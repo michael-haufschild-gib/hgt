@@ -20,6 +20,24 @@ four-vertex path `d₂−x, x, d₃−x, d₂−d₃+x`, with successive weights
 the other components are the existing prime-two pairs. Its capacity bound
 is still an open obligation.
 
+A strict floor at `a=log(3)/2` suffices for the first new target:
+`RHTower.continuous_ccmRestrictedWeilGroundEnergy` extends it to a larger
+aperture. At this boundary the prime-three correlation vanishes. The exact
+Gamma tail is
+`Ω(log 3)=log(2+√3)/2+π/6`.
+
+For the even sector, the next capacity candidate retains Legendre degrees
+`0,2,4,6` and harmonic gap `H₈=761/280`. The proposed diagonal potential is
+`449/500−log(1−x²)/2`. A polynomial reciprocal candidate, with `z=x²`, is
+`500/449−31z/50+7z²/200−27z³/500−3z⁴/200−z⁸/10`.
+Its pointwise certificate passed Lean. Reflected products are at most `4/5`
+when `63/50≤x+y≤127/100`, keeping the weighted pair ratio at most `1/5`.
+The three audited declarations are `primeThreeEvenReciprocal_bound`,
+`primeThreeEvenPotential_le_log`, and `primeThreeEvenReciprocal_pair_bound`
+in `ThePrimeThreeBoundaryHasAPolynomialReciprocalBound.lean`; their axioms
+are only `propext`, `Classical.choice`, `Quot.sound`.
+The four-moment capacity matrix remains unproved.
+
 The Gamma comparison previously retained its polynomial moments only for
 lag radius `r≤1`. The larger windows require `r≤log(5)<2`. The extension
 uses, for `0<z≤1`,
@@ -72,9 +90,14 @@ passed direct Lean checks and standard-only transitive axiom audits in
 `NewtonRefinementControlsTheGammaKernelThroughRadiusTwo.lean`.
 The exact update error is `U(1/U−q)²+(T−U)q²`.
 
+The integrated form `gammaPolynomialLowerNewton3_error` has error at most
+`6r/10¹⁷` times mass for `0<r≤2`. It and
+`local_gamma_remainder_sub_newton3` passed direct Lean checks and standard-only
+transitive axiom audits in
+`TheRefinedGammaPolynomialHasAUniformErrorThroughRadiusTwo.lean`.
+
 ## Open obligations
 
-- The integrated refined comparison is drafted, but has not passed Lean.
 - Prove positive finite-moment capacities for the simultaneous prime reflections,
   including both parities. No such certificate is claimed here.
 - Transfer the resulting floors to all block sizes.

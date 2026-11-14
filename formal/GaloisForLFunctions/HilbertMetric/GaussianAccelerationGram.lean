@@ -50,10 +50,13 @@ theorem integrable_gaussianAccelerationGram_entry {ι : Type*} {d : ℕ}
     unfold finiteGaussianDistanceGram
     congr 1
     ring
-  simp_rw [he]
-  exact (integrable_gaussianAcceleration_quadratic_iff _ _).mpr
+  have h := (integrable_gaussianAcceleration_quadratic_iff s
+    (-(∑ k, (y i k - y j k) ^ 2))).mpr
     (lt_of_le_of_lt (neg_nonpos.mpr (Finset.sum_nonneg fun k _ => sq_nonneg _))
       (by positivity))
+  convert h using 1
+  funext x
+  rw [congrFun he x]
 
 private def accelerationMatrixDensity {ι : Type*} {d : ℕ}
     (y : ι → Fin d → ℝ) (s x : ℝ) : Matrix ι ι ℝ :=
@@ -66,7 +69,8 @@ private theorem accelerationMatrixDensity_integrable {ι : Type*} {d : ℕ}
       (volume.restrict (Ioi 0)) := by
   apply (integrable_gaussianAccelerationGram_entry y s i j).congr
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-  simp only [accelerationMatrixDensity, if_pos hx, Matrix.smul_apply, smul_eq_mul]
+  have hx0 : 0 < x := hx
+  simp only [accelerationMatrixDensity, if_pos hx0, Matrix.smul_apply, smul_eq_mul]
 
 private theorem accelerationMatrixDensity_integral {ι : Type*} {d : ℕ}
     (y : ι → Fin d → ℝ) (s : ℝ) :
@@ -77,7 +81,8 @@ private theorem accelerationMatrixDensity_integral {ι : Type*} {d : ℕ}
   unfold _root_.HTGeometry.integralMatrixKernel gaussianAcceleration
   apply integral_congr_ae
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
-  simp only [accelerationMatrixDensity, if_pos hx, Matrix.smul_apply, smul_eq_mul]
+  have hx0 : 0 < x := hx
+  simp only [accelerationMatrixDensity, if_pos hx0, Matrix.smul_apply, smul_eq_mul]
 
 private theorem accelerationMatrixDensity_posSemidef
     {ι : Type*} [Fintype ι] [DecidableEq ι] {d : ℕ}
@@ -125,15 +130,80 @@ theorem gaussianAccelerationGram_posDef_iff_injective
     have hsupport : Ioi (0 : ℝ) ⊆ Function.support
         (_root_.HTGeometry.integralMatrixKernelQuadratic (accelerationMatrixDensity y s) v) := by
       intro x hx
+      have hx0 : 0 < x := hx
       have hg := (finiteGaussianDistanceGram_posDef_iff_injective_of_pos_fintype
-        y (sq_pos_of_pos hx)).mpr hy
+        y (sq_pos_of_pos hx0)).mpr hy
       have hp : (accelerationMatrixDensity y s x).PosDef := by
-        rw [accelerationMatrixDensity, if_pos hx]
+        rw [accelerationMatrixDensity, if_pos hx0]
         exact hg.smul (gaussianAccelerationKernel_exp_pos s x)
       exact (hp.dotProduct_mulVec_pos hv).ne'
     exact lt_of_lt_of_le (by simp : 0 < (volume.restrict (Ioi (0 : ℝ))) (Ioi 0))
       (measure_mono hsupport)
 
+/-- Acceleration preserves the exact rank: repeated feature vectors account for every defect. -/
+theorem gaussianAccelerationGram_rank_eq_image_card
+    {ι : Type*} [Fintype ι] [DecidableEq ι] {d : ℕ}
+    (y : ι → Fin d → ℝ) (s : ℝ) :
+    (gaussianAccelerationGram y s).rank = (Finset.univ.image y).card := by
+  classical
+  let S : Finset (Fin d → ℝ) := Finset.univ.image y
+  let witness (a : S) : ∃ i ∈ (Finset.univ : Finset ι), y i = a :=
+    Finset.mem_image.mp a.2
+  let rep : S → ι := fun a => (witness a).choose
+  have hrep (a : S) : y (rep a) = a := (witness a).choose_spec.2
+  let label : ι → S := fun i => ⟨y i, by simp [S]⟩
+  have hrep_label (i : ι) : y (rep (label i)) = y i := by
+    simpa [label] using hrep (label i)
+  have hrep_injective : Function.Injective rep := by
+    intro a b hab
+    apply Subtype.ext
+    rw [← hrep a, ← hrep b, hab]
+  let yr : S → Fin d → ℝ := fun a => y (rep a)
+  have hyr : Function.Injective yr := by
+    intro a b hab
+    apply Subtype.ext
+    rw [← hrep a, ← hrep b]
+    exact hab
+  let M : Matrix ι ι ℝ := gaussianAccelerationGram y s
+  have hsub : M.submatrix rep rep = gaussianAccelerationGram yr s := by
+    rfl
+  have hpos : (gaussianAccelerationGram yr s).PosDef :=
+    (gaussianAccelerationGram_posDef_iff_injective yr s).2 hyr
+  have hsubrank : (M.submatrix rep rep).rank = Fintype.card S := by
+    rw [hsub]
+    exact Matrix.rank_of_isUnit _ hpos.isUnit
+  have hlower : S.card ≤ M.rank := by
+    calc
+      S.card = Fintype.card S := by simp
+      _ = (M.submatrix rep rep).rank := hsubrank.symm
+      _ ≤ M.rank := Matrix.rank_submatrix_le M rep rep
+  have hrow (i : ι) : M.row i = M.row (rep (label i)) := by
+    funext j
+    change gaussianAccelerationGram y s i j =
+      gaussianAccelerationGram y s (rep (label i)) j
+    simp only [gaussianAccelerationGram]
+    rw [hrep_label]
+  have hrange : Set.range M.row =
+      Set.range (fun a : S => M.row (rep a)) := by
+    ext v
+    constructor
+    · rintro ⟨i, rfl⟩
+      exact ⟨label i, (hrow i).symm⟩
+    · rintro ⟨a, rfl⟩
+      exact ⟨rep a, rfl⟩
+  have hupper : M.rank ≤ S.card := by
+    rw [M.rank_eq_finrank_span_row, hrange]
+    simpa only [Set.finrank, Fintype.card_coe] using
+      (finrank_range_le_card (R := ℝ) (fun a : S => M.row (rep a)))
+  change M.rank = S.card
+  exact le_antisymm hupper hlower
+
 end
 
 end GaloisForLFunctions.HilbertMetric
+
+#print axioms GaloisForLFunctions.HilbertMetric.gaussianAccelerationGram_entry
+#print axioms GaloisForLFunctions.HilbertMetric.integrable_gaussianAccelerationGram_entry
+#print axioms GaloisForLFunctions.HilbertMetric.gaussianAccelerationGram_posSemidef
+#print axioms GaloisForLFunctions.HilbertMetric.gaussianAccelerationGram_posDef_iff_injective
+#print axioms GaloisForLFunctions.HilbertMetric.gaussianAccelerationGram_rank_eq_image_card

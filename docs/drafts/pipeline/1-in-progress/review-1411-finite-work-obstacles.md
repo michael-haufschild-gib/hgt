@@ -10,10 +10,10 @@
 | Task | Exact scope | Status |
 |---|---|---|
 | A1 | Jensen real-rootedness for every degree at most `31922`, from width `3/8` and verified height `67`. | Direct Lean and axiom audits passed |
-| A2 | Common certified floor interfaces for smaller apertures, real/complex tests, step packets, charge-free neutral forms and dressed middles; constants and cutoff ranges explicit. | Lean draft; check pending |
-| A3 | Exact rational ladder milestones and decomposition of `levelAt 2 4` into its three remaining nonnegative excesses. | Lean draft; check pending |
+| A2 | Common certified floor interfaces for smaller apertures, real/complex tests, step packets, charge-free neutral forms and dressed middles; constants and cutoff ranges explicit. | Direct Lean and axiom audits passed |
+| A3 | Exact rational ladder milestones and decomposition of `levelAt 2 4` into its three remaining nonnegative excesses. | Direct Lean and axiom audits passed |
 | A4 | Actual pole/Gamma/jump/root-number terms in WL, CHMD, SZ, HAT-C and PM transfers. | Lean drafts; checks pending |
-| A5 | The `2^ρ/3^ρ` trace equation, two/three reflection discriminants, double-collision sheet exchange and contact ideals at degrees `1,2,3,4,9`. | Lean drafts; checks pending |
+| A5 | The `2^ρ/3^ρ` trace equation, two/three reflection discriminants, realized central sheet exchange and contact ideals at degrees `1,2,3,4,9`. | Lean drafts; checks pending |
 | A6 | Primitive completion and scattering for the actual third-cyclotomic Eisenstein family. | Lean draft; check pending |
 | A7 | Three-even-moment Gram certificate with exact margin `1/1000000`, and strictness exactly for nonzero moment triples. | Public interface drafted in existing moment module; check pending |
 
@@ -32,6 +32,9 @@
 - The two prime reflection differences have product in the zero's pair field.
   Its square is `(T₂²−8)(T₃²−12)`. The two differences cannot both vanish,
   by injectivity of the two prime exponent coordinates and nonrealness of every ξ zero.
+- `exists_isCollision_center_two` supplies actual central double collisions at complex
+  times with arbitrarily large real parts. Their labels `√2` and `−√2` are interchanged by
+  `s↦−s` and remain distinct on a punctured neighborhood.
 - Scattering normalization transfers the certified floor only with jump tail,
   Robin mass correction and omitted prime contacts all retained.
 - The Eisenstein character has root number `+1` and Gamma factor `Γℝ(s+1)`.
@@ -43,8 +46,9 @@
 
 ## Boundaries
 
-No all-aperture positivity, vanishing of the remaining overlap excesses, collision existence,
-Artin holomorphy, infinite square-class classification or improved scattering rate is asserted.
+No all-aperture positivity, vanishing of the remaining overlap excesses, prescribed off-centre
+collision, Artin holomorphy, infinite square-class classification or improved scattering rate
+is asserted.
 Domain restrictions on tests and finite windows must remain explicit; no unproved analytic
 premise may replace an actual input. Each delivered endpoint requires a direct Lean check,
 transitive axiom audit and owning umbrella import.

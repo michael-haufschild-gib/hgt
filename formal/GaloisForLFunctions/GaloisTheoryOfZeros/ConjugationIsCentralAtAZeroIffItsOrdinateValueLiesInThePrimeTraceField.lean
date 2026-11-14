@@ -313,8 +313,3 @@ theorem primeOrdinateValue_mem_of_critical (q : Nat.Primes) (ρ : XiDivisorSuppo
   primeOrdinateValue_mem_of_rational q ρ ⟨1 / 2, by rw [h]; norm_num⟩
 
 end GaloisForLFunctions.GaloisTheoryOfZeros
-
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.primeOrdinateValue_mem_iff_conj
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.primeTraceConjugation_central_iff
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.primeOrdinateValue_mem_of_critical
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.primeTraceExponentHom_fixed_iff

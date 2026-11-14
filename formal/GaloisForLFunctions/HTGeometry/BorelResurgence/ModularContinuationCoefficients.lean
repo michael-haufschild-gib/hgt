@@ -57,3 +57,8 @@ theorem countable_hardyPrimitive_affine_boundary_exceptions (m : ℕ) (f : ℂ �
   exact hardyPrimitiveJet_naturalBoundary m hz
 
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.e2_affine_continuation_coefficients_subsingleton
+#print axioms GaloisForLFunctions.HTGeometry.hardyPrimitive_affine_continuation_coefficients_subsingleton
+#print axioms GaloisForLFunctions.HTGeometry.countable_e2_affine_boundary_exceptions
+#print axioms GaloisForLFunctions.HTGeometry.countable_hardyPrimitive_affine_boundary_exceptions

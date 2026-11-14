@@ -65,7 +65,8 @@ theorem summable_shifted_exp (a x : ℝ) :
   apply hs.of_nonneg_of_le (fun _ => (Real.exp_pos _).le)
   intro n
   rw [← Real.exp_add, Real.exp_le_exp]
-  have h := abs_sub_le (x + Real.exp a * (n : ℝ)) x
+  have h := abs_sub_le (x + Real.exp a * (n : ℝ)) 0 x
+  simp only [sub_zero, zero_sub, abs_neg] at h
   rw [show x + Real.exp a * (n : ℝ) - x = Real.exp a * (n : ℝ) by ring,
     abs_mul, abs_of_pos (Real.exp_pos a)] at h
   linarith only [h]
@@ -98,7 +99,7 @@ theorem btzSpatialImages_tendsto_zero (a x : ℝ) :
   have he : Tendsto (fun t : ℝ => Real.exp (-|t|)) atTop (𝓝 0) := by
     apply (Real.tendsto_exp_atBot.comp tendsto_neg_atTop_atBot).congr'
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with t ht
-    rw [abs_of_nonneg ht]
+    simp only [Function.comp_def, abs_of_nonneg ht]
   have hb := he.mul_const (∑' n : ℤ, Real.exp (-|x + Real.exp a * (n : ℝ)|))
   rw [zero_mul] at hb
   exact squeeze_zero (fun t => (btzSpatialImages_pos a t x).le)
@@ -114,7 +115,7 @@ theorem btzSpatialImages_periodic (a t : ℝ) :
   convert h using 1
   apply tsum_congr
   intro n
-  congr 2
+  apply congrArg (btzKernel t)
   simp only [Equiv.coe_addRight, Int.cast_add, Int.cast_one]
   ring
 
@@ -132,14 +133,23 @@ theorem summable_longStringImages (b a t x : ℝ) :
 theorem summable_btzDoubleImages (b a t x : ℝ) :
     Summable (fun p : ℤ × ℤ =>
       btzKernel (t + Real.exp b * (p.1 : ℝ)) (x + Real.exp a * (p.2 : ℝ))) := by
-  rw [summable_prod_of_nonneg (fun _ => (btzKernel_pos _ _).le)]
-  exact ⟨fun _ => summable_btzSpatialImages _ _ _, summable_longStringImages _ _ _ _⟩
+  refine (summable_prod_of_nonneg
+    (f := fun p : ℤ × ℤ => btzKernel
+      (t + Real.exp b * (p.1 : ℝ)) (x + Real.exp a * (p.2 : ℝ)))
+    (fun p => (btzKernel_pos _ _).le)).mpr ?_
+  constructor
+  · intro m
+    exact summable_btzSpatialImages a (t + Real.exp b * (m : ℝ)) x
+  · exact summable_longStringImages b a t x
 
 /-- Exchanging time and space also exchanges their image lattices. -/
 theorem longStringImages_swap (b a t x : ℝ) :
     longStringImages b a t x = longStringImages a b x t := by
   unfold longStringImages btzSpatialImages
-  rw [← (summable_btzDoubleImages b a t x).tsum_comm]
+  rw [← Summable.tsum_comm
+    (f := fun m n : ℤ => btzKernel
+      (t + Real.exp b * (m : ℝ)) (x + Real.exp a * (n : ℝ)))
+    (summable_btzDoubleImages b a t x)]
   apply tsum_congr
   intro n
   apply tsum_congr
@@ -161,7 +171,7 @@ theorem longStringImages_periodic (b a x : ℝ) :
   convert h using 1
   apply tsum_congr
   intro m
-  congr 2
+  apply congrArg (fun u => btzSpatialImages a u x)
   simp only [Equiv.coe_addRight, Int.cast_add, Int.cast_one]
   ring
 
@@ -190,25 +200,7 @@ theorem btzKernel_zero_lattice (a : ℝ) (n : ℕ) :
     rw [Real.cosh_two_mul, Real.cosh_sq]
     ring
   rw [btzKernel, Real.cosh_zero, h, hyperbolicResolventWeight]
-  field_simp [(Real.cosh_pos (n * a)).ne'] <;> ring
+  field_simp [(Real.cosh_pos (n * a)).ne']
+  ring
 
 end GaloisForLFunctions.HTGeometry.Thermofield
-
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzKernel_pos
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzKernel_swap
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzKernel_neg_time
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzKernel_le_exp
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.summable_shifted_exp
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.summable_btzSpatialImages
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzSpatialImages_pos
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzSpatialImages_le
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzSpatialImages_tendsto_zero
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzSpatialImages_periodic
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.summable_longStringImages
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.summable_btzDoubleImages
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_swap
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_pos
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_periodic
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_returns
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_not_tendsto_zero
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzKernel_zero_lattice

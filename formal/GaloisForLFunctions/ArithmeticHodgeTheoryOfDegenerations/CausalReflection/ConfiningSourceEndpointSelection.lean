@@ -110,8 +110,20 @@ theorem confiningIntervalSourceFloor_derivative_jump (u v s t : ℝ) :
   rw [hf]
   exact endpointPotential_derivative_jump _ _ _ _ _ _
 
+/-- The change of preferred confinement endpoint is a genuine first-order source transition. -/
+theorem confiningIntervalSourceFloor_not_differentiable (u v : ℝ) :
+    ¬ DifferentiableAt ℝ (confiningIntervalSourceFloor u v) (confiningCoexistenceSource u v) := by
+  have hf : confiningIntervalSourceFloor u v =
+      endpointPotential (confiningHalfLineGroundEnergy (Real.exp u))
+        (confiningHalfLineGroundEnergy (Real.exp u + Real.exp v)) (Real.exp u) v := by
+    funext z
+    exact confiningIntervalSourceFloor_eq u v z
+  rw [hf]
+  exact endpointPotential_not_differentiable _ _ _ _
+
 #print axioms confiningSourceEnergy_endpoint_bound
 #print axioms confiningIntervalSourceFloor_eq
 #print axioms confiningIntervalSourceFloor_derivative_jump
+#print axioms confiningIntervalSourceFloor_not_differentiable
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -39,7 +39,7 @@ theorem left_eq_right_mirror (β : ℝ) (E : α → ℝ) (A : Matrix α α ℂ) 
   ext a b
   simp only [left, right, amplitude, Matrix.mul_diagonal, Matrix.diagonal_mul,
     Matrix.transpose_apply, mirror]
-  field_simp [sqrt_weight_ne_zero β E a] <;> ring
+  field_simp [sqrt_weight_ne_zero β E a]
 
 /-- Full Schmidt support makes the right action faithful. -/
 theorem right_action_injective (β : ℝ) (E : α → ℝ) :
@@ -62,7 +62,7 @@ theorem mirror_mirror (β : ℝ) (E : α → ℝ) (A : Matrix α α ℂ) :
     mirror β E (mirror β E A) = A := by
   ext a b
   simp only [mirror]
-  field_simp [sqrt_weight_ne_zero β E a, sqrt_weight_ne_zero β E b] <;> ring
+  field_simp [sqrt_weight_ne_zero β E a, sqrt_weight_ne_zero β E b]
 
 omit [DecidableEq α] in
 /-- The opposite algebra reverses the order of operator products. -/
@@ -73,7 +73,7 @@ theorem mirror_mul (β : ℝ) (E : α → ℝ) (A B : Matrix α α ℂ) :
   apply Finset.sum_congr rfl
   intro c _
   field_simp [sqrt_weight_ne_zero β E a, sqrt_weight_ne_zero β E b,
-    sqrt_weight_ne_zero β E c] <;> ring
+    sqrt_weight_ne_zero β E c]
 
 omit [DecidableEq α] [Nonempty α] in
 theorem mirror_add (β : ℝ) (E : α → ℝ) (A B : Matrix α α ℂ) :

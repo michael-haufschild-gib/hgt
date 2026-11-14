@@ -36,9 +36,10 @@ def couplingResponse (ℓ q x : ℝ) : ℝ :=
 
 theorem entropy_hasDerivAt (ℓ x : ℝ) :
     HasDerivAt (entropy ℓ) (12 * Real.pi * (x ^ 2 + 2 * ℓ)) x := by
-  convert (((hasDerivAt_id x).pow 3).add
-    ((hasDerivAt_id x).const_mul (6 * ℓ))).const_mul (4 * Real.pi) using 1 <;>
-    (try dsimp [entropy]) <;> ring
+  apply ((((hasDerivAt_id x).pow 3).add
+    ((hasDerivAt_id x).const_mul (6 * ℓ))).const_mul (4 * Real.pi)).congr_deriv
+  dsimp
+  ring
 
 theorem entropy_pos (a u : ℝ) : 0 < entropy (a ^ 2) (Real.exp u) := by
   unfold entropy
@@ -58,7 +59,7 @@ theorem energy_hasDerivAt (ℓ q u : ℝ) :
   apply (hp.add hq).congr_deriv
   dsimp
   field_simp
-  <;> ring
+  ring
 
 /-- The radial first law is an identity of actual derivatives. -/
 theorem radial_first_law (a q u : ℝ) :
@@ -69,7 +70,7 @@ theorem radial_first_law (a q u : ℝ) :
   unfold temperature
   have hd : Real.exp u ^ 2 + 2 * a ^ 2 ≠ 0 := by positivity
   field_simp [hd]
-  <;> ring
+  ring
 
 theorem potential_radial_hasDerivAt (a q u t z : ℝ) :
     HasDerivAt (potential t z (a ^ 2) q)
@@ -80,7 +81,6 @@ theorem potential_radial_hasDerivAt (a q u t z : ℝ) :
   apply h.congr_deriv
   have hfirst := radial_first_law a q u
   rw [(energy_hasDerivAt _ _ _).deriv, (entropy_hasDerivAt _ _).deriv] at hfirst
-  dsimp
   nlinarith only [hfirst]
 
 /-- Radial stationarity is exactly temperature matching. -/
@@ -95,10 +95,10 @@ theorem potential_coupling_hasDerivAt (t z ℓ q x : ℝ) :
       (3 - 24 * Real.pi * x * t - z) ℓ := by
   have he := (((hasDerivAt_id ℓ).const_add (x ^ 4 + x ^ 2)).const_mul 3).add_const
     (q ^ 2 / x ^ 2)
-  have hs := (((hasDerivAt_id ℓ).mul_const (6 * x)).const_add (x ^ 3)).const_mul
+  have hs := ((((hasDerivAt_id ℓ).const_mul 6).mul_const x).const_add (x ^ 3)).const_mul
     (4 * Real.pi)
-  have h := (he.sub (hs.const_mul t)).sub ((hasDerivAt_id ℓ).mul_const z)
-  convert h using 1 <;> (try dsimp [potential, energy, entropy]) <;> ring
+  apply ((he.sub (hs.const_mul t)).sub ((hasDerivAt_id ℓ).const_mul z)).congr_deriv
+  ring
 
 /-- On a thermal saddle the coupling equation matches the prescribed source. -/
 theorem coupling_stationary_iff (z ℓ q x : ℝ) :

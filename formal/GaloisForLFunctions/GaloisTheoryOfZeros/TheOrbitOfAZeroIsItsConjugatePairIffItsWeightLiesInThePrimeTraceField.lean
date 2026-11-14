@@ -13,7 +13,8 @@ the positive real numbers `p^{2 Re ρ}`.
   `Re τ(ρ + ρ̄) = 2 Re ρ`.
 * **Doubling** (`primeTraceZeroMap_re_of_weight_re`). Then `Re (τcτ⁻¹)ρ − Re ρ` is
   `± 2 (Re τρ − Re ρ)`, so the set of the displacements `|Re τρ − Re ρ|` is closed under
-  doubling. It is bounded, hence zero.
+  doubling. It is bounded, hence zero. The argument runs in every subgroup that contains
+  conjugation (`primeTraceZeroMap_re_of_weight_re_of_mem`).
 * **Converse** (`primeTraceExponentHom_weight_of_re`). If every `σ` keeps the real part of `ρ`,
   then `τρ` and `τρ̄` are the two zeros `ρ`, `ρ̄`, and `τ` fixes the weight.
 
@@ -90,17 +91,19 @@ private theorem doubling_set_eq_zero (S : Set ℝ) (hS : S.Nonempty) (hB : BddAb
   have hx' := le_csSup hB hx
   exact le_antisymm (by linarith only [hu, hx']) (hn x hx)
 
-/-- **Doubling.** If the real part of the weight is the same along its orbit, every arithmetic
-automorphism keeps the real part of the zero. -/
-theorem primeTraceZeroMap_re_of_weight_re (ρ : XiDivisorSupport)
-    (hq : ∀ τ : G, ((primeTraceExponentHom τ (primeTraceWeight ρ) : Δ) : ℂ).re =
-      2 * (ρ : ℂ).re) (σ : G) :
+/-- **Doubling in a subgroup.** If a subgroup of arithmetic automorphisms contains conjugation
+and keeps the real part of the weight, each of its elements keeps the real part of the zero. -/
+theorem primeTraceZeroMap_re_of_weight_re_of_mem (ρ : XiDivisorSupport) (K : Subgroup G)
+    (hc : primeTraceConjugation ∈ K)
+    (hq : ∀ τ ∈ K, ((primeTraceExponentHom τ (primeTraceWeight ρ) : Δ) : ℂ).re =
+      2 * (ρ : ℂ).re) {σ : G} (hσ : σ ∈ K) :
     (primeTraceZeroMap σ ρ : ℂ).re = (ρ : ℂ).re := by
-  let S : Set ℝ := Set.range (fun τ : G => |(primeTraceZeroMap τ ρ : ℂ).re - (ρ : ℂ).re|)
-  have hS : S.Nonempty := ⟨_, 1, rfl⟩
+  let S : Set ℝ :=
+    (fun τ : G => |(primeTraceZeroMap τ ρ : ℂ).re - (ρ : ℂ).re|) '' (K : Set G)
+  have hS : S.Nonempty := ⟨_, 1, K.one_mem, rfl⟩
   have hB : BddAbove S := by
     refine ⟨1, ?_⟩
-    rintro x ⟨τ, rfl⟩
+    rintro x ⟨τ, -, rfl⟩
     have ha := xi_divisor_support_re_mem_open_unit (primeTraceZeroMap τ ρ)
     have hb := xi_divisor_support_re_mem_open_unit ρ
     apply le_of_lt
@@ -108,7 +111,7 @@ theorem primeTraceZeroMap_re_of_weight_re (ρ : XiDivisorSupport)
     constructor <;> linarith only [ha.1, ha.2, hb.1, hb.2]
   -- conjugating complex conjugation by `τ` doubles the displacement of `τ`
   have hd : ∀ x ∈ S, 2 * x ∈ S := by
-    rintro x ⟨τ, rfl⟩
+    rintro x ⟨τ, hτ, rfl⟩
     let ζ := primeTraceZeroMap τ⁻¹ ρ
     have hinv : primeTraceZeroMap τ ζ = ρ := by
       dsimp only [ζ]
@@ -118,7 +121,8 @@ theorem primeTraceZeroMap_re_of_weight_re (ρ : XiDivisorSupport)
       rw [primeTraceExponentHom_root]
       congr 1
       rw [primeTraceZeroMap_mul, primeTraceZeroMap_mul, primeTraceZeroMap_conjugation]
-    refine ⟨τ * primeTraceConjugation * τ⁻¹, ?_⟩
+    refine ⟨τ * primeTraceConjugation * τ⁻¹,
+      K.mul_mem (K.mul_mem hτ hc) (K.inv_mem hτ), ?_⟩
     change |(primeTraceZeroMap (τ * primeTraceConjugation * τ⁻¹) ρ : ℂ).re - (ρ : ℂ).re| =
       2 * |(primeTraceZeroMap τ ρ : ℂ).re - (ρ : ℂ).re|
     rcases abs_eq_abs.mp (primeTraceZeroMap_height τ⁻¹ ρ) with hi | hi
@@ -140,7 +144,7 @@ theorem primeTraceZeroMap_re_of_weight_re (ρ : XiDivisorSupport)
         ((ρ : ℂ) - (2 • (primeTraceZeroMap τ ρ : ℂ) -
           ((primeTraceExponentHom τ (primeTraceWeight ρ) : Δ) : ℂ))).re at hre
       simp only [two_nsmul, Complex.sub_re, Complex.add_re] at hre
-      rw [hq τ] at hre
+      rw [hq τ hτ] at hre
       have hd' : (primeTraceZeroMap (τ * primeTraceConjugation * τ⁻¹) ρ : ℂ).re - (ρ : ℂ).re =
           -(2 * ((primeTraceZeroMap τ ρ : ℂ).re - (ρ : ℂ).re)) := by linarith only [hre]
       rw [hd', abs_neg, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
@@ -162,14 +166,23 @@ theorem primeTraceZeroMap_re_of_weight_re (ρ : XiDivisorSupport)
         ((ρ : ℂ) + (2 • (primeTraceZeroMap τ ρ : ℂ) -
           ((primeTraceExponentHom τ (primeTraceWeight ρ) : Δ) : ℂ))).re at hre
       simp only [two_nsmul, Complex.sub_re, Complex.add_re] at hre
-      rw [hq τ] at hre
+      rw [hq τ hτ] at hre
       have hd' : (primeTraceZeroMap (τ * primeTraceConjugation * τ⁻¹) ρ : ℂ).re - (ρ : ℂ).re =
           2 * ((primeTraceZeroMap τ ρ : ℂ).re - (ρ : ℂ).re) := by linarith only [hre]
       rw [hd', abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
   have hn : ∀ x ∈ S, 0 ≤ x := by
-    rintro x ⟨τ, rfl⟩
+    rintro x ⟨τ, -, rfl⟩
     exact abs_nonneg _
-  exact sub_eq_zero.mp (abs_eq_zero.mp (doubling_set_eq_zero S hS hB hd hn _ ⟨σ, rfl⟩))
+  exact sub_eq_zero.mp (abs_eq_zero.mp (doubling_set_eq_zero S hS hB hd hn _ ⟨σ, hσ, rfl⟩))
+
+/-- **Doubling.** If the real part of the weight is the same along its orbit, every arithmetic
+automorphism keeps the real part of the zero. -/
+theorem primeTraceZeroMap_re_of_weight_re (ρ : XiDivisorSupport)
+    (hq : ∀ τ : G, ((primeTraceExponentHom τ (primeTraceWeight ρ) : Δ) : ℂ).re =
+      2 * (ρ : ℂ).re) (σ : G) :
+    (primeTraceZeroMap σ ρ : ℂ).re = (ρ : ℂ).re :=
+  primeTraceZeroMap_re_of_weight_re_of_mem ρ ⊤ (Subgroup.mem_top _) (fun τ _ => hq τ)
+    (Subgroup.mem_top σ)
 
 /-! ## From the real part to the weight -/
 

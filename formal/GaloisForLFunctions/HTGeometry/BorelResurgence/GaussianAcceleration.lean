@@ -83,7 +83,8 @@ theorem gaussianAcceleration_quadratic (s a : ℝ) :
       (Real.pi * Real.exp s) * (4 / (1 - 4 * Real.exp s * a)) := by ring
   rw [he, Real.sqrt_mul (show 0 ≤ Real.pi * Real.exp s by positivity)
     (4 / (1 - 4 * Real.exp s * a)), Real.sqrt_div (by norm_num : (0 : ℝ) ≤ 4)]
-  rw [show Real.sqrt 4 = 2 by norm_num]
+  rw [show Real.sqrt 4 = 2 by
+    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 2)]]
   have hs : Real.sqrt (Real.pi * Real.exp s) ≠ 0 := by positivity
   field_simp [hs]
 
@@ -111,3 +112,14 @@ theorem integrable_gaussianAcceleration_gaussian (s r : ℝ) :
 end
 
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.gaussianAccelerationKernel_eq_translatedGaussian
+#print axioms GaloisForLFunctions.HTGeometry.gaussianAccelerationKernel_nonneg
+#print axioms GaloisForLFunctions.HTGeometry.gaussianAccelerationKernel_exp_pos
+#print axioms GaloisForLFunctions.HTGeometry.gaussianAccelerationKernel_mul_quadratic
+#print axioms GaloisForLFunctions.HTGeometry.gaussianAcceleration_quadratic_raw
+#print axioms GaloisForLFunctions.HTGeometry.integrable_gaussianAcceleration_quadratic_iff
+#print axioms GaloisForLFunctions.HTGeometry.gaussianAcceleration_quadratic
+#print axioms GaloisForLFunctions.HTGeometry.integral_gaussianAccelerationKernel
+#print axioms GaloisForLFunctions.HTGeometry.gaussianAcceleration_gaussian
+#print axioms GaloisForLFunctions.HTGeometry.integrable_gaussianAcceleration_gaussian

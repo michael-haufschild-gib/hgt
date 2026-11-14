@@ -40,3 +40,7 @@ theorem affine_exact_cancellation (c : ℂ) (θ : ℝ) :
   ring
 
 end U0
+
+#print axioms U0.affine_continuation_coefficients_subsingleton
+#print axioms U0.countable_affine_boundary_exceptions
+#print axioms U0.affine_exact_cancellation

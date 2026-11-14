@@ -1,5 +1,6 @@
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.Calculus.Deriv.Inv
+import Mathlib.Analysis.Convex.Deriv
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
@@ -29,7 +30,7 @@ theorem endpoint_gap (H₀ H₁ a k z : ℝ) :
       Real.exp k * (coexistenceSource H₀ H₁ k - z) := by
   unfold coexistenceSource
   field_simp
-  <;> ring
+  ring
 
 theorem lower_endpoint_le_iff (H₀ H₁ a k z : ℝ) :
     H₀ - z * a ≤ H₁ - z * (a + Real.exp k) ↔
@@ -67,13 +68,16 @@ theorem endpoint_coexistence (H₀ H₁ a k : ℝ) :
   simp only [sub_self, mul_zero] at h
   exact sub_eq_zero.mp h
 
+private theorem source_line_hasDerivAt (H a z : ℝ) :
+    HasDerivAt (fun x => H - x * a) (-a) z := by
+  apply ((hasDerivAt_const z H).sub ((hasDerivAt_id z).mul_const a)).congr_deriv
+  ring
+
 /-- The left source derivative is minus the lower endpoint coupling. -/
 theorem endpointPotential_left_hasDerivAt (H₀ H₁ a k v : ℝ) :
     HasDerivAt (endpointPotential H₀ H₁ a k) (-a)
       (coexistenceSource H₀ H₁ k - Real.exp v) := by
-  have hd : HasDerivAt (fun z => H₀ - z * a) (-a)
-      (coexistenceSource H₀ H₁ k - Real.exp v) := by
-    convert (hasDerivAt_const _ H₀).sub ((hasDerivAt_id _).mul_const a) using 1 <;> simp
+  have hd := source_line_hasDerivAt H₀ a (coexistenceSource H₀ H₁ k - Real.exp v)
   apply hd.congr_of_eventuallyEq
   have hlt : coexistenceSource H₀ H₁ k - Real.exp v < coexistenceSource H₀ H₁ k :=
     sub_lt_self _ (Real.exp_pos v)
@@ -84,10 +88,7 @@ theorem endpointPotential_left_hasDerivAt (H₀ H₁ a k v : ℝ) :
 theorem endpointPotential_right_hasDerivAt (H₀ H₁ a k v : ℝ) :
     HasDerivAt (endpointPotential H₀ H₁ a k) (-(a + Real.exp k))
       (coexistenceSource H₀ H₁ k + Real.exp v) := by
-  have hd : HasDerivAt (fun z => H₁ - z * (a + Real.exp k)) (-(a + Real.exp k))
-      (coexistenceSource H₀ H₁ k + Real.exp v) := by
-    convert (hasDerivAt_const _ H₁).sub ((hasDerivAt_id _).mul_const (a + Real.exp k))
-      using 1 <;> simp
+  have hd := source_line_hasDerivAt H₁ (a + Real.exp k) (coexistenceSource H₀ H₁ k + Real.exp v)
   apply hd.congr_of_eventuallyEq
   have hlt : coexistenceSource H₀ H₁ k < coexistenceSource H₀ H₁ k + Real.exp v :=
     lt_add_of_pos_right _ (Real.exp_pos v)
@@ -103,6 +104,35 @@ theorem endpointPotential_derivative_jump (H₀ H₁ a k v w : ℝ) :
     (endpointPotential_left_hasDerivAt _ _ _ _ _).deriv]
   ring
 
+theorem endpointPotential_left_boundary (H₀ H₁ a k : ℝ) :
+    HasDerivWithinAt (endpointPotential H₀ H₁ a k) (-a)
+      (Set.Iic (coexistenceSource H₀ H₁ k)) (coexistenceSource H₀ H₁ k) := by
+  have hd := source_line_hasDerivAt H₀ a (coexistenceSource H₀ H₁ k)
+  exact hd.hasDerivWithinAt.congr
+    (fun z hz => (endpointPotential_eq_lower_iff H₀ H₁ a k z).mpr hz)
+    ((endpointPotential_eq_lower_iff H₀ H₁ a k _).mpr le_rfl)
+
+theorem endpointPotential_right_boundary (H₀ H₁ a k : ℝ) :
+    HasDerivWithinAt (endpointPotential H₀ H₁ a k) (-(a + Real.exp k))
+      (Set.Ici (coexistenceSource H₀ H₁ k)) (coexistenceSource H₀ H₁ k) := by
+  have hd := source_line_hasDerivAt H₁ (a + Real.exp k) (coexistenceSource H₀ H₁ k)
+  exact hd.hasDerivWithinAt.congr
+    (fun z hz => (endpointPotential_eq_upper_iff H₀ H₁ a k z).mpr hz)
+    ((endpointPotential_eq_upper_iff H₀ H₁ a k _).mpr le_rfl)
+
+/-- Every nonzero endpoint interval produces a genuine nondifferentiable coexistence point. -/
+theorem endpointPotential_not_differentiable (H₀ H₁ a k : ℝ) :
+    ¬ DifferentiableAt ℝ (endpointPotential H₀ H₁ a k) (coexistenceSource H₀ H₁ k) := by
+  intro h
+  have hl := (endpointPotential_left_boundary H₀ H₁ a k).derivWithin
+    (uniqueDiffWithinAt_Iic _)
+  have hr := (endpointPotential_right_boundary H₀ H₁ a k).derivWithin
+    (uniqueDiffWithinAt_Ici _)
+  have hgl := h.hasDerivAt.hasDerivWithinAt.derivWithin (uniqueDiffWithinAt_Iic _)
+  have hgr := h.hasDerivAt.hasDerivWithinAt.derivWithin (uniqueDiffWithinAt_Ici _)
+  have hz : Real.exp k = 0 := by linarith only [hl, hr, hgl, hgr]
+  exact Real.exp_ne_zero k hz
+
 /-- Independent endpoint energy shifts translate the threshold by their secant. -/
 theorem coexistenceSource_scheme_shift (H₀ H₁ F₀ F₁ k : ℝ) :
     coexistenceSource (H₀ + F₀) (H₁ + F₁) k =
@@ -112,6 +142,7 @@ theorem coexistenceSource_scheme_shift (H₀ H₁ F₀ F₁ k : ℝ) :
 
 #print axioms endpointPotential_eq_lower_iff
 #print axioms endpointPotential_derivative_jump
+#print axioms endpointPotential_not_differentiable
 #print axioms coexistenceSource_scheme_shift
 
 end GaloisForLFunctions.HTGeometry.Thermodynamics

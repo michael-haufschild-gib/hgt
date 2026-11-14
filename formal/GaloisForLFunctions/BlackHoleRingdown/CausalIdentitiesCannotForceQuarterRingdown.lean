@@ -285,7 +285,6 @@ theorem primeTwoFactor_one_add_two_mul_eq_schurDen (α : ℝ) (w : ℂ) :
     rw [this, Complex.exp_add, hexpL]
   have e1 : Complex.exp (((α : ℂ) - (1 + 2 * w)) * L) =
       (Complex.exp ((α : ℂ) * L) / 2) * Complex.exp (-2 * w * L) := by
-    have h2 : Complex.exp ((α : ℂ) * L) = 2 * (Complex.exp ((α : ℂ) * L) / 2) := by ring
     have hsum : ((α : ℂ) - (1 + 2 * w)) * L + L = (α : ℂ) * L + (-2 * w * L) := by ring
     have hexp := congrArg Complex.exp hsum
     rw [Complex.exp_add, Complex.exp_add, hexpL] at hexp
@@ -343,7 +342,6 @@ theorem schurDen_primeTwo_eq_mul (α : ℝ) (v : ℂ) :
 theorem schurDen_primeTwo_ne_zero_of_re_gt {α : ℝ} (h0 : 0 < α) (h1 : α < 1)
     {w : ℂ} (hw1 : α - 1 < 2 * w.re) (hw2 : -α < 2 * w.re) :
     schurDen 2 (primeTwoTrace α) ((2 : ℂ) ^ (-2 * w)) ≠ 0 := by
-  have hc0 : (2 : ℂ) ^ (2 * w - 1 / 2) ≠ 0 := by rw [two_cpow_eq_exp]; exact Complex.exp_ne_zero _
   have hfac := primeTwoFactor_one_add_two_mul_eq_schurDen α w
   intro hden
   rw [hden, mul_zero] at hfac
@@ -492,7 +490,7 @@ theorem deformedEchoKernel_eq_zero_of_nonpos (α : ℝ) {τ : ℝ} (hτ : τ ≤
   have hlog : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
   have hk : ∀ k : ℕ, echoKernel (τ - 2 * ((k + 1 : ℕ) : ℝ) * Real.log 2) = 0 := fun k =>
     echoKernel_eq_zero_of_nonpos (by
-      have : 0 ≤ 2 * ((k + 1 : ℕ) : ℝ) * Real.log 2 := by positivity
+      have : 0 ≤ 2 * ((k + 1 : ℕ) : ℝ) * Real.log 2 := mul_nonneg (by positivity) hlog
       linarith)
   simp [deformedEchoKernel, echoKernel_eq_zero_of_nonpos hτ, hk]
 
@@ -602,8 +600,6 @@ theorem primeTwoScatteringGate_eq_causal_series {α : ℝ} (h0 : 1 / 2 < α) (h1
   have hA2 : (echoWeightA2 α : ℂ) = ((x : ℂ) - 2) / (2 * (1 - (x : ℂ))) := by
     unfold echoWeightA2; push_cast; rfl
   rw [primeTwoScatteringGate, schurDen_primeTwo_eq_mul, schurNum, hA1, hA2]
-  have hden_all : 2 * (1 - (r₁ : ℂ) * v) * (1 - (r₂ : ℂ) * v) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero two_ne_zero h1r1) h1r2
   field_simp
   linear_combination
     (4 * (1 - (x : ℂ)) * v ^ 2) * hr12 +
@@ -688,23 +684,6 @@ theorem integral_cexp_mul_deformedEchoKernel {α : ℝ} (h0 : 1 / 2 < α) (h1 : 
       Complex.exp (-w * (τ : ℂ)) * ((deformedEchoKernel α τ : ℝ) : ℂ) =
         (1 / 2 : ℂ) * Kw τ + ∑' k : ℕ, G k τ := by
     intro τ
-    have hfin : {k : ℕ | deformedEchoCoeff α k * echoKernel (τ - d k) ≠ 0}.Finite := by
-      have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
-      refine (Set.finite_lt_nat (⌈τ / (2 * Real.log 2)⌉₊ + 1)).subset fun k hk => ?_
-      simp only [mem_setOf_eq] at hk ⊢
-      by_contra hge
-      push Not at hge
-      have hdk : τ ≤ d k := by
-        have h1 : τ / (2 * Real.log 2) ≤ (⌈τ / (2 * Real.log 2)⌉₊ : ℝ) := Nat.le_ceil _
-        have h2 : (⌈τ / (2 * Real.log 2)⌉₊ : ℝ) < (k + 1 : ℕ) := by exact_mod_cast hge
-        have h3 : τ / (2 * Real.log 2) < (k + 1 : ℕ) := h1.trans_lt h2
-        rw [div_lt_iff₀ (by positivity)] at h3
-        dsimp only [d]
-        linarith
-      exact hk (by rw [echoKernel_eq_zero_of_nonpos (by linarith), mul_zero])
-    have hsum_pt : Summable fun k : ℕ => deformedEchoCoeff α k * echoKernel (τ - d k) :=
-      summable_of_ne_finset_zero (s := hfin.toFinset) fun k hk => by
-        simpa [hfin.mem_toFinset] using hk
     unfold deformedEchoKernel
     push_cast
     rw [mul_add, show Complex.exp (-w * (τ : ℂ)) * ((1 / 2 : ℂ) * ((echoKernel τ : ℝ) : ℂ)) =
@@ -1242,7 +1221,7 @@ theorem deformed_bilateral_laplace_eq {α : ℝ} (h0 : 0 < α) (h1 : α < 1)
     _ = 2 * Real.pi * pulseAmplitude h (-I * w) * deformedScatteringPhase α w := hF_eval
 
 /-- Uniform bound on `primeTwoScatteringGate α u` across `-σ ≤ Re u ≤ 0` when `σ < (1 - α)/2`. -/
-private theorem exists_primeTwoScatteringGate_left_le {α σ : ℝ}
+theorem exists_primeTwoScatteringGate_left_le {α σ : ℝ}
     (h0 : 1 / 2 < α) (h1 : α < 1) (hσ0 : 0 < σ) (hσα : σ < (1 - α) / 2) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ u : ℂ, -σ ≤ u.re → u.re ≤ 0 → ‖primeTwoScatteringGate α u‖ ≤ K := by
   set η : ℝ := 1 - (2 : ℝ) ^ (2 * σ + α - 1)
@@ -1287,7 +1266,6 @@ private theorem exists_primeTwoScatteringGate_left_le {α σ : ℝ}
           _ ≤ (2 : ℝ) ^ (2 * σ + α - 1) :=
               Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
           _ = 1 - η := by simp [η]
-      have htri := norm_sub_rev (1 : ℂ) ((((2 : ℝ) ^ (-α) : ℝ) : ℂ) * v)
       have hsub := norm_sub_norm_le (1 : ℂ) ((((2 : ℝ) ^ (-α) : ℝ) : ℂ) * v)
       rw [norm_one] at hsub
       linarith

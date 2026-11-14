@@ -75,10 +75,9 @@ def gammaHigherLagPolynomialNewton3 (t : ℝ) : ℝ :=
 
 private theorem continuous_higher_lag_newton3 : Continuous gammaHigherLagPolynomialNewton3 := by
   have hp : Continuous sinhRefinedFactor := by
-    dsimp only [sinhRefinedFactor, newtonFactor, sinhUpperFactor, sinhLowerFactor]
+    unfold sinhRefinedFactor newtonFactor sinhUpperFactor sinhLowerFactor
     fun_prop
   have hq := continuous_cosh_newton3.comp (continuous_id.div_const 2)
-  dsimp only [gammaHigherLagPolynomialNewton3]
   exact (((continuous_id.div_const 4).mul (hp.comp (continuous_id.div_const 2))).add
     ((hq.sub continuous_const).div_const 2)).add (continuous_id.div_const 24) |>.add
       ((continuous_id.pow 2).div_const 16)

@@ -31,13 +31,24 @@ def eventProjector (s : Finset α) : Matrix α α ℂ :=
 theorem expectation_events (β : ℝ) (E : α → ℝ) (s t : Finset α) :
     pairExpectation (amplitude β E) (eventProjector s) (eventProjector t) =
       ((∑ a ∈ s ∩ t, finiteGibbsStateWeight β E a : ℝ) : ℂ) := by
-  rw [expectation_eq_kms]
-  simp only [eventProjector, Matrix.diagonal_apply, mul_ite, ite_mul,
-    mul_zero, zero_mul, mul_one]
-  simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true,
-    finiteKMSWightmanWeight_self]
-  push_cast
-  simp only [← ite_and, ← Finset.mem_inter, Finset.sum_ite_mem, Finset.univ_inter]
+  rw [pairExpectation, amplitude_adjoint]
+  simp only [amplitude, eventProjector, Matrix.diagonal_transpose,
+    Matrix.diagonal_mul_diagonal, Matrix.trace_diagonal]
+  calc
+    _ = ∑ a, if a ∈ s ∩ t then (finiteGibbsStateWeight β E a : ℂ) else 0 := by
+      apply Finset.sum_congr rfl
+      intro a _
+      by_cases hs : a ∈ s
+      · by_cases ht : a ∈ t
+        · simp only [hs, ht, Finset.mem_inter, and_self, if_true, mul_one]
+          rw [← Complex.ofReal_mul,
+            Real.mul_self_sqrt (finiteGibbsStateWeight_pos β E a).le]
+        · simp [hs, ht]
+      · simp [hs]
+    _ = _ := by
+      simp only [Finset.sum_ite_mem, Finset.univ_inter]
+      push_cast
+      rfl
 
 /-- A repeated event on both copies has its ordinary Gibbs probability. -/
 theorem expectation_same_event (β : ℝ) (E : α → ℝ) (s : Finset α) :

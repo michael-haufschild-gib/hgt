@@ -159,3 +159,10 @@ theorem countable_coefficients_continuing_at_singular_points
 end
 
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.not_continuesAcross_iff_affine_coefficients_subsingleton
+#print axioms GaloisForLFunctions.HTGeometry.affine_continuation_coefficients_classification
+#print axioms GaloisForLFunctions.HTGeometry.continuesAcross_iff_open_representative
+#print axioms GaloisForLFunctions.HTGeometry.isOpen_continuation_locus
+#print axioms GaloisForLFunctions.HTGeometry.continuesAcross_disk_iff
+#print axioms GaloisForLFunctions.HTGeometry.countable_coefficients_continuing_at_singular_points

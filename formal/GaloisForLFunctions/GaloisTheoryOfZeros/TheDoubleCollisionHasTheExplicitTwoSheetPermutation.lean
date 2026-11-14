@@ -1,12 +1,13 @@
 import GaloisForLFunctions.GaloisTheoryOfZeros.TheHermiteMonodromyOfACollision
+import GaloisForLFunctions.GaloisTheoryOfZeros.TheCentreValueHasASimpleZeroAtAForwardTime
 
 /-!
 # The explicit permutation of a double collision
 
 The two Hermite labels are `√2` and `−√2`. A half-turn in the square-root
 time parameter interchanges their actual analytic sheets, which remain
-distinct off the collision. This specifies the local permutation on the
-domain of double collisions; it makes no collision-existence assertion.
+distinct off the collision. Central double collisions realize this
+transposition at arbitrarily large real parts of the time.
 -/
 
 noncomputable section
@@ -53,7 +54,21 @@ theorem eventually_doubleCollision_transposition {τ ζ : ℂ} (hc : IsCollision
     collisionZero_ne hc hp hn hne] with s hp' hn' hne'
   exact ⟨hp', by simpa only [neg_neg] using hn', hne'⟩
 
+/-- Central collisions realize the explicit transposition arbitrarily far into the forward plane. -/
+theorem exists_forward_doubleCollision_transposition (T : ℝ) :
+    ∃ τ : ℂ, T < τ.re ∧ IsCollision τ 0 2 ∧
+      ∀ᶠ s : ℂ in 𝓝[≠] 0,
+        collisionZero τ 0 2 (Real.sqrt 2 : ℂ) (-s) =
+          collisionZero τ 0 2 (-(Real.sqrt 2 : ℂ)) s ∧
+        collisionZero τ 0 2 (-(Real.sqrt 2 : ℂ)) (-s) =
+          collisionZero τ 0 2 (Real.sqrt 2 : ℂ) s ∧
+        collisionZero τ 0 2 (Real.sqrt 2 : ℂ) s ≠
+          collisionZero τ 0 2 (-(Real.sqrt 2 : ℂ)) s := by
+  obtain ⟨τ, hT, hc⟩ := exists_isCollision_center_two T
+  exact ⟨τ, hT, hc, eventually_doubleCollision_transposition hc⟩
+
 #print axioms heatModelFwd_two_roots
 #print axioms eventually_doubleCollision_transposition
+#print axioms exists_forward_doubleCollision_transposition
 
 end GaloisForLFunctions.GaloisTheoryOfZeros

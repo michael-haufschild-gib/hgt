@@ -296,7 +296,7 @@ theorem kruskalEmbedding_smul_SL2R (U V : ℝ) (g : SL(2, ℝ)) (z : UpperHalfPl
       zero_mul, sub_zero, add_zero, Complex.add_im, Complex.mul_im, UpperHalfPlane.coe_re,
       UpperHalfPlane.coe_im]
     field_simp
-    linear_combination (1 - z.im) * hdet
+    linear_combination hdet
   have hY := hyperboloid_moebius hdet z.re z.im_pos
   rw [hre, him]
   funext i

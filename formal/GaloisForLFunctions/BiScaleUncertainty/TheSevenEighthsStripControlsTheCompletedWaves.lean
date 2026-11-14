@@ -41,7 +41,8 @@ theorem three_eighths_endpoint_bounds :
     zetaZeroWidth_le_iff_endpoint_equivalences (σ := 3 / 8) (by norm_num) (by norm_num)
   refine ⟨h1.mp zetaZeroWidth_le_three_eighths, ?_,
     h3.mp zetaZeroWidth_le_three_eighths, h4.mp zetaZeroWidth_le_three_eighths⟩
-  convert h2.mp zetaZeroWidth_le_three_eighths using 1 <;> norm_num
+  convert h2.mp zetaZeroWidth_le_three_eighths using 1
+  norm_num
 
 end GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
 

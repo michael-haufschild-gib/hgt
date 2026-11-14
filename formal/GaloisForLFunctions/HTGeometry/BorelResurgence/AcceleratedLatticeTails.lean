@@ -48,10 +48,10 @@ theorem acceleratedLatticeTerm_harmonic_bounds (s : ℝ) (n : ℕ) :
     apply Real.sqrt_le_sqrt
     nlinarith only [hn1]
   constructor
-  · rw [div_eq_mul_inv, ← mul_inv_rev]
-    exact inv_le_inv₀ (by positivity) (by positivity) |>.mpr hhi
-  · rw [div_eq_mul_inv, ← mul_inv_rev]
-    exact inv_le_inv₀ (by positivity) (by positivity) |>.mpr hlo
+  · rw [div_eq_mul_inv, ← mul_inv]
+    exact (inv_le_inv₀ (by positivity) (by positivity)).mpr hhi
+  · rw [div_eq_mul_inv, ← mul_inv]
+    exact (inv_le_inv₀ (by positivity) (by positivity)).mpr hlo
 
 /-- Every finite accelerated lattice window lies between explicit multiples of its harmonic mass. -/
 theorem acceleratedLatticeWindow_harmonic_bounds (s : ℝ) (S : Finset ℕ) :
@@ -81,3 +81,8 @@ theorem not_summable_acceleratedLatticeTerm (s : ℝ) :
 end
 
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.acceleratedLatticeTerm_eq
+#print axioms GaloisForLFunctions.HTGeometry.acceleratedLatticeTerm_harmonic_bounds
+#print axioms GaloisForLFunctions.HTGeometry.acceleratedLatticeWindow_harmonic_bounds
+#print axioms GaloisForLFunctions.HTGeometry.not_summable_acceleratedLatticeTerm

@@ -22,7 +22,7 @@ theorem energy_covariance_eq_variance (β : ℝ) (E : A → ℝ) :
 
 theorem energyMean_hasDerivAt (β : ℝ) (E : A → ℝ) :
     HasDerivAt (fun b => finiteGibbsEnergyMean b E) (-finiteGibbsEnergyVariance β E) β := by
-  simpa only [gibbsMean, ← finiteGibbsEnergyMean, energy_covariance_eq_variance] using
+  simpa only [energy_covariance_eq_variance] using
     hasDerivAt_gibbsMean_temperature E E β
 
 /-- Literal second derivative of the logarithmic partition function. -/

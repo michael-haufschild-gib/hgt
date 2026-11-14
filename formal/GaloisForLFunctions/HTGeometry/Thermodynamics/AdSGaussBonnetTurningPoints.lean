@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Thermodynamics.AdSGaussBonnetBoundary
+import Mathlib.Analysis.Convex.Deriv
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
 # The charged turning-point boundary
@@ -81,7 +83,7 @@ theorem temperature_hasDerivAt (a q u : ℝ) :
   apply (hn.div hd (by dsimp; positivity)).congr_deriv
   dsimp [turningPolynomial]
   field_simp [hpos]
-  <;> ring
+  ring
 
 theorem temperature_charged_deriv_pos (a v u : ℝ) :
     0 < deriv (temperature (1 / 36 + a ^ 2) (Real.exp v)) (Real.exp u) := by
@@ -97,7 +99,28 @@ theorem temperature_charged_deriv_pos (a v u : ℝ) :
   rw [← hx] at hn
   exact div_pos hn (by positivity)
 
+/-- Above the neutral threshold, charged temperature is strictly increasing on all positive radii. -/
+theorem temperature_charged_strictMonoOn (a v : ℝ) :
+    StrictMonoOn (temperature (1 / 36 + a ^ 2) (Real.exp v)) (Set.Ioi 0) := by
+  apply strictMonoOn_of_deriv_pos (convex_Ioi 0)
+  · intro x hx
+    have hs : Real.sqrt (1 / 36 + a ^ 2) ^ 2 = 1 / 36 + a ^ 2 :=
+      Real.sq_sqrt (by positivity)
+    have hd := temperature_hasDerivAt (Real.sqrt (1 / 36 + a ^ 2)) (Real.exp v) (Real.log x)
+    rw [hs, Real.exp_log hx] at hd
+    exact hd.continuousAt.continuousWithinAt
+  · intro x hx
+    have hpos : 0 < x := interior_subset hx
+    simpa only [Real.exp_log hpos] using temperature_charged_deriv_pos a v (Real.log x)
+
+/-- No two positive radii can share a bath temperature in this regime. -/
+theorem temperature_charged_fiber_subsingleton (a v t : ℝ) :
+    Set.Subsingleton {x : ℝ | 0 < x ∧ temperature (1 / 36 + a ^ 2) (Real.exp v) x = t} := by
+  intro x hx y hy
+  exact (temperature_charged_strictMonoOn a v).injOn hx.1 hy.1 (hx.2.trans hy.2.symm)
+
 #print axioms turningPolynomial_zero_iff
 #print axioms temperature_charged_deriv_pos
+#print axioms temperature_charged_fiber_subsingleton
 
 end GaloisForLFunctions.HTGeometry.AdSGaussBonnet

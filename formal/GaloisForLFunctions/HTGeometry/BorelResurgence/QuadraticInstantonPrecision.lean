@@ -102,3 +102,11 @@ theorem translatedGaussian_round_max (s x : ℝ) (l : ℤ) :
 end
 
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.quadraticInstantonMagnitude_factorization
+#print axioms GaloisForLFunctions.HTGeometry.quadraticPrecisionScale_le_term
+#print axioms GaloisForLFunctions.HTGeometry.quadraticInstantonMagnitude_eq_scale_iff
+#print axioms GaloisForLFunctions.HTGeometry.quadraticInstantonMagnitude_mul_translatedGaussian
+#print axioms GaloisForLFunctions.HTGeometry.quadraticInstantonMagnitude_round_min
+#print axioms GaloisForLFunctions.HTGeometry.quadraticInstantonMagnitude_round_bounds
+#print axioms GaloisForLFunctions.HTGeometry.translatedGaussian_round_max

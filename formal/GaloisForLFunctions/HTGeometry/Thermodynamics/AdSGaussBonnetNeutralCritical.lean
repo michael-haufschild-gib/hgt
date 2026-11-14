@@ -29,9 +29,9 @@ private theorem sqrt_six_cube : Real.sqrt 6 ^ 3 = 6 * Real.sqrt 6 := by
   rw [pow_succ, Real.sq_sqrt (by positivity : (0 : ℝ) ≤ 6)]
 
 private theorem sqrt_six_fourth : Real.sqrt 6 ^ 4 = 36 := by
-  rw [show (4 : ℕ) = 2 * 2 by rfl, pow_mul,
-    Real.sq_sqrt (by positivity : (0 : ℝ) ≤ 6)]
-  norm_num
+  calc
+    Real.sqrt 6 ^ 4 = (Real.sqrt 6 ^ 2) ^ 2 := by ring
+    _ = 36 := by rw [Real.sq_sqrt (by positivity : (0 : ℝ) ≤ 6)]; norm_num
 
 /-- The entire critical off-shell landscape is a positive quartic. -/
 theorem neutral_critical_potential_quartic (x : ℝ) :
@@ -101,7 +101,7 @@ theorem neutral_critical_on_shell_cubic (u : ℝ) :
   unfold potential energy entropy temperature
   have hd : Real.exp u ^ 2 + (1 / 18 : ℝ) ≠ 0 := by positivity
   field_simp [Real.pi_ne_zero, hd]
-  <;> ring
+  ring
 
 #print axioms neutral_critical_potential_zero_iff
 #print axioms neutral_critical_entropy_pos
