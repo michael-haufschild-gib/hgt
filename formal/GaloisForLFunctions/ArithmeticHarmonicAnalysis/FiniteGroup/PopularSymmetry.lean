@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.AdditiveCombinatorics.SubgroupFinset
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Tactic
+import Mathlib.Algebra.BigOperators.Ring.Finset
+import Mathlib.Tactic.Linarith
 
 /-!
 # Popular translations and geometric growth
@@ -22,6 +23,7 @@ variable {G : Type*} [Group G] [Fintype G] [DecidableEq G]
 def popularTranslations (A : Finset G) : Finset G :=
   univ.filter fun g => A.card < 2 * (A ∩ g • A).card
 
+omit [Fintype G] in
 /-- Overlap is the number of points whose inverse translate remains in the set. -/
 theorem inter_translate_eq_filter (A : Finset G) (g : G) :
     A ∩ g • A = A.filter (fun x => g⁻¹ * x ∈ A) := by
@@ -45,7 +47,7 @@ theorem sum_inter_translate_card (A : Finset G) :
           (fun g => if g ∈ A then (1 : ℕ) else 0))
       _ = A.card := by simp
   simp_rw [hsum]
-  simp only [sum_const, smul_eq_mul, pow_two]
+  simp only [sum_const, smul_eq_mul, pow_two, mul_one]
 
 /-- The strict popularity threshold gives a sharp integer bound, including the empty set. -/
 theorem popular_card_mul_succ_le (A : Finset G) :
@@ -74,6 +76,7 @@ theorem popular_card_lt_iff (A : Finset G) :
     have hm := Nat.mul_le_mul_right (A.card + 1) (Nat.le_of_not_gt hn)
     nlinarith only [hp, hA, hm]
 
+omit [Fintype G] in
 /-- Exact inclusion-exclusion for a set and any translate. -/
 theorem union_translate_card (A : Finset G) (g : G) :
     (A ∪ g • A).card + (A ∩ g • A).card = 2 * A.card := by

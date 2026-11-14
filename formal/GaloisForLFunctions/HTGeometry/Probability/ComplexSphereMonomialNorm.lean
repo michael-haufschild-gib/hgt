@@ -58,7 +58,7 @@ theorem tendsto_complexSphereMellin_scaled (n : ℕ) :
       simpa using tendsto_const_nhds.add
         (Filter.Tendsto.div_atTop (f := fun _ : ℝ => 1 + (j : ℝ))
           tendsto_const_nhds tendsto_id)
-    simpa using tendsto_finset_prod (Finset.range n) (fun j _ => hfactor j)
+    simpa using tendsto_finsetProd (Finset.range n) (fun j _ => hfactor j)
   have he : ∀ᶠ s : ℝ in atTop,
       s ^ n * complexSphereMellin n s =
         (n.factorial : ℝ) / ∏ j ∈ Finset.range n, (1 + (1 + (j : ℝ)) / s) := by
@@ -75,8 +75,12 @@ theorem tendsto_complexSphereMellin_scaled (n : ℕ) :
       have hj : (0 : ℝ) ≤ j := Nat.cast_nonneg j
       linarith only [hs, hj]
     field_simp
-  apply Filter.Tendsto.congr' he.symm
-  simpa using tendsto_const_nhds.div hprod one_ne_zero
+  apply Filter.Tendsto.congr' (Filter.EventuallyEq.symm he)
+  have hratio := (tendsto_const_nhds (x := (n.factorial : ℝ))).div hprod one_ne_zero
+  change Tendsto (fun s : ℝ => (n.factorial : ℝ) /
+    ∏ j ∈ Finset.range n, (1 + (1 + (j : ℝ)) / s)) atTop
+      (𝓝 ((n.factorial : ℝ) / 1)) at hratio
+  simpa only [div_one] using hratio
 
 /-- The normalized `Lᵖ` size of a coordinate monomial, extended to real degree. -/
 def complexSphereMonomialNorm (n : ℕ) (p m : ℝ) : ℝ :=
@@ -131,7 +135,7 @@ theorem tendsto_complexSphereMonomialNorm_scaled (n : ℕ) {p : ℝ} (hp : 0 < p
     Tendsto (fun m : ℝ => m ^ ((n : ℝ) / p) * complexSphereMonomialNorm n p m)
       atTop (𝓝 (complexSphereMonomialConstant n p)) := by
   have harg : Tendsto (fun m : ℝ => m * p / 2) atTop atTop := by
-    simpa only [div_eq_mul_inv, mul_assoc] using
+    simpa only [id_eq, div_eq_mul_inv, mul_assoc] using
       (tendsto_id.atTop_mul_const (div_pos hp two_pos))
   have hscaled : Tendsto
       (fun m : ℝ => m ^ n * complexSphereMellin n (m * p / 2)) atTop
@@ -168,6 +172,8 @@ theorem tendsto_complexSphereMonomialNorm_ratio (n : ℕ) {p q : ℝ}
     (tendsto_complexSphereMonomialNorm_scaled n hp) (complexSphereMonomialConstant_pos n hp).ne'
   apply Filter.Tendsto.congr' _ h
   filter_upwards [eventually_gt_atTop (0 : ℝ)] with m hm
+  change (m ^ ((n : ℝ) / q) * complexSphereMonomialNorm n q m) /
+    (m ^ ((n : ℝ) / p) * complexSphereMonomialNorm n p m) = _
   rw [mul_div_mul_comm, ← Real.rpow_sub hm]
   congr 2
   ring

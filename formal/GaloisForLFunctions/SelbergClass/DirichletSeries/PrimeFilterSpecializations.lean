@@ -38,7 +38,7 @@ theorem mem_relative_cofinite_primeFilterCoefficientField_iff
     x ∈ primeFilterCoefficientField (cofinite ⊓ principal P) ↔
       {p ∈ P | primeFractionDerivation p x ≠ 0}.Finite := by
   rw [mem_primeFilterCoefficientField_iff, eventually_inf_principal, eventually_cofinite]
-  simp only [not_imp]
+  simp only [_root_.not_imp]
 
 /-- For a fixed retained prime set, ordinary coefficient-vector independence is already the exact
 criterion over the field of fractions with no activity there. -/
@@ -76,7 +76,8 @@ theorem algebraicIndependent_primeColumns_over_relativeTailField_iff
           (arithmeticOfPrimeColumn (a i))) ↔
       ∀ c : I → ℂ, {p ∈ P | ∑ i, c i * a i p ≠ 0}.Finite → c = 0 := by
   rw [algebraicIndependent_primeColumns_over_filterField_iff]
-  simp only [FilterCoefficientIndependent, eventually_inf_principal, eventually_cofinite, not_imp]
+  simp only [FilterCoefficientIndependent, eventually_inf_principal, eventually_cofinite,
+    _root_.not_imp]
 
 /-- The cofinite specialization agrees exactly with tail coefficient independence. -/
 theorem filterCoefficientIndependent_cofinite_iff

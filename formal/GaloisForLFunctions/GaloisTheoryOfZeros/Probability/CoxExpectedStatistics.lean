@@ -19,7 +19,7 @@ theorem integral_weighted_occupancy {ι : Type*} [Fintype ι]
     (K : ℝ) (g w : ι → ℝ) :
     (∫ b, ∑ i, if b i then w i else 0 ∂binaryLaw K g) =
       ∑ i, w i * detection (max K 0) (g i) := by
-  rw [integral_finset_sum _ (fun _ _ => Integrable.of_finite)]
+  rw [integral_finsetSum _ (fun _ _ => Integrable.of_finite)]
   apply Finset.sum_congr rfl
   intro i _
   change (∫ b, (fun c : Bool => if c then w i else 0) (b i)

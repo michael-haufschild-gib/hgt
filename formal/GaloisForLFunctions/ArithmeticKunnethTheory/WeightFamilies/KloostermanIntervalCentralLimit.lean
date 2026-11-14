@@ -76,8 +76,13 @@ theorem charFun_arithmeticKloostermanIntervalLaw (S : Finset Nat.Primes)
         (fun p r => ((Real.sqrt S.card)⁻¹ * t) * standardizedKloostermanTrace p r) n) /
           ((N + 1 : ℕ) : ℂ) := by
   rw [charFun_apply_real, integral_arithmeticKloostermanIntervalLaw]
-  simp only [exp_arithmeticKloostermanSum_eq_phase, Fin.sum_univ_eq_sum_range,
+  simp only [exp_arithmeticKloostermanSum_eq_phase,
     sum_Ico_eq_sum_range, Nat.add_sub_cancel_left]
+  have hsum := Fin.sum_univ_eq_sum_range
+    (fun n : ℕ => primeResiduePhase S
+      (fun p r => ((Real.sqrt S.card)⁻¹ * t) * standardizedKloostermanTrace p r) (A + n))
+    (N + 1)
+  refine (congrArg (fun z : ℂ => ((N + 1 : ℕ) : ℝ)⁻¹ • z) hsum).trans ?_
   simp [Algebra.smul_def, inv_mul_eq_div]
 
 /-- The sampling-window error is uniform in frequency and interval location. -/
@@ -114,7 +119,7 @@ theorem tendsto_charFun_arithmeticKloostermanIntervalLaw
       exact_mod_cast primeSetProduct_pos (HTGeometry.sievePrefix e n)
     apply (div_le_div_iff₀ (by positivity) hnR).mpr
     push_cast
-    nlinarith only [hP, Nat.cast_nonneg (R n)]
+    nlinarith only [hP, (Nat.cast_nonneg (R n) : (0 : ℝ) ≤ R n)]
   have href : Tendsto (fun n : ℕ =>
       charFun (arithmeticKloostermanLaw (HTGeometry.sievePrefix e n)) t)
       atTop (𝓝 (cexp (-(t : ℂ) ^ 2 / 2))) := by

@@ -17816,3 +17816,5 @@ import GaloisForLFunctions.HTGeometry.Probability.ComplexSphereMonomialNorm
 import GaloisForLFunctions.HTGeometry.Probability.SphereCubicMoment
 import GaloisForLFunctions.HTGeometry.DispersivePDE.CoxElasticaCollisions
 import GaloisForLFunctions.HTGeometry.Probability.CoxDivisorCharge
+import GaloisForLFunctions.HTGeometry.Probability.CoxDetailedBalance
+import GaloisForLFunctions.HTGeometry.SymmetricCharacters.CoxMixtureRigidity

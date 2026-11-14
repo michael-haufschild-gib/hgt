@@ -121,10 +121,8 @@ The goal is met when route ACS is fully closed and formalized unconditionally in
 - https://arxiv.org/abs/2611.13848 a moment proof of the hollman-xiang conjectures on kloosterman polynomials
 - https://arxiv.org/abs/2611.24399 stevens approach to klooserman sums on split groups
 - https://arxiv.org/abs/2611.16078 simple length multiplicity on X(n)
-- https://arxiv.org/abs/2611.17140 hardy spaces and toeplitz operators on the hexablock
 - https://arxiv.org/abs/2611.13085 time direction entanglement entropy of free fermion ground states
 - https://arxiv.org/abs/2611.16799 nevanlinna theory for generalized tropical meromorphic functions and applications to ultra-discrete equations
-- https://arxiv.org/abs/2611.
 - https://arxiv.org/abs/2611.
 - https://arxiv.org/abs/2611.
 
@@ -135,7 +133,7 @@ task:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2611.12541
+- https://arxiv.org/abs/2611.17140
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...

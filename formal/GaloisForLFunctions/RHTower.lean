@@ -28428,3 +28428,4 @@ import GaloisForLFunctions.RHTower.Representation.EndpointAlternatingPositivity
 import GaloisForLFunctions.RHTower.Representation.EndpointSectorPositivity
 import GaloisForLFunctions.RHTower.FiniteSmoothWeilGramsAndRestrictedIndex
 import GaloisForLFunctions.RHTower.Deninger.LegendreFrobeniusInvariance
+import GaloisForLFunctions.RHTower.Sieve.CoxVinogradovRigidity
