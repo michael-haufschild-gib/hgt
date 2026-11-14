@@ -278,7 +278,7 @@ theorem weilSchur_nonneg_firstStep {Q R a b : ℕ} (hQ : 2 ≤ Q) (hR : 1 ≤ R)
   refine (forall_blockWindow_form_nonneg_iff_weilSchur Q R a b (by omega)).mp (fun x => ?_) e
   have hJ : 5000 * (R + (a + (R + a) + b)) ≤ 10609 * R := by omega
   have h3R : 3 * R ≤ (Q + 1) * R := Nat.mul_le_mul_right R (by omega)
-  have h := groundEnergy_mul_le_packetForm_stepPacket hR (A := ⟨1881 / 5000, by norm_num⟩)
+  have h := groundEnergy_mul_le_packetForm_stepPacket hR (Q := Q) (A := ⟨1881 / 5000, by norm_num⟩)
     (log_window_lt_of_firstStep hR hJ) (by omega) (extendFin x)
   rw [packetForm_stepPacket_eq_blockWindow_form hR] at h
   have hx : (fun i : Fin (a + (R + a) + b) => extendFin x i) = x :=
@@ -293,7 +293,7 @@ theorem sum_sum_eq_of_eq_zero {J J' : ℕ} (hJ : J ≤ J') {τ σ : ℕ → ℝ}
     (hlt : ∀ n, n < J → τ n = σ n) (hge : ∀ n, J ≤ n → τ n = 0) (K : ℕ → ℕ → ℝ) :
     ∑ i ∈ range J', ∑ l ∈ range J', τ i * τ l * K i l =
       ∑ i ∈ range J, ∑ l ∈ range J, σ i * σ l * K i l := by
-  have hsub : range J ⊆ range J' := Finset.range_subset.mpr hJ
+  have hsub : range J ⊆ range J' := Finset.range_mono hJ
   have hout : ∀ i ∈ range J', i ∉ range J → ∑ l ∈ range J', τ i * τ l * K i l = 0 :=
     fun i _ hi => Finset.sum_eq_zero fun l _ => by
       rw [hge i (not_lt.mp fun h => hi (Finset.mem_range.mpr h)), zero_mul, zero_mul]
@@ -314,7 +314,7 @@ theorem exists_firstStep_weilPencilSchur_neg {Q : ℕ} (hQ : 2 ≤ Q) :
     exists_firstStep_window_signTwin_lt hQ (ω := fun _ => -1) rfl
   refine ⟨5000 * R₀, 150 * R₀, 309 * R₀, by omega, by omega, by omega, ?_⟩
   by_contra hne
-  push_neg at hne
+  simp only [not_exists, not_lt] at hne
   have hall := (forall_reweightedWindow_form_nonneg_iff_weilPencilSchur (Q := Q) (R := 5000 * R₀)
     (a := 150 * R₀) (b := 309 * R₀) (by omega) hQ (by omega) (fun _ => -1)).mpr hne
   -- the step packet refined to block size `5000` and padded to `(5000R₀, 10609R₀]`
@@ -322,8 +322,8 @@ theorem exists_firstStep_weilPencilSchur_neg {Q : ℕ} (hQ : 2 ≤ Q) :
       τ = fun n => if n < 5000 * J then refineStep 5000 σ n else 0 := ⟨_, rfl⟩
   have hpad := sum_sum_eq_of_eq_zero (J := 5000 * J)
     (J' := 150 * R₀ + (5000 * R₀ + 150 * R₀) + 309 * R₀) (by omega) (τ := τ)
-    (σ := refineStep 5000 σ) (fun n hn => by rw [hτ, if_pos hn])
-    (fun n hn => by rw [hτ, if_neg (not_lt.mpr hn)])
+    (σ := refineStep 5000 σ) (fun n hn => by rw [hτ]; exact if_pos hn)
+    (fun n hn => by rw [hτ]; exact if_neg (not_lt.mpr hn))
     (fun i l => reweightedBlock (fun _ => -1) Q (5000 * R₀ + i) (5000 * R₀ + l))
   have href := sum_reweightedBlock_refine hR₀ (m := 5000) (by norm_num) (fun _ => -1) Q J σ
   have hx := hall (fun i => τ i)
@@ -346,13 +346,13 @@ theorem exists_firstStep_weilDipole_pos {Q : ℕ} (hQ : 2 ≤ Q) :
   rw [← weilPencilSchur_one] at h1
   have hf1 := weilPencilSchur_form Q R a b 1 e
   have hfm := weilPencilSchur_form Q R a b (-1) e
-  have hΠ := weilContactForm_nonneg Q b (by omega : 1 ≤ R + a) e
+  have hC := weilContactForm_nonneg Q b (by omega : 1 ≤ R + a) e
   have hdip : -(e ⬝ᵥ (weilPencilSchur Q R a b (-1) *ᵥ e)) ≤ 4 * weilDipole Q R a b e := by
     linarith
   refine ⟨R, a, b, hR, ha, hb, e, h1, he, hdip, fun w hw => ?_⟩
   have hfw := weilPencilSchur_form Q R a b w e
   have h2 : 0 ≤ 2 * weilDipole Q R a b e + (1 - w) * weilContactForm Q R a b e := by
-    have := mul_nonneg (by linarith : (0 : ℝ) ≤ 1 - w) hΠ
+    have := mul_nonneg (by linarith : (0 : ℝ) ≤ 1 - w) hC
     linarith
   have h3 := mul_nonneg (by linarith : (0 : ℝ) ≤ -(w + 1)) h2
   nlinarith only [hfw, hfm, h3, he]

@@ -185,6 +185,13 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
    `packetForm_stepPacket_eq_two`, `reweightedPacketForm_stepPacket_eq_pencilStepForm`,
    `re_weilFullFunctional_liouville_eq_pencilWeilForm`, `exists_window_signTwin_pencil_lt`,
    `exists_firstStep_window_signTwin_lt` (P17).
+18. (M) `TheDipoleOfWeilsGreenMatrixCarriesTheFirstOverlapStep` — `weilPencilCoupling`
+   `P_w = W₀ − wC`, `weilPencilSchur`, `weilDipole`, `weilContactForm`; reweighted window in the
+   overlap blocks (`reweightedWindow_submatrix_overlapEquiv_weil`), overlap law of the pencil,
+   normal form `S_w = S₀ + 2w·dip − w²Π`; `weilSchur_nonneg_firstStep`;
+   `exists_firstStep_weilPencilSchur_neg` (twin packet refined ×5000 into `(5000R, 10609R]`);
+   `exists_firstStep_weilDipole_pos` (dipole `≥ −S₋₁/4 > 0`, all `w ≤ −1` fail);
+   `weilSignTwin_obstruction_firstStep` (P18).
 
 ## Status of the questions
 - Q1 sliver blocks: answered. `G_D = −(Σw)²/(D|N(1,1)|) + positive`; on slivers and charge-free
@@ -197,7 +204,9 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
   (coupling `≤ 1/5000` M4, dipole M8, dressed middle M11, a priori gap M13) stay unproved by
   their own means. Perturbation from the certified range reaches ends of relative width
   `exp(−6760003)` only (M12). In Weil's form the first step fails for the sign twin: some
-  first-step window carries a step packet below `−1/1000` for every `ω` with `ω(2) = −1` (M17).
+  first-step window carries a step packet below `−1/1000` for every `ω` with `ω(2) = −1` (M17);
+  in Weil's normal form the dipole `⟨W₀e, 𝒢_D Ce⟩` is positive there and sign-blind bounds fail
+  (M18).
 - Q4 excess: excess functions and envelopes (P), additive loss law (M2); thin steps: loss of
   the floor `≤ B²/log(1/δ)` (M12), not summable along a chain; gap = margin (M13); excess of
   the `ρ`-steps is zero down to level `−c` while `ρ²/2` lies inside an aperture of ground
@@ -209,7 +218,7 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
   `½[1/|x−y| + 1/(x+y)]`, a regional logarithmic Laplacian; no closed form found. Normal
   forms: two channels, charge formula, pole matrix (M10).
 
-## Open after M17
+## Open after M18
 - A proof of a step through the Green matrix of the middle (coupling bound, dipole sign or a
   priori gap), not through the aperture.
 - Neutral part of the sign twin on the first step: a second negative square? (M17 decides
@@ -234,3 +243,4 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
 - 2026-11-14 — module 11 extended to ends `16a ≤ R`, `8b ≤ R + a`; modules 12, 13 formalized.
 - 2026-11-14 — modules 14, 15 formalized: ground energy of an aperture as gap and excess; first step at every block size.
 - 2026-11-14 — modules 16, 17 formalized: ground energy = floor of Weil's form on the windows inside an aperture; first step of Weil's form fails for the sign twin.
+- 2026-11-14 — module 18 formalized: Weil pencil normal form; positive dipole and sign-blind obstruction at the first step.

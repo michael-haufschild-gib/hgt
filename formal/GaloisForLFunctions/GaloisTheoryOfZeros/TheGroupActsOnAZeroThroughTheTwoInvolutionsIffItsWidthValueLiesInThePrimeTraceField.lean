@@ -96,16 +96,16 @@ theorem primeTraceExponentValue_mul_neg (p : Nat.Primes) (z : Δ) :
     Complex.exp ((Real.log (p : ℕ) : ℂ) * (-(z : ℂ))) = 1
   rw [← Complex.exp_add, mul_neg, add_neg_cancel, Complex.exp_zero]
 
-/-- An automorphism that fixes `x + x'`, where `x x' = 1`, sends `x` to `x` or to `x'`. -/
-theorem eq_or_eq_of_add_fixed {σ : G} {x x' : E} (hx : x * x' = 1)
-    (hfix : σ (x + x') = x + x') : σ x = x ∨ σ x = x' := by
-  have hy : σ x * σ x' = 1 := by rw [← map_mul, hx, map_one]
-  rw [map_add] at hfix
-  have h : (σ x - x) * (σ x - x') = 0 := by
-    linear_combination (σ x) * hfix - hy + hx
-  rcases mul_eq_zero.1 h with h | h
-  · exact Or.inl (sub_eq_zero.1 h)
-  · exact Or.inr (sub_eq_zero.1 h)
+/-- If `σ(y + y') = x + x'` with `y y' = 1` and `x x' = 1`, then `σy` is `x` or `x'`. -/
+theorem eq_or_eq_of_add_eq {σ : G} {x x' y y' : E} (hx : x * x' = 1) (hy : y * y' = 1)
+    (h : σ (y + y') = x + x') : σ y = x ∨ σ y = x' := by
+  have hy' : σ y * σ y' = 1 := by rw [← map_mul, hy, map_one]
+  rw [map_add] at h
+  have h0 : (σ y - x) * (σ y - x') = 0 := by
+    linear_combination (σ y) * h - hy' + hx
+  rcases mul_eq_zero.1 h0 with h0 | h0
+  · exact Or.inl (sub_eq_zero.1 h0)
+  · exact Or.inr (sub_eq_zero.1 h0)
 
 /-- Equal prime values have equal real parts. -/
 theorem primeTraceExponentHom_re_of_value_eq (p : Nat.Primes) {z z' : Δ} {σ : G}
@@ -171,7 +171,7 @@ theorem primeTraceZeroMap_of_width_fixed (p : Nat.Primes) (ρ : XiDivisorSupport
     primeTraceConjugation_value_of_im p (primeTraceCentredWeight_im ρ)
   have hcx' : primeTraceConjugation x' = x' :=
     primeTraceConjugation_value_of_im p (primeTraceCentredWeight_neg_im ρ)
-  have hσx := eq_or_eq_of_add_fixed hxx (h σ)
+  have hσx := eq_or_eq_of_add_eq hxx hxx (h σ)
   -- `k = σ⁻¹cσ` fixes `x`
   have hcσ : primeTraceConjugation (σ x) = σ x := by
     rcases hσx with e | e <;> rw [e]
@@ -223,6 +223,32 @@ theorem primeTraceZeroMap_of_width_fixed (p : Nat.Primes) (ρ : XiDivisorSupport
       primeTraceCentredWeight_coe, Complex.ofReal_re, hσc] at h1
     linarith only [h1]
 
+/-- If `σ` carries `ρ̄` to the conjugate of `σρ` and `σρ` has real part `β` or `1 − β`, it sends
+the centred weight to `±` itself. -/
+theorem primeTraceExponentHom_centredWeight_of_conj (σ : G) (ρ : XiDivisorSupport)
+    (hc : primeTraceZeroMap σ (xiZeroConjEquiv ρ) = xiZeroConjEquiv (primeTraceZeroMap σ ρ))
+    (hr : (primeTraceZeroMap σ ρ : ℂ).re = (ρ : ℂ).re ∨
+      (primeTraceZeroMap σ ρ : ℂ).re = 1 - (ρ : ℂ).re) :
+    primeTraceExponentHom σ (primeTraceCentredWeight ρ) = primeTraceCentredWeight ρ ∨
+      primeTraceExponentHom σ (primeTraceCentredWeight ρ) = -primeTraceCentredWeight ρ := by
+  rw [primeTraceExponentHom_centredWeight, hc]
+  rcases hr with hr | hr
+  · left
+    apply Subtype.ext
+    change (primeTraceZeroMap σ ρ : ℂ) - (1 - starRingEnd ℂ (primeTraceZeroMap σ ρ : ℂ)) =
+      (ρ : ℂ) - (1 - starRingEnd ℂ (ρ : ℂ))
+    apply Complex.ext <;>
+      simp only [Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im,
+        Complex.conj_re, Complex.conj_im] <;> linarith only [hr]
+  · right
+    apply Subtype.ext
+    change (primeTraceZeroMap σ ρ : ℂ) - (1 - starRingEnd ℂ (primeTraceZeroMap σ ρ : ℂ)) =
+      -((ρ : ℂ) - (1 - starRingEnd ℂ (ρ : ℂ)))
+    apply Complex.ext <;>
+      simp only [Complex.neg_re, Complex.neg_im, Complex.sub_re, Complex.sub_im,
+        Complex.one_re, Complex.one_im, Complex.conj_re, Complex.conj_im] <;>
+      linarith only [hr]
+
 /-- **The width criterion.** For one prime `p`: the width value `p^{2β−1} + p^{1−2β}` of a zero
 `ρ = β + iγ` lies in `B` iff every arithmetic automorphism carries `ρ̄` to the conjugate of the
 image of `ρ`, and this image has real part `β` or `1 − β`. -/
@@ -235,47 +261,21 @@ theorem primeWidthValue_mem_iff (p : Nat.Primes) (ρ : XiDivisorSupport) :
   · intro h
     exact primeTraceZeroMap_of_width_fixed p ρ ((coe_mem_primeTraceField_iff_fixed _).1 h)
   · intro h
-    refine (coe_mem_primeTraceField_iff_fixed _).2 fun σ => ?_
-    -- `σ(2β − 1) = ±(2β − 1)`
-    have hw : primeTraceExponentHom σ (primeTraceCentredWeight ρ) = primeTraceCentredWeight ρ ∨
-        primeTraceExponentHom σ (primeTraceCentredWeight ρ) = -primeTraceCentredWeight ρ := by
-      obtain ⟨hc, hr⟩ := h σ
-      rw [primeTraceExponentHom_centredWeight, hc]
-      rcases hr with hr | hr
-      · left
-        apply Subtype.ext
-        change (primeTraceZeroMap σ ρ : ℂ) - (1 - starRingEnd ℂ (primeTraceZeroMap σ ρ : ℂ)) =
-          (ρ : ℂ) - (1 - starRingEnd ℂ (ρ : ℂ))
-        apply Complex.ext <;>
-          simp only [Complex.sub_re, Complex.sub_im, Complex.one_re, Complex.one_im,
-            Complex.conj_re, Complex.conj_im] <;> linarith only [hr]
-      · right
-        apply Subtype.ext
-        change (primeTraceZeroMap σ ρ : ℂ) - (1 - starRingEnd ℂ (primeTraceZeroMap σ ρ : ℂ)) =
-          -((ρ : ℂ) - (1 - starRingEnd ℂ (ρ : ℂ)))
-        apply Complex.ext <;>
-          simp only [Complex.neg_re, Complex.neg_im, Complex.sub_re, Complex.sub_im,
-            Complex.one_re, Complex.one_im, Complex.conj_re, Complex.conj_im] <;>
-          linarith only [hr]
-    rw [primeWidthValue, map_add, ← primeTraceExponentHom_value,
-      ← primeTraceExponentHom_value, map_neg]
-    rcases hw with h1 | h1
-    · rw [h1]
-    · rw [h1, neg_neg, add_comm]
+    exact (coe_mem_primeTraceField_iff_fixed _).2 fun σ => primeTraceExponentValue_pair_map p
+      (primeTraceExponentHom_centredWeight_of_conj σ ρ (h σ).1 (h σ).2)
 
 /-- Membership of the width value does not depend on the prime. -/
 theorem primeWidthValue_mem_iff_mem (p q : Nat.Primes) (ρ : XiDivisorSupport) :
     (primeWidthValue p ρ : ℂ) ∈ B ↔ (primeWidthValue q ρ : ℂ) ∈ B :=
   (primeWidthValue_mem_iff p ρ).trans (primeWidthValue_mem_iff q ρ).symm
 
-/-- **The quartet form.** If the width value lies in `B`, every automorphism sends `ρ` into the
-quartet `{ρ, ρ̄, 1 − ρ, 1 − ρ̄}`, and `ρ̄` to the conjugate of the image. -/
-theorem primeTraceZeroMap_mem_quartet (p : Nat.Primes) (ρ : XiDivisorSupport)
-    (h : (primeWidthValue p ρ : ℂ) ∈ B) (σ : G) :
+/-- An image of `ρ` with real part `β` or `1 − β` lies in the quartet `{ρ, ρ̄, 1 − ρ, 1 − ρ̄}`. -/
+theorem primeTraceZeroMap_mem_quartet_of_re (σ : G) (ρ : XiDivisorSupport)
+    (hr : (primeTraceZeroMap σ ρ : ℂ).re = (ρ : ℂ).re ∨
+      (primeTraceZeroMap σ ρ : ℂ).re = 1 - (ρ : ℂ).re) :
     primeTraceZeroMap σ ρ = ρ ∨ primeTraceZeroMap σ ρ = xiZeroConjEquiv ρ ∨
       primeTraceZeroMap σ ρ = xiZeroReflectEquiv ρ ∨
         primeTraceZeroMap σ ρ = xiZeroReflectEquiv (xiZeroConjEquiv ρ) := by
-  have hr := ((primeWidthValue_mem_iff p ρ).1 h σ).2
   have hi := abs_eq_abs.1 (primeTraceZeroMap_height σ ρ)
   have e1 : (xiZeroConjEquiv ρ : ℂ) = starRingEnd ℂ (ρ : ℂ) := rfl
   have e2 : (xiZeroReflectEquiv ρ : ℂ) = 1 - (ρ : ℂ) := rfl
@@ -293,6 +293,15 @@ theorem primeTraceZeroMap_mem_quartet (p : Nat.Primes) (ρ : XiDivisorSupport)
     rw [e2]
     exact Complex.ext (by simp only [Complex.sub_re, Complex.one_re]; exact hr)
       (by simp only [Complex.sub_im, Complex.one_im]; rw [hi]; ring)
+
+/-- **The quartet form.** If the width value lies in `B`, every automorphism sends `ρ` into the
+quartet `{ρ, ρ̄, 1 − ρ, 1 − ρ̄}`, and `ρ̄` to the conjugate of the image. -/
+theorem primeTraceZeroMap_mem_quartet (p : Nat.Primes) (ρ : XiDivisorSupport)
+    (h : (primeWidthValue p ρ : ℂ) ∈ B) (σ : G) :
+    primeTraceZeroMap σ ρ = ρ ∨ primeTraceZeroMap σ ρ = xiZeroConjEquiv ρ ∨
+      primeTraceZeroMap σ ρ = xiZeroReflectEquiv ρ ∨
+        primeTraceZeroMap σ ρ = xiZeroReflectEquiv (xiZeroConjEquiv ρ) :=
+  primeTraceZeroMap_mem_quartet_of_re σ ρ ((primeWidthValue_mem_iff p ρ).1 h σ).2
 
 /-! ## The chain weight ⇒ width ⇒ ordinate -/
 
@@ -343,7 +352,3 @@ theorem exists_primeTraceZeroMap_eq_reflect (p : Nat.Primes) (ρ : XiDivisorSupp
       rw [Complex.conj_conj]
 
 end GaloisForLFunctions.GaloisTheoryOfZeros
-
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.primeWidthValue_mem_iff
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.exists_primeTraceZeroMap_eq_reflect
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.primeTraceZeroMap_mem_quartet

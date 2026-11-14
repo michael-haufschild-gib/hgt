@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.Thermodynamics.AdSGaussBonnetCylinder
 import GaloisForLFunctions.HTGeometry.CPVThermalRadiation
 import Mathlib.Analysis.Convex.Deriv
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
 # Strict cylinder concavity and endpoint selection
@@ -24,6 +25,7 @@ theorem cylinderPotential_second_derivative (t z q x s : ℝ) :
   have heq : deriv (cylinderPotential t z q x) =ᶠ[nhds (subcriticalCoupling s)]
       cylinderPotentialSlope t z q x := by
     filter_upwards [Iio_mem_nhds (subcriticalCoupling_lt s)] with l hl
+    change l < 1 / 4 at hl
     have hp : 0 < 1 - 4 * l := by linarith only [hl]
     have hr : subcriticalCoupling (Real.log (1 - 4 * l)) = l := by
       unfold subcriticalCoupling

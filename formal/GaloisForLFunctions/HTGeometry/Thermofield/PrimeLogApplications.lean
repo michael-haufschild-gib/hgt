@@ -85,9 +85,3 @@ theorem primeLog_opposite_times (P : Finset Nat.Primes)
 end
 
 end GaloisForLFunctions.HTGeometry.Thermofield
-
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.primeLog_energy_injective
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.primeLog_returnPlateau
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.primeLog_returnPlateau_zero
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.primeLog_twoCopy_correlation
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.primeLog_opposite_times

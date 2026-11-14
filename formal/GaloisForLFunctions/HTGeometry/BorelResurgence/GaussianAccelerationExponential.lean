@@ -25,7 +25,7 @@ theorem gaussianAccelerationKernel_mul_exponential (s r x : ℝ) :
   rw [mul_assoc, ← Real.exp_add, mul_left_comm, ← Real.exp_add]
   congr 2
   field_simp [Real.exp_ne_zero]
-  <;> ring
+  ring
 
 /-- Every linear exponential is accelerable at every positive time, on the entire real axis. -/
 theorem integrable_gaussianAcceleration_exponential (s r : ℝ) :
@@ -53,7 +53,7 @@ private theorem integral_shift_gaussianAccelerationKernel (s h : ℝ) :
   have hc := integral_image_eq_integral_abs_deriv_smul
     (f := fun x : ℝ => x - h) (f' := fun _ => (1 : ℝ)) (s := Ioi (0 : ℝ))
     measurableSet_Ioi (fun x _ => ((hasDerivAt_id x).sub_const h).hasDerivWithinAt)
-    (fun x _ y _ hxy => sub_right_injective h hxy)
+    (fun x _ y _ hxy => by linarith only [hxy])
     (gaussianAccelerationKernel (Real.exp s))
   rw [himage] at hc
   simpa only [abs_one, one_smul] using hc.symm

@@ -75,7 +75,7 @@ theorem coeff_gaussianSaddleReconstruction (P : ℝ[X]) (n : ℕ) :
   simp only [gaussianSaddleReconstruction, finsetSum_coeff, coeff_monomial]
   by_cases hn : n ∈ P.support
   · simp [hn]
-  · have hz : P.coeff n = 0 := not_mem_support_iff.mp hn
+  · have hz : P.coeff n = 0 := by simpa using hn
     simp [hn, hz]
 
 /-- Reconstruction recovers every coefficient except the invisible quadratic coefficient. -/
@@ -88,8 +88,8 @@ theorem gaussianSaddleReconstruction_action (P : ℝ[X]) :
   by_cases hn : n = 2
   · subst n
     norm_num
-  · simp only [if_neg (Ne.symm hn)]
-    field_simp [saddle_degree_factor_ne_zero hn]
+  · simp only [if_neg (Ne.symm hn), sub_zero]
+    exact (div_eq_iff (saddle_degree_factor_ne_zero hn)).mpr (by ring)
 
 /-- Applying the saddle action after reconstruction gives the same exact quadratic projection. -/
 theorem gaussianSaddlePolynomial_reconstruction (P : ℝ[X]) :
@@ -101,8 +101,9 @@ theorem gaussianSaddlePolynomial_reconstruction (P : ℝ[X]) :
   by_cases hn : n = 2
   · subst n
     norm_num
-  · simp only [if_neg (Ne.symm hn)]
-    field_simp [saddle_degree_factor_ne_zero hn]
+  · simp only [if_neg (Ne.symm hn), sub_zero]
+    rw [← mul_div_assoc]
+    exact (div_eq_iff (saddle_degree_factor_ne_zero hn)).mpr (by ring)
 
 /-- Vanishing quadratic coefficient is the sole obstruction to being a Gaussian saddle action. -/
 theorem exists_gaussianSaddlePolynomial_iff (Q : ℝ[X]) :
@@ -119,11 +120,15 @@ theorem gaussianSaddle_gomes_quadratic_classification (a b c : ℝ) :
     gaussianSaddlePolynomial (C a * X ^ 2 + C b * X + C c) = C (b / 2) * X + C c ∧
       (IsFiniteMeasure (gomesDilatonMeasure (C a * X ^ 2 + C b * X + C c)) ↔ a < 0) := by
   refine ⟨?_, gomesDilatonMeasure_quadratic_finite_iff a b c⟩
-  unfold gaussianSaddlePolynomial
-  simp only [derivative_add, derivative_mul, derivative_C, derivative_pow, derivative_X,
-    zero_mul, zero_add, mul_one, derivative_X, Nat.reduceSub, pow_one, smul_eq_C_mul]
-  push_cast
-  ring
+  ext n
+  rw [coeff_gaussianSaddlePolynomial]
+  by_cases h0 : n = 0
+  · subst n; norm_num
+  by_cases h1 : n = 1
+  · subst n; norm_num; ring
+  by_cases h2 : n = 2
+  · subst n; norm_num
+  simp [h0, h1, h2]
 
 end
 

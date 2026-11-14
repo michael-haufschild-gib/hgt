@@ -37,6 +37,7 @@ theorem anomaly_eta_recovery (κ s : ℝ) :
   rw [anomaly_scale]
   unfold weylAnomaly
   field_simp [(beta_pos s).ne']
+  <;> ring
 
 /-- The same ratio determines the dimensionless coupling. -/
 theorem anomaly_coupling_recovery (κ s : ℝ) :
@@ -50,6 +51,7 @@ theorem anomaly_scale_recovery (κ s : ℝ) :
       (2 * beta (subcriticalCoupling s) ^ 3) = Real.exp κ := by
   rw [anomaly_scale]
   field_simp [(beta_pos s).ne']
+  <;> ring
 
 /-- Equality of both anomalies is exactly equality of both independent theory coordinates. -/
 theorem anomaly_coordinates_injective (κ s κ' s' : ℝ) :
@@ -61,11 +63,11 @@ theorem anomaly_coordinates_injective (κ s κ' s' : ℝ) :
       rw [← anomaly_eta_recovery κ s, ← anomaly_eta_recovery κ' s', ha, hc]
     have hes := congrArg (fun x : ℝ => x ^ 2) he
     rw [eta_sq, eta_sq] at hes
-    have hs : s = s' := Real.exp_inj.mp hes
+    have hs : s = s' := Real.exp_injective hes
     subst s'
     have hscale : Real.exp κ = Real.exp κ' := by
       rw [← anomaly_scale_recovery κ s, ← anomaly_scale_recovery κ' s, ha, hc]
-    exact ⟨Real.exp_inj.mp hscale, rfl⟩
+    exact ⟨Real.exp_injective hscale, rfl⟩
   · rintro ⟨rfl, rfl⟩
     exact ⟨rfl, rfl⟩
 

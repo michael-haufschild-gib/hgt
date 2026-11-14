@@ -25,6 +25,10 @@ A strict floor at `a=log(3)/2` suffices for the first new target:
 aperture. At this boundary the prime-three correlation vanishes. The exact
 Gamma tail is
 `Ω(log 3)=log(2+√3)/2+π/6`.
+The identity and the normalized Gamma mass lower bound `−4546/2500`
+are formalized in `TheGammaMassAtThePrimeThreeBoundaryIsCertified.lean`.
+Direct Lean checks and transitive axiom audits passed using only
+`propext`, `Classical.choice`, and `Quot.sound`.
 Likewise, a strict floor at `a=log(2)` extends above the ratio-four boundary.
 The prime-four term vanishes there; the prime-two/prime-three components
 are still four-vertex paths, together with isolated prime-two pairs.
@@ -39,7 +43,19 @@ The three audited declarations are `primeThreeEvenReciprocal_bound`,
 `primeThreeEvenPotential_le_log`, and `primeThreeEvenReciprocal_pair_bound`
 in `ThePrimeThreeBoundaryHasAPolynomialReciprocalBound.lean`; their axioms
 are only `propext`, `Classical.choice`, `Quot.sound`.
+The proposed charges `(0.7235,6.089,5.705,3.483)` with cross charge `0.06735`
+do not pass the polynomial capacity bound: its second principal minor is
+negative. This rejects that coarse bound, not the actual Weil floor.
 The four-moment capacity matrix remains unproved.
+
+A stronger quartic Gamma reserve follows from the fourth correlation moment.
+For an even unit-window source, with half-window Legendre moments `m₀,m₂,m₄`,
+half the fourth correlation moment is
+`16m₀²/15+80m₀m₂/21+16m₀m₄/35+8m₂²/3`.
+Completing squares bounds this by `17/10` times half-window mass;
+the complementary quartic lag deficit is at least `47a⁵/10` times mass
+at aperture `a`. For odd sources the corresponding bound is `63a⁵/10`.
+These reserve bounds are candidates awaiting Lean formalization.
 
 The Gamma comparison previously retained its polynomial moments only for
 lag radius `r≤1`. The larger windows require `r≤log(5)<2`. The extension

@@ -99,6 +99,16 @@ theorem norm_primeTraceExponentValue (p : Nat.Primes) (z : Δ) :
       Real.exp (Real.log ((p : ℕ) : ℝ) * ((z : Δ) : ℂ).re) := by
   rw [primeTraceExponentValue_coe, Complex.norm_exp, Complex.re_ofReal_mul]
 
+/-- If `σ z = ± z'`, then `σ` carries `p^z + p^{−z}` to `p^{z'} + p^{−z'}`. -/
+theorem primeTraceExponentValue_pair_map (p : Nat.Primes) {σ : G} {z z' : Δ}
+    (h : primeTraceExponentHom σ z = z' ∨ primeTraceExponentHom σ z = -z') :
+    σ (primeTraceExponentValue p z + primeTraceExponentValue p (-z)) =
+      primeTraceExponentValue p z' + primeTraceExponentValue p (-z') := by
+  rw [map_add, ← primeTraceExponentHom_value, ← primeTraceExponentHom_value, map_neg]
+  rcases h with h | h
+  · rw [h]
+  · rw [h, neg_neg, add_comm]
+
 /-! ## The ordinate of a zero -/
 
 /-- The ordinate `ρ − ρ̄ = 2i Im ρ` of a zero in the integer span of the zeros. -/
@@ -134,6 +144,26 @@ theorem primeTraceExponentHom_ordinate (σ : G) (ρ : XiDivisorSupport) :
       primeTraceSupportRoot (primeTraceZeroMap σ ρ) -
         primeTraceSupportRoot (primeTraceZeroMap σ (xiZeroConjEquiv ρ)) := by
   rw [primeTraceOrdinate, map_sub, primeTraceExponentHom_root, primeTraceExponentHom_root]
+
+/-- If `σ` carries `ρ̄` to the conjugate of `σρ`, it sends the ordinate to `±` itself. -/
+theorem primeTraceExponentHom_ordinate_of_conj (σ : G) (ρ : XiDivisorSupport)
+    (h : primeTraceZeroMap σ (xiZeroConjEquiv ρ) = xiZeroConjEquiv (primeTraceZeroMap σ ρ)) :
+    primeTraceExponentHom σ (primeTraceOrdinate ρ) = primeTraceOrdinate ρ ∨
+      primeTraceExponentHom σ (primeTraceOrdinate ρ) = -primeTraceOrdinate ρ := by
+  rw [primeTraceExponentHom_ordinate, h]
+  rcases abs_eq_abs.1 (primeTraceZeroMap_height σ ρ) with hi | hi
+  · left
+    apply Subtype.ext
+    change (primeTraceZeroMap σ ρ : ℂ) - starRingEnd ℂ (primeTraceZeroMap σ ρ : ℂ) =
+      (ρ : ℂ) - starRingEnd ℂ (ρ : ℂ)
+    rw [Complex.sub_conj, Complex.sub_conj, hi]
+  · right
+    apply Subtype.ext
+    change (primeTraceZeroMap σ ρ : ℂ) - starRingEnd ℂ (primeTraceZeroMap σ ρ : ℂ) =
+      -((ρ : ℂ) - starRingEnd ℂ (ρ : ℂ))
+    rw [Complex.sub_conj, Complex.sub_conj, hi]
+    push_cast
+    ring
 
 /-! ## From the ordinate value to conjugate images -/
 
@@ -236,29 +266,8 @@ theorem primeOrdinateValue_mem_iff_conj (p : Nat.Primes) (ρ : XiDivisorSupport)
     exact primeTraceZeroMap_conj_of_re σ ρ (primeTraceZeroMap_re_conj_of_fixed p ρ σ
       ((coe_mem_primeTraceField_iff_fixed _).1 h σ))
   · intro h
-    refine (coe_mem_primeTraceField_iff_fixed _).2 fun σ => ?_
-    -- `σ(ρ − ρ̄) = ±(ρ − ρ̄)`
-    have hord : primeTraceExponentHom σ (primeTraceOrdinate ρ) = primeTraceOrdinate ρ ∨
-        primeTraceExponentHom σ (primeTraceOrdinate ρ) = -primeTraceOrdinate ρ := by
-      rw [primeTraceExponentHom_ordinate, h σ]
-      rcases abs_eq_abs.1 (primeTraceZeroMap_height σ ρ) with hi | hi
-      · left
-        apply Subtype.ext
-        change (primeTraceZeroMap σ ρ : ℂ) - starRingEnd ℂ (primeTraceZeroMap σ ρ : ℂ) =
-          (ρ : ℂ) - starRingEnd ℂ (ρ : ℂ)
-        rw [Complex.sub_conj, Complex.sub_conj, hi]
-      · right
-        apply Subtype.ext
-        change (primeTraceZeroMap σ ρ : ℂ) - starRingEnd ℂ (primeTraceZeroMap σ ρ : ℂ) =
-          -((ρ : ℂ) - starRingEnd ℂ (ρ : ℂ))
-        rw [Complex.sub_conj, Complex.sub_conj, hi]
-        push_cast
-        ring
-    rw [primeOrdinateValue, map_add, ← primeTraceExponentHom_value,
-      ← primeTraceExponentHom_value, map_neg]
-    rcases hord with h1 | h1
-    · rw [h1]
-    · rw [h1, neg_neg, add_comm]
+    exact (coe_mem_primeTraceField_iff_fixed _).2 fun σ =>
+      primeTraceExponentValue_pair_map p (primeTraceExponentHom_ordinate_of_conj σ ρ (h σ))
 
 /-- Membership of the ordinate value does not depend on the prime. -/
 theorem primeOrdinateValue_mem_iff_mem (p q : Nat.Primes) (ρ : XiDivisorSupport) :

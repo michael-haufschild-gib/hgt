@@ -1429,9 +1429,9 @@ theorem milestone_one_subcubic_power_saving (W₀ : ℝ → ℂ) {a b : ℝ} (ha
     let γ : ℝ := min (3 * η - 1 / 2) 1
     0 < η' ∧ η' < 1 / 3 ∧ 0 < γ ∧
       ∃ C : ℝ, 0 < C ∧
-        ∀ (X : ℝ) (hX1 : 1 ≤ X) (c : O) (hc : c ≠ 0)
+        ∀ (X : ℝ) (_ : 1 ≤ X) (c : O) (hc : c ≠ 0)
           [Fintype (O ⧸ Ideal.span {9 * c})]
-          (hc_cond : (Ideal.absNorm (Ideal.span {c}) : ℝ) ≤ X ^ (1 - δ))
+          (_ : (Ideal.absNorm (Ideal.span {c}) : ℝ) ≤ X ^ (1 - δ))
           (Ψ : (O ⧸ Ideal.span {c}) →* ℂ), (∀ x, ‖Ψ x‖ ≤ 1) →
         ∀ s ∈ complexParameterBox σ₁ σ₂ T,
           ‖reciprocityBoundaryDefect (X ^ η) (X ^ η') c hc Ψ
@@ -1677,13 +1677,3 @@ theorem subconductor_dual_scale_obstruction :
           ring
 
 end GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies
-
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.vstar_complexTwistedWindow_apply
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.incompleteIdealT_cusp_reciprocity
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.incompleteIdealSummand_retains_target
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.incompleteReciprocity_retains_rootNumber_phases
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.exists_nonreducible_incompleteIdealT_subcubic
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.directCubeTail_uniform_box_bound
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.dualCubeTail_uniform_box_bound
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.milestone_one_subcubic_power_saving
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.subconductor_dual_scale_obstruction

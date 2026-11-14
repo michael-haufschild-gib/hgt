@@ -22,8 +22,9 @@ theorem energy_covariance_eq_variance (β : ℝ) (E : A → ℝ) :
 
 theorem energyMean_hasDerivAt (β : ℝ) (E : A → ℝ) :
     HasDerivAt (fun b => finiteGibbsEnergyMean b E) (-finiteGibbsEnergyVariance β E) β := by
-  simpa only [energy_covariance_eq_variance] using
-    hasDerivAt_gibbsMean_temperature E E β
+  change HasDerivAt (fun b => gibbsMean b E E) (-finiteGibbsEnergyVariance β E) β
+  apply (hasDerivAt_gibbsMean_temperature E E β).congr_deriv
+  rw [energy_covariance_eq_variance]
 
 /-- Literal second derivative of the logarithmic partition function. -/
 theorem logPartition_second_derivative (β : ℝ) (E : A → ℝ) :
@@ -34,7 +35,11 @@ theorem logPartition_second_derivative (β : ℝ) (E : A → ℝ) :
     funext b
     exact (hasDerivAt_log_finiteGibbsPartition E b).deriv
   rw [hfun]
-  simpa only [neg_neg] using (energyMean_hasDerivAt β E).neg.deriv
+  have hd : HasDerivAt (fun b => -finiteGibbsEnergyMean b E)
+      (finiteGibbsEnergyVariance β E) β := by
+    apply (energyMean_hasDerivAt β E).neg.congr_deriv
+    ring
+  exact hd.deriv
 
 /-- Heat capacity is defined by differentiating mean energy in physical temperature. -/
 def canonicalHeatCapacity (E : A → ℝ) (T : ℝ) : ℝ :=
@@ -76,8 +81,20 @@ theorem thermalGapMoment_eq_heatCapacity (u : ℝ) (E : A → ℝ) :
     canonicalHeatCapacity_eq_variance]
   field_simp
 
+/-- Heat capacity determines the slope of the existing finite heat-trace spectral dimension. -/
+theorem heatSpectralDimension_slope_heatCapacity (u : ℝ) (E : A → ℝ) :
+    Real.exp u * deriv (finiteHeatSpectralDimension E) (Real.exp u)⁻¹ =
+      2 * Real.exp u * finiteGibbsEnergyMean (Real.exp u)⁻¹ E -
+        2 * Real.exp u ^ 2 * canonicalHeatCapacity E (Real.exp u) := by
+  rw [(hasDerivAt_finiteHeatSpectralDimension E (Real.exp u)⁻¹).deriv,
+    energy_covariance_eq_variance, canonicalHeatCapacity_eq_variance]
+  change Real.exp u * (2 * finiteGibbsEnergyMean (Real.exp u)⁻¹ E -
+      2 * (Real.exp u)⁻¹ * finiteGibbsEnergyVariance (Real.exp u)⁻¹ E) = _
+  field_simp
+
 #print axioms logPartition_second_derivative
 #print axioms canonicalHeatCapacity_zero_iff
 #print axioms thermalGapMoment_eq_heatCapacity
+#print axioms heatSpectralDimension_slope_heatCapacity
 
 end GaloisForLFunctions.HTGeometry.Thermodynamics

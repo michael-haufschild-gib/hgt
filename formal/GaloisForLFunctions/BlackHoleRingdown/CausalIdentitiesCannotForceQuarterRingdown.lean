@@ -332,7 +332,7 @@ theorem schurDen_primeTwo_eq_mul (α : ℝ) (v : ℂ) :
   have hsum : 2 * ((2 : ℝ) ^ (-α) + (2 : ℝ) ^ (α - 1)) = primeTwoTrace α := by
     have h1 : (2 : ℝ) * (2 : ℝ) ^ (-α) = (2 : ℝ) ^ (1 - α) := by
       calc (2 : ℝ) * (2 : ℝ) ^ (-α) = (2 : ℝ) ^ (1 : ℝ) * (2 : ℝ) ^ (-α) := by norm_num
-        _ = (2 : ℝ) ^ (1 - α) := by rw [← Real.rpow_add (by norm_num)]; congr 1; ring
+        _ = (2 : ℝ) ^ (1 - α) := by rw [← Real.rpow_add (by norm_num)]; rfl
     have h2 : (2 : ℝ) * (2 : ℝ) ^ (α - 1) = (2 : ℝ) ^ α := by
       calc (2 : ℝ) * (2 : ℝ) ^ (α - 1) = (2 : ℝ) ^ (1 : ℝ) * (2 : ℝ) ^ (α - 1) := by norm_num
         _ = (2 : ℝ) ^ α := by rw [← Real.rpow_add (by norm_num)]; congr 1; ring
@@ -343,8 +343,9 @@ theorem schurDen_primeTwo_eq_mul (α : ℝ) (v : ℂ) :
       (primeTwoTrace α : ℂ) := by
     exact_mod_cast hsum
   unfold schurDen
+  rw [← hsumC]
   push_cast
-  linear_combination (-(v : ℂ)) * hsumC + (-(2 * v ^ 2)) * hprodC
+  linear_combination (-(2 * v ^ 2)) * hprodC
 
 /-- Nonvanishing of `schurDen 2 (primeTwoTrace α) (2^{-2w})` on `-σ ≤ Re w` when `σ < (1 - α)/2`. -/
 theorem schurDen_primeTwo_ne_zero_of_re_gt {α : ℝ} (h0 : 0 < α) (_h1 : α < 1)
@@ -363,8 +364,8 @@ theorem norm_primeTwoScatteringGate_le_one {α : ℝ} (h0 : 0 < α) (h1 : α < 1
   set v : ℂ := (2 : ℂ) ^ (-2 * w)
   have hv : ‖v‖ ≤ 1 := by
     dsimp only [v]
-    rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num,
-      Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num)]
+    nth_rw 1 [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num]
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num)]
     have hre : (-2 * w).re = -2 * w.re := by simp
     rw [hre]
     exact Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (by linarith)
@@ -381,8 +382,9 @@ theorem norm_primeTwoScatteringGate_axis {α : ℝ} (h0 : 0 < α) (h1 : α < 1) 
   set v : ℂ := (2 : ℂ) ^ (-2 * ((t : ℂ) * I))
   have hv1 : Complex.normSq v = 1 := by
     dsimp only [v]
-    rw [Complex.normSq_eq_norm_sq, show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num,
-      Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num)]
+    rw [Complex.normSq_eq_norm_sq]
+    nth_rw 1 [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num]
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num)]
     have hre : (-2 * ((t : ℂ) * I)).re = 0 := by simp
     rw [hre, Real.rpow_zero, one_pow]
   have hdiff := GaloisForLFunctions.ArithmeticScatteringHolography.normSq_schurDen_sub_num
@@ -592,7 +594,7 @@ theorem primeTwoScatteringGate_eq_causal_series {α : ℝ} (h0 : 1 / 2 < α) (h1
     have h1' : (2 : ℝ) * r₁ = (2 : ℝ) ^ (1 - α) := by
       dsimp only [r₁]
       calc (2 : ℝ) * (2 : ℝ) ^ (-α) = (2 : ℝ) ^ (1 : ℝ) * (2 : ℝ) ^ (-α) := by norm_num
-        _ = (2 : ℝ) ^ (1 - α) := by rw [← Real.rpow_add (by norm_num)]; congr 1; ring
+        _ = (2 : ℝ) ^ (1 - α) := by rw [← Real.rpow_add (by norm_num)]; rfl
     have h2' : (2 : ℝ) * r₂ = (2 : ℝ) ^ α := by
       dsimp only [r₂]
       calc (2 : ℝ) * (2 : ℝ) ^ (α - 1) = (2 : ℝ) ^ (1 : ℝ) * (2 : ℝ) ^ (α - 1) := by norm_num
@@ -635,14 +637,14 @@ theorem primeTwoScatteringGate_eq_causal_series {α : ℝ} (h0 : 1 / 2 < α) (h1
       (1 - (r₁ : ℂ) * v)) * D =
       (2 * (x : ℂ) - 1) * ((r₁ : ℂ) * v) * (1 - (r₂ : ℂ) * v) := by
     dsimp only [D]
-    rw [div_mul_eq_mul_div, div_div, div_mul_eq_mul_div,
+    rw [div_mul_eq_mul_div (2 * (x : ℂ) - 1), div_div, div_mul_eq_mul_div,
       div_eq_iff (mul_ne_zero (mul_ne_zero two_ne_zero h1xC) h1r1)]
     ring
   have hR2 : (((x : ℂ) - 2) / (2 * (1 - (x : ℂ))) * ((r₂ : ℂ) * v) /
       (1 - (r₂ : ℂ) * v)) * D =
       ((x : ℂ) - 2) * ((r₂ : ℂ) * v) * (1 - (r₁ : ℂ) * v) := by
     dsimp only [D]
-    rw [div_mul_eq_mul_div, div_div, div_mul_eq_mul_div,
+    rw [div_mul_eq_mul_div ((x : ℂ) - 2), div_div, div_mul_eq_mul_div,
       div_eq_iff (mul_ne_zero (mul_ne_zero two_ne_zero h1xC) h1r2)]
     ring
   rw [hL, add_mul, add_mul, hR1, hR2]
@@ -757,6 +759,27 @@ theorem deformedRetardedCorrelator_order_at_zero {α : ℝ} (h0 : 0 < α) (h1 : 
   exact scatteringPhase_meromorphicOrderAt_at_zero (differentiable_xiDeformed α)
     (fun _ => xiDeformed_ne_zero_of_one_le_re h0 h1) (xiDeformed_one_sub α) hρ
 
+theorem differentiableAt_deformedScatteringPhase {α : ℝ}
+    {w : ℂ} (hne : w ≠ 1 / 2) (hxi : xiDeformed α (1 + 2 * w) ≠ 0) :
+    DifferentiableAt ℂ (deformedScatteringPhase α) w := by
+  have hd : 2 * w - 1 ≠ 0 := fun h0 => hne (by linear_combination h0 / 2)
+  exact ((by fun_prop : DifferentiableAt ℂ (fun v : ℂ => 1 + 2 * v) w).div (by fun_prop) hd).mul
+    ((((differentiable_xiDeformed α) _).comp w (by fun_prop)).div
+      (((differentiable_xiDeformed α) _).comp w (by fun_prop)) hxi)
+
+theorem analyticAt_deformedAdvancedCorrelator {α : ℝ} {ν : ℂ}
+    (hne : ν ≠ -(I / 2)) (hxi : xiDeformed α (1 + 2 * I * ν) ≠ 0) :
+    AnalyticAt ℂ (deformedAdvancedCorrelator α) ν := by
+  set U : Set ℂ := {z : ℂ | z ≠ -(I / 2) ∧ xiDeformed α (1 + 2 * I * z) ≠ 0}
+  have hUo : IsOpen U :=
+    isOpen_ne.inter (isOpen_ne.preimage ((differentiable_xiDeformed α).continuous.comp (by fun_prop)))
+  have hdiff : DifferentiableOn ℂ (deformedAdvancedCorrelator α) U := by
+    intro z hz
+    have h1 : I * z ≠ 1 / 2 := fun h => hz.1 (by linear_combination (-I) * h + z * I_sq)
+    have h2 : xiDeformed α (1 + 2 * (I * z)) ≠ 0 := by simpa [mul_assoc] using hz.2
+    exact ((differentiableAt_deformedScatteringPhase h1 h2).comp z (by fun_prop)).differentiableWithinAt
+  exact (hdiff.analyticOnNhd hUo) ν ⟨hne, hxi⟩
+
 /-- Two-boundary eternal-AdS pole order for `deformedWightmanRL α` in `-1/2 < Im ν < 0`. -/
 theorem deformedWightmanRL_order_lower {α : ℝ} (h0 : 0 < α) (h1 : α < 1) {ν : ℂ}
     (hlo : -(1 / 2 : ℝ) < ν.im) (hhi : ν.im < 0) (hz : xiDeformed α (1 - 2 * I * ν) = 0) :
@@ -767,20 +790,12 @@ theorem deformedWightmanRL_order_lower {α : ℝ} (h0 : 0 < α) (h1 : α < 1) {�
   have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ν) ≠ 0 :=
     mul_ne_zero (mul_ne_zero two_ne_zero I_ne_zero)
       (sinh_pi_mul_ne_zero_of_abs_im_lt_one habs0 habs1)
-  have hadv_open : IsOpen {z : ℂ | z ≠ -(I / 2) ∧ xiDeformed α (1 + 2 * I * z) ≠ 0} :=
-    isOpen_ne.inter (isOpen_ne.preimage ((differentiable_xiDeformed α).continuous.comp (by fun_prop)))
-  have hadv_mem : ν ∈ {z : ℂ | z ≠ -(I / 2) ∧ xiDeformed α (1 + 2 * I * z) ≠ 0} := by
-    refine ⟨fun h => by have := congrArg Complex.im h; simp at this; linarith, ?_⟩
-    exact xiDeformed_ne_zero_of_one_le_re h0 h1 (by simp; linarith)
-  have hadv_an : AnalyticAt ℂ (fun z => -deformedAdvancedCorrelator α z) ν := by
-    refine (AnalyticAt.neg ?_)
-    refine (DifferentiableOn.analyticOnNhd (fun z hz => ?_) hadv_open) ν hadv_mem
-    have h2z : 2 * (I * z) - 1 ≠ 0 := fun he => hz.1 (by linear_combination (-I / 2) * he + z * I_sq)
-    exact ((((by fun_prop : DifferentiableAt ℂ (fun v : ℂ => 1 + 2 * v) (I * z)).div
-      (by fun_prop) h2z).mul
-        ((((differentiable_xiDeformed α) _).comp (I * z) (by fun_prop)).div
-          (((differentiable_xiDeformed α) _).comp (I * z) (by fun_prop))
-          (by simpa [mul_assoc] using hz.2))).comp z (by fun_prop)).differentiableWithinAt
+  have hadv_ne : ν ≠ -(I / 2) := fun h => by
+    have := congrArg Complex.im h; simp at this; linarith
+  have hadv_xi : xiDeformed α (1 + 2 * I * ν) ≠ 0 :=
+    xiDeformed_ne_zero_of_one_le_re h0 h1 (by simp; linarith)
+  have hadv_an : AnalyticAt ℂ (fun z => -deformedAdvancedCorrelator α z) ν :=
+    (analyticAt_deformedAdvancedCorrelator hadv_ne hadv_xi).neg
   have hν_eq : ν = I * ((1 - 2 * I * ν) - 1) / 2 := by linear_combination ν * I_sq
   have hret_ord : meromorphicOrderAt (deformedRetardedCorrelator α) ν =
       -meromorphicOrderAt (xiDeformed α) (1 - 2 * I * ν) := by
@@ -821,14 +836,6 @@ theorem deformedLineField_zero (α : ℝ) (h : CompactPulse) (τ : ℝ) :
   have e : ((0 : ℝ) : ℂ) + (t : ℂ) * I = (t : ℂ) * I := by simp
   rw [e, show -I * ((t : ℂ) * I) = (t : ℂ) by linear_combination (-(t : ℂ)) * I_sq]
   congr 2; ring
-
-theorem differentiableAt_deformedScatteringPhase {α : ℝ}
-    {w : ℂ} (hne : w ≠ 1 / 2) (hxi : xiDeformed α (1 + 2 * w) ≠ 0) :
-    DifferentiableAt ℂ (deformedScatteringPhase α) w := by
-  have hd : 2 * w - 1 ≠ 0 := fun h0 => hne (by linear_combination h0 / 2)
-  exact ((by fun_prop : DifferentiableAt ℂ (fun v : ℂ => 1 + 2 * v) w).div (by fun_prop) hd).mul
-    ((((differentiable_xiDeformed α) _).comp w (by fun_prop)).div
-      (((differentiable_xiDeformed α) _).comp w (by fun_prop)) hxi)
 
 theorem continuous_deformedReflectedField_and_bounded {α : ℝ} (h0 : 0 < α) (h1 : α < 1)
     (h : CompactPulse) :

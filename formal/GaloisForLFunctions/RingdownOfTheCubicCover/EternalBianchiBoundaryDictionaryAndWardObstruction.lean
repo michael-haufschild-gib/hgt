@@ -162,8 +162,8 @@ theorem hasProd_bianchiPrimeGate {w : ℂ} (hw : 1 / 2 < w.re) :
     HasProd (fun p : Nat.Primes => bianchiPrimeGate p w)
       ((riemannZeta (2 * w) * DirichletCharacter.LFunction chi3D (2 * w)) /
         (riemannZeta (2 * w + 1) * DirichletCharacter.LFunction chi3D (2 * w + 1))) := by
-  rw [← mul_div_mul_comm]
-  exact (hasProd_primeEchoGate hw).mul (hasProd_chi3EchoGate hw)
+  have h := (hasProd_primeEchoGate hw).mul (hasProd_chi3EchoGate hw)
+  rwa [div_mul_div_comm] at h
 
 /-- Archimedean completion ratio of the Bianchi horizon on `SL₂(ℤ[ω])\ℍ³`. -/
 def bianchiArchimedeanFactor (w : ℂ) : ℂ :=
@@ -226,23 +226,23 @@ theorem bianchiPrimeProduct_mul_archimedean_eq_scatteringPhase {w : ℂ} (hw : 1
 
 /-! ## 2. Complete Single- and Two-Boundary Singularity Dictionary -/
 
-/-- Retarded boundary correlator `G_{R,K}(ω) = φ_K(-iω)` on the Bianchi horizon. -/
-def bianchiRetardedCorrelator (ω : ℂ) : ℂ :=
-  bianchiScatteringPhase (-I * ω)
+/-- Retarded boundary correlator `G_{R,K}(ν) = φ_K(-iν)` on the Bianchi horizon. -/
+def bianchiRetardedCorrelator (ν : ℂ) : ℂ :=
+  bianchiScatteringPhase (-I * ν)
 
-/-- Advanced boundary correlator `G_{A,K}(ω) = φ_K(iω)` on the Bianchi horizon. -/
-def bianchiAdvancedCorrelator (ω : ℂ) : ℂ :=
-  bianchiScatteringPhase (I * ω)
+/-- Advanced boundary correlator `G_{A,K}(ν) = φ_K(iν)` on the Bianchi horizon. -/
+def bianchiAdvancedCorrelator (ν : ℂ) : ℂ :=
+  bianchiScatteringPhase (I * ν)
 
-/-- Trans-horizon thermofield Wightman correlator `G_{RL,K}(ω)` at inverse Hawking temperature
+/-- Trans-horizon thermofield Wightman correlator `G_{RL,K}(ν)` at inverse Hawking temperature
 `β_H = 2π`. -/
-def bianchiWightmanRL (ω : ℂ) : ℂ :=
-  (bianchiRetardedCorrelator ω - bianchiAdvancedCorrelator ω) /
-    (2 * I * Complex.sinh (Real.pi * ω))
+def bianchiWightmanRL (ν : ℂ) : ℂ :=
+  (bianchiRetardedCorrelator ν - bianchiAdvancedCorrelator ν) /
+    (2 * I * Complex.sinh (Real.pi * ν))
 
-theorem analyticAt_bianchiRetardedCorrelator {ω : ℂ}
-    (hne : ω ≠ I / 2) (hxi : xiBianchi (1 - 2 * I * ω) ≠ 0) :
-    AnalyticAt ℂ bianchiRetardedCorrelator ω := by
+theorem analyticAt_bianchiRetardedCorrelator {ν : ℂ}
+    (hne : ν ≠ I / 2) (hxi : xiBianchi (1 - 2 * I * ν) ≠ 0) :
+    AnalyticAt ℂ bianchiRetardedCorrelator ν := by
   set U : Set ℂ := {z : ℂ | z ≠ I / 2 ∧ xiBianchi (1 - 2 * I * z) ≠ 0}
   have hUo : IsOpen U :=
     isOpen_ne.inter (isOpen_ne.preimage (differentiable_xiBianchi.continuous.comp (by fun_prop)))
@@ -253,11 +253,11 @@ theorem analyticAt_bianchiRetardedCorrelator {ω : ℂ}
     have h2 : xiBianchi (1 + 2 * (-I * z)) ≠ 0 := by
       simpa [sub_eq_add_neg, mul_assoc] using hz.2
     exact ((differentiableAt_bianchiScatteringPhase h1 h2).comp z (by fun_prop)).differentiableWithinAt
-  exact (hdiff.analyticOnNhd hUo) ω ⟨hne, hxi⟩
+  exact (hdiff.analyticOnNhd hUo) ν ⟨hne, hxi⟩
 
-theorem analyticAt_bianchiAdvancedCorrelator {ω : ℂ}
-    (hne : ω ≠ -(I / 2)) (hxi : xiBianchi (1 + 2 * I * ω) ≠ 0) :
-    AnalyticAt ℂ bianchiAdvancedCorrelator ω := by
+theorem analyticAt_bianchiAdvancedCorrelator {ν : ℂ}
+    (hne : ν ≠ -(I / 2)) (hxi : xiBianchi (1 + 2 * I * ν) ≠ 0) :
+    AnalyticAt ℂ bianchiAdvancedCorrelator ν := by
   set U : Set ℂ := {z : ℂ | z ≠ -(I / 2) ∧ xiBianchi (1 + 2 * I * z) ≠ 0}
   have hUo : IsOpen U :=
     isOpen_ne.inter (isOpen_ne.preimage (differentiable_xiBianchi.continuous.comp (by fun_prop)))
@@ -267,84 +267,84 @@ theorem analyticAt_bianchiAdvancedCorrelator {ω : ℂ}
       hz.1 (by linear_combination (-I) * h + z * I_sq)
     have h2 : xiBianchi (1 + 2 * (I * z)) ≠ 0 := by simpa [mul_assoc] using hz.2
     exact ((differentiableAt_bianchiScatteringPhase h1 h2).comp z (by fun_prop)).differentiableWithinAt
-  exact (hdiff.analyticOnNhd hUo) ω ⟨hne, hxi⟩
+  exact (hdiff.analyticOnNhd hUo) ν ⟨hne, hxi⟩
 
 /-- Every zero `ρ` of `xiBianchi` produces an isolated pole of `bianchiRetardedCorrelator` at
-`ω_ρ = i(ρ - 1)/2` of exact multiplicity `-ord_ρ xiBianchi < 0`. -/
+`ν_ρ = i(ρ - 1)/2` of exact multiplicity `-ord_ρ xiBianchi < 0`. -/
 theorem bianchiRetardedCorrelator_order_at_zero {ρ : ℂ} (hρ : xiBianchi ρ = 0) :
     meromorphicOrderAt bianchiRetardedCorrelator (I * (ρ - 1) / 2) =
       -meromorphicOrderAt xiBianchi ρ := by
   have hcoord : -I * (I * (ρ - 1) / 2) = (ρ - 1) / 2 := by
     linear_combination (-(ρ - 1) / 2) * I_sq
-  have hd : HasDerivAt (fun ω : ℂ => -I * ω) (-I) (I * (ρ - 1) / 2) := hasDerivAt_const_mul (-I)
+  have hd : HasDerivAt (fun ν : ℂ => -I * ν) (-I) (I * (ρ - 1) / 2) := hasDerivAt_const_mul (-I)
   have hcomp : meromorphicOrderAt bianchiRetardedCorrelator (I * (ρ - 1) / 2) =
       meromorphicOrderAt bianchiScatteringPhase ((ρ - 1) / 2) := by
     rw [← hcoord]
     exact meromorphicOrderAt_comp_of_deriv_ne_zero
-      (f := bianchiScatteringPhase) (g := fun ω : ℂ => -I * ω) (by fun_prop)
+      (f := bianchiScatteringPhase) (g := fun ν : ℂ => -I * ν) (by fun_prop)
       (by rw [hd.deriv]; exact neg_ne_zero.mpr I_ne_zero)
   rw [hcomp]
   exact scatteringPhase_meromorphicOrderAt_at_zero differentiable_xiBianchi
     (fun _ => xiBianchi_ne_zero_of_one_le_re) xiBianchi_one_sub hρ
 
-/-- Bijective single-boundary singularity characterization for `SL₂(ℤ[ω])\ℍ³` (`ω ≠ i/2`). -/
-theorem bianchiRetardedCorrelator_isPole_iff {ω : ℂ} (hω : ω ≠ I / 2) :
-    meromorphicOrderAt bianchiRetardedCorrelator ω < 0 ↔
-      (riemannZeta (1 - 2 * I * ω) * DirichletCharacter.LFunction chi3D (1 - 2 * I * ω) = 0 ∧
-        0 < (1 - 2 * I * ω).re ∧ (1 - 2 * I * ω).re < 1) := by
-  have hxi_iff : xiBianchi (1 - 2 * I * ω) = 0 ↔
-      (riemannZeta (1 - 2 * I * ω) * DirichletCharacter.LFunction chi3D (1 - 2 * I * ω) = 0 ∧
-        0 < (1 - 2 * I * ω).re ∧ (1 - 2 * I * ω).re < 1) := by
+/-- Bijective single-boundary singularity characterization for `SL₂(ℤ[ω])\ℍ³` (`ν ≠ i/2`). -/
+theorem bianchiRetardedCorrelator_isPole_iff {ν : ℂ} (hν : ν ≠ I / 2) :
+    meromorphicOrderAt bianchiRetardedCorrelator ν < 0 ↔
+      (riemannZeta (1 - 2 * I * ν) * DirichletCharacter.LFunction chi3D (1 - 2 * I * ν) = 0 ∧
+        0 < (1 - 2 * I * ν).re ∧ (1 - 2 * I * ν).re < 1) := by
+  have hxi_iff : xiBianchi (1 - 2 * I * ν) = 0 ↔
+      (riemannZeta (1 - 2 * I * ν) * DirichletCharacter.LFunction chi3D (1 - 2 * I * ν) = 0 ∧
+        0 < (1 - 2 * I * ν).re ∧ (1 - 2 * I * ν).re < 1) := by
     constructor
     · intro hz
       obtain ⟨h0, h1⟩ := zero_mem_openStrip_of_xiBianchi_eq_zero hz
-      have hne1 : 1 - 2 * I * ω ≠ 1 := fun h => by rw [h, one_re] at h1; exact lt_irrefl _ h1
+      have hne1 : 1 - 2 * I * ν ≠ 1 := fun h => by rw [h, one_re] at h1; exact lt_irrefl _ h1
       exact ⟨(xiBianchi_eq_zero_iff h0 hne1).mp hz, h0, h1⟩
     · rintro ⟨hz, h0, h1⟩
-      have hne1 : 1 - 2 * I * ω ≠ 1 := fun h => by rw [h, one_re] at h1; exact lt_irrefl _ h1
+      have hne1 : 1 - 2 * I * ν ≠ 1 := fun h => by rw [h, one_re] at h1; exact lt_irrefl _ h1
       exact (xiBianchi_eq_zero_iff h0 hne1).mpr hz
   rw [← hxi_iff]
   constructor
   · intro hpole
     by_contra hnz
-    have han := analyticAt_bianchiRetardedCorrelator hω hnz
+    have han := analyticAt_bianchiRetardedCorrelator hν hnz
     exact (not_lt_of_ge han.meromorphicOrderAt_nonneg) hpole
   · intro hz
-    have hω_eq : ω = I * ((1 - 2 * I * ω) - 1) / 2 := by linear_combination ω * I_sq
-    nth_rw 1 [hω_eq]
+    have hν_eq : ν = I * ((1 - 2 * I * ν) - 1) / 2 := by linear_combination ν * I_sq
+    nth_rw 1 [hν_eq]
     rw [bianchiRetardedCorrelator_order_at_zero hz]
     exact (meromorphicOrderAt_pos_of_entire_zero differentiable_xiBianchi
       (fun _ => xiBianchi_ne_zero_of_one_le_re) hz).2.1
 
-/-- Lower-strip (`-1/2 < Im ω < 0`) pole-order identity for `bianchiWightmanRL`. -/
-theorem bianchiWightmanRL_order_lower {ω : ℂ}
-    (hlo : -(1 / 2 : ℝ) < ω.im) (hhi : ω.im < 0) (hz : xiBianchi (1 - 2 * I * ω) = 0) :
-    meromorphicOrderAt bianchiWightmanRL ω =
-      -meromorphicOrderAt xiBianchi (1 - 2 * I * ω) := by
-  have habs0 : 0 < |ω.im| := abs_pos.mpr hhi.ne
-  have habs1 : |ω.im| < 1 := by rw [abs_of_neg hhi]; linarith
-  have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ω) ≠ 0 :=
+/-- Lower-strip (`-1/2 < Im ν < 0`) pole-order identity for `bianchiWightmanRL`. -/
+theorem bianchiWightmanRL_order_lower {ν : ℂ}
+    (hlo : -(1 / 2 : ℝ) < ν.im) (hhi : ν.im < 0) (hz : xiBianchi (1 - 2 * I * ν) = 0) :
+    meromorphicOrderAt bianchiWightmanRL ν =
+      -meromorphicOrderAt xiBianchi (1 - 2 * I * ν) := by
+  have habs0 : 0 < |ν.im| := abs_pos.mpr hhi.ne
+  have habs1 : |ν.im| < 1 := by rw [abs_of_neg hhi]; linarith
+  have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ν) ≠ 0 :=
     mul_ne_zero (mul_ne_zero two_ne_zero I_ne_zero)
       (sinh_pi_mul_ne_zero_of_abs_im_lt_one habs0 habs1)
-  have hadv_ne : ω ≠ -(I / 2) := fun h => by
+  have hadv_ne : ν ≠ -(I / 2) := fun h => by
     have := congrArg Complex.im h; simp at this; linarith
-  have hadv_xi : xiBianchi (1 + 2 * I * ω) ≠ 0 :=
+  have hadv_xi : xiBianchi (1 + 2 * I * ν) ≠ 0 :=
     xiBianchi_ne_zero_of_one_le_re (by simp; linarith)
-  have hadv_an : AnalyticAt ℂ (fun z => -bianchiAdvancedCorrelator z) ω :=
+  have hadv_an : AnalyticAt ℂ (fun z => -bianchiAdvancedCorrelator z) ν :=
     (analyticAt_bianchiAdvancedCorrelator hadv_ne hadv_xi).neg
-  have hω_eq : ω = I * ((1 - 2 * I * ω) - 1) / 2 := by linear_combination ω * I_sq
-  have hret_ord : meromorphicOrderAt bianchiRetardedCorrelator ω =
-      -meromorphicOrderAt xiBianchi (1 - 2 * I * ω) := by
-    nth_rw 1 [hω_eq]
+  have hν_eq : ν = I * ((1 - 2 * I * ν) - 1) / 2 := by linear_combination ν * I_sq
+  have hret_ord : meromorphicOrderAt bianchiRetardedCorrelator ν =
+      -meromorphicOrderAt xiBianchi (1 - 2 * I * ν) := by
+    nth_rw 1 [hν_eq]
     exact bianchiRetardedCorrelator_order_at_zero hz
-  have hret_neg : meromorphicOrderAt bianchiRetardedCorrelator ω < 0 := by
+  have hret_neg : meromorphicOrderAt bianchiRetardedCorrelator ν < 0 := by
     rw [hret_ord]
     exact (meromorphicOrderAt_pos_of_entire_zero differentiable_xiBianchi
       (fun _ => xiBianchi_ne_zero_of_one_le_re) hz).2.1
-  have hlt : meromorphicOrderAt bianchiRetardedCorrelator ω <
-      meromorphicOrderAt (fun z => -bianchiAdvancedCorrelator z) ω :=
+  have hlt : meromorphicOrderAt bianchiRetardedCorrelator ν <
+      meromorphicOrderAt (fun z => -bianchiAdvancedCorrelator z) ν :=
     lt_of_lt_of_le hret_neg hadv_an.meromorphicOrderAt_nonneg
-  have hden_an : AnalyticAt ℂ (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) ω :=
+  have hden_an : AnalyticAt ℂ (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) ν :=
     AnalyticAt.inv (by fun_prop) hsinh_ne
   have hW : bianchiWightmanRL =
       (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) *
@@ -353,46 +353,46 @@ theorem bianchiWightmanRL_order_lower {ω : ℂ}
   rw [hW, meromorphicOrderAt_mul_of_ne_zero hden_an (inv_ne_zero hsinh_ne),
     meromorphicOrderAt_add_eq_left_of_lt hadv_an.meromorphicAt hlt, hret_ord]
 
-/-- Upper-strip (`0 < Im ω < 1/2`) pole-order identity for `bianchiWightmanRL`. -/
-theorem bianchiWightmanRL_order_upper {ω : ℂ}
-    (hlo : 0 < ω.im) (hhi : ω.im < 1 / 2) (hz : xiBianchi (1 + 2 * I * ω) = 0) :
-    meromorphicOrderAt bianchiWightmanRL ω =
-      -meromorphicOrderAt xiBianchi (1 + 2 * I * ω) := by
-  have habs0 : 0 < |ω.im| := abs_pos.mpr hlo.ne'
-  have habs1 : |ω.im| < 1 := by rw [abs_of_pos hlo]; linarith
-  have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ω) ≠ 0 :=
+/-- Upper-strip (`0 < Im ν < 1/2`) pole-order identity for `bianchiWightmanRL`. -/
+theorem bianchiWightmanRL_order_upper {ν : ℂ}
+    (hlo : 0 < ν.im) (hhi : ν.im < 1 / 2) (hz : xiBianchi (1 + 2 * I * ν) = 0) :
+    meromorphicOrderAt bianchiWightmanRL ν =
+      -meromorphicOrderAt xiBianchi (1 + 2 * I * ν) := by
+  have habs0 : 0 < |ν.im| := abs_pos.mpr hlo.ne'
+  have habs1 : |ν.im| < 1 := by rw [abs_of_pos hlo]; linarith
+  have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ν) ≠ 0 :=
     mul_ne_zero (mul_ne_zero two_ne_zero I_ne_zero)
       (sinh_pi_mul_ne_zero_of_abs_im_lt_one habs0 habs1)
-  have hret_ne : ω ≠ I / 2 := fun h => by
+  have hret_ne : ν ≠ I / 2 := fun h => by
     have := congrArg Complex.im h; simp at this; linarith
-  have hret_xi : xiBianchi (1 - 2 * I * ω) ≠ 0 :=
+  have hret_xi : xiBianchi (1 - 2 * I * ν) ≠ 0 :=
     xiBianchi_ne_zero_of_one_le_re (by simp; linarith)
-  have hret_an : AnalyticAt ℂ bianchiRetardedCorrelator ω :=
+  have hret_an : AnalyticAt ℂ bianchiRetardedCorrelator ν :=
     analyticAt_bianchiRetardedCorrelator hret_ne hret_xi
-  have hneg_ord : meromorphicOrderAt (fun z => -bianchiAdvancedCorrelator z) ω =
-      -meromorphicOrderAt xiBianchi (1 + 2 * I * ω) := by
+  have hneg_ord : meromorphicOrderAt (fun z => -bianchiAdvancedCorrelator z) ν =
+      -meromorphicOrderAt xiBianchi (1 + 2 * I * ν) := by
     rw [show (fun z => -bianchiAdvancedCorrelator z) = -bianchiAdvancedCorrelator from rfl,
       ← meromorphicOrderAt_neg]
     have hadv_eq : bianchiAdvancedCorrelator = fun z => bianchiRetardedCorrelator (-z) := by
       funext z; simp [bianchiAdvancedCorrelator, bianchiRetardedCorrelator]
     rw [hadv_eq]
-    have hd : HasDerivAt (fun z : ℂ => -z) (-1) ω := (hasDerivAt_id ω).neg
-    have hcomp : meromorphicOrderAt (fun z => bianchiRetardedCorrelator (-z)) ω =
-        meromorphicOrderAt bianchiRetardedCorrelator (-ω) :=
+    have hd : HasDerivAt (fun z : ℂ => -z) (-1) ν := (hasDerivAt_id ν).neg
+    have hcomp : meromorphicOrderAt (fun z => bianchiRetardedCorrelator (-z)) ν =
+        meromorphicOrderAt bianchiRetardedCorrelator (-ν) :=
       meromorphicOrderAt_comp_of_deriv_ne_zero (f := bianchiRetardedCorrelator)
         (g := fun z : ℂ => -z) (by fun_prop) (by rw [hd.deriv]; norm_num)
     rw [hcomp]
-    have hω_eq : -ω = I * ((1 + 2 * I * ω) - 1) / 2 := by linear_combination (-ω) * I_sq
-    nth_rw 1 [hω_eq]
+    have hν_eq : -ν = I * ((1 + 2 * I * ν) - 1) / 2 := by linear_combination (-ν) * I_sq
+    nth_rw 1 [hν_eq]
     exact bianchiRetardedCorrelator_order_at_zero hz
-  have hadv_neg : meromorphicOrderAt (fun z => -bianchiAdvancedCorrelator z) ω < 0 := by
+  have hadv_neg : meromorphicOrderAt (fun z => -bianchiAdvancedCorrelator z) ν < 0 := by
     rw [hneg_ord]
     exact (meromorphicOrderAt_pos_of_entire_zero differentiable_xiBianchi
       (fun _ => xiBianchi_ne_zero_of_one_le_re) hz).2.1
-  have hlt : meromorphicOrderAt (fun z => -bianchiAdvancedCorrelator z) ω <
-      meromorphicOrderAt bianchiRetardedCorrelator ω :=
+  have hlt : meromorphicOrderAt (fun z => -bianchiAdvancedCorrelator z) ν <
+      meromorphicOrderAt bianchiRetardedCorrelator ν :=
     lt_of_lt_of_le hadv_neg hret_an.meromorphicOrderAt_nonneg
-  have hden_an : AnalyticAt ℂ (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) ω :=
+  have hden_an : AnalyticAt ℂ (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) ν :=
     AnalyticAt.inv (by fun_prop) hsinh_ne
   have hW : bianchiWightmanRL =
       (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) *
@@ -401,19 +401,19 @@ theorem bianchiWightmanRL_order_upper {ω : ℂ}
   rw [hW, meromorphicOrderAt_mul_of_ne_zero hden_an (inv_ne_zero hsinh_ne),
     meromorphicOrderAt_add_eq_right_of_lt hret_an.meromorphicAt hlt, hneg_ord]
 
-/-- **Complete Two-Boundary Eternal Bianchi Dictionary.** On `0 < |Im ω| < 1/2` (disjoint from all
-Hawking–Matsubara thermal poles `ω = ik`), `bianchiWightmanRL` has a pole at `ω` iff
-`xiBianchi (1 - 2iω) = 0 ∨ xiBianchi (1 + 2iω) = 0`. -/
-theorem bianchiWightmanRL_isPole_iff {ω : ℂ}
-    (h0 : 0 < |ω.im|) (h1 : |ω.im| < 1 / 2) :
-    meromorphicOrderAt bianchiWightmanRL ω < 0 ↔
-      (xiBianchi (1 - 2 * I * ω) = 0 ∨ xiBianchi (1 + 2 * I * ω) = 0) := by
-  have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ω) ≠ 0 :=
+/-- **Complete Two-Boundary Eternal Bianchi Dictionary.** On `0 < |Im ν| < 1/2` (disjoint from all
+Hawking–Matsubara thermal poles `ν = ik`), `bianchiWightmanRL` has a pole at `ν` iff
+`xiBianchi (1 - 2iν) = 0 ∨ xiBianchi (1 + 2iν) = 0`. -/
+theorem bianchiWightmanRL_isPole_iff {ν : ℂ}
+    (h0 : 0 < |ν.im|) (h1 : |ν.im| < 1 / 2) :
+    meromorphicOrderAt bianchiWightmanRL ν < 0 ↔
+      (xiBianchi (1 - 2 * I * ν) = 0 ∨ xiBianchi (1 + 2 * I * ν) = 0) := by
+  have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ν) ≠ 0 :=
     mul_ne_zero (mul_ne_zero two_ne_zero I_ne_zero)
       (sinh_pi_mul_ne_zero_of_abs_im_lt_one h0 (by linarith))
-  have hne_pos : ω ≠ I / 2 := fun h => by
+  have hne_pos : ν ≠ I / 2 := fun h => by
     have := congrArg Complex.im h; simp at this; rw [this] at h1; norm_num at h1
-  have hne_neg : ω ≠ -(I / 2) := fun h => by
+  have hne_neg : ν ≠ -(I / 2) := fun h => by
     have := congrArg Complex.im h; simp at this; rw [this] at h1; norm_num at h1
   constructor
   · intro hpole
@@ -421,24 +421,24 @@ theorem bianchiWightmanRL_isPole_iff {ω : ℂ}
     push Not at hnone
     have han_ret := analyticAt_bianchiRetardedCorrelator hne_pos hnone.1
     have han_adv := analyticAt_bianchiAdvancedCorrelator hne_neg hnone.2
-    have han_den : AnalyticAt ℂ (fun z => 2 * I * Complex.sinh (Real.pi * z)) ω := by fun_prop
-    have han_W : AnalyticAt ℂ bianchiWightmanRL ω :=
+    have han_den : AnalyticAt ℂ (fun z => 2 * I * Complex.sinh (Real.pi * z)) ν := by fun_prop
+    have han_W : AnalyticAt ℂ bianchiWightmanRL ν :=
       (han_ret.sub han_adv).div han_den hsinh_ne
     exact (not_lt_of_ge han_W.meromorphicOrderAt_nonneg) hpole
   · intro hzero
-    rcases lt_trichotomy ω.im 0 with hneg | heq0 | hpos
-    · have hadv_nz : xiBianchi (1 + 2 * I * ω) ≠ 0 :=
+    rcases lt_trichotomy ν.im 0 with hneg | heq0 | hpos
+    · have hadv_nz : xiBianchi (1 + 2 * I * ν) ≠ 0 :=
         xiBianchi_ne_zero_of_one_le_re (by simp; linarith)
       have hz := hzero.resolve_right hadv_nz
-      have hlo : -(1 / 2 : ℝ) < ω.im := by rw [abs_of_neg hneg] at h1; linarith
+      have hlo : -(1 / 2 : ℝ) < ν.im := by rw [abs_of_neg hneg] at h1; linarith
       rw [bianchiWightmanRL_order_lower hlo hneg hz]
       exact (meromorphicOrderAt_pos_of_entire_zero differentiable_xiBianchi
         (fun _ => xiBianchi_ne_zero_of_one_le_re) hz).2.1
     · exfalso; rw [heq0, abs_zero] at h0; exact lt_irrefl _ h0
-    · have hret_nz : xiBianchi (1 - 2 * I * ω) ≠ 0 :=
+    · have hret_nz : xiBianchi (1 - 2 * I * ν) ≠ 0 :=
         xiBianchi_ne_zero_of_one_le_re (by simp; linarith)
       have hz := hzero.resolve_left hret_nz
-      have hhi : ω.im < 1 / 2 := by rwa [abs_of_pos hpos] at h1
+      have hhi : ν.im < 1 / 2 := by rwa [abs_of_pos hpos] at h1
       rw [bianchiWightmanRL_order_upper hpos hhi hz]
       exact (meromorphicOrderAt_pos_of_entire_zero differentiable_xiBianchi
         (fun _ => xiBianchi_ne_zero_of_one_le_re) hz).2.1
@@ -464,10 +464,10 @@ theorem xiBianchi_re_mem_Icc_of_eq_zero {s : ℂ} (hz : xiBianchi s = 0) :
   have h1 : (7 / 8 : ℝ) < (1 - s).re := by simp; linarith
   exact xiBianchi_ne_zero_of_seven_eighths_lt_re h1 (by rw [xiBianchi_one_sub]; exact hz)
 
-/-- For `0 < δ ≤ 1/4`, `bianchiWightmanRL` is analytic on `{0 < |Im ω| < δ}` iff `xiBianchi` has no
+/-- For `0 < δ ≤ 1/4`, `bianchiWightmanRL` is analytic on `{0 < |Im ν| < δ}` iff `xiBianchi` has no
 zeros outside `[2δ, 1 - 2δ]`. -/
-theorem bianchiWightmanRL_analyticOnNhd_strip_iff {δ : ℝ} (h0 : 0 < δ) (h1 : δ ≤ 1 / 4) :
-    AnalyticOnNhd ℂ bianchiWightmanRL {ω : ℂ | 0 < |ω.im| ∧ |ω.im| < δ} ↔
+theorem bianchiWightmanRL_analyticOnNhd_strip_iff {δ : ℝ} (_h0 : 0 < δ) (h1 : δ ≤ 1 / 4) :
+    AnalyticOnNhd ℂ bianchiWightmanRL {ν : ℂ | 0 < |ν.im| ∧ |ν.im| < δ} ↔
       ∀ ρ : ℂ, xiBianchi ρ = 0 → 2 * δ ≤ ρ.re ∧ ρ.re ≤ 1 - 2 * δ := by
   constructor
   · intro han ρ hρ
@@ -475,60 +475,64 @@ theorem bianchiWightmanRL_analyticOnNhd_strip_iff {δ : ℝ} (h0 : 0 < δ) (h1 :
     have hupper : ρ.re ≤ 1 - 2 * δ := by
       by_contra hgt
       push Not at hgt
-      set ω : ℂ := I * (ρ - 1) / 2 with hω
-      have him : ω.im = (ρ.re - 1) / 2 := by rw [hω]; simp
-      have hmem : ω ∈ {z : ℂ | 0 < |z.im| ∧ |z.im| < δ} := by
-        have hneg : ω.im < 0 := by rw [him]; linarith
+      set ν : ℂ := I * (ρ - 1) / 2 with hν
+      have him : ν.im = (ρ.re - 1) / 2 := by rw [hν]; simp
+      have hmem : ν ∈ {z : ℂ | 0 < |z.im| ∧ |z.im| < δ} := by
+        have hneg : ν.im < 0 := by rw [him]; linarith
         refine ⟨abs_pos.mpr hneg.ne, ?_⟩
         rw [abs_of_neg hneg, him]; linarith
-      have hpole : meromorphicOrderAt bianchiWightmanRL ω < 0 := by
+      have hpole : meromorphicOrderAt bianchiWightmanRL ν < 0 := by
         rw [bianchiWightmanRL_isPole_iff hmem.1 (lt_of_lt_of_le hmem.2 (by linarith))]
         left
-        have heq : 1 - 2 * I * ω = ρ := by rw [hω]; linear_combination (1 - ρ) * I_sq
+        have heq : 1 - 2 * I * ν = ρ := by rw [hν]; linear_combination (1 - ρ) * I_sq
         rwa [heq]
-      exact (not_lt_of_ge (han ω hmem).meromorphicOrderAt_nonneg) hpole
+      exact (not_lt_of_ge (han ν hmem).meromorphicOrderAt_nonneg) hpole
     have hlower : 2 * δ ≤ ρ.re := by
       have hsym : xiBianchi (1 - ρ) = 0 := by rwa [xiBianchi_one_sub]
       by_contra hlt
       push Not at hlt
-      set ω : ℂ := I * ((1 - ρ) - 1) / 2 with hω
-      have him : ω.im = -ρ.re / 2 := by rw [hω]; simp
-      have hmem : ω ∈ {z : ℂ | 0 < |z.im| ∧ |z.im| < δ} := by
-        have hneg : ω.im < 0 := by rw [him]; linarith
+      set ν : ℂ := I * ((1 - ρ) - 1) / 2 with hν
+      have him : ν.im = -ρ.re / 2 := by rw [hν]; simp
+      have hmem : ν ∈ {z : ℂ | 0 < |z.im| ∧ |z.im| < δ} := by
+        have hneg : ν.im < 0 := by rw [him]; linarith
         refine ⟨abs_pos.mpr hneg.ne, ?_⟩
         rw [abs_of_neg hneg, him]; linarith
-      have hpole : meromorphicOrderAt bianchiWightmanRL ω < 0 := by
+      have hpole : meromorphicOrderAt bianchiWightmanRL ν < 0 := by
         rw [bianchiWightmanRL_isPole_iff hmem.1 (lt_of_lt_of_le hmem.2 (by linarith))]
         left
-        have heq : 1 - 2 * I * ω = 1 - ρ := by rw [hω]; linear_combination ρ * I_sq
+        have heq : 1 - 2 * I * ν = 1 - ρ := by rw [hν]; linear_combination ρ * I_sq
         rwa [heq]
-      exact (not_lt_of_ge (han ω hmem).meromorphicOrderAt_nonneg) hpole
+      exact (not_lt_of_ge (han ν hmem).meromorphicOrderAt_nonneg) hpole
     exact ⟨hlower, hupper⟩
-  · intro hstrip ω hω
-    have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ω) ≠ 0 :=
+  · intro hstrip ν hν
+    have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ν) ≠ 0 :=
       mul_ne_zero (mul_ne_zero two_ne_zero I_ne_zero)
-        (sinh_pi_mul_ne_zero_of_abs_im_lt_one hω.1 (by linarith [hω.2]))
-    have hne_pos : ω ≠ I / 2 := fun h => by
-      have := congrArg Complex.im h; simp at this; rw [this] at hω; norm_num at hω; linarith
-    have hne_neg : ω ≠ -(I / 2) := fun h => by
-      have := congrArg Complex.im h; simp at this; rw [this] at hω; norm_num at hω; linarith
-    have hnz1 : xiBianchi (1 - 2 * I * ω) ≠ 0 := fun hz => by
+        (sinh_pi_mul_ne_zero_of_abs_im_lt_one hν.1 (by linarith [hν.2]))
+    have hne_pos : ν ≠ I / 2 := fun h => by
+      have him := congrArg Complex.im h; simp at him
+      have h2 : |ν.im| < δ := hν.2
+      rw [him] at h2; norm_num at h2; linarith
+    have hne_neg : ν ≠ -(I / 2) := fun h => by
+      have him := congrArg Complex.im h; simp at him
+      have h2 : |ν.im| < δ := hν.2
+      rw [him] at h2; norm_num at h2; linarith
+    have hnz1 : xiBianchi (1 - 2 * I * ν) ≠ 0 := fun hz => by
       have hbd := (hstrip _ hz).2
-      have hre : (1 - 2 * I * ω).re = 1 + 2 * ω.im := by simp
-      have habs := abs_lt.mp hω.2
+      have hre : (1 - 2 * I * ν).re = 1 + 2 * ν.im := by simp
+      have habs := abs_lt.mp hν.2
       linarith
-    have hnz2 : xiBianchi (1 + 2 * I * ω) ≠ 0 := fun hz => by
+    have hnz2 : xiBianchi (1 + 2 * I * ν) ≠ 0 := fun hz => by
       have hbd := (hstrip _ hz).2
-      have hre : (1 + 2 * I * ω).re = 1 - 2 * ω.im := by simp
-      have habs := abs_lt.mp hω.2
+      have hre : (1 + 2 * I * ν).re = 1 - 2 * ν.im := by simp; ring
+      have habs := abs_lt.mp hν.2
       linarith
     exact ((analyticAt_bianchiRetardedCorrelator hne_pos hnz1).sub
       (analyticAt_bianchiAdvancedCorrelator hne_neg hnz2)).div (by fun_prop) hsinh_ne
 
-/-- Analyticity of `bianchiWightmanRL` on the punctured quarter-strip `0 < |Im ω| < 1/4` is
+/-- Analyticity of `bianchiWightmanRL` on the punctured quarter-strip `0 < |Im ν| < 1/4` is
 equivalent to GRH for `ζ_K(s) = ζ(s) L(s, χ₋₃)`. -/
 theorem dedekind_rh_iff_bianchiWightmanRL_quarter_strip :
-    AnalyticOnNhd ℂ bianchiWightmanRL {ω : ℂ | 0 < |ω.im| ∧ |ω.im| < 1 / 4} ↔
+    AnalyticOnNhd ℂ bianchiWightmanRL {ν : ℂ | 0 < |ν.im| ∧ |ν.im| < 1 / 4} ↔
       ∀ ρ : ℂ, xiBianchi ρ = 0 → ρ.re = 1 / 2 := by
   rw [bianchiWightmanRL_analyticOnNhd_strip_iff (by norm_num) le_rfl]
   constructor
@@ -541,18 +545,22 @@ theorem dedekind_rh_iff_bianchiWightmanRL_quarter_strip :
 
 /-- Quarter-strip analyticity of `bianchiWightmanRL` implies `RiemannHypothesis`. -/
 theorem bianchiWightmanRL_quarter_strip_implies_riemannHypothesis
-    (han : AnalyticOnNhd ℂ bianchiWightmanRL {ω : ℂ | 0 < |ω.im| ∧ |ω.im| < 1 / 4}) :
+    (han : AnalyticOnNhd ℂ bianchiWightmanRL {ν : ℂ | 0 < |ν.im| ∧ |ν.im| < 1 / 4}) :
     RiemannHypothesis := by
   have hgrh := dedekind_rh_iff_bianchiWightmanRL_quarter_strip.mp han
-  intro s hs htriv hs1
-  have hxi0 : xi s = 0 := xi_eq_zero_of_nontrivial_zeta_zero hs htriv hs1
-  have hb0 : xiBianchi s = 0 := by rw [xiBianchi, hxi0, mul_zero, zero_mul]
-  exact hgrh s hb0
+  rw [RingdownRate.riemannHypothesis_iff_pulse_ringdown,
+    ← RingdownRate.zeroFreeStrip_iff_pulse_ringdown (by norm_num) le_rfl]
+  intro ρ hζ hρ0
+  have hρ1 : ρ.re < 1 := lt_of_not_ge fun h1 => riemannZeta_ne_zero_of_one_le_re h1 hζ
+  have hne1 : ρ ≠ 1 := fun h => by rw [h, one_re] at hρ1; exact lt_irrefl _ hρ1
+  have hb0 : xiBianchi ρ = 0 :=
+    (xiBianchi_eq_zero_iff hρ0 hne1).mpr (mul_eq_zero_of_left hζ _)
+  linarith [hgrh ρ hb0]
 
 /-- **Unconditional Eternal Bianchi Analytic Strip.** `bianchiWightmanRL` is unconditionally
-analytic on `{ω ∈ ℂ | 0 < |Im ω| < 1/16}`. -/
+analytic on `{ν ∈ ℂ | 0 < |Im ν| < 1/16}`. -/
 theorem bianchiWightmanRL_analyticOnNhd_one_sixteenth :
-    AnalyticOnNhd ℂ bianchiWightmanRL {ω : ℂ | 0 < |ω.im| ∧ |ω.im| < 1 / 16} := by
+    AnalyticOnNhd ℂ bianchiWightmanRL {ν : ℂ | 0 < |ν.im| ∧ |ν.im| < 1 / 16} := by
   rw [bianchiWightmanRL_analyticOnNhd_strip_iff (by norm_num) (by norm_num)]
   intro ρ hρ
   have hmem := xiBianchi_re_mem_Icc_of_eq_zero hρ
@@ -573,7 +581,7 @@ theorem xiBianchiDeformed_one_sub (α : ℝ) (s : ℂ) :
 
 theorem xiBianchiDeformed_conj (α : ℝ) (s : ℂ) :
     xiBianchiDeformed α (starRingEnd ℂ s) = starRingEnd ℂ (xiBianchiDeformed α s) := by
-  rw [xiBianchiDeformed, map_mul, primeTwoFactor_conj, xiBianchi_conj, xiBianchiDeformed]
+  rw [xiBianchiDeformed, xiBianchiDeformed, map_mul, primeTwoFactor_conj, xiBianchi_conj]
 
 theorem xiBianchiDeformed_ne_zero_of_one_le_re {α : ℝ} (h0 : 0 < α) (h1 : α < 1)
     {s : ℂ} (hs : 1 ≤ s.re) : xiBianchiDeformed α s ≠ 0 :=
@@ -614,24 +622,24 @@ theorem hasProd_bianchiDeformedPrimeGate {α : ℝ} {w : ℂ} (hw : 1 / 2 < w.re
   have hgate : (fun p : Nat.Primes => bianchiDeformedPrimeGate α p w) =
       fun p => m p * bianchiPrimeGate p w := by
     funext p
-    have hp_eq : ((p : ℕ) = 2) ↔ p = p2 := ⟨fun h => Subtype.ext h, fun h => congrArg Subtype.val h⟩
+    unfold bianchiDeformedPrimeGate
     by_cases hp : p = p2
-    · simp [bianchiDeformedPrimeGate, m, hp, hp_eq.mpr hp]
-    · have hne2 : (p : ℕ) ≠ 2 := fun h => hp (hp_eq.mp h)
-      simp [bianchiDeformedPrimeGate, m, hp, hne2]
+    · subst hp; simp [m, p2]
+    · have hp2 : (p : ℕ) ≠ 2 := fun h => hp (Subtype.ext h)
+      simp [m, hp, hp2]
   rw [hgate]
   exact hm.mul (hasProd_bianchiPrimeGate hw)
 
 /-- Deformed Bianchi retarded, advanced, and two-boundary Wightman correlators. -/
-def bianchiDeformedRetardedCorrelator (α : ℝ) (ω : ℂ) : ℂ :=
-  bianchiDeformedScatteringPhase α (-I * ω)
+def bianchiDeformedRetardedCorrelator (α : ℝ) (ν : ℂ) : ℂ :=
+  bianchiDeformedScatteringPhase α (-I * ν)
 
-def bianchiDeformedAdvancedCorrelator (α : ℝ) (ω : ℂ) : ℂ :=
-  bianchiDeformedScatteringPhase α (I * ω)
+def bianchiDeformedAdvancedCorrelator (α : ℝ) (ν : ℂ) : ℂ :=
+  bianchiDeformedScatteringPhase α (I * ν)
 
-def bianchiDeformedWightmanRL (α : ℝ) (ω : ℂ) : ℂ :=
-  (bianchiDeformedRetardedCorrelator α ω - bianchiDeformedAdvancedCorrelator α ω) /
-    (2 * I * Complex.sinh (Real.pi * ω))
+def bianchiDeformedWightmanRL (α : ℝ) (ν : ℂ) : ℂ :=
+  (bianchiDeformedRetardedCorrelator α ν - bianchiDeformedAdvancedCorrelator α ν) /
+    (2 * I * Complex.sinh (Real.pi * ν))
 
 theorem bianchiDeformedRetardedCorrelator_order_at_zero {α : ℝ} (h0 : 0 < α) (h1 : α < 1)
     {ρ : ℂ} (hρ : xiBianchiDeformed α ρ = 0) :
@@ -639,52 +647,66 @@ theorem bianchiDeformedRetardedCorrelator_order_at_zero {α : ℝ} (h0 : 0 < α)
       -meromorphicOrderAt (xiBianchiDeformed α) ρ := by
   have hcoord : -I * (I * (ρ - 1) / 2) = (ρ - 1) / 2 := by
     linear_combination (-(ρ - 1) / 2) * I_sq
-  have hd : HasDerivAt (fun ω : ℂ => -I * ω) (-I) (I * (ρ - 1) / 2) := hasDerivAt_const_mul (-I)
+  have hd : HasDerivAt (fun ν : ℂ => -I * ν) (-I) (I * (ρ - 1) / 2) := hasDerivAt_const_mul (-I)
   have hcomp : meromorphicOrderAt (bianchiDeformedRetardedCorrelator α) (I * (ρ - 1) / 2) =
       meromorphicOrderAt (bianchiDeformedScatteringPhase α) ((ρ - 1) / 2) := by
     rw [← hcoord]
     exact meromorphicOrderAt_comp_of_deriv_ne_zero
-      (f := bianchiDeformedScatteringPhase α) (g := fun ω : ℂ => -I * ω) (by fun_prop)
+      (f := bianchiDeformedScatteringPhase α) (g := fun ν : ℂ => -I * ν) (by fun_prop)
       (by rw [hd.deriv]; exact neg_ne_zero.mpr I_ne_zero)
   rw [hcomp]
   exact scatteringPhase_meromorphicOrderAt_at_zero (differentiable_xiBianchiDeformed α)
     (fun _ => xiBianchiDeformed_ne_zero_of_one_le_re h0 h1) (xiBianchiDeformed_one_sub α) hρ
 
-theorem bianchiDeformedWightmanRL_order_lower {α : ℝ} (h0 : 0 < α) (h1 : α < 1) {ω : ℂ}
-    (hlo : -(1 / 2 : ℝ) < ω.im) (hhi : ω.im < 0) (hz : xiBianchiDeformed α (1 - 2 * I * ω) = 0) :
-    meromorphicOrderAt (bianchiDeformedWightmanRL α) ω =
-      -meromorphicOrderAt (xiBianchiDeformed α) (1 - 2 * I * ω) := by
-  have habs0 : 0 < |ω.im| := abs_pos.mpr hhi.ne
-  have habs1 : |ω.im| < 1 := by rw [abs_of_neg hhi]; linarith
-  have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ω) ≠ 0 :=
-    mul_ne_zero (mul_ne_zero two_ne_zero I_ne_zero)
-      (sinh_pi_mul_ne_zero_of_abs_im_lt_one habs0 habs1)
-  have hadv_open : IsOpen {z : ℂ | z ≠ -(I / 2) ∧ xiBianchiDeformed α (1 + 2 * I * z) ≠ 0} :=
+theorem differentiableAt_bianchiDeformedScatteringPhase {α : ℝ}
+    {w : ℂ} (hne : w ≠ 1 / 2) (hxi : xiBianchiDeformed α (1 + 2 * w) ≠ 0) :
+    DifferentiableAt ℂ (bianchiDeformedScatteringPhase α) w := by
+  have hd : 2 * w - 1 ≠ 0 := fun h0 => hne (by linear_combination h0 / 2)
+  exact ((by fun_prop : DifferentiableAt ℂ (fun v : ℂ => 1 + 2 * v) w).div (by fun_prop) hd).mul
+    ((((differentiable_xiBianchiDeformed α) _).comp w (by fun_prop)).div
+      (((differentiable_xiBianchiDeformed α) _).comp w (by fun_prop)) hxi)
+
+theorem analyticAt_bianchiDeformedAdvancedCorrelator {α : ℝ} {ν : ℂ}
+    (hne : ν ≠ -(I / 2)) (hxi : xiBianchiDeformed α (1 + 2 * I * ν) ≠ 0) :
+    AnalyticAt ℂ (bianchiDeformedAdvancedCorrelator α) ν := by
+  set U : Set ℂ := {z : ℂ | z ≠ -(I / 2) ∧ xiBianchiDeformed α (1 + 2 * I * z) ≠ 0}
+  have hUo : IsOpen U :=
     isOpen_ne.inter
       (isOpen_ne.preimage ((differentiable_xiBianchiDeformed α).continuous.comp (by fun_prop)))
-  have hadv_mem : ω ∈ {z : ℂ | z ≠ -(I / 2) ∧ xiBianchiDeformed α (1 + 2 * I * z) ≠ 0} := by
-    refine ⟨fun h => by have := congrArg Complex.im h; simp at this; linarith, ?_⟩
-    exact xiBianchiDeformed_ne_zero_of_one_le_re h0 h1 (by simp; linarith)
-  have hadv_an : AnalyticAt ℂ (fun z => -bianchiDeformedAdvancedCorrelator α z) ω := by
-    refine AnalyticAt.neg ?_
-    refine (DifferentiableOn.analyticOnNhd (fun z hz => ?_) hadv_open) ω hadv_mem
-    have h2z : 2 * (I * z) - 1 ≠ 0 := fun he => hz.1 (by linear_combination (-I / 2) * he + z * I_sq)
-    exact ((((by fun_prop : DifferentiableAt ℂ (fun v : ℂ => 1 + 2 * v) (I * z)).div
-      (by fun_prop) h2z).mul
-        ((((differentiable_xiBianchiDeformed α) _).comp (I * z) (by fun_prop)).div
-          (((differentiable_xiBianchiDeformed α) _).comp (I * z) (by fun_prop))
-          (by simpa [mul_assoc] using hz.2))).comp z (by fun_prop)).differentiableWithinAt
-  have hω_eq : ω = I * ((1 - 2 * I * ω) - 1) / 2 := by linear_combination ω * I_sq
-  have hret_ord : meromorphicOrderAt (bianchiDeformedRetardedCorrelator α) ω =
-      -meromorphicOrderAt (xiBianchiDeformed α) (1 - 2 * I * ω) := by
-    nth_rw 1 [hω_eq]
+  have hdiff : DifferentiableOn ℂ (bianchiDeformedAdvancedCorrelator α) U := by
+    intro z hz
+    have h1 : I * z ≠ 1 / 2 := fun h => hz.1 (by linear_combination (-I) * h + z * I_sq)
+    have h2 : xiBianchiDeformed α (1 + 2 * (I * z)) ≠ 0 := by simpa [mul_assoc] using hz.2
+    exact ((differentiableAt_bianchiDeformedScatteringPhase h1 h2).comp z
+      (by fun_prop)).differentiableWithinAt
+  exact (hdiff.analyticOnNhd hUo) ν ⟨hne, hxi⟩
+
+theorem bianchiDeformedWightmanRL_order_lower {α : ℝ} (h0 : 0 < α) (h1 : α < 1) {ν : ℂ}
+    (hlo : -(1 / 2 : ℝ) < ν.im) (hhi : ν.im < 0) (hz : xiBianchiDeformed α (1 - 2 * I * ν) = 0) :
+    meromorphicOrderAt (bianchiDeformedWightmanRL α) ν =
+      -meromorphicOrderAt (xiBianchiDeformed α) (1 - 2 * I * ν) := by
+  have habs0 : 0 < |ν.im| := abs_pos.mpr hhi.ne
+  have habs1 : |ν.im| < 1 := by rw [abs_of_neg hhi]; linarith
+  have hsinh_ne : 2 * I * Complex.sinh (Real.pi * ν) ≠ 0 :=
+    mul_ne_zero (mul_ne_zero two_ne_zero I_ne_zero)
+      (sinh_pi_mul_ne_zero_of_abs_im_lt_one habs0 habs1)
+  have hadv_ne : ν ≠ -(I / 2) := fun h => by
+    have := congrArg Complex.im h; simp at this; linarith
+  have hadv_xi : xiBianchiDeformed α (1 + 2 * I * ν) ≠ 0 :=
+    xiBianchiDeformed_ne_zero_of_one_le_re h0 h1 (by simp; linarith)
+  have hadv_an : AnalyticAt ℂ (fun z => -bianchiDeformedAdvancedCorrelator α z) ν :=
+    (analyticAt_bianchiDeformedAdvancedCorrelator hadv_ne hadv_xi).neg
+  have hν_eq : ν = I * ((1 - 2 * I * ν) - 1) / 2 := by linear_combination ν * I_sq
+  have hret_ord : meromorphicOrderAt (bianchiDeformedRetardedCorrelator α) ν =
+      -meromorphicOrderAt (xiBianchiDeformed α) (1 - 2 * I * ν) := by
+    nth_rw 1 [hν_eq]
     exact bianchiDeformedRetardedCorrelator_order_at_zero h0 h1 hz
   obtain ⟨_, hneg, _⟩ := meromorphicOrderAt_pos_of_entire_zero (differentiable_xiBianchiDeformed α)
     (fun _ => xiBianchiDeformed_ne_zero_of_one_le_re h0 h1) hz
-  have hlt : meromorphicOrderAt (bianchiDeformedRetardedCorrelator α) ω <
-      meromorphicOrderAt (fun z => -bianchiDeformedAdvancedCorrelator α z) ω :=
+  have hlt : meromorphicOrderAt (bianchiDeformedRetardedCorrelator α) ν <
+      meromorphicOrderAt (fun z => -bianchiDeformedAdvancedCorrelator α z) ν :=
     lt_of_lt_of_le (by rw [hret_ord]; exact hneg) hadv_an.meromorphicOrderAt_nonneg
-  have hden_an : AnalyticAt ℂ (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) ω :=
+  have hden_an : AnalyticAt ℂ (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) ν :=
     AnalyticAt.inv (by fun_prop) hsinh_ne
   have hW : bianchiDeformedWightmanRL α =
       (fun z => (2 * I * Complex.sinh (Real.pi * z))⁻¹) *
@@ -712,14 +734,6 @@ theorem bianchiDeformedLineField_zero (α : ℝ) (h : CompactPulse) (τ : ℝ) :
   have e : ((0 : ℝ) : ℂ) + (t : ℂ) * I = (t : ℂ) * I := by simp
   rw [e, show -I * ((t : ℂ) * I) = (t : ℂ) by linear_combination (-(t : ℂ)) * I_sq]
   congr 2; ring
-
-theorem differentiableAt_bianchiDeformedScatteringPhase {α : ℝ}
-    {w : ℂ} (hne : w ≠ 1 / 2) (hxi : xiBianchiDeformed α (1 + 2 * w) ≠ 0) :
-    DifferentiableAt ℂ (bianchiDeformedScatteringPhase α) w := by
-  have hd : 2 * w - 1 ≠ 0 := fun h0 => hne (by linear_combination h0 / 2)
-  exact ((by fun_prop : DifferentiableAt ℂ (fun v : ℂ => 1 + 2 * v) w).div (by fun_prop) hd).mul
-    ((((differentiable_xiBianchiDeformed α) _).comp w (by fun_prop)).div
-      (((differentiable_xiBianchiDeformed α) _).comp w (by fun_prop)) hxi)
 
 theorem continuous_bianchiDeformedReflectedField_and_bounded {α : ℝ} (h0 : 0 < α) (h1 : α < 1)
     (h : CompactPulse) :
@@ -796,7 +810,7 @@ private theorem bianchiDeformedReflectedField_eq_lineField {α : ℝ} (h0 : 0 < 
       calc s.re * τ ≤ |s.re * τ| := le_abs_self _
         _ = |s.re| * |τ| := abs_mul _ _
         _ ≤ (3 / 8) * |τ| := mul_le_mul_of_nonneg_right habs_re (abs_nonneg _)
-    simp only [hΦ, norm_mul]
+    simp only [hΦ]; rw [norm_mul]
     calc ‖pulseAmplitude h (-I * s) * bianchiDeformedScatteringPhase α s‖ *
           ‖Complex.exp (s * (τ : ℂ))‖
         ≤ (B / (1 + s.im ^ 2)) * Real.exp ((3 / 8) * |τ|) :=
@@ -1069,7 +1083,7 @@ theorem bianchiDeformedReflectedField_decay {α σ : ℝ}
       have : (s * (τ : ℂ)).re = s.re * τ := by simp
       rw [this]
       exact Real.exp_le_one_iff.2 (mul_nonpos_of_nonpos_of_nonneg hs2 hτ)
-    simp only [hΦ, norm_mul]
+    simp only [hΦ]; rw [norm_mul]
     calc ‖pulseAmplitude h (-I * s) * bianchiDeformedScatteringPhase α s‖ *
           ‖Complex.exp (s * (τ : ℂ))‖
         ≤ B / (1 + s.im ^ 2) * 1 := mul_le_mul (hB_left s hs1 hs2) he
@@ -1085,7 +1099,7 @@ theorem bianchiDeformedReflectedField_decay {α σ : ℝ}
     intro t
     have hre : (((-σ : ℝ) : ℂ) + (t : ℂ) * I).re = -σ := by simp
     have him : (((-σ : ℝ) : ℂ) + (t : ℂ) * I).im = t := by simp
-    simp only [hΦ, norm_mul, Complex.norm_exp]
+    simp only [hΦ]; rw [norm_mul, Complex.norm_exp]
     have : ((((-σ : ℝ) : ℂ) + (t : ℂ) * I) * (τ : ℂ)).re = -σ * τ := by simp
     rw [this]
     have hb := hB_left _ (by rw [hre]) (by rw [hre]; linarith)
@@ -1239,10 +1253,10 @@ theorem bianchi_universal_causal_ringdown_infimum_zero {δ : ℝ} (hδ : 0 < δ)
     fun t => norm_bianchiDeformedScatteringPhase_axis (by linarith) hα1 t, ?_, ?_, ?_⟩
   · intro ρ hρ
     obtain ⟨hr0, hr1⟩ := zero_mem_openStrip_of_xiBianchi_eq_zero hρ
-    set ω : ℂ := I * (ρ - 1) / 2 with hω
-    have him : ω.im = (ρ.re - 1) / 2 := by rw [hω]; simp
-    have h12 : 1 - 2 * I * ω = ρ := by rw [hω]; linear_combination (1 - ρ) * I_sq
-    have hz : xiBianchiDeformed α (1 - 2 * I * ω) = 0 := by
+    set ν : ℂ := I * (ρ - 1) / 2 with hν
+    have him : ν.im = (ρ.re - 1) / 2 := by rw [hν]; simp
+    have h12 : 1 - 2 * I * ν = ρ := by rw [hν]; linear_combination (1 - ρ) * I_sq
+    have hz : xiBianchiDeformed α (1 - 2 * I * ν) = 0 := by
       rw [h12, xiBianchiDeformed, hρ, mul_zero]
     rw [bianchiDeformedWightmanRL_order_lower (by linarith) hα1 (by rw [him]; linarith)
       (by rw [him]; linarith) hz]

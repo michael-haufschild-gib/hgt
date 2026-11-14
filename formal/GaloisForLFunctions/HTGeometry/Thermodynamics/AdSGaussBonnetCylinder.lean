@@ -81,8 +81,7 @@ theorem vacuumEnergy_hasDerivAt (s : ℝ) :
   have hb := (beta_pos s).ne'
   have hs := beta_sq s
   field_simp [he, hb]
-  nlinarith only [congrArg (fun x : ℝ =>
-    18 * beta (subcriticalCoupling s) ^ 2 * x) hs]
+  nlinarith only [hs]
 
 theorem betaSlope_hasDerivAt (s : ℝ) :
     HasDerivAt betaSlope (betaCurvature (subcriticalCoupling s)) (subcriticalCoupling s) := by
@@ -94,8 +93,18 @@ theorem betaSlope_hasDerivAt (s : ℝ) :
   field_simp [(eta_pos s).ne', (beta_pos s).ne']
   ring
 
+/-- The vacuum energy is strictly convex in the subcritical coupling. -/
+theorem vacuumSlope_hasDerivAt (s : ℝ) :
+    HasDerivAt (fun l => -(45 / 8) * beta l)
+      (45 / (16 * eta (subcriticalCoupling s) * beta (subcriticalCoupling s)))
+      (subcriticalCoupling s) := by
+  apply ((beta_hasDerivAt s).const_mul (-(45 / 8))).congr_deriv
+  unfold betaSlope
+  ring
+
 theorem betaCurvature_neg (s : ℝ) : betaCurvature (subcriticalCoupling s) < 0 := by
   unfold betaCurvature
+  rw [neg_div]
   have h₁ : 0 < 1 / (eta (subcriticalCoupling s) ^ 3 * beta (subcriticalCoupling s)) := by
     have he := eta_pos s
     have hb := beta_pos s

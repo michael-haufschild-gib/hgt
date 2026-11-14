@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.FiniteKMSPurityNormalization
 # Thermal return, replica purity, and exact degeneracy
 
 The thermofield return amplitude is the partition function at complex inverse
-temperature divided by the real partition function. Its completed-time squared
+temperature divided by the real partition function. Its long-time mean squared
 return has a strictly positive floor `Z(2β) / Z(β)^2`. Equality holds precisely
 when the energies are distinct; degeneracies increase the plateau.
 
@@ -71,7 +71,7 @@ theorem replicaRigidAt_one_iff_injective (E : α → ℝ) :
     have hij : E i = E j := by simpa [replicaMultiplicityEnergy] using henergy
     rw [h hij]
 
-/-- The exact thermal completed-time return mass, including all degeneracies. -/
+/-- The exact thermal mean-return plateau, including all degeneracies. -/
 def returnPlateau (β : ℝ) (E : α → ℝ) : ℝ :=
   fidelityReplicaCollisionMass (finiteGibbsStateWeight β E) E 1
 

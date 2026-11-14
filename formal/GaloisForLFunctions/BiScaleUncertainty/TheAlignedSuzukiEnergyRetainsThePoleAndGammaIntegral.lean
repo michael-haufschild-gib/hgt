@@ -36,6 +36,7 @@ theorem suzukiPrimePolarGammaAmplitude_eq {N : ℕ} (hN : 2 ≤ N) :
   have hlog : 0 < Real.log (N : ℝ) := Real.log_pos (by
     exact_mod_cast (show 1 < N by omega))
   have ht0 : 0 < t := (lt_min unitRieszSuzukiBase_pos hlog).trans_le ht.1
+  dsimp only
   rw [screwRegularKernel_eq_polar_sub_ccmGammaTranslationDensity ht0]
 
 /-- Both sides of the aligned-energy comparison retain the full arithmetic completion. -/

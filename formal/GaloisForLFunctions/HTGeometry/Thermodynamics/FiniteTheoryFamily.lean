@@ -87,7 +87,7 @@ theorem theoryWeight_fixed_measure_iff (b : ℝ) (E : I → A → ℝ)
   unfold theoryWeight
   rw [finiteGibbsPartition_add_const, ← mul_assoc,
     mul_left_inj' (finiteGibbsPartition_pos (Real.exp b) (E i)).ne',
-    ← Real.exp_add, Real.exp_inj]
+    ← Real.exp_add, Real.exp_eq_exp]
   constructor <;> intro h
   · have he : Real.exp b * (V i - U i - F i) = 0 := by linarith only [h]
     have hz := (mul_eq_zero.mp he).resolve_left (Real.exp_ne_zero b)
@@ -103,11 +103,80 @@ theorem theoryPartition_pos (β : ℝ) (E : I → A → ℝ) (w U : I → ℝ) :
 
 theorem theoryProbability_normalized (β : ℝ) (E : I → A → ℝ) (w U : I → ℝ) :
     ∑ i, theoryProbability β E w U i = 1 := by
-  rw [theoryProbability, ← Finset.sum_div]
+  simp only [theoryProbability, ← Finset.sum_div]
   exact div_self (theoryPartition_pos β E w U).ne'
+
+/-- A control mismatch multiplies each theory's weight by its own exponential tilt. -/
+theorem theoryWeight_control_ratio (β : ℝ) (E : I → A → ℝ)
+    (w U F V : I → ℝ) (i : I) :
+    theoryWeight β (fun j a => E j a + F j) w V i =
+      Real.exp (β * (V i - U i - F i)) * theoryWeight β E w U i := by
+  unfold theoryWeight
+  rw [finiteGibbsPartition_add_const, ← mul_assoc, ← mul_assoc,
+    ← Real.exp_add, ← Real.exp_add]
+  congr 2
+  ring
+
+theorem theoryWeight_common_control_shift (β c : ℝ) (E : I → A → ℝ)
+    (w U F : I → ℝ) (i : I) :
+    theoryWeight β (fun j a => E j a + F j) w (fun j => U j + F j + c) i =
+      Real.exp (β * c) * theoryWeight β E w U i := by
+  rw [theoryWeight_control_ratio]
+  congr 2
+  ring
+
+theorem theoryPartition_common_control_shift (β c : ℝ) (E : I → A → ℝ)
+    (w U F : I → ℝ) :
+    theoryPartition β (fun j a => E j a + F j) w (fun j => U j + F j + c) =
+      Real.exp (β * c) * theoryPartition β E w U := by
+  simp only [theoryPartition, theoryWeight_common_control_shift, Finset.mul_sum]
+
+theorem theoryProbability_common_control_shift (β c : ℝ) (E : I → A → ℝ)
+    (w U F : I → ℝ) (i : I) :
+    theoryProbability β (fun j a => E j a + F j) w (fun j => U j + F j + c) i =
+      theoryProbability β E w U i := by
+  unfold theoryProbability
+  rw [theoryWeight_common_control_shift, theoryPartition_common_control_shift]
+  field_simp [(theoryPartition_pos β E w U).ne']
+
+/-- Fixed-measure normalized laws preserve controls exactly modulo a common additive constant. -/
+theorem theoryProbability_fixed_measure_iff (b : ℝ) (E : I → A → ℝ) (w U F V : I → ℝ) :
+    (∀ i, theoryProbability (Real.exp b) (fun j a => E j a + F j) w V i =
+      theoryProbability (Real.exp b) E w U i) ↔
+        ∃ c : ℝ, ∀ i, V i = U i + F i + c := by
+  constructor
+  · intro h
+    have hr (i : I) : Real.exp (Real.exp b * (V i - U i - F i)) * theoryPartition (Real.exp b) E w U =
+        theoryPartition (Real.exp b) (fun j a => E j a + F j) w V := by
+      have he := congrArg (fun x : ℝ =>
+        x * theoryPartition (Real.exp b) (fun j a => E j a + F j) w V *
+          theoryPartition (Real.exp b) E w U) (h i)
+      unfold theoryProbability at he
+      rw [theoryWeight_control_ratio] at he
+      field_simp [(theoryPartition_pos (Real.exp b) E w U).ne',
+        (theoryPartition_pos (Real.exp b) (fun j a => E j a + F j) w V).ne'] at he
+      apply (mul_left_inj' (theoryWeight_pos (Real.exp b) E w U i).ne').mp
+      nlinarith only [he]
+    obtain ⟨i₀⟩ := ‹Nonempty I›
+    refine ⟨V i₀ - U i₀ - F i₀, ?_⟩
+    intro i
+    have he : Real.exp (Real.exp b * (V i - U i - F i)) =
+        Real.exp (Real.exp b * (V i₀ - U i₀ - F i₀)) := by
+      apply (mul_left_inj' (theoryPartition_pos (Real.exp b) E w U).ne').mp
+      rw [hr i, hr i₀]
+    have hx := Real.exp_injective he
+    have hz : Real.exp b * ((V i - U i - F i) - (V i₀ - U i₀ - F i₀)) = 0 := by
+      linarith only [hx]
+    have hoffset := (mul_eq_zero.mp hz).resolve_left (Real.exp_ne_zero b)
+    linarith only [hoffset]
+  · rintro ⟨c, hc⟩
+    have hf : V = fun i => U i + F i + c := funext hc
+    rw [hf]
+    exact fun i => theoryProbability_common_control_shift (Real.exp b) c E w U F i
 
 #print axioms theoryProbability_scheme_covariance
 #print axioms theoryWeight_fixed_measure_iff
 #print axioms theoryProbability_normalized
+#print axioms theoryProbability_fixed_measure_iff
 
 end GaloisForLFunctions.HTGeometry.Thermodynamics

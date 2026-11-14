@@ -91,6 +91,7 @@ private theorem accelerationMatrixDensity_posSemidef
   unfold accelerationMatrixDensity
   split_ifs with hx
   · letI : Fintype (Set.range y) := Fintype.ofFinite _
+    -- The collision quotient is strictly positive; its pullback is semidefinite.
     let z : Set.range y → Fin d → ℝ := Subtype.val
     have hz := (finiteGaussianDistanceGram_posDef_iff_injective_of_pos_fintype
       z (sq_pos_of_pos hx)).mpr Subtype.val_injective
@@ -153,10 +154,6 @@ theorem gaussianAccelerationGram_rank_eq_image_card
   let label : ι → S := fun i => ⟨y i, by simp [S]⟩
   have hrep_label (i : ι) : y (rep (label i)) = y i := by
     simpa [label] using hrep (label i)
-  have hrep_injective : Function.Injective rep := by
-    intro a b hab
-    apply Subtype.ext
-    rw [← hrep a, ← hrep b, hab]
   let yr : S → Fin d → ℝ := fun a => y (rep a)
   have hyr : Function.Injective yr := by
     intro a b hab

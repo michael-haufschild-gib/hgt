@@ -142,12 +142,3 @@ theorem thermal_no_signalling (β : ℝ) (E : α → ℝ)
 end
 
 end GaloisForLFunctions.HTGeometry.Thermofield
-
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.evolve_zero
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_two_times
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_opposite_times
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_evolved_conjugate
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.half_thermal_weight
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_eq_half_thermal_time
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.reduced_left_right_unitary
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.thermal_no_signalling

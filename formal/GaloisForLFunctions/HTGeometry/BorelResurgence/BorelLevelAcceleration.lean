@@ -23,10 +23,10 @@ theorem integrable_gaussianAcceleration_monomial (s : ℝ) (n : ℕ) :
     IntegrableOn (fun x => gaussianAccelerationKernel (Real.exp s) x * x ^ n) (Ioi 0) := by
   have h := (integrable_rpow_mul_exp_neg_mul_sq
     (by positivity : 0 < (4 * Real.exp s)⁻¹)
-    (lt_of_lt_of_le (by norm_num : (-1 : ℝ) < 0) (Nat.cast_nonneg n))).integrableOn.const_mul
+    (lt_of_lt_of_le (by norm_num : (-1 : ℝ) < 0) (Nat.cast_nonneg n))).const_mul
       (Real.sqrt (Real.pi * Real.exp s))⁻¹
   simpa only [gaussianAccelerationKernel, Real.rpow_natCast, mul_left_comm, mul_comm,
-    mul_assoc] using h
+    mul_assoc] using h.integrableOn (s := Ioi (0 : ℝ))
 
 /-- The exact half-Gaussian moment with its time dependence separated. -/
 theorem gaussianAcceleration_monomial (s : ℝ) (n : ℕ) :
@@ -64,7 +64,6 @@ theorem gaussianAcceleration_monomial (s : ℝ) (n : ℕ) :
   simp only [Real.rpow_natCast, Real.rpow_two] at hi
   rw [hi, hpower, Real.sqrt_mul Real.pi_pos.le, hsqrt]
   field_simp [Real.exp_ne_zero, Real.sqrt_ne_zero'.mpr Real.pi_pos]
-  <;> ring
 
 /-- The Gamma duplication identity in the normalization used by the two Borel levels. -/
 theorem gamma_borel_duplication (n : ℕ) :
@@ -95,7 +94,7 @@ theorem gaussianAcceleration_dividedPowerFn (s : ℝ) (n : ℕ) :
   have hd := gamma_borel_duplication n
   apply (eq_div_iff hg).mpr
   field_simp [hf, hp] at hd ⊢
-  linear_combination Real.exp (s * (n : ℝ) / 2) * hd
+  linear_combination hd
 
 /-- Every finite Borel polynomial changes level by an exact coefficient formula. -/
 theorem gaussianAcceleration_finiteBorel (s : ℝ) (S : Finset ℕ) (a : ℕ → ℝ) :

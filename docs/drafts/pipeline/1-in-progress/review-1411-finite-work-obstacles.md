@@ -12,9 +12,9 @@
 | A1 | Jensen real-rootedness for every degree at most `31922`, from width `3/8` and verified height `67`. | Direct Lean and axiom audits passed |
 | A2 | Common certified floor interfaces for smaller apertures, real/complex tests, step packets, charge-free neutral forms and dressed middles; constants and cutoff ranges explicit. | Direct Lean and axiom audits passed |
 | A3 | Exact rational ladder milestones and decomposition of `levelAt 2 4` into its three remaining nonnegative excesses. | Direct Lean and axiom audits passed |
-| A4 | Actual pole/Gamma/jump/root-number terms in WL, CHMD, SZ, HAT-C and PM transfers. | WL/CHMD checked; SZ/HAT-C/PM pending |
+| A4 | Actual pole/Gamma/jump/root-number terms in WL, CHMD, SZ, HAT-C and PM transfers. | WL/CHMD/SZ checked; HAT-C/PM pending |
 | A5 | The `2^ρ/3^ρ` trace equation, two/three reflection discriminants, realized central sheet exchange and contact ideals at degrees `1,2,3,4,9`. | Lean drafts; checks pending |
-| A6 | Primitive completion and scattering for the actual third-cyclotomic Eisenstein family. | Lean draft; check pending |
+| A6 | Primitive completion, simple pole, reflection and scattering for `CyclotomicField 3 ℚ`. | Lean draft; check pending |
 | A7 | Three-even-moment Gram certificate with exact margin `1/1000000`, and strictness exactly for nonzero moment triples. | Public interface drafted in existing moment module; check pending |
 
 ## Mathematical reductions
@@ -40,6 +40,9 @@
 - The Eisenstein character has root number `+1` and Gamma factor `Γℝ(s+1)`.
   The Bianchi phase at the removable origin is `−1`; the completed quotient
   on the punctured spectral axis retains the polar factor. The pulse rate is `1/16−ε`.
+- The unit-modulus Hecke character is primitive. Its continued source is `ζL(χ₋₃)`
+  off `1`, with pole order `−1` at `1`; the actual Gauss/parity phase remains in
+  reflection. The proved Hecke strip feeds the scattering equivalence at `δ=1/16`.
 - The three-even-moment certificate retains its exact reflected-pair polynomial
   integrals and inverse mixed charge form. Its margin is
   `10⁻⁶(u²+v²+w²)`, hence strictness holds exactly for nonzero triples.

@@ -22,6 +22,13 @@ open GaloisForLFunctions.RHTower.HalfWeight
 
 namespace GaloisForLFunctions.RingdownOfTheCubicCover
 
+local notation "K₃" => CyclotomicField 3 ℚ
+
+local instance : NeZero ((3 : ℕ) : ℚ) := ⟨by norm_num⟩
+local instance : IsCyclotomicExtension {3} ℚ K₃ :=
+  CyclotomicField.isCyclotomicExtension 3 ℚ
+local instance : NumberField K₃ := IsCyclotomicExtension.numberField {3} ℚ K₃
+
 /-- The archimedean factor of the actual odd character modulo three. -/
 theorem gammaFactor_chi3D (s : ℂ) :
     DirichletCharacter.gammaFactor chi3D s = Complex.Gammaℝ (s + 1) := by
@@ -68,16 +75,40 @@ theorem xiBianchi_eq_gamma_product {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) :
   rw [hxi, completedBianchiZeta_eq_gamma_product hs]
 
 /-- The primitive trivial Hecke character, with both poles and all completion factors retained. -/
-theorem thirdCyclotomic_primitive_hecke_completion
-    (K : Type*) [Field K] [NumberField K] [IsCyclotomicExtension {3} ℚ K] :
-    heckeFiniteConductor (trivialModulus K) 1 = (trivialModulus K).fin ∧
+theorem thirdCyclotomic_primitive_hecke_completion :
+    heckeFiniteConductor (trivialModulus K₃) 1 = (trivialModulus K₃).fin ∧
       ∀ s : ℂ, 1 < s.re →
-        heckeXi (trivialModulus K) 1 s =
-          s * (s - 1) * (heckeCompletionFactor (trivialModulus K) s *
-            heckeGammaFactor (trivialModulus K) 1 s *
+        heckeXi (trivialModulus K₃) 1 s =
+          s * (s - 1) * (heckeCompletionFactor (trivialModulus K₃) s *
+            heckeGammaFactor (trivialModulus K₃) 1 s *
               (riemannZeta s * DirichletCharacter.LFunction chi3D s)) := by
-  refine ⟨heckeFiniteConductor_trivialModulus K 1, fun s hs => ?_⟩
-  rw [heckeXi_trivialModulus_one K hs, dedekindZeta_thirdCyclotomic K hs]
+  refine ⟨heckeFiniteConductor_trivialModulus K₃ 1, fun s hs => ?_⟩
+  rw [heckeXi_trivialModulus_one K₃ hs, dedekindZeta_thirdCyclotomic K₃ hs]
+
+/-- The continued Hecke source is the actual Dedekind product, with its simple pole retained. -/
+theorem thirdCyclotomic_hecke_source_and_pole :
+    (∀ s : ℂ, s ≠ 1 → heckeLFunction (trivialModulus K₃) 1 s =
+      riemannZeta s * DirichletCharacter.LFunction chi3D s) ∧
+    meromorphicOrderAt (heckeLFunction (trivialModulus K₃) 1) 1 = (-1 : ℤ) :=
+  ⟨fun _ hs => heckeLFunction_thirdCyclotomic_trivial K₃ hs,
+    meromorphicOrderAt_heckeLFunction_one (trivialModulus K₃)⟩
+
+/-- Primitive reflection retains the arithmetic Gauss/parity phase, whose modulus is one. -/
+theorem thirdCyclotomic_hecke_reflection :
+    ‖heckeRootNumber (trivialModulus K₃) 1‖ = 1 ∧
+      ∀ s : ℂ, heckeXi (trivialModulus K₃) 1 (1 - s) =
+        heckeRootNumber (trivialModulus K₃) 1 * heckeXi (trivialModulus K₃) 1 s := by
+  have hprim := heckeFiniteConductor_trivialModulus K₃ 1
+  refine ⟨norm_heckeRootNumber (trivialModulus K₃) 1 hprim, fun s => ?_⟩
+  have hinv : (1 : HeckeCharacter (trivialModulus K₃))⁻¹ = 1 :=
+    hecke_inv_eq_one_iff.mpr rfl
+  simpa only [hinv] using heckeXi_one_sub (trivialModulus K₃) 1 hprim s
+
+/-- The actual cubic-field Hecke source inherits the certified strip without a cancellation premise. -/
+theorem thirdCyclotomic_hecke_zero_strip {s : ℂ} (hs1 : s ≠ 1) (hs0 : 0 < s.re)
+    (hz : heckeLFunction (trivialModulus K₃) 1 s = 0) :
+    s.re ∈ Set.Icc (1 / 8 : ℝ) (7 / 8 : ℝ) :=
+  heckeLFunction_thirdCyclotomic_zero_mem_quasiRH_strip K₃ hs1 hs0 hz
 
 /-- The polar prefactor gives the continued scattering value at zero. -/
 theorem bianchiScatteringPhase_zero : bianchiScatteringPhase 0 = -1 := by
@@ -116,17 +147,23 @@ theorem eisenstein_scattering_certificate :
     (∀ t : ℝ, ‖bianchiScatteringPhase ((t : ℂ) * I)‖ = 1) ∧
     (∀ ε : ℝ, 0 < ε → ∀ h : BlackHoleRingdown.CompactPulse,
       ∃ C : ℝ, ∀ τ : ℝ, 0 ≤ τ →
-        ‖bianchiReflectedField h τ‖ ≤ C * Real.exp (-(1 / 16 - ε) * τ)) :=
-  ⟨bianchiScatteringPhase_zero, norm_bianchiScatteringPhase_axis,
-    fun _ hε h => bianchi_pulse_ringdown_one_sixteenth hε h⟩
+        ‖bianchiReflectedField h τ‖ ≤ C * Real.exp (-(1 / 16 - ε) * τ)) := by
+  refine ⟨bianchiScatteringPhase_zero, norm_bianchiScatteringPhase_axis, ?_⟩
+  apply (bianchi_hecke_zeroFreeStrip_iff_pulse_ringdown K₃ (δ := 1 / 16)
+    (by norm_num) (by norm_num)).mp
+  intro ρ hρ1 hρ hρ0
+  simpa only [show (1 : ℝ) - 2 * (1 / 16) = 7 / 8 by norm_num] using
+    (thirdCyclotomic_hecke_zero_strip hρ1 hρ0 hρ).2
 
 #print axioms gammaFactor_chi3D
 #print axioms chi3D_primitive_rootNumber
 #print axioms completedBianchiZeta_eq_gamma_product
 #print axioms xiBianchi_eq_gamma_product
 #print axioms thirdCyclotomic_primitive_hecke_completion
+#print axioms thirdCyclotomic_hecke_source_and_pole
+#print axioms thirdCyclotomic_hecke_reflection
+#print axioms thirdCyclotomic_hecke_zero_strip
 #print axioms bianchiScatteringPhase_axis_eq_completedRatio
 #print axioms eisenstein_scattering_certificate
-#print axioms heckeLFunction_thirdCyclotomic_zero_mem_quasiRH_strip
 
 end GaloisForLFunctions.RingdownOfTheCubicCover

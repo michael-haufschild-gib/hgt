@@ -96,11 +96,3 @@ theorem mirror_diagonal (β : ℝ) (E : α → ℝ) (f : α → ℂ) :
 end
 
 end GaloisForLFunctions.HTGeometry.Thermofield
-
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.left_eq_right_mirror
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.right_action_injective
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.left_eq_right_iff
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.mirror_mirror
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.mirror_mul
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.mirror_add
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.mirror_diagonal

@@ -79,7 +79,8 @@ theorem shiftedSource_acceleration_gaussian_bound (f : CompactTest) (u s : ℝ) 
     have hsq := sq_nonneg (b * |x| - R)
     rw [sub_sq, mul_pow, sq_abs] at hsq
     nlinarith only [hsq]
-  rw [norm_mul, Complex.norm_real, abs_of_nonneg (gaussianAccelerationKernel_nonneg _ _)]
+  simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs,
+    abs_of_nonneg (gaussianAccelerationKernel_nonneg _ _)]
   calc
     gaussianAccelerationKernel (Real.exp s) x * ‖shiftedSourceTransform f u τ x‖ ≤
         gaussianAccelerationKernel (Real.exp s) x *
@@ -94,7 +95,7 @@ theorem shiftedSource_acceleration_gaussian_bound (f : CompactTest) (u s : ℝ) 
       exact Real.exp_le_exp.mpr (by linarith only [hlin])
     _ = _ := by rw [Real.exp_add]; ring
 
-/-- All compact sources and all real translations admit acceleration at every positive time. -/
+/-- All compact sources and all real translations have convergent acceleration at every positive time. -/
 theorem integrable_shiftedSource_acceleration (f : CompactTest) (u τ s : ℝ) :
     Integrable (fun x : ℝ => (gaussianAccelerationKernel (Real.exp s) x : ℂ) *
       shiftedSourceTransform f u τ x) := by
