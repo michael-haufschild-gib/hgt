@@ -57,7 +57,3 @@ theorem groupNoise_expectation_shift_sq_le_min (p q : FiniteProbabilityLaw G) (f
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
-
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.groupNoise_right_eq_left
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.groupNoise_uniformPearson_le_min
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.groupNoise_expectation_shift_sq_le_min

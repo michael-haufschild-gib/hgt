@@ -26,10 +26,11 @@ theorem algebraicIndependent_natPair_iff_finiteSquares
   · intro h n
     apply h.comp
     intro q r hqr
-    apply Prod.ext (congrArg Prod.fst hqr)
     apply Prod.ext
-    · exact Fin.ext (congrArg (fun t : J × (ℕ × ℕ) => t.2.1) hqr)
-    · exact Fin.ext (congrArg (fun t : J × (ℕ × ℕ) => t.2.2) hqr)
+    · exact congrArg (fun t : J × (ℕ × ℕ) => t.1) hqr
+    · apply Prod.ext
+      · exact Fin.ext (congrArg (fun t : J × (ℕ × ℕ) => t.2.1) hqr)
+      · exact Fin.ext (congrArg (fun t : J × (ℕ × ℕ) => t.2.2) hqr)
   · intro h
     apply algebraicIndependent_of_finite_type
     intro s hs
@@ -41,10 +42,11 @@ theorem algebraicIndependent_natPair_iff_finiteSquares
     have he : Function.Injective e := by
       intro q r hqr
       apply Subtype.ext
-      apply Prod.ext (congrArg Prod.fst hqr)
       apply Prod.ext
-      · exact congrArg (fun t : J × (Fin (N + 1) × Fin (N + 1)) => (t.2.1 : ℕ)) hqr
-      · exact congrArg (fun t : J × (Fin (N + 1) × Fin (N + 1)) => (t.2.2 : ℕ)) hqr
+      · exact congrArg (fun t : J × (Fin (N + 1) × Fin (N + 1)) => t.1) hqr
+      · apply Prod.ext
+        · exact congrArg (fun t : J × (Fin (N + 1) × Fin (N + 1)) => (t.2.1 : ℕ)) hqr
+        · exact congrArg (fun t : J × (Fin (N + 1) × Fin (N + 1)) => (t.2.2 : ℕ)) hqr
     exact (h N).comp e he
 
 /-- A prime-supported color observable with a natural shift and logarithmic order. -/
@@ -88,6 +90,22 @@ theorem algebraicIndependent_primeColorBasisInfiniteJets_over_densityField_iff
 
 #print axioms algebraicIndependent_primeColorInfiniteJets_over_densityField_iff
 #print axioms algebraicIndependent_primeColorBasisInfiniteJets_over_densityField_iff
+
+/-- Every surviving color supplies all natural shifts and logarithmic orders as independent
+generators. No assumption that all original colors survive is needed. -/
+theorem algebraicIndependent_frequentPrimeColorInfiniteJets_over_densityField
+    {C : Type*} [Fintype C] [DecidableEq C] (color : Nat.Primes → C) :
+    AlgebraicIndependent (primeDensityCoefficientField primeCountingWindow)
+      (primeColorNaturalShiftLogJet color
+        (fun (c : frequentPrimeColors (primeWindowDensityFilter primeCountingWindow) color) d =>
+          if d = c.1 then 1 else 0)) := by
+  let F := primeWindowDensityFilter primeCountingWindow
+  let b := fun (c : frequentPrimeColors F color) (d : C) => if d = c.1 then (1 : ℂ) else 0
+  apply (algebraicIndependent_primeColorInfiniteJets_over_densityField_iff color b).mpr
+  exact (algebraicIndependent_finiteColorPrimeColumns_iff F color b).mp
+    (algebraicIndependent_frequentPrimeColorIndicators F color)
+
+#print axioms algebraicIndependent_frequentPrimeColorInfiniteJets_over_densityField
 
 end
 end GaloisForLFunctions.SelbergClass.DirichletSeries

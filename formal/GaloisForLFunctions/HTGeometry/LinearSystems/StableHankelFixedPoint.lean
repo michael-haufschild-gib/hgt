@@ -7,7 +7,8 @@ Dividing a stable Hankel packet by one plus its explicit modal norm budget
 makes feedback strictly contractive for every choice of poles and residues.
 The forced feedback equation has a unique half-line `L²` solution. Picard
 iteration converges from every initial state with an explicit geometric
-error bound, independent of an observation window.
+error bound, independent of an observation window. The solution operator
+is the bounded two-sided inverse of `I - S` for the normalized packet `S`.
 -/
 
 open Filter Topology
@@ -168,19 +169,19 @@ def hankelSolutionOperator {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin n 
       (1 + stableHankelBudget logRate residue) (norm_hankelFixedPoint_le logRate residue)
 
 /-- Solving the feedback equation is a right inverse of its residual operator. -/
-theorem sub_one_hankelContraction_mul_solution {n : ℕ} (logRate : Fin n → ℝ)
+theorem one_sub_hankelContraction_mul_solution {n : ℕ} (logRate : Fin n → ℝ)
     (residue : Fin n → ℂ) :
     (1 - stableHankelContraction logRate residue) * hankelSolutionOperator logRate residue = 1 := by
-  ext f
+  ext f : 1
   change hankelFixedPoint logRate residue f -
     stableHankelContraction logRate residue (hankelFixedPoint logRate residue f) = f
   exact sub_eq_iff_eq_add.mpr (hankelFixedPoint_eq logRate residue f)
 
 /-- Uniqueness also gives the left inverse, so the constructed solution operator is the resolvent. -/
-theorem hankelSolution_mul_sub_one_contraction {n : ℕ} (logRate : Fin n → ℝ)
+theorem hankelSolution_mul_one_sub_contraction {n : ℕ} (logRate : Fin n → ℝ)
     (residue : Fin n → ℂ) :
     hankelSolutionOperator logRate residue * (1 - stableHankelContraction logRate residue) = 1 := by
-  ext f
+  ext f : 1
   change hankelFixedPoint logRate residue (f - stableHankelContraction logRate residue f) = f
   symm
   apply (contractingWith_hankelPicardStep logRate residue
@@ -210,6 +211,6 @@ end GaloisForLFunctions.HTGeometry
 #print axioms GaloisForLFunctions.HTGeometry.norm_hankelFixedPoint_le
 #print axioms GaloisForLFunctions.HTGeometry.hankelFixedPoint_add
 #print axioms GaloisForLFunctions.HTGeometry.hankelFixedPoint_smul
-#print axioms GaloisForLFunctions.HTGeometry.sub_one_hankelContraction_mul_solution
-#print axioms GaloisForLFunctions.HTGeometry.hankelSolution_mul_sub_one_contraction
+#print axioms GaloisForLFunctions.HTGeometry.one_sub_hankelContraction_mul_solution
+#print axioms GaloisForLFunctions.HTGeometry.hankelSolution_mul_one_sub_contraction
 #print axioms GaloisForLFunctions.HTGeometry.norm_hankelSolutionOperator_le

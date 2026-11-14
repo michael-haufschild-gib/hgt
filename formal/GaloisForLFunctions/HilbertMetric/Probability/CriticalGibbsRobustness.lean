@@ -1,5 +1,7 @@
-import GaloisForLFunctions.HilbertMetric.Probability.UniformNoiseRobustness
-import GaloisForLFunctions.HTGeometry.GaussBonnetFixedChargeAGibbsAccumulatedCollision
+module
+
+public import GaloisForLFunctions.HilbertMetric.Probability.UniformNoiseRobustness
+public import GaloisForLFunctions.HTGeometry.GaussBonnetFixedChargeAGibbsAccumulatedCollision
 
 /-!
 # Observable robustness along critical Gibbs Markov dynamics
@@ -8,6 +10,8 @@ Collision decay controls every observable through its uniform
 variance. Squared expectation errors decay at the spectral rate and have a
 finite accumulated budget, retaining the initial collision information.
 -/
+
+@[expose] public section
 
 open scoped BigOperators
 namespace GaloisForLFunctions.HilbertMetric.Probability

@@ -35,7 +35,7 @@ def finiteObservableMin (f : ι → ℝ) : ℝ :=
 theorem thermal_likelihood_le_max (β : ℝ) (E : ι → ℝ)
     (p : FiniteProbabilityLaw ι) (i : ι) :
     p.prob i / finiteGibbsStateWeight β E i ≤ thermalMaxLikelihood β E p := by
-  exact Finset.le_sup' _ (Finset.mem_univ i)
+  exact Finset.le_sup' (fun j => p.prob j / finiteGibbsStateWeight β E j) (Finset.mem_univ i)
 
 theorem thermal_prob_le_maxLikelihood (β : ℝ) (E : ι → ℝ)
     (p : FiniteProbabilityLaw ι) (i : ι) :
@@ -63,6 +63,7 @@ theorem thermalMaxDivergence_nonneg (β : ℝ) (E : ι → ℝ)
     (p : FiniteProbabilityLaw ι) : 0 ≤ thermalMaxDivergence β E p :=
   (pearsonEnergy_nonneg _ _).trans (thermalPearsonDivergence_le_maxDivergence β E p)
 
+omit [Nonempty ι] in
 /-- Subtracting a constant shifts a probability-weighted mean by that constant. -/
 theorem finiteLaw_mean_sub_const (p : FiniteProbabilityLaw ι) (f : ι → ℝ) (c : ℝ) :
     finiteWeightedMean p.prob (fun i => f i - c) = finiteWeightedMean p.prob f - c := by
@@ -101,9 +102,9 @@ theorem thermal_expectation_shift_le_maxCertificate (β : ℝ) (E f : ι → ℝ
           finiteWeightedVariance (finiteGibbsStateWeight β E) f))
           (finiteObservableMax f - finiteWeightedMean (finiteGibbsStateWeight β E) f)) := by
   have hlo (i : ι) : finiteObservableMin f ≤ f i :=
-    Finset.inf'_le _ (Finset.mem_univ i)
+    Finset.inf'_le f (Finset.mem_univ i)
   have hhi (i : ι) : f i ≤ finiteObservableMax f :=
-    Finset.le_sup' _ (Finset.mem_univ i)
+    Finset.le_sup' f (Finset.mem_univ i)
   apply le_min
   · have h := thermal_expectation_le_stopLoss β E f p (finiteObservableMin f)
     have hpos (i : ι) : max (f i - finiteObservableMin f) 0 = f i - finiteObservableMin f :=

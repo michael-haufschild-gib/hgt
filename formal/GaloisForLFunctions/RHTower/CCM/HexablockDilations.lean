@@ -23,13 +23,11 @@ private theorem dilation_isometry (u : ℝ) : star (ccmLogDilation u) * ccmLogDi
   rw [dilation_star]
   change ccmLogDilation (-u) ∘L ccmLogDilation u = 1
   rw [ccmLogDilation_comp, neg_add_cancel, ccmLogDilation_zero]
-  rfl
 
 private theorem dilation_coisometry (u : ℝ) : ccmLogDilation u * star (ccmLogDilation u) = 1 := by
   rw [dilation_star]
   change ccmLogDilation u ∘L ccmLogDilation (-u) = 1
   rw [ccmLogDilation_comp, add_neg_cancel, ccmLogDilation_zero]
-  rfl
 
 private theorem dilation_commute (u v : ℝ) : Commute (ccmLogDilation u) (ccmLogDilation v) := by
   change ccmLogDilation u ∘L ccmLogDilation v = ccmLogDilation v ∘L ccmLogDilation u

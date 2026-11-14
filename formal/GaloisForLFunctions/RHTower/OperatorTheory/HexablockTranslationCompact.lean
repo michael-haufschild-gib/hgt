@@ -45,8 +45,9 @@ theorem additiveTranslation_hasNoEigenvectors {b : ℝ} (hb : b ≠ 0) :
   have hlim := (tendsto_inner_additiveTranslationUnitary_of_abs_atTop hescape x x).norm
   have he (n : ℕ) : ‖⟪x, additiveTranslationUnitary ((n : ℝ) * b) x⟫_ℂ‖ = ‖x‖ ^ 2 := by
     rw [hpow, inner_smul_right, norm_mul, norm_pow, hμ, one_pow, one_mul,
-      inner_self_eq_norm_sq_to_K, norm_pow, Complex.norm_real, Real.norm_eq_abs,
-      abs_of_nonneg (norm_nonneg x)]
+      inner_self_eq_norm_sq_to_K, norm_pow]
+    change ‖((‖x‖ : ℝ) : ℂ)‖ ^ 2 = ‖x‖ ^ 2
+    rw [Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (norm_nonneg x)]
   have hz : ‖x‖ ^ 2 = 0 := tendsto_nhds_unique tendsto_const_nhds
     (by simpa only [he, norm_zero] using hlim)
   exact (ne_of_gt (sq_pos_of_pos (norm_pos_iff.mpr hx0))) hz
@@ -59,7 +60,9 @@ theorem hexablock_translation_compact_iff (b : ℝ)
       (halfSum (unitaryOp (additiveTranslationUnitary b)) 1)
       (unitaryOp (additiveTranslationUnitary b)) T ∧ IsCompactOperator T) ↔
     IsCompactOperator T ∧ (b = 0 ∨ T = 0) := by
-  rw [hexablock_translation_brownHalmos_iff]
+  have hbrown := hexablock_translation_brownHalmos_iff b T
+  dsimp only at hbrown
+  rw [hbrown]
   constructor
   · rintro ⟨hcomm, hc⟩
     refine ⟨hc, ?_⟩

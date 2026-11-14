@@ -83,7 +83,7 @@ theorem fourierCoeff_periodizedExponentialPacket {n : ℕ} (residue : Fin n → 
     apply ((integrableOn_Ioc_l1Periodization
       (RHTower.causalFourierExponential_integrable (Real.exp_pos (logRate j)))).const_mul
         (residue j)).bdd_mul he.aestronglyMeasurable (c := 1)
-    exact Filter.Eventually.of_forall fun x => by simp [fourier_coe_apply, Complex.norm_exp]
+    exact Filter.Eventually.of_forall fun x => by simp [Complex.norm_exp]
   simp only [periodizedExponentialPacket, Finset.mul_sum]
   rw [integral_finsetSum _ (fun j _ => hint j)]
   apply Finset.sum_congr rfl
@@ -108,7 +108,7 @@ theorem norm_stableExponentialPacketSymbol_le {n : ℕ} (residue : Fin n → ℂ
 /-- Each real-pole resolvent already has Hermitian frequency symmetry. -/
 theorem stableExponentialSymbol_conj (α ξ : ℝ) :
     star (stableExponentialSymbol α (-ξ)) = stableExponentialSymbol α ξ := by
-  simp [stableExponentialSymbol, mul_assoc]
+  simp [stableExponentialSymbol, mul_assoc, -Complex.ofReal_exp]
 
 /-- Averaging a symbol with its conjugate reflection enforces a real kernel. -/
 def hermitianFrequencyProjection (φ : ℝ → ℂ) (ξ : ℝ) : ℂ :=
@@ -148,7 +148,8 @@ theorem hermitianFrequencyProjection_stablePacket {n : ℕ} (residue : Fin n →
   apply Finset.sum_congr rfl
   intro j _
   have hr : residue j + star (residue j) = 2 * ((residue j).re : ℂ) := by
-    apply Complex.ext <;> simp <;> ring
+    apply Complex.ext <;> simp
+    ring
   calc
     _ = (residue j + star (residue j)) * stableExponentialSymbol (logRate j) ξ / 2 := by ring
     _ = _ := by rw [hr]; ring

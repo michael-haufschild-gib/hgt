@@ -19,6 +19,7 @@ noncomputable section
 theorem thermalWeightedVariance_eq_energyVariance {ι : Type*} [Fintype ι] [Nonempty ι]
     (β : ℝ) (E : ι → ℝ) :
     finiteWeightedVariance (finiteGibbsStateWeight β E) E = finiteGibbsEnergyVariance β E := by
+  classical
   exact weighted_variance_eq (sum_finiteGibbsStateWeight_eq_one β E) E
 
 /-- The sampled potential inherits the full variance-sensitive robustness bound. -/
@@ -56,8 +57,3 @@ theorem stringPotential_expectation_shift_sq_le_temperature {n : ℕ}
 
 end
 end GaloisForLFunctions.HilbertMetric.Probability
-
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermalWeightedVariance_eq_energyVariance
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.stringPotential_expectation_shift_sq_le_variance
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.stringPotential_expectation_shift_sq_le_radius
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.stringPotential_expectation_shift_sq_le_temperature

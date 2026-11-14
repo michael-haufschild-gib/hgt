@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SelbergClass.DirichletSeries.PrimeColorInfiniteJets
+import GaloisForLFunctions.SelbergClass.DirichletSeries.PrimeColorInfiniteJetAlgebra
 import GaloisForLFunctions.HTGeometry.PrimeResidueValuationInteractionSuperselection
 
 /-!
@@ -84,6 +84,22 @@ theorem algebraicIndependent_primeResidueInteractionInfiniteJets_over_densityFie
 
 #print axioms primeResidueInteractionPolynomialEquiv
 #print axioms algebraicIndependent_primeResidueInteractionInfiniteJets_over_densityField_iff
+
+/-- The entire shifted residue-interaction algebra is polynomial on the surviving residue
+patterns and the two natural indices, including when some interaction columns are dependent. -/
+def primeResidueInteractionInfiniteJetPolynomialEquiv
+    {ι : Type*} [Fintype ι]
+    (A : ι → Type*) [∀ i, Fintype (A i)] [∀ i, DecidableEq (A i)] [∀ i, One (A i)]
+    (y : Nat.Primes → ∀ i, A i) :
+    MvPolynomial
+        (frequentPrimeColors (primeWindowDensityFilter primeCountingWindow) y × (ℕ × ℕ))
+        (primeDensityCoefficientField primeCountingWindow)
+      ≃ₐ[primeDensityCoefficientField primeCountingWindow]
+        Algebra.adjoin (primeDensityCoefficientField primeCountingWindow)
+          (Set.range (primeColorNaturalShiftLogJet y (fun z x => anchoredProductBasis A z x))) :=
+  primeColorBasisInfiniteJetPolynomialEquiv y (anchoredProductBasis A)
+
+#print axioms primeResidueInteractionInfiniteJetPolynomialEquiv
 
 end
 end GaloisForLFunctions.SelbergClass.DirichletSeries

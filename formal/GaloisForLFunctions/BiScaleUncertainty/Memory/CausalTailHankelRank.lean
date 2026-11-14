@@ -99,15 +99,14 @@ theorem sampledCausalTail_eq_stateSpace (N : ℕ) (h : ℝ≥0) :
 
 /-- Every rectangular tail Hankel block has rank at most one. -/
 theorem rank_sampledCausalTail_hankel_le_one (N : ℕ) (h : ℝ≥0) (p q : ℕ) :
-    (fun (i : Fin p) (j : Fin q) => sampledCausalTail N h (i.val + j.val) :
-      Matrix (Fin p) (Fin q) ℝ).rank ≤ 1 := by
+    Matrix.rank (fun (i : Fin p) (j : Fin q) => sampledCausalTail N h (i.val + j.val)) ≤ 1 := by
   rw [sampledCausalTail_eq_stateSpace]
   exact rank_stateSpacePastFuture_le _ _ _ p q
 
 /-- Every nonempty rectangular tail window requires exactly one state. -/
 theorem rank_sampledCausalTail_hankel_eq_one (N : ℕ) (h : ℝ≥0) (p q : ℕ) :
-    (fun (i : Fin (p + 1)) (j : Fin (q + 1)) => sampledCausalTail N h (i.val + j.val) :
-      Matrix (Fin (p + 1)) (Fin (q + 1)) ℝ).rank = 1 := by
+    Matrix.rank (fun (i : Fin (p + 1)) (j : Fin (q + 1)) =>
+      sampledCausalTail N h (i.val + j.val)) = 1 := by
   let H : Matrix (Fin (p + 1)) (Fin (q + 1)) ℝ :=
     fun i j => sampledCausalTail N h (i.val + j.val)
   let B : Matrix (Fin 1) (Fin 1) ℝ := H.submatrix (fun _ => 0) (fun _ => 0)

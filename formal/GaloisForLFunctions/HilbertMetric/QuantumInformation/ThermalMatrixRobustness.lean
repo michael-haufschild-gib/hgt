@@ -26,6 +26,7 @@ theorem thermalInverseQuadratic_nonneg (β : ℝ) (E : ι → ℝ) (X : Matrix �
   exact Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun j _ =>
     div_nonneg (Complex.normSq_nonneg _) (finiteKMSWightmanWeight_pos β E i j).le
 
+omit [Nonempty ι] in
 /-- Real Hilbert--Schmidt pairing in matrix-entry coordinates. -/
 theorem hsInner_re_eq_sum (A X : Matrix ι ι ℂ) :
     (QuantumAlg.hsInner A X).re =

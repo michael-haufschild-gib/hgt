@@ -84,11 +84,3 @@ theorem thermal_wightman_lt_born_iff (β : ℝ) (E : ι → ℝ) (A : ι → ι 
 
 end
 end GaloisForLFunctions.HilbertMetric.QuantumInformation
-
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermalPopulation_sqrt_mul
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.sandwichedQuadratic_thermal_eq
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermal_born_sub_wightman_eq_skew
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermal_wightman_le_born
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermalPopulation_eq_iff
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermal_skew_eq_zero_iff
-#print axioms GaloisForLFunctions.HilbertMetric.QuantumInformation.thermal_wightman_lt_born_iff

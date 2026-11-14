@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SelbergClass.DirichletSeries.PrimeColorInfiniteJets
+import GaloisForLFunctions.SelbergClass.DirichletSeries.PrimeColorInfiniteJetAlgebra
 import GaloisForLFunctions.HTGeometry.PrimeWalshTailConstraint
 
 /-!
@@ -96,6 +96,21 @@ theorem algebraicIndependent_primeWalshInfiniteJets_over_densityField_iff
       (primeOrientationWalshBasis (I := I))
 
 #print axioms algebraicIndependent_primeWalshInfiniteJets_over_densityField_iff
+
+/-- All shifted Walsh observations form a polynomial algebra on surviving Boolean patterns,
+natural shifts, and logarithmic orders, without requiring every Boolean pattern to survive. -/
+def primeWalshInfiniteJetPolynomialEquiv
+    (color : Nat.Primes → I → Bool) :
+    MvPolynomial
+        (frequentPrimeColors (primeWindowDensityFilter primeCountingWindow) color × (ℕ × ℕ))
+        (primeDensityCoefficientField primeCountingWindow)
+      ≃ₐ[primeDensityCoefficientField primeCountingWindow]
+        Algebra.adjoin (primeDensityCoefficientField primeCountingWindow)
+          (Set.range (primeColorNaturalShiftLogJet color (fun B x => orientationWalshCharacter B x))) := by
+  simpa only [primeOrientationWalshBasis_apply] using
+    primeColorBasisInfiniteJetPolynomialEquiv color (primeOrientationWalshBasis (I := I))
+
+#print axioms primeWalshInfiniteJetPolynomialEquiv
 
 end
 end GaloisForLFunctions.SelbergClass.DirichletSeries

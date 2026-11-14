@@ -95,7 +95,7 @@ theorem filterCoefficientIndependent_of_coefficientShiftJet
       _ = 0 := by rw [hp, zero_mul]
   have hzero := h q' hevent
   funext j
-  exact congrFun hzero (j, a₀, 0)
+  simpa only [q', if_pos rfl, Pi.zero_apply] using congrFun hzero (j, a₀, 0)
 
 /-- Prime exponential-polynomial rigidity supplies the analytic input: all finite shift–jet
 rectangles have exactly the independence of the surviving color table. -/

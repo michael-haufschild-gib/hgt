@@ -65,10 +65,11 @@ theorem contDiff_radialCarlemanTest (n m : ℕ) :
     filter_upwards [ball_mem_nhds (0 : RadialCarlemanSpace n) zero_lt_one] with y hy
     have hy' : ‖y‖ < 1 := by simpa only [mem_ball, dist_zero_right] using hy
     exact radialCarlemanTest_eq_zero_of_norm_le_one n m hy'.le
-  · have hf : ContDiff ℝ (⊤ : ℕ∞) (fun y : RadialCarlemanSpace n => y.fst ^ m) :=
-      (((ContinuousLinearMap.fst ℂ ℂ (EuclideanSpace ℂ (Fin n))).comp
-        (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ (EuclideanSpace ℂ (Fin n))).toContinuousLinearMap)
-          .restrictScalars ℝ).contDiff.pow m
+  · have hf₀ : ContDiff ℝ (⊤ : ℕ∞) (fun y : RadialCarlemanSpace n => y.fst) :=
+      ((((ContinuousLinearMap.fst ℂ ℂ (EuclideanSpace ℂ (Fin n))).comp
+        (WithLp.prodContinuousLinearEquiv 2 ℂ ℂ
+          (EuclideanSpace ℂ (Fin n))).toContinuousLinearMap).restrictScalars ℝ)).contDiff
+    have hf := hf₀.pow m
     have hr : ContDiffAt ℝ (⊤ : ℕ∞)
         (fun y : RadialCarlemanSpace n => carlemanLogCutoff (Real.log ‖y‖)) x :=
       contDiff_carlemanLogCutoff.contDiffAt.comp x
@@ -92,7 +93,8 @@ theorem radialCarlemanSpace_finrank (n : ℕ) :
   have hv : Module.finrank ℝ (EuclideanSpace ℂ (Fin n)) = 2 * n := by
     rw [← Module.finrank_mul_finrank ℝ ℂ (EuclideanSpace ℂ (Fin n)),
       Complex.finrank_real_complex, finrank_euclideanSpace, Fintype.card_fin]
-  rw [RadialCarlemanSpace, blockSpace_finrank, Complex.finrank_real_complex, hv]
+  change Module.finrank ℝ (BlockSpace ℂ (EuclideanSpace ℂ (Fin n))) = _
+  rw [blockSpace_finrank, Complex.finrank_real_complex, hv]
 
 theorem radialCarlemanSpace_real_finrank (n : ℕ) :
     (Module.finrank ℝ (RadialCarlemanSpace n) : ℝ) = 2 * ((n : ℝ) + 1) := by
@@ -178,7 +180,35 @@ theorem radialCarlemanDbarNorm_balanced (n m : ℕ) {p : ℝ} (hp : 0 < p) :
   have he (a b c : ℝ) : a * b * c = (a * c) * b := by ring
   rw [he, Real.mul_rpow (mul_nonneg hm hi) hM, complexHilbertSphereMellin_eq n hs]
   change (1 / 2 : ℝ) * (_ * _) = ((1 / 2 : ℝ) * _) * _
+  unfold complexSphereMonomialNorm
   ring
+
+/-- The balanced weighted function power is integrable; its positive integral cannot be a
+nonintegrable Bochner integral's default value. -/
+theorem integrable_radialCarlemanTest_weight (n m : ℕ) {p : ℝ} (hp : 0 < p) :
+    Integrable (fun x : RadialCarlemanSpace n =>
+      (‖x‖ ^ (-((m : ℝ) + 2 * ((n : ℝ) + 1) / p)) *
+        ‖radialCarlemanTest n m x‖) ^ p) := by
+  by_contra h
+  have he := radialCarlemanNorm_balanced n m hp
+  have hpos := mul_pos (radialCarlemanAmplitude_pos n hp)
+    (complexSphereMonomialNorm_pos n hp (Nat.cast_nonneg m))
+  unfold radialCarlemanNorm at he
+  rw [integral_undef h, Real.zero_rpow (div_pos one_pos hp).ne'] at he
+  exact hpos.ne' he.symm
+
+/-- The balanced weighted antiholomorphic power is integrable as well. -/
+theorem integrable_radialCarlemanTest_dbar_weight (n m : ℕ) {p : ℝ} (hp : 0 < p) :
+    Integrable (fun x : RadialCarlemanSpace n =>
+      (‖x‖ ^ (-((m : ℝ) + 2 * ((n : ℝ) + 1) / p - 1)) *
+        ‖_root_.HTGeometry.dbarDifferential (radialCarlemanTest n m) x‖) ^ p) := by
+  by_contra h
+  have he := radialCarlemanDbarNorm_balanced n m hp
+  have hpos := mul_pos (radialCarlemanDefect_pos n hp)
+    (complexSphereMonomialNorm_pos n hp (Nat.cast_nonneg m))
+  unfold radialCarlemanDbarNorm at he
+  rw [integral_undef h, Real.zero_rpow (div_pos one_pos hp).ne'] at he
+  exact hpos.ne' he.symm
 
 /-- The critical upper exponent leaves the weighted function norm's radial factor fixed. -/
 theorem radialCarlemanNorm_critical (n m : ℕ) :
@@ -231,6 +261,7 @@ theorem tendsto_radialCarleman_ratio_scaled (n : ℕ) :
   apply h.congr'
   filter_upwards with m
   rw [radialCarlemanNorm_critical, radialCarlemanDbarNorm_critical]
+  simp only [Function.comp_apply]
   ring
 
 /-- The one-complex-dimensional family has a degree-independent ratio: the concentration
