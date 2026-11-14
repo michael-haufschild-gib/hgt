@@ -18,7 +18,7 @@ mediator of the overlap law (MAFT `hermNegIndex_neutralWindow_overlap_eq_one_iff
 `N⁰(x,y) = δ ϱ(x) − ½(D(x+y+1) + D(|x−y|))`, `ϱ(x) = ΔF(x) − κ`. `M_D = N⁰` on `[D, 2D)`.
 Window `(R, 2D+b]`, `D = R+a`: ends `E₁ = (R, D]`, `E₂ = (2D, 2D+b]`.
 
-## Facts established on paper (to formalize)
+## Mathematical targets
 - P1 middle prime-free: `x<y<2x ⇒ ⌊y/k⌋<x` for `k≥2`; `neutralWindow Q D D = neutralWindow 1 D D`.
 - P2 flat-packet bound: `μ_D ≥ −N⁰(1,1) = κ + ½D(3) − 2 log 2 ≈ 1.199` (constant vector,
   `sum_neutralBlock_dyadic`).
@@ -48,14 +48,19 @@ Formalized (compile clean, wired into the umbrella):
    first step margin `≤ ‖X₀‖`, refinement at a level,
    `riemannHypothesis_iff_overlapSchur_bddBelow`, `…_forall_overlapSchur_nonneg`,
    `…_forall_harmonic_nonneg`, `riemannHypothesis_of_level_function`.
+3. `TheCertifiedFloorsAreAPrioriBoundsForTheGreenMatrixAndTheConditionalEnergies` — certified
+   ground-state and conditional floors, `−1 ⪯ G_D ⪯ 5000`, and an upper binding bound.
+4. `ChargeCancellationPreservesTheCertifiedFloor` — spectral floor also for `J<R`, exact
+   charge-cancellation Schur floor, and the local neutral-orthogonal overlap criterion.
+
+All A162 components have clean transitive axiom audits; see
+`../3-formalized/a162-certified-window-floors-and-overlap-calculus.md`.
 
 Planned:
-3. One bound state with a floor for every certified window; conditional-energy floor; sliver
-   blocks of `G_D`; a priori two-sided bounds of `G_D`.
-4. Potential theory `M = V + 𝓔` (P3), `μ_D = −⟨V⟩_φ`, upper bound of `μ_D`, P8.
-5. Inversion at equal index, tower monotonicity (P5, P6).
-6. Contact pencil and sign twin (P7).
-7+. boundary-map norms (Hilbert inequality), first step, no-go for norm bounds.
+5. Sliver blocks of `G_D`; potential theory `M = V + 𝓔` (P3), `μ_D = −⟨V⟩_φ`, P8.
+6. Inversion at equal index, tower monotonicity (P5, P6).
+7. Contact pencil and sign twin (P7).
+8+. Boundary-map norms (Hilbert inequality), first step, no-go for norm bounds.
 
 ## Log
 - 2026-11-14 — card created; README first draft written; modules 1–2 formalized.

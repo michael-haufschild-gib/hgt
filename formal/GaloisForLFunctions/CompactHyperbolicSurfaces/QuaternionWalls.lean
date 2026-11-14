@@ -60,7 +60,8 @@ theorem two_lt_abs_trSL_congGroup {N : ℕ} (hN : 3 ≤ N) (γ : congGroup N) (h
     have := Int.le_of_dvd (by norm_num) hd; omega
   · have hpure : nrd (x - quatOne) = 0 := by
       have h1 := hx1
-      simp [nrd, quatOne, h] at h1 ⊢ <;> linarith
+      simp [nrd, quatOne, h] at h1 ⊢
+      linarith
     have hxe : x = quatOne := sub_eq_zero.mp (eq_zero_of_nrd_eq_zero _ hpure)
     apply hγ
     apply Subtype.ext
@@ -231,7 +232,8 @@ theorem quatConj_quatConj (x : Fin 4 → ℤ) : quatConj (quatConj x) = x := by
 
 /-- `trd (x w x̄) = nrd x · trd w`. -/
 theorem conjQ_zero (x w : Fin 4 → ℤ) : conjQ x w 0 = nrd x * w 0 := by
-  simp [conjQ, quatMul, quatConj, nrd] <;> ring
+  simp [conjQ, quatMul, quatConj, nrd]
+  ring
 
 theorem conjQ_mem_wallSet {N : ℕ} {x w : Fin 4 → ℤ} (hx1 : nrd x = 1) (hx : IsCong N x)
     (hw : w ∈ wallSet N) : conjQ x w ∈ wallSet N := by
@@ -242,7 +244,7 @@ theorem conjQ_mem_wallSet {N : ℕ} {x w : Fin 4 → ℤ} (hx1 : nrd x = 1) (hx 
   · have h := isCongTo_mul (isCongTo_mul hx' hwc) (isCongTo_conj hx')
     have hI : quatMul (quatMul quatOne quatI) (quatConj quatOne) = quatI := by
       funext k
-      fin_cases k <;> simp [quatMul, quatOne, quatI, quatConj, Matrix.vecHead, Matrix.vecTail]
+      fin_cases k <;> simp [quatMul, quatOne, quatI, quatConj]
     rwa [hI] at h
 
 /-- `x̄ (x w x̄) x = w` for `nrd x = 1`. -/

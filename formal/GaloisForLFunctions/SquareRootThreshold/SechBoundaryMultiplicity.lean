@@ -113,9 +113,11 @@ theorem sum_fibre_multiplicity_mul_sech_le_boundary {a b T : ℝ}
       ring
   have himlim := (Complex.continuous_im.continuousAt.tendsto.comp hcontour).div_const (2*Real.pi)
   simp only [Complex.mul_im,Complex.I_re,Complex.I_im,zero_mul,one_mul,zero_add] at himlim
-  apply le_of_tendsto himlim
+  apply neg_le_neg_iff.mp
+  apply le_of_tendsto himlim.neg
   filter_upwards [hlolim.eventually (eventually_le_atBot T),
     hhilim.eventually (eventually_ge_atTop T)] with n hnlo hnhi
+  apply neg_le_neg
   have hre : (zlo n).re < (zhi n).re := by rw [(hzlo n).1,(hzhi n).1]; linarith only [hb0]
   have him : (zlo n).im < (zhi n).im := by rw [(hzlo n).2,(hzhi n).2]; exact hlohi n
   have hleftdepth : |(zlo n).re-1/2| ≤ b := by

@@ -57,5 +57,9 @@ not supply the general-field `7/8` estimate or conductor/ramification matching.
   only `propext`, `Classical.choice`, `Quot.sound`. Umbrella import added.
 - A140: the located full-sector certificate ends at `181/500`; the dilation tower
   stays below `0.3621`. Neither reaches `1881/5000`.
+  An alternative is the exact Legendre spectrum of the regional logarithmic
+  operator (`LatticeSectionTheory.regionalLogOperator_legP`): retain the prime
+  translations and boundary potential, and prove a finite-dimensional Schur
+  certificate with a quantitative tail bound. Those bounds remain unproved.
 - A141: quotient construction above awaits formalization. The located `7/8`
   producer uses the Hecke family over `ℚ(ζ₃)`, not arbitrary containing fields.

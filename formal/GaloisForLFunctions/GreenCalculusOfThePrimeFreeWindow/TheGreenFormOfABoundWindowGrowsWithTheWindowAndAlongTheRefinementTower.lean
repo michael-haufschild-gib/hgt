@@ -28,8 +28,9 @@ state is held on both sides.
   (`groundVector_sq_le_greenPositive_of_sliver`).
 * **The tower law** (`greenMatrix_form_le_refined`, `bindingEnergy_le_refined`): refinement by
   `m` is an isometry that compresses the middle at block size `mD` to the middle at block size
-  `D`. Along the refinement tower the Green form and the binding energy increase; they are
-  bounded by `5000` and by `γ + π/2 + log 8π`.
+  `D`. Along the refinement tower the Green form and the binding energy increase; the Green
+  form stays below `5000` (`greenMatrix_form_refined_le`) and the binding energy below `3`
+  (`bindingEnergy_lt_three`).
 -/
 
 open Finset Matrix

@@ -1,10 +1,10 @@
 import GaloisForLFunctions.ConjugateDiagonalGeometry.LogarithmicBoundaryNormalization
 import GaloisForLFunctions.HTGeometry.DigammaHalfPlaneAsymptotic
 import GaloisForLFunctions.HTGeometry.PolynomialExponentialDomination
-import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianXiLogDerivativeGrowth
+import GaloisForLFunctions.RHTower.RiemannGaussian.GaussianExplicitFormula
 
 /-!
-# The logarithmic main term of the translated Gaussian zero sum
+# The logarithmic main term of the arithmetic Gaussian formula
 
 The quarter-line digamma density differs from the logarithm of height by a
 bounded quantity. Gaussian convolution preserves its leading coefficient;
@@ -245,30 +245,23 @@ private theorem bounded_gaussianArchimedeanRemainder {ε : ℝ} (hε : 0 < ε) (
   rw [add_sub_cancel_right]
   exact (abs_sub _ _).trans (add_le_add_right hp _)
 
-/-- The actual translated Gaussian zero sum has the logarithmic coefficient
-predicted by the archimedean mass. -/
-theorem tendsto_canonicalZetaGaussianZeroSum_log_normalized {ε : ℝ} (hε : 0 < ε) :
-    Tendsto (fun T => canonicalZetaGaussianZeroSum ε T / Real.log |T|)
-      (Filter.comap abs atTop) (𝓝 (Real.sqrt (Real.pi / ε) / (2 * Real.pi))) := by
+/-- The arithmetic Gaussian formula has the logarithmic coefficient
+of its archimedean mass; the prime and pole terms have zero coefficient. -/
+theorem tendsto_gaussianArithmeticExplicitFormula_log_normalized {ε : ℝ} (hε : 0 < ε) :
+    Tendsto (fun T => gaussianArithmeticExplicitFormula ε T / Real.log |T|)
+      (Filter.comap abs atTop) (𝓝 (Real.sqrt (Real.pi / ε) / Real.pi)) := by
   have hd := tendsto_gaussianDigammaIntegral_log_normalized hε
   have hr := tendsto_bounded_div_log (bounded_gaussianArchimedeanRemainder hε)
   have hp := tendsto_bounded_div_log (abs_gaussianPrimeContribution_le hε)
-  have hh := ((hd.add hr).sub hp).div_const 2
+  have hh := (hd.add hr).sub hp
   simp only [add_zero, sub_zero] at hh
   convert hh using 1
-  · funext T
-    have he := gaussianArithmeticExplicitFormula_eq_canonical hε T
-    unfold gaussianArithmeticExplicitFormula canonicalZetaSymmetricGaussianZeroSum at he
-    rw [show canonicalZetaGaussianZeroSum ε T =
-      (gaussianDigammaIntegral ε T +
-        (gaussianArchimedeanContribution ε T - gaussianDigammaIntegral ε T) -
-        gaussianPrimeContribution ε T) / 2 by linarith only [he]]
-    ring
-  · congr 1
-    ring
+  funext T
+  unfold gaussianArithmeticExplicitFormula
+  ring
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry
 
 #print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.tendsto_riemannArchimedeanDensity_log_normalized
 
-#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.tendsto_canonicalZetaGaussianZeroSum_log_normalized
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.tendsto_gaussianArithmeticExplicitFormula_log_normalized

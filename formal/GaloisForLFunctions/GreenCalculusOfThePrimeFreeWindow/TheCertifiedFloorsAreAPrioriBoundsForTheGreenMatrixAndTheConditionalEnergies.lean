@@ -1,5 +1,4 @@
-import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheLossOfAnOverlapStepIsAdditiveBelowTheBindingEnergyOfTheMiddle
-import GaloisForLFunctions.MixingArithmeticOfTheFloorTrees.TheBindingEnergyOfAWindowIsCarriedByItsFloorTrees
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.ChargeCancellationPreservesTheCertifiedFloor
 
 /-!
 # The certified floors are a priori bounds for the Green matrix and the conditional energies
@@ -11,21 +10,16 @@ the Green calculus.
 * **Two-sided bounds of the inverse** (`OneBoundState.inv_form_le`, `OneBoundState.inv_form_ge`):
   a matrix with one bound state of depth `μ` and floor `c` has `−1/μ ⪯ M⁻¹ ⪯ 1/c`. For the
   dyadic middle `−1 ⪯ G_D ⪯ 5000` at every block size (`greenMatrix_form_ge`,
-  `greenMatrix_form_le`), and its binding energy lies in `(1, γ + π/2 + log 8π]`
-  (`one_lt_bindingEnergy`, `bindingEnergy_le`).
+  `greenMatrix_form_le`).
 * **One bound state with a floor on the certified range**
   (`exists_oneBoundState_neutralWindow`): for `R ≤ J`, `50 J ≤ 53 R` the neutral part has a
   positive ground vector of negative eigenvalue and is at least `1/5000` on its orthogonal
   complement: the second eigenvalue is at least `1/5000`.
-* **The conditional energy inherits the floors** (`schur_floor_of_floor_hyperplane`): if the
-  middle has one bound state with floor `c` and the part is at least `c'` on a hyperplane, the
-  Schur complement of the middle is at least `min c c'`. The part still holds at most one bound
-  state at every level `−t > −min c c'`, so the Schur complement at that level is nonnegative,
-  and it grows at unit speed in the level.
 * **The first overlap step** (`overlapLeftEnergy_floor`, `overlapRightEnergy_floor`,
-  `overlapSchur_ge_of_firstStep`): for `a ≤ 3R/100`, `b ≤ 3(R + a)/50` both conditional
-  energies are at least `1/5000`, and the Schur complement of the middle is at least
-  `1/5000 − ‖X‖`. A conditional coupling of norm at most `1/5000` gives one bound state
+  `overlapSchur_ge_of_firstStep`): for `a ≤ 3R/100`, `b ≤ 3(R + a)/50` both parts lie in the
+  certified range, so by charge cancellation both conditional energies are at least `1/5000`,
+  and the Schur complement of the middle is at least `1/5000 − ‖X‖`. A conditional coupling of
+  norm at most `1/5000` gives one bound state
   (`hermNegIndex_neutralWindow_eq_one_of_firstStep_coupling_le`).
 -/
 
@@ -38,27 +32,9 @@ noncomputable section
 
 namespace GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow
 
-/-- A bound `t q ≤ S` for every `t` below `m` is the bound at `m`. -/
-theorem le_of_forall_lt_mul {m q S : ℝ} (hm : 0 < m) (hq : 0 ≤ q)
-    (h : ∀ t, 0 < t → t < m → t * q ≤ S) : m * q ≤ S := by
-  by_contra hlt
-  rw [not_le] at hlt
-  have hS0 : 0 ≤ S :=
-    le_trans (mul_nonneg (half_pos hm).le hq) (h (m / 2) (half_pos hm) (half_lt_self hm))
-  have hq0 : 0 < q := by
-    rcases hq.eq_or_lt with h0 | h0
-    · rw [← h0, mul_zero] at hlt
-      linarith
-    · exact h0
-  have hSq : S / q < m := by rwa [div_lt_iff₀ hq0]
-  have hSq0 : 0 ≤ S / q := div_nonneg hS0 hq0.le
-  have ht := h ((m + S / q) / 2) (by linarith) (by linarith)
-  have hc : S / q * q = S := div_mul_cancel₀ S hq0.ne'
-  nlinarith
-
 section Bounds
 
-variable {ι ι' κ α β : Type*} [Fintype ι] [Fintype ι'] [Fintype κ] [Fintype α] [Fintype β]
+variable {ι ι' α β : Type*} [Fintype ι] [Fintype ι'] [Fintype α] [Fintype β]
 
 /-- The form of a reindexed matrix. -/
 theorem dotProduct_submatrix_mulVec_equiv (A : Matrix ι ι ℝ) (e : ι' ≃ ι) (y : ι' → ℝ) :
@@ -93,7 +69,7 @@ theorem OneBoundState.sq_dot_le (h : OneBoundState M φ μ c) (w : ι → ℝ) :
     dotProduct_self_star_nonneg (v := OneBoundState.perp φ w)
   linarith
 
-variable [DecidableEq ι] [DecidableEq κ] [DecidableEq α] [DecidableEq β]
+variable [DecidableEq ι] [DecidableEq α] [DecidableEq β]
 
 /-- **The inverse of a matrix with one bound state is at most the inverse of its floor.** -/
 theorem OneBoundState.inv_form_le (h : OneBoundState M φ μ c) (w : ι → ℝ) :
@@ -131,36 +107,6 @@ theorem fromBlocks_form_ge_of_floors {E₁ : Matrix α α ℝ} {X : Matrix α β
   rw [← fromBlocks_add_diagonal_const, dotProduct_add_diagonal_mulVec] at h
   linarith
 
-/-- **The conditional energy inherits the floors.** If the middle has one bound state with
-floor `c` and the part is at least `c'` on a hyperplane, the Schur complement of the middle is
-at least `min c c'`. -/
-theorem schur_floor_of_floor_hyperplane {A : Matrix ι ι ℝ} (h : OneBoundState A φ μ c)
-    (P : Matrix ι κ ℝ) {N : Matrix κ κ ℝ} (hN : ∀ i j, N i j = N j i) {ℓ : ι ⊕ κ → ℝ}
-    {c' : ℝ} (hc' : 0 < c')
-    (hfloor : ∀ y : ι ⊕ κ → ℝ, ℓ ⬝ᵥ y = 0 →
-      c' * (y ⬝ᵥ y) ≤ y ⬝ᵥ (fromBlocks A P Pᵀ N *ᵥ y)) (e : κ → ℝ) :
-    min c c' * (e ⬝ᵥ e) ≤ e ⬝ᵥ ((N - Pᵀ * A⁻¹ * P) *ᵥ e) := by
-  refine le_of_forall_lt_mul (lt_min h.floor_pos hc') (dotProduct_self_star_nonneg (v := e))
-    fun t ht0 htm => ?_
-  have htc : t < c := lt_of_lt_of_le htm (min_le_left _ _)
-  have htc' : t < c' := lt_of_lt_of_le htm (min_le_right _ _)
-  -- at the level `−t` the part still holds at most one bound state
-  have hA := h.add_diagonal (C := -t) (by linarith [h.depth_pos]) (by linarith)
-  have hidx : hermNegIndex ((fromBlocks (A + Matrix.diagonal fun _ => -t) P Pᵀ
-      (N + Matrix.diagonal fun _ => -t)).map (↑) : Matrix (ι ⊕ κ) (ι ⊕ κ) ℂ) ≤ 1 := by
-    rw [← fromBlocks_add_diagonal_const]
-    refine hermNegIndex_le_one_of_nonneg_on_hyperplane _ ℓ fun y hy => ?_
-    rw [dotProduct_add_diagonal_mulVec]
-    have h1 := hfloor y hy
-    have h2 : 0 ≤ y ⬝ᵥ y := dotProduct_self_star_nonneg (v := y)
-    linarith [mul_nonneg (sub_nonneg.mpr htc'.le) h2]
-  have hS := schur_nonneg_of_hermNegIndex_le_one hA P (symm_add_diagonal hN (-t)) hidx e
-  -- the Schur complement grows at unit speed from the level `−t` to the level `0`
-  have hmono := schur_add_diagonal_mono h P N (C := -t) (C' := 0) (by linarith) h.depth_pos
-    (by linarith) e
-  simp only [Matrix.diagonal_zero, add_zero] at hmono
-  linarith
-
 end Bounds
 
 /-! ### The dyadic middle -/
@@ -183,16 +129,6 @@ theorem greenMatrix_form_ge {D : ℕ} (hD : 1 ≤ D) (w : Fin D → ℝ) :
     exact hμ.le
   have h2 : 0 ≤ w ⬝ᵥ w := dotProduct_self_star_nonneg (v := w)
   linarith [mul_nonneg (sub_nonneg.mpr h1) h2]
-
-/-- **The binding energy of the dyadic middle is at most `γ + π/2 + log 8π`** at every block
-size: the middle carries no floor tree. -/
-theorem bindingEnergy_le {D : ℕ} (hD : 1 ≤ D) :
-    bindingEnergy D ≤
-      Real.eulerMascheroniConstant + Real.pi / 2 + Real.log (8 * Real.pi) := by
-  have h := le_eigenvalue_of_prime_free hD hD (groundPair_spec hD).1
-    (oneBoundState_primeFreeMiddle hD).eig
-  have h0 := neg_gammaBracket_zero
-  linarith
 
 /-! ### The certified range -/
 
@@ -222,23 +158,28 @@ theorem exists_oneBoundState_neutralWindow {Q R J : ℕ} (hR : 1 ≤ R) (hRJ : R
 
 /-! ### The first overlap step -/
 
+/-- The charge of the ground vector of the middle does not vanish. -/
+theorem charge_groundVector_ne_zero {κ : Type*} {D : ℕ} (hD : 1 ≤ D) :
+    ((fun _ : Fin D ⊕ κ => (1 : ℝ)) ∘ Sum.inl) ⬝ᵥ groundVector D ≠ 0 := by
+  haveI : Nonempty (Fin D) := ⟨⟨0, hD⟩⟩
+  have hp : 0 < ∑ i, groundVector D i :=
+    Finset.sum_pos (fun i _ => (groundPair_spec hD).1 i) Finset.univ_nonempty
+  simpa only [dotProduct, Function.comp_apply, one_mul] using hp.ne'
+
 /-- **The conditional energy of the left end is at least `1/5000`** when the left part
-`(R, 2(R + a)]` lies in the certified range. -/
+`(R, 2(R + a)]` lies in the certified range: the charge of an end is cancelled on the ground
+vector of the middle. -/
 theorem overlapLeftEnergy_floor {Q R a : ℕ} (hR : 1 ≤ R) (ha : 100 * a ≤ 3 * R) (hQ : 2 ≤ Q)
     (u : Fin a → ℝ) : 1 / 5000 * (u ⬝ᵥ u) ≤ u ⬝ᵥ (overlapLeftEnergy Q R a *ᵥ u) := by
-  have hfl : ∀ y : Fin (R + a) ⊕ Fin a → ℝ, (fun _ => (1 : ℝ)) ⬝ᵥ y = 0 →
-      1 / 5000 * (y ⬝ᵥ y) ≤ y ⬝ᵥ (fromBlocks (primeFreeMiddle (R + a))
-        (posMatrix (neutralBlock Q) (middlePos R a) (leftPos R a))
-        (posMatrix (neutralBlock Q) (middlePos R a) (leftPos R a))ᵀ
-        (posMatrix (neutralBlock Q) (leftPos R a) (leftPos R a)) *ᵥ y) := by
-    intro y hy
-    rw [← neutralWindow_dyadic_eq Q, ← neutralWindow_submatrix_leftPartEquiv]
-    exact floor_submatrix_equiv (neutralWindow_floor_of_sum_eq_zero hR (by omega) hQ) _ y hy
-  have h := schur_floor_of_floor_hyperplane
-    (oneBoundState_primeFreeMiddle (by omega : 1 ≤ R + a)) _
-    (posMatrix_symm (neutralBlock_symm Q) (leftPos R a)) (by norm_num : (0 : ℝ) < 1 / 5000)
-    hfl u
-  rw [min_self] at h
+  have hD : 1 ≤ R + a := by omega
+  have h := schur_floor_of_charge_cancellation (oneBoundState_primeFreeMiddle hD)
+    (posMatrix (neutralBlock Q) (middlePos R a) (leftPos R a))
+    (posMatrix (neutralBlock Q) (leftPos R a) (leftPos R a)) (fun _ => (1 : ℝ))
+    (charge_groundVector_ne_zero hD) (by norm_num : (0 : ℝ) ≤ 1 / 5000)
+    (fun y hy => by
+      rw [← neutralWindow_dyadic_eq Q, ← neutralWindow_submatrix_leftPartEquiv]
+      exact floor_submatrix_equiv (neutralWindow_floor_of_sum_eq_zero hR (by omega) hQ) _ y hy)
+    u
   rw [overlapLeftEnergy, neutralWindow_dyadic_eq]
   exact h
 
@@ -247,20 +188,15 @@ theorem overlapLeftEnergy_floor {Q R a : ℕ} (hR : 1 ≤ R) (ha : 100 * a ≤ 3
 theorem overlapRightEnergy_floor {Q R a b : ℕ} (hR : 1 ≤ R) (hb : 50 * b ≤ 3 * (R + a))
     (hQ : 2 ≤ Q) (v : Fin b → ℝ) :
     1 / 5000 * (v ⬝ᵥ v) ≤ v ⬝ᵥ (overlapRightEnergy Q R a b *ᵥ v) := by
-  have hfl : ∀ y : Fin (R + a) ⊕ Fin b → ℝ, (fun _ => (1 : ℝ)) ⬝ᵥ y = 0 →
-      1 / 5000 * (y ⬝ᵥ y) ≤ y ⬝ᵥ (fromBlocks (primeFreeMiddle (R + a))
-        (posMatrix (neutralBlock Q) (middlePos R a) (rightPos R a b))
-        (posMatrix (neutralBlock Q) (middlePos R a) (rightPos R a b))ᵀ
-        (posMatrix (neutralBlock Q) (rightPos R a b) (rightPos R a b)) *ᵥ y) := by
-    intro y hy
-    rw [← neutralWindow_dyadic_eq Q, ← neutralWindow_submatrix_rightPart Q R a b]
-    exact floor_submatrix_equiv
-      (neutralWindow_floor_of_sum_eq_zero (by omega) (by omega) hQ) _ y hy
-  have h := schur_floor_of_floor_hyperplane
-    (oneBoundState_primeFreeMiddle (by omega : 1 ≤ R + a)) _
-    (posMatrix_symm (neutralBlock_symm Q) (rightPos R a b))
-    (by norm_num : (0 : ℝ) < 1 / 5000) hfl v
-  rw [min_self] at h
+  have hD : 1 ≤ R + a := by omega
+  have h := schur_floor_of_charge_cancellation (oneBoundState_primeFreeMiddle hD)
+    (posMatrix (neutralBlock Q) (middlePos R a) (rightPos R a b))
+    (posMatrix (neutralBlock Q) (rightPos R a b) (rightPos R a b)) (fun _ => (1 : ℝ))
+    (charge_groundVector_ne_zero hD) (by norm_num : (0 : ℝ) ≤ 1 / 5000)
+    (fun y hy => by
+      rw [← neutralWindow_dyadic_eq Q, ← neutralWindow_submatrix_rightPart Q R a b]
+      exact floor_submatrix_equiv (neutralWindow_floor_of_sum_eq_zero hD (by omega) hQ) _ y hy)
+    v
   rw [overlapRightEnergy, neutralWindow_dyadic_eq]
   exact h
 

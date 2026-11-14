@@ -79,7 +79,6 @@ theorem integral_weighted_translation_pairing_le {K F G : ℝ → ℝ}
   have hi : Integrable (fun u => lineConvolution K F u * G u) := by
     refine (hG1.norm.const_mul D).mono' (hm.mul hGm.stronglyMeasurable).aestronglyMeasurable ?_
     exact Eventually.of_forall fun u => by
-      dsimp only
       rw [Real.norm_eq_abs, abs_mul, Real.norm_eq_abs]
       exact mul_le_mul_of_nonneg_right (hb u) (abs_nonneg _)
   rw [integral_weighted_translation_pairing hK hKm hK0 hFm hGm hF2 hG2,
