@@ -15,7 +15,7 @@ included by substituting their real translation lengths.
 noncomputable section
 namespace RHTower
 open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HTGeometry.Hexablock ContinuousLinearMap
-open MeasureTheory
+open MeasureTheory RHTower.MellinL2
 
 private theorem unitaryOp_star_mul {H : Type*} [NormedAddCommGroup H]
     [InnerProductSpace ℂ H] [CompleteSpace H] (U : H ≃ₗᵢ[ℂ] H) :

@@ -48,16 +48,22 @@ theorem hasCompactSupport_carlemanLogCutoff : HasCompactSupport carlemanLogCutof
 /-- Every positive power of the cutoff is integrable. -/
 theorem integrable_carlemanLogCutoff_rpow {p : ℝ} (hp : 0 < p) :
     Integrable (fun t : ℝ => |carlemanLogCutoff t| ^ p) := by
-  have hc := (Real.continuous_rpow_const hp.le).comp contDiff_carlemanLogCutoff.continuous.abs
-  exact hc.integrable_of_hasCompactSupport
-    (hasCompactSupport_carlemanLogCutoff.comp_left (by simp [Real.zero_rpow hp.ne']))
+  have hc : Continuous (fun t : ℝ => |carlemanLogCutoff t| ^ p) :=
+    (Real.continuous_rpow_const hp.le).comp contDiff_carlemanLogCutoff.continuous.abs
+  have hs : HasCompactSupport (fun t : ℝ => |carlemanLogCutoff t| ^ p) :=
+    hasCompactSupport_carlemanLogCutoff.comp_left (g := fun u : ℝ => |u| ^ p)
+      (by simp only [abs_zero, Real.zero_rpow hp.ne'])
+  exact hc.integrable_of_hasCompactSupport hs
 
 /-- The cutoff's positive-power mass is strictly positive. -/
 theorem integral_carlemanLogCutoff_rpow_pos {p : ℝ} (hp : 0 < p) :
     0 < ∫ t : ℝ, |carlemanLogCutoff t| ^ p := by
-  have hc := (Real.continuous_rpow_const hp.le).comp contDiff_carlemanLogCutoff.continuous.abs
-  apply hc.integral_pos_of_hasCompactSupport_nonneg_nonzero
-    (hasCompactSupport_carlemanLogCutoff.comp_left (by simp [Real.zero_rpow hp.ne']))
+  have hc : Continuous (fun t : ℝ => |carlemanLogCutoff t| ^ p) :=
+    (Real.continuous_rpow_const hp.le).comp contDiff_carlemanLogCutoff.continuous.abs
+  have hs : HasCompactSupport (fun t : ℝ => |carlemanLogCutoff t| ^ p) :=
+    hasCompactSupport_carlemanLogCutoff.comp_left (g := fun u : ℝ => |u| ^ p)
+      (by simp only [abs_zero, Real.zero_rpow hp.ne'])
+  apply hc.integral_pos_of_hasCompactSupport_nonneg_nonzero hs
     (fun t => Real.rpow_nonneg (abs_nonneg _) _) (x := 3)
   rw [carlemanLogCutoff_three, abs_one, Real.one_rpow]
   exact one_ne_zero
@@ -65,9 +71,35 @@ theorem integral_carlemanLogCutoff_rpow_pos {p : ℝ} (hp : 0 < p) :
 /-- Every positive power of the cutoff derivative has finite mass. -/
 theorem integrable_deriv_carlemanLogCutoff_rpow {p : ℝ} (hp : 0 < p) :
     Integrable (fun t : ℝ => |deriv carlemanLogCutoff t| ^ p) := by
-  have hc := (Real.continuous_rpow_const hp.le).comp
-    (contDiff_carlemanLogCutoff.continuous_deriv (by simp)).abs
-  exact hc.integrable_of_hasCompactSupport
-    (hasCompactSupport_carlemanLogCutoff.deriv.comp_left (by simp [Real.zero_rpow hp.ne']))
+  have hc : Continuous (fun t : ℝ => |deriv carlemanLogCutoff t| ^ p) :=
+    (Real.continuous_rpow_const hp.le).comp
+      (contDiff_carlemanLogCutoff.continuous_deriv (by simp)).abs
+  have hs : HasCompactSupport (fun t : ℝ => |deriv carlemanLogCutoff t| ^ p) :=
+    hasCompactSupport_carlemanLogCutoff.deriv.comp_left (g := fun u : ℝ => |u| ^ p)
+      (by simp only [abs_zero, Real.zero_rpow hp.ne'])
+  exact hc.integrable_of_hasCompactSupport hs
+
+/-- The derivative is nonzero somewhere, since the cutoff has a nonzero value and compact support. -/
+theorem exists_deriv_carlemanLogCutoff_ne_zero : ∃ t : ℝ, deriv carlemanLogCutoff t ≠ 0 := by
+  by_contra h
+  push Not at h
+  have hf := HasCompactSupport.integral_Ioi_deriv_eq
+    (contDiff_carlemanLogCutoff.of_le (by simp)) hasCompactSupport_carlemanLogCutoff 3
+  simp_rw [h, integral_zero, carlemanLogCutoff_three] at hf
+  norm_num at hf
+
+/-- The derivative's positive-power mass is strictly positive as well as finite. -/
+theorem integral_deriv_carlemanLogCutoff_rpow_pos {p : ℝ} (hp : 0 < p) :
+    0 < ∫ t : ℝ, |deriv carlemanLogCutoff t| ^ p := by
+  obtain ⟨t, ht⟩ := exists_deriv_carlemanLogCutoff_ne_zero
+  have hc : Continuous (fun t : ℝ => |deriv carlemanLogCutoff t| ^ p) :=
+    (Real.continuous_rpow_const hp.le).comp
+      (contDiff_carlemanLogCutoff.continuous_deriv (by simp)).abs
+  have hs : HasCompactSupport (fun t : ℝ => |deriv carlemanLogCutoff t| ^ p) :=
+    hasCompactSupport_carlemanLogCutoff.deriv.comp_left (g := fun u : ℝ => |u| ^ p)
+      (by simp only [abs_zero, Real.zero_rpow hp.ne'])
+  apply hc.integral_pos_of_hasCompactSupport_nonneg_nonzero hs
+    (fun t => Real.rpow_nonneg (abs_nonneg _) _) (x := t)
+  exact (Real.rpow_pos_of_pos (abs_pos.mpr ht) p).ne'
 
 end GaloisForLFunctions.HTGeometry

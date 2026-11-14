@@ -62,8 +62,8 @@ theorem primeColorValue_basisExpansion
       ∑ i, algebraMap ℂ arithmeticFunctionFractionField ((B.repr b) i) *
         primeColorValue color (B i) := by
   have h := congrArg (primeColorValueLinearMap color) (B.sum_repr b)
-  simpa only [map_sum, LinearMap.map_smul, primeColorValueLinearMap_apply,
-    Algebra.smul_def] using h.symm
+  simp only [map_sum, LinearMap.map_smul] at h
+  simpa only [primeColorValueLinearMap_apply, Algebra.smul_def] using h.symm
 
 variable [DecidableEq C]
 

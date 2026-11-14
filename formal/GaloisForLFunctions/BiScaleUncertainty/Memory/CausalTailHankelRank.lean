@@ -13,7 +13,7 @@ arithmetic cutoff and the number of observations.
 -/
 
 open MeasureTheory
-open scoped BigOperators Matrix
+open scoped BigOperators Matrix NNReal
 
 namespace GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
 

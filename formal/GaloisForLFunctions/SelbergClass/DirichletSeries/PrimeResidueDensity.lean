@@ -1,4 +1,4 @@
-import GaloisForLFunctions.SelbergClass.DirichletSeries.PrimeColorBasis
+import GaloisForLFunctions.SelbergClass.DirichletSeries.PrimeColorInfiniteJets
 import GaloisForLFunctions.HTGeometry.PrimeResidueValuationInteractionSuperselection
 
 /-!
@@ -58,6 +58,32 @@ theorem algebraicIndependent_primeResidueInteractions_over_cofiniteField_iff
 
 #print axioms algebraicIndependent_primeResidueInteractions_over_filterField_iff
 #print axioms algebraicIndependent_primeResidueInteractions_over_densityField_iff
+
+/-- The residue-interaction algebra has one polynomial generator for each surviving residue
+pattern, even when its original interaction columns become dependent. -/
+def primeResidueInteractionPolynomialEquiv
+    {ι : Type*} [Fintype ι]
+    (A : ι → Type*) [∀ i, Fintype (A i)] [∀ i, DecidableEq (A i)] [∀ i, One (A i)]
+    (F : Filter Nat.Primes) (y : Nat.Primes → ∀ i, A i) :
+    MvPolynomial (frequentPrimeColors F y) (primeFilterCoefficientField F)
+      ≃ₐ[primeFilterCoefficientField F]
+        Algebra.adjoin (primeFilterCoefficientField F)
+          (Set.range fun z => primeColorValue y (anchoredProductBasis A z)) :=
+  finiteColorBasisPolynomialEquiv F y (anchoredProductBasis A)
+
+/-- Every natural shift and logarithmic order of every anchored interaction is jointly
+independent precisely when no complete residue pattern has prime density zero. -/
+theorem algebraicIndependent_primeResidueInteractionInfiniteJets_over_densityField_iff
+    {ι : Type*} [Fintype ι]
+    (A : ι → Type*) [∀ i, Fintype (A i)] [∀ i, DecidableEq (A i)] [∀ i, One (A i)]
+    (y : Nat.Primes → ∀ i, A i) :
+    AlgebraicIndependent (primeDensityCoefficientField primeCountingWindow)
+        (primeColorNaturalShiftLogJet y (fun z x => anchoredProductBasis A z x)) ↔
+      ∀ z, ¬ PrimeWindowDensityZero primeCountingWindow {p | y p = z} :=
+  algebraicIndependent_primeColorBasisInfiniteJets_over_densityField_iff y (anchoredProductBasis A)
+
+#print axioms primeResidueInteractionPolynomialEquiv
+#print axioms algebraicIndependent_primeResidueInteractionInfiniteJets_over_densityField_iff
 
 end
 end GaloisForLFunctions.SelbergClass.DirichletSeries

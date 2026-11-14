@@ -114,6 +114,19 @@ theorem stableExponentialSymbol_conj (α ξ : ℝ) :
 def hermitianFrequencyProjection (φ : ℝ → ℂ) (ξ : ℝ) : ℂ :=
   (φ ξ + star (φ (-ξ))) / 2
 
+/-- The completed symbol has conjugate symmetry at every frequency. -/
+theorem hermitianFrequencyProjection_symmetry (φ : ℝ → ℂ) (ξ : ℝ) :
+    star (hermitianFrequencyProjection φ (-ξ)) = hermitianFrequencyProjection φ ξ := by
+  simp only [hermitianFrequencyProjection, neg_neg, star_div₀, star_add, star_star, star_ofNat]
+  ring
+
+/-- In particular, the zero-frequency coefficient is real. -/
+theorem hermitianFrequencyProjection_zero_im (φ : ℝ → ℂ) :
+    (hermitianFrequencyProjection φ 0).im = 0 := by
+  have h := congrArg Complex.im (hermitianFrequencyProjection_symmetry φ 0)
+  simp only [neg_zero, Complex.star_def, Complex.conj_im] at h
+  linarith only [h]
+
 /-- For real poles, Hermitian projection keeps exactly the real parts of the residues. -/
 theorem hermitianFrequencyProjection_stablePacket {n : ℕ} (residue : Fin n → ℂ)
     (logRate : Fin n → ℝ) (ξ : ℝ) :
@@ -160,5 +173,7 @@ end GaloisForLFunctions.HTGeometry
 #print axioms GaloisForLFunctions.HTGeometry.fourierCoeff_periodizedExponentialPacket
 #print axioms GaloisForLFunctions.HTGeometry.norm_stableExponentialPacketSymbol_le
 #print axioms GaloisForLFunctions.HTGeometry.stableExponentialSymbol_conj
+#print axioms GaloisForLFunctions.HTGeometry.hermitianFrequencyProjection_symmetry
+#print axioms GaloisForLFunctions.HTGeometry.hermitianFrequencyProjection_zero_im
 #print axioms GaloisForLFunctions.HTGeometry.hermitianFrequencyProjection_stablePacket
 #print axioms GaloisForLFunctions.HTGeometry.hermitianFrequencyProjection_idempotent

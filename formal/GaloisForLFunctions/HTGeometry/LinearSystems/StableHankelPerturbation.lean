@@ -90,14 +90,14 @@ theorem hasRankLE_stableHankelPacket_prune {n : ℕ} (logRate : Fin n → ℝ)
     (finrank_span_finset_le_card _).trans Finset.card_image_le, ?_⟩
   intro z
   unfold stableHankelPacket finiteRankProbe
-  rw [ContinuousLinearMap.sum_apply]
+  rw [_root_.sum_apply]
   refine Submodule.sum_mem _ fun j _ => ?_
   by_cases hj : j ∈ keep
-  · simp only [if_pos hj, ContinuousLinearMap.smul_apply, InnerProductSpace.rankOne_apply]
+  · simp only [if_pos hj, _root_.smul_apply, InnerProductSpace.rankOne_apply]
     apply Submodule.smul_mem
     apply Submodule.smul_mem
     exact Submodule.subset_span (Finset.mem_coe.mpr (Finset.mem_image_of_mem v hj))
-  · simp only [if_neg hj, zero_smul, ContinuousLinearMap.zero_apply]
+  · simp only [if_neg hj, zero_smul, _root_.zero_apply]
     exact Submodule.zero_mem _
 
 /-- Retaining `k` modes gives a rank-`k` approximation with an explicit spectral error bound. -/
@@ -112,10 +112,10 @@ theorem approxNumber_stableHankelPacket_le_discarded {n : ℕ} (logRate : Fin n 
 theorem norm_finiteExponentialHankel_exp_le {n : ℕ} (logRate : Fin n → ℝ)
     (m : Fin n → ℕ) :
     ‖finiteExponentialHankel (fun j => Real.exp (logRate j))
-      (fun j => Real.exp_pos _) m‖ ≤ ∑ j, (m j : ℝ) / Real.exp (logRate j) := by
+      (fun _ => Real.exp_pos _) m‖ ≤ ∑ j, (m j : ℝ) / Real.exp (logRate j) := by
   have h := norm_stableHankelPacket_le logRate (fun j => ((2 * m j : ℕ) : ℂ))
   change ‖finiteExponentialHankel (fun j => Real.exp (logRate j))
-    (fun j => Real.exp_pos _) m‖ ≤ _ at h
+    (fun _ => Real.exp_pos _) m‖ ≤ _ at h
   refine h.trans_eq (Finset.sum_congr rfl fun j _ => ?_)
   rw [Complex.norm_natCast]
   push_cast

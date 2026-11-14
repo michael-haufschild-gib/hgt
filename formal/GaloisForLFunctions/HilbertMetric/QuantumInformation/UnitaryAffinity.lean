@@ -32,12 +32,10 @@ theorem bornQuadratic_unitary (p : ι → ℝ≥0) (U : Matrix.unitaryGroup ι �
   have hr : (∑ i, ∑ j, (p i : ℝ) * finiteUnitaryEntryWeight U i j / 2) =
       (∑ i, (p i : ℝ)) / 2 := by
     simp_rw [← Finset.sum_div, ← Finset.mul_sum, sum_finiteUnitaryEntryWeight_row, mul_one]
-    rw [Finset.sum_div]
   have hc : (∑ i, ∑ j, (p j : ℝ) * finiteUnitaryEntryWeight U i j / 2) =
       (∑ j, (p j : ℝ)) / 2 := by
     rw [Finset.sum_comm]
     simp_rw [← Finset.sum_div, ← Finset.mul_sum, sum_finiteUnitaryEntryWeight_column, mul_one]
-    rw [Finset.sum_div]
   rw [hr, hc]
   ring
 

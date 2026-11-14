@@ -55,7 +55,8 @@ theorem subproduct_target_or_character_container (q : ι → G) (I : Finset ι) 
       have hall : ∀ i ∈ I, χ (q i) = 1 := by
         intro i hi
         by_contra hne
-        have hpos := card_pos.mpr ⟨i, mem_filter.mpr ⟨hi, hne⟩⟩
+        have hpos : 0 < (I.filter fun j => χ (q j) ≠ 1).card :=
+          card_pos.mpr ⟨i, mem_filter.mpr ⟨hi, hne⟩⟩
         omega
       have hclosure : Subgroup.closure (q '' (I : Set ι)) ≤ χ.ker := by
         apply (Subgroup.closure_le _).mpr
@@ -64,6 +65,7 @@ theorem subproduct_target_or_character_container (q : ι → G) (I : Finset ι) 
       exact hχ (hclosure hgen)
     · exact Or.inl hgen
 
+omit [DecidableEq G] [DecidableEq ι] in
 /-- Failure of subgroup generation admits a character that annihilates every indexed factor. -/
 theorem generated_target_or_common_character_kernel (q : ι → G) (I : Finset ι) (g : G) :
     g ∈ Subgroup.closure (q '' (I : Set ι)) ∨

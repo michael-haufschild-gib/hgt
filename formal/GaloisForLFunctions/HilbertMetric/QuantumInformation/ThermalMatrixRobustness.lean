@@ -29,7 +29,7 @@ theorem thermalInverseQuadratic_nonneg (β : ℝ) (E : ι → ℝ) (X : Matrix �
 /-- Real Hilbert--Schmidt pairing in matrix-entry coordinates. -/
 theorem hsInner_re_eq_sum (A X : Matrix ι ι ℂ) :
     (QuantumAlg.hsInner A X).re =
-      ∑ i, ∑ j, (A i j).re * (X i j).re + (A i j).im * (X i j).im := by
+      ∑ i, ∑ j, ((A i j).re * (X i j).re + (A i j).im * (X i j).im) := by
   simp only [QuantumAlg.hsInner, Matrix.trace, Matrix.diag_apply, Matrix.mul_apply,
     Matrix.conjTranspose_apply, Complex.re_sum, Complex.mul_re, Complex.star_def,
     Complex.conj_re, Complex.conj_im, neg_mul, sub_neg_eq_add]
@@ -40,7 +40,7 @@ theorem thermal_hilbertSchmidt_robustness (β : ℝ) (E : ι → ℝ) (A X : Mat
     (QuantumAlg.hsInner A X).re ^ (2 : ℕ) ≤
       sandwichedQuadratic (thermalPopulation β E) A * thermalInverseQuadratic β E X := by
   rw [hsInner_re_eq_sum, sandwichedQuadratic_thermal_eq]
-  change (∑ i, ∑ j, (A i j).re * (X i j).re + (A i j).im * (X i j).im) ^ (2 : ℕ) ≤
+  change (∑ i, ∑ j, ((A i j).re * (X i j).re + (A i j).im * (X i j).im)) ^ (2 : ℕ) ≤
     (∑ i, ∑ j, finiteKMSWightmanWeight β E i j * Complex.normSq (A i j)) *
       ∑ i, ∑ j, Complex.normSq (X i j) / finiteKMSWightmanWeight β E i j
   apply Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul Finset.univ

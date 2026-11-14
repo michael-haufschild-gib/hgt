@@ -11,7 +11,7 @@ error bound, independent of an observation window.
 -/
 
 open Filter Topology
-open scoped BigOperators
+open scoped BigOperators NNReal
 
 namespace GaloisForLFunctions.HTGeometry
 
@@ -68,7 +68,9 @@ theorem contractingWith_hankelPicardStep {n : ℕ} (logRate : Fin n → ℝ)
     (residue : Fin n → ℂ) (forcing : HalfLineLaplaceL2) :
     ContractingWith (stableHankelRatio logRate residue) (hankelPicardStep logRate residue forcing) := by
   refine ⟨stableHankelRatio_lt_one _ _, LipschitzWith.of_dist_le_mul fun x y => ?_⟩
-  simp only [hankelPicardStep, dist_add_left, dist_eq_norm, ← map_sub]
+  dsimp only [hankelPicardStep]
+  rw [dist_add_left]
+  simp only [dist_eq_norm, ← map_sub]
   exact ((stableHankelContraction logRate residue).le_opNorm (x - y)).trans
     (mul_le_mul_of_nonneg_right (norm_stableHankelContraction_le _ _) (norm_nonneg _))
 
@@ -105,7 +107,7 @@ theorem hankelPicard_error_le {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin
     ‖(hankelPicardStep logRate residue forcing)^[k] u - hankelFixedPoint logRate residue forcing‖ ≤
       ‖u - hankelPicardStep logRate residue forcing u‖ *
         (stableHankelRatio logRate residue : ℝ) ^ k / (1 - stableHankelRatio logRate residue) := by
-  simpa only [dist_eq_norm] using
+  simpa only [dist_eq_norm, hankelFixedPoint] using
     (contractingWith_hankelPicardStep logRate residue forcing).apriori_dist_iterate_fixedPoint_le u k
 
 /-- Starting at zero bounds the error entirely by forcing size and the modal budget. -/
@@ -133,6 +135,65 @@ theorem norm_hankelFixedPoint_le {n : ℕ} (logRate : Fin n → ℝ) (residue : 
       (1 + stableHankelBudget logRate residue) * ‖forcing‖ := by
   simpa using hankelPicard_zero_error_le logRate residue forcing 0
 
+/-- Superposition follows from uniqueness of the feedback equation. -/
+theorem hankelFixedPoint_add {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin n → ℂ)
+    (f g : HalfLineLaplaceL2) :
+    hankelFixedPoint logRate residue (f + g) =
+      hankelFixedPoint logRate residue f + hankelFixedPoint logRate residue g := by
+  symm
+  apply (contractingWith_hankelPicardStep logRate residue (f + g)).fixedPoint_unique
+  change (f + g) + stableHankelContraction logRate residue
+    (hankelFixedPoint logRate residue f + hankelFixedPoint logRate residue g) = _
+  rw [map_add]
+  calc
+    _ = (f + stableHankelContraction logRate residue (hankelFixedPoint logRate residue f)) +
+        (g + stableHankelContraction logRate residue (hankelFixedPoint logRate residue g)) := by abel
+    _ = _ := by rw [← hankelFixedPoint_eq logRate residue f, ← hankelFixedPoint_eq logRate residue g]
+
+theorem hankelFixedPoint_smul {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin n → ℂ)
+    (c : ℂ) (f : HalfLineLaplaceL2) :
+    hankelFixedPoint logRate residue (c • f) = c • hankelFixedPoint logRate residue f := by
+  symm
+  apply (contractingWith_hankelPicardStep logRate residue (c • f)).fixedPoint_unique
+  change c • f + stableHankelContraction logRate residue (c • hankelFixedPoint logRate residue f) = _
+  rw [map_smul, ← smul_add, ← hankelFixedPoint_eq]
+
+/-- The feedback solution is a bounded complex-linear operator on the full half-line. -/
+def hankelSolutionOperator {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin n → ℂ) :
+    HalfLineLaplaceL2 →L[ℂ] HalfLineLaplaceL2 :=
+  ({ toFun := hankelFixedPoint logRate residue
+     map_add' := hankelFixedPoint_add logRate residue
+     map_smul' := hankelFixedPoint_smul logRate residue } :
+    HalfLineLaplaceL2 →ₗ[ℂ] HalfLineLaplaceL2).mkContinuous
+      (1 + stableHankelBudget logRate residue) (norm_hankelFixedPoint_le logRate residue)
+
+/-- Solving the feedback equation is a right inverse of its residual operator. -/
+theorem sub_one_hankelContraction_mul_solution {n : ℕ} (logRate : Fin n → ℝ)
+    (residue : Fin n → ℂ) :
+    (1 - stableHankelContraction logRate residue) * hankelSolutionOperator logRate residue = 1 := by
+  ext f
+  change hankelFixedPoint logRate residue f -
+    stableHankelContraction logRate residue (hankelFixedPoint logRate residue f) = f
+  exact sub_eq_iff_eq_add.mpr (hankelFixedPoint_eq logRate residue f)
+
+/-- Uniqueness also gives the left inverse, so the constructed solution operator is the resolvent. -/
+theorem hankelSolution_mul_sub_one_contraction {n : ℕ} (logRate : Fin n → ℝ)
+    (residue : Fin n → ℂ) :
+    hankelSolutionOperator logRate residue * (1 - stableHankelContraction logRate residue) = 1 := by
+  ext f
+  change hankelFixedPoint logRate residue (f - stableHankelContraction logRate residue f) = f
+  symm
+  apply (contractingWith_hankelPicardStep logRate residue
+    (f - stableHankelContraction logRate residue f)).fixedPoint_unique
+  exact sub_add_cancel _ _
+
+/-- The modal budget controls the norm of the inverse operator. -/
+theorem norm_hankelSolutionOperator_le {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin n → ℂ) :
+    ‖hankelSolutionOperator logRate residue‖ ≤ 1 + stableHankelBudget logRate residue := by
+  apply ContinuousLinearMap.opNorm_le_bound _
+    (add_nonneg zero_le_one (stableHankelBudget_nonneg _ _))
+  exact norm_hankelFixedPoint_le logRate residue
+
 end
 
 end GaloisForLFunctions.HTGeometry
@@ -147,3 +208,8 @@ end GaloisForLFunctions.HTGeometry
 #print axioms GaloisForLFunctions.HTGeometry.hankelPicard_error_le
 #print axioms GaloisForLFunctions.HTGeometry.hankelPicard_zero_error_le
 #print axioms GaloisForLFunctions.HTGeometry.norm_hankelFixedPoint_le
+#print axioms GaloisForLFunctions.HTGeometry.hankelFixedPoint_add
+#print axioms GaloisForLFunctions.HTGeometry.hankelFixedPoint_smul
+#print axioms GaloisForLFunctions.HTGeometry.sub_one_hankelContraction_mul_solution
+#print axioms GaloisForLFunctions.HTGeometry.hankelSolution_mul_sub_one_contraction
+#print axioms GaloisForLFunctions.HTGeometry.norm_hankelSolutionOperator_le

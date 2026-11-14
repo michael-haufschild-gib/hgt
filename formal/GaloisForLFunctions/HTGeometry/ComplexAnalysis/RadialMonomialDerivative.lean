@@ -61,7 +61,7 @@ theorem weighted_norm_dbarDifferential_radialComplexMonomial
   rw [norm_dbarDifferential_radialComplexMonomial_eq V m hx hχ, he,
     Real.mul_rpow (by norm_num : (0 : ℝ) ≤ 1 / 2) (by positivity)]
 
-local instance : InnerProductSpace ℝ V := InnerProductSpace.rclikeToReal ℂ V
+local instance (priority := 50) : InnerProductSpace ℝ V := InnerProductSpace.rclikeToReal ℂ V
 
 variable [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
 

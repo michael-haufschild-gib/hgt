@@ -51,7 +51,7 @@ theorem thermal_wightman_le_born (β : ℝ) (E : ι → ℝ) (A : ι → ι → 
   rw [← sandwichedQuadratic_thermal_eq]
   exact sandwichedQuadratic_le_born _ _
 
-/-- Gibbs degeneracy is exactly temperature zero or energy degeneracy. -/
+/-- Gibbs degeneracy is exactly zero inverse temperature or energy degeneracy. -/
 theorem thermalPopulation_eq_iff (β : ℝ) (E : ι → ℝ) (i j : ι) :
     thermalPopulation β E i = thermalPopulation β E j ↔ β = 0 ∨ E i = E j := by
   rw [← NNReal.coe_inj]
@@ -67,7 +67,7 @@ theorem thermalPopulation_eq_iff (β : ℝ) (E : ι → ℝ) (i j : ι) :
     · rw [h]
 
 /-- Thermal skew information is zero exactly on energy-preserving transitions,
-with the maximally mixed zero-temperature-parameter state included. -/
+with the maximally mixed zero-inverse-temperature state included. -/
 theorem thermal_skew_eq_zero_iff (β : ℝ) (E : ι → ℝ) (A : ι → ι → ℂ) :
     skewInformation (thermalPopulation β E) A = 0 ↔
       ∀ i j, β = 0 ∨ E i = E j ∨ A i j = 0 := by
