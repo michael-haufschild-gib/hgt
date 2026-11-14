@@ -18,8 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 section Coordinate
 
-variable (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-  [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
+variable (V : Type*) [NormedAddCommGroup V]
 
 /-- Squared complex-coordinate modulus on the unit sphere. -/
 def complexBlockSphereCoordinate (ω : sphere (0 : BlockSpace ℂ V) 1) : ℝ :=
@@ -38,6 +37,8 @@ theorem complexBlockSphereCoordinate_mem (ω : sphere (0 : BlockSpace ℂ V) 1) 
   exact ⟨sq_nonneg _, by
     change ‖(ω.1 : BlockSpace ℂ V).fst‖ ^ 2 ≤ 1
     linarith only [hsq, sq_nonneg ‖(ω.1 : BlockSpace ℂ V).snd‖]⟩
+
+variable [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
 
 /-- Probability law of the squared coordinate under normalized spherical measure. -/
 def complexBlockCoordinateLaw : Measure ℝ :=

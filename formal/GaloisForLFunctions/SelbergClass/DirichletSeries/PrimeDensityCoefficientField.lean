@@ -49,16 +49,21 @@ theorem primeWindowFrequency_union_le (W : ℕ → Finset Nat.Primes)
     ext p
     simp only [Finset.mem_filter, Set.mem_union, Finset.mem_union]
     tauto
-  unfold primeWindowFrequency
+  change (((W n).filter (· ∈ S ∪ T)).card : ℝ) / (W n).card ≤
+    (((W n).filter (· ∈ S)).card : ℝ) / (W n).card +
+      (((W n).filter (· ∈ T)).card : ℝ) / (W n).card
   rw [heq, ← add_div]
   apply div_le_div_of_nonneg_right _ (Nat.cast_nonneg _)
   exact_mod_cast Finset.card_union_le ((W n).filter (· ∈ S)) ((W n).filter (· ∈ T))
 
 theorem primeWindowDensityZero_empty (W : ℕ → Finset Nat.Primes) :
     PrimeWindowDensityZero W ∅ := by
-  simpa only [PrimeWindowDensityZero, primeWindowFrequency, Set.mem_empty_iff_false,
-    Finset.filter_false, Finset.card_empty, Nat.cast_zero, zero_div] using
-    (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (𝓝 0))
+  have heq : primeWindowFrequency W ∅ = fun _ => 0 := by
+    funext n
+    simp [primeWindowFrequency]
+  change Tendsto (primeWindowFrequency W ∅) atTop (𝓝 0)
+  rw [heq]
+  exact tendsto_const_nhds
 
 /-- Density-zero prime sets are closed under taking subsets. -/
 theorem PrimeWindowDensityZero.subset {W : ℕ → Finset Nat.Primes}

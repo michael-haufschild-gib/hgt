@@ -58,3 +58,4 @@ import GaloisForLFunctions.KodairaParshinAbc.Legendre.SymmetricSquarePeriods
 import GaloisForLFunctions.KodairaParshinAbc.Legendre.AnalyticSquaredPeriod
 import GaloisForLFunctions.KodairaParshinAbc.Periods.DifferentialSymmetricSquare
 import GaloisForLFunctions.KodairaParshinAbc.Periods.SymmetricSquareRecognition
+import GaloisForLFunctions.KodairaParshinAbc.Periods.CoxSingularFibres

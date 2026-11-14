@@ -42,7 +42,7 @@ theorem arithmeticPrimeSupport_restricted_moebius (S : Set ℕ) :
       {p : Nat.Primes | p.1 ∈ S} := by
   apply primeSupport_restriction_of_nonzero_primes
   intro p
-  simp [p.2]
+  simp [moebius_apply_prime p.2]
 
 /-- Partial Liouville coefficients detect every allowed prime. -/
 theorem arithmeticPrimeSupport_restricted_liouville (S : Set ℕ) :
@@ -50,7 +50,7 @@ theorem arithmeticPrimeSupport_restricted_liouville (S : Set ℕ) :
       {p : Nat.Primes | p.1 ∈ S} := by
   apply primeSupport_restriction_of_nonzero_primes
   intro p
-  simp [p.2]
+  simp [liouville, p.2.ne_zero, cardFactors_apply_prime p.2]
 
 /-- Exact sparse-coefficient criterion for every partial zeta Euler product. -/
 theorem restricted_zeta_mem_densityField_iff

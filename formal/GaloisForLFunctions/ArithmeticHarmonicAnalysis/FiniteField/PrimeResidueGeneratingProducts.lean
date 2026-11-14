@@ -65,10 +65,45 @@ theorem sum_prime_centered_product_sq (S : Finset Nat.Primes)
       (∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) ^ 2 =
       (primeSetProduct S : ℝ) *
         ∏ p ∈ S, (1 + t p ^ 2 * (A p).card * (p.val - ((A p).card : ℝ))) := by
-  simp_rw [prod_pow]
+  simp_rw [← prod_pow]
   rw [sum_primeResidue_product]
   simp only [sum_centeredResidueFactor_sq, ZMod.card, prod_mul_distrib,
     primeSetProduct, Nat.cast_prod]
+
+/-- Subtracting the exact mean leaves the product variance minus one, without absolute-value loss. -/
+theorem sum_prime_centered_product_variance (S : Finset Nat.Primes)
+    (A : (p : Nat.Primes) → Finset (ZMod p.val)) (t : Nat.Primes → ℝ) :
+    ∑ n ∈ range (primeSetProduct S),
+      ((∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) - 1) ^ 2 =
+      (primeSetProduct S : ℝ) *
+        ((∏ p ∈ S, (1 + t p ^ 2 * (A p).card * (p.val - ((A p).card : ℝ)))) - 1) := by
+  simp_rw [sub_sq, mul_one, one_pow]
+  rw [sum_add_distrib, sum_sub_distrib, ← mul_sum,
+    sum_prime_centered_product_sq, sum_prime_centered_product]
+  simp only [sum_const, card_range, nsmul_eq_mul, mul_one]
+  ring
+
+/-- A complete-period deviation bound for arbitrary forbidden residue sets and local parameters. -/
+theorem prime_centered_product_deviation (S : Finset Nat.Primes)
+    (A : (p : Nat.Primes) → Finset (ZMod p.val)) (t : Nat.Primes → ℝ) (L : NNReal) :
+    (L : ℝ) ^ 2 * (((range (primeSetProduct S)).filter fun n =>
+      (L : ℝ) ≤ |(∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) - 1|).card : ℝ) ≤
+      (primeSetProduct S : ℝ) *
+        ((∏ p ∈ S, (1 + t p ^ 2 * (A p).card * (p.val - ((A p).card : ℝ)))) - 1) := by
+  rw [← sum_prime_centered_product_variance]
+  calc
+    _ = ∑ _n ∈ (range (primeSetProduct S)).filter (fun n =>
+        (L : ℝ) ≤ |(∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) - 1|),
+          (L : ℝ) ^ 2 := by rw [sum_const, nsmul_eq_mul, mul_comm]
+    _ ≤ ∑ n ∈ (range (primeSetProduct S)).filter (fun n =>
+        (L : ℝ) ≤ |(∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) - 1|),
+          ((∏ p ∈ S, centeredResidueFactor (A p) (t p) (n : ZMod p.val)) - 1) ^ 2 := by
+      apply sum_le_sum
+      intro n hn
+      have h := pow_le_pow_left₀ L.property (mem_filter.mp hn).2 2
+      simpa only [sq_abs] using h
+    _ ≤ _ := sum_le_sum_of_subset_of_nonneg (filter_subset _ _)
+      (fun n _ _ => sq_nonneg _)
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis

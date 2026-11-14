@@ -98,4 +98,54 @@ theorem log_rankin_ratio_counterexample :
   rw [harg]
   linarith only [hlo, hneg]
 
+/-- A rational lower bound for `log 2` sufficient for the fourth-degree Rankin threshold. -/
+theorem log_two_ge_forty_seven_over_seventy_two : (47 / 72 : ℝ) ≤ Real.log 2 := by
+  have h₁ := quadratic_le_log_one_add (⟨1 / 2, by positivity⟩ : NNReal)
+  have h₂ := quadratic_le_log_one_add (⟨1 / 3, by positivity⟩ : NNReal)
+  have heq : Real.log 2 = Real.log (1 + 1 / 2) + Real.log (1 + 1 / 3) := by
+    rw [← Real.log_mul (by norm_num) (by norm_num)]
+    congr 1
+    ring
+  rw [heq]
+  norm_num only [NNReal.coe_mk] at h₁ h₂
+  linarith only [h₁, h₂]
+
+/-- The adaptive degree still makes the corrected Rankin exponent at most `-log 2`. -/
+theorem corrected_rankin_exponent (t : Icc (0 : ℝ) (1 / 3)) (S : NNReal) :
+    -((⌈4 * t.1 * (S : ℝ)⌉₊ + 1 : ℕ) : ℝ) * Real.log 2 +
+      ((S : ℝ) / 2) * Real.log ((1 + 2 * t.1) / (1 - t.1)) + t.1 * S ≤
+        -Real.log 2 := by
+  have hlog := log_rankin_ratio_le_three
+    (⟨t.1, t.property.1, by linarith only [t.property.2]⟩ : Icc (0 : ℝ) (1 / 2))
+  have hlocal := mul_le_mul_of_nonneg_left hlog (div_nonneg S.property (by norm_num : (0 : ℝ) ≤ 2))
+  have hceil := Nat.le_ceil (4 * t.1 * (S : ℝ))
+  have hlower := log_two_ge_forty_seven_over_seventy_two
+  have hlogpos : 0 ≤ Real.log 2 := by linarith only [hlower]
+  have hdegree := mul_le_mul_of_nonneg_right hceil hlogpos
+  have hmass : 0 ≤ t.1 * (S : ℝ) := mul_nonneg t.property.1 S.property
+  have hmargin := mul_le_mul_of_nonneg_left hlower hmass
+  norm_num only [Nat.cast_add, Nat.cast_one] at *
+  nlinarith only [hlocal, hdegree, hmargin, hmass]
+
+/-- The proposed quadratic coefficient involving `log (3/2)` also fails on the stated interval. -/
+theorem quadratic_log_counterexample :
+    (1 / 4 : ℝ) + (3 * Real.log (3 / 2) - 1) * (1 / 4 : ℝ) ^ 2 <
+      -Real.log (1 - 1 / 4 : ℝ) := by
+  have hlow := quadratic_le_log_one_add (⟨1 / 3, by positivity⟩ : NNReal)
+  have h₁ := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 9 / 8 by norm_num)
+  have h₂ := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 4 / 3 by norm_num)
+  have hsum : Real.log (3 / 2 : ℝ) = Real.log (9 / 8) + Real.log (4 / 3) := by
+    rw [← Real.log_mul (by norm_num) (by norm_num)]
+    congr 1
+    ring
+  have hinv : -Real.log (1 - 1 / 4 : ℝ) = Real.log (1 + 1 / 3) := by
+    rw [← Real.log_inv]
+    congr 1
+    norm_num
+  rw [hsum, hinv]
+  norm_num only [NNReal.coe_mk] at hlow
+  have harg : (1 + 1 / 3 : ℝ) = 4 / 3 := by ring
+  rw [harg] at hlow ⊢
+  linarith only [hlow, h₁, h₂]
+
 end GaloisForLFunctions.BezoutValuationIncidence.Sieve

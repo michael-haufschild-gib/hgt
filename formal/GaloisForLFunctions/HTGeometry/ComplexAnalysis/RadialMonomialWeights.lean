@@ -80,7 +80,15 @@ theorem integral_complexBlock_rpow_radial (s : ℝ) (φ : ℝ → ℝ) :
         Real.mul_rpow hr.le (norm_nonneg _)])]
   congr 1
   unfold complexBlockSphereMellin
-  field_simp [(complexBlock_sphere_mass_pos V).ne']
+  rw [← mul_div_assoc]
+  apply (eq_div_iff (complexBlock_sphere_mass_pos V).ne').mpr
+  ring
+
+end ComplexBlock
+
+section Monomials
+
+variable (V : Type*) [NormedAddCommGroup V]
 
 /-- A complex-coordinate monomial multiplied by a profile in logarithmic radius. -/
 def radialComplexMonomial (m : ℕ) (χ : ℝ → ℝ) (x : BlockSpace ℂ V) : ℂ :=
@@ -103,6 +111,8 @@ theorem weighted_norm_radialComplexMonomial_rpow (m : ℕ) (χ : ℝ → ℝ)
     ← Real.rpow_mul (norm_nonneg _), ← Real.rpow_natCast ‖x.fst‖ m,
     ← Real.rpow_mul (norm_nonneg _)]
   ring
+
+variable [InnerProductSpace ℝ V] [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
 
 /-- Exact separation of the weighted `Lᵖ` integral of a radial coordinate monomial. -/
 theorem integral_weighted_radialComplexMonomial (m : ℕ) (χ : ℝ → ℝ) (τ p : ℝ) :
@@ -139,9 +149,9 @@ theorem integral_critical_weighted_radialComplexMonomial (m : ℕ) (χ : ℝ →
       ((m : ℝ) - ((m : ℝ) + (Module.finrank ℝ (BlockSpace ℂ V) : ℝ) / p)) * p = -1 := by
     field_simp
     ring
-  rw [he, integral_logRadius_weight]
+  rw [he, integral_logRadius_weight (fun t => |χ t| ^ p)]
 
-end ComplexBlock
+end Monomials
 
 /-- The critical upper exponent exactly cancels the radial Jacobian. -/
 theorem integral_carlemanQ_radialComplexMonomial (n m : ℕ) (χ : ℝ → ℝ) :
