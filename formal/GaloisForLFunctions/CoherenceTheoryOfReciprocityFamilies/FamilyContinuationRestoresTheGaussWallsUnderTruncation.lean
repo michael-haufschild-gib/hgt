@@ -92,7 +92,7 @@ section PrimeTruncation
 variable (π : O) [NeZero π] [hP : (Ideal.span {π}).IsMaximal] (hlam : lambda ∉ Ideal.span {π})
   (h2 : (2 : O) ∉ Ideal.span {π}) (hprim : lambda ^ 2 ∣ π - 1)
 
-include h2 hprim in
+include hlam h2 hprim in
 /-- **Odd cube exponents vanish identically at `j = 0`.** At residue mode `j = 0`, every term of the
 local row-Poisson series with odd cube exponent `l = 2r + 1` vanishes, because the base layers
 `(e, 1, k, i)` are supported on nonzero sextic residue modes `j ∈ {2, 3, 4}`. -/
@@ -112,7 +112,7 @@ theorem localTerm_odd_cube_eq_zero (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.s
     · exact localTerm_eq_zero_of_two_le π hlam h2 hprim ηp X Y V hu 0 e 1 k (m - r) (by omega) hk
   · rfl
 
-include h2 hprim in
+include hlam h2 hprim in
 /-- For every cutoff `L ≥ 1`, truncating `localTerm` at `j = 0` to `l < L` coincides pointwise with
 truncating to the even cutoff `l < 2 * ((L + 1) / 2)`. -/
 theorem localTerm_lt_eq_lt_even (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π})
@@ -192,7 +192,7 @@ theorem hasSum_localTerm_even_layer (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.
               (by norm_num) (r - 1) m,
             show 2 + 2 * (r - 1) = 2 * r by omega]
           by_cases hmr : m = r
-          · subst hmr
+          · subst m
             rw [if_pos (by omega), show r - (r - 1) = 1 by omega,
               localTerm_A1 π hlam h2 hprim ηp X Y V hu (by norm_num : 0 < 6) 1,
               if_pos ⟨rfl, rfl⟩]
@@ -215,7 +215,7 @@ theorem hasSum_localTerm_even_layer (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.
               (by norm_num) r m,
             show 0 + 2 * r = 2 * r by ring]
           by_cases hmr : m = r
-          · subst hmr
+          · subst m
             rw [if_pos le_rfl, Nat.sub_self,
               localTerm_B0 π hlam h2 hprim ηp X Y V hu 0 0, if_pos ⟨rfl, rfl⟩]
             simp only [show (1 : Fin 2) = 0 ↔ False by decide, false_and, ite_false,
@@ -233,10 +233,11 @@ theorem hasSum_localTerm_even_layer (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.
             localTerm_family π hlam h2 hprim ηp X Y V hu (by norm_num : 0 < 6) 1 0 1
               (by norm_num) r m,
             show 0 + 2 * r = 2 * r by ring]
-          rcases lt_trichotomy m r with hlt | rfl | hgt
+          rcases lt_trichotomy m r with hlt | hmr | hgt
           · rw [if_neg (by omega)]
             simp [show ¬ (r + 1 ≤ m) by omega]
-          · rw [if_pos le_rfl, Nat.sub_self, localTerm_B1 π hlam h2 hprim ηp X Y V hu 0 0]
+          · subst m
+            rw [if_pos le_rfl, Nat.sub_self, localTerm_B1 π hlam h2 hprim ηp X Y V hu 0 0]
             simp [show ¬ (r + 1 ≤ r) by omega]
           · have hrm1 : r + 1 ≤ m := by omega
             rw [if_pos (by omega), localTerm_B1 π hlam h2 hprim ηp X Y V hu 0 (m - r),
@@ -330,21 +331,21 @@ theorem hasSum_localTerm_lt_cutoff (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.s
       have hlayer := hasSum_localTerm_even_layer π hlam h2 hprim ηp X Y V hu hV
         (r := d + 1) (by omega)
       have hsum := ih.add hlayer
-      rw [Finset.sum_Ico_succ_top (by omega : 1 ≤ d + 1)]
-      refine (hsum.congr_fun fun v => ?_).trans_eq ?_
-      · obtain ⟨e, l, k, m⟩ := v
-        dsimp only
-        by_cases hl : l < 2 * (d + 1)
-        · rw [if_pos hl, if_neg (by omega), if_pos (by omega), add_zero]
-        · rw [if_neg hl, zero_add]
-          by_cases heq : l = 2 * (d + 1)
-          · rw [if_pos heq, if_pos (by omega)]
-          · rw [if_neg heq]
-            by_cases hlt2 : l < 2 * (d + 2)
-            · have hodd : l = 2 * (d + 1) + 1 := by omega
-              rw [if_pos hlt2, hodd, localTerm_odd_cube_eq_zero π hlam h2 hprim ηp X Y V hu]
-            · rw [if_neg hlt2]
-      · ring
+      rw [Finset.sum_Ico_succ_top (by omega : 1 ≤ d + 1), add_mul, ← add_assoc]
+      refine hsum.congr_fun fun v => ?_
+      obtain ⟨e, l, k, m⟩ := v
+      dsimp only
+      by_cases hl : l < 2 * (d + 1)
+      · rw [if_pos (by omega : l < 2 * (d + 1 + 1)), if_pos hl,
+          if_neg (by omega : ¬ l = 2 * (d + 1)), add_zero]
+      · rw [if_neg hl, zero_add]
+        by_cases heq : l = 2 * (d + 1)
+        · rw [if_pos (by omega : l < 2 * (d + 1 + 1)), if_pos heq]
+        · rw [if_neg heq]
+          by_cases hlt2 : l < 2 * (d + 1 + 1)
+          · have hodd : l = 2 * (d + 1) + 1 := by omega
+            rw [if_pos hlt2, hodd, localTerm_odd_cube_eq_zero π hlam h2 hprim ηp X Y V hu]
+          · rw [if_neg hlt2]
   have hM1 : 1 ≤ (L + 1) / 2 := by omega
   have hMd : (L + 1) / 2 - 1 + 1 = (L + 1) / 2 := by omega
   have h := heven ((L + 1) / 2 - 1)
@@ -426,19 +427,35 @@ theorem truncatedPrincipalLocalFactor_eq_geom_mul_regular_add {M : ℕ} (hM : 1 
       field_simp [hD']
       ring
     | succ d ih =>
-      have hlhs : truncatedPrincipalLocalFactor (d + 2) Q A ηp s =
-          truncatedPrincipalLocalFactor (d + 1) Q A ηp s +
-            (1 - ((Q : ℂ)⁻¹) ^ 2) * (1 - (Q : ℂ)⁻¹) *
-              (A * (Q : ℂ) ^ (3 - 6 * s)) ^ (d + 1) := by
-        unfold truncatedPrincipalLocalFactor
-        rw [show d + 2 = (d + 1) + 1 from rfl, Finset.sum_Ico_succ_top (by omega : 1 ≤ d + 1)]
-        ring
-      rw [hlhs, ih, show d + 2 = (d + 1) + 1 from rfl, Finset.sum_range_succ]
-      unfold regularLocalFactor
       set R := A * (Q : ℂ) ^ (3 - 6 * s)
       set D := ηp * (Q : ℂ) ^ (-s)
+      set S_d := ∑ r ∈ Finset.range (d + 1), R ^ r
+      have hlhs : truncatedPrincipalLocalFactor (d + 2) Q A ηp s =
+          truncatedPrincipalLocalFactor (d + 1) Q A ηp s +
+            (1 - ((Q : ℂ)⁻¹) ^ 2) * (1 - (Q : ℂ)⁻¹) * R ^ (d + 1) := by
+        unfold truncatedPrincipalLocalFactor
+        rw [show d + 2 = (d + 1) + 1 from rfl, Finset.sum_Ico_succ_top (by omega : 1 ≤ d + 1)]
+        dsimp only [R]
+        ring
+      have hsum_succ : (∑ r ∈ Finset.range (d + 2), R ^ r) = S_d + R ^ (d + 1) :=
+        Finset.sum_range_succ (fun r => R ^ r) (d + 1)
+      have hpow_succ : R ^ (d + 2) = R ^ (d + 1) * R := pow_succ R (d + 1)
+      change truncatedPrincipalLocalFactor (d + 2) Q A ηp s =
+        (∑ r ∈ Finset.range (d + 2), R ^ r) * regularLocalFactor Q A ηp s +
+          (1 - ((Q : ℂ)⁻¹) ^ 2) * ((Q : ℂ)⁻¹ * R ^ (d + 2) / (1 - D))
+      rw [hlhs, ih, hsum_succ, hpow_succ]
+      change (S_d * regularLocalFactor Q A ηp s +
+            (1 - ((Q : ℂ)⁻¹) ^ 2) * ((Q : ℂ)⁻¹ * R ^ (d + 1) / (1 - D))) +
+          (1 - ((Q : ℂ)⁻¹) ^ 2) * (1 - (Q : ℂ)⁻¹) * R ^ (d + 1) =
+        (S_d + R ^ (d + 1)) * regularLocalFactor Q A ηp s +
+          (1 - ((Q : ℂ)⁻¹) ^ 2) * ((Q : ℂ)⁻¹ * (R ^ (d + 1) * R) / (1 - D))
+      unfold regularLocalFactor
+      change (S_d * ((1 - ((Q : ℂ)⁻¹) ^ 2) * (1 - (Q : ℂ)⁻¹ * (R - D) / (1 - D))) +
+            (1 - ((Q : ℂ)⁻¹) ^ 2) * ((Q : ℂ)⁻¹ * R ^ (d + 1) / (1 - D))) +
+          (1 - ((Q : ℂ)⁻¹) ^ 2) * (1 - (Q : ℂ)⁻¹) * R ^ (d + 1) =
+        (S_d + R ^ (d + 1)) * ((1 - ((Q : ℂ)⁻¹) ^ 2) * (1 - (Q : ℂ)⁻¹ * (R - D) / (1 - D))) +
+          (1 - ((Q : ℂ)⁻¹) ^ 2) * ((Q : ℂ)⁻¹ * (R ^ (d + 1) * R) / (1 - D))
       have hD' : 1 - D ≠ 0 := hD
-      rw [pow_succ R (d + 1)]
       field_simp [hD']
       ring
   have hMd : M - 1 + 1 = M := by omega
@@ -629,42 +646,47 @@ theorem differentiableAt_truncatedModifiedRegularFactor {M : ℕ} (hM : 1 ≤ M)
   have hD_diff : DifferentiableAt ℂ (fun z : ℂ => 1 - ηp * (Q : ℂ) ^ (-z)) s :=
     (differentiableAt_const 1).sub
       ((differentiableAt_id.neg.const_cpow (Or.inl hQ')).const_mul ηp)
-  have hsum_diff : DifferentiableAt ℂ
-      (fun z : ℂ => ∑ r ∈ Finset.range M, (A * (Q : ℂ) ^ (3 - 6 * z)) ^ r) s :=
-    DifferentiableAt.sum fun r _ => hR_diff.pow r
+  have hsum_diff : ∀ m : ℕ, DifferentiableAt ℂ
+      (fun z : ℂ => ∑ r ∈ Finset.range m, (A * (Q : ℂ) ^ (3 - 6 * z)) ^ r) s := by
+    intro m
+    induction m with
+    | zero => simp
+    | succ m ihm =>
+      simpa only [Finset.sum_range_succ] using ihm.add (hR_diff.pow m)
   unfold truncatedModifiedRegularFactor
   exact (differentiableAt_regularLocalFactor hQ0 A ηp hD).add
     ((((differentiableAt_const _).mul (((hR_diff.pow M).const_mul _).div hD_diff hD))).div
-      hsum_diff hgeom_ne)
+      (hsum_diff M) hgeom_ne)
 
 /-- The `S`-deleted Euler product of `truncatedModifiedRegularFactor M`. -/
-def truncatedModifiedRegularCorrection (M : ℕ) (A η : HeightOneSpectrum O → ℂ)
-    (S : Finset (HeightOneSpectrum O)) (s : ℂ) : ℂ :=
-  ∏' v : {v : HeightOneSpectrum O // v ∉ S},
+def truncatedModifiedRegularCorrection {L_nf : Type*} [Field L_nf] [NumberField L_nf] (M : ℕ)
+    (A η : HeightOneSpectrum (𝓞 L_nf) → ℂ) (S : Finset (HeightOneSpectrum (𝓞 L_nf))) (s : ℂ) : ℂ :=
+  ∏' v : {v : HeightOneSpectrum (𝓞 L_nf) // v ∉ S},
     truncatedModifiedRegularFactor M (primeNorm v.1) (A v.1) (η v.1) s
 
 /-- **Uniform `M`-independent prime cutoff for `truncatedModifiedRegularCorrection` on
 `Re s > 41/72`.** One fixed norm `N_cut ≥ 160` works simultaneously for all depths `M ≥ 2`, all
 finite sets `S` containing `{v | N(v) ≤ N_cut}`, and all coefficients `‖A_v‖, ‖η_v‖ ≤ 1`. -/
-theorem exists_truncatedModifiedRegularCorrection_cutoff :
+theorem exists_truncatedModifiedRegularCorrection_cutoff {L_nf : Type*} [Field L_nf]
+    [NumberField L_nf] :
     ∃ N_cut : ℕ, 160 ≤ N_cut ∧
-      ∀ {M : ℕ}, 2 ≤ M → ∀ (S : Finset (HeightOneSpectrum O)),
-        (∀ v : HeightOneSpectrum O, v.asIdeal.absNorm ≤ N_cut → v ∈ S) →
-        ∀ A η : HeightOneSpectrum O → ℂ, (∀ v, ‖A v‖ ≤ 1) → (∀ v, ‖η v‖ ≤ 1) →
+      ∀ {M : ℕ}, 2 ≤ M → ∀ (S : Finset (HeightOneSpectrum (𝓞 L_nf))),
+        (∀ v : HeightOneSpectrum (𝓞 L_nf), v.asIdeal.absNorm ≤ N_cut → v ∈ S) →
+        ∀ A η : HeightOneSpectrum (𝓞 L_nf) → ℂ, (∀ v, ‖A v‖ ≤ 1) → (∀ v, ‖η v‖ ≤ 1) →
           DifferentiableOn ℂ (truncatedModifiedRegularCorrection M A η S)
             {s : ℂ | 41 / 72 < s.re} ∧
           (∀ s : ℂ, 41 / 72 < s.re →
             ‖truncatedModifiedRegularCorrection M A η S s - 1‖ ≤ 1 / 2) ∧
           (∀ s : ℂ, 41 / 72 < s.re →
-            Multipliable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
+            Multipliable fun v : {v : HeightOneSpectrum (𝓞 L_nf) // v ∉ S} =>
               truncatedModifiedRegularFactor M (primeNorm v.1) (A v.1) (η v.1) s) := by
-  obtain ⟨N₀, _, hcut⟩ := exists_cutoff_product (K := K)
+  obtain ⟨N₀, _, hcut⟩ := exists_cutoff_product (K := L_nf)
     (by norm_num : (1 : ℝ) < 17 / 12) (by norm_num : (0 : ℝ) ≤ 17)
   set N_cut : ℕ := max 160 (max 64 N₀)
   refine ⟨N_cut, le_max_left _ _, fun {M} hM S hS A η hA hη => ?_⟩
-  have hS_N₀ : ∀ v : HeightOneSpectrum O, v.asIdeal.absNorm ≤ N₀ → v ∈ S :=
+  have hS_N₀ : ∀ v : HeightOneSpectrum (𝓞 L_nf), v.asIdeal.absNorm ≤ N₀ → v ∈ S :=
     fun v hv => hS v (hv.trans ((le_max_right 64 N₀).trans (le_max_right 160 _)))
-  have hbig64 : ∀ v : {v : HeightOneSpectrum O // v ∉ S}, 64 ≤ primeNorm v.1 := by
+  have hbig64 : ∀ v : {v : HeightOneSpectrum (𝓞 L_nf) // v ∉ S}, 64 ≤ primeNorm v.1 := by
     intro v
     have hv : 64 < v.1.asIdeal.absNorm := lt_of_not_ge fun h =>
       v.2 (hS v.1 (h.trans ((le_max_left 64 N₀).trans (le_max_right 160 _))))
@@ -672,7 +694,7 @@ theorem exists_truncatedModifiedRegularCorrection_cutoff :
     exact_mod_cast hv.le
   set U : Set ℂ := {s : ℂ | 41 / 72 < s.re}
   have hU : IsOpen U := isOpen_lt continuous_const continuous_re
-  let f : HeightOneSpectrum O → ℂ → ℂ := fun v s =>
+  let f : HeightOneSpectrum (𝓞 L_nf) → ℂ → ℂ := fun v s =>
     if 64 ≤ primeNorm v then truncatedModifiedRegularFactor M (primeNorm v) (A v) (η v) s else 1
   obtain ⟨hdiff_f, hclose_f⟩ := hcut S hS_N₀ U hU f
     (fun v _ => by
@@ -690,19 +712,21 @@ theorem exists_truncatedModifiedRegularCorrection_cutoff :
         exact norm_truncatedModifiedRegularFactor_sub_one_le hM hv64 (hA v) (hη v) (le_of_lt hs)
       · rw [if_neg hv64, sub_self, norm_zero]
         exact mul_nonneg (by norm_num) (Real.rpow_nonneg (by linarith [two_le_primeNorm v]) _))
-  have heq : (fun s => ∏' v : {v : HeightOneSpectrum O // v ∉ S}, f v.1 s) =
+  have heq : (fun s => ∏' v : {v : HeightOneSpectrum (𝓞 L_nf) // v ∉ S}, f v.1 s) =
       truncatedModifiedRegularCorrection M A η S := by
     funext s
     unfold truncatedModifiedRegularCorrection
     exact tprod_congr fun v => if_pos (hbig64 v)
-  rw [heq] at hdiff_f hclose_f
-  refine ⟨hdiff_f, hclose_f, fun s hs => ?_⟩
-  have hsum : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
+  have heq_app : ∀ s, (∏' v : {v : HeightOneSpectrum (𝓞 L_nf) // v ∉ S}, f v.1 s) =
+      truncatedModifiedRegularCorrection M A η S s := congr_fun heq
+  rw [heq] at hdiff_f
+  refine ⟨hdiff_f, fun s hs => by rw [← heq_app s]; exact hclose_f s hs, fun s hs => ?_⟩
+  have hsum : Summable fun v : {v : HeightOneSpectrum (𝓞 L_nf) // v ∉ S} =>
       truncatedModifiedRegularFactor M (primeNorm v.1) (A v.1) (η v.1) s - 1 := by
-    have hmaj : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
+    have hmaj : Summable fun v : {v : HeightOneSpectrum (𝓞 L_nf) // v ∉ S} =>
         17 * primeNorm v.1 ^ (-(17 / 12 : ℝ)) :=
-      ((numberField_summable_finitePlace_absNorm_rpow (K := K)
-        (by norm_num : (1 : ℝ) < 17 / 12)).mul_left 17).comp_injective Subtype.val_injective
+      ((numberField_summable_finitePlace_absNorm_rpow (K := L_nf)
+        (by norm_num : (1 : ℝ) < 17 / 12)).subtype _).mul_left 17
     exact (hmaj.of_nonneg_of_le (fun _ => norm_nonneg _) fun v =>
       norm_truncatedModifiedRegularFactor_sub_one_le hM (hbig64 v) (hA v.1) (hη v.1)
         (le_of_lt hs)).of_norm
@@ -720,9 +744,14 @@ private theorem cpow_pow_nat {x : ℂ} (hx : x ≠ 0) (z : ℂ) (M : ℕ) :
 for the Eisenstein probe with local phases `κ_v^6`. -/
 def truncatedFullPrincipalCorrection (M : ℕ) (𝔪 : Modulus K) (η : HeckeCharacter 𝔪)
     (S : Finset (HeightOneSpectrum O)) (s : ℂ) : ℂ :=
-  truncatedPrincipalCorrection M (fun v => primeKappaAt 𝔪 η v ^ 6)
+  truncatedPrincipalCorrection (L_nf := K) M (fun v => primeKappaAt 𝔪 η v ^ 6)
     (fun v => heckeValue 𝔪 η v.asIdeal) S s *
     deletedEulerFactors 𝔪 η S s
+
+private theorem summable_primeNorm_rpow_compl (S : Finset (HeightOneSpectrum O)) {e : ℝ}
+    (he : 1 < e) :
+    Summable fun v : {v : HeightOneSpectrum O // v ∉ S} => primeNorm v.1 ^ (-e) :=
+  (numberField_summable_finitePlace_absNorm_rpow (K := K) he).subtype _
 
 /-- **Exact Euler-product functional identity on `Re s > 2/3` (`M ≥ 2`).** Multiplying
 `truncatedFullPrincipalCorrection M 𝔪 η S s` by `L(6Ms - 3M, ψ₆^M χ_{𝔣(η^{6M})})` and its finite
@@ -735,10 +764,10 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
     truncatedFullPrincipalCorrection M 𝔪 η S s *
       (grossenLFunction 𝔪 (η ^ (6 * M)) M (6 * (M : ℂ) * s - 3 * (M : ℂ)) *
         grossenDeletedFactors 𝔪 (η ^ (6 * M)) M S (6 * (M : ℂ) * s - 3 * (M : ℂ)) *
-        residualCorrection (fun v => primeKappaAt 𝔪 η v ^ 6)
+        residualCorrection (L := K) (fun v => primeKappaAt 𝔪 η v ^ 6)
           (fun v => heckeValue 𝔪 η v.asIdeal) S s) =
       continuedProbeCorrection 𝔪 η S s *
-        truncatedModifiedRegularCorrection M (fun v => primeKappaAt 𝔪 η v ^ 6)
+        truncatedModifiedRegularCorrection (L_nf := K) M (fun v => primeKappaAt 𝔪 η v ^ 6)
           (fun v => heckeValue 𝔪 η v.asIdeal) S s := by
   set A : HeightOneSpectrum O → ℂ := fun v => primeKappaAt 𝔪 η v ^ 6
   set ηv : HeightOneSpectrum O → ℂ := fun v => heckeValue 𝔪 η v.asIdeal
@@ -749,13 +778,9 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
   have hw1 : 1 < (6 * s - 3).re := by
     simp only [sub_re, mul_re, re_ofNat, im_ofNat, zero_mul, sub_zero]; linarith
   have hwM1 : 1 < wM.re := by
-    have hre : wM.re = (M : ℝ) * (6 * s.re - 3) := by
-      dsimp [wM]
-      have h1 : (6 * (M : ℂ) * s - 3 * (M : ℂ)) = ((M : ℝ) : ℂ) * (6 * s - 3) := by
-        push_cast; ring
-      rw [h1, Complex.re_ofReal_mul]
-      simp only [sub_re, mul_re, re_ofNat, im_ofNat, zero_mul, sub_zero]
-    rw [hre]
+    have h1 : wM = ((M : ℝ) : ℂ) * (6 * s - 3) := by dsimp [wM]; push_cast; ring
+    rw [h1, Complex.re_ofReal_mul]
+    simp only [sub_re, mul_re, re_ofNat, im_ofNat, zero_mul, sub_zero]
     have hM2 : (2 : ℝ) ≤ M := by exact_mod_cast hM
     nlinarith
   -- Multipliability of `∑_{r < M} R_v^r` on `Re s > 2/3`
@@ -763,8 +788,7 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
       ∑ r ∈ Finset.range M, (A v.1 * (primeNorm v.1 : ℂ) ^ (3 - 6 * s)) ^ r := by
     have hmaj : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
         2 * primeNorm v.1 ^ (-(6 * s.re - 3)) :=
-      ((numberField_summable_finitePlace_absNorm_rpow (K := K) hw1).mul_left 2).comp_injective
-        Subtype.val_injective
+      (summable_primeNorm_rpow_compl S hw1).mul_left 2
     have hsum : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
         (∑ r ∈ Finset.range M, (A v.1 * (primeNorm v.1 : ℂ) ^ (3 - 6 * s)) ^ r) - 1 := by
       refine (hmaj.of_nonneg_of_le (fun _ => norm_nonneg _) fun v => ?_).of_norm
@@ -801,8 +825,7 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
       truncatedModifiedRegularFactor M (primeNorm v.1) (A v.1) (ηv v.1) s := by
     have hmaj : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
         17 * primeNorm v.1 ^ (-(17 / 12 : ℝ)) :=
-      ((numberField_summable_finitePlace_absNorm_rpow (K := K)
-        (by norm_num : (1 : ℝ) < 17 / 12)).mul_left 17).comp_injective Subtype.val_injective
+      (summable_primeNorm_rpow_compl S (by norm_num : (1 : ℝ) < 17 / 12)).mul_left 17
     have hsum : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
         truncatedModifiedRegularFactor M (primeNorm v.1) (A v.1) (ηv v.1) s - 1 :=
       (hmaj.of_nonneg_of_le (fun _ => norm_nonneg _) fun v =>
@@ -810,10 +833,10 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
           (by linarith)).of_norm
     exact (Complex.multipliable_one_add_of_summable hsum).congr fun _ => by ring
   -- Factor `truncatedPrincipalCorrection M = (∏' geom) * truncatedModifiedRegularCorrection M`
-  have hsplit_trunc : truncatedPrincipalCorrection M A ηv S s =
+  have hsplit_trunc : truncatedPrincipalCorrection (L_nf := K) M A ηv S s =
       (∏' v : {v : HeightOneSpectrum O // v ∉ S},
         ∑ r ∈ Finset.range M, (A v.1 * (primeNorm v.1 : ℂ) ^ (3 - 6 * s)) ^ r) *
-      truncatedModifiedRegularCorrection M A ηv S s := by
+      truncatedModifiedRegularCorrection (L_nf := K) M A ηv S s := by
     unfold truncatedPrincipalCorrection truncatedModifiedRegularCorrection
     rw [← hmul_geom.tprod_mul hmul_mod]
     refine tprod_congr fun v => ?_
@@ -832,7 +855,7 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
         (primeNorm v.1 : ℂ) ^ (-wM))⁻¹ := by
     have hmaj : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
         primeNorm v.1 ^ (-wM.re) :=
-      (numberField_summable_finitePlace_absNorm_rpow (K := K) hwM1).subtype _
+      summable_primeNorm_rpow_compl S hwM1
     have hbd : ∀ v : {v : HeightOneSpectrum O // v ∉ S},
         ‖idealPsiSix v.1.asIdeal ^ M * heckeValue 𝔪 (η ^ (6 * M)) v.1.asIdeal *
           (primeNorm v.1 : ℂ) ^ (-wM)‖ ≤ primeNorm v.1 ^ (-wM.re) := by
@@ -897,16 +920,21 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
   have hgM_split := grossenEulerProductModS_eq_mul_deletedFactors 𝔪 (η ^ (6 * M))
     (by omega : 1 ≤ M) S hwM1
   have hg1_split := grossenEulerProductModS_eq_mul_deletedFactors 𝔪 (η ^ 6) le_rfl S hw1
+  have halg : ∀ p_geom m_reg del_S l_M del_M res_S l_1 del_1 : ℂ,
+      p_geom * (l_M * del_M) = l_1 * del_1 →
+      (p_geom * m_reg * del_S) * (l_M * del_M * res_S) =
+        (l_1 * del_1 * (res_S * del_S)) * m_reg :=
+    fun _ _ _ _ _ _ _ _ hp => by linear_combination del_S * res_S * m_reg * hp
+  rw [hgM_split, hg1_split] at hprod_id
   unfold truncatedFullPrincipalCorrection continuedProbeCorrection fullResidualCorrection
-  change (truncatedPrincipalCorrection M A ηv S s * deletedEulerFactors 𝔪 η S s) *
-    (grossenLFunction 𝔪 (η ^ (6 * M)) M wM * grossenDeletedFactors 𝔪 (η ^ (6 * M)) M S wM *
-      residualCorrection A ηv S s) =
+  change (truncatedPrincipalCorrection (L_nf := K) M A ηv S s * deletedEulerFactors 𝔪 η S s) *
+      (grossenLFunction 𝔪 (η ^ (6 * M)) M wM * grossenDeletedFactors 𝔪 (η ^ (6 * M)) M S wM *
+        residualCorrection (L := K) A ηv S s) =
     (grossenLFunction 𝔪 (η ^ 6) 1 (6 * s - 3) * grossenDeletedFactors 𝔪 (η ^ 6) 1 S (6 * s - 3) *
-      (residualCorrection A ηv S s * deletedEulerFactors 𝔪 η S s)) *
-      truncatedModifiedRegularCorrection M A ηv S s
-  rw [hsplit_trunc, ← hgM_split, ← hg1_split]
-  linear_combination (deletedEulerFactors 𝔪 η S s * residualCorrection A ηv S s *
-    truncatedModifiedRegularCorrection M A ηv S s) * hprod_id
+      (residualCorrection (L := K) A ηv S s * deletedEulerFactors 𝔪 η S s)) *
+      truncatedModifiedRegularCorrection (L_nf := K) M A ηv S s
+  rw [hsplit_trunc]
+  exact halg _ _ _ _ _ _ _ _ hprod_id
 
 /-- **Explicit holomorphic continuation of `truncatedFullPrincipalCorrection M 𝔪 η S` (`M ≥ 2`) to
 `Re s > 7/12`.** On `Re s ≥ 7/12`, `Re(6Ms - 3M) ≥ M / 2 ≥ 1`, so `grossenLFunction 𝔪 (η^{6M}) M`
@@ -914,11 +942,11 @@ is unconditionally nonvanishing and divides cleanly into `continuedProbeCorrecti
 def continuedTruncatedCorrection (M : ℕ) (𝔪 : Modulus K) (η : HeckeCharacter 𝔪)
     (S : Finset (HeightOneSpectrum O)) (s : ℂ) : ℂ :=
   (continuedProbeCorrection 𝔪 η S s *
-    truncatedModifiedRegularCorrection M (fun v => primeKappaAt 𝔪 η v ^ 6)
+    truncatedModifiedRegularCorrection (L_nf := K) M (fun v => primeKappaAt 𝔪 η v ^ 6)
       (fun v => heckeValue 𝔪 η v.asIdeal) S s) /
   (grossenLFunction 𝔪 (η ^ (6 * M)) M (6 * (M : ℂ) * s - 3 * (M : ℂ)) *
     grossenDeletedFactors 𝔪 (η ^ (6 * M)) M S (6 * (M : ℂ) * s - 3 * (M : ℂ)) *
-    residualCorrection (fun v => primeKappaAt 𝔪 η v ^ 6)
+    residualCorrection (L := K) (fun v => primeKappaAt 𝔪 η v ^ 6)
       (fun v => heckeValue 𝔪 η v.asIdeal) S s)
 
 private theorem truncated_denominator_ne_zero_of_seven_twelfths_le {M : ℕ} (hM : 2 ≤ M)
@@ -926,11 +954,12 @@ private theorem truncated_denominator_ne_zero_of_seven_twelfths_le {M : ℕ} (hM
     {s : ℂ} (hs : 7 / 12 ≤ s.re) :
     grossenLFunction 𝔪 (η ^ (6 * M)) M (6 * (M : ℂ) * s - 3 * (M : ℂ)) *
       grossenDeletedFactors 𝔪 (η ^ (6 * M)) M S (6 * (M : ℂ) * s - 3 * (M : ℂ)) *
-      residualCorrection (fun v => primeKappaAt 𝔪 η v ^ 6)
+      residualCorrection (L := K) (fun v => primeKappaAt 𝔪 η v ^ 6)
         (fun v => heckeValue 𝔪 η v.asIdeal) S s ≠ 0 := by
-  have hA : ∀ v, ‖primeKappaAt 𝔪 η v ^ 6‖ ≤ 1 := fun v => by
+  have hA : ∀ v : HeightOneSpectrum O, ‖primeKappaAt 𝔪 η v ^ 6‖ ≤ 1 := fun v => by
     rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) (norm_primeKappaAt_le 𝔪 η v)
-  have hη : ∀ v, ‖heckeValue 𝔪 η v.asIdeal‖ ≤ 1 := fun _ => norm_heckeValue_le_one 𝔪 η _
+  have hη : ∀ v : HeightOneSpectrum O, ‖heckeValue 𝔪 η v.asIdeal‖ ≤ 1 :=
+    fun v => norm_heckeValue_le_one 𝔪 η v.asIdeal
   have hwM_re : 1 ≤ (6 * (M : ℂ) * s - 3 * (M : ℂ)).re := by
     have h1 : (6 * (M : ℂ) * s - 3 * (M : ℂ)) = ((M : ℝ) : ℂ) * (6 * s - 3) := by
       push_cast; ring
@@ -941,7 +970,7 @@ private theorem truncated_denominator_ne_zero_of_seven_twelfths_le {M : ℕ} (hM
   exact mul_ne_zero
     (mul_ne_zero (grossenLFunction_ne_zero_of_one_le_re 𝔪 (η ^ (6 * M)) (by omega) hwM_re)
       (grossenDeletedFactors_ne_zero 𝔪 (η ^ (6 * M)) M S (by linarith)))
-    (residualCorrection_ne_zero _ _ hA hη S (by linarith))
+    (residualCorrection_ne_zero (L := K) _ _ hA hη S (by linarith))
 
 /-- **Holomorphy and exact zero-locus preservation for `continuedTruncatedCorrection M` (`M ≥ 2`) on
 `Re s > 7/12`.** Whenever `S` contains `{v | N(v) ≤ N_cut}`, `continuedTruncatedCorrection M 𝔪 η S`
@@ -961,14 +990,15 @@ theorem exists_continuedTruncatedCorrection_properties :
         (∀ s : ℂ, 7 / 12 < s.re →
           (continuedTruncatedCorrection M 𝔪 η S s = 0 ↔
             continuedProbeCorrection 𝔪 η S s = 0)) := by
-  obtain ⟨N_cut, h160, hmod_cut⟩ := exists_truncatedModifiedRegularCorrection_cutoff
+  obtain ⟨N_cut, h160, hmod_cut⟩ := exists_truncatedModifiedRegularCorrection_cutoff (L_nf := K)
   refine ⟨N_cut, h160, fun {M} hM 𝔪 η S hS => ?_⟩
-  have hA : ∀ v, ‖primeKappaAt 𝔪 η v ^ 6‖ ≤ 1 := fun v => by
+  have hA : ∀ v : HeightOneSpectrum O, ‖primeKappaAt 𝔪 η v ^ 6‖ ≤ 1 := fun v => by
     rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) (norm_primeKappaAt_le 𝔪 η v)
-  have hη : ∀ v, ‖heckeValue 𝔪 η v.asIdeal‖ ≤ 1 := fun _ => norm_heckeValue_le_one 𝔪 η _
+  have hη : ∀ v : HeightOneSpectrum O, ‖heckeValue 𝔪 η v.asIdeal‖ ≤ 1 :=
+    fun v => norm_heckeValue_le_one 𝔪 η v.asIdeal
   obtain ⟨hmod_diff, hmod_close, _⟩ := hmod_cut hM S hS _ _ hA hη
   have hmod_ne : ∀ s : ℂ, 41 / 72 < s.re →
-      truncatedModifiedRegularCorrection M (fun v => primeKappaAt 𝔪 η v ^ 6)
+      truncatedModifiedRegularCorrection (L_nf := K) M (fun v => primeKappaAt 𝔪 η v ^ 6)
         (fun v => heckeValue 𝔪 η v.asIdeal) S s ≠ 0 := by
     intro s hs h0
     have hc := hmod_close s hs
@@ -1001,17 +1031,18 @@ theorem exists_continuedTruncatedCorrection_properties :
     ((differentiable_grossenDeletedFactors 𝔪 (η ^ (6 * M)) M S).comp haff).differentiableOn
   have hnum_diff : DifferentiableOn ℂ
       (fun s => continuedProbeCorrection 𝔪 η S s *
-        truncatedModifiedRegularCorrection M (fun v => primeKappaAt 𝔪 η v ^ 6)
+        truncatedModifiedRegularCorrection (L_nf := K) M (fun v => primeKappaAt 𝔪 η v ^ 6)
           (fun v => heckeValue 𝔪 η v.asIdeal) S s)
       {s : ℂ | 7 / 12 < s.re} :=
     ((differentiableOn_continuedProbeCorrection 𝔪 η S).mono hsub12).mul (hmod_diff.mono hsub41)
   have hden_diff : DifferentiableOn ℂ
       (fun s => grossenLFunction 𝔪 (η ^ (6 * M)) M (6 * (M : ℂ) * s - 3 * (M : ℂ)) *
         grossenDeletedFactors 𝔪 (η ^ (6 * M)) M S (6 * (M : ℂ) * s - 3 * (M : ℂ)) *
-        residualCorrection (fun v => primeKappaAt 𝔪 η v ^ 6)
+        residualCorrection (L := K) (fun v => primeKappaAt 𝔪 η v ^ 6)
           (fun v => heckeValue 𝔪 η v.asIdeal) S s)
       {s : ℂ | 7 / 12 < s.re} :=
-    (hLM_diff.mul hdelM_diff).mul ((differentiableOn_residualCorrection _ _ hA hη S).mono hsub12)
+    (hLM_diff.mul hdelM_diff).mul
+      ((differentiableOn_residualCorrection (L := K) _ _ hA hη S).mono hsub12)
   have hS_lam : ∀ v : HeightOneSpectrum O, lambda ∈ v.asIdeal → v ∈ S :=
     fun v hv => hS v ((absNorm_le_nine_of_lambda_mem hv).trans (by omega))
   have hS_64 : ∀ v : {v : HeightOneSpectrum O // v ∉ S}, 64 ≤ primeNorm v.1 := by
@@ -1057,7 +1088,7 @@ theorem exists_unbounded_zeros_and_no_nonvanishing_continuation_of_truncatedProb
           (∀ s : ℂ, 2 ≤ s.re →
             G s = truncatedFullPrincipalCorrection ((L + 1) / 2) 𝔪 η S s) ∧
           (∀ s : ℂ, σ₀ < s.re → G s ≠ 0)) := by
-  obtain ⟨N_cut, h160, hmod_cut⟩ := exists_truncatedModifiedRegularCorrection_cutoff
+  obtain ⟨N_cut, h160, hmod_cut⟩ := exists_truncatedModifiedRegularCorrection_cutoff (L_nf := K)
   refine ⟨N_cut, h160, fun {L} hL 𝔪 η S hS {σ₀} hσ₀ => ?_⟩
   set M : ℕ := (L + 1) / 2
   have hM : 2 ≤ M := by omega
@@ -1065,9 +1096,10 @@ theorem exists_unbounded_zeros_and_no_nonvanishing_continuation_of_truncatedProb
       (∀ s : ℂ, 2 ≤ s.re → G s = truncatedFullPrincipalCorrection M 𝔪 η S s) →
       ∀ T : ℝ, ∃ s₀ : ℂ, 7 / 12 ≤ s₀.re ∧ s₀.re < 2 / 3 ∧ T < |s₀.im| ∧ G s₀ = 0 := by
     intro G hG_diff hG_eq T
-    have hA : ∀ v, ‖primeKappaAt 𝔪 η v ^ 6‖ ≤ 1 := fun v => by
+    have hA : ∀ v : HeightOneSpectrum O, ‖primeKappaAt 𝔪 η v ^ 6‖ ≤ 1 := fun v => by
       rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) (norm_primeKappaAt_le 𝔪 η v)
-    have hη : ∀ v, ‖heckeValue 𝔪 η v.asIdeal‖ ≤ 1 := fun _ => norm_heckeValue_le_one 𝔪 η _
+    have hη : ∀ v : HeightOneSpectrum O, ‖heckeValue 𝔪 η v.asIdeal‖ ≤ 1 :=
+      fun v => norm_heckeValue_le_one 𝔪 η v.asIdeal
     obtain ⟨hmod_diff, _, _⟩ := hmod_cut hM S hS _ _ hA hη
     set U : Set ℂ := {s : ℂ | max σ₀ (41 / 72) < s.re}
     have hU_open : IsOpen U := isOpen_lt continuous_const continuous_re
@@ -1097,10 +1129,10 @@ theorem exists_unbounded_zeros_and_no_nonvanishing_continuation_of_truncatedProb
     let D_diff : ℂ → ℂ := fun s =>
       G s * (grossenLFunction 𝔪 (η ^ (6 * M)) M (6 * (M : ℂ) * s - 3 * (M : ℂ)) *
         grossenDeletedFactors 𝔪 (η ^ (6 * M)) M S (6 * (M : ℂ) * s - 3 * (M : ℂ)) *
-        residualCorrection (fun v => primeKappaAt 𝔪 η v ^ 6)
+        residualCorrection (L := K) (fun v => primeKappaAt 𝔪 η v ^ 6)
           (fun v => heckeValue 𝔪 η v.asIdeal) S s) -
       continuedProbeCorrection 𝔪 η S s *
-        truncatedModifiedRegularCorrection M (fun v => primeKappaAt 𝔪 η v ^ 6)
+        truncatedModifiedRegularCorrection (L_nf := K) M (fun v => primeKappaAt 𝔪 η v ^ 6)
           (fun v => heckeValue 𝔪 η v.asIdeal) S s
     have hD_diff : DifferentiableOn ℂ D_diff U := by
       have hLM : DifferentiableOn ℂ
@@ -1112,7 +1144,7 @@ theorem exists_unbounded_zeros_and_no_nonvanishing_continuation_of_truncatedProb
             (6 * (M : ℂ) * s - 3 * (M : ℂ))) U :=
         ((differentiable_grossenDeletedFactors 𝔪 (η ^ (6 * M)) M S).comp haff).differentiableOn
       exact ((hG_diff.mono hsubG).mul ((hLM.mul hdelM).mul
-        ((differentiableOn_residualCorrection _ _ hA hη S).mono hsub12))).sub
+        ((differentiableOn_residualCorrection (L := K) _ _ hA hη S).mono hsub12))).sub
         (((differentiableOn_continuedProbeCorrection 𝔪 η S).mono hsub12).mul
           (hmod_diff.mono hsub41))
     have hana : AnalyticOnNhd ℂ D_diff U := hD_diff.analyticOnNhd hU_open
@@ -1469,14 +1501,3 @@ theorem incomplete_reciprocity_producer_classification :
     linarith
 
 end GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies
-
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.singleRow_vs_rowPoisson_amplification_dichotomy
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.localTerm_odd_cube_eq_zero
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.hasSum_localTerm_lt_cutoff
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.truncatedPrincipalLocalFactor_eq_geom_mul_regular_add
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.exists_truncatedPrincipalCorrection_one_cutoff
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.exists_continuedTruncatedCorrection_properties
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.exists_unbounded_zeros_and_no_nonvanishing_continuation_of_truncatedProbeCorrection
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.exists_subcubic_sixthPower_defect_lower_bound
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.coupled_tower_iterates_eq_and_tendsto
-#print axioms GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.incomplete_reciprocity_producer_classification

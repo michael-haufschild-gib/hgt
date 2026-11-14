@@ -42,14 +42,17 @@ theorem acceleratedLatticeTerm_harmonic_bounds (s : ℝ) (n : ℕ) :
       Real.sqrt (1 + 4 * Real.exp s * ((n : ℝ) + 1) ^ 2) := by
     calc
       _ = Real.sqrt (4 * Real.exp s * ((n : ℝ) + 1) ^ 2) := by
-        rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hn.le]
+        rw [Real.sqrt_mul (show 0 ≤ 4 * Real.exp s by positivity) (((n : ℝ) + 1) ^ 2),
+          Real.sqrt_sq hn.le]
       _ ≤ _ := Real.sqrt_le_sqrt (by linarith)
   have hhi : Real.sqrt (1 + 4 * Real.exp s * ((n : ℝ) + 1) ^ 2) ≤
       Real.sqrt (1 + 4 * Real.exp s) * ((n : ℝ) + 1) := by
     calc
       _ ≤ Real.sqrt ((1 + 4 * Real.exp s) * ((n : ℝ) + 1) ^ 2) :=
         Real.sqrt_le_sqrt (by nlinarith only [hn1])
-      _ = _ := by rw [Real.sqrt_mul (by positivity), Real.sqrt_sq hn.le]
+      _ = _ := by
+        rw [Real.sqrt_mul (show 0 ≤ 1 + 4 * Real.exp s by positivity) (((n : ℝ) + 1) ^ 2),
+          Real.sqrt_sq hn.le]
   constructor
   · rw [div_eq_mul_inv, ← mul_inv]
     exact (inv_le_inv₀ (by positivity) (by positivity)).mpr hhi

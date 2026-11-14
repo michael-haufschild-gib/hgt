@@ -282,6 +282,15 @@ value at `P₁` and `P₋₁` exceeds `E` on some window of the first step; boun
 contact only through its size, such as two-sided bounds for the blocks of `𝒢_D`, cannot prove
 the first step in Weil's normal form.
 
+**P19 The continuum Green kernel.** `tendsto_towerGreen_factorial`, `continuumGreen_refine`,
+`continuumGreen_eq_form`: the Green forms of the tower converge to a quadratic form `𝔊_D` on the
+step functions of block size `D`, one object at all block sizes (`𝔊_{mD}(ι_m w) = 𝔊_D(w)`), with
+`G_D ⪯ 𝔊_D ⪯ 5000`. `continuumGreen_add_charge_nonneg`, `continuumGreen_pos_of_sum_eq_zero`: its
+negative part is the explicit constant kernel, `𝔊_D + 𝟙𝟙ᵀ/(Dδ) ⪰ 0` with the depth
+`δ = γ + log 2π + 3 log 2 − 3 log 3` of a dyadic window, and it is positive definite on
+charge-free functions; it has at most one negative square. `tendsto_bindingEnergy_factorial`:
+the binding energies along the tower converge to a limit in `[δ, 3]`.
+
 ## 6. Tools
 
 **From the corpus.** Haynsworth additivity (`hermNegIndex_fromBlocks_transpose`), the overlap
@@ -333,7 +342,7 @@ positive at every aperture iff RH), the floors of the two sectors at the apertur
 | 2 | A lower bound for `μ_D` uniform in `D` | answered: `1 < −N(1,1) ≤ μ_D < 3`, nondecreasing along the tower |
 | 3 | The first step | answered: it holds at every block size with the excess `1/50000` (P15). It is the floor of Weil's form at the aperture `1881/5000` carried to the matrices (P14); no bound for `G_D` enters. In Weil's form it fails for the sign twin (P17); in Weil's normal form a proof must keep the sign of the dipole, which is positive where the twin fails (P18) |
 | 4 | The excess of a step as a function of the ratio | defined, bounded, monotone (P6); additive (P5); a thin step loses at most `B²/log(1/δ)` of the floor (P12); zero, down to the level `−c`, as long as `ρ²/2` lies inside an aperture of ground energy `≥ c` (P15); a common gap of the bound windows is RH (P14); in Weil's normal form a step at every block size is the sign of the ground energy of its aperture (P16) |
-| 5 | The Green kernel of the continuum form in closed form | open; normal forms only (mechanisms 2, 3, 8). In the multiplicative variable the continuum form is a potential minus the finite part of `½[1/|x−y| + 1/(x+y)]` (the jets are second differences of `x log x`); the regional part is diagonal in the Legendre polynomials with eigenvalues `2H_n` (LatticeSectionTheory), the logarithmic potential and the reflection kernel are not |
+| 5 | The Green kernel of the continuum form in closed form | partly answered: the kernel exists as the limit of the tower, its negative part is the explicit constant `−1/δ` per unit of multiplicative length, the rest is positive on charge-free functions (P19). Open: a closed form of the positive part. In the multiplicative variable the continuum form is a potential minus the finite part of `½[1/|x−y| + 1/(x+y)]` (the jets are second differences of `x log x`); the regional part is diagonal in the Legendre polynomials with eigenvalues `2H_n` (LatticeSectionTheory), the logarithmic potential and the reflection kernel are not |
 
 **Open.**
 - *A proof of a step through the middle.* P15 obtains the first step from the aperture. No
@@ -357,9 +366,8 @@ positive at every aperture iff RH), the floors of the two sectors at the apertur
   `≥ 0` and no more; a positive lower bound from boundness alone is RH (P14).
 - *Wide ends bind.* The dual law needs ends without bound states; the threshold ratio of a
   bound window is not determined.
-- *The continuum.* The Green forms of the tower increase and are bounded, so they converge on
-  every step packet; the limit, the Green form of `log|x| + log|p|` on an interval of ratio two,
-  is not constructed as an object, and no closed form is known.
+- *The continuum.* The continuum Green kernel exists (P19); whether it keeps exactly one
+  negative square at every block size, and a closed form of its positive part, are open.
 - *The composition formula.* A window is the block form of two adjacent windows (P12), and of
   its middle and ends; the Green matrix of the whole in terms of the Green matrices of the
   parts is not stated.

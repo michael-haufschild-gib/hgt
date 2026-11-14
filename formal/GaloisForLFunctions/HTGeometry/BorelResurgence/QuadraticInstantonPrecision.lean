@@ -48,8 +48,9 @@ theorem quadraticPrecisionScale_le_term (A s N l : ℝ) :
 theorem quadraticInstantonMagnitude_eq_scale_iff (A s N l : ℝ) :
     quadraticInstantonMagnitude A s N l = quadraticPrecisionScale A s N ↔
       l = quadraticInstantonCenter A s N := by
+  have hscale : quadraticPrecisionScale A s N ≠ 0 := Real.exp_ne_zero _
   rw [quadraticInstantonMagnitude_factorization,
-    mul_eq_left₀ (Real.exp_ne_zero _), Real.exp_eq_one_iff,
+    mul_eq_left₀ hscale, Real.exp_eq_one_iff,
     mul_eq_zero, or_iff_right (Real.exp_ne_zero s), sq_eq_zero_iff, sub_eq_zero]
 
 /-- The existing heat Gaussian is exactly the inverse normalized sector magnitude. -/
@@ -59,7 +60,9 @@ theorem quadraticInstantonMagnitude_mul_translatedGaussian (A s N l : ℝ) :
         quadraticPrecisionScale A s N := by
   rw [quadraticInstantonMagnitude_factorization, RiemannGaussian.translatedGaussian,
     mul_assoc, ← Real.exp_add]
-  simp only [← neg_mul, add_neg_cancel, Real.exp_zero, mul_one]
+  rw [show Real.exp s * (l - quadraticInstantonCenter A s N) ^ 2 +
+      -(Real.exp s) * (l - quadraticInstantonCenter A s N) ^ 2 = 0 by ring,
+    Real.exp_zero, mul_one]
 
 /-- Rounding the stationary number gives a global minimum over every integer sector. -/
 theorem quadraticInstantonMagnitude_round_min (A s N : ℝ) (l : ℤ) :

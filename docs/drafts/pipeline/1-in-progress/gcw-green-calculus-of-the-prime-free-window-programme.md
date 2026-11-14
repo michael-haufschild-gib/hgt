@@ -192,6 +192,11 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
    `exists_firstStep_weilPencilSchur_neg` (twin packet refined ×5000 into `(5000R, 10609R]`);
    `exists_firstStep_weilDipole_pos` (dipole `≥ −S₋₁/4 > 0`, all `w ≤ −1` fail);
    `weilSignTwin_obstruction_firstStep` (P18).
+19. (M) `TheContinuumGreenKernelIsTheLimitOfTheTowerAndIsNegativeOnlyAlongTheCharge` —
+   `greenForm`, `towerGreen`, `continuumGreen` (sup along `k!·D`), `continuumGreenMatrix`
+   (polarization); convergence, tower consistency `𝔊_{mD}(ι_m w) = 𝔊_D(w)`, `G_D ⪯ 𝔊_D ⪯ 5000`,
+   `𝔊_D + 𝟙𝟙ᵀ/(Dδ) ⪰ 0`, positive definite on charge-free functions, at most one negative square;
+   binding energies converge in `[δ, 3]` (P19).
 
 ## Status of the questions
 - Q1 sliver blocks: answered. `G_D = −(Σw)²/(D|N(1,1)|) + positive`; on slivers and charge-free
@@ -212,7 +217,7 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
   the `ρ`-steps is zero down to level `−c` while `ρ²/2` lies inside an aperture of ground
   energy `≥ c` (M15); RH ⟺ a priori gap of the bound windows (M14); in Weil's normal form a
   step at every block size ⟺ sign of the ground energy of its aperture (M16).
-- Q5 closed form: open. The continuum form is `log|x| + log|p|` on an interval of ratio two, a
+- Q5 closed form: the kernel exists as the tower limit with closed-form negative part `−1/δ` (M19); positive part open. The continuum form is `log|x| + log|p|` on an interval of ratio two, a
   truncated convolution in the multiplicative variable with the digamma symbol (infinitely many
   poles); in the multiplicative variable the kernel is the finite part of
   `½[1/|x−y| + 1/(x+y)]`, a regional logarithmic Laplacian; no closed form found. Normal
@@ -244,3 +249,4 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
 - 2026-11-14 — modules 14, 15 formalized: ground energy of an aperture as gap and excess; first step at every block size.
 - 2026-11-14 — modules 16, 17 formalized: ground energy = floor of Weil's form on the windows inside an aperture; first step of Weil's form fails for the sign twin.
 - 2026-11-14 — module 18 formalized: Weil pencil normal form; positive dipole and sign-blind obstruction at the first step.
+- 2026-11-14 — module 19 formalized: continuum Green kernel as tower limit, negative part in closed form.

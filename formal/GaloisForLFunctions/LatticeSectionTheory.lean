@@ -29,6 +29,7 @@ import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.RegionalLogarit
 import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.RegionalLogarithmicLowOddMoments
 import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.RegionalLogarithmicFirstOddMoment
 import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.RegionalLogarithmicLowEvenMoments
+import GaloisForLFunctions.LatticeSectionTheory.WindowJumpCounts.TheQuarticLagDeficitRetainsAMassReserve
 
 /-!
 # Lattice Section Theory

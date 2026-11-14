@@ -23,7 +23,8 @@ theorem shiftedSource_realRay_exponential_bound (f : CompactTest) (u : ℝ) :
     ∃ C R : ℝ, 0 ≤ C ∧ 0 ≤ R ∧ ∀ τ x : ℝ,
       ‖shiftedSourceTransform f u τ x‖ ≤
         C / (1 + |τ|) ^ 2 * Real.exp (R * |x|) := by
-  obtain ⟨a, ha, hsupport⟩ := f.2.2.isBounded.exists_pos_norm_le'
+  obtain ⟨a, ha, hsupport⟩ :=
+    Bornology.IsBounded.exists_pos_norm_le (E := ℝ) f.2.2.isBounded
   have hsupp : ∀ x, f.1 x ≠ 0 → |x| ≤ a := by
     intro x hx
     simpa only [Real.norm_eq_abs] using hsupport x (subset_tsupport f.1 hx)
@@ -72,8 +73,8 @@ theorem shiftedSource_acceleration_gaussian_bound (f : CompactTest) (u s : ℝ) 
   refine ⟨q * C * Real.exp (R ^ 2 / (2 * b)), by positivity, fun τ x => ?_⟩
   have hlin : R * |x| ≤ b / 2 * x ^ 2 + R ^ 2 / (2 * b) := by
     apply (mul_le_mul_iff_right₀ (show 0 < 2 * b by positivity)).mp
-    have he : (b / 2 * x ^ 2 + R ^ 2 / (2 * b)) * (2 * b) = b ^ 2 * x ^ 2 + R ^ 2 := by
-      field_simp
+    have he : (2 * b) * (b / 2 * x ^ 2 + R ^ 2 / (2 * b)) = b ^ 2 * x ^ 2 + R ^ 2 := by
+      field_simp [hb.ne']
       <;> ring
     rw [he]
     have hsq := sq_nonneg (b * |x| - R)
@@ -93,7 +94,10 @@ theorem shiftedSource_acceleration_gaussian_bound (f : CompactTest) (u s : ℝ) 
     _ ≤ q * C / (1 + |τ|) ^ 2 * Real.exp (R ^ 2 / (2 * b) + -(b / 2) * x ^ 2) := by
       apply mul_le_mul_of_nonneg_left _ (by positivity)
       exact Real.exp_le_exp.mpr (by linarith only [hlin])
-    _ = _ := by rw [Real.exp_add]; ring
+    _ = _ := by
+      rw [Real.exp_add]
+      dsimp only [b]
+      ring
 
 /-- All compact sources and all real translations have convergent acceleration at every positive time. -/
 theorem integrable_shiftedSource_acceleration (f : CompactTest) (u τ s : ℝ) :

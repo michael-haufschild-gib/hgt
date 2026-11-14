@@ -148,14 +148,3 @@ theorem tensor_purity_le_returnPlateau
 end
 
 end GaloisForLFunctions.HTGeometry.Thermofield
-
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.survival_eq_partition_ratio
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.replicaRigidAt_one_iff_injective
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.purity_le_returnPlateau
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.partition_ratio_le_returnPlateau
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.returnPlateau_pos
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.returnPlateau_eq_purity_iff
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.purity_lt_returnPlateau_iff
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.partitionReturnMean_tendsto
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.partitionReturnMean_not_tendsto_zero
-#print axioms GaloisForLFunctions.HTGeometry.Thermofield.tensor_purity_le_returnPlateau

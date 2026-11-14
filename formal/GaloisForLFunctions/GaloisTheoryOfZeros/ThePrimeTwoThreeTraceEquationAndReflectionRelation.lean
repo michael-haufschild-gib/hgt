@@ -16,9 +16,20 @@ open scoped BigOperators
 
 namespace GaloisForLFunctions.GaloisTheoryOfZeros
 
-local notation "p₂" => (⟨2, Nat.prime_two⟩ : Nat.Primes)
-local notation "p₃" => (⟨3, Nat.prime_three⟩ : Nat.Primes)
+private def primeTwo : Nat.Primes := ⟨2, Nat.prime_two⟩
+private def primeThree : Nat.Primes := ⟨3, Nat.prime_three⟩
+
+local notation "p₂" => primeTwo
+local notation "p₃" => primeThree
 local notation "E" => primeTraceExtension
+
+private theorem primeRelationValue_two_three (z : ℂ) :
+    primeRelationValue z (Finsupp.single p₂ 1 + Finsupp.single p₃ (-1)) =
+      Complex.exp (z * (Real.log 2 : ℂ)) / Complex.exp (z * (Real.log 3 : ℂ)) := by
+  rw [primeRelationValue_add, primeRelationValue_single, primeRelationValue_single]
+  change Complex.exp (z * (Real.log 2 : ℂ)) ^ (1 : ℤ) *
+    Complex.exp (z * (Real.log 3 : ℂ)) ^ (-1 : ℤ) = _
+  rw [zpow_one, zpow_neg_one, div_eq_mul_inv]
 
 /-- The trace equation for the specified mixed prime monomial `2^ρ / 3^ρ`. -/
 def primeTwoThreeRatioEquation (t : ℝ) : primeTraceField[X] :=
@@ -34,8 +45,7 @@ theorem primeTwoThreeRatioEquation_map (t : ℝ) :
         (X - C (Complex.exp (((primeTraceCopy t i).1 : ℂ) * (Real.log 2 : ℂ)) /
           Complex.exp (((primeTraceCopy t i).1 : ℂ) * (Real.log 3 : ℂ)))) := by
   rw [primeTwoThreeRatioEquation, primeTracePolynomial_map_eq_prod]
-  simp only [primeRelationValue_add, primeRelationValue_single, zpow_one, zpow_neg_one,
-    div_eq_mul_inv]
+  simp_rw [primeRelationValue_two_three]
 
 /-- The finite trace equation has exactly the actual mixed-prime roots in that fibre. -/
 theorem primeTwoThreeRatioEquation_rootSet (t : ℝ) (z : ℂ) :
@@ -44,8 +54,7 @@ theorem primeTwoThreeRatioEquation_rootSet (t : ℝ) (z : ℂ) :
         Complex.exp (((primeTraceCopy t i).1 : ℂ) * (Real.log 2 : ℂ)) /
           Complex.exp (((primeTraceCopy t i).1 : ℂ) * (Real.log 3 : ℂ)) = z := by
   rw [primeTwoThreeRatioEquation, primeTracePolynomial_rootSet]
-  simp only [primeRelationValue_add, primeRelationValue_single, zpow_one, zpow_neg_one,
-    div_eq_mul_inv]
+  simp_rw [primeRelationValue_two_three]
 
 /-- A square root of the product of the two reflection discriminants, in the pair field itself. -/
 def primeTwoThreeReflectionSquareRoot (ρ : XiDivisorSupport) : primePairField ρ :=
@@ -58,20 +67,20 @@ theorem primeTwoThreeReflectionSquareRoot_sq (ρ : XiDivisorSupport) :
       (primeResiduePairValue p₂ ρ ^ 2 - 8) * (primeResiduePairValue p₃ ρ ^ 2 - 12) := by
   change (primeReflectionDifference p₂ ρ * primeReflectionDifference p₃ ρ) ^ 2 = _
   rw [mul_pow, primeReflectionDifference_sq, primeReflectionDifference_sq]
-  norm_num
+  norm_num [primeTwo, primeThree]
 
 /-- The two specified reflection differences cannot both vanish at an actual zero. -/
 theorem primeTwoThreeReflectionDifference_nonzero (ρ : XiDivisorSupport) :
     primeReflectionDifference p₂ ρ ≠ 0 ∨ primeReflectionDifference p₃ ρ ≠ 0 := by
   by_contra h
-  push_neg at h
+  push Not at h
   have h2 := sub_eq_zero.mp h.1
   have h3 := sub_eq_zero.mp h.2
   have he : (ρ : ℂ) = (xiZeroReflectEquiv ρ : ℂ) := by
     apply two_prime_exponential_injective Nat.prime_two Nat.prime_three (by norm_num)
     apply Prod.ext
-    · simpa only [primeResidueValue_coe] using congrArg (fun x : E => (x : ℂ)) h2
-    · simpa only [primeResidueValue_coe] using congrArg (fun x : E => (x : ℂ)) h3
+    · simpa only [primeResidueValue_coe, primeTwo] using congrArg (fun x : E => (x : ℂ)) h2
+    · simpa only [primeResidueValue_coe, primeThree] using congrArg (fun x : E => (x : ℂ)) h3
   have hi := congrArg Complex.im he
   rw [xiZeroReflectEquiv_apply] at hi
   simp only [Complex.sub_im, Complex.one_im] at hi

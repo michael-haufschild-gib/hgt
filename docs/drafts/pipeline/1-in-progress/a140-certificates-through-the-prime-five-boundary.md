@@ -48,14 +48,15 @@ do not pass the polynomial capacity bound: its second principal minor is
 negative. This rejects that coarse bound, not the actual Weil floor.
 The four-moment capacity matrix remains unproved.
 
-A stronger quartic Gamma reserve follows from the fourth correlation moment.
-For an even unit-window source, with half-window Legendre moments `m₀,m₂,m₄`,
-half the fourth correlation moment is
-`16m₀²/15+80m₀m₂/21+16m₀m₄/35+8m₂²/3`.
-Completing squares bounds this by `17/10` times half-window mass;
-the complementary quartic lag deficit is at least `47a⁵/10` times mass
-at aperture `a`. For odd sources the corresponding bound is `63a⁵/10`.
-These reserve bounds are candidates awaiting Lean formalization.
+A stronger quartic Gamma reserve follows from the exact fourth correlation moment.
+For a unit-window source, with full-window Legendre moments `r₀,…,r₄`, it is
+`8r₀²/15+40r₀r₂/21+8r₀r₄/35+4r₂²/3−12r₁²/5−8r₁r₃/5`.
+Bessel's inequality and square completions bound this by `17/10` times mass,
+or `1/10` for odd sources. Scaling gives quartic lag reserves `47a⁵/10`
+and `63a⁵/10` times mass, respectively. All seven transitive audits in
+`WindowJumpCounts/TheQuarticLagDeficitRetainsAMassReserve.lean` passed with
+only `propext`, `Classical.choice`, and `Quot.sound`. Its final plain-file
+audit passed.
 
 The Gamma comparison previously retained its polynomial moments only for
 lag radius `r≤1`. The larger windows require `r≤log(5)<2`. The extension

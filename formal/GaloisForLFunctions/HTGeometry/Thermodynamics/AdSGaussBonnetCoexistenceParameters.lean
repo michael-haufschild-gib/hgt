@@ -134,18 +134,71 @@ theorem coexistenceProduct_sub_six_coupling (τ θ : ℝ) :
   unfold coexistenceN coexistenceD coexistenceJ coexistenceK
   ring
 
-theorem coexistenceProduct_sub_six_coupling_nonneg (τ θ : ℝ) :
-    0 ≤ coexistenceProduct τ θ - 6 * coexistenceCoupling τ θ := by
+theorem coexistence_lower_radius_nonneg (τ θ : ℝ) :
+    0 ≤ coexistenceJ (CPV.thermalRatio τ) * coexistenceRadius τ θ ^ 2 - 1 := by
   have hp := coexistence_polynomials_pos τ
-  have hK := hp.2.2.2
   have hl := (coexistenceSquare_bounds τ θ).1
   have hm := mul_le_mul_of_nonneg_left hl hp.2.2.1.le
   have hc : coexistenceJ (CPV.thermalRatio τ) * (1 / coexistenceJ (CPV.thermalRatio τ)) = 1 := by
     field_simp [hp.2.2.1.ne']
   rw [hc, ← coexistenceRadius_sq] at hm
-  have hn : 0 ≤ coexistenceJ (CPV.thermalRatio τ) * coexistenceRadius τ θ ^ 2 - 1 := sub_nonneg.mpr hm
+  exact sub_nonneg.mpr hm
+
+theorem coexistenceProduct_sub_six_coupling_nonneg (τ θ : ℝ) :
+    0 ≤ coexistenceProduct τ θ - 6 * coexistenceCoupling τ θ := by
+  have hK := (coexistence_polynomials_pos τ).2.2.2
+  have hn := coexistence_lower_radius_nonneg τ θ
   rw [coexistenceProduct_sub_six_coupling]
   positivity
+
+/-- Every split-radius coexistence coupling lies strictly below the neutral critical threshold. -/
+theorem coexistenceCoupling_lt_threshold (τ θ : ℝ) : coexistenceCoupling τ θ < 1 / 36 := by
+  have hp := coexistence_polynomials_pos τ
+  have hk := CPV.thermalRatio_pos τ
+  have hJ := hp.2.2.1
+  have hD := hp.2.1
+  have hK := hp.2.2.2
+  have hpoly : coexistenceD (CPV.thermalRatio τ) - CPV.thermalRatio τ * coexistenceJ (CPV.thermalRatio τ) =
+      CPV.thermalRatio τ ^ 4 + 2 * CPV.thermalRatio τ ^ 3 + 3 * CPV.thermalRatio τ ^ 2 +
+        2 * CPV.thermalRatio τ + 1 := by
+    unfold coexistenceD coexistenceJ
+    ring
+  have hpolypos : 0 < coexistenceD (CPV.thermalRatio τ) - CPV.thermalRatio τ * coexistenceJ (CPV.thermalRatio τ) := by
+    rw [hpoly]
+    positivity
+  have hm := mul_le_mul_of_nonneg_left (coexistenceSquare_bounds τ θ).1 hD.le
+  rw [← coexistenceRadius_sq] at hm
+  have hratio : coexistenceD (CPV.thermalRatio τ) * (1 / coexistenceJ (CPV.thermalRatio τ)) -
+      CPV.thermalRatio τ =
+        (coexistenceD (CPV.thermalRatio τ) - CPV.thermalRatio τ * coexistenceJ (CPV.thermalRatio τ)) /
+          coexistenceJ (CPV.thermalRatio τ) := by field_simp [hJ.ne']
+  have hprod : 0 < coexistenceD (CPV.thermalRatio τ) * coexistenceRadius τ θ ^ 2 - CPV.thermalRatio τ := by
+    have hpos := div_pos hpolypos hJ
+    rw [← hratio] at hpos
+    linarith only [hm, hpos]
+  have hden : 3 * coexistenceK (CPV.thermalRatio τ) * coexistenceRadius τ θ ^ 2 + 1 ≠ 0 := by positivity
+  have hgap : CPV.thermalRatio τ / (6 * coexistenceJ (CPV.thermalRatio τ)) - coexistenceCoupling τ θ =
+      (coexistenceJ (CPV.thermalRatio τ) * coexistenceRadius τ θ ^ 2 - 1) *
+        (coexistenceD (CPV.thermalRatio τ) * coexistenceRadius τ θ ^ 2 - CPV.thermalRatio τ) /
+        (6 * coexistenceJ (CPV.thermalRatio τ) *
+          (3 * coexistenceK (CPV.thermalRatio τ) * coexistenceRadius τ θ ^ 2 + 1)) := by
+    unfold coexistenceCoupling
+    field_simp [hJ.ne', hden]
+    unfold coexistenceN coexistenceD coexistenceJ coexistenceK
+    ring
+  have hupper : coexistenceCoupling τ θ ≤ CPV.thermalRatio τ / (6 * coexistenceJ (CPV.thermalRatio τ)) := by
+    apply sub_nonneg.mp
+    rw [hgap]
+    have hl := coexistence_lower_radius_nonneg τ θ
+    positivity
+  have hthreshold : 1 / 36 - CPV.thermalRatio τ / (6 * coexistenceJ (CPV.thermalRatio τ)) =
+      (1 - CPV.thermalRatio τ) ^ 2 / (36 * coexistenceJ (CPV.thermalRatio τ)) := by
+    field_simp [hJ.ne']
+    unfold coexistenceJ
+    ring
+  have hsplit := sub_pos.mpr (CPV.thermalRatio_lt_one τ)
+  have hstrict : 0 < (1 - CPV.thermalRatio τ) ^ 2 / (36 * coexistenceJ (CPV.thermalRatio τ)) := by positivity
+  linarith only [hupper, hthreshold, hstrict]
 
 def coexistenceDenominator (τ θ : ℝ) : ℝ :=
   coexistenceSum τ θ ^ 2 + coexistenceProduct τ θ - 6 * coexistenceCoupling τ θ
@@ -203,6 +256,7 @@ theorem coexistenceCharge_sq (τ θ : ℝ) :
 
 #print axioms coexistenceSquare_bounds
 #print axioms coexistenceCoupling_nonneg
+#print axioms coexistenceCoupling_lt_threshold
 #print axioms coexistenceTemperature_pos
 #print axioms coexistenceCharge_sq
 

@@ -12,8 +12,8 @@
 | A1 | Jensen real-rootedness for every degree at most `31922`, from width `3/8` and verified height `67`. | Direct Lean and axiom audits passed |
 | A2 | Common certified floor interfaces for smaller apertures, real/complex tests, step packets, charge-free neutral forms and dressed middles; constants and cutoff ranges explicit. | Direct Lean and axiom audits passed |
 | A3 | Exact rational ladder milestones and decomposition of `levelAt 2 4` into its three remaining nonnegative excesses. | Direct Lean and axiom audits passed |
-| A4 | Actual pole/Gamma/jump/root-number terms in WL, CHMD, SZ, HAT-C and PM transfers. | WL/CHMD/SZ checked; HAT-C/PM pending |
-| A5 | The `2^ρ/3^ρ` trace equation, two/three reflection discriminants, realized central sheet exchange and contact ideals at degrees `1,2,3,4,9`. | Lean drafts; checks pending |
+| A4 | Actual pole/Gamma/jump/root-number terms in WL, CHMD, SZ, HAT-C and PM transfers. | WL/CHMD/SZ/HAT-C checked; PM pending |
+| A5 | The `2^ρ/3^ρ` trace equation, two/three reflection discriminants, realized central sheet exchange and contact ideals at degrees `1,2,3,4,9`. | Direct Lean and axiom audits passed |
 | A6 | Primitive completion, simple pole, reflection and scattering for `CyclotomicField 3 ℚ`. | Lean draft; check pending |
 | A7 | Three-even-moment Gram certificate with exact margin `1/1000000`, and strictness exactly for nonzero moment triples. | Public interface drafted in existing moment module; check pending |
 
@@ -32,15 +32,20 @@
 - The two prime reflection differences have product in the zero's pair field.
   Its square is `(T₂²−8)(T₃²−12)`. The two differences cannot both vanish,
   by injectivity of the two prime exponent coordinates and nonrealness of every ξ zero.
+- Prime-power contact formulas give `J(1,2)=(2)`, `J(1,3)=(3)`,
+  `J(2,4)=(4)` and `J(3,9)=(9)`; distinct prime valuations give `J(2,3)=ℤ`.
 - `exists_isCollision_center_two` supplies actual central double collisions at complex
   times with arbitrarily large real parts. Their labels `√2` and `−√2` are interchanged by
   `s↦−s` and remain distinct on a punctured neighborhood.
 - Scattering normalization transfers the certified floor only with jump tail,
   Robin mass correction and omitted prime contacts all retained.
+- The width `3/8` gives the literal completed WL and CHMD waves exponent `3/8`.
+  Suzuki's amplitude retains the integral of `2cosh(t/2)−gammaDensity(t)`;
+  eventually `A_N²≤E_N≤1889568(log 4+4)² A_N²`.
 - The Eisenstein character has root number `+1` and Gamma factor `Γℝ(s+1)`.
   The Bianchi phase at the removable origin is `−1`; the completed quotient
   on the punctured spectral axis retains the polar factor. The pulse rate is `1/16−ε`.
-- The unit-modulus Hecke character is primitive. Its continued source is `ζL(χ₋₃)`
+- The trivial Hecke character at the trivial modulus is primitive. Its continued source is `ζL(χ₋₃)`
   off `1`, with pole order `−1` at `1`; the actual Gauss/parity phase remains in
   reflection. The proved Hecke strip feeds the scattering equivalence at `δ=1/16`.
 - The three-even-moment certificate retains its exact reflected-pair polynomial

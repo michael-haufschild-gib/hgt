@@ -78,6 +78,8 @@ import GaloisForLFunctions.BlackHoleRingdown.TheAlgebraOfCuspSupportedProfiles
 import GaloisForLFunctions.BlackHoleRingdown.TheHorocycleRateIsTheZeroFreeRegion
 import GaloisForLFunctions.BlackHoleRingdown.TheLaxPhillipsSemigroupOfTheModularSurface
 import GaloisForLFunctions.BlackHoleRingdown.TheOptimalHorocycleExponentAndEulerAnnihilators
+import GaloisForLFunctions.BlackHoleRingdown.TheEternalAdSPrimeMarkedDictionary
+import GaloisForLFunctions.BlackHoleRingdown.CausalIdentitiesCannotForceQuarterRingdown
 
 /-!
 # Black-hole ringdown and the zeros of zeta
@@ -107,6 +109,7 @@ each component of the metric rings down in these modes.
 
 The late-time decay exponent of the field of every pulse is half the width of the zero-free strip, at every strength, and the
 thermalization exponent of long horocycles is `½` plus the same number: the two RH rates `e^{-τ/4}` and `y^{3/4}` are one exponent.
+Extending the modular black hole across its bifurcate horizon `UV = 0` to the two-boundary Kruskal–Maldacena `AdS₄` spacetime (`β_H = 2π`), local prime-cycle gates `1 + Σ (1 - 1/p) e^{-w · 2(k+1) log p}` converge independently of `ζ` to `ζ(2w)/ζ(2w+1)` and identify every nontrivial zero of `ζ` with an isolated pole of exact multiplicity in both the retarded correlator `G_R` and the trans-horizon Wightman correlator `G_{RL}` on `0 < |Im ν| < ½` (`1/16` strip analyticity holds unconditionally; `1/4` is equivalent to RH). While reflection-paired Hadamard factorization forces global Lax–Phillips Schur passivity `‖ξ(2w)/ξ(1+2w)‖ ≤ 1` on `Re w ≥ 0`, replacing the prime-`2` gate by the retarded Schur factor `B_{2,α}(w)` (`½ < α < 1`) preserves causal echo support, rational-prime Euler structure, functional equation, Schur/Herglotz passivity, unitarity, and the complete `G_R`/`G_{RL}` zero-to-pole dictionary while collapsing the reflected-pulse decay rate to `(1 - α)/2 → 0` (and smooth 4D vacuum Einstein–`AdS₄` quaternion-cover black holes with locally tempered geodesic factors likewise violate `¼` via `0 < λ_j < ¼`).
 
 Every cusp form is smooth and is a gravitational quasinormal mode, in both vector branches and the scalar sector, at exactly
 the base damping of its sector; the zeta modes lie strictly deeper, exactly `¼` deeper iff RH, and form a set of density zero.

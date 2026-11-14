@@ -4,7 +4,7 @@ import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheSquareOfANumberRingThrough
 /-!
 # The primitive Eisenstein family with its full completion
 
-For the third cyclotomic field, the character has root number `+1` and
+For the third cyclotomic field, `χ₋₃` has root number `+1` and
 Gamma factor `Γℝ(s + 1)`. The two poles and conductor factor remain in
 the completed product. Its scattering ratio has value `-1` at the origin;
 away from that removable point the completed-zeta quotient is literal.
@@ -104,7 +104,7 @@ theorem thirdCyclotomic_hecke_reflection :
     hecke_inv_eq_one_iff.mpr rfl
   simpa only [hinv] using heckeXi_one_sub (trivialModulus K₃) 1 hprim s
 
-/-- The actual cubic-field Hecke source inherits the certified strip without a cancellation premise. -/
+/-- The actual Eisenstein-field Hecke source inherits the certified strip without a cancellation premise. -/
 theorem thirdCyclotomic_hecke_zero_strip {s : ℂ} (hs1 : s ≠ 1) (hs0 : 0 < s.re)
     (hz : heckeLFunction (trivialModulus K₃) 1 s = 0) :
     s.re ∈ Set.Icc (1 / 8 : ℝ) (7 / 8 : ℝ) :=
@@ -141,6 +141,17 @@ theorem bianchiScatteringPhase_axis_eq_completedRatio {t : ℝ} (ht : t ≠ 0) :
     norm_num at hi
     exact ht (by linarith only [hi])
 
+/-- The off-real scattering factorization retains the odd Gamma quotient and polar factor. -/
+theorem bianchiScatteringPhase_eq_explicit_gamma_factors {u : ℂ} (him : u.im ≠ 0) :
+    bianchiScatteringPhase u =
+      ((3 : ℂ) ^ (2 * u / 2) / (3 : ℂ) ^ ((1 + 2 * u) / 2)) *
+        (2 / (2 * u - 1)) * BlackHoleRingdown.scatterQ (u + 1 / 2) *
+        (DirichletCharacter.LFunction chi3D (2 * u) *
+          (DirichletCharacter.LFunction chi3D (1 + 2 * u))⁻¹ *
+          (Complex.Gammaℝ (2 * u + 1) / Complex.Gammaℝ (2 * u + 2))) := by
+  rw [bianchiScatteringPhase_eq_factors him, gammaFactor_chi3D, gammaFactor_chi3D]
+  rw [show (1 + 2 * u + 1 : ℂ) = 2 * u + 2 by ring]
+
 /-- The actual scattering phase is unitary and has the unconditional one-sixteenth pulse rate. -/
 theorem eisenstein_scattering_certificate :
     bianchiScatteringPhase 0 = -1 ∧
@@ -164,6 +175,7 @@ theorem eisenstein_scattering_certificate :
 #print axioms thirdCyclotomic_hecke_reflection
 #print axioms thirdCyclotomic_hecke_zero_strip
 #print axioms bianchiScatteringPhase_axis_eq_completedRatio
+#print axioms bianchiScatteringPhase_eq_explicit_gamma_factors
 #print axioms eisenstein_scattering_certificate
 
 end GaloisForLFunctions.RingdownOfTheCubicCover

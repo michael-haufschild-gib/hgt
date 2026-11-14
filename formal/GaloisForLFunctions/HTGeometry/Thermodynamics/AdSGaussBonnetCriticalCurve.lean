@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.Thermodynamics.AdSGaussBonnetBoundary
+import GaloisForLFunctions.HTGeometry.Thermodynamics.AdSGaussBonnetTurningPoints
 
 /-!
 # The full charged critical curve and its global minimum
@@ -64,6 +64,34 @@ theorem criticalCurveTemperature_pos (θ : ℝ) : 0 < criticalCurveTemperature �
   unfold criticalCurveTemperature
   have hr := criticalCurveRadius_pos θ
   positivity
+
+theorem turningPolynomial_hasDerivAt (l q y : ℝ) :
+    HasDerivAt (turningPolynomial l q)
+      (24 * y ^ 3 + (108 * l - 9) * y ^ 2 + 12 * l * y + 5 * q ^ 2) y := by
+  have hfirst := (((hasDerivAt_id y).pow 2).const_mul 3).mul
+    (((((hasDerivAt_id y).pow 2).const_mul 2).add
+      ((hasDerivAt_id y).const_mul (12 * l - 1))).add_const (2 * l))
+  have hlast := (((hasDerivAt_id y).const_mul 5).add_const (6 * l)).const_mul (q ^ 2)
+  apply (hfirst.add hlast).congr_deriv
+  dsimp
+  ring
+
+/-- The temperature-turning polynomial has an actual double root on the critical curve. -/
+theorem criticalCurve_turning_double_root (θ : ℝ) :
+    turningPolynomial (criticalCurveCoupling θ) (criticalCurveCharge θ) (criticalCurveRadius θ ^ 2) = 0 ∧
+      deriv (turningPolynomial (criticalCurveCoupling θ) (criticalCurveCharge θ))
+        (criticalCurveRadius θ ^ 2) = 0 := by
+  have hd : 9 * criticalCurveRadius θ ^ 2 + 1 ≠ 0 := by positivity
+  constructor
+  · unfold turningPolynomial
+    rw [criticalCurveCharge_sq]
+    unfold criticalCurveCoupling
+    field_simp [hd]
+    ring
+  · rw [(turningPolynomial_hasDerivAt _ _ _).deriv, criticalCurveCharge_sq]
+    unfold criticalCurveCoupling
+    field_simp [hd]
+    ring
 
 theorem criticalCurve_temperature_value (θ : ℝ) :
     temperature (criticalCurveCoupling θ) (criticalCurveCharge θ) (criticalCurveRadius θ) =
@@ -135,6 +163,7 @@ theorem criticalCurve_minimum_attained (θ : ℝ) :
   ring
 
 #print axioms criticalCurveCoupling_bounds
+#print axioms criticalCurve_turning_double_root
 #print axioms criticalCurve_potential_gap
 #print axioms criticalCurve_unique_minimizer
 #print axioms criticalCurve_minimum_attained

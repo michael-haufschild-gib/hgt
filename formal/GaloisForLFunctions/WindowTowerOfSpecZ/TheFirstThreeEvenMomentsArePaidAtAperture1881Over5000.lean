@@ -294,7 +294,7 @@ theorem firstOverlapEvenMomentCapacity_lt_iff (u v w : ℝ) :
   constructor
   · intro h
     by_contra hz
-    push_neg at hz
+    push Not at hz
     rcases hz with ⟨rfl, rfl, rfl⟩
     norm_num [firstOverlapEvenMomentCapacity, firstOverlapEvenMomentAllowance,
       referenceCapacityQuad] at h

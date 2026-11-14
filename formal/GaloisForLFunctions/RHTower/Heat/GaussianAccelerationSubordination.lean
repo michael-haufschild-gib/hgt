@@ -18,16 +18,14 @@ open GaloisForLFunctions.HTGeometry
 
 noncomputable section
 
-/-- The spatial derivative of the acceleration kernel is its first-passage density. -/
+/-- The negative spatial derivative of the acceleration kernel is its first-passage density. -/
 theorem hasDerivAt_gaussianAccelerationKernel (t x : ℝ) :
     HasDerivAt (gaussianAccelerationKernel t)
       (-(x / (2 * t)) * gaussianAccelerationKernel t x) x := by
   have h := (((hasDerivAt_pow 2 x).const_mul (-(4 * t)⁻¹)).exp).const_mul
     (Real.sqrt (Real.pi * t))⁻¹
-  convert h using 1
-  simp only [gaussianAccelerationKernel, mul_inv, inv_pow]
-  norm_num
-  ring
+  exact h.congr_deriv (by
+    norm_num [gaussianAccelerationKernel, div_eq_mul_inv, mul_inv]; ring)
 
 /-- Laplace transforming the first-passage density gives the square-root semigroup. -/
 theorem gaussianAcceleration_firstPassage_laplace (u s : ℝ) :
@@ -49,7 +47,6 @@ theorem gaussianAcceleration_firstPassage_laplace (u s : ℝ) :
       have hr2 : r ^ 2 = t := by rw [← hr, Real.sq_sqrt ht0.le]
       rw [← hr2]
       field_simp [hp, hs]
-      <;> ring
     rw [gaussianAccelerationKernel, ← mul_assoc (Real.exp u / (2 * t)), hnormal]
     unfold burnolSubordinationIntegrand
     rw [show -(4 * t)⁻¹ * Real.exp u ^ 2 = -(Real.exp u ^ 2 / (4 * t)) by ring]

@@ -1267,15 +1267,6 @@ theorem bianchi_universal_causal_ringdown_infimum_zero {δ : ℝ} (hδ : 0 < δ)
   · exact ⟨excitingPulse (((α : ℂ) - 1) / 2),
       not_bianchiDeformedReflectedField_decay_gt hα_half hα1 hδ_gt⟩
 
-#print axioms hasProd_bianchiPrimeGate
-#print axioms bianchiWightmanRL_isPole_iff
-#print axioms dedekind_rh_iff_bianchiWightmanRL_quarter_strip
-#print axioms bianchiWightmanRL_quarter_strip_implies_riemannHypothesis
-#print axioms bianchiWightmanRL_analyticOnNhd_one_sixteenth
-#print axioms bianchiDeformedReflectedField_decay
-#print axioms not_bianchiDeformedReflectedField_decay_gt
-#print axioms bianchi_universal_causal_ringdown_infimum_zero
-
 end GaloisForLFunctions.RingdownOfTheCubicCover
 
 end

@@ -974,15 +974,6 @@ theorem quasinormal_midpoint_shift_law (ρ : ℂ) :
       rw [h]
       norm_num
 
-#print axioms ambientForm_kruskalEmbedding
-#print axioms kruskalEmbedding_smul_SL2R
-#print axioms hasProd_primeEchoGate
-#print axioms norm_xi_two_mul_le_of_re_nonneg
-#print axioms modularWightmanRL_isPole_iff
-#print axioms riemannHypothesis_iff_modularWightmanRL_quarter_strip
-#print axioms modularWightmanRL_analyticOnNhd_one_sixteenth
-#print axioms quasinormal_midpoint_shift_law
-
 end
 
 end GaloisForLFunctions.BlackHoleRingdown

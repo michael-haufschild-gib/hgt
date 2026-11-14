@@ -16,6 +16,7 @@ noncomputable section
 open Real
 namespace GaloisForLFunctions.WindowTowerOfSpecZ
 
+/-- The corrected harmonic estimate at `64` gives a rational upper bound for Euler's constant. -/
 theorem eulerMascheroniConstant_lt_577215667_div_1000000000 :
     Real.eulerMascheroniConstant < (577215667 / 1000000000 : ℝ) := by
   have h := _root_.RHTower.eulerMascheroniConstant_lt_secondUpper (n := 64) (by norm_num)
@@ -30,6 +31,7 @@ theorem eulerMascheroniConstant_lt_577215667_div_1000000000 :
   norm_num at h
   linarith only [h, hH, Real.log_two_gt_d9]
 
+/-- A finite exponential lower bound certifies an upper bound for `log π`. -/
 theorem log_pi_le_114472989_div_100000000 :
     Real.log Real.pi ≤ (114472989 / 100000000 : ℝ) := by
   let x : ℝ := (114472989 / 100000000) / 2
@@ -65,6 +67,7 @@ end GaloisForLFunctions.WindowTowerOfSpecZ
 namespace GaloisForLFunctions.WindowTowerOfSpecZ
 open _root_.RHTower.WeilLevyPoleGauss
 
+/-- At `log 3`, the Gamma tail has an exact logarithmic and circular decomposition. -/
 theorem archLevyAntideriv_log_three :
     archLevyAntideriv (Real.log 3) = Real.log (2 + Real.sqrt 3) / 2 + Real.pi / 6 := by
   have hlog : 0 < Real.log 3 := Real.log_pos (by norm_num)
@@ -123,6 +126,7 @@ private theorem log_two_add_sqrt_three_lower :
   have hl := Real.log_le_log (Real.exp_pos _) hu
   simpa only [Real.log_exp] using hl
 
+/-- The normalized Gamma mass coefficient at aperture `log(3)/2` is at least `−4546/2500`. -/
 theorem gamma_mass_constant_at_aperture_log_three_half :
     -(4546 / 2500 : ℝ) ≤ Zeta23.EF.gammaBracket 0 + Real.log 2 + Real.log 3 / 2 -
       (Real.log 3) ^ 2 / 48 - (Real.log 3) ^ 3 / 48 +

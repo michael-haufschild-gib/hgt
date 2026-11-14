@@ -18,6 +18,7 @@ import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheThreeRemainingEx
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheGroundEnergyOfAnApertureIsTheFloorOfWeilsFormOnTheWindowsInsideIt
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheFirstOverlapStepOfWeilsFormFailsForTheSignTwin
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheDipoleOfWeilsGreenMatrixCarriesTheFirstOverlapStep
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheContinuumGreenKernelIsTheLimitOfTheTowerAndIsNegativeOnlyAlongTheCharge
 
 /-!
 # Green calculus of the prime-free window
@@ -34,6 +35,7 @@ of a bound window and the continuity method, the floor of Weil's form on an aper
 of every window inside it and as the excess of its overlap step, the first overlap step at
 every block size, the ground energy of an aperture as the common floor of Weil's form on the
 windows inside it, the failure of the first step of Weil's form for the sign twin and the
-dipole of Weil's Green matrix that carries it, and the forms of the Riemann hypothesis they give.
+dipole of Weil's Green matrix that carries it, the continuum Green kernel as the limit of the
+tower, and the forms of the Riemann hypothesis they give.
 See `GreenCalculusOfThePrimeFreeWindow/README.md`.
 -/

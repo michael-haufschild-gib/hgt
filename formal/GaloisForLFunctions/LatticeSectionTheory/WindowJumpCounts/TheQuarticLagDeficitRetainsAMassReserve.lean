@@ -64,12 +64,18 @@ private theorem whole_fourth_correlation {F : ℝ → ℝ} (hF : Continuous F)
           (6 * x ^ 2) * (y ^ 2 * F y) - (4 * x ^ 3) * (y ^ 1 * F y) +
             x ^ 4 * (y ^ 0 * F y)) := by funext y; ring
     rw [hshift, he, integral_const_mul]
-    rw [integral_add ((hi 4).sub ((hi 3).const_mul _)) ((hi 2).const_mul _),
-      integral_sub (hi 4) ((hi 3).const_mul _),
-      integral_sub (((hi 4).sub ((hi 3).const_mul _)).add ((hi 2).const_mul _))
-        ((hi 1).const_mul _),
-      integral_add ((((hi 4).sub ((hi 3).const_mul _)).add ((hi 2).const_mul _)).sub
-        ((hi 1).const_mul _)) ((hi 0).const_mul _), integral_const_mul]
+    have hiA : Integrable (fun y => y ^ 4 * F y - (4 * x) * (y ^ 3 * F y)) :=
+      (hi 4).sub ((hi 3).const_mul (4 * x))
+    have hiB : Integrable (fun y => y ^ 4 * F y - (4 * x) * (y ^ 3 * F y) +
+        (6 * x ^ 2) * (y ^ 2 * F y)) := hiA.add ((hi 2).const_mul (6 * x ^ 2))
+    have hiC : Integrable (fun y => y ^ 4 * F y - (4 * x) * (y ^ 3 * F y) +
+        (6 * x ^ 2) * (y ^ 2 * F y) - (4 * x ^ 3) * (y ^ 1 * F y)) :=
+      hiB.sub ((hi 1).const_mul (4 * x ^ 3))
+    rw [integral_add hiC ((hi 0).const_mul (x ^ 4)),
+      integral_sub hiB ((hi 1).const_mul (4 * x ^ 3)),
+      integral_add hiA ((hi 2).const_mul (6 * x ^ 2)),
+      integral_sub (hi 4) ((hi 3).const_mul (4 * x))]
+    simp only [integral_const_mul]
     rfl
   have hl (t : ℝ) : t ^ 4 * autocorr F t = ∫ x, t ^ 4 * F x * F (x + t) := by
     unfold autocorr
@@ -85,12 +91,18 @@ private theorem whole_fourth_correlation {F : ℝ → ℝ} (hF : Continuous F)
         (6 * m 2) * (x ^ 2 * F x) - (4 * m 1) * (x ^ 3 * F x) +
           m 0 * (x ^ 4 * F x) := by funext x; ring
   rw [he]
-  rw [integral_add ((((hi 0).const_mul _).sub ((hi 1).const_mul _)).add
-      ((hi 2).const_mul _)|>.sub ((hi 3).const_mul _)) ((hi 4).const_mul _),
-    integral_sub ((((hi 0).const_mul _).sub ((hi 1).const_mul _)).add
-      ((hi 2).const_mul _)) ((hi 3).const_mul _),
-    integral_add (((hi 0).const_mul _).sub ((hi 1).const_mul _)) ((hi 2).const_mul _),
-    integral_sub ((hi 0).const_mul _) ((hi 1).const_mul _), integral_const_mul]
+  have hiA : Integrable (fun x => m 4 * (x ^ 0 * F x) - (4 * m 3) * (x ^ 1 * F x)) :=
+    ((hi 0).const_mul (m 4)).sub ((hi 1).const_mul (4 * m 3))
+  have hiB : Integrable (fun x => m 4 * (x ^ 0 * F x) - (4 * m 3) * (x ^ 1 * F x) +
+      (6 * m 2) * (x ^ 2 * F x)) := hiA.add ((hi 2).const_mul (6 * m 2))
+  have hiC : Integrable (fun x => m 4 * (x ^ 0 * F x) - (4 * m 3) * (x ^ 1 * F x) +
+      (6 * m 2) * (x ^ 2 * F x) - (4 * m 1) * (x ^ 3 * F x)) :=
+    hiB.sub ((hi 3).const_mul (4 * m 1))
+  rw [integral_add hiC ((hi 4).const_mul (m 0)),
+    integral_sub hiB ((hi 3).const_mul (4 * m 1)),
+    integral_add hiA ((hi 2).const_mul (6 * m 2)),
+    integral_sub ((hi 0).const_mul (m 4)) ((hi 1).const_mul (4 * m 3))]
+  simp only [integral_const_mul]
   change m 4 * m 0 - 4 * m 3 * m 1 + 6 * m 2 * m 2 - 4 * m 1 * m 3 + m 0 * m 4 = _
   ring
 
@@ -158,7 +170,6 @@ private theorem legendre_position_moments {F : ℝ → ℝ} (hF : Continuous F)
         fun x => (3 * (x ^ 2 * F x) - x ^ 0 * F x) / 2 := by
       funext x; norm_num [legP]; ring
     rw [he, integral_div, integral_sub ((hi 2).const_mul _) (hi 0), integral_const_mul]
-    rfl
   have h3 : r 3 = (5 * m 3 - 3 * m 1) / 2 := by
     rw [hr]
     have he : (fun x => legP 3 x * F x) =
@@ -166,17 +177,17 @@ private theorem legendre_position_moments {F : ℝ → ℝ} (hF : Continuous F)
       funext x; norm_num [legP]; ring
     rw [he, integral_div, integral_sub ((hi 3).const_mul _) ((hi 1).const_mul _),
       integral_const_mul, integral_const_mul]
-    rfl
   have h4 : r 4 = (35 * m 4 - 30 * m 2 + 3 * m 0) / 8 := by
     rw [hr]
     have he : (fun x => legP 4 x * F x) = fun x =>
         (35 * (x ^ 4 * F x) - 30 * (x ^ 2 * F x) + 3 * (x ^ 0 * F x)) / 8 := by
       funext x; norm_num [legP]; ring
+    have hiS : Integrable (fun x => 35 * (x ^ 4 * F x) - 30 * (x ^ 2 * F x)) :=
+      ((hi 4).const_mul 35).sub ((hi 2).const_mul 30)
     rw [he, integral_div,
-      integral_add (((hi 4).const_mul _).sub ((hi 2).const_mul _)) ((hi 0).const_mul _),
+      integral_add hiS ((hi 0).const_mul 3),
       integral_sub ((hi 4).const_mul _) ((hi 2).const_mul _),
       integral_const_mul, integral_const_mul, integral_const_mul]
-    rfl
   exact ⟨h0.symm, h1.symm, by linarith only [h0, h2],
     by linarith only [h1, h3], by linarith only [h0, h2, h4]⟩
 
@@ -326,6 +337,42 @@ theorem odd_autocorr_fourth_moment_le_mass {F : ℝ → ℝ} (hF : Continuous F)
     (hF.comp (continuous_const.mul continuous_id)) (dilation_support ha hs)
     (fun x => by rw [mul_neg, ho])
 
+private theorem quartic_lag_deficit_eq {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
+    {a : ℝ} (ha : 0 < a) (hs : tsupport F ⊆ Icc (-a) a) :
+    (∫ t in Ioc (0 : ℝ) (2 * a), t ^ 4 * (autocorr F 0 - autocorr F t)) =
+      (32 / 5) * a ^ 5 * (∫ x, F x ^ 2) -
+        ∫ t in Ioc (0 : ℝ) (2 * a), t ^ 4 * autocorr F t := by
+  have hcs : HasCompactSupport F :=
+    isCompact_Icc.of_isClosed_subset (isClosed_tsupport F) hs
+  have hc := _root_.RHTower.ArchimedeanExactForm.continuous_autocorr hF hcs
+  have hiA : IntegrableOn (fun t : ℝ => t ^ 4 * autocorr F 0) (Ioc 0 (2 * a)) :=
+    ((continuous_pow 4).mul continuous_const).integrableOn_Icc.mono_set Ioc_subset_Icc_self
+  have hiB : IntegrableOn (fun t : ℝ => t ^ 4 * autocorr F t) (Ioc 0 (2 * a)) :=
+    ((continuous_pow 4).mul hc).integrableOn_Icc.mono_set Ioc_subset_Icc_self
+  simp_rw [mul_sub]
+  rw [integral_sub hiA hiB]
+  congr 1
+  rw [← intervalIntegral.integral_of_le (by positivity : (0 : ℝ) ≤ 2 * a),
+    intervalIntegral.integral_mul_const, integral_pow, autocorr_zero_eq]
+  ring
+
+/-- Every source has a positive quartic lag reserve, uniform in the aperture. -/
+theorem quartic_lag_deficit_ge_mass {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
+    {a : ℝ} (ha : 0 < a) (hs : tsupport F ⊆ Icc (-a) a) :
+    (47 / 10) * a ^ 5 * (∫ x, F x ^ 2) ≤
+      ∫ t in Ioc (0 : ℝ) (2 * a), t ^ 4 * (autocorr F 0 - autocorr F t) := by
+  rw [quartic_lag_deficit_eq hF ha hs]
+  linarith only [autocorr_fourth_moment_le_mass hF.continuous ha hs]
+
+/-- Oddness raises the quartic lag reserve from `47/10` to `63/10`. -/
+theorem odd_quartic_lag_deficit_ge_mass {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
+    {a : ℝ} (ha : 0 < a) (hs : tsupport F ⊆ Icc (-a) a)
+    (ho : ∀ x, F (-x) = -F x) :
+    (63 / 10) * a ^ 5 * (∫ x, F x ^ 2) ≤
+      ∫ t in Ioc (0 : ℝ) (2 * a), t ^ 4 * (autocorr F 0 - autocorr F t) := by
+  rw [quartic_lag_deficit_eq hF ha hs]
+  linarith only [odd_autocorr_fourth_moment_le_mass hF.continuous ha hs ho]
+
 end GaloisForLFunctions.LatticeSectionTheory
 
 #print axioms GaloisForLFunctions.LatticeSectionTheory.autocorr_fourth_moment
@@ -333,3 +380,5 @@ end GaloisForLFunctions.LatticeSectionTheory
 #print axioms GaloisForLFunctions.LatticeSectionTheory.unit_odd_autocorr_fourth_moment_le_mass
 #print axioms GaloisForLFunctions.LatticeSectionTheory.autocorr_fourth_moment_le_mass
 #print axioms GaloisForLFunctions.LatticeSectionTheory.odd_autocorr_fourth_moment_le_mass
+#print axioms GaloisForLFunctions.LatticeSectionTheory.quartic_lag_deficit_ge_mass
+#print axioms GaloisForLFunctions.LatticeSectionTheory.odd_quartic_lag_deficit_ge_mass

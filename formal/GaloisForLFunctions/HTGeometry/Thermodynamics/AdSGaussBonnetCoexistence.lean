@@ -111,6 +111,65 @@ theorem coexistence_exactly_two_minimizers (τ θ u : ℝ) :
     (coexistence_residual_pos τ θ u).ne', show (3 : ℝ) ≠ 0 by norm_num, false_or,
     pow_eq_zero_iff (by norm_num : 2 ≠ 0), sub_eq_zero]
 
+private theorem two_root_stationarity_expansion (S P B C x : ℝ) :
+    (3 / 2) * (x ^ 2 - S * x + P) *
+      (2 * x * (2 * x - S) * (x ^ 2 + B * x + C) +
+        x * (x ^ 2 - S * x + P) * (2 * x + B) -
+        2 * (x ^ 2 - S * x + P) * (x ^ 2 + B * x + C)) =
+      6 * x ^ 6 + (9 / 2) * (B - 2 * S) * x ^ 5 +
+      3 * (C - 2 * S * B + S ^ 2 + 2 * P) * x ^ 4 +
+      (3 / 2) * ((S ^ 2 + 2 * P) * B - 2 * S * C - 2 * S * P) * x ^ 3 -
+      (3 / 2) * (P ^ 2 * B - 2 * S * P * C) * x - 3 * P ^ 2 * C := by ring
+
+theorem coexistence_stationarity_factor (τ θ x : ℝ) :
+    6 * x ^ 6 + 3 * x ^ 4 - coexistenceCharge τ θ ^ 2 -
+        6 * Real.pi * coexistenceTemperature τ θ * x ^ 3 * (x ^ 2 + 2 * coexistenceCoupling τ θ) =
+      (3 / 2) * (x ^ 2 - coexistenceSum τ θ * x + coexistenceProduct τ θ) *
+        (2 * x * (2 * x - coexistenceSum τ θ) *
+            (x ^ 2 + coexistenceLinear τ θ * x + coexistenceConstant τ θ) +
+          x * (x ^ 2 - coexistenceSum τ θ * x + coexistenceProduct τ θ) *
+            (2 * x + coexistenceLinear τ θ) -
+          2 * (x ^ 2 - coexistenceSum τ θ * x + coexistenceProduct τ θ) *
+            (x ^ 2 + coexistenceLinear τ θ * x + coexistenceConstant τ θ)) := by
+  have hf := two_root_stationarity_expansion (coexistenceSum τ θ) (coexistenceProduct τ θ)
+    (coexistenceLinear τ θ) (coexistenceConstant τ θ) x
+  rw [coexistence_quadratic_coefficient, coexistence_cubic_coefficient,
+    coexistence_linear_coefficient] at hf
+  rw [coexistenceCharge_sq]
+  unfold coexistenceTemperature
+  field_simp
+  nlinarith only [hf]
+
+/-- Both global minima are smooth thermal saddles at the same positive temperature. -/
+theorem coexistence_temperature_matching (τ θ : ℝ) :
+    temperature (coexistenceCoupling τ θ) (coexistenceCharge τ θ)
+        (CPV.thermalRatio τ * coexistenceRadius τ θ) = coexistenceTemperature τ θ ∧
+      temperature (coexistenceCoupling τ θ) (coexistenceCharge τ θ)
+        (coexistenceRadius τ θ) = coexistenceTemperature τ θ := by
+  have hr := coexistenceRadius_pos τ θ
+  have hk := CPV.thermalRatio_pos τ
+  have hl := coexistenceCoupling_nonneg τ θ
+  constructor
+  · have hroot : (CPV.thermalRatio τ * coexistenceRadius τ θ) ^ 2 -
+        coexistenceSum τ θ * (CPV.thermalRatio τ * coexistenceRadius τ θ) +
+        coexistenceProduct τ θ = 0 := by
+      unfold coexistenceSum coexistenceProduct
+      ring
+    have hf := coexistence_stationarity_factor τ θ (CPV.thermalRatio τ * coexistenceRadius τ θ)
+    rw [hroot, mul_zero, zero_mul] at hf
+    unfold temperature
+    apply (div_eq_iff (by positivity)).mpr
+    nlinarith only [hf]
+  · have hroot : coexistenceRadius τ θ ^ 2 - coexistenceSum τ θ * coexistenceRadius τ θ +
+        coexistenceProduct τ θ = 0 := by
+      unfold coexistenceSum coexistenceProduct
+      ring
+    have hf := coexistence_stationarity_factor τ θ (coexistenceRadius τ θ)
+    rw [hroot, mul_zero, zero_mul] at hf
+    unfold temperature
+    apply (div_eq_iff (by positivity)).mpr
+    nlinarith only [hf]
+
 theorem coexistence_minima_attained (τ θ : ℝ) :
     potential (coexistenceTemperature τ θ) 0 (coexistenceCoupling τ θ) (coexistenceCharge τ θ)
         (CPV.thermalRatio τ * coexistenceRadius τ θ) = coexistenceMinimum τ θ ∧
@@ -153,6 +212,7 @@ theorem coexistence_entropy_gap_pos (τ θ : ℝ) :
 #print axioms coexistence_potential_gap
 #print axioms coexistence_exactly_two_minimizers
 #print axioms coexistence_minima_attained
+#print axioms coexistence_temperature_matching
 #print axioms coexistence_entropy_gap_pos
 
 end GaloisForLFunctions.HTGeometry.AdSGaussBonnet

@@ -1773,15 +1773,6 @@ theorem exists_eternalAdS_compact_blackHole_violating_quarter_decay :
       hs₀_mem.2.2.2
   · linarith
 
-#print axioms primeTwoFactor_div_eq_primeTwoScatteringGate
-#print axioms norm_deformedReducedScattering_le_one
-#print axioms integral_cexp_mul_deformedEchoKernel
-#print axioms deformedWightmanRL_order_lower
-#print axioms deformedReflectedField_decay
-#print axioms not_deformedReflectedField_decay_gt
-#print axioms universal_causal_ringdown_infimum_zero
-#print axioms exists_eternalAdS_compact_blackHole_violating_quarter_decay
-
 end
 
 end GaloisForLFunctions.BlackHoleRingdown
