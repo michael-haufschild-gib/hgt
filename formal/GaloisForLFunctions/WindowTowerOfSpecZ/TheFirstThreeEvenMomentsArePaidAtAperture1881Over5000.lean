@@ -269,6 +269,50 @@ private theorem reference_capacity_quad_le (u v w : ℝ) :
   rw [he] at h
   exact sub_nonneg.mp (nonneg_of_mul_nonneg_right h chargeDet_pos)
 
+/-- Reference capacity of the constant, quadratic and quartic even moments.
+The entries retain the rational reflected-pair polynomial integrals. -/
+def firstOverlapEvenMomentCapacity (u v w : ℝ) : ℝ :=
+  referenceCapacityQuad u v w
+
+/-- The inverse charge form, including the mixed constant/quadratic pole charge. -/
+def firstOverlapEvenMomentAllowance (u v w : ℝ) : ℝ :=
+  (charge2 * u ^ 2 + 2 * poleMixedCharge * u * v + charge0 * v ^ 2) / chargeDet +
+    w ^ 2 / (33 / 10 - 9 * (97 / 50000))
+
+/-- A reusable exact Gram certificate: all three even moments retain a margin of `10⁻⁶`.
+The principal minors and polynomial integrals are proved above; no numerical or
+analytic certificate premise remains. -/
+theorem firstOverlapEvenMomentCapacity_certificate (u v w : ℝ) :
+    firstOverlapEvenMomentCapacity u v w + (1 / 1000000) * (u ^ 2 + v ^ 2 + w ^ 2) ≤
+      firstOverlapEvenMomentAllowance u v w :=
+  reference_capacity_quad_le u v w
+
+/-- The reference capacity is strictly below its allowance for every nonzero moment triple. -/
+theorem firstOverlapEvenMomentCapacity_lt_iff (u v w : ℝ) :
+    firstOverlapEvenMomentCapacity u v w < firstOverlapEvenMomentAllowance u v w ↔
+      u ≠ 0 ∨ v ≠ 0 ∨ w ≠ 0 := by
+  constructor
+  · intro h
+    by_contra hz
+    push_neg at hz
+    rcases hz with ⟨rfl, rfl, rfl⟩
+    norm_num [firstOverlapEvenMomentCapacity, firstOverlapEvenMomentAllowance,
+      referenceCapacityQuad] at h
+  · intro h
+    have hmass : 0 < u ^ 2 + v ^ 2 + w ^ 2 := by
+      by_contra hm
+      have hm' : u ^ 2 + v ^ 2 + w ^ 2 ≤ 0 := le_of_not_gt hm
+      rcases h with hu | hv | hw
+      · exact hu (by nlinarith only [hm', sq_nonneg v, sq_nonneg w])
+      · exact hv (by nlinarith only [hm', sq_nonneg u, sq_nonneg w])
+      · exact hw (by nlinarith only [hm', sq_nonneg u, sq_nonneg v])
+    have hmargin : 0 < (1 / 1000000 : ℝ) * (u ^ 2 + v ^ 2 + w ^ 2) :=
+      mul_pos (by norm_num) hmass
+    linarith only [firstOverlapEvenMomentCapacity_certificate u v w, hmargin]
+
+#print axioms firstOverlapEvenMomentCapacity_certificate
+#print axioms firstOverlapEvenMomentCapacity_lt_iff
+
 private def source (u v w x : ℝ) : ℝ :=
   u + v * ((3 * x ^ 2 - 1) / 2) + w * ((35 * x ^ 4 - 30 * x ^ 2 + 3) / 8)
 private def sourceD (v w x : ℝ) : ℝ :=

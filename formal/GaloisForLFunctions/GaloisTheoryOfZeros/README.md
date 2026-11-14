@@ -66,7 +66,10 @@ two involutions `c` and `r`. There are three tiers.
    finite support of the pairs. `G₊` contains every signed 3-cycle and every double flip, so
    it induces every signed permutation on every finite set of pairs; it contains an odd
    permutation of the zeros; it is normal of index at most two in `W`; and it is all of `W`
-   as soon as it contains the exchange of two pairs. The cover is rigid: it is connected, its
+   as soon as it contains the exchange of two pairs. Every turn is an involution: `k` sign
+   flips, `k` the order of vanishing of the centre value at its time, and `c` exchanges. If
+   `G₊ ≠ W`, one parity law holds at all forward times: `c + εk` is even, with one
+   `ε ∈ {0, 1}`. The cover is rigid: it is connected, its
    only deck map is `r`, its only mirror maps are `cr` and `c`, no zero is a continuous
    function of the time or of finitely many other zeros, no finite set of zeros is the root
    set of a polynomial with coefficients continuous in the time, the configurations of `n`
@@ -100,6 +103,7 @@ ordinate, `δ = ½ − Re ρ` the width. Conjugation of `w` is `cr`; negation of
 | branch times | the complex times at which the family has a multiple zero |
 | centre value | `c(τ) = H_τ(0) = ∫ Φ(x) e^{τx²} dx = Σ μ₂ₙ τⁿ/n!`, an entire function; its zeros are the centre times |
 | fibre trace | `Σ 1/z²` over the zeros of `H_τ` with multiplicity; a symmetric function of the fibre, hence a single-valued function of the time |
+| ramification of a time | the number `M = 2k + 4c` of zeros moved by a small turn around it: `k` flipped pairs, `k` the order of the centre value there, and `c` exchanges of two pairs |
 
 Language: *orbit* (of a zero under a group), *width class* (the square class of a radicand),
 *reflection kernel* (the group over the field that forgets the orientation of reflection
@@ -241,6 +245,11 @@ finitely many zeros).
   to the flip times one exchange. In the same way signed 3-cycles and double flips clear the
   moved zeros of any signed permutation off three reference pairs and then on them: modulo
   the group every signed permutation of finite support is `1`, a flip, an exchange, or both.
+- **Peeling an involution.** A signed involution of finite support splits along the orbit
+  `{z, σz, −z, −σz}` of a moved zero into a flip or an exchange and an involution with fewer
+  moved zeros. In a group of index two without exchanges each exchange changes the class, and
+  each flip changes it or not, the same for all flips because the group is transitive. So the
+  class of an involution is the parity of `c + εk`.
 - **Centralizer by transitivity.** A map that commutes with a group containing the signed
   3-cycles keeps every pair, because a 3-cycle through its value and two further pairs fixes
   the argument; transitivity makes its sign constant. A continuous map of the cover over its
@@ -491,6 +500,13 @@ are distinct and simple, and they are all the zeros of `H_{τ₀+s²}` in a fixe
   `W = G₊(b) ∪ G₊(b)e`, and `G₊(b) = W` as soon as it contains one such exchange. So `G₊` is
   `W`, or the kernel of the sign on the pairs, or the kernel of the product of the sign on
   the zeros and the sign on the pairs.
+- *The turns and their parity law.* The turn around every forward time is an involution of
+  `G₊`. It carries a zero to its negative exactly on the `2k` sheets of the collision at the
+  centre, `k` the order of vanishing of the centre value: the sign of a turn on the zeros is
+  `(−1)^k`. It moves `M = 2k + 4c` zeros. If `G₊ ≠ W` there is `ε ∈ {0, 1}` with `c + εk`
+  even at every forward time: `8 ∣ M` off the centre times, in particular at every real
+  time, and `M mod 8` is one number, `2` or `6`, at all simple centre times. A turn around
+  one double collision off the centre and no other collision is the exchange of two pairs.
 - *The two involutions from the group.* A map of the fibre that commutes with `G₊(b)` is the
   identity or `r`, and the centre of `G₊(b)` is trivial. Over a real time `t`, a permutation
   `σ` with `T_γ̄ = σ T_γ σ⁻¹` for every forward loop `γ` and its mirror loop `γ̄` is `cr` or
@@ -586,6 +602,9 @@ collisions.
 [index two](TheForwardMonodromyGroupHasIndexAtMostTwoInTheSignedPermutationsOfFiniteSupport.lean),
 [parity of the quartets](AnOddNumberOfQuartetsOfNonrealZerosAtARealTimeGivesEverySignedPermutation.lean),
 [isolated double collision](TheTurnAroundAnIsolatedDoubleCollisionOffTheCentreIsTheExchangeOfTwoPairs.lean),
+[turns are involutions](EveryTurnIsAnInvolutionThatFlipsAsManyPairsAsTheOrderOfTheCentreValue.lean),
+[parity of involutions](TheInvolutionsOfAProperForwardMonodromyGroupObeyAParityLaw.lean),
+[parity law of the turns](TheTurnsOfAProperForwardMonodromyGroupObeyAParityLaw.lean),
 [centralizer and mirror](TheForwardMonodromyDeterminesTheReflectionAndTheConjugationOfTheZeros.lean),
 [deck maps](TheReflectionIsTheOnlySymmetryOfTheHeatCoverOverTheForwardTimes.lean),
 [connectedness](TheHeatCoverOverTheForwardTimesIsConnectedAndHasNoPolynomialFactor.lean),
@@ -637,7 +656,9 @@ collisions.
    time: at a real time `t > 0` conjugation flips no pair (no zero is imaginary) and exchanges
    the two pairs of every quartet `{z, z̄, −z, −z̄}` of nonreal zeros, so an odd number of
    quartets at one real time gives `G₊ = W`, and if `G₊ ≠ W` the nonreal zeros form an even
-   number of quartets at every real time. In every case the
+   number of quartets at every real time. In general the sign is read off the ramification
+   `M = 2k + 4c` of the forward times: `G₊ = W` as soon as `8 ∤ M` at one time off the
+   centre times, or `M mod 8` differs at two simple centre times. In every case the
    cover is in the position of a generic curve over a finite field at every finite level,
    and the remaining problem is the word of conjugation, not the group.
 2. **Independence of the moments.** Are the normalized moments `μ₂/μ₀, …, μ₂ₙ/μ₀` of `Φ`
@@ -755,11 +776,14 @@ belongs here when it is applied to one of the six questions.
   function of the time, the centre value; for the others no such function is known. The
   known ones lie near the times with `2S₀ = ±B₀`, in the direction of the imaginary axis.
   Which sign occurs on a given loop of saddles.
-- The sign on the pairs. Two existence statements, each of which settles it: a forward time
-  with one double collision away from the centre and no other collision (its turn is the
-  exchange of two pairs, so `G₊ = W`), or a real time with an odd number of quartets of
-  nonreal zeros. A centre time at which the central collision is double and no other
-  collision happens gives the flip of a single pair, not the sign on the pairs.
+- The sign on the pairs. Existence statements, each of which gives `G₊ = W`: a forward time
+  off the centre times whose ramification is not divisible by `8`, for instance one double
+  collision away from the centre and no other collision; two simple centre times with
+  different ramification modulo `8`; a real time with an odd number of quartets of nonreal
+  zeros. A centre time at which the central collision is double and no other collision
+  happens gives the flip of a single pair, not the sign on the pairs. The converse, that
+  `G₊ ≠ W` when one parity law holds at all forward times, needs the two sign characters on
+  the signed permutations of finite support.
 - A property of the branch divisor that makes the transports of a forward loop at a real time
   and of its mirror loop agree; a mirror-symmetric presentation of `G₊` by turns.
 - The ideal of the analytic relations among `n` zeros in distinct pairs. A relation that

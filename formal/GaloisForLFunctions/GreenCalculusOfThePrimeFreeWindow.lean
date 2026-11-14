@@ -13,6 +13,7 @@ import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.AThinEndIsLogarithm
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheBoundRangeEndsOnlyWhereTheGapOfTheBoundWindowsCloses
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheGroundEnergyOfAnApertureIsAGapOfEveryWindowInsideIt
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheFirstOverlapStepHoldsAtEveryBlockSize
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheGroundEnergyOfAnApertureIsTheFloorOfWeilsFormOnTheWindowsInsideIt
 
 /-!
 # Green calculus of the prime-free window
@@ -27,6 +28,7 @@ plane and the positive Green matrix of Weil's form on the middle, the middle dre
 attraction of the two ends of the first step, the logarithmic stiffness of a thin end, the gap
 of a bound window and the continuity method, the floor of Weil's form on an aperture as a gap
 of every window inside it and as the excess of its overlap step, the first overlap step at
-every block size, and the forms of the Riemann hypothesis they give.
+every block size, the ground energy of an aperture as the common floor of Weil's form on the
+windows inside it, and the forms of the Riemann hypothesis they give.
 See `GreenCalculusOfThePrimeFreeWindow/README.md`.
 -/

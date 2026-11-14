@@ -13,6 +13,13 @@ finitely many low moments reduces each parity to a weighted capacity problem;
 the tail has the next harmonic gap. At these apertures the prime reflections
 for `2`, `3`, and `4` must be retained together.
 
+Immediately above `log(3)/2`, put `d₂=log(2)/a`, `d₃=log(3)/a`.
+When `a<log(2)` and `d₂+2<2d₃`, a prime-three overlap component is the
+four-vertex path `d₂−x, x, d₃−x, d₂−d₃+x`, with successive weights
+`w₂,w₃,w₂`. Eliminating the two outer vertices leaves a two-by-two inverse;
+the other components are the existing prime-two pairs. Its capacity bound
+is still an open obligation.
+
 The Gamma comparison previously retained its polynomial moments only for
 lag radius `r≤1`. The larger windows require `r≤log(5)<2`. The extension
 uses, for `0<z≤1`,
@@ -29,9 +36,37 @@ existing degree-six exponential bounds and polynomial inequalities on `[0,1]`.
 transitive audits, with only `propext`, `Classical.choice`, `Quot.sound`.
 They are in `TheGammaRemainderRetainsHigherLagsThroughRadiusTwo.lean`.
 
+The exact decomposition, including the mean and both correlation moments,
+now holds for `0<r≤2`:
+`gamma_eq_logarithmic_lag_correlation_moments_and_remainder_to_two`.
+Its lower-bound corollary is
+`gamma_ge_logarithmic_lag_and_correlation_moments_to_two`.
+Both passed direct Lean checks and standard-only transitive axiom audits in
+`TheGammaComparisonRetainsItsChargesThroughRadiusTwo.lean`.
+
+The degree-fourteen reciprocal polynomials now give a lower kernel through
+`r=2`, with pointwise error at most `1/10000000` for `r≤11/10`:
+`archLevySinhWeight_ge_polynomial14` and
+`archLevySinhWeight_polynomial14_error` in
+`TheGammaKernelHasAFourteenthOrderPolynomialLowerBound.lean`.
+Direct checks and standard-only axiom audits passed. Multiplication by
+degree-sixteen exponential bounds certifies the polynomial signs.
+
+The integrated comparison `gammaPolynomialLower14_error` bounds the Gamma
+energy between the retained polynomial form and that form plus
+`r/5000000` times mass for `r≤11/10`. Its direct Lean check and both
+transitive axiom audits passed in
+`TheGammaPolynomialComparisonHasAUniformError.lean`.
+
 ## Open obligations
 
-- Check the drafted exact mean/correlation decomposition through lag radius two.
+- The quartic primitive projection retains
+  `(m₀−m₂)²/3+(m₂−m₄)²/7+m₄²/11−2m₄m₆/11`, with Wirtinger cost
+  `π⁻²(M−m₀²−5m₂²−9m₄²)` only on residual mass. Its Lean draft awaits checking.
+- For larger diameters, Newton refinement of the reciprocal polynomials uses
+  `q↦q(2−Tq)`, where `T` is a Taylor upper bound for the hyperbolic denominator.
+  The exact error is `U(1/U−q)²+(T−U)q²`. Three refinements should reduce the
+  kernel error below `3/10¹⁷` throughout `0<t≤2`; this bound is not yet formalized.
 - Prove positive finite-moment capacities for the simultaneous prime reflections,
   including both parities. No such certificate is claimed here.
 - Transfer the resulting floors to all block sizes.
