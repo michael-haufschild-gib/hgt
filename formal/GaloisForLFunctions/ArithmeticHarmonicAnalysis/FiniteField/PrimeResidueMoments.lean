@@ -98,7 +98,7 @@ theorem abs_sum_Ico_primeResidueStatistic_sub_mean (S : Finset Nat.Primes)
   have h := SuccessorShellArithmetic.abs_sum_Ico_periodic_le_period_mass
     (primeSetProduct_pos S) (fun n => primeResidueStatistic S f n - primeResidueMean S f)
     hper hmean A B
-  simp only [sum_sub_distrib, sum_const, card_Ico, nsmul_eq_mul] at h
+  simp only [sum_sub_distrib, sum_const, Nat.card_Ico, nsmul_eq_mul] at h
   refine h.trans ?_
   calc
     _ ≤ ∑ n ∈ range (primeSetProduct S),

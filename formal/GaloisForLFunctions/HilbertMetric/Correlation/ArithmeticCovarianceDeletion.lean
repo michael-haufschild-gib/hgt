@@ -11,7 +11,7 @@ centered deletion law, including all correlations between coefficient systems.
 
 open scoped BigOperators
 namespace GaloisForLFunctions.HilbertMetric
-open RHTower
+open _root_.RHTower
 noncomputable section
 
 /-- The concrete vector representing an arithmetic covariance Rayleigh direction. -/

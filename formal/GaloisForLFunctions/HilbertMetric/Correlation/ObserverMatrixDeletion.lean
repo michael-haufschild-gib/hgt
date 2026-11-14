@@ -11,7 +11,7 @@ errors, with the exact quadratic correction retained.
 
 open scoped BigOperators
 namespace GaloisForLFunctions.HilbertMetric
-open RHTower
+open _root_.RHTower
 noncomputable section
 
 private def observerMatrixVector {d : ℕ} (A : Fin d → Fin d → ℂ) :

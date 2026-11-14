@@ -6,6 +6,7 @@ import GaloisForLFunctions.HTGeometry.Arithmetic.IntegralTests
 import GaloisForLFunctions.HTGeometry.Arithmetic.IntegralResidue
 import GaloisForLFunctions.HTGeometry.Arithmetic.ValuationSums
 import GaloisForLFunctions.HTGeometry.Arithmetic.LogarithmicPrecision
+import GaloisForLFunctions.HTGeometry.Arithmetic.IntegralPolynomialValuation
 import GaloisForLFunctions.HTGeometry.Arithmetic.FiniteValuationSelector
 import GaloisForLFunctions.HTGeometry.Arithmetic.ValuationSelectorResidue
 import GaloisForLFunctions.HTGeometry.Arithmetic.SquareDenominatorMultipliers

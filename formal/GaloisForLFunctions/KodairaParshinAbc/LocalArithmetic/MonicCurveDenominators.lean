@@ -13,7 +13,7 @@ x-denominators without any assumption that their polynomial splits.
 
 namespace GaloisForLFunctions.KodairaParshinAbc.LocalArithmetic
 
-open HTGeometry.Arithmetic
+open Polynomial HTGeometry.Arithmetic
 
 variable {p : ℕ} [Fact p.Prime]
 

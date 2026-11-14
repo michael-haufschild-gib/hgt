@@ -72,7 +72,7 @@ theorem selbergKernel_positiveDefinite :
   rw [Finset.sum_comm]
   simpa only [selbergGram, mul_comm] using selbergGram_nonneg x w
 
-/-- The corpus's two-packet Cauchy law applies to the explicit Selberg kernel. -/
+/-- Cauchy--Schwarz between two finite Selberg packets. -/
 theorem selbergPacketCross_sq_le {N M : ℕ} (s a : Fin N → ℝ) (t b : Fin M → ℝ) :
     HTGeometry.realKernelPacketCross selbergKernel s a t b ^ 2 ≤
       HTGeometry.realKernelPacketEnergy selbergKernel s a *
@@ -86,6 +86,66 @@ theorem selbergPacketChannelGram_posSemidef {M N : ℕ}
     (HTGeometry.realKernelPacketChannelGram selbergKernel t b).PosSemidef :=
   HTGeometry.realKernelPacketChannelGram_posSemidef_of_positiveDefinite
     selbergKernel selbergKernel_positiveDefinite selbergKernel_even t b
+
+private theorem selbergPacketEnergy_eq_gram {n : ℕ} (x w : Fin n → ℝ) :
+    HTGeometry.realKernelPacketEnergy selbergKernel x w = selbergGram x w := by
+  unfold HTGeometry.realKernelPacketEnergy selbergGram
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [show x j - x i = -(x i - x j) by ring, selbergKernel_even]
+  ring
+
+private theorem selbergPacketCross_symm {n : ℕ} (x u v : Fin n → ℝ) :
+    HTGeometry.realKernelPacketCross selbergKernel x v x u =
+      HTGeometry.realKernelPacketCross selbergKernel x u x v := by
+  unfold HTGeometry.realKernelPacketCross
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro i _
+  apply Finset.sum_congr rfl
+  intro j _
+  rw [show x i - x j = -(x j - x i) by ring, selbergKernel_even]
+  ring
+
+private theorem selbergGram_sub {n : ℕ} (x u v : Fin n → ℝ) :
+    selbergGram x (u - v) = selbergGram x u + selbergGram x v -
+      2 * HTGeometry.realKernelPacketCross selbergKernel x u x v := by
+  have he : HTGeometry.realKernelPacketEnergy selbergKernel x (u - v) =
+      HTGeometry.realKernelPacketEnergy selbergKernel x u +
+        HTGeometry.realKernelPacketEnergy selbergKernel x v -
+        HTGeometry.realKernelPacketCross selbergKernel x u x v -
+        HTGeometry.realKernelPacketCross selbergKernel x v x u := by
+    unfold HTGeometry.realKernelPacketEnergy HTGeometry.realKernelPacketCross
+    simp only [Pi.sub_apply, sub_mul, mul_sub, Finset.sum_sub_distrib]
+    ring
+  rw [selbergPacketEnergy_eq_gram, selbergPacketEnergy_eq_gram,
+    selbergPacketEnergy_eq_gram, selbergPacketCross_symm] at he
+  linarith only [he]
+
+/-- Sharp centered deletion law for the explicit Selberg correlation. -/
+theorem selbergGram_deletion_centered {n : ℕ} (x u v : Fin n → ℝ) :
+    (selbergGram x (u - v) - selbergGram x u - selbergGram x v) ^ 2 ≤
+      4 * selbergGram x u * selbergGram x v := by
+  have h := selbergPacketCross_sq_le x u x v
+  rw [selbergPacketEnergy_eq_gram, selbergPacketEnergy_eq_gram] at h
+  rw [selbergGram_sub]
+  nlinarith only [h]
+
+/-- Every exceptional direction pays its complete energy and geometric-mean interaction. -/
+theorem selbergGram_deletion_error {n : ℕ} (x u v : Fin n → ℝ) :
+    |selbergGram x (u - v) - selbergGram x u| ≤ selbergGram x v +
+      2 * Real.sqrt (selbergGram x u * selbergGram x v) := by
+  have h := selbergPacketCross_sq_le x u x v
+  rw [selbergPacketEnergy_eq_gram, selbergPacketEnergy_eq_gram] at h
+  have ha : |HTGeometry.realKernelPacketCross selbergKernel x u x v| ≤
+      Real.sqrt (selbergGram x u * selbergGram x v) := by
+    rw [← Real.sqrt_sq_eq_abs]
+    exact Real.sqrt_le_sqrt h
+  have hb := abs_le.mp ha
+  rw [selbergGram_sub, abs_le]
+  constructor <;> linarith [selbergGram_nonneg x v]
 
 /-- Weighted mass of ordered distinct pairs within the unit gap. -/
 def selbergClosePairMass {n : ℕ} (x : Fin n → ℝ) (m : Fin n → ℝ≥0) : ℝ :=
@@ -126,6 +186,36 @@ theorem selbergGram_sub_card_le_closePairCard {n : ℕ} (x : Fin n → ℝ) :
   simpa only [NNReal.coe_one, one_pow, Finset.sum_const, Finset.card_univ, Fintype.card_fin,
     nsmul_eq_mul, mul_one, hc] using h
 
+/-- Original correlation surplus still forces close pairs after any exceptional nodes are deleted.
+The exceptional cost is explicit; no density or zero-counting estimate is assumed. -/
+theorem selberg_surplus_after_deletion {n : ℕ} (x : Fin n → ℝ)
+    (m : Fin n → ℝ≥0) (e : Finset (Fin n)) :
+    selbergGram x (fun i => m i) -
+      (selbergGram x (fun i => if i ∈ e then (m i : ℝ) else 0) +
+        2 * Real.sqrt (selbergGram x (fun i => m i) *
+          selbergGram x (fun i => if i ∈ e then (m i : ℝ) else 0))) -
+      (∑ i, (if i ∈ e then (0 : ℝ) else (m i : ℝ)) ^ 2) ≤
+      selbergClosePairMass x (fun i => if i ∈ e then 0 else m i) := by
+  let u : Fin n → ℝ := fun i => m i
+  let v : Fin n → ℝ := fun i => if i ∈ e then m i else 0
+  let r : Fin n → ℝ≥0 := fun i => if i ∈ e then 0 else m i
+  have he : (fun i => (r i : ℝ)) = u - v := by
+    funext i
+    dsimp only [r, u, v, Pi.sub_apply]
+    split_ifs <;> simp
+  have herror := (abs_le.mp (selbergGram_deletion_error x u v)).1
+  have hpair := selbergGram_sub_diagonal_le_closePairs x r
+  have hdiag : (∑ i, (r i : ℝ) ^ 2) =
+      ∑ i, (if i ∈ e then (0 : ℝ) else (m i : ℝ)) ^ 2 := by
+    apply Finset.sum_congr rfl
+    intro i _
+    dsimp only [r]
+    split_ifs <;> simp
+  rw [hdiag, he] at hpair
+  change selbergGram x u - (selbergGram x v + 2 * Real.sqrt (selbergGram x u * selbergGram x v)) -
+    (∑ i, (if i ∈ e then (0 : ℝ) else (m i : ℝ)) ^ 2) ≤ selbergClosePairMass x r
+  linarith only [herror, hpair]
+
 end
 end GaloisForLFunctions.TransThresholdPairCorrelation
 
@@ -137,3 +227,6 @@ end GaloisForLFunctions.TransThresholdPairCorrelation
 #print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergKernel_positiveDefinite
 #print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergPacketCross_sq_le
 #print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergPacketChannelGram_posSemidef
+
+#print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selbergGram_deletion_centered
+#print axioms GaloisForLFunctions.TransThresholdPairCorrelation.selberg_surplus_after_deletion

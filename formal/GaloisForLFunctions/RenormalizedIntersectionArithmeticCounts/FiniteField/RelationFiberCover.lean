@@ -20,6 +20,7 @@ theorem card_relation_upper_bound_add_section
     Nat.card {t : Y × Z // P t.1 t.2} ≤ Nat.card I * n + Nat.card J := by
   classical
   letI := Fintype.ofFinite I
+  letI := Fintype.ofFinite J
   letI := Fintype.ofFinite Z
   let F : (Σ i : I, {w : Z | P (f i) w}) ⊕ J → {t : Y × Z // P t.1 t.2} :=
     Sum.elim (fun x => ⟨(f x.1, x.2.val), x.2.property⟩) (fun j => ⟨(g j, z j), hz j⟩)
@@ -27,7 +28,8 @@ theorem card_relation_upper_bound_add_section
     rintro ⟨⟨y, w⟩, hyw⟩
     rcases hcover y w hyw with ⟨i, hi⟩ | ⟨j, hj, hzj⟩
     · refine ⟨Sum.inl ⟨i, w, ?_⟩, ?_⟩
-      · simpa only [hi] using hyw
+      · change P (f i) w
+        simpa only [hi] using hyw
       · apply Subtype.ext
         change (f i, w) = (y, w)
         rw [hi]
