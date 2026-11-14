@@ -43,6 +43,7 @@ not supply the general-field `7/8` estimate or conductor/ramification matching.
 
 ## Existing ingredients and outstanding checks
 
+- **A162 closed:** see `../3-formalized/a162-certified-window-floors-and-overlap-calculus.md`.
 - GCW's Green criterion, harmonic criterion, additive loss law and
   `one_lt_bindingEnergy` passed transitive audits: only `propext`,
   `Classical.choice`, `Quot.sound`.
@@ -52,7 +53,8 @@ not supply the general-field `7/8` estimate or conductor/ramification matching.
   see `../3-formalized/charge-cancellation-preserves-the-certified-floor.md`.
 - The GCW module
   `TheCertifiedFloorsAreAPrioriBoundsForTheGreenMatrixAndTheConditionalEnergies`
-  supplies first-overlap floors; its final audit is pending.
+  supplies first-overlap floors. Its source snapshot and transitive audits passed;
+  only `propext`, `Classical.choice`, `Quot.sound`. Umbrella import added.
 - A140: the located full-sector certificate ends at `181/500`; the dilation tower
   stays below `0.3621`. Neither reaches `1881/5000`.
 - A141: quotient construction above awaits formalization. The located `7/8`

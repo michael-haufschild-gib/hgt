@@ -104,9 +104,15 @@ theorem smul_SL_mul_denomSq (g : SL(2, ℝ)) (z : ℍ) :
     have := denomSq_pos g z
     rw [denomSq, h1, h2] at this
     norm_num at this
+  have hN : Complex.normSq ((g 1 0 : ℂ) * z + g 1 1) = denomSq g z := by
+    rw [Complex.normSq_apply]
+    simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      UpperHalfPlane.coe_re, UpperHalfPlane.coe_im, zero_mul, sub_zero, Complex.add_im,
+      Complex.mul_im, add_zero]
+    unfold denomSq; ring
   have hD : (denomSq g z : ℂ) =
       ((g 1 0 : ℂ) * z + g 1 1) * ((g 1 0 : ℂ) * (starRingEnd ℂ) (z : ℂ) + g 1 1) := by
-    apply Complex.ext <;> simp [denomSq] <;> ring
+    rw [← hN, ← Complex.mul_conj, map_add, map_mul, Complex.conj_ofReal, Complex.conj_ofReal]
   rw [coe_smul_SL, hD, ← mul_assoc, div_mul_cancel₀ _ hne]
 
 theorem re_smul_SL (g : SL(2, ℝ)) (z : ℍ) : (g • z).re =
@@ -225,7 +231,7 @@ theorem quatConj_quatConj (x : Fin 4 → ℤ) : quatConj (quatConj x) = x := by
 
 /-- `trd (x w x̄) = nrd x · trd w`. -/
 theorem conjQ_zero (x w : Fin 4 → ℤ) : conjQ x w 0 = nrd x * w 0 := by
-  simp [conjQ, quatMul, quatConj, nrd, Matrix.vecHead, Matrix.vecTail] <;> ring
+  simp [conjQ, quatMul, quatConj, nrd] <;> ring
 
 theorem conjQ_mem_wallSet {N : ℕ} {x w : Fin 4 → ℤ} (hx1 : nrd x = 1) (hx : IsCong N x)
     (hw : w ∈ wallSet N) : conjQ x w ∈ wallSet N := by
@@ -394,10 +400,10 @@ theorem exists_hermR_eq_zero (M : Matrix (Fin 2) (Fin 2) ℝ) {z z' : ℍ}
   have hcont : Continuous fun t : ℝ =>
       hermR M ((1 - t) * z.re + t * z'.re) ((1 - t) * z.im + t * z'.im) := by
     unfold hermR; fun_prop
-  have h0 : (fun t : ℝ => hermR M ((1 - t) * z.re + t * z'.re) ((1 - t) * z.im + t * z'.im)) 0 =
-      hermForm M z := by simp [hermForm]
-  have h1 : (fun t : ℝ => hermR M ((1 - t) * z.re + t * z'.re) ((1 - t) * z.im + t * z'.im)) 1 =
-      hermForm M z' := by simp [hermForm]
+  have h0 : hermR M ((1 - 0) * z.re + 0 * z'.re) ((1 - 0) * z.im + 0 * z'.im) = hermForm M z := by
+    simp [hermForm]
+  have h1 : hermR M ((1 - 1) * z.re + 1 * z'.re) ((1 - 1) * z.im + 1 * z'.im) = hermForm M z' := by
+    simp [hermForm]
   have hzero : ∃ t ∈ Icc (0 : ℝ) 1,
       hermR M ((1 - t) * z.re + t * z'.re) ((1 - t) * z.im + t * z'.im) = 0 := by
     unfold posInd at h
@@ -463,7 +469,7 @@ theorem finsum_eq_sum_of_separating {N : ℕ} {s : Finset (wallSet N)} {z z' : �
     (hs : ∀ w : wallSet N, posInd (wallSide w z) ≠ posInd (wallSide w z') → w ∈ s) :
     ∑ᶠ w : wallSet N, (posInd (wallSide w z) - posInd (wallSide w z')) =
       ∑ w ∈ s, (posInd (wallSide w z) - posInd (wallSide w z')) :=
-  finsum_eq_sum_of_support_subset _ fun w hw => hs w fun h => hw (by rw [h, sub_self])
+  finsum_eq_sum_of_support_subset _ fun w hw => hs w fun h => hw (by simp only [h, sub_self])
 
 theorem finite_support_sep {N : ℕ} (z z' : ℍ) :
     (Function.support fun w : wallSet N =>
@@ -471,7 +477,7 @@ theorem finite_support_sep {N : ℕ} (z z' : ℍ) :
   classical
   obtain ⟨s, hs⟩ := exists_finset_separating N ((Set.finite_singleton z').insert z).isCompact
   refine s.finite_toSet.subset fun w hw => ?_
-  exact hs w z (by simp) z' (by simp) fun h => hw (by rw [h, sub_self])
+  exact hs w z (by simp) z' (by simp) fun h => hw (by simp only [h, sub_self])
 
 /-! ### The wall count -/
 

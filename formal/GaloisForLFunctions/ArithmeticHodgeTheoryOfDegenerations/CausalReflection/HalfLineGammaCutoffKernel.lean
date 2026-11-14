@@ -38,7 +38,8 @@ theorem abs_archLevyDensity_sub_inverse_le {h : ℝ} (hh : 0 < h) :
     apply (div_le_iff₀ (mul_pos (by norm_num) hh)).mpr
     nlinarith only [hmul, Real.add_one_le_exp (-h / 2)]
   have hid : (1 - h / 2) / (2 * h) = 1 / (2 * h) - 1 / 4 := by
-    field_simp [hh.ne'] <;> ring
+    field_simp [hh.ne']
+    ring
   rw [hid] at hlo
   have hup := WeilLevyHarmonicDoubling.two_mul_archLevyDensity_le_inv_add_half hh
   have hinv : 1 / h = 2 * (1 / (2 * h)) := by
