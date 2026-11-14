@@ -103,3 +103,12 @@ theorem product_period_ratio {K : Type*} [Field K] (f g : K) :
   · rw [pow_two, mul_div_mul_left _ _ hf]
 
 end GaloisForLFunctions.KodairaParshinAbc.Periods
+
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.symmetricSquare_product
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.symmetricSquare_square
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.wronskian_defect
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.wronskian_square_product
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.product_period_conic
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.product_period_wronskian
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.wilczynski_symmetricSquare
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.product_period_ratio

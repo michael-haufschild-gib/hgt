@@ -43,3 +43,7 @@ theorem binomialSquare_product_wronskian (n : ℕ) (g : R[X]) :
   wronskian_square_product _ _
 
 end GaloisForLFunctions.KodairaParshinAbc.Legendre
+
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Legendre.binomialSquare_symmetricSquare
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Legendre.deuring_symmetricSquare
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Legendre.binomialSquare_product_wronskian

@@ -261,12 +261,10 @@ theorem autocorr_one_of_parity {G : ℝ → ℝ} (hG : Continuous G)
   have hsub := intervalIntegral.integral_comp_sub_left
     (f := fun u => G u * G (1 - u)) (d := 1) (a := (1 / 2 : ℝ)) (b := 1)
   norm_num at hsub
-  have hsym : (∫ u in (0 : ℝ)..(1 / 2), G (1 - u) * G (1 - (1 - u))) =
-      ∫ u in (0 : ℝ)..(1 / 2), G u * G (1 - u) := by
-    refine intervalIntegral.integral_congr fun u _ => ?_
-    ring
-  rw [hsym] at hsub
-  rw [← hsplit, hsub]
+  have hsym : (∫ u in (1 / 2 : ℝ)..1, G u * G (1 - u)) =
+      ∫ u in (1 / 2 : ℝ)..1, G (1 - u) * G u :=
+    intervalIntegral.integral_congr fun u _ => mul_comm _ _
+  rw [← hsplit, hsym, hsub]
   ring
 
 theorem autocorr_primeThree_of_parity {G : ℝ → ℝ} (hG : Continuous G)
@@ -299,8 +297,8 @@ theorem autocorr_primeThree_of_parity {G : ℝ → ℝ} (hG : Continuous G)
     (f := fun t => G (1 - t) * G (a + t)) (d := 1 - a) (a := L4) (b := 1 - a)
   have hL : 1 - a - L4 = L4 := by dsimp [L4]; ring
   rw [sub_self, hL] at hsub
-  have hsym : (∫ t in (0 : ℝ)..L4, G (1 - (1 - a - t)) * G (a + (1 - a - t))) =
-      ∫ t in (0 : ℝ)..L4, G (1 - t) * G (a + t) := by
+  have hsym : (∫ t in L4..(1 - a), G (1 - (1 - a - t)) * G (a + (1 - a - t))) =
+      ∫ t in L4..(1 - a), G (1 - t) * G (a + t) := by
     refine intervalIntegral.integral_congr fun t _ => ?_
     have he1 : 1 - (1 - a - t) = a + t := by ring
     have he2 : a + (1 - a - t) = 1 - t := by ring
@@ -382,7 +380,7 @@ theorem weilQuad_ge_retained_gamma_moments {F : ℝ → ℝ} (hF : ContDiff ℝ 
     simp_rw [Finset.sum_mul, mul_assoc]
     rw [integral_finsetSum _ fun q _ => hiq q]
     simp_rw [integral_const_mul, hpow_D, mul_sub]
-    rw [Finset.sum_sub_distrib, Finset.sum_mul]
+    rw [Finset.sum_sub_distrib]
     congr 1
     apply Finset.sum_congr rfl
     intro q _
@@ -449,8 +447,11 @@ private theorem sum_range_even_odd_split (f : ℕ → ℝ) (q : ℕ) :
   induction q with
   | zero => simp
   | succ q ih =>
-    conv_rhs => rw [Finset.sum_range_succ, Finset.sum_range_succ]
-    rw [show 2 * (q + 1) + 1 = (2 * q + 1) + 1 + 1 by omega,
+    have h1 : (∑ r ∈ Finset.range (q + 1 + 1), f (2 * r)) =
+        (∑ r ∈ Finset.range (q + 1), f (2 * r)) + f (2 * (q + 1)) := Finset.sum_range_succ _ _
+    have h2 : (∑ r ∈ Finset.range (q + 1), f (2 * r + 1)) =
+        (∑ r ∈ Finset.range q, f (2 * r + 1)) + f (2 * q + 1) := Finset.sum_range_succ _ _
+    rw [h1, h2, show 2 * (q + 1) + 1 = (2 * q + 1) + 1 + 1 by omega,
       Finset.sum_range_succ, Finset.sum_range_succ, ih]
     ring
 
@@ -516,9 +517,9 @@ private theorem half_even_lag_moment_eq_half_whole {G : ℝ → ℝ}
         (Iic (2 : ℝ)).indicator (fun t => t ^ (2 * q) * autocorr G t) t := by
       intro t _
       by_cases ht : t ≤ 2
-      · exact (Set.indicator_of_mem (s := Iic (2 : ℝ)) ht _).symm
+      · rw [Set.indicator_of_mem (s := Iic (2 : ℝ)) ht]
       · rw [Set.indicator_of_notMem (s := Iic (2 : ℝ)) ht,
-          autocorr_eq_zero_of_support (r := 2) (by simpa using hs) (lt_of_not_ge ht), mul_zero]
+          autocorr_eq_zero_of_support (a := 1) hs (by linarith), mul_zero]
     rw [setIntegral_congr_fun measurableSet_Ioi he, setIntegral_indicator measurableSet_Iic]
     have hset : Ioi (0 : ℝ) ∩ Iic 2 = Ioc (0 : ℝ) 2 := Ioi_inter_Iic
     rw [hset]
@@ -661,6 +662,7 @@ theorem sub_lowProj_moment_ge {G : ℝ → ℝ} (hG : Continuous G) {m n : ℕ} 
   rw [integral_sub hi1 hi2]
   change regionalLegendreMoment G n - regionalLegendreMoment (lowProj G m) n = _
   rw [lowProj_moment_ge G hn, sub_zero]
+  rfl
 
 theorem projection_residual_mass_pub {G : ℝ → ℝ} (hG : Continuous G) (m : ℕ) :
     (∫ x in Icc (-1 : ℝ) 1, (G x - lowProj G m x) ^ 2) =
@@ -691,10 +693,12 @@ theorem projection_residual_mass_pub {G : ℝ → ℝ} (hG : Continuous G) (m : 
   have hiGG : IntegrableOn (fun x => G x ^ 2) (Icc (-1 : ℝ) 1) := (hG.pow 2).integrableOn_Icc
   have hiPP : IntegrableOn (fun x => P x ^ 2) (Icc (-1 : ℝ) 1) := (hP.pow 2).integrableOn_Icc
   have hiGP : IntegrableOn (fun x => G x * P x) (Icc (-1 : ℝ) 1) := (hG.mul hP).integrableOn_Icc
+  have hiGPP : IntegrableOn (fun x => G x ^ 2 + P x ^ 2) (Icc (-1 : ℝ) 1) := hiGG.add hiPP
+  have hi2GP : IntegrableOn (fun x => 2 * (G x * P x)) (Icc (-1 : ℝ) 1) := hiGP.const_mul 2
   have he : (fun x => (G x - lowProj G m x) ^ 2) =
       fun x => (G x ^ 2 + P x ^ 2) - 2 * (G x * P x) := by
     funext x; dsimp [P]; ring
-  rw [he, integral_sub (hiGG.add hiPP) (hiGP.const_mul 2), integral_add hiGG hiPP,
+  rw [he, integral_sub hiGPP hi2GP, integral_add hiGG hiPP,
     integral_const_mul, hGP, hPP]
   dsimp [B]
   ring
@@ -866,7 +870,7 @@ theorem isPolyDeg_legP (n : ℕ) : isPolyDeg (n + 1) (legP n) := by
       rw [h1, h0, ← Finset.sum_sub_distrib, Finset.sum_div]
       apply Finset.sum_congr rfl; intro k _; ring
 
-theorem isPolyDeg_lowProj (G : ℝ → ℝ) {m : ℕ} (hm : 1 ≤ m) :
+theorem isPolyDeg_lowProj (G : ℝ → ℝ) {m : ℕ} (_ : 1 ≤ m) :
     isPolyDeg m (lowProj G m) := by
   have hterm : ∀ n < m, isPolyDeg m (fun x => projCoeff G n * legP n x) := by
     intro n hn
@@ -886,7 +890,7 @@ theorem isPolyDeg_lowProj (G : ℝ → ℝ) {m : ℕ} (hm : 1 ≤ m) :
       obtain ⟨b1, hb1⟩ := ih (by omega)
       obtain ⟨b2, hb2⟩ := hterm r (by omega)
       refine ⟨fun k => b1 k + b2 k, fun x => ?_⟩
-      dsimp only
+      dsimp only at hb1 hb2 ⊢
       rw [Finset.sum_range_succ, hb1 x, hb2 x, ← Finset.sum_add_distrib]
       apply Finset.sum_congr rfl; intro k _; ring
   exact hsum m le_rfl
@@ -1095,9 +1099,8 @@ theorem lag_moment_eq_iterPrim {G : ℝ → ℝ} (hG : Continuous G)
   have hl (t : ℝ) : t ^ n * autocorr G t = ∫ y, G y * (t ^ n * G (y - t)) := by
     unfold autocorr
     have hshift := integral_add_right_eq_self (μ := volume) (fun y : ℝ => G (y - t) * G y) t
-    dsimp only at hshift
     simp_rw [add_sub_cancel_right] at hshift
-    rw [← hshift, ← integral_const_mul]
+    rw [hshift, ← integral_const_mul]
     exact integral_congr_ae (Eventually.of_forall fun y => by ring)
   simp_rw [hl]
   have hcut_y (t : ℝ) : (∫ y, G y * (t ^ n * G (y - t))) =
@@ -1123,10 +1126,9 @@ theorem lag_moment_eq_iterPrim {G : ℝ → ℝ} (hG : Continuous G)
     have hy0 : 0 ≤ y + 1 := by linarith [hy.1]
     have hy2 : y + 1 ≤ 2 := by linarith [hy.2]
     rw [← intervalIntegral.integral_of_le (by norm_num : (0 : ℝ) ≤ 2)]
-    have hsplit := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
-      (a := (0 : ℝ)) (b := y + 1) (c := 2)
-      (((continuous_pow n).mul (hG.comp (continuous_const.sub continuous_id))).intervalIntegrable _ _)
-      (((continuous_pow n).mul (hG.comp (continuous_const.sub continuous_id))).intervalIntegrable _ _)
+    have hcont_t : Continuous (fun t : ℝ => t ^ n * G (y - t)) := by fun_prop
+    have hsplit := intervalIntegral.integral_add_adjacent_intervals
+      (hcont_t.intervalIntegrable 0 (y + 1)) (hcont_t.intervalIntegrable (y + 1) 2)
     have htail_zero : (∫ t in (y + 1)..2, t ^ n * G (y - t)) = 0 := by
       rw [intervalIntegral.integral_of_le hy2]
       refine setIntegral_eq_zero_of_forall_eq_zero fun t ht => ?_
@@ -1436,15 +1438,26 @@ private theorem exp_odd_diff_sum (z : ℝ) :
   induction M with
   | zero => simp
   | succ M ih =>
-    conv_rhs => rw [Finset.sum_range_succ]
-    rw [show 2 * (M + 1) + 1 = (2 * M + 1) + 1 + 1 by omega,
-      Finset.sum_range_succ, Finset.sum_range_succ,
-      Finset.sum_range_succ, Finset.sum_range_succ]
-    have hev : (-z) ^ ((2 * M + 1) + 1) = z ^ ((2 * M + 1) + 1) := by
-      rw [show (2 * M + 1) + 1 = 2 * (M + 1) by omega, pow_mul, neg_sq, ← pow_mul]
+    have h1 : (∑ m ∈ Finset.range (2 * (M + 1) + 1), z ^ m / (m.factorial : ℝ)) =
+        (∑ m ∈ Finset.range (2 * M + 1), z ^ m / (m.factorial : ℝ)) +
+          z ^ (2 * M + 1) / ((2 * M + 1).factorial : ℝ) +
+          z ^ (2 * M + 2) / ((2 * M + 2).factorial : ℝ) := by
+      rw [show 2 * (M + 1) + 1 = (2 * M + 1) + 1 + 1 by omega,
+        Finset.sum_range_succ, Finset.sum_range_succ]
+    have h2 : (∑ m ∈ Finset.range (2 * (M + 1) + 1), (-z) ^ m / (m.factorial : ℝ)) =
+        (∑ m ∈ Finset.range (2 * M + 1), (-z) ^ m / (m.factorial : ℝ)) +
+          (-z) ^ (2 * M + 1) / ((2 * M + 1).factorial : ℝ) +
+          (-z) ^ (2 * M + 2) / ((2 * M + 2).factorial : ℝ) := by
+      rw [show 2 * (M + 1) + 1 = (2 * M + 1) + 1 + 1 by omega,
+        Finset.sum_range_succ, Finset.sum_range_succ]
+    have h3 : (∑ j ∈ Finset.range (M + 1), z ^ (2 * j + 1) / ((2 * j + 1).factorial : ℝ)) =
+        (∑ j ∈ Finset.range M, z ^ (2 * j + 1) / ((2 * j + 1).factorial : ℝ)) +
+          z ^ (2 * M + 1) / ((2 * M + 1).factorial : ℝ) := Finset.sum_range_succ _ _
+    have hev : (-z) ^ (2 * M + 2) = z ^ (2 * M + 2) := by
+      rw [show 2 * M + 2 = 2 * (M + 1) by omega, pow_mul, neg_sq, ← pow_mul]
     have hodd : (-z) ^ (2 * M + 1) = -(z ^ (2 * M + 1)) := by
       rw [pow_succ, pow_mul, neg_sq, ← pow_mul]; ring
-    rw [hev, hodd, neg_div]
+    rw [h1, h2, h3, hev, hodd, neg_div]
     linarith [ih]
 
 private theorem abs_pow_sub_le_half {z z0 : ℝ} (hz : z ∈ Icc (0 : ℝ) (1 / 2))
@@ -1515,7 +1528,6 @@ private theorem interval_cauchy_schwarz_unit {G E : ℝ → ℝ} (hG : Continuou
       rw [intervalIntegral.integral_add (i1.sub i2) i3,
         intervalIntegral.integral_sub i1 i2,
         intervalIntegral.integral_const_mul, intervalIntegral.integral_const_mul]
-      ring
     by_cases hIGG : IGG = 0
     · by_contra hlt
       push Not at hlt
@@ -1583,7 +1595,11 @@ theorem even_cosh_pole_ge {F : ℝ → ℝ} (hF : Continuous F)
       exact intervalIntegral.integral_congr fun u _ => by ring
     rw [h2int] at hev
     field_simp [hA_pos.ne'] at hscale
-    linarith
+    have hcomm : (∫ x, F x * (2 * Real.cosh (x / 2))) = ∫ x, 2 * Real.cosh (x / 2) * F x :=
+      integral_congr_ae (Eventually.of_forall fun x => mul_comm _ _)
+    rw [hev] at hscale
+    rw [hcomm, ← hscale]
+    ring
   have hquot : (coshPairing F ^ 2 / 2) / (2 * apertureLogTwo) =
       4 * apertureLogTwo * (∫ u in (0 : ℝ)..1, G u * Real.cosh (apertureLogTwo * u / 2)) ^ 2 := by
     rw [hpair]; field_simp [hA_pos.ne']; ring
@@ -1727,7 +1743,11 @@ theorem odd_sinh_pole_ge {F : ℝ → ℝ} (hF : Continuous F)
       exact intervalIntegral.integral_congr fun u _ => by ring
     rw [h2int] at hev
     field_simp [hA_pos.ne'] at hscale
-    linarith
+    have hcomm : (∫ x, F x * (2 * Real.sinh (x / 2))) = ∫ x, 2 * Real.sinh (x / 2) * F x :=
+      integral_congr_ae (Eventually.of_forall fun x => mul_comm _ _)
+    rw [hev] at hscale
+    rw [hcomm, ← hscale]
+    ring
   have hquot : -(sinhPairing F ^ 2 / 2) / (2 * apertureLogTwo) =
       -4 * apertureLogTwo * (∫ u in (0 : ℝ)..1, G u * Real.sinh (apertureLogTwo * u / 2)) ^ 2 := by
     rw [hpair]; field_simp [hA_pos.ne']; ring
@@ -2017,8 +2037,8 @@ theorem tridiag4_complete_sq_pert
   have hs3 : 0 ≤ (u3 + (e2 * w2 + d3 * w3 - v30)) ^ 2 := sq_nonneg _
   have hu2 : 0 ≤ ((1 / 4 : ℝ) * u2 - 4 * dv2) ^ 2 := sq_nonneg _
   have hu3 : 0 ≤ ((1 / 4 : ℝ) * u3 - 4 * dv3) ^ 2 := sq_nonneg _
-  have hw2 : 0 ≤ ((1 / 10 ^ 11 : ℝ) * w2 + 10 ^ 11 * dv2) ^ 2 := sq_nonneg _
-  have hw3 : 0 ≤ ((1 / 10 ^ 11 : ℝ) * w3 + 10 ^ 11 * dv3) ^ 2 := sq_nonneg _
+  have hw2 : 0 ≤ ((1 / 10 ^ 11 : ℝ) * w2 - 10 ^ 11 * dv2) ^ 2 := sq_nonneg _
+  have hw3 : 0 ≤ ((1 / 10 ^ 11 : ℝ) * w3 - 10 ^ 11 * dv3) ^ 2 := sq_nonneg _
   have hnonneg01 : 0 ≤ (1 / 16 : ℝ) * (u0 ^ 2 + u1 ^ 2) := by positivity
   linarith
 

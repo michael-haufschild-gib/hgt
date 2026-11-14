@@ -49,3 +49,8 @@ theorem heckeCompanion_symmetricSquare_discriminant (a p : R) (v : Fin 3 → R) 
   simp [Matrix.det_fin_two]
 
 end GaloisForLFunctions.ArithmeticCorrespondencePositivity
+
+#print axioms GaloisForLFunctions.ArithmeticCorrespondencePositivity.symmetricSquare_discriminant
+#print axioms GaloisForLFunctions.ArithmeticCorrespondencePositivity.symmetricPair_discriminant
+#print axioms GaloisForLFunctions.ArithmeticCorrespondencePositivity.symmetricPair_self_discriminant
+#print axioms GaloisForLFunctions.ArithmeticCorrespondencePositivity.heckeCompanion_symmetricSquare_discriminant

@@ -91,7 +91,8 @@ theorem exists_forwardMonodromy_eq_on_continued_window {ι : Type*} [Finite ι]
   choose w hw hw0 using fun i =>
     exists_continuation_of_zero (complexHeat_zero_xiSpectralPointSupport (s i))
   choose w' hw' hw0' using fun i =>
-    exists_continuation_of_zero (complexHeat_zero_xiSpectralPointSupport (primeTraceZeroMap σ (s i)))
+    exists_continuation_of_zero
+      (complexHeat_zero_xiSpectralPointSupport (primeTraceZeroMap σ (s i)))
   -- distinct points that are not opposite stay so for small times
   have hsep : ∀ (v : ι → ℝ → ℂ) (a : ι → XiDivisorSupport),
       (∀ i, Tendsto (v i) (𝓝[>] 0) (𝓝 (xiSpectralPointSupport (a i)))) →

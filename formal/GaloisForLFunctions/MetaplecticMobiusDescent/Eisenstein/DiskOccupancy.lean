@@ -47,36 +47,48 @@ theorem mem_centres_iff_card (z : ℂ) (r : ℝ) (k : ℕ) :
     obtain ⟨s, hs, hcard⟩ := Finset.exists_subset_card_eq hk
     exact ⟨s, hcard, fun n hn => (mem_points z r n).mp (hs hn)⟩
 
-/-- Each occupancy threshold is closed; no points disappear in a limiting closed disk. -/
-theorem isClosed_centres (r : ℝ) (k : ℕ) : IsClosed (centres r k) := by
+/-- Occupancy thresholds are jointly closed in the radius and the centre. -/
+theorem isClosed_radius_centres (k : ℕ) :
+    IsClosed {p : ℝ × ℂ | p.2 ∈ centres p.1 k} := by
   classical
   rw [← isOpen_compl_iff]
-  refine isOpen_iff_mem_nhds.mpr fun z hz => ?_
-  let t := points z (r + 1)
-  let F : Set ℂ := ⋃ s ∈ t.powersetCard k, ⋂ n ∈ s, closedBall (ringComplex n) r
+  refine isOpen_iff_mem_nhds.mpr fun p hp => ?_
+  let t := points p.2 (p.1 + 2)
+  let F : Set (ℝ × ℂ) := ⋃ s ∈ t.powersetCard k,
+    ⋂ n ∈ s, {q | dist q.2 (ringComplex n) ≤ q.1}
   have hF : IsClosed F := isClosed_biUnion_finset fun _ _ =>
-    isClosed_biInter fun _ _ => isClosed_closedBall
-  have hsub : F ⊆ centres r k := by
-    intro w hw
-    obtain ⟨s, hw⟩ := mem_iUnion.mp hw
-    obtain ⟨hs, hw⟩ := mem_iUnion.mp hw
+    isClosed_biInter fun _ _ => isClosed_le (continuous_snd.dist continuous_const) continuous_fst
+  have hsub : F ⊆ {q : ℝ × ℂ | q.2 ∈ centres q.1 k} := by
+    intro q hq
+    obtain ⟨s, hq⟩ := mem_iUnion.mp hq
+    obtain ⟨hs, hq⟩ := mem_iUnion.mp hq
     exact ⟨s, (Finset.mem_powersetCard.mp hs).2,
-      fun n hn => mem_iInter.mp (mem_iInter.mp hw n) hn⟩
-  have hzF : z ∈ Fᶜ := fun h => hz (hsub h)
-  have hnhds := Filter.inter_mem (ball_mem_nhds z zero_lt_one)
-    (hF.isOpen_compl.mem_nhds hzF)
+      fun n hn => mem_iInter.mp (mem_iInter.mp hq n) hn⟩
+  have hpF : p ∈ Fᶜ := fun h => hp (hsub h)
+  have hrad : {q : ℝ × ℂ | q.1 < p.1 + 1} ∈ 𝓝 p :=
+    (isOpen_lt continuous_fst continuous_const).mem_nhds (by dsimp; linarith)
+  have hcentre : {q : ℝ × ℂ | dist q.2 p.2 < 1} ∈ 𝓝 p :=
+    (isOpen_lt (continuous_snd.dist continuous_const) continuous_const).mem_nhds
+      (by simp only [dist_self]; exact zero_lt_one)
+  have hnhds := Filter.inter_mem (Filter.inter_mem hrad hcentre)
+    (hF.isOpen_compl.mem_nhds hpF)
   apply Filter.mem_of_superset hnhds
-  rintro w ⟨hwz, hwF⟩ hw
-  obtain ⟨s, hs, hcov⟩ := hw
+  rintro q ⟨⟨hqr, hqz⟩, hqF⟩ hq
+  obtain ⟨s, hs, hcov⟩ := hq
   have hst : s ⊆ t := by
     intro n hn
-    apply (mem_points z (r + 1) n).mpr
-    have ht := dist_triangle z w (ringComplex n)
-    have hwz' : dist z w < 1 := by simpa only [mem_ball, dist_comm] using hwz
-    linarith only [ht, hwz', hcov n hn]
-  apply hwF
+    apply (mem_points p.2 (p.1 + 2) n).mpr
+    have ht := dist_triangle p.2 q.2 (ringComplex n)
+    have hqz' : dist p.2 q.2 < 1 := by simpa only [dist_comm] using hqz
+    change q.1 < p.1 + 1 at hqr
+    linarith only [ht, hqz', hqr, hcov n hn]
+  apply hqF
   refine mem_iUnion.mpr ⟨s, mem_iUnion.mpr ⟨Finset.mem_powersetCard.mpr ⟨hst, hs⟩, ?_⟩⟩
   exact mem_iInter.mpr fun n => mem_iInter.mpr fun hn => hcov n hn
+
+/-- Each occupancy threshold is closed; no points disappear in a limiting closed disk. -/
+theorem isClosed_centres (r : ℝ) (k : ℕ) : IsClosed (centres r k) :=
+  (isClosed_radius_centres k).preimage (continuous_const.prodMk continuous_id)
 
 /-- Translation by a lattice point preserves the number of admissible distinct points. -/
 theorem add_mem_centres {z : ℂ} {r : ℝ} {k : ℕ}
@@ -110,3 +122,5 @@ end GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy
 #print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy.mem_centres_iff_card
 #print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy.isClosed_centres
 #print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy.add_mem_centres_iff
+
+#print axioms GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein.DiskOccupancy.isClosed_radius_centres

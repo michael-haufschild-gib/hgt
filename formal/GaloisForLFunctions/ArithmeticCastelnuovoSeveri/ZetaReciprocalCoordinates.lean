@@ -76,3 +76,9 @@ theorem golden_reciprocity_without_purity :
   ⟨goldenDatum.pointCount_reciprocalResponses, goldenDatum_not_unitary⟩
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
+
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.CurveDatum.pointCountCoordinate_eq_tangent
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.CurveDatum.pointCountCoordinate_unitPart
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.CurveDatum.pointCountCoordinate_response
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.CurveDatum.pointCount_reciprocalResponses
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.golden_reciprocity_without_purity

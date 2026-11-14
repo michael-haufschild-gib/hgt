@@ -29,3 +29,5 @@ theorem hermite_squared_ode (n : ℕ) :
   linear_combination hs
 
 end GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow
+
+#print axioms GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow.hermite_squared_ode

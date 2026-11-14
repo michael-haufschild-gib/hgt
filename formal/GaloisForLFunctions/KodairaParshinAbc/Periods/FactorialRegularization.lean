@@ -73,7 +73,7 @@ theorem factorialRegularization_derivative (f : PowerSeries ℂ) :
       factorialRegularization f - PowerSeries.C (PowerSeries.constantCoeff f) := by
   ext n
   cases n with
-  | zero => simp [coeff_factorialRegularization]
+  | zero => simp [factorialRegularization]
   | succ n =>
       simp only [coeff_succ_X_mul, coeff_factorialRegularization, coeff_derivative,
         map_sub, coeff_C, Nat.succ_ne_zero, if_false, sub_zero,
@@ -81,3 +81,11 @@ theorem factorialRegularization_derivative (f : PowerSeries ℂ) :
       ring
 
 end GaloisForLFunctions.KodairaParshinAbc.Periods
+
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.coeff_factorialRegularization
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.coeff_formalBorel
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.factorialRegularization_formalBorel
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.formalBorel_factorialRegularization
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.factorialRegularization_eulerPolynomial
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.factorialRegularization_mul_X
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.factorialRegularization_derivative
