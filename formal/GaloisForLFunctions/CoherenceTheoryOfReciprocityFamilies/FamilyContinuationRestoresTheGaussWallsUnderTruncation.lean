@@ -116,7 +116,7 @@ include hlam h2 hprim in
 /-- For every cutoff `L ≥ 1`, truncating `localTerm` at `j = 0` to `l < L` coincides pointwise with
 truncating to the even cutoff `l < 2 * ((L + 1) / 2)`. -/
 theorem localTerm_lt_eq_lt_even (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {π})
-    {L : ℕ} (hL : 1 ≤ L) (v : Fin 2 × ℕ × ℕ × ℕ) :
+    {L : ℕ} (_ : 1 ≤ L) (v : Fin 2 × ℕ × ℕ × ℕ) :
     (if v.2.1 < L then localTerm π ηp X Y V u 0 v else 0) =
       (if v.2.1 < 2 * ((L + 1) / 2) then localTerm π ηp X Y V u 0 v else 0) := by
   obtain ⟨e, l, k, m⟩ := v
@@ -350,7 +350,7 @@ theorem hasSum_localTerm_lt_cutoff (ηp X Y V : ℂ) {u : O} (hu : u ∉ Ideal.s
   have hMd : (L + 1) / 2 - 1 + 1 = (L + 1) / 2 := by omega
   have h := heven ((L + 1) / 2 - 1)
   rw [hMd] at h
-  exact h.congr_fun fun v => (localTerm_lt_eq_lt_even π hlam h2 hprim ηp X Y V hu hL v).symm
+  exact h.congr_fun fun v => localTerm_lt_eq_lt_even π hlam h2 hprim ηp X Y V hu hL v
 
 end PrimeTruncation
 
@@ -444,11 +444,6 @@ theorem truncatedPrincipalLocalFactor_eq_geom_mul_regular_add {M : ℕ} (hM : 1 
         (∑ r ∈ Finset.range (d + 2), R ^ r) * regularLocalFactor Q A ηp s +
           (1 - ((Q : ℂ)⁻¹) ^ 2) * ((Q : ℂ)⁻¹ * R ^ (d + 2) / (1 - D))
       rw [hlhs, ih, hsum_succ, hpow_succ]
-      change (S_d * regularLocalFactor Q A ηp s +
-            (1 - ((Q : ℂ)⁻¹) ^ 2) * ((Q : ℂ)⁻¹ * R ^ (d + 1) / (1 - D))) +
-          (1 - ((Q : ℂ)⁻¹) ^ 2) * (1 - (Q : ℂ)⁻¹) * R ^ (d + 1) =
-        (S_d + R ^ (d + 1)) * regularLocalFactor Q A ηp s +
-          (1 - ((Q : ℂ)⁻¹) ^ 2) * ((Q : ℂ)⁻¹ * (R ^ (d + 1) * R) / (1 - D))
       unfold regularLocalFactor
       change (S_d * ((1 - ((Q : ℂ)⁻¹) ^ 2) * (1 - (Q : ℂ)⁻¹ * (R - D) / (1 - D))) +
             (1 - ((Q : ℂ)⁻¹) ^ 2) * ((Q : ℂ)⁻¹ * R ^ (d + 1) / (1 - D))) +
@@ -652,7 +647,12 @@ theorem differentiableAt_truncatedModifiedRegularFactor {M : ℕ} (hM : 1 ≤ M)
     induction m with
     | zero => simp
     | succ m ihm =>
-      simpa only [Finset.sum_range_succ] using ihm.add (hR_diff.pow m)
+      have heq_fn : ((fun z : ℂ => ∑ r ∈ Finset.range m, (A * (Q : ℂ) ^ (3 - 6 * z)) ^ r) +
+          (fun z : ℂ => A * (Q : ℂ) ^ (3 - 6 * z)) ^ m) =
+          (fun z : ℂ => ∑ r ∈ Finset.range (m + 1), (A * (Q : ℂ) ^ (3 - 6 * z)) ^ r) := by
+        ext z
+        simp [Finset.sum_range_succ]
+      exact heq_fn ▸ ihm.add (hR_diff.pow m)
   unfold truncatedModifiedRegularFactor
   exact (differentiableAt_regularLocalFactor hQ0 A ηp hD).add
     ((((differentiableAt_const _).mul (((hR_diff.pow M).const_mul _).div hD_diff hD))).div
@@ -753,6 +753,55 @@ private theorem summable_primeNorm_rpow_compl (S : Finset (HeightOneSpectrum O))
     Summable fun v : {v : HeightOneSpectrum O // v ∉ S} => primeNorm v.1 ^ (-e) :=
   (numberField_summable_finitePlace_absNorm_rpow (K := K) he).subtype _
 
+private theorem norm_geom_sum_sub_one_le {M : ℕ} (hM : 2 ≤ M) {Q : ℝ} (hQ : 64 ≤ Q)
+    {A s : ℂ} (hA : ‖A‖ ≤ 1) (hs : 2 / 3 < s.re) :
+    ‖(∑ r ∈ Finset.range M, (A * (Q : ℂ) ^ (3 - 6 * s)) ^ r) - 1‖ ≤
+      2 * Q ^ (-(6 * s.re - 3)) := by
+  set Rv := A * (Q : ℂ) ^ (3 - 6 * s)
+  have hQ1 : 1 ≤ Q := by linarith
+  have hRv : ‖Rv‖ ≤ Q ^ (-(6 * s.re - 3)) := by
+    dsimp [Rv]; rw [norm_mul]
+    refine (mul_le_of_le_one_left (norm_nonneg _) hA).trans (norm_ofReal_cpow_le hQ1 ?_)
+    simp only [sub_re, mul_re, re_ofNat, im_ofNat, zero_mul, sub_zero]; linarith
+  have hRv_qtr : ‖Rv‖ ≤ 1 / 4 :=
+    norm_R_le_quarter_of_sixty_four_le hQ hA (by linarith)
+  have h1Rv : 1 / 2 ≤ ‖1 - Rv‖ := by
+    have h := norm_sub_norm_le (1 : ℂ) Rv; rw [norm_one] at h; linarith
+  have hne : 1 - Rv ≠ 0 := norm_pos_iff.mp (by linarith)
+  have hident : (∑ r ∈ Finset.range M, Rv ^ r) - 1 = Rv * (1 - Rv ^ (M - 1)) / (1 - Rv) := by
+    rw [eq_div_iff hne]
+    have hg := geom_sum_mul_neg Rv M
+    have hpow : Rv * Rv ^ (M - 1) = Rv ^ M := by
+      rw [← pow_succ', show M - 1 + 1 = M by omega]
+    linear_combination hg - Rv * hpow
+  have hnum : ‖1 - Rv ^ (M - 1)‖ ≤ 5 / 4 := by
+    have hp : ‖Rv ^ (M - 1)‖ ≤ 1 / 4 := by
+      rw [norm_pow]
+      calc ‖Rv‖ ^ (M - 1) ≤ (1 / 4 : ℝ) ^ (M - 1) :=
+            pow_le_pow_left₀ (norm_nonneg Rv) hRv_qtr (M - 1)
+        _ ≤ (1 / 4 : ℝ) ^ 1 := pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
+        _ = 1 / 4 := pow_one _
+    have h := norm_sub_le (1 : ℂ) (Rv ^ (M - 1)); rw [norm_one] at h; linarith
+  rw [hident, norm_div, norm_mul, div_le_iff₀ (by linarith)]
+  nlinarith [norm_nonneg Rv]
+
+private theorem geom_mul_one_sub_inv_eq {M : ℕ} (hM : 1 ≤ M) {Rv : ℂ} (hRv_qtr : ‖Rv‖ ≤ 1 / 4) :
+    (∑ r ∈ Finset.range M, Rv ^ r) * (1 - Rv ^ M)⁻¹ = (1 - Rv)⁻¹ := by
+  have h1Rv : 1 - Rv ≠ 0 := by
+    have h := norm_sub_norm_le (1 : ℂ) Rv; rw [norm_one] at h
+    exact norm_pos_iff.mp (by linarith)
+  have h1RvM : 1 - Rv ^ M ≠ 0 := by
+    have hM_le : ‖Rv ^ M‖ ≤ 1 / 4 := by
+      rw [norm_pow]
+      calc ‖Rv‖ ^ M ≤ (1 / 4 : ℝ) ^ M := pow_le_pow_left₀ (norm_nonneg Rv) hRv_qtr M
+        _ ≤ (1 / 4 : ℝ) ^ 1 := pow_le_pow_of_le_one (by norm_num) (by norm_num) hM
+        _ = 1 / 4 := pow_one _
+    have h := norm_sub_norm_le (1 : ℂ) (Rv ^ M); rw [norm_one] at h
+    exact norm_pos_iff.mp (by linarith)
+  have hg := geom_sum_mul_neg Rv M
+  field_simp [h1Rv, h1RvM]
+  linear_combination hg
+
 /-- **Exact Euler-product functional identity on `Re s > 2/3` (`M ≥ 2`).** Multiplying
 `truncatedFullPrincipalCorrection M 𝔪 η S s` by `L(6Ms - 3M, ψ₆^M χ_{𝔣(η^{6M})})` and its finite
 deleted/residual factors recovers `continuedProbeCorrection 𝔪 η S s · truncatedModifiedRegularCorrection M`. -/
@@ -775,8 +824,9 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
   have hA : ∀ v, ‖A v‖ ≤ 1 := fun v => by
     dsimp [A]; rw [norm_pow]; exact pow_le_one₀ (norm_nonneg _) (norm_primeKappaAt_le 𝔪 η v)
   have hη : ∀ v, ‖ηv v‖ ≤ 1 := fun v => norm_heckeValue_le_one 𝔪 η _
+  have hw1' : 1 < 6 * s.re - 3 := by linarith
   have hw1 : 1 < (6 * s - 3).re := by
-    simp only [sub_re, mul_re, re_ofNat, im_ofNat, zero_mul, sub_zero]; linarith
+    simp only [sub_re, mul_re, re_ofNat, im_ofNat, zero_mul, sub_zero]; exact hw1'
   have hwM1 : 1 < wM.re := by
     have h1 : wM = ((M : ℝ) : ℂ) * (6 * s - 3) := by dsimp [wM]; push_cast; ring
     rw [h1, Complex.re_ofReal_mul]
@@ -788,37 +838,11 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
       ∑ r ∈ Finset.range M, (A v.1 * (primeNorm v.1 : ℂ) ^ (3 - 6 * s)) ^ r := by
     have hmaj : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
         2 * primeNorm v.1 ^ (-(6 * s.re - 3)) :=
-      (summable_primeNorm_rpow_compl S hw1).mul_left 2
+      (summable_primeNorm_rpow_compl S hw1').mul_left 2
     have hsum : Summable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
-        (∑ r ∈ Finset.range M, (A v.1 * (primeNorm v.1 : ℂ) ^ (3 - 6 * s)) ^ r) - 1 := by
-      refine (hmaj.of_nonneg_of_le (fun _ => norm_nonneg _) fun v => ?_).of_norm
-      set Rv := A v.1 * (primeNorm v.1 : ℂ) ^ (3 - 6 * s)
-      have hv1 : 1 ≤ primeNorm v.1 := by linarith [two_le_primeNorm v.1]
-      have hRv : ‖Rv‖ ≤ primeNorm v.1 ^ (-(6 * s.re - 3)) := by
-        dsimp [Rv]; rw [norm_mul]
-        refine (mul_le_of_le_one_left (norm_nonneg _) (hA v.1)).trans (norm_ofReal_cpow_le hv1 ?_)
-        simp only [sub_re, mul_re, re_ofNat, im_ofNat, zero_mul, sub_zero]; linarith
-      have hRv_qtr : ‖Rv‖ ≤ 1 / 4 :=
-        norm_R_le_quarter_of_sixty_four_le (hS_64 v) (hA v.1) (by linarith)
-      have h1Rv : 1 / 2 ≤ ‖1 - Rv‖ := by
-        have h := norm_sub_norm_le (1 : ℂ) Rv; rw [norm_one] at h; linarith
-      have hne : 1 - Rv ≠ 0 := norm_pos_iff.mp (by linarith)
-      have hident : (∑ r ∈ Finset.range M, Rv ^ r) - 1 = Rv * (1 - Rv ^ (M - 1)) / (1 - Rv) := by
-        rw [eq_div_iff hne]
-        have hg := geom_sum_mul_neg Rv M
-        have hpow : Rv * Rv ^ (M - 1) = Rv ^ M := by
-          rw [← pow_succ', show M - 1 + 1 = M by omega]
-        linear_combination hg - Rv * hpow
-      have hnum : ‖1 - Rv ^ (M - 1)‖ ≤ 5 / 4 := by
-        have hp : ‖Rv ^ (M - 1)‖ ≤ 1 / 4 := by
-          rw [norm_pow]
-          calc ‖Rv‖ ^ (M - 1) ≤ (1 / 4 : ℝ) ^ (M - 1) :=
-                pow_le_pow_left₀ (norm_nonneg Rv) hRv_qtr (M - 1)
-            _ ≤ (1 / 4 : ℝ) ^ 1 := pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
-            _ = 1 / 4 := pow_one _
-        have h := norm_sub_le (1 : ℂ) (Rv ^ (M - 1)); rw [norm_one] at h; linarith
-      rw [hident, norm_div, norm_mul, div_le_iff₀ (by linarith)]
-      nlinarith [norm_nonneg Rv]
+        (∑ r ∈ Finset.range M, (A v.1 * (primeNorm v.1 : ℂ) ^ (3 - 6 * s)) ^ r) - 1 :=
+      (hmaj.of_nonneg_of_le (fun _ => norm_nonneg _) fun v =>
+        norm_geom_sum_sub_one_le hM (hS_64 v) (hA v.1) hs).of_norm
     exact (Complex.multipliable_one_add_of_summable hsum).congr fun _ => by ring
   -- Multipliability of `truncatedModifiedRegularFactor M` on `Re s > 2/3`
   have hmul_mod : Multipliable fun v : {v : HeightOneSpectrum O // v ∉ S} =>
@@ -900,23 +924,9 @@ theorem truncatedFullPrincipalCorrection_mul_grossen_eq {M : ℕ} (hM : 2 ≤ M)
         cpow_pow_nat hQ_ne (3 - 6 * s) M]
       have hexp : (M : ℂ) * (3 - 6 * s) = -wM := by dsimp [wM]; ring
       rw [hexp]
-    have hRv_qtr : ‖Rv‖ ≤ 1 / 4 :=
-      norm_R_le_quarter_of_sixty_four_le (hS_64 v) (hA v.1) (by linarith)
-    have h1Rv : 1 - Rv ≠ 0 := by
-      have h := norm_sub_norm_le (1 : ℂ) Rv; rw [norm_one] at h
-      exact norm_pos_iff.mp (by linarith)
-    have h1RvM : 1 - Rv ^ M ≠ 0 := by
-      have hM_le : ‖Rv ^ M‖ ≤ 1 / 4 := by
-        rw [norm_pow]
-        calc ‖Rv‖ ^ M ≤ (1 / 4 : ℝ) ^ M := pow_le_pow_left₀ (norm_nonneg Rv) hRv_qtr M
-          _ ≤ (1 / 4 : ℝ) ^ 1 := pow_le_pow_of_le_one (by norm_num) (by norm_num) (by omega)
-          _ = 1 / 4 := pow_one _
-      have h := norm_sub_norm_le (1 : ℂ) (Rv ^ M); rw [norm_one] at h
-      exact norm_pos_iff.mp (by linarith)
     rw [← hRvM_eq, ← hRv_eq, pow_one]
-    have hg := geom_sum_mul_neg Rv M
-    field_simp [h1Rv, h1RvM]
-    linear_combination hg
+    exact geom_mul_one_sub_inv_eq (by omega)
+      (norm_R_le_quarter_of_sixty_four_le (hS_64 v) (hA v.1) (by linarith))
   have hgM_split := grossenEulerProductModS_eq_mul_deletedFactors 𝔪 (η ^ (6 * M))
     (by omega : 1 ≤ M) S hwM1
   have hg1_split := grossenEulerProductModS_eq_mul_deletedFactors 𝔪 (η ^ 6) le_rfl S hw1
@@ -1051,19 +1061,22 @@ theorem exists_continuedTruncatedCorrection_properties :
     unfold primeNorm
     exact_mod_cast hv.le
   refine ⟨hnum_diff.div hden_diff (fun s hs =>
-      truncated_denominator_ne_zero_of_seven_twelfths_le hM 𝔪 η S (le_of_lt hs)),
+      truncated_denominator_ne_zero_of_seven_twelfths_le hM 𝔪 η S (s := s) (le_of_lt hs)),
     fun s hs => ?_, fun s hs => ?_, fun s hs => ?_⟩
-  · have hden_ne := truncated_denominator_ne_zero_of_seven_twelfths_le hM 𝔪 η S (by linarith)
+  · have hden_ne :=
+      truncated_denominator_ne_zero_of_seven_twelfths_le hM 𝔪 η S (s := s) (by linarith)
     unfold continuedTruncatedCorrection
     rw [div_eq_iff hden_ne]
     exact (truncatedFullPrincipalCorrection_mul_grossen_eq hM 𝔪 η S hS_lam hS_64 hs).symm
-  · have hden_ne := truncated_denominator_ne_zero_of_seven_twelfths_le hM 𝔪 η S (by linarith)
+  · have hden_ne :=
+      truncated_denominator_ne_zero_of_seven_twelfths_le hM 𝔪 η S (s := s) (by linarith)
     unfold continuedTruncatedCorrection
     exact div_ne_zero
       (mul_ne_zero (continuedProbeCorrection_ne_zero_of_two_thirds_le 𝔪 η S hs)
         (hmod_ne s (by linarith)))
       hden_ne
-  · have hden_ne := truncated_denominator_ne_zero_of_seven_twelfths_le hM 𝔪 η S (le_of_lt hs)
+  · have hden_ne :=
+      truncated_denominator_ne_zero_of_seven_twelfths_le hM 𝔪 η S (s := s) (le_of_lt hs)
     unfold continuedTruncatedCorrection
     rw [div_eq_zero_iff, or_iff_left hden_ne, mul_eq_zero]
     exact or_iff_left (hmod_ne s (by linarith))
@@ -1107,10 +1120,14 @@ theorem exists_unbounded_zeros_and_no_nonvanishing_continuation_of_truncatedProb
       have hU_eq : U = Complex.reCLM ⁻¹' Set.Ioi (max σ₀ (41 / 72)) := rfl
       rw [hU_eq]
       exact ((convex_Ioi _).linear_preimage Complex.reCLM.toLinearMap).isPreconnected
-    have hsubG : U ⊆ {s : ℂ | σ₀ < s.re} := fun s hs =>
-      lt_of_le_of_lt (le_max_left _ _) hs
-    have hsub41 : U ⊆ {s : ℂ | 41 / 72 < s.re} := fun s hs =>
-      lt_of_le_of_lt (le_max_right _ _) hs
+    have hsubG : U ⊆ {s : ℂ | σ₀ < s.re} := fun s hs => by
+      have hs' : max σ₀ (41 / 72) < s.re := hs
+      show σ₀ < s.re
+      exact lt_of_le_of_lt (le_max_left _ _) hs'
+    have hsub41 : U ⊆ {s : ℂ | 41 / 72 < s.re} := fun s hs => by
+      have hs' : max σ₀ (41 / 72) < s.re := hs
+      show 41 / 72 < s.re
+      exact lt_of_le_of_lt (le_max_right _ _) hs'
     have hsub12 : U ⊆ {s : ℂ | 1 / 2 < s.re} := fun s hs => by
       have h41 : 41 / 72 < s.re := hsub41 hs; show 1 / 2 < s.re; linarith
     have haff : Differentiable ℂ (fun s : ℂ => 6 * (M : ℂ) * s - 3 * (M : ℂ)) :=
@@ -1163,7 +1180,7 @@ theorem exists_unbounded_zeros_and_no_nonvanishing_continuation_of_truncatedProb
       filter_upwards [(isOpen_lt continuous_const continuous_re).mem_nhds
         (by norm_num : (2 : ℝ) < (3 : ℂ).re)] with s hs
       have hs2 : 2 ≤ s.re := le_of_lt hs
-      dsimp only [D_diff]
+      simp only [D_diff, Pi.zero_apply]
       rw [hG_eq s hs2, truncatedFullPrincipalCorrection_mul_grossen_eq hM 𝔪 η S hS_lam hS_64
         (by linarith), sub_self]
     obtain ⟨s₀, hs₀_lo, hs₀_hi, hs₀_im, hs₀_zero⟩ :=
@@ -1184,16 +1201,24 @@ theorem exists_unbounded_zeros_and_no_nonvanishing_continuation_of_truncatedProb
 
 /-! ### 5. Sub-cubic global cutoff (`N(J) < Z^η`, `η < 1/3`) and persistence of `7/8`, `2/3`, `3/5` -/
 
-private theorem mul_le_prime_iff {I J P : Ideal O} (hP : P.IsPrime) (hIJ : I * J ≤ P) :
-    I ≤ P ∨ J ≤ P := by
+private theorem mul_le_prime_iff {R : Type*} [CommSemiring R] {I J P : Ideal R}
+    (hP : P.IsPrime) (hIJ : I * J ≤ P) : I ≤ P ∨ J ≤ P := by
   by_contra hnot
   obtain ⟨hI, hJ⟩ : ¬ (I ≤ P) ∧ ¬ (J ≤ P) := not_or.mp hnot
   obtain ⟨x, hxI, hxP⟩ := Set.not_subset.mp hI
   obtain ⟨y, hyJ, hyP⟩ := Set.not_subset.mp hJ
   exact (hP.mem_or_mem (hIJ (Ideal.mul_mem_mul hxI hyJ))).elim hxP hyP
 
-private theorem mem_of_prod_asIdeal_le {S : Finset (HeightOneSpectrum O)}
-    {T : Finset {v : HeightOneSpectrum O // v ∉ S}} {u₀ : {v : HeightOneSpectrum O // v ∉ S}}
+private theorem prod_ideal_le_of_mem {R : Type*} [CommSemiring R] {ι : Type*}
+    [DecidableEq ι] (f : ι → Ideal R) {T : Finset ι} {u₀ : ι} (hu₀ : u₀ ∈ T) :
+    (∏ u ∈ T, f u) ≤ f u₀ := by
+  rw [← Finset.insert_erase hu₀, Finset.prod_insert (Finset.not_mem_erase u₀ T)]
+  exact Submodule.mul_le.mpr fun a ha b _ => Ideal.mul_mem_right b _ ha
+
+private theorem mem_of_prod_asIdeal_le {R : Type*} [CommRing R] [IsDedekindDomain R]
+    {S : Finset (HeightOneSpectrum R)}
+    {T : Finset {v : HeightOneSpectrum R // v ∉ S}}
+    {u₀ : {v : HeightOneSpectrum R // v ∉ S}}
     (hle : (∏ u ∈ T, u.1.asIdeal) ≤ u₀.1.asIdeal) : u₀ ∈ T := by
   induction T using Finset.induction_on with
   | empty =>
@@ -1207,17 +1232,19 @@ private theorem mem_of_prod_asIdeal_le {S : Finset (HeightOneSpectrum O)}
       exact Finset.mem_insert.mpr (Or.inl hwu.symm)
     · exact Finset.mem_insert_of_mem (ih hT_le)
 
-private theorem prod_asIdeal_injective (S : Finset (HeightOneSpectrum O)) :
-    Function.Injective (fun T : Finset {v : HeightOneSpectrum O // v ∉ S} =>
+private theorem prod_asIdeal_injective {R : Type*} [CommRing R] [IsDedekindDomain R]
+    (S : Finset (HeightOneSpectrum R)) :
+    Function.Injective (fun T : Finset {v : HeightOneSpectrum R // v ∉ S} =>
       ∏ u ∈ T, u.1.asIdeal) := by
   intro T₁ T₂ h
+  dsimp only at h
   refine Finset.Subset.antisymm (fun u₀ hu₀ => ?_) (fun u₀ hu₀ => ?_)
   · refine mem_of_prod_asIdeal_le ?_
     rw [← h]
-    exact Ideal.dvd_iff_le.mp (Finset.dvd_prod_of_mem (fun u => u.1.asIdeal) hu₀)
+    exact prod_ideal_le_of_mem (fun u => u.1.asIdeal) hu₀
   · refine mem_of_prod_asIdeal_le ?_
     rw [h]
-    exact Ideal.dvd_iff_le.mp (Finset.dvd_prod_of_mem (fun u => u.1.asIdeal) hu₀)
+    exact prod_ideal_le_of_mem (fun u => u.1.asIdeal) hu₀
 
 /-- **Unconditional `Z^{2/3}` squarefree sixth-power Möbius norm lower bound inside every sub-cubic
 omitted tail `N(J) ≥ Z^η` (`η < 1/3`).** For every `η < 1/3` (in particular across the entire
@@ -1333,7 +1360,6 @@ theorem exists_subcubic_sixthPower_defect_lower_bound {η : ℝ} (hη : η < 1 /
               mul_left_comm ((deletedSquarefreeNorm T : ℝ) ^ _) (Z ^ b),
               ← Real.rpow_add hNT_pos]
             congr 2
-            ring
         _ ≤ Z ^ b * (Z ^ (η / 2)) ^ (3 - 6 * b) :=
             mul_le_mul_of_nonneg_left
               (Real.rpow_le_rpow hNT_pos.le hNT_le (by linarith)) (by positivity)
@@ -1418,7 +1444,8 @@ theorem coupled_tower_iterates_eq_and_tendsto (σ_base : ℝ) :
     tendsto_const_nhds.add h0
   simp only [mul_zero, add_zero] at h1
   refine h1.congr fun K => ?_
-  rw [hiter K, one_div_pow, div_eq_mul_inv]
+  rw [hiter K, one_div_pow]
+  ring
 
 /-! ### 6. Complete synthesis of the incomplete-reciprocity producer classification -/
 
@@ -1459,7 +1486,7 @@ theorem incomplete_reciprocity_producer_classification :
         ∀ (Ψ : (O ⧸ Ideal.span {c}) →* ℂ), (∀ x, ‖Ψ x‖ ≤ 1) →
         ∀ s ∈ complexParameterBox σ₁ σ₂ T,
           ‖reciprocityBoundaryDefect (X ^ η) (X ^ max (δ / 3) ((1 - δ) / 3))
-              c hc Ψ (CompletedHeight.finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc))
+              c hc Ψ (finiteTwistCusp (9 * c) (mul_ne_zero (by norm_num) hc))
               (complexTwistedWindow W₀ s) X‖ ≤
             C * X ^ ((1 / 2 : ℝ) - min (3 * η - 1 / 2) 1)) ∧
     -- (2) Milestone 2: `L ≥ 3` truncation restores the exact strip zeros and blocks `σ₀ < 7/12`
@@ -1486,14 +1513,14 @@ theorem incomplete_reciprocity_producer_classification :
     (∀ σ_base : ℝ, 3 / 5 < σ_base →
       (∀ K : ℕ, 3 / 5 < ((fun b : ℝ => (3 + b) / 6)^[K] σ_base)) ∧
       Tendsto (fun K : ℕ => ((fun b : ℝ => (3 + b) / 6)^[K] σ_base)) atTop (𝓝 (3 / 5 : ℝ))) := by
-  refine ⟨fun hY₀ Ψ W hX I => incompleteIdealSummand_retains_target hY₀ Ψ W hX I,
-    fun W₀ ha hab hs hW σ₁ σ₂ T hδ0 hδ1 hη_lo hη_hi =>
+  refine ⟨fun {_} hY₀ Ψ W {_} hX I => incompleteIdealSummand_retains_target hY₀ Ψ W hX I,
+    fun W₀ {_ _} ha hab hs hW σ₁ σ₂ T {_ _} hδ0 hδ1 hη_lo hη_hi =>
       (milestone_one_subcubic_power_saving W₀ ha hab hs hW σ₁ σ₂ T hδ0 hδ1 hη_lo hη_hi).2.2.2,
-    ?_, fun hη 𝔪 η_char S a => exists_subcubic_sixthPower_defect_lower_bound hη 𝔪 η_char S a,
+    ?_, fun {_} hη 𝔪 η_char S a => exists_subcubic_sixthPower_defect_lower_bound hη 𝔪 η_char S a,
     fun σ_base hσ => ?_⟩
   · obtain ⟨N_cut, h160, hno⟩ :=
       exists_unbounded_zeros_and_no_nonvanishing_continuation_of_truncatedProbeCorrection
-    exact ⟨N_cut, h160, fun hL 𝔪 η_char S hS hσ₀ => (hno hL 𝔪 η_char S hS hσ₀).2⟩
+    exact ⟨N_cut, h160, fun {_} hL 𝔪 η_char S hS {_} hσ₀ => (hno hL 𝔪 η_char S hS hσ₀).2⟩
   · obtain ⟨hiter, htend⟩ := coupled_tower_iterates_eq_and_tendsto σ_base
     refine ⟨fun K => ?_, htend⟩
     rw [hiter K]

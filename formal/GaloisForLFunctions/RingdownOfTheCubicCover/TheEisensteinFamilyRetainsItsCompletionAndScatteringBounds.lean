@@ -54,7 +54,7 @@ theorem completedBianchiZeta_eq_gamma_product {s : ℂ} (hs : 0 < s.re) :
     completedBianchiZeta s =
       (3 : ℂ) ^ (s / 2) * (Complex.Gammaℝ s * Complex.Gammaℝ (s + 1)) *
         (riemannZeta s * DirichletCharacter.LFunction chi3D s) := by
-  have hs0 : s ≠ 0 := fun h => by simpa [h] using hs
+  have hs0 : s ≠ 0 := fun h => by simp [h] at hs
   have hz : completedRiemannZeta s = riemannZeta s * Complex.Gammaℝ s := by
     rw [riemannZeta_def_of_ne_zero hs0, div_mul_cancel₀ _
       (Complex.Gammaℝ_ne_zero_of_re_pos hs)]
@@ -68,7 +68,7 @@ theorem xiBianchi_eq_gamma_product {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) :
     xiBianchi s = s * (s - 1) / 2 *
       ((3 : ℂ) ^ (s / 2) * (Complex.Gammaℝ s * Complex.Gammaℝ (s + 1)) *
         (riemannZeta s * DirichletCharacter.LFunction chi3D s)) := by
-  have hs0 : s ≠ 0 := fun h => by simpa [h] using hs
+  have hs0 : s ≠ 0 := fun h => by simp [h] at hs
   have hxi : xiBianchi s = s * (s - 1) / 2 * completedBianchiZeta s := by
     rw [xiBianchi, _root_.RHTower.xi_eq_half_mul hs0 hs1, completedBianchiZeta]
     ring

@@ -36,9 +36,9 @@ theorem finiteGibbsVariance_range_decomposition (β : ℝ) (E : A → ℝ) :
       (finiteSpectrumMin E + finiteSpectrumMax E) * finiteGibbsEnergyMean β E -
         (∑ a, finiteGibbsStateWeight β E a * E a ^ 2) - finiteSpectrumMin E * finiteSpectrumMax E := by
     calc
-      _ = ∑ a, (finiteSpectrumMin E + finiteSpectrumMax E) * (finiteGibbsStateWeight β E a * E a) -
+      _ = ∑ a, ((finiteSpectrumMin E + finiteSpectrumMax E) * (finiteGibbsStateWeight β E a * E a) -
           finiteGibbsStateWeight β E a * E a ^ 2 -
-          (finiteSpectrumMin E * finiteSpectrumMax E) * finiteGibbsStateWeight β E a := by
+          (finiteSpectrumMin E * finiteSpectrumMax E) * finiteGibbsStateWeight β E a) := by
             apply Finset.sum_congr rfl
             intro a _
             ring

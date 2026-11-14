@@ -61,10 +61,12 @@ theorem landauScalar_minimizers (u r x : ℝ) :
     have hs := (mul_eq_zero.mp hz).resolve_left (pow_ne_zero 2 (Real.exp_ne_zero u))
     have hs' := (pow_eq_zero_iff (by norm_num : 2 ≠ 0)).mp hs
     unfold landauEquilibriumSquare
+    rw [neg_div]
     linarith only [hs']
   · intro h
     have hs : x ^ 2 + min r 0 / (2 * Real.exp u ^ 2) = 0 := by
       unfold landauEquilibriumSquare at h
+      rw [neg_div] at h
       linarith only [h]
     rw [hs, zero_pow (by norm_num : 2 ≠ 0), mul_zero, zero_add]
     by_cases hr : r ≤ 0

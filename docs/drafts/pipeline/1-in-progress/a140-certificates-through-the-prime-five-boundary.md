@@ -46,6 +46,9 @@ are only `propext`, `Classical.choice`, `Quot.sound`.
 The proposed charges `(0.7235,6.089,5.705,3.483)` with cross charge `0.06735`
 do not pass the polynomial capacity bound: its second principal minor is
 negative. This rejects that coarse bound, not the actual Weil floor.
+Raising the potential to `1799/2000`, reducing the cross charge to `0.06681`,
+and tightening the geometric tail still leaves its second minor negative.
+The next candidate retains degree eight, with harmonic gap `H₁₀`.
 The four-moment capacity matrix remains unproved.
 
 A stronger quartic Gamma reserve follows from the exact fourth correlation moment.

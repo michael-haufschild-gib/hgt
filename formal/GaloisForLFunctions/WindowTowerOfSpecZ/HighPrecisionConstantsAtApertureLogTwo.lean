@@ -27,48 +27,48 @@ open SelectivePositivityAndThresholdLaws
 
 /-! ### Rational enclosures of the aperture constants -/
 
-abbrev logTwoLo : ℝ := 17328679513998632735430803 / 25000000000000000000000000
-abbrev logTwoHi : ℝ := 69314718055994530941723213 / 100000000000000000000000000
+def logTwoLo : ℝ := 17328679513998632735430803 / 25000000000000000000000000
+def logTwoHi : ℝ := 69314718055994530941723213 / 100000000000000000000000000
 
-abbrev logThreeLo : ℝ := 109861228866810969139524523 / 100000000000000000000000000
-abbrev logThreeHi : ℝ := 27465307216702742284881131 / 25000000000000000000000000
+def logThreeLo : ℝ := 109861228866810969139524523 / 100000000000000000000000000
+def logThreeHi : ℝ := 27465307216702742284881131 / 25000000000000000000000000
 
-abbrev sqrtTwoLo : ℝ := 17677669529663688110021109 / 12500000000000000000000000
-abbrev sqrtTwoHi : ℝ := 141421356237309504880168873 / 100000000000000000000000000
+def sqrtTwoLo : ℝ := 17677669529663688110021109 / 12500000000000000000000000
+def sqrtTwoHi : ℝ := 141421356237309504880168873 / 100000000000000000000000000
 
-abbrev sqrtThreeLo : ℝ := 86602540378443864676372317 / 50000000000000000000000000
-abbrev sqrtThreeHi : ℝ := 34641016151377545870548927 / 20000000000000000000000000
+def sqrtThreeLo : ℝ := 86602540378443864676372317 / 50000000000000000000000000
+def sqrtThreeHi : ℝ := 34641016151377545870548927 / 20000000000000000000000000
 
-abbrev piLo : ℝ := 157079632679489661923 / 50000000000000000000
-abbrev piHi : ℝ := 314159265358979323847 / 100000000000000000000
+def piLo : ℝ := 157079632679489661923 / 50000000000000000000
+def piHi : ℝ := 314159265358979323847 / 100000000000000000000
 
-abbrev logPiLo : ℝ := 57236494292470008707 / 50000000000000000000
-abbrev logPiHi : ℝ := 22894597716988003483 / 20000000000000000000
+def logPiLo : ℝ := 57236494292470008707 / 50000000000000000000
+def logPiHi : ℝ := 22894597716988003483 / 20000000000000000000
 
-abbrev eulerLo : ℝ := 28860783245076643 / 50000000000000000
-abbrev eulerHi : ℝ := 288607832450766431 / 500000000000000000
+def eulerLo : ℝ := 28860783245076643 / 50000000000000000
+def eulerHi : ℝ := 288607832450766431 / 500000000000000000
 
-abbrev archLevyTwoLogTwoLo : ℝ := 101295375333486096191 / 100000000000000000000
-abbrev archLevyTwoLogTwoHi : ℝ := 1582740239585720253 / 1562500000000000000
+def archLevyTwoLogTwoLo : ℝ := 101295375333486096191 / 100000000000000000000
+def archLevyTwoLogTwoHi : ℝ := 1582740239585720253 / 1562500000000000000
 
-abbrev gammaBracketZeroLo : ℝ := -335761463701604099 / 62500000000000000
-abbrev gammaBracketZeroHi : ℝ := -5372183419225665581 / 1000000000000000000
+def gammaBracketZeroLo : ℝ := -335761463701604099 / 62500000000000000
+def gammaBracketZeroHi : ℝ := -5372183419225665581 / 1000000000000000000
 
-abbrev primeThreeRatioLo : ℝ := 15849625007211561814537389 / 10000000000000000000000000
-abbrev primeThreeRatioHi : ℝ := 1584962500721156181453739 / 1000000000000000000000000
+def primeThreeRatioLo : ℝ := 15849625007211561814537389 / 10000000000000000000000000
+def primeThreeRatioHi : ℝ := 1584962500721156181453739 / 1000000000000000000000000
 
-abbrev primeThreeShiftLo : ℝ := 5849625007211561814537389 / 10000000000000000000000000
-abbrev primeThreeShiftHi : ℝ := 584962500721156181453739 / 1000000000000000000000000
+def primeThreeShiftLo : ℝ := 5849625007211561814537389 / 10000000000000000000000000
+def primeThreeShiftHi : ℝ := 584962500721156181453739 / 1000000000000000000000000
 
-abbrev primeTwoWeightLo : ℝ := 1225322679335683989642377 / 2500000000000000000000000
-abbrev primeTwoWeightHi : ℝ := 4901290717342735958569509 / 10000000000000000000000000
+def primeTwoWeightLo : ℝ := 1225322679335683989642377 / 2500000000000000000000000
+def primeTwoWeightHi : ℝ := 4901290717342735958569509 / 10000000000000000000000000
 
-abbrev primeThreeWeightLo : ℝ := 6342841005975639771863877 / 10000000000000000000000000
-abbrev primeThreeWeightHi : ℝ := 3171420502987819885931939 / 5000000000000000000000000
+def primeThreeWeightLo : ℝ := 6342841005975639771863877 / 10000000000000000000000000
+def primeThreeWeightHi : ℝ := 3171420502987819885931939 / 5000000000000000000000000
 
 /-! ### Monotone derivative helper and hyperbolic artanh enclosures -/
 
-private theorem nonneg_of_hasDerivAt_nonneg {f f' : ℝ → ℝ} {b : ℝ} (hb : 0 ≤ b)
+private theorem nonneg_of_hasDerivAt_nonneg (f f' : ℝ → ℝ) {b : ℝ} (hb : 0 ≤ b)
     (hf0 : f 0 = 0) (hd : ∀ x ∈ Icc 0 b, HasDerivAt f (f' x) x)
     (hnn : ∀ x ∈ Icc 0 b, 0 ≤ f' x) : 0 ≤ f b := by
   have hc : ContinuousOn f (Icc 0 b) := fun x hx => (hd x hx).continuousAt.continuousWithinAt
@@ -123,8 +123,8 @@ theorem log_one_add_div_one_sub_bounds (N : ℕ) {t : ℝ} (ht0 : 0 ≤ t) (ht1 
     intro x hx
     have hx1 : 0 < 1 + x := by linarith [hx.1]
     have hx2 : 0 < 1 - x := by linarith [hx.2, ht1]
-    have h1 := ((hasDerivAt_id x).const_add 1).log hx1.ne'
-    have h2 := ((hasDerivAt_id x).const_sub 1).log hx2.ne'
+    have h1 := ((hasDerivAt_id' x).const_add 1).log hx1.ne'
+    have h2 := ((hasDerivAt_id' x).const_sub 1).log hx2.ne'
     refine (h1.sub h2).congr_deriv ?_
     have hne : 1 - x ^ 2 ≠ 0 := by nlinarith [hx1, hx2]
     field_simp [hx1.ne', hx2.ne', hne]
@@ -132,7 +132,9 @@ theorem log_one_add_div_one_sub_bounds (N : ℕ) {t : ℝ} (ht0 : 0 ≤ t) (ht1 
   have hval : Real.log (1 + t) - Real.log (1 - t) = Real.log ((1 + t) / (1 - t)) :=
     (Real.log_div (by linarith) (by linarith)).symm
   have h_lo : 0 ≤ (Real.log (1 + t) - Real.log (1 - t)) - artanhPartialSum N t := by
-    refine nonneg_of_hasDerivAt_nonneg ht0 ?_ ?_ ?_
+    refine nonneg_of_hasDerivAt_nonneg
+      (fun y => (Real.log (1 + y) - Real.log (1 - y)) - artanhPartialSum N y)
+      (fun x => 2 / (1 - x ^ 2) - ∑ k ∈ Finset.range N, 2 * x ^ (2 * k)) ht0 ?_ ?_ ?_
     · simp [artanhPartialSum, zero_pow (Nat.succ_ne_zero _)]
     · intro x hx
       exact (hd_log x hx).sub (hasDerivAt_artanhPartialSum N x)
@@ -144,7 +146,12 @@ theorem log_one_add_div_one_sub_bounds (N : ℕ) {t : ℝ} (ht0 : 0 ≤ t) (ht1 
   have h_hi : 0 ≤ (artanhPartialSum N t +
       (2 / ((2 * (N : ℝ) + 1) * (1 - t ^ 2))) * t ^ (2 * N + 1)) -
       (Real.log (1 + t) - Real.log (1 - t)) := by
-    refine nonneg_of_hasDerivAt_nonneg ht0 ?_ ?_ ?_
+    refine nonneg_of_hasDerivAt_nonneg
+      (fun y => (artanhPartialSum N y +
+        (2 / ((2 * (N : ℝ) + 1) * (1 - t ^ 2))) * y ^ (2 * N + 1)) -
+        (Real.log (1 + y) - Real.log (1 - y)))
+      (fun x => ((∑ k ∈ Finset.range N, 2 * x ^ (2 * k)) +
+        (2 / (1 - t ^ 2)) * x ^ (2 * N)) - 2 / (1 - x ^ 2)) ht0 ?_ ?_ ?_
     · simp [artanhPartialSum, zero_pow (Nat.succ_ne_zero _)]
     · intro x hx
       have hrem_d : HasDerivAt
@@ -208,7 +215,8 @@ theorem log_two_bounds_d26 : logTwoLo ≤ Real.log 2 ∧ Real.log 2 ≤ logTwoHi
     norm_num
   have c1 : logTwoLo ≤ (1065029249461195969396896023675784712 / 2626685325478320010006427764892578125 : ℝ) + (19263008916537257381220349789142042 / 66959365080929663646946656377037675 : ℝ) := by norm_num [logTwoLo]
   have c2 : (157624328920257003470740611804856872571 / 388749428170791361480951309204101562500 : ℝ) + (4777226211301239830542646754639040591 / 16605922540070556584442770781505343400 : ℝ) ≤ logTwoHi := by norm_num [logTwoHi]
-  exact ⟨by linarith, by linarith⟩
+  rw [h2]
+  exact ⟨c1.trans (add_le_add hA1 hB1), (add_le_add hA2 hB2).trans c2⟩
 
 theorem log_three_bounds_d26 : logThreeLo ≤ Real.log 3 ∧ Real.log 3 ≤ logThreeHi := by
   obtain ⟨hA1, hA2⟩ := artanh_one_fifth_bounds
@@ -220,7 +228,9 @@ theorem log_three_bounds_d26 : logThreeLo ≤ Real.log 3 ∧ Real.log 3 ≤ logT
     norm_num
   have c1 : logThreeLo ≤ 2 * (1065029249461195969396896023675784712 / 2626685325478320010006427764892578125 : ℝ) + (19263008916537257381220349789142042 / 66959365080929663646946656377037675 : ℝ) := by norm_num [logThreeLo]
   have c2 : 2 * (157624328920257003470740611804856872571 / 388749428170791361480951309204101562500 : ℝ) + (4777226211301239830542646754639040591 / 16605922540070556584442770781505343400 : ℝ) ≤ logThreeHi := by norm_num [logThreeHi]
-  exact ⟨by linarith, by linarith⟩
+  rw [h3]
+  exact ⟨c1.trans (add_le_add (mul_le_mul_of_nonneg_left hA1 (by norm_num)) hB1),
+    (add_le_add (mul_le_mul_of_nonneg_left hA2 (by norm_num)) hB2).trans c2⟩
 
 theorem sqrt_two_bounds_d26 : sqrtTwoLo ≤ Real.sqrt 2 ∧ Real.sqrt 2 ≤ sqrtTwoHi := by
   have hs := Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)
@@ -259,18 +269,20 @@ theorem log_pi_bounds_d20 : logPiLo ≤ Real.log Real.pi ∧ Real.log Real.pi �
   rw [hrat_lo] at hu_lo_b
   rw [hrat_hi] at hu_hi_b
   have hm_lo : Real.log (piLo / 3) ≤ Real.log (Real.pi / 3) :=
-    Real.log_le_log (by norm_num [piLo]) (by linarith)
+    Real.log_le_log (by norm_num [piLo]) (div_le_div_of_nonneg_right hp1 (by norm_num))
   have hm_hi : Real.log (Real.pi / 3) ≤ Real.log (piHi / 3) :=
-    Real.log_le_log (by linarith [Real.pi_pos]) (by linarith)
+    Real.log_le_log (div_pos Real.pi_pos (by norm_num)) (div_le_div_of_nonneg_right hp2 (by norm_num))
   have hsplit : Real.log Real.pi = Real.log 3 + Real.log (Real.pi / 3) := by
     rw [← Real.log_mul (by norm_num) (by positivity)]
     congr 1; ring
   have c_lo : logPiLo ≤ logThreeLo + artanhPartialSum 8 u_lo := by
     norm_num [logPiLo, logThreeLo, artanhPartialSum, Finset.sum_range_succ, u_lo, piLo]
   have c_hi : logThreeHi + (artanhPartialSum 8 u_hi +
-      (2 / ((2 * (8 : ℝ) + 1) * (1 - u_hi ^ 2))) * u_hi ^ (2 * 8 + 1)) ≤ logPiHi := by
+      (2 / ((2 * (8 : ℕ) + 1) * (1 - u_hi ^ 2))) * u_hi ^ (2 * 8 + 1)) ≤ logPiHi := by
     norm_num [logPiHi, logThreeHi, artanhPartialSum, Finset.sum_range_succ, u_hi, piHi]
-  exact ⟨by linarith [hu_lo_b.1], by linarith [hu_hi_b.2]⟩
+  rw [hsplit]
+  exact ⟨c_lo.trans (add_le_add hl3_lo (hu_lo_b.1.trans hm_lo)),
+    (add_le_add hl3_hi (hm_hi.trans hu_hi_b.2)).trans c_hi⟩
 
 /-! ### Order-twelve Euler–Maclaurin enclosure for `eulerMascheroniConstant` -/
 
@@ -292,7 +304,6 @@ private theorem eulerUpperTail_mul (x : ℝ) (hx : x ≠ 0) :
       -x ^ 9 / 2 + x ^ 8 / 12 - x ^ 6 / 120 + x ^ 4 / 252 - x ^ 2 / 240 + 1 / 132 := by
   unfold eulerUpperTail
   field_simp [hx]
-  ring
 
 private theorem eulerLowerTail_mul (x : ℝ) (hx : x ≠ 0) :
     x ^ 12 * eulerLowerTail x =
@@ -311,7 +322,6 @@ private theorem artanhPartialSum_seven_mul (x : ℝ) (h2x : 2 * x + 1 ≠ 0) :
         2 / 13 := by
   norm_num [artanhPartialSum, Finset.sum_range_succ]
   field_simp [h2x]
-  ring
 
 private theorem eulerUpperSeq12_step_pos (y : ℝ) (hy : 0 ≤ y) :
     let x := y + 1
@@ -391,7 +401,6 @@ private theorem eulerLowerSeq12_step_pos (y : ℝ) (hy : 0 ≤ y) :
       field_simp [h2x.ne']; ring
     rw [h1mt]
     field_simp [hx0.ne', hx1.ne', h2x.ne']
-    ring
   have halg : 4 * x ^ 12 * (x + 1) ^ 12 * (2 * x + 1) ^ 13 *
       ((1 / (x + 1) + eulerLowerTail (x + 1) - eulerLowerTail x) -
         (artanhPartialSum 7 t + (2 / (15 * (1 - t ^ 2))) * t ^ 15)) =
@@ -438,10 +447,10 @@ private theorem strictAnti_eulerUpperSeq12 : StrictAnti eulerUpperSeq12 := by
   rw [hrat, Real.log_div hx1.ne' hx0.ne'] at ht_b
   have hstep := eulerUpperSeq12_step_pos (n : ℝ) (Nat.cast_nonneg n)
   unfold eulerUpperSeq12 Real.eulerMascheroniSeq'
-  simp only [Nat.succ_ne_zero, if_false, harmonic_succ]
+  simp only [Nat.succ_ne_zero, if_false]
+  rw [harmonic_succ (n + 1)]
   push_cast
-  change (harmonic (n + 1) : ℝ) + (x + 1)⁻¹ - Real.log (x + 1) + eulerUpperTail (x + 1) <
-    (harmonic (n + 1) : ℝ) - Real.log x + eulerUpperTail x
+  dsimp [x] at ht_b hstep
   rw [inv_eq_one_div]
   linarith [ht_b.1, hstep]
 
@@ -458,10 +467,10 @@ private theorem strictMono_eulerLowerSeq12 : StrictMono eulerLowerSeq12 := by
   have hstep := eulerLowerSeq12_step_pos (n : ℝ) (Nat.cast_nonneg n)
   norm_num only [Nat.reduceMul, Nat.reduceAdd, Nat.cast_ofNat] at ht_b
   unfold eulerLowerSeq12 Real.eulerMascheroniSeq'
-  simp only [Nat.succ_ne_zero, if_false, harmonic_succ]
+  simp only [Nat.succ_ne_zero, if_false]
+  rw [harmonic_succ (n + 1)]
   push_cast
-  change (harmonic (n + 1) : ℝ) - Real.log x + eulerLowerTail x <
-    (harmonic (n + 1) : ℝ) + (x + 1)⁻¹ - Real.log (x + 1) + eulerLowerTail (x + 1)
+  dsimp only [x] at ht_b hstep
   rw [inv_eq_one_div]
   linarith [ht_b.2, hstep]
 
@@ -482,21 +491,30 @@ private theorem tendsto_eulerUpperTail :
   have h8 := tendsto_inv_pow_add_one 8 (by norm_num) (-1 / 240)
   have h10 := tendsto_inv_pow_add_one 10 (by norm_num) (1 / 132)
   have hs := (((((h1.add h2).add h4).add h6).add h8).add h10)
-  simp only [add_zero] at hs
+  rw [show (0 : ℝ) + 0 + 0 + 0 + 0 + 0 = 0 by norm_num] at hs
   refine hs.congr fun n => ?_
+  have hx : ((n : ℝ) + 1) ≠ 0 := by positivity
+  field_simp [hx]
   ring
 
 theorem eulerMascheroniConstant_bounds_d18 :
     eulerLo ≤ Real.eulerMascheroniConstant ∧ Real.eulerMascheroniConstant ≤ eulerHi := by
   have hseq := Real.tendsto_eulerMascheroniSeq'.comp (tendsto_add_atTop_nat 1)
   have hlimU : Tendsto eulerUpperSeq12 atTop (𝓝 Real.eulerMascheroniConstant) := by
-    simpa only [eulerUpperSeq12, add_zero] using hseq.add tendsto_eulerUpperTail
+    unfold eulerUpperSeq12
+    simpa only [Function.comp_apply, add_zero] using hseq.add tendsto_eulerUpperTail
   have hlimL : Tendsto eulerLowerSeq12 atTop (𝓝 Real.eulerMascheroniConstant) := by
     have h12 := tendsto_inv_pow_add_one 12 (by norm_num) (-691 / 32760)
     have htL : Tendsto (fun n : ℕ => eulerLowerTail ((n : ℝ) + 1)) atTop (𝓝 0) := by
-      simpa only [add_zero] using (tendsto_eulerUpperTail.add h12).congr fun n => by
-        unfold eulerLowerTail; ring
-    simpa only [eulerLowerSeq12, add_zero] using hseq.add htL
+      have hs := tendsto_eulerUpperTail.add h12
+      rw [add_zero] at hs
+      refine hs.congr fun n => ?_
+      unfold eulerLowerTail
+      have hx : ((n : ℝ) + 1) ≠ 0 := by positivity
+      field_simp [hx]
+      ring
+    unfold eulerLowerSeq12
+    simpa only [Function.comp_apply, add_zero] using hseq.add htL
   have h_le_U : Real.eulerMascheroniConstant ≤ eulerUpperSeq12 23 :=
     strictAnti_eulerUpperSeq12.antitone.le_of_tendsto hlimU 23
   have h_ge_L : eulerLowerSeq12 23 ≤ Real.eulerMascheroniConstant :=
@@ -504,20 +522,21 @@ theorem eulerMascheroniConstant_bounds_d18 :
   have hH24 : ((harmonic 24 : ℚ) : ℝ) = (1347822955 / 356948592 : ℝ) := by
     rw [show (24 : ℕ) = 12 + 12 from rfl, _root_.RHTower.harmonic_add_eq_add_sum]
     norm_num [harmonic, Finset.sum_range_succ]
-  have hlog24 : Real.log ((24 : ℕ) : ℝ) = 3 * Real.log 2 + Real.log 3 := by
-    rw [show ((24 : ℕ) : ℝ) = 2 ^ (3 : ℕ) * 3 by norm_num,
+  have hlog24 : Real.log (24 : ℝ) = 3 * Real.log 2 + Real.log 3 := by
+    rw [show (24 : ℝ) = 2 ^ (3 : ℕ) * 3 by norm_num,
       Real.log_mul (by norm_num) (by norm_num), Real.log_pow]
     norm_num
   obtain ⟨hl2_lo, hl2_hi⟩ := log_two_bounds_d26
   obtain ⟨hl3_lo, hl3_hi⟩ := log_three_bounds_d26
-  unfold eulerUpperSeq12 eulerLowerSeq12 Real.eulerMascheroniSeq' at h_le_U h_ge_L
+  unfold eulerUpperSeq12 Real.eulerMascheroniSeq' at h_le_U
+  unfold eulerLowerSeq12 Real.eulerMascheroniSeq' at h_ge_L
   norm_num only [Nat.reduceAdd, Nat.succ_ne_zero, if_false] at h_le_U h_ge_L
   rw [hH24, hlog24] at h_le_U h_ge_L
   have cL : eulerLo ≤ (1347822955 / 356948592 : ℝ) - (3 * logTwoHi + logThreeHi) + eulerLowerTail 24 := by
     norm_num [eulerLo, logTwoHi, logThreeHi, eulerLowerTail, eulerUpperTail]
   have cU : (1347822955 / 356948592 : ℝ) - (3 * logTwoLo + logThreeLo) + eulerUpperTail 24 ≤ eulerHi := by
     norm_num [eulerHi, logTwoLo, logThreeLo, eulerUpperTail]
-  exact ⟨by linarith, by linarith⟩
+  exact ⟨cL.trans (by linarith), (by linarith : Real.eulerMascheroniConstant ≤ _).trans cU⟩
 
 /-! ### Closed form and enclosure of `archLevyAntideriv (2 * log 2)` -/
 
@@ -531,6 +550,7 @@ theorem archLevyAntideriv_two_mul_log_two :
     norm_num
   rw [archLevyAntideriv_eq_log_div hpos, hexp]
   norm_num
+  ring
 
 private def levyQuarticPartialSum (x : ℝ) : ℝ :=
   ∑ n ∈ Finset.range 16, (2 / (4 * (n : ℝ) + 1)) * x ^ (4 * n + 1)
@@ -579,8 +599,8 @@ theorem archLevyAntideriv_two_mul_log_two_bounds :
     intro x hx
     have hx1 : 0 < 1 + x := by linarith [hx.1]
     have hx2 : 0 < 1 - x := by linarith [hx.2]
-    have h1 := ((hasDerivAt_id x).const_add 1).log hx1.ne'
-    have h2 := ((hasDerivAt_id x).const_sub 1).log hx2.ne'
+    have h1 := ((hasDerivAt_id' x).const_add 1).log hx1.ne'
+    have h2 := ((hasDerivAt_id' x).const_sub 1).log hx2.ne'
     have h3 := Real.hasDerivAt_arctan x
     refine (((h1.sub h2).div_const 2).add h3).congr_deriv ?_
     have hne4 : 1 - x ^ 4 ≠ 0 := by
@@ -590,7 +610,10 @@ theorem archLevyAntideriv_two_mul_log_two_bounds :
     field_simp [hx1.ne', hx2.ne', hne2, hne4]
     ring
   have h_lo : 0 ≤ f (1 / 2) - levyQuarticPartialSum (1 / 2) := by
-    refine nonneg_of_hasDerivAt_nonneg (by norm_num) ?_ ?_ ?_
+    refine nonneg_of_hasDerivAt_nonneg
+      (fun y => f y - levyQuarticPartialSum y)
+      (fun x => 2 / (1 - x ^ 4) - ∑ n ∈ Finset.range 16, 2 * x ^ (4 * n))
+      (by norm_num) ?_ ?_ ?_
     · simp [f, levyQuarticPartialSum, zero_pow (Nat.succ_ne_zero _)]
     · intro x hx
       exact (hd_f x hx).sub (hasDerivAt_levyQuarticPartialSum x)
@@ -603,7 +626,10 @@ theorem archLevyAntideriv_two_mul_log_two_bounds :
       positivity
   have h_hi : 0 ≤ (levyQuarticPartialSum (1 / 2) + (32 / (15 * 65)) * (1 / 2 : ℝ) ^ 65) -
       f (1 / 2) := by
-    refine nonneg_of_hasDerivAt_nonneg (by norm_num) ?_ ?_ ?_
+    refine nonneg_of_hasDerivAt_nonneg
+      (fun y => (levyQuarticPartialSum y + (32 / (15 * 65)) * y ^ 65) - f y)
+      (fun x => ((∑ n ∈ Finset.range 16, 2 * x ^ (4 * n)) + (32 / 15) * x ^ 64) - 2 / (1 - x ^ 4))
+      (by norm_num) ?_ ?_ ?_
     · simp [f, levyQuarticPartialSum, zero_pow (Nat.succ_ne_zero _)]
     · intro x hx
       have hrem_d : HasDerivAt (fun y : ℝ => (32 / (15 * 65)) * y ^ 65)
@@ -611,8 +637,8 @@ theorem archLevyAntideriv_two_mul_log_two_bounds :
         exact ((hasDerivAt_pow 65 x).const_mul (32 / (15 * 65))).congr_deriv (by norm_num; ring)
       exact ((hasDerivAt_levyQuarticPartialSum x).add hrem_d).sub (hd_f x hx)
     · intro x hx
-      have hx4_le : x ^ 4 ≤ 1 / 16 := by
-        simpa using pow_le_pow_left₀ hx.1 hx.2 4
+      have hx4_le : x ^ 4 ≤ 1 / 16 :=
+        (pow_le_pow_left₀ hx.1 hx.2 4).trans (by norm_num)
       have hx4 : 0 < 1 - x ^ 4 := by linarith
       have hdiff : (∑ n ∈ Finset.range 16, 2 * x ^ (4 * n)) + (32 / 15) * x ^ 64 -
           2 / (1 - x ^ 4) = 2 * x ^ 64 * (16 / 15 - 1 / (1 - x ^ 4)) := by
@@ -630,14 +656,14 @@ theorem archLevyAntideriv_two_mul_log_two_bounds :
   have c_hi : levyQuarticPartialSum (1 / 2) + (32 / (15 * 65)) * (1 / 2 : ℝ) ^ 65 ≤
       archLevyTwoLogTwoHi := by
     norm_num [archLevyTwoLogTwoHi, levyQuarticPartialSum, Finset.sum_range_succ]
-  exact ⟨by linarith, by linarith⟩
+  exact ⟨c_lo.trans (sub_nonneg.mp h_lo), (sub_nonneg.mp h_hi).trans c_hi⟩
 
 /-! ### Derived enclosures for `gammaBracket 0` and prime weights and shifts -/
 
 theorem gammaBracket_zero_bounds :
     gammaBracketZeroLo ≤ Zeta23.EF.gammaBracket 0 ∧
       Zeta23.EF.gammaBracket 0 ≤ gammaBracketZeroHi := by
-  have hbr := ArithmeticCriticalityTheory.neg_gammaBracket_zero_eq
+  have hbr := _root_.RHTower.WeilLevyPoleGauss.neg_gammaBracket_zero_eq
   obtain ⟨hlp1, hlp2⟩ := log_pi_bounds_d20
   obtain ⟨hl21, hl22⟩ := log_two_bounds_d26
   obtain ⟨heu1, heu2⟩ := eulerMascheroniConstant_bounds_d18
@@ -646,7 +672,11 @@ theorem gammaBracket_zero_bounds :
     norm_num [gammaBracketZeroLo, logPiHi, logTwoHi, eulerHi, piHi]
   have c2 : -(logPiLo + 3 * logTwoLo + eulerLo + piLo / 2) ≤ gammaBracketZeroHi := by
     norm_num [gammaBracketZeroHi, logPiLo, logTwoLo, eulerLo, piLo]
-  exact ⟨by linarith, by linarith⟩
+  have hb1 : -(logPiHi + 3 * logTwoHi + eulerHi + piHi / 2) ≤ Zeta23.EF.gammaBracket 0 := by
+    linarith [hbr, hlp2, hl22, heu2, hpi2]
+  have hb2 : Zeta23.EF.gammaBracket 0 ≤ -(logPiLo + 3 * logTwoLo + eulerLo + piLo / 2) := by
+    linarith [hbr, hlp1, hl21, heu1, hpi1]
+  exact ⟨c1.trans hb1, hb2.trans c2⟩
 
 theorem primeThreeRatio_bounds :
     primeThreeRatioLo ≤ Real.log 3 / Real.log 2 ∧
@@ -740,12 +770,14 @@ private theorem neg_log_one_sub_ge_sum (r : ℕ) {z : ℝ} (hz0 : 0 ≤ z) (hz1 
   rw [hsum_eq]
   suffices h : 0 ≤ -Real.log (1 - z) - ∑ k ∈ Finset.range r, z ^ (k + 1) / ((k : ℝ) + 1) by
     linarith
-  refine nonneg_of_hasDerivAt_nonneg hz0 ?_ ?_ ?_
+  refine nonneg_of_hasDerivAt_nonneg
+    (fun y => -Real.log (1 - y) - ∑ k ∈ Finset.range r, y ^ (k + 1) / ((k : ℝ) + 1))
+    (fun x => 1 / (1 - x) - ∑ k ∈ Finset.range r, x ^ k) hz0 ?_ ?_ ?_
   · simp [zero_pow (Nat.succ_ne_zero _)]
   · intro x hx
     have hx1 : 0 < 1 - x := by linarith [hx.2, hz1]
     have hd1 : HasDerivAt (fun y => -Real.log (1 - y)) (1 / (1 - x)) x := by
-      have h := (((hasDerivAt_id x).const_sub 1).log hx1.ne').neg
+      have h := (((hasDerivAt_id' x).const_sub 1).log hx1.ne').neg
       exact h.congr_deriv (by ring)
     have hd2 : HasDerivAt (fun y : ℝ => ∑ k ∈ Finset.range r, y ^ (k + 1) / ((k : ℝ) + 1))
         (∑ k ∈ Finset.range r, x ^ k) x := by
@@ -825,8 +857,8 @@ private theorem legP_envelope_le_one {u : ℝ} (hu : u ^ 2 ≤ 1) :
   intro n
   induction n with
   | zero =>
-    simp only [Nat.zero_add, legP, legP', Nat.cast_zero, zero_add]
-    ring_nf; le_rfl
+    simp only [legP, legP', Nat.cast_zero, zero_add]
+    ring_nf; exact le_rfl
   | succ n ih =>
     obtain ⟨h1, h2⟩ := legP'_step_identities (n + 1) u
     have halg : (((n : ℝ) + 1) + 1) ^ 2 * legP (n + 2) u ^ 2 +
@@ -850,8 +882,6 @@ private theorem legP_envelope_le_one {u : ℝ} (hu : u ^ 2 ≤ 1) :
         legP (n + 1) u ^ 2 +
           (1 - u ^ 2) * legP' (n + 1) u ^ 2 / ((n + 1 : ℕ) + 1 : ℝ) ^ 2 := by
       push_cast
-      apply (div_eq_div_iff hpos2.ne' hpos2.ne').mp
-      -- rewrite both sides over common denominator
       have hL : (legP (n + 2) u ^ 2 + (1 - u ^ 2) * legP' (n + 2) u ^ 2 / (((n : ℝ) + 1) + 1) ^ 2) =
           ((((n : ℝ) + 1) + 1) ^ 2 * legP (n + 2) u ^ 2 + (1 - u ^ 2) * legP' (n + 2) u ^ 2) /
             (((n : ℝ) + 1) + 1) ^ 2 := by field_simp [hpos2.ne']
@@ -878,8 +908,8 @@ theorem abs_legP_le_one {u : ℝ} (hu : |u| ≤ 1) (n : ℕ) : |legP n u| ≤ 1 
   · have henv := legP_envelope_le_one hu2 n
     have hrem : 0 ≤ (1 - u ^ 2) * legP' (n + 1) u ^ 2 / ((n : ℝ) + 1) ^ 2 :=
       div_nonneg (mul_nonneg (by linarith) (sq_nonneg _)) (by positivity)
-    have hsq : legP (n + 1) u ^ 2 ≤ 1 := by linarith
-    exact abs_le_of_sq_le_sq' (by simpa using hsq) (by norm_num)
+    have hsq : |legP (n + 1) u| ^ 2 ≤ 1 := by rw [sq_abs]; linarith
+    nlinarith [abs_nonneg (legP (n + 1) u)]
 
 /-- Markov–Legendre derivative bound `|legP' n u| ≤ n(n + 1) / 2` on `[-1, 1]`. -/
 theorem abs_legP'_le {u : ℝ} (hu : |u| ≤ 1) :

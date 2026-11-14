@@ -152,7 +152,7 @@ theorem theoryProbability_fixed_measure_iff (b : ℝ) (E : I → A → ℝ) (w U
         x * theoryPartition (Real.exp b) (fun j a => E j a + F j) w V *
           theoryPartition (Real.exp b) E w U) (h i)
       unfold theoryProbability at he
-      rw [theoryWeight_control_ratio] at he
+      rw [theoryWeight_control_ratio (Real.exp b) E w U F V i] at he
       field_simp [(theoryPartition_pos (Real.exp b) E w U).ne',
         (theoryPartition_pos (Real.exp b) (fun j a => E j a + F j) w V).ne'] at he
       apply (mul_left_inj' (theoryWeight_pos (Real.exp b) E w U i).ne').mp
