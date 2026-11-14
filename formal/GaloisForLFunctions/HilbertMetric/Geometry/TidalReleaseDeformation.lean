@@ -1,6 +1,9 @@
 import Mathlib.Analysis.InnerProductSpace.Calculus
+import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.NormNum
 
 /-!
 # Quadratic release and its exact quartic deformation
@@ -40,9 +43,10 @@ theorem tidalReleaseJet_neg (x a : H) (t : ℝ) :
 /-- The velocity of the quadratic configuration jet. -/
 theorem tidalReleaseJet_hasDerivAt (x a : H) (t : ℝ) :
     HasDerivAt (tidalReleaseJet x a) (t • a) t := by
-  convert (hasDerivAt_const t x).add
-    (((hasDerivAt_id t).pow 2).div_const 2 |>.smul_const a) using 1 <;>
-    simp [tidalReleaseJet]
+  change HasDerivAt (fun s : ℝ => x + (s ^ 2 / 2) • a) (t • a) t
+  have ha : HasDerivAt (fun s : ℝ => (s ^ 2 / 2) • a) (t • a) t := by
+    simpa using (((hasDerivAt_id t).pow 2).div_const 2).smul_const a
+  exact ha.const_add x
 
 /-- The length coefficient differs from the quadratic prediction by a nonnegative term. -/
 theorem tidalReleaseJet_quadratic_lower (x a : H) (t : ℝ) :
@@ -55,7 +59,7 @@ theorem tidalReleaseJet_quadratic_eq_iff (x a : H) (t : ℝ) :
     ‖tidalReleaseJet x a t‖ ^ 2 = ‖x‖ ^ 2 + t ^ 2 * inner ℝ x a ↔
       t = 0 ∨ a = 0 := by
   rw [tidalReleaseJet_norm_sq, add_eq_left, mul_eq_zero, div_eq_zero_iff,
-    pow_eq_zero_iff (by decide : 4 ≠ 0), sq_eq_zero_iff, norm_eq_zero]
+    pow_eq_zero_iff (by norm_num : 4 ≠ 0), sq_eq_zero_iff, norm_eq_zero]
   norm_num
 
 /-- Nullity and exact length preservation are jointly equivalent to zero time or

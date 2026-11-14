@@ -22,7 +22,8 @@ theorem causalTent_eq_tentCount (δ x : ℝ) :
   by_cases h : x ≤ |δ|
   · rw [min_eq_left (by linarith only [h]), abs_of_nonpos (sub_nonpos.mpr h)]
     ring
-  · rw [min_eq_right (by linarith only [h]), abs_of_nonneg (by linarith only [h])]
+  · rw [min_eq_right (by linarith only [h]),
+      abs_of_nonneg (by linarith only [h] : 0 ≤ x - |δ|)]
     ring
 
 /-- A unit-height plateau cutoff is the difference of its outer and inner counting kernels. -/
@@ -36,7 +37,7 @@ theorem tentReal_eq_count_difference (a x : ℝ) :
 /-- The central tent's slope divisor has one pole of multiplicity two. -/
 theorem centeredTent_characteristic (a r : ℝ) :
     proximity r (fun x => tentCount a x) + |r| = max |a| |r| := by
-  unfold proximity tentCount
+  change (max 0 (max 0 (|a| - |r|)) + max 0 (max 0 (|a| - |-r|))) / 2 + |r| = _
   rw [abs_neg]
   rw [max_eq_right (le_max_left 0 (|a| - |r|))]
   by_cases h : |r| ≤ |a|
@@ -53,6 +54,11 @@ theorem plateauTent_characteristic (a r : ℝ) :
   rw [abs_neg]
   simp only [min_def, max_def]
   split_ifs <;> linarith
+
+#print axioms causalTent_eq_tentCount
+#print axioms tentReal_eq_count_difference
+#print axioms centeredTent_characteristic
+#print axioms plateauTent_characteristic
 
 end
 end GaloisForLFunctions.BiScaleUncertainty.TropicalJensen

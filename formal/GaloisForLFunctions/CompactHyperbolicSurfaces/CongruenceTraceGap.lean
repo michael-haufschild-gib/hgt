@@ -47,8 +47,33 @@ theorem congruence_trace_gap (n : ℕ) (A : Gamma n) :
     exact ⟨|m|, by rw [hm, abs_mul, abs_of_nonneg (sq_nonneg _)]⟩
   have hle := Int.le_of_dvd hpos hdabs
   have htri := abs_sub (slTrace A.val) 2
-  norm_num only [abs_ofNat] at htri
+  norm_num at htri
   linarith only [hle, htri]
+
+/-- Every squared-level trace is realized by a product of opposite unipotents. -/
+def congruenceTraceWitness (n : ℕ) (m : ℤ) : Gamma n :=
+  ⟨⟨!![1, (n : ℤ); n * m, 1 + (n : ℤ) ^ 2 * m], by
+      rw [Matrix.det_fin_two_of]
+      ring⟩, by
+    apply Gamma_mem.mpr
+    simp⟩
+
+theorem slTrace_congruenceTraceWitness (n : ℕ) (m : ℤ) :
+    slTrace (congruenceTraceWitness n m).val = 2 + (n : ℤ) ^ 2 * m := by
+  simp only [congruenceTraceWitness, slTrace, Matrix.of_apply, Matrix.cons_val_zero,
+    Matrix.cons_val_one, Matrix.cons_val_fin_one]
+  ring
+
+/-- Complete classification of the trace spectrum, including levels zero, one and two. -/
+theorem congruence_trace_spectrum (n : ℕ) (t : ℤ) :
+    (∃ A : Gamma n, slTrace A.val = t) ↔ (n : ℤ) ^ 2 ∣ t - 2 := by
+  constructor
+  · rintro ⟨A, rfl⟩
+    exact congruence_sq_dvd_trace_sub_two n A
+  · rintro ⟨m, hm⟩
+    refine ⟨congruenceTraceWitness n m, ?_⟩
+    rw [slTrace_congruenceTraceWitness]
+    linarith only [hm]
 
 /-- Holonomy of two opposite cusp parabolics with common area parameter `n`. -/
 def cuspPair (n : ℤ) : SL(2, ℤ) :=
@@ -106,7 +131,7 @@ theorem congruence_length_minimum (k : ℕ) :
   · obtain ⟨A, hA, ht⟩ := congruence_trace_gap_attained k
     refine ⟨A, hA, ?_⟩
     unfold hypLen
-    rw [trSL_realCongruenceMatrix, ← Int.cast_abs]
+    rw [trSL_realCongruenceMatrix]
     have ht' : (|slTrace A.val| : ℝ) = ((k + 3 : ℕ) : ℝ) ^ 2 - 2 := by exact_mod_cast ht
     rw [ht']
   · rintro l ⟨A, hA, rfl⟩
@@ -116,7 +141,7 @@ theorem congruence_length_minimum (k : ℕ) :
       have : (2 : ℝ) < (|slTrace A.val| : ℝ) := by exact_mod_cast hA
       linarith only [this]
     unfold hypLen
-    rw [trSL_realCongruenceMatrix, ← Int.cast_abs]
+    rw [trSL_realCongruenceMatrix]
     have hmono := (Real.arcosh_le_arcosh hbase hpos).mpr (by linarith only [ht'])
     linarith only [hmono]
 
@@ -132,7 +157,7 @@ theorem quaternion_congruence_trace_quantized (n : ℕ) (A : congGroup n) :
     ring
   have hnorm' : 2 * (n : ℤ) * u 0 + (n : ℤ) ^ 2 * nrd u = 0 := by
     simp only [nrd, Pi.add_apply, Pi.smul_apply, smul_eq_mul, quatOne,
-      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val, Matrix.cons_val_fin_one,
+      Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val,
       zero_add] at hnorm ⊢
     linear_combination hnorm
   refine ⟨-nrd u, ?_⟩
@@ -143,10 +168,26 @@ theorem quaternion_congruence_trace_quantized (n : ℕ) (A : congGroup n) :
   have he : 2 * (n : ℝ) * u 0 + (n : ℝ) ^ 2 * (nrd u : ℝ) = 0 := by exact_mod_cast hnorm'
   linarith only [he]
 
+/-- Transfer of the modular trace gap to the compact quaternion congruence groups. -/
+theorem quaternion_congruence_trace_gap (n : ℕ) (A : congGroup n) :
+    trSL A.val = 2 ∨ (n : ℝ) ^ 2 - 2 ≤ |trSL A.val| := by
+  obtain ⟨m, hm⟩ := quaternion_congruence_trace_quantized n A
+  have h := congruence_trace_gap n (congruenceTraceWitness n m)
+  rw [slTrace_congruenceTraceWitness] at h
+  rcases h with h | h
+  · left
+    rw [hm]
+    exact_mod_cast h
+  · right
+    rw [hm]
+    exact_mod_cast h
+
 #print axioms congruence_sq_dvd_trace_sub_two
 #print axioms congruence_trace_gap
+#print axioms congruence_trace_spectrum
 #print axioms congruence_trace_minimum
 #print axioms congruence_length_minimum
 #print axioms quaternion_congruence_trace_quantized
+#print axioms quaternion_congruence_trace_gap
 
 end GaloisForLFunctions.CompactHyperbolicSurfaces

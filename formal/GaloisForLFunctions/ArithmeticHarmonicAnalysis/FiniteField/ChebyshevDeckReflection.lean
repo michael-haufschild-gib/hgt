@@ -142,8 +142,9 @@ theorem chebyshevArtinSchreierReduction_reflection (s m : ℕ)
         (xy.1.2 - frobeniusTraceSum p 1 s ((dickson 1 (1 : A) m).eval xy.1.1))
     have hpoly := congrArg (eval xy.1.1) (HTGeometry.dickson_comp_neg_X (R := A) m)
     simp only [eval_comp, eval_neg, eval_X, eval_mul, eval_C] at hpoly
-    rw [Nat.mul_comm (p ^ s) m, pow_mul, parityScalar_primePower, hpoly,
-      trace_parityScalar_mul, mul_sub]
+    have hparity : (-1 : A) ^ (p ^ s * m) = (-1 : A) ^ m := by
+      rw [Nat.mul_comm (p ^ s) m, pow_mul, parityScalar_primePower]
+    rw [hparity, hpoly, trace_parityScalar_mul, mul_sub]
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
 

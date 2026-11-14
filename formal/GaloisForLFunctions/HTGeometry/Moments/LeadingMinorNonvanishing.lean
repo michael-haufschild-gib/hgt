@@ -1,6 +1,6 @@
-import GaloisForLFunctions.HTGeometry.FiniteModalHankelRank
 import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
 import Mathlib.LinearAlgebra.Matrix.ToLinearEquiv
+import Mathlib.Tactic.Ring
 
 /-!
 # Nonvanishing leading minors of a finite Hankel matrix
@@ -61,7 +61,7 @@ private theorem pairing_zero_of_recurrence (s : ℕ → K) {m N : ℕ}
 /-- Independence of all columns of a square Hankel block excludes a kernel vector. -/
 private theorem det_ne_zero_of_independent (s : ℕ → K) (m : ℕ)
     (h : LinearIndependent K (fun j : Fin m => column s m j.val)) :
-    (algebraicHankelMatrix s m).det ≠ 0 := by
+    ((Matrix.of fun i j : Fin m => s (i.val + j.val))).det ≠ 0 := by
   intro hz
   obtain ⟨b, hb, hker⟩ := Matrix.exists_mulVec_eq_zero_iff.mpr hz
   apply hb
@@ -69,7 +69,7 @@ private theorem det_ne_zero_of_independent (s : ℕ → K) (m : ℕ)
   apply Fintype.linearIndependent_iff.mp h b
   funext i
   have hi := congrFun hker i
-  simpa only [Matrix.mulVec, dotProduct, algebraicHankelMatrix, column,
+  simpa only [Matrix.mulVec, dotProduct, Matrix.of_apply, column,
     Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply, mul_comm] using hi
 
 /-- A dependent next column forces the maximal independent initial block to be invertible. -/
@@ -77,8 +77,8 @@ private theorem det_ne_zero_of_next_mem_span (s : ℕ → K) {m N : ℕ}
     (h : LinearIndependent K (fun j : Fin m => column s N j.val))
     (hnext : column s N m ∈ Submodule.span K
       (Set.range (fun j : Fin m => column s N j.val))) :
-    (algebraicHankelMatrix s m).det ≠ 0 := by
-  obtain ⟨c, hc⟩ := Submodule.mem_span_range_iff_exists_fun.mp hnext
+    ((Matrix.of fun i j : Fin m => s (i.val + j.val))).det ≠ 0 := by
+  obtain ⟨c, hc⟩ := (Submodule.mem_span_range_iff_exists_fun K).mp hnext
   have hrec : ∀ r < N, s (r + m) = ∑ j : Fin m, c j * s (r + j.val) := by
     intro r hr
     have he := congrFun hc ⟨r, hr⟩
@@ -88,7 +88,7 @@ private theorem det_ne_zero_of_next_mem_span (s : ℕ → K) {m N : ℕ}
   have hbase : ∀ i < m, (∑ j : Fin m, b j * s (i + j.val)) = 0 := by
     intro i hi
     have he := congrFun hker ⟨i, hi⟩
-    simpa only [Matrix.mulVec, dotProduct, algebraicHankelMatrix, Pi.zero_apply,
+    simpa only [Matrix.mulVec, dotProduct, Matrix.of_apply, Pi.zero_apply,
       mul_comm] using he
   have hall := pairing_zero_of_recurrence s c b hrec hbase
   apply hb
@@ -101,7 +101,7 @@ private theorem det_ne_zero_of_next_mem_span (s : ℕ → K) {m N : ℕ}
 /-- Enlarging an independent initial family either reaches the square block or a recurrence. -/
 private theorem exists_leading_det_ne_zero (s : ℕ → K) (M N : ℕ) (hMN : M ≤ N)
     (h : LinearIndependent K (fun j : Fin M => column s N j.val)) :
-    ∃ m, M ≤ m ∧ m ≤ N ∧ (algebraicHankelMatrix s m).det ≠ 0 := by
+    ∃ m, M ≤ m ∧ m ≤ N ∧ ((Matrix.of fun i j : Fin m => s (i.val + j.val))).det ≠ 0 := by
   by_cases heq : M = N
   · subst M
     exact ⟨N, le_rfl, le_rfl, det_ne_zero_of_independent s N h⟩
@@ -118,14 +118,14 @@ decreasing_by omega
 
 /-- A nonzero leading determinant remains an independence certificate in any taller window. -/
 private theorem independent_of_leading_det_ne_zero (s : ℕ → K) {m N : ℕ}
-    (hmN : m ≤ N) (hdet : (algebraicHankelMatrix s m).det ≠ 0) :
+    (hmN : m ≤ N) (hdet : ((Matrix.of fun i j : Fin m => s (i.val + j.val))).det ≠ 0) :
     LinearIndependent K (fun j : Fin m => column s N j.val) := by
   apply Fintype.linearIndependent_iff.mpr
   intro b hb j
-  have hker : algebraicHankelMatrix s m *ᵥ b = 0 := by
+  have hker : (Matrix.of fun i j : Fin m => s (i.val + j.val)) *ᵥ b = 0 := by
     funext i
     have he := congrFun hb ⟨i.val, lt_of_lt_of_le i.isLt hmN⟩
-    simpa only [Matrix.mulVec, dotProduct, algebraicHankelMatrix, column,
+    simpa only [Matrix.mulVec, dotProduct, Matrix.of_apply, column,
       Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply, mul_comm] using he
   have hb0 : b = 0 := by
     by_contra hn
@@ -136,7 +136,7 @@ private theorem independent_of_leading_det_ne_zero (s : ℕ → K) {m N : ℕ}
 intermediate size. This includes empty windows and signed or complex moments. -/
 theorem independent_iff_exists_leading_det (s : ℕ → K) (M N : ℕ) :
     (M ≤ N ∧ LinearIndependent K (fun j : Fin M => column s N j.val)) ↔
-      ∃ m, M ≤ m ∧ m ≤ N ∧ (algebraicHankelMatrix s m).det ≠ 0 := by
+      ∃ m, M ≤ m ∧ m ≤ N ∧ ((Matrix.of fun i j : Fin m => s (i.val + j.val))).det ≠ 0 := by
   constructor
   · rintro ⟨hMN, h⟩
     exact exists_leading_det_ne_zero s M N hMN h
@@ -144,7 +144,7 @@ theorem independent_iff_exists_leading_det (s : ℕ → K) (M N : ℕ) :
     refine ⟨hMm.trans hmN, ?_⟩
     exact (independent_of_leading_det_ne_zero s hmN hdet).comp
       (fun j : Fin M => (⟨j.val, lt_of_lt_of_le j.isLt hMm⟩ : Fin m))
-      (fun i j hij => Fin.ext (congrArg Fin.val hij))
+      (fun i j hij => Fin.ext (congrArg (fun z : Fin m => z.val) hij))
 
 #print axioms independent_iff_exists_leading_det
 

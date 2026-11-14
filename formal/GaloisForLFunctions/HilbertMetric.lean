@@ -132,3 +132,4 @@ import GaloisForLFunctions.HilbertMetric.QuantumInformation.SandwichedVariance
 import GaloisForLFunctions.HilbertMetric.Probability.PearsonRobustness
 import GaloisForLFunctions.HilbertMetric.Probability.ThermalRobustness
 import GaloisForLFunctions.HilbertMetric.Probability.UniformNoiseRobustness
+import GaloisForLFunctions.HilbertMetric.Geometry.TidalReleaseDeformation
