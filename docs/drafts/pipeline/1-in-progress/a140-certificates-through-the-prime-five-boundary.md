@@ -33,7 +33,7 @@ Likewise, a strict floor at `a=log(2)` extends above the ratio-four boundary.
 The prime-four term vanishes there; the prime-two/prime-three components
 are still four-vertex paths, together with isolated prime-two pairs.
 
-For the even sector, the next capacity candidate retains Legendre degrees
+For the even sector, a capacity candidate retains Legendre degrees
 `0,2,4,6` and harmonic gap `H₈=761/280`. The proposed diagonal potential is
 `449/500−log(1−x²)/2`. A polynomial reciprocal majorant, with `z=x²`, is
 `500/449−31z/50+7z²/200−27z³/500−3z⁴/200−z⁸/10`.
@@ -43,16 +43,15 @@ The three audited declarations are `primeThreeEvenReciprocal_bound`,
 `primeThreeEvenPotential_le_log`, and `primeThreeEvenReciprocal_pair_bound`
 in `ThePrimeThreeBoundaryHasAPolynomialReciprocalBound.lean`; their axioms
 are only `propext`, `Classical.choice`, `Quot.sound`.
-The proposed charges `(0.7235,6.089,5.705,3.483)` with cross charge `0.06735`
-do not pass the polynomial capacity bound: its second principal minor is
-nonpositive. This rejects that coarse bound, not the actual Weil floor.
-Raising the potential to `1799/2000`, reducing the cross charge to `0.06681`,
-and tightening the geometric tail still leaves its second minor nonpositive.
-Retaining degree eight with harmonic gap `H₁₀`, potential `111/100`, and
-exact rational low-mode charges still leaves the second minor nonpositive
-for the degree-sixteen reciprocal and cubic geometric-tail bound.
-A positive capacity certificate remains open; further moment truncation
-must also control the reciprocal and discarded mixed-charge errors.
+For harmonic gap `H₁₀` and potential `111/100`, the degree-sixteen reciprocal
+and its reflected-product bound are valid, but the corresponding rational
+capacity matrix has a strictly negative second principal minor.
+All six declarations in `TheTenthGapReciprocalHasANegativeCapacityMinor.lean`
+passed the direct Lean check and standard-only transitive axiom audits.
+The precise obstruction and positive survivor are recorded in
+`../5-failed/a140-tenth-gap-polynomial-capacity.md`.
+This rejects that matrix certificate, not the actual Weil floor.
+A positive capacity certificate remains open.
 
 A stronger quartic Gamma reserve follows from the exact fourth correlation moment.
 For a unit-window source, with full-window Legendre moments `r₀,…,r₄`, it is

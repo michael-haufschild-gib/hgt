@@ -104,6 +104,7 @@ theorem thermofieldEntanglement_temperature_hasDerivAt (u : ℝ) (E : Fin (n + 1
       ((-(1 : ℝ) / Real.exp u ^ 2) * finiteGibbsEnergyMean (Real.exp u)⁻¹ E +
         (Real.exp u)⁻¹ * (finiteGibbsEnergyVariance (Real.exp u)⁻¹ E / Real.exp u ^ 2)) = _
   field_simp
+  ring
 
 theorem thermofieldEntanglement_temperature_derivative_nonneg (u : ℝ) (E : Fin (n + 1) → ℝ) :
     0 ≤ deriv (fun T => Thermofield.entanglementEntropy T⁻¹ E) (Real.exp u) := by

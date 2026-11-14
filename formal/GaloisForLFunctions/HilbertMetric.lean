@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HilbertMetric.GaussianAccelerationGram
 import GaloisForLFunctions.HilbertMetric.BogomolnyPrasadSommerfieldBounds
 import GaloisForLFunctions.HilbertMetric.GradedPartition
 import GaloisForLFunctions.HilbertMetric.GaussianFock

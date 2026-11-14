@@ -1,3 +1,4 @@
+import GaloisForLFunctions.U0.AffineContinuationCoefficients
 import GaloisForLFunctions.U0.ClosedLoopFTC
 import GaloisForLFunctions.U0.MahlerRatFunc
 import GaloisForLFunctions.U0.VelocityJetSeries

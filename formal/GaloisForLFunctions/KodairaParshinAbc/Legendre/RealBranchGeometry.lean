@@ -23,8 +23,8 @@ theorem legendreJ_sub_1728 {m : ℝ} (h0 : m ≠ 0) (h1 : m ≠ 1) :
     legendreJ m - 1728 =
       64 * ((m + 1) * (m - 2) * (2 * m - 1)) ^ 2 / (m ^ 2 * (1 - m) ^ 2) := by
   rw [legendreJ]
-  have h1' : 1 - m ≠ 0 := sub_ne_zero.mpr h1.symm
-  field_simp
+  have h1' : 1 - m ≠ 0 := sub_ne_zero.mpr (Ne.symm h1)
+  field_simp [h0, h1']
   ring
 
 /-- Every nonsingular real Legendre curve has invariant at least `1728`. -/
@@ -50,7 +50,7 @@ theorem legendreJ_eq_1728_iff (m : ℝ) :
     have he := legendreJ_sub_1728 h0 h1
     rw [h, sub_self] at he
     have hden : m ^ 2 * (1 - m) ^ 2 ≠ 0 :=
-      mul_ne_zero (pow_ne_zero 2 h0) (pow_ne_zero 2 (sub_ne_zero.mpr h1.symm))
+      mul_ne_zero (pow_ne_zero 2 h0) (pow_ne_zero 2 (sub_ne_zero.mpr (Ne.symm h1)))
     have hnum : ((m + 1) * (m - 2) * (2 * m - 1)) ^ 2 = 0 := by
       have hmul := (div_eq_zero_iff.mp he.symm).resolve_right hden
       exact (mul_eq_zero.mp hmul).resolve_left (by norm_num)
@@ -69,6 +69,20 @@ theorem legendreJ_range (m : ℝ) :
   by_cases h1 : m = 1
   · exact Or.inl (Or.inr h1)
   exact Or.inr (legendreJ_lower_bound h0 h1)
+
+/-- The actual real Legendre curve has the same sharp modular-invariant lower bound. -/
+theorem legendreCurve_j_lower_bound (m : ℝ)
+    [WeierstrassCurve.IsElliptic (GaloisForLFunctions.HTGeometry.LegendreDoubling.curve m)] :
+    1728 ≤ WeierstrassCurve.j (GaloisForLFunctions.HTGeometry.LegendreDoubling.curve m) := by
+  rw [legendre_j_eq_legendreJ]
+  exact legendreJ_lower_bound (legendre_ne_zero_ne_one m).1 (legendre_ne_zero_ne_one m).2
+
+/-- The equality case for the curve invariant is the complete real elliptic branch fiber. -/
+theorem legendreCurve_j_eq_1728_iff (m : ℝ)
+    [WeierstrassCurve.IsElliptic (GaloisForLFunctions.HTGeometry.LegendreDoubling.curve m)] :
+    WeierstrassCurve.j (GaloisForLFunctions.HTGeometry.LegendreDoubling.curve m) = 1728 ↔
+      m = -1 ∨ m = 2 ∨ m = 1 / 2 := by
+  rw [legendre_j_eq_legendreJ, legendreJ_eq_1728_iff]
 
 /-- Homogenizing the elliptic branch identity produces an exact square for every triple. -/
 theorem abcInvariant_square_remainder {R : Type*} [CommRing R] (a b : R) :

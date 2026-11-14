@@ -97,7 +97,13 @@ and those have nonreal times. (F) `k = 1`: `M = 2 + 4c`, `c + ε` even, so `M �
 
 ## Open
 
-The ramification in terms of the collisions,
+The value of the sign. With (G), `G₊ = W` needs one forward time with `c` odd and `k` even, or
+two times violating the two laws. The known forward collisions lie in the saddle region; the
+two-term model controls the zeros within `|az| ≤ 8` of the centre and the far zeros are simple,
+but the zeros in between are not controlled at a model collision time, so the full turn there
+(its `c`) is not known. The sign on the zeros of a loop is the parity of the number of centre
+times it winds around (each turn contributes `(−1)^k`); the sign on the pairs has no known
+holomorphic carrier. The ramification in terms of the collisions,
 `M = Σ_ζ 2⌊m_ζ/2⌋` over the multiple zeros `ζ` of `H_τ₀`. The value of the sign: no forward
 time is known at which all collisions are known.
 

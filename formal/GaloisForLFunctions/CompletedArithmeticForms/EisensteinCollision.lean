@@ -33,6 +33,7 @@ theorem eisensteinTrace_collision_saturates (p : Nat.Primes) (k : ℕ) :
     |eisensteinTrace 0 ((p : ℕ) ^ k)| = (k : ℝ) + 1 := by
   rw [eisensteinTrace_prime_pow_eq_cosSum 0 p.property]
   simp [cosSum]
+  positivity
 
 /-- The Whittaker and spectral Mertens models have literally the same collision sequence. -/
 theorem whittakerCoeff_collision_eq_spectral (p : Nat.Primes) (k : ℕ) :

@@ -398,7 +398,14 @@ and every weight value lies in `B`. A lift `σ` of `r` agrees with conjugation a
 `p^{2 Re ρ} ∈ B`, and `cσ` fixes exactly the critical zeros. For each height `t` the field
 `E_t = B(p^ρ : |Im ρ| = |t|)` is finite Galois over `B`, `Gal(E/E_t)` is the pointwise stabilizer
 of the zeros of that height, `[E_t : B]` is even at occupied heights, and `E` is the compositum of
-the `E_t`.
+the `E_t`. An orbit leaves the quartet of `ρ` only through another off-line zero of the same
+absolute ordinate with a third real part; if the ordinate value lies in `B`, the conjugates of
+`p^{2β}` are the weight values of the orbit. The traces of distinct heights are linearly
+independent functions of the prime vector. For the zeros `U_t` of ordinate `t`, the product
+`A_{t,p}` of their reflection radicals satisfies `c(A_{t,p}) = (−1)^{|U_t|} A_{t,p}`, every
+automorphism multiplies it by `±1`, and `|U_t|` is odd iff `½ + it` is a zero; then for a
+suitable prime the product of the radicands of height `t` is a negative non-square of `B`. A lift
+of `r` acts on every `A_{t,p}` as `c` does.
 ([spectral field](ThePrimeSpectralFieldOfTheZeros.lean),
 [trace group](ThePrimeTraceGaloisGroupOfTheZeros.lean),
 [residue fields](ThePrimeResidueFieldsOfTheZeros.lean),
@@ -413,7 +420,10 @@ the `E_t`.
 [orbit and degree](TheDegreeOfTheResidueFieldOfAZeroIsTheSizeOfItsOrbit.lean),
 [functional equation of the traces](TheMixedPrimeTracesSatisfyTheFunctionalEquation.lean),
 [identification of a lift](ALiftOfTheReflectionIsConjugationExactlyWhereTheWeightLiesInThePrimeTraceField.lean),
-[fibre layers](TheFibreFieldsOverThePrimeTracesAreFiniteGaloisAndGenerateTheSpectralField.lean))
+[fibre layers](TheFibreFieldsOverThePrimeTracesAreFiniteGaloisAndGenerateTheSpectralField.lean),
+[leaving the quartet](AnOrbitLeavesItsQuartetOnlyThroughAnotherOffLineQuartetOfTheSameOrdinate.lean),
+[independence of heights](TheTracesOfDistinctHeightsAreLinearlyIndependent.lean),
+[parity of the radicals](TheReflectionRadicalsOfOneHeightCarryTheParityOfItsZeros.lean))
 
 **Arithmetic groups and the heat cover.** Let `φ` be an injective map between the zeros of ξ
 and the zeros of `H_b` at a forward time. If `φ` carries the reflection to `z ↦ −z`, every
@@ -421,8 +431,13 @@ automorphism over `B` agrees with an element of `G₊(b)` on any finitely many z
 reflection pairs. No `φ` from the forward fibre to the zeros of ξ carries `G₊(b)` into the
 group over `B` (`G₊` is transitive on an infinite fibre, the orbits over `B` are finite), and
 no `φ` from the zeros of ξ to the forward fibre carries conjugation, or any automorphism moving
-infinitely many zeros, to an element of `G₊(b)` (those move finitely many zeros).
-([finite windows](TheArithmeticGroupIsAHeatMonodromyOnFiniteWindowsButNotOnAFibre.lean))
+infinitely many zeros, to an element of `G₊(b)` (those move finitely many zeros). Every zero of
+ξ is the limit as `t → 0⁺` of zeros of `H_t` (a Hermite sheet of its collision at the time `0`);
+for finitely many zeros `s_i` in distinct reflection pairs and `σ` over `B`, continuations
+`w_i(t) → s_i`, `w'_i(t) → σ s_i` are matched by an element of `G₊(t)` at every small real time
+`t` off the branch times.
+([finite windows](TheArithmeticGroupIsAHeatMonodromyOnFiniteWindowsButNotOnAFibre.lean),
+[continued windows](TheArithmeticGroupActsOnContinuedWindowsOfZerosAsHeatMonodromy.lean))
 
 **Over `ℚ`.** `[ℚ(ρ−½) : K_even] ≤ 2`; the negation of all centred zeros is a field
 automorphism iff an anchor lies outside `K_even`; `K_even ⊆ ℝ` iff RH.
@@ -711,9 +726,11 @@ Each problem names its base. The calibration questions concern the finite equati
    over `B`; the functional equation gives `T_t(n) = n·T_t(1/n)` and `T_{−t} = T_t`; `T_t(1)`
    counts the zeros of ordinate `±t`; the traces with `t ≥ 0`, `n ≥ 1` generate `B`. The finite
    layers: `F_ρ = B(2^ρ, 3^ρ)` is finite over `B` of degree the size of the orbit, and `E` is the
-   compositum of the finite Galois layers `E_t = B(p^ρ : |Im ρ| = |t|)`. Open: relations among
-   the traces of different heights, and the position of the prime values of one zero over the
-   field of the traces of finitely many heights. An equality of fields restates the definition;
+   compositum of the finite Galois layers `E_t = B(p^ρ : |Im ρ| = |t|)`. Across heights there is
+   no linear relation: the trace functions of distinct heights are linearly independent. Open:
+   algebraic relations among the traces of different heights (a transcendence question), and
+   the position of the prime values of one zero over the field of the traces of finitely many
+   heights. An equality of fields restates the definition;
    a relation that is not a consequence of the definition and the functional equation is the
    objective.
 2. **Orbits and stabilizers over `B`.** Settled: membership is fixedness; the stabilizer of `ρ`
@@ -724,15 +741,22 @@ Each problem names its base. The calibration questions concern the finite equati
    value `v = p^{2β−1} + p^{1−2β}` lies in `B` iff every automorphism acts on `ρ, ρ̄` as one of
    `1, c, r, cr`; weight ⇒ width ⇒ ordinate, and a width without weight realizes `r` on the
    quartet of an off-line zero; the orbit lies in the quartet iff `u + v, uv ∈ B`, and then the
-   three orbit types are separated by `p^{2β}` and `v`. Open: orbits that leave the quartet, and
-   which prime values of a zero with irrational real part lie in `B`. The pair criterion does
+   three orbit types are separated by `p^{2β}` and `v`. An orbit leaves the quartet only if two
+   distinct off-line quartets share an absolute ordinate; when conjugation is central at `ρ` it
+   leaves exactly when `p^{2β}` has a conjugate other than `p^{2β}`, `p^{2−2β}`. So leaving the
+   quartet is reduced to a coincidence of ordinates in the zero configuration. Open: which prime
+   values of a zero with irrational real part lie in `B`. The pair criterion does
    not force the weight `p`, so it does not give `Re ρ = ½`.
 3. **The reflection lift.** Settled: `H_ρ = B` iff `Re ρ = ½`; `Gal(E/H)` is the group of sign
    families on the reflection radicals `p^ρ − p^{1−ρ}`; `r` lifts to `E/B` iff every square
    product of their discriminants has an even number of factors. A lift `σ` is conjugation at
    `ρ` iff `p^{2 Re ρ} ∈ B`, so the identification of a lift with conjugation is the weight
    problem of 2; RH iff `r` lifts and all weights lie in `B`; under a lift `cσ` fixes exactly the
-   critical zeros. Open: a parity restriction on the square relations that comes from a source.
+   critical zeros. Source parity: the product of the radicands of the zeros of ordinate `t` is
+   `A_{t,p}²` with `c(A_{t,p}) = (−1)^{|U_t|} A_{t,p}`, and `|U_t|` is odd iff `½ + it` is a zero;
+   then the product is a negative non-square of `B` for a suitable `p`, and a lift of `r` acts on
+   `A_{t,p}` as `c`. This class is compatible with a lift and does not force criticality. Open: a
+   source restriction that separates the lift from conjugation.
 4. **Arithmetic groups and the heat cover.** The heat group is known up to one sign. `G₊(τ)`
    is a group of signed permutations of the pairs, the same up to conjugation at every base
    time and generated by the turns around the forward branch times; every turn is an
@@ -749,8 +773,11 @@ Each problem names its base. The calibration questions concern the finite equati
    or `r`; `G₊` acts on a fibre at a forward time and is primitive on the pairs. Settled: an
    injective identification of the fibres that respects the reflection makes every
    automorphism over `B` a heat monodromy on every finite window, and no identification carries
-   one group into the other on a whole fibre. Open: a specialization from forward times to the
-   time `0` (where transport is not controlled) that relates the two on growing windows.
+   one group into the other on a whole fibre; along continuations of the zeros from the time
+   `0`, every automorphism over `B` is matched on each finite window by heat monodromies at all
+   small real times. Open: the sign, which needs the full fibre at one turn (the
+   two-term model controls a window near the centre; the zeros between the window and the far
+   zeros are not controlled at a model collision time), and a time `t₀` uniform in the window.
 
 Calibration questions.
 
@@ -773,18 +800,21 @@ Calibration questions.
 | M3 | orbits over `B` by the weight and ordinate values; centrality of conjugation | formalized |
 | M4 | the orbit types inside a quartet: pair, Klein action, partial flip | formalized |
 | M5 | stabilizers and degrees: `[F_ρ : B] = |G·ρ|`; finite Galois layers `E_t` | formalized |
-| M6 | orbits that leave the quartet | open |
+| M6 | orbits that leave the quartet: reduced to a coincidence of ordinates of off-line quartets | formalized |
 | M7 | relations among the traces from the functional equation; half the generators | formalized |
-| M8 | relations among the traces of different heights | open |
+| M8 | relations among the traces of different heights: none linear | formalized |
+| M8′ | algebraic relations among the traces of different heights | open |
 | M9 | RH splits into the reflection lift and the weights; a lift is `c` where the weight is in `B` | formalized |
-| M10 | a source-derived restriction on the reflection square classes or the prime weights | open |
+| M10 | the source class of the radicands of one height (parity of its zeros) | formalized |
+| M10′ | a source-derived restriction that forces the lift of `r` to be `c` | open |
 | M11 | the Jensen dichotomy: full group or dependent moments | formalized |
 | M12 | the forward monodromy group with the turns and conjugation as elements; a collision away from the centre | formalized |
 | M13 | `W⁰ ≤ G₊`, an odd permutation, index at most two, `G₊ ≠ W` iff one parity law | formalized |
 | M14 | the two involutions from `G₊`; rigidity and connectedness of the cover | formalized |
 | M15 | the sign: whether `G₊ = W` | open |
 | M16 | `G₊` and the group over `B`: finite windows yes, whole fibres no | formalized |
-| M17 | a specialization from forward times to the time `0` on growing windows | open |
+| M17 | specialization from the time `0` on continued windows of zeros (multiple zeros included) | formalized |
+| M17′ | a time `t₀` uniform in growing windows (non-escape near the time `0`) | open |
 | M18 | independence of the moments at low degree; the degree over `K` | open |
 
 ## Tools
@@ -875,15 +905,13 @@ problems.
 - Any automorphism of `L/K` or `E/B` other than conjugation, or its exclusion.
 - The square-class relations among the widths of two fibres, and among the reflection
   discriminants of two zeros.
-- Relations among the mixed prime traces of different heights: independent generators of `B`,
-  the transcendence degree of the field of the traces of finitely many heights, and the degree
-  of the prime values of one zero over such a field.
-- Orbits that leave the quartet: a zero sent to another zero of the same absolute ordinate
-  with a third real part; the image of `G` in the signed permutations of the reflection pairs of
-  one height; for an isolated quartet the degree `[E_t : B] ∈ {2, 4, 8}` of the three orbit types.
+- Algebraic relations among the mixed prime traces of different heights (linear relations are
+  excluded): the transcendence degree of the field of the traces of finitely many heights, and
+  the degree of the prime values of one zero over such a field.
+- The image of `G` in the signed permutations of the reflection pairs of one height; for an
+  isolated quartet the degree `[E_t : B] ∈ {2, 4, 8}` of the three orbit types.
 - Which of the weight, width and ordinate values of a zero with irrational real part lie in `B`;
-  a source parity on the reflection radicands of one height, whose product over the height is
-  a symmetric function of its prime values.
+  a source restriction on the reflection radicands beyond the parity class of one height.
 - Algebraic relations among the normalized moments `μ₂ₙ/μ₀`, which decide whether a Jensen
   equation is generic.
 - The collisions away from the centre as a set. The central branch times are the zeros of one

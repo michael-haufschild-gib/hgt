@@ -399,3 +399,4 @@ import GaloisForLFunctions.Bottcher.SeibergWittenTopologicalShadow
 import GaloisForLFunctions.Bottcher.SeibergWittenFlatDiracShadow
 import GaloisForLFunctions.Bottcher.HalfPlane.AnchoredSchwarz
 import GaloisForLFunctions.Bottcher.HalfPlane.XiDonoghueDynamics
+import GaloisForLFunctions.Bottcher.Eisenstein.ZeroJets

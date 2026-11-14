@@ -30,6 +30,12 @@ theorem coeff_binomialSquare (n k : ℕ) :
   · have hnk : n < k := by omega
     simp [binomialSquare, coeff_monomial, hk, Nat.choose_eq_zero_of_lt hnk]
 
+/-- Binomial-square polynomials commute with change of coefficient ring. -/
+theorem map_binomialSquare {S : Type*} [CommRing S] (φ : R →+* S) (n : ℕ) :
+    (binomialSquare n : R[X]).map φ = binomialSquare n := by
+  ext k
+  simp only [coeff_map, coeff_binomialSquare, map_pow, map_natCast]
+
 theorem binomialSquare_natDegree [Nontrivial R] (n : ℕ) :
     (binomialSquare n : R[X]).natDegree = n := by
   apply natDegree_eq_of_le_of_coeff_ne_zero
@@ -93,7 +99,7 @@ theorem binomialSquare_gauss (n : ℕ) :
       coeff_zero, Nat.cast_zero]
     linear_combination binomialSquare_coefficient_recurrence (R := R) n 0
   · simp only [coeff_sub, coeff_add, coeff_X_mul, coeff_X_mul_zero, coeff_C_mul,
-      coeff_derivative, coeff_zero, Nat.cast_zero, Nat.cast_one]
+      coeff_derivative, coeff_zero, Nat.cast_zero]
     linear_combination binomialSquare_coefficient_recurrence (R := R) n 1
   · simp only [coeff_sub, coeff_add, coeff_X_mul, coeff_C_mul, coeff_derivative,
       coeff_zero, Nat.cast_add, Nat.cast_one]
@@ -101,28 +107,102 @@ theorem binomialSquare_gauss (n : ℕ) :
     push_cast at h
     linear_combination h
 
+/-- At characteristic `2n+1`, the terminating Gauss equation is the Legendre equation. -/
+theorem binomialSquare_picardFuchs_of_char (n : ℕ) [CharP R (2 * n + 1)] :
+    4 * X * (1 - X) * (binomialSquare n : R[X]).derivative.derivative +
+      4 * (1 - 2 * X) * (binomialSquare n).derivative - binomialSquare n = 0 := by
+  have hn : 2 * (n : R) + 1 = 0 := by
+    simpa only [Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one] using
+      (CharP.cast_eq_zero R (2 * n + 1))
+  have hl : 2 * (n : R) - 1 = -2 := by linear_combination hn
+  have hq : 4 * (n : R) ^ 2 = 1 := by
+    linear_combination (2 * (n : R) - 1) * hn
+  have hlinear : C (2 * (n : R) - 1) = (-2 : R[X]) := by rw [hl, map_neg, map_ofNat]
+  have hquad : 4 * C ((n : R) ^ 2) = (1 : R[X]) := by
+    simpa only [map_mul, map_ofNat, map_one] using congrArg C hq
+  have h := binomialSquare_gauss (R := R) n
+  rw [hlinear] at h
+  linear_combination 4 * h + (binomialSquare n : R[X]) * hquad
+
 /-- The Legendre Picard--Fuchs identity holds modulo every odd modulus `2n+1`. -/
 theorem binomialSquare_picardFuchs (n : ℕ) :
     4 * X * (1 - X) * (binomialSquare n : (ZMod (2 * n + 1))[X]).derivative.derivative +
-      4 * (1 - 2 * X) * (binomialSquare n).derivative - binomialSquare n = 0 := by
-  have hn : 2 * (n : ZMod (2 * n + 1)) + 1 = 0 := by
-    simpa only [Nat.cast_add, Nat.cast_mul, Nat.cast_ofNat, Nat.cast_one] using
-      (ZMod.natCast_self (2 * n + 1))
-  have hl : 2 * (n : ZMod (2 * n + 1)) - 1 = -2 := by linear_combination hn
-  have hq : 4 * (n : ZMod (2 * n + 1)) ^ 2 = 1 := by
-    linear_combination (2 * (n : ZMod (2 * n + 1)) - 1) * hn
-  have hlinear : C (2 * (n : ZMod (2 * n + 1)) - 1) =
-      (-2 : (ZMod (2 * n + 1))[X]) := by rw [hl, map_neg, map_ofNat]
-  have hquad : 4 * C ((n : ZMod (2 * n + 1)) ^ 2) =
-      (1 : (ZMod (2 * n + 1))[X]) := by
-    simpa only [map_mul, map_ofNat, map_one] using congrArg C hq
-  have h := binomialSquare_gauss (R := ZMod (2 * n + 1)) n
-  rw [hlinear] at h
-  linear_combination 4 * h + (binomialSquare n : (ZMod (2 * n + 1))[X]) * hquad
+      4 * (1 - 2 * X) * (binomialSquare n).derivative - binomialSquare n = 0 :=
+  binomialSquare_picardFuchs_of_char n
 
 /-- The weight-two Legendre differential operator on polynomials. -/
 def legendreOperator (f : R[X]) : R[X] :=
   (1 - 2 * X) * f + 6 * X * (1 - X) * f.derivative
+
+/-- Each numerator coefficient depends on exactly two adjacent period coefficients. -/
+theorem coeff_legendreOperator_succ (f : R[X]) (k : ℕ) :
+    (legendreOperator f).coeff (k + 1) =
+      (6 * (k : R) + 7) * f.coeff (k + 1) - (6 * (k : R) + 2) * f.coeff k := by
+  have he : legendreOperator f = f - 2 * (X * f) +
+      6 * (X * f.derivative) - 6 * (X * (X * f.derivative)) := by
+    unfold legendreOperator
+    ring
+  rw [he]
+  cases k with
+  | zero =>
+    simp only [coeff_sub, coeff_add, coeff_ofNat_mul, coeff_X_mul, coeff_X_mul_zero,
+      coeff_derivative, Nat.cast_zero]
+    ring
+  | succ k =>
+    simp only [coeff_sub, coeff_add, coeff_ofNat_mul, coeff_X_mul, coeff_derivative,
+      Nat.cast_add, Nat.cast_one]
+    ring
+
+/-- The top numerator coefficient is one even over a composite odd-modulus ring. -/
+theorem binomialSquare_operator_top_coeff (n : ℕ) [CharP R (2 * n + 1)] :
+    (legendreOperator (binomialSquare n : R[X])).coeff (n + 1) = 1 := by
+  rw [coeff_legendreOperator_succ, coeff_binomialSquare, coeff_binomialSquare,
+    Nat.choose_eq_zero_of_lt (Nat.lt_succ_self n), Nat.choose_self,
+    Nat.cast_zero, Nat.cast_one]
+  have hn := CharP.cast_eq_zero R (2 * n + 1)
+  push_cast at hn
+  linear_combination -3 * hn
+
+/-- The Deuring numerator has exact degree `n+1`. -/
+theorem binomialSquare_operator_natDegree [Nontrivial R] (n : ℕ) [CharP R (2 * n + 1)] :
+    (legendreOperator (binomialSquare n : R[X])).natDegree = n + 1 := by
+  apply natDegree_eq_of_le_of_coeff_ne_zero
+  · rw [natDegree_le_iff_coeff_eq_zero]
+    intro k hk
+    cases k with
+    | zero => omega
+    | succ k =>
+      rw [coeff_legendreOperator_succ, coeff_binomialSquare, coeff_binomialSquare,
+        Nat.choose_eq_zero_of_lt (by omega : n < k + 1),
+        Nat.choose_eq_zero_of_lt (by omega : n < k), Nat.cast_zero]
+      ring
+  · rw [binomialSquare_operator_top_coeff]
+    exact one_ne_zero
+
+/-- The weight-two numerator is monic in its natural odd characteristic. -/
+theorem binomialSquare_operator_monic [Nontrivial R] (n : ℕ) [CharP R (2 * n + 1)] :
+    (legendreOperator (binomialSquare n : R[X])).Monic := by
+  change (legendreOperator (binomialSquare n : R[X])).coeff
+    (legendreOperator (binomialSquare n)).natDegree = 1
+  rw [binomialSquare_operator_natDegree, binomialSquare_operator_top_coeff]
+
+/-- The period equation reduces the numerator derivative to a first-order expression. -/
+theorem binomialSquare_operator_derivative (n : ℕ) [CharP R (2 * n + 1)] :
+    2 * (legendreOperator (binomialSquare n : R[X])).derivative =
+      2 * (1 - 2 * X) * (binomialSquare n).derivative - binomialSquare n := by
+  simp only [legendreOperator, derivative_add, derivative_mul, derivative_sub,
+    derivative_one, derivative_ofNat, derivative_X]
+  linear_combination 3 * (binomialSquare_picardFuchs_of_char (R := R) n)
+
+/-- The second numerator derivative retains the two-state period system. -/
+theorem binomialSquare_operator_secondDerivative (n : ℕ) [CharP R (2 * n + 1)] :
+    2 * (legendreOperator (binomialSquare n : R[X])).derivative.derivative =
+      2 * (1 - 2 * X) * (binomialSquare n).derivative.derivative -
+        5 * (binomialSquare n).derivative := by
+  have h := congrArg Polynomial.derivative (binomialSquare_operator_derivative (R := R) n)
+  simp only [derivative_mul, derivative_sub, derivative_one, derivative_ofNat,
+    derivative_X] at h
+  linear_combination h
 
 /-- The Riccati defect is exactly the linear Picard--Fuchs defect times `9 X(1-X) f`. -/
 theorem legendreOperator_riccati_defect (f : R[X]) :
