@@ -110,7 +110,7 @@ theorem stableExponentialSymbol_conj (α ξ : ℝ) :
     star (stableExponentialSymbol α (-ξ)) = stableExponentialSymbol α ξ := by
   simp [stableExponentialSymbol, mul_assoc, -Complex.ofReal_exp]
 
-/-- Averaging a symbol with its conjugate reflection enforces a real kernel. -/
+/-- Averaging a symbol with its conjugate reflection. -/
 def hermitianFrequencyProjection (φ : ℝ → ℂ) (ξ : ℝ) : ℂ :=
   (φ ξ + star (φ (-ξ))) / 2
 

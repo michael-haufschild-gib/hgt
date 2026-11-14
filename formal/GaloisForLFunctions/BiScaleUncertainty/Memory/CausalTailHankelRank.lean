@@ -87,7 +87,7 @@ theorem sampledCausalTail_ne_zero (N : ℕ) (h : ℝ≥0) (k : ℕ) :
   rw [sampledCausalTail_eq_geometric]
   exact mul_ne_zero (causalResponse_cutoff_ne_zero N) (pow_ne_zero _ (Real.exp_ne_zero _))
 
-/-- The tail is a literal one-state response, not merely a rank estimate. -/
+/-- The tail is exactly realized by a single scalar state. -/
 theorem sampledCausalTail_eq_stateSpace (N : ℕ) (h : ℝ≥0) :
     sampledCausalTail N h = algebraicStateSpaceResponse
       (Matrix.diagonal (fun _ : Fin 1 => Real.exp (-(h : ℝ) / 2)))

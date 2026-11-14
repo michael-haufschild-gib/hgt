@@ -147,6 +147,7 @@ theorem weightedColorBasis_adjoin_eq
     exact ⟨(B q.1, q.2), rfl⟩
   · apply Algebra.adjoin_le
     rintro _ ⟨⟨b, t⟩, rfl⟩
+    change primeWeightedColorValue color (w t) b ∈ _
     rw [primeWeightedColorValue_basisExpansion color (w t) B b]
     apply Subalgebra.sum_mem
     intro i _

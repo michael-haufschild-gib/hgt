@@ -135,11 +135,3 @@ theorem thermal_expectation_shift_le_maxCertificate (β : ℝ) (E f : ι → ℝ
 
 end
 end GaloisForLFunctions.HilbertMetric.Probability
-
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermal_likelihood_le_max
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermal_prob_le_maxLikelihood
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermalPearsonDivergence_le_maxDivergence
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermalMaxDivergence_nonneg
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.finiteLaw_mean_sub_const
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermal_expectation_le_stopLoss
-#print axioms GaloisForLFunctions.HilbertMetric.Probability.thermal_expectation_shift_le_maxCertificate

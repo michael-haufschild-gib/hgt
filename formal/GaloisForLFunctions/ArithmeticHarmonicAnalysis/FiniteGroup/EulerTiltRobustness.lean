@@ -22,9 +22,11 @@ def eulerTiltVariance (σ : ℝ) (N : ℕ)
 /-- The centered Euler variance is nonnegative at every real tilt. -/
 theorem eulerTiltVariance_nonneg (σ : ℝ) (N : ℕ)
     (f : Finset ↥(Sieve.primeSubtypeLE N) → ℝ) : 0 ≤ eulerTiltVariance σ N f := by
-  exact bernoulliExp_sq_nonneg _
+  exact bernoulliExp_sq_nonneg (ι := ↥(Sieve.primeSubtypeLE N))
+    (fun p => routeEEulerBernoulliProb σ p.1)
     (fun p => (routeEEulerBernoulliProb_pos σ p.1).le)
-    (fun p => (routeEEulerBernoulliProb_lt_one σ p.1).le) _
+    (fun p => (routeEEulerBernoulliProb_lt_one σ p.1).le)
+    (fun S => f S - routeEEulerBernoulliExpBelow σ N f)
 
 /-- Finite Euler expectation preserves subtraction of constants. -/
 theorem eulerTiltExpectation_sub_const (σ : ℝ) (N : ℕ)

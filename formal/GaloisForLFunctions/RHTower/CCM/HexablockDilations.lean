@@ -23,11 +23,13 @@ private theorem dilation_isometry (u : ℝ) : star (ccmLogDilation u) * ccmLogDi
   rw [dilation_star]
   change ccmLogDilation (-u) ∘L ccmLogDilation u = 1
   rw [ccmLogDilation_comp, neg_add_cancel, ccmLogDilation_zero]
+  exact _root_.ContinuousLinearMap.one_def.symm
 
 private theorem dilation_coisometry (u : ℝ) : ccmLogDilation u * star (ccmLogDilation u) = 1 := by
   rw [dilation_star]
   change ccmLogDilation u ∘L ccmLogDilation (-u) = 1
   rw [ccmLogDilation_comp, add_neg_cancel, ccmLogDilation_zero]
+  exact _root_.ContinuousLinearMap.one_def.symm
 
 private theorem dilation_commute (u v : ℝ) : Commute (ccmLogDilation u) (ccmLogDilation v) := by
   change ccmLogDilation u ∘L ccmLogDilation v = ccmLogDilation v ∘L ccmLogDilation u
@@ -35,34 +37,60 @@ private theorem dilation_commute (u v : ℝ) : Commute (ccmLogDilation u) (ccmLo
 
 /-- Four physical dilation parameters satisfy the hexablock energy and cross relations. -/
 theorem hexablock_ccmDilation_relations (b c d e : ℝ) :
-    let u := ccmLogDilation b
-    let v := ccmLogDilation c
-    let w := ccmLogDilation d
-    let z := ccmLogDilation e
-    (star (a u w) * a u w + star (x₁ u v) * x₁ u v = 1) ∧
-    (star (a u w) * a u w + star (x₂ u w z) * x₂ u w z = 1) ∧
-    star (x₃ u v w z) * x₃ u v w z = 1 ∧
-    star (x₁ u v) * x₃ u v w z = x₂ u w z := by
-  dsimp only
-  obtain ⟨h₁, h₂, h₃⟩ := energy _ _ _ _ (dilation_isometry b) (dilation_isometry c)
-    (dilation_isometry d) (dilation_isometry e)
-  exact ⟨h₁, h₂, h₃, cross _ _ _ _ (dilation_isometry b) (dilation_isometry c)
+    (star (a (ccmLogDilation b) (ccmLogDilation d)) * a (ccmLogDilation b) (ccmLogDilation d) +
+      star (x₁ (ccmLogDilation b) (ccmLogDilation c)) * x₁ (ccmLogDilation b) (ccmLogDilation c) = 1) ∧
+    (star (a (ccmLogDilation b) (ccmLogDilation d)) * a (ccmLogDilation b) (ccmLogDilation d) +
+      star (x₂ (ccmLogDilation b) (ccmLogDilation d) (ccmLogDilation e)) *
+        x₂ (ccmLogDilation b) (ccmLogDilation d) (ccmLogDilation e) = 1) ∧
+    star (x₃ (ccmLogDilation b) (ccmLogDilation c) (ccmLogDilation d) (ccmLogDilation e)) *
+      x₃ (ccmLogDilation b) (ccmLogDilation c) (ccmLogDilation d) (ccmLogDilation e) = 1 ∧
+    star (x₁ (ccmLogDilation b) (ccmLogDilation c)) *
+      x₃ (ccmLogDilation b) (ccmLogDilation c) (ccmLogDilation d) (ccmLogDilation e) =
+        x₂ (ccmLogDilation b) (ccmLogDilation d) (ccmLogDilation e) := by
+  obtain ⟨h₁, h₂, h₃⟩ := energy (A := evenSubspace →L[ℂ] evenSubspace)
+    (ccmLogDilation b) (ccmLogDilation c) (ccmLogDilation d) (ccmLogDilation e)
+    (dilation_isometry b) (dilation_isometry c) (dilation_isometry d) (dilation_isometry e)
+  exact ⟨h₁, h₂, h₃, cross (A := evenSubspace →L[ℂ] evenSubspace)
+    (ccmLogDilation b) (ccmLogDilation c) (ccmLogDilation d) (ccmLogDilation e)
+    (dilation_isometry b) (dilation_isometry c)
     (dilation_commute b c) (dilation_commute b d) (dilation_commute b e)⟩
 
 /-- Three physical dilations satisfy the tetrablock coordinate identities. -/
 theorem tetrablock_ccmDilation_relations (b c d : ℝ) :
-    let u := ccmLogDilation b
-    let v := ccmLogDilation c
-    let z := ccmLogDilation d
-    (star (halfDiff u v) * halfDiff u v +
-      star (Tetrablock.x₂ u v) * Tetrablock.x₂ u v = 1) ∧
-    (star (Tetrablock.x₂ u v) * Tetrablock.x₃ u v z = Tetrablock.x₁ u v z) ∧
-    star (Tetrablock.x₃ u v z) * Tetrablock.x₃ u v z = 1 := by
-  dsimp only
-  exact ⟨Tetrablock.energy _ _ (dilation_isometry b) (dilation_isometry c),
-    Tetrablock.cross _ _ _ (dilation_isometry b) (dilation_isometry c)
+    (star (halfDiff (ccmLogDilation b) (ccmLogDilation c)) *
+      halfDiff (ccmLogDilation b) (ccmLogDilation c) +
+      star (Tetrablock.x₂ (ccmLogDilation b) (ccmLogDilation c)) *
+        Tetrablock.x₂ (ccmLogDilation b) (ccmLogDilation c) = 1) ∧
+    (star (Tetrablock.x₂ (ccmLogDilation b) (ccmLogDilation c)) *
+      Tetrablock.x₃ (ccmLogDilation b) (ccmLogDilation c) (ccmLogDilation d) =
+        Tetrablock.x₁ (ccmLogDilation b) (ccmLogDilation c) (ccmLogDilation d)) ∧
+    star (Tetrablock.x₃ (ccmLogDilation b) (ccmLogDilation c) (ccmLogDilation d)) *
+      Tetrablock.x₃ (ccmLogDilation b) (ccmLogDilation c) (ccmLogDilation d) = 1 := by
+  exact ⟨Tetrablock.energy (A := evenSubspace →L[ℂ] evenSubspace)
+      (ccmLogDilation b) (ccmLogDilation c) (dilation_isometry b) (dilation_isometry c),
+    Tetrablock.cross (A := evenSubspace →L[ℂ] evenSubspace)
+      (ccmLogDilation b) (ccmLogDilation c) (ccmLogDilation d)
+      (dilation_isometry b) (dilation_isometry c)
       (dilation_commute b c) (dilation_commute b d) (dilation_commute c d),
-    Tetrablock.last_isometry _ _ _ (dilation_isometry b) (dilation_isometry c) (dilation_isometry d)⟩
+    Tetrablock.last_isometry (A := evenSubspace →L[ℂ] evenSubspace)
+      (ccmLogDilation b) (ccmLogDilation c) (ccmLogDilation d)
+      (dilation_isometry b) (dilation_isometry c) (dilation_isometry d)⟩
+
+/-- Physical Brown–Halmos fixed operators are exactly the dilation commutant. -/
+theorem hexablock_ccmDilation_brownHalmos_iff (u : ℝ) (T : evenSubspace →L[ℂ] evenSubspace) :
+    BrownHalmos (halfDiff (ccmLogDilation u) 1) (halfSum (ccmLogDilation u) 1)
+      (halfSum (ccmLogDilation u) 1) (ccmLogDilation u) T ↔ Commute T (ccmLogDilation u) := by
+  rw [slice_brownHalmos_iff]
+  constructor
+  · intro hfix
+    change T * ccmLogDilation u = ccmLogDilation u * T
+    calc
+      T * ccmLogDilation u = ccmLogDilation u *
+          (star (ccmLogDilation u) * T * ccmLogDilation u) := by
+        rw [← mul_assoc, ← mul_assoc, dilation_coisometry, one_mul]
+      _ = ccmLogDilation u * T := by rw [hfix]
+  · intro hcomm
+    rw [mul_assoc, hcomm.eq, ← mul_assoc, dilation_isometry, one_mul]
 
 /-- A nonzero physical logarithmic dilation has no eigenvectors. -/
 theorem ccmLogDilation_hasNoEigenvectors {u : ℝ} (hu : u ≠ 0) :
@@ -80,30 +108,23 @@ theorem hexablock_ccmDilation_compact_iff (u : ℝ) (T : evenSubspace →L[ℂ] 
     (BrownHalmos (halfDiff (ccmLogDilation u) 1) (halfSum (ccmLogDilation u) 1)
       (halfSum (ccmLogDilation u) 1) (ccmLogDilation u) T ∧ IsCompactOperator T) ↔
       IsCompactOperator T ∧ (u = 0 ∨ T = 0) := by
-  rw [slice_brownHalmos_iff]
+  rw [hexablock_ccmDilation_brownHalmos_iff]
   constructor
-  · rintro ⟨hfix, hc⟩
+  · rintro ⟨hcomm, hc⟩
     refine ⟨hc, ?_⟩
     by_cases hu : u = 0
     · exact Or.inl hu
     · right
-      have hcomm : T * ccmLogDilation u = ccmLogDilation u * T := by
-        calc
-          T * ccmLogDilation u = ccmLogDilation u *
-              (star (ccmLogDilation u) * T * ccmLogDilation u) := by
-            rw [← mul_assoc, ← mul_assoc, dilation_coisometry, one_mul]
-          _ = ccmLogDilation u * T := by rw [hfix]
       apply eq_zero_of_isCompactOperator_of_comm (ccmLogDilation_hasNoEigenvectors hu) hc
       intro x
-      exact congrArg (fun R : evenSubspace →L[ℂ] evenSubspace => R x) hcomm
+      exact congrArg (fun R : evenSubspace →L[ℂ] evenSubspace => R x) hcomm.eq
   · rintro ⟨hc, hu | hT⟩
     · subst u
       refine ⟨?_, hc⟩
-      rw [ccmLogDilation_zero]
-      change star (1 : evenSubspace →L[ℂ] evenSubspace) * T * 1 = T
-      simp only [star_one, one_mul, mul_one]
+      rw [ccmLogDilation_zero, ← _root_.ContinuousLinearMap.one_def]
+      exact Commute.one_right T
     · subst T
-      exact ⟨by simp only [mul_zero, zero_mul], hc⟩
+      exact ⟨Commute.zero_left _, hc⟩
 
 end RHTower
 
@@ -111,3 +132,5 @@ end RHTower
 #print axioms RHTower.tetrablock_ccmDilation_relations
 #print axioms RHTower.ccmLogDilation_hasNoEigenvectors
 #print axioms RHTower.hexablock_ccmDilation_compact_iff
+
+#print axioms RHTower.hexablock_ccmDilation_brownHalmos_iff

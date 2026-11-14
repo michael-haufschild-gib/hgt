@@ -65,7 +65,7 @@ theorem norm_stableHankelPacket_sub_le {n : ℕ} (logRate : Fin n → ℝ)
   rw [stableHankelPacket_sub]
   exact norm_stableHankelPacket_le logRate _
 
-/-- Pruning any subset has a certified error equal to at most its discarded modal budget. -/
+/-- Pruning any subset has error bounded by its discarded modal budget. -/
 theorem norm_stableHankelPacket_prune_le {n : ℕ} (logRate : Fin n → ℝ)
     (residue : Fin n → ℂ) (keep : Finset (Fin n)) :
     ‖stableHankelPacket logRate residue -

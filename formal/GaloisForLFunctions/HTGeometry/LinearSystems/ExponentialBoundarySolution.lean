@@ -49,7 +49,7 @@ theorem hasDerivAt_modalInitialSolution (lam : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) 
   dsimp only [modalInitialSolution]
   ring
 
-/-- Existence and uniqueness are proved, with no spectral or solvability premise. -/
+/-- Every continuous forcing and prescribed initial value determine a unique global solution. -/
 theorem existsUnique_modalInitialSolution (lam : ℂ) (f : C(ℝ, ℂ)) (z : ℂ) :
     ∃! u : ℝ → ℂ, u 0 = z ∧ ∀ t, HasDerivAt u (lam * u t + f t) t := by
   refine ⟨modalInitialSolution lam f z,

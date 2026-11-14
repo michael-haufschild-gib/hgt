@@ -87,7 +87,7 @@ theorem hankelFixedPoint_eq {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin n
       stableHankelContraction logRate residue (hankelFixedPoint logRate residue forcing) :=
   (contractingWith_hankelPicardStep logRate residue forcing).fixedPoint_isFixedPt.symm
 
-/-- Well-posed feedback follows from the proved modal budget, without a smallness premise. -/
+/-- Normalization makes feedback well posed for every residue bank. -/
 theorem existsUnique_hankelFeedback {n : ℕ} (logRate : Fin n → ℝ) (residue : Fin n → ℂ)
     (forcing : HalfLineLaplaceL2) :
     ∃! u : HalfLineLaplaceL2, u = forcing + stableHankelContraction logRate residue u := by
