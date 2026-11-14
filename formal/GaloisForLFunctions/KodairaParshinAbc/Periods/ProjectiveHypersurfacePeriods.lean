@@ -1,4 +1,5 @@
 import GaloisForLFunctions.KodairaParshinAbc.Periods.FactorialRegularization
+import GaloisForLFunctions.KodairaParshinAbc.Periods.LogarithmicPrimitive
 import Mathlib.Data.Nat.Factorial.BigOperators
 import Mathlib.RingTheory.PowerSeries.Expand
 import Mathlib.Tactic
@@ -24,8 +25,8 @@ def projectivePeriodCoefficient (r d : ℕ) : ℂ :=
 
 /-- The Euler polynomial on the right side of the Picard--Fuchs recurrence. -/
 def projectiveStepPolynomial (r : ℕ) : Polynomial ℂ :=
-  Polynomial.C (r + 2) * ∏ j ∈ Finset.range (r + 1),
-    (Polynomial.C (r + 2) * Polynomial.X + Polynomial.C (j + 1))
+  Polynomial.C (r + 2 : ℂ) * ∏ j ∈ Finset.range (r + 1),
+    (Polynomial.C (r + 2 : ℂ) * Polynomial.X + Polynomial.C (j + 1 : ℂ))
 
 theorem eval_projectiveStepPolynomial (r d : ℕ) :
     (projectiveStepPolynomial r).eval (d : ℂ) =
@@ -134,6 +135,23 @@ theorem projectiveAmbient_regularization (r : ℕ) :
     ring
   · ring
 
+/-- The local period consists of one logarithm and the canonical regular primitive. -/
+def projectiveLocalPeriod (r : ℕ) : ℂ × PowerSeries ℂ :=
+  (1, eulerPrimitive (projectivePeriod r))
+
+theorem projectiveLocalPeriod_euler (r : ℕ) :
+    logarithmicEuler (projectiveLocalPeriod r) = projectivePeriod r := by
+  have h := logarithmicEuler_primitive (projectivePeriod r)
+  simpa [projectiveLocalPeriod, projectivePeriod, projectivePeriodCoefficient] using h
+
+/-- The uniform local period solves the operator with the Euler factor on the right. -/
+theorem projectiveLocalPeriod_picardFuchs (r : ℕ) :
+    (formalEulerOp^[r + 1]) (logarithmicEuler (projectiveLocalPeriod r)) =
+      PowerSeries.X * eulerPolynomial (projectiveStepPolynomial r)
+        (logarithmicEuler (projectiveLocalPeriod r)) := by
+  rw [projectiveLocalPeriod_euler]
+  exact projectivePeriod_picardFuchs r
+
 end GaloisForLFunctions.KodairaParshinAbc.Periods
 
 #print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.eval_projectiveStepPolynomial
@@ -142,3 +160,5 @@ end GaloisForLFunctions.KodairaParshinAbc.Periods
 #print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projectivePeriod_picardFuchs
 #print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projectivePeriod_solution_iff
 #print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projectiveAmbient_regularization
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projectiveLocalPeriod_euler
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.projectiveLocalPeriod_picardFuchs

@@ -55,7 +55,7 @@ theorem activeRepresentative_norm_split (T : D →L[𝕜] W) (x : D) :
     ‖x‖ ^ 2 = ‖activeRepresentative T x‖ ^ 2 +
       ‖x - activeRepresentative T x‖ ^ 2 := by
   have h := Submodule.norm_sq_eq_add_norm_sq_starProjection x T.kerᗮ
-  rw [Submodule.starProjection_orthogonal_val] at h
+  rw [T.kerᗮ.starProjection_orthogonal_val x] at h
   exact h
 
 /-- The complete fibre has a unique norm-minimizing representative. -/

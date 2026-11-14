@@ -49,6 +49,17 @@ theorem formalEulerOp_eq_zero_iff (f : PowerSeries ℂ) :
     ext n
     cases n <;> simp [coeff_formalEulerOp]
 
+/-- The constant coefficient is the sole obstruction to a regular Euler primitive. -/
+theorem exists_eulerPrimitive_iff (f : PowerSeries ℂ) :
+    (∃ g : PowerSeries ℂ, formalEulerOp g = f) ↔ PowerSeries.constantCoeff f = 0 := by
+  constructor
+  · rintro ⟨g, hg⟩
+    have hc := congrArg (PowerSeries.coeff 0) hg
+    simpa [coeff_formalEulerOp] using hc.symm
+  · intro h
+    refine ⟨eulerPrimitive f, ?_⟩
+    rw [formalEulerOp_eulerPrimitive, h, map_zero, sub_zero]
+
 /-- Euler differentiation of `a log(q)+f(q)`, represented by the pair `(a,f)`. -/
 def logarithmicEuler (v : ℂ × PowerSeries ℂ) : PowerSeries ℂ :=
   PowerSeries.C v.1 + formalEulerOp v.2
@@ -73,6 +84,7 @@ end GaloisForLFunctions.KodairaParshinAbc.Periods
 
 #print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.formalEulerOp_eulerPrimitive
 #print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.formalEulerOp_eq_zero_iff
+#print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.exists_eulerPrimitive_iff
 #print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.logarithmicEuler_primitive
 #print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.localEulerFactor_primitive
 #print axioms GaloisForLFunctions.KodairaParshinAbc.Periods.leftEulerFactor_iff

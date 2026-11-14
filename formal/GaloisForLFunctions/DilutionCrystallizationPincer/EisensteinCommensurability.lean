@@ -196,6 +196,22 @@ theorem mixedClosure_eq_top_of_norm_not_represented (α : ℂ) (n : ℕ)
   by_contra h
   exact hn (norm_represented_of_mixedClosure_ne_top α n hnorm h)
 
+/-- Squared scales congruent to two modulo three satisfy the norm obstruction automatically. -/
+theorem mixedClosure_eq_top_of_mod_three_eq_two (α : ℂ) (n : ℕ)
+    (hnorm : ‖α‖ ^ 2 = n) (hn : n % 3 = 2) : mixedClosure α = ⊤ := by
+  apply mixedClosure_eq_top_of_norm_not_represented α n hnorm
+  rintro ⟨z, hz⟩
+  apply norm_emod_three_ne_two z
+  rw [mem_normSet.mp hz]
+  exact_mod_cast hn
+
+/-- The original lattice and its real square-root-of-two dilation have dense sum. -/
+theorem mixedClosure_sqrt_two_eq_top : mixedClosure (Real.sqrt 2 : ℂ) = ⊤ := by
+  apply mixedClosure_eq_top_of_mod_three_eq_two (Real.sqrt 2 : ℂ) 2
+  · rw [Complex.norm_real, Real.norm_eq_abs, sq_abs]
+    exact Real.sq_sqrt (by positivity)
+  · rfl
+
 /-- A closed lattice-periodic set containing an incommensurate triangular coset fills the plane. -/
 theorem closed_periodic_set_eq_univ (α c : ℂ) (hα : mixedClosure α = ⊤)
     (S : Set ℂ) (hS : IsClosed S)
@@ -221,4 +237,5 @@ end GaloisForLFunctions.DilutionCrystallizationPincer.EisensteinCommensurability
 #print axioms GaloisForLFunctions.DilutionCrystallizationPincer.EisensteinCommensurability.exists_nat_mul_mem_of_mixedClosure_ne_top
 #print axioms GaloisForLFunctions.DilutionCrystallizationPincer.EisensteinCommensurability.mixedClosure_ne_top_iff
 #print axioms GaloisForLFunctions.DilutionCrystallizationPincer.EisensteinCommensurability.mixedClosure_eq_top_of_norm_not_represented
+#print axioms GaloisForLFunctions.DilutionCrystallizationPincer.EisensteinCommensurability.mixedClosure_sqrt_two_eq_top
 #print axioms GaloisForLFunctions.DilutionCrystallizationPincer.EisensteinCommensurability.closed_periodic_set_eq_univ
