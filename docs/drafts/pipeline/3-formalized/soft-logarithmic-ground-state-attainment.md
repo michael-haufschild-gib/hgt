@@ -1,6 +1,6 @@
 # Attainment of the closed soft logarithmic ground energy
 
-- **Stage:** 2-fully-proven; Lean assembly incomplete, not counted.
+- **Stage:** 3-formalized
 - **Target:** Review-1311 A158; closed-domain attainment of the universal confinement limit.
 - **Connection:** First-moment Fourier nonconcentration, physical/Fourier compactness, and the literal logarithmic jump form.
 
@@ -83,8 +83,13 @@ Verified and integrated, with final source audits using only `propext`,
   (`HardyBoundary/LogarithmicWeightComparison`,
   `HardyBoundary/LogarithmicCutoffConvergence`).
 
-Unit trial recovery, the reverse variational inequality, and attainment
-remain unverified. Application modules lie in
+- Unit trial recovery with strong `L²` and full signed-energy convergence
+  (`exists_softLogarithmic_unit_recovery` in `SoftLogarithmicCutoffRecovery`).
+- The reverse variational inequality and unconditional attainment
+  (`ClosedSoftLogarithmicHalfLineDomain.groundEnergy_le` and
+  `exists_closedSoftLogarithmic_groundState` in `SoftLogarithmicClosedAttainment`).
+
+Application modules lie in
 `ArithmeticHodgeTheoryOfDegenerations/CausalReflection`; generic helpers
 lie in `HTGeometry/HardyBoundary`.
 Uniqueness and sign rigidity are separate open statements in

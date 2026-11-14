@@ -171,3 +171,6 @@ theorem exists_logDeriv_residueUnit_left_add_log_le_epsilon_log {σ ε : ℝ}
     _ ≤ ε * Real.log |t| := by linarith only [harch, hright, hp, hc t ht₁]
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry
+
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.exists_logDeriv_residueUnit_right_le_epsilon_log
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.exists_logDeriv_residueUnit_left_add_log_le_epsilon_log

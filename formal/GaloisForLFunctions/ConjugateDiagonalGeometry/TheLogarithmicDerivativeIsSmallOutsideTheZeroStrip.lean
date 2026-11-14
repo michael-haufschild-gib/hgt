@@ -230,3 +230,6 @@ theorem exists_logDeriv_zeta_le_epsilon_log {σ ε : ℝ}
   exact (hb t ht8).trans hmul
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry
+
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.exists_logDeriv_zeta_log_power_bound
+#print axioms GaloisForLFunctions.ConjugateDiagonalGeometry.exists_logDeriv_zeta_le_epsilon_log

@@ -4,10 +4,11 @@
 - **Type:** CONJECTURE
 - **Target:** Review-1311 A158, B16, B17; attainment in the closed limiting domain and convergence of the rescaled profiles.
 - **Statement:** The closed half-line form with Fourier symbol `log|ξ|` and potential `8(-u)` has a unique unit minimizing line with a nonnegative representative. Rescaled actual confining minimizers converge in `L²` to this line.
-- **Status:** Full statement unproved; not counted. The [universal soft logarithmic limit](../3-formalized/universal-soft-logarithmic-confinement-limit.md) and compact `L²` closure of every unit Rayleigh sublevel are verified. Closed-domain attainment, sign rigidity, and profile convergence remain open.
+- **Status:** Full statement unproved. The [universal soft logarithmic limit](../3-formalized/universal-soft-logarithmic-confinement-limit.md), compact `L²` closure of every unit Rayleigh sublevel, and closed-domain attainment are verified. Sign rigidity, uniqueness, and profile convergence remain open.
 
-The [closed-attainment paper proof](../2-fully-proven/soft-logarithmic-ground-state-attainment.md)
-is followed by Lean formalization; its assembly remains unverified.
+The [closed-attainment proof](../3-formalized/soft-logarithmic-ground-state-attainment.md)
+is formalized by `exists_closedSoftLogarithmic_groundState`, with only the
+standard three axioms.
 
 ## Corpus connection
 
@@ -25,8 +26,8 @@ Fourier energy: split `L=L₊-L₋` and use `L₋≤16+4M` against the potential
 decomposition, coercivity, and bounds on both nonnegative parts of every
 unit Rayleigh sublevel. Its final plain source audit passes without warnings
 and with exactly the standard three axioms; it is wired.
-The closed-domain limit allows profiles outside `L¹`; compact trial
-recovery remains open.
+The closed-domain limit allows profiles outside `L¹`; compact unit trial
+recovery is verified in `SoftLogarithmicCutoffRecovery`.
 The layer-cake API is `MeasureTheory.lintegral_eq_lintegral_meas_lt`; its integrable real-valued version is `MeasureTheory.Integrable.integral_eq_integral_meas_lt`. Apply it to the measure with Fourier square density.
 
 `HTGeometry/HardyBoundary/ExponentialDistributionTails` verifies the general
@@ -50,7 +51,7 @@ their limiting energies approach `μ`, and their first moments approach
 `1/8`. The existing Fourier-window estimate therefore applies to the whole
 approximating sequence. Uniform negative-logarithmic tails bound the
 negative part; the known energy and first-moment limits then bound the
-positive logarithmic part. These bounds and physical tightness would give
+positive logarithmic part. These bounds and physical tightness give
 an `L²` limit. Fatou controls
 its positive logarithmic energy and first moment; uniform integrability
 passes the negative logarithmic term. Compact cutoff recovery then proves
@@ -80,13 +81,13 @@ the module is integrated. `WeightedL2MomentContinuity` also passes its final
 plain source audit with those axioms and is integrated. It proves
 continuity for bounded weights, passage through uniform weighted tails,
 and moment convergence from vanishing weighted error. Applying these
-lemmas to the joint signed energy is now verified; recovery remains open.
+lemmas to the joint signed energy and compact trial recovery is verified.
 `SoftLogarithmicNegativePartContinuity` is now audited and integrated with
 the standard three axioms: bounded physical first moments give convergence
 of the negative Fourier logarithmic energy along strong limits of unit trials.
 `SoftLogarithmicClosedLimit` is audited and integrated with those axioms:
-joint Fatou gives a unit finite-energy limit with `Q≤μ`. The reverse
-inequality still needs compact trial recovery.
+joint Fatou gives a unit finite-energy limit with `Q≤μ`. Compact trial
+recovery supplies the reverse inequality in `SoftLogarithmicClosedAttainment`.
 
 `SoftLogarithmicClosedDomain` is audited and integrated with the standard
 three axioms. It defines the literal finite-energy half-line domain in
@@ -115,7 +116,7 @@ and with exactly the standard three axioms; it is wired. The
 general helper `HTGeometry/HardyBoundary/LogarithmicMomentCompactness`
 passes its final plain source audit without warnings and with exactly the
 standard three axioms; it is wired. These compactness results are not counted
-separately from the remaining attainment problem.
+separately from closed attainment.
 
 The finite trial infimum supplies normalized trials with energies in
 `[μ,μ+1/(n+1)]`. Compactness of the sublevel `μ+1` gives a strongly
@@ -128,7 +129,7 @@ same sublevel; the entire family has compact `L²` closure.
 source audit passes without warnings, with exactly the standard three
 axioms; it is integrated. Neither theorem identifies the limit's energy.
 
-`CanonicalSystemOfTheWindowTower.hasLogarithmicEnergy_cutoff` preserves the closed `L²` logarithmic domain under bounded Lipschitz multiplication. `logarithmicCutoff_translation_loss_le` supplies a common integrable jump majorant. Recovery can use dominated convergence of those jump losses, followed by comparison of the positive reference weight with `log⁺|ξ|`.
+`CanonicalSystemOfTheWindowTower.hasLogarithmicEnergy_cutoff` preserves the closed `L²` logarithmic domain under bounded Lipschitz multiplication. `logarithmicCutoff_translation_loss_le` supplies a common integrable jump majorant. Recovery uses dominated convergence of those jump losses, followed by comparison of the positive reference weight with `log⁺|ξ|`.
 
 For recovery choose cutoffs equal to one on `[-N,0]`, zero below `-2N`,
 bounded by one, and with Lipschitz constant at most one. For `N≥2`, the
@@ -138,7 +139,7 @@ The error
 defect tends to zero by the unitary bound `‖T_hg-g‖≤2‖g‖`. Thus dominated
 convergence is needed only in the shift variable. The existing loss inequality bounds its squared
 defect by `2‖T_hf-f‖²+2h²‖f‖²`. This is integrable against the reference
-Lévy density `exp(-h)/(2h)`. Dominated convergence would therefore give
+Lévy density `exp(-h)/(2h)`. Dominated convergence gives
 convergence in the positive logarithmic form norm. The first-moment term
 converges by physical domination, and the negative logarithmic term by the
 uniform tail estimate. No exponential moment of the limit is needed.
@@ -155,9 +156,8 @@ Fourier-window estimate on arbitrary nonintegrable `L²` profiles.
 
 ## Missing bridges
 
-1. Pass signed energy to the strong limit and prove cutoff recovery in the constructed closed domain. Compact physical cutoffs with finite logarithmic energy already belong to the trial class; smoothness is unnecessary for comparing its infimum. Do not assume that the limiting minimizer has an exponential moment.
-2. Transfer the exact logarithmic modulus identity from bounded cores to this domain; prove strict loss for two nonzero sign parts.
-3. Use rescaled near-minimality from the universal confinement limit to obtain convergence to the unique minimizing line.
+1. Transfer the exact logarithmic modulus identity from bounded cores to this domain; prove strict loss for two nonzero sign parts and uniqueness of the minimizing line.
+2. Use rescaled near-minimality from the universal confinement limit to obtain convergence to that line.
 
 The limiting domain may be larger than the union of positive exponential domains used for trial functions. Attainment in that trial class is not part of the conjecture.
 

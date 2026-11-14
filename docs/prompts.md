@@ -105,7 +105,7 @@ task:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2502.02661v2
+- docs/goldbach-conditional.pdf
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -331,9 +331,7 @@ the goal is met when you have made 250 such significant contributions.
 do not use the hgtl7 skill. 
 
 your task on every turn:
-find an opportunity to "connect the dots" between different parts of our lean corpus to either:
-- overcome an open hard obstacle in a route docs/reports/review-1011/route-obstacles.md
-- finds a solution for removing a wall in docs/reports/review-1011/walls-ledger.md
+find an opportunity to "connect the dots" between different parts of our lean corpus to overcome an open mathematical obstacle from "# 2.2 Open mathematical obstacles" in docs/reports/review-1211/obstacles-summary.md
 
 Not valid are mere improvements of insignificant numbers, redressing existing knowledge in new language, or anything that does not clearly count as significant progress.
 
@@ -383,10 +381,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 a while ago we did create these documents:
-- docs/reports/review-1211/walls-ledger.md
-- docs/reports/review-1211/route-obstacles.md
-- docs/reports/review-1211/route-unification-ledger.md
-- docs/reports/review-1211/obstacles-summary.md
+- docs/reports/review-1311/walls-ledger.md
+- docs/reports/review-1311/route-obstacles.md
+- docs/reports/review-1311/route-unification-ledger.md
+- docs/reports/review-1311/obstacles-summary.md
   
 read also but do not edit:
 - docs/reports/rh-current-frontier-map.md
@@ -426,7 +424,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the reports in folder docs/reports/review-1211/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-1311/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 make sure to validate every claim. we have seen in previous rounds you simply restating old reports without actually validating that the old report facts were still valid.
@@ -495,10 +493,9 @@ do not run any builds. do not search the web. do not grep for sorry or other shi
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-1011/obstacles-summary.md
-a prior report is docs/reports/review-1011/fable.md
+read and understand docs/reports/review-1311/obstacles-summary.md
 
-docs/reports/review-1011/fable.md suggests under "## 10. A research programme for a Galois theory of the zeros"  a new research programme called "Galois theory of the zeros"
+under "## 2.9 A new field for RH?" it suggest a new research programme "Green calculus of the prime-free window"
 
 Your task: develop this field/research programme and do the actual research and formalization.
 We are not interested in busywork, trivial work and discoveries, work on finite solution when the problem is infinite, optimizing numbers that provide nothing for the - we are only interested in focused work on solving the actual problems and questions and topics and move the frontier with every new lean module.
@@ -531,9 +528,9 @@ Start with writing the first draft of README.md for the the programme
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-1111/obstacles-summary.md
+read and understand docs/reports/review-1311/obstacles-summary.md
 
-under "## 2.17 A research programme to close the route ZCG" it suggest a new research programme
+under "## 2.19 A research programme for a general Galois theory of the zeros" it suggest a new research programme
 
 Your task: develop this research programme and do the actual research and formalization, until all open questions are answered, and a viable producer is found.
 
@@ -655,11 +652,11 @@ Put all lean code for the answer into relevant subfolders to not bloat RHTower a
 
 Do not use the hgtl7 skill.
 
-read docs/reports/review-1111/obstacles-summary.md
+read docs/reports/review-1311/route-obstacles.md and docs/reports/review-1311/obstacles-summary.md
 
-under "## 2.1 Tasks that are just work" -> "### Classical inputs to formalize" it lists tasks which are likely to be doable.
+understand what obstacles A162, A140, A141 and  are about.
 
-your task: find a complete solution for each task and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
+your task: find a complete solution for both obstacles and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
 
 where necessary lean infrastructure is absent from our lean corpus and mathlib -> build it no matter the effort.
 
@@ -688,9 +685,9 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 ## question paper
 
-read and understand fully: docs/reports/review-1211/obstacles-summary.md
+read and understand fully: docs/reports/review-1311/obstacles-summary.md
 
-under "## 3. The one big question: what does a fake zero cost in the functional equation? (B186)" it asks a question.
+under "## 2.21 The one big question: the first selective sign (B192)" it asks a question.
 
 your task: answer the question, find a complete solution for it and unconditionally formalize the answer and its implications and collaries as paper proofs ready for another ai agent to formalize in lean.
 
@@ -710,11 +707,16 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 Do not use the hgtl7 skill.
 
-read and understand fully: docs/reports/review-1211/obstacles-summary.md
+read and understand fully: docs/reports/review-1311/obstacles-summary.md
 
-under "## 3. The one big question: what does a fake zero cost in the functional equation? (B186)" it asks a question.
+under "## 2.21 The one big question: does the prime 2 bind through the prime-free middle with a loss that iterates? (B194 → B192, with B195)" it asks for:
+"For every block size and every window `(R,2(R+a)+b]` with `a≤3R/100`, `b≤3(R+a)/50`:
+1. prove `BG₊Bᵀ⪯N_e+(Bφ_D)(Bφ_D)ᵀ/μ_D` from two-sided bounds for the sliver blocks of the Green matrix of the dyadic middle;
+2. record the excess of the step as a function of the ratio;
+3. repeat at the ratios `2.25, 2.53, 3.21`: one bound state of `(R,3R]` at every block size.
+"
 
-your task: answer the question, find a complete solution for it and unconditionally formalize the answer and its implications and collaries in lean.
+your task: answer the question, find a complete solution for everything asked and unconditionally formalize the answers and their implications and collaries in lean.
 
 We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed question.
 

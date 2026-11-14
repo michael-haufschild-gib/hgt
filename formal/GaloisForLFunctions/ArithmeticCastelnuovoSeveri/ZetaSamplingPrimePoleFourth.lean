@@ -32,7 +32,7 @@ theorem matrixFrobeniusEnergy_zetaSamplingCompression_nuX (P : Params) (T : ℝ)
     ring
   simp only [matrixFrobeniusEnergy, he, Complex.norm_real, Real.norm_eq_abs, sq_abs,
     div_pow, ← Finset.sum_div, Params.trGtildeSq]
-  simp only [div_eq_mul_inv, mul_pow, mul_inv_rev, inv_pow]
+  simp only [div_eq_mul_inv, mul_pow, _root_.mul_inv_rev, inv_pow]
   ring
 
 /-- At bandwidth one the full source has a uniformly bounded normalized second moment. -/
@@ -65,7 +65,7 @@ theorem exists_zetaSamplingCompression_source_second_bound {P : Params}
     change |l T + 2*Real.log 2-1| ≤ _
     have hh := abs_add_le (P.L T) (2*Real.log 2-1)
     rw [abs_of_pos hL0] at hh
-    rw [← heL]
+    rw [← heL, add_sub_assoc]
     linarith only [hh,hcL]
   have hell2 : ell1 T ^ 2 ≤ 4*P.L T ^ 2 := by
     have hh := mul_self_le_mul_self (abs_nonneg (ell1 T)) hell
@@ -155,7 +155,10 @@ theorem zetaSamplingCompression_nuX_split {P : Params} (hP : P.Valid) {T : ℝ}
     (fun τ => (PX_abs_le (P.X T) τ).trans (le_add_of_nonneg_right (abs_nonneg τ)))
     (P.tau T i) (P.tau T j)
   simp only [zetaSamplingCompression,Matrix.add_apply,nuX,add_mul]
-  rw [integral_add (hiμ.add hiπ) hip,integral_add hiμ hiπ]
+  have hiab := integral_add hiμ hiπ
+  have hisum := integral_add (hiμ.add hiπ) hip
+  simp only [Pi.add_apply] at hiab hisum
+  rw [hisum,hiab]
   push_cast
   ring
 

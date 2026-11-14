@@ -37,14 +37,25 @@ Window `(R, 2D+b]`, `D = R+a`: ends `E₁ = (R, D]`, `E₂ = (2D, 2D+b]`.
 - P9 magnitude reading (not a theorem): floors at aperture `≈0.36` are of prolate size
   (`10⁻³–10⁻²`), so `‖G₊‖` is large; crude norm bounds cannot give the first step.
 
-## Module plan
-1. ThePrimeFreeMiddle — P1, potential/Dirichlet split, P3 closed form.
-2. TheGreenMatrixOfTheDyadicWindow — `G_D`, ground pair, channels, P2/P3 bounds, P8.
-3. TheOverlapLawInGreenForm — Schur complement in two channels; RH in Green form.
-4. TheAdditiveLossLaw — P4, excess, RH from a summable excess.
-5. InversionAtEqualIndex / tower monotonicity — P5, P6.
-6. TheContactPencil — P7, sign twin.
-7+. sliver bounds, boundary-map norms (Hilbert inequality), first step.
+## Modules
+Formalized (compile clean, wired into the umbrella):
+1. `TheGreenMatrixOfTheDyadicMiddleHasABoundStateChannelAndAPositiveChannel` — `OneBoundState`,
+   `positiveChannel` (`0 ⪯ G₊ ⪯ 1/c` on `φ^⊥`), `primeFreeMiddle` (P1), `bindingEnergy > 1` (P2),
+   `greenMatrix`, `overlapSchur`, overlap law in Green form, `riemannHypothesis_iff_forall_greenForm`.
+2. `TheLossOfAnOverlapStepIsAdditiveBelowTheBindingEnergyOfTheMiddle` — levels
+   (`OneBoundState.add_diagonal`), Dirichlet principle `positiveChannel_ge`, `S_C` grows at unit
+   speed, P4 (`hermNegIndex_fromBlocks_add_diagonal_le_one`), additive loss law on windows,
+   first step margin `≤ ‖X₀‖`, refinement at a level,
+   `riemannHypothesis_iff_overlapSchur_bddBelow`, `…_forall_overlapSchur_nonneg`,
+   `…_forall_harmonic_nonneg`, `riemannHypothesis_of_level_function`.
+
+Planned:
+3. One bound state with a floor for every certified window; conditional-energy floor; sliver
+   blocks of `G_D`; a priori two-sided bounds of `G_D`.
+4. Potential theory `M = V + 𝓔` (P3), `μ_D = −⟨V⟩_φ`, upper bound of `μ_D`, P8.
+5. Inversion at equal index, tower monotonicity (P5, P6).
+6. Contact pencil and sign twin (P7).
+7+. boundary-map norms (Hilbert inequality), first step, no-go for norm bounds.
 
 ## Log
-- 2026-11-14 — card created; README first draft written.
+- 2026-11-14 — card created; README first draft written; modules 1–2 formalized.

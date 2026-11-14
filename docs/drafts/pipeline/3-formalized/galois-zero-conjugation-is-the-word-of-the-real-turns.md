@@ -1,8 +1,8 @@
 # Conjugation of the zeros is the word of the turns around the real branch times
 
 - **ID:** galois-zero-conjugation-word
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-1311/obstacles-summary.md` §2.19 question 4; programme card `gtz-galois-theory-of-zeros-programme.md`
 - **Statement:** over a positive real time `t` off the branch times, `cr = λ_m ⋯ λ_1`, where `p_1 < … < p_m` are the real branch times above `t` and `λ_j` is the lasso at `t` whose head is a small turn around `p_j` and whose tail runs from `t` through the closed upper half-plane.
 
@@ -66,10 +66,25 @@ and `W⁻¹ λ'_j W` is the lasso at `t` with tail `η · δ'_j`, `W⁻¹ θ W` 
 3. The number of factors is the number of real branch times above `t`; RH ⇔ the word is empty
    at every `t > 0`.
 
+## Lean
+
+Module `GaloisTheoryOfZeros/ConjugationOfTheZerosIsTheWordOfTheTurnsAroundTheRealBranchTimes.lean`.
+
+| Paper | Lean |
+|---|---|
+| Lemma 1 | `Transports.conj_path` |
+| Lemma 2 | `conj_timeSeg`, `isForwardPath_timeSeg_of_forall_not_mem` |
+| Lemma 3 | `conj_turnPath_ofReal`, `transports_upperHalfTurn_conj` |
+| step `c_t = W⁻¹(c_{s₁}θ)W` | `transports_overPath_conj`, `fibreConj_eq_permCongr_mul_turn` |
+| `m = 0` | `fibreConj_eq_one_of_forall_not_mem` |
+| Theorem | `exists_turnLassos_of_list`, `exists_fibreConj_eq_prod_turnLassos` (`IsUpperTurnLasso`, `tailBox`, `lassoPerm`) |
+| Corollary 1 | `fibreConj_mem_closure_realTurnLassos`, `realTurnLassos_subset_turnLassos`, `IsUpperTurnLasso.mem_turnLassos` |
+| Corollary 2 | `fibreConj_mul_turnPerm_mul_self`, `fibreConj_mul_turnPerm_mul_fibreConj` |
+
 ## Gates
 - [x] 0 → 1
 - [x] 1 → 2  paper proof above
-- [ ] 2 → 3  Lean: `GaloisTheoryOfZeros/ConjugationOfTheZerosIsTheWordOfTheTurnsAroundTheRealBranchTimes.lean`
+- [x] 2 → 3  `lake --old env lean` clean
 
 ## Log
-- 2026-11-14 — card created with the paper proof.
+- 2026-11-14 — card created with the paper proof; formalized.

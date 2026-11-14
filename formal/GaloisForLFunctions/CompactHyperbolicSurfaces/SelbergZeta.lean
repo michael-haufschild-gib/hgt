@@ -78,6 +78,7 @@ theorem lam_add_ne_zero_of_one_lt_re {s : ℂ} (hs : 1 < s.re) (j : X.SpecIndex 
   rw [hy] at hre
   nlinarith
 
+include hhyp in
 /-- **`Φ = R + E'/E` at real points** `σ > a`. -/
 theorem lengthSeries_eq_real {σ : ℝ} (haσ : a < σ) :
     X.lengthSeries σ = X.zR a σ + logDeriv (X.specProd ha) σ := by
@@ -92,8 +93,10 @@ theorem lengthSeries_eq_real {σ : ℝ} (haσ : a < σ) :
   -- the spectral side
   have hnu : logDeriv (X.specProd ha) σ =
       ((-(2 * σ - 1) * ∑' j, X.nu ha (b := σ) j : ℝ) : ℂ) := by
-    rw [logDeriv_specProd X ha (lam_add_ne_zero_of_one_lt_re ha hσre), Complex.ofReal_mul,
-      Complex.ofReal_tsum, ← tsum_mul_left]
+    rw [logDeriv_specProd X ha (lam_add_ne_zero_of_one_lt_re ha hσre),
+      show ((-(2 * σ - 1) * ∑' j, X.nu ha (b := σ) j : ℝ) : ℂ) =
+        ∑' j, ((-(2 * σ - 1) * X.nu ha (b := σ) j : ℝ) : ℂ) by
+          rw [← Complex.ofReal_tsum, tsum_mul_left]]
     refine tsum_congr fun j => ?_
     rw [nu_def]
     push_cast
@@ -110,6 +113,7 @@ theorem lengthSeries_eq_real {σ : ℝ} (haσ : a < σ) :
   push_cast
   ring
 
+include hhyp in
 /-- **`Φ = R + E'/E` on `Re s > 1`** (identity theorem). -/
 theorem lengthSeries_eq {s : ℂ} (hs : 1 < s.re) :
     X.lengthSeries s = X.zR a s + logDeriv (X.specProd ha) s := by
@@ -136,8 +140,9 @@ theorem lengthSeries_eq {s : ℂ} (hs : 1 < s.re) :
     have htend : Tendsto (fun x : ℝ => (x : ℂ)) (𝓝[≠] (a + 1)) (𝓝[≠] ((a + 1 : ℝ) : ℂ)) :=
       tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
         (Complex.continuous_ofReal.tendsto _ |>.mono_left nhdsWithin_le_nhds)
-        (eventually_nhdsWithin_of_forall fun x hx => by
-          simpa using (show x ≠ a + 1 from hx))
+        (eventually_nhdsWithin_of_forall fun x (hx : x ∈ ({a + 1}ᶜ : Set ℝ)) =>
+          show (x : ℂ) ∈ ({((a + 1 : ℝ) : ℂ)}ᶜ : Set ℂ) from fun h =>
+            hx (by exact_mod_cast (mem_singleton_iff.mp h)))
     refine htend.frequently ?_
     have hev : ∀ᶠ x in 𝓝[≠] (a + 1 : ℝ), a < x :=
       eventually_nhdsWithin_of_eventually_nhds (eventually_gt_nhds (by linarith))
@@ -163,6 +168,7 @@ theorem differentiableOn_selbergZeta : DifferentiableOn ℂ (X.selbergZeta ha) {
   exact ((((differentiableAt_const _).mul (X.differentiable_specProd ha s)).mul
     hG.cexp)).differentiableWithinAt
 
+include hhyp in
 /-- **The Euler product.**  On `Re s > 1`, `Z(s) = Π_{p, k} (1 − e^{−(s+k)ℓ_p})`. -/
 theorem eulerZeta_eq_selbergZeta {s : ℂ} (hs : 1 < s.re) : X.eulerZeta s = X.selbergZeta ha s := by
   set U : Set ℂ := {s | 1 < s.re}
@@ -188,11 +194,12 @@ theorem eulerZeta_eq_selbergZeta {s : ℂ} (hs : 1 < s.re) : X.eulerZeta s = X.s
       have : deriv (X.specProd ha) s = logDeriv (X.specProd ha) s * X.specProd ha s := by
         rw [logDeriv_apply, div_mul_cancel₀ _ (hEne s hs)]
       rw [← this]; exact (X.differentiable_specProd ha s).hasDerivAt
-    have hG := (hasDerivAt_zG ha0 hs0).neg.cexp
+    have hG := (hasDerivAt_zG (X := X) ha0 hs0).neg.cexp
     have hH := (hZ.mul hG).div hE (hEne s hs)
     refine hH.congr_deriv ?_
     have hid := lengthSeries_eq hhyp ha hs'
     have hne := hEne s hs
+    simp only [Pi.mul_apply, Pi.neg_apply]
     rw [hid]
     field_simp
     ring
@@ -208,6 +215,7 @@ theorem eulerZeta_eq_selbergZeta {s : ℂ} (hs : 1 < s.re) : X.eulerZeta s = X.s
   field_simp
   rw [mul_assoc, ← Complex.exp_add, neg_add_cancel, Complex.exp_zero, mul_one]
 
+include hhyp in
 theorem zetaConst_ne_zero : X.zetaConst ha ≠ 0 := by
   have hp : 1 < ((a + 1 : ℝ) : ℂ).re := by simp; linarith
   have hEne : X.specProd ha ((a + 1 : ℝ) : ℂ) ≠ 0 := fun h => by
@@ -215,6 +223,7 @@ theorem zetaConst_ne_zero : X.zetaConst ha ≠ 0 := by
     exact lam_add_ne_zero_of_one_lt_re ha hp j hj
   exact div_ne_zero (mul_ne_zero (eulerZeta_ne_zero hhyp hp) (Complex.exp_ne_zero _)) hEne
 
+include hhyp in
 /-- **The zeros of `Z`.** -/
 theorem selbergZeta_eq_zero_iff (s : ℂ) :
     X.selbergZeta ha s = 0 ↔ ∃ j : X.SpecIndex ha, (X.spectralParam ha j : ℂ) + s * (s - 1) = 0 := by
@@ -223,6 +232,7 @@ theorem selbergZeta_eq_zero_iff (s : ℂ) :
 
 /-! ### The functional equation -/
 
+include ha in
 theorem zR_add_zR_one_sub {w : ℂ} (h0 : 0 < w.re) (h1 : w.re < 1) :
     X.zR a w + X.zR a (1 - w) = X.area * ((w - 1 / 2) * Complex.tan (π * (w - 1 / 2))) := by
   have ha0 : 0 < a := by linarith
@@ -232,14 +242,13 @@ theorem zR_add_zR_one_sub {w : ℂ} (h0 : 0 < w.re) (h1 : w.re < 1) :
     rw [e, Complex.cot_eq_cos_div_sin, Complex.tan_eq_sin_div_cos, Complex.cos_add_pi_div_two,
       Complex.sin_add_pi_div_two, neg_div]
   have hπ : (π : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
-  rw [zR, zR, hcot] at *
+  rw [zR, zR]
   have e : (2 * w - 1) * ((X.zConst a : ℂ) + (X.area / (2 * π) : ℝ) * psiDiff a w) +
       (2 * (1 - w) - 1) * ((X.zConst a : ℂ) + (X.area / (2 * π) : ℝ) * psiDiff a (1 - w)) =
       (2 * w - 1) * ((X.area / (2 * π) : ℝ) * (psiDiff a w - psiDiff a (1 - w))) := by ring
   rw [e, hψ, hcot]
   push_cast
   field_simp
-  ring
 
 /-- **The functional equation.**  For `0 < Re s < 1`,
 `Z(1 − s) = Z(s) exp(−|F| ∫_0^1 (s − ½) v tan(πv) dt)`, `v = t(s − ½)`. -/
@@ -258,14 +267,13 @@ theorem selbergZeta_one_sub {s : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1) :
       Complex.sub_re, Complex.sub_im, zero_mul, sub_zero]
     norm_num
     constructor <;> nlinarith
-  set Q : ℂ → ℂ := fun z => X.zG a (1 - z) - X.zG a z
+  set Q : ℂ → ℂ := fun z => X.zG a (1 - z) - X.zG a z with hQdef
   have hQ : ∀ z : ℂ, 0 < z.re → z.re < 1 →
       HasDerivAt Q (-(X.zR a (1 - z)) - X.zR a z) z := by
     intro z hz0 hz1
-    have h1' : HasDerivAt (fun z => X.zG a (1 - z)) (X.zR a (1 - z) * (-1)) z := by
-      have := (hasDerivAt_zG ha0 (s := 1 - z) (by simp; linarith)).comp z
-        ((hasDerivAt_id z).const_sub 1)
-      simpa using this
+    have h1' : HasDerivAt (fun z => X.zG a (1 - z)) (X.zR a (1 - z) * (-1)) z :=
+      (hasDerivAt_zG (X := X) ha0 (s := 1 - z) (by simp; linarith)).comp z
+        ((hasDerivAt_id' z).const_sub 1)
     exact (h1'.sub (hasDerivAt_zG ha0 hz0)).congr_deriv (by ring)
   have hderiv : ∀ t ∈ uIcc (0 : ℝ) 1, HasDerivAt (fun t : ℝ => Q (w t))
       ((-(X.zR a (1 - w t)) - X.zR a (w t)) * (s - 1 / 2)) t := by
@@ -294,17 +302,18 @@ theorem selbergZeta_one_sub {s : ℂ} (h0 : 0 < s.re) (h1 : s.re < 1) :
     rw [← intervalIntegral.integral_const_mul, ← intervalIntegral.integral_neg]
     refine intervalIntegral.integral_congr fun t ht => ?_
     obtain ⟨hw0, hw1⟩ := hw_strip t ht
-    have h := zR_add_zR_one_sub ha hw0 hw1
+    have h := zR_add_zR_one_sub (X := X) ha hw0 hw1
     have hv : w t - 1 / 2 = (t : ℂ) * (s - 1 / 2) := by simp only [w]; ring
     rw [hv] at h
-    simp only
-    linear_combination (s - 1 / 2) * h
+    show (-(X.zR a (1 - w t)) - X.zR a (w t)) * (s - 1 / 2) = -(X.area * ((s - 1 / 2) *
+      (((t : ℂ) * (s - 1 / 2)) * Complex.tan (π * ((t : ℂ) * (s - 1 / 2))))))
+    linear_combination (-(s - 1 / 2)) * h
   rw [hint] at hftc
   -- assemble
-  rw [selbergZeta, selbergZeta, specProd_one_sub, ← hftc]
-  simp only [Q]
-  rw [mul_assoc, mul_assoc, ← Complex.exp_add]
-  ring_nf
+  rw [selbergZeta, selbergZeta, specProd_one_sub, hftc, hQdef, mul_assoc _ (Complex.exp _),
+    ← Complex.exp_add]
+  congr 2
+  ring
 
 end CompactQuotient
 

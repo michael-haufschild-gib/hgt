@@ -50,6 +50,11 @@ theorem exists_nat_forall_pos_add_mul {ι : Type*} [Finite ι] (x c : ι → ℝ
     mul_le_mul_of_nonneg_right h1 (hc i).le
   linarith
 
+/-- A ring homomorphism at `X + s Y² P`. -/
+theorem map_add_natCast_mul_sq_mul {R S : Type*} [Semiring R] [Semiring S] (f : R →+* S)
+    (X Y : R) (s P : ℕ) : f (X + s * (Y ^ 2 * P)) = f X + s * (f Y ^ 2 * P) := by
+  simp only [map_add, map_mul, map_pow, map_natCast]
+
 /-! ### Norms from a field in which a prime has trivial stabilizer -/
 
 section Split
@@ -57,7 +62,6 @@ section Split
 variable (K E : Type u) {Δ : Type u} [Field K] [NumberField K] [Field E] [NumberField E]
   [Algebra K E] [CommGroup Δ] [Fintype Δ] [MulSemiringAction Δ E] [IsGaloisGroup Δ K E]
 
-omit [NumberField K] [NumberField E] in
 /-- The norm of an integer is the product of its conjugates. -/
 theorem algebraMap_intNorm_eq_prod_smul (x : 𝓞 E) :
     algebraMap (𝓞 K) (𝓞 E) (Algebra.intNorm (𝓞 K) (𝓞 E) x) = ∏ τ : Δ, τ • x := by
@@ -67,7 +71,6 @@ theorem algebraMap_intNorm_eq_prod_smul (x : 𝓞 E) :
     algebraMap_norm_eq_prod_smul K E Δ, map_prod]
   exact Finset.prod_congr rfl fun τ _ => rfl
 
-omit [NumberField K] [NumberField E] in
 /-- **The norm modulo a power of a prime with trivial stabilizer.** If `x ≡ a mod 𝔔^k` and
 `τ x ≡ 1 mod 𝔔^k` for `τ ≠ 1`, then `N_{E/K} x ≡ a mod 𝔔^k`. -/
 theorem algebraMap_intNorm_sub_mem_pow (𝔔 : Ideal (𝓞 E)) {k : ℕ} {a : 𝓞 K} {x : 𝓞 E}
@@ -164,9 +167,8 @@ theorem exists_intNorm_sub_mem_pow_of_stabilizer (u : HeightOneSpectrum (𝓞 K)
       rw [hβ]
       simp only [map_add, map_mul, map_one, map_natCast]
       ring
-    have h := hs ⟨w, hw⟩
-    rw [hval, map_add, map_mul, map_mul, map_pow, map_natCast, map_natCast]
-    exact h
+    rw [hval, map_add_natCast_mul_sq_mul]
+    exact hs ⟨w, hw⟩
   · refine algebraMap_intNorm_sub_mem_pow K E (Δ := Δ) w₀.asIdeal ?_ fun σ hσ => ?_
     · -- `β ≡ a mod w₀^k`
       have hε0 : ε - 1 ∈ w₀.asIdeal ^ k := by

@@ -1,9 +1,9 @@
 # Pole and archimedean terms in the fourth compressed source moment
 
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper); Lean formalization in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `Zeta23/PrimeSideA/Defs.lean`, `PrimeSideA/Basic.lean`, `RHTower/ZetaWeightedGramIntegral.lean`.
-- **Statement:** At bandwidth one, the literal full-line pole compression tends to zero in operator norm, and the archimedean compression tends to the identity in normalized Schatten fourth norm. The prime fourth-moment bound remains open.
+- **Statement:** At bandwidth one, the literal full-line pole compression tends to zero in operator norm, changes the normalized prime fourth trace by `O(L⁻²)`, and the archimedean compression tends to the identity in normalized Schatten fourth norm. The prime fourth-moment bound remains open.
 
 ## Exact source
 
@@ -83,8 +83,8 @@ unconditional boundedness of either fourth moment is asserted.
 - [x] Concrete Lean sampling estimate, full-line pole bound, and uniform vanishing: `ZetaSamplingPoleCompression.lean`; transitive axioms are `propext`, `Classical.choice`, `Quot.sound`.
 - [x] Full-line archimedean density error `O(1/L)` and uniform vanishing: `ZetaSamplingArchimedeanCompression.lean`; standard axioms only.
 - [x] Actual matrix pole-norm vanishing and archimedean normalized-fourth approximation: `ZetaSamplingCompressionMatrix.lean`; standard axioms only.
-- [ ] Direct source checks and transitive axiom audit.
-- [ ] Prime centered fourth upper bound; remains unproved.
+- [x] Actual prime second-moment bound and pole fourth-trace error: `ZetaSamplingPrimePoleFourth.lean`; standard axioms only.
+- [x] Direct source checks and transitive axiom audits of all displayed estimates.
 
 ## Formalized matrix estimates
 
@@ -104,4 +104,12 @@ Its three main perturbation theorems pass Lean with only
 Its entries are the literal full-line
 density integrals; the baseline trace is exactly the sampling dimension.
 `zetaSamplingCompression_pole_uniformly_small` proves actual pole operator-norm
-vanishing. The prime/pole fourth-trace application still awaits its source check.
+vanishing. `exists_zetaSamplingCompression_prime_second_bound` derives the pure
+prime second moment from the established full-source trace theorem.
+`zetaSamplingCompression_pole_fourth_error_le_inverse_bandwidth_sq` proves the
+actual prime/pole fourth-trace estimate. Both declarations are in
+`ZetaSamplingPrimePoleFourth.lean`; their transitive axioms are exactly
+`propext`, `Classical.choice`, and `Quot.sound`.
+
+The pure prime centered fourth upper bound remains unproved; none of these
+results asserts it.

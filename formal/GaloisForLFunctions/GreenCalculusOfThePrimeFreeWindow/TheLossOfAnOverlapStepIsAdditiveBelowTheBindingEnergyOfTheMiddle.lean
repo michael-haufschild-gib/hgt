@@ -49,7 +49,8 @@ section Diagonal
 variable {ι ι' α β : Type*} [DecidableEq ι] [DecidableEq ι'] [DecidableEq α] [DecidableEq β]
 
 theorem symm_add_diagonal {N : Matrix ι ι ℝ} (hN : ∀ i j, N i j = N j i) (C : ℝ) (i j : ι) :
-    (N + Matrix.diagonal fun _ => C) i j = (N + Matrix.diagonal fun _ => C) j i := by
+    (N + Matrix.diagonal fun _ => C : Matrix ι ι ℝ) i j =
+      (N + Matrix.diagonal fun _ => C : Matrix ι ι ℝ) j i := by
   rw [Matrix.add_apply, Matrix.add_apply, hN i j]
   by_cases hij : i = j
   · rw [hij]
@@ -546,7 +547,7 @@ theorem hermNegIndex_neutralWindow_add_le_refined {R : ℕ} (hR : 1 ≤ R) {m : 
 
 /-! ### The Riemann hypothesis with a loss -/
 
-theorem two_le_of_window_le {Q R J : ℕ} (hR : 1 ≤ R) (hJ : 1 ≤ J) (hQ : R + J ≤ Q * R) :
+theorem two_le_of_window_le {Q R J : ℕ} (hJ : 1 ≤ J) (hQ : R + J ≤ Q * R) :
     2 ≤ Q := by
   by_contra hlt
   have : Q * R ≤ 1 * R := Nat.mul_le_mul_right R (by omega)
@@ -557,7 +558,7 @@ theorem overlapSchur_nonneg_of_riemannHypothesis (hRH : RiemannHypothesis) {Q R 
     (hR : 1 ≤ R) (hQ : R + (a + (R + a) + b) ≤ Q * R) (e : Fin a ⊕ Fin b → ℝ) :
     0 ≤ e ⬝ᵥ (overlapSchur Q R a b *ᵥ e) :=
   (hermNegIndex_neutralWindow_eq_one_iff_overlapSchur a b hR
-    (two_le_of_window_le hR (by omega) hQ)).mp
+    (two_le_of_window_le (by omega) hQ)).mp
     ((riemannHypothesis_iff_forall_hermNegIndex_neutralWindow_eq_one.mp hRH) Q R
       (a + (R + a) + b) hR (by omega) hQ) e
 
@@ -581,7 +582,7 @@ theorem riemannHypothesis_iff_overlapSchur_bddBelow :
         hermNegIndex ((neutralWindow Q R J + Matrix.diagonal fun _ => y).map (↑) :
           Matrix (Fin J) (Fin J) ℂ) ≤ 1 := by
       intro Q R J hR hRJ hQ
-      have hQ2 : 2 ≤ Q := two_le_of_window_le (by omega) (by omega) hQ
+      have hQ2 : 2 ≤ Q := two_le_of_window_le (by omega) hQ
       rcases Nat.lt_or_ge J (R + 3) with hJ | hJ
       · exact (hermNegIndex_add_diagonal_le (neutralWindow Q R J) hy0).trans
           (hermNegIndex_neutralWindow_eq_one (by omega) hRJ (by omega) hQ2).le
@@ -680,7 +681,7 @@ theorem riemannHypothesis_of_level_function (L : ℕ → ℕ → ℕ → ℝ)
     induction J using Nat.strong_induction_on with
     | _ J ih =>
       intro Q R hR hRJ hQ
-      have hQ2 : 2 ≤ Q := two_le_of_window_le (by omega) (by omega) hQ
+      have hQ2 : 2 ≤ Q := two_le_of_window_le (by omega) hQ
       rcases Nat.lt_or_ge J (R + 3) with hJ | hJ
       · exact (hermNegIndex_add_diagonal_le (neutralWindow Q R J) (hL0 Q R J)).trans
           (hermNegIndex_neutralWindow_eq_one (by omega) hRJ (by omega) hQ2).le
