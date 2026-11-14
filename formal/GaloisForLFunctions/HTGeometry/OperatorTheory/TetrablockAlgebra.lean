@@ -37,10 +37,11 @@ theorem cross (u v z : A) (hu : star u * u = 1) (hv : star v * v = 1)
     star (x₂ u v) * x₃ u v z =
         (1 / 2 : ℂ) • ((star u * u) * v + star v * u * v) * z := by
       simp only [x₂, x₃, halfSum, star_smul, star_add, star_div₀, star_one, star_ofNat,
-        smul_mul_assoc, add_mul, mul_add, mul_assoc]
+        smul_mul_assoc, add_mul, mul_assoc]
     _ = halfSum u v * z := by rw [hu, one_mul, hc, add_comm v u]; rfl
     _ = x₁ u v z := (huz.add_left hvz).smul_left _
 
+omit [Algebra ℂ A] [StarModule ℂ A] in
 /-- The final coordinate of the tetrablock tuple is an isometry. -/
 theorem last_isometry (u v z : A)
     (hu : star u * u = 1) (hv : star v * v = 1) (hz : star z * z = 1) :

@@ -55,6 +55,15 @@ variable {G ι : Type*} [CommGroup G]
 def bernoulliCharacterProduct (χ : G →* Circle) (q : ι → G) (I : Finset ι) : ℂ :=
   ∏ i ∈ I, bernoulliMultiplier (χ (q i))
 
+/-- A character mode vanishes exactly when one Bernoulli factor is antipodal. -/
+theorem bernoulliCharacterProduct_eq_zero_iff (χ : G →* Circle) (q : ι → G)
+    (I : Finset ι) :
+    bernoulliCharacterProduct χ q I = 0 ↔
+      ∃ i ∈ I, ((χ (q i) : Circle) : ℂ) = -1 := by
+  simp only [bernoulliCharacterProduct, prod_eq_zero_iff, bernoulliMultiplier,
+    div_eq_zero_iff, OfNat.ofNat_ne_zero, or_false, add_eq_zero_iff_eq_neg,
+    eq_comm (a := (1 : ℂ))]
+
 /-- Each character value outside the open half-plane contributes a factor of three quarters. -/
 theorem bernoulliCharacterProduct_decay (χ : G →* Circle) (q : ι → G) (I : Finset ι) :
     Complex.normSq (bernoulliCharacterProduct χ q I) ≤
@@ -95,3 +104,4 @@ end GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup
 #print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.bernoulliCharacterProduct_decay
 #print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.bernoulliCharacterProduct_fourth_decay
 #print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.bernoulliCharacterProduct_square
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.bernoulliCharacterProduct_eq_zero_iff

@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.OperatorTheory.TetrablockAlgebra
 import GaloisForLFunctions.HTGeometry.OperatorTheory.HexablockAlgebra
 import GaloisForLFunctions.RHTower.PaperPrimeCoShiftEscape
 
@@ -78,8 +79,22 @@ theorem hexablock_arithmetic_compact_iff (T : H →L[ℂ] H) :
     refine ⟨fun p => (slice_brownHalmos_iff (Vop p) 0).mpr ?_, isCompactOperator_zero⟩
     simp only [mul_zero, zero_mul]
 
+/-- Three arithmetic shifts give the tetrablock cross relation and complementary energy. -/
+theorem tetrablock_arithmetic_relations (p q r : ℕ+) :
+    (star (halfDiff (Vop p) (Vop q)) * halfDiff (Vop p) (Vop q) +
+      star (Tetrablock.x₂ (Vop p) (Vop q)) * Tetrablock.x₂ (Vop p) (Vop q) = 1) ∧
+    (star (Tetrablock.x₂ (Vop p) (Vop q)) * Tetrablock.x₃ (Vop p) (Vop q) (Vop r) =
+      Tetrablock.x₁ (Vop p) (Vop q) (Vop r)) ∧
+    star (Tetrablock.x₃ (Vop p) (Vop q) (Vop r)) * Tetrablock.x₃ (Vop p) (Vop q) (Vop r) = 1 := by
+  exact ⟨Tetrablock.energy _ _ (shift_isometry p) (shift_isometry q),
+    Tetrablock.cross _ _ _ (shift_isometry p) (shift_isometry q)
+      (Vop_commute p q) (Vop_commute p r) (Vop_commute q r),
+    Tetrablock.last_isometry _ _ _ (shift_isometry p) (shift_isometry q) (shift_isometry r)⟩
+
 end RHTower.PrimeCoShift
 
 #print axioms RHTower.PrimeCoShift.hexablock_arithmetic_relations
 #print axioms RHTower.PrimeCoShift.hexablock_arithmetic_brownHalmos_iff
 #print axioms RHTower.PrimeCoShift.hexablock_arithmetic_compact_iff
+
+#print axioms RHTower.PrimeCoShift.tetrablock_arithmetic_relations

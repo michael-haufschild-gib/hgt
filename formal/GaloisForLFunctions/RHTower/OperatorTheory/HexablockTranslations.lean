@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.OperatorTheory.TetrablockAlgebra
 import GaloisForLFunctions.HTGeometry.OperatorTheory.HexablockAlgebra
 import GaloisForLFunctions.RHTower.PrimeTranslationKoszulOffLine
 
@@ -13,7 +14,7 @@ included by substituting their real translation lengths.
 
 noncomputable section
 namespace RHTower
-open GaloisForLFunctions.HTGeometry.Hexablock ContinuousLinearMap
+open GaloisForLFunctions.HTGeometry GaloisForLFunctions.HTGeometry.Hexablock ContinuousLinearMap
 open MeasureTheory
 
 private theorem unitaryOp_star_mul {H : Type*} [NormedAddCommGroup H]
@@ -70,7 +71,25 @@ theorem hexablock_translation_brownHalmos_iff (b : ℝ)
   · intro h
     rw [mul_assoc, h.eq, ← mul_assoc, unitaryOp_star_mul, one_mul]
 
+/-- Three real translations give the tetrablock coordinate identities. -/
+theorem tetrablock_translation_relations (b c d : ℝ) :
+    let u := unitaryOp (additiveTranslationUnitary b)
+    let v := unitaryOp (additiveTranslationUnitary c)
+    let z := unitaryOp (additiveTranslationUnitary d)
+    (star (halfDiff u v) * halfDiff u v +
+      star (Tetrablock.x₂ u v) * Tetrablock.x₂ u v = 1) ∧
+    (star (Tetrablock.x₂ u v) * Tetrablock.x₃ u v z = Tetrablock.x₁ u v z) ∧
+    star (Tetrablock.x₃ u v z) * Tetrablock.x₃ u v z = 1 := by
+  dsimp only
+  have h (t : ℝ) := unitaryOp_star_mul (additiveTranslationUnitary t)
+  exact ⟨Tetrablock.energy _ _ (h b) (h c),
+    Tetrablock.cross _ _ _ (h b) (h c) (commute_additiveTranslationUnitary b c)
+      (commute_additiveTranslationUnitary b d) (commute_additiveTranslationUnitary c d),
+    Tetrablock.last_isometry _ _ _ (h b) (h c) (h d)⟩
+
 end RHTower
 
 #print axioms RHTower.hexablock_translation_relations
 #print axioms RHTower.hexablock_translation_brownHalmos_iff
+
+#print axioms RHTower.tetrablock_translation_relations

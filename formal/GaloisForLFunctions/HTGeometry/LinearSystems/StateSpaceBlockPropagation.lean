@@ -91,17 +91,25 @@ def stateSpacePastFuture (A : Matrix (Fin d) (Fin d) K) (b c : Fin d → K)
     (p q : ℕ) : Matrix (Fin p) (Fin q) K :=
   fun i j => algebraicStateSpaceResponse A b c (i.val + j.val)
 
+/-- Observation covectors on an arbitrary finite future window. -/
+def stateSpaceObservation (A : Matrix (Fin d) (Fin d) K) (c : Fin d → K)
+    (p : ℕ) : Matrix (Fin p) (Fin d) K :=
+  fun i k => ∑ l, c l * (A ^ i.val) l k
+
+/-- Reachable vectors on an arbitrary finite past window. -/
+def stateSpaceReachability (A : Matrix (Fin d) (Fin d) K) (b : Fin d → K)
+    (q : ℕ) : Matrix (Fin d) (Fin q) K :=
+  fun k j => ((A ^ j.val) *ᵥ b) k
+
 /-- Every rectangular past-to-future block factors through the same `d` states. -/
 theorem stateSpacePastFuture_factorization (A : Matrix (Fin d) (Fin d) K)
     (b c : Fin d → K) (p q : ℕ) :
     stateSpacePastFuture A b c p q =
-      (fun (i : Fin p) (k : Fin d) => ∑ l, c l * (A ^ i.val) l k :
-        Matrix (Fin p) (Fin d) K) *
-        (fun (k : Fin d) (j : Fin q) => ((A ^ j.val) *ᵥ b) k :
-          Matrix (Fin d) (Fin q) K) := by
+      stateSpaceObservation A c p * stateSpaceReachability A b q := by
   ext i j
   rw [stateSpacePastFuture, algebraicStateSpaceResponse_add]
-  simp only [Matrix.mul_apply, Matrix.mulVec, dotProduct, Finset.mul_sum, Finset.sum_mul]
+  simp only [Matrix.mul_apply, stateSpaceObservation, stateSpaceReachability,
+    Matrix.mulVec, dotProduct, Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   apply Finset.sum_congr rfl
   intro k _
@@ -115,8 +123,7 @@ theorem rank_stateSpacePastFuture_le (A : Matrix (Fin d) (Fin d) K)
     (stateSpacePastFuture A b c p q).rank ≤ d := by
   rw [stateSpacePastFuture_factorization]
   exact (Matrix.rank_mul_le_left _ _).trans (by
-    simpa using Matrix.rank_le_card_width
-      (fun (i : Fin p) (k : Fin d) => ∑ l, c l * (A ^ i.val) l k))
+    simpa using Matrix.rank_le_card_width (stateSpaceObservation A c p))
 
 end
 

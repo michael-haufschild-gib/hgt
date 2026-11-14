@@ -35,10 +35,7 @@ theorem fourierCoeff_periodized_causalExponential (α : ℝ) (k : ℤ) :
 theorem stableExponentialSymbol_denominator_ne_zero (α ξ : ℝ) :
     (Real.exp α : ℂ) + 2 * I * ξ ≠ 0 := by
   intro h
-  have hr := congrArg Complex.re h
-  simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.re_ofNat,
-    Complex.I_re, Complex.im_ofNat, Complex.I_im, Complex.ofReal_im,
-    mul_zero, zero_mul, sub_zero, zero_sub, add_zero, Complex.zero_re] at hr
+  have hr : Real.exp α = 0 := by simpa using congrArg Complex.re h
   exact (Real.exp_ne_zero α) hr
 
 /-- A resolvent is bounded by the reciprocal damping at every frequency. -/
@@ -77,8 +74,8 @@ theorem fourierCoeff_periodizedExponentialPacket {n : ℕ} (residue : Fin n → 
       (Set.Ioc (0 : ℝ) 1) := by
     apply ((integrableOn_Ioc_l1Periodization
       (RHTower.causalFourierExponential_integrable (Real.exp_pos (logRate j)))).const_mul
-        (residue j)).bdd_mul (by fun_prop) (C := 1)
-    exact Filter.Eventually.of_forall fun x => by simp [Complex.norm_exp]
+        (residue j)).bdd_mul (by fun_prop) (c := 1)
+    exact Filter.Eventually.of_forall fun x => by simp [fourier_coe_apply, Complex.norm_exp]
   simp only [periodizedExponentialPacket, Finset.mul_sum]
   rw [integral_finsetSum _ (fun j _ => hint j)]
   apply Finset.sum_congr rfl

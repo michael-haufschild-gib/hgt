@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.OperatorTheory.TetrablockAlgebra
 import GaloisForLFunctions.HTGeometry.OperatorTheory.HexablockAlgebra
 import GaloisForLFunctions.HTGeometry.SingularGaugeToeplitzHorizon
 
@@ -60,8 +61,26 @@ theorem hexablock_shift_powers_relations (m n r s : ℕ) :
     ((Commute.refl _).pow_pow m n) ((Commute.refl _).pow_pow m r)
     ((Commute.refl _).pow_pow m s)⟩
 
+/-- The tetrablock parametrization also applies to any three shift powers. -/
+theorem tetrablock_shift_powers_relations (m n r : ℕ) :
+    let u : VecSeq E →L[ℂ] VecSeq E := vecForward ^ m
+    let v : VecSeq E →L[ℂ] VecSeq E := vecForward ^ n
+    let z : VecSeq E →L[ℂ] VecSeq E := vecForward ^ r
+    (star (halfDiff u v) * halfDiff u v +
+      star (Tetrablock.x₂ u v) * Tetrablock.x₂ u v = 1) ∧
+    (star (Tetrablock.x₂ u v) * Tetrablock.x₃ u v z = Tetrablock.x₁ u v z) ∧
+    star (Tetrablock.x₃ u v z) * Tetrablock.x₃ u v z = 1 := by
+  dsimp only
+  have h (k : ℕ) := isometry_pow (vecForward : VecSeq E →L[ℂ] VecSeq E) shift_isometry k
+  exact ⟨Tetrablock.energy _ _ (h m) (h n),
+    Tetrablock.cross _ _ _ (h m) (h n) ((Commute.refl _).pow_pow m n)
+      ((Commute.refl _).pow_pow m r) ((Commute.refl _).pow_pow n r),
+    Tetrablock.last_isometry _ _ _ (h m) (h n) (h r)⟩
+
 end GaloisForLFunctions.HTGeometry
 
 #print axioms GaloisForLFunctions.HTGeometry.hexablock_shift_brownHalmos_iff
 #print axioms GaloisForLFunctions.HTGeometry.hexablock_shift_compact_iff
 #print axioms GaloisForLFunctions.HTGeometry.hexablock_shift_powers_relations
+
+#print axioms GaloisForLFunctions.HTGeometry.tetrablock_shift_powers_relations

@@ -60,10 +60,13 @@ def xl : ℕ → ℚ
 
 def width : ℚ := (1 - aLoQ) / 2 - T.lo
 
+def branchOK (b : ℕ) : Bool :=
+  (T.tayB b).valid && decide (0 < (T.tayB b).om) &&
+    decide (0 ≤ T.xl b) && decide ((T.tayB b).t0 ≤ T.xl b ^ 2)
+
 def check : Bool :=
   decide (0 ≤ T.lo) && decide (T.lo ≤ (1 - aHiQ) / 2) &&
-    (List.range 4).all (fun b => (T.tayB b).valid && decide (0 < (T.tayB b).om) &&
-      decide (0 ≤ T.xl b) && decide ((T.tayB b).t0 ≤ T.xl b ^ 2)) &&
+    (List.range 4).all (fun b => T.branchOK b) &&
     pivots4Pos (S.c0 + (T.tayB 0).base) (S.c0 + (T.tayB 1).base) (S.c0 + (T.tayB 2).base)
       (S.c0 + (T.tayB 3).base) S.e2 S.e3
 
@@ -83,10 +86,13 @@ def xl : ℕ → ℚ
 
 def width : ℚ := T.hi - (1 - aHiQ)
 
+def branchOK (b : ℕ) : Bool :=
+  (T.tayB b).valid && decide (0 < (T.tayB b).om) &&
+    decide (0 ≤ T.xl b) && decide ((T.tayB b).t0 ≤ T.xl b ^ 2)
+
 def check : Bool :=
   decide (1 - aLoQ ≤ T.hi) && decide (T.hi ≤ 1 / 2) &&
-    (List.range 2).all (fun b => (T.tayB b).valid && decide (0 < (T.tayB b).om) &&
-      decide (0 ≤ T.xl b) && decide ((T.tayB b).t0 ≤ T.xl b ^ 2)) &&
+    (List.range 2).all (fun b => T.branchOK b) &&
     pivots2Pos (S.c0 + (T.tayB 0).base) (S.c0 + (T.tayB 1).base) S.e2
 
 def pert (k : ℕ) : ℚ := 2 * T.width * S.K * S.sup k ^ 2
@@ -98,13 +104,15 @@ private theorem const_branch_le {τ : TaylorBranch} (hτ : τ.valid = true) {xl 
     (h0 : 0 ≤ xl) (ht : τ.t0 ≤ xl ^ 2) {x : ℝ} (hle : (xl : ℝ) ≤ x) (hx1 : x < 1) :
     (τ.base : ℝ) ≤ vTrue x := by
   have h0' : (0 : ℝ) ≤ (xl : ℝ) + (0 : ℚ) * (0 : ℝ) := by
-    simpa using (Rat.cast_nonneg.mpr h0 : (0 : ℝ) ≤ xl)
+    rw [Rat.cast_zero, mul_zero, add_zero]; exact Rat.cast_nonneg.mpr h0
   have ht' : (τ.t0 : ℝ) ≤ ((xl : ℝ) + (0 : ℚ) * (0 : ℝ)) ^ 2 := by
-    have : (τ.t0 : ℝ) ≤ (xl : ℝ) ^ 2 := by rw [← Rat.cast_pow]; exact Rat.cast_le.mpr ht
-    simpa using this
-  have h := qeval_poly_le_vTrue hτ 0 xl 0 (ξ := 0) h0' ht' (by simpa using hle) hx1
-  rw [qeval_TaylorBranch_poly] at h
-  simpa using h
+    rw [Rat.cast_zero, mul_zero, add_zero, ← Rat.cast_pow]; exact Rat.cast_le.mpr ht
+  have hle' : (xl : ℝ) + (0 : ℚ) * (0 : ℝ) ≤ x := by
+    rw [Rat.cast_zero, mul_zero, add_zero]; exact hle
+  have h := qeval_poly_le_vTrue hτ 0 xl 0 (ξ := 0) h0' ht' hle' hx1
+  have hev : qeval (τ.poly 0 xl 0) 0 = τ.base := by
+    simp only [TaylorBranch.poly, tayTail, qadd, qeval]; ring
+  rwa [hev] at h
 
 /-- `phiFn m x ^ 2 ≤ K ∑ sup_k² m_k²` on `[-1, 1]`. -/
 private theorem sq_phiFn_le {S : SectorData} (hS : S.valid = true) (m : Fin S.K → ℝ) {x : ℝ}
@@ -116,8 +124,8 @@ private theorem sum_sup_nonneg (S : SectorData) (m : Fin S.K → ℝ) :
   mul_nonneg (Nat.cast_nonneg _) (Finset.sum_nonneg fun _ _ => by positivity)
 
 theorem aLoQ_HiQ_bounds : (1 / 2 : ℝ) ≤ aLoQ ∧ (aHiQ : ℝ) ≤ 3 / 5 := by
-  have h1 : (1 / 2 : ℚ) ≤ aLoQ := by decide
-  have h2 : aHiQ ≤ 3 / 5 := by decide
+  have h1 : (1 / 2 : ℚ) ≤ aLoQ := by decide +kernel
+  have h2 : aHiQ ≤ 3 / 5 := by decide +kernel
   have h1' := Rat.cast_le (K := ℝ).mpr h1
   have h2' := Rat.cast_le (K := ℝ).mpr h2
   simp only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] at h1' h2'
@@ -156,7 +164,9 @@ theorem Sliver4.bound {S : SectorData} (hS : S.valid = true) {T : Sliver4} (hT :
     have hs0 : 0 < s := lt_of_le_of_lt hlo0' hs.1
     have hb : ∀ b < 4, ∀ x : ℝ, (T.xl b : ℝ) ≤ x → x < 1 →
         ((S.c0 + (T.tayB b).base : ℚ) : ℝ) ≤ S.c0 + vTrue x := fun b hb4 x hx hx1 => by
-      obtain ⟨⟨⟨hv, _⟩, h0⟩, ht⟩ := hbr b hb4
+      have hb_ok := hbr b hb4
+      simp only [Sliver4.branchOK, Bool.and_eq_true, decide_eq_true_eq] at hb_ok
+      obtain ⟨⟨⟨hv, _⟩, h0⟩, ht⟩ := hb_ok
       have := const_branch_le hv h0 ht hx hx1
       rw [Rat.cast_add]; linarith only [this]
     have h0 := hb 0 (by norm_num) s (by rw [hxl0]; exact hs.1.le)
@@ -226,7 +236,9 @@ theorem Sliver2.bound {S : SectorData} (hS : S.valid = true) {T : Sliver2} (hT :
     intro u hu
     have hb : ∀ b < 2, ∀ x : ℝ, (T.xl b : ℝ) ≤ x → x < 1 →
         ((S.c0 + (T.tayB b).base : ℚ) : ℝ) ≤ S.c0 + vTrue x := fun b hb2 x hx hx1 => by
-      obtain ⟨⟨⟨hv, _⟩, h0⟩, ht⟩ := hbr b hb2
+      have hb_ok := hbr b hb2
+      simp only [Sliver2.branchOK, Bool.and_eq_true, decide_eq_true_eq] at hb_ok
+      obtain ⟨⟨⟨hv, _⟩, h0⟩, ht⟩ := hb_ok
       have := const_branch_le hv h0 ht hx hx1
       rw [Rat.cast_add]; linarith only [this]
     have h0 := hb 0 (by norm_num) u (by rw [hxl0]; linarith only [hu.1, haH])
