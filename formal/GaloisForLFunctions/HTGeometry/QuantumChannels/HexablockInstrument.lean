@@ -1,3 +1,5 @@
+import GaloisForLFunctions.HTGeometry.FiniteNoiseMixingApplications
+import GaloisForLFunctions.HTGeometry.BistochasticKrausDeterminant
 import GaloisForLFunctions.HTGeometry.OperatorTheory.HexablockAlgebra
 import GaloisForLFunctions.HTGeometry.FiniteQuantumOperationalMemoryLaw
 
@@ -12,6 +14,7 @@ exactly the commutant of `U`.
 
 noncomputable section
 namespace GaloisForLFunctions.HTGeometry
+open scoped BigOperators NNReal
 open Hexablock Matrix
 open _root_.RHTower
 variable {n : ℕ}
@@ -75,9 +78,72 @@ theorem hexablockInstrument_fixed_iff (U : Matrix.unitaryGroup (Fin n) ℂ)
     rw [mul_assoc, h.eq, ← mul_assoc, hl, one_mul, smul_add]
     module
 
+/-- Gram states stay positive under the sum/difference instrument. -/
+theorem hexablockInstrument_gram_posSemidef (U : Matrix.unitaryGroup (Fin n) ℂ)
+    (A : Matrix (Fin n) (Fin n) ℂ) :
+    ((hexablockInstrument U).evolveMatrix (Aᴴ * A)).PosSemidef :=
+  (hexablockInstrument U).evolveMatrix_posSemidef (Matrix.posSemidef_conjTranspose_mul_self A)
+
+/-- The instrument induces an explicit bistochastic mixing of input eigenvalues. -/
+def hexablockSpectralMixing (U : Matrix.unitaryGroup (Fin n) ℂ)
+    (A : Matrix (Fin n) (Fin n) ℂ) : doublyStochastic ℝ (Fin n) := by
+  let hX := Matrix.isHermitian_conjTranspose_mul_self A
+  let hY := (hexablockInstrument_gram_posSemidef U A).isHermitian
+  refine ⟨bistochasticKrausEigenWeight (hexablockInstrument U).operator hX hY,
+    mem_doublyStochastic_iff_sum.mpr ⟨?_, ?_, ?_⟩⟩
+  · exact bistochasticKrausEigenWeight_nonneg _ _ _
+  · apply sum_bistochasticKrausEigenWeight_row
+    simpa only [FiniteKrausChannel.evolveMatrix, mul_one] using hexablockInstrument_unital U
+  · exact sum_bistochasticKrausEigenWeight_column _ _ _ (hexablockInstrument U).completeness
+
+/-- Exact output-spectrum formula for every Gram input. -/
+theorem hexablockSpectralMixing_eigenvalues (U : Matrix.unitaryGroup (Fin n) ℂ)
+    (A : Matrix (Fin n) (Fin n) ℂ) :
+    (hexablockInstrument_gram_posSemidef U A).isHermitian.eigenvalues =
+      (hexablockSpectralMixing U A).val *ᵥ
+        (Matrix.isHermitian_conjTranspose_mul_self A).eigenvalues := by
+  funext i
+  exact eigenvalues_kraus_sum_eq_weighted_sum (hexablockInstrument U).operator
+    (Matrix.isHermitian_conjTranspose_mul_self A)
+    (hexablockInstrument_gram_posSemidef U A).isHermitian rfl i
+
+/-- No sum of the largest eigenvalues increases under this instrument. -/
+theorem hexablockInstrument_spectral_topSum_le (U : Matrix.unitaryGroup (Fin n) ℂ)
+    (A : Matrix (Fin n) (Fin n) ℂ) (r : Fin (n + 1)) :
+    topSum r.val (hexablockInstrument_gram_posSemidef U A).isHermitian.eigenvalues ≤
+      topSum r.val (Matrix.isHermitian_conjTranspose_mul_self A).eigenvalues := by
+  rw [hexablockSpectralMixing_eigenvalues]
+  exact bistochasticMixing_topSum_le _ _ r
+
+/-- Spectral purity decreases for every Gram input. -/
+theorem hexablockInstrument_spectral_purity_le (U : Matrix.unitaryGroup (Fin n) ℂ)
+    (A : Matrix (Fin n) (Fin n) ℂ) :
+    (∑ i, (hexablockInstrument_gram_posSemidef U A).isHermitian.eigenvalues i ^ 2) ≤
+      ∑ i, (Matrix.isHermitian_conjTranspose_mul_self A).eigenvalues i ^ 2 := by
+  rw [hexablockSpectralMixing_eigenvalues]
+  exact bistochasticMixing_sum_sq_le _ _
+
+/-- The spectral Shannon functional increases under the instrument. -/
+theorem hexablockInstrument_spectral_entropy_le (U : Matrix.unitaryGroup (Fin n) ℂ)
+    (A : Matrix (Fin n) (Fin n) ℂ) :
+    entropy (Matrix.isHermitian_conjTranspose_mul_self A).eigenvalues ≤
+      entropy (hexablockInstrument_gram_posSemidef U A).isHermitian.eigenvalues := by
+  let x : Fin n → ℝ≥0 := fun i => ⟨(Matrix.isHermitian_conjTranspose_mul_self A).eigenvalues i,
+    (Matrix.posSemidef_conjTranspose_mul_self A).eigenvalues_nonneg i⟩
+  have h := bistochasticMixing_negMulLog_sum_le (hexablockSpectralMixing U A) x
+  change (∑ i, Real.negMulLog ((Matrix.isHermitian_conjTranspose_mul_self A).eigenvalues i)) ≤
+    ∑ i, Real.negMulLog (((hexablockSpectralMixing U A).val *ᵥ
+      (Matrix.isHermitian_conjTranspose_mul_self A).eigenvalues) i) at h
+  rw [← hexablockSpectralMixing_eigenvalues] at h
+  simpa only [entropy, tsum_fintype, Real.negMulLog, neg_mul] using h
+
 end GaloisForLFunctions.HTGeometry
 
 #print axioms GaloisForLFunctions.HTGeometry.hexablockInstrument
 #print axioms GaloisForLFunctions.HTGeometry.hexablockInstrument_evolve
 #print axioms GaloisForLFunctions.HTGeometry.hexablockInstrument_unital
 #print axioms GaloisForLFunctions.HTGeometry.hexablockInstrument_fixed_iff
+
+#print axioms GaloisForLFunctions.HTGeometry.hexablockInstrument_spectral_topSum_le
+#print axioms GaloisForLFunctions.HTGeometry.hexablockInstrument_spectral_purity_le
+#print axioms GaloisForLFunctions.HTGeometry.hexablockInstrument_spectral_entropy_le

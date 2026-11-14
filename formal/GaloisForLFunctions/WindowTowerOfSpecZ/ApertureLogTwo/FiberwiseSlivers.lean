@@ -52,12 +52,12 @@ variable (S : SectorData) (T : Sliver4)
 def tayB (b : ℕ) : TaylorBranch := T.tay.getD b ⟨0, 0, 0, 1, 0⟩
 
 /-- Lower points of the four branches over the sliver. -/
-def xl : ℕ → ℚ
-  | 0 => T.lo
-  | 1 => 1 - (1 - aLoQ) / 2
-  | 2 => aLoQ + T.lo
-  | 3 => 1 - aHiQ - (1 - aLoQ) / 2
-  | _ => 0
+def xl (b : ℕ) : ℚ :=
+  if b = 0 then T.lo
+  else if b = 1 then 1 - (1 - aLoQ) / 2
+  else if b = 2 then aLoQ + T.lo
+  else if b = 3 then 1 - aHiQ - (1 - aLoQ) / 2
+  else 0
 
 def width : ℚ := (1 - aLoQ) / 2 - T.lo
 
@@ -81,10 +81,10 @@ variable (S : SectorData) (T : Sliver2)
 
 def tayB (b : ℕ) : TaylorBranch := T.tay.getD b ⟨0, 0, 0, 1, 0⟩
 
-def xl : ℕ → ℚ
-  | 0 => 1 - aHiQ
-  | 1 => 1 - T.hi
-  | _ => 0
+def xl (b : ℕ) : ℚ :=
+  if b = 0 then 1 - aHiQ
+  else if b = 1 then 1 - T.hi
+  else 0
 
 def width : ℚ := T.hi - (1 - aHiQ)
 
@@ -126,12 +126,7 @@ private theorem sum_sup_nonneg (S : SectorData) (m : Fin S.K → ℝ) :
   mul_nonneg (Nat.cast_nonneg _) (Finset.sum_nonneg fun _ _ => by positivity)
 
 theorem aLoQ_HiQ_bounds : (1 / 2 : ℝ) ≤ aLoQ ∧ (aHiQ : ℝ) ≤ 3 / 5 := by
-  have h1 : (1 / 2 : ℚ) ≤ aLoQ := by decide +kernel
-  have h2 : aHiQ ≤ 3 / 5 := by decide +kernel
-  have h1' := Rat.cast_le (K := ℝ).mpr h1
-  have h2' := Rat.cast_le (K := ℝ).mpr h2
-  simp only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] at h1' h2'
-  exact ⟨h1', h2'⟩
+  constructor <;> norm_num [aLoQ, aHiQ]
 
 theorem Sliver4.bound {S : SectorData} (hS : S.valid = true) {T : Sliver4} (hT : T.check S = true)
     {G : ℝ → ℝ} (hGc : Continuous G)
@@ -148,13 +143,16 @@ theorem Sliver4.bound {S : SectorData} (hS : S.valid = true) {T : Sliver4} (hT :
   have hlo' : (T.lo : ℝ) ≤ (1 - (aHiQ : ℝ)) / 2 := by
     have := Rat.cast_le (K := ℝ).mpr hlo
     simp only [Rat.cast_div, Rat.cast_sub, Rat.cast_one, Rat.cast_ofNat] at this; exact this
-  have hxl0 : (T.xl 0 : ℝ) = T.lo := rfl
+  have hxl0 : (T.xl 0 : ℝ) = T.lo := by simp only [Sliver4.xl, ↓reduceIte]
   have hxl1 : (T.xl 1 : ℝ) = 1 - (1 - (aLoQ : ℝ)) / 2 := by
-    simp only [Sliver4.xl, Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat]
+    simp only [Sliver4.xl, OfNat.one_ne_zero, ↓reduceIte,
+      Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat]
   have hxl2 : (T.xl 2 : ℝ) = (aLoQ : ℝ) + T.lo := by
-    simp only [Sliver4.xl, Rat.cast_add]
+    simp only [Sliver4.xl, OfNat.ofNat_ne_zero, OfNat.ofNat_ne_one, ↓reduceIte, Rat.cast_add]
   have hxl3 : (T.xl 3 : ℝ) = 1 - (aHiQ : ℝ) - (1 - (aLoQ : ℝ)) / 2 := by
-    simp only [Sliver4.xl, Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat]
+    have : (3 : ℕ) ≠ 2 := by decide
+    simp only [Sliver4.xl, OfNat.ofNat_ne_zero, OfNat.ofNat_ne_one, this, ↓reduceIte,
+      Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat]
   have hwid : (T.width : ℝ) = (1 - (aLoQ : ℝ)) / 2 - T.lo := by
     simp only [Sliver4.width, Rat.cast_sub, Rat.cast_div, Rat.cast_one, Rat.cast_ofNat]
   generalize (aLoQ : ℝ) = aL, (aHiQ : ℝ) = aH at haL haH haL1 haH1 hlo' hxl1 hxl2 hxl3 hwid
@@ -225,9 +223,9 @@ theorem Sliver2.bound {S : SectorData} (hS : S.valid = true) {T : Sliver2} (hT :
     have := Rat.cast_le (K := ℝ).mpr hhi
     simp only [Rat.cast_div, Rat.cast_one, Rat.cast_ofNat] at this; exact this
   have hxl0 : (T.xl 0 : ℝ) = 1 - (aHiQ : ℝ) := by
-    simp only [Sliver2.xl, Rat.cast_sub, Rat.cast_one]
+    simp only [Sliver2.xl, ↓reduceIte, Rat.cast_sub, Rat.cast_one]
   have hxl1 : (T.xl 1 : ℝ) = 1 - (T.hi : ℝ) := by
-    simp only [Sliver2.xl, Rat.cast_sub, Rat.cast_one]
+    simp only [Sliver2.xl, OfNat.one_ne_zero, ↓reduceIte, Rat.cast_sub, Rat.cast_one]
   have hwid : (T.width : ℝ) = (T.hi : ℝ) - (1 - (aHiQ : ℝ)) := by
     simp only [Sliver2.width, Rat.cast_sub, Rat.cast_one]
   generalize (aLoQ : ℝ) = aL, (aHiQ : ℝ) = aH at haL haH haH1 hhi0' hxl0 hwid

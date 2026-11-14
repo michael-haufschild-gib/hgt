@@ -113,9 +113,18 @@ theorem hermitianFrequencyProjection_stablePacket {n : ℕ} (residue : Fin n →
     hermitianFrequencyProjection (fun ξ =>
       ∑ j, residue j * stableExponentialSymbol (logRate j) ξ) ξ =
       ∑ j, ((residue j).re : ℂ) * stableExponentialSymbol (logRate j) ξ := by
+  have hconj : star (∑ j, residue j * stableExponentialSymbol (logRate j) (-ξ)) =
+      ∑ j, star (residue j) * stableExponentialSymbol (logRate j) ξ := by
+    change (starRingEnd ℂ) (∑ j, residue j * stableExponentialSymbol (logRate j) (-ξ)) = _
+    rw [map_sum]
+    apply Finset.sum_congr rfl
+    intro j _
+    rw [map_mul]
+    change star (residue j) * star (stableExponentialSymbol (logRate j) (-ξ)) = _
+    rw [stableExponentialSymbol_conj]
   unfold hermitianFrequencyProjection
-  simp only [star_sum, star_mul, stableExponentialSymbol_conj,
-    ← Finset.sum_add_distrib, Finset.sum_div]
+  rw [hconj]
+  simp only [← Finset.sum_add_distrib, div_eq_mul_inv, Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro j _
   have hr : residue j + star (residue j) = 2 * ((residue j).re : ℂ) := by

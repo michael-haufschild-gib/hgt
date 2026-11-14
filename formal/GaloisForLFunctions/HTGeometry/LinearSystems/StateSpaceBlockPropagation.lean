@@ -133,3 +133,10 @@ theorem rank_stateSpacePastFuture_le (A : Matrix (Fin d) (Fin d) K)
 end
 
 end HTGeometry
+
+#print axioms HTGeometry.drivenState_add
+#print axioms HTGeometry.drivenState_eq_free_add_zero
+#print axioms HTGeometry.drivenState_eq_sum
+#print axioms HTGeometry.drivenState_output
+#print axioms HTGeometry.stateSpacePastFuture_factorization
+#print axioms HTGeometry.rank_stateSpacePastFuture_le

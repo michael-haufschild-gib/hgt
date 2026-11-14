@@ -95,10 +95,12 @@ theorem integral_sphereThreeSpectralLaw_even (k : ℕ) :
     norm_num
   simp_rw [he]
   rw [integral_const_mul]
-  change _ * (4 ^ k * _) = _
-  rw [mul_left_comm, ← div_eq_mul_inv]
-  change 4 ^ k * blockSphereMellin ℝ (EuclideanSpace ℝ (Fin 3)) k = _
-  rw [← hm, mul_div_cancel₀ _ (pow_ne_zero _ (by norm_num : (4 : ℝ) ≠ 0))]
+  calc
+    _ = 4 ^ k * blockSphereMellin ℝ (EuclideanSpace ℝ (Fin 3)) k := by
+      unfold blockSphereMellin Measure.real
+      ring
+    _ = _ := by
+      rw [← hm, mul_div_cancel₀ _ (pow_ne_zero _ (by norm_num : (4 : ℝ) ≠ 0))]
 
 /-- Antipodal invariance annihilates every odd signed coordinate moment. -/
 theorem integral_sphereThreeSpectralLaw_odd (k : ℕ) :
