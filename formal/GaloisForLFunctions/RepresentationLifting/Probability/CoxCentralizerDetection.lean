@@ -1,22 +1,23 @@
 import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.CoxResidualClassification
 import GaloisForLFunctions.RepresentationLifting.ModularTrace
+import Mathlib.Analysis.Matrix.Normed
 
 /-!
 # Gamma–Cox detection of dual-number endomorphisms
 
-The commutator residual vanishes precisely on the square-zero shift's
+The Frobenius commutator norm vanishes precisely on the square-zero shift's
 centralizer. Its limiting binary test therefore identifies the repeated block
 structure of a dual-number-linear endomorphism.
 -/
 
 open Filter Topology
-open scoped Classical
+open scoped Classical Matrix.Norms.Frobenius
 open GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox
 namespace GaloisForLFunctions.RepresentationLifting
 noncomputable section
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-/-- The commutator norm detects the full centralizer structure. -/
+/-- The Frobenius commutator norm detects the full centralizer structure. -/
 theorem cox_dualNumber_centralizer (T : Matrix (ι ⊕ ι) (ι ⊕ ι) ℝ) :
     Tendsto (fun K => detection K ‖T * dualNumberShift - dualNumberShift * T‖) atTop
       (𝓝 (if ∃ A B : Matrix ι ι ℝ, T = Matrix.fromBlocks A B 0 A then 1 else 0)) := by

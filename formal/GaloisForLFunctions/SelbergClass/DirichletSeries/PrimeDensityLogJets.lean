@@ -1,6 +1,7 @@
 import GaloisForLFunctions.SelbergClass.DirichletSeries.PrimeDensityCoefficientField
 import GaloisForLFunctions.SelbergClass.DirichletSeries.PrimeFilterVandermonde
 import GaloisForLFunctions.HTGeometry.CofinitePacketVandermonde
+import GaloisForLFunctions.HTGeometry.DirectionalKaehlerWedge
 
 /-!
 # Prime-zeta logarithmic jets over sparse-prime coefficients
@@ -64,8 +65,30 @@ theorem algebraicIndependent_primeIndicatorJets_over_densityField (n : ℕ) :
   simpa only [Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re,
     Complex.ofReal_im, mul_zero, one_mul, zero_add] using him
 
+/-- The entire countable family of polynomial prime weights is algebraically independent over
+the density-zero prime coefficient field. -/
+theorem algebraicIndependent_allPrimePolynomialWeights_over_densityField :
+    AlgebraicIndependent (primeDensityCoefficientField primeCountingWindow)
+      (fun k : ℕ => algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+        (arithmeticOfPrimeColumn (fun p => (p.1 : ℂ) ^ k))) := by
+  apply (algebraicIndependent_nat_iff_initialSegments _).mpr
+  intro n
+  exact algebraicIndependent_primePolynomialWeights_over_densityField (n + 1)
+
+/-- The full logarithmic jet sequence of the prime indicator is algebraically independent over
+all coefficients with density-zero prime activity. -/
+theorem algebraicIndependent_allPrimeIndicatorJets_over_densityField :
+    AlgebraicIndependent (primeDensityCoefficientField primeCountingWindow)
+      (fun k : ℕ => algebraMap (ArithmeticFunction ℂ) arithmeticFunctionFractionField
+        (primeProfileRotatedLogJet k primeIndicatorProfile)) := by
+  apply (algebraicIndependent_nat_iff_initialSegments _).mpr
+  intro n
+  exact algebraicIndependent_primeIndicatorJets_over_densityField (n + 1)
+
 #print axioms algebraicIndependent_primePolynomialWeights_over_densityField
 #print axioms algebraicIndependent_primeIndicatorJets_over_densityField
+#print axioms algebraicIndependent_allPrimePolynomialWeights_over_densityField
+#print axioms algebraicIndependent_allPrimeIndicatorJets_over_densityField
 
 end
 end GaloisForLFunctions.SelbergClass.DirichletSeries

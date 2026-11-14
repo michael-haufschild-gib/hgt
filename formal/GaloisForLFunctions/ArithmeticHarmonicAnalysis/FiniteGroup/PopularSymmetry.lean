@@ -106,3 +106,8 @@ theorem popular_complement_majority (A : Finset G) :
   exact Or.inr (Or.inr (by omega))
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.sum_inter_translate_card
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.popular_card_lt_iff
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.popular_or_growth
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.popular_complement_majority

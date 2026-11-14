@@ -60,9 +60,9 @@ theorem integral_chain4 {S : SectorData} (hS : S.valid = true) {G : ℝ → ℝ}
     simp only [chain4, Bool.and_eq_true, decide_eq_true_eq] at h
     obtain ⟨⟨hsa, hds⟩, hrest⟩ := h
     have hmid : x + D.ds ≤ y := le_of_chain4 hrest
-    have hx' : (0 : ℝ) ≤ x := by exact_mod_cast hx
-    have hmid' : ((x + D.ds : ℚ) : ℝ) ≤ y := by exact_mod_cast hmid
-    have hds' : (0 : ℝ) < D.ds := by exact_mod_cast hds
+    have hx' : (0 : ℝ) ≤ x := Rat.cast_nonneg.mpr hx
+    have hmid' : ((x + D.ds : ℚ) : ℝ) ≤ y := Rat.cast_le.mpr hmid
+    have hds' : (0 : ℝ) < D.ds := Rat.cast_pos.mpr hds
     have hD := P4Sub.bound hS (hc D (List.mem_cons_self ..)) hGc hiPot m
     rw [hsa] at hD
     have ih := integral_chain4 hS hGc hiPot m Ds (x + D.ds) y hrest
@@ -89,9 +89,9 @@ theorem integral_chain2 {S : SectorData} (hS : S.valid = true) {G : ℝ → ℝ}
     simp only [chain2, Bool.and_eq_true, decide_eq_true_eq] at h
     obtain ⟨⟨hua, hdu⟩, hrest⟩ := h
     have hmid : x + D.du ≤ y := le_of_chain2 hrest
-    have hx' : (0 : ℝ) ≤ x := by exact_mod_cast hx
-    have hmid' : ((x + D.du : ℚ) : ℝ) ≤ y := by exact_mod_cast hmid
-    have hdu' : (0 : ℝ) < D.du := by exact_mod_cast hdu
+    have hx' : (0 : ℝ) ≤ x := Rat.cast_nonneg.mpr hx
+    have hmid' : ((x + D.du : ℚ) : ℝ) ≤ y := Rat.cast_le.mpr hmid
+    have hdu' : (0 : ℝ) < D.du := Rat.cast_pos.mpr hdu
     have hD := P2Sub.bound hS (hc D (List.mem_cons_self ..)) hGc hiPot m
     rw [hua] at hD
     have ih := integral_chain2 hS hGc hiPot m Ds (x + D.du) y hrest
@@ -178,21 +178,21 @@ theorem bound (hS : S.valid = true) (hFC : FC.check S = true) (h4 : ∀ D ∈ FC
   -- sliver endpoints
   have hs4' := hs4
   simp only [Sliver4.check, Bool.and_eq_true, decide_eq_true_eq] at hs4'
-  have hlo0 : (0 : ℝ) ≤ FC.s4.lo := Rat.cast_nonneg.mpr hs4'.1.1.1.1
+  have hlo0 : (0 : ℝ) ≤ FC.s4.lo := Rat.cast_nonneg.mpr hs4'.1.1.1
   have hlo1 : (FC.s4.lo : ℝ) ≤ (1 - aHiQ) / 2 := by
-    have := Rat.cast_le (K := ℝ).mpr hs4'.1.1.1.2; push_cast at this; exact this
+    have := Rat.cast_le (K := ℝ).mpr hs4'.1.1.2; push_cast at this; exact this
   have hs2' := hs2
   simp only [Sliver2.check, Bool.and_eq_true, decide_eq_true_eq] at hs2'
   have hhi0 : (1 - aLoQ : ℝ) ≤ FC.s2.hi := by
-    have := Rat.cast_le (K := ℝ).mpr hs2'.1.1.1.1; push_cast at this; exact this
+    have := Rat.cast_le (K := ℝ).mpr hs2'.1.1.1; push_cast at this; exact this
   have hhi1 : (FC.s2.hi : ℝ) ≤ 1 / 2 := by
-    have := Rat.cast_le (K := ℝ).mpr hs2'.1.1.1.2; push_cast at this; exact this
+    have := Rat.cast_le (K := ℝ).mpr hs2'.1.1.2; push_cast at this; exact this
   have hL4 : (FC.s4.lo : ℝ) ≤ (1 - a) / 2 := by linarith only [hlo1, haH]
   -- subinterval and sliver bounds
   have hP4 := integral_chain4 hS hGc hiPot m FC.p4 0 FC.s4.lo hc4 h4 le_rfl hL4
   have hP2 := integral_chain2 hS hGc hiPot m FC.p2 FC.s2.hi (1 / 2) hc2 h2
     (by have : (0 : ℝ) ≤ FC.s2.hi := by linarith only [hhi0, haL, haL1, haH, haH1]
-        exact Rat.cast_nonneg.mp this) (by norm_num)
+        exact Rat.cast_nonneg.mp this) (by push_cast; norm_num)
   push_cast at hP4 hP2
   have hT4 := Sliver4.bound hS hs4 hGc hiPot m
   have hT2 := Sliver2.bound hS hs2 hGc hiPot m

@@ -44,15 +44,17 @@ theorem primeWindowFrequency_union_le (W : ℕ → Finset Nat.Primes)
     (S T : Set Nat.Primes) (n : ℕ) :
     primeWindowFrequency W (S ∪ T) n ≤
       primeWindowFrequency W S n + primeWindowFrequency W T n := by
-  have heq : (W n).filter (· ∈ S ∪ T) =
-      (W n).filter (· ∈ S) ∪ (W n).filter (· ∈ T) := by
+  have hfreq : primeWindowFrequency W (S ∪ T) n =
+      ((((W n).filter (· ∈ S) ∪ (W n).filter (· ∈ T)).card : ℝ) / (W n).card) := by
+    apply congrArg (fun t : Finset Nat.Primes => (t.card : ℝ) / (W n).card)
     ext p
     simp only [Finset.mem_filter, Set.mem_union, Finset.mem_union]
     tauto
-  change (((W n).filter (· ∈ S ∪ T)).card : ℝ) / (W n).card ≤
+  rw [hfreq]
+  change ((((W n).filter (· ∈ S) ∪ (W n).filter (· ∈ T)).card : ℝ) / (W n).card) ≤
     (((W n).filter (· ∈ S)).card : ℝ) / (W n).card +
       (((W n).filter (· ∈ T)).card : ℝ) / (W n).card
-  rw [heq, ← add_div]
+  rw [← add_div]
   apply div_le_div_of_nonneg_right _ (Nat.cast_nonneg _)
   exact_mod_cast Finset.card_union_le ((W n).filter (· ∈ S)) ((W n).filter (· ∈ T))
 

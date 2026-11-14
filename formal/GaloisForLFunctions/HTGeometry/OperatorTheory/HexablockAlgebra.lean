@@ -16,34 +16,34 @@ on the Hexablock*, §§5 and 7.
 
 noncomputable section
 namespace GaloisForLFunctions.HTGeometry.Hexablock
-variable {A : Type*} [Ring A] [StarRing A] [Algebra ℝ A] [StarModule ℝ A]
+variable {A : Type*} [Ring A] [StarRing A] [Algebra ℂ A] [StarModule ℂ A]
 
-def halfSum (u v : A) : A := (1 / 2 : ℝ) • (u + v)
-def halfDiff (u v : A) : A := (1 / 2 : ℝ) • (u - v)
+def halfSum (u v : A) : A := (1 / 2 : ℂ) • (u + v)
+def halfDiff (u v : A) : A := (1 / 2 : ℂ) • (u - v)
 
 /-- Polarization splits a quadratic form between the sum and difference channels. -/
 theorem polarization (u v t : A) :
     star (halfDiff u v) * t * halfDiff u v +
       star (halfSum u v) * t * halfSum u v =
-        (1 / 2 : ℝ) • (star u * t * u + star v * t * v) := by
-  simp only [halfSum, halfDiff, star_smul, star_add, star_sub, star_trivial,
+        (1 / 2 : ℂ) • (star u * t * u + star v * t * v) := by
+  simp only [halfSum, halfDiff, star_smul, star_add, star_sub, star_div₀, star_one, star_ofNat,
     smul_mul_assoc, mul_smul_comm, smul_smul, add_mul, sub_mul, mul_add, mul_sub,
     smul_add, smul_sub]
   module
 
-omit [Algebra ℝ A] [StarModule ℝ A] in
+omit [Algebra ℂ A] [StarModule ℂ A] in
 /-- Multiplication by an isometry leaves the Gram operator unchanged. -/
 theorem gram_mul (u v : A) (hu : star u * u = 1) :
     star (u * v) * (u * v) = star v * v := by
   rw [star_mul, mul_assoc, ← mul_assoc (star u), hu, one_mul]
 
-omit [Algebra ℝ A] [StarModule ℝ A] in
+omit [Algebra ℂ A] [StarModule ℂ A] in
 /-- Isometries are closed under multiplication, without a commutativity requirement. -/
 theorem isometry_mul (u v : A) (hu : star u * u = 1) (hv : star v * v = 1) :
     star (u * v) * (u * v) = 1 := by
   rw [gram_mul u v hu, hv]
 
-omit [Algebra ℝ A] [StarModule ℝ A] in
+omit [Algebra ℂ A] [StarModule ℂ A] in
 theorem isometry_pow (u : A) (hu : star u * u = 1) (n : ℕ) :
     star (u ^ n) * u ^ n = 1 := by
   induction n with
@@ -95,17 +95,17 @@ theorem slice_brownHalmos_iff (u t : A) :
     rw [polarization, h, star_one, one_mul, mul_one, smul_add]
     module
   refine ⟨h, ?_, henergy, henergy⟩
-  simp only [halfSum, star_smul, star_add, star_one, star_trivial,
+  simp only [halfSum, star_smul, star_add, star_one, star_div₀, star_ofNat,
     smul_mul_assoc, add_mul, one_mul, mul_smul_comm, mul_add, mul_one, h]
   module
 
-omit [StarRing A] [StarModule ℝ A] in
+omit [StarRing A] [StarModule ℂ A] in
 /-- The parametrized sum and difference recover the original operator. -/
 theorem halfDiff_add_halfSum (u : A) : halfDiff u 1 + halfSum u 1 = u := by
   simp only [halfDiff, halfSum, smul_sub, smul_add]
   module
 
-omit [StarRing A] [StarModule ℝ A] in
+omit [StarRing A] [StarModule ℂ A] in
 /-- Splitting an operator preserves its commutant exactly. -/
 theorem slice_commutant_iff (u t : A) :
     (Commute t (halfDiff u 1) ∧ Commute t (halfSum u 1)) ↔ Commute t u := by
@@ -121,13 +121,13 @@ theorem slice_commutant_iff (u t : A) :
 theorem slice_adjoint_commutant_iff (u t : A) :
     (Commute t (star (halfDiff u 1)) ∧ Commute t (star (halfSum u 1))) ↔
       Commute t (star u) := by
-  simpa only [halfDiff, halfSum, star_smul, star_sub, star_add, star_one, star_trivial]
+  simpa only [halfDiff, halfSum, star_smul, star_sub, star_add, star_one, star_div₀, star_ofNat]
     using slice_commutant_iff (star u) t
 
 /-- The adjoint of the sum channel cancels the original isometry. -/
 theorem star_halfSum_mul (u : A) (hu : star u * u = 1) :
     star (halfSum u 1) * u = halfSum u 1 := by
-  simp only [halfSum, star_smul, star_add, star_one, star_trivial,
+  simp only [halfSum, star_smul, star_add, star_one, star_div₀, star_ofNat,
     smul_mul_assoc, add_mul, one_mul, hu]
   rw [add_comm]
 

@@ -58,7 +58,7 @@ theorem hexablock_arithmetic_compact_iff (T : H →L[ℂ] H) :
       let p := primePNat (paperCoShiftEscapePrime n)
       have hp := (slice_brownHalmos_iff (Vop p) T).mp (hfix p)
       conv_lhs => rw [← hp]
-      rw [mul_apply, mul_apply, star_eq_adjoint, adjoint_inner_right]
+      rw [mul_apply, mul_apply, _root_.ContinuousLinearMap.star_eq_adjoint, adjoint_inner_right]
     have ht : Tendsto (fun n =>
         ⟪Vop (primePNat (paperCoShiftEscapePrime n)) y,
           T (Vop (primePNat (paperCoShiftEscapePrime n)) x)⟫_ℂ) atTop (𝓝 0) := by

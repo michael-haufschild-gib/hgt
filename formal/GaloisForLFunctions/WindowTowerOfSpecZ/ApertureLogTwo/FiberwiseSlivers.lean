@@ -137,7 +137,7 @@ theorem Sliver4.bound {S : SectorData} (hS : S.valid = true) {T : Sliver4} (hT :
     intro s hs
     have hs0 : 0 < s := lt_of_le_of_lt hlo0' hs.1
     have hb : ∀ b < 4, ∀ x : ℝ, (T.xl b : ℝ) ≤ x → x < 1 →
-        (S.c0 + (T.tayB b).base : ℝ) ≤ S.c0 + vTrue x := fun b hb4 x hx hx1 => by
+        ((S.c0 + (T.tayB b).base : ℚ) : ℝ) ≤ S.c0 + vTrue x := fun b hb4 x hx hx1 => by
       obtain ⟨⟨⟨hv, _⟩, h0⟩, ht⟩ := hbr b hb4
       have := const_branch_le hv h0 ht hx hx1
       rw [Rat.cast_add]; linarith only [this]
@@ -198,7 +198,7 @@ theorem Sliver2.bound {S : SectorData} (hS : S.valid = true) {T : Sliver2} (hT :
   have hpt : ∀ u ∈ Ioo (1 - a) (T.hi : ℝ), -(2 * C) ≤ f2Integrand S G m u := by
     intro u hu
     have hb : ∀ b < 2, ∀ x : ℝ, (T.xl b : ℝ) ≤ x → x < 1 →
-        (S.c0 + (T.tayB b).base : ℝ) ≤ S.c0 + vTrue x := fun b hb2 x hx hx1 => by
+        ((S.c0 + (T.tayB b).base : ℚ) : ℝ) ≤ S.c0 + vTrue x := fun b hb2 x hx hx1 => by
       obtain ⟨⟨⟨hv, _⟩, h0⟩, ht⟩ := hbr b hb2
       have := const_branch_le hv h0 ht hx hx1
       rw [Rat.cast_add]; linarith only [this]

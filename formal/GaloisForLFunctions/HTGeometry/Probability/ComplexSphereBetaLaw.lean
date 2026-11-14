@@ -158,6 +158,7 @@ theorem integral_complexBlockCoordinateTilt_transverse (k : ℕ) :
     integral_const, probReal_univ, one_smul, integral_id_betaMeasure ha hb]
   have hden : 1 + (k : ℝ) + (Module.finrank ℝ V : ℝ) / 2 ≠ 0 := (add_pos ha hb).ne'
   field_simp
+  ring
 
 end Beta
 

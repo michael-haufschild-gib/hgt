@@ -13,7 +13,7 @@ Pal–Su–Tomar, *Hardy Spaces and Toeplitz operators on the Hexablock*, §8.
 noncomputable section
 namespace GaloisForLFunctions.HTGeometry.Tetrablock
 open Hexablock
-variable {A : Type*} [Ring A] [StarRing A] [Algebra ℝ A] [StarModule ℝ A]
+variable {A : Type*} [Ring A] [StarRing A] [Algebra ℂ A] [StarModule ℂ A]
 
 def x₁ (u v z : A) : A := z * halfSum u v
 def x₂ (u v : A) : A := halfSum u v
@@ -35,8 +35,8 @@ theorem cross (u v z : A) (hu : star u * u = 1) (hv : star v * v = 1)
     rw [mul_assoc, huv.eq, ← mul_assoc, hv, one_mul]
   calc
     star (x₂ u v) * x₃ u v z =
-        (1 / 2 : ℝ) • ((star u * u) * v + star v * u * v) * z := by
-      simp only [x₂, x₃, halfSum, star_smul, star_add, star_trivial,
+        (1 / 2 : ℂ) • ((star u * u) * v + star v * u * v) * z := by
+      simp only [x₂, x₃, halfSum, star_smul, star_add, star_div₀, star_one, star_ofNat,
         smul_mul_assoc, add_mul, mul_add, mul_assoc]
     _ = halfSum u v * z := by rw [hu, one_mul, hc, add_comm v u]; rfl
     _ = x₁ u v z := (huz.add_left hvz).smul_left _

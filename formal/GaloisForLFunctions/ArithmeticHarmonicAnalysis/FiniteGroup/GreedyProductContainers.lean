@@ -29,6 +29,25 @@ theorem subproducts_insert (q : ι → G) (I : Finset ι) (i : ι) (hi : i ∉ I
   rw [hp, union_mul, singleton_mul, singleton_mul, one_smul]
   rfl
 
+omit [Fintype G] in
+/-- The empty selection contributes the identity to every subproduct sheet. -/
+theorem one_mem_subproducts (q : ι → G) (I : Finset ι) : 1 ∈ subproducts q I := by
+  induction I using Finset.induction_on with
+  | empty => simp [subproducts]
+  | @insert i I hi ih =>
+    rw [subproducts_insert q I i hi]
+    exact mem_union_left _ ih
+
+omit [Fintype G] in
+/-- Retaining fewer indexed factors can only shrink the subproduct sheet. -/
+theorem subproducts_subset (q : ι → G) {I J : Finset ι} (hJI : J ⊆ I) :
+    subproducts q J ⊆ subproducts q I := by
+  have hfactor : subproducts q (I \ J) * subproducts q J = subproducts q I :=
+    prod_sdiff hJI
+  intro x hx
+  rw [← hfactor]
+  simpa only [one_mul] using mul_mem_mul (one_mem_subproducts q (I \ J)) hx
+
 /-- Every finite factor family admits a multiplicity-preserving greedy container. -/
 theorem exists_greedy_container (q : ι → G) (I : Finset ι) (A : Finset G) :
     ∃ J ⊆ I, 3 ^ J.card * A.card ≤ 2 ^ J.card * (A * subproducts q J).card ∧
@@ -40,7 +59,7 @@ theorem exists_greedy_container (q : ι → G) (I : Finset ι) (A : Finset G) :
       · simp [subproducts]
       · intro i hi
         simpa only [subproducts, prod_empty, mul_one] using hstop i (mem_sdiff.mp hi).1
-    · push_neg at hstop
+    · push Not at hstop
       obtain ⟨i, hi, hnot⟩ := hstop
       have hgrow := (popular_or_growth A (q i)).resolve_left hnot
       obtain ⟨J, hJ, hbound, hpopular⟩ := ih (I.erase i) (erase_ssubset hi) (A ∪ q i • A)
@@ -63,8 +82,15 @@ theorem exists_greedy_container (q : ι → G) (I : Finset ι) (A : Finset G) :
 /-- Starting from the identity gives a small skeleton whose sheet contains every unused factor
 in its half-popular container. -/
 theorem exists_subproduct_container (q : ι → G) (I : Finset ι) :
-    ∃ J ⊆ I, 3 ^ J.card ≤ 2 ^ J.card * (subproducts q J).card ∧
+    ∃ J ⊆ I, subproducts q J ⊆ subproducts q I ∧
+      3 ^ J.card ≤ 2 ^ J.card * (subproducts q J).card ∧
       ∀ i ∈ I \ J, q i ∈ popularTranslations (subproducts q J) := by
-  simpa only [Finset.card_one, mul_one, one_mul] using exists_greedy_container q I (1 : Finset G)
+  obtain ⟨J, hJ, hsize, hpopular⟩ := exists_greedy_container q I (1 : Finset G)
+  exact ⟨J, hJ, subproducts_subset q hJ,
+    by simpa only [Finset.card_one, mul_one, one_mul] using hsize,
+    by simpa only [one_mul] using hpopular⟩
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.exists_greedy_container
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.exists_subproduct_container

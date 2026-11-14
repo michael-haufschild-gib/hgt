@@ -50,8 +50,9 @@ private theorem saturated_subproducts_bound (q : ι → G) (H : Finset G)
         intro heq
         have heqset := eq_of_subset_of_card_le hsub heq.ge
         have hshift : q i • (subproducts q I * H) ⊆ subproducts q I * H := by
+          intro x hx
           rw [heqset, hstep]
-          exact subset_union_right
+          exact mem_union_right _ hx
         have hfix := eq_of_subset_of_card_le hshift (by rw [card_smul_finset])
         exact hqi (hperiodI (mem_mulStab.mpr hfix))
       obtain ⟨m, hm⟩ := hH.card_dvd_card_mul (subproducts q I)
@@ -76,4 +77,34 @@ theorem subproduct_stabilizer_growth (q : ι → G) (I : Finset ι) :
     (isSubgroupFinset_mulStab _) I
   simpa only [mul_mulStab] using h (by simp only [mul_mulStab]; exact Subset.rfl)
 
+/-- The stabilizer itself consists of represented subproducts. -/
+theorem stabilizer_subset_subproducts (q : ι → G) (I : Finset ι) :
+    mulStab (subproducts q I) ⊆ subproducts q I := by
+  simpa only [one_smul] using smul_mulStab_subset (one_mem_subproducts q I)
+
+/-- An unrepresented target consumes another whole stabilizer coset. -/
+theorem subproduct_hit_or_coset_bound (q : ι → G) (I : Finset ι) (g : G) :
+    g ∈ subproducts q I ∨
+      ((I.filter fun i => q i ∉ mulStab (subproducts q I)).card + 2) *
+        (mulStab (subproducts q I)).card ≤ Fintype.card G := by
+  by_cases hg : g ∈ subproducts q I
+  · exact Or.inl hg
+  have hd : Disjoint (subproducts q I) (g • mulStab (subproducts q I)) := by
+    rw [disjoint_left]
+    intro x hx hxg
+    have hH := isSubgroupFinset_mulStab (subproducts q I)
+    have heq := hH.smul_eq_smul_of_mem hxg
+    have hgcoset : g ∈ x • mulStab (subproducts q I) := by
+      rw [heq]
+      exact hH.mem_smul_self g
+    exact hg (smul_mulStab_subset hx hgcoset)
+  have htotal := card_le_univ (subproducts q I ∪ g • mulStab (subproducts q I))
+  rw [card_union_of_disjoint hd, card_smul_finset] at htotal
+  have hgrowth := subproduct_stabilizer_growth q I
+  exact Or.inr (by nlinarith only [htotal, hgrowth])
+
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.subproduct_stabilizer_growth
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.stabilizer_subset_subproducts
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.subproduct_hit_or_coset_bound

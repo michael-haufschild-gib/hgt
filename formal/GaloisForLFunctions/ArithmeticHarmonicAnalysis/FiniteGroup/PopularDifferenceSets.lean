@@ -98,3 +98,9 @@ theorem popular_subgroup (H : Subgroup G) :
     omega
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.difference_popular_card
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.difference_popular_or_dyson_growth
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.difference_full_or_half
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.period_popular_or_empty
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.popular_subgroup

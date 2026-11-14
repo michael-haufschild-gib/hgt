@@ -29,7 +29,7 @@ private theorem sum_two_values {α : Type*} [Fintype α] [DecidableEq α]
   rw [sum_ite]
   simp only [filter_mem_eq_inter, univ_inter, sum_const, nsmul_eq_mul]
   have heq : univ.filter (fun a => a ∉ A) = univ \ A := by ext a; simp
-  rw [heq, card_sdiff (subset_univ _), card_univ, Nat.cast_sub (card_le_univ A)]
+  rw [heq, card_sdiff, inter_univ, card_univ, Nat.cast_sub (card_le_univ A)]
 
 /-- The local factor has mean one under the uniform law on residues. -/
 theorem sum_centeredResidueFactor {α : Type*} [Fintype α] [DecidableEq α]
@@ -107,3 +107,8 @@ theorem prime_centered_product_deviation (S : Finset Nat.Primes)
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.sum_prime_centered_product
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.sum_prime_centered_product_sq
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.sum_prime_centered_product_variance
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.prime_centered_product_deviation

@@ -24,14 +24,14 @@ theorem hexablock_shift_brownHalmos_iff (T : VecSeq E →L[ℂ] VecSeq E) :
     ∀ n m (x y : E),
       ⟪lp.single 2 (n + 1) x, T (lp.single 2 (m + 1) y)⟫_ℂ =
         ⟪lp.single 2 n x, T (lp.single 2 m y)⟫_ℂ := by
-  rw [slice_brownHalmos_iff, star_eq_adjoint, adjoint_vecForward]
+  rw [slice_brownHalmos_iff, _root_.ContinuousLinearMap.star_eq_adjoint, adjoint_vecForward]
   exact fixed_iff_toeplitz T
 
 /-- There are no nonzero compact operators satisfying these Brown–Halmos relations. -/
 theorem hexablock_shift_compact_iff (T : VecSeq E →L[ℂ] VecSeq E) :
     (BrownHalmos (halfDiff vecForward 1) (halfSum vecForward 1)
       (halfSum vecForward 1) vecForward T ∧ IsCompactOperator T) ↔ T = 0 := by
-  rw [slice_brownHalmos_iff, star_eq_adjoint, adjoint_vecForward]
+  rw [slice_brownHalmos_iff, _root_.ContinuousLinearMap.star_eq_adjoint, adjoint_vecForward]
   constructor
   · intro h
     exact eq_zero_of_compact_fixed h.2 h.1
@@ -40,7 +40,7 @@ theorem hexablock_shift_compact_iff (T : VecSeq E →L[ℂ] VecSeq E) :
 
 private theorem shift_isometry :
     star (vecForward : VecSeq E →L[ℂ] VecSeq E) * vecForward = 1 := by
-  rw [star_eq_adjoint, adjoint_vecForward]
+  rw [_root_.ContinuousLinearMap.star_eq_adjoint, adjoint_vecForward]
   exact vecBack_comp_vecForward
 
 /-- Four independently chosen shift powers give both energy partitions and the cross identity. -/
