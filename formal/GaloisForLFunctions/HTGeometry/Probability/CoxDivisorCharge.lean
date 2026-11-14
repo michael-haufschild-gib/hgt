@@ -57,6 +57,18 @@ theorem cox_divisor_error_le {ι : Type*} [Fintype ι] (K : ℝ) (g m s n : ι �
   simpa only [hp] using
     binaryLaw_integer_error_le K (fun i => fzzIntegerResidual (g i) (m i) (s i) (n i))
 
+/-- The number of tested sectors may grow with concentration, with no bound on their counts. -/
+theorem cox_expanding_divisor_realization
+    (g m s n : (k : ℕ) → Fin k → ℕ) :
+    Tendsto (fun k : ℕ => (binaryLaw (k : ℝ)
+      (fun i => (fzzIntegerResidual (g k i) (m k i) (s k i) (n k i) : ℝ))).real
+      {b | b ≠ fun i => decide (FZZDivisorRealization (g k i) (m k i) (s k i) (n k i))})
+      atTop (𝓝 0) := by
+  exact tendsto_expanding_integer_classification
+    (fun k i => fzzIntegerResidual (g k i) (m k i) (s k i) (n k i))
+    (fun k i => FZZDivisorRealization (g k i) (m k i) (s k i) (n k i))
+    (fun k i => fzzIntegerResidual_zero_iff (g k i) (m k i) (s k i) (n k i))
+
 end
 end GaloisForLFunctions.HTGeometry.FZZCigar
 
@@ -64,3 +76,4 @@ end GaloisForLFunctions.HTGeometry.FZZCigar
 #print axioms GaloisForLFunctions.HTGeometry.FZZCigar.cox_divisor_realization
 #print axioms GaloisForLFunctions.HTGeometry.FZZCigar.cox_moving_divisor_realization
 #print axioms GaloisForLFunctions.HTGeometry.FZZCigar.cox_divisor_error_le
+#print axioms GaloisForLFunctions.HTGeometry.FZZCigar.cox_expanding_divisor_realization

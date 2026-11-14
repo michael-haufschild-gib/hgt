@@ -6,8 +6,8 @@ import GaloisForLFunctions.GaloisTheoryOfZeros.Probability.FiniteGammaCoxLaw
 
 Integrality supplies a unit gap at every nonzero residual. The common error
 envelope is independent of the integer's size. Consequently a fixed finite
-number of candidates may change arbitrarily with concentration: their entire
-current zero pattern is still recovered with vanishing error probability.
+number of candidates may change arbitrarily with concentration. Even `n`
+candidates at concentration `n` have vanishing total error probability.
 -/
 
 open Filter Topology
@@ -92,6 +92,42 @@ theorem tendsto_moving_integer_classification {ι : Type*} [Fintype ι]
     by_cases h : P K i <;> simp [zeroPattern, hP, h]
   simpa only [hp] using tendsto_moving_integer_error g
 
+/-- The error envelope also dominates a linearly growing number of candidates. -/
+theorem tendsto_mul_integerEnvelope :
+    Tendsto (fun K => K * integerEnvelope K) atTop (𝓝 0) := by
+  have ha : Tendsto (fun K : ℝ => K * Real.exp (-K * Real.log 2)) atTop (𝓝 0) := by
+    simpa only [Real.rpow_one, mul_comm, neg_mul, mul_neg] using
+      tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 1 (Real.log 2)
+        (Real.log_pos (by norm_num))
+  have hb : Tendsto (fun K : ℝ => K ^ 2 * Real.exp (-K)) atTop (𝓝 0) := by
+    simpa only [Real.rpow_two, neg_one_mul] using
+      tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 2 1 zero_lt_one
+  have h := ha.add hb
+  simp only [zero_add] at h
+  apply h.congr'
+  exact Eventually.of_forall fun K => by dsimp [integerEnvelope]; ring
+
+/-- Concentration `n` classifies `n` arbitrary integer candidates simultaneously. -/
+theorem tendsto_expanding_integer_error (g : (n : ℕ) → Fin n → ℤ) :
+    Tendsto (fun n : ℕ => (binaryLaw (n : ℝ) (fun i => (g n i : ℝ))).real
+      {b | b ≠ zeroPattern (fun i => (g n i : ℝ))}) atTop (𝓝 0) := by
+  have hb (n : ℕ) : (binaryLaw (n : ℝ) (fun i => (g n i : ℝ))).real
+      {b | b ≠ zeroPattern (fun i => (g n i : ℝ))} ≤ (n : ℝ) * integerEnvelope n := by
+    simpa [max_eq_left (Nat.cast_nonneg n)] using binaryLaw_integer_error_le (n : ℝ) (g n)
+  exact squeeze_zero' (Eventually.of_forall fun _ => MeasureTheory.measureReal_nonneg)
+    (Eventually.of_forall hb) (tendsto_mul_integerEnvelope.comp tendsto_natCast_atTop_atTop)
+
+/-- Expanding integer candidate sets retain consistency for any proved zero criterion. -/
+theorem tendsto_expanding_integer_classification
+    (g : (n : ℕ) → Fin n → ℤ) (P : (n : ℕ) → Fin n → Prop)
+    [∀ n, DecidablePred (P n)] (hP : ∀ n i, g n i = 0 ↔ P n i) :
+    Tendsto (fun n : ℕ => (binaryLaw (n : ℝ) (fun i => (g n i : ℝ))).real
+      {b | b ≠ fun i => decide (P n i)}) atTop (𝓝 0) := by
+  have hp (n : ℕ) : zeroPattern (fun i => (g n i : ℝ)) = fun i => decide (P n i) := by
+    funext i
+    by_cases h : P n i <;> simp [zeroPattern, hP, h]
+  simpa only [hp] using tendsto_expanding_integer_error g
+
 end
 end GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox
 
@@ -103,3 +139,6 @@ end GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox
 #print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.binaryLaw_integer_error_le
 #print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.tendsto_moving_integer_error
 #print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.tendsto_moving_integer_classification
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.tendsto_mul_integerEnvelope
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.tendsto_expanding_integer_error
+#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.GammaCox.tendsto_expanding_integer_classification

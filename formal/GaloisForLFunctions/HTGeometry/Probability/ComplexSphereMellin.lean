@@ -65,7 +65,10 @@ theorem integral_real_homogeneous_mul_gaussian
   apply setIntegral_congr_fun measurableSet_Ioi
   intro r hr
   have hd : 1 ≤ Module.finrank ℝ E := Module.finrank_pos
-  rw [Real.rpow_add hr, ← Nat.cast_sub hd, Real.rpow_natCast]
+  have hcast : ((Module.finrank ℝ E - 1 : ℕ) : ℝ) = (Module.finrank ℝ E : ℝ) - 1 := by
+    rw [Nat.cast_sub hd, Nat.cast_one]
+  dsimp only
+  rw [Real.rpow_add hr, ← hcast, Real.rpow_natCast]
   simp only [smul_eq_mul, mul_assoc]
 
 /-- The complex Gaussian Mellin integral, including integrable negative powers. -/
@@ -78,6 +81,7 @@ theorem integral_complex_norm_rpow_gaussian {s : ℝ} (hs : -1 < s) :
       ∫ r in Ioi (0 : ℝ), r ^ (2 * s + 1) * Real.exp (-r ^ 2) := by
     apply setIntegral_congr_fun measurableSet_Ioi
     intro r hr
+    dsimp only
     rw [Real.rpow_add hr, Real.rpow_one]
     ring
   rw [he]
@@ -91,13 +95,15 @@ theorem integral_complex_norm_rpow_gaussian {s : ℝ} (hs : -1 < s) :
 section ComplexBlock
 
 variable (V : Type*) [NormedAddCommGroup V] [InnerProductSpace ℝ V]
-  [FiniteDimensional ℝ V] [MeasurableSpace V] [BorelSpace V]
+  [FiniteDimensional ℝ V]
 
 /-- A complex coordinate supplies at least two real dimensions. -/
 theorem complexBlock_finrank_ge_two : 2 ≤ Module.finrank ℝ (BlockSpace ℂ V) := by
   rw [(WithLp.linearEquiv 2 ℝ (ℂ × V)).finrank_eq,
     Module.finrank_prod, Complex.finrank_real_complex]
   omega
+
+variable [MeasurableSpace V] [BorelSpace V]
 
 /-- The spherical measure has positive total mass, even for a zero-dimensional complement. -/
 theorem complexBlock_sphere_mass_pos :
@@ -185,7 +191,7 @@ theorem complexBlockSphereMellin_pos {s : ℝ} (hs : -1 < s) :
     (Real.Gamma_pos_of_pos (by linarith only [hd])))
     (Real.Gamma_pos_of_pos (by linarith only [hs, hd]))
 
-/-- The coordinate singularity is integrable precisely throughout the Mellin range used here. -/
+/-- The coordinate singularity is integrable throughout the range `s > -1`. -/
 theorem integrable_complexBlock_sphere_rpow {s : ℝ} (hs : -1 < s) :
     Integrable (fun ω : sphere (0 : BlockSpace ℂ V) 1 =>
       ‖(ω.1 : BlockSpace ℂ V).fst‖ ^ (2 * s)) volume.toSphere := by

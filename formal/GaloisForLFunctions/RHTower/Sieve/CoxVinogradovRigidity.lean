@@ -37,7 +37,7 @@ theorem vinogradovIntegerEnergy_zero_iff {b : ℕ} (x y : Fin b → ℕ) :
     have hm := congrArg
       (fun M : Multiset ℕ => (M.map fun (n : ℕ) => (n : ℤ) ^ j).sum) h
     have he : (∑ i, (x i : ℤ) ^ j) = ∑ i, (y i : ℤ) ^ j := by
-      simpa [Multiset.map_map, Function.comp_def] using hm
+      simpa only [Multiset.map_map, Function.comp_def, Finset.sum_eq_multiset_sum] using hm
     simp only [he, sub_self, zero_pow two_ne_zero]
 
 /-- Moment-energy detection recognizes equality up to permutation, including repeated entries. -/
@@ -59,9 +59,22 @@ theorem cox_moving_vinogradov_diagonal {ι : Type*} [Fintype ι] {b : ℕ}
     (fun K i => univ.val.map (x K i) = univ.val.map (y K i))
     (fun K i => vinogradovIntegerEnergy_zero_iff (x K i) (y K i))
 
+/-- Both candidate count and tuple length may grow; concentration controls only candidate count. -/
+theorem cox_expanding_vinogradov_diagonal (b : ℕ → ℕ)
+    (x y : (k : ℕ) → Fin k → Fin (b k) → ℕ) :
+    Tendsto (fun k : ℕ => (binaryLaw (k : ℝ)
+      (fun i => (vinogradovIntegerEnergy (x k i) (y k i) : ℝ))).real
+      {d | d ≠ fun i => decide (univ.val.map (x k i) = univ.val.map (y k i))})
+      atTop (𝓝 0) := by
+  exact tendsto_expanding_integer_classification
+    (fun k i => vinogradovIntegerEnergy (x k i) (y k i))
+    (fun k i => univ.val.map (x k i) = univ.val.map (y k i))
+    (fun k i => vinogradovIntegerEnergy_zero_iff (x k i) (y k i))
+
 end
 end RHTower.Sieve
 
 #print axioms RHTower.Sieve.vinogradovIntegerEnergy_zero_iff
 #print axioms RHTower.Sieve.cox_vinogradov_diagonal
 #print axioms RHTower.Sieve.cox_moving_vinogradov_diagonal
+#print axioms RHTower.Sieve.cox_expanding_vinogradov_diagonal

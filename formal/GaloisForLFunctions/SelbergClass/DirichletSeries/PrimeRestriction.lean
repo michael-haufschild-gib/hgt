@@ -3,7 +3,8 @@ import Mathlib.NumberTheory.ArithmeticFunction.Liouville
 import Mathlib.NumberTheory.ArithmeticFunction.Misc
 import Mathlib.Algebra.Algebra.Hom
 
-/-!+# Restricting Dirichlet coefficients to a set of primes
+/-!
+# Restricting Dirichlet coefficients to a set of primes
 
 Keeping coefficients whose prime divisors belong to a fixed set is a ring endomorphism for
 Dirichlet convolution. A multiplicative function factors into its restrictions to a prime set
