@@ -17,8 +17,8 @@
    `∫ F ψ(v) = ∫_0^∞ ψ(v) a₀(F; v) |P| v^{−3} dv`.
 3. Continuation of `E` as a function (SQ2) from MMD's seed + resolvent (`TheCubicInitialResolventMatching`,
    `LocalCubicCorrectedSeeds`, `TheCubicIncomingResidue`); growth.
-4. Constant term of `θ²` (SQ3): needs `θ`'s Fourier–Bessel expansion (`WeightedCubicResidualFourierTests`,
-   no olean, peer-edited) — wait for it or rebuild the needed part.
+4. Constant term of `θ²` (SQ3): needs `θ`'s Fourier–Bessel expansion (MMD `Eisenstein/WeightedResidualFourierTests`,
+   `Eisenstein/ResidualGaussFactorization`).
 5. Renormalization and the double pole (SQ4); Mellin transfer to `D(w)` (SQ5).
 
 ## Roadmap (2): the spectral side (user: "continue 1, then 2")

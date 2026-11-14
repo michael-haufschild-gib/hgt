@@ -108,7 +108,7 @@ theorem eventually_eq_zero_or_eventually_ne_zero_of_analyticAt {F : ℂ × (Fin 
       have e : (fun τ : ℂ => (τ, r τ)) x.1 = x := Prod.ext rfl hr0
       rw [e]
       exact hF
-    exact hFx.comp hmap
+    exact AnalyticAt.comp (g := F) (f := fun τ : ℂ => (τ, r τ)) hFx hmap
   rcases hg.eventually_eq_zero_or_eventually_ne_zero with h | h
   · left
     have h' : ∀ᶠ y in 𝓝[forwardPairConfigurations n] x, F (y.1, r y.1) = 0 :=
@@ -123,7 +123,7 @@ theorem eventually_eq_zero_or_eventually_ne_zero_of_analyticAt {F : ℂ × (Fin 
         y.1 ≠ x.1 → F (y.1, r y.1) ≠ 0 :=
       ((continuous_fst.tendsto x).eventually (eventually_nhdsWithin_iff.1 h)).filter_mono
         nhdsWithin_le_nhds
-    filter_upwards [h', hloc.filter_mono (nhdsWithin_mono x diff_subset),
+    filter_upwards [h', hloc.filter_mono (nhdsWithin_mono x sdiff_subset),
       self_mem_nhdsWithin] with y hy1 hy2 hy3
     -- a configuration of the chart over the same time is `x`
     have hne : y.1 ≠ x.1 := fun e => hy3.2 (Prod.ext e (by rw [hy2, e, hr0]))
@@ -223,6 +223,3 @@ theorem eq_zero_of_frequently_eval_eq_zero {P : ℂ → MvPolynomial (Fin n) ℂ
   exact eq_zero_of_forall_eval_eq_zero hτ hb fun z hz => hall (τ, z) hz
 
 end GaloisForLFunctions.GaloisTheoryOfZeros
-
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.forall_eq_zero_or_forall_eventually_ne_zero
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.eq_zero_of_frequently_eval_eq_zero

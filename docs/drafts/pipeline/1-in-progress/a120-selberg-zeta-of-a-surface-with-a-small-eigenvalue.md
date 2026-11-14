@@ -108,12 +108,19 @@ Notation: `X = Γ\ℍ` a `CompactQuotient` with `|tr γ| > 2` for `γ ≠ 1` (tr
    `≤ |F|(4 tail_a(U) + (2πL_U/n)²/c)` (`|ΔF| ≤ 2` always, `≤ 2πL_U/n` for `u ≤ U`). Choose `U`, then `n`:
    `Re⟨F, T_aF⟩ > ‖F‖²/(c + ¼)`; the constrained norm of `T_a` on `1^⊥` is an eigenvalue `μ > 1/(c + ¼)`,
    `λ = 1/μ − c < ¼`, and `λ ≠ 0` by ergodicity (`k_a > 0`).
-10. *Open: entire continuation.* `Z = κE e^{G}`, `e^{G}` has the factor `Π_k (s+k)^{(2k+1)|F|/2π}`: `Z`
-   extends to an entire function iff `|F|/2π ∈ ℤ` (Gauss–Bonnet, `|F| = 4π(g − 1)`). The Lean statement
-   is on `Re s > 0`. Candidate routes: (a) Dirichlet polygon, vertex cycles with angle sum `2π`, fan
-   triangulation and `area(T) = π − Σ angles`, giving `|F| = 2π(E − V − 1)`; (b) weight-`m` Bergman
-   projections: `rank = ∫_F K_m(z,z) = (m−1)|F|/4π` (hyperbolic orbital integrals of holomorphic kernels
-   vanish), `m = 4, 6` give `|F|/4π ∈ ℤ`.
+10. *Integrality of the area* (`|F| ∈ 4πℕ`, Gauss–Bonnet without polygons). `h(z, w) = 2i√(Im z Im w)/(z − w̄)`:
+   `|h|² = 1/(1 + u)`, `h(z, z) = 1`, `h(w, z) = \bar h(z, w)`, `h(gz, gw) = ε_g(z) \bar ε_g(w) h(z, w)`,
+   `ε_g(z) = j_g(z)/|j_g(z)|`. *Reproducing identity* (`m ≥ 2`): `∫_ℍ h(z,y)^m h(y,w)^m dμ(y) = (4π/(m−1)) h(z,w)^m`;
+   at `z = i` the Cayley map `y = i(1+ζ)/(1−ζ)` gives `h(i,y)h(y,w) = (1−|ζ|²) h(i,w)/(1 − ζω̄)`,
+   `dμ = 4dA/(1−|ζ|²)²`, and `∫_D (1−|ζ|²)^{m−2}(1−ζω̄)^{−m} dA = π/(m−1)` (circle means). For `m ≥ 3`,
+   `K_m(z,w) = ((m−1)/4π) Σ_γ h(z,γw)^m ε_γ(w)^m` is bounded and hermitian, `K_m(γz, w) = ε_γ(z)^m K_m(z, w)`, and
+   unfolding gives `∫_F K_m(z,y)K_m(y,w) dμ(y) = K_m(z,w)`: `P_m` is a Hilbert–Schmidt orthogonal projection, of
+   finite rank `d_m = tr P_m = ∫_F K_m(y,y)`. The term `γ = 1` gives `(m−1)|F|/4π`; for `γ ≠ 1`, `u(y,γy) ≥ u₀ > 0`
+   on `F`, so the rest is `≤ ((m−1)/4π)|F| M q^{m−3}`, `q = (1+u₀)^{−1/2}`. Hence `d_{m+1} − d_m → |F|/4π`:
+   `|F|/4π ∈ ℕ`.
+11. *Entire continuation.* `N = |F|/2π ∈ ℕ`: `e^{N g_k(s)} = (s+k)^{N(2k+1)} e^{N((s²−s)/(a+k) − 2s − c_k)}` is entire,
+   and `|g_k(s)| ≤ C_R/k²` on `|s| < R`, `k ≥ 2R`, so `Π_k` converges locally uniformly on `ℂ`:
+   `Ẑ = κ E e^{A(s²−s)} Π_k e^{N g_k}` is entire and equals `Z` on `Re s > 0`.
 
 ## Status
 Lean (folder `CompactHyperbolicSurfaces/`, umbrella `CompactHyperbolicSurfaces.lean`, wired into
@@ -158,7 +165,7 @@ Lean (folder `CompactHyperbolicSurfaces/`, umbrella `CompactHyperbolicSurfaces.l
   holomorphy on `Re s > 0`, functional equation, zeros off the line in the strip = `{½ ± √(¼ − λ_j)}`,
   finite and nonempty).
 
-Open: entire continuation (step 10, Gauss–Bonnet).
+Open: steps 10–11 (in progress).
 
 ## Log
 - 2026-11-13 — created; route analysis (compact surface needed; cusped and periodic models fail the

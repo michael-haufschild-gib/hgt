@@ -134,7 +134,7 @@ RHTower/HalfWeight*, SelbergPoincareUnfolding), the bridge γ₂ ↔ G̃.
 
 **Next infrastructure (for C16/M2 in Lean).** (i) Rankin–Selberg unfolding of the cubic Eisenstein
 series on ℍ³ (MMD has E, the residue θ, cusp-strip Fourier tests; no unfolding over Γ\ℍ³); (ii) θ's
-Fourier expansion (in `WeightedCubicResidualFourierTests`, no olean, under peer edit); (iii) Zagier
+Fourier expansion (MMD `Eisenstein/WeightedResidualFourierTests`, `Eisenstein/ResidualGaussFactorization`); (iii) Zagier
 renormalization on ℍ³; (iv) bridge γ₂ ↔ G̃ (`residueTraceQuotientChar_phase`, `paperE`). Checked
 2026-11-12: MMD has fundamental domains for every H ≤ levelThree
 (`hyperbolicFundamentalSet_isFundamentalDomain`), invariant volume, E as a height series

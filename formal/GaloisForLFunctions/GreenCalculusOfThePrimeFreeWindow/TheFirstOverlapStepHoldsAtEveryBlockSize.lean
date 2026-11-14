@@ -22,9 +22,11 @@ aperture of the first step the ground energy is positive.
   `10609/5000` has the gap `1/50000` (`hasGap_neutralWindow_firstStep`) and, for `R ≤ J`,
   exactly one bound state (`hermNegIndex_neutralWindow_firstStep`), at every block size and
   for every cutoff `Q ≥ 2`. On the two ends of a window of the first step
-  `B G₊ Bᵀ + 1/50000 ⪯ N_e + (Bφ)(Bφ)ᵀ/μ` (`greenForm_firstStep`); the excess of the first
-  step vanishes at every level `C ≥ −1/50000` (`schurStepExcess_firstStep`), and the ladder
-  starts without loss (`levelAt_one`).
+  `B G₊ Bᵀ + 1/50000 ⪯ N_e + (Bφ)(Bφ)ᵀ/μ` (`greenForm_firstStep`); the middle dressed by the
+  attraction of both ends holds one bound state (`hermNegIndex_dressedMiddle_firstStep`,
+  `dressedMiddle_wells_bound_firstStep`); the excess of the first step vanishes at every level
+  `C ≥ −1/50000` (`schurStepExcess_firstStep`), and the ladder starts without loss
+  (`levelAt_one`).
 
 The step is the floor of Weil's form at its aperture, carried to the matrices. No bound for the
 Green matrix of the middle enters.
@@ -52,7 +54,8 @@ theorem overlapSchurLevel_nonneg_of_floor {Q R a b : ℕ} (hR : 1 ≤ R) {c : �
     {C : ℝ} (hC : -c ≤ C) (hCμ : C < bindingEnergy (R + a)) (e : Fin a ⊕ Fin b → ℝ) :
     0 ≤ e ⬝ᵥ (overlapSchurLevel Q R a b C *ᵥ e) := by
   have hD : 1 ≤ R + a := by omega
-  have hμ : -c < bindingEnergy (R + a) := by linarith [one_lt_bindingEnergy hD]
+  have hμ : -c < bindingEnergy (R + a) :=
+    (neg_nonpos.mpr hc0).trans_lt (zero_lt_one.trans (one_lt_bindingEnergy hD))
   have hA := (oneBoundState_primeFreeMiddle hD).add_diagonal hμ
     (by linarith : (0 : ℝ) < 1 / 5000 + -c)
   have hidx : hermNegIndex ((neutralWindow Q R (a + (R + a) + b) +
@@ -114,7 +117,8 @@ theorem schurStepExcess_eq_zero_of_le_groundEnergy
       rw [hnat]
       have h2 : ((2 * (R + a) + b : ℕ) : ℝ) < (((Q + 1) * R : ℕ) : ℝ) := by
         have h3 := mul_lt_mul_of_pos_right hQ hR0
-        push_cast
+        have hw := hwhole
+        push_cast at hw ⊢
         linarith
       exact_mod_cast h2
     exact (windowExcess_eq_zero_of_floor hR hc0 hc
@@ -168,6 +172,27 @@ theorem greenForm_firstStep {Q R a b : ℕ} (hQ : 2 ≤ Q) (hR : 1 ≤ R) (ha : 
         (groundVector (R + a) ⬝ᵥ (endCoupling Q R a b *ᵥ e)) ^ 2 / bindingEnergy (R + a) :=
   greenForm_firstStep_of_even_floor (by norm_num) (by norm_num) evenWeilFloor_firstStep hQ hR
     ha hb e
+
+/-- **The attractions of the two ends superpose without a second bound state.** On the first
+step the dyadic middle dressed by the attraction of both ends holds exactly one bound state. -/
+theorem hermNegIndex_dressedMiddle_firstStep {Q R a b : ℕ} (hQ : 2 ≤ Q) (hR : 1 ≤ R)
+    (ha : 100 * a ≤ 3 * R) (hb : 50 * b ≤ 3 * (R + a)) :
+    hermNegIndex ((dressedMiddle Q R a b).map (↑) :
+      Matrix (Fin (R + a)) (Fin (R + a)) ℂ) = 1 := by
+  rw [← hermNegIndex_neutralWindow_eq_dressedMiddle hR (by omega) (by omega)]
+  exact hermNegIndex_neutralWindow_firstStep hQ hR (by omega) (by omega)
+
+/-- **The Hodge index inequality of the dressed middle on the first step**: two nonnegative
+packets of the dyadic middle without a common block, the first of negative dressed energy,
+satisfy the reverse Cauchy–Schwarz inequality of the dressed form. -/
+theorem dressedMiddle_wells_bound_firstStep {Q R a b : ℕ} (hQ : 2 ≤ Q) (hR : 1 ≤ R)
+    (ha : 100 * a ≤ 3 * R) (hb : 50 * b ≤ 3 * (R + a)) (x y : Fin (R + a) → ℝ)
+    (hx : ∀ k, 0 ≤ x k) (hy : ∀ k, 0 ≤ y k) (hxy : ∀ k, x k * y k = 0)
+    (hneg : bilin (dressedMiddle Q R a b) x x < 0) :
+    bilin (dressedMiddle Q R a b) x x * bilin (dressedMiddle Q R a b) y y ≤
+      bilin (dressedMiddle Q R a b) x y ^ 2 :=
+  (hermNegIndex_neutralWindow_eq_one_iff_dressedMiddle_wells_bound hR (by omega) (by omega)).mp
+    (hermNegIndex_neutralWindow_firstStep hQ hR (by omega) (by omega)) x y hx hy hxy hneg
 
 /-- The square of the ratio `103/50`, halved, lies inside the aperture `1881/5000`. -/
 theorem log_firstStep_ratio_lt : Real.log ((103 / 50 : ℝ) ^ 2 / 2) < 2 * (1881 / 5000) := by

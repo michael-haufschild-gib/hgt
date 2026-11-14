@@ -101,14 +101,14 @@ restriction of the corrected seed. [Initial source matching](../3-formalized/cub
 and [constant-term nonvanishing](../3-formalized/cubic-constant-term-nonvanishing.md)
 prove that the actual residue is a nonzero `8/9` Laplace eigenvector.
 
-`WeightedCubicResidualFourierTests` identifies every bounded height-weighted
+`Eisenstein/WeightedResidualFourierTests` identifies every bounded height-weighted
 residual Fourier test on every compact positive height interval, including
 the arithmetic constant mode (`kernelCuspIntervalFourier_residue_full`).
 The actual coefficients satisfy `|c_h| ≤ C_ε exp(ε|frequency(h)|)` for every
 `ε>0` (`cubicResidualFourierCoefficient_subexponential`). Exponential Bessel
 decay gives an absolutely convergent nonconstant Fourier series, continuous
 at every positive height (`cubicResidualNonzeroSeries_continuousOn`).
-Fourier completeness identifies this series with the actual residual vector
+In `Eisenstein/ResidualGaussFactorization`, Fourier completeness identifies this series with the actual residual vector
 (`cubicEisensteinResidue_continuous_representative`), giving pointwise cubic
 automorphy (`cubicResidualFunction_automorphy`).
 
@@ -122,7 +122,7 @@ the CRT twist into frequency `9ah` gives a finite decomposition into
 unramified Gauss series (`arithmeticDirichletSeries_finite_gauss`), absolutely
 convergent for `Re s > 2`.
 
-Finite rational averaging acts contractively on the actual quotient L² space
+In `Eisenstein/RationalSourceProjection`, finite rational averaging acts contractively on the actual quotient L² space
 (`kernelRationalSourceProjection_norm_le`). Its continuous residual
 representative has the extended cubic automorphy law
 (`cubicSourceResidualFunction_represents_projection`,

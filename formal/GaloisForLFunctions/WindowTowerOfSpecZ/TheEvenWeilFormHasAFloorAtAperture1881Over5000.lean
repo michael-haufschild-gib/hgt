@@ -124,7 +124,8 @@ private theorem dilated_correlation_moment (F : ℝ → ℝ) (n : ℕ) :
   have hc (t : ℝ) : autocorr F (aperture * t) =
       aperture * autocorr (fun x => F (aperture * x)) t := by
     rw [dilated_autocorr]
-    norm_num [aperture] <;> ring
+    norm_num [aperture]
+    ring
   have he (t : ℝ) : (aperture * t) ^ n * autocorr F (aperture * t) =
       aperture ^ (n + 1) * (t ^ n * autocorr (fun x => F (aperture * x)) t) := by
     rw [hc, mul_pow, pow_succ]
@@ -380,14 +381,16 @@ theorem weilQuad_ge_even_at_aperture_1881_over_5000 {F : ℝ → ℝ} (hF : Cont
     change (∫ t in Ioc (0 : ℝ) (2 * aperture), t * autocorr F t) =
       aperture ^ (1 + 2) * ∫ t in Ioc (0 : ℝ) 2, t * autocorr G t at h
     rw [hC1G] at h
-    nlinarith only [h]
+    rw [h]
+    ring
   have hC2 : (∫ t in Ioc (0 : ℝ) (2 * aperture), t ^ 2 * autocorr F t) =
       aperture ^ 4 * ((4 / 3) * m0 * (m0 + 2 * m2)) := by
     have h := dilated_correlation_moment F 2
     change (∫ t in Ioc (0 : ℝ) (2 * aperture), t ^ 2 * autocorr F t) =
       aperture ^ (2 + 2) * ∫ t in Ioc (0 : ℝ) 2, t ^ 2 * autocorr G t at h
     rw [hC2G] at h
-    nlinarith only [h]
+    rw [h]
+    ring
   have hPrime : autocorr F (Real.log 2) = aperture * C := dilated_prime_correlation hs he
   have hPole : coshPairing F = 4 * aperture * P := dilated_cosh_pairing hF.continuous hs he
   have hGamma := gamma_eq_logarithmic_lag_correlation_moments_and_remainder hF hcs
@@ -398,21 +401,23 @@ theorem weilQuad_ge_even_at_aperture_1881_over_5000 {F : ℝ → ℝ} (hF : Cont
     (∫ t in Ioc (0 : ℝ) (2 * aperture), t ^ 2 * autocorr F t) / 16 + R = _ at hGamma
   rw [hMass, hMean, hC1, hC2] at hGamma
   have hWeil := even_weil_decomposition hF hs he
-  rw [← hGamma, hPrime, hPole] at hWeil
+  rw [hMass, ← hGamma, hPrime, hPole] at hWeil
   have hNormalized : weilQuad F / (2 * aperture) = L / (2 * aperture) + c * M -
       aperture * m0 ^ 2 / 2 + aperture ^ 2 / 24 * (m0 ^ 2 - H) +
       aperture ^ 3 / 24 * m0 ^ 2 + aperture ^ 3 / 12 * m0 * m2 +
       R / (2 * aperture) - (Real.log 2 / Real.sqrt 2) * C + 4 * aperture * P ^ 2 := by
-    dsimp only [aperture] at hWeil ⊢
-    nlinarith only [hWeil]
+    rw [hWeil]
+    dsimp only [aperture]
+    ring
   have hLag := (even_logarithmic_lag_and_exterior hG hGs hGe).2
   have hScale := dilated_lag F
   change (∫ t in Ioc (0 : ℝ) 2, (autocorr G 0 - autocorr G t) / t) = aperture⁻¹ * L at hScale
   rw [hScale] at hLag
   have hBoundary : L / (2 * aperture) = regionalLogEnergy G / 4 + X := by
     change aperture⁻¹ * L / 2 = regionalLogEnergy G / 4 + X at hLag
-    dsimp only [aperture] at hLag ⊢
-    linarith only [hLag]
+    calc
+      _ = aperture⁻¹ * L / 2 := by dsimp only [aperture]; ring
+      _ = _ := hLag
   rw [hBoundary] at hNormalized
   have hM : (∫ x in Icc (-1 : ℝ) 1, G x ^ 2) = 2 * M :=
     even_integral_unit (hG.continuous.pow 2) (fun x => by rw [hGe])
@@ -449,7 +454,7 @@ theorem weilQuad_ge_even_at_aperture_1881_over_5000 {F : ℝ → ℝ} (hF : Cont
     (1 / 1000000) * M at hCapacity
   unfold firstOverlapEvenCharge at hCapacity
   rw [hMass]
-  dsimp only [aperture] at hNormalized hPrimitive hCosh hRem hCapacity ⊢
+  norm_num [aperture] at hNormalized hCosh hRem hCapacity ⊢
   nlinarith only [hNormalized, hGap, hBessel, hPrimitive, hCosh, hPotential,
     hRem, hGammaMass, hCapacity, hNonneg]
 

@@ -3,7 +3,7 @@
 Namespace `GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow`; umbrella
 `GreenCalculusOfThePrimeFreeWindow.lean`. Every statement below with a Lean name is a theorem of
 this folder unless a neighbour is named (MAFT = MixingArithmeticOfTheFloorTrees, AGZ =
-AbsoluteGeometryOfSpecZ). Statements under "Open" are not theorems.
+AbsoluteGeometryOfSpecZ, WTZ = WindowTowerOfSpecZ). Statements under "Open" are not theorems.
 
 ## 1. Motivation
 
@@ -25,9 +25,9 @@ middle. Two facts make it an object of its own.
   of the middle into the right end.
 
 The calculus is the potential theory of this one family of matrices, with the arithmetic as
-boundary data. It does not prove a step. It determines the mediator (sign structure, size,
-monotonicity), turns a step into inequalities between explicit forms, and proves which
-inequalities cannot work.
+boundary data. It determines the mediator (sign structure, size, monotonicity), turns a step
+into inequalities between explicit forms, proves which inequalities cannot work, and says what
+a step is in the continuum: the ground energy of Weil's form on one aperture.
 
 ## 2. Objects
 
@@ -51,6 +51,8 @@ inequalities cannot work.
 | Attraction of the ends, dressed middle | `endAttraction`, `dressedMiddle` | `Σ = P N_e⁻¹ Pᵀ`, `M̃ = M_D − Σ` (narrow ends) |
 | Adjacent windows | `adjacentCoupling Q R J j` | coupling of `(R, R + J]` to `(R + J, R + J + j]`; the window `(R, R + J + j]` is the block form of the two |
 | Gap | `HasGap M c` | `M ⪰ c` on a hyperplane: the second eigenvalue is at least `c` |
+| Floor of Weil's form | `WeilFloor A c`, `EvenWeilFloor`, `OddWeilFloor` | `𝔚(F) ≥ c ∫F²` on the real `C²` tests supported in `[−A, A]`; on the even tests; on the odd tests |
+| Ground energy of an aperture | `ccmRestrictedWeilGroundEnergy A` (RHTower) | the infimum of Weil's form on the unit tests of `[−A, A]`; strictly decreasing in `A` |
 
 ## 3. Language
 
@@ -71,6 +73,8 @@ inequalities cannot work.
 - The **gap** of a window is a lower bound of its neutral form on a hyperplane. A window with
   `R ≤ J` and a gap `≥ 0` is bound; a **floor** is a gap on the complement of the ground vector.
 - A **thin end** of a window is an adjacent window of relative width `1/K`: `K j ≤ R + J`.
+- A window `(R, R + J]` **lies inside the aperture** `A` if `log((R + J)/R) < 2A`: its step
+  packets are tests of Weil's form on an interval of length less than `2A`.
 - The **dipole** is the mixed jet–contact term `𝒥ᵀ G_D 𝒞`; the **sign twin** reverses the
   contact of `2`, hence the dipole, and nothing else.
 
@@ -115,6 +119,16 @@ inequalities cannot work.
    block size `KR` one block is a thin end, so a bound range with a common gap grows block by
    block; the refinement tower returns the conclusion to every block size. The bound range can
    end only where the gap of the bound windows closes.
+12. **A window is a test interval.** On charge-free packets the neutral part of `(R, R + J]` is
+   Weil's form of a step packet. So the ground energy of an aperture is a floor of every
+   window inside it on its charge-free packets, at every block size. The ground vector of the
+   middle cancels the charge of the ends, so the same number bounds the Schur complement on
+   the ends from below: it is the excess of the step. Weil's form splits into even and odd
+   tests on the aperture; the split is made on smooth tests, parity is not a symmetry of step
+   packets.
+13. **The sign gives the gap.** The ground energy decreases strictly with the aperture.
+   Nonnegative at `A`, it is positive at every smaller aperture, and all windows inside have a
+   common positive gap.
 
 ## 5. Pillar theorems
 
@@ -187,6 +201,31 @@ every window of ratio `≤ a/b` is bound. `exists_bound_window_without_gap`: an 
 preceded, at no larger ratio, by bound windows without gap `c`, for every `c > 0`.
 `riemannHypothesis_of_gap_of_bound_windows`: a common positive gap of the bound windows at
 every cutoff gives RH. The estimate is asked only of windows that are already bound.
+`hasGap_neutralWindow_iff`: a window has the gap `c` iff `N_W − c` has at most one negative
+square (Poincaré inequality of the Doob chain); the gap of `(mR, mR + mJ]` is a gap of
+`(R, R + J]` (`hasGap_neutralWindow_of_hasGap_refined`).
+
+**P14 The ground energy of an aperture is a gap of every window inside it.**
+`hasGap_neutralWindow_of_le_groundEnergy`: if `log((R + J)/R) < 2A` and `R + J < (Q + 1)R`,
+the neutral part of `(R, R + J]` is at least the ground energy of `A` on its charge-free
+packets. `overlapSchur_form_ge_of_floor`, `greenForm_add_excess_le_of_floor`: a floor `c ≥ 0`
+of a window on its charge-free packets gives `B G₊ Bᵀ + c ⪯ N_e + (Bφ)(Bφ)ᵀ/μ` on the ends.
+`WeilFloor.of_even_of_odd`: a floor is needed on the even and on the odd tests only.
+`riemannHypothesis_iff_exists_gap_neutralWindow`, `riemannHypothesis_iff_gap_of_bound_windows`:
+RH holds iff at every cutoff the windows have a common positive gap, iff the bound windows
+have one. The continuity method of P13 loses nothing.
+
+**P15 The first step.** WTZ proves the floors `1/2000` and `1/50000` of Weil's form on the
+odd and on the even tests of the aperture `1881/5000`, and `log(10609/5000) < 2 · 1881/5000`.
+`hermNegIndex_neutralWindow_firstStep`, `hasGap_neutralWindow_firstStep`: every window of ratio
+at most `10609/5000` has exactly one bound state and the gap `1/50000`, at every block size and
+for every cutoff `Q ≥ 2`. `greenForm_firstStep`: on the two ends of a window of the first step
+`B G₊ Bᵀ + 1/50000 ⪯ N_e + (Bφ)(Bφ)ᵀ/μ`. `hermNegIndex_dressedMiddle_firstStep`: the middle
+dressed by both ends holds one bound state. `schurStepExcess_eq_zero_of_le_groundEnergy`: if
+`log(ρ²/2) < 2A` and `ρ²/2 < Q + 1`, the excess of the steps of ratio `ρ` vanishes at every
+level `C ≥ −c`, for `0 ≤ c < 1/5000` at most the ground energy of `A`;
+`schurStepExcess_firstStep`, `levelAt_one`: the first step has no excess down to the level
+`−1/50000`, and the ladder to ratio three starts at its second step without loss.
 
 ## 6. Tools
 
@@ -196,7 +235,11 @@ packets (`sum_neutralBlock_ge_of_short`, `sum_blockMatrix_ge_of_short`), refinem
 (`sum_neutralBlock_refine`), negativity off the diagonal (`neutralBlock_neg`), two wells and the
 Hodge index inequality on the positive cone (`hermNegIndex_le_one_iff_forall_wells_bound`), sink
 counts (`hermNegIndex_le_one_add_card_sinks`), narrow windows
-(`one_lt_blockPotential_of_narrow`).
+(`one_lt_blockPotential_of_narrow`), Weil's form of a step packet against the ground energy
+(`groundEnergy_mul_nested_mass_le_packetForm_of_log_lt`), the ground energy as a function of
+the aperture (RHTower and ArithmeticContinuationAndCriticalEnergy: strictly decreasing,
+positive at every aperture iff RH), the floors of the two sectors at the aperture `1881/5000`
+(WTZ).
 
 **Built here.**
 - `OneBoundState`: forms, inverse, channels, reversed Cauchy–Schwarz
@@ -217,7 +260,11 @@ counts (`hermNegIndex_le_one_add_card_sinks`), narrow windows
 - A window as the block form of two adjacent windows (`neutralWindow_submatrix_finSumFinEquiv`,
   `neutralWindow_form_eq_head_tail`); the stiff corner lemma
   (`fromBlocks_form_ge_of_stiff_corner`); one bound state from a floor on any hyperplane
-  (`exists_oneBoundState_of_pos_eigenvector_of_hyperplane`); `HasGap`.
+  (`exists_oneBoundState_of_pos_eigenvector_of_hyperplane`); `HasGap` and its equivalence with
+  the margin (`hasGap_iff_hermNegIndex_add_diagonal_le_one`).
+- The transfer from an aperture to the windows inside it: floors, gaps, the excess of a step,
+  its levels (`neutralWindow_floor_of_le_groundEnergy`, `overlapSchur_form_ge_of_floor`,
+  `overlapSchurLevel_nonneg_of_floor`).
 
 ## 7. Questions and open topics
 
@@ -225,24 +272,29 @@ counts (`hermNegIndex_le_one_add_card_sinks`), narrow windows
 |---|---|---|
 | 1 | Two-sided bounds for the sliver blocks of `G_D` | answered: positive definite, between `1/(C log 2D)` and `5000`; the order `1/log D` is attained |
 | 2 | A lower bound for `μ_D` uniform in `D` | answered: `1 < −N(1,1) ≤ μ_D < 3`, nondecreasing along the tower |
-| 3 | The first step | open; three normal forms (P2, P7, P10), small blocks (P11), the threshold `1/5000` (P3); reduced to a common gap of the bound windows of ratio `≤ 10609/5000` (P13) |
-| 4 | The excess of a step as a function of the ratio | defined, bounded, monotone (P6); additive (P5); a thin step loses at most `B²/log(1/δ)` of the floor (P12); no bound below the binding energy |
+| 3 | The first step | answered: it holds at every block size with the excess `1/50000` (P15). It is the floor of Weil's form at the aperture `1881/5000` carried to the matrices (P14); no bound for `G_D` enters |
+| 4 | The excess of a step as a function of the ratio | defined, bounded, monotone (P6); additive (P5); a thin step loses at most `B²/log(1/δ)` of the floor (P12); zero, down to the level `−c`, as long as `ρ²/2` lies inside an aperture of ground energy `≥ c` (P15); a common gap of the bound windows is RH (P14) |
 | 5 | The Green kernel of the continuum form in closed form | open; normal forms only (mechanisms 2, 3, 8) |
 
 **Open.**
-- *The superposition of two attractions.* `M_D − Σ₁` and `M_D − Σ₂` each hold one bound state.
-  The first step is the same for `M_D − P N_e⁻¹ Pᵀ`, whose attraction is `Σ₁ + Σ₂` up to the
-  jets between the ends. No inequality of the corpus compares the three.
+- *A proof of a step through the middle.* P15 obtains the first step from the aperture. No
+  proof from the Green matrix is known: `M_D − Σ₁` and `M_D − Σ₂` each hold one bound state,
+  the first step is the same for `M_D − P N_e⁻¹ Pᵀ`, whose attraction is `Σ₁ + Σ₂` up to the
+  jets between the ends, and no inequality of the corpus compares the three without the floor
+  of the aperture.
 - *The sign of the dipole.* Any proof of a step at ratio three must use it; on the first step it
-  is not known whether it must.
-- *An excess below the binding energy.* The envelopes of P6 carry the factor `5000`, the
-  reciprocal of the certified floor. The dual law bounds the attraction by `(4/3)‖P‖²`, which
-  is no better than the bound of the margin by the norm of the coupling.
-- *The a priori gap.* P13 asks for a lower bound of the gap of a window from the fact that it
-  is bound. The Hodge index inequality on a bound window gives a gap `≥ 0` and no more.
-- *The converse of the continuity method.* Whether RH gives a common gap of the windows of a
-  cutoff is not known. It is strict decrease of the gap in the ratio: a zero mode of a window
-  that is a zero mode of a larger bound window would have to vanish.
+  is not known whether it must. The Liouville twist of Weil's form is negative on an odd test
+  of the aperture `181/500` (SelectivePositivityAndThresholdLaws); the charge of that test is
+  not controlled, so the index of the neutral part of the sign twin is not decided there.
+- *The later steps.* By P14 and P15 the steps at the ratios `2.25, 2.53, 3.21` are the ground
+  energies of the apertures `½ log(ρ²/2)` of the preceding ratios. An excess that does not come
+  from the aperture is not known: the envelopes of P6 carry the factor `5000`, and the dual
+  law bounds the attraction by `(4/3)‖P‖²`.
+- *The converse at one aperture.* One bound state of every window inside an aperture is not
+  known to give a nonnegative ground energy there: the neutral part differs from Weil's form
+  by the pole plane, and the proof of AGZ uses windows far outside the aperture.
+- *An a priori gap from boundness.* The Hodge index inequality on a bound window gives a gap
+  `≥ 0` and no more; a positive lower bound from boundness alone is RH (P14).
 - *Wide ends bind.* The dual law needs ends without bound states; the threshold ratio of a
   bound window is not determined.
 - *The continuum.* The Green forms of the tower increase and are bounded, so they converge on
@@ -259,8 +311,11 @@ counts (`hermNegIndex_le_one_add_card_sinks`), narrow windows
 | The certified floors give the first step | They need a conditional coupling of norm `≤ 1/5000`; adjacent jets are `≈ 0.69` |
 | A perturbation from the certified range reaches the first step | It reaches ends of relative width `exp(−6760003)`: adjacent windows couple with order one, and an end of width `δ` has stiffness `log(1/δ)` (P12) |
 | A chain of thin ends reaches a fixed ratio | The losses `B²/log(1/δ)` are not summable over a chain of fixed total width |
-| The certified range `J ≤ 53R/50` is sharp | Windows beyond it are bound with floor `1/10000` at every block size (P12) |
-| An a priori gap of the bound windows is less than RH | It implies RH (P13); whether RH implies it is open |
+| The certified range `J ≤ 53R/50` is sharp | Windows up to ratio `10609/5000` have the gap `1/50000` at every block size (P15) |
+| An a priori gap of the bound windows is less than RH | It is RH (P13, P14) |
+| The first step is a statement about the Green matrix | It is the ground energy of one aperture; the Green form of the step is a consequence (P14, P15) |
+| Parity splits the window matrices | It splits Weil's form on the smooth tests of a symmetric aperture; a step packet has no parity |
+| One bound state of the windows inside an aperture is the sign of its ground energy | Only the sign gives the bound state (P14); the converse is known for all apertures together (AGZ) |
 | The Green matrix decays like `1/D` on the slivers | Its diagonal is `Θ(1/log D)` everywhere (P4) |
 | The Green matrix is indefinite in many directions | It is negative only along the charge; on charge-free packets it is positive definite (P4) |
 | A bound for `G₊` in operator norm suffices | The only uniform bound is `5000`; smooth packets give mediated couplings of order one |
@@ -278,7 +333,8 @@ counts (`hermNegIndex_le_one_add_card_sinks`), narrow windows
 | MixingArithmeticOfTheFloorTrees | the overlap law, margins and exponent laws; GCW studies the mediator of its step |
 | AbsoluteGeometryOfSpecZ | block matrix, neutral part, tower, certified windows, two wells, sink counts, twisted contacts |
 | HTGeometry, HeckeKreinToeplitz | Hermitian inertia, index comparison |
-| Certificate programmes | the floor `1/5000` at ratio `2.06`; a certificate at aperture `½ log(10609/5000)` would give the first step directly |
+| WindowTowerOfSpecZ and the certificate programmes | floors of Weil's form on an aperture: `1/5000` at ratio `2.06`, the two sectors at `1881/5000`. GCW carries a floor at an aperture to every window inside it, as a gap and as the excess of the step (P14) |
+| RHTower (CCM), ArithmeticContinuationAndCriticalEnergy | the ground energy of an aperture, its strict monotonicity, RH as its sign |
 
 Route of the finite-scale picture: certificate at one aperture → every block size → overlap
 recursion → margin and exponent receivers. GCW is the analysis of the one inequality the
@@ -291,10 +347,18 @@ bounds, monotonicity in the window and along the tower; the binding energy is pi
 absolute constants; the loss law is a theorem; the pencil separates `ζ` from its sign twin at
 ratio three; the pole plane and the dual elimination give two further normal forms of a step;
 thin ends are stiff, the gap of a window is lower semicontinuous, and the bound range ends only
-where the gap of the bound windows closes.
+where the gap of the bound windows closes. The first step holds at every block size with the
+excess `1/50000`; the excess of a step is bounded by the ground energy of its aperture; RH is
+a common positive gap of the bound windows.
 
-**Not reached.** A step. Success for the programme is a proof of the first step with a stated
-excess. P13 names one input that gives it: a common gap of the bound windows of its range.
+**Not reached.** A proof of a step from the Green matrix of the middle: the first step comes
+from the floor of Weil's form at its aperture, and the calculus carries it to the matrices.
+The steps at the ratios `2.25, 2.53, 3.21` wait for the ground energies of their apertures. A
+closed form of the Green kernel.
+
+**Success.** A step proved with a stated excess (reached for the first step, through the
+aperture); a proof of a step that uses the middle and fails for the sign twin (open); an
+excess that sums below the binding energy along the ladder (open, and RH).
 
 **What a contribution must be.**
 - **C1** Uniform in the block size, or monotone along the tower.

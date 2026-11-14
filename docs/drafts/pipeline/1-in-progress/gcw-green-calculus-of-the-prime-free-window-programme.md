@@ -56,6 +56,26 @@ Window `(R, 2D+b]`, `D = R+a`: ends `E₁ = (R, D]`, `E₂ = (2D, 2D+b]`.
   (restriction), is lower semicontinuous (P12). At block size `KR`, `log K ≥ c/2 + 2B²/c + 2`,
   one block is a thin end: from the certified `(KR, 2KR]`, bound ⇒ gap `c` (hypothesis) ⇒
   next window has gap `c/2 > 0` ⇒ bound; up to `KJ`; refinement gives `(R, R+J]`.
+  Gap = margin: for symmetric `G` with entries `≤ 0` off the diagonal and a positive
+  eigenvector, `ind(G − c) ≤ 1` gives a gap `c` on the hyperplane orthogonal to the
+  eigenvector (Poincaré inequality of the Doob chain); so a gap of `(mR, mR + mJ]` is a gap of
+  `(R, R + J]` (refinement preserves the index at every level).
+- P14 transfer from the aperture: a step packet of `(R, R+J]` is a test of Weil's form on an
+  interval of length `log((R+J)/R)`; on charge-free packets the neutral form is Weil's form
+  (`R + J < (Q+1)R`), hence `≥ E(A)·Σσ²` if `log((R+J)/R) < 2A`, `E(A)` the ground energy of
+  the aperture. So `E(A)` is a gap of every window inside the aperture (hyperplane: charge
+  zero), at every block size. Charge cancellation on the ground vector of the middle turns
+  the floor on charge-free packets into `S ⪰ c` on the two ends: the excess of the step.
+  Weil's form splits into even and odd tests (on smooth tests; parity is not a symmetry of
+  step packets). `E` is strictly decreasing in the aperture, so `E(A) ≥ 0` gives `E > 0`
+  inside: RH ⇒ common positive gap of the windows of every cutoff. With P13: RH ⟺ a priori
+  gap of the bound windows.
+- P15 levels from a floor: floor `c ∈ [0, 1/5000)` on charge-free packets ⇒ `N_W − c` has
+  index `≤ 1`; the middle keeps one bound state at level `−c`; Haynsworth ⇒ `S_{−c} ⪰ 0`;
+  unit speed in the level ⇒ `S_C ⪰ 0` for `C ∈ [−c, μ)`. A `ρ`-step window has ratio
+  `≤ ρ²/2`: if `log(ρ²/2) < 2A`, `ρ²/2 < Q + 1`, `c ≤ E(A)`, the excess of the `ρ`-steps
+  vanishes at every level `≥ −c`. First step: `ρ = 103/50`, `A = 1881/5000`
+  (`log(10609/5000) < 0.7524`), odd floor `1/2000`, even floor `1/50000` (WindowTowerOfSpecZ).
 
 ## Modules
 Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper card
@@ -116,32 +136,61 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
    `hermNegIndex_neutralWindow_eq_one_of_gap` (cutoff `Q`, ratio `≤ a/b`: bound ⇒ gap `c` for
    one `c > 0` gives all bound); `exists_bound_window_without_gap` (unconditional: an unbound
    window is preceded, at smaller ratio, by bound windows without gap `c`, every `c > 0`);
-   `riemannHypothesis_of_gap_of_bound_windows` (P13).
+   `riemannHypothesis_of_gap_of_bound_windows` (P13). Gap = margin
+   (`hasGap_iff_hermNegIndex_add_diagonal_le_one`, `hasGap_neutralWindow_iff`); the gap
+   decreases along the tower (`hasGap_neutralWindow_of_hasGap_refined`); loss of a thin step
+   at every level; gap `1/10000` beyond the certified range at every block size
+   (`hasGap_neutralWindow_beyond_certified`).
+14. (M) `TheGroundEnergyOfAnApertureIsAGapOfEveryWindowInsideIt` — `WeilFloor`,
+   `EvenWeilFloor`, `OddWeilFloor`; floor ⇒ ground energy (`WeilFloor.le_groundEnergy`),
+   parity (`WeilFloor.of_even_of_odd`); ground energy ⇒ floor on charge-free packets and gap
+   of every window inside the aperture (`neutralWindow_floor_of_le_groundEnergy`,
+   `hasGap_neutralWindow_of_le_groundEnergy`); floor ⇒ excess of the step
+   (`overlapSchur_form_ge_of_floor`, `greenForm_add_excess_le_of_floor`); first step from the
+   even sector at aperture `1881/5000` (odd floor `1/2000` of WindowTowerOfSpecZ); sign ⇒ gap
+   (`groundEnergy_pos_of_lt_of_nonneg`); `riemannHypothesis_iff_exists_gap_neutralWindow`,
+   `riemannHypothesis_iff_gap_of_bound_windows` (P14).
+15. (M) `TheFirstOverlapStepHoldsAtEveryBlockSize` — floor `c ∈ [0, 1/5000)` on charge-free
+   packets ⇒ `S_C ⪰ 0` for `C ∈ [−c, μ)` (`overlapSchurLevel_nonneg_of_floor`), excess zero
+   (`windowExcess_eq_zero_of_floor`, `schurStepExcess_eq_zero_of_le_groundEnergy`); even floor
+   `1/50000` at aperture `1881/5000` (WindowTowerOfSpecZ) ⇒ `E(1881/5000) ≥ 1/50000`; first
+   step at every block size for `Q ≥ 2`: one negative square
+   (`hermNegIndex_neutralWindow_firstStep`), gap `1/50000`, Green form with excess `1/50000`,
+   dressed middle with one bound state, `schurStepExcess Q (103/50) C = 0` for
+   `C ≥ −1/50000`, `levelAt Q 1 = 0` (P15).
 
 ## Status of the questions
 - Q1 sliver blocks: answered. `G_D = −(Σw)²/(D|N(1,1)|) + positive`; on slivers and charge-free
   packets `‖w‖²/(C log 2D) ≤ ⟨w,G_D w⟩ ≤ 5000‖w‖²`; order `1/log D` attained (P, diagonal).
 - Q2 `μ_D`: `−N(1,1) ≤ μ_D < 3`, nondecreasing along the tower.
-- Q3 first step: open. Reduced to coupling `≤ 1/5000` (M4), to the dipole (M8), to one bound
-  state of the dressed middle (M11: mediator `N_e⁻¹ ∈ [1/‖N_e‖, 4/3]`, positivity
-  preserving), to an a priori gap of the bound windows of ratio `≤ 10609/5000` (M13); small
-  blocks `R ≤ 33` (P). At ratio three the sign of the dipole is necessary (M8, P). The step at
-  every block size is one statement at aperture `½ log(10609/5000)` (refinement). Perturbation
-  from the certified range reaches ends of relative width `exp(−6760003)` only (M12): the
-  coupling of adjacent windows is of order one, the stiffness of an end of width `δ` is
-  `log(1/δ)`.
+- Q3 first step: answered at every block size, `Q ≥ 2`, ratio `≤ 10609/5000`: one negative
+  square, gap and excess `1/50000` (M15). The proof is the floor of Weil's form at aperture
+  `1881/5000` (odd `1/2000`, even `1/50000`, WindowTowerOfSpecZ) carried to the matrices
+  (M14); it does not go through bounds for the Green matrix. Reductions inside the calculus
+  (coupling `≤ 1/5000` M4, dipole M8, dressed middle M11, a priori gap M13) stay unproved by
+  their own means. Perturbation from the certified range reaches ends of relative width
+  `exp(−6760003)` only (M12).
 - Q4 excess: excess functions and envelopes (P), additive loss law (M2); thin steps: loss of
-  the floor `≤ B²/log(1/δ)` (M12), not summable along a chain.
+  the floor `≤ B²/log(1/δ)` (M12), not summable along a chain; gap = margin (M13); excess of
+  the `ρ`-steps is zero down to level `−c` while `ρ²/2` lies inside an aperture of ground
+  energy `≥ c` (M15); RH ⟺ a priori gap of the bound windows (M14).
 - Q5 closed form: open. The continuum form is `log|x| + log|p|` on an interval of ratio two, a
   truncated convolution in the multiplicative variable with the digamma symbol (infinitely many
-  poles); no closed form found. Normal forms: two channels, charge formula, pole matrix (M10).
+  poles); in the multiplicative variable the kernel is the finite part of
+  `½[1/|x−y| + 1/(x+y)]`, a regional logarithmic Laplacian; no closed form found. Normal
+  forms: two channels, charge formula, pole matrix (M10).
 
-## Open after M13
-- Converse of the continuity method: does RH give a common gap of the windows of cutoff `Q`?
-  It is strict decrease of the gap in the ratio (a zero mode of a window that stays a zero
-  mode of a larger bound window must vanish: unique continuation). Not proved.
-- A priori gap on the first step: no estimate known; the Hodge index inequality on a bound
-  window gives gap `≥ 0` only.
+## Open after M15
+- A proof of a step through the Green matrix of the middle (coupling bound, dipole sign or a
+  priori gap), not through the aperture.
+- Sign of the dipole at the first step (the sign twin has a Liouville-negative odd test at
+  aperture `181/500`; the index of the twin's neutral windows is not decided by it).
+- Later steps (`ρ = 2.25, 2.53, 3.21`): ground energies of the apertures `½ log(ρ²/2)`;
+  certificates at larger apertures (A140), outside the calculus.
+- Converse at one aperture: does one negative square of the neutral windows inside an aperture
+  at every block size give `E(A) ≥ 0`? (Known for Weil's form of the step packets; the pole
+  plane separates the two.)
+- A priori gap of a bound window; wide ends; continuum object and closed form.
 
 ## Ideas not yet done
 - Tower limits: `μ_∞ = sup_D μ_D`, limit of the Green form along the tower (bounded, monotone).
@@ -154,3 +203,4 @@ Compile clean, wired into the umbrella. Mine (M) and a second agent's (P; paper 
 - 2026-11-14 — card created; README first draft; modules 1–9 above formalized.
 - 2026-11-14 — modules 10, 11 formalized; README rewritten as the foundational document.
 - 2026-11-14 — module 11 extended to ends `16a ≤ R`, `8b ≤ R + a`; modules 12, 13 formalized.
+- 2026-11-14 — modules 14, 15 formalized: ground energy of an aperture as gap and excess; first step at every block size.

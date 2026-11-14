@@ -14,7 +14,8 @@ monodromy group `G₊(b)` is a subgroup of `W(b)`.
 * **One coset** (`mem_forwardMonodromy_or_mul_exchange_mem`). For the exchange `e` of any two
   pairs `a ↔ a'`, `−a ↔ −a'`, every `w ∈ W(b)` lies in `G₊(b)` or `w e` does.
 * **One exchange decides** (`mem_forwardMonodromy_of_exchange_mem`). `G₊(b) = W(b)` as soon as
-  `G₊(b)` contains the exchange of two pairs.
+  `G₊(b)` contains the exchange of two pairs, and then at every base time
+  (`mem_forwardMonodromy_of_exchange_mem_base`).
 
 So the group of the zeros over the forward times is determined up to one sign: it is `W(b)` or a
 subgroup of index two that contains no exchange of two pairs.
@@ -107,5 +108,35 @@ theorem mem_forwardMonodromy_of_exchange_mem (h1 : a' ≠ a) (h2 : a' ≠ fibreN
   rcases mem_forwardMonodromy_or_mul_exchange_mem hb₀ hb h1 h2 hea hea' he heo hw hfin with h | h
   · exact h
   · exact ((forwardMonodromy b hb₀ hb).mul_mem_cancel_right heG).mp h
+
+/-- **One exchange at one base time decides at every base time.** If `G₊(b₁)` contains the
+exchange of two pairs, then `G₊(b)` contains every permutation of the zeros of `H_b` that
+commutes with `z ↦ −z` and moves finitely many zeros: the transport along a forward path from
+`b₁` to `b` conjugates the exchange to an exchange in `G₊(b)`. -/
+theorem mem_forwardMonodromy_of_exchange_mem_base {b₁ : ℂ} (hb₁₀ : 0 < b₁.re)
+    (hb₁ : b₁ ∉ branchTimes) {x x' : {z : ℂ // complexHeat b₁ z = 0}}
+    {ε : Perm {z : ℂ // complexHeat b₁ z = 0}} (h1 : x' ≠ x) (h2 : x' ≠ fibreNeg b₁ x)
+    (hx : ε x = x') (hx' : ε x' = x) (hε : ∀ y, ε (fibreNeg b₁ y) = fibreNeg b₁ (ε y))
+    (ho : ∀ y, y ≠ x → y ≠ fibreNeg b₁ x → y ≠ x' → y ≠ fibreNeg b₁ x' → ε y = y)
+    (hεG : ε ∈ forwardMonodromy b₁ hb₁₀ hb₁) {w : Perm {z : ℂ // complexHeat b z = 0}}
+    (hw : ∀ q, w (fibreNeg b q) = fibreNeg b (w q)) (hfin : {q | w q ≠ q}.Finite) :
+    w ∈ forwardMonodromy b hb₀ hb := by
+  obtain ⟨γ, hγ, g0, g1⟩ := exists_isForwardPath hb₁₀ hb₀ hb₁ hb
+  obtain ⟨φ, hφ⟩ := hγ.exists_fibreEquiv g0 g1
+  have hφn : ∀ q, φ (fibreNeg b₁ q) = fibreNeg b (φ q) := fun q =>
+    Subtype.ext (hγ.transports_unique (hφ (fibreNeg b₁ q)) (hφ q).neg)
+  have hφs : ∀ y, φ.symm (fibreNeg b y) = fibreNeg b₁ (φ.symm y) := fun y => by
+    rw [Equiv.symm_apply_eq, hφn, Equiv.apply_symm_apply]
+  refine mem_forwardMonodromy_of_exchange_mem hb₀ hb (a := φ x) (a' := φ x')
+    (e := φ.permCongr ε) (fun h => h1 (φ.injective h))
+    (fun h => h2 (φ.injective (h.trans (hφn x).symm))) ?_ ?_ (fun y => ?_)
+    (fun y k1 k2 k3 k4 => ?_) (hγ.permCongr_mem_forwardMonodromy g0 g1 hφ hεG) hw hfin
+  · rw [Equiv.permCongr_apply, Equiv.symm_apply_apply, hx]
+  · rw [Equiv.permCongr_apply, Equiv.symm_apply_apply, hx']
+  · rw [Equiv.permCongr_apply, Equiv.permCongr_apply, hφs, hε, hφn]
+  · rw [Equiv.permCongr_apply, ho (φ.symm y) (fun h => k1 ((Equiv.symm_apply_eq φ).mp h))
+      (fun h => k2 (by rw [(Equiv.symm_apply_eq φ).mp h, hφn]))
+      (fun h => k3 ((Equiv.symm_apply_eq φ).mp h))
+      (fun h => k4 (by rw [(Equiv.symm_apply_eq φ).mp h, hφn])), Equiv.apply_symm_apply]
 
 end GaloisForLFunctions.GaloisTheoryOfZeros

@@ -505,7 +505,12 @@ are distinct and simple, and they are all the zeros of `H_{τ₀+s²}` in a fixe
   to the sign. The configurations of `n` zeros, no two equal or opposite, form a path
   connected set for every `n`, and a polynomial relation `P_τ(z₁, …, zₙ) = 0` that holds on an
   open and closed nonempty set of them has `P_τ = 0` at every time: zeros in distinct pairs
-  are algebraically independent over the functions of the time. An equivalence relation on a
+  are algebraically independent over the functions of the time. Near a configuration the
+  configurations are the graph of analytic functions of the time, so they form an irreducible
+  analytic curve: a function analytic at every configuration vanishes on all of them or on a
+  discrete set, and a polynomial relation with coefficients analytic in the time that holds
+  on configurations accumulating at a configuration is the zero polynomial at every time. An
+  equivalence relation on a
   fibre that `G₊` preserves is equality, the relation `z' = ±z`, or everything: the action on
   the pairs is primitive, and the cover of the squared zeros is the only cover between the
   cover of the zeros and the forward times.
@@ -580,12 +585,14 @@ collisions.
 [normal form](ASignedGroupWithTheEvenPermutationsAndAFlipUpToAnExchangeHasIndexAtMostTwo.lean),
 [index two](TheForwardMonodromyGroupHasIndexAtMostTwoInTheSignedPermutationsOfFiniteSupport.lean),
 [parity of the quartets](AnOddNumberOfQuartetsOfNonrealZerosAtARealTimeGivesEverySignedPermutation.lean),
+[isolated double collision](TheTurnAroundAnIsolatedDoubleCollisionOffTheCentreIsTheExchangeOfTwoPairs.lean),
 [centralizer and mirror](TheForwardMonodromyDeterminesTheReflectionAndTheConjugationOfTheZeros.lean),
 [deck maps](TheReflectionIsTheOnlySymmetryOfTheHeatCoverOverTheForwardTimes.lean),
 [connectedness](TheHeatCoverOverTheForwardTimesIsConnectedAndHasNoPolynomialFactor.lean),
 [independence](AZeroThatIsAContinuousFunctionOfFinitelyManyZerosIsOneOfThemUpToTheSign.lean),
 [configurations](TheConfigurationsOfZerosInDistinctPairsOverTheForwardTimesAreConnected.lean),
-[intermediate covers](TheOnlyIntermediateCoverOfTheZerosIsTheCoverOfTheSquaredZeros.lean))
+[intermediate covers](TheOnlyIntermediateCoverOfTheZerosIsTheCoverOfTheSquaredZeros.lean),
+[analytic relations](AnAnalyticRelationAmongZerosInDistinctPairsHoldsOnEveryConfigurationOrOnADiscreteSet.lean))
 
 ## Criteria
 
@@ -624,7 +631,9 @@ collisions.
 
    Remaining: one sign. `G₊ = W` iff `G₊` contains the exchange of two pairs; otherwise `G₊`
    is the kernel of the sign on the pairs or of the product of the two signs. One forward
-   branch time whose turn is an odd permutation of the pairs decides it. So does one real
+   branch time whose turn is an odd permutation of the pairs decides it: if at one forward
+   time `H_τ₀` has a double zero at `ζ₀ ≠ 0` and no multiple zero besides `±ζ₀`, the turn
+   around `τ₀` is the exchange of two pairs and `G₊ = W`. So does one real
    time: at a real time `t > 0` conjugation flips no pair (no zero is imaginary) and exchanges
    the two pairs of every quartet `{z, z̄, −z, −z̄}` of nonreal zeros, so an odd number of
    quartets at one real time gives `G₊ = W`, and if `G₊ ≠ W` the nonreal zeros form an even
@@ -720,7 +729,9 @@ belongs here when it is applied to one of the six questions.
 - The size of `G₊` is not a form of RH and gives no route to it: at index at most two in `W`
   every signed permutation of a finite set of pairs occurs. RH is the value of one element.
 - The rigidity statements are on continuous single-valued maps over the forward times off the
-  branch times. They do not exclude multivalued or analytic relations among several zeros.
+  branch times and on polynomial relations. Analytic relations among several zeros exist:
+  `H_τ(zᵢ) = 0`. The identity theorem on the configurations says that a relation persists,
+  not that it is trivial.
 - The heat cover has infinitely many sheets and is not proper over the time plane. The local
   theory gives uniqueness of lifts and continuation up to escape; that no zero leaves every
   compact set along a compact path of times is a theorem only for `Re τ > 0`.
@@ -744,16 +755,17 @@ belongs here when it is applied to one of the six questions.
   function of the time, the centre value; for the others no such function is known. The
   known ones lie near the times with `2S₀ = ±B₀`, in the direction of the imaginary axis.
   Which sign occurs on a given loop of saddles.
-- The sign on the pairs: a forward branch time whose turn is an odd permutation of the pairs,
-  for instance one double collision away from the centre and no other collision at its time,
-  or a centre time at which the central collision is double and no other collision happens.
-  The first gives `G₊ = W`; the second gives the flip of a single pair.
+- The sign on the pairs. Two existence statements, each of which settles it: a forward time
+  with one double collision away from the centre and no other collision (its turn is the
+  exchange of two pairs, so `G₊ = W`), or a real time with an odd number of quartets of
+  nonreal zeros. A centre time at which the central collision is double and no other
+  collision happens gives the flip of a single pair, not the sign on the pairs.
 - A property of the branch divisor that makes the transports of a forward loop at a real time
   and of its mirror loop agree; a mirror-symmetric presentation of `G₊` by turns.
-- Analytic relations among finitely many zeros, holomorphic in the time and the zeros.
-  Continuous single-valued dependence and persistent polynomial relations are excluded; that
-  an analytic relation valid near one configuration persists needs analytic charts of the
-  configurations, which are missing.
+- The ideal of the analytic relations among `n` zeros in distinct pairs. A relation that
+  holds on a non-discrete set of configurations holds on all of them, and polynomial relations
+  with analytic coefficients are trivial; `H_τ(zᵢ)` are relations, and whether they generate
+  all of them is open.
 - Non-escape and accumulation of branch times at times with `Re τ ≤ 0`; control of transport
   as `τ → 0`.
 - Simplicity of every zero of the centre value (all central collisions double; simple zeros

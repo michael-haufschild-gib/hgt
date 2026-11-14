@@ -15,7 +15,11 @@
   product of the exchanges of the two pairs of each quartet `{z, z̄, −z, −z̄}` of nonreal zeros;
   (F) if the number of quartets is odd at one real time `t > 0` off the branch times, then
   `G₊(b) = W(b)` for every `b`; if `G₊(b) ≠ W(b)`, the number of quartets is even at every such
-  time.
+  time;
+  (G) if at one forward time `τ₀` the function `H_τ₀` has a double zero at `ζ₀ ≠ 0` and no
+  multiple zero besides `±ζ₀`, then for all small `r` the turn of radius `r²` around `τ₀`
+  exchanges two zeros `w, w'` in distinct pairs, exchanges `−w, −w'`, and fixes every other
+  zero; hence `G₊(b) = W(b)` for every `b`.
 
 ## Goal
 
@@ -62,7 +66,15 @@ conjugation on the quartets of `A` and the identity elsewhere; `c_{A ∪ {a}} = 
 `c_A ∈ G₊(t)` iff `|A|` is even (if `c_A ∉ G` and `c_{{a}} ∉ G` then `c_A c_{{a}}⁻¹ ∈ G`; if
 `c_A ∈ G` then `c_A c_{{a}} ∉ G`). So `|S|` is even. With `|S|` odd some `c_{{a}} ∈ G₊(t)`;
 the transport along a forward path from `t` to `b` conjugates it to an exchange in `G₊(b)`,
-and (D) applies. ∎
+and (D) applies.
+
+(G) The collision at `ζ₀` has the two sheets `Z_{±ρ₀}(r) = ζ₀ + r·β_{±ρ₀}(r)` (`ρ₀ = √2`, the
+roots of the profile of order two), distinct for small `r ≠ 0`, and the turn carries `Z_ρ` to
+`Z_{−ρ}`. Both sheets tend to `ζ₀ ≠ 0`, so `Z_{ρ₀}(r) + Z_{−ρ₀}(r) → 2ζ₀ ≠ 0`: the two sheets
+lie in distinct pairs. The sheets at `−ζ₀` are `−Z_{∓ρ₀}(r)`. By the turn theorem on the whole
+fibre a zero that is not a sheet of a collision of order `≥ 2` at `τ₀` returns; the only such
+collisions are at `±ζ₀`, of order two, with the four sheets above. The turn is a forward loop
+at `τ₀ + r²`, so the exchange lies in `G₊(τ₀ + r²)`; transport to `b` and (D). ∎
 
 ## Lean
 
@@ -79,10 +91,14 @@ and (D) applies. ∎
 | D | same | `mem_forwardMonodromy_of_exchange_mem` |
 | E | `AnOddNumberOfQuartetsOfNonrealZerosAtARealTimeGivesEverySignedPermutation` | `re_ne_zero_of_complexHeat_ofReal_eq_zero`, `firstQuadrantZeros`, `quartetConj`, `quartetConj_insert`, `quartetConj_firstQuadrantZeros`, `quartetConj_singleton_exchange` |
 | F | same | `quartetConj_mem_forwardMonodromy_iff_even`, `exists_quartetConj_singleton_mem_forwardMonodromy`, `mem_forwardMonodromy_of_odd_firstQuadrantZeros`, `even_ncard_firstQuadrantZeros` |
+| base change | `TheForwardMonodromyGroupHasIndexAtMostTwoInTheSignedPermutationsOfFiniteSupport` | `mem_forwardMonodromy_of_exchange_mem_base` |
+| G | `TheTurnAroundAnIsolatedDoubleCollisionOffTheCentreIsTheExchangeOfTwoPairs` | `eventually_turn_exchange`, `mem_forwardMonodromy_of_isolated_double_collision` |
 
 ## Open
 
-Which of the three groups: equivalently whether one exchange of two pairs lies in `G₊(b)`. A
-forward branch time whose turn is an odd permutation of the pairs decides it, and so does a
-real time with an odd number of quartets of nonreal zeros. Under RH conjugation is trivial at
-every real time and (F) gives nothing.
+Which of the three groups: equivalently whether one exchange of two pairs lies in `G₊(b)`.
+Each of two existence statements decides it: a forward time with one double collision off the
+centre and no other collision (G), or a real time with an odd number of quartets of nonreal
+zeros (F). Under RH conjugation is trivial at every real time and (F) gives nothing. For (G)
+the missing input is the separation of the collisions of one time: the two-term model places
+all collisions of one sign at one model time.

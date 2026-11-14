@@ -26,8 +26,7 @@ Proof. Conjugation at `t` is an element of `G₊(t)`. Write it as the product of
 its quartets. `G₊(t)` has index at most two in the signed permutations of finite support, so if
 it contains none of these exchanges it contains the products of an even number of them and no
 product of an odd number. With an odd number of quartets `G₊(t)` therefore contains one
-exchange, and one exchange gives the whole group; a forward path carries the exchange to the
-base `b`.
+exchange, and one exchange gives the whole group at every base time.
 -/
 
 open Complex MeasureTheory Set
@@ -375,27 +374,10 @@ theorem mem_forwardMonodromy_of_odd_firstQuadrantZeros (ht : 0 < t)
     (hb₀ : 0 < b.re) (hbb : b ∉ branchTimes) {w : Perm {z : ℂ // complexHeat b z = 0}}
     (hw : ∀ x, w (fibreNeg b x) = fibreNeg b (w x)) (hfin : {x | w x ≠ x}.Finite) :
     w ∈ forwardMonodromy b hb₀ hbb := by
-  have ht₀ : 0 < ((t : ℝ) : ℂ).re := by rw [Complex.ofReal_re]; exact ht
   obtain ⟨a, ha, haG⟩ := exists_quartetConj_singleton_mem_forwardMonodromy ht hb hodd
   obtain ⟨x, x', h1, h2, hx, hx', ho⟩ := quartetConj_singleton_exchange ha
-  -- a forward path carries the exchange to the base `b`
-  obtain ⟨γ, hγ, g0, g1⟩ := exists_isForwardPath ht₀ hb₀ hb hbb
-  obtain ⟨φ, hφ⟩ := hγ.exists_fibreEquiv g0 g1
-  have hφn : ∀ q, φ (fibreNeg (t : ℂ) q) = fibreNeg b (φ q) := fun q =>
-    Subtype.ext (hγ.transports_unique (hφ (fibreNeg (t : ℂ) q)) (hφ q).neg)
-  have hφs : ∀ y, φ.symm (fibreNeg b y) = fibreNeg (t : ℂ) (φ.symm y) := fun y => by
-    rw [Equiv.symm_apply_eq, hφn, Equiv.apply_symm_apply]
-  refine mem_forwardMonodromy_of_exchange_mem hb₀ hbb (a := φ x) (a' := φ x')
-    (e := φ.permCongr (quartetConj t {a})) (fun h => h1 (φ.injective h))
-    (fun h => h2 (φ.injective (h.trans (hφn x).symm))) ?_ ?_ (fun y => ?_)
-    (fun y k1 k2 k3 k4 => ?_) (hγ.permCongr_mem_forwardMonodromy g0 g1 hφ haG) hw hfin
-  · rw [Equiv.permCongr_apply, Equiv.symm_apply_apply, hx]
-  · rw [Equiv.permCongr_apply, Equiv.symm_apply_apply, hx']
-  · rw [Equiv.permCongr_apply, Equiv.permCongr_apply, hφs, quartetConj_fibreNeg, hφn]
-  · rw [Equiv.permCongr_apply, ho (φ.symm y) (fun h => k1 ((Equiv.symm_apply_eq φ).mp h))
-      (fun h => k2 (by rw [(Equiv.symm_apply_eq φ).mp h, hφn]))
-      (fun h => k3 ((Equiv.symm_apply_eq φ).mp h))
-      (fun h => k4 (by rw [(Equiv.symm_apply_eq φ).mp h, hφn])), Equiv.apply_symm_apply]
+  exact mem_forwardMonodromy_of_exchange_mem_base hb₀ hbb (by rw [Complex.ofReal_re]; exact ht)
+    hb h1 h2 hx hx' (quartetConj_fibreNeg {a}) ho haG hw hfin
 
 /-- **If `G₊` is not the group of all signed permutations of finite support, the quartets of
 nonreal zeros are even in number** at every real time `t > 0` off the branch times. -/

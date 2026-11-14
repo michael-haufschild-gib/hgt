@@ -439,13 +439,28 @@ volume under quotient projection by a finite multiple of quotient volume and
 constructs the resulting bounded complex L² pullback with its almost-
 everywhere identity.
 
-`WeightedCubicResidualFourierTests.lean` constructs bounded height-weighted
-Fourier tests of the actual meromorphic family, proves their residue limits
-against the nonzero residual vector, and gives the exact initial scattering-
-factor identity.
+The quasi-Riemann development continues in topic subfolders, each named after
+the source folder it adapts.
 
-Theta identification and uniform contracting mean-square descent remain
-unproved here. No global cancellation
-estimate or zero-free half-plane is asserted by this module.
+- `Eisenstein/` starts with the weighted residual Fourier tests. It goes on to
+  the continuous Fourier series of the cubic residue, pointwise automorphy,
+  Gauss factorization of the residue sums, the rational source projection, cube
+  averages, and the cusp, Mellin and reflection data of the source.
+- `Reciprocity/`, `GaussSums/`, `Poisson/` and `Mellin/` hold the Kubota
+  character on rational matrices, the Gauss-sum expansions, Gaussian Poisson
+  summation, and Gamma bounds with contour shifts.
+- `QuadraticSieve/`, `CubicSieve/` and `RowCompletion/` hold the quadratic and
+  cubic large sieves, the Heath-Brown iteration and the completed cusp rows.
+- `Moments/`, `MeanSquare/`, `Inversion/`, `Descent/`, `Energy/`,
+  `Reflection/`, `Cusp/`, `Fourier/`, `Dictionary/` and `PrimeRows/` build the
+  centered moment estimates and their two-stage descent.
+- `Hecke/` holds Hecke L-functions, the Wiener–Ikehara theorem, Dirichlet base
+  change and the common probe. `PrimeCounting/` holds the annular prime mass.
+- `Detector/` holds the Gamma zero detector and the final assembly.
+
+`Detector/QuasiRiemannHypothesis.lean` ends with
+`riemannZeta_ne_zero_of_seven_eighths_lt_re`, its Dirichlet L-function form
+`DirichletCharacter.LFunction_ne_zero_of_seven_eighths_lt_re`, and the
+reflected strip `riemannZeta_ne_zero_of_re_lt_one_eighth`.
 
 The arithmetic and quotient analysis draw on the [OpenAI metaplectic argument](https://github.com/openai/math/blob/main/preprints/The-Quasi-Riemann-Hypothesis-October-5-2026/paper2.pdf). Source attribution is in `NOTICE`; license is in `LICENSE`.

@@ -60,8 +60,14 @@ not supply the general-field `7/8` estimate or conductor/ramification matching.
   `weilQuad F ≥ (1/2000)∫F²`. The polynomial comparison, third regional gap,
   and actual Weil transfer passed direct Lean checks and standard-only axiom
   audits. See `../3-formalized/a140-odd-certificate-at-1881-over-5000.md`.
-  The even sector, larger apertures, and full-sector transfer remain open;
-  see `a140-even-certificate-at-1881-over-5000.md`.
+  **The full first-overlap certificate is closed.** The even sector has floor `1/50000`:
+  `weilQuad_ge_even_at_aperture_1881_over_5000` passed its direct check and
+  standard-only axiom audit. Parity, complexification, the closed form and
+  every block matrix of ratio `≤10609/5000` retain that floor. All transfer
+  checks and axiom audits passed; see
+  `../3-formalized/a140-first-overlap-certificate-at-1881-over-5000.md`.
+  Larger apertures remain open; see
+  `a140-certificates-through-the-prime-five-boundary.md`.
 - A141: the quotient construction is formalized in
   `EveryArtinEulerProductHasAMeromorphicContinuationAndASignedIndexLaw.lean`:
   `exists_analytic_quotient_artin`, `exists_meromorphicContinuation_artin`,

@@ -59,12 +59,15 @@ nonzero. Thus prime valuations congruent to two modulo three vanish.
 
 ## Lean
 
-Module: `GaloisForLFunctions/MetaplecticMobiusDescent/WeightedCubicResidualFourierTests.lean`.
+Module `GaloisForLFunctions/MetaplecticMobiusDescent/Eisenstein/CubeAveragesAndNormalizedGauss.lean`:
 
 - `cubicSourceResidualFunction_cube_eigenrelation`
 - `rationalSourceScatteringResidue_prime_power_table`
 - `rationalSourceThetaScalar_ne_zero`
 - `normalized_sourceFourier_squarefree_cube`
+
+Module `GaloisForLFunctions/MetaplecticMobiusDescent/Eisenstein/CuspAveragesAndBesselMellin.lean`:
+
 - `sourceFourier_squarefree_cube_norm`
 - `sourceFourier_squarefree_cube_support_iff`
 

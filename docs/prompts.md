@@ -424,7 +424,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the reports in folder docs/reports/review-1311/ without history language or "this changed since last review".
+place the reports in folder docs/reports/review-1411/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 make sure to validate every claim. we have seen in previous rounds you simply restating old reports without actually validating that the old report facts were still valid.
@@ -656,7 +656,7 @@ read docs/reports/review-1311/route-obstacles.md and docs/reports/review-1311/ob
 
 understand what obstacles A162, A140, A141 and  are about.
 
-your task: find a complete solution for both obstacles and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
+your task: find a complete solution for these obstacles and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
 
 where necessary lean infrastructure is absent from our lean corpus and mathlib -> build it no matter the effort.
 
@@ -709,12 +709,7 @@ Do not use the hgtl7 skill.
 
 read and understand fully: docs/reports/review-1311/obstacles-summary.md
 
-under "## 2.21 The one big question: does the prime 2 bind through the prime-free middle with a loss that iterates? (B194 → B192, with B195)" it asks for:
-"For every block size and every window `(R,2(R+a)+b]` with `a≤3R/100`, `b≤3(R+a)/50`:
-1. prove `BG₊Bᵀ⪯N_e+(Bφ_D)(Bφ_D)ᵀ/μ_D` from two-sided bounds for the sliver blocks of the Green matrix of the dyadic middle;
-2. record the excess of the step as a function of the ratio;
-3. repeat at the ratios `2.25, 2.53, 3.21`: one bound state of `(R,3R]` at every block size.
-"
+under "## 2.5 Breakthrough question for the search for a producer: a pairing whose frame reaches the line (B187)" it asks for: "Is there a Möbius-signed pairing `(c,k)` with `c/(k−1)<3/5`; for the line, with `c≤(k−1)/2`?"
 
 your task: answer the question, find a complete solution for everything asked and unconditionally formalize the answers and their implications and collaries in lean.
 
