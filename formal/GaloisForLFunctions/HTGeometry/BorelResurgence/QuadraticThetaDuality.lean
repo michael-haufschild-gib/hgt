@@ -5,7 +5,8 @@ import GaloisForLFunctions.HTGeometry.GaussianThetaCharacteristics
 
 The Gaussian Fourier inversion `γ ↦ π²/γ` induces the action transformation
 `A ↦ iπA/γ`. Its square reverses `A`, and the stationary action changes sign.
-The reciprocal quadratic convergence inequality is exactly an open disk tangent to the origin.
+The reciprocal quadratic convergence inequality is exactly an open disk, empty when the action
+vanishes and tangent to the origin otherwise.
 These statements concern the Gaussian algebra and convergence geometry alone.
 -/
 
@@ -83,18 +84,15 @@ private theorem reciprocal_convergence_disk (A t : ℂ) (b : ℝ) (hb : 0 < b) :
     have he : (A ^ 2 / (4 * t)).re =
         ((A ^ 2).re * t.re + (A ^ 2).im * t.im) / (4 * Complex.normSq t) := by
       norm_num [Complex.div_re, Complex.normSq_mul, Complex.mul_re, Complex.mul_im]
-      field_simp [hn.ne']
-      <;> ring
+      field_simp [hn.ne']; ring
     have hr : (A ^ 2 / (8 * (b : ℂ))).re =
         (A ^ 2).re / (8 * b) := by
       norm_num [Complex.div_re]
-      field_simp [hb.ne']
-      <;> ring
+      field_simp [hb.ne']; ring
     have hi : (A ^ 2 / (8 * (b : ℂ))).im =
         (A ^ 2).im / (8 * b) := by
       norm_num [Complex.div_im]
-      field_simp [hb.ne']
-      <;> ring
+      field_simp [hb.ne']; ring
     have hdiff : Complex.normSq (t - A ^ 2 / (8 * (b : ℂ))) -
         Complex.normSq (A ^ 2 / (8 * (b : ℂ))) =
         Complex.normSq t - ((A ^ 2).re * t.re + (A ^ 2).im * t.im) /
@@ -119,7 +117,7 @@ private theorem reciprocal_convergence_disk (A t : ℂ) (b : ℝ) (hb : 0 < b) :
     rw [lt_div_iff₀ (by positivity)]
     ring_nf
 
-/-- A reciprocal Gaussian convergence region is an open disk tangent to the origin. -/
+/-- A reciprocal Gaussian convergence region is exactly an open disk, possibly empty. -/
 theorem quadratic_reciprocal_convergence_disk (A t : ℂ) (s : ℝ) :
     0 < (-(Real.exp s : ℂ) + A ^ 2 / (4 * t)).re ↔
       t ∈ ball (A ^ 2 / (8 * (Real.exp s : ℂ)))

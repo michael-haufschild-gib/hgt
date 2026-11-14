@@ -125,7 +125,3 @@ theorem mem_quartet_iff_weight_conjugates (p q : Nat.Primes) (ρ : XiDivisorSupp
     Complex.one_re]
 
 end GaloisForLFunctions.GaloisTheoryOfZeros
-
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.exists_offLine_of_not_mem_quartet
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.sum_prod_mem_of_offLine_unique
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.mem_quartet_iff_weight_conjugates

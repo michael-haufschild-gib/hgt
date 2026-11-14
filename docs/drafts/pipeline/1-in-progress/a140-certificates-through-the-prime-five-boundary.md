@@ -48,8 +48,11 @@ do not pass the polynomial capacity bound: its second principal minor is
 nonpositive. This rejects that coarse bound, not the actual Weil floor.
 Raising the potential to `1799/2000`, reducing the cross charge to `0.06681`,
 and tightening the geometric tail still leaves its second minor nonpositive.
-The next candidate retains degree eight, with harmonic gap `H₁₀`.
-A positive capacity certificate remains open.
+Retaining degree eight with harmonic gap `H₁₀`, potential `111/100`, and
+exact rational low-mode charges still leaves the second minor nonpositive
+for the degree-sixteen reciprocal and cubic geometric-tail bound.
+A positive capacity certificate remains open; further moment truncation
+must also control the reciprocal and discarded mixed-charge errors.
 
 A stronger quartic Gamma reserve follows from the exact fourth correlation moment.
 For a unit-window source, with full-window Legendre moments `r₀,…,r₄`, it is
@@ -60,6 +63,19 @@ and `63a⁵/10` times mass, respectively. All seven transitive audits in
 `WindowJumpCounts/TheQuarticLagDeficitRetainsAMassReserve.lean` passed with
 only `propext`, `Classical.choice`, and `Quot.sound`. Its final plain-file
 audit passed.
+
+For `2a≤11/10`, the Gamma remainder retains the exact quartic deficit with
+coefficient `1/176`, together with cubic reserve `5a⁴/2304` times mass.
+Consequently its uniform reserve is
+`(5a⁴/2304+47a⁵/1760)M`, or `(5a⁴/2304+63a⁵/1760)M` for odd sources.
+All four declarations in `TheGammaReserveRetainsTheQuarticLagDeficit.lean`
+passed the direct Lean check and standard-only transitive axiom audits.
+
+The three-moment cosh projection retains its complete quartic polynomial,
+with mass loss at most `1/300000` for `a≤11/20`.
+`even_cosh_pole_ge_three_moments` passed its direct check and standard-only
+axiom audit. The completed lag and pole proofs are recorded in
+`../3-formalized/a140-prime-three-lag-and-pole-bounds.md`.
 
 The Gamma comparison previously retained its polynomial moments only for
 lag radius `r≤1`. The larger windows require `r≤log(5)<2`. The extension

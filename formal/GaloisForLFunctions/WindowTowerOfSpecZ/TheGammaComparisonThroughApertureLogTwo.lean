@@ -1,6 +1,7 @@
 import GaloisForLFunctions.WindowTowerOfSpecZ.HighPrecisionConstantsAtApertureLogTwo
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheGammaKernelHasAFourteenthOrderPolynomialLowerBound
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheGammaComparisonRetainsItsChargesThroughRadiusTwo
+import GaloisForLFunctions.SpacingScaleHarmonicAnalysis.WeilsFormIsContinuousInTheLevyNorm
 import GaloisForLFunctions.RHTower.WeilMarkovPoleCapacity
 
 /-!
@@ -30,7 +31,8 @@ open Real MeasureTheory Set Filter Topology Zeta23
 open _root_.RHTower _root_.RHTower.ArchimedeanAnomaly
 open _root_.RHTower.WeilMarkovPole _root_.RHTower.WeilLevyPoleGauss
 namespace GaloisForLFunctions.WindowTowerOfSpecZ
-open ArithmeticCriticalityTheory BiScaleUncertainty
+open LatticeSectionTheory ArithmeticIncidencePositivity ArithmeticCriticalityTheory
+open BiScaleUncertainty SpacingScaleHarmonicAnalysis
 
 /-! ### Degree-22 reciprocal `sinh` lower bound on `(0, 1]` -/
 
@@ -273,7 +275,6 @@ theorem retainedGammaPolyRem_eq_expanded (t : ℝ) :
     (-519878183231709 / 327680000000000000000000 : ℝ) * t ^ 18 + (4669432996809649 / 20971520000000000000000000 : ℝ) * t ^ 20 + (-1377431922843341 / 83886080000000000000000000 : ℝ) * t ^ 22) := by
   unfold retainedGammaPolyRem
   norm_num [Finset.sum_range_succ, gammaAlphaEven]
-  ring
 
 theorem retainedGammaPolyRem_le_retainedGammaRemainderWeight {t : ℝ}
     (ht : t ∈ Ioc (0 : ℝ) (7 / 5)) :
@@ -357,7 +358,7 @@ private theorem gammaCoshPolynomial26_bounds {z : ℝ} (h0 : 0 ≤ z) (h1 : z �
       (hb 14).1, (hb 16).2, (hb 18).1, (hb 20).2, (hb 22).1, (hb 24).2, (hb 26).1]
 
 private theorem gammaCoshPolynomial26_error {z : ℝ} (h0 : 0 ≤ z) (h7 : z ≤ 7 / 10) :
-    1 / Real.cosh z - gammaCoshPolynomial26 z ≤ 22 / 10 ^ 10 := by
+    1 / Real.cosh z - gammaCoshPolynomial26 z ≤ 22 / 10 ^ 11 := by
   have h1 : z ≤ 1 := by linarith
   have hCl := cosh_ge_coshTaylor26 h0 h1
   obtain ⟨hQ0, hQ2⟩ := gammaCoshPolynomial26_bounds h0 h1
@@ -374,7 +375,7 @@ private theorem gammaCoshPolynomial26_error {z : ℝ} (h0 : 0 ≤ z) (h7 : z ≤
   have hz28 : z ^ 28 ≤ (7 / 10 : ℝ) ^ 28 := pow_le_pow_left₀ h0 h7 28
   have hz27 : z ^ 27 ≤ (7 / 10 : ℝ) ^ 27 := pow_le_pow_left₀ h0 h7 27
   have hnum : (91 / 20000000 : ℝ) * (7 / 10 : ℝ) ^ 28 +
-      8 * (7 / 10 : ℝ) ^ 27 / 10888869450418352160768000000 ≤ 22 / 10 ^ 10 := by norm_num
+      8 * (7 / 10 : ℝ) ^ 27 / 10888869450418352160768000000 ≤ (22 / 10 ^ 11 : ℝ) := by norm_num
   have hprod := mul_le_mul_of_nonneg_left hCl hQ0
   have herr := mul_le_mul_of_nonneg_right hQ2 (show 0 ≤ 4 * z ^ 27 / 10888869450418352160768000000 by positivity)
   have hc_one : 1 ≤ Real.cosh z := Real.one_le_cosh z
@@ -406,7 +407,7 @@ theorem archLevySinhWeight_le_poly14_cosh26 {t : ℝ} (ht : t ∈ Ioc (0 : ℝ) 
     field_simp [ht.1.ne']; ring
   rw [hscale] at hs'
   have hz15 : (t / 2) ^ 15 ≤ (7 / 10 : ℝ) ^ 15 := pow_le_pow_left₀ hz0.le hz7 15
-  have hnum : (7 / 10 : ℝ) ^ 15 / 20000000 + (22 / 10 ^ 10) / 2 ≤ (4 / 10 ^ 10 : ℝ) := by norm_num
+  have hnum : (7 / 10 : ℝ) ^ 15 / 20000000 + (22 / 10 ^ 11 : ℝ) / 2 ≤ (4 / 10 ^ 10 : ℝ) := by norm_num
   linarith [he, hs', hc', hz15, hnum]
 
 /-! ### Exact two-prime Weil decomposition and degree-14 Gamma comparison at `A = log 2` -/
@@ -516,13 +517,13 @@ theorem twoPrimeDegree14GammaForm_le_weilQuad {F : ℝ → ℝ} (hF : ContDiff �
     sub_nonneg.mpr ((le_abs_self _).trans (abs_autocorr_le_zero hcs hF.continuous t))
   have hiW : IntegrableOn (fun t => D t * archLevySinhWeight t) (Ioi (0 : ℝ)) :=
     integrableOn_biScaleLevyIntegrand hF hcs
+  have hsub : Ioc (0 : ℝ) r ⊆ Ioi 0 := fun _ ht => ht.1
+  have hsubtail : Ioi r ⊆ Ioi 0 := fun t ht => show (0 : ℝ) < t from lt_trans hr_pos ht
   have hsplit : (∫ t in Ioc (0 : ℝ) r, D t * archLevySinhWeight t) +
       (∫ t in Ioi r, D t * archLevySinhWeight t) = biScaleLevyEnergy F := by
-    rw [← setIntegral_union
+    rw [← setIntegral_union (s := Ioc (0 : ℝ) r) (t := Ioi r)
       (Set.disjoint_left.mpr fun t ht ht' => not_lt_of_ge ht.2 ht')
-      measurableSet_Ioi
-      (hiW.mono_set fun _ ht => ht.1)
-      (hiW.mono_set fun _ ht => lt_trans hr_pos ht),
+      measurableSet_Ioi (hiW.mono_set hsub) (hiW.mono_set hsubtail),
       Ioc_union_Ioi_eq_Ioi hr_pos.le]
     rfl
   have htail : (∫ t in Ioi r, D t * archLevySinhWeight t) =
@@ -543,36 +544,30 @@ theorem twoPrimeDegree14GammaForm_le_weilQuad {F : ℝ → ℝ} (hF : ContDiff �
       (Ioc (0 : ℝ) r) := by
     have hcont : Continuous (fun t =>
         D t * ((gammaSinhPolynomial14 (t / 2) - 1) / t + gammaCoshPolynomial14 (t / 2) / 2)) := by
-      have hpoly : (fun t : ℝ => (gammaSinhPolynomial14 (t / 2) - 1) / t) =
-          fun t => -t / 24 + 7 * t ^ 3 / 5760 - 31 * t ^ 5 / 967680 +
+      have hpoly : ∀ t : ℝ, (gammaSinhPolynomial14 (t / 2) - 1) / t =
+          -t / 24 + 7 * t ^ 3 / 5760 - 31 * t ^ 5 / 967680 +
             127 * t ^ 7 / 154828800 - 73 * t ^ 9 / 3503554560 +
             1414477 * t ^ 11 / 2678117105664000 - 8191 * t ^ 13 / 612141052723200 := by
-        funext t
+        intro t
         by_cases ht0 : t = 0
         · subst ht0; norm_num [gammaSinhPolynomial14]
         · unfold gammaSinhPolynomial14; field_simp [ht0]; ring
-      rw [hpoly]
+      simp_rw [hpoly]
       unfold gammaCoshPolynomial14
       fun_prop
     refine (hilog.add (hcont.integrableOn_Icc.mono_set Ioc_subset_Icc_self)).congr ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioc] with t ht
+    simp only [Pi.add_apply]
     field_simp [ht.1.ne']
     ring
   have hmono : (∫ t in Ioc (0 : ℝ) r,
       D t * (gammaSinhPolynomial14 (t / 2) / t + gammaCoshPolynomial14 (t / 2) / 2)) ≤
       ∫ t in Ioc (0 : ℝ) r, D t * archLevySinhWeight t := by
-    refine setIntegral_mono_on hi14 (hiW.mono_set fun _ ht => ht.1) measurableSet_Ioc fun t ht => ?_
+    refine setIntegral_mono_on hi14 (hiW.mono_set hsub) measurableSet_Ioc fun t ht => ?_
     exact mul_le_mul_of_nonneg_left
       (archLevySinhWeight_ge_polynomial14 ht.1 (ht.2.trans hr2)) (hd_nn t)
   rw [weilQuad_two_prime_decomposition hF hs]
   unfold twoPrimeDegree14GammaForm
   linarith [hsplit, htail, hmono]
-
-#print axioms gammaSinhPolynomial22_le_div_sinh
-#print axioms gammaChebyshevCoshPoly_le_inv_cosh
-#print axioms retainedGammaPolyRem_le_retainedGammaRemainderWeight
-#print axioms archLevySinhWeight_le_poly14_cosh26
-#print axioms weilQuad_two_prime_decomposition
-#print axioms twoPrimeDegree14GammaForm_le_weilQuad
 
 end GaloisForLFunctions.WindowTowerOfSpecZ

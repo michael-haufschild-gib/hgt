@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.DirichletCharacterTwist
-import GaloisForLFunctions.RHTower.SiegelProductCoefficients
+import GaloisForLFunctions.RHTower.SiegelProductLFunction
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.DoubleRootSpecialization
 
 /-!
@@ -30,6 +30,38 @@ def weightOneEisensteinCoeff {q₁ q₂ : ℕ}
   toArithmeticFunction (fun n : ℕ => χ₁ n) *
     toArithmeticFunction (fun n : ℕ => χ₂ n)
 
+/-- Absolute convergence of the character-pair coefficient series needs no cancellation. -/
+theorem weightOneEisensteinCoeff_abscissa_le {q₁ q₂ : ℕ}
+    (χ₁ : DirichletCharacter ℂ q₁) (χ₂ : DirichletCharacter ℂ q₂) :
+    LSeries.abscissaOfAbsConv (fun n => weightOneEisensteinCoeff χ₁ χ₂ n) ≤ 1 := by
+  apply LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable
+  intro σ hσ
+  have hs : 1 < (σ : ℂ).re := by simpa using hσ
+  exact LSeriesSummable_mul
+    (LSeriesSummable_toArithmeticFunction_of_norm_le (fun n => χ₁.norm_le_one n) hs)
+    (LSeriesSummable_toArithmeticFunction_of_norm_le (fun n => χ₂.norm_le_one n) hs)
+
+/-- The character-pair Dirichlet series factors throughout the half-plane `Re s > 1`,
+written here as `s = 1 + exp σ + it`. -/
+theorem weightOneEisensteinCoeff_LSeries (q₁ q₂ : ℕ)
+    (χ₁ : DirichletCharacter ℂ (q₁ + 1)) (χ₂ : DirichletCharacter ℂ (q₂ + 1))
+    (σ t : ℝ) :
+    LSeries (fun n => weightOneEisensteinCoeff χ₁ χ₂ n)
+        ((1 + Real.exp σ : ℝ) + (t : ℂ) * Complex.I) =
+      DirichletCharacter.LFunction χ₁ ((1 + Real.exp σ : ℝ) + (t : ℂ) * Complex.I) *
+        DirichletCharacter.LFunction χ₂ ((1 + Real.exp σ : ℝ) + (t : ℂ) * Complex.I) := by
+  have hs : 1 < ((1 + Real.exp σ : ℝ) + (t : ℂ) * Complex.I).re := by
+    simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+      Complex.ofReal_im, Complex.I_re, Complex.I_im, mul_zero, zero_mul,
+      sub_self, add_zero]
+    exact lt_add_of_pos_right (1 : ℝ) (Real.exp_pos σ)
+  have h₁ := LSeriesSummable_toArithmeticFunction_of_norm_le (fun n => χ₁.norm_le_one n) hs
+  have h₂ := LSeriesSummable_toArithmeticFunction_of_norm_le (fun n => χ₂.norm_le_one n) hs
+  rw [weightOneEisensteinCoeff, LSeries_mul' h₁ h₂,
+    LSeries_toArithmeticFunction, LSeries_toArithmeticFunction,
+    DirichletCharacter.LFunction_eq_LSeries χ₁ hs,
+    DirichletCharacter.LFunction_eq_LSeries χ₂ hs]
+
 /-- The two characters may have different moduli. -/
 theorem weightOneEisensteinCoeff_prime_pow {q₁ q₂ : ℕ}
     (χ₁ : DirichletCharacter ℂ q₁) (χ₂ : DirichletCharacter ℂ q₂)
@@ -40,7 +72,7 @@ theorem weightOneEisensteinCoeff_prime_pow {q₁ q₂ : ℕ}
     spectralMertensRow_two]
   apply Finset.sum_congr rfl
   intro j _
-  simp [toArithmeticFunction, pow_ne_zero _ p.property.ne_zero, map_pow]
+  simp [toArithmeticFunction, p.property.ne_zero, map_pow]
 
 /-- Irregularity is characterized by the entire repeated-root coefficient sequence. -/
 theorem weightOneEisenstein_irregular_iff {q₁ q₂ : ℕ}
@@ -92,10 +124,10 @@ common-level coefficients, with no nonvanishing premise. -/
 theorem weightOneEisensteinCoeff_twist_reduction {q : ℕ}
     (χ₁ χ₂ : DirichletCharacter ℂ q) :
     dirichletCharacterTwist χ₁
-      (weightOneEisensteinCoeff 1 (χ₁⁻¹ * χ₂)) =
+      (weightOneEisensteinCoeff (1 : DirichletCharacter ℂ q) (χ₁⁻¹ * χ₂)) =
         weightOneEisensteinCoeff χ₁ χ₂ := by
   rw [weightOneEisensteinCoeff_twist]
-  simp [← mul_assoc, MulChar.mul_inv]
+  simp [← mul_assoc]
 
 end
 

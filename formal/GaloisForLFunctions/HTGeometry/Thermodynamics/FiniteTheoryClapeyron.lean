@@ -7,7 +7,7 @@ import GaloisForLFunctions.HTGeometry.Thermofield.EntropyApplications
 # Source coexistence for finite Gibbs theories
 
 The generalized Clapeyron identity of arXiv:2611.16364 applies to the
-actual finite Gibbs free energies. Its entropy is the corpus Shannon
+finite Gibbs free energies. Its entropy is the finite Shannon
 entropy, and its slope also measures the difference in information
 reserves after accounting for the two state-space dimensions.
 
@@ -24,7 +24,7 @@ variable {n m : ℕ}
 def finiteThermalFreeEnergy (E : Fin (n + 1) → ℝ) (T : ℝ) : ℝ :=
   -(T * Real.log (finiteGibbsPartition T⁻¹ E))
 
-/-- Differentiating the finite trace gives minus the existing Shannon entropy. -/
+/-- Differentiating the finite trace gives minus the Shannon entropy. -/
 theorem finiteThermalFreeEnergy_hasDerivAt (u : ℝ) (E : Fin (n + 1) → ℝ) :
     HasDerivAt (finiteThermalFreeEnergy E)
       (-entropy (finiteGibbsStateWeight (Real.exp u)⁻¹ E)) (Real.exp u) := by

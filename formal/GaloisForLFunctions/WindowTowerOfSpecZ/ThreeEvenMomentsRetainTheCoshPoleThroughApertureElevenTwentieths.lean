@@ -98,6 +98,8 @@ private theorem cosh_pole_quartic_projection_floor {G : ℝ → ℝ} (hG : Conti
   have hE : E ^ 2 ≤ (1 / 2250000000000) * M := by
     have h := _root_.RHTower.Sieve.integral_mul_sq_le (by norm_num : (0 : ℝ) ≤ 1)
       hG (hcosh.sub hproj)
+    change E ^ 2 ≤ M * (∫ x in (0 : ℝ)..1,
+      (Real.cosh (a * x / 2) - quarticPoleProjection a x) ^ 2) at h
     exact h.trans (by simpa only [M, mul_comm] using mul_le_mul_of_nonneg_left hErr hM)
   have he : (∫ x in (0 : ℝ)..1, G x * Real.cosh (a * x / 2)) = B + E := by
     have hi1 : IntervalIntegrable (fun x => G x * Real.cosh (a * x / 2)) volume 0 1 :=

@@ -103,7 +103,7 @@ theorem gaussianAcceleration_symmetricGaussian (s v a : ℝ) :
       (Real.exp v + (4 * Real.exp s)⁻¹) =
         Real.exp v / (1 + 4 * Real.exp s * Real.exp v) := by
     field_simp [Real.exp_ne_zero, hD, hden]
-    <;> ring
+    ring
   rw [gaussianAcceleration_symmetricGaussian_raw, hrate]
   rw [show -(Real.exp v / (1 + 4 * Real.exp s * Real.exp v)) * a ^ 2 =
       -(Real.exp v * a ^ 2 / (1 + 4 * Real.exp s * Real.exp v)) by ring]

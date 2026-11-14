@@ -22,7 +22,7 @@ theorem spectralMertensRow_two (a b : ℂ) (k : ℕ) :
       ∑ j ∈ range (k + 1), a ^ j * b ^ (k - j) := by
   simp only [spectralMertensRow, Fin.prod_univ_two, Matrix.cons_val_zero,
     Matrix.cons_val_one, Matrix.cons_val_fin_one, coeff_mul, coeff_mk]
-  exact Finset.Nat.sum_antidiagonal_eq_sum_range_succ _ k
+  exact Finset.Nat.sum_antidiagonal_eq_sum_range_succ (fun i j => a ^ i * b ^ j) k
 
 /-- The collision value does not require division by the root separation. -/
 theorem spectralMertensRow_double (a : ℂ) (k : ℕ) :
@@ -68,7 +68,7 @@ theorem spectralMertensRow_double_phase_norm (θ : ℝ) (k : ℕ) :
     ‖spectralMertensRow
       ![Complex.exp ((θ : ℂ) * Complex.I), Complex.exp ((θ : ℂ) * Complex.I)] k‖ =
         (k : ℝ) + 1 := by
-  rw [spectralMertensRow_double, norm_mul, norm_pow]
+  rw [spectralMertensRow_double, norm_mul, norm_pow, Complex.norm_natCast]
   simp [Complex.norm_exp]
 
 /-- Exact cubic energy at a collision of two pure roots. -/
