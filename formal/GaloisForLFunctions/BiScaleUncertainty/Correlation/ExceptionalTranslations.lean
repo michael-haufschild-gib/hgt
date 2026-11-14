@@ -25,7 +25,7 @@ def translationPacket (f : C_c(ℝ, ℝ)) (s : Finset ι) (w t : ι → ℝ) : C
     have hs := HasCompactSupport.finset_sum (s := s)
       (f := fun i u => w i * f (u + t i))
       (fun i _ => (f.hasCompactSupport.comp_homeomorph (Homeomorph.addRight (t i))).mul_left)
-    convert hs using 1
+    convert hs using 1 <;> try rfl
     ext u
     simp only [Finset.sum_apply]⟩
 

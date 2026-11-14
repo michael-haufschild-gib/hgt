@@ -121,7 +121,7 @@ private theorem selbergGram_sub {n : ℕ} (x u v : Fin n → ℝ) :
     simp only [Pi.sub_apply, sub_mul, mul_sub, Finset.sum_sub_distrib]
     ring
   rw [selbergPacketEnergy_eq_gram, selbergPacketEnergy_eq_gram,
-    selbergPacketEnergy_eq_gram, selbergPacketCross_symm] at he
+    selbergPacketEnergy_eq_gram, selbergPacketCross_symm x u v] at he
   linarith only [he]
 
 /-- Sharp centered deletion law for the explicit Selberg correlation. -/

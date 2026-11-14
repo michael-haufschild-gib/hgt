@@ -273,7 +273,7 @@ theorem abs_qeval_le_qabsSum : ∀ (p : List ℚ) {x : ℝ}, |x| ≤ 1 → |qeva
     calc |(c : ℝ) + x * qeval cs x| ≤ |(c : ℝ)| + |x| * |qeval cs x| := by
           rw [← abs_mul]; exact abs_add_le _ _
       _ ≤ |(c : ℝ)| + 1 * (qabsSum cs : ℝ) :=
-          add_le_add_left (mul_le_mul hx ih (abs_nonneg _) zero_le_one) _
+          add_le_add le_rfl (mul_le_mul hx ih (abs_nonneg _) zero_le_one)
       _ = _ := by rw [one_mul]
 
 /-- All coefficients nonnegative. -/

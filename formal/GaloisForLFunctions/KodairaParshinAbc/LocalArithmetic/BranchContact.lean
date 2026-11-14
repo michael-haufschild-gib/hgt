@@ -113,7 +113,29 @@ theorem integer_branch_separation {ι : Type*} (s : Finset ι) (a : ι → ℤ) 
     exact fun h => hsep i hi hij (Int.natCast_dvd.mp h)
   simpa only [Int.cast_sub] using isPadicUnit_intCast hcast
 
+/-- The product of any finite set of good odd-contact primes divides the
+absolute twisting parameter. The twist need not be squarefree. -/
+theorem odd_branchContact_product_dvd_integer_twist {ι : Type*}
+    (s : Finset ι) (a : ι → ℤ) (T : Finset ℕ) {x y : ℚ} {d : ℤ}
+    (hd : d ≠ 0) (hprime : ∀ p ∈ T, p.Prime)
+    (hcurve : y ^ 2 = (d : ℚ) * ∏ i ∈ s, (x - (a i : ℚ)))
+    (hcontact : ∀ p ∈ T, ∃ j ∈ s,
+      0 < padicValRat p (x - (a j : ℚ)) ∧
+      ¬ Even (padicValRat p (x - (a j : ℚ))) ∧
+      ∀ i ∈ s, i ≠ j → ¬ p ∣ (a j - a i).natAbs) :
+    (∏ p ∈ T, p) ∣ d.natAbs := by
+  have hsub : T ⊆ d.natAbs.primeFactors := by
+    intro p hp
+    letI : Fact p.Prime := ⟨hprime p hp⟩
+    obtain ⟨j, hj, hx, hodd, hsep⟩ := hcontact p hp
+    have hdvd := odd_branchContact_dvd_integer_twist s (fun i => (a i : ℚ))
+      hj hd hx hodd (integer_branch_separation s a j hsep) hcurve
+    exact Nat.mem_primeFactors.mpr ⟨hprime p hp, hdvd, Int.natAbs_ne_zero.mpr hd⟩
+  exact (Finset.prod_dvd_prod_of_subset T d.natAbs.primeFactors id hsub).trans
+    (Nat.prod_primeFactors_dvd d.natAbs)
+
 #print axioms branchContact_product_val
 #print axioms odd_branchContact_dvd_integer_twist
+#print axioms odd_branchContact_product_dvd_integer_twist
 
 end GaloisForLFunctions.KodairaParshinAbc.LocalArithmetic

@@ -120,4 +120,39 @@ theorem primaryCount_eq_divisorChar (n : {n : ℕ // n % 2 = 1}) :
   push_cast at hc
   linarith only [hc]
 
+private theorem primary_norm_one_iff (z : ↥(normSet 1)) :
+    IsPrimary z.val ↔ z.val = 1 := by
+  constructor
+  · intro hp
+    have hn : z.val.re ^ 2 + z.val.im ^ 2 = 1 := by
+      simpa only [norm_eq, Nat.cast_one] using mem_normSet.mp z.property
+    have hpi := (isPrimary_iff z.val).mp hp
+    simp only [Int.dvd_iff_emod_eq_zero] at hpi
+    have hr : -1 ≤ z.val.re ∧ z.val.re ≤ 1 := by
+      constructor <;> nlinarith only [hn, sq_nonneg z.val.im,
+        sq_nonneg (z.val.re - 1), sq_nonneg (z.val.re + 1)]
+    have hi : -1 ≤ z.val.im ∧ z.val.im ≤ 1 := by
+      constructor <;> nlinarith only [hn, sq_nonneg z.val.re,
+        sq_nonneg (z.val.im - 1), sq_nonneg (z.val.im + 1)]
+    apply Zsqrtd.ext
+    · change z.val.re = 1
+      omega
+    · change z.val.im = 0
+      omega
+  · intro hz
+    rw [hz]
+    simp [IsPrimary]
+
+/-- Canonical primary selection has first coefficient one in every angular weight. -/
+theorem primaryCoefficient_one (k : ℕ) : primaryCoefficient k 1 = 1 := by
+  let e : ↥(normSet 1) := ⟨1, mem_normSet.mpr (by simp)⟩
+  unfold primaryCoefficient
+  simp_rw [primary_norm_one_iff]
+  rw [Finset.sum_eq_single e]
+  · simp [e]
+  · intro z _ hze
+    have hz : z.val ≠ 1 := fun h => hze (Subtype.ext h)
+    rw [if_neg hz]
+  · simp
+
 end GaloisForLFunctions.SelbergClass.GaussianAngular
