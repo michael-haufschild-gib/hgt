@@ -34,7 +34,7 @@ theorem artanh_hasDerivAt_tanh (u : ℝ) :
     filter_upwards [isOpen_Ioo.mem_nhds ⟨neg_one_lt_tanh u, tanh_lt_one u⟩] with y hy
     exact tanh_artanh hy
   simpa only [one_div, inv_inv] using
-    hf.of_local_left_inverse hc (by positivity) hlocal
+    HasDerivAt.of_local_left_inverse hc hf (by positivity) hlocal
 
 /-- Positive time derivative of the clock, written in slice coordinates. -/
 def schwarzschildClockTimeDerivative (m u X : ℝ) : ℝ :=
@@ -54,7 +54,7 @@ theorem schwarzschildCauchyClock_time_hasDerivAt (m u X : ℝ) :
   have hi := (hasDerivAt_id (schwarzschildCauchySlice u X)).div_const (sqrt (1 + X ^ 2))
   have ha := artanh_hasDerivAt_tanh u
   rw [← hratio] at ha
-  have h := (ha.comp _ hi).const_mul (4 * exp m)
+  have h := (ha.comp (schwarzschildCauchySlice u X) hi).const_mul (4 * exp m)
   have he : 4 * exp m * (cosh u ^ 2 * (1 / sqrt (1 + X ^ 2))) =
       schwarzschildClockTimeDerivative m u X := by
     unfold schwarzschildClockTimeDerivative
@@ -70,19 +70,19 @@ theorem schwarzschildCauchyClock_space_hasDerivAt (m u X : ℝ) :
   have hp : 1 + X ^ 2 ≠ 0 := by positivity
   have hbase : HasDerivAt (fun Y : ℝ => 1 + Y ^ 2) (2 * X) X := by
     simpa using ((hasDerivAt_id X).pow 2).const_add 1
-  have hi := (hbase.sqrt hp).const_div (schwarzschildCauchySlice u X) hs
+  have hi := (hasDerivAt_const X (schwarzschildCauchySlice u X)).div (hbase.sqrt hp) hs
+  simp only [zero_mul, zero_sub] at hi
   have hratio : schwarzschildCauchySlice u X / sqrt (1 + X ^ 2) = tanh u := by
     simp only [schwarzschildCauchySlice, mul_div_cancel_left₀ _ hs]
   have ha := artanh_hasDerivAt_tanh u
   rw [← hratio] at ha
   have h := (ha.comp X hi).const_mul (4 * exp m)
   have he : 4 * exp m * (cosh u ^ 2 *
-      (-schwarzschildCauchySlice u X * (2 * X / (2 * sqrt (1 + X ^ 2))) /
+      (-(schwarzschildCauchySlice u X * (2 * X / (2 * sqrt (1 + X ^ 2)))) /
         sqrt (1 + X ^ 2) ^ 2)) = schwarzschildClockSpaceDerivative m u X := by
     unfold schwarzschildClockSpaceDerivative schwarzschildClockTimeDerivative
       schwarzschildCauchySlope schwarzschildCauchySlice
     field_simp
-    ring
   rw [he] at h
   exact h
 
@@ -113,3 +113,12 @@ theorem schwarzschildClockDifferential_timelike (m u X c : ℝ) :
   exact mul_neg_of_pos_of_neg (exp_pos c) (by linarith only [h, hp])
 
 end GaloisForLFunctions.HTGeometry
+
+-- BEGIN PAPER AXIOM AUDIT
+#print axioms GaloisForLFunctions.HTGeometry.artanh_hasDerivAt_tanh
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyClock_time_hasDerivAt
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyClock_space_hasDerivAt
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildClockTimeDerivative_pos
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildClockDifferential_norm
+#print axioms GaloisForLFunctions.HTGeometry.schwarzschildClockDifferential_timelike
+-- END PAPER AXIOM AUDIT

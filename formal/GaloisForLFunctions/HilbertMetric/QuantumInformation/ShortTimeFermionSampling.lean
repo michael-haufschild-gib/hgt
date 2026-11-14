@@ -29,7 +29,8 @@ theorem twoModeSeparatingTime_pos (q s : ℝ) : 0 < twoModeSeparatingTime q s :=
 
 theorem twoModeSeparatingTime_lt (q s : ℝ) : twoModeSeparatingTime q s < exp (-s) := by
   rw [twoModeSeparatingTime, exp_neg]
-  exact one_div_lt_inv_iff₀ (by positivity) (exp_pos s) |>.mpr (by linarith [exp_pos q])
+  simpa only [one_div] using
+    one_div_lt_one_div_of_lt (exp_pos s) (by linarith [exp_pos q])
 
 /-- The explicit short sample has phase angle strictly between zero and one. -/
 theorem twoModeSeparatingTime_phaseAngle (q s : ℝ) :
@@ -69,6 +70,24 @@ theorem twoMode_arbitrarily_short_pure (q s : ℝ) :
   ⟨twoModeSeparatingTime q s, twoModeSeparatingTime_pos q s,
     twoModeSeparatingTime_lt q s, twoModeSeparatingTime_entropy q s⟩
 
+/-- Exact observed-space entropy jumps at coincident sampling times. This is a
+rank discontinuity, before any numerical singular-value cutoff is introduced. -/
+theorem twoModeTemporalEntropy_not_continuousAt_zero (q : ℝ) :
+    ¬ ContinuousAt (fun t => fermionSpectralEntropy
+      (twoModeTemporalCorrelation 1 (twoModeEvolutionPhase q t))) 0 := by
+  intro hc
+  have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
+  obtain ⟨δ, hδ, hclose⟩ := Metric.continuousAt_iff.mp hc (Real.log 2 / 2) (by positivity)
+  have ht := twoModeSeparatingTime_lt q (-Real.log δ)
+  rw [neg_neg, Real.exp_log hδ] at ht
+  have hd : dist (twoModeSeparatingTime q (-Real.log δ)) 0 < δ := by
+    simpa only [Real.dist_eq, sub_zero,
+      abs_of_pos (twoModeSeparatingTime_pos q (-Real.log δ))] using ht
+  have hbad := hclose hd
+  rw [twoModeSeparatingTime_entropy, twoModeEvolutionPhase_zero_entropy,
+    Real.dist_eq, zero_sub, abs_neg, abs_of_pos hlog] at hbad
+  linarith only [hbad, hlog]
+
 end GaloisForLFunctions.HilbertMetric
 
 -- BEGIN PAPER AXIOM AUDIT
@@ -79,4 +98,5 @@ end GaloisForLFunctions.HilbertMetric
 #print axioms GaloisForLFunctions.HilbertMetric.twoModeSeparatingTime_entropy
 #print axioms GaloisForLFunctions.HilbertMetric.twoModeEvolutionPhase_zero_entropy
 #print axioms GaloisForLFunctions.HilbertMetric.twoMode_arbitrarily_short_pure
+#print axioms GaloisForLFunctions.HilbertMetric.twoModeTemporalEntropy_not_continuousAt_zero
 -- END PAPER AXIOM AUDIT
