@@ -238,7 +238,7 @@ private theorem sq_source_pert_le (hS : S.valid = true) (m : Fin S.K → ℝ) {b
 theorem low_le (hS : S.valid = true) (hD : check S D = true) (G : ℝ → ℝ) (m : Fin S.K → ℝ)
     {ξ : ℝ} (hξ : ξ ∈ Ioo (0 : ℝ) 1) : low S D m ξ ≤ f4Integrand S G m (D.sa + D.ds * ξ) := by
   simp only [check, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hD
-  obtain ⟨⟨⟨⟨⟨⟨⟨⟨⟨hsa, hds⟩, hsb⟩, hbr⟩, hpiv⟩, -⟩, -⟩, -⟩, -⟩ := hD
+  obtain ⟨⟨⟨⟨⟨⟨⟨⟨hsa, hds⟩, hsb⟩, hbr⟩, hpiv⟩, -⟩, -⟩, -⟩, -⟩ := hD
   have hsa' : (0 : ℝ) ≤ D.sa := by exact_mod_cast hsa
   have hds' : (0 : ℝ) < D.ds := by exact_mod_cast hds
   have hsb' : (D.sa : ℝ) + D.ds ≤ (1 - aHiQ) / 2 := by exact_mod_cast hsb
@@ -317,6 +317,117 @@ theorem low_le (hS : S.valid = true) (hD : check S D = true) (G : ℝ → ℝ) (
     simp only [f4Integrand, a]; ring
   rw [hf]
   nlinarith [hsq, hmono, hz0, hz1, hz2, hz3]
+
+/-! ### Integration in the unit variable -/
+
+private theorem sum_sym_avg {K : ℕ} (X : Fin K → Fin K → ℝ) (m : Fin K → ℝ) :
+    ∑ i : Fin K, ∑ j : Fin K, ((X i j + X j i) / 2) * m i * m j =
+      ∑ i : Fin K, ∑ j : Fin K, X i j * m i * m j := by
+  have hswap : ∑ i : Fin K, ∑ j : Fin K, X j i * m i * m j =
+      ∑ i : Fin K, ∑ j : Fin K, X i j * m i * m j := by
+    rw [Finset.sum_comm]
+    exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+  have h : ∑ i : Fin K, ∑ j : Fin K, ((X i j + X j i) / 2) * m i * m j =
+      (∑ i : Fin K, ∑ j : Fin K, X i j * m i * m j +
+        ∑ i : Fin K, ∑ j : Fin K, X j i * m i * m j) / 2 := by
+    rw [← Finset.sum_add_distrib, Finset.sum_div]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [← Finset.sum_add_distrib, Finset.sum_div]
+    exact Finset.sum_congr rfl fun j _ => by ring
+  rw [h, hswap]; ring
+
+/-- The `ξ`-integral of the minorant is the exact certificate form. -/
+theorem integral_low (hD : check S D = true) (m : Fin S.K → ℝ) :
+    (D.ds : ℝ) * (∫ ξ in (0 : ℝ)..1, low S D m ξ) =
+      -(quadR S.K (qMat S D) m) - ∑ k : Fin S.K, (pert S D k : ℝ) * m k ^ 2 := by
+  simp only [check, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hD
+  obtain ⟨⟨⟨⟨-, hW⟩, hlen⟩, -⟩, -⟩ := hD
+  have hWb : ∀ b : Fin 4, ∀ i < S.K, (D.WB b i).length ≤ 7 := fun b i hi => hW b b.2 i hi
+  have hEb : ∀ b : Fin 4, ∀ i < S.K, (er S D b i).length ≤ 32 := fun b i hi =>
+    fastEval_lengths S D hlen b.2 hi
+  have hc : ∀ f : ℝ → ℝ, Continuous f → IntervalIntegrable f volume 0 1 :=
+    fun f hf => hf.intervalIntegrable 0 1
+  have hcont1 : ∀ b : Fin 4, Continuous fun ξ => linQ (D.WB b) m ξ * linQ (hh S D b) m ξ :=
+    fun b => (continuous_linQ _ m).mul (continuous_linQ _ m)
+  have hcont2 : ∀ b : Fin 4, Continuous fun ξ => linQ (er S D b) m ξ * linQ (er S D b) m ξ :=
+    fun b => (continuous_linQ _ m).mul (continuous_linQ _ m)
+  have hint : (∫ ξ in (0 : ℝ)..1, low S D m ξ) =
+      -(∑ b : Fin 4, ∫ ξ in (0 : ℝ)..1, linQ (D.WB b) m ξ * linQ (hh S D b) m ξ) -
+        ∑ b : Fin 4, (∫ ξ in (0 : ℝ)..1, linQ (er S D b) m ξ * linQ (er S D b) m ξ) -
+        (16 + 10 ^ 22) * ((S.K : ℝ) * ∑ b : Fin 4, ∑ k : Fin S.K, (eta S D b k : ℝ) ^ 2 * m k ^ 2) := by
+    unfold low
+    rw [intervalIntegral.integral_sub ((hc _ (continuous_finsetSum _ fun b _ => hcont1 b)).neg.sub
+        (hc _ (continuous_finsetSum _ fun b _ => hcont2 b))) (continuous_const.intervalIntegrable _ _),
+      intervalIntegral.integral_sub (hc _ (continuous_finsetSum _ fun b _ => hcont1 b)).neg
+        (hc _ (continuous_finsetSum _ fun b _ => hcont2 b)),
+      intervalIntegral.integral_neg,
+      intervalIntegral.integral_finsetSum fun b _ => hc _ (hcont1 b),
+      intervalIntegral.integral_finsetSum fun b _ => hc _ (hcont2 b),
+      intervalIntegral.integral_const, smul_eq_mul]
+    ring
+  rw [hint]
+  simp_rw [integral_lin_mul_lin_gramN (N := 7) _ _ (hWb _) m,
+    integral_lin_mul_lin_gramN (N := 32) _ _ (hEb _) m]
+  have hQ : quadR S.K (qMat S D) m = (D.ds : ℝ) * (∑ b : Fin 4,
+      (∑ i : Fin S.K, ∑ j : Fin S.K, (gramN 7 (D.WB b i) (hh S D b j) : ℝ) * m i * m j +
+        ∑ i : Fin S.K, ∑ j : Fin S.K, (gramN 32 (er S D b i) (er S D b j) : ℝ) * m i * m j)) := by
+    have hentry : ∀ i j : Fin S.K, (matQ (qMat S D) i j : ℝ) = (D.ds : ℝ) * ∑ b : Fin 4,
+        (((gramN 7 (D.WB b i) (hh S D b j) : ℝ) + (gramN 7 (D.WB b j) (hh S D b i) : ℝ)) / 2 +
+          (gramN 32 (er S D b i) (er S D b j) : ℝ)) := fun i j => by
+      rw [qMat, matQ_tabQ _ i.2 j.2, list_sum_range_eq]
+      push_cast; rfl
+    simp only [quadR, hentry, Finset.mul_sum, Finset.sum_mul]
+    rw [Finset.sum_comm]
+    conv_lhs => arg 2; ext i; rw [Finset.sum_comm]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun b _ => ?_
+    have hsym := sum_sym_avg (fun i j : Fin S.K => (gramN 7 (D.WB b i) (hh S D b j) : ℝ)) m
+    rw [mul_add, Finset.mul_sum, Finset.mul_sum, ← hsym, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun j _ => ?_
+    ring
+  have hP : ∑ k : Fin S.K, (pert S D k : ℝ) * m k ^ 2 = (D.ds : ℝ) * ((16 + 10 ^ 22) *
+      ((S.K : ℝ) * ∑ b : Fin 4, ∑ k : Fin S.K, (eta S D b k : ℝ) ^ 2 * m k ^ 2)) := by
+    simp only [pert, list_sum_range_eq]
+    push_cast
+    rw [Finset.sum_comm, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [Finset.sum_mul, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun b _ => by ring
+  rw [hQ, hP]; ring
+
+/-- **Four-branch subinterval bound.** -/
+theorem bound (hS : S.valid = true) (hD : check S D = true) {G : ℝ → ℝ} (hGc : Continuous G)
+    (hiPot : IntegrableOn (fun u => G u ^ 2 * (S.c0 + vTrue u)) (Ioo (0 : ℝ) 1))
+    (m : Fin S.K → ℝ) :
+    -(quadR S.K D.Qhat m) - ∑ k : Fin S.K, (vecQ D.pertHat k : ℝ) * m k ^ 2 ≤
+      ∫ s in (D.sa : ℝ)..(D.sa + D.ds), f4Integrand S G m s := by
+  have hD' := hD
+  simp only [check, Bool.and_eq_true, List.all_eq_true, List.mem_range, decide_eq_true_eq] at hD'
+  obtain ⟨⟨⟨⟨⟨⟨⟨⟨hsa, hds⟩, hsb⟩, -⟩, -⟩, -⟩, -⟩, hdom⟩, hpert⟩ := hD'
+  have hds' : (0 : ℝ) < D.ds := by exact_mod_cast hds
+  have hsa' : (0 : ℝ) ≤ D.sa := by exact_mod_cast hsa
+  have hsb' : (D.sa : ℝ) + D.ds ≤ (1 - aHiQ) / 2 := by exact_mod_cast hsb
+  have hf := intervalIntegrable_f4Integrand (S := S) hGc hiPot m hsa' (by linarith)
+    (by linarith [primeThreeOffset_mem.2])
+  have hlow := integral_ge_of_unit_minorant (continuous_low (S := S) (D := D) m) hds' hf
+    (fun ξ hξ => low_le hS hD G m hξ)
+  rw [integral_low hD] at hlow
+  have hQ : quadR S.K (qMat S D) m ≤ quadR S.K D.Qhat m := by
+    have h := quad_le_of_domCheck_sub hdom m
+    have he : quadR S.K (fastEval S D).1 m = quadR S.K (qMat S D) m := by
+      simp only [quadR]
+      exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by
+        rw [fastEval_fst S D i.2 j.2]
+    linarith
+  have hP : ∑ k : Fin S.K, (pert S D k : ℝ) * m k ^ 2 ≤
+      ∑ k : Fin S.K, (vecQ D.pertHat k : ℝ) * m k ^ 2 :=
+    Finset.sum_le_sum fun k _ => mul_le_mul_of_nonneg_right (by
+      have := hpert k k.2
+      rw [fastEval_snd S D k.2] at this
+      exact_mod_cast this) (sq_nonneg _)
+  linarith
 
 end P4Sub
 
