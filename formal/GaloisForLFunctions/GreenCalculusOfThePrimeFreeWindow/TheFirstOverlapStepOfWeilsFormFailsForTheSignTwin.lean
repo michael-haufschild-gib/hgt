@@ -28,7 +28,7 @@ the normal form of Weil's form therefore fails for the sign twin: a proof of it 
 of the contact of two.
 
 The transfer runs through the comb as for `w = 1`. The contact of two is a bounded form on the
-comb (`abs_doubleContact_add_sub_le`), so the block averages carry it up to the mass of the rest;
+comb (`abs_doubleContact_sub_le`), so the block averages carry it up to the mass of the rest;
 on block functions of even block size it is exactly the graph of the floor map of two
 (`two_log_two_mul_doubleContact_blockFunction`): half of a block is doubled into the block
 `2(R + j)`, the other half into the next one; on the samples of a packet it is a Riemann sum of
@@ -70,14 +70,14 @@ theorem sum_ite_double_le (S : Finset ℕ) {g : ℕ → ℝ} (hg : ∀ n, 0 ≤ 
           obtain ⟨m, hm, rfl⟩ := Finset.mem_image.mp hn
           exact (Finset.mem_filter.mp hm).2) fun n _ _ => hg n
 
-/-- **The contact of two is a bounded form on the comb.** Adding `z` to a divisor `s` changes
-the contact by at most `p Σ s_n² + (q + 1) Σ z_n²`, for all weights `p q = 1`. -/
-theorem abs_doubleContact_add_sub_le (S : Finset ℕ) (s z : ℕ → ℝ) {p q : ℝ} (hp : 0 < p)
+/-- **The contact of two is a bounded form on the comb.** The contacts of two divisors `c`, `s`
+differ by at most `p Σ s_n² + (q + 1) Σ (c_n − s_n)²`, for all weights `p q = 1`. -/
+theorem abs_doubleContact_sub_le (S : Finset ℕ) (c s : ℕ → ℝ) {p q : ℝ} (hp : 0 < p)
     (hq : 0 < q) (hpq : p * q = 1) :
-    |doubleContact S (fun n => s n + z n) - doubleContact S s| ≤
-      p * ∑ n ∈ S, s n ^ 2 + (q + 1) * ∑ n ∈ S, z n ^ 2 := by
-  obtain ⟨g, hg⟩ : ∃ g : ℕ → ℝ, ∀ n, g n = p / 2 * s n ^ 2 + (q / 2 + 1 / 2) * z n ^ 2 :=
-    ⟨fun n => p / 2 * s n ^ 2 + (q / 2 + 1 / 2) * z n ^ 2, fun _ => rfl⟩
+    |doubleContact S c - doubleContact S s| ≤
+      p * ∑ n ∈ S, s n ^ 2 + (q + 1) * ∑ n ∈ S, (c n - s n) ^ 2 := by
+  obtain ⟨g, hg⟩ : ∃ g : ℕ → ℝ, ∀ n, g n = p / 2 * s n ^ 2 + (q / 2 + 1 / 2) * (c n - s n) ^ 2 :=
+    ⟨fun n => p / 2 * s n ^ 2 + (q / 2 + 1 / 2) * (c n - s n) ^ 2, fun _ => rfl⟩
   have hg0 : ∀ n, 0 ≤ g n := fun n => by
     rw [hg]
     exact add_nonneg (mul_nonneg (half_pos hp).le (sq_nonneg _))
@@ -96,29 +96,32 @@ theorem abs_doubleContact_add_sub_le (S : Finset ℕ) (s z : ℕ → ℝ) {p q :
   have key1 : ∀ a b : ℝ, |a * b| ≤ 1 / 2 * a ^ 2 + 1 / 2 * b ^ 2 := fun a b => by
     rw [abs_le]
     constructor <;> nlinarith only [sq_nonneg (a - b), sq_nonneg (a + b)]
+  -- termwise, with `z = c − s`: `c c' − s s' = s z' + s' z + z z'`
   have hterm : ∀ m ∈ S,
-      |(if 2 * m ∈ S then (s m + z m) * (s (2 * m) + z (2 * m)) else 0) -
+      |(if 2 * m ∈ S then c m * c (2 * m) else 0) -
         (if 2 * m ∈ S then s m * s (2 * m) else 0)| ≤
       g m + if 2 * m ∈ S then g (2 * m) else 0 := by
     intro m _
     split_ifs with h
-    · have e : (s m + z m) * (s (2 * m) + z (2 * m)) - s m * s (2 * m) =
-          s m * z (2 * m) + s (2 * m) * z m + z m * z (2 * m) := by ring
-      have h1 := key (s m) (z (2 * m))
-      have h2 := key (s (2 * m)) (z m)
-      have h3 := key1 (z m) (z (2 * m))
-      have h4 := abs_add_three (s m * z (2 * m)) (s (2 * m) * z m) (z m * z (2 * m))
+    · have e : c m * c (2 * m) - s m * s (2 * m) =
+          s m * (c (2 * m) - s (2 * m)) + s (2 * m) * (c m - s m) +
+            (c m - s m) * (c (2 * m) - s (2 * m)) := by ring
+      have h1 := key (s m) (c (2 * m) - s (2 * m))
+      have h2 := key (s (2 * m)) (c m - s m)
+      have h3 := key1 (c m - s m) (c (2 * m) - s (2 * m))
+      have h4 := abs_add_three (s m * (c (2 * m) - s (2 * m))) (s (2 * m) * (c m - s m))
+        ((c m - s m) * (c (2 * m) - s (2 * m)))
       rw [e, hg m, hg (2 * m)]
       linarith
     · rw [sub_zero, abs_zero, add_zero]
       exact hg0 m
-  show |∑ m ∈ S, (if 2 * m ∈ S then (s m + z m) * (s (2 * m) + z (2 * m)) else 0) -
-      ∑ m ∈ S, (if 2 * m ∈ S then s m * s (2 * m) else 0)| ≤ _
+  unfold doubleContact
   rw [← Finset.sum_sub_distrib]
   refine (Finset.abs_sum_le_sum_abs _ _).trans ((Finset.sum_le_sum hterm).trans ?_)
   rw [Finset.sum_add_distrib]
   have h2 := sum_ite_double_le S hg0
-  have h1 : ∑ n ∈ S, g n = p / 2 * ∑ n ∈ S, s n ^ 2 + (q / 2 + 1 / 2) * ∑ n ∈ S, z n ^ 2 := by
+  have h1 : ∑ n ∈ S, g n =
+      p / 2 * ∑ n ∈ S, s n ^ 2 + (q / 2 + 1 / 2) * ∑ n ∈ S, (c n - s n) ^ 2 := by
     rw [Finset.sum_congr rfl fun n _ => hg n, Finset.sum_add_distrib, ← Finset.mul_sum,
       ← Finset.mul_sum]
   linarith
@@ -312,8 +315,8 @@ theorem packetForm_stepPacket_eq_two {R J : ℕ} (hR : 1 ≤ R) (hJ : R + J ≤ 
   | base => rfl
   | succ n hn ih =>
     have h := packetForm_pred_sub (k := n + 1) (by omega) (stepPacket R J σ)
-    rw [Nat.add_sub_cancel, contact_stepPacket_eq_sum_floorGraph hR (by omega) J σ,
-      sum_sum_floorGraph_eq_zero hJ (by omega) σ] at h
+    rw [Nat.add_sub_cancel, contact_stepPacket_eq_sum_floorGraph hR (k := n + 1) (by omega) J σ,
+      sum_sum_floorGraph_eq_zero hJ (k := n + 1) (by omega) σ] at h
     linarith
 
 /-- **In a window of ratio at most three a reweighting of the contacts is the pencil at its
@@ -398,7 +401,7 @@ theorem pencil_residual_bound {c η w M Z Cm Cd Dm Dd : ℝ} (hη : 0 < η) (hM 
     exact mul_le_of_le_one_right hη.le ((div_le_one (by linarith)).mpr (by linarith))
   have hspM := mul_le_mul_of_nonneg_right hsp hM
   have hcZ := mul_nonneg (show (0 : ℝ) ≤ |c| - c + 3 * η by linarith [le_abs_self c]) hZ
-  nlinarith only [h1, h2, hΔ, hsΔ, hspM, hcZ]
+  linarith only [h1, h2, hΔ, hsΔ, hspM, hcZ]
 
 /-- **A floor of the pencil on the step packets of a window is a floor on every divisor of its
 comb**, at all large even block sizes and up to `3η`, once the window starts after `R` blocks
@@ -436,15 +439,8 @@ theorem eventually_pencilCombForm_ge_of_stepPacket_floor {R J Q : ℕ} (hR : 1 �
   rw [hdiv] at hmargin
   have h1 := combForm_ge_blockMean_add_residual hBpos hBN hQ' hη (hRlarge.trans hmargin) d
   have h2 := hb (blockMean (R * (2 * b)) (2 * b) J d)
-  have h3 := abs_doubleContact_add_sub_le (Ioc (R * (2 * b)) (R * (2 * b) + 2 * b * J))
-    (fun n => blockMean (R * (2 * b)) (2 * b) J d (blockIndex (R * (2 * b)) (2 * b) n))
-    (fun n => d n - blockMean (R * (2 * b)) (2 * b) J d (blockIndex (R * (2 * b)) (2 * b) n))
-    hp hq hpq
-  have he : (fun n => blockMean (R * (2 * b)) (2 * b) J d (blockIndex (R * (2 * b)) (2 * b) n) +
-      (d n - blockMean (R * (2 * b)) (2 * b) J d (blockIndex (R * (2 * b)) (2 * b) n))) = d := by
-    funext n
-    ring
-  rw [he] at h3
+  have h3 := abs_doubleContact_sub_le (Ioc (R * (2 * b)) (R * (2 * b) + 2 * b * J)) d
+    (fun n => blockMean (R * (2 * b)) (2 * b) J d (blockIndex (R * (2 * b)) (2 * b) n)) hp hq hpq
   rw [pencilCombForm] at h2 ⊢
   rw [HodgeTheoryOfAFixedPart.sum_sq_eq_blockMean_add_residual hBpos (R * (2 * b)) J d]
   exact pencil_residual_bound hη (Finset.sum_nonneg fun _ _ => sq_nonneg _)
@@ -731,7 +727,7 @@ theorem exists_window_signTwin_pencil_lt :
   have hexp : Real.exp (2 * (37 / 100)) ≤ ((3 : ℕ) : ℝ) := by
     have h1 := Real.exp_le_exp.mpr (show (2 * (37 / 100) : ℝ) ≤ 1 by norm_num)
     have h2 := Real.exp_one_lt_d9
-    push_cast
+    rw [Nat.cast_ofNat]
     linarith
   have hlog3 : (181 / 500 + 181 / 500 : ℝ) < Real.log 3 := by
     have h1 : (1 : ℝ) < Real.log 3 := by

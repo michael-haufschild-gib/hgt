@@ -1,7 +1,7 @@
 # The Selberg zeta function of a surface with a small eigenvalue
 
 - **ID:** A120
-- **Stage:** 1-in-progress
+- **Stage:** 3-formalized
 - **Type:** FORMALIZATION PROGRAM (classical [C])
 - **Source:** docs/reports/review-1311/obstacles-summary.md §2.1 "Models and laws of world I", A120;
   `1-in-progress/review-1111-classical-inputs.md` (row A120)
@@ -37,18 +37,17 @@ function `Q_{s−1}(1+2u)/2π`, defined as an inverse Abel transform). Then
   `s(s−1) = −λ_j`; `Z = s(s−1)·Π_{λ_j>0}(1 + s(s−1)/λ_j)e^{−s(s−1)/λ_j}·e^{H(s)}` on `Re s > 0`,
   `H` a primitive of the holomorphic rest; `Z(1−s)/Z(s) = exp(vol ∫_0^{s−½} v tan πv dv)` from
   `Σ_k (1/(s+k) − 1/(1−s+k)) = π cot πs`.
-- *Small eigenvalue:* on `Γ_n = {χ ∈ 2nℤ}` the test field `e^{2πiθ/2n}` has
+- *Small eigenvalue:* on `Γ_n = {χ ∈ nℤ}` (`n` odd) the test field `e^{2πiθ/n}` has
   `⟨T_a F, F⟩ ≥ (m_a − C/n²)‖F‖²`, `m_a = 1/(a(a−1))`; the top eigenvalue of `T_a` on `1^⊥` then
   exceeds `1/(a(a−1)+¼)`, i.e. `λ < ¼`; `k_a > 0` gives ergodicity, so `λ > 0`.
 
 ## Modules (folder `CompactHyperbolicSurfaces/`)
 1. cocompact free groups: counting `#{γ : u(z,γw) ≤ R} ≤ C(1+R)`, fundamental set, unfolding;
-2. the quaternion group `Γ(23) ⊂ O¹`, `O = {[[α, 3β],[β′, α′]] : α, β ∈ ℤ[√2]}`: discrete, cocompact
-   (Minkowski), free;
-3. walls and `χ : Γ(23) → ℤ` with `χ(u₀) = ±2`;
+2. the quaternion group `Γ(5) ⊂ O¹`, `O = ℤ⟨1, i, j, ij⟩ ⊂ (2, 3)_ℚ`: discrete, cocompact (Minkowski), free;
+3. walls and `χ : Γ(5) → ℤ` with `χ(η) = −2`;
 4. resolvent kernels and Abel calculus; 5. operators, resolvent identity, spectrum;
-6. Mercer trace; 7. conjugacy classes, orbital integrals, trace formula; 8. Selberg zeta;
-9. small eigenvalue on `Γ_n`; 10. assembly.
+6. Mercer trace; 7. conjugacy classes, orbital integrals, trace formula; 8. Selberg zeta on `Re s > 0`;
+9. small eigenvalue on `Γ_n`; 10. Bergman projections, `|F| ∈ 2πℕ`; 11. entire continuation.
 
 ## Step 1 in detail: an explicit cocompact group (paper)
 `B = (2, 3)_ℚ` is a division algebra: `x₀² − 2x₁² − 3x₂² + 6x₃² = 0` in integers forces `3 | x₀, x₁`
@@ -69,7 +68,7 @@ embeds `B ⊗ ℝ ≅ M₂(ℝ)` with `nrd = det`. `O = ℤ⟨1, i, j, ij⟩`, `
   `θ(z) = Σ_γ ψ(γ⁻¹z) χ̃(γ)` (Γ-partition of unity `ψ`) gives the test function `e^{2πiθ/n}` on
   `Γ_n = ker(χ̃ mod n)`, orthogonal to constants, with Rayleigh quotient `O(1/n²)`.
 
-## Remaining route (paper)
+## Paper proof
 Notation: `X = Γ\ℍ` a `CompactQuotient` with `|tr γ| > 2` for `γ ≠ 1` (true in `Γ(N)`: `tr = 2x₀`,
 `x₀ ≡ 1 mod N`, `|x₀| ≤ 1` forces `x = 1` by anisotropy of the pure part). `D = k_a − k_s`, `1 < a < s`.
 1. *Hyperbolic elements.* `γ = ±σ dil(N) σ⁻¹`, `N > 1`; `ℓ(γ) = log N`. Commuting with `dil(N)`, `N ≠ 1`,
@@ -108,16 +107,16 @@ Notation: `X = Γ\ℍ` a `CompactQuotient` with `|tr γ| > 2` for `γ ≠ 1` (tr
    `≤ |F|(4 tail_a(U) + (2πL_U/n)²/c)` (`|ΔF| ≤ 2` always, `≤ 2πL_U/n` for `u ≤ U`). Choose `U`, then `n`:
    `Re⟨F, T_aF⟩ > ‖F‖²/(c + ¼)`; the constrained norm of `T_a` on `1^⊥` is an eigenvalue `μ > 1/(c + ¼)`,
    `λ = 1/μ − c < ¼`, and `λ ≠ 0` by ergodicity (`k_a > 0`).
-10. *Integrality of the area* (`|F| ∈ 4πℕ`, Gauss–Bonnet without polygons). `h(z, w) = 2i√(Im z Im w)/(z − w̄)`:
+10. *Integrality of the area* (`|F| ∈ 2πℕ`, Gauss–Bonnet without polygons). `h(z, w) = 2i√(Im z Im w)/(z − w̄)`:
    `|h|² = 1/(1 + u)`, `h(z, z) = 1`, `h(w, z) = \bar h(z, w)`, `h(gz, gw) = ε_g(z) \bar ε_g(w) h(z, w)`,
    `ε_g(z) = j_g(z)/|j_g(z)|`. *Reproducing identity* (`m ≥ 2`): `∫_ℍ h(z,y)^m h(y,w)^m dμ(y) = (4π/(m−1)) h(z,w)^m`;
    at `z = i` the Cayley map `y = i(1+ζ)/(1−ζ)` gives `h(i,y)h(y,w) = (1−|ζ|²) h(i,w)/(1 − ζω̄)`,
-   `dμ = 4dA/(1−|ζ|²)²`, and `∫_D (1−|ζ|²)^{m−2}(1−ζω̄)^{−m} dA = π/(m−1)` (circle means). For `m ≥ 3`,
-   `K_m(z,w) = ((m−1)/4π) Σ_γ h(z,γw)^m ε_γ(w)^m` is bounded and hermitian, `K_m(γz, w) = ε_γ(z)^m K_m(z, w)`, and
-   unfolding gives `∫_F K_m(z,y)K_m(y,w) dμ(y) = K_m(z,w)`: `P_m` is a Hilbert–Schmidt orthogonal projection, of
-   finite rank `d_m = tr P_m = ∫_F K_m(y,y)`. The term `γ = 1` gives `(m−1)|F|/4π`; for `γ ≠ 1`, `u(y,γy) ≥ u₀ > 0`
-   on `F`, so the rest is `≤ ((m−1)/4π)|F| M q^{m−3}`, `q = (1+u₀)^{−1/2}`. Hence `d_{m+1} − d_m → |F|/4π`:
-   `|F|/4π ∈ ℕ`.
+   `dμ = 4dA/(1−|ζ|²)²`, and `∫_D (1−|ζ|²)^{m−2}(1−ζω̄)^{−m} dA = π/(m−1)` (circle means). For the even weight
+   `m = 2(j+2)`, `K_j(z,w) = ((2j+3)/4π) Σ_γ h(z,γw)^m ε_γ(w)^m` is bounded, continuous and hermitian,
+   `K_j(γz, w) = ε_γ(z)^m K_j(z, w)`, and unfolding gives `∫_F K_j(z,y)K_j(y,w) dμ(y) = K_j(z,w)`: `P_j` is an
+   idempotent Hilbert–Schmidt operator, so `d_j = tr P_j = ∫_F K_j(y,y) ∈ ℕ`. The term `γ = 1` gives
+   `(2j+3)|F|/4π`; for `γ ≠ 1`, `u(y,γy) ≥ u₀ > 0` on `F`, so the rest is `≤ ((2j+3)/4π)|F| M q^j`,
+   `q = 1/(1+u₀)`. Hence `d_{j+1} − d_j → |F|/2π`: `|F|/2π ∈ ℕ`.
 11. *Entire continuation.* `N = |F|/2π ∈ ℕ`: `e^{N g_k(s)} = (s+k)^{N(2k+1)} e^{N((s²−s)/(a+k) − 2s − c_k)}` is entire,
    and `|g_k(s)| ≤ C_R/k²` on `|s| < R`, `k ≥ 2R`, so `Π_k` converges locally uniformly on `ℂ`:
    `Ẑ = κ E e^{A(s²−s)} Π_k e^{N g_k}` is entire and equals `Z` on `Re s > 0`.
@@ -161,14 +160,19 @@ Lean (folder `CompactHyperbolicSurfaces/`, umbrella `CompactHyperbolicSurfaces.l
   `exists_spectralParam_mem_Ioo`.
 - `CyclicCovers`: `coverGroup`, `isCocompactFree_coverGroup`, `integral_testF_eq_zero`,
   `integral_energy_testL_le`, `exists_coverGroup_small_eigenvalue`.
-- `SmallEigenvalueZeta`: `offLine_zeros_eq`, headline `exists_selbergZeta_small_eigenvalue` (Euler product,
-  holomorphy on `Re s > 0`, functional equation, zeros off the line in the strip = `{½ ± √(¼ − λ_j)}`,
-  finite and nonempty).
-
-Open: steps 10–11 (in progress).
+- `SmallEigenvalueZeta`: `offLine_zeros_eq`.
+- `BergmanKernel`: `bergK`, `norm_bergK_sq`, `bergK_smul`, `autF_mul`, `bergK_cayley`,
+  `integral_ball_weight_mul`, reproducing identity `integral_bergK_pow`, `lintegral_one_add_pairU_pow_lt_top`.
+- `BergmanProjection`: `bergAut`, `bergAut_swap`, `bergAut_smul_left`, `integral_bergAut_mul` (idempotency),
+  `exists_opTrace_eq_nat`, `exists_nat_integral_bergAut_diag`.
+- `AreaIntegrality`: `exists_pairU_ge`, `norm_bergAut_diag_sub_le`, `exists_nat_volume_F_eq` (`|F| = 2πN`).
+- `EntireSelbergZeta`: `zFactor`, `exists_norm_gTerm_le`, `differentiable_tprod_zFactor`, `entireZeta`
+  (entire, `entireZeta_eq_selbergZeta`), headline `exists_selbergZeta_small_eigenvalue`: an entire `Ẑ = Z`
+  on `Re s > 0`, Euler product on `Re s > 1`, functional equation on `0 < Re s < 1`, zeros off the line in
+  the strip `= {½ ± √(¼ − λ_j) : 0 < λ_j < ¼}`, finite and nonempty.
 
 ## Log
 - 2026-11-13 — created; route analysis (compact surface needed; cusped and periodic models fail the
   finite-stratum requirement); plan written.
 - 2026-11-13 — Mercer trace and Step 1 (explicit cocompact free group) formalized; paused by user.
-- 2026-11-14 — steps 1–9 formalized; headline `exists_selbergZeta_small_eigenvalue`; open: step 10.
+- 2026-11-14 — steps 1–11 formalized; headline `exists_selbergZeta_small_eigenvalue` (entire `Ẑ`).

@@ -82,10 +82,11 @@ private theorem hyperbolic_denominator_upper {z : ℝ} (h0 : 0 < z) (h1 : z ≤ 
   have hsu : Real.sinh z / z ≤ gammaSinhDenominatorUpper z := (div_le_iff₀ h0).mpr hs.1
   have hse : gammaSinhDenominatorUpper z - Real.sinh z / z ≤
       2 * z ^ 18 / 100000000000000000 := by
-    apply (mul_le_mul_right h0).mp
-    have he : (gammaSinhDenominatorUpper z - Real.sinh z / z) * z =
-        gammaSinhDenominatorUpper z * z - Real.sinh z := by field_simp [h0.ne']
+    have he : gammaSinhDenominatorUpper z - Real.sinh z / z =
+        (gammaSinhDenominatorUpper z * z - Real.sinh z) / z := by
+      field_simp [h0.ne']
     rw [he]
+    apply (div_le_iff₀ h0).mpr
     nlinarith only [hs.2]
   refine ⟨⟨?_, hsu.trans hTs, sub_nonneg.mpr hsu, hse⟩,
     ⟨?_, hc.1.trans hTc, sub_nonneg.mpr hc.1, ?_⟩⟩

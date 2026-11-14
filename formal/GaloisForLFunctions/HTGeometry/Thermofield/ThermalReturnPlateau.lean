@@ -26,6 +26,7 @@ noncomputable section
 
 variable {α : Type*} [Fintype α] [DecidableEq α] [Nonempty α]
 
+omit [DecidableEq α] [Nonempty α] in
 /-- Thermal return is the normalized partition function at complex temperature. -/
 theorem survival_eq_partition_ratio (β : ℝ) (E : α → ℝ) (t : ℝ) :
     finiteSpectralSurvivalAmplitude (finiteGibbsStateWeight β E) E t =
@@ -45,6 +46,7 @@ theorem survival_eq_partition_ratio (β : ℝ) (E : α → ℝ) (t : ℝ) :
   rw [hexp, finiteGibbsStateWeight, Complex.ofReal_div]
   ring
 
+omit [Nonempty α] in
 /-- At one replica, energy rigidity is exactly absence of degenerate levels. -/
 theorem replicaRigidAt_one_iff_injective (E : α → ℝ) :
     ReplicaRigidAt E 1 ↔ Function.Injective E := by
@@ -112,6 +114,7 @@ def partitionReturnMean (β : ℝ) (E : α → ℝ) (T : ℝ) : ℂ :=
     (Complex.normSq (finiteComplexGibbsPartition E
       ((β : ℂ) - (t : ℂ) * Complex.I) / (finiteGibbsPartition β E : ℂ)) : ℂ)
 
+omit [Nonempty α] in
 /-- The exact mean-return limit exists for every finite Gibbs spectrum. -/
 theorem partitionReturnMean_tendsto (β : ℝ) (E : α → ℝ) :
     Tendsto (partitionReturnMean β E) atTop (𝓝 (returnPlateau β E : ℂ)) := by
@@ -141,3 +144,14 @@ theorem tensor_purity_le_returnPlateau
 end
 
 end GaloisForLFunctions.HTGeometry.Thermofield
+
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.survival_eq_partition_ratio
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.replicaRigidAt_one_iff_injective
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.purity_le_returnPlateau
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.partition_ratio_le_returnPlateau
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.returnPlateau_pos
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.returnPlateau_eq_purity_iff
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.purity_lt_returnPlateau_iff
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.partitionReturnMean_tendsto
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.partitionReturnMean_not_tendsto_zero
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.tensor_purity_le_returnPlateau

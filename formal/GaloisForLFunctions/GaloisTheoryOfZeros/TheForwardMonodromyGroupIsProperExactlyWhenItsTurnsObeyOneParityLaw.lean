@@ -218,6 +218,3 @@ theorem exists_not_mem_forwardMonodromy_iff_exists_turn_parity :
       h1 h2 hea hea' he heo (hle h)⟩
 
 end GaloisForLFunctions.GaloisTheoryOfZeros
-
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.forwardMonodromy_eq_signedKernel_of_not_mem
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.exists_not_mem_forwardMonodromy_iff_exists_turn_parity

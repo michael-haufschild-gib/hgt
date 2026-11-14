@@ -14,6 +14,7 @@ import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheBoundRangeEndsOn
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheGroundEnergyOfAnApertureIsAGapOfEveryWindowInsideIt
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheFirstOverlapStepHoldsAtEveryBlockSize
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheGroundEnergyOfAnApertureIsTheFloorOfWeilsFormOnTheWindowsInsideIt
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheFirstOverlapStepOfWeilsFormFailsForTheSignTwin
 
 /-!
 # Green calculus of the prime-free window
@@ -29,6 +30,7 @@ attraction of the two ends of the first step, the logarithmic stiffness of a thi
 of a bound window and the continuity method, the floor of Weil's form on an aperture as a gap
 of every window inside it and as the excess of its overlap step, the first overlap step at
 every block size, the ground energy of an aperture as the common floor of Weil's form on the
-windows inside it, and the forms of the Riemann hypothesis they give.
+windows inside it, the failure of the first step of Weil's form for the sign twin, and the forms
+of the Riemann hypothesis they give.
 See `GreenCalculusOfThePrimeFreeWindow/README.md`.
 -/

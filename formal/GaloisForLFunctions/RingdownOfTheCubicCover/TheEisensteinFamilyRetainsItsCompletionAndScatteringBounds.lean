@@ -96,9 +96,7 @@ theorem bianchiScatteringPhase_axis_eq_completedRatio {t : ℝ} (ht : t ≠ 0) :
     norm_num at this
   · intro h
     have hi := congrArg Complex.im h
-    simp only [Complex.add_im, Complex.one_im, Complex.mul_im, Complex.ofReal_re,
-      Complex.ofReal_im, Complex.I_re, Complex.I_im, zero_mul, mul_zero, mul_one,
-      add_zero, zero_add, Complex.ofNat_im, Complex.ofNat_re] at hi
+    norm_num at hi
     exact ht (by linarith only [hi])
 
 /-- The actual scattering phase is unitary and has the unconditional one-sixteenth pulse rate. -/

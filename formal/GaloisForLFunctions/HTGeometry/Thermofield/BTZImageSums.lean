@@ -92,6 +92,18 @@ theorem btzSpatialImages_le (a t x : ℝ) :
     (fun _ => btzKernel_le_exp _ _)
     ((summable_shifted_exp a x).mul_left _)
 
+/-- The spatially quotiented correlator decays to zero at late times. -/
+theorem btzSpatialImages_tendsto_zero (a x : ℝ) :
+    Tendsto (fun t => btzSpatialImages a t x) atTop (𝓝 0) := by
+  have he : Tendsto (fun t : ℝ => Real.exp (-|t|)) atTop (𝓝 0) := by
+    apply (Real.tendsto_exp_atBot.comp tendsto_neg_atTop_atBot).congr'
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with t ht
+    rw [abs_of_nonneg ht]
+  have hb := he.mul_const (∑' n : ℤ, Real.exp (-|x + Real.exp a * (n : ℝ)|))
+  rw [zero_mul] at hb
+  exact squeeze_zero (fun t => (btzSpatialImages_pos a t x).le)
+    (fun t => btzSpatialImages_le a t x) hb
+
 /-- Adding a full spatial period just permutes the image labels. -/
 theorem btzSpatialImages_periodic (a t : ℝ) :
     Function.Periodic (btzSpatialImages a t) (Real.exp a) := by
@@ -151,4 +163,44 @@ theorem longStringImages_returns (b a x : ℝ) (n : ℕ) :
     rw [Nat.cast_add, Nat.cast_one, add_mul, one_mul,
       longStringImages_periodic b a x, ih]
 
+/-- The convergent temporal completion cannot share the spatial correlator's
+late-time decay: positive exact returns occur arbitrarily late. -/
+theorem longStringImages_not_tendsto_zero (b a x : ℝ) :
+    ¬ Tendsto (fun t => longStringImages b a t x) atTop (𝓝 0) := by
+  intro h
+  have ht : Tendsto (fun n : ℕ => (n : ℝ) * Real.exp b) atTop atTop :=
+    tendsto_natCast_atTop_atTop.atTop_mul_const (Real.exp_pos b)
+  have hzero : Tendsto (fun _ : ℕ => longStringImages b a 0 x) atTop (𝓝 0) := by
+    simpa only [Function.comp_def, longStringImages_returns] using h.comp ht
+  have heq : longStringImages b a 0 x = 0 := tendsto_nhds_unique tendsto_const_nhds hzero
+  exact (longStringImages_pos b a 0 x).ne' heq
+
+/-- At zero time, BTZ lattice entries are squares of the corpus hyperbolic
+resolvent weights. -/
+theorem btzKernel_zero_lattice (a : ℝ) (n : ℕ) :
+    btzKernel 0 (2 * (n * a)) = (1 / 4 : ℝ) * hyperbolicResolventWeight a n ^ 2 := by
+  have h : 1 + Real.cosh (2 * (n * a)) = 2 * Real.cosh (n * a) ^ 2 := by
+    rw [Real.cosh_two_mul, Real.cosh_sq]
+    ring
+  rw [btzKernel, Real.cosh_zero, h, hyperbolicResolventWeight]
+  field_simp [(Real.cosh_pos (n * a)).ne'] <;> ring
+
 end GaloisForLFunctions.HTGeometry.Thermofield
+
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzKernel_pos
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzKernel_swap
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzKernel_neg_time
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzKernel_le_exp
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.summable_shifted_exp
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.summable_btzSpatialImages
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzSpatialImages_pos
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzSpatialImages_le
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzSpatialImages_tendsto_zero
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzSpatialImages_periodic
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.summable_longStringImages
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.summable_btzDoubleImages
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_pos
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_periodic
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_returns
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.longStringImages_not_tendsto_zero
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.btzKernel_zero_lattice

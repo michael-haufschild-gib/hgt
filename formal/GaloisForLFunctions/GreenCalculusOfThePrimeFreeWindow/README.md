@@ -53,6 +53,8 @@ a step is in the continuum: the ground energy of Weil's form on one aperture.
 | Gap | `HasGap M c` | `M ⪰ c` on a hyperplane: the second eigenvalue is at least `c` |
 | Floor of Weil's form | `WeilFloor A c`, `EvenWeilFloor`, `OddWeilFloor` | `𝔚(F) ≥ c ∫F²` on the real `C²` tests supported in `[−A, A]`; on the even tests; on the odd tests |
 | Ground energy of an aperture | `ccmRestrictedWeilGroundEnergy A` (RHTower) | the infimum of Weil's form on the unit tests of `[−A, A]`; strictly decreasing in `A` |
+| Floor on step packets | `StepFloor Q A c`, `PencilStepFloor w Q A c` | `c Σσ² ≤ 𝔚(σ)` on the step packets of every window inside `A`, at every block size; the same for the pencil |
+| Pencil of the prime two | `pencilStepForm w`, `pencilCombForm w`, `pencilWeilForm w` | Weil's form with the contact of `2` weighted by `w`, on step packets, combs (`doubleContact`: `Σ c_m c_{2m}`) and smooth tests; `w = 1` is `ζ`, `w = −1` the sign twin |
 
 ## 3. Language
 
@@ -134,8 +136,14 @@ a step is in the continuum: the ground energy of Weil's form on one aperture.
    large `B`. Far from the origin (`log R ≥ C_Q²/η + κ`) the form of a divisor is at least the
    form of its block averages plus `κ` times the mass of the rest, so the floor passes to every
    divisor of the comb. The samples of a `C²` packet at the scale `rB` live on the comb of a
-   window inside the aperture, and the comb form tends to the sum over the zeros. Bounded
-   additions to the comb, such as the contact of one prime, pass the same way.
+   window inside the aperture, and the comb form tends to the sum over the zeros.
+15. **The pencil passes through the comb.** The contact of two on a comb, `2 log 2 Σ c_m c_{2m}`,
+   is bounded by the mass, so the block averages carry it up to the mass of the rest. On block
+   functions of even block size it is exactly the graph of the floor map of two (half of a block
+   doubles into one block, half into the next); on samples it is a Riemann sum of
+   `∫ f(u) f(u + log 2)`. Mechanism 14 therefore holds for `𝔚 + (1 − w) C₂` at every weight `w`.
+   Inside a window of ratio `≤ 3` every reweighting of the contacts is the pencil at its weight
+   of two, and below `log 3` the Liouville twist of Weil's functional is the pencil at `w = −1`.
 
 ## 5. Pillar theorems
 
@@ -245,6 +253,17 @@ for `Q ≥ 2`, `E(A) ≥ 0` iff the overlap law in the normal form of Weil's for
 window inside the aperture. A step in Weil's normal form is the sign of one ground energy, no
 less and no more.
 
+**P17 The sign twin fails the first step of Weil's form.** `pencilWeilForm_ge_of_stepFloor`,
+`exists_stepPacket_pencil_lt`: the transfer of P16 holds for the pencil at every weight `w`
+(mechanism 15). `reweightedPacketForm_stepPacket_eq_pencilStepForm`: on windows of ratio `≤ 3`
+a reweighting `ω` of the contacts is the pencil at `ω(2)`, for every cutoff `Q ≥ 2`.
+`exists_firstStep_window_signTwin_lt`: for every `Q ≥ 2` and every `ω` with `ω(2) = −1`, some
+window of ratio `≤ 10609/5000`, at some block size, carries a step packet with
+`Σ σ_j σ_l W_ω(R + j, R + l) < −(1/1000) Σ σ_j²`, where `ζ` has the floor `1/50000` (P15). The
+witness is the odd test of the aperture `181/500` on which the Liouville twist of Weil's
+functional is negative (SelectivePositivityAndThresholdLaws). A proof of the first step in
+Weil's normal form must use the sign of the contact of two.
+
 ## 6. Tools
 
 **From the corpus.** Haynsworth additivity (`hermNegIndex_fromBlocks_transpose`), the overlap
@@ -290,8 +309,8 @@ positive at every aperture iff RH), the floors of the two sectors at the apertur
 |---|---|---|
 | 1 | Two-sided bounds for the sliver blocks of `G_D` | answered: positive definite, between `1/(C log 2D)` and `5000`; the order `1/log D` is attained |
 | 2 | A lower bound for `μ_D` uniform in `D` | answered: `1 < −N(1,1) ≤ μ_D < 3`, nondecreasing along the tower |
-| 3 | The first step | answered: it holds at every block size with the excess `1/50000` (P15). It is the floor of Weil's form at the aperture `1881/5000` carried to the matrices (P14); no bound for `G_D` enters |
-| 4 | The excess of a step as a function of the ratio | defined, bounded, monotone (P6); additive (P5); a thin step loses at most `B²/log(1/δ)` of the floor (P12); zero, down to the level `−c`, as long as `ρ²/2` lies inside an aperture of ground energy `≥ c` (P15); a common gap of the bound windows is RH (P14) |
+| 3 | The first step | answered: it holds at every block size with the excess `1/50000` (P15). It is the floor of Weil's form at the aperture `1881/5000` carried to the matrices (P14); no bound for `G_D` enters. In Weil's form it fails for the sign twin (P17) |
+| 4 | The excess of a step as a function of the ratio | defined, bounded, monotone (P6); additive (P5); a thin step loses at most `B²/log(1/δ)` of the floor (P12); zero, down to the level `−c`, as long as `ρ²/2` lies inside an aperture of ground energy `≥ c` (P15); a common gap of the bound windows is RH (P14); in Weil's normal form a step at every block size is the sign of the ground energy of its aperture (P16) |
 | 5 | The Green kernel of the continuum form in closed form | open; normal forms only (mechanisms 2, 3, 8) |
 
 **Open.**
@@ -300,17 +319,18 @@ positive at every aperture iff RH), the floors of the two sectors at the apertur
   the first step is the same for `M_D − P N_e⁻¹ Pᵀ`, whose attraction is `Σ₁ + Σ₂` up to the
   jets between the ends, and no inequality of the corpus compares the three without the floor
   of the aperture.
-- *The sign of the dipole.* Any proof of a step at ratio three must use it; on the first step it
-  is not known whether it must. The Liouville twist of Weil's form is negative on an odd test
-  of the aperture `181/500` (SelectivePositivityAndThresholdLaws); the charge of that test is
-  not controlled, so the index of the neutral part of the sign twin is not decided there.
+- *The sign of the dipole on the neutral part.* Any proof of a step at ratio three must use it
+  (P7), and so must any proof of the first step in Weil's form (P17). Whether the neutral part
+  of the sign twin holds a second bound state on the first step is not decided: the witness of
+  P17 is odd and its charge is not controlled.
 - *The later steps.* By P14 and P15 the steps at the ratios `2.25, 2.53, 3.21` are the ground
   energies of the apertures `½ log(ρ²/2)` of the preceding ratios. An excess that does not come
   from the aperture is not known: the envelopes of P6 carry the factor `5000`, and the dual
   law bounds the attraction by `(4/3)‖P‖²`.
-- *The converse at one aperture.* One bound state of every window inside an aperture is not
-  known to give a nonnegative ground energy there: the neutral part differs from Weil's form
-  by the pole plane, and the proof of AGZ uses windows far outside the aperture.
+- *The converse at one aperture for the neutral part.* For Weil's form it holds (P16). One bound
+  state of every neutral window inside an aperture is not known to give a nonnegative ground
+  energy there: the neutral part differs from Weil's form by the pole plane, and the proof of
+  AGZ uses windows far outside the aperture.
 - *An a priori gap from boundness.* The Hodge index inequality on a bound window gives a gap
   `≥ 0` and no more; a positive lower bound from boundness alone is RH (P14).
 - *Wide ends bind.* The dual law needs ends without bound states; the threshold ratio of a
@@ -333,7 +353,8 @@ positive at every aperture iff RH), the floors of the two sectors at the apertur
 | An a priori gap of the bound windows is less than RH | It is RH (P13, P14) |
 | The first step is a statement about the Green matrix | It is the ground energy of one aperture; the Green form of the step is a consequence (P14, P15) |
 | Parity splits the window matrices | It splits Weil's form on the smooth tests of a symmetric aperture; a step packet has no parity |
-| One bound state of the windows inside an aperture is the sign of its ground energy | Only the sign gives the bound state (P14); the converse is known for all apertures together (AGZ) |
+| One bound state of the windows inside an aperture is the sign of its ground energy | For Weil's form on the windows inside it, it is (P16). For the neutral part only the sign gives the bound state (P14); the converse is known for all apertures together (AGZ) |
+| Below ratio three the first step is decided by the sizes of the contacts | The sign twin has the same sizes and fails it in Weil's form (P17) |
 | The Green matrix decays like `1/D` on the slivers | Its diagonal is `Θ(1/log D)` everywhere (P4) |
 | The Green matrix is indefinite in many directions | It is negative only along the charge; on charge-free packets it is positive definite (P4) |
 | A bound for `G₊` in operator norm suffices | The only uniform bound is `5000`; smooth packets give mediated couplings of order one |
@@ -353,6 +374,8 @@ positive at every aperture iff RH), the floors of the two sectors at the apertur
 | HTGeometry, HeckeKreinToeplitz | Hermitian inertia, index comparison |
 | WindowTowerOfSpecZ and the certificate programmes | floors of Weil's form on an aperture: `1/5000` at ratio `2.06`, the two sectors at `1881/5000`. GCW carries a floor at an aperture to every window inside it, as a gap and as the excess of the step (P14) |
 | RHTower (CCM), ArithmeticContinuationAndCriticalEnergy | the ground energy of an aperture, its strict monotonicity, RH as its sign |
+| HodgeTheoryOfAFixedPart | the comb of a window, block averages, samples of a packet: the way back from step packets to smooth tests (P16, P17) |
+| SelectivePositivityAndThresholdLaws, SquareRootThreshold | the Liouville twist of Weil's functional and its odd witness at `181/500`; below `log 3` the twist is the pencil at `w = −1` (P17) |
 
 Route of the finite-scale picture: certificate at one aperture → every block size → overlap
 recursion → margin and exponent receivers. GCW is the analysis of the one inequality the
@@ -367,7 +390,9 @@ ratio three; the pole plane and the dual elimination give two further normal for
 thin ends are stiff, the gap of a window is lower semicontinuous, and the bound range ends only
 where the gap of the bound windows closes. The first step holds at every block size with the
 excess `1/50000`; the excess of a step is bounded by the ground energy of its aperture; RH is
-a common positive gap of the bound windows.
+a common positive gap of the bound windows. The ground energy of an aperture is exactly the
+common floor of Weil's form on the windows inside it, so a step in Weil's normal form is its
+sign; the first step of Weil's form fails for the sign twin.
 
 **Not reached.** A proof of a step from the Green matrix of the middle: the first step comes
 from the floor of Weil's form at its aperture, and the calculus carries it to the matrices.

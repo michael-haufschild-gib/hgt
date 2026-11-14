@@ -45,6 +45,7 @@ theorem expectation_same_event (β : ℝ) (E : α → ℝ) (s : Finset α) :
       ((∑ a ∈ s, finiteGibbsStateWeight β E a : ℝ) : ℂ) := by
   rw [expectation_events, Finset.inter_self]
 
+omit [Nonempty α] in
 theorem eventProjector_univ : eventProjector (Finset.univ : Finset α) = 1 := by
   ext a b
   simp [eventProjector, Matrix.diagonal_apply, Matrix.one_apply]
@@ -70,3 +71,10 @@ theorem expectation_same_event_eq_absorption (β : ℝ) (E : α → ℝ) (s : Fi
 end
 
 end GaloisForLFunctions.HTGeometry.Thermofield
+
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_events
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_same_event
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.eventProjector_univ
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_event
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_event_eq_absorption
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_same_event_eq_absorption

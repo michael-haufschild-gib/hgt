@@ -199,3 +199,17 @@ theorem primeRadiation_annihilate_norm (p : Nat.Primes) :
   rw [radiationPair_annihilate_normSq, primeRadiation_mean]
 
 end GaloisForLFunctions.HTGeometry.Thermofield
+
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.radiationVector_successor
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.radiationPair_annihilate_left
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.radiationPair_annihilate_right
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.squeezeGain_sq_sub_squeezeMix_sq
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.radiationPair_bogoliubov_vacuum
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.radiationPair_annihilate_isHS
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.radiationPair_annihilate_normSq
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.radiationPair_annihilate_bose_norm
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.left_commutator
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.annihilators_commute
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.left_annihilate_right_create_commute
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.primeRadiation_bogoliubov_vacuum
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.primeRadiation_annihilate_norm

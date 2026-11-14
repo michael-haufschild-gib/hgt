@@ -28,6 +28,7 @@ def mirror (β : ℝ) (E : α → ℝ) (A : Matrix α α ℂ) : Matrix α α ℂ
   fun a b => (Real.sqrt (finiteGibbsStateWeight β E a) : ℂ) /
     (Real.sqrt (finiteGibbsStateWeight β E b) : ℂ) * A b a
 
+omit [DecidableEq α] in
 private theorem sqrt_weight_ne_zero (β : ℝ) (E : α → ℝ) (a : α) :
     (Real.sqrt (finiteGibbsStateWeight β E a) : ℂ) ≠ 0 := by
   exact_mod_cast (Real.sqrt_pos.mpr (finiteGibbsStateWeight_pos β E a)).ne'
@@ -55,6 +56,7 @@ theorem left_eq_right_iff (β : ℝ) (E : α → ℝ) (A B : Matrix α α ℂ) :
   rw [left_eq_right_mirror]
   exact ⟨fun h => (right_action_injective β E h).symm, fun h => by rw [h]⟩
 
+omit [DecidableEq α] in
 /-- Exchanging the two copies twice recovers the original observable. -/
 theorem mirror_mirror (β : ℝ) (E : α → ℝ) (A : Matrix α α ℂ) :
     mirror β E (mirror β E A) = A := by
@@ -62,6 +64,7 @@ theorem mirror_mirror (β : ℝ) (E : α → ℝ) (A : Matrix α α ℂ) :
   simp only [mirror]
   field_simp [sqrt_weight_ne_zero β E a, sqrt_weight_ne_zero β E b] <;> ring
 
+omit [DecidableEq α] in
 /-- The opposite algebra reverses the order of operator products. -/
 theorem mirror_mul (β : ℝ) (E : α → ℝ) (A B : Matrix α α ℂ) :
     mirror β E (A * B) = mirror β E B * mirror β E A := by
@@ -72,6 +75,7 @@ theorem mirror_mul (β : ℝ) (E : α → ℝ) (A B : Matrix α α ℂ) :
   field_simp [sqrt_weight_ne_zero β E a, sqrt_weight_ne_zero β E b,
     sqrt_weight_ne_zero β E c] <;> ring
 
+omit [DecidableEq α] [Nonempty α] in
 theorem mirror_add (β : ℝ) (E : α → ℝ) (A B : Matrix α α ℂ) :
     mirror β E (A + B) = mirror β E A + mirror β E B := by
   ext a b
@@ -91,3 +95,11 @@ theorem mirror_diagonal (β : ℝ) (E : α → ℝ) (f : α → ℂ) :
 end
 
 end GaloisForLFunctions.HTGeometry.Thermofield
+
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.left_eq_right_mirror
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.right_action_injective
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.left_eq_right_iff
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.mirror_mirror
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.mirror_mul
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.mirror_add
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.mirror_diagonal

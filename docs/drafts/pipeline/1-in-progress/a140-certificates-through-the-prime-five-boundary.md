@@ -65,12 +65,16 @@ The quartic primitive projection retains
 direct Lean check and standard-only transitive axiom audit in
 `WindowJumpCounts/TheQuarticProjectionRetainsThePrimitiveMass.lean`.
 
+Three Newton updates `q↦q(2−Tq)`, with Taylor upper denominator `T`,
+give kernel error at most `3/10¹⁷` throughout `0<t≤2`.
+`gamma_reciprocal_newton3_errors` and `archLevySinhWeight_newton3_error`
+passed direct Lean checks and standard-only transitive axiom audits in
+`NewtonRefinementControlsTheGammaKernelThroughRadiusTwo.lean`.
+The exact update error is `U(1/U−q)²+(T−U)q²`.
+
 ## Open obligations
 
-- For larger diameters, Newton refinement of the reciprocal polynomials uses
-  `q↦q(2−Tq)`, where `T` is a Taylor upper bound for the hyperbolic denominator.
-  The exact error is `U(1/U−q)²+(T−U)q²`. Three refinements should reduce the
-  kernel error below `3/10¹⁷` throughout `0<t≤2`; this bound is not yet formalized.
+- The integrated refined comparison is drafted, but has not passed Lean.
 - Prove positive finite-moment capacities for the simultaneous prime reflections,
   including both parities. No such certificate is claimed here.
 - Transfer the resulting floors to all block sizes.

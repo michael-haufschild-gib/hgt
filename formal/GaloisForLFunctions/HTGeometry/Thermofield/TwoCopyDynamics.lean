@@ -28,6 +28,7 @@ variable {α : Type*} [Fintype α] [DecidableEq α] [Nonempty α]
 def evolve (E : α → ℝ) (z : ℂ) (A : Matrix α α ℂ) : Matrix α α ℂ :=
   fun a b => Complex.exp (Complex.I * z * ((E a - E b : ℝ) : ℂ)) * A a b
 
+omit [Fintype α] [DecidableEq α] [Nonempty α] in
 theorem evolve_zero (E : α → ℝ) (A : Matrix α α ℂ) : evolve E 0 A = A := by
   ext a b
   simp [evolve]
@@ -71,6 +72,7 @@ theorem expectation_evolved_conjugate (β : ℝ) (E : α → ℝ)
     Complex.ofReal_mul, Complex.star_def, ← Complex.mul_conj]
   ring
 
+omit [DecidableEq α] [Nonempty α] in
 /-- Half an imaginary thermal period turns a Gibbs weight into a Wightman weight. -/
 theorem half_thermal_weight (β : ℝ) (E : α → ℝ) (a b : α) :
     (finiteGibbsStateWeight β E a : ℂ) *
@@ -103,7 +105,8 @@ theorem expectation_eq_half_thermal_time (β : ℝ) (E : α → ℝ)
         (β : ℂ) * ((E a - E b : ℝ) : ℂ) / 2 +
           Complex.I * z * ((E a - E b : ℝ) : ℂ) := by
     ring_nf
-    simp [Complex.I_sq]
+    simp only [Complex.I_sq]
+    ring
   rw [harg, Complex.exp_add]
   rw [show (finiteGibbsStateWeight β E a : ℂ) *
       (Complex.exp ((β : ℂ) * ((E a - E b : ℝ) : ℂ) / 2) *
@@ -113,6 +116,7 @@ theorem expectation_eq_half_thermal_time (β : ℝ) (E : α → ℝ)
           (Complex.exp (Complex.I * z * ((E a - E b : ℝ) : ℂ)) * A a b) * B a b by ring]
   rw [half_thermal_weight]
 
+omit [Nonempty α] in
 /-- A unitary on the unobserved copy leaves the observed density matrix unchanged. -/
 theorem reduced_left_right_unitary (Ψ : Matrix α α ℂ)
     (U : Matrix.unitaryGroup α ℂ) :
@@ -138,3 +142,12 @@ theorem thermal_no_signalling (β : ℝ) (E : α → ℝ)
 end
 
 end GaloisForLFunctions.HTGeometry.Thermofield
+
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.evolve_zero
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_two_times
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_opposite_times
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_evolved_conjugate
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.half_thermal_weight
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_eq_half_thermal_time
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.reduced_left_right_unitary
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.thermal_no_signalling

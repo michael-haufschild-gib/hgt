@@ -203,3 +203,22 @@ theorem reduced_purity (β : ℝ) (E : α → ℝ) :
 end
 
 end GaloisForLFunctions.HTGeometry.Thermofield
+
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.amplitude_adjoint
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.amplitude_sq
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.density_trace
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.amplitude_normSq
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.reduced_left
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.reduced_right
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.left_right_commute
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_left
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_right
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_one
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.sqrt_weight_mul
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_eq_kms
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.expectation_conjugate
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.diagonal_difference
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.hamiltonian_difference
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.charged_constraints
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.amplitude_product_iff
+#print axioms GaloisForLFunctions.HTGeometry.Thermofield.reduced_purity

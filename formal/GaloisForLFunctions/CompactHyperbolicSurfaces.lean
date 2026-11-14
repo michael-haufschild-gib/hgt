@@ -31,6 +31,10 @@ import GaloisForLFunctions.CompactHyperbolicSurfaces.WallCrossing
 import GaloisForLFunctions.CompactHyperbolicSurfaces.DirichletEnergy
 import GaloisForLFunctions.CompactHyperbolicSurfaces.CyclicCovers
 import GaloisForLFunctions.CompactHyperbolicSurfaces.SmallEigenvalueZeta
+import GaloisForLFunctions.CompactHyperbolicSurfaces.BergmanKernel
+import GaloisForLFunctions.CompactHyperbolicSurfaces.BergmanProjection
+import GaloisForLFunctions.CompactHyperbolicSurfaces.AreaIntegrality
+import GaloisForLFunctions.CompactHyperbolicSurfaces.EntireSelbergZeta
 
 /-!
 # Compact hyperbolic surfaces
@@ -47,5 +51,10 @@ An explicit example: the congruence subgroups `Γ(N)`, `N ≥ 3`, of the norm-on
 The trace formula, the Selberg zeta function (Euler product, holomorphy on `Re s > 0`, functional
 equation, zeros at `λ_j + s(s − 1) = 0`), and a surface with an eigenvalue in `(0, ¼)`: walls of the
 quaternion order give `χ : Γ(5) → ℤ` with `χ(η) = −2`, and the cyclic covers `ker(χ mod n)` carry
-the test functions `e^{2πiθ/n}` (`exists_selbergZeta_small_eigenvalue`).
+the test functions `e^{2πiθ/n}`.
+
+Bergman projections give the integrality of the area: the weight-`2(j+2)` projection has trace
+`(2j + 3)|F|/4π + O(j q^j)`, a natural number, so `|F| = 2πN` (`exists_nat_volume_F_eq`), and the
+Selberg zeta function continues to an entire function (`entireZeta`,
+`exists_selbergZeta_small_eigenvalue`).
 -/
