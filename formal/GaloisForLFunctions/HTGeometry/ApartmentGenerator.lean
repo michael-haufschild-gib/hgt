@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 section
 
@@ -33,7 +33,7 @@ noncomputable def faceMultiplicity {n : ℕ}
       nerve_delta_nonDegenerate _ y.2 j⟩ :
         (nerve (properPart (Set ι))).nonDegenerate n) = F then 1 else 0)
 
-variable {C : Type u} [Category.{v} C] [Preadditive C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Preadditive C] [HasCoproducts.{u} C]
 
 /-- **The boundary of a chain, read at one face**, is the signed sum of its chamber coefficients. -/
 theorem comp_d_comp_chamberCoefficient {n : ℕ} [Finite ι]
@@ -104,7 +104,7 @@ end Thin
 section Assembly
 
 variable {ι : Type u} [Finite ι]
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- The chambers of an apartment, indexed by the permutations of a reference ordering. -/
 noncomputable def orderingChamberEquiv {n : ℕ} (hN : Nat.card ι = n + 2) (e₀ : Fin (n + 2) ≃ ι) :
@@ -262,7 +262,7 @@ section Frame
 
 variable {K V ι : Type u} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
   [Fintype ι]
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- **The apartment class of an observer frame, explicitly.**  The fundamental class of the frame's
 Coxeter sphere — the signed sum over the orderings of the frame — pushed into the building. -/

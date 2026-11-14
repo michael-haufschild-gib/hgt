@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.KodairaParshinAbc.Periods
 
 open Polynomial HTGeometry
 
-variable {K : Type*} [Field K] [CharZero K]
+variable {K : Type*} [Field K]
 
 private abbrev x : RatFunc K := algebraMap K[X] (RatFunc K) X
 
@@ -44,14 +44,13 @@ theorem derivative_yukawaDenominator (n : ℕ) (a : K) :
     derivative_one, derivative_C, derivative_X, zero_mul, zero_add,
     Nat.add_sub_cancel, mul_one, Nat.cast_add, Nat.cast_one]
   rw [pow_succ]
-  simp only [map_add, map_mul, map_natCast, map_one]
-  norm_num
+  simp only [map_add, map_mul, map_natCast, map_one, map_ofNat]
   ring
 
 /-- The differential expression with all singular denominators cleared. -/
 def yukawaEquation (n : ℕ) (a : K) (f : RatFunc K) : RatFunc K :=
   x * (1 - algebraMap K (RatFunc K) a * x) * ratFuncDerivative K f +
-    ((n + 1 : RatFunc K) - (n + 2) * algebraMap K (RatFunc K) a * x) * f
+    ((n + 1 : RatFunc K) - (n + 2 : RatFunc K) * algebraMap K (RatFunc K) a * x) * f
 
 private theorem map_C (a : K) :
     algebraMap K[X] (RatFunc K) (C a) = algebraMap K (RatFunc K) a := by
@@ -64,9 +63,10 @@ theorem yukawa_integrating_factor (n : ℕ) (a : K) (f : RatFunc K) :
   rw [Derivation.leibniz, smul_eq_mul, smul_eq_mul,
     ratFuncDerivative_algebraMap, derivative_yukawaDenominator]
   simp only [yukawaDenominator, yukawaEquation, map_mul, map_pow, map_sub, map_one,
-    map_C, map_add, map_natCast, pow_succ]
-  norm_num
+    map_C, map_add, map_natCast, map_ofNat, pow_succ]
   ring
+
+variable [CharZero K]
 
 /-- Every rational solution is a constant multiple of the algebraic Yukawa coupling. -/
 theorem yukawaEquation_eq_zero_iff (n : ℕ) (a : K) (f : RatFunc K) :

@@ -37,6 +37,12 @@ zeros in distinct pairs to any such zeros. ∎
 |---|---|---|
 | all | `TheArithmeticGroupActsOnContinuedWindowsOfZerosAsHeatMonodromy` | `complexHeat_zero_xiSpectralPointSupport`, `xiSpectralPointSupport_injective`, `exists_continuation_of_zero`, `exists_forwardMonodromy_eq_on_continued_window` |
 
+(C) If continuations `w_ρ(t)` of all off-line zeros are, on one interval `0 < t < t₀`, nonreal
+zeros of `H_t` and pairwise distinct, then only finitely many zeros are off the line: at `t₀/2`
+they inject into the finite set of nonreal zeros of `H_{t₀/2}` (Ki–Kim–Lee). Lean:
+`AUniformSpecializationOfTheOffLineZerosForcesThemToBeFinite.finite_offLine_of_uniform`.
+
 ## Open
 
-A uniform `t₀` on growing windows (would need non-escape near the time `0`).
+Whether finitely many off-line zeros suffice for a uniform `t₀` (non-escape of all zeros near the
+time `0`).

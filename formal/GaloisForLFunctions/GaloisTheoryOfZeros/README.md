@@ -407,7 +407,8 @@ a rational relation among the heights. For the zeros `U_t` of ordinate `t`, the 
 `A_{t,p}` of their reflection radicals satisfies `c(A_{t,p}) = (−1)^{|U_t|} A_{t,p}`, every
 automorphism multiplies it by `±1`, and `|U_t|` is odd iff `½ + it` is a zero; then for a
 suitable prime the product of the radicands of height `t` is a negative non-square of `B`. A lift
-of `r` acts on every `A_{t,p}` as `c` does.
+of `r` acts on every `A_{t,p}` as `c` does. A square relation in `B` among the radicand products
+of finitely many heights involves an even number of heights carrying a critical zero.
 ([spectral field](ThePrimeSpectralFieldOfTheZeros.lean),
 [trace group](ThePrimeTraceGaloisGroupOfTheZeros.lean),
 [residue fields](ThePrimeResidueFieldsOfTheZeros.lean),
@@ -426,7 +427,8 @@ of `r` acts on every `A_{t,p}` as `c` does.
 [leaving the quartet](AnOrbitLeavesItsQuartetOnlyThroughAnotherOffLineQuartetOfTheSameOrdinate.lean),
 [independence of heights](TheTracesOfDistinctHeightsAreLinearlyIndependent.lean),
 [algebraic independence](TheTracesOfRationallyIndependentHeightsAreAlgebraicallyIndependent.lean),
-[parity of the radicals](TheReflectionRadicalsOfOneHeightCarryTheParityOfItsZeros.lean))
+[parity of the radicals](TheReflectionRadicalsOfOneHeightCarryTheParityOfItsZeros.lean),
+[square relations](ASquareRelationAmongHeightRadicandsHasAnEvenNumberOfCriticalHeights.lean))
 
 **Arithmetic groups and the heat cover.** Let `φ` be an injective map between the zeros of ξ
 and the zeros of `H_b` at a forward time. If `φ` carries the reflection to `z ↦ −z`, every
@@ -438,9 +440,12 @@ infinitely many zeros, to an element of `G₊(b)` (those move finitely many zero
 ξ is the limit as `t → 0⁺` of zeros of `H_t` (a Hermite sheet of its collision at the time `0`);
 for finitely many zeros `s_i` in distinct reflection pairs and `σ` over `B`, continuations
 `w_i(t) → s_i`, `w'_i(t) → σ s_i` are matched by an element of `G₊(t)` at every small real time
-`t` off the branch times.
+`t` off the branch times. A time uniform in the window is obstructed: continuations of the
+off-line zeros that stay nonreal and distinct on one interval of positive times exist only if the
+off-line zeros are finite in number (Ki–Kim–Lee).
 ([finite windows](TheArithmeticGroupIsAHeatMonodromyOnFiniteWindowsButNotOnAFibre.lean),
-[continued windows](TheArithmeticGroupActsOnContinuedWindowsOfZerosAsHeatMonodromy.lean))
+[continued windows](TheArithmeticGroupActsOnContinuedWindowsOfZerosAsHeatMonodromy.lean),
+[uniform windows](AUniformSpecializationOfTheOffLineZerosForcesThemToBeFinite.lean))
 
 **Over `ℚ`.** `[ℚ(ρ−½) : K_even] ≤ 2`; the negation of all centred zeros is a field
 automorphism iff an anchor lies outside `K_even`; `K_even ⊆ ℝ` iff RH.
@@ -764,7 +769,8 @@ Each problem names its base. The calibration questions concern the finite equati
    critical zeros. Source parity: the product of the radicands of the zeros of ordinate `t` is
    `A_{t,p}²` with `c(A_{t,p}) = (−1)^{|U_t|} A_{t,p}`, and `|U_t|` is odd iff `½ + it` is a zero;
    then the product is a negative non-square of `B` for a suitable `p`, and a lift of `r` acts on
-   `A_{t,p}` as `c`. This class is compatible with a lift and does not force criticality. Open: a
+   `A_{t,p}` as `c`; a square relation in `B` among such products has an even number of
+   critical heights. This class is compatible with a lift and does not force criticality. Open: a
    source restriction that separates the lift from conjugation.
 4. **Arithmetic groups and the heat cover.** The heat group is known up to one sign. `G₊(τ)`
    is a group of signed permutations of the pairs, the same up to conjugation at every base
@@ -788,7 +794,8 @@ Each problem names its base. The calibration questions concern the finite equati
    `0`, every automorphism over `B` is matched on each finite window by heat monodromies at all
    small real times. Open: the sign, which needs the full fibre at one turn (the
    two-term model controls a window near the centre; the zeros between the window and the far
-   zeros are not controlled at a model collision time), and a time `t₀` uniform in the window.
+   zeros are not controlled at a model collision time). A time `t₀` uniform in the window that
+   keeps the off-line zeros nonreal and distinct exists only if they are finite in number.
 
 Calibration questions.
 
@@ -826,7 +833,7 @@ Calibration questions.
 | M15′ | the sign from real collisions: mass `≢ 0 (mod 8)` ⇒ `G₊ = W` | formalized |
 | M16 | `G₊` and the group over `B`: finite windows yes, whole fibres no | formalized |
 | M17 | specialization from the time `0` on continued windows of zeros (multiple zeros included) | formalized |
-| M17′ | a time `t₀` uniform in growing windows (non-escape near the time `0`) | open |
+| M17′ | a uniform `t₀`: obstructed unless the off-line zeros are finite | formalized (reduction) |
 | M18 | independence of the moments at low degree; the degree over `K` | open |
 
 ## Tools

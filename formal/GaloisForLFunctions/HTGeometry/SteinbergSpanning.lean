@@ -16,12 +16,12 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 section
 
 variable {K V : Type u} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 
 /-- The apartment of a frame of the whole space, as a map of order complexes into the building. -/
 noncomputable def buildingApartmentMap {ι : Type u}

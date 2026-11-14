@@ -22,7 +22,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 section Atoms
 
@@ -82,7 +82,7 @@ section Base
 
 variable {K V : Type u} [DivisionRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
 variable {κ : Type u} {W p : κ → Submodule K V} {ι : Type u} [Finite ι]
-variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 
 omit [FiniteDimensional K V] in
 /-- The two vertices of an intersection simplex, as elements of the disjoint union. -/

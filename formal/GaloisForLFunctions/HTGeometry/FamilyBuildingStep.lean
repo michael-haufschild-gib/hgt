@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 variable {L : Type u} [Lattice L] [BoundedOrder L] [IsModularLattice L] {ι : Type u} {W p : ι → L}
 
@@ -64,7 +64,7 @@ noncomputable def famCoverInterHomologyIso (hp : ∀ a, IsAtom (p a)) {C : Type*
 
 section
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 omit [Abelian C] [HasCoproducts C] in
 /-- A map out of a zero object is a monomorphism. -/

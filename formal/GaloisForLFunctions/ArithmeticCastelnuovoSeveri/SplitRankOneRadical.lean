@@ -74,8 +74,8 @@ theorem upperTrace_fibre_gram (b : Fin 2 → ℚ) :
 
 /-- The Gram rank stays one even when the two matrices are independent. -/
 theorem upperTrace_fibre_gram_rank (b : Fin 2 → ℚ) :
-    (fun i j => splitTracePairing (upperTrace 1 (b i)) (upperTrace 1 (b j)) :
-      Matrix (Fin 2) (Fin 2) ℚ).rank = 1 := by
+    Matrix.rank (fun i j : Fin 2 =>
+      splitTracePairing (upperTrace 1 (b i)) (upperTrace 1 (b j))) = 1 := by
   rw [upperTrace_fibre_gram, Matrix.rank_eq_finrank_span_cols]
   change Module.finrank ℚ (Submodule.span ℚ
     (Set.range (fun _ : Fin 2 => fun _ : Fin 2 => (-1 : ℚ)))) = 1

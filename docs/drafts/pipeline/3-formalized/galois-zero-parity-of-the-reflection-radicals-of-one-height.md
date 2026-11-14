@@ -11,7 +11,9 @@
   (D) for each zero at most one prime kills its radical; some prime has `A_{t,p} ≠ 0`;
   (E) if `½ + it` is a zero, some prime makes `A_{t,p}²` a negative element of `B` that is not a
   square in `B`;
-  (F) a lift `σ` of the reflection has `σ(A_{t,p}) = c(A_{t,p})`.
+  (F) a lift `σ` of the reflection has `σ(A_{t,p}) = c(A_{t,p})`;
+  (G) if `∏_{t∈T} A_{t,p_t}² = b²` with `b ∈ B` and all `A_{t,p_t} ≠ 0`, then an even number of
+  the heights in `T` carry a critical zero.
 
 ## Goal
 
@@ -35,7 +37,8 @@ so in `B`. (C) `ρ ↦ 1 − ρ̄` pairs `Re < ½` with `Re > ½`; the critical 
 `½ + it`. (D) `p^ρ = p^{1−ρ}` and `q^ρ = q^{1−ρ}` give `ρ = 1 − ρ` (two primes), impossible;
 finitely many zeros, infinitely many primes. (E) `c(A) = −A` makes `A` purely imaginary, `A² < 0`;
 `A² = b²` with `b ∈ B` gives `A = ±b ∈ B`, then `A = −A`, `A = 0`. (F) `σ(p^ρ − p^{1−ρ}) =
-−(p^ρ − p^{1−ρ})`. ∎
+−(p^ρ − p^{1−ρ})`. (G) `∏A = ±b` is fixed by `c`, which multiplies it by `(−1)^{Σ|U_t|}`;
+a sum is even iff its number of odd terms is. ∎
 
 ## Lean
 
@@ -47,6 +50,7 @@ finitely many zeros, infinitely many primes. (E) `c(A) = −A` makes `A` purely 
 | D | same | `reflectionDifference_ne_zero_of_ne`, `exists_prime_heightReflectionProduct_ne_zero` |
 | E | same | `heightReflectionProduct_eq_zero_of_mem`, `exists_prime_radicand_product_not_square` |
 | F | same | `lift_heightReflectionProduct` |
+| G | `ASquareRelationAmongHeightRadicandsHasAnEvenNumberOfCriticalHeights` | `even_card_critical_of_isSquare` |
 
 ## Open
 

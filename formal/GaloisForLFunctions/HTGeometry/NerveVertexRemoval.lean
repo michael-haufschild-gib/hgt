@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial
 
-universe v u
+universe v u c
 
 variable {P : Type u} [PartialOrder P]
 
@@ -38,7 +38,7 @@ noncomputable def generalStarCone (p : P) : (generalStar p : Type u) →o (gener
       exact h
 
 /-- **The star of any element is contractible.** -/
-theorem isZero_homology_generalStar (p : P) {C : Type u} [Category.{v} C]
+theorem isZero_homology_generalStar (p : P) {C : Type c} [Category.{v} C]
     [Limits.HasCoproducts.{u} C] [Preadditive C] [CategoryWithHomology C] (R : C) (i : ℕ)
     (hi : 1 ≤ i) :
     Limits.IsZero (((nerveSubcomplex (generalStar p) : SSet.{u})).homology R i) := by
@@ -71,7 +71,7 @@ theorem nerveSubcomplex_generalStar_sup_compl (p : P) :
 
 /-- **Cutting an order complex at an arbitrary vertex.** -/
 theorem isZero_homology_nerve_of_vertex (p : P)
-    {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+    {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
     (R : C) (i j : ℕ) (hij : (ComplexShape.down ℕ).Rel i j) (hi : 1 ≤ i)
     (hcompl : Limits.IsZero (((nerveSubcomplex {q : P | q ≠ p} : SSet.{u})).homology R i))
     (hlink : Limits.IsZero

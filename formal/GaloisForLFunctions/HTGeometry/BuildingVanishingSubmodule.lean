@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 variable {K V : Type u} [DivisionRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
 
@@ -35,7 +35,7 @@ theorem finrank_of_covBy {U W : Submodule K V} (h : U ⋖ W) :
 
 section
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- **Solomon--Tits vanishing for a vector space.**  The order complex of the proper nonzero
 subspaces of a finite-dimensional vector space has no homology in degree `i` whenever

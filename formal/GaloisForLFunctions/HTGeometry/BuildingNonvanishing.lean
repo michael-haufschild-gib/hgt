@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 section Lattice
 
@@ -206,7 +206,7 @@ end Cover
 section Induction
 
 variable {K V : Type u} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- **The homology of a family of buildings of rank `i + 2` is free on a nonempty index.**  The
 descent removes one rank per degree, and at the bottom the intersection of the base with a piece has

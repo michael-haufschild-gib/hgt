@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial
 
-universe v u
+universe v u c
 
 variable (P : Type u) [PartialOrder P]
 
@@ -47,7 +47,7 @@ def orderConeBaseOrderIso : {x : WithTop P // x ≠ ⊤} ≃o P where
 
 section Homology
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- Relative chains of an order cone modulo its base. -/
 noncomputable def orderConeRelativeChains (R : C) : ChainComplex C ℕ :=
@@ -67,7 +67,7 @@ variable {K V : Type u} [Field K] [AddCommGroup V] [Module K V]
 
 /-- Relative cone homology of every flag interval is free. -/
 theorem isFreeOver_flagIntervalRelativeHomology (A B : Submodule K V) (R : C) (n : ℕ) :
-    IsFreeOver.{v, u, u} R
+    IsFreeOver.{v, c, u} R
       ((orderConeRelativeChains (flagInterval A B) R).homology (n + 2)) :=
   IsFreeOver.of_iso (isFreeOver_flagIntervalHomology A B R (n + 1))
     (orderConeRelativeHomologyIso (flagInterval A B) R n)

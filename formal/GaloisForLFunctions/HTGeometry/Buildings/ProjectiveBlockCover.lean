@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial
 
-universe v u
+universe v u c
 
 variable {K V ι κ : Type u} [Field K] [AddCommGroup V] [Module K V]
 
@@ -60,7 +60,7 @@ theorem projectiveBlockConfigurations_nonempty_iff
   rw [blockConfigurations_nonempty_iff]
   exact forall_congr' (fun i => flagBlockLines_nonempty_iff _ _)
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- Every projective block-cover intersection has zero positive homology. -/
 theorem isZero_projectiveBlockIntersection_homology

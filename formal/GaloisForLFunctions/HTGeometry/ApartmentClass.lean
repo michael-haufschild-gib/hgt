@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 /-- A monotone map of posets induces a map of their order complexes. -/
 noncomputable def orderHomNerveMap {α β : Type u} [Preorder α] [Preorder β] (f : α →o β) :
@@ -27,7 +27,7 @@ noncomputable def orderHomNerveMap {α β : Type u} [Preorder α] [Preorder β] 
 section
 
 variable {K V ι : Type u} [Field K] [AddCommGroup V] [Module K V] [Fintype ι]
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- The order complex of the apartment of a frame, mapped into the building. -/
 noncomputable def apartmentNerveMap (b : Basis ι K V) :

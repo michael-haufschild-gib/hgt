@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial
 
-universe v u
+universe v u c
 
 variable {P : Type u} [PartialOrder P]
 
@@ -25,7 +25,7 @@ instance starOrderBot (p : P) : OrderBot ({q : P | p ≤ q} : Type u) where
   bot_le q := q.2
 
 /-- **The star of a point is contractible.** -/
-theorem isZero_homology_star (p : P) {C : Type u} [Category.{v} C] [Limits.HasCoproducts.{u} C]
+theorem isZero_homology_star (p : P) {C : Type c} [Category.{v} C] [Limits.HasCoproducts.{u} C]
     [Preadditive C] [CategoryWithHomology C] (R : C) (i : ℕ) (hi : 1 ≤ i) :
     Limits.IsZero (((nerveSubcomplex {q : P | p ≤ q} : SSet.{u})).homology R i) :=
   Limits.IsZero.of_iso (isZero_homology_of_orderBot R i hi)
@@ -38,7 +38,7 @@ degree `i`.
 The star contributes nothing because it has a least element; this is where minimality is used, both
 to make the two pieces cover and to make the star a cone. -/
 theorem isZero_homology_nerve_of_minimal (p : P) (hmin : ∀ q, q ≤ p → q = p)
-    {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+    {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
     (R : C) (i j : ℕ) (hij : (ComplexShape.down ℕ).Rel i j) (hi : 1 ≤ i)
     (hcompl : Limits.IsZero (((nerveSubcomplex {q : P | q ≠ p} : SSet.{u})).homology R i))
     (hlink : Limits.IsZero
@@ -58,7 +58,7 @@ theorem star_inter_compl_eq (p : P) :
 
 /-- **Cutting at a minimal element, with the link named.** -/
 theorem isZero_homology_nerve_of_minimal' (p : P) (hmin : ∀ q, q ≤ p → q = p)
-    {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+    {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
     (R : C) (i j : ℕ) (hij : (ComplexShape.down ℕ).Rel i j) (hi : 1 ≤ i)
     (hcompl : Limits.IsZero (((nerveSubcomplex {q : P | q ≠ p} : SSet.{u})).homology R i))
     (hlink : Limits.IsZero (((nerveSubcomplex {q : P | p < q} : SSet.{u})).homology R j)) :
@@ -71,7 +71,7 @@ link.**  In degree one the link is connected rather than acyclic, and what the v
 that its homology injects into the homology of the two pieces — the content of the reduced
 statement, expressed without an augmented complex. -/
 theorem isZero_homology_nerve_of_minimal_mono (p : P) (hmin : ∀ q, q ≤ p → q = p)
-    {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+    {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
     (R : C) (i j : ℕ) (hij : (ComplexShape.down ℕ).Rel i j) (hi : 1 ≤ i)
     (hcompl : Limits.IsZero (((nerveSubcomplex {q : P | q ≠ p} : SSet.{u})).homology R i))
     (hmono : Mono (HomologicalComplex.homologyMap

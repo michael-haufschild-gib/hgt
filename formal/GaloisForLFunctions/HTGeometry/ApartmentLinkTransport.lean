@@ -14,7 +14,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 section Transport
 
@@ -84,7 +84,7 @@ theorem linkInterMap_comp_interToSmallerNerve (hp : ∀ a, IsAtom (p a)) (hstric
 
 section Class
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 variable (e₀ : Fin (n + 3) ≃ ι) (R : C)
 
 /-- **The connecting map, followed by the identification of the intersections with the family one
@@ -116,7 +116,7 @@ end Transport
 
 section Generation
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 
 /-- **Generation is transported along an isomorphism** that matches every map of one family with a
 map of another, up to an invertible scalar: if the second family generates, so does the first. -/

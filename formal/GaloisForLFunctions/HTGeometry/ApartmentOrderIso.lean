@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open Module
 
-universe u
+universe u c
 
 variable {K V ι : Type u} [DivisionRing K] [AddCommGroup V] [Module K V]
 
@@ -102,7 +102,7 @@ section
 
 open CategoryTheory
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 
 /-- **The apartment has no homology below its top degree.**  The subsets of a frame form a Boolean
 lattice, which is modular, atomic and graded by cardinality, so the Solomon--Tits vanishing applies

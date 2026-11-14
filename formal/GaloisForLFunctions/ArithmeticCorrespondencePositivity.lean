@@ -119,3 +119,4 @@ prime error is the archimedean genus exactly under RH with simple zeros). See
 -/
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.IntegrableLogarithmicStaircasesHaveHolomorphicMellinTransforms
 import GaloisForLFunctions.ArithmeticCorrespondencePositivity.LogarithmicAbelIntegrability
+import GaloisForLFunctions.ArithmeticCorrespondencePositivity.ChebyshevSquaredEquations

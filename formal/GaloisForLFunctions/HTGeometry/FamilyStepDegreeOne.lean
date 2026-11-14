@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 variable {L : Type u} [Lattice L] [BoundedOrder L] [IsModularLattice L] {ι : Type u} {W p : ι → L}
 
@@ -48,7 +48,7 @@ def famPieceCollapse (hp : ∀ a, IsAtom (p a)) (v : famCoverIndex W p → prope
 
 section
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- **The collapse is a retraction of the inclusion, up to homology**, once the componentwise
 constant self-map of the intersections is homologically the identity. -/

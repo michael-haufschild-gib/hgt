@@ -17,12 +17,12 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 section
 
 variable {K V : Type u} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- **The homology of the building vanishes in every positive degree but the top one.** -/
 theorem isZero_homology_building_of_ne [Nontrivial V] (R : C) (i : ℕ) (hi : 1 ≤ i)

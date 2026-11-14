@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 variable {L : Type u} [Lattice L] [BoundedOrder L] [IsModularLattice L] {ι : Type u} {W p : ι → L}
 
@@ -314,7 +314,7 @@ end EmptyCase
 
 section Assembly
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- **The disjoint union of interval buildings is connected component by component.**  The map
 sending each element to the atom of its own component is the identity on degree-zero homology, as

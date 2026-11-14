@@ -21,12 +21,12 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 section Cycles
 
 variable {K V : Type u} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- **The Steinberg module is the module of top cycles of the building.**  There are no chains above
 degree `N - 2`, so a top homology class is exactly a normalized cycle. -/

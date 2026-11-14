@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 section Perm
 
@@ -72,7 +72,7 @@ end Perm
 
 section Zero
 
-variable {ι : Type u} {C : Type u} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
+variable {ι : Type u} {C : Type c} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
 
 /-- **The fundamental chain of a two-element frame is the difference of its two points.** -/
 theorem apartmentChainIn_zero (e₀ : Fin (0 + 2) ≃ ι) {X : SSet.{u}}
@@ -96,7 +96,7 @@ end Zero
 
 section ZeroClass
 
-variable {ι : Type u} {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {ι : Type u} {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 
 /-- **The apartment class of a two-element frame is the difference of the classes of its two
 points.** -/

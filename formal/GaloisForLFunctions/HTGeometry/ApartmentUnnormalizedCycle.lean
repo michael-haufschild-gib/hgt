@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 variable {ι : Type u}
 
@@ -77,7 +77,7 @@ end Involution
 
 section Chain
 
-variable {C : Type u} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
 
 /-- The signed sum of the chambers of an apartment listed by a set of orderings of the frame,
 carried into any simplicial set the apartment maps to. -/
@@ -156,7 +156,7 @@ theorem swap_trans_mem_starOrderings {n : ℕ} {σ : Equiv.Perm (Fin (n + 3))} {
 
 section Cycle
 
-variable {C : Type u} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
 
 /-- **The fundamental chain of an apartment is a cycle**, in any simplicial set it maps to. -/
 theorem apartmentChainIn_univ_comp_d {n : ℕ} (e₀ : Fin (n + 3) ≃ ι) {X : SSet.{u}}
@@ -207,7 +207,7 @@ end Cycle
 
 section Class
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 
 /-- The apartment chain is a cycle in every degree the differential can leave. -/
 theorem apartmentChainIn_univ_comp_d_eq_zero {m j : ℕ} (e₀ : Fin (m + 2) ≃ ι) {X : SSet.{u}}

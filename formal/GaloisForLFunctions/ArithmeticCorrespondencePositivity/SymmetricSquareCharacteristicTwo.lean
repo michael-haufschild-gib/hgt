@@ -64,16 +64,17 @@ theorem binarySquareDiagonal_intertwines (A : Matrix (Fin 2) (Fin 2) R) (x : Fin
 theorem binaryMixed_intertwines (A : Matrix (Fin 2) (Fin 2) R) (v : Fin 3 → R) :
     binaryMixed ((symmetricSquareMatrix A).mulVec v) = A.det * binaryMixed v := by
   have h2 : (2 : R) = 0 := CharP.cast_eq_zero R 2
-  simp [binaryMixed, symmetricSquareMatrix, Matrix.mulVec, dotProduct,
+  simp [binaryMixed, symmetricSquareMatrix, dotProduct,
     Fin.sum_univ_succ, Matrix.det_fin_two, h2, CharTwo.sub_eq_add]
 
 /-- The characteristic-two discriminant is the square of the quotient coordinate. -/
 theorem symmetricDiscriminant_charTwo (v : Fin 3 → R) :
     symmetricDiscriminant v = binaryMixed v ^ 2 := by
   have h4 : (4 : R) = 0 := by
+    have h2 : (2 : R) = 0 := CharP.cast_eq_zero R 2
     calc
       (4 : R) = 2 * 2 := by ring
-      _ = 0 := by rw [CharP.cast_eq_zero R 2, zero_mul]
+      _ = 0 := by rw [h2, zero_mul]
   simp only [symmetricDiscriminant, binaryMixed, LinearMap.proj_apply, h4,
     zero_mul, sub_zero]
 

@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 variable {ι : Type u}
 
@@ -133,7 +133,7 @@ end Link
 
 section Boundary
 
-variable {C : Type u} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
 
 /-- **The boundary of the star half of an apartment cycle is the apartment cycle of the link.**
 All the faces but the one deleting the top vertex cancel in pairs, and the surviving faces are the

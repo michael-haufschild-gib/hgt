@@ -15,11 +15,11 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Module
 
-universe v u
+universe v u c
 
 variable {K V : Type u} [Field K] [AddCommGroup V] [Module K V]
   [FiniteDimensional K V] [DecidableEq (Submodule K V)]
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- Relative homology of the cusped cone is dual-building homology shifted by one. -/
 noncomputable def cuspRelativeDualHomologyIso (R : C) (n : ℕ) :
@@ -29,7 +29,7 @@ noncomputable def cuspRelativeDualHomologyIso (R : C) (n : ℕ) :
 
 /-- Every positive-base-degree relative cusp homology object is free, also for the zero space. -/
 theorem isFreeOver_cuspRelativeHomology (R : C) (n : ℕ) :
-    IsFreeOver.{v, u, u} R ((orderConeRelativeChains (CuspedVertex K V) R).homology (n + 2)) := by
+    IsFreeOver.{v, c, u} R ((orderConeRelativeChains (CuspedVertex K V) R).homology (n + 2)) := by
   apply IsFreeOver.of_iso _ (cuspRelativeDualHomologyIso R n)
   rcases subsingleton_or_nontrivial (Dual K V) with h | h
   · haveI : SSet.HasDimensionLT (nerve (properPart (Submodule K (Dual K V)))) 0 :=

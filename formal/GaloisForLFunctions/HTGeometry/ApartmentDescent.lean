@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 section
 
@@ -37,7 +37,7 @@ section Descent
 
 variable {L : Type u} [Lattice L] [BoundedOrder L] [IsModularLattice L] {κ : Type u} {W p : κ → L}
 variable {ι : Type u} [Finite ι] {n : ℕ} {a : ι}
-variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 variable (f : properPart (Set ι) →o famBuilding W) (c : famCoverIndex W p)
 variable (e₀ : Fin (n + 3) ≃ ι) (R : C) {hN : Nat.card ι = n + 3}
 

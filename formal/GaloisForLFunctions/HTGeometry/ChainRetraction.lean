@@ -17,11 +17,11 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 section
 
-variable {C : Type u} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
 variable {Y Z : SSet.{u}} (n : ℕ) (R : C) (r : Y _⦋n⦌ → Option (Z _⦋n⦌))
 
 /-- The retraction of the chains attached to a partial choice of preimages. -/

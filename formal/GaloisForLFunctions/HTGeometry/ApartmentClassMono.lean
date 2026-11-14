@@ -15,7 +15,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 /-! ## Chain bounds and dimension -/
 
@@ -97,7 +97,7 @@ end Dimension
 section Mono
 
 variable {K V ι : Type u} [Field K] [AddCommGroup V] [Module K V] [Fintype ι]
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 omit [Fintype ι] in
 /-- The vertices of a frame's apartment are distinguished by the subspaces they span. -/

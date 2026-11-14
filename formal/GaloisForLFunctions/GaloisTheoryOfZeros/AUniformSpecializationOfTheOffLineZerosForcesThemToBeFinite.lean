@@ -41,5 +41,3 @@ theorem finite_offLine_of_uniform {t₀ : ℝ} (ht₀ : 0 < t₀) (w : XiDivisor
   exact ⟨by rw [← complexHeat_ofReal]; exact h0, him⟩
 
 end GaloisForLFunctions.GaloisTheoryOfZeros
-
-#print axioms GaloisForLFunctions.GaloisTheoryOfZeros.finite_offLine_of_uniform

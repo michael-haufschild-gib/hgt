@@ -34,7 +34,7 @@ theorem branchEvaluationMatrix_injective_iff {R : Type*} [CommRing R]
       rw [ha, branchEvaluationMatrix_mulVec, branchEvaluationMatrix_mulVec]
       simp
     have hz := congrFun (hinj heq) 1
-    simpa using hz
+    simp at hz
   · intro ha x y hxy
     rw [branchEvaluationMatrix_mulVec, branchEvaluationMatrix_mulVec] at hxy
     have h0 : x 0 = y 0 := congrFun hxy 0

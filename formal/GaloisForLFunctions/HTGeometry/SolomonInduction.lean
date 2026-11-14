@@ -17,12 +17,12 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 section
 
 variable {K V : Type u} [DivisionRing K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 
 theorem card_univ_diff_singleton {ι : Type u} [Finite ι] (i₀ : ι) :
     Nat.card ↥(Set.univ \ {i₀} : Set ι) = Nat.card ι - 1 := by
@@ -31,7 +31,7 @@ theorem card_univ_diff_singleton {ι : Type u} [Finite ι] (i₀ : ι) :
 /-- **Generation by apartment classes in the smallest rank**, the statement the induction starts
 from: for a family of planes of a fixed vector space, the classes of the apartments of its frames
 generate the first homology of the disjoint union of their buildings. -/
-def SolomonBase (K V C : Type u) [DivisionRing K] [AddCommGroup V] [Module K V]
+def SolomonBase (K V : Type u) (C : Type c) [DivisionRing K] [AddCommGroup V] [Module K V]
     [FiniteDimensional K V] [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C] : Prop :=
   ∀ (κ : Type u) (_ : Nonempty κ) (W : κ → Submodule K V) (ι : Type u) (_ : Finite ι)
     (_ : Nat.card ι = 0 + 3) (e₀ : Fin (0 + 3) ≃ ι) (_ : ∀ a, finrank K ↥(W a) = 0 + 3) (R : C),

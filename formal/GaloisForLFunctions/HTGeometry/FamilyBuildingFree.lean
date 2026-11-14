@@ -21,14 +21,14 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 section
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- A zero object is free: it is the coproduct over the empty index. -/
-theorem IsFreeOver.of_isZero {R Z : C} (h : Limits.IsZero Z) : IsFreeOver.{v, u, u} R Z := by
+theorem IsFreeOver.of_isZero {R Z : C} (h : Limits.IsZero Z) : IsFreeOver.{v, c, u} R Z := by
   refine ⟨PEmpty.{u + 1}, ⟨h.iso ?_⟩⟩
   rw [Limits.IsZero.iff_id_eq_zero]
   exact Sigma.hom_ext _ _ fun i => i.elim
@@ -38,7 +38,7 @@ end
 section
 
 variable {L : Type u} [Lattice L] [BoundedOrder L] [IsModularLattice L] {ι : Type u} {W p : ι → L}
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- The component of the base attached to a component of the pieces: the atom of that component. -/
 noncomputable def famCoverBaseComponent (hp : ∀ a, IsAtom (p a)) (hpW : ∀ a, p a ≤ W a) :
@@ -70,7 +70,7 @@ theorem famCoverBaseComponent_apply (hp : ∀ a, IsAtom (p a)) (hpW : ∀ a, p a
 /-- **The first homology of a disjoint union of interval buildings is free.** -/
 theorem isFreeOver_homology_famBuilding_one (hp : ∀ a, IsAtom (p a)) (hpW : ∀ a, p a ≤ W a)
     [Nonempty (famCoverIndex W p)] (R : C) :
-    IsFreeOver.{v, u, u} R ((nerve (famBuilding W)).homology R 1) := by
+    IsFreeOver.{v, c, u} R ((nerve (famBuilding W)).homology R 1) := by
   refine IsFreeOver.of_iso ?_ (famSupHomologyIso (W := W) (p := p) R 1)
   exact isFreeOver_homology_famSup_one (nerve (famBuilding W)) R
     (famCoverBaseSub (W := W) (p := p)) (famCoverPieceSub (W := W) (p := p))
@@ -85,7 +85,7 @@ one; at the bottom the Mayer--Vietoris kernel is a coproduct of copies of the co
 theorem isFreeOver_homology_famBuilding
     (hatomic : ∀ V : L, ⊥ < V → ∃ q, IsAtom q ∧ q ≤ V) (R : C) :
     ∀ (i : ℕ), 1 ≤ i → ∀ (ι : Type u) (W : ι → L), (∀ a, ⊥ < W a) →
-      IsFreeOver.{v, u, u} R ((nerve (famBuilding W)).homology R i) := by
+      IsFreeOver.{v, c, u} R ((nerve (famBuilding W)).homology R i) := by
   classical
   intro i
   induction i with
@@ -110,7 +110,7 @@ positive degree.** -/
 theorem isFreeOver_homology_properPart
     (hatomic : ∀ V : L, ⊥ < V → ∃ q, IsAtom q ∧ q ≤ V) (R : C) (i : ℕ) (hi : 1 ≤ i)
     (hbot : (⊥ : L) < ⊤) :
-    IsFreeOver.{v, u, u} R ((nerve (properPart L)).homology R i) := by
+    IsFreeOver.{v, c, u} R ((nerve (properPart L)).homology R i) := by
   have h := isFreeOver_homology_famBuilding hatomic R i hi PUnit.{u + 1} (fun _ => (⊤ : L))
     (fun _ => hbot)
   exact IsFreeOver.of_iso h

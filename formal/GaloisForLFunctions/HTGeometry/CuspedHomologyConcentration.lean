@@ -14,13 +14,13 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 section
 
 variable {K V : Type u} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
   [DecidableEq (Submodule K V)]
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- **The all-depth cusped horizon complex has no homology in positive degrees except the top
 one.**  Adding an infinite private tail to every elementary horizon changes nothing: the cusps

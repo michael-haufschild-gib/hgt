@@ -62,15 +62,30 @@ theorem gaussianPlaneDefect_integral (s t ξ η : ℝ) :
     (∫ p : ℝ × ℝ, gaussianPlaneDefect s t ξ η p) =
       -(((ξ ^ 2 / (4 * Real.exp s) + η ^ 2 / (4 * Real.exp t) : ℝ)) : ℂ) *
         gaussMoment (Real.exp s) 0 ξ * gaussMoment (Real.exp t) 0 η := by
+  change (∫ p : ℝ × ℝ, gaussianPlaneDefect s t ξ η p
+    ∂(volume : Measure ℝ).prod volume) = _
   rw [gaussianPlaneDefect_split]
   have h (n m : ℕ) :=
     (integrable_gaussMomentIntegrand (Real.exp_pos s) n ξ).mul_prod
       (integrable_gaussMomentIntegrand (Real.exp_pos t) m η)
-  rw [integral_sub (((h 2 0).const_mul (Real.exp s : ℂ)).add
-      ((h 0 2).const_mul (Real.exp t : ℂ))) (h 0 0),
+  have hsum : Integrable (fun p : ℝ × ℝ =>
+      (Real.exp s : ℂ) * (((p.1 : ℂ) ^ 2 * gaussPhase (Real.exp s) ξ p.1) *
+        ((p.2 : ℂ) ^ 0 * gaussPhase (Real.exp t) η p.2)) +
+      (Real.exp t : ℂ) * (((p.1 : ℂ) ^ 0 * gaussPhase (Real.exp s) ξ p.1) *
+        ((p.2 : ℂ) ^ 2 * gaussPhase (Real.exp t) η p.2)))
+      ((volume : Measure ℝ).prod volume) :=
+    ((h 2 0).const_mul (Real.exp s : ℂ)).add ((h 0 2).const_mul (Real.exp t : ℂ))
+  have hsep (n m : ℕ) :
+      (∫ p : ℝ × ℝ, ((p.1 : ℂ) ^ n * gaussPhase (Real.exp s) ξ p.1) *
+        ((p.2 : ℂ) ^ m * gaussPhase (Real.exp t) η p.2)
+        ∂(volume : Measure ℝ).prod volume) =
+      gaussMoment (Real.exp s) n ξ * gaussMoment (Real.exp t) m η :=
+    integral_prod_mul (fun x : ℝ => (x : ℂ) ^ n * gaussPhase (Real.exp s) ξ x)
+      (fun y : ℝ => (y : ℂ) ^ m * gaussPhase (Real.exp t) η y)
+  rw [integral_sub hsum (h 0 0),
     integral_add ((h 2 0).const_mul (Real.exp s : ℂ)) ((h 0 2).const_mul (Real.exp t : ℂ)),
     integral_const_mul, integral_const_mul,
-    integral_prod_mul, integral_prod_mul, integral_prod_mul]
+    hsep 2 0, hsep 0 2, hsep 0 0]
   change (Real.exp s : ℂ) * (gaussMoment (Real.exp s) 2 ξ * gaussMoment (Real.exp t) 0 η) +
     (Real.exp t : ℂ) * (gaussMoment (Real.exp s) 0 ξ * gaussMoment (Real.exp t) 2 η) -
     gaussMoment (Real.exp s) 0 ξ * gaussMoment (Real.exp t) 0 η = _

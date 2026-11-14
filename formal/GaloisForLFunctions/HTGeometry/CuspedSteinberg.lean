@@ -21,12 +21,12 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 section
 
 variable {K V : Type u} [Field K] [AddCommGroup V] [Module K V] [FiniteDimensional K V]
-variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 
 /-- **The annihilator identifies the dual of the subspace lattice with the subspace lattice of the
 dual space.** -/
@@ -60,7 +60,7 @@ noncomputable def cuspDualHomologyIso (R : C) (n : ℕ) :
 /-- **The homology of the all-depth cusped complex is free** in every degree: it is the homology of
 the building of the dual space. -/
 theorem isFreeOver_cuspHomology [Nontrivial V] (R : C) (i : ℕ) :
-    IsFreeOver.{v, u, u} R ((nerveFunctor.obj (Cat.of (CuspedVertex K V))).homology R i) := by
+    IsFreeOver.{v, c, u} R ((nerveFunctor.obj (Cat.of (CuspedVertex K V))).homology R i) := by
   haveI : Nontrivial (Module.Dual K V) := by
     refine Module.nontrivial_of_finrank_pos (R := K) ?_
     rw [Subspace.dual_finrank_eq]

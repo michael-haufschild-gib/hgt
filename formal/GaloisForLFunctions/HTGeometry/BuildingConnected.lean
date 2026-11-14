@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite Module
 
-universe v u
+universe v u c
 
 section
 
@@ -104,7 +104,7 @@ theorem isConnected_nerve_properPart_submodule_orderDual (h3 : 3 ≤ finrank K V
 
 section
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- **The degree-zero homology of the building is a single copy of the coefficients.**  This is the
 degree-zero half of the statement that the reduced homology is concentrated in the top degree. -/

@@ -109,7 +109,7 @@ theorem binary_rank_one_isogeny_normal_form (x y z : ℤ) :
         _ = 1 := hb.symm
     · intro p q
       rw [hx, hy, hz]
-      simp only [integralIsogenyAdditiveCoordinates, if_pos rfl,
+      simp only [integralIsogenyAdditiveCoordinates,
         Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_fin_one,
         primitiveIntegralIsogenyMatrix2]
       push_cast

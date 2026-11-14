@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 variable {L : Type u} [Lattice L] [BoundedOrder L] [IsModularLattice L]
 
@@ -68,7 +68,7 @@ def famBuildingPUnitOrderIso :
 
 section
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- **Solomon--Tits vanishing, for a family of intervals at once.**  Every component of rank at least
 `i + 3` contributes nothing to the homology of the disjoint union in degree `i`. -/

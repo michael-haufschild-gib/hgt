@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Simplicial Opposite
 
-universe u
+universe u c
 
 /-! ## Strictly monotone families of naturals on a finite interval -/
 
@@ -538,7 +538,7 @@ theorem apartment_not_spanning_of_ne {a : ι} (U : properPart (Set ι))
 
 section Coefficients
 
-variable {C : Type u} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
 
 /-- **The fundamental chain of the Coxeter sphere of a frame**: the signed sum of the top simplices
 of the apartment, one for each ordering of the frame. -/
@@ -906,7 +906,7 @@ end Surjectivity
 
 section Homology
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 
 /-- **The apartment of a frame with `N` vectors has dimension below `N - 1`.** -/
 theorem apartmentHasDimensionLT_of_card {ι : Type u} [Finite ι] {N : ℕ} (hN : Nat.card ι = N) :

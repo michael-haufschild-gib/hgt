@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Module
 
-universe v u
+universe v u c
 
 variable {K V : Type u} [Field K] [AddCommGroup V] [Module K V]
 
@@ -71,7 +71,7 @@ def flagIntervalOrderIso (A B : Submodule K V) :
 
 section Homology
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- Flag-interval homology is the homology of the quotient building in every degree. -/
 noncomputable def flagIntervalHomologyIso (A B : Submodule K V) (R : C) (i : ℕ) :
@@ -88,7 +88,7 @@ private theorem isZero_buildingHomology_subsingleton [Subsingleton V] (R : C) (i
 
 /-- Freeness also includes the zero quotient: its building is empty. -/
 theorem isFreeOver_flagIntervalHomology (A B : Submodule K V) (R : C) (i : ℕ) :
-    IsFreeOver.{v, u, u} R ((nerve (flagInterval A B)).homology R i) := by
+    IsFreeOver.{v, c, u} R ((nerve (flagInterval A B)).homology R i) := by
   apply IsFreeOver.of_iso _ (flagIntervalHomologyIso A B R i)
   rcases subsingleton_or_nontrivial (flagLayer A B) with h | h
   · exact IsFreeOver.of_isZero (isZero_buildingHomology_subsingleton R i)

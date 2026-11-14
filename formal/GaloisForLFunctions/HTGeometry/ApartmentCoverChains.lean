@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 section
 
@@ -131,7 +131,7 @@ end Cover
 
 section Retract
 
-variable {C : Type u} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
 variable {ι : Type u} {m : ℕ}
 
 /-- **An apartment chain whose chambers are covered by a choice of preimages is the image of a
@@ -157,7 +157,7 @@ section Halves
 
 variable {L : Type u} [Lattice L] [BoundedOrder L] [IsModularLattice L] {κ : Type u} {W p : κ → L}
 variable {ι : Type u} [Finite ι] {n : ℕ} {a : ι}
-variable {C : Type u} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Preadditive C] [Limits.HasCoproducts.{u} C]
 variable (f : properPart (Set ι) →o famBuilding W) (c : famCoverIndex W p)
 
 open scoped Classical in

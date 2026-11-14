@@ -17,13 +17,13 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 section Step
 
 variable {L : Type u} [CompleteLattice L] [IsModularLattice L] {κ : Type u} {W p : κ → L}
 variable {ι : Type u} [Finite ι] {n : ℕ}
-variable {C : Type u} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [Limits.HasCoproducts.{u} C]
 
 /-- The frames of the components of a family whose atom at a given place is the chosen atom of that
 component. -/

@@ -37,3 +37,4 @@ import GaloisForLFunctions.KodairaParshinAbc.Legendre.DeuringZeros
 import GaloisForLFunctions.KodairaParshinAbc.Legendre.OrdinaryRootLifts
 import GaloisForLFunctions.KodairaParshinAbc.Legendre.EllipticMultiplicity
 import GaloisForLFunctions.KodairaParshinAbc.Periods.ProjectiveHypersurfacePeriods
+import GaloisForLFunctions.KodairaParshinAbc.Periods.RationalYukawa

@@ -14,7 +14,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Opposite
 
-universe v u
+universe v u c
 
 section Combinatorics
 
@@ -59,7 +59,7 @@ end Combinatorics
 
 section BaseCase
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 variable {ι : Type u} {S : Set ι} {a : ι}
 
 /-- The pieces of the cover of a Boolean interval form a connected complex: there is one of them,
@@ -222,7 +222,7 @@ end BaseCase
 
 section Induction
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- **The order complex of a Boolean interval is a sphere.**  Its homology in the top degree is one
 copy of the coefficients: the cover has a single piece, so the descent removes one element at a time

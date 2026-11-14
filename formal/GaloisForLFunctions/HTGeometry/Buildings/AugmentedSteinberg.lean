@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.HTGeometry
 
 open CategoryTheory Limits Simplicial Module
 
-universe v u
+universe v u c
 
 variable (P : Type u) [PartialOrder P]
 
@@ -36,7 +36,7 @@ theorem isConnected_orderCone : SSet.IsConnected (nerve (WithTop P)) := by
 noncomputable def orderConeBaseNerveIso : (orderConeBase P : SSet) ≅ nerve P :=
   nerveSubcomplexIso _ ≪≫ orderIsoNerveIso (orderConeBaseOrderIso P)
 
-variable {C : Type u} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
+variable {C : Type c} [Category.{v} C] [Abelian C] [HasCoproducts.{u} C]
 
 /-- Relative degree one is precisely reduced degree-zero homology. -/
 noncomputable def orderConeFirstRelativeHomologyIso (R : C) :
@@ -63,7 +63,7 @@ noncomputable def orderConeFirstRelativeHomologyIso (R : C) :
 
 /-- First relative homology is free for every poset, even when disconnected. -/
 theorem isFreeOver_orderConeFirstRelativeHomology (R : C) :
-    IsFreeOver.{v, u, u} R ((orderConeRelativeChains P R).homology 1) := by
+    IsFreeOver.{v, c, u} R ((orderConeRelativeChains P R).homology 1) := by
   let hS := relChainShortExact (nerve (WithTop P)) R (orderConeBase P)
   haveI : Mono (hS.δ 1 0 rfl) := hS.mono_δ 1 0 rfl
     (isZero_homology_of_orderTop (P := WithTop P) R 1 (by omega))
@@ -127,12 +127,12 @@ theorem isZero_orderConeRelativeHomology_zero [Nonempty P] (R : C) :
 theorem isFreeOver_flagIntervalRelativeHomology_all
     {K V : Type u} [Field K] [AddCommGroup V] [Module K V]
     (A B : Submodule K V) (R : C) (n : ℕ) :
-    IsFreeOver.{v, u, u} R ((orderConeRelativeChains (flagInterval A B) R).homology n) := by
+    IsFreeOver.{v, c, u} R ((orderConeRelativeChains (flagInterval A B) R).homology n) := by
   rcases n with _ | _ | n
   · rcases isEmpty_or_nonempty (flagInterval A B) with h | h
     · haveI : SSet.IsConnected (nerve (WithTop (flagInterval A B))) :=
         isConnected_orderCone (flagInterval A B)
-      have hR : IsFreeOver.{v, u, u} R R :=
+      have hR : IsFreeOver.{v, c, u} R R :=
         IsFreeOver.of_iso (isFreeOver_homology_zero (nerve (WithTop (flagInterval A B))) R)
           (asIso ((nerve (WithTop (flagInterval A B))).homology₀ε R)).symm
       exact IsFreeOver.of_iso hR (orderConeEmptyRelativeHomologyIso (flagInterval A B) R)
@@ -235,7 +235,7 @@ noncomputable def augmentedFlagSteinbergModule (A B : Submodule K V) (R : C) : C
 omit [FiniteDimensional K V] in
 /-- The corrected flag Steinberg object is free in every dimension. -/
 theorem isFreeOver_augmentedFlagSteinbergModule (A B : Submodule K V) (R : C) :
-    IsFreeOver.{v, u, u} R (augmentedFlagSteinbergModule A B R) :=
+    IsFreeOver.{v, c, u} R (augmentedFlagSteinbergModule A B R) :=
   isFreeOver_flagIntervalRelativeHomology_all A B R _
 
 /-- A one-dimensional flag layer contributes the coefficients, not a zero factor. -/
