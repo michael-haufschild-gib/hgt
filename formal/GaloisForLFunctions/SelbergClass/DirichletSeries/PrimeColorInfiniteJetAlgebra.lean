@@ -70,9 +70,14 @@ def primeColorBasisInfiniteJetPolynomialEquiv
   have heq : Algebra.adjoin (primeDensityCoefficientField primeCountingWindow)
       (Set.range (primeColorNaturalShiftLogJet color (fun j c => B j c))) =
         primeColorInfiniteJetAlgebra color := by
-    simpa only [primeColorNaturalShiftLogJet_eq_weighted] using
-      weightedColorBasis_adjoin_eq (primeWindowDensityFilter primeCountingWindow)
-        color primeNaturalShiftLogWeight B
+    rw [primeColorNaturalShiftLogJet_eq_weighted]
+    change Algebra.adjoin (primeFilterCoefficientField (primeWindowDensityFilter primeCountingWindow))
+        (Set.range fun q : J × (ℕ × ℕ) =>
+          primeWeightedColorValue color (primeNaturalShiftLogWeight q.2) (B q.1)) =
+      weightedColorPrimeAlgebra (primeWindowDensityFilter primeCountingWindow)
+        color primeNaturalShiftLogWeight
+    exact weightedColorBasis_adjoin_eq (primeWindowDensityFilter primeCountingWindow)
+      color primeNaturalShiftLogWeight B
   exact (primeColorInfiniteJetPolynomialEquiv color).trans
     (Subalgebra.equivOfEq _ _ heq.symm)
 

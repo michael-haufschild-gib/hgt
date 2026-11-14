@@ -26,7 +26,8 @@ private theorem twoPrimary_quotient_character_power (N : ℕ)
   apply MulChar.mulEquivToUnitHom.injective
   rw [map_pow, map_one]
   change χ.toUnitHom ^ (2 ^ j) = 1
-  ext x
+  apply MonoidHom.ext
+  intro x
   change χ.toUnitHom x ^ (2 ^ j) = 1
   have hx : (QuotientGroup.mk' χ.toUnitHom.ker x) ^ (2 ^ j) = 1 := by
     rw [← hj]

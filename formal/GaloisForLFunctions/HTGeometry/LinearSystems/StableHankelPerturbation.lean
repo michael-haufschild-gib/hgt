@@ -124,12 +124,3 @@ theorem norm_finiteExponentialHankel_exp_le {n : ℕ} (logRate : Fin n → ℝ)
 end
 
 end GaloisForLFunctions.HTGeometry
-
-#print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelPacket_le
-#print axioms GaloisForLFunctions.HTGeometry.norm_sq_expFeature_exp_sub
-#print axioms GaloisForLFunctions.HTGeometry.stableHankelPacket_sub
-#print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelPacket_sub_le
-#print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelPacket_prune_le
-#print axioms GaloisForLFunctions.HTGeometry.hasRankLE_stableHankelPacket_prune
-#print axioms GaloisForLFunctions.HTGeometry.approxNumber_stableHankelPacket_le_discarded
-#print axioms GaloisForLFunctions.HTGeometry.norm_finiteExponentialHankel_exp_le

@@ -198,19 +198,3 @@ theorem norm_hankelSolutionOperator_le {n : ℕ} (logRate : Fin n → ℝ) (resi
 end
 
 end GaloisForLFunctions.HTGeometry
-
-#print axioms GaloisForLFunctions.HTGeometry.stableHankelBudget_nonneg
-#print axioms GaloisForLFunctions.HTGeometry.stableHankelRatio_lt_one
-#print axioms GaloisForLFunctions.HTGeometry.norm_stableHankelContraction_le
-#print axioms GaloisForLFunctions.HTGeometry.contractingWith_hankelPicardStep
-#print axioms GaloisForLFunctions.HTGeometry.hankelFixedPoint_eq
-#print axioms GaloisForLFunctions.HTGeometry.existsUnique_hankelFeedback
-#print axioms GaloisForLFunctions.HTGeometry.tendsto_hankelPicard
-#print axioms GaloisForLFunctions.HTGeometry.hankelPicard_error_le
-#print axioms GaloisForLFunctions.HTGeometry.hankelPicard_zero_error_le
-#print axioms GaloisForLFunctions.HTGeometry.norm_hankelFixedPoint_le
-#print axioms GaloisForLFunctions.HTGeometry.hankelFixedPoint_add
-#print axioms GaloisForLFunctions.HTGeometry.hankelFixedPoint_smul
-#print axioms GaloisForLFunctions.HTGeometry.one_sub_hankelContraction_mul_solution
-#print axioms GaloisForLFunctions.HTGeometry.hankelSolution_mul_one_sub_contraction
-#print axioms GaloisForLFunctions.HTGeometry.norm_hankelSolutionOperator_le

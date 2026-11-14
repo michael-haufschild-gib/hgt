@@ -1,6 +1,7 @@
 import GaloisForLFunctions.goldbach.AffineProgressionConductor
 import GaloisForLFunctions.goldbach.BalancedProductCollisions
 import GaloisForLFunctions.goldbach.Characters.BernoulliSubproductContainers
+import GaloisForLFunctions.goldbach.Characters.MaximalOddKernels
 import GaloisForLFunctions.goldbach.CoprimePrimePairCorrection
 import GaloisForLFunctions.goldbach.GammaFactorBoundary
 import GaloisForLFunctions.goldbach.InfiniteSpectralSquareProduct

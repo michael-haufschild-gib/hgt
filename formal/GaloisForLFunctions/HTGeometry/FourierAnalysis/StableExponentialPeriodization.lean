@@ -166,15 +166,3 @@ theorem hermitianFrequencyProjection_idempotent (φ : ℝ → ℂ) :
 end
 
 end GaloisForLFunctions.HTGeometry
-
-#print axioms GaloisForLFunctions.HTGeometry.fourierCoeff_periodized_causalExponential
-#print axioms GaloisForLFunctions.HTGeometry.stableExponentialSymbol_denominator_ne_zero
-#print axioms GaloisForLFunctions.HTGeometry.norm_stableExponentialSymbol_le
-#print axioms GaloisForLFunctions.HTGeometry.norm_normalized_stableExponentialSymbol_le_one
-#print axioms GaloisForLFunctions.HTGeometry.fourierCoeff_periodizedExponentialPacket
-#print axioms GaloisForLFunctions.HTGeometry.norm_stableExponentialPacketSymbol_le
-#print axioms GaloisForLFunctions.HTGeometry.stableExponentialSymbol_conj
-#print axioms GaloisForLFunctions.HTGeometry.hermitianFrequencyProjection_symmetry
-#print axioms GaloisForLFunctions.HTGeometry.hermitianFrequencyProjection_zero_im
-#print axioms GaloisForLFunctions.HTGeometry.hermitianFrequencyProjection_stablePacket
-#print axioms GaloisForLFunctions.HTGeometry.hermitianFrequencyProjection_idempotent

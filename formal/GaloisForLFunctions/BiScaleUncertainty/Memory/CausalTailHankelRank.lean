@@ -142,14 +142,3 @@ theorem sampledCausalTail_add (N : ℕ) (h : ℝ≥0) (k l : ℕ) :
 end
 
 end GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
-
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.sampledCausalTail_eq_geometric
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.causalResponse_cutoff_ne_zero
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.causalResponse_cutoff_sq_pos
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.causalWindowEnergy_lt_laplaceEnergy
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.sampledCausalTail_ne_zero
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.rank_sampledCausalTail_hankel_eq_one
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.sampledCausalTail_eq_stateSpace
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.rank_sampledCausalTail_hankel_le_one
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.det_sampledCausalTail_hankel_two
-#print axioms GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.sampledCausalTail_add

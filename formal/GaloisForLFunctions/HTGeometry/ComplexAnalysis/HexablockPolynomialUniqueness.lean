@@ -8,7 +8,7 @@ import Mathlib.Tactic.NormNum
 # Polynomial uniqueness for hexablock and tetrablock coordinates
 
 The two polynomial parametrizations have nonzero Jacobian determinants.
-The corpus's characteristic-zero Jacobian criterion therefore makes their
+The characteristic-zero Jacobian criterion therefore makes their
 coordinate families algebraically independent: substitution loses no
 polynomial information. The determinant factorizations also identify the
 critical loci of both parametrizations.

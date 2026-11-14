@@ -184,16 +184,3 @@ theorem range_stableEndpointCorrection (α τ : ℝ) :
 end
 
 end GaloisForLFunctions.HTGeometry
-
-#print axioms GaloisForLFunctions.HTGeometry.modalInitialSolution_zero
-#print axioms GaloisForLFunctions.HTGeometry.modalInitialSolution_sub
-#print axioms GaloisForLFunctions.HTGeometry.norm_stableInitialSolution_sub
-#print axioms GaloisForLFunctions.HTGeometry.hasDerivAt_modalInitialSolution
-#print axioms GaloisForLFunctions.HTGeometry.existsUnique_modalInitialSolution
-#print axioms GaloisForLFunctions.HTGeometry.stableEndpoint_denominator_ne_zero
-#print axioms GaloisForLFunctions.HTGeometry.stableEndpointSolution_boundary
-#print axioms GaloisForLFunctions.HTGeometry.hasDerivAt_stableEndpointSolution
-#print axioms GaloisForLFunctions.HTGeometry.existsUnique_stableEndpointSolution
-#print axioms GaloisForLFunctions.HTGeometry.stableEndpointSolution_sub_causal_mem_span
-#print axioms GaloisForLFunctions.HTGeometry.stableEndpointState_const
-#print axioms GaloisForLFunctions.HTGeometry.range_stableEndpointCorrection

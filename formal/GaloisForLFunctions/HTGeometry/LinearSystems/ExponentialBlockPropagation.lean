@@ -134,12 +134,3 @@ theorem modalBlockResponse_eq_integral {n : ℕ} (residue pole : Fin n → ℂ)
 end
 
 end GaloisForLFunctions.HTGeometry
-
-#print axioms GaloisForLFunctions.HTGeometry.exponential_propagator_split
-#print axioms GaloisForLFunctions.HTGeometry.exponentialBlock_split
-#print axioms GaloisForLFunctions.HTGeometry.exponentialBlock_zero_eq_causalConv
-#print axioms GaloisForLFunctions.HTGeometry.exponentialBlock_eq_integratingFactor
-#print axioms GaloisForLFunctions.HTGeometry.hasDerivAt_exponentialBlock
-#print axioms GaloisForLFunctions.HTGeometry.causalConv_exponential_split
-#print axioms GaloisForLFunctions.HTGeometry.modalBlockResponse_split
-#print axioms GaloisForLFunctions.HTGeometry.modalBlockResponse_eq_integral
