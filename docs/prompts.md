@@ -99,32 +99,43 @@ Make good use of the search tool for our lean corpus to find existing work and g
 
 The goal is met when route ACS is fully closed and formalized unconditionally in lean.
 ## list
+1x
 - https://arxiv.org/abs/2611.16156 many more odd zeta values are irrational
 - https://arxiv.org/abs/2611.17317 c1a reularity of w22 q-valued maps with small laplacian
 - https://arxiv.org/abs/2611.13468 a cyclotomic artin-tate formula and sphere packing for K3 surfaces 
 - https://arxiv.org/abs/2611.15808 a short route to diening´s averaging criterion in spaces of homogeneous types
+
+2 
 - https://arxiv.org/abs/2611.12500 horizontal estimates for kloosterman sums under hecke eigenvalue constraints
 - https://arxiv.org/abs/2611.41332 kloosterman sums and pluecker height zeta functions
 - https://arxiv.org/abs/2611.16169 wasserstein rates of all orders for the sato-tate law of kloosterman sums
 - https://arxiv.org/abs/2611.08029 on sufficient conditions for rank zero in families of elliptic curves
+- https://arxiv.org/abs/2611.24399 stevens approach to klooserman sums on split groups
+- https://arxiv.org/abs/2611.13848 a moment proof of the hollman-xiang conjectures on kloosterman polynomials
+- https://arxiv.org/abs/2611.13848 a moment proof of the hollman-xiang conjectures on kloosterman polynomials
+
+3x
 - https://arxiv.org/abs/2611.11708 derived invariance of the space of holomorphic two-forms
 - https://arxiv.org/abs/2611.14090 equivarent quantisation of hypertoric varieties via symplectic cuts
 - https://arxiv.org/abs/2611.10478 motivic generating functions and l'derivatives of cohomological automorphic representations
 - https://arxiv.org/abs/2611.10255 automorphism of kummer and artin-schreier curves defined by chebyshev polynomials
 - https://arxiv.org/abs/2611.08316 p-parity conjecture for panchishkin galois representations
 - https://arxiv.org/abs/2611.11955 gauge rigdity and holonomy classifications of time-scaled intertwining cocylces on hilbert bundles
+
+4
 - https://arxiv.org/abs/2611.15605 representation theory and the algebraic k-theory of geometric fields
 - https://arxiv.org/abs/2611.14073 explicit plane models for all galois quotients of the hermitian curve
 - https://arxiv.org/abs/2611.13963 euclidian and hermitian self-orthogonal codes from divisible codes
-- https://arxiv.org/abs/2611.16083 tendex lines and short-time deformations: the geometry of lunar tides
+
+5
 - https://arxiv.org/abs/2611.15912 entire boosted hypersurfaces of vanishing mean curvature in schwarzschild spacetime
-- https://arxiv.org/abs/2611.13848 a moment proof of the hollman-xiang conjectures on kloosterman polynomials
-- https://arxiv.org/abs/2611.24399 stevens approach to klooserman sums on split groups
-- https://arxiv.org/abs/2611.16078 simple length multiplicity on X(n)
+- https://arxiv.org/abs/2611.16083 tendex lines and short-time deformations: the geometry of lunar tides
 - https://arxiv.org/abs/2611.13085 time direction entanglement entropy of free fermion ground states
+
+6x
+- https://arxiv.org/abs/2611.16078 simple length multiplicity on X(n)
 - https://arxiv.org/abs/2611.16799 nevanlinna theory for generalized tropical meromorphic functions and applications to ultra-discrete equations
-- https://arxiv.org/abs/2611.
-- https://arxiv.org/abs/2611.
+- https://arxiv.org/abs/2611.39739 lp integrability of functions with fourier support on high codimension manifolds
 
 
 ## apply external paper to corpus experiment
@@ -133,7 +144,12 @@ task:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2611.17140
+- https://arxiv.org/abs/2611.11708 derived invariance of the space of holomorphic two-forms
+- https://arxiv.org/abs/2611.14090 equivarent quantisation of hypertoric varieties via symplectic cuts
+- https://arxiv.org/abs/2611.10478 motivic generating functions and l'derivatives of cohomological automorphic representations
+- https://arxiv.org/abs/2611.10255 automorphism of kummer and artin-schreier curves defined by chebyshev polynomials
+- https://arxiv.org/abs/2611.08316 p-parity conjecture for panchishkin galois representations
+- https://arxiv.org/abs/2611.11955 gauge rigdity and holonomy classifications of time-scaled intertwining cocylces on hilbert bundles
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -409,10 +425,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 a while ago we did create these documents:
-- docs/reports/review-1311/walls-ledger.md
-- docs/reports/review-1311/route-obstacles.md
-- docs/reports/review-1311/route-unification-ledger.md
-- docs/reports/review-1311/obstacles-summary.md
+- docs/reports/review-1411/walls-ledger.md
+- docs/reports/review-1411/route-obstacles.md
+- docs/reports/review-1411/route-unification-ledger.md
+- docs/reports/review-1411/obstacles-summary.md
   
 read also but do not edit:
 - docs/reports/rh-current-frontier-map.md
@@ -452,7 +468,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-place the reports in folder docs/reports/review-1411/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-1411/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 make sure to validate every claim. we have seen in previous rounds you simply restating old reports without actually validating that the old report facts were still valid.
@@ -489,9 +505,9 @@ do not run any builds. do not read anything outside the formal/ folder. do not r
 Read the following documents:
 1. Route ledger: docs/reports/rh-current-frontier-map.md
 2. Failed/Killed approaches: docs/reports/rh-killed-routes.md
-3. Unification of the routes: docs/reports/review-1011/route-unification-ledger.md
-4. Hard obstacles: docs/reports/review-1011/route-obstacles.md
-5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-1011/walls-ledger.md
+3. Unification of the routes: docs/reports/review-1411/route-unification-ledger.md
+4. Hard obstacles: docs/reports/review-1411/route-obstacles.md
+5. The hard obstacles (Walls) we have identified and not overcome: docs/reports/review-1411/walls-ledger.md
    
 Do not rely only on these markdown files which are partly outdated. Use the search tool for our lean corpus to research what our research currently shows. Do not assume, our research is far ahead of your training data - our lean corpus is the Sota research. Take the time to search and understand. We are expected an accurate, in-depth research and report, not superficial ai-slop that is useless to our frontier research.
 
@@ -513,9 +529,11 @@ The questions for you to answer:
 13. Lets assume that RH is false. Design a research programme to a) prove that RH is wrong, b) find a concrete counterexample (without computation). s the nontrivial zeta zeros as roots of an algebraic equation and classifies their permutation by a corresponding Galois group. what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
 14. Missed opportunities: Do you see anything in our lean corpus that are missed opportunities to assemble theorems that would bring us a significant breakthrough in solving AAL, ZAL, B13, quasiRH, or RH, or kill a proof route so we do not waste time on researching something that will become a dead end?  
 
-Write a report in docs docs/reports/review-1011/fable.md
+Write a report in docs docs/reports/review-1411/fable.md
 
 do not run any builds. do not search the web. do not grep for sorry or other shit. your job is not to verify of other agents but to write a consolidated report and big picture interpretation of their research. focus on the mathematics.
+
+keep your eyes on the rh proof, that´s the ultimate goal. 
 
 ## Init new field programme
 
@@ -737,7 +755,7 @@ Do not use the hgtl7 skill.
 
 read and understand fully: docs/reports/review-1411/obstacles-summary.md
 
-under "## 2.7 — Breakthrough under the AdS/modular-horizon hypothesis" it asks for: "can a prime-marked modular-horizon observable obey a causal identity that forces quarter-rate reflected-pulse decay, while an independently proved boundary dictionary identifies every relevant ζ pole with an observable singularity?"
+under "## 2.21 The single most valuable narrower question" it asks for: "**Does exact ζ arithmetic force `FiniteOffLine → RH`?** Equivalently: **can the actual real packet form have a finite positive negative index?**"
 
 your task: answer the question, find a complete solution for everything asked and unconditionally formalize the answers and their implications and collaries in lean.
 
