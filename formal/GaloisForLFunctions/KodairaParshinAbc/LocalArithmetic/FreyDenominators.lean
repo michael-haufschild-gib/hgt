@@ -25,4 +25,6 @@ theorem frey_equation_squareDenominator (a b : ℤ) {x y : ℚ}
     (by exact ⟨1, by simp⟩)
   simpa [Fin.prod_univ_three] using hcurve
 
+#print axioms frey_equation_squareDenominator
+
 end GaloisForLFunctions.KodairaParshinAbc.LocalArithmetic

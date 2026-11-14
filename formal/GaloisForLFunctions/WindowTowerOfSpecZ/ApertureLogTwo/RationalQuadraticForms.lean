@@ -110,13 +110,19 @@ theorem quad_nonneg_of_ldlCheck {K : ℕ} {C L : List (List ℚ)} {d : List ℚ}
     have heq : (∑ i : Fin K, ∑ j : Fin K,
         (∑ r : Fin K, (matQ L i r : ℝ) * (vecQ d r : ℝ) * (matQ L j r : ℝ)) * m i * m j) =
         ∑ r : Fin K, (vecQ d r : ℝ) * (∑ i : Fin K, (matQ L i r : ℝ) * m i) ^ 2 := by
-      simp_rw [sq, Finset.sum_mul, Finset.mul_sum]
-      rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl fun j _ => ?_
+      have h1 : ∀ i j : Fin K,
+          (∑ r : Fin K, (matQ L i r : ℝ) * (vecQ d r : ℝ) * (matQ L j r : ℝ)) * m i * m j =
+            ∑ r : Fin K, (vecQ d r : ℝ) * ((matQ L i r : ℝ) * m i) * ((matQ L j r : ℝ) * m j) :=
+        fun i j => by
+          rw [Finset.sum_mul, Finset.sum_mul]
+          exact Finset.sum_congr rfl fun r _ => by ring
+      simp_rw [h1]
+      rw [Finset.sum_congr rfl fun i _ => Finset.sum_comm, Finset.sum_comm]
       refine Finset.sum_congr rfl fun r _ => ?_
-      ring
+      rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun i _ => ?_
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun j _ => by ring
     rw [heq]
     exact Finset.sum_nonneg fun r _ =>
       mul_nonneg (by exact_mod_cast h.1 r r.2) (sq_nonneg _)

@@ -70,6 +70,38 @@ the multiplicativity and reciprocity laws. -/
 def quadraticResidueParity (p : ℕ) [Fact p.Prime] (a : ℤ) : ZMod 2 :=
   signParity (legendreSym p a)
 
+/-- The parity of the symbol of `-1` records the half-prime exponent. -/
+theorem quadraticResidueParity_neg_one {p : ℕ} [Fact p.Prime] (hp : p ≠ 2) :
+    quadraticResidueParity p (-1) = ((p / 2 : ℕ) : ZMod 2) := by
+  rw [quadraticResidueParity, legendreSym.at_neg_one hp,
+    ZMod.χ₄_eq_neg_one_pow ((Nat.Prime.mod_two_eq_one_iff_ne_two Fact.out).mpr hp),
+    signParity_neg_one_pow]
+
+/-- Products of prime Legendre symbols are the Jacobi symbol of the
+product modulus. Repeated primes are allowed. -/
+theorem legendreSym_prod_eq_jacobi {ι : Type*} (s : Finset ι) (p : ι → ℕ)
+    [∀ i, Fact (p i).Prime] (a : ℤ) :
+    (∏ i ∈ s, legendreSym (p i) a) = jacobiSym a (∏ i ∈ s, p i) := by
+  classical
+  induction s using Finset.induction with
+  | empty => simp
+  | insert i s hi ih =>
+    have hp : p i ≠ 0 := (Fact.out : (p i).Prime).ne_zero
+    have hs : (∏ j ∈ s, p j) ≠ 0 :=
+      Finset.prod_ne_zero_iff.mpr (fun j _ => (Fact.out : (p j).Prime).ne_zero)
+    rw [Finset.prod_insert hi, Finset.prod_insert hi, jacobiSym.mul_right' a hp hs,
+      jacobiSym.legendreSym.to_jacobiSym, ih]
+
+/-- Additive residue-symbol sums are the parity of the product-modulus
+Jacobi symbol. -/
+theorem quadraticResidueParity_sum {ι : Type*} (s : Finset ι) (p : ι → ℕ)
+    [∀ i, Fact (p i).Prime] (a : ℤ) (ha : ∀ i ∈ s, (a : ZMod (p i)) ≠ 0) :
+    (∑ i ∈ s, quadraticResidueParity (p i) a) =
+      signParity (jacobiSym a (∏ i ∈ s, p i)) := by
+  rw [← legendreSym_prod_eq_jacobi s p a,
+    signParity_prod s _ (fun i hi => legendreSym.eq_one_or_neg_one (p i) (ha i hi))]
+  rfl
+
 /-- The additive form of quadratic reciprocity for distinct odd primes. -/
 theorem quadraticResidueParity_reciprocity {p q : ℕ} [Fact p.Prime] [Fact q.Prime]
     (hp : p ≠ 2) (hq : q ≠ 2) (hpq : p ≠ q) :
@@ -88,6 +120,15 @@ theorem quadraticResidueParity_reciprocity {p q : ℕ} [Fact p.Prime] [Fact q.Pr
     (legendreSym.eq_one_or_neg_one p hq0), signParity_neg_one_pow, Nat.cast_mul] at h
   exact h
 
+/-- Reciprocity expressed using the two `-1` symbols. -/
+theorem quadraticResidueParity_reciprocity_neg_one {p q : ℕ}
+    [Fact p.Prime] [Fact q.Prime] (hp : p ≠ 2) (hq : q ≠ 2) (hpq : p ≠ q) :
+    quadraticResidueParity q p + quadraticResidueParity p q =
+      quadraticResidueParity p (-1) * quadraticResidueParity q (-1) := by
+  rw [quadraticResidueParity_neg_one hp, quadraticResidueParity_neg_one hq]
+  exact quadraticResidueParity_reciprocity hp hq hpq
+
 #print axioms quadraticResidueParity_reciprocity
+#print axioms quadraticResidueParity_sum
 
 end GaloisForLFunctions.HTGeometry.Arithmetic
