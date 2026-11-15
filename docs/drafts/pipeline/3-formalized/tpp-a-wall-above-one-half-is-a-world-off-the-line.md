@@ -1,8 +1,8 @@
 # A wall above one half is a world off the line
 
 - **ID:** tpp-verdict-worlds
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** review-1511 obstacles summary §2.18, failure row of stage 5; TPP README Q9
 - **Statement:** For a source class with abscissas $A$ and a seed $s$, the wall of all levers valid on the class is $\sup(A\cap(-\infty,s])$; hence "the route ends at a wall above $\tfrac12$" holds for the class iff it has a world with abscissa in $(\tfrac12,s]$.
 
@@ -26,8 +26,8 @@ twins of SelbergClass.
 
 ## Gates
 - [x] 0 → 1  in-progress
-- [ ] 1 → 2  fully-proven
-- [ ] 2 → 3  formalized
+- [x] 1 → 2  fully-proven: Theorems 1–8 below, no open dependency
+- [x] 2 → 3  formalized: `wall_validLevers`, `wall_validLevers_eq_half_iff`, `half_lt_wall_validLevers_zeta_iff`, `signLevers_cofinal_iff_deligneLever`, `wall_signLevers_eq_half_iff`, `wall_eq_seed_of_zetaTwins`; axioms `propext`, `Classical.choice`, `Quot.sound`
 
 ## Setting
 
@@ -161,17 +161,44 @@ Consequences for the programme of §2.18.
   the same problem for the source.
 - The test for a proposed source is exact: it reaches below $b$ iff it fails in every world with
   abscissa in $(b,s]$. For a source below $\tfrac23$ the worlds of Theorem 7 force the joint use
-  of Euler product, functional equation and Ramanujan bound; the twins of Theorem 8 have all three
-  in coefficient form, so a source that lowers the seed uses the level one of $\zeta$ or the
-  square-root bound for the prime-power coefficients of the Euler logarithm.
+  of Euler product, functional equation and Ramanujan bound. The twins of Theorem 8 have all three
+  in coefficient form and agree with $\zeta$ on any prescribed prefix, so a source that lowers the
+  seed uses a property the twins lack. Of the Selberg axioms they lack one: the bound
+  $b(n)=O(n^{\vartheta})$, $\vartheta<\tfrac12$, on the Euler logarithm (their local roots have
+  modulus $p^{b}$ and $p^{1-b}$); and their conductor is $p^2$, not $1$.
 
 ## Lean
 
-- `ExponentDynamicsOfTheCriticalStrip/TheWallOfASourceClassIsTheLargestAbscissaItRealizes.lean`:
-  Theorems 1–3, 4 (frames), 7.
-- `ExponentDynamicsOfTheCriticalStrip/TheMultiplicativeTwinsRealizeEveryAbscissaAboveTheZeros.lean`:
-  Theorem 8.
-- `TensorPowerProgramme/AWallAboveOneHalfIsAWorldOffTheLine.lean`: Theorems 4 (lines), 5, 6.
+Namespace `GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip`:
+
+- `ExponentDynamicsOfTheCriticalStrip/TheWallOfASourceClassIsTheLargestAbscissaItRealizes.lean`
+  - Theorem 1: `validLevers`, `mem_allowed_of_mem`, `le_wall_of_mem`, `lt_wall_of_mem`, `sSup_le_wall`.
+  - Theorem 2: `envelope`, `monotone_envelope`, `envelope_le`, `envelope_mem_validLevers`,
+    `le_envelope_iff`, `allowed_eq_of_envelope_mem`, `wall_eq_of_envelope_mem`, `wall_validLevers`,
+    `wall_monotone_validLevers`.
+  - Corollary 3: `lt_wall_validLevers_iff`, `wall_validLevers_le_iff`, `wall_validLevers_eq_iff`,
+    `wall_validLevers_singleton`.
+  - Theorem 4 (frames): `isLever_pairingStep_iff`, `isLever_flooredFrame_iff`,
+    `pairingStep_mem_validLevers_iff`.
+  - Theorem 7: `wall_eq_seed_of_coshModels`, `min_two_thirds_le_wall_of_eulerWorlds`,
+    `wall_eq_seed_of_shiftedPairs`.
+- `ExponentDynamicsOfTheCriticalStrip/TheMultiplicativeTwinsRealizeEveryAbscissaAboveTheZeros.lean`
+  - Theorem 8: `zetaTwin`, `zetaTwin_isExtendedSelberg`, `re_of_localFactor_eq_zero`,
+    `zeroSupRe_zetaTwin`, `wall_eq_seed_of_zetaTwins`.
+
+Namespace `GaloisForLFunctions.TensorPowerProgramme`:
+
+- `TensorPowerProgramme/AWallAboveOneHalfIsAWorldOffTheLine.lean`
+  - Theorem 4 (lines): `isLever_deligneLever_iff`, `isLever_signLever_iff`,
+    `deligneLever_mem_validLevers_iff`, `signLever_mem_validLevers_iff`, `signLevers_cofinal_iff`,
+    `signLevers_cofinal_iff_deligneLever`.
+  - Theorem 5: `signCentre`, `allowed_signLevers`, `min_signCentre_le_wall_signLevers`,
+    `wall_signLevers_eq_half_iff`, `flooredFrames`, `allowed_flooredFrames`,
+    `lt_wall_flooredFrames_iff`.
+  - Theorem 6: `wall_validLevers_zeta`, `half_lt_wall_validLevers_zeta_iff`,
+    `half_lt_wall_iff_exists_offLine`, `riemannHypothesis_of_wall_le_half`,
+    `wall_validLevers_eq_half_iff`.
 
 ## Log
 - 2026-11-15 — created in 1-in-progress with complete paper proofs
+- 2026-11-16 — formalized; moved to 3-formalized

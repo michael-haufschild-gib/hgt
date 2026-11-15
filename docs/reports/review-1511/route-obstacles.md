@@ -59,7 +59,7 @@ What no route has: a mechanism that lowers the exponent below the vertex of the 
 | O8 | R | The sign of Weil's form at every aperture |
 | O9 | R | A doubling factor below √2 proved from the window matrices |
 | O10 | R | An effectivity, section or count law whose definition does not contain the sign |
-| O11 | R | **Resolved for rational deformations at one prime:** nonnegative logarithmic coefficients and an entire reflected completion force the reduced rational multiplier to be trivial ([`not_exists_nontrivial_positive_rational_twin`](../../../formal/GaloisForLFunctions/SelbergClass/RationalEulerTwinsCannotHavePositiveLogarithms.lean#L178) [K]). Reciprocal quadratics already fail at `p²,p⁴,p⁶` or `p⁸` |
+| O11 | R | **Resolved for rational deformations at one prime:** nonnegative logarithmic coefficients and an entire reflected completion force the reduced rational multiplier to be trivial ([`not_exists_nontrivial_positive_rational_twin`](../../../formal/GaloisForLFunctions/SelbergClass/RationalEulerTwinsCannotHavePositiveLogarithms.lean#L167) [K]). Reciprocal quadratics already fail at `p²,p⁴,p⁶` or `p⁸` |
 | O12 | U | AAL: no finite nonempty top layer |
 | O13 | U | Zeros approach the line; landing uniform as σ ↓ ½ |
 | O14 | U | Reality of the heat flow inside near-coincidence clusters for t < ½/log X |

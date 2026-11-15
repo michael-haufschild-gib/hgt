@@ -25,13 +25,13 @@ theorem symbol_opposite_shifts (a b c : O) (ha : lambda ^ 2 ∣ a - 1)
   have hbc : lambda ^ 2 ∣ b * c :=
     dvd_mul_of_dvd_right (lambda_sq_dvd_three.trans hc) b
   have hA : lambda ^ 2 ∣ a + b * c - 1 := by
-    convert dvd_add ha hbc using 1 <;> ring
+    convert dvd_add ha hbc using 1; ring
   have hB : lambda ^ 2 ∣ a - b * c - 1 := by
-    convert dvd_sub ha hbc using 1 <;> ring
+    convert dvd_sub ha hbc using 1; ring
   have hAB : lambda ^ 2 ∣ (a + b * c) * (a - b * c) - 1 := by
-    convert dvd_add (dvd_mul_of_dvd_left hA (a - b * c)) hB using 1 <;> ring
+    convert dvd_add (dvd_mul_of_dvd_left hA (a - b * c)) hB using 1; ring
   have haa : lambda ^ 2 ∣ a * a - 1 := by
-    convert dvd_mul_of_dvd_left ha (a + 1) using 1 <;> ring
+    convert dvd_mul_of_dvd_left ha (a + 1) using 1; ring
   have h9 : (9 : O) ∣ (a + b * c) * (a - b * c) - a * a := by
     obtain ⟨k, hk⟩ := hc
     refine ⟨-(b * k) ^ 2, ?_⟩

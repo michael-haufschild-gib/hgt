@@ -53,6 +53,9 @@ Modules, in order of attack. Status: P = paper proof below, L = Lean compiled an
 | 26 | TheCubicStepanovPolynomialIsIndependent | acid test, order 3 (norm form, cubic descent, independence) | L |
 | 27 | TheCubicStepanovCount | acid test, order 3 (three-level Stepanov count) | L |
 | 28 | TheCubicCurveCountWithoutWeil | acid test, order 3 (equidistribution; Hasse–Weil for y³ = h(x) over 𝔽_{s²}) | L |
+| 29 | TheLFunctionOfACharacterOnASplitPolynomial | acid test (weight χ(Res), extension sums, vanishing, top coefficient q^{(m−1)/2}) | L |
+| 30 | TheCubicNormCharacterSumHasTheWeilBound | acid test (Σ_{𝔽_{s²}} χ(N f(x)) = O(D s) by Stepanov) | L |
+| 31 | TheAcidTestPassesForCubicCharacters | acid test, order 3: RH for L(χ, f), χ cubic, 3 ∤ deg f, without Weil | L |
 
 Open, with the input that is missing:
 
@@ -283,6 +286,13 @@ cubic descent: π | h(X) irreducible divides A₂, then A₁, then A₀, equatio
 Bound (q = s², s ≥ 3D + 10, ℓ = s, K = ⌊(s² − 2D)/3⌋, J = ⌊(s + 3D + 6)/3⌋): 3N_ε ≤ s² + (5D+4)s. Classes 1, ω, ω²
 partition the nonroots ⇒ |3N_1 − s²| ≤ 2(5D+4)s + 3D; #{y³ = h(x)} = #{h = 0} + 3N_1 (cube roots, AGZ).
 
+**M29–M31 (RH for cubic characters).** w(P) = χ(Res(P,f)), Σ_{x∈E} χ(N f(x)) = c_n (norm = Res^{n/d}, fibres of
+minpoly). Split squarefree f: s_k = 0 for k ≥ m (translation, Σχ = 0); s_{m−1} g(χ^m) = g(χ)^m Π χ(d_α) (Lagrange,
+fibres of the leading coefficient; Z = χ(s)^m Z kills the zero fibre) ⇒ |s_{m−1}| = q^{(m−1)/2} for χ^m ≠ 1.
+Over E with |E| = s²: χ(a) depends on a^{(q−1)/3} (a/b a cube), N(y)^{N_F} = y^{N_E}; with ζ = χ(a) ≠ 1 the sum is
+T_1 + ζT_ε + ζ²T_{ε²}, 1 + ζ + ζ² = 0 and equidistribution give O(Ds). L* monic of degree m − 1, Newton ⇒ c_n = −Σω^n;
+norm_le_of_power_sums_bound at degrees 2k ⇒ |ω| ≤ √q; |Πω| = q^{(m−1)/2} ⇒ |ω| = √q.
+
 ## No-go closure
 - **Margin in the mass normalisation at every block size** (fable §5.2, first lemma as stated). Not a consequence
   of the width. Insight: the normalisation decides exactness. Survivors, all in Lean: the exact ruler in the
@@ -299,5 +309,5 @@ partition the nonroots ⇒ |3N_1 − s²| ≤ 2(5D+4)s + 3D; #{y³ = h(x)} = #{h
 ## Log
 - 2026-11-15 — created; README first draft written. Modules 1–6 compiled, axiom-clean, wired.
 - 2026-11-15 — modules 7–12 compiled, axiom-clean, wired.
-- 2026-11-15 — M3 §4 (shifted pairs), modules 13–28 compiled, wired (axiom checks dropped at the user's request from M21 on). E4 rank one answered without the
+- 2026-11-15 — M3 §4 (shifted pairs), modules 13–31 compiled, wired (axiom checks dropped at the user's request from M21 on). E4 rank one answered without the
   classification of pure monomials (M18); the classification is needed only to identify completions.

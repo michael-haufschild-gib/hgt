@@ -2,11 +2,12 @@ import GaloisForLFunctions.HTGeometry.Thermofield.GibbsKMSOverlap
 import GaloisForLFunctions.HTGeometry.PrimeLogKMSRealization
 
 /-!
-# Arithmetic susceptibility of the prime-log KMS model
+# Arithmetic susceptibility of a prime-log KMS kernel mixture
 
 For a prime logarithm, the single-gap susceptibility is
-`(p²-1)/(log p * (p²+1))`. The vacuum-plus-prime Gibbs model therefore has
-an explicit arithmetic susceptibility and inherits the sharp KMS overlap bound.
+`(p²-1)/(log p * (p²+1))`. Gibbs weights from the vacuum-plus-prime spectrum,
+with the prime-log energies used as half-gaps, give an explicit arithmetic
+susceptibility and inherit the sharp KMS overlap bound.
 -/
 
 noncomputable section
@@ -35,7 +36,7 @@ def primeLogKMSSusceptibility (P : Finset Nat.Primes) (β : ℝ) : ℝ :=
     (((p.1 : ℕ)^2-1 : ℝ) / (Real.log (p.1 : ℕ) * ((p.1 : ℕ)^2+1)))) /
     (1 + ∑ p : P, Real.exp (-β * primeLogSupport p.1))
 
-/-- Reading every gap of the existing multiplicative Hamiltonian gives the arithmetic ratio. -/
+/-- Using the prime-log energies as half-gaps gives the arithmetic ratio. -/
 theorem gibbsKMSSusceptibility_primeLog (P : Finset Nat.Primes) (β : ℝ) :
     gibbsKMSSusceptibility β (primeLogKMSFiniteEnergy P) (primeLogKMSFiniteEnergy P) =
       primeLogKMSSusceptibility P β := by
@@ -51,7 +52,7 @@ theorem gibbsKMSSusceptibility_primeLog (P : Finset Nat.Primes) (β : ℝ) :
   rw [← Finset.sum_div, ← add_div, hZ]
   rfl
 
-/-- Arithmetic form of the sharp integrated square bound for the prime-log Hamiltonian. -/
+/-- Arithmetic form of the sharp integrated square bound for the prime-log kernel mixture. -/
 theorem primeLogKMS_overlap_bound (P : Finset Nat.Primes) (β : ℝ) :
     (∫ u in (0:ℝ)..1,
       gibbsKMSAutocorrelation β (primeLogKMSFiniteEnergy P) (primeLogKMSFiniteEnergy P) u ^ 2) ≤

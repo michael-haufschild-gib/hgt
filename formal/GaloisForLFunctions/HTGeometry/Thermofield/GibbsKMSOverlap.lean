@@ -17,7 +17,7 @@ open _root_.HTGeometry
 
 variable {α : Type*} [Fintype α] [Nonempty α]
 
-/-- The normalized KMS autocorrelation of a finite Gibbs distribution of gaps. -/
+/-- A finite Gibbs mixture of KMS kernels with spectral gaps `2 * gap a`. -/
 def gibbsKMSAutocorrelation (β : ℝ) (energy gap : α → ℝ) (u : ℝ) : ℝ :=
   ∑ a, finiteGibbsStateWeight β energy a * kmsKernel (gap a) u
 

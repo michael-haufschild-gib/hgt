@@ -28,6 +28,10 @@ The nonquadratic characters `S` of a Möbius-signed tuple carry the **signature 
   `c = k/2` forces `k ∈ {3, 4, 6}`; a pairing priced below `7k/10`, or with coupled barrier below
   `7/10`, has Euclidean signature (`euclidean_of_pairingC_lt`, `euclidean_of_coupledBarrier_lt`).
 
+* **The cost theorem** (`half_period_add_one_le_pairingC`): `c = k · w(S) + Σ_{rows} (k/m − 1)`
+  (`pairingC_eq`), and off the periods `3, 4, 6` every pairing costs at least `k/2 + 1`; the
+  bound is attained at period `8` (`exists_zmod_five_pairing`).
+
 So a sign lever of period `5` or of period `k ≥ 7` is never a Gauss pairing
 (`half_period_lt_pairingC`): the completion N2 of the programme needs a source outside the Gauss
 family, and every Gauss completion of a hyperbolic signature pays at least `k/5` above the sign line.
@@ -455,5 +459,179 @@ theorem exists_zmod_eleven_pairing :
   · rw [hnq]
     simp only [signatureWeight, List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, hχ, hψ]
     norm_num
+
+
+/-! ### The cost of the rows -/
+
+theorem signatureWeight_append (A B : List G) :
+    signatureWeight (A ++ B) = signatureWeight A + signatureWeight B := by
+  simp only [signatureWeight, List.map_append, List.sum_append]
+
+/-- Quadratic characters weigh nothing: a list of characters of order at least two has the weight
+of its nonquadratic part. -/
+theorem signatureWeight_nonQuadraticPart {L : List G} (hL : ∀ x ∈ L, 2 ≤ orderOf x) :
+    signatureWeight (nonQuadraticPart L) = signatureWeight L := by
+  induction L with
+  | nil => rfl
+  | cons x L ih =>
+    have ih' := ih fun y hy => hL y (List.mem_cons_of_mem _ hy)
+    simp only [nonQuadraticPart, List.filter_cons] at ih' ⊢
+    by_cases h3 : 3 ≤ orderOf x
+    · simp only [h3, decide_true, if_true, signatureWeight_cons, ih']
+    · have h2 : orderOf x = 2 := by have := hL x List.mem_cons_self; omega
+      simp only [h3, decide_false, Bool.false_eq_true, if_false]
+      rw [ih', signatureWeight_cons, h2]
+      norm_num
+
+theorem comps_eq_period_mul_signatureWeight (k : ℝ) (A : List G) :
+    (A.map fun x => (1 / 2 - 1 / (orderOf x : ℝ)) * k).sum = k * signatureWeight A := by
+  induction A with
+  | nil => simp [signatureWeight_nil]
+  | cons x A ih =>
+    rw [List.map_cons, List.sum_cons, signatureWeight_cons, ih]
+    ring
+
+theorem rows_eq_period_mul_signatureWeight_add (k : ℝ) (D : List G) :
+    (D.length : ℝ) * (k / 2 - 1) =
+      k * signatureWeight D + (D.map fun x => k / (orderOf x : ℝ) - 1).sum := by
+  induction D with
+  | nil => simp [signatureWeight_nil]
+  | cons x D ih =>
+    rw [List.length_cons, signatureWeight_cons, List.map_cons, List.sum_cons, Nat.cast_succ,
+      add_mul, ih]
+    ring
+
+/-- **The price is the weight plus the cost of the rows**:
+`c = k · w(S) + Σ_{rows} (k/m − 1)`, each row of order `m ∣ k` costing `k/m − 1 ≥ 0`. -/
+theorem pairingC_eq (P : MoebiusGaussPairing G) :
+    P.pairingC = (P.period : ℝ) * signatureWeight (nonQuadraticPart (P.compChars ++ P.rowChars)) +
+      (P.rowChars.map fun x => (P.period : ℝ) / (orderOf x : ℝ) - 1).sum := by
+  rw [MoebiusGaussPairing.pairingC, comps_eq_period_mul_signatureWeight,
+    rows_eq_period_mul_signatureWeight_add,
+    signatureWeight_nonQuadraticPart P.moebius.two_le_order, signatureWeight_append]
+  ring
+
+/-- **The cost theorem of the Gauss family.** Off the crystallographic periods every Gauss pairing
+costs at least one more than the sign: `c ≥ k/2 + 1` for `k ∉ {3, 4, 6}`. A hyperbolic signature
+pays `k/5 ≥ 1`; a Euclidean one at such a period needs a row, of order a proper divisor of `k`,
+which pays `k/m − 1 ≥ 1`. -/
+theorem half_period_add_one_le_pairingC (hG : HasUniqueOrderTwo G) (P : MoebiusGaussPairing G)
+    (hk : P.period ≠ 3 ∧ P.period ≠ 4 ∧ P.period ≠ 6) :
+    (P.period : ℝ) / 2 + 1 ≤ P.pairingC := by
+  have hk3 := P.three_le_period hG
+  have hk5 : 5 ≤ P.period := by omega
+  have hk5r : (5 : ℝ) ≤ P.period := by exact_mod_cast hk5
+  have heq := pairingC_eq P
+  have hpos : ∀ x ∈ P.rowChars, (0 : ℝ) < orderOf x := fun x hx => by
+    have := P.moebius.two_le_order x (List.mem_append_right _ hx)
+    exact_mod_cast (show 0 < orderOf x by omega)
+  rcases signatureWeight_dichotomy hG P.moebius with ⟨hw, hord⟩ | hw
+  · by_cases hrows : P.rowChars = []
+    · exfalso
+      have hc : P.pairingC = (P.period : ℝ) / 2 := by
+        rw [heq, hw, hrows]
+        simp only [List.map_nil, List.sum_nil, add_zero]
+        ring
+      rcases period_mem_of_pairingC_eq_half hG P hc with h | h | h
+      · exact hk.1 h
+      · exact hk.2.1 h
+      · exact hk.2.2 h
+    · have hslack : ∀ x ∈ P.rowChars, (1 : ℝ) ≤ (P.period : ℝ) / (orderOf x : ℝ) - 1 := by
+        intro x hx
+        have hdvd := P.orderOf_dvd_period (List.mem_append_right _ hx)
+        have hne : orderOf x ≠ P.period := by
+          intro hxk
+          have hxS : x ∈ nonQuadraticPart (P.compChars ++ P.rowChars) := by
+            simp only [nonQuadraticPart, List.mem_filter, decide_eq_true_eq]
+            exact ⟨List.mem_append_right _ hx, by omega⟩
+          rcases hord x hxS with h | h | h <;> omega
+        have h2m : 2 * orderOf x ≤ P.period := by
+          obtain ⟨c, hc⟩ := hdvd
+          have hc0 : c ≠ 0 := by
+            rintro rfl
+            rw [mul_zero] at hc
+            omega
+          have hc1 : c ≠ 1 := by
+            rintro rfl
+            rw [mul_one] at hc
+            exact hne hc.symm
+          rw [hc]
+          have : 2 ≤ c := by omega
+          nlinarith
+        have h2mr : (2 : ℝ) * orderOf x ≤ P.period := by exact_mod_cast h2m
+        rw [le_sub_iff_add_le, le_div_iff₀ (hpos x hx)]
+        linarith
+      have hsum : (P.rowChars.length : ℝ) ≤
+          (P.rowChars.map fun x => (P.period : ℝ) / (orderOf x : ℝ) - 1).sum := by
+        have h := List.sum_le_sum (l := P.rowChars) (f := fun _ => (1 : ℝ))
+          (g := fun x => (P.period : ℝ) / (orderOf x : ℝ) - 1) hslack
+        simpa using h
+      have hlen : (1 : ℝ) ≤ P.rowChars.length := by
+        exact_mod_cast List.length_pos_of_ne_nil hrows
+      rw [heq, hw]
+      linarith
+  · have hnn : 0 ≤ (P.rowChars.map fun x => (P.period : ℝ) / (orderOf x : ℝ) - 1).sum := by
+      refine List.sum_nonneg fun y hy => ?_
+      obtain ⟨x, hx, rfl⟩ := List.mem_map.mp hy
+      have hdvd := P.orderOf_dvd_period (List.mem_append_right _ hx)
+      have hle : (orderOf x : ℝ) ≤ P.period := by
+        exact_mod_cast Nat.le_of_dvd P.period_pos hdvd
+      rw [sub_nonneg, le_div_iff₀ (hpos x hx)]
+      linarith
+    rw [heq]
+    nlinarith
+
+/-- **The cost theorem is sharp.** On `ZMod 5` the pair `(φ, φ)`, `φ` of order `4`, completed once
+and twisted once at period `8`, costs `5 = 8/2 + 1`. -/
+theorem exists_zmod_five_pairing :
+    ∃ P : MoebiusGaussPairing (MulChar (ZMod 5) ℂ), P.period = 8 ∧ P.pairingC = 5 := by
+  haveI : Fact (Nat.Prime 5) := ⟨by norm_num⟩
+  have hexp_ne : Monoid.exponent (ZMod 5)ˣ ≠ 0 := Monoid.exponent_ne_zero_of_finite
+  haveI : HasEnoughRootsOfUnity ℂ (Monoid.exponent (ZMod 5)ˣ) :=
+    ⟨⟨_, Complex.isPrimitiveRoot_exp (Monoid.exponent (ZMod 5)ˣ) hexp_ne⟩,
+      rootsOfUnity.isCyclic _ _⟩
+  obtain ⟨e⟩ := MulChar.mulEquiv_units (ZMod 5) ℂ
+  obtain ⟨g, hg⟩ := IsCyclic.exists_generator (α := (ZMod 5)ˣ)
+  have hcard_u : Fintype.card (ZMod 5)ˣ = 4 := by
+    rw [Fintype.card_units, ZMod.card 5]
+  have hord_g : orderOf g = 4 := by
+    rw [orderOf_eq_card_of_forall_mem_zpowers hg, Nat.card_eq_fintype_card, hcard_u]
+  let φ : MulChar (ZMod 5) ℂ := e.symm g
+  have hord_φ : orderOf φ = 4 := by rw [MulEquiv.orderOf_eq, hord_g]
+  have hord_sq : orderOf (φ * φ) = 2 := by
+    rw [← sq, orderOf_pow' φ two_ne_zero, hord_φ]
+    norm_num
+  have hmoeb : IsMoebiusSignedTuple [φ, φ] := by
+    refine ⟨by simp, ?_, ?_, ?_⟩
+    · intro u hu
+      simp only [List.mem_cons, List.not_mem_nil, or_false, or_self] at hu
+      rw [hu, hord_φ]
+      norm_num
+    · simp only [List.prod_cons, List.prod_nil, mul_one]
+      exact hord_sq ▸ pow_orderOf_eq_one (φ * φ)
+    · right
+      refine ⟨?_, ⟨1, rfl⟩⟩
+      simp only [List.prod_cons, List.prod_nil, mul_one]
+      intro h1
+      rw [h1, orderOf_one] at hord_sq
+      omega
+  have hlcm : tupleOrderLcm [φ, φ] = 4 := by
+    simp only [tupleOrderLcm, List.foldr_cons, List.foldr_nil, hord_φ]
+    norm_num
+  let P : MoebiusGaussPairing (MulChar (ZMod 5) ℂ) :=
+    { compChars := [φ]
+      rowChars := [φ]
+      moebius := hmoeb
+      period := 8
+      period_pos := by norm_num
+      lcm_dvd_period := by
+        show tupleOrderLcm [φ, φ] ∣ 8
+        rw [hlcm]
+        norm_num
+      period_eq_of_no_rows := fun h => absurd h (List.cons_ne_nil _ _) }
+  refine ⟨P, rfl, ?_⟩
+  simp only [P, MoebiusGaussPairing.pairingC, List.map_cons, List.map_nil, List.sum_cons,
+    List.sum_nil, List.length_cons, List.length_nil, hord_φ]
+  norm_num
 
 end GaloisForLFunctions.TensorPowerProgramme

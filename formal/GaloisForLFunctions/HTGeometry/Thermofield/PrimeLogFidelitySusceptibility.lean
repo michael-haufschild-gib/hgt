@@ -148,7 +148,12 @@ theorem primeLogSpectralResponse_horizontal (P : Finset Nat.Primes) (s : ℝ)
       (primeLogSpectralResponse P s a forcing) = primeLogSpectralResponse P s a forcing := by
   classical
   have h : finiteComplexInner (Pi.single a 1) (primeLogSpectralResponse P s a forcing) = 0 := by
-    simp [finiteComplexInner, Pi.single_apply, primeLogSpectralResponse]
+    unfold finiteComplexInner
+    apply Finset.sum_eq_zero
+    intro i _
+    by_cases hi : i = a
+    · simp [Pi.single_apply, primeLogSpectralResponse, hi]
+    · simp [Pi.single_apply, hi]
   funext i
   simp only [finitePureStateHorizontalTangent, h, mul_zero, sub_zero]
 
@@ -179,13 +184,17 @@ theorem primeLogFidelitySusceptibility_energy_scaling (P : Finset Nat.Primes) (s
     primeLogFidelitySusceptibility P s a forcing =
       (Real.exp s)^(-2 : ℤ) * primeLogFidelitySusceptibility P 0 a forcing := by
   classical
+  have hs : (Real.exp s)^(-2 : ℤ) = ((Real.exp s)^(2 : ℕ))⁻¹ :=
+    (zpow_neg (Real.exp s) 2).trans
+      (congrArg (fun t : ℝ => t⁻¹) (zpow_natCast (Real.exp s) 2))
+  rw [hs]
   rw [primeLogFidelitySusceptibility_sum, primeLogFidelitySusceptibility_sum, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i _
   by_cases hi : i = a
   · simp [hi]
   · simp only [if_neg hi, Real.exp_zero, one_pow, one_mul]
-    simp only [zpow_neg, zpow_natCast, div_eq_mul_inv, mul_inv_rev]
+    simp only [div_eq_mul_inv, mul_inv_rev, ← inv_pow]
     ring
 
 end GaloisForLFunctions.HTGeometry.Thermofield
