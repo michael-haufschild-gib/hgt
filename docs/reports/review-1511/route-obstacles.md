@@ -1,10 +1,10 @@
 # Review 1511 — routes and their hard obstacles
 
-Corpus: commit 1698d6b686 with the working tree (15 November 2026). Inputs: the frontier map and the killed-routes ledger, the corpus search tool, and the Lean statements cited below, each read in source. No build, compile or axiom audit was run for this report.
+Corpus: commit a7fcf5212f with the working tree (15 November 2026). Inputs: the frontier map and the killed-routes ledger, the corpus search tool, and the Lean statements cited below, each read in source. No build, compile or axiom audit was run for this report.
 
 Grades are the frontier map's: **[L]** integrated, **[S]** source only (unfinished or unintegrated), **[K]** individually audited. A fact marked **(src)** was read in the Lean source and has no grade of its own on the frontier map. A statement marked *table* comes from a programme table returned by the search tool and is not a Lean statement.
 
-Companion reports: [obstacles summary](obstacles-summary.md) (tasks J1–J10, open problems O1–O16, questions and programmes), [walls ledger](walls-ledger.md) (P, R, U walls), [route unification ledger](route-unification-ledger.md).
+Companion reports: [obstacles summary](obstacles-summary.md) (tasks J1–J11, open problems O1–O16, questions and programmes), [walls ledger](walls-ledger.md) (P, R, U walls), [route unification ledger](route-unification-ledger.md).
 
 ## 1. Status
 
@@ -14,7 +14,7 @@ What is proved without hypothesis:
 
 - **A zero-free half-plane.** ζ, every Dirichlet L-function and every finite-order Hecke L-function of ℚ(ω) have no zero on Re s > 20999/24000 [L] ([`riemannZeta_ne_zero_of_sub_seven_eighths_lt_re`](../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L147), [`hecke_ne_zero_of_sub_seven_eighths_lt_re`](../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L111), [`hecke_beta_le_sub_seven_eighths`](../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L34)). Width: w = sup |Re ρ − ½| ≤ 8999/24000 ([`zetaZeroWidth_le_sub_three_eighths`](../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L60)).
 - **A calculus that carries this bound everywhere.** Every width ruler of the corpus reads the same number ([`sub_three_eighths_ruler_jump`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L186) [L]); a family of levers that covers (½, 20999/24000] gives RH ([`riemannHypothesis_of_covering_levers_sub_seven_eighths`](../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L438) [L]).
-- **The sign of Weil's form on small windows.** Floor 1/50000 at aperture 1881/5000 [L]; floor 10⁻¹³ at aperture log 2 [S] ([`weilFloor_apertureLogTwo`](../../../formal/GaloisForLFunctions/WindowTowerOfSpecZ/TheTwoPrimeWindowHasAPositiveWeilFloorAtEveryBlockSize.lean#L48)); index one of the neutral window through ratio 103/50 [L] ([`hermNegIndex_neutralWindow_eq_one`](../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheNeutralPartOfAWindowOfRatioTwoHasOneNegativeSquareAtEveryBlockSize.lean#L315)) and through ratio three [S].
+- **The sign of Weil's form on small windows.** Floor 1/50000 at aperture 1881/5000 [L]; floor 10⁻¹³ at aperture log 2 [S] ([`weilFloor_apertureLogTwo`](../../../formal/GaloisForLFunctions/WindowTowerOfSpecZ/TheTwoPrimeWindowHasAPositiveWeilFloorAtEveryBlockSize.lean#L48)); index one of the neutral window through ratio 103/50 ([`hermNegIndex_neutralWindow_eq_one`](../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheNeutralPartOfAWindowOfRatioTwoHasOneNegativeSquareAtEveryBlockSize.lean#L315)), with gap 1/50000 through ratio 10609/5000 [L], and through ratio three [S].
 - **Exact dictionaries.** The number of negative squares of Weil's form equals the number of zeros right of the line ([`pontryagin_law`](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHodgeDefectCountsTheRightZeros.lean#L490)); RH ⇔ zeros approach the line (ZAL) ∧ the asymptotic abscissa law (AAL) ([`riemannHypothesis_tfae`](../../../formal/GaloisForLFunctions/InfiniteRankWeilTheory/TheInfiniteRankWeilProof.lean#L64)); failure of AAL ⇔ a finite nonempty set of zeros beyond some depth ([TheFailureOfTheAbscissaLawIsAFiniteLayer](../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/TheFailureOfTheAbscissaLawIsAFiniteLayer.lean)).
 
 What no route has: a mechanism that lowers the exponent below the vertex of the cubic probe, a mechanism that produces the sign of Weil's form at a growing aperture, and a mechanism that excludes a finite top layer of zeros. These are the three core families of the [walls ledger](walls-ledger.md).
@@ -43,6 +43,7 @@ What no route has: a mechanism that lowers the exponent below the vertex of the 
 | J8 | Fixed-aperture certificates beyond log 2 (ratio four, the fourth ladder excess) |
 | J9 | Further finite rungs from a larger verified height |
 | J10 | The elementary bound for cubic character sums from the Stepanov count |
+| J11 | The top-octave statement for ζ as one theorem, composed from two integrated statements |
 
 **(b) Open problems** — no solution is known; details in [obstacles summary §2.2](obstacles-summary.md#22-open-obstacles).
 
@@ -144,11 +145,11 @@ A candidate has a detector or receiver and no source-to-receiver step.
 
 | Programme | Result that bears on a route | Open item | Class |
 |---|---|---|---|
-| Metaplectic descent, family continuation, exponent dynamics, reciprocity families | the seed and its transfers; the stage walls 13/15, 5/6, 2/3, 3/5 (walls ledger P3–P9) | O1–O4 | P |
+| Metaplectic descent, family continuation, exponent dynamics, reciprocity families | the seed and its transfers; the stage walls 13/15, 5/6, 2/3, 3/5 (walls ledger P3–P12) | O1–O4 | P |
 | Tensor-power programme | a pole law is equivalent to the width for flow data and abelian bases ([`exists_poleLaw_iff`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TheTensorMomentsOfAFlowDatumHaveBaseLossExactlyOne.lean#L510), [`exists_twistPoleLaw_iff`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/AnAbelianBaseIsARuler.lean#L568)); one Deligne lever or sign levers at all large periods give RH ([`riemannHypothesis_of_deligneLever`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TheThreeLinesOfFrames.lean#L84), [`riemannHypothesis_of_signLevers`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TheThreeLinesOfFrames.lean#L94)) | O4, O5 | P/U |
 | Green calculus of the window, floor-tree mixing, absolute geometry | index one through ratio three; gluing through the dyadic middle ([`riemannHypothesis_iff_forall_overlap_contraction`](../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/AWindowGluesItsTwoOverlappingPartsThroughItsDyadicMiddle.lean#L519)); top-octave blindness | O9, O10 | R |
 | Selective arithmetic | a window sign at one aperture excludes nothing ([`exists_zetaDensity_positive_window_deep_zeros`](../../../formal/GaloisForLFunctions/SelectiveArithmetic/TheRungSignSurvivesDeepZerosAtZetaDensity.lean#L90)) | a sign with a cluster exclusion | R |
 | Counting and scattering holography, modular horizon, ringdown | rate ⇔ strip; the count door ([`exists_count_tateLimit_iff`](../../../formal/GaloisForLFunctions/CountingHolography/TheCountDoorOfACurveAndOfZ.lean#L39)) | O10, O11 | R |
 | Floor-free arithmetic, auxiliary dynamics, exceptional layers, worlds, Euler–FE transport | non-attainment and phase-return receivers of AAL; realizability of finite layers | O12 | U |
 | Galois theory of zeros, nodal geometry, finite free probability | monodromy of the heat flow; collision laws | O14, O16 | U |
-| Verified height rungs | finite rungs; verification height double exponential in the aperture [L] | none that transfers | U |
+| Verified height rungs, aperture floors | finite rungs; no positive floor of Weil's form holds along unbounded apertures: μ(A) ≤ K·exp((11/2)A − π·e^(2(A−2))) for A ≥ 3 [L] ([`not_exists_positive_floor_along`](../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheApertureFloorMustDecayDoublyExponentially.lean#L110)) | none that transfers | U |

@@ -1,244 +1,176 @@
-# Route unification ledger
+# Review 1511 — route unification ledger
 
-The routes read three invariants of one object, the zero configuration of `ξ`. Each route is a face of one of three problems: **move the width**, **empty the index**, **close the tail**. Inside each face the routes share an exact invariant, and many are formally the same ruler. A fourth layer, **selection**, is common to all faces: every mechanism that closes a face must fail on the worlds that lack one structure of `ζ`. Evidence conventions: [route report](route-obstacles.md), [fact log](../../../logs/review-1511-frontier-facts.md); [S] = tagged unintegrated by the frontier map, [W] = untracked file, [D] = deduction of this ledger.
+Corpus: commit a7fcf5212f with the working tree (15 November 2026). The ledger records which routes are faces of one problem, by the theorem that identifies them. Every Lean statement cited was read in source. No build, compile or axiom audit was run for this report.
 
-Kinds of connection:
+Grades are the frontier map's: **[L]** integrated, **[S]** source only, **[K]** individually audited; **(src)** marks a statement read in the Lean source that has no grade of its own on the frontier map. *Reading* marks an interpretation of this report.
 
-- **Ruler identity** — both routes are exact two-sided readings of the same number; every bound, seed and lever passes between them with no loss [MEASURING] [LEVERTRANSPORT].
-- **Invariant identity** — both routes compute the same integer, threshold or set.
-- **Quantitative transfer** — a theorem moves a bound with stated losses.
-- **Endpoint equivalence** — both full statements are RH, with no transfer of partial estimates.
-- **Proposed bridge** — a missing theorem.
+Companion reports: [routes and obstacles](route-obstacles.md) (route names and receivers), [obstacles summary](obstacles-summary.md) (open problems O1–O16), [walls ledger](walls-ledger.md) (walls P, R, U).
 
-## The three faces
+## 1. Result
 
-| Face | Invariant | RH | Unconditional value | Why the face does not close by itself |
-|---|---|---|---|---|
-| **W — width** | `w = sup |Re ρ − ½|` | `w = 0` | `w ≤ 3/8` [MMD_STRIP]; `w ≤ 8999/24000` written [WIDTHSUB] [S] | Readings do not move the number; no lever is proved; the producer's frames stop at `3/5` and its estimates at `7/8`; a lever must use the Ramanujan property [MEASURING] [WALLGEN] [VERTEXPOS] [PAIRS]. |
-| **I — index** | `κ = #` distinct zeros right of the line; its threshold `W₀ = inf_A windowThreshold(A)` | `κ = 0`, `W₀ = ∞` | counted exactly by windows and packets [INDEXLAW] [INDEX] | Each finite stage sees zeros to a finite height; a prime-2 deformation with off-line zeros passes the certified aperture [P2LOG2] [S]; compact Selberg zeta functions have finite positive `κ` [SMALLEIG]. |
-| **T — tail** | `Θ∞`, the top layer, landing | ZAL ∧ `FiniteOffLine → RH` ∧ Landing [THREEATOMS] | `Θ∞ < 1` ⇔ `Θ < 1` [QUASITAIL] | Fakes realize each atom's failure; Euler worlds realize `Θ∞ < Θ < 2/3` [TWOTHIRDSWORLD]. |
+The frontier map lists 38 live route formulations and 12 candidates. Under the identifications proved in Lean, and for the routes that have a receiver only under the reading stated in each group, they are faces of three statements about one configuration:
 
-The faces meet only at RH: `w = 0 ⇔ κ = 0 ⇔ W₀ = ∞ ⇔` ZAL ∧ AAL. Off RH they separate into three worlds: **F** (`0 < κ < ∞`), **S** (ZAL, Landing fails), **D** (ZAL fails). In every one of them the half-line state undergoes a Hawking–Page transition at the finite `W₀` [HPTRANS] [S].
-
-## Routes on the faces
-
-| Face | Exact rulers / invariant computers | Receivers at the RH endpoint | Shared object | What remains distinct |
-|---|---|---|---|---|
-| **W** | Zero abscissa, prefix, unit window, zeros of `M_X`, signal, two-end state [RULERS] [WD] [SIGNAL-WIDTH]; WL [WL]; WD long moments and their slope loss [WD-LONG] [SLOPE]; PBM [PBM]; SRT [SRT]; log-energy floor [LOGENERGY]; margin and doubling [MARGINSINF] [DOUBLING]; squarefree quotient on `[½, 9/16)` [SQFRULER]; cubic-probe correction [RUNG]; PM strip [ADS]; JAS level via the signal [SIGNAL-JAS] | MC [MC], FU [FU], CFC [CFC], RP [RP], SQF [SQF], TT [TT], CHMD [CHMD], LI [LI], RB [RB], SZ [SZ], AIP [AIP], CTF [CTF] [BSY], PRIMELAG [PRIMELAG] | `w`; on the rulers literally the same number. Heat time is a half ruler, `Λ ≤ w²/2` [NEWMAN], and no lower bound in `w` alone exists [HEATSPACING]. | Receivers at exponent zero have no rate dictionary; their partial estimates do not transfer. |
-| **I** | Neutral windows [INDEXLAW]; packets [INDEX]; SC glued index; HF threshold and Hawking–Page point [HF] [HPTRANS] [S]; null modes [NULLMODES]; TG integer count [TG]; W1C and index-one realizations [W1C] [INDEXONE] | EWU, OWU, ACT [ACT], HAT-C [HATC], RN [RN], ECP [ECP], TH [TH], PA [PA], GTA [GTA], HCF [HCF], XN [XN], ACS margin and gap [ACS] [GAPRH] | `κ`, Weil's form, the threshold `W₀` | A finite aperture, rank, flag or degree is a finite stage; sector signs are not quantitatively comparable. |
-| **T** | Finite top layer [AAL-LAYER]; three atoms [THREEATOMS]; landing TFAE [LANDING-TFAE]; finite oscillation and non-attainment [FINOSC] [NONATTAIN]; unit-gap form of AAL [UNITGAPAAL]; Jensen counts [JENSENCOUNT]; heat counts [HEAT-UNIFORM] [HEATUNIT]; IWT [IWT]; horocycle filters [HOROZAL] [HOROAAL] | BAG [BAG], ZCG [ZCG], PTR [PTR], SC/JAS shell signs ⇒ AAL [AKLT], S3 [RETURNRH] | layers, tails, recurrence, heat counts of one divisor | One off-line zero falsifies RH, not AAL. |
-
-Candidates: SEC, CDC/BSH, APF, EGC, EWJ, FEL, WBF on I (detectors); IRK, MSC on I (algebraic counts); RFHM, W1C on I/T; S3 on T, where it is RH [RETURNRH].
-
-## Proved bridges
-
-### 1. The width face is one ruler (ruler identity)
-
-The rulers listed above agree reading by reading; the seed is instantiated on each: `Λ ≤ 9/128`, heat threshold `≤ 3/64`, `M(n) = O(n^β)` for `β > 7/8`, rate `3/8` on prefixes, windows, moments, signal and states, slope loss `3/4`, doubling factors above `2^{3/8}` [NEWMAN] [HEATTHR] [MERTENS78] [RULERS] [SLOPE34] [DOUBLING38]. The written seed passes to all of them at once: every ruler jumps from `3/8` to `8999/24000` [AVOIDJUMP] [S]. **Consequence.** Every W-route needs the same missing object, a lever or a better seed; none is closer to RH than another.
-
-### 2. The index face carries the width, and carries nothing more (invariant identity plus ruler)
-
-The second negative square of the window of ratio `3K+1` sinks at rate `w` [MARGINDEPTH] [MARGINSINF]; the best doubling factor is `2^w` [DOUBLING]; RH ⇔ factor one ⇔ a constant level, and levels are bounded or polynomial [DOUBLINGONE] [LOSSDICHOT]. The gluing data of the windows — any finite prefix of contacts, every dyadic middle, both half-windows — support exactly the factor `√2`: a sub-Euler model shares all of them and has best factor `√2` [SQRT2] [SUBEULER] [S]. Contacts `k ≥ 3K+2` act only on the end-to-end block of a doubled window, and a factor below `√2` forces that block's prime form to be negative of order `√K` [TOPLOCAL] [TOPOCTAVE] [S]. [D] That form is a weighted prime sum over `(3K, 6K]`, a reading of `w`. **Consequence.** The window calculus is a complete finite model of the width and contains no producer: the index face reads `κ` and `w` but moves neither.
-
-### 3. Tail atoms (invariant identity)
-
-| Statement | Content |
-|---|---|
-| AAL | `Θ = Θ∞`; zero transport to arbitrarily large heights [AAL]; every line has `≤ 1` or infinitely many zeros to its right [UNITGAPAAL] |
-| ¬AAL | a finite top layer [AAL-LAYER]; the prime error is a finite trigonometric oscillation attained on every late window [FINOSC] |
-| `FiniteOffLine → RH` | packet index `0` or `∞` [INDEX] |
-| Landing | ZAL ⇒ finitely many off-line zeros; bounded Hadamard threshold [LANDING-TFAE] |
-| RH | ZAL ∧ `FiniteOffLine → RH` ∧ Landing [THREEATOMS]; under AAL, RH ⇔ ZAL [AKLT] |
-
-The finite stratum is the bridge between I and T, and the open one.
-
-### 4. Galois structure and heat (finite-window identity)
-
-Arithmetic automorphisms act on continued finite windows as heat monodromies [HEAT-FINITE]; whole fibres are excluded [HEAT-NOGO]. `Re ρ = ½` iff `p^{2Re ρ} ∈ B` and an automorphism realizes the reflection [REFLECTION]. An isolated off-line quartet at a height without critical zero has a negative radicand at every prime, its square class in `B` is decided by the absence of partial flips, and its mixed traces are symmetric under the swap `(Re ρ − ½) ↔ i Im ρ` [REGIMEA] [PARTIALFLIP] [TRACEFACTOR]; a critical zero at the same ordinate confines the action to the Klein group [KLEIN]. These are identities, not exclusions.
-
-### 5. Physics reads the width and the index threshold
-
-The AdS two-boundary strip width `δ` is `¼ − w/2` [ADS]. The half-line confining problem has its Hawking–Page point at `W₀ = inf_A windowThreshold(A)`, the index-face threshold, and RH ⇔ the bare energy is nonnegative [HPTRANS] [HPEQUIV] [S]. Prime-2 deformations satisfy every physical axiom formalized, have decay thresholds `→ 0`, and pass the certified aperture [ADS-NOGO] [P2LOG2] [S]. **Consequence.** The physical routes are the W- and I-faces in thermal language; the axioms are hypotheses of rulers, and their only missing input is the temperedness of the gates.
-
-### 6. The producer acts on the width only
-
-Frames `b ↦ (c + b)/k` act on the abscissa; completed Gauss frames stay `≥ 3/5`; the Möbius sign alone allows `(k/2, k)` with centres `k/(2(k−1)) → ½` [GAUSS] [MIXED] [SIGNLINE] [SIGNWALL]; the cubic frame is a ruler between the correction and its rung [RUNG]. The estimate ladder has its published vertex at `7/8`, closes at `20999/24000` by rescaling [SUBSEED] [S], cannot go below `40535/46328` in this estimate system [FARKAS] [S], and has design floor `13/15` and Cauchy–Schwarz floor `5/6` [VERTEXPOS] [VERTEXFLOOR] [SAVING]. Every rung transfers to `ζ` and all Dirichlet `L` [LADDERTRANSFER]. No producer theorem acts on `κ` or on the tail.
-
-### 7. Identity forcing is a ruler near the line
-
-Exact forcing from `ζ`'s identities stops at the quartet [QUARTETFORCE]; coincidences `ζ(ρ) = ζ(ρ/k) = 0` force `Θ ≥ k/(k+1)` and are excluded for `k ≥ 7` by the written seed [ROOTCOINC] [S] [K7] [S]; Witt monomials, Brauer relations and shifted convolutions force nothing [WITTORD] [BRAUERCANCEL] [SHIFTMARGIN]. What survives is the squarefree quotient as a ruler on `[½, 9/16)` [SQFRULER]. Closure laws (right descent, right doubling) would place every real-zero-free configuration on the line [DESCENT] [RDOUBLE], and the band-forcing receivers turn any expanding forcing law into a lever [BANDFORCE] [COVERLEVERS]; no forcing law for `ζ` is proved. **Consequence.** The sign-free programme reduces, at present, to the W-face.
-
-## The selection layer
-
-| World | Structure it lacks | Face it defeats |
+| Problem | Statement | Faces |
 |---|---|---|
-| Euler worlds [EULERWORLD] | functional equation | W below `2/3`; T (`Θ∞ < Θ`) |
-| Cosh models [COSH] | Dirichlet series | W everywhere |
-| Two-sided prime edits [EDIT] | arithmetic beyond the count | the seed |
-| Shifted pairs [PAIRSABS] [TEMPERED] | Ramanujan bound | W in `[Θ, Θ + ½)` |
-| Prime-2 deformations [P2FACTOR] [P2LOG2] | tempered gate at 2 | I at the certified apertures (`½log 2` for every `α`, `log 2` for `α` near `½`); physics |
-| Compact Selberg zeta [SMALLEIG] | archimedean temperedness | I (finite positive `κ`) |
-| Fake edits [EDITDEFECT] [RIGIDITY] | decaying FE defect | T (world I) |
+| **W — the width** | w = sup \|Re ρ − ½\| = 0 | every ruler (group A), every sign criterion (group B), every collision criterion (group D), every uniformity criterion (group E), every physical rate (group F) |
+| **AAL — the abscissa law** | no line has a finite positive number of zeros to its right | group C |
+| **ZAL — approach to the line** | the zeros approach the line, with landing | the second half of group C |
 
-[D] The last three rows are all non-tempered at one place, and a single Euler column is pure iff tempered [EULERCOLUMN]. Unit Euler parameters are the property that no Euler–FE countermodel of the corpus has and that no proved mechanism uses.
+RH ⇔ W ⇔ ZAL ∧ AAL ([`riemannHypothesis_tfae`](../../../formal/GaloisForLFunctions/InfiniteRankWeilTheory/TheInfiniteRankWeilProof.lean#L64)). The routes differ in the kind of input they accept, not in the problem:
 
-## Distinctions that no theorem removes
+| Family | Input a route accepts | What the identifications show |
+|---|---|---|
+| P | an estimate with cancellation | every estimate is a bound for w, and every bound for w is every estimate (group A) |
+| R | a sign of a quadratic form | a sign with a loss of rate β is the bound w ≤ β; the sign without loss is w = 0 (bridges G1–G3) |
+| U | an exclusion or a statement uniform in an order | each finite stage is available; the uniform statement is w = 0, AAL or ZAL (groups C–E) |
 
-| Pair | Why they stay distinct |
-|---|---|
-| W at positive rate ↔ I | `w ≤ β < 3/8` says nothing about finiteness of `κ`. |
-| I ↔ T (finite stratum) | Finite positive `κ` occurs with Euler product and functional equation (compact Selberg); `FiniteOffLine → RH` needs `ζ`'s arithmetic. |
-| W ↔ T without functional equation | Euler worlds realize `Θ∞ < Θ < 2/3` [TWOTHIRDSWORLD]. |
-| Receivers at exponent zero ↔ rulers | No rate dictionary; no partial transfer. |
-| Arithmetic Galois ↔ heat | Finite windows only [HEAT-NOGO]. |
-| Finite aperture ↔ `ζ` | Prime-2 deformations pass the same certificates [P2LOG2] [S]. |
+Statements strictly weaker than RH that the faces expose: the stages O1–O4, the root coincidences O7, a doubling factor below √2 (O9), the separation O11, the sign of the monodromy group O16.
 
-## Proposed bridges
+## 2. Group A — one width, many rulers
 
-| Bridge | Faces | Available pieces | Missing theorem |
+**Common problem.** A ruler is a criterion that holds at exponent β exactly when w ≤ β. All rulers read one number; a bound proved in one is a bound in all ([`sub_three_eighths_ruler_jump`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L186) [L]; [EveryRulerCarriesTheSeedAndEveryLever](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean)). No ruler produces a bound.
+
+| Ruler | Coordinate in which it reads w | Route | Lean |
 |---|---|---|---|
-| **A lever** | W | ruler calculus; five worlds; band-forcing receivers [BANDFORCE] | One map `T` with `T(b) < b` proved for `ζ` using Dirichlet series, functional equation and unit Euler parameters. |
-| **A better seed** | W | written seed `20999/24000` [SUBSEED] [S]; design floor `13/15` [BALANCED]; ladder transfer [LADDERTRANSFER] | The count `U^{1−δ}`; a pre-Cauchy–Schwarz saving. |
-| **Sign-line frames** | W | Stickelberger pricing [SIGNPRICE] [SIGNLINE] | A completion of a Möbius-signed monomial of period `k ≥ 7` priced at `k/2`. |
-| **Clustering law** | W ↔ I | margin converse with `1 + log R` [MARGINDEPTH] | A uniform bound on deep off-line zeros per unit window. |
-| **Finite stratum** | I ↔ T | packet dichotomy; filters; world-I edits [INDEX] [COFACTORS] [WORLDI] | Exclude finite positive `κ` for `ζ`. |
-| **Landing / non-attainment** | T | landing TFAE; non-attainment receivers [LANDING-TFAE] [NONATTAIN] | A uniform Hadamard threshold, or window non-attainment of the prime error. |
-| **Sign of `G₊`** | T (heat) | off-centre collision; isolated double-collision criterion [OFFCENTRE] [DOUBLECOLL] | An isolated double collision off the centre. |
-| **Selecting gates** | all | Euler column purity ⇔ temperedness [EULERCOLUMN]; prime-2 deformations [P2LOG2] [S] | An inequality for `ζ` that a non-tempered gate violates. |
+| Mertens function, producer rate | a polynomial rate of an integer producer exists ⇔ M(n) = O(n^(1−σ)) for some σ > 0; M(n) = O(n^(7/8)) holds | MC | [`exists_hasRate_rpow_iff_mertens`](../../../formal/GaloisForLFunctions/ArithmeticAuxiliaryDynamics/TheRateAndTheMertensScaleCoincide.lean#L452), [`exists_mertens_le_seven_eighths_exact`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L229) |
+| Signal of the zeta kernel | Θ ≤ b ⇔ signal O(Z^(b′)), b′ > b | JAS | [TheSignalExponentIsTheZeroAbscissa](../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSignalExponentIsTheZeroAbscissa.lean) |
+| Squarefree power quotient | pole-free on Re s > β/2 ⇔ Θ ≤ β, for β < 27001/48000 | SQF | [`squarefreePowerQuotient_poleFree_iff_zetaZeroAbscissa_le_sub`](../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L309) |
+| Long mollified moments | least slope loss = 2w | WD | [`zetaZeroWidth_le_of_slopeLaw`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth.lean#L68), [`slopeLaw_sub_three_quarters`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L335) |
+| Prime traces on logarithmic windows | w ≤ σ ⇔ one-sided bounds −K·p^σ | SRT | [`zetaZeroWidth_le_iff_bddBelow_primeDegrees`](../../../formal/GaloisForLFunctions/SurfaceOfSpecZ/TheWidthIsTheStepanovExponentAtThePrimes.lean#L909) |
+| Even prime-trace moments | 2kw ≤ a_k ≤ 1 + 2kw, a_k/(2k) → w | SRT, tensor-power programme | [`tendsto_momentExponent_div`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/ThePrimeTraceMomentsOfZetaReadTheWidthWithBaseLossAtMostOne.lean#L201) |
+| Pulse ringdown on the modular surface | rate δ ⇔ no zero with Re ρ > 1 − 2δ | PM | [`zeroFreeStrip_iff_pulse_ringdown`](../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheRingdownRateIsTheZeroFreeStrip.lean#L625) |
+| Thermalization of Farey counts | rate y^(1/2+δ−ε) ⇔ the same strip | counting holography | [`zeroFreeStrip_iff_fareyCount_rate`](../../../formal/GaloisForLFunctions/CountingHolography/ThermalizationFasterThanTheSquareRootIsAZeroFreeStrip.lean#L486) |
+| Floor of Weil's form in the logarithmic energy | w ≤ β ⇔ floor at rate β | RW | [`isRuler_logEnergyFloor`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWidthIsTheRateOfTheWeilFloorInTheLogarithmicEnergy.lean#L428) |
+| Margin of the window matrices | infimum of margin rates = w | ACS | [`isRuler_marginLaw`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesIsARulerAtPolynomialBlockSize.lean#L782), [`sInf_marginLaw_eq_zetaZeroWidth`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesIsARulerAtPolynomialBlockSize.lean#L804) |
+| Doubling factor of the margin | infimum of factors = 2^w | ACS | [`zetaZeroWidth_le_logb_of_doublingLaw`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestDoublingFactorOfTheMarginIsTwoToTheWidth.lean#L178), [`doublingLaw_of_zetaZeroWidth_lt`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestDoublingFactorOfTheMarginIsTwoToTheWidth.lean#L184) |
+| Return transfer on log² windows | the transfer ⇔ RH | S3 (candidate) | [`homogeneousReturnWindowTransfer_iff_riemannHypothesis`](../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheReturnTransferIsTheRiemannHypothesisUnderAStrip.lean#L44) |
 
-Chaining RH-equivalent endpoints supplies nothing; chaining rulers supplies a ruler. The [summary](obstacles-summary.md) develops the assemblies and research questions.
+**Members by receiver** (a bound at exponent ½ + ε implies RH or is equivalent to it): PBM, RB, SZ, TT, CTF, BAG. *Reading:* each is the endpoint w = 0 of a ruler of the table.
 
-<!-- source references -->
-[AAL]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/TheAbscissaLawsOfAZeroConfiguration.lean#L106
-[AAL-LAYER]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/TheFailureOfTheAbscissaLawIsAFiniteLayer.lean#L33
-[ACS]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/AUniformLowerBoundOnTheMarginOfTheWindowMatricesForcesTheRiemannHypothesis.lean#L505
-[ACT]: ../../../formal/GaloisForLFunctions/ArithmeticCriticalityTheory/SingleShiftCompleteness.lean#L177
-[ADS]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheEternalAdSPrimeMarkedDictionary.lean#L884
-[ADS-NOGO]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/CausalIdentitiesCannotForceQuarterRingdown.lean#L1600
-[AIP]: ../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheCompensatedRemainderOfTheFullLedger.lean#L878
-[AKLT]: ../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/PrimeTowersAndConeCouplingProduceAsymptoticAbscissaLaw.lean#L306
-[AVOIDJUMP]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L186
-[BAG]: ../../../formal/GaloisForLFunctions/RHTower/ZetaDiscRecurrenceOnEveryClosedDiscOfTheStrip.lean#L294
-[BALANCED]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L541
-[BANDFORCE]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/ExpandingForcingLawsRulersAndTheRiemannHypothesis.lean#L154
-[BRAUERCANCEL]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L497
-[BSY]: ../../../formal/GaloisForLFunctions/RHTower/BalazardSaiasYorCriterionEquivalence.lean#L217
-[CFC]: ../../../formal/GaloisForLFunctions/RHTower/CCM/CCMFirstClockTailLowerBoundCompleteness.lean#L1089
-[CHMD]: ../../../formal/GaloisForLFunctions/RHTower/CHMDStage22PrimeWaveGrowthLawAndTwoPointSumCriterion.lean#L385
-[COFACTORS]: ../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheGrowingFilterReachesPolynomiallyManyCofactors.lean#L1
-[COSH]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L142
-[COVERLEVERS]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/ExpandingForcingLawsRulersAndTheRiemannHypothesis.lean#L352
-[CTF]: ../../../formal/GaloisForLFunctions/RHTower/ChronologicalRiemannEquivalence.lean#L414
-[DESCENT]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/TheClosedConfigurationsOfHalvingAndDoubling.lean#L431
-[DOUBLECOLL]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheTurnAroundAnIsolatedDoubleCollisionOffTheCentreIsTheExchangeOfTwoPairs.lean#L162
-[DOUBLING]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestDoublingFactorOfTheMarginIsTwoToTheWidth.lean#L217
-[DOUBLING38]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestDoublingFactorOfTheMarginIsTwoToTheWidth.lean#L191
-[DOUBLINGONE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheLossOfTheMarginIsBoundedOrPolynomial.lean#L81
-[ECP]: ../../../formal/GaloisForLFunctions/RHTower/Representation/EndpointCharacterCriterion.lean#L62
-[EDIT]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L186
-[EDITDEFECT]: ../../../formal/GaloisForLFunctions/WorldsOfTheZeroConfiguration/TheWorldOneScenarioTable.lean#L38
-[EULERCOLUMN]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/RamanujanIsRealityOfAnEulerColumn.lean#L91
-[EULERWORLD]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L81
-[FARKAS]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheTrueVertexBelowSevenEighths.lean#L328
-[FINOSC]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/ThePrimeNumberTheoremIsNotAttainedOnWindows.lean#L68
-[FU]: ../../../formal/GaloisForLFunctions/RHTower/MobiusDivisorOneSidedPowerGapBootstrap.lean#L596
-[GAPRH]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheGroundEnergyOfAnApertureIsAGapOfEveryWindowInsideIt.lean#L408
-[GAUSS]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/MoebiusSignedGaussPairingsEndAtThreeFifths.lean#L595
-[GTA]: ../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSchurQuarticSpectralDecayEquivalence.lean#L293
-[HATC]: ../../../formal/GaloisForLFunctions/HyperbolicArakelovTheory/TheJumpTailFloorNeedsTheFullArithmeticNormalization.lean#L38
-[HCF]: ../../../formal/GaloisForLFunctions/RHTower/XiGaussianHeatTwoPrimeSourceSampling.lean#L123
-[HEAT-FINITE]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheArithmeticGroupActsOnContinuedWindowsOfZerosAsHeatMonodromy.lean#L81
-[HEAT-NOGO]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheArithmeticGroupIsAHeatMonodromyOnFiniteWindowsButNotOnAFibre.lean#L62
-[HEAT-UNIFORM]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/AUniformSpecializationOfTheOffLineZerosForcesThemToBeFinite.lean#L29
-[HEATSPACING]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheHeatTimeIsTheWidthTimesTheSpacing.lean#L109
-[HEATTHR]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L162
-[HEATUNIT]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/TheHeatFlowHasTheCountOfItsLimit.lean#L60
-[HF]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/TheCriticalHalfLineStateIsUniqueUpToSign.lean#L96
-[HOROAAL]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheOptimalHorocycleExponentAndEulerAnnihilators.lean#L1107
-[HOROZAL]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheOptimalHorocycleExponentAndEulerAnnihilators.lean#L1090
-[HPEQUIV]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean#L352
-[HPTRANS]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean#L440
-[INDEX]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheFiniteStratumIsThePacketIndexDichotomy.lean#L85
-[INDEXLAW]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheIndexOfTheNeutralPartIsOnePlusTheNumberOfZerosRightOfTheLine.lean#L166
-[INDEXONE]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/AnIndexOneRealizationIsAUnitGap.lean#L93
-[IWT]: ../../../formal/GaloisForLFunctions/InfiniteRankWeilTheory/TheInfiniteRankWeilProof.lean#L64
-[JENSENCOUNT]: ../../../formal/GaloisForLFunctions/FiniteFreeProbability/JensenCountsOffLineZeros.lean
-[K7]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L212
-[KLEIN]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/GaloisClosureAndMixedTracesOfAnIsolatedQuartet.lean#L445
-[LADDERTRANSFER]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheCubicCoverSpecializationOfTheBindingBin.lean#L344
-[LANDING-TFAE]: ../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheLandingLawForZeta.lean#L145
-[LEVERTRANSPORT]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L85
-[LI]: ../../../formal/GaloisForLFunctions/RHTower/LiEvenCrossActualClockGrowthLaw.lean#L165
-[LOGENERGY]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWidthIsTheRateOfTheWeilFloorInTheLogarithmicEnergy.lean#L428
-[LOSSDICHOT]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheLossOfTheMarginIsBoundedOrPolynomial.lean#L106
-[MARGINDEPTH]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesSinksAtTheRateOfTheWidth.lean#L789
-[MARGINSINF]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesIsARulerAtPolynomialBlockSize.lean#L804
-[MC]: ../../../formal/GaloisForLFunctions/RHTower/MobiusHilbertFormEquivalence.lean#L219
-[MEASURING]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L79
-[MERTENS78]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L169
-[MIXED]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/MixedTowersOfLeversStayAboveTheBestCentre.lean#L419
-[NEWMAN]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L155
-[NONATTAIN]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/ThePrimeNumberTheoremIsNotAttainedOnWindows.lean#L151
-[NULLMODES]: ../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/NullModesForceApertureIndexGrowth.lean
-[OFFCENTRE]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ACollisionAwayFromTheCentreExistsAtAForwardTime.lean#L625
-[P2FACTOR]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/CausalIdentitiesCannotForceQuarterRingdown.lean#L95
-[P2LOG2]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/PrimeTwoDeformedApertureLogTwoTest.lean#L278
-[PA]: ../../../formal/GaloisForLFunctions/RHTower/PrimeArchEndpointCalibratedHausdorffRH.lean#L92
-[PAIRS]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L295
-[PAIRSABS]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L259
-[PARTIALFLIP]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/GaloisClosureAndMixedTracesOfAnIsolatedQuartet.lean#L308
-[PBM]: ../../../formal/GaloisForLFunctions/RHTower/RegularizedLogZetaAbscissa.lean#L402
-[PRIMELAG]: ../../../formal/GaloisForLFunctions/InfiniteRankPurityTheory/ThePrimeLagIsPositiveDefiniteExactlyUnderRH.lean#L52
-[PTR]: ../../../formal/GaloisForLFunctions/RHTower/XiCosineShiftExceptionalPointCriterion.lean#L510
-[QUARTETFORCE]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/TheClosedConfigurationsOfHalvingAndDoubling.lean#L120
-[QUASITAIL]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/QuasiRHIsATailLaw.lean#L34
-[RB]: ../../../formal/GaloisForLFunctions/RHTower/RobinColossallyAbundantReduction.lean#L132
-[RDOUBLE]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/TheClosedConfigurationsOfHalvingAndDoubling.lean#L549
-[REFLECTION]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ALiftOfTheReflectionIsConjugationExactlyWhereTheWeightLiesInThePrimeTraceField.lean#L55
-[REGIMEA]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/GaloisClosureAndMixedTracesOfAnIsolatedQuartet.lean#L247
-[RETURNRH]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L254
-[RIGIDITY]: ../../../formal/GaloisForLFunctions/EulerFETransportTheory/DecayingFunctionalEquationsDetermineThePrimes.lean#L486
-[RN]: ../../../formal/GaloisForLFunctions/RHTower/CCM/CCMThetaGroundRHCriterion.lean#L49
-[ROOTCOINC]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L174
-[RP]: ../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePLinearFloorCriterion.lean#L478
-[RULERS]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L55
-[RUNG]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheCorrectionOfTheCubicProbeCarriesTheAbscissaOfItsRung.lean#L126
-[SAVING]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheRankTwoMultipleDirichletSeriesConvexityHull.lean#L830
-[SHIFTMARGIN]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L426
-[SIGNAL-JAS]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSignalExponentIsThePositivityLevel.lean#L165
-[SIGNAL-WIDTH]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSignalExponentIsTheZeroAbscissa.lean#L212
-[SIGNLINE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheShortMoebiusMonomialsPayExactlyHalf.lean#L139
-[SIGNPRICE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheShortMoebiusMonomialsPayExactlyHalf.lean#L97
-[SIGNWALL]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheShortMoebiusMonomialsPayExactlyHalf.lean#L157
-[SLOPE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth.lean#L110
-[SLOPE34]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth.lean#L95
-[SMALLEIG]: ../../../formal/GaloisForLFunctions/CompactHyperbolicSurfaces/SmallEigenvalueZeta.lean#L25
-[SQF]: ../../../formal/GaloisForLFunctions/RHTower/SquarefreeExponentialOneSided.lean#L605
-[SQFRULER]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L268
-[SQRT2]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L149
-[SRT]: ../../../formal/GaloisForLFunctions/SurfaceOfSpecZ/ScaleLocality/PrimeLogarithmicWindows.lean#L145
-[SUBEULER]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L319
-[SUBSEED]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L147
-[SZ]: ../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreAlignedGammaCompletion.lean#L380
-[TEMPERED]: ../../../formal/GaloisForLFunctions/RHTower/NonTemperedShiftedZetaPairCountermodel.lean
-[TG]: ../../../formal/GaloisForLFunctions/RHTower/FormationAnchoredCubicEndpoint.lean#L220
-[TH]: ../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaHermiteTraceFlag.lean#L250
-[THREEATOMS]: ../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheLandingLawForZeta.lean#L68
-[TOPLOCAL]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheFloorGraphNormAndTopOctaveBlindnessOfWindowGluing.lean#L650
-[TOPOCTAVE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L663
-[TRACEFACTOR]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/GaloisClosureAndMixedTracesOfAnIsolatedQuartet.lean#L372
-[TT]: ../../../formal/GaloisForLFunctions/RHTower/PaperWoldDirectedCovarianceRH.lean#L182
-[TWOTHIRDSWORLD]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L95
-[UNITGAPAAL]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/NonAttainmentGivesTheAbscissaLaw.lean#L117
-[VERTEXFLOOR]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L499
-[VERTEXPOS]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L333
-[W1C]: ../../../formal/GaloisForLFunctions/InfiniteRankPurityTheory/TheIndexIsSemicontinuous.lean#L96
-[WALLGEN]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/MixedTowersOfLeversStayAboveTheBestCentre.lean#L525
-[WD]: ../../../formal/GaloisForLFunctions/MultiscaleMollifiedZetaField/TheWidthIsReadInOneWindow.lean#L85
-[WD-LONG]: ../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/NearLineLogMean/LongMoebiusSecondMomentRigidity.lean#L659
-[WIDTHSUB]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L60
-[WITTORD]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L182
-[WL]: ../../../formal/GaloisForLFunctions/BiScaleUncertainty/WeilLagCriticalDeficitEndpointAndLimitLaw.lean#L868
-[WORLDI]: ../../../formal/GaloisForLFunctions/WorldsOfTheZeroConfiguration/AFiniteLayerCanBeEditedAway.lean#L136
-[XN]: ../../../formal/GaloisForLFunctions/RHTower/XiNewtonDiscSourceMargin.lean#L219
-[ZCG]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheForwardMonodromyDeterminesTheReflectionAndTheConjugationOfTheZeros.lean#L186
+**What one solution gives.** A bound w ≤ β from any source gives, by the table, the Mertens bound, the signal bound, the slope law, the ringdown rate, the Weil floor at rate β and the doubling factor 2^β. The seed gives all of them at β = 8999/24000.
+
+**The producer inside the group.** The only source of a bound is the estimate route. Its open steps O1–O5 are stages of one problem, half-power cancellation (O6), ordered by the exponent they reach: 13/15, 5/6, 2/3, 3/5, k/(2(k−1)), ½ (walls ledger, "The walls in order of exponent").
+
+## 3. Group B — one sign
+
+**Common problem.** Nonnegativity of Weil's form on every test, in one of its coordinates.
+
+| Face | Statement | Routes | Lean |
+|---|---|---|---|
+| Negative squares | number of negative squares = number of zeros right of the line | all of group B | [`pontryagin_law`](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHodgeDefectCountsTheRightZeros.lean#L490) |
+| Windows | RH ⇔ index one of every neutral window | ACS, SC | [`riemannHypothesis_iff_forall_hermNegIndex_neutralWindow_eq_one`](../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheRiemannHypothesisIsOneNegativeSquareOfTheNeutralPartOfEveryWindow.lean#L622) |
+| Ground energy | μ(a) = the floor of Weil's form on step packets of the windows inside a | RW, EWU/OWU, ACT | [`stepFloor_iff_le_groundEnergy`](../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheGroundEnergyOfAnApertureIsTheFloorOfWeilsFormOnTheWindowsInsideIt.lean#L500) |
+| Onset aperture | onset = ⊤ ⇔ all zeros on the line | RW | [`onsetAperture_eq_top_iff_onLine`](../../../formal/GaloisForLFunctions/WindowVisibilityLaw/OnsetApertureAndPositivityDictionary.lean#L372) |
+| Prime lag | RH ⇔ the Weil lag function is positive definite | WL | [ThePrimeLagIsPositiveDefiniteExactlyUnderRH](../../../formal/GaloisForLFunctions/InfiniteRankPurityTheory/ThePrimeLagIsPositiveDefiniteExactlyUnderRH.lean) |
+| Half-line form | RH ⇔ λ(R) ≥ 0 at every R | HF | [ArithmeticHawkingPagePhaseStructure](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean) [S] |
+| Jump tail | corrected energy + jump tail = Weil's form at a fixed height | HAT-C | [TheJumpTailFloorNeedsTheFullArithmeticNormalization](../../../formal/GaloisForLFunctions/HyperbolicArakelovTheory/TheJumpTailFloorNeedsTheFullArithmeticNormalization.lean) |
+| Deformation | RH ⇔ the regularized Gram deforms crossing-free at every horizon | edge Hodge theory | [TheIndexComputedByDeformation](../../../formal/GaloisForLFunctions/EdgeHodgeTheory/TheIndexComputedByDeformation.lean) |
+| Reflection Krein form | at most one negative square, zero at a critical zero, one off the line | PM | [`tentReflectionKrein_index`](../../../formal/GaloisForLFunctions/ArithmeticHolographyOfTheModularHorizon/TheReflectionKreinFormCountsTheOffLineResonances.lean#L244) |
+| Schur complements | RH ⇔ the Schur complement of every dyadic middle is nonnegative | ACS | [`riemannHypothesis_iff_forall_overlapSchur_nonneg`](../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheLossOfAnOverlapStepIsAdditiveBelowTheBindingEnergyOfTheMiddle.lean#L609) |
+| Effectivity | Hodge index ⇔ an effectivity with Riemann–Roch and ampleness | ACS | [`exists_effectivity_iff_hodgeIndex`](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/HodgeIndexFromEffectivity.lean#L102) |
+| Count | a form is the Tate limit of a count ⇔ it is nonnegative | counting holography | [`exists_count_tateLimit_iff`](../../../formal/GaloisForLFunctions/CountingHolography/TheCountDoorOfACurveAndOfZ.lean#L39) |
+
+**Members by receiver only** (a positivity at every aperture, rank or degree implies RH): CHMD, TH, RN, GTA, AIP, ECP, PA, LI, HCF, FU, CFC, RP, and the candidates SEC, CDC/BSH, EWJ, MSC, RFHM, W1C, WBF, IRK. *Reading:* each asks for the sign of the same form on a subfamily of tests.
+
+**What one solution gives.** The sign at every aperture in any face gives RH and with it every face.
+
+**What distinguishes the faces.** The certified range. The faces are certified at different fixed positions (aperture log 2, ratio three, rank 14, order 200, n ≤ 314), and none of the certificates is a consequence of another in Lean.
+
+## 4. Group C — one exclusion
+
+**Common problem.** AAL: no finite nonempty top layer. Its failure has one shape ([`not_abscissaLaw_iff_finite_layer`](../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/TheFailureOfTheAbscissaLawIsAFiniteLayer.lean#L33)), and each receiver detects that shape in its own coordinate.
+
+| Face | Statement | Programme or route | Lean |
+|---|---|---|---|
+| Counting | AAL ⇔ no line right of ½ has a finite number > 1 of zeros to its right | floor-free arithmetic | [`asymptoticAbscissaLaw_iff_encard_rightOf_le_one`](../../../formal/GaloisForLFunctions/FloorFreeArithmetic/NonAttainmentGivesTheAbscissaLaw.lean#L117) |
+| Trace classification | RH / empty top line / finite nonempty top line / infinite top line | floor-free arithmetic | [`zetaNormTrace_quadrichotomy`](../../../formal/GaloisForLFunctions/FloorFreeArithmetic/TheSplineTraceClassificationAtTheZeroAbscissa.lean#L437) |
+| Non-attainment | AAL from non-attainment on windows of one length per depth | floor-free arithmetic | [`asymptoticAbscissaLaw_of_windowNonAttainment`](../../../formal/GaloisForLFunctions/FloorFreeArithmetic/NonAttainmentGivesTheAbscissaLaw.lean#L54) |
+| Phase return | AAL from one bounded phase return at each off-line zero | auxiliary dynamics, BAG | [`asymptoticAbscissaLaw_of_infinite_zeros`](../../../formal/GaloisForLFunctions/ArithmeticAuxiliaryDynamics/TheMissingInputOfTransport.lean#L236) |
+| Very smooth degrees | AAL from a lower bound of the spline trace | surface of Spec ℤ | [`asymptoticAbscissaLaw_of_bddBelow_verySmooth`](../../../formal/GaloisForLFunctions/SurfaceOfSpecZ/VerySmoothDegreesNeedAnAttainedTop.lean#L889) |
+| Deuring–Heilbronn form | abscissa law ⇔ linear law ∧ asymptotic Deuring–Heilbronn | exceptional layers | [TheDeuringHeilbronnQuestionForZeta](../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheDeuringHeilbronnQuestionForZeta.lean) |
+| Prime shells, prime towers | shell signs on infinitely many dyadic prime shells ⇒ AAL; an undamped bound on a two-prime cone ⇒ AAL | JAS, SC | frontier map [L] |
+
+**The second half.** ZAL with landing: RH ⇔ ZAL ∧ (finite off-line set ⇒ RH) ∧ landing ([`riemannHypothesis_iff_three_atoms`](../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheLandingLawForZeta.lean#L68)). Candidates EGC and APF belong here.
+
+**What one solution gives.** AAL in any face gives all faces. AAL alone gives no bound for Θ; with ZAL it gives RH.
+
+## 5. Group D — one collision
+
+**Common problem.** The zeros of the heat family stay real down to time 0.
+
+| Face | Statement | Route | Lean |
+|---|---|---|---|
+| Local constant | RH ⇔ Λ_X = 0 for every X | ZCG | [`riemannHypothesis_iff_forall_localNewmanConstant_eq_zero`](../../../formal/GaloisForLFunctions/RHTower/Heat/TheLocalDeBruijnNewmanConstant.lean#L103) |
+| Branch times | RH ⇔ no positive real branch time ⇔ conjugation is the identity at each positive nonbranch time | ZCG | frontier map [L]; [ConjugationOfTheZerosIsTheWordOfTheTurnsAroundTheRealBranchTimes](../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ConjugationOfTheZerosIsTheWordOfTheTurnsAroundTheRealBranchTimes.lean) |
+| Jensen polynomials | the non-real count N_d increases to the total off-line multiplicity | LA | frontier map [L]; [`jensenNonrealCount_eq_zero_of_le_31922`](../../../formal/GaloisForLFunctions/VerifiedHeightRungs/TheJensenPolynomialsThroughDegree31922AreRealRooted.lean#L21) |
+| Cosine shifts | collision-free descent in the shift ⇒ RH | PTR | frontier map [L] |
+
+**Relation to the width.** One-sided: Λ ≤ w²/2 ([`newmanConstant_le_half_sq_zetaZeroWidth`](../../../formal/GaloisForLFunctions/SquareRootThreshold/TheWallsMeasureOneZeroWidth.lean#L331)) and Λ_X ≥ c·d²/log X for an off-line zero of depth d ([`exists_le_localNewmanConstant_of_offLine_zero`](../../../formal/GaloisForLFunctions/RHTower/Heat/TheLocalDeBruijnNewmanConstant.lean#L157)). The heat time is not a ruler: models of fixed width have heat time → 0 ([`exists_cosDefect_width_heatTime_lt`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheHeatTimeIsTheWidthTimesTheSpacing.lean#L109)).
+
+## 6. Group E — one uniformity
+
+**Common problem.** A bound whose constant or exponent does not grow with an order parameter.
+
+| Order parameter | Uniform statement | Route | Lean |
+|---|---|---|---|
+| Tensor power k | one growth exponent for all even prime-trace moments ⇔ RH | SRT, tensor-power programme | [`riemannHypothesis_iff_moments_primeTraces`](../../../formal/GaloisForLFunctions/SurfaceOfSpecZ/TheTensorPowerTrick.lean#L34) |
+| Adams power m | top bound one for all powers ⇔ temperedness | tensor-power programme | [`adamsPoleLaw_iff`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TemperedIsTheUniformTopBound.lean#L87) |
+| Mollifier length θ | long-prefix moments O(T^K) with K independent of θ ⇒ RH | WD | frontier map [L] |
+| Gauge moment order | a loss law sublinear in the order excludes every positive depth; gauge moments lose at least linearly | amplification | [`nonpos_of_sublinear_loss`](../../../formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/MultiplicativeAmplificationLosesLinearly.lean#L71), [`pow_sum_normSq_le_sum_normSq_powCoeff`](../../../formal/GaloisForLFunctions/ArithmeticCorrelationGeometry/MultiplicativeAmplificationLosesLinearly.lean#L102) |
+| Period k of a frame | valid sign levers at all large periods ⇒ RH | MC, tensor-power programme | [`riemannHypothesis_of_signLevers`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TheThreeLinesOfFrames.lean#L94) |
+| Rank, degree, index n | positivity at every rank (TH, ECP), degree (LA, HCF), index (LI, PA) | TH, ECP, LA, HCF, LI, PA | frontier map [L] |
+
+*Reading:* groups B and E overlap on TH, ECP, LI, PA, HCF: these routes ask for a sign and for its uniformity in an order.
+
+## 7. Group F — the physical faces
+
+The physical formulations are faces of groups A and B and of no further problem.
+
+| Physical statement | Mathematical face | Group | Lean |
+|---|---|---|---|
+| Ringdown of a pulse on the modular horizon at rate δ | zero-free strip | A | [`zeroFreeStrip_iff_pulse_ringdown`](../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheRingdownRateIsTheZeroFreeStrip.lean#L625) |
+| Thermalization of Farey counts | zero-free strip | A | [`zeroFreeStrip_iff_fareyCount_rate`](../../../formal/GaloisForLFunctions/CountingHolography/ThermalizationFasterThanTheSquareRootIsAZeroFreeStrip.lean#L486) |
+| A one-sided bound on the dual side | a rate | A | [`not_oneSided_of_seen`](../../../formal/GaloisForLFunctions/ArithmeticHolographyOfTheModularHorizon/TheDualSideHasNoSign.lean#L867) |
+| Vacuum stability of the half-line form (Hawking–Page) | λ(R) ≥ 0 | B | [`offLine_arithmetic_hawking_page_transition`](../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean#L440) [S] |
+| Reflection positivity of the cavity | Krein index | B | [`tentReflectionKrein_index`](../../../formal/GaloisForLFunctions/ArithmeticHolographyOfTheModularHorizon/TheReflectionKreinFormCountsTheOffLineResonances.lean#L244) |
+| A count law | nonnegativity of the form | B | [`exists_count_tateLimit_iff`](../../../formal/GaloisForLFunctions/CountingHolography/TheCountDoorOfACurveAndOfZ.lean#L39) |
+
+Causality, passivity, unitarity and KMS positivity are not faces of RH: they hold on the prime-two deformations, on which the rate fails ([`xiDeformed`](../../../formal/GaloisForLFunctions/BlackHoleRingdown/CausalIdentitiesCannotForceQuarterRingdown.lean#L215)).
+
+## 8. Bridges between the problems
+
+| ID | Bridge | From → to | Lean |
+|---|---|---|---|
+| G1 | A doubling law with factor λ gives the half-plane Re s > ½ + log₂ λ, and conversely | R ↔ P | [`riemannZeta_ne_zero_of_doublingLaw`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L793), [`doublingLaw_of_zetaZeroWidth_lt`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestDoublingFactorOfTheMarginIsTwoToTheWidth.lean#L184) |
+| G2 | A floor of Weil's form at rate β in the logarithmic energy ⇔ w ≤ β | R ↔ P | [`isRuler_logEnergyFloor`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWidthIsTheRateOfTheWeilFloorInTheLogarithmicEnergy.lean#L428) |
+| G3 | RH ⇔ a constant level law of the margin | R ↔ W | [`riemannHypothesis_iff_exists_const_isLevelLaw`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheLossOfTheMarginIsBoundedOrPolynomial.lean#L61) |
+| G4 | The Hodge defect is the number of right zeros; an unbounded defect ⇔ infinitely many off-line zeros | R ↔ U | [`zeta_hodgeDefect_iff`](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheHodgeDefectCountsTheRightZeros.lean#L556) |
+| G5 | Λ ≤ w²/2 | P → heat | [`newmanConstant_le_half_sq_zetaZeroWidth`](../../../formal/GaloisForLFunctions/SquareRootThreshold/TheWallsMeasureOneZeroWidth.lean#L331) |
+| G6 | A failure of AAL gives Θ < 1 | U → P | [`quasiRH_or_asymptoticAbscissaLaw`](../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/QuasiRHIsATailLaw.lean#L27) |
+| G7 | RH ⇔ the reflection lifts to Gal(E/B) and every weight lies in B | arithmetic of the zeros ↔ W | [`forall_re_eq_half_iff`](../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ALiftOfTheReflectionIsConjugationExactlyWhereTheWeightLiesInThePrimeTraceField.lean#L74) |
+| G8 | A zero of a finite-order Hecke L-function with probe estimates gives a zero of a rung at 6ρ − 3 | seeded family → Grössencharacter tower | [`grossenLFunction_zero_of_hecke_zero_and_probe_estimates`](../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheCubicProbeIsACoupledTowerReachingThreeFifths.lean#L164) |
+| G9 | A pole law of the even tensor moments at weight w₀ ⇔ w ≤ w₀ | tensor powers ↔ W | [`exists_momentPoleLaw_iff`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/ThePrimeTraceMomentsOfZetaReadTheWidthWithBaseLossAtMostOne.lean#L223) |
+
+G1–G3 are the reason the families P and R are one problem with two kinds of input: a sign with a loss is an exponent. The seed crosses G1 and G2 from P to R; no statement of the corpus crosses them from R to P (obstacle O9).
+
+## 9. Pairs that are not faces of one problem
+
+| Pair | Why they differ | Lean |
+|---|---|---|
+| The exponent walls 13/15, 5/6, 2/3, 3/5 and the sign | the walls bound completion classes of the estimate route; a window sign at one aperture is compatible with zeros of any depth | [`sInf_coupledBarrier_eq_three_fifths`](../../../formal/GaloisForLFunctions/FamilyContinuationTheory/MoebiusSignedGaussPairingsEndAtThreeFifths.lean#L859), [`exists_zetaDensity_positive_window_deep_zeros`](../../../formal/GaloisForLFunctions/SelectiveArithmetic/TheRungSignSurvivesDeepZerosAtZetaDensity.lean#L90) |
+| A certificate at a fixed aperture and the sign at every aperture | no positive floor holds along unbounded apertures | [`not_exists_positive_floor_along`](../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheApertureFloorMustDecayDoublyExponentially.lean#L110) |
+| ZAL and AAL | functional equation, reality and order one admit zeros that approach the line with infinitely many off it | [`approachingModel_eq_zero_iff`](../../../formal/GaloisForLFunctions/InfiniteRankWeilTheory/TheFunctionalEquationAdmitsApproachingRemainders.lean#L312) |
+| The width and the heat time | fixed width, heat time → 0 | [`exists_cosDefect_width_heatTime_lt`](../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheHeatTimeIsTheWidthTimesTheSpacing.lean#L109) |
+| The sign of the monodromy group and RH | a proper group forces 8 to divide the collision masses and no exclusion | [`eight_dvd_collisionMass`](../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ARealCollisionOfMassNotDivisibleByEightGivesEverySignedPermutation.lean#L174) |
+| Purity and the price of the sign | the calibration curves are pure and their Gauss triples cost k/2 | [`stickelbergerPrice_jacobiTriple`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TheCalibrationCurvesArePureByTheirPairing.lean#L56) [S] |
+| Integrality with positive Euler data and purity | the golden datum has the first and not the second | [`goldenDatum_beurling`](../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheGoldenCurveIsABeurlingSystem.lean#L582) |
+| Künneth positivity and purity | all Künneth–Adams positivities ⇔ nonnegative point counts, which is weaker | [`kunneth_positivity_tfae`](../../../formal/GaloisForLFunctions/ArithmeticKunnethTheory/KunnethPositivityIsPointCountPositivity.lean#L68) |
+| The cusp channel and the continuous channel of a congruence horizon | exceptional eigenvalues are bounded by 3/16, sharp in weight ½; the zeros are bounded by the seed | [`selberg_status`](../../../formal/GaloisForLFunctions/RHTower/SelbergConjectureStatus.lean#L34) |
+| Root coincidences and RH | a coincidence ζ(ρ) = ζ(ρ/k) = 0 forces Θ ≥ k/(k+1); its exclusion for k ≤ 6 is weaker than RH | [`abscissa_ge_of_zeta_zero_div_nat`](../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L174) |
+
+## 10. Consequences for the choice of work
+
+- A route of group A is advanced only by the producer. Work on a ruler changes the coordinate, not the number.
+- A route of group B is advanced by a certificate at a fixed position or by the sign at every aperture; the first does not transfer (walls R1–R3), the second is RH.
+- Groups C and D have receivers and no producer.
+- The estimate route is the single place where an open step is neither RH nor a finite certificate: O1–O4.

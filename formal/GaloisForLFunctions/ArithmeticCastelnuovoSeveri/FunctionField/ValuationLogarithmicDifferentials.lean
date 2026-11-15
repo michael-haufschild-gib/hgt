@@ -63,8 +63,7 @@ theorem valuation_logarithmic_mem_of_characteristic_dvd
       rw [map_mul, map_pow, map_zpow₀, hπ, ← WithZero.exp_zsmul,
         ← WithZero.exp_nsmul, hfexp, ← WithZero.exp_add]
       have he : (p : ℤ) * j + p • (j • (-1 : ℤ)) = 0 := by
-        simp only [nsmul_eq_mul, zsmul_eq_mul]
-        ring
+        simp
       rw [he, WithZero.exp_zero]
     have hu : f * w ^ p ∈ v.valuationSubring := by
       change v (f * w ^ p) ≤ 1

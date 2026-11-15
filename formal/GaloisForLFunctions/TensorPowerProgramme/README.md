@@ -1,6 +1,6 @@
 # The Tensor-Power Programme Ω (TPP)
 
-Namespace `GaloisForLFunctions.TensorPowerProgramme`; umbrella `TensorPowerProgramme.lean`; 6 modules.
+Namespace `GaloisForLFunctions.TensorPowerProgramme`; umbrella `TensorPowerProgramme.lean`; 8 modules.
 Specification: §2.22 of [the review-1511 obstacles summary](../../../docs/reports/review-1511/obstacles-summary.md).
 
 *Deligne's tensor-power argument, carried to `Spec ℤ`: what it needs, where it breaks, and which
@@ -70,7 +70,7 @@ obstruction of the producer.
 |---|---|
 | Euler datum over a base | points `x` with norms `N(x) > 1`; at each point local parameters `α_{x,i}`, closed under conjugation, so the level traces `t_x(n) = Σ_i α_{x,i}^n` are real |
 | Depth, width | `δ(α) = log‖α‖ / log N(x) − w/2` for weight `w`; the width `W` is the supremum of the depths |
-| Tensor-power moments | `D_{2k}(s) = Σ_x Σ_n log N(x) · t_x(n)^{2k} · N(x)^{−ns}`, nonnegative coefficients; the moment exponent `a_k` is its abscissa |
+| Tensor-power moments | `D_{2k}(s) = Σ_x Σ_n log N(x) · t_x(n)^{2k} · N(x)^{−ns}`, nonnegative coefficients; the moment exponent `a_k` is its abscissa; for `ζ` in Lean `MomentBound k a`, `momentExponent k` over `SurfaceOfSpecZ.primeTraceMoment` |
 | Pole law | `a_k ≤ 2k·(w/2) + A` for all `k` with `A` independent of `k`: the content of step 3 |
 | Edge | the part of the `2k`-th tensor power that fixes `a_k`: tuples of parameters whose product survives the averaging over the base |
 | Polarization pair | `α` and `N(x)^w/α` (functional equation); their tensor has the known size `N(x)^w` |
@@ -154,17 +154,40 @@ obstruction of the producer.
 
 | # | Question | Answer, or what remains |
 |---|---|---|
-| Q1 (Ω1) | **Calibration.** Which inputs does the pole law need; does monodromy enter already over `𝔽_q`? | The pole law is the analytic continuation of the constituents' series; positivity converts it into convergence (`norm_eq_one_of_adamsPoleLaw`). Its rank-two form needs only the Adams powers (`norm_eq_one_of_adams_continue`). Over `𝔽_q` the constituents are supplied by the trace formula and monodromy (ArithmeticKunnethTheory); over `ℤ` by functoriality. Open: the Kummer curves in this language (their local systems are Jacobi-sum characters, abelian, pure by the Gauss-sum norm identity). |
+| Q1 (Ω1) | **Calibration.** Which inputs does the pole law need; does monodromy enter already over `𝔽_q`? | The pole law is the analytic continuation of the constituents' series; positivity converts it into convergence (`norm_eq_one_of_adamsPoleLaw`); in rank two the Adams powers are the constituents (`norm_eq_one_of_adams_continue`). On the Kummer/Fermat calibration curves no monodromy and no tensor power is needed: their eigenvalues are Jacobi sums, and purity is the identity of the two pairings (`conj_jacobiSum`, `jacobiSum_mul_jacobiSum_inv_eq_card`, `norm_jacobiSum_sq`); the same eigenvalues sit `p`-adically on the sign line (`stickelbergerPrice_jacobiTriple`): purity does not remove the sign cost. Monodromy enters only for non-CM families, where the trace formula supplies the constituents (ArithmeticKunnethTheory); over `ℤ` functoriality would. |
 | Q2 (Ω2) | **Price ledger.** | Proved: the half unit at every period, one-step values `½ + 1/(2k)`, `½ + 1/k`, `2/3`; completion centres increase strictly to `2/3` (`signPrice_sub_delignePrice`, `deligneLever_one`, `signLever_one`, `completionStep_one`, `completionCentre_strictMono`, `tendsto_completionCentre`). |
-| Q3 (Ω3) | **Diagnosis over `Spec ℤ`.** | Proved in sharp form for every finite configuration: base loss exactly `1`, edge residue a positive sum of squares, pole law ⇔ width (`summable_flowMomentTerm_iff`, `exists_poleLaw_iff`); for `ζ` itself the corpus window (`riemannHypothesis_iff_moments_primeTraces`). |
+| Q3 (Ω3) | **Diagnosis over `Spec ℤ`.** | Proved. For `ζ`: `2kw ≤ a_k ≤ 1 + 2kw`, `a_k/(2k) → w`, and the pole law at any weight `w₀` is `w ≤ w₀` (`two_mul_width_le_momentExponent`, `momentExponent_le`, `tendsto_momentExponent_div`, `exists_momentPoleLaw_iff`). For every finite configuration the exponent is exactly `1 + 2kW` and nothing cancels at the edge (`summable_flowMomentTerm_iff`, `edgeResidue_pos`). |
 | Q4 (Ω4) | **Pencil.** Heat pencil, twist families, Fermat/Kummer family; else the axiom list of N1. | Heat: arithmetic only at `τ = 0` (ZeroConfigurationGeometry `exists_dirichlet_iff`). Twists: abelian, a ruler (`summable_dirichletMomentTerm_iff`). Kummer: Jacobi-sum characters, abelian; the transport of `ζ` into them is Q6. Axiom list: `PencilThroughZeta`, with `riemannHypothesis_of_pencil` and `riemannHypothesis_iff_nonempty_pencil`: the list is RH; N1 is a source of its pole law (mechanism 10). |
-| Q5 (Ω5) | **Frame track.** A sign-line completion at period `k ≥ 7`. | Open. A completion priced on the sign line at all large periods gives RH (`riemannHypothesis_of_signLevers`); one Deligne frame would (`riemannHypothesis_of_deligneLever`). The Stickelberger price of the `A₂` coefficients is not computed. |
-| Q6 (Ω6) | **Exact transport.** Continuation of the cubic probe to the centre of `(3, 6)` by identities. | Open (the probe's dual series is not written). |
+| Q5 (Ω5) | **Frame track.** A sign-line completion at period `k ≥ 7`. | Open (stage 2–3 of §7). One valid sign lever of period `k` gives `Θ ≤ k/(2(k−1))`; sign levers at all large periods give RH (`riemannHypothesis_of_signLevers`); one Deligne lever gives RH (`riemannHypothesis_of_deligneLever`). The Stickelberger price of the `A₂` coefficients (stage 1) is not computed. |
+| Q6 (Ω6) | **Exact transport.** Continuation of the cubic probe to the centre of `(3, 6)` by identities. | Open; the dual series of the probe (stage 1) is not written. |
 | Q7 (Ω7) | **Uniformity.** | The top bound `1` for all Adams powers is temperedness (`adamsPoleLaw_iff`). Open: conductor growth of order-`k` completions. |
 | Q8 (Ω8) | **Assembly.** | Proved for levers: one valid Deligne lever, or valid sign levers at all large periods, give RH (`riemannHypothesis_of_deligneLever`, `riemannHypothesis_of_signLevers`). |
-| Q9 | **Refutation.** Does every Euler–FE family through `ζ` have finite monodromy on its zeros; does every transport have an intrinsic floor? | Partial: abelian bases cannot carry a pole law below purity (`exists_twistPoleLaw_iff`); Euler–FE deformations of `ζ` in the Hamburger class are rigid (EulerFETransportTheory `beurlingSystem_rigidity_of_decaying_defect`). Open in general. |
+| Q9 | **Refutation.** Does every Euler–FE family through `ζ` have finite monodromy on its zeros; does every transport have an intrinsic floor? | Reformulated by `riemannHypothesis_iff_nonempty_pencil`: pencils exist iff RH (one prime is a pencil under RH), so no theorem about the existence of pencils can refute the route; a refutation must concern the sources of the pole law. In the abelian class the source is the conclusion (`exists_twistPoleLaw_iff`, `exists_poleLaw_iff`); Euler–FE deformations of `ζ` in the Hamburger class are rigid (EulerFETransportTheory `beurlingSystem_rigidity_of_decaying_defect`). Open: sources beyond abelian ones, and intrinsic floors of transports. |
 
-## 7. Tools
+## 7. The programme to close
+
+Deligne's four steps over `ℤ`: pointwise data, free positivity and the limit are in the corpus; the
+pole law is the programme. Three objects are missing:
+
+- **N1** a pencil whose pole law has a source that does not know the parameters;
+- **N2** a joint completion of a Möbius-signed monomial on the sign line at period `k ≥ 7`;
+- **N3** an exact transport from `ζ` without estimate floor, uniform in the period.
+
+| Stage | Statement | Status | A failure proves |
+|---|---|---|---|
+| 1 | Tools: Hecke characters of `ℚ(ω)` with infinity type as an abelian base; the dual series of the cubic probe; the Stickelberger price of the `A₂` coefficients | work | — |
+| 2 | N2 at `k = 7`: one valid sign lever of period `7` gives `Θ ≤ 7/12` | open | a cost theorem at period `7`: every completion costs more than `7/2`, and `3/5` is the wall of the Gauss family, not only of the completion class |
+| 3 | N2 at all large periods, with constants uniform in the period (Q7) | open | conductor growth of order-`k` completions: an intrinsic floor above `½` (Q9) |
+| 4 | N1: a base with non-abelian monodromy, `ζ` as a fibre at a prime point, constituents that are `L`-functions of other objects | open | finite or abelian monodromy on the zeros of every Euler–FE family through `ζ`; with the rigidity of Euler–FE data (`beurlingSystem_rigidity_of_decaying_defect`) this says that `ζ` lies in no family |
+| 5 | Assembly | proved: `riemannHypothesis_of_signLevers`, `riemannHypothesis_of_deligneLever`, `riemannHypothesis_of_pencil` | — |
+
+Stage 4 alone suffices and stage 3 alone suffices. Stage 2 is the first place where the programme
+produces an exponent, and it presupposes estimates down to `7/12` (the estimate ladder of the cubic
+probe). The pole law for `ζ` is a ruler at every weight (`exists_momentPoleLaw_iff`), so no
+argument that produces it from the moments of `ζ` alone can succeed: the source is a second
+object.
+
+## 8. Tools
 
 **From the corpus.** Frame and tower calculus with walls and mixed towers
 (`pairingStep`, `towerValue`, `wall`); Stickelberger valuations and prices of Gauss sums
@@ -184,13 +207,13 @@ the width law at the primes (`riemannHypothesis_iff_moments_primeTraces`,
   (`PencilThroughZeta`, `zetaCycle`).
 - The levers of the three lines and their assembly into RH criteria.
 
-**To build.**
-- Hecke characters of `ℚ(ω)` (with infinity type) as an abelian base, certifying the Kummer
-  verdict.
-- An infinite-rank polarized base with an Adams package, the form a pencil through `ζ` must take.
-- The dual series of the cubic probe (Q6) and the Stickelberger price of the `A₂` coefficients (Q5).
+**To build (stage 1 of §7).**
+- Hecke characters of `ℚ(ω)` with infinity type as an abelian base: the prime number theorem of
+  each Grössencharacter, certifying the Kummer verdict.
+- The dual series of the cubic probe (Q6).
+- The Stickelberger price of the `A₂` coefficients (Q5).
 
-## 8. Traps
+## 9. Traps
 
 | Trap | Truth |
 |---|---|
@@ -207,11 +230,13 @@ the width law at the primes (`riemannHypothesis_iff_moments_primeTraces`,
 | Composing frames lowers the centre | Composite centres are convex combinations of the centres |
 | Exact transport is a lever | The cubic correction moves bounds between `ζ` and the rung without loss: a ruler until the rung family has a seed |
 
-## 9. Pillar theorems
+## 10. Pillar theorems
 
 | Theorem | Lean |
 |---|---|
 | Flow data have base loss exactly one; coinvariants are shifted `−ζ'/ζ`; the edge residue is a positive sum of squares; the pole law is the width | `summable_flowMomentTerm_iff`, `ofReal_tsum_flowMomentTerm`, `edgeResidue_pos`, `exists_poleLaw_iff` |
+| The prime-trace moments of `ζ` read the width with base loss at most one; the pole law at any weight is the width | `two_mul_width_le_momentExponent`, `momentExponent_le`, `tendsto_momentExponent_div`, `exists_momentPoleLaw_iff` |
+| The calibration eigenvalues are pure by the identity of their two pairings and sit on the sign line | `norm_jacobiSum_sq`, `stickelbergerPrice_jacobiTriple` |
 | Abelian bases are rulers; Dirichlet twists of any modulus form an abelian base | `summable_twistMomentTerm_iff`, `exists_twistPoleLaw_iff`, `isAbelianBase_dirichlet`, `summable_dirichletMomentTerm_iff` |
 | Polarized bases whose Adams squares continue to `Re s > 1` are pure; in rank two the Adams series suffice | `norm_eq_one_of_adamsPoleLaw`, `norm_eq_one_of_adams_continue` |
 | The top bound one for all Adams powers is temperedness | `adamsPoleLaw_iff` |
@@ -221,7 +246,7 @@ the width law at the primes (`riemannHypothesis_iff_moments_primeTraces`,
 All results are unconditional; the reductions to RH name their hypothesis as an object of the
 programme (a lever, a pencil).
 
-## 10. Context
+## 11. Context
 
 | Neighbour | Interface |
 |---|---|
@@ -237,17 +262,16 @@ programme (a lever, a pencil).
 | EulerFETransportTheory | rigidity of Euler–FE data with the functional equation of `ζ` |
 | AbsoluteGeometryOfSpecZ (`𝔽₁`) | receives the axiom list of N1 as its specification |
 
-## 11. Success criteria
+## 12. Success criteria
 
-The programme is complete when every question of §6 has a Lean answer — the theorem asked for or a
-no-go with its strongest positive survivor — and the tools of §7 exist: Euler data over a base with
-the ruler law and the Rankin step; the edge calculus; the price ledger and assembly; the pencil
-axioms with a verdict on each candidate.
+The programme closes RH if stage 3 or stage 4 of §7 succeeds; it is complete as a field when every
+question of §6 has a Lean answer — the theorem asked for, or the failure theorem of §7 with its
+strongest positive survivor — and the stage-1 tools exist.
 
 A contribution to TPP
 
 - is unconditional Lean, with no premise that carries the mathematics;
-- moves one question of §6, or builds a tool that a later answer uses;
+- moves one question of §6 or one stage of §7, or builds a tool that a later stage uses;
 - works with tensor powers, frames, pole laws, edges or pencils — not with products of the spectrum
   alone, which ArithmeticKunnethTheory has closed;
 - states no "RH ⇒ X"; reductions "X ⇒ RH" only when `X` is a named object of the programme (a pole
