@@ -41,7 +41,7 @@ theorem spectralMeanSquare_le_mass_mul_mean (s : Finset Circle)
     (a b : Circle → ℂ) (N : ℕ) :
     (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N, ‖circleSignal s a n-circleSignal s b n‖^2 ≤
       (∑ z ∈ s, ‖a z-b z‖) * spectralMeanDistance s a b N := by
-  rw [spectralMeanDistance, mul_left_comm, Finset.mul_sum]
+  conv_rhs => rw [spectralMeanDistance, mul_left_comm, Finset.mul_sum]
   apply mul_le_mul_of_nonneg_left _ (inv_nonneg.mpr (Nat.cast_nonneg N))
   apply Finset.sum_le_sum
   intro n _
@@ -119,7 +119,8 @@ theorem spectralMeanDistance_le_mass_mul_density (s : Finset Circle)
     spectralMeanDistance s a b N ≤
       (∑ z ∈ s, ‖a z-b z‖) * spectralDisagreementDensity s a b N := by
   classical
-  rw [spectralMeanDistance, spectralDisagreementDensity, mul_left_comm, Finset.mul_sum]
+  rw [spectralMeanDistance]
+  conv_rhs => rw [spectralDisagreementDensity, mul_left_comm, Finset.mul_sum]
   apply mul_le_mul_of_nonneg_left _ (inv_nonneg.mpr (Nat.cast_nonneg N))
   apply Finset.sum_le_sum
   intro n _

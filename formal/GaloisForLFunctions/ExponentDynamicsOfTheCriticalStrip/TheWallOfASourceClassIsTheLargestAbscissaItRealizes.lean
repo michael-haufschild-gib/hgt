@@ -51,7 +51,7 @@ theorem validLevers_anti {A B : Set ℝ} (h : A ⊆ B) : validLevers B ⊆ valid
 valid levers. -/
 theorem mem_allowed_of_mem {𝒯 : Set (ℝ → ℝ)} {A : Set ℝ} (hsub : 𝒯 ⊆ validLevers A) {a s : ℝ}
     (ha : a ∈ A) (has : a ≤ s) : a ∈ allowed 𝒯 s :=
-  ⟨has, fun T hT => (hsub hT a ha).le_apply_self⟩
+  ⟨has, fun _ hT => (hsub hT a ha).le_apply_self⟩
 
 theorem le_wall_of_mem {𝒯 : Set (ℝ → ℝ)} {A : Set ℝ} (hsub : 𝒯 ⊆ validLevers A) {a s : ℝ}
     (ha : a ∈ A) (has : a ≤ s) : a ≤ wall 𝒯 s :=
@@ -139,20 +139,24 @@ theorem wall_validLevers {A : Set ℝ} {s : ℝ} (hne : (A ∩ Iic s).Nonempty) 
 /-- The monotone valid levers have the same wall. -/
 theorem wall_monotone_validLevers {A : Set ℝ} {s : ℝ} (hne : (A ∩ Iic s).Nonempty) :
     wall {T | Monotone T ∧ T ∈ validLevers A} s = sSup (A ∩ Iic s) :=
-  wall_eq_of_envelope_mem (fun _ hT => hT.2) ⟨monotone_envelope A, envelope_mem_validLevers A⟩ hne
+  wall_eq_of_envelope_mem (𝒯 := {T | Monotone T ∧ T ∈ validLevers A}) (fun _ hT => hT.2)
+    (And.intro (monotone_envelope A) (envelope_mem_validLevers A)) hne
 
 /-! ### 3. The decision -/
+
+private theorem bddAbove_inter_Iic (A : Set ℝ) (s : ℝ) : BddAbove (A ∩ Iic s) :=
+  ⟨s, fun _ ha => ha.2⟩
 
 /-- **Decision.** The wall of a source class exceeds `h` iff the class has a world with abscissa in
 `(h, s]`. -/
 theorem lt_wall_validLevers_iff {A : Set ℝ} {s h : ℝ} (hne : (A ∩ Iic s).Nonempty) :
     h < wall (validLevers A) s ↔ ∃ a ∈ A, h < a ∧ a ≤ s := by
-  rw [wall_validLevers hne, lt_csSup_iff ⟨s, fun _ ha => ha.2⟩ hne]
+  rw [wall_validLevers hne, lt_csSup_iff (bddAbove_inter_Iic A s) hne]
   exact ⟨fun ⟨a, ha, hha⟩ => ⟨a, ha.1, hha, ha.2⟩, fun ⟨a, ha, hha, has⟩ => ⟨a, ⟨ha, has⟩, hha⟩⟩
 
 theorem wall_validLevers_le_iff {A : Set ℝ} {s h : ℝ} (hne : (A ∩ Iic s).Nonempty) :
     wall (validLevers A) s ≤ h ↔ ∀ a ∈ A, a ≤ s → a ≤ h := by
-  rw [wall_validLevers hne, csSup_le_iff ⟨s, fun _ ha => ha.2⟩ hne]
+  rw [wall_validLevers hne, csSup_le_iff (bddAbove_inter_Iic A s) hne]
   exact ⟨fun H a ha has => H a ⟨ha, has⟩, fun H a ha => H a ha.1 ha.2⟩
 
 /-- The wall of a source class is a lower bound `h` of the class iff every world at or below the

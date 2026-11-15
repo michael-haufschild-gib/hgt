@@ -16,6 +16,28 @@ noncomputable section
 open scoped BigOperators ComplexConjugate
 namespace GaloisForLFunctions.HTGeometry.Thermofield
 
+/-- A Hermitian perturbation with freely prescribed couplings to the selected level. -/
+def primeLogPerturbation (P : Finset Nat.Primes) (a : Option P)
+    (forcing : Option P → ℂ) : Matrix (Option P) (Option P) ℂ :=
+  fun i j => if i = a then (if j = a then 0 else conj (forcing j))
+    else if j = a then forcing i else 0
+
+/-- Arbitrary coupling data produce a genuine self-adjoint perturbation. -/
+theorem primeLogPerturbation_isHermitian (P : Finset Nat.Primes) (a : Option P)
+    (forcing : Option P → ℂ) : (primeLogPerturbation P a forcing).IsHermitian := by
+  classical
+  ext i j
+  by_cases hi : i = a <;> by_cases hj : j = a <;>
+    simp [Matrix.conjTranspose_apply, primeLogPerturbation, hi, hj]
+
+/-- Its action on the selected eigenstate is exactly the off-diagonal forcing. -/
+theorem primeLogPerturbation_basis (P : Finset Nat.Primes) (a : Option P)
+    (forcing : Option P → ℂ) (i : Option P) :
+    (primeLogPerturbation P a forcing).mulVec (Pi.single a 1) i =
+      if i = a then 0 else forcing i := by
+  classical
+  simp [Matrix.mulVec, dotProduct, Pi.single_apply, primeLogPerturbation]
+
 /-- The first-order eigenvector response, orthogonal to the selected energy level. -/
 def primeLogSpectralResponse (P : Finset Nat.Primes) (s : ℝ)
     (a : Option P) (forcing : Option P → ℂ) (i : Option P) : ℂ :=
@@ -38,6 +60,15 @@ theorem primeLogSpectralResponse_equation (P : Finset Nat.Primes) (s : ℝ)
       Complex.ofReal_ne_zero.mpr (mul_ne_zero (Real.exp_pos s).ne' hg)
     simp only [primeLogSpectralResponse, if_neg hi, sub_zero]
     field_simp
+
+/-- The inverse-gap response solves the first-order equation for the constructed Hermitian perturbation. -/
+theorem primeLogSpectralResponse_perturbation (P : Finset Nat.Primes) (s : ℝ)
+    (a : Option P) (forcing : Option P → ℂ) (i : Option P) :
+    ((Real.exp s * (primeLogKMSFiniteEnergy P a-primeLogKMSFiniteEnergy P i) : ℝ) : ℂ) *
+        primeLogSpectralResponse P s a forcing i =
+      (primeLogPerturbation P a forcing).mulVec (Pi.single a 1) i := by
+  rw [primeLogSpectralResponse_equation, primeLogPerturbation_basis]
+  by_cases hi : i = a <;> simp [hi]
 
 /-- Squared norm of the horizontal spectral response. -/
 def primeLogFidelitySusceptibility (P : Finset Nat.Primes) (s : ℝ)

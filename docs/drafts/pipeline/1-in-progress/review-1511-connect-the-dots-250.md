@@ -6,7 +6,7 @@
 - **Accepted contributions:** 1/250. Existing results, numerical refinements, conditional receivers and renamed statements do not count.
 - **Evidence:** local corpus searches, exact source statements and kernel compilation. No external literature checks. Further axiom checks skipped at user request.
 
-## Active conjecture: O3, angular twists of the cubic probe
+## Pending conjecture: O3, angular twists of the cubic probe
 
 The finite-order probe estimates extend to each fixed sextic infinity type without changing their exponents. This would give the first half-plane left of 1 for the Grössencharacter rungs and lower the cubic correction boundary below 2/3.
 
@@ -15,6 +15,10 @@ The finite-order probe estimates extend to each fixed sextic infinity type witho
 **Required proof:** construct the angularly twisted analytic probe; verify every estimate used by the finite-order seed; prove nonvanishing for the actual `grossenLFunction`. Unit norm alone does not justify transferring a cancellation estimate.
 
 **Known obstruction:** `HeckeFamily.Character` contains a periodic residue character and no infinity type. No theorem about its `LFunction` alone proves the conjecture.
+
+## Active conjecture: rational Euler rigidity at one prime
+
+An entire completed deformation by a reduced rational function of `p⁻ˢ`, preserving reflection and admitting a nonnegative logarithmic Dirichlet representation, is trivial. The proposed connection joins ξ's exclusion of complete Euler fibres with simultaneous phase returns of finite spectra. [Proof target and scope](finite-euler-logarithmic-counts-force-unit-disk-roots.md). Lean drafts exist; verification incomplete. No new accepted contribution yet.
 
 ## Completion gate
 
@@ -30,4 +34,4 @@ The reciprocal quadratic twins in `SelbergClass.PositiveFiniteEulerTwins` also s
 
 **Backlog strengthening:** ordinary coefficient integrality also survives. At a prime `p>4`, choose `A=p`; the two reciprocal root radii are `(p±√(p²−4p))/2`, both greater than one and distinct. The ordinary coefficients then lie in `{0,1,1+p,1+2p}`. This exact family requires a separate audit; count it as a strengthening of the same contribution.
 
-**Broader backlog question:** [nonnegative logarithmic counts force every finite Euler root into the unit disk](../0-backlog/finite-euler-logarithmic-counts-force-unit-disk-roots.md).
+**Broader active question:** [nonnegative logarithmic counts force every finite Euler root into the unit disk](finite-euler-logarithmic-counts-force-unit-disk-roots.md).

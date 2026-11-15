@@ -22,10 +22,12 @@ theorem kmsMean_primeLog (p : Nat.Primes) :
   have hp : (0 : ℝ) < (p : ℕ) := by exact_mod_cast p.property.pos
   have hl : Real.log (p : ℕ) ≠ 0 := (primeLogSupport_pos p).ne'
   have hd : ((p : ℕ)^2+1 : ℝ) ≠ 0 := by positivity
+  have hs : ((p : ℕ) : ℝ) + (((p : ℕ) : ℝ))⁻¹ ≠ 0 :=
+    (add_pos hp (inv_pos.mpr hp)).ne'
   rw [kmsMean, if_neg (primeLogSupport_pos p).ne', primeLogSupport,
     Real.sinh_eq, Real.cosh_eq]
   simp only [Real.exp_neg, Real.exp_log hp]
-  field_simp [hp.ne', hl, hd] <;> ring
+  field_simp [hp.ne', hl, hd, hs] <;> ring
 
 /-- Explicit susceptibility including the vacuum contribution. -/
 def primeLogKMSSusceptibility (P : Finset Nat.Primes) (β : ℝ) : ℝ :=

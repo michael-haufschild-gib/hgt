@@ -21,10 +21,14 @@ theorem finite_valuation_log_support (f : K) :
     (Function.support (fun v : HeightOneSpectrum B => WithZero.log (v.valuation K f))).Finite := by
   by_cases hf : f = 0
   · subst f
-    simp only [map_zero, WithZero.log_zero, Function.support_zero, Set.finite_empty]
+    simp only [map_zero, WithZero.log_zero]
+    change (Function.support (0 : HeightOneSpectrum B → ℤ)).Finite
+    rw [Function.support_zero]
+    exact Set.finite_empty
   · apply ((HeightOneSpectrum.Support.finite B f).union
       (HeightOneSpectrum.Support.finite B f⁻¹)).subset
     intro v hv
+    change WithZero.log (v.valuation K f) ≠ 0 at hv
     have hv1 : v.valuation K f ≠ 1 := by
       intro h
       exact hv (by rw [h, WithZero.log_one])

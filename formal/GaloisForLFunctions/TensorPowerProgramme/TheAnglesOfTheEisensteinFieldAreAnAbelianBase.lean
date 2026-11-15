@@ -196,7 +196,7 @@ theorem angle_pnt_zero :
     rw [← hE, deriv_fun_mul (differentiableAt_riemannZeta hs1)
       ((DirichletCharacter.differentiable_LFunction chi3D_ne_one) s)]
     have hΛ := LSeries_vonMangoldt_eq_regular_add hs
-    rw [LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs] at hΛ
+    rw [ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs] at hΛ
     beta_reduce
     rw [neg_div_mul_aux hζ hχ, hΛ]
     ring

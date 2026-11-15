@@ -104,6 +104,7 @@ theorem norm_gibbsRotationMean_le_one (β : ℝ) (energy : α → ℝ) (phase : 
         abs_of_pos (finiteGibbsStateWeight_pos β energy a)]
     _ = 1 := sum_finiteGibbsStateWeight_eq_one β energy
 
+omit [Nonempty α] in
 /-- Gibbs averaging loses precisely the radial component restored by polar correction. -/
 theorem gibbsRotationMean_correction_error (β : ℝ) (energy : α → ℝ) (phase : α → Circle) :
     ‖gibbsRotationMean β energy phase -

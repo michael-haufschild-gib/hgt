@@ -41,9 +41,11 @@ theorem gibbsKMSSusceptibility_nonneg (β : ℝ) (energy gap : α → ℝ) :
 theorem integral_gibbsKMSAutocorrelation (β : ℝ) (energy gap : α → ℝ) :
     (∫ u in (0:ℝ)..1, gibbsKMSAutocorrelation β energy gap u) =
       gibbsKMSSusceptibility β energy gap := by
+  have hi (a : α) : IntervalIntegrable
+      (fun u => finiteGibbsStateWeight β energy a * kmsKernel (gap a) u) volume 0 1 :=
+    (continuous_const.mul (continuous_kmsKernel (gap a))).intervalIntegrable _ _
   simp only [gibbsKMSAutocorrelation]
-  rw [intervalIntegral.integral_finsetSum (fun a _ =>
-    (continuous_const.mul (continuous_kmsKernel (gap a))).intervalIntegrable _ _)]
+  rw [intervalIntegral.integral_finsetSum (fun a _ => hi a)]
   simp only [intervalIntegral.integral_const_mul, integral_kmsKernel, gibbsKMSSusceptibility]
 
 omit [Nonempty α] in

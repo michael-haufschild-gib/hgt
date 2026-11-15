@@ -21,6 +21,7 @@ variable {ι A : Type*} [Fintype ι] [Nonempty ι]
 def gibbsJointValue (β : ℝ) (energy : ι → ℝ) (Q : ι → A → ℝ) (action : ι → A) : ℝ :=
   ∑ i, finiteGibbsStateWeight β energy i * Q i (action i)
 
+omit [Nonempty ι] in
 /-- Changing one action changes only its strictly positive weighted local value. -/
 theorem gibbsJointValue_update [DecidableEq ι] (β : ℝ) (energy : ι → ℝ) (Q : ι → A → ℝ)
     (action : ι → A) (i : ι) (a : A) :
