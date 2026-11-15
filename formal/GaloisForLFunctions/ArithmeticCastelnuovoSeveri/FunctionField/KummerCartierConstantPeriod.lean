@@ -70,7 +70,10 @@ theorem primePowerKummerRegularCartierPeriod_eq_zero :
     change (((squareKummerRegularCartierIterate p s c d r F : G → G)^[k]) ω).val = 0
     rw [squareKummerRegularCartierIterate_iterate]
     have he : F * k = k * (F - 1) + k := by
-      rw [← Nat.mul_succ, Nat.sub_add_cancel (show 1 ≤ F by omega), Nat.mul_comm]
+      have hs : (F - 1).succ = F := by omega
+      have hm := Nat.mul_succ k (F - 1)
+      rw [hs] at hm
+      exact (Nat.mul_comm F k).trans hm
     rw [he, squareKummerCartierIterate_add,
       primePowerKummerCartier_iterate_eq_zero p d n r c ω, map_zero]
 
@@ -80,8 +83,7 @@ theorem primePowerKummerRegularCartier_constant_period (ω : G) :
   apply Subtype.ext
   have h := squareKummerRegularCartierIterate_iterate p s c d r 1 F ω
   rw [one_mul] at h
-  rw [h]
   have hz := LinearMap.congr_fun (primePowerKummerRegularCartierPeriod_eq_zero p d n r c) ω
-  exact congrArg Subtype.val hz
+  exact h.trans (congrArg Subtype.val hz)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

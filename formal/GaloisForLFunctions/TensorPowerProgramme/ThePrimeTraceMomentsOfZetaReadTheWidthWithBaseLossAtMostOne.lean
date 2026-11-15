@@ -58,7 +58,7 @@ theorem sum_log_primes_le (N : ℕ) :
   rw [hprod, ← Real.log_rpow (by norm_num : (0 : ℝ) < 4)]
   have h4 : (primorial N : ℝ) ≤ (4 : ℝ) ^ (N : ℝ) := by
     rw [Real.rpow_natCast]
-    exact_mod_cast primorial_le_4_pow N
+    exact_mod_cast primorial_le_four_pow N
   exact Real.log_le_log (by exact_mod_cast primorial_pos N) h4
 
 /-- The width law at the primes, both sides: `|2 Re S(log p)| ≤ K p^w`. -/
@@ -108,7 +108,9 @@ theorem momentBound_one_add (k : ℕ) : MomentBound k (1 + 2 * k * zetaZeroWidth
         mul_le_mul_of_nonneg_right (sum_log_primes_le N) (by positivity)
     _ = K ^ (2 * k) * Real.log 4 * (N : ℝ) ^ (1 + 2 * k * w) := by
         rcases Nat.eq_zero_or_pos N with rfl | hN
-        · simp
+        · have hpos : (1 + 2 * k * w : ℝ) ≠ 0 := by positivity
+          rw [Nat.cast_zero, Real.zero_rpow hpos]
+          ring
         · rw [Real.rpow_add (by exact_mod_cast hN), Real.rpow_one]
           ring
 
@@ -120,7 +122,7 @@ theorem MomentBound.mono {k : ℕ} {a b : ℝ} (hab : a ≤ b) (h : MomentBound 
   · have h0 : primeTraceMoment k 0 = 0 := by
       simp [primeTraceMoment, Finset.filter_singleton, Nat.not_prime_zero]
     rw [h0]
-    exact mul_nonneg (abs_nonneg _) (Real.rpow_nonneg le_rfl _)
+    exact mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg 0) _)
   · have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
     calc primeTraceMoment k N ≤ C * (N : ℝ) ^ a := hC N
       _ ≤ |C| * (N : ℝ) ^ a := mul_le_mul_of_nonneg_right (le_abs_self C)
