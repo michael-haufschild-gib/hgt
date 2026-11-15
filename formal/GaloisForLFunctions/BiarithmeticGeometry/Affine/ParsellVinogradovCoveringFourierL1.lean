@@ -64,6 +64,7 @@ theorem smoothCovering_fourierL1_le_sum (r k q : ℕ) (ε : ℝ) (hε : ε ≠ 0
           SchwartzMap (EuclideanSpace ℝ (AffineAxisIndex r k)) ℂ).integrable.norm
         (integrable_finsetSum (dimensionCoveringGrid r q ε) (fun i _ => hi i))
       intro x
+      dsimp only
       rw [he, sum_apply]
       exact norm_sum_le _ _
     _ = _ := integral_finsetSum (dimensionCoveringGrid r q ε) (fun i _ => hi i)
@@ -110,7 +111,7 @@ theorem exists_smoothCovering_fourierL1_inverseScale_bound (r k q : ℕ) :
   apply (hbound ε hε δ).trans
   calc
     _ ≤ C * (2 * (q + 1 : ℝ) * ((r + 1 : ℕ) : ℝ) / |ε| + 3 / |ε|) :=
-      mul_le_mul_of_nonneg_left (add_le_add_left hthree _) hC.le
+      mul_le_mul_of_nonneg_left (add_le_add le_rfl hthree) hC.le
     _ = _ := by ring
 
 #print axioms smoothCoveringEuclideanSchwartz

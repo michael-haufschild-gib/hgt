@@ -1376,7 +1376,12 @@ theorem abs_bilin_reweightedNeutral_clusterVec_le (ω : ℕ → ℝ)
         have hsL₁_ne : Real.sqrt (L₁ : ℝ) ≠ 0 := (Real.sqrt_pos.mpr hL₁pos).ne'
         have hsL₂_ne : Real.sqrt (L₂ : ℝ) ≠ 0 := (Real.sqrt_pos.mpr hL₂pos).ne'
         field_simp [hs2_ne, hsL₁_ne, hsL₂_ne]
-        rw [Real.sq_sqrt zero_le_two, Real.sq_sqrt hL₁pos.le, Real.sq_sqrt hL₂pos.le]
+        rw [Real.sq_sqrt zero_le_two, Real.sq_sqrt hL₁pos.le]
+        have hsq2 : Real.sqrt (L₂ : ℝ) * (1 + Real.sqrt (L₂ : ℝ)) = Real.sqrt (L₂ : ℝ) + L₂ := by
+          calc Real.sqrt (L₂ : ℝ) * (1 + Real.sqrt (L₂ : ℝ))
+              = Real.sqrt (L₂ : ℝ) + Real.sqrt (L₂ : ℝ) * Real.sqrt (L₂ : ℝ) := by ring
+            _ = Real.sqrt (L₂ : ℝ) + L₂ := by rw [Real.mul_self_sqrt hL₂pos.le]
+        rw [mul_assoc (2 * (L₁ : ℝ)), hsq2]
         ring
       calc (1 / Real.sqrt (2 * (L₁ : ℝ))) * ∑ i ∈ Ico q₁ (q₁ + L₁), _
           ≤ (1 / Real.sqrt (2 * (L₁ : ℝ))) *
@@ -1451,7 +1456,10 @@ theorem subEulerGluingWeight_prime_pow {Q₀ p r : ℕ} (hp : p.Prime) (hr : 1 �
   rw [hmin_pow, hp.minFac_eq]
   have hne1 : p ^ r ≠ 1 := hpr_gt.ne'
   have hne2 : p ≠ 1 := hp.ne_one
-  simp only [hne1, hne2, false_or]
+  by_cases hpred : subEulerPrimePred Q₀ p
+  · rw [if_pos (Or.inr hpred), if_pos (Or.inr hpred)]
+  · rw [if_neg (by rintro (h | h); · exact hne1 h; · exact hpred h),
+      if_neg (by rintro (h | h); · exact hne2 h; · exact hpred h)]
 
 /-- Every prime in the band `(256^m, 3 · 256^m]` (`m ≥ 1`) has `subEulerGluingWeight Q₀ p = 1`. -/
 theorem subEulerGluingWeight_eq_one_of_mem_band {Q₀ m p : ℕ} (hm : 1 ≤ m) (hp : p.Prime)
@@ -1568,8 +1576,10 @@ theorem sum_prime_log_band_ge {m : ℕ} (hm : 4 ≤ m) :
           ((1 / 100) * Real.sqrt ((3 * N : ℕ) : ℝ) + 4 / (1 / 100)) :=
       mul_le_mul_of_nonneg_left hlog (by positivity)
     nlinarith
+  have h69 : (69 / 100 : ℝ) ≤ Real.log 2 :=
+    (by norm_num : (69 / 100 : ℝ) ≤ 0.6931471803).trans Real.log_two_gt_d9.le
   have hlog2N : (69 / 100 : ℝ) * N ≤ (N : ℝ) * Real.log 2 :=
-    mul_le_mul_of_nonneg_left (by linarith [Real.log_two_gt_d9]) (Nat.cast_nonneg N)
+    mul_le_mul_of_nonneg_left h69 (Nat.cast_nonneg N)
   have h3N_mul : ((3 * N : ℕ) : ℝ) * Real.log 2 = 3 * ((N : ℝ) * Real.log 2) := by
     push_cast; ring
   have hlog4_mul : Real.log 4 * (N : ℝ) = 2 * ((N : ℝ) * Real.log 2) := by
@@ -1811,13 +1821,13 @@ private lemma subEuler_contact_cross_of_N {ω : ℕ → ℝ} (hω1 : ∀ k, |ω 
       rcases Finset.mem_filter.mp hk with ⟨hkI, hkne⟩
       rw [← abs_mul, abs_ne_zero] at hkne
       obtain ⟨_, hk_lo, _⟩ := hsupp k hkI hkne
-      have hb := abs_bilin_floorGraph_le le_rfl
+      have hb := abs_bilin_floorGraph_le (R := 1) le_rfl (k := k)
         (by have := (Finset.mem_Icc.mp hkI).1; omega) (3 * (8 * N))
         (clusterVec 0 (N - 1) (5 * N)) (clusterVec 6 (7 * N - 1) (17 * N))
       rw [hu_sq, hv_sq] at hb
       have hsk_ge : Real.sqrt N / Real.sqrt 8 ≤ Real.sqrt k := by
         rw [div_le_iff₀ (Real.sqrt_pos.mpr (by norm_num)), ← Real.sqrt_mul (Nat.cast_nonneg k)]
-        exact Real.sqrt_le_sqrt (by exact_mod_cast hk_lo.le)
+        exact Real.sqrt_le_sqrt (by exact_mod_cast (show N ≤ k * 8 by omega))
       calc |ω k| * |∑ i ∈ range (3 * (8 * N)), ∑ j ∈ range (3 * (8 * N)),
             clusterVec 0 (N - 1) (5 * N) i * clusterVec 6 (7 * N - 1) (17 * N) j *
               floorGraph k (1 + i) (1 + j)|
@@ -1828,7 +1838,7 @@ private lemma subEuler_contact_cross_of_N {ω : ℕ → ℝ} (hω1 : ∀ k, |ω 
             div_le_div_of_nonneg_left
               (mul_nonneg zero_le_two ArithmeticFunction.vonMangoldt_nonneg)
               (div_pos hsN_pos (Real.sqrt_pos.mpr (by norm_num))) hsk_ge
-        _ = (2 * Real.sqrt 8 / Real.sqrt N) * (Λ k : ℝ) := by ring
+        _ = (2 * Real.sqrt 8 / Real.sqrt N) * (Λ k : ℝ) := by rw [div_div_eq_mul_div]; ring
     refine hcomp_le.trans ?_
     rw [← Finset.mul_sum, ← Chebyshev.psi_sub_theta_eq_sum_not_prime ((24 * N : ℕ) : ℝ)]
     have hpt := psi_sub_theta_le_three_mul_sqrt ((24 * N : ℕ) : ℝ)
@@ -1908,11 +1918,12 @@ private lemma two_le_hermNegIndex_subEuler_of_N {ω : ℕ → ℝ} (hω0 : ∀ k
       (1 / 120 : ℝ) * Real.sqrt ((8 * N : ℕ) : ℝ) + 19000 := by
     have h1 := log_le_eps_mul_sqrt_add (x := ((1 + 3 * (8 * N) : ℕ) : ℝ) + 1) (ε := 1 / 400)
       (by positivity) (by norm_num)
-    norm_num at h1
+    rw [show (4 : ℝ) / (1 / 400) = 1600 by norm_num] at h1
     have hsq : Real.sqrt (((1 + 3 * (8 * N) : ℕ) : ℝ) + 1) ≤ 3 * Real.sqrt ((8 * N : ℕ) : ℝ) := by
       rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 3), ← Real.sqrt_mul (by norm_num)]
       refine Real.sqrt_le_sqrt ?_
-      push_cast; linarith [hN_pos_r]
+      rw [show (3 : ℝ) ^ 2 = 9 by norm_num]
+      exact_mod_cast (show (1 + 3 * (8 * N)) + 1 ≤ 9 * (8 * N) by omega)
     linarith [h1, hsq, Real.sqrt_nonneg ((8 * N : ℕ) : ℝ)]
   have hu_raw := bilin_reweightedNeutral_clusterVec_le hω0
     (R₀ := 1) (Q := 3 * (8 * N) + 1) (J₀ := 3 * (8 * N)) (p₀ := 0) (q₀ := N - 1) (L := 5 * N)
@@ -2066,7 +2077,7 @@ private lemma halfCutoff_full_window_prime_sum {Q p₀ q₀ L : ℕ} {P : Finset
 /-- Every cross-contact term between `clusterVec 0 (6K + L - 2) L` and
 `clusterVec 1 (9K + 2 + L) L` (`L = K / 20`, `2 ≤ k ≤ 3K + 1`) vanishes outside
 `i ∈ Ico (6K + L - 2) (6K + 2L - 2)` and `j = 1`. -/
-private lemma halfCutoff_cross_vanish_outside {K k i j : ℕ} (hK : 200 ≤ K) (hk2 : 2 ≤ k)
+private lemma halfCutoff_cross_vanish_outside {K k i j : ℕ} (_ : 200 ≤ K) (hk2 : 2 ≤ k)
     (hkQ : k ≤ 3 * K + 1)
     (hnot : ¬(6 * K + K / 20 - 2 ≤ i ∧ i < 6 * K + K / 20 - 2 + K / 20 ∧ j = 1)) :
     clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
@@ -2324,7 +2335,7 @@ theorem two_le_hermNegIndex_neutralWindow_halfCutoff_of_primeSums {K R : ℕ} (h
       (1 / 200 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) - 50 := by
     have h1 := log_le_eps_mul_sqrt_add (x := ((2 + 10 * K : ℕ) : ℝ) + 1) (ε := 1 / 8000)
       (by positivity) (by norm_num)
-    norm_num at h1
+    rw [show (4 : ℝ) / (1 / 8000) = 32000 by norm_num] at h1
     have hsq : Real.sqrt (((2 + 10 * K : ℕ) : ℝ) + 1) ≤ 4 * Real.sqrt K := by
       rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 4), ← Real.sqrt_mul (by norm_num)]
       refine Real.sqrt_le_sqrt ?_
