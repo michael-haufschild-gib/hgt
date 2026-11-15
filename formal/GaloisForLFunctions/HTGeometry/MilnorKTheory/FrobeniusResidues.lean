@@ -81,7 +81,8 @@ theorem milnorResidue_iterateFrobenius_eq_zero_iff_all_degrees [PerfectRing k p]
   constructor
   · intro h
     apply milnorKDeg_charPower_injective_all p (r * (n + 1)) n
-    simpa only [smul_zero] using h
+    have hzero : p ^ (r * (n + 1)) • (0 : MilnorKDeg k n) = 0 := smul_zero _
+    exact h.trans hzero.symm
   · rintro h
     rw [h, smul_zero]
 

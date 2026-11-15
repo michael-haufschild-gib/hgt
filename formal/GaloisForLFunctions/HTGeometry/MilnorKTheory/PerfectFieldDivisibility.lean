@@ -7,8 +7,8 @@ import Mathlib.FieldTheory.Perfect
 
 Frobenius is invertible on a perfect field, hence on its Milnor groups. Its explicit
 weight `p^n` therefore makes multiplication by `p` invertible in every positive degree.
-Both existence and uniqueness of division follow; no norm map or torsion conjecture
-is needed. The inverse is induced by taking Frobenius roots of symbol entries.
+Inverse Frobenius supplies division by `p^n`; composing with multiplication by
+`p^(n-1)` supplies division by `p`. The same argument gives unique division by `p^r`.
 -/
 
 namespace GaloisForLFunctions.HTGeometry

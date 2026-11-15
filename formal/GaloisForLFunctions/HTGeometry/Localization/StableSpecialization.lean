@@ -56,15 +56,18 @@ theorem stableSpecialization_ideal (x : R) :
 
 /-- The polynomial quotient at `X = 1`, with the relation written without the constant map. -/
 noncomputable def polynomialSpecializationOne (R : Type*) [CommRing R] :
-    (Polynomial R ⧸ Ideal.span ({Polynomial.X - 1} : Set (Polynomial R))) ≃+* R := by
-  simpa only [map_one] using (Polynomial.quotientSpanXSubCAlgEquiv (1 : R)).toRingEquiv
+    (Polynomial R ⧸ Ideal.span ({Polynomial.X - 1} : Set (Polynomial R))) ≃+* R :=
+  (Ideal.quotEquivOfEq (show
+    Ideal.span ({Polynomial.X - 1} : Set (Polynomial R)) =
+      Ideal.span ({Polynomial.X - Polynomial.C (1 : R)} : Set (Polynomial R)) by
+        rw [Polynomial.C_1])).trans (Polynomial.quotientSpanXSubCAlgEquiv (1 : R)).toRingEquiv
 
 /-- Polynomial representatives are sent to their value at one. -/
 theorem polynomialSpecializationOne_mk (p : Polynomial R) :
     polynomialSpecializationOne R
       (Ideal.Quotient.mk (Ideal.span ({Polynomial.X - 1} : Set (Polynomial R))) p) = p.eval 1 := by
-  simpa only [polynomialSpecializationOne, map_one] using
-    Polynomial.quotientSpanXSubCAlgEquiv_mk (1 : R) p
+  rw [polynomialSpecializationOne, RingEquiv.trans_apply, Ideal.quotEquivOfEq_mk]
+  exact Polynomial.quotientSpanXSubCAlgEquiv_mk (1 : R) p
 
 /-- Evaluation at one is unchanged when the polynomial variable has first been inverted. -/
 noncomputable def localizedPolynomialSpecializationOne (R : Type*) [CommRing R] :

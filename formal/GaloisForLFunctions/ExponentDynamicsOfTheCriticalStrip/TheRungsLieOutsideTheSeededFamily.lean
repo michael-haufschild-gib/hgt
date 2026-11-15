@@ -56,9 +56,13 @@ theorem dvd_of_isIntegral_mul_eq {a b : O} (ha : a ≠ 0) {y : ℂ} (hy : IsInte
   have hza : ringComplex a ≠ 0 := fun h0 => ha (ringComplex_injective (by rw [h0, map_zero]))
   have hx : L (algebraMap O K b / algebraMap O K a) = y := by
     rw [map_div₀, hL, hL, div_eq_iff hza, ← h, mul_comm]
+  have hcomm : ∀ r : ℤ, L (algebraMap ℤ K r) = algebraMap ℤ ℂ r := fun r => by
+    rw [eq_intCast (algebraMap ℤ K), eq_intCast (algebraMap ℤ ℂ)]
+    exact map_intCast L r
+  let L' : K →ₐ[ℤ] ℂ := { L with commutes' := hcomm }
   have hxi : IsIntegral ℤ (algebraMap O K b / algebraMap O K a) :=
-    (isIntegral_algHom_iff L.toIntAlgHom L.injective).mp (hx ▸ hy)
-  haveI : IsScalarTower ℤ O K := IsScalarTower.of_algebraMap_eq fun x => by
+    (isIntegral_algHom_iff L' L.injective).mp (hx ▸ hy)
+  haveI := IsScalarTower.of_algebraMap_eq (R := ℤ) (S := O) (A := K) fun r => by
     rw [eq_intCast (algebraMap ℤ K), eq_intCast (algebraMap ℤ O), map_intCast]
   obtain ⟨c, hc⟩ := IsIntegrallyClosed.isIntegral_iff.mp (hxi.tower_top (A := O))
   exact ⟨c, IsFractionRing.injective O K (by rw [map_mul, hc, mul_comm, div_mul_cancel₀ _ ha'])⟩
