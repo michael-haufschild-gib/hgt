@@ -74,7 +74,7 @@ theorem squareKummer_regular_character_component
     exact mul_comm _ _
   have hprojection := diagonal_primitiveRoot_projection hζF.inv B
     (fun k => (σ k).toLinearMap) heigen f i
-  simp only [inv_pow, inv_inv] at hprojection
+  simp only [inv_pow] at hprojection
   have hN : (N : F) = 1 := by
     have hK : (N : K) = 1 := by
       dsimp only [N]
@@ -95,6 +95,6 @@ theorem squareKummer_regular_character_component
     exact h
   change (B.repr f i • B i) • dy ∈ S
   rw [← hprojection, Finset.sum_smul]
-  exact S.sum_mem fun k _ => hterm k
+  exact S.sum_mem fun k _ => by simpa only [inv_inv] using hterm k
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

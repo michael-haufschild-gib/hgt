@@ -41,3 +41,4 @@ See `HodgeTheoryWithoutVarieties/README.md`.
 -/
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.TheDepthLawIsEffective
 import GaloisForLFunctions.HodgeTheoryWithoutVarieties.ThePrimitiveDepthLawIsEffective
+import GaloisForLFunctions.HodgeTheoryWithoutVarieties.Quadratic.FujikiDegreeRigidity

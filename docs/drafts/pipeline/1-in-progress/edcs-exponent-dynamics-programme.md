@@ -33,10 +33,10 @@ Modules, in order of attack. Status: P = paper proof below, L = Lean compiled an
 | 6 | TheMarginOfTheWindowMatricesSinksAtTheRateOfTheWidth | E1 (converse rate law, all packets) | L |
 | 7 | WeilsFormIsContinuousInTheLogarithmicEnergy | E1 (tool) | L |
 | 8 | StepSamplesCarryWeilsFormOfALipschitzPacket | E1 (tool) | L |
-| 9 | TheMarginOfTheWindowMatricesIsARulerAtPolynomialBlockSize | E1 (exactness) | P |
-| 10 | TheBestDoublingFactorOfTheMarginIsTwoToTheWidth | E2 (margin) | P |
-| 11 | TheCorrectionOfTheCubicProbeCarriesTheAbscissaOfItsRung | E6; §14 item 11 | P |
-| 12 | TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth | E2 (long moments) | P |
+| 9 | TheMarginOfTheWindowMatricesIsARulerAtPolynomialBlockSize | E1 (exactness) | L |
+| 10 | TheBestDoublingFactorOfTheMarginIsTwoToTheWidth | E2 (margin) | L |
+| 11 | TheCorrectionOfTheCubicProbeCarriesTheAbscissaOfItsRung | E6; §14 item 11 | L |
+| 12 | TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth | E2 (long moments) | L |
 
 Open, with the input that is missing:
 
@@ -175,4 +175,4 @@ The least loss is 2w; the loss 3/4 holds with no hypothesis.
 
 ## Log
 - 2026-11-15 — created; README first draft written. Modules 1–6 compiled, axiom-clean, wired.
-- 2026-11-15 — modules 7, 8 compiled, axiom-clean; modules 9–12 written.
+- 2026-11-15 — modules 7–12 compiled, axiom-clean, wired.

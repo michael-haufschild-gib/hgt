@@ -137,17 +137,52 @@ The goal is met when route ACS is fully closed and formalized unconditionally in
 - https://arxiv.org/abs/2611.16799 nevanlinna theory for generalized tropical meromorphic functions and applications to ultra-discrete equations
 - https://arxiv.org/abs/2611.39739 lp integrability of functions with fourier support on high codimension manifolds
 
+7 kronecker
+- https://arxiv.org/abs/2611.06256
+- https://arxiv.org/abs/2611.16354
+- https://arxiv.org/abs/2611.15182
+- https://arxiv.org/abs/2611.11593
+- https://arxiv.org/abs/2611.10761
+- https://arxiv.org/abs/2611.08007  
 
+8 kummer
+- https://arxiv.org/abs/2611.16593
+- https://arxiv.org/abs/2611.15943
+- https://arxiv.org/abs/2611.14187
+- https://arxiv.org/abs/2611.12294
+- https://arxiv.org/abs/2611.10924
+- https://arxiv.org/abs/2611.04118
+- https://arxiv.org/abs/2611.00362
+
+9 groessencharacter
+- https://arxiv.org/abs/2611.14812
+- https://arxiv.org/abs/2611.12844
+- https://arxiv.org/abs/2611.09220
+
+10 hochschild
+- https://arxiv.org/abs/1302.6534
+- https://arxiv.org/abs/1910.09992
+- https://arxiv.org/abs/2106.16082
+- https://arxiv.org/abs/2611.05915
+- https://arxiv.org/abs/2611.04022
+- https://arxiv.org/abs/2611.01508
+
+11 dirichlet 1
+- https://arxiv.org/abs/2611.17326
+- https://arxiv.org/abs/2611.17317
+- https://arxiv.org/abs/2611.17253
+- https://arxiv.org/abs/2611.17054
+- https://arxiv.org/abs/2611.16997
+- https://arxiv.org/abs/2611.16978
+- https://arxiv.org/abs/2611.16828
+  
 ## apply external paper to corpus experiment
 do not use the hgtl7 skill
 task:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2611.15605 representation theory and the algebraic k-theory of geometric fields
-- https://arxiv.org/abs/2611.14073 explicit plane models for all galois quotients of the hermitian curve
-- https://arxiv.org/abs/2611.13963 euclidian and hermitian self-orthogonal codes from divisible codes
-
+- https://arxiv.org/abs/2611.01210
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -157,6 +192,7 @@ papers:
 5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
 6. make sure you don't leave staleclean up after yourself.
 7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
    
 Non-negotiable working mode rules:
 1. If an idea would be interesting, but is missing lean infrastructure, build it no matter the effort, instead of pivoting.
@@ -697,9 +733,9 @@ Put all lean code for the answer into relevant subfolders to not bloat RHTower a
 
 Do not use the hgtl7 skill.
 
-read  docs/reports/review-1411/obstacles-summary.md
+read  docs/reports/review-1511/obstacles-summary.md
 
-understand what the obstacles under "## 2.1 — Tasks that are work rather than new mathematics" are all about.
+understand what the obstacles under "## 2.1 Tasks that are work" are all about.
 
 your task: find a complete solution for these obstacles and unconditionally formalize it. start with the easiest tasks and work towards the hardest.
 
@@ -752,9 +788,9 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 Do not use the hgtl7 skill.
 
-read and understand fully: docs/reports/review-1411/obstacles-summary.md
+read and understand fully: docs/reports/review-1511/obstacles-summary.md
 
-under "## 2.21 The single most valuable narrower question" it asks for: "**Does exact ζ arithmetic force `FiniteOffLine → RH`?** Equivalently: **can the actual real packet form have a finite positive negative index?**"
+under "## 2.21 The one big question" it asks for: "Is there an interval of exponents that the abscissa of `ζ` provably avoids?"
 
 your task: answer the question, find a complete solution for everything asked and unconditionally formalize the answers and their implications and collaries in lean.
 
