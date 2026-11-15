@@ -21,7 +21,7 @@ Statuses: **Open** — no proof in the corpus; **Excluded** — a proved obstruc
 | Input | Exact extent | Boundary |
 |---|---|---|
 | **Seed** | `ζ(s) ≠ 0` for `Re s > 7/8`; every Dirichlet `L(s,χ)`; every finite-order Hecke `L`-function and every ray class `L`-function of `ℚ(ω)`; `1/8 ≤ Re ρ ≤ 7/8` [SEEDZETA] [MMD_DIR] [HECKESEED] [RAYSEED] [S] [MMD_STRIP]; the degree-two Artin character of `ℚ(∛2)` [ARTINSEED] [S]. Written in source, hypothesis-free: the same families zero-free on `Re s > 20999/24000`, zeros of `ζ` in `[3001/24000, 20999/24000]` [SUBSEED] [SUBDIR] [SUBSTRIP] [S] | False for two-sided prime edits with count `Ax + O(x^{14/15})` [EDIT] and for shifted pairs with `a > 3/8` [PAIRSABS]. |
-| **Seed on every ruler** | `w ≤ 8999/24000` written [WIDTHSUB] [S]; `Λ ≤ 9/128`; heat threshold `≤ 3/64`; `M(n) = O(n^β)`, `β > 7/8`; prefixes, unit window, long moments, signal, two-end state at rate `3/8`; slope loss `3/4`; doubling factors above `2^{3/8}`; ancestry gap law; return transfer ⇔ RH [NEWMAN] [HEATTHR] [MERTENS78] [RULERS] [SLOPE34] [DOUBLING38] [RETURNRH] | Readings of `w ≤ 3/8`. |
+| **Seed on every ruler** | Written in source: every ruler jumps from `3/8` to `8999/24000`; `Θ ∉ (20999/24000, 7/8]`; `Λ ≤ 80982001/1152000000`; `|M(n)| = O(n^{7/8})` without loss; slope loss `8999/12000`; AdS strip `3001/48000` [AVOIDJUMP] [AVOID] [NEWMANSUB] [MERTENSEXACT] [SLOPESUB] [ADSSUB] [S]. Integrated: `Λ ≤ 9/128`; heat threshold `≤ 3/64`; `M(n) = O(n^β)`, `β > 7/8`; prefixes, unit window, long moments, signal, two-end state at rate `3/8`; slope loss `3/4`; doubling factors above `2^{3/8}`; ancestry gap law; return transfer ⇔ RH [NEWMAN] [HEATTHR] [MERTENS78] [RULERS] [SLOPE34] [DOUBLING38] [RETURNRH] | Readings of `w ≤ 3/8`. |
 | **Exact rulers of `w`** | Zero abscissa, Möbius prefix at one height, unit window, zeros of `M_X`, signal, two-end state [RULERS] [WD] [SIGNAL-WIDTH]; Weil floor in the logarithmic energy [LOGENERGY]; margin at polynomial block size [MARGINRULER] [MARGINSINF]; doubling factor (best `2^w`) [DOUBLING]; slope loss of the long moments (least `2w`) [SLOPE]; squarefree quotient on `[½, 9/16)` [SQFRULER]; cubic-probe correction `(3 + Θ_rung)/6` [RUNG]; WL, WD-long, SRT, PBM dictionaries [WL] [WD-LONG] [SRT] [PBM]; AdS strip [ADS] | A ruler reads `w`; it produces nothing. |
 | **Margin depth** | Every window of ratio `3K+1` has at most one eigenvalue below `−C(1+log K)²K^{3/8}(1+log R)` [MARGIN38]; `C K^{3/8+ε}` at polynomial block size [MARGINPOLY]; an `O(√K)` shift removes every negative square of every bounded-weight window [SHIFTKILL] [S] | The factor `1 + log R` is clustering at the resolved height (U9). |
 | **Jensen rung** | Real-rooted through degree `31922` [JENSEN]; `N_d ≤ 300√(d log d)` for `log d ≥ 6.1·10⁶` [JENSENBOUND] | Finite degree. |
@@ -92,8 +92,11 @@ A quantitative theorem states source, signs, domain, constants and quantifier or
 [ACS]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/AUniformLowerBoundOnTheMarginOfTheWindowMatricesForcesTheRiemannHypothesis.lean#L505
 [ADS]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheEternalAdSPrimeMarkedDictionary.lean#L884
 [ADS-NOGO]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/CausalIdentitiesCannotForceQuarterRingdown.lean#L1600
+[ADSSUB]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L368
 [ARTINSEED]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheArtinFunctionOfTheCubeRootsOfTwoCarriesTheSeed.lean#L147
 [AVERAGE]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheAverageRowIsBlindToTheTarget.lean#L148
+[AVOID]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L82
+[AVOIDJUMP]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L186
 [BAG]: ../../../formal/GaloisForLFunctions/RHTower/ZetaDiscRecurrenceOnEveryClosedDiscOfTheStrip.lean#L294
 [BALANCED]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L541
 [BRAUERCANCEL]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L497
@@ -178,10 +181,12 @@ A quantitative theorem states source, signs, domain, constants and quantifier or
 [MC]: ../../../formal/GaloisForLFunctions/RHTower/MobiusHilbertFormEquivalence.lean#L219
 [MEASURING]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L79
 [MERTENS78]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L169
-[MINFILTER]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/MinimumTargetWeights.lean#L229
+[MERTENSEXACT]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L229
+[MINFILTER]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/MinimumTargetWeights.lean#L234
 [MIXED]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/MixedTowersOfLeversStayAboveTheBestCentre.lean#L419
 [NEARDIAG]: ../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheNearDiagonalCofactorsHaveASummableRow.lean#L162
 [NEWMAN]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L155
+[NEWMANSUB]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L198
 [NONATTAIN]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/ThePrimeNumberTheoremIsNotAttainedOnWindows.lean#L151
 [ODDLOG2]: ../../../formal/GaloisForLFunctions/WindowTowerOfSpecZ/TheOddWeilFormHasAFloorAtApertureLogTwo.lean#L3966
 [ODDPROP]: ../../../formal/GaloisForLFunctions/MultiscaleMollifiedZetaField/TheTwistedMomentGivesAPositiveCriticalProportion.lean#L109
@@ -214,7 +219,7 @@ A quantitative theorem states source, signs, domain, constants and quantifier or
 [RIGIDITY]: ../../../formal/GaloisForLFunctions/EulerFETransportTheory/DecayingFunctionalEquationsDetermineThePrimes.lean#L486
 [ROOTCOINC]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L174
 [ROOTS]: ../../../formal/GaloisForLFunctions/RHTower/XiHeightAdaptiveFiniteLadderClosure.lean#L234
-[ROWCANCEL]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/SmoothArithmeticRowCancellation.lean#L214
+[ROWCANCEL]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/SmoothArithmeticRowCancellation.lean#L224
 [ROWCOUNTAT]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L436
 [ROWTARGET]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/TheNonprincipalRowRetainsTheTarget.lean#L46
 [RULERS]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L55
@@ -234,6 +239,7 @@ A quantitative theorem states source, signs, domain, constants and quantifier or
 [SIGNWALL]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheShortMoebiusMonomialsPayExactlyHalf.lean#L157
 [SLOPE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth.lean#L110
 [SLOPE34]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth.lean#L95
+[SLOPESUB]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L335
 [SLOWDEFECT]: ../../../formal/GaloisForLFunctions/EulerFETransportTheory/ArbitrarilySlowDefectsOfPositiveWeightedSystems.lean#L569
 [SMALLEIG]: ../../../formal/GaloisForLFunctions/CompactHyperbolicSurfaces/SmallEigenvalueZeta.lean#L25
 [SQFRULER]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L268
@@ -244,7 +250,7 @@ A quantitative theorem states source, signs, domain, constants and quantifier or
 [SUBCRITICAL]: ../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheCompleteWeilMatrixIsPositiveDefiniteBelowTheEighthRoot.lean#L166
 [SUBDIR]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L141
 [SUBEULER]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L319
-[SUBPROBE]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsHighTransport.lean#L1231
+[SUBPROBE]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsHighTransport.lean#L1260
 [SUBSEED]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L147
 [SUBSTRIP]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L180
 [TARGETFILTER]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheNonprincipalFilterRecoversTheTarget.lean#L161
@@ -267,7 +273,6 @@ A quantitative theorem states source, signs, domain, constants and quantifier or
 [WD]: ../../../formal/GaloisForLFunctions/MultiscaleMollifiedZetaField/TheWidthIsReadInOneWindow.lean#L85
 [WD-LONG]: ../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/NearLineLogMean/LongMoebiusSecondMomentRigidity.lean#L659
 [WEAKEND]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean#L182
-[WIDTHSUB]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L60
 [WITT]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/Witt/RaynaudOperatorBoundary.lean#L19
 [WITTORD]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L182
 [WL]: ../../../formal/GaloisForLFunctions/BiScaleUncertainty/WeilLagCriticalDeficitEndpointAndLimitLaw.lean#L868

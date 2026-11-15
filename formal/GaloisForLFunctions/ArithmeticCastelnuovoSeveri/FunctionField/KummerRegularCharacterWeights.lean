@@ -27,7 +27,7 @@ private theorem regularWeight_add (a : SquareKummerRegularIndex p s d r) :
       (p ^ (s + 1) + 1) * (a.2.val + 1) := by
   apply Nat.sub_add_cancel
   have h := Nat.mul_le_mul_left (p ^ (s + 1) + 1)
-    (Nat.succ_le_succ (Nat.zero_le a.2.val))
+    (show 1 ≤ a.2.val + 1 by omega)
   rw [mul_one] at h
   exact le_trans a.1.isLt.le h
 

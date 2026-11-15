@@ -34,9 +34,10 @@ private theorem norm_character_fourier_le {F : Type*} [Field F] [Fintype F]
   · let u : Fˣ := Units.mk0 (-h) (neg_ne_zero.mpr hh)
     have he : (∑ d : F, χ d * ψ (-(h * d))) = gaussSum χ (ψ.mulShift u) := by
       simp only [gaussSum, AddChar.mulShift_apply, u, Units.val_mk0, neg_mul]
-    rw [he, gaussSum_mulShift_eq, norm_mul,
-      Complex.norm_eq_one_of_mem_rootsOfUnity ((χ⁻¹).apply_mem_rootsOfUnity u),
-      one_mul, ArithmeticEffectivityTheory.norm_gaussSum_eq_sqrt_card hχ hψ]
+    have hu : ‖χ⁻¹ (u : F)‖ = 1 :=
+      Complex.norm_eq_one_of_mem_rootsOfUnity ((χ⁻¹).apply_mem_rootsOfUnity u)
+    rw [he, gaussSum_mulShift_eq, norm_mul, hu, one_mul,
+      ArithmeticEffectivityTheory.norm_gaussSum_eq_sqrt_card hχ hψ]
 
 /-- The constant mode of the corrected local row. -/
 def rowTargetConstant (Q R η X Y V : ℂ) : ℂ :=
@@ -79,8 +80,15 @@ theorem norm_rowTargetResidual_fourier_le (Q R η X Y V : ℂ)
     {ψ : AddChar (O ⧸ P) ℂ} (hψ : ψ.IsPrimitive) (h : O ⧸ P) :
     ‖∑ d, rowTargetResidual P hg Q R η X Y V d * ψ (-(h * d))‖ ≤
       Real.sqrt (Fintype.card (O ⧸ P)) * (‖rowTargetConstant Q R η X Y V‖ + ‖R * Y‖) := by
-  simp_rw [rowTargetResidual_eq, add_mul, mul_assoc]
-  rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
+  have he : (∑ d, rowTargetResidual P hg Q R η X Y V d * ψ (-(h * d))) =
+      rowTargetConstant Q R η X Y V * (∑ d, complexSexticChar P hg d * ψ (-(h * d))) +
+        (R * Y) * (∑ d, complexCubicChar P hg d * ψ (-(h * d))) := by
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+    apply Finset.sum_congr rfl
+    intro d _
+    rw [rowTargetResidual_eq]
+    ring
+  rw [he]
   calc
     _ ≤ ‖rowTargetConstant Q R η X Y V *
           ∑ d, complexSexticChar P hg d * ψ (-(h * d))‖ +

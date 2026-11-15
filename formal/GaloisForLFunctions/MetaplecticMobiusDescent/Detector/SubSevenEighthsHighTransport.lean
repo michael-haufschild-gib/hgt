@@ -660,6 +660,20 @@ private lemma subPoolOutside (M : Ideal O) (H : Subgroup (O ⧸ M)ˣ)
     ∀ j P, P ∈ pool (RayQuotient.identityClass M H) S c b (Y j) → P.val ∉ S :=
   fun _ P hP => (mem_pool _ S c b _ P).mp hP |>.2.2.2
 
+private lemma cubeArithmeticSum_pool_congr {K : ℕ} (S : Finset (Ideal O))
+    (hS : SourceExclusions S) (hmax : ∀ P ∈ S, P.IsMaximal) (η : Character)
+    (R : Finset FreeRow) {M : Ideal O} {H : Subgroup (O ⧸ M)ˣ}
+    (WC : Fin K → ℝ → ℂ) {Y₁ Y₂ : Fin K → ℝ} (hY : Y₁ = Y₂)
+    (hPS₁ : ∀ j P, P ∈ pool (RayQuotient.identityClass M H) S 1 2 (Y₁ j) → P.val ∉ S)
+    (hPS₂ : ∀ j P, P ∈ pool (RayQuotient.identityClass M H) S 1 2 (Y₂ j) → P.val ∉ S)
+    (a e : ℝ) (t : HeightSpace) :
+    cubeArithmeticSum S hS hmax η R
+      (fun j => pool (RayQuotient.identityClass M H) S 1 2 (Y₁ j)) hPS₁ WC Y₁ a e t =
+    cubeArithmeticSum S hS hmax η R
+      (fun j => pool (RayQuotient.identityClass M H) S 1 2 (Y₂ j)) hPS₂ WC Y₂ a e t := by
+  subst hY
+  rfl
+
 theorem sub_floor_rows_saving (D : HighData subDelta)
     (he_t : 2000 * D.e ≤ D.t) (heps_t : ((D.N : ℝ) + 8) * D.eps ≤ D.t)
     (F : SourceData D) (n : ℕ) (τ : ℝ)
@@ -771,11 +785,19 @@ theorem sub_floor_rows_saving (D : HighData subDelta)
     have hi_le : i ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hi)
     have har_i := hb (7 / 8) (by norm_num) le_rfl ((2438 / 3003 : ℝ) + D.t)
       (by linarith [D.t_pos]) (Ri i) hrows_i hnorm_i i hi_le hbin_i
-    dsimp only at har_i
-    rw [sub_scale_slot_eq hZp.le D.ell] at har_i
     let vf : ℝ := ((2438 / 3003 : ℝ) + D.t) * (67 / 100 + 12 * D.e + D.eps * ((D.N : ℝ) + 8)) +
       D.t - 1 / 40 + D.t / 6
     let mass : ℝ := Ca * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) * Z' ^ vf
+    have har_i' : ∀ t : HeightSpace,
+        ((|t.1.1| ≤ (3 * i + 1 : ℕ) * Z' ^ τ ∧ |t.2| ≤ (3 * i + 1 : ℕ) * Z' ^ τ) ∧
+          |t.1.2| ≤ (3 * i + 1 : ℕ) * Z' ^ τ) →
+        ‖cubeArithmeticSum F.S F.exclusions F.maximal η (Ri i) T hT WC Yp (51 / 100) D.e t‖ ≤
+          mass := by
+      intro t ht
+      have hh := har_i t ht
+      dsimp only at hh
+      rwa [cubeArithmeticSum_pool_congr F.S F.exclusions F.maximal η (Ri i) WC
+        (sub_scale_slot_eq hZp.le D.ell) _ hT (51 / 100) D.e t] at hh
     have hheight : (3 * i + 1 : ℕ) * Z' ^ τ ≤ (3 * i + 2 : ℕ) * Z' ^ τ :=
       mul_le_mul_of_nonneg_right (by exact_mod_cast (show 3 * i + 1 ≤ 3 * i + 2 by omega))
         (Real.rpow_nonneg hZ'p.le _)
@@ -784,7 +806,7 @@ theorem sub_floor_rows_saving (D : HighData subDelta)
       η (Ri i) (fun u hu => (hrows_i u hu).1) T hT (rayCubeFamily F.modulus ⊤ le_top) hbin_i
       WC Yp (Z ^ (17 / 48 : ℝ)) (Z ^ (479 / 1000 : ℝ)) Z
       (Real.rpow_pos_of_pos hZp _) (Real.rpow_pos_of_pos hZp _) hZp mass
-      (by dsimp [mass]; positivity) har_i
+      (by dsimp [mass]; positivity) har_i'
     rw [div_eq_mul_inv, norm_mul]
     have hm := mul_le_mul hp hn.2 (norm_nonneg _) (by positivity)
     apply hm.trans
@@ -1103,8 +1125,10 @@ theorem sub_nonfloor_rows_saving (D : HighData subDelta)
             intro bin hbin_ne
             have hp_cl := hcl d' hg.2.2.1 hg.2.2.2.1 v' a C0 hg.1 ha ha' hC0 Rij
               hrows_Rij hnorm_Rij i hi_le hnext' hcurrent' t ht (hmom_Rij t ht) bin hbin_ne
-            dsimp only at hp_cl
-            rw [sub_scale_slot_eq hZp.le D.ell] at hp_cl
+            have hp_bound := hp_cl.2.2
+            dsimp only at hp_bound
+            rw [cubeArithmeticSum_pool_congr F.S F.exclusions F.maximal η _ WC
+              (sub_scale_slot_eq hZp.le D.ell) _ hT a D.e t] at hp_bound
             let q := classMean (Finset.univ : Finset (Fin D.N)) ((2 * a - 1) / 2) D.t
               (fun s => D.ell s / d') bin
             let E_q : ℝ := D.t + 2 * τ + D.t +
@@ -1123,7 +1147,7 @@ theorem sub_nonfloor_rows_saving (D : HighData subDelta)
             have hdiv : Z' ^ E_q ≤
                 Z ^ (13499 / 72000 - 1 / 500000 - D.t / 8 - D.t / 8 : ℝ) / scale_a :=
               (le_div_iff₀ hscale_pos).mpr (by rwa [mul_comm])
-            apply hp_cl.2.2.trans
+            apply hp_bound.trans
             dsimp [B_single]
             rw [mul_div_assoc]
             exact mul_le_mul_of_nonneg_left hdiv (by positivity))
@@ -1247,7 +1271,7 @@ theorem exists_sub_common_probe (hβ : (20999 / 24000 : ℝ) < HeckeZeroSupremum
   obtain ⟨counts⟩ := source_count_parameters F
   obtain ⟨τ, hτ, hτd, hτcost, hτt, hτ2, hτeps, hsource⟩ :=
     sub_source_moments_unconditional hβ D hfine F counts
-  obtain ⟨n, hn, hwidth⟩ := exists_source_cube_bin_number D.e D.e_pos
+  obtain ⟨n, hn_pos, hwidth⟩ := exists_source_cube_bin_number D.e D.e_pos
   let ell' : Fin D.N → ℝ := fun j => (1001 / 1000 : ℝ) * D.ell j
   let ellMin' : ℝ := (1001 / 1000 : ℝ) * ((7 / 8 : ℝ) * D.rmin)
   have hell'_pos (j : Fin D.N) : 0 < ell' j := mul_pos (by norm_num) (D.slots_bounds j).1
@@ -1360,7 +1384,7 @@ theorem exists_sub_common_probe (hβ : (20999 / 24000 : ℝ) < HeckeZeroSupremum
         (by norm_num) (by norm_num) (Real.rpow_pos_of_pos hZp _) P hP).2
       simpa only [mul_comm] using hh
     obtain ⟨idx, grid, hbins⟩ := exists_source_cube_bins D.e (Z' ^ τ) D.e_pos hZ'.2
-      n hn hwidth F.S F.exclusions.prime η (rayCubeFamily F.modulus ⊤ le_top)
+      n hn_pos hwidth F.S F.exclusions.prime η (rayCubeFamily F.modulus ⊤ le_top)
     let R_band := rowBand L U_cut
     have hdec := canonical_physical_probe_partition F.S F.exclusions F.maximal η T
       (fun j P hP => outside_prime_supported F.S F.exclusions.bad P (hT j P hP)) WC Yp
@@ -1386,7 +1410,7 @@ theorem exists_sub_common_probe (hβ : (20999 / 24000 : ℝ) < HeckeZeroSupremum
       (fun u => (3 * idx u + 1 : ℕ) * Z' ^ τ) idx (rayCubeFamily F.modulus ⊤ le_top)
       (fun u _ => by
         rcases hbins u with ⟨_, _, _, ha0, ha1, hBH, hbuf, _, _, hnext, _⟩
-        have hτ_eq : Z ^ ((1001 / 1000 : ℝ) * τ) = Z' ^ τ := (Real.rpow_mul hZp.le _ _).symm
+        have hτ_eq : Z ^ ((1001 / 1000 : ℝ) * τ) = Z' ^ τ := Real.rpow_mul hZp.le _ _
         refine ⟨ha0, ha1, hZ'.2, hτ_eq.le.trans hBH, ?_, hnext⟩
         have hZ'p : 0 < Z' := Real.rpow_pos_of_pos hZp _
         have : 0 ≤ Z' ^ τ := Real.rpow_nonneg hZ'p.le _

@@ -34,7 +34,7 @@ Candidates: SEC, CDC/BSH, APF, EGC, EWJ, FEL, WBF on I (detectors); IRK, MSC on 
 
 ### 1. The width face is one ruler (ruler identity)
 
-The rulers listed above agree reading by reading; the seed is instantiated on each: `Λ ≤ 9/128`, heat threshold `≤ 3/64`, `M(n) = O(n^β)` for `β > 7/8`, rate `3/8` on prefixes, windows, moments, signal and states, slope loss `3/4`, doubling factors above `2^{3/8}` [NEWMAN] [HEATTHR] [MERTENS78] [RULERS] [SLOPE34] [DOUBLING38]. **Consequence.** Every W-route needs the same missing object, a lever or a better seed; none is closer to RH than another.
+The rulers listed above agree reading by reading; the seed is instantiated on each: `Λ ≤ 9/128`, heat threshold `≤ 3/64`, `M(n) = O(n^β)` for `β > 7/8`, rate `3/8` on prefixes, windows, moments, signal and states, slope loss `3/4`, doubling factors above `2^{3/8}` [NEWMAN] [HEATTHR] [MERTENS78] [RULERS] [SLOPE34] [DOUBLING38]. The written seed passes to all of them at once: every ruler jumps from `3/8` to `8999/24000` [AVOIDJUMP] [S]. **Consequence.** Every W-route needs the same missing object, a lever or a better seed; none is closer to RH than another.
 
 ### 2. The index face carries the width, and carries nothing more (invariant identity plus ruler)
 
@@ -117,6 +117,7 @@ Chaining RH-equivalent endpoints supplies nothing; chaining rulers supplies a ru
 [ADS-NOGO]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/CausalIdentitiesCannotForceQuarterRingdown.lean#L1600
 [AIP]: ../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheCompensatedRemainderOfTheFullLedger.lean#L878
 [AKLT]: ../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/PrimeTowersAndConeCouplingProduceAsymptoticAbscissaLaw.lean#L306
+[AVOIDJUMP]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L186
 [BAG]: ../../../formal/GaloisForLFunctions/RHTower/ZetaDiscRecurrenceOnEveryClosedDiscOfTheStrip.lean#L294
 [BALANCED]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L541
 [BANDFORCE]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/ExpandingForcingLawsRulersAndTheRiemannHypothesis.lean#L154

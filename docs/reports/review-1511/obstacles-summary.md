@@ -18,6 +18,7 @@ Evidence: Lean statements read in source at `3699ff3a33` with the working tree o
 | Is there a heat-time lower bound in the width alone? | No: cosine-defect models of fixed width have heat time `→ 0`. | [HEATSPACING] |
 | Does the rescaled probe geometry close below `7/8`? | Yes, at `20999/24000`, for `ζ`, every Dirichlet and every Hecke `L`-function of `ℚ(ω)`. | [SUBPROBE] [SUBHECKE] [SUBSEED] [S] |
 | Can a zero satisfy `ζ(ρ) = ζ(ρ/k) = 0`? | Such a coincidence forces `Θ ≥ k/(k+1)`; none occurs for `k ≥ 7`. | [ROOTCOINC] [S] [K7] [S] |
+| Is there an interval `(b₁, b₂] ⊂ (½, 7/8]` that `Θ` provably avoids? | Yes, `(20999/24000, 7/8]` — the improved seed restated; no band strictly below the seed is excluded [D]. | [AVOID] [S] |
 
 ## 2.1 Tasks that are work
 
@@ -26,7 +27,7 @@ Each task has a known method and no unproved sign, rate or uniformity. None of t
 | # | Task | Concrete output | Inputs | Payoff |
 |---|---|---|---|---|
 | A1 | **The optimal geometry of the present estimates** | Locate the true vertex of the cubic-probe budget in `(40535/46328, 20999/24000]` and close the probe there with the transport, common-probe and zero-exclusion modules written for `20999/24000`. | [FARKAS] [TRUEVERTEX] [SUBPROBE] [S] | The best seed the present estimate system can give; at most `≈ 1/23164` below `7/8`. Every further step needs a new estimate (2.4, 2.5). |
-| A2 | **Integrate the [S] modules** | Grade and integrate the sub-`7/8` half-plane and its detectors, the √2 and top-octave modules, the Hawking–Page phase law, the prime-2 aperture test, the Artin seed, the `log 2` floors, the Kummer Cartier period and the target-extraction modules; transport `20999/24000` to every ruler (`w ≤ 8999/24000`, Mertens exponent, heat threshold, AdS strip `3001/48000`, doubling factors `2^{8999/24000+ε}`) [D]. | [SUBSEED] [WIDTHSUB] [SQRT2] [TOPLOCAL] [HPTRANS] [P2LOG2] [ARTINSEED] [FLOORLOG2] [KUMMERCARTIER] [TARGETFILTER] [ROWCANCEL] | Every statement in the walls ledger becomes [L]; the improved seed on all rulers. |
+| A2 | **Integrate the [S] modules** | Grade and integrate the sub-`7/8` half-plane and its detectors, the √2 and top-octave modules, the Hawking–Page phase law, the prime-2 aperture test, the Artin seed, the `log 2` floors, the Kummer Cartier period and the target-extraction modules; the transport of `20999/24000` to every ruler is written (ruler jump, `Λ`, Mertens, slope, log-energy, doubling, AdS strip `3001/48000`) [AVOIDJUMP] [ADSSUB] [S]. | [SUBSEED] [WIDTHSUB] [SQRT2] [TOPLOCAL] [HPTRANS] [P2LOG2] [ARTINSEED] [FLOORLOG2] [KUMMERCARTIER] [TARGETFILTER] [ROWCANCEL] | Every statement in the walls ledger becomes [L]; the improved seed on all rulers. |
 | A3 | **Isolated double collision off the centre** | One forward time with a double zero `ζ₀ ≠ 0` and no other multiple zero; then `G₊ = W`. A multiple zero off the centre exists at arbitrarily large forward times; order two and isolation remain. | [OFFCENTRE] [DOUBLECOLL] | Decides the sign of `G₊`; with `G₊ = W` every parity mechanism carries no information. |
 | A4 | **`Q = 2` fourth ladder step** | Zero excess (or a failing window) at ratio `103⁸/(100⁸/2)` for cutoff two. | [FOURTHRED] [FOURTH] [S] | Completes the ratio-three ladder at every cutoff. |
 | A5 | **Seed for every pure cubic field** | Every nontrivial ray class `L`-function of `ℚ(ω)` carries the seed [RAYSEED] [S]; identify the two-dimensional Artin character of each `ℚ(∛m)` with a ray class character of `ℚ(ω)`, as written for `m = 2` [ARTINSEED] [S] [D]. | [RAYSEED] [S] [ARTINSEED] [ARTIN] | Dedekind zeta functions of all pure cubic fields zero-free on `Re s > 7/8`; the first non-abelian family with a seed. |
@@ -40,7 +41,7 @@ Each task has a known method and no unproved sign, rate or uniformity. None of t
 
 | # | Problem | Exact missing content | Routes | Nature |
 |---|---|---|---|---|
-| B1 | **A lever or a better seed for `w`** | `Θ ≤ b ⇒ Θ ≤ T(b) < b` for `ζ`, using Dirichlet series, functional equation and unit Euler parameters together [PAIRSNOBITE] | all W-routes (P1, P8) | Classical open. |
+| B1 | **A lever or a better seed for `w`** | `Θ ≤ b ⇒ Θ ≤ T(b) < b` for `ζ` biting below the seed, using Dirichlet series, functional equation and unit Euler parameters together [PAIRSNOBITE]; the band lever `(20999/24000, 7/8]` is the seed restated [AVOID] [S] | all W-routes (P1, P8) | Classical open. |
 | B2 | **The design count `U^{1−δ}`** | The number of rows of the cubic probe in amplitude bin `δ` at most `U^{1−δ+ε}`, giving `13/15` [BALANCED] | producer, all W | Open (2.4). |
 | B3 | **A pre-Cauchy–Schwarz saving** | Signed off-diagonal saving `s > 0` in the floor-bin row Gram; `3/4` needs `s ≥ 1/12` [SIGNEDGRAM] [SAVING] | producer, MC, JAS | Open (2.5). |
 | B4 | **A sign-line completion** | A completion of a Möbius-signed Gauss monomial of period `k ≥ 7` priced at `k/2` [SIGNPRICE] [SIGNLINE] | producer, MC, JAS | Open (2.21). |
@@ -379,6 +380,47 @@ The assumption guides the search; a disproof must concern the actual `ζ`.
 
 **Filter.** T1 not RH; T2 decided by a construction or a cost theorem; T3 consequence written in Lean (tower values on the sign line [SIGNLINE], covering criterion [COVERSUB]); T4 no finite window; T5 frames of centre below `2/3` fail on Euler worlds, so the mechanism must use the functional equation of the completion [FRAMEWORLD]; T6 Stickelberger pricing and the sign line are proved; T7 the corpus records that realizing the price needs a different completion and has none.
 
+## 2.22 Best-shot proof route: the tensor-power programme Ω
+
+**Working prior.** No shortcut exists, every question resolves to its least favourable answer, and closure needs mathematics that does not exist yet. Under this prior the route to choose is not the one with the cheapest next step but the one whose shape has proved an RH before, whose receiver and bookkeeping are already in Lean, which uses all four structures of `ζ` together, and whose failures name the missing mathematics precisely. One route meets all four conditions: Deligne's tensor-power argument, carried to `Spec ℤ`.
+
+### Why this route
+
+1. **It is the only shape that has proved an RH.** For varieties over finite fields the argument has four steps: (i) pointwise purity of the local Frobenius eigenvalues; (ii) nonnegativity of the traces of even tensor powers; (iii) a bound on the global `L`-functions of all tensor powers, uniform in the power, coming from cohomology (the top cohomology is the coinvariants of a large monodromy group); (iv) the power tends to infinity.
+2. **In the corpus's own calculus it is a frame tower of centre `½`.** The `k`-th tensor power moves a zero at real part `β` to `kβ − (k−1)/2`; with the trivial top bound `1` this is the frame `((k−1)/2, k)` and gives `Θ ≤ ½ + 1/(2k)` [D]. The Möbius-signed sign line `(k/2, k)` differs from it by exactly the half unit that the Möbius sign costs at some place, and gives `½ + 1/k` [SIGNCOST] [SIGNLINE] [TOWERFIX] [D]: the sign is free in the limit. The completion line `c ≥ 2k/3 − 1` [PRICE] has centres `2/3 − 1/(3(k−1))`, increasing to `2/3` [D]: factor-by-factor completion gets worse with `k`, which is why its best point is `3/5` at `k = 6`.
+3. **The corpus holds the receiver and the pieces.** RH ⇔ the prime-trace moments `Σ_{p≤N} log p · (2 Re S(log p))^{2k}` are `O(N^{1+A})` with `A` independent of `k`; the positivity is free and the uniformity in `k` is RH [TENSORTRICK]. A single Euler column is pure iff tempered — pointwise purity, step (i) [EULERCOLUMN]. Frames, towers and covering levers are proved [TOWERFIX] [SIGNLINE] [COVERSUB]. The zeros of the heat pencil carry a big monodromy group (index `≤ 2` in the signed permutations; one exchange gives all of them) [HEATMONO] [ODDQUART]. The Kummer calibration curves have the Hasse–Weil maximal count and their Frobenius eigenvalues are Gauss and Jacobi sums with Stickelberger valuations [KUMMERMAX] [STICKEL].
+4. **Nothing else in the corpus has a mechanism.** Every width route is a ruler, the index face reads `κ` and `w` without moving them, the tail atoms have no engine, the physical axioms are satisfied by fakes (sections 2.3, P- and U-walls). The selection layer requires a mechanism that uses unit Euler parameters (R11); the tensor-power argument is precisely the mechanism that turns pointwise purity into global purity.
+
+### The missing mathematics the route predicts
+
+| Code | Object | Corpus shadow | Why it does not exist yet |
+|---|---|---|---|
+| **N1** | A **pencil through `ζ`**: a family of `L`-data over a base whose points carry Frobenius-type operators, each member with Euler product and functional equation, whose zeros form a local system with large monodromy, and which has `ζ` (or an object whose purity is RH) as a fibre | Heat pencil: big monodromy, but a Dirichlet series only at time `0` [HEATMONO] [HEATDIR]; twist families: Euler products and the seed, no monodromy [MMD_DIR] [RAYSEED] [S]; the motive of the zeros over `Spec ℤ` is a sum of Tate twists [TENSORTRICK] | Geometry without arithmetic, or arithmetic without geometry: no known family has both. |
+| **N2** | **Sign-line completions at every period**: joint completions of Möbius-signed Gauss monomials priced `k/2` for `k ≥ 7` (2.21) | Stickelberger pricing and the sign line [SIGNPRICE] [SIGNLINE]; for orders `m ≥ 4` at the Kazhdan–Patterson theta rank the positive-form budget is `≥ 25/28 > 7/8` [HIGHORDER] | Needs the Fourier coefficients of theta functions on higher metaplectic covers, known only for orders `2` and `3`. |
+| **N3** | **Exact transport uniform in the period**: `ζ`-zeros forced into the period-`k` family with no estimate floor and constants uniform in `k` (2.6) | Exact zero locus of the cubic correction [CORRZERO]; the `20999/24000` transport is estimate-bound [SUBPROBE] [S] | Every proved transport passes through moment estimates whose floor is at least `5/6` in Cauchy–Schwarz form [SAVING]. |
+
+### Stages
+
+| Stage | What must be proved | Lean starting points | Least favourable answer | What that answer teaches |
+|---|---|---|---|---|
+| **Ω1 Calibration** | Purity of the Kummer calibration curves by the tensor-power argument, written in the frame calculus: Frobenius eigenvalues, positivity of even powers, the top-cohomology bound, frames `((k−1)/2, k)`, limit | Kummer function fields [KUMMERMAX] [KUMMERPARITY] [KUMMERCARTIER] [S]; Gauss sums and Stickelberger [STICKEL] [TENSORPRICE]; [TOWERFIX] | Step (iii) needs Lefschetz-pencil and monodromy input that the frame calculus cannot express | The exact list of inputs; if monodromy is needed already over `𝔽_q`, N1 is unavoidable over `ℤ`. |
+| **Ω2 Price ledger** | Sign line and Deligne line differ by the Möbius half unit and have the same limit; completion-line centres increase to `2/3` | [SIGNCOST] [SIGNLINE] [PRICE] [WALLGEN] | None: arithmetic | The obstruction of the producer is the completion, not the sign. |
+| **Ω3 Diagnosis over `Spec ℤ`** | The exponents `a_k` of the prime-trace moments satisfy `2kw ≤ a_k ≤ 1 + 2kw` [D], from the receiver and the width law at the primes, so `a_k/(2k) → w` | [TENSORTRICK] [PRIMEWIDTH] | Confirmed: the trick over `Spec ℤ` with the motive of the zeros is a ruler | `Spec ℤ` is the wrong base: the motive of the zeros is Tate, without monodromy over the primes, so every tuple of zeros contributes to the edge and nothing cancels. The zeros must vary in a family with monodromy (N1). |
+| **Ω4 Pencil** | Decide three candidates: (a) heat pencil — an arithmetic structure at times `τ ≠ 0`, or a no-go; (b) twist families of Dirichlet and ray-class `L`-functions — a monodromy on the family (the function-field analogue has one); (c) the Fermat/Kummer family — a transport of `ζ`'s zeros into its fibres | (a) [HEATMONO] [HEATDIR]; (b) [MMD_DIR] [RAYSEED] [S]; (c) [CORRZERO] [RUNG] | Each candidate splits into geometry without arithmetic or arithmetic without geometry | A specification of N1 as a list of axioms that no known object meets; it is the target object of the `𝔽₁` programme (2.14, stage F3). |
+| **Ω5 Frame track** | A sign-line completion at period `k ≥ 7` (2.21): first the Stickelberger price of the `A₂` series coefficients; then Weil's Jacobi-sum Hecke characters, whose infinity type is given by Stickelberger's theorem [D, classical] — test whether a probe for `ζ` has such a character as its correction at `ks − k/2` | [A2CHAIN] [STICKEL] [SIGNPRICE] [HIGHORDER] | Higher-order budgets stay above `7/8` and the theta coefficients are not explicit | Metaplectic covers cost more than the sign line saves; the frame track needs a source outside metaplectic theta functions (N2). |
+| **Ω6 Exact transport** | First for the cubic frame `(3, 6)`: exact transport alone gives `Θ ≤ 2/3` from one level and `3/5` from the tower [TOWERFIX] [D]; prove continuation of the probe by identities (2.6) | [CORRZERO] [RUNG] [GROSSENTOWER] [SUBPROBE] [S] | The dual series has abscissa equal to the estimate floor: the floor is intrinsic | Transport must be at the level of eigenvalues (algebraic), which is N1 again. |
+| **Ω7 Uniformity** | Constants of completion and transport uniform in `k`; the top bound `1` is free for tempered members (Euler product on `Re s > 1`, nonvanishing on `Re s = 1`) | [LADDERTRANSFER] | Conductors of order-`k` families push the floor `σ₀(k)` to `1` | N3: an analysis of families of growing degree. |
+| **Ω8 Assembly** | For each `k`: `Θ ≤ max(σ₀(k), (k/2 + 1)/k)`; levers covering `(½, 20999/24000]` give RH | [TOWERFIX] [SIGNLINE] [COVERSUB] [S] | — | — |
+
+### Decision logic
+
+- **Ω1–Ω3 are proofs within reach.** Ω1 and Ω2 fix the bookkeeping; Ω3 is expected to come out as a ruler theorem, which is the precise statement that the tensor-power argument cannot run over `Spec ℤ` itself.
+- **Ω4 decides the route.** A pencil with both arithmetic and monodromy, even a model one, reduces RH to Ω7. If all three candidates split, the programme's output is the axiom list of N1 — the object the RH needs — and that list becomes the specification of the `𝔽₁` programme.
+- **Ω5 and Ω6 are the frame track, independent of N1.** They can reach `3/5` (exact transport at the cubic frame) or `½ + 1/k` (sign line) without a pencil; the least favourable answers send both back to N1.
+- **What refutes the programme.** A theorem that every family of Euler–FE data through `ζ` with nonconstant zeros has finite monodromy on its zeros, or that every transport from `ζ` into another family has an intrinsic estimate floor: then no Deligne-shaped proof exists, and RH needs a mechanism without precedent.
+
+**Assessment.** The chance that Ω closes within existing mathematics is small. Its value under the working prior is that each stage ends in a theorem: a calibration (Ω1), a price law (Ω2), a ruler no-go (Ω3), a pencil or the axiom list of the missing object (Ω4), a completion or a cost theorem (Ω5), a transport or an intrinsic floor (Ω6).
+
 <!-- source references -->
 [A2CHAIN]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheRankTwoMultipleDirichletSeriesConvexityHull.lean#L504
 [A2DOUBLE]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheRankTwoMultipleDirichletSeriesConvexityHull.lean#L779
@@ -387,10 +429,13 @@ The assumption guides the search; a disproof must concern the actual `ζ`.
 [ACS]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/AUniformLowerBoundOnTheMarginOfTheWindowMatricesForcesTheRiemannHypothesis.lean#L505
 [ADS]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheEternalAdSPrimeMarkedDictionary.lean#L884
 [ADS-NOGO]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/CausalIdentitiesCannotForceQuarterRingdown.lean#L1600
+[ADSSUB]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L368
 [AKLT]: ../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/PrimeTowersAndConeCouplingProduceAsymptoticAbscissaLaw.lean#L306
 [ARTIN]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/EveryArtinLFunctionHasACompletionWithAFunctionalEquation.lean
 [ARTINSEED]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheArtinFunctionOfTheCubeRootsOfTwoCarriesTheSeed.lean#L147
 [AVERAGE]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheAverageRowIsBlindToTheTarget.lean#L148
+[AVOID]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L82
+[AVOIDJUMP]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L186
 [BALANCED]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L541
 [BANDFORCE]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/ExpandingForcingLawsRulersAndTheRiemannHypothesis.lean#L154
 [BRAUER]: ../../../formal/GaloisForLFunctions/RHTower/Artin/ArtinBrauerInductionTheorem.lean#L206
@@ -436,11 +481,14 @@ The assumption guides the search; a disproof must concern the actual `ζ`.
 [HEAT-FINITE]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheArithmeticGroupActsOnContinuedWindowsOfZerosAsHeatMonodromy.lean#L81
 [HEAT-NOGO]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheArithmeticGroupIsAHeatMonodromyOnFiniteWindowsButNotOnAFibre.lean#L62
 [HEAT-PARITY]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheForwardMonodromyGroupIsProperExactlyWhenItsTurnsObeyOneParityLaw.lean#L204
+[HEATDIR]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/OnlyTheUndeformedKernelHasADirichletSeries.lean#L623
 [HEATLOC]: ../../../formal/GaloisForLFunctions/RHTower/XiSliceHeatThresholdVerificationHeight.lean#L94
+[HEATMONO]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheForwardMonodromyGroupHasIndexAtMostTwoInTheSignedPermutationsOfFiniteSupport.lean#L116
 [HEATSPACING]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheHeatTimeIsTheWidthTimesTheSpacing.lean#L109
 [HEATUNIT]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/TheHeatFlowHasTheCountOfItsLimit.lean#L60
 [HECKESEED]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/QuasiRiemannHypothesis.lean#L602
 [HIDDEN]: ../../../formal/GaloisForLFunctions/WindowVisibilityLaw/ShallowClusterExclusionAndTaperedCrystalBarrier.lean#L1179
+[HIGHORDER]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/MoebiusSignedGaussPairingsEndAtThreeFifths.lean#L976
 [HPEQUIV]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean#L352
 [HPTRANS]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean#L440
 [INDEX]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheFiniteStratumIsThePacketIndexDichotomy.lean#L85
@@ -468,7 +516,7 @@ The assumption guides the search; a disproof must concern the actual `ζ`.
 [MARGINSINF]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesIsARulerAtPolynomialBlockSize.lean#L804
 [MC]: ../../../formal/GaloisForLFunctions/RHTower/MobiusHilbertFormEquivalence.lean#L219
 [MEASURING]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L79
-[MINFILTER]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/MinimumTargetWeights.lean#L229
+[MINFILTER]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/MinimumTargetWeights.lean#L234
 [MIXED]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/MixedTowersOfLeversStayAboveTheBestCentre.lean#L419
 [MIXEDTRACE]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheMixedPrimeTracesSatisfyTheFunctionalEquation.lean
 [MULT]: ../../../formal/GaloisForLFunctions/SquareRootThreshold/SechMultiplicityEnvelope.lean#L91
@@ -493,6 +541,7 @@ The assumption guides the search; a disproof must concern the actual `ζ`.
 [PRICE]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/MoebiusSignedGaussPairingsEndAtThreeFifths.lean#L383
 [PRICEABOVE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheGaussPairingsArePricedAboveTheSign.lean#L126
 [PRIME-FIBRES]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheFibreFieldsOverThePrimeTracesAreFiniteGaloisAndGenerateTheSpectralField.lean#L1
+[PRIMEWIDTH]: ../../../formal/GaloisForLFunctions/SurfaceOfSpecZ/TheWidthIsTheStepanovExponentAtThePrimes.lean#L909
 [PROPALT]: ../../../formal/GaloisForLFunctions/RHTower/Zeta23SeventyPercentOrSimpleNearLine.lean#L21
 [QUARTET]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheOrbitOfAZeroLiesInItsQuartetIffItsWidthAndOrdinateValuesSolveAQuadraticOverThePrimeTraceField.lean#L281
 [QUARTETFORCE]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/TheClosedConfigurationsOfHalvingAndDoubling.lean#L120
@@ -502,7 +551,7 @@ The assumption guides the search; a disproof must concern the actual `ζ`.
 [RFHM]: ../../../formal/GaloisForLFunctions/RHTower/JointAncestryAllPrimeReversibleRFHMSewingNoGo.lean#L37
 [RIGIDITY]: ../../../formal/GaloisForLFunctions/EulerFETransportTheory/DecayingFunctionalEquationsDetermineThePrimes.lean#L486
 [ROOTCOINC]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L174
-[ROWCANCEL]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/SmoothArithmeticRowCancellation.lean#L214
+[ROWCANCEL]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/SmoothArithmeticRowCancellation.lean#L224
 [ROWCOUNTAT]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L436
 [RULERS]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L55
 [RUNG]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheCorrectionOfTheCubicProbeCarriesTheAbscissaOfItsRung.lean#L126
@@ -532,10 +581,12 @@ The assumption guides the search; a disproof must concern the actual `ζ`.
 [SUBDIR]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L141
 [SUBEULER]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L319
 [SUBHECKE]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L34
-[SUBPROBE]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsHighTransport.lean#L1231
+[SUBPROBE]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsHighTransport.lean#L1260
 [SUBSEED]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L147
 [TARGETFILTER]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheNonprincipalFilterRecoversTheTarget.lean#L161
 [TEMPERED]: ../../../formal/GaloisForLFunctions/RHTower/NonTemperedShiftedZetaPairCountermodel.lean
+[TENSORPRICE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheTensorPowersOfAGaussSumReachZetaAtTheRateOfItsOrder.lean
+[TENSORTRICK]: ../../../formal/GaloisForLFunctions/SurfaceOfSpecZ/TheTensorPowerTrick.lean#L34
 [TH]: ../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaHermiteTraceFlag.lean#L250
 [THERMOFIELD]: ../../../formal/GaloisForLFunctions/HTGeometry/Thermofield/PrimeLogApplications.lean
 [THREEATOMS]: ../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheLandingLawForZeta.lean#L68

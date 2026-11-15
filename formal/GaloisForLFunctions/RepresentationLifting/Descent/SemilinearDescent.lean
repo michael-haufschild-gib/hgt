@@ -38,8 +38,8 @@ local instance semilinearFixedFieldComm : SMulCommClass G (FixedPoints.subfield 
 
 /-- Restricting semilinear scalars to the fixed field gives an ordinary representation. -/
 def semilinearFixedRepresentation : Representation (FixedPoints.subfield G L) G V :=
-  letI := semilinearFixedFieldComm G L V
-  Representation.ofDistribMulAction (FixedPoints.subfield G L) G V
+  @Representation.ofDistribMulAction (FixedPoints.subfield G L) G V
+    _ _ _ (semilinearFixedFieldModule G L V) _ (semilinearFixedFieldComm G L V)
 
 variable [Fintype G] [FaithfulSMul G L] [FiniteDimensional L V]
 

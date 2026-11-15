@@ -65,19 +65,19 @@ theorem heckeFamilyOfRay_residue_ne_one (hψ : ψ ≠ 1) : (heckeFamilyOfRay �
   intro h1
   have h1' : finiteHeckeWeight 𝔪 ψ = 1 := h1
   apply hψ
-  ext c
+  refine DFunLike.ext _ _ fun c => ?_
   obtain ⟨x, rfl⟩ := rayResidueClass_surjective 𝔪 c
-  have hemp : IsEmpty 𝔪.inf := ⟨fun w => isEmpty_isReal_infinitePlace.false w.1⟩
-  have hx : rayResidueClass 𝔪 x = fullRayResidueClass 𝔪 x.1 := congrArg (rayResidueClass 𝔪) rfl
+  haveI : IsEmpty 𝔪.inf :=
+    ⟨fun w => FamilyContinuationTheory.isEmpty_isReal_infinitePlace.false w.1⟩
+  have hx : rayResidueClass 𝔪 x = fullRayResidueClass 𝔪 x.1 := rfl
   have hfin : finiteResidueCharacter 𝔪 ψ x.1.1 = 1 := by
     apply Units.ext
     rw [← finiteHeckeWeight_unit, h1', MulChar.one_apply_coe, Units.val_one]
   have hinf : infiniteSignCharacter 𝔪 ψ x.1.2 = 1 := by
     rw [Subsingleton.elim x.1.2 1, map_one]
-  rw [hx]
-  change (rayResidueCharacter 𝔪 ψ x.1 : ℂ) = ((1 : HeckeCharacter 𝔪) _ : ℂ)
+  rw [hx, MonoidHom.one_apply]
+  change rayResidueCharacter 𝔪 ψ x.1 = 1
   rw [rayResidueCharacter_eq_mul, hfin, hinf, mul_one]
-  rfl
 
 /-- On `Re s > 1` the MMD `L`-function of `ψ` is `L(s, ψ)`. -/
 theorem LFunction_heckeFamilyOfRay_eq_heckeL {s : ℂ} (hs : 1 < s.re) :

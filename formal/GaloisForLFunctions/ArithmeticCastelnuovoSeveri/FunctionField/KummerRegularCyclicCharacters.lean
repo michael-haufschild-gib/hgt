@@ -42,7 +42,7 @@ theorem squareKummerRegularScaling_basis (ζ : K) (hζ : ζ ^ M = 1)
       ζ ^ squareKummerRegularWeight p s d r a • squareKummerRegularMonomialBasis p s c d r a := by
   have hi : a.1.val ≤ (p ^ (s + 1) + 1) * (a.2.val + 1) := by
     have h := Nat.mul_le_mul_left (p ^ (s + 1) + 1)
-      (Nat.succ_le_succ (Nat.zero_le a.2.val))
+      (show 1 ≤ a.2.val + 1 by omega)
     rw [mul_one] at h
     exact a.1.isLt.le.trans h
   apply Subtype.ext

@@ -84,6 +84,7 @@ import GaloisForLFunctions.RepresentationLifting.KTheory.VirtualCharacterK0
 import GaloisForLFunctions.RepresentationLifting.KTheory.FiniteAbelianVirtualRing
 import GaloisForLFunctions.RepresentationLifting.KTheory.VirtualCharacterFirstJet
 import GaloisForLFunctions.RepresentationLifting.Descent.SemilinearInvariantSpan
+import GaloisForLFunctions.RepresentationLifting.Descent.SemilinearDescent
 
 /-!
 # Representation lifting and quadratic extensions

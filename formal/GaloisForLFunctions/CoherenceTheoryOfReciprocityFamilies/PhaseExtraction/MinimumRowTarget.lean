@@ -101,7 +101,7 @@ theorem minimumPhaseReadout_target_error (Q R η X Y V : ℂ)
       sexticReadout_sub _ _ _
     rw [hs]
     have ht := minimumPhaseReadout_recovers_target Q R η X Y V hY hR
-    linear_combination -ht
+    linear_combination ht
   have hn := norm_minimumPhaseReadout_sq_le Y (fun ρ => f ρ - rowLocalSum Q R η X Y V ρ)
   rw [he, norm_mul, norm_neg, mul_pow]
   calc

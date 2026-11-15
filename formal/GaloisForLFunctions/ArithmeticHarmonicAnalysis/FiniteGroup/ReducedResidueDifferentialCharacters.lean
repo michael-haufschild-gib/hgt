@@ -23,7 +23,7 @@ theorem reducedResidue_regular_character_rise (N m R : ℕ) (hN : 0 < N) (hm : 0
   let t := m * (i.val * R % N)
   have hcut := (reducedResidue_cutoff_iff N m R hN hcop i k).mpr hk
   have hNk : N ≤ N * (k + 1) := by
-    have h := Nat.mul_le_mul_left N (Nat.succ_le_succ (Nat.zero_le k))
+    have h := Nat.mul_le_mul_left N (show 1 ≤ k + 1 by omega)
     simpa only [mul_one] using h
   have hi : i.val < N * (k + 1) := lt_of_lt_of_le i.isLt hNk
   have hjadd : j + i.val = N * (k + 1) := Nat.sub_add_cancel hi.le

@@ -8,7 +8,7 @@ The corpus has one seed — no zero of `ζ`, of any Dirichlet `L`-function or of
 
 ## Shared frontier
 
-**Width (face W).** `w ≤ 3/8` is the integrated seed [MMD_STRIP]; `w ≤ 8999/24000` is written [WIDTHSUB] [S]. The seed is read exactly by many rulers: zero abscissa, Möbius prefix at one height, one unit window, zeros of `M_X`, zeta-kernel signal, two-end state [RULERS] [WD] [SIGNAL-WIDTH]; the Weil floor in the logarithmic energy [LOGENERGY]; the neutral-window margin and its doubling factor (best factor `2^w`) at polynomial block size [MARGINSINF] [DOUBLING]; the slope loss of the long moments (least loss `2w`, loss `3/4` unconditional) [SLOPE] [SLOPE34]; the squarefree quotient `((s−1)ζ)^m/ζ(2s)` on `[½, 9/16)` [SQFRULER], on `[½, 27001/48000)` with the written seed [SQFRULER2] [S]; the quotient `ζ(2s)/ζ(s)` [EULERDOUBLING] [S]; Weil-lag, prime-log-window, regularized-series and long-moment dictionaries [WL] [SRT] [PBM] [WD-LONG]; the AdS strip [ADS]. A lever on one ruler is a lever on all [MEASURING] [LEVERTRANSPORT]. No lever for `ζ` is proved.
+**Width (face W).** `w ≤ 3/8` is the integrated seed [MMD_STRIP]; `w ≤ 8999/24000` is written, and every ruler of `w` carries it: `Θ ∉ (20999/24000, 7/8]`, `Λ ≤ 80982001/1152000000`, `|M(n)| = O(n^{7/8})` without loss [WIDTHSUB] [AVOID] [AVOIDJUMP] [NEWMANSUB] [MERTENSEXACT] [S]. The seed is read exactly by many rulers: zero abscissa, Möbius prefix at one height, one unit window, zeros of `M_X`, zeta-kernel signal, two-end state [RULERS] [WD] [SIGNAL-WIDTH]; the Weil floor in the logarithmic energy [LOGENERGY]; the neutral-window margin and its doubling factor (best factor `2^w`) at polynomial block size [MARGINSINF] [DOUBLING]; the slope loss of the long moments (least loss `2w`, loss `3/4` unconditional) [SLOPE] [SLOPE34]; the squarefree quotient `((s−1)ζ)^m/ζ(2s)` on `[½, 9/16)` [SQFRULER], on `[½, 27001/48000)` with the written seed [SQFRULER2] [S]; the quotient `ζ(2s)/ζ(s)` [EULERDOUBLING] [S]; Weil-lag, prime-log-window, regularized-series and long-moment dictionaries [WL] [SRT] [PBM] [WD-LONG]; the AdS strip [ADS]. A lever on one ruler is a lever on all [MEASURING] [LEVERTRANSPORT]. No lever for `ζ` is proved.
 
 **Index (face I).** Some neutral window has `r` negative squares iff `r ≤ 1 + κ` [INDEXLAW]; real packets attain `κ` exactly [INDEX]. Bounded margins ⇔ RH [ACS]; a gap at each cutoff ⇔ RH [GAPRH]. A constant level law, a doubling law with factor one, and the margin law at every positive rate are each RH, and no intermediate growth exists: bounded loss or a positive rate [DOUBLINGONE] [LOSSDICHOT].
 
@@ -35,10 +35,10 @@ The corpus has one seed — no zero of `ζ`, of any Dirichlet `L`-function or of
 | **PBM — regularized abscissa** | `Σ(1_P(n) − 1/log n)n^{−σ}` convergent on `σ > ½` ⇔ RH [PBM]. | Seed reading at `3/8` [D]. | Convergence on `σ > ½`. |
 | **RB — Robin** | Eventual Robin inequality on colossally abundant `n` ⇔ RH [RB]. | Reductions. | The eventual inequality. |
 | **SRT — prime-log windows** | `Re ρ ≤ ½ + α` for all zeros ⇔ a one-sided cubic prime-trace floor `−Kp^α` on cofinal windows [SRT]; two fixed primes on `√T` windows suffice for RH [TWOPRIME]; prime-window non-attainment gives AAL [NONATTAIN]. | Seed reading at `3/8` [D]. | The floor at `α = 0`. |
-| **WD — long moments** | Width read at one height [WD]; two-sided long-moment slope with a common `K` [WD-LONG]; the least slope loss of a stage map `θ ↦ 2θ` is `2w`, loss `3/4` holds, loss `8999/12000` follows from the written seed, loss `0` is RH [SLOPE] [SLOPE34] [D] [S]; depth ladder [DEPTHLADDER]; necessary mollifier length [NECLEN]. | Transfer supplied bounds with the exact quantifiers. | A slope loss below `3/4`, i.e. a better seed; RH needs loss `0` with `θ` unbounded. |
+| **WD — long moments** | Width read at one height [WD]; two-sided long-moment slope with a common `K` [WD-LONG]; the least slope loss of a stage map `θ ↦ 2θ` is `2w`, loss `3/4` holds, loss `8999/12000` from the written seed [SLOPESUB] [S], loss `0` is RH [SLOPE] [SLOPE34]; depth ladder [DEPTHLADDER]; necessary mollifier length [NECLEN]. | Transfer supplied bounds with the exact quantifiers. | A slope loss below `3/4`, i.e. a better seed; RH needs loss `0` with `θ` unbounded. |
 | **JAS — joint ancestry** | Dressed PSD at level one ⇔ RH [JAS]; a signal bound `O(Z^b)` gives level `b + ½ + ε` [SIGNAL-JAS]; ancestry abscissa is `0` or `≥ 1 +` the largest depth [RULERS]. | Insert supplied bounds. | Level-one sign or half-power signal (P1, P2, P9). |
 | **CTF — chronological rows** | RH ⇔ unit-bounded rows reach every tolerance [CTF]; RH ⇔ `∫ log|ζ(½+it)| dt/(¼+t²) = 0` [BSY]. | Row/norm identities. | Vanishing-error rows. |
-| **PM — physical model** | Strip width `δ` of the two-boundary correlator ⇔ zeros in `Re ρ ≤ 1 − 2δ`; `δ = 1/16` from the seed, `δ = 3001/48000` from the written seed [ADS] [D] [S]; Bianchi analogue [BIANCHI]; ZAL and AAL as Euler-filtered horocycle rates [HOROZAL] [HOROAAL]. Excluded: causal, Euler, FE, passive, axis-unitary prime-2 deformations, with decay thresholds `→ 0` [ADS-NOGO]; such a deformation keeps the `10⁻¹³` floor at aperture `½log 2` for every `α` and stays Weil-positive at aperture `log 2` for `α` near `½` while carrying off-line zeros [P2NYQ] [P2LOG2] [S]. | Transport the seed to every observable. | `δ > 1/16` is a better seed, `δ = 1/4` is RH; a physical principle must see the non-tempered gate. |
+| **PM — physical model** | Strip width `δ` of the two-boundary correlator ⇔ zeros in `Re ρ ≤ 1 − 2δ`; `δ = 1/16` from the seed, `δ = 3001/48000` from the written seed [ADS] [ADSSUB] [S]; Bianchi analogue [BIANCHI]; ZAL and AAL as Euler-filtered horocycle rates [HOROZAL] [HOROAAL]. Excluded: causal, Euler, FE, passive, axis-unitary prime-2 deformations, with decay thresholds `→ 0` [ADS-NOGO]; such a deformation keeps the `10⁻¹³` floor at aperture `½log 2` for every `α` and stays Weil-positive at aperture `log 2` for `α` near `½` while carrying off-line zeros [P2NYQ] [P2LOG2] [S]. | Transport the seed to every observable. | `δ > 1/16` is a better seed, `δ = 1/4` is RH; a physical principle must see the non-tempered gate. |
 
 ### Complete forms, windows and thresholds (index face)
 
@@ -56,7 +56,7 @@ The corpus has one seed — no zero of `ζ`, of any Dirichlet `L`-function or of
 | **ACT — one shift** | At any fixed shift, the pole-free variation inequality on even `C²_c` profiles ⇔ RH [ACT]. | Fix one shift. | All profiles. |
 | **AIP — compensated incidence** | Subexponential compensated cost at every rate ⇔ RH [AIP]. | Keep prime, pole, reflection terms. | Subexponential cost at every rate. |
 | **SC — two-prime cone** | Bounded Gaussian-damped coupling on one two-prime cone ⇔ RH [SC]; undamped coupling or prime towers give AAL, and under AAL RH ⇔ ZAL [AKLT]. | Apply the receivers. | The coupling bound. |
-| **ACS — arithmetic index** | Margin bounded ⇔ RH [ACS]; gap ⇔ RH [GAPRH] [GAP]; index law [INDEXLAW]; margin rate at polynomial block size = `w` [MARGINSINF]; doubling factor best `2^w` [DOUBLING]; RH ⇔ doubling factor one [DOUBLINGONE]; a factor in `(1, 2^{3/8})` exists iff `w < 3/8` [DOUBLING38IFF] [S], so the written seed gives factors `2^{8999/24000+ε}` [WIDTHSUB] [D] [S]; every bounded contact-weight model has the factor `√2` [SQRT2] [S]; ratio ladder `≤ 3` (`Q ≥ 2`), `< 4` (`Q ≥ 3`) [LOGLADDER] [S]; the first step separates `ζ` from the sign twin through the dipole [TWIN] [DIPOLE]. Excluded: gluing data alone — a sub-Euler model agrees with the true window up to any certified cutoff, on every dyadic middle and on both half-windows, and has best factor exactly `√2` [SUBEULER] [S]; fixed-rank absolute gluing [RANK-WALL]; bare dilation gap [TREE-GAP]. | Decide the `Q = 2` fourth step [FOURTHRED] [S]. | A factor below `√2` needs a negative fresh-octave form of order `√K` on the obstructing direction [TOPOCTAVE] [TOPJUMP] [S]; that form reads primes in `(3K, 6K]`, i.e. the width (P10). |
+| **ACS — arithmetic index** | Margin bounded ⇔ RH [ACS]; gap ⇔ RH [GAPRH] [GAP]; index law [INDEXLAW]; margin rate at polynomial block size = `w` [MARGINSINF]; doubling factor best `2^w` [DOUBLING]; RH ⇔ doubling factor one [DOUBLINGONE]; a factor in `(1, 2^{3/8})` exists iff `w < 3/8` [DOUBLING38IFF] [S], so the written seed gives factors `2^{8999/24000+ε}`, and `2^{3/8}` holds exactly [DOUBLINGSUB] [S]; every bounded contact-weight model has the factor `√2` [SQRT2] [S]; ratio ladder `≤ 3` (`Q ≥ 2`), `< 4` (`Q ≥ 3`) [LOGLADDER] [S]; the first step separates `ζ` from the sign twin through the dipole [TWIN] [DIPOLE]. Excluded: gluing data alone — a sub-Euler model agrees with the true window up to any certified cutoff, on every dyadic middle and on both half-windows, and has best factor exactly `√2` [SUBEULER] [S]; fixed-rank absolute gluing [RANK-WALL]; bare dilation gap [TREE-GAP]. | Decide the `Q = 2` fourth step [FOURTHRED] [S]. | A factor below `√2` needs a negative fresh-octave form of order `√K` on the obstructing direction [TOPOCTAVE] [TOPJUMP] [S]; that form reads primes in `(3K, 6K]`, i.e. the width (P10). |
 | **ECP — endpoint characters** | Actual character Grams PSD at every rank ⇔ RH [ECP]. | Finite shapes. | All ranks. |
 
 ### Zero geometry, heat, approximation
@@ -115,12 +115,15 @@ Walls: [wall ledger](walls-ledger.md). Faces and bridges: [unification ledger](r
 [ACT]: ../../../formal/GaloisForLFunctions/ArithmeticCriticalityTheory/SingleShiftCompleteness.lean#L177
 [ADS]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheEternalAdSPrimeMarkedDictionary.lean#L884
 [ADS-NOGO]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/CausalIdentitiesCannotForceQuarterRingdown.lean#L1600
+[ADSSUB]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L368
 [AIP]: ../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheCompensatedRemainderOfTheFullLedger.lean#L878
 [AKLT]: ../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/PrimeTowersAndConeCouplingProduceAsymptoticAbscissaLaw.lean#L306
 [APF]: ../../../formal/GaloisForLFunctions/RHTower/PaperPrimeFredholmReconstruction.lean#L39
 [ARTIN]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/EveryArtinLFunctionHasACompletionWithAFunctionalEquation.lean
 [ARTINSEED]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheArtinFunctionOfTheCubeRootsOfTwoCarriesTheSeed.lean#L147
 [AVERAGE]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheAverageRowIsBlindToTheTarget.lean#L148
+[AVOID]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L82
+[AVOIDJUMP]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L186
 [BAG]: ../../../formal/GaloisForLFunctions/RHTower/ZetaDiscRecurrenceOnEveryClosedDiscOfTheStrip.lean#L294
 [BALANCED]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L541
 [BANDFORCE]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/ExpandingForcingLawsRulersAndTheRiemannHypothesis.lean#L154
@@ -151,6 +154,7 @@ Walls: [wall ledger](walls-ledger.md). Faces and bridges: [unification ledger](r
 [DOUBLING]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestDoublingFactorOfTheMarginIsTwoToTheWidth.lean#L217
 [DOUBLING38IFF]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L771
 [DOUBLINGONE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheLossOfTheMarginIsBoundedOrPolynomial.lean#L81
+[DOUBLINGSUB]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L356
 [ECP]: ../../../formal/GaloisForLFunctions/RHTower/Representation/EndpointCharacterCriterion.lean#L62
 [EDIT]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L186
 [EDITDEFECT]: ../../../formal/GaloisForLFunctions/WorldsOfTheZeroConfiguration/TheWorldOneScenarioTable.lean#L38
@@ -223,13 +227,15 @@ Walls: [wall ledger](walls-ledger.md). Faces and bridges: [unification ledger](r
 [MC]: ../../../formal/GaloisForLFunctions/RHTower/MobiusHilbertFormEquivalence.lean#L219
 [MEASURING]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L79
 [MERTENS78]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L169
-[MINFILTER]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/MinimumTargetWeights.lean#L229
+[MERTENSEXACT]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L229
+[MINFILTER]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/MinimumTargetWeights.lean#L234
 [MIXED]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/MixedTowersOfLeversStayAboveTheBestCentre.lean#L419
 [MSC]: ../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmGammaSewnSquarefreeXiConormalBridge.lean#L87
 [MULT]: ../../../formal/GaloisForLFunctions/SquareRootThreshold/SechMultiplicityEnvelope.lean#L91
 [NECLEN]: ../../../formal/GaloisForLFunctions/ArithmeticProduction/TheNecessaryLengthOfAMollifier.lean#L716
 [NEWMAN]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L155
 [NEWMANLOW]: ../../../formal/GaloisForLFunctions/RHTower/Heat/TheHeatDetectionRateIsQuadraticInTheDepth.lean#L520
+[NEWMANSUB]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L198
 [NONATTAIN]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/ThePrimeNumberTheoremIsNotAttainedOnWindows.lean#L151
 [ODDLOG2]: ../../../formal/GaloisForLFunctions/WindowTowerOfSpecZ/TheOddWeilFormHasAFloorAtApertureLogTwo.lean#L3966
 [ODDPROP]: ../../../formal/GaloisForLFunctions/MultiscaleMollifiedZetaField/TheTwistedMomentGivesAPositiveCriticalProportion.lean#L109
@@ -264,7 +270,7 @@ Walls: [wall ledger](walls-ledger.md). Faces and bridges: [unification ledger](r
 [RFHM]: ../../../formal/GaloisForLFunctions/RHTower/JointAncestryAllPrimeReversibleRFHMSewingNoGo.lean#L37
 [RN]: ../../../formal/GaloisForLFunctions/RHTower/CCM/CCMThetaGroundRHCriterion.lean#L49
 [ROOTCOINC]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L174
-[ROWCANCEL]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/SmoothArithmeticRowCancellation.lean#L214
+[ROWCANCEL]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/SmoothArithmeticRowCancellation.lean#L224
 [ROWTARGET]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/TheNonprincipalRowRetainsTheTarget.lean#L46
 [RP]: ../../../formal/GaloisForLFunctions/RHTower/SPEQuantileRieszRoutePLinearFloorCriterion.lean#L478
 [RULERS]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L55
@@ -288,6 +294,7 @@ Walls: [wall ledger](walls-ledger.md). Faces and bridges: [unification ledger](r
 [SIGNPRICE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheShortMoebiusMonomialsPayExactlyHalf.lean#L97
 [SLOPE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth.lean#L110
 [SLOPE34]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth.lean#L95
+[SLOPESUB]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean#L335
 [SMALLEIG]: ../../../formal/GaloisForLFunctions/CompactHyperbolicSurfaces/SmallEigenvalueZeta.lean#L25
 [SQF]: ../../../formal/GaloisForLFunctions/RHTower/SquarefreeExponentialOneSided.lean#L605
 [SQFRULER]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L268
@@ -301,7 +308,7 @@ Walls: [wall ledger](walls-ledger.md). Faces and bridges: [unification ledger](r
 [SUBDIR]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L141
 [SUBEULER]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L319
 [SUBHECKE]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L34
-[SUBPROBE]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsHighTransport.lean#L1231
+[SUBPROBE]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsHighTransport.lean#L1260
 [SUBSEED]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L147
 [SZ]: ../../../formal/GaloisForLFunctions/RHTower/Suzuki/SuzukiTransitionCoreAlignedGammaCompletion.lean#L380
 [TARGETFILTER]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheNonprincipalFilterRecoversTheTarget.lean#L161
