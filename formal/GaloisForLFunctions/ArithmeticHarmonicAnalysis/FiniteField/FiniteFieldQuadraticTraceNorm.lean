@@ -23,7 +23,8 @@ private theorem quadratic_trace (x : L) :
   simpa only [hdegree, Finset.sum_range_succ, Finset.range_zero, Finset.sum_empty,
     pow_zero, pow_one, zero_add] using FiniteField.algebraMap_trace_eq_sum_pow K L x
 
-private theorem quadratic_norm (x : L) :
+/-- In a quadratic finite-field extension, the embedded norm is the product with the Frobenius conjugate. -/
+theorem finiteField_quadratic_norm (x : L) :
     algebraMap K L (Algebra.norm K x) = x * x ^ Nat.card K := by
   simpa only [hdegree, Finset.prod_range_succ, Finset.range_zero, Finset.prod_empty,
     pow_zero, pow_one, one_mul] using FiniteField.algebraMap_norm_eq_prod_pow K L x
@@ -62,8 +63,8 @@ theorem finiteField_quadratic_trace_norm_iff (x y : L) :
       (quadratic_trace hdegree y).symm.trans
         ((congrArg (algebraMap K L) ht).trans (quadratic_trace hdegree x))
     have hp : y * y ^ Nat.card K = x * x ^ Nat.card K :=
-      (quadratic_norm hdegree y).symm.trans
-        ((congrArg (algebraMap K L) hn).trans (quadratic_norm hdegree x))
+      (finiteField_quadratic_norm hdegree y).symm.trans
+        ((congrArg (algebraMap K L) hn).trans (finiteField_quadratic_norm hdegree x))
     exact first_eq_or_of_sum_prod_eq x (x ^ Nat.card K) y (y ^ Nat.card K) hs hp
   · rintro (rfl | rfl)
     · exact ⟨rfl, rfl⟩
@@ -72,7 +73,7 @@ theorem finiteField_quadratic_trace_norm_iff (x y : L) :
         rw [quadratic_trace hdegree, quadratic_trace hdegree, quadratic_frobenius_sq hdegree,
           add_comm]
       · apply (algebraMap K L).injective
-        rw [quadratic_norm hdegree, quadratic_norm hdegree, quadratic_frobenius_sq hdegree,
+        rw [finiteField_quadratic_norm hdegree, finiteField_quadratic_norm hdegree, quadratic_frobenius_sq hdegree,
           mul_comm]
 
 private theorem pair_fiber_pair (a b : K) (x : K × K)
@@ -96,7 +97,7 @@ private theorem quadratic_fiber_base_root (a b : K) (x : L)
   have hs : x + x ^ Nat.card K = algebraMap K L a + algebraMap K L b := by
     rw [← quadratic_trace hdegree, ht, map_add]
   have hp : x * x ^ Nat.card K = algebraMap K L a * algebraMap K L b := by
-    rw [← quadratic_norm hdegree, hn, map_mul]
+    rw [← finiteField_quadratic_norm hdegree, hn, map_mul]
   exact first_eq_or_of_sum_prod_eq _ _ x (x ^ Nat.card K) hs hp
 
 private theorem quadratic_fiber_card_le_two (v : K × K) :

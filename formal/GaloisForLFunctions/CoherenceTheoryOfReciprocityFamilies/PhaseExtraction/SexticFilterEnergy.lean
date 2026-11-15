@@ -126,23 +126,6 @@ theorem sexticPolynomial_average {ζ : ℂ} (hζ : IsPrimitiveRoot ζ 6) (c : Fi
   have h := sexticCoefficients_polynomial hζ c 0
   simpa only [sexticCoefficients, Fin.val_zero, pow_zero, div_one] using h
 
-/-- Cubic row numerators may be multiplied by a quadratic without creating a
-new constant mode on the six phases. -/
-theorem sextic_average_cubic_mul_quadratic {ζ : ℂ} (hζ : IsPrimitiveRoot ζ 6)
-    (a b c d u v : ℂ) :
-    (1 / 6 : ℂ) * ∑ i : Fin 6,
-      (a + b * ζ ^ i.val + c * (ζ ^ i.val) ^ 2 + d * (ζ ^ i.val) ^ 3) *
-        (1 + u * ζ ^ i.val + v * (ζ ^ i.val) ^ 2) = a := by
-  let coeff : Fin 6 → ℂ := ![a, b + a * u, c + b * u + a * v,
-    d + c * u + b * v, d * u + c * v, d * v]
-  have he (ρ : ℂ) : (a + b * ρ + c * ρ ^ 2 + d * ρ ^ 3) *
-      (1 + u * ρ + v * ρ ^ 2) = sexticPolynomial coeff ρ := by
-    simp only [sexticPolynomial, coeff, Fin.sum_univ_succ, Matrix.cons_val_zero,
-      Matrix.cons_val_succ, Fin.val_zero, Fin.val_succ]
-    ring
-  simp_rw [he]
-  simpa only [coeff, Matrix.cons_val_zero] using sexticPolynomial_average hζ coeff
-
 /-- Exact polynomial expression for the geometric row, away from its six poles. -/
 theorem sextic_geometric_expansion (ρ Y : ℂ) (hρ : ρ ^ 6 = 1) (hY : Y ^ 6 ≠ 1) :
     ρ * Y * (1 - ρ * Y)⁻¹ =
@@ -180,7 +163,6 @@ theorem sexticReadout_geometric {ζ : ℂ} (hζ : IsPrimitiveRoot ζ 6)
     simp_rw [sextic_geometric_expansion _ Y (hr _) hY]
     unfold sexticReadout
     simp only [Finset.mul_sum, Finset.sum_div, ← Finset.sum_add_distrib]
-    rw [← Finset.sum_div]
     refine Finset.sum_congr rfl fun i _ => ?_
     ring
   rw [he, sexticReadout_one ζ w]
@@ -189,5 +171,44 @@ theorem sexticReadout_geometric {ζ : ℂ} (hζ : IsPrimitiveRoot ζ 6)
     sexticReadout_monomial hζ w (by norm_num : 0 < 3) (by norm_num),
     sexticReadout_monomial hζ w (by norm_num : 0 < 4) (by norm_num),
     sexticReadout_monomial hζ w (by norm_num : 0 < 5) (by norm_num)]
+  rfl
+
+/-- Addition of observations preserves the signed phase pairing. -/
+theorem sexticReadout_add (w f g : Fin 6 → ℂ) :
+    sexticReadout w (fun i => f i + g i) = sexticReadout w f + sexticReadout w g := by
+  simp only [sexticReadout, mul_add, Finset.sum_add_distrib]
+
+/-- Subtraction of observations preserves the signed phase pairing. -/
+theorem sexticReadout_sub (w f g : Fin 6 → ℂ) :
+    sexticReadout w (fun i => f i - g i) = sexticReadout w f - sexticReadout w g := by
+  simp only [sexticReadout, mul_sub, Finset.sum_sub_distrib]
+
+/-- A scalar coefficient factors out of the phase pairing. -/
+theorem sexticReadout_mul (w f : Fin 6 → ℂ) (c : ℂ) :
+    sexticReadout w (fun i => c * f i) = c * sexticReadout w f := by
+  unfold sexticReadout
+  simp only [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  ring
+
+/-- The inverse phase reads the target Fourier coefficient. -/
+theorem sexticReadout_inverse (ζ : ℂ) (w : Fin 6 → ℂ) :
+    sexticReadout w (fun i => (ζ ^ i.val)⁻¹) = sexticCoefficients ζ w 1 := by
+  simp only [sexticReadout, sexticCoefficients, Fin.val_one, pow_one, div_eq_mul_inv]
+
+/-- Cauchy–Schwarz with the literal normalization of the six-phase pairing. -/
+theorem norm_sexticReadout_sq_le (w f : Fin 6 → ℂ) :
+    36 * ‖sexticReadout w f‖ ^ 2 ≤
+      (∑ i : Fin 6, ‖w i‖ ^ 2) * ∑ i : Fin 6, ‖f i‖ ^ 2 := by
+  have hn : ‖∑ i : Fin 6, w i * f i‖ ≤ ∑ i : Fin 6, ‖w i‖ * ‖f i‖ := by
+    simpa only [norm_mul] using norm_sum_le Finset.univ (fun i => w i * f i)
+  have hs : ‖∑ i : Fin 6, w i * f i‖ ^ 2 ≤
+      (∑ i : Fin 6, ‖w i‖ ^ 2) * ∑ i : Fin 6, ‖f i‖ ^ 2 := by
+    calc
+      _ ≤ (∑ i : Fin 6, ‖w i‖ * ‖f i‖) ^ 2 := by gcongr
+      _ ≤ _ := Finset.sum_mul_sq_le_sq_mul_sq _ _ _
+  rw [sexticReadout, norm_mul]
+  norm_num only [norm_div, norm_one, Complex.norm_ofNat]
+  nlinarith only [hs]
 
 end GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies

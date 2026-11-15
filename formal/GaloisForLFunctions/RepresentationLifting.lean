@@ -82,6 +82,7 @@ import GaloisForLFunctions.RepresentationLifting.Augmentation.PrimaryTorsionCoho
 import GaloisForLFunctions.RepresentationLifting.KTheory.FieldGrothendieckGroup
 import GaloisForLFunctions.RepresentationLifting.KTheory.VirtualCharacterK0
 import GaloisForLFunctions.RepresentationLifting.KTheory.FiniteAbelianVirtualRing
+import GaloisForLFunctions.RepresentationLifting.KTheory.VirtualCharacterFirstJet
 
 /-!
 # Representation lifting and quadratic extensions
