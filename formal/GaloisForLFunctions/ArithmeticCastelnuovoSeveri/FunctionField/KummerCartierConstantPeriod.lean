@@ -56,11 +56,11 @@ theorem primePowerKummerRegularCartierPeriod_eq_zero :
   let S := squareKummerRegularScaling p s c d r ζ hζ.pow_eq_one
   have hweight (i : SquareKummerRegularIndex p s d r) : weight i < M :=
     (squareKummerRegularWeight_bounds p s d r i).2
-  have hλ : Function.Injective (fun i => ζ ^ weight i) := by
+  have hinjective : Function.Injective (fun i => ζ ^ weight i) := by
     intro i j hij
     exact squareKummerRegularWeight_injective p s d r
       (hζ.pow_inj (hweight i) (hweight j) hij)
-  refine diagonal_commuting_nilpotent_eq_zero B S.toLinearMap T (fun i => ζ ^ weight i) hλ
+  refine diagonal_commuting_nilpotent_eq_zero B S.toLinearMap T (fun i => ζ ^ weight i) hinjective
     (squareKummerRegularScaling_basis p s c d r ζ hζ.pow_eq_one) ?_ k ?_
   · intro ω
     exact squareKummerRegularCartierIterate_aut p s c d r F

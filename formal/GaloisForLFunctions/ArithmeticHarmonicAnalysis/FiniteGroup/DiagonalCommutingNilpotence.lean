@@ -15,7 +15,7 @@ variable {K V ι : Type*} [Field K] [AddCommGroup V] [Module K V] [Fintype ι]
 
 /-- A commuting linear operator preserves each line in a simple diagonal spectrum. -/
 theorem diagonal_commuting_basis (B : Module.Basis ι K V) (S T : V →ₗ[K] V)
-    (eigenvalue : ι → K) (hλ : Function.Injective eigenvalue)
+    (eigenvalue : ι → K) (hinjective : Function.Injective eigenvalue)
     (hS : ∀ i, S (B i) = eigenvalue i • B i) (hcomm : ∀ v, S (T v) = T (S v)) (i : ι) :
     T (B i) = B.repr (T (B i)) i • B i := by
   classical
@@ -27,20 +27,20 @@ theorem diagonal_commuting_basis (B : Module.Basis ι K V) (S T : V →ₗ[K] V)
     simp only [map_smul, Finsupp.smul_apply, Module.Basis.repr_self,
       Finsupp.single_apply, if_true, smul_eq_mul, mul_one]
   · have hzero := diagonal_eigenvector_coefficient_zero B S eigenvalue hS (T (B i))
-      (eigenvalue i) heig j (fun h => hji (hλ h))
+      (eigenvalue i) heig j (fun h => hji (hinjective h))
     rw [hzero]
     simp only [map_smul, Finsupp.smul_apply, Module.Basis.repr_self,
       Finsupp.single_apply, if_neg (Ne.symm hji), smul_zero]
 
 /-- A nilpotent linear operator commuting with a simple diagonal spectrum is zero. -/
 theorem diagonal_commuting_nilpotent_eq_zero (B : Module.Basis ι K V) (S T : V →ₗ[K] V)
-    (eigenvalue : ι → K) (hλ : Function.Injective eigenvalue)
+    (eigenvalue : ι → K) (hinjective : Function.Injective eigenvalue)
     (hS : ∀ i, S (B i) = eigenvalue i • B i) (hcomm : ∀ v, S (T v) = T (S v))
     (n : ℕ) (hn : ∀ v, (T : V → V)^[n] v = 0) : T = 0 := by
   apply B.ext
   intro i
   let a := B.repr (T (B i)) i
-  have hdiag : T (B i) = a • B i := diagonal_commuting_basis B S T eigenvalue hλ hS hcomm i
+  have hdiag : T (B i) = a • B i := diagonal_commuting_basis B S T eigenvalue hinjective hS hcomm i
   have hpow (k : ℕ) : (T : V → V)^[k] (B i) = a ^ k • B i := by
     induction k with
     | zero => simp only [Function.iterate_zero_apply, pow_zero, one_smul]

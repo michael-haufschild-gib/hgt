@@ -65,7 +65,7 @@ theorem exists_nonzero_solution_of_finrank {V : Type*} [AddCommGroup V] [Module 
 abbrev Data3 (E : Type*) (J K : ℕ) := (Fin J → Fin K → E) × (Fin J → Fin K → E) × (Fin J → Fin K → E)
 
 theorem finrank_data3 (J K : ℕ) : Module.finrank E (Data3 E J K) = 3 * (J * K) := by
-  simp only [Data3, Module.finrank_prod, Module.finrank_pi_fintype, Module.finrank_fin_fun,
+  simp only [Data3, Module.finrank_prod, Module.finrank_pi_fintype, Module.finrank_self,
     Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul]
   ring
 
@@ -173,11 +173,11 @@ theorem eval_hasseDeriv_auxPoly3 {p n : ℕ} [Fact p.Prime] [CharP E p] (hh : h 
     map_add, map_add, eval_add, eval_add, eval_add, eval_add, eval_mul, eval_mul, eval_mul, eval_pow,
     eval_C, eval_C]
   have l1 := eval_hasseDeriv_mul_pow h (ofCoeffs (u.2.1 j)) hh hkN x
-  have l2 := eval_hasseDeriv_mul_pow h (ofCoeffs (u.2.2 j)) hh (M := 2 * N) (by omega) x
+  have l2 := eval_hasseDeriv_mul_pow h (ofCoeffs (u.2.2 j)) hh (M := 2 * N) (k := k) (by omega) x
   have hε2 : (h.eval x) ^ (2 * N) = ε ^ 2 := by rw [mul_comm, pow_mul, hxε]
   rw [hxε] at l1
   rw [hε2] at l2
-  simp only [levelSum, eval_finsetSum]
+  simp only [levelSum, eval_finsetSum, eval_pow, eval_X]
   linear_combination x ^ (j : ℕ) * l1 + x ^ (j : ℕ) * l2
 
 end setup
@@ -191,7 +191,7 @@ theorem cubic_stepanov_count [Fintype E] [DecidableEq E] {p n : ℕ} [Fact p.Pri
     (hK : 3 * (K - 1) + 2 * h.natDegree < p ^ n)
     (hdim : ∑ k : Fin ℓ, (K + (k : ℕ) * h.natDegree + J) < 3 * (J * K)) (ε : E) :
     ℓ * (univ.filter (fun x : E => h.eval x ≠ 0 ∧ h.eval x ^ N = ε)).card ≤
-      (K - 1) + 2 * N * h.natDegree + p ^ n * (J - 1) := by
+      (K - 1) + 2 * (N * h.natDegree) + p ^ n * (J - 1) := by
   have hh : h ≠ 0 := by rintro rfl; simp at hdeg
   set T := univ.filter (fun x : E => h.eval x ≠ 0 ∧ h.eval x ^ N = ε)
   obtain ⟨u, hu0, hu⟩ := exists_nonzero_solution_of_finrank (E := E) (V := Data3 E J K)
@@ -240,17 +240,17 @@ theorem cubic_stepanov_count [Fintype E] [DecidableEq E] {p n : ℕ} [Fact p.Pri
   refine natDegree_mul_le.trans ?_
   have hj := j.isLt
   have h1 : (ofCoeffs (u.1 j) + ofCoeffs (u.2.1 j) * h ^ N +
-      ofCoeffs (u.2.2 j) * h ^ (2 * N)).natDegree ≤ (K - 1) + 2 * N * h.natDegree := by
+      ofCoeffs (u.2.2 j) * h ^ (2 * N)).natDegree ≤ (K - 1) + 2 * (N * h.natDegree) := by
     refine (natDegree_add_le _ _).trans (max_le ((natDegree_add_le _ _).trans (max_le ?_ ?_)) ?_)
     · have := ofCoeffs_natDegree_lt hK0 (u.1 j); omega
     · refine natDegree_mul_le.trans ?_
       rw [natDegree_pow]
       have := ofCoeffs_natDegree_lt hK0 (u.2.1 j)
-      nlinarith
+      omega
     · refine natDegree_mul_le.trans ?_
-      rw [natDegree_pow]
+      rw [natDegree_pow, Nat.mul_assoc]
       have := ofCoeffs_natDegree_lt hK0 (u.2.2 j)
-      nlinarith
+      omega
   have h2 : ((X ^ (p ^ n)) ^ (j : ℕ) : E[X]).natDegree ≤ p ^ n * (J - 1) := by
     rw [← pow_mul, natDegree_X_pow]
     exact Nat.mul_le_mul_left _ (by omega)

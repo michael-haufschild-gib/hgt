@@ -68,6 +68,6 @@ theorem stickelbergerPrice_jacobiTriple {p : ℕ} [Fact p.Prime] {ζ : PadicAlgC
     · exact h₂
     · rwa [orderOf_inv]
   · rw [hprod, one_pow]
-  · exact Or.inl ⟨hprod, by simp⟩
+  · exact Or.inl ⟨hprod, ⟨1, rfl⟩⟩
 
 end GaloisForLFunctions.TensorPowerProgramme
