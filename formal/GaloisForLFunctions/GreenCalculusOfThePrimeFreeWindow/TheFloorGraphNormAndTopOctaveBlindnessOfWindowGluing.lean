@@ -1458,8 +1458,7 @@ theorem subEulerGluingWeight_prime_pow {Q₀ p r : ℕ} (hp : p.Prime) (hr : 1 �
   have hne2 : p ≠ 1 := hp.ne_one
   by_cases hpred : subEulerPrimePred Q₀ p
   · rw [if_pos (Or.inr hpred), if_pos (Or.inr hpred)]
-  · rw [if_neg (by rintro (h | h); · exact hne1 h; · exact hpred h),
-      if_neg (by rintro (h | h); · exact hne2 h; · exact hpred h)]
+  · rw [if_neg (fun h => h.elim hne1 hpred), if_neg (fun h => h.elim hne2 hpred)]
 
 /-- Every prime in the band `(256^m, 3 · 256^m]` (`m ≥ 1`) has `subEulerGluingWeight Q₀ p = 1`. -/
 theorem subEulerGluingWeight_eq_one_of_mem_band {Q₀ m p : ℕ} (hm : 1 ≤ m) (hp : p.Prime)
@@ -1578,8 +1577,9 @@ theorem sum_prime_log_band_ge {m : ℕ} (hm : 4 ≤ m) :
     nlinarith
   have h69 : (69 / 100 : ℝ) ≤ Real.log 2 :=
     (by norm_num : (69 / 100 : ℝ) ≤ 0.6931471803).trans Real.log_two_gt_d9.le
-  have hlog2N : (69 / 100 : ℝ) * N ≤ (N : ℝ) * Real.log 2 :=
-    mul_le_mul_of_nonneg_left h69 (Nat.cast_nonneg N)
+  have hlog2N : (69 / 100 : ℝ) * N ≤ (N : ℝ) * Real.log 2 := by
+    rw [mul_comm (69 / 100 : ℝ)]
+    exact mul_le_mul_of_nonneg_left h69 (Nat.cast_nonneg N)
   have h3N_mul : ((3 * N : ℕ) : ℝ) * Real.log 2 = 3 * ((N : ℝ) * Real.log 2) := by
     push_cast; ring
   have hlog4_mul : Real.log 4 * (N : ℝ) = 2 * ((N : ℝ) * Real.log 2) := by

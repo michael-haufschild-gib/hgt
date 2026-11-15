@@ -24,7 +24,7 @@ theorem squareKummer_frobenius_monomial_primitive (a : L) (i : Fin p) (hi : i.va
     KaehlerDifferential.D K L
       ((a ^ p * algebraMap K L ((i.val + 1 : K)⁻¹)) * y ^ (i.val + 1)) =
         (a ^ p * y ^ i.val) • dy := by
-  let D := KaehlerDifferential.D K L
+  let D : Derivation K L Ω := KaehlerDifferential.D K L
   have hprimitive := squareKummer_lower_monomial_primitive p s c b R y i.val hi
   simp only [Nat.cast_add, Nat.cast_one] at hprimitive
   rw [mul_assoc, D.leibniz, derivation_frobenius_power_eq_zero p D a,
@@ -34,7 +34,7 @@ theorem squareKummer_frobenius_monomial_primitive (a : L) (i : Fin p) (hi : i.va
 theorem squareKummer_differential_frobenius_expansion (ω : Ω) :
     ∃ a : Fin p → L, ω = ∑ i : Fin p, a i ^ p • (y ^ i.val • dy) := by
   classical
-  let E := squareKummerDifferentialEquiv p s c b R
+  let E : Ω ≃ₗ[L] L := squareKummerDifferentialEquiv p s c b R
   obtain ⟨a, ha⟩ := squareKummer_coordinate_power_expansion p s c b R (E ω)
   refine ⟨a, E.injective ?_⟩
   rw [map_sum]

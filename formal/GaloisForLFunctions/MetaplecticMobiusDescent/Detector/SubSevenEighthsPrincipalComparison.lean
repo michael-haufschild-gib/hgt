@@ -19,7 +19,7 @@ namespace GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein
 
 open Eisenstein CubicJacobi CubicKubota CubicRamified CompletedGauss
 open CanonicalRowCompletion CanonicalQuadraticSieve SchwartzPlanePoisson
-open HeckeIdealSeries HeckeFamily
+open HeckeFamily
 
 section SubSevenEighthsEuler
 
@@ -50,8 +50,7 @@ theorem sub_unramifiedClosed_open_region_bound (Q : ℝ) (A eta v x w z : ℂ)
     (coordK_norm_le Q hQ1 eta x w heta).trans (Real.rpow_le_rpow_of_exponent_le hQ1 (by linarith))
   have hVh : ‖V‖ ≤ 1 / 2 := hV.trans (rpow_le_half Q _ hQ (by norm_num))
   have hRh : ‖R‖ ≤ 1 / 2 := hR.trans (rpow_le_half Q _ hQ (by norm_num))
-  have hDh : ‖D‖ ≤ 1 / 2 := hDh_aux where
-    hDh_aux := hD.trans (rpow_le_half Q _ hQ (by norm_num))
+  have hDh : ‖D‖ ≤ 1 / 2 := hD.trans (rpow_le_half Q _ hQ (by norm_num))
   have hWh : ‖W‖ ≤ 1 :=
     hW.trans ((Real.rpow_le_rpow_of_exponent_le hQ1 (by norm_num : -(9 / 10 : ℝ) ≤ 0)).trans_eq
       (Real.rpow_zero Q))
@@ -168,10 +167,12 @@ theorem sub_globalClosedCorrection_analytic_x (η : Character) (S : Finset Id)
     AnalyticOnNhd ℂ (fun x => globalClosedCorrection η S x w z) {x : ℂ | 43 / 50 < x.re} := by
   apply normalProduct_analytic _ _ _ (isOpen_lt continuous_const Complex.continuous_re) hS.summable
   · intro P
-    exact sub_unramifiedClosed_analytic_x (Ideal.absNorm P.val)
-      (actualAPhase η (primaryIdealGenerator P.val)) (idealCoeff η P.val) 1 w z
-      (by exact_mod_cast hS.norm_four P.val P.property)
-      (actualAPhase_norm_le_one η _) (idealCoeff_norm_le_one η _) (by simp) hz
+    apply sub_unramifiedClosed_analytic_x
+    · exact_mod_cast hS.norm_four P.val P.property
+    · exact actualAPhase_norm_le_one η _
+    · exact idealCoeff_norm_le_one η _
+    · simp
+    · exact hz
   · intro P x hx
     exact sub_idealClosedCorrection_bound η P.val (hS.norm_four P.val P.property) x w z hx.le hw hz
   · exact hS.half
@@ -181,10 +182,13 @@ theorem sub_globalClosedCorrection_analytic_w (η : Character) (S : Finset Id)
     AnalyticOnNhd ℂ (fun w => globalClosedCorrection η S x w z) {w : ℂ | 9 / 10 < w.re} := by
   apply normalProduct_analytic _ _ _ (isOpen_lt continuous_const Complex.continuous_re) hS.summable
   · intro P
-    exact sub_unramifiedClosed_analytic_w (Ideal.absNorm P.val)
-      (actualAPhase η (primaryIdealGenerator P.val)) (idealCoeff η P.val) 1 x z
-      (by exact_mod_cast hS.norm_four P.val P.property)
-      (actualAPhase_norm_le_one η _) (idealCoeff_norm_le_one η _) (by simp) hx hz
+    apply sub_unramifiedClosed_analytic_w
+    · exact_mod_cast hS.norm_four P.val P.property
+    · exact actualAPhase_norm_le_one η _
+    · exact idealCoeff_norm_le_one η _
+    · simp
+    · exact hx
+    · exact hz
   · intro P w hw
     exact sub_idealClosedCorrection_bound η P.val (hS.norm_four P.val P.property) x w z hx hw.le hz
   · exact hS.half
@@ -194,10 +198,12 @@ theorem sub_globalClosedCorrection_analytic_z (η : Character) (S : Finset Id)
     AnalyticOnNhd ℂ (fun z => globalClosedCorrection η S x w z) {z : ℂ | 4 / 25 < z.re} := by
   apply normalProduct_analytic _ _ _ (isOpen_lt continuous_const Complex.continuous_re) hS.summable
   · intro P
-    exact sub_unramifiedClosed_analytic_z (Ideal.absNorm P.val)
-      (actualAPhase η (primaryIdealGenerator P.val)) (idealCoeff η P.val) 1 x w
-      (by exact_mod_cast hS.norm_four P.val P.property)
-      (actualAPhase_norm_le_one η _) (idealCoeff_norm_le_one η _) (by simp) hx
+    apply sub_unramifiedClosed_analytic_z
+    · exact_mod_cast hS.norm_four P.val P.property
+    · exact actualAPhase_norm_le_one η _
+    · exact idealCoeff_norm_le_one η _
+    · simp
+    · exact hx
   · intro P z hz
     exact sub_idealClosedCorrection_bound η P.val (hS.norm_four P.val P.property) x w z hx hw hz.le
   · exact hS.half
