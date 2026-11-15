@@ -31,7 +31,7 @@ theorem squareKummerRegularCartierIterate_frobenius_smul (e : ℕ) (a : K) (ω :
       a • squareKummerRegularCartierIterate p s c d r e ω := by
   apply Subtype.ext
   change I e ((a ^ (p ^ e)) • ω.val) = a • I e ω.val
-  rw [← IsScalarTower.algebraMap_smul K L (a ^ (p ^ e)), map_pow,
+  rw [← IsScalarTower.algebraMap_smul L (a ^ (p ^ e)), map_pow,
     squareKummerCartierIterate_frobenius_smul, IsScalarTower.algebraMap_smul]
 
 /-- The restricted iterate preserves scalar lines over the full constant field. -/

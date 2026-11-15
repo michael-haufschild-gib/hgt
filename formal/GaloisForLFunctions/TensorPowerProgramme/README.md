@@ -1,6 +1,6 @@
 # The Tensor-Power Programme Ω (TPP)
 
-Namespace `GaloisForLFunctions.TensorPowerProgramme`; umbrella `TensorPowerProgramme.lean`; 2 modules.
+Namespace `GaloisForLFunctions.TensorPowerProgramme`; umbrella `TensorPowerProgramme.lean`; 3 modules.
 Specification: §2.22 of [the review-1511 obstacles summary](../../../docs/reports/review-1511/obstacles-summary.md).
 
 *Deligne's tensor-power argument, carried to `Spec ℤ`: what it needs, where it breaks, and which
@@ -80,6 +80,7 @@ obstruction of the producer.
 | Abelian base | every local system a sum of characters (Dirichlet and Hecke twists, Jacobi-sum characters, the archimedean family); in Lean `IsAbelianBase N λ ev`: norms, von Mangoldt weights, characters with conjugation = inversion, linear independence, and the prime number theorem of each character |
 | Twisted datum (Lean) | `twistTrace` `t(x) = Σ_i b_i χ_i(x) N(x)^{z_i}`, moments `twistMomentTerm` |
 | Tuples (Lean) | `tupleMode` `Σ z_{a_j}`, `tupleWeight` `Π b_{a_j}`, `tupleChar` `Π χ_{a_j}`; pairs `pairMode` `Z_{a,a'}`, `pairWeight` `B_{a,a'}`, `pairChar` `χ_a χ_{a'}⁻¹`; edge residues `edgeResidue`, `twistEdgeResidue` |
+| Adams power (Lean) | `adamsTrace α m n x = Σ_i (α_{x,i}^{mn} + α_{x,i}^{−mn})`: moves modulus `N^δ` to `N^{mδ}`; its Rankin–Selberg square `adamsSquareCoeff`; frequencies `levelFreq` `(n+1) log N(x)`; `AdamsPoleLaw`: every square continues to `Re s > 1` |
 | Pencil through `ζ` (N1) | an Euler datum over a base with a pole law, non-abelian monodromy, and the zeros of `ζ` among the local parameters of one point |
 | Sign-line completion (N2) | a joint completion of a Möbius-signed monomial of period `k ≥ 7` priced `c = k/2` |
 | Exact transport (N3) | zeros of `ζ` forced into a period-`k` family with no estimate floor and constants uniform in `k` |
@@ -128,6 +129,14 @@ obstruction of the producer.
    split the squares further (`Σ ‖Σ_{(Σ z_a, χ_a) = κ} Π b_a‖²`); positivity is the linear
    independence of characters, and the analytic input is the prime number theorem of each
    character (a pole only for the trivial one, no zero on `Re s = 1`).
+8. **Polarization fixes the edge.** For a polarized datum (`α ↔ α⁻¹`) the Rankin–Selberg square of
+   the `m`-th Adams power has nonnegative coefficients; if it continues analytically to `Re s > 1`,
+   Landau's theorem makes it converge there, and one point of the base gives `|α|^m ≤ N(x)` for
+   every `m`: purity. In rank two `p_m² = p_{2m} + 2`: the square is the next Adams power plus the
+   two polarization pairs `α^m ⊗ α^{−m}`, of weight `det = 1` whatever `α` is, so the pole law
+   reduces to the continuation of the Adams series themselves — the constituents. For
+   `GL₂`-automorphic data they are differences of symmetric-power log-derivatives (the classical
+   route from functoriality to Ramanujan); for flow data they are the shifted modes.
 
 ## 6. Questions
 
@@ -169,6 +178,7 @@ the width law at the primes (`riemannHypothesis_iff_moments_primeTraces`,
 |---|---|
 | Positivity of even tensor powers forces purity | Golden data have positive even-tensor Euler coefficients and are impure (ArithmeticKunnethTheory) |
 | Large monodromy forces purity | An impure Frobenius has a split lift with full `SL₂` image; the pole law is the input |
+| The pole law needs the moments to converge | It needs only analytic continuation: positivity (Landau) converts continuation into convergence |
 | Tensor powers of `ζ` amplify the depth | Products of the spectrum are homogeneous: gain equals depth times length |
 | A family proves the purity of its members | Only members of positive mass, through moments of the full traces; without a measure, the closed strip |
 | The heat pencil is a pencil | Only its fibre at `τ = 0` has a Dirichlet series; arithmetic group and heat monodromy agree on finite windows only |
@@ -186,6 +196,7 @@ the width law at the primes (`riemannHypothesis_iff_moments_primeTraces`,
 | Flow data have base loss exactly one: `D_k(σ) < ∞ ⇔ σ > 1 + 2kW`; coinvariant expansion into shifted `−ζ'/ζ`; positive edge residue; pole law ⇔ `W ≤ w₀` | `summable_flowMomentTerm_iff`, `ofReal_tsum_flowMomentTerm`, `edgeResidue_pos`, `exists_poleLaw_iff` — proved |
 | Abelian bases are rulers: same exact law on every abelian base; Dirichlet twists of any modulus form one | `summable_twistMomentTerm_iff`, `exists_twistPoleLaw_iff`, `isAbelianBase_dirichlet`, `summable_dirichletMomentTerm_iff` — proved |
 | Over `Spec ℤ` for `ζ` itself: the prime-trace moments read `w` with an offset in `[0, 1]`; uniformity in `k` is RH | corpus: `riemannHypothesis_iff_moments_primeTraces`, `zetaZeroWidth_le_iff_linear_tensor_loss` |
+| Polarized bases: continuation of the Adams squares to `Re s > 1` ⇒ purity; rank two: continuation of the Adams series suffices | `norm_eq_one_of_adamsPoleLaw`, `norm_eq_one_of_adams_continue` — proved |
 | Price ledger of the Deligne, sign and completion lines | target |
 | Pencil axioms and the verdict on the heat, twist and Kummer candidates | target |
 | Sign-line price of Jacobi-sum characters and of the `A₂` coefficients | target |

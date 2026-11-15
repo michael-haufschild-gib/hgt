@@ -58,6 +58,8 @@ theorem dvd_of_isIntegral_mul_eq {a b : O} (ha : a ≠ 0) {y : ℂ} (hy : IsInte
     rw [map_div₀, hL, hL, div_eq_iff hza, ← h, mul_comm]
   have hxi : IsIntegral ℤ (algebraMap O K b / algebraMap O K a) :=
     (isIntegral_algHom_iff L.toIntAlgHom L.injective).mp (hx ▸ hy)
+  haveI : IsScalarTower ℤ O K := IsScalarTower.of_algebraMap_eq fun x => by
+    rw [eq_intCast (algebraMap ℤ K), eq_intCast (algebraMap ℤ O), map_intCast]
   obtain ⟨c, hc⟩ := IsIntegrallyClosed.isIntegral_iff.mp (hxi.tower_top (A := O))
   exact ⟨c, IsFractionRing.injective O K (by rw [map_mul, hc, mul_comm, div_mul_cancel₀ _ ha'])⟩
 

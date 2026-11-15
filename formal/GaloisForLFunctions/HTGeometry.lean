@@ -17924,3 +17924,4 @@ import GaloisForLFunctions.HTGeometry.MilnorKTheory.FrobeniusWeights
 import GaloisForLFunctions.HTGeometry.MilnorKTheory.PerfectFieldDivisibility
 import GaloisForLFunctions.HTGeometry.MilnorKTheory.DiagonalFrobenius
 import GaloisForLFunctions.HTGeometry.MilnorKTheory.PolylogSymbolCollapse
+import GaloisForLFunctions.HTGeometry.MilnorKTheory.ValuationTensorSymbols

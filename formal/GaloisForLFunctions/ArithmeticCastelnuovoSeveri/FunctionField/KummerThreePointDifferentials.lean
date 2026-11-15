@@ -58,8 +58,8 @@ theorem kummerThreePointScalingAut_monomial_differential
   rw [kummerThreePointScalingAut_coordinate c b R n ζ hζ,
     kummerThreePointScalingAut_integralMonomial c b R n ζ hζ i,
     kummerThreePointScalingAut_differential c b R n ζ hζ]
-  rw [← IsScalarTower.algebraMap_smul K L (ζ ^ (n + 1)),
-    ← IsScalarTower.algebraMap_smul K L (ζ ^ ((n + 1) * (k + 1) - i)),
+  rw [← IsScalarTower.algebraMap_smul L (ζ ^ (n + 1)),
+    ← IsScalarTower.algebraMap_smul L (ζ ^ ((n + 1) * (k + 1) - i)),
     map_pow, map_pow, smul_smul, smul_smul]
   change (((a ^ (n + 1) * y) ^ k / (a ^ i * β)) * a ^ (n + 1)) • dy =
     (a ^ j * (y ^ k / β)) • dy

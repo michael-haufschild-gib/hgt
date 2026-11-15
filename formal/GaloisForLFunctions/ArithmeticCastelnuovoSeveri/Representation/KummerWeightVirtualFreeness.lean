@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RepresentationLifting.KTheory.UniformCharacterMultiplicity
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FunctionField.KummerRegularMonomialBasis
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteField.KummerExponentParity
 import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
 
 /-!
@@ -193,6 +194,23 @@ theorem complexLift_isVirtuallyFree_iff_dvd :
       p ^ (s + 1) + 1 ∣ kummerExponent (p ^ (d + 1)) r := by
   rw [complexLift_isVirtuallyFree_iff_empty, regularIndex_empty_iff_dvd]
 
+/-- At equal prime-power scales, every even exponent length gives the zero lift. -/
+theorem complexLift_diagonal_even (n : ℕ) : complexLift p s s (2 * n) = 0 := by
+  apply (complexLift_eq_zero_iff p s s (2 * n)).mpr
+  exact (regularIndex_empty_iff_dvd p s s (2 * n)).mpr
+    (kummerExponent_even_dvd (p ^ (s + 1)) n)
+
+/-- At equal prime-power scales, every odd exponent length gives a nonfree lift. -/
+theorem complexLift_diagonal_odd (n : ℕ) :
+    ¬ IsVirtuallyFree (WeightGroup p s s) (complexLift p s s (2 * n + 1)) := by
+  rw [complexLift_isVirtuallyFree_iff_dvd]
+  intro h
+  have hg := Nat.gcd_eq_left h
+  rw [kummerExponent_odd_gcd] at hg
+  have hp : 1 < p ^ (s + 1) :=
+    Nat.one_lt_pow (Nat.succ_ne_zero s) (Fact.out : p.Prime).one_lt
+  omega
+
 /-- A nonidentity trace detects exactly the nonzero regular-differential families. -/
 theorem exists_nonidentity_trace_iff_not_dvd :
     (∃ g : WeightGroup p s d, g ≠ 1 ∧ (complexLift p s d r).val g ≠ 0) ↔
@@ -222,6 +240,8 @@ theorem complexLift_isVirtuallyFree_iff_finrank_zero (c : (SquareConstantField p
 #print axioms complexLift_trivialMultiplicity
 #print axioms complexLift_multiplicity
 #print axioms complexLift_isVirtuallyFree_iff_dvd
+#print axioms complexLift_diagonal_even
+#print axioms complexLift_diagonal_odd
 #print axioms exists_nonidentity_trace_iff_not_dvd
 #print axioms complexLift_dimension
 #print axioms complexLift_isVirtuallyFree_iff_finrank_zero
