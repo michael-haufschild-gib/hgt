@@ -3,7 +3,7 @@ import GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.EveryRayClassFunct
 import GaloisForLFunctions.MetaplecticMobiusDescent.Detector.SubSevenEighthsZeroFreeHalfPlane
 
 /-!
-# Global signed cancellation for the Eisenstein Hecke family
+# Uniform smoothed Möbius bounds for the Eisenstein Hecke family
 
 The log-normal sum with Gaussian centre `5/6` over all squarefree ideals has size
 `O(Q^ε X^a)`, uniformly over
