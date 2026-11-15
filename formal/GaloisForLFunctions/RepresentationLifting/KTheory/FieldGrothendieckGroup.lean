@@ -158,8 +158,4 @@ theorem fieldK0Tensor_class (V W : FGModuleCat.{u} K) :
   rw [fieldK0Rank_class, fieldK0Rank_class, fieldK0Rank_class]
   exact_mod_cast (Module.finrank_tensorProduct (R := K) (S := K) (M := V) (M' := W)).symm
 
-#print axioms finiteVectorSpaceClassesEquivNat
-#print axioms fieldK0Class_prod
-#print axioms fieldK0EquivInt
-#print axioms fieldK0Class_shortExact
 end GaloisForLFunctions.RepresentationLifting

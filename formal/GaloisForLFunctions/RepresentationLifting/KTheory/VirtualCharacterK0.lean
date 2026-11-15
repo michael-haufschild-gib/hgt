@@ -134,8 +134,4 @@ theorem virtualRepresentationFieldK0_annihilator :
   rw [Module.mem_annihilator]
   exact virtualRepresentationK0Action_zero_iff G χ
 
-#print axioms virtualRepresentationAugmentationQuotient
-#print axioms virtualRepresentationK0Action_tensor
-#print axioms virtualRepresentationK0Action_zero_iff
-#print axioms virtualRepresentationFieldK0_annihilator
 end GaloisForLFunctions.RepresentationLifting

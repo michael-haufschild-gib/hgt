@@ -71,13 +71,7 @@ import GaloisForLFunctions.RepresentationLifting.PermutationCohomologyTrace
 import GaloisForLFunctions.RepresentationLifting.Applications.BicycleSelfExtension
 import GaloisForLFunctions.RepresentationLifting.Applications.BicycleTrace
 
-/-!
-# Representation lifting and quadratic extensions
 
-Characteristic-two quadratic sequences, ideal-power lifts of free-group representations,
-graded self-extensions, cyclic norm differentials, modular trace formulas,
-and trace restriction criteria in group cohomology.
--/
 import GaloisForLFunctions.RepresentationLifting.Probability.CoxCentralizerDetection
 import GaloisForLFunctions.RepresentationLifting.Augmentation.DivisibleGroupQuotients
 import GaloisForLFunctions.RepresentationLifting.Augmentation.DivisibleGroupCompletion
@@ -89,3 +83,10 @@ import GaloisForLFunctions.RepresentationLifting.KTheory.FieldGrothendieckGroup
 import GaloisForLFunctions.RepresentationLifting.KTheory.VirtualCharacterK0
 import GaloisForLFunctions.RepresentationLifting.KTheory.FiniteAbelianVirtualRing
 
+/-!
+# Representation lifting and quadratic extensions
+
+Characteristic-two quadratic sequences, ideal-power lifts of free-group representations,
+graded self-extensions, cyclic norm differentials, modular trace formulas,
+and trace restriction criteria in group cohomology.
+-/

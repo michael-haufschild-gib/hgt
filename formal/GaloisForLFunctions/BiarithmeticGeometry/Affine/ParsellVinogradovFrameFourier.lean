@@ -93,14 +93,6 @@ theorem exists_uniform_coveringWeight_fourierL1 (r k q : ℕ) :
   rw [← normalizedCoveringWeight_fourierL1_eq]
   exact (hbound ε hε δ i hi).2
 
-#print axioms momentFrameLinearEquiv
-#print axioms momentFrameLinearContinuousEquiv
-#print axioms momentFrameEuclideanLinearEquiv
-#print axioms coveringWeightSchwartz
-#print axioms coveringWeightEuclideanSchwartz
-#print axioms normalizedCoveringWeight_eq_affine
-#print axioms normalizedCoveringWeight_fourierL1_eq
-#print axioms exists_uniform_coveringWeight_fourierL1
 
 end
 end GaloisForLFunctions.BiarithmeticGeometry.ParsellVinogradov

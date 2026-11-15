@@ -107,14 +107,6 @@ def cutoffProfileSchwartz (r k q : ℕ) (N : ℤ) : SchwartzMap (AffineAxisSpace
     (show Complex.ofRealCLM 0 = 0 from rfl)).toSchwartzMap
       (Complex.ofRealCLM.contDiff.comp (contDiff_cutoffProfile r k q N))
 
-#print axioms degreeOne_momentAffineAction_vertical
-#print axioms cubeCutoff_coordinate_lt
-#print axioms cubeCutoff_mul_vertical_translate_eq_zero
-#print axioms frameCutoff_mul_eq_zero_of_separation
-#print axioms frameCutoff_integer_mul_eq_zero
-#print axioms contDiff_cutoffProfile
-#print axioms hasCompactSupport_cutoffProfile
-#print axioms cutoffProfileSchwartz
 
 end
 end GaloisForLFunctions.BiarithmeticGeometry.ParsellVinogradov

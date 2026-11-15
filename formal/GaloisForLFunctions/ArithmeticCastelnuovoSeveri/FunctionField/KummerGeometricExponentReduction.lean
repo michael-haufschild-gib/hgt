@@ -29,6 +29,4 @@ def kummerGeometricExponentOddEquiv (c : Kˣ) (b q n : ℕ) :
     (kummerExponentCongrEquiv c b _ _ q (kummerExponent_odd_mod q n))).trans
     (kummerExponentReductionEquiv c b 1 q).symm
 
-#print axioms kummerGeometricExponentEvenEquiv
-#print axioms kummerGeometricExponentOddEquiv
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

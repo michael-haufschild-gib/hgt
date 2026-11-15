@@ -47,6 +47,4 @@ theorem kummerExponent_odd_gcd (q n : ℕ) :
   rw [Nat.gcd_rec (q + 1) (kummerExponent q (2 * n + 1)), kummerExponent_odd_mod,
     ← Nat.gcd_rec (q + 1) 1, Nat.gcd_one_right]
 
-#print axioms kummerExponent_even_gcd
-#print axioms kummerExponent_odd_gcd
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis

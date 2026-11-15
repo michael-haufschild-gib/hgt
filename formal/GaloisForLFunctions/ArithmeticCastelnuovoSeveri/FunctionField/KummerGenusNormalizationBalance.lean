@@ -73,8 +73,6 @@ theorem squareKummer_zero_genus_defect_exact :
   rw [Nat.mul_add] at h
   omega
 
-#print axioms squareKummerAffineDefect_add_genus_twice
-#print axioms squareKummer_genus_bound_eq_iff_normal
 
 /-- Even geometric-sum length gives genus zero when the two prime powers agree. -/
 theorem squareKummerGeometricGenus_even (n : ℕ) :
@@ -89,6 +87,4 @@ theorem squareKummerGeometricGenus_odd (n : ℕ) :
   rw [squareKummerGeometricGenus, squareKummer_regularDifferential_finrank,
     kummerExponent_odd_gcd, Nat.add_sub_cancel, Nat.mul_comm]
 
-#print axioms squareKummerGeometricGenus_even
-#print axioms squareKummerGeometricGenus_odd
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

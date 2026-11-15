@@ -101,13 +101,5 @@ theorem integral_norm_fourierInv_comp_affine (f : E → ℂ) (B : E ≃L[ℝ] E)
   filter_upwards [] with w
   exact norm_fourierInv_comp_add f a w
 
-#print axioms det_real_adjoint
-#print axioms det_inverseAdjointEquiv
-#print axioms latticeScale_mul_inverseAdjoint
-#print axioms integral_real_comp_linearEquiv
-#print axioms fourierInv_comp_linearEquiv
-#print axioms norm_fourierInv_comp_add
-#print axioms integral_norm_fourierInv_comp_linearEquiv
-#print axioms integral_norm_fourierInv_comp_affine
 
 end GaloisForLFunctions.HTGeometry.IntegerLatticePoisson

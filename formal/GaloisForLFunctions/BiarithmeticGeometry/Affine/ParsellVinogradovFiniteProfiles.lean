@@ -94,11 +94,6 @@ theorem exists_four_cutoffProfiles (r k : ℕ) (ε : ℝ) (hε : ε ≠ 0)
     show (4 : ℤ) - 1 = 3 by norm_num] using
       exists_cutoffProfile_of_coveringWeight r k 0 ε hε δ i hi
 
-#print axioms card_cutoffProfileIndices
-#print axioms coveringWeight_comp_frame_profile
-#print axioms cutoffProfile_truncate
-#print axioms exists_cutoffProfile_of_coveringWeight
-#print axioms exists_four_cutoffProfiles
 
 end
 end GaloisForLFunctions.BiarithmeticGeometry.ParsellVinogradov

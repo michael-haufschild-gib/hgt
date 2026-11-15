@@ -168,22 +168,6 @@ theorem tsupport_coveringWeight_subset (r k q : ℕ) (ε : ℝ) (hε : ε ≠ 0)
   change frameCutoff r k ε δ (ε * (i : ℝ) / (q + 1 : ℝ)) x * _ = 0
   rw [hz, zero_mul]
 
-#print axioms smoothCovering_mem_Icc
-#print axioms contDiff_smoothCovering
-#print axioms isOpen_coveringNeighborhood
-#print axioms smoothCovering_eqOn_neighborhood
-#print axioms horizontalMoment_mem_coveringNeighborhood
-#print axioms unitMomentImage_subset_coveringNeighborhood
-#print axioms isCompact_coveringBoxUnion
-#print axioms support_smoothCovering_subset
-#print axioms tsupport_smoothCovering_subset
-#print axioms hasCompactSupport_smoothCovering
-#print axioms smoothCoveringSchwartz
-#print axioms sum_coveringWeight
-#print axioms coveringWeight_mem_Icc
-#print axioms contDiff_coveringWeight
-#print axioms hasCompactSupport_coveringWeight
-#print axioms tsupport_coveringWeight_subset
 
 end
 end GaloisForLFunctions.BiarithmeticGeometry.ParsellVinogradov

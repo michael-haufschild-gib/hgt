@@ -35,11 +35,13 @@ theorem squareKummer_differential_frobenius_expansion (ω : Ω) :
     ∃ a : Fin p → L, ω = ∑ i : Fin p, a i ^ p • (y ^ i.val • dy) := by
   classical
   let E : Ω ≃ₗ[L] L := squareKummerDifferentialEquiv p s c b R
+  have hE : E dy = 1 := by
+    change squareKummerDifferentialEquiv p s c b R dy = 1
+    rw [squareKummerDifferentialEquiv_D_polynomial, derivative_X, map_one]
   obtain ⟨a, ha⟩ := squareKummer_coordinate_power_expansion p s c b R (E ω)
   refine ⟨a, E.injective ?_⟩
   rw [map_sum]
-  simp only [map_smul, squareKummerDifferentialEquiv_D_polynomial,
-    derivative_X, map_one, smul_eq_mul, mul_one]
+  simp only [map_smul, hE, smul_eq_mul, mul_one]
   exact ha
 
 /-- Coefficient extraction on a Frobenius expansion retains precisely its highest coefficient. -/

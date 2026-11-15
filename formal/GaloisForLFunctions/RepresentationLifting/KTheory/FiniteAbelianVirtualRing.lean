@@ -105,6 +105,4 @@ theorem finiteAbelianCharacterAlgebraHom_augmentation (f : MonoidAlgebra ℤ (Li
     rw [hd]
     simp only [augmentation, MonoidAlgebra.lift_single, MonoidHom.one_apply, zsmul_eq_mul, mul_one]
 
-#print axioms finiteAbelianCharacterAlgebraEquiv
-#print axioms finiteAbelianCharacterAlgebraHom_augmentation
 end GaloisForLFunctions.RepresentationLifting

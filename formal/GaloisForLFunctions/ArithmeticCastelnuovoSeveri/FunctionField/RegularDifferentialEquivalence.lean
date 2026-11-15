@@ -49,5 +49,4 @@ theorem globalRegularDifferential_finrank_eq (σ : L ≃ₐ[K] L') :
       Module.finrank K (globalRegularDifferentials K L') :=
   (globalRegularDifferentialEquiv σ).finrank_eq
 
-#print axioms globalRegularDifferentialEquiv
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

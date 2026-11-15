@@ -86,7 +86,6 @@ theorem kummerExponentReductionEquiv_root (c : Kˣ) (b R n : ℕ) :
   change kummerExponentReductionHom c b R n (AdjoinRoot.root (kummerBranchFieldPolynomial c b R n)) = _
   exact AdjoinRoot.liftAlgHom_root _ _ _ _
 
-#print axioms kummerExponentReductionEquiv
 
 /-- Equal branch exponents define canonically identical Kummer extensions. -/
 def kummerExponentCongrEquiv (c : Kˣ) (b R S n : ℕ) (h : R = S) :
@@ -104,5 +103,4 @@ def kummerExponentShiftEquiv (c : Kˣ) (b R n k : ℕ) :
     (kummerExponentCongrEquiv c b _ _ n hmod)).trans
     (kummerExponentReductionEquiv c b R n).symm
 
-#print axioms kummerExponentShiftEquiv
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

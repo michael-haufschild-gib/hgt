@@ -20,7 +20,7 @@ This module resolves the window-gluing doubling-factor problem unconditionally:
    For every finite certified cutoff `Q₀ : ℕ` and every block-size law `ρ` with `ρ(K) ≥ 1`, the
    sub-Euler model `subEulerGluingWeight Q₀` takes values in `{0, 1}`, satisfies `ω(p^r) = ω(p)` on
    all prime powers, agrees entry-for-entry with `neutralWindow` up to `Q₀`, has the exact same
-   dyadic-middle Green operator `weilMiddle D` at every `D`, and has identical wide-overlap steps
+   dyadic-middle neutral matrix `primeFreeMiddle D` at every `D`, and has identical wide-overlap steps
    up to `Q₀`, yet admits **no** doubling law with any factor `λ < √2` (and in particular none
    with `λ ≤ 2^{3/8}` or `λ < 2^{3/8}`). The infimum of its valid doubling factors is `√2`.
 
@@ -104,11 +104,13 @@ theorem reweightedDoublingLaw_sqrt_two {ω : ℕ → ℝ} {B : ℝ} (hB : 0 ≤ 
     have hs : Real.sqrt K₁ ≤ Real.sqrt K₂ := Real.sqrt_le_sqrt (by exact_mod_cast h12)
     nlinarith [mul_le_mul_of_nonneg_left hs hslope]
   · intro K _
+    dsimp only
     have hs2K : Real.sqrt ((2 * K : ℕ) : ℝ) = Real.sqrt 2 * Real.sqrt K := by
       rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul zero_le_two]
     rw [hs2K]
     nlinarith [Real.sqrt_nonneg 2, Real.sqrt_nonneg K]
   · intro K hK
+    dsimp only
     have h0 := hermNegIndex_reweightedNeutral_shift_eq_zero hB hω (ρ K) hK
       (Q := 3 * K + 1) (J := 3 * K * ρ K) (by omega) le_rfl
       (a := reweightedShiftSlope B * Real.sqrt K + 5) le_rfl
@@ -126,6 +128,7 @@ theorem reweightedDoublingLaw_of_sqrt_two_le {ω : ℕ → ℝ} {B : ℝ} (hB : 
     have hs : Real.sqrt K₁ ≤ Real.sqrt K₂ := Real.sqrt_le_sqrt (by exact_mod_cast h12)
     nlinarith [mul_le_mul_of_nonneg_left hs hslope]
   · intro K _
+    dsimp only
     have hs2K : Real.sqrt ((2 * K : ℕ) : ℝ) = Real.sqrt 2 * Real.sqrt K := by
       rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul zero_le_two]
     rw [hs2K]
@@ -135,6 +138,7 @@ theorem reweightedDoublingLaw_of_sqrt_two_le {ω : ℕ → ℝ} {B : ℝ} (hB : 
       mul_le_mul_of_nonneg_right hlam hnonneg
     nlinarith [Real.sqrt_nonneg 2]
   · intro K hK
+    dsimp only
     have h0 := hermNegIndex_reweightedNeutral_shift_eq_zero hB hω (ρ K) hK
       (Q := 3 * K + 1) (J := 3 * K * ρ K) (by omega) le_rfl
       (a := reweightedShiftSlope B * Real.sqrt K + 5) le_rfl
@@ -183,7 +187,7 @@ theorem not_reweightedDoublingLaw_of_lt_sqrt_two_subEulerGluingWeight (Q₀ : �
       rw [← logb_two_sqrt_two]
       exact Real.logb_lt_logb (by norm_num) (by linarith) hμ2
     set δ : ℝ := 1 / 2 - θ
-    have hδ_pos : 0 < δ := by linarith
+    have hδ_pos : 0 < δ := by dsimp [δ]; linarith
     -- Along `K_m = 8 · 256^m`, `(K_m : ℝ) ^ δ → ∞`.
     have htend_K : Tendsto (fun m : ℕ => ((8 * 256 ^ m : ℕ) : ℝ)) atTop atTop := by
       have h1 : Tendsto (fun m : ℕ => (256 : ℝ) ^ m) atTop atTop :=
@@ -219,6 +223,7 @@ theorem not_reweightedDoublingLaw_of_lt_sqrt_two_subEulerGluingWeight (Q₀ : �
       nlinarith
     have htwo := two_le_hermNegIndex_subEulerGluingWeight Q₀ hm (hρ K hK1) ha_shift
     have hone := hlev K hK1
+    dsimp only [K] at hone
     omega
   by_cases h1 : 1 < lam
   · exact hgt_one h1 hlam
@@ -231,6 +236,7 @@ theorem not_reweightedDoublingLaw_of_lt_sqrt_two_subEulerGluingWeight (Q₀ : �
       ⟨fun K => max (a K) 0, |c| + |lam| * |a 1|, hmono.max monotone_const, ?_,
         hlev.mono fun K _ => le_max_left _ _⟩
     intro K hK
+    dsimp only
     have ha2K := hd K hK
     have ha1_le : a 1 ≤ a K := hmono hK
     have hc_le : c ≤ |c| := le_abs_self c
@@ -282,11 +288,29 @@ theorem sInf_reweightedDoublingLaw_subEulerGluingWeight_eq_sqrt_two (Q₀ : ℕ)
     exact not_reweightedDoublingLaw_of_lt_sqrt_two_subEulerGluingWeight Q₀ hρ (not_le.mp hlt) hS.2
   exact le_antisymm (csInf_le ⟨1, fun _ h => h.1.le⟩ hmem) (le_csInf ⟨Real.sqrt 2, hmem⟩ hlow)
 
+/-- On every dyadic middle `(D, 2D]`, no floor map acts, so `reweightedNeutral ω Q` coincides
+entry-for-entry with `primeFreeMiddle D` for every contact weight `ω` and cutoff `Q`. -/
+theorem windowMatrix_reweightedNeutral_dyadic (ω : ℕ → ℝ) (Q D : ℕ) :
+    windowMatrix (reweightedNeutral ω Q) D D = primeFreeMiddle D := by
+  rcases Nat.eq_zero_or_pos D with rfl | hD
+  · ext i; exact i.elim0
+  · ext i j
+    have hi := i.2; have hj := j.2
+    simp only [primeFreeMiddle, neutralWindow, windowMatrix, Matrix.of_apply]
+    rw [reweightedNeutral_eq_one_sub ω Q (by omega) (by omega)]
+    have hz : ∑ k ∈ Icc 2 Q, ω k * floorGraph k (D + i) (D + j) = 0 :=
+      Finset.sum_eq_zero fun k hk => by
+        have hk2 := (Finset.mem_Icc.mp hk).1
+        rcases le_total (D + (i : ℕ)) (D + (j : ℕ)) with hij | hji
+        · rw [floorGraph_eq_zero_of_lt_mul hk2 hij (by nlinarith), mul_zero]
+        · rw [floorGraph_comm, floorGraph_eq_zero_of_lt_mul hk2 hji (by nlinarith), mul_zero]
+    rw [hz, sub_zero]
+
 /-- **Complete window-gluing obstruction theorem**: for every finite certified cutoff `Q₀ : ℕ` and
 every `ρ` with `ρ(K) ≥ 1`, `ω := subEulerGluingWeight Q₀` satisfies:
 1. Sub-Euler bounds `0 ≤ ω(k) ≤ 1` and exact prime-power constancy `ω(p^r) = ω(p)` (`r ≥ 1`),
 2. Entrywise equality with `neutralWindow Q R J` for all `Q ≤ Q₀`,
-3. Entrywise equality `windowMatrix (reweightedBlock ω Q) D D = weilMiddle D` on every dyadic
+3. Entrywise equality `windowMatrix (reweightedNeutral ω Q) D D = primeFreeMiddle D` on every dyadic
    middle `(D, 2D]`,
 4. Entrywise equality with `neutralWindow` on both half-windows `(R, (3K + 1)R]` and
    `(2R, (6K + 2)R]` for all `3K + 1 ≤ Q₀`,
@@ -299,13 +323,13 @@ theorem gluing_indistinguishable_obstruction_package (Q₀ : ℕ) {ρ : ℕ → 
     (∀ k, 0 ≤ ω k ∧ ω k ≤ 1) ∧
     (∀ p r : ℕ, p.Prime → 1 ≤ r → ω (p ^ r) = ω p) ∧
     (∀ Q R J : ℕ, Q ≤ Q₀ → windowMatrix (reweightedNeutral ω Q) R J = neutralWindow Q R J) ∧
-    (∀ Q D : ℕ, windowMatrix (reweightedBlock ω Q) D D = weilMiddle D) ∧
+    (∀ Q D : ℕ, windowMatrix (reweightedNeutral ω Q) D D = primeFreeMiddle D) ∧
     ReweightedDoublingLaw ω ρ (Real.sqrt 2) ∧
     (∀ lam : ℝ, lam < Real.sqrt 2 → ¬ ReweightedDoublingLaw ω ρ lam) :=
   ⟨fun k => ⟨subEulerGluingWeight_nonneg Q₀ k, subEulerGluingWeight_le_one Q₀ k⟩,
    fun _ _ hp hr => subEulerGluingWeight_prime_pow hp hr,
    fun _ _ _ hQ => windowMatrix_subEulerGluingWeight_eq_neutralWindow hQ,
-   windowMatrix_reweightedBlock_dyadic (subEulerGluingWeight Q₀),
+   windowMatrix_reweightedNeutral_dyadic (subEulerGluingWeight Q₀),
    reweightedDoublingLaw_sqrt_two zero_le_one (abs_subEulerGluingWeight_le_one Q₀) ρ,
    fun _ hlam => not_reweightedDoublingLaw_of_lt_sqrt_two_subEulerGluingWeight Q₀ hρ hlam⟩
 
@@ -367,9 +391,9 @@ lemma tendsto_theta_div_natCast :
 
 /-- Along any linear integer endpoint `N(K)` satisfying `a * K - C ≤ N(K) ≤ a * K + C` (`a > 0`),
 `θ(N(K)) / K → a` and `ψ(N(K)) / K → a`. -/
-lemma tendsto_theta_psi_linear {N : ℕ → ℕ} {a C : ℝ} (ha : 0 < a) (hC : 0 ≤ C)
-    (hlo : ∀ᶠ K in atTop, a * (K : ℝ) - C ≤ (N K : ℝ))
-    (hhi : ∀ᶠ K in atTop, (N K : ℝ) ≤ a * (K : ℝ) + C) :
+lemma tendsto_theta_psi_linear {N : ℕ → ℕ} {a C : ℝ} (ha : 0 < a) (_ : 0 ≤ C)
+    (hlo : ∀ᶠ K : ℕ in atTop, a * (K : ℝ) - C ≤ (N K : ℝ))
+    (hhi : ∀ᶠ K : ℕ in atTop, (N K : ℝ) ≤ a * (K : ℝ) + C) :
     Tendsto (fun K : ℕ => Chebyshev.theta (N K : ℝ) / (K : ℝ)) atTop (𝓝 a) ∧
     Tendsto (fun K : ℕ => Chebyshev.psi (N K : ℝ) / (K : ℝ)) atTop (𝓝 a) := by
   have hNK_atTop : Tendsto N atTop atTop := by
@@ -382,12 +406,13 @@ lemma tendsto_theta_psi_linear {N : ℕ → ℕ} {a C : ℝ} (ha : 0 < a) (hC : 
     filter_upwards [hev, hlo] with K h1 h2
     exact_mod_cast h1.trans h2
   have hrat : Tendsto (fun K : ℕ => (N K : ℝ) / (K : ℝ)) atTop (𝓝 a) := by
-    refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
-      (f := fun K : ℕ => a - C * (K : ℝ)⁻¹) (h := fun K : ℕ => a + C * (K : ℝ)⁻¹) ?_ ?_ ?_ ?_
-    · simpa using tendsto_const_nhds.sub
+    have hlo_lim : Tendsto (fun K : ℕ => a - C * (K : ℝ)⁻¹) atTop (𝓝 a) := by
+      simpa using tendsto_const_nhds.sub
         ((tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop).const_mul C)
-    · simpa using tendsto_const_nhds.add
+    have hhi_lim : Tendsto (fun K : ℕ => a + C * (K : ℝ)⁻¹) atTop (𝓝 a) := by
+      simpa using tendsto_const_nhds.add
         ((tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop).const_mul C)
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlo_lim hhi_lim ?_ ?_
     · filter_upwards [hlo, eventually_ge_atTop 1] with K h1 hK1
       have hKpos : (0 : ℝ) < K := by exact_mod_cast hK1
       rw [show a - C * (K : ℝ)⁻¹ = (a * (K : ℝ) - C) / (K : ℝ) by field_simp [hKpos.ne']]
@@ -474,7 +499,7 @@ theorem eventually_two_le_hermNegIndex_neutralWindow_halfCutoff :
     (Eventually.of_forall fun K => by
       have h1 : ((10 * (23 * K / 10) : ℕ) : ℝ) ≤ ((23 * K : ℕ) : ℝ) := by
         exact_mod_cast (Nat.mul_div_le (23 * K) 10)
-      push_cast at h1; linarith)).1
+      push_cast at h1 ⊢; linarith)).1
   have h15K := (tendsto_theta_psi_linear (N := fun K => 3 * K / 2) (a := 3 / 2) (C := 2)
     (by norm_num) (by norm_num)
     (Eventually.of_forall fun K => by
@@ -535,8 +560,14 @@ theorem eventually_two_le_hermNegIndex_neutralWindow_halfCutoff :
       exact div_le_div_of_nonneg_left
         (Real.log_nonneg (by exact_mod_cast hpP.one_lt.le))
         (by exact_mod_cast hpP.pos) hp_hi
-    have hdiv := (div_le_div_of_nonneg_right hsum_lo h3Kpos.le).trans
-      ((Finset.sum_div _ _ _).symm.le.trans (Finset.sum_le_sum hpt))
+    have hdiv : ((84 / 100 : ℝ) * K) / (3 * (K : ℝ)) ≤
+        ∑ p ∈ (Icc (21 * K / 10 + 1) (3 * K)).filter Nat.Prime, Real.log p / p :=
+      calc ((84 / 100 : ℝ) * K) / (3 * (K : ℝ))
+          ≤ (∑ p ∈ (Icc (21 * K / 10 + 1) (3 * K)).filter Nat.Prime, Real.log p) /
+              (3 * (K : ℝ)) := div_le_div_of_nonneg_right hsum_lo h3Kpos.le
+        _ = ∑ p ∈ (Icc (21 * K / 10 + 1) (3 * K)).filter Nat.Prime,
+              Real.log p / (3 * (K : ℝ)) := Finset.sum_div _ _ _
+        _ ≤ _ := Finset.sum_le_sum hpt
     have hval : ((84 / 100 : ℝ) * K) / (3 * (K : ℝ)) = 28 / 100 := by
       field_simp [hKpos.ne']; norm_num
     linarith
@@ -556,8 +587,14 @@ theorem eventually_two_le_hermNegIndex_neutralWindow_halfCutoff :
       exact div_le_div_of_nonneg_left
         (Real.log_nonneg (by exact_mod_cast hpP.one_lt.le))
         (by exact_mod_cast hpP.pos) hp_hi
-    have hdiv := (div_le_div_of_nonneg_right hsum_lo h3Kpos.le).trans
-      ((Finset.sum_div _ _ _).symm.le.trans (Finset.sum_le_sum hpt))
+    have hdiv : ((60 / 100 : ℝ) * K) / (3 * (K : ℝ)) ≤
+        ∑ p ∈ (Icc (23 * K / 10 + 2) (3 * K)).filter Nat.Prime, Real.log p / p :=
+      calc ((60 / 100 : ℝ) * K) / (3 * (K : ℝ))
+          ≤ (∑ p ∈ (Icc (23 * K / 10 + 2) (3 * K)).filter Nat.Prime, Real.log p) /
+              (3 * (K : ℝ)) := div_le_div_of_nonneg_right hsum_lo h3Kpos.le
+        _ = ∑ p ∈ (Icc (23 * K / 10 + 2) (3 * K)).filter Nat.Prime,
+              Real.log p / (3 * (K : ℝ)) := Finset.sum_div _ _ _
+        _ ≤ _ := Finset.sum_le_sum hpt
     have hval : ((60 / 100 : ℝ) * K) / (3 * (K : ℝ)) = 20 / 100 := by
       field_simp [hKpos.ne']; norm_num
     linarith
@@ -647,7 +684,7 @@ theorem topOctave_jump_of_doublingLaw_lt_sqrt_two {ρ : ℕ → ℕ} (hρ : ∀ 
     rw [← logb_two_sqrt_two]
     exact Real.logb_lt_logb (by norm_num) (by linarith) hlam2
   set δ : ℝ := 1 / 2 - θ
-  have hδ_pos : 0 < δ := by linarith
+  have hδ_pos : 0 < δ := by dsimp [δ]; linarith
   have htend_2K : Tendsto (fun K : ℕ => ((2 * K : ℕ) : ℝ) ^ δ) atTop atTop := by
     have hlin : Tendsto (fun K : ℕ => ((2 * K : ℕ) : ℝ)) atTop atTop :=
       (Filter.Tendsto.const_mul_atTop zero_lt_two tendsto_natCast_atTop_atTop).congr
@@ -723,10 +760,9 @@ theorem topOctave_jump_of_doublingLaw_lt_sqrt_two {ρ : ℕ → ℕ} (hρ : ∀ 
       windowMatrix (floorGraph k) R (6 * K * R)) *ᵥ v) =
       ∑ k ∈ Icc (3 * K + 2) (6 * K + 1),
         v ⬝ᵥ (windowMatrix (floorGraph k) R (6 * K * R) *ᵥ v) := by
-    simp only [dotProduct, Matrix.mulVec, Matrix.sum_apply, Finset.mul_sum]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Finset.sum_comm]
+    simp only [dotProduct, Matrix.mulVec, Matrix.sum_apply, Finset.sum_mul, Finset.mul_sum]
+    rw [Finset.sum_congr rfl fun _ _ => Finset.sum_comm]
+    exact Finset.sum_comm
   rw [hdiag_v, hsum_v] at hv_pos
   linarith
 

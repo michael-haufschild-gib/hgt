@@ -101,6 +101,4 @@ def kummerEvenGeometricRationalEquiv (c : Kˣ) (b q n : ℕ) :
   (kummerZeroExponentRationalEquiv c b q).trans
     ((kummerGeometricExponentEvenEquiv c b q n).symm.restrictScalars K)
 
-#print axioms kummerZeroExponentRationalEquiv
-#print axioms kummerEvenGeometricRationalEquiv
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

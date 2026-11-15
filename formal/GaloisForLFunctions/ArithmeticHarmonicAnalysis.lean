@@ -125,13 +125,7 @@ import GaloisForLFunctions.ArithmeticHarmonicAnalysis.TypicalZetaBoxBounds
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.TypicalZetaWindowBounds
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.DensityOneExtraction
 
-/-!
-# Arithmetic harmonic analysis at critical resolution
 
-Arithmetic support, successor reconstruction, prime-phase resolution,
-Adams fixed-locus constraints, theta–Gamma differential independence,
-logarithmic phase estimates, and zeta subconvexity.
--/
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.PositiveDilationPrimeJetSeparation
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.AlgebraicPrimeFrequencyRigidity
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.DilatedVonMangoldtJets
@@ -170,3 +164,12 @@ import GaloisForLFunctions.ArithmeticHarmonicAnalysis.Codes.SchurClosedCodes
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.Codes.SchurClosedCSSCodes
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteField.DivisibleLineMoments
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteField.DivisibleHyperplaneMoments
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteField.SexticCharacterProjection
+
+/-!
+# Arithmetic harmonic analysis at critical resolution
+
+Arithmetic support, successor reconstruction, prime-phase resolution,
+Adams fixed-locus constraints, theta–Gamma differential independence,
+logarithmic phase estimates, and zeta subconvexity.
+-/

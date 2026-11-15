@@ -41,8 +41,9 @@ theorem isUnit_mk_of_sup_eq_top {a : O} (h : Ideal.span {a} ⊔ Ideal.span {(6 :
   obtain ⟨y, hy, z, hz, hyz⟩ := Submodule.mem_sup.1 ((Ideal.eq_top_iff_one _).1 h)
   obtain ⟨c, rfl⟩ := Ideal.mem_span_singleton'.1 hy
   have hz0 : Ideal.Quotient.mk (Ideal.span {(6 : O)}) z = 0 := Ideal.Quotient.eq_zero_iff_mem.2 hz
-  refine isUnit_of_mul_eq_one _ (Ideal.Quotient.mk _ c) ?_
-  rw [← map_mul, mul_comm, ← sub_eq_of_eq_add' hyz.symm, map_sub, hz0, sub_zero, map_one]
+  refine isUnit_iff_exists_inv.2 ⟨Ideal.Quotient.mk _ c, ?_⟩
+  rw [← map_mul, mul_comm, show c * a = 1 - z by linear_combination hyz, map_sub, hz0, sub_zero,
+    map_one]
 
 /-- On a residue `a mod 6` the character is `(π_{(a)} mod 2)`. -/
 theorem sixResidueMulChar_mk (a : O) :
@@ -68,13 +69,15 @@ def sixHeckeFamilyCharacter : HeckeFamily.Character :=
   HeckeFamily.Character.ofResidue (Ideal.span {(6 : O)}) sixModulus.fin_ne_bot sixResidueMulChar
     sixResidueMulChar_unit
 
-theorem sixHeckeFamilyCharacter_residue_ne_one : sixHeckeFamilyCharacter.residue ≠ 1 := by
+theorem sixResidueMulChar_ne_one : sixResidueMulChar ≠ 1 := by
   intro h1
   have hu := isUnit_mk_six good_one_add_three_omega.1 good_one_add_three_omega.2
   have h := sixResidueMulChar_mk (1 + 3 * omega)
-  change sixHeckeFamilyCharacter.residue _ = _ at h
   rw [h1, MulChar.one_apply hu] at h
   exact twoCubicOf_one_add_three_omega_ne_one (ringComplex_injective (by rw [map_one]; exact h.symm))
+
+theorem sixHeckeFamilyCharacter_residue_ne_one : sixHeckeFamilyCharacter.residue ≠ 1 :=
+  sixResidueMulChar_ne_one
 
 /-- **The bridge on ideals**: the MMD coefficients are the values of `χ`. -/
 theorem idealCoeff_sixHeckeFamilyCharacter (I : Ideal O) :
@@ -86,8 +89,11 @@ theorem idealCoeff_sixHeckeFamilyCharacter (I : Ideal O) :
     exact HeckeFamily.idealCoeff_zero _
   · obtain ⟨a, ha⟩ := (IsPrincipalIdealRing.principal I).principal
     have ha' : Ideal.span ({a} : Set O) = I := ha.symm
-    change IdealCharacter.ofResidue (Ideal.span {(6 : O)}) sixResidueMulChar _ I = _
-    rw [IdealCharacter.ofResidue_of_generator _ _ _ hI ha', sixResidueMulChar_mk, twoCubicOf, ha']
+    have ha0 : a ≠ 0 := by
+      rintro rfl
+      exact hI (by rw [← ha', Ideal.span_singleton_eq_bot])
+    rw [← ha', HeckeFamily.idealCoeff_span _ ha0]
+    exact sixResidueMulChar_mk a
 
 /-- On `Re s > 1` the MMD `L`-function is `L(s, χ)`. -/
 theorem LFunction_sixHeckeFamilyCharacter_eq_heckeL {s : ℂ} (hs : 1 < s.re) :
@@ -98,11 +104,10 @@ theorem LFunction_sixHeckeFamilyCharacter_eq_heckeL {s : ℂ} (hs : 1 < s.re) :
     intro I hI
     apply mem_nonZeroDivisors_of_ne_zero
     rintro rfl
-    exact hI (by simp [HeckeFamily.idealTerm])
+    exact hI (by rw [HeckeFamily.idealTerm, HeckeFamily.idealCoeff_zero, zero_div])
   rw [← tsum_subtype_eq_of_support_subset hsupp]
   refine tsum_congr fun I => ?_
-  change HeckeFamily.idealCoeff sixHeckeFamilyCharacter I / (Ideal.absNorm (I : Ideal O) : ℂ) ^ s =
-    heckeValue sixModulus cubicTwoHecke I * (Ideal.absNorm (I : Ideal O) : ℂ) ^ (-s)
+  simp only [HeckeFamily.idealTerm, heckeIdealTerm, MonoidHom.coe_mk, OneHom.coe_mk]
   rw [idealCoeff_sixHeckeFamilyCharacter, cpow_neg, div_eq_mul_inv]
 
 /-- The entire continuation of `L(s, χ)` from its completion. -/
@@ -125,7 +130,7 @@ theorem artinCont_eq_heckeL {s : ℂ} (hs : 1 < s.re) : artinCont s = heckeL six
 theorem LFunction_sixHeckeFamilyCharacter_eq (s : ℂ) :
     HeckeFamily.LFunction sixHeckeFamilyCharacter s = artinCont s := by
   have hL : Differentiable ℂ (HeckeFamily.LFunction sixHeckeFamilyCharacter) := by
-    have h := HeckeFamily.continuedLattice_entire_nonprincipal sixHeckeFamilyCharacter
+    have h := HeckeCharacterAnalytic.continuedLattice_entire_nonprincipal sixHeckeFamilyCharacter
       sixHeckeFamilyCharacter_residue_ne_one
     exact fun z => (h z).div_const 6
   have hA : AnalyticOnNhd ℂ (HeckeFamily.LFunction sixHeckeFamilyCharacter) univ :=
@@ -150,9 +155,8 @@ theorem heckeXi_cubicTwoHecke_ne_zero {s : ℂ} (hs : (7 / 8 : ℝ) < s.re) :
 /-- Every zero of `L(s, ρ)` lies in `Re s ≤ 7/8`. -/
 theorem re_le_seven_eighths_of_mem_artinZeros {ρ : ℂ} (hρ : ρ ∈ artinZeros.carrier) :
     ρ.re ≤ 7 / 8 := by
+  have h0 : heckeXi sixModulus cubicTwoHecke ρ = 0 := hρ
   by_contra h
-  exact heckeXi_cubicTwoHecke_ne_zero (lt_of_not_ge h) hρ
-
-#print axioms heckeXi_cubicTwoHecke_ne_zero
+  exact heckeXi_cubicTwoHecke_ne_zero (lt_of_not_ge h) h0
 
 end GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip
