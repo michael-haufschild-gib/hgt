@@ -5,11 +5,13 @@ import GaloisForLFunctions.MetaplecticMobiusDescent.Detector.SubSevenEighthsZero
 /-!
 # Global signed cancellation for the Eisenstein Hecke family
 
-The log-normal sum over all squarefree ideals has size `O(Q^ε X^a)`, uniformly over
+The log-normal sum with Gaussian centre `5/6` over all squarefree ideals has size
+`O(Q^ε X^a)`, uniformly over
 ray class characters of the Eisenstein field, for `20999/24000 < a ≤ 2` and `ε > 0`.
 Here `Q = 1 + 18 N(rad 𝔪) N(𝔪)` records the presented modulus, including deleted Euler factors.
 The coefficients retain the Möbius signs. The proof moves the reciprocal Gaussian contour
 into the unconditional zero-free half-plane and integrates the uniform reciprocal bound.
+For `Q ≤ X^A`, every fixed `A ≥ 0` permits the bound `O_{A,δ}(X^(7/8+δ))` for every `δ > 0`.
 -/
 
 noncomputable section
@@ -40,13 +42,13 @@ theorem signedConductorScale_eq (χ : Character) :
 theorem presentationComplexity_le (χ : Character) (t : ℝ) :
     presentationComplexity χ t ≤ 2 * signedConductorScale χ * (1 + |t| ^ 2) := by
   have ht : (3 + |t|) ^ 2 ≤ 18 * (1 + |t| ^ 2) := by
-    nlinarith [sq_nonneg (|t| - 1)]
+    nlinarith only [sq_nonneg (|t| - 1), sq_nonneg |t|]
   have h := mul_le_mul_of_nonneg_left ht
     (show 0 ≤ ((HeckeDeletionBounds.radical χ.modulus).absNorm : ℝ) *
       (2 * (χ.modulus.absNorm : ℝ)) by positivity)
   dsimp [signedConductorScale, presentationComplexity, HeckeLogarithmic.complexity]
   simp only [abs_zero, add_zero] at *
-  nlinarith [sq_nonneg |t|]
+  nlinarith only [h, sq_nonneg |t|]
 
 /-- Uniform reciprocal growth with arbitrarily small modulus exponent and quadratic height cost. -/
 theorem exists_uniform_signed_reciprocal_bound (a ε : ℝ)
@@ -154,7 +156,7 @@ theorem signed_squarefree_sum_eq_signal (𝔪 : Modulus K) (ψ : HeckeCharacter 
     ← LFunction_heckeFamilyOfRay_eq_heckeL 𝔪 ψ hre]
   simp only [Continuation.gaussianContourIntegrand, HeckeSignal.quotient,
     ofReal_zero, add_zero, one_mul, smul_eq_mul]
-  rw [show (2 : ℂ) + (y : ℂ) * I = linePoint (-y) by simp [linePoint],
+  rw [show (2 : ℂ) + (y : ℂ) * I = linePoint (-y) by unfold linePoint; push_cast; ring,
     HeckeReciprocal.reciprocal_eq_inv _ h0 h1]
   push_cast
   ring
@@ -195,7 +197,7 @@ theorem exists_uniform_signed_squarefree_growing_modulus (A δ : ℝ)
   have hAε : A * (δ / (A + 1)) ≤ δ := by
     rw [← mul_div_assoc]
     apply (div_le_iff₀ (by linarith : 0 < A + 1)).mpr
-    nlinarith
+    nlinarith only [hδ]
   have hp : (signedConductorScale (heckeFamilyOfRay 𝔪 ψ)) ^ (δ / (A + 1)) ≤ X ^ δ := by
     calc
       _ ≤ (X ^ A) ^ (δ / (A + 1)) := Real.rpow_le_rpow

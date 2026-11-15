@@ -86,6 +86,8 @@ import GaloisForLFunctions.RepresentationLifting.KTheory.VirtualCharacterFirstJe
 import GaloisForLFunctions.RepresentationLifting.Descent.SemilinearInvariantSpan
 import GaloisForLFunctions.RepresentationLifting.Descent.SemilinearDescent
 import GaloisForLFunctions.RepresentationLifting.Descent.SemilinearAveraging
+import GaloisForLFunctions.RepresentationLifting.Descent.SemilinearCohomology
+import GaloisForLFunctions.RepresentationLifting.Descent.FiniteAutomorphismAtiyah
 
 /-!
 # Representation lifting and quadratic extensions

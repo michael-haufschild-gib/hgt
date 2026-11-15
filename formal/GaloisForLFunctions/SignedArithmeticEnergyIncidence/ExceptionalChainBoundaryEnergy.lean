@@ -6,7 +6,7 @@ import GaloisForLFunctions.SignedArithmeticEnergyIncidence.ChainLendingAndTrainC
 The negative of the split exceptional intersection matrix has diagonal entries
 `2, …, 2, p + 2` and adjacent entries `-1`. Its square decomposition is the
 identity in Lemma 3.14 of https://arxiv.org/abs/2610.40335. Here it acts on the
-existing signed-incidence chain. Eliminating its interior gives the exact
+signed-incidence chain. Eliminating its interior gives the exact
 boundary coefficient `(p² + p + 1) / p`, attained by the linear ramp.
 -/
 
@@ -144,6 +144,32 @@ theorem pinnedIncrement_exceptionalChainRamp (n : ℕ) (t : ℝ) (k : ℕ) :
   | zero => simp [pinnedIncrement, exceptionalChainRamp]
   | succ k => simp only [pinnedIncrement, exceptionalChainRamp, Nat.cast_add, Nat.cast_one]; ring
 
+/-- The linear ramp is the unique minimizing profile at each prescribed terminal value. -/
+theorem exceptionalChainEnergy_minimizers (n : ℕ) (f : ℕ → ℝ) :
+    exceptionalChainEnergy n f =
+      (((n : ℝ) + 2) + 1 / ((n : ℝ) + 1)) * f n ^ 2 ↔
+      ∀ k ≤ n, f k = exceptionalChainRamp n (f n) k := by
+  rw [exceptionalChainEnergy_boundary_eq_iff]
+  constructor
+  · intro h k hk
+    rw [← sum_pinnedIncrement k f]
+    have he : (∑ j ∈ range (k + 1), pinnedIncrement f j) =
+        ∑ _j ∈ range (k + 1), f n / ((n : ℝ) + 1) :=
+      sum_congr rfl fun j hj => h j (by have := mem_range.mp hj; omega)
+    rw [he]
+    simp only [sum_const, card_range, nsmul_eq_mul, Nat.cast_add, Nat.cast_one,
+      exceptionalChainRamp]
+    ring
+  · intro h k hk
+    cases k with
+    | zero =>
+      rw [pinnedIncrement, h 0 (by omega)]
+      simp [exceptionalChainRamp]
+    | succ k =>
+      rw [pinnedIncrement, h (k + 1) hk, h k (by omega)]
+      simp only [exceptionalChainRamp, Nat.cast_add, Nat.cast_one]
+      ring
+
 /-- Every terminal value attains the effective boundary energy. -/
 theorem exceptionalChainEnergy_ramp (n : ℕ) (t : ℝ) :
     exceptionalChainEnergy n (exceptionalChainRamp n t) =
@@ -156,7 +182,67 @@ theorem exceptionalChainEnergy_ramp (n : ℕ) (t : ℝ) :
   simp only [pinnedIncrement_exceptionalChainRamp, sub_self, zero_pow (by omega : 2 ≠ 0),
     sum_const_zero, zero_add]
 
-/-- The existing sharp path bound also controls the entire exceptional-chain mass. -/
+/-- Eliminating toward the opposite endpoint exposes a different boundary coefficient. -/
+theorem exceptionalChainEnergy_head_decomposition (n : ℕ) (f : ℕ → ℝ) :
+    exceptionalChainEnergy n f =
+      (∑ k ∈ range n,
+        (f (k + 1) - f k + ((n : ℝ) + 2) / ((n : ℝ) + 1) ^ 2 * f 0) ^ 2) +
+      ((n : ℝ) + 2) * (f n - f 0 / ((n : ℝ) + 1) ^ 2) ^ 2 +
+      (1 + ((n : ℝ) + 2) / ((n : ℝ) + 1) ^ 2) * f 0 ^ 2 := by
+  have hn : (n : ℝ) + 1 ≠ 0 := by positivity
+  have ht : (∑ k ∈ range n, (f (k + 1) - f k)) = f n - f 0 :=
+    sum_range_sub f n
+  let c := ((n : ℝ) + 2) / ((n : ℝ) + 1) ^ 2 * f 0
+  have he : (∑ k ∈ range n, (f (k + 1) - f k + c) ^ 2) =
+      (∑ k ∈ range n, (f k - f (k + 1)) ^ 2) +
+      2 * c * (f n - f 0) + (n : ℝ) * c ^ 2 := by
+    calc
+      _ = ∑ k ∈ range n, ((f k - f (k + 1)) ^ 2 +
+            2 * c * (f (k + 1) - f k) + c ^ 2) :=
+        sum_congr rfl fun _ _ => by ring
+      _ = _ := by rw [sum_add_distrib, sum_add_distrib, ← mul_sum, ht, sum_const,
+          card_range, nsmul_eq_mul]
+  change exceptionalChainEnergy n f =
+    (∑ k ∈ range n, (f (k + 1) - f k + c) ^ 2) + _ + _
+  rw [he, exceptionalChainEnergy_adjacent_squares]
+  dsimp only [c]
+  field_simp
+  <;> ring
+
+/-- The effective coefficient at the first coordinate is `1 + (p + 1) / p²`. -/
+theorem exceptionalChainEnergy_head_bound (n : ℕ) (f : ℕ → ℝ) :
+    (1 + ((n : ℝ) + 2) / ((n : ℝ) + 1) ^ 2) * f 0 ^ 2 ≤ exceptionalChainEnergy n f := by
+  rw [exceptionalChainEnergy_head_decomposition]
+  have hs : 0 ≤ ∑ k ∈ range n,
+      (f (k + 1) - f k + ((n : ℝ) + 2) / ((n : ℝ) + 1) ^ 2 * f 0) ^ 2 :=
+    sum_nonneg fun _ _ => sq_nonneg _
+  have ht : 0 ≤ ((n : ℝ) + 2) * (f n - f 0 / ((n : ℝ) + 1) ^ 2) ^ 2 :=
+    mul_nonneg (by positivity) (sq_nonneg _)
+  linarith only [hs, ht]
+
+/-- The descending affine profile minimizing energy at the first coordinate. -/
+def exceptionalChainHeadRamp (n : ℕ) (t : ℝ) (k : ℕ) : ℝ :=
+  (1 - ((k : ℝ) * ((n : ℝ) + 2)) / ((n : ℝ) + 1) ^ 2) * t
+
+/-- The head bound is attained for every prescribed first-coordinate value. -/
+theorem exceptionalChainEnergy_head_ramp (n : ℕ) (t : ℝ) :
+    exceptionalChainEnergy n (exceptionalChainHeadRamp n t) =
+      (1 + ((n : ℝ) + 2) / ((n : ℝ) + 1) ^ 2) * t ^ 2 := by
+  have hn : (n : ℝ) + 1 ≠ 0 := by positivity
+  have h0 : exceptionalChainHeadRamp n t 0 = t := by simp [exceptionalChainHeadRamp]
+  have hend : exceptionalChainHeadRamp n t n = t / ((n : ℝ) + 1) ^ 2 := by
+    unfold exceptionalChainHeadRamp
+    field_simp
+    <;> ring
+  have hj (k : ℕ) : exceptionalChainHeadRamp n t (k + 1) - exceptionalChainHeadRamp n t k +
+      ((n : ℝ) + 2) / ((n : ℝ) + 1) ^ 2 * t = 0 := by
+    simp only [exceptionalChainHeadRamp, Nat.cast_add, Nat.cast_one]
+    ring
+  rw [exceptionalChainEnergy_head_decomposition, h0, hend]
+  simp only [hj, sub_self, zero_pow (by omega : 2 ≠ 0), sum_const_zero, mul_zero,
+    add_zero, zero_add]
+
+/-- The sharp path bound also controls the entire exceptional-chain mass. -/
 theorem exceptionalChainEnergy_coercive (n : ℕ) (f : ℕ → ℝ) :
     (2 - 2 * Real.cos (Real.pi / ((n : ℝ) + 2))) *
       (∑ k ∈ range (n + 1), f k ^ 2) + ((n : ℝ) + 1) * f n ^ 2 ≤
@@ -168,7 +254,10 @@ theorem exceptionalChainEnergy_coercive (n : ℕ) (f : ℕ → ℝ) :
 #print axioms exceptionalChainEnergy_boundary_decomposition
 #print axioms exceptionalChainEnergy_zero_iff
 #print axioms exceptionalChainEnergy_boundary_eq_iff
+#print axioms exceptionalChainEnergy_minimizers
 #print axioms exceptionalChainEnergy_ramp
+#print axioms exceptionalChainEnergy_head_decomposition
+#print axioms exceptionalChainEnergy_head_ramp
 #print axioms exceptionalChainEnergy_coercive
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence

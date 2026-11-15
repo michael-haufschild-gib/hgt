@@ -167,7 +167,7 @@ theorem heckeLFunction_eq_LFunction_heckeFamilyOfRay {s : ℂ} (h0 : s ≠ 0) (h
     have hopen : IsOpen {z : ℂ | 1 < z.re} := isOpen_lt continuous_const continuous_re
     filter_upwards [hopen.mem_nhds (by simp : (1 : ℝ) < (2 : ℂ).re)] with z hz
     have hz1 : z ≠ 1 := by rintro rfl; simp at hz
-    have hz0 : z ≠ 0 := by rintro rfl; simp at hz
+    have hz0 : z ≠ 0 := by rintro rfl; norm_num at hz
     rw [← sub_one_mul_heckeLFunction 𝔪 ψ hz1, HeckeOrigin.poleRemoved_eq _ hz0 hz1,
       heckeLFunction_eq_heckeL 𝔪 ψ hz, LFunction_heckeFamilyOfRay_eq_heckeL 𝔪 ψ hz]
   have h := (show AnalyticOnNhd ℂ (rayRegular 𝔪 ψ) univ from fun z _ => hF.analyticAt z

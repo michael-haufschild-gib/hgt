@@ -7,8 +7,7 @@ import Mathlib.GroupTheory.GroupAction.Quotient
 For a finite action, the ordinary character counts fixed points. Consequently
 its virtual class is regular exactly when every stabilizer is trivial. For a
 coset action this is equivalent to the defining subgroup being trivial. These
-are applications of nonidentity-trace detection to the permutation modules
-already used in the corpus's representation and Artin constructions.
+are applications of nonidentity-trace detection to permutation and coset modules.
 -/
 
 open scoped BigOperators
@@ -41,7 +40,7 @@ theorem permutationVirtualRepresentation_apply (g : G) :
       if g • x = x then 1 else 0 := by
     rw [LinearMap.toMatrix_apply, MonoidAlgebra.basis_apply]
     change (Representation.ofMulAction ℂ G X g (MonoidAlgebra.single x 1)).coeff x = _
-    rw [Representation.ofMulAction_single, MonoidAlgebra.coeff_single]
+    rw [Representation.ofMulAction_single, MonoidAlgebra.coeff_single, Finsupp.single_apply]
   simp only [hdiag, permutationFixedCount, Finset.card_filter, Nat.cast_sum, Nat.cast_ite,
     Nat.cast_one, Nat.cast_zero]
 

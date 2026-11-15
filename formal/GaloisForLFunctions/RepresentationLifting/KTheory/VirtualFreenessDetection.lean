@@ -5,14 +5,14 @@ import GaloisForLFunctions.RHTower.Artin.ArtinVirtualCharacterPairing
 # Nonidentity traces detect virtual freeness
 
 The regular-character obstruction in §2.5 of https://arxiv.org/abs/2610.40335
-has an exact converse for the corpus's concrete complex virtual characters.
+has an exact converse for concrete complex virtual characters.
 An integer multiple of the regular character is precisely a virtual character
 supported at the identity. Integrality of the trivial-character pairing proves
 the converse. The regular ideal and the dimension augmentation ideal annihilate
 each other, so dimension alone loses every nonzero degree-zero obstruction.
 -/
 
-open scoped BigOperators
+open scoped BigOperators Classical
 noncomputable section
 namespace GaloisForLFunctions.RepresentationLifting
 
@@ -38,7 +38,7 @@ theorem regularVirtualRepresentation_apply (g : G) :
     rw [LinearMap.toMatrix_apply, MonoidAlgebra.basis_apply]
     change (Representation.ofMulAction ℂ G G g (MonoidAlgebra.single x 1)).coeff x = _
     rw [Representation.ofMulAction_single, MonoidAlgebra.coeff_single]
-    simp only [smul_eq_mul, mul_eq_right]
+    simp only [Finsupp.single_apply, smul_eq_mul, mul_eq_right]
   simp only [hdiag, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
   split_ifs <;> simp
 
@@ -77,7 +77,7 @@ theorem isVirtuallyFree_iff (χ : VirtualRepresentationRing G) :
 theorem not_isVirtuallyFree_iff (χ : VirtualRepresentationRing G) :
     ¬ IsVirtuallyFree G χ ↔ ∃ g : G, g ≠ 1 ∧ χ.val g ≠ 0 := by
   rw [isVirtuallyFree_iff]
-  push_neg
+  push Not
   rfl
 
 /-- Tensoring the regular class by any virtual class only remembers its dimension. -/
@@ -88,7 +88,8 @@ theorem regularVirtualRepresentation_mul (χ : VirtualRepresentationRing G) :
   apply Subtype.ext
   funext g
   change (regularVirtualRepresentation G).val g * χ.val g =
-    (virtualRepresentationAugmentation G χ : ℂ) * (regularVirtualRepresentation G).val g
+    virtualRepresentationAugmentation G χ • (regularVirtualRepresentation G).val g
+  rw [zsmul_eq_mul]
   change (regularVirtualRepresentation G).val g * χ.val g =
     (virtualRepresentationDegree G χ : ℂ) * (regularVirtualRepresentation G).val g
   rw [virtualRepresentationDegree_cast, regularVirtualRepresentation_apply]
@@ -126,14 +127,22 @@ theorem regularVirtualRepresentation_mul_eq_zero_iff (χ : VirtualRepresentation
     have hc : (Fintype.card G : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr Fintype.card_ne_zero
     have hz := (mul_eq_zero.mp hv).resolve_left hc
     apply Int.cast_injective (α := ℂ)
-    change (virtualRepresentationDegree G χ : ℂ) = (0 : ℂ)
-    rw [virtualRepresentationDegree_cast, hz]
+    change (virtualRepresentationDegree G χ : ℂ) = ((0 : ℤ) : ℂ)
+    rw [Int.cast_zero, virtualRepresentationDegree_cast, hz]
   · intro h
     rw [regularVirtualRepresentation_mul, h, zero_smul]
+
+/-- A virtually free class invisible to the field K-zero action is zero. -/
+theorem isVirtuallyFree_and_K0Action_zero_iff (χ : VirtualRepresentationRing G) :
+    (IsVirtuallyFree G χ ∧ ∀ x : FieldK0 ℂ, virtualRepresentationK0Action G χ x = 0) ↔
+      χ = 0 := by
+  rw [virtualRepresentationK0Action_zero_iff]
+  exact isVirtuallyFree_and_degree_zero_iff G χ
 
 #print axioms isVirtuallyFree_iff
 #print axioms not_isVirtuallyFree_iff
 #print axioms isVirtuallyFree_and_degree_zero_iff
 #print axioms regularVirtualRepresentation_mul_eq_zero_iff
+#print axioms isVirtuallyFree_and_K0Action_zero_iff
 
 end GaloisForLFunctions.RepresentationLifting

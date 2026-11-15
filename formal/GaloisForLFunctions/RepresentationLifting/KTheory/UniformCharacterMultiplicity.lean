@@ -38,8 +38,9 @@ theorem linearMultiplicity_zsmul (χ : LinearCharacter G) (m : ℤ)
     linearMultiplicity G χ (m • θ) = m * linearMultiplicity G χ θ := by
   apply Int.cast_injective (α := ℂ)
   simp only [linearMultiplicity, Int.cast_mul, virtualMultiplicity_cast]
-  simp only [characterPairing, Subring.coe_zsmul, Pi.smul_apply, zsmul_eq_mul,
-    mul_assoc, ← Finset.mul_sum]
+  change characterPairing G (linearVirtualCharacter G χ).val (m • θ.val) =
+    (m : ℂ) * characterPairing G (linearVirtualCharacter G χ).val θ.val
+  simp only [characterPairing, Pi.smul_apply, zsmul_eq_mul, mul_assoc, ← Finset.mul_sum]
   ring
 
 /-- Fourier inversion in the concrete virtual-representation ring. -/
@@ -70,7 +71,7 @@ theorem not_isVirtuallyFree_iff_multiplicity_discrepancy (θ : VirtualRepresenta
   constructor
   · intro h
     by_contra hn
-    push_neg at hn
+    push Not at hn
     exact h ⟨linearMultiplicity G 1 θ, fun χ => hn χ 1⟩
   · rintro ⟨χ, ψ, h⟩ ⟨m, hm⟩
     exact h ((hm χ).trans (hm ψ).symm)
