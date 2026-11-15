@@ -8,7 +8,8 @@ After the reciprocal target is subtracted, the character-weighted completed
 row is exactly a linear combination of the sextic and cubic residue characters.
 Both have mean zero. Their finite Fourier coefficients have square-root size,
 so lattice Poisson summation bounds the signed extraction error to every order
-when the row scale exceeds the conductor. All parameters in the bound are
+when the dual expansion divided by the square root of the conductor norm is large.
+All parameters in the bound are
 explicit; the reciprocal target is retained before taking norms.
 -/
 
@@ -120,11 +121,20 @@ def eisensteinRowDecay (f : SchwartzMap E ℂ) (M : ℕ) (B : E ≃L[ℝ] E)
 
 /-- A positive lower bound for the expansion of the inverse adjoint, determined by `B`. -/
 def eisensteinDualScale (B : E ≃L[ℝ] E) : ℝ :=
-  (‖(inverseAdjointEquiv B).symm.toContinuousLinearMap‖ + 1)⁻¹
+  ‖(inverseAdjointEquiv B).symm.toContinuousLinearMap‖⁻¹
+
+private theorem norm_inverseAdjoint_symm_pos (B : E ≃L[ℝ] E) :
+    0 < ‖(inverseAdjointEquiv B).symm.toContinuousLinearMap‖ := by
+  apply norm_pos_iff.mpr
+  intro he
+  obtain ⟨v, hv⟩ := exists_ne (0 : E)
+  have hz := congrArg (fun T : E →L[ℝ] E => T ((inverseAdjointEquiv B) v)) he
+  change (inverseAdjointEquiv B).symm ((inverseAdjointEquiv B) v) = 0 at hz
+  rw [ContinuousLinearEquiv.symm_apply_apply] at hz
+  exact hv hz
 
 theorem eisensteinDualScale_pos (B : E ≃L[ℝ] E) : 0 < eisensteinDualScale B := by
-  unfold eisensteinDualScale
-  positivity
+  exact inv_pos.mpr (norm_inverseAdjoint_symm_pos B)
 
 theorem eisensteinDualScale_mul_norm_le (B : E ≃L[ℝ] E) (v : E) :
     eisensteinDualScale B * ‖v‖ ≤ ‖inverseAdjoint B v‖ := by
@@ -133,10 +143,9 @@ theorem eisensteinDualScale_mul_norm_le (B : E ≃L[ℝ] E) (v : E) :
   change ‖(inverseAdjointEquiv B).symm ((inverseAdjointEquiv B) v)‖ ≤
     ‖(inverseAdjointEquiv B).symm.toContinuousLinearMap‖ * ‖inverseAdjoint B v‖ at hn
   rw [ContinuousLinearEquiv.symm_apply_apply] at hn
-  have hp : 0 < ‖(inverseAdjointEquiv B).symm.toContinuousLinearMap‖ + 1 := by positivity
   rw [eisensteinDualScale, inv_mul_eq_div]
-  apply (div_le_iff₀ hp).mpr
-  exact hn.trans (by nlinarith only [norm_nonneg (inverseAdjoint B v)])
+  apply (div_le_iff₀ (norm_inverseAdjoint_symm_pos B)).mpr
+  simpa only [mul_comm] using hn
 
 /-- Signed extraction on the lattice: the reciprocal target is removed before the norm,
 and the remaining actual arithmetic modes satisfy an explicit Poisson bound. -/
@@ -152,10 +161,13 @@ theorem norm_tsum_rowTargetResidual_le (f : SchwartzMap E ℂ) {M : ℕ} (hM : (
   have h := norm_tsum_eisensteinColumn_le f hM B hμ hT a b
     (rowTargetResidual (Ideal.span {eval a b}) hg Q R η X Y V)
     (sum_rowTargetResidual_eq_zero (Ideal.span {eval a b}) hg Q R η X Y V)
+  rw [show (3 * 2 + 3 : ℝ) = 9 by norm_num] at h
   change _ ≤ eisensteinRowDecay f M B μ a b * _ at h
   have hd : 0 ≤ eisensteinRowDecay f M B μ a b := by
     have hB := (latticeScale_pos B).le
-    have hs := (SchwartzMap.seminorm ℝ M 0 (𝓕 f)).coe_nonneg
+    have hs : 0 ≤ SchwartzMap.seminorm ℝ M 0 (𝓕 f) := apply_nonneg _ _
+    have hw : 0 ≤ ∑' m : Z, latticeBracket m ^ (-(M : ℝ)) :=
+      tsum_nonneg fun m => Real.rpow_nonneg (latticeBracket_pos m).le _
     unfold eisensteinRowDecay
     positivity
   refine h.trans ?_

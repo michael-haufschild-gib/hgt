@@ -25,6 +25,7 @@ theorem sexticReadout_rowLocalSum_of_tests {ζ : ℂ} (hζ : IsPrimitiveRoot ζ 
       -(1 - R)⁻¹ * η * X := by
   have hm : sexticReadout w (fun i => ζ ^ i.val) = 0 := by
     have h := sexticReadout_monomial hζ w (k := 1) (by norm_num) (by norm_num)
+    change sexticReadout w (fun i => (ζ ^ i.val) ^ 1) = sexticCoefficients ζ w 5 at h
     simpa only [pow_one, h5] using h
   have hc : sexticReadout w (fun _ => 1) = 0 := by rw [sexticReadout_one ζ w, h0]
   have hi : sexticReadout w (fun i => (ζ ^ i.val)⁻¹) = 1 := by
@@ -76,6 +77,15 @@ theorem norm_minimumPhaseReadout_sq_le (Y : ℂ) (f : ℂ → ℂ) :
   change 36 * ‖minimumPhaseReadout Y f‖ ^ 2 ≤ _ at h
   nlinarith only [h]
 
+/-- Conjugate filter observations attain the stated mean-square cost exactly. -/
+theorem minimumPhaseReadout_conj_weight (Y : ℂ) :
+    minimumPhaseReadout Y (fun ρ => conj (minimumTargetWeight Y ρ)) =
+      ((1 + ‖Y‖ ^ 6 / targetGram Y : ℝ) : ℂ) := by
+  unfold minimumPhaseReadout
+  rw [sexticReadout_conj, minimumTargetWeight_energy minimum_phase_root Y]
+  push_cast
+  ring
+
 /-- Perturbations of the actual rows have the optimal squared extraction cost;
 the explicit completion multiplier introduces no pole as `R` approaches one. -/
 theorem minimumPhaseReadout_target_error (Q R η X Y V : ℂ)
@@ -86,10 +96,11 @@ theorem minimumPhaseReadout_target_error (Q R η X Y V : ℂ)
           rowLocalSum Q R η X Y V (targetSixthRoot ^ i.val)‖ ^ 2 := by
   have he : -(1 - R) * minimumPhaseReadout Y f - η * X =
       -(1 - R) * minimumPhaseReadout Y (fun ρ => f ρ - rowLocalSum Q R η X Y V ρ) := by
-    rw [minimumPhaseReadout, sexticReadout_sub]
+    have hs : minimumPhaseReadout Y (fun ρ => f ρ - rowLocalSum Q R η X Y V ρ) =
+        minimumPhaseReadout Y f - minimumPhaseReadout Y (rowLocalSum Q R η X Y V) :=
+      sexticReadout_sub _ _ _
+    rw [hs]
     have ht := minimumPhaseReadout_recovers_target Q R η X Y V hY hR
-    change -(1 - R) * minimumPhaseReadout Y f - η * X =
-      -(1 - R) * (minimumPhaseReadout Y f - minimumPhaseReadout Y (rowLocalSum Q R η X Y V))
     linear_combination -ht
   have hn := norm_minimumPhaseReadout_sq_le Y (fun ρ => f ρ - rowLocalSum Q R η X Y V ρ)
   rw [he, norm_mul, norm_neg, mul_pow]

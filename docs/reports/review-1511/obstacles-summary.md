@@ -1,8 +1,23 @@
 # RH research: consolidated frontier, open problems and research programmes
 
-**State in one paragraph.** The corpus proves one seed: no zero of `ζ`, of any Dirichlet `L`-function, or of the Hecke family of `ℚ(ω)` lies in `Re s > 7/8` [MMD] [MMD_DIR] [MMD_HECKE]. It reads the zero width `w = Θ − ½` exactly through many rulers, and a formal ruler calculus shows that these readings are one number: the seed passes to all of them, and a lever on one is a lever on all [RULERS] [LEVERTRANSPORT]. No lever for `ζ` is proved. The only producer class has a proved wall at `3/5`, also under mixing, composition and minima [GAUSS] [WALLGEN]; its estimates stop at the vertex `7/8` [VERTEX]. Levers valid on Euler products without a functional equation cannot bite below `2/3`, levers valid on functional equations without a Dirichlet series bite nowhere, and the seed fails for prime edits with a power count rate [EULERWORLD] [COSH] [EDIT]. The index face counts the zeros right of the line exactly and its margin is a ruler of `w` [INDEXLAW] [MARGINSINF]. The tail face factors RH into ZAL, the finite stratum and Landing, all open [THREEATOMS].
+**State in one paragraph.** One seed is proved: no zero of `ζ`, of any Dirichlet `L`-function or of any Hecke or ray class `L`-function of `ℚ(ω)` lies in `Re s > 7/8` [SEEDZETA] [MMD_DIR] [HECKESEED] [RAYSEED] [S]; a hypothesis-free proof of `Re s > 20999/24000` for the same families is written in source and not graded by the frontier map [SUBSEED] [SUBDIR] [S]. The corpus reads the zero width `w = Θ − ½` exactly through many rulers, and a ruler calculus makes them one number [RULERS] [LEVERTRANSPORT]. No lever for `ζ` is proved, and five world classes fix what a lever must use: the Dirichlet series, the exact functional equation, the arithmetic of the primes beyond their count, and the Ramanujan size of the Euler parameters [TWOTHIRDSWORLD] [COSH] [EDIT] [PAIRSNOBITE]. The only producer, the cubic probe, has two ladders: its frames stop at `3/5` under factor-by-factor completion while the Möbius sign alone prices frames down to centres `k/(2(k−1)) → ½` [WALLGEN] [SIGNLINE]; its estimates have the published vertex `7/8`, close at `20999/24000` after rescaling, cannot pass `40535/46328` with the present estimates, reach `13/15` only with a better row count, and stop at `5/6` in every Cauchy–Schwarz model [VERTEXPOS] [SUBSEED] [FARKAS] [BALANCED] [SAVING] [S]. The window calculus is a complete finite model of `w` with no producer in gluing form [SUBEULER] [S]. Identity forcing stops at the quartet [QUARTETFORCE]. The half-line problem has an exact Hawking–Page structure off RH, and stability does not exclude it [HPTRANS] [SADDLE] [S]. The tail factors into ZAL, the finite stratum and Landing, all open [THREEATOMS].
 
-Evidence: Lean statements read in source at `cf08f8dfc5` with the working tree of 15 Nov 2026 ([W] = untracked working-tree module, [S] = tagged unintegrated by the frontier map); [working log](../../../logs/review-1511-working-log.md). No build or audit was run. Statements marked **[D]** are deductions of this report, to be proved before use. Companion reports: [routes](route-obstacles.md), [walls](walls-ledger.md), [faces](route-unification-ledger.md).
+Evidence: Lean statements read in source at `3699ff3a33` with the working tree of 15 Nov 2026 ([S] = tagged unintegrated by the frontier map, [W] = untracked working-tree file); [fact log](../../../logs/review-1511-frontier-facts.md). No build or audit was run. **[D]** marks deductions of this report, to be proved before use. Companion reports: [routes](route-obstacles.md), [walls](walls-ledger.md), [faces](route-unification-ledger.md).
+
+**Questions with an answer in Lean.**
+
+| Question | Answer | Lean |
+|---|---|---|
+| Does the gluing data of the windows (finite prefix, dyadic middles, half-windows) give a doubling factor below `√2`? | No: a sub-Euler model with the same data has best factor `√2`; a factor below `√2` needs a negative fresh-octave form of order `√K`. | [SUBEULER] [TOPOCTAVE] [S] |
+| Do the `A₂` cubic multiple Dirichlet series supply the estimates below `7/8`? | No: every convexity, Perron, Kubota-pole and squared-row boundary exceeds `7/8`; Cauchy–Schwarz models have `s = 0`. | [A2CHAIN] [A2REJECT] [A2DOUBLE] [SAVING] |
+| Does a rational Euler identity, a Brauer relation or a shifted convolution force a second zero? | No: forcing stops at the quartet; survivor is a ruler on `[½, 9/16)`. | [WITTORD] [BRAUERCANCEL] [SHIFTMARGIN] [SQFRULER] |
+| Is the off-line world a thermodynamically unstable black-hole phase? | No: the saddle is stable at every `R`, the weak endpoint always wins, the Legendre intercept is the bare energy. | [SADDLE] [WEAKEND] [LEGENDRE] [S] |
+| Does bootstrapping the probe on an assumed zero-free region give a lever? | No [D]: low estimates through the twists return the zero, the high-side count moves by `< 10⁻⁴`. | [TWISTRETURN] [ROWCOUNTAT] |
+| Does a finite-aperture Weil certificate separate `ζ` from a deformation with off-line zeros? | No: prime-2 deformations keep the floor at `½log 2` and, near `α = ½`, at `log 2`. | [P2NYQ] [P2LOG2] [S] |
+| Does KMS positivity on the modular horizon place the zeros? | No: positive kernels with the same KMS condition have all zeros off the line. | [KMSPOS] [FAKEHORIZON] |
+| Is there a heat-time lower bound in the width alone? | No: cosine-defect models of fixed width have heat time `→ 0`. | [HEATSPACING] |
+| Does the rescaled probe geometry close below `7/8`? | Yes, at `20999/24000`, for `ζ`, every Dirichlet and every Hecke `L`-function of `ℚ(ω)`. | [SUBPROBE] [SUBHECKE] [SUBSEED] [S] |
+| Can a zero satisfy `ζ(ρ) = ζ(ρ/k) = 0`? | Such a coincidence forces `Θ ≥ k/(k+1)`; none occurs for `k ≥ 7`. | [ROOTCOINC] [S] [K7] [S] |
 
 ## 2.1 Tasks that are work
 
@@ -10,385 +25,385 @@ Each task has a known method and no unproved sign, rate or uniformity. None of t
 
 | # | Task | Concrete output | Inputs | Payoff |
 |---|---|---|---|---|
-| A1 | **Effective Siegel from the all-moduli seed** | No real zero of any `L(s,χ)` in `Re s > 7/8` is immediate; a short Euler product on `Re s ≥ 7/8 + ε` gives an effective lower bound for `L(1,χ)` of the shape `≫ (log log q)^{−1}`, effective class-number lower bounds, PNT in progressions with error `x^{7/8+ε}` and explicit `q`-dependence, least prime in a progression [D]. | [MMD_DIR]; Siegel is present only ineffectively [SIEGEL] | Conductor-uniform tools for the family routes (CRF, JAS); the classical Siegel problem in effective form. |
-| A2 | **Lindelöf right of the seed** | `ζ(σ+it)^{±1} ≪_ε |t|^ε` for `σ ≥ 7/8 + ε` (Borel–Carathéodory, three circles) [D]. | [MMD], polynomial bound for `1/ζ` [INVZETA] | Uniform inputs for moment and window routes. |
-| A3 | **Sign of the heat monodromy group** | One forward time with a double zero `ζ₀ ≠ 0` and no other multiple zero; then `G₊ = W` [DOUBLECOLL]. A multiple zero off the centre exists at arbitrarily large forward time [OFFCENTRE]; missing: exact order two and isolation (local analysis on the model loop). | [OFFCENTRE] [DOUBLECOLL] [MOD8] | Decides the sign of the forward monodromy group; with `G₊ = W` the parity mechanism (`8 | N(t)`) carries no information, and ZCG must use arithmetic input. |
-| A4 | **`Q = 2` fourth ladder step** | Zero excess (or an explicit failing window) at ratio `103⁸/(100⁸/2) ≈ 3.2099` for cutoff two [FOURTHRED]. | [FOURTH] [LOGLADDER] | Completes the ratio-three ladder at every cutoff. |
-| A5 | **Next-aperture certificate** | A rational certificate past the prime-square contact (aperture `½log 5`), in the method of the `log 2` certificate. Existence is not guaranteed: the certificate exists iff the floor is positive there. | [EVENLOG2] [ODDLOG2] [EDGE] | Extends the certified range of RW, EWU, OWU, ACS. |
-| A6 | **Grössencharacter rung** | The `7/8` machine for the weight-one sextic Grössencharacter family of `ℚ(ω)`. The frame is a ruler between abscissas: the correction has abscissa `(3 + Θ_rung)/6`, and `7/8` for the rung is the same statement as `31/48` for the correction [RUNG] [RUNG3148] [W]. | [CORRZERO] [GROSSENTOWER] | A seed for the rung family is what the frame tower lacks; it lowers the frame wall below `2/3` and does not move `Θ` (the estimates bind at `7/8`). |
-| A7 | **Heilbronn characters and Artin conductors** | Heilbronn characters from Brauer induction; Aramata–Brauer; Artin conductor exponents [D, classical]. | [BRAUER] [ARTIN] | Multiplicity laws across Galois groups (2.19). |
-| A8 | **Counterexample localization as one theorem** | Assemble: a positive heat threshold puts an off-line zero below an explicit height [HEATLOC]; the visibility law gives the aperture; the index law gives the window with two negative squares [INDEXLAW] [D]. | [HEATLOC] [HIDDEN] [INDEXLAW] | The chain of 2.20(b), lacking only its first link. |
-| A9 | **Integrate the working-tree rulers** | Wire the modules proving the margin ruler at polynomial block size, the doubling ruler (best factor `2^w`) and the rung ruler; carry the factor `1 + log R` through the ACS consumers. | [MARGINRULER] [DOUBLING] [RUNG] [W] | ACS and frame statements become width statements. |
-| A10 | **Seed instantiations not in Lean** | Seed readings at `3/8` on the prime-log windows and the regularized prime series, in the form of their two-sided theorems (the Weil-lag reading exists in `TheSevenEighthsStripControlsTheCompletedWaves`) [D]. | [SRT] [PBM] | Uniform seed table across the rulers. |
-
-Moving any ruler below `3/8`, an aperture to infinity, a degree to infinity, or a finite stratum to the empty set is research (2.2).
+| A1 | **The optimal geometry of the present estimates** | Locate the true vertex of the cubic-probe budget in `(40535/46328, 20999/24000]` and close the probe there with the transport, common-probe and zero-exclusion modules written for `20999/24000`. | [FARKAS] [TRUEVERTEX] [SUBPROBE] [S] | The best seed the present estimate system can give; at most `≈ 1/23164` below `7/8`. Every further step needs a new estimate (2.4, 2.5). |
+| A2 | **Integrate the [S] modules** | Grade and integrate the sub-`7/8` half-plane and its detectors, the √2 and top-octave modules, the Hawking–Page phase law, the prime-2 aperture test, the Artin seed, the `log 2` floors, the Kummer Cartier period and the target-extraction modules; transport `20999/24000` to every ruler (`w ≤ 8999/24000`, Mertens exponent, heat threshold, AdS strip `3001/48000`, doubling factors `2^{8999/24000+ε}`) [D]. | [SUBSEED] [WIDTHSUB] [SQRT2] [TOPLOCAL] [HPTRANS] [P2LOG2] [ARTINSEED] [FLOORLOG2] [KUMMERCARTIER] [TARGETFILTER] [ROWCANCEL] | Every statement in the walls ledger becomes [L]; the improved seed on all rulers. |
+| A3 | **Isolated double collision off the centre** | One forward time with a double zero `ζ₀ ≠ 0` and no other multiple zero; then `G₊ = W`. A multiple zero off the centre exists at arbitrarily large forward times; order two and isolation remain. | [OFFCENTRE] [DOUBLECOLL] | Decides the sign of `G₊`; with `G₊ = W` every parity mechanism carries no information. |
+| A4 | **`Q = 2` fourth ladder step** | Zero excess (or a failing window) at ratio `103⁸/(100⁸/2)` for cutoff two. | [FOURTHRED] [FOURTH] [S] | Completes the ratio-three ladder at every cutoff. |
+| A5 | **Seed for every pure cubic field** | Every nontrivial ray class `L`-function of `ℚ(ω)` carries the seed [RAYSEED] [S]; identify the two-dimensional Artin character of each `ℚ(∛m)` with a ray class character of `ℚ(ω)`, as written for `m = 2` [ARTINSEED] [S] [D]. | [RAYSEED] [S] [ARTINSEED] [ARTIN] | Dedekind zeta functions of all pure cubic fields zero-free on `Re s > 7/8`; the first non-abelian family with a seed. |
+| A6 | **Effective Siegel from the all-moduli seed** | No real zero of any `L(s,χ)` in `Re s > 7/8`; a short Euler product on `Re s ≥ 7/8 + ε` gives an effective `L(1,χ) ≫ (log log q)^{−1}`, effective class-number lower bounds, prime-number theorem in progressions with error `x^{7/8+ε}` [D, classical]. | [MMD_DIR]; Siegel's theorem is present only ineffectively [SIEGEL] | Conductor-uniform tools for CRF/JAS; the effective Siegel problem. |
+| A7 | **Lindelöf right of the seed** | `ζ(σ+it)^{±1} ≪_ε |t|^ε` for `σ ≥ 7/8 + ε` (Borel–Carathéodory, three circles) [D]. | [SEEDZETA] [INVZETA] | Uniform inputs for moment and window routes. |
+| A8 | **Heilbronn characters and conductors** | Heilbronn characters from Brauer induction; Aramata–Brauer; Artin conductor exponents [D, classical]. | [BRAUER] [ARTIN] | Multiplicity laws for the Galois programme (2.19). |
+| A9 | **Counterexample localization as one theorem** | Positive heat threshold ⇒ off-line zero below an explicit height; aperture visibility; index law ⇒ a window with two negative squares [D]. | [HEATLOC] [HIDDEN] [INDEXLAW] | The chain of 2.20(b) without its first link. |
+| A10 | **Seed readings on SRT and PBM** | The two-sided theorems of prime-log windows and the regularized prime series at rate `3/8` [D]. | [SRT] [PBM] | Uniform seed table on all rulers. |
 
 ## 2.2 Open mathematical problems
 
 | # | Problem | Exact missing content | Routes | Nature |
 |---|---|---|---|---|
-| B1 | **A lever or a second seed for `w`** | A theorem `Θ ≤ b ⇒ Θ ≤ T(b) < b` for `ζ`, or a zero-free half-plane by a mechanism other than the cubic family | all W-routes (P1, P8) | Classical open problem: no zero-free strip `Re s > 1 − δ` is known in the literature beyond the corpus seed. |
-| B2 | **Estimates below the vertex `7/8`** | Row count in the binding bin (`13/15`), row mean square at generic size (`5/6`), a signed off-diagonal saving before Cauchy–Schwarz (`5/6 − s`) [VERTEX] [ESCAPE] [SIGNEDGRAM] | producer, MC, JAS | Open; each is a family mean-value problem. |
-| B3 | **A source outside the Gauss class** | Möbius sign and independent reflection at frame centre `< 3/5` [GAUSS] [PRICE] | producer | Open (fable question). |
-| B4 | **Complete form at every aperture** | `w = 0` on the logarithmic-energy ruler [LOGENERGY0] | RW, HF, EWU, OWU, ACT, AIP, HAT-C, RN, SZ, SC | RH. |
-| B5 | **A doubling law from the gluing data** | The best doubling factor of the margin is `2^w` [DOUBLING] [W]; open: a proof of any factor `< √2` by the gluing calculus without the seed, any factor `< 2^{3/8}` at all, or an a priori gap on bound windows [GAP] | ACS, RW, HF | Open; a second producer if solved (2.4). |
-| B6 | **Finite stratum** | Exclude finite positive index for `ζ` [INDEX] | AAL, ACS, ZCG, BAG, PM, W1C | Open; not implied by any width bound `> 0`. |
-| B7 | **Landing** | Bounded Hadamard threshold as `σ ↓ ½` [LANDING-TFAE] | AAL, ZCG, SRT | Open. |
-| B8 | **ZAL** | E.g. bounded dyadic mollified moments at every length exponent `θ > 1` (depth ladder) [DEPTHLADDER] | WD, MZF, ZCG | Classical: mollifier lengths beyond the known ranges are open. |
-| B9 | **Critical-state exclusion** | An arithmetic property incompatible with the outer, cyclic, Laplace zero-free state; endpoint sign [HF] [ENDPOINT] | HF, RW, ACS | Open. |
-| B10 | **Clustering at the resolved height** | Bounded number of deep off-line zeros per unit window, uniformly in height [MARGINDEPTH] | ACS, RW, SRT | Open (local density type). |
-| B11 | **Prime-weighted cofactor cancellation** | Beat the isolated top residue [COFACTORS] | AAL, BAG, ZCG | Open. |
-| B12 | **Heat collisions near time zero** | No real branch time in `(0, 9/128]` [ZCG] [NEWMAN] | ZCG, LA, PTR | RH. |
-| B13 | **A restriction on conjugation** | An arithmetic relation in `B` that excludes noncritical orbits [REFLECTION] [CONJCENTRAL] | Galois, ZCG | Open. |
-| B14 | **A physical selection principle with a rate** | Distinguish integral unit-multiplicity gates from prime-2 deformations and bound the decay [ADS-NOGO] | PM | Open. |
-| B15 | **Prime pairs beyond bandwidth one** | Signed bound on the trans-threshold surplus (`70%` needs `I ≤ 7/45` at bandwidth `4/3`) [SEVENTY] [PROPALT] | census | Classical: pair correlation beyond `|α| ≤ 1` is open. |
-| B16 | **Higher source constraints** | All-order flags, quartic charge decay, endpoint-character sign [TH] [GTA] [ECP] | TH, PA, GTA, ECP, HCF | RH-equivalent receivers. |
-| B17 | **A global arithmetic intersection theory** | Diagonal with logarithmic self-pairings, index theorem, a symmetry that scales the form [DIAGONAL] | ACS, F₁ | Open (the `𝔽₁` problem). |
-| B18 | **Unbounded Jensen degree** | Reality in every degree without heat shift [LA] | LA | RH. |
+| B1 | **A lever or a better seed for `w`** | `Θ ≤ b ⇒ Θ ≤ T(b) < b` for `ζ`, using Dirichlet series, functional equation and unit Euler parameters together [PAIRSNOBITE] | all W-routes (P1, P8) | Classical open. |
+| B2 | **The design count `U^{1−δ}`** | The number of rows of the cubic probe in amplitude bin `δ` at most `U^{1−δ+ε}`, giving `13/15` [BALANCED] | producer, all W | Open (2.4). |
+| B3 | **A pre-Cauchy–Schwarz saving** | Signed off-diagonal saving `s > 0` in the floor-bin row Gram; `3/4` needs `s ≥ 1/12` [SIGNEDGRAM] [SAVING] | producer, MC, JAS | Open (2.5). |
+| B4 | **A sign-line completion** | A completion of a Möbius-signed Gauss monomial of period `k ≥ 7` priced at `k/2` [SIGNPRICE] [SIGNLINE] | producer, MC, JAS | Open (2.21). |
+| B5 | **Estimate-free transport** | Every zero of `ζ` in `Re s > 3/5` is a zero of the probe correction (an identity, no estimate) [CORRZERO] [RUNG] | producer, sign-free routes | Open (2.6). |
+| B6 | **Complete form at every aperture** | `w = 0` on the log-energy ruler [LOGENERGY0]; the sign of the bare energy [HPEQUIV] [S] | RW, HF, EWU, OWU, ACT, AIP, HAT-C, RN, SZ, SC | RH. |
+| B7 | **The fresh-octave form** | A negative form of order `K^β`, `β < 3/8`, from the primes in `(3K, 6K]` on the obstructing direction [TOPOCTAVE] [DOUBLING38IFF] [S] | ACS, RW, HF | A better seed in window form. |
+| B8 | **Finite stratum** | Exclude finite positive `κ` for `ζ` [INDEX] | AAL, ACS, ZCG, BAG, PM, W1C | Open; the only Euler–FE world with finite `κ` is archimedean non-tempered [SMALLEIG]. |
+| B9 | **Landing / window non-attainment** | Bounded Hadamard threshold [LANDING-TFAE]; or the prime error `o(x^β)` on arbitrarily late windows of one ratio [NONATTAIN] | AAL, ZCG, SRT | Open. |
+| B10 | **ZAL** | Bounded dyadic mollified moments at every length `T^θ` [DEPTHLADDER] | WD, MZF, ZCG | Classical: mollifier lengths beyond known ranges. |
+| B11 | **Clustering at the resolved height** | Bounded number of deep off-line zeros per unit window, uniformly in height [MARGINDEPTH] | ACS, RW, SRT | Open. |
+| B12 | **Prime-weighted cofactor cancellation** | Beat the isolated top residue [COFACTORS] | AAL, BAG, ZCG | Open. |
+| B13 | **Heat collisions near time zero** | No real branch time in `(0, 9/128]` [ZCG] [NEWMAN]; a heat law using the density [HEATSPACING] | ZCG, LA, PTR | RH for the first; open for the second. |
+| B14 | **A restriction on conjugation** | A relation in `B` excluding noncritical orbits [REFLECTION] [PARTIALFLIP] | Galois, ZCG | Open. |
+| B15 | **A selecting gate principle** | A statement about `ζ` false for every non-tempered gate deformation [P2LOG2] [EULERCOLUMN] [S] | PM, HF | Open. |
+| B16 | **Pair correlation beyond bandwidth one** | Signed bound on the trans-threshold surplus [SEVENTY] [PROPALT] | census | Classical open. |
+| B17 | **Higher source constraints** | All-order flags, quartic charge, character sign [TH] [GTA] [ECP] | TH, PA, GTA, ECP, HCF | RH-equivalent receivers. |
+| B18 | **Global arithmetic intersection theory** | Diagonal with logarithmic self-pairings, index theorem, scaling symmetry [DIAGONAL] | ACS, F₁ | Open (the `𝔽₁` problem). |
+| B19 | **Unbounded Jensen degree** | Reality in every degree [LA] | LA | RH. |
+| B20 | **Forcing without coincidence** | A forcing law for `ζ` outside rational Euler identities [BANDFORCE] | SQF, ZCG | Open. |
 
 ## 2.3 Frankenstein routes
 
-**Rule.** An assembly of rulers is a ruler [MEASURING]. A Frankenstein proof must contain a lever, a contracting stage map, or the three atoms. Routes that only exchange RH-equivalent endpoints supply nothing.
+**Rule.** An assembly of rulers is a ruler [MEASURING]. A Frankenstein proof must contain a lever, a contracting stage map, or the three atoms, and each piece must fail on the world that lacks its structure.
 
-**Assembly I — the window producer: gluing → doubling law → half-plane.** The margin of the neutral windows is an exact ruler of `w` at polynomial block size [MARGINSINF] [W], and so is its doubling factor: a doubling law with factor `λ` gives `w ≤ log₂ λ`, the best factor is `2^w`, and `w = 0` iff every factor above one occurs [DOUBLINGHP] [DOUBLING] [DOUBLINGRH] [W]. The window form is Weil's explicit formula, so it uses the Euler product and the functional equation together — the property the worlds theorems demand of any lever [EULERWORLD] [COSH]. The Green calculus shows that the first overlap step is carried by the sign of the prime-2 contact, through the dipole, and that no contact-sign-blind bound proves it [DIPOLE] [GREEN]. **Missing piece:** a doubling law derived from the gluing data alone (2.4). Every other piece is a theorem, and the missing piece is a statement about finite matrices.
+**Assembly I — the producer chain to the frame centre.** Pieces: (1) the coupled-tower contraction `Θ₀ ≤ max(σ₀, c/(k−1))` for any frame tower with per-level zero transfer [TOWERFIX]; (2) towers on the sign line `(k/2, k)` have values in `(½, K/(2(K−1))]` [SIGNLINE]; (3) the estimate floor `σ₀` of the probe (`7/8` integrated, `20999/24000` written, `> 40535/46328` for the present estimates, `13/15` with B2, `5/6 − s` with B3) [VERTEXPOS] [SUBSEED] [FARKAS] [BALANCED] [SAVING] [S]; (4) every rung transfers to `ζ` and all Dirichlet `L` [LADDERTRANSFER]; (5) covering levers give RH [COVERLEVERS]. If for every `K` a sign-line completion of period `≥ K` exists (B4) and the estimate floor of its probe lies below `K/(2(K−1))` (B2, B3 and beyond), the levers cover `(½, 7/8]` and RH follows [D]. **Missing pieces:** B4 (identity level) and the estimate floor at every period (analytic; `σ₀ → ½` needs `s → 1/3`). This is the only assembly whose pieces all lie on one producer.
 
-**Assembly II — three atoms from three programmes.** RH ⇔ ZAL ∧ `FiniteOffLine → RH` ∧ Landing [THREEATOMS]. ZAL: bounded dyadic mollified moments at length `T^θ` give eventual depth `< 1/(2θ) + ε` [DEPTHLADDER]; at every `θ` this is ZAL [D]. Finite stratum: the packet index counts distinct right zeros [INDEX]; the growing filter isolates a finite top layer with controlled remainder [COFACTORS]. Landing: a bounded Hadamard threshold [LANDING-TFAE]. **Missing pieces:** moments beyond every known length (B8), prime-weighted cofactor cancellation (B11), a landing mechanism (B7). Each piece belongs to a different route, so partial progress is independent.
+**Assembly II — three atoms from three programmes.** ZAL from the depth ladder at every `θ` [DEPTHLADDER]; the finite stratum from the packet dichotomy and the filters [INDEX] [COFACTORS]; Landing from a bounded Hadamard threshold [LANDING-TFAE]. RH ⇔ the three [THREEATOMS]. **Missing:** B10, B8, B9.
 
-**Assembly III — AAL from cones, ZAL from moments.** Bounded undamped coupling on a two-prime cone, or bounded prime towers, give AAL, and under AAL RH ⇔ ZAL [AKLT]. With the ZAL engine of Assembly II this is a two-input proof. **Missing:** the coupling bound and the moments.
+**Assembly III — AAL from windows, ZAL from moments.** Window non-attainment of the prime error gives AAL [NONATTAIN]; two-prime cone bounds or prime towers also give AAL [AKLT]; under AAL, RH ⇔ ZAL [AKLT]. **Missing:** non-attainment or the coupling bound; B10.
+
+**Assembly IV — gates.** Euler-column purity ⇔ temperedness [EULERCOLUMN]; RH ⇔ the bare half-line energy is nonnegative [HPEQUIV] [S]; the standalone deficit of a non-tempered gate at aperture `log 2` is `−2 log 2 (cosh((α−½)log 2) − 1)`, zero exactly at the tempered point [P2STANDALONE] [S]. **Missing:** a decomposition of the bare energy into gate terms that are nonnegative for unit gates (2.7). Without it the assembly is a dictionary.
 
 **Assemblies that do not close, with the reason.**
 
 | Assembly | Reason |
 |---|---|
-| World I → edit → Euler–FE rigidity | In world I an edit removes the top layer with a larger zero-free half-plane [WORLDI]; rigidity needs a decaying pointwise functional-equation defect [RIGIDITY], and the defect of such an edit is not small in any decaying sense [WZCROW]. |
-| Finite heat windows → whole-fibre purity | Whole-fibre intertwining is impossible [HEAT-NOGO]; uniform nonreal continuation already forces finite support [HEAT-UNIFORM], which then needs B6. |
-| Any chain of receivers at exponent zero | Each link is RH; no partial estimate passes. |
-| Gauss towers of mixed frames | Value `≥ 3/5` [MIXED]. |
+| Gluing → doubling law → half-plane | The gluing data support exactly `√2` [SUBEULER] [S]; the fresh-octave form is a reading of `w` [TOPOCTAVE] [D]. |
+| `A₂` multiple Dirichlet series → estimates | All rank-two boundaries exceed `7/8` [A2REJECT]. |
+| Probe bootstrap on an assumed zero-free region | Twist-based low estimates return the zero; the high-side count is insensitive [TWISTRETURN] [ROWCOUNTAT] [D]. |
+| World I → edit → Euler–FE rigidity | Fake-edit defects do not decay [EDITDEFECT]; rigidity needs decay [RIGIDITY]. |
+| Rational Euler identities → forcing | Orders preserved, Brauer relations cancel `ζ`, shifted margins `≥ 9/16` [WITTORD] [BRAUERCANCEL] [SHIFTMARGIN]. |
+| Hawking–Page stability → exclusion | Stability holds at every `R` with or without RH [SADDLE] [S]. |
+| Finite-aperture certificates → RH | Prime-2 deformations pass them [P2LOG2] [S]. |
+| Finite heat windows → whole-fibre purity | No whole-fibre intertwiner [HEAT-NOGO]. |
+| Gauss towers of mixed completed frames | Value `≥ 3/5` [MIXED]. |
+| Any chain of receivers at exponent zero | Each link is RH. |
 
 ## 2.4 A breakthrough question below RH and below a new quasi-RH
 
-### Question: can the gluing calculus of the windows prove a zero-free half-plane on its own?
+### Question: is the number of rows of the cubic probe in amplitude bin `δ` at most `U^{1−δ+ε}`?
 
-**Setting.** A level law assigns to each ratio `3K + 1`, at block size `ρ(K)` with `K¹⁰ ≤ ρ(K) ≤ K^A`, a shift `a(K)` after which the neutral window has at most one negative square; a doubling law with factor `λ` is a monotone level law with `a(2K) ≤ λ·a(K) + c`. The corpus proves, with no hypothesis on zeros: a doubling law with factor `λ > 1` gives `w ≤ log₂ λ` [DOUBLINGHP]; the best factor is exactly `2^w` [DOUBLING]; every factor above `2^{3/8}` occurs, through the seed [DOUBLING38]; `w = 0` iff every factor above one occurs [DOUBLINGRH] [W]. The trivial factor of the calculus is `√2`.
+**Setting.** The compensated cubic probe with scales `X = Z^{lx}`, `Y = Z^{ly}` and slot length `ℓ` has low boundary `5/6 + M/12 − ℓ/6 + (M + ℓ − 1)₊/2`; its high side is controlled bin by bin through a row count `R(δ)` [VERTEXPOS]. With the published count — built from inverse and plain witnesses — the published geometry is a vertex at `7/8` [VERTEXPOS]; rescaling reaches `20999/24000` [SUBSEED] [S], and no geometry of the present estimates passes `40535/46328` [FARKAS] [S]. With the count `U^{1−δ}` in every bin, the balanced geometry `(2/5, 2/5, 1/5)` has low boundary `13/15` and negative high side [BALANCED]; below `13/15` the floor bin blocks every geometry [VERTEXFLOOR]. Every rung of the ladder, `13/15` included, transfers to `ζ` and all Dirichlet `L`-functions [LADDERTRANSFER].
 
-**Question.** Prove a doubling law with some factor `λ < √2` from the gluing calculus alone — Green matrices of the dyadic middle, overlap steps, contact dipoles, the `log 2` floor — without using the cubic family.
+**Question.** Prove that the rows in bin `δ` number at most `U^{1−δ+ε}`.
 
-**Why it is less hard than RH and than a new quasi-RH.** Any `λ < √2` answers it; for `λ ∈ (2^{3/8}, √2)` the conclusion is already true, so the question asks for a mechanism, not for a new exponent. It concerns finite matrices with entries built from `Λ`, the pole and the Gamma kernel.
+**Why it is less hard than RH and than a new quasi-RH from scratch.** It is one counting estimate inside an existing proof; continuation, reciprocity, the low side and the transfer are in place. It needs no estimate at exponent zero and no new analytic object.
 
-**Why it is a breakthrough.** It would be a second producer, independent of cubic reciprocity, and the first centred one: the window is symmetric under the functional equation, a gluing step has no frame cost, so the Gauss wall `3/5` does not apply [WALLGEN]. The window form is the explicit formula, so the mechanism uses the Dirichlet series and the functional equation together, as the worlds theorems require [EULERWORLD] [COSH]. By ruler transport its half-plane holds on every W-route [LEVERTRANSPORT]. Any improvement of its factor below `2^{3/8}` is an improvement of quasi-RH; factor `1` is RH [DOUBLINGRH].
+**Why it is a breakthrough.** It moves the only seed by an estimate, from `20999/24000` to `13/15`, past the ceiling of the present estimates, on `ζ`, every Dirichlet `L`-function and every ruler at once [LEVERTRANSPORT]; it shows that the vertex is a property of the witness count, not of the probe; and it reaches the floor of the design, so that every further step is known to need B3.
 
-**First lemma.** The first overlap step is carried by the dipole `2w⟨W₀e, 𝒢_D Ce⟩` of the Green matrix of the middle; no bound blind to the sign of the contact proves it [DIPOLE]; the continuum Green kernel is negative only along the charge [GREEN]. Prove a contraction of the conditional coupling at the balanced split of every ratio with a constant below the trivial one; the contact dipole is the term that must carry it, since the sign twin differs from `ζ` exactly there [TWIN] [D].
+**First lemma.** Write the bin condition as a large-values condition for sextic residue sums over `ℤ[ω]` (a row lies in bin `δ` when its prime amplitude is `≍ U^{−δ/2}` times the trivial size) and bound the number of large values by a large-values inequality for the sextic characters of the rows, against the published witness count [ROWCOUNTAT]. The binding bin is `δ = 79/204` [A2CHAIN].
 
-**If the answer is no** (a model with the same gluing data and best factor `√2`): ACS, RW, HF, HAT-C, EWU, OWU, ACT, AIP and SC are retired as producers in their gluing form and stay rulers; the frontier contracts to the producer ladder (2.5), the lever (2.21) and the atoms.
+**Rejection test.** If the rows of one bin are phase-coherent in the sense of the dependent sextic twists (row root numbers `G(c)γ₂(c)²`), the large-values count saturates at the witness count; record the exact exponent. Then `13/15` needs a different design.
 
-**Filter.** T1: not RH for `λ > 1`. T3: [DOUBLINGHP] turns `λ` into a half-plane. T5: fails for the sign twin [TWIN]. T6: dipole, Green kernel, ladder are named. T7: the doubling ruler and the best factor are theorems [W]; no theorem derives a factor from the gluing data alone.
+**Filter.** T1: not RH. T2: decided by a proof or by an explicit excess of rows. T3: consequence written in Lean as rungs of the ladder [LADDERTRANSFER] [BALANCED]. T4: no finite window decides it. T5: false for prime edits (no reciprocity, seed false) [EDIT]. T6: the published count is not refuted. T7: no module proves the count.
 
 ## 2.5 A breakthrough in the search for a producer
 
-### Question: do the multiple Dirichlet series of the cubic cover of `GL₃` supply the estimates that stop the seed at `7/8`?
+### Question: do the sextic rows of the probe carry a signed off-diagonal saving before Cauchy–Schwarz?
 
-The producer has two ladders. The frame ladder (identities) ends at `3/5` [GAUSS]. The estimate ladder binds first: `7/8` is a vertex where three estimates meet — the low bound, the row count in the bin `δ = 79/204`, the dual length of the reflected rows — and every geometry with low boundary below `7/8 − 1/4000` has a positive high exponent [VERTEX]. Below that: `13/15` needs a different row count in the binding bin, `5/6` the row mean square at its generic size, and escape below the free floor needs a bilinear signed saving `s > 0` in the row Gram, with half-plane `½ + (5/12)(4/5 − (12/5)s)` at order six [ESCAPE] [SIGNEDGRAM] [D]. All three missing inputs are **family mean values** of cubic Gauss sums with their signs.
+**Setting.** Cauchy–Schwarz over the column shell bounds the bilinear floor sum by `(Σ|b|²)` times the diagonal plus the signed off-diagonal Gram `Σ_{u₁≠u₂} α(u₁)ᾱ(u₂) Σ_m Φ(u₁,m)Φ̄(u₂,m)`, preserving every phase [SIGNEDGRAM]. Every Cauchy–Schwarz or rank-two model has saving `s = 0` and floor `5/6`; a saving `s` gives `5/6 − s`: `3/4` at `s = 1/12`, `2/3` at `1/6`, `½` at `1/3` [SAVING]. Squaring a row sum loses the finiteness of `W(A₂)` [A2DOUBLE]; low estimates through the twists return the zero [TWISTRETURN].
 
-Weyl-group multiple Dirichlet series of metaplectic Eisenstein series on covers of `GL_r` are the classical objects whose double meromorphic continuation and group of functional equations encode exactly such family mean values (for the cubic cover of `GL₃`: twisted first moments of cubic `L`-series over `ℚ(ω)`). The corpus contains the cubic cover of `GL₂` only (the MMD source) and no multiple Dirichlet series.
+**Question.** Is `|Σ_{u₁≠u₂} α(u₁)ᾱ(u₂) Σ_m Φ(u₁,m)Φ̄(u₂,m)|` smaller than its absolute majorant by a power of the row length, for the actual sextic rows and amplitudes?
 
-**Question, sharpened.** Does the `A₂` cubic multiple Dirichlet series, continued in both variables with its Weyl-group functional equations, give (a) the row count in the binding bin, (b) the row mean square at generic size, or (c) a signed off-diagonal saving `s ≥ 1/12` in the row Gram of the cubic probe?
+**Why it is the right place.** It is the one input that every producer of the Gauss class needs below `5/6`, and the corpus has no tool for it: the large sieve for cubic and sextic residue symbols (the Heath-Brown type, external) is not in the corpus, and every tool that is (rank-two series, twist expansions, convexity) gives `s = 0` [SAVING] [A2REJECT]. The question uses the size of the coefficients (unit Gauss-sum normalizations), as the shifted-pair world demands [PAIRS].
 
-**Payoff.** (a) gives a seed `13/15`, (b) `5/6`, (c) with `s = 1/12` the half-plane `3/4` and with `s = 1/6` `2/3` [D]. Each is an unconditional improvement of quasi-RH for `ζ` and every Dirichlet `L`-function, by the same transfer as the existing seed [MMD_DIR].
+**What exists.** After subtraction of the reciprocal target, each completed row is a combination of sextic and cubic residue characters with square-root Fourier coefficients, and lattice Poisson bounds its signed error on one modulus [ROWCANCEL] [S]: the cancellation inside a row is proved; the cancellation between rows is the open part.
 
-**Why this is the right place to look.** The seed fails for prime edits with a power count rate [EDIT]: its proof uses the arithmetic of the rational primes beyond the count, namely cubic reciprocity. Multiple Dirichlet series carry the same reciprocity one rank higher and produce signed family averages before any norm is taken — the step every corpus no-go identifies as missing (norms are blind to parity, phase and target [AVERAGE]).
+**First lemma.** For one dyadic shell, write the off-diagonal entry for a pair `(u₁, u₂)` as a complete sextic character sum to modulus `u₁ū₂` over the column variable; separate the pairs where both characters are trivial (no cancellation, with a common phase [D]) and bound their number; apply the Weil bound to the rest. The saving `s` is the exponent by which the exceptional pairs are sparse.
 
-**First lemma.** Identify the corpus row sums of the binding bin with a specialization of the `A₂` series, and compute the exponent its two-variable continuation gives for that specialization, against the published row count.
+**Payoff.** `s ≥ 1/12` with B2 gives `ζ` zero-free on `Re s > 3/4`; `s ≥ 1/6` gives `2/3`; each transfers [LADDERTRANSFER]. **If the answer is no** (coherent rows): the Gauss producer class is capped at `5/6`, and the W-face needs a producer outside it.
 
-**Rejection test.** If the two-variable continuation reproduces only absolute (norm) bounds for the specialization, the class of multiple Dirichlet series at rank two is excluded for the estimate ladder; record the boundary exponent.
+**Filter.** T1–T4 as in 2.4. T5: false for edits and for shifted pairs (no unit normalizations). T6: the escape model and Gram identity are proved [SAVING] [SIGNEDGRAM]. T7: no saving is proved.
 
 ## 2.6 Without positivity, Weil positivity or spectral arguments
 
-**Reading of the exclusion.** Excluded: every argument whose engine is the sign of a quadratic or Hermitian form (Weil, windows, Hodge index, PSD, Li, de Branges, joint ancestry) and every realization of zeros as a spectrum. Kept: exact identities, analytic continuation, Hadamard factorization, Galois and monodromy, integrality, counting; inequalities used as estimates inside an identity-driven argument.
+**Reading of the exclusion.** Excluded: every argument whose engine is the sign of a quadratic or Hermitian form (Weil, windows, Hodge index, PSD, Li, de Branges, joint ancestry, KMS positivity) and every realization of zeros as a spectrum. Kept: exact identities, analytic continuation, Poisson and Voronoi summation, Hadamard factorization, Galois and monodromy, integrality, size estimates used inside identity-driven arguments. The `7/8` and `20999/24000` proofs are of this kind: a probe, its continuation and moment estimates, no sign of a form [SEEDZETA] [SUBSEED] [S].
 
-### Question: does one off-line zero of `ζ` force a second zero, by an exact identity that uses `ζ`'s own functional equation, without a coincidence hypothesis?
+**What the corpus fixes.** Forcing through rational Euler identities is excluded [WITTORD] [BRAUERCANCEL] [SHIFTMARGIN]; one exact transport between different `L`-functions is proved: the probe correction vanishes in `Re s > ½` exactly where the weight-one sextic Grössencharacter rung vanishes at `6s − 3`, and `Θ_corr = (3 + Θ_rung)/6` both ways [CORRZERO] [RUNG] [RUNG3148]. The link from `ζ` to the correction runs through the probe, which is controlled only above its estimate floor `σ₀`; above `σ₀` every zero of `ζ` is a zero of the correction, because the probe is holomorphic there and `ζ` divides it [D].
 
-A **forcing law** is a theorem: if `ζ(ρ) = 0` with `Re ρ > ½`, then some explicit `φ(ρ)` is a zero of `ζ` (or of an explicitly related Dirichlet series known to be regular there). The corpus has two instances of this shape, both conditional: a halving pair `ζ(ρ) = ζ(ρ/2) = 0` forces the zero `1 − ρ/2` and so `Θ ≥ 2/3` [HALVING]; an orbit of the prime-trace Galois group leaves its quartet only through another off-line quartet of the same ordinate [LEAVEQUART].
+### Question: does the probe continue to the centre of its frame by identities alone?
 
-**What a positive answer gives.** If `Re φ(ρ) > Re ρ` (depth expansion), iterating from any off-line zero exceeds the seed after finitely many steps: RH [D]. If `φ` expands only on a band, a gap law — the question of 2.21, reached with no positivity.
+Prove that the compensated cubic probe continues holomorphically to `Re s > 3/5` by exact summation identities (Poisson and Voronoi for the cubic theta coefficients, the functional equations of the Hecke family), with no size estimate. Equivalently: every zero of `ζ` with `Re ρ > 3/5` is a zero of the correction, i.e. `6ρ − 3` is a zero of the rung.
 
-**Why it is the right sign-free question.** The worlds theorems say a lever needs the Dirichlet series and the functional equation together [EULERWORLD] [COSH]. A forcing law is the sign-free form of that joint use: the Euler product supplies the identity, the functional equation supplies the reflection that closes the orbit. The Galois layers supply the bookkeeping: the off-line zeros of one height pair up under `ρ ↦ 1 − ρ̄`, so the product of the reflection radicands of a height is a negative non-square in `B` (for some prime) whenever a critical zero sits at that height [RADICAND], and square relations among heights carry an even number of critical heights [SQREL].
+**What a positive answer gives.** An expanding forcing law `x ↦ 6x − 3` from `ζ` into the rung family on `(3/5, 1)`. With a seed for the rung family (the `7/8` machine on weight-one Grössencharacters), `Θ ≤ 31/48` [RUNG3148]; with the same continuation at every level of the coupled tower, `Θ ≤ 3/5` [TOWERFIX] [GROSSENTOWER]; with a sign-line completion of period `k` (2.21), `Θ ≤ k/(2(k − 1))` [SIGNLINE]; covering all periods gives RH [COVERSUB] [D]. Every step is an identity or a transport; no form is signed.
 
-**First lemma.** For the identities `Σλ(n)n^{−s} = ζ(2s)/ζ(s)` and `Σμ(n)²n^{−s} = ζ(s)/ζ(2s)`, combined with the functional equation, determine the complete set of zero configurations that are closed under the induced transport. Halving pairs force `Θ ≥ 2/3` [HALVING]; decide whether a single quartet with no partner can be closed under the transport.
+**Why it is the right sign-free question.** It moves the estimate floor out of the zero transport: every bound on `Θ` from this producer is `max(σ₀, frame centre)` [TOWERFIX], so the sign-free content is the frame, and the question asks whether the frame acts without the estimates. It uses the Dirichlet series (theta coefficients), the functional equation (theta reflection) and the arithmetic of the primes (cubic reciprocity) together; prime edits and Euler worlds have no probe.
 
-**Filter.** T5: on cosh models the Dirichlet-series identity is absent; on Euler worlds the reflection is absent. T7: no forcing law without coincidence is in the corpus.
+**First lemma.** Write the probe as a Mellin transform of a finite combination of cubic theta coefficients against the rows; identify the dual side after Poisson summation with a Dirichlet series of the rung family times explicit factors, and compute its abscissa of absolute convergence. If that abscissa is `≤ 3/5`, continuation is exact; if it equals the floor `σ₀`, the floor is a property of the probe, not of the estimates — record the dual series that carries it.
+
+**Filter.** T1 not RH; T2 decided by an identity or by an explicit dual series with abscissa `> 3/5`; T3 consequence through [TOWERFIX] and [RUNG3148]; T4 no finite window; T5 false for edits and Euler worlds; T6 the zero-locus identity of the correction is proved [CORRZERO]; T7 not answered.
 
 ## 2.7 Under the hypothesis: RH is a phenomenon of AdS with a modular horizon
 
-**What the corpus fixes.** The eternal-AdS prime-marked correlator is analytic on the strip of width `δ` iff all zeros satisfy `Re ρ ≤ 1 − 2δ`; `δ = 1/16` unconditionally; `δ = 1/4` is RH [ADS]. Causal, Euler, FE, passive, unitary prime-2 deformations ring down arbitrarily slowly [ADS-NOGO]. The critical threshold of the arithmetic window energy is infinite iff RH; off RH it is attained by a unique outer cyclic critical state [HF] [POLAR]; the confinement energy is strictly concave and selects an endpoint, with no endpoint sign [ENDPOINT] [ENDPOINT-BOUND]. The thermodynamic endpoint competition is the mechanism of the AdS Gauss–Bonnet phase structure [THERMO]; the prime-log carrier has a thermofield realization [THERMOFIELD].
+**What the corpus fixes.** The functional equation is a KMS condition at inverse temperature one; the KMS state exists whether RH holds or not, and positive kernels with the same KMS condition have all zeros off the line [KMSPOS] [FAKEHORIZON]. The two-boundary strip width reads `w` [ADS]. Causal, Euler, FE, passive, axis-unitary prime-2 deformations ring down arbitrarily slowly [ADS-NOGO] and pass the certified aperture `log 2` [P2LOG2] [S]. The confined half-line state has an exact Hawking–Page transition at `W₀` off RH; stability, outerness, cyclicity and endpoint competition hold with or without RH; RH ⇔ the bare energy is nonnegative [HPTRANS] [SADDLE] [WEAKEND] [HPEQUIV] [S]. The standalone energy of a prime-2 gate at aperture `log 2` is exactly `−2 log 2 (cosh((α − ½) log 2) − 1)`: negative for every non-unitary gate, zero at the unitary one [P2STANDALONE] [S].
 
-### Question: is the off-line world the black-hole phase of an arithmetic Hawking–Page transition, and is that phase thermodynamically excluded?
+Every physical axiom formalized is satisfied by a fake. The one physical property no fake has is the unitarity of the prime gates: every Euler–FE countermodel of the corpus has a non-unitary gate at some place [TEMPERED] [P2FACTOR] [SMALLEIG] [D].
 
-Read the window energy as a free energy at inverse temperature given by the aperture, the critical threshold as the transition temperature, the critical half-line state as the black-hole saddle and the polar (pole-dominated) configuration as thermal AdS. RH is the statement that the transition never happens (threshold `+∞`).
+### Question: is the bare horizon energy a sum of gate energies, each nonnegative exactly when its gate is unitary?
 
-**Concrete form.** (1) Identify the source-tilted confinement energy whose minimum sits at an endpoint with the actual critical threshold (the corpus proves the endpoint selection but not this identification [ENDPOINT]). (2) Prove the endpoint sign: the thermal endpoint wins at every confinement scale. (3) Show that the would-be black-hole saddle — unique, outer, cyclic, Laplace zero-free [HF-OUTER] [HF-CYCLIC] [HF-BOUNDARY] — has the specific heat of a small AdS black hole (negative), so it cannot be the minimizer it is defined to be.
+Find a decomposition `E_bare = Σ_p E_p + E_∞` of the bare half-line energy, with `E_p` built from the local factor at `p` together with an assigned share of the pole and Gamma terms, such that `E_p ≥ 0` whenever the gate at `p` has unit parameters and `E_∞ ≥ 0` for the Riemann Gamma factor. With [HPEQUIV] this gives RH.
 
-**Why it opens the path.** It replaces an all-aperture positivity statement by a statement about one saddle with fully known structure, and it is a dynamical principle that the prime-2 deformations do not inherit automatically: the deformations change the gate at 2 and with it the free energy, so (2) is a source-selective statement — the property R5 asks for.
+**The door (decidable, not RH).** (1) For one gate, the standalone ladder energy is the template: compute `E_p` for a single deformed gate at every aperture and show that it vanishes identically at the unitary point (the corpus has it at `log 2` [P2STANDALONE] [S]). (2) For finite products of gates with the Riemann Gamma factor, prove or refute that the cross terms between gates vanish after the pole is distributed — the explicit formula is linear in the contacts, so the question is whether a signed regrouping exists; the sign twin, which differs from `ζ` in the sign of one contact, is the test the regrouping must fail [TWIN] [DIPOLE]. (3) Check the fake horizons: they have no gates and `E_∞` alone; their off-line zeros show where `E_∞` cannot be nonnegative by itself [FAKEHORIZON].
 
-**Test.** Compute the sign of the endpoint competition on the certified window `log 2`, where the floor is known [FLOORLOG2] [S], and on the deformed system of [ADS-NOGO] at the same aperture; the principle must separate them.
+**Why it opens the path.** It replaces an all-aperture sign by a local sign at each gate, which is exactly where every fake differs from `ζ` (R11). If step (2) fails, the physical route has no local form and reduces to the W- and I-faces.
 
 ## 2.8 Under the hypothesis: RH is a problem of topology or geometry
 
-**What the corpus fixes.** The index of the neutral windows is `1 + κ` at most and attains every value up to it [INDEXLAW]; along the aperture the index grows exactly at null modes [NULLMODES]; the margin, the depth of the second negative square, sinks at rate `w` [MARGINSINF] [W]; deforming a Hermitian form to a positive one without crossing is equivalent to its positivity [DEFORM]. So the zeros right of the line are eigenvalue crossings of an explicit family of finite matrices over a parameter space (aperture, ratio, block size, cutoff).
+**What the corpus fixes.** The neutral windows carry the index: some window has `r` negative squares iff `r ≤ 1 + κ` [INDEXLAW]. Doubling a window is local: the true window of ratio `6K+1` is the un-updated glued matrix minus the fresh contacts `k ∈ [3K+2, 6K+1]`, which act only on the end-to-end block `(R, 2R] × ((3K+1)R, (6K+1)R]` [TOPLOCAL] [S]; the un-updated glued matrix has two negative squares up to a shift of order `√K` [TOPJUMP] [S]; a doubling factor below `√2` forces the fresh block to remove one of them [TOPOCTAVE] [S]. Haynsworth inertia and response matrices are in the corpus (AGZ window gluing).
 
-### Question: is there a spectral-flow formula for the window family whose local density is computable from the explicit formula and integrates to zero?
+### Question: is there an index theorem for the doubling step?
 
-Spectral flow counts crossings with sign; for the aperture family it equals the index growth `κ` [D]. An Atiyah–Patodi–Singer type formula would write it as the integral of a local density (the variation of an `η`-type invariant built from the prime contacts, the pole and the Gamma kernel) plus boundary terms at the certified range (ratio `< 4`, aperture `≤ log 2`, where the flow vanishes [OVERLAP] [FLOORLOG2]).
+Prove that the number of negative squares removed in the step `K → 2K` equals the signature of a finite octave form — the Schur complement of the end-to-end block, built from the primes in `(3K, 6K]` — and identify a deformation class of contact data in which that signature is invariant and which contains both `ζ` and a model whose octave signatures are computable.
 
-**Why it opens the path.** Positivity is then not proved directly: it follows from the vanishing of a topological integral, for which symmetry arguments are available — the functional equation acts on the parameter space as a reflection, and the density may be odd under it. Crossing-free deformation is excluded as a shortcut [DEFORM]; a spectral-flow formula is a different statement, because it counts crossings instead of forbidding them.
+**What it gives.** `κ` becomes a sum of local octave signatures plus a boundary term at the certified ratio, the shape of an Atiyah–Patodi–Singer formula; RH becomes the vanishing of every octave signature beyond the first, and a homotopy within the invariance class to a model with vanishing signatures proves it. The sub-Euler model, whose best factor is `√2` [SUBEULER] [S], is the test: its octave signatures do not cancel the jump, so it must lie outside the invariance class.
 
-**First test.** Write the density on the first resonant apertures, where the prime-square contact enters [EDGE], and check it against the certified index one; then compute it for the sign twin, where the first overlap step fails [TWIN] — the density must see the contact sign [DIPOLE].
+**First lemma.** Apply Haynsworth inertia to `N(6K+1) = N(3K+1) − F_K` with `F_K` supported on the end-to-end block [TOPLOCAL] [S], and write the inertia difference as the inertia of an explicit `R × 3KR` octave form.
 
 ## 2.9 Does RH need a new field of mathematics?
 
-The corpus does not prove that existing mathematics is insufficient. It does prove three structural facts that no existing field organizes: readings of `w` cannot move it [MEASURING]; every partial structure of `ζ` — Euler product without functional equation, functional equation without Dirichlet series, prime counts with a power rate — admits worlds that realize every abscissa the mechanism would exclude [EULERWORLD] [COSH] [EDIT]; and the complete structure is rigid — a decaying pointwise functional-equation defect with unit multiplicities forces the rational primes [RIGIDITY], while positive real weights allow arbitrarily slow defects with off-line zeros [SLOWDEFECT]. A proof must therefore use the full structure at a point where the structure is rigid. The field this calls for is:
+The corpus does not prove that existing mathematics is insufficient. It proves that readings of `w` cannot move it [MEASURING]; that every structure of `ζ` taken without one other has worlds realizing every abscissa a mechanism would exclude [TWOTHIRDSWORLD] [COSH] [EDIT] [PAIRSNOBITE]; that the complete Euler–FE structure with unit multiplicities is rigid [RIGIDITY]; and that every Euler–FE countermodel is non-tempered somewhere, while a single tempered Euler column is pure [EULERCOLUMN] [TEMPERED] [SMALLEIG] [D]. A proof must act where Euler product, exact functional equation, unit Euler parameters and integral primes are all present. No current field organizes mechanisms by that requirement.
 
-### Rigidity-to-location theory (deformation theory of arithmetic `L`-data)
+### Tempered selection theory
 
-**Subject.** The space of arithmetic `L`-data — Euler data (norms, multiplicities, local factors), functional-equation data (Gamma factor, conductor, root number), count data (error rates) — with `ζ` as a point, and the zero configuration, the width and the index as functions on that space. The field studies how the location of zeros depends on the data near a rigid point.
+**Subject.** `L`-data with four structures — Euler product, exact functional equation, local parameters of unit size at every place (finite and archimedean), integral generalized primes — and the location of their zeros as a function of the data. The field studies which zero-location statements are monotone in the temperedness exponents of the local parameters.
 
-**Objects.** Worlds (Euler worlds, cosh models, two-sided prime edits, Beurling systems, positive-weighted systems, compact Selberg data); defect functionals (pointwise and mean functional-equation defects, count defect, multiplicity defect); zero maps `data ↦ configuration`; the abscissa `Θ`, tail abscissa `Θ∞` and index `κ` as functions; topologies on data in which these functions are or are not semicontinuous.
+**Objects.** Worlds (Euler worlds, cosh models, prime edits, shifted pairs, prime-2 deformations, compact Selberg zeta functions); local Euler columns and their purity; temperedness exponents `θ_v` (Ramanujan exponent at a finite place, exceptional parameter at the archimedean place); gate energies; `Θ`, `Θ∞` and `κ` as functions on the space of data.
 
-**Language.** Rigid point, defect topology, modulus of location (how far zeros move per unit defect), world (a datum on which a mechanism is tested), joint use (a mechanism invisible on every world missing one structure).
+**Language.** Gate, unitary gate, temperedness defect, joint use, world test, purity of a column, rigidity point.
 
-**Criteria.** (i) Every theorem states the defect topology. (ii) A mechanism is admitted only if it fails on each world missing one structure — the worlds theorems are acceptance tests. (iii) Results are either rigidity (data pinned), location (zeros pinned), or transfer (a modulus of location).
+**Criteria.** Every theorem names the structures it uses; a mechanism is admitted only if it fails on every world missing one structure; every result is a purity law (zeros pinned by temperedness), a rigidity law (data pinned), or a transfer law (location moved by a stated amount per unit of temperedness defect).
 
-**Questions.** What is the modulus of continuity of `Θ` at `ζ` in each defect topology? Between the mean-square topology (fakes exist [WZCROW]) and the pointwise-decay topology (only `ζ` [RIGIDITY]), where does location become forced? Is the index `κ` upper semicontinuous at `ζ` in some topology in which `ζ` is approximable by data with `κ = 0` (then W1C-type closure gives RH [W1C])? Which identities of `ζ` survive every deformation that keeps rigidity, and do they force zeros (2.6)?
+**Questions.** Does the abscissa of an Euler–FE datum of degree two exceed `Θ` by at most its temperedness exponent, as the shifted pairs attain [PAIRSABS]? Is there a gate-local energy (2.7)? Does the purity of tempered Euler columns [EULERCOLUMN] propagate to the global zeros along a deformation that keeps the exact functional equation? Are the off-line zeros of a finite gate deformation of `ζ` with exact functional equation exactly the zeros of its non-tempered gates and of `ζ` [P2FACTOR] [D]?
 
-**Tools to develop.** Edit calculus with exact balance laws; Tauberian transfer between defect sizes and zero displacement; semicontinuity of indices under locally uniform convergence [W1C]; Euler–FE rigidity with explicit moduli; the ruler calculus restricted to subfamilies.
+**Tools.** Euler-column purity; the world theorems as acceptance tests; Euler–FE rigidity; the ruler calculus restricted to tempered families; gate energies at finite aperture.
 
-**First theorems that would count.** A modulus of location for Beurling systems with pointwise defect `O((1 + |t|)^{−a})` uniform in `a` as `a ↓ 0`; the threshold topology separating fakes from rigidity.
+**First theorems that would count.** A transfer law `Θ(F) − ½ ≤ C·θ(F) + (Θ − ½)` on a degree-two class containing the shifted pairs, proved with the size of the coefficients; a gate-local energy identity at one aperture.
 
 ## 2.10 Does an AAL proof or falsification need a new field?
 
-**What the corpus fixes.** AAL fails exactly at a finite nonempty top layer [AAL-LAYER]. In world I an edit of the rational primes with a power count rate removes the layer and has a strictly larger zero-free half-plane; hence AAL follows if no such edit has a larger zero-free half-plane than `ζ`, and no edit law decides this [WORLDI]. Euler worlds realize every pair `Θ∞ < Θ < 2/3` [TWOTHIRDSWORLD]; under AAL, RH ⇔ ZAL [AKLT].
+**What the corpus fixes.** AAL fails exactly at a finite top layer [AAL-LAYER]; then `ψ(x) − x = x^β T(log x) + O(x^{β−η})` with `T` a nonzero trigonometric polynomial, attained on every late window [FINOSC]; non-attainment on arbitrarily late windows of one ratio gives AAL [NONATTAIN]; AAL ⇔ every line has at most one or infinitely many zeros to its right [UNITGAPAAL]; in world I an edit removes the layer [WORLDI], and fake-edit defects do not decay [EDITDEFECT].
 
-### Extremal arithmetic of prime systems
+### Finite-oscillation arithmetic
 
-**Subject.** Variational problems on the space of prime systems (rational primes with two-sided edits, Beurling systems) with a fixed count rate: maximize the zero-free half-plane, the tail abscissa gap `Θ − Θ∞`, or the layer mass. AAL is a statement that `ζ` admits no improving direction that removes a finite layer.
+**Subject.** Arithmetic error terms at their top rate: when can the Chebyshev error, the Mertens function or a prime trace be, at its top rate, a finite trigonometric oscillation in `log x`? AAL is the statement that it never is.
 
-**Objects.** Edits `e` with count `Ax + O(x^β)`; edit zeta functions `ζ_e`; the layer carrier `L(s) = ∏(s − ρ_j)(s − ρ̄_j)`; the factorization `(s − 1)ζ_e L = (s − 1)ζ · C e^{H}` [WORLDI]; the functional `e ↦ Θ(ζ_e)`.
+**Objects.** Top layers; finite oscillations `x^β T(log x)`; attainment windows; prime-phase boxes; edits removing a layer; cofactor currents and their filters [COFACTORS].
 
-**Questions.** (1) First variation: how does `Θ(ζ_e)` change under a single prime insertion or deletion near a top layer? (2) Is `ζ` a local maximum of the zero-free half-plane among edits with count error `O(x^β)` for some `β < 1`? (3) What does the improving edit of world I cost in the functional equation, and does the exact functional equation of `ζ` forbid that cost? (4) For falsification: construct a finite layer for `ζ` by proving that an extremal edit exists with larger zero-free half-plane — the mirror problem.
+**Questions.** (1) Can a finite oscillation at rate `β > ½` coexist with the equidistribution of prime phases on late windows? (2) What is the finest window on which a finite oscillation is attained, and does a sieve lower bound for primes on that window contradict attainment? (3) For falsification: which finite top layers are consistent with the exact functional equation, the trace functional equation and the quartet Galois constraints [REGIMEA] [KLEIN]?
 
-**Criteria.** Statements relative to `ζ` (the docstring of [WORLDI] records that no edit law decides AAL); every extremality claim tested on Euler worlds without functional equation, where layers exist [EULERWORLD]; distinguishing AAL from ZAL in every theorem.
+**Criteria.** Every statement compares an error with its own rate (no exponent claimed); AAL and ZAL kept apart; every mechanism tested on Euler worlds, where finite layers exist.
 
-**Tools.** Greedy and signed grouped edits with square-root discrepancy; balance laws of two-sided edits; Hadamard factorization relative to a layer; variational derivatives of abscissae (Landau-type arguments for one-sided coefficients); the finite-layer filters of ELT [COFACTORS].
-
-**What it must answer.** Whether AAL is an extremal principle of the rational primes, and if not, which finite layer is consistent with the exact functional equation.
+**Tools.** Bohr almost periodicity; Kronecker–Weyl equidistribution of `t log p`; Landau's one-sided theorem; non-attainment receivers [NONATTAIN]; cofactor filters [COFACTORS]; world-I edits.
 
 ## 2.11 Under the exclusion of positivity and spectra: a new field
 
-### Zero-forcing calculus
+### Reciprocity transport theory
 
-**Subject.** Exact identities among Dirichlet series with Euler product (dilations, quotients, convolutions, twists), combined with functional equations, as **transport maps on zero configurations**: a zero at `ρ` forces a zero or a contradiction at `φ(ρ)`. The field classifies forcing maps, their orbits, and the configurations closed under them. No quadratic form, no spectrum.
+**Subject.** Exact zero transport between `L`-functions of different families produced by reciprocity: probes, corrections and rungs of metaplectic covers, frames `(c, k)` acting as `b ↦ (c + b)/k`, towers of frames, and their prices in Stickelberger arithmetic. No sign of a form, no spectrum.
 
-**Objects.** Identity relations `R(F₁,…,F_m) = 0` of finite complexity; forcing maps `φ_R`; coincidence varieties (configurations on which a map is defined, e.g. halving pairs [HALVING]); closed configurations; Galois orbits of `p^ρ` over the prime-trace field `B` and their quartet structure [QUARTET] [LEAVEQUART]; square classes of height radicands [RADICAND] [SQREL].
+**Objects.** Probes and corrections [CORRZERO]; rungs and frame abscissae [RUNG]; towers [TOWERFIX]; Stickelberger prices and the sign line [SIGNPRICE] [SIGNLINE]; completed and joint theta series; estimate floors.
 
-**Language.** Forcing map, coincidence, closure, expansion (`Re φ(ρ) > Re ρ`), contraction, orbit type (pair, Klein, partial flip, leaving the quartet) [INVOLUTIONS].
+**Language.** Frame, centre, price, sign line, completion cost, rung, tower, estimate floor, exact transport.
 
-**Criteria.** Every forcing law uses an identity of `ζ` and its functional equation, and fails on cosh models and Euler worlds; every result is exact (no estimate whose sign is the content).
+**Criteria.** Every transport is an identity or a continuation; every price is computed in Stickelberger arithmetic; every result fails for prime edits and Euler worlds; the excluded class of rational Euler identities is the boundary [WITTORD] [BRAUERCANCEL].
 
-**Questions.** (1) Classify forcing maps of bounded complexity. (2) Is there a forcing map without coincidence hypothesis? (3) Is any forcing map expanding on a band (gap law) or on all of `(½, 7/8]` (RH)? (4) Do the Galois constraints (quartets, square classes, mixed traces with `T_t(n) = n·T_t(1/n)` [MIXEDTRACE]) turn coincidence hypotheses into forced coincidences?
+**Questions.** Exact continuation of the probe to its frame centre (2.6); joint completions on the sign line (2.21); rung seeds for every level of a tower; whether towers on the sign line reach `½` with uniformly controlled rungs.
 
-**Tools.** Mellin and Hadamard factorization; transcendence of prime powers at zeros (three prime exponentials algebraic iff the exponent is rational); finite Galois layers [PRIME-FIBRES]; monodromy of the heat cover as a second source of orbit constraints [HEAT-FINITE].
-
-**First result that would count.** A forcing law with no coincidence hypothesis, even non-expanding.
+**Tools.** Cubic and sextic theta series, Kubota–Patterson reciprocity, Poisson and Voronoi summation over `ℤ[ω]`, Stickelberger valuations [STICKEL], tower contraction.
 
 ## 2.12 Under the AdS modular-horizon hypothesis: a new field
 
-### Arithmetic black-hole thermodynamics
+### Gate thermodynamics of the arithmetic horizon
 
-**Subject.** Phase structure of arithmetic ensembles built from the prime-marked horizon: free energies indexed by aperture (inverse temperature) and confinement (volume); saddles (ground states, the critical half-line state); transitions (critical thresholds); stability (concavity, specific heat).
+**Subject.** The modular horizon with prime gates as local scatterers: the KMS structure fixed by the functional equation [KMSPOS], the Hawking–Page phase law [HPTRANS] [S], and the contribution of each gate to the free energy.
 
-**Objects.** The window energies and their critical thresholds [POLAR]; the confinement ground energy, strictly concave, with endpoint selection [ENDPOINT] [ENDPOINT-BOUND]; the critical state (unique, outer, cyclic, Laplace zero-free) [HF] [HF-OUTER] [HF-CYCLIC] [HF-BOUNDARY]; the two-boundary correlator and its strip [ADS]; thermofield and BTZ realizations of the prime-log carrier [THERMOFIELD]; prime-2 deformations [ADS-NOGO].
+**Objects.** Gates (local Euler factors as local S-matrices) and their unitarity; gate energies [P2STANDALONE] [S]; bare and confined energies; the Hawking–Page point `W₀`; fake horizons without gates [FAKEHORIZON]; prime-2 deformations [ADS-NOGO].
 
-**Language.** Phase, saddle, transition temperature, specific heat, endpoint competition, gate (local factor), quantized gate (integral unit-multiplicity factor).
+**Language.** Gate, unitary gate, gate energy, bare energy, Legendre intercept, transition point, latent jump, fake horizon.
 
-**Criteria.** Exact `ξ` divisor and multiplicities on the boundary; pole and Gamma factors retained; the `ζ`/Bianchi distinction kept [BIANCHI]; every principle separates the arithmetic system from the prime-2 deformations; no physical axiom stands in for an estimate.
+**Criteria.** Exact divisor, pole and Gamma factors retained; every principle separates `ζ` from prime-2 deformations and from fake horizons; no physical axiom replaces an estimate.
 
-**Questions.** Is the off-line world a black-hole phase (2.7)? What is its specific heat? Does gate quantization (integrality, unit multiplicity) have a thermodynamic signature that the deformations lack? Is the ringdown rate a thermodynamic quantity (a gap of the transfer operator at the transition)?
+**Questions.** Gate-local energy (2.7); additivity of gate energies over finite gate sets; the latent jump at `W₀` as a function of the gates; ringdown rate as a gate quantity, with the deformation law `(1 − α)/2` as calibration [ADS-NOGO].
 
-**Tools.** Endpoint competition under a source; concavity and Legendre duality; KMS and thermofield purification; Euler–FE rigidity as the statement that quantized gates with exact duality are the rational primes [RIGIDITY].
+**Tools.** KMS and thermofield constructions [THERMOFIELD]; Legendre duality of the confining energy [LEGENDRE] [S]; Euler-column purity [EULERCOLUMN].
 
 ## 2.13 Under the topology/geometry hypothesis: a new field
 
-### Index theory of the explicit formula
+### Octave index theory of the window tower
 
-**Subject.** Families of explicit-formula quadratic forms (windows, apertures, ratios, cutoffs, heat times) over parameter spaces, and their topological invariants: index, spectral flow, null-mode walls, `η`-type invariants.
+**Subject.** The neutral windows as a two-parameter family (ratio, block size) of finite Hermitian matrices, the localization of the doubling step on the end-to-end block, and the index as a sum of local octave invariants.
 
-**Objects.** The neutral window family and its index `≤ 1 + κ` [INDEXLAW]; null modes and index growth along the aperture [NULLMODES]; the margin as the depth of the second negative square, a ruler of `w` [MARGINSINF] [W]; Green matrices and the continuum Green kernel [GREEN]; the heat cover with its monodromy group [ZCG].
+**Objects.** Neutral windows [INDEXLAW]; doubling steps and fresh octaves [TOPLOCAL] [S]; un-updated glued matrices and their jump [TOPJUMP] [S]; octave forms (Schur complements of end-to-end blocks); margins and their rates [MARGINSINF]; sub-Euler models [SUBEULER] [S].
 
-**Language.** Wall (null-mode locus), crossing, spectral flow, local index density, boundary contribution at the certified region, reflection of the parameter space by the functional equation.
+**Language.** Octave, octave form, octave signature, jump, invariance class, boundary term at the certified ratio.
 
-**Criteria.** Every invariant is computed from the literal explicit formula (prime contacts, pole, Gamma kernel); a crossing-free deformation is never assumed [DEFORM]; the sign twin must have nonzero flow where the first step fails [TWIN].
+**Criteria.** Every invariant computed from the literal contacts; the sub-Euler model and the sign twin as tests [SUBEULER] [TWIN]; no crossing-free deformation assumed [DEFORM].
 
-**Questions.** A spectral-flow formula (2.8); parity of crossings under the functional-equation reflection; whether walls can be crossed by one parameter without being crossed by another (a monodromy of walls); whether the index face and the heat cover have one common topological invariant.
+**Questions.** The index theorem for the doubling step (2.8); invariance classes of octave data; the octave signature of `ζ` at the first octaves past the certified ratio.
 
-**Tools.** Spectral flow and `η`-invariants for families of finite Hermitian matrices with explicit entries; Schur complements and Green calculus; transversality of crossings; the step-sample transfer between continuous and finite forms [STEPS].
+**Tools.** Haynsworth inertia, Schur complements, response matrices, Green calculus [GREEN], floor-graph norms [FLOORNORM] [S].
 
 ## 2.14 A research programme to construct `𝔽₁`
 
-**Aim.** A geometry in which `Spec ℤ` has a square with the actual arithmetic diagonal and in which one inequality on that square is a theorem of the geometry. Not a one-element field: `0 ≠ 1` excludes that.
+**Aim.** A geometry in which `Spec ℤ` has a square with the actual arithmetic diagonal, in which one inequality on that square is a theorem of the geometry, and in which the Euler parameters are unitary for a structural reason. Not a one-element field: `0 ≠ 1` excludes that.
 
-**What the corpus fixes.** Two Frobenius graphs meet in their contact ideal, with the first prime contacts `(2)` and `(3)` [CONTACT] [CONTACT-EX]; in integral big-Witt ghosts `F_kV_k = k` but `V_kF_k ≠ k` [WITT]; a completion of window couplings with one negative square forces logarithmic self-pairings `≥ m log m − 2m` on runs of blocks [DIAGONAL]; the neutral index is `≤ 1 + κ` [INDEXLAW]; every Artin `L`-function has a completion with a functional equation, Brauer induction is proved [ARTIN] [BRAUER]; the Kummer calibration has its places, intrinsic rational counts, differential orders at every finite place and local regularity criteria [KUMMER-COUNT] [KUMMER-DIFF] [KUMMER-REG].
-
-**Stages and gates.**
+**What the corpus fixes.** Frobenius graphs meet in their contact ideals, the first prime contacts are `(2)` and `(3)` [CONTACT] [CONTACT-EX]; integral ghost Witt vectors have `F_kV_k = k`, `V_kF_k ≠ k` [WITT]; a completion of window couplings with one negative square forces logarithmic self-pairings [DIAGONAL]; the neutral index is `≤ 1 + κ` [INDEXLAW]; Artin completions, Brauer induction [ARTIN] [BRAUER]; the seed for every ray class function of `ℚ(ω)` [RAYSEED] [S]; the Kummer calibration curves are maximal, `#C = Q² + 1 + 2Qg`, with parity classification and Cartier vanishing after one constant-field period [KUMMERMAX] [KUMMERPARITY] [KUMMERCARTIER] [S]; the window calculus alone has no producer [SUBEULER] [S].
 
 | Stage | Content | Gate |
 |---|---|---|
-| F1 Calibration | The Kummer function field written in the window language: contacts, diagonal, windows, Riemann–Hurwitz from the differential orders | Weil's inequality for the calibration proved inside the window calculus, with Frobenius as the only extra structure. |
-| F2 Diagonal | The logarithmic self-pairing derived from contact order and an archimedean boundary datum, compatible under gluing | Reproduces [DIAGONAL] on every run without copying the Weil matrix. |
-| F3 Symmetry | A correspondence on the square of `ℤ` that scales the neutral form by a factor `≠ 1` on a nonzero subspace, or a theorem that none exists in a stated class | Either outcome; the no-go collapses the programme into ACS. |
-| F4 Count | A Riemann–Roch count on windows of ratio `< 4` with a quadratic term reproducing the `10⁻¹³` floor structurally [FLOORLOG2] | Structural constant equals the certificate. |
+| F1 Calibration | The Kummer curve in window language; Weil's inequality for it derived from the curve's geometry, not from the explicit formula | The step that uses Frobenius is named; its analogue on `Spec ℤ` is the target object. |
+| F2 Diagonal | The logarithmic self-pairing derived from contact order and an archimedean boundary datum, compatible under gluing | Reproduces [DIAGONAL] without copying the Weil matrix. |
+| F3 Unitarity | A structure on the square that makes every Euler parameter of unit size (for curves: Frobenius unitary on `H¹` after normalization) | Fails for shifted pairs and prime-2 gates [TEMPERED] [P2FACTOR]. |
+| F4 Symmetry | A correspondence on the square scaling the neutral form by a factor `≠ 1` on a nonzero subspace, or a no-go in a stated class | Either outcome; the no-go reduces `𝔽₁` to a language for ACS. |
 | F5 Index | Index law as a theorem of the geometry, functorial under refinement | Agrees with [INDEXLAW]. |
-| F6 Reciprocity | Conductors and squares of number rings (Artin, Heilbronn) | Index statements for Dedekind squares. |
+| F6 Reciprocity | Conductors and Artin characters as cycles; the seed as an intersection inequality on the family of `ℚ(ω)` [RAYSEED] [S] | Index statements for Dedekind squares. |
 
-**Acceptance tests.** Recover `(1,2) = (2)`, `(1,3) = (3)` and prime-square contacts; explain the negative diagonal; separate `Λ` from the sign twin [TWIN]; pass the worlds tests — the geometry must not exist for Euler worlds without functional equation [EULERWORLD].
-
-**Stop rule.** If F1 fails, the window calculus is not the carrier; if F3 ends in the no-go, `𝔽₁` is a language for ACS and adds no inequality.
+**Acceptance tests.** Recover `(1,2) = (2)`, `(1,3) = (3)`; explain the negative diagonal; separate `Λ` from the sign twin [TWIN]; fail for Euler worlds and non-tempered models. **Stop rule.** If F1 shows that the curve proof uses only the explicit formula, the window calculus is a ruler in both settings and F3 is the whole programme.
 
 ## 2.15 A research programme to close WD
 
-**The route.** WD reads `w` through Möbius polynomials and mollified moments: at one height for all prefix lengths [WD]; on one unit window; through cofinal long moments with one exponent `K` for arbitrarily large length exponent `θ` (two-sided slope law, pure and mollified versions equivalent) [WD-LONG]. These are rulers [RULERS]. The seed gives `|M_X(½+it₀)| = O(X^{3/8+ε})`, `∫₀¹|ζM_X|² = O(X^{3/4+2ε})`, long moments `T^{4+3θ/4}` and `T^{6+3θ/4}` [RULERS]. The depth ladder gives eventual depth `< 1/(2θ) + ε` from bounded dyadic moments at length `T^θ`, `θ > ½` [DEPTHLADDER]; real unit-bounded mollifiers of length `T^θ` have normalized moment `≥ 1 + 1/(8 + 6θ)` [NECLEN].
+**The route.** WD reads `w` through Möbius polynomials and mollified moments: at one height [WD]; through cofinal long moments with one exponent `K` [WD-LONG]; and through the slope loss of the stage map `θ ↦ 2θ`, whose least value is `2w`, with loss `3/4` unconditional and `8999/12000` from the written seed [SLOPE] [SLOPE34] [WIDTHSUB] [S] [D]. The depth ladder gives depth `< 1/(2θ) + ε` from bounded dyadic moments at length `T^θ` [DEPTHLADDER]; mollifiers of length `T^θ` have moment `≥ 1 + 1/(8 + 6θ)` [NECLEN].
 
-**Diagnosis.** WD as a ruler is complete. Closing WD as a proof needs a lever on its ruler: an estimate at exponent below `3/8`, ultimately at `0`. The route's own content cannot supply it (measuring is not moving [MEASURING]).
+**Diagnosis.** WD is a complete ruler; closing it needs a slope loss below the seed's, which is a better seed, and loss `0` for unbounded `θ`, which is RH.
 
 | Stage | Content | Gate |
 |---|---|---|
-| D1 Seed table | Instantiations at `3/8` on every WD ruler | Done for prefixes, window, moments [RULERS]. |
-| D2 Stage map in `θ` | An inequality from length `T^θ` to `T^{2θ}` with an explicit loss | Any loss below the seed slope is a better quasi-RH; slope zero with one `K` is RH. |
-| D3 Negative moments | Make the long-mollifier/negative-moment link two-sided | Separates the forms of the slope law that are RH from those that also need simple zeros. |
-| D4 ZAL engine | Bounded dyadic moments at every `θ > 1` | Gives ZAL (Assembly II); needs lengths beyond every known mollifier range. |
-| D5 Signed off-diagonal | One off-diagonal term of a long moment with a signed bound beating its absolute budget in a genuinely long range | First evidence that WD's own sums carry a lever. |
-| D6 Decision | If D2 and D5 have no candidate | Retire WD as a producer; keep it as a ruler and as the ZAL engine. |
+| D1 Seed table | Instantiations on every WD ruler | Done at `3/8` [RULERS]; transport of `8999/24000` is work. |
+| D2 Stage map | A slope law with explicit loss | Exact: least loss `2w` [SLOPE]. |
+| D3 Negative moments | Two-sided long-mollifier / negative-moment link | Separates RH forms from simple-zero forms. |
+| D4 ZAL engine | Bounded dyadic moments at every `θ > 1` | ZAL (Assembly II). |
+| D5 Signed off-diagonal | One off-diagonal term of a long moment with a signed bound beating its absolute budget, using `|μ| ≤ 1` | Shifted pairs have unbounded Möbius coefficients; the bound must fail for them [PAIRS]. |
+| D6 Decision | No candidate for D5 | WD stays a ruler and the ZAL engine. |
 
-**Closure criteria.** Common `K`, unbounded `θ`, `θ`-dependent constants allowed, cofinal heights, the arithmetic mollifier itself. A universal constant over all `θ, T` is false [WD-LONG]. **Rejection tests.** Coefficient-norm bounds, short weights and density-only corridors leave finite or shallow exceptions.
+**Closure criteria.** Common `K`, unbounded `θ`, `θ`-dependent constants, cofinal heights, the arithmetic mollifier itself [WD-LONG].
 
 ## 2.16 A research programme to close ACS
 
-**The route.** RH ⇔ the neutral-window margins are bounded below [ACS]; ⇔ at each cutoff `Q ≥ 2` the windows of index one have a common gap `c_Q > 0` [GAPRH] [GAP]. The index law counts right zeros [INDEXLAW]; the margin exponent at polynomial block size equals `w` [MARGINSINF] [W]; with no hypothesis the margin depth is `C(1+log K)²K^{3/8}(1+log R)` [MARGIN38]. Certified: ratio `≤ 3` for `Q ≥ 2`, `< 4` for `Q ≥ 3` at every block size [LOGLADDER]; the first overlap step separates `ζ` from the sign twin through the dipole of the Green matrix [TWIN] [DIPOLE]. Excluded: fixed-rank absolute gluing [RANK-WALL], bare dilation gap [TREE-GAP], uniform positive gap at unbounded aperture under RH [MARGIN-DECAY].
+**The route.** RH ⇔ bounded margins ⇔ a gap at every cutoff ⇔ doubling factor one [ACS] [GAPRH] [DOUBLINGONE]; the margin rate at polynomial block size is `w` and the best doubling factor `2^w` [MARGINSINF] [DOUBLING]; a factor in `(1, 2^{3/8})` exists iff `w < 3/8` [DOUBLING38IFF] [S], so the written seed gives such factors [WIDTHSUB] [D] [S]. Every bounded-weight model has the factor `√2`, and the gluing data cannot do better [SQRT2] [SUBEULER] [S]; the fresh octave acts only on the end-to-end block [TOPLOCAL] [S].
 
-**Reading.** ACS is a continuity method whose openness is proved (thin tails [GAP]) and whose closedness is RH. Its margin is an exact ruler of the width: the window calculus is a complete finite model of `w`, built from the explicit formula, so it uses the Euler product and the functional equation together — the joint use every lever requires.
+**Reading.** The window calculus is a complete finite model of `w` and `κ`. It has no producer in gluing form; its fresh-octave form is a reading of `w`. ACS closes only by importing a producer or an index theorem.
 
 | Stage | Content | Gate |
 |---|---|---|
-| C1 Converse rate law | Margin `≥ −C K^{w+ε}` | Done: every block size with `1 + log R` [MARGINDEPTH]; polynomial block size exactly [MARGINPOLY] [MARGINRULER] [W]. |
-| C2 Stage map | A doubling law `a(2K) ≤ λ·a(K) + c` derived from the gluing data, seeing the contact signs | Best factor is `2^w` [DOUBLING] [W]; a gluing proof of any `λ < √2` is a second producer, of `λ < 2^{3/8}` a better seed, of every `λ > 1` RH (2.4). |
-| C3 Acid test | Prove the gap of the windows of the Kummer calibration by stage maps, without Weil's theorem | If the calculus cannot prove the gap where it is true, C2 is not pursued in this calculus. |
-| C4 Certificates | `Q = 2` fourth step [FOURTHRED]; prime-square aperture | Extends the certified base. |
-| C5 Critical state | Identities of the possible limit state (dilation, reflection, cyclicity) tested against the prime weights [HF] | One identity the actual source violates closes the method (wall U5). |
-| C6 Clustering | Remove `1 + log R` (wall U9) | The margin ruler at all block sizes. |
+| C1 Converse rate law | Margin `≥ −C K^{w+ε}` | Done [MARGINDEPTH] [MARGINPOLY] [MARGINRULER]. |
+| C2 Doubling | Factor below `√2` from gluing data | Excluded [SUBEULER] [S]; survivor: the fresh-octave form. |
+| C3 Octave index | Index theorem for the doubling step (2.8) | `κ` as a sum of octave signatures. |
+| C4 Certificates | `Q = 2` fourth step [FOURTHRED] [S] | Finite apertures do not separate `ζ` from deformations [P2LOG2] [S]. |
+| C5 Critical state | Hawking–Page structure (exact) [HPTRANS] [S] | The sign of the bare energy. |
+| C6 Clustering | Remove `1 + log R` | The margin ruler at all block sizes. |
+| C7 Acid test | Gap of the Kummer-calibration windows by stage maps | Names the step that needs Frobenius (F1 of 2.14). |
 
-**Closure record if A2 ends in a fake with `λ = √2`.** Negative: the gluing calculus produces no half-plane. Survivors: index law, openness, floors through ratio four, margin ruler, first-step dipole.
+**Decision record.** ACS is retired as a producer. Survivors: index law, margin and doubling rulers, ratio ladder, first-step dipole, top-octave locality.
 
 ## 2.17 A research programme to close ZCG
 
-**The route.** RH ⇔ forward loops and mirror loops transport the zeros alike at every positive real nonbranch time [ZCG]; `Λ ≤ 9/128`, so only `0 < t ≤ 9/128` is open [NEWMAN]. The forward group `G₊` has index `≤ 2` in the finitely supported signed permutations; it is proper iff its turns obey one parity law [HEAT-PARITY]; a proper group forces `8 | N(t)` at every real `t > 0` [HEAT-EIGHT] and one residue class `2` or `6 mod 8` at all simple centre times [MOD8]; an odd number of nonreal quartets at one real time gives `G₊ = W` [ODDQUART]. A forward multiple zero off the centre exists at arbitrarily large forward time [OFFCENTRE]; one isolated double one gives `G₊ = W` [DOUBLECOLL]. Arithmetic automorphisms act on finite continued windows as heat monodromies [HEAT-FINITE]; whole fibres are excluded [HEAT-NOGO]; a uniform injective nonreal continuation of all off-line zeros forces finitely many [HEAT-UNIFORM].
+**The route.** RH ⇔ forward and mirror loops transport alike at every positive nonbranch time [ZCG]; `Λ ≤ 9/128` [NEWMAN]; `G₊` has index `≤ 2`, proper iff one parity law [HEAT-PARITY]; proper forces `8 | N(t)` [HEAT-EIGHT]; an odd number of nonreal quartets gives `G₊ = W` [ODDQUART]; an isolated off-centre double collision gives `G₊ = W` [DOUBLECOLL]; `N(t) ≤ 1` at times accumulating at `0` gives RH [HEATUNIT]; finite windows are heat monodromies, fibres are not [HEAT-FINITE] [HEAT-NOGO]; width alone gives no heat-time bound [HEATSPACING]. ZCG is sign-free.
 
 | Stage | Content | Gate |
 |---|---|---|
-| Z1 Sign of `G₊` | Isolated double collision off the centre (task A3) | Expected `G₊ = W`; then the heat cover has no invariant beyond transitivity and all parity mechanisms close. |
-| Z2 Arithmetic content | Identify data retained under continuation of finite windows but invisible to `W` (the prime-trace orbit types [QUARTET] [INVOLUTIONS]) | One invariant of the arithmetic group that heat monodromy must respect. |
-| Z3 Time-zero control | Quantitative shrinking of the specialization interval for growing windows | A bound turning finite-window specialization into finite off-line support under explicit tail assumptions. |
-| Z4 Finite stratum | Combine with B6 | ZCG then closes with Landing and ZAL (Assembly II). |
+| Z1 Sign of `G₊` | A3 | `G₊ = W` closes every parity mechanism. |
+| Z2 Arithmetic content | Isolated-quartet regimes: negative radicand, partial flips, Klein action [REGIMEA] [PARTIALFLIP] [KLEIN] | One invariant of the arithmetic group respected by heat continuation. |
+| Z3 Heat law with density | A two-sided heat-time law in width and spacing for `ξ` | Turns `Λ` into a ruler. |
+| Z4 Transport | The estimate-free transport of 2.6 | A forcing law into the rung family. |
+| Z5 Finite stratum | With B8 | ZCG closes with Landing and ZAL. |
 
-**Rejection tests.** A whole-fibre intertwiner; global conjugation by one finitary heat element; "large monodromy implies real zeros". All three are excluded or empty.
+**Rejection tests.** Whole-fibre intertwiners; global conjugation by one finitary heat element; "large monodromy implies real zeros": excluded or empty.
 
 ## 2.18 A research programme to close MC/JAS
 
-**The route.** MC: Möbius Hilbert form subpolynomial ⇔ RH [MC]; the zeta-kernel signal is a smoothed Möbius sum and a ruler: `Θ ≤ b` iff the signal is `O(Z^{b'})` for every `b' > b` [SIGNAL] [SIGNAL-WIDTH]. JAS: dressed PSD at level one ⇔ RH [JAS]; a signal bound `O(Z^b)` gives large-prime level `b + ½ + ε` [SIGNAL-JAS]; the ancestry abscissa is `0` or `≥ 1 +` the largest depth, with no hypothesis [RULERS]. The seed gives signal exponent `7/8` and level `11/8 + ε`.
-
-**Diagnosis.** MC and JAS are W-face rulers fed by one producer. The producer's frames end at `3/5` [GAUSS] [WALLGEN]; its estimates stop at the vertex `7/8` [VERTEX]; truncation and averaging walls are proved [TRUNCATION] [AVERAGE]; incomplete reciprocity keeps the phases with a subcubic defect saving [INCOMPLETE].
+**The route.** Möbius Hilbert form subpolynomial ⇔ RH [MC]; the signal is a Möbius sum and a ruler [SIGNAL] [SIGNAL-WIDTH]; dressed PSD at level one ⇔ RH [JAS]; a signal bound `O(Z^b)` gives level `b + ½ + ε` [SIGNAL-JAS]. MC and JAS are W-face rulers fed by the cubic producer.
 
 | Stage | Content | Gate |
 |---|---|---|
-| M1 Estimates below the vertex | Row count in the binding bin; row mean square at generic size; signed off-diagonal saving [VERTEX] [ESCAPE] [SIGNEDGRAM] | Seeds `13/15`, `5/6`, `5/6 − s` (2.5). |
-| M2 Family mean values | Multiple Dirichlet series of the cubic cover of `GL₃` as the source of M1 | First specialization matched to the corpus row sums. |
-| M3 Target-preserving extraction | Extraction weights that cancel the continued family residue and keep the `ρ⁻¹` target mode | Strict saving over the sixth-power scale for the signed aggregate. |
-| M4 Frame | A source outside the Gauss class; the corpus explores Serre's `Q₈` representation (induction from `C₄`, ramification at 2, 5, 41) with local epsilon factors unpaid [Q8SRC] | Frame centre `< 3/5`, or a classification excluding it. |
-| M5 Lever | Combine M1–M4 with the functional equation of `ζ` (2.21) | A lever transported to all W-rulers. |
+| M0 Seeds | `7/8` [L]; `20999/24000` written [SUBSEED] [S] | Integration (A2). |
+| M1 Present estimates | Optimal geometry in `(40535/46328, 20999/24000]` (A1) | Ceiling of the present estimate system. |
+| M2 Row count | The count `U^{1−δ}` (2.4) | `13/15`. |
+| M3 Cross-row saving | Signed off-diagonal Gram saving (2.5); per-row cancellation exists [ROWCANCEL] [S] | `5/6 − s`. |
+| M4 Target extraction | Minimum-energy filters and Poisson restoration [MINFILTER] [POISSONPROJ] [S] | Long weighted rows. |
+| M5 Frames | Sign-line completion at period `≥ 7` (2.21) | Frame centre `k/(2(k−1))`. |
+| M6 Exact transport | Continuation to the frame centre (2.6) | Removes the estimate floor from the transport. |
 
-**Rejection tests.** Principal averaging; more Gauss factors in the same budget; dropping the first sextic layer while claiming its target; reversible sewing [RFHM].
+**Rejection tests.** Principal averaging [AVERAGE]; more Gauss factors in the same completion budget [WALLGEN]; rank-two series [A2REJECT]; reversible sewing [RFHM].
 
 ## 2.19 A research programme: Galois theory of the zeros
 
-A finite polynomial cannot have infinitely many distinct roots; the algebraic object is a compatible family of finite equations. **Fixed.** Complete-fibre traces give monic polynomials with the centred zeros as roots [FIBRES]. The prime-trace field `B` (generated by mixed traces with `T_t(n) = n·T_t(1/n)` [MIXEDTRACE]) and the field `E` of prime values `p^ρ`: `E/B` is the compositum of finite Galois layers, one per height, each of even degree [PRIME-FIBRES]; the degree of the residue field of a zero is its orbit size [ORBIT]. Criteria: `Re ρ = ½` iff `p^{2Re ρ} ∈ B` and an automorphism realizes the reflection [REFLECTION]; conjugation is central iff every ordinate value lies in `B` [CONJCENTRAL]; the group acts on a quartet through the Klein group iff the width value lies in `B` [INVOLUTIONS]; the orbit lies in the quartet iff the width and ordinate values solve a quadratic over `B` [QUARTET]; an orbit leaves its quartet only through another off-line quartet of the same ordinate [LEAVEQUART]; square relations among height radicands carry an even number of critical heights [SQREL] [RADICAND]. Heat comparison holds on finite windows only [HEAT-FINITE] [HEAT-NOGO].
+A finite polynomial cannot have infinitely many distinct roots; the algebraic object is a compatible family of finite equations. **Fixed.** Complete-fibre traces give monic polynomials with the centred zeros as roots [FIBRES]; mixed traces satisfy `T_t(n) = n·T_t(1/n)` [MIXEDTRACE]; `E/B` is a compositum of finite Galois layers [PRIME-FIBRES]; orbit size = residue degree [ORBIT]; `Re ρ = ½` iff `p^{2Re ρ} ∈ B` and an automorphism realizes the reflection [REFLECTION]; conjugation central iff ordinate values lie in `B` [CONJCENTRAL]; quartet criterion [QUARTET]; orbits leave quartets only through same-ordinate off-line quartets [LEAVEQUART]; square relations carry an even number of critical heights [SQREL]; an isolated off-line quartet has a negative radicand at every prime, square class ⇔ no partial flip, traces symmetric under `(Re ρ − ½) ↔ i Im ρ`, Klein action at a shared critical ordinate [REGIMEA] [PARTIALFLIP] [TRACEFACTOR] [KLEIN]; finite windows match heat monodromy, fibres do not [HEAT-FINITE] [HEAT-NOGO].
 
 | Stage | Content | Gate |
 |---|---|---|
-| G1 Sign of `G₊` | Task A3 | Decides whether heat monodromy adds any constraint. |
-| G2 Representation ring | Heilbronn characters from Brauer induction; Aramata–Brauer; zeros of order one belong to one abelian character [BRAUER] [ARTIN] [D] | Multiplicity laws across Galois groups. |
-| G3 Cross-height relations | Algebraic relations among traces of different heights (trace functions of `ℚ`-independent heights are independent as functions [TRACE-INDEP]) | Presentation of `B`. |
-| G4 A restriction on conjugation | A relation in `B` derived from the Euler product that separates the reflection lift from conjugation | The only door to location in this theory. |
-| G5 Forcing | Use G3 and the quartet criteria inside the zero-forcing calculus (2.11) | A forced coincidence of ordinates or its exclusion. |
+| G1 Sign of `G₊` | A3 | Whether heat monodromy adds a constraint. |
+| G2 Representation ring | Heilbronn characters, Aramata–Brauer, conductors (A8) | Multiplicity laws across Galois groups. |
+| G3 Cross-height relations | Algebraic relations among traces of different heights [TRACE-INDEP] | Presentation of `B`. |
+| G4 Partial flips | Decide whether an isolated off-line quartet admits a partial flip in `Gal(E/B)`, using the swap symmetry of its traces [TRACEFACTOR] | A forced square class at off-line heights. |
+| G5 Restriction on conjugation | A relation in `B` from the Euler product separating the reflection lift from conjugation | The only door to location in this theory. |
 
-**Limit stated precisely.** The theory locates zeros only through the position of conjugation relative to the reflection; orders and multiplicities are governed by G2, location by G4.
+**Limit.** The theory locates zeros only through the position of conjugation relative to the reflection.
 
 ## 2.20 A programme assuming RH is false
 
-The assumption guides the search; a final disproof must concern the actual `ζ`.
+The assumption guides the search; a disproof must concern the actual `ζ`.
 
-**The three worlds.** F: finitely many off-line zeros (finite positive index); S: ZAL with Landing failing; D: ZAL failing [THREEATOMS]. **Constraints on an off-line zero `ρ = ½ + δ + iγ`.** `|δ| ≤ 3/8` [MMD_STRIP]; `ζ(½ + iγ)` is flattened to order `δ²` for `|δ| ≤ 1/16` [FLATTEN]; `Λ ≥ δ²/(200 log γ)` for `γ ≥ e^{1600}` [NEWMANLOW]; density exponent `30/13` [DENSITY]; at most `1 − 0.6725` of zeros off the simple critical class [CENSUS]; each right zero adds one negative square to some window [INDEXLAW]; in world I an edit with larger zero-free half-plane exists [WORLDI].
+**The three worlds.** F (`0 < κ < ∞`), S (ZAL, Landing fails), D (ZAL fails) [THREEATOMS]. **Constraints on an off-line zero `ρ = ½ + δ + iγ`.** `|δ| ≤ 3/8` [MMD_STRIP], `≤ 8999/24000` written [WIDTHSUB] [S]; no coincidence `ζ(ρ/k) = 0` for `k ≥ 7` [K7] [S]; `ζ(½ + iγ)` flattened to order `δ²` [FLATTEN]; `Λ ≥ δ²/(200 log γ)` above `e^{1600}` [NEWMANLOW]; multiplicity `≤ ((3/(8π))cos((4π/3)δ) + ε) log γ` [MULT]; density `30/13` [DENSITY]; at most `1 − 0.6725` off the simple critical class [CENSUS]; each right zero adds a negative square to some window [INDEXLAW]; the half-line state has a Hawking–Page point at a finite `W₀` [HPTRANS] [S]; off AAL the prime error is a finite oscillation attained on every late window [FINOSC]; an isolated off-line quartet at a pure height has negative radicand at every prime [REGIMEA].
 
-**(a) Proving falsity analytically.** Strategies with a finite certificate:
+**(a) Proving falsity analytically.** A noncomputational disproof is a structural lower bound for one gap quantity: window binding beyond pole capacity [POLECAP]; two negative squares [INDEXLAW]; a violated integer lag inequality [INTLAG]; a nonreal Jensen root [JENSEN]; a positive heat threshold [HEATLOC]. The direction with content: make the half rulers two-sided (mass-normalized floor, heat with density, long-mollifier/negative moments, margin at all block sizes), so that a lower bound for a moment, a heat constant or a margin becomes an off-line zero.
 
-| Certificate | Statement that would decide | Lean |
-|---|---|---|
-| Window binding beyond pole capacity | A window whose binding energy exceeds `√ρ − 1/√ρ + log ρ` carries an off-line zero | [POLECAP] [POLECAPRH] |
-| Window with two negative squares | Index law | [INDEXLAW] |
-| Integer violating the lag inequality | RH ⇔ the inequality for every `n ≥ 2` (a `Π⁰₁` form) | [INTLAG] |
-| Nonreal Jensen root | Degree `> 31922` | [JENSEN] |
-| Positive heat threshold | Off-line zero below `e^{100/λ}` | [HEATLOC] |
+**(b) A concrete counterexample without computation.** World F is the natural target: a finite configuration of quartets, consistent with the Galois regimes (negative radicands, partial-flip criterion, Klein action at shared ordinates) [REGIMEA] [PARTIALFLIP] [KLEIN], with `8 | N(t)` if `G₊` is proper and `G₊ = W` if the number of quartets is odd [HEAT-EIGHT] [ODDQUART], and with a finite oscillation of the prime error [FINOSC]. The prime-2 deformations show the shape such a world takes when a gate is non-unitary: ladders of off-line zeros spaced `2π/log p`, invisible below the Nyquist aperture `½log p` [P2NYQ] [S]. [D] A counterexample for `ζ`, whose gates are unitary, cannot arise from such a ladder; the localization chain (A9) lacks its first link, a structural positive lower bound for one gap quantity.
 
-A noncomputational disproof is a structural lower bound for one of these quantities. The research direction with content: **make the half rulers two-sided** — the mass-normalized Weil floor, the heat bound `Λ ≤ w²/2`, the long-mollifier/negative-moment link (D3 of 2.15), the margin at all block sizes (C6 of 2.16): a two-sided ruler turns a lower bound for a moment, a heat constant or a margin into an off-line zero. And **the mirror of 2.10**: an extremal edit with larger zero-free half-plane would describe world I.
-
-**(b) A concrete counterexample without computation.** A counterexample is specified by a region and a proof of a zero inside: a rational rectangle in `½ < Re s < 7/8` with a proved argument-principle count. The localization chain exists in pieces — heat threshold → height bound [HEATLOC]; aperture visibility [HIDDEN]; index → window [INDEXLAW] — and lacks its first link, a structural positive lower bound for one gap quantity (task A8 assembles the rest). World F is the natural target: a finite configuration of quartets, closed under the zero-forcing transport (2.6/2.11), consistent with the Galois quartet criteria and with `8 | N(t)` if `G₊` is proper [HEAT-EIGHT]. Such a configuration is a candidate counterexample described by finitely many algebraic data; its existence is the open question.
-
-**AAL distinction.** One off-line zero falsifies RH, not AAL; falsifying AAL needs a finite top layer strictly above the tail abscissa [AAL-LAYER].
+**AAL distinction.** One off-line zero falsifies RH, not AAL; falsifying AAL needs a finite top layer above the tail abscissa [AAL-LAYER].
 
 ## 2.21 The one big question
 
-### Is there an interval of exponents that the abscissa of `ζ` provably avoids?
+### Does a Möbius-signed Gauss monomial of period `k ≥ 7` have a completion priced on the sign line?
 
-Find `½ < b₁ < b₂ ≤ 7/8` and prove, with no hypothesis on zeros, that `Θ ∉ (b₁, b₂)`. Equivalently, prove one **lever** for `ζ`: a map `T` on exponents with `Θ ≤ b ⇒ Θ ≤ T(b)` and `T(b) < b` for `b ∈ (b₁, b₂)` (a lever is a gap law [MIXED]).
+**Setting.** Every Möbius-signed Gauss monomial over `𝔽_p` has a conjugate of Stickelberger defect at least `½`; monomials of length at most three are priced exactly `k/2` at period `k`; frames `(k/2, k)` have centre `k/(2(k−1))`, and towers on this sign line take values in `(½, K/(2(K−1))]`, with wall `½` not attained [SIGNCOST] [SIGNPRICE] [SIGNLINE] [SIGNWALL]. The completed Gauss pairings, which complete each factor by its own theta series, cost `c ≥ 2k/3 − 1` and are priced at least at the sign line [PRICE] [PRICEABOVE]; the two lines meet at `k = 6`, which is the wall `3/5` of the whole completed class, mixed towers included [GAUSS] [WALLGEN].
 
-**Why it is less hard than RH, quasi-RH and AAL.** RH implies it. It does not imply any half-plane: if `Θ` is below `b₁` or above `b₂`, nothing changes. It needs no estimate at exponent zero and no improvement of the vertex `7/8`.
+**Question.** Construct, for some `k ≥ 7`, a joint completion of a Möbius-signed monomial — one automorphic object (a theta series on a higher metaplectic cover, a coefficient of a Weyl-group multiple Dirichlet series, or a Jacobi-sum family) completing all factors at once — whose functional equation prices the frame at `c = k/2`; or prove that every completion in a stated class costs `c ≥ 2k/3 − 1`.
 
-**Why it kills, establishes and unblocks.** It establishes the lever route, which no programme of the corpus has opened; it unblocks wall P8 on all W-routes at once; a classification showing that no identity of bounded complexity forces zeros without coincidence (2.6, 2.11) would retire the identity-driven lever programmes and leave the producer ladder (2.5) and the window producer (2.4) as the only ways to move `w`.
+**Why it is less hard than AAL, RH and quasi-RH.** It is a question about Gauss sums and the functional equations of explicit theta-type objects; it contains no analytic estimate and no statement about zeros.
 
-**What a positive answer gives.**
-1. It is the first lever. By lever transport it is simultaneously a gap law on every ruler: Möbius partial sums cannot have growth exponent in `(b₁, b₂)`, unit windows and long moments cannot have slopes in the corresponding band, the window margin cannot sink at those rates, the AdS strip width cannot lie in `(½ − b₂/2, ½ − b₁/2)` [LEVERTRANSPORT] [ADS] [D].
-2. The worlds theorems force its proof to use the Dirichlet series and the functional equation of `ζ` together: if `b₂ ≤ 2/3` an Euler world realizes every abscissa in the band [EULERWORLD]; cosh models realize every abscissa [COSH]. A proof would therefore exhibit the joint mechanism that every route lacks.
-3. Iteration criterion [D]: if a family of such levers covers `(½, 7/8]` with a monotone envelope, its wall is `½` and RH follows; the question isolates the first step of that programme.
+**Why it decides several routes at once.**
+1. *If yes:* the frame ladder of the producer is not capped at `3/5`: frames with centres `7/12, 4/7, …` exist, and with a completion at every period the frame side of Assembly I reaches `½` [SIGNLINE] [COVERSUB]. The remaining obstacle of MC, JAS, WL, WD, SQF, CHMD and every W-ruler fed by the producer is then the estimate ladder alone (2.4, 2.5, 2.6).
+2. *If no (a cost theorem):* the Gauss producer class is capped at `3/5` whatever estimates are proved; every W-route that relies on it is retired as a route to RH and survives only as a ruler, and the W-face needs a producer outside Möbius-signed Gauss monomials.
+3. Either way it fixes the target of 2.6: exact continuation to the frame centre is worth `½ + O(1/k)` or `3/5`.
 
-**Templates in the corpus.** (i) Halving descent: if `ζ(ρ) = ζ(ρ/2) = 0`, the functional equation makes `1 − ρ/2` a zero, of real part `1 − Re ρ/2`; hence any halving pair forces `Θ ≥ 2/3` [HALVING]. This is a forcing law `ρ ↦ 1 − ρ/2`, conditional on a coincidence; off RH some right zero is not halved. (ii) Frames: a correction at the dilated argument `ks − c` transfers a zero-free region of the correction to `ζ` with `T(b) = (c + b)/k` [TOWERFIX]; the cubic frame is exact in both directions between the correction and its Grössencharacter rung [RUNG], so a band-limited lever needs a source whose correction has a zero-free region proved only when `Θ ∈ (b₁, b₂)`.
+**First lemma.** Compute the Stickelberger price of the coefficients of the `A₂` cubic multiple Dirichlet series as a function of the period, with its Weyl-group functional equations as the completion; the corpus has its convexity and reflection data [A2CHAIN] and the valuation of every prime-field Gauss sum [STICKEL]. The rank-two series fails the estimate ladder [A2REJECT]; its frame price is not computed, and it is the first joint completion available.
 
-**First lemma to test.** Classify the zero-transport maps of the exact identities with Euler product in the corpus — `ζ(2s)/ζ(s)`, `ζ(s)²/ζ(2s)`, the squarefree partition [MSC], the cubic frame [CORRZERO] — and determine whether any of them, combined with `ξ(s) = ξ(1 − s)`, sends a rightmost zero at `Re ρ = b ∈ (b₁, b₂)` to a forced zero or pole of a series known to be regular there (the seed for Dirichlet `L`-functions is available as the regularity input [MMD_DIR]).
-
-**Filter.** Not RH-equivalent (T1); decided by proof (T2); consequence is a theorem on every ruler (T3); no finite window decides it (T4); false on Euler worlds and cosh models for suitable bands (T5); the input — an identity using the functional equation — is named and not refuted (T6); EDCS defines gap laws but proves none for `ζ` (T7).
+**Filter.** T1 not RH; T2 decided by a construction or a cost theorem; T3 consequence written in Lean (tower values on the sign line [SIGNLINE], covering criterion [COVERSUB]); T4 no finite window; T5 frames of centre below `2/3` fail on Euler worlds, so the mechanism must use the functional equation of the completion [FRAMEWORLD]; T6 Stickelberger pricing and the sign line are proved; T7 the corpus records that realizing the price needs a different completion and has none.
 
 <!-- source references -->
+[A2CHAIN]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheRankTwoMultipleDirichletSeriesConvexityHull.lean#L504
+[A2DOUBLE]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheRankTwoMultipleDirichletSeriesConvexityHull.lean#L779
+[A2REJECT]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheRankTwoMultipleDirichletSeriesConvexityHull.lean#L696
 [AAL-LAYER]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/AbscissaLaws/TheFailureOfTheAbscissaLawIsAFiniteLayer.lean#L33
 [ACS]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/AUniformLowerBoundOnTheMarginOfTheWindowMatricesForcesTheRiemannHypothesis.lean#L505
 [ADS]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheEternalAdSPrimeMarkedDictionary.lean#L884
 [ADS-NOGO]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/CausalIdentitiesCannotForceQuarterRingdown.lean#L1600
 [AKLT]: ../../../formal/GaloisForLFunctions/ArithmeticKreinLangerTheory/PrimeTowersAndConeCouplingProduceAsymptoticAbscissaLaw.lean#L306
 [ARTIN]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/EveryArtinLFunctionHasACompletionWithAFunctionalEquation.lean
+[ARTINSEED]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheArtinFunctionOfTheCubeRootsOfTwoCarriesTheSeed.lean#L147
 [AVERAGE]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheAverageRowIsBlindToTheTarget.lean#L148
-[BIANCHI]: ../../../formal/GaloisForLFunctions/RingdownOfTheCubicCover/EternalBianchiBoundaryDictionaryAndWardObstruction.lean#L469
+[BALANCED]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L541
+[BANDFORCE]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/ExpandingForcingLawsRulersAndTheRiemannHypothesis.lean#L154
 [BRAUER]: ../../../formal/GaloisForLFunctions/RHTower/Artin/ArtinBrauerInductionTheorem.lean#L206
+[BRAUERCANCEL]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L497
 [CENSUS]: ../../../formal/GaloisForLFunctions/IncommensurableGaborPinching/CriticalLineZeroProportion.lean#L1042
 [COFACTORS]: ../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheGrowingFilterReachesPolynomiallyManyCofactors.lean#L1
 [CONJCENTRAL]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ConjugationIsCentralAtAZeroIffItsOrdinateValueLiesInThePrimeTraceField.lean#L279
 [CONTACT]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheConductorOfTwoGraphsIsTheirContact.lean#L22
 [CONTACT-EX]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheFirstTwoPrimeContactIdeals.lean#L14
 [CORRZERO]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/GrossencharacterLFunctionsHaveZerosInTheRightHalfStrip.lean#L621
-[COSH]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L138
+[COSH]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L142
+[COVERLEVERS]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/ExpandingForcingLawsRulersAndTheRiemannHypothesis.lean#L352
+[COVERSUB]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L438
 [DEFORM]: ../../../formal/GaloisForLFunctions/EdgeHodgeTheory/TheIndexComputedByDeformation.lean#L107
 [DENSITY]: ../../../formal/GaloisForLFunctions/RHTower/PrimeShortIntervalsSeventeenThirtiethsUnconditional.lean#L25
 [DEPTHLADDER]: ../../../formal/GaloisForLFunctions/SelectiveArithmetic/TheCancellationAndDepthLadder.lean#L67
@@ -396,125 +411,153 @@ Find `½ < b₁ < b₂ ≤ 7/8` and prove, with no hypothesis on zeros, that `Θ
 [DIPOLE]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheDipoleOfWeilsGreenMatrixCarriesTheFirstOverlapStep.lean#L364
 [DOUBLECOLL]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheTurnAroundAnIsolatedDoubleCollisionOffTheCentreIsTheExchangeOfTwoPairs.lean#L162
 [DOUBLING]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestDoublingFactorOfTheMarginIsTwoToTheWidth.lean#L217
-[DOUBLING38]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestDoublingFactorOfTheMarginIsTwoToTheWidth.lean#L191
-[DOUBLINGHP]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestDoublingFactorOfTheMarginIsTwoToTheWidth.lean#L178
-[DOUBLINGRH]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestDoublingFactorOfTheMarginIsTwoToTheWidth.lean#L251
+[DOUBLING38IFF]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L771
+[DOUBLINGONE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheLossOfTheMarginIsBoundedOrPolynomial.lean#L81
 [ECP]: ../../../formal/GaloisForLFunctions/RHTower/Representation/EndpointCharacterCriterion.lean#L62
-[EDGE]: ../../../formal/GaloisForLFunctions/FrustratedArithmeticDirichletForms/TheEdgeLawCrossesOneBetweenLogFiveAndLogSix.lean#L295
-[EDIT]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L175
-[ENDPOINT]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ConfiningSourceEndpointSelection.lean#L1
-[ENDPOINT-BOUND]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ConfiningSourceEndpointSelection.lean#L24
-[ESCAPE]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheMetaplecticVoronoiExponentInvariants.lean#L587
-[EULERWORLD]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L77
-[EVENLOG2]: ../../../formal/GaloisForLFunctions/WindowTowerOfSpecZ/TheEvenWeilFormHasAFloorAtApertureLogTwo.lean#L4126
+[EDIT]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L186
+[EDITDEFECT]: ../../../formal/GaloisForLFunctions/WorldsOfTheZeroConfiguration/TheWorldOneScenarioTable.lean#L38
+[EULERCOLUMN]: ../../../formal/GaloisForLFunctions/ZeroConfigurationGeometry/RamanujanIsRealityOfAnEulerColumn.lean#L91
+[FAKEHORIZON]: ../../../formal/GaloisForLFunctions/ArithmeticScatteringHolography/TheKMSStripOfTheHorizon.lean#L322
+[FARKAS]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheTrueVertexBelowSevenEighths.lean#L328
 [FIBRES]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheFieldOfCompleteFibreTraces.lean#L486
+[FINOSC]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/ThePrimeNumberTheoremIsNotAttainedOnWindows.lean#L68
 [FLATTEN]: ../../../formal/GaloisForLFunctions/ArithmeticDiscreteness/TheDepthOfAnFEPairIsReadOnTheLine.lean#L113
 [FLOORLOG2]: ../../../formal/GaloisForLFunctions/WindowTowerOfSpecZ/TheTwoPrimeWindowHasAPositiveWeilFloorAtEveryBlockSize.lean#L48
+[FLOORNORM]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheFloorGraphNormAndTopOctaveBlindnessOfWindowGluing.lean#L97
 [FOURTH]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheTwoPrimeWindowAndRatioThreeHoldAtEveryBlockSize.lean#L285
 [FOURTHRED]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheTwoPrimeWindowAndRatioThreeHoldAtEveryBlockSize.lean#L310
-[GAP]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheBoundRangeEndsOnlyWhereTheGapOfTheBoundWindowsCloses.lean#L308
+[FRAMEWORLD]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L166
 [GAPRH]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheGroundEnergyOfAnApertureIsAGapOfEveryWindowInsideIt.lean#L408
 [GAUSS]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/MoebiusSignedGaussPairingsEndAtThreeFifths.lean#L595
 [GREEN]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheContinuumGreenKernelIsTheLimitOfTheTowerAndIsNegativeOnlyAlongTheCharge.lean
 [GROSSENTOWER]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheCubicProbeIsACoupledTowerReachingThreeFifths.lean#L1577
 [GTA]: ../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaSchurQuarticSpectralDecayEquivalence.lean#L293
-[HALVING]: ../../../formal/GaloisForLFunctions/ArithmeticHolographyOfTheModularHorizon/HalvingDescentAndShimuraZeros.lean#L40
 [HEAT-EIGHT]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ARealCollisionOfMassNotDivisibleByEightGivesEverySignedPermutation.lean#L165
 [HEAT-FINITE]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheArithmeticGroupActsOnContinuedWindowsOfZerosAsHeatMonodromy.lean#L81
 [HEAT-NOGO]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheArithmeticGroupIsAHeatMonodromyOnFiniteWindowsButNotOnAFibre.lean#L62
 [HEAT-PARITY]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheForwardMonodromyGroupIsProperExactlyWhenItsTurnsObeyOneParityLaw.lean#L204
-[HEAT-UNIFORM]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/AUniformSpecializationOfTheOffLineZerosForcesThemToBeFinite.lean#L29
 [HEATLOC]: ../../../formal/GaloisForLFunctions/RHTower/XiSliceHeatThresholdVerificationHeight.lean#L94
-[HF]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/TheCriticalHalfLineStateIsUniqueUpToSign.lean#L96
-[HF-BOUNDARY]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/TheCriticalHalfLineStateHasNoBoundaryLaplaceZero.lean#L149
-[HF-CYCLIC]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/TheCriticalHalfLineStateIsCyclic.lean#L59
-[HF-OUTER]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/TheCriticalHalfLineLaplaceMultiplierIsOuter.lean#L45
+[HEATSPACING]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheHeatTimeIsTheWidthTimesTheSpacing.lean#L109
+[HEATUNIT]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/TheHeatFlowHasTheCountOfItsLimit.lean#L60
+[HECKESEED]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/QuasiRiemannHypothesis.lean#L602
 [HIDDEN]: ../../../formal/GaloisForLFunctions/WindowVisibilityLaw/ShallowClusterExclusionAndTaperedCrystalBarrier.lean#L1179
-[INCOMPLETE]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/IncompleteReciprocityRetainsPhasesWithSubcubicSaving.lean#L1
+[HPEQUIV]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean#L352
+[HPTRANS]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean#L440
 [INDEX]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/TheFiniteStratumIsThePacketIndexDichotomy.lean#L85
 [INDEXLAW]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheIndexOfTheNeutralPartIsOnePlusTheNumberOfZerosRightOfTheLine.lean#L166
 [INTLAG]: ../../../formal/GaloisForLFunctions/RHTower/WeilLagFunctionInteger.lean#L541
-[INVOLUTIONS]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheGroupActsOnAZeroThroughTheTwoInvolutionsIffItsWidthValueLiesInThePrimeTraceField.lean
 [INVZETA]: ../../../formal/GaloisForLFunctions/RingdownOfTheCubicCover/UnconditionalScatteringResonanceBounds.lean#L246
 [JAS]: ../../../formal/GaloisForLFunctions/RHTower/JointAncestryLevelOneCapstones.lean#L35
 [JENSEN]: ../../../formal/GaloisForLFunctions/VerifiedHeightRungs/TheJensenPolynomialsThroughDegree31922AreRealRooted.lean#L21
-[KUMMER-COUNT]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FunctionField/KummerIntrinsicRationalCount.lean
-[KUMMER-DIFF]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FunctionField/KummerFiniteDifferentialOrders.lean
-[KUMMER-REG]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FunctionField/KummerLocalRegularityCriterion.lean
+[K7]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L212
+[KLEIN]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/GaloisClosureAndMixedTracesOfAnIsolatedQuartet.lean#L445
+[KMSPOS]: ../../../formal/GaloisForLFunctions/ArithmeticScatteringHolography/TheKMSStripOfTheHorizon.lean#L125
+[KUMMERCARTIER]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FunctionField/KummerCartierConstantPeriod.lean
+[KUMMERMAX]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FunctionField/KummerMaximalCount.lean
+[KUMMERPARITY]: ../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FunctionField/KummerParityClassification.lean
 [LA]: ../../../formal/GaloisForLFunctions/FiniteFreeProbability/FiniteFreeDeBruijnNewman.lean#L466
+[LADDERTRANSFER]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheCubicCoverSpecializationOfTheBindingBin.lean#L344
 [LANDING-TFAE]: ../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheLandingLawForZeta.lean#L145
 [LEAVEQUART]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/AnOrbitLeavesItsQuartetOnlyThroughAnotherOffLineQuartetOfTheSameOrdinate.lean#L43
+[LEGENDRE]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean#L212
 [LEVERTRANSPORT]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L85
 [LOGENERGY0]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWidthIsTheRateOfTheWeilFloorInTheLogarithmicEnergy.lean#L441
-[LOGLADDER]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheTwoPrimeWindowAndRatioThreeHoldAtEveryBlockSize.lean#L322
-[MARGIN-DECAY]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/UnderTheRiemannHypothesisTheMarginOfALongWindowTendsToZero.lean#L442
-[MARGIN38]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesSinksAtTheRateOfTheWidth.lean#L800
 [MARGINDEPTH]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesSinksAtTheRateOfTheWidth.lean#L789
 [MARGINPOLY]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesSinksAtTheRateOfTheWidth.lean#L810
-[MARGINRULER]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesIsARulerAtPolynomialBlockSize.lean#L719
-[MARGINSINF]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesIsARulerAtPolynomialBlockSize.lean#L741
+[MARGINRULER]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesIsARulerAtPolynomialBlockSize.lean#L782
+[MARGINSINF]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMarginOfTheWindowMatricesIsARulerAtPolynomialBlockSize.lean#L804
 [MC]: ../../../formal/GaloisForLFunctions/RHTower/MobiusHilbertFormEquivalence.lean#L219
 [MEASURING]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L79
+[MINFILTER]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/MinimumTargetWeights.lean#L229
 [MIXED]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/MixedTowersOfLeversStayAboveTheBestCentre.lean#L419
 [MIXEDTRACE]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheMixedPrimeTracesSatisfyTheFunctionalEquation.lean
-[MMD]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/QuasiRiemannHypothesis.lean#L631
-[MMD_DIR]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/QuasiRiemannHypothesis.lean#L637
-[MMD_HECKE]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/QuasiRiemannHypothesis.lean#L602
-[MMD_STRIP]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/QuasiRiemannHypothesis.lean#L674
-[MOD8]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheTurnsOfAProperForwardMonodromyGroupObeyAParityLaw.lean#L128
-[MSC]: ../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmGammaSewnSquarefreeXiConormalBridge.lean#L87
+[MULT]: ../../../formal/GaloisForLFunctions/SquareRootThreshold/SechMultiplicityEnvelope.lean#L91
 [NECLEN]: ../../../formal/GaloisForLFunctions/ArithmeticProduction/TheNecessaryLengthOfAMollifier.lean#L716
 [NEWMAN]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L155
 [NEWMANLOW]: ../../../formal/GaloisForLFunctions/RHTower/Heat/TheHeatDetectionRateIsQuadraticInTheDepth.lean#L520
-[NULLMODES]: ../../../formal/GaloisForLFunctions/ArithmeticContinuationAndCriticalEnergy/NullModesForceApertureIndexGrowth.lean
-[ODDLOG2]: ../../../formal/GaloisForLFunctions/WindowTowerOfSpecZ/TheOddWeilFormHasAFloorAtApertureLogTwo.lean#L3943
+[NONATTAIN]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/ThePrimeNumberTheoremIsNotAttainedOnWindows.lean#L151
 [ODDQUART]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/AnOddNumberOfQuartetsOfNonrealZerosAtARealTimeGivesEverySignedPermutation.lean#L372
 [OFFCENTRE]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ACollisionAwayFromTheCentreExistsAtAForwardTime.lean#L625
 [ORBIT]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheDegreeOfTheResidueFieldOfAZeroIsTheSizeOfItsOrbit.lean#L50
-[OVERLAP]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheTwoPrimeWindowAndRatioThreeHoldAtEveryBlockSize.lean#L273
+[P2FACTOR]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/CausalIdentitiesCannotForceQuarterRingdown.lean#L95
+[P2LOG2]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/PrimeTwoDeformedApertureLogTwoTest.lean#L278
+[P2NYQ]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/PrimeTwoDeformedApertureLogTwoTest.lean#L169
+[P2STANDALONE]: ../../../formal/GaloisForLFunctions/BlackHoleRingdown/PrimeTwoDeformedApertureLogTwoTest.lean#L233
+[PAIRS]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L295
+[PAIRSABS]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L259
+[PAIRSNOBITE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L267
+[PARTIALFLIP]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/GaloisClosureAndMixedTracesOfAnIsolatedQuartet.lean#L308
 [PBM]: ../../../formal/GaloisForLFunctions/RHTower/RegularizedLogZetaAbscissa.lean#L402
-[POLAR]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/WholeSpaceCriticalThresholdEqualsPolarThreshold.lean#L256
+[POISSONPROJ]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TargetProjection/SexticPoissonProjection.lean#L249
 [POLECAP]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/TheBindingEnergyOfAWindowIsAtMostItsPoleCapacity.lean#L251
-[POLECAPRH]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/TheBindingEnergyOfAWindowIsAtMostItsPoleCapacity.lean#L239
 [PRICE]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/MoebiusSignedGaussPairingsEndAtThreeFifths.lean#L383
+[PRICEABOVE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheGaussPairingsArePricedAboveTheSign.lean#L126
 [PRIME-FIBRES]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheFibreFieldsOverThePrimeTracesAreFiniteGaloisAndGenerateTheSpectralField.lean#L1
 [PROPALT]: ../../../formal/GaloisForLFunctions/RHTower/Zeta23SeventyPercentOrSimpleNearLine.lean#L21
-[Q8SRC]: ../../../formal/GaloisForLFunctions/RHTower/SerreQ8MonomialSourceLaw.lean
 [QUARTET]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheOrbitOfAZeroLiesInItsQuartetIffItsWidthAndOrdinateValuesSolveAQuadraticOverThePrimeTraceField.lean#L281
-[RADICAND]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheReflectionRadicalsOfOneHeightCarryTheParityOfItsZeros.lean#L337
-[RANK-WALL]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/TheBindingOfTheTwoHalvesOfAWindowOfRatioFourHasRankProportionalToTheBlockSize.lean#L929
+[QUARTETFORCE]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/TheClosedConfigurationsOfHalvingAndDoubling.lean#L120
+[RAYSEED]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRayClassFunctionOfTheEisensteinFieldCarriesTheSeed.lean#L130
 [REFLECTION]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ALiftOfTheReflectionIsConjugationExactlyWhereTheWeightLiesInThePrimeTraceField.lean#L55
+[REGIMEA]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/GaloisClosureAndMixedTracesOfAnIsolatedQuartet.lean#L247
 [RFHM]: ../../../formal/GaloisForLFunctions/RHTower/JointAncestryAllPrimeReversibleRFHMSewingNoGo.lean#L37
 [RIGIDITY]: ../../../formal/GaloisForLFunctions/EulerFETransportTheory/DecayingFunctionalEquationsDetermineThePrimes.lean#L486
+[ROOTCOINC]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L174
+[ROWCANCEL]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/PhaseExtraction/SmoothArithmeticRowCancellation.lean#L214
+[ROWCOUNTAT]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L436
 [RULERS]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/EveryRulerCarriesTheSeedAndEveryLever.lean#L55
 [RUNG]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheCorrectionOfTheCubicProbeCarriesTheAbscissaOfItsRung.lean#L126
 [RUNG3148]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheCorrectionOfTheCubicProbeCarriesTheAbscissaOfItsRung.lean#L167
+[SADDLE]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean#L660
+[SAVING]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheRankTwoMultipleDirichletSeriesConvexityHull.lean#L830
+[SEEDZETA]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/QuasiRiemannHypothesis.lean#L631
 [SEVENTY]: ../../../formal/GaloisForLFunctions/TransThresholdPairCorrelation/TotientGridGaussianRegularization.lean#L637
+[SHIFTMARGIN]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L426
 [SIEGEL]: ../../../formal/GaloisForLFunctions/RHTower/SiegelTheorem.lean#L108
 [SIGNAL]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSignalOfTheZetaKernelIsAMoebiusSum.lean#L1
 [SIGNAL-JAS]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSignalExponentIsThePositivityLevel.lean#L165
 [SIGNAL-WIDTH]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSignalExponentIsTheZeroAbscissa.lean#L212
+[SIGNCOST]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheMoebiusSignCostsHalfAUnitAtSomePlace.lean#L188
 [SIGNEDGRAM]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheFloorBinBilinearGramIdentity.lean#L138
-[SLOWDEFECT]: ../../../formal/GaloisForLFunctions/EulerFETransportTheory/ArbitrarilySlowDefectsOfPositiveWeightedSystems.lean#L569
+[SIGNLINE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheShortMoebiusMonomialsPayExactlyHalf.lean#L139
+[SIGNPRICE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheShortMoebiusMonomialsPayExactlyHalf.lean#L97
+[SIGNWALL]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheShortMoebiusMonomialsPayExactlyHalf.lean#L157
+[SLOPE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth.lean#L110
+[SLOPE34]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth.lean#L95
+[SMALLEIG]: ../../../formal/GaloisForLFunctions/CompactHyperbolicSurfaces/SmallEigenvalueZeta.lean#L25
+[SQFRULER]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L268
 [SQREL]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/ASquareRelationAmongHeightRadicandsHasAnEvenNumberOfCriticalHeights.lean#L33
+[SQRT2]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L149
 [SRT]: ../../../formal/GaloisForLFunctions/SurfaceOfSpecZ/ScaleLocality/PrimeLogarithmicWindows.lean#L145
-[STEPS]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/StepSamplesCarryWeilsFormOfALipschitzPacket.lean
+[STICKEL]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheGaussSumsOfAPrimeFieldCarryStickelbergersValuation.lean#L316
+[SUBDIR]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L141
+[SUBEULER]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L319
+[SUBHECKE]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L34
+[SUBPROBE]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsHighTransport.lean#L1231
+[SUBSEED]: ../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean#L147
+[TARGETFILTER]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheNonprincipalFilterRecoversTheTarget.lean#L161
+[TEMPERED]: ../../../formal/GaloisForLFunctions/RHTower/NonTemperedShiftedZetaPairCountermodel.lean
 [TH]: ../../../formal/GaloisForLFunctions/RHTower/Hedenmalm/HedenmalmThetaHermiteTraceFlag.lean#L250
-[THERMO]: ../../../formal/GaloisForLFunctions/HTGeometry/Thermodynamics/EndpointSourceSwitch.lean
 [THERMOFIELD]: ../../../formal/GaloisForLFunctions/HTGeometry/Thermofield/PrimeLogApplications.lean
 [THREEATOMS]: ../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheLandingLawForZeta.lean#L68
+[TOPJUMP]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L472
+[TOPLOCAL]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheFloorGraphNormAndTopOctaveBlindnessOfWindowGluing.lean#L650
+[TOPOCTAVE]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheWindowGluingDoublingFactorStopsAtRootTwo.lean#L663
 [TOWERFIX]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/MoebiusSignedGaussPairingsEndAtThreeFifths.lean#L1140
 [TRACE-INDEP]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheTracesOfRationallyIndependentHeightsAreAlgebraicallyIndependent.lean#L201
-[TREE-GAP]: ../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/TheDilationProcessHasNoGap.lean#L174
-[TRUNCATION]: ../../../formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/FamilyContinuationRestoresTheGaussWallsUnderTruncation.lean#L1101
+[TRACEFACTOR]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/GaloisClosureAndMixedTracesOfAnIsolatedQuartet.lean#L372
+[TRUEVERTEX]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheTrueVertexBelowSevenEighths.lean#L109
 [TWIN]: ../../../formal/GaloisForLFunctions/GreenCalculusOfThePrimeFreeWindow/TheFirstOverlapStepOfWeilsFormFailsForTheSignTwin.lean#L744
-[TWOTHIRDSWORLD]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L92
-[VERTEX]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean
-[W1C]: ../../../formal/GaloisForLFunctions/InfiniteRankPurityTheory/TheIndexIsSemicontinuous.lean#L96
+[TWISTRETURN]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L780
+[TWOTHIRDSWORLD]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/LeversThatBiteFailInTheWorlds.lean#L95
+[UNITGAPAAL]: ../../../formal/GaloisForLFunctions/FloorFreeArithmetic/NonAttainmentGivesTheAbscissaLaw.lean#L117
+[VERTEXFLOOR]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L499
+[VERTEXPOS]: ../../../formal/GaloisForLFunctions/FamilyContinuationTheory/TheSevenEighthsGeometryIsAVertex.lean#L333
 [WALLGEN]: ../../../formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/MixedTowersOfLeversStayAboveTheBestCentre.lean#L525
 [WD]: ../../../formal/GaloisForLFunctions/MultiscaleMollifiedZetaField/TheWidthIsReadInOneWindow.lean#L85
 [WD-LONG]: ../../../formal/GaloisForLFunctions/ConjugateDiagonalGeometry/NearLineLogMean/LongMoebiusSecondMomentRigidity.lean#L659
+[WEAKEND]: ../../../formal/GaloisForLFunctions/ArithmeticHodgeTheoryOfDegenerations/CausalReflection/ArithmeticHawkingPagePhaseStructure.lean#L182
+[WIDTHSUB]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean#L60
 [WITT]: ../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/Witt/RaynaudOperatorBoundary.lean#L19
+[WITTORD]: ../../../formal/GaloisForLFunctions/ZeroForcingCalculus/WittMonomialsShiftedConvolutionsAndBrauerCancellation.lean#L182
 [WORLDI]: ../../../formal/GaloisForLFunctions/WorldsOfTheZeroConfiguration/AFiniteLayerCanBeEditedAway.lean#L136
-[WZCROW]: ../../../formal/GaloisForLFunctions/WorldsOfTheZeroConfiguration/TheWorldOneScenarioTable.lean#L72
 [ZCG]: ../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheForwardMonodromyDeterminesTheReflectionAndTheConjugationOfTheZeros.lean#L186

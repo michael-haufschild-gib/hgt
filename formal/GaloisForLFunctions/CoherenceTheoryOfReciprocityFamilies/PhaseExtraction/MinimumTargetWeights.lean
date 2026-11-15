@@ -46,8 +46,12 @@ theorem inner_targetNormal (Y : ℂ) (v : EuclideanSpace ℂ (Fin 3)) :
 theorem minimumTargetTail_constraint (Y : ℂ) :
     ⟪targetNormal Y, minimumTargetTail Y⟫_ℂ = -Y ^ 3 := by
   have hself : ⟪targetNormal Y, targetNormal Y⟫_ℂ = (targetGram Y : ℂ) := by
-    rw [inner_self_eq_norm_sq_to_K]
-    exact_mod_cast norm_targetNormal_sq Y
+    rw [inner_targetNormal]
+    change Y ^ 2 * conj (Y ^ 2) + Y * conj Y + 1 = (targetGram Y : ℂ)
+    simp only [Complex.mul_conj, Complex.normSq_eq_norm_sq, norm_pow]
+    unfold targetGram
+    push_cast
+    ring
   rw [minimumTargetTail, inner_smul_right, hself]
   exact div_mul_cancel₀ _ (Complex.ofReal_ne_zero.mpr (targetGram_pos Y).ne')
 
@@ -132,8 +136,8 @@ def minimumTargetWeight (Y ρ : ℂ) : ℂ := fourModeWeight 1 (minimumTargetTai
 theorem minimumTargetWeight_energy {ζ : ℂ} (hζ : IsPrimitiveRoot ζ 6) (Y : ℂ) :
     ∑ i : Fin 6, ‖minimumTargetWeight Y (ζ ^ i.val)‖ ^ 2 =
       6 * (1 + ‖Y‖ ^ 6 / targetGram Y) := by
-  rw [minimumTargetWeight, fourModeWeight_energy hζ, norm_minimumTargetTail_sq]
-  norm_num
+  simpa only [minimumTargetWeight, norm_one, one_pow, norm_minimumTargetTail_sq] using
+    fourModeWeight_energy hζ (1 : ℂ) (minimumTargetTail Y)
 
 /-- The three free coefficients of any observed phase weight. -/
 def phaseTargetTail (ζ : ℂ) (w : Fin 6 → ℂ) : EuclideanSpace ℂ (Fin 3) :=
@@ -164,8 +168,7 @@ theorem fourModeWeight_geometric {ζ : ℂ} (hζ : IsPrimitiveRoot ζ 6)
         fourModeCoefficients 1 v j := by
     simpa only [sexticPolynomial_fourMode] using
       sexticCoefficients_polynomial hζ (fourModeCoefficients 1 v) j
-  simp only [hc, fourModeCoefficients, Matrix.cons_val_zero, Matrix.cons_val_succ,
-    mul_zero, mul_one, add_zero, zero_add, inner_targetNormal]
+  simp [hc, fourModeCoefficients, inner_targetNormal]
   ring
 
 /-- Away from `Y=0`, geometric cancellation is precisely the normal equation. -/
@@ -185,7 +188,9 @@ theorem minimumTargetWeight_geometric {ζ : ℂ} (hζ : IsPrimitiveRoot ζ 6)
     (Y : ℂ) (hY : Y ^ 6 ≠ 1) :
     sexticReadout (fun i => minimumTargetWeight Y (ζ ^ i.val))
       (fun i => ζ ^ i.val * Y * (1 - ζ ^ i.val * Y)⁻¹) = 0 := by
-  rw [minimumTargetWeight, fourModeWeight_geometric hζ Y hY,
+  change sexticReadout (fun i => fourModeWeight 1 (minimumTargetTail Y) (ζ ^ i.val))
+    (fun i => ζ ^ i.val * Y * (1 - ζ ^ i.val * Y)⁻¹) = 0
+  rw [fourModeWeight_geometric hζ Y hY,
     minimumTargetTail_constraint, add_neg_cancel, mul_zero, zero_div]
 
 /-- Geometric cancellation has the same exact excess-energy law at `Y=0`,
@@ -273,7 +278,7 @@ theorem minimumTargetWeight_admissible {ζ : ℂ} (hζ : IsPrimitiveRoot ζ 6)
     simpa only [sexticPolynomial_fourMode, minimumTargetWeight] using
       sexticCoefficients_polynomial hζ (fourModeCoefficients 1 (minimumTargetTail Y)) j
   refine ⟨?_, ?_, ?_, minimumTargetWeight_geometric hζ Y hY⟩ <;>
-    simp only [hc, fourModeCoefficients, Matrix.cons_val_zero, Matrix.cons_val_succ]
+    simp [hc, fourModeCoefficients]
 
 /-- Nonzero geometric parameters strictly improve the two-mode filter cost. -/
 theorem minimumTargetWeight_cost_lt (Y : ℂ) (hY : Y ≠ 0) :

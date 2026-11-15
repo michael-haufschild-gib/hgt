@@ -134,15 +134,20 @@ theorem exists_sub_high_data_fine :
 
 /-- Capped width induction and inverse/marked/unmarked field estimates unconditionally supply the
 source moment bounds at `subDelta` with absorbed polynomial height growth. -/
-theorem sub_source_moments_unconditional (D : HighData subDelta)
+theorem sub_source_moments_unconditional
+    (hβ : (20999 / 24000 : ℝ) < HeckeZeroSupremum.beta)
+    (D : HighData subDelta)
     (hfine : ∀ j, D.ell j ≤ detectorMesh subDelta D.t / 200)
     (F : SourceData D) (counts : CountParameters F.modulus ⊤ D.t) :
     ∃ τ : ℝ, 0 < τ ∧ τ < (1 / 200 : ℝ) / 2 ∧ 4 * τ < (1 / 200) * D.cost ∧ τ < D.t ∧
       2 * τ ≤ D.t ∧ τ * (2 + 4 * D.eps) < D.t ∧
       ∀ η : Character, ∃ C : ℝ, 0 < C ∧ ∀ᶠ Z' : ℝ in atTop,
         SourceMomentBound F counts η Z' τ (C * Z' ^ D.t) (Z' ^ (2 * τ)) := by
+  have hβ_hi : HeckeZeroSupremum.beta ≤ 7 / 8 :=
+    HeckeCommonProbe.beta_le_seven_eighths ProbeFinalAssemblyUnconditional.common_probe
+  have hsubD : subDelta = 1 / 100000000 := rfl
   have hcert : ∀ bΦ : ℝ, 0 < bΦ →
-      CenteredMomentEnergyBands.CertifiedBand (α := Fin D.N) F.modulus ⊤ le_top
+      CenteredMomentEnergyCappedWidthInduction.CertifiedBand (α := Fin D.N) F.modulus ⊤ le_top
         (fun x => conj (F.W x)) 2 (1 / 4) (9 / 4) bΦ 0 1 (33 / 50) (33 / 50) 2
         (CenteredMomentDetectorPlainMomentParameters.kappaPlain D)
         (CenteredMomentDetectorPlainMomentParameters.stageError D)
@@ -346,7 +351,7 @@ lemma sub_large_source_scale {K : ℕ} {Z : ℝ} (hZ : 0 < Z) (length : Fin K �
     (∏ i, (Z ^ (length i)) ^ r) *
       ((Z ^ (17 / 48 : ℝ)) ^ (1 / 2 - r) * Z ^ (2 + r - 1) *
         (Z ^ (479 / 1000 : ℝ)) ^ ((2 : ℝ) - 1)) =
-      Z ^ ((20591 / 12000 : ℝ) + (1219 / 1500 : ℝ) * r) := by
+      Z ^ ((19873 / 12000 : ℝ) + (1219 / 1500 : ℝ) * r) := by
   have hp : (∏ i, (Z ^ (length i)) ^ r) = Z ^ ((1001 / 6000 : ℝ) * r) := by
     calc
       _ = ∏ i, Z ^ (length i * r) :=
@@ -359,9 +364,9 @@ lemma sub_large_source_scale {K : ℕ} {Z : ℝ} (hZ : 0 < Z) (length : Fin K �
   ring
 
 lemma sub_large_geometric_scale (Z ζ r : ℝ) (hZ : 0 < Z) (n : ℕ) :
-    Z ^ ((20591 / 12000 : ℝ) + (1219 / 1500 : ℝ) * r) *
+    Z ^ ((19873 / 12000 : ℝ) + (1219 / 1500 : ℝ) * r) *
       (Z ^ ((1219 / 1500 : ℝ) + ζ) * (2 : ℝ) ^ n) ^ (8 / 5 + (1 / 4 : ℝ) - r) =
-      Z ^ ((20591 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) - ζ * r) *
+      Z ^ ((19873 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) - ζ * r) *
         ((2 : ℝ) ^ ((37 / 20 : ℝ) - r)) ^ n := by
   rw [show (8 / 5 + (1 / 4 : ℝ) - r) = (37 / 20 : ℝ) - r by norm_num]
   rw [Real.mul_rpow (Real.rpow_nonneg hZ.le _) (by positivity), ← Real.rpow_mul hZ.le]
@@ -390,10 +395,10 @@ theorem sub_large_physical_tail (K : ℕ) (a b B ζ : ℝ) (hζ : 0 < ζ)
         W0 W1 (Z ^ (17 / 48 : ℝ)) (Z ^ (479 / 1000 : ℝ)) Z‖) ≤
         C * (η.modulus.absNorm : ℝ) ^ (1 / 4 : ℝ) * Z ^ (-1 : ℝ) := by
   obtain ⟨r, hr0⟩ := exists_gt (max (37 / 20 : ℝ)
-    (((20591 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) + 1) / ζ))
+    (((19873 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) + 1) / ζ))
   have hr37 : (37 / 20 : ℝ) < r := (le_max_left _ _).trans_lt hr0
   have hr17 : (17 / 50 : ℝ) ≤ r := by linarith
-  have hr_save : (20591 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) - ζ * r ≤ -1 := by
+  have hr_save : (19873 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) - ζ * r ≤ -1 := by
     have hdiv := (div_lt_iff₀ hζ).mp ((le_max_right _ _).trans_lt hr0)
     nlinarith
   obtain ⟨Ci, hCi, hmain⟩ := calibrated_physical_dyad_integral K (1 / 2000) (1 / 4) a b r B
@@ -412,7 +417,7 @@ theorem sub_large_physical_tail (K : ℕ) (a b B ζ : ℝ) (hζ : 0 < ζ)
   let U0 := Z ^ ((1219 / 1500 : ℝ) + ζ)
   let f : ℕ → ℂ := fun n => finitePhysicalRows S hmax η (dyadicRows U0 n) T W
     (fun i => Z ^ (length i)) W0 W1 (Z ^ (17 / 48 : ℝ)) (Z ^ (479 / 1000 : ℝ)) Z
-  let g : ℕ → ℝ := fun n => Z ^ ((20591 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) - ζ * r) *
+  let g : ℕ → ℝ := fun n => Z ^ ((19873 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) - ζ * r) *
     ((2 : ℝ) ^ ((37 / 20 : ℝ) - r)) ^ n
   let A : ℝ := (1 + N0) * Ci * (η.modulus.absNorm : ℝ) ^ (1 / 4 : ℝ)
   have hg_sum : Summable g :=
@@ -444,7 +449,7 @@ theorem sub_large_physical_tail (K : ℕ) (a b B ζ : ℝ) (hζ : 0 < ζ)
       rw [mul_assoc (Ci * _ * _), hsc]
       calc
         _ = Ci * (η.modulus.absNorm : ℝ) ^ (1 / 4 : ℝ) *
-            (Z ^ ((20591 / 12000 : ℝ) + (1219 / 1500 : ℝ) * r) *
+            (Z ^ ((19873 / 12000 : ℝ) + (1219 / 1500 : ℝ) * r) *
               (U0 * (2 : ℝ) ^ n) ^ (8 / 5 + (1 / 4 : ℝ) - r)) := by ring
         _ = _ := by dsimp [U0, g]; rw [hgeo]
     calc
@@ -456,13 +461,13 @@ theorem sub_large_physical_tail (K : ℕ) (a b B ζ : ℝ) (hζ : 0 < ζ)
   have hf_norm : Summable (fun n => ‖f n‖) :=
     Summable.of_nonneg_of_le (fun _ => norm_nonneg _) hfn (hg_sum.mul_left A)
   refine ⟨hf_norm.of_norm, ?_⟩
-  have hexp : Z ^ ((20591 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) - ζ * r) ≤
+  have hexp : Z ^ ((19873 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) - ζ * r) ≤
       Z ^ (-1 : ℝ) :=
     Real.rpow_le_rpow_of_exponent_le hZ hr_save
   calc
     (∑' n, ‖f n‖) ≤ ∑' n, A * g n := hf_norm.tsum_le_tsum hfn (hg_sum.mul_left A)
     _ = A * ∑' n, g n := tsum_mul_left
-    _ = A * (Z ^ ((20591 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) - ζ * r) *
+    _ = A * (Z ^ ((19873 / 12000 : ℝ) + ((1219 / 1500 : ℝ) + ζ) * (37 / 20 : ℝ) - ζ * r) *
         (1 - (2 : ℝ) ^ ((37 / 20 : ℝ) - r))⁻¹) := by
       dsimp [g]
       rw [tsum_mul_left, tsum_geometric_of_lt_one (Real.rpow_nonneg (by norm_num) _) hq]
@@ -570,8 +575,8 @@ theorem sub_finite_cube_saving {ι : Type*} [Fintype ι] (K : ℕ) (τ_Z b ζ A 
             (pow_le_pow_left₀ (Nat.cast_nonneg _) huZ 6) (sq_nonneg _))
             (pow_le_pow_left₀ hp0 hp_prod 3) (pow_nonneg hp0 3) (by positivity)
         _ = (η.modulus.absNorm : ℝ) ^ 2 * (b ^ K) ^ 3 * (Z ^ (6 : ℝ) * Z ^ (3 : ℝ)) := by
-          rw [← Real.rpow_natCast Z 6, ← Real.rpow_natCast Z 3]
-          norm_num only [Nat.cast_ofNat]
+          have h63 : Z ^ (6 : ℝ) * Z ^ (3 : ℝ) = Z ^ 6 * Z ^ 3 := by norm_num
+          rw [h63]
           ring
         _ = _ := by rw [← Real.rpow_add hZ0]; norm_num
     have hscale : (Z ^ (17 / 48 : ℝ)) ^ (1 / 2 - (17 / 50 : ℝ)) * Z ^ (2 + (17 / 50 : ℝ) - 1) *
@@ -598,8 +603,9 @@ theorem sub_finite_cube_saving {ι : Type*} [Fintype ι] (K : ℕ) (τ_Z b ζ A 
           (Z ^ (11 : ℝ) / height (H u) ^ N) := by
         have hh : Z ^ (9 : ℝ) * Z ^ (2 : ℝ) = Z ^ (11 : ℝ) := by
           rw [← Real.rpow_add hZ0]; norm_num
-        rw [mul_assoc (Cr * _), ← mul_assoc _ (Z ^ (9 : ℝ)), mul_assoc _ _ (Z ^ (9 : ℝ)), hh]
-        ring
+        rw [show Cr * ((η.modulus.absNorm : ℝ) ^ 2 * (b ^ K) ^ 3 * Z ^ (9 : ℝ)) * Z ^ (2 : ℝ) =
+            (Cr * (b ^ K) ^ 3 * (η.modulus.absNorm : ℝ) ^ 2) * (Z ^ (9 : ℝ) * Z ^ (2 : ℝ)) by ring,
+          hh, mul_div_assoc]
       _ ≤ (Cr * (b ^ K) ^ 3 * (η.modulus.absNorm : ℝ) ^ 2) *
           (Z ^ (11 : ℝ) / Z ^ (τ_Z * N)) :=
         mul_le_mul_of_nonneg_left
@@ -649,8 +655,7 @@ theorem sub_finite_cube_saving {ι : Type*} [Fintype ι] (K : ℕ) (τ_Z b ζ A 
 
 /-! ### Piece 4: Floor rows (`a = 51/100`) at `(Z^{17/48}, Z^{479/1000}, Z)` -/
 
-omit [NeZero M] in
-private lemma subPoolOutside {M : Ideal O} [NeZero M] (H : Subgroup (O ⧸ M)ˣ)
+private lemma subPoolOutside (M : Ideal O) (H : Subgroup (O ⧸ M)ˣ)
     (S : Finset (Ideal O)) (N : ℕ) (c b : ℝ) (Y : Fin N → ℝ) :
     ∀ j P, P ∈ pool (RayQuotient.identityClass M H) S c b (Y j) → P.val ∉ S :=
   fun _ P hP => (mem_pool _ S c b _ P).mp hP |>.2.2.2
@@ -663,7 +668,7 @@ theorem sub_floor_rows_saving (D : HighData subDelta)
     ∃ C : ℝ, 0 < C ∧ ∀ η : Character, ∀ᶠ Z : ℝ in atTop,
       let Z' : ℝ := Z ^ (1001 / 1000 : ℝ)
       let Yp : Fin D.N → ℝ := fun j => Z ^ (ell' j)
-      let T : Fin D.N → Finset PrimeIdeal :=
+      let T : Fin D.N → Finset HeckeIdealSeries.PrimeIdeal :=
         fun j => pool (RayQuotient.identityClass F.modulus ⊤) F.S 1 2 (Yp j)
       let normer := sourceResidueConstant F.W F.W F.modulus *
         (Probe.principalScalar Finset.univ Z (1001 / 6000)
@@ -678,7 +683,7 @@ theorem sub_floor_rows_saving (D : HighData subDelta)
         (3 * (idx u + 1 : ℕ) * Z' ^ τ) < 51 / 100 + 2 * D.e) →
       normer ≠ 0 ∧
       ‖finiteCentralCubeRows F.S F.exclusions F.maximal η rows T
-          (subPoolOutside ⊤ F.S D.N 1 2 Yp) (fun _ y => (F.w y : ℂ)) Yp
+          (subPoolOutside F.modulus ⊤ F.S D.N 1 2 Yp) (fun _ y => (F.w y : ℂ)) Yp
           F.W F.W (Z ^ (17 / 48 : ℝ)) (Z ^ (479 / 1000 : ℝ)) Z D.e
           (fun _ => 51 / 100) (fun u => (3 * idx u + 1 : ℕ) * Z' ^ τ) / normer‖ ≤
         C * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) * Z ^ (13499 / 72000 - 1 / 200 : ℝ) := by
@@ -709,22 +714,22 @@ theorem sub_floor_rows_saving (D : HighData subDelta)
     (fun _ y => (F.bounded y).1) (fun _ => F.nonzero)
     F.W F.W 1 2 1 2 (by norm_num) (by norm_num) F.complex_support F.complex_support
     F.real F.real F.nonnegative F.nonnegative F.complex_nonzero F.complex_nonzero
-    (D.t / 8) (by positivity)
+    (D.t / 8) (div_pos D.t_pos (by norm_num))
   refine ⟨(n + 1 : ℕ) * (Cp * Ca * Cn), by positivity, ?_⟩
   intro η
   filter_upwards [sub_scale_tendsto.eventually (harith η),
     sub_scale_tendsto.eventually (source_cube_height_eventually τ hτ),
     hnormer, eventually_ge_atTop (1 : ℝ)] with Z hb hZ' hn hZ
-  intro rows hrows idx hidx hbin
   dsimp only at hn ⊢
+  intro rows hrows idx hidx hbin
   refine ⟨hn.1, ?_⟩
   have hZp : 0 < Z := zero_lt_one.trans_le hZ
   let Z' : ℝ := Z ^ (1001 / 1000 : ℝ)
   have hZ'p : 0 < Z' := Real.rpow_pos_of_pos hZp _
   let Yp : Fin D.N → ℝ := fun j => Z ^ (ell' j)
-  let T : Fin D.N → Finset PrimeIdeal :=
+  let T : Fin D.N → Finset HeckeIdealSeries.PrimeIdeal :=
     fun j => pool (RayQuotient.identityClass F.modulus ⊤) F.S 1 2 (Yp j)
-  let hT := subPoolOutside (M := F.modulus) ⊤ F.S D.N 1 2 Yp
+  let hT := subPoolOutside F.modulus ⊤ F.S D.N 1 2 Yp
   let normer := sourceResidueConstant F.W F.W F.modulus *
     (Probe.principalScalar Finset.univ Z (1001 / 6000)
       (slotMass T (residueWeights (fun _ => F.w) Yp)) : ℂ)
@@ -828,7 +833,7 @@ lemma sub_nonfloor_class_exponent_bound (D : HighData subDelta)
     (hε_t : 2000 * D.ε ≤ D.t) (he_t : 2000 * D.e ≤ D.t)
     (heps_t : ((D.N : ℝ) + 8) * D.eps ≤ D.t)
     {τ d' v' a q : ℝ} (hτ2 : 2 * τ ≤ D.t)
-    (hd'0 : 0 ≤ d') (hd'hi : d' ≤ 7 / 8) (hv'0 : 0 ≤ v') (hv'hi : v' ≤ 2438 / 3003 + D.t)
+    (hd'0 : 0 ≤ d') (hd'hi : d' ≤ 7 / 8) (_hv'0 : 0 ≤ v') (hv'hi : v' ≤ 2438 / 3003 + D.t)
     (hdv : d' - v' ≤ 2 * D.t) (ha : 51 / 100 < a) (ha1 : a ≤ 1)
     (hq0 : 0 ≤ q) (hq : q ≤ (2 * a - 1) / 2) :
     ((4 / 25 : ℝ) * (17 / 48) + (a + 16 * D.e - 33 / 50) + (479 / 1000 : ℝ) * (-a - 6 * D.e)) +
@@ -851,11 +856,11 @@ lemma sub_nonfloor_class_exponent_bound (D : HighData subDelta)
   have hζ_Z : 0 ≤ ζ_Z := mul_nonneg (by norm_num) D.t_pos.le
   have hd_Z : d_Z ≤ 1219 / 1500 + ζ_Z := by dsimp [d_Z, ζ_Z]; linarith
   let R₀ : ℝ := if δ ≤ 5 / 6 then Budget.rowCount δ x else 1 - δ
-  have hR₀_bounds : 0 ≤ R₀ ∧ R₀ ≤ 5 / 2 := by
+  have hR₀_bounds : 0 ≤ R₀ ∧ R₀ ≤ 4 := by
     dsimp [R₀]
     split_ifs with hδ56
     · have hsl := Budget.rowCount_slope_bounds hδ0 hδ56 hx0 hx
-      exact ⟨by linarith [hsl.1], by linarith [hsl.2]⟩
+      exact ⟨by linarith [hsl.1], by linarith [hsl.2, hδ0]⟩
     · exact ⟨by linarith, by linarith⟩
   have hadapt : adaptiveRowExponent δ q subDelta D.ε D.t D.t D.t ≤
       R₀ + subDelta / 4 + 159 * D.ε + 9 * D.t := by
@@ -869,11 +874,11 @@ lemma sub_nonfloor_class_exponent_bound (D : HighData subDelta)
     · have hs := subDelta_pos
       linarith [D.epsilon_pos, D.t_pos]
   have hd_adapt : d' * adaptiveRowExponent δ q subDelta D.ε D.t D.t D.t ≤
-      v' * R₀ + 2 * D.t * (5 / 2) + (7 / 8) * (subDelta / 4 + 159 * D.ε + 9 * D.t) := by
+      v' * R₀ + 2 * D.t * 4 + (7 / 8) * (subDelta / 4 + 159 * D.ε + 9 * D.t) := by
     have h1 : d' * adaptiveRowExponent δ q subDelta D.ε D.t D.t D.t ≤
         d' * (R₀ + subDelta / 4 + 159 * D.ε + 9 * D.t) :=
       mul_le_mul_of_nonneg_left hadapt hd'0
-    have h2 : d' * R₀ ≤ v' * R₀ + 2 * D.t * (5 / 2) := by
+    have h2 : d' * R₀ ≤ v' * R₀ + 2 * D.t * 4 := by
       rcases le_total d' v' with hle | hle
       · have : d' * R₀ ≤ v' * R₀ := mul_le_mul_of_nonneg_right hle hR₀_bounds.1
         linarith [D.t_pos]
@@ -924,7 +929,7 @@ theorem sub_nonfloor_rows_saving (D : HighData subDelta)
     ∃ C : ℝ, 0 < C ∧ ∀ η : Character, ∀ᶠ Z : ℝ in atTop,
       let Z' : ℝ := Z ^ (1001 / 1000 : ℝ)
       let Yp : Fin D.N → ℝ := fun j => Z ^ (ell' j)
-      let T : Fin D.N → Finset PrimeIdeal :=
+      let T : Fin D.N → Finset HeckeIdealSeries.PrimeIdeal :=
         fun j => pool (RayQuotient.identityClass F.modulus ⊤) F.S 1 2 (Yp j)
       let normer := sourceResidueConstant F.W F.W F.modulus *
         (Probe.principalScalar Finset.univ Z (1001 / 6000)
@@ -945,7 +950,7 @@ theorem sub_nonfloor_rows_saving (D : HighData subDelta)
         ((3 * idx u : ℕ) * Z' ^ τ)) →
       normer ≠ 0 ∧
       ‖finiteCentralCubeRows F.S F.exclusions F.maximal η rows T
-          (subPoolOutside ⊤ F.S D.N 1 2 Yp) (fun _ y => (F.w y : ℂ)) Yp
+          (subPoolOutside F.modulus ⊤ F.S D.N 1 2 Yp) (fun _ y => (F.w y : ℂ)) Yp
           F.W F.W (Z ^ (17 / 48 : ℝ)) (Z ^ (479 / 1000 : ℝ)) Z D.e
           (fun u => 51 / 100 + D.e * grid u) (fun u => (3 * idx u + 1 : ℕ) * Z' ^ τ) / normer‖ ≤
         C * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
@@ -981,8 +986,8 @@ theorem sub_nonfloor_rows_saving (D : HighData subDelta)
     (fun _ y => (F.bounded y).1) (fun _ => F.nonzero)
     F.W F.W 1 2 1 2 (by norm_num) (by norm_num) F.complex_support F.complex_support
     F.real F.real F.nonnegative F.nonnegative F.complex_nonzero F.complex_nonzero
-    (D.t / 8) (by positivity)
-  obtain ⟨Cd, hCd, hdyad⟩ := canonical_dyad_cost (D.t / 8) (by positivity)
+    (D.t / 8) (div_pos D.t_pos (by norm_num))
+  obtain ⟨Cd, hCd, hdyad⟩ := canonical_dyad_cost (D.t / 8) (div_pos D.t_pos (by norm_num))
   let m : ℕ := ⌊(49 / 100 : ℝ) / D.e⌋₊
   let cardCost : ℝ := (HeckeDetectorClassBudget.alphabetBound D.t : ℝ) ^ D.N + 1
   have hcardCost : 0 < cardCost := by dsimp [cardCost]; positivity
@@ -995,16 +1000,16 @@ theorem sub_nonfloor_rows_saving (D : HighData subDelta)
     sub_scale_tendsto.eventually (HeckeDyadic.constant_absorbed_eventually (3 * (n : ℝ) + 1) τ hτ),
     sub_scale_tendsto.eventually (source_cube_height_eventually τ hτ),
     hnormer, eventually_ge_atTop (1 : ℝ)] with Z hcl hgeo hnheight hZ' hn hZ
-  intro C0 hC0 hmom rows hrows idx grid hlabels hnext hcurrent
   dsimp only at hn ⊢
+  intro C0 hC0 hmom rows hrows idx grid hlabels hnext hcurrent
   refine ⟨hn.1, ?_⟩
   have hZp : 0 < Z := zero_lt_one.trans_le hZ
   let Z' : ℝ := Z ^ (1001 / 1000 : ℝ)
   have hZ'p : 0 < Z' := Real.rpow_pos_of_pos hZp _
   let Yp : Fin D.N → ℝ := fun j => Z ^ (ell' j)
-  let T : Fin D.N → Finset PrimeIdeal :=
+  let T : Fin D.N → Finset HeckeIdealSeries.PrimeIdeal :=
     fun j => pool (RayQuotient.identityClass F.modulus ⊤) F.S 1 2 (Yp j)
-  let hT := subPoolOutside (M := F.modulus) ⊤ F.S D.N 1 2 Yp
+  let hT := subPoolOutside F.modulus ⊤ F.S D.N 1 2 Yp
   let normer := sourceResidueConstant F.W F.W F.modulus *
     (Probe.principalScalar Finset.univ Z (1001 / 6000)
       (slotMass T (residueWeights (fun _ => F.w) Yp)) : ℂ)
@@ -1213,7 +1218,7 @@ theorem sub_nonfloor_rows_saving (D : HighData subDelta)
 def subProbe (D : HighData subDelta) (F : SourceData D) (η : Character) (Z : ℝ) : ℂ :=
   let ell' : Fin D.N → ℝ := fun j => (1001 / 1000 : ℝ) * D.ell j
   let Yp : Fin D.N → ℝ := fun j => Z ^ (ell' j)
-  let T : Fin D.N → Finset PrimeIdeal :=
+  let T : Fin D.N → Finset HeckeIdealSeries.PrimeIdeal :=
     fun j => pool (RayQuotient.identityClass F.modulus ⊤) F.S 1 2 (Yp j)
   let normer := sourceResidueConstant F.W F.W F.modulus *
     (Probe.principalScalar Finset.univ Z (1001 / 6000)
@@ -1241,7 +1246,7 @@ theorem exists_sub_common_probe (hβ : (20999 / 24000 : ℝ) < HeckeZeroSupremum
   obtain ⟨F⟩ := exists_source_data D
   obtain ⟨counts⟩ := source_count_parameters F
   obtain ⟨τ, hτ, hτd, hτcost, hτt, hτ2, hτeps, hsource⟩ :=
-    sub_source_moments_unconditional D hfine F counts
+    sub_source_moments_unconditional hβ D hfine F counts
   obtain ⟨n, hn, hwidth⟩ := exists_source_cube_bin_number D.e D.e_pos
   let ell' : Fin D.N → ℝ := fun j => (1001 / 1000 : ℝ) * D.ell j
   let ellMin' : ℝ := (1001 / 1000 : ℝ) * ((7 / 8 : ℝ) * D.rmin)
@@ -1285,7 +1290,7 @@ theorem exists_sub_common_probe (hβ : (20999 / 24000 : ℝ) < HeckeZeroSupremum
     (fun _ y => (F.bounded y).1) (fun _ => F.nonzero)
     F.W F.W 1 2 1 2 (by norm_num) (by norm_num) F.complex_support F.complex_support
     F.real F.real F.nonnegative F.nonnegative F.complex_nonzero F.complex_nonzero
-    (D.t / 8) (by positivity)
+    (D.t / 8) (div_pos D.t_pos (by norm_num))
   have hlow_all := ProbePhysical.sub_normalized_compensatedPhysicalProbe_low F.modulus ⊤ le_top
     F.S F.exclusions F.maximal 1 2 1 loss (by norm_num) (by norm_num) hloss
     ell' hell'_pos hell'_inj hell'_sum (fun _ => F.w) (fun _ => F.smooth) (fun _ => F.compact)
@@ -1294,20 +1299,20 @@ theorem exists_sub_common_probe (hβ : (20999 / 24000 : ℝ) < HeckeZeroSupremum
     F.real F.real F.nonnegative F.nonnegative F.complex_nonzero F.complex_nonzero
   refine ⟨loss, σ, hloss, hloss_lt, hσ, ?_⟩
   intro η
-  have hH_diff := SubSevenEighthsSignalComparison.PrincipalSignalComparison.sub_sourceCorrection_differentiable
+  have hH_diff := PrincipalSignalComparison.sub_sourceCorrection_differentiable
     η F.S F.exclusions
-  have hH_bnd := SubSevenEighthsSignalComparison.PrincipalSignalComparison.sub_sourceCorrection_bound
+  have hH_bnd := PrincipalSignalComparison.sub_sourceCorrection_bound
     η F.S F.exclusions
   obtain ⟨Clow, hClow, hlow⟩ := hlow_all η
   obtain ⟨Cp, hCp, hprinc⟩ :=
-    SubSevenEighthsSignalComparison.ProbePrincipalNormalized.sub_actual_ray_principal_comparison
+    ProbePrincipalNormalized.sub_actual_ray_principal_comparison
       F.modulus ⊤ le_top η F.S F.exclusions 1 2 1 ellMin' (by norm_num) (by norm_num)
       (by norm_num) hmin'_pos ell' hell'_min hell'_inj hell'_sum
       (fun _ => F.w) (fun _ => F.smooth) (fun _ => F.compact) (fun _ => F.support)
       (fun _ => F.bounded) (fun _ => F.nonzero)
       F.W F.W 1 2 1 2 (by norm_num) (by norm_num) F.complex_support F.complex_support
       F.real F.real F.nonnegative F.nonnegative F.complex_nonzero F.complex_nonzero
-      D.e (D.t / 8) D.e_pos (by linarith [he_t, D.t_small]) (by positivity)
+      D.e (D.t / 8) D.e_pos (by linarith [he_t, D.t_small]) (div_pos D.t_pos (by norm_num))
       (by linarith [D.e_pos]) (by linarith [HeckeZeroSupremum.beta_le_one, D.e_small])
   obtain ⟨Cm, hCm, hmom_η⟩ := hsource η
   refine ⟨η.excludePrimes F.S F.exclusions.prime, sourceCorrection η F.S, subProbe D F η,
@@ -1332,9 +1337,9 @@ theorem exists_sub_common_probe (hβ : (20999 / 24000 : ℝ) < HeckeZeroSupremum
     have hZp : 0 < Z := zero_lt_one.trans_le hZ
     let Z' : ℝ := Z ^ (1001 / 1000 : ℝ)
     let Yp : Fin D.N → ℝ := fun j => Z ^ (ell' j)
-    let T : Fin D.N → Finset PrimeIdeal :=
+    let T : Fin D.N → Finset HeckeIdealSeries.PrimeIdeal :=
       fun j => pool (RayQuotient.identityClass F.modulus ⊤) F.S 1 2 (Yp j)
-    let hT := subPoolOutside (M := F.modulus) ⊤ F.S D.N 1 2 Yp
+    let hT := subPoolOutside F.modulus ⊤ F.S D.N 1 2 Yp
     let WC : Fin D.N → ℝ → ℂ := fun _ y => (F.w y : ℂ)
     let normer := sourceResidueConstant F.W F.W F.modulus *
       (Probe.principalScalar Finset.univ Z (1001 / 6000)
@@ -1349,7 +1354,7 @@ theorem exists_sub_common_probe (hβ : (20999 / 24000 : ℝ) < HeckeZeroSupremum
     have hWCB (j : Fin D.N) (y : ℝ) : ‖WC j y‖ ≤ 1 := by
       simpa only [WC, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (F.bounded y).1]
         using (F.bounded y).2
-    have hpool (j : Fin D.N) (P : PrimeIdeal) (hP : P ∈ T j) :
+    have hpool (j : Fin D.N) (P : HeckeIdealSeries.PrimeIdeal) (hP : P ∈ T j) :
         (P.val.absNorm : ℝ) ≤ 2 * Z ^ (ell' j) := by
       have hh := (pool_norm_bounds (RayQuotient.identityClass F.modulus ⊤) F.S
         (by norm_num) (by norm_num) (Real.rpow_pos_of_pos hZp _) P hP).2
@@ -1383,7 +1388,8 @@ theorem exists_sub_common_probe (hβ : (20999 / 24000 : ℝ) < HeckeZeroSupremum
         rcases hbins u with ⟨_, _, _, ha0, ha1, hBH, hbuf, _, _, hnext, _⟩
         have hτ_eq : Z ^ ((1001 / 1000 : ℝ) * τ) = Z' ^ τ := (Real.rpow_mul hZp.le _ _).symm
         refine ⟨ha0, ha1, hZ'.2, hτ_eq.le.trans hBH, ?_, hnext⟩
-        have : 0 ≤ Z' ^ τ := Real.rpow_nonneg (by positivity) _
+        have hZ'p : 0 < Z' := Real.rpow_pos_of_pos hZp _
+        have : 0 ≤ Z' ^ τ := Real.rpow_nonneg hZ'p.le _
         linarith)
     let P_pool := principalPhysicalPool η F.S T WC Yp F.W F.W
       (Z ^ (17 / 48 : ℝ)) (Z ^ (479 / 1000 : ℝ)) Z

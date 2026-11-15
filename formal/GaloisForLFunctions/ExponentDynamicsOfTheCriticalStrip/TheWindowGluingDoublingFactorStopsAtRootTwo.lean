@@ -223,8 +223,7 @@ theorem not_reweightedDoublingLaw_of_lt_sqrt_two_subEulerGluingWeight (Q₀ : �
       nlinarith
     have htwo := two_le_hermNegIndex_subEulerGluingWeight Q₀ hm (hρ K hK1) ha_shift
     have hone := hlev K hK1
-    dsimp only [K] at hone
-    omega
+    exact absurd (htwo.trans hone) (by norm_num)
   by_cases h1 : 1 < lam
   · exact hgt_one h1 hlam
   · intro ⟨a, c, hmono, hd, hlev⟩
@@ -495,7 +494,7 @@ theorem eventually_two_le_hermNegIndex_neutralWindow_halfCutoff :
     (Eventually.of_forall fun K => by
       have h1 : ((23 * K : ℕ) : ℝ) ≤ ((10 * (23 * K / 10 + 1) : ℕ) : ℝ) := by
         exact_mod_cast (show 23 * K ≤ 10 * (23 * K / 10 + 1) by omega)
-      push_cast at h1; linarith)
+      push_cast at h1 ⊢; linarith)
     (Eventually.of_forall fun K => by
       have h1 : ((10 * (23 * K / 10) : ℕ) : ℝ) ≤ ((23 * K : ℕ) : ℝ) := by
         exact_mod_cast (Nat.mul_div_le (23 * K) 10)

@@ -31,3 +31,4 @@ by the root numbers of the rows, and the diagonal short Gram; the root number of
 phase of bounded conductor times the square of the theta coefficient, whose cube is the Möbius sign
 times the angular character. See `CoherenceTheoryOfReciprocityFamilies/README.md`.
 -/
+import GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies.TargetProjection.SexticPoissonProjection

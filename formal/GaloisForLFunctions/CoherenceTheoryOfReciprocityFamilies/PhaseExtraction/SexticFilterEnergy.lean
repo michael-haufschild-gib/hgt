@@ -196,6 +196,13 @@ theorem sexticReadout_inverse (ζ : ℂ) (w : Fin 6 → ℂ) :
     sexticReadout w (fun i => (ζ ^ i.val)⁻¹) = sexticCoefficients ζ w 1 := by
   simp only [sexticReadout, sexticCoefficients, Fin.val_one, pow_one, div_eq_mul_inv]
 
+/-- Conjugate observations attain the phase-weight energy exactly. -/
+theorem sexticReadout_conj (w : Fin 6 → ℂ) :
+    sexticReadout w (fun i => conj (w i)) =
+      (1 / 6 : ℂ) * ((∑ i : Fin 6, ‖w i‖ ^ 2 : ℝ) : ℂ) := by
+  simp only [sexticReadout, Complex.mul_conj, Complex.normSq_eq_norm_sq,
+    Complex.ofReal_sum]
+
 /-- Cauchy–Schwarz with the literal normalization of the six-phase pairing. -/
 theorem norm_sexticReadout_sq_le (w f : Fin 6 → ℂ) :
     36 * ‖sexticReadout w f‖ ^ 2 ≤

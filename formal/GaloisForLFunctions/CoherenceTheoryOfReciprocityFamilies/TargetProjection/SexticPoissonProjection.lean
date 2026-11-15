@@ -398,8 +398,8 @@ abbrev SexticPoissonPrime :=
 def sexticHeckeProjectedLocalTerm (𝔪 : Modulus K) (η : HeckeCharacter 𝔪)
     (v : SexticPoissonPrime) (x z : ℂ) (d : Fin 2 × ℕ × ℕ × ℕ) : ℂ := by
   letI := isMaximal_span_primeGen v.1 v.2.1
-  have hλ : lambda ∉ Ideal.span {primeGen v.1} := (primeGen_spec v.1 v.2.1).1 ▸ v.2.1
-  exact sexticProjectedLocalTerm (primeGen v.1) hλ (heckeValue 𝔪 η v.1.asIdeal)
+  have hlamP : lambda ∉ Ideal.span {primeGen v.1} := (primeGen_spec v.1 v.2.1).1 ▸ v.2.1
+  exact sexticProjectedLocalTerm (primeGen v.1) hlamP (heckeValue 𝔪 η v.1.asIdeal)
     ((v.1.asIdeal.absNorm:ℂ)^(-x)) ((v.1.asIdeal.absNorm:ℂ)^(-(1-x)))
     ((v.1.asIdeal.absNorm:ℂ)^(-(6*z))) d
 
@@ -414,9 +414,9 @@ theorem sexticHeckePoisson_restores_target_on_floor (𝔪 : Modulus K) (η : Hec
         1-heckeValue 𝔪 η v.1.asIdeal*X := by
   letI := isMaximal_span_primeGen v.1 v.2.1
   have hspan := primeGen_spec v.1 v.2.1
-  have hλ : lambda ∉ Ideal.span {primeGen v.1} := hspan.1 ▸ v.2.1
+  have hlamP : lambda ∉ Ideal.span {primeGen v.1} := hspan.1 ▸ v.2.1
   have h2 : (2:O) ∉ Ideal.span {primeGen v.1} := hspan.1 ▸ v.2.2
-  have h := sexticPoisson_restores_target_on_floor (primeGen v.1) hλ h2 hspan.2
+  have h := sexticPoisson_restores_target_on_floor (primeGen v.1) hlamP h2 hspan.2
     (norm_heckeValue_le_one 𝔪 η v.1.asIdeal) hx hx1 hz
   simpa only [sexticHeckeProjectedLocalTerm, sexticPrimeCompletion, primeR,
     primeQ_primeGen v.1 v.2.1] using h

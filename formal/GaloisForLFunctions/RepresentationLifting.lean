@@ -83,6 +83,7 @@ import GaloisForLFunctions.RepresentationLifting.KTheory.FieldGrothendieckGroup
 import GaloisForLFunctions.RepresentationLifting.KTheory.VirtualCharacterK0
 import GaloisForLFunctions.RepresentationLifting.KTheory.FiniteAbelianVirtualRing
 import GaloisForLFunctions.RepresentationLifting.KTheory.VirtualCharacterFirstJet
+import GaloisForLFunctions.RepresentationLifting.Descent.SemilinearInvariantSpan
 
 /-!
 # Representation lifting and quadratic extensions
