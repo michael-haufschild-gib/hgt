@@ -25,8 +25,7 @@ theorem kmsMean_primeLog (p : Nat.Primes) :
   rw [kmsMean, if_neg (primeLogSupport_pos p).ne', primeLogSupport,
     Real.sinh_eq, Real.cosh_eq]
   simp only [Real.exp_neg, Real.exp_log hp]
-  field_simp [hp.ne', hl, hd]
-  <;> ring
+  field_simp [hp.ne', hl, hd] <;> ring
 
 /-- Explicit susceptibility including the vacuum contribution. -/
 def primeLogKMSSusceptibility (P : Finset Nat.Primes) (β : ℝ) : ℝ :=

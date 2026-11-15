@@ -25,9 +25,10 @@ def gibbsKMSAutocorrelation (β : ℝ) (energy gap : α → ℝ) (u : ℝ) : ℝ
 def gibbsKMSSusceptibility (β : ℝ) (energy gap : α → ℝ) : ℝ :=
   ∑ a, finiteGibbsStateWeight β energy a * kmsMean (gap a)
 
+omit [Nonempty α] in
 theorem continuous_gibbsKMSAutocorrelation (β : ℝ) (energy gap : α → ℝ) :
     Continuous (gibbsKMSAutocorrelation β energy gap) := by
-  apply continuous_finset_sum
+  apply continuous_finsetSum
   intro a _
   exact continuous_const.mul (continuous_kmsKernel (gap a))
 
@@ -40,10 +41,12 @@ theorem gibbsKMSSusceptibility_nonneg (β : ℝ) (energy gap : α → ℝ) :
 theorem integral_gibbsKMSAutocorrelation (β : ℝ) (energy gap : α → ℝ) :
     (∫ u in (0:ℝ)..1, gibbsKMSAutocorrelation β energy gap u) =
       gibbsKMSSusceptibility β energy gap := by
-  rw [gibbsKMSAutocorrelation, intervalIntegral.integral_finsetSum (fun a _ =>
+  simp only [gibbsKMSAutocorrelation]
+  rw [intervalIntegral.integral_finsetSum (fun a _ =>
     (continuous_const.mul (continuous_kmsKernel (gap a))).intervalIntegrable _ _)]
   simp only [intervalIntegral.integral_const_mul, integral_kmsKernel, gibbsKMSSusceptibility]
 
+omit [Nonempty α] in
 private theorem square_expansion (β : ℝ) (energy gap : α → ℝ) (u : ℝ) :
     gibbsKMSAutocorrelation β energy gap u ^ 2 =
       ∑ a, ∑ b, (finiteGibbsStateWeight β energy a * finiteGibbsStateWeight β energy b) *
@@ -71,7 +74,7 @@ theorem integral_gibbsKMSAutocorrelation_sq_le (β : ℝ) (energy gap : α → �
       ∑ a, ∑ b, (w a*w b) * (∫ u in (0:ℝ)..1, kmsKernel (gap a) u * kmsKernel (gap b) u) := by
     simp_rw [square_expansion]
     rw [intervalIntegral.integral_finsetSum (fun a _ =>
-      (continuous_finset_sum _ (fun b _ => hcont a b)).intervalIntegrable _ _)]
+      (continuous_finsetSum _ (fun b _ => hcont a b)).intervalIntegrable _ _)]
     apply Finset.sum_congr rfl
     intro a _
     rw [intervalIntegral.integral_finsetSum (fun b _ => (hcont a b).intervalIntegrable _ _)]
@@ -102,6 +105,7 @@ theorem gibbsKMS_overlap_bound (β : ℝ) (energy gap : α → ℝ) :
       ((∫ u in (0:ℝ)..1, gibbsKMSAutocorrelation β energy gap u) +
         (∫ u in (0:ℝ)..1, gibbsKMSAutocorrelation β energy gap u)^2) / 2 := by
   rw [integral_gibbsKMSAutocorrelation]
-  convert integral_gibbsKMSAutocorrelation_sq_le β energy gap using 1 <;> ring
+  convert integral_gibbsKMSAutocorrelation_sq_le β energy gap using 1
+  ring
 
 end GaloisForLFunctions.HTGeometry.Thermofield

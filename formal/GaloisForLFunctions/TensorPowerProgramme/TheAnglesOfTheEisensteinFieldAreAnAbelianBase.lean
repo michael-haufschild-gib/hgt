@@ -76,9 +76,12 @@ theorem baseLSeries_angle (j : Multiplicative ℤ) (s : ℂ) :
   rw [baseLSeries, primePowerSeries]
   refine tsum_congr fun x => ?_
   rw [angleNorm, angleLam, angleEv, eulerRatio, angleCoeff, Complex.ofReal_natCast,
-    natCast_pow_cpow, mul_pow, ← zpow_natCast, ← zpow_mul, mul_assoc]
-  push_cast
-  ring_nf
+    natCast_pow_cpow, mul_pow]
+  have hz : idealPsiSix x.1.asIdeal ^ (Multiplicative.toAdd j * ((x.2 : ℤ) + 1)) =
+      (idealPsiSix x.1.asIdeal ^ Multiplicative.toAdd j) ^ (x.2 + 1) := by
+    rw [zpow_mul, show ((x.2 : ℤ) + 1) = ((x.2 + 1 : ℕ) : ℤ) by push_cast; ring, zpow_natCast]
+  rw [hz]
+  ring
 
 /-! ### The prime number theorem of each character -/
 
@@ -190,7 +193,7 @@ theorem angle_pnt_zero :
     have hE := neg_deriv_div_eq_primePowerSeries (fun v => (norm_angleCoeff 0 v).le)
       (L := fun z => riemannZeta z * DirichletCharacter.LFunction chi3D z)
       (fun z hz => exp_eulerLog_angle_zero hz) hs
-    rw [← hE, deriv_mul (differentiableAt_riemannZeta hs1)
+    rw [← hE, deriv_fun_mul (differentiableAt_riemannZeta hs1)
       ((DirichletCharacter.differentiable_LFunction chi3D_ne_one) s)]
     have hΛ := LSeries_vonMangoldt_eq_regular_add hs
     rw [LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs] at hΛ

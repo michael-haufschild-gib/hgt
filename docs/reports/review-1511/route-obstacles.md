@@ -1,6 +1,6 @@
 # Review 1511 — routes and their hard obstacles
 
-Corpus: commit a7fcf5212f with the working tree (15 November 2026). Inputs: the frontier map and the killed-routes ledger, the corpus search tool, and the Lean statements cited below, each read in source. No build, compile or axiom audit was run for this report.
+Corpus: commit a7fcf5212f with the working tree (15 November 2026). Inputs: the frontier map and the killed-routes ledger, the corpus search tool, and the Lean statements cited below, each read in source. O11 additions were individually checked with `lake --old env lean`; no umbrella build or axiom audit was run for those additions.
 
 Grades are the frontier map's: **[L]** integrated, **[S]** source only (unfinished or unintegrated), **[K]** individually audited. A fact marked **(src)** was read in the Lean source and has no grade of its own on the frontier map. A statement marked *table* comes from a programme table returned by the search tool and is not a Lean statement.
 
@@ -45,7 +45,7 @@ What no route has: a mechanism that lowers the exponent below the vertex of the 
 | J10 | The elementary bound for cubic character sums from the Stepanov count |
 | J11 | The top-octave statement for ζ as one theorem, composed from two integrated statements |
 
-**(b) Open problems** — no solution is known; details in [obstacles summary §2.2](obstacles-summary.md#22-open-obstacles).
+**(b) Obstacles** — O11 is resolved for reciprocal quadratics; the others remain open. Details in [obstacles summary §2.2](obstacles-summary.md#22-open-obstacles).
 
 | ID | Family | Problem |
 |---|---|---|
@@ -59,7 +59,7 @@ What no route has: a mechanism that lowers the exponent below the vertex of the 
 | O8 | R | The sign of Weil's form at every aperture |
 | O9 | R | A doubling factor below √2 proved from the window matrices |
 | O10 | R | An effectivity, section or count law whose definition does not contain the sign |
-| O11 | R | **Resolved for reciprocal quadratics:** a negative Euler logarithmic coefficient occurs at `p²,p⁴,p⁶` or `p⁸`, while ζ has positive coefficients ([`exists_negative_even_eulerLogCoeff`](../../../formal/GaloisForLFunctions/SelbergClass/PositiveFiniteEulerLogarithmicSigns.lean#L47) [K]) |
+| O11 | R | **Resolved for reciprocal quadratics:** a negative Euler logarithmic coefficient occurs at `p²,p⁴,p⁶` or `p⁸`, while ζ's four values are positive ([`exists_negative_even_eulerLogCoeff`](../../../formal/GaloisForLFunctions/SelbergClass/PositiveFiniteEulerLogarithmicSigns.lean#L47) [K]) |
 | O12 | U | AAL: no finite nonempty top layer |
 | O13 | U | Zeros approach the line; landing uniform as σ ↓ ½ |
 | O14 | U | Reality of the heat flow inside near-coincidence clusters for t < ½/log X |

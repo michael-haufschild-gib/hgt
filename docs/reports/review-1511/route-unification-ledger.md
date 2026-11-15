@@ -1,6 +1,6 @@
 # Review 1511 — route unification ledger
 
-Corpus: commit a7fcf5212f with the working tree (15 November 2026). The ledger records which routes are faces of one problem, by the theorem that identifies them. Every Lean statement cited was read in source. No build, compile or axiom audit was run for this report.
+Corpus: commit a7fcf5212f with the working tree (15 November 2026). The ledger records which routes are faces of one problem, by the theorem that identifies them. Every Lean statement cited was read in source. O11 additions were individually checked with `lake --old env lean`; no umbrella build or axiom audit was run for those additions.
 
 Grades are the frontier map's: **[L]** integrated, **[S]** source only, **[K]** individually audited; **(src)** marks a statement read in the Lean source that has no grade of its own on the frontier map. *Reading* marks an interpretation of this report.
 

@@ -7,7 +7,7 @@
 
 ## Statement
 
-For every finite coefficient prefix and every `1/2 < σ < 1`, a positive, bounded, multiplicative Dirichlet series agreeing with ζ on that prefix has a reflection-symmetric completion with an off-line zero at real part σ, a globally contractive reduced scattering symbol, and unitary scattering on the imaginary axis. No nonnegative logarithmic Dirichlet series represents it on any right half-plane. The obstruction is already visible in `a(p)² > 2a(p²)`.
+For every finite coefficient prefix and every `1/2 < σ < 1`, a positive, bounded, multiplicative Dirichlet series agreeing with ζ on that prefix has a reflection-symmetric completion with an off-line zero at real part σ, a globally contractive reduced scattering symbol, and unitary scattering on the imaginary axis. No nonnegative, absolutely convergent logarithmic Dirichlet series represents it on any right half-plane. The obstruction is already visible in `a(p)² > 2a(p²)`.
 
 ## Proof [PROVED HERE]
 
