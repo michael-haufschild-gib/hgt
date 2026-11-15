@@ -29,7 +29,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.TensorPowerProgramme
 
-variable {F : Type*} [Field F] [Fintype F] [DecidableEq F]
+variable {F : Type*} [Field F] [Fintype F]
 
 /-- **The conjugation pair** of a Jacobi sum: `conj J(χ, φ) = J(χ⁻¹, φ⁻¹)`. -/
 theorem conj_jacobiSum (χ φ : MulChar F ℂ) : conj (jacobiSum χ φ) = jacobiSum χ⁻¹ φ⁻¹ := by
@@ -68,6 +68,6 @@ theorem stickelbergerPrice_jacobiTriple {p : ℕ} [Fact p.Prime] {ζ : PadicAlgC
     · exact h₂
     · rwa [orderOf_inv]
   · rw [hprod, one_pow]
-  · exact Or.inl ⟨hprod, by decide⟩
+  · exact Or.inl ⟨hprod, by simp⟩
 
 end GaloisForLFunctions.TensorPowerProgramme

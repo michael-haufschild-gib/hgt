@@ -94,7 +94,9 @@ theorem primePowerKummer_frobenius_pow_iff_valuation_orders (e : ℕ) (f : L) :
       obtain ⟨a', ha'⟩ := (ih a).mpr haorders
       refine ⟨a', ?_⟩
       calc
-        a' ^ (p ^ (e + 1)) = (a' ^ (p ^ e)) ^ p := by rw [pow_succ, pow_mul]
+        a' ^ (p ^ (e + 1)) = (a' ^ (p ^ e)) ^ p :=
+          (congrArg (fun j : ℕ => a' ^ j) (pow_succ p e)).trans
+            (pow_mul a' (p ^ e) p)
         _ = f := by rw [ha', ha]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
