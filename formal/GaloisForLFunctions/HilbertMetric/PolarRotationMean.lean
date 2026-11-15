@@ -26,7 +26,7 @@ def polarRotation (z : ℂ) : Circle := by
   classical
   exact if hz : z = 0 then 1 else
     ⟨z / (‖z‖ : ℂ), by
-      change ‖z / (‖z‖ : ℂ)‖ = 1
+      apply mem_sphere_zero_iff_norm.mpr
       rw [norm_div, Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg (norm_nonneg z), div_self (norm_ne_zero_iff.mpr hz)]⟩
 
@@ -127,7 +127,7 @@ theorem norm_gibbsRotationMean_eq_one_iff (β : ℝ) (energy : α → ℝ)
       (fun a => (finiteGibbsStateWeight_pos β energy a).le)
       (fun a => (phase a : ℂ))).mp he
     refine ⟨⟨u, ?_⟩, ?_⟩
-    · exact hu
+    · exact mem_sphere_zero_iff_norm.mpr hu
     · intro a
       apply Circle.coe_injective
       simpa only [Circle.norm_coe, Complex.ofReal_one, one_mul]
