@@ -21,7 +21,8 @@ The statement has two readings, and each gets a theorem.
   directions.
 
 Non-circularity: Theorems 1–5 are statements about real numbers and maps; no property of $\zeta$
-enters. Theorem 6 uses $\tfrac12\le\Theta\le\tfrac78$. Theorem 7 uses the worlds of EDCS.
+enters. Theorem 6 uses $\tfrac12\le\Theta\le\tfrac78$. Theorems 7–8 use the worlds of EDCS and the
+twins of SelbergClass.
 
 ## Gates
 - [x] 0 → 1  in-progress
@@ -124,6 +125,19 @@ exceeds $h$ iff some $b\in(h,s]$ lies at or below every level.
 *Proof.* The families realize $[\tfrac12,\infty)$, $(\tfrac12,\tfrac23)$ and
 $[\Theta,\Theta+\tfrac12)$ (EDCS); Theorem 1. $\square$
 
+**Theorem 8 (multiplicative twins).** For a prime $p$ and $r>0$ let
+$F_{p,r}(s)=\zeta(s)\,(1+Ap^{-s}+p\,p^{-2s})$, $A=r+p/r$. It is a degree-one member of the extended
+Selberg class of conductor $p^2$ with multiplicative coefficients in $[1,1+A+p]$
+(SelbergClass `extendedClass`). The zeros of the local factor lie on
+$\operatorname{Re}s=\log r/\log p$ and $\operatorname{Re}s=1-\log r/\log p$; for $r=p^b$,
+$b\ge\Theta$, the abscissa of $F_{p,r}$ is $b$. Hence levers valid on the twins of one prime have
+$\mathrm{wall}(\mathcal T,s)=s$ for every seed $s\ge\Theta$.
+
+*Proof.* With $t=p^s$ the factor is $p^{-2s}(t+r)(t+p/r)$ and $|t|=p^{\operatorname{Re}s}$, so a
+zero has $p^{\operatorname{Re}s}\in\{r,p/r\}$. For $r=p^b$ the two lines are $b$ and $1-b\le b$
+(as $b\ge\Theta\ge\tfrac12$), the zeros of $\zeta$ lie at or left of $\Theta\le b$, and the line
+$\operatorname{Re}s=b$ carries a zero. Theorem 1. $\square$
+
 ## Verdict
 
 | Reading of the statement | Decision | Where |
@@ -131,10 +145,11 @@ $[\Theta,\Theta+\tfrac12)$ (EDCS); Theorem 1. $\square$
 | All levers true for $\zeta$ | equivalent to $\neg$RH | Theorem 6.1 |
 | Source = tensor moments of $\zeta$ alone, or an abelian base | true: rulers, the pole law is the width | TPP `exists_momentPoleLaw_iff`, `exists_twistPoleLaw_iff` |
 | Source valid without Dirichlet series, or without functional equation, or without the Ramanujan bound | true: wall $=s$, $\ge\min(s,\tfrac23)$, $=s$ | Theorem 7 |
+| Source valid for multiplicative series with bounded coefficients and a functional equation (twins of conductor $p^2$) | true: wall $=s$ for every seed $s\ge\Theta$ | Theorem 8 |
 | Source = Gauss pairings completed factor by factor | true: wall $\tfrac35$ | EDCS `wall_gaussLevers` |
 | Sign line with bounded periods | true: wall $\ge\kappa_K$ | Theorem 5 |
 | Sign line with unbounded periods, or one Deligne lever, on a class | false iff the class has no world right of $\tfrac12$; one condition for both lines | Theorem 4 |
-| Source using Euler product, functional equation and Ramanujan bound of $\zeta$ itself | the class is $\{\zeta\}$ in the Hamburger class (`beurlingSystem_rigidity_of_decaying_defect`), so the reading is the first row | Theorem 6 |
+| Source using the level one of $\zeta$ (its own functional equation) with the Euler product | the class is $\{\zeta\}$ in the Hamburger class (`beurlingSystem_rigidity_of_decaying_defect`), so the reading is the first row | Theorem 6 |
 
 Consequences for the programme of §2.18.
 
@@ -146,12 +161,16 @@ Consequences for the programme of §2.18.
   the same problem for the source.
 - The test for a proposed source is exact: it reaches below $b$ iff it fails in every world with
   abscissa in $(b,s]$. For a source below $\tfrac23$ the worlds of Theorem 7 force the joint use
-  of Euler product, functional equation and Ramanujan bound.
+  of Euler product, functional equation and Ramanujan bound; the twins of Theorem 8 have all three
+  in coefficient form, so a source that lowers the seed uses the level one of $\zeta$ or the
+  square-root bound for the prime-power coefficients of the Euler logarithm.
 
 ## Lean
 
 - `ExponentDynamicsOfTheCriticalStrip/TheWallOfASourceClassIsTheLargestAbscissaItRealizes.lean`:
   Theorems 1–3, 4 (frames), 7.
+- `ExponentDynamicsOfTheCriticalStrip/TheMultiplicativeTwinsRealizeEveryAbscissaAboveTheZeros.lean`:
+  Theorem 8.
 - `TensorPowerProgramme/AWallAboveOneHalfIsAWorldOffTheLine.lean`: Theorems 4 (lines), 5, 6.
 
 ## Log

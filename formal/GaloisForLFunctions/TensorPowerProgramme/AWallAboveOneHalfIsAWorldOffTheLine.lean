@@ -43,9 +43,8 @@ open ExponentDynamicsOfTheCriticalStrip FamilyContinuationTheory
 def signCentre (k : ℝ) : ℝ := k / (2 * (k - 1))
 
 theorem signCentre_eq {k : ℝ} (hk : 1 < k) : signCentre k = 1 / 2 + 1 / (2 * (k - 1)) := by
-  have hk1 : k - 1 ≠ 0 := (sub_pos.2 hk).ne'
-  rw [signCentre]
-  field_simp
+  have h2 : 2 * (k - 1) ≠ 0 := mul_ne_zero two_ne_zero (sub_pos.2 hk).ne'
+  rw [signCentre, div_eq_iff h2, add_mul, one_div_mul_cancel h2]
   ring
 
 theorem half_lt_signCentre {k : ℝ} (hk : 1 < k) : 1 / 2 < signCentre k := by
@@ -83,7 +82,7 @@ private theorem one_lt_cast {k : ℕ} (hk : 2 ≤ k) : (1 : ℝ) < k := by
 theorem isLever_deligneLever_iff {k θ : ℝ} (hk : 1 < k) :
     IsLever θ (deligneLever k) ↔ θ ≤ 1 / 2 := by
   have hk1 : k - 1 ≠ 0 := (sub_pos.2 hk).ne'
-  have hc : (k - 1) / 2 / (k - 1) = 1 / 2 := by field_simp
+  have hc : (k - 1) / 2 / (k - 1) = 1 / 2 := by rw [div_right_comm, div_self hk1]
   rw [deligneLever, isLever_pairingStep_iff hk, hc]
 
 /-- The sign lever of period `k` is a lever of `θ` iff `θ` is at most its centre. -/
@@ -253,7 +252,13 @@ theorem riemannHypothesis_of_wall_le_half {𝒯 : Set (ℝ → ℝ)} {A : Set �
 class have wall `½` iff every world of the class at or below the seed lies on the line. -/
 theorem wall_validLevers_eq_half_iff {A : Set ℝ} (hζ : RHTower.zetaZeroAbscissa ∈ A)
     (hA : ∀ a ∈ A, 1 / 2 ≤ a) :
-    wall (validLevers A) (7 / 8) = 1 / 2 ↔ ∀ a ∈ A, a ≤ 7 / 8 → a = 1 / 2 :=
-  wall_validLevers_eq_iff ⟨_, hζ, zetaZeroAbscissa_le_seven_eighths⟩ hA
+    wall (validLevers A) (7 / 8) = 1 / 2 ↔ ∀ a ∈ A, a ≤ 7 / 8 → a = 1 / 2 := by
+  have hne : (A ∩ Iic (7 / 8 : ℝ)).Nonempty := ⟨_, hζ, zetaZeroAbscissa_le_seven_eighths⟩
+  exact wall_validLevers_eq_iff hne hA
 
 end GaloisForLFunctions.TensorPowerProgramme
+
+#print axioms GaloisForLFunctions.TensorPowerProgramme.signLevers_cofinal_iff_deligneLever
+#print axioms GaloisForLFunctions.TensorPowerProgramme.wall_signLevers_eq_half_iff
+#print axioms GaloisForLFunctions.TensorPowerProgramme.half_lt_wall_validLevers_zeta_iff
+#print axioms GaloisForLFunctions.TensorPowerProgramme.wall_validLevers_eq_half_iff

@@ -59,7 +59,7 @@ theorem primeLogSpectralResponse_equation (P : Finset Nat.Primes) (s : ℝ)
         (primeLogKMSFiniteEnergy P a-primeLogKMSFiniteEnergy P i) : ℝ) : ℂ) ≠ 0 :=
       Complex.ofReal_ne_zero.mpr (mul_ne_zero (Real.exp_pos s).ne' hg)
     simp only [primeLogSpectralResponse, if_neg hi, sub_zero]
-    field_simp
+    exact mul_div_cancel₀ _ hd
 
 /-- The inverse-gap response solves the first-order equation for the constructed Hermitian perturbation. -/
 theorem primeLogSpectralResponse_perturbation (P : Finset Nat.Primes) (s : ℝ)
@@ -164,7 +164,7 @@ theorem primeLogFidelitySusceptibility_energy_scaling (P : Finset Nat.Primes) (s
   by_cases hi : i = a
   · simp [hi]
   · simp only [if_neg hi, Real.exp_zero, one_pow, one_mul]
-    rw [zpow_neg, zpow_natCast]
+    simp only [zpow_neg, zpow_natCast, div_eq_mul_inv, mul_inv_rev]
     ring
 
 end GaloisForLFunctions.HTGeometry.Thermofield

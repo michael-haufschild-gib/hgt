@@ -56,7 +56,7 @@ theorem denominator_eq_zero {q : ℝ} (hq : 1 < q)
       Complex.exp (c * s) * multiplier W ((q : ℂ) ^ (-s)) * xi s) : V = 0 := by
   induction V using Multiset.induction_on with
   | empty => rfl
-  | cons v V ih =>
+  | cons v V _ih =>
     exact False.elim (hred v (Multiset.mem_cons_self _ _)
       (denominator_root_mem_numerator hq W (v ::ₘ V) c F hid
         (Multiset.mem_cons_self _ _) (hV v (Multiset.mem_cons_self _ _))))
@@ -103,7 +103,7 @@ theorem numerator_eq_zero_of_reflection {p : ℕ} (hp : 1 < p)
     exact hpR.not_ge (hnorm ▸ hle)
   induction W using Multiset.induction_on with
   | empty => rfl
-  | cons a W ih => exact False.elim (hno a (Multiset.mem_cons_self _ _))
+  | cons a W _ih => exact False.elim (hno a (Multiset.mem_cons_self _ _))
 
 /-- At one prime, a reduced rational Euler deformation preserving completed reflection
 and a nonnegative logarithmic Dirichlet representation is the trivial deformation. -/

@@ -26,6 +26,7 @@ variable {F : Type*} [Field F] [Fintype F] {χ : MulChar F ℂ}
 /-- A cubic character is constant on the classes of `a^{(q−1)/3}`. -/
 theorem char_eq_of_pow_eq (hχ3 : χ ^ 3 = 1) {N : ℕ} (hq : Fintype.card F = 3 * N + 1)
     {a b : F} (ha : a ≠ 0) (hb : b ≠ 0) (hab : a ^ N = b ^ N) : χ a = χ b := by
+  classical
   have hw : (a / b) ^ ((Fintype.card F - 1) / 3) = 1 := by
     rw [show (Fintype.card F - 1) / 3 = N by rw [hq]; omega, div_pow, hab,
       div_self (pow_ne_zero _ hb)]
@@ -56,6 +57,7 @@ theorem algebraMap_norm_pow_eq {NF N : ℕ} (hqF : Fintype.card F = 3 * NF + 1)
     rw [Module.card_eq_pow_finrank (K := F) (V := E)]
     simpa using Nat.sub_dvd_pow_sub_pow (Fintype.card F) 1 (Module.finrank F E)
   obtain ⟨k, hk⟩ := hdvd
+  have hF2 := Fintype.one_lt_card (α := F)
   rw [map_pow, FiniteField.algebraMap_norm_eq_pow, Nat.card_eq_fintype_card,
     Nat.card_eq_fintype_card, ← pow_mul, hk, Nat.mul_div_cancel_left _ (by rw [hqF]; omega)]
   congr 1
@@ -89,7 +91,7 @@ theorem sum_char_norm_eq [DecidableEq E] {χ : MulChar F ℂ} (hχ3 : χ ^ 3 = 1
     calc ω = ω ^ 2 * ω := by rw [h2, one_mul]
       _ = ω ^ 3 := by ring
       _ = 1 := hω3
-  have hω0 : ω ≠ 0 := by rintro rfl; norm_num at hω3
+  have hω0 : ω ≠ 0 := by intro h0; rw [h0] at hω3; norm_num at hω3
   have hωω2 : ω ≠ ω ^ 2 := by
     intro h2
     have : ω * (ω - 1) = 0 := by linear_combination -h2
@@ -105,7 +107,7 @@ theorem sum_char_norm_eq [DecidableEq E] {χ : MulChar F ℂ} (hχ3 : χ ^ 3 = 1
     rw [heval]
     set y := h.eval x
     by_cases hy : y = 0
-    · rw [hy, map_zero, MulChar.map_zero]
+    · rw [hy, Algebra.norm_zero, MulChar.map_zero]
       simp
     · have hNy : Algebra.norm F y ≠ 0 := Algebra.norm_ne_zero_iff.mpr hy
       have hcube : (y ^ N) ^ 3 = 1 := by
@@ -134,7 +136,6 @@ theorem sum_char_norm_eq [DecidableEq E] {χ : MulChar F ℂ} (hχ3 : χ ^ 3 = 1
   rw [Finset.sum_congr rfl fun x _ => hpt x, Finset.sum_add_distrib, Finset.sum_add_distrib,
     ← Finset.mul_sum, ← Finset.mul_sum]
   simp only [Finset.sum_boole]
-  rfl
 
 /-- **The Weil bound for the cubic norm character over `𝔽_{s²}`, by counting.** -/
 theorem norm_sum_char_norm_le [DecidableEq E] {χ : MulChar F ℂ} (hχ : χ ≠ 1) (hχ3 : χ ^ 3 = 1)
@@ -181,12 +182,13 @@ theorem norm_sum_char_norm_le [DecidableEq E] {χ : MulChar F ℂ} (hχ : χ ≠
   have hb : ∀ ε : E, ε ^ 3 = 1 → ‖(3 * (T ε : ℂ) - s ^ 2)‖ ≤ B := by
     intro ε hε
     have h1 := hbound ε hε
-    have : ((3 * (T ε : ℂ) - s ^ 2)) = (((3 * (T ε : ℤ) - s ^ 2 : ℤ) : ℝ) : ℂ) := by push_cast; ring
+    have h1R : |(3 * (T ε : ℝ) - (s : ℝ) ^ 2)| ≤ B := by
+      have := (Int.cast_le (R := ℝ)).mpr h1
+      push_cast at this
+      exact this
+    have : ((3 * (T ε : ℂ) - s ^ 2)) = ((3 * (T ε : ℝ) - (s : ℝ) ^ 2 : ℝ) : ℂ) := by push_cast; ring
     rw [this, Complex.norm_real, Real.norm_eq_abs]
-    have h2 : |((3 * (T ε : ℤ) - s ^ 2 : ℤ) : ℝ)| = ((|3 * (T ε : ℤ) - s ^ 2| : ℤ) : ℝ) := by
-      push_cast; rfl
-    rw [h2]
-    exact_mod_cast h1
+    exact h1R
   have key : (3 : ℂ) * ((T 1 : ℂ) + ζ * T ω + ζ ^ 2 * T (ω ^ 2)) =
       (3 * (T 1 : ℂ) - s ^ 2) + ζ * (3 * (T ω : ℂ) - s ^ 2) + ζ ^ 2 * (3 * (T (ω ^ 2) : ℂ) - s ^ 2) +
         s ^ 2 * (1 + ζ + ζ ^ 2) := by ring

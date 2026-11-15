@@ -1,4 +1,5 @@
 import GaloisForLFunctions.SelbergClass.PositiveFiniteEulerBound
+import GaloisForLFunctions.SelbergClass.DirichletSeries.LogarithmicUniqueness
 import GaloisForLFunctions.ZeroConfigurationGeometry.OneSidedPowerSumsDetectEveryExteriorRoot
 
 /-!
@@ -26,6 +27,15 @@ def multiplier (W : Multiset ℂ) (x : ℂ) : ℂ :=
 def rootLogCoeff (p : ℕ) (W : Multiset ℂ) (n : ℕ) : ℂ :=
   (W.map fun a => powerLogCoeff p a n).sum
 
+private theorem rootLogCoeff_empty (p : ℕ) : rootLogCoeff p 0 = 0 := by
+  funext n
+  simp only [rootLogCoeff, Multiset.map_zero, Multiset.sum_zero, Pi.zero_apply]
+
+private theorem rootLogCoeff_cons (p : ℕ) (a : ℂ) (W : Multiset ℂ) :
+    rootLogCoeff p (a ::ₘ W) = powerLogCoeff p a + rootLogCoeff p W := by
+  funext n
+  simp only [rootLogCoeff, Multiset.map_cons, Multiset.sum_cons, Pi.add_apply]
+
 /-- The zeta logarithm after multiplication by a finite local polynomial. -/
 def logCoeff (p : ℕ) (W : Multiset ℂ) (n : ℕ) : ℂ :=
   RHTower.eulerLogDirichletCoeff n + rootLogCoeff p W n
@@ -36,13 +46,14 @@ private theorem rootLog_hasSum {p : ℕ} (hp : 1 < p) (W : Multiset ℂ) (s : �
       (W.map fun a => Complex.log (1 - a * (p : ℂ) ^ (-s))).sum := by
   induction W using Multiset.induction_on with
   | empty =>
-    simpa only [rootLogCoeff, Multiset.map_zero, Multiset.sum_zero,
-      LSeriesHasSum, LSeries.term, zero_div, ite_self] using
+    rw [rootLogCoeff_empty]
+    change HasSum (fun n : ℕ => if n = 0 then (0 : ℂ) else 0 / (n : ℂ) ^ s) 0
+    simpa only [zero_div, ite_self] using
       (hasSum_zero : HasSum (fun _ : ℕ => (0 : ℂ)) 0)
   | cons a W ih =>
-    simpa only [rootLogCoeff, Multiset.map_cons, Multiset.sum_cons] using
-      (hasSum_powerLogCoeff hp a (hsmall a (Multiset.mem_cons_self _ _))).add
-        (ih fun b hb => hsmall b (Multiset.mem_cons_of_mem hb))
+    rw [rootLogCoeff_cons, Multiset.map_cons, Multiset.sum_cons]
+    exact (hasSum_powerLogCoeff hp a (hsmall a (Multiset.mem_cons_self _ _))).add
+      (ih fun b hb => hsmall b (Multiset.mem_cons_of_mem hb))
 
 private theorem exp_sum_log {p : ℕ} (W : Multiset ℂ) (s : ℂ)
     (hsmall : ∀ a ∈ W, ‖a * (p : ℂ) ^ (-s)‖ < 1) :
@@ -60,6 +71,7 @@ private theorem exp_sum_log {p : ℕ} (W : Multiset ℂ) (s : ℂ)
     simp only [Multiset.map_cons, Multiset.sum_cons, Complex.exp_add,
       Complex.exp_log hne, multiplier, Multiset.prod_cons]
     rw [ih fun b hb => hsmall b (Multiset.mem_cons_of_mem hb)]
+    rfl
 
 /-- The finite local Taylor logarithms give an absolutely convergent Euler identity. -/
 theorem logCoeff_summable_exp {p : ℕ} (hp : p.Prime) (W : Multiset ℂ) {s : ℂ}
@@ -124,6 +136,7 @@ theorem logCoeff_prime_pow {p : ℕ} (hp : p.Prime) (W : Multiset ℂ)
   obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hk
   rw [logCoeff, rootLogCoeff_pow hp.one_lt,
     RHTower.eulerLogDirichletCoeff_prime_pow_succ _ _ hp]
+  simp only [Nat.cast_succ]
   ring
 
 /-- Every exterior root forces negative logarithmic coefficients beyond every cutoff. -/
