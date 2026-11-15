@@ -7,7 +7,7 @@
 
 ## Statement
 
-For every `1/2 < α < 1`, put `t = 2^α + 2^(1−α)` and remove the conductor factor from the existing deformation:
+For every `0 < α < 1`, put `t = 2^α + 2^(1−α)` and remove the conductor factor from the existing deformation:
 
 `Dα(s) = 2^(1/2−s) primeTwoFactor(α,s) ζ(s)`.
 

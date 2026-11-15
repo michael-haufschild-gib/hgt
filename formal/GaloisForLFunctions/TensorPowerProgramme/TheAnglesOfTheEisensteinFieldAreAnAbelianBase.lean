@@ -26,7 +26,8 @@ loss exactly one.
 open Complex Filter Topology
 open NumberField IsDedekindDomain
 open GaloisForLFunctions.FamilyContinuationTheory GaloisForLFunctions.FamilyContinuationTheory.EisensteinNorm
-open GaloisForLFunctions.HeckeLFunctions MetaplecticMobiusDescent.Eisenstein
+open GaloisForLFunctions.HeckeLFunctions GaloisForLFunctions.MetaplecticMobiusDescent.Eisenstein
+open scoped ComplexConjugate
 
 noncomputable section
 

@@ -25,6 +25,8 @@ Otherwise `−1<x≤1`, hence `x²≤1`, and
 
 Thus one of the four coefficients is negative. The argument uses only exact local coefficient identities; no zero estimate enters.
 
+For ζ the corresponding coefficient is `1/k>0`, by `RHTower.eulerLogDirichletCoeff_prime_pow_succ`. The test is finite at the modifying prime; the positive passive twins can place that prime beyond any prescribed coefficient prefix.
+
 ## Internal audit
 
 `PositiveFiniteEulerBound.not_strictEulerBound` already excludes strict square-root growth through an asymptotic doubled-power identity. The present claim is a finite sign obstruction, requiring neither a growth bound nor an off-line zero. Corpus searches found the logarithmic coefficient formula and critical-circle classification, but no four-exponent sign test. No external literature checks; axiom checks skipped.

@@ -40,12 +40,13 @@ private theorem integral_cosh_affine_mul (x : ℝ) :
       (x * Real.cosh (x * (1-2*u))) u := by
     apply (((((hasDerivAt_const u (1:ℝ)).sub
       ((hasDerivAt_id u).const_mul 2)).const_mul x).sinh).neg.div_const 2).congr_deriv
+    simp only [Pi.sub_apply, id_eq]
     ring
   have hi : IntervalIntegrable (fun u => x * Real.cosh (x * (1-2*u))) volume 0 1 :=
     (by fun_prop : Continuous _).intervalIntegrable _ _
   have h := integral_eq_sub_of_hasDerivAt (fun u _ => hd u) hi
   rw [intervalIntegral.integral_const_mul] at h
-  simp only [mul_zero, sub_zero, mul_one, show (1:ℝ)-2*1 = -1 by ring,
+  simp only [mul_zero, sub_zero, mul_one, show (1:ℝ)-2 = -1 by ring,
     mul_neg_one, Real.sinh_neg, neg_neg] at h
   linarith only [h]
 

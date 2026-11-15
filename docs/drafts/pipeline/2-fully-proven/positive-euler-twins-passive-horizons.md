@@ -1,4 +1,4 @@
-# Positive Euler twins remain passive horizons
+# Positive Euler twins have passive scattering
 
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper); Lean in progress
