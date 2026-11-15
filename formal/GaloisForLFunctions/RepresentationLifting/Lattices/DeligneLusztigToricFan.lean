@@ -6,7 +6,7 @@ import GaloisForLFunctions.RepresentationLifting.Lattices.RankTwoHermite
 The rays `(1,0), …, (1,p), (p+1,p²+p+1)` from Lemma 3.12 of
 https://arxiv.org/abs/2610.40335 have unimodular adjacent pairs. The
 determinant-index formula makes each adjacent lattice the full integer
-lattice. Every cone lattice point is an integral combination of adjacent
+lattice. Every cone lattice point is a nonnegative integral combination of adjacent
 rays, and each generating ray is indecomposable. The three-ray relations
 give coefficients `2, …, 2, p+2`,
 the same coefficients appearing in the exceptional intersection chain.
@@ -121,7 +121,7 @@ private theorem cone_eq_zero_of_first_eq_zero (n : ℕ) (v : Fin 2 → ℤ)
   have hn : 0 ≤ (n : ℤ) := by omega
   have hb := hv.2.2
   rw [hx, mul_zero] at hb
-  have hy : v 1 = 0 := by nlinarith only [hb, hv.2.1, hn]
+  have hy : v 1 = 0 := by nlinarith only [hb, hv.2.1, mul_nonneg hn hv.2.1]
   ext i
   fin_cases i
   · exact hx
@@ -153,6 +153,7 @@ theorem ray_indecomposable (n k : ℕ) (u v : Fin 2 → ℤ) :
     have hδu : 0 ≤ N * u 0 - D * u 1 := sub_nonneg.mpr hu.2.2
     have hδv : 0 ≤ N * v 0 - D * v 1 := sub_nonneg.mpr hv.2.2
     have hδ : N * u 0 - D * u 1 = 0 := by linarith only [hsum, hδu, hδv]
+    -- A zero boundary deficit forces the first coordinate to be a multiple of `p+1`.
     let z := u 1 - ((n : ℤ) + 1) * u 0
     have hperiod : u 0 = D * z := by
       dsimp only [N, D] at hδ
@@ -188,7 +189,7 @@ theorem cone_lattice_decomposition (n : ℕ) (v : Fin 2 → ℤ) :
     by_cases hxz : x = 0
     · have hyz : y = 0 := by
         rw [hxz, mul_zero] at hb
-        nlinarith only [hy0, hb, hn]
+        nlinarith only [hy0, hb, mul_nonneg hn hy0]
       refine ⟨⟨0, by omega⟩, 0, 0, le_rfl, le_rfl, ?_⟩
       simp only [zero_smul, zero_add]
       ext i
@@ -197,6 +198,7 @@ theorem cone_lattice_decomposition (n : ℕ) (v : Fin 2 → ℤ) :
       · exact hyz
     have hx : 0 < x := by omega
     by_cases hlo : y ≤ ((n : ℤ) + 1) * x
+    -- Below slope `p`, division by `x` chooses two rays with first coordinate one.
     · let q := y / x
       let r := y % x
       have hq0 : 0 ≤ q := Int.ediv_nonneg hy0 hx.le
@@ -234,7 +236,8 @@ theorem cone_lattice_decomposition (n : ℕ) (v : Fin 2 → ℤ) :
             Matrix.cons_val_zero, Nat.cast_add, Nat.cast_one, hkq]
           change y = (x - r) * q + r * (q + 1)
           nlinarith only [hdiv]
-    · let a := (((n : ℤ) + 1) ^ 2 + ((n : ℤ) + 1) + 1) * x - ((n : ℤ) + 2) * y
+    · -- The last unimodular cone gives its two coefficients directly.
+      let a := (((n : ℤ) + 1) ^ 2 + ((n : ℤ) + 1) + 1) * x - ((n : ℤ) + 2) * y
       let b := y - ((n : ℤ) + 1) * x
       have ha : 0 ≤ a := sub_nonneg.mpr hb
       have hbb : 0 ≤ b := by dsimp only [b]; omega

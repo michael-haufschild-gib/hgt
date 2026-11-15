@@ -35,7 +35,7 @@ theorem unitPhase_nat_div (m : ℕ) (d : ℝ) :
 /-- The inverse-chord coefficient, expressed without a complex division. -/
 def chordFactor (t : ℝ) : ℂ := -RHTower.Sieve.klCoeff t
 
-/-- Real cotangent in turns. -/
+/-- Cotangent of the half-angle of a phase measured in turns. -/
 def cotangent (t : ℝ) : ℝ := Real.cos (Real.pi * t) / Real.sin (Real.pi * t)
 
 private theorem chordFactor_rectangular (t : ℝ) :
