@@ -30,7 +30,7 @@ theorem exceptionalChainEnergy_expansion (n : ℕ) (f : ℕ → ℝ) :
       2 * ∑ k ∈ range (n + 1), f k ^ 2 -
       2 * ∑ k ∈ range n, f k * f (k + 1) + ((n : ℝ) + 1) * f n ^ 2 := by
   rw [exceptionalChainEnergy, incidenceEnergy_chainCoupling]
-  simp only [add_mul, sum_add_distrib, ← mul_sum, neg_one_mul, neg_mul,
+  simp only [add_mul, sum_add_distrib, ← mul_sum,
     sum_neg_distrib, ite_mul, zero_mul, sum_ite_eq', mem_range, Nat.lt_succ_self, if_true]
   ring
 
@@ -89,7 +89,7 @@ theorem exceptionalChainEnergy_boundary_decomposition (n : ℕ) (f : ℕ → ℝ
         rw [mul_sum]; exact sum_congr rfl fun _ _ => by ring, sum_pinnedIncrement]
   rw [exceptionalChainEnergy_squares, hsum]
   field_simp
-  <;> ring
+  ring
 
 /-- The effective terminal coefficient is the quotient of the chain discriminant by its length. -/
 theorem exceptionalChainEnergy_boundary_bound (n : ℕ) (f : ℕ → ℝ) :
@@ -207,7 +207,7 @@ theorem exceptionalChainEnergy_head_decomposition (n : ℕ) (f : ℕ → ℝ) :
   rw [he, exceptionalChainEnergy_adjacent_squares]
   dsimp only [c]
   field_simp
-  <;> ring
+  ring
 
 /-- The effective coefficient at the first coordinate is `1 + (p + 1) / p²`. -/
 theorem exceptionalChainEnergy_head_bound (n : ℕ) (f : ℕ → ℝ) :
@@ -233,7 +233,7 @@ theorem exceptionalChainEnergy_head_ramp (n : ℕ) (t : ℝ) :
   have hend : exceptionalChainHeadRamp n t n = t / ((n : ℝ) + 1) ^ 2 := by
     unfold exceptionalChainHeadRamp
     field_simp
-    <;> ring
+    ring
   have hj (k : ℕ) : exceptionalChainHeadRamp n t (k + 1) - exceptionalChainHeadRamp n t k +
       ((n : ℝ) + 2) / ((n : ℝ) + 1) ^ 2 * t = 0 := by
     simp only [exceptionalChainHeadRamp, Nat.cast_add, Nat.cast_one]
@@ -253,7 +253,7 @@ theorem exceptionalChainEnergy_indexProfile (n : ℕ) :
     field_simp
   rw [hf, exceptionalChainEnergy_ramp]
   field_simp
-  <;> ring
+  ring
 
 /-- The descending branch multiplicities have energy `p²(p²+p+1)`. -/
 theorem exceptionalChainEnergy_branchProfile (n : ℕ) :
@@ -267,10 +267,10 @@ theorem exceptionalChainEnergy_branchProfile (n : ℕ) :
     funext k
     unfold exceptionalChainHeadRamp
     field_simp
-    <;> ring
+    ring
   rw [hf, exceptionalChainEnergy_head_ramp]
   field_simp
-  <;> ring
+  ring
 
 /-- The sharp path bound also controls the entire exceptional-chain mass. -/
 theorem exceptionalChainEnergy_coercive (n : ℕ) (f : ℕ → ℝ) :

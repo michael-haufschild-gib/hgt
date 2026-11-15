@@ -6,7 +6,9 @@ import GaloisForLFunctions.RepresentationLifting.Lattices.RankTwoHermite
 The rays `(1,0), …, (1,p), (p+1,p²+p+1)` from Lemma 3.12 of
 https://arxiv.org/abs/2610.40335 have unimodular adjacent pairs. The
 determinant-index formula makes each adjacent lattice the full integer
-lattice. The three-ray relations give coefficients `2, …, 2, p+2`,
+lattice. Every cone lattice point is an integral combination of adjacent
+rays, and each generating ray is indecomposable. The three-ray relations
+give coefficients `2, …, 2, p+2`,
 the same coefficients appearing in the exceptional intersection chain.
 -/
 
@@ -17,6 +19,15 @@ namespace GaloisForLFunctions.RepresentationLifting.DeligneLusztigFan
 def ray (n k : ℕ) : Fin 2 → ℤ :=
   if k ≤ n + 1 then ![1, (k : ℤ)]
   else ![(n : ℤ) + 2, ((n : ℤ) + 1) ^ 2 + ((n : ℤ) + 1) + 1]
+
+theorem ray_ne_zero (n k : ℕ) : ray n k ≠ 0 := by
+  intro h
+  have hx := congrFun h 0
+  by_cases hk : k ≤ n + 1
+  · exact one_ne_zero (by
+      simpa only [ray, if_pos hk, Matrix.cons_val_zero, Pi.zero_apply] using hx)
+  · simp only [ray, if_neg hk, Matrix.cons_val_zero, Pi.zero_apply] at hx
+    omega
 
 /-- Matrix whose columns are consecutive fan rays. -/
 def adjacentMatrix (n : ℕ) (k : Fin (n + 2)) : Matrix (Fin 2) (Fin 2) ℤ :=
@@ -105,6 +116,62 @@ private theorem cone_smul (n : ℕ) (a : ℤ) (v : Fin 2 → ℤ)
   have h := mul_le_mul_of_nonneg_left hv.2.2 ha
   nlinarith only [h]
 
+private theorem cone_eq_zero_of_first_eq_zero (n : ℕ) (v : Fin 2 → ℤ)
+    (hv : InCone n v) (hx : v 0 = 0) : v = 0 := by
+  have hn : 0 ≤ (n : ℤ) := by omega
+  have hb := hv.2.2
+  rw [hx, mul_zero] at hb
+  have hy : v 1 = 0 := by nlinarith only [hb, hv.2.1, hn]
+  ext i
+  fin_cases i
+  · exact hx
+  · exact hy
+
+/-- No generating ray is a sum of two nonzero integer points of the cone. -/
+theorem ray_indecomposable (n k : ℕ) (u v : Fin 2 → ℤ) :
+    InCone n u ∧ InCone n v ∧ ray n k = u + v → u = 0 ∨ v = 0 := by
+  rintro ⟨hu, hv, he⟩
+  have h₀ := congrFun he 0
+  have h₁ := congrFun he 1
+  by_cases hk : k ≤ n + 1
+  · simp only [ray, if_pos hk, Matrix.cons_val_zero, Pi.add_apply] at h₀
+    have hz : u 0 = 0 ∨ v 0 = 0 := by
+      have hu0 := hu.1
+      have hv0 := hv.1
+      omega
+    exact hz.imp (cone_eq_zero_of_first_eq_zero n u hu)
+      (cone_eq_zero_of_first_eq_zero n v hv)
+  · simp only [ray, if_neg hk, Matrix.cons_val_zero, Matrix.cons_val_one,
+      Pi.add_apply] at h₀ h₁
+    let D : ℤ := (n : ℤ) + 2
+    let N : ℤ := ((n : ℤ) + 1) ^ 2 + ((n : ℤ) + 1) + 1
+    have hD : 0 < D := by dsimp only [D]; omega
+    have hsum : (N * u 0 - D * u 1) + (N * v 0 - D * v 1) = 0 := by
+      calc
+        _ = N * (u 0 + v 0) - D * (u 1 + v 1) := by ring
+        _ = 0 := by rw [← h₀, ← h₁]; dsimp only [D, N]; ring
+    have hδu : 0 ≤ N * u 0 - D * u 1 := sub_nonneg.mpr hu.2.2
+    have hδv : 0 ≤ N * v 0 - D * v 1 := sub_nonneg.mpr hv.2.2
+    have hδ : N * u 0 - D * u 1 = 0 := by linarith only [hsum, hδu, hδv]
+    let z := u 1 - ((n : ℤ) + 1) * u 0
+    have hperiod : u 0 = D * z := by
+      dsimp only [N, D] at hδ
+      dsimp only [D, z]
+      nlinarith only [hδ]
+    by_cases huz : u 0 = 0
+    · exact Or.inl (cone_eq_zero_of_first_eq_zero n u hu huz)
+    · have hup : 0 < u 0 := lt_of_le_of_ne hu.1 (Ne.symm huz)
+      have hz : 0 < z := by
+        by_contra h
+        have hm := mul_le_mul_of_nonneg_left (le_of_not_gt h) hD.le
+        nlinarith only [hm, hperiod, hup]
+      have hz1 : 1 ≤ z := by omega
+      have hm := mul_le_mul_of_nonneg_left hz1 hD.le
+      have hvz : v 0 = 0 := by
+        change D = u 0 + v 0 at h₀
+        nlinarith only [hm, hperiod, h₀, hv.1]
+      exact Or.inr (cone_eq_zero_of_first_eq_zero n v hv hvz)
+
 /-- Every lattice point of the cone is a nonnegative integral combination of adjacent rays. -/
 theorem cone_lattice_decomposition (n : ℕ) (v : Fin 2 → ℤ) :
     InCone n v ↔ ∃ k : Fin (n + 2), ∃ a b : ℤ,
@@ -177,7 +244,7 @@ theorem cone_lattice_decomposition (n : ℕ) (v : Fin 2 → ℤ) :
       ext i
       fin_cases i <;>
         simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Matrix.cons_val_one,
-          Matrix.cons_val_zero, Nat.cast_add, Nat.cast_one]
+          Matrix.cons_val_zero, Nat.cast_add, Nat.cast_one, mul_one]
       · change x = a + b * ((n : ℤ) + 2)
         dsimp only [a, b]
         ring
@@ -193,6 +260,7 @@ theorem cone_lattice_decomposition (n : ℕ) (v : Fin 2 → ℤ) :
 #print axioms adjacent_lattice_index
 #print axioms interior_ray_relation
 #print axioms last_ray_relation
+#print axioms ray_indecomposable
 #print axioms cone_lattice_decomposition
 
 end GaloisForLFunctions.RepresentationLifting.DeligneLusztigFan

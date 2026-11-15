@@ -59,9 +59,11 @@ theorem permutationFixedCount_eq_card_iff (g : G) :
   · intro h
     have he : Finset.univ.filter (fun x : X => g • x = x) = Finset.univ :=
       Finset.eq_of_subset_of_card_le (Finset.filter_subset _ _) (by
-        simpa only [Finset.card_univ] using h.ge)
+        simpa only [permutationFixedCount, Finset.card_univ] using h.ge)
     intro x
-    exact (Finset.mem_filter.mp (he.symm ▸ Finset.mem_univ x)).2
+    have hx : x ∈ Finset.univ.filter (fun y : X => g • y = y) := he.symm ▸ Finset.mem_univ x
+    have hx' := Finset.mem_filter.mp hx
+    exact hx'.2
   · intro h
     simp [permutationFixedCount, h]
 
@@ -101,7 +103,7 @@ theorem reducedPermutation_eq_zero_iff :
     change (reducedPermutationVirtualRepresentation G X).val g = 0 at he
     rw [reducedPermutationVirtualRepresentation_apply] at he
     exact (permutationFixedCount_eq_card_iff G X g).mp
-      (Nat.cast_injective (α := ℂ) (sub_eq_zero.mp he))
+      (Nat.cast_injective (R := ℂ) (sub_eq_zero.mp he))
   · intro h
     apply Subtype.ext
     funext g
@@ -109,6 +111,7 @@ theorem reducedPermutation_eq_zero_iff :
     rw [reducedPermutationVirtualRepresentation_apply,
       (permutationFixedCount_eq_card_iff G X g).mpr (h g), sub_self]
 
+omit [Fintype G] in
 /-- Every reduced permutation class lies in the dimension augmentation ideal. -/
 theorem reducedPermutation_augmentation :
     virtualRepresentationAugmentation G (reducedPermutationVirtualRepresentation G X) = 0 := by
@@ -130,12 +133,31 @@ theorem reducedPermutation_isVirtuallyFree_iff :
   · intro h
     exact ((isVirtuallyFree_and_degree_zero_iff G _).mpr h).1
 
+omit [Fintype G] in
 /-- Field K-zero sees none of the reduced permutation character. -/
 theorem reducedPermutation_K0Action_zero :
     ∀ x : FieldK0 ℂ, virtualRepresentationK0Action G
       (reducedPermutationVirtualRepresentation G X) x = 0 := by
   apply (virtualRepresentationK0Action_zero_iff G _).mpr
   exact reducedPermutation_augmentation G X
+
+/-- Every nontrivial finite group has a nonfree virtual class invisible to field K-zero. -/
+theorem exists_K0_invisible_nonfree_iff :
+    (∃ χ : VirtualRepresentationRing G,
+      (∀ x : FieldK0 ℂ, virtualRepresentationK0Action G χ x = 0) ∧
+      ¬ IsVirtuallyFree G χ) ↔ Nontrivial G := by
+  constructor
+  · rintro ⟨χ, _, hχ⟩
+    obtain ⟨g, hg, _⟩ := (not_isVirtuallyFree_iff G χ).mp hχ
+    exact ⟨⟨g, 1, hg⟩⟩
+  · intro hG
+    refine ⟨reducedPermutationVirtualRepresentation G G, reducedPermutation_K0Action_zero G G, ?_⟩
+    intro hfree
+    have ht := (reducedPermutation_isVirtuallyFree_iff G G).mp hfree
+    obtain ⟨a, b, hab⟩ := hG.exists_pair_ne
+    have ha : a = 1 := by simpa only [smul_eq_mul, mul_one] using ht a 1
+    have hb : b = 1 := by simpa only [smul_eq_mul, mul_one] using ht b 1
+    exact hab (ha.trans hb.symm)
 
 local instance (H : Subgroup G) : Fintype (G ⧸ H) := Fintype.ofFinite _
 
@@ -165,6 +187,7 @@ theorem coset_isVirtuallyFree_iff (H : Subgroup G) :
 #print axioms permutation_isVirtuallyFree_iff
 #print axioms reducedPermutation_isVirtuallyFree_iff
 #print axioms reducedPermutation_K0Action_zero
+#print axioms exists_K0_invisible_nonfree_iff
 #print axioms coset_isVirtuallyFree_iff
 
 end GaloisForLFunctions.RepresentationLifting

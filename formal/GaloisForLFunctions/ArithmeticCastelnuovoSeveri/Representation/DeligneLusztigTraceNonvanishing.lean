@@ -38,18 +38,27 @@ def chordFactor (t : ℝ) : ℂ := -RHTower.Sieve.klCoeff t
 /-- Real cotangent in turns. -/
 def cotangent (t : ℝ) : ℝ := Real.cos (Real.pi * t) / Real.sin (Real.pi * t)
 
+private theorem chordFactor_rectangular (t : ℝ) :
+    chordFactor t = (1 / 2 : ℂ) + Complex.I / 2 * (cotangent t : ℂ) := by
+  change -(-(1 / 2 : ℂ) - Complex.I / 2 * (cotangent t : ℂ)) = _
+  ring
+
 theorem chordFactor_re (t : ℝ) : (chordFactor t).re = 1 / 2 := by
-  simp [chordFactor, RHTower.Sieve.klCoeff]
+  rw [chordFactor_rectangular]
+  simp
 
 theorem chordFactor_im (t : ℝ) : (chordFactor t).im = cotangent t / 2 := by
-  simp [chordFactor, RHTower.Sieve.klCoeff, cotangent] <;> ring
+  rw [chordFactor_rectangular]
+  simp <;> ring
 
 /-- In the open first turn the chord coefficient is the literal inverse. -/
 theorem chordFactor_eq_inv (t : Set.Ioo (0 : ℝ) 1) :
     chordFactor t = (1 - unitPhase t)⁻¹ := by
   have h := RHTower.Sieve.klCoeff_mul t.property.1 t.property.2
   have hm : chordFactor t * (1 - unitPhase t) = 1 := by
-    simpa only [chordFactor, unitPhase, neg_mul, mul_sub, mul_one, neg_sub] using h
+    calc
+      _ = RHTower.Sieve.klCoeff t * (unitPhase t - 1) := by rw [chordFactor]; ring
+      _ = 1 := h
   exact eq_inv_of_mul_eq_one_left hm
 
 /-- No chord in the open first turn vanishes. -/
@@ -88,7 +97,7 @@ theorem splitRational_im (p : ℝ) (t u : Set.Ioo (0 : ℝ) 1) :
     rw [splitRational, chordFactor_eq_inv, chordFactor_eq_inv]
     push_cast
     field_simp [unitPhase_chord_ne_zero t, unitPhase_chord_ne_zero u]
-    <;> ring
+    ring
   rw [he]
   simp only [pow_two, Complex.mul_im, Complex.mul_re, Complex.add_im, Complex.sub_im,
     Complex.sub_re, Complex.one_re, Complex.one_im, Complex.ofReal_re, Complex.ofReal_im,
@@ -109,7 +118,7 @@ theorem unitaryRational_im (p : ℝ) (t u : Set.Ioo (0 : ℝ) 1) :
     rw [unitaryRational, chordFactor_eq_inv, chordFactor_eq_inv]
     dsimp only [c₀, cᵤ, cᵥ]
     field_simp [unitPhase_chord_ne_zero t, unitPhase_chord_ne_zero u]
-    <;> ring
+    ring
   rw [he]
   dsimp only [c₀, cᵤ, cᵥ]
   simp only [pow_two, Complex.mul_im, Complex.mul_re, Complex.add_im, Complex.sub_im,

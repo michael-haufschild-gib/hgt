@@ -1,6 +1,6 @@
 # The Tensor-Power Programme Ω (TPP)
 
-Namespace `GaloisForLFunctions.TensorPowerProgramme`; umbrella `TensorPowerProgramme.lean`.
+Namespace `GaloisForLFunctions.TensorPowerProgramme`; umbrella `TensorPowerProgramme.lean`; 2 modules.
 Specification: §2.22 of [the review-1511 obstacles summary](../../../docs/reports/review-1511/obstacles-summary.md).
 
 *Deligne's tensor-power argument, carried to `Spec ℤ`: what it needs, where it breaks, and which
@@ -76,7 +76,10 @@ obstruction of the producer.
 | Polarization pair | `α` and `N(x)^w/α` (functional equation); their tensor has the known size `N(x)^w` |
 | Conjugation pair | `α` and `ᾱ`; their tensor has the unknown size `‖α‖²`. Purity is the coincidence of the two pairings |
 | Flow datum | Frobenius at `x` is `N(x)^D` for one operator `D`: the motive of the zeros `⊕ ℤ(−ρ)` over `Spec ℤ`. Its geometric monodromy is trivial |
-| Abelian base | every local system a sum of characters (Dirichlet and Hecke twists, Jacobi-sum characters, the archimedean family) |
+| Flow datum (Lean) | `flowTrace z b n = Σ_i b_i n^{z_i}`, moments `flowMomentTerm z b k σ n = Λ(n) |t(n)|^{2k} n^{−σ}` |
+| Abelian base | every local system a sum of characters (Dirichlet and Hecke twists, Jacobi-sum characters, the archimedean family); in Lean `IsAbelianBase N λ ev`: norms, von Mangoldt weights, characters with conjugation = inversion, linear independence, and the prime number theorem of each character |
+| Twisted datum (Lean) | `twistTrace` `t(x) = Σ_i b_i χ_i(x) N(x)^{z_i}`, moments `twistMomentTerm` |
+| Tuples (Lean) | `tupleMode` `Σ z_{a_j}`, `tupleWeight` `Π b_{a_j}`, `tupleChar` `Π χ_{a_j}`; pairs `pairMode` `Z_{a,a'}`, `pairWeight` `B_{a,a'}`, `pairChar` `χ_a χ_{a'}⁻¹`; edge residues `edgeResidue`, `twistEdgeResidue` |
 | Pencil through `ζ` (N1) | an Euler datum over a base with a pole law, non-abelian monodromy, and the zeros of `ζ` among the local parameters of one point |
 | Sign-line completion (N2) | a joint completion of a Möbius-signed monomial of period `k ≥ 7` priced `c = k/2` |
 | Exact transport (N3) | zeros of `ζ` forced into a period-`k` family with no estimate floor and constants uniform in `k` |
@@ -117,6 +120,14 @@ obstruction of the producer.
 6. **Diagnosis over `Spec ℤ`.** The motive of the zeros is a flow datum: all Frobenii are
    simultaneously diagonal, the geometric monodromy is trivial, every tuple of zeros contributes
    to the edge and nothing cancels. The zeros have to vary in a family with monodromy.
+7. **Coinvariants are everything, nothing cancels.** For a flow datum the `k`-th tensor moment is
+   `Σ_{a,a'} B_{a,a'} (−ζ'/ζ)(σ − Z_{a,a'})` over pairs of `k`-tuples of modes; each tuple carries
+   its own shifted pole. At the edge `σ = 1 + 2kW` the surviving pairs are the conjugation pairs
+   of top tuples, and the residue is `Σ_w ‖Σ_{Σ z_a = w} Π b_a‖²`, a sum of squares that the
+   top mode of largest imaginary part makes positive. On an abelian base the characters only
+   split the squares further (`Σ ‖Σ_{(Σ z_a, χ_a) = κ} Π b_a‖²`); positivity is the linear
+   independence of characters, and the analytic input is the prime number theorem of each
+   character (a pole only for the trivial one, no zero on `Re s = 1`).
 
 ## 6. Questions
 
@@ -144,7 +155,8 @@ the width law at the primes (`riemannHypothesis_iff_moments_primeTraces`,
 (GaloisTheoryOfZeros); the cubic probe, its correction and rung (`correctionAbscissa_eq`).
 
 **To build.**
-- Euler data over a base with tensor powers, moment exponents and the ruler law.
+- Euler data over a base with tensor powers, moment exponents and the ruler law (flow data and
+  abelian bases done: `IsAbelianBase`, `twistMomentTerm`, the edge residue as a sum of squares).
 - The pole law as an axiom with its Rankin step, and a dissection of its inputs over `𝔽_q`.
 - An edge calculus: which tuples survive averaging under abelian, symplectic and flow monodromy, and
   at which weight.
@@ -160,7 +172,8 @@ the width law at the primes (`riemannHypothesis_iff_moments_primeTraces`,
 | Tensor powers of `ζ` amplify the depth | Products of the spectrum are homogeneous: gain equals depth times length |
 | A family proves the purity of its members | Only members of positive mass, through moments of the full traces; without a measure, the closed strip |
 | The heat pencil is a pencil | Only its fibre at `τ = 0` has a Dirichlet series; arithmetic group and heat monodromy agree on finite windows only |
-| Twist families are a base | They are abelian; their tensor powers are moments and their edges are conjugation pairs |
+| Twist families are a base | They are abelian: every even tensor moment has base loss exactly one and its edge is a positive sum of squares over conjugation pairs (`summable_dirichletMomentTerm_iff`) |
+| Characters can cancel the edge | Distinct characters are linearly independent; the edge residue is a sum of squares that never vanishes |
 | The Möbius sign is the obstruction | The sign line has wall `½`; completion caps the producer at `3/5` |
 | A dilation transports zeros at the Deligne price | It has the Deligne frame with top `(k + 1)/2`: a ruler |
 | Composing frames lowers the centre | Composite centres are convex combinations of the centres |
@@ -170,9 +183,9 @@ the width law at the primes (`riemannHypothesis_iff_moments_primeTraces`,
 
 | Theorem | Status |
 |---|---|
-| Ruler law `2kW ≤ a_k ≤ 2kW + a₀` for Euler data over a base; pole law ⇔ purity | target |
-| Over `Spec ℤ`: `2kw ≤ a_k ≤ 1 + 2kw` for the prime-trace moments of `ζ` | target |
-| Abelian edge: under abelian monodromy the pole law is equivalent to its conclusion | target |
+| Flow data have base loss exactly one: `D_k(σ) < ∞ ⇔ σ > 1 + 2kW`; coinvariant expansion into shifted `−ζ'/ζ`; positive edge residue; pole law ⇔ `W ≤ w₀` | `summable_flowMomentTerm_iff`, `ofReal_tsum_flowMomentTerm`, `edgeResidue_pos`, `exists_poleLaw_iff` — proved |
+| Abelian bases are rulers: same exact law on every abelian base; Dirichlet twists of any modulus form one | `summable_twistMomentTerm_iff`, `exists_twistPoleLaw_iff`, `isAbelianBase_dirichlet`, `summable_dirichletMomentTerm_iff` — proved |
+| Over `Spec ℤ` for `ζ` itself: the prime-trace moments read `w` with an offset in `[0, 1]`; uniformity in `k` is RH | corpus: `riemannHypothesis_iff_moments_primeTraces`, `zetaZeroWidth_le_iff_linear_tensor_loss` |
 | Price ledger of the Deligne, sign and completion lines | target |
 | Pencil axioms and the verdict on the heat, twist and Kummer candidates | target |
 | Sign-line price of Jacobi-sum characters and of the `A₂` coefficients | target |

@@ -35,10 +35,11 @@ theorem squareKummerRegularMonomialBasis_apply (a : SquareKummerRegularIndex p s
       ((algebraMap K[X] L X) ^ a.2.val / β a.1.val) • dy := by
   classical
   rw [squareKummerRegularMonomialBasis, Module.Basis.map_apply, Pi.basis_apply]
+  let coefficient : SquareKummerRegularCoefficientSpace p s d r :=
+    Pi.single a.1 (degreeLT.basis K (kummerDifferentialCutoff p s d r a.1.val) a.2)
   change (∑ i : Fin (p ^ (s + 1) + 1),
-    (algebraMap K[X] L
-      (((Pi.single a.1 (degreeLT.basis K (kummerDifferentialCutoff p s d r a.1.val) a.2)) i) : K[X]) /
-        β i.val) • dy) = _
+    (algebraMap K[X] L (coefficient i : K[X]) / β i.val) • dy) = _
+  dsimp only [coefficient]
   rw [Finset.sum_eq_single a.1]
   · rw [Pi.single_eq_same, degreeLT.basis_val, map_pow]
   · intro i _ hi

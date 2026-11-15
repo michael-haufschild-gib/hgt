@@ -131,7 +131,7 @@ theorem exists_uniform_signed_signal_bound (a ε : ℝ)
   rw [integral_const_mul] at h
   calc
     _ ≤ B * (signedConductorScale χ) ^ ε * X ^ a := by
-      convert h using 1 <;> unfold B <;> ring
+      convert h using 1 <;> first | rfl | (dsimp only [B]; ring)
     _ ≤ _ := by gcongr; linarith
 
 /-- The analytic signal is the actual Möbius-signed sum over all squarefree ideals. -/
