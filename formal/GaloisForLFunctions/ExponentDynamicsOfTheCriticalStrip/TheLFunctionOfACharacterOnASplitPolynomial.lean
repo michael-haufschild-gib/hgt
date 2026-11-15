@@ -264,7 +264,7 @@ theorem sum_monicDeg_pred_char_mul_gaussSum {χ : MulChar F ℂ} {f : F[X]} (hsq
       Φ (ofCoeffs c) = 0 := by
     obtain ⟨s, hs0, hs⟩ : ∃ s : F, s ≠ 0 ∧ χ s ^ m ≠ 1 := by
       by_contra hcon
-      push_neg at hcon
+      push Not at hcon
       apply hχm
       ext a
       rw [MulChar.pow_apply_coe, MulChar.one_apply_coe]

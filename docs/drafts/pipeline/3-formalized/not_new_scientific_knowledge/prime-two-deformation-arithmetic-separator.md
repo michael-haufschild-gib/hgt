@@ -1,7 +1,7 @@
 # Arithmetic coefficients separate the prime-two deformation
 
-- **Stage:** 2-fully-proven
-- **Type:** Existing-result application; Lean audit pending; excluded from contribution count
+- **Stage:** 3-formalized
+- **Type:** Existing-result application; excluded from contribution count
 - **Obstacle:** O11, review 1511 §2.2.
 - **Connection:** the passive prime-two scattering deformation and uniqueness of absolutely convergent Dirichlet series.
 
@@ -28,5 +28,5 @@ This excludes the specific positive-trace deformation in O11. It does not assert
 ## Verification
 
 - Lean module: `BlackHoleRingdown/ThePositiveEulerTwinsArePassive.lean`.
-- Final compile and umbrella integration pending. Axiom checks skipped at user request.
+- Declarations: `primeTwo_coeff_neg_iff`, `not_exists_nonnegative_primeTwo_representation`. Module passed `lake --old env lean` and is imported by the BlackHoleRingdown umbrella. Axiom checks skipped.
 - Not counted toward 250: coefficient formula already belongs to `PositiveFiniteEulerCoefficients`; this is its application to the named scattering deformation.

@@ -1,7 +1,7 @@
 # Positive Euler twins have passive scattering
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Obstacle:** O11, review 1511 §2.2.
 - **Connection:** positive finite Euler modifications in the Selberg programme and the Schur criterion of arithmetic scattering.
 
@@ -30,5 +30,6 @@ The two local Euler roots are `−r,−u`. The existing logarithmic expansion id
 - **Rejected route:** add ordinary nonnegative multiplicative coefficients to the physical positivity laws to distinguish ζ.
 - **Positive survivor:** the two-coefficient inequality `a(p)² > 2a(p²)` excludes every nonnegative logarithmic representation, while ordinary coefficients remain positive at every integer and match any prescribed finite ζ prefix.
 - **Known inputs:** `PositiveFiniteEulerCoefficients`, `PositiveFiniteEulerCompletion`, `PositiveFiniteEulerZeros`, `PositiveFiniteEulerProduct`, `schur_bound_iff`, modular scattering contractivity and unitarity.
-- **Lean:** `BlackHoleRingdown/ThePositiveEulerTwinsArePassive.lean`; full theorem and audits pending.
-- **Count:** unaccepted until formalization and significance review. Axiom checks skipped at user request.
+- **Lean:** `BlackHoleRingdown/ThePositiveEulerTwinsArePassive.lean`, `PositiveEulerHorizon.exists_positive_passive_twin`; entire reflection-symmetric completion: `differentiable_completedXi`, `completedXi_one_sub`; logarithmic uniqueness obstruction: `not_exists_nonnegative_logarithm`.
+- **Verification:** `lake --old env lean GaloisForLFunctions/BlackHoleRingdown/ThePositiveEulerTwinsArePassive.lean` passed; BlackHoleRingdown umbrella import added. Axiom checks skipped.
+- **Count:** one integrated O11 contribution with the four-even-power separator; auxiliary uniqueness extraction and the known signed-family application do not count separately.

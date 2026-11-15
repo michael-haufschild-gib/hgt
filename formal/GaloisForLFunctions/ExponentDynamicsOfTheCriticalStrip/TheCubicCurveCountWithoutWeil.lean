@@ -139,11 +139,12 @@ theorem eq_of_pow_three_eq_one {ω y : E} (hω : ω ^ 3 = 1) (hω1 : ω ≠ 1) (
   · exact Or.inr (Or.inr (sub_eq_zero.mp h))
 
 /-- **Equidistribution of the cubic classes.** `h(x)^N` is a cube root of unity at every nonroot;
-the bounds for the classes of `ω` and `ω²` bound the class of `1` from below. -/
-theorem abs_three_mul_card_sub_le [Fintype E] [DecidableEq E] {p n : ℕ} [Fact p.Prime] [CharP E p]
-    (hcard : Fintype.card E = p ^ n) {h : E[X]} (hsq : Squarefree h) (hdeg : 1 ≤ h.natDegree)
-    {N s : ℕ} (hQ : p ^ n = 3 * N + 1) (hs : p ^ n = s ^ 2) (hsD : 3 * h.natDegree + 10 ≤ s) :
-    |(3 * (univ.filter (fun x : E => h.eval x ≠ 0 ∧ h.eval x ^ N = 1)).card : ℤ) - s ^ 2| ≤
+the upper bounds for two classes bound the third from below. -/
+theorem abs_three_mul_card_sub_le_of_cube_eq_one [Fintype E] [DecidableEq E] {p n : ℕ} [Fact p.Prime]
+    [CharP E p] (hcard : Fintype.card E = p ^ n) {h : E[X]} (hsq : Squarefree h)
+    (hdeg : 1 ≤ h.natDegree) {N s : ℕ} (hQ : p ^ n = 3 * N + 1) (hs : p ^ n = s ^ 2)
+    (hsD : 3 * h.natDegree + 10 ≤ s) {ε : E} (hε : ε ^ 3 = 1) :
+    |(3 * (univ.filter (fun x : E => h.eval x ≠ 0 ∧ h.eval x ^ N = ε)).card : ℤ) - s ^ 2| ≤
       2 * (5 * h.natDegree + 4) * s + 3 * h.natDegree := by
   have hh0 : h ≠ 0 := by rintro rfl; simp at hdeg
   set D := h.natDegree
@@ -209,9 +210,18 @@ theorem abs_three_mul_card_sub_le [Fintype E] [DecidableEq E] {p n : ℕ} [Fact 
   have h3 := hb (ω ^ 2)
   have hs0 : (0 : ℤ) ≤ s := by positivity
   have hD0 : (0 : ℤ) ≤ D := by positivity
-  change |(3 * (T 1).card : ℤ) - s ^ 2| ≤ _
+  change |(3 * (T ε).card : ℤ) - s ^ 2| ≤ _
   rw [abs_le]
-  constructor <;> nlinarith
+  rcases eq_of_pow_three_eq_one hω3 hω1 hε with rfl | rfl | rfl <;>
+    constructor <;> nlinarith
+
+/-- The class of `1`. -/
+theorem abs_three_mul_card_sub_le [Fintype E] [DecidableEq E] {p n : ℕ} [Fact p.Prime] [CharP E p]
+    (hcard : Fintype.card E = p ^ n) {h : E[X]} (hsq : Squarefree h) (hdeg : 1 ≤ h.natDegree)
+    {N s : ℕ} (hQ : p ^ n = 3 * N + 1) (hs : p ^ n = s ^ 2) (hsD : 3 * h.natDegree + 10 ≤ s) :
+    |(3 * (univ.filter (fun x : E => h.eval x ≠ 0 ∧ h.eval x ^ N = 1)).card : ℤ) - s ^ 2| ≤
+      2 * (5 * h.natDegree + 4) * s + 3 * h.natDegree :=
+  abs_three_mul_card_sub_le_of_cube_eq_one hcard hsq hdeg hQ hs hsD (one_pow 3)
 
 /-- The cubic curve `y³ = h(x)` has `#{h = 0} + 3·#{h(x)^N = 1}` points: a nonzero `a` has three cube
 roots if `a^N = 1` and none otherwise, and `0` has one. -/

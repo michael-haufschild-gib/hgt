@@ -80,6 +80,7 @@ import GaloisForLFunctions.BlackHoleRingdown.TheLaxPhillipsSemigroupOfTheModular
 import GaloisForLFunctions.BlackHoleRingdown.TheOptimalHorocycleExponentAndEulerAnnihilators
 import GaloisForLFunctions.BlackHoleRingdown.TheEternalAdSPrimeMarkedDictionary
 import GaloisForLFunctions.BlackHoleRingdown.CausalIdentitiesCannotForceQuarterRingdown
+import GaloisForLFunctions.BlackHoleRingdown.ThePositiveEulerTwinsArePassive
 
 /-!
 # Black-hole ringdown and the zeros of zeta

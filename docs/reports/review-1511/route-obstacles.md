@@ -59,7 +59,7 @@ What no route has: a mechanism that lowers the exponent below the vertex of the 
 | O8 | R | The sign of Weil's form at every aperture |
 | O9 | R | A doubling factor below √2 proved from the window matrices |
 | O10 | R | An effectivity, section or count law whose definition does not contain the sign |
-| O11 | R | A property that separates the modular horizon from its prime-two deformations other than the decay rate |
+| O11 | R | **Resolved for reciprocal quadratics:** a negative Euler logarithmic coefficient occurs at `p²,p⁴,p⁶` or `p⁸`, while ζ has positive coefficients ([`exists_negative_even_eulerLogCoeff`](../../../formal/GaloisForLFunctions/SelbergClass/PositiveFiniteEulerLogarithmicSigns.lean#L47) [K]) |
 | O12 | U | AAL: no finite nonempty top layer |
 | O13 | U | Zeros approach the line; landing uniform as σ ↓ ½ |
 | O14 | U | Reality of the heat flow inside near-coincidence clusters for t < ½/log X |
@@ -83,7 +83,7 @@ Each row: the receiver (proved), the hard obstacle, and its split into (a) and (
 | **RB** Robin, Nicolas | Eventual Robin inequality on colossally abundant integers ⇔ RH | — | O6 |
 | **SZ** Suzuki screw | Bounded Ward residual A_N ⇔ RH; \|A_N\| ≤ C√N·exp(−c·vkScale) [L] | — | bounded unnormalized residual (O6) |
 | **TT** theta tail, heat–Cassini | Bounded D_t + Q_t/2 for each 0 < t < ½ ⇔ RH; uniform bound on a shrinking band [L] | — | a fixed positive t (O6, O15) |
-| **PM** physical model (scattering, ringdown) | Quarter-rate decay ⇔ RH ([`riemannHypothesis_iff_pulse_ringdown`](../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheRingdownRateIsTheZeroFreeStrip.lean#L650)); rate δ ⇔ zero-free strip of depth 2δ ([`zeroFreeStrip_iff_pulse_ringdown`](../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheRingdownRateIsTheZeroFreeStrip.lean#L625)); horocycle exponent 1 − Θ/2 [L]; strip 1/16 [L], 3001/48000 [S] | J1, J3 | a rate beyond the seed (O6); a Krein or reflection sign (O8); O11 |
+| **PM** physical model (scattering, ringdown) | Quarter-rate decay ⇔ RH ([`riemannHypothesis_iff_pulse_ringdown`](../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheRingdownRateIsTheZeroFreeStrip.lean#L650)); rate δ ⇔ zero-free strip of depth 2δ ([`zeroFreeStrip_iff_pulse_ringdown`](../../../formal/GaloisForLFunctions/BlackHoleRingdown/TheRingdownRateIsTheZeroFreeStrip.lean#L625)); horocycle exponent 1 − Θ/2 [L]; strip 1/16 [L], 3001/48000 [S] | J1, J3 | a rate beyond the seed (O6); a Krein or reflection sign (O8) |
 | **BAG** deterministic self-return | Power-many separated returns of ζ to itself ⇒ exclusion of a zero; graded count fewer than T^c returns, c > (30/13)(1−σ) [L] | — | lower bounds for ζ-target returns; a bounded phase return (O12) |
 
 ### 4.2 Family R — the sign of Weil's form
@@ -149,7 +149,7 @@ A candidate has a detector or receiver and no source-to-receiver step.
 | Tensor-power programme | a pole law is equivalent to the width for flow data and abelian bases ([`exists_poleLaw_iff`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TheTensorMomentsOfAFlowDatumHaveBaseLossExactlyOne.lean#L510), [`exists_twistPoleLaw_iff`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/AnAbelianBaseIsARuler.lean#L568)); one Deligne lever or sign levers at all large periods give RH ([`riemannHypothesis_of_deligneLever`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TheThreeLinesOfFrames.lean#L84), [`riemannHypothesis_of_signLevers`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TheThreeLinesOfFrames.lean#L94)) | O4, O5 | P/U |
 | Green calculus of the window, floor-tree mixing, absolute geometry | index one through ratio three; gluing through the dyadic middle ([`riemannHypothesis_iff_forall_overlap_contraction`](../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/AWindowGluesItsTwoOverlappingPartsThroughItsDyadicMiddle.lean#L519)); top-octave blindness | O9, O10 | R |
 | Selective arithmetic | a window sign at one aperture excludes nothing ([`exists_zetaDensity_positive_window_deep_zeros`](../../../formal/GaloisForLFunctions/SelectiveArithmetic/TheRungSignSurvivesDeepZerosAtZetaDensity.lean#L90)) | a sign with a cluster exclusion | R |
-| Counting and scattering holography, modular horizon, ringdown | rate ⇔ strip; the count door ([`exists_count_tateLimit_iff`](../../../formal/GaloisForLFunctions/CountingHolography/TheCountDoorOfACurveAndOfZ.lean#L39)) | O10, O11 | R |
+| Counting and scattering holography, modular horizon, ringdown | rate ⇔ strip; the count door ([`exists_count_tateLimit_iff`](../../../formal/GaloisForLFunctions/CountingHolography/TheCountDoorOfACurveAndOfZ.lean#L39)) | O10; O11 resolved for reciprocal quadratics | R |
 | Floor-free arithmetic, auxiliary dynamics, exceptional layers, worlds, Euler–FE transport | non-attainment and phase-return receivers of AAL; realizability of finite layers | O12 | U |
 | Galois theory of zeros, nodal geometry, finite free probability | monodromy of the heat flow; collision laws | O14, O16 | U |
 | Verified height rungs, aperture floors | finite rungs; no positive floor of Weil's form holds along unbounded apertures: μ(A) ≤ K·exp((11/2)A − π·e^(2(A−2))) for A ≥ 3 [L] ([`not_exists_positive_floor_along`](../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheApertureFloorMustDecayDoublyExponentially.lean#L110)) | none that transfers | U |
