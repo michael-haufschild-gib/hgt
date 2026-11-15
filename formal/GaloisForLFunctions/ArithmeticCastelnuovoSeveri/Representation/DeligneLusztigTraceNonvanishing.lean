@@ -49,7 +49,8 @@ theorem chordFactor_re (t : ℝ) : (chordFactor t).re = 1 / 2 := by
 
 theorem chordFactor_im (t : ℝ) : (chordFactor t).im = cotangent t / 2 := by
   rw [chordFactor_rectangular]
-  simp <;> ring
+  simp
+  ring
 
 /-- In the open first turn the chord coefficient is the literal inverse. -/
 theorem chordFactor_eq_inv (t : Set.Ioo (0 : ℝ) 1) :

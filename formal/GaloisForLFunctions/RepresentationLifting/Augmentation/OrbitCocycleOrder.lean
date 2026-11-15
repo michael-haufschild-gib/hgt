@@ -63,6 +63,7 @@ theorem integerOrbitCocycle_sum (a : X) (g : G) :
   simp [integerOrbitCocycle, Pi.single_apply, Finset.sum_sub_distrib]
 
 /-- Every invariant integer-valued function on a transitive set is constant. -/
+omit [Fintype X] [DecidableEq X] in
 theorem integerOrbitAction_invariant_iff [MulAction.IsPretransitive G X]
     (a : X) (v : X → ℤ) :
     (∀ g : G, integerOrbitAction G X g v = v) ↔ ∀ x, v x = v a := by
@@ -90,7 +91,7 @@ theorem integerOrbitCocycle_multiple_is_coboundary_iff
       rw [map_sub, map_smul, integerOrbitAction_single]
       have h := hc g
       simp only [integerOrbitCocycle, smul_sub] at h
-      linear_combination -h
+      linear_combination h
     have hconst := (integerOrbitAction_invariant_iff (G := G) a v).mp hv
     have hsum : (∑ x, v x) = m := by
       simp [v, Pi.single_apply, Finset.sum_sub_distrib, hb]
@@ -98,17 +99,36 @@ theorem integerOrbitCocycle_multiple_is_coboundary_iff
     calc
       m = ∑ x, v x := hsum.symm
       _ = ∑ _x : X, v a := Finset.sum_congr rfl (fun x _ => hconst x)
-      _ = (Fintype.card X : ℤ) * v a := by simp [nsmul_eq_mul]
+      _ = (Fintype.card X : ℤ) * v a := by simp
   · rintro ⟨k, rfl⟩
     let m : ℤ := (Fintype.card X : ℤ) * k
     refine ⟨m • Pi.single a 1 - (fun _ => k), ?_, ?_⟩
-    · simp [Pi.single_apply, Finset.sum_sub_distrib, m, nsmul_eq_mul]
+    · simp [Pi.single_apply, Finset.sum_sub_distrib, m]
     · intro g
       rw [map_sub, map_smul, integerOrbitAction_single]
       have hconst : integerOrbitAction G X g (fun _ : X => k) = fun _ => k := rfl
       rw [hconst]
       simp only [integerOrbitCocycle, smul_sub]
       abel
+
+/-- Finite coordinates identify the permutation lattice with finitely supported divisors. -/
+noncomputable def integerOrbitDivisor (v : X → ℤ) : X →₀ ℤ :=
+  Finsupp.equivFunOnFinite.symm v
+
+/-- The coordinate augmentation kernel is the existing divisor augmentation submodule. -/
+theorem integerOrbitDivisor_mem_augmentation_iff (v : X → ℤ) :
+    integerOrbitDivisor v ∈ augmentationSubmodule X ↔ ∑ x, v x = 0 := by
+  rw [mem_augmentationSubmodule_iff_orbitDegree_zero, orbitDegree,
+    Finsupp.sum_fintype _ _ (fun _ => rfl)]
+  rfl
+
+/-- Exact cocycle order expressed in the divisor augmentation submodule. -/
+theorem augmentationDivisorCocycle_order [MulAction.IsPretransitive G X] (a : X) (m : ℤ) :
+    (∃ b : X → ℤ, integerOrbitDivisor b ∈ augmentationSubmodule X ∧ ∀ g : G,
+      m • integerOrbitCocycle a g = integerOrbitAction G X g b - b) ↔
+      (Fintype.card X : ℤ) ∣ m := by
+  simp only [integerOrbitDivisor_mem_augmentation_iff]
+  exact integerOrbitCocycle_multiple_is_coboundary_iff a m
 
 /-- The regular action has augmentation-cocycle order exactly the group order. -/
 theorem regularAugmentationCocycle_order [Fintype G] [DecidableEq G] (m : ℤ) :
@@ -121,3 +141,4 @@ end GaloisForLFunctions.RepresentationLifting
 
 #print axioms GaloisForLFunctions.RepresentationLifting.integerOrbitCocycle_multiple_is_coboundary_iff
 #print axioms GaloisForLFunctions.RepresentationLifting.regularAugmentationCocycle_order
+#print axioms GaloisForLFunctions.RepresentationLifting.augmentationDivisorCocycle_order
