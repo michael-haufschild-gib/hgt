@@ -1,6 +1,6 @@
 # Finite Euler logarithmic counts force roots into the unit disk
 
-- **Stage:** 0-backlog
+- **Stage:** 1-in-progress
 - **Type:** CONJECTURE
 - **Obstacle:** O11
 
@@ -11,3 +11,7 @@ For a finite multiset of local Euler roots `W`, define `bₖ=(1−Σ_{α∈W} α
 **Corpus connection:** `ZeroConfigurationGeometry.BoundedImagesCertifyPurity.exists_simultaneous_return` gives arbitrarily large simultaneous returns of any finite unimodular family. Apply it to all nonzero root phases. At a common return every root power has positive real part; a root outside the unit disk forces their sum above one. This avoids identifying a largest-modulus layer.
 
 **Required:** audit overlap with existing power-sum purity and Li recurrence theorems; prove the real-part conclusion for finite multisets, including zero roots; identify the resulting coefficients with the actual finite Euler logarithm. No contribution counted before those steps.
+
+**Exact target:** for every exterior root and every exponent cutoff, a later real power sum exceeds any prescribed bound. Consequently eventual logarithmic positivity forces all roots into the unit disk. A nonempty multiset stable under `α ↦ p/conj α`, `p>1`, cannot satisfy it. Identify the coefficients by exponentiating the finite sum of local Taylor logarithms and Dirichlet-series uniqueness.
+
+**Internal overlap:** `BoundedImagesCertifyPurity` controls the absolute value of power sums. `FinitePrimeRigidity` assumes the strict Selberg Euler bound. Neither gives the one-sided logarithmic sign exclusion under consideration. This strengthens accepted O11 contribution 1; no additional contribution is counted merely for increasing the degree.

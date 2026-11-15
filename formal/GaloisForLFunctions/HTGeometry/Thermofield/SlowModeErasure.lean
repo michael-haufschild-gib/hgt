@@ -60,7 +60,7 @@ theorem thermalDeviationSq_rescaled (a u : ℝ)
     thermalDeviationSq a u ρ t / spinDecayMass a t =
       spinDecayMass a t * thermalFastEnergy u ρ + thermalSlowEnergy ρ := by
   rw [thermalDeviationSq_two_rate]
-  field_simp [(spinDecayMass_pos a t).ne']
+  field_simp [(spinDecayMass_pos a t).ne'] <;> ring
 
 /-- Positive damping makes the rescaled error converge to the coherence energy. -/
 theorem thermalDeviationSq_rescaled_tendsto (s u : ℝ)
