@@ -42,7 +42,9 @@ theorem exists_dimensionGrid_unitFrame (r k q : ℕ) (ε : ℝ) (hε : ε ≠ 0)
       (by rw [abs_of_nonneg hw0]; exact hw1)
   · rw [scaledAffine_momentCenteredFrame_moment]
     congr 1
-    linarith only [he]
+    calc
+      _ = ε * ((i : ℝ) / (q + 1 : ℝ) + w) + ε * ∑ j, δ j * u j := by ring
+      _ = z := by rw [← he]; ring
 
 /-- The explicit finite grid covers every moment of the full physical unit cube. -/
 theorem exists_dimensionGrid_momentCoveringBox (r k q : ℕ) (ε : ℝ) (hε : ε ≠ 0)
@@ -64,9 +66,28 @@ theorem card_dimensionCoveringGrid_le (r q : ℕ) (ε : ℝ) :
   have hR : 0 ≤ (q + 1 : ℝ) * ((r + 1 : ℕ) : ℝ) / |ε| + 1 := by positivity
   exact (card_integerWindow_le 0 _ hR).trans_eq (by ring)
 
+/-- In positive degree, the corrected grid covers the full unit moment image exactly at nonzero scale. -/
+theorem dimensionGrid_covers_unit_moments_iff (r k q : ℕ) (ε : ℝ)
+    (δ : Fin (r + 1) → ℝ) (hθ : ∀ i, 0 ≤ ε * δ i ∧ ε * δ i ≤ 1) :
+    (∀ (u : Fin (r + 1) → ℝ) (z : ℝ), (∀ i, 0 ≤ u i ∧ u i ≤ 1) →
+      (0 ≤ z ∧ z ≤ 1) → ∃ i ∈ dimensionCoveringGrid r q ε,
+        horizontalMoment r (k + 1) u z ∈
+          momentCoveringBox r (k + 1) ε δ (ε * (i : ℝ) / (q + 1 : ℝ))) ↔ ε ≠ 0 := by
+  constructor
+  · intro hcover hzero
+    subst ε
+    obtain ⟨i, _, hi⟩ := hcover 0 1 (by intro j; norm_num) (by norm_num)
+    have hv := (mem_momentCoveringBox_projection r k 0 δ
+      (0 * (i : ℝ) / (q + 1 : ℝ)) (horizontalMoment r (k + 1) 0 1) hi).2
+    rw [degreeOneProjection_moment] at hv
+    norm_num at hv
+  · intro hε u z hu hz
+    exact exists_dimensionGrid_momentCoveringBox r (k + 1) q ε hε δ u z hu hθ hz
+
 #print axioms exists_dimensionGrid_unitFrame
 #print axioms exists_dimensionGrid_momentCoveringBox
 #print axioms card_dimensionCoveringGrid_le
+#print axioms dimensionGrid_covers_unit_moments_iff
 
 end
 end GaloisForLFunctions.BiarithmeticGeometry.ParsellVinogradov

@@ -107,7 +107,7 @@ theorem squareKummer_characterForm_regular_iff_degreeLT
   rw [squareKummer_characterForm_regular_iff, mem_degreeLT]
   by_cases hf : f = 0
   · subst f
-    simp only [true_or, degree_zero, bot_lt_coe]
+    simp
   · rw [or_iff_right hf]
     exact natDegree_lt_iff_degree_lt hf
 

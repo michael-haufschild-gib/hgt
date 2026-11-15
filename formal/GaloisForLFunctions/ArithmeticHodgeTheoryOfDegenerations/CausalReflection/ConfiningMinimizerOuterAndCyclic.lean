@@ -57,11 +57,11 @@ theorem integral_mul_eq_zero_of_fourier_pair_zero {F G : ℝ → ℝ}
     (hsum.integrable.ofReal (𝕜 := ℂ)) hsum.memLp_complex
     (hdiff.integrable.ofReal (𝕜 := ℂ)) hdiff.memLp_complex
     (Eventually.of_forall hfourier) 0
-  change (∫ u, (starRingEnd ℂ) (F u + (1 : ℝ) * G u : ℂ) *
-      (F (u + 0) + (1 : ℝ) * G (u + 0) : ℂ)) =
-    ∫ u, (starRingEnd ℂ) (F u + (-1 : ℝ) * G u : ℂ) *
-      (F (u + 0) + (-1 : ℝ) * G (u + 0) : ℂ) at he
-  simp only [add_zero, ← Complex.ofReal_mul, ← Complex.ofReal_add, Complex.conj_ofReal] at he
+  change (∫ u : ℝ, (starRingEnd ℂ) ((F u + (1 : ℝ) * G u : ℝ) : ℂ) *
+      ((F (u + 0) + (1 : ℝ) * G (u + 0) : ℝ) : ℂ)) =
+    ∫ u : ℝ, (starRingEnd ℂ) ((F u + (-1 : ℝ) * G u : ℝ) : ℂ) *
+      ((F (u + 0) + (-1 : ℝ) * G (u + 0) : ℝ) : ℂ) at he
+  simp only [add_zero, Complex.conj_ofReal, ← Complex.ofReal_mul] at he
   rw [integral_complex_ofReal, integral_complex_ofReal] at he
   have hreal : (∫ u, (F u + (1 : ℝ) * G u) ^ 2) = ∫ u, (F u + (-1 : ℝ) * G u) ^ 2 := by
     simpa only [pow_two] using Complex.ofReal_inj.mp he
@@ -238,7 +238,7 @@ theorem IsHalfLineEnergyMinimizer.endpoint_mass_pos
       change ¬u + (-d / 2) < -d / 2
       linarith only [hu]) F
   have hnShift : (∫ u, G (u + (-d / 2)) ^ 2) = 1 := by
-    simpa only [hnG] using integral_add_right_eq_self (fun u => G u ^ 2) (-d / 2)
+    simpa only [hnG] using integral_add_right_eq_self (μ := volume) (fun u => G u ^ 2) (-d / 2)
   have hfloor := criticalHalfLineGroundEnergy_le hR (hG.comp_add_right (-d / 2) hsShift) hnShift
   rw [criticalHalfLineFullEnergy_comp_add_right hG _ _ hsShift, henergy] at hfloor
   have heps : Real.exp (8 * (-d / 2)) - 1 < 0 := by

@@ -259,15 +259,11 @@ private theorem zero_mass_iff_ae_zero_domain {G : ℝ → ℝ}
 private theorem fullEnergy_zero_of_ae_zero {R : ℝ} {G : ℝ → ℝ}
     (hG : CriticalHalfLineEnergyDomain G) (hae : G =ᵐ[volume] 0) :
     criticalHalfLineFullEnergy R G = 0 := by
-  have hz : CriticalHalfLineEnergyDomain (fun _ : ℝ => (0 : ℝ)) := by
-    have hw : IsWindowTest 0 (fun _ : ℝ => (0 : ℝ)) :=
-      { contDiff := contDiff_const, vanish := fun _ _ => rfl }
-    exact criticalHalfLineEnergyDomain_of_window hw
+  have hz : CriticalHalfLineEnergyDomain (fun _ : ℝ => (0 : ℝ)) :=
+    criticalHalfLineEnergyDomain_of_window { contDiff := contDiff_const, vanish := fun _ _ => rfl }
   rw [criticalHalfLineFullEnergy_congr_ae hG hz hae]
-  have hp0 : paperFT (cx (fun _ : ℝ => (0 : ℝ))) = 0 := by
-    funext z; simp [paperFT, cx]
-  simp [criticalHalfLineFullEnergy, archForm, hp0, primeSum, coshHalfMoment,
-    sinhHalfMoment, halfLineExpMass_eq_full hz.support]
+  have hmul := criticalHalfLineFullEnergy_const_mul R 0 (fun _ : ℝ => (0 : ℝ))
+  simpa only [zero_mul, zero_pow two_ne_zero] using hmul
 
 /-- **Variational Unit-Ball Envelope Law:** At every positive confinement ratio `R > 0`,
 minimizing `criticalHalfLineFullEnergy R` on the occupation ball `{∫ G² ≤ 1}` reduces

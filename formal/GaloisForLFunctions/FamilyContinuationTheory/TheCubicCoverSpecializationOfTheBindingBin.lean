@@ -1,5 +1,6 @@
 import GaloisForLFunctions.FamilyContinuationTheory.TheLocalFactorOfThePoissonSeriesIsExplicit
 import GaloisForLFunctions.MetaplecticMobiusDescent.Hecke.DirichletBaseChange
+import GaloisForLFunctions.MetaplecticMobiusDescent.RowCompletion.GoodMaskRows
 
 /-!
 # The cubic cover specialization of the binding bin and general half-plane base-change transfer
@@ -69,7 +70,7 @@ theorem two_mul_card_cube_eq_one {G : Type*} [Group G] [Fintype G] [DecidableEq 
   have hunion : H ∪ Hc = Finset.univ := by
     ext g
     simp only [H, Hc, Finset.mem_union, Finset.mem_filter, Finset.mem_univ, true_and]
-    exact em _
+    exact iff_true_intro (em _)
   have hsum : H.card + Hc.card = Fintype.card G := by
     rw [← Finset.card_union_of_disjoint hdisj, hunion, Finset.card_univ]
   have himg : H.image (fun g => g₀ * g) = Hc := by
@@ -132,7 +133,7 @@ theorem dirichlet_norm_shell_linear_independent_real (S : Finset ℕ)
       have htend_sum : Filter.Tendsto
           (fun σ : ℝ => ∑ n ∈ S.erase m, c n * ((m : ℝ) / (n : ℝ)) ^ σ)
           Filter.atTop (nhds (∑ _n ∈ S.erase m, (0 : ℝ))) := by
-        refine tendsto_finset_sum (S.erase m) fun n hn => ?_
+        refine tendsto_finsetSum (S.erase m) fun n hn => ?_
         have hmn : m < n :=
           Nat.lt_of_le_of_ne (Finset.min'_le S n (Finset.mem_of_mem_erase hn))
             (Finset.mem_erase.mp hn).1.symm
@@ -182,7 +183,7 @@ theorem dirichlet_norm_shell_linear_independent (S : Finset ℕ)
     intro σ hσ
     have h := congrArg Complex.im (hsum σ hσ)
     simp only [hcast, Complex.im_sum, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
-      mul_zero, add_zero, Complex.zero_im] at h
+      mul_zero, zero_add, Complex.zero_im] at h
     exact h
   have hre0 := dirichlet_norm_shell_linear_independent_real S hpos (fun n => (c n).re) hre
   have him0 := dirichlet_norm_shell_linear_independent_real S hpos (fun n => (c n).im) him
@@ -200,12 +201,12 @@ open MetaplecticMobiusDescent MetaplecticMobiusDescent.Eisenstein
 variable (π : O) [NeZero π] [hP : (Ideal.span {π}).IsMaximal] (hlam : lambda ∉ Ideal.span {π})
   (h2 : (2 : O) ∉ Ideal.span {π}) (hprim : lambda ^ 2 ∣ π - 1)
 
-omit hP in
+omit [NeZero π] hP in
 theorem primeR_zero_X (ηp V : ℂ) : primeR π ηp 0 V = 0 := by
   unfold primeR
   simp
 
-omit [NeZero π] hP in
+omit [NeZero π] in
 theorem baseSum_zero_X (ηp Y V : ℂ) (u : O) (j : ℕ) (e p k : Fin 2) :
     baseSum π hlam ηp 0 Y V u j e p k = 0 := by
   fin_cases e <;> fin_cases p <;> fin_cases k <;> simp [baseSum, primeR]
@@ -220,7 +221,7 @@ theorem hasSum_localTerm_zero_X (ηp Y V : ℂ) {u : O} (hu : u ∉ Ideal.span {
     HasSum (localTerm π ηp 0 Y V u 0)
       ((1 - V)⁻¹ + complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y *
         (1 - complexSexticChar (Ideal.span {π}) hlam (Ideal.Quotient.mk _ u) * Y)⁻¹) := by
-  have h := hasSum_localTerm π hlam h2 hprim ηp 0 Y V hu (by norm_num) hV hW
+  have h := hasSum_localTerm π hlam h2 hprim ηp 0 Y V hu (j := 0) (by norm_num) hV hW
     (by rw [primeR_zero_X, norm_zero]; exact zero_lt_one)
   simpa [primeR_zero_X, baseSum_zero_X] using h
 
@@ -268,7 +269,6 @@ theorem sextic_cubic_gauss_quadratic_obstruction :
             (principalTraceChar π (NeZero.ne π)) =
         -ringComplex π * primeAbs π * fixedDualAverage π ∧
       -ringComplex π * primeAbs π * fixedDualAverage π ≠ 0 := by
-  letI : Field (O ⧸ Ideal.span {π}) := Ideal.Quotient.field _
   set χ := complexSexticChar (Ideal.span {π}) hlam
   have hne3 : χ ^ 3 ≠ 1 :=
     mt (complexSexticChar_pow_eq_one_iff π hlam h2 3).mp (by norm_num)
@@ -280,15 +280,10 @@ theorem sextic_cubic_gauss_quadratic_obstruction :
     fun u => sexticChar_pow_six π hlam (u : O ⧸ Ideal.span {π}) u.isUnit
   have hφ3 : ∃ u₀ : (O ⧸ Ideal.span {π})ˣ, φ u₀ ^ 3 ≠ 1 := by
     by_contra hall
-    push_neg at hall
     apply hne3
     ext x
-    by_cases hx : x = 0
-    · subst hx
-      simp [MulChar.map_zero]
-    · have hu : IsUnit x := isUnit_iff_ne_zero.mpr hx
-      rw [MulChar.pow_apply' χ (by norm_num), MulChar.one_apply hu]
-      exact hall hu.unit
+    rw [MulChar.pow_apply' χ (by norm_num), MulChar.one_apply x.isUnit]
+    exact not_ne_iff.mp fun hne_u => hall ⟨x, hne_u⟩
   have hcard := (two_mul_card_cube_eq_one φ hφ6 hφ3).1
   have hhd := sextic_gauss_product π hlam h2 hprim
   rw [gauss_three_eq π hlam h2, show (‖ringComplex π‖ : ℂ) = primeAbs π from rfl] at hhd
@@ -303,14 +298,14 @@ end LocalPoisson
 
 section CubicRowAndBaseChange
 
-open MetaplecticMobiusDescent.CubicEisenstein
+open MetaplecticMobiusDescent.Eisenstein MetaplecticMobiusDescent.CubicEisenstein
 
 /-- **Global square-row restriction to the cubic cover.** Evaluating the sextic corpus row
 character `idealRowHom x` on any square ideal `d²` yields the cubic cover residue symbol
 `idealSymbol d x` (`n = 3`). -/
-theorem idealRowHom_sq_ideal_eq_cubic (x : Eisenstein.O) (d : Ideal Eisenstein.O) :
+theorem idealRowHom_sq_ideal_eq_cubic (x : O) (d : Ideal O) :
     CanonicalRowCompletion.idealRowHom x (d ^ 2) =
-      Eisenstein.ringComplex (CubicRamified.idealSymbol d x) := by
+      ringComplex (MetaplecticMobiusDescent.CubicJacobi.idealSymbol d x) := by
   rw [map_pow, CanonicalRowCompletion.idealRowHom_square]
 
 /-- **General-`σ₀` Dirichlet base-change transfer.** For any `σ₀ ≥ 0`, nonvanishing of all

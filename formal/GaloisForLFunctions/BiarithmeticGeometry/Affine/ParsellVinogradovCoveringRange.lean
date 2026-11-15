@@ -41,7 +41,8 @@ theorem scaledAffine_momentCenteredFrame_moment (r k : ℕ) (ε : ℝ)
     horizontalMoment r k 0 t +
       Matrix.toLin' (scaledAffineMatrix r k ε δ t) (horizontalMoment r k u z) =
         horizontalMoment r k u (t + ε * (z + ∑ i, δ i * u i)) := by
-  simp only [scaledAffineLinear_apply, Matrix.toLin'_apply,
+  rw [scaledAffineLinear_apply]
+  simp only [Matrix.toLin'_apply,
     verticalDilationMatrix_moment, vectorAffineMatrix_moment]
   have hs : (∑ i, (ε • δ) i * u i) = ε * ∑ i, δ i * u i := by
     simp only [Pi.smul_apply, smul_eq_mul, Finset.mul_sum, mul_assoc]
@@ -61,7 +62,8 @@ theorem horizontalMoment_mem_selected_center (r k : ℕ) (ε : ℝ)
   · have h := horizontalMoment_mem_unitCube r k u 0 hu (by norm_num)
     rw [mem_centeredCube_iff] at h ⊢
     exact fun a => (h a).trans (by norm_num)
-  · rw [scaledAffine_momentCenteredFrame_moment]
+  · dsimp only
+    rw [scaledAffine_momentCenteredFrame_moment]
     congr 1
     ring
 

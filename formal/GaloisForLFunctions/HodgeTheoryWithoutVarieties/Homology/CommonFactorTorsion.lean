@@ -74,18 +74,46 @@ theorem commonFactorTorsionProjection_ker (z : R) (E : Type*) [AddCommGroup E]
     · apply Subtype.ext
       exact (congrArg Prod.snd hw).symm
 
+/-- Cycles inherit additive inverses from multiplication by minus one. -/
+local instance commonFactorCyclesAddCommGroup (z : R) (E : Type*) [AddCommGroup E]
+    [Module R E] (p : ℕ) : AddCommGroup (splitCommonFactorKoszulCycles z E p) :=
+  Module.addCommMonoidToAddCommGroup R
+
 /-- Homology of the split common-factor complex, using its actual boundary relation. -/
 abbrev commonFactorTorsionHomology (z : R) (E : Type*) [AddCommGroup E] [Module R E]
-    (p : ℕ) := Quotient (splitCommonFactorKoszulBoundaries z E p).quotientRel
+    (p : ℕ) : Type _ :=
+  splitCommonFactorKoszulCycles z E p ⧸ splitCommonFactorKoszulBoundaries z E p
+
+/-- The cycle projection descends to the actual homology quotient. -/
+def commonFactorTorsionHomologyMap (z : R) (E : Type*) [AddCommGroup E] [Module R E]
+    (p : ℕ) : commonFactorTorsionHomology z E p →ₗ[R]
+      exteriorScalarQuotient z E (p + 1) × exteriorScalarTorsion z E p :=
+  (splitCommonFactorKoszulBoundaries z E p).liftQ (commonFactorTorsionProjection z E p)
+    (le_of_eq (commonFactorTorsionProjection_ker z E p).symm)
+
+theorem commonFactorTorsionHomologyMap_injective (z : R) (E : Type*) [AddCommGroup E]
+    [Module R E] (p : ℕ) : Function.Injective (commonFactorTorsionHomologyMap z E p) := by
+  intro x y
+  refine Quotient.inductionOn₂ x y ?_
+  intro u v h
+  apply (Submodule.Quotient.eq (splitCommonFactorKoszulBoundaries z E p)).mpr
+  rw [← commonFactorTorsionProjection_ker, LinearMap.mem_ker, map_sub]
+  exact sub_eq_zero.mpr h
+
+theorem commonFactorTorsionHomologyMap_surjective (z : R) (E : Type*) [AddCommGroup E]
+    [Module R E] (p : ℕ) : Function.Surjective (commonFactorTorsionHomologyMap z E p) := by
+  intro t
+  obtain ⟨u, rfl⟩ := commonFactorTorsionProjection_surjective z E p t
+  exact ⟨Submodule.Quotient.mk u, rfl⟩
 
 /-- In every degree, homology is the scalar quotient plus the scalar torsion. -/
 def commonFactorTorsionHomologyEquiv (z : R) (E : Type*) [AddCommGroup E] [Module R E]
     (p : ℕ) :
     commonFactorTorsionHomology z E p ≃ₗ[R]
       exteriorScalarQuotient z E (p + 1) × exteriorScalarTorsion z E p :=
-  (Submodule.quotEquivOfEq _ _ (commonFactorTorsionProjection_ker z E p).symm).trans
-    ((commonFactorTorsionProjection z E p).quotKerEquivOfSurjective
-      (commonFactorTorsionProjection_surjective z E p))
+  LinearEquiv.ofBijective (commonFactorTorsionHomologyMap z E p)
+    ⟨commonFactorTorsionHomologyMap_injective z E p,
+      commonFactorTorsionHomologyMap_surjective z E p⟩
 
 #print axioms commonFactorTorsionCyclesEquiv
 #print axioms commonFactorTorsionProjection_ker

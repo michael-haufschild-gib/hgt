@@ -740,11 +740,11 @@ theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
 differentiable (`C¹`) on `(0, ∞)` with locally Lipschitz derivatives (`C^{1,1}_loc`). -/
 theorem contDiffOn_one_confiningHalfLineGroundEnergy :
     ContDiffOn ℝ 1 confiningHalfLineGroundEnergy (Ioi 0) := by
-  rw [contDiffOn_one_iff_deriv_of_isOpen isOpen_Ioi]
-  refine ⟨fun t ht => ?_, ?_⟩
+  rw [show (1 : WithTop ℕ∞) = 0 + 1 from rfl, contDiffOn_succ_iff_deriv_of_isOpen isOpen_Ioi]
+  refine ⟨fun t ht => ?_, fun h => nomatch h, contDiffOn_zero.mpr ?_⟩
   · obtain ⟨F, hF⟩ := exists_criticalHalfLineGroundEnergy_minimizer (inv_pos.mpr ht)
-    exact (hasDerivAt_confiningHalfLineGroundEnergy_of_minimizer ht hF).differentiableAt
-  · rw [continuousOn_iff_continuousAt (isOpen_Ioi)]
+    exact (hasDerivAt_confiningHalfLineGroundEnergy_of_minimizer ht hF).differentiableAt.differentiableWithinAt
+  · rw [isOpen_Ioi.continuousOn_iff]
     intro t ht
     obtain ⟨F, hF⟩ := exists_criticalHalfLineGroundEnergy_minimizer (inv_pos.mpr ht)
     obtain ⟨δ, L, hδ, hL, hlip⟩ := hF.minimizer_lipschitz_stability (inv_pos.mpr ht)
