@@ -9,7 +9,8 @@ Two prime valuations give the alternating pairing
 `v_p(a)v_q(b) - v_q(a)v_p(b)` on rational units. It descends through the degree-two
 shuffle relation, but not through Steinberg relations. For every prime `p`, a prime
 divisor `q` of `p+1` detects the classical symbol at `-p`. Consequently this symbol
-has infinite order modulo shuffle while its Milnor image is zero.
+has infinite order modulo shuffle while its Milnor image is zero. The canonical
+surjection to Milnor degree two therefore has a kernel containing an infinite cyclic group.
 -/
 
 namespace GaloisForLFunctions.HTGeometry
@@ -116,7 +117,7 @@ theorem exists_primePolylog_positive_detector (p : Nat.Primes) :
     have h1 : p.val ∣ 1 := (Nat.dvd_add_iff_right (dvd_refl p.val)).mpr h
     exact p.property.ne_one (Nat.dvd_one.mp h1)
   obtain ⟨q, hq, hqd⟩ := Nat.exists_prime_and_dvd
-    (show p.val + 1 ≠ 1 from by omega)
+    (show p.val + 1 ≠ 1 from by have hp := p.property.two_le; omega)
   have hqp : q ≠ p.val := by
     rintro rfl
     exact hpnot hqd
@@ -141,7 +142,7 @@ theorem primePolylogShuffleClass_infinite_order (p : Nat.Primes) :
   obtain ⟨q, _, hpos⟩ := exists_primePolylog_positive_detector p
   intro m n hmn
   have h := congrArg (valuationShuffleDetector p q) hmn
-  simp only [map_smul, smul_eq_mul, RingHom.id_apply] at h
+  simp only [map_smul, smul_eq_mul] at h
   have hz : (m - n) * valuationShuffleDetector p q
       (classicalPolylogShuffleClass (primePolylogArgument p)) = 0 := by
     rw [sub_mul, h, sub_self]
@@ -155,6 +156,91 @@ theorem primePolylog_symbol_separation (p : Nat.Primes) :
       Function.Injective (fun m : ℤ => m • classicalPolylogShuffleClass (primePolylogArgument p)) :=
   ⟨classicalPolylogMilnorImage_eq_zero ℚ 0 _, primePolylogShuffleClass_infinite_order p⟩
 
+/-- The Milnor symbol as an integral bilinear map on the additive unit lattice. -/
+def rationalMilnorBilinear :
+    RationalUnitLattice →ₗ[ℤ] RationalUnitLattice →ₗ[ℤ] MilnorKDeg ℚ 2 :=
+  AddMonoidHom.toIntLinearMap
+    { toFun := fun a => AddMonoidHom.toIntLinearMap
+        { toFun := fun b => milnorSym2 ℚ a.toMul b.toMul
+          map_zero' := milnorSym2_one_right (F := ℚ) a.toMul
+          map_add' := fun b c => milnorSym2_mul_right (F := ℚ) a.toMul b.toMul c.toMul }
+      map_zero' := by
+        ext b
+        exact milnorSym2_one_left (F := ℚ) b.toMul
+      map_add' := by
+        intro a b
+        ext c
+        exact milnorSym2_mul_left (F := ℚ) a.toMul b.toMul c.toMul }
+
+/-- The canonical tensor presentation map to Milnor degree two. -/
+def rationalMilnorTensorMap :
+    RationalUnitLattice ⊗[ℤ] RationalUnitLattice →ₗ[ℤ] MilnorKDeg ℚ 2 :=
+  TensorProduct.lift rationalMilnorBilinear
+
+/-- Antisymmetry makes the Milnor projection annihilate shuffle relations. -/
+theorem rationalUnitShuffleRelations_le_milnor_ker :
+    rationalUnitShuffleRelations ≤ rationalMilnorTensorMap.ker := by
+  apply Submodule.span_le.mpr
+  rintro _ ⟨⟨a, b⟩, rfl⟩
+  change rationalMilnorTensorMap (a ⊗ₜ[ℤ] b + b ⊗ₜ[ℤ] a) = 0
+  rw [map_add]
+  change milnorSym2 ℚ a.toMul b.toMul + milnorSym2 ℚ b.toMul a.toMul = 0
+  rw [milnorSym2_antisymm, neg_add_cancel]
+
+/-- The canonical map from degree-two shuffle symbols to Milnor symbols. -/
+def rationalShuffleToMilnor : RationalUnitShuffleSymbols →ₗ[ℤ] MilnorKDeg ℚ 2 :=
+  rationalUnitShuffleRelations.liftQ rationalMilnorTensorMap
+    rationalUnitShuffleRelations_le_milnor_ker
+
+/-- Every Milnor degree-two class lifts to the shuffle quotient. -/
+theorem rationalShuffleToMilnor_surjective : Function.Surjective rationalShuffleToMilnor := by
+  have hr : AddSubgroup.closure (Set.range fun ab : ℚˣ × ℚˣ => milnorSym2 ℚ ab.1 ab.2) ≤
+      rationalShuffleToMilnor.toAddMonoidHom.range := by
+    apply (AddSubgroup.closure_le _).mpr
+    rintro _ ⟨⟨a, b⟩, rfl⟩
+    exact ⟨Submodule.Quotient.mk (Additive.ofMul a ⊗ₜ[ℤ] Additive.ofMul b), rfl⟩
+  rw [closure_range_milnorSym2] at hr
+  intro x
+  exact hr (AddSubgroup.mem_top x)
+
+/-- Every classical weight-two symbol belongs to the kernel of the Milnor projection. -/
+theorem classicalPolylogShuffle_in_milnor_kernel (a : PolylogArgument ℚ) :
+    rationalShuffleToMilnor (classicalPolylogShuffleClass a) = 0 := by
+  change rationalMilnorTensorMap (classicalPolylogTensorTwo a) = 0
+  rw [classicalPolylogTensorTwo, map_neg]
+  change -milnorSym2 ℚ (oneSubUnit a.2) a.1 = 0
+  rw [polylogFirstPair_eq_zero, neg_zero]
+
+/-- A negative-prime classical symbol, regarded as a class in the actual projection kernel. -/
+def primePolylogKernelClass (p : Nat.Primes) : rationalShuffleToMilnor.ker :=
+  ⟨classicalPolylogShuffleClass (primePolylogArgument p),
+    classicalPolylogShuffle_in_milnor_kernel _⟩
+
+/-- The kernel of the canonical Milnor projection contains an infinite cyclic subgroup. -/
+theorem primePolylogKernelClass_infinite_order (p : Nat.Primes) :
+    Function.Injective (fun m : ℤ => m • primePolylogKernelClass p) := by
+  intro m n h
+  apply primePolylogShuffleClass_infinite_order p
+  exact congrArg Subtype.val h
+
+/-- No additive map from Milnor degree two recovers all classical shuffle symbols. -/
+theorem classicalPolylogShuffle_not_factor_through_milnor :
+    ¬ ∃ f : MilnorKDeg ℚ 2 →+ RationalUnitShuffleSymbols,
+      ∀ a : PolylogArgument ℚ, f (classicalPolylogMilnorImage ℚ 0 a) =
+        classicalPolylogShuffleClass a := by
+  rintro ⟨f, hf⟩
+  let p : Nat.Primes := ⟨2, Nat.prime_two⟩
+  obtain ⟨q, _, hpos⟩ := exists_primePolylog_positive_detector p
+  have hz := hf (primePolylogArgument p)
+  rw [classicalPolylogMilnorImage_eq_zero, map_zero] at hz
+  rw [← hz, map_zero] at hpos
+  exact (lt_irrefl (0 : ℤ)) hpos
+
 end GaloisForLFunctions.HTGeometry
 
 #print axioms GaloisForLFunctions.HTGeometry.primePolylog_symbol_separation
+#print axioms GaloisForLFunctions.HTGeometry.classicalPolylogShuffle_not_factor_through_milnor
+
+#print axioms GaloisForLFunctions.HTGeometry.primePolylogKernelClass_infinite_order
+
+#print axioms GaloisForLFunctions.HTGeometry.rationalShuffleToMilnor_surjective

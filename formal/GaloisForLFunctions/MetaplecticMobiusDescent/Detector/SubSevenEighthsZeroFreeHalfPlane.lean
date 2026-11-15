@@ -159,7 +159,7 @@ theorem riemannZeta_ne_zero_of_re_lt_sub_one_eighth {s : ℂ}
   intro hzero
   have hs0 : s ≠ 0 := by
     intro hs
-    simpa only [hs, Complex.zero_re, lt_self_iff_false] using h0
+    simp only [hs, Complex.zero_re, lt_self_iff_false] at h0
   have hΓ : Complex.Gammaℝ s ≠ 0 := Complex.Gammaℝ_ne_zero_of_re_pos h0
   have hcompleted : completedRiemannZeta s = 0 := by
     have hz := (riemannZeta_def_of_ne_zero hs0).symm.trans hzero

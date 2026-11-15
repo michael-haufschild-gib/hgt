@@ -22,7 +22,10 @@ theorem kummerThreePointScalingAut_differential
     (ζ : K) (hζ : ζ ^ ((n + 1) * (b + 1)) = 1) :
     algHomKaehlerMap (kummerThreePointScalingAut c b R n ζ hζ).toAlgHom dy =
       ζ ^ (n + 1) • dy := by
-  rw [algHomKaehlerMap_D, kummerThreePointScalingAut_coordinate,
+  rw [algHomKaehlerMap_D]
+  change (KaehlerDifferential.D K L)
+    (kummerThreePointScalingAut c b R n ζ hζ (algebraMap K[X] L X)) = _
+  rw [kummerThreePointScalingAut_coordinate c b R n ζ hζ,
     ← map_pow, (KaehlerDifferential.D K L).leibniz,
     (KaehlerDifferential.D K L).map_algebraMap, smul_zero, add_zero,
     IsScalarTower.algebraMap_smul]
@@ -48,8 +51,13 @@ theorem kummerThreePointScalingAut_monomial_differential
     ((algebraMap K L).injective (h.trans (map_zero _).symm))
   have hbalance : a ^ j * a ^ i = (a ^ (n + 1)) ^ k * a ^ (n + 1) := by
     rw [← pow_add, Nat.sub_add_cancel hik, pow_mul, pow_succ]
-  rw [algHomKaehlerMap_smul, map_div₀, map_pow, kummerThreePointScalingAut_coordinate,
-    kummerThreePointScalingAut_integralMonomial, kummerThreePointScalingAut_differential]
+  rw [algHomKaehlerMap_smul, map_div₀, map_pow]
+  change (kummerThreePointScalingAut c b R n ζ hζ (algebraMap K[X] L X) ^ k /
+    kummerThreePointScalingAut c b R n ζ hζ (kummerIntegralMonomial c b R n i)) •
+      algHomKaehlerMap (kummerThreePointScalingAut c b R n ζ hζ).toAlgHom dy = _
+  rw [kummerThreePointScalingAut_coordinate c b R n ζ hζ,
+    kummerThreePointScalingAut_integralMonomial c b R n ζ hζ i,
+    kummerThreePointScalingAut_differential c b R n ζ hζ]
   rw [← IsScalarTower.algebraMap_smul K L (ζ ^ (n + 1)),
     ← IsScalarTower.algebraMap_smul K L (ζ ^ ((n + 1) * (k + 1) - i)),
     map_pow, map_pow, smul_smul, smul_smul]

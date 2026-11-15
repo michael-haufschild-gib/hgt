@@ -185,7 +185,7 @@ theorem abscissa_ge_of_zeta_zero_div_nat {k : ℕ} (hk : 1 ≤ k) {ρ : ℂ}
     have hm := congrArg Complex.re
       (show ((k : ℝ) : ℂ) * (ρ / (k : ℂ)) = ρ by push_cast; exact mul_div_cancel₀ ρ hkc_ne)
     rw [Complex.re_ofReal_mul] at hm
-    exact (eq_div_iff hk_pos.ne').mpr hm
+    exact (eq_div_iff hk_pos.ne').mpr ((mul_comm _ _).trans hm)
   have hdiv_pos : 0 < (ρ / (k : ℂ)).re := by
     rw [hdiv_re]
     exact div_pos h0 hk_pos
@@ -230,7 +230,7 @@ theorem riemannZeta_nat_mul_ne_zero_of_seven_le {k : ℕ} (hk : 7 ≤ k) {z : �
   have hk_pos : (0 : ℝ) < (k : ℝ) := by exact_mod_cast (by omega : 0 < k)
   have hkc_ne : (k : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
   have hm_re : ((k : ℂ) * z).re = (k : ℝ) * z.re := by
-    simpa using Complex.re_ofReal_mul (k : ℝ) z
+    simp
   have hm_pos : 0 < ((k : ℂ) * z).re := by
     rw [hm_re]
     exact mul_pos hk_pos h0
@@ -262,7 +262,7 @@ theorem dilatedPowerQuotient_neg_order_at_div_of_seven_le {k : ℕ} (hk : 7 ≤ 
     have hm := congrArg Complex.re
       (show ((k : ℝ) : ℂ) * (ρ / (k : ℂ)) = ρ by push_cast; exact mul_div_cancel₀ ρ hkc_ne)
     rw [Complex.re_ofReal_mul] at hm
-    exact (eq_div_iff hk_pos.ne').mpr hm
+    exact (eq_div_iff hk_pos.ne').mpr ((mul_comm _ _).trans hm)
   have hs_lt1 : (ρ / (k : ℂ)).re < 1 := by
     rw [hs_re, div_lt_one hk_pos]
     have : (1 : ℝ) ≤ (k : ℝ) := by exact_mod_cast (by omega : 1 ≤ k)

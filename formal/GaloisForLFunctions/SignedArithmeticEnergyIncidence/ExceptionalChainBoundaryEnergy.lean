@@ -91,7 +91,7 @@ theorem exceptionalChainEnergy_boundary_decomposition (n : ℕ) (f : ℕ → ℝ
   field_simp
   ring
 
-/-- The effective terminal coefficient is the quotient of the chain discriminant by its length. -/
+/-- The effective terminal coefficient is `(p²+p+1)/p` for a chain of length `p`. -/
 theorem exceptionalChainEnergy_boundary_bound (n : ℕ) (f : ℕ → ℝ) :
     (((n : ℝ) + 2) + 1 / ((n : ℝ) + 1)) * f n ^ 2 ≤ exceptionalChainEnergy n f := by
   rw [exceptionalChainEnergy_boundary_decomposition]

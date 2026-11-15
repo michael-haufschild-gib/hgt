@@ -30,6 +30,17 @@ variable {G X}
 theorem integerOrbitAction_apply (g : G) (v : X → ℤ) (x : X) :
     integerOrbitAction G X g v x = v (g⁻¹ • x) := rfl
 
+/-- Identity and multiplication act by identity and composition of the coordinate maps. -/
+theorem integerOrbitAction_one (v : X → ℤ) : integerOrbitAction G X 1 v = v := by
+  funext x
+  simp only [integerOrbitAction_apply, inv_one, one_smul]
+
+theorem integerOrbitAction_mul (g h : G) (v : X → ℤ) :
+    integerOrbitAction G X (g * h) v =
+      integerOrbitAction G X g (integerOrbitAction G X h v) := by
+  funext x
+  simp only [integerOrbitAction_apply, mul_inv_rev, mul_smul]
+
 /-- Point masses are transported to their translates. -/
 theorem integerOrbitAction_single [DecidableEq X] (g : G) (a : X) :
     integerOrbitAction G X g (Pi.single a 1) = Pi.single (g • a) 1 := by
@@ -62,8 +73,8 @@ theorem integerOrbitCocycle_sum (a : X) (g : G) :
     ∑ x, integerOrbitCocycle a g x = 0 := by
   simp [integerOrbitCocycle, Pi.single_apply, Finset.sum_sub_distrib]
 
-/-- Every invariant integer-valued function on a transitive set is constant. -/
 omit [Fintype X] [DecidableEq X] in
+/-- Every invariant integer-valued function on a transitive set is constant. -/
 theorem integerOrbitAction_invariant_iff [MulAction.IsPretransitive G X]
     (a : X) (v : X → ℤ) :
     (∀ g : G, integerOrbitAction G X g v = v) ↔ ∀ x, v x = v a := by

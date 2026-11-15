@@ -945,7 +945,7 @@ theorem sub_nonfloor_rows_saving (D : HighData subDelta)
     (heps_t : ((D.N : ℝ) + 8) * D.eps ≤ D.t)
     (F : SourceData D) (counts : CountParameters F.modulus ⊤ D.t)
     (n : ℕ) (τ : ℝ) (hτ : 0 < τ) (hτd : τ < (1 / 200 : ℝ) / 2)
-    (hτcost : 4 * τ < (1 / 200) * D.cost) (hτt : τ < D.t) (hτ2 : 2 * τ ≤ D.t)
+    (hτcost : 4 * τ < (1 / 200) * D.cost) (_hτt : τ < D.t) (hτ2 : 2 * τ ≤ D.t)
     (hτeps : τ * (2 + 4 * D.eps) < D.t) :
     let ell' : Fin D.N → ℝ := fun j => (1001 / 1000 : ℝ) * D.ell j
     ∃ C : ℝ, 0 < C ∧ ∀ η : Character, ∀ᶠ Z : ℝ in atTop,

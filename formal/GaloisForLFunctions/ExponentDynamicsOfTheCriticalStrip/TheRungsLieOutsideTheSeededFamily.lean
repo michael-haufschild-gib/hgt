@@ -58,7 +58,7 @@ theorem dvd_of_isIntegral_mul_eq {a b : O} (ha : a ≠ 0) {y : ℂ} (hy : IsInte
     rw [map_div₀, hL, hL, div_eq_iff hza, ← h, mul_comm]
   have hxi : IsIntegral ℤ (algebraMap O K b / algebraMap O K a) :=
     (isIntegral_algHom_iff L.toIntAlgHom L.injective).mp (hx ▸ hy)
-  obtain ⟨c, hc⟩ := (IsIntegralClosure.isIntegral_iff (A := O)).mp hxi
+  obtain ⟨c, hc⟩ := IsIntegrallyClosed.isIntegral_iff.mp (hxi.tower_top (A := O))
   exact ⟨c, IsFractionRing.injective O K (by rw [map_mul, hc, mul_comm, div_mul_cancel₀ _ ha'])⟩
 
 /-- `|π|² = N(π)`. -/
@@ -96,7 +96,7 @@ theorem elemPsiSix_mul_eq {π₁ π₂ : O} {u : Oˣ} {p : ℕ} (hp : 0 < p)
   have hp0 : (p : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hp.ne'
   have hz0 : ringComplex π₁ ≠ 0 := by
     intro h0
-    rw [h0, mul_zero] at hconj
+    rw [h0, zero_mul] at hconj
     exact hp0 hconj.symm
   have hbar : conj (ringComplex π₁) * ringComplex u = ringComplex π₂ :=
     mul_left_cancel₀ hz0 (by linear_combination ringComplex u * hconj - hz)
@@ -115,6 +115,7 @@ theorem not_isIntegral_split {π₁ π₂ : O} {u : Oˣ} {p j : ℕ} (hp : 0 < p
     ¬ IsIntegral ℤ (elemPsiSix π₁ ^ (j + 1) * ζ₁ + elemPsiSix π₂ ^ (j + 1) * ζ₂) := by
   intro hc
   obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hn.ne'
+  rw [Nat.succ_eq_add_one] at hζ₁ hn
   have e₁ := elemPsiSix_mul_eq hp hprod h₁
   have e₂ := elemPsiSix_mul_eq (π₁ := π₂) (π₂ := π₁) hp (by rw [mul_comm, hprod]) h₂
   have hc_eq : (elemPsiSix π₁ ^ (j + 1) * ζ₁ + elemPsiSix π₂ ^ (j + 1) * ζ₂) *
@@ -140,8 +141,9 @@ theorem not_isIntegral_split {π₁ π₂ : O} {u : Oˣ} {p j : ℕ} (hp : 0 < p
   have hζint := isIntegral_of_pow_eq_one hn hζ₁
   refine hndvd (dvd_of_isIntegral_mul_eq (a := π₁) ?_ (hy'.mul (hζint.pow m)) ?_)
   · rintro rfl
-    rw [map_zero, norm_zero, ne_eq] at h₁
-    exact hp.ne' (by exact_mod_cast h₁.symm.trans (by norm_num))
+    rw [map_zero, norm_zero] at h₁
+    have h0 : (p : ℝ) = 0 := by rw [← h₁]; norm_num
+    exact hp.ne' (by exact_mod_cast h0)
   · rw [← mul_assoc, hzy, map_pow]
     linear_combination ringComplex π₂ ^ (6 * (j + 1)) * hζ₁
 
@@ -349,15 +351,10 @@ theorem isIntegral_heckeValue {𝔫 : Modulus K} (φ : HeckeCharacter 𝔫) (I :
     rw [← Units.val_pow_eq_pow_val, ← map_pow, pow_card_eq_one', map_one, Units.val_one]
   · exact isIntegral_zero
 
-theorem isIntegral_sum {s : Finset ℕ} {F : ℕ → ℂ} (h : ∀ i ∈ s, IsIntegral ℤ (F i)) :
-    IsIntegral ℤ (∑ i ∈ s, F i) := by
-  rw [← mem_integralClosure_iff]
-  exact Subalgebra.sum_mem _ fun i hi => mem_integralClosure_iff.mpr (h i hi)
-
 theorem isIntegral_heckeCoeff {𝔫 : Modulus K} (φ : HeckeCharacter 𝔫) (n : ℕ) :
     IsIntegral ℤ (heckeCoeff 𝔫 φ n) := by
   rw [heckeCoeff, ← mem_integralClosure_iff]
-  exact Subalgebra.sum_mem _ fun I _ => mem_integralClosure_iff.mpr (isIntegral_heckeValue φ I)
+  exact Subalgebra.sum_mem _ fun I _ => isIntegral_heckeValue φ I
 
 theorem heckeCoeff_one {𝔫 : Modulus K} (φ : HeckeCharacter 𝔫) : heckeCoeff 𝔫 φ 1 = 1 := by
   rw [heckeCoeff, idealsOfNorm_one, Finset.sum_singleton, ← Ideal.one_eq_top, heckeValue_one]
@@ -370,7 +367,7 @@ def heckeProdCoeff : List (Σ 𝔫 : Modulus K, HeckeCharacter 𝔫) → ℕ →
 theorem isIntegral_convolution {f g : ℕ → ℂ} (hf : ∀ n, IsIntegral ℤ (f n))
     (hg : ∀ n, IsIntegral ℤ (g n)) (n : ℕ) : IsIntegral ℤ (LSeries.convolution f g n) := by
   rw [LSeries.convolution_def, ← mem_integralClosure_iff]
-  exact Subalgebra.sum_mem _ fun x _ => mem_integralClosure_iff.mpr ((hf _).mul (hg _))
+  exact Subalgebra.sum_mem _ fun x _ => (hf _).mul (hg _)
 
 theorem isIntegral_heckeProdCoeff (A : List (Σ 𝔫 : Modulus K, HeckeCharacter 𝔫)) (n : ℕ) :
     IsIntegral ℤ (heckeProdCoeff A n) := by

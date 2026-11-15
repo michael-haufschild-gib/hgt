@@ -1173,10 +1173,10 @@ lemma sub_arithmetic_onLines_bound_of_gaps {ι : Type*} (η : Character) (S : Fi
     (fixed_principal_w_growth (∏ P ∈ S, P) hcw hυ p.2)
   have hlz : ‖LFunction (fixedPrincipal (∏ P ∈ S, P)) (6 * ((ξ : ℂ) + p.1.2 * I))‖ ≤
       (zBoxAmplitude (∏ P ∈ S, P) Bz / δz) * height p.1.2 ^ 3 := by
-    convert hlz0 using 1 <;> first | rfl | ring
+    convert hlz0 using 1; ring
   have hlw : ‖LFunction (fixedPrincipal (∏ P ∈ S, P)) ((υ : ℂ) + p.2 * I)‖ ≤
       (wAmplitude (∏ P ∈ S, P) cw / δw) * height p.2 ^ 3 := by
-    convert hlw0 using 1 <;> first | rfl | ring
+    convert hlw0 using 1; ring
   have hp1 := (height_pos p.1.1).le
   have hp2 := (height_pos p.1.2).le
   have hp3 := (height_pos p.2).le
