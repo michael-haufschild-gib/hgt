@@ -27,7 +27,7 @@ theorem isSymm_binarySelmerSymmetric (A : Matrix ι ι (ZMod 2)) (z : ι → ZMo
 omit [Fintype ι] in
 /-- The only quadratic obstruction is the lower diagonal vector. -/
 theorem diagonal_binarySelmerSymmetric (A : Matrix ι ι (ZMod 2)) (z : ι → ZMod 2) :
-    (fun i => binarySelmerSymmetric A z i i) = Sum.elim 0 z := by
+    (fun i => binarySelmerSymmetric A z i i) = Sum.elim (0 : ι → ZMod 2) z := by
   funext i
   cases i with
   | inl i =>
@@ -37,17 +37,18 @@ theorem diagonal_binarySelmerSymmetric (A : Matrix ι ι (ZMod 2)) (z : ι → Z
       change diagonal z i i = z i
       simp
 
-/-- The existing alternating completion is exactly the canonical rank-one repair of
+omit [Fintype ι] in
+/-- The alternating completion is exactly the canonical rank-one repair of
 the symmetric descent matrix. -/
 theorem binaryAlternatingRepair_binarySelmerSymmetric
     (A : Matrix ι ι (ZMod 2)) (z : ι → ZMod 2) :
     binaryAlternatingRepair (binarySelmerSymmetric A z) = binarySelmerMatrix Aᵀ z 0 := by
-  have houter : vecMulVec (Sum.elim (0 : ι → ZMod 2) z) (Sum.elim 0 z) =
+  have houter : vecMulVec (Sum.elim (0 : ι → ZMod 2) z) (Sum.elim (0 : ι → ZMod 2) z) =
       fromBlocks (0 : Matrix ι ι (ZMod 2)) 0 0 (vecMulVec z z) := by
     ext (i | i) (j | j) <;> simp [vecMulVec, fromBlocks]
   rw [binaryAlternatingRepair, diagonal_binarySelmerSymmetric, houter]
   dsimp only [binarySelmerSymmetric, binarySelmerMatrix]
-  rw [diagonal_zero, add_zero, transpose_transpose, fromBlocks_add]
+  rw [Matrix.diagonal_zero, add_zero, transpose_transpose, fromBlocks_add]
   simp only [add_zero]
   rw [add_comm A Aᵀ, add_comm (diagonal z) (vecMulVec z z)]
   rfl
@@ -89,7 +90,8 @@ theorem binarySelmerSymmetricGraph_isQuadraticLagrangian_iff
     exact congrFun h (Sum.inr i)
   · intro h
     subst z
-    rfl
+    funext i
+    cases i <;> rfl
 
 /-- The two matrix models have graph defect exactly one when correction is needed. -/
 theorem binarySelmerSymmetric_completion_defect
@@ -105,7 +107,8 @@ theorem binarySelmerSymmetric_completion_defect
       exact congrFun h (Sum.inr i)
     · intro h
       subst z
-      rfl
+      funext i
+      cases i <;> rfl
   simp only [heq]
 
 #print axioms rank_binarySelmerMatrix_eq_even_part
@@ -143,7 +146,7 @@ theorem det_binarySelmerMatrix_eq_symmetric_diagonal
     (binarySelmerMatrix Aᵀ z ε).det = (binarySelmerSymmetric (A + diagonal ε) z).det := by
   have h := det_binarySelmerMatrix_eq_symmetric (A + diagonal ε) z
   have heq : binarySelmerMatrix (A + diagonal ε)ᵀ z 0 = binarySelmerMatrix Aᵀ z ε := by
-    simp only [binarySelmerMatrix, transpose_add, diagonal_transpose, diagonal_zero, add_zero]
+    simp only [binarySelmerMatrix, transpose_add, diagonal_transpose, Matrix.diagonal_zero, add_zero]
   rwa [heq] at h
 
 /-- Arbitrary symmetric descent matrices admit a nonsingular diagonal completion. -/

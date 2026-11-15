@@ -35,6 +35,11 @@ theorem matrixQuadraticLine_eval (W : Matrix ι ι ℝ) (x h : ι → ℝ) (t : 
     qf, bil_add_left, bil_add_right, bil_smul_left, bil_smul_right]
   ring
 
+/-- The weak degree threshold detects the isotropic cone of the matrix form. -/
+theorem matrixQuadraticLine_isotropic_iff (W : Matrix ι ι ℝ) (x h : ι → ℝ) (n : ℕ) :
+    ((matrixQuadraticLine W x h) ^ (n + 1)).natDegree ≤ n + 1 ↔ qf W h = 0 :=
+  quadratic_power_degree_le_exponent_iff _ _ _ _
+
 /-- Affine degree of every higher power characterizes the symmetric radical. -/
 theorem matrixQuadraticLine_radical_iff (W : Matrix ι ι ℝ) (h : ι → ℝ) (n : ℕ) :
     (∀ x, ((matrixQuadraticLine W x h) ^ (n + 2)).natDegree ≤ 1) ↔
@@ -58,8 +63,23 @@ theorem matrixQuadraticLine_radical_symmetrize (W : Matrix ι ι ℝ) (h : ι �
     rw [dotProduct_transpose_mulVec]
   simp only [he]
 
+/-- The affine-power locus is the ordinary kernel of the symmetric matrix part. -/
+theorem matrixQuadraticLine_kernel_iff (W : Matrix ι ι ℝ) (h : ι → ℝ) (n : ℕ) :
+    (∀ x, ((matrixQuadraticLine W x h) ^ (n + 2)).natDegree ≤ 1) ↔
+      (W + W.transpose) *ᵥ h = 0 := by
+  classical
+  rw [matrixQuadraticLine_radical_symmetrize]
+  constructor
+  · intro H
+    funext i
+    simpa [bil, dotProduct, Pi.single_apply] using H (Pi.single i 1)
+  · intro H x
+    simp [bil, H]
+
 #print axioms matrixQuadraticLine_radical_iff
+#print axioms matrixQuadraticLine_isotropic_iff
 #print axioms matrixQuadraticLine_radical_symmetrize
+#print axioms matrixQuadraticLine_kernel_iff
 #print axioms quadraticLine_eval
 #print axioms matrixQuadraticLine_eval
 end GaloisForLFunctions.HodgeTheoryWithoutVarieties

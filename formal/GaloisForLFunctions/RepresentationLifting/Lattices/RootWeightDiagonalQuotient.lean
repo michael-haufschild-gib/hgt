@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RepresentationLifting.Lattices.RootWeightCoordinates
+import GaloisForLFunctions.RepresentationLifting.Lattices.RootWeightCokernel
 import Mathlib.LinearAlgebra.Isomorphisms
 
 /-!
@@ -77,6 +77,27 @@ theorem root_diagonal_quotient_injective (p : ι) :
   apply rootToWeight_injective ι p
   exact congrArg (diagonalWeightQuotientEquiv ι p) h
 
+/-- The integral roots inside the diagonal quotient become the pointed root weights. -/
+theorem diagonalWeightQuotientEquiv_map_root_range (p : ι) :
+    Submodule.map (diagonalWeightQuotientEquiv ι p).toLinearMap
+      (LinearMap.range ((coordinateDiagonal ι).mkQ.comp (coordinateRootLattice ι).subtype)) =
+        LinearMap.range (rootToWeight ι p) := by
+  ext w
+  constructor
+  · rintro ⟨v, ⟨u, rfl⟩, rfl⟩
+    exact ⟨u, rfl⟩
+  · rintro ⟨u, rfl⟩
+    exact ⟨(coordinateDiagonal ι).mkQ u.val, ⟨u, rfl⟩, rfl⟩
+
+/-- The cokernel of the natural map `Q → ℤ^ι / ℤ(1,…,1)` is cyclic of order `|ι|`. -/
+def diagonalRootCokernelEquiv [Nontrivial ι] (p : ι) :
+    (((ι → ℤ) ⧸ coordinateDiagonal ι) ⧸
+      LinearMap.range ((coordinateDiagonal ι).mkQ.comp (coordinateRootLattice ι).subtype)) ≃ₗ[ℤ]
+        ZMod (Fintype.card ι) :=
+  (Submodule.Quotient.equiv _ _ (diagonalWeightQuotientEquiv ι p)
+    (diagonalWeightQuotientEquiv_map_root_range ι p)).trans (rootWeightCokernelEquiv ι p)
+
 #print axioms diagonalWeightQuotientEquiv
 #print axioms root_diagonal_quotient_injective
+#print axioms diagonalRootCokernelEquiv
 end GaloisForLFunctions.RepresentationLifting

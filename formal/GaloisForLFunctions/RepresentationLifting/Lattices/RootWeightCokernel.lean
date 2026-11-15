@@ -39,7 +39,7 @@ theorem rootWeightResidue_surjective (p : ι) : Function.Surjective (rootWeightR
   obtain ⟨j, hj⟩ := exists_ne p
   refine ⟨⟨(Pi.single j z : ι → ℤ), ?_⟩, ?_⟩
   · change (Pi.single j z : ι → ℤ) p = 0
-    simp [hj, Ne.symm hj]
+    simp [Ne.symm hj]
   · change ((∑ i : ι, (Pi.single j z : ι → ℤ) i : ℤ) : ZMod (Fintype.card ι)) = z
     simp
 
@@ -58,7 +58,7 @@ theorem rootWeight_index (p : ι) :
   rw [Nat.card_congr (rootWeightCokernelEquiv ι p).toEquiv,
     Nat.card_eq_fintype_card, ZMod.card]
 
-/-- Tensoring the cyclic lattice defect with a rank-two lattice squares its order. -/
+/-- Two independent copies square the lattice index. -/
 theorem rootWeight_pair_index (p : ι) :
     Nat.card ((coordinateWeightLattice ι p ⧸ LinearMap.range (rootToWeight ι p)) ×
       (coordinateWeightLattice ι p ⧸ LinearMap.range (rootToWeight ι p))) =

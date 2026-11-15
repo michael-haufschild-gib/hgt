@@ -104,7 +104,7 @@ theorem card_zeroQuartet_eq_four {ρ : ℂ} (hre : ρ.re ≠ 1 / 2) (him : ρ.im
     h12 (by linear_combination -h)
   rw [zeroQuartet, Finset.card_insert_of_notMem, Finset.card_insert_of_notMem,
     Finset.card_insert_of_notMem, Finset.card_singleton]
-  · simp [h23, h24, h34]
+  · simp [h34]
   · simp [h23, h24]
   · simp [h12, h13, h14]
 
@@ -214,7 +214,7 @@ theorem isStripLocallyFinite_zetaStripZeros :
       exact lt_irrefl 1 h1
     have hxi : RHTower.xi z = 0 := (RHTower.xi_eq_zero_iff h0 hne1).mpr hz
     exact ⟨RHTower.mem_xi_divisor_support_of_eq_zero hxi, hzK⟩
-  have hloc : MeromorphicOn.LocallyFiniteSupport
+  have hloc : LocallyFiniteSupport
       (fun z : ℂ => MeromorphicOn.divisor RHTower.xi Set.univ z) := fun z =>
     (MeromorphicOn.divisor RHTower.xi Set.univ).supportLocallyFiniteWithinDomain' z (Set.mem_univ z)
   exact (hloc.locallyFinite_support.finite_inter_compact hK).subset hsub
@@ -347,9 +347,9 @@ theorem closed_right_descent_iff {Z : Set ℂ} (hZ : IsQuartetSymmetric Z)
       have hsub_ne : z - (k : ℂ) / ((k : ℂ) + 1) ≠ 0 := sub_ne_zero.mpr hne
       have hpow : (-(1 / (k : ℂ))) ^ (a + 1) = (-(1 / (k : ℂ))) ^ (b + 1) :=
         mul_right_cancel₀ hsub_ne (add_left_cancel heq)
+      rw [one_div, neg_inv, inv_pow, inv_pow, inv_inj] at hpow
       have hnorm := congrArg Norm.norm hpow
-      simp only [norm_pow, norm_neg, norm_div, norm_one, Complex.norm_natCast, one_div, inv_pow,
-        inv_inj] at hnorm
+      simp only [norm_pow, norm_neg, Complex.norm_natCast] at hnorm
       have hnat : k ^ (a + 1) = k ^ (b + 1) := by exact_mod_cast hnorm
       have hab1 : a + 1 = b + 1 := Nat.pow_right_injective hk hnat
       omega
@@ -789,15 +789,15 @@ theorem odd_dyadic_depth_of_closed_left_doubling {Z : Set ℂ} (hZ : IsQuartetSy
           intro h0
           apply hall_ne (j + 1)
           rw [Function.iterate_succ_apply', tentMap, h0, abs_zero])
-    let g : ℕ → ↥(Z \ {z : ℂ | z.re = 1 / 2}) := fun n => by
-      obtain ⟨hmem, hre, _⟩ := horb n fun j _ => hall_pos j
-      refine ⟨leftDoublingRightStep^[n] ρ, hmem, ?_⟩
-      simp only [Set.mem_setOf_eq]
-      linarith [hall_pos n]
+    let g : ℕ → ↥(Z \ {z : ℂ | z.re = 1 / 2}) := fun n =>
+      ⟨leftDoublingRightStep^[n] ρ, (horb n fun j _ => hall_pos j).1, by
+        simp only [Set.mem_setOf_eq]
+        rw [(horb n fun j _ => hall_pos j).2.1]
+        linarith [hall_pos n]⟩
     have hinj : Function.Injective g := by
       intro a b hab
-      have him_eq : (leftDoublingRightStep^[a] ρ).im = (leftDoublingRightStep^[b] ρ).im := by
-        simpa [g] using congrArg (fun x : ↥(Z \ {z : ℂ | z.re = 1 / 2}) => x.1.im) hab
+      have him_eq : (leftDoublingRightStep^[a] ρ).im = (leftDoublingRightStep^[b] ρ).im :=
+        congrArg (fun x : ↥(Z \ {z : ℂ | z.re = 1 / 2}) => x.1.im) hab
       rw [(horb a fun j _ => hall_pos j).2.2, (horb b fun j _ => hall_pos j).2.2] at him_eq
       have hpow : (2 : ℝ) ^ a = (2 : ℝ) ^ b := mul_right_cancel₀ him0 him_eq
       have hpowN : (2 : ℕ) ^ a = (2 : ℕ) ^ b := by exact_mod_cast hpow
@@ -827,8 +827,10 @@ theorem odd_dyadic_depth_of_closed_left_doubling {Z : Set ℂ} (hZ : IsQuartetSy
   have hend_eq : leftDoublingRightStep^[k + 1] ρ =
       (1 / 2 : ℂ) + (((2 : ℝ) ^ (k + 1) * ρ.im : ℝ) : ℂ) * Complex.I := by
     apply Complex.ext
-    · rw [hre_end]; simp
-    · rw [him_end]; simp
+    · rw [hre_end, Complex.add_re, Complex.re_ofReal_mul, Complex.I_re, mul_zero, add_zero]
+      norm_num
+    · rw [him_end, Complex.add_im, Complex.im_ofReal_mul, Complex.I_im, mul_one]
+      norm_num
   rw [hδ_def] at hδ_eq
   refine ⟨k, m, hm, by linarith [hδ_eq], hend_eq ▸ hmem_end⟩
 
@@ -915,7 +917,7 @@ theorem closed_left_doubling_union_quartet_iff {Z_crit : Set ℂ}
             starRingEnd ℂ ((1 / 2 : ℂ) + ((2 * ρ.im : ℝ) : ℂ) * Complex.I) := by
           apply Complex.ext
           · simp [hρ34]; ring
-          · simp; ring
+          · simp
         rw [heq]
         exact hconj _ hpartner
       · refine Or.inl ?_
@@ -923,7 +925,7 @@ theorem closed_left_doubling_union_quartet_iff {Z_crit : Set ℂ}
             (1 / 2 : ℂ) + ((2 * ρ.im : ℝ) : ℂ) * Complex.I := by
           apply Complex.ext
           · simp [hρ34]; ring
-          · simp; ring
+          · simp
         rw [heq]
         exact hpartner
 

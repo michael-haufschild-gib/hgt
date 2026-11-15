@@ -111,7 +111,7 @@ theorem deningerHiddenPrimeHochschild_linearIndependent :
     LinearIndependent ℂ (fun p : DeningerPrimeLogAway =>
       deningerHiddenPrimeHochschild (deningerPrimeLogKernelBasis p)) := by
   have hk : deningerHiddenPrimeHochschild.ker = ⊥ :=
-    LinearMap.ker_eq_bot.mpr deningerHiddenPrimeHochschild_injective
+    (LinearMap.ker_eq_bot (f := deningerHiddenPrimeHochschild)).mpr deningerHiddenPrimeHochschild_injective
   have hi := deningerPrimeLogKernelBasis.linearIndependent.map' deningerHiddenPrimeHochschild hk
   exact hi
 

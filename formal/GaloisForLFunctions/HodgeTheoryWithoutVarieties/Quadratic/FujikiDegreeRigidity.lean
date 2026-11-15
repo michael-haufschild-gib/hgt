@@ -16,6 +16,19 @@ namespace GaloisForLFunctions.HodgeTheoryWithoutVarieties
 
 variable {R : Type*} [CommRing R] [IsDomain R]
 
+/-- Degree at most the exponent means that the base polynomial is affine. -/
+theorem power_natDegree_le_exponent_iff (p : R[X]) (n : ℕ) :
+    (p ^ (n + 1)).natDegree ≤ n + 1 ↔ p.natDegree ≤ 1 := by
+  rw [natDegree_pow]
+  constructor
+  · intro h
+    by_contra hp
+    have htwo : 2 ≤ p.natDegree := by omega
+    have := Nat.mul_le_mul_left (n + 1) htwo
+    omega
+  · intro h
+    simpa only [mul_one] using Nat.mul_le_mul_left (n + 1) h
+
 /-- Below its exponent, a polynomial power has only a constant base. -/
 theorem power_natDegree_lt_exponent_iff (p : R[X]) (n : ℕ) :
     (p ^ (n + 1)).natDegree < n + 1 ↔ p.natDegree = 0 := by
@@ -64,11 +77,30 @@ theorem quadratic_power_degree_lt_exponent_iff (a b c : R) (n : ℕ) :
   rw [power_natDegree_lt_exponent_iff, ← power_natDegree_le_one_iff _ 0]
   exact quadratic_power_affine_iff a b c 0
 
+/-- At the exponent threshold only the quadratic coefficient must vanish. -/
+theorem quadratic_power_degree_le_exponent_iff (a b c : R) (n : ℕ) :
+    ((C a + C b * X + C c * X ^ 2) ^ (n + 1)).natDegree ≤ n + 1 ↔ c = 0 := by
+  rw [power_natDegree_le_exponent_iff]
+  constructor
+  · intro h
+    have hc := coeff_eq_zero_of_natDegree_lt (p := C a + C b * X + C c * X ^ 2)
+      (n := 2) (by omega)
+    simpa using hc
+  · rintro rfl
+    simp only [map_zero, zero_mul, add_zero]
+    exact (natDegree_add_le _ _).trans
+      (max_le (by simp) (natDegree_mul_le.trans (by simp)))
+
 variable {V : Type*} [AddCommGroup V] [Module R V]
 
 /-- Restriction of a quadratic form to `x + t • h`, as a polynomial in `t`. -/
 def quadraticLine (q : QuadraticForm R V) (x h : V) : R[X] :=
   C (q x) + C (q.polarBilin x h) * X + C (q h) * X ^ 2
+
+/-- The weak degree threshold detects isotropy, independently of the base point. -/
+theorem quadraticLine_isotropic_iff (q : QuadraticForm R V) (x h : V) (n : ℕ) :
+    ((quadraticLine q x h) ^ (n + 1)).natDegree ≤ n + 1 ↔ q h = 0 :=
+  quadratic_power_degree_le_exponent_iff _ _ _ _
 
 theorem quadraticLine_power_affine_iff (q : QuadraticForm R V) (x h : V) (n : ℕ) :
     ((quadraticLine q x h) ^ (n + 2)).natDegree ≤ 1 ↔
@@ -92,6 +124,7 @@ theorem quadraticLine_degree_threshold_iff (q : QuadraticForm R V) (h : V) (n : 
     fun H x => ⟨H.2 x, H.1⟩⟩
 
 #print axioms quadratic_power_affine_iff
+#print axioms quadraticLine_isotropic_iff
 #print axioms quadraticLine_radical_iff
 #print axioms quadraticLine_degree_threshold_iff
 end GaloisForLFunctions.HodgeTheoryWithoutVarieties

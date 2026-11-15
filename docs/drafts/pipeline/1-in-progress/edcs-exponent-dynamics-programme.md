@@ -49,7 +49,7 @@ Open, with the input that is missing:
 | E4 abelian rigidity | open | the factorisation of Gauss sums (Stickelberger) and the Kubota series of order ≥ 4; neither is in Mathlib or the corpus |
 | E5 | over 𝔽_q both levers are theorems (IRW thick levels; AKT tensor growth); over ℤ base change needs well-founded outer modes (IRW), tensor powers the price law (FCT) | a lever from either over ℤ |
 | E6 | frame (3, 6) exact (M11) | a zero-free half-plane for Grössencharacter L-functions of ℚ(ω) |
-| E7 | three families (M3) | a world with Euler product and functional equation |
+| E7 | four families (M3); the shifted pairs ζ(s−a)ζ(s+a) have Dirichlet series, Euler product and functional equation and realize [Θ, Θ+½); a bite at b forces Ramanujan precision n^{b−Θ} | a tempered world (Euler product, functional equation, Ramanujan) with an abscissa off the line: none is known, which is GRH-type |
 | acid test 𝔽_q[T] | not started | a stage-map proof of the window gap for characters ramified at ∞ |
 | Weil matrix exponent 1/8–1/4 | owned by CACT | uniform pole pairing (card cact-whole-space-threshold-onset) |
 
@@ -82,6 +82,12 @@ signal exponent 7/8, two-end depth e^{3v/8}, joint-ancestry gap law, Transfer �
 - edits of the primes with count Ax + O(x^{14/15}): zeros exactly on Re s = σ right of 7/8, any σ ∈ (7/8, 14/15).
   The seed is false for an edit.
 A frame with centre < 2/3 is a lever in neither of the first two families.
+- shifted pairs F_a(s) = ζ(s−a)ζ(s+a), a ≥ 0 (RHTower countermodel: coefficients c_a(n) = Σ_{de=n} d^a e^{−a} ≥ 0,
+  Euler product, Λ(s−a)Λ(s+a) symmetric under s ↦ 1−s, c_a(p) ≥ p^a). Zeros of F_a are ρ ± a, so
+  sup Re = Θ + a (upper bound from Re ρ ≤ Θ; approximation by ρ + a). Realized: [Θ, Θ+½) ⊇ [7/8, 1)
+  (seed and Θ ≥ ½). A map biting at b ∈ [Θ, Θ+½) fails for a = b − Θ, where c_a(n) ≤ d(n) n^a
+  (each d^a e^{−a} ≤ n^a) and no C n^ε, ε < a, bounds c_a. A frame with centre < 1 bites at some
+  b ∈ (max(Θ, centre), 1) and fails for a pair. For a > 3/8: Θ + a > 7/8, the seed is false.
 
 **M4–M5 (E1, the floor in the logarithmic energy).** Z with |Re ρ − ½| ≤ σ; f continuous, supported in
 [−a, a]; E(f) = ∫₀¹ ‖f(·+x) − f‖² dx/x. Then |W(f, f)| ≤ 160 L(a, σ) (E(f) + ‖f‖²),

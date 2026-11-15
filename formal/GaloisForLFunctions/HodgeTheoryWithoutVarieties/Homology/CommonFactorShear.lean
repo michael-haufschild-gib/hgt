@@ -76,17 +76,18 @@ def commonFactorShearCyclesEquiv (z : R) (a b : Rˣ) :
     apply Prod.ext
     · apply Subtype.ext
       exact congrArg Prod.fst ((commonFactorShear a b).apply_symm_apply (x.1.val, x.2))
-    · exact congrArg Prod.snd ((commonFactorShear a b).apply_symm_apply (x.1.val, x.2))
+    · exact congrArg (fun v : R × R => v.2)
+        ((commonFactorShear a b).apply_symm_apply (x.1.val, x.2))
   map_add' x y := by
     apply Prod.ext
     · apply Subtype.ext
       exact congrArg Prod.fst ((commonFactorShear a b).map_add x.val y.val)
-    · exact congrArg Prod.snd ((commonFactorShear a b).map_add x.val y.val)
+    · exact congrArg (fun v : R × R => v.2) ((commonFactorShear a b).map_add x.val y.val)
   map_smul' c x := by
     apply Prod.ext
     · apply Subtype.ext
       exact congrArg Prod.fst ((commonFactorShear a b).map_smul c x.val)
-    · exact congrArg Prod.snd ((commonFactorShear a b).map_smul c x.val)
+    · exact congrArg (fun v : R × R => v.2) ((commonFactorShear a b).map_smul c x.val)
 
 /-- The quotient coordinate is reduced modulo the common factor. -/
 def commonFactorShearProjection (z : R) (a b : Rˣ) :
@@ -121,6 +122,7 @@ theorem commonFactorShearProjection_ker (z : R) (a b : Rˣ) :
     rw [commonFactorShear_d2]
     exact Prod.ext hr.symm ht.symm
   · rintro ⟨t, ht⟩
+    change commonFactorKoszulD2 z a b t = x.val at ht
     have hs : commonFactorShear a b x.val = (0, z * t) := by
       rw [← ht, commonFactorShear_d2]
     apply Prod.ext
