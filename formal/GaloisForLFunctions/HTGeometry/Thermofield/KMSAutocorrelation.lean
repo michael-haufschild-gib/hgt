@@ -38,12 +38,13 @@ private theorem integral_cosh_affine_mul (x : ℝ) :
     x * (∫ u in (0:ℝ)..1, Real.cosh (x * (1-2*u))) = Real.sinh x := by
   have hd (u : ℝ) : HasDerivAt (fun v => -Real.sinh (x * (1-2*v)) / 2)
       (x * Real.cosh (x * (1-2*u))) u := by
-    convert (((((hasDerivAt_const u (1:ℝ)).sub
-      ((hasDerivAt_id u).const_mul 2)).const_mul x).sinh).neg.div_const 2) using 1 <;> ring
+    apply (((((hasDerivAt_const u (1:ℝ)).sub
+      ((hasDerivAt_id u).const_mul 2)).const_mul x).sinh).neg.div_const 2).congr_deriv
+    ring
   have hi : IntervalIntegrable (fun u => x * Real.cosh (x * (1-2*u))) volume 0 1 :=
     (by fun_prop : Continuous _).intervalIntegrable _ _
   have h := integral_eq_sub_of_hasDerivAt (fun u _ => hd u) hi
-  rw [integral_const_mul] at h
+  rw [intervalIntegral.integral_const_mul] at h
   simp only [mul_zero, sub_zero, mul_one, show (1:ℝ)-2*1 = -1 by ring,
     mul_neg_one, Real.sinh_neg, neg_neg] at h
   linarith only [h]
@@ -54,7 +55,8 @@ theorem integral_kmsKernel (x : ℝ) :
   by_cases hx : x = 0
   · subst x
     simp [kmsKernel, kmsMean]
-  · rw [kmsMean, if_neg hx, kmsKernel, integral_div]
+  · simp only [kmsKernel]
+    rw [kmsMean, if_neg hx, intervalIntegral.integral_div]
     have h := integral_cosh_affine_mul x
     apply (eq_div_iff (mul_ne_zero hx (Real.cosh_pos x).ne')).mpr
     field_simp [(Real.cosh_pos x).ne']
@@ -79,11 +81,12 @@ theorem integral_kmsKernel_sq (x : ℝ) :
     rw [show 2 * (x * (1-2*u)) = (2*x)*(1-2*u) by ring] at h
     dsimp [kmsKernel]
     field_simp [hc]
+    rw [mul_comm x 2]
     nlinarith only [h, h']
   simp_rw [hpoint]
-  rw [integral_div, integral_add
+  rw [intervalIntegral.integral_div, intervalIntegral.integral_add
     ((by fun_prop : Continuous (fun u : ℝ => Real.cosh ((2*x)*(1-2*u)))).intervalIntegrable _ _)
-    intervalIntegrable_const, integral_const]
+    intervalIntegrable_const, intervalIntegral.integral_const]
   have h := integral_cosh_affine_mul (2*x)
   rw [Real.sinh_two_mul] at h
   rw [kmsMean, if_neg hx]

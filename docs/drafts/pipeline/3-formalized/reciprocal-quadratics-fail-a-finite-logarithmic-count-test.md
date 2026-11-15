@@ -1,6 +1,6 @@
 # Four even prime-power counts detect every reciprocal quadratic
 
-- **Stage:** 2-fully-proven; Lean in progress
+- **Stage:** 3-formalized
 - **Obstacle:** O11
 - **Connection:** reciprocal scattering factors, Newton power sums and Euler logarithmic coefficients.
 - **Count:** strengthening of the positive-passive-twin candidate; not a separate contribution.
@@ -31,4 +31,4 @@ Thus one of the four coefficients is negative. The argument uses only exact loca
 
 ## Lean
 
-`SelbergClass/PositiveFiniteEulerLogarithmicSigns.lean`; compilation and umbrella integration pending.
+`SelbergClass/PositiveFiniteEulerLogarithmicSigns.lean`, theorem `exists_negative_even_eulerLogCoeff`. Verified with `lake --old env lean GaloisForLFunctions/SelbergClass/PositiveFiniteEulerLogarithmicSigns.lean`; imported by the Selberg-class umbrella. No axiom checks.

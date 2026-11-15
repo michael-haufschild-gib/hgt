@@ -351,7 +351,7 @@ theorem two_mul_coeff_prime_sq_lt_sq_coeff_prime {p : ℕ} (hp : p.Prime) {r u :
     simp only [coeff, if_neg hp.ne_zero, if_pos (dvd_refl p), if_neg hnot, add_zero]
   have hc2 : coeff p (r + u) (p ^ 2) = 1 + (r + u) + p := by
     simp only [coeff, if_neg (pow_ne_zero 2 hp.ne_zero),
-      if_pos (dvd_pow_self p (by norm_num)), if_pos (dvd_refl (p ^ 2))]
+      if_pos (dvd_pow_self p (by norm_num : (2 : ℕ) ≠ 0)), if_pos (dvd_refl (p ^ 2))]
   rw [hc1, hc2]
   nlinarith only [hru, sq_pos_of_pos (zero_lt_one.trans hr), sq_nonneg (u - 1), hu]
 

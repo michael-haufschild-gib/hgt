@@ -107,4 +107,48 @@ theorem spectralMeanDistance_tendsto_zero_iff_signal_eq
     rw [hz]
     exact tendsto_const_nhds
 
+/-- Proportion of sampling times at which the two signals differ. -/
+def spectralDisagreementDensity (s : Finset Circle) (a b : Circle → ℂ) (N : ℕ) : ℝ := by
+  classical
+  exact (N : ℝ)⁻¹ * ∑ n ∈ Finset.range N,
+    if circleSignal s a n = circleSignal s b n then 0 else 1
+
+/-- Bounded spectral mass controls mean distance by the disagreement density. -/
+theorem spectralMeanDistance_le_mass_mul_density (s : Finset Circle)
+    (a b : Circle → ℂ) (N : ℕ) :
+    spectralMeanDistance s a b N ≤
+      (∑ z ∈ s, ‖a z-b z‖) * spectralDisagreementDensity s a b N := by
+  classical
+  rw [spectralMeanDistance, spectralDisagreementDensity, mul_left_comm, Finset.mul_sum]
+  apply mul_le_mul_of_nonneg_left _ (inv_nonneg.mpr (Nat.cast_nonneg N))
+  apply Finset.sum_le_sum
+  intro n _
+  by_cases h : circleSignal s a n = circleSignal s b n
+  · simp only [h, sub_self, norm_zero, if_pos, mul_zero, le_refl]
+  · rw [if_neg h, mul_one, circleSignal_sub]
+    exact norm_circleSignal_le s (fun z => a z-b z) n
+
+/-- Agreement on a set of density one identifies every finite spectral coefficient. -/
+theorem spectralDisagreementDensity_tendsto_zero_iff
+    (s : Finset Circle) (a b : Circle → ℂ) :
+    Tendsto (spectralDisagreementDensity s a b) atTop (𝓝 0) ↔
+      ∀ z ∈ s, a z = b z := by
+  classical
+  constructor
+  · intro h
+    apply (spectralMeanDistance_tendsto_zero_iff s a b).mp
+    apply squeeze_zero
+      (fun N => mul_nonneg (inv_nonneg.mpr (Nat.cast_nonneg N))
+        (Finset.sum_nonneg fun _ _ => norm_nonneg _))
+      (spectralMeanDistance_le_mass_mul_density s a b)
+    simpa only [mul_zero] using h.const_mul (∑ z ∈ s, ‖a z-b z‖)
+  · intro h
+    have hs := (spectralMeanDistance_tendsto_zero_iff_signal_eq s a b).mp
+      ((spectralMeanDistance_tendsto_zero_iff s a b).mpr h)
+    have hz : spectralDisagreementDensity s a b = fun _ => 0 := by
+      funext N
+      simp [spectralDisagreementDensity, hs]
+    rw [hz]
+    exact tendsto_const_nhds
+
 end GaloisForLFunctions.HilbertMetric

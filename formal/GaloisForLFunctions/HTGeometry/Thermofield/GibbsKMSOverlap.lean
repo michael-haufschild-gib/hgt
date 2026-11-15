@@ -40,9 +40,9 @@ theorem gibbsKMSSusceptibility_nonneg (β : ℝ) (energy gap : α → ℝ) :
 theorem integral_gibbsKMSAutocorrelation (β : ℝ) (energy gap : α → ℝ) :
     (∫ u in (0:ℝ)..1, gibbsKMSAutocorrelation β energy gap u) =
       gibbsKMSSusceptibility β energy gap := by
-  rw [gibbsKMSAutocorrelation, integral_finsetSum (fun a _ =>
+  rw [gibbsKMSAutocorrelation, intervalIntegral.integral_finsetSum (fun a _ =>
     (continuous_const.mul (continuous_kmsKernel (gap a))).intervalIntegrable _ _)]
-  simp only [integral_const_mul, integral_kmsKernel, gibbsKMSSusceptibility]
+  simp only [intervalIntegral.integral_const_mul, integral_kmsKernel, gibbsKMSSusceptibility]
 
 private theorem square_expansion (β : ℝ) (energy gap : α → ℝ) (u : ℝ) :
     gibbsKMSAutocorrelation β energy gap u ^ 2 =
@@ -70,12 +70,12 @@ theorem integral_gibbsKMSAutocorrelation_sq_le (β : ℝ) (energy gap : α → �
   have hexpand : (∫ u in (0:ℝ)..1, gibbsKMSAutocorrelation β energy gap u ^ 2) =
       ∑ a, ∑ b, (w a*w b) * (∫ u in (0:ℝ)..1, kmsKernel (gap a) u * kmsKernel (gap b) u) := by
     simp_rw [square_expansion]
-    rw [integral_finsetSum (fun a _ =>
+    rw [intervalIntegral.integral_finsetSum (fun a _ =>
       (continuous_finset_sum _ (fun b _ => hcont a b)).intervalIntegrable _ _)]
     apply Finset.sum_congr rfl
     intro a _
-    rw [integral_finsetSum (fun b _ => (hcont a b).intervalIntegrable _ _)]
-    simp only [integral_const_mul]
+    rw [intervalIntegral.integral_finsetSum (fun b _ => (hcont a b).intervalIntegrable _ _)]
+    simp only [intervalIntegral.integral_const_mul]
   rw [hexpand]
   calc
     _ ≤ ∑ a, ∑ b, (w a*w b) * ((c a+c b)/4+c a*c b/2) := by
