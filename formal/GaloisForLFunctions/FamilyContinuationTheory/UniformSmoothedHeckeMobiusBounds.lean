@@ -109,7 +109,7 @@ theorem exists_uniform_signed_signal_bound (a ε : ℝ)
   have hQ0 : 0 ≤ signedConductorScale χ := zero_le_one.trans (signedConductorScale_ge_one χ)
   have hβ : HeckeZeroSupremum.beta < a :=
     SubSevenEighthsZeroFree.hecke_beta_le_sub_seven_eighths.trans_lt ha
-  rw [HeckeSignalShift.sub_contour_shift_left χ (fun _ => 1) differentiableOn_const
+  rw [HeckeSignalShift.sub_contour_shift_left χ (fun _ => 1) (differentiableOn_const (1 : ℂ))
     (by intro s hs; norm_num) 0 a (by linarith) ha2 hβ hX, norm_mul]
   have hint := norm_integral_le_of_norm_le
     ((Continuation.polynomialGaussian_integrable 2).const_mul
@@ -150,8 +150,8 @@ theorem signed_squarefree_sum_eq_signal (𝔪 : Modulus K) (ψ : HeckeCharacter 
   apply integral_congr_ae
   filter_upwards [] with y
   have hre : 1 < (linePoint (-y)).re := by rw [linePoint_re]; norm_num
-  have h0 : linePoint (-y) ≠ 0 := by intro h; simp [h] at hre
-  have h1 : linePoint (-y) ≠ 1 := by intro h; simp [h] at hre
+  have h0 : linePoint (-y) ≠ 0 := by intro h; norm_num [h] at hre
+  have h1 : linePoint (-y) ≠ 1 := by intro h; norm_num [h] at hre
   rw [heckeKernel, heckeLFunction_eq_heckeL 𝔪 ψ hre,
     ← LFunction_heckeFamilyOfRay_eq_heckeL 𝔪 ψ hre]
   simp only [Continuation.gaussianContourIntegrand, HeckeSignal.quotient,

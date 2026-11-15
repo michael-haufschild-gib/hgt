@@ -175,3 +175,5 @@ logarithmic phase estimates, and zeta subconvexity.
 -/
 
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.ReducedResidueDifferentialCharacters
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteField.FiniteFieldNormKernel
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteField.FiniteFieldNormCharacters

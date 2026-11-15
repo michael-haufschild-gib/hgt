@@ -16,7 +16,7 @@ weight multiset; no comparison with étale cohomology is assumed.
 open scoped BigOperators Classical
 noncomputable section
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri.KummerWeightFreeness
-open RepresentationLifting
+open RepresentationLifting ArithmeticHarmonicAnalysis
 
 /-- The complex character of a cyclic group with residue weight `w`. -/
 def cyclicWeightCharacter (N : ℕ) [NeZero N] (w : ZMod N) :
@@ -190,10 +190,22 @@ theorem complexLift_dimension (c : (SquareConstantField p s)ˣ) :
             (kummerExponent (p ^ (d + 1)) r))) : ℂ) := by
   rw [complexLift_at_one, Module.finrank_eq_card_basis (squareKummerRegularMonomialBasis p s c d r)]
 
+/-- Virtual freeness of the lift is equivalent to zero dimension of the intrinsic differential space. -/
+theorem complexLift_isVirtuallyFree_iff_finrank_zero (c : (SquareConstantField p s)ˣ) :
+    IsVirtuallyFree (WeightGroup p s d) (complexLift p s d r) ↔
+      Module.finrank (SquareConstantField p s)
+        (globalRegularDifferentials (SquareConstantField p s)
+          (SquareKummerField p s c (p ^ (d + 1) - 2)
+            (kummerExponent (p ^ (d + 1)) r))) = 0 := by
+  rw [complexLift_isVirtuallyFree_iff_empty,
+    Module.finrank_eq_card_basis (squareKummerRegularMonomialBasis p s c d r),
+    Fintype.card_eq_zero_iff]
+
 #print axioms complexLift_trivialMultiplicity
 #print axioms complexLift_multiplicity
 #print axioms complexLift_isVirtuallyFree_iff_dvd
 #print axioms exists_nonidentity_trace_iff_not_dvd
 #print axioms complexLift_dimension
+#print axioms complexLift_isVirtuallyFree_iff_finrank_zero
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.KummerWeightFreeness

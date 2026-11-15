@@ -69,9 +69,130 @@ theorem last_ray_relation (n : ℕ) :
   ext i
   fin_cases i <;> simp <;> ring
 
+/-- Integer points in the cone between the first and last rays. -/
+def InCone (n : ℕ) (v : Fin 2 → ℤ) : Prop :=
+  0 ≤ v 0 ∧ 0 ≤ v 1 ∧
+    ((n : ℤ) + 2) * v 1 ≤ (((n : ℤ) + 1) ^ 2 + ((n : ℤ) + 1) + 1) * v 0
+
+/-- Every listed ray lies in the original rational cone. -/
+theorem ray_inCone (n k : ℕ) : InCone n (ray n k) := by
+  unfold InCone ray
+  by_cases hk : k ≤ n + 1
+  · rw [if_pos hk]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+    have hkn : (k : ℤ) ≤ (n : ℤ) + 1 := by exact_mod_cast hk
+    have hn : 0 ≤ (n : ℤ) := by omega
+    refine ⟨by omega, by omega, ?_⟩
+    have hm := mul_le_mul_of_nonneg_left hkn (show 0 ≤ (n : ℤ) + 2 by omega)
+    nlinarith only [hm]
+  · rw [if_neg hk]
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+    refine ⟨by omega, by positivity, ?_⟩
+    exact le_of_eq (mul_comm _ _)
+
+private theorem cone_add (n : ℕ) (u v : Fin 2 → ℤ)
+    (hu : InCone n u) (hv : InCone n v) : InCone n (u + v) := by
+  refine ⟨add_nonneg hu.1 hv.1, add_nonneg hu.2.1 hv.2.1, ?_⟩
+  change ((n : ℤ) + 2) * (u 1 + v 1) ≤
+    (((n : ℤ) + 1) ^ 2 + ((n : ℤ) + 1) + 1) * (u 0 + v 0)
+  nlinarith only [hu.2.2, hv.2.2]
+
+private theorem cone_smul (n : ℕ) (a : ℤ) (v : Fin 2 → ℤ)
+    (ha : 0 ≤ a) (hv : InCone n v) : InCone n (a • v) := by
+  refine ⟨mul_nonneg ha hv.1, mul_nonneg ha hv.2.1, ?_⟩
+  change ((n : ℤ) + 2) * (a * v 1) ≤
+    (((n : ℤ) + 1) ^ 2 + ((n : ℤ) + 1) + 1) * (a * v 0)
+  have h := mul_le_mul_of_nonneg_left hv.2.2 ha
+  nlinarith only [h]
+
+/-- Every lattice point of the cone is a nonnegative integral combination of adjacent rays. -/
+theorem cone_lattice_decomposition (n : ℕ) (v : Fin 2 → ℤ) :
+    InCone n v ↔ ∃ k : Fin (n + 2), ∃ a b : ℤ,
+      0 ≤ a ∧ 0 ≤ b ∧ v = a • ray n k.val + b • ray n (k.val + 1) := by
+  constructor
+  · intro hv
+    let x := v 0
+    let y := v 1
+    have hx0 : 0 ≤ x := hv.1
+    have hy0 : 0 ≤ y := hv.2.1
+    have hb : ((n : ℤ) + 2) * y ≤
+        (((n : ℤ) + 1) ^ 2 + ((n : ℤ) + 1) + 1) * x := hv.2.2
+    have hn : 0 ≤ (n : ℤ) := by omega
+    by_cases hxz : x = 0
+    · have hyz : y = 0 := by
+        rw [hxz, mul_zero] at hb
+        nlinarith only [hy0, hb, hn]
+      refine ⟨⟨0, by omega⟩, 0, 0, le_rfl, le_rfl, ?_⟩
+      simp only [zero_smul, zero_add]
+      ext i
+      fin_cases i
+      · exact hxz
+      · exact hyz
+    have hx : 0 < x := by omega
+    by_cases hlo : y ≤ ((n : ℤ) + 1) * x
+    · let q := y / x
+      let r := y % x
+      have hq0 : 0 ≤ q := Int.ediv_nonneg hy0 hx.le
+      have hr0 : 0 ≤ r := Int.emod_nonneg y hx.ne'
+      have hrx : r < x := Int.emod_lt_of_pos y hx
+      have hdiv : x * q + r = y := by
+        dsimp only [q, r]
+        rw [Int.emod_def]
+        ring
+      have hqp : q ≤ (n : ℤ) + 1 := by
+        by_contra h
+        have hm := mul_lt_mul_of_pos_left (lt_of_not_ge h) hx
+        nlinarith only [hm, hlo, hdiv, hr0]
+      by_cases hqe : q = (n : ℤ) + 1
+      · have hyr : y = ((n : ℤ) + 1) * x := by
+          rw [hqe] at hdiv
+          nlinarith only [hdiv, hr0, hlo]
+        refine ⟨⟨n + 1, by omega⟩, x, 0, hx0, le_rfl, ?_⟩
+        simp only [zero_smul, add_zero, ray, if_pos le_rfl]
+        ext i
+        fin_cases i
+        · simp [x]
+        · simpa [y, mul_comm] using hyr
+      · have hqn : q ≤ (n : ℤ) := by omega
+        let k : Fin (n + 2) := ⟨q.toNat, by omega⟩
+        have hk : k.val ≤ n + 1 := by dsimp [k]; omega
+        have hks : k.val + 1 ≤ n + 1 := by dsimp [k]; omega
+        have hkq : (k.val : ℤ) = q := Int.toNat_of_nonneg hq0
+        refine ⟨k, x - r, r, by omega, hr0, ?_⟩
+        simp only [ray, if_pos hk, if_pos hks]
+        ext i
+        fin_cases i
+        · simp [x]
+        · simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Matrix.cons_val_one,
+            Matrix.cons_val_zero, Nat.cast_add, Nat.cast_one, hkq]
+          change y = (x - r) * q + r * (q + 1)
+          nlinarith only [hdiv]
+    · let a := (((n : ℤ) + 1) ^ 2 + ((n : ℤ) + 1) + 1) * x - ((n : ℤ) + 2) * y
+      let b := y - ((n : ℤ) + 1) * x
+      have ha : 0 ≤ a := sub_nonneg.mpr hb
+      have hbb : 0 ≤ b := by dsimp only [b]; omega
+      have hlast : ¬ n + 1 + 1 ≤ n + 1 := by omega
+      refine ⟨⟨n + 1, by omega⟩, a, b, ha, hbb, ?_⟩
+      simp only [ray, if_pos le_rfl, if_neg hlast]
+      ext i
+      fin_cases i <;>
+        simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Matrix.cons_val_one,
+          Matrix.cons_val_zero, Nat.cast_add, Nat.cast_one]
+      · change x = a + b * ((n : ℤ) + 2)
+        dsimp only [a, b]
+        ring
+      · change y = a * ((n : ℤ) + 1) + b *
+          (((n : ℤ) + 1) ^ 2 + ((n : ℤ) + 1) + 1)
+        dsimp only [a, b]
+        ring
+  · rintro ⟨k, a, b, ha, hb, rfl⟩
+    exact cone_add n _ _ (cone_smul n a _ ha (ray_inCone n k.val))
+      (cone_smul n b _ hb (ray_inCone n (k.val + 1)))
+
 #print axioms adjacentMatrix_det
 #print axioms adjacent_lattice_index
 #print axioms interior_ray_relation
 #print axioms last_ray_relation
+#print axioms cone_lattice_decomposition
 
 end GaloisForLFunctions.RepresentationLifting.DeligneLusztigFan

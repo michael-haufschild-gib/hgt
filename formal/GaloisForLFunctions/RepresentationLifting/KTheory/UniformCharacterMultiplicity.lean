@@ -91,7 +91,7 @@ theorem isVirtuallyFree_iff_uniform_multiplicity (θ : VirtualRepresentationRing
     exact ⟨m, fun χ => by rw [linearMultiplicity_zsmul, linearMultiplicity_regular, mul_one]⟩
   · rintro ⟨m, hm⟩
     refine ⟨m, ?_⟩
-    conv_lhs => rw [virtualRepresentation_fourier]
+    conv_lhs => rw [virtualRepresentation_fourier G θ]
     rw [virtualRepresentation_fourier G (regularVirtualRepresentation G)]
     simp only [linearMultiplicity_regular, one_smul, Finset.smul_sum, hm]
 

@@ -14,7 +14,7 @@ open scoped BigOperators
 noncomputable section
 namespace GaloisForLFunctions.RepresentationLifting
 
-variable (G X : Type*) [Group G] [Fintype G] [MulAction G X] [Fintype X]
+variable (G X : Type*) [Group G] [MulAction G X] [Fintype X]
 
 /-- The virtual class of the actual permutation representation on `X`. -/
 def permutationVirtualRepresentation : VirtualRepresentationRing G :=
@@ -51,6 +51,22 @@ theorem permutationVirtualRepresentation_eq_zero_iff (g : G) :
   rw [permutationVirtualRepresentation_apply, Nat.cast_eq_zero]
   simp [permutationFixedCount, Finset.card_eq_zero, Finset.filter_eq_empty_iff]
 
+/-- A permutation has maximal trace exactly when it fixes every basis vector. -/
+theorem permutationFixedCount_eq_card_iff (g : G) :
+    permutationFixedCount G X g = Fintype.card X ↔ ∀ x : X, g • x = x := by
+  classical
+  constructor
+  · intro h
+    have he : Finset.univ.filter (fun x : X => g • x = x) = Finset.univ :=
+      Finset.eq_of_subset_of_card_le (Finset.filter_subset _ _) (by
+        simpa only [Finset.card_univ] using h.ge)
+    intro x
+    exact (Finset.mem_filter.mp (he.symm ▸ Finset.mem_univ x)).2
+  · intro h
+    simp [permutationFixedCount, h]
+
+variable [Fintype G]
+
 /-- Regularity of a permutation character is equivalent to freeness of the action. -/
 theorem permutation_isVirtuallyFree_iff :
     IsVirtuallyFree G (permutationVirtualRepresentation G X) ↔
@@ -63,6 +79,65 @@ theorem permutation_isVirtuallyFree_iff :
   · intro h g hg
     apply (permutationVirtualRepresentation_eq_zero_iff G X g).mpr
     exact fun x hx => hg (h g x hx)
+
+/-- The permutation class after subtracting its ordinary dimension. -/
+def reducedPermutationVirtualRepresentation : VirtualRepresentationRing G :=
+  permutationVirtualRepresentation G X - (Fintype.card X : VirtualRepresentationRing G)
+
+omit [Fintype G] in
+theorem reducedPermutationVirtualRepresentation_apply (g : G) :
+    (reducedPermutationVirtualRepresentation G X).val g =
+      (permutationFixedCount G X g : ℂ) - (Fintype.card X : ℂ) := by
+  change (permutationVirtualRepresentation G X).val g - (Fintype.card X : ℂ) = _
+  rw [permutationVirtualRepresentation_apply]
+
+omit [Fintype G] in
+/-- Dimension subtraction kills exactly the permutation classes of trivial actions. -/
+theorem reducedPermutation_eq_zero_iff :
+    reducedPermutationVirtualRepresentation G X = 0 ↔ ∀ (g : G) (x : X), g • x = x := by
+  constructor
+  · intro h g
+    have he := congrArg (fun χ : VirtualRepresentationRing G => χ.val g) h
+    change (reducedPermutationVirtualRepresentation G X).val g = 0 at he
+    rw [reducedPermutationVirtualRepresentation_apply] at he
+    exact (permutationFixedCount_eq_card_iff G X g).mp
+      (Nat.cast_injective (α := ℂ) (sub_eq_zero.mp he))
+  · intro h
+    apply Subtype.ext
+    funext g
+    change (reducedPermutationVirtualRepresentation G X).val g = 0
+    rw [reducedPermutationVirtualRepresentation_apply,
+      (permutationFixedCount_eq_card_iff G X g).mpr (h g), sub_self]
+
+/-- Every reduced permutation class lies in the dimension augmentation ideal. -/
+theorem reducedPermutation_augmentation :
+    virtualRepresentationAugmentation G (reducedPermutationVirtualRepresentation G X) = 0 := by
+  apply Int.cast_injective (α := ℂ)
+  change (virtualRepresentationDegree G (reducedPermutationVirtualRepresentation G X) : ℂ) =
+    ((0 : ℤ) : ℂ)
+  rw [Int.cast_zero, virtualRepresentationDegree_cast, reducedPermutationVirtualRepresentation_apply]
+  simp [permutationFixedCount]
+
+/-- A reduced permutation class is virtually free exactly when the action is trivial. -/
+theorem reducedPermutation_isVirtuallyFree_iff :
+    IsVirtuallyFree G (reducedPermutationVirtualRepresentation G X) ↔
+      ∀ (g : G) (x : X), g • x = x := by
+  rw [← reducedPermutation_eq_zero_iff]
+  constructor
+  · intro h
+    exact (isVirtuallyFree_and_degree_zero_iff G _).mp
+      ⟨h, reducedPermutation_augmentation G X⟩
+  · intro h
+    exact ((isVirtuallyFree_and_degree_zero_iff G _).mpr h).1
+
+/-- Field K-zero sees none of the reduced permutation character. -/
+theorem reducedPermutation_K0Action_zero :
+    ∀ x : FieldK0 ℂ, virtualRepresentationK0Action G
+      (reducedPermutationVirtualRepresentation G X) x = 0 := by
+  apply (virtualRepresentationK0Action_zero_iff G _).mpr
+  exact reducedPermutation_augmentation G X
+
+local instance (H : Subgroup G) : Fintype (G ⧸ H) := Fintype.ofFinite _
 
 /-- A coset permutation class is virtually free exactly for the trivial subgroup. -/
 theorem coset_isVirtuallyFree_iff (H : Subgroup G) :
@@ -88,6 +163,8 @@ theorem coset_isVirtuallyFree_iff (H : Subgroup G) :
 
 #print axioms permutationVirtualRepresentation_apply
 #print axioms permutation_isVirtuallyFree_iff
+#print axioms reducedPermutation_isVirtuallyFree_iff
+#print axioms reducedPermutation_K0Action_zero
 #print axioms coset_isVirtuallyFree_iff
 
 end GaloisForLFunctions.RepresentationLifting

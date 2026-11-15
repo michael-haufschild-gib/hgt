@@ -126,3 +126,4 @@ import GaloisForLFunctions.MixingArithmeticOfTheFloorTrees
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow
 import GaloisForLFunctions.RingdownOfTheCubicCover
 import GaloisForLFunctions.ZeroForcingCalculus
+import GaloisForLFunctions.TensorPowerProgramme

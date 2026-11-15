@@ -242,6 +242,36 @@ theorem exceptionalChainEnergy_head_ramp (n : ℕ) (t : ℝ) :
   simp only [hj, sub_self, zero_pow (by omega : 2 ≠ 0), sum_const_zero, mul_zero,
     add_zero, zero_add]
 
+/-- The increasing exceptional multiplicities have energy `p(p²+p+1)`. -/
+theorem exceptionalChainEnergy_indexProfile (n : ℕ) :
+    exceptionalChainEnergy n (fun k => (k : ℝ) + 1) =
+      ((n : ℝ) + 1) * (((n : ℝ) + 1) ^ 2 + ((n : ℝ) + 1) + 1) := by
+  have hn : (n : ℝ) + 1 ≠ 0 := by positivity
+  have hf : (fun k : ℕ => (k : ℝ) + 1) = exceptionalChainRamp n ((n : ℝ) + 1) := by
+    funext k
+    unfold exceptionalChainRamp
+    field_simp
+  rw [hf, exceptionalChainEnergy_ramp]
+  field_simp
+  <;> ring
+
+/-- The descending branch multiplicities have energy `p²(p²+p+1)`. -/
+theorem exceptionalChainEnergy_branchProfile (n : ℕ) :
+    exceptionalChainEnergy n (fun k =>
+      (((n : ℝ) + 1) ^ 2 + ((n : ℝ) + 1) + 1) - ((n : ℝ) + 2) * ((k : ℝ) + 1)) =
+      ((n : ℝ) + 1) ^ 2 * (((n : ℝ) + 1) ^ 2 + ((n : ℝ) + 1) + 1) := by
+  have hn : (n : ℝ) + 1 ≠ 0 := by positivity
+  have hf : (fun k : ℕ =>
+      (((n : ℝ) + 1) ^ 2 + ((n : ℝ) + 1) + 1) - ((n : ℝ) + 2) * ((k : ℝ) + 1)) =
+      exceptionalChainHeadRamp n (((n : ℝ) + 1) ^ 2) := by
+    funext k
+    unfold exceptionalChainHeadRamp
+    field_simp
+    <;> ring
+  rw [hf, exceptionalChainEnergy_head_ramp]
+  field_simp
+  <;> ring
+
 /-- The sharp path bound also controls the entire exceptional-chain mass. -/
 theorem exceptionalChainEnergy_coercive (n : ℕ) (f : ℕ → ℝ) :
     (2 - 2 * Real.cos (Real.pi / ((n : ℝ) + 2))) *
@@ -258,6 +288,8 @@ theorem exceptionalChainEnergy_coercive (n : ℕ) (f : ℕ → ℝ) :
 #print axioms exceptionalChainEnergy_ramp
 #print axioms exceptionalChainEnergy_head_decomposition
 #print axioms exceptionalChainEnergy_head_ramp
+#print axioms exceptionalChainEnergy_indexProfile
+#print axioms exceptionalChainEnergy_branchProfile
 #print axioms exceptionalChainEnergy_coercive
 
 end GaloisForLFunctions.SignedArithmeticEnergyIncidence
