@@ -66,7 +66,10 @@ theorem source_translation_phase_pair (h : O)
       (-(2 * (cuspFrequency h * ringComplex omega)))
       (cuspFrequency h * (3 * ringComplex omega))
     rw [cuspFrequency_period, mul_one] at he
-    convert he.symm using 1 <;> congr 1 <;> ring
+    change _ = tracePhase (cuspFrequency h * ringComplex omega)
+    rw [← he]
+    congr 1
+    ring
   rw [h2, hneg]
   by_cases hd : (3 : O) ∣ h
   · rw [if_pos hd]

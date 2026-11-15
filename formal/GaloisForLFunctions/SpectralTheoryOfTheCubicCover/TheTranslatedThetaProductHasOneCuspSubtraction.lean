@@ -23,13 +23,13 @@ theorem integralTranslation_mul (a b : O) :
     integralTranslation a * integralTranslation b = integralTranslation (a + b) := by
   refine Matrix.SpecialLinearGroup.ext _ _ fun i j => ?_
   fin_cases i <;> fin_cases j <;>
-    simp [integralTranslation, Matrix.mul_apply, Fin.sum_univ_two]
+    simp [integralTranslation, Matrix.mul_apply, Fin.sum_univ_two, add_comm]
 
 theorem integralTranslation_neg (b : O) :
     integralTranslation (-b) = (integralTranslation b)⁻¹ := by
   refine Matrix.SpecialLinearGroup.ext _ _ fun i j => ?_
   fin_cases i <;> fin_cases j <;>
-    simp [integralTranslation, Matrix.SpecialLinearGroup.coe_inv, Matrix.adjugate_fin_two]
+    simp [integralTranslation]
 
 theorem height_integralTranslation (b : O) (w : HyperbolicSpace) :
     hyperbolicHeight (integralComplexMatrix (integralTranslation b) • w) = hyperbolicHeight w := by
@@ -39,12 +39,15 @@ theorem height_integralTranslation (b : O) (w : HyperbolicSpace) :
 private theorem three_dvd_int_add_omega (a b : ℤ)
     (h : (3 : O) ∣ (a : O) + (b : O) * omega) :
     (3 : ℤ) ∣ a ∧ (3 : ℤ) ∣ b := by
-  have hr := cuspResidue_of_three_dvd h
-  rw [cuspResidue_add, cuspResidue_intCast, cuspResidue_intCast_mul,
-    cuspResidue_omega] at hr
-  simp only [mul_zero, mul_one, add_zero, zero_add, Prod.mk.injEq] at hr
-  exact ⟨(ZMod.intCast_zmod_eq_zero_iff_dvd a 3).mp hr.1,
-    (ZMod.intCast_zmod_eq_zero_iff_dvd b 3).mp hr.2⟩
+  obtain ⟨x, hx⟩ := h
+  obtain ⟨u, v, hxv⟩ := Coordinates.exists_coordinates x
+  have he : Coordinates.eval a b = Coordinates.eval (3 * u) (3 * v) := by
+    rw [Coordinates.eval, Coordinates.eval]
+    rw [hxv] at hx
+    push_cast
+    linear_combination hx
+  have hc := Coordinates.unique_coordinates he
+  exact ⟨⟨u, hc.1⟩, ⟨v, hc.2⟩⟩
 
 /-- Only the two copies of infinity can meet after opposite translations by `ω`. -/
 theorem rationalRep_translation_pair (q q' : RationalFourCusp)
@@ -58,16 +61,14 @@ theorem rationalRep_translation_pair (q q' : RationalFourCusp)
       ((rationalRep q' 1 0 * rationalRep q 1 1 -
         rationalRep q' 1 1 * rationalRep q 1 0 : ℤ) : O) +
       ((2 * rationalRep q' 1 0 * rationalRep q 1 0 : ℤ) : O) * omega := by
-    simp only [Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two,
-      rationalEmbedding, Matrix.SpecialLinearGroup.map_apply_coe, RingHom.mapMatrix_apply,
-      Matrix.map_apply, integralTranslation, SL2_inv_00, SL2_inv_10]
-    push_cast
+    simp [integralTranslation, rationalEmbedding, Matrix.mul_apply, Fin.sum_univ_two,
+      Matrix.adjugate_fin_two]
     ring
   rw [he] at h
   obtain ⟨h1, h2⟩ := three_dvd_int_add_omega _ _ h
   rcases q with ⟨⟩ | ⟨⟩ | ⟨⟩ | ⟨⟩ <;>
     rcases q' with ⟨⟩ | ⟨⟩ | ⟨⟩ | ⟨⟩ <;>
-    norm_num [rationalRep, rationalFourCuspRep, ModularGroup.coe_S, ModularGroup.coe_T,
+    simp [rationalRep, rationalFourCuspRep, ModularGroup.coe_S, ModularGroup.coe_T,
       pow_two, Matrix.mul_apply, Fin.sum_univ_two] at h1 h2 ⊢
 
 /-- Distinct translated rational cusp profiles have disjoint high support. -/
@@ -86,12 +87,14 @@ theorem translation_cross_zero (F : ℝ → ℂ) (q q' : RationalFourCusp)
   have e1 : complexMatrix n •
       (rationalComplex (rationalRep q) • (integralComplexMatrix (integralTranslation omega) • w)) =
         integralComplexMatrix g₁ • w := by
-    rw [g₁, map_mul, map_mul, mul_smul, mul_smul]
+    dsimp only [g₁]
+    rw [map_mul, map_mul, mul_smul, mul_smul]
     rfl
   have e2 : complexMatrix n' •
       (rationalComplex (rationalRep q') • (integralComplexMatrix (integralTranslation (-omega)) • w)) =
         integralComplexMatrix g₂ • w := by
-    rw [g₂, map_mul, map_mul, mul_smul, mul_smul]
+    dsimp only [g₂]
+    rw [map_mul, map_mul, mul_smul, mul_smul]
     rfl
   rw [e1] at hn
   rw [e2] at hn'
@@ -193,7 +196,15 @@ theorem thetaLinear_translation_mul (w : HyperbolicSpace) :
   simp only [thetaLinear, linearSubtraction, translatedSubtraction]
   rw [mul_mul_mul_comm, ← pow_two, Finset.sum_mul_sum]
   congr 1
-  simp only [translation_term, ite_and, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  have he (q : RationalFourCusp) :
+      (∑ q' : RationalFourCusp,
+        if q = .inl () ∧ q' = .inl () then
+          conj (cuspCutoffCorrection 1 (growthProfile (Set.Ici 2)) w) else 0) =
+      if q = .inl () then conj (cuspCutoffCorrection 1 (growthProfile (Set.Ici 2)) w) else 0 := by
+    by_cases hq : q = .inl ()
+    · simp only [hq, true_and, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    · simp only [hq, false_and, if_false, Finset.sum_const_zero]
+  simp only [translation_term, he, Finset.sum_ite_eq', Finset.mem_univ, if_true]
 
 /-- Uniform cancellation of the cusp growth in products of integral translates. -/
 theorem theta_translated_product_remainder_bounded :

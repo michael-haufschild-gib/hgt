@@ -56,6 +56,7 @@ Modules, in order of attack. Status: P = paper proof below, L = Lean compiled an
 | 29 | TheLFunctionOfACharacterOnASplitPolynomial | acid test (weight χ(Res), extension sums, vanishing, top coefficient q^{(m−1)/2}) | L |
 | 30 | TheCubicNormCharacterSumHasTheWeilBound | acid test (Σ_{𝔽_{s²}} χ(N f(x)) = O(D s) by Stepanov) | L |
 | 31 | TheAcidTestPassesForCubicCharacters | acid test, order 3: RH for L(χ, f), χ cubic, 3 ∤ deg f, without Weil | L |
+| 32 | TheKloostermanSumsAreOrdinary | E4 rank two (K(a) a p-adic unit; eigenvalues ordinary; defects ±1/2) | L |
 
 Open, with the input that is missing:
 
@@ -293,6 +294,10 @@ Over E with |E| = s²: χ(a) depends on a^{(q−1)/3} (a/b a cube), N(y)^{N_F} =
 T_1 + ζT_ε + ζ²T_{ε²}, 1 + ζ + ζ² = 0 and equidistribution give O(Ds). L* monic of degree m − 1, Newton ⇒ c_n = −Σω^n;
 norm_le_of_power_sums_bound at degrees 2k ⇒ |ω| ≤ √q; |Πω| = q^{(m−1)/2} ⇒ |ω| = √q.
 
+**M32 (Kloosterman, rank two).** K(a) = Σ_{x≠0} ζ^{x + a/x} in PadicAlgCl p: K + 1 = Σ(ζ^y − 1) + p, each term of norm
+≤ ‖ζ − 1‖ < 1, ‖p‖ = 1/p ⇒ ‖K‖ = 1. Eigenvalues α + β = −K, αβ = p: roots of X² + KX + p are integral (ultrametric),
+‖α‖‖β‖ = 1/p and max ≥ ‖α + β‖ = 1 ⇒ {‖α‖, ‖β‖} = {1, 1/p}; defects ½ + log_p‖·‖ = ±½, monomial α^mβ^n: ±(m − n)/2.
+
 ## No-go closure
 - **Margin in the mass normalisation at every block size** (fable §5.2, first lemma as stated). Not a consequence
   of the width. Insight: the normalisation decides exactness. Survivors, all in Lean: the exact ruler in the
@@ -309,5 +314,5 @@ norm_le_of_power_sums_bound at degrees 2k ⇒ |ω| ≤ √q; |Πω| = q^{(m−1)
 ## Log
 - 2026-11-15 — created; README first draft written. Modules 1–6 compiled, axiom-clean, wired.
 - 2026-11-15 — modules 7–12 compiled, axiom-clean, wired.
-- 2026-11-15 — M3 §4 (shifted pairs), modules 13–31 compiled, wired (axiom checks dropped at the user's request from M21 on). E4 rank one answered without the
+- 2026-11-15 — M3 §4 (shifted pairs), modules 13–32 compiled, wired (axiom checks dropped at the user's request from M21 on). E4 rank one answered without the
   classification of pure monomials (M18); the classification is needed only to identify completions.

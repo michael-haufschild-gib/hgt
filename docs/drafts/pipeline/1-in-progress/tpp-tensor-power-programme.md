@@ -67,9 +67,10 @@ sources with infinite non-abelian monodromy on the parameters. Peer module AWall
 | C8 | PNT of the characters ⇒ linear independence | residues as s ↓ 1 | **[L]** linearIndependent_of_pnt |
 | C9 | −L'/L of a number-field Euler product is the prime-power series | termwise derivative of Σ −log(1 − c N^{−w}) | **[L]** neg_deriv_div_eq_primePowerSeries |
 | C10 | Angle characters of ℚ(ω) form an abelian base | Grössencharacter L nonvanishing on Re ≥ 1; ζ_K = ζ L(χ₋₃) | **[L]** isAbelianBase_angle |
+| C13 | Cost theorem of the Gauss family: c = k·w(S) + Σ_rows (k/m − 1); c ≥ k/2 + 1 off {3,4,6}, sharp at k = 8 | row slack | **[L]** half_period_add_one_le_pairingC |
 | C12 | Finite monodromy (Chebotarev classes) ⇒ ruler | fibres = abelian bases with trivial character group | **[L]** summable_classMomentTerm_iff |
 | C11 | Gauss pairings never below the sign line; on it only at k ∈ {3,4,6}; hyperbolic gap 1/5 | signature weight, orbifold parity | **[L]** half_period_le_pairingC, signatureWeight_dichotomy |
 
 ## Log
 - 2026-11-15 — created; README; modules C1–C6 formalized.
-- 2026-11-16 — C7–C12 formalized.
+- 2026-11-16 — C7–C13 formalized; paused by user.
