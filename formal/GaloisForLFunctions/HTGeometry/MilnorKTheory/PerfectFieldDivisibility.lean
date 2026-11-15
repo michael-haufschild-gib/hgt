@@ -24,7 +24,7 @@ theorem milnorKDeg_frobeniusWeight_bijective (r n : ℕ) :
   constructor
   · intro x y h
     apply e.injective
-    rw [he, he, h]
+    exact (he x).trans (h.trans (he y).symm)
   · intro x
     obtain ⟨y, hy⟩ := e.surjective x
     exact ⟨y, (he y).symm.trans hy⟩
@@ -63,3 +63,5 @@ theorem milnorKDeg_existsUnique_charPower_division (r n : ℕ) (x : MilnorKDeg F
   exact ⟨y, hy, fun z hz => (milnorKDeg_charPower_bijective (F := F) p r n).1 (hz.trans hy.symm)⟩
 
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.milnorKDeg_existsUnique_charPower_division

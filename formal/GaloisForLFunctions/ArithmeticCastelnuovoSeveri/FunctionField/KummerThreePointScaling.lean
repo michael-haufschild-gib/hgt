@@ -45,8 +45,9 @@ theorem kummerThreePointScalingAut_root (ζ : K) (hζ : ζ ^ ((n + 1) * (b + 1))
     kummerThreePointHom_root c b R n
   have hz : threePointScaling c b R n ζ hζ z = algebraMap K T ζ * z := by
     change autAdjoinRootXPowSubC _ _ _ _ = _
-    rw [autAdjoinRootXPowSubC_root, rootsOfUnity.coe_mkOfPowEq, Algebra.smul_def,
+    erw [autAdjoinRootXPowSubC_root, rootsOfUnity.coe_mkOfPowEq, Algebra.smul_def,
       ← IsScalarTower.algebraMap_apply K F T]
+    rfl
   change e (threePointScaling c b R n ζ hζ (e.symm _)) = _
   rw [← he, e.symm_apply_apply, hz, map_mul, e.commutes]
 
@@ -93,6 +94,5 @@ theorem kummerThreePointScalingAut_integralMonomial
       (algebraMap K L ζ) ^ i * kummerIntegralMonomial c b R n i := by
   rw [kummerIntegralMonomial, map_div₀, map_pow, kummerThreePointScalingAut_root,
     map_pow, kummerThreePointScalingAut_branchFactor, mul_pow, mul_div_assoc]
-  rfl
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

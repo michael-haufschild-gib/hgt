@@ -19,12 +19,24 @@ Answer README §6 questions Q1–Q9 by Lean theorems; build the tools of README 
 - Family moments and fixed parts (IRP `member_norm_le_of_family_moments`).
 - Frames, towers, walls, sign line, Stickelberger prices (FCT, EDCS); cubic correction = rung at 6s−3 (EDCS).
 
+## Lean modules [L]
+TheTensorMomentsOfAFlowDatumHaveBaseLossExactlyOne, AnAbelianBaseIsARuler,
+APolarizedBaseWhoseAdamsSquaresContinueIsPure.
+
 ## Status
-- README first draft written.
+- Flow data over Spec ℤ: k-th tensor moment converges iff σ > 1 + 2kW (base loss exactly 1); coinvariant
+  expansion into shifted −ζ'/ζ; edge residue = sum of squares > 0; pole law ⇔ W ≤ w₀.
+- Abelian bases (IsAbelianBase: characters + PNT package + independence): same exact law; Dirichlet
+  twists of any modulus instantiate it (Q4b verdict: twist family is a ruler).
+- Polarized base: continuation of Rankin–Selberg squares of Adams powers to Re s > 1 ⇒ purity (Landau +
+  power-sum rigidity); rank two: p_m² = p_{2m} + 2 reduces to the Adams package (Langlands–Serre form).
 
 ## Conjecture loop (ledger)
 | # | Conjecture | Test | Status |
 |---|---|---|---|
+| C1 | Flow data: moment abscissa exactly 1 + 2kW (no cancellation at the edge) | −ζ'/ζ pole + residue = Σ‖·‖² | **[L]** summable_flowMomentTerm_iff |
+| C2 | Abelian bases (characters with PNT) are rulers with the same law | linear independence of characters | **[L]** summable_twistMomentTerm_iff |
+| C3 | Polarized base + continuation of Adams squares ⇒ purity | Landau (HTGeometry) + power sums | **[L]** norm_eq_one_of_adamsPoleLaw |
 
 ## Log
-- 2026-11-15 — created; README draft.
+- 2026-11-15 — created; README draft; modules C1–C3 formalized.

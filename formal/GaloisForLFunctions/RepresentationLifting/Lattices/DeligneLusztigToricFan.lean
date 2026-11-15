@@ -47,7 +47,8 @@ theorem adjacentMatrix_det (n : ℕ) (k : Fin (n + 2)) :
   · have he : k.val = n + 1 := by omega
     have hs : ¬ k.val + 1 ≤ n + 1 := by omega
     simp only [adjacentMatrix, Matrix.cons_val_zero, Matrix.cons_val_one,
-      ray, if_pos hk, if_neg hs, he, Nat.cast_add, Nat.cast_one]
+      ray, if_pos hk, if_neg hs]
+    simp only [he, Nat.cast_add, Nat.cast_one]
     ring
 
 /-- Each adjacent pair generates a lattice of index one. -/
@@ -69,7 +70,8 @@ theorem interior_ray_relation (n : ℕ) (k : Fin n) :
   have h₂ : k.val + 2 ≤ n + 1 := by omega
   simp only [ray, if_pos h₀, if_pos h₁, if_pos h₂]
   ext i
-  fin_cases i <;> simp <;> ring
+  fin_cases i <;> simp
+  ring
 
 /-- The last exceptional ray carries the larger coefficient `p+2`. -/
 theorem last_ray_relation (n : ℕ) :
@@ -232,8 +234,8 @@ theorem cone_lattice_decomposition (n : ℕ) (v : Fin 2 → ℤ) :
         ext i
         fin_cases i
         · simp [x]
-        · simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Matrix.cons_val_one,
-            Matrix.cons_val_zero, Nat.cast_add, Nat.cast_one, hkq]
+        · simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul,
+            Nat.cast_add, Nat.cast_one, hkq]
           change y = (x - r) * q + r * (q + 1)
           nlinarith only [hdiv]
     · -- The last unimodular cone gives its two coefficients directly.
@@ -246,9 +248,8 @@ theorem cone_lattice_decomposition (n : ℕ) (v : Fin 2 → ℤ) :
       simp only [ray, if_pos le_rfl, if_neg hlast]
       ext i
       fin_cases i <;>
-        simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Matrix.cons_val_one,
-          Matrix.cons_val_zero, Nat.cast_add, Nat.cast_one, mul_one]
-      · change x = a + b * ((n : ℤ) + 2)
+        simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Nat.cast_add, Nat.cast_one]
+      · change x = a * 1 + b * ((n : ℤ) + 2)
         dsimp only [a, b]
         ring
       · change y = a * ((n : ℤ) + 1) + b *

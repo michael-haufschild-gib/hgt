@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.MilnorKTheory.FrobeniusWeights
+import GaloisForLFunctions.HTGeometry.MilnorKTheory.PerfectFieldDivisibility
 import GaloisForLFunctions.HTGeometry.MilnorResidueInfinity
 
 /-!
@@ -42,8 +42,8 @@ theorem milnorResidue_iterateFrobenius (D : ResidueData K k) (r n : ℕ)
     (x : MilnorKDeg K (n + 1)) :
     milnorResidue D (n + 1) (milnorKDegMap (iterateFrobenius K p r) (n + 1) x) =
       p ^ r • milnorKDegMap (iterateFrobenius k p r) n (milnorResidue D (n + 1) x) := by
-  simpa only [Nat.mul_one] using
-    milnorDegreeDropHom_iterateFrobenius p r n 1 (milnorResidue D (n + 1)) x
+  rw [milnorKDegMap_iterateFrobenius, milnorKDegMap_iterateFrobenius, map_nsmul,
+    smul_smul, Nat.mul_add, Nat.mul_one, pow_add, Nat.mul_comm (p ^ (r * n))]
 
 /-- At infinity on the rational function field, the same ramification factor is forced. -/
 theorem milnorResidueInfty_iterateFrobenius (r n : ℕ)
@@ -53,4 +53,25 @@ theorem milnorResidueInfty_iterateFrobenius (r n : ℕ)
   simpa only [Nat.mul_one] using
     milnorDegreeDropHom_iterateFrobenius p r n 1 (milnorResidueInfty n) x
 
+/-- With perfect residue field, Frobenius preserves vanishing of every positive-degree residue.
+The original field need not be perfect. -/
+theorem milnorResidue_iterateFrobenius_eq_zero_iff [PerfectRing k p]
+    (D : ResidueData K k) (r n : ℕ) (x : MilnorKDeg K (n + 2)) :
+    milnorResidue D (n + 2) (milnorKDegMap (iterateFrobenius K p r) (n + 2) x) = 0 ↔
+      milnorResidue D (n + 2) x = 0 := by
+  rw [milnorKDegMap_iterateFrobenius, map_nsmul]
+  exact milnorKDeg_charPower_smul_eq_zero_iff p (r * (n + 2)) n _
+
+/-- Frobenius preserves the kernel of the infinity residue over a perfect constant field. -/
+theorem milnorResidueInfty_iterateFrobenius_eq_zero_iff [PerfectRing k p]
+    (r n : ℕ) (x : MilnorKDeg (RatFunc k) (n + 2)) :
+    milnorResidueInfty (n + 1)
+        (milnorKDegMap (iterateFrobenius (RatFunc k) p r) (n + 2) x) = 0 ↔
+      milnorResidueInfty (n + 1) x = 0 := by
+  rw [milnorKDegMap_iterateFrobenius, map_nsmul]
+  exact milnorKDeg_charPower_smul_eq_zero_iff p (r * (n + 2)) n _
+
 end GaloisForLFunctions.HTGeometry
+
+#print axioms GaloisForLFunctions.HTGeometry.milnorResidue_iterateFrobenius
+#print axioms GaloisForLFunctions.HTGeometry.milnorResidueInfty_iterateFrobenius_eq_zero_iff

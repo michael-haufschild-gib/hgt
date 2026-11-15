@@ -77,6 +77,17 @@ theorem norm_le_one_of_forall_pow_le {z : ℂ} {B : ℝ} (h : ∀ m : ℕ, 1 ≤
   have h2 : ‖z‖ ^ m ≤ ‖z‖ ^ (m + 1) := pow_le_pow_right₀ hz.le (by omega)
   linarith
 
+/-- `e^{−2(n+1)ℓ} · (e^ℓ)^{2(n+1)} = 1`. -/
+theorem exp_levelFreq (ℓ : ι → ℝ) (x : ι) (n : ℕ) :
+    Real.exp (-(2 * levelFreq ℓ (x, n))) * (Real.exp (ℓ x) ^ (n + 1)) ^ 2 = 1 := by
+  have h1 : (Real.exp (ℓ x) ^ (n + 1)) ^ 2 = Real.exp (2 * levelFreq ℓ (x, n)) := by
+    rw [← pow_mul, ← Real.exp_nat_mul]
+    congr 1
+    simp only [levelFreq]
+    push_cast
+    ring
+  rw [h1, ← Real.exp_add, neg_add_cancel, Real.exp_zero]
+
 /-- **The Rankin–Landau step.** Under the pole law of the Adams squares, every parameter at a
 point of positive weight is unitary. -/
 theorem norm_eq_one_of_adamsPoleLaw {ℓ lam : ι → ℝ} {α : ι → Fin g → ℂ}
@@ -232,10 +243,12 @@ theorem norm_eq_one_of_adams_continue {ℓ lam : ι → ℝ} {β : ι → ℂ} (
       (by linarith)).differentiableWithinAt
   · intro s hs
     have hs2 : σ₂ ≤ s.re := hs.le
+    beta_reduce
     rw [hagree s (lt_of_le_of_lt hσ₁ hs)]
     have hA := summable_ofReal_mul_cexp hf hsA hs2
     have hB : Summable fun p : ι × ℕ => ((lam p.1 : ℝ) : ℂ) * Complex.exp (-(s * (levelFreq ℓ p : ℂ))) :=
-      summable_ofReal_mul_cexp hf (by simpa [gdTwistTerm, abs_of_nonneg (hlam _)] using hsB) hs2
+      summable_ofReal_mul_cexp hf (a := fun p : ι × ℕ => lam p.1) (hsB.congr fun p => by
+        simp only [gdTwistTerm, pow_zero, mul_one, abs_of_nonneg (hlam p.1)]) hs2
     simp only [gdSeries]
     rw [← tsum_mul_left, ← hA.tsum_add (hB.mul_left 2)]
     refine tsum_congr fun p => ?_

@@ -35,8 +35,9 @@ theorem cyclicWeightCharacter_injective (N : ℕ) [NeZero N] :
   intro a b h
   have he := congrArg (fun χ : LinearCharacter (Multiplicative (ZMod N)) =>
     (χ (Multiplicative.ofAdd (1 : ZMod N)) : ℂ)) h
-  simp only [cyclicWeightCharacter_apply, Multiplicative.toAdd_ofAdd, mul_one] at he
-  exact ZMod.injective_stdAddChar he
+  simp only [cyclicWeightCharacter_apply] at he
+  change ZMod.stdAddChar (a * 1) = ZMod.stdAddChar (b * 1) at he
+  exact ZMod.injective_stdAddChar (by simpa only [mul_one] using he)
 
 theorem cyclicWeightCharacter_zero (N : ℕ) [NeZero N] : cyclicWeightCharacter N 0 = 1 := by
   ext g
@@ -95,8 +96,16 @@ theorem complexLift_multiplicity (χ : LinearCharacter (WeightGroup p s d)) :
   simp_rw [linearMultiplicity_linear]
   by_cases h : ∃ a : SquareKummerRegularIndex p s d r, regularWeightCharacter p s d r a = χ
   · obtain ⟨a, rfl⟩ := h
-    simp only [(regularWeightCharacter_injective p s d r).eq_iff,
-      Finset.sum_ite_eq', Finset.mem_univ, if_true, exists_eq, ↓reduceIte]
+    have ha : ∃ b : SquareKummerRegularIndex p s d r,
+        regularWeightCharacter p s d r b = regularWeightCharacter p s d r a := ⟨a, rfl⟩
+    rw [if_pos ha]
+    simp only [(regularWeightCharacter_injective p s d r).eq_iff]
+    rw [Finset.sum_eq_single a]
+    · exact if_pos rfl
+    · intro b _ hba
+      exact if_neg hba.symm
+    · intro ha
+      exact (ha (Finset.mem_univ a)).elim
   · rw [if_neg h]
     apply Finset.sum_eq_zero
     intro a _
@@ -113,7 +122,15 @@ theorem complexLift_trivialMultiplicity :
 /-- The identity trace counts the actual regular-differential basis vectors. -/
 theorem complexLift_at_one :
     (complexLift p s d r).val 1 = (Fintype.card (SquareKummerRegularIndex p s d r) : ℂ) := by
-  simp [complexLift, linearCharacterVirtualHom]
+  change ((virtualRepresentationSubring (WeightGroup p s d)).subtype.toAddMonoidHom
+    (∑ a : SquareKummerRegularIndex p s d r,
+      linearCharacterVirtualHom (WeightGroup p s d) (regularWeightCharacter p s d r a))) 1 = _
+  rw [map_sum]
+  simp only [Finset.sum_apply]
+  change (∑ a : SquareKummerRegularIndex p s d r,
+    (linearVirtualCharacter (WeightGroup p s d) (regularWeightCharacter p s d r a)).val 1) = _
+  simp only [linearVirtualCharacter_apply, map_one, Units.val_one, Finset.sum_const,
+    Finset.card_univ, nsmul_eq_mul, mul_one]
 
 /-- The lift vanishes exactly when there are no regular basis vectors. -/
 theorem complexLift_eq_zero_iff :
@@ -155,8 +172,9 @@ theorem regularIndex_empty_iff_dvd :
   have hc := regularIndex_card_twice p s d r
   have hq : 0 < p ^ (d + 1) - 1 := Nat.sub_pos_of_lt
     (Nat.one_lt_pow (Nat.succ_ne_zero d) (Fact.out : p.Prime).one_lt)
-  have hg := Nat.gcd_le_left (kummerExponent (p ^ (d + 1)) r)
-    (Nat.succ_pos (p ^ (s + 1)))
+  have hg : Nat.gcd (p ^ (s + 1) + 1) (kummerExponent (p ^ (d + 1)) r) ≤
+      p ^ (s + 1) + 1 :=
+    Nat.gcd_le_left _ (Nat.succ_pos (p ^ (s + 1)))
   constructor
   · intro h
     rw [h, mul_zero] at hc
