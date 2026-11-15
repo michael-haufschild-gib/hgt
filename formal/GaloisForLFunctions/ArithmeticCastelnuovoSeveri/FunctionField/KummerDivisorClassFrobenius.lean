@@ -73,7 +73,10 @@ theorem primePowerKummerPrincipalDivisors_nsmul_iff
       D ∈ primePowerKummerPrincipalDivisors p d n r c := by
   change (∃ f : L, f ≠ 0 ∧
     (∀ v, WithZero.log (v.valuation L f) = (p ^ e) • D.1 v) ∧
-      WithZero.log (squareKummerInfinityValuation p s c d r f) = (p ^ e) • D.2) ↔ _
+      WithZero.log (squareKummerInfinityValuation p s c d r f) = (p ^ e) • D.2) ↔
+    (∃ f : L, f ≠ 0 ∧
+      (∀ v, WithZero.log (v.valuation L f) = D.1 v) ∧
+        WithZero.log (squareKummerInfinityValuation p s c d r f) = D.2)
   simpa only [nsmul_eq_mul, Nat.cast_pow] using
     primePowerKummer_principal_orders_frobenius_saturated p d n r c e (fun v => D.1 v) D.2
 

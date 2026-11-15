@@ -10,12 +10,13 @@ logarithmic positivity and reflection exclude every nonconstant numerator.
 -/
 
 noncomputable section
+set_option autoImplicit false
 open Complex Filter Topology
 
 namespace GaloisForLFunctions.SelbergClass.FiniteEuler
 
 open GaloisForLFunctions.InfiniteRankPurityTheory
-open RHTower
+open _root_.RHTower
 
 theorem multiplier_eq_zero_iff (W : Multiset ℂ) (x : ℂ) :
     multiplier W x = 0 ↔ ∃ a ∈ W, a * x = 1 := by
@@ -74,6 +75,7 @@ theorem numerator_eq_zero_of_reflection {p : ℕ} (hp : 1 < p)
   have hno (a : ℂ) (ha : a ∈ W) : False := by
     have ha0 := hW a ha
     obtain ⟨s, hs, hxi⟩ := exists_zero_localFactor_not_zero hpR (inv_ne_zero ha0)
+    simp only [Complex.ofReal_natCast] at hs
     have hXa : a * (p : ℂ) ^ (-s) = 1 := by rw [hs, mul_inv_cancel₀ ha0]
     have hzero : multiplier W ((p : ℂ) ^ (-s)) = 0 :=
       (multiplier_eq_zero_iff W _).mpr ⟨a, ha, hXa⟩
@@ -92,7 +94,8 @@ theorem numerator_eq_zero_of_reflection {p : ℕ} (hp : 1 < p)
       calc _ = (a * (p : ℂ) ^ (-s)) * (d * (p : ℂ) ^ (-(1 - s))) := by ring
         _ = 1 := by rw [hXa, hXd, one_mul]
     have had : a * d = (p : ℂ) := by
-      calc a * d = ((a * d) * (p : ℂ)⁻¹) * p := by
+      calc
+        a * d = ((a * d) * (p : ℂ)⁻¹) * p := by
           rw [mul_assoc, inv_mul_cancel₀ hpc, mul_one]
         _ = p := by rw [hprod, one_mul]
     have hnorm : ‖a‖ * ‖d‖ = (p : ℝ) := by
@@ -119,7 +122,7 @@ theorem rational_twin_rigidity {p : ℕ} (hp : p.Prime)
       Complex.exp (LSeries b s) = riemannZeta s * multiplier W ((p : ℂ) ^ (-s)) /
         multiplier V ((p : ℂ) ^ (-s))) : W = 0 ∧ V = 0 := by
   have hVzero := denominator_eq_zero (by exact_mod_cast hp.one_lt : (1 : ℝ) < p)
-    W V c F hV hred hid
+    W V c F hV hred (by simpa only [Complex.ofReal_natCast] using hid)
   subst V
   simp only [multiplier, Multiset.map_zero, Multiset.prod_zero, one_mul, div_one] at hid hb
   have hunit := norm_le_one_of_nonnegative_logarithm hp W hpos hb
@@ -133,8 +136,8 @@ private theorem differentiable_multiplier {p : ℕ} (hp : p ≠ 0) (W : Multiset
   | empty => simpa only [multiplier, Multiset.map_zero, Multiset.prod_zero] using
       (differentiable_const (1 : ℂ))
   | cons a W ih =>
-    simpa only [multiplier, Multiset.map_cons, Multiset.prod_cons] using
-      ((differentiable_const (1 : ℂ)).sub (hpow.const_mul a)).mul ih
+    simp only [multiplier, Multiset.map_cons, Multiset.prod_cons]
+    exact ((differentiable_const (1 : ℂ)).sub (hpow.const_mul a)).mul ih
 
 /-- Holomorphic continuation makes the cross-multiplied Euler identity global. -/
 theorem completed_identity_of_halfplane {p : ℕ} (hp : p ≠ 0)

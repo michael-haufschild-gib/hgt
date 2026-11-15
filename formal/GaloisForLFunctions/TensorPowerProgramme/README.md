@@ -1,6 +1,6 @@
 # The Tensor-Power Programme Ω (TPP)
 
-Namespace `GaloisForLFunctions.TensorPowerProgramme`; umbrella `TensorPowerProgramme.lean`; 8 modules.
+Namespace `GaloisForLFunctions.TensorPowerProgramme`; umbrella `TensorPowerProgramme.lean`; 12 modules.
 Specification: §2.22 of [the review-1511 obstacles summary](../../../docs/reports/review-1511/obstacles-summary.md).
 
 *Deligne's tensor-power argument, carried to `Spec ℤ`: what it needs, where it breaks, and which
@@ -85,6 +85,8 @@ obstruction of the producer.
 | Levers of the lines (Lean) | `deligneLever k` `b ↦ ((k−1)/2 + b)/k`, `signLever k` `b ↦ (k/2 + b)/k`, `completionCentre k` `(2k/3 − 1)/(k − 1)` |
 | Sign-line completion (N2) | a joint completion of a Möbius-signed monomial of period `k ≥ 7` priced `c = k/2` |
 | Exact transport (N3) | zeros of `ζ` forced into a period-`k` family with no estimate floor and constants uniform in `k` |
+| Angle base of `ℚ(ω)` (Lean) | points `(v, m)` for the prime powers `v^{m+1}`, norm `N(v)^{m+1}`, weight `log N(v)`, characters `j ∈ ℤ` acting by `ψ₆(v)^{j(m+1)}` with `ψ₆` the sextic Grössencharacter: `angleNorm`, `angleLam`, `angleEv` |
+| Signature of a Gauss pairing (Lean) | the orders `m_i ≥ 3` of the nonquadratic characters of a Möbius-signed tuple, closed by the involution when their number is even; weight `Σ (1/2 − 1/m_i)` (`signatureWeight`). Euclidean signatures: `(3, 3, 3)`, `(2, 3, 6)`, `(2, 4, 4)` |
 
 ## 4. Language
 
@@ -149,6 +151,17 @@ obstruction of the producer.
 11. **One Deligne frame suffices, the sign needs all periods.** A Deligne lever excludes every
    exponent right of `½`; a sign lever only those right of `k/(2(k − 1))`; the completion
    centres increase to `2/3` and the Gauss levers stop at `3/5`.
+12. **The sign line is Euclidean.** A Gauss pairing of period `k` costs at least `k` times the
+   weight of its signature, and Möbius parity makes the signature that of a sphere orbifold with an
+   odd number of cone points; for three points the weight is `½` plus the normalized area of the
+   triangle. The weight is `½` exactly at the Euclidean signatures and at least `7/10` otherwise.
+   So the Gauss family never prices below the sign line, meets it only at the crystallographic
+   periods `3, 4, 6`, and pays at least `k/5` above it at every hyperbolic signature.
+13. **The prime number theorem is the whole abelian input.** Independence of the characters
+   follows from the pole of the trivial character (`linearIndependent_of_pnt`), and for a number
+   field the series of each character is `−L'/L` of its Euler product
+   (`neg_deriv_div_eq_primePowerSeries`). An abelian base is the list of `L`-functions with a pole
+   only at the trivial character and no zero on `Re s = 1`.
 
 ## 6. Questions
 
@@ -157,8 +170,8 @@ obstruction of the producer.
 | Q1 (Ω1) | **Calibration.** Which inputs does the pole law need; does monodromy enter already over `𝔽_q`? | The pole law is the analytic continuation of the constituents' series; positivity converts it into convergence (`norm_eq_one_of_adamsPoleLaw`); in rank two the Adams powers are the constituents (`norm_eq_one_of_adams_continue`). On the Kummer/Fermat calibration curves no monodromy and no tensor power is needed: their eigenvalues are Jacobi sums, and purity is the identity of the two pairings (`conj_jacobiSum`, `jacobiSum_mul_jacobiSum_inv_eq_card`, `norm_jacobiSum_sq`); the same eigenvalues sit `p`-adically on the sign line (`stickelbergerPrice_jacobiTriple`): purity does not remove the sign cost. Monodromy enters only for non-CM families, where the trace formula supplies the constituents (ArithmeticKunnethTheory); over `ℤ` functoriality would. |
 | Q2 (Ω2) | **Price ledger.** | Proved: the half unit at every period, one-step values `½ + 1/(2k)`, `½ + 1/k`, `2/3`; completion centres increase strictly to `2/3` (`signPrice_sub_delignePrice`, `deligneLever_one`, `signLever_one`, `completionStep_one`, `completionCentre_strictMono`, `tendsto_completionCentre`). |
 | Q3 (Ω3) | **Diagnosis over `Spec ℤ`.** | Proved. For `ζ`: `2kw ≤ a_k ≤ 1 + 2kw`, `a_k/(2k) → w`, and the pole law at any weight `w₀` is `w ≤ w₀` (`two_mul_width_le_momentExponent`, `momentExponent_le`, `tendsto_momentExponent_div`, `exists_momentPoleLaw_iff`). For every finite configuration the exponent is exactly `1 + 2kW` and nothing cancels at the edge (`summable_flowMomentTerm_iff`, `edgeResidue_pos`). |
-| Q4 (Ω4) | **Pencil.** Heat pencil, twist families, Fermat/Kummer family; else the axiom list of N1. | Heat: arithmetic only at `τ = 0` (ZeroConfigurationGeometry `exists_dirichlet_iff`). Twists: abelian, a ruler (`summable_dirichletMomentTerm_iff`). Kummer: Jacobi-sum characters, abelian; the transport of `ζ` into them is Q6. Axiom list: `PencilThroughZeta`, with `riemannHypothesis_of_pencil` and `riemannHypothesis_iff_nonempty_pencil`: the list is RH; N1 is a source of its pole law (mechanism 10). |
-| Q5 (Ω5) | **Frame track.** A sign-line completion at period `k ≥ 7`. | Open (stage 2–3 of §7). One valid sign lever of period `k` gives `Θ ≤ k/(2(k−1))`; sign levers at all large periods give RH (`riemannHypothesis_of_signLevers`); one Deligne lever gives RH (`riemannHypothesis_of_deligneLever`). The Stickelberger price of the `A₂` coefficients (stage 1) is not computed. |
+| Q4 (Ω4) | **Pencil.** Heat pencil, twist families, Fermat/Kummer family; else the axiom list of N1. | Heat: arithmetic only at `τ = 0` (ZeroConfigurationGeometry `exists_dirichlet_iff`). Twists: abelian, a ruler (`summable_dirichletMomentTerm_iff`). Kummer and Hecke: Jacobi-sum characters and Grössencharacters, abelian; the angle characters `ψ₆^j` of `ℚ(ω)` form an abelian base (`isAbelianBase_angle`), so their tensor moments are rulers (`summable_angleMomentTerm_iff`); the transport of `ζ` into them is Q6. Axiom list: `PencilThroughZeta`, with `riemannHypothesis_of_pencil` and `riemannHypothesis_iff_nonempty_pencil`: the list is RH; N1 is a source of its pole law (mechanism 10). |
+| Q5 (Ω5) | **Frame track.** A sign-line completion at period `k ≥ 7`. | Open for completions outside the Gauss family (stage 2–3 of §7). The Gauss family never prices below the sign line, `c ≥ k/2` (`half_period_le_pairingC`); it meets it only at the periods `3, 4, 6` (`period_mem_of_pairingC_eq_half`), whose signatures are Euclidean (`signatureWeight_dichotomy`); every hyperbolic signature pays at least `k/5` above it, sharp at `(2, 5, 10)` (`euclidean_of_pairingC_lt`, `exists_zmod_eleven_pairing`). So no Gauss pairing is a sign lever at period `5` or at any period `k ≥ 7` (`half_period_lt_pairingC`), and no Gauss pairing beats the sign lever of its period (`signCentre_le_coupledBarrier`). One valid sign lever of period `k` gives `Θ ≤ k/(2(k−1))`; sign levers at all large periods give RH (`riemannHypothesis_of_signLevers`). The Stickelberger price of the `A₂` coefficients (stage 1) is not computed. |
 | Q6 (Ω6) | **Exact transport.** Continuation of the cubic probe to the centre of `(3, 6)` by identities. | Open; the dual series of the probe (stage 1) is not written. |
 | Q7 (Ω7) | **Uniformity.** | The top bound `1` for all Adams powers is temperedness (`adamsPoleLaw_iff`). Open: conductor growth of order-`k` completions. |
 | Q8 (Ω8) | **Assembly.** | Proved for levers: one valid Deligne lever, or valid sign levers at all large periods, give RH (`riemannHypothesis_of_deligneLever`, `riemannHypothesis_of_signLevers`). |
@@ -175,8 +188,8 @@ pole law is the programme. Three objects are missing:
 
 | Stage | Statement | Status | A failure proves |
 |---|---|---|---|
-| 1 | Tools: Hecke characters of `ℚ(ω)` with infinity type as an abelian base; the dual series of the cubic probe; the Stickelberger price of the `A₂` coefficients | work | — |
-| 2 | N2 at `k = 7`: one valid sign lever of period `7` gives `Θ ≤ 7/12` | open | a cost theorem at period `7`: every completion costs more than `7/2`, and `3/5` is the wall of the Gauss family, not only of the completion class |
+| 1 | Tools: Hecke characters of `ℚ(ω)` with infinity type as an abelian base; the dual series of the cubic probe; the Stickelberger price of the `A₂` coefficients | angle base built (`isAbelianBase_angle`); dual series and `A₂` price open | — |
+| 2 | N2 at `k = 7`: one valid sign lever of period `7` gives `Θ ≤ 7/12` | open outside the Gauss family; inside it the cost theorem holds (`half_period_lt_pairingC`): every Gauss pairing of period `7` costs more than `7/2` | a cost theorem at period `7`: every completion costs more than `7/2`, and `3/5` is the wall of the Gauss family, not only of the completion class |
 | 3 | N2 at all large periods, with constants uniform in the period (Q7) | open | conductor growth of order-`k` completions: an intrinsic floor above `½` (Q9) |
 | 4 | N1: a base with non-abelian monodromy, `ζ` as a fibre at a prime point, constituents that are `L`-functions of other objects | open | finite or abelian monodromy on the zeros of every Euler–FE family through `ζ`; with the rigidity of Euler–FE data (`beurlingSystem_rigidity_of_decaying_defect`) this says that `ζ` lies in no family |
 | 5 | Assembly | proved: `riemannHypothesis_of_signLevers`, `riemannHypothesis_of_deligneLever`, `riemannHypothesis_of_pencil` | — |
@@ -206,10 +219,13 @@ the width law at the primes (`riemannHypothesis_iff_moments_primeTraces`,
 - The axioms of a pencil through `ζ` and their reduction to the one-cycle law at a prime
   (`PencilThroughZeta`, `zetaCycle`).
 - The levers of the three lines and their assembly into RH criteria.
+- The analytic package of an abelian base from `L`-functions: independence from the prime number
+  theorem (`IsAbelianBase.of_pnt`), the Euler logarithm of a number field and its derivative
+  (`eulerLog`, `primePowerSeries`), and the angle base of `ℚ(ω)` (`isAbelianBase_angle`).
+- The signature weight of a Gauss pairing and its Euclidean–hyperbolic dichotomy
+  (`signatureWeight`, `pair_signature`, `triple_signature`).
 
 **To build (stage 1 of §7).**
-- Hecke characters of `ℚ(ω)` with infinity type as an abelian base: the prime number theorem of
-  each Grössencharacter, certifying the Kummer verdict.
 - The dual series of the cubic probe (Q6).
 - The Stickelberger price of the `A₂` coefficients (Q5).
 
@@ -229,6 +245,7 @@ the width law at the primes (`riemannHypothesis_iff_moments_primeTraces`,
 | A dilation transports zeros at the Deligne price | It has the Deligne frame with top `(k + 1)/2`: a ruler |
 | Composing frames lowers the centre | Composite centres are convex combinations of the centres |
 | Exact transport is a lever | The cubic correction moves bounds between `ζ` and the rung without loss: a ruler until the rung family has a seed |
+| A Gauss completion reaches the sign line at a large period | Only at the periods `3, 4, 6`: the Euclidean signatures `(3, 3, 3)`, `(2, 3, 6)`, `(2, 4, 4)`; every other signature costs at least `7k/10` |
 
 ## 10. Pillar theorems
 
@@ -242,6 +259,8 @@ the width law at the primes (`riemannHypothesis_iff_moments_primeTraces`,
 | The top bound one for all Adams powers is temperedness | `adamsPoleLaw_iff` |
 | A pencil through `ζ` proves RH, and exists iff RH | `riemannHypothesis_of_pencil`, `riemannHypothesis_iff_nonempty_pencil` |
 | The three lines: half unit, one-step values, completion centres to `2/3`; one Deligne lever or sign levers at all large periods give RH | `signPrice_sub_delignePrice`, `excluded_deligneLever`, `excluded_signLever`, `tendsto_completionCentre`, `riemannHypothesis_of_deligneLever`, `riemannHypothesis_of_signLevers` |
+| The prime number theorem of the characters gives their independence; the logarithmic derivative of a number-field Euler product is its prime-power series; the angle characters of `ℚ(ω)` form an abelian base | `linearIndependent_of_pnt`, `IsAbelianBase.of_pnt`, `neg_deriv_div_eq_primePowerSeries`, `isAbelianBase_angle`, `summable_angleMomentTerm_iff` |
+| Gauss pairings and the sign line: `c ≥ k/2`, equality only at `k ∈ {3, 4, 6}`, Euclidean signatures or excess at least `k/5`, sharp | `half_period_le_pairingC`, `period_mem_of_pairingC_eq_half`, `signatureWeight_dichotomy`, `euclidean_of_coupledBarrier_lt`, `exists_zmod_eleven_pairing` |
 
 All results are unconditional; the reductions to RH name their hypothesis as an object of the
 programme (a lever, a pencil).

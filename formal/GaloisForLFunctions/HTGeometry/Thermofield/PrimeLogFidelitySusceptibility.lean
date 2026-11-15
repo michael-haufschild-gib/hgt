@@ -114,6 +114,27 @@ theorem primeLogFidelitySusceptibility_eq_zero_iff (P : Finset Nat.Primes) (s : 
     · simp [primeLogSpectralResponse, hi]
     · simp [primeLogSpectralResponse, hi, h i hi]
 
+/-- The susceptibility detects every coupling in the constructed Hermitian perturbation. -/
+theorem primeLogFidelitySusceptibility_eq_zero_iff_perturbation (P : Finset Nat.Primes)
+    (s : ℝ) (a : Option P) (forcing : Option P → ℂ) :
+    primeLogFidelitySusceptibility P s a forcing = 0 ↔
+      primeLogPerturbation P a forcing = 0 := by
+  classical
+  rw [primeLogFidelitySusceptibility_eq_zero_iff]
+  constructor
+  · intro h
+    ext i j
+    by_cases hi : i = a
+    · by_cases hj : j = a
+      · simp [primeLogPerturbation, hi, hj]
+      · simp [primeLogPerturbation, hi, hj, h j hj]
+    · by_cases hj : j = a
+      · simp [primeLogPerturbation, hi, hj, h i hi]
+      · simp [primeLogPerturbation, hi, hj]
+  · intro h i hi
+    have he := congrArg (fun M : Matrix (Option P) (Option P) ℂ => M i a) h
+    simpa [primeLogPerturbation, hi] using he
+
 /-- The selected basis state has unit norm in the corpus's pure-state inner product. -/
 theorem primeLogBasis_normalized (P : Finset Nat.Primes) (a : Option P) :
     finiteComplexInner (Pi.single a 1) (Pi.single a 1) = 1 := by

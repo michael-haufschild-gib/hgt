@@ -26,8 +26,8 @@ def polarRotation (z : ℂ) : Circle := by
   classical
   exact if hz : z = 0 then 1 else
     ⟨z / (‖z‖ : ℂ), by
-      change ‖z / (‖z‖ : ℂ) - 0‖ = 1
-      rw [sub_zero, norm_div, Complex.norm_real, Real.norm_eq_abs,
+      change ‖z / (‖z‖ : ℂ)‖ = 1
+      rw [norm_div, Complex.norm_real, Real.norm_eq_abs,
         abs_of_nonneg (norm_nonneg z), div_self (norm_ne_zero_iff.mpr hz)]⟩
 
 /-- Polar factorization holds even at a vanishing mean. -/
@@ -119,15 +119,15 @@ theorem norm_gibbsRotationMean_eq_one_iff (β : ℝ) (energy : α → ℝ)
   · intro h
     have he : (∑ a, finiteGibbsStateWeight β energy a * ‖(phase a : ℂ)‖) =
         ‖∑ a, (finiteGibbsStateWeight β energy a : ℂ) * (phase a : ℂ)‖ := by
-      simpa only [Circle.norm_coe, mul_one, sum_finiteGibbsStateWeight_eq_one]
+      simpa only [Circle.norm_coe, mul_one, sum_finiteGibbsStateWeight_eq_one,
+        gibbsRotationMean]
         using h.symm
     obtain ⟨u, hu, ha⟩ := (GaloisForLFunctions.HTGeometry.weighted_norm_sum_eq_iff
       (finiteGibbsStateWeight β energy)
       (fun a => (finiteGibbsStateWeight_pos β energy a).le)
       (fun a => (phase a : ℂ))).mp he
     refine ⟨⟨u, ?_⟩, ?_⟩
-    · change ‖u - 0‖ = 1
-      simpa only [sub_zero] using hu
+    · exact hu
     · intro a
       apply Circle.coe_injective
       simpa only [Circle.norm_coe, Complex.ofReal_one, one_mul]
