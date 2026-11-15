@@ -14,6 +14,7 @@ differential to vanish. This detects actual roots, not merely divisors.
 noncomputable section
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open IsDedekindDomain ArithmeticHarmonicAnalysis
+open GaloisForLFunctions.HTGeometry
 variable (p : ℕ) [Fact p.Prime] (d n r : ℕ)
     (c : (SquareConstantField p (kummerSquareIndex d n))ˣ)
 local notation "s" => kummerSquareIndex d n

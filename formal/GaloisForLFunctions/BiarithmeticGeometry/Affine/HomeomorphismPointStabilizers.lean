@@ -32,12 +32,13 @@ theorem affineLineHomeomorph_apply (u : Kˣ) (b x : K) :
 def homeomorphPointStabilizer (a : K) : Subgroup (K ≃ₜ K) where
   carrier := {f | f a = a}
   one_mem' := rfl
-  mul_mem' hf hg := by
-    change _ (_ a) = a
+  mul_mem' {f g} hf hg := by
+    change f (g a) = a
     rw [hg, hf]
   inv_mem' {f} hf := by
     change f.symm a = a
-    rw [← hf, f.symm_apply_apply]
+    apply f.injective
+    simpa only [f.apply_symm_apply] using hf.symm
 
 private theorem exists_affine_pair {a b c d : K} (hab : a ≠ b) (hcd : c ≠ d) :
     ∃ f : K ≃ₜ K, f a = c ∧ f b = d := by

@@ -78,7 +78,7 @@ theorem integral_kmsKernel_sq (x : ℝ) :
     have h' := Real.cosh_sq_sub_sinh_sq (x * (1-2*u))
     rw [show 2 * (x * (1-2*u)) = (2*x)*(1-2*u) by ring] at h
     dsimp [kmsKernel]
-    field_simp
+    field_simp [hc]
     nlinarith only [h, h']
   simp_rw [hpoint]
   rw [integral_div, integral_add
@@ -88,7 +88,7 @@ theorem integral_kmsKernel_sq (x : ℝ) :
   rw [Real.sinh_two_mul] at h
   rw [kmsMean, if_neg hx]
   simp only [sub_zero, smul_eq_mul, one_mul]
-  field_simp
+  field_simp [hx, hc]
   nlinarith only [h]
 
 /-- The endpoint attenuation is bounded by the square of the susceptibility. -/
@@ -114,6 +114,20 @@ theorem integral_kmsKernel_sq_le (x : ℝ) :
   have he : 1 / (2 * Real.cosh x ^ 2) = (1 / Real.cosh x ^ 2) / 2 := by ring
   rw [he]
   linarith only [h]
+
+/-- The quadratic coefficient `1/2` is optimal, already at zero spectral gap. -/
+theorem kms_square_coefficient_iff (c : ℝ) :
+    (∀ x : ℝ, (∫ u in (0:ℝ)..1, kmsKernel x u ^ 2) ≤
+      kmsMean x / 2 + c * kmsMean x ^ 2) ↔ 1/2 ≤ c := by
+  constructor
+  · intro h
+    have hzero := h 0
+    norm_num [kmsKernel, kmsMean] at hzero
+    linarith only [hzero]
+  · intro hc x
+    calc
+      _ ≤ kmsMean x / 2 + kmsMean x ^ 2 / 2 := integral_kmsKernel_sq_le x
+      _ ≤ _ := by nlinarith only [mul_le_mul_of_nonneg_right hc (sq_nonneg (kmsMean x))]
 
 /-- Mixed KMS correlations retain the improved quadratic coefficient. -/
 theorem integral_kmsKernel_mul_le (x y : ℝ) :

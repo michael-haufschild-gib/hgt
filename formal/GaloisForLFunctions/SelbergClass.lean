@@ -1,4 +1,5 @@
 import GaloisForLFunctions.SelbergClass.DirichletSeries.PrimeRestriction
+import GaloisForLFunctions.SelbergClass.DirichletSeries.LogarithmicUniqueness
 import GaloisForLFunctions.SelbergClass.DirichletSeries.PrimeSupportedSeries
 import GaloisForLFunctions.SelbergClass.DirichletSeries.FiniteEulerRelations
 import GaloisForLFunctions.SelbergClass.DirichletSeries.CharacterPartitions
