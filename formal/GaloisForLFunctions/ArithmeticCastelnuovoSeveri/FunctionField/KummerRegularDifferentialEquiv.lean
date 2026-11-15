@@ -47,6 +47,16 @@ def squareKummerRegularCoefficientMap :
       globalRegularDifferentials (SquareConstantField p s)
         (SquareKummerField p s c (p ^ (d + 1) - 2) (kummerExponent (p ^ (d + 1)) r)) :=
   (coefficientFormMap p s c d r).codRestrict _ (fun a => by
+    change (∑ i : Fin (p ^ (s + 1) + 1),
+      (algebraMap (SquareConstantField p s)[X]
+        (SquareKummerField p s c (p ^ (d + 1) - 2) (kummerExponent (p ^ (d + 1)) r))
+          (a i : (SquareConstantField p s)[X]) /
+        kummerIntegralMonomial c (p ^ (d + 1) - 2) (kummerExponent (p ^ (d + 1)) r)
+          (p ^ (s + 1)) i.val) •
+        KaehlerDifferential.D (SquareConstantField p s)
+          (SquareKummerField p s c (p ^ (d + 1) - 2) (kummerExponent (p ^ (d + 1)) r))
+          (algebraMap (SquareConstantField p s)[X]
+            (SquareKummerField p s c (p ^ (d + 1) - 2) (kummerExponent (p ^ (d + 1)) r)) X)) ∈ _
     apply Submodule.sum_mem
     intro i _
     exact (squareKummer_characterForm_regular_iff_degreeLT p s c d r

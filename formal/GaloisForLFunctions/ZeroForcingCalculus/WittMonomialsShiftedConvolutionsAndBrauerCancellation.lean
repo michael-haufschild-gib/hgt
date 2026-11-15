@@ -85,15 +85,18 @@ theorem meromorphicOrderAt_riemannZeta_ne_top (s : ℂ) :
   have hz0 : riemannZeta =ᶠ[𝓝[≠] s] 0 := meromorphicOrderAt_eq_top_iff.mp htop
   have hw1 : ∀ᶠ w : ℂ in 𝓝[≠] s, w ≠ 1 := by
     by_cases hs : s = 1
-    · subst hs; simpa using self_mem_nhdsWithin
+    · subst hs
+      filter_upwards [self_mem_nhdsWithin] with w hw
+      exact hw
     · exact nhdsWithin_le_nhds (isOpen_ne.mem_nhds hs)
-  have hu_ne : RHTower.zetaResidueUnit =ᶠ[𝓝[≠] s] 0 := by
+  have hu_ne : RHTower.zetaResidueUnit =ᶠ[𝓝[≠] s] (fun _ : ℂ => (0 : ℂ)) := by
     filter_upwards [hz0, hw1] with w hwz hne
     change Function.update (fun z => (z - 1) * riemannZeta z) 1 1 w = 0
-    rw [Function.update_of_ne hne, hwz, mul_zero]
-  have hu_nhds : RHTower.zetaResidueUnit =ᶠ[𝓝 s] (fun _ => (0 : ℂ)) :=
+    have hwz0 : riemannZeta w = 0 := hwz
+    rw [Function.update_of_ne hne, hwz0, mul_zero]
+  have hu_nhds : RHTower.zetaResidueUnit =ᶠ[𝓝 s] (fun _ : ℂ => (0 : ℂ)) :=
     (ContinuousAt.eventuallyEq_nhds_iff_eventuallyEq_nhdsNE
-      (RHTower.analyticAt_zetaResidueUnit s).continuousAt continuousAt_const).mpr hu_ne
+      (RHTower.analyticAt_zetaResidueUnit s).continuousAt continuousAt_const).mp hu_ne
   have han : AnalyticOnNhd ℂ RHTower.zetaResidueUnit Set.univ :=
     fun z _ => RHTower.analyticAt_zetaResidueUnit z
   have h10 : RHTower.zetaResidueUnit 1 = 0 :=
@@ -120,18 +123,20 @@ theorem meromorphicOrderAt_pos_of_analyticAt_eq_zero {f : ℂ → ℂ} {s : ℂ}
 theorem meromorphicOrderAt_riemannZeta_one :
     meromorphicOrderAt riemannZeta 1 = -1 := by
   have heq : riemannZeta =ᶠ[𝓝[≠] (1 : ℂ)]
-      fun w : ℂ => (w - 1) ^ (-1 : ℤ) * RHTower.zetaResidueUnit w := by
+      ((fun w : ℂ => (w - 1) ^ (-1 : ℤ)) * RHTower.zetaResidueUnit) := by
     filter_upwards [riemannZeta_eventuallyEq_inv_mul_unit] with w hw
+    change riemannZeta w = (w - 1) ^ (-1 : ℤ) * RHTower.zetaResidueUnit w
     rw [hw, zpow_neg_one]
   have hm1 : MeromorphicAt (fun w : ℂ => (w - 1) ^ (-1 : ℤ)) 1 :=
     ((analyticAt_id.sub analyticAt_const).meromorphicAt).zpow (-1)
   have hm2 : MeromorphicAt RHTower.zetaResidueUnit 1 :=
     (RHTower.analyticAt_zetaResidueUnit 1).meromorphicAt
+  have ho1 : meromorphicOrderAt (fun w : ℂ => (w - 1) ^ (-1 : ℤ)) 1 = (-1 : ℤ) :=
+    meromorphicOrderAt_zpow_id_sub_const (x := (1 : ℂ)) (n := (-1 : ℤ))
   have ho2 : meromorphicOrderAt RHTower.zetaResidueUnit 1 = 0 :=
     meromorphicOrderAt_eq_zero_of_analyticAt_ne_zero (RHTower.analyticAt_zetaResidueUnit 1)
       (by rw [RHTower.zetaResidueUnit_one]; exact one_ne_zero)
-  rw [meromorphicOrderAt_congr heq, meromorphicOrderAt_fun_mul hm1 hm2,
-    meromorphicOrderAt_fun_zpow_id_sub_const, ho2, add_zero]
+  rw [meromorphicOrderAt_congr heq, meromorphicOrderAt_mul hm1 hm2, ho1, ho2, add_zero]
   rfl
 
 /-- Meromorphic order of `w ↦ riemannZeta (c * w)` for any nonzero multiplier `c ≠ 0`. -/
@@ -167,7 +172,8 @@ theorem meromorphicOrderAt_wittZetaMonomial (K : ℕ) (e : Fin K → ℤ) (s : �
   rw [meromorphicOrderAt_fun_prod hm]
   refine Finset.sum_congr rfl fun j _ => ?_
   have hj := meromorphicOrderAt_riemannZeta_const_mul (hc j) s
-  rw [meromorphicOrderAt_fun_zpow hj.1, hj.2]
+  change meromorphicOrderAt ((fun w : ℂ => riemannZeta (((j.1 + 1 : ℕ) : ℂ) * w)) ^ e j) s = _
+  rw [meromorphicOrderAt_zpow hj.1, hj.2]
 
 /-- **Higher Witt factors are invisible on `Re ρ > 1/2`.** At every point `ρ` with `Re ρ > 1/2`, all
 dilated factors `ζ((j + 1) ρ)` with `j ≥ 1` have `Re((j + 1) ρ) ≥ 2 Re ρ > 1`, hence are analytic
@@ -178,12 +184,12 @@ theorem meromorphicOrderAt_wittZetaMonomial_of_half_lt_re {ρ : ℂ} (hre : 1 / 
     meromorphicOrderAt (wittZetaMonomial K e) ρ =
       (e ⟨0, hK⟩ : WithTop ℤ) * meromorphicOrderAt riemannZeta ρ := by
   rw [meromorphicOrderAt_wittZetaMonomial]
-  rw [Finset.sum_eq_single ⟨0, hK⟩]
+  rw [Finset.sum_eq_single (⟨0, hK⟩ : Fin K)]
   · simp
   · intro j _ hj0
     have hj1 : 1 ≤ j.1 := Nat.one_le_iff_ne_zero.mpr fun h => hj0 (Fin.ext h)
     have hmul_re : (((j.1 + 1 : ℕ) : ℂ) * ρ).re = ((j.1 + 1 : ℕ) : ℝ) * ρ.re := by
-      simpa using Complex.re_ofReal_mul ((j.1 + 1 : ℕ) : ℝ) ρ
+      simp
     have hj_ge : (2 : ℝ) ≤ ((j.1 + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_le_succ hj1
     have hgt1 : 1 < (((j.1 + 1 : ℕ) : ℂ) * ρ).re := by
       rw [hmul_re]
@@ -197,7 +203,7 @@ theorem meromorphicOrderAt_wittZetaMonomial_of_half_lt_re {ρ : ℂ} (hre : 1 / 
         (riemannZeta_ne_zero_of_one_le_re hgt1.le)
     rw [ho0, mul_zero]
   · intro hmem
-    exact absurd (Finset.mem_univ ⟨0, hK⟩) hmem
+    exact absurd (Finset.mem_univ (⟨0, hK⟩ : Fin K)) hmem
 
 /-! ## 2. The unconditional `[1/2, 9/16)` squarefree pole-abscissa ruler -/
 
@@ -216,11 +222,15 @@ theorem squarefreePowerQuotient_eventuallyEq_unit (m : ℕ) (s : ℂ) :
         RHTower.zetaResidueUnit (2 * w) := by
   have hw1 : ∀ᶠ w : ℂ in 𝓝[≠] s, w ≠ 1 := by
     by_cases hs : s = 1
-    · subst hs; simpa using self_mem_nhdsWithin
+    · subst hs
+      filter_upwards [self_mem_nhdsWithin] with w hw
+      exact hw
     · exact nhdsWithin_le_nhds (isOpen_ne.mem_nhds hs)
   have hw_half : ∀ᶠ w : ℂ in 𝓝[≠] s, w ≠ (1 / 2 : ℂ) := by
     by_cases hs : s = (1 / 2 : ℂ)
-    · subst hs; simpa using self_mem_nhdsWithin
+    · subst hs
+      filter_upwards [self_mem_nhdsWithin] with w hw
+      exact hw
     · exact nhdsWithin_le_nhds (isOpen_ne.mem_nhds hs)
   filter_upwards [hw1, hw_half] with w hne1 hneh
   have h2w1 : 2 * w ≠ 1 := by
@@ -232,10 +242,8 @@ theorem squarefreePowerQuotient_eventuallyEq_unit (m : ℕ) (s : ℂ) :
   change ((w - 1) * riemannZeta w) ^ m / riemannZeta (2 * w) =
     Function.update (fun z => (z - 1) * riemannZeta z) 1 1 w ^ m * (2 * w - 1) /
       Function.update (fun z => (z - 1) * riemannZeta z) 1 1 (2 * w)
-  rw [Function.update_of_ne hne1, Function.update_of_ne h2w1]
-  by_cases hz : riemannZeta (2 * w) = 0
-  · simp [hz]
-  · field_simp [h2sub, hz]
+  rw [Function.update_of_ne hne1, Function.update_of_ne h2w1,
+    mul_comm (2 * w - 1) (riemannZeta (2 * w)), mul_div_mul_right _ _ h2sub]
 
 /-- `squarefreePowerQuotient m` is meromorphic at every `s : ℂ`. -/
 theorem meromorphicAt_squarefreePowerQuotient (m : ℕ) (s : ℂ) :
@@ -298,11 +306,11 @@ theorem squarefreePowerQuotient_poleFree_iff_zetaZeroAbscissa_le (m : ℕ) {β :
       have hρ_ntop : meromorphicOrderAt riemannZeta ρ ≠ ⊤ :=
         meromorphicOrderAt_riemannZeta_ne_top ρ
       lift meromorphicOrderAt riemannZeta ρ to ℤ using hρ_ntop with n hn
-      have hn_pos : 0 < n := by exact_mod_cast hn ▸ hρ_pos
+      have hn_pos : 0 < n := by exact_mod_cast hρ_pos
       have hq_ord : meromorphicOrderAt (squarefreePowerQuotient m) (ρ / 2) =
           ((-n : ℤ) : WithTop ℤ) := by
         change meromorphicOrderAt (u / v) (ρ / 2) = _
-        rw [meromorphicOrderAt_div hu_an.meromorphicAt hv_pair.1, hu_ord, hv_ord, ← hn, zero_sub]
+        rw [meromorphicOrderAt_div hu_an.meromorphicAt hv_pair.1, hu_ord, hv_ord, zero_sub]
         rfl
       have hnonneg := hpole (ρ / 2) hs_gt
       rw [hq_ord] at hnonneg
@@ -323,7 +331,7 @@ theorem squarefreePowerQuotient_poleFree_iff_zetaZeroAbscissa_le (m : ℕ) {β :
   · intro habs s hs
     rw [meromorphicOrderAt_congr (squarefreePowerQuotient_eventuallyEq_unit m s)]
     have h2s_re : (2 * s).re = 2 * s.re := by
-      simpa using Complex.re_ofReal_mul (2 : ℝ) s
+      simp
     have hden_ne : RHTower.zetaResidueUnit (2 * s) ≠ 0 := by
       by_cases h2s1 : 2 * s = 1
       · rw [h2s1, RHTower.zetaResidueUnit_one]
@@ -366,6 +374,7 @@ theorem squarefreePowerQuotient_poleFree_quarter_iff_riemannHypothesis (m : ℕ)
       RiemannHypothesis := by
   have h0 : (0 : ℝ) ∈ Set.Ico (0 : ℝ) (1 / 16) := ⟨le_rfl, by norm_num⟩
   have hr := isRuler_squarefreePowerQuotient m 0 h0
+  dsimp only at hr
   rw [show ((1 / 2 + (0 : ℝ)) / 2 : ℝ) = 1 / 4 by norm_num] at hr
   refine hr.symm.trans ?_
   rw [le_antisymm_iff]
@@ -380,8 +389,12 @@ theorem squarefreeQuotient_poleFree_iff_zetaZeroAbscissa_le {β : ℝ}
     (∀ s : ℂ, β / 2 < s.re →
         0 ≤ meromorphicOrderAt (fun w => ((w - 1) * riemannZeta w) / riemannZeta (2 * w)) s) ↔
       RHTower.zetaZeroAbscissa ≤ β := by
-  simpa [squarefreePowerQuotient, pow_one] using
-    squarefreePowerQuotient_poleFree_iff_zetaZeroAbscissa_le 1 hβ
+  have heq : squarefreePowerQuotient 1 =
+      fun w => ((w - 1) * riemannZeta w) / riemannZeta (2 * w) := by
+    funext w
+    simp [squarefreePowerQuotient]
+  rw [← heq]
+  exact squarefreePowerQuotient_poleFree_iff_zetaZeroAbscissa_le 1 hβ
 
 /-! ## 3. The shifted Rankin–Selberg / Ramanujan divisor-convolution barrier -/
 
@@ -400,13 +413,11 @@ theorem ramanujan_shift_margin_ge (a b ρ : ℂ) :
       (show ((2 : ℝ) : ℂ) * ((ρ + a + b) / 2) = ρ + a + b by push_cast; ring)
     rw [Complex.re_ofReal_mul, Complex.add_re, Complex.add_re] at h
     linarith
-  have h0 : (0 : ℝ) ≤ max (max (0 : ℝ) a.re) (max b.re (a + b).re) :=
-    le_trans (le_max_left 0 a.re) (le_max_left _ _)
-  have hab : (a + b).re ≤ max (max (0 : ℝ) a.re) (max b.re (a + b).re) :=
-    le_trans (le_max_right b.re (a + b).re) (le_max_right _ _)
-  have havg : (a.re + b.re) / 2 ≤ max (max (0 : ℝ) a.re) (max b.re (a + b).re) := by
-    rw [Complex.add_re] at hab
-    linarith
+  set M : ℝ := max (max (0 : ℝ) a.re) (max b.re (a + b).re)
+  have h0 : (0 : ℝ) ≤ M := le_trans (le_max_left 0 a.re) (le_max_left _ _)
+  have hab : a.re + b.re ≤ M := by
+    rw [← Complex.add_re]
+    exact le_trans (le_max_right b.re (a + b).re) (le_max_right _ _)
   rw [hs_re]
   linarith
 

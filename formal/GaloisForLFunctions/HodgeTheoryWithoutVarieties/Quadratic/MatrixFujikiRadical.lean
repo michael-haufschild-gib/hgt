@@ -18,8 +18,9 @@ namespace GaloisForLFunctions.HodgeTheoryWithoutVarieties
 theorem quadraticLine_eval {V : Type*} [AddCommGroup V] [Module ℝ V]
     (q : QuadraticForm ℝ V) (x h : V) (t : ℝ) :
     (quadraticLine q x h).eval t = q (x + t • h) := by
+  rw [QuadraticMap.map_add q x (t • h)]
   simp only [quadraticLine, eval_add, eval_mul, eval_pow, eval_C, eval_X,
-    QuadraticMap.map_add, QuadraticMap.map_smul, QuadraticMap.polar_smul_right,
+    QuadraticMap.map_smul, QuadraticMap.polar_smul_right,
     QuadraticMap.polarBilin_apply_apply, smul_eq_mul]
   ring
 

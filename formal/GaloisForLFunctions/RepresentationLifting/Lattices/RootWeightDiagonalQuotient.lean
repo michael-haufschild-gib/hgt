@@ -28,6 +28,7 @@ def diagonalWeightProjection (p : ι) : (ι → ℤ) →ₗ[ℤ] coordinateWeigh
     change c * v i - c * v p = c * (v i - v p)
     exact (mul_sub c (v i) (v p)).symm
 
+omit [Fintype ι] in
 /-- Two integral vectors have the same weight exactly when their difference is diagonal. -/
 theorem diagonalWeightProjection_ker (p : ι) :
     (diagonalWeightProjection ι p).ker = coordinateDiagonal ι := by
@@ -49,6 +50,7 @@ theorem diagonalWeightProjection_ker (p : ι) :
     change c * 1 - c * 1 = 0
     exact sub_self _
 
+omit [Fintype ι] in
 theorem diagonalWeightProjection_surjective (p : ι) :
     Function.Surjective (diagonalWeightProjection ι p) := by
   intro w

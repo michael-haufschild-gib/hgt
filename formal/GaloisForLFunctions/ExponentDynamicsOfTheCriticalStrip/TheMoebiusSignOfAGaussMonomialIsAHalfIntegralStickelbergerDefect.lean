@@ -138,7 +138,8 @@ theorem isMoebiusSignedTuple_iff_defect {ζ : PadicAlgCl p} (hζ : IsPrimitiveRo
     constructor
     · rintro ⟨s, hs⟩
       refine ⟨s, ?_⟩
-      have : (p - 1) * q = (p - 1) * (s + s) := by rw [← hq, hs]; ring
+      have hs' : S = (p - 1) * s := by rw [hS]; exact hs
+      have : (p - 1) * q = (p - 1) * (s + s) := by rw [← hq, hs']; ring
       exact Nat.eq_of_mul_eq_mul_left hN0 this
     · rintro ⟨s, hs⟩
       refine ⟨s, ?_⟩
@@ -158,7 +159,7 @@ theorem isMoebiusSignedTuple_iff_defect {ζ : PadicAlgCl p} (hζ : IsPrimitiveRo
         rw [(teichExp_spec p χ).2.2]
         exact Nat.pos_of_dvd_of_pos (orderOf_dvd_sub_one p _) hN0
       omega, hsq, h⟩⟩
-  rw [hmoeb, hone, hdef]
+  rw [hmoeb, ne_eq, hone, hdef]
   constructor
   · rintro (⟨⟨s, hs⟩, ⟨t, ht⟩⟩ | ⟨hs, ⟨t, ht⟩⟩)
     · refine ⟨(s : ℤ) - t - 1, ?_⟩
@@ -178,12 +179,12 @@ theorem isMoebiusSignedTuple_iff_defect {ζ : PadicAlgCl p} (hζ : IsPrimitiveRo
     · left
       refine ⟨hqe, ?_⟩
       obtain ⟨s, hs⟩ := hqe
-      refine ⟨(s : ℤ).toNat - j.toNat - 1 + 0, ?_⟩
+      refine ⟨((s : ℤ) - j - 1).toNat, ?_⟩
       omega
     · right
       refine ⟨Nat.not_even_iff_odd.2 hqo, ?_⟩
       obtain ⟨s, hs⟩ := hqo
-      refine ⟨s - j.toNat, ?_⟩
+      refine ⟨((s : ℤ) - j).toNat, ?_⟩
       omega
 
 /-- **No pure Möbius-signed Gauss monomial.** The defect of a Möbius-signed monomial is at least
@@ -197,7 +198,9 @@ theorem half_le_abs_stickelbergerDefect {ζ : PadicAlgCl p} (hζ : IsPrimitiveRo
   · have : (0 : ℝ) ≤ j := by exact_mod_cast h
     rw [abs_of_nonneg (by linarith)]
     linarith
-  · have : (j : ℝ) ≤ -1 := by exact_mod_cast (Int.lt_iff_add_one_le.1 h)
+  · have : (j : ℝ) ≤ -1 := by
+      have h' : j ≤ -1 := by omega
+      exact_mod_cast h'
     rw [abs_of_neg (by linarith)]
     linarith
 
