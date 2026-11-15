@@ -7,7 +7,7 @@
 
 ## Statement
 
-For every finite coefficient prefix and every `1/2 < σ < 1`, a positive, bounded, multiplicative Dirichlet series agreeing with ζ on that prefix has a reflection-symmetric completion with an off-line zero at real part σ, a globally contractive reduced scattering symbol, and unitary scattering on the imaginary axis. Its logarithmic Euler coefficient at the square of the modifying prime is negative.
+For every finite coefficient prefix and every `1/2 < σ < 1`, a positive, bounded, multiplicative Dirichlet series agreeing with ζ on that prefix has a reflection-symmetric completion with an off-line zero at real part σ, a globally contractive reduced scattering symbol, and unitary scattering on the imaginary axis. No nonnegative logarithmic Dirichlet series represents it on any right half-plane. The obstruction is already visible in `a(p)² > 2a(p²)`.
 
 ## Proof [PROVED HERE]
 
@@ -23,12 +23,12 @@ Writing `v=p^(−2w)`, its multiplier in the reduced scattering symbol is
 
 The denominator factors as `(r+v)(u+v)` and is nonzero for `|v|≤1`. The identity `(r−1)(u−1)>0` gives `A<p+1`. The existing theorem `schur_bound_iff` with trace `−A` makes this quotient contractive on the disk. The difference-of-squares identity gives modulus one on its boundary. Multiplication by the actual modular scattering symbol preserves these properties. Nonvanishing of the denominator also gives holomorphy throughout the closed right half-plane.
 
-The two local Euler roots are `−r,−u`. The existing logarithmic expansion identifies the coefficient at `p²` as `(1−r²−u²)/2`, which is negative because `r,u>1`. This coefficient is an explicit arithmetic obstruction independent of zero estimates. Ordinary coefficient positivity does not supply it.
+The two local Euler roots are `−r,−u`. The existing logarithmic expansion identifies the coefficient at `p²` as `(1−r²−u²)/2`, which is negative because `r,u>1`. Since `a(p)=1+r+u` and `a(p²)=1+r+u+p`, this is exactly `a(p²)−a(p)²/2`. Differentiating equality of exponentiated Dirichlet series removes the constant logarithm branch; Dirichlet-series uniqueness then forces every competing logarithmic coefficient at `p²` to have this negative value. This arithmetic obstruction uses no zero estimate.
 
 ## No-go closure
 
 - **Rejected route:** add ordinary nonnegative multiplicative coefficients to the physical positivity laws to distinguish ζ.
-- **Positive survivor:** the actual logarithmic coefficient at the first repeated prime is negative for every constructed countermodel; the ordinary coefficients remain positive at every integer.
+- **Positive survivor:** the two-coefficient inequality `a(p)² > 2a(p²)` excludes every nonnegative logarithmic representation, while ordinary coefficients remain positive at every integer and match any prescribed finite ζ prefix.
 - **Known inputs:** `PositiveFiniteEulerCoefficients`, `PositiveFiniteEulerCompletion`, `PositiveFiniteEulerZeros`, `PositiveFiniteEulerProduct`, `schur_bound_iff`, modular scattering contractivity and unitarity.
 - **Lean:** `BlackHoleRingdown/ThePositiveEulerTwinsArePassive.lean`; full theorem and audits pending.
 - **Count:** unaccepted until formalization and significance review. Axiom checks skipped at user request.

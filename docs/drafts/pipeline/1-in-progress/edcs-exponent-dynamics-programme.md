@@ -50,6 +50,9 @@ Modules, in order of attack. Status: P = paper proof below, L = Lean compiled an
 | 23 | TheHeckeFamilyOfTheRationalsCarriesTheSeed | E6 (second field: HeckeHalfPlane ℚ (7/8)) | L |
 | 24 | TheRungsLieOutsideTheSeededFamily | E6 (rungs not quotients of products of finite-order L-functions) | L |
 | 25 | TheRungsAreTensorPowersOfTheCubicGaussSums | E5/E6 (ψ₆(𝔭) = conj(g̃_𝔭)^18; rung = tensor power) | L |
+| 26 | TheCubicStepanovPolynomialIsIndependent | acid test, order 3 (norm form, cubic descent, independence) | L |
+| 27 | TheCubicStepanovCount | acid test, order 3 (three-level Stepanov count) | L |
+| 28 | TheCubicCurveCountWithoutWeil | acid test, order 3 (equidistribution; Hasse–Weil for y³ = h(x) over 𝔽_{s²}) | L |
 
 Open, with the input that is missing:
 
@@ -272,6 +275,14 @@ heckeL: iterated convolution with δ, coefficients integral (values of a finite 
 (π̄/|π|)⁶, MMD normalizedCubicGauss_cube: g̃³ = −π/|π| ⇒ conj(g̃)^18 = conj(g̃³)^6 = (−π̄/|π|)^6 = ψ₆(P). Rung prime term
 at v ∌ λ: conj(g̃_v)^{18k} ψ_prim(v) N(v)^{−w}.
 
+**M26–M28 (acid test, order three).** |E| = Q = 3N + 1. Independence: A₀ + A₁g + A₂g² = 0 (g = h^N) ⇒ norm form
+A₀³ + A₁³g³ + A₂³g⁶ − 3A₀A₁A₂g³ = 0 (factor x+y+z); × h², h g³ = h^Q = h(X^Q) ⇒ bivariate identity
+h(X)²A₀³ + h(X)h(Y)A₁³ + h(Y)²A₂³ − 3h(X)h(Y)A₀A₁A₂ at Y = X^Q, coefficient degree ≤ 2D + 3(K−1) < Q ⇒ zero in E[X][Y];
+cubic descent: π | h(X) irreducible divides A₂, then A₁, then A₀, equation returns ⇒ all zero. Count: three levels,
+3JK unknowns, one-level Hasse lemma h^k D^{(k)}(r h^M) = h^M Σ h^{k−i}P_{M,i}D^{(k−i)}r; ℓ·N_ε ≤ (K−1) + 2ND + Q(J−1).
+Bound (q = s², s ≥ 3D + 10, ℓ = s, K = ⌊(s² − 2D)/3⌋, J = ⌊(s + 3D + 6)/3⌋): 3N_ε ≤ s² + (5D+4)s. Classes 1, ω, ω²
+partition the nonroots ⇒ |3N_1 − s²| ≤ 2(5D+4)s + 3D; #{y³ = h(x)} = #{h = 0} + 3N_1 (cube roots, AGZ).
+
 ## No-go closure
 - **Margin in the mass normalisation at every block size** (fable §5.2, first lemma as stated). Not a consequence
   of the width. Insight: the normalisation decides exactness. Survivors, all in Lean: the exact ruler in the
@@ -288,5 +299,5 @@ at v ∌ λ: conj(g̃_v)^{18k} ψ_prim(v) N(v)^{−w}.
 ## Log
 - 2026-11-15 — created; README first draft written. Modules 1–6 compiled, axiom-clean, wired.
 - 2026-11-15 — modules 7–12 compiled, axiom-clean, wired.
-- 2026-11-15 — M3 §4 (shifted pairs), modules 13–25 compiled, wired (axiom checks dropped at the user's request from M21 on). E4 rank one answered without the
+- 2026-11-15 — M3 §4 (shifted pairs), modules 13–28 compiled, wired (axiom checks dropped at the user's request from M21 on). E4 rank one answered without the
   classification of pure monomials (M18); the classification is needed only to identify completions.

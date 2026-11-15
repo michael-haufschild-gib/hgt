@@ -2,6 +2,7 @@ import GaloisForLFunctions.BlackHoleRingdown.CausalIdentitiesCannotForceQuarterR
 import GaloisForLFunctions.SelbergClass.PositiveFiniteEulerCompletion
 import GaloisForLFunctions.SelbergClass.PositiveFiniteEulerZeros
 import GaloisForLFunctions.SelbergClass.PositiveFiniteEulerProduct
+import GaloisForLFunctions.SelbergClass.DirichletSeries.LogarithmicUniqueness
 
 /-!
 # Arithmetic coefficients and passive reciprocal Euler factors
@@ -225,8 +226,10 @@ theorem completedXi_den_ne_zero {p : ℕ} (hp : 1 < p) {r u : ℝ}
   rw [completedXi, hd]
   exact mul_ne_zero
     (mul_ne_zero hz (schurDen_pair_ne_zero hr hu hru (norm_frequency_le hp hw)))
-    (xi_ne_zero_of_one_le_re (by simp only [Complex.add_re, Complex.one_re,
-      Complex.mul_re, Complex.ofNat_re, Complex.ofNat_im, zero_mul, sub_zero]; linarith only [hw]))
+    (xi_ne_zero_of_one_le_re (by
+      have he : (1 + 2 * w).re = 1 + 2 * w.re := by simp
+      rw [he]
+      linarith only [hw]))
 
 theorem differentiableAt_reducedScattering {p : ℕ} (hp : 1 < p) {r u : ℝ}
     (hr : 1 < r) (hu : 1 < u) (hru : r * u = p) {w : ℂ} (hw : 0 ≤ w.re) :
@@ -295,10 +298,62 @@ theorem eulerLogCoeff_prime_sq_neg {p : ℕ} (hp : p.Prime) {r u : ℝ}
     (hr : 1 < r) (hu : 1 < u) :
     (eulerLogCoeff p (-(r : ℂ)) (-(u : ℂ)) (p ^ 2)).re < 0 := by
   rw [eulerLogCoeff_prime_pow hp _ _ (by norm_num : (2 : ℕ) ≠ 0)]
-  simp only [neg_sq, Complex.div_ofReal_re, Complex.sub_re, Complex.one_re,
-    ← Complex.ofReal_pow, Complex.ofReal_re, Nat.cast_ofNat]
+  have he : (1 - (-(r : ℂ)) ^ 2 - (-(u : ℂ)) ^ 2) / (2 : ℂ) =
+      (((1 - r ^ 2 - u ^ 2) / 2 : ℝ) : ℂ) := by push_cast; ring
+  rw [show ((2 : ℕ) : ℂ) = 2 by norm_num, he, Complex.ofReal_re]
   nlinarith only [sq_pos_of_pos (by linarith only [hr] : 0 < r),
     sq_nonneg (u - 1), hu]
+
+/-- No nonnegative logarithmic Dirichlet series can represent a positive passive twin,
+even after restricting the Euler identity to an arbitrarily small right half-plane. -/
+theorem not_exists_nonnegative_logarithm {p : ℕ} (hp : p.Prime) {r u : ℝ}
+    (hr : 1 < r) (hu : 1 < u) (hru : r * u = p) :
+    ¬ ∃ b : ℕ → ℂ, (∀ n : ℕ, 0 ≤ (b n).re) ∧ ∃ B : ℝ,
+      ∀ s : ℂ, B < s.re → LSeriesSummable b s ∧
+        Complex.exp (LSeries b s) = localFactor p (r + u) s * riemannZeta s := by
+  rintro ⟨b, hpos, B, hb⟩
+  have hr0 : 0 < r := zero_lt_one.trans hr
+  have hu0 : 0 < u := zero_lt_one.trans hu
+  have hrp : r ≤ p := by
+    calc r ≤ r * u := by nlinarith only [mul_pos hr0 (sub_pos.mpr hu)]
+      _ = p := hru
+  have hup : u ≤ p := by
+    calc u ≤ r * u := by nlinarith only [mul_pos (sub_pos.mpr hr) hu0]
+      _ = p := hru
+  have hnR : ‖-(r : ℂ)‖ ≤ p := by
+    simpa only [norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hr0] using hrp
+  have hnU : ‖-(u : ℂ)‖ ≤ p := by
+    simpa only [norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hu0] using hup
+  have hadd : -(r : ℂ) + -(u : ℂ) = -((r + u : ℝ) : ℂ) := by push_cast; ring
+  have hmul : -(r : ℂ) * -(u : ℂ) = p := by
+    rw [neg_mul_neg, ← Complex.ofReal_mul, hru, Complex.ofReal_natCast]
+  have heq : b (p ^ 2) = logarithmicCoeffs hp (-(r : ℂ)) (-(u : ℂ)) (p ^ 2) := by
+    apply GaloisForLFunctions.SelbergClass.DirichletSeries.coeff_eq_of_exp_lSeries_eq
+      (B := max B 1)
+    · exact fun s hs => (hb s ((le_max_left B 1).trans_lt hs)).1
+    · exact fun s hs => logarithmicCoeffs_summable hp hnR hnU ((le_max_right B 1).trans_lt hs)
+    · intro s hs
+      exact (hb s ((le_max_left B 1).trans_lt hs)).2.trans
+        (logarithmicCoeffs_exp hp hadd hmul hnR hnU ((le_max_right B 1).trans_lt hs)).symm
+    · exact one_lt_pow₀ hp.one_lt (by norm_num)
+  have hneg := eulerLogCoeff_prime_sq_neg hp hr hu
+  change (logarithmicCoeffs hp (-(r : ℂ)) (-(u : ℂ)) (p ^ 2)).re < 0 at hneg
+  rw [← heq] at hneg
+  exact (not_lt_of_ge (hpos (p ^ 2))) hneg
+
+/-- The prime-square logarithmic obstruction can be read from two ordinary coefficients. -/
+theorem two_mul_coeff_prime_sq_lt_sq_coeff_prime {p : ℕ} (hp : p.Prime) {r u : ℝ}
+    (hr : 1 < r) (hu : 1 < u) (hru : r * u = p) :
+    2 * coeff p (r + u) (p ^ 2) < coeff p (r + u) p ^ 2 := by
+  have hpp : p < p ^ 2 := by nlinarith only [hp.one_lt]
+  have hnot : ¬ p ^ 2 ∣ p := fun h => (Nat.le_of_dvd hp.pos h).not_gt hpp
+  have hc1 : coeff p (r + u) p = 1 + (r + u) := by
+    simp only [coeff, if_neg hp.ne_zero, if_pos (dvd_refl p), if_neg hnot, add_zero]
+  have hc2 : coeff p (r + u) (p ^ 2) = 1 + (r + u) + p := by
+    simp only [coeff, if_neg (pow_ne_zero 2 hp.ne_zero),
+      if_pos (dvd_pow_self p (by norm_num)), if_pos (dvd_refl (p ^ 2))]
+  rw [hc1, hc2]
+  nlinarith only [hru, sq_pos_of_pos (zero_lt_one.trans hr), sq_nonneg (u - 1), hu]
 
 /-- Every finite zeta prefix extends to a positive arithmetic twin with passive
 scattering and a prescribed off-line zero. Its prime-square logarithmic count is negative. -/
@@ -310,6 +365,10 @@ theorem exists_positive_passive_twin (N : ℕ) (σ : Set.Ioo (1 / 2 : ℝ) 1) :
         (arithmeticCoeffs p A n).im = 0 ∧
         1 ≤ (arithmeticCoeffs p A n).re ∧ ‖arithmeticCoeffs p A n‖ ≤ C) ∧
       (∀ n : ℕ, n ≠ 0 → n ≤ N → arithmeticCoeffs p A n = 1) ∧
+      2 * coeff p A (p ^ 2) < coeff p A p ^ 2 ∧
+      (¬ ∃ b : ℕ → ℂ, (∀ n : ℕ, 0 ≤ (b n).re) ∧ ∃ B : ℝ,
+        ∀ s : ℂ, B < s.re → LSeriesSummable b s ∧
+          Complex.exp (LSeries b s) = localFactor p A s * riemannZeta s) ∧
       (∃ s : ℂ, s.re = σ ∧ completedXi p A s = 0 ∧ (extendedClass hp A) s = 0) ∧
       (∀ w : ℂ, 0 ≤ w.re → DifferentiableAt ℂ (reducedScattering p A) w ∧
         ‖reducedScattering p A w‖ ≤ 1 ∧
@@ -341,7 +400,9 @@ theorem exists_positive_passive_twin (N : ℕ) (σ : Set.Ioo (1 / 2 : ℝ) 1) :
     (by rw [mul_comm, hru])
   have hparam : reciprocalParameter p r = r + u := by rw [reciprocalParameter, hpr]
   refine ⟨p, hp, r + u, by omega, extendedClass_degree hp _,
-    arithmeticCoeffs_isMultiplicative hp _, ⟨1 + (r + u) + p, ?_⟩, ?_, ?_,
+    arithmeticCoeffs_isMultiplicative hp _, ⟨1 + (r + u) + p, ?_⟩, ?_,
+    two_mul_coeff_prime_sq_lt_sq_coeff_prime hp hr hu hru,
+    not_exists_nonnegative_logarithm hp hr hu hru, ?_,
     fun w hw => ⟨differentiableAt_reducedScattering hp.one_lt hr hu hru hw,
       norm_reducedScattering_le_one hp.one_lt hr hu hru hw,
       herglotz_re_nonneg hp.one_lt hr hu hru hw⟩,
@@ -355,7 +416,7 @@ theorem exists_positive_passive_twin (N : ℕ) (σ : Set.Ioo (1 / 2 : ℝ) 1) :
     rw [arithmeticCoeffs_apply, coeff_eq_one_of_lt hn (by omega), Complex.ofReal_one]
   · have hre : (factorZero p r).re = (σ : ℝ) := by
       rw [factorZero_re, show Real.log r = (σ : ℝ) * Real.log p by
-        rw [r, Real.log_rpow hp0]]
+        exact Real.log_rpow hp0 (σ : ℝ)]
       exact mul_div_cancel_right₀ _ (Real.log_pos hpR).ne'
     have hz : localFactor p (r + u) (factorZero p r) = 0 := by
       rw [← hparam]

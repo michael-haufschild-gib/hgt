@@ -145,8 +145,8 @@ theorem abs_three_mul_card_sub_le [Fintype E] [DecidableEq E] {p n : ℕ} [Fact 
     {N s : ℕ} (hQ : p ^ n = 3 * N + 1) (hs : p ^ n = s ^ 2) (hsD : 3 * h.natDegree + 10 ≤ s) :
     |(3 * (univ.filter (fun x : E => h.eval x ≠ 0 ∧ h.eval x ^ N = 1)).card : ℤ) - s ^ 2| ≤
       2 * (5 * h.natDegree + 4) * s + 3 * h.natDegree := by
-  set D := h.natDegree
   have hh0 : h ≠ 0 := by rintro rfl; simp at hdeg
+  set D := h.natDegree
   obtain ⟨ω, hω3, hω1⟩ := exists_cube_root_of_unity (E := E) (by rw [hcard, hQ]; omega)
   have hω0 : ω ≠ 0 := by rintro rfl; norm_num at hω3
   have hω2 : ω ^ 2 ≠ 1 := by

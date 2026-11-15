@@ -145,29 +145,27 @@ theorem hasSum_deriv_eulerLog (hc : ∀ v, ‖c v‖ ≤ 1) {w : ℂ} (hw : 1 < 
   rw [hfun] at h
   exact h
 
-/-- The prime-power series converges and regroups by primes:
-`Σ_m log N(v) r^{m+1} = log N(v) · r/(1 − r)`. -/
-theorem hasSum_primePowerSeries (hc : ∀ v, ‖c v‖ ≤ 1) {w : ℂ} (hw : 1 < w.re) :
-    HasSum (fun v => (Real.log v.asIdeal.absNorm : ℂ) * eulerRatio c w v / (1 - eulerRatio c w v))
-      (primePowerSeries c w) := by
-  set σ := w.re with hσdef
+/-- The real majorant `Σ_{v,m} log N(v) · (N(v)^{−σ})^{m+1}` converges for `σ > 1`: the level sums
+are `log N(v) · q/(1 − q) ≤ 2 log N(v) N(v)^{−σ}`, and `log N(v) ≤ N(v)^δ/δ` leaves the prime sum at
+exponent `σ − δ > 1`. -/
+theorem summable_log_mul_rpow_pow {σ : ℝ} (hσ : 1 < σ) :
+    Summable fun p : HeightOneSpectrum (𝓞 K) × ℕ =>
+      Real.log p.1.asIdeal.absNorm * ((p.1.asIdeal.absNorm : ℝ) ^ (-σ)) ^ (p.2 + 1) := by
   set δ := (σ - 1) / 2 with hδ
   have hδ0 : 0 < δ := by rw [hδ]; linarith
   have hσδ : 1 < σ - δ := by rw [hδ]; linarith
-  -- the size q_v = N(v)^{−σ} of the ratio, at most 1/2
   set q : HeightOneSpectrum (𝓞 K) → ℝ := fun v => (v.asIdeal.absNorm : ℝ) ^ (-σ)
   have hq0 : ∀ v, 0 ≤ q v := fun v => Real.rpow_nonneg (Nat.cast_nonneg _) _
-  have hq : ∀ v, ‖eulerRatio c w v‖ ≤ q v ∧ q v ≤ 1 / 2 := fun v =>
-    norm_eulerRatio_le_half hc hw le_rfl v
+  have hqh : ∀ v, q v ≤ 1 / 2 := fun v =>
+    (norm_eulerRatio_le_half (c := fun _ => 1) (fun _ => by simp) hσ (w := (σ : ℂ)) (by simp) v).2
   have hlog0 : ∀ v : HeightOneSpectrum (𝓞 K), 0 ≤ Real.log v.asIdeal.absNorm := fun v =>
     Real.log_nonneg (by exact_mod_cast (show 1 ≤ v.asIdeal.absNorm by
       linarith [two_le_absNorm_prime v]))
-  -- majorant on the product
   set M : HeightOneSpectrum (𝓞 K) × ℕ → ℝ := fun p => Real.log p.1.asIdeal.absNorm * q p.1 ^ (p.2 + 1)
   have hM0 : 0 ≤ M := fun p => mul_nonneg (hlog0 _) (pow_nonneg (hq0 _) _)
   have hfib : ∀ v, HasSum (fun m : ℕ => M (v, m)) (Real.log v.asIdeal.absNorm * (q v * (1 - q v)⁻¹)) := by
     intro v
-    have hg := hasSum_geometric_of_lt_one (hq0 v) (by linarith [(hq v).2])
+    have hg := hasSum_geometric_of_lt_one (hq0 v) (by linarith [hqh v])
     have h2 := (hg.mul_left (q v)).mul_left (Real.log v.asIdeal.absNorm)
     have hfun : (fun i : ℕ => Real.log v.asIdeal.absNorm * (q v * q v ^ i)) =
         fun m : ℕ => M (v, m) := funext fun m => by
@@ -175,32 +173,45 @@ theorem hasSum_primePowerSeries (hc : ∀ v, ‖c v‖ ≤ 1) {w : ℂ} (hw : 1 
       rw [pow_succ']
     rw [hfun] at h2
     exact h2
-  have hMsum : Summable M := by
-    refine (summable_prod_of_nonneg hM0).mpr ⟨fun v => (hfib v).summable, ?_⟩
-    have hmaj := (numberField_summable_finitePlace_absNorm_rpow (K := K) hσδ).mul_left (2 / δ)
-    refine Summable.of_nonneg_of_le (fun v => tsum_nonneg fun m => hM0 (v, m)) (fun v => ?_) hmaj
-    rw [(hfib v).tsum_eq]
-    have hv1 : (1 : ℝ) ≤ v.asIdeal.absNorm := by
-      exact_mod_cast (show 1 ≤ v.asIdeal.absNorm by linarith [two_le_absNorm_prime v])
-    have hv0 : (0 : ℝ) < v.asIdeal.absNorm := by linarith
-    have hlogle : Real.log v.asIdeal.absNorm ≤ (v.asIdeal.absNorm : ℝ) ^ δ / δ :=
-      Real.log_le_rpow_div hv0.le hδ0
-    have hgeo : q v * (1 - q v)⁻¹ ≤ 2 * q v := by
-      have h1 : (1 / 2 : ℝ) ≤ 1 - q v := by linarith [(hq v).2]
-      rw [← div_eq_mul_inv, div_le_iff₀ (by linarith)]
-      nlinarith [hq0 v]
-    calc Real.log v.asIdeal.absNorm * (q v * (1 - q v)⁻¹)
-        ≤ ((v.asIdeal.absNorm : ℝ) ^ δ / δ) * (2 * q v) :=
-          mul_le_mul hlogle hgeo (mul_nonneg (hq0 v) (inv_nonneg.mpr (by linarith [(hq v).2])))
-            (by positivity)
-      _ = 2 / δ * (v.asIdeal.absNorm : ℝ) ^ (-(σ - δ)) := by
-          simp only [q]
-          rw [show -(σ - δ) = δ + -σ by ring, Real.rpow_add hv0]
-          ring
-  -- the complex series is dominated by the majorant
+  show Summable M
+  refine (summable_prod_of_nonneg hM0).mpr ⟨fun v => (hfib v).summable, ?_⟩
+  have hmaj := (numberField_summable_finitePlace_absNorm_rpow (K := K) hσδ).mul_left (2 / δ)
+  refine Summable.of_nonneg_of_le (fun v => tsum_nonneg fun m => hM0 (v, m)) (fun v => ?_) hmaj
+  rw [(hfib v).tsum_eq]
+  have hv1 : (1 : ℝ) ≤ v.asIdeal.absNorm := by
+    exact_mod_cast (show 1 ≤ v.asIdeal.absNorm by linarith [two_le_absNorm_prime v])
+  have hv0 : (0 : ℝ) < v.asIdeal.absNorm := by linarith
+  have hlogle : Real.log v.asIdeal.absNorm ≤ (v.asIdeal.absNorm : ℝ) ^ δ / δ :=
+    Real.log_le_rpow_div hv0.le hδ0
+  have hgeo : q v * (1 - q v)⁻¹ ≤ 2 * q v := by
+    have h1 : (1 / 2 : ℝ) ≤ 1 - q v := by linarith [hqh v]
+    rw [← div_eq_mul_inv, div_le_iff₀ (by linarith)]
+    nlinarith [hq0 v]
+  calc Real.log v.asIdeal.absNorm * (q v * (1 - q v)⁻¹)
+      ≤ ((v.asIdeal.absNorm : ℝ) ^ δ / δ) * (2 * q v) :=
+        mul_le_mul hlogle hgeo (mul_nonneg (hq0 v) (inv_nonneg.mpr (by linarith [hqh v])))
+          (by positivity)
+    _ = 2 / δ * (v.asIdeal.absNorm : ℝ) ^ (-(σ - δ)) := by
+        simp only [q]
+        rw [show -(σ - δ) = δ + -σ by ring, Real.rpow_add hv0]
+        ring
+
+/-- The prime-power series converges and regroups by primes:
+`Σ_m log N(v) r^{m+1} = log N(v) · r/(1 − r)`. -/
+theorem hasSum_primePowerSeries (hc : ∀ v, ‖c v‖ ≤ 1) {w : ℂ} (hw : 1 < w.re) :
+    HasSum (fun v => (Real.log v.asIdeal.absNorm : ℂ) * eulerRatio c w v / (1 - eulerRatio c w v))
+      (primePowerSeries c w) := by
+  have hq : ∀ v, ‖eulerRatio c w v‖ ≤ (v.asIdeal.absNorm : ℝ) ^ (-w.re) ∧
+      (v.asIdeal.absNorm : ℝ) ^ (-w.re) ≤ 1 / 2 := fun v =>
+    norm_eulerRatio_le_half hc hw le_rfl v
+  have hlog0 : ∀ v : HeightOneSpectrum (𝓞 K), 0 ≤ Real.log v.asIdeal.absNorm := fun v =>
+    Real.log_nonneg (by exact_mod_cast (show 1 ≤ v.asIdeal.absNorm by
+      linarith [two_le_absNorm_prime v]))
+  -- the complex series is dominated by the real majorant
   have hfsum : Summable fun p : HeightOneSpectrum (𝓞 K) × ℕ =>
       (Real.log p.1.asIdeal.absNorm : ℂ) * eulerRatio c w p.1 ^ (p.2 + 1) := by
-    refine Summable.of_norm (hMsum.of_nonneg_of_le (fun p => norm_nonneg _) fun p => ?_)
+    refine Summable.of_norm ((summable_log_mul_rpow_pow (K := K) hw).of_nonneg_of_le
+      (fun p => norm_nonneg _) fun p => ?_)
     rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (hlog0 _), norm_pow]
     exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _) (hq p.1).1 _) (hlog0 _)
   refine hfsum.hasSum.prod_fiberwise fun v => ?_

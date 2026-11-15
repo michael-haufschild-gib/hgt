@@ -1,7 +1,7 @@
 import Mathlib.Topology.Algebra.GroupWithZero
 import Mathlib.Topology.Instances.Rat
 import Mathlib.Analysis.Complex.Basic
-import Mathlib.GroupTheory.Subgroup.Basic
+import Mathlib.Algebra.Group.Subgroup.Basic
 import Mathlib.Order.Atoms
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.LinearCombination

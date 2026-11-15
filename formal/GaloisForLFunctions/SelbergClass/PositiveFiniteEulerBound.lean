@@ -1,3 +1,4 @@
+import GaloisForLFunctions.SelbergClass.DirichletSeries.LogarithmicUniqueness
 import GaloisForLFunctions.SelbergClass.PositiveFiniteEulerCoefficients
 import GaloisForLFunctions.HTGeometry.CanonicalEulerLog
 import GaloisForLFunctions.RHTower.SelbergClass.Full
@@ -150,50 +151,6 @@ private theorem exists_log_halfplane {p : ℕ} (hp : 1 < p) (α β : ℂ) :
   exact ⟨(mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.exp_pos _).le).trans_lt hsmall,
     (mul_le_mul_of_nonneg_right (le_max_right _ _) (Real.exp_pos _).le).trans_lt hsmall⟩
 
-/-- Equality after exponentiation determines all nonconstant Dirichlet coefficients.
-Differentiation removes the additive logarithm branch. -/
-private theorem coeff_eq_of_exp_lSeries_eq {f g : ℕ → ℂ} {B : ℝ}
-    (hf : ∀ s : ℂ, B < s.re → LSeriesSummable f s)
-    (hg : ∀ s : ℂ, B < s.re → LSeriesSummable g s)
-    (he : ∀ s : ℂ, B < s.re → Complex.exp (LSeries f s) = Complex.exp (LSeries g s))
-    {n : ℕ} (hn : 1 < n) : f n = g n := by
-  have hfa : LSeries.abscissaOfAbsConv f ≤ (B + 1 : ℝ) := by
-    simpa only [Complex.ofReal_re] using
-      (hf ((B + 1 : ℝ) : ℂ) (by simp only [Complex.ofReal_re]; linarith)).abscissaOfAbsConv_le
-  have hga : LSeries.abscissaOfAbsConv g ≤ (B + 1 : ℝ) := by
-    simpa only [Complex.ofReal_re] using
-      (hg ((B + 1 : ℝ) : ℂ) (by simp only [Complex.ofReal_re]; linarith)).abscissaOfAbsConv_le
-  have hfbs {s : ℂ} (hs : B + 1 < s.re) : LSeries.abscissaOfAbsConv f < s.re :=
-    hfa.trans_lt (by exact_mod_cast hs)
-  have hgbs {s : ℂ} (hs : B + 1 < s.re) : LSeries.abscissaOfAbsConv g < s.re :=
-    hga.trans_lt (by exact_mod_cast hs)
-  have hderiv {s : ℂ} (hs : B + 1 < s.re) :
-      LSeries (LSeries.logMul f) s = LSeries (LSeries.logMul g) s := by
-    have hdf := (LSeries_hasDerivAt (hfbs hs)).cexp
-    have hdg := (LSeries_hasDerivAt (hgbs hs)).cexp
-    have hloc : (fun z : ℂ => Complex.exp (LSeries f z)) =ᶠ[𝓝 s]
-        (fun z : ℂ => Complex.exp (LSeries g z)) := by
-      filter_upwards [(isOpen_lt continuous_const continuous_re).mem_nhds
-        (by linarith : B < s.re)] with z hz
-      exact he z hz
-    have h := (hdf.congr_of_eventuallyEq hloc.symm).deriv.symm.trans hdg.deriv
-    rw [he s (by linarith)] at h
-    have hcancel := mul_left_cancel₀ (Complex.exp_ne_zero (LSeries g s)) h
-    exact neg_injective hcancel
-  have hlogf := LSeriesSummable_logMul_of_lt_re (hfbs (s := (B + 2 : ℝ)) (by simp))
-  have hlogg := LSeriesSummable_logMul_of_lt_re (hgbs (s := (B + 2 : ℝ)) (by simp))
-  have hc : LSeries.logMul f n = LSeries.logMul g n := by
-    apply LSeries.eq_of_LSeries_eventually_eq
-      (hlogf.abscissaOfAbsConv_le.trans_lt (EReal.coe_lt_top _))
-      (hlogg.abscissaOfAbsConv_le.trans_lt (EReal.coe_lt_top _))
-    · filter_upwards [eventually_gt_atTop (B + 1)] with x hx
-      exact hderiv (s := (x : ℂ)) hx
-    · omega
-  change Complex.log (n : ℂ) * f n = Complex.log (n : ℂ) * g n at hc
-  apply mul_left_cancel₀ _ hc
-  rw [← Complex.natCast_log]
-  exact Complex.ofReal_ne_zero.mpr (Real.log_pos (by exact_mod_cast hn)).ne'
-
 /-- Any purported full Selberg carrier is forced to have the explicit quadratic Euler logarithm. -/
 theorem fullClass_eulerLogCoeff_prime_pow {p : ℕ} (hp : p.Prime) {A : ℝ} {α β : ℂ}
     (hadd : α + β = -(A : ℂ)) (hmul : α * β = p)
@@ -202,7 +159,7 @@ theorem fullClass_eulerLogCoeff_prime_pow {p : ℕ} (hp : p.Prime) {A : ℝ} {α
     F.eulerLogCoeff (p ^ k) = (1 - α ^ k - β ^ k) / (k : ℂ) := by
   obtain ⟨B, hB, hhalf⟩ := exists_log_halfplane hp.one_lt α β
   have hsame : F.eulerLogCoeff (p ^ k) = eulerLogCoeff p α β (p ^ k) := by
-    apply coeff_eq_of_exp_lSeries_eq (B := B)
+    apply DirichletSeries.coeff_eq_of_exp_lSeries_eq (B := B)
     · exact fun s hs => F.eulerLogSummable s (hB.trans_lt hs)
     · exact fun s hs => (hasSum_eulerLogCoeff hp α β (hB.trans_lt hs)
         (hhalf s hs).1 (hhalf s hs).2).LSeriesSummable

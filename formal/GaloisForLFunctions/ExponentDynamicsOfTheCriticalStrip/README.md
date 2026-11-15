@@ -261,8 +261,11 @@ long moments (CDG).
 - **The acid test over $\mathbb F_q[T]$.** Passed for quadratic characters of split squarefree moduli of odd
   degree: Stepanov's counts at even degrees on both parity classes and the base-change lever give index zero
   of the trace kernel without Weil's theorem (RHTower `riemannHypothesis_splitHyperelliptic`, AKLT
-  `stepanov_order_hyperelliptic`). Open: characters of order $\ge3$, and the gluing calculus of the windows
-  as the producer.
+  `stepanov_order_hyperelliptic`). Characters of order three: Stepanov's count with three levels
+  (`cubic_stepanov_independence`, by the norm form and cubic descent) equidistributes $h(x)^N$ among the
+  cube roots of unity and gives $|\#\{y^3=h(x)\}-s^2|\le 2(5D+4)s+4D$ over $\mathbb F_{s^2}$
+  (`abs_card_cubicCurve_sub_le`), without Weil's theorem. Open: the base-change lever for these curves
+  (their $L$-functions), and the gluing calculus of the windows as the producer.
 
 ## 9. Traps
 

@@ -27,3 +27,5 @@ The reciprocal quadratic twins in `SelbergClass.PositiveFiniteEulerTwins` also s
 **Arithmetic survivor:** the genuine Euler logarithmic coefficient at `p²` is `(1−r²−u²)/2<0`, although all ordinary coefficients are positive. This gives a specific count obstruction that survives strengthening the physical countermodel by ordinary coefficient positivity.
 
 **Internal duplicate rejected:** the sign pattern of the original positive-trace prime-two deformation follows from `PositiveFiniteEulerCoefficients`; the strict Euler-growth obstruction is already `PositiveFiniteEulerBound.not_fullClass`. Neither counts as a contribution.
+
+**Stronger conjecture:** ordinary coefficient integrality also survives. At a prime `p>4`, choose `A=p`; the two reciprocal root radii are `(p±√(p²−4p))/2`, both greater than one and distinct. The ordinary coefficients then lie in `{0,1,1+p,1+2p}`. Audit this exact family after the positive passive construction; count it as a strengthening of the same contribution.
