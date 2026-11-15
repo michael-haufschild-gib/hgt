@@ -19,9 +19,11 @@ The nonquadratic characters `S` of a Möbius-signed tuple carry the **signature 
   `1/a + 1/b ≤ 3/10` (`pair_signature`); three with product `1` are `(3, 3, 3)` or have
   `Σ 1/m ≤ 3/4` (`triple_signature`); four with product `ε` are not all cubic. The gap `1/5` is
   attained by `(2, 5, 10)` (`exists_zmod_eleven_pairing`).
-* **Never below the sign line** (`half_period_le_pairingC`): `c ≥ k/2` for every pairing, so no
-  Gauss pairing is a better lever than the sign lever of its period
-  (`signCentre_le_coupledBarrier`).
+* **Never below the sign line** (`half_period_le_pairingC`): `c ≥ k/2` for every pairing over a
+  group with one involution, so no Gauss pairing is a better lever than the sign lever of its period
+  (`signCentre_le_coupledBarrier`). Over `𝔽_p` this is the Stickelberger bound
+  `Stickelberger.half_mul_period_le_pairingC`; here it follows from the signature alone and comes
+  with its equality cases.
 * **On the sign line only at the crystallographic periods** (`period_mem_of_pairingC_eq_half`):
   `c = k/2` forces `k ∈ {3, 4, 6}`; a pairing priced below `7k/10`, or with coupled barrier below
   `7/10`, has Euclidean signature (`euclidean_of_pairingC_lt`, `euclidean_of_coupledBarrier_lt`).

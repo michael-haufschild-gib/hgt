@@ -121,7 +121,7 @@ theorem newton_lRootsC (hχ : χ ≠ 1) {f : F[X]} (hsq : Squarefree f) (hsplit 
       ∑ k ∈ range n, if 0 < k then degSumC χ f k * rootPowerSumC χ f (n - k) else 0 := by
     rw [Finset.sum_filter, Nat.sum_antidiagonal_eq_sum_range_succ
       (fun a b => if a ∈ Set.Ioo 0 n then (-1) ^ a * ((-1) ^ a * degSumC χ f a) *
-        rootPowerSumC χ f b else 0), sum_range_succ]
+        rootPowerSumC χ f b else 0), Finset.sum_range_succ]
     simp only [Set.mem_Ioo, lt_irrefl, and_false, if_false, add_zero]
     refine Finset.sum_congr rfl fun k hk => ?_
     have hkn := mem_range.mp hk
@@ -133,7 +133,7 @@ theorem newton_lRootsC (hχ : χ ≠ 1) {f : F[X]} (hsq : Squarefree f) (hsplit 
   have hsplit0 : ∑ k ∈ range n, degSumC χ f k * rootPowerSumC χ f (n - k) =
       rootPowerSumC χ f n +
         ∑ k ∈ range n, if 0 < k then degSumC χ f k * rootPowerSumC χ f (n - k) else 0 := by
-    rw [← Nat.succ_pred_eq_of_pos hn, sum_range_succ', sum_range_succ']
+    rw [← Nat.succ_pred_eq_of_pos hn, Finset.sum_range_succ', Finset.sum_range_succ']
     simp only [degSumC_zero, one_mul, Nat.sub_zero, lt_irrefl, if_false, add_zero,
       Nat.succ_pos, if_true]
     ring
@@ -168,8 +168,8 @@ theorem powerSumW_eq_neg_rootPowerSumC (hχ : χ ≠ 1) {f : F[X]} (hsq : Square
         rw [Finset.mem_Icc] at hj
         rw [show n' + 1 - (n' + 1 - j) = j by omega]
         rfl
-    rw [hre, sum_range_succ'] at hc
-    rw [sum_range_succ'] at hr
+    rw [hre, Finset.sum_range_succ'] at hc
+    rw [Finset.sum_range_succ'] at hr
     simp only [Nat.sub_zero, degSumC_zero, mul_one, one_mul] at hc hr
     have hih : ∀ k ∈ range n', powerSumW (charW χ f) (n' + 1 - (k + 1)) * degSumC χ f (k + 1) =
         -(degSumC χ f (k + 1) * rootPowerSumC χ f (n' + 1 - (k + 1))) := by
@@ -211,6 +211,7 @@ theorem norm_prod_lRootsC (hχ : χ ≠ 1) {f : F[X]} (hsq : Squarefree f) (hspl
 
 theorem pow_mod_three_of_mod {q : ℕ} (hq : q % 3 = 1) (j : ℕ) : q ^ j % 3 = 1 := by
   rw [Nat.pow_mod, hq, one_pow]
+  norm_num
 
 /-- **The count at the even degrees bounds the reciprocal roots**: over the extension of degree
 `2k` the cubic Stepanov count bounds `Σ_i (ω_i²)^k` by `O(q^k)`, so `|ω_i| ≤ √q`. -/
@@ -221,7 +222,7 @@ theorem norm_rootEnumC_le {p : ℕ} [hp : Fact p.Prime] [CharP F p] (hχ : χ �
   set m := f.natDegree
   set q := Fintype.card F
   obtain ⟨r, -, hq⟩ := FiniteField.card F p
-  have hq2 : 2 ≤ q := by omega
+  have hq2 : 2 ≤ q := Fintype.one_lt_card
   have hq3 : q % 3 = 1 := by omega
   have hbound : ∀ k, 3 * m + 10 ≤ k →
       ‖∑ j ∈ univ, (rootEnum (lRootsC χ f) j ^ 2) ^ k‖ ≤ (10 * m + 11 : ℝ) * (q : ℝ) ^ k := by
@@ -256,8 +257,9 @@ theorem norm_rootEnumC_le {p : ℕ} [hp : Fact p.Prime] [CharP F p] (hχ : χ �
       (by rw [← hcard, hcardE]; omega) (by rw [← hcard, hcardE]; ring) hpk
     have hpk1 : (1 : ℝ) ≤ (q : ℝ) ^ k := one_le_pow₀ (by exact_mod_cast (by omega : 1 ≤ q))
     have hm0 : (0 : ℝ) ≤ m := by positivity
+    have hpkR : (m : ℝ) ≤ (q : ℝ) ^ k := by exact_mod_cast (by omega : m ≤ q ^ k)
     calc ‖extChar χ (E := E) f‖ ≤ 2 * (5 * m + 4) * (q ^ k : ℕ) + 3 * m := hst
-      _ ≤ (10 * m + 11 : ℝ) * (q : ℝ) ^ k := by push_cast; nlinarith
+      _ ≤ (10 * m + 11 : ℝ) * (q : ℝ) ^ k := by push_cast; linarith
   have h := norm_le_of_power_sums_bound univ (fun j => rootEnum (lRootsC χ f) j ^ 2)
     (C := 10 * m + 11) (ρ := q) (m0 := 3 * m + 10) (by positivity) hbound i (mem_univ i)
   rw [norm_pow] at h

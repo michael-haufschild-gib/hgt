@@ -24,7 +24,7 @@ RH ⇔ W ⇔ ZAL ∧ AAL ([`riemannHypothesis_tfae`](../../../formal/GaloisForLF
 | R | a sign of a quadratic form | a sign with a loss of rate β is the bound w ≤ β; the sign without loss is w = 0 (bridges G1–G3) |
 | U | an exclusion or a statement uniform in an order | each finite stage is available; the uniform statement is w = 0, AAL or ZAL (groups C–E) |
 
-Statements strictly weaker than RH that the faces expose: the stages O1–O4, the root coincidences O7, a doubling factor below √2 (O9), the now-proved reciprocal-quadratic separation (O11), the sign of the monodromy group O16.
+Statements strictly weaker than RH that the faces expose: the stages O1–O4, the root coincidences O7, a doubling factor below √2 (O9), the now-proved separation of rational Euler deformations at one prime (O11), the sign of the monodromy group O16.
 
 ## 2. Group A — one width, many rulers
 

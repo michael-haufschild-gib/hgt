@@ -1,7 +1,7 @@
 # Rational Euler rigidity at one prime
 
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM
 - **Obstacle:** O11; strengthening of accepted contribution 1, not an additional count.
 
 ## Statement
@@ -28,10 +28,10 @@ The positive survivor is exact: eventual boundedness above of the real power sum
 
 `BoundedImagesCertifyPurity` bounds absolute power sums; `FinitePrimeRigidity` assumes the strict Selberg Euler bound. Neither supplies this one-sided logarithmic sign criterion. Internal overlap was checked; no external literature audit requested.
 
-## Lean targets
+## Lean declarations
 
 - `ZeroConfigurationGeometry/OneSidedPowerSumsDetectEveryExteriorRoot.lean`: `roots_norm_le_one_iff_eventually_re_powerSum_bounded`.
 - `SelbergClass/FiniteEulerLogarithmicPositivity.lean`: `exists_negative_logCoeff`, `coeff_prime_pow_eq`, `norm_le_one_of_nonnegative_logarithm`.
 - `SelbergClass/RationalEulerTwinsCannotHavePositiveLogarithms.lean`: `denominator_eq_zero`, `rational_twin_rigidity`, `not_exists_nontrivial_positive_rational_twin`.
 
-Formal verification incomplete. Scope: rational functions of one Euler coordinate `p⁻ˢ`. Simultaneous edits at several primes and arbitrary rational-in-`s` Beurling modifications remain outside the theorem.
+All three modules passed final plain `lake --old env lean` checks and are umbrella-wired. Axiom checks skipped at user request. Scope: rational functions of one Euler coordinate `p⁻ˢ`. Simultaneous edits at several primes and arbitrary rational-in-`s` Beurling modifications remain outside the theorem.

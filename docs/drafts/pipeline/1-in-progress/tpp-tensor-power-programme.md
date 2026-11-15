@@ -25,7 +25,8 @@ APolarizedBaseWhoseAdamsSquaresContinueIsPure, TemperedIsTheUniformTopBound,
 TheAxiomsOfAPencilThroughZeta, TheThreeLinesOfFrames, TheCalibrationCurvesArePureByTheirPairing,
 ThePrimeNumberTheoremOfTheCharactersGivesTheirIndependence,
 TheEulerLogarithmDifferentiatesToThePrimePowerSeries, TheAnglesOfTheEisensteinFieldAreAnAbelianBase,
-TheGaussPairingsMeetTheSignLineOnlyAtTheEuclideanSignatures, ThePrimeTraceMomentsOfZetaReadTheWidthWithBaseLossAtMostOne.
+TheGaussPairingsMeetTheSignLineOnlyAtTheEuclideanSignatures, ThePrimeTraceMomentsOfZetaReadTheWidthWithBaseLossAtMostOne,
+FiniteMonodromyIsARuler.
 
 ## Status
 - Flow data over Spec ℤ: k-th tensor moment converges iff σ > 1 + 2kW (base loss exactly 1); coinvariant
@@ -49,7 +50,9 @@ TheGaussPairingsMeetTheSignLineOnlyAtTheEuclideanSignatures, ThePrimeTraceMoment
 
 ## Open
 Q5 A₂ Stickelberger price, sign-line completion k ≥ 7 outside the Gauss family; Q6 dual series of the
-cubic probe; Q7 conductor growth; Q9: finite monodromy ⇒ ruler (next), sources beyond finite monodromy.
+Q6 answered by the corpus (correctionAbscissa_eq: exact transport is a ruler); Q7 conductor growth; Q9:
+sources with infinite non-abelian monodromy on the parameters. Peer module AWallAboveOneHalfIsAWorldOffTheLine
+(not mine, unwired) has isLever_signLever_iff.
 
 ## Conjecture loop (ledger)
 | # | Conjecture | Test | Status |
@@ -64,8 +67,9 @@ cubic probe; Q7 conductor growth; Q9: finite monodromy ⇒ ruler (next), sources
 | C8 | PNT of the characters ⇒ linear independence | residues as s ↓ 1 | **[L]** linearIndependent_of_pnt |
 | C9 | −L'/L of a number-field Euler product is the prime-power series | termwise derivative of Σ −log(1 − c N^{−w}) | **[L]** neg_deriv_div_eq_primePowerSeries |
 | C10 | Angle characters of ℚ(ω) form an abelian base | Grössencharacter L nonvanishing on Re ≥ 1; ζ_K = ζ L(χ₋₃) | **[L]** isAbelianBase_angle |
+| C12 | Finite monodromy (Chebotarev classes) ⇒ ruler | fibres = abelian bases with trivial character group | **[L]** summable_classMomentTerm_iff |
 | C11 | Gauss pairings never below the sign line; on it only at k ∈ {3,4,6}; hyperbolic gap 1/5 | signature weight, orbifold parity | **[L]** half_period_le_pairingC, signatureWeight_dichotomy |
 
 ## Log
 - 2026-11-15 — created; README; modules C1–C6 formalized.
-- 2026-11-16 — C7–C11 formalized.
+- 2026-11-16 — C7–C12 formalized.

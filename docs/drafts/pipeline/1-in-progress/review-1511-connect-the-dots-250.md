@@ -16,9 +16,9 @@ The finite-order probe estimates extend to each fixed sextic infinity type witho
 
 **Known obstruction:** `HeckeFamily.Character` contains a periodic residue character and no infinity type. No theorem about its `LFunction` alone proves the conjecture.
 
-## Active conjecture: rational Euler rigidity at one prime
+## Active conjecture: O2, the unramified squarefree theta pole
 
-An entire completed deformation by a reduced rational function of `p⁻ˢ`, preserving reflection and admitting a nonnegative logarithmic Dirichlet representation, is trivial. The proposed connection joins ξ's exclusion of complete Euler fibres with simultaneous phase returns of finite spectra. [Proof target and scope](finite-euler-logarithmic-counts-force-unit-disk-roots.md). Lean drafts exist; verification incomplete. No new accepted contribution yet.
+Opposite translations of the cubic source theta function may separate the unramified square from the ramified contribution. Cubic-symbol denominator congruence proves the required multiplier identity on paper; cusp separation and the spectral continuation remain to be formalized. [Exact target and remaining identities](the-unramified-theta-square-has-a-nonzero-pole.md). No contribution counted.
 
 ## Completion gate
 
@@ -34,4 +34,4 @@ The reciprocal quadratic twins in `SelbergClass.PositiveFiniteEulerTwins` also s
 
 **Backlog strengthening:** ordinary coefficient integrality also survives. At a prime `p>4`, choose `A=p`; the two reciprocal root radii are `(p±√(p²−4p))/2`, both greater than one and distinct. The ordinary coefficients then lie in `{0,1,1+p,1+2p}`. This exact family requires a separate audit; count it as a strengthening of the same contribution.
 
-**Broader active question:** [nonnegative logarithmic counts force every finite Euler root into the unit disk](finite-euler-logarithmic-counts-force-unit-disk-roots.md).
+**Verified strengthening:** [rational Euler rigidity at one prime](../3-formalized/finite-euler-logarithmic-counts-force-unit-disk-roots.md). Every nontrivial reduced rational modification in `p⁻ˢ` fails either entire reflected completion or nonnegative logarithmic representation. The proof combines one-sided power-sum recurrence, uniqueness of logarithmic coefficients and ξ's exclusion of complete Euler fibres. All three modules passed final plain Lean checks and are umbrella-wired; this strengthens contribution 1.

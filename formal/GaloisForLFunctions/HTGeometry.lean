@@ -15054,6 +15054,7 @@ import GaloisForLFunctions.HTGeometry.Thermofield.PrimeLogApplications
 import GaloisForLFunctions.HTGeometry.Thermofield.KMSAutocorrelation
 import GaloisForLFunctions.HTGeometry.Thermofield.GibbsKMSOverlap
 import GaloisForLFunctions.HTGeometry.Thermofield.PrimeLogKMSOverlap
+import GaloisForLFunctions.HTGeometry.Thermofield.SlowModeErasure
 import GaloisForLFunctions.HTGeometry.Thermofield.BTZImageSums
 import GaloisForLFunctions.HTGeometry.QNMAnchorApplications
 import GaloisForLFunctions.HTGeometry.QNMAnchorNormalization
