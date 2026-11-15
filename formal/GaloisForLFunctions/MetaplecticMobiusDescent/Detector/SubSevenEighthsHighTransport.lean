@@ -812,13 +812,13 @@ theorem sub_floor_rows_saving (D : HighData subDelta)
     apply hm.trans
     have hexp_eq : ((Z ^ (17 / 48 : ℝ)) ^ (4 / 25 : ℝ) * Z ^ ((51 / 100 : ℝ) + 16 * D.e - 33 / 50) *
         (Z ^ (479 / 1000 : ℝ)) ^ (-(51 / 100 : ℝ) - 6 * D.e)) * Z' ^ vf * Z ^ (D.t / 8) =
-        Z ^ ((-181 / 300 : ℝ) + (521 / 1000 : ℝ) * (51 / 100) + (1643 / 125 : ℝ) * D.e +
+        Z ^ ((-181 / 300 : ℝ) + (521 / 1000 : ℝ) * (51 / 100) + (6563 / 500 : ℝ) * D.e +
           (1001 / 1000 : ℝ) * vf + D.t / 8) := by
       dsimp [Z']
       rw [← Real.rpow_mul hZp.le, ← Real.rpow_mul hZp.le, ← Real.rpow_mul hZp.le,
         ← Real.rpow_add hZp, ← Real.rpow_add hZp, ← Real.rpow_add hZp, ← Real.rpow_add hZp]
       congr 1; ring
-    have hexp_le : (-181 / 300 : ℝ) + (521 / 1000 : ℝ) * (51 / 100) + (1643 / 125 : ℝ) * D.e +
+    have hexp_le : (-181 / 300 : ℝ) + (521 / 1000 : ℝ) * (51 / 100) + (6563 / 500 : ℝ) * D.e +
         (1001 / 1000 : ℝ) * vf + D.t / 8 ≤ 13499 / 72000 - 1 / 200 := by
       dsimp [vf]
       have hdt := D.t_small
@@ -831,7 +831,7 @@ theorem sub_floor_rows_saving (D : HighData subDelta)
             (Z ^ (479 / 1000 : ℝ)) ^ (-(51 / 100 : ℝ) - 6 * D.e)) * Z' ^ vf * Z ^ (D.t / 8)) := by
         dsimp [mass]; ring
       _ = (Cp * Ca * Cn) * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
-          Z ^ ((-181 / 300 : ℝ) + (521 / 1000 : ℝ) * (51 / 100) + (1643 / 125 : ℝ) * D.e +
+          Z ^ ((-181 / 300 : ℝ) + (521 / 1000 : ℝ) * (51 / 100) + (6563 / 500 : ℝ) * D.e +
             (1001 / 1000 : ℝ) * vf + D.t / 8) := by rw [hexp_eq]
       _ ≤ _ := mul_le_mul_of_nonneg_left
         (Real.rpow_le_rpow_of_exponent_le hZ hexp_le) (by positivity)
@@ -1137,7 +1137,8 @@ theorem sub_nonfloor_rows_saving (D : HighData subDelta)
               D.t - 2 / 75 + q / 6 + D.t / 6
             have hexp_q := sub_nonfloor_class_exponent_bound D hε_t he_t heps_t hτ2
               (by linarith [hg.2.2.1]) hg.2.2.2.1 hg.1 hg.2.1
-              (by dsimp [d', v']; unfold sourceDyadConductor; linarith) ha ha' hp_cl.1 hp_cl.2.1
+              (add_sub_cancel_left (sourceDyadExponent Z' k) (2 * D.t)).le
+              ha ha' hp_cl.1 hp_cl.2.1
             have hscale_Z : scale_a * Z' ^ E_q ≤
                 Z ^ (13499 / 72000 - 1 / 500000 - D.t / 8 - D.t / 8 : ℝ) := by
               dsimp [scale_a, Z']
