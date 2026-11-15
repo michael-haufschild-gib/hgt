@@ -67,15 +67,18 @@ theorem squareKummerRegularWeight_injective :
   rintro ⟨i, k⟩ ⟨i', k'⟩ h
   have hx := regularWeight_add p s d r ⟨i, k⟩
   have hy := regularWeight_add p s d r ⟨i', k'⟩
+  dsimp only at hx hy
   have he : (p ^ (s + 1) + 1) * (k.val + 1) + i'.val =
-      (p ^ (s + 1) + 1) * (k'.val + 1) + i.val := by omega
+      (p ^ (s + 1) + 1) * (k'.val + 1) + i.val := by
+    rw [← hx, ← hy, h]
+    omega
   have hm := congrArg (fun x : ℕ => x % (p ^ (s + 1) + 1)) he
   simp only [Nat.mul_add_mod_self_left, Nat.mod_eq_of_lt i.isLt,
     Nat.mod_eq_of_lt i'.isLt] at hm
   have hi : i = i' := Fin.ext hm.symm
   subst i'
   have he' : (p ^ (s + 1) + 1) * (k.val + 1) =
-      (p ^ (s + 1) + 1) * (k'.val + 1) := by omega
+      (p ^ (s + 1) + 1) * (k'.val + 1) := Nat.add_right_cancel he
   have hk : k = k' := Fin.ext (Nat.succ.inj
     (Nat.eq_of_mul_eq_mul_left (Nat.succ_pos _) he'))
   cases hk

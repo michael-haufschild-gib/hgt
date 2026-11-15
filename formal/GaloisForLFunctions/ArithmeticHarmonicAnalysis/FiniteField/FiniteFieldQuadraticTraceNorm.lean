@@ -18,7 +18,8 @@ open scoped Classical
 variable {K L : Type*} [Field K] [Field L] [Fintype K] [Fintype L] [Algebra K L]
 variable (hdegree : Module.finrank K L = 2)
 
-private theorem quadratic_trace (x : L) :
+/-- In a quadratic finite-field extension, the embedded trace is the sum with the Frobenius conjugate. -/
+theorem finiteField_quadratic_trace (x : L) :
     algebraMap K L (Algebra.trace K L x) = x + x ^ Nat.card K := by
   simpa only [hdegree, Finset.sum_range_succ, Finset.range_zero, Finset.sum_empty,
     pow_zero, pow_one, zero_add] using FiniteField.algebraMap_trace_eq_sum_pow K L x
@@ -43,7 +44,7 @@ private theorem quadratic_trace_base (a : K) :
   have ha : a ^ Nat.card K = a := by
     simpa only [Nat.card_eq_fintype_card] using FiniteField.pow_card a
   apply (algebraMap K L).injective
-  rw [quadratic_trace hdegree, ← map_pow, ha, map_add]
+  rw [finiteField_quadratic_trace hdegree, ← map_pow, ha, map_add]
 
 private theorem first_eq_or_of_sum_prod_eq {F : Type*} [Field F]
     (a b x y : F) (hs : x + y = a + b) (hp : x * y = a * b) : x = a ∨ x = b := by
@@ -60,8 +61,8 @@ theorem finiteField_quadratic_trace_norm_iff (x y : L) :
   constructor
   · rintro ⟨ht, hn⟩
     have hs : y + y ^ Nat.card K = x + x ^ Nat.card K :=
-      (quadratic_trace hdegree y).symm.trans
-        ((congrArg (algebraMap K L) ht).trans (quadratic_trace hdegree x))
+      (finiteField_quadratic_trace hdegree y).symm.trans
+        ((congrArg (algebraMap K L) ht).trans (finiteField_quadratic_trace hdegree x))
     have hp : y * y ^ Nat.card K = x * x ^ Nat.card K :=
       (finiteField_quadratic_norm hdegree y).symm.trans
         ((congrArg (algebraMap K L) hn).trans (finiteField_quadratic_norm hdegree x))
@@ -70,7 +71,7 @@ theorem finiteField_quadratic_trace_norm_iff (x y : L) :
     · exact ⟨rfl, rfl⟩
     · constructor
       · apply (algebraMap K L).injective
-        rw [quadratic_trace hdegree, quadratic_trace hdegree, quadratic_frobenius_sq hdegree,
+        rw [finiteField_quadratic_trace hdegree, finiteField_quadratic_trace hdegree, quadratic_frobenius_sq hdegree,
           add_comm]
       · apply (algebraMap K L).injective
         rw [finiteField_quadratic_norm hdegree, finiteField_quadratic_norm hdegree, quadratic_frobenius_sq hdegree,
@@ -95,7 +96,7 @@ private theorem quadratic_fiber_base_root (a b : K) (x : L)
     (ht : Algebra.trace K L x = a + b) (hn : Algebra.norm K x = a * b) :
     x = algebraMap K L a ∨ x = algebraMap K L b := by
   have hs : x + x ^ Nat.card K = algebraMap K L a + algebraMap K L b := by
-    rw [← quadratic_trace hdegree, ht, map_add]
+    rw [← finiteField_quadratic_trace hdegree, ht, map_add]
   have hp : x * x ^ Nat.card K = algebraMap K L a * algebraMap K L b := by
     rw [← finiteField_quadratic_norm hdegree, hn, map_mul]
   exact first_eq_or_of_sum_prod_eq _ _ x (x ^ Nat.card K) hs hp

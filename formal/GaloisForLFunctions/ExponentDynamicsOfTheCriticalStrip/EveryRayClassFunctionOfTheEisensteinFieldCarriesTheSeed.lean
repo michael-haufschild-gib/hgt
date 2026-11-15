@@ -18,6 +18,10 @@ seed to all of them.
   `L`-function of `ψ` everywhere (identity theorem from `Re s > 1`).
 * **The seed** (`heckeXi_ne_zero_of_seven_eighths_lt_re`, `re_le_seven_eighths_of_mem_heckeZeros`):
   for every nontrivial ray class character `ψ` of `ℚ(ω)`, `Ξ_ψ` has no zero on `Re s > 7/8`.
+* **The family half-plane** (`heckeHalfPlane_seven_eighths`): off `s = 1` the global Hecke
+  `L`-function of every ray class character of `ℚ(ω)`, trivial characters of every modulus included,
+  is the MMD `L`-function of its residue character (`heckeLFunction_eq_LFunction_heckeFamilyOfRay`,
+  through the entire functions `(s − 1)L(s, ψ)`), so FCT's `HeckeHalfPlane K (7/8)` holds.
 -/
 
 noncomputable section
@@ -142,5 +146,44 @@ theorem re_le_seven_eighths_of_mem_heckeZeros (hψ : ψ ≠ 1)
   have h0 : heckeXi 𝔪 ψ ρ = 0 := hρ
   by_contra h
   exact heckeXi_ne_zero_of_seven_eighths_lt_re 𝔪 ψ hψ (lt_of_not_ge h) h0
+
+/-- The entire function `(s − 1)L(s, ψ)` of the global continuation. -/
+def rayRegular (s : ℂ) : ℂ :=
+  (s - 1) * heckeEntireRegularPart 𝔪 ψ s + heckeThetaPoleCoefficient 𝔪 ψ
+
+theorem sub_one_mul_heckeLFunction {s : ℂ} (hs : s ≠ 1) :
+    (s - 1) * heckeLFunction 𝔪 ψ s = rayRegular 𝔪 ψ s := by
+  have h : s - 1 ≠ 0 := sub_ne_zero.mpr hs
+  rw [heckeLFunction, rayRegular, mul_add, mul_comm (s - 1) (_ / _), div_mul_cancel₀ _ h]
+
+/-- Off `0` and `1` the global Hecke `L`-function of `ψ` is the MMD `L`-function of `ψ`: both
+`(s − 1)`-multiples are entire and agree on `Re s > 1`. -/
+theorem heckeLFunction_eq_LFunction_heckeFamilyOfRay {s : ℂ} (h0 : s ≠ 0) (h1 : s ≠ 1) :
+    heckeLFunction 𝔪 ψ s = HeckeFamily.LFunction (heckeFamilyOfRay 𝔪 ψ) s := by
+  have hF : Differentiable ℂ (rayRegular 𝔪 ψ) :=
+    ((differentiable_id.sub_const 1).mul (differentiable_heckeEntireRegularPart 𝔪 ψ)).add_const _
+  have hG := HeckeOrigin.poleRemoved_entire (heckeFamilyOfRay 𝔪 ψ)
+  have hev : rayRegular 𝔪 ψ =ᶠ[nhds (2 : ℂ)] HeckeOrigin.poleRemoved (heckeFamilyOfRay 𝔪 ψ) := by
+    have hopen : IsOpen {z : ℂ | 1 < z.re} := isOpen_lt continuous_const continuous_re
+    filter_upwards [hopen.mem_nhds (by simp : (1 : ℝ) < (2 : ℂ).re)] with z hz
+    have hz1 : z ≠ 1 := by rintro rfl; simp at hz
+    have hz0 : z ≠ 0 := by rintro rfl; simp at hz
+    rw [← sub_one_mul_heckeLFunction 𝔪 ψ hz1, HeckeOrigin.poleRemoved_eq _ hz0 hz1,
+      heckeLFunction_eq_heckeL 𝔪 ψ hz, LFunction_heckeFamilyOfRay_eq_heckeL 𝔪 ψ hz]
+  have h := (show AnalyticOnNhd ℂ (rayRegular 𝔪 ψ) univ from fun z _ => hF.analyticAt z
+    ).eqOn_of_preconnected_of_eventuallyEq (fun z _ => hG.analyticAt z) isPreconnected_univ
+      (mem_univ 2) hev (mem_univ s)
+  rw [← sub_one_mul_heckeLFunction 𝔪 ψ h1, HeckeOrigin.poleRemoved_eq _ h0 h1] at h
+  exact mul_left_cancel₀ (sub_ne_zero.mpr h1) h
+
+/-- **The Hecke family of `ℚ(ω)` has the half-plane `7/8`**: no finite-order Hecke `L`-function of
+`ℚ(ω)`, of any modulus, trivial characters included, vanishes at `ρ ≠ 1` with `Re ρ > 7/8`. -/
+theorem heckeHalfPlane_seven_eighths : FamilyContinuationTheory.HeckeHalfPlane K (7 / 8) := by
+  intro 𝔫 φ ρ hρ hρ1
+  have h0 : ρ ≠ 0 := by
+    rintro rfl
+    norm_num at hρ
+  rw [heckeLFunction_eq_LFunction_heckeFamilyOfRay 𝔫 φ h0 hρ1]
+  exact ProbeFinalAssemblyUnconditional.hecke_nonzero _ ρ hρ (Or.inl hρ1)
 
 end GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip
