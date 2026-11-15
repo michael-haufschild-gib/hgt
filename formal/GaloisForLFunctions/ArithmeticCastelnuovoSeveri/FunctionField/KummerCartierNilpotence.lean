@@ -41,11 +41,18 @@ theorem primePowerKummerRegularCartier_block_nilpotent (ω : G) :
   obtain ⟨ζ, hζ'⟩ := squareConstantField_threePoint_primitiveRoots p d n
   have hζ : IsPrimitiveRoot ζ M := (mem_primitiveRoots hM).mp hζ'
   have hroot : (ζ ^ A) ^ M = 1 := by
-    rw [← pow_mul, Nat.mul_comm A M, pow_mul, hζ.pow_eq_one, one_pow]
+    calc
+      (ζ ^ A) ^ M = ζ ^ (A * M) := (pow_mul ζ A M).symm
+      _ = ζ ^ (M * A) := congrArg (fun j : ℕ => ζ ^ j) (Nat.mul_comm A M)
+      _ = (ζ ^ M) ^ A := pow_mul ζ M A
+      _ = 1 := by rw [hζ.pow_eq_one, one_pow]
   let S := squareKummerRegularScaling p s c d r (ζ ^ A) hroot
   have hdiag (i : SquareKummerRegularIndex p s d r) :
       S (B i) = ζ ^ (A * weight i) • B i := by
-    rw [squareKummerRegularScaling_basis, ← pow_mul]
+    calc
+      S (B i) = (ζ ^ A) ^ weight i • B i :=
+        squareKummerRegularScaling_basis p s c d r (ζ ^ A) hroot i
+      _ = _ := congrArg (fun a : K => a • B i) (pow_mul ζ A (weight i)).symm
   have hbound (i : SquareKummerRegularIndex p s d r) : weight i < M :=
     (squareKummerRegularWeight_bounds p s d r i).2
   have hrise (i : SquareKummerRegularIndex p s d r) :
@@ -60,7 +67,10 @@ theorem primePowerKummerRegularCartier_block_nilpotent (ω : G) :
         squareKummerRegularCartierIterate_aut p s c d r e
           (squareKummerCyclicScalingAut p s c d r (ζ ^ A) hroot) (B j)
       _ = T ((ζ ^ weight j) ^ A • B j) := by
-        rw [hdiag, Nat.mul_comm A (weight j), pow_mul]
+        have hpower : ζ ^ (A * weight j) = (ζ ^ weight j) ^ A :=
+          (congrArg (fun k : ℕ => ζ ^ k) (Nat.mul_comm A (weight j))).trans
+            (pow_mul ζ (weight j) A)
+        rw [hdiag, hpower]
       _ = ζ ^ weight j • T (B j) :=
         squareKummerRegularCartierIterate_frobenius_smul p s c d r e (ζ ^ weight j) (B j)
   have hlower (j i : SquareKummerRegularIndex p s d r) (hji : weight j ≤ weight i) :

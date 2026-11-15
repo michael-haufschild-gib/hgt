@@ -40,7 +40,7 @@ theorem squareKummerCartierIterate_add (e f : ℕ)
     squareKummerCartierIterate p s c b R (e + f) ω =
       squareKummerCartierIterate p s c b R e (squareKummerCartierIterate p s c b R f ω) := by
   induction e with
-  | zero => rfl
+  | zero => rw [Nat.zero_add f, squareKummerCartierIterate_zero]
   | succ e ih => rw [Nat.succ_add, squareKummerCartierIterate_succ, ih,
       squareKummerCartierIterate_succ]
 
@@ -51,8 +51,16 @@ theorem squareKummerCartierIterate_mul (e f : ℕ)
       (squareKummerCartierIterate p s c b R e : _ → _)^[f] ω := by
   induction f generalizing ω with
   | zero => rfl
-  | succ f ih => rw [Nat.mul_succ, squareKummerCartierIterate_add, ih,
-      Function.iterate_succ_apply]
+  | succ f ih =>
+    calc
+      _ = squareKummerCartierIterate p s c b R (e * f + e) ω :=
+        congrArg (fun j => squareKummerCartierIterate p s c b R j ω) (Nat.mul_succ e f)
+      _ = squareKummerCartierIterate p s c b R (e * f)
+          (squareKummerCartierIterate p s c b R e ω) :=
+        squareKummerCartierIterate_add p s c b R (e * f) e ω
+      _ = (squareKummerCartierIterate p s c b R e : _ → _)^[f]
+          (squareKummerCartierIterate p s c b R e ω) := ih _
+      _ = _ := by rw [Function.iterate_succ_apply]
 
 /-- The `e`th Cartier iterate extracts the scalar root of a `p^e`th power. -/
 theorem squareKummerCartierIterate_frobenius_smul (e : ℕ)
@@ -64,7 +72,9 @@ theorem squareKummerCartierIterate_frobenius_smul (e : ℕ)
   | zero => rw [squareKummerCartierIterate_zero, squareKummerCartierIterate_zero, pow_zero, pow_one]
   | succ e ih =>
     have ha : a ^ (p ^ (e + 1)) = (a ^ p) ^ (p ^ e) := by
-      rw [pow_succ, ← pow_mul, Nat.mul_comm (p ^ e) p]
+      have he : p ^ (e + 1) = p * p ^ e :=
+        (pow_succ p e).trans (Nat.mul_comm (p ^ e) p)
+      exact (congrArg (fun j : ℕ => a ^ j) he).trans (pow_mul a p (p ^ e))
     rw [squareKummerCartierIterate_succ, ha, ih,
       squareKummerCoordinateCartier_frobenius_smul, squareKummerCartierIterate_succ]
 

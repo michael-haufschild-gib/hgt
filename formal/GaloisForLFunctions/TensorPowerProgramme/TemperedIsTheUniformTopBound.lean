@@ -38,7 +38,9 @@ theorem norm_adamsTrace_le {α : ι → Fin g → ℂ} {x : ι} (hx : ∀ i, ‖
           refine (norm_add_le _ _).trans ?_
           rw [norm_pow, norm_pow, norm_inv, hx i]
           norm_num
-    _ = 2 * g := by simp [mul_comm]
+    _ = 2 * g := by
+        rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+        ring
 
 /-- **Tempered data have top bound one for every Adams power.** -/
 theorem adamsPoleLaw_of_norm_eq_one {ℓ lam : ι → ℝ} {α : ι → Fin g → ℂ} (hℓ : ∀ x, 0 ≤ ℓ x)
@@ -50,7 +52,7 @@ theorem adamsPoleLaw_of_norm_eq_one {ℓ lam : ι → ℝ} {α : ι → Fin g �
   have ha := adamsSquareCoeff_nonneg hlam α m
   have hf := levelFreq_nonneg hℓ
   -- the square coefficients are at most (2g)² λ(x)
-  have hcoef : ∀ p : ι × ℕ, adamsSquareCoeff lam α m p ≤ (2 * g) ^ 2 * lam p.1 := by
+  have hcoef : ∀ p : ι × ℕ, adamsSquareCoeff lam α m p ≤ ((2 : ℝ) * g) ^ 2 * lam p.1 := by
     intro p
     rcases (hlam p.1).lt_or_eq with hp | hp
     · have ht := norm_adamsTrace_le (hpure p.1 hp) m (p.2 + 1)
@@ -63,14 +65,18 @@ theorem adamsPoleLaw_of_norm_eq_one {ℓ lam : ι → ℝ} {α : ι → Fin g �
     · rw [adamsSquareCoeff, ← hp]
       simp
   have hsum : ∀ σ : ℝ, 1 < σ →
-      Summable (gdTwistTerm (adamsSquareCoeff lam α m) (levelFreq ℓ) σ 0) := fun σ hσ =>
-    Summable.of_nonneg_of_le (gdTwistTerm_nonneg ha hf σ 0) (fun p => by
-      simp only [gdTwistTerm, pow_zero, mul_one]
-      calc adamsSquareCoeff lam α m p * Real.exp (-(σ * levelFreq ℓ p))
-          ≤ (2 * g) ^ 2 * lam p.1 * Real.exp (-(σ * levelFreq ℓ p)) :=
-            mul_le_mul_of_nonneg_right (hcoef p) (Real.exp_pos _).le
-        _ = (2 * g) ^ 2 * (lam p.1 * Real.exp (-(σ * levelFreq ℓ p))) := by ring)
-      (by simpa [gdTwistTerm] using (hbase σ hσ).mul_left ((2 * g) ^ 2))
+      Summable (gdTwistTerm (adamsSquareCoeff lam α m) (levelFreq ℓ) σ 0) := by
+    intro σ hσ
+    have hb : Summable fun p : ι × ℕ =>
+        ((2 : ℝ) * g) ^ 2 * (lam p.1 * Real.exp (-(σ * levelFreq ℓ p))) :=
+      ((hbase σ hσ).mul_left (((2 : ℝ) * g) ^ 2)).congr fun p => by
+        simp only [gdTwistTerm, pow_zero, mul_one]
+    refine Summable.of_nonneg_of_le (gdTwistTerm_nonneg ha hf σ 0) (fun p => ?_) hb
+    simp only [gdTwistTerm, pow_zero, mul_one]
+    calc adamsSquareCoeff lam α m p * Real.exp (-(σ * levelFreq ℓ p))
+        ≤ ((2 : ℝ) * g) ^ 2 * lam p.1 * Real.exp (-(σ * levelFreq ℓ p)) :=
+          mul_le_mul_of_nonneg_right (hcoef p) (Real.exp_pos _).le
+      _ = ((2 : ℝ) * g) ^ 2 * (lam p.1 * Real.exp (-(σ * levelFreq ℓ p))) := by ring
   refine ⟨2, hsum 2 (by norm_num), gdSeries (adamsSquareCoeff lam α m) (levelFreq ℓ),
     fun s hs => ?_, fun s _ => rfl⟩
   have hs1 : 1 < s.re := hs
