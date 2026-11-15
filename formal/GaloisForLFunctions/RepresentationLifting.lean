@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RepresentationLifting.Lattices.AbelianAugmentationLattice
 import GaloisForLFunctions.RepresentationLifting.QuadraticSequence
 import GaloisForLFunctions.RepresentationLifting.QuadraticNaturality
 import GaloisForLFunctions.RepresentationLifting.ChainSelfExtension
@@ -60,4 +61,3 @@ and trace restriction criteria in group cohomology.
 -/
 import GaloisForLFunctions.RepresentationLifting.Probability.CoxCentralizerDetection
 
-import GaloisForLFunctions.RepresentationLifting.Lattices.AbelianAugmentationLattice

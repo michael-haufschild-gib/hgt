@@ -60,6 +60,22 @@ instance frobeniusKummerFieldPolynomial_irreducible :
 /-- The actual radical field; its field structure follows from Eisenstein irreducibility. -/
 abbrev FrobeniusKummerField := AdjoinRoot (frobeniusKummerFieldPolynomial c b R n)
 
+/-- The irreducible radical equation makes the field finite-dimensional over its rational base. -/
+instance frobeniusKummerField_finiteDimensional :
+    FiniteDimensional (FractionRing K[X]) (FrobeniusKummerField c b R n) :=
+  (AdjoinRoot.powerBasis
+    (frobeniusKummerBranch_fraction_irreducible c b R n).ne_zero).finite
+
+/-- The constant-field embedding preserves characteristic in the constructed radical field. -/
+instance frobeniusKummerField_charP (p : ℕ) [CharP K p] :
+    CharP (FrobeniusKummerField c b R n) p :=
+  charP_of_injective_algebraMap (algebraMap K (FrobeniusKummerField c b R n)).injective p
+
+/-- The polynomial coordinate ring acts faithfully through its fraction field. -/
+instance frobeniusKummerField_torsionFree :
+    Module.IsTorsionFree K[X] (FrobeniusKummerField c b R n) :=
+  Module.IsTorsionFree.trans (FractionRing K[X])
+
 /-- The radical field has exactly the prescribed degree over its rational base. -/
 theorem frobeniusKummerField_finrank :
     Module.finrank (FractionRing K[X]) (FrobeniusKummerField c b R n) = n + 1 := by

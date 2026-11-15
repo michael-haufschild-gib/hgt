@@ -78,6 +78,7 @@ private theorem binaryExponent_adjacent (k : ℕ) :
   | zero => norm_num [binaryExponent]
   | succ k ih =>
     rw [show k + 1 + 1 = k + 2 by omega, binaryExponent_two_step]
+    rw [show k + 1 + 3 = k + 4 by omega]
     have hpascal := Nat.choose_succ_succ (k + 3) 2
     change (k + 4).choose 3 = (k + 3).choose 2 + (k + 3).choose 3 at hpascal
     omega
@@ -95,7 +96,9 @@ theorem axisExponent_adjacent (r k : ℕ) :
     have hsum := Nat.sum_range_add_choose k (r + 3)
     have hterm (i : ℕ) : r + i + 3 = i + (r + 3) := by omega
     simp only [hterm]
-    convert hsum using 1 <;> congr 1 <;> omega
+    have hn : r + 1 + k + 3 = k + (r + 3) + 1 := by omega
+    have hm : 1 + (r + 3) = r + 3 + 1 := by omega
+    simpa only [hn, hm] using hsum
 
 /-- Two additional degrees contribute a single binomial coefficient. -/
 theorem axisExponent_two_step (r k : ℕ) :
@@ -106,7 +109,7 @@ theorem axisExponent_two_step (r k : ℕ) :
   change (r + k + 4).choose (r + 3) =
     (r + k + 3).choose (r + 2) + (r + k + 3).choose (r + 3) at hp
   have he : r + (k + 1) + 3 = r + k + 4 := by omega
-  rw [he] at h1
+  rw [he, show k + 1 + 1 = k + 2 by omega] at h1
   omega
 
 private def axisBinomialSum (r k : ℕ) : ℕ :=

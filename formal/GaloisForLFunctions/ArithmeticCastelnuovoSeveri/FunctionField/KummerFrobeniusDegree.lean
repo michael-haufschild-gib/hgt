@@ -2,6 +2,7 @@ import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FunctionField.KummerChara
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FunctionField.FrobeniusPowerField
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FunctionField.KummerFieldGenerators
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FunctionField.KummerOriginFunctionOrders
+import Mathlib.LinearAlgebra.FiniteDimensional.Basic
 
 
 /-!
@@ -105,10 +106,14 @@ theorem squareKummer_frobenius_adjoin_uniformizer
   have hd : Module.finrank P P⟮π⟯ = p :=
     frobeniusPowerField_adjoin_finrank K L p π
       (frobeniusPowerField_uniformizer_notMem K L p v π hπ)
-  have ht := Module.finrank_mul_finrank P P⟮π⟯ L
-  rw [hd, squareKummer_frobenius_finrank] at ht
-  apply IntermediateField.finrank_eq_one_iff_eq_top.mp
-  apply Nat.eq_of_mul_eq_mul_left (Fact.out : p.Prime).pos
-  simpa only [mul_one] using ht
+  letI : FiniteDimensional P L := squareKummer_frobenius_finiteDimensional p s c b R
+  have hdim : Module.finrank P P⟮π⟯ = Module.finrank P L :=
+    hd.trans (squareKummer_frobenius_finrank p s c b R).symm
+  have htop : P⟮π⟯.toSubalgebra.toSubmodule = ⊤ :=
+    Submodule.eq_top_of_finrank_eq hdim
+  apply top_unique
+  intro x _
+  have hx : x ∈ P⟮π⟯.toSubalgebra.toSubmodule := by rw [htop]; trivial
+  exact hx
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

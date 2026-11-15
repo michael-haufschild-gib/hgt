@@ -104,6 +104,7 @@ theorem abelianAugmentation_index :
     Nat.card (CyclicIntegralMoving G ⧸ AbelianAugmentationLattice G) = Fintype.card G := by
   calc
     _ = Nat.card (Additive G) := Nat.card_congr (abelianAugmentationQuotientEquiv G).toEquiv
+    _ = Nat.card G := Nat.card_congr (Equiv.refl G)
     _ = Fintype.card G := Nat.card_eq_fintype_card
 
 variable [IsCyclic G]

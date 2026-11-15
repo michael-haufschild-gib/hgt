@@ -1,3 +1,5 @@
+import GaloisForLFunctions.HTGeometry.GroupAlgebras.FirstJet
+import GaloisForLFunctions.HTGeometry.GroupAlgebras.CharacterFirstJet
 import GaloisForLFunctions.HTGeometry.BorelResurgence.GaussianAcceleration
 import GaloisForLFunctions.HTGeometry.Lattices.IntegralZeroSumEnergy
 import GaloisForLFunctions.HTGeometry.Lattices.SmallZeroSumEnergy
@@ -17889,6 +17891,3 @@ import GaloisForLFunctions.HTGeometry.LeviCivita.SchwarzschildCauchyClockDiffere
 import GaloisForLFunctions.HTGeometry.LeviCivita.SchwarzschildTendexScaling
 import GaloisForLFunctions.HTGeometry.Thermofield.SchwarzschildBinaryClock
 
-import GaloisForLFunctions.HTGeometry.GroupAlgebras.FirstJet
-
-import GaloisForLFunctions.HTGeometry.GroupAlgebras.CharacterFirstJet

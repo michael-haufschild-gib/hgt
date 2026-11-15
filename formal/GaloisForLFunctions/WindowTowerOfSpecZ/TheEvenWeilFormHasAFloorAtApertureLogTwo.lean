@@ -3804,11 +3804,23 @@ private theorem hPole_bound {F : ℝ → ℝ} (hFc : Continuous F)
     nlinarith [sq_nonneg (P0 - P_clean)]
   have hsc1 : -(4 * logTwoLo * (1 - 1 / 10 ^ 20) * (1 - 1 / 10 ^ 25)) = (-17328679513998632735257514471992062272782418444248379513998632735430803 / 6250000000000000000000000000000000000000000000000000000000000000000000 : ℝ) := by norm_num [logTwoLo]
   have hsc2 : 4 * logTwoLo * (10 ^ 25 : ℝ) * ((12 : ℝ) * (1 / 10 ^ 30 : ℝ) ^ 2) = (51986038541995898206292409 / 156250000000000000000000000000000000000000000000000000000000 : ℝ) := by norm_num [logTwoLo]
-  have hpos_c : 0 ≤ 4 * logTwoLo * (1 - 1 / 10 ^ 20 : ℝ) := by norm_num [logTwoLo]
-  have hm1 := mul_le_mul_of_nonneg_left hyoung hpos_c
-  have hm2 := mul_le_mul_of_nonneg_left hdv_sq (show 0 ≤ 4 * logTwoLo * (1 - 1 / 10 ^ 20 : ℝ) * 10 ^ 25 by norm_num [logTwoLo])
-  have h1m : 4 * logTwoLo * (1 - 1 / 10 ^ 20 : ℝ) * 10 ^ 25 ≤ 4 * logTwoLo * 10 ^ 25 := by norm_num [logTwoLo]
-  nlinarith [mul_le_mul_of_nonneg_right h1m (sq_nonneg (P0 - P_clean))]
+  have hm1 : -((-17328679513998632735257514471992062272782418444248379513998632735430803 / 6250000000000000000000000000000000000000000000000000000000000000000000 : ℝ) * P_clean ^ 2) - 4 * logTwoLo * (1 - 1 / 10 ^ 20) * 10 ^ 25 * (P0 - P_clean) ^ 2 ≤
+      4 * logTwoLo * (1 - 1 / 10 ^ 20) * P0 ^ 2 := by
+    have h := mul_le_mul_of_nonneg_left hyoung (by norm_num [logTwoLo] : (0 : ℝ) ≤ 4 * logTwoLo * (1 - 1 / 10 ^ 20))
+    have he : 4 * logTwoLo * (1 - 1 / 10 ^ 20) * ((1 - 1 / 10 ^ 25) * P_clean ^ 2 - 10 ^ 25 * (P0 - P_clean) ^ 2) =
+        -((-17328679513998632735257514471992062272782418444248379513998632735430803 / 6250000000000000000000000000000000000000000000000000000000000000000000 : ℝ) * P_clean ^ 2) - 4 * logTwoLo * (1 - 1 / 10 ^ 20) * 10 ^ 25 * (P0 - P_clean) ^ 2 := by
+      rw [← hsc1]; ring
+    linarith
+  have hm2 : 4 * logTwoLo * (1 - 1 / 10 ^ 20) * 10 ^ 25 * (P0 - P_clean) ^ 2 ≤
+      (51986038541995898206292409 / 156250000000000000000000000000000000000000000000000000000000 : ℝ) * ∑ k : Fin 12, m k ^ 2 := by
+    have h1m : 4 * logTwoLo * (1 - 1 / 10 ^ 20 : ℝ) * 10 ^ 25 ≤ 4 * logTwoLo * 10 ^ 25 := by norm_num [logTwoLo]
+    have h1 := mul_le_mul_of_nonneg_right h1m (sq_nonneg (P0 - P_clean))
+    have h2 := mul_le_mul_of_nonneg_left hdv_sq (by norm_num [logTwoLo] : (0 : ℝ) ≤ 4 * logTwoLo * 10 ^ 25)
+    have he : 4 * logTwoLo * (10 ^ 25 : ℝ) * ((12 : ℝ) * (1 / 10 ^ 30 : ℝ) ^ 2 * ∑ k : Fin 12, m k ^ 2) =
+        (51986038541995898206292409 / 156250000000000000000000000000000000000000000000000000000000 : ℝ) * ∑ k : Fin 12, m k ^ 2 := by
+      rw [← hsc2]; ring
+    linarith
+  linarith [hpole, hm1, hm2]
 
 private theorem hP2_bound {F : ℝ → ℝ} (hFc : Continuous F)
     (hs : tsupport F ⊆ Icc (-apertureLogTwo) apertureLogTwo)
@@ -3958,7 +3970,9 @@ private theorem arch_and_moments_ge {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
   set M_res : ℝ := (∫ x in Icc (-1 : ℝ) 1, (G x - lowProj G 24 x) ^ 2) / 2
   have hMres_nn : 0 ≤ M_res := div_nonneg (setIntegral_nonneg measurableSet_Icc fun _ _ => sq_nonneg _) (by norm_num)
   have hMres_eq : M_res = M - ∑ k : Fin 12, (2 * (degAt k : ℝ) + 1) * m k ^ 2 := hMres_eq_lem hGc hGpar
-  have hRegLog := hRegLog_lem hG1 hGpar
+  have hRegLog : ((1347822955 / 356948592 : ℝ) : ℝ) * M_res +
+      ((0 : ℝ) * m ⟨0, by omega⟩ ^ 2 + (15 / 2 : ℝ) * m ⟨1, by omega⟩ ^ 2 + (75 / 4 : ℝ) * m ⟨2, by omega⟩ ^ 2 + (637 / 20 : ℝ) * m ⟨3, by omega⟩ ^ 2 + (12937 / 280 : ℝ) * m ⟨4, by omega⟩ ^ 2 + (7381 / 120 : ℝ) * m ⟨5, by omega⟩ ^ 2 + (430105 / 5544 : ℝ) * m ⟨6, by omega⟩ ^ 2 + (33980257 / 360360 : ℝ) * m ⟨7, by omega⟩ ^ 2 + (2436559 / 21840 : ℝ) * m ⟨8, by omega⟩ ^ 2 + (528149137 / 4084080 : ℝ) * m ⟨9, by omega⟩ ^ 2 + (2289240535 / 15519504 : ℝ) * m ⟨10, by omega⟩ ^ 2 + (859193865 / 5173168 : ℝ) * m ⟨11, by omega⟩ ^ 2) ≤
+      regionalLogEnergy G / 4 := hRegLog_lem hG1 hGpar
   have hMean : apow0_1 * (-((1 / 2 : ℝ) * m ⟨0, by omega⟩ ^ 2)) -
       errApow_1 * (1 / 2 : ℝ) * m ⟨0, by omega⟩ ^ 2 ≤
       -((∫ x, F x) ^ 2 / 4) / (2 * apertureLogTwo) := by
@@ -3980,44 +3994,51 @@ private theorem arch_and_moments_ge {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
     have hd := abs_aperture_pow_1_sub
     rw [pow_one] at hd
     nlinarith [(abs_le.mp hd).2, sq_nonneg (m ⟨0, by omega⟩)]
+  have hG_def : dilateLogTwo F = G := rfl
+  have hm_def : halfMoment G = m := rfl
+  have hMres_def : (∫ x in Icc (-1 : ℝ) 1, (G x - lowProj G 24 x) ^ 2) / 2 = M_res := rfl
   have hEv_0 := hEv_bound_0 hGc hsG hGpar
-  dsimp only at hEv_0
+  dsimp only at hEv_0; rw [hG_def, hm_def] at hEv_0
   have hEv_1 := hEv_bound_1 hGc hsG hGpar
-  dsimp only at hEv_1
+  dsimp only at hEv_1; rw [hG_def, hm_def] at hEv_1
   have hEv_2 := hEv_bound_2 hGc hsG hGpar
-  dsimp only at hEv_2
+  dsimp only at hEv_2; rw [hG_def, hm_def] at hEv_2
   have hEv_3 := hEv_bound_3 hGc hsG hGpar
-  dsimp only at hEv_3
+  dsimp only at hEv_3; rw [hG_def, hm_def] at hEv_3
   have hEv_4 := hEv_bound_4 hGc hsG hGpar
-  dsimp only at hEv_4
+  dsimp only at hEv_4; rw [hG_def, hm_def] at hEv_4
   have hEv_5 := hEv_bound_5 hGc hsG hGpar
-  dsimp only at hEv_5
+  dsimp only at hEv_5; rw [hG_def, hm_def] at hEv_5
   have hEv_6 := hEv_bound_6 hGc hsG hGpar
-  dsimp only at hEv_6
+  dsimp only at hEv_6; rw [hG_def, hm_def] at hEv_6
   have hEv_7 := hEv_bound_7 hGc hsG hGpar
-  dsimp only at hEv_7
+  dsimp only at hEv_7; rw [hG_def, hm_def] at hEv_7
   have hEv_8 := hEv_bound_8 hGc hsG hGpar
-  dsimp only at hEv_8
+  dsimp only at hEv_8; rw [hG_def, hm_def] at hEv_8
   have hEv_9 := hEv_bound_9 hGc hsG hGpar
-  dsimp only at hEv_9
+  dsimp only at hEv_9; rw [hG_def, hm_def] at hEv_9
   have hEv_10 := hEv_bound_10 hGc hsG hGpar
-  dsimp only at hEv_10
+  dsimp only at hEv_10; rw [hG_def, hm_def] at hEv_10
   have hEv_11 := hEv_bound_11 hGc hsG hGpar
-  dsimp only at hEv_11
+  dsimp only at hEv_11; rw [hG_def, hm_def] at hEv_11
   have hOdd_0 := hOdd_bound_0 hGc hsG hLowProj hHopp
-  dsimp only at hOdd_0
+  dsimp only at hOdd_0; rw [hG_def, hm_def, hMres_def] at hOdd_0
   have hOdd_1 := hOdd_bound_1 hGc hsG hLowProj hHopp
-  dsimp only at hOdd_1
+  dsimp only at hOdd_1; rw [hG_def, hm_def, hMres_def] at hOdd_1
   have hOdd_2 := hOdd_bound_2 hGc hsG hLowProj hHopp
-  dsimp only at hOdd_2
+  dsimp only at hOdd_2; rw [hG_def, hm_def, hMres_def] at hOdd_2
   have hOdd_3 := hOdd_bound_3 hGc hsG hLowProj hHopp
-  dsimp only at hOdd_3
-  have hPole := hPole_bound hF.continuous hs hpar
-  dsimp only at hPole
-  have hP2_pert := hP2_bound hF.continuous hs hpar
-  dsimp only at hP2_pert
-  have hP3_pert := hP3_bound hF.continuous hs hpar
-  dsimp only at hP3_pert
+  dsimp only at hOdd_3; rw [hG_def, hm_def, hMres_def] at hOdd_3
+  have hPole : -((-17328679513998632735257514471992062272782418444248379513998632735430803 / 6250000000000000000000000000000000000000000000000000000000000000000000 : ℝ) * (∑ k : Fin 12, vPoleClean k * m k) ^ 2) -
+      ((51986038541995898206292409 / 156250000000000000000000000000000000000000000000000000000000 : ℝ) * ∑ k : Fin 12, m k ^ 2) - (1 / 10 ^ 24) * M ≤
+      (coshPairing F ^ 2 / 2 - sinhPairing F ^ 2 / 2) / (2 * apertureLogTwo) :=
+    hPole_bound hF.continuous hs hpar
+  have hP2_pert : 2 * e2Mid * (∫ u in (0 : ℝ)..(1 / 2), G u * G (1 - u)) - (1 / 10000000000000000000000000 : ℝ) * M ≤
+      (-2 * (Real.log 2 / Real.sqrt 2) * autocorr F (Real.log 2)) / (2 * apertureLogTwo) :=
+    hP2_bound hF.continuous hs hpar
+  have hP3_pert : 2 * e3Mid * (∫ s in (0 : ℝ)..L4, G (1 - s) * G (a + s)) - (1 / 10000000000000000000000000 : ℝ) * M ≤
+      (-2 * (Real.log 3 / Real.sqrt 3) * autocorr F (Real.log 3)) / (2 * apertureLogTwo) :=
+    hP3_bound hF.continuous hs hpar
   have hRet := weilQuad_ge_retained_gamma_moments hF hs
   have hRetDiv := div_le_div_of_nonneg_right hRet h2A_pos.le
   have hLagDil : (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), (autocorr F 0 - autocorr F t) / t) / (2 * apertureLogTwo) =
@@ -4066,7 +4087,8 @@ private theorem arch_and_moments_ge {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
       ((0 : ℝ) * m ⟨0, by omega⟩ ^ 2 + (15 / 2 : ℝ) * m ⟨1, by omega⟩ ^ 2 + (75 / 4 : ℝ) * m ⟨2, by omega⟩ ^ 2 + (637 / 20 : ℝ) * m ⟨3, by omega⟩ ^ 2 + (12937 / 280 : ℝ) * m ⟨4, by omega⟩ ^ 2 + (7381 / 120 : ℝ) * m ⟨5, by omega⟩ ^ 2 + (430105 / 5544 : ℝ) * m ⟨6, by omega⟩ ^ 2 + (33980257 / 360360 : ℝ) * m ⟨7, by omega⟩ ^ 2 + (2436559 / 21840 : ℝ) * m ⟨8, by omega⟩ ^ 2 + (528149137 / 4084080 : ℝ) * m ⟨9, by omega⟩ ^ 2 + (2289240535 / 15519504 : ℝ) * m ⟨10, by omega⟩ ^ 2 + (859193865 / 5173168 : ℝ) * m ⟨11, by omega⟩ ^ 2) =
       (83986301180386383586712497 / 22309287000000000000000000 : ℝ) * M - (∑ k : Fin 12, ((83986301180386383586712497 / 22309287000000000000000000 : ℝ) * (2 * (degAt k : ℝ) + 1)) * m k ^ 2 -
         ((0 : ℝ) * m ⟨0, by omega⟩ ^ 2 + (15 / 2 : ℝ) * m ⟨1, by omega⟩ ^ 2 + (75 / 4 : ℝ) * m ⟨2, by omega⟩ ^ 2 + (637 / 20 : ℝ) * m ⟨3, by omega⟩ ^ 2 + (12937 / 280 : ℝ) * m ⟨4, by omega⟩ ^ 2 + (7381 / 120 : ℝ) * m ⟨5, by omega⟩ ^ 2 + (430105 / 5544 : ℝ) * m ⟨6, by omega⟩ ^ 2 + (33980257 / 360360 : ℝ) * m ⟨7, by omega⟩ ^ 2 + (2436559 / 21840 : ℝ) * m ⟨8, by omega⟩ ^ 2 + (528149137 / 4084080 : ℝ) * m ⟨9, by omega⟩ ^ 2 + (2289240535 / 15519504 : ℝ) * m ⟨10, by omega⟩ ^ 2 + (859193865 / 5173168 : ℝ) * m ⟨11, by omega⟩ ^ 2)) := by
-    rw [hMres_eq]; norm_num [deltaResRat]; ring
+    simp_rw [mul_assoc, ← Finset.mul_sum]
+    rw [hMres_eq]; dsimp only [deltaResRat]; ring
   linarith [hRetDiv, hRetSplit, hLagDil, hGamM, hRegLog, hRegId, hResMargin, hMassMarginM,
     hMean, hEv_0, hEv_1, hEv_2, hEv_3, hEv_4, hEv_5, hEv_6, hEv_7, hEv_8, hEv_9, hEv_10, hEv_11, hOdd_0, hOdd_1, hOdd_2, hOdd_3,
     hPole, hP2_pert, hP3_pert, hBfast_id, hBfast_le]

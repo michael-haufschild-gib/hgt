@@ -86,6 +86,25 @@ theorem exists_chainExponent (r d : ℕ) (β : Fin r → ℕ) (hβ : ∑ i, β i
     · rfl
     · exact congrFun ha q
 
+/-- The remaining binary degree is total degree minus the fixed exponents. -/
+theorem chainDegree_eq_sub (r d : ℕ) (a : HomogeneousChain r d) :
+    chainDegree a = d - ∑ i, chainExponent a i := by
+  have h := sum_chainExponent_add_degree r d a
+  omega
+
+/-- Chains are exactly the bounded untouched-variable exponent tuples. -/
+def chainEquivBounded (r d : ℕ) :
+    HomogeneousChain r d ≃ {β : Fin r → ℕ // ∑ i, β i ≤ d} where
+  toFun a := ⟨chainExponent a, by have h := sum_chainExponent_add_degree r d a; omega⟩
+  invFun β := Classical.choose (exists_chainExponent r d β.val β.property)
+  left_inv a := by
+    apply chainExponent_injective r d
+    exact Classical.choose_spec (exists_chainExponent r d (chainExponent a)
+      (by have h := sum_chainExponent_add_degree r d a; omega))
+  right_inv β := by
+    apply Subtype.ext
+    exact Classical.choose_spec (exists_chainExponent r d β.val β.property)
+
 /-- The scalar moment coordinates of one chain. -/
 def chainMoment (r d : ℕ) (y : Fin r → ℝ) (x z : ℝ) (a : HomogeneousChain r d) :
     Fin (chainDegree a + 1) → ℝ :=
@@ -120,6 +139,7 @@ theorem shearLinear_chainMoment (r d : ℕ) (θ : ℝ) (y : Fin r → ℝ) (x z 
 #print axioms sum_chainExponent_add_degree
 #print axioms chainExponent_injective
 #print axioms exists_chainExponent
+#print axioms chainEquivBounded
 #print axioms chainMoment_exhaustive
 #print axioms shearLinear_chainMoment
 

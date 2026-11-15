@@ -43,7 +43,7 @@ theorem valuation_powerCoordinate {L : Type*} [Field L]
   rw [map_mul, map_pow, map_pow, hπ, ← WithZero.exp_log hi,
     ← WithZero.exp_nsmul, ← WithZero.exp_nsmul, ← WithZero.exp_add]
   congr 1
-  simp only [nsmul_eq_mul]
+  simp only [nsmul_eq_mul, WithZero.log_exp]
   ring
 
 /-- With distinct nonzero term values, any bound on a finite sum bounds every term. -/

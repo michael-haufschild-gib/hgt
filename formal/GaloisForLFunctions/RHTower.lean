@@ -1,3 +1,7 @@
+import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeSteinbergObstruction
+import GaloisForLFunctions.RHTower.Deninger.DeningerSignedAugmentationSquares
+import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeMomentCoordinates
+import GaloisForLFunctions.RHTower.Deninger.DeningerFirstJetClassification
 import GaloisForLFunctions.RHTower.Heat.GaussianAccelerationSubordination
 import GaloisForLFunctions.RHTower.Heat.LiClockGaussianAcceleration
 import GaloisForLFunctions.RHTower.ThetaCusp.AffineContinuationCoefficients
@@ -28436,8 +28440,3 @@ import GaloisForLFunctions.RHTower.FiniteSmoothWeilGramsAndRestrictedIndex
 import GaloisForLFunctions.RHTower.Deninger.LegendreFrobeniusInvariance
 import GaloisForLFunctions.RHTower.Sieve.CoxVinogradovRigidity
 
-import GaloisForLFunctions.RHTower.Deninger.DeningerSignedAugmentationSquares
-
-import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeMomentCoordinates
-
-import GaloisForLFunctions.RHTower.Deninger.DeningerFirstJetClassification
