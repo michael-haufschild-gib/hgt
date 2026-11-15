@@ -44,6 +44,7 @@ theorem milnorResidue_iterateFrobenius (D : ResidueData K k) (r n : ℕ)
       p ^ r • milnorKDegMap (iterateFrobenius k p r) n (milnorResidue D (n + 1) x) := by
   rw [milnorKDegMap_iterateFrobenius, milnorKDegMap_iterateFrobenius, map_nsmul,
     smul_smul, Nat.mul_add, Nat.mul_one, pow_add, Nat.mul_comm (p ^ (r * n))]
+  rfl
 
 /-- At infinity on the rational function field, the same ramification factor is forced. -/
 theorem milnorResidueInfty_iterateFrobenius (r n : ℕ)
