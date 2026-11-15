@@ -105,14 +105,14 @@ The goal is met when route ACS is fully closed and formalized unconditionally in
 - https://arxiv.org/abs/2611.13468 a cyclotomic artin-tate formula and sphere packing for K3 surfaces 
 - https://arxiv.org/abs/2611.15808 a short route to diening´s averaging criterion in spaces of homogeneous types
 
-2 
+2 x
 - https://arxiv.org/abs/2611.12500 horizontal estimates for kloosterman sums under hecke eigenvalue constraints
 - https://arxiv.org/abs/2611.41332 kloosterman sums and pluecker height zeta functions
 - https://arxiv.org/abs/2611.16169 wasserstein rates of all orders for the sato-tate law of kloosterman sums
 - https://arxiv.org/abs/2611.08029 on sufficient conditions for rank zero in families of elliptic curves
 - https://arxiv.org/abs/2611.24399 stevens approach to klooserman sums on split groups
 - https://arxiv.org/abs/2611.13848 a moment proof of the hollman-xiang conjectures on kloosterman polynomials
-- https://arxiv.org/abs/2611.13848 a moment proof of the hollman-xiang conjectures on kloosterman polynomials
+
 
 3x
 - https://arxiv.org/abs/2611.11708 derived invariance of the space of holomorphic two-forms
@@ -122,12 +122,12 @@ The goal is met when route ACS is fully closed and formalized unconditionally in
 - https://arxiv.org/abs/2611.08316 p-parity conjecture for panchishkin galois representations
 - https://arxiv.org/abs/2611.11955 gauge rigdity and holonomy classifications of time-scaled intertwining cocylces on hilbert bundles
 
-4
+4x
 - https://arxiv.org/abs/2611.15605 representation theory and the algebraic k-theory of geometric fields
 - https://arxiv.org/abs/2611.14073 explicit plane models for all galois quotients of the hermitian curve
 - https://arxiv.org/abs/2611.13963 euclidian and hermitian self-orthogonal codes from divisible codes
 
-5
+5x
 - https://arxiv.org/abs/2611.15912 entire boosted hypersurfaces of vanishing mean curvature in schwarzschild spacetime
 - https://arxiv.org/abs/2611.16083 tendex lines and short-time deformations: the geometry of lunar tides
 - https://arxiv.org/abs/2611.13085 time direction entanglement entropy of free fermion ground states
@@ -144,12 +144,10 @@ task:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2611.11708 derived invariance of the space of holomorphic two-forms
-- https://arxiv.org/abs/2611.14090 equivarent quantisation of hypertoric varieties via symplectic cuts
-- https://arxiv.org/abs/2611.10478 motivic generating functions and l'derivatives of cohomological automorphic representations
-- https://arxiv.org/abs/2611.10255 automorphism of kummer and artin-schreier curves defined by chebyshev polynomials
-- https://arxiv.org/abs/2611.08316 p-parity conjecture for panchishkin galois representations
-- https://arxiv.org/abs/2611.11955 gauge rigdity and holonomy classifications of time-scaled intertwining cocylces on hilbert bundles
+- https://arxiv.org/abs/2611.15605 representation theory and the algebraic k-theory of geometric fields
+- https://arxiv.org/abs/2611.14073 explicit plane models for all galois quotients of the hermitian curve
+- https://arxiv.org/abs/2611.13963 euclidian and hermitian self-orthogonal codes from divisible codes
+
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -433,7 +431,8 @@ a while ago we did create these documents:
 read also but do not edit:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
-
+- docs/reports/review-1411/fable.md
+  
 write new reports from scratch to reflect the current status quo and frontier of our research taking into account all new lean proofs and changes done since the original reports were written:
 1. a complete report about each route and route candidate and what the hard mathematical obstacles are that block us from closing the route. split these into a) obstacles that we can solve and are "just work", and b) obstacles that are open mathematical problems nobody has a solution to
 2. then create a summary document that combines all the information and:
@@ -468,7 +467,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the reports in folder docs/reports/review-1411/ without history language or "this changed since last review".
+place the reports in folder docs/reports/review-1511/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 make sure to validate every claim. we have seen in previous rounds you simply restating old reports without actually validating that the old report facts were still valid.
@@ -539,9 +538,9 @@ keep your eyes on the rh proof, that´s the ultimate goal.
 
 Do not use the hgtl7 skill.
 
-read and understand docs/reports/review-1311/obstacles-summary.md
+read and understand docs/reports/review-1411/fable.md
 
-under "## 2.9 A new field for RH?" it suggest a new research programme "Green calculus of the prime-free window"
+under "#### 7.2 The field: exponent dynamics of the critical strip" it suggest a new research programme "exponent dynamics of the critical strip"
 
 Your task: develop this field/research programme and do the actual research and formalization.
 We are not interested in busywork, trivial work and discoveries, work on finite solution when the problem is infinite, optimizing numbers that provide nothing for the - we are only interested in focused work on solving the actual problems and questions and topics and move the frontier with every new lean module.

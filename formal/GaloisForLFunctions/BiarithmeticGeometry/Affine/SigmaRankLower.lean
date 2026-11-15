@@ -73,12 +73,19 @@ theorem diagonalBlock_mul_of_rankLower [Fintype ι] [∀ i, Fintype (κ i)] [Sem
     · rw [hN ⟨j, z⟩ ⟨i, y⟩ hji (show ρ j ≤ ρ i by omega), mul_zero]
   · simp
 
-private abbrev rankOrder [Fintype ι] [DecidableEq ι] (ρ : ι → ℕ) : LinearOrder ι :=
-  { LinearOrder.lift' (fun i => toLex (ρ i, Fintype.equivFin ι i)) (fun a b h => by
+private abbrev rankOrder [Fintype ι] [hEq : DecidableEq ι] (ρ : ι → ℕ) : LinearOrder ι :=
+  let o := LinearOrder.lift' (fun i => toLex (ρ i, Fintype.equivFin ι i)) (fun a b h => by
     apply (Fintype.equivFin ι).injective
     have hp : (ρ a, Fintype.equivFin ι a) = (ρ b, Fintype.equivFin ι b) := h
-    exact congrArg Prod.snd hp) with
-    toDecidableEq := inferInstance }
+    exact congrArg Prod.snd hp)
+  { o with
+    toDecidableEq := hEq
+    compare_eq_compareOfLessAndEq := by
+      intro a b
+      have h := o.compare_eq_compareOfLessAndEq a b
+      have he : o.toDecidableEq = hEq := Subsingleton.elim _ _
+      exact h.trans (congrArg
+        (fun deq : DecidableEq ι => @compareOfLessAndEq ι a b o.toLT (o.toDecidableLT a b) deq) he) }
 
 private theorem rank_le_of_rankOrder_lt [Fintype ι] [DecidableEq ι] (ρ : ι → ℕ) {a b : ι}
     (h : @LT.lt ι (rankOrder ρ).toLT a b) : ρ a ≤ ρ b := by

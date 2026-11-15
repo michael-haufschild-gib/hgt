@@ -12,6 +12,7 @@ coefficient as well. The parameter differential is nonzero.
 
 noncomputable section
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
+open Polynomial
 
 /-- A derivation in characteristic `p` kills every `p`th power. -/
 theorem derivation_frobenius_power_eq_zero
@@ -31,7 +32,7 @@ theorem derivation_uniformizer_power_expansion
   rw [map_sum, Finset.sum_smul]
   apply Finset.sum_congr rfl
   intro i _
-  rw [D.leibniz, derivation_frobenius_power_eq_zero, smul_zero, add_zero,
+  rw [D.leibniz, derivation_frobenius_power_eq_zero p D (a i), smul_zero, add_zero,
     D.leibniz_pow, ← Nat.cast_smul_eq_nsmul L]
   simp only [mul_smul]
 

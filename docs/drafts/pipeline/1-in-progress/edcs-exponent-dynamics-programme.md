@@ -31,13 +31,27 @@ Modules, in order of attack. Status: P = paper proof below, L = Lean compiled an
 | 4 | TransformsSampledOnLogarithmicallyDensePoints | E1 (tool) | L |
 | 5 | TheWidthIsTheRateOfTheWeilFloorInTheLogarithmicEnergy | E1 | L |
 | 6 | TheMarginOfTheWindowMatricesSinksAtTheRateOfTheWidth | E1 (converse rate law, all packets) | L |
-| 7 | WeilsFormIsContinuousInTheLogarithmicEnergy | E1 (tool) | P |
-| 8 | StepSamplesCarryWeilsFormOfALipschitzPacket | E1 (tool) | P |
+| 7 | WeilsFormIsContinuousInTheLogarithmicEnergy | E1 (tool) | L |
+| 8 | StepSamplesCarryWeilsFormOfALipschitzPacket | E1 (tool) | L |
 | 9 | TheMarginOfTheWindowMatricesIsARulerAtPolynomialBlockSize | E1 (exactness) | P |
-| – | stage maps and loss exponents | E2 | research |
-| – | function-field levers and the acid test | E5 | research |
-| – | rung lever; seeds for families | E6 | research |
-| – | critical exponent of the complete Weil matrix | topics | research |
+| 10 | TheBestDoublingFactorOfTheMarginIsTwoToTheWidth | E2 (margin) | P |
+| 11 | TheCorrectionOfTheCubicProbeCarriesTheAbscissaOfItsRung | E6; §14 item 11 | P |
+| 12 | TheBestSlopeLossOfTheLongMomentsIsTwiceTheWidth | E2 (long moments) | P |
+
+Open, with the input that is missing:
+
+| Question | State | Missing |
+|---|---|---|
+| E1 heat | half ruler: Λ ≤ w²/2; δ²/(200 log γ) ≤ Λ from one zero | the function of the zeros that Λ is; no law in w alone is expected (a pair at depth δ inside real zeros of density log γ closes in time ≍ δ/log γ) |
+| E1 mass normalisation, every block size | equivalent to width + cluster law (SRT) | boundedness of the zeros off the line in unit windows |
+| E2 contraction | best factor 2^w, best slope loss 2w (M10, M12) | a factor below √2 from the gluing calculus; GCW additive loss law holds below the binding energy of the middle only |
+| E3 | open | a source outside the Gauss class |
+| E4 abelian rigidity | open | the factorisation of Gauss sums (Stickelberger) and the Kubota series of order ≥ 4; neither is in Mathlib or the corpus |
+| E5 | over 𝔽_q both levers are theorems (IRW thick levels; AKT tensor growth); over ℤ base change needs well-founded outer modes (IRW), tensor powers the price law (FCT) | a lever from either over ℤ |
+| E6 | frame (3, 6) exact (M11) | a zero-free half-plane for Grössencharacter L-functions of ℚ(ω) |
+| E7 | three families (M3) | a world with Euler product and functional equation |
+| acid test 𝔽_q[T] | not started | a stage-map proof of the window gap for characters ramified at ∞ |
+| Weil matrix exponent 1/8–1/4 | owned by CACT | uniform pole pairing (card cact-whole-space-threshold-onset) |
 
 ### Paper proofs
 
@@ -99,31 +113,66 @@ Proof. T_q(u) = Φ_u(−z) conj Φ_u(−z̄), Φ_{u₁} = Φ_{u₂} + Φ_d, so
 T_q(u₁) − T_q(u₂) = Φ_d conj Φ₂' + Φ₂ conj Φ_d' + Φ_d conj Φ_d'; xy ≤ y²/(2s) + s x²/2; the sample bound of
 M5 for d and for u₂.
 
-**M8 (step samples).** f continuous, |f| ≤ M, |f(u) − f(v)| ≤ L|u − v|, supported in (log R, log(R+J)],
-R + J ≤ QR; σ_j = ∫ f · flat_j, g = Σ σ_j flat_j (the projection on the cells); c = 2L + M, Λ = log Q + 1.
-(i) ∫ f g = Σσ_j² = ∫g²; ∫(f − g)² = ∫f² − Σσ_j² ≥ 0.
-(ii) On the cell (log a, log(a+1)]: f(u) − σ_j e^{u/2} = ∫_cell [(f(u) − f(s))e^s + f(s)(e^s − e^{(u+s)/2})] ds,
-so |f − g| ≤ c/a ≤ c/R.
-(iii) ‖Δ_t(g − f)‖² ≤ min(4c²Λ/R², (2L²Λ + 12(R+J)Σσ²) t); D ≤ β and D ≤ βNt give
-∫₀¹ D dt/t ≤ 2β log(1 + N); with N = 3(R+J)R²: E(g − f) ≤ 8c²Λ log(1 + 3(R+J)R²)/R².
-(iv) M7 on packets (smooth both, mollification lowers E, masses converge), s = 1/R:
-|𝔚_Q(g) − Z(f)| ≤ 160 L((log Q + 1)/2, w) c²Λ(16 log(1 + 3(R+J)R²) + 4)/R.
-(v) Charges: ∫ g e^{u/2} = ∫ f e^{u/2}; |∫ (g − f) e^{−u/2}| ≤ (c/R) Λ e^{−(log R)/2}; |∫ f e^{u/2}| ≤ M Q Λ e^{(log R)/2}.
-Neutral forms differ by at most (iv) + 2c²QΛ²/R.
+**M8 (step samples).** F continuous, |F| ≤ M, |F(u) − F(v)| ≤ L|u − v|, supported in (log R, log(R+J)],
+R + J ≤ QR; flat_j = e^{u/2} on the cell (log(R+j), log(R+j+1)]; σ_j = ∫ F · flat_j, g = Σ σ_j flat_j (the
+projection on the cells); c = L + M, Λ = log Q + 1.
+(i) ∫ F g = Σσ_j² = ∫g²; ∫(g − F)² = ∫F² − Σσ_j² ≥ 0.
+(ii) ∫ flat_j e^{s/2} ds = 1, so on the cell of a: F(u) − σ_j e^{u/2} = ∫ flat_j(s)[F(u)e^{s/2} − F(s)e^{u/2}] ds and
+F(u)e^{s/2} − F(s)e^{u/2} = e^{s/2}[(F(u) − F(s)) − F(s)(e^{(u−s)/2} − 1)], |u − s| ≤ 1/a: |g − F| ≤ c/R.
+(iii) Two moduli: ‖Δ_t(g − F)‖² ≤ β and ≤ βNt for 0 ≤ t ≤ 1 give ∫₀¹ ‖Δ_t‖² dt/t ≤ 2β log(1 + N) (the density is
+≤ 2βN/(1 + Nt)); with N = 4(R+J)R² the energy of g − F is O(c²Λ log(1 + N)/R²).
+(iv) M7 on packets with s = 1/R:
+|𝔚_Q(g) − 𝔚_Q(F)| ≤ c² (Λ/R) · 160 L((log Q + 1)/2, w)(16 log(1 + 4(R+J)R²) + 5).
+(v) Charges a(h) = ∫ h e^{−u/2}, b(h) = ∫ h e^{u/2} on a window [log R, log R + log Q]:
+|a(g − F)| ≤ (c/R) e^{−(log R)/2} log Q, |b(g − F)| ≤ (c/R) e^{(log R + log Q)/2} log Q, the same with M for F;
+|a(g)b(g) − a(F)b(F)| ≤ 3c² (log Q)² Q/R.
+Neutral forms differ by at most c² · sampleError(Q, R, J),
+sampleError = (Λ/R)(160 L(·)(16 log(1 + 4(R+J)R²) + 5) + 6 Q log Q).
 
-**M9 (the margin is a ruler at polynomial block size).** θ < ½. Suppose for every K there is R ≥ K^{10} with
-N_W(3K+1, R) + C K^θ of index ≤ 1. Then w ≤ θ.
+**M9 (the margin is a ruler at polynomial block size).** 0 ≤ θ < ½, ρ(K) ≥ K^{10}. Suppose
+N_W(3K+1, ρ(K)) + C K^θ has index ≤ 1 for every K ≥ 1 (the margin law of rate θ along ρ). Then w ≤ θ.
 Proof. Lag v, K ≍ e^v with the two states of the two ends (binding state e_v, antisymmetric state o_v)
 inside the window, translated by log R. If 2 Re S(v) > 2 Re S(0) + (4E m₀ + 1)e^{θv}, both smooth neutral forms
 lie below −D·mass − 1, D = |C| K^θ; N(s e + t o) = s² N(e) + t² N(o) and the masses are orthogonal. By M8 the
 window matrix on the samples of the plane is at most the smooth form plus
 2c₀²(s² + t²)·C₃K⁴(1 + log R)/R ≤ (s² + t²)/2 for K large (1 + log R ≤ 2√R, √R ≥ K⁵). Two negative squares:
 contradiction. So 2 Re S(v) ≤ 2 Re S(0) + E' e^{θv} from some lag on, which is w ≤ θ (MAFT rate law).
-Rulers: for A ≥ 10 and β ≥ 0, w ≤ β ⇔ ∀ε > 0 ∃C ∀K, R with K^{10} ≤ R ≤ K^A: index(N_W + C K^{β+ε}) ≤ 1; the
-same with the floor of the block matrices in place of the index. One sequence of matrices (R = K^{10}) reads w.
+The sampling error at ratio 3K + 1 is ≤ C₃ K⁴(1 + log R)/R (resolution N = 4(3K+1)R³, 1 + log N ≤ 8(3K+1)(1 + log R),
+depth of the window at θ = 1), and K⁴(1 + log R)/R ≤ 2/K for R ≥ K^{10}.
+Ruler: for K^{10} ≤ ρ(K) ≤ K^A and β ≥ 0, w ≤ β ⇔ the margin law holds along ρ at every rate β + ε (transmitter: M6).
+The infimum of the nonnegative rates of the margin law is w. One sequence of matrices (ρ(K) = K^{10}) reads w.
+
+**M10 (the best doubling factor).** a monotone, a(2K) ≤ λ a(K) + c for K ≥ 1, λ > 1. With d = c/(λ − 1):
+a(2ⁿ) + d ≤ (a(1) + d) λⁿ. For 2^m ≤ K < 2^{m+1}: a(K) ≤ a(2^{m+1}) ≤ (|a(1)| + 2|c|/(λ − 1)) λ^{m+1} and
+λ^m = (2^m)^{log₂ λ} ≤ K^{log₂ λ}. A level law is a(K) with index(N_W(3K+1, ρ(K)) + a(K)) ≤ 1; raising the levels keeps
+it. So a doubling law with factor λ is a margin law of rate log₂ λ, and by M9 w ≤ log₂ λ. A margin law of rate
+β ≥ 0 has the monotone levels max(C, 0) K^β with a(2K) = 2^β a(K). At polynomial block size: the infimum of the
+factors is 2^w; every factor above 2^{3/8} occurs with no hypothesis; w = 0 iff every factor above 1 occurs.
+
+**M11 (the frame (3, 6) is exact).** FCT: for Re s > ½ the continued correction of the cubic probe vanishes at s
+iff the Grössencharacter L-function of the rung η⁶ vanishes at 6s − 3. So x ↦ (3 + x)/6 maps the zero depths of
+the rung in Re w > 0 onto those of the correction in Re s > ½; a continuous monotone map commutes with the
+supremum of a nonempty bounded set. The rung has zeros in ½ ≤ Re w < 1 and none on Re w ≥ 1 (FCT), so
+Θ_corr = (3 + Θ_rung)/6 ∈ [7/12, 2/3], independent of the finite set of primes; Θ_rung ≤ 7/8 ⇔ Θ_corr ≤ 31/48.
+
+**M12 (the best slope loss).** I(θ, T) = ∫₁ᵀ|ζ M_{T^θ}(½+it)|² dt ≤ C_θ T^{a(θ)} with a(2θ) ≤ a(θ) + κθ, κ ≥ 0.
+Then a(2ⁿ) ≤ a(1) + κ(2ⁿ − 1), so along θ = 2ⁿ the moments are ≤ C T^{K + 2(κ/2)θ} with K = max(a(1) − κ, 0); the
+sharp converse of the slope (CDG) gives w ≤ κ/2. For β ≥ w the exponents 6 + 2βθ (CDG) have a(2θ) − a(θ) = 2βθ.
+The least loss is 2w; the loss 3/4 holds with no hypothesis.
 
 ## No-go closure
-(to be filled per retired route)
+- **Margin in the mass normalisation at every block size** (fable §5.2, first lemma as stated). Not a consequence
+  of the width. Insight: the normalisation decides exactness. Survivors, all in Lean: the exact ruler in the
+  logarithmic energy (M5), the factor 1 + log R on all window matrices (M6), exactness at polynomial block size (M9).
+- **Cluster law from the trivial floor.** Rejected: the terms of the zeros of a cluster have independent phases,
+  and a uniform cloud of zeros off the line is invisible to a test of fixed aperture. NO POSITIVE SALVAGE FOUND
+  beyond the dichotomy of SRT.
+- **A stage map as a producer.** A doubling law and a slope law are rulers (M10, M12). Survivor in Lean: the best
+  factor 2^w and the best loss 2w.
+- **The squaring identity M_{X²} = 2M_X − ζ M_X² − D_X** (Vaughan with an empty leg at one height). Neutral: the
+  quadratic term reproduces the exponent and the defect D_X = Σ_{a,b≤X} μ(a)μ(b)(ab)^{−s}(ζ_{X²/ab} − ζ) is a
+  linear combination of readings. No statement beyond the pointwise ruler; not formalized.
 
 ## Log
 - 2026-11-15 — created; README first draft written. Modules 1–6 compiled, axiom-clean, wired.
+- 2026-11-15 — modules 7, 8 compiled, axiom-clean; modules 9–12 written.

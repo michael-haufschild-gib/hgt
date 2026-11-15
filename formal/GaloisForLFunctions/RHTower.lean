@@ -1,3 +1,6 @@
+import GaloisForLFunctions.RHTower.Deninger.DeningerRegulatorKernel
+import GaloisForLFunctions.RHTower.Deninger.DeningerHiddenPrimeTangents
+import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeLogRegulator
 import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeSteinbergObstruction
 import GaloisForLFunctions.RHTower.Deninger.DeningerSignedAugmentationSquares
 import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeMomentCoordinates

@@ -107,7 +107,7 @@ theorem squareKummerInfinity_derivative_coordinate
   have hchain : D y⁻¹ = -(y⁻¹) ^ 2 * D y := by
     simpa only [smul_eq_mul] using D.leibniz_of_mul_eq_one (inv_mul_cancel₀ hy0)
   have hv := congrArg v hchain
-  rw [hDinv, map_mul, map_neg, map_pow, hinv, ← WithZero.exp_nsmul] at hv
+  rw [hDinv, map_mul, v.map_neg, map_pow, hinv, ← WithZero.exp_nsmul] at hv
   have hfinal : v (D y) = WithZero.exp ((N : ℤ) + 1) := by
     apply mul_left_cancel₀ (show WithZero.exp (2 • (-(N : ℤ))) ≠ 0 from WithZero.exp_ne_zero)
     rw [← hv, ← WithZero.exp_add]

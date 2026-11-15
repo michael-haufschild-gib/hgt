@@ -61,7 +61,8 @@ theorem exists_axisExponentTuple (r k : ℕ) (α : Fin (r + 2) → ℕ)
   obtain ⟨a, ha⟩ := exists_chainExponent r (d.val + 1) (fun i => α i.succ.succ) (by omega)
   have hdegree : chainDegree a = α 0 + α (Fin.succ 0) := by
     have h := sum_chainExponent_add_degree r (d.val + 1) a
-    rw [ha, hd] at h
+    rw [ha] at h
+    change (∑ i : Fin r, α i.succ.succ) + chainDegree a = d.val + 1 at h
     omega
   refine ⟨⟨d, a, ⟨α 0, by omega⟩⟩, ?_⟩
   funext i

@@ -2149,6 +2149,7 @@ private def e2Mid : ℝ := (-1225322679335683989642377 / 25000000000000000000000
 private def e3Mid : ℝ := (-3171420502987819885931939 / 5000000000000000000000000 : ℝ)
 private def deltaResRat : ℝ := (11324140799014169 / 1000000000000000000 : ℝ)
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_0 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -2184,6 +2185,7 @@ private theorem hEv_bound_0 {F : ℝ → ℝ}
   simp_rw [qEvRowAbs_0_eq] at hpert
   exact hpert
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_1 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -2223,6 +2225,7 @@ private theorem hEv_bound_1 {F : ℝ → ℝ}
   simp_rw [qEvRowAbs_1_eq] at hpert
   exact hpert
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_2 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -2266,6 +2269,7 @@ private theorem hEv_bound_2 {F : ℝ → ℝ}
   simp_rw [qEvRowAbs_2_eq] at hpert
   exact hpert
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_3 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -2313,6 +2317,7 @@ private theorem hEv_bound_3 {F : ℝ → ℝ}
   simp_rw [qEvRowAbs_3_eq] at hpert
   exact hpert
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_4 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -2364,6 +2369,7 @@ private theorem hEv_bound_4 {F : ℝ → ℝ}
   simp_rw [qEvRowAbs_4_eq] at hpert
   exact hpert
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_5 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -2419,6 +2425,7 @@ private theorem hEv_bound_5 {F : ℝ → ℝ}
   simp_rw [qEvRowAbs_5_eq] at hpert
   exact hpert
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_6 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -2478,6 +2485,7 @@ private theorem hEv_bound_6 {F : ℝ → ℝ}
   simp_rw [qEvRowAbs_6_eq] at hpert
   exact hpert
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_7 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -2541,6 +2549,7 @@ private theorem hEv_bound_7 {F : ℝ → ℝ}
   simp_rw [qEvRowAbs_7_eq] at hpert
   exact hpert
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_8 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -2608,6 +2617,7 @@ private theorem hEv_bound_8 {F : ℝ → ℝ}
   simp_rw [qEvRowAbs_8_eq] at hpert
   exact hpert
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_9 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -2679,6 +2689,7 @@ private theorem hEv_bound_9 {F : ℝ → ℝ}
   simp_rw [qEvRowAbs_9_eq] at hpert
   exact hpert
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_10 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -2754,6 +2765,7 @@ private theorem hEv_bound_10 {F : ℝ → ℝ}
   simp_rw [qEvRowAbs_10_eq] at hpert
   exact hpert
 
+set_option linter.unusedSimpArgs false in
 private theorem hEv_bound_11 {F : ℝ → ℝ}
     (hGc : Continuous (dilateLogTwo F))
     (hsG : tsupport (dilateLogTwo F) ⊆ Icc (-1 : ℝ) 1)
@@ -3563,7 +3575,7 @@ private theorem hOdd_bound_3 {F : ℝ → ℝ}
 
 private theorem bFast_quad_decomp (m : Fin 12 → ℝ) :
     (∑ i : Fin 12, ∑ j : Fin 12, bFastMat i j * m i * m j) =
-      (∑ k : Fin 12, ((83986301180386383586712497 / 22309287000000000000000000 : ℝ) * (2 * (degAt k : ℝ) + 1)) * m k ^ 2 -
+      ((83986301180386383586712497 / 22309287000000000000000000 : ℝ) * (∑ k : Fin 12, (2 * (degAt k : ℝ) + 1) * m k ^ 2) -
         ((0 : ℝ) * m ⟨0, by omega⟩ ^ 2 + (15 / 2 : ℝ) * m ⟨1, by omega⟩ ^ 2 + (75 / 4 : ℝ) * m ⟨2, by omega⟩ ^ 2 + (637 / 20 : ℝ) * m ⟨3, by omega⟩ ^ 2 + (12937 / 280 : ℝ) * m ⟨4, by omega⟩ ^ 2 + (7381 / 120 : ℝ) * m ⟨5, by omega⟩ ^ 2 + (430105 / 5544 : ℝ) * m ⟨6, by omega⟩ ^ 2 + (33980257 / 360360 : ℝ) * m ⟨7, by omega⟩ ^ 2 + (2436559 / 21840 : ℝ) * m ⟨8, by omega⟩ ^ 2 + (528149137 / 4084080 : ℝ) * m ⟨9, by omega⟩ ^ 2 + (2289240535 / 15519504 : ℝ) * m ⟨10, by omega⟩ ^ 2 + (859193865 / 5173168 : ℝ) * m ⟨11, by omega⟩ ^ 2)) +
       (-(apow0_1 * (-((1 / 2 : ℝ) * m ⟨0, by omega⟩ ^ 2)) - errApow_1 * (1 / 2 : ℝ) * m ⟨0, by omega⟩ ^ 2)) +
       ((-(apow0_1 * (∑ i : Fin 12, ∑ j : Fin 12, qEvMat_0 i j * m i * m j) - (∑ i : Fin 12, (errApow_1 * qEvRowAbs_0 i) * m i ^ 2))) +
@@ -3730,6 +3742,7 @@ private theorem hRegLog_lem {G : ℝ → ℝ} (hG1 : ContDiff ℝ 1 G)
   refine le_trans (le_of_eq ?_) hg
   ring
 
+set_option linter.unusedSimpArgs false in
 private theorem hPole_bound {F : ℝ → ℝ} (hFc : Continuous F)
     (hs : tsupport F ⊆ Icc (-apertureLogTwo) apertureLogTwo)
     (hpar : ∀ x, F (-x) = F x) :
@@ -4054,9 +4067,11 @@ private theorem arch_and_moments_ge {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
   have hMassMargin : c0Rat + (1 / 10 ^ 13 : ℝ) + (1 / 10 ^ 24 : ℝ) + (1 / 10000000000000000000000000 : ℝ) + (1 / 10000000000000000000000000 : ℝ) ≤
       cGammaLo + (83986301180386383586712497 / 22309287000000000000000000 : ℝ) := by norm_num [c0Rat, cGammaLo]
   have hMassMarginM := mul_le_mul_of_nonneg_right hMassMargin hM_nn
-  have hEvenSum : (∑ q ∈ Finset.range 12, gammaAlphaEven q * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ (2 * q) * autocorr F t) =
-      gammaAlphaEven 0 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 0 * autocorr F t + gammaAlphaEven 1 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 2 * autocorr F t + gammaAlphaEven 2 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 4 * autocorr F t + gammaAlphaEven 3 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 6 * autocorr F t + gammaAlphaEven 4 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 8 * autocorr F t + gammaAlphaEven 5 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 10 * autocorr F t + gammaAlphaEven 6 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 12 * autocorr F t + gammaAlphaEven 7 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 14 * autocorr F t + gammaAlphaEven 8 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 16 * autocorr F t + gammaAlphaEven 9 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 18 * autocorr F t + gammaAlphaEven 10 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 20 * autocorr F t + gammaAlphaEven 11 * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 22 * autocorr F t := by
-    rw [sum_range_12]; norm_num only [Nat.reduceMul]
+  have hEvenSum : (∑ q ∈ Finset.range 12, gammaAlphaEven q * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ (2 * q) * autocorr F t)) =
+      gammaAlphaEven 0 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 0 * autocorr F t) + gammaAlphaEven 1 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 2 * autocorr F t) + gammaAlphaEven 2 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 4 * autocorr F t) + gammaAlphaEven 3 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 6 * autocorr F t) + gammaAlphaEven 4 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 8 * autocorr F t) + gammaAlphaEven 5 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 10 * autocorr F t) + gammaAlphaEven 6 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 12 * autocorr F t) + gammaAlphaEven 7 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 14 * autocorr F t) + gammaAlphaEven 8 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 16 * autocorr F t) + gammaAlphaEven 9 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 18 * autocorr F t) + gammaAlphaEven 10 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 20 * autocorr F t) + gammaAlphaEven 11 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 22 * autocorr F t) := by
+    rw [sum_range_12]
+  have hMassDiv : ((1 / 10 ^ 13 : ℝ) * (∫ x, F x ^ 2)) / (2 * apertureLogTwo) = (1 / 10 ^ 13 : ℝ) * M := by
+    rw [hF_mass]; field_simp [hA_pos.ne']
   have hRetSplit : ((∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), (autocorr F 0 - autocorr F t) / t) +
       twoPrimeGammaMassExact * (∫ x, F x ^ 2) - (∫ x, F x) ^ 2 / 4 +
       (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t * autocorr F t) / 24 -
@@ -4064,7 +4079,7 @@ private theorem arch_and_moments_ge {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
       31 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 5 * autocorr F t) / 967680 -
       127 * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 7 * autocorr F t) / 154828800 +
       (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 2 * autocorr F t) / 16 -
-      (∑ q ∈ Finset.range 12, gammaAlphaEven q * ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ (2 * q) * autocorr F t) -
+      (∑ q ∈ Finset.range 12, gammaAlphaEven q * (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ (2 * q) * autocorr F t)) -
       2 * (Real.log 2 / Real.sqrt 2) * autocorr F (Real.log 2) -
       2 * (Real.log 3 / Real.sqrt 3) * autocorr F (Real.log 3) +
       coshPairing F ^ 2 / 2 - sinhPairing F ^ 2 / 2) / (2 * apertureLogTwo) -
@@ -4079,15 +4094,14 @@ private theorem arch_and_moments_ge {F : ℝ → ℝ} (hF : ContDiff ℝ 2 F)
       (coshPairing F ^ 2 / 2 - sinhPairing F ^ 2 / 2) / (2 * apertureLogTwo) := by
     have ht1 : (∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t * autocorr F t) =
         ∫ t in Ioc (0 : ℝ) (2 * apertureLogTwo), t ^ 1 * autocorr F t := by simp only [pow_one]
-    rw [ht1, hEvenSum, hF_mass]; dsimp only [gammaAlphaEven]; field_simp [hA_pos.ne']; ring
+    rw [ht1, hEvenSum, hMassDiv]; dsimp only [gammaAlphaEven]; ring
   have hSubFloor : (weilQuad F - (1 / 10 ^ 13 : ℝ) * ∫ x, F x ^ 2) / (2 * apertureLogTwo) =
       weilQuad F / (2 * apertureLogTwo) - ((1 / 10 ^ 13 : ℝ) * ∫ x, F x ^ 2) / (2 * apertureLogTwo) := sub_div _ _ _
   rw [hSubFloor, hPotSplit]
   have hRegId : ((1347822955 / 356948592 : ℝ) : ℝ) * M_res - deltaResRat * M_res +
       ((0 : ℝ) * m ⟨0, by omega⟩ ^ 2 + (15 / 2 : ℝ) * m ⟨1, by omega⟩ ^ 2 + (75 / 4 : ℝ) * m ⟨2, by omega⟩ ^ 2 + (637 / 20 : ℝ) * m ⟨3, by omega⟩ ^ 2 + (12937 / 280 : ℝ) * m ⟨4, by omega⟩ ^ 2 + (7381 / 120 : ℝ) * m ⟨5, by omega⟩ ^ 2 + (430105 / 5544 : ℝ) * m ⟨6, by omega⟩ ^ 2 + (33980257 / 360360 : ℝ) * m ⟨7, by omega⟩ ^ 2 + (2436559 / 21840 : ℝ) * m ⟨8, by omega⟩ ^ 2 + (528149137 / 4084080 : ℝ) * m ⟨9, by omega⟩ ^ 2 + (2289240535 / 15519504 : ℝ) * m ⟨10, by omega⟩ ^ 2 + (859193865 / 5173168 : ℝ) * m ⟨11, by omega⟩ ^ 2) =
-      (83986301180386383586712497 / 22309287000000000000000000 : ℝ) * M - (∑ k : Fin 12, ((83986301180386383586712497 / 22309287000000000000000000 : ℝ) * (2 * (degAt k : ℝ) + 1)) * m k ^ 2 -
+      (83986301180386383586712497 / 22309287000000000000000000 : ℝ) * M - ((83986301180386383586712497 / 22309287000000000000000000 : ℝ) * (∑ k : Fin 12, (2 * (degAt k : ℝ) + 1) * m k ^ 2) -
         ((0 : ℝ) * m ⟨0, by omega⟩ ^ 2 + (15 / 2 : ℝ) * m ⟨1, by omega⟩ ^ 2 + (75 / 4 : ℝ) * m ⟨2, by omega⟩ ^ 2 + (637 / 20 : ℝ) * m ⟨3, by omega⟩ ^ 2 + (12937 / 280 : ℝ) * m ⟨4, by omega⟩ ^ 2 + (7381 / 120 : ℝ) * m ⟨5, by omega⟩ ^ 2 + (430105 / 5544 : ℝ) * m ⟨6, by omega⟩ ^ 2 + (33980257 / 360360 : ℝ) * m ⟨7, by omega⟩ ^ 2 + (2436559 / 21840 : ℝ) * m ⟨8, by omega⟩ ^ 2 + (528149137 / 4084080 : ℝ) * m ⟨9, by omega⟩ ^ 2 + (2289240535 / 15519504 : ℝ) * m ⟨10, by omega⟩ ^ 2 + (859193865 / 5173168 : ℝ) * m ⟨11, by omega⟩ ^ 2)) := by
-    simp_rw [mul_assoc, ← Finset.mul_sum]
     rw [hMres_eq]; dsimp only [deltaResRat]; ring
   linarith [hRetDiv, hRetSplit, hLagDil, hGamM, hRegLog, hRegId, hResMargin, hMassMarginM,
     hMean, hEv_0, hEv_1, hEv_2, hEv_3, hEv_4, hEv_5, hEv_6, hEv_7, hEv_8, hEv_9, hEv_10, hEv_11, hOdd_0, hOdd_1, hOdd_2, hOdd_3,

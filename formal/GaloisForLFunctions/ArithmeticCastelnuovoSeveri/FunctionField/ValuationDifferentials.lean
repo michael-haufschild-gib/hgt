@@ -44,6 +44,6 @@ def globalRegularDifferentials (K L : Type*) [Field K] [Field L] [Algebra K L] :
 theorem mem_globalRegularDifferentials_iff (ω : KaehlerDifferential K L) :
     ω ∈ globalRegularDifferentials K L ↔
       ∀ W : ConstantFieldPlaces K L, ω ∈ valuationLocalDifferentials W.val W.property.2 := by
-  exact Submodule.mem_iInf
+  simp only [globalRegularDifferentials, Submodule.mem_iInf]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

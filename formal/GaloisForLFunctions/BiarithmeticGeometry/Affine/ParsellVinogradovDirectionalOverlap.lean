@@ -107,12 +107,27 @@ theorem bounded_directionalAffine_overlap_uniform_iff (r k : ℕ) (p : ℝ) :
       exact Real.rpow_le_rpow_of_exponent_le hb hp'
     exact (mul_le_mul_of_nonneg_right hpow ENNReal.toReal_nonneg).trans (h θ η t a b)
 
+/-- Intersections with actual affine cube images have the same exact distinguished-component threshold. -/
+theorem bounded_directionalAffine_image_overlap_uniform_iff (r k : ℕ) (p : ℝ) :
+    (∃ C : ℝ, ∀ (θ : ℝ) (η : Fin r → ℝ) (t : ℝ) (a b : AffineAxisSpace r k),
+      (1 + |θ|) ^ p * (volume (centeredCube a 1 ∩
+        (Matrix.toLin' (directionalAffineMatrix r k θ η t)) '' centeredCube b 1)).toReal ≤ C) ↔
+      p ≤ (∑ j ∈ Finset.range ((k + 1) / 2), (r + k + 1 - 2 * j).choose (r + 2) : ℕ) := by
+  rw [← bounded_directionalAffine_overlap_uniform_iff]
+  simp only [volume_cube_inter_directionalAffine_image]
+  constructor
+  · rintro ⟨C, h⟩
+    exact ⟨C, fun θ η t a b => h θ η t b a⟩
+  · rintro ⟨C, h⟩
+    exact ⟨C, fun θ η t a b => h θ η t b a⟩
+
 #print axioms exists_directionalAffine_determinant_certificate
 #print axioms exists_regularized_directionalAffine_volume_upper
 #print axioms exists_uniform_directionalAffine_overlap_decay
 #print axioms volume_cube_inter_directionalAffine_image
 #print axioms exists_uniform_directionalAffine_image_overlap_decay
 #print axioms bounded_directionalAffine_overlap_uniform_iff
+#print axioms bounded_directionalAffine_image_overlap_uniform_iff
 
 end
 end GaloisForLFunctions.BiarithmeticGeometry.ParsellVinogradov

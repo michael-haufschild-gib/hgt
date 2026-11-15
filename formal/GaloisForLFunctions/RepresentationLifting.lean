@@ -1,3 +1,8 @@
+import GaloisForLFunctions.RepresentationLifting.Lattices.BinaryPackingFamily
+import GaloisForLFunctions.RepresentationLifting.Lattices.AbelianPackingDensity
+import GaloisForLFunctions.RepresentationLifting.Lattices.AbelianMovingRealLattice
+import GaloisForLFunctions.RepresentationLifting.Lattices.AbelianRealLattice
+import GaloisForLFunctions.RepresentationLifting.Lattices.AbelianPackingMinimum
 import GaloisForLFunctions.RepresentationLifting.Lattices.AbelianAugmentationLattice
 import GaloisForLFunctions.RepresentationLifting.QuadraticSequence
 import GaloisForLFunctions.RepresentationLifting.QuadraticNaturality
@@ -60,4 +65,6 @@ graded self-extensions, cyclic norm differentials, modular trace formulas,
 and trace restriction criteria in group cohomology.
 -/
 import GaloisForLFunctions.RepresentationLifting.Probability.CoxCentralizerDetection
+import GaloisForLFunctions.RepresentationLifting.Augmentation.DivisibleGroupQuotients
+import GaloisForLFunctions.RepresentationLifting.Augmentation.DivisibleGroupCompletion
 

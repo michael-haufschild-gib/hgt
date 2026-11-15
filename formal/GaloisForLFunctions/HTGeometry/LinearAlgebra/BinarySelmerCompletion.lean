@@ -59,6 +59,12 @@ def binarySelmerMatrix (A : Matrix ι ι (ZMod 2)) (z ε : ι → ZMod 2) :
   let G := A + diagonal ε
   fromBlocks (G + Gᵀ) G Gᵀ (binaryRankOneCorrection z)
 
+/-- Every diagonal choice gives an alternating Selmer block matrix. -/
+theorem isAlternatingMatrix_binarySelmerMatrix
+    (A : Matrix ι ι (ZMod 2)) (z ε : ι → ZMod 2) :
+    IsAlternatingMatrix (binarySelmerMatrix A z ε) :=
+  binarySelmer_core_alternating (A + diagonal ε) z
+
 /-- Every binary matrix and vector admit a nonsingular Selmer block
 completion. No condition on their entries is needed. -/
 theorem exists_nonsingular_binarySelmerMatrix

@@ -60,7 +60,8 @@ theorem squareKummer_coordinateForm_local_regular_iff
   rw [squareKummer_localDifferential_valuation_iff p s c b R v hK π hπ,
     map_smul, smul_eq_mul, squareKummerDifferentialEquiv_D_polynomial, derivative_X, map_one, mul_one,
     squareKummerUniformizerDerivation_apply, squareKummerCoordinateDerivation_polynomial,
-    derivative_X, map_one, mul_one, mul_comm]
+    derivative_X, map_one, mul_one]
+  rw [mul_comm ((squareKummerCoordinateDerivation p s c b R π)⁻¹) f]
 
 /-- The finite normalization valuations and the unique infinity valuation test global regularity exactly. -/
 theorem squareKummer_coordinateForm_global_regular_iff

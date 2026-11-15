@@ -104,7 +104,8 @@ theorem packetLogEnergy_le_of_drop_le {g : ℝ → ℝ} (hgm : Measurable g) {β
     have hpos : 0 < 1 + N * t := by linarith
     rcases eq_or_lt_of_le ht0 with h0 | ht
     · rw [← h0, div_zero]
-      exact mul_nonneg (mul_nonneg (by norm_num) hβ) (div_nonneg hN hpos.le)
+      exact mul_nonneg (mul_nonneg (by norm_num) hβ)
+        (div_nonneg hN (by rw [mul_zero, add_zero]; exact zero_le_one))
     · rw [div_le_iff₀ ht, show 2 * β * (N / (1 + N * t)) * t = 2 * β * N * t / (1 + N * t) by ring,
         le_div_iff₀ hpos]
       have h3 := mul_le_mul_of_nonneg_right hD1 hNt
@@ -426,9 +427,9 @@ theorem abs_sub_cellCoeff_mul_exp_le {F : ℝ → ℝ} (hFc : Continuous F) {M L
       have hee : 0 ≤ Real.exp (s / 2) * Real.exp (s / 2) :=
         mul_nonneg (Real.exp_pos _).le (Real.exp_pos _).le
       have hmul := mul_le_mul_of_nonneg_left hin hee
-      rw [hf, hsplit, norm_mul, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs, Real.norm_eq_abs,
+      rw [hf, hsplit, norm_mul, norm_mul, Real.norm_eq_abs, Real.norm_eq_abs,
         abs_of_pos (Real.exp_pos _)]
-      linarith
+      linarith only [hmul]
     · have hf : flatPacket a b s = 0 := by
         unfold flatPacket
         exact Set.indicator_of_notMem hs _
@@ -467,7 +468,7 @@ theorem WindowPacket.support_window (hF : WindowPacket R J M L F) (hR : 1 ≤ R)
 
 /-- The support of a step sample in a window of ratio at most `Q`. -/
 theorem stepSample_support (F : ℝ → ℝ) (hR : 1 ≤ R) (hQ₀ : 1 ≤ Q) (hRJ : R + J ≤ Q * R) :
-    ∀ u, stepSample F R J u ≠ 0 → Real.log R ≤ u ∧ u ≤ Real.log R + Real.log Q := fun u hu =>
+    ∀ u, stepSample F R J u ≠ 0 → Real.log R ≤ u ∧ u ≤ Real.log R + Real.log Q := fun _ hu =>
   ⟨(stepPacket_ne_zero hR J _ hu).1,
     (stepPacket_ne_zero hR J _ hu).2.trans (log_window_le hR hQ₀ hRJ)⟩
 
@@ -527,8 +528,10 @@ theorem integral_stepSample_sub_sq (hF : WindowPacket R J M L F) (hR : 1 ≤ R) 
       stepSample F R J u ^ 2 - 2 * (F u * stepSample F R J u) + F u ^ 2 := by
     funext u
     ring
-  rw [e2, integral_add (hig2.sub (hiFg.const_mul 2)) hiF2, integral_sub hig2 (hiFg.const_mul 2),
-    integral_const_mul, hg2, hFg]
+  have hi3 : Integrable fun u =>
+      stepSample F R J u ^ 2 - 2 * (F u * stepSample F R J u) := hig2.sub (hiFg.const_mul 2)
+  rw [e2, integral_add hi3 hiF2, integral_sub hig2 (hiFg.const_mul 2), integral_const_mul, hg2,
+    hFg]
   ring
 
 /-- The sample does not gain mass: `Σ σ_j² ≤ ∫ F²`. -/
@@ -770,6 +773,18 @@ def sampleError (Q R J : ℕ) : ℝ :=
         (16 * Real.log (1 + 4 * ((R + J : ℕ) : ℝ) * (R : ℝ) ^ 2) + 5)) +
       6 * (Real.log Q * Q))
 
+theorem sampleError_nonneg {Q : ℕ} (hQ : 1 ≤ Q) (R J : ℕ) : 0 ≤ sampleError Q R J := by
+  have hlogQ : 0 ≤ Real.log Q := Real.log_nonneg (by exact_mod_cast hQ)
+  have hL := logSamplingConst_nonneg (σ := zetaZeroWidth) (a := (Real.log Q + 1) / 2)
+    (by positivity)
+  have hT : 0 ≤ Real.log (1 + 4 * ((R + J : ℕ) : ℝ) * (R : ℝ) ^ 2) := by
+    have h : (0 : ℝ) ≤ 4 * ((R + J : ℕ) : ℝ) * (R : ℝ) ^ 2 := by positivity
+    exact Real.log_nonneg (by linarith)
+  unfold sampleError
+  exact mul_nonneg (div_nonneg (by linarith) (Nat.cast_nonneg R))
+    (add_nonneg (mul_nonneg (by norm_num) (mul_nonneg hL (by linarith)))
+      (mul_nonneg (by norm_num) (mul_nonneg hlogQ (Nat.cast_nonneg Q))))
+
 /-- **The neutral part of Weil's form on the step sample of a Lipschitz packet** differs from
 the neutral part on the packet by at most `(L + M)² · sampleError Q R J`. The charges of
 `g − F` are at most `(L + M)/R` times those of the window. -/
@@ -794,6 +809,8 @@ theorem abs_neutralForm_stepSample_sub_le (hF : WindowPacket R J M L F) (hR : 1 
   have hiF : ∀ {w : ℝ → ℝ}, Continuous w → Integrable fun u => F u * w u := fun hw =>
     (hF.continuous.mul hw).integrable_of_hasCompactSupport
       (hasCompactSupport_of_support_le hFs).mul_right
+  have hig : ∀ {w : ℝ → ℝ}, Continuous w → Integrable fun u => stepSample F R J u * w u :=
+    fun hw => integrable_stepPacket_mul R J (cellCoeff F R) hw
   -- the four charges
   obtain ⟨a, ha⟩ : ∃ a : ℝ, a = ∫ u, stepSample F R J u * Real.exp (-u / 2) := ⟨_, rfl⟩
   obtain ⟨b, hb⟩ : ∃ b : ℝ, b = ∫ u, stepSample F R J u * Real.exp (u / 2) := ⟨_, rfl⟩
@@ -810,7 +827,7 @@ theorem abs_neutralForm_stepSample_sub_le (hF : WindowPacket R J M L F) (hR : 1 
       _ = Q := Real.exp_log hQ'
   have hda : |a - a'| ≤ (L + M) / R * α * Real.log Q := by
     have e : a - a' = ∫ u, (stepSample F R J u - F u) * Real.exp (-u / 2) := by
-      rw [ha, ha', ← integral_sub (integrable_stepPacket_mul R J _ hw1) (hiF hw1)]
+      rw [ha, ha', ← integral_sub (hig hw1) (hiF hw1)]
       refine integral_congr_ae (Eventually.of_forall fun u => ?_)
       exact (sub_mul _ _ _).symm
     have h := abs_integral_mul_exp_neg_le hlr hdb hds
@@ -819,7 +836,7 @@ theorem abs_neutralForm_stepSample_sub_le (hF : WindowPacket R J M L F) (hR : 1 
     exact h
   have hdb' : |b - b'| ≤ (L + M) / R * β * Real.log Q := by
     have e : b - b' = ∫ u, (stepSample F R J u - F u) * Real.exp (u / 2) := by
-      rw [hb, hb', ← integral_sub (integrable_stepPacket_mul R J _ hw2) (hiF hw2)]
+      rw [hb, hb', ← integral_sub (hig hw2) (hiF hw2)]
       refine integral_congr_ae (Eventually.of_forall fun u => ?_)
       exact (sub_mul _ _ _).symm
     have h := abs_integral_mul_exp_le hlr hdb hds

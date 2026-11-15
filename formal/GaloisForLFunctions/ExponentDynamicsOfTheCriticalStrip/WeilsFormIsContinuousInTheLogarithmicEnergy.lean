@@ -113,21 +113,54 @@ theorem intervalSource_sub {a : SuzukiPositiveAperture} (u₁ u₂ : CCMComplexS
     rw [(smoothSource_intervalSource u₁).vanish x hx,
       (smoothSource_intervalSource u₂).vanish x hx, sub_zero]
 
+/-- The difference of two smooth sources is Lipschitz. -/
+theorem exists_lipschitzWith_source_sub {a : SuzukiPositiveAperture}
+    (u₁ u₂ : CCMComplexSmoothInteriorSource a) :
+    ∃ K : NNReal, LipschitzWith K (fun x => u₁ x - u₂ x) := by
+  obtain ⟨K₁, hK₁⟩ := exists_lipschitzWith_source u₁
+  obtain ⟨K₂, hK₂⟩ := exists_lipschitzWith_source u₂
+  exact ⟨K₁ + K₂, hK₁.sub hK₂⟩
+
 /-- The density of the logarithmic energy of a difference of smooth sources is integrable. -/
 theorem intervalIntegrable_logEnergy_source_sub {a : SuzukiPositiveAperture}
     (u₁ u₂ : CCMComplexSmoothInteriorSource a) :
     IntervalIntegrable
       (fun t => (∫ x, ‖(u₁ (x + t) - u₂ (x + t)) - (u₁ x - u₂ x)‖ ^ 2) / t) volume 0 1 := by
-  obtain ⟨K₁, hK₁⟩ := exists_lipschitzWith_source u₁
-  obtain ⟨K₂, hK₂⟩ := exists_lipschitzWith_source u₂
-  exact intervalIntegrable_logEnergy_of_lipschitz a.2.le (intervalSource_sub u₁ u₂)
-    (hK₁.sub hK₂)
+  obtain ⟨K, hK⟩ := exists_lipschitzWith_source_sub u₁ u₂
+  have h := intervalIntegrable_logEnergy_of_lipschitz (f := fun x => u₁ x - u₂ x) a.2.le
+    (intervalSource_sub u₁ u₂) hK
+  exact h
 
-/-- The transform of a smooth source is the transform of a second one plus the transform of
-the difference. -/
-theorem testTransform_source_eq_add {a : SuzukiPositiveAperture}
-    (u₁ u₂ : CCMComplexSmoothInteriorSource a) (z : ℂ) :
-    testTransform u₁ z = testTransform u₂ z + testTransform (fun x => u₁ x - u₂ x) z := by
+/-- The samples of a difference of smooth sources at the zero copies are summable, with sum
+bounded by the logarithmic energy norm of the difference. -/
+theorem zeroSample_source_sub {a : SuzukiPositiveAperture}
+    (u₁ u₂ : CCMComplexSmoothInteriorSource a) :
+    Summable (zeroSample (fun x => u₁ x - u₂ x)) ∧
+      ∑' q, zeroSample (fun x => u₁ x - u₂ x) q ≤
+        160 * (logSamplingConst a.1 zetaZeroWidth *
+          (logEnergy (fun x => u₁ x - u₂ x) + ∫ x, ‖u₁ x - u₂ x‖ ^ 2)) := by
+  have hId := intervalSource_sub u₁ u₂
+  have hGd := intervalIntegrable_logEnergy_source_sub u₁ u₂
+  exact ⟨summable_zeroSample a.2 hId hGd, tsum_zeroSample_le a.2 hId hGd⟩
+
+/-- The difference of the forms of two smooth sources as a difference of sums over the zero
+copies. -/
+theorem sourceQuadratic_sub_eq_tsum {a : SuzukiPositiveAperture}
+    (u₁ u₂ : CCMComplexSmoothInteriorSource a) :
+    ccmRestrictedWeilSourceQuadratic a u₁.toCCMFormVector -
+        ccmRestrictedWeilSourceQuadratic a u₂.toCCMFormVector =
+      ∑' q : XiZeroCopy, (zeroSumTerm u₁ (xiSpectralPoint q)).re -
+        ∑' q : XiZeroCopy, (zeroSumTerm u₂ (xiSpectralPoint q)).re := by
+  rw [sourceQuadratic_eq_re_tsum, sourceQuadratic_eq_re_tsum,
+    Complex.re_tsum (CCMParityQuartet.summable_zeroSumTerm u₁),
+    Complex.re_tsum (CCMParityQuartet.summable_zeroSumTerm u₂)]
+
+/-- The zero terms of two smooth sources differ by the cross terms of their samples. -/
+theorem abs_re_zeroSumTerm_source_sub_le {a : SuzukiPositiveAperture}
+    (u₁ u₂ : CCMComplexSmoothInteriorSource a) {s : ℝ} (hs : 0 < s) (q : XiZeroCopy) :
+    |(zeroSumTerm u₁ (xiSpectralPoint q)).re - (zeroSumTerm u₂ (xiSpectralPoint q)).re| ≤
+      (1 + 1 / s) * zeroSample (fun x => u₁ x - u₂ x) q + s * zeroSample u₂ q := by
+  refine abs_re_zeroSumTerm_sub_le (f := u₁) (g := u₂) (fun z => ?_) hs q
   rw [testTransform_sub_fun u₁.continuous u₁.hasCompactSupport u₂.continuous
     u₂.hasCompactSupport z]
   ring
@@ -151,6 +184,57 @@ theorem abs_tsum_sub_le_of_pointwise {ι : Type*} {T₁ T₂ S₁ S₂ : ι → 
     linarith
   · exact (hd.tsum_le_tsum (fun q => (abs_le.mp (hpt q)).2) hb).trans hsum
 
+/-- The summation of a pointwise comparison, with both bounds of the form `160 κ E`. -/
+theorem abs_tsum_sub_le_scaled {ι : Type*} {T₁ T₂ S₁ S₂ : ι → ℝ} {c₁ c₂ κ E₁ E₂ : ℝ}
+    (hc₁ : 0 ≤ c₁) (hc₂ : 0 ≤ c₂) (hT₁ : Summable T₁) (hT₂ : Summable T₂) (hS₁ : Summable S₁)
+    (hS₂ : Summable S₂) (hB₁ : ∑' q, S₁ q ≤ 160 * (κ * E₁))
+    (hB₂ : ∑' q, S₂ q ≤ 160 * (κ * E₂))
+    (hpt : ∀ q, |T₁ q - T₂ q| ≤ c₁ * S₁ q + c₂ * S₂ q) :
+    |∑' q, T₁ q - ∑' q, T₂ q| ≤ 160 * (κ * (c₁ * E₁ + c₂ * E₂)) :=
+  (abs_tsum_sub_le_of_pointwise hc₁ hc₂ hT₁ hT₂ hS₁ hS₂ hB₁ hB₂ hpt).trans
+    (le_of_eq (by ring))
+
+/-- The real parts of the zero terms of a smooth source are summable. -/
+theorem summable_re_zeroSumTerm {a : SuzukiPositiveAperture}
+    (u : CCMComplexSmoothInteriorSource a) :
+    Summable fun q : XiZeroCopy => (zeroSumTerm u (xiSpectralPoint q)).re := by
+  have hsumm : Summable fun q : XiZeroCopy => zeroSumTerm u (xiSpectralPoint q) :=
+    summable_zeroSumTerm u
+  exact Complex.reCLM.summable hsumm
+
+/-- The samples of a smooth source at the zero copies are summable, with sum bounded by its
+logarithmic energy norm. -/
+theorem zeroSample_source {a : SuzukiPositiveAperture} (u : CCMComplexSmoothInteriorSource a) :
+    Summable (zeroSample u) ∧
+      ∑' q, zeroSample u q ≤
+        160 * (logSamplingConst a.1 zetaZeroWidth * (logEnergy u + ∫ x, ‖u x‖ ^ 2)) := by
+  have hI := smoothSource_intervalSource u
+  have hG := intervalIntegrable_logEnergy_source u
+  exact ⟨summable_zeroSample a.2 hI hG, tsum_zeroSample_le a.2 hI hG⟩
+
+/-- The sums over the zero copies of two smooth sources differ by at most the logarithmic
+energy norms of the difference and of the second source, weighted by `1 + 1/s` and `s`. -/
+theorem abs_tsum_zeroSumTerm_sub_le {a : SuzukiPositiveAperture}
+    (u₁ u₂ : CCMComplexSmoothInteriorSource a) {s : ℝ} (hs : 0 < s) :
+    |∑' q : XiZeroCopy, (zeroSumTerm u₁ (xiSpectralPoint q)).re -
+        ∑' q : XiZeroCopy, (zeroSumTerm u₂ (xiSpectralPoint q)).re| ≤
+      160 * (logSamplingConst a.1 zetaZeroWidth *
+        ((1 + 1 / s) * (logEnergy (fun x => u₁ x - u₂ x) + ∫ x, ‖u₁ x - u₂ x‖ ^ 2) +
+          s * (logEnergy u₂ + ∫ x, ‖u₂ x‖ ^ 2))) := by
+  obtain ⟨hSd, hBd⟩ := zeroSample_source_sub u₁ u₂
+  obtain ⟨hS₂, hB₂⟩ := zeroSample_source u₂
+  have h1s : (0 : ℝ) ≤ 1 + 1 / s := add_nonneg zero_le_one (one_div_pos.mpr hs).le
+  have h := abs_tsum_sub_le_scaled
+    (T₁ := fun q : XiZeroCopy => (zeroSumTerm u₁ (xiSpectralPoint q)).re)
+    (T₂ := fun q : XiZeroCopy => (zeroSumTerm u₂ (xiSpectralPoint q)).re)
+    (S₁ := zeroSample (fun x => u₁ x - u₂ x)) (S₂ := zeroSample u₂)
+    (c₁ := 1 + 1 / s) (c₂ := s) (κ := logSamplingConst a.1 zetaZeroWidth)
+    (E₁ := logEnergy (fun x => u₁ x - u₂ x) + ∫ x, ‖u₁ x - u₂ x‖ ^ 2)
+    (E₂ := logEnergy u₂ + ∫ x, ‖u₂ x‖ ^ 2)
+    h1s hs.le (summable_re_zeroSumTerm u₁) (summable_re_zeroSumTerm u₂) hSd hS₂ hBd hB₂
+    (abs_re_zeroSumTerm_source_sub_le u₁ u₂ hs)
+  exact h
+
 /-- **Weil's form is continuous in the logarithmic energy.** For smooth sources `u₁, u₂` of
 aperture `a`, `d = u₁ − u₂` and `s > 0`,
 `|W(u₁, u₁) − W(u₂, u₂)| ≤ 160 · L(a, w) ((1 + 1/s)(E(d) + ∫|d|²) + s (E(u₂) + ∫|u₂|²))` with `w`
@@ -162,23 +246,8 @@ theorem abs_sourceQuadratic_sub_le {a : SuzukiPositiveAperture}
       160 * (logSamplingConst a.1 zetaZeroWidth *
         ((1 + 1 / s) * (logEnergy (fun x => u₁ x - u₂ x) + ∫ x, ‖u₁ x - u₂ x‖ ^ 2) +
           s * (logEnergy u₂ + ∫ x, ‖u₂ x‖ ^ 2))) := by
-  have hI₂ := smoothSource_intervalSource u₂
-  have hG₂ := intervalIntegrable_logEnergy_source u₂
-  have hId := intervalSource_sub u₁ u₂
-  have hGd := intervalIntegrable_logEnergy_source_sub u₁ u₂
-  have hT₁ : Summable fun q : XiZeroCopy => (zeroSumTerm u₁ (xiSpectralPoint q)).re :=
-    Complex.reCLM.summable (CCMParityQuartet.summable_zeroSumTerm u₁)
-  have hT₂ : Summable fun q : XiZeroCopy => (zeroSumTerm u₂ (xiSpectralPoint q)).re :=
-    Complex.reCLM.summable (CCMParityQuartet.summable_zeroSumTerm u₂)
-  have h := abs_tsum_sub_le_of_pointwise (by positivity : (0 : ℝ) ≤ 1 + 1 / s) hs.le hT₁ hT₂
-    (summable_zeroSample a.2 hId hGd) (summable_zeroSample a.2 hI₂ hG₂)
-    (tsum_zeroSample_le a.2 hId hGd) (tsum_zeroSample_le a.2 hI₂ hG₂)
-    (fun q => abs_re_zeroSumTerm_sub_le (testTransform_source_eq_add u₁ u₂) hs q)
-  rw [sourceQuadratic_eq_re_tsum, sourceQuadratic_eq_re_tsum,
-    Complex.re_tsum (CCMParityQuartet.summable_zeroSumTerm u₁),
-    Complex.re_tsum (CCMParityQuartet.summable_zeroSumTerm u₂)]
-  refine h.trans (le_of_eq ?_)
-  ring
+  rw [sourceQuadratic_sub_eq_tsum u₁ u₂]
+  exact abs_tsum_zeroSumTerm_sub_le u₁ u₂ hs
 
 /-- The continuity for the Weil form of the zeros of `ζ`. -/
 theorem abs_zetaZeroConfig_re_W_sub_le {a : SuzukiPositiveAperture}
