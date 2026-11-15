@@ -556,6 +556,91 @@ theorem offLine_arithmetic_hawking_page_transition (hnotRH : ¬ RiemannHypothesi
           criticalHalfLineFullEnergy_const_mul]
         norm_num [hF.2.2]
 
+/-- **Exact Comparison of `confiningSourceEnergy`, `W = ⨅ A ≥ 0, windowThreshold A`, and
+`polarPaymentCriticalThreshold`:**
+`polarPaymentCriticalThreshold ≤ W` unconditionally, with `polarPaymentCriticalThreshold = ⊤ ↔
+W = ⊤ ↔ RiemannHypothesis`. Off `RH`, `W = (W₀ : EReal)` (`0 < W₀`) is the unique zero of
+`criticalHalfLineGroundEnergy` on `(0, ∞)` (and `W₀⁻¹` is the unique zero of
+`confiningHalfLineGroundEnergy`), where the intrinsic Legendre intercept of `confiningSourceEnergy`
+equals `-a(W₀) W₈(F) < -a(W₀) < 0` on every normalized minimizer `F` at `W₀`, and any nonzero
+polar pairing `∫ F · polarSourceProfile ≠ 0` strictly lowers `polarPaymentCriticalThreshold < W₀`. -/
+theorem hawking_page_threshold_and_polar_comparison :
+    let W := ⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A
+    polarPaymentCriticalThreshold ≤ W ∧
+    (polarPaymentCriticalThreshold = ⊤ ↔ W = ⊤) ∧
+    (W = ⊤ ↔ RiemannHypothesis) ∧
+    (¬ RiemannHypothesis → ∃ W₀ : ℝ, 0 < W₀ ∧ W = (W₀ : EReal) ∧
+      polarPaymentCriticalThreshold ≤ (W₀ : EReal) ∧
+      (∀ R : ℝ, 0 < R → (criticalHalfLineGroundEnergy R = 0 ↔ R = W₀)) ∧
+      (∀ t : ℝ, 0 < t → (confiningHalfLineGroundEnergy t = 0 ↔ t = W₀⁻¹)) ∧
+      (∀ F : ℝ → ℝ, IsHalfLineEnergyMinimizer W₀ F →
+        confiningSourceEnergy
+          (criticalAliasCoefficient 1 * (∫ u, F u ^ 2 * Real.exp (-(8 * u)))) W₀⁻¹ =
+            -(criticalAliasCoefficient W₀ * (∫ u, F u ^ 2 * Real.exp (-(8 * u)))) ∧
+        ((∫ u, F u * polarSourceProfile u) ≠ 0 →
+          polarPaymentCriticalThreshold < (W₀ : EReal)))) := by
+  intro W
+  have hle : polarPaymentCriticalThreshold ≤ W := polarPaymentCriticalThreshold_le_iInf_windowThreshold
+  have hW_iff : W = ⊤ ↔ RiemannHypothesis := by
+    dsimp only [W]
+    rw [← highConductorCriticalThreshold_eq_iInf_windowThreshold]
+    exact highConductorCriticalThreshold_eq_top_iff_riemannHypothesis
+  have hpol_iff : polarPaymentCriticalThreshold = ⊤ ↔ W = ⊤ :=
+    polarPaymentCriticalThreshold_eq_top_iff_riemannHypothesis.trans hW_iff.symm
+  refine ⟨hle, hpol_iff, hW_iff, fun hnotRH => ?_⟩
+  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hRH | ⟨W₀, F₀, hW₀, ht, hF₀⟩
+  · exact False.elim (hnotRH hRH)
+  have hλ0 : criticalHalfLineGroundEnergy W₀ = 0 :=
+    criticalHalfLineGroundEnergy_eq_zero hW₀ ht hF₀
+  have hdF₀ := criticalHalfLineEnergyDomain_of_groundState hF₀
+  have hmin₀ : IsHalfLineEnergyMinimizer W₀ F₀ := by
+    refine ⟨hdF₀, hF₀.2.2.2.1, ?_⟩
+    rw [hλ0]
+    exact criticalHalfLineFullEnergy_groundState_eq_zero hW₀ ht hF₀
+  refine ⟨W₀, hW₀, ht, ht ▸ hle, ?_, ?_, ?_⟩
+  · intro R hR
+    refine ⟨fun h0 => ?_, fun hEq => hEq ▸ hλ0⟩
+    rcases lt_trichotomy R W₀ with hlt | rfl | hgt
+    · have := criticalHalfLineGroundEnergy_strictAntiOn hR hW₀ hlt
+      linarith only [this, h0, hλ0]
+    · rfl
+    · have := criticalHalfLineGroundEnergy_strictAntiOn hW₀ hR hgt
+      linarith only [this, h0, hλ0]
+  · intro t ht_pos
+    refine ⟨fun h0 => ?_, fun hEq => ?_⟩
+    · have hR_eq : t⁻¹ = W₀ := by
+        rcases lt_trichotomy t⁻¹ W₀ with hlt | heq | hgt
+        · have := criticalHalfLineGroundEnergy_strictAntiOn (inv_pos.mpr ht_pos) hW₀ hlt
+          unfold confiningHalfLineGroundEnergy at h0
+          linarith only [this, h0, hλ0]
+        · exact heq
+        · have := criticalHalfLineGroundEnergy_strictAntiOn hW₀ (inv_pos.mpr ht_pos) hgt
+          unfold confiningHalfLineGroundEnergy at h0
+          linarith only [this, h0, hλ0]
+      simpa only [inv_inv] using congrArg Inv.inv hR_eq
+    · rw [hEq]
+      unfold confiningHalfLineGroundEnergy
+      rwa [inv_inv]
+  · intro F hF
+    refine ⟨?_, fun hP => ?_⟩
+    · rw [(hF.confiningSourceEnergy_legendre_intercept hW₀).1]
+      have hsum := criticalHalfLineFullEnergy_eq_bare_add_confinement W₀ hF.1
+      rw [hF.2.2, hλ0] at hsum
+      linarith only [hsum]
+    · have hP₀ : (∫ u, F₀ u * polarSourceProfile u) ≠ 0 := by
+        rcases halfLineEnergyMinimizer_unique_up_to_sign hW₀ hF hmin₀ with hae | hae
+        · intro hz
+          apply hP
+          rw [← hz]
+          exact integral_congr_ae (hae.mono fun u hu => by rw [hu])
+        · intro hz
+          apply hP
+          have hneg : (∫ u, F u * polarSourceProfile u) = -(∫ u, F₀ u * polarSourceProfile u) := by
+            rw [← integral_neg]
+            exact integral_congr_ae (hae.mono fun u hu => by rw [hu]; ring)
+          rw [hneg, hz, neg_zero]
+      exact polarPaymentCriticalThreshold_lt_of_charged_criticalHalfLineGroundState hW₀ hF₀ hP₀
+
 /-! ### Resolution of (3): Universal saddle stability and non-exclusion at every `R > 0` -/
 
 /-- **Universal Saddle Rigidity and Stability Theorem (Refuting (3)):** At every positive
@@ -605,6 +690,7 @@ theorem universal_confining_saddle_rigidity_and_stability (R : ℝ) (hR : 0 < R)
 #print axioms IsHalfLineEnergyMinimizer.confiningSourceEnergy_legendre_intercept
 #print axioms riemannHypothesis_thermodynamic_equivalences
 #print axioms offLine_arithmetic_hawking_page_transition
+#print axioms hawking_page_threshold_and_polar_comparison
 #print axioms universal_confining_saddle_rigidity_and_stability
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -50,7 +50,7 @@ theorem integerTranslateOverlap_separation (r k q : ℕ) (ε : ℝ) (hε : ε �
 theorem integerTranslateOverlap_parallel_separation (r k q : ℕ) (ε : ℝ) (hε : ε ≠ 0)
     (δ : Fin (r + 1) → ℝ) (i j : ℤ) (h : integerTranslateOverlap r k q ε δ δ i j) :
     |(i : ℝ) - (j : ℝ)| ≤ 4 * (q + 1 : ℝ) := by
-  simpa only [sub_self, Pi.zero_apply, abs_zero, Finset.sum_const_zero, mul_zero, add_zero,
+  simpa only [sub_self, Pi.zero_apply, abs_zero, Finset.sum_const_zero, mul_zero, zero_mul, add_zero,
     mul_comm] using integerTranslateOverlap_separation r k q ε hε δ δ i j h
 
 /-- The coordinate sum gives a complete finite enumeration with no dimension-dependent loss. -/
@@ -75,11 +75,12 @@ theorem exists_intersectingTranslateFinset (r k q : ℕ) (ε : ℝ) (hε : ε �
         4 * (q + 1 : ℝ) * ((r + 1 : ℕ) : ℝ) * euclideanNorm (δ - η) := by
   obtain ⟨S, hS, hcard⟩ := exists_intersectingTranslateFinset_l1 r k q ε hε δ η i
   refine ⟨S, hS, hcard.trans ?_⟩
+  have hd : 0 ≤ 4 * (q + 1 : ℝ) := by positivity
   calc
     _ ≤ 1 + 8 * (q + 1 : ℝ) + (4 * (q + 1 : ℝ)) *
         (((r + 1 : ℕ) : ℝ) * euclideanNorm (δ - η)) :=
       add_le_add_left (mul_le_mul_of_nonneg_left (sum_abs_le_card_mul_euclideanNorm (δ - η))
-        (by positivity)) _
+        hd) _
     _ = _ := by ring
 
 /-- Parallel families have a bounded number of intersecting translates independent of dimension and degree. -/
@@ -90,7 +91,7 @@ theorem exists_same_direction_intersectingTranslateFinset (r k q : ℕ) (ε : �
   obtain ⟨S, hS, hcard⟩ := exists_intersectingTranslateFinset r k q ε hε δ δ i
   refine ⟨S, hS, ?_⟩
   have hz : euclideanNorm (0 : Fin (r + 1) → ℝ) = 0 := by simp [euclideanNorm]
-  simpa only [sub_self, hz, mul_zero, add_zero, add_comm] using hcard
+  simpa only [sub_self, hz, mul_zero, add_zero, zero_add, add_comm] using hcard
 
 /-- At spacing equal to the vertical scale, at most nine parallel translates meet a given box. -/
 theorem exists_nine_parallel_intersecting_translates (r k : ℕ) (ε : ℝ) (hε : ε ≠ 0)

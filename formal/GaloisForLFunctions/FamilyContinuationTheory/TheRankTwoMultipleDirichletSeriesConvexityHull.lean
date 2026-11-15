@@ -354,7 +354,7 @@ theorem exists_convex_cone_attaining_weylA2Convexity {σ₁ : ℝ} (h0 : 0 ≤ �
     · intro w
       fin_cases w
       · simp only [weylCone, pts, weylAct]; exact ⟨le_rfl, by linarith [hr]⟩
-      · simp only [weylCone, pts, weylAct, weylS1]; exact ⟨le_rfl, by linarith [hr]⟩
+      · simp only [weylCone, pts, weylAct, weylS1]; exact ⟨by norm_num, by linarith [hr]⟩
       · norm_num [weylCone, pts, weylAct, weylS2]
       · norm_num [weylCone, pts, weylAct, weylS1, weylS2]
       · norm_num [weylCone, pts, weylAct, weylS1, weylS2]
@@ -615,8 +615,8 @@ theorem universal_balanced_minimax_attained {δ R : ℝ} (hδ : 0 ≤ δ) (hR : 
   have hℓs : 0 ≤ ℓs := div_nonneg (by linarith [hsum]) hDpos.le
   have hℓD : ℓs * D = 3 - 2 * R - 2 * δ := div_mul_cancel₀ _ hDne
   have h2 : 2 / (3 * D) * (12 * D) = 8 := by
-    rw [div_mul_eq_mul_div, mul_div_mul_right _ _ hDne]
-    norm_num
+    rw [div_mul_eq_mul_div, div_eq_iff (mul_ne_zero (by norm_num) hDne)]
+    ring
   have h12D : 12 * D ≠ 0 := mul_ne_zero (by norm_num) hDne
   have hedge : (1 - ℓs) / 2 + (1 - ℓs) / 2 + ℓs - 1 = 0 := by ring
   refine ⟨hℓs, ?_, ?_⟩

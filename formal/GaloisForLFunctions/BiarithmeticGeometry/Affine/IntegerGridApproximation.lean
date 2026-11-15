@@ -34,7 +34,9 @@ theorem exists_scaled_integer_cell (q : ℕ) (ε : ℝ) (hε : ε ≠ 0) (β : �
   let d : ℝ := q + 1
   let a : ℝ := β * d / ε
   have hd : 0 < d := by dsimp only [d]; positivity
-  have hd1 : 1 ≤ d := by dsimp only [d]; positivity
+  have hd1 : 1 ≤ d := by
+    dsimp only [d]
+    linarith only [Nat.cast_nonneg (R := ℝ) q]
   have hf := floor_cell_bounds a
   have he : ε * a = β * d := by
     dsimp only [a]

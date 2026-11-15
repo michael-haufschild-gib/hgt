@@ -7,6 +7,7 @@ import Mathlib.RingTheory.Polynomial.Cyclotomic.Eval
 import Mathlib.RingTheory.Polynomial.Cyclotomic.Roots
 import Mathlib.RingTheory.Polynomial.Pochhammer
 import Mathlib.FieldTheory.Finite.Basic
+import Mathlib.Data.Nat.Prime.Factorial
 
 /-!
 # The Gauss sums of a prime field carry Stickelberger's valuation
@@ -269,7 +270,7 @@ theorem sum_pow_sub_one : ∑ x : ZMod p, x ^ (p - 1) = -1 := by
   simp
 
 theorem factorial_ne_zero {k : ℕ} (hk : k < p) : (k ! : ZMod p) ≠ 0 := by
-  rw [Ne, CharP.cast_eq_zero_iff (ZMod p) p, hp.out.dvd_factorial]
+  rw [Ne, CharP.cast_eq_zero_iff (ZMod p) p, Nat.Prime.dvd_factorial hp.out]
   omega
 
 /-- **The coefficients below the Stickelberger index vanish mod `p`.** -/
@@ -353,5 +354,52 @@ theorem norm_gaussSum_teichCharK_pow_pow {ζ : PadicAlgCl p} (hζ : IsPrimitiveR
       ((p : ℝ)⁻¹) ^ (p - 1 - n) := by
   rw [norm_gaussSum_teichCharK_pow p hζ hn hnp, ← pow_mul, mul_comm, pow_mul,
     norm_sub_one_pow hζ]
+
+/-! ### 5. Every character is a power of the Teichmüller character -/
+
+theorem toK_injective : Function.Injective (toK p) := fun x y h => by
+  have h1 := norm_toK p (x - y)
+  rw [map_sub, h, sub_self, norm_zero] at h1
+  exact sub_eq_zero.1 (norm_eq_zero.1 h1.symm)
+
+theorem teich_injective : Function.Injective (teich p) := fun x y h => by
+  rw [← toZMod_teich p x, h, toZMod_teich]
+
+/-- At a generator `g` of `𝔽_p^×` the Teichmüller character is a primitive `(p − 1)`-th root of
+unity: `ω` is faithful. -/
+theorem isPrimitiveRoot_teichCharK {g : (ZMod p)ˣ} (hg : ∀ u, u ∈ Subgroup.zpowers g) :
+    IsPrimitiveRoot (teichCharK p g) (p - 1) := by
+  have hgo : orderOf g = p - 1 := by
+    rw [orderOf_eq_card_of_forall_mem_zpowers hg, Nat.card_eq_fintype_card, ZMod.card_units]
+  refine ⟨?_, fun l hl => ?_⟩
+  · rw [← map_pow, ← Units.val_pow_eq_pow_val, ZMod.units_pow_card_sub_one_eq_one, Units.val_one,
+      map_one]
+  · rw [← map_pow, ← Units.val_pow_eq_pow_val, ← map_one (teichCharK p), teichCharK_apply,
+      teichCharK_apply] at hl
+    rw [← hgo]
+    exact orderOf_dvd_of_pow_eq_one (Units.ext (teich_injective p (toK_injective p hl)))
+
+/-- **Every character of `𝔽_p` with values in `K` is a power `ω^n`, `1 ≤ n ≤ p − 1`.** -/
+theorem exists_eq_teichCharK_pow (χ : MulChar (ZMod p) (PadicAlgCl p)) :
+    ∃ n : ℕ, 1 ≤ n ∧ n ≤ p - 1 ∧ χ = teichCharK p ^ n := by
+  have hp2 := hp.out.two_le
+  haveI : NeZero (p - 1) := ⟨by omega⟩
+  obtain ⟨g, hg⟩ := IsCyclic.exists_generator (α := (ZMod p)ˣ)
+  have hη := isPrimitiveRoot_teichCharK p hg
+  have hχg : χ (g : ZMod p) ^ (p - 1) = 1 := by
+    rw [← map_pow, ← Units.val_pow_eq_pow_val, ZMod.units_pow_card_sub_one_eq_one, Units.val_one,
+      map_one]
+  obtain ⟨j, -, hjη⟩ := hη.eq_pow_of_pow_eq_one hχg
+  refine ⟨if j = 0 then p - 1 else j, by split_ifs <;> omega, by split_ifs <;> omega,
+    MulChar.ext fun u => ?_⟩
+  obtain ⟨k, rfl⟩ := mem_powers_iff_mem_zpowers.2 (hg u)
+  rw [MulChar.pow_apply_coe, Units.val_pow_eq_pow_val, map_pow, map_pow, ← hjη, ← pow_mul,
+    ← pow_mul]
+  split_ifs with hj0
+  · rw [hj0, zero_mul, pow_zero, mul_comm, pow_mul, hη.pow_eq_one, one_pow]
+  · rw [mul_comm]
+
+#print axioms norm_gaussSum_teichCharK_pow_pow
+#print axioms exists_eq_teichCharK_pow
 
 end GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.Stickelberger
