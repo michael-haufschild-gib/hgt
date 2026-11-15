@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.LinearAlgebra.BasisImage
 import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeHochschild
 import GaloisForLFunctions.RHTower.Deninger.DeningerHiddenPrimeTangents
 
@@ -110,13 +111,10 @@ theorem deningerHiddenPrimeHochschild_injective : Function.Injective deningerHid
 theorem deningerHiddenPrimeHochschild_linearIndependent :
     LinearIndependent ℂ (fun p : DeningerPrimeLogAway =>
       deningerHiddenPrimeHochschild (deningerPrimeLogKernelBasis p)) := by
-  apply linearIndependent_iff.mpr
-  intro l hl
-  apply (linearIndependent_iff.mp deningerPrimeLogKernelBasis.linearIndependent) l
-  apply deningerHiddenPrimeHochschild_injective
-  rw [map_zero]
-  exact (Finsupp.apply_linearCombination ℂ deningerHiddenPrimeHochschild
-    (fun p : DeningerPrimeLogAway => deningerPrimeLogKernelBasis p) l).trans hl
+  exact GaloisForLFunctions.HTGeometry.basisImage_linearIndependent
+    (R := ℂ) (M := deningerPrimeLog.ker) (N := HochschildOne Quotient)
+    (ι := DeningerPrimeLogAway) deningerPrimeLogKernelBasis deningerHiddenPrimeHochschild
+    deningerHiddenPrimeHochschild_injective
 
 /-- The explicit logarithmic prime-relation basis gives nonzero Hochschild classes. -/
 theorem deningerHiddenPrimeHochschild_ne_zero (p : DeningerPrimeLogAway) :

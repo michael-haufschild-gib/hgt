@@ -36,7 +36,7 @@ theorem exists_scaled_integer_cell (q : ℕ) (ε : ℝ) (hε : ε ≠ 0) (β : �
   have hd : 0 < d := by dsimp only [d]; positivity
   have hd1 : 1 ≤ d := by
     dsimp only [d]
-    linarith only [Nat.cast_nonneg (R := ℝ) q]
+    linarith only [Nat.cast_nonneg (α := ℝ) q]
   have hf := floor_cell_bounds a
   have he : ε * a = β * d := by
     dsimp only [a]
@@ -67,9 +67,10 @@ theorem exists_scaled_integer_cell_in_window (q : ℕ) (ε : ℝ) (hε : ε ≠ 
   refine ⟨i, ?_, w, hw0, hw1, he⟩
   apply (mem_integerWindow_iff _ _ _).mpr
   simp only [Int.cast_zero, zero_sub, abs_neg]
-  exact hi.trans (add_le_add_right
+  exact hi.trans (add_le_add
     (div_le_div_of_nonneg_right
-      (mul_le_mul_of_nonneg_left hβ (by positivity)) (abs_nonneg ε)) 1)
+      (mul_le_mul_of_nonneg_left hβ (show 0 ≤ (q + 1 : ℝ) by positivity))
+      (abs_nonneg ε)) le_rfl)
 
 #print axioms floor_cell_bounds
 #print axioms abs_floor_le_abs_add_one

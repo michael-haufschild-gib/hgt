@@ -389,7 +389,7 @@ theorem exists_eq_teichCharK_pow (χ : MulChar (ZMod p) (PadicAlgCl p)) :
   have hχg : χ (g : ZMod p) ^ (p - 1) = 1 := by
     rw [← map_pow, ← Units.val_pow_eq_pow_val, ZMod.units_pow_card_sub_one_eq_one, Units.val_one,
       map_one]
-  obtain ⟨j, -, hjη⟩ := hη.eq_pow_of_pow_eq_one hχg
+  obtain ⟨j, hj, hjη⟩ := hη.eq_pow_of_pow_eq_one hχg
   refine ⟨if j = 0 then p - 1 else j, by split_ifs <;> omega, by split_ifs <;> omega,
     MulChar.ext fun u => ?_⟩
   obtain ⟨k, rfl⟩ := mem_powers_iff_mem_zpowers.2 (hg u)

@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.LinearAlgebra.BasisImage
 import GaloisForLFunctions.HTGeometry.Homology.AlternatingCyclicMoments
 import GaloisForLFunctions.HTGeometry.Lattices.IntegralFourEnergy
 import GaloisForLFunctions.HTGeometry.Homology.AugmentedHochschildOne

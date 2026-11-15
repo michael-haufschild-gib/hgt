@@ -79,8 +79,7 @@ theorem exists_intersectingTranslateFinset (r k q : ℕ) (ε : ℝ) (hε : ε �
   calc
     _ ≤ 1 + 8 * (q + 1 : ℝ) + (4 * (q + 1 : ℝ)) *
         (((r + 1 : ℕ) : ℝ) * euclideanNorm (δ - η)) :=
-      add_le_add_left (mul_le_mul_of_nonneg_left (sum_abs_le_card_mul_euclideanNorm (δ - η))
-        hd) _
+      add_le_add le_rfl (mul_le_mul_of_nonneg_left (sum_abs_le_card_mul_euclideanNorm (δ - η)) hd)
     _ = _ := by ring
 
 /-- Parallel families have a bounded number of intersecting translates independent of dimension and degree. -/
