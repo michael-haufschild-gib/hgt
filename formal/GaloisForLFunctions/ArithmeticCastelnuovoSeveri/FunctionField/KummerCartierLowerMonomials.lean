@@ -22,8 +22,8 @@ theorem squareKummer_lower_monomial_primitive (t : L) (i : ℕ) (hi : i < p - 1)
         t ^ i • KaehlerDifferential.D K L t := by
   let D := KaehlerDifferential.D K L
   have hn : ((i + 1 : ℕ) : L) ≠ 0 := by
-    rw [CharP.cast_eq_zero_iff L p]
-    intro hd
+    intro hz
+    have hd : p ∣ i + 1 := (CharP.cast_eq_zero_iff L p (i + 1)).mp hz
     have hp := Nat.le_of_dvd (Nat.succ_pos i) hd
     omega
   rw [D.leibniz, D.map_algebraMap, smul_zero, add_zero, D.leibniz_pow,

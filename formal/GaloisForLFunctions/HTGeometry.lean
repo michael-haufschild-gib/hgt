@@ -111,6 +111,7 @@ import GaloisForLFunctions.HTGeometry.BoundedKernelReindexing
 import GaloisForLFunctions.HTGeometry.IntegerLatticePoisson
 import GaloisForLFunctions.HTGeometry.SchwartzPoissonSummation
 import GaloisForLFunctions.HTGeometry.AffineLatticePoisson
+import GaloisForLFunctions.HTGeometry.Fourier.AffineIntegralNorm
 import GaloisForLFunctions.HTGeometry.GaussianLatticeTheta
 import GaloisForLFunctions.HTGeometry.IntrinsicLatticeTheta
 import GaloisForLFunctions.HTGeometry.CoordinateProductFourier

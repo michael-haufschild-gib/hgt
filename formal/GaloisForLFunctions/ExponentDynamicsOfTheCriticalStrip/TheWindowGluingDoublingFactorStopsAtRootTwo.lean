@@ -61,7 +61,7 @@ leaves at most one negative square. -/
 def IsReweightedLevelLaw (ω : ℕ → ℝ) (ρ : ℕ → ℕ) (a : ℕ → ℝ) : Prop :=
   ∀ K : ℕ, 1 ≤ K →
     hermNegIndex ((windowMatrix (reweightedNeutral ω (3 * K + 1)) (ρ K) (3 * K * ρ K) +
-      Matrix.diagonal fun _ => a K).map (↑) :
+      Matrix.diagonal (fun _ : Fin (3 * K * ρ K) => a K)).map (↑) :
         Matrix (Fin (3 * K * ρ K)) (Fin (3 * K * ρ K)) ℂ) ≤ 1
 
 /-- A **reweighted doubling law with factor `lam`**: a monotone reweighted level law satisfying
@@ -449,7 +449,8 @@ theorem eventually_two_le_hermNegIndex_neutralWindow_halfCutoff :
     ∀ᶠ K : ℕ in atTop, ∀ R : ℕ, 6 ≤ R → ∀ a : ℝ,
       a ≤ (1 / 2000 : ℝ) * Real.sqrt K - 40000 →
       2 ≤ hermNegIndex ((neutralWindow (3 * K + 1) R (6 * K * R) +
-        Matrix.diagonal fun _ => a).map (↑) : Matrix (Fin (6 * K * R)) (Fin (6 * K * R)) ℂ) := by
+        Matrix.diagonal (fun _ : Fin (6 * K * R) => a)).map (↑) :
+          Matrix (Fin (6 * K * R)) (Fin (6 * K * R)) ℂ) := by
   have h3K := (tendsto_theta_psi_linear (N := fun K => 3 * K) (a := 3) (C := 0)
     (by norm_num) le_rfl
     (Eventually.of_forall fun K => by push_cast; linarith)
@@ -628,10 +629,10 @@ theorem topOctave_jump_of_doublingLaw_lt_sqrt_two {ρ : ℕ → ℕ} (hρ : ∀ 
     ∀ᶠ K : ℕ in atTop,
       let R := ρ (2 * K)
       2 ≤ hermNegIndex ((neutralWindow (3 * K + 1) R (6 * K * R) +
-        Matrix.diagonal fun _ => (1 / 2000 : ℝ) * Real.sqrt K - 40000).map (↑) :
+        Matrix.diagonal (fun _ : Fin (6 * K * R) => (1 / 2000 : ℝ) * Real.sqrt K - 40000)).map (↑) :
           Matrix (Fin (6 * K * R)) (Fin (6 * K * R)) ℂ) ∧
       hermNegIndex ((neutralWindow (6 * K + 1) R (6 * K * R) +
-        Matrix.diagonal fun _ => (1 / 4000 : ℝ) * Real.sqrt K - 40000).map (↑) :
+        Matrix.diagonal (fun _ : Fin (6 * K * R) => (1 / 4000 : ℝ) * Real.sqrt K - 40000)).map (↑) :
           Matrix (Fin (6 * K * R)) (Fin (6 * K * R)) ℂ) ≤ 1 ∧
       ∃ v : Fin (6 * K * R) → ℝ, v ≠ 0 ∧
         ∑ k ∈ Icc (3 * K + 2) (6 * K + 1),
@@ -680,11 +681,21 @@ theorem topOctave_jump_of_doublingLaw_lt_sqrt_two {ρ : ℕ → ℕ} (hρ : ∀ 
     have h2 : Real.sqrt 2 * Real.sqrt K ≤ 2 * Real.sqrt K :=
       mul_le_mul_of_nonneg_right hs2_le (Real.sqrt_nonneg K)
     linarith
-  have hlev2K := hlev (2 * K) h2K1
-  have h6K : 3 * (2 * K) = 6 * K := by omega
-  rw [h6K] at hlev2K
+  have hcast_idx : ∀ (M₁ M₂ : ℕ), M₁ = M₂ →
+      hermNegIndex ((neutralWindow (M₁ + 1) R (M₁ * R) +
+        Matrix.diagonal (fun _ : Fin (M₁ * R) => a (2 * K))).map (↑) :
+          Matrix (Fin (M₁ * R)) (Fin (M₁ * R)) ℂ) =
+      hermNegIndex ((neutralWindow (M₂ + 1) R (M₂ * R) +
+        Matrix.diagonal (fun _ : Fin (M₂ * R) => a (2 * K))).map (↑) :
+          Matrix (Fin (M₂ * R)) (Fin (M₂ * R)) ℂ) := by
+    rintro M₁ _ rfl; rfl
+  have hlev2K : hermNegIndex ((neutralWindow (6 * K + 1) R (6 * K * R) +
+      Matrix.diagonal (fun _ : Fin (6 * K * R) => a (2 * K))).map (↑) :
+        Matrix (Fin (6 * K * R)) (Fin (6 * K * R)) ℂ) ≤ 1 := by
+    rw [← hcast_idx (3 * (2 * K)) (6 * K) (by omega)]
+    exact hlev (2 * K) h2K1
   have hone : hermNegIndex ((neutralWindow (6 * K + 1) R (6 * K * R) +
-      Matrix.diagonal fun _ => (1 / 4000 : ℝ) * Real.sqrt K - 40000).map (↑) :
+      Matrix.diagonal (fun _ : Fin (6 * K * R) => (1 / 4000 : ℝ) * Real.sqrt K - 40000)).map (↑) :
         Matrix (Fin (6 * K * R)) (Fin (6 * K * R)) ℂ) ≤ 1 :=
     (hermNegIndex_add_diagonal_mono (neutralWindow (6 * K + 1) R (6 * K * R)) ha2K_le).trans hlev2K
   refine ⟨htwo, hone, ?_⟩
@@ -693,11 +704,11 @@ theorem topOctave_jump_of_doublingLaw_lt_sqrt_two {ρ : ℕ → ℕ} (hρ : ∀ 
   have hdecomp := (neutralWindow_doubling_topOctave_decomposition (K := K) (R := R) (by omega)).1
   -- Expand `v ⬝ᵥ ((B - A) *ᵥ v)` using `hdecomp`.
   have hBA : (neutralWindow (6 * K + 1) R (6 * K * R) +
-      Matrix.diagonal fun _ => (1 / 4000 : ℝ) * Real.sqrt K - 40000) -
+      Matrix.diagonal (fun _ : Fin (6 * K * R) => (1 / 4000 : ℝ) * Real.sqrt K - 40000)) -
       (neutralWindow (3 * K + 1) R (6 * K * R) +
-        Matrix.diagonal fun _ => (1 / 2000 : ℝ) * Real.sqrt K - 40000) =
+        Matrix.diagonal (fun _ : Fin (6 * K * R) => (1 / 2000 : ℝ) * Real.sqrt K - 40000)) =
       -(∑ k ∈ Icc (3 * K + 2) (6 * K + 1), windowMatrix (floorGraph k) R (6 * K * R)) -
-        Matrix.diagonal fun _ => (1 / 4000 : ℝ) * Real.sqrt K := by
+        Matrix.diagonal (fun _ : Fin (6 * K * R) => (1 / 4000 : ℝ) * Real.sqrt K) := by
     rw [hdecomp]
     ext i j
     simp only [Matrix.sub_apply, Matrix.add_apply, Matrix.neg_apply, Matrix.diagonal_apply]
@@ -734,7 +745,7 @@ theorem exists_doublingLaw_lt_two_rpow_three_eighths_iff {ρ : ℕ → ℕ} (hρ
       rwa [Real.logb_rpow (by norm_num) (by norm_num)] at h
     exact hw.trans_lt hlog
   · intro hw
-    have hρ₁ : ∀ K, 1 ≤ K → 1 ≤ ρ K := fun K hK => lt_of_lt_of_le (pow_pos hK 10) (hρ K)
+    have hρ₁ : ∀ K, 1 ≤ K → 1 ≤ ρ K := fun K hK => (Nat.one_le_pow 10 K hK).trans (hρ K)
     have hw0 := zetaZeroWidth_nonneg
     set β : ℝ := (zetaZeroWidth + 3 / 8) / 2
     refine ⟨(2 : ℝ) ^ β, Real.one_lt_rpow (by norm_num) (by dsimp [β]; linarith),

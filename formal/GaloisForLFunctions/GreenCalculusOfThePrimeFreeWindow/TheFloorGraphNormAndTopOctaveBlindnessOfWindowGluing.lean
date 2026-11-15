@@ -330,8 +330,14 @@ theorem sum_vonMangoldt_div_sqrt_le {Q : ℕ} (hQ : 1 ≤ Q) :
           rw [hsL]
           exact mul_le_mul hs2_lt hsqQ (Real.sqrt_nonneg _) zero_le_two
         unfold floorContactSqrtConst
-        nlinarith [Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num), Real.sqrt_nonneg 2,
-          Real.sqrt_nonneg Q]
+        have hc0 : 0 ≤ 4 * (Real.log 4 + 4) * (2 + Real.sqrt 2) := by
+          have : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
+          positivity
+        calc 4 * (Real.log 4 + 4) * ((2 + Real.sqrt 2) * (Real.sqrt 2) ^ L)
+            = 4 * (Real.log 4 + 4) * (2 + Real.sqrt 2) * (Real.sqrt 2) ^ L := by ring
+          _ ≤ 4 * (Real.log 4 + 4) * (2 + Real.sqrt 2) * (2 * Real.sqrt Q) :=
+              mul_le_mul_of_nonneg_left hL_le hc0
+          _ = 8 * (2 + Real.sqrt 2) * (Real.log 4 + 4) * Real.sqrt Q := by ring
 
 /-! ## 2. Universal prime-free and reweighted quadratic-form lower bounds -/
 
@@ -339,7 +345,9 @@ theorem sum_vonMangoldt_div_sqrt_le {Q : ℕ} (hQ : 1 ≤ Q) :
 lemma log_le_two_mul_sqrt {x : ℝ} (hx : 0 < x) : Real.log x ≤ 2 * Real.sqrt x := by
   have hsx : 0 < Real.sqrt x := Real.sqrt_pos.mpr hx
   have hlog : Real.log x = 2 * Real.log (Real.sqrt x) := by
-    rw [← Real.log_pow, Real.sq_sqrt hx.le]; norm_num
+    have h := Real.log_pow (Real.sqrt x) 2
+    rw [Real.sq_sqrt hx.le, Nat.cast_ofNat] at h
+    exact h
   linarith [Real.log_le_sub_one_of_pos hsx]
 
 /-- Rewriting `reweightedNeutral` against the prime-free kernel `neutralBlock 1` for positive block
@@ -505,8 +513,7 @@ theorem sum_reweightedNeutral_ge {ω : ℕ → ℝ} {B : ℝ} (hB : 0 ≤ B) (h�
               (div_nonneg (mul_nonneg zero_le_two ArithmeticFunction.vonMangoldt_nonneg)
                 (Real.sqrt_nonneg _)) hsq)
         _ = B * (∑ k ∈ Icc 2 (4 * K), 2 * (Λ k : ℝ) / Real.sqrt k) * ∑ i ∈ range J, σ i ^ 2 := by
-            simp only [Finset.mul_sum, Finset.sum_mul]
-            exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun i _ => by ring
+            rw [← Finset.mul_sum, ← Finset.sum_mul, mul_assoc]
     have hsumQ : ∑ k ∈ Icc 2 (4 * K), 2 * (Λ k : ℝ) / Real.sqrt k ≤
         2 * floorContactSqrtConst * Real.sqrt K := by
       calc ∑ k ∈ Icc 2 (4 * K), 2 * (Λ k : ℝ) / Real.sqrt k
@@ -779,7 +786,8 @@ lemma log_le_eps_mul_sqrt_add {x ε : ℝ} (hx : 0 < x) (hε : 0 < ε) :
     have h4 : Real.sqrt (Real.sqrt x) ^ 4 = x := by
       calc Real.sqrt (Real.sqrt x) ^ 4 = (Real.sqrt (Real.sqrt x) ^ 2) ^ 2 := by ring
         _ = x := by rw [Real.sq_sqrt hsx.le, Real.sq_sqrt hx.le]
-    rw [← h4, Real.log_pow, Nat.cast_ofNat]
+    have hl := Real.log_pow (Real.sqrt (Real.sqrt x)) 4
+    rw [h4, Nat.cast_ofNat] at hl
     linarith [Real.log_le_sub_one_of_pos ht]
   have ham : 0 ≤ (ε * Real.sqrt (Real.sqrt x) - 2) ^ 2 := sq_nonneg _
   have ht2 : Real.sqrt (Real.sqrt x) ^ 2 = Real.sqrt x := Real.sq_sqrt hsx.le
@@ -818,9 +826,9 @@ lemma bilin_windowMatrix_add_diagonal_coe (K : ℕ → ℕ → ℝ) (R₀ J₀ :
       ∑ l : Fin J₀, x i * y l * (Matrix.diagonal (fun _ : Fin J₀ => a)) i l = a * (x i * y i) := by
     intro i
     rw [Finset.sum_eq_single i
-      (fun l _ hli => by simp [Matrix.diagonal_apply, hli.symm])
+      (fun l _ hli => by simp [hli.symm])
       (fun hi => absurd (Finset.mem_univ i) hi)]
-    simp [Matrix.diagonal_apply]; ring
+    simp; ring
   simp_rw [hdiag]
   rw [← Finset.mul_sum, ← Fin.sum_univ_eq_sum_range (fun i => x i * y i) J₀]
 
@@ -977,7 +985,7 @@ lemma clusterVec_mul_eq_zero {p₁ q₁ L₁ p₂ q₂ L₂ : ℕ} (hp : p₁ < 
     (hq : q₁ + L₁ ≤ q₂) (j : ℕ) :
     clusterVec p₁ q₁ L₁ j * clusterVec p₂ q₂ L₂ j = 0 := by
   unfold clusterVec
-  split_ifs <;> first | ring | (exfalso; omega)
+  split_ifs <;> first | simp only [mul_zero, zero_mul] | (exfalso; omega)
 
 /-- **Self-pairing upper bound for `clusterVec`**: for nonnegative weights `ω ≥ 0`, all diagonal
 entries are bounded by `log(R₀ + J₀ + 1) + 1 + a` while all off-diagonal entries are nonpositive,
@@ -1044,6 +1052,7 @@ theorem bilin_reweightedNeutral_clusterVec_le {ω : ℕ → ℝ} (hω : ∀ k, 0
     · refine Finset.sum_congr rfl fun i _ => ?_
       rw [Finset.sum_map]; rfl
     · intro i₁ _ i₂ _ hne
+      change Disjoint _ _
       rw [Finset.disjoint_left]
       intro x hx1 hx2
       rcases Finset.mem_map.mp hx1 with ⟨l₁, _, rfl⟩
@@ -1068,7 +1077,7 @@ theorem bilin_reweightedNeutral_clusterVec_le {ω : ℕ → ℝ} (hω : ∀ k, 0
     rcases Finset.mem_map.mp hx1 with ⟨l₁, hl₁, rfl⟩
     rcases Finset.mem_map.mp hx2 with ⟨l₂, _, h2⟩
     have := (Finset.mem_Ico.mp hl₁).1
-    have := (Prod.mk.inj h2).1
+    have := (Prod.mk.inj h2).2
     omega
   have hS_val : ∑ x ∈ S, clusterVec p₀ q₀ L x.1 * clusterVec p₀ q₀ L x.2 *
       reweightedNeutral ω Q (R₀ + x.1) (R₀ + x.2) ≤
@@ -1097,7 +1106,6 @@ theorem bilin_reweightedNeutral_clusterVec_le {ω : ℕ → ℝ} (hω : ∀ k, 0
       have hsL_ne : Real.sqrt (L : ℝ) ≠ 0 := (Real.sqrt_pos.mpr hLpos).ne'
       field_simp [hs2_ne, hsL_ne]
       rw [Real.sq_sqrt zero_le_two]
-      ring
     have hterm_le : 2 * ∑ l ∈ Ico q₀ (q₀ + L),
         clusterVec p₀ q₀ L p₀ * clusterVec p₀ q₀ L l * reweightedNeutral ω Q (R₀ + p₀) (R₀ + l) ≤
         ∑ l ∈ Ico q₀ (q₀ + L),
@@ -1118,15 +1126,19 @@ theorem bilin_reweightedNeutral_clusterVec_le {ω : ℕ → ℝ} (hω : ∀ k, 0
           xLogXDiff_pos (n := R₀ + l - (R₀ + p₀)) (by omega)]
       linarith
     refine hterm_le.trans (le_of_eq ?_)
-    rw [← Finset.mul_sum, ← Finset.sum_neg_distrib, Finset.sum_comm]
+    rw [← Finset.mul_sum, Finset.sum_neg_distrib, Finset.sum_comm]
     simp only [← Finset.mul_sum]
     ring
   have hoff_le : ∑ i ∈ range J₀, ∑ l ∈ (range J₀).erase i,
       clusterVec p₀ q₀ L i * clusterVec p₀ q₀ L l * reweightedNeutral ω Q (R₀ + i) (R₀ + l) ≤
       -(1 / Real.sqrt L) * ∑ k ∈ Icc 2 Q, ω k *
         ∑ l ∈ Ico q₀ (q₀ + L), floorGraph k (R₀ + p₀) (R₀ + l) := by
-    rw [hoff_eq]
-    exact (Finset.sum_le_sum_of_subset_of_nonpos hSP hoff_nonpos).trans hS_val
+    rw [hoff_eq, ← Finset.sum_sdiff hSP]
+    have hrest : ∑ x ∈ P \ S, clusterVec p₀ q₀ L x.1 * clusterVec p₀ q₀ L x.2 *
+        reweightedNeutral ω Q (R₀ + x.1) (R₀ + x.2) ≤ 0 :=
+      Finset.sum_nonpos fun x hx =>
+        hoff_nonpos x (Finset.mem_sdiff.mp hx).1 (Finset.mem_sdiff.mp hx).2
+    linarith
   linarith
 
 /-- Cross-pairing magnitude bound between two separated `clusterVec` packets on
@@ -1197,11 +1209,17 @@ theorem abs_bilin_reweightedNeutral_clusterVec_le (ω : ℕ → ℝ)
                   ∑ k ∈ Icc 2 Q, ω k *
                     (clusterVec p₁ q₁ L₁ i * clusterVec p₂ q₂ L₂ j * floorGraph k (R₀ + i) (R₀ + j)) := by
               intro j _
-              rw [mul_add, Finset.mul_sum, ← Finset.sum_neg_distrib]
-              congr 1
-              · ring
-              · rw [← Finset.sum_neg_distrib]
+              rw [mul_add, Finset.mul_sum]
+              have hsum_neg : ∑ k ∈ Icc 2 Q,
+                  clusterVec p₁ q₁ L₁ i * clusterVec p₂ q₂ L₂ j *
+                    (-ω k * floorGraph k (R₀ + i) (R₀ + j)) =
+                  -(∑ k ∈ Icc 2 Q, ω k *
+                    (clusterVec p₁ q₁ L₁ i * clusterVec p₂ q₂ L₂ j *
+                      floorGraph k (R₀ + i) (R₀ + j))) := by
+                rw [← Finset.sum_neg_distrib]
                 exact Finset.sum_congr rfl fun k _ => by ring
+              rw [hsum_neg]
+              ring
             rw [Finset.sum_congr rfl h1, Finset.sum_sub_distrib, Finset.sum_neg_distrib,
               Finset.sum_comm (t := Icc 2 Q)]
             congr 1
@@ -1352,7 +1370,8 @@ theorem abs_bilin_reweightedNeutral_clusterVec_le (ω : ℕ → ℝ)
       have hcoef : (1 / Real.sqrt (2 * (L₁ : ℝ))) * (L₁ : ℝ) *
           ((1 / Real.sqrt 2) + (L₂ : ℝ) / Real.sqrt (2 * (L₂ : ℝ))) =
           (Real.sqrt L₁ + Real.sqrt ((L₁ : ℝ) * L₂)) / 2 := by
-        rw [Real.sqrt_mul zero_le_two, Real.sqrt_mul hL₁pos.le]
+        simp_rw [Real.sqrt_mul zero_le_two]
+        rw [Real.sqrt_mul hL₁pos.le]
         have hs2_ne : Real.sqrt 2 ≠ 0 := (Real.sqrt_pos.mpr zero_lt_two).ne'
         have hsL₁_ne : Real.sqrt (L₁ : ℝ) ≠ 0 := (Real.sqrt_pos.mpr hL₁pos).ne'
         have hsL₂_ne : Real.sqrt (L₂ : ℝ) ≠ 0 := (Real.sqrt_pos.mpr hL₂pos).ne'
@@ -1411,7 +1430,7 @@ theorem abs_subEulerGluingWeight_le_one (Q₀ k : ℕ) : |subEulerGluingWeight Q
 /-- **Finite-prefix agreement**: `subEulerGluingWeight Q₀ k = 1` for all `1 ≤ k ≤ Q₀`. -/
 theorem subEulerGluingWeight_eq_one_of_le {Q₀ k : ℕ} (hk1 : 1 ≤ k) (hkQ : k ≤ Q₀) :
     subEulerGluingWeight Q₀ k = 1 := by
-  unfold subEulerGluingWeight
+  unfold subEulerGluingWeight subEulerPrimePred
   rcases eq_or_lt_of_le hk1 with rfl | hk2
   · rw [if_pos (Or.inl rfl)]
   · rw [if_pos (Or.inr (Or.inl ((Nat.minFac_le (by omega)).trans hkQ)))]
@@ -1424,7 +1443,7 @@ theorem subEulerGluingWeight_prime_pow {Q₀ p r : ℕ} (hp : p.Prime) (hr : 1 �
   have hpr_gt : 1 < p ^ r := one_lt_pow₀ hp.one_lt (by omega)
   have hmin_pow : (p ^ r).minFac = p := by
     have hmf_prime : (p ^ r).minFac.Prime := Nat.minFac_prime hpr_gt.ne'
-    have hdvd : (p ^ r).minFac ∣ p := hp.dvd_of_dvd_pow (Nat.minFac_dvd _)
+    have hdvd : (p ^ r).minFac ∣ p := hmf_prime.dvd_of_dvd_pow (Nat.minFac_dvd _)
     rcases hp.eq_one_or_self_of_dvd _ hdvd with h1 | hself
     · exact absurd h1 hmf_prime.ne_one
     · exact hself
@@ -1432,13 +1451,13 @@ theorem subEulerGluingWeight_prime_pow {Q₀ p r : ℕ} (hp : p.Prime) (hr : 1 �
   rw [hmin_pow, hp.minFac_eq]
   have hne1 : p ^ r ≠ 1 := hpr_gt.ne'
   have hne2 : p ≠ 1 := hp.ne_one
-  simp [hne1, hne2]
+  simp only [hne1, hne2, false_or]
 
 /-- Every prime in the band `(256^m, 3 · 256^m]` (`m ≥ 1`) has `subEulerGluingWeight Q₀ p = 1`. -/
 theorem subEulerGluingWeight_eq_one_of_mem_band {Q₀ m p : ℕ} (hm : 1 ≤ m) (hp : p.Prime)
     (hlo : 256 ^ m < p) (hhi : p ≤ 3 * 256 ^ m) :
     subEulerGluingWeight Q₀ p = 1 := by
-  unfold subEulerGluingWeight
+  unfold subEulerGluingWeight subEulerPrimePred
   rw [hp.minFac_eq, if_pos (Or.inr (Or.inr ⟨m, hm, hlo, hhi⟩))]
 
 /-- **Exact finite-prefix window indistinguishability**: up to cutoff `Q₀`, all neutral and block
@@ -1467,9 +1486,10 @@ lemma psi_sub_theta_le_three_mul_sqrt (x : ℝ) :
           ≤ (Real.log 4 + 4) * x ^ (n : ℝ)⁻¹ := Chebyshev.psi_le_const_mul_self (by positivity)
         _ ≤ (Real.log 4 + 4) * Real.sqrt x := by
             rw [Real.sqrt_eq_rpow]
-            gcongr
-            · exact hx
-            · rw [one_div]; exact inv_anti₀ zero_lt_two (by exact_mod_cast hn)
+            refine mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hx ?_)
+              (by have := Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num); positivity)
+            rw [one_div]
+            exact inv_anti₀ zero_lt_two (by exact_mod_cast hn)
     linarith [Chebyshev.psi_sub_theta_le_psi_add_psi_add_psi x, hbound 2 le_rfl,
       hbound 3 (by norm_num), hbound 5 (by norm_num)]
 

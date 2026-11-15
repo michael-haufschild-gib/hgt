@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.TheMoebiusSignCostsHalfAUnitAtSomePlace
+import GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.MixedTowersOfLeversStayAboveTheBestCentre
 
 /-!
 # The short Möbius monomials pay exactly half
@@ -20,6 +21,11 @@ centres `¾, ⅔, ⅝, ⅗, 7/12, …` at `k = 3, 4, 5, 6, 7, …`. The wall `�
 point `k = 6` of this line, where it meets their completion bound `c ≥ (2/3)k − 1`
 (FCT `two_thirds_mul_period_sub_one_le_pairingC`; `half_mul_le_two_thirds_mul_sub_one_iff`); beyond `k = 6` the price of completing each factor by
 its own theta series exceeds the price of the sign.
+
+**Towers on the line of the sign** (`towerValue_signLine_mem`, `exists_towerValue_signLine_lt`):
+frames `(k_r/2, k_r)` with periods `≥ K` have tower values in `(½, K/(2(K − 1))]`. The wall of the
+line of the sign is `½`, not attained; the wall of the Gauss pairings is `⅗`, attained at `(3, 6)`
+(`three_fifths_le_towerValue_pairings`).
 -/
 
 namespace GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.Stickelberger
@@ -126,6 +132,41 @@ Gauss pairings exactly up to the period `6`, where both give the centre `⅗`. -
 theorem half_mul_le_two_thirds_mul_sub_one_iff (k : ℝ) : k / 2 ≤ 2 / 3 * k - 1 ↔ 6 ≤ k := by
   constructor <;> intro h <;> linarith
 
+/-! ### Towers on the line of the sign -/
+
+/-- **Towers on the line of the sign.** For frames `(k_r/2, k_r)` with `K ≤ k_r` the tower value
+lies in `(½, K/(2(K − 1))]`: above the line, and within `1/(2(K − 1))` of it. -/
+theorem towerValue_signLine_mem {k : ℕ → ℝ} {K : ℝ} (hK : 2 ≤ K) (hk : ∀ r, K ≤ k r) (r : ℕ) :
+    1 / 2 < towerValue (fun r => k r / 2) k r ∧
+      towerValue (fun r => k r / 2) k r ≤ K / (2 * (K - 1)) := by
+  have hk2 : ∀ r, 2 ≤ k r := fun r => hK.trans (hk r)
+  have hc0 : ∀ r, 0 ≤ k r / 2 := fun r => by linarith [hk2 r]
+  have hc : ∀ r, k r / 2 ≤ k r - 1 := fun r => by linarith [hk2 r]
+  refine ⟨?_, towerValue_le_of_centres_le hk2 hc0 hc (fun r => ?_) r⟩
+  · have hsol := isTowerSolution_towerValue hk2 hc0 hc r
+    have hnext : 1 / 2 ≤ towerValue (fun r => k r / 2) k (r + 1) :=
+      le_towerValue_of_centres_ge hk2 hc0 hc (fun r => by linarith) (r + 1)
+    rw [hsol, FamilyContinuationTheory.pairingStep, lt_div_iff₀ (by linarith [hk2 r])]
+    linarith
+  · have hK1 : 0 < K - 1 := by linarith
+    rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity)]
+    nlinarith [hk r]
+
+/-- **The wall of the line of the sign is `½`, not attained.** Constant frames `(K/2, K)` give
+tower values above `½` and below `½ + ε` once `K ≥ 2 + 1/ε`. -/
+theorem exists_towerValue_signLine_lt {ε : ℝ} (hε : 0 < ε) :
+    ∃ K : ℝ, 2 ≤ K ∧ 1 / 2 < towerValue (fun _ => K / 2) (fun _ => K) 0 ∧
+      towerValue (fun _ => K / 2) (fun _ => K) 0 < 1 / 2 + ε := by
+  refine ⟨2 + 1 / ε, by have := one_div_pos.2 hε; linarith, ?_⟩
+  have h := towerValue_signLine_mem (k := fun _ => 2 + 1 / ε) (K := 2 + 1 / ε)
+    (by have := one_div_pos.2 hε; linarith) (fun _ => le_rfl) 0
+  refine ⟨h.1, h.2.trans_lt ?_⟩
+  have hε' : 0 < 1 / ε := one_div_pos.2 hε
+  have hεt : ε * (1 / ε) = 1 := by field_simp
+  rw [div_lt_iff₀ (by linarith : (0 : ℝ) < 2 * (2 + 1 / ε - 1))]
+  nlinarith [hεt]
+
 #print axioms stickelbergerPrice_eq_half_mul
+#print axioms exists_towerValue_signLine_lt
 
 end GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.Stickelberger

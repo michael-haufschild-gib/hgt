@@ -43,6 +43,7 @@ Modules, in order of attack. Status: P = paper proof below, L = Lean compiled an
 | 16 | TheHeatTimeIsTheWidthTimesTheSpacing | E1 (heat) | L |
 | 17 | TheLossOfTheMarginIsBoundedOrPolynomial | E2 (loss exponent zero) | L |
 | 18 | TheMoebiusSignCostsHalfAUnitAtSomePlace | E4 (price of the sign) | L |
+| 19 | TheShortMoebiusMonomialsPayExactlyHalf | E3, E4 (the wall 3/5 is completion, not arithmetic) | L |
 
 Open, with the input that is missing:
 
@@ -209,6 +210,18 @@ so Σ_t (ta mod N) = |U|·N/2 and Σ_t defect(L^t) = Σ_χ (Σ_t (tn mod N)/N �
 (∏L)² = 1, so ∏L^t = ∏L and L^t is Möbius-signed; by M15 its defect is in ½ + ℤ. If all were < ½ they would be
 ≤ −½ and the sum negative. So some conjugate has defect ≥ ½.
 
+**M19 (short Möbius monomials pay exactly ½; towers on the sign line).** Towers with frames (k_r/2, k_r), k_r ≥ K:
+V_r = (k_r/2 + V_{r+1})/k_r ≥ ½ + 1/(2k_r) > ½ (M1 lower centre bound for V_{r+1}); centres k/(2(k−1)) ≤ K/(2(K−1)) give
+V ≤ K/(2(K−1)) (M1); with K = 2 + 1/ε the value is < ½ + ε. Prices: For r nontrivial characters each exponent lies in [1, N − 1], so
+r/N ≤ S/N ≤ r(N − 1)/N and the defect S/N − r/2 lies in (−r/2, r/2). For a Möbius-signed monomial it is in ½ + ℤ
+(M15); for r ≤ 3 only ±½ remain. Conjugates are Möbius-signed of the same length, so every conjugate has defect ±½,
+and some has +½ (M18): the price is exactly k/2, centre k/(2(k−1)). FCT two_thirds_mul_period_sub_one_le_pairingC
+gives c ≥ (2/3)k − 1; k/2 ≥ (2/3)k − 1 iff k ≤ 6: the two lines meet at k = 6, centre 3/5.
+Insight: the valuation (arithmetic) price of the Möbius sign allows centres k/(2(k−1)) → ½; the 3/5 wall is where
+per-factor completion (one Kubota series per Gauss factor) overtakes it. A source below 3/5 needs a joint completion
+of a short Möbius monomial (a theta series or multiple Dirichlet series whose coefficients are products of Gauss sums
+of distinct characters) at a period k ≥ 7. Paper status: the interpretation is [D]; the arithmetic is in Lean.
+
 ## No-go closure
 - **Margin in the mass normalisation at every block size** (fable §5.2, first lemma as stated). Not a consequence
   of the width. Insight: the normalisation decides exactness. Survivors, all in Lean: the exact ruler in the
@@ -225,4 +238,5 @@ so Σ_t (ta mod N) = |U|·N/2 and Σ_t defect(L^t) = Σ_χ (Σ_t (tn mod N)/N �
 ## Log
 - 2026-11-15 — created; README first draft written. Modules 1–6 compiled, axiom-clean, wired.
 - 2026-11-15 — modules 7–12 compiled, axiom-clean, wired.
-- 2026-11-15 — M3 §4 (shifted pairs), modules 13–18 compiled, axiom-clean, wired.
+- 2026-11-15 — M3 §4 (shifted pairs), modules 13–19 compiled, axiom-clean, wired. E4 rank one answered without the
+  classification of pure monomials (M18); the classification is needed only to identify completions.

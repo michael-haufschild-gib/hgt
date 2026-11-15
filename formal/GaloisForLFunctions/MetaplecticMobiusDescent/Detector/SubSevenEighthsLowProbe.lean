@@ -267,6 +267,7 @@ lemma canonical_slot_inverse_three_halves : ∃ C : ℝ, 0 < C ∧
     apply Finset.sum_congr rfl
     intro P _
     rw [canonicalSlotEquiv_norm]
+    dsimp [ProbeGramCommon.gramIdealNorm, f]
     norm_num
   rw [he]
   exact hb _
@@ -343,9 +344,7 @@ theorem sub_lowUnselectedMass_bound (K : ℕ) (a M : ℝ) (ha : 0 < a) (hM : 0 �
         (fun i _ => hslot i)
     _ = B ^ J.card * Z ^ (-lowUnselectedLength ell J / 2) := by
       rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_coe,
-        ← Real.rpow_sum_of_pos hZ]
-      congr 2
-      rw [lowUnselectedLength, ← Finset.sum_coe_sort]
+        ← Real.rpow_sum_of_pos hZ, Finset.sum_coe_sort J (fun i => -ell i / 2), lowUnselectedLength]
       simp_rw [neg_div, Finset.sum_neg_distrib, ← Finset.sum_div]
     _ ≤ B ^ K * Z ^ (-lowUnselectedLength ell J / 2) :=
       mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hB1 hc) (Real.rpow_nonneg hZ.le _)
@@ -368,7 +367,7 @@ theorem sub_low_selected_physical_energy (η : HeckeFamily.Character) (S : Finse
         (lowSelectedWeight η (fun i => canonicalSlotSupport (T i)) J W Y t)
         η S hS (lowSelectedIdeal (fun i => canonicalSlotSupport (T i)) J) (Z ^ (1 + ell0 + shift)) t σ z‖ ^ 2) ≤
         C * (1 + ‖t‖) ^ degree * Z ^ ((4999 / 6000 - 7 * d / 4) + 507 * ε) := by
-  obtain ⟨degree, C, Z₀, hC, hZ₀, he⟩ := InverseReflectedPhase.CompletedRows.sub_low_original_completed_energy
+  obtain ⟨degree, C, Z₀, hC, hZ₀, he⟩ := InverseReflectedPhase.sub_low_original_completed_energy
     (lowReflectionPeriod η S hS) (lowReflectionPeriod_ne_zero η S hS)
     (1 : Id) squarefree_one (lowReflectionMask η S hS) (lowReflectionMask_ne_zero η S hS)
     (lowReflectionMask_bad η S hS hbad).1 (lowReflectionMask_bad η S hS hbad).2
@@ -642,23 +641,20 @@ theorem sub_low_central_compensated_tuple (η : HeckeFamily.Character) (S : Fins
       (div_pos (by positivity) hL) (div_pos (by positivity) hL)
     have hgn : 0 ≤ lowGramFactor (calibrationForSet S hS) (Z ^ (17 / 48 : ℝ) / L) (Z ^ (479 / 1000 : ℝ) / L) ε :=
       Real.sqrt_nonneg _
-    have hh := mul_le_mul_of_nonneg_left hib
-      (mul_nonneg (norm_nonneg (lowUnselectedWeight slots J W Yp p)) hgn)
-    have hh2 := mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_left hgb (norm_nonneg (lowUnselectedWeight slots J W Yp p)))
-      (show 0 ≤ V by dsimp [V]; positivity)
     calc
-      _ = ‖lowUnselectedWeight slots J W Yp p‖ *
-        lowGramFactor (calibrationForSet S hS) (Z ^ (17 / 48 : ℝ) / L) (Z ^ (479 / 1000 : ℝ) / L) ε *
-        (Real.sqrt Q)⁻¹ / (2 * Real.pi) *
-        lowInverseMass (calibrationForSet S hS) (a0 * a1) (max 1 (b0 * b1)) (mul_pos ha0 ha1)
-          (lt_of_lt_of_le zero_lt_one (le_max_left _ _)) (Z ^ (17 / 48 : ℝ) / L) (Z ^ (479 / 1000 : ℝ) / L)
-          (div_pos (by positivity) hL) (div_pos (by positivity) hL)
-          (lowSelectedInverseRow Finset.univ (lowSelectedWeight η slots J W Yp t) η S hS (lowSelectedIdeal slots J) X t) := by ring
-      _ ≤ (‖lowUnselectedWeight slots J W Yp p‖ * Real.sqrt (3 * q / L)) * (G * V) := by
-        have hh3 := hh.trans hh2
-        simp only [G, V, d, div_eq_mul_inv, mul_assoc] at hh3 ⊢
-        convert hh3 using 1 <;> first | rfl | (congr 7 <;> rfl)
+      _ = (‖lowUnselectedWeight slots J W Yp p‖ *
+          lowGramFactor (calibrationForSet S hS) (Z ^ (17 / 48 : ℝ) / L) (Z ^ (479 / 1000 : ℝ) / L) ε) *
+          (((Real.sqrt Q)⁻¹ / (2 * Real.pi)) *
+          lowInverseMass (calibrationForSet S hS) (a0 * a1) (max 1 (b0 * b1)) (mul_pos ha0 ha1)
+            (lt_of_lt_of_le zero_lt_one (le_max_left _ _)) (Z ^ (17 / 48 : ℝ) / L) (Z ^ (479 / 1000 : ℝ) / L)
+            (div_pos (by positivity) hL) (div_pos (by positivity) hL)
+            (lowSelectedInverseRow Finset.univ (lowSelectedWeight η slots J W Yp t) η S hS (lowSelectedIdeal slots J) X t)) := by ring
+      _ ≤ (‖lowUnselectedWeight slots J W Yp p‖ *
+          lowGramFactor (calibrationForSet S hS) (Z ^ (17 / 48 : ℝ) / L) (Z ^ (479 / 1000 : ℝ) / L) ε) * V :=
+        mul_le_mul_of_nonneg_left hib (mul_nonneg (norm_nonneg _) hgn)
+      _ ≤ (‖lowUnselectedWeight slots J W Yp p‖ * (Real.sqrt (3 * q / L) * G)) * V :=
+        mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hgb (norm_nonneg _)) (by dsimp [V]; positivity)
+      _ = (‖lowUnselectedWeight slots J W Yp p‖ * Real.sqrt (3 * q / L)) * (G * V) := by ring
       _ ≤ (‖lowUnselectedWeight slots J W Yp p‖ * Real.sqrt (3 * q / L)) *
           (Ci * (1 + ‖t‖) ^ degree * Z ^ (13499 / 72000 + d / 8 + 254 * ε)) :=
         mul_le_mul_of_nonneg_left hGV (by positivity)
@@ -864,7 +860,7 @@ theorem sub_low_remote_gaussian_dyads (S : Finset Id) (hS : ∀ P ∈ S, P.IsMax
   refine ⟨?_, ?_⟩
   · convert hh.1 using 1
     funext j
-    split_ifs with h <;> simp_all only [ite_true, ite_false]
+    split_ifs with h <;> simp_all only
   · have hhFinal := hh.2.trans (show _ ≤ C0 * Z ^ (-1 : ℝ) from by
       have hm := sub_compensation_scale_mass_bound η (calibrationForSet S hS) ell hell hsum b Z hZ.1.le T hT hnorm J W hW
       calc
@@ -874,7 +870,7 @@ theorem sub_low_remote_gaussian_dyads (S : Finset Id) (hS : ∀ P ∈ S, P.IsMax
           (by have hb := sub_lowLength_bounds ell hell hsum J; linarith) hN') (by dsimp [C0]; positivity))
     convert hhFinal using 1 <;> first
     | rfl
-    | apply tsum_congr; intro j; split_ifs with h <;> simp_all only [ite_true, ite_false]
+    | apply tsum_congr; intro j; split_ifs with h <;> simp_all only
 
 theorem sub_low_central_gaussian_dyads (η : HeckeFamily.Character) (S : Finset Id)
     (hS : ∀ P ∈ S, P.IsMaximal) (hbad : fixedBadPrimes ⊆ S)
@@ -1065,7 +1061,7 @@ theorem sub_ray_compensatedPhysicalProbe_low_loss
     rw [norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hD]
     exact (div_le_one hD).mpr ((hWnorm i x).trans (le_max_right _ _))
   have hscale : (fun i x => (D : ℂ) * Wn i x) = W := by
-    funext i x; dsimp [Wn]; field_simp
+    funext i x; dsimp [Wn]; exact mul_div_cancel₀ _ (Complex.ofReal_ne_zero.mpr hD.ne')
   let ε := min (loss / 512) (1 / 2)
   have he : 0 < ε := by dsimp [ε]; positivity
   have he1 : ε < 1 := lt_of_le_of_lt (min_le_right _ _) (by norm_num)
