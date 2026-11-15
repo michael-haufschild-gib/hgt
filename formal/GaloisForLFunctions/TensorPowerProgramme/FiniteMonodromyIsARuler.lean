@@ -46,6 +46,7 @@ structure IsFiniteMonodromyBase (N lam : P → ℝ) (frob : P → Γ) : Prop whe
 
 variable {N lam : P → ℝ} {frob : P → Γ}
 
+omit [Fintype Γ] in
 /-- **A Frobenius class is an abelian base** with the trivial character group, once its weight is
 divided by its density. -/
 theorem isAbelianBase_fibre (hB : IsFiniteMonodromyBase N lam frob) (g : Γ) {c : ℝ} (hc : 0 < c)
@@ -53,7 +54,7 @@ theorem isAbelianBase_fibre (hB : IsFiniteMonodromyBase N lam frob) (g : Γ) {c 
     (hF : ∀ s : ℂ, 1 < s.re →
       ∑' x : {x // frob x = g}, (lam x : ℂ) * (N x : ℂ) ^ (-s) = G s + (c : ℂ) / (s - 1)) :
     IsAbelianBase (fun x : {x // frob x = g} => N x) (fun x => lam x / c)
-      (fun (_ : PUnit) _ => (1 : ℂ)) := by
+      (fun (_ : Unit) _ => (1 : ℂ)) := by
   have hc' : (c : ℂ) ≠ 0 := by exact_mod_cast hc.ne'
   refine IsAbelianBase.of_pnt (fun x => hB.one_le_norm x)
     (fun x => div_nonneg (hB.lam_nonneg x) hc.le) (fun σ hσ => ?_) (fun _ _ => by simp)
@@ -65,7 +66,7 @@ theorem isAbelianBase_fibre (hB : IsFiniteMonodromyBase N lam frob) (g : Γ) {c 
     ring
   · refine ⟨fun s => G s / c, hG.div_const _, fun s hs => ?_⟩
     have hsum : baseLSeries (fun x : {x // frob x = g} => N x) (fun x => lam x / c)
-        (fun (_ : PUnit) _ => (1 : ℂ)) 1 s =
+        (fun (_ : Unit) _ => (1 : ℂ)) 1 s =
         (∑' x : {x // frob x = g}, (lam x : ℂ) * (N x : ℂ) ^ (-s)) / c := by
       rw [baseLSeries, ← tsum_div_const]
       congr 1
@@ -83,21 +84,23 @@ def classMomentTerm (N lam : P → ℝ) (frob : P → Γ) (z b : ι → ℂ) (φ
     (σ : ℝ) (x : P) : ℝ :=
   lam x * ‖classTrace N frob z b φ x‖ ^ (2 * k) * N x ^ (-σ)
 
+omit [Fintype Γ] in
 theorem classMomentTerm_nonneg (hB : IsFiniteMonodromyBase N lam frob) (z b : ι → ℂ)
     (φ : ι → Γ → ℂ) (k : ℕ) (σ : ℝ) (x : P) : 0 ≤ classMomentTerm N lam frob z b φ k σ x :=
   mul_nonneg (mul_nonneg (hB.lam_nonneg x) (pow_nonneg (norm_nonneg _) _))
     (Real.rpow_nonneg (by linarith [hB.one_le_norm x]) _)
 
+omit [Fintype Γ] in
 /-- On the class `g` the moment is `c` times the moment of the flow datum with coefficients
 `b_i φ_i(g)`. -/
 theorem classMomentTerm_fibre (g : Γ) {c : ℝ} (hc : 0 < c) (z b : ι → ℂ) (φ : ι → Γ → ℂ)
     (k : ℕ) (σ : ℝ) (x : {x // frob x = g}) :
     classMomentTerm N lam frob z b φ k σ x =
       c * twistMomentTerm (fun x : {x // frob x = g} => N x) (fun x => lam x / c)
-        (fun (_ : PUnit) _ => (1 : ℂ)) z (fun i => b i * φ i g) (fun _ => (1 : PUnit)) k σ x := by
+        (fun (_ : Unit) _ => (1 : ℂ)) z (fun i => b i * φ i g) (fun _ => (1 : Unit)) k σ x := by
   have htr : classTrace N frob z b φ x =
-      twistTrace (fun x : {x // frob x = g} => N x) (fun (_ : PUnit) _ => (1 : ℂ)) z
-        (fun i => b i * φ i g) (fun _ => (1 : PUnit)) x := by
+      twistTrace (fun x : {x // frob x = g} => N x) (fun (_ : Unit) _ => (1 : ℂ)) z
+        (fun i => b i * φ i g) (fun _ => (1 : Unit)) x := by
     rw [classTrace, twistTrace, x.2]
     simp only [mul_one]
   rw [classMomentTerm, twistMomentTerm, htr]
@@ -108,9 +111,9 @@ theorem summable_classMomentTerm_iff_fibres (hB : IsFiniteMonodromyBase N lam fr
     (z b : ι → ℂ) (φ : ι → Γ → ℂ) (k : ℕ) (σ : ℝ) :
     Summable (classMomentTerm N lam frob z b φ k σ) ↔
       ∀ g : Γ, Summable fun x : {x // frob x = g} => classMomentTerm N lam frob z b φ k σ x := by
-  rw [← (Equiv.sigmaFiberEquiv frob).summable_iff,
-    summable_sigma_of_nonneg fun p => classMomentTerm_nonneg hB z b φ k σ _]
-  exact ⟨fun h => h.1, fun h => ⟨h, Summable.of_finite⟩⟩
+  rw [← (Equiv.sigmaFiberEquiv frob).summable_iff]
+  exact (summable_sigma_of_nonneg fun p => classMomentTerm_nonneg hB z b φ k σ _).trans
+    ⟨fun h => h.1, fun h => ⟨h, Summable.of_finite⟩⟩
 
 /-- **Finite monodromy is a ruler.** A datum over a base with finite monodromy, with distinct modes
 and width `W` (the largest real part of a mode active in some class), has `k`-th tensor moment
@@ -127,7 +130,7 @@ theorem summable_classMomentTerm_iff (hB : IsFiniteMonodromyBase N lam frob) {z 
     obtain ⟨c, hc, G, hG, hF⟩ := hB.chebotarev g₀
     have hBg := isAbelianBase_fibre hB g₀ hc hG hF
     have hs : Summable (twistMomentTerm (fun x : {x // frob x = g₀} => N x) (fun x => lam x / c)
-        (fun (_ : PUnit) _ => (1 : ℂ)) z (fun i => b i * φ i g₀) (fun _ => (1 : PUnit)) k σ) := by
+        (fun (_ : Unit) _ => (1 : ℂ)) z (fun i => b i * φ i g₀) (fun _ => (1 : Unit)) k σ) := by
       refine ((h g₀).div_const c).congr fun x => ?_
       rw [classMomentTerm_fibre g₀ hc]
       field_simp
@@ -138,7 +141,7 @@ theorem summable_classMomentTerm_iff (hB : IsFiniteMonodromyBase N lam frob) {z 
     obtain ⟨c, hc, G, hG, hF⟩ := hB.chebotarev g
     have hBg := isAbelianBase_fibre hB g hc hG hF
     have hs := summable_twistMomentTerm hBg (z := z) (b := fun i => b i * φ i g)
-      (fun _ => (1 : PUnit)) (fun i hi => hW i g hi) k hσ
+      (fun _ => (1 : Unit)) (fun i hi => hW i g hi) k hσ
     refine (hs.mul_left c).congr fun x => ?_
     rw [classMomentTerm_fibre g hc]
 
@@ -173,16 +176,19 @@ theorem residue_fibre_tsum (a : (ZMod q)ˣ) (s : ℂ) :
   funext n
   rcases eq_or_ne n 0 with rfl | hn
   · simp [LSeries.term, residueLam, Set.indicator_apply]
-  · rw [LSeries.term_of_ne_zero hn, dirichletNorm,
-      max_eq_left (by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hn), Complex.ofReal_natCast,
-      Complex.cpow_neg, div_eq_mul_inv]
+  · have hN : ((dirichletNorm n : ℝ) : ℂ) = (n : ℂ) := by
+      rw [dirichletNorm, max_eq_left (by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hn),
+        Complex.ofReal_natCast]
+    rw [LSeries.term_of_ne_zero hn]
     by_cases hu : IsUnit (n : ZMod q)
     · have hiff : residueFrob q n = a ↔ (n : ZMod q) = a := by
         rw [residueFrob, dif_pos hu]
         exact ⟨fun h => by rw [← h]; rfl, fun h => Units.ext h⟩
       by_cases hna : (n : ZMod q) = a
-      · simp [Set.indicator_apply, hiff.mpr hna, hna, residueLam, hu]
-      · simp [Set.indicator_apply, mt hiff.mp hna, hna]
+      · have h1 : residueFrob q n = a := hiff.mpr hna
+        simp [h1, hna, residueLam, hN, Complex.cpow_neg, div_eq_mul_inv]
+      · have h1 : ¬ residueFrob q n = a := mt hiff.mp hna
+        simp [h1, hna]
     · have hna : (n : ZMod q) ≠ a := fun h => hu (h ▸ a.isUnit)
       simp [Set.indicator_apply, residueLam, hu, hna]
 

@@ -21,3 +21,9 @@ The rotated correlation weights `T(ωh)T(h)`, not `T(h)²`. Its half-residue can
 ## Scope and status
 
 No new theorem or contribution counted. Internal corpus comparison only; no external literature checks. The exact residue and continuation domain remain to be proved before Lean formalization. A successful isolation would identify an actual arithmetic main term missing from O2, rather than restate the already formalized mixed pole.
+
+## Candidate separation by translations
+
+Replace rotations by the opposite translations `U = [[1,ω],[0,1]]` and `U⁻¹`. The product `θ_s(Uw)θ_s(U⁻¹w)` reads `T(h)²` with additive phase `tracePhase(2ωξ_h)`. The source mask restricts nonzero coefficients outside `3O` to the two primary signs. Pairing `h` and `−h` should therefore give weight `−1/2` on that layer and weight `1` on `3O`. This would make `D−D_U` exactly `3/2` times the unramified contribution.
+
+Required identities: `κ(UnU⁻¹)κ(U⁻¹nU)=κ(n)²`; only the cusp at infinity contributes to the product of the two translated four-cusp subtractions; the additive phase has the stated values. If these hold, the existing bounded-renormalization and spectral-pairing arguments should give `D_U` one quarter of the double-pole residue of `D`, hence a nonzero double pole for the unramified contribution. These ratios remain conjectural until all three identities and the analytic transfer are proved.
