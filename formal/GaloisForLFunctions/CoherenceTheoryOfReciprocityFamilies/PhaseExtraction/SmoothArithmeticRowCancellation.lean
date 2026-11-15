@@ -118,6 +118,26 @@ def eisensteinRowDecay (f : SchwartzMap E ℂ) (M : ℕ) (B : E ≃L[ℝ] E)
     ∑' m : Z, latticeBracket m ^ (-(M : ℝ))) *
       (μ * Real.sqrt (2 / (3 * (eisNormZ a b : ℝ)))) ^ (-(M : ℝ)))
 
+/-- A positive lower bound for the expansion of the inverse adjoint, determined by `B`. -/
+def eisensteinDualScale (B : E ≃L[ℝ] E) : ℝ :=
+  (‖(inverseAdjointEquiv B).symm.toContinuousLinearMap‖ + 1)⁻¹
+
+theorem eisensteinDualScale_pos (B : E ≃L[ℝ] E) : 0 < eisensteinDualScale B := by
+  unfold eisensteinDualScale
+  positivity
+
+theorem eisensteinDualScale_mul_norm_le (B : E ≃L[ℝ] E) (v : E) :
+    eisensteinDualScale B * ‖v‖ ≤ ‖inverseAdjoint B v‖ := by
+  have hn := (inverseAdjointEquiv B).symm.toContinuousLinearMap.le_opNorm
+    ((inverseAdjointEquiv B) v)
+  change ‖(inverseAdjointEquiv B).symm ((inverseAdjointEquiv B) v)‖ ≤
+    ‖(inverseAdjointEquiv B).symm.toContinuousLinearMap‖ * ‖inverseAdjoint B v‖ at hn
+  rw [ContinuousLinearEquiv.symm_apply_apply] at hn
+  have hp : 0 < ‖(inverseAdjointEquiv B).symm.toContinuousLinearMap‖ + 1 := by positivity
+  rw [eisensteinDualScale, inv_mul_eq_div]
+  apply (div_le_iff₀ hp).mpr
+  exact hn.trans (by nlinarith only [norm_nonneg (inverseAdjoint B v)])
+
 /-- Signed extraction on the lattice: the reciprocal target is removed before the norm,
 and the remaining actual arithmetic modes satisfy an explicit Poisson bound. -/
 theorem norm_tsum_rowTargetResidual_le (f : SchwartzMap E ℂ) {M : ℕ} (hM : (2 : ℝ) < M)
@@ -182,8 +202,7 @@ theorem rowTargetResidual_localTerm (π : O) [NeZero π]
 convergence domain. The main term is exactly the reciprocal target times the
 coprimality indicator, rather than an absolute-value replacement. -/
 theorem norm_tsum_localTerm_target_error_le (f : SchwartzMap E ℂ) {M : ℕ}
-    (hM : (2 : ℝ) < M) (B : E ≃L[ℝ] E) {μ : ℝ} (hμ : 0 < μ)
-    (hT : ∀ v, μ * ‖v‖ ≤ ‖inverseAdjoint B v‖)
+    (hM : (2 : ℝ) < M) (B : E ≃L[ℝ] E)
     (a b : ℤ) [NeZero (eval a b)] [(Ideal.span {eval a b}).IsMaximal]
     (hlam : lambda ∉ Ideal.span {eval a b}) (h2 : (2 : O) ∉ Ideal.span {eval a b})
     (hprim : lambda ^ 2 ∣ eval a b - 1) (η X Y V : ℂ)
@@ -196,10 +215,12 @@ theorem norm_tsum_localTerm_target_error_le (f : SchwartzMap E ℂ) {M : ℕ}
                (1 - complexSexticChar (Ideal.span {eval a b}) hlam d * Y)⁻¹) +
          η * X * (1 : MulChar (O ⧸ Ideal.span {eval a b}) ℂ) d) *
            f (B (euclideanIntegerPoint n))‖ ≤
-      eisensteinRowDecay f M B μ a b * Real.sqrt (Fintype.card (O ⧸ Ideal.span {eval a b})) *
+      eisensteinRowDecay f M B (eisensteinDualScale B) a b *
+        Real.sqrt (Fintype.card (O ⧸ Ideal.span {eval a b})) *
         (‖rowTargetConstant (primeQ (eval a b)) (primeR (eval a b) η X V) η X Y V‖ +
           ‖primeR (eval a b) η X V * Y‖) := by
   simp_rw [rowTargetResidual_localTerm (eval a b) hlam h2 hprim η X Y V hV hY hR]
-  exact norm_tsum_rowTargetResidual_le f hM B hμ hT a b hlam _ _ η X Y V
+  exact norm_tsum_rowTargetResidual_le f hM B (eisensteinDualScale_pos B)
+    (eisensteinDualScale_mul_norm_le B) a b hlam _ _ η X Y V
 
 end GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies
