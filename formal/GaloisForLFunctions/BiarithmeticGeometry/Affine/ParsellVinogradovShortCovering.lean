@@ -26,7 +26,7 @@ private theorem corner_not_mem_center_ge_neg_one (k : ℕ) (ε t : ℝ)
   simp only [Fin.cons_zero, Fin.cons_succ] at hv
   have hs : ε * (∑ _ : Fin 2, (1 / ε) * (1 : ℝ)) = 2 := by
     calc
-      _ = (2 / ε) * ε := by norm_num [Fin.sum_univ_succ] <;> ring
+      _ = (2 / ε) * ε := by norm_num [Fin.sum_univ_succ]; ring
       _ = 2 := div_mul_cancel₀ 2 (ne_of_gt hε)
   rw [hs, abs_of_pos hε] at hv
   have hlo := (abs_le.mp hv).1

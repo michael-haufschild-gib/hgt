@@ -326,7 +326,9 @@ theorem exists_adsNoGo_nonseparation_at_aperture_log_two :
   have hmin_pos : 0 < min (1 / 4) (δ / 2) := lt_min (by norm_num) (by positivity)
   have hα₀_mem : α₀ ∈ Ioo (1 / 2 : ℝ) 1 :=
     ⟨by dsimp [α₀]; linarith, by dsimp [α₀]; linarith [min_le_left (1 / 4) (δ / 2)]⟩
-  refine ⟨α₀, hα₀_mem, ?_, confiningSourceEnergy_weak_endpoint_strict_lt,
+  refine ⟨α₀, hα₀_mem, ?_,
+    fun u v => confiningSourceEnergy_weak_endpoint_strict_lt u v
+      (criticalAliasCoefficient_positive zero_lt_one).le,
     riemannHypothesis_iff_onsetAperture_zeta_eq_top⟩
   intro α h0 h1 hα_lt
   have hdist : dist α (1 / 2) < δ := by

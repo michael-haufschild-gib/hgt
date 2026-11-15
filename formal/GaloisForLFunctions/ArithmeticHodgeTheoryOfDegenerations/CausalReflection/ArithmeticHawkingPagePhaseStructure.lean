@@ -53,6 +53,7 @@ theorem criticalHalfLineFullEnergy_eq_bare_add_confinement (R : ℝ) {F : ℝ �
       criticalAliasCoefficient R * (∫ u, F u ^ 2 * Real.exp (-(8 * u))) := by
   unfold criticalHalfLineFullEnergy bareHalfLineEnergy
   rw [halfLineExpMass_eq_full hF.support]
+  ring
 
 /-- Every unit-norm profile supported on `(-∞, 0)` has eighth-exponential mass strictly
 greater than `1`. -/

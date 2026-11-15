@@ -2,7 +2,7 @@ import GaloisForLFunctions.BiarithmeticGeometry.Affine.ParsellVinogradovCovering
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.IntegerGridApproximation
 
 /-!
-# A finite corrected covering of the unit moment manifold
+# A finite covering of the unit moment manifold
 
 The inverse physical shear coordinate lies in `[-(r+1),1]`. Sampling its
 scaled integer part gives a finite covering with unit-bounded frame
@@ -59,14 +59,14 @@ theorem exists_dimensionGrid_momentCoveringBox (r k q : ℕ) (ε : ℝ) (hε : �
   rw [mem_centeredCube_iff] at hx ⊢
   exact fun a => (hx a).trans (by norm_num)
 
-/-- The corrected finite grid has inverse-scale size, with an explicit additive rounding term. -/
+/-- The dimension-dependent grid has inverse-scale size, with an explicit additive rounding term. -/
 theorem card_dimensionCoveringGrid_le (r q : ℕ) (ε : ℝ) :
     ((dimensionCoveringGrid r q ε).card : ℝ) ≤
       2 * (q + 1 : ℝ) * ((r + 1 : ℕ) : ℝ) / |ε| + 3 := by
   have hR : 0 ≤ (q + 1 : ℝ) * ((r + 1 : ℕ) : ℝ) / |ε| + 1 := by positivity
   exact (card_integerWindow_le 0 _ hR).trans_eq (by ring)
 
-/-- In positive degree, the corrected grid covers the full unit moment image exactly at nonzero scale. -/
+/-- In positive degree, this grid covers the full unit moment image exactly at nonzero scale. -/
 theorem dimensionGrid_covers_unit_moments_iff (r k q : ℕ) (ε : ℝ)
     (δ : Fin (r + 1) → ℝ) (hθ : ∀ i, 0 ≤ ε * δ i ∧ ε * δ i ≤ 1) :
     (∀ (u : Fin (r + 1) → ℝ) (z : ℝ), (∀ i, 0 ≤ u i ∧ u i ≤ 1) →

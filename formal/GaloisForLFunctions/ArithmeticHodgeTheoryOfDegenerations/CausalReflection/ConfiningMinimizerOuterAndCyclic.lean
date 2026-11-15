@@ -237,8 +237,8 @@ theorem IsHalfLineEnergyMinimizer.endpoint_mass_pos
     indicator_of_notMem (show u + (-d / 2) ∉ Iio (-d / 2) by
       change ¬u + (-d / 2) < -d / 2
       linarith only [hu]) F
-  have hnShift : (∫ u, G (u + (-d / 2)) ^ 2) = 1 := by
-    simpa only [hnG] using integral_add_right_eq_self (μ := volume) (fun u => G u ^ 2) (-d / 2)
+  have hnShift : (∫ u, G (u + (-d / 2)) ^ 2) = 1 :=
+    (integral_add_right_eq_self (μ := volume) (fun u => G u ^ 2) (-d / 2)).trans hnG
   have hfloor := criticalHalfLineGroundEnergy_le hR (hG.comp_add_right (-d / 2) hsShift) hnShift
   rw [criticalHalfLineFullEnergy_comp_add_right hG _ _ hsShift, henergy] at hfloor
   have heps : Real.exp (8 * (-d / 2)) - 1 < 0 := by

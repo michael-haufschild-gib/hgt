@@ -79,6 +79,12 @@ local instance commonFactorCyclesAddCommGroup (z : R) (E : Type*) [AddCommGroup 
     [Module R E] (p : ℕ) : AddCommGroup (splitCommonFactorKoszulCycles z E p) :=
   Module.addCommMonoidToAddCommGroup R
 
+/-- The quotient and torsion coordinates use the same scalar additive inverses. -/
+local instance commonFactorTorsionCoordinatesAddCommGroup (z : R) (E : Type*)
+    [AddCommGroup E] [Module R E] (p : ℕ) :
+    AddCommGroup (exteriorScalarQuotient z E (p + 1) × exteriorScalarTorsion z E p) :=
+  Module.addCommMonoidToAddCommGroup R
+
 /-- Homology of the split common-factor complex, using its actual boundary relation. -/
 abbrev commonFactorTorsionHomology (z : R) (E : Type*) [AddCommGroup E] [Module R E]
     (p : ℕ) : Type _ :=

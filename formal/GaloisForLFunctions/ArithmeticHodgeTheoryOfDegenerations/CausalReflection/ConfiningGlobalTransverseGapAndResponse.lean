@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ConfiningHalfLineGroundEnergyCurvature
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.CriticalHalfLineEnergyBranch
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.CriticalHalfLineGroundEnergyDerivative
+import Mathlib.Analysis.Calculus.ContDiff.Deriv
 
 /-!
 # Global transverse spectral gap and Lipschitz parameter response at every positive ratio
@@ -447,8 +448,7 @@ theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
               L * |criticalAliasCoefficient S - criticalAliasCoefficient R| := by
   obtain ⟨γ, hγ, hgap⟩ := hF.controls_neutralPart hR
   let w : ℝ := ∫ u, F u ^ 2 * Real.exp (-(8 * u))
-  have hw1 : 1 ≤ w := by
-    simpa only [hF.2.1] using hF.1.square_mass_le_exponential_mass
+  have hw1 : 1 ≤ w := one_le_exponential_square_of_domain hF.1 hF.2.1
   have hw : 0 < w := zero_lt_one.trans_le hw1
   let J : ℝ := ∫ u, (Real.exp (-|u|) * polarSourceProfile u) ^ 2
   have hJ : 0 ≤ J := integral_nonneg fun u => sq_nonneg _
@@ -741,7 +741,7 @@ differentiable (`C¹`) on `(0, ∞)` with locally Lipschitz derivatives (`C^{1,1
 theorem contDiffOn_one_confiningHalfLineGroundEnergy :
     ContDiffOn ℝ 1 confiningHalfLineGroundEnergy (Ioi 0) := by
   rw [show (1 : WithTop ℕ∞) = 0 + 1 from rfl, contDiffOn_succ_iff_deriv_of_isOpen isOpen_Ioi]
-  refine ⟨fun t ht => ?_, fun h => nomatch h, contDiffOn_zero.mpr ?_⟩
+  refine ⟨fun t ht => ?_, by simp, contDiffOn_zero.mpr ?_⟩
   · obtain ⟨F, hF⟩ := exists_criticalHalfLineGroundEnergy_minimizer (inv_pos.mpr ht)
     exact (hasDerivAt_confiningHalfLineGroundEnergy_of_minimizer ht hF).differentiableAt.differentiableWithinAt
   · rw [isOpen_Ioi.continuousOn_iff]

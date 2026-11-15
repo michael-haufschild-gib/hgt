@@ -61,6 +61,8 @@ import GaloisForLFunctions.FamilyContinuationTheory.GrossencharacterLFunctionsHa
 import GaloisForLFunctions.FamilyContinuationTheory.TheCubicProbeIsACoupledTowerReachingThreeFifths
 import GaloisForLFunctions.FamilyContinuationTheory.TheMoebiusParityOfAGaussMonomial
 import GaloisForLFunctions.FamilyContinuationTheory.MoebiusSignedGaussPairingsEndAtThreeFifths
+import GaloisForLFunctions.FamilyContinuationTheory.TheRankTwoMultipleDirichletSeriesConvexityHull
+import GaloisForLFunctions.FamilyContinuationTheory.TheCubicCoverSpecializationOfTheBindingBin
 
 /-!
 # Family continuation theory
@@ -231,5 +233,30 @@ Umbrella for the route "a zero-free half-plane by continuing the reciprocals of 
   `(3/2 − 1/n)(2κ − 1)/(2κ + 1) ≥ 25/28 > 7/8` and `θ ≥ 22/21 > 1`; and general `(c, k)` coupled
   towers `Θ_r ≤ max(σ₀, (c + Θ_{r+1})/k)` contract to `max(σ₀, c/(k − 1))` with stationary solution
   `Θ_r = c/(k − 1) ≥ 3/5`.
+* **The rank-two multiple Dirichlet series convexity hull and binding-bin specialization.** At
+  every primary prime `π ∤ 6` and unramified row `u ∉ (π)`, specializing the local Poisson series to
+  `X = 0, V = 0` gives `(1 − χ_π(u) Y)⁻¹`, the sextic (`n = 6`) Hecke Euler factor, whose global
+  character `idealRowHom` restricts to the cubic cover symbol `idealSymbol` (`n = 3`) on square
+  ideals `u = d²` (`N(d) ≤ U^{1/2}`), while `χ(4) G₁ G₂ = −π |π| Γ(π) ≠ 0` maps sextic–cubic Gauss
+  products into the quadratic Gauss phase and linear independence of distinct norm shells `n^{−σ}`
+  prevents inverse-`L` polar cancellation across distinct row norms. Under the `W(A₂) ≅ S₃`
+  reflections `w₁(s₁, s₂) = (1 − s₁, s₁ + s₂ − ½)` and `w₂(s₁, s₂) = (s₁ + s₂ − ½, 1 − s₂)` of an
+  order-`n` multiple Dirichlet series over `ℚ(ω)`, none of the six absolute-convergence cones meets
+  `(0, 1) × ℝ`, the Kubota polar orbit intersects `s₁ = (1 − δ)/2` at `{½ ± 1/n, ½ ± 1/n + δ/2}`,
+  and the exact convex lower envelope of the braid-invariant `(0, 1, 1)` Stirling cone costs on
+  `[0, 1] × ℝ` is `max(0, 1 − (σ₁ + 2σ₂)/3, 3/2 − (2σ₁ + 4σ₂)/3, 3/2 − σ₁ − 2σ₂)`, attained by
+  explicit convex cone decompositions. Along `s₁ = (1 − δ)/2`, the sharp-truncation Perron exponent
+  has global minimum `7/8 + δ/4` (constant across `[−(1 − δ)/4, (2 + δ)/4]`), so at `δ = 79/204`
+  every `A₂` continuation exponent (`793/816 < 1 < 419/408 < 487/408 < 1099/816`) exceeds both
+  `rowCount(79/204, ½) + δ/2 = 224609/260712` and `4571/5304`. Across all geometries, the global
+  minimax of `max(lowBoundaryGen, highBoundary)` is bounded below by `1 − 2/(3(6R + 6δ − 1))` over
+  `ℝ³` (`R ≥ 2/3, δ ≥ 0`, attained for `R + δ ≤ 3/2`) and by `(3R + 3δ + 1)/(2R + 2δ + 3)` over
+  `ℓ ≥ 0` (`2/3 ≤ R ≤ (δ + 5)/6, R + δ ≥ 4/9`, attained for `R + δ ≥ 3/2`), placing all rank-two
+  rejection boundaries (`1`, `679/747`, `1474/1599`, `577/645`, `39/40`, `1121/1257`, `2173/2445`)
+  strictly above `7/8`. Squaring doubles `(κ, κ') = (1, 1)` (`A₂`, trace `−1`, order `3`) to
+  `(2, 2)` (`Ã₁`, trace `2`, parabolic), on `δ = 0` the Kubota pole `½ + 1/n` coincides with
+  `R_crit(n) = ½ + 1/n` (`5/6` at `n = 3`, `s = 0`), and `probeThetaHybridFree 6 ≥ 4/5` locks
+  `s = 0 < 1/12` (`5/6 − s`), while `HeckeFamily.LFunction ≠ 0` on `Re s > σ₀` (`σ₀ ≥ 0`) transfers
+  unconditionally to `riemannZeta` and every `DirichletCharacter.LFunction`.
 -/
 import GaloisForLFunctions.FamilyContinuationTheory.EisensteinNormSquareDescent
