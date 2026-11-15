@@ -15,6 +15,24 @@ namespace GaloisForLFunctions.HTGeometry
 variable {K k : Type*} [Field K] [Field k]
 variable (p : ℕ) [Fact p.Prime] [CharP K p] [CharP k p]
 
+/-- Characteristic-power multiplication is injective in every degree over a perfect field.
+Degree zero is the integer group; positive degrees admit unique characteristic-power division. -/
+theorem milnorKDeg_charPower_injective_all [PerfectRing k p] (r n : ℕ) :
+    Function.Injective (fun x : MilnorKDeg k n => p ^ r • x) := by
+  cases n with
+  | zero =>
+      intro x y h
+      apply (milnorDegZeroEquiv k).injective
+      have hh := congrArg (milnorDegZeroEquiv k) h
+      simp only [map_nsmul, nsmul_eq_mul] at hh
+      have hzero : ((p ^ r : ℕ) : ℤ) *
+          (milnorDegZeroEquiv k x - milnorDegZeroEquiv k y) = 0 := by
+        rw [mul_sub, hh, sub_self]
+      have hp : p ≠ 0 := (show p.Prime from Fact.out).ne_zero
+      have hne : ((p ^ r : ℕ) : ℤ) ≠ 0 := Nat.cast_ne_zero.mpr (pow_ne_zero r hp)
+      exact sub_eq_zero.mp ((mul_eq_zero.mp hzero).resolve_left hne)
+  | succ n => exact (milnorKDeg_charPower_bijective (F := k) p r n).1
+
 /-- A map preserving Milnor degree intertwines Frobenius because both weights agree. -/
 theorem milnorDegreeHom_iterateFrobenius (r n : ℕ)
     (f : MilnorKDeg K n →+ MilnorKDeg k n) (x : MilnorKDeg K n) :
@@ -54,25 +72,51 @@ theorem milnorResidueInfty_iterateFrobenius (r n : ℕ)
   simpa only [Nat.mul_one] using
     milnorDegreeDropHom_iterateFrobenius p r n 1 (milnorResidueInfty n) x
 
+/-- Over a perfect residue field, Frobenius preserves the residue kernel in every degree. -/
+theorem milnorResidue_iterateFrobenius_eq_zero_iff_all_degrees [PerfectRing k p]
+    (D : ResidueData K k) (r n : ℕ) (x : MilnorKDeg K (n + 1)) :
+    milnorResidue D (n + 1) (milnorKDegMap (iterateFrobenius K p r) (n + 1) x) = 0 ↔
+      milnorResidue D (n + 1) x = 0 := by
+  rw [milnorKDegMap_iterateFrobenius, map_nsmul]
+  constructor
+  · intro h
+    apply milnorKDeg_charPower_injective_all p (r * (n + 1)) n
+    simpa only [smul_zero] using h
+  · rintro h
+    rw [h, smul_zero]
+
+/-- The infinity-residue kernel is preserved by Frobenius in all degrees. -/
+theorem milnorResidueInfty_iterateFrobenius_eq_zero_iff_all_degrees [PerfectRing k p]
+    (r n : ℕ) (x : MilnorKDeg (RatFunc k) (n + 1)) :
+    milnorResidueInfty n (milnorKDegMap (iterateFrobenius (RatFunc k) p r) (n + 1) x) = 0 ↔
+      milnorResidueInfty n x = 0 := by
+  rw [milnorKDegMap_iterateFrobenius, map_nsmul]
+  constructor
+  · intro h
+    apply milnorKDeg_charPower_injective_all p (r * (n + 1)) n
+    simpa only [smul_zero] using h
+  · rintro h
+    rw [h, smul_zero]
+
 /-- With perfect residue field, Frobenius preserves vanishing of every positive-degree residue.
 The original field need not be perfect. -/
 theorem milnorResidue_iterateFrobenius_eq_zero_iff [PerfectRing k p]
     (D : ResidueData K k) (r n : ℕ) (x : MilnorKDeg K (n + 2)) :
     milnorResidue D (n + 2) (milnorKDegMap (iterateFrobenius K p r) (n + 2) x) = 0 ↔
-      milnorResidue D (n + 2) x = 0 := by
-  rw [milnorKDegMap_iterateFrobenius, map_nsmul]
-  exact milnorKDeg_charPower_smul_eq_zero_iff p (r * (n + 2)) n _
+      milnorResidue D (n + 2) x = 0 :=
+  milnorResidue_iterateFrobenius_eq_zero_iff_all_degrees p D r (n + 1) x
 
 /-- Frobenius preserves the kernel of the infinity residue over a perfect constant field. -/
 theorem milnorResidueInfty_iterateFrobenius_eq_zero_iff [PerfectRing k p]
     (r n : ℕ) (x : MilnorKDeg (RatFunc k) (n + 2)) :
     milnorResidueInfty (n + 1)
         (milnorKDegMap (iterateFrobenius (RatFunc k) p r) (n + 2) x) = 0 ↔
-      milnorResidueInfty (n + 1) x = 0 := by
-  rw [milnorKDegMap_iterateFrobenius, map_nsmul]
-  exact milnorKDeg_charPower_smul_eq_zero_iff p (r * (n + 2)) n _
+      milnorResidueInfty (n + 1) x = 0 :=
+  milnorResidueInfty_iterateFrobenius_eq_zero_iff_all_degrees p r (n + 1) x
 
 end GaloisForLFunctions.HTGeometry
 
 #print axioms GaloisForLFunctions.HTGeometry.milnorResidue_iterateFrobenius
 #print axioms GaloisForLFunctions.HTGeometry.milnorResidueInfty_iterateFrobenius_eq_zero_iff
+#print axioms GaloisForLFunctions.HTGeometry.milnorResidue_iterateFrobenius_eq_zero_iff_all_degrees
+#print axioms GaloisForLFunctions.HTGeometry.milnorResidueInfty_iterateFrobenius_eq_zero_iff_all_degrees

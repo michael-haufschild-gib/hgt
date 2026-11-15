@@ -30,7 +30,7 @@ theorem exceptionalChainEnergy_expansion (n : ℕ) (f : ℕ → ℝ) :
       2 * ∑ k ∈ range (n + 1), f k ^ 2 -
       2 * ∑ k ∈ range n, f k * f (k + 1) + ((n : ℝ) + 1) * f n ^ 2 := by
   rw [exceptionalChainEnergy, incidenceEnergy_chainCoupling]
-  simp only [add_mul, sum_add_distrib, ← mul_sum,
+  simp only [add_mul, sum_add_distrib, ← mul_sum, neg_mul,
     sum_neg_distrib, ite_mul, zero_mul, sum_ite_eq', mem_range, Nat.lt_succ_self, if_true]
   ring
 

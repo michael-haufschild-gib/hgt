@@ -99,8 +99,10 @@ theorem zetaZeroWidth_le_of_pencil (P : PencilThroughZeta ι) {k : ℕ} (hk : 1 
   have hp0 : (0 : ℝ) < P.p := by linarith
   have ha := pencil_coeff_nonneg P k
   have hf := levelFreq_nonneg P.ℓ_nonneg
-  have hx := (summable_pencil_two P hk).comp_injective
-    (fun a b h => (Prod.mk.inj h).2 : Function.Injective fun n : ℕ => (P.x₀, n))
+  have hx : Summable fun n : ℕ => gdTwistTerm
+      (fun q : ι × ℕ => P.lam q.1 * P.trace q.1 (q.2 + 1) ^ (2 * k)) (levelFreq P.ℓ) 2 0 (P.x₀, n) :=
+    (summable_pencil_two P hk).comp_injective
+      (fun a b h => (Prod.mk.inj h).2 : Function.Injective fun n : ℕ => (P.x₀, n))
   set C := ∑' n : ℕ, gdTwistTerm (fun q : ι × ℕ => P.lam q.1 * P.trace q.1 (q.2 + 1) ^ (2 * k))
     (levelFreq P.ℓ) 2 0 (P.x₀, n)
   have hC0 : 0 ≤ C := tsum_nonneg fun n => gdTwistTerm_nonneg ha hf 2 0 _
@@ -120,7 +122,8 @@ theorem zetaZeroWidth_le_of_pencil (P : PencilThroughZeta ι) {k : ℕ} (hk : 1 
   -- every level of x₀ is at most B ρ^{n+1}
   have hlev : ∀ n : ℕ, |P.trace P.x₀ (n + 1)| ≤ B * ρ ^ (n + 1) := by
     intro n
-    have ht := hx.le_tsum n fun j _ => gdTwistTerm_nonneg ha hf 2 0 _
+    have ht : gdTwistTerm (fun q : ι × ℕ => P.lam q.1 * P.trace q.1 (q.2 + 1) ^ (2 * k))
+        (levelFreq P.ℓ) 2 0 (P.x₀, n) ≤ C := hx.le_tsum n fun j _ => gdTwistTerm_nonneg ha hf 2 0 _
     simp only [gdTwistTerm, pow_zero, mul_one] at ht
     have hE := exp_levelFreq P.ℓ P.x₀ n
     rw [P.freq_x₀, Real.exp_log hp0] at hE
@@ -186,31 +189,32 @@ theorem riemannHypothesis_iff_nonempty_pencil :
     RiemannHypothesis ↔ Nonempty (PencilThroughZeta Unit) := by
   refine ⟨fun hRH => ?_, fun ⟨P⟩ => riemannHypothesis_of_pencil P⟩
   obtain ⟨C, hC⟩ := exists_bound_towerMoment_of_riemannHypothesis hRH Nat.prime_two
-  set t : ℕ → ℝ := fun n => ‖towerMoment Zeta23.zetaZeroConfig zetaCycle (Real.log 2) n‖
+  set L : ℝ := Real.log ((2 : ℕ) : ℝ)
+  set t : ℕ → ℝ := fun n => ‖towerMoment Zeta23.zetaZeroConfig zetaCycle L n‖
   have hC0 : 0 ≤ C := (norm_nonneg _).trans (hC 0)
-  have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
-  have hf : ∀ q : Unit × ℕ, 0 ≤ levelFreq (fun _ : Unit => Real.log 2) q :=
+  have hlog2 : 0 < L := Real.log_pos (by norm_num)
+  have hf : ∀ q : Unit × ℕ, 0 ≤ levelFreq (fun _ : Unit => L) q :=
     levelFreq_nonneg fun _ => hlog2.le
-  refine ⟨{ ℓ := fun _ => Real.log 2, lam := fun _ => 1, trace := fun _ n => t n,
-    ℓ_nonneg := fun _ => hlog2.le, lam_nonneg := fun _ => zero_le_one,
-    poleLaw := fun k _ => ?_, x₀ := (), p := 2, prime := Nat.prime_two, freq_x₀ := by norm_num,
-    weight_x₀ := one_pos, zeta_fibre := fun n => abs_of_nonneg (norm_nonneg _) }⟩
+  refine ⟨⟨fun _ => L, fun _ => 1, fun _ n => t n, fun _ => hlog2.le, fun _ => zero_le_one,
+    fun k _ => ?_, (), 2, Nat.prime_two, rfl, one_pos, fun n => abs_of_nonneg (norm_nonneg _)⟩⟩
   have ha : ∀ q : Unit × ℕ, 0 ≤ (1 : ℝ) * t (q.2 + 1) ^ (2 * k) := fun q => by
     rw [one_mul, pow_mul]; exact pow_nonneg (sq_nonneg _) _
   -- the coefficients are at most C^{2k}, so the series converges on Re s > 0
   have hsum : ∀ σ : ℝ, 0 < σ → Summable (gdTwistTerm (fun q : Unit × ℕ => (1 : ℝ) * t (q.2 + 1) ^ (2 * k))
-      (levelFreq fun _ => Real.log 2) σ 0) := by
+      (levelFreq fun _ => L) σ 0) := by
     intro σ hσ
-    set r := Real.exp (-(σ * Real.log 2))
+    set r := Real.exp (-(σ * L))
     have hr0 : 0 ≤ r := (Real.exp_pos _).le
-    have hr1 : r < 1 := Real.exp_lt_one.mpr (by nlinarith)
+    have hr1 : r < 1 := by
+      rw [← Real.exp_zero]
+      exact Real.exp_lt_exp.mpr (by nlinarith)
     have hg : Summable fun n : ℕ => C ^ (2 * k) * r ^ (n + 1) :=
       ((summable_geometric_of_lt_one hr0 hr1).mul_left r).mul_left (C ^ (2 * k)) |>.congr
         fun n => by ring
     have hg' : Summable fun q : Unit × ℕ => C ^ (2 * k) * r ^ (q.2 + 1) :=
       (Equiv.summable_iff (Equiv.punitProd ℕ)).mpr hg
     refine Summable.of_nonneg_of_le (gdTwistTerm_nonneg ha hf σ 0) (fun q => ?_) hg'
-    have hexp : Real.exp (-(σ * levelFreq (fun _ : Unit => Real.log 2) q)) = r ^ (q.2 + 1) := by
+    have hexp : Real.exp (-(σ * levelFreq (fun _ : Unit => L) q)) = r ^ (q.2 + 1) := by
       rw [← Real.exp_nat_mul]
       congr 1
       simp only [levelFreq]
