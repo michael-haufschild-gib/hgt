@@ -38,10 +38,11 @@ theorem dualKoszul_span_eq_socle_range :
     obtain ⟨y, hy⟩ := Ideal.mem_span_singleton.mp hx
     refine ⟨dualNumberResidue y, ?_⟩
     rw [← LinearMap.comp_apply, ← dualNumberEpsMul_eq_socle_comp_residue]
-    exact hy
+    exact hy.symm
   · rintro ⟨y, rfl⟩
     apply Ideal.mem_span_singleton.mpr
     refine ⟨TrivSqZeroExt.inl y, ?_⟩
+    symm
     change dualNumberEpsMul (TrivSqZeroExt.inl y) = dualNumberSocleInclusion y
     rw [dualNumberEpsMul_eq_socle_comp_residue, LinearMap.comp_apply]
     rfl
@@ -57,9 +58,9 @@ def dualKoszulAnnihilatorEquiv :
   · intro x y h
     exact dualNumberSocleInclusion_injective (congrArg Subtype.val h)
   · intro x
-    have hx := x.property
-    rw [dualKoszul_annihilator_eq_residue_ker,
-      ← dualNumberSocle_range_eq_residue_ker] at hx
+    have hx : x.val ∈ LinearMap.range (dualNumberSocleInclusion (K := K)) := by
+      simpa only [dualKoszul_annihilator_eq_residue_ker,
+        ← dualNumberSocle_range_eq_residue_ker] using x.property
     obtain ⟨y, hy⟩ := hx
     exact ⟨y, Subtype.ext hy⟩
 

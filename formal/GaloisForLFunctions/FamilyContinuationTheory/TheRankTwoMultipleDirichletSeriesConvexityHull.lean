@@ -32,7 +32,7 @@ boundaries separating rank two from `7/8`:
 * **Sharp-truncation Perron plateau and binding-bin exclusion** (`perronSharpExponent_ge`,
   `perronSharpExponent_eq_plateau`, `binding_bin_a2_specialization_chain`). Along `s₁ = (1 − δ)/2`,
   the sharp-truncation Perron exponent `(σ₂ + 2 μ A₀)/(1 + 2 μ)` (`A₀ = (5 + δ)/4`) has global
-  minimum `7/8 + δ/4` (`793/816` at `δ = 79/204`), constant across `[−(1 − δ)/4, (5 + δ)/8]`. Every
+  minimum `7/8 + δ/4` (`793/816` at `δ = 79/204`), constant across `[−(1 − δ)/4, (2 + δ)/4]`. Every
   `A₂` specialization exponent (`793/816 < 1 < 419/408 < 487/408 < 1099/816`) strictly exceeds both
   `rowCount(79/204, ½) + δ/2 = 224609/260712` and the `7/8` threshold `4571/5304`.
 * **Universal global minimax half-plane laws and rank-two rejection boundaries**
@@ -100,6 +100,7 @@ theorem weylA2_braid_and_order_three (p : ℝ × ℝ) :
     weylS1 (weylS2 (weylS1 p)) = weylLongest p ∧
       weylS2 (weylS1 (weylS2 p)) = weylLongest p ∧
       (weylS1 ∘ weylS2)^[3] p = p := by
+  rcases p with ⟨σ₁, σ₂⟩
   refine ⟨?_, ?_, ?_⟩
   · simp only [weylS1, weylS2, weylLongest, Prod.mk.injEq]; constructor <;> ring
   · simp only [weylS1, weylS2, weylLongest, Prod.mk.injEq]; constructor <;> ring
@@ -165,32 +166,29 @@ theorem kubotaPolarLocus_slice_iff {n δ : ℝ} (hn : 0 < n) (hδ : 0 ≤ δ) (h
       s₂ = 1 / 2 + 1 / n ∨ s₂ = 1 / 2 - 1 / n ∨
         s₂ = 1 / 2 + 1 / n + δ / 2 ∨ s₂ = 1 / 2 - 1 / n + δ / 2 := by
   have h1n : 0 < 1 / n := one_div_pos.mpr hn
-  have hno1 : (1 - δ) / 2 ≠ 1 / 2 + 1 / n := by linarith
-  have hno2 : 1 - (1 - δ) / 2 ≠ 1 / 2 + 1 / n := by
-    intro h
-    apply hne
-    linarith
+  have h2n : 2 / n = 2 * (1 / n) := by ring
+  have hne' : δ ≠ 2 * (1 / n) := h2n ▸ hne
   constructor
   · rintro ⟨w, hw⟩
     fin_cases w <;> simp only [weylAct, weylS1, weylS2, weylLongest] at hw
     · rcases hw with h | h
-      · exact absurd h hno1
-      · exact Or.inl h
+      · exfalso; linarith
+      · exact Or.inl (by linarith)
     · rcases hw with h | h
-      · exact absurd h hno2
+      · exfalso; apply hne'; linarith
       · exact Or.inr (Or.inr (Or.inl (by linarith)))
     · rcases hw with h | h
       · exact Or.inr (Or.inr (Or.inl (by linarith)))
       · exact Or.inr (Or.inl (by linarith))
     · rcases hw with h | h
       · exact Or.inr (Or.inr (Or.inr (by linarith)))
-      · exact absurd h hno1
+      · exfalso; linarith
     · rcases hw with h | h
-      · exact Or.inl h
+      · exact Or.inl (by linarith)
       · exact Or.inr (Or.inr (Or.inr (by linarith)))
     · rcases hw with h | h
       · exact Or.inr (Or.inl (by linarith))
-      · exact absurd h hno2
+      · exfalso; apply hne'; linarith
   · rintro (rfl | rfl | rfl | rfl)
     · exact ⟨0, Or.inr rfl⟩
     · exact ⟨2, Or.inr (by simp only [weylAct, weylS2]; ring)⟩
@@ -260,37 +258,45 @@ theorem weylA2Convexity_convex_sum {ι : Type*} (s : Finset ι) (lam : ι → �
       ∑ i ∈ s, lam i * weylA2Convexity (pts i).1 (pts i).2 := by
   set X := ∑ i ∈ s, lam i * (pts i).1
   set Y := ∑ i ∈ s, lam i * (pts i).2
-  set S := ∑ i ∈ s, lam i * weylA2Convexity (pts i).1 (pts i).2
   refine max_le (max_le ?_ ?_) (max_le ?_ ?_)
   · refine Finset.sum_nonneg fun i hi => mul_nonneg (hlam i hi) ?_
     exact (le_max_left _ _).trans (le_max_left _ _)
   · have hlin : 1 - (X + 2 * Y) / 3 =
         ∑ i ∈ s, lam i * (1 - ((pts i).1 + 2 * (pts i).2) / 3) := by
-      calc 1 - (X + 2 * Y) / 3 = (∑ i ∈ s, lam i) - (X + 2 * Y) / 3 := by rw [hsum]
-        _ = ∑ i ∈ s, lam i * (1 - ((pts i).1 + 2 * (pts i).2) / 3) := by
-          simp only [X, Y, ← Finset.sum_div, ← Finset.mul_sum, ← Finset.sum_add_distrib,
-            ← Finset.sum_sub_distrib]
-          refine Finset.sum_congr rfl fun i _ => by ring
+      have h1 : ∑ i ∈ s, lam i * (1 - ((pts i).1 + 2 * (pts i).2) / 3) =
+          (∑ i ∈ s, lam i) - (X + 2 * Y) / 3 := by
+        have hcongr : ∀ i, lam i * (1 - ((pts i).1 + 2 * (pts i).2) / 3) =
+            lam i - (lam i * (pts i).1) / 3 - 2 * ((lam i * (pts i).2) / 3) := fun _ => by ring
+        simp_rw [hcongr, Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.sum_div]
+        dsimp only [X, Y]
+        ring
+      rw [h1, hsum]
     rw [hlin]
     refine Finset.sum_le_sum fun i hi => mul_le_mul_of_nonneg_left ?_ (hlam i hi)
     exact (le_max_right _ _).trans (le_max_left _ _)
   · have hlin : 3 / 2 - (2 * X + 4 * Y) / 3 =
         ∑ i ∈ s, lam i * (3 / 2 - (2 * (pts i).1 + 4 * (pts i).2) / 3) := by
-      calc 3 / 2 - (2 * X + 4 * Y) / 3 =
-            3 / 2 * (∑ i ∈ s, lam i) - (2 * X + 4 * Y) / 3 := by rw [hsum, mul_one]
-        _ = ∑ i ∈ s, lam i * (3 / 2 - (2 * (pts i).1 + 4 * (pts i).2) / 3) := by
-          simp only [X, Y, Finset.mul_sum, ← Finset.sum_div, ← Finset.sum_add_distrib,
-            ← Finset.sum_sub_distrib]
-          refine Finset.sum_congr rfl fun i _ => by ring
+      have h1 : ∑ i ∈ s, lam i * (3 / 2 - (2 * (pts i).1 + 4 * (pts i).2) / 3) =
+          3 / 2 * (∑ i ∈ s, lam i) - (2 * X + 4 * Y) / 3 := by
+        have hcongr : ∀ i, lam i * (3 / 2 - (2 * (pts i).1 + 4 * (pts i).2) / 3) =
+            3 / 2 * lam i - 2 * ((lam i * (pts i).1) / 3) - 4 * ((lam i * (pts i).2) / 3) :=
+          fun _ => by ring
+        simp_rw [hcongr, Finset.sum_sub_distrib, ← Finset.mul_sum, ← Finset.sum_div]
+        dsimp only [X, Y]
+        ring
+      rw [h1, hsum, mul_one]
     rw [hlin]
     refine Finset.sum_le_sum fun i hi => mul_le_mul_of_nonneg_left ?_ (hlam i hi)
     exact (le_max_left _ _).trans (le_max_right _ _)
   · have hlin : 3 / 2 - X - 2 * Y =
         ∑ i ∈ s, lam i * (3 / 2 - (pts i).1 - 2 * (pts i).2) := by
-      calc 3 / 2 - X - 2 * Y = 3 / 2 * (∑ i ∈ s, lam i) - X - 2 * Y := by rw [hsum, mul_one]
-        _ = ∑ i ∈ s, lam i * (3 / 2 - (pts i).1 - 2 * (pts i).2) := by
-          simp only [X, Y, Finset.mul_sum, ← Finset.sum_sub_distrib]
-          refine Finset.sum_congr rfl fun i _ => by ring
+      have h1 : ∑ i ∈ s, lam i * (3 / 2 - (pts i).1 - 2 * (pts i).2) =
+          3 / 2 * (∑ i ∈ s, lam i) - X - 2 * Y := by
+        have hcongr : ∀ i, lam i * (3 / 2 - (pts i).1 - 2 * (pts i).2) =
+            3 / 2 * lam i - lam i * (pts i).1 - 2 * (lam i * (pts i).2) := fun _ => by ring
+        simp_rw [hcongr, Finset.sum_sub_distrib, ← Finset.mul_sum]
+        rfl
+      rw [h1, hsum, mul_one]
     rw [hlin]
     refine Finset.sum_le_sum fun i hi => mul_le_mul_of_nonneg_left ?_ (hlam i hi)
     exact (le_max_right _ _).trans (le_max_right _ _)
@@ -334,103 +340,115 @@ theorem exists_convex_cone_attaining_weylA2Convexity {σ₁ : ℝ} (h0 : 0 ≤ �
   rcases le_total (3 / 2 - σ₁ / 2) σ₂ with htop | hbelow1
   · set r : ℝ := σ₂ - (3 / 2 - σ₁ / 2)
     have hr : 0 ≤ r := sub_nonneg.mpr htop
-    let lam : Fin 6 → ℝ := ![σ₁, 1 - σ₁, 0, 0, 0, 0]
-    let pts : Fin 6 → ℝ × ℝ :=
-      ![(1, 1 + r), (0, 3 / 2 + r), (3 / 2, 0), (1, -1 / 2), (-1 / 2, 1), (0, 0)]
-    have hval : weylA2Convexity σ₁ σ₂ = 0 := by
-      unfold weylA2Convexity
-      rw [max_eq_left (by linarith), max_eq_left (max_le (by linarith) (by linarith))]
+    let lam : Fin 6 → ℝ := fun
+      | 0 => σ₁ | 1 => 1 - σ₁ | 2 => 0 | 3 => 0 | 4 => 0 | 5 => 0
+    let pts : Fin 6 → ℝ × ℝ := fun
+      | 0 => (1, 1 + r) | 1 => (0, 3 / 2 + r) | 2 => (3 / 2, 0)
+      | 3 => (1, -1 / 2) | 4 => (-1 / 2, 1) | 5 => (0, 0)
+    have hval : weylA2Convexity σ₁ σ₂ = 0 :=
+      le_antisymm (max_le (max_le le_rfl (by linarith)) (max_le (by linarith) (by linarith)))
+        ((le_max_left _ _).trans (le_max_left _ _))
     refine ⟨lam, pts, ?_, ?_, ?_, ?_, ?_, ?_⟩
-    · intro w; fin_cases w <;> simp [lam] <;> linarith
-    · simp [Fin.sum_univ_six, lam]
+    · intro w; fin_cases w <;> simp only [lam] <;> linarith
+    · rw [Fin.sum_univ_six]; simp only [lam]; ring
     · intro w
-      fin_cases w <;>
-        simp [weylCone, pts, weylAct, weylS1, weylS2, weylLongest] <;> linarith
-    · simp [Fin.sum_univ_six, lam, pts]
-    · simp [Fin.sum_univ_six, lam, pts, r]; ring
-    · rw [hval]
-      simp [Fin.sum_univ_six, lam, pts, weylConeCost, weylStirlingCocycle]
+      fin_cases w
+      · simp only [weylCone, pts, weylAct]; exact ⟨le_rfl, by linarith [hr]⟩
+      · simp only [weylCone, pts, weylAct, weylS1]; exact ⟨le_rfl, by linarith [hr]⟩
+      · norm_num [weylCone, pts, weylAct, weylS2]
+      · norm_num [weylCone, pts, weylAct, weylS1, weylS2]
+      · norm_num [weylCone, pts, weylAct, weylS1, weylS2]
+      · norm_num [weylCone, pts, weylAct, weylLongest]
+    · rw [Fin.sum_univ_six]; simp only [lam, pts]; ring
+    · rw [Fin.sum_univ_six]; simp only [lam, pts, r]; ring
+    · rw [hval, Fin.sum_univ_six]
+      simp only [lam, pts, weylConeCost, weylStirlingCocycle]; ring
   · rcases le_total (3 / 4 - σ₁ / 2) σ₂ with hmid1 | hbelow2
     · set t : ℝ := 2 - (2 * σ₁ + 4 * σ₂) / 3
       have ht0 : 0 ≤ t := by simp only [t]; linarith
       have ht1 : t ≤ 1 := by simp only [t]; linarith
-      let lam : Fin 6 → ℝ :=
-        ![(1 - t) * σ₁, (1 - t) * (1 - σ₁), t * ((2 * σ₁ + 1) / 4), 0,
-          t * ((3 - 2 * σ₁) / 4), 0]
-      have hval : weylA2Convexity σ₁ σ₂ = 1 - (σ₁ + 2 * σ₂) / 3 := by
-        unfold weylA2Convexity
-        rw [max_eq_right (by linarith), max_eq_left (max_le (by linarith) (by linarith))]
+      let lam : Fin 6 → ℝ := fun
+        | 0 => (1 - t) * σ₁
+        | 1 => (1 - t) * (1 - σ₁)
+        | 2 => t * ((2 * σ₁ + 1) / 4)
+        | 3 => 0
+        | 4 => t * ((3 - 2 * σ₁) / 4)
+        | 5 => 0
+      have hval : weylA2Convexity σ₁ σ₂ = 1 - (σ₁ + 2 * σ₂) / 3 :=
+        le_antisymm (max_le (max_le (by linarith) le_rfl) (max_le (by linarith) (by linarith)))
+          ((le_max_right _ _).trans (le_max_left _ _))
       refine ⟨lam, weylConeVertex, ?_, ?_, weylCone_weylConeVertex, ?_, ?_, ?_⟩
       · intro w
-        fin_cases w <;> simp only [lam, Matrix.cons_val_zero, Matrix.cons_val_one,
-          Matrix.cons_val]
-        · exact mul_nonneg (by linarith) h0
-        · exact mul_nonneg (by linarith) (by linarith)
-        · exact mul_nonneg ht0 (by linarith)
+        fin_cases w <;> simp only [lam]
+        · exact mul_nonneg (by linarith [ht1]) h0
+        · exact mul_nonneg (by linarith [ht1]) (by linarith [h1])
+        · exact mul_nonneg ht0 (by linarith [h0])
         · exact le_rfl
-        · exact mul_nonneg ht0 (by linarith)
+        · exact mul_nonneg ht0 (by linarith [h1])
         · exact le_rfl
-      · simp only [Fin.sum_univ_six, lam, Matrix.cons_val_zero, Matrix.cons_val_one,
-          Matrix.cons_val]; ring
-      · simp only [Fin.sum_univ_six, lam, weylConeVertex, Matrix.cons_val_zero,
-          Matrix.cons_val_one, Matrix.cons_val]; ring
-      · simp only [Fin.sum_univ_six, lam, weylConeVertex, Matrix.cons_val_zero,
-          Matrix.cons_val_one, Matrix.cons_val, t]; ring
-      · rw [hval]
-        simp only [Fin.sum_univ_six, lam, weylConeVertex, weylConeCost, weylStirlingCocycle,
-          Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val, t]; ring
+      · rw [Fin.sum_univ_six]; simp only [lam]; ring
+      · rw [Fin.sum_univ_six]; simp only [lam, weylConeVertex]; ring
+      · rw [Fin.sum_univ_six]; simp only [lam, weylConeVertex, t]; ring
+      · rw [hval, Fin.sum_univ_six]
+        simp only [lam, weylConeVertex, weylConeCost, weylStirlingCocycle, t]; ring
     · rcases le_total (-σ₁ / 2) σ₂ with hmid2 | hbot
       · set s : ℝ := 1 - (2 * σ₁ + 4 * σ₂) / 3
         have hs0 : 0 ≤ s := by simp only [s]; linarith
         have hs1 : s ≤ 1 := by simp only [s]; linarith
-        let lam : Fin 6 → ℝ :=
-          ![0, 0, (1 - s) * ((2 * σ₁ + 1) / 4), s * σ₁,
-            (1 - s) * ((3 - 2 * σ₁) / 4), s * (1 - σ₁)]
-        have hval : weylA2Convexity σ₁ σ₂ = 3 / 2 - (2 * σ₁ + 4 * σ₂) / 3 := by
-          unfold weylA2Convexity
-          rw [max_eq_left (by linarith), max_eq_right (max_le (by linarith) (by linarith))]
+        let lam : Fin 6 → ℝ := fun
+          | 0 => 0
+          | 1 => 0
+          | 2 => (1 - s) * ((2 * σ₁ + 1) / 4)
+          | 3 => s * σ₁
+          | 4 => (1 - s) * ((3 - 2 * σ₁) / 4)
+          | 5 => s * (1 - σ₁)
+        have hval : weylA2Convexity σ₁ σ₂ = 3 / 2 - (2 * σ₁ + 4 * σ₂) / 3 :=
+          le_antisymm (max_le (max_le (by linarith) (by linarith)) (max_le le_rfl (by linarith)))
+            ((le_max_left _ _).trans (le_max_right _ _))
         refine ⟨lam, weylConeVertex, ?_, ?_, weylCone_weylConeVertex, ?_, ?_, ?_⟩
         · intro w
-          fin_cases w <;> simp only [lam, Matrix.cons_val_zero, Matrix.cons_val_one,
-            Matrix.cons_val]
+          fin_cases w <;> simp only [lam]
           · exact le_rfl
           · exact le_rfl
-          · exact mul_nonneg (by linarith) (by linarith)
+          · exact mul_nonneg (by linarith [hs1]) (by linarith [h0])
           · exact mul_nonneg hs0 h0
-          · exact mul_nonneg (by linarith) (by linarith)
-          · exact mul_nonneg hs0 (by linarith)
-        · simp only [Fin.sum_univ_six, lam, Matrix.cons_val_zero, Matrix.cons_val_one,
-            Matrix.cons_val]; ring
-        · simp only [Fin.sum_univ_six, lam, weylConeVertex, Matrix.cons_val_zero,
-            Matrix.cons_val_one, Matrix.cons_val]; ring
-        · simp only [Fin.sum_univ_six, lam, weylConeVertex, Matrix.cons_val_zero,
-            Matrix.cons_val_one, Matrix.cons_val, s]; ring
-        · rw [hval]
-          simp only [Fin.sum_univ_six, lam, weylConeVertex, weylConeCost, weylStirlingCocycle,
-            Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val, s]; ring
+          · exact mul_nonneg (by linarith [hs1]) (by linarith [h1])
+          · exact mul_nonneg hs0 (by linarith [h1])
+        · rw [Fin.sum_univ_six]; simp only [lam]; ring
+        · rw [Fin.sum_univ_six]; simp only [lam, weylConeVertex]; ring
+        · rw [Fin.sum_univ_six]; simp only [lam, weylConeVertex, s]; ring
+        · rw [hval, Fin.sum_univ_six]
+          simp only [lam, weylConeVertex, weylConeCost, weylStirlingCocycle, s]; ring
       · set r : ℝ := -σ₁ / 2 - σ₂
         have hr : 0 ≤ r := sub_nonneg.mpr hbot
-        let lam : Fin 6 → ℝ := ![0, 0, 0, σ₁, 0, 1 - σ₁]
-        let pts : Fin 6 → ℝ × ℝ :=
-          ![(1, 1), (0, 3 / 2), (3 / 2, 0), (1, -1 / 2 - r), (-1 / 2, 1), (0, -r)]
-        have hval : weylA2Convexity σ₁ σ₂ = 3 / 2 - σ₁ - 2 * σ₂ := by
-          unfold weylA2Convexity
-          rw [max_eq_right (by linarith), max_eq_right (max_le (by linarith) (by linarith))]
+        let lam : Fin 6 → ℝ := fun
+          | 0 => 0 | 1 => 0 | 2 => 0 | 3 => σ₁ | 4 => 0 | 5 => 1 - σ₁
+        let pts : Fin 6 → ℝ × ℝ := fun
+          | 0 => (1, 1) | 1 => (0, 3 / 2) | 2 => (3 / 2, 0)
+          | 3 => (1, -1 / 2 - r) | 4 => (-1 / 2, 1) | 5 => (0, -r)
+        have hval : weylA2Convexity σ₁ σ₂ = 3 / 2 - σ₁ - 2 * σ₂ :=
+          le_antisymm (max_le (max_le (by linarith) (by linarith)) (max_le (by linarith) le_rfl))
+            ((le_max_right _ _).trans (le_max_right _ _))
         refine ⟨lam, pts, ?_, ?_, ?_, ?_, ?_, ?_⟩
-        · intro w; fin_cases w <;> simp [lam] <;> linarith
-        · simp [Fin.sum_univ_six, lam]
+        · intro w; fin_cases w <;> simp only [lam] <;> linarith
+        · rw [Fin.sum_univ_six]; simp only [lam]; ring
         · intro w
-          fin_cases w <;>
-            simp [weylCone, pts, weylAct, weylS1, weylS2, weylLongest] <;> linarith
-        · simp [Fin.sum_univ_six, lam, pts]
-        · simp [Fin.sum_univ_six, lam, pts, r]; ring
-        · rw [hval]
-          simp [Fin.sum_univ_six, lam, pts, weylConeCost, weylStirlingCocycle, r]; ring
+          fin_cases w
+          · norm_num [weylCone, pts, weylAct]
+          · norm_num [weylCone, pts, weylAct, weylS1]
+          · norm_num [weylCone, pts, weylAct, weylS2]
+          · simp only [weylCone, pts, weylAct, weylS1, weylS2]; constructor <;> linarith [hr]
+          · norm_num [weylCone, pts, weylAct, weylS1, weylS2]
+          · simp only [weylCone, pts, weylAct, weylLongest]; constructor <;> linarith [hr]
+        · rw [Fin.sum_univ_six]; simp only [lam, pts]; ring
+        · rw [Fin.sum_univ_six]; simp only [lam, pts, r]; ring
+        · rw [hval, Fin.sum_univ_six]
+          simp only [lam, pts, weylConeCost, weylStirlingCocycle, r]; ring
 
 /-! ### Sharp-truncation Perron plateau and binding-bin exclusion (First Lemma & Subpart (a)) -/
 
 /-- Right edge `(5 + δ)/4 = 3/2 − w₀/2` at which `weylA2Convexity((1 − δ)/2, σ₂)` vanishes. -/
-theorem weylA2Convexity_slice_eq_zero_iff {δ : ℝ} (hδ0 : -1 ≤ δ) (hδ1 : δ ≤ 1) (σ₂ : ℝ) :
+theorem weylA2Convexity_slice_eq_zero_iff (δ σ₂ : ℝ) :
     weylA2Convexity ((1 - δ) / 2) σ₂ = 0 ↔ (5 + δ) / 4 ≤ σ₂ := by
   unfold weylA2Convexity
   constructor
@@ -465,18 +483,16 @@ theorem perronSharpExponent_ge (δ σ₂ : ℝ) :
   rw [le_div_iff₀ (by linarith : 0 < 1 + 2 * μ)]
   linarith
 
-/-- **Exact Perron plateau.** Throughout `σ₂ ∈ [−(1 − δ)/4, (5 + δ)/8]`, `perronSharpExponent δ σ₂`
+/-- **Exact Perron plateau.** Throughout `σ₂ ∈ [−(1 − δ)/4, (2 + δ)/4]`, `perronSharpExponent δ σ₂`
 is identically constant and equal to `7/8 + δ/4`. -/
 theorem perronSharpExponent_eq_plateau (δ σ₂ : ℝ)
-    (hlo : -(1 - δ) / 4 ≤ σ₂) (hhi : σ₂ ≤ (5 + δ) / 8) :
+    (hlo : -(1 - δ) / 4 ≤ σ₂) (hhi : σ₂ ≤ (2 + δ) / 4) :
     perronSharpExponent δ σ₂ = 7 / 8 + δ / 4 := by
-  have hμ : weylA2Convexity ((1 - δ) / 2) σ₂ = 3 / 2 - (2 * ((1 - δ) / 2) + 4 * σ₂) / 3 := by
-    unfold weylA2Convexity
-    rw [max_eq_left (by linarith), max_eq_right (max_le (by linarith) (by linarith))]
-  have hpos : 0 < 1 + 2 * (3 / 2 - (2 * ((1 - δ) / 2) + 4 * σ₂) / 3) := by linarith
+  have hμ : weylA2Convexity ((1 - δ) / 2) σ₂ = 3 / 2 - (2 * ((1 - δ) / 2) + 4 * σ₂) / 3 :=
+    le_antisymm (max_le (max_le (by linarith) (by linarith)) (max_le le_rfl (by linarith)))
+      ((le_max_left _ _).trans (le_max_right _ _))
   unfold perronSharpExponent
-  rw [hμ]
-  field_simp [hpos.ne']
+  rw [hμ, div_eq_iff (by linarith)]
   ring
 
 /-- **First Lemma & Subpart (a): binding-bin `A₂` specialization chain.** At the binding bin
@@ -575,7 +591,8 @@ theorem universal_balanced_minimax_le {δ R : ℝ} (hδ : 0 ≤ δ) (hR : 2 / 3 
     simp only [D]; ring
   have hbound : 3 * D - 2 ≤ 3 * D * M := by linarith
   have hrew : 1 - 2 / (3 * D) = (3 * D - 2) / (3 * D) := by
-    field_simp [hD.ne']
+    symm
+    rw [sub_div, div_self hD.ne']
   rw [hrew, div_le_iff₀ hD]
   linarith
 
@@ -591,21 +608,25 @@ theorem universal_balanced_minimax_attained {δ R : ℝ} (hδ : 0 ≤ δ) (hR : 
       highBoundary xs xs ℓs δ (δ / 2) R = 1 - 2 / (3 * D) := by
   dsimp only
   set D : ℝ := 6 * R + 6 * δ - 1
-  have hDpos : 0 < D := by simp only [D]; linarith
+  have hDdef : D = 6 * R + 6 * δ - 1 := rfl
+  have hDpos : 0 < D := by simp only [D]; linarith [hδ, hR]
   have hDne : D ≠ 0 := hDpos.ne'
   set ℓs : ℝ := (3 - 2 * R - 2 * δ) / D
-  have hℓs : 0 ≤ ℓs := div_nonneg (by linarith) hDpos.le
+  have hℓs : 0 ≤ ℓs := div_nonneg (by linarith [hsum]) hDpos.le
+  have hℓD : ℓs * D = 3 - 2 * R - 2 * δ := div_mul_cancel₀ _ hDne
+  have h2 : 2 / (3 * D) * (12 * D) = 8 := by
+    rw [div_mul_eq_mul_div, mul_div_mul_right _ _ hDne]
+    norm_num
+  have h12D : 12 * D ≠ 0 := mul_ne_zero (by norm_num) hDne
   have hedge : (1 - ℓs) / 2 + (1 - ℓs) / 2 + ℓs - 1 = 0 := by ring
   refine ⟨hℓs, ?_, ?_⟩
   · unfold lowBoundaryGen
     rw [sub_self, max_self, hedge, max_self]
-    simp only [ℓs, D]
-    field_simp [hDne]
-    ring
+    apply mul_right_cancel₀ h12D
+    linear_combination -3 * hℓD - hDdef + h2
   · unfold highBoundary
-    simp only [ℓs, D]
-    field_simp [hDne]
-    ring
+    apply mul_right_cancel₀ h12D
+    linear_combination (18 * R + 18 * δ - 6) * hℓD + (6 * R + 6 * δ - 10) * hDdef + h2
 
 /-- **Universal unslotted-spillover global minimax law.** For `2/3 ≤ R ≤ (δ + 5)/6`,
 `4/9 ≤ R + δ`, and any `(lx, ly, ℓ) ∈ ℝ³` with `0 ≤ ℓ`,
@@ -616,13 +637,13 @@ theorem universal_unslotted_minimax_le {δ R : ℝ} (hR0 : 2 / 3 ≤ R) (hR1 : R
       max (lowBoundaryGen lx ly ℓ) (highBoundary lx ly ℓ δ (δ / 2) R) := by
   set M := max (lowBoundaryGen lx ly ℓ) (highBoundary lx ly ℓ δ (δ / 2) R)
   set D₂ : ℝ := 2 * R + 2 * δ + 3
-  have hD₂ : 0 < 3 * D₂ := by simp only [D₂]; linarith
+  have hD₂ : 0 < D₂ := by simp only [D₂]; linarith [hsum]
   obtain ⟨-, -, hf3, hf4⟩ := lowBoundaryGen_linear_faces lx ly ℓ
   have hL3 : 1 / 3 + 2 * lx / 3 + ly / 2 + ℓ / 3 ≤ M := hf3.trans (le_max_left _ _)
   have hL4 : 1 / 3 + 7 * (lx + ly) / 12 + ℓ / 3 ≤ M := hf4.trans (le_max_left _ _)
   have hH : highBoundary lx ly ℓ δ (δ / 2) R ≤ M := le_max_right _ _
-  have hm3 := mul_le_mul_of_nonneg_left hL3 (by linarith : 0 ≤ 14 * (3 * R - 2))
-  have hm4 := mul_le_mul_of_nonneg_left hL4 (by linarith : 0 ≤ 6 * (δ + 5 - 6 * R))
+  have hm3 := mul_le_mul_of_nonneg_left hL3 (by linarith [hR0] : 0 ≤ 14 * (3 * R - 2))
+  have hm4 := mul_le_mul_of_nonneg_left hL4 (by linarith [hR1] : 0 ≤ 6 * (δ + 5 - 6 * R))
   have hmH := mul_le_mul_of_nonneg_left hH (by norm_num : (0 : ℝ) ≤ 7)
   have hid : 14 * (3 * R - 2) * (1 / 3 + 2 * lx / 3 + ly / 2 + ℓ / 3) +
         6 * (δ + 5 - 6 * R) * (1 / 3 + 7 * (lx + ly) / 12 + ℓ / 3) +
@@ -632,9 +653,9 @@ theorem universal_unslotted_minimax_le {δ R : ℝ} (hR0 : 2 / 3 ≤ R) (hR1 : R
     ring
   have hw : (14 * (3 * R - 2) + 6 * (δ + 5 - 6 * R) + 7) * M = 3 * D₂ * M := by
     simp only [D₂]; ring
-  have hℓ_term : 0 ≤ (9 * R + 9 * δ - 4) * ℓ := mul_nonneg (by linarith) hℓ
+  have hℓ_term : 0 ≤ (9 * R + 9 * δ - 4) * ℓ := mul_nonneg (by linarith [hsum]) hℓ
   have hbound : 3 * (3 * R + 3 * δ + 1) ≤ 3 * D₂ * M := by linarith
-  rw [div_le_iff₀ (by linarith : 0 < D₂)]
+  rw [div_le_iff₀ hD₂]
   linarith
 
 /-- Attainment of `(3R + 3δ + 1)/(2R + 2δ + 3)` at `(2(R + δ)/(2R + 2δ + 3),
@@ -759,7 +780,8 @@ theorem row_mean_square_conductor_doubling :
     (voronoiCompositeMatrix 1 1).trace = -1 ∧
       voronoiCompositeMatrix 1 1 ^ 3 = 1 ∧
       (voronoiCompositeMatrix 2 2).trace = 2 ∧
-      (∀ m : ℕ, (sumScaleKappa 2 ∘ reflectScaleKappa 2)^[m] (1, 0) = (1 + 2 * (m : ℝ), 2 * m)) ∧
+      (∀ m : ℕ,
+        (sumScaleKappa 2 ∘ reflectScaleKappa 2)^[m] (1, 0) = (1 + 2 * (m : ℝ), 2 * (m : ℝ))) ∧
       (∀ lx ly ℓ β : ℝ,
         β ≤ lowBoundaryFree lx ly ℓ + max 0 (principalExcess (lx + ly) ℓ β) / 2) ∧
       (∀ lx ly ℓ v : ℝ,
@@ -770,8 +792,11 @@ theorem row_mean_square_conductor_doubling :
   · rw [trace_voronoiCompositeMatrix]; norm_num
   · intro m
     have h := (parabolic_quadratic_and_iterate (κ := 2) (by norm_num) m 1 0).2
-    norm_num at h
-    convert h using 2 <;> ring
+    have h42 : (4 : ℝ) / 2 = 2 := by norm_num
+    rw [h42] at h
+    rw [h]
+    simp only [Prod.mk.injEq]
+    constructor <;> ring
   · intro lx ly ℓ v
     have hθ := free_floor_le_probeThetaHybridFree (by norm_num : (3 : ℝ) ≤ 6) lx ly ℓ v
     have hmon := (positiveFormBoundary_strictMono (by norm_num : (1 : ℝ) < 6)).monotone hθ

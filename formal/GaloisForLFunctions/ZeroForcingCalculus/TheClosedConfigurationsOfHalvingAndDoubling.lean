@@ -206,18 +206,18 @@ theorem isQuartetSymmetric_zetaStripZeros :
 theorem isStripLocallyFinite_zetaStripZeros :
     IsStripLocallyFinite {s : ℂ | 0 < s.re ∧ s.re < 1 ∧ riemannZeta s = 0} := by
   intro K hK _hKsub
-  have hsub : {s : ℂ | 0 < s.re ∧ s.re < 1 ∧ riemannZeta s = 0} ∩ K ⊆
-      (MeromorphicOn.divisor RHTower.xi Set.univ).support ∩ K := by
-    intro z ⟨⟨h0, h1, hz⟩, hzK⟩
-    have hne1 : z ≠ 1 := fun h => by
-      rw [h, Complex.one_re] at h1
-      exact lt_irrefl 1 h1
-    have hxi : RHTower.xi z = 0 := (RHTower.xi_eq_zero_iff h0 hne1).mpr hz
-    exact ⟨RHTower.mem_xi_divisor_support_of_eq_zero hxi, hzK⟩
   have hloc : LocallyFiniteSupport
       (fun z : ℂ => MeromorphicOn.divisor RHTower.xi Set.univ z) := fun z =>
     (MeromorphicOn.divisor RHTower.xi Set.univ).supportLocallyFiniteWithinDomain' z (Set.mem_univ z)
-  exact (hloc.locallyFinite_support.finite_inter_compact hK).subset hsub
+  have hfinI : {i : RHTower.XiDivisorSupport | ({(i : ℂ)} ∩ K).Nonempty}.Finite :=
+    hloc.locallyFinite_support.finite_nonempty_inter_compact hK
+  refine (hfinI.image Subtype.val).subset ?_
+  intro z ⟨⟨h0, h1, hz⟩, hzK⟩
+  have hne1 : z ≠ 1 := fun h => by
+    rw [h, Complex.one_re] at h1
+    exact lt_irrefl 1 h1
+  have hxi : RHTower.xi z = 0 := (RHTower.xi_eq_zero_iff h0 hne1).mpr hz
+  exact ⟨⟨z, RHTower.mem_xi_divisor_support_of_eq_zero hxi⟩, ⟨z, rfl, hzK⟩, rfl⟩
 
 /-- The `k`-fold descent-reflection step `z ↦ 1 − z / k`, with fixed point `k / (k + 1)`. -/
 def descentReflectStep (k : ℕ) (z : ℂ) : ℂ := 1 - z / (k : ℂ)

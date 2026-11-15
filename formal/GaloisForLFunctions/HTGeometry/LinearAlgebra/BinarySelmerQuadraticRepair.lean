@@ -47,11 +47,10 @@ theorem binaryAlternatingRepair_binarySelmerSymmetric
       fromBlocks (0 : Matrix ι ι (ZMod 2)) 0 0 (vecMulVec z z) := by
     ext (i | i) (j | j) <;> simp [vecMulVec, fromBlocks]
   rw [binaryAlternatingRepair, diagonal_binarySelmerSymmetric, houter]
-  dsimp only [binarySelmerSymmetric, binarySelmerMatrix]
-  rw [Matrix.diagonal_zero, add_zero, transpose_transpose, fromBlocks_add]
+  dsimp only [binarySelmerSymmetric, binarySelmerMatrix, binaryRankOneCorrection]
+  rw [Matrix.diagonal_zero', add_zero, transpose_transpose, fromBlocks_add]
   simp only [add_zero]
   rw [add_comm A Aᵀ, add_comm (diagonal z) (vecMulVec z z)]
-  rfl
 
 /-- The alternating Selmer matrix discards precisely the odd rank unit. -/
 theorem rank_binarySelmerMatrix_eq_even_part
@@ -146,7 +145,7 @@ theorem det_binarySelmerMatrix_eq_symmetric_diagonal
     (binarySelmerMatrix Aᵀ z ε).det = (binarySelmerSymmetric (A + diagonal ε) z).det := by
   have h := det_binarySelmerMatrix_eq_symmetric (A + diagonal ε) z
   have heq : binarySelmerMatrix (A + diagonal ε)ᵀ z 0 = binarySelmerMatrix Aᵀ z ε := by
-    simp only [binarySelmerMatrix, transpose_add, diagonal_transpose, Matrix.diagonal_zero, add_zero]
+    simp only [binarySelmerMatrix, transpose_add, diagonal_transpose, Matrix.diagonal_zero', add_zero]
   rwa [heq] at h
 
 /-- Arbitrary symmetric descent matrices admit a nonsingular diagonal completion. -/

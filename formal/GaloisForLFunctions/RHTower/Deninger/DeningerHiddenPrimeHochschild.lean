@@ -110,10 +110,13 @@ theorem deningerHiddenPrimeHochschild_injective : Function.Injective deningerHid
 theorem deningerHiddenPrimeHochschild_linearIndependent :
     LinearIndependent ℂ (fun p : DeningerPrimeLogAway =>
       deningerHiddenPrimeHochschild (deningerPrimeLogKernelBasis p)) := by
-  have hk : deningerHiddenPrimeHochschild.ker = ⊥ :=
-    (LinearMap.ker_eq_bot (f := deningerHiddenPrimeHochschild)).mpr deningerHiddenPrimeHochschild_injective
-  have hi := deningerPrimeLogKernelBasis.linearIndependent.map' deningerHiddenPrimeHochschild hk
-  exact hi
+  apply linearIndependent_iff.mpr
+  intro l hl
+  apply (linearIndependent_iff.mp deningerPrimeLogKernelBasis.linearIndependent) l
+  apply deningerHiddenPrimeHochschild_injective
+  rw [map_zero]
+  exact (Finsupp.apply_linearCombination ℂ deningerHiddenPrimeHochschild
+    (fun p : DeningerPrimeLogAway => deningerPrimeLogKernelBasis p) l).trans hl
 
 /-- The explicit logarithmic prime-relation basis gives nonzero Hochschild classes. -/
 theorem deningerHiddenPrimeHochschild_ne_zero (p : DeningerPrimeLogAway) :
