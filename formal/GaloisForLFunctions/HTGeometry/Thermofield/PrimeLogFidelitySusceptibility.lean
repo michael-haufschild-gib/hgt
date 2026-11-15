@@ -64,6 +64,25 @@ theorem primeLogFidelitySusceptibility_nonneg (P : Finset Nat.Primes) (s : ℝ)
     0 ≤ primeLogFidelitySusceptibility P s a forcing :=
   Finset.sum_nonneg fun _ _ => sq_nonneg _
 
+/-- Exactly the forcing supported on the chosen level is invisible to the projective response. -/
+theorem primeLogFidelitySusceptibility_eq_zero_iff (P : Finset Nat.Primes) (s : ℝ)
+    (a : Option P) (forcing : Option P → ℂ) :
+    primeLogFidelitySusceptibility P s a forcing = 0 ↔
+      ∀ i, i ≠ a → forcing i = 0 := by
+  classical
+  rw [primeLogFidelitySusceptibility,
+    Finset.sum_eq_zero_iff_of_nonneg (fun _ _ => sq_nonneg _)]
+  constructor
+  · intro h i hi
+    have hz := norm_eq_zero.mp (sq_eq_zero_iff.mp (h i (Finset.mem_univ i)))
+    have he := primeLogSpectralResponse_equation P s a forcing i
+    rw [hz, mul_zero, if_neg hi, sub_zero] at he
+    exact he.symm
+  · intro h i _
+    by_cases hi : i = a
+    · simp [primeLogSpectralResponse, hi]
+    · simp [primeLogSpectralResponse, hi, h i hi]
+
 /-- The selected basis state has unit norm in the corpus's pure-state inner product. -/
 theorem primeLogBasis_normalized (P : Finset Nat.Primes) (a : Option P) :
     finiteComplexInner (Pi.single a 1) (Pi.single a 1) = 1 := by
