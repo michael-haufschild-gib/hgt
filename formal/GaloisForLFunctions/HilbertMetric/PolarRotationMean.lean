@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.FiniteKMSWightman
+import GaloisForLFunctions.HTGeometry.MarkedVariationDynamics
 import Mathlib.Analysis.Complex.Circle
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
 import Mathlib.MeasureTheory.Measure.Lebesgue.Complex
@@ -103,6 +104,49 @@ theorem norm_gibbsRotationMean_le_one (β : ℝ) (energy : α → ℝ) (phase : 
       rw [norm_mul, Circle.norm_coe, mul_one, Complex.norm_real, Real.norm_eq_abs,
         abs_of_pos (finiteGibbsStateWeight_pos β energy a)]
     _ = 1 := sum_finiteGibbsStateWeight_eq_one β energy
+
+/-- A common rotation survives Gibbs averaging unchanged. -/
+theorem gibbsRotationMean_const (β : ℝ) (energy : α → ℝ) (u : Circle) :
+    gibbsRotationMean β energy (fun _ => u) = (u : ℂ) := by
+  simp only [gibbsRotationMean, ← Finset.sum_mul, ← Complex.ofReal_sum,
+    sum_finiteGibbsStateWeight_eq_one, Complex.ofReal_one, one_mul]
+
+/-- Radius is preserved precisely when every rotation agrees. -/
+theorem norm_gibbsRotationMean_eq_one_iff (β : ℝ) (energy : α → ℝ)
+    (phase : α → Circle) :
+    ‖gibbsRotationMean β energy phase‖ = 1 ↔ ∃ u : Circle, ∀ a, phase a = u := by
+  constructor
+  · intro h
+    have he : (∑ a, finiteGibbsStateWeight β energy a * ‖(phase a : ℂ)‖) =
+        ‖∑ a, (finiteGibbsStateWeight β energy a : ℂ) * (phase a : ℂ)‖ := by
+      simpa only [Circle.norm_coe, mul_one, sum_finiteGibbsStateWeight_eq_one]
+        using h.symm
+    obtain ⟨u, hu, ha⟩ := (GaloisForLFunctions.HTGeometry.weighted_norm_sum_eq_iff
+      (finiteGibbsStateWeight β energy)
+      (fun a => (finiteGibbsStateWeight_pos β energy a).le)
+      (fun a => (phase a : ℂ))).mp he
+    refine ⟨⟨u, ?_⟩, ?_⟩
+    · change ‖u - 0‖ = 1
+      simpa only [sub_zero] using hu
+    · intro a
+      apply Circle.coe_injective
+      simpa only [Circle.norm_coe, Complex.ofReal_one, one_mul]
+        using ha a (finiteGibbsStateWeight_pos β energy a)
+  · rintro ⟨u, hu⟩
+    have hp : phase = fun _ => u := funext hu
+    rw [hp, gibbsRotationMean_const, Circle.norm_coe]
+
+/-- Disagreement of phases is exactly the obstruction to radius preservation. -/
+theorem norm_gibbsRotationMean_lt_one_iff (β : ℝ) (energy : α → ℝ)
+    (phase : α → Circle) :
+    ‖gibbsRotationMean β energy phase‖ < 1 ↔ ¬ ∃ u : Circle, ∀ a, phase a = u := by
+  constructor
+  · intro h hc
+    exact (ne_of_lt h) ((norm_gibbsRotationMean_eq_one_iff β energy phase).mpr hc)
+  · intro h
+    by_contra hn
+    exact h ((norm_gibbsRotationMean_eq_one_iff β energy phase).mp
+      (le_antisymm (norm_gibbsRotationMean_le_one β energy phase) (le_of_not_gt hn)))
 
 omit [Nonempty α] in
 /-- Gibbs averaging loses precisely the radial component restored by polar correction. -/
