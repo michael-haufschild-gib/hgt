@@ -17,6 +17,7 @@ variable (p : ℕ) [Fact p.Prime] (s : ℕ) (c : (SquareConstantField p s)ˣ) (b
 local notation "K" => SquareConstantField p s
 local notation "L" => SquareKummerField p s c b R
 local notation "Ω" => KaehlerDifferential K L
+local notation "P" => SquareKummerFrobeniusField p s c b R
 local notation "dy" => KaehlerDifferential.D K L (algebraMap K[X] L X)
 
 private def topFrobeniusIndex : Fin p :=
@@ -24,30 +25,50 @@ private def topFrobeniusIndex : Fin p :=
 
 /-- The highest Frobenius coordinate of a differential, with its unique Frobenius root extracted. -/
 def squareKummerCoordinateCartier : Ω →+ Ω where
-  toFun ω := (frobeniusPowerFieldEquiv K L p).symm
+  toFun ω := (show L ≃+* P from frobeniusPowerFieldEquiv K L p).symm
     ((squareKummerCoordinatePowerBasis p s c b R).repr
       (squareKummerDifferentialEquiv p s c b R ω) (topFrobeniusIndex p)) • dy
   map_zero' := by
-    rw [map_zero, map_zero, Finsupp.zero_apply, map_zero, zero_smul]
+    let E : Ω ≃ₗ[L] L := squareKummerDifferentialEquiv p s c b R
+    let B : Module.Basis (Fin p) P L := squareKummerCoordinatePowerBasis p s c b R
+    let F : L ≃+* P := frobeniusPowerFieldEquiv K L p
+    let j := topFrobeniusIndex p
+    change F.symm (B.repr (E 0) j) • dy = 0
+    have hc : B.repr (E 0) j = 0 :=
+      (congrArg (fun x : L => B.repr x j) E.map_zero).trans
+        (congrArg (fun a : Fin p →₀ P => a j) B.repr.map_zero)
+    rw [hc, F.symm.map_zero, zero_smul]
   map_add' ω η := by
-    rw [map_add, map_add, Finsupp.add_apply, map_add, add_smul]
+    let E : Ω ≃ₗ[L] L := squareKummerDifferentialEquiv p s c b R
+    let B : Module.Basis (Fin p) P L := squareKummerCoordinatePowerBasis p s c b R
+    let F : L ≃+* P := frobeniusPowerFieldEquiv K L p
+    let j := topFrobeniusIndex p
+    change F.symm (B.repr (E (ω + η)) j) • dy =
+      F.symm (B.repr (E ω) j) • dy + F.symm (B.repr (E η) j) • dy
+    have hc : B.repr (E (ω + η)) j = B.repr (E ω) j + B.repr (E η) j :=
+      (congrArg (fun x : L => B.repr x j) (E.map_add ω η)).trans
+        (congrArg (fun a : Fin p →₀ P => a j) (B.repr.map_add (E ω) (E η)))
+    exact (congrArg (fun a : P => F.symm a • dy) hc).trans
+      ((congrArg (fun a : L => a • dy) (F.symm.map_add _ _)).trans (add_smul _ _ dy))
 
 /-- Frobenius coefficient extraction turns multiplication by a `p`th power into multiplication by its root. -/
 theorem squareKummerCoordinateCartier_frobenius_smul (a : L) (ω : Ω) :
     squareKummerCoordinateCartier p s c b R (a ^ p • ω) =
       a • squareKummerCoordinateCartier p s c b R ω := by
-  let E := squareKummerDifferentialEquiv p s c b R
-  let B := squareKummerCoordinatePowerBasis p s c b R
-  let F := frobeniusPowerFieldEquiv K L p
+  let E : Ω ≃ₗ[L] L := squareKummerDifferentialEquiv p s c b R
+  let B : Module.Basis (Fin p) P L := squareKummerCoordinatePowerBasis p s c b R
+  let F : L ≃+* P := frobeniusPowerFieldEquiv K L p
   let j := topFrobeniusIndex p
-  have hc : B.repr (E (a ^ p • ω)) j =
-      frobeniusPowerElement K L p a * B.repr (E ω) j := by
-    rw [map_smul]
-    change B.repr (frobeniusPowerElement K L p a • E ω) j = _
-    rw [map_smul, Finsupp.smul_apply, smul_eq_mul]
+  let aP : P := frobeniusPowerElement K L p a
+  have hE : E (a ^ p • ω) = aP • E ω := E.map_smul (a ^ p) ω
+  have hc : B.repr (E (a ^ p • ω)) j = aP * B.repr (E ω) j :=
+    (congrArg (fun x : L => B.repr x j) hE).trans
+      (congrArg (fun u : Fin p →₀ P => u j) (B.repr.map_smul aP (E ω)))
   change F.symm (B.repr (E (a ^ p • ω)) j) • dy =
     a • (F.symm (B.repr (E ω) j) • dy)
-  rw [hc, map_mul, frobeniusPowerFieldEquiv_symm_element, mul_smul]
+  rw [hc, F.symm.map_mul]
+  have hroot : F.symm aP = a := frobeniusPowerFieldEquiv_symm_element K L p a
+  rw [hroot, mul_smul]
 
 /-- Frobenius coefficient extraction selects exactly the highest coordinate power. -/
 theorem squareKummerCoordinateCartier_power (i : Fin p) :
@@ -55,9 +76,9 @@ theorem squareKummerCoordinateCartier_power (i : Fin p) :
       ((algebraMap K[X] L X) ^ i.val • dy) =
         if i.val = p - 1 then dy else 0 := by
   classical
-  let E := squareKummerDifferentialEquiv p s c b R
-  let B := squareKummerCoordinatePowerBasis p s c b R
-  let F := frobeniusPowerFieldEquiv K L p
+  let E : Ω ≃ₗ[L] L := squareKummerDifferentialEquiv p s c b R
+  let B : Module.Basis (Fin p) P L := squareKummerCoordinatePowerBasis p s c b R
+  let F : L ≃+* P := frobeniusPowerFieldEquiv K L p
   let j := topFrobeniusIndex p
   have he : E ((algebraMap K[X] L X) ^ i.val • dy) = B i := by
     rw [map_smul, squareKummerDifferentialEquiv_D_polynomial, derivative_X,

@@ -11,11 +11,13 @@ lists `χ ↦ χ^t`, `t ∈ (ℤ/(p − 1))^×` (`conjList`).
   `p`-adic content of a monomial of `r` nontrivial characters averages to its weight `r/2`.
 * **Conjugation keeps the Möbius sign** (`isMoebiusSignedTuple_conjList`): `t` is odd and
   `(∏ L)² = 1`, so `∏ L^t = ∏ L`.
-* **The price of the sign** (`exists_conjList_half_le_stickelbergerDefect`,
-  `exists_conjList_stickelbergerDefect_le_neg_half`): every conjugate of a Möbius-signed monomial has
-  half-integral defect (`isMoebiusSignedTuple_iff_defect`), and the defects average to zero; so at
-  some place above `p` the weight exceeds the `p`-content by at least `½`, and at another the
-  content exceeds the weight by at least `½`.
+* **The price of the sign** (`exists_conjList_half_le_stickelbergerDefect`): every conjugate of a
+  Möbius-signed monomial has half-integral defect (`isMoebiusSignedTuple_iff_defect`), and the
+  defects average to zero; so at some place above `p` the weight exceeds the `p`-content by at
+  least `½`.
+
+* **Frames** (`half_lt_stickelbergerPrice_div`): pricing a monomial at the period `k` by `k` times
+  its largest conjugate defect gives `c ≥ k/2 > (k − 1)/2`: no such frame is centred.
 
 For one character of order `m` the largest defect over its conjugates is `½ − 1/m` (the extremal
 character, `norm_gaussSum_extremalChar_pow`), the price per unit of a completed factor in the Gauss
@@ -36,7 +38,7 @@ theorem neZero_p_sub_one : NeZero (p - 1) := ⟨by have := hp.out.two_le; omega�
 attribute [local instance] neZero_p_sub_one
 
 /-- The conjugate list `χ ↦ χ^t`. -/
-def conjList (t : (ZMod (p - 1))ˣ) (L : List (MulChar (ZMod p) (PadicAlgCl p))) :
+noncomputable def conjList (t : (ZMod (p - 1))ˣ) (L : List (MulChar (ZMod p) (PadicAlgCl p))) :
     List (MulChar (ZMod p) (PadicAlgCl p)) :=
   L.map fun χ => χ ^ (t : ZMod (p - 1)).val
 
@@ -77,8 +79,11 @@ theorem teichExp_pow_val {χ : MulChar (ZMod p) (PadicAlgCl p)} (hχ : χ ≠ 1)
   · rcases Nat.eq_zero_or_pos ((t : ZMod (p - 1)) * (teichExp p χ : ZMod (p - 1))).val with h0 | h0
     · exact absurd ((ZMod.val_eq_zero _).1 h0) hy
     · exact h0
-  · rw [ZMod.val_mul, ZMod.val_natCast, Nat.mod_eq_of_lt hlt, ← orderOf_teichCharK p,
-      pow_mod_orderOf, h3, ← pow_mul, mul_comm]
+  · have hmod := pow_mod_orderOf (teichCharK p) ((t : ZMod (p - 1)).val * teichExp p χ)
+    rw [orderOf_teichCharK] at hmod
+    rw [ZMod.val_mul, ZMod.val_natCast, Nat.mod_eq_of_lt hlt, hmod]
+    conv_lhs => rw [h3]
+    rw [← pow_mul, mul_comm]
 
 /-- **The Stickelberger distribution.** For `a ≠ 0` in `ℤ/(p − 1)` the residues `t a` over the
 units `t` add to half of `(p − 1)` times their number. -/
@@ -216,7 +221,37 @@ theorem exists_conjList_half_le_stickelbergerDefect {ζ : PadicAlgCl p} (hζ : I
   rw [hsum, Finset.sum_const, Finset.card_univ, nsmul_eq_mul] at this
   nlinarith
 
+/-! ### Frames priced by the defect -/
+
+/-- The **Stickelberger price** of a monomial at the period `k`: `k` times the largest defect of its
+Galois conjugates, the weight of `G^k` that reaches `ζ` through no power of `p` at the worst place. -/
+noncomputable def stickelbergerPrice {ζ : PadicAlgCl p} (hζ : IsPrimitiveRoot ζ p) (k : ℝ)
+    (L : List (MulChar (ZMod p) (PadicAlgCl p))) : ℝ :=
+  k * Finset.univ.sup' Finset.univ_nonempty fun t : (ZMod (p - 1))ˣ =>
+    stickelbergerDefect p hζ (conjList p t L)
+
+theorem half_mul_le_stickelbergerPrice {ζ : PadicAlgCl p} (hζ : IsPrimitiveRoot ζ p) {k : ℝ}
+    (hk : 0 ≤ k) {L : List (MulChar (ZMod p) (PadicAlgCl p))} (hM : IsMoebiusSignedTuple L) :
+    k / 2 ≤ stickelbergerPrice hζ k L := by
+  obtain ⟨t, ht⟩ := exists_conjList_half_le_stickelbergerDefect hζ hM
+  have hsup : 1 / 2 ≤ Finset.univ.sup' Finset.univ_nonempty fun t : (ZMod (p - 1))ˣ =>
+      stickelbergerDefect p hζ (conjList p t L) :=
+    ht.trans (Finset.le_sup' (fun t : (ZMod (p - 1))ˣ => stickelbergerDefect p hζ (conjList p t L))
+      (Finset.mem_univ t))
+  unfold stickelbergerPrice
+  nlinarith
+
+/-- **No frame of a Möbius-signed abelian monomial priced by its defect is centred:** the centre
+`c/(k − 1)` of the frame `(c, k)` with `c` the Stickelberger price exceeds `½`. -/
+theorem half_lt_stickelbergerPrice_div {ζ : PadicAlgCl p} (hζ : IsPrimitiveRoot ζ p) {k : ℝ}
+    (hk : 1 < k) {L : List (MulChar (ZMod p) (PadicAlgCl p))} (hM : IsMoebiusSignedTuple L) :
+    1 / 2 < stickelbergerPrice hζ k L / (k - 1) := by
+  rw [lt_div_iff₀ (by linarith)]
+  have := half_mul_le_stickelbergerPrice hζ (by linarith) hM
+  linarith
+
 #print axioms sum_stickelbergerDefect_conjList_eq_zero
 #print axioms exists_conjList_half_le_stickelbergerDefect
+#print axioms half_lt_stickelbergerPrice_div
 
 end GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.Stickelberger

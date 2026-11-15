@@ -51,7 +51,7 @@ theorem binaryTraceForm_isAlt : (binaryTraceForm A).IsAlt := by
   rw [binaryTraceForm_apply, ← sq, binary_trace_sq, ← sq, ZMod.pow_card,
     CharTwo.add_self_eq_zero]
 
-/-- The rank-one endomorphism producing the corrected trace pairing. -/
+/-- The trace shear whose precomposition produces the corrected trace pairing. -/
 noncomputable def binaryTraceShear : A →ₗ[ZMod 2] A :=
   LinearMap.id + (Algebra.trace (ZMod 2) A).smulRight (1 : A)
 

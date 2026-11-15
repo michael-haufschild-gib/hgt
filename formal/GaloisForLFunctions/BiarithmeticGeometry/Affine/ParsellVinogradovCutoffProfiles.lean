@@ -52,6 +52,39 @@ theorem cubeCutoff_mul_vertical_translate_eq_zero (r k : ℕ) (t : ℝ) (ht : 4 
       linarith only [hc.2, hd.1, ht]
   rw [cubeCutoff_eq_zero_of_coordinate _ (degreeOneIndex r k 0) hb, mul_zero]
 
+/-- Parallel physical cutoffs have zero product once their centers are four scales apart. -/
+theorem frameCutoff_mul_eq_zero_of_separation (r k : ℕ) (ε : ℝ) (hε : ε ≠ 0)
+    (δ : Fin (r + 1) → ℝ) (t s : ℝ) (h : 4 * |ε| ≤ |t - s|)
+    (x : AffineAxisSpace r (k + 1)) :
+    frameCutoff r (k + 1) ε δ t x * frameCutoff r (k + 1) ε δ s x = 0 := by
+  have ht : 4 ≤ |(t - s) / ε| := by
+    rw [abs_div]
+    exact (le_div_iff₀ (abs_pos.mpr hε)).mpr h
+  calc
+    _ = cubeCutoff (momentFrameInverse r (k + 1) ε δ t x) *
+        cubeCutoff (momentFrameInverse r (k + 1) ε δ s
+          (momentFrame r (k + 1) ε δ t (momentFrameInverse r (k + 1) ε δ t x))) := by
+      rw [momentFrame_frameInverse r (k + 1) ε hε]
+      rfl
+    _ = 0 := by
+      rw [momentFrameInverse_parallelFrame r (k + 1) ε hε]
+      exact cubeCutoff_mul_vertical_translate_eq_zero r k _ ht _
+
+/-- The boundary indices at distance four grid-density units already have zero cutoff product. -/
+theorem frameCutoff_integer_mul_eq_zero (r k q : ℕ) (ε : ℝ) (hε : ε ≠ 0)
+    (δ : Fin (r + 1) → ℝ) (i j : ℤ)
+    (h : 4 * (q + 1 : ℝ) ≤ |(i : ℝ) - (j : ℝ)|) (x : AffineAxisSpace r (k + 1)) :
+    frameCutoff r (k + 1) ε δ (ε * (i : ℝ) / (q + 1 : ℝ)) x *
+      frameCutoff r (k + 1) ε δ (ε * (j : ℝ) / (q + 1 : ℝ)) x = 0 := by
+  apply frameCutoff_mul_eq_zero_of_separation r k ε hε δ _ _ _ x
+  have hd : (0 : ℝ) < q + 1 := by positivity
+  rw [show ε * (i : ℝ) / (q + 1 : ℝ) - ε * (j : ℝ) / (q + 1 : ℝ) =
+    ε * (((i : ℝ) - (j : ℝ)) / (q + 1 : ℝ)) by ring,
+    abs_mul, abs_div, abs_of_pos hd]
+  calc
+    _ = |ε| * 4 := mul_comm _ _
+    _ ≤ _ := mul_le_mul_of_nonneg_left ((le_div_iff₀ hd).mpr h) (abs_nonneg ε)
+
 /-- A profile with a prescribed number of preceding integer-grid cutoffs. -/
 def cutoffProfile (r k q : ℕ) (N : ℤ) (x : AffineAxisSpace r k) : ℝ :=
   cubeCutoff x * ∏ m ∈ Finset.Icc (1 : ℤ) N,
@@ -77,6 +110,8 @@ def cutoffProfileSchwartz (r k q : ℕ) (N : ℤ) : SchwartzMap (AffineAxisSpace
 #print axioms degreeOne_momentAffineAction_vertical
 #print axioms cubeCutoff_coordinate_lt
 #print axioms cubeCutoff_mul_vertical_translate_eq_zero
+#print axioms frameCutoff_mul_eq_zero_of_separation
+#print axioms frameCutoff_integer_mul_eq_zero
 #print axioms contDiff_cutoffProfile
 #print axioms hasCompactSupport_cutoffProfile
 #print axioms cutoffProfileSchwartz

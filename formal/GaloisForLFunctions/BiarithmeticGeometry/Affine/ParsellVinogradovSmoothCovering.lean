@@ -44,7 +44,9 @@ def coveringWeight (r k q : ℕ) (ε : ℝ) (δ : Fin (r + 1) → ℝ) (i : ℤ)
 
 theorem smoothCovering_mem_Icc (r k q : ℕ) (ε : ℝ) (δ : Fin (r + 1) → ℝ)
     (x : AffineAxisSpace r k) : smoothCovering r k q ε δ x ∈ Set.Icc (0 : ℝ) 1 :=
-  cutoffUnion_mem_Icc _ _ (fun i _ => frameCutoff_mem_Icc r k ε δ _ x)
+  cutoffUnion_mem_Icc (dimensionCoveringGrid r q ε)
+    (fun i => frameCutoff r k ε δ (ε * (i : ℝ) / (q + 1 : ℝ)) x)
+    (fun i _ => frameCutoff_mem_Icc r k ε δ (ε * (i : ℝ) / (q + 1 : ℝ)) x)
 
 theorem contDiff_smoothCovering (r k q : ℕ) (ε : ℝ) (δ : Fin (r + 1) → ℝ) :
     ContDiff ℝ (↑(⊤ : ℕ∞)) (smoothCovering r k q ε δ) := by
@@ -56,7 +58,8 @@ theorem contDiff_smoothCovering (r k q : ℕ) (ε : ℝ) (δ : Fin (r + 1) → �
 
 theorem isOpen_coveringNeighborhood (r k q : ℕ) (ε : ℝ) (δ : Fin (r + 1) → ℝ) :
     IsOpen (coveringNeighborhood r k q ε δ) :=
-  isOpen_iUnion (fun i => isOpen_iUnion (fun _ => isOpen_frameCore r k ε δ _))
+  isOpen_iUnion (fun i => isOpen_iUnion
+    (fun _ => isOpen_frameCore r k ε δ (ε * (i : ℝ) / (q + 1 : ℝ))))
 
 /-- The finite smooth union is identically one throughout its open plateau union. -/
 theorem smoothCovering_eqOn_neighborhood (r k q : ℕ) (ε : ℝ)
@@ -91,7 +94,7 @@ theorem unitMomentImage_subset_coveringNeighborhood (r k q : ℕ) (ε : ℝ) (h�
 theorem isCompact_coveringBoxUnion (r k q : ℕ) (ε : ℝ) (δ : Fin (r + 1) → ℝ) :
     IsCompact (coveringBoxUnion r k q ε δ) :=
   (dimensionCoveringGrid r q ε).isCompact_biUnion
-    (fun i _ => isCompact_momentCoveringBox r k ε δ _)
+    (fun i _ => isCompact_momentCoveringBox r k ε δ (ε * (i : ℝ) / (q + 1 : ℝ)))
 
 /-- Outside the finite box union every factor cutoff vanishes. -/
 theorem support_smoothCovering_subset (r k q : ℕ) (ε : ℝ) (hε : ε ≠ 0)
@@ -127,13 +130,17 @@ def smoothCoveringSchwartz (r k q : ℕ) (ε : ℝ) (hε : ε ≠ 0)
 theorem sum_coveringWeight (r k q : ℕ) (ε : ℝ) (δ : Fin (r + 1) → ℝ)
     (x : AffineAxisSpace r k) :
     (∑ i ∈ dimensionCoveringGrid r q ε, coveringWeight r k q ε δ i x) =
-      smoothCovering r k q ε δ x := sum_orderedWeight _ _
+      smoothCovering r k q ε δ x :=
+  sum_orderedWeight (dimensionCoveringGrid r q ε)
+    (fun i => frameCutoff r k ε δ (ε * (i : ℝ) / (q + 1 : ℝ)) x)
 
 theorem coveringWeight_mem_Icc (r k q : ℕ) (ε : ℝ) (δ : Fin (r + 1) → ℝ)
     (i : ℤ) (hi : i ∈ dimensionCoveringGrid r q ε) (x : AffineAxisSpace r k) :
     coveringWeight r k q ε δ i x ∈ Set.Icc 0
       (frameCutoff r k ε δ (ε * (i : ℝ) / (q + 1 : ℝ)) x) :=
-  orderedWeight_mem_Icc _ _ (fun j _ => frameCutoff_mem_Icc r k ε δ _ x) i hi
+  orderedWeight_mem_Icc (dimensionCoveringGrid r q ε)
+    (fun j => frameCutoff r k ε δ (ε * (j : ℝ) / (q + 1 : ℝ)) x)
+    (fun j _ => frameCutoff_mem_Icc r k ε δ (ε * (j : ℝ) / (q + 1 : ℝ)) x) i hi
 
 theorem contDiff_coveringWeight (r k q : ℕ) (ε : ℝ) (δ : Fin (r + 1) → ℝ) (i : ℤ) :
     ContDiff ℝ (↑(⊤ : ℕ∞)) (coveringWeight r k q ε δ i) := by

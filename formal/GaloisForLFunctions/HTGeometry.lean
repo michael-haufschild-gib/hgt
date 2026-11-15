@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.Homology.AugmentationUnitWedge
 import GaloisForLFunctions.HTGeometry.Homology.CyclicOneFunctor
 import GaloisForLFunctions.HTGeometry.Homology.SquareZeroCyclicExterior
 import GaloisForLFunctions.HTGeometry.Homology.ProductCyclicOne
@@ -39,6 +40,9 @@ import GaloisForLFunctions.HTGeometry.LinearAlgebra.QuadraticLagrangianParity
 import GaloisForLFunctions.HTGeometry.LinearAlgebra.HyperbolicMatrixGraphs
 import GaloisForLFunctions.HTGeometry.LinearAlgebra.BinaryQuadraticRefinement
 import GaloisForLFunctions.HTGeometry.LinearAlgebra.BinaryQuadraticGraphs
+import GaloisForLFunctions.HTGeometry.LinearAlgebra.BinaryTraceCorrection
+import GaloisForLFunctions.HTGeometry.LinearAlgebra.BinaryTraceEtale
+import GaloisForLFunctions.HTGeometry.LinearAlgebra.BinaryTraceRadical
 import GaloisForLFunctions.HTGeometry.LinearAlgebra.QuadraticParityBoundary
 import GaloisForLFunctions.HTGeometry.LinearAlgebra.BlockTriangularRank
 import GaloisForLFunctions.HTGeometry.LinearAlgebra.PolynomialSquareRoot

@@ -264,7 +264,7 @@ private theorem fullEnergy_zero_of_ae_zero {R : ℝ} {G : ℝ → ℝ}
     criticalHalfLineEnergyDomain_of_window (A := (1 : ℝ))
       { contDiff := contDiff_const, vanish := fun _ _ => rfl }
   rw [criticalHalfLineFullEnergy_congr_ae hG hz hae]
-  have hmul := criticalHalfLineFullEnergy_const_mul R 0 (fun _ : ℝ => (0 : ℝ))
+  have hmul := criticalHalfLineFullEnergy_const_mul R (fun _ : ℝ => (0 : ℝ)) 0
   simpa only [zero_mul, zero_pow two_ne_zero] using hmul
 
 /-- **Variational Unit-Ball Envelope Law:** At every positive confinement ratio `R > 0`,
@@ -279,14 +279,14 @@ theorem sInf_unitBall_criticalHalfLineFullEnergy_eq_min {R : ℝ} (hR : 0 < R) :
   have hz : CriticalHalfLineEnergyDomain (fun _ : ℝ => (0 : ℝ)) :=
     criticalHalfLineEnergyDomain_of_window (A := (1 : ℝ))
       { contDiff := contDiff_const, vanish := fun _ _ => rfl }
-  have hz_mass : (∫ u, (0 : ℝ) ^ 2) ≤ 1 := by simp
+  have hz_mass : (∫ _u : ℝ, ((fun _ : ℝ => (0 : ℝ)) _u) ^ 2) ≤ 1 := by simp
   have hz_E : criticalHalfLineFullEnergy R (fun _ : ℝ => (0 : ℝ)) = 0 :=
     fullEnergy_zero_of_ae_zero hz EventuallyEq.rfl
   apply IsLeast.csInf_eq
   constructor
   · by_cases h0 : 0 ≤ criticalHalfLineGroundEnergy R
     · rw [min_eq_left h0]
-      exact ⟨0, hz, hz_mass, hz_E⟩
+      exact ⟨fun _ : ℝ => (0 : ℝ), hz, hz_mass, hz_E⟩
     · rw [min_eq_right (le_of_not_ge h0)]
       exact ⟨F, hF.1, hF.2.1.le, hF.2.2⟩
   · rintro _ ⟨G, hG, hm, rfl⟩

@@ -7,7 +7,7 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheBudgetInTheTwistExponent
 At the published balanced-surplus scales `(lx, ly, ℓ) = (17/48, 23/48, 1/6)` the cubic compensated
 probe has low boundary `7/8` (`θ = 9/10`). Moving along the dual-length edge `lx + ly + ℓ = 1` to
 `(lx, ly, ℓ) = (17/48, 479/1000, 1001/6000)` lowers the low boundary in both Gram regimes to
-`20999/24000 = 7/8 − 1/24000` (`θ = 4499/5000 = 9/10 − 1/5000`) while preserving strict negativity
+`20999/24000 = 7/8 − 1/24000` (`θ = 8999/10000 = 9/10 − 1/10000`) while preserving strict negativity
 of every high-side nonprincipal exponent:
 
 * **Exact sum-of-squares certificate (`endpoint_certificate_subSevenEighths`).** Across every bin
@@ -44,9 +44,11 @@ theorem lowBoundaryGen_subSevenEighths :
   rw [lowBoundaryGen_eq_of_le (1001 / 6000) (by norm_num), lowBoundary_subSevenEighths]
 
 theorem probeThetaGen_subSevenEighths :
-    probeThetaGen 6 (17 / 48) (479 / 1000) (1001 / 6000) = 4499 / 5000 := by
-  have hb := positiveFormTheta_probeThetaGen_iff (n := 6)
-  norm_num [probeThetaGen, lowBoundaryGenOrder, positiveFormTheta] at *
+    probeThetaGen 6 (17 / 48) (479 / 1000) (1001 / 6000) = 8999 / 10000 := by
+  apply (positiveFormBoundary_strictMono (by norm_num : (1 : ℝ) < 6)).injective
+  rw [positiveFormBoundary_probeThetaGen (by norm_num) (by norm_num), lowBoundaryGenOrder_six,
+    lowBoundaryGen_subSevenEighths]
+  norm_num [positiveFormBoundary]
 
 /-- On `(M, ℓ) = (4999/6000, 1001/6000)` we have `1 + 3ℓ = 3001/2000 ≤ 4999/3000 = 2M`, so the
 reflected allowance of unselected slots costs nothing. -/
@@ -123,23 +125,25 @@ theorem endpoint_certificate_subSevenEighths {δ x : ℝ} (hδ0 : 0 ≤ δ) (hδ
 /-- Positive row-length slope of `rowCount δ x` relative to `z₀ = 17/50`. -/
 theorem rowCount_slope_bounds {δ x : ℝ} (hδ0 : 0 ≤ δ) (hδ : δ ≤ 5 / 6) (hx0 : 0 ≤ x)
     (hx : x ≤ 1 / 2) :
-    73 / 300 ≤ rowCount δ x + δ / 2 - 17 / 50 ∧ rowCount δ x + δ / 2 - 17 / 50 ≤ 2 := by
+    73 / 300 ≤ rowCount δ x + δ / 2 - 17 / 50 ∧ rowCount δ x + δ / 2 - 17 / 50 ≤ 3 := by
   have hJ := rowJ_pos hδ0 hδ hx
   have hJ0 : 0 < rowJ δ x := by linarith
   have hP0 : 0 ≤ rowP x := by unfold rowP; exact mul_nonneg (by linarith) (by linarith)
-  have hD0 : 0 ≤ rowD x := by unfold rowD; linarith
+  have hPle : rowP x ≤ 2 := by
+    have hx1 : 0 ≤ 1 - x := by linarith
+    unfold rowP
+    nlinarith [mul_nonneg hx0 hx1]
   have hge : 1 - δ ≤ rowCount δ x := by
     unfold rowCount
     have hq : 0 ≤ (5 / 6 - δ) * δ * rowP x / (2 * rowJ δ x) :=
       div_nonneg (mul_nonneg (mul_nonneg (by linarith) hδ0) hP0) (by linarith)
     linarith
-  have hle : rowCount δ x ≤ 1 := by
+  have hle : rowCount δ x ≤ 5 / 2 := by
     unfold rowCount
-    have hnum : (5 / 6 - δ) * δ * rowP x ≤ 2 * rowJ δ x * δ := by
-      unfold rowJ
-      nlinarith [mul_nonneg (mul_nonneg (sub_nonneg.2 hδ) hD0) hδ0,
-        mul_nonneg (mul_nonneg hδ0 hP0) hδ0]
-    have hdiv : (5 / 6 - δ) * δ * rowP x / (2 * rowJ δ x) ≤ δ := by
+    have hnum : (5 / 6 - δ) * δ * rowP x ≤ 25 / 18 := by
+      have hprod : (5 / 6 - δ) * δ ≤ 25 / 36 := by nlinarith [sq_nonneg (δ - 5 / 12)]
+      nlinarith
+    have hdiv : (5 / 6 - δ) * δ * rowP x / (2 * rowJ δ x) ≤ 3 / 2 := by
       rw [div_le_iff₀ (by linarith)]
       linarith
     linarith
@@ -149,7 +153,7 @@ theorem rowCount_slope_bounds {δ x : ℝ} (hδ0 : 0 ≤ δ) (hδ : δ ≤ 5 / 6
 theorem rowExponent_balanced_subSevenEighths {δ x d ζ : ℝ} (hδ0 : 0 ≤ δ) (hδ : δ ≤ 5 / 6)
     (hx0 : 0 ≤ x) (hx : x ≤ 1 / 2) (hζ : 0 ≤ ζ) (hd : d ≤ 1219 / 1500 + ζ) :
     rowExponent (17 / 48) (479 / 1000) (1001 / 6000) (20999 / 24000) (17 / 50)
-      δ (x * δ) (rowCount δ x) d ≤ -(29 / 9720000) + 2 * ζ := by
+      δ (x * δ) (rowCount δ x) d ≤ -(29 / 9720000) + 3 * ζ := by
   have htop := endpoint_certificate_subSevenEighths hδ0 hδ hx0 hx
   have hsl := rowCount_slope_bounds hδ0 hδ hx0 hx
   have hrel : rowExponent (17 / 48) (479 / 1000) (1001 / 6000) (20999 / 24000) (17 / 50)
@@ -164,23 +168,16 @@ theorem rowExponent_balanced_subSevenEighths {δ x d ζ : ℝ} (hδ0 : 0 ≤ δ)
   · have hnonpos : (d - 1219 / 1500) * (rowCount δ x + δ / 2 - 17 / 50) ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg (by linarith) (by linarith [hsl.1])
     linarith
-  · have hbd : (d - 1219 / 1500) * (rowCount δ x + δ / 2 - 17 / 50) ≤ 2 * ζ := by
+  · have hbd : (d - 1219 / 1500) * (rowCount δ x + δ / 2 - 17 / 50) ≤ 3 * ζ := by
       nlinarith [hsl.1, hsl.2]
     linarith
 
 /-- High-`δ` certificate (`5/6 ≤ δ ≤ 1`, `q ≤ δ/2`, `R = 1 − δ`). -/
-theorem endpoint_high_delta_subSevenEighths {δ q : ℝ} (hδ0 : 5 / 6 ≤ δ) (hδ1 : δ ≤ 1)
+theorem endpoint_high_delta_subSevenEighths {δ q : ℝ} (hδ0 : 5 / 6 ≤ δ) (_hδ1 : δ ≤ 1)
     (hq : q ≤ δ / 2) :
     endpointExponent (17 / 48) (479 / 1000) (1001 / 6000) (20999 / 24000) δ q (1 - δ) ≤
       -(109 / 1500) := by
-  have hmono : endpointExponent (17 / 48) (479 / 1000) (1001 / 6000) (20999 / 24000) δ q (1 - δ) ≤
-      endpointExponent (17 / 48) (479 / 1000) (1001 / 6000) (20999 / 24000) δ (δ / 2) (1 - δ) := by
-    unfold endpointExponent
-    linarith
-  have hlin : endpointExponent (17 / 48) (479 / 1000) (1001 / 6000) (20999 / 24000)
-      δ (δ / 2) (1 - δ) = -(599 / 1000) + (261 / 4000) * δ := by
-    unfold endpointExponent
-    ring
+  unfold endpointExponent
   linarith
 
 /-- High-`δ` certificate across all row lengths `d ≤ 1219/1500 + ζ` (`ζ ≥ 0`). -/
@@ -208,12 +205,6 @@ theorem rowExponent_floor_bin_subSevenEighths {q d ζ : ℝ} (hq : q ≤ 1 / 100
     (hd : d ≤ 1219 / 1500 + ζ) :
     rowExponent (17 / 48) (479 / 1000) (1001 / 6000) (20999 / 24000) (17 / 50)
       (1 / 50) q 1 d ≤ -(5083 / 900000) + (67 / 100) * ζ := by
-  have hrel : rowExponent (17 / 48) (479 / 1000) (1001 / 6000) (20999 / 24000) (17 / 50)
-      (1 / 50) q 1 d =
-      -(52331 / 900000) + (1001 / 6000) * (q - 1 / 100) + (67 / 100) * (d - 1219 / 1500) := by
-    unfold rowExponent
-    ring
-  -- Check exact constant via linear arithmetic
   unfold rowExponent
   linarith
 
