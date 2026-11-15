@@ -82,11 +82,3 @@ theorem pureStateReduced_fermionEntropies_eq
   fermionSpectralEntropy_gram (HTGeometry.bipartitePureStateMatrix ψ)
 
 end GaloisForLFunctions.HilbertMetric
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HilbertMetric.fermionSpectralEntropy_diagonal
-#print axioms GaloisForLFunctions.HilbertMetric.fermionSpectralEntropy_projection_diagonal
-#print axioms GaloisForLFunctions.HilbertMetric.fermionSpectralEntropy_mul_comm
-#print axioms GaloisForLFunctions.HilbertMetric.fermionSpectralEntropy_gram
-#print axioms GaloisForLFunctions.HilbertMetric.pureStateReduced_fermionEntropies_eq
--- END PAPER AXIOM AUDIT

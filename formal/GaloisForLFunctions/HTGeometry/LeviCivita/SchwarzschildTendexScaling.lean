@@ -61,7 +61,8 @@ theorem schwarzschildTendex_null_iff (m r : ℝ) (v : ℝ × ℝ) :
     planarTendexForm (schwarzschildTendexCoefficient m r) v v = 0 ↔
       v.2 = sqrt 2 * v.1 ∨ v.2 = -(sqrt 2 * v.1) := by
   have he : schwarzschildTendexCoefficient m r = exp (m - 3 * r) := by
-    rw [schwarzschildTendexCoefficient, exp_sub, exp_nat_mul r 3]
+    have hr : exp (3 * r) = exp r ^ 3 := by simpa using exp_nat_mul r 3
+    rw [schwarzschildTendexCoefficient, exp_sub, hr]
   rw [he]
   exact planarTendexForm_null_iff _ v
 
@@ -82,12 +83,3 @@ theorem schwarzschildTendex_horizon_entropy_determinant (m polar : ℝ) :
     _ = _ := by rw [h]
 
 end GaloisForLFunctions.HTGeometry
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendexCoefficient_pos
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendex_radial
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendex_trace
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendex_determinant
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendex_null_iff
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildTendex_horizon_entropy_determinant
--- END PAPER AXIOM AUDIT

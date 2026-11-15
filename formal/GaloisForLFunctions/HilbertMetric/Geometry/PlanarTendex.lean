@@ -130,14 +130,3 @@ theorem tendexNullSpiral_injective (theta₀ : ℝ) : Function.Injective (tendex
   exact exp_injective ((sq_eq_sq₀ (exp_nonneg u) (exp_nonneg v)).mp h)
 
 end GaloisForLFunctions.HilbertMetric
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HilbertMetric.planarTendexForm_split
-#print axioms GaloisForLFunctions.HilbertMetric.planarTendexForm_null_iff
-#print axioms GaloisForLFunctions.HilbertMetric.planarTendex_null_acceleration_energy
-#print axioms GaloisForLFunctions.HilbertMetric.tendexNullSpiral_hasDerivAt
-#print axioms GaloisForLFunctions.HilbertMetric.tendexNullSpiralVelocity_polar
-#print axioms GaloisForLFunctions.HilbertMetric.tendexNullSpiral_null
-#print axioms GaloisForLFunctions.HilbertMetric.tendexNullSpiral_radius_sq
-#print axioms GaloisForLFunctions.HilbertMetric.tendexNullSpiral_injective
--- END PAPER AXIOM AUDIT

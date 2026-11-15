@@ -1,0 +1,14 @@
+import GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.MixedTowersOfLeversStayAboveTheBestCentre
+import GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.EveryRulerCarriesTheSeedAndEveryLever
+import GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.LeversThatBiteFailInTheWorlds
+import GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.TransformsSampledOnLogarithmicallyDensePoints
+import GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.TheWidthIsTheRateOfTheWeilFloorInTheLogarithmicEnergy
+import GaloisForLFunctions.ExponentDynamicsOfTheCriticalStrip.TheMarginOfTheWindowMatricesSinksAtTheRateOfTheWidth
+
+/-!
+# Exponent Dynamics of the Critical Strip
+
+Umbrella for the maps on exponents and between stages of the critical strip: levers, gap laws and
+walls; towers over affine frames and their values; rulers and the transmission of the seed; stage
+maps and loss exponents. See `ExponentDynamicsOfTheCriticalStrip/README.md`.
+-/

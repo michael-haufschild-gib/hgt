@@ -34,7 +34,7 @@ theorem tentReal_eq_count_difference (a x : ℝ) :
   simp only [min_def, max_def]
   split_ifs <;> linarith
 
-/-- The central tent's slope divisor has one pole of multiplicity two. -/
+/-- Boundary proximity plus the central counting term, including zero width. -/
 theorem centeredTent_characteristic (a r : ℝ) :
     proximity r (fun x => tentCount a x) + |r| = max |a| |r| := by
   change (max 0 (max 0 (|a| - |r|)) + max 0 (max 0 (|a| - |-r|))) / 2 + |r| = _
@@ -45,6 +45,17 @@ theorem centeredTent_characteristic (a r : ℝ) :
     ring
   · rw [max_eq_left (by linarith only [h]), max_eq_right (le_of_not_ge h)]
     ring
+
+/-- At zero width the roots and central pole cancel, giving characteristic zero. -/
+theorem centeredTent_characteristic_exact (a r : ℝ) :
+    proximity r (fun x => tentCount a x) + (if a = 0 then 0 else |r|) =
+      if a = 0 then 0 else max |a| |r| := by
+  by_cases ha : a = 0
+  · subst a
+    have ht (x : ℝ) : tentCount 0 x = 0 := by
+      rw [tentCount, abs_zero, zero_sub, max_eq_left (neg_nonpos.mpr (abs_nonneg x))]
+    simp [ht, proximity]
+  · simpa only [if_neg ha] using centeredTent_characteristic a r
 
 /-- The existing compact-kernel cutoff has an explicit tropical characteristic. -/
 theorem plateauTent_characteristic (a r : ℝ) :
@@ -58,6 +69,7 @@ theorem plateauTent_characteristic (a r : ℝ) :
 #print axioms causalTent_eq_tentCount
 #print axioms tentReal_eq_count_difference
 #print axioms centeredTent_characteristic
+#print axioms centeredTent_characteristic_exact
 #print axioms plateauTent_characteristic
 
 end

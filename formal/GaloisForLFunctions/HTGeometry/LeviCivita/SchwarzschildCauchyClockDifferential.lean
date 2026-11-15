@@ -113,12 +113,3 @@ theorem schwarzschildClockDifferential_timelike (m u X c : ℝ) :
   exact mul_neg_of_pos_of_neg (exp_pos c) (by linarith only [h, hp])
 
 end GaloisForLFunctions.HTGeometry
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HTGeometry.artanh_hasDerivAt_tanh
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyClock_time_hasDerivAt
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyClock_space_hasDerivAt
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildClockTimeDerivative_pos
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildClockDifferential_norm
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildClockDifferential_timelike
--- END PAPER AXIOM AUDIT

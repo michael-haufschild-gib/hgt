@@ -84,13 +84,3 @@ theorem measurementRelease_length_eq_iff (L : Submodule ℝ H) (x : H) (t : ℝ)
     sub_eq_zero, show (4 : ℝ) ≠ 0 by norm_num, or_false, or_assoc]
 
 end HTGeometry.ConstraintRelativity
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms HTGeometry.ConstraintRelativity.reporterRelease_null
-#print axioms HTGeometry.ConstraintRelativity.reporterRelease_norm_sq
-#print axioms HTGeometry.ConstraintRelativity.reporterRelease_length_nondecreasing
-#print axioms HTGeometry.ConstraintRelativity.reporterRelease_length_eq_iff
-#print axioms HTGeometry.ConstraintRelativity.measurementRelease_norm_sq
-#print axioms HTGeometry.ConstraintRelativity.measurementRelease_born_coefficient
-#print axioms HTGeometry.ConstraintRelativity.measurementRelease_length_eq_iff
--- END PAPER AXIOM AUDIT

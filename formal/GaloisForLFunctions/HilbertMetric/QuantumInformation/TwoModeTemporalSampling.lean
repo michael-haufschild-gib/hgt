@@ -152,14 +152,3 @@ theorem twoModeTemporalCorrelation_entropy (z w : ℂ) :
   by_cases h : z = w <;> simp [h, Real.binEntropy_two_inv]
 
 end GaloisForLFunctions.HilbertMetric
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeTemporal_interpolation
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeTemporalSpace_mem_iff
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeTemporalProjection_fixed_iff
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeTemporalProjection_isHermitian
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeTemporalProjection_idempotent
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeTemporalCorrelation_eq
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeTemporalCorrelation_charpoly
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeTemporalCorrelation_entropy
--- END PAPER AXIOM AUDIT

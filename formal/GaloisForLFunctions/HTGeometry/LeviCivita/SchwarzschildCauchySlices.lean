@@ -142,17 +142,3 @@ theorem schwarzschildCauchyNormal_tangent_orthogonal (u x : ℝ) :
   simp [splitForm]
 
 end GaloisForLFunctions.HTGeometry
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlice_domain
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyClock_slice
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlice_injective
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlice_foliation
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlice_hasDerivAt
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlope_margin
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchySlope_sq_lt_one
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyNormal_timelike
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyNormal_boost_timelike
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyTangent_spacelike
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyNormal_tangent_orthogonal
--- END PAPER AXIOM AUDIT

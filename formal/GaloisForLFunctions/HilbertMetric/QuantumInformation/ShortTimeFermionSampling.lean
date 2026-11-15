@@ -48,8 +48,30 @@ theorem twoModeSeparatingTime_no_alias (q s : ℝ) :
   have hsin := sin_pos_of_pos_of_le_one hangle.1 hangle.2.le
   intro h
   have hi := congrArg Complex.im h
-  simp [twoModeEvolutionPhase, Complex.exp_im] at hi
+  simp only [twoModeEvolutionPhase, Complex.exp_im, Complex.one_im,
+    Complex.mul_I_re, Complex.mul_I_im, Complex.ofReal_re, Complex.ofReal_im,
+    neg_zero, exp_zero, one_mul] at hi
   linarith
+
+/-- The observations at times zero and the separating time already span both
+physical modes; no later-time observations are needed. -/
+theorem twoModeSeparatingTime_firstTwo_span (q s : ℝ) :
+    Submodule.span ℂ
+      {twoModeTemporalSample 1 (twoModeEvolutionPhase q (twoModeSeparatingTime q s)) 0,
+       twoModeTemporalSample 1 (twoModeEvolutionPhase q (twoModeSeparatingTime q s)) 1} = ⊤ := by
+  let z := twoModeEvolutionPhase q (twoModeSeparatingTime q s)
+  let S := Submodule.span ℂ {twoModeTemporalSample 1 z 0, twoModeTemporalSample 1 z 1}
+  change S = ⊤
+  apply top_unique
+  intro v _
+  have hz : z - 1 ≠ 0 := sub_ne_zero.mpr (Ne.symm (twoModeSeparatingTime_no_alias q s))
+  have h₀ : twoModeTemporalSample 1 z 0 ∈ S := Submodule.subset_span (by simp)
+  have h₁ : twoModeTemporalSample 1 z 1 ∈ S := Submodule.subset_span (by simp)
+  have hscaled : (z - 1) • v ∈ S := by
+    rw [twoModeTemporal_interpolation]
+    exact S.add_mem (S.smul_mem _ h₀) (S.smul_mem _ h₁)
+  have h := S.smul_mem (z - 1)⁻¹ hscaled
+  simpa only [smul_smul, inv_mul_cancel₀ hz, one_smul] using h
 
 /-- Exact two-mode entropy vanishes at the explicitly separated short time. -/
 theorem twoModeSeparatingTime_entropy (q s : ℝ) :
@@ -89,14 +111,3 @@ theorem twoModeTemporalEntropy_not_continuousAt_zero (q : ℝ) :
   linarith only [hbad, hlog]
 
 end GaloisForLFunctions.HilbertMetric
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeSeparatingTime_pos
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeSeparatingTime_lt
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeSeparatingTime_phaseAngle
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeSeparatingTime_no_alias
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeSeparatingTime_entropy
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeEvolutionPhase_zero_entropy
-#print axioms GaloisForLFunctions.HilbertMetric.twoMode_arbitrarily_short_pure
-#print axioms GaloisForLFunctions.HilbertMetric.twoModeTemporalEntropy_not_continuousAt_zero
--- END PAPER AXIOM AUDIT

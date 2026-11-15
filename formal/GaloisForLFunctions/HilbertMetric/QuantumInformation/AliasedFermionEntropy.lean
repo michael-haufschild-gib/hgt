@@ -176,20 +176,3 @@ theorem fermionCellEntropy_ge_two_variance (a b : ℕ) :
   nlinarith only [h₁, h₂]
 
 end GaloisForLFunctions.HilbertMetric
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HilbertMetric.fermionCellOccupation_nonneg
-#print axioms GaloisForLFunctions.HilbertMetric.fermionCellOccupation_le_one
-#print axioms GaloisForLFunctions.HilbertMetric.fermionCellEntropy_eq_zero_iff
-#print axioms GaloisForLFunctions.HilbertMetric.fermionCellEntropy_nonneg
-#print axioms GaloisForLFunctions.HilbertMetric.fermionCellEntropy_pos_iff
-#print axioms GaloisForLFunctions.HilbertMetric.fermionCellEntropy_le_log_two
-#print axioms GaloisForLFunctions.HilbertMetric.fermionCellEntropy_max_iff
-#print axioms GaloisForLFunctions.HilbertMetric.aliasedFermionEntropy_nonneg
-#print axioms GaloisForLFunctions.HilbertMetric.aliasedFermionEntropy_eq_zero_iff
-#print axioms GaloisForLFunctions.HilbertMetric.aliasedFermionEntropy_le
-#print axioms GaloisForLFunctions.HilbertMetric.aliasedFermionEntropy_eq_spectral
-#print axioms GaloisForLFunctions.HilbertMetric.fermionCellEntropy_swap
-#print axioms GaloisForLFunctions.HilbertMetric.fermionCellVariance_eq
-#print axioms GaloisForLFunctions.HilbertMetric.fermionCellEntropy_ge_two_variance
--- END PAPER AXIOM AUDIT

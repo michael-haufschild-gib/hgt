@@ -51,7 +51,7 @@ theorem primeTemporalFermionEntropy_unique (rho : ℂ) (u : ℝ) (p q : Nat.Prim
     · exact Or.inr (Or.inr (by rw [primeTemporalFermionEntropy_eq, if_neg hq]))
   · exact Or.inl (by rw [primeTemporalFermionEntropy_eq, if_neg hp])
 
-/-- The entropy product is supported exactly on the prime diagonal. -/
+/-- Entropy products vanish off the prime diagonal. -/
 theorem primeTemporalFermionEntropy_product (rho : ℂ) (u : ℝ) (p q : Nat.Primes) :
     primeTemporalFermionEntropy rho u p * primeTemporalFermionEntropy rho u q =
       if p = q then primeTemporalFermionEntropy rho u p ^ 2 else 0 := by
@@ -79,7 +79,7 @@ theorem primeTemporalFermionEntropy_sum_le (rho : ℂ) (u : ℝ) (s : Finset Nat
   have hlog : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
   by_cases hzero : ∀ p ∈ s, primeTemporalFermionEntropy rho u p = 0
   · simpa only [Finset.sum_eq_zero hzero] using hlog
-  push_neg at hzero
+  push Not at hzero
   obtain ⟨p, hp, hne⟩ := hzero
   have hsum : ∑ q ∈ s, primeTemporalFermionEntropy rho u q =
       primeTemporalFermionEntropy rho u p := by
@@ -96,13 +96,36 @@ theorem primeTemporalFermionEntropy_sum_le (rho : ℂ) (u : ℝ) (s : Finset Nat
   · exact (hne hz).elim
   · exact hz.le
 
-end GaloisForLFunctions.HeckeKreinToeplitz
+/-- A prescribed prime resonates with the explicit positive gap `2π/log p`. -/
+theorem temporalPartnerExponent_resonance (rho : ℂ) (p : Nat.Primes) :
+    zeroChar rho (primeElt p.property) =
+      zeroChar (temporalPartnerExponent rho (Real.log (2 * Real.pi / Real.log (p : ℕ))))
+        (primeElt p.property) := by
+  have hlog : 0 < Real.log (p : ℕ) := Real.log_pos (by exact_mod_cast p.property.one_lt)
+  have hgap : 0 < 2 * Real.pi / Real.log (p : ℕ) := by positivity
+  apply (zeroChar_prime_eq_iff p.property).mpr
+  refine ⟨-1, ?_⟩
+  rw [temporalPartnerExponent, Real.exp_log hgap]
+  have hprod := congrArg (fun x : ℝ => (x : ℂ))
+    (div_mul_cancel₀ (2 * Real.pi) hlog.ne')
+  norm_num only [Complex.ofReal_mul] at hprod
+  rw [show ((2 : ℝ) : ℂ) = 2 by norm_num] at hprod
+  norm_num only
+  linear_combination -Complex.I * hprod
 
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HeckeKreinToeplitz.temporalPartnerExponent_ne
-#print axioms GaloisForLFunctions.HeckeKreinToeplitz.primeTemporalFermionEntropy_eq
-#print axioms GaloisForLFunctions.HeckeKreinToeplitz.primeTemporalFermionEntropy_unique
-#print axioms GaloisForLFunctions.HeckeKreinToeplitz.primeTemporalFermionEntropy_product
-#print axioms GaloisForLFunctions.HeckeKreinToeplitz.primeTemporalFermionEntropy_values
-#print axioms GaloisForLFunctions.HeckeKreinToeplitz.primeTemporalFermionEntropy_sum_le
--- END PAPER AXIOM AUDIT
+/-- Every single-prime entropy profile is realized explicitly; the one-bit bound is sharp. -/
+theorem primeTemporalFermionEntropy_spike (rho : ℂ) (p q : Nat.Primes) :
+    primeTemporalFermionEntropy rho (Real.log (2 * Real.pi / Real.log (p : ℕ))) q =
+      if q = p then Real.log 2 else 0 := by
+  rw [primeTemporalFermionEntropy_eq]
+  by_cases hqp : q = p
+  · subst q
+    rw [if_pos (temporalPartnerExponent_resonance rho p), if_pos rfl]
+  · rw [if_neg hqp, if_neg]
+    intro hq
+    apply hqp
+    exact Subtype.ext (eq_of_alias_of_alias
+      (temporalPartnerExponent_ne rho (Real.log (2 * Real.pi / Real.log (p : ℕ))))
+      q.property p.property hq (temporalPartnerExponent_resonance rho p))
+
+end GaloisForLFunctions.HeckeKreinToeplitz

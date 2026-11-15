@@ -126,6 +126,7 @@ import GaloisForLFunctions.HeckeKreinToeplitz.TheSelectiveIndexOfTheAtomicKernel
 import GaloisForLFunctions.HeckeKreinToeplitz.APurePointSpectrumIsThinAtMostFrequencies
 import GaloisForLFunctions.HeckeKreinToeplitz.OnTheFiniteStratumEveryFlipHasInfiniteIndex
 import GaloisForLFunctions.HeckeKreinToeplitz.EveryFlipSetHasInfiniteIndexOnTheHeckeLattice
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.PrimeTemporalFermionEntropy
 
 /-!
 # Hecke-covariant Krein–Toeplitz theory

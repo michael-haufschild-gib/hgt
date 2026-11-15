@@ -14,7 +14,7 @@ correlation spectrum counts both particle and hole occupations.
 -/
 
 noncomputable section
-open scoped BigOperators Matrix
+open scoped BigOperators Matrix ComplexOrder
 namespace GaloisForLFunctions.HTGeometry
 open Real SchafferExl GaloisForLFunctions.HilbertMetric
 
@@ -46,8 +46,7 @@ theorem spinBathDensity_fermion_entropy (u : ℝ) :
 theorem spinBathDensity_vonNeumann_entropy (u : ℝ) :
     finiteMatrixVonNeumannEntropy (spinBathDensity u)
       (spinBathDensity_posSemidef u).isHermitian = Real.binEntropy (spinBathUpper u) := by
-  rw [spinBathDensity_real_diagonal]
-  rw [Thermofield.vonNeumannEntropy_real_diagonal]
+  simp only [spinBathDensity_real_diagonal, Thermofield.vonNeumannEntropy_real_diagonal]
   simp only [entropy, tsum_fintype, Fin.sum_univ_two, Matrix.cons_val_zero,
     Matrix.cons_val_one, Real.binEntropy, Real.log_inv]
   ring
@@ -60,11 +59,3 @@ theorem spinBathDensity_entropy_factor_two (u : ℝ) :
   rw [spinBathDensity_fermion_entropy, spinBathDensity_vonNeumann_entropy]
 
 end GaloisForLFunctions.HTGeometry
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HTGeometry.schwarzschildCauchyClock_spinBath
-#print axioms GaloisForLFunctions.HTGeometry.spinBathDensity_real_diagonal
-#print axioms GaloisForLFunctions.HTGeometry.spinBathDensity_fermion_entropy
-#print axioms GaloisForLFunctions.HTGeometry.spinBathDensity_vonNeumann_entropy
-#print axioms GaloisForLFunctions.HTGeometry.spinBathDensity_entropy_factor_two
--- END PAPER AXIOM AUDIT

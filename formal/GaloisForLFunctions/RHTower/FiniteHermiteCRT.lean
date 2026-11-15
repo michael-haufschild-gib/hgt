@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.Polynomial.FiniteJetCRT
 import Mathlib.RingTheory.Ideal.Quotient.Operations
 import Mathlib.Algebra.Polynomial.Derivative
 import Mathlib.Algebra.Polynomial.RingDivision
@@ -29,14 +30,8 @@ theorem exists_polynomial_sub_mem_power_linear_ideal
     {ι : Type*} [Finite ι] (w : ι → ℂ) (hw : Function.Injective w)
     (m : ι → ℕ) (target : ι → Polynomial ℂ) :
     ∃ B : Polynomial ℂ, ∀ i,
-      B - target i ∈ Ideal.span ({(X - C (w i)) ^ m i} : Set (Polynomial ℂ)) := by
-  let I : ι → Ideal (Polynomial ℂ) := fun i =>
-    Ideal.span ({(X - C (w i)) ^ m i} : Set (Polynomial ℂ))
-  have hI : Pairwise (IsCoprime on I) := by
-    intro i j hij
-    apply (Ideal.isCoprime_span_singleton_iff _ _).mpr
-    exact (pairwise_coprime_X_sub_C hw hij).pow
-  simpa only [I] using Ideal.exists_forall_sub_mem_ideal hI target
+      B - target i ∈ Ideal.span ({(X - C (w i)) ^ m i} : Set (Polynomial ℂ)) :=
+  GaloisForLFunctions.HTGeometry.exists_polynomial_sub_mem_power_linear_ideal w hw m target
 
 /-- Divisibility form of finite polynomial CRT. -/
 theorem exists_polynomial_power_linear_dvd_sub
@@ -355,3 +350,5 @@ theorem exists_real_even_polynomial_iterateDerivative_eval_eq_degree_lt_modulus
 end
 
 end RHTower
+
+#print axioms RHTower.exists_polynomial_sub_mem_power_linear_ideal

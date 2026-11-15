@@ -14,7 +14,7 @@ without assuming a spectral decomposition or a sampling-rank premise.
 -/
 
 noncomputable section
-open scoped Matrix BigOperators
+open scoped Matrix BigOperators ComplexOrder
 namespace GaloisForLFunctions.HilbertMetric
 
 /-- Orthogonal projector for a uniformly observed unresolved cell. -/
@@ -65,12 +65,13 @@ theorem uniformTemporalCorrelation_gram (n : ℕ) (occupied : Finset (Fin (n + 1
   ext i j
   rw [uniformTemporalCorrelation_entry]
   simp only [Matrix.mul_apply, uniformTemporalAmplitude, Matrix.conjTranspose_apply,
-    Complex.conj_ofReal, Fin.sum_univ_one]
+    Fin.sum_univ_one]
+  simp only [show ∀ x : ℝ, star (x : ℂ) = (x : ℂ) from fun x => by simp]
   have hs : (Real.sqrt (occupied.card : ℝ) : ℂ) ^ 2 = (occupied.card : ℂ) := by
     exact_mod_cast Real.sq_sqrt (Nat.cast_nonneg occupied.card)
   push_cast
   rw [div_mul_div_comm, ← pow_two, hs]
-  rfl
+  rw [pow_two]
 
 /-- The dual Gram matrix has exactly one occupation, the occupied fraction. -/
 theorem uniformTemporalAmplitude_dualGram (n : ℕ) (occupied : Finset (Fin (n + 1))) :
@@ -80,8 +81,9 @@ theorem uniformTemporalAmplitude_dualGram (n : ℕ) (occupied : Finset (Fin (n +
   have hij : i = j := Subsingleton.elim _ _
   subst j
   simp only [Matrix.mul_apply, uniformTemporalAmplitude, Matrix.conjTranspose_apply,
-    Complex.conj_ofReal, Matrix.diagonal_apply_eq, Finset.sum_const,
+    Matrix.diagonal_apply_eq, Finset.sum_const,
     Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+  simp only [show ∀ x : ℝ, star (x : ℂ) = (x : ℂ) from fun x => by simp]
   have hs : (Real.sqrt (occupied.card : ℝ) : ℂ) ^ 2 = (occupied.card : ℂ) := by
     exact_mod_cast Real.sq_sqrt (Nat.cast_nonneg occupied.card)
   have hn : ((n + 1 : ℕ) : ℂ) ≠ 0 := by exact_mod_cast Nat.succ_ne_zero n
@@ -115,14 +117,3 @@ theorem uniformTemporalCorrelation_entropy_zero_iff
   simp only [hn, or_false, Nat.cast_eq_zero, Nat.cast_inj]
 
 end GaloisForLFunctions.HilbertMetric
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HilbertMetric.uniformTemporalProjection_idempotent
-#print axioms GaloisForLFunctions.HilbertMetric.uniformTemporalProjection_isHermitian
-#print axioms GaloisForLFunctions.HilbertMetric.uniformTemporalCorrelation_entry
-#print axioms GaloisForLFunctions.HilbertMetric.uniformTemporalCorrelation_gram
-#print axioms GaloisForLFunctions.HilbertMetric.uniformTemporalAmplitude_dualGram
-#print axioms GaloisForLFunctions.HilbertMetric.uniformTemporalCorrelation_entropy
-#print axioms GaloisForLFunctions.HilbertMetric.uniformTemporalCorrelation_posSemidef
-#print axioms GaloisForLFunctions.HilbertMetric.uniformTemporalCorrelation_entropy_zero_iff
--- END PAPER AXIOM AUDIT

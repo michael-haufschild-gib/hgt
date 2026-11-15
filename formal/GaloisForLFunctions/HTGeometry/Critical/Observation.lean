@@ -20,6 +20,7 @@ import GaloisForLFunctions.HTGeometry.Critical.Observation.CotangentBasis
 import GaloisForLFunctions.HTGeometry.Critical.Observation.Field
 import GaloisForLFunctions.HTGeometry.Critical.Observation.JacobianBlocks
 import GaloisForLFunctions.HTGeometry.Critical.Observation.JacobianDet
+import GaloisForLFunctions.HTGeometry.Critical.Observation.HorizonJacobianRank
 import GaloisForLFunctions.HTGeometry.Critical.Observation.JacobianMinor
 import GaloisForLFunctions.HTGeometry.Critical.Observation.JacobianRecip
 import GaloisForLFunctions.HTGeometry.Critical.Observation.TorusChartEquiv

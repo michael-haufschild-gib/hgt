@@ -119,14 +119,3 @@ theorem constantTendexFlow_null_length_eq_iff (q a t : ℝ) :
   simp only [mul_eq_zero, exp_ne_zero, false_or]
 
 end GaloisForLFunctions.HilbertMetric
-
--- BEGIN PAPER AXIOM AUDIT
-#print axioms GaloisForLFunctions.HilbertMetric.constantTendexFlow_zero
-#print axioms GaloisForLFunctions.HilbertMetric.constantTendexVelocity_zero
-#print axioms GaloisForLFunctions.HilbertMetric.constantTendexFlow_hasDerivAt
-#print axioms GaloisForLFunctions.HilbertMetric.constantTendexVelocity_hasDerivAt
-#print axioms GaloisForLFunctions.HilbertMetric.constantTendexFlow_null_length
-#print axioms GaloisForLFunctions.HilbertMetric.tendex_null_length_gap
-#print axioms GaloisForLFunctions.HilbertMetric.constantTendexFlow_null_length_ge
-#print axioms GaloisForLFunctions.HilbertMetric.constantTendexFlow_null_length_eq_iff
--- END PAPER AXIOM AUDIT
