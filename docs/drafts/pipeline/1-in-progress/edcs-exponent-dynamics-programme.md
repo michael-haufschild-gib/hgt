@@ -44,6 +44,7 @@ Modules, in order of attack. Status: P = paper proof below, L = Lean compiled an
 | 17 | TheLossOfTheMarginIsBoundedOrPolynomial | E2 (loss exponent zero) | L |
 | 18 | TheMoebiusSignCostsHalfAUnitAtSomePlace | E4 (price of the sign) | L |
 | 19 | TheShortMoebiusMonomialsPayExactlyHalf | E3, E4 (the wall 3/5 is completion, not arithmetic) | L |
+| 20 | TheGaussPairingsArePricedAboveTheSign | E4 (FCT prices dominate the sign; arithmetic barrier c ≥ k/2) | L |
 
 Open, with the input that is missing:
 
@@ -222,6 +223,11 @@ per-factor completion (one Kubota series per Gauss factor) overtakes it. A sourc
 of a short Möbius monomial (a theta series or multiple Dirichlet series whose coefficients are products of Gauss sums
 of distinct characters) at a period k ≥ 7. Paper status: the interpretation is [D]; the arithmetic is in Lean.
 
+**M20 (FCT prices dominate the sign).** Defect of a monomial = Σ over factors of (½ + log_p‖g(x)‖). For x of order
+m ≥ 2, every conjugate x^t has order m (t coprime to N, m | N) and ‖g(x^t)‖^m = p^{−v}, v ≥ 1 (M14), so
+log_p‖g(x^t)‖ = −v/m ≤ −1/m. Comps: k(½ + log) ≤ (½ − 1/m)k; rows (m | k so k/m ≥ 1): k(½ + log) ≤ k/2 − 1. Summing:
+k·defect(L^t) ≤ pairingC at every t, so the Stickelberger price ≤ pairingC, and with M18 pairingC ≥ k/2.
+
 ## No-go closure
 - **Margin in the mass normalisation at every block size** (fable §5.2, first lemma as stated). Not a consequence
   of the width. Insight: the normalisation decides exactness. Survivors, all in Lean: the exact ruler in the
@@ -238,5 +244,5 @@ of distinct characters) at a period k ≥ 7. Paper status: the interpretation is
 ## Log
 - 2026-11-15 — created; README first draft written. Modules 1–6 compiled, axiom-clean, wired.
 - 2026-11-15 — modules 7–12 compiled, axiom-clean, wired.
-- 2026-11-15 — M3 §4 (shifted pairs), modules 13–19 compiled, axiom-clean, wired. E4 rank one answered without the
+- 2026-11-15 — M3 §4 (shifted pairs), modules 13–20 compiled, axiom-clean, wired. E4 rank one answered without the
   classification of pure monomials (M18); the classification is needed only to identify completions.

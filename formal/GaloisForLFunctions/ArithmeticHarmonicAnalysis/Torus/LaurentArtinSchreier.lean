@@ -63,8 +63,8 @@ theorem laurent_binaryArtinSchreier_constant_iff
     simpa only [binaryArtinSchreier_apply, map_add, map_pow, laurentAugmentation_single] using
       congrArg (laurentAugmentation (A := A) (ι := ι)) hf
   · rintro ⟨b, hb, rfl⟩
-    simpa only [binaryArtinSchreier_apply, map_add, map_pow] using
-      congrArg (AddMonoidAlgebra.singleZeroRingHom : A →+* AddMonoidAlgebra A (ι → ℤ)) hb
+    simp only [binaryArtinSchreier_apply] at hb ⊢
+    rw [AddMonoidAlgebra.single_pow, nsmul_zero, ← AddMonoidAlgebra.single_add, hb]
 
 #print axioms laurent_binaryArtinSchreier_eq_augmentation
 #print axioms laurent_binaryArtinSchreier_eq_constantCoeff

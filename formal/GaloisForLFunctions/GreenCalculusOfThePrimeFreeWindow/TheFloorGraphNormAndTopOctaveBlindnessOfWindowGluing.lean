@@ -1568,16 +1568,399 @@ theorem sum_prime_log_band_ge {m : ℕ} (hm : 4 ≤ m) :
           ((1 / 100) * Real.sqrt ((3 * N : ℕ) : ℝ) + 4 / (1 / 100)) :=
       mul_le_mul_of_nonneg_left hlog (by positivity)
     nlinarith
-  have hlog2 := Real.log_two_gt_d9
+  have hlog2N : (69 / 100 : ℝ) * N ≤ (N : ℝ) * Real.log 2 :=
+    mul_le_mul_of_nonneg_left (by linarith [Real.log_two_gt_d9]) (Nat.cast_nonneg N)
   have h3N_mul : ((3 * N : ℕ) : ℝ) * Real.log 2 = 3 * ((N : ℝ) * Real.log 2) := by
     push_cast; ring
   have hlog4_mul : Real.log 4 * (N : ℝ) = 2 * ((N : ℝ) * Real.log 2) := by
     rw [hlog4]; ring
-  linarith
+  linarith [hlo, hhi, hl1, hl2, hlog2N, h3N_mul, hlog4_mul]
 
 /-- Explicit cross-magnitude constant for the two-cluster witness of `subEulerGluingWeight`. -/
 def subEulerCrossConst : ℝ :=
   73 + 5 * floorContactSqrtConst + 90 * (Real.log 4 + 4)
+
+/-- Lower bound on the prime-band floor attraction on `(1 + p₀)` to `[1 + q₀, 1 + q₀ + L)` for
+`subEulerGluingWeight Q₀` at scale `N = 256^m` (`m ≥ 4`). -/
+private lemma subEuler_fiber_sum_ge (Q₀ : ℕ) {m p₀ q₀ L : ℕ} (hm : 4 ≤ m)
+    (hinc : ∀ p ∈ (Ioc (256 ^ m) (3 * 256 ^ m)).filter Nat.Prime,
+      1 + q₀ ≤ p * (1 + p₀) ∧ p * (1 + p₀) + p ≤ 1 + q₀ + L) :
+    ((256 ^ m : ℕ) : ℝ) / 2 ≤
+      ∑ k ∈ Icc 2 (3 * (8 * 256 ^ m) + 1), subEulerGluingWeight Q₀ k *
+        ∑ l ∈ Ico q₀ (q₀ + L), floorGraph k (1 + p₀) (1 + l) := by
+  have hsubP : (Ioc (256 ^ m) (3 * 256 ^ m)).filter Nat.Prime ⊆ Icc 2 (3 * (8 * 256 ^ m) + 1) := by
+    intro p hp
+    rcases Finset.mem_filter.mp hp with ⟨hpI, hpP⟩
+    have hp3 := (Finset.mem_Ioc.mp hpI).2
+    exact Finset.mem_Icc.mpr ⟨hpP.two_le, by omega⟩
+  have hnonneg_k : ∀ k ∈ Icc 2 (3 * (8 * 256 ^ m) + 1),
+      k ∉ (Ioc (256 ^ m) (3 * 256 ^ m)).filter Nat.Prime →
+      0 ≤ subEulerGluingWeight Q₀ k * ∑ l ∈ Ico q₀ (q₀ + L), floorGraph k (1 + p₀) (1 + l) := by
+    intro k _ _
+    refine mul_nonneg (subEulerGluingWeight_nonneg Q₀ k) (Finset.sum_nonneg fun l _ => ?_)
+    unfold floorGraph; split_ifs
+    · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k)
+    · exact le_rfl
+  refine (sum_prime_log_band_ge hm).trans ((Finset.sum_le_sum fun p hp => ?_).trans
+    (Finset.sum_le_sum_of_subset_of_nonneg hsubP hnonneg_k))
+  rcases Finset.mem_filter.mp hp with ⟨hpI, hpP⟩
+  rcases Finset.mem_Ioc.mp hpI with ⟨hp_lo, hp_hi⟩
+  rw [subEulerGluingWeight_eq_one_of_mem_band (by omega) hpP hp_lo hp_hi, one_mul]
+  obtain ⟨hb1, hb2⟩ := hinc p hp
+  have hpos_pm : 1 ≤ p * (1 + p₀) := Nat.mul_pos hpP.pos (by omega)
+  have hF_sub : Ico (p * (1 + p₀) - 1) (p * (1 + p₀) - 1 + p) ⊆ Ico q₀ (q₀ + L) := by
+    intro l hl
+    rcases Finset.mem_Ico.mp hl with ⟨hl1, hl2⟩
+    exact Finset.mem_Ico.mpr ⟨by omega, by omega⟩
+  have hF_val : ∑ l ∈ Ico (p * (1 + p₀) - 1) (p * (1 + p₀) - 1 + p),
+      floorGraph p (1 + p₀) (1 + l) = Real.log p := by
+    have hterm : ∀ l ∈ Ico (p * (1 + p₀) - 1) (p * (1 + p₀) - 1 + p),
+        floorGraph p (1 + p₀) (1 + l) = Real.log p / p := by
+      intro l hl
+      rcases Finset.mem_Ico.mp hl with ⟨hl1, hl2⟩
+      have h1l : p * (1 + p₀) ≤ 1 + l := by omega
+      have h2l : 1 + l < (1 + p₀ + 1) * p := by
+        calc 1 + l < p * (1 + p₀) + p := by omega
+          _ = (1 + p₀ + 1) * p := by ring
+      have hdiv : (1 + l) / p = 1 + p₀ := by
+        refine le_antisymm ?_ ?_
+        · exact Nat.lt_succ_iff.mp ((Nat.div_lt_iff_lt_mul hpP.pos).mpr h2l)
+        · exact (Nat.le_div_iff_mul_le hpP.pos).mpr (by rw [mul_comm]; exact h1l)
+      have hle_pl : 1 + p₀ ≤ 1 + l := by
+        have hp2 := hpP.two_le
+        calc 1 + p₀ ≤ 2 * (1 + p₀) := by omega
+          _ ≤ p * (1 + p₀) := Nat.mul_le_mul_right _ hp2
+          _ ≤ 1 + l := h1l
+      rw [floorGraph_of_le p hle_pl, if_pos hdiv, ArithmeticFunction.vonMangoldt_apply_prime hpP]
+    rw [Finset.sum_congr rfl hterm, Finset.sum_const, Nat.card_Ico, Nat.add_sub_cancel_left,
+      nsmul_eq_mul]
+    have hp_pos : (0 : ℝ) < p := by exact_mod_cast hpP.pos
+    field_simp [hp_pos.ne']
+  rw [← hF_val]
+  refine Finset.sum_le_sum_of_subset_of_nonneg hF_sub fun l _ _ => ?_
+  unfold floorGraph; split_ifs
+  · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg p)
+  · exact le_rfl
+
+/-- Jet cross-term bound `≤ 73` for the separated cluster pair at any scale `N ≥ 256`. -/
+private lemma subEuler_jet_cross_bound {N : ℕ} (hN : 256 ≤ N) :
+    1 + (Real.sqrt ((5 * N : ℕ) : ℝ) + Real.sqrt ((17 * N : ℕ) : ℝ) +
+      Real.sqrt (((5 * N : ℕ) : ℝ) * ((17 * N : ℕ) : ℝ))) * (2 / ((N / 2 : ℕ) : ℝ)) ≤ 73 := by
+  have hN_pos_r : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  have hd_pos : (0 : ℝ) < ((N / 2 : ℕ) : ℝ) := by exact_mod_cast (show 0 < N / 2 by omega)
+  have hdiv_le : 2 / ((N / 2 : ℕ) : ℝ) ≤ 6 / (N : ℝ) := by
+    rw [div_le_div_iff₀ hd_pos hN_pos_r]
+    have h1 : (N : ℝ) ≤ 3 * ((N / 2 : ℕ) : ℝ) := by
+      exact_mod_cast (show N ≤ 3 * (N / 2) by omega)
+    linarith
+  have hs85 : Real.sqrt (((5 * N : ℕ) : ℝ) * ((17 * N : ℕ) : ℝ)) ≤ 10 * (N : ℝ) := by
+    rw [← Real.sqrt_sq (by positivity : (0 : ℝ) ≤ 10 * N)]
+    refine Real.sqrt_le_sqrt ?_
+    push_cast; nlinarith
+  have hsN_N : 8 * Real.sqrt N ≤ 2 * (N : ℝ) := by
+    have h16 : (16 : ℝ) ≤ Real.sqrt N := by
+      rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 16)]
+      exact Real.sqrt_le_sqrt (by exact_mod_cast hN)
+    have hmul := mul_le_mul_of_nonneg_right h16 (Real.sqrt_nonneg N)
+    rw [Real.mul_self_sqrt hN_pos_r.le] at hmul
+    linarith
+  have hs5 : Real.sqrt ((5 * N : ℕ) : ℝ) ≤ 3 * Real.sqrt N := by
+    rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num)]
+    refine mul_le_mul_of_nonneg_right ?_ (Real.sqrt_nonneg _)
+    rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 3)]
+    exact Real.sqrt_le_sqrt (by norm_num)
+  have hs17 : Real.sqrt ((17 * N : ℕ) : ℝ) ≤ 5 * Real.sqrt N := by
+    rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num)]
+    refine mul_le_mul_of_nonneg_right ?_ (Real.sqrt_nonneg _)
+    rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 5)]
+    exact Real.sqrt_le_sqrt (by norm_num)
+  have hsum_s : Real.sqrt ((5 * N : ℕ) : ℝ) + Real.sqrt ((17 * N : ℕ) : ℝ) +
+      Real.sqrt (((5 * N : ℕ) : ℝ) * ((17 * N : ℕ) : ℝ)) ≤ 12 * (N : ℝ) := by
+    linarith [hs85, hsN_N, hs5, hs17]
+  have hmul : (Real.sqrt ((5 * N : ℕ) : ℝ) + Real.sqrt ((17 * N : ℕ) : ℝ) +
+      Real.sqrt (((5 * N : ℕ) : ℝ) * ((17 * N : ℕ) : ℝ))) * (2 / ((N / 2 : ℕ) : ℝ)) ≤
+      (12 * (N : ℝ)) * (6 / (N : ℝ)) :=
+    mul_le_mul hsum_s hdiv_le (by positivity) (by positivity)
+  have heq72 : (12 * (N : ℝ)) * (6 / (N : ℝ)) = 72 := by
+    field_simp [hN_pos_r.ne']; ring
+  linarith [hmul, heq72]
+
+/-- Support geometry of cross-contacts between `clusterVec 0 (N - 1) (5 * N)` and
+`clusterVec 6 (7 * N - 1) (17 * N)` for `k ≥ 25` (`N ≥ 1000`). -/
+private lemma subEuler_support_out {N k : ℕ} (hN : 1000 ≤ N) (hk25 : 25 ≤ k)
+    (hsum_ne : ∑ i ∈ range (3 * (8 * N)), ∑ j ∈ range (3 * (8 * N)),
+      clusterVec 0 (N - 1) (5 * N) i * clusterVec 6 (7 * N - 1) (17 * N) j *
+        floorGraph k (1 + i) (1 + j) ≠ 0) :
+    N < 8 * k ∧ k ≤ 24 * N ∧ ¬(N < k ∧ k ≤ 3 * N) := by
+  obtain ⟨i, _, hj_ex⟩ := Finset.exists_ne_zero_of_sum_ne_zero hsum_ne
+  obtain ⟨j, _, hij_ne⟩ := Finset.exists_ne_zero_of_sum_ne_zero hj_ex
+  have hui : clusterVec 0 (N - 1) (5 * N) i ≠ 0 := fun h => hij_ne (by rw [h, zero_mul, zero_mul])
+  have hvj : clusterVec 6 (7 * N - 1) (17 * N) j ≠ 0 :=
+    fun h => hij_ne (by rw [h, mul_zero, zero_mul])
+  have hfg : floorGraph k (1 + i) (1 + j) ≠ 0 := fun h => hij_ne (by rw [h, mul_zero])
+  have hi_supp : i = 0 ∨ (N - 1 ≤ i ∧ i < 6 * N - 1) := by
+    unfold clusterVec at hui
+    by_cases h0 : i = 0
+    · exact Or.inl h0
+    · rw [if_neg h0] at hui
+      by_cases hI : N - 1 ≤ i ∧ i < N - 1 + 5 * N
+      · exact Or.inr ⟨hI.1, by omega⟩
+      · rw [if_neg hI] at hui; exact absurd rfl hui
+  have hj_supp : j = 6 ∨ (7 * N - 1 ≤ j ∧ j < 24 * N - 1) := by
+    unfold clusterVec at hvj
+    by_cases h6 : j = 6
+    · exact Or.inl h6
+    · rw [if_neg h6] at hvj
+      by_cases hJ : 7 * N - 1 ≤ j ∧ j < 7 * N - 1 + 17 * N
+      · exact Or.inr ⟨hJ.1, by omega⟩
+      · rw [if_neg hJ] at hvj; exact absurd rfl hvj
+  rcases hi_supp with rfl | ⟨hi1, hi2⟩ <;> rcases hj_supp with rfl | ⟨hj1, hj2⟩
+  · exfalso; exact hfg (floorGraph_eq_zero_of_lt_mul (by omega) (by omega) (by omega))
+  · rw [floorGraph_of_le k (by omega)] at hfg
+    have hdiv : (1 + j) / k = 1 := by by_contra h; exact hfg (if_neg h)
+    have h1 := (Nat.le_div_iff_mul_le (by omega : 0 < k)).mp hdiv.ge
+    have h2 := (Nat.div_lt_iff_lt_mul (by omega : 0 < k)).mp (show (1 + j) / k < 2 by omega)
+    exact ⟨by omega, by omega, by omega⟩
+  · rw [floorGraph_comm, floorGraph_of_le k (by omega)] at hfg
+    have hdiv : (1 + i) / k = 7 := by by_contra h; exact hfg (if_neg h)
+    have h1 := (Nat.le_div_iff_mul_le (by omega : 0 < k)).mp hdiv.ge
+    have h2 := (Nat.div_lt_iff_lt_mul (by omega : 0 < k)).mp (show (1 + i) / k < 8 by omega)
+    exact ⟨by omega, by omega, by omega⟩
+  · exfalso
+    have hlt_prod : 1 + j < k * (1 + i) := by
+      have h1 : 1 + j < 25 * (1 + i) := by omega
+      have h2 : 25 * (1 + i) ≤ k * (1 + i) := Nat.mul_le_mul_right (1 + i) hk25
+      exact lt_of_lt_of_le h1 h2
+    exact hfg (floorGraph_eq_zero_of_lt_mul (by omega) (by omega) hlt_prod)
+
+/-- Composite-tail cross-contact bound for any `|ω| ≤ 1` whose active `k ≥ 25` are composite in
+`(N / 8, 24 N]`. -/
+private lemma subEuler_contact_cross_of_N {ω : ℕ → ℝ} (hω1 : ∀ k, |ω k| ≤ 1) {N : ℕ}
+    (hN : 1000 ≤ N)
+    (hsupp : ∀ k ∈ Icc 25 (3 * (8 * N) + 1),
+      ω k * ∑ i ∈ range (3 * (8 * N)), ∑ j ∈ range (3 * (8 * N)),
+        clusterVec 0 (N - 1) (5 * N) i * clusterVec 6 (7 * N - 1) (17 * N) j *
+          floorGraph k (1 + i) (1 + j) ≠ 0 →
+      ¬k.Prime ∧ N < 8 * k ∧ k ≤ 24 * N) :
+    ∑ k ∈ Icc 2 (3 * (8 * N) + 1), |ω k| *
+      |∑ i ∈ range (3 * (8 * N)), ∑ j ∈ range (3 * (8 * N)),
+        clusterVec 0 (N - 1) (5 * N) i * clusterVec 6 (7 * N - 1) (17 * N) j *
+          floorGraph k (1 + i) (1 + j)| ≤
+      5 * floorContactSqrtConst + 90 * (Real.log 4 + 4) := by
+  have hN_pos_r : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  have hsN_pos : 0 < Real.sqrt (N : ℝ) := Real.sqrt_pos.mpr hN_pos_r
+  have hu_sq : ∑ i ∈ range (3 * (8 * N)), clusterVec 0 (N - 1) (5 * N) i ^ 2 = 1 :=
+    sum_clusterVec_sq (by omega) (by omega) (by omega)
+  have hv_sq : ∑ j ∈ range (3 * (8 * N)), clusterVec 6 (7 * N - 1) (17 * N) j ^ 2 = 1 :=
+    sum_clusterVec_sq (by omega) (by omega) (by omega)
+  have hsplit_Q : Icc 2 (3 * (8 * N) + 1) = Icc 2 24 ∪ Icc 25 (3 * (8 * N) + 1) := by
+    ext k; simp only [Finset.mem_Icc, Finset.mem_union]; omega
+  have hdisj_Q : Disjoint (Icc 2 24) (Icc 25 (3 * (8 * N) + 1)) := by
+    rw [Finset.disjoint_left]; intro k h1 h2
+    have := (Finset.mem_Icc.mp h1).2; have := (Finset.mem_Icc.mp h2).1; omega
+  rw [hsplit_Q, Finset.sum_union hdisj_Q]
+  refine add_le_add ?_ ?_
+  · calc ∑ k ∈ Icc 2 24, |ω k| *
+          |∑ i ∈ range (3 * (8 * N)), ∑ j ∈ range (3 * (8 * N)),
+            clusterVec 0 (N - 1) (5 * N) i * clusterVec 6 (7 * N - 1) (17 * N) j *
+              floorGraph k (1 + i) (1 + j)|
+        ≤ ∑ k ∈ Icc 2 24, 2 * (Λ k : ℝ) / Real.sqrt k := by
+          refine Finset.sum_le_sum fun k hk => ?_
+          have hb := abs_bilin_floorGraph_le le_rfl (Finset.mem_Icc.mp hk).1 (3 * (8 * N))
+            (clusterVec 0 (N - 1) (5 * N)) (clusterVec 6 (7 * N - 1) (17 * N))
+          rw [hu_sq, hv_sq] at hb
+          calc |ω k| * |∑ i ∈ range (3 * (8 * N)), ∑ j ∈ range (3 * (8 * N)),
+                clusterVec 0 (N - 1) (5 * N) i * clusterVec 6 (7 * N - 1) (17 * N) j *
+                  floorGraph k (1 + i) (1 + j)|
+              ≤ 1 * ((Λ k : ℝ) / Real.sqrt k * (1 + 1)) :=
+                mul_le_mul (hω1 k) hb (abs_nonneg _) zero_le_one
+            _ = 2 * (Λ k : ℝ) / Real.sqrt k := by ring
+      _ ≤ floorContactSqrtConst * Real.sqrt (24 : ℝ) :=
+          sum_vonMangoldt_div_sqrt_le (Q := 24) (by norm_num)
+      _ ≤ 5 * floorContactSqrtConst := by
+          have hs24 : Real.sqrt 24 ≤ 5 := by
+            rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 5)]
+            exact Real.sqrt_le_sqrt (by norm_num)
+          exact (mul_comm _ _).trans_le
+            (mul_le_mul_of_nonneg_right hs24 floorContactSqrtConst_pos.le)
+  · rw [← Finset.sum_filter_ne_zero]
+    have hsubC : (Icc 25 (3 * (8 * N) + 1)).filter (fun k =>
+        |ω k| * |∑ i ∈ range (3 * (8 * N)), ∑ j ∈ range (3 * (8 * N)),
+          clusterVec 0 (N - 1) (5 * N) i * clusterVec 6 (7 * N - 1) (17 * N) j *
+            floorGraph k (1 + i) (1 + j)| ≠ 0) ⊆
+        (Ioc 0 ⌊((24 * N : ℕ) : ℝ)⌋₊).filter (fun k => ¬k.Prime) := by
+      intro k hk
+      rcases Finset.mem_filter.mp hk with ⟨hkI, hkne⟩
+      rw [← abs_mul, abs_ne_zero] at hkne
+      obtain ⟨hnp, _, hk24⟩ := hsupp k hkI hkne
+      rw [Finset.mem_filter, Finset.mem_Ioc, Nat.floor_natCast]
+      have := (Finset.mem_Icc.mp hkI).1
+      exact ⟨⟨by omega, hk24⟩, hnp⟩
+    have hcomp_le : ∑ k ∈ (Icc 25 (3 * (8 * N) + 1)).filter (fun k =>
+        |ω k| * |∑ i ∈ range (3 * (8 * N)), ∑ j ∈ range (3 * (8 * N)),
+          clusterVec 0 (N - 1) (5 * N) i * clusterVec 6 (7 * N - 1) (17 * N) j *
+            floorGraph k (1 + i) (1 + j)| ≠ 0),
+        |ω k| * |∑ i ∈ range (3 * (8 * N)), ∑ j ∈ range (3 * (8 * N)),
+          clusterVec 0 (N - 1) (5 * N) i * clusterVec 6 (7 * N - 1) (17 * N) j *
+            floorGraph k (1 + i) (1 + j)| ≤
+        ∑ k ∈ (Ioc 0 ⌊((24 * N : ℕ) : ℝ)⌋₊).filter (fun k => ¬k.Prime),
+          (2 * Real.sqrt 8 / Real.sqrt N) * (Λ k : ℝ) := by
+      refine (Finset.sum_le_sum fun k hk => ?_).trans
+        (Finset.sum_le_sum_of_subset_of_nonneg hsubC fun k _ _ =>
+          mul_nonneg (by positivity) ArithmeticFunction.vonMangoldt_nonneg)
+      rcases Finset.mem_filter.mp hk with ⟨hkI, hkne⟩
+      rw [← abs_mul, abs_ne_zero] at hkne
+      obtain ⟨_, hk_lo, _⟩ := hsupp k hkI hkne
+      have hb := abs_bilin_floorGraph_le le_rfl
+        (by have := (Finset.mem_Icc.mp hkI).1; omega) (3 * (8 * N))
+        (clusterVec 0 (N - 1) (5 * N)) (clusterVec 6 (7 * N - 1) (17 * N))
+      rw [hu_sq, hv_sq] at hb
+      have hsk_ge : Real.sqrt N / Real.sqrt 8 ≤ Real.sqrt k := by
+        rw [div_le_iff₀ (Real.sqrt_pos.mpr (by norm_num)), ← Real.sqrt_mul (Nat.cast_nonneg k)]
+        exact Real.sqrt_le_sqrt (by exact_mod_cast hk_lo.le)
+      calc |ω k| * |∑ i ∈ range (3 * (8 * N)), ∑ j ∈ range (3 * (8 * N)),
+            clusterVec 0 (N - 1) (5 * N) i * clusterVec 6 (7 * N - 1) (17 * N) j *
+              floorGraph k (1 + i) (1 + j)|
+          ≤ 1 * ((Λ k : ℝ) / Real.sqrt k * (1 + 1)) :=
+            mul_le_mul (hω1 k) hb (abs_nonneg _) zero_le_one
+        _ = 2 * (Λ k : ℝ) / Real.sqrt k := by ring
+        _ ≤ 2 * (Λ k : ℝ) / (Real.sqrt N / Real.sqrt 8) :=
+            div_le_div_of_nonneg_left
+              (mul_nonneg zero_le_two ArithmeticFunction.vonMangoldt_nonneg)
+              (div_pos hsN_pos (Real.sqrt_pos.mpr (by norm_num))) hsk_ge
+        _ = (2 * Real.sqrt 8 / Real.sqrt N) * (Λ k : ℝ) := by ring
+    refine hcomp_le.trans ?_
+    rw [← Finset.mul_sum, ← Chebyshev.psi_sub_theta_eq_sum_not_prime ((24 * N : ℕ) : ℝ)]
+    have hpt := psi_sub_theta_le_three_mul_sqrt ((24 * N : ℕ) : ℝ)
+    have hprod : (2 * Real.sqrt 8 / Real.sqrt N) *
+        (3 * (Real.log 4 + 4) * Real.sqrt ((24 * N : ℕ) : ℝ)) =
+        6 * (Real.sqrt 8 * Real.sqrt 24) * (Real.log 4 + 4) := by
+      rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num)]
+      field_simp [hsN_pos.ne']
+      ring
+    have hs192 : Real.sqrt 8 * Real.sqrt 24 ≤ 15 := by
+      rw [← Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 8),
+        ← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 15)]
+      exact Real.sqrt_le_sqrt (by norm_num)
+    calc (2 * Real.sqrt 8 / Real.sqrt N) *
+          (Chebyshev.psi ((24 * N : ℕ) : ℝ) - Chebyshev.theta ((24 * N : ℕ) : ℝ))
+        ≤ (2 * Real.sqrt 8 / Real.sqrt N) *
+            (3 * (Real.log 4 + 4) * Real.sqrt ((24 * N : ℕ) : ℝ)) :=
+          mul_le_mul_of_nonneg_left hpt (by positivity)
+      _ = 6 * (Real.sqrt 8 * Real.sqrt 24) * (Real.log 4 + 4) := hprod
+      _ ≤ 90 * (Real.log 4 + 4) := by
+          have hc : 0 ≤ Real.log 4 + 4 := by
+            have := Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num); positivity
+          nlinarith [hs192, hc]
+
+/-- Scale-`N` assembly of the two-negative-squares witness for `subEulerGluingWeight`. -/
+private lemma two_le_hermNegIndex_subEuler_of_N {ω : ℕ → ℝ} (hω0 : ∀ k, 0 ≤ ω k)
+    (hω1 : ∀ k, |ω k| ≤ 1) {N R : ℕ} (hN : 1000 ≤ N) (hR : 1 ≤ R)
+    (hf1 : (N : ℝ) / 2 ≤ ∑ k ∈ Icc 2 (3 * (8 * N) + 1), ω k *
+      ∑ l ∈ Ico (N - 1) (N - 1 + 5 * N), floorGraph k (1 + 0) (1 + l))
+    (hf2 : (N : ℝ) / 2 ≤ ∑ k ∈ Icc 2 (3 * (8 * N) + 1), ω k *
+      ∑ l ∈ Ico (7 * N - 1) (7 * N - 1 + 17 * N), floorGraph k (1 + 6) (1 + l))
+    (hsupp : ∀ k ∈ Icc 25 (3 * (8 * N) + 1),
+      ω k * ∑ i ∈ range (3 * (8 * N)), ∑ j ∈ range (3 * (8 * N)),
+        clusterVec 0 (N - 1) (5 * N) i * clusterVec 6 (7 * N - 1) (17 * N) j *
+          floorGraph k (1 + i) (1 + j) ≠ 0 →
+      ¬k.Prime ∧ N < 8 * k ∧ k ≤ 24 * N)
+    {a : ℝ} (ha : a ≤ (1 / 60 : ℝ) * Real.sqrt ((8 * N : ℕ) : ℝ) - (subEulerCrossConst + 20000)) :
+    2 ≤ hermNegIndex ((windowMatrix (reweightedNeutral ω (3 * (8 * N) + 1)) R (3 * (8 * N) * R) +
+      Matrix.diagonal (fun _ : Fin (3 * (8 * N) * R) => a)).map (↑) :
+        Matrix (Fin (3 * (8 * N) * R)) (Fin (3 * (8 * N) * R)) ℂ) := by
+  have hN_pos_r : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
+  have hsN_pos : 0 < Real.sqrt (N : ℝ) := Real.sqrt_pos.mpr hN_pos_r
+  have hsK_eq : Real.sqrt ((8 * N : ℕ) : ℝ) = Real.sqrt 8 * Real.sqrt (N : ℝ) := by
+    rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num)]
+  have hs8_lt : Real.sqrt 8 < 3 := by
+    rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 3)]
+    exact Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
+  have hattr1 : (1 / 18 : ℝ) * Real.sqrt ((8 * N : ℕ) : ℝ) ≤
+      (1 / Real.sqrt ((5 * N : ℕ) : ℝ)) * ((N : ℝ) / 2) := by
+    have hs5_lt : Real.sqrt 5 ≤ 3 := by
+      rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 3)]; exact Real.sqrt_le_sqrt (by norm_num)
+    have h1 : (1 / Real.sqrt ((5 * N : ℕ) : ℝ)) * ((N : ℝ) / 2) =
+        Real.sqrt N / (2 * Real.sqrt 5) := by
+      rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num)]
+      have hs5_ne : Real.sqrt 5 ≠ 0 := (Real.sqrt_pos.mpr (by norm_num)).ne'
+      field_simp [hs5_ne, hsN_pos.ne']
+      rw [Real.sq_sqrt hN_pos_r.le]
+    rw [h1, hsK_eq]
+    have hdiv : Real.sqrt N / 6 ≤ Real.sqrt N / (2 * Real.sqrt 5) :=
+      div_le_div_of_nonneg_left hsN_pos.le (by positivity) (by linarith)
+    nlinarith [hs8_lt, hsN_pos, hdiv]
+  have hattr2 : (1 / 30 : ℝ) * Real.sqrt ((8 * N : ℕ) : ℝ) ≤
+      (1 / Real.sqrt ((17 * N : ℕ) : ℝ)) * ((N : ℝ) / 2) := by
+    have hs17_lt : Real.sqrt 17 ≤ 5 := by
+      rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 5)]; exact Real.sqrt_le_sqrt (by norm_num)
+    have h1 : (1 / Real.sqrt ((17 * N : ℕ) : ℝ)) * ((N : ℝ) / 2) =
+        Real.sqrt N / (2 * Real.sqrt 17) := by
+      rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num)]
+      have hs17_ne : Real.sqrt 17 ≠ 0 := (Real.sqrt_pos.mpr (by norm_num)).ne'
+      field_simp [hs17_ne, hsN_pos.ne']
+      rw [Real.sq_sqrt hN_pos_r.le]
+    rw [h1, hsK_eq]
+    have hdiv : Real.sqrt N / 10 ≤ Real.sqrt N / (2 * Real.sqrt 17) :=
+      div_le_div_of_nonneg_left hsN_pos.le (by positivity) (by linarith)
+    nlinarith [hs8_lt, hsN_pos, hdiv]
+  have hlog_diag : Real.log (((1 + 3 * (8 * N) : ℕ) : ℝ) + 1) + 1 ≤
+      (1 / 120 : ℝ) * Real.sqrt ((8 * N : ℕ) : ℝ) + 19000 := by
+    have h1 := log_le_eps_mul_sqrt_add (x := ((1 + 3 * (8 * N) : ℕ) : ℝ) + 1) (ε := 1 / 400)
+      (by positivity) (by norm_num)
+    norm_num at h1
+    have hsq : Real.sqrt (((1 + 3 * (8 * N) : ℕ) : ℝ) + 1) ≤ 3 * Real.sqrt ((8 * N : ℕ) : ℝ) := by
+      rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 3), ← Real.sqrt_mul (by norm_num)]
+      refine Real.sqrt_le_sqrt ?_
+      push_cast; linarith [hN_pos_r]
+    linarith [h1, hsq, Real.sqrt_nonneg ((8 * N : ℕ) : ℝ)]
+  have hu_raw := bilin_reweightedNeutral_clusterVec_le hω0
+    (R₀ := 1) (Q := 3 * (8 * N) + 1) (J₀ := 3 * (8 * N)) (p₀ := 0) (q₀ := N - 1) (L := 5 * N)
+    le_rfl (by omega) (by omega) (by omega) a
+  have hv_raw := bilin_reweightedNeutral_clusterVec_le hω0
+    (R₀ := 1) (Q := 3 * (8 * N) + 1) (J₀ := 3 * (8 * N)) (p₀ := 6) (q₀ := 7 * N - 1) (L := 17 * N)
+    le_rfl (by omega) (by omega) (by omega) a
+  have hcross_raw := abs_bilin_reweightedNeutral_clusterVec_le ω
+    (R₀ := 1) (Q := 3 * (8 * N) + 1) (J₀ := 3 * (8 * N))
+    (p₁ := 0) (q₁ := N - 1) (L₁ := 5 * N)
+    (p₂ := 6) (q₂ := 7 * N - 1) (L₂ := 17 * N) (d := N / 2)
+    (by omega) (by omega) (by omega) (by omega) (by omega) (by omega) (by omega) a
+  have hjet_num := subEuler_jet_cross_bound (show 256 ≤ N by omega)
+  have hcont_num := subEuler_contact_cross_of_N hω1 hN hsupp
+  have hM0 : 0 ≤ subEulerCrossConst := by
+    unfold subEulerCrossConst
+    have := Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num)
+    have := floorContactSqrtConst_pos
+    positivity
+  have huv_le : |bilin (windowMatrix (reweightedNeutral ω (3 * (8 * N) + 1)) 1 (3 * (8 * N)) +
+        Matrix.diagonal (fun _ : Fin (3 * (8 * N)) => a))
+      (fun i : Fin (3 * (8 * N)) => clusterVec 0 (N - 1) (5 * N) i)
+      (fun j : Fin (3 * (8 * N)) => clusterVec 6 (7 * N - 1) (17 * N) j)| ≤
+      subEulerCrossConst := by
+    unfold subEulerCrossConst at *
+    linarith [hcross_raw, hjet_num, hcont_num]
+  have hu_le : bilin (windowMatrix (reweightedNeutral ω (3 * (8 * N) + 1)) 1 (3 * (8 * N)) +
+        Matrix.diagonal (fun _ : Fin (3 * (8 * N)) => a))
+      (fun j : Fin (3 * (8 * N)) => clusterVec 0 (N - 1) (5 * N) j)
+      (fun j : Fin (3 * (8 * N)) => clusterVec 0 (N - 1) (5 * N) j) ≤
+      -(subEulerCrossConst + 1) := by
+    have hmul1 := mul_le_mul_of_nonneg_left hf1
+      (by positivity : (0 : ℝ) ≤ 1 / Real.sqrt ((5 * N : ℕ) : ℝ))
+    linarith [hu_raw, hmul1, hattr1, hlog_diag, ha, Real.sqrt_nonneg ((8 * N : ℕ) : ℝ)]
+  have hv_le : bilin (windowMatrix (reweightedNeutral ω (3 * (8 * N) + 1)) 1 (3 * (8 * N)) +
+        Matrix.diagonal (fun _ : Fin (3 * (8 * N)) => a))
+      (fun j : Fin (3 * (8 * N)) => clusterVec 6 (7 * N - 1) (17 * N) j)
+      (fun j : Fin (3 * (8 * N)) => clusterVec 6 (7 * N - 1) (17 * N) j) ≤
+      -(subEulerCrossConst + 1) := by
+    have hmul2 := mul_le_mul_of_nonneg_left hf2
+      (by positivity : (0 : ℝ) ≤ 1 / Real.sqrt ((17 * N : ℕ) : ℝ))
+    linarith [hv_raw, hmul2, hattr2, hlog_diag, ha, Real.sqrt_nonneg ((8 * N : ℕ) : ℝ)]
+  exact two_le_hermNegIndex_reweightedNeutral_of_coarse (R₀ := 1) (m := R)
+    (R := R) (J₀ := 3 * (8 * N)) (J := 3 * (8 * N) * R) (Q := 3 * (8 * N) + 1)
+    le_rfl hR (by omega)
+    (by have : R * (3 * (8 * N)) = 3 * (8 * N) * R := mul_comm _ _; omega)
+    ω a (clusterVec 0 (N - 1) (5 * N)) (clusterVec 6 (7 * N - 1) (17 * N))
+    hM0 hu_le hv_le huv_le (by linarith [hM0]) (by nlinarith [hM0])
 
 /-- **Two negative squares up to `c₀ √K − C₀` for `subEulerGluingWeight Q₀`**: for every `Q₀ : ℕ`
 and every `m ≥ Q₀ + 4`, setting `K = 8 · 256^m`, the reweighted neutral window of
@@ -1590,401 +1973,258 @@ theorem two_le_hermNegIndex_subEulerGluingWeight (Q₀ : ℕ) {m R : ℕ} (hm : 
       (3 * (8 * 256 ^ m) + 1)) R (3 * (8 * 256 ^ m) * R) +
       Matrix.diagonal (fun _ : Fin (3 * (8 * 256 ^ m) * R) => a)).map (↑) :
         Matrix (Fin (3 * (8 * 256 ^ m) * R)) (Fin (3 * (8 * 256 ^ m) * R)) ℂ) := by
-  set N : ℕ := 256 ^ m
-  set K : ℕ := 8 * N
-  set Q : ℕ := 3 * K + 1
-  set J₀ : ℕ := 3 * K
-  set ω : ℕ → ℝ := subEulerGluingWeight Q₀
   have hm4 : 4 ≤ m := by omega
-  have hN_ge : 256 ^ 4 ≤ N := Nat.pow_le_pow_right (by norm_num) hm4
-  have h8Q₀_lt : 8 * Q₀ < N := by
+  have hN_big : 1000 ≤ 256 ^ m :=
+    (by norm_num : 1000 ≤ 256 ^ 4).trans (Nat.pow_le_pow_right (by norm_num) hm4)
+  have h8Q₀_lt : 8 * Q₀ < 256 ^ m := by
     have hQlt : Q₀ < 256 ^ Q₀ :=
       (Nat.lt_two_pow_self (n := Q₀)).trans_le (Nat.pow_le_pow_left (by norm_num) Q₀)
-    have hpow : 256 ^ Q₀ * 256 ^ 4 ≤ N := by
-      rw [← pow_add]
-      exact Nat.pow_le_pow_right (by norm_num) hm
-    nlinarith [show 1 ≤ 256 ^ Q₀ from Nat.one_le_pow Q₀ 256 (by norm_num)]
-  have hN_big : 1000 ≤ N := (by norm_num : 1000 ≤ 256 ^ 4).trans hN_ge
-  let u := clusterVec 0 (N - 1) (5 * N)
-  let v := clusterVec 6 (7 * N - 1) (17 * N)
-  -- Prime attraction in `(N, 3N]` for both clusters.
-  have hprime_sum := sum_prime_log_band_ge hm4
-  have hfiber : ∀ p₀ q₀ L : ℕ,
-      (∀ p ∈ (Ioc N (3 * N)).filter Nat.Prime,
-        1 + q₀ ≤ p * (1 + p₀) ∧ p * (1 + p₀) + p ≤ 1 + q₀ + L) →
-      (N : ℝ) / 2 ≤ ∑ k ∈ Icc 2 Q, ω k * ∑ l ∈ Ico q₀ (q₀ + L), floorGraph k (1 + p₀) (1 + l) := by
-    intro p₀ q₀ L hinc
-    have hsubP : (Ioc N (3 * N)).filter Nat.Prime ⊆ Icc 2 Q := by
-      intro p hp
-      rcases Finset.mem_filter.mp hp with ⟨hpI, hpP⟩
-      rcases Finset.mem_Ioc.mp hpI with ⟨_, hp3⟩
-      exact Finset.mem_Icc.mpr ⟨hpP.two_le, by omega⟩
-    have hnonneg_k : ∀ k ∈ Icc 2 Q, k ∉ (Ioc N (3 * N)).filter Nat.Prime →
-        0 ≤ ω k * ∑ l ∈ Ico q₀ (q₀ + L), floorGraph k (1 + p₀) (1 + l) := by
-      intro k _ _
-      refine mul_nonneg (subEulerGluingWeight_nonneg Q₀ k) (Finset.sum_nonneg fun l _ => ?_)
-      unfold floorGraph; split_ifs
-      · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k)
-      · exact le_rfl
-    refine hprime_sum.trans ((Finset.sum_le_sum fun p hp => ?_).trans
-      (Finset.sum_le_sum_of_subset_of_nonneg hsubP hnonneg_k))
-    rcases Finset.mem_filter.mp hp with ⟨hpI, hpP⟩
-    rcases Finset.mem_Ioc.mp hpI with ⟨hp_lo, hp_hi⟩
-    have hωp : ω p = 1 := subEulerGluingWeight_eq_one_of_mem_band (by omega) hpP hp_lo hp_hi
-    rw [hωp, one_mul]
-    obtain ⟨hb1, hb2⟩ := hinc p hp
-    let F : Finset ℕ := Ico (p * (1 + p₀) - 1) (p * (1 + p₀) - 1 + p)
-    have hF_sub : F ⊆ Ico q₀ (q₀ + L) := by
-      intro l hl
-      rcases Finset.mem_Ico.mp hl with ⟨hl1, hl2⟩
-      exact Finset.mem_Ico.mpr ⟨by omega, by omega⟩
-    have hF_val : ∑ l ∈ F, floorGraph p (1 + p₀) (1 + l) = Real.log p := by
-      have hp2 := hpP.two_le
-      have hterm : ∀ l ∈ F, floorGraph p (1 + p₀) (1 + l) = Real.log p / p := by
-        intro l hl
-        rcases Finset.mem_Ico.mp hl with ⟨hl1, hl2⟩
-        have h1l : 1 + l ≥ p * (1 + p₀) := by omega
-        have h2l : 1 + l < (1 + p₀ + 1) * p := by nlinarith
-        have hdiv : (1 + l) / p = 1 + p₀ := by
-          refine le_antisymm ?_ ?_
-          · exact Nat.lt_succ_iff.mp ((Nat.div_lt_iff_lt_mul (by omega)).mpr h2l)
-          · exact (Nat.le_div_iff_mul_le (by omega)).mpr (by nlinarith)
-        rw [floorGraph_of_le p (by nlinarith), if_pos hdiv,
-          ArithmeticFunction.vonMangoldt_apply_prime hpP]
-      rw [Finset.sum_congr rfl hterm, Finset.sum_const,
-        show F.card = p by simp [F], nsmul_eq_mul]
-      have hp_pos : (0 : ℝ) < p := by exact_mod_cast hpP.pos
-      field_simp [hp_pos.ne']
-    rw [← hF_val]
-    refine Finset.sum_le_sum_of_subset_of_nonneg hF_sub fun l _ _ => ?_
-    unfold floorGraph; split_ifs
-    · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg p)
-    · exact le_rfl
-  -- Self-bounds on `u` and `v`.
-  have hu_raw := bilin_reweightedNeutral_clusterVec_le (subEulerGluingWeight_nonneg Q₀)
-    (R₀ := 1) (Q := Q) (J₀ := J₀) (p₀ := 0) (q₀ := N - 1) (L := 5 * N)
-    le_rfl (by omega) (by omega) (by omega) a
-  have hv_raw := bilin_reweightedNeutral_clusterVec_le (subEulerGluingWeight_nonneg Q₀)
-    (R₀ := 1) (Q := Q) (J₀ := J₀) (p₀ := 6) (q₀ := 7 * N - 1) (L := 17 * N)
-    le_rfl (by omega) (by omega) (by omega) a
-  have hf1 : (N : ℝ) / 2 ≤ ∑ k ∈ Icc 2 Q, ω k *
-      ∑ l ∈ Ico (N - 1) (N - 1 + 5 * N), floorGraph k (1 + 0) (1 + l) := by
-    refine hfiber 0 (N - 1) (5 * N) fun p hp => ?_
-    rcases Finset.mem_Ioc.mp (Finset.mem_filter.mp hp).1 with ⟨h1, h2⟩
+    have hpow : 256 ^ Q₀ * 256 ^ 4 ≤ 256 ^ m := by
+      rw [← pow_add]; exact Nat.pow_le_pow_right (by norm_num) hm
+    have h8 : 8 * Q₀ < 256 ^ Q₀ * 16 := by
+      have := Nat.one_le_pow Q₀ 256 (by norm_num); omega
+    have h16 : 256 ^ Q₀ * 16 ≤ 256 ^ Q₀ * 256 ^ 4 :=
+      Nat.mul_le_mul_left _ (by norm_num)
+    exact lt_of_lt_of_le h8 (h16.trans hpow)
+  refine two_le_hermNegIndex_subEuler_of_N (subEulerGluingWeight_nonneg Q₀)
+    (abs_subEulerGluingWeight_le_one Q₀) hN_big hR
+    (subEuler_fiber_sum_ge Q₀ hm4 fun p hp => ?_)
+    (subEuler_fiber_sum_ge Q₀ hm4 fun p hp => ?_)
+    (fun k hk hne => ?_) ha
+  · rcases Finset.mem_Ioc.mp (Finset.mem_filter.mp hp).1 with ⟨h1, h2⟩
     omega
-  have hf2 : (N : ℝ) / 2 ≤ ∑ k ∈ Icc 2 Q, ω k *
-      ∑ l ∈ Ico (7 * N - 1) (7 * N - 1 + 17 * N), floorGraph k (1 + 6) (1 + l) := by
-    refine hfiber 6 (7 * N - 1) (17 * N) fun p hp => ?_
-    rcases Finset.mem_Ioc.mp (Finset.mem_filter.mp hp).1 with ⟨h1, h2⟩
+  · rcases Finset.mem_Ioc.mp (Finset.mem_filter.mp hp).1 with ⟨h1, h2⟩
     omega
-  -- Compare `√N` and `√K` (`K = 8 N`).
-  have hsK_eq : Real.sqrt (K : ℝ) = Real.sqrt 8 * Real.sqrt (N : ℝ) := by
-    have : (K : ℝ) = 8 * (N : ℝ) := by dsimp [K]; push_cast; rfl
-    rw [this, Real.sqrt_mul (by norm_num)]
-  have hs8_lt : Real.sqrt 8 < 3 := by
-    rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 3)]
-    exact Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
-  have hs5_lt : Real.sqrt 5 ≤ 3 := by
-    rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 3)]
-    exact Real.sqrt_le_sqrt (by norm_num)
-  have hs17_lt : Real.sqrt 17 ≤ 5 := by
-    rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 5)]
-    exact Real.sqrt_le_sqrt (by norm_num)
-  have hN_pos_r : (0 : ℝ) < N := by positivity
-  have hsN_pos : 0 < Real.sqrt (N : ℝ) := Real.sqrt_pos.mpr hN_pos_r
-  have hattr1 : (1 / 18 : ℝ) * Real.sqrt K ≤
-      (1 / Real.sqrt ((5 * N : ℕ) : ℝ)) * ((N : ℝ) / 2) := by
-    have h1 : (1 / Real.sqrt ((5 * N : ℕ) : ℝ)) * ((N : ℝ) / 2) =
-        Real.sqrt N / (2 * Real.sqrt 5) := by
-      rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num)]
-      have hs5_ne : Real.sqrt 5 ≠ 0 := (Real.sqrt_pos.mpr (by norm_num)).ne'
-      field_simp [hs5_ne, hsN_pos.ne']
-      rw [Real.sq_sqrt hN_pos_r.le]
-    rw [h1, hsK_eq]
-    have hdiv : Real.sqrt N / 6 ≤ Real.sqrt N / (2 * Real.sqrt 5) :=
-      div_le_div_of_nonneg_left hsN_pos.le (by positivity) (by linarith)
-    nlinarith
-  have hattr2 : (1 / 30 : ℝ) * Real.sqrt K ≤
-      (1 / Real.sqrt ((17 * N : ℕ) : ℝ)) * ((N : ℝ) / 2) := by
-    have h1 : (1 / Real.sqrt ((17 * N : ℕ) : ℝ)) * ((N : ℝ) / 2) =
-        Real.sqrt N / (2 * Real.sqrt 17) := by
-      rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num)]
-      have hs17_ne : Real.sqrt 17 ≠ 0 := (Real.sqrt_pos.mpr (by norm_num)).ne'
-      field_simp [hs17_ne, hsN_pos.ne']
-      rw [Real.sq_sqrt hN_pos_r.le]
-    rw [h1, hsK_eq]
-    have hdiv : Real.sqrt N / 10 ≤ Real.sqrt N / (2 * Real.sqrt 17) :=
-      div_le_div_of_nonneg_left hsN_pos.le (by positivity) (by linarith)
-    nlinarith
-  have hlog_diag : Real.log (((1 + J₀ : ℕ) : ℝ) + 1) + 1 ≤ (1 / 120 : ℝ) * Real.sqrt K + 19000 := by
-    have h1 := log_le_eps_mul_sqrt_add (x := ((1 + J₀ : ℕ) : ℝ) + 1) (ε := 1 / 400)
-      (by positivity) (by norm_num)
-    have hsq : Real.sqrt (((1 + J₀ : ℕ) : ℝ) + 1) ≤ 3 * Real.sqrt K := by
-      rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 3), ← Real.sqrt_mul (by norm_num)]
-      refine Real.sqrt_le_sqrt ?_
-      have hK1 : (1 : ℝ) ≤ K := by exact_mod_cast (show 1 ≤ K by omega)
-      have hJ : (J₀ : ℝ) = 3 * (K : ℝ) := by dsimp [J₀]; push_cast; rfl
-      push_cast
-      linarith
-    linarith
-  -- Cross-bound on `(u, v)`.
-  have hcross_raw := abs_bilin_reweightedNeutral_clusterVec_le ω
-    (R₀ := 1) (Q := Q) (J₀ := J₀) (p₁ := 0) (q₁ := N - 1) (L₁ := 5 * N)
-    (p₂ := 6) (q₂ := 7 * N - 1) (L₂ := 17 * N) (d := N / 2)
-    (by omega) (by omega) (by omega) (by omega) (by omega) (by omega) (by omega) a
-  have hjet_num : 1 + (Real.sqrt ((5 * N : ℕ) : ℝ) + Real.sqrt ((17 * N : ℕ) : ℝ) +
-      Real.sqrt (((5 * N : ℕ) : ℝ) * ((17 * N : ℕ) : ℝ))) * (2 / ((N / 2 : ℕ) : ℝ)) ≤ 73 := by
-    have hd_ge : (N : ℝ) / 3 ≤ ((N / 2 : ℕ) : ℝ) := by
-      have : N / 3 + 1 ≤ N / 2 := by omega
-      have h1 : (N : ℝ) ≤ 3 * ((N / 2 : ℕ) : ℝ) := by
-        exact_mod_cast (show N ≤ 3 * (N / 2) by omega)
-      linarith
-    have hdiv_le : 2 / ((N / 2 : ℕ) : ℝ) ≤ 6 / (N : ℝ) := by
-      rw [div_le_div_iff₀ (by exact_mod_cast (show 0 < N / 2 by omega)) hN_pos_r]
-      linarith
-    have hs85 : Real.sqrt (((5 * N : ℕ) : ℝ) * ((17 * N : ℕ) : ℝ)) ≤ 10 * N := by
-      rw [← Real.sqrt_sq (by positivity : (0 : ℝ) ≤ 10 * N)]
-      refine Real.sqrt_le_sqrt ?_
-      push_cast; nlinarith
-    have hs5N : Real.sqrt ((5 * N : ℕ) : ℝ) ≤ 3 * N := by
-      rw [← Real.sqrt_sq (by positivity : (0 : ℝ) ≤ 3 * N)]
-      refine Real.sqrt_le_sqrt ?_
-      push_cast; nlinarith [show (1 : ℝ) ≤ N by exact_mod_cast (by omega : 1 ≤ N)]
-    have hs17N : Real.sqrt ((17 * N : ℕ) : ℝ) ≤ 5 * N := by
-      rw [← Real.sqrt_sq (by positivity : (0 : ℝ) ≤ 5 * N)]
-      refine Real.sqrt_le_sqrt ?_
-      push_cast; nlinarith [show (1 : ℝ) ≤ N by exact_mod_cast (by omega : 1 ≤ N)]
-    have hsum_s : Real.sqrt ((5 * N : ℕ) : ℝ) + Real.sqrt ((17 * N : ℕ) : ℝ) +
-        Real.sqrt (((5 * N : ℕ) : ℝ) * ((17 * N : ℕ) : ℝ)) ≤ 12 * N := by
-      -- Tighter: `√(5N) + √(17N) ≤ 8 √N ≤ 2 N` since `N ≥ 1000`!
-      have hsN_N : 8 * Real.sqrt N ≤ 2 * (N : ℝ) := by
-        have h16 : (16 : ℝ) ≤ Real.sqrt N := by
-          rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 16)]
-          exact Real.sqrt_le_sqrt (by exact_mod_cast (show 256 ≤ N by omega))
-        have := mul_le_mul_of_nonneg_right h16 (Real.sqrt_nonneg N)
-        rw [Real.mul_self_sqrt hN_pos_r.le] at this
-        linarith
-      have h5 : Real.sqrt ((5 * N : ℕ) : ℝ) ≤ 3 * Real.sqrt N := by
-        rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num)]
-        exact mul_le_mul_of_nonneg_right hs5_lt (Real.sqrt_nonneg _)
-      have h17 : Real.sqrt ((17 * N : ℕ) : ℝ) ≤ 5 * Real.sqrt N := by
-        rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num)]
-        exact mul_le_mul_of_nonneg_right hs17_lt (Real.sqrt_nonneg _)
-      linarith
-    calc 1 + (Real.sqrt ((5 * N : ℕ) : ℝ) + Real.sqrt ((17 * N : ℕ) : ℝ) +
-            Real.sqrt (((5 * N : ℕ) : ℝ) * ((17 * N : ℕ) : ℝ))) * (2 / ((N / 2 : ℕ) : ℝ))
-        ≤ 1 + (12 * (N : ℝ)) * (6 / (N : ℝ)) := by
-          gcongr
-      _ = 73 := by field_simp [hN_pos_r.ne']; ring
-  -- Contacts on `(u, v)`: split `k ≤ 24` and `k ≥ 25`.
-  have hcont_num : ∑ k ∈ Icc 2 Q, |ω k| *
-      |∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (1 + i) (1 + j)| ≤
-      5 * floorContactSqrtConst + 90 * (Real.log 4 + 4) := by
-    have hu_sq : ∑ i ∈ range J₀, u i ^ 2 = 1 := sum_clusterVec_sq (by omega) (by omega) (by omega)
-    have hv_sq : ∑ j ∈ range J₀, v j ^ 2 = 1 := sum_clusterVec_sq (by omega) (by omega) (by omega)
-    -- If `k ≥ 25` and the cross-sum is nonzero with `ω k ≠ 0`, then `¬ k.Prime`, `N < 8 * k`, and `k ≤ 24 * N`.
-    have hsupp_k : ∀ k ∈ Icc 25 Q,
-        ω k * ∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (1 + i) (1 + j) ≠ 0 →
-        ¬k.Prime ∧ N < 8 * k ∧ k ≤ 24 * N := by
-      intro k hk hne
-      have hω_ne : ω k ≠ 0 := fun h => hne (by rw [h, zero_mul])
-      have hsum_ne : ∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (1 + i) (1 + j) ≠ 0 :=
-        fun h => hne (by rw [h, mul_zero])
-      obtain ⟨i, hi, hj_ex⟩ := Finset.exists_ne_zero_of_sum_ne_zero hsum_ne
-      obtain ⟨j, hj, hij_ne⟩ := Finset.exists_ne_zero_of_sum_ne_zero hj_ex
-      have hui : u i ≠ 0 := fun h => hij_ne (by rw [h, zero_mul, zero_mul])
-      have hvj : v j ≠ 0 := fun h => hij_ne (by rw [h, mul_zero, zero_mul])
-      have hfg : floorGraph k (1 + i) (1 + j) ≠ 0 := fun h => hij_ne (by rw [h, mul_zero])
-      have hk25 : 25 ≤ k := (Finset.mem_Icc.mp hk).1
-      have hi_supp : i = 0 ∨ (N - 1 ≤ i ∧ i < 6 * N - 1) := by
-        dsimp [u, clusterVec] at hui
-        by_cases h0 : i = 0
-        · exact Or.inl h0
-        · rw [if_neg h0] at hui
-          by_cases hI : N - 1 ≤ i ∧ i < N - 1 + 5 * N
-          · exact Or.inr ⟨hI.1, by omega⟩
-          · rw [if_neg hI] at hui; exact absurd rfl hui
-      have hj_supp : j = 6 ∨ (7 * N - 1 ≤ j ∧ j < 24 * N - 1) := by
-        dsimp [v, clusterVec] at hvj
-        by_cases h6 : j = 6
-        · exact Or.inl h6
-        · rw [if_neg h6] at hvj
-          by_cases hJ : 7 * N - 1 ≤ j ∧ j < 7 * N - 1 + 17 * N
-          · exact Or.inr ⟨hJ.1, by omega⟩
-          · rw [if_neg hJ] at hvj; exact absurd rfl hvj
-      -- Analyze the four support pairs to extract `N < 8 * k`, `k ≤ 24 * N`, and `¬(N < k ∧ k ≤ 3 * N)`.
-      have hband_out : N < 8 * k ∧ k ≤ 24 * N ∧ ¬(N < k ∧ k ≤ 3 * N) := by
-        rcases hi_supp with rfl | ⟨hi1, hi2⟩ <;> rcases hj_supp with rfl | ⟨hj1, hj2⟩
-        · -- `(1, 7)`: `7 < 25 * 1 ≤ k * 1`
-          exfalso; exact hfg (floorGraph_eq_zero_of_lt_mul (by omega) (by omega) (by omega))
-        · -- `(1, y)` with `7N ≤ y < 24N`: `(1 + j) / k = 1`
-          rw [floorGraph_of_le k (by omega)] at hfg
-          have hdiv : (1 + j) / k = 1 := by by_contra h; exact hfg (if_neg h)
-          have h1 := (Nat.le_div_iff_mul_le (by omega : 0 < k)).mp hdiv.ge
-          have h2 := (Nat.div_lt_iff_lt_mul (by omega : 0 < k)).mp (show (1 + j) / k < 2 by omega)
-          exact ⟨by omega, by omega, by omega⟩
-        · -- `(x, 7)` with `N ≤ x < 6N`: `(1 + i) / k = 7`
-          rw [floorGraph_comm, floorGraph_of_le k (by omega)] at hfg
-          have hdiv : (1 + i) / k = 7 := by by_contra h; exact hfg (if_neg h)
-          have h1 := (Nat.le_div_iff_mul_le (by omega : 0 < k)).mp hdiv.ge
-          have h2 := (Nat.div_lt_iff_lt_mul (by omega : 0 < k)).mp (show (1 + i) / k < 8 by omega)
-          exact ⟨by omega, by omega, by omega⟩
-        · -- `(x, y)` with `N ≤ x < 6N`, `7N ≤ y < 24N`: `y < 24 N < 25 N ≤ k * x`
-          exfalso; exact hfg (floorGraph_eq_zero_of_lt_mul (by omega) (by omega) (by nlinarith))
-      refine ⟨?_, hband_out.1, hband_out.2.1⟩
-      intro hk_prime
-      -- Since `k > N / 8 > Q₀` and `k.Prime`, `ω k ≠ 0` forces `k` into some `(256^r, 3 · 256^r]`.
-      dsimp [ω, subEulerGluingWeight] at hω_ne
-      rw [hk_prime.minFac_eq] at hω_ne
-      have hcond : k = 1 ∨ subEulerPrimePred Q₀ k := by
-        by_contra hc; exact hω_ne (if_neg hc)
-      unfold subEulerPrimePred at hcond
-      rcases hcond with rfl | hQ₀ | ⟨r, _, hr_lo, hr_hi⟩
-      · exact hk_prime.ne_one rfl
-      · omega
-      · rcases lt_trichotomy r m with hrm | rfl | hmr
-        · have hpow : 256 ^ r * 256 ≤ N := by
-            calc 256 ^ r * 256 = 256 ^ (r + 1) := (pow_succ 256 r).symm
-              _ ≤ 256 ^ m := Nat.pow_le_pow_right (by norm_num) hrm
-          omega
-        · exact hband_out.2.2 ⟨hr_lo, hr_hi⟩
-        · have hpow : N * 256 ≤ 256 ^ r := by
-            calc 256 ^ m * 256 = 256 ^ (m + 1) := (pow_succ 256 m).symm
-              _ ≤ 256 ^ r := Nat.pow_le_pow_right (by norm_num) hmr
-          omega
-    have hsplit_Q : Icc 2 Q = Icc 2 24 ∪ Icc 25 Q := by
-      ext k; simp only [Finset.mem_Icc, Finset.mem_union]; omega
-    have hdisj_Q : Disjoint (Icc 2 24) (Icc 25 Q) := by
-      rw [Finset.disjoint_left]; intro k h1 h2
-      have := (Finset.mem_Icc.mp h1).2; have := (Finset.mem_Icc.mp h2).1; omega
-    rw [hsplit_Q, Finset.sum_union hdisj_Q]
-    refine add_le_add ?_ ?_
-    · calc ∑ k ∈ Icc 2 24, |ω k| * |∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (1 + i) (1 + j)|
-          ≤ ∑ k ∈ Icc 2 24, 2 * (Λ k : ℝ) / Real.sqrt k := by
-            refine Finset.sum_le_sum fun k hk => ?_
-            have hb := abs_bilin_floorGraph_le le_rfl (Finset.mem_Icc.mp hk).1 J₀ u v
-            rw [hu_sq, hv_sq] at hb
-            have hω1 := abs_subEulerGluingWeight_le_one Q₀ k
-            calc |ω k| * |∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (1 + i) (1 + j)|
-                ≤ 1 * ((Λ k : ℝ) / Real.sqrt k * (1 + 1)) :=
-                  mul_le_mul hω1 hb (abs_nonneg _) zero_le_one
-              _ = 2 * (Λ k : ℝ) / Real.sqrt k := by ring
-        _ ≤ floorContactSqrtConst * Real.sqrt (24 : ℝ) := by
-            simpa using sum_vonMangoldt_div_sqrt_le (Q := 24) (by norm_num)
-        _ ≤ 5 * floorContactSqrtConst := by
-            have hs24 : Real.sqrt 24 ≤ 5 := by
-              rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 5)]
-              exact Real.sqrt_le_sqrt (by norm_num)
-            nlinarith [floorContactSqrtConst_pos]
-    · -- Composite tail `k ∈ Icc 25 Q`: reduce to `(Ioc 0 (24 * N)).filter (¬ ·.Prime)`.
-      let Comp : Finset ℕ := (Ioc 0 ⌊((24 * N : ℕ) : ℝ)⌋₊).filter (fun k => ¬k.Prime)
-      have hcomp_le : ∑ k ∈ Icc 25 Q,
-          |ω k| * |∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (1 + i) (1 + j)| ≤
-          ∑ k ∈ Comp, (2 * Real.sqrt 8 / Real.sqrt N) * (Λ k : ℝ) := by
-        -- Filter `Icc 25 Q` to nonzero terms first.
-        rw [← Finset.sum_filter_ne_zero]
-        have hsubC : (Icc 25 Q).filter (fun k =>
-            |ω k| * |∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (1 + i) (1 + j)| ≠ 0) ⊆
-            Comp := by
-          intro k hk
-          rcases Finset.mem_filter.mp hk with ⟨hkI, hkne⟩
-          have hkne' : ω k * ∑ i ∈ range J₀, ∑ j ∈ range J₀,
-              u i * v j * floorGraph k (1 + i) (1 + j) ≠ 0 := by
-            rwa [← abs_mul, abs_ne_zero] at hkne
-          obtain ⟨hnp, _, hk24⟩ := hsupp_k k hkI hkne'
-          rw [Finset.mem_filter, Finset.mem_Ioc, Nat.floor_natCast]
-          have := (Finset.mem_Icc.mp hkI).1
-          exact ⟨⟨by omega, hk24⟩, hnp⟩
-        refine (Finset.sum_le_sum fun k hk => ?_).trans
-          (Finset.sum_le_sum_of_subset_of_nonneg hsubC fun k _ _ =>
-            mul_nonneg (by positivity) ArithmeticFunction.vonMangoldt_nonneg)
-        rcases Finset.mem_filter.mp hk with ⟨hkI, hkne⟩
-        have hkne' : ω k * ∑ i ∈ range J₀, ∑ j ∈ range J₀,
-            u i * v j * floorGraph k (1 + i) (1 + j) ≠ 0 := by
-          rwa [← abs_mul, abs_ne_zero] at hkne
-        obtain ⟨_, hk_lo, _⟩ := hsupp_k k hkI hkne'
-        have hb := abs_bilin_floorGraph_le le_rfl (by have := (Finset.mem_Icc.mp hkI).1; omega) J₀ u v
-        rw [hu_sq, hv_sq] at hb
-        have hω1 := abs_subEulerGluingWeight_le_one Q₀ k
-        have hsk_ge : Real.sqrt N / Real.sqrt 8 ≤ Real.sqrt k := by
-          rw [div_le_iff₀ (Real.sqrt_pos.mpr (by norm_num))]
-          rw [← Real.sqrt_mul (Nat.cast_nonneg k)]
-          exact Real.sqrt_le_sqrt (by exact_mod_cast hk_lo.le)
-        calc |ω k| * |∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (1 + i) (1 + j)|
-            ≤ 1 * ((Λ k : ℝ) / Real.sqrt k * (1 + 1)) :=
-              mul_le_mul hω1 hb (abs_nonneg _) zero_le_one
-          _ = 2 * (Λ k : ℝ) / Real.sqrt k := by ring
-          _ ≤ 2 * (Λ k : ℝ) / (Real.sqrt N / Real.sqrt 8) :=
-              div_le_div_of_nonneg_left
-                (mul_nonneg zero_le_two ArithmeticFunction.vonMangoldt_nonneg)
-                (div_pos hsN_pos (Real.sqrt_pos.mpr (by norm_num))) hsk_ge
-          _ = (2 * Real.sqrt 8 / Real.sqrt N) * (Λ k : ℝ) := by ring
-      refine hcomp_le.trans ?_
-      rw [← Finset.mul_sum]
-      have hpsi_th : ∑ k ∈ Comp, (Λ k : ℝ) =
-          Chebyshev.psi ((24 * N : ℕ) : ℝ) - Chebyshev.theta ((24 * N : ℕ) : ℝ) :=
-        (Chebyshev.psi_sub_theta_eq_sum_not_prime ((24 * N : ℕ) : ℝ)).symm
-      rw [hpsi_th]
-      have hpt := psi_sub_theta_le_three_mul_sqrt ((24 * N : ℕ) : ℝ)
-      have hs24N : Real.sqrt ((24 * N : ℕ) : ℝ) = Real.sqrt 24 * Real.sqrt N := by
-        rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num)]
-      have hprod : (2 * Real.sqrt 8 / Real.sqrt N) *
-          (3 * (Real.log 4 + 4) * Real.sqrt ((24 * N : ℕ) : ℝ)) =
-          6 * (Real.sqrt 8 * Real.sqrt 24) * (Real.log 4 + 4) := by
-        rw [hs24N]
-        field_simp [hsN_pos.ne']
-        ring
-      have hs192 : Real.sqrt 8 * Real.sqrt 24 ≤ 15 := by
-        rw [← Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 8),
-          ← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 15)]
-        exact Real.sqrt_le_sqrt (by norm_num)
-      calc (2 * Real.sqrt 8 / Real.sqrt N) *
-            (Chebyshev.psi ((24 * N : ℕ) : ℝ) - Chebyshev.theta ((24 * N : ℕ) : ℝ))
-          ≤ (2 * Real.sqrt 8 / Real.sqrt N) *
-              (3 * (Real.log 4 + 4) * Real.sqrt ((24 * N : ℕ) : ℝ)) :=
-            mul_le_mul_of_nonneg_left hpt (by positivity)
-        _ = 6 * (Real.sqrt 8 * Real.sqrt 24) * (Real.log 4 + 4) := hprod
-        _ ≤ 90 * (Real.log 4 + 4) := by
-            nlinarith [Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num)]
-  -- Assemble the `2 × 2` discriminant bound and refine by `m' = R` (`1 * R = R`).
-  have hM0 : 0 ≤ subEulerCrossConst := by
-    unfold subEulerCrossConst
-    nlinarith [floorContactSqrtConst_pos, Real.log_nonneg (show (1 : ℝ) ≤ 4 by norm_num)]
-  have huv_le : |bilin (windowMatrix (reweightedNeutral ω Q) 1 J₀ +
-        Matrix.diagonal (fun _ : Fin J₀ => a))
-      (fun i : Fin J₀ => u i) (fun j : Fin J₀ => v j)| ≤ subEulerCrossConst := by
-    unfold subEulerCrossConst
-    dsimp only [u, v] at hcont_num ⊢
-    linarith
-  have hu_le : bilin (windowMatrix (reweightedNeutral ω Q) 1 J₀ +
-        Matrix.diagonal (fun _ : Fin J₀ => a))
-      (fun j : Fin J₀ => u j) (fun j : Fin J₀ => u j) ≤ -(subEulerCrossConst + 1) := by
-    have hmul1 : (1 / Real.sqrt ((5 * N : ℕ) : ℝ)) * ((N : ℝ) / 2) ≤
-        (1 / Real.sqrt ((5 * N : ℕ) : ℝ)) *
-          ∑ k ∈ Icc 2 Q, ω k * ∑ l ∈ Ico (N - 1) (N - 1 + 5 * N), floorGraph k (1 + 0) (1 + l) :=
-      mul_le_mul_of_nonneg_left hf1 (by positivity)
-    have hK_nonneg : 0 ≤ Real.sqrt (K : ℝ) := Real.sqrt_nonneg _
-    change a ≤ (1 / 60 : ℝ) * Real.sqrt K - (subEulerCrossConst + 20000) at ha
-    dsimp only [u, ω] at hu_raw hmul1 ⊢
-    linarith
-  have hv_le : bilin (windowMatrix (reweightedNeutral ω Q) 1 J₀ +
-        Matrix.diagonal (fun _ : Fin J₀ => a))
-      (fun j : Fin J₀ => v j) (fun j : Fin J₀ => v j) ≤ -(subEulerCrossConst + 1) := by
-    have hmul2 : (1 / Real.sqrt ((17 * N : ℕ) : ℝ)) * ((N : ℝ) / 2) ≤
-        (1 / Real.sqrt ((17 * N : ℕ) : ℝ)) *
-          ∑ k ∈ Icc 2 Q, ω k * ∑ l ∈ Ico (7 * N - 1) (7 * N - 1 + 17 * N),
-            floorGraph k (1 + 6) (1 + l) :=
-      mul_le_mul_of_nonneg_left hf2 (by positivity)
-    have hK_nonneg : 0 ≤ Real.sqrt (K : ℝ) := Real.sqrt_nonneg _
-    change a ≤ (1 / 60 : ℝ) * Real.sqrt K - (subEulerCrossConst + 20000) at ha
-    dsimp only [v, ω] at hv_raw hmul2 ⊢
-    linarith
-  exact two_le_hermNegIndex_reweightedNeutral_of_coarse (R₀ := 1) (m := R)
-    (R := R) (J₀ := J₀) (J := 3 * K * R) (Q := Q) le_rfl hR
-    (by omega) (by nlinarith) ω a u v hM0 hu_le hv_le huv_le
-    (by linarith) (by nlinarith)
+  · have hω_ne : subEulerGluingWeight Q₀ k ≠ 0 := fun h => hne (by rw [h, zero_mul])
+    have hsum_ne : ∑ i ∈ range (3 * (8 * 256 ^ m)), ∑ j ∈ range (3 * (8 * 256 ^ m)),
+        clusterVec 0 (256 ^ m - 1) (5 * 256 ^ m) i *
+          clusterVec 6 (7 * 256 ^ m - 1) (17 * 256 ^ m) j *
+          floorGraph k (1 + i) (1 + j) ≠ 0 := fun h => hne (by rw [h, mul_zero])
+    obtain ⟨hk_lo, hk_hi, hnot_band⟩ :=
+      subEuler_support_out hN_big (Finset.mem_Icc.mp hk).1 hsum_ne
+    refine ⟨?_, hk_lo, hk_hi⟩
+    intro hk_prime
+    unfold subEulerGluingWeight subEulerPrimePred at hω_ne
+    rw [hk_prime.minFac_eq] at hω_ne
+    have hcond : k = 1 ∨ k ≤ Q₀ ∨ ∃ r : ℕ, 1 ≤ r ∧ 256 ^ r < k ∧ k ≤ 3 * 256 ^ r := by
+      by_contra hc; exact hω_ne (if_neg hc)
+    rcases hcond with rfl | hQ₀ | ⟨r, _, hr_lo, hr_hi⟩
+    · exact hk_prime.ne_one rfl
+    · omega
+    · rcases lt_trichotomy r m with hrm | rfl | hmr
+      · have hpow : 256 ^ r * 256 ≤ 256 ^ m := by
+          rw [← pow_succ]; exact Nat.pow_le_pow_right (by norm_num) hrm
+        omega
+      · exact hnot_band ⟨hr_lo, hr_hi⟩
+      · have hpow : 256 ^ m * 256 ≤ 256 ^ r := by
+          rw [← pow_succ]; exact Nat.pow_le_pow_right (by norm_num) hmr
+        omega
 
 /-! ### 4.2 Un-updated doubling jump on `neutralWindow (3K + 1)` -/
+
+/-- Full-fiber prime attraction lower bound at coarse block size `2` (`2 + p₀` to
+`[2 + q₀, 2 + q₀ + L)`). -/
+private lemma halfCutoff_full_window_prime_sum {Q p₀ q₀ L : ℕ} {P : Finset ℕ}
+    (hP : P ⊆ (Icc 2 Q).filter Nat.Prime)
+    (hcov : ∀ p ∈ P, p * (2 + p₀) ≤ 2 + q₀ ∧ 2 + q₀ + L ≤ p * (2 + p₀ + 1)) :
+    (L : ℝ) * (∑ p ∈ P, Real.log p / p) ≤
+      ∑ k ∈ Icc 2 Q, (1 : ℝ) * ∑ l ∈ Ico q₀ (q₀ + L), floorGraph k (2 + p₀) (2 + l) := by
+  have hsub : P ⊆ Icc 2 Q := fun p hp => (Finset.mem_filter.mp (hP hp)).1
+  have hnonneg : ∀ k ∈ Icc 2 Q, k ∉ P →
+      0 ≤ (1 : ℝ) * ∑ l ∈ Ico q₀ (q₀ + L), floorGraph k (2 + p₀) (2 + l) := by
+    intro k _ _
+    refine mul_nonneg zero_le_one (Finset.sum_nonneg fun l _ => ?_)
+    unfold floorGraph; split_ifs
+    · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k)
+    · exact le_rfl
+  rw [Finset.mul_sum]
+  refine (Finset.sum_le_sum fun p hp => ?_).trans
+    (Finset.sum_le_sum_of_subset_of_nonneg hsub hnonneg)
+  have hpP : p.Prime := (Finset.mem_filter.mp (hP hp)).2
+  obtain ⟨hc1, hc2⟩ := hcov p hp
+  rw [one_mul]
+  have hterm : ∀ l ∈ Ico q₀ (q₀ + L), floorGraph p (2 + p₀) (2 + l) = Real.log p / p := by
+    intro l hl
+    rcases Finset.mem_Ico.mp hl with ⟨hl1, hl2⟩
+    have h1l : p * (2 + p₀) ≤ 2 + l := by omega
+    have h2l : 2 + l < (2 + p₀ + 1) * p := by
+      calc 2 + l < p * (2 + p₀ + 1) := by omega
+        _ = (2 + p₀ + 1) * p := mul_comm _ _
+    have hdiv : (2 + l) / p = 2 + p₀ := by
+      refine le_antisymm ?_ ?_
+      · exact Nat.lt_succ_iff.mp ((Nat.div_lt_iff_lt_mul hpP.pos).mpr h2l)
+      · exact (Nat.le_div_iff_mul_le hpP.pos).mpr (by rw [mul_comm]; exact h1l)
+    have hle_pl : 2 + p₀ ≤ 2 + l := by
+      have hp2 := hpP.two_le
+      calc 2 + p₀ ≤ 2 * (2 + p₀) := by omega
+        _ ≤ p * (2 + p₀) := Nat.mul_le_mul_right _ hp2
+        _ ≤ 2 + l := h1l
+    rw [floorGraph_of_le p hle_pl, if_pos hdiv, ArithmeticFunction.vonMangoldt_apply_prime hpP]
+  rw [Finset.sum_congr rfl hterm, Finset.sum_const, Nat.card_Ico, Nat.add_sub_cancel_left,
+    nsmul_eq_mul]
+
+/-- Every cross-contact term between `clusterVec 0 (6K + L - 2) L` and
+`clusterVec 1 (9K + 2 + L) L` (`L = K / 20`, `2 ≤ k ≤ 3K + 1`) vanishes outside
+`i ∈ Ico (6K + L - 2) (6K + 2L - 2)` and `j = 1`. -/
+private lemma halfCutoff_cross_vanish_outside {K k i j : ℕ} (hK : 200 ≤ K) (hk2 : 2 ≤ k)
+    (hkQ : k ≤ 3 * K + 1)
+    (hnot : ¬(6 * K + K / 20 - 2 ≤ i ∧ i < 6 * K + K / 20 - 2 + K / 20 ∧ j = 1)) :
+    clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+      clusterVec 1 (9 * K + 2 + K / 20) (K / 20) j *
+      floorGraph k (2 + i) (2 + j) = 0 := by
+  by_cases hui : clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i = 0
+  · rw [hui, zero_mul, zero_mul]
+  by_cases hvj : clusterVec 1 (9 * K + 2 + K / 20) (K / 20) j = 0
+  · rw [hvj, mul_zero, zero_mul]
+  have hi_s : i = 0 ∨ (6 * K + K / 20 - 2 ≤ i ∧ i < 6 * K + K / 20 - 2 + K / 20) := by
+    unfold clusterVec at hui
+    by_cases h0 : i = 0
+    · exact Or.inl h0
+    · rw [if_neg h0] at hui
+      by_cases hI : 6 * K + K / 20 - 2 ≤ i ∧ i < 6 * K + K / 20 - 2 + K / 20
+      · exact Or.inr hI
+      · rw [if_neg hI] at hui; exact absurd rfl hui
+  have hj_s : j = 1 ∨ (9 * K + 2 + K / 20 ≤ j ∧ j < 9 * K + 2 + K / 20 + K / 20) := by
+    unfold clusterVec at hvj
+    by_cases h1 : j = 1
+    · exact Or.inl h1
+    · rw [if_neg h1] at hvj
+      by_cases hJ : 9 * K + 2 + K / 20 ≤ j ∧ j < 9 * K + 2 + K / 20 + K / 20
+      · exact Or.inr hJ
+      · rw [if_neg hJ] at hvj; exact absurd rfl hvj
+  rcases hi_s with rfl | ⟨hi1, hi2⟩ <;> rcases hj_s with rfl | ⟨hj1, hj2⟩
+  · rw [floorGraph_eq_zero_of_lt_mul hk2 (by omega) (by omega), mul_zero]
+  · rw [floorGraph_of_le k (by omega), if_neg, mul_zero]
+    intro hdiv
+    have hlt3 := (Nat.div_lt_iff_lt_mul (by omega : 0 < k)).mp (show (2 + j) / k < 3 by omega)
+    omega
+  · exact absurd ⟨hi1, hi2, rfl⟩ hnot
+  · have hlt_prod : 2 + j < k * (2 + i) := by
+      have h1 : 2 + j < 2 * (2 + i) := by omega
+      have h2 : 2 * (2 + i) ≤ k * (2 + i) := Nat.mul_le_mul_right (2 + i) hk2
+      exact lt_of_lt_of_le h1 h2
+    rw [floorGraph_eq_zero_of_lt_mul hk2 (by omega) hlt_prod, mul_zero]
+
+/-- Contact cross-sum bound `≤ (21 / 100) √(K / 20)` on `neutralWindow (3K + 1)`. -/
+private lemma halfCutoff_contact_cross_bound {K : ℕ} (hK : 200 ≤ K)
+    (hC : ∑ k ∈ Icc (3 * K / 2 + 1) (21 * K / 10), (Λ k : ℝ) / k ≤ 42 / 100) :
+    ∑ k ∈ Icc 2 (3 * K + 1), |(1 : ℝ)| *
+      |∑ i ∈ range (10 * K), ∑ j ∈ range (10 * K),
+        clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+          clusterVec 1 (9 * K + 2 + K / 20) (K / 20) j *
+          floorGraph k (2 + i) (2 + j)| ≤
+      (21 / 100 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) := by
+  have hL_pos : (0 : ℝ) < ((K / 20 : ℕ) : ℝ) := by exact_mod_cast (show 0 < K / 20 by omega)
+  have hsL_pos : 0 < Real.sqrt ((K / 20 : ℕ) : ℝ) := Real.sqrt_pos.mpr hL_pos
+  have hterm_le : ∀ k ∈ Icc 2 (3 * K + 1),
+      |(1 : ℝ)| * |∑ i ∈ range (10 * K), ∑ j ∈ range (10 * K),
+        clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+          clusterVec 1 (9 * K + 2 + K / 20) (K / 20) j *
+          floorGraph k (2 + i) (2 + j)| ≤
+      if k ∈ Icc (3 * K / 2 + 1) (21 * K / 10) then
+        (Real.sqrt ((K / 20 : ℕ) : ℝ) / 2) * ((Λ k : ℝ) / k) else 0 := by
+    intro k hk
+    rw [abs_one, one_mul]
+    rcases Finset.mem_Icc.mp hk with ⟨hk2, hkQ⟩
+    have hnn : ∀ i j, 0 ≤ clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+        clusterVec 1 (9 * K + 2 + K / 20) (K / 20) j * floorGraph k (2 + i) (2 + j) := fun i j =>
+      mul_nonneg (mul_nonneg (clusterVec_nonneg _ _ _ _) (clusterVec_nonneg _ _ _ _)) (by
+        unfold floorGraph; split_ifs
+        · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k)
+        · exact le_rfl)
+    rw [abs_of_nonneg (Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun j _ => hnn i j)]
+    by_cases hk_in : k ∈ Icc (3 * K / 2 + 1) (21 * K / 10)
+    · rw [if_pos hk_in]
+      have hsum_eq : ∑ i ∈ range (10 * K), ∑ j ∈ range (10 * K),
+          clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+            clusterVec 1 (9 * K + 2 + K / 20) (K / 20) j * floorGraph k (2 + i) (2 + j) =
+          ∑ i ∈ Ico (6 * K + K / 20 - 2) (6 * K + K / 20 - 2 + K / 20),
+            clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+              clusterVec 1 (9 * K + 2 + K / 20) (K / 20) 1 * floorGraph k (2 + i) 3 := by
+        have hin : ∀ i ∈ range (10 * K),
+            ∑ j ∈ range (10 * K),
+              clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+                clusterVec 1 (9 * K + 2 + K / 20) (K / 20) j * floorGraph k (2 + i) (2 + j) =
+            if 6 * K + K / 20 - 2 ≤ i ∧ i < 6 * K + K / 20 - 2 + K / 20 then
+              clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+                clusterVec 1 (9 * K + 2 + K / 20) (K / 20) 1 * floorGraph k (2 + i) 3 else 0 := by
+          intro i _
+          by_cases hI : 6 * K + K / 20 - 2 ≤ i ∧ i < 6 * K + K / 20 - 2 + K / 20
+          · rw [if_pos hI, Finset.sum_eq_single 1
+              (fun j _ hj1 => halfCutoff_cross_vanish_outside hK hk2 hkQ (fun h => hj1 h.2.2))
+              (fun h1 => absurd (Finset.mem_range.mpr (by omega)) h1)]
+          · rw [if_neg hI]
+            exact Finset.sum_eq_zero fun j _ =>
+              halfCutoff_cross_vanish_outside hK hk2 hkQ (fun h => hI ⟨h.1, h.2.1⟩)
+        rw [Finset.sum_congr rfl hin, ← Finset.sum_filter]
+        have hfil : (range (10 * K)).filter
+            (fun i => 6 * K + K / 20 - 2 ≤ i ∧ i < 6 * K + K / 20 - 2 + K / 20) =
+            Ico (6 * K + K / 20 - 2) (6 * K + K / 20 - 2 + K / 20) := by
+          ext i; simp only [Finset.mem_filter, Finset.mem_range, Finset.mem_Ico]; omega
+        rw [hfil]
+      rw [hsum_eq]
+      have hpt : ∀ i ∈ Ico (6 * K + K / 20 - 2) (6 * K + K / 20 - 2 + K / 20),
+          clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+            clusterVec 1 (9 * K + 2 + K / 20) (K / 20) 1 * floorGraph k (2 + i) 3 ≤
+            (1 / (2 * Real.sqrt ((K / 20 : ℕ) : ℝ))) * ((Λ k : ℝ) / k) := by
+        intro i hi
+        rcases Finset.mem_Ico.mp hi with ⟨hi1, hi2⟩
+        have hui : clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i =
+            1 / Real.sqrt (2 * ((K / 20 : ℕ) : ℝ)) := by
+          unfold clusterVec
+          rw [if_neg (by omega), if_pos ⟨hi1, hi2⟩]
+        have hv1 : clusterVec 1 (9 * K + 2 + K / 20) (K / 20) 1 = 1 / Real.sqrt 2 := by
+          simp [clusterVec]
+        have huv_val : clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+            clusterVec 1 (9 * K + 2 + K / 20) (K / 20) 1 =
+            1 / (2 * Real.sqrt ((K / 20 : ℕ) : ℝ)) := by
+          rw [hui, hv1, Real.sqrt_mul zero_le_two]
+          have hs2_ne : Real.sqrt 2 ≠ 0 := (Real.sqrt_pos.mpr zero_lt_two).ne'
+          field_simp [hs2_ne, hsL_pos.ne']
+          rw [Real.sq_sqrt zero_le_two]
+        rw [huv_val]
+        refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+        unfold floorGraph; split_ifs
+        · exact le_rfl
+        · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k)
+      calc ∑ i ∈ Ico (6 * K + K / 20 - 2) (6 * K + K / 20 - 2 + K / 20),
+            clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+              clusterVec 1 (9 * K + 2 + K / 20) (K / 20) 1 * floorGraph k (2 + i) 3
+          ≤ ∑ _i ∈ Ico (6 * K + K / 20 - 2) (6 * K + K / 20 - 2 + K / 20),
+              (1 / (2 * Real.sqrt ((K / 20 : ℕ) : ℝ))) * ((Λ k : ℝ) / k) := Finset.sum_le_sum hpt
+        _ = (Real.sqrt ((K / 20 : ℕ) : ℝ) / 2) * ((Λ k : ℝ) / k) := by
+            rw [Finset.sum_const, Nat.card_Ico, Nat.add_sub_cancel_left, nsmul_eq_mul]
+            field_simp [hsL_pos.ne']
+            rw [Real.sq_sqrt hL_pos.le]
+    · rw [if_neg hk_in]
+      refine le_of_eq (Finset.sum_eq_zero fun i _ => Finset.sum_eq_zero fun j _ => ?_)
+      by_cases hcase : 6 * K + K / 20 - 2 ≤ i ∧ i < 6 * K + K / 20 - 2 + K / 20 ∧ j = 1
+      · rcases hcase with ⟨hi1, hi2, rfl⟩
+        have hfg0 : floorGraph k (2 + i) 3 = 0 := by
+          rw [floorGraph_comm, floorGraph_of_le k (by omega), if_neg]
+          intro hdiv
+          have h1 := (Nat.le_div_iff_mul_le (by omega : 0 < k)).mp hdiv.ge
+          have h2 := (Nat.div_lt_iff_lt_mul (by omega : 0 < k)).mp
+            (show (2 + i) / k < 4 by omega)
+          exact hk_in (Finset.mem_Icc.mpr ⟨by omega, by omega⟩)
+        rw [hfg0, mul_zero]
+      · exact halfCutoff_cross_vanish_outside hK hk2 hkQ hcase
+  have hsubC : Icc (3 * K / 2 + 1) (21 * K / 10) ⊆ Icc 2 (3 * K + 1) :=
+    Finset.Icc_subset_Icc (by omega) (by omega)
+  calc ∑ k ∈ Icc 2 (3 * K + 1), |(1 : ℝ)| *
+          |∑ i ∈ range (10 * K), ∑ j ∈ range (10 * K),
+            clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i *
+              clusterVec 1 (9 * K + 2 + K / 20) (K / 20) j * floorGraph k (2 + i) (2 + j)|
+      ≤ ∑ k ∈ Icc 2 (3 * K + 1), if k ∈ Icc (3 * K / 2 + 1) (21 * K / 10) then
+          (Real.sqrt ((K / 20 : ℕ) : ℝ) / 2) * ((Λ k : ℝ) / k) else 0 :=
+        Finset.sum_le_sum hterm_le
+    _ = (Real.sqrt ((K / 20 : ℕ) : ℝ) / 2) *
+          ∑ k ∈ Icc (3 * K / 2 + 1) (21 * K / 10), (Λ k : ℝ) / k := by
+        rw [← Finset.sum_filter, Finset.filter_mem_eq_inter, Finset.inter_eq_right.mpr hsubC,
+          ← Finset.mul_sum]
+    _ ≤ (Real.sqrt ((K / 20 : ℕ) : ℝ) / 2) * (42 / 100) :=
+        mul_le_mul_of_nonneg_left hC (by positivity)
+    _ = (21 / 100 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) := by ring
 
 /-- **Un-updated glued-matrix jump on `neutralWindow (3K + 1)`**: whenever the prime bands
 `[2.1K + 1, 3K]` and `[2.3K + 2, 3K]` and the cross-band `[1.5K + 1, 2.1K]` carry their PNT
@@ -2002,287 +2242,137 @@ theorem two_le_hermNegIndex_neutralWindow_halfCutoff_of_primeSums {K R : ℕ} (h
     2 ≤ hermNegIndex ((neutralWindow (3 * K + 1) R (6 * K * R) +
       Matrix.diagonal (fun _ : Fin (6 * K * R) => a)).map (↑) :
         Matrix (Fin (6 * K * R)) (Fin (6 * K * R)) ℂ) := by
-  set L : ℕ := K / 20
-  set Q : ℕ := 3 * K + 1
-  set J₀ : ℕ := 10 * K
-  have hL_ge : 10 ≤ L := by omega
-  have hL_pos : (0 : ℝ) < L := by exact_mod_cast (show 0 < L by omega)
-  have hsL_pos : 0 < Real.sqrt (L : ℝ) := Real.sqrt_pos.mpr hL_pos
-  -- Rewrite `neutralWindow Q` as `windowMatrix (reweightedNeutral (fun _ => 1) Q)`.
-  have hrew : neutralWindow Q R (6 * K * R) =
-      windowMatrix (reweightedNeutral (fun _ => 1) Q) R (6 * K * R) := by
-    ext i j
-    simp [neutralWindow, windowMatrix, reweightedNeutral]
+  have hL_pos : (0 : ℝ) < ((K / 20 : ℕ) : ℝ) := by exact_mod_cast (show 0 < K / 20 by omega)
+  have hsL_pos : 0 < Real.sqrt ((K / 20 : ℕ) : ℝ) := Real.sqrt_pos.mpr hL_pos
+  have hrew : neutralWindow (3 * K + 1) R (6 * K * R) =
+      windowMatrix (reweightedNeutral (fun _ => 1) (3 * K + 1)) R (6 * K * R) := by
+    ext i j; simp [neutralWindow, windowMatrix, reweightedNeutral]
   rw [hrew]
-  let u := clusterVec 0 (6 * K + L - 2) L
-  let v := clusterVec 1 (9 * K + 2 + L) L
-  -- Full-window prime attraction on `u` (`p₀ = 0`, `2 + 0 = 2`) and `v` (`p₀ = 1`, `2 + 1 = 3`).
-  have hfull_win : ∀ p₀ q₀ : ℕ, ∀ P : Finset ℕ,
-      P ⊆ (Icc 2 Q).filter Nat.Prime →
-      (∀ p ∈ P, p * (2 + p₀) ≤ 2 + q₀ ∧ 2 + q₀ + L ≤ p * (2 + p₀ + 1)) →
-      (L : ℝ) * (∑ p ∈ P, Real.log p / p) ≤
-        ∑ k ∈ Icc 2 Q, (1 : ℝ) * ∑ l ∈ Ico q₀ (q₀ + L), floorGraph k (2 + p₀) (2 + l) := by
-    intro p₀ q₀ P hP hcov
-    have hsub : P ⊆ Icc 2 Q := fun p hp => (Finset.mem_filter.mp (hP hp)).1
-    have hnonneg : ∀ k ∈ Icc 2 Q, k ∉ P →
-        0 ≤ (1 : ℝ) * ∑ l ∈ Ico q₀ (q₀ + L), floorGraph k (2 + p₀) (2 + l) := by
-      intro k _ _
-      refine mul_nonneg zero_le_one (Finset.sum_nonneg fun l _ => ?_)
-      unfold floorGraph; split_ifs
-      · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k)
-      · exact le_rfl
-    rw [Finset.mul_sum]
-    refine (Finset.sum_le_sum fun p hp => ?_).trans
-      (Finset.sum_le_sum_of_subset_of_nonneg hsub hnonneg)
-    have hpP : p.Prime := (Finset.mem_filter.mp (hP hp)).2
-    obtain ⟨hc1, hc2⟩ := hcov p hp
-    rw [one_mul]
-    have hterm : ∀ l ∈ Ico q₀ (q₀ + L), floorGraph p (2 + p₀) (2 + l) = Real.log p / p := by
-      intro l hl
-      rcases Finset.mem_Ico.mp hl with ⟨hl1, hl2⟩
-      have hdiv : (2 + l) / p = 2 + p₀ := by
-        refine le_antisymm ?_ ?_
-        · exact Nat.lt_succ_iff.mp ((Nat.div_lt_iff_lt_mul hpP.pos).mpr (by nlinarith))
-        · exact (Nat.le_div_iff_mul_le hpP.pos).mpr (by nlinarith)
-      rw [floorGraph_of_le p (by nlinarith [hpP.two_le]), if_pos hdiv,
-        ArithmeticFunction.vonMangoldt_apply_prime hpP]
-    rw [Finset.sum_congr rfl hterm, Finset.sum_const, Nat.card_Ico, Nat.add_sub_cancel_left,
-      nsmul_eq_mul]
+  have hsqL : (1 / Real.sqrt ((K / 20 : ℕ) : ℝ)) * ((K / 20 : ℕ) : ℝ) =
+      Real.sqrt ((K / 20 : ℕ) : ℝ) := by
+    field_simp [hsL_pos.ne']
+    exact (Real.sq_sqrt hL_pos.le).symm
+  have hw1 : (28 / 100 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) ≤
+      (1 / Real.sqrt ((K / 20 : ℕ) : ℝ)) * ∑ k ∈ Icc 2 (3 * K + 1), (1 : ℝ) *
+        ∑ l ∈ Ico (6 * K + K / 20 - 2) (6 * K + K / 20 - 2 + K / 20),
+          floorGraph k (2 + 0) (2 + l) := by
+    have h1 := halfCutoff_full_window_prime_sum (Q := 3 * K + 1) (p₀ := 0)
+      (q₀ := 6 * K + K / 20 - 2) (L := K / 20)
+      (P := (Icc (21 * K / 10 + 1) (3 * K)).filter Nat.Prime)
+      (Finset.filter_subset_filter _ (Finset.Icc_subset_Icc (by omega) (by omega)))
+      (fun p hp => by
+        rcases Finset.mem_Icc.mp (Finset.mem_filter.mp hp).1 with ⟨_, _⟩
+        constructor <;> omega)
+    calc (28 / 100 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ)
+        ≤ (∑ p ∈ (Icc (21 * K / 10 + 1) (3 * K)).filter Nat.Prime, Real.log p / p) *
+            Real.sqrt ((K / 20 : ℕ) : ℝ) :=
+          mul_le_mul_of_nonneg_right hS₁ hsL_pos.le
+      _ = (1 / Real.sqrt ((K / 20 : ℕ) : ℝ)) * (((K / 20 : ℕ) : ℝ) *
+            ∑ p ∈ (Icc (21 * K / 10 + 1) (3 * K)).filter Nat.Prime, Real.log p / p) := by
+          rw [← mul_assoc, hsqL, mul_comm]
+      _ ≤ _ := mul_le_mul_of_nonneg_left h1 (by positivity)
+  have hw2 : (20 / 100 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) ≤
+      (1 / Real.sqrt ((K / 20 : ℕ) : ℝ)) * ∑ k ∈ Icc 2 (3 * K + 1), (1 : ℝ) *
+        ∑ l ∈ Ico (9 * K + 2 + K / 20) (9 * K + 2 + K / 20 + K / 20),
+          floorGraph k (2 + 1) (2 + l) := by
+    have h1 := halfCutoff_full_window_prime_sum (Q := 3 * K + 1) (p₀ := 1)
+      (q₀ := 9 * K + 2 + K / 20) (L := K / 20)
+      (P := (Icc (23 * K / 10 + 2) (3 * K)).filter Nat.Prime)
+      (Finset.filter_subset_filter _ (Finset.Icc_subset_Icc (by omega) (by omega)))
+      (fun p hp => by
+        rcases Finset.mem_Icc.mp (Finset.mem_filter.mp hp).1 with ⟨_, _⟩
+        constructor <;> omega)
+    calc (20 / 100 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ)
+        ≤ (∑ p ∈ (Icc (23 * K / 10 + 2) (3 * K)).filter Nat.Prime, Real.log p / p) *
+            Real.sqrt ((K / 20 : ℕ) : ℝ) :=
+          mul_le_mul_of_nonneg_right hS₂ hsL_pos.le
+      _ = (1 / Real.sqrt ((K / 20 : ℕ) : ℝ)) * (((K / 20 : ℕ) : ℝ) *
+            ∑ p ∈ (Icc (23 * K / 10 + 2) (3 * K)).filter Nat.Prime, Real.log p / p) := by
+          rw [← mul_assoc, hsqL, mul_comm]
+      _ ≤ _ := mul_le_mul_of_nonneg_left h1 (by positivity)
   have hu_raw := bilin_reweightedNeutral_clusterVec_le (ω := fun _ => 1) (fun _ => zero_le_one)
-    (R₀ := 2) (Q := Q) (J₀ := J₀) (p₀ := 0) (q₀ := 6 * K + L - 2) (L := L)
+    (R₀ := 2) (Q := 3 * K + 1) (J₀ := 10 * K) (p₀ := 0) (q₀ := 6 * K + K / 20 - 2) (L := K / 20)
     (by norm_num) (by omega) (by omega) (by omega) a
   have hv_raw := bilin_reweightedNeutral_clusterVec_le (ω := fun _ => 1) (fun _ => zero_le_one)
-    (R₀ := 2) (Q := Q) (J₀ := J₀) (p₀ := 1) (q₀ := 9 * K + 2 + L) (L := L)
+    (R₀ := 2) (Q := 3 * K + 1) (J₀ := 10 * K) (p₀ := 1) (q₀ := 9 * K + 2 + K / 20) (L := K / 20)
     (by norm_num) (by omega) (by omega) (by omega) a
-  have hw1 : (28 / 100 : ℝ) * Real.sqrt L ≤
-      (1 / Real.sqrt L) * ∑ k ∈ Icc 2 Q, (1 : ℝ) *
-        ∑ l ∈ Ico (6 * K + L - 2) (6 * K + L - 2 + L), floorGraph k (2 + 0) (2 + l) := by
-    have h1 := hfull_win 0 (6 * K + L - 2) ((Icc (21 * K / 10 + 1) (3 * K)).filter Nat.Prime)
-      (Finset.filter_subset_filter _ (Finset.Icc_subset_Icc (by omega) (by omega)))
-      (fun p hp => by
-        rcases Finset.mem_Icc.mp (Finset.mem_filter.mp hp).1 with ⟨hp1, hp2⟩
-        constructor <;> omega)
-    have hmul := mul_le_mul_of_nonneg_left h1 (by positivity : (0 : ℝ) ≤ 1 / Real.sqrt L)
-    have hsq : (1 / Real.sqrt L) * (L : ℝ) = Real.sqrt L := by
-      field_simp [hsL_pos.ne']
-      exact (Real.sq_sqrt hL_pos.le).symm
-    calc (28 / 100 : ℝ) * Real.sqrt L
-        ≤ (∑ p ∈ (Icc (21 * K / 10 + 1) (3 * K)).filter Nat.Prime, Real.log p / p) * Real.sqrt L :=
-          mul_le_mul_of_nonneg_right hS₁ hsL_pos.le
-      _ = (1 / Real.sqrt L) * ((L : ℝ) *
-            ∑ p ∈ (Icc (21 * K / 10 + 1) (3 * K)).filter Nat.Prime, Real.log p / p) := by
-          rw [← mul_assoc, hsq, mul_comm]
-      _ ≤ _ := hmul
-  have hw2 : (20 / 100 : ℝ) * Real.sqrt L ≤
-      (1 / Real.sqrt L) * ∑ k ∈ Icc 2 Q, (1 : ℝ) *
-        ∑ l ∈ Ico (9 * K + 2 + L) (9 * K + 2 + L + L), floorGraph k (2 + 1) (2 + l) := by
-    have h1 := hfull_win 1 (9 * K + 2 + L) ((Icc (23 * K / 10 + 2) (3 * K)).filter Nat.Prime)
-      (Finset.filter_subset_filter _ (Finset.Icc_subset_Icc (by omega) (by omega)))
-      (fun p hp => by
-        rcases Finset.mem_Icc.mp (Finset.mem_filter.mp hp).1 with ⟨hp1, hp2⟩
-        constructor <;> omega)
-    have hmul := mul_le_mul_of_nonneg_left h1 (by positivity : (0 : ℝ) ≤ 1 / Real.sqrt L)
-    have hsq : (1 / Real.sqrt L) * (L : ℝ) = Real.sqrt L := by
-      field_simp [hsL_pos.ne']
-      exact (Real.sq_sqrt hL_pos.le).symm
-    calc (20 / 100 : ℝ) * Real.sqrt L
-        ≤ (∑ p ∈ (Icc (23 * K / 10 + 2) (3 * K)).filter Nat.Prime, Real.log p / p) * Real.sqrt L :=
-          mul_le_mul_of_nonneg_right hS₂ hsL_pos.le
-      _ = (1 / Real.sqrt L) * ((L : ℝ) *
-            ∑ p ∈ (Icc (23 * K / 10 + 2) (3 * K)).filter Nat.Prime, Real.log p / p) := by
-          rw [← mul_assoc, hsq, mul_comm]
-      _ ≤ _ := hmul
-  -- Cross-bound on `(u, v)` at `d = L`.
   have hcross_raw := abs_bilin_reweightedNeutral_clusterVec_le (fun _ => (1 : ℝ))
-    (R₀ := 2) (Q := Q) (J₀ := J₀) (p₁ := 0) (q₁ := 6 * K + L - 2) (L₁ := L)
-    (p₂ := 1) (q₂ := 9 * K + 2 + L) (L₂ := L) (d := L)
+    (R₀ := 2) (Q := 3 * K + 1) (J₀ := 10 * K)
+    (p₁ := 0) (q₁ := 6 * K + K / 20 - 2) (L₁ := K / 20)
+    (p₂ := 1) (q₂ := 9 * K + 2 + K / 20) (L₂ := K / 20) (d := K / 20)
     (by omega) (by omega) (by omega) (by omega) (by omega) (by omega) (by omega) a
-  have hjet_7 : 1 + (Real.sqrt L + Real.sqrt L + Real.sqrt ((L : ℝ) * L)) * (2 / (L : ℝ)) ≤ 7 := by
-    have hsLL : Real.sqrt ((L : ℝ) * L) = L := Real.sqrt_mul_self hL_pos.le
-    have hsL_le : Real.sqrt L ≤ L := by
-      have h1 : (1 : ℝ) ≤ Real.sqrt L := by
-        rw [← Real.sqrt_one]; exact Real.sqrt_le_sqrt (by exact_mod_cast (by omega : 1 ≤ L))
+  have hjet_7 : 1 + (Real.sqrt ((K / 20 : ℕ) : ℝ) + Real.sqrt ((K / 20 : ℕ) : ℝ) +
+      Real.sqrt (((K / 20 : ℕ) : ℝ) * ((K / 20 : ℕ) : ℝ))) * (2 / ((K / 20 : ℕ) : ℝ)) ≤ 7 := by
+    rw [Real.sqrt_mul_self hL_pos.le]
+    have hsL_le : Real.sqrt ((K / 20 : ℕ) : ℝ) ≤ ((K / 20 : ℕ) : ℝ) := by
+      have h1 : (1 : ℝ) ≤ Real.sqrt ((K / 20 : ℕ) : ℝ) := by
+        rw [← Real.sqrt_one]; exact Real.sqrt_le_sqrt (by exact_mod_cast (show 1 ≤ K / 20 by omega))
       have := mul_le_mul_of_nonneg_right h1 hsL_pos.le
       rwa [one_mul, Real.mul_self_sqrt hL_pos.le] at this
-    rw [hsLL]
-    have hsum : Real.sqrt L + Real.sqrt L + (L : ℝ) ≤ 3 * (L : ℝ) := by linarith
-    calc 1 + (Real.sqrt L + Real.sqrt L + (L : ℝ)) * (2 / (L : ℝ))
-        ≤ 1 + (3 * (L : ℝ)) * (2 / (L : ℝ)) := by gcongr
-      _ = 7 := by field_simp [hL_pos.ne']; ring
-  -- Cross-contacts: only `(i ∈ Ico (6K + L - 2) (6K + 2L - 2), j = 1)` and `k ∈ Icc (3K/2 + 1) (21K/10)` can be nonzero!
-  have hcont_21 : ∑ k ∈ Icc 2 Q, |(1 : ℝ)| *
-      |∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (2 + i) (2 + j)| ≤
-      (21 / 100 : ℝ) * Real.sqrt L := by
-    have hterm_le : ∀ k ∈ Icc 2 Q,
-        |(1 : ℝ)| * |∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (2 + i) (2 + j)| ≤
-        if k ∈ Icc (3 * K / 2 + 1) (21 * K / 10) then
-          (Real.sqrt L / 2) * ((Λ k : ℝ) / k) else 0 := by
-      intro k hk
-      rw [abs_one, one_mul]
-      have hk2 := (Finset.mem_Icc.mp hk).1
-      have hkQ := (Finset.mem_Icc.mp hk).2
-      -- Pointwise nonnegativity so `|∑| = ∑`.
-      have hnn : ∀ i j, 0 ≤ u i * v j * floorGraph k (2 + i) (2 + j) := fun i j =>
-        mul_nonneg (mul_nonneg (clusterVec_nonneg _ _ _ _) (clusterVec_nonneg _ _ _ _)) (by
-          unfold floorGraph; split_ifs
-          · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k)
-          · exact le_rfl)
-      rw [abs_of_nonneg (Finset.sum_nonneg fun i _ => Finset.sum_nonneg fun j _ => hnn i j)]
-      -- Every pair outside `i ∈ Ico (6K + L - 2) (6K + 2L - 2)` and `j = 1` vanishes!
-      have honly : ∀ i ∈ range J₀, ∀ j ∈ range J₀,
-          ¬(6 * K + L - 2 ≤ i ∧ i < 6 * K + L - 2 + L ∧ j = 1) →
-          u i * v j * floorGraph k (2 + i) (2 + j) = 0 := by
-        intro i _ j _ hnot
-        by_cases hui : u i = 0
-        · rw [hui, zero_mul, zero_mul]
-        by_cases hvj : v j = 0
-        · rw [hvj, mul_zero, zero_mul]
-        have hi_s : i = 0 ∨ (6 * K + L - 2 ≤ i ∧ i < 6 * K + L - 2 + L) := by
-          dsimp [u, clusterVec] at hui
-          by_cases h0 : i = 0
-          · exact Or.inl h0
-          · rw [if_neg h0] at hui
-            by_cases hI : 6 * K + L - 2 ≤ i ∧ i < 6 * K + L - 2 + L
-            · exact Or.inr hI
-            · rw [if_neg hI] at hui; exact absurd rfl hui
-        have hj_s : j = 1 ∨ (9 * K + 2 + L ≤ j ∧ j < 9 * K + 2 + L + L) := by
-          dsimp [v, clusterVec] at hvj
-          by_cases h1 : j = 1
-          · exact Or.inl h1
-          · rw [if_neg h1] at hvj
-            by_cases hJ : 9 * K + 2 + L ≤ j ∧ j < 9 * K + 2 + L + L
-            · exact Or.inr hJ
-            · rw [if_neg hJ] at hvj; exact absurd rfl hvj
-        rcases hi_s with rfl | ⟨hi1, hi2⟩ <;> rcases hj_s with rfl | ⟨hj1, hj2⟩
-        · -- `(2, 3)`: `3 < 2 * 2 ≤ k * 2`
-          rw [floorGraph_eq_zero_of_lt_mul hk2 (by omega) (by nlinarith), mul_zero]
-        · -- `(2, 2 + j)` with `2 + j ≥ 9K + 4 + L > 3 * Q`: `(2 + j) / k ≥ 3 > 2`!
-          rw [floorGraph_of_le k (by omega), if_neg, mul_zero]
-          intro hdiv
-          have := (Nat.div_lt_iff_lt_mul (by omega : 0 < k)).mp (show (2 + j) / k < 3 by omega)
-          nlinarith
-        · exact absurd ⟨hi1, hi2, rfl⟩ hnot
-        · -- `(2 + i, 2 + j)` with `2 + j < 2 * (2 + i)`
-          rw [floorGraph_eq_zero_of_lt_mul hk2 (by omega) (by nlinarith), mul_zero]
-      by_cases hk_in : k ∈ Icc (3 * K / 2 + 1) (21 * K / 10)
-      · rw [if_pos hk_in]
-        -- Keep only `i ∈ Ico (6K + L - 2) (6K + 2L - 2)` and `j = 1`.
-        have hsum_eq : ∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (2 + i) (2 + j) =
-            ∑ i ∈ Ico (6 * K + L - 2) (6 * K + L - 2 + L), u i * v 1 * floorGraph k (2 + i) 3 := by
-          have hin : ∀ i ∈ range J₀,
-              ∑ j ∈ range J₀, u i * v j * floorGraph k (2 + i) (2 + j) =
-              if 6 * K + L - 2 ≤ i ∧ i < 6 * K + L - 2 + L then
-                u i * v 1 * floorGraph k (2 + i) 3 else 0 := by
-            intro i hi
-            by_cases hI : 6 * K + L - 2 ≤ i ∧ i < 6 * K + L - 2 + L
-            · rw [if_pos hI, Finset.sum_eq_single 1
-                (fun j hj hj1 => honly i hi j hj (fun h => hj1 h.2.2))
-                (fun h1 => absurd (Finset.mem_range.mpr (by omega)) h1)]
-            · rw [if_neg hI]
-              exact Finset.sum_eq_zero fun j hj => honly i hi j hj (fun h => hI ⟨h.1, h.2.1⟩)
-          rw [Finset.sum_congr rfl hin, ← Finset.sum_filter]
-          have hfil : (range J₀).filter (fun i => 6 * K + L - 2 ≤ i ∧ i < 6 * K + L - 2 + L) =
-              Ico (6 * K + L - 2) (6 * K + L - 2 + L) := by
-            ext i; simp only [Finset.mem_filter, Finset.mem_range, Finset.mem_Ico]; omega
-          rw [hfil]
-        rw [hsum_eq]
-        have hpt : ∀ i ∈ Ico (6 * K + L - 2) (6 * K + L - 2 + L),
-            u i * v 1 * floorGraph k (2 + i) 3 ≤
-              (1 / (2 * Real.sqrt L)) * ((Λ k : ℝ) / k) := by
-          intro i hi
-          rcases Finset.mem_Ico.mp hi with ⟨hi1, hi2⟩
-          have hui : u i = 1 / Real.sqrt (2 * (L : ℝ)) := by
-            dsimp [u, clusterVec]
-            rw [if_neg (by omega), if_pos ⟨hi1, hi2⟩]
-          have hv1 : v 1 = 1 / Real.sqrt 2 := by simp [v, clusterVec]
-          have huv_val : u i * v 1 = 1 / (2 * Real.sqrt L) := by
-            rw [hui, hv1, Real.sqrt_mul zero_le_two]
-            have hs2_ne : Real.sqrt 2 ≠ 0 := (Real.sqrt_pos.mpr zero_lt_two).ne'
-            field_simp [hs2_ne, hsL_pos.ne']
-            rw [Real.sq_sqrt zero_le_two]
-          rw [huv_val]
-          refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-          unfold floorGraph; split_ifs
-          · exact le_rfl
-          · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Nat.cast_nonneg k)
-        calc ∑ i ∈ Ico (6 * K + L - 2) (6 * K + L - 2 + L), u i * v 1 * floorGraph k (2 + i) 3
-            ≤ ∑ _i ∈ Ico (6 * K + L - 2) (6 * K + L - 2 + L),
-                (1 / (2 * Real.sqrt L)) * ((Λ k : ℝ) / k) := Finset.sum_le_sum hpt
-          _ = (Real.sqrt L / 2) * ((Λ k : ℝ) / k) := by
-              rw [Finset.sum_const, Nat.card_Ico, Nat.add_sub_cancel_left, nsmul_eq_mul]
-              field_simp [hsL_pos.ne']
-              rw [Real.sq_sqrt hL_pos.le]
-      · rw [if_neg hk_in]
-        refine le_of_eq (Finset.sum_eq_zero fun i hi => Finset.sum_eq_zero fun j hj => ?_)
-        by_cases hcase : 6 * K + L - 2 ≤ i ∧ i < 6 * K + L - 2 + L ∧ j = 1
-        · rcases hcase with ⟨hi1, hi2, rfl⟩
-          have hfg0 : floorGraph k (2 + i) 3 = 0 := by
-            rw [floorGraph_comm, floorGraph_of_le k (by omega), if_neg]
-            intro hdiv
-            have h1 := (Nat.le_div_iff_mul_le (by omega : 0 < k)).mp hdiv.ge
-            have h2 := (Nat.div_lt_iff_lt_mul (by omega : 0 < k)).mp
-              (show (2 + i) / k < 4 by omega)
-            exact hk_in (Finset.mem_Icc.mpr ⟨by omega, by omega⟩)
-          rw [hfg0, mul_zero]
-        · exact honly i hi j hj hcase
-    have hsubC : Icc (3 * K / 2 + 1) (21 * K / 10) ⊆ Icc 2 Q :=
-      Finset.Icc_subset_Icc (by omega) (by omega)
-    calc ∑ k ∈ Icc 2 Q, |(1 : ℝ)| *
-            |∑ i ∈ range J₀, ∑ j ∈ range J₀, u i * v j * floorGraph k (2 + i) (2 + j)|
-        ≤ ∑ k ∈ Icc 2 Q, if k ∈ Icc (3 * K / 2 + 1) (21 * K / 10) then
-            (Real.sqrt L / 2) * ((Λ k : ℝ) / k) else 0 := Finset.sum_le_sum hterm_le
-      _ = (Real.sqrt L / 2) * ∑ k ∈ Icc (3 * K / 2 + 1) (21 * K / 10), (Λ k : ℝ) / k := by
-          rw [← Finset.sum_filter, Finset.filter_mem_eq_inter, Finset.inter_eq_right.mpr hsubC,
-            ← Finset.mul_sum]
-      _ ≤ (Real.sqrt L / 2) * (42 / 100) :=
-          mul_le_mul_of_nonneg_left hC (by positivity)
-      _ = (21 / 100 : ℝ) * Real.sqrt L := by ring
-  -- Relate `Real.sqrt K` and `Real.sqrt L` (`K / 25 ≤ L` since `K ≥ 200` and `L = K / 20`).
-  have hsK_le : Real.sqrt K ≤ 5 * Real.sqrt L := by
+    have hmul : (Real.sqrt ((K / 20 : ℕ) : ℝ) + Real.sqrt ((K / 20 : ℕ) : ℝ) +
+        ((K / 20 : ℕ) : ℝ)) * (2 / ((K / 20 : ℕ) : ℝ)) ≤
+        (3 * ((K / 20 : ℕ) : ℝ)) * (2 / ((K / 20 : ℕ) : ℝ)) :=
+      mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+    have heq6 : (3 * ((K / 20 : ℕ) : ℝ)) * (2 / ((K / 20 : ℕ) : ℝ)) = 6 := by
+      field_simp [hL_pos.ne']; ring
+    linarith [hmul, heq6]
+  have hcont_21 := halfCutoff_contact_cross_bound hK hC
+  have hsK_le : Real.sqrt K ≤ 5 * Real.sqrt ((K / 20 : ℕ) : ℝ) := by
     rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 5), ← Real.sqrt_mul (by norm_num)]
-    exact Real.sqrt_le_sqrt (by exact_mod_cast (show K ≤ 25 * L by omega))
-  have hlog_diag : Real.log (((2 + J₀ : ℕ) : ℝ) + 1) + 1 ≤ (1 / 400 : ℝ) * Real.sqrt L + 39000 := by
-    have h1 := log_le_eps_mul_sqrt_add (x := ((2 + J₀ : ℕ) : ℝ) + 1) (ε := 1 / 8000)
+    exact Real.sqrt_le_sqrt (by exact_mod_cast (show K ≤ 25 * (K / 20) by omega))
+  have ha_L : Real.log (((2 + 10 * K : ℕ) : ℝ) + 1) + 1 + a ≤
+      (1 / 200 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) - 50 := by
+    have h1 := log_le_eps_mul_sqrt_add (x := ((2 + 10 * K : ℕ) : ℝ) + 1) (ε := 1 / 8000)
       (by positivity) (by norm_num)
-    have hsq : Real.sqrt (((2 + J₀ : ℕ) : ℝ) + 1) ≤ 4 * Real.sqrt K := by
+    norm_num at h1
+    have hsq : Real.sqrt (((2 + 10 * K : ℕ) : ℝ) + 1) ≤ 4 * Real.sqrt K := by
       rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 4), ← Real.sqrt_mul (by norm_num)]
       refine Real.sqrt_le_sqrt ?_
-      have hJ : (J₀ : ℝ) = 10 * (K : ℝ) := by dsimp [J₀]; push_cast; rfl
       have hK1 : (1 : ℝ) ≤ K := by exact_mod_cast (show 1 ≤ K by omega)
-      push_cast
-      linarith
-    linarith
-  have ha_L : Real.log (((2 + J₀ : ℕ) : ℝ) + 1) + 1 + a ≤ (1 / 200 : ℝ) * Real.sqrt L - 50 := by
-    linarith
-  have hu_le : bilin (windowMatrix (reweightedNeutral (fun _ => 1) Q) 2 J₀ +
-        Matrix.diagonal (fun _ : Fin J₀ => a))
-      (fun j : Fin J₀ => u j) (fun j : Fin J₀ => u j) ≤ -((55 / 200 : ℝ) * Real.sqrt L + 50) := by
-    dsimp only [u]
-    linarith
-  have hv_le : bilin (windowMatrix (reweightedNeutral (fun _ => 1) Q) 2 J₀ +
-        Matrix.diagonal (fun _ : Fin J₀ => a))
-      (fun j : Fin J₀ => v j) (fun j : Fin J₀ => v j) ≤ -((39 / 200 : ℝ) * Real.sqrt L + 50) := by
-    dsimp only [v]
-    linarith
-  have huv_le : |bilin (windowMatrix (reweightedNeutral (fun _ => 1) Q) 2 J₀ +
-        Matrix.diagonal (fun _ : Fin J₀ => a))
-      (fun i : Fin J₀ => u i) (fun j : Fin J₀ => v j)| ≤ (21 / 100 : ℝ) * Real.sqrt L + 7 := by
-    dsimp only [u, v] at hcont_21 ⊢
-    linarith
-  -- Final discriminant check at `m' = (R + 1) / 2`.
+      push_cast; linarith
+    linarith [h1, hsq, hsK_le, ha, Real.sqrt_nonneg K, hsL_pos]
+  have hu_le : bilin (windowMatrix (reweightedNeutral (fun _ => 1) (3 * K + 1)) 2 (10 * K) +
+        Matrix.diagonal (fun _ : Fin (10 * K) => a))
+      (fun j : Fin (10 * K) => clusterVec 0 (6 * K + K / 20 - 2) (K / 20) j)
+      (fun j : Fin (10 * K) => clusterVec 0 (6 * K + K / 20 - 2) (K / 20) j) ≤
+      -((55 / 200 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) + 50) := by
+    linarith [hu_raw, hw1, ha_L]
+  have hv_le : bilin (windowMatrix (reweightedNeutral (fun _ => 1) (3 * K + 1)) 2 (10 * K) +
+        Matrix.diagonal (fun _ : Fin (10 * K) => a))
+      (fun j : Fin (10 * K) => clusterVec 1 (9 * K + 2 + K / 20) (K / 20) j)
+      (fun j : Fin (10 * K) => clusterVec 1 (9 * K + 2 + K / 20) (K / 20) j) ≤
+      -((39 / 200 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) + 50) := by
+    linarith [hv_raw, hw2, ha_L]
+  have huv_le : |bilin (windowMatrix (reweightedNeutral (fun _ => 1) (3 * K + 1)) 2 (10 * K) +
+        Matrix.diagonal (fun _ : Fin (10 * K) => a))
+      (fun i : Fin (10 * K) => clusterVec 0 (6 * K + K / 20 - 2) (K / 20) i)
+      (fun j : Fin (10 * K) => clusterVec 1 (9 * K + 2 + K / 20) (K / 20) j)| ≤
+      (21 / 100 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) + 7 := by
+    linarith [hcross_raw, hjet_7, hcont_21]
   refine two_le_hermNegIndex_reweightedNeutral_of_coarse (R₀ := 2) (m := (R + 1) / 2)
-    (R := R) (J₀ := J₀) (J := 6 * K * R) (Q := Q) (by norm_num) (by omega)
+    (R := R) (J₀ := 10 * K) (J := 6 * K * R) (Q := 3 * K + 1) (by norm_num) (by omega)
     (by omega) (by
       have hm_hi : 2 * ((R + 1) / 2) ≤ R + 1 := by omega
       have hmul : (5 * K + 1) * (2 * ((R + 1) / 2)) ≤ (5 * K + 1) * (R + 1) :=
         Nat.mul_le_mul_left _ hm_hi
-      dsimp [J₀]
-      nlinarith)
-    (fun _ => 1) a u v
-    (M := (21 / 100 : ℝ) * Real.sqrt L + 7)
-    (α := -((55 / 200 : ℝ) * Real.sqrt L + 50))
-    (γ := -((39 / 200 : ℝ) * Real.sqrt L + 50))
-    (by positivity) hu_le hv_le huv_le (by linarith) ?_
+      have h1 : ((R + 1) / 2) * 2 + ((R + 1) / 2) * (10 * K) =
+          (5 * K + 1) * (2 * ((R + 1) / 2)) := by ring
+      have h2 : (5 * K + 1) * (R + 1) ≤ R + 6 * K * R := by
+        have hKR : 5 * K + 1 ≤ K * R := by
+          calc 5 * K + 1 ≤ 6 * K := by omega
+            _ = K * 6 := mul_comm _ _
+            _ ≤ K * R := Nat.mul_le_mul_left K hR
+        calc (5 * K + 1) * (R + 1) = 5 * (K * R) + R + (5 * K + 1) := by ring
+          _ ≤ 5 * (K * R) + R + K * R := Nat.add_le_add_left hKR _
+          _ = R + 6 * K * R := by ring
+      exact (h1.symm ▸ hmul).trans h2)
+    (fun _ => 1) a
+    (clusterVec 0 (6 * K + K / 20 - 2) (K / 20))
+    (clusterVec 1 (9 * K + 2 + K / 20) (K / 20))
+    (M := (21 / 100 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) + 7)
+    (α := -((55 / 200 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) + 50))
+    (γ := -((39 / 200 : ℝ) * Real.sqrt ((K / 20 : ℕ) : ℝ) + 50))
+    (by positivity) hu_le hv_le huv_le (by linarith [hsL_pos]) ?_
   nlinarith [Real.sq_sqrt hL_pos.le, hsL_pos]
 
 end GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow

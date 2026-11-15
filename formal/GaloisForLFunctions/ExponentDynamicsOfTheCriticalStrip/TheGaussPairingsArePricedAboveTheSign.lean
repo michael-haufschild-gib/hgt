@@ -48,12 +48,15 @@ theorem logb_norm_gaussSum_le {ζ : PadicAlgCl p} (hζ : IsPrimitiveRoot ζ p)
   have h := congrArg (Real.logb p) hv
   rw [Real.logb_pow, Real.logb_pow, Real.logb_inv,
     Real.logb_self_eq_one (by exact_mod_cast hp.out.one_lt)] at h
-  have hm : (0 : ℝ) < orderOf x := by have : 0 < orderOf x := by omega
-                                     exact_mod_cast this
+  have hm : (0 : ℝ) < orderOf x := by
+    have h0 : 0 < orderOf x := by omega
+    exact_mod_cast h0
   have hv1' : (1 : ℝ) ≤ v := by exact_mod_cast hv1
-  rw [le_neg, ← neg_div' ] at *
-  rw [div_le_iff₀ hm]
-  nlinarith
+  have hL : Real.logb p ‖gaussSum x (AddChar.zmodChar p hζ.pow_eq_one)‖ = -(v : ℝ) / orderOf x := by
+    rw [eq_div_iff hm.ne']
+    linarith
+  rw [hL, neg_div, neg_le_neg_iff]
+  exact div_le_div_of_nonneg_right hv1' hm.le
 
 /-- Every conjugate of a character of order `m ≥ 2` has `log_p ‖g(x^t)‖ ≤ −1/m`. -/
 theorem logb_norm_gaussSum_pow_le {ζ : PadicAlgCl p} (hζ : IsPrimitiveRoot ζ p)
