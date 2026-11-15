@@ -53,7 +53,6 @@ theorem criticalHalfLineFullEnergy_eq_bare_add_confinement (R : ℝ) {F : ℝ �
       criticalAliasCoefficient R * (∫ u, F u ^ 2 * Real.exp (-(8 * u))) := by
   unfold criticalHalfLineFullEnergy bareHalfLineEnergy
   rw [halfLineExpMass_eq_full hF.support]
-  ring
 
 /-- Every unit-norm profile supported on `(-∞, 0)` has eighth-exponential mass strictly
 greater than `1`. -/
@@ -151,7 +150,8 @@ theorem criticalHalfLineGroundEnergy_strictAntiOn :
     StrictAntiOn criticalHalfLineGroundEnergy (Ioi 0) := by
   intro R₁ hR₁ R₂ hR₂ hlt
   have hinv : R₂⁻¹ < R₁⁻¹ := (inv_lt_inv₀ hR₂ hR₁).mpr hlt
-  have hm := confiningHalfLineGroundEnergy_strictMonoOn (inv_pos.mpr hR₂) (inv_pos.mpr hR₁) hinv
+  have hm := confiningHalfLineGroundEnergy_strictMonoOn
+    (mem_Ioi.mpr (inv_pos.mpr hR₂)) (mem_Ioi.mpr (inv_pos.mpr hR₁)) hinv
   simpa only [confiningHalfLineGroundEnergy, inv_inv] using hm
 
 /-! ### Resolution of (1) and (2): Coupling-endpoint sign and Legendre intercept -/
@@ -261,7 +261,8 @@ private theorem fullEnergy_zero_of_ae_zero {R : ℝ} {G : ℝ → ℝ}
     (hG : CriticalHalfLineEnergyDomain G) (hae : G =ᵐ[volume] 0) :
     criticalHalfLineFullEnergy R G = 0 := by
   have hz : CriticalHalfLineEnergyDomain (fun _ : ℝ => (0 : ℝ)) :=
-    criticalHalfLineEnergyDomain_of_window { contDiff := contDiff_const, vanish := fun _ _ => rfl }
+    criticalHalfLineEnergyDomain_of_window (A := (1 : ℝ))
+      { contDiff := contDiff_const, vanish := fun _ _ => rfl }
   rw [criticalHalfLineFullEnergy_congr_ae hG hz hae]
   have hmul := criticalHalfLineFullEnergy_const_mul R 0 (fun _ : ℝ => (0 : ℝ))
   simpa only [zero_mul, zero_pow two_ne_zero] using hmul
@@ -276,7 +277,8 @@ theorem sInf_unitBall_criticalHalfLineFullEnergy_eq_min {R : ℝ} (hR : 0 < R) :
         min 0 (criticalHalfLineGroundEnergy R) := by
   obtain ⟨F, hF⟩ := exists_criticalHalfLineGroundEnergy_minimizer hR
   have hz : CriticalHalfLineEnergyDomain (fun _ : ℝ => (0 : ℝ)) :=
-    criticalHalfLineEnergyDomain_of_window { contDiff := contDiff_const, vanish := fun _ _ => rfl }
+    criticalHalfLineEnergyDomain_of_window (A := (1 : ℝ))
+      { contDiff := contDiff_const, vanish := fun _ _ => rfl }
   have hz_mass : (∫ u, (0 : ℝ) ^ 2) ≤ 1 := by simp
   have hz_E : criticalHalfLineFullEnergy R (fun _ : ℝ => (0 : ℝ)) = 0 :=
     fullEnergy_zero_of_ae_zero hz EventuallyEq.rfl
@@ -366,8 +368,8 @@ theorem riemannHypothesis_thermodynamic_equivalences :
       have hz := criticalHalfLineGroundEnergy_eq_zero hW₀ ht hF₀
       have hneg : criticalHalfLineGroundEnergy (W₀ + 1) < 0 := by
         rw [← hz]
-        exact criticalHalfLineGroundEnergy_strictAntiOn hW₀ (by linarith only [hW₀])
-          (lt_add_one W₀)
+        exact criticalHalfLineGroundEnergy_strictAntiOn hW₀
+          (mem_Ioi.mpr (by linarith only [hW₀])) (lt_add_one W₀)
       linarith only [hneg, hnonneg (W₀ + 1) (by linarith only [hW₀])]
   have h1 : RiemannHypothesis ↔ ∀ R : ℝ, 0 < R → 0 < criticalHalfLineGroundEnergy R :=
     ⟨fun hRH R hR => (criticalAliasCoefficient_positive hR).trans
@@ -404,13 +406,13 @@ theorem riemannHypothesis_thermodynamic_equivalences :
         0 ≤ criticalHalfLineFullEnergy R G ∧
           (criticalHalfLineFullEnergy R G = 0 ↔ G =ᵐ[volume] 0) := by
     refine ⟨fun hRH R G hR hG _ => ?_, fun hvac => ?_⟩
-    · have hλ := h1.mp hRH R hR
+    · have hlam := h1.mp hRH R hR
       have hm0 : 0 ≤ ∫ u, G u ^ 2 := integral_nonneg fun u => sq_nonneg _
       have hlow := criticalHalfLineGroundEnergy_mul_mass_le_all hR hG
-      refine ⟨(mul_nonneg hλ.le hm0).trans hlow, ?_⟩
+      refine ⟨(mul_nonneg hlam.le hm0).trans hlow, ?_⟩
       constructor
       · intro hE0
-        have hm_zero : (∫ u, G u ^ 2) = 0 := by nlinarith only [hλ, hm0, hlow, hE0]
+        have hm_zero : (∫ u, G u ^ 2) = 0 := by nlinarith only [hlam, hm0, hlow, hE0]
         exact (zero_mass_iff_ae_zero_domain hG).mp hm_zero
       · exact fullEnergy_zero_of_ae_zero hG
     · apply h1.mpr
@@ -461,12 +463,12 @@ theorem offLine_arithmetic_hawking_page_transition (hnotRH : ¬ RiemannHypothesi
                   G =ᵐ[volume] F ∨ G =ᵐ[volume] fun u => -F u)) := by
   rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hRH | ⟨W₀, F₀, hW₀, ht, hF₀⟩
   · exact False.elim (hnotRH hRH)
-  have hλ0 : criticalHalfLineGroundEnergy W₀ = 0 :=
+  have hlam0 : criticalHalfLineGroundEnergy W₀ = 0 :=
     criticalHalfLineGroundEnergy_eq_zero hW₀ ht hF₀
   have hdF₀ := criticalHalfLineEnergyDomain_of_groundState hF₀
   have hmin₀ : IsHalfLineEnergyMinimizer W₀ F₀ := by
     refine ⟨hdF₀, hF₀.2.2.2.1, ?_⟩
-    rw [hλ0]
+    rw [hlam0]
     exact criticalHalfLineFullEnergy_groundState_eq_zero hW₀ ht hF₀
   have hderiv := hasDerivAt_confiningHalfLineGroundEnergy_of_minimizer
     (inv_pos.mpr hW₀) (by simpa only [inv_inv] using hmin₀)
@@ -475,11 +477,11 @@ theorem offLine_arithmetic_hawking_page_transition (hnotRH : ¬ RiemannHypothesi
     simpa only [mul_one] using mul_lt_mul_of_pos_left
       (one_lt_exponential_mass_of_unit_domain hdF₀ hF₀.2.2.2.1)
       (criticalAliasCoefficient_positive zero_lt_one)
-  refine ⟨W₀, F₀, hW₀, ht, hmin₀, hλ0, hderiv, hlatent, ?_, ?_, ?_⟩
+  refine ⟨W₀, F₀, hW₀, ht, hmin₀, hlam0, hderiv, hlatent, ?_, ?_, ?_⟩
   · -- Regime 1: 0 < R < W₀ (strict thermal-AdS vacuum phase).
     intro R hR hRW
     have hpos : 0 < criticalHalfLineGroundEnergy R := by
-      rw [← hλ0]
+      rw [← hlam0]
       exact criticalHalfLineGroundEnergy_strictAntiOn hR hW₀ hRW
     refine ⟨hpos, fun G hG _ => ⟨fun hE0 => ?_, fullEnergy_zero_of_ae_zero hG⟩⟩
     have hm0 : 0 ≤ ∫ u, G u ^ 2 := integral_nonneg fun u => sq_nonneg _
@@ -495,7 +497,7 @@ theorem offLine_arithmetic_hawking_page_transition (hnotRH : ¬ RiemannHypothesi
       obtain ⟨γ, hγ, hgap⟩ := hmin₀.controls_neutralPart hW₀
       have hQ0 : confiningShiftedEnergy W₀ G = 0 := by
         unfold confiningShiftedEnergy
-        rw [hE0, hλ0, zero_mul, sub_self]
+        rw [hE0, hlam0, zero_mul, sub_self]
       have hn_le := hgap hG
       rw [hQ0] at hn_le
       have hn_nonneg : 0 ≤ ∫ u, criticalHalfLineNeutralPart F₀ G u ^ 2 * Real.exp (-(8 * u)) :=
@@ -527,12 +529,12 @@ theorem offLine_arithmetic_hawking_page_transition (hnotRH : ¬ RiemannHypothesi
       exact ⟨c, hc_mem, hG_ae⟩
     · rintro ⟨c, _, hG_ae⟩
       rw [criticalHalfLineFullEnergy_congr_ae hG (hdF₀.const_mul c) hG_ae,
-        criticalHalfLineFullEnergy_const_mul, hmin₀.2.2, hλ0, mul_zero]
+        criticalHalfLineFullEnergy_const_mul, hmin₀.2.2, hlam0, mul_zero]
   · -- Regime 3: W₀ < R (condensed black-hole phase ±F_R).
     intro R hWR
     have hR : 0 < R := hW₀.trans hWR
     have hneg : criticalHalfLineGroundEnergy R < 0 := by
-      rw [← hλ0]
+      rw [← hlam0]
       exact criticalHalfLineGroundEnergy_strictAntiOn hW₀ hR hWR
     refine ⟨hneg, fun F hF G hG hm1 => ?_⟩
     have hm0 : 0 ≤ ∫ u, G u ^ 2 := integral_nonneg fun u => sq_nonneg _
@@ -587,33 +589,33 @@ theorem hawking_page_threshold_and_polar_comparison :
   refine ⟨hle, hpol_iff, hW_iff, fun hnotRH => ?_⟩
   rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hRH | ⟨W₀, F₀, hW₀, ht, hF₀⟩
   · exact False.elim (hnotRH hRH)
-  have hλ0 : criticalHalfLineGroundEnergy W₀ = 0 :=
+  have hlam0 : criticalHalfLineGroundEnergy W₀ = 0 :=
     criticalHalfLineGroundEnergy_eq_zero hW₀ ht hF₀
   have hdF₀ := criticalHalfLineEnergyDomain_of_groundState hF₀
   have hmin₀ : IsHalfLineEnergyMinimizer W₀ F₀ := by
     refine ⟨hdF₀, hF₀.2.2.2.1, ?_⟩
-    rw [hλ0]
+    rw [hlam0]
     exact criticalHalfLineFullEnergy_groundState_eq_zero hW₀ ht hF₀
   refine ⟨W₀, hW₀, ht, ht ▸ hle, ?_, ?_, ?_⟩
   · intro R hR
-    refine ⟨fun h0 => ?_, fun hEq => hEq ▸ hλ0⟩
+    refine ⟨fun h0 => ?_, fun hEq => hEq ▸ hlam0⟩
     rcases lt_trichotomy R W₀ with hlt | rfl | hgt
     · have := criticalHalfLineGroundEnergy_strictAntiOn hR hW₀ hlt
-      linarith only [this, h0, hλ0]
+      linarith only [this, h0, hlam0]
     · rfl
     · have := criticalHalfLineGroundEnergy_strictAntiOn hW₀ hR hgt
-      linarith only [this, h0, hλ0]
+      linarith only [this, h0, hlam0]
   · intro t ht_pos
     refine ⟨fun h0 => ?_, fun hEq => ?_⟩
     · have hR_eq : t⁻¹ = W₀ := by
         rcases lt_trichotomy t⁻¹ W₀ with hlt | heq | hgt
         · have := criticalHalfLineGroundEnergy_strictAntiOn (inv_pos.mpr ht_pos) hW₀ hlt
           unfold confiningHalfLineGroundEnergy at h0
-          linarith only [this, h0, hλ0]
+          linarith only [this, h0, hlam0]
         · exact heq
         · have := criticalHalfLineGroundEnergy_strictAntiOn hW₀ (inv_pos.mpr ht_pos) hgt
           unfold confiningHalfLineGroundEnergy at h0
-          linarith only [this, h0, hλ0]
+          linarith only [this, h0, hlam0]
       simpa only [inv_inv] using congrArg Inv.inv hR_eq
     · rw [hEq]
       unfold confiningHalfLineGroundEnergy
@@ -622,19 +624,24 @@ theorem hawking_page_threshold_and_polar_comparison :
     refine ⟨?_, fun hP => ?_⟩
     · rw [(hF.confiningSourceEnergy_legendre_intercept hW₀).1]
       have hsum := criticalHalfLineFullEnergy_eq_bare_add_confinement W₀ hF.1
-      rw [hF.2.2, hλ0] at hsum
+      rw [hF.2.2, hlam0] at hsum
       linarith only [hsum]
     · have hP₀ : (∫ u, F₀ u * polarSourceProfile u) ≠ 0 := by
         rcases halfLineEnergyMinimizer_unique_up_to_sign hW₀ hF hmin₀ with hae | hae
         · intro hz
           apply hP
           rw [← hz]
-          exact integral_congr_ae (hae.mono fun u hu => by rw [hu])
+          exact integral_congr_ae (hae.mono fun u hu => by
+            dsimp only at hu ⊢
+            rw [hu])
         · intro hz
           apply hP
           have hneg : (∫ u, F u * polarSourceProfile u) = -(∫ u, F₀ u * polarSourceProfile u) := by
             rw [← integral_neg]
-            exact integral_congr_ae (hae.mono fun u hu => by rw [hu]; ring)
+            exact integral_congr_ae (hae.mono fun u hu => by
+              dsimp only at hu ⊢
+              rw [hu]
+              ring)
           rw [hneg, hz, neg_zero]
       exact polarPaymentCriticalThreshold_lt_of_charged_criticalHalfLineGroundState hW₀ hF₀ hP₀
 

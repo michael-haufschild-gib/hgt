@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.Deninger.DeningerHiddenPrimeCyclic
 import GaloisForLFunctions.RHTower.Deninger.DeningerHiddenPrimeHochschild
 import GaloisForLFunctions.RHTower.Deninger.DeningerPrimeHochschild
 import GaloisForLFunctions.RHTower.Deninger.DeningerRegulatorKernel

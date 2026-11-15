@@ -377,7 +377,6 @@ theorem squarefreePowerQuotient_poleFree_quarter_iff_riemannHypothesis (m : ℕ)
   dsimp only at hr
   rw [show ((1 / 2 + (0 : ℝ)) / 2 : ℝ) = 1 / 4 by norm_num] at hr
   refine hr.symm.trans ?_
-  rw [le_antisymm_iff]
   exact ⟨fun h => SquareRootThreshold.riemannHypothesis_iff_zetaZeroWidth_eq_zero.mpr
       (le_antisymm h SquareRootThreshold.zetaZeroWidth_nonneg),
     fun h => (SquareRootThreshold.riemannHypothesis_iff_zetaZeroWidth_eq_zero.mp h).le⟩

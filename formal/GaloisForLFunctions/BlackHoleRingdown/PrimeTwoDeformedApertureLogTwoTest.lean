@@ -71,15 +71,15 @@ theorem temperedConfig_primeTwoZeroConfig {α : ℝ} (h0 : 1 / 2 < α) (h1 : α 
 private theorem one_sub_two_cpow_sub_eq_zero_iff (δ : ℝ) (s : ℂ) :
     1 - (2 : ℂ) ^ (((1 / 2 + δ : ℝ) : ℂ) - s) = 0 ↔
       s ∈ Set.range (verticalLatticePoint (Real.log 2) δ) := by
-  have h2 : (2 : ℂ) = ((2 : ℕ) : ℂ) := by norm_num
   have hexp : ∀ z : ℂ, (2 : ℂ) ^ z = Complex.exp (z * ((Real.log 2 : ℝ) : ℂ)) := by
     intro z
     rw [Complex.cpow_def_of_ne_zero two_ne_zero,
       show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num,
       ← Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 2), mul_comm]
-  rw [sub_eq_zero, eq_comm, hexp, ← natCast_cpow_neg_eq_iff one_lt_two δ s,
-    natCast_cpow_neg (by norm_num : (2 : ℕ) ≠ 0) s]
-  simp only [Nat.cast_ofNat, Complex.ofReal_exp]
+  have hn := natCast_cpow_neg_eq_iff (by norm_num : 1 < 2) δ s
+  rw [natCast_cpow_neg (by norm_num : (2 : ℕ) ≠ 0) s] at hn
+  simp only [Nat.cast_ofNat, Complex.ofReal_exp] at hn
+  rw [sub_eq_zero, eq_comm, hexp, ← hn]
   constructor
   · intro h
     have hmul := congrArg (· * Complex.exp (-(((1 / 2 + δ) * Real.log 2 : ℝ) : ℂ))) h
@@ -92,7 +92,8 @@ private theorem one_sub_two_cpow_sub_eq_zero_iff (δ : ℝ) (s : ℂ) :
     have hmul := congrArg (· * Complex.exp (((1 / 2 + δ) * Real.log 2 : ℝ) : ℂ)) h
     dsimp only at hmul
     rw [← Complex.exp_add, ← Complex.exp_add] at hmul
-    have hrhs : (-((1 / 2 + δ) * Real.log 2 : ℝ) : ℂ) + (((1 / 2 + δ) * Real.log 2 : ℝ) : ℂ) = 0 := by
+    have hrhs : ((-((1 / 2 + δ) * Real.log 2) : ℝ) : ℂ) + (((1 / 2 + δ) * Real.log 2 : ℝ) : ℂ) = 0 := by
+      push_cast
       ring
     rw [hrhs, Complex.exp_zero] at hmul
     convert hmul using 2

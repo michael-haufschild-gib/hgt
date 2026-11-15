@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ConfiningHalfLineGroundEnergyCurvature
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ConfiningHalfLineGroundStateRigidity
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.CriticalHalfLineEnergyBranch
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.CriticalHalfLineGroundEnergyDerivative
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
@@ -116,9 +117,12 @@ theorem IsHalfLineEnergyMinimizer.shiftedEnergy_neutralPart
     funext u
     dsimp only [criticalHalfLineNeutralPart, c]
     ring
-  rw [hfun] at he hm
+  have hm' : (∫ u, criticalHalfLineNeutralPart F G u ^ 2) =
+      ((∫ u, G u ^ 2) + 2 * c * ∫ u, F u * G u) + c ^ 2 * 1 := by
+    simpa only [← congrFun hfun] using hm
+  rw [hfun] at he
   unfold confiningShiftedEnergy
-  rw [he, hm]
+  rw [he, hm']
   dsimp only [c]
   ring
 
@@ -228,20 +232,20 @@ theorem IsHalfLineEnergyMinimizer.transverse_L2_gap
       (show Tendsto (fun n => ∫ u, G n u ^ 2) atTop (𝓝 1) by
         simpa only [hnG] using (tendsto_const_nhds (x := (1 : ℝ)))) herr
     exact h.congr fun n => integral_congr_ae (Eventually.of_forall fun u => by congr 1; ring)
-  let λR : ℝ := criticalHalfLineGroundEnergy R
-  have hEs_upper (n : ℕ) : criticalHalfLineFullEnergy R (H n) ≤ λR + 2 * e n := by
+  let lamR : ℝ := criticalHalfLineGroundEnergy R
+  have hEs_upper (n : ℕ) : criticalHalfLineFullEnergy R (H n) ≤ lamR + 2 * e n := by
     have hh := heH n
     have hq := heG n
     unfold confiningShiftedEnergy at hq
     rw [hnG n, mul_one] at hq
     linarith only [hh, hq]
-  have hEs_lower (n : ℕ) : λR * (∫ u, H n u ^ 2) ≤ criticalHalfLineFullEnergy R (H n) :=
+  have hEs_lower (n : ℕ) : lamR * (∫ u, H n u ^ 2) ≤ criticalHalfLineFullEnergy R (H n) :=
     criticalHalfLineGroundEnergy_mul_mass_le_all hR (hDH n)
-  have hElim : Tendsto (fun n => criticalHalfLineFullEnergy R (H n)) atTop (𝓝 λR) := by
-    have hlow_lim : Tendsto (fun n => λR * ∫ u, H n u ^ 2) atTop (𝓝 λR) := by
-      simpa only [mul_one] using hmasslim.const_mul λR
-    have hup_lim : Tendsto (fun n => λR + 2 * e n) atTop (𝓝 λR) := by
-      simpa only [mul_zero, add_zero] using (helim.const_mul 2).const_add λR
+  have hElim : Tendsto (fun n => criticalHalfLineFullEnergy R (H n)) atTop (𝓝 lamR) := by
+    have hlow_lim : Tendsto (fun n => lamR * ∫ u, H n u ^ 2) atTop (𝓝 lamR) := by
+      simpa only [mul_one] using hmasslim.const_mul lamR
+    have hup_lim : Tendsto (fun n => lamR + 2 * e n) atTop (𝓝 lamR) := by
+      simpa only [mul_zero, add_zero] using (helim.const_mul 2).const_add lamR
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le hlow_lim hup_lim hEs_lower hEs_upper
   obtain ⟨K, s, hs, hDK, hnormK, hEK, _, hL2, _⟩ :=
     exists_domain_limit_of_smooth_energy_limit hR hDH
@@ -249,7 +253,7 @@ theorem IsHalfLineEnergyMinimizer.transverse_L2_gap
       (fun n => (hnH n).trans (hnG n).le) hmasslim
       (mul_nonneg (by norm_num) hM)
       (fun n => (hH8 n).trans (mul_le_mul_of_nonneg_left (hG8 n) (by norm_num)))
-      (fun n => (hEs_upper n).trans (by linarith only [hele n])) hElim
+      (B := lamR + 2) (fun n => (hEs_upper n).trans (by linarith only [hele n])) hElim
   have hKmin : IsHalfLineEnergyMinimizer R K :=
     ⟨hDK, hnormK, le_antisymm hEK (criticalHalfLineGroundEnergy_le hR hDK hnormK)⟩
   have hpair0 := tendsto_pair_diff_domain hF.1 hDH hdG herr
@@ -308,13 +312,13 @@ theorem IsHalfLineEnergyMinimizer.controls_neutralPart
   have h := hgap (hF.1.neutralPart hG) (hF.neutralPart_orthogonal hG)
   rwa [hF.shiftedEnergy_neutralPart hR hG] at h
 
-private theorem shifted_tangent_algebra {ES λR Q η w m n q c γ : ℝ}
+private theorem shifted_tangent_algebra {ES lamR Q η w m n q c γ : ℝ}
     (hγ : 0 < γ) (hw : 0 ≤ w) (hm : 0 ≤ m) (hn : 0 ≤ n)
     (hmn : m ≤ n) (hmass : m = 1 - c ^ 2)
-    (hQ : γ * n ≤ Q) (he : ES = λR + Q + η * (n + 2 * c * q + (1 - m) * w))
+    (hQ : γ * n ≤ Q) (he : ES = lamR + Q + η * (n + 2 * c * q + (1 - m) * w))
     (hsmall : |η| * (1 + w) ≤ γ / 2)
     (hpos : 0 ≤ n + 2 * (2 * η * c / γ) * q + (2 * η * c / γ) ^ 2 * w) :
-    λR + η * w - (2 * w / γ) * η ^ 2 ≤ ES := by
+    lamR + η * w - (2 * w / γ) * η ^ 2 ≤ ES := by
   have hc : c ^ 2 ≤ 1 := by linarith only [hmass, hm]
   have hC : 0 ≤ 2 * w / γ := by positivity
   have hy := mul_nonneg (half_pos hγ).le hpos
@@ -478,13 +482,13 @@ theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
     rw [hH.2.2] at h
     dsimp only [η, v] at h ⊢
     linarith only [h]
-  have hλS_le : criticalHalfLineGroundEnergy S ≤ criticalHalfLineGroundEnergy R + η * w := by
+  have hlamS_le : criticalHalfLineGroundEnergy S ≤ criticalHalfLineGroundEnergy R + η * w := by
     have h := criticalHalfLineGroundEnergy_le hS hF.1 hF.2.1
     rwa [criticalHalfLineFullEnergy_change_ratio S R hF.1, hF.2.2] at h
   have hsymm : confiningShiftedEnergy R H ≤ η * (w - v) := by
     unfold confiningShiftedEnergy
     rw [hH.2.1, mul_one, hER_H]
-    linarith only [hλS_le]
+    linarith only [hlamS_le]
   -- Crude preliminary bound showing n ≤ 1 on the neighborhood.
   have hrepr (u : ℝ) : N u + c * F u = H u := sub_add_cancel _ _
   have hweighted := criticalHalfLine_exponential_mass_add_const_mul_le hdN hF.1 c
@@ -575,6 +579,7 @@ theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
     nlinarith only [hsmall_prod, mul_le_mul_of_nonneg_right h8w (abs_nonneg η)]
   have hsmall_d_mul := mul_le_mul_of_nonneg_right hsmall_d hd0
   have hγ_step : γ / (2 * (1 + w)) * d ≤ γ * n := by
+    rw [div_mul_eq_mul_div]
     apply (div_le_iff₀ (by positivity : 0 < 2 * (1 + w))).mpr
     have h := mul_le_mul_of_nonneg_left hd_le_n hγ.le
     linarith only [h]
@@ -583,7 +588,10 @@ theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
       have h1 : η * (w - v) = -η * d - 2 * σ * η * qD := by rw [← neg_sub v w, hvw]; ring
       linarith only [hQR, hsymm, h1]
     have hquarter : γ / (2 * (1 + w)) * d - γ / (4 * (1 + w)) * d -
-        γ / (8 * (1 + w)) * d = γ / (8 * (1 + w)) * d := by ring
+        γ / (8 * (1 + w)) * d = γ / (8 * (1 + w)) * d := by
+      have h1w : 1 + w ≠ 0 := by linarith only [hw1]
+      field_simp [h1w]
+      ring
     linarith only [hγ_step, hsymm', hηd, hmul_sq, hsmall_d_mul, hquarter]
   have hd_lip : d ≤ K0 ^ 2 * η ^ 2 := by
     have hd32 : d ≤ (32 * (1 + w) ^ 2 * w / γ ^ 2) * η ^ 2 := by
@@ -624,8 +632,9 @@ theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
       have hq_pos (t : ℝ) : 0 ≤ 2 * t * qD + t ^ 2 * w := by
         have hp : 0 ≤ ∫ u, (D u + t * F u) ^ 2 * Real.exp (-(8 * u)) :=
           integral_nonneg fun u => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le
-        rw [criticalHalfLine_exponential_mass_add_const_mul hD hF.1, hd_zero, zero_add] at hp
-        exact hp
+        rw [criticalHalfLine_exponential_mass_add_const_mul hD hF.1] at hp
+        change 0 ≤ d + 2 * t * qD + t ^ 2 * w at hp
+        rwa [hd_zero, zero_add] at hp
       have hq0 : qD = 0 := by
         by_contra hqne
         have hp := hq_pos (-qD / w)
@@ -672,6 +681,7 @@ theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
       have hd_bound : d ≤ t := by
         have ht1 : t ≤ 1 := by
           dsimp only [t, K0]
+          rw [div_mul_eq_mul_div]
           apply (div_le_one hγ).mpr
           have h68 : 6 * (1 + w) * w ≤ 8 * w * (1 + w) := by nlinarith only [hw1]
           nlinarith only [hsmall_prod, mul_le_mul_of_nonneg_right h68 (abs_nonneg η)]
@@ -688,7 +698,8 @@ theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
         dsimp only [L]
         have h2w : 2 + w ≤ 1 + 3 * w + Real.sqrt (2 * J) := by
           linarith only [hw1, Real.sqrt_nonneg (2 * J)]
-        nlinarith only [h2w, hK0.le, Real.sqrt_nonneg (2 * J)]
+        have hm := mul_le_mul_of_nonneg_right h2w hK0.le
+        linarith only [hm, hw1, Real.sqrt_nonneg (2 * J)]
       exact hvabs'.trans (hsum_t.trans (mul_le_mul_of_nonneg_right hL_dom (abs_nonneg η)))
   -- Polar difference bound from d ≤ K0² η².
   have hpolar_lip : |(∫ u, H u * polarSourceProfile u) -
@@ -757,12 +768,13 @@ theorem contDiffOn_one_confiningHalfLineGroundEnergy :
     refine ⟨r, hr, ?_⟩
     intro s hs
     rw [Real.dist_eq] at hs ⊢
+    have ht' : 0 < t := ht
     have hs_pos : 0 < s := by
       have hrt : r ≤ t / 2 := min_le_left _ _
-      linarith only [(abs_lt.mp hs).1, hrt, ht]
+      linarith only [(abs_lt.mp hs).1, hrt, ht']
     obtain ⟨H, hH⟩ := exists_criticalHalfLineGroundEnergy_minimizer (inv_pos.mpr hs_pos)
     have hds := (hasDerivAt_confiningHalfLineGroundEnergy_of_minimizer hs_pos hH).deriv
-    have hdt := (hasDerivAt_confiningHalfLineGroundEnergy_of_minimizer ht hF).deriv
+    have hdt := (hasDerivAt_confiningHalfLineGroundEnergy_of_minimizer ht' hF).deriv
     rw [hds, hdt, ← mul_sub, abs_mul, abs_of_pos ha1]
     have hη_eq : criticalAliasCoefficient s⁻¹ - criticalAliasCoefficient t⁻¹ =
         criticalAliasCoefficient 1 * (s - t) := by
@@ -773,7 +785,7 @@ theorem contDiffOn_one_confiningHalfLineGroundEnergy :
       have hrδ : r ≤ δ / criticalAliasCoefficient 1 :=
         (min_le_right _ _).trans (min_le_left _ _)
       have hlt := hs.trans_le hrδ
-      exact ((lt_div_iff₀ ha1).mp hlt).le
+      linarith only [((lt_div_iff₀ ha1).mp hlt).le]
     obtain ⟨_, _, _, hvw, _⟩ := hlip s⁻¹ (inv_pos.mpr hs_pos) hη_small H hH
     rw [hη_eq, abs_mul, abs_of_pos ha1] at hvw
     have hrε : r ≤ ε / (2 * (criticalAliasCoefficient 1 ^ 2 * L + 1)) :=
