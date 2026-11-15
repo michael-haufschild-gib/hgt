@@ -213,7 +213,7 @@ theorem isStripLocallyFinite_zetaStripZeros :
       rw [h, Complex.one_re] at h1
       exact lt_irrefl 1 h1
     have hxi : RHTower.xi z = 0 := (RHTower.xi_eq_zero_iff h0 hne1).mpr hz
-    exact ⟨(RHTower.mem_xi_divisor_support_iff_xi_eq_zero z).mpr hxi, hzK⟩
+    exact ⟨RHTower.mem_xi_divisor_support_of_eq_zero hxi, hzK⟩
   have hloc : MeromorphicOn.LocallyFiniteSupport
       (fun z : ℂ => MeromorphicOn.divisor RHTower.xi Set.univ z) := fun z =>
     (MeromorphicOn.divisor RHTower.xi Set.univ).supportLocallyFiniteWithinDomain' z (Set.mem_univ z)
@@ -914,19 +914,30 @@ theorem closed_left_doubling_union_quartet_iff {Z_crit : Set ℂ}
         have heq : 2 * (1 - ρ) =
             starRingEnd ℂ ((1 / 2 : ℂ) + ((2 * ρ.im : ℝ) : ℂ) * Complex.I) := by
           apply Complex.ext
-          · simp [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, Complex.re_ofReal_mul, hρ34]
-            ring
-          · simp [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, Complex.im_ofReal_mul]
+          · simp [hρ34]; ring
+          · simp; ring
         rw [heq]
         exact hconj _ hpartner
       · refine Or.inl ?_
         have heq : 2 * (1 - starRingEnd ℂ ρ) =
             (1 / 2 : ℂ) + ((2 * ρ.im : ℝ) : ℂ) * Complex.I := by
           apply Complex.ext
-          · simp [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, Complex.re_ofReal_mul, hρ34]
-            ring
-          · simp [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, Complex.im_ofReal_mul]
+          · simp [hρ34]; ring
+          · simp; ring
         rw [heq]
         exact hpartner
 
 end GaloisForLFunctions.ZeroForcingCalculus
+
+#print axioms GaloisForLFunctions.ZeroForcingCalculus.zeta_offLine_quartet
+#print axioms GaloisForLFunctions.ZeroForcingCalculus.closed_right_descent_iff
+#print axioms GaloisForLFunctions.ZeroForcingCalculus.closed_full_descent_iff_empty
+#print axioms GaloisForLFunctions.ZeroForcingCalculus.closed_right_descent_no_real_iff_onLine
+#print axioms GaloisForLFunctions.ZeroForcingCalculus.not_closed_right_descent_union_quartet
+#print axioms GaloisForLFunctions.ZeroForcingCalculus.closed_full_doubling_iff_empty
+#print axioms GaloisForLFunctions.ZeroForcingCalculus.closed_right_doubling_iff_onLine
+#print axioms GaloisForLFunctions.ZeroForcingCalculus.tentMap_iterate_eq_zero_iff
+#print axioms GaloisForLFunctions.ZeroForcingCalculus.odd_dyadic_depth_of_closed_left_doubling
+#print axioms GaloisForLFunctions.ZeroForcingCalculus.not_closed_left_doubling_quartet
+#print axioms GaloisForLFunctions.ZeroForcingCalculus.closed_left_doubling_union_quartet_iff
+

@@ -2,7 +2,7 @@ import GaloisForLFunctions.HodgeTheoryWithoutVarieties.Quadratic.FujikiDegreeRig
 import GaloisForLFunctions.ArithmeticLorentzianGeometry.LorentzianFormsAtDegreeTwo
 
 /-!
-# Fujiki degree tests for the corpus's matrix forms
+# Fujiki degree tests for real matrix forms
 
 The affine-line power test detects the radical of the symmetric part of any
 real matrix, including singular and indefinite matrices. No positivity or

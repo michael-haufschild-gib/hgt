@@ -6,7 +6,7 @@ import GaloisForLFunctions.HTGeometry.DualNumberResidueQuotient
 
 For the pair `(εa,εb)` over `K[ε]/(ε²)`, the closed generator and the
 annihilator each contribute one residue-field copy to degree-one homology.
-This applies the common-factor shear to the corpus's exact dual-number
+This applies the common-factor shear to the exact dual-number
 residue sequence and exhibits the term lost by imposing regularity.
 -/
 
@@ -63,6 +63,13 @@ def dualKoszulAnnihilatorEquiv :
     obtain ⟨y, hy⟩ := hx
     exact ⟨y, Subtype.ext hy⟩
 
+/-- Degree-zero homology is the residue field. -/
+def dualNumberKoszulH0Equiv (a b : (DualNumber K)ˣ) :
+    commonFactorKoszulH0 DualNumber.eps a b ≃ₗ[DualNumber K] K :=
+  (commonFactorKoszulH0Equiv DualNumber.eps a b).trans
+    ((Submodule.quotEquivOfEq _ _ dualKoszul_span_eq_socle_range).trans
+      dualNumberResidueQuotientEquiv)
+
 /-- Degree-one homology has two residue-field summands, for every pair of units. -/
 def dualNumberKoszulH1Equiv (a b : (DualNumber K)ˣ) :
     commonFactorKoszulH1 DualNumber.eps a b ≃ₗ[DualNumber K] K × K :=
@@ -77,6 +84,7 @@ def dualNumberKoszulH2Equiv (a b : (DualNumber K)ˣ) :
   (LinearEquiv.ofEq _ _ (commonFactorKoszulH2_eq_annihilator DualNumber.eps a b)).trans
     dualKoszulAnnihilatorEquiv
 
+#print axioms dualNumberKoszulH0Equiv
 #print axioms dualNumberKoszulH1Equiv
 #print axioms dualNumberKoszulH2Equiv
 end GaloisForLFunctions.HodgeTheoryWithoutVarieties

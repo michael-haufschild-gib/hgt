@@ -74,7 +74,6 @@ theorem squareKummer_regular_character_component
     exact mul_comm _ _
   have hprojection := diagonal_primitiveRoot_projection hζF.inv B
     (fun k => (σ k).toLinearMap) heigen f i
-  simp only [inv_pow] at hprojection
   have hN : (N : F) = 1 := by
     have hK : (N : K) = 1 := by
       dsimp only [N]
@@ -84,17 +83,20 @@ theorem squareKummer_regular_character_component
       (N : F) = algebraMap K F (N : K) := (map_natCast (algebraMap K F) N).symm
       _ = 1 := by rw [hK, map_one]
   rw [hN, one_smul] at hprojection
-  have hterm (k : ℕ) : (ζF ^ (k * i.val) • σ k f) • dy ∈ S := by
+  have hterm (k : ℕ) : (((ζF⁻¹) ^ (k * i.val))⁻¹ • σ k f) • dy ∈ S := by
     have hσ := globalRegularDifferentials_stable_aut ((σ k).restrictScalars K) _ hf
     rw [squareKummer_coordinateForm_map_aut] at hσ
-    have h := S.smul_mem (ζ ^ (k * i.val)) hσ
-    change (ζF ^ (k * i.val) • σ k f) • dy ∈ S
-    rw [Algebra.smul_def, mul_smul, map_pow,
-      ← IsScalarTower.algebraMap_apply K F L, ← map_pow,
-      IsScalarTower.algebraMap_smul]
+    let a : K := ((ζ⁻¹) ^ (k * i.val))⁻¹
+    have h := S.smul_mem a hσ
+    have ha : algebraMap K F a = ((ζF⁻¹) ^ (k * i.val))⁻¹ := by
+      dsimp only [a, ζF]
+      rw [map_inv₀, map_pow, map_inv₀]
+    change (((ζF⁻¹) ^ (k * i.val))⁻¹ • σ k f) • dy ∈ S
+    rw [← ha, Algebra.smul_def, mul_smul,
+      ← IsScalarTower.algebraMap_apply K F L, IsScalarTower.algebraMap_smul]
     exact h
   change (B.repr f i • B i) • dy ∈ S
   rw [← hprojection, Finset.sum_smul]
-  exact S.sum_mem fun k _ => by simpa only [inv_inv] using hterm k
+  exact S.sum_mem fun k _ => hterm k
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

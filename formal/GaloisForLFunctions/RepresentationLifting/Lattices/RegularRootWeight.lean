@@ -6,8 +6,8 @@ import GaloisForLFunctions.RepresentationLifting.Lattices.CyclicDifferenceEnergy
 
 The integral norm kernel of the regular representation is the type-A root
 lattice. Its map into the diagonal quotient is injective and has cyclic
-cokernel of order the group cardinality. This applies the root-to-weight
-isogeny to the corpus's moving and augmentation lattices.
+cokernel of order the group cardinality. This identifies the root-to-weight
+defect with the invariant-plus-moving gluing obstruction.
 -/
 
 noncomputable section
@@ -33,8 +33,10 @@ theorem regularRootCoordinates_bijective : Function.Bijective (regularRootCoordi
     refine ⟨⟨v, (cyclicRegularNorm_eq_zero_iff G v).mpr hv⟩, ?_⟩
     apply Subtype.ext
     funext g
-    change v.coeff g = w.val g
-    simp [v, MonoidAlgebra.coeff_sum, MonoidAlgebra.coeff_single]
+    change (MonoidAlgebra.coeffAddEquiv (∑ i, MonoidAlgebra.single i (w.val i))) g = _
+    rw [map_sum]
+    change (∑ i, Finsupp.single i (w.val i)) g = _
+    simp [Finsupp.single_apply]
 
 /-- The regular norm kernel is the type-A root lattice, integrally. -/
 def regularRootEquiv : CyclicIntegralMoving G ≃ₗ[ℤ] coordinateRootLattice G :=
