@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HilbertMetric.FiniteSpectralMeanShadowing
 import GaloisForLFunctions.HilbertMetric.PositiveGibbsMixing
+import GaloisForLFunctions.HilbertMetric.PolarRotationMean
 import GaloisForLFunctions.HilbertMetric.GaussianAccelerationGram
 import GaloisForLFunctions.HilbertMetric.Correlation.ExceptionalEnergy
 import GaloisForLFunctions.HilbertMetric.Correlation.CompactSourceDeletion

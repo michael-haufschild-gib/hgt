@@ -30,6 +30,7 @@ private theorem characteristicPower_pred (e : ℕ) :
   have hpow : 1 ≤ p ^ (e + 1) := Nat.one_le_pow _ _ hp
   have hsucc := Nat.sub_add_cancel hpow
   rw [pow_succ] at hsucc
+  rw [pow_succ]
   omega
 
 /-- Cartier selects exactly the monomial exponents congruent to `p-1` modulo `p`. -/
