@@ -1,8 +1,8 @@
 # An Unconditional Sub-Seven-Eighths Zero-Free Half-Plane, Avoided Abscissa Interval, and Monotone Lever
 
 - **ID:** sub-seven-eighths-lever-and-avoided-interval
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Source:** `docs/reports/review-1511/obstacles-summary.md` (`## 2.21 The one big question`)
 - **Statement:** Every Hecke `L`-function of `ℚ(ω)`, every Dirichlet `L`-function, and `ζ(s)` are unconditionally nonvanishing on `Re s > 20999/24000 = 7/8 - 1/24000` (away from simple principal poles at `s = 1`); hence `zetaZeroAbscissa ≤ 20999/24000`, `zetaZeroAbscissa ∉ (20999/24000, 7/8]`, `subSevenEighthsLever := closedRightBandLever (20999/24000) (7/8)` is an explicit monotone lever for `zetaZeroAbscissa`, the unconstrained `ℝ³` cubic-probe LP vertex is bracketed in `(40535/46328, 20999/24000]`, and no nontrivial zero `ρ` of `ζ` satisfies `ζ(ρ/k) = 0` for any `k ≥ 7`.
 
@@ -12,21 +12,23 @@ Resolve `## 2.21` unconditionally in full: exhibit `1/2 < b₁ < b₂ ≤ 7/8` (
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea, Door passport sketch
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorems in target modules, `lake --old env lean` clean, `#print axioms` clean
+- [x] 2 → 3  formalized: Lean theorems in the modules below, `lake --old env lean` clean
 
-## Target Modules
-- `formal/GaloisForLFunctions/FamilyContinuationTheory/TheTrueVertexBelowSevenEighths.lean`
-- `formal/GaloisForLFunctions/MetaplecticMobiusDescent/Reflection/SubSevenEighthsLowProbe.lean`
-- `formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsHighTransport.lean`
-- `formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean`
-- `formal/GaloisForLFunctions/ZeroConfigurationGeometry/EulerDilationTransportClassification.lean`
-- `formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean`
+## Lean Modules
+- `formal/GaloisForLFunctions/FamilyContinuationTheory/TheTrueVertexBelowSevenEighths.lean` (§1): `Budget.lowBoundary_subSevenEighths`, `Budget.probeThetaGen_subSevenEighths`, `Budget.subSevenEighthsNumerator_sos`, `Budget.endpoint_certificate_subSevenEighths`, `Budget.endpoint_high_delta_subSevenEighths`, `Budget.rowExponent_floor_bin_subSevenEighths`, `Budget.farkas_two_bin_identity`, `Budget.farkas_two_bin_vertex_attained`, `Budget.endpointExponent_three_bin_pos_of_lowBoundaryGen_le`, `Budget.endpointExponent_three_bin_pos_of_lowBoundary_le`, `Budget.probeThetaGen_three_bin_pos_of_le`
+- `formal/GaloisForLFunctions/MetaplecticMobiusDescent/Reflection/SubSevenEighthsReflectedEnergy.lean` (§2): `sub_compensated_reflected_exponent_with_length`, `sub_low_original_completed_energy`
+- `formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsLowProbe.lean` (§2): `ProbePhysical.sub_lowUnselectedMass_bound`, `ProbePhysical.sub_normalized_compensatedPhysicalProbe_low`
+- `formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsPrincipalComparison.lean` (§3.1–3.2): `ProbeEuler.sub_unramifiedClosed_open_region_bound`, `ProbePhysical.sub_globalClosedCorrection_bound`, `ProbePrincipalRemainderBounds.sub_source_remainders_strict_saving`, `ProbePrincipalNormalized.sub_actual_ray_principal_comparison`
+- `formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsHighTransport.lean` (§3.3–3.4): `SubSevenEighthsHighTransport.sub_small_physical_tail`, `SubSevenEighthsHighTransport.sub_large_physical_tail`, `SubSevenEighthsHighTransport.sub_floor_rows_saving`, `SubSevenEighthsHighTransport.sub_nonfloor_rows_saving`, `SubSevenEighthsHighTransport.exists_sub_common_probe`
+- `formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean` (§3.5): `SubSevenEighthsZeroFree.hecke_beta_le_sub_seven_eighths`, `SubSevenEighthsZeroFree.dirichlet_sub_seven_eighths_nonzero`, `riemannZeta_ne_zero_of_sub_seven_eighths_lt_re`, `riemannZeta_zero_mem_sub_quasiRH_strip`
+- `formal/GaloisForLFunctions/ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean` (§4): `zetaZeroAbscissa_le_sub_seven_eighths`, `eulerDoublingQuotient_poleFree_iff_zetaZeroAbscissa_le`, `abscissa_ge_of_zeta_zero_div_nat`, `riemannZeta_div_nat_ne_zero_of_seven_le`, `dilatedPowerQuotient_neg_order_at_div_of_seven_le`, `squarefreePowerQuotient_poleFree_iff_zetaZeroAbscissa_le_sub`, `isRuler_squarefreePowerQuotient_sub`, `ramanujan_shift_margin_zeta_zero_ge_sub`, `riemannHypothesis_of_covering_levers_sub_seven_eighths`
+- `formal/GaloisForLFunctions/ExponentDynamicsOfTheCriticalStrip/TheAbscissaAvoidsAnIntervalBelowSevenEighths.lean` (Goal): `exists_avoided_interval_below_seven_eighths`, `zetaZeroAbscissa_notMem_sub_seven_eighths_Ioc`, `subSevenEighthsLever`, `isLever_zetaZeroAbscissa_subSevenEighthsLever`, `exists_lever_below_seven_eighths`, `wall_subSevenEighthsLever`
 
 ## Theorems & Complete Proofs (`[PROVED HERE]`)
 
 ### 1. Exact Sub-`7/8` SOS Certificate and Unconstrained `ℝ³` LP Vertex (`[PROVED HERE]`)
 1. **Sub-`7/8` certificate at `(lx, ly, ℓ) = (17/48, 479/1000, 1001/6000)`.**
-   Here `M = lx + ly = 4999/6000`, `M + ℓ = 1`, `lx ≤ ly`, `1 + 3ℓ = 3001/2000 ≤ 4999/3000 = 2M`, `lowBoundary (17/48) (479/1000) (1001/6000) = lowBoundaryGen (17/48) (479/1000) (1001/6000) = 20999/24000 = 7/8 - 1/24000`, and `probeThetaGen 6 (17/48) (479/1000) (1001/6000) = 4499/5000 = 9/10 - 1/5000`.
+   Here `M = lx + ly = 4999/6000`, `M + ℓ = 1`, `lx ≤ ly`, `1 + 3ℓ = 3001/2000 ≤ 4999/3000 = 2M`, `lowBoundary (17/48) (479/1000) (1001/6000) = lowBoundaryGen (17/48) (479/1000) (1001/6000) = 20999/24000 = 7/8 - 1/24000`, and `probeThetaGen 6 (17/48) (479/1000) (1001/6000) = 8999/10000 = 9/10 - 1/10000`.
    For `0 ≤ δ ≤ 5/6` and `0 ≤ x ≤ 1/2`, set `y = 1/2 - x ∈ [0, 1/2]` and
    - `A₀(y) = 32032 y³ + 94004 y² + 130988 y + 51037 ≥ 51037 > 0`,
    - `B₀(y) = 12974 y² + 188503 y + 118478`,
@@ -61,7 +63,8 @@ By `ZeroForcingCalculus`, every finite Witt/Euler monomial `∏_{j=1}^K ζ(js)^{
 - **Exact killing theorem/mechanism:** On `Re ρ > 1/2`, `Re(kρ) > 1` for every `k ≥ 2`, where `ζ(ks) ≠ 0` is holomorphic; hence `ord_ρ(∏_{j=1}^K ζ(js)^{e_j}) = e_1 ord_ρ ζ`, so pure finite Euler-dilation identities cannot cancel an isolated off-line zero of `ζ` without external analyticity across `Re s > (Re ρ)/k`.
 - **Strongest positive survivor:** Unconditional functional-equation abscissa lower bound `k/(k + 1) ≤ zetaZeroAbscissa` from any `k`-fold root coincidence `ζ(ρ) = ζ(ρ/k) = 0` (`k ≥ 2`, `0 < Re ρ < 1`), unconditionally ruling out `ζ(ρ) = ζ(ρ/k) = 0` for all `k ≥ 7` via `zetaZeroAbscissa ≤ 20999/24000 < 7/8`, plus widening of the unconditional `squarefreePowerQuotient` pole-abscissa ruler to `[1/2, 27001/48000)` and Ramanujan shift margin to `≥ 27001/48000`.
 - **New insight:** While `ζ(s)/ζ(ks)` alone is a ruler rather than a lever, pairing `ζ(ρ/k) = 0` with `s ↦ 1 - s` creates a genuine two-point abscissa sum rule `Re ρ + k(1 - Re(ρ/k)) = k` whose threshold at `k = 7` sits exactly at `7/8` and is unconditionally broken by `20999/24000`.
-- **Status:** Dependency-closed on paper; formalizing directly in `ZeroConfigurationGeometry/EulerDilationTransportClassification.lean`.
+- **Status:** Formalized in `ZeroForcingCalculus/EulerDilationAndRootCoincidenceExclusion.lean` (`abscissa_ge_of_zeta_zero_div_nat`, `riemannZeta_div_nat_ne_zero_of_seven_le`, `dilatedPowerQuotient_neg_order_at_div_of_seven_le`, `isRuler_squarefreePowerQuotient_sub`, `ramanujan_shift_margin_zeta_zero_ge_sub`).
 
 ## Log
 - 2026-11-15 — Promoted to `2-fully-proven` with complete unconditional paper proofs across all 6 target modules.
+- 2026-11-15 — Formalized in the 8 modules above; promoted to `3-formalized`.

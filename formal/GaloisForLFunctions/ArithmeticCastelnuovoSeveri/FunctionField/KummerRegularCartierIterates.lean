@@ -23,7 +23,7 @@ local notation "I" => squareKummerCartierIterate p s c (p ^ (d + 1) - 2)
 def squareKummerRegularCartierIterate (e : ℕ) : G →+ G where
   toFun ω := ⟨I e ω.val, squareKummerCartierIterate_global_regular p s c d r e ω.val ω.property⟩
   map_zero' := Subtype.ext (map_zero _)
-  map_add' ω η := Subtype.ext (map_add _ _ _)
+  map_add' ω η := Subtype.ext ((I e).map_add ω.val η.val)
 
 /-- The restricted iterate extracts `p^e`th powers of constants. -/
 theorem squareKummerRegularCartierIterate_frobenius_smul (e : ℕ) (a : K) (ω : G) :

@@ -53,17 +53,17 @@ theorem signPrice_sub_delignePrice (k : ℝ) : k / 2 - (k - 1) / 2 = 1 / 2 := by
 theorem deligneLever_one {k : ℝ} (hk : 0 < k) : deligneLever k 1 = 1 / 2 + 1 / (2 * k) := by
   rw [deligneLever, pairingStep]
   field_simp
-  ring
+  try ring
 
 theorem signLever_one {k : ℝ} (hk : 0 < k) : signLever k 1 = 1 / 2 + 1 / k := by
   rw [signLever, pairingStep]
   field_simp
-  ring
+  try ring
 
 theorem completionStep_one {k : ℝ} (hk : 0 < k) : pairingStep (2 / 3 * k - 1) k 1 = 2 / 3 := by
   rw [pairingStep]
   field_simp
-  ring
+  try ring
 
 /-- **One Deligne frame excludes every exponent right of `½`.** -/
 theorem excluded_deligneLever {k : ℝ} (hk : 1 < k) : excluded (deligneLever k) = Set.Ioi (1 / 2) := by
@@ -100,12 +100,10 @@ theorem riemannHypothesis_of_signLevers {K : ℕ}
   intro b hb
   have hb1 : 1 / 2 < b := hb.1
   -- a period with centre k/(2(k − 1)) below b
-  obtain ⟨k, hk⟩ := exists_nat_gt (max (max K 2) (b / (2 * b - 1)))
-  have hkK : (K : ℝ) < k := lt_of_le_of_lt (le_trans (by exact_mod_cast le_max_left K 2)
-    (le_max_left _ _)) hk
-  have hk2 : (2 : ℝ) < k := lt_of_le_of_lt (le_trans (by exact_mod_cast le_max_right K 2)
-    (le_max_left _ _)) hk
-  have hkb : b / (2 * b - 1) < k := lt_of_le_of_lt (le_max_right _ _) hk
+  obtain ⟨k, hk⟩ := exists_nat_gt (max (max (K : ℝ) 2) (2 * b / (2 * b - 1)))
+  have hkK : (K : ℝ) < k := lt_of_le_of_lt (le_trans (le_max_left (K : ℝ) 2) (le_max_left _ _)) hk
+  have hk2 : (2 : ℝ) < k := lt_of_le_of_lt (le_trans (le_max_right (K : ℝ) 2) (le_max_left _ _)) hk
+  have hkb : 2 * b / (2 * b - 1) < k := lt_of_le_of_lt (le_max_right _ _) hk
   simp only [Set.mem_iUnion, exists_prop]
   refine ⟨signLever k, ⟨k, by exact_mod_cast hkK.le, by exact_mod_cast hk2.le, rfl⟩, ?_⟩
   rw [excluded_signLever (by linarith)]

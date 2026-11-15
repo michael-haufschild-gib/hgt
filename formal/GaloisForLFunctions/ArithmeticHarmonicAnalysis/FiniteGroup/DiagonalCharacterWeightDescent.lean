@@ -13,15 +13,15 @@ namespace GaloisForLFunctions.ArithmeticHarmonicAnalysis
 variable {K V ι : Type*} [Field K] [AddCommGroup V] [Module K V] [Fintype ι]
 
 /-- A diagonal operator multiplies each basis coordinate by its corresponding eigenvalue. -/
-theorem diagonal_basis_repr (B : Module.Basis ι K V) (S : V →ₗ[K] V) (λ : ι → K)
-    (hS : ∀ i, S (B i) = λ i • B i) (v : V) (i : ι) :
-    B.repr (S v) i = λ i * B.repr v i := by
+theorem diagonal_basis_repr (B : Module.Basis ι K V) (S : V →ₗ[K] V) (eigenvalue : ι → K)
+    (hS : ∀ i, S (B i) = eigenvalue i • B i) (v : V) (i : ι) :
+    B.repr (S v) i = eigenvalue i * B.repr v i := by
   classical
   conv_lhs => rw [← B.sum_repr v]
   rw [map_sum, map_sum, Finsupp.finsetSum_apply, Finset.sum_eq_single i]
-  · simp only [map_smul, hS, Finsupp.smul_apply, Module.Basis.repr_self,
-      Finsupp.single_apply, if_pos rfl, smul_eq_mul, mul_one]
-    exact mul_comm _ _
+  · simpa only [map_smul, hS, Finsupp.smul_apply, Module.Basis.repr_self,
+      Finsupp.single_apply, if_true, smul_eq_mul, mul_one] using
+        mul_comm (B.repr v i) (eigenvalue i)
   · intro j _ hji
     simp only [map_smul, hS, Finsupp.smul_apply, Module.Basis.repr_self,
       Finsupp.single_apply, if_neg hji, smul_zero]
@@ -30,12 +30,12 @@ theorem diagonal_basis_repr (B : Module.Basis ι K V) (S : V →ₗ[K] V) (λ : 
 
 /-- An eigenvector has zero coefficient at every diagonal basis vector with a different eigenvalue. -/
 theorem diagonal_eigenvector_coefficient_zero (B : Module.Basis ι K V)
-    (S : V →ₗ[K] V) (λ : ι → K) (hS : ∀ i, S (B i) = λ i • B i)
-    (v : V) (μ : K) (hv : S v = μ • v) (i : ι) (hi : λ i ≠ μ) :
+    (S : V →ₗ[K] V) (eigenvalue : ι → K) (hS : ∀ i, S (B i) = eigenvalue i • B i)
+    (v : V) (μ : K) (hv : S v = μ • v) (i : ι) (hi : eigenvalue i ≠ μ) :
     B.repr v i = 0 := by
   have h := congrArg (fun x : V => B.repr x i) hv
-  rw [diagonal_basis_repr B S λ hS, map_smul, Finsupp.smul_apply, smul_eq_mul] at h
-  have hz : (λ i - μ) * B.repr v i = 0 := by rw [sub_mul, h, sub_self]
+  rw [diagonal_basis_repr B S eigenvalue hS, map_smul, Finsupp.smul_apply, smul_eq_mul] at h
+  have hz : (eigenvalue i - μ) * B.repr v i = 0 := by rw [sub_mul, h, sub_self]
   exact (mul_eq_zero.mp hz).resolve_left (sub_ne_zero.mpr hi)
 
 /-- Rising character residues force an eigenvector for the powered cyclic action to have lower weights. -/
