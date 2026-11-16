@@ -72,14 +72,15 @@ private theorem analyticAt_energyLaplace {F : ℝ → ℝ} (hF : CriticalHalfLin
 
 private theorem analyticOrderAt_xi_half_add (z : ℂ) :
     analyticOrderAt (fun p : ℂ => xi (1 / 2 + p)) z = analyticOrderAt xi (1 / 2 + z) := by
-  apply analyticOrderAt_comp_of_deriv_ne_zero (by fun_prop)
+  apply analyticOrderAt_comp_of_deriv_ne_zero (f := xi)
+    (g := fun p : ℂ => 1 / 2 + p) (by fun_prop)
   rw [((hasDerivAt_id z).const_add (1 / 2 : ℂ)).deriv]
   exact one_ne_zero
 
 private theorem deriv_xi_half_add :
     deriv (fun p : ℂ => xi (1 / 2 + p)) = fun p => deriv xi (1 / 2 + p) := by
   funext p
-  simpa only [one_mul, mul_one] using
+  simpa only [Function.comp_def, one_mul, mul_one] using
     ((xi_differentiable (1 / 2 + p)).hasDerivAt.comp p
       ((hasDerivAt_id p).const_add (1 / 2 : ℂ))).deriv
 
@@ -131,11 +132,12 @@ theorem analyticOrderAt_stateXiProduct {W₀ : ℝ} (hW : 0 < W₀) {F : ℝ →
     funext w
     simp only [stateXiProduct, Pi.mul_apply, div_eq_mul_inv, neg_mul]
     ring
-  rw [heq, analyticOrderAt_mul analyticAt_const
-    ((differentiable_clearedRemainder hF).analyticAt (w + 8) |>.comp
-      (analyticAt_id.add analyticAt_const)),
+  have hd : Differentiable ℂ (fun v : ℂ => clearedRemainder F (v + 8)) :=
+    (differentiable_clearedRemainder hF).comp (differentiable_id.add (differentiable_const _))
+  rw [heq, analyticOrderAt_mul analyticAt_const (hd.analyticAt w),
     (analyticAt_const.analyticOrderAt_eq_zero.mpr (neg_ne_zero.mpr (inv_ne_zero ha))), zero_add]
-  apply analyticOrderAt_comp_of_deriv_ne_zero (by fun_prop)
+  apply analyticOrderAt_comp_of_deriv_ne_zero (f := clearedRemainder F)
+    (g := fun v : ℂ => v + 8) (by fun_prop)
   simp
 
 /-- A seen zero of multiplicity `m` gives a zero of multiplicity `m - 1` in the entire state
@@ -227,3 +229,7 @@ theorem riemannHypothesis_or_criticalState_exact_multiplicities :
       fun _ hc => criticalState_stateXiProduct_order hW ht hF hc⟩
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState
+
+#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.riemannHypothesis_or_criticalState_exact_multiplicities
+#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.le_analyticOrderAt_stateXiProduct_iff
+#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.stateXiProduct_first_nonzero_jet

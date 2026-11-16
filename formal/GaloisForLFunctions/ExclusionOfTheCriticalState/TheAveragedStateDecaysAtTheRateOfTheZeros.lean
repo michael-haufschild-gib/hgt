@@ -177,7 +177,7 @@ theorem integral_Ioi_reflect_eq_laplace {F : ℝ → ℝ} (hF : CriticalHalfLine
   have h1 := integral_comp_neg_Ioi (0 : ℝ) (fun u : ℝ => Complex.exp (z * (u : ℂ)) * cx F u)
   rw [neg_zero] at h1
   have h2 : ∫ u in Iic (0 : ℝ), Complex.exp (z * (u : ℂ)) * cx F u =
-      ∫ u, Complex.exp (z * (u : ℂ)) * cx F u :=
+      ∫ u : ℝ, Complex.exp (z * (u : ℂ)) * cx F u :=
     setIntegral_eq_integral_of_forall_compl_eq_zero fun u hu => by
       have hu' : 0 ≤ u := (not_le.mp hu).le
       show Complex.exp (z * (u : ℂ)) * ((F u : ℝ) : ℂ) = 0
@@ -301,9 +301,8 @@ theorem averageSymbol_partialFraction {z : ℂ} (hz : -8 ≤ z.re) :
       1 / 6 * (z + 9)⁻¹ - 1 / 2 * (z + 10)⁻¹ + 1 / 2 * (z + 11)⁻¹ - 1 / 6 * (z + 12)⁻¹ := by
   obtain ⟨h9, h10, h11, h12⟩ := averageSymbol_factors_ne_zero hz
   unfold averageSymbol
-  first
-    | (field_simp; ring)
-    | field_simp
+  field_simp
+  ring
 
 private theorem integral_four_term {μ : Measure ℝ} {f₁ f₂ f₃ f₄ : ℝ → ℂ} (a₁ a₂ a₃ a₄ : ℂ)
     (h₁ : Integrable f₁ μ) (h₂ : Integrable f₂ μ) (h₃ : Integrable f₃ μ)
@@ -568,7 +567,7 @@ theorem differentiableAt_stateMeromorphic_of_re {W₀ : ℝ} {F : ℝ → ℝ}
   have hg : DifferentiableAt ℂ (globalRemainder F) (s + 8) :=
     differentiableAt_globalRemainder_of_re hF hκ (by rw [h8]; linarith)
   have hadd : DifferentiableAt ℂ (fun w : ℂ => w + 8) s := differentiableAt_id.add_const 8
-  have hc : DifferentiableAt ℂ (fun w : ℂ => globalRemainder F (w + 8)) s := hg.comp s hadd
+  have hc : DifferentiableAt ℂ (globalRemainder F ∘ fun w : ℂ => w + 8) s := hg.comp s hadd
   show DifferentiableAt ℂ
     (fun w => -globalRemainder F (w + 8) / (criticalAliasCoefficient W₀ : ℂ)) s
   exact hc.neg.div_const _
