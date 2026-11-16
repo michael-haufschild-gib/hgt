@@ -111,8 +111,14 @@ theorem ratioCorrelation_lowerThree (Θ : HyperbolicSpace → ℂ)
 theorem norm_lam_chi_chi_traceChar_le (t a b r : P.Res) :
     ‖P.lam t * (P.chi a * P.chi b * P.traceChar r)‖ ≤ 1 := by
   rw [norm_mul, norm_mul, norm_mul, P.norm_traceChar, mul_one]
-  exact mul_le_one₀ (P.norm_lam_le t) (norm_nonneg _)
+  exact mul_le_one₀ (P.norm_lam_le t) (by positivity)
     (mul_le_one₀ (P.norm_chi_le a) (norm_nonneg _) (P.norm_chi_le b))
+
+theorem integral_high_mul_comm (u : O) (v : ℝ) (hv : 0 < v) :
+    ∫ z in periodDomain, sourceTheta (P.fracShift u • upperPoint z v hv) *
+        sourceTheta (P.dilation • P.dilation • upperPoint z v hv) = P.highTerm v := by
+  rw [highTerm, ← P.integral_high_mul u v hv]
+  exact integral_congr_ae (Filter.Eventually.of_forall fun z => mul_comm _ _)
 
 /-- **One ratio pair over a middle cusp, integrated.** -/
 theorem integral_ratioCorrelation_middle (h2 : (2 : P.Res) ≠ 0) (c : P.Res) (hc1 : c ≠ 1)
@@ -130,17 +136,13 @@ theorem integral_ratioCorrelation_middle (h2 : (2 : P.Res) ≠ 0) (c : P.Res) (h
   by_cases h₁ : 1 + 9 * t * x.1 = 0
   · have hQ : (1 + 9 * t * x.1) * (1 + c * (9 * t * x.1)) = 0 := by rw [h₁, zero_mul]
     simp_rw [if_pos h₁]
-    rw [if_pos h₁, hQ, MulChar.map_zero, zero_mul, add_zero, integral_const_mul, P.integral_high_mul, highTerm]
+    rw [hQ, MulChar.map_zero, zero_mul, add_zero, integral_const_mul, P.integral_high_mul, highTerm]
   · by_cases h₂ : 1 + c * (9 * t * x.1) = 0
     · have hQ : (1 + 9 * t * x.1) * (1 + c * (9 * t * x.1)) = 0 := by rw [h₂, mul_zero]
       simp_rw [if_neg h₁, if_pos h₂]
-      rw [if_neg h₁, if_pos h₂, hQ, MulChar.map_zero, zero_mul, add_zero, integral_const_mul, highTerm,
-        ← P.integral_high_mul (P.lift (t / (1 + 9 * t * x.1))) v hv]
-      congr 2
-      funext z
-      ring
+      rw [hQ, MulChar.map_zero, zero_mul, add_zero, integral_const_mul, P.integral_high_mul_comm]
     · simp_rw [if_neg h₁, if_neg h₂]
-      rw [if_neg h₁, if_neg h₂, zero_add, integral_const_mul]
+      rw [zero_add, integral_const_mul]
       simp_rw [P.sourceTheta_fracShift]
       rw [integral_translate_mul _ _ hb hb]
       congr 2
@@ -176,15 +178,15 @@ theorem integral_middle_sumR (h2 : (2 : P.Res) ≠ 0) (c : P.Res) (hc1 : c ≠ 1
     simp_rw [integral_const_mul]
   simp_rw [hsplit, P.integral_ratioCorrelation_middle h2 c hc1 _ _ v hv, mul_add, Finset.sum_add_distrib]
   simp only [← hbdef]
-  set g : P.Res → ℂ := fun s => if 1 + s = 0 then P.chi (1 + c * s) * P.highTerm v
-    else if 1 + c * s = 0 then P.chi (1 + s) * P.highTerm v else 0 with hg
+  obtain ⟨g, hgs⟩ : ∃ g : P.Res → ℂ, ∀ s, g s = if 1 + s = 0 then P.chi (1 + c * s) * P.highTerm v
+      else if 1 + c * s = 0 then P.chi (1 + s) * P.highTerm v else 0 := ⟨_, fun s => rfl⟩
   have hhigh : ∑ x : {x : P.Res // x ≠ 0}, ∑ t : P.Res, P.lam t *
       (if 1 + 9 * t * x.1 = 0 then (P.chi (3 * x.1))⁻¹ * P.chi (1 + c * (9 * t * x.1)) * P.highTerm v
         else if 1 + c * (9 * t * x.1) = 0 then P.chi (1 + 9 * t * x.1) * (P.chi (3 * x.1))⁻¹ * P.highTerm v
         else 0) = 0 := by
     refine (Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun t _ => ?_).trans (P.high_sum_vanish h2 g)
     congr 1
-    simp only [hg]
+    rw [hgs]
     split_ifs <;> ring
   rw [hhigh, zero_add]
   have hgen : ∀ x : {x : P.Res // x ≠ 0}, ∑ t : P.Res, P.lam t *
@@ -205,7 +207,7 @@ theorem integral_middle_sumR (h2 : (2 : P.Res) ≠ 0) (c : P.Res) (hc1 : c ≠ 1
       rw [← tsum_mul_left]
       exact tsum_congr fun k => by ring]
     ring
-  simp_rw [hgen]
+  rw [Finset.sum_congr rfl fun x _ => hgen x]
   rw [← Finset.mul_sum, sum_tsum_swap b b hb hb _ _ (fun x k => P.norm_sum_lam_chi_traceChar_le _ _)]
   congr 1
   refine tsum_congr fun k => ?_
@@ -373,16 +375,18 @@ theorem integral_sourceRatioTrace_eq (h2 : (2 : P.Res) ≠ 0) (c : P.Res) (hc0 :
       P.cuspZeroCoeff c / P.cuspZeroCoeff (-1) * ∫ z in periodDomain, P.sourceFracTraceW (upperPoint z v hv) := by
   have hC := P.cuspZeroCoeff_neg_one_ne_zero h2
   have hprop := P.ratio_coefficients_proportional h2 c hc0 hc1
-  rw [P.cuspZeroCoeff_neg_one] at hprop hC
-  rw [P.integral_sourceRatioTrace h2 c hc0 hc1 v hv, P.integral_sourceFracTraceW h2 v hv, P.cuspZeroCoeff_neg_one]
-  set S₁ := ∑' k : O, rationalSourceModeAmplitude v k * rationalSourceModeAmplitude v (-k) * P.lam (P.res k)
-  have h2k : (∑' k : O, rationalSourceModeAmplitude v k * rationalSourceModeAmplitude v (-k) * P.lam (2 * P.res k)) =
-      P.lam 2 * S₁ := by
-    rw [← tsum_mul_left]
-    exact tsum_congr fun k => by rw [map_mul]; ring
-  rw [h2k]
-  field_simp
-  linear_combination (periodArea * gaussSum P.lam P.traceChar * S₁) * hprop
+  have key : P.cuspZeroCoeff (-1) * ∫ z in periodDomain, P.sourceRatioTrace c (upperPoint z v hv) =
+      P.cuspZeroCoeff c * ∫ z in periodDomain, P.sourceFracTraceW (upperPoint z v hv) := by
+    rw [P.integral_sourceRatioTrace h2 c hc0 hc1 v hv, P.integral_sourceFracTraceW h2 v hv, P.cuspZeroCoeff_neg_one]
+    set S₁ := ∑' k : O, rationalSourceModeAmplitude v k * rationalSourceModeAmplitude v (-k) * P.lam (P.res k)
+    have h2k : (∑' k : O, rationalSourceModeAmplitude v k * rationalSourceModeAmplitude v (-k) *
+        P.lam (2 * P.res k)) = P.lam 2 * S₁ := by
+      rw [← tsum_mul_left]
+      exact tsum_congr fun k => by rw [map_mul]; ring
+    rw [h2k]
+    linear_combination (periodArea * gaussSum P.lam P.traceChar * S₁) * hprop
+  rw [div_mul_eq_mul_div, eq_div_iff hC]
+  linear_combination key
 
 end PrimaryPrime
 

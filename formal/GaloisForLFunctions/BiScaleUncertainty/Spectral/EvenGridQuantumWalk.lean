@@ -21,19 +21,22 @@ def evenGridWalk (n : ℕ) : Velocity →L[ℝ] Velocity :=
 
 private theorem grid_idem (d : ℕ) : coprimeProjector d * coprimeProjector d =
     coprimeProjector d := by
-  ext v
-  exact coprimeProjection_idempotent d v
+  apply ContinuousLinearMap.ext
+  intro v
+  simpa only [mul_apply_eq_comp, coprimeProjector_apply] using coprimeProjection_idempotent d v
 
 private theorem common_idem (n : ℕ) : evenGridCommonPart n * evenGridCommonPart n =
     evenGridCommonPart n := by
-  ext v
+  apply ContinuousLinearMap.ext
+  intro v
   exact (evenGrid_parts_projections n v).1
 
 private theorem common_mul_grid (n : ℕ) : evenGridCommonPart n * coprimeProjector (n+1) =
     evenGridCommonPart n := by
-  ext v
-  simp only [ContinuousLinearMap.mul_apply, evenGridCommonPart,
-    ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
+  apply ContinuousLinearMap.ext
+  intro v
+  simp only [mul_apply_eq_comp, evenGridCommonPart,
+    sub_apply, smul_apply,
     evenGridCompression_project]
   rw [show coprimeProjector (n+1) (coprimeProjector (n+1) v) =
     coprimeProjector (n+1) v from coprimeProjection_idempotent (n+1) v]
@@ -41,11 +44,12 @@ private theorem common_mul_grid (n : ℕ) : evenGridCommonPart n * coprimeProjec
 private theorem grid_signal (n : ℕ) :
     coprimeProjector (n+1) * HTGeometry.projectionReflection (coprimeProjector 0) *
       coprimeProjector (n+1) = evenGridCommonPart n := by
-  ext v
-  simp only [HTGeometry.projectionReflection, ContinuousLinearMap.mul_apply,
-    ContinuousLinearMap.sub_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.one_apply, map_sub, map_add, evenGridCommonPart,
-    ContinuousLinearMap.smul_apply, evenGridCompression, ContinuousLinearMap.comp_apply]
+  apply ContinuousLinearMap.ext
+  intro v
+  simp only [HTGeometry.projectionReflection, mul_apply_eq_comp,
+    sub_apply, add_apply,
+    one_apply_eq_self, map_sub, map_add, evenGridCommonPart,
+    smul_apply, evenGridCompression, ContinuousLinearMap.comp_apply]
   rw [show coprimeProjector (n+1) (coprimeProjector (n+1) v) =
     coprimeProjector (n+1) v from coprimeProjection_idempotent (n+1) v]
   module
@@ -75,7 +79,36 @@ theorem evenGridWalk_odd_compression (n k : ℕ) :
   · simp only [zero_smul, add_zero]
   · exact ⟨(k : ℤ), by push_cast; ring⟩
 
+private theorem zero_signal_four_mul (k : ℕ) :
+    (Chebyshev.T ℝ ((4*k : ℕ) : ℤ)).eval 0 = 1 := by
+  have hindex : ((4*k : ℕ) : ℤ) = 2 * (2 * (k : ℤ)) := by push_cast; ring
+  have heven : Even (2 * (k : ℤ)) := ⟨k, by ring⟩
+  rw [hindex, Chebyshev.T_eval_two_mul_zero, Int.negOnePow_even _ heven]
+  simp
+
+/-- Every fourth step returns the entire original grid exactly. -/
+theorem evenGridWalk_four_mul_compression (n k : ℕ) :
+    coprimeProjector (n+1) * evenGridWalk n ^ (4*k) * coprimeProjector (n+1) =
+      coprimeProjector (n+1) := by
+  rw [evenGridWalk_compression, zero_signal_four_mul, one_smul]
+  apply ContinuousLinearMap.ext
+  intro v
+  exact evenGrid_parts_sum n v
+
+/-- Halfway through each return cycle, half-overlap modes change sign. -/
+theorem evenGridWalk_four_mul_add_two_compression (n k : ℕ) :
+    coprimeProjector (n+1) * evenGridWalk n ^ (4*k+2) * coprimeProjector (n+1) =
+      evenGridCommonPart n - evenGridHalfPart n := by
+  have hz : (Chebyshev.T ℝ ((4*k+2 : ℕ) : ℤ)).eval 0 = -1 := by
+    rw [Nat.cast_add, Nat.cast_ofNat, Chebyshev.T_add_two]
+    simp only [eval_sub, eval_mul, eval_X, mul_zero, zero_mul, zero_sub,
+      zero_signal_four_mul]
+  rw [evenGridWalk_compression, hz, neg_one_smul, sub_eq_add_neg]
+
 end GaloisForLFunctions.BiScaleUncertainty.SobolevShear
 
 #print axioms GaloisForLFunctions.BiScaleUncertainty.SobolevShear.evenGridWalk_compression
 #print axioms GaloisForLFunctions.BiScaleUncertainty.SobolevShear.evenGridWalk_odd_compression
+
+#print axioms GaloisForLFunctions.BiScaleUncertainty.SobolevShear.evenGridWalk_four_mul_compression
+#print axioms GaloisForLFunctions.BiScaleUncertainty.SobolevShear.evenGridWalk_four_mul_add_two_compression

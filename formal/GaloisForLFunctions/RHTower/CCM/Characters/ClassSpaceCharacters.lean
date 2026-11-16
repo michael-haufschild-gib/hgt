@@ -40,7 +40,7 @@ theorem positiveCharacter_exists_unique_normTwist (χ : Units NNReal →ₜ* Cir
   have hder (a : ℝ) : HasDerivAt
       (fun x : ℝ => Complex.exp ((a * x : ℝ) * Complex.I)) ((a : ℂ) * Complex.I) 0 := by
     have hlin := (((hasDerivAt_id (0 : ℝ)).const_mul a).ofReal_comp).mul_const Complex.I
-    simpa only [mul_zero, Complex.ofReal_zero, zero_mul, Complex.exp_zero,
+    simpa only [id_eq, mul_zero, Complex.ofReal_zero, zero_mul, Complex.exp_zero,
       one_mul, mul_one] using hlin.cexp
   have heq : (fun x : ℝ => Complex.exp ((s * x : ℝ) * Complex.I)) =
       (fun x : ℝ => Complex.exp ((t * x : ℝ) * Complex.I)) := by
@@ -103,6 +103,7 @@ theorem exists_finite_character_normTwist (χ : CCMRationalClassSpaceSection →
   obtain ⟨t, ht⟩ := positiveCharacter_eq_normTwist (classSpaceRadialRestriction χ)
   refine ⟨S, n, θ, t, fun b => ?_⟩
   rw [classSpaceCharacter_split, Circle.coe_mul, ← hθ b.1, ht b.2]
+  rfl
 
 /-- The finite-data-and-norm-twist family exhausts all continuous unitary section characters. -/
 theorem exists_classSpaceCharacter (χ : CCMRationalClassSpaceSection →ₜ* Circle) :
@@ -133,12 +134,14 @@ theorem exists_unique_norm_frequency (χ : CCMRationalClassSpaceSection →ₜ* 
     (classSpaceFiniteRestriction χ)
   refine ⟨t, ⟨S, n, θ, fun b => ?_⟩, ?_⟩
   · rw [classSpaceCharacter_split, Circle.coe_mul, ← hθ b.1, ht b.2]
+    rfl
   · rintro s ⟨T, m, φ, hφ⟩
     apply ht_unique s
     intro r
     change (χ (1, r) : ℂ) =
       Complex.exp ((s * ccmRationalPositiveUnitLog r : ℝ) * Complex.I)
-    simpa only [map_one, Circle.coe_one, one_mul] using hφ (1, r)
+    simpa only [map_one, Circle.coe_one, one_mul, ccmRationalClassSpaceModule,
+      ccmRationalPositiveUnitLog] using hφ (1, r)
 
 #print axioms positiveCharacter_eq_normTwist
 #print axioms positiveCharacter_exists_unique_normTwist

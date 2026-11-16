@@ -33,7 +33,7 @@ plane `Re p > ½`. Here the nodes are real and sparse.
 
 noncomputable section
 open Complex Set Filter Topology
-open scoped ComplexConjugate
+open scoped ComplexConjugate ComplexOrder Matrix
 
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open HTGeometry _root_.RHTower
@@ -132,13 +132,13 @@ theorem isPSDKernel_ofReal_of_forall_real {X : Type*} {K : X → X → ℝ}
     fun n w => Matrix.PosSemidef.of_dotProduct_mulVec_nonneg ?_ fun v => ?_
   · ext i j
     simp [Matrix.conjTranspose_apply, hsym]
-  · have key : star v ⬝ᵥ (Matrix.of fun j k => (K (w j) (w k) : ℂ)) *ᵥ v =
+  · have key : dotProduct (star v) (Matrix.mulVec (Matrix.of fun j k => (K (w j) (w k) : ℂ)) v) =
         ∑ i, ∑ j, star (v i) * ((K (w i) (w j) : ℂ) * v j) := by
       simp [dotProduct, Matrix.mulVec, Finset.mul_sum]
     rw [key, Complex.nonneg_iff]
     simp only [Complex.re_sum, Complex.im_sum, Complex.mul_re, Complex.mul_im, Complex.star_def,
-      Complex.conj_re, Complex.conj_im, Complex.ofReal_re, Complex.ofReal_im, zero_mul, mul_zero,
-      sub_zero, add_zero, zero_add, neg_mul, sub_neg_eq_add]
+      Complex.conj_re, Complex.conj_im, Complex.ofReal_re, Complex.ofReal_im, zero_mul,
+      sub_zero, add_zero, neg_mul, sub_neg_eq_add]
     constructor
     · have h1 := h n w fun i => (v i).re
       have h2 := h n w fun i => (v i).im
@@ -151,14 +151,14 @@ theorem isPSDKernel_ofReal_of_forall_real {X : Type*} {K : X → X → ℝ}
         rw [← Finset.sum_add_distrib]
         exact Finset.sum_congr rfl fun j _ => by ring
       linarith
-    · have e : ∑ i, ∑ j, ((v i).re * (K (w i) (w j) * (v j).im) -
-          (v i).im * (K (w i) (w j) * (v j).re)) = 0 := by
-        simp only [Finset.sum_sub_distrib]
-        rw [sub_eq_zero, Finset.sum_comm]
+    · have e : ∑ i, ∑ j, ((v i).re * (K (w i) (w j) * (v j).im) +
+          -((v i).im * (K (w i) (w j) * (v j).re))) = 0 := by
+        simp only [Finset.sum_add_distrib, Finset.sum_neg_distrib]
+        rw [add_neg_eq_zero, Finset.sum_comm]
         refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
         rw [hsym]
         ring
-      linarith
+      exact e.symm
 
 /-! ### The probe kernel on real nodes -/
 
@@ -175,8 +175,8 @@ theorem probe_forms_nonneg_of_riemannHypothesis (hRH : RiemannHypothesis) {n : �
   have hM := (hK.posSemidef fun i =>
     (⟨((p i : ℝ) : ℂ), by simpa using hp i⟩ : {W : ℂ // 1 / 2 < W.re})).dotProduct_mulVec_nonneg
       fun i => ((c i : ℝ) : ℂ)
-  have hval : star (fun i => ((c i : ℝ) : ℂ)) ⬝ᵥ (Matrix.of fun j k =>
-      criticalLogDerivKernel ((p j : ℝ) : ℂ) ((p k : ℝ) : ℂ)) *ᵥ (fun i => ((c i : ℝ) : ℂ)) =
+  have hval : dotProduct (star fun i => ((c i : ℝ) : ℂ)) (Matrix.mulVec (Matrix.of fun j k =>
+      criticalLogDerivKernel ((p j : ℝ) : ℂ) ((p k : ℝ) : ℂ)) fun i => ((c i : ℝ) : ℂ)) =
       ((∑ i, ∑ j, c i * c j * bareMixedEnergy (probe (p i)) (probe (p j)) : ℝ) : ℂ) := by
     simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, Complex.star_def,
       Complex.conj_ofReal, Finset.mul_sum]

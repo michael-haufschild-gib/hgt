@@ -723,3 +723,5 @@ import GaloisForLFunctions.BiScaleUncertainty.Spectra.ReciprocalPrimeLattice
 import GaloisForLFunctions.BiScaleUncertainty.Spectral.EvenGridUncertaintySpectrum
 import GaloisForLFunctions.BiScaleUncertainty.Observation.BoundedCoordinateSignCone
 import GaloisForLFunctions.BiScaleUncertainty.Sieve.MinimumKernelCancellation
+
+import GaloisForLFunctions.BiScaleUncertainty.Spectral.EvenGridQuantumWalk

@@ -30,7 +30,7 @@ theorem aeval_idempotent (E : R) (hE : E * E = E) (p : 𝕜[X]) :
       rw [← smul_add, add_sub_cancel, Algebra.smul_def, mul_one]
     | succ n =>
       simp only [aeval_monomial, hpow, eval_monomial, one_pow, mul_one,
-        zero_pow (Nat.succ_ne_zero n), mul_zero, zero_smul, add_zero, Algebra.smul_def]
+        zero_pow (Nat.succ_ne_zero n), mul_zero, Algebra.smul_def, map_zero, zero_mul, add_zero]
 
 /-- Restricting to a larger projection replaces the ambient complement by `Q-E`. -/
 theorem aeval_idempotent_mul (E Q : R) (hE : E * E = E) (hEQ : E * Q = E)

@@ -166,3 +166,5 @@ Hermitian kernels with finitely many negative squares on groups, and on the Heck
 
 See `HeckeKreinToeplitz/README.md`.
 -/
+
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.MultiplicativeJetInertia
