@@ -80,11 +80,6 @@ theorem fracShift_mul_sO (t : O) :
     P.contraction_S, mul_assoc, mul_assoc, mul_assoc]
 
 
-theorem complexCharacter_lowMat (y : O) (hy : ¬ P.p ∣ y) :
-    complexCharacter (P.lowMat y hy) = ringComplex (symbol (3 * y) P.p) := by
-  rw [complexCharacter_eq_symbol]
-  rfl
-
 section Points
 
 variable (Θ : HyperbolicSpace → ℂ)

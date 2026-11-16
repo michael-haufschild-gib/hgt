@@ -15,6 +15,7 @@ open Polynomial
 variable (p : ℕ) [Fact p.Prime] (s d : ℕ)
     (E : Type*) [Field E] [Algebra (SquareConstantField p s) E]
     (c : Eˣ) (R : ℕ)
+include s
 
 /-- The prime-power branch exponent remains nonzero after extending constants. -/
 theorem squareKummerExtension_branchExponent_ne_zero :

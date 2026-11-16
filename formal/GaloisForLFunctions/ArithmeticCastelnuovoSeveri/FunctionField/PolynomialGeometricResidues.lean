@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FunctionField.PolynomialFiniteQuotients
 import Mathlib.FieldTheory.IsAlgClosed.Basic
+import Mathlib.RingTheory.DedekindDomain.AdicValuation
 import Mathlib.RingTheory.DedekindDomain.Ideal.Basic
 
 /-!
@@ -43,5 +44,21 @@ theorem polynomialGeometricResidue_ker (w : HeightOneSpectrum B) :
       (e.symm.injective (h.trans (map_zero e.symm).symm))
   · intro h
     rw [Ideal.Quotient.eq_zero_iff_mem.mpr h, map_zero]
+
+/-- A specified residue is equivalent to the corresponding constant difference lying in the prime. -/
+theorem polynomialGeometricResidue_eq_iff (w : HeightOneSpectrum B) (b : B) (a : K) :
+    polynomialGeometricResidue K B w b = a ↔ b - algebraMap K B a ∈ w.asIdeal := by
+  rw [← polynomialGeometricResidue_ker K B w]
+  change polynomialGeometricResidue K B w b = a ↔
+    polynomialGeometricResidue K B w (b - algebraMap K B a) = 0
+  rw [map_sub, AlgHom.commutes, sub_eq_zero]
+
+/-- Subtracting the geometric residue gives a function vanishing at the actual finite place. -/
+theorem polynomialGeometricResidue_sub_lt_one
+    (L : Type*) [Field L] [Algebra B L] [IsFractionRing B L]
+    (w : HeightOneSpectrum B) (b : B) :
+    w.valuation L (algebraMap B L (b - algebraMap K B (polynomialGeometricResidue K B w b))) < 1 := by
+  exact (w.valuation_lt_one_iff_mem _).mpr
+    ((polynomialGeometricResidue_eq_iff K B w b _).mp rfl)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

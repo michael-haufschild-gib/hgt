@@ -231,7 +231,7 @@ arithmetic branches, under a common integrable density with polynomial height co
 `AngularPhysicalEnergy` applies the filtered arithmetic energy theorem to separated angular
 kernels. The original reflected exponent, terminal dual width and surviving-branch factor
 are unchanged; the height degree is uniform in arithmetic types. `AngularDyadicRows` identifies the actual angular row with its bounded weight slots;
-assembling completed-source energy remains pending.
+`AngularLowCompleted` completes the actual source-energy assembly.
 
 `AngularPhaseIdeals` identifies the extra denominator phase exactly as
 `idealPsiSix(span{c})^(2k)`. It is trivial on units, bounded by one, and common to all

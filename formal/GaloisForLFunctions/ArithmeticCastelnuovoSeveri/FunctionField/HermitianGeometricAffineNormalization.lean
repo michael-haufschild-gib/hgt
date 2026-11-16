@@ -32,6 +32,7 @@ theorem hermitianGeometric_integral_power_expansion (x : H) (hx : IsIntegral E[X
   apply Finset.sum_congr rfl
   intro i _
   have ha : algebraMap E[X] (FractionRing E[X]) (a i) = B.repr x i := (hc i).choose_spec
+  rw [Algebra.smul_def]
   change algebraMap (FractionRing E[X]) H (B.repr x i) * B i = _
   rw [← ha, ← IsScalarTower.algebraMap_apply E[X] (FractionRing E[X]) H,
     kummerIntegralMonomialBasis_apply, kummerIntegralMonomial,
