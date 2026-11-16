@@ -30,10 +30,11 @@ theorem fractionRingMobiusEquiv_coordinate (a b c d : K) (hdet : a * d - b * c �
       (algebraMap K (FractionRing K[X]) c * algebraMap K[X] (FractionRing K[X]) X +
         algebraMap K (FractionRing K[X]) d) := by
   let e := IsLocalization.algEquiv K[X]⁰ (FractionRing K[X]) (RatFunc K)
+  have hconst (t : K) : e.symm (algebraMap K (RatFunc K) t) =
+      algebraMap K (FractionRing K[X]) t := (e.symm.restrictScalars K).commutes t
   change e.symm (RatFunc.mobiusEquiv a b c d hdet
     (e (algebraMap K[X] (FractionRing K[X]) X))) = _
   rw [e.commutes, RatFunc.algebraMap_X, RatFunc.mobiusEquiv_X, RatFunc.mobius]
-  simp only [map_div₀, map_add, map_mul, ← RatFunc.algebraMap_X, e.symm.commutes,
-    (e.symm.restrictScalars K).commutes]
+  simp only [map_div₀, map_add, map_mul, ← RatFunc.algebraMap_X, e.symm.commutes, hconst]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

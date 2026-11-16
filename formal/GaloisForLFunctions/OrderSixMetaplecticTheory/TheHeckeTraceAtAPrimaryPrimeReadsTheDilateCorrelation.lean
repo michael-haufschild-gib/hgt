@@ -153,4 +153,137 @@ theorem sum_cuspCharacterSeries_low (c : O → ℂ) (hc : Summable (fun h => ‖
 
 end PrimaryPrime
 
+
+namespace PrimaryPrime
+
+variable (P : PrimaryPrime)
+
+/-! ### The constant term for the projected theta function -/
+
+/-- The Hecke trace at `p` of the projected theta function. -/
+abbrev sourceHeckeTrace : HyperbolicSpace → ℂ := P.heckeTrace sourceTheta
+
+theorem heckeHigh_source (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    P.heckeHigh sourceTheta (upperPoint z v hv) =
+      cuspCharacterSeries (rationalSourceModeAmplitude (‖ringComplex P.p‖ * v)) (ringComplex P.p * z) := by
+  rw [heckeHigh, P.dilation_upperPoint, sourceTheta, cubicSourceResidualFunction_fourier_expansion]
+
+theorem heckeLow_source (t : O) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    P.heckeLow sourceTheta t (upperPoint z v hv) =
+      cuspCharacterSeries (rationalSourceModeAmplitude (v / ‖ringComplex P.p‖))
+        ((z + 3 * ringComplex t) / ringComplex P.p) := by
+  rw [heckeLow, transThree_smul_upperPoint, P.contraction_upperPoint, sourceTheta,
+    cubicSourceResidualFunction_fourier_expansion]
+
+/-- The coefficients of the low point shifted by `−3β/p`. -/
+def shiftedLow (v : ℝ) (β : O) (k : O) : ℂ :=
+  rationalSourceModeAmplitude (v / ‖ringComplex P.p‖) k *
+    tracePhase (cuspFrequency k * (-(3 * ringComplex β) / ringComplex P.p))
+
+theorem summable_shiftedLow (v : ℝ) (hv : 0 < v) (β : O) : Summable (fun k => ‖P.shiftedLow v β k‖) := by
+  simpa only [shiftedLow, norm_mul, tracePhase_norm, mul_one] using
+    rationalSourceModeAmplitude_summable _ (div_pos hv P.norm_pos)
+
+theorem integral_cuspCharacterSeries (g : O → ℂ) (hg : Summable (fun h => ‖g h‖)) :
+    ∫ z in periodDomain, cuspCharacterSeries g z = periodArea * g 0 := by
+  have h := cuspCharacterSeries_fourier g hg 0
+  simp only [cuspFrequency, map_zero, zero_div, neg_zero, zero_mul, AddChar.map_zero_eq_one, mul_one] at h
+  rw [h]
+
+/-- The trace at `(z, v)` as cusp series: two dilate terms and the phased low–low terms. -/
+theorem sourceHeckeTrace_upperPoint (v : ℝ) (hv : 0 < v) (z : ℂ) :
+    P.sourceHeckeTrace (upperPoint z v hv) =
+      2 * (cuspCharacterSeries (rationalSourceModeAmplitude (‖ringComplex P.p‖ * v)) (ringComplex P.p * z) *
+          ((Fintype.card P.Res : ℂ) *
+            cuspCharacterSeries (fun m => rationalSourceModeAmplitude (v / ‖ringComplex P.p‖) (m * P.p)) z)) +
+        ∑ y : {y : P.Res // y ≠ 0}, ringComplex (symbol (3 * P.lift y.1) P.p) *
+          ((Fintype.card P.Res : ℂ) * cuspCharacterSeries (fun m => cuspConv (P.shiftedLow v (P.lowBeta (P.lift y.1)))
+            (rationalSourceModeAmplitude (v / ‖ringComplex P.p‖)) (m * P.p)) z) := by
+  rw [sourceHeckeTrace, P.heckeTrace_eq_hecke sourceTheta sourceTheta_automorphy]
+  simp only [P.heckeHigh_source, P.heckeLow_source]
+  set a := rationalSourceModeAmplitude (‖ringComplex P.p‖ * v)
+  set b := rationalSourceModeAmplitude (v / ‖ringComplex P.p‖)
+  have hb : Summable (fun h => ‖b h‖) := rationalSourceModeAmplitude_summable _ (div_pos hv P.norm_pos)
+  have hii : ∑ x : P.Res, cuspCharacterSeries b ((z + 3 * ringComplex (P.wShift + P.lift x)) / ringComplex P.p) =
+      (Fintype.card P.Res : ℂ) * cuspCharacterSeries (fun m => b (m * P.p)) z := by
+    have e : ∀ x : P.Res, z + 3 * ringComplex (P.wShift + P.lift x) =
+        (z + 3 * ringComplex P.wShift) + 3 * ringComplex (P.lift x) := by
+      intro x
+      rw [map_add]
+      ring
+    simp_rw [e]
+    rw [P.sum_cuspCharacterSeries_low b hb, cuspCharacterSeries_period]
+  have hiii : ∀ y : {y : P.Res // y ≠ 0}, ∑ x : P.Res, ringComplex (symbol (3 * P.lift y.1) P.p) *
+      cuspCharacterSeries b ((z + 3 * ringComplex (P.lift x - P.lowBeta (P.lift y.1))) / ringComplex P.p) *
+        cuspCharacterSeries b ((z + 3 * ringComplex (P.lift x)) / ringComplex P.p) =
+      ringComplex (symbol (3 * P.lift y.1) P.p) * ((Fintype.card P.Res : ℂ) *
+        cuspCharacterSeries (fun m => cuspConv (P.shiftedLow v (P.lowBeta (P.lift y.1))) b (m * P.p)) z) := by
+    intro y
+    set β := P.lowBeta (P.lift y.1)
+    have e : ∀ x : P.Res, cuspCharacterSeries b ((z + 3 * ringComplex (P.lift x - β)) / ringComplex P.p) *
+        cuspCharacterSeries b ((z + 3 * ringComplex (P.lift x)) / ringComplex P.p) =
+        cuspCharacterSeries (cuspConv (P.shiftedLow v β) b) ((z + 3 * ringComplex (P.lift x)) / ringComplex P.p) := by
+      intro x
+      rw [show (z + 3 * ringComplex (P.lift x - β)) / ringComplex P.p =
+          (z + 3 * ringComplex (P.lift x)) / ringComplex P.p + (-(3 * ringComplex β) / ringComplex P.p) by
+        rw [map_sub]; ring, cuspCharacterSeries_translate]
+      change cuspCharacterSeries (P.shiftedLow v β) ((z + 3 * ringComplex (P.lift x)) / ringComplex P.p) *
+        cuspCharacterSeries b ((z + 3 * ringComplex (P.lift x)) / ringComplex P.p) = _
+      rw [cuspCharacterSeries_mul (P.summable_shiftedLow v hv β) hb]
+    simp_rw [mul_assoc, e]
+    rw [← Finset.mul_sum, P.sum_cuspCharacterSeries_low _ (summable_cuspConv (P.summable_shiftedLow v hv β) hb)]
+  rw [← Finset.mul_sum, P.sum_cuspCharacterSeries_low b hb z, ← Finset.sum_mul, hii, Finset.sum_comm]
+  simp_rw [hiii]
+  ring
+
+/-- **The constant term of the Hecke trace at `p`.** -/
+theorem integral_sourceHeckeTrace (v : ℝ) (hv : 0 < v) :
+    ∫ z in periodDomain, P.sourceHeckeTrace (upperPoint z v hv) =
+      (Fintype.card P.Res : ℂ) * periodArea *
+        (2 * ∑' h : O, rationalSourceModeAmplitude (‖ringComplex P.p‖ * v) h *
+            rationalSourceModeAmplitude (v / ‖ringComplex P.p‖) (-(h * P.p) * P.p) +
+          ∑ y : {y : P.Res // y ≠ 0}, ringComplex (symbol (3 * P.lift y.1) P.p) *
+            cuspConv (P.shiftedLow v (P.lowBeta (P.lift y.1))) (rationalSourceModeAmplitude (v / ‖ringComplex P.p‖)) 0) := by
+  set a := rationalSourceModeAmplitude (‖ringComplex P.p‖ * v)
+  set b := rationalSourceModeAmplitude (v / ‖ringComplex P.p‖)
+  have ha : Summable (fun h => ‖a h‖) := rationalSourceModeAmplitude_summable _ (mul_pos P.norm_pos hv)
+  have hb : Summable (fun h => ‖b h‖) := rationalSourceModeAmplitude_summable _ (div_pos hv P.norm_pos)
+  have hinj : Function.Injective (fun m : O => m * P.p) := fun x y h => mul_right_cancel₀ P.ne_zero h
+  have hbp : Summable (fun m => ‖b (m * P.p)‖) := hb.comp_injective hinj
+  have hg : ∀ β : O, Summable (fun m => ‖cuspConv (P.shiftedLow v β) b (m * P.p)‖) := fun β =>
+    (summable_cuspConv (P.summable_shiftedLow v hv β) hb).comp_injective hinj
+  simp_rw [P.sourceHeckeTrace_upperPoint v hv]
+  have hc1 : Continuous (fun z : ℂ => cuspCharacterSeries a (ringComplex P.p * z) *
+      ((Fintype.card P.Res : ℂ) * cuspCharacterSeries (fun m => b (m * P.p)) z)) :=
+    ((cuspCharacterSeries_continuous a ha).comp (continuous_const.mul continuous_id)).mul
+      (continuous_const.mul (cuspCharacterSeries_continuous _ hbp))
+  have hc2 : ∀ y : {y : P.Res // y ≠ 0}, Continuous (fun z : ℂ => ringComplex (symbol (3 * P.lift y.1) P.p) *
+      ((Fintype.card P.Res : ℂ) * cuspCharacterSeries (fun m => cuspConv (P.shiftedLow v (P.lowBeta (P.lift y.1)))
+        b (m * P.p)) z)) := fun y =>
+    continuous_const.mul (continuous_const.mul (cuspCharacterSeries_continuous _ (hg _)))
+  have h1 := integral_cuspCharacterSeries_mul_dilate P.p a (fun m => b (m * P.p)) ha hbp
+  have I1 : ∫ z in periodDomain, cuspCharacterSeries a (ringComplex P.p * z) *
+      ((Fintype.card P.Res : ℂ) * cuspCharacterSeries (fun m => b (m * P.p)) z) =
+      (Fintype.card P.Res : ℂ) * (periodArea * ∑' h : O, a h * b (-(h * P.p) * P.p)) := by
+    rw [show (fun z : ℂ => cuspCharacterSeries a (ringComplex P.p * z) *
+        ((Fintype.card P.Res : ℂ) * cuspCharacterSeries (fun m => b (m * P.p)) z)) =
+        fun z => (Fintype.card P.Res : ℂ) * (cuspCharacterSeries a (ringComplex P.p * z) *
+          cuspCharacterSeries (fun m => b (m * P.p)) z) by funext z; ring, integral_const_mul, h1]
+  have I2 : ∀ y : {y : P.Res // y ≠ 0}, ∫ z in periodDomain, ringComplex (symbol (3 * P.lift y.1) P.p) *
+      ((Fintype.card P.Res : ℂ) * cuspCharacterSeries (fun m => cuspConv (P.shiftedLow v (P.lowBeta (P.lift y.1)))
+        b (m * P.p)) z) =
+      ringComplex (symbol (3 * P.lift y.1) P.p) * ((Fintype.card P.Res : ℂ) *
+        (periodArea * cuspConv (P.shiftedLow v (P.lowBeta (P.lift y.1))) b 0)) := by
+    intro y
+    rw [integral_const_mul, integral_const_mul, integral_cuspCharacterSeries _ (hg _), zero_mul]
+  rw [integral_add ((integrableOn_periodDomain_of_continuous _ hc1).const_mul 2)
+      (integrable_finsetSum _ fun y _ => integrableOn_periodDomain_of_continuous _ (hc2 y)),
+    integral_const_mul, I1, integral_finsetSum _ fun y _ => integrableOn_periodDomain_of_continuous _ (hc2 y),
+    Finset.sum_congr rfl fun y _ => I2 y, mul_add, Finset.mul_sum]
+  congr 1
+  · ring
+  · exact Finset.sum_congr rfl fun y _ => by ring
+
+end PrimaryPrime
+
 end GaloisForLFunctions.OrderSixMetaplecticTheory

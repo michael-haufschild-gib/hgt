@@ -257,5 +257,3 @@ theorem finite_criticalOrbit_cm_iff
 
 end Bottcher.Arithmetic
 
-#print axioms Bottcher.Arithmetic.criticalOrbit_second_zero_iff
-#print axioms Bottcher.Arithmetic.finite_criticalOrbit_cm_iff

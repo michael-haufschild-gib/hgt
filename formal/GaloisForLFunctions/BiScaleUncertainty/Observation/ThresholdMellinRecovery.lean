@@ -141,4 +141,3 @@ theorem calibratedFloquetRecovery_bound (N : ℕ) (z : ℂ) (f : DeningerMeyerCa
 #print axioms calibratedFloquetRecovery_bound
 
 end GaloisForLFunctions.BiScaleUncertainty.Observation
-

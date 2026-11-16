@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Fifty-one helper modules passed final plain Lean checks and are umbrella-wired.
+- **Verified:** Fifty-six helper modules passed final plain Lean checks and are umbrella-wired.
 - **Missing:** Actual low completed-source energy, angular prime-slot estimates, high moment induction and both common-signal estimates.
 
 ## Receiver
@@ -257,3 +257,19 @@ extraction. Actual marked completed rows join the original free prime family exa
 `AngularLowSectorEnergy` combines angular dyadic energy with surviving-branch widths.
 Retained low sectors satisfy the original exponent `(5/6−2d)+200η+π+κ+ρLpool−O₀/2`,
 with polynomial height cost independent of arithmetic types and scales.
+
+`AngularArithmeticTails` bounds actual raw and dyadic reflected arithmetic tails by
+`C(1+|θ|)^degree · N(∏p) · T^(−A) · scale^(−2)` for every `A`.
+
+`AngularWholeRows` identifies actual whole reflected rows with their absolutely convergent
+dyadic expansion. Shape separation retains the exact angular denominator phase.
+
+`AngularMarkedReflection` reflects marked angular completed sums through finite inclusion–
+exclusion and Fourier inversion. Periodicity is required only for the original finite
+coefficient; actual fixed and active cusp strata carry the angular kernels.
+
+`AngularControlledMarked` reconstructs actual marked sources from controlled strata,
+retaining finite Fourier and inactive-prime weights and the exact angular reflection.
+
+`AngularReindexing` transports actual angular cusp reflection through prime-family
+equivalences and pullbacks of controlled cusp data, preserving both angular phases.

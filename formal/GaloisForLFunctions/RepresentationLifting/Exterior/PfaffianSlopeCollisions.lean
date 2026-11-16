@@ -45,6 +45,21 @@ theorem pfaffianSlope_collision (a d e : ℕ) :
         rw [hf, hc, sub_self, mul_zero]
       exact sub_eq_zero.mp ((mul_eq_zero.mp hz).resolve_right (mul_ne_zero hd he))
 
+/-- Distinct equal slopes have an explicit odd integer value. -/
+theorem pfaffianSlope_collision_value (a d e : ℕ) :
+    pfaffianSlope a d = pfaffianSlope a e →
+      d = e ∨ pfaffianSlope a d = 2 * ((a : ℚ) + d + e + 1) + 1 := by
+  intro h
+  rcases (pfaffianSlope_collision a d e).mp h with h | hc
+  · exact Or.inl h
+  right
+  have hc' : (a.choose 2 : ℚ) = 2 * (d + 1) * (e + 1) := by exact_mod_cast hc
+  have hd : (d + 1 : ℚ) ≠ 0 := by positivity
+  unfold pfaffianSlope
+  rw [hc']
+  field_simp
+  ring
+
 theorem pfaffianSlope_fiber_at_most_two (a d e f : ℕ) :
     (pfaffianSlope a d = pfaffianSlope a e ∧ pfaffianSlope a d = pfaffianSlope a f) →
       d = e ∨ d = f ∨ e = f := by
@@ -81,6 +96,7 @@ theorem pfaffianSlope_hankel_nonsingular (a n : ℕ) (w : Fin n → ℚ) :
   simp only [Finset.mem_univ, forall_const, and_comm]
 
 #print axioms pfaffianSlope_collision
+#print axioms pfaffianSlope_collision_value
 #print axioms pfaffianSlope_fiber_at_most_two
 #print axioms pfaffianSlope_hankel_nonsingular
 
