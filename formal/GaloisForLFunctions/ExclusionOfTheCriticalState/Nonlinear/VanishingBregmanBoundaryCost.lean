@@ -47,6 +47,7 @@ theorem arctan_mixed_terminal_exact_cost_tendsto_zero {F : ℝ → ℝ}
     archLevyAntideriv d * arctanBoundaryMoment 0 d F +
       archLevyAntideriv d * arctanBoundaryMoment 1 d F) ?_ h
   exact Eventually.of_forall fun d => by
+    dsimp only
     rw [← mul_add, arctanBoundaryMoment_zero_add_one hF d]
 
 /-- The logarithmically weighted mixed terminal moment vanishes throughout the energy domain. -/
@@ -57,6 +58,7 @@ theorem arctan_mixed_terminal_logarithmic_cost_tendsto_zero {F : ℝ → ℝ}
   apply logarithmic_moment_tendsto_zero_of_exact_cost ?_
     (arctan_mixed_terminal_exact_cost_tendsto_zero hF)
   intro d _
+  change 0 ≤ ∫ u in Ioo (-d) 0, F u * Real.arctan (F u)
   rw [← arctanBoundaryMoment_zero_add_one hF d]
   exact add_nonneg (integral_nonneg fun u => arctanGapKernel_nonneg 0 (F u) 0)
     (integral_nonneg fun u => arctanGapKernel_nonneg 1 (F u) 0)
@@ -75,6 +77,7 @@ theorem terminal_square_exact_cost_tendsto_zero {F : ℝ → ℝ}
       archLevyAntideriv d * arctanBoundaryMoment 1 d F +
       archLevyAntideriv d * arctanBoundaryMoment 2 d F) ?_ h
   exact Eventually.of_forall fun d => by
+    dsimp only
     rw [← mul_add, ← mul_add, arctanBoundaryMoment_sum hF d]
 
 /-- The terminal square mass is little-o of the reciprocal logarithmic scale. -/

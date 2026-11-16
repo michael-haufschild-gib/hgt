@@ -138,7 +138,8 @@ theorem padicScalar_topNil_not_nilpotent (n : ℕ) :
     ext i j
     rw [Matrix.natCast_apply]
     split_ifs
-    · simpa only [pow_one] using (CharP.cast_eq_zero (ZMod (p ^ 1)) (p ^ 1))
+    · change (p : ZMod (p ^ 1)) = 0
+      exact (CharP.cast_eq_zero_iff (ZMod (p ^ 1)) (p ^ 1) p).mpr (by simp only [pow_one, dvd_refl])
     · exact Nat.cast_zero
   · rintro ⟨m, hm⟩
     rw [← Nat.cast_pow] at hm
