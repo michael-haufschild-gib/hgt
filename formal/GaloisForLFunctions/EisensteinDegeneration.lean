@@ -9,6 +9,7 @@ import GaloisForLFunctions.EisensteinDegeneration.AdicInverseLimit
 import GaloisForLFunctions.EisensteinDegeneration.TwoBranchRegularity
 import GaloisForLFunctions.EisensteinDegeneration.MulticoverCoefficients
 import GaloisForLFunctions.EisensteinDegeneration.MulticoverWittGhost
+import GaloisForLFunctions.EisensteinDegeneration.Parity.BalancedEulerGhost
 
 /-!
 # Algebraic mechanisms of irregular Eisenstein degeneration

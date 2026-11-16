@@ -25,12 +25,12 @@ theorem configurationSquareMass_eq_collidedForm (Z : ZeroConfig) (f : ℝ → �
 /-- Translating a test changes the reflection defect by exactly the change in square mass. -/
 theorem zeta_reflectionDefect_translate_sub (a : ℝ) {f : ℝ → ℂ}
     (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
-    configurationReflectionDefect zetaZeroConfig (translate a f) -
+    configurationReflectionDefect zetaZeroConfig (ArithmeticPolarization.translate a f) -
         configurationReflectionDefect zetaZeroConfig f =
-      configurationSquareMass zetaZeroConfig (translate a f) -
+      configurationSquareMass zetaZeroConfig (ArithmeticPolarization.translate a f) -
         configurationSquareMass zetaZeroConfig f := by
-  have htf : ContDiff ℝ 2 (translate a f) := hf.comp (contDiff_id.sub contDiff_const)
-  have htfc : HasCompactSupport (translate a f) := hfc.comp_homeomorph (Homeomorph.subRight a)
+  have htf : ContDiff ℝ 2 (ArithmeticPolarization.translate a f) := hf.comp (contDiff_id.sub contDiff_const)
+  have htfc : HasCompactSupport (ArithmeticPolarization.translate a f) := hfc.comp_homeomorph (Homeomorph.subRight a)
   have ht := zeta_squareMass_sub_re_W_eq_reflectionDefect htf htfc
   rw [W_translate_translate] at ht
   have h := zeta_squareMass_sub_re_W_eq_reflectionDefect hf hfc
@@ -40,19 +40,19 @@ theorem zeta_reflectionDefect_translate_sub (a : ℝ) {f : ℝ → ℂ}
 theorem actualZeta_weil_translate (a : ℝ) {f : ℝ → ℂ}
     (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
     RHTower.weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
-      (EF.weilTest (translate a f) (translate a f)) =
+      (EF.weilTest (ArithmeticPolarization.translate a f) (ArithmeticPolarization.translate a f)) =
     RHTower.weilFullFunctional (fun n => (ArithmeticFunction.vonMangoldt n : ℝ))
       (EF.weilTest f f) := by
-  have htf : ContDiff ℝ 2 (translate a f) := hf.comp (contDiff_id.sub contDiff_const)
-  have htfc : HasCompactSupport (translate a f) := hfc.comp_homeomorph (Homeomorph.subRight a)
+  have htf : ContDiff ℝ 2 (ArithmeticPolarization.translate a f) := hf.comp (contDiff_id.sub contDiff_const)
+  have htfc : HasCompactSupport (ArithmeticPolarization.translate a f) := hfc.comp_homeomorph (Homeomorph.subRight a)
   rw [← RHTower.zeta_W_eq_weilFullFunctional_mixed htf htfc htf htfc,
     ← RHTower.zeta_W_eq_weilFullFunctional_mixed hf hfc hf hfc, W_translate_translate]
 
 /-- Translation preserves the truth of the reflection-defect comparison on each test. -/
 theorem zeta_reflectionDefect_translate_le_iff (a : ℝ) {f : ℝ → ℂ}
     (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
-    configurationReflectionDefect zetaZeroConfig (translate a f) ≤
-        configurationSquareMass zetaZeroConfig (translate a f) ↔
+    configurationReflectionDefect zetaZeroConfig (ArithmeticPolarization.translate a f) ≤
+        configurationSquareMass zetaZeroConfig (ArithmeticPolarization.translate a f) ↔
       configurationReflectionDefect zetaZeroConfig f ≤ configurationSquareMass zetaZeroConfig f := by
   have h := zeta_reflectionDefect_translate_sub a hf hfc
   constructor <;> intro hle <;> linarith only [h, hle]
@@ -60,16 +60,16 @@ theorem zeta_reflectionDefect_translate_le_iff (a : ℝ) {f : ℝ → ℂ}
 /-- Symmetric translation measures horizontal displacement by a nonnegative hyperbolic-cosine weight. -/
 theorem zeta_squareMass_translate_second_difference (a : ℝ) {f : ℝ → ℂ}
     (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
-    configurationSquareMass zetaZeroConfig (translate a f) +
-      configurationSquareMass zetaZeroConfig (translate (-a) f) -
+    configurationSquareMass zetaZeroConfig (ArithmeticPolarization.translate a f) +
+      configurationSquareMass zetaZeroConfig (ArithmeticPolarization.translate (-a) f) -
       2 * configurationSquareMass zetaZeroConfig f =
     ∑' ρ : zetaZeroConfig.carrier, (zetaZeroConfig.mult ρ : ℝ) *
       (2 * Real.cosh (2 * ((ρ : ℂ).re - 1 / 2) * a) - 2) *
         ‖paperFT f (gammaOf ρ)‖ ^ 2 := by
   have hs (b : ℝ) : Summable (fun ρ : zetaZeroConfig.carrier =>
-      (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr (translate b f) ρ)) := by
-    have htb : ContDiff ℝ 2 (translate b f) := hf.comp (contDiff_id.sub contDiff_const)
-    have htbc : HasCompactSupport (translate b f) := hfc.comp_homeomorph (Homeomorph.subRight b)
+      (zetaZeroConfig.mult ρ : ℝ) * Complex.normSq (tr (ArithmeticPolarization.translate b f) ρ)) := by
+    have htb : ContDiff ℝ 2 (ArithmeticPolarization.translate b f) := hf.comp (contDiff_id.sub contDiff_const)
+    have htbc : HasCompactSupport (ArithmeticPolarization.translate b f) := hfc.comp_homeomorph (Homeomorph.subRight b)
     simpa only [tr, Complex.normSq_eq_norm_sq] using
       summable_squareMass_of_temperedConfig zetaZeroConfig temperedConfig_zetaZeroConfig htb htbc
   have hs0 : Summable (fun ρ : zetaZeroConfig.carrier =>
@@ -83,8 +83,8 @@ theorem zeta_squareMass_translate_second_difference (a : ℝ) {f : ℝ → ℂ}
 /-- Symmetric translation increases square mass and reflection defect by the same nonnegative amount. -/
 theorem zeta_reflectionDefect_translate_second_difference (a : ℝ) {f : ℝ → ℂ}
     (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
-    0 ≤ configurationReflectionDefect zetaZeroConfig (translate a f) +
-      configurationReflectionDefect zetaZeroConfig (translate (-a) f) -
+    0 ≤ configurationReflectionDefect zetaZeroConfig (ArithmeticPolarization.translate a f) +
+      configurationReflectionDefect zetaZeroConfig (ArithmeticPolarization.translate (-a) f) -
       2 * configurationReflectionDefect zetaZeroConfig f := by
   have hp := zeta_reflectionDefect_translate_sub a hf hfc
   have hm := zeta_reflectionDefect_translate_sub (-a) hf hfc

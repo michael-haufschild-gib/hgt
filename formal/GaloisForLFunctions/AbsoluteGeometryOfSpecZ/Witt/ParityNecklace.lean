@@ -23,7 +23,11 @@ theorem coord_add (x y : ghostRing) (n : ℕ+) :
   have hxy := ghostComponent_eq_sum_coord (x + y) M
   have hx := ghostComponent_eq_sum_coord x M
   have hy := ghostComponent_eq_sum_coord y M
-  simpa only [map_add, hx, hy, Finset.sum_add_distrib, mul_add, M] using hxy.symm
+  rw [map_add, hx, hy] at hxy
+  change (∑ d ∈ m.divisors, (d : ℤ) * coord x d) +
+    (∑ d ∈ m.divisors, (d : ℤ) * coord y d) =
+      ∑ d ∈ m.divisors, (d : ℤ) * coord (x + y) d at hxy
+  simpa only [Finset.sum_add_distrib, mul_add] using hxy.symm
 
 private theorem sum_divisors_multiple (k n : ℕ+) (b : ℕ → ℤ) :
     (∑ d ∈ ((k : ℕ) * n).divisors,
@@ -90,6 +94,7 @@ theorem teichmuller_add_neg (a : ℤ) :
     change a ^ (2 * (m : ℕ)) + (-a) ^ (2 * (m : ℕ)) =
       (verschiebungFun 2 (teichmuller (a ^ 2)).val) (2 * m)
     rw [verschiebungFun_mul, teichmuller_apply, pow_mul, pow_mul]
+    norm_num only [PNat.val_ofNat, Nat.cast_ofNat]
     ring
   · rw [verschiebung_apply]
     simp only [show ((2 : ℕ+) : ℕ) = 2 by decide, if_neg hn]

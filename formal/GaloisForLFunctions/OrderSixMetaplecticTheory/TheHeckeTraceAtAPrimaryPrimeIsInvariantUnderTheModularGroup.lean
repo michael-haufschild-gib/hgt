@@ -196,7 +196,8 @@ theorem theta_transO (t : O) (ht : (3 : O) ∣ t - 1) (x : HyperbolicSpace) :
     Θ (integralComplexMatrix (transO t) • x) = Θ x := by
   obtain ⟨k, hk⟩ := ht
   have hm : transO t = rationalEmbedding ModularGroup.T * (transThree k : SL(2, O)) := by
-    ext i j
+    apply Matrix.SpecialLinearGroup.ext
+    intro i j
     fin_cases i <;> fin_cases j <;>
       simp [transO, transThree, rationalEmbedding, ModularGroup.coe_T, Matrix.SpecialLinearGroup.coe_mul,
         Matrix.mul_apply, Fin.sum_univ_two]

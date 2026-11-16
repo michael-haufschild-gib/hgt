@@ -151,6 +151,7 @@ import GaloisForLFunctions.SelbergClass.Primon.KestenLikelihoodCompletion
 import GaloisForLFunctions.SelbergClass.Primon.KestenLikelihoodLogClock
 import GaloisForLFunctions.SelbergClass.Primon.KestenLikelihoodIndependence
 import GaloisForLFunctions.SelbergClass.Primon.SemicircleCharacters
+import GaloisForLFunctions.SelbergClass.Primon.CharacterFusion
 import GaloisForLFunctions.SelbergClass.Primon.KestenCharacterSchur
 import GaloisForLFunctions.SelbergClass.Primon.KestenCharacterHardy
 import GaloisForLFunctions.SelbergClass.Primon.KestenCharacterJets

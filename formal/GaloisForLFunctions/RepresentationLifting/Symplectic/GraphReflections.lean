@@ -30,8 +30,8 @@ def graphReflection (T : H →L[ℂ] H) : (H × H) ≃ₗ[ℂ] (H × H) where
   invFun p := (p.1, (2 : ℂ) • graphSymmetrization T p.1 - p.2)
   left_inv p := by ext <;> simp
   right_inv p := by ext <;> simp
-  map_add' p q := by ext <;> simp <;> module
-  map_smul' c p := by ext <;> simp <;> module
+  map_add' p q := by ext <;> simp; module
+  map_smul' c p := by ext <;> simp; module
 
 @[simp] theorem graphReflection_apply (T : H →L[ℂ] H) (p : H × H) :
     graphReflection T p = (p.1, (2 : ℂ) • graphSymmetrization T p.1 - p.2) := rfl
@@ -44,7 +44,7 @@ theorem graphReflection_involutive (T : H →L[ℂ] H) : Function.Involutive (gr
 /-- Symmetrization is symmetric for the Hilbert pairing. -/
 theorem graphSymmetrization_inner (T : H →L[ℂ] H) (x y : H) :
     ⟪graphSymmetrization T x, y⟫_ℂ = ⟪x, graphSymmetrization T y⟫_ℂ := by
-  simp only [graphSymmetrization, ContinuousLinearMap.add_apply, inner_add_left, inner_add_right]
+  simp only [graphSymmetrization, add_apply, inner_add_left, inner_add_right]
   rw [ContinuousLinearMap.adjoint_inner_left, ContinuousLinearMap.adjoint_inner_right]
   exact add_comm _ _
 
@@ -91,7 +91,8 @@ theorem graphReflection_neg_iff (T : H →L[ℂ] H) (p : H × H) :
 theorem graphReflection_comp (S T : H →L[ℂ] H) (p : H × H) :
     graphReflection S (graphReflection T p) =
       (p.1, p.2 + (2 : ℂ) • ((graphSymmetrization S - graphSymmetrization T) p.1)) := by
-  ext <;> simp <;> module
+  ext <;> simp
+  module
 
 /-- Common fixed vectors are precisely graph vectors over the kernel of the difference. -/
 theorem graphReflection_common_fixed (S T : H →L[ℂ] H) (p : H × H) :
@@ -100,7 +101,7 @@ theorem graphReflection_common_fixed (S T : H →L[ℂ] H) (p : H × H) :
         p.1 ∈ LinearMap.ker ((graphSymmetrization S - graphSymmetrization T).toLinearMap) := by
   rw [graphReflection_fixed_iff, graphReflection_fixed_iff, mem_operatorGraph, mem_operatorGraph,
     LinearMap.mem_ker]
-  simp only [ContinuousLinearMap.coe_coe, ContinuousLinearMap.sub_apply, sub_eq_zero]
+  simp only [ContinuousLinearMap.coe_coe, sub_apply, sub_eq_zero]
   constructor
   · rintro ⟨hS, hT⟩
     exact ⟨hT, hS.symm.trans hT⟩

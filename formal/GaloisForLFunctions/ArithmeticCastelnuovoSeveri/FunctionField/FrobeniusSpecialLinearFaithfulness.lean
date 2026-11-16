@@ -53,7 +53,10 @@ theorem frobeniusSpecialLinearAut_injective :
   change frobeniusSpecialLinearHom K E γ R M z = frobeniusSpecialLinearHom K E γ R N z at hroot
   rw [frobeniusSpecialLinearHom_root, frobeniusSpecialLinearHom_root] at hroot
   have hden : D = D' := (mul_left_cancel₀ hz ((div_eq_div_iff hD hD').mp hroot)).symm
-  have hbottom := frobeniusSpecialLinearField_linearCoordinate_injective K E γ R hden
+  have hbottom :
+      (algebraMap K E (M 1 0), algebraMap K E (M 1 1)) =
+        (algebraMap K E (N 1 0), algebraMap K E (N 1 1)) :=
+    frobeniusSpecialLinearField_linearCoordinate_injective K E γ R hden
   have h10 : M 1 0 = N 1 0 := (algebraMap K E).injective (congrArg Prod.fst hbottom)
   have h11 : M 1 1 = N 1 1 := (algebraMap K E).injective (congrArg Prod.snd hbottom)
   have hcoord := congrArg (fun σ : L ≃ₐ[E] L => σ x) h
@@ -64,7 +67,10 @@ theorem frobeniusSpecialLinearAut_injective :
   rw [hden] at hcoord
   have hnum := congrArg (fun a : L => a * D') hcoord
   rw [div_mul_cancel₀ _ hD', div_mul_cancel₀ _ hD'] at hnum
-  have htop := frobeniusSpecialLinearField_linearCoordinate_injective K E γ R hnum
+  have htop :
+      (algebraMap K E (M 0 0), algebraMap K E (M 0 1)) =
+        (algebraMap K E (N 0 0), algebraMap K E (N 0 1)) :=
+    frobeniusSpecialLinearField_linearCoordinate_injective K E γ R hnum
   have h00 : M 0 0 = N 0 0 := (algebraMap K E).injective (congrArg Prod.fst htop)
   have h01 : M 0 1 = N 0 1 := (algebraMap K E).injective (congrArg Prod.snd htop)
   apply SpecialLinearGroup.ext

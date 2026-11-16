@@ -24,7 +24,8 @@ private theorem continuous_character_list (l : List ℕ) :
   induction l with
   | nil => simp only [List.map_nil, List.sum_nil]; exact continuous_const
   | cons j l ih =>
-    simpa only [List.map_cons, List.sum_cons] using (spectralCharacter j).continuous.add ih
+    simp only [List.map_cons, List.sum_cons]
+    convert (spectralCharacter j).continuous.add ih using 1
 
 private theorem integral_character_list (f : C(ℝ, ℝ)) (l : List ℕ) :
     (∫ x, f x * (l.map fun j => spectralCharacter j x).sum
@@ -75,7 +76,13 @@ theorem tensorSpinMultiplicity_energy_list (n : ℕ) :
     simp_rw [← pow_add, ← two_mul]
     exact hm.trans (semicircleMoment_even n)
   rw [he] at h
-  exact_mod_cast h.symm
+  have hcast (l : List ℕ) :
+      (((l.map (tensorSpinMultiplicity n)).sum : ℕ) : ℝ) =
+        (l.map fun j => (tensorSpinMultiplicity n j : ℝ)).sum := by
+    induction l with
+    | nil => simp
+    | cons j l ih => simp [ih]
+  exact_mod_cast (hcast (tensorSpinWeights n)).trans h.symm
 
 private theorem list_sum_eq_range_count (l : List ℕ) (N : ℕ)
     (hN : ∀ j ∈ l, j < N) (f : ℕ → ℕ) :
@@ -106,9 +113,11 @@ theorem tensorMultiplicityAlgebra_finrank (n : ℕ) :
       Matrix (Fin (tensorSpinMultiplicity n k)) (Fin (tensorSpinMultiplicity n k)) ℝ) =
         catalan n := by
   rw [Module.finrank_pi_fintype]
-  simp only [Module.finrank_pi, Fintype.card_fin, Module.finrank_pi_fintype,
-    Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-  simpa only [pow_two, Fin.sum_univ_eq_sum_range] using tensorSpinMultiplicity_energy n
+  simp only [Module.finrank_matrix, Fintype.card_fin, Module.finrank_self, mul_one]
+  change (∑ k : Fin (n + 1),
+    (fun j : ℕ => tensorSpinMultiplicity n j * tensorSpinMultiplicity n j) k) = _
+  rw [Fin.sum_univ_eq_sum_range]
+  simpa only [pow_two] using tensorSpinMultiplicity_energy n
 
 /-- Dimension carried by highest weights at most the cutoff. -/
 def tensorSpinLowDimension (n L : ℕ) : ℕ :=
@@ -147,7 +156,7 @@ theorem tensorSpin_low_square_bound (n L : ℕ) :
   have hw : (∑ k ∈ s, (k + 1) ^ 2) ≤ (L + 1) ^ 3 := by
     calc
       _ ≤ ∑ _k ∈ s, (L + 1) ^ 2 := Finset.sum_le_sum fun k hk =>
-        Nat.pow_le_pow_left (by have := (Finset.mem_filter.mp hk).2; omega)
+        Nat.pow_le_pow_left (by have := (Finset.mem_filter.mp hk).2; omega) 2
       _ = s.card * (L + 1) ^ 2 := by simp
       _ ≤ (L + 1) * (L + 1) ^ 2 := Nat.mul_le_mul_right _ hc
       _ = (L + 1) ^ 3 := by ring
@@ -168,7 +177,9 @@ theorem tensorSpin_sqrt_cutoff (n : ℕ) :
     by_contra h
     have hpos : 0 < tensorSpinTailDimension n L := by omega
     have hh : 3 * n * 2 ^ n ≤ 6 * n * tensorSpinTailDimension n L := by
-      nlinarith only [show 2 ^ n ≤ 2 * tensorSpinTailDimension n L by omega]
+      have hm := Nat.mul_le_mul_left (3 * n)
+        (show 2 ^ n ≤ 2 * tensorSpinTailDimension n L by omega)
+      nlinarith only [hm]
     have hstrict := Nat.mul_lt_mul_of_pos_right hs hpos
     omega
   dsimp [L] at hd hhalf
@@ -178,7 +189,8 @@ theorem tensorSpin_sqrt_cutoff (n : ℕ) :
 theorem catalan_lower_bound_from_tensor_split (n : ℕ) :
     (2 ^ n) ^ 2 ≤ 4 * catalan n * (Nat.sqrt (6 * n) + 2) ^ 3 := by
   have h := tensorSpin_sqrt_cutoff n
-  have hs := Nat.pow_le_pow_left (n := 2) h
+  have hs : (2 ^ n) ^ 2 ≤
+      (2 * tensorSpinLowDimension n (Nat.sqrt (6 * n) + 1)) ^ 2 := Nat.pow_le_pow_left h 2
   have hl := tensorSpin_low_square_bound n (Nat.sqrt (6 * n) + 1)
   nlinarith only [hs, hl]
 

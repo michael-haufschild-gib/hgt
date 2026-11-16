@@ -1,4 +1,5 @@
 import Mathlib.FieldTheory.RatFunc.IntermediateField
+import Mathlib.FieldTheory.Relrank
 
 /-!
 # Relative degrees after rational coordinate realization
