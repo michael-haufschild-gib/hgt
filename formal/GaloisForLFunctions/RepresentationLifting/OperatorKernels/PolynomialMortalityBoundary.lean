@@ -26,6 +26,7 @@ theorem polynomialDerivative_pow_ne_zero (n : ℕ) :
   rw [ker_polynomialDerivative_pow, mem_degreeLT, degree_X_pow] at hX
   exact lt_irrefl _ hX
 
+omit [CharZero K] in
 /-- Every polynomial dies at a finite derivative order. -/
 theorem polynomialDerivative_pointwise_killable (f : K[X]) :
     ∃ T ∈ Submonoid.powers (derivative : Module.End K K[X]), T f = 0 := by
@@ -33,6 +34,7 @@ theorem polynomialDerivative_pointwise_killable (f : K[X]) :
   rw [Module.End.pow_apply]
   exact iterate_derivative_eq_zero (Nat.lt_succ_self _)
 
+omit [CharZero K] in
 /-- Finite sets can still be synchronized even in this infinite-dimensional representation. -/
 theorem polynomialDerivative_finset_killable (s : Finset K[X]) :
     ∃ T ∈ Submonoid.powers (derivative : Module.End K K[X]), ∀ f ∈ s, T f = 0 :=

@@ -67,10 +67,17 @@ theorem arctan_jump_bounds (a b : ℝ) :
     · nlinarith only [mul_le_mul_of_nonneg_right hl (neg_nonneg.mpr hy)]
     · nlinarith only [mul_le_mul_of_nonneg_left hl (neg_nonneg.mpr hx)]
 
+/-- Dissipation vanishes exactly when the two profile values agree. -/
+theorem arctanBregman_symm_eq_zero_iff (a b : ℝ) :
+    scalarBregman arctanPotential a b + scalarBregman arctanPotential b a = 0 ↔ a = b := by
+  rw [arctanBregman_symm, mul_eq_zero, sub_eq_zero, sub_eq_zero, Real.arctan_inj]
+  simp only [or_self]
+
 #print axioms deriv_arctanPotential
 #print axioms arctan_contraction
 #print axioms arctanBregman_symm
 #print axioms arctan_jump_bounds
+#print axioms arctanBregman_symm_eq_zero_iff
 
 end GaloisForLFunctions.HilbertMetric.Probability
 end

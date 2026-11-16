@@ -80,7 +80,7 @@ theorem integrableOn_arctanDissipation {F : ℝ → ℝ}
   have hnonneg : 0 ≤ ∫ u, (F u - F (u + x)) *
       (Real.arctan (F u) - Real.arctan (F (u + x))) :=
     integral_nonneg fun u => (sq_nonneg _).trans (arctan_jump_bounds _ _).1
-  rw [Real.norm_of_nonneg (mul_nonneg (archLevyDensity_pos hx).le hnonneg)]
+  rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (archLevyDensity_pos hx).le hnonneg)]
   exact mul_le_mul_of_nonneg_left (integral_arctanJump_bounds hF x).2
     (archLevyDensity_pos hx).le
 
@@ -145,6 +145,7 @@ theorem riemannHypothesis_or_criticalState_bregman_balance :
       he ▸ arctanLevyDissipation_nonneg F, he ▸ hb.1, he ▸ hb.2⟩
 
 #print axioms domain_arctan
+#print axioms arctanLevyDissipation_eq_bregman
 #print axioms integrableOn_arctanDissipation
 #print axioms arctanLevyDissipation_bounds
 #print axioms riemannHypothesis_or_criticalState_bregman_balance

@@ -126,7 +126,7 @@ theorem adjacentPowerTorusStarAlgebra_separatesPoints (n : ℕ) :
   exact hi (AddCircle.injective_toCircle one_ne_zero he)
 
 /-- Powered observations uniformly approximate every continuous torus observable. -/
-theorem adjacentPowerTorusAlgebra_closure_eq_top [Countable ι] (n : ℕ) :
+theorem adjacentPowerTorusAlgebra_closure_eq_top (n : ℕ) :
     (adjacentPowerTorusStarAlgebra ι n).topologicalClosure = ⊤ :=
   ContinuousMap.starSubalgebra_topologicalClosure_eq_top_of_separatesPoints
     (adjacentPowerTorusStarAlgebra ι n) (adjacentPowerTorusStarAlgebra_separatesPoints n)

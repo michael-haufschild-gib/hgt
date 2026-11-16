@@ -97,4 +97,30 @@ theorem hermitianGeometricPointValuation_tangent_frobenius
     one_pow, one_mul] at ht
   exact ht.trans (hermitianGeometricPointValuation_radical_sub p s U)
 
+open scoped Classical in
+/-- Every geometric contact is accounted for by `Q` copies of the point and one Frobenius copy. -/
+theorem hermitianGeometricPointValuation_tangent_all
+    (P U : HermitianAffinePoint p s E) :
+    V U (hermitianGeometricTangentFunction p s P) =
+      WithZero.exp (-(((if U = P then Q else 0) +
+        (if U = hermitianFrobeniusPoint p s E P then 1 else 0) : ℕ) : ℤ)) := by
+  classical
+  by_cases hUP : U = P
+  · subst U
+    by_cases hF : hermitianFrobeniusPoint p s E P = P
+    · have hfix := (hermitianFrobeniusPoint_eq_self_iff p s E P).mp hF
+      simpa only [if_pos rfl, if_pos hF.symm, if_pos hfix] using
+        hermitianGeometricPointValuation_tangent p s P
+    · have hfix : P.val.1 ^ (Q * Q) ≠ P.val.1 :=
+        fun h => hF ((hermitianFrobeniusPoint_eq_self_iff p s E P).mpr h)
+      simpa only [if_pos rfl, if_neg (Ne.symm hF), if_neg hfix, Nat.add_zero] using
+        hermitianGeometricPointValuation_tangent p s P
+  · by_cases hUF : U = hermitianFrobeniusPoint p s E P
+    · subst U
+      simpa only [if_neg hUP, if_pos rfl, Nat.zero_add, Nat.cast_one] using
+        hermitianGeometricPointValuation_tangent_frobenius p s P hUP
+    · simpa only [if_neg hUP, if_neg hUF, Nat.zero_add, Nat.cast_zero,
+        neg_zero, WithZero.exp_zero] using
+        hermitianGeometricPointValuation_tangent_unit p s P U hUP hUF
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
