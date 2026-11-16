@@ -90,8 +90,12 @@ theorem integral_traceWord_pair_eq_zero {r s : ℕ} (a : Fin r → ℕ) (b : Fin
         (starRingEnd ℂ) (traceWord b (scalarPhaseUnitaryMatrix (iota := ι) t * U)) ∂finiteUnitaryHaar ι) =
       ∫ U : Matrix.unitaryGroup ι ℂ, traceWord a U * (starRingEnd ℂ) (traceWord b U)
         ∂finiteUnitaryHaar ι := by
-    unfold finiteUnitaryHaar
-    exact integral_mul_left_eq_self _ (scalarPhaseUnitaryMatrix (iota := ι) t)
+    letI : Measure.IsMulLeftInvariant (finiteUnitaryHaar ι) := by
+      unfold finiteUnitaryHaar
+      infer_instance
+    exact integral_mul_left_eq_self (μ := finiteUnitaryHaar ι)
+      (fun U : Matrix.unitaryGroup ι ℂ => traceWord a U * (starRingEnd ℂ) (traceWord b U))
+      (scalarPhaseUnitaryMatrix (iota := ι) t)
   simp_rw [traceWord_pair_rotate, hphase] at hinv
   rw [integral_const_mul] at hinv
   linear_combination (-1 / 2 : ℂ) * hinv
@@ -104,7 +108,53 @@ theorem integral_trace_pow_pair_eq_zero (m n : ℕ) (hmn : m ≠ n) :
   simpa [traceWord] using integral_traceWord_pair_eq_zero (ι := ι)
     (fun _ : Fin 1 => m) (fun _ : Fin 1 => n) (by simpa using hmn)
 
+/-- A finite power-trace polynomial has exactly diagonal Haar energy. -/
+theorem integral_trace_polynomial_energy (s : Finset ℕ) (c : ℕ → ℂ) :
+    (∫ U : Matrix.unitaryGroup ι ℂ,
+      (∑ m ∈ s, c m * Matrix.trace ((U : Matrix ι ι ℂ) ^ m)) *
+        (starRingEnd ℂ) (∑ n ∈ s, c n * Matrix.trace ((U : Matrix ι ι ℂ) ^ n))
+        ∂finiteUnitaryHaar ι) =
+      ∑ m ∈ s, (c m * (starRingEnd ℂ) (c m)) *
+        ∫ U : Matrix.unitaryGroup ι ℂ,
+          Matrix.trace ((U : Matrix ι ι ℂ) ^ m) *
+            (starRingEnd ℂ) (Matrix.trace ((U : Matrix ι ι ℂ) ^ m)) ∂finiteUnitaryHaar ι := by
+  have hc (m n : ℕ) : Continuous (fun U : Matrix.unitaryGroup ι ℂ =>
+      (c m * (starRingEnd ℂ) (c n)) *
+        (Matrix.trace ((U : Matrix ι ι ℂ) ^ m) *
+          (starRingEnd ℂ) (Matrix.trace ((U : Matrix ι ι ℂ) ^ n)))) := by
+    unfold Matrix.trace
+    fun_prop
+  have hexpand (U : Matrix.unitaryGroup ι ℂ) :
+      (∑ m ∈ s, c m * Matrix.trace ((U : Matrix ι ι ℂ) ^ m)) *
+        (starRingEnd ℂ) (∑ n ∈ s, c n * Matrix.trace ((U : Matrix ι ι ℂ) ^ n)) =
+      ∑ m ∈ s, ∑ n ∈ s, (c m * (starRingEnd ℂ) (c n)) *
+        (Matrix.trace ((U : Matrix ι ι ℂ) ^ m) *
+          (starRingEnd ℂ) (Matrix.trace ((U : Matrix ι ι ℂ) ^ n))) := by
+    rw [map_sum, sum_mul]
+    apply sum_congr rfl
+    intro m _
+    rw [mul_sum]
+    apply sum_congr rfl
+    intro n _
+    rw [map_mul]
+    ring
+  simp_rw [hexpand]
+  rw [integral_finset_sum s (fun m _ =>
+    (continuous_finset_sum s (fun n _ => hc m n)).integrable_of_hasCompactSupport
+      (HasCompactSupport.of_compactSpace _))]
+  apply sum_congr rfl
+  intro m hm
+  rw [integral_finset_sum s (fun n _ =>
+    (hc m n).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)),
+    sum_eq_single m]
+  · rw [integral_const_mul]
+  · intro n _ hnm
+    rw [integral_const_mul, integral_trace_pow_pair_eq_zero m n hnm.symm, mul_zero]
+  · exact fun h => (h hm).elim
+
 #print axioms integral_traceWord_pair_eq_zero
+#print axioms integrable_traceWord_pair
 #print axioms integral_trace_pow_pair_eq_zero
+#print axioms integral_trace_polynomial_energy
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.RandomMatrix

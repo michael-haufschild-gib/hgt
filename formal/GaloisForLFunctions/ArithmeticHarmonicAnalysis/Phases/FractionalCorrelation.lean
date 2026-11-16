@@ -14,7 +14,8 @@ logarithmic envelope. Frequencies are measured in radians.
 
 noncomputable section
 
-open Finset RHTower
+open Finset
+open RHTower (bourgainOscillation norm_sum_weighted_bourgainOscillation_sub_le)
 open scoped ArithmeticFunction
 open GaloisForLFunctions.ArithmeticHarmonicAnalysis.AlmostPrimes
 
@@ -88,7 +89,7 @@ theorem moebius_fractional_correlation (s : Finset ℕ) (k : ℕ)
     (mul_nonneg (mul_nonneg (abs_nonneg ξ) (powerTaylorConstant_nonneg c k))
       (Real.rpow_nonneg (zero_le_one.trans hN) _))
   calc ∑ n ∈ s, ‖(ArithmeticFunction.moebius n : ℂ)‖ ≤ ∑ _n ∈ s, (1 : ℝ) :=
-        sum_le_sum fun n _ => Sieve.norm_moebius_complex_le_one n
+        sum_le_sum fun n _ => RHTower.Sieve.norm_moebius_complex_le_one n
     _ = _ := by simp only [sum_const, nsmul_eq_mul, mul_one]
 
 /-- The prime-discrepancy weight `Λ-1` has a concrete short-block error. -/
@@ -110,8 +111,8 @@ theorem centeredMangoldt_fractional_correlation (s : Finset ℕ) (k : ℕ)
         have h := norm_sub_le (Λ n : ℂ) (1 : ℂ)
         rw [norm_one, Complex.norm_real, Real.norm_eq_abs,
           abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg] at h
-        exact h.trans (add_le_add_right (ArithmeticFunction.vonMangoldt_le_log.trans
-          (Real.log_le_log (zero_lt_one.trans_le (hN.trans (hs n hn).1)) (hs n hn).2)) 1)
+        exact h.trans (add_le_add (ArithmeticFunction.vonMangoldt_le_log.trans
+          (Real.log_le_log (zero_lt_one.trans_le (hN.trans (hs n hn).1)) (hs n hn).2)) le_rfl)
     _ = _ := by simp only [sum_const, nsmul_eq_mul]
 
 #print axioms fractional_correlation_taylor

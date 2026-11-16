@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RepresentationLifting.Probability.FittingDegreeCounts
+import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
@@ -92,7 +93,67 @@ theorem sum_nilpotentCount_div_automorphismCount (n : ℕ) :
         (Nat.card (FittingDegreeStratum K (Fin n → K) (d : ℕ)) : ℚ) /
           finiteFieldAutomorphismCount K n := Finset.sum_congr rfl fun d _ => (hfrac d).symm
     _ = (↑(∑ d : Fin (n + 1), Nat.card (FittingDegreeStratum K (Fin n → K) (d : ℕ))) : ℚ) /
-        finiteFieldAutomorphismCount K n := by rw [Nat.cast_sum, Finset.sum_div]
+        finiteFieldAutomorphismCount K n := by
+          simp only [Nat.cast_sum, div_eq_mul_inv, Finset.sum_mul]
     _ = _ := by rw [hsum, Nat.cast_pow]
+
+/-- Subtraction of adjacent Fitting sums gives the next nilpotent count. -/
+theorem finiteFieldNilpotentCount_succ (n : ℕ) :
+    finiteFieldNilpotentCount K (n + 1) = Nat.card K ^ (n * n + n) := by
+  have hs := sum_nilpotentCount_div_automorphismCount K (n + 1)
+  rw [Fin.sum_univ_castSucc] at hs
+  simp only [Fin.val_castSucc, Fin.val_last] at hs
+  rw [sum_nilpotentCount_div_automorphismCount K n] at hs
+  have hg : (finiteFieldAutomorphismCount K n : ℚ) ≠ 0 := by
+    exact_mod_cast (finiteFieldAutomorphismCount_pos K n).ne'
+  have hh : (finiteFieldAutomorphismCount K (n + 1) : ℚ) ≠ 0 := by
+    exact_mod_cast (finiteFieldAutomorphismCount_pos K (n + 1)).ne'
+  have hp : 1 ≤ Nat.card K ^ (n + 1) :=
+    Nat.succ_le_of_lt (pow_pos (Nat.card_pos (α := K)) (n + 1))
+  have hr : (finiteFieldAutomorphismCount K (n + 1) : ℚ) =
+      (Nat.card K : ℚ) ^ n * ((Nat.card K : ℚ) ^ (n + 1) - 1) *
+        finiteFieldAutomorphismCount K n := by
+    rw [finiteFieldAutomorphismCount_succ, Nat.cast_mul, Nat.cast_mul,
+      Nat.cast_pow, Nat.cast_sub hp, Nat.cast_pow, Nat.cast_one]
+  have ht := congrArg (fun z : ℚ => z * finiteFieldAutomorphismCount K (n + 1)) hs
+  rw [add_mul, div_mul_cancel₀ _ hh, div_mul_cancel₀ _ hh] at ht
+  have hc : (Nat.card K : ℚ) ^ (n * n) / finiteFieldAutomorphismCount K n *
+      finiteFieldAutomorphismCount K (n + 1) =
+        (Nat.card K : ℚ) ^ (n * n + n) * ((Nat.card K : ℚ) ^ (n + 1) - 1) := by
+    rw [hr, pow_add]
+    field_simp
+    ring
+  rw [hc, show (n + 1) * (n + 1) = (n * n + n) + (n + 1) by ring, pow_add] at ht
+  have ha : (finiteFieldNilpotentCount K (n + 1) : ℚ) =
+      (Nat.card K : ℚ) ^ (n * n + n) := by linear_combination ht
+  exact_mod_cast ha
+
+/-- The Fine–Herstein count: exactly `q^(n*(n-1))` nilpotent endomorphisms. -/
+theorem finiteFieldNilpotentCount_eq (n : ℕ) :
+    finiteFieldNilpotentCount K n = Nat.card K ^ (n * (n - 1)) := by
+  cases n with
+  | zero => simp only [finiteFieldNilpotentCount_zero, Nat.zero_mul, pow_zero]
+  | succ n =>
+    rw [finiteFieldNilpotentCount_succ]
+    simp only [Nat.add_sub_cancel]
+    congr 1
+    ring
+
+/-- The endomorphism count is the same count for square matrices in standard coordinates. -/
+theorem card_nilpotent_matrices (n : ℕ) :
+    Nat.card {A : Matrix (Fin n) (Fin n) K // IsNilpotent A} =
+      Nat.card K ^ (n * (n - 1)) := by
+  let e := LinearMap.toMatrixAlgEquiv' (R := K) (n := Fin n)
+  let eN : NilpotentEnd K (Fin n → K) ≃
+      {A : Matrix (Fin n) (Fin n) K // IsNilpotent A} :=
+    { toFun := fun N => ⟨e N.1, N.2.map e⟩
+      invFun := fun A => ⟨e.symm A.1, A.2.map e.symm⟩
+      left_inv := fun N => Subtype.ext (e.symm_apply_apply N.1)
+      right_inv := fun A => Subtype.ext (e.apply_symm_apply A.1) }
+  rw [← Nat.card_congr eN]
+  exact finiteFieldNilpotentCount_eq K n
+
+#print axioms finiteFieldNilpotentCount_eq
+#print axioms card_nilpotent_matrices
 
 end GaloisForLFunctions.RepresentationLifting.OperatorKernels

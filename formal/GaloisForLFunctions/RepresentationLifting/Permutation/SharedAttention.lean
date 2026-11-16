@@ -45,8 +45,8 @@ theorem pool_perm (score : V → ℝ) (value : V → W) (x : ι → V) (e : Equi
     pool score value (x ∘ e) = pool score value x := by
   unfold pool
   congr 1
-  · exact congrArg Inv.inv (e.sum_comp (fun i => Real.exp (score (x i))))
-  · exact e.sum_comp (fun i => Real.exp (score (x i)) • value (x i))
+  · exact congrArg Inv.inv (Equiv.sum_comp e (fun i => Real.exp (score (x i))))
+  · exact Equiv.sum_comp e (fun i => Real.exp (score (x i)) • value (x i))
 
 /-- Queries reindex with tokens while each attention average remains unchanged. -/
 theorem attention_perm (score : V → V → ℝ) (value : V → V) (x : ι → V)
@@ -79,6 +79,7 @@ theorem readout_perm (score : V → V → ℝ) (value post : V → V)
   unfold readout
   rw [show (fun _ : ι => initial) = (fun _ : ι => initial) ∘ e from rfl,
     refine_perm, pool_perm]
+  rfl
 
 #print axioms pool_perm
 #print axioms refine_perm

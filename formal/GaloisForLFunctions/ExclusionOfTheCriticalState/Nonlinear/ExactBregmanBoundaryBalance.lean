@@ -10,6 +10,8 @@ exponential mode. Summing the first two moments bounds the signed
 arithmetic balance below by the terminal integral of `F * atan(F)`.
 For `0 < d ≤ 1`, the same estimate controls this integral with the
 logarithmic weight `log(2/d)`.
+Summing all three terminal moments recovers the square mass and gives
+the corresponding logarithmic boundary bound throughout the energy domain.
 -/
 
 noncomputable section
@@ -95,6 +97,49 @@ theorem arctanBoundaryMoment_logarithmic_bound {F : ℝ → ℝ}
   have he := arctanBoundaryMoment_exact_lower hF i hd
   linarith only [hc, he]
 
+/-- The three terminal moments decompose the ordinary terminal square mass exactly. -/
+theorem arctanBoundaryMoment_sum {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) (d : ℝ) :
+    arctanBoundaryMoment 0 d F + arctanBoundaryMoment 1 d F + arctanBoundaryMoment 2 d F =
+      ∫ u in Ioo (-d) 0, F u ^ 2 := by
+  rw [arctanBoundaryMoment_zero_add_one hF d]
+  have hm : Integrable (fun u => F u * Real.arctan (F u)) :=
+    integrable_mul_of_memLp hF.memLp_real (domain_arctan hF).memLp_real
+  unfold arctanBoundaryMoment
+  rw [← integral_add hm.integrableOn (integrableOn_arctanBoundaryMoment hF 2 d)]
+  apply integral_congr_ae
+  exact Eventually.of_forall fun u => by
+    change F u * Real.arctan (F u) +
+      ((F u - 0) ^ 2 - (F u - 0) * (Real.arctan (F u) - Real.arctan 0)) = F u ^ 2
+    rw [Real.arctan_zero, sub_zero, sub_zero]
+    ring
+
+/-- Summing the Bregman gaps bounds terminal square mass with the full Lévy tail. -/
+theorem terminal_square_exact_boundary_bound {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {d : ℝ} (hd : 0 < d) :
+    archLevyAntideriv d * (∫ u in Ioo (-d) 0, F u ^ 2) ≤ levyEnergy F := by
+  have h0 := arctanBoundaryMoment_exact_lower hF 0 hd
+  have h1 := arctanBoundaryMoment_exact_lower hF 1 hd
+  have h2 := arctanBoundaryMoment_exact_lower hF 2 hd
+  change archLevyAntideriv d * arctanBoundaryMoment 0 d F ≤
+    levyEnergy (Real.arctan ∘ F) at h0
+  change archLevyAntideriv d * arctanBoundaryMoment 1 d F ≤
+    arctanLevyDissipation F - levyEnergy (Real.arctan ∘ F) at h1
+  change archLevyAntideriv d * arctanBoundaryMoment 2 d F ≤
+    levyEnergy F - arctanLevyDissipation F at h2
+  rw [← arctanBoundaryMoment_sum hF d, mul_add, mul_add]
+  linarith only [h0, h1, h2]
+
+/-- Finite jump energy limits square-mass concentration at the half-line endpoint. -/
+theorem terminal_square_logarithmic_boundary_bound {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {d : ℝ} (hd : 0 < d) (hd1 : d ≤ 1) :
+    Real.log (2 / d) * (∫ u in Ioo (-d) 0, F u ^ 2) ≤ 2 * levyEnergy F := by
+  have hn : 0 ≤ ∫ u in Ioo (-d) 0, F u ^ 2 := integral_nonneg fun u => sq_nonneg (F u)
+  have hc := mul_le_mul_of_nonneg_right (log_two_div_le_twice_archLevyAntideriv hd hd1)
+    hn
+  have he := terminal_square_exact_boundary_bound hF hd
+  linarith only [hc, he]
+
 /-- The signed arithmetic balance bounds the nonlinear mass in every short terminal collar. -/
 theorem criticalState_arctan_balance_logarithmic_terminal_bound {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
@@ -132,6 +177,7 @@ theorem riemannHypothesis_or_criticalState_exact_bregman_boundary_balance :
 #print axioms criticalState_arctan_boundary_coefficient_improves
 #print axioms criticalState_arctan_balance_exact_terminal_lower
 #print axioms criticalState_arctan_balance_logarithmic_terminal_bound
+#print axioms terminal_square_logarithmic_boundary_bound
 #print axioms riemannHypothesis_or_criticalState_exact_bregman_boundary_balance
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState
