@@ -151,6 +151,18 @@ theorem continuous_paperFT_div {F : ℝ → ℝ} (hF : Integrable F) {p : ℂ} (
   have := congrArg Complex.re h
   rcases hs with rfl | rfl <;> simp at this <;> linarith
 
+theorem differentiableAt_gammaIntegrand (A : ℂ) (g r : ℝ) {p : ℂ} (hp : 0 < p.re) :
+    DifferentiableAt ℂ (fun p : ℂ => (A / (p - I * r) + conj A / (p + I * r)) / 2 * (g : ℂ)) p := by
+  have h1 : p - I * r ≠ 0 := by
+    intro h; have := congrArg Complex.re h; simp at this; linarith
+  have h2 : p + I * r ≠ 0 := by
+    intro h; have := congrArg Complex.re h; simp at this; linarith
+  have d1 : DifferentiableAt ℂ (fun p : ℂ => A / (p - I * r)) p :=
+    (differentiableAt_const _).div (differentiableAt_id.sub_const _) h1
+  have d2 : DifferentiableAt ℂ (fun p : ℂ => conj A / (p + I * r)) p :=
+    (differentiableAt_const _).div (differentiableAt_id.add_const _) h2
+  exact ((d1.add d2).div_const _).mul_const _
+
 /-- The Gamma pairing is holomorphic on `Re p > 0`. -/
 theorem differentiableOn_stateGamma {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) :
     DifferentiableOn ℂ (stateGamma F) {p : ℂ | 0 < p.re} := by
@@ -158,15 +170,14 @@ theorem differentiableOn_stateGamma {F : ℝ → ℝ} (hF : CriticalHalfLineEner
   have hne : ∀ p : ℂ, 0 < p.re → ∀ r : ℝ, p - I * r ≠ 0 ∧ p + I * r ≠ 0 := by
     intro p hp r
     constructor <;> intro h <;> have := congrArg Complex.re h <;> simp at this <;> linarith
+  unfold stateGamma
   refine DifferentiableOn.const_mul ?_ _
   refine differentiableOn_integral_of_locally_bounded (ν := volume)
     (F := fun (r : ℝ) (p : ℂ) => (paperFT (cx F) r / (p - I * r) +
       conj (paperFT (cx F) r) / (p + I * r)) / 2 * (EF.gammaBracket r : ℂ)) hU ?_ ?_ ?_
   · intro r p hp
-    have h := hne p hp r
-    refine DifferentiableAt.differentiableWithinAt ?_
-    exact ((((differentiableAt_const _).div (differentiableAt_id.sub_const _) h.1).add
-      ((differentiableAt_const _).div (differentiableAt_id.add_const _) h.2)).div_const _).mul_const _
+    exact (differentiableAt_gammaIntegrand (paperFT (cx F) r) (EF.gammaBracket r) r
+      hp).differentiableWithinAt
   · intro p hp
     have h1 := continuous_paperFT_div hF.integrable hp I (Or.inl rfl)
     have h2 : Continuous fun r : ℝ => conj (paperFT (cx F) r) / (p + I * r) := by
@@ -191,13 +202,14 @@ theorem differentiableOn_stateGamma {F : ℝ → ℝ} (hF : CriticalHalfLineEner
       linarith
     · have hA : Integrable fun r : ℝ => |EF.gammaBracket r| * ‖paperFT (cx F) r‖ ^ 2 :=
         hF.gamma.norm.congr (Eventually.of_forall fun r => by
-          simp only [norm_mul, norm_pow, norm_norm, Real.norm_eq_abs]; ring)
+          simp only [norm_mul, norm_pow, Real.norm_eq_abs, abs_norm]; ring)
       have hB : Integrable fun r : ℝ => |EF.gammaBracket r| * (1 + r ^ 2)⁻¹ := by
         have i1 := (integrable_inv_one_add_sq).const_mul |EvenSector.gammaLogConst|
         have i2 := HTGeometry.integrable_log_mul_inv_sq_add_sq (a := 1) one_pos
         refine (i1.add i2).mono'
           ((Continuous.mul (continuous_abs.comp WeilHerglotz.continuous_gammaBracket)
-            (by fun_prop : Continuous fun r : ℝ => (1 + r ^ 2)⁻¹)).aestronglyMeasurable)
+            (Continuous.inv₀ (f := fun r : ℝ => 1 + r ^ 2) (by fun_prop)
+              fun r => show (1 : ℝ) + r ^ 2 ≠ 0 by positivity)).aestronglyMeasurable)
           (Eventually.of_forall fun r => ?_)
         have hg := EvenSector.abs_gammaBracket_le_log r
         have hl : 0 ≤ Real.log (2 + |r|) := Real.log_nonneg (by linarith [abs_nonneg r])
@@ -221,9 +233,12 @@ theorem differentiableOn_stateGamma {F : ℝ → ℝ} (hF : CriticalHalfLineEner
         apply norm_ge_of_re_im hcpos hM
         · rcases hs with rfl | rfl <;> simp <;> rw [abs_of_pos (by linarith)] <;> linarith
         · rcases hs with rfl | rfl <;> simp
-          · have := abs_sub_abs_le_abs_sub r (-z.im); simp at this
-            rw [abs_add_comm] at *; linarith [abs_add_le z.im r, abs_sub_abs_le_abs_sub r (-z.im)]
-          · linarith [abs_sub_abs_le_abs_sub r z.im, abs_sub_comm z.im r]
+          · have h := abs_add_le (z.im + r) (-z.im)
+            rw [abs_neg, show z.im + r + -z.im = r by ring] at h
+            linarith
+          · have h := abs_add_le (z.im + -r) (-z.im)
+            rw [abs_neg, show z.im + -r + -z.im = -r by ring, abs_neg] at h
+            linarith
       have h1 : κ * (1 + |r|) ≤ ‖z - I * r‖ := by
         have := hlow (-1) (Or.inr rfl); simpa [sub_eq_add_neg, mul_comm, mul_left_comm] using this
       have h2 : κ * (1 + |r|) ≤ ‖z + I * r‖ := by
@@ -245,8 +260,7 @@ def stateTail (F : ℝ → ℝ) (p : ℂ) : ℂ :=
     (cexp (p * Real.log n) * ∫ u in Iio (-Real.log n), (F u : ℂ) * cexp (p * u))
 
 /-- The confinement mass bounds the mass of a profile beyond `-L`. -/
-theorem setIntegral_abs_le_confinement {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {L : ℝ}
-    (hL : 0 ≤ L) :
+theorem setIntegral_abs_le_confinement {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) (L : ℝ) :
     (∫ u in Iio (-L), |F u|) ≤
       Real.exp (-(4 * L)) * ((∫ u, F u ^ 2 * Real.exp (-(8 * u))) + 1 / 8) / 2 := by
   have hW := hF.exponential
@@ -260,9 +274,11 @@ theorem setIntegral_abs_le_confinement {F : ℝ → ℝ} (hF : CriticalHalfLineE
     set Y := Real.exp (2 * L) * Real.exp (4 * u)
     have hXY : |F u| = X * Y := by
       simp only [X, Y]
-      have : Real.exp (-(2 * L)) * Real.exp (2 * L) * (Real.exp (-(4 * u)) * Real.exp (4 * u)) = 1 := by
+      have h1 : Real.exp (-(2 * L)) * Real.exp (2 * L) * (Real.exp (-(4 * u)) * Real.exp (4 * u)) = 1 := by
         rw [← Real.exp_add, ← Real.exp_add, ← Real.exp_add]; simp
-      nlinarith [this]
+      calc |F u| = |F u| * (Real.exp (-(2 * L)) * Real.exp (2 * L) *
+            (Real.exp (-(4 * u)) * Real.exp (4 * u))) := by rw [h1, mul_one]
+        _ = _ := by ring
     have hX2 : Real.exp (-(4 * L)) * (F u ^ 2 * Real.exp (-(8 * u))) = X ^ 2 := by
       simp only [X, mul_pow, sq_abs, ← Real.exp_nat_mul]; ring_nf
     have hY2 : Real.exp (4 * L) * Real.exp (8 * u) = Y ^ 2 := by
@@ -279,8 +295,10 @@ theorem setIntegral_abs_le_confinement {F : ℝ → ℝ} (hF : CriticalHalfLineE
         setIntegral_mono_on habs hint measurableSet_Iio hpt
     _ = (Real.exp (-(4 * L)) * (∫ u in Iio (-L), F u ^ 2 * Real.exp (-(8 * u))) +
           Real.exp (4 * L) * (Real.exp (8 * (-L)) / 8)) / 2 := by
+        have hexp : (∫ a in Iio (-L), Real.exp (8 * a)) = Real.exp (8 * (-L)) / 8 := by
+          rw [← integral_Iic_eq_integral_Iio, integral_exp_mul_Iic (by norm_num)]
         rw [integral_div, integral_add (hW.integrableOn.const_mul _) hE, integral_const_mul,
-          integral_const_mul, ← integral_Iic_eq_integral_Iio, integral_exp_mul_Iic (by norm_num)]
+          integral_const_mul, hexp]
     _ ≤ Real.exp (-(4 * L)) * ((∫ u, F u ^ 2 * Real.exp (-(8 * u))) + 1 / 8) / 2 := by
         have hle : (∫ u in Iio (-L), F u ^ 2 * Real.exp (-(8 * u))) ≤
             ∫ u, F u ^ 2 * Real.exp (-(8 * u)) :=
@@ -298,7 +316,7 @@ theorem norm_stateTail_term_le {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDom
         ∫ u in Iio (-Real.log n), (F u : ℂ) * cexp (p * u))‖ ≤
       vonMangoldtAtom n * (Real.exp (-(4 * Real.log n)) *
         (((∫ u, F u ^ 2 * Real.exp (-(8 * u))) + 1 / 8) / 2)) := by
-  set L := Real.log n with hLdef
+  set L := Real.log n with _hLdef
   have hL : 0 ≤ L := Real.log_natCast_nonneg n
   have hatom : 0 ≤ vonMangoldtAtom n := by
     unfold vonMangoldtAtom; split_ifs
@@ -320,7 +338,7 @@ theorem norm_stateTail_term_le {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDom
         mul_le_mul_of_nonneg_left hint (Real.exp_pos _).le
     _ = ∫ u in Iio (-L), |F u| := by
         rw [← mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, one_mul]
-    _ ≤ _ := setIntegral_abs_le_confinement hF hL
+    _ ≤ _ := (setIntegral_abs_le_confinement hF L).trans_eq (by ring)
 
 /-- The prime tail is holomorphic on `Re p > 0`. -/
 theorem differentiableOn_stateTail {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) :
@@ -387,7 +405,7 @@ theorem stateGamma_ofReal (F : ℝ → ℝ) (p : ℝ) :
     push_cast
     ring
   simp_rw [hpt]
-  rw [integral_ofReal]
+  rw [integral_complex_ofReal]
   push_cast
   ring
 
@@ -397,7 +415,7 @@ theorem stateTail_ofReal (F : ℝ → ℝ) (p : ℝ) : stateTail F p = (primeTai
   refine tsum_congr fun n => ?_
   have hi : (∫ u in Iio (-Real.log n), (F u : ℂ) * cexp ((p : ℂ) * u)) =
       ((∫ u in Iio (-Real.log n), F u * Real.exp (p * u) : ℝ) : ℂ) := by
-    rw [← integral_ofReal]
+    rw [← integral_complex_ofReal]
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
     push_cast
     rfl

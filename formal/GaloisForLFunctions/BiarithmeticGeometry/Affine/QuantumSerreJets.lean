@@ -143,7 +143,3 @@ theorem quantumSerre_jet_eq_zero_iff (n : ℕ) (q : ℂˣ) (h : ℂ) :
     simp only [quantumSerre_jet_apply, hc.mpr he, ite_self, Matrix.zero_apply]
 
 end GaloisForLFunctions.BiarithmeticGeometry
-
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.quantumSerre_diagonal_eq_zero_iff
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.quantumSerre_oneSidedJet_both
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.quantumSerre_jet_eq_zero_iff

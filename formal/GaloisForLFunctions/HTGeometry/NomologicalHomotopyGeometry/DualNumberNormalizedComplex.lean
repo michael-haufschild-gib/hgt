@@ -126,8 +126,7 @@ theorem differential_on_inputs (n : ℕ) (F : ReducedCochain n) (x : Fin (n + 1)
   have hlast := Fin.prod_univ_castSucc x
   ext
   · simp [cochain, differential, product, eps, MultilinearMap.mkPiRing_apply]
-  · simp only [cochain, MultilinearMap.mkPiRing_apply, Prod.snd_smul, Prod.snd_add,
-      smul_eq_mul]
+  · simp only [cochain, MultilinearMap.mkPiRing_apply, Prod.snd_add]
     dsimp [differential, product, eps]
     linear_combination (F (fun _ => 1)).1 * hfirst +
       ((-1 : ℝ) ^ (n + 1) * (F (fun _ => 1)).1) * hlast
@@ -175,7 +174,7 @@ def eulerAction (n : ℕ) (u : Dual) : Dual := (-(n : ℝ) * u.1, (1 - n) * u.2)
 theorem eulerAction_eq_insertions (n : ℕ) (u : Dual) :
     eulerAction n u = (0, u.2) - ∑ _ : Fin n, u := by
   simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin]
-  ext <;> (simp [eulerAction, nsmul_eq_mul]; ring)
+  ext <;> simp [eulerAction, nsmul_eq_mul, sub_mul]
 
 theorem eulerAction_differential (n : ℕ) (u : Dual) :
     eulerAction (n + 1) (differential n u) = differential n (eulerAction n u) := by
@@ -312,7 +311,8 @@ theorem cyclicMultiplicity_odd (n : ℕ) : cyclicMultiplicity (2 * n + 1) = 2 * 
   have hsign (i : ℕ) : (-1 : ℝ) ^ (i * ((2 * n + 1) - 1)) = 1 := by
     rw [Nat.add_sub_cancel, Nat.mul_comm i, pow_mul]
     simp [pow_mul]
-  simp [cyclicMultiplicity, hsign]
+  simp only [cyclicMultiplicity, hsign]
+  simp
 
 /-- Frobenius transpose of the normalized cyclic operator; it lowers cochain degree by one. -/
 def bv (n : ℕ) (u : Dual) : Dual := (cyclicMultiplicity n * u.2, 0)
@@ -354,17 +354,21 @@ theorem bv_differential (n : ℕ) (u : Dual) :
     differential n (bv (n + 1) u) + bv (n + 2) (differential (n + 1) u) = 0 := by
   rcases Nat.even_or_odd n with ⟨k, hk⟩ | ⟨k, hk⟩
   · have hn : n = 2 * k := by omega
-    subst n
+    rw [hn]
     rw [differential_even, show 2 * k + 2 = 2 * (k + 1) by omega, bv_even]
     simp
   · have hn : n = 2 * k + 1 := by omega
-    subst n
+    rw [hn]
     rw [show 2 * k + 1 + 1 = 2 * (k + 1) by omega, bv_even, differential_even]
     simp [differential, bv]
 
 /-- Abbaspour's BV-derived bracket with the degree-one Euler class. -/
 def bvEulerBracket (n : ℕ) (u : Dual) : Dual :=
   -bv (n + 1) (cup eps u) + cup (bv 1 eps) u - cup eps (bv n u)
+
+theorem bvEulerBracket_zero (u : Dual) : bvEulerBracket 0 u = eulerAction 0 u := by
+  simp [bvEulerBracket, bv_odd 0, bv_even 0, cup, eps, product, eulerAction]
+  ext <;> simp
 
 /-- On positive even classes the BV-derived bracket equals the Euler insertion bracket. -/
 theorem bvEulerBracket_even (n : ℕ) (a : ℝ) :

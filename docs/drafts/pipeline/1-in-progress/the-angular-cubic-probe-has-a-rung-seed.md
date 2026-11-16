@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Thirty-eight helper modules passed final plain Lean checks and are umbrella-wired.
+- **Verified:** Forty-two helper modules passed final plain Lean checks and are umbrella-wired.
 - **Missing:** Angular source moment induction and both common-signal estimates.
 
 ## Receiver
@@ -116,7 +116,7 @@ The normalized order `r≥1` satisfies
 `v^(r−1) Dbar^r(F∘T)(0) = (-conj(c)/c)^r/(|c|²v²) · v₀^(r−1) Dz^r F(v₀,−d/c)`.
 The angular factor has modulus one, so the absolute reflection scale is independent of `r`.
 This removes the extra height powers. Angular-kernel physical energy is verified below;
-actual completed-source energy still needs the arithmetic phase identification.
+actual completed-source energy still needs source reconstruction and energy assembly.
 
 ## Higher source and reflected kernels
 
@@ -175,7 +175,7 @@ retain the original radial scale; the reflected multiplier has modulus `cuspWidt
 and exact smoothed reflection at every source cusp, with the original conductor scale.
 `AngularFiniteReflection` proves the actual angular completed sum has finite-cusp reflection
 in arbitrary cusp coordinates and exact unit/ramified/squarefree/cube reindexing.
-The reflected energy estimates still need their angular extensions.
+Actual completed-source energy still requires reconstruction and assembly.
 
 `AngularCuspPhase` proves the extra denominator phase is multiplicative and has modulus
 one for nonzero denominators. Sixfold jet increments remove fixed cusp unit rotations.
@@ -197,9 +197,28 @@ the terminal factor `min(1,R^(1/4))`, with polynomial height bounds uniform in a
 
 `AngularPhysicalRows` proves exact angular-kernel separation into the original frozen
 arithmetic branches, under a common integrable density with polynomial height control.
-Actual denominator and frequency phases still require their arithmetic identification.
+Actual row identification must insert the separated denominator and frequency phases.
 
 `AngularPhysicalEnergy` applies the filtered arithmetic energy theorem to separated angular
 kernels. The original reflected exponent, terminal dual width and surviving-branch factor
 are unchanged; the height degree is uniform in arithmetic types. Its bounded weight slots
-still need identification with the actual angular denominator and frequency characters.
+still need the exact angular row identity.
+
+`AngularPhaseIdeals` identifies the extra denominator phase exactly as
+`idealPsiSix(span{c})^(2k)`. It is trivial on units, bounded by one, and common to all
+finite Fourier residues of a controlled cusp. The row/slot/column insertion remains pending.
+
+`AngularRowPhases.angular_reflected_denominator_phase` separates the actual reflected
+ideal character into fixed-conductor, row and slot factors. The opposite frequency
+character is a bounded column weight. Each factor has norm at most one.
+
+`AngularFixedArrays` identifies actual finite-cusp reflection with angular fixed arrays.
+Full-index summability and coefficient normalization retain the original square-root/cube
+denominator. A common controlled cusp sum factors its denominator character and leaves
+the original integral trace phase and opposite frequency character inside the series.
+
+`AngularControlledReflection.completedT_angular_canonical_smoothed_reflection` reflects
+`completedT(angularSourceTwist k Ψ)` assuming finite periodicity only for `Ψ`.
+Exact finite phase inversion and absolute source summability discharge this identity.
+Controlled strata retain their original local bracket product, multiplied by denominator
+character `elemPsiSix(c∏p)^(2k)` and opposite frequency character.

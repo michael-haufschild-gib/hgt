@@ -14,7 +14,6 @@ surjectivity over the original square constant field.
 noncomputable section
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open Polynomial
-open GaloisForLFunctions.HTGeometry
 variable (p : ℕ) [Fact p.Prime] (s : ℕ) (c : (SquareConstantField p s)ˣ)
 local notation "K" => SquareConstantField p s
 local notation "H" => SquareKummerField p s c (p ^ (s + 1) - 2) 1
@@ -55,11 +54,12 @@ theorem hermitianAffineCoordinate_transcendental
   exact kummerBranchField_coordinate_transcendental c (p ^ (s + 1) - 2) 1
     (p ^ (s + 1)) hr.isAlgebraic
 
-private theorem hermitianAffine_eval (ξ : Kˣ) (a : squareFrobeniusFixedField p s) :
-    (kummerBranchFieldPolynomial c (p ^ (s + 1) - 2) 1 (p ^ (s + 1))).eval₂
-      (fracRealize (hermitianAffineCoordinate_transcendental p s c ξ a))
-      (algebraMap K H ξ * AdjoinRoot.root
-        (kummerBranchFieldPolynomial c (p ^ (s + 1) - 2) 1 (p ^ (s + 1)))) = 0 := by
+private theorem hermitianAffine_equation (ξ : Kˣ) (a : squareFrobeniusFixedField p s) :
+    (algebraMap K H ξ * AdjoinRoot.root
+      (kummerBranchFieldPolynomial c (p ^ (s + 1) - 2) 1 (p ^ (s + 1)))) ^
+        (p ^ (s + 1) + 1) =
+    algebraMap K H c * hermitianAffineCoordinate p s c ξ a *
+      (1 - hermitianAffineCoordinate p s c ξ a ^ (p ^ (s + 1) - 2 + 1)) ^ 1 := by
   let Q := p ^ (s + 1)
   let y := algebraMap K[X] H X
   let z := AdjoinRoot.root (kummerBranchFieldPolynomial c (Q - 2) 1 Q)
@@ -77,34 +77,25 @@ private theorem hermitianAffine_eval (ξ : Kˣ) (a : squareFrobeniusFixedField p
     ring
   have hwprod : w * (1 - w ^ (Q - 1)) = w - w ^ Q := by
     rw [mul_sub, mul_one, ← pow_succ', Nat.sub_add_cancel (by omega : 1 ≤ Q)]
-  change (X ^ (Q + 1) - C (algebraMap K[X] (FractionRing K[X])
-    (kummerBranch c (Q - 2) 1))).eval₂
-      (fracRealize (hermitianAffineCoordinate_transcendental p s c ξ a))
-      (algebraMap K H ξ * z) = 0
-  rw [eval₂_sub, eval₂_pow, eval₂_X, eval₂_C]
-  change (algebraMap K H ξ * z) ^ (Q + 1) -
-    fracRealize (hermitianAffineCoordinate_transcendental p s c ξ a)
-      (algebraMap K[X] (FractionRing K[X]) (kummerBranch c (Q - 2) 1)) = 0
-  rw [fracRealize_algebraMap, kummerBranch]
-  simp only [map_mul, map_pow, map_sub, map_one, aeval_C, aeval_X, pow_one]
-  change (algebraMap K H ξ * z) ^ (Q + 1) -
-    algebraMap K H c * w * (1 - w ^ (Q - 2 + 1)) = 0
-  rw [show Q - 2 + 1 = Q - 1 by omega, mul_assoc (algebraMap K H c),
-    hwprod, hw, mul_pow, hz, ← map_pow]
+  change (algebraMap K H ξ * z) ^ (Q + 1) =
+    algebraMap K H c * w * (1 - w ^ (Q - 2 + 1)) ^ 1
+  rw [pow_one, show Q - 2 + 1 = Q - 1 by omega,
+    mul_assoc (algebraMap K H c), hwprod, hw, mul_pow, hz, ← map_pow]
   ring
 
 /-- The affine Hermitian substitutions extend to constant-field homomorphisms. -/
 def hermitianAffineHom (ξ : Kˣ) (a : squareFrobeniusFixedField p s) : H →ₐ[K] H :=
-  AdjoinRoot.liftAlgHom _ (fracRealize (hermitianAffineCoordinate_transcendental p s c ξ a))
+  kummerBranchFieldHomOfCoordinates c (p ^ (s + 1) - 2) 1 (p ^ (s + 1))
+    (hermitianAffineCoordinate p s c ξ a)
     (algebraMap K H ξ * AdjoinRoot.root
       (kummerBranchFieldPolynomial c (p ^ (s + 1) - 2) 1 (p ^ (s + 1))))
-    (hermitianAffine_eval p s c ξ a)
+    (hermitianAffineCoordinate_transcendental p s c ξ a)
+    (hermitianAffine_equation p s c ξ a)
 
 /-- The rational coordinate transforms by norm scaling and fixed-field translation. -/
 theorem hermitianAffineHom_coordinate (ξ : Kˣ) (a : squareFrobeniusFixedField p s) :
-    hermitianAffineHom p s c ξ a (algebraMap K[X] H X) = hermitianAffineCoordinate p s c ξ a := by
-  rw [IsScalarTower.algebraMap_apply K[X] (FractionRing K[X]), AdjoinRoot.algebraMap_eq,
-    hermitianAffineHom, AdjoinRoot.liftAlgHom_of, fracRealize_algebraMap, aeval_X]
+    hermitianAffineHom p s c ξ a (algebraMap K[X] H X) = hermitianAffineCoordinate p s c ξ a :=
+  kummerBranchFieldHomOfCoordinates_coordinate _ _ _ _ _ _ _ _
 
 /-- The Hermitian radical is multiplied by the chosen unit. -/
 theorem hermitianAffineHom_root (ξ : Kˣ) (a : squareFrobeniusFixedField p s) :
@@ -112,7 +103,7 @@ theorem hermitianAffineHom_root (ξ : Kˣ) (a : squareFrobeniusFixedField p s) :
       (AdjoinRoot.root (kummerBranchFieldPolynomial c (p ^ (s + 1) - 2) 1 (p ^ (s + 1)))) =
     algebraMap K H ξ * AdjoinRoot.root
       (kummerBranchFieldPolynomial c (p ^ (s + 1) - 2) 1 (p ^ (s + 1))) :=
-  AdjoinRoot.liftAlgHom_root _ _ _ _
+  kummerBranchFieldHomOfCoordinates_root _ _ _ _ _ _ _ _
 
 /-- Both original generators can be recovered from their affine images. -/
 theorem hermitianAffineHom_surjective (ξ : Kˣ) (a : squareFrobeniusFixedField p s) :

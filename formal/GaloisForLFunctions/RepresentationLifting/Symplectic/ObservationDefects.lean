@@ -66,19 +66,17 @@ theorem permutationMoving_endomorphism_defect
 theorem transitiveAction_observation_factors {A : Type*} [AddCommGroup A] (n : ℕ)
     (ρ : TransitiveActions.Transitive A (Fin (n + 1)) 0)
     (f : (Fin (n + 1) → ℂ) →ₗ[ℂ] W) :
-    ∃ g, g.comp (realConstraintOperator
+    ∃ g : (Unit ⊕ (A × Fin (n + 1)) → ℂ) →ₗ[ℂ] W, g.comp (realConstraintOperator
       (permutationMovingConstraints (fun a => (ρ.val a).toMul))) = f := by
   let T := realConstraintOperator (permutationMovingConstraints (fun a => (ρ.val a).toMul))
   have hk : T.ker = ⊥ := by
-    rw [T, realConstraintOperator_kernel, transitiveAction_movingKernel_eq_bot]
+    dsimp only [T]
+    rw [realConstraintOperator_kernel, transitiveAction_movingKernel_eq_bot]
   change f ∈ (precompose T).range
   rw [range_precompose]
   apply LinearMap.ext
   intro v
-  have hv : v.val = 0 := by
-    have := v.property
-    rw [hk] at this
-    exact this
+  have hv : v.val = 0 := hk.le v.property
   change f v.val = 0
   rw [hv, map_zero]
 

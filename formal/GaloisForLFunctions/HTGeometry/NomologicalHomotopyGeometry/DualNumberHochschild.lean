@@ -165,10 +165,22 @@ def centeredParameter (u : Dual) (t : ℝ) : ℝ := t * u.1 + (t * u.2 / 2) ^ 2
 def centeredCoordinates (u : Dual) (t : ℝ) : Dual ≃ₗ[ℝ] Dual where
   toFun x := (x.1 - t * u.2 / 2 * x.2, x.2)
   invFun x := (x.1 + t * u.2 / 2 * x.2, x.2)
-  left_inv x := by ext; dsimp; ring
-  right_inv x := by ext; dsimp; ring
-  map_add' x y := by ext; dsimp; ring
-  map_smul' c x := by ext; dsimp; ring
+  left_inv x := by
+    apply Prod.ext
+    · dsimp; ring
+    · rfl
+  right_inv x := by
+    apply Prod.ext
+    · dsimp; ring
+    · rfl
+  map_add' x y := by
+    apply Prod.ext
+    · dsimp; ring
+    · rfl
+  map_smul' c x := by
+    apply Prod.ext
+    · dsimp; ring
+    · rfl
 
 /-- Exact nonlinear normal form; the eliminated boundary contributes a quadratic scalar term. -/
 theorem centeredCoordinates_product (u : Dual) (t : ℝ) (x y : Dual) :

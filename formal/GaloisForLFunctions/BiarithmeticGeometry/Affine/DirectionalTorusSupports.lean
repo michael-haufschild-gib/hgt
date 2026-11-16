@@ -123,7 +123,3 @@ theorem directionalRestriction_atomic_or_parallel
   · exact Or.inr h
 
 end GaloisForLFunctions.BiarithmeticGeometry
-
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.wrappedLineFamily_inter_countable_or_parallel
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.restricted_directional_measure_countable_or_parallel
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.directionalRestriction_atomic_or_parallel

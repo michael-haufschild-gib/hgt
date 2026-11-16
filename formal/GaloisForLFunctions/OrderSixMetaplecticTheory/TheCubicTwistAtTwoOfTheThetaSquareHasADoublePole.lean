@@ -102,6 +102,8 @@ theorem cubicTwistCoeff_eq_symbol (h : O) :
     have hs : symbol h (-2) = 0 := by
       rw [symbol_congr (show (-2 : O) ∣ h - 0 by simpa using hd),
         symbol_prime (-2) negTwo_prime primary_neg_two, primeValue_eq _ hgood, map_zero]
+      haveI : Nontrivial (O ⧸ Ideal.span {(-2 : O)}) := Ideal.Quotient.nontrivial_iff.mpr hmax.ne_top
+      exact MulChar.map_zero _
     rw [cubicTwistCoeff, h0, cubeRootF_zero, hs, map_zero]
   · rw [cubicTwistCoeff, symbol_neg_two_eq_cubeRootF h hd]
 
@@ -286,5 +288,155 @@ theorem besselDirichlet_fourShiftCoeff (s : ℂ) (hs : 4 < s.re) :
     _ = _ := by
         rw [tsum_geometric_of_norm_lt_one hq, hLchi]
         ring
+
+
+/-! ### The 2-adic factor -/
+
+/-- `c(s) = 2^{−s}·2·2^{−s}\overline{G̃(−2)}(1 − 4·2^{−3s})^{−1} + 2^{s−2}`: the combination
+`2^{−s}D₄ + 2^{s−2}L_χ` is `c(s)L_χ`. -/
+def twoAdicFactor (s : ℂ) : ℂ :=
+  (2 : ℂ) ^ (-s) * (2 * (2 : ℂ) ^ (-s) * star (normalizedCubicUnitGauss (-2)) *
+    (1 - 4 * ((2 : ℂ) ^ (-s)) ^ 3)⁻¹) + (2 : ℂ) ^ (s - 2)
+
+theorem combination_eq (s : ℂ) (hs : 4 < s.re) :
+    (2 : ℂ) ^ (-s) * besselDirichlet fourShiftCoeff s + (2 : ℂ) ^ (s - 2) * besselDirichlet cubicTwistCoeff s =
+      twoAdicFactor s * besselDirichlet cubicTwistCoeff s := by
+  rw [besselDirichlet_fourShiftCoeff s hs, twoAdicFactor]
+  ring
+
+theorem two_cpow_neg_ne_zero (s : ℂ) : (2 : ℂ) ^ (-s) ≠ 0 :=
+  norm_pos_iff.mp (by rw [norm_two_cpow_neg]; positivity)
+
+theorem twoAdicFactor_mul (s : ℂ) (hs : 2 / 3 < s.re) :
+    twoAdicFactor s * (4 * (2 : ℂ) ^ (-s) * (1 - 4 * ((2 : ℂ) ^ (-s)) ^ 3)) =
+      1 + 4 * ((2 : ℂ) ^ (-s)) ^ 3 * (2 * star (normalizedCubicUnitGauss (-2)) - 1) := by
+  have h1 := one_sub_four_mul_cube_ne_zero s hs
+  have ht := two_cpow_neg_ne_zero s
+  have h2 : (2 : ℂ) ^ (s - 2) = (4 * (2 : ℂ) ^ (-s))⁻¹ := by
+    rw [Complex.cpow_sub _ _ two_ne_zero, Complex.cpow_neg, show (2 : ℂ) ^ (2 : ℂ) = 4 by norm_num]
+    field_simp
+  rw [twoAdicFactor, h2]
+  generalize (2 : ℂ) ^ (-s) = t at h1 ht ⊢
+  have e1 : (1 - 4 * t ^ 3)⁻¹ * (1 - 4 * t ^ 3) = 1 := inv_mul_cancel₀ h1
+  have e2 : (4 * t)⁻¹ * (4 * t) = 1 := inv_mul_cancel₀ (mul_ne_zero (by norm_num) ht)
+  linear_combination (8 * t ^ 3 * star (normalizedCubicUnitGauss (-2))) * e1 + (1 - 4 * t ^ 3) * e2
+
+/-- `(2^{15/4})^{-1} < 1/12`. -/
+theorem two_rpow_neg_fifteen_quarters_lt : (2 : ℝ) ^ (-15 / 4 : ℝ) < 1 / 12 := by
+  have h4 : ((2 : ℝ) ^ (-15 / 4 : ℝ)) ^ (4 : ℕ) = 1 / 32768 := by
+    rw [← Real.rpow_natCast, ← Real.rpow_mul (by norm_num),
+      show (-15 / 4 : ℝ) * ((4 : ℕ) : ℝ) = -((15 : ℕ) : ℝ) by norm_num, Real.rpow_neg (by norm_num),
+      Real.rpow_natCast]
+    norm_num
+  by_contra hge
+  push Not at hge
+  have := pow_le_pow_left₀ (by norm_num) hge 4
+  rw [h4] at this
+  norm_num at this
+
+/-- `c(s) ≠ 0` for `Re s > 5/4`: `c(s)·4·2^{−s}(1 − 4·2^{−3s}) = 1 + 4·2^{−3s}(2\overline{G̃(−2)} − 1)` and
+`12·2^{−3Re s} < 1`. -/
+theorem twoAdicFactor_ne_zero (s : ℂ) (hs : 5 / 4 < s.re) : twoAdicFactor s ≠ 0 := by
+  intro h0
+  have key := twoAdicFactor_mul s (by linarith)
+  rw [h0, zero_mul] at key
+  have hG : ‖star (normalizedCubicUnitGauss (-2))‖ = 1 := by
+    rw [norm_star, normalizedCubicUnitGauss_prime_norm (-2) negTwo_prime primary_neg_two]
+  have h3 : ‖2 * star (normalizedCubicUnitGauss (-2)) - 1‖ ≤ 3 := by
+    calc _ ≤ ‖2 * star (normalizedCubicUnitGauss (-2))‖ + ‖(1 : ℂ)‖ := norm_sub_le _ _
+      _ = 3 := by rw [norm_mul, hG]; norm_num
+  have hc : ‖4 * ((2 : ℂ) ^ (-s)) ^ 3‖ < 1 / 3 := by
+    rw [norm_four_mul_cube]
+    have h := Real.rpow_lt_rpow_of_exponent_lt (by norm_num : (1 : ℝ) < 2)
+      (show -s.re * 3 < -15 / 4 by linarith)
+    linarith [two_rpow_neg_fifteen_quarters_lt]
+  have hX : ‖4 * ((2 : ℂ) ^ (-s)) ^ 3 * (2 * star (normalizedCubicUnitGauss (-2)) - 1)‖ < 1 := by
+    rw [norm_mul]
+    calc _ ≤ ‖4 * ((2 : ℂ) ^ (-s)) ^ 3‖ * 3 := mul_le_mul_of_nonneg_left h3 (norm_nonneg _)
+      _ < 1 / 3 * 3 := by linarith
+      _ = 1 := by norm_num
+  rw [show 4 * ((2 : ℂ) ^ (-s)) ^ 3 * (2 * star (normalizedCubicUnitGauss (-2)) - 1) = -1 by
+    linear_combination key.symm, norm_neg, norm_one] at hX
+  exact lt_irrefl _ hX
+
+theorem twoAdicFactor_differentiableAt (s : ℂ) (hs : 2 / 3 < s.re) : DifferentiableAt ℂ twoAdicFactor s := by
+  have hne := one_sub_four_mul_cube_ne_zero s hs
+  have ht : DifferentiableAt ℂ (fun s : ℂ => (2 : ℂ) ^ (-s)) s :=
+    DifferentiableAt.const_cpow (f := fun s : ℂ => -s) differentiableAt_id.neg (Or.inl two_ne_zero)
+  have hu : DifferentiableAt ℂ (fun s : ℂ => (2 : ℂ) ^ (s - 2)) s :=
+    DifferentiableAt.const_cpow (f := fun s : ℂ => s - 2) (differentiableAt_id.sub_const 2) (Or.inl two_ne_zero)
+  have hinv : DifferentiableAt ℂ (fun s : ℂ => (1 - 4 * ((2 : ℂ) ^ (-s)) ^ 3)⁻¹) s :=
+    ((differentiableAt_const _).sub ((differentiableAt_const _).mul (ht.pow 3))).inv hne
+  change DifferentiableAt ℂ (fun s : ℂ => (2 : ℂ) ^ (-s) * (2 * (2 : ℂ) ^ (-s) *
+    star (normalizedCubicUnitGauss (-2)) * (1 - 4 * ((2 : ℂ) ^ (-s)) ^ 3)⁻¹) + (2 : ℂ) ^ (s - 2)) s
+  exact (ht.mul ((((differentiableAt_const _).mul ht).mul (differentiableAt_const _)).mul hinv)).add hu
+
+/-- `c(4/3) = 2^{−2/3}(1 + ⅔\overline{G̃(−2)})`. -/
+theorem twoAdicFactor_four_thirds :
+    twoAdicFactor (4 / 3) = (2 : ℂ) ^ (-(2 / 3 : ℂ)) * (1 + 2 / 3 * star (normalizedCubicUnitGauss (-2))) := by
+  have h2 : (2 : ℂ) ≠ 0 := two_ne_zero
+  have ht3 : ((2 : ℂ) ^ (-(4 / 3 : ℂ))) ^ 3 = 1 / 16 := by
+    rw [← Complex.cpow_nat_mul, show ((3 : ℕ) : ℂ) * -(4 / 3) = -(4 : ℂ) by norm_num, Complex.cpow_neg,
+      show (2 : ℂ) ^ (4 : ℂ) = 16 by norm_num]
+    norm_num
+  have ht2 : ((2 : ℂ) ^ (-(4 / 3 : ℂ))) ^ 2 = (2 : ℂ) ^ (-(2 / 3 : ℂ)) / 4 := by
+    rw [← Complex.cpow_nat_mul, show ((2 : ℕ) : ℂ) * -(4 / 3) = -(2 / 3) + -(2 : ℂ) by norm_num,
+      Complex.cpow_add _ _ h2, Complex.cpow_neg 2 2, show (2 : ℂ) ^ (2 : ℂ) = 4 by norm_num]
+    ring
+  have hs2 : (2 : ℂ) ^ ((4 / 3 : ℂ) - 2) = (2 : ℂ) ^ (-(2 / 3 : ℂ)) := by norm_num
+  rw [twoAdicFactor, hs2, ht3]
+  have e : (2 : ℂ) ^ (-(4 / 3 : ℂ)) * (2 * (2 : ℂ) ^ (-(4 / 3 : ℂ)) * star (normalizedCubicUnitGauss (-2)) *
+      (1 - 4 * (1 / 16))⁻¹) = 8 / 3 * ((2 : ℂ) ^ (-(4 / 3 : ℂ))) ^ 2 * star (normalizedCubicUnitGauss (-2)) := by
+    norm_num
+    ring
+  rw [e, ht2]
+  ring
+
+theorem one_add_two_thirds_gauss_ne_zero : 1 + 2 / 3 * star (normalizedCubicUnitGauss (-2)) ≠ 0 := by
+  intro h0
+  have hG : ‖star (normalizedCubicUnitGauss (-2))‖ = 1 := by
+    rw [norm_star, normalizedCubicUnitGauss_prime_norm (-2) negTwo_prime primary_neg_two]
+  have h := congrArg norm (show 2 / 3 * star (normalizedCubicUnitGauss (-2)) = -1 by linear_combination h0)
+  rw [norm_mul, hG, norm_neg, norm_one] at h
+  norm_num at h
+
+/-! ### The double pole -/
+
+/-- **The cubic twist at two of the theta square has a double pole.** `M(s)L_χ(s)`, with
+`L_χ(s) = Σ_{h≠0}(h/−2)₃T(h)²(4π|ξ_h|)^{−s}`, continues to `{5/4 < Re s < 13/3, Im s > 0}` and to a punctured
+neighbourhood of `4/3`, and `(s − 4/3)²M(s)L_χ(s) → 108π³r³/c(4/3)` with
+`c(4/3) = 2^{−2/3}(1 + ⅔\overline{G̃(−2)}) ≠ 0`. -/
+theorem cubicTwistAtTwo_double_pole :
+    ∃ Λ : ℂ → ℂ,
+      (∀ s : ℂ, 4 < s.re → s.re < 13 / 3 → 0 < s.im →
+        Λ s = besselSqMellin s * besselDirichlet cubicTwistCoeff s) ∧
+      (∀ s : ℂ, 5 / 4 < s.re → s.re < 13 / 3 → 0 < s.im → DifferentiableAt ℂ Λ s) ∧
+      (∀ᶠ s in 𝓝[≠] (4 / 3 : ℂ), DifferentiableAt ℂ Λ s) ∧
+      Tendsto (fun s => (s - 4 / 3) ^ 2 * Λ s) (𝓝[≠] (4 / 3 : ℂ))
+        (𝓝 (108 * (Real.pi : ℂ) ^ 3 * constantArithmeticResidue ^ 3 / twoAdicFactor (4 / 3))) ∧
+      twoAdicFactor (4 / 3) =
+        (2 : ℂ) ^ (-(2 / 3 : ℂ)) * (1 + 2 / 3 * star (normalizedCubicUnitGauss (-2))) ∧
+      108 * (Real.pi : ℂ) ^ 3 * constantArithmeticResidue ^ 3 / twoAdicFactor (4 / 3) ≠ 0 := by
+  obtain ⟨Λ, hΛ, hΛd, hΛn, hΛl, hne⟩ := twoAdicCubicTwist_double_pole
+  have hre43 : (5 / 4 : ℝ) < (4 / 3 : ℂ).re := by norm_num
+  have hc0 : twoAdicFactor (4 / 3) ≠ 0 := twoAdicFactor_ne_zero _ hre43
+  refine ⟨fun s => Λ s / twoAdicFactor s, fun s hs4 hs hi => ?_, fun s hs1 hs hi => ?_, ?_, ?_,
+    twoAdicFactor_four_thirds, div_ne_zero hne hc0⟩
+  · have hc := twoAdicFactor_ne_zero s (by linarith)
+    show Λ s / twoAdicFactor s = _
+    rw [hΛ s hs4 hs hi, combination_eq s hs4, div_eq_iff hc]
+    ring
+  · exact (hΛd s (by linarith) hs hi).div (twoAdicFactor_differentiableAt s (by linarith))
+      (twoAdicFactor_ne_zero s hs1)
+  · have hre : ∀ᶠ s in 𝓝[≠] (4 / 3 : ℂ), 5 / 4 < s.re :=
+      eventually_nhdsWithin_of_eventually_nhds
+        ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds hre43)
+    filter_upwards [hΛn, hre] with s h1 h2
+    exact h1.div (twoAdicFactor_differentiableAt s (by linarith)) (twoAdicFactor_ne_zero s h2)
+  · have hcont : Tendsto twoAdicFactor (𝓝[≠] (4 / 3 : ℂ)) (𝓝 (twoAdicFactor (4 / 3))) :=
+      (twoAdicFactor_differentiableAt _ (by linarith)).continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+    refine (hΛl.div hcont hc0).congr' (Eventually.of_forall fun s => ?_)
+    simp only [Pi.div_apply]
+    ring
 
 end GaloisForLFunctions.OrderSixMetaplecticTheory

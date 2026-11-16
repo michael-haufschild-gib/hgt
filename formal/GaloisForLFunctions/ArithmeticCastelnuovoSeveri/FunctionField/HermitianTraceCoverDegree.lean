@@ -36,12 +36,14 @@ theorem hermitianKummerFieldHom_finrank :
   let J := f.fieldRange
   let P : K[X] := frobeniusTraceSum p ((d + 1) * (r + 1)) (m + 1) X ^ R
   have hP : aeval x P = y := by
-    simp only [P, frobeniusTraceSum, map_pow, map_sum, aeval_X,
-      y, hermitianTraceFieldCoordinate, x, R]
+    change aeval x (frobeniusTraceSum p ((d + 1) * (r + 1)) (m + 1) X ^ R) =
+      frobeniusTraceSum p ((d + 1) * (r + 1)) (m + 1) x ^ R
+    simp only [frobeniusTraceSum, map_pow, map_sum, aeval_X]
   have hd : (d + 1) * (r + 1) - 1 + 1 = (d + 1) * (r + 1) :=
     Nat.sub_add_cancel (Nat.mul_pos (Nat.succ_pos d) (Nat.succ_pos r))
   have hdeg : P.natDegree = p ^ ((d + 1) * (r + 1) * m) * R := by
-    rw [P, natDegree_pow]
+    dsimp only [P]
+    rw [natDegree_pow]
     have ht := frobeniusTraceSum_polynomial_natDegree (K := K) p ((d + 1) * (r + 1) - 1) m
     rw [hd] at ht
     rw [ht, Nat.mul_comm]

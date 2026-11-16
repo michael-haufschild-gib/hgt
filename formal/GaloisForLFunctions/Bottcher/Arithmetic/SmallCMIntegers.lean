@@ -125,7 +125,3 @@ theorem closed_small_cm_integer_iff (x : 𝓞 K) :
         Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2), Real.sqrt_nonneg (2 : ℝ)]
 
 end Bottcher.Arithmetic
-
-#print axioms Bottcher.Arithmetic.small_cm_integer_iff
-#print axioms Bottcher.Arithmetic.cm_integer_gap
-#print axioms Bottcher.Arithmetic.closed_small_cm_integer_iff

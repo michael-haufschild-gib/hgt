@@ -145,8 +145,3 @@ theorem upperConj_bounded_iff_fixed (A : Matrix (Fin 2) (Fin 2) ℝ) :
     exact ⟨h10, by linarith only [h01]⟩
 
 end GaloisForLFunctions.BiarithmeticGeometry
-
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.scaled_coefficient_le_samples
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.upperConj_quadratic_bound
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.upperConj_linear_bound
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.upperConj_bounded_iff_fixed

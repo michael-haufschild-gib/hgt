@@ -25,7 +25,7 @@ theorem hermitianKummerCoverIndex_succ (d r m : ℕ) :
     hermitianKummerCoverIndex d r m + 1 = (d + 1) * (r + 1) * (m + 1) := by
   rw [hermitianKummerCoverIndex, kummerSquareIndex_succ,
     Nat.sub_add_cancel (Nat.mul_pos (Nat.succ_pos r) (Nat.succ_pos m))]
-  ring
+  simp only [Nat.succ_eq_add_one, Nat.mul_assoc]
 
 /-- Every exponent length dividing the Frobenius length has an actual Hermitian function-field cover. -/
 def normalizedKummerHermitianEmbedding (d r m : ℕ) :
@@ -39,8 +39,14 @@ def normalizedKummerHermitianEmbedding (d r m : ℕ) :
     (p ^ (d + 1) - 2) (kummerExponent (p ^ (d + 1)) (r + 1)) (p ^ (s + 1))
     →ₐ[SquareConstantField p s]
     KummerBranchField (kummerTraceConstant p s)⁻¹ (p ^ (s + 1) - 2) 1 (p ^ (s + 1))
-  rw [hs]
-  exact hermitianKummerFieldHom p (kummerTraceConstant p s)⁻¹ d r m
+  exact Eq.mpr (congrArg (fun Q : ℕ =>
+    KummerBranchField
+      ((kummerTraceConstant p s)⁻¹ ^ kummerExponent (p ^ (d + 1)) (r + 1))
+      (p ^ (d + 1) - 2) (kummerExponent (p ^ (d + 1)) (r + 1)) Q
+      →ₐ[SquareConstantField p s]
+    KummerBranchField (kummerTraceConstant p s)⁻¹ (Q - 2) 1 Q)
+    (congrArg (p ^ ·) hs))
+    (hermitianKummerFieldHom p (kummerTraceConstant p s)⁻¹ d r m)
 
 /-- The Hermitian trace-cover homomorphism is injective. -/
 theorem normalizedKummerHermitianEmbedding_injective (d r m : ℕ) :

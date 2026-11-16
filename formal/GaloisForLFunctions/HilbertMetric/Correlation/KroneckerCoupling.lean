@@ -151,9 +151,3 @@ theorem kroneckerDefect_clusters {ι : Type*} [Fintype ι]
     (fun i => A i u.1 v.1) (fun i => B i u.2 v.2)
 
 end HilbertMetric.Correlation
-
-#print axioms HilbertMetric.Correlation.kroneckerDefect_mem_crossFibre
-#print axioms HilbertMetric.Correlation.kroneckerDefect_product
-#print axioms HilbertMetric.Correlation.kroneckerDefect_eq_zero_iff
-#print axioms HilbertMetric.Correlation.kroneckerDefect_two_clusters_eq_zero_iff
-#print axioms HilbertMetric.Correlation.kroneckerDefect_clusters

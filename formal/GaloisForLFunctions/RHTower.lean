@@ -634,6 +634,7 @@ import GaloisForLFunctions.RHTower.ArithmeticXiStokesCentralRankPort
 import GaloisForLFunctions.RHTower.Artin.ArtinBrauerElementary
 import GaloisForLFunctions.RHTower.Artin.ArtinCharacterInduction
 import GaloisForLFunctions.RHTower.Artin.ArtinCharacterMultiplicity
+import GaloisForLFunctions.RHTower.Artin.TensorMultiplicityError
 import GaloisForLFunctions.RHTower.Artin.ArtinFiniteAbelianFourier
 import GaloisForLFunctions.RHTower.Artin.ArtinFiniteOrderLocalPolynomialBound
 import GaloisForLFunctions.RHTower.Artin.ArtinFormalEulerSource

@@ -136,9 +136,3 @@ theorem arrayGram_trace_mul_le (rows₁ rows₂ cols : Finset ℕ) (A B : ℕ �
   exact gramContraction_le rows₁ rows₂ cols A B
 
 end HilbertMetric.Correlation
-
-#print axioms HilbertMetric.Correlation.gramContraction_defect
-#print axioms HilbertMetric.Correlation.gramContraction_le
-#print axioms HilbertMetric.Correlation.gramContraction_eq_iff
-#print axioms HilbertMetric.Correlation.gramContraction_lt_iff
-#print axioms HilbertMetric.Correlation.arrayGram_trace_mul_le
