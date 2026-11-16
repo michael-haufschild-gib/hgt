@@ -335,7 +335,7 @@ theorem integral_middle_sum (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 0 < v) :
         P.fracSum sourceTheta (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv) =
       periodArea * ∑' k : O, rationalSourceModeAmplitude v k * rationalSourceModeAmplitude v (-k) *
         (P.normC - P.fracJacobi + (P.fracJacobi - 1) * (if P.p ∣ k then P.normC else 0)) := by
-  set b := rationalSourceModeAmplitude v
+  set b := rationalSourceModeAmplitude v with hbdef
   have hb : Summable (fun h => ‖b h‖) := rationalSourceModeAmplitude_summable v hv
   have h9 := P.nine_ne_zero'
   have hsplit : ∀ x : {x : P.Res // x ≠ 0}, ∫ z in periodDomain,
@@ -348,6 +348,7 @@ theorem integral_middle_sum (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 0 < v) :
         ((continuous_hyperbolic_action (complexMatrix (lowerThree (P.p * P.lift x.1)))).comp
           (continuous_upperPoint_z v hv))))
   simp_rw [hsplit, P.integral_fracCorrelation_middle h2 _ _ v hv, Finset.sum_add_distrib]
+  simp only [← hbdef]
   have hhigh : ∑ x : {x : P.Res // x ≠ 0}, ∑ t : P.Res,
       (if 1 + 9 * t * x.1 = 0 ∨ 1 - 9 * t * x.1 = 0 then P.chi 2 * (P.chi (3 * x.1))⁻¹ * P.highTerm v else 0) = 0 := by
     set c0 : ℂ := ∑ s : P.Res, if 1 + s = 0 ∨ 1 - s = 0 then (1 : ℂ) else 0

@@ -81,6 +81,7 @@ theorem complementaryPairEquiv_smul (P Q : ComplementaryPair K V)
       exact (a ⟨u, hu⟩).2
     · intro hx
       refine ⟨(a.symm ⟨x, hx⟩ : V), (a.symm ⟨x, hx⟩).2, ?_⟩
+      change complementaryPairEquiv P Q a b (a.symm ⟨x, hx⟩ : V) = x
       rw [complementaryPairEquiv_left]
       exact congrArg Subtype.val (a.apply_symm_apply ⟨x, hx⟩)
   · ext x
@@ -91,8 +92,68 @@ theorem complementaryPairEquiv_smul (P Q : ComplementaryPair K V)
       exact (b ⟨u, hu⟩).2
     · intro hx
       refine ⟨(b.symm ⟨x, hx⟩ : V), (b.symm ⟨x, hx⟩).2, ?_⟩
+      change complementaryPairEquiv P Q a b (b.symm ⟨x, hx⟩ : V) = x
       rw [complementaryPairEquiv_right]
       exact congrArg Subtype.val (b.apply_symm_apply ⟨x, hx⟩)
+
+private theorem stabilizer_map_left (P : ComplementaryPair K V)
+    (g : MulAction.stabilizer (V ≃ₗ[K] V) P) : P.1.1.map g.1.toLinearMap = P.1.1 :=
+  congrArg (fun Q : ComplementaryPair K V => Q.1.1)
+    (MulAction.mem_stabilizer_iff.mp g.2)
+
+private theorem stabilizer_map_right (P : ComplementaryPair K V)
+    (g : MulAction.stabilizer (V ≃ₗ[K] V) P) : P.1.2.map g.1.toLinearMap = P.1.2 :=
+  congrArg (fun Q : ComplementaryPair K V => Q.1.2)
+    (MulAction.mem_stabilizer_iff.mp g.2)
+
+private def stabilizerLeft (P : ComplementaryPair K V)
+    (g : MulAction.stabilizer (V ≃ₗ[K] V) P) : P.1.1 ≃ₗ[K] P.1.1 :=
+  (g.1.submoduleMap P.1.1).trans
+    (LinearEquiv.ofEq _ _ (stabilizer_map_left P g))
+
+private def stabilizerRight (P : ComplementaryPair K V)
+    (g : MulAction.stabilizer (V ≃ₗ[K] V) P) : P.1.2 ≃ₗ[K] P.1.2 :=
+  (g.1.submoduleMap P.1.2).trans
+    (LinearEquiv.ofEq _ _ (stabilizer_map_right P g))
+
+private theorem stabilizerLeft_apply (P : ComplementaryPair K V)
+    (g : MulAction.stabilizer (V ≃ₗ[K] V) P) (x : P.1.1) :
+    (stabilizerLeft P g x : V) = g.1 x := rfl
+
+private theorem stabilizerRight_apply (P : ComplementaryPair K V)
+    (g : MulAction.stabilizer (V ≃ₗ[K] V) P) (x : P.1.2) :
+    (stabilizerRight P g x : V) = g.1 x := rfl
+
+/-- Preserving both complementary summands is equivalent to independent automorphisms of them. -/
+def complementaryPairStabilizerEquiv (P : ComplementaryPair K V) :
+    MulAction.stabilizer (V ≃ₗ[K] V) P ≃
+      ((P.1.1 ≃ₗ[K] P.1.1) × (P.1.2 ≃ₗ[K] P.1.2)) :=
+  Equiv.ofBijective (fun g => (stabilizerLeft P g, stabilizerRight P g)) ⟨by
+    intro g h he
+    apply Subtype.ext
+    apply LinearEquiv.ext
+    intro x
+    obtain ⟨⟨u, v⟩, rfl⟩ := (Submodule.prodEquivOfIsCompl P.1.1 P.1.2 P.2).surjective x
+    change g.1 ((u : V) + (v : V)) = h.1 ((u : V) + (v : V))
+    rw [map_add, map_add]
+    have hu := congrArg (fun z : (P.1.1 ≃ₗ[K] P.1.1) × (P.1.2 ≃ₗ[K] P.1.2) =>
+      (z.1 u : V)) he
+    have hv := congrArg (fun z : (P.1.1 ≃ₗ[K] P.1.1) × (P.1.2 ≃ₗ[K] P.1.2) =>
+      (z.2 v : V)) he
+    exact congrArg₂ (· + ·) hu hv,
+    by
+    rintro ⟨a, b⟩
+    refine ⟨⟨complementaryPairEquiv P P a b,
+      MulAction.mem_stabilizer_iff.mpr (complementaryPairEquiv_smul P P a b)⟩, ?_⟩
+    apply Prod.ext
+    · apply LinearEquiv.ext
+      intro u
+      apply Subtype.ext
+      exact complementaryPairEquiv_left P P a b u
+    · apply LinearEquiv.ext
+      intro v
+      apply Subtype.ext
+      exact complementaryPairEquiv_right P P a b v⟩
 
 variable [FiniteDimensional K V]
 
@@ -108,5 +169,55 @@ theorem mem_complementaryPair_orbit_iff (P Q : ComplementaryPair K V) :
     let a : P.1.1 ≃ₗ[K] Q.1.1 := LinearEquiv.ofFinrankEq _ _ hdim.symm
     let b : P.1.2 ≃ₗ[K] Q.1.2 := LinearEquiv.ofFinrankEq _ _ (by omega)
     exact ⟨complementaryPairEquiv P Q a b, complementaryPairEquiv_smul P Q a b⟩
+
+
+/-- A finite basis identifies automorphisms with the matrix general linear group. -/
+def automorphismMatrixEquiv :
+    (V ≃ₗ[K] V) ≃* Matrix.GL (Fin (Module.finrank K V)) K :=
+  (LinearMap.GeneralLinearGroup.generalLinearEquiv K V).symm.trans
+    (Units.mapEquiv (LinearMap.toMatrixAlgEquiv (Module.finBasis K V)).toMulEquiv)
+
+section FiniteField
+variable [Finite K]
+
+local instance : Finite (Submodule K V) := by
+  letI : Finite V := Module.finite_of_finite K
+  exact Finite.of_injective (fun P : Submodule K V => (P : Set V)) SetLike.coe_injective
+
+local instance : Finite (V ≃ₗ[K] V) := by
+  letI : Finite V := Module.finite_of_finite K
+  exact Finite.of_injective (fun e : V ≃ₗ[K] V => (e : V → V)) DFunLike.coe_injective
+
+attribute [local instance] Fintype.ofFinite
+
+/-- The automorphism count depends only on the field size and vector-space dimension. -/
+theorem card_automorphisms_eq_prod :
+    Nat.card (V ≃ₗ[K] V) =
+      ∏ i : Fin (Module.finrank K V),
+        (Nat.card K ^ Module.finrank K V - Nat.card K ^ (i : ℕ)) := by
+  rw [Nat.card_congr (automorphismMatrixEquiv (K := K) (V := V)).toEquiv,
+    Matrix.card_GL_field]
+  simp only [Nat.card_eq_fintype_card]
+
+/-- Orbit--stabilizer counts complementary pairs of prescribed dimensions exactly. -/
+theorem card_complementaryPair_mul_card_blocks (P : ComplementaryPair K V) :
+    Nat.card {Q : ComplementaryPair K V // Module.finrank K Q.1.1 = Module.finrank K P.1.1} *
+      Nat.card (P.1.1 ≃ₗ[K] P.1.1) * Nat.card (P.1.2 ≃ₗ[K] P.1.2) =
+      Nat.card (V ≃ₗ[K] V) := by
+  have horbit : MulAction.orbit (V ≃ₗ[K] V) P =
+      {Q : ComplementaryPair K V | Module.finrank K Q.1.1 = Module.finrank K P.1.1} :=
+    Set.ext fun Q => mem_complementaryPair_orbit_iff P Q
+  have h := MulAction.card_orbit_mul_card_stabilizer_eq_card_group (V ≃ₗ[K] V) P
+  simp only [← Nat.card_eq_fintype_card] at h
+  rw [Nat.card_congr (Equiv.setCongr horbit),
+    Nat.card_congr (complementaryPairStabilizerEquiv P), Nat.card_prod] at h
+  simpa only [mul_assoc] using h
+
+end FiniteField
+
+#print axioms complementaryPairStabilizerEquiv
+#print axioms mem_complementaryPair_orbit_iff
+#print axioms card_complementaryPair_mul_card_blocks
+#print axioms card_automorphisms_eq_prod
 
 end GaloisForLFunctions.RepresentationLifting.OperatorKernels

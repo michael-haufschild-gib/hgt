@@ -147,14 +147,3 @@ theorem constraintFace_isExtreme (C : σ → Matrix κ ι ℂ)
   (constraintFace_isExposed C S).isExtreme
 
 end GaloisForLFunctions.HTGeometry.Quantum
-
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_nonneg
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_eq_trace
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_eq_zero_iff_all_contractions
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.sum_constraintEnergy_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintHamiltonian_posSemidef
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_constraintHamiltonian
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_constraintHamiltonian_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintFace_isExposed
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintFace_isExtreme

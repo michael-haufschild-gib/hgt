@@ -52,7 +52,3 @@ theorem gibbs_positive_test_charge_reduction (t : M → ℝ) (word : ι → GasW
   exact (chargePinch_eq_self_iff charge _).mp (chargePinch_idempotent charge X.1)
 
 end GaloisForLFunctions.HTGeometry
-
-#print axioms GaloisForLFunctions.HTGeometry.chargePinch_gibbsGram
-#print axioms GaloisForLFunctions.HTGeometry.trace_gibbsGram_chargePinch
-#print axioms GaloisForLFunctions.HTGeometry.gibbs_positive_test_charge_reduction
