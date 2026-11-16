@@ -1,5 +1,8 @@
 import GaloisForLFunctions.RHTower.Fermionic.FermiSeaEnergy
 import GaloisForLFunctions.RHTower.LocalCharacters.PadicFiniteConductor
+import GaloisForLFunctions.RHTower.LocalCharacters.PrimeProductCharacters
+import GaloisForLFunctions.RHTower.CCM.Characters.ProfiniteUnitProduct
+import GaloisForLFunctions.RHTower.CCM.Characters.ProfiniteUnitCharacters
 import GaloisForLFunctions.RHTower.LocalCharacters.PadicCharacterDecomposition
 import GaloisForLFunctions.RHTower.LocalCharacters.PrimitiveTateCharacterCompleteness
 import GaloisForLFunctions.RHTower.LocalCharacters.ContinuousTateIntegrals

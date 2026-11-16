@@ -69,8 +69,9 @@ theorem modelAtom_eulerLogDirichletCoeff (n : ℕ) :
       Complex.ofReal_div]
   · simp
 
-theorem modelWallPrimeBalance_eulerLogDirichletCoeff (F : ℝ → ℝ) (p : ℂ) :
-    modelWallPrimeBalance RHTower.eulerLogDirichletCoeff F p = wallPrimeBalance F p := by
+theorem modelWallPrimeBalance_eulerLogDirichletCoeff (F : ℝ → ℝ) :
+    modelWallPrimeBalance RHTower.eulerLogDirichletCoeff F = wallPrimeBalance F := by
+  funext p
   unfold modelWallPrimeBalance wallPrimeBalance modelPrimeHead primeHead
   simp_rw [modelAtom_eulerLogDirichletCoeff]
 
@@ -79,9 +80,9 @@ theorem modelWallPrimeBalance_eulerLogDirichletCoeff (F : ℝ → ℝ) (p : ℂ)
 theorem modelBeyondTheWallPrimeContinuation_zeta_iff :
     ModelBeyondTheWallPrimeContinuation RHTower.eulerLogDirichletCoeff ↔
       ZetaBeyondTheWallPrimeContinuation := by
-  unfold ModelBeyondTheWallPrimeContinuation ZetaBeyondTheWallPrimeContinuation
-    HasBeyondTheWallPrimeContinuation
-  simp_rw [modelWallPrimeBalance_eulerLogDirichletCoeff]
+  constructor <;> intro h F hF <;>
+    simpa only [HasBeyondTheWallPrimeContinuation,
+      modelWallPrimeBalance_eulerLogDirichletCoeff] using h F hF
 
 /-! ### Explicit evaluation on `probe 5` for single-prime logarithmic terms -/
 
@@ -99,8 +100,8 @@ private theorem cexp_mul_levyHead_probe_five {q : ℂ} (hq : -4 < q.re) {L : ℝ
       refine integral_congr_ae (Eventually.of_forall fun u => ?_)
       rcases lt_or_ge u 0 with hu | hu
       · by_cases hLu : -L ≤ u
-        · rw [indicator_of_mem (mem_Ici.mpr hLu), indicator_of_mem ⟨hLu, hu⟩, probe_of_neg hu,
-            Complex.ofReal_exp, ← Complex.exp_add]
+        · rw [indicator_of_mem (mem_Ici.mpr hLu), indicator_of_mem (mem_Ico.mpr ⟨hLu, hu⟩),
+            probe_of_neg hu, Complex.ofReal_exp, ← Complex.exp_add]
           congr 1; push_cast; ring
         · rw [indicator_of_notMem (show u ∉ Ici (-L) by simp [hLu]),
             indicator_of_notMem (show u ∉ Ico (-L) 0 by simp [hLu])]
@@ -109,16 +110,17 @@ private theorem cexp_mul_levyHead_probe_five {q : ℂ} (hq : -4 < q.re) {L : ℝ
         · rw [indicator_of_mem (mem_Ici.mpr hLu), probe_of_nonneg hu,
             Complex.ofReal_zero, mul_zero]
         · rw [indicator_of_notMem (show u ∉ Ici (-L) by simp [hLu])]
-    rw [hsplit, ← integral_Ioc_eq_integral_Ico,
+    rw [hsplit, integral_Ico_eq_integral_Ioc,
       ← intervalIntegral.integral_of_le (by linarith : -L ≤ 0)]
-    have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt
+    have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt (a := -L) (b := (0 : ℝ))
       (f := fun u : ℝ => cexp (((5 : ℂ) + q) * u) / ((5 : ℂ) + q))
       (f' := fun u : ℝ => cexp (((5 : ℂ) + q) * u))
       (fun u _ => by
         have hd := (((hasDerivAt_id u).ofReal_comp.const_mul ((5 : ℂ) + q)).cexp).div_const
           ((5 : ℂ) + q)
         simpa [mul_div_cancel_right₀ _ h5q] using hd)
-      ((by fun_prop : Continuous fun u : ℝ => cexp (((5 : ℂ) + q) * u)).intervalIntegrable _ _)
+      ((by fun_prop : Continuous fun u : ℝ => cexp (((5 : ℂ) + q) * u)).intervalIntegrable
+        (-L) (0 : ℝ))
     rw [hFTC]
     simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero, Complex.ofReal_neg, mul_neg]
     ring
@@ -160,7 +162,8 @@ private theorem hasSum_modelPrimeHead_powerLogCoeff {p : ℕ} (hp : p.Prime) {γ
     dsimp [w₁]
     rw [norm_mul, Complex.norm_exp]
     have hre : ((q - 1 / 2) * (Real.log p : ℂ)).re = (q.re - 1 / 2) * Real.log p := by
-      simp [re_one_half]; ring
+      simp only [Complex.mul_re, Complex.sub_re, Complex.ofReal_re, Complex.ofReal_im,
+        mul_zero, sub_zero, re_one_half]
     rw [hre]
     calc ‖γ‖ * Real.exp ((q.re - 1 / 2) * Real.log p)
         < (p : ℝ) * Real.exp ((q.re - 1 / 2) * Real.log p) :=
@@ -173,7 +176,8 @@ private theorem hasSum_modelPrimeHead_powerLogCoeff {p : ℕ} (hp : p.Prime) {γ
     dsimp [w₂]
     rw [norm_mul, Complex.norm_exp]
     have hre : (-(11 / 2 : ℂ) * (Real.log p : ℂ)).re = -(11 / 2 : ℝ) * Real.log p := by
-      simp; ring
+      have h11 : (-(11 / 2 : ℂ)).re = -(11 / 2 : ℝ) := by norm_num
+      simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero, h11]
     rw [hre]
     calc ‖γ‖ * Real.exp (-(11 / 2 : ℝ) * Real.log p)
         ≤ (p : ℝ) * Real.exp (-(11 / 2 : ℝ) * Real.log p) :=
@@ -220,10 +224,14 @@ private theorem hasSum_modelPrimeHead_powerLogCoeff {p : ℕ} (hp : p.Prime) {γ
   have hatom : modelAtom (powerLogCoeff p γ) (p ^ m) =
       -(Real.log p : ℂ) * γ ^ m * cexp (-((1 / 2 : ℂ) * (m : ℂ) * Real.log p)) := by
     unfold modelAtom
-    rw [if_pos hpm_ge2, powerLogCoeff_pow hp.one_lt γ m, hlog_pm, hsqrt_pm]
-    push_cast
-    rw [div_mul_eq_mul_div, mul_div_cancel_right₀ _ hm_ne, div_eq_mul_inv, ← Complex.exp_neg]
-    ring
+    rw [if_pos hpm_ge2, powerLogCoeff_pow hp.one_lt γ m, hlog_pm, hsqrt_pm,
+      Complex.ofReal_mul, Complex.ofReal_natCast, div_eq_mul_inv _ (cexp _), ← Complex.exp_neg]
+    field_simp [hm_ne]
+  dsimp only [Function.comp_apply]
+  change modelAtom (powerLogCoeff p γ) (p ^ m) *
+      (cexp (q * Real.log ((p ^ m : ℕ) : ℝ)) *
+        levyHead (probe 5) q (Real.log ((p ^ m : ℕ) : ℝ))) =
+    -(Real.log p : ℂ) / ((5 : ℂ) + q) * (w₁ ^ m - w₂ ^ m)
   rw [hatom, cexp_mul_levyHead_probe_five hq4 (Real.log_natCast_nonneg _), hlog_pm]
   have hw₁_m : w₁ ^ m = γ ^ m * cexp (((q - 1 / 2) * Real.log p) * (m : ℂ)) := by
     dsimp [w₁]; rw [mul_pow, ← Complex.exp_nat_mul]; congr 2; ring
@@ -233,11 +241,13 @@ private theorem hasSum_modelPrimeHead_powerLogCoeff {p : ℕ} (hp : p.Prime) {γ
   have he1 : cexp (-((1 / 2 : ℂ) * (m : ℂ) * Real.log p)) *
       cexp (q * (((m : ℝ) * Real.log p : ℝ) : ℂ)) =
       cexp (((q - 1 / 2) * Real.log p) * (m : ℂ)) := by
-    rw [← Complex.exp_add]; congr 1; push_cast; ring
+    rw [← Complex.exp_add]; congr 1
+    rw [Complex.ofReal_mul, Complex.ofReal_natCast]; ring
   have he2 : cexp (-((1 / 2 : ℂ) * (m : ℂ) * Real.log p)) *
       cexp ((-5 : ℂ) * (((m : ℝ) * Real.log p : ℝ) : ℂ)) =
       cexp ((-(11 / 2 : ℂ) * Real.log p) * (m : ℂ)) := by
-    rw [← Complex.exp_add]; congr 1; push_cast; ring
+    rw [← Complex.exp_add]; congr 1
+    rw [Complex.ofReal_mul, Complex.ofReal_natCast]; ring
   have h5q : (5 : ℂ) + q ≠ 0 := by
     intro e; have := congrArg Complex.re e; simp at this; linarith
   calc -(Real.log p : ℂ) * γ ^ m * cexp (-((1 / 2 : ℂ) * (m : ℂ) * Real.log p)) *
@@ -248,7 +258,7 @@ private theorem hasSum_modelPrimeHead_powerLogCoeff {p : ℕ} (hp : p.Prime) {γ
               cexp (q * (((m : ℝ) * Real.log p : ℝ) : ℂ))) -
             γ ^ m * (cexp (-((1 / 2 : ℂ) * (m : ℂ) * Real.log p)) *
               cexp ((-5 : ℂ) * (((m : ℝ) * Real.log p : ℝ) : ℂ)))) := by
-          field_simp [h5q]; ring
+          field_simp [h5q]
     _ = _ := by rw [he1, he2]
 
 /-! ### General finite-factor refutation theorem -/
@@ -290,7 +300,7 @@ theorem not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff {p : ℕ} (hp : p.
   have hqstar_re : -(1 / 2 : ℝ) < qstar.re ∧ qstar.re < 0 := by
     have hre : qstar.re = 1 / 2 - Real.log ‖α‖ / Real.log p := by
       dsimp [qstar]
-      rw [Complex.sub_re, re_one_half, Complex.div_ofReal_re, Complex.log_re]
+      rw [re_one_half, Complex.div_ofReal_re, Complex.log_re]
     have hlog_lo : (1 / 2 : ℝ) * Real.log p < Real.log ‖α‖ := by
       have := Real.log_lt_log (Real.sqrt_pos.mpr hp0) hα_lo
       rwa [Real.log_sqrt hp0.le, div_eq_inv_mul, show (2 : ℝ)⁻¹ = 1 / 2 by norm_num] at this
@@ -326,15 +336,15 @@ theorem not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff {p : ℕ} (hp : p.
     rw [hexp_arg, Complex.exp_neg, Complex.exp_log hα_ne, mul_inv_cancel₀ hα_ne, sub_self]
   have hF₁₂_qstar : F₁₂ qstar = 0 := by dsimp [F₁₂]; rw [hf₂_qstar, mul_zero]
   have hf₂_order_ne_top : analyticOrderAt f₂ qstar ≠ ⊤ := by
-    refine AnalyticAt.analyticOrderAt_ne_top (hf₂_diff.analyticAt qstar) ?_
+    intro htop
     have hderiv_ne : deriv f₂ qstar ≠ 0 := by
       rw [hf₂_deriv qstar]
       have hexp_eq : α * cexp ((qstar - 1 / 2) * Real.log p) = 1 :=
-        sub_eq_zero.mp hf₂_qstar |>.symm
+        (sub_eq_zero.mp hf₂_qstar).symm
       rw [mul_assoc, hexp_eq, mul_one]
       exact neg_ne_zero.mpr hlC
-    intro hev
-    exact hderiv_ne (Filter.EventuallyEq.deriv_eq hev)
+    have hev : f₂ =ᶠ[𝓝 qstar] 0 := analyticOrderAt_eq_top.mp htop
+    exact hderiv_ne (by simpa [Pi.zero_def] using hev.deriv_eq)
   have hF₁₂_order_ne_top : analyticOrderAt F₁₂ qstar ≠ ⊤ := by
     change analyticOrderAt (f₁ * f₂) qstar ≠ ⊤
     rw [analyticOrderAt_mul (hf₁_diff.analyticAt qstar) (hf₂_diff.analyticAt qstar)]
@@ -352,7 +362,8 @@ theorem not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff {p : ℕ} (hp : p.
     dsimp [wβ]
     rw [norm_mul, Complex.norm_exp]
     have hre : ((q - 1 / 2) * (Real.log p : ℂ)).re = (q.re - 1 / 2) * Real.log p := by
-      simp [re_one_half]; ring
+      simp only [Complex.mul_re, Complex.sub_re, Complex.ofReal_re, Complex.ofReal_im,
+        mul_zero, sub_zero, re_one_half]
     rw [hre]
     have hsqrt_eq : Real.sqrt p = Real.exp ((1 / 2 : ℝ) * Real.log p) := by
       rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos hp0]; ring_nf
@@ -383,8 +394,8 @@ theorem not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff {p : ℕ} (hp : p.
   let RHS : ℂ → ℂ := fun q => F₁₂ q * Rreg q + (1 / ((5 : ℂ) + q)) * deriv F₁₂ q
   have hLHS_diff : DifferentiableOn ℂ LHS V := by
     refine (hf₁_diff.mul hf₂_diff).differentiableOn.mul ?_
-    exact ((differentiableOn_archimedeanWallTail hd5).mono fun q hq =>
-      by linarith [hq.2]).add (hH.mono fun q hq => hq.2)
+    exact ((differentiableOn_archimedeanWallTail hd5).mono fun q (hq : q ∈ V) =>
+      show q.re < 5 / 2 by linarith [hq.2]).add (hH.mono fun q (hq : q ∈ V) => hq.2)
   have hRreg_diff : DifferentiableOn ℂ Rreg V := by
     intro q hq
     have h5q : (5 : ℂ) + q ≠ 0 := by
@@ -407,13 +418,13 @@ theorem not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff {p : ℕ} (hp : p.
       (fun q _ => (((hf₁_diff.mul hf₂_diff).analyticAt q).deriv).differentiableAt.differentiableWithinAt)
     have := congrArg Complex.re e; simp at this; linarith [hq.1]
   -- Show `LHS =ᶠ[𝓝 (-1)] RHS` using the explicit series on `-2 < Re q < -1/2`
-  have hm1_in : (-1 : ℂ) ∈ V := ⟨by simp; norm_num, by simp; norm_num⟩
+  have hm1_in : (-1 : ℂ) ∈ V := ⟨by simp, by simp⟩
   have hev_m1 : LHS =ᶠ[𝓝 (-1 : ℂ)] RHS := by
     set W := {q : ℂ | -2 < q.re ∧ q.re < -(1 / 2)}
     have hW_open : IsOpen W :=
       (isOpen_lt continuous_const Complex.continuous_re).inter
         (isOpen_lt Complex.continuous_re continuous_const)
-    filter_upwards [hW_open.mem_nhds ⟨by simp; norm_num, by simp; norm_num⟩] with q hq
+    filter_upwards [hW_open.mem_nhds ⟨by simp, by simp; norm_num⟩] with q hq
     have hq4 : -4 < q.re := by linarith [hq.1]
     have hqh : q.re < -(1 / 2) := hq.2
     have h5q : (5 : ℂ) + q ≠ 0 := by
@@ -441,7 +452,7 @@ theorem not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff {p : ℕ} (hp : p.
       split_ifs
       · ring
       · ring
-    have hsum_all := ((hs_zeta.hasSum.add hs_α).add hs_β).congr_fun fun n => (hsplit_atom n).symm
+    have hsum_all := ((hs_zeta.hasSum.add hs_α).add hs_β).congr_fun fun n => hsplit_atom n
     have hbal_eq : H q = wallPrimeBalance (probe 5) q +
         (-(Real.log p : ℂ) / ((5 : ℂ) + q)) *
           ((α * cexp ((q - 1 / 2) * Real.log p)) / f₂ q - cα / (1 - cα) +
@@ -464,7 +475,8 @@ theorem not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff {p : ℕ} (hp : p.
       have hn := congrArg norm h1
       rw [norm_one, norm_mul, Complex.norm_exp] at hn
       have hre : ((q - 1 / 2) * (Real.log p : ℂ)).re = (q.re - 1 / 2) * Real.log p := by
-        simp [re_one_half]; ring
+        simp only [Complex.mul_re, Complex.sub_re, Complex.ofReal_re, Complex.ofReal_im,
+          mul_zero, sub_zero, re_one_half]
       rw [hre] at hn
       have hlt1 : ‖α‖ * Real.exp ((q.re - 1 / 2) * Real.log p) < 1 := by
         calc ‖α‖ * Real.exp ((q.re - 1 / 2) * Real.log p)
@@ -514,7 +526,7 @@ theorem not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff {p : ℕ} (hp : p.
   have hr_an : AnalyticAt ℂ Rreg qstar := hRreg_diff.analyticAt (hV_open.mem_nhds hqstar_in)
   have hK_an : AnalyticAt ℂ (fun q : ℂ => archimedeanWallTail (probe 5) q + H q) qstar :=
     (((differentiableOn_archimedeanWallTail hd5).mono fun q (hq : q ∈ V) =>
-      by linarith [hq.2]).add (hH.mono fun q (hq : q ∈ V) => hq.2)).analyticAt
+      show q.re < 5 / 2 by linarith [hq.2]).add (hH.mono fun q (hq : q ∈ V) => hq.2)).analyticAt
       (hV_open.mem_nhds hqstar_in)
   have hord_RHS := analyticOrderAt_leibniz_obstruction hF₁₂_an hg_an hr_an hF₁₂_qstar
     hF₁₂_order_ne_top (one_div_ne_zero fun e => by
@@ -635,9 +647,10 @@ theorem exists_positive_euler_twin_failing_beyondTheWallContinuation (N : ℕ)
   have hα_lt_p : ‖α‖ < p := by
     rw [hα_norm]
     exact ((Real.rpow_lt_rpow_left_iff hpR).mpr σ.property.2).trans_eq (Real.rpow_one _)
-  have hβ_le_p : ‖β‖ ≤ p :=
-    hβ_lt_sqrt.le.trans ((by rw [hsqrt_p]; exact Real.rpow_le_rpow_of_exponent_le hpR.le
-      (by norm_num)).trans_eq (Real.rpow_one _))
+  have hβ_le_p : ‖β‖ ≤ p := by
+    refine hβ_lt_sqrt.le.trans ?_
+    rw [hsqrt_p]
+    exact (Real.rpow_le_rpow_of_exponent_le hpR.le (by norm_num)).trans_eq (Real.rpow_one _)
   refine ⟨p, hp, A, α, β, by omega, hA,
     arithmeticCoeffs_isMultiplicative hp A,
     ⟨1 + A + p, fun n hn => ?_⟩,

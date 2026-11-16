@@ -25,3 +25,4 @@ import GaloisForLFunctions.goldbach.SignedBetaReflection
 import GaloisForLFunctions.goldbach.SpectralSquareProduct
 import GaloisForLFunctions.goldbach.SquareDivisorTail
 import GaloisForLFunctions.goldbach.StripBoundaryEnergy
+import GaloisForLFunctions.goldbach.ProductResidueRamanujanMoments

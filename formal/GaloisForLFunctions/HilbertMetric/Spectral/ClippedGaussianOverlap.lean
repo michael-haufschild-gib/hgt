@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HilbertMetric.Spectral.ClippedCongruence
+import GaloisForLFunctions.HilbertMetric.Spectral.ClippedPinching
 import GaloisForLFunctions.HilbertMetric.DegreeFiveGaussianCurvature
 
 /-!
@@ -20,6 +20,7 @@ open Clipped
 noncomputable section
 variable {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
 
+omit [Fintype ι] [DecidableEq ι] in
 theorem gaussianDistance_complex_hermitian (x : ι → κ → ℝ) (t : ℝ) :
     ((finiteGaussianDistanceGram x t).map (Complex.ofReal)).IsHermitian := by
   ext i j
@@ -41,9 +42,10 @@ theorem gaussianDistance_clipped_overlap (x : ι → κ → ℝ) (t : ℝ) (τ :
       Fintype.card ι := by
     simp [trace, diag, finiteGaussianDistanceGram]
   rw [ht] at h
-  simpa only [Matrix.map_apply, Complex.normSq_ofReal, ← pow_two,
-    show (2 : ℝ) * Fintype.card ι = Fintype.card ι + Fintype.card ι by ring,
-    sub_add_cancel] using h
+  simp only [Matrix.map_apply, Complex.normSq_ofReal, ← pow_two] at h
+  convert h using 1
+  congr 1
+  ring
 
 /-- Gaussian overlap remains visible when any subset of points receives double weight. -/
 theorem gaussianDistance_mixed_clipping (x : ι → κ → ℝ) (t : ℝ)
@@ -63,7 +65,7 @@ theorem gaussianDistance_mixed_overlap_lower (x : ι → κ → ℝ) (t : ℝ)
         ((τ : ℝ) ^ 2) + ∑ i, binaryWeight doubled i ^ 2 ≤
       energy (mixedCutoff τ) (weightedGram (binaryWeight doubled)
         ((finiteGaussianDistanceGram x t).map Complex.ofReal)) :=
-  (add_le_add_right (gaussianDistance_clipped_overlap x t τ) _).trans
+  (add_le_add (gaussianDistance_clipped_overlap x t τ) le_rfl).trans
     (gaussianDistance_mixed_clipping x t doubled τ)
 
 /-- The coherent half-bandwidth convention inherits the identical overlap bound. -/
@@ -79,4 +81,28 @@ theorem halfGaussianDistance_mixed_clipping (x : ι → κ → ℝ) (t : ℝ)
 #print axioms halfGaussianDistance_mixed_clipping
 
 end
+
+section Clusters
+variable {β κ : Type*} [Fintype β] [DecidableEq β] [Fintype κ]
+  {ι : β → Type*} [∀ b, Fintype (ι b)] [∀ b, DecidableEq (ι b)]
+
+/-- Disjoint Gaussian clusters contribute separate overlap gains, even when mutually coupled. -/
+theorem gaussianDistance_clustered_mixed_lower (x : (Σ b, ι b) → κ → ℝ) (t : ℝ)
+    (doubled : (Σ b, ι b) → Bool) (τ : ℝ≥0) :
+    (∑ b, min ((∑ i : ι b, ∑ j : ι b,
+        (finiteGaussianDistanceGram (fun k => x ⟨b, k⟩) t i j) ^ 2) - Fintype.card (ι b))
+      ((τ : ℝ) ^ 2)) + ∑ i, binaryWeight doubled i ^ 2 ≤
+      energy (mixedCutoff τ) (weightedGram (binaryWeight doubled)
+        ((finiteGaussianDistanceGram x t).map Complex.ofReal)) := by
+  have hm := mixed_block_defects (gaussianDistance_complex_hermitian x t)
+    (fun i => by simp [finiteGaussianDistanceGram]) doubled τ
+  apply le_trans ?_ hm
+  apply add_le_add_right
+  apply Finset.sum_le_sum
+  intro b _
+  exact gaussianDistance_clipped_overlap (fun k => x ⟨b, k⟩) t τ
+
+#print axioms gaussianDistance_clustered_mixed_lower
+
+end Clusters
 end GaloisForLFunctions.HilbertMetric

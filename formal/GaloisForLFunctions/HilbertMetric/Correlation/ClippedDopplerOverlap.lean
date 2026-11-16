@@ -10,7 +10,7 @@ inequality then preserves its overlap defect under single or double pilot weight
 -/
 
 open Matrix
-open scoped NNReal
+open scoped ComplexOrder NNReal
 namespace HilbertMetric.Correlation
 open GaloisForLFunctions.HilbertMetric.Clipped
 noncomputable section

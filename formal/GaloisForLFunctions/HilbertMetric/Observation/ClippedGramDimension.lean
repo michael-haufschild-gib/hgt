@@ -10,7 +10,7 @@ quadratic defect, which grows only linearly on the upper spectral tail.
 -/
 
 open Matrix
-open scoped NNReal
+open scoped ComplexOrder NNReal
 namespace GaloisForLFunctions.HilbertMetric.Observation
 open Clipped
 noncomputable section
@@ -25,8 +25,8 @@ private theorem relative_square_le_defect {x : ℝ} (hx : 0 ≤ x) :
   · have hden : 0 < (x + 1) ^ 2 := sq_pos_of_pos (by linarith only [hx])
     have hratio : (x - 1) ^ 2 / (x + 1) ^ 2 ≤ 1 :=
       (div_le_one hden).mpr (by nlinarith only [hx])
-    exact hratio.trans (by simpa using defect_ge_cutoff (by norm_num : (0 : ℝ) ≤ 1)
-      (by linarith only [h] : 1 + 1 ≤ x))
+    have hcut : 1 + 1 ≤ x := by linarith only [h]
+    exact hratio.trans (by simpa using defect_ge_cutoff (by norm_num : (0 : ℝ) ≤ 1) hcut)
 
 /-- The corpus's Gram spectrum computes the clipped matrix defect exactly. -/
 theorem gramSpectrum_clippedDefect (A : Matrix m n ℂ) (τ : ℝ) :
@@ -49,6 +49,7 @@ theorem gramDimensionSlope_clippedDefect (A : Matrix m n ℂ) :
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro i _
+    simp only [div_mul_eq_div_div]
     ring
   rw [he, gramSpectrum_clippedDefect] at hs
   linarith only [hs, hid]

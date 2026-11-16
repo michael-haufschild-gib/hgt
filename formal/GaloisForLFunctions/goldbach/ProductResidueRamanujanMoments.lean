@@ -66,7 +66,7 @@ theorem balancedProductResidueCount_ramanujan_moment (q : ℕ+) (b k : ℕ) :
         ∑ t : ZMod (q : ℕ), (Nat.gcd (q : ℕ) t.val : ℂ) *
           unitTupleCount q (fun _ : Fin k => 1) t := by
   simp_rw [balancedProductResidueCount_eq, Nat.cast_mul, Nat.cast_pow, mul_assoc]
-  rw [← mul_sum, productResidueCount_ramanujan_moment, mul_assoc]
+  rw [← mul_sum, productResidueCount_ramanujan_moment]
 
 #print axioms productResidueCount_ramanujan_moment
 #print axioms productResidueCount_ramanujan_moment_is_nat

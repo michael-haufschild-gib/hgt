@@ -1,7 +1,0 @@
-import GaloisForLFunctions.ExclusionOfTheCriticalState.TheZeroValuesOfTheStateAreANegativeVectorOfTheZeroPairing
-open GaloisForLFunctions.ExclusionOfTheCriticalState
-#print axioms criticalState_hasSum_zeroPairing_heated
-#print axioms criticalState_tendsto_zeroPairing
-#print axioms criticalState_tendsto_zeroNorm
-#print axioms criticalState_zeroNorm_limit_neg
-#print axioms laplace_mul_laplace_neg_of_re_eq_zero
