@@ -124,8 +124,15 @@ so nothing is lost between stages.
 | Q5 | Sign law | answered (Lean): one sign on no ray |
 | Q6 | Index law | $\zeta$: finite index at every ratio (Lean); exact count of critical ratios open |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH |
-| Q8 | The arithmetic property that excludes the state | open |
+| Q8 | The arithmetic property that excludes the state | criterion and model separation proved (Lean): beyond-the-wall prime-pole continuation; proof for $\zeta$ open |
 | Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): vanishing average wall mass, uniform right $o(1/\sigma)$ decay and charge cancellation; leading asymptotics and exclusion open |
+
+**Q8 criterion.** For every $F\in\mathcal H$, require the [prime-pole balance](TheBeyondTheWallPrimeBalanceExcludesTheState.lean)
+$\Phi_F(p)=\hat SF(p)+\mathcal LF(-\tfrac12)/(p+\tfrac12)$ to extend holomorphically from
+$\operatorname{Re}p<-\tfrac12$ to $\operatorname{Re}p<0$. Every critical state
+[sees a left zero](Zeros/TheCriticalStateSeesALeftZero.lean), which forces a pole in this balance;
+the criterion therefore excludes the state. It [fails on prime-two deformations and positive passive Euler twins](Models/BeyondTheWallContinuationFailsOnTheModels.lean),
+including twins matching any finite $\zeta$ prefix. Proving it for $\zeta$ remains open and is equivalent to RH.
 
 ## 6. Tools
 

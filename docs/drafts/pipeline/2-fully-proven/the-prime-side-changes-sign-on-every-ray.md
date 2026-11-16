@@ -3,8 +3,8 @@
 - **Stage:** 2-fully-proven
 - **Type:** THEOREM (paper); Lean formalization in progress
 - **Target:** ECS Q5/Q8; sign restriction on the actual prime-side profile.
-- **Statement:** The real part of the exact left-continuation datum has both
-  signs on every tail of the positive half-line, in the almost-everywhere sense.
+- **Statement:** Both the full left-continuation datum and its prime-minus-pole
+  part have both signs on every positive tail, in the almost-everywhere sense.
 
 ## Connection
 
@@ -44,8 +44,23 @@ zero-freeness gives `LF(z)≠0`. At `z-8`, the displayed product has order
 at least the multiplicity of `ρ`, whereas
 `analyticOrderAt_stateXiProduct_add_one` gives one less. Contradiction.
 
-This argument uses existing right-side seen zeros and does not require
-the separate left-zero existence theorem.
+## Prime-minus-pole wave
 
-This asserts oscillation of an explicit prime-side balance, not absence of
-the critical state. No arithmetic exclusion or contribution is counted yet.
+Take `D=wallPrimeWaveDatumLp(F,c=1)` and again
+`f(u)=exp(u) Re D(-u)` on the negative half-line. Put
+`R(p)=globalRemainder F p−archimedeanWallTail F p`.
+The exact Hardy representation gives `Lf(x)=R(−x−2)` for real `x>0`.
+Both terms of `R` are real and analytic at every real `p<0`: Xi has no
+real zeros, and the archimedean tail is holomorphic for `Re p<5/2`.
+
+A one-signed tail of `Re D` would therefore force every absolute moment
+of `f` at exponent `σ>−2` to converge, by the measurable Landau theorem.
+Then `H(p)=Lf(−p−2)` is holomorphic on `Re p<0`. On real `p<−2` it
+equals `R(p)=wallPrimeBalance F p`; analytic uniqueness extends equality
+to `Re p<−1/2`. This contradicts
+`criticalState_not_hasBeyondTheWallPrimeContinuation`, whose obstruction
+is the state's seen left zero. Thus the prime-minus-pole wave itself
+oscillates; archimedean terms are not needed in this sign restriction.
+
+These are sign restrictions, not absence of the critical state.
+Lean formalization remains incomplete; no contribution counted.

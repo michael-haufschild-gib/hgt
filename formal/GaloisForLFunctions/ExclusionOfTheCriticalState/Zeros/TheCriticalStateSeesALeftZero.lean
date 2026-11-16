@@ -170,9 +170,9 @@ private theorem integral_cauchy_pair_vertical {p₀ : ℂ} {K σ : ℝ} (hK : 0 
     refine integral_congr_ae (Eventually.of_forall fun t => ?_)
     dsimp only
     have e1 : ((σ : ℂ) + (t + p₀.im : ℝ) * I) - p₀ = (a : ℂ) + t * I := by
-      apply Complex.ext <;> simp [a] <;> ring
+      apply Complex.ext <;> simp [a]
     have e2 : ((σ : ℂ) + (t + p₀.im : ℝ) * I) - (p₀ + K) = (b : ℂ) + t * I := by
-      apply Complex.ext <;> simp [b] <;> ring
+      apply Complex.ext <;> simp [b]
     rw [e1, e2]
   rw [hshift]
   have hdecomp : (fun u : ℝ => (((a : ℂ) + u * I)⁻¹ - ((b : ℂ) + u * I)⁻¹)) =
@@ -283,6 +283,7 @@ private theorem integral_vertical_one_pole_left {G : ℂ → ℂ} {σ₀ σ₁ :
     set Cfar : ℝ := 4 * B + 4 * ‖G p₀‖ * K
     set Ctot : ℝ := (|C₀| + 1) * (1 + T₀ ^ 2) + Cfar
     have hMσ : -σ₀ ≤ M := (le_max_right _ _).trans hM
+    rw [show (-M : ℂ) = ((-M : ℝ) : ℂ) by simp]
     refine integral_vertical_line_shift_of_decay (Φ := R) (c₁ := σ₀) (c₂ := -M) (C := Ctot)
       (fun s hs => hR_diff s (by
         rcases Set.mem_uIcc.mp hs with h | h <;> linarith [h.1, h.2, hMσ]))
@@ -503,7 +504,7 @@ private theorem norm_sub_sq_on_four_ge {L : ℝ} (hL : 8 ≤ L) (t : ℝ) :
   have hre : ((L : ℂ) ^ 2 - ((4 : ℂ) + t * I) ^ 2).re = L ^ 2 - 16 + t ^ 2 := by
     have : ((4 : ℂ) + t * I) ^ 2 = ((16 - t ^ 2 : ℝ) : ℂ) + ((8 * t : ℝ) : ℂ) * I := by
       push_cast; ring_nf; rw [I_sq]; ring
-    rw [this, ← Complex.ofReal_pow]; simp; ring
+    rw [this]; simp [pow_two]; ring
   have hpos : (3 / 4 : ℝ) * L ^ 2 + t ^ 2 ≤ L ^ 2 - 16 + t ^ 2 := by nlinarith
   exact hpos.trans ((le_abs_self _).trans (by rw [← hre]; exact Complex.abs_re_le_norm _))
 
@@ -673,8 +674,8 @@ private theorem criticalState_globalRemainder_four {W₀ : ℝ} (hW : 0 < W₀)
       _ = -(criticalAliasCoefficient W₀ : ℂ) *
             negativeHalfLineLaplace (cx F) (((-4 + ε : ℝ) : ℂ) + t * I) := by ring
   have hlim1 := (hRem_cont.tendsto.mono_left nhdsWithin_le_nhds).congr' hev
-  have hlim2 := hLap_cont.tendsto.mono_left nhdsWithin_le_nhds
-  have heq0 := tendsto_nhds_unique hlim1 hlim2
+  have heq0 := tendsto_nhds_unique hlim1
+    (hLap_cont.tendsto.mono_left (nhdsWithin_le_nhds (s := Ioi (0 : ℝ))))
   norm_num at heq0
   exact heq0
 
@@ -757,15 +758,26 @@ private theorem criticalState_norm_sq_four_integrable_and_pos {W₀ : ℝ} (hW :
       refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
       dsimp [φ]
       rw [Complex.norm_real, Real.norm_eq_abs, sq_abs, mul_pow, ← Real.exp_nat_mul]
+      push_cast
       have : Real.exp (-(2 * 1 * x)) * (F (-x) ^ 2 * Real.exp (2 * (5 * x))) =
           F (-x) ^ 2 * (Real.exp (-(2 * 1 * x)) * Real.exp (2 * (5 * x))) := by ring
       rw [this, ← Real.exp_add]
       congr 2; ring
     rw [heq_W8]
-    exact zero_lt_one.trans (one_lt_exponential_mass_of_unit_domain hd hF.2.2.2.1)
+    have hunit : ∫ u : ℝ, F u ^ 2 = 1 := hF.2.2.2.1
+    have hle_exp : ∀ u : ℝ, F u ^ 2 ≤ F u ^ 2 * Real.exp (-(8 * u)) := fun u => by
+      rcases lt_or_ge u 0 with hu | hu
+      · exact le_mul_of_one_le_right (sq_nonneg _) (Real.one_le_exp (by linarith))
+      · simp [hd.support u hu]
+    have hge1 : 1 ≤ ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)) :=
+      hunit ▸ integral_mono hd.sq hd.exponential hle_exp
+    linarith
   have hinv_pos : 0 < |(2 * Real.pi)⁻¹| := abs_pos.mpr (inv_ne_zero hpi)
   rw [smul_eq_mul] at hscale
-  nlinarith [hrhs_pos, hscale, hinv_pos]
+  by_contra hle
+  push Not at hle
+  have hnonpos := mul_nonpos_of_nonneg_of_nonpos hinv_pos.le hle
+  linarith
 
 /-! ### Exact single-parameter residue identities -/
 
@@ -905,7 +917,6 @@ private theorem integral_singleCauchy_left_line {W₀ : ℝ} (hW : 0 < W₀)
   have h2L : -(L : ℂ) - (L : ℂ) = -2 * (L : ℂ) := by ring
   rw [neg_neg, h2L]
   field_simp [hL0]
-  ring
 
 private theorem integral_singleCauchy_zero_term {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
@@ -1195,7 +1206,7 @@ private theorem biCauchy_state_identity {W₀ : ℝ} (hW : 0 < W₀)
           ≤ 4 * N ^ 4 * (680 * (1 + t ^ 2)) :=
             mul_le_mul_of_nonneg_left hpoly (by positivity)
         _ = 2720 * N ^ 4 * (1 + t ^ 2)⁻¹ * ((1 + t ^ 2) * (1 + t ^ 2)) := by
-            field_simp [(by positivity : (0 : ℝ) < 1 + t ^ 2).ne']
+            field_simp [(by positivity : (0 : ℝ) < 1 + t ^ 2).ne']; norm_num
     rw [norm_mul, norm_mul, norm_mul]
     calc ‖biCauchy N ((4 : ℂ) + t * I)‖ * ‖negativeHalfLineLaplace (cx F) ((-4 : ℂ) - t * I)‖ *
             (‖negativeHalfLineLaplace (cx F) (centredZero c)‖ *

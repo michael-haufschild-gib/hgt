@@ -209,36 +209,44 @@ theorem integral_stateHeatSymbol_mul_laplace {μ : Measure ℝ} [SFinite μ] {ε
 def heatedState (ε : ℝ) (F : ℝ → ℝ) (T : ℝ) : ℝ :=
   ∫ u : ℝ, stateHeatKernel ε (u - T) * (Real.exp (-(8 * u)) * F u)
 
+theorem aestronglyMeasurable_dampedState {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) :
+    AEStronglyMeasurable (fun u : ℝ => ((Real.exp (-(8 * u)) * F u : ℝ) : ℂ)) volume :=
+  (Complex.measurable_ofReal.comp
+    ((by fun_prop : Measurable fun u : ℝ => Real.exp (-(8 * u))).mul hF.meas)).aestronglyMeasurable
+
+/-- The state in the weight of the confinement has a Laplace integral right of `Re p = 4`. -/
+theorem integrable_exp_mul_dampedState {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {b : ℝ}
+    (hb : 4 < b) :
+    Integrable (fun u : ℝ => Real.exp (b * u) * ‖((Real.exp (-(8 * u)) * F u : ℝ) : ℂ)‖) := by
+  refine (integrable_abs_mul_exp_of_domain hF (c := b - 8) (by linarith)).congr
+    (Eventually.of_forall fun u => ?_)
+  show |F u| * Real.exp ((b - 8) * u) =
+    Real.exp (b * u) * ‖((Real.exp (-(8 * u)) * F u : ℝ) : ℂ)‖
+  rw [Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _),
+    show (b - 8) * u = b * u + -(8 * u) by ring, Real.exp_add]
+  ring
+
+/-- The transform shifted by `8` is the Laplace integral of `e^{−8u} F(u)`. -/
+theorem laplace_sub_eight_eq_integral (F : ℝ → ℝ) (b t : ℝ) :
+    negativeHalfLineLaplace (cx F) (b + t * I - 8) =
+      ∫ u : ℝ, Complex.exp (((b : ℂ) + t * I) * u) * ((Real.exp (-(8 * u)) * F u : ℝ) : ℂ) := by
+  unfold negativeHalfLineLaplace
+  refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+  show Complex.exp (((b : ℂ) + t * I - 8) * (u : ℂ)) * ((F u : ℝ) : ℂ) =
+    Complex.exp (((b : ℂ) + t * I) * u) * ((Real.exp (-(8 * u)) * F u : ℝ) : ℂ)
+  have hx : ((b : ℂ) + t * I - 8) * (u : ℂ) =
+      ((b : ℂ) + t * I) * u + ((-(8 * u) : ℝ) : ℂ) := by
+    push_cast
+    ring
+  rw [Complex.ofReal_mul, Complex.ofReal_exp, ← mul_assoc, ← Complex.exp_add, hx]
+
 /-- Right of `Re p = 4` the Gaussian line integral of the shifted transform is the heated state. -/
 theorem integral_stateHeatSymbol_mul_laplace_right {F : ℝ → ℝ}
     (hF : CriticalHalfLineEnergyDomain F) {ε : ℝ} (hε : 0 < ε) (T : ℝ) {b : ℝ} (hb : 4 < b) :
     ∫ t : ℝ, stateHeatSymbol ε T (b + t * I) * negativeHalfLineLaplace (cx F) (b + t * I - 8) =
       2 * Real.pi * ((heatedState ε F T : ℝ) : ℂ) := by
-  have hφm : AEStronglyMeasurable (fun u : ℝ => ((Real.exp (-(8 * u)) * F u : ℝ) : ℂ)) volume :=
-    (Complex.measurable_ofReal.comp
-      ((by fun_prop : Measurable fun u : ℝ => Real.exp (-(8 * u))).mul hF.meas)).aestronglyMeasurable
-  have hφ : Integrable
-      (fun u : ℝ => Real.exp (b * u) * ‖((Real.exp (-(8 * u)) * F u : ℝ) : ℂ)‖) := by
-    refine (integrable_abs_mul_exp_of_domain hF (c := b - 8) (by linarith)).congr
-      (Eventually.of_forall fun u => ?_)
-    show |F u| * Real.exp ((b - 8) * u) =
-      Real.exp (b * u) * ‖((Real.exp (-(8 * u)) * F u : ℝ) : ℂ)‖
-    rw [Complex.norm_real, Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _),
-      show (b - 8) * u = b * u + -(8 * u) by ring, Real.exp_add]
-    ring
-  have h := integral_stateHeatSymbol_mul_laplace (μ := volume) hε T b hφm hφ
-  have e1 : ∀ t : ℝ, negativeHalfLineLaplace (cx F) (b + t * I - 8) =
-      ∫ u : ℝ, Complex.exp (((b : ℂ) + t * I) * u) * ((Real.exp (-(8 * u)) * F u : ℝ) : ℂ) := by
-    intro t
-    unfold negativeHalfLineLaplace
-    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-    show Complex.exp (((b : ℂ) + t * I - 8) * (u : ℂ)) * ((F u : ℝ) : ℂ) =
-      Complex.exp (((b : ℂ) + t * I) * u) * ((Real.exp (-(8 * u)) * F u : ℝ) : ℂ)
-    have hx : ((b : ℂ) + t * I - 8) * (u : ℂ) =
-        ((b : ℂ) + t * I) * u + ((-(8 * u) : ℝ) : ℂ) := by
-      push_cast
-      ring
-    rw [Complex.ofReal_mul, Complex.ofReal_exp, ← mul_assoc, ← Complex.exp_add, hx]
+  have h := integral_stateHeatSymbol_mul_laplace (μ := volume) hε T b
+    (aestronglyMeasurable_dampedState hF) (integrable_exp_mul_dampedState hF hb)
   have e2 : (∫ u : ℝ, ((stateHeatKernel ε (u - T) : ℝ) : ℂ) *
         ((Real.exp (-(8 * u)) * F u : ℝ) : ℂ)) = ((heatedState ε F T : ℝ) : ℂ) := by
     have h1 : (∫ u : ℝ, ((stateHeatKernel ε (u - T) * (Real.exp (-(8 * u)) * F u) : ℝ) : ℂ)) =
@@ -253,7 +261,7 @@ theorem integral_stateHeatSymbol_mul_laplace_right {F : ℝ → ℝ}
   show stateHeatSymbol ε T (b + t * I) * negativeHalfLineLaplace (cx F) (b + t * I - 8) =
     stateHeatSymbol ε T (b + t * I) *
       ∫ u : ℝ, Complex.exp (((b : ℂ) + t * I) * u) * ((Real.exp (-(8 * u)) * F u : ℝ) : ℂ)
-  rw [e1 t]
+  rw [laplace_sub_eight_eq_integral F b t]
 
 /-! ### The left line: the prime side beyond the wall -/
 
@@ -272,65 +280,80 @@ def beyondWallProfile (W₀ : ℝ) {F : ℝ → ℝ} (hF : CriticalHalfLineEnerg
 def heatedBeyondWall (ε W₀ : ℝ) {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) (T : ℝ) : ℂ :=
   ∫ x : ℝ in Ioi (0 : ℝ), ((stateHeatKernel ε (x - T) : ℝ) : ℂ) * beyondWallProfile W₀ hF x
 
-/-- Left of `Re p = −1` the Gaussian line integral of the continuation is the heated profile beyond
-the wall. -/
-theorem integral_stateHeatSymbol_mul_stateMeromorphic_left {W₀ : ℝ} {F : ℝ → ℝ}
-    (hF : CriticalHalfLineEnergyDomain F) {ε : ℝ} (hε : 0 < ε) (T : ℝ) {a : ℝ} (ha : a < -1) :
-    ∫ t : ℝ, stateHeatSymbol ε T (a + t * I) * stateMeromorphic W₀ F (a + t * I - 8) =
-      2 * Real.pi * heatedBeyondWall ε W₀ hF T := by
+theorem aestronglyMeasurable_beyondWallProfile (W₀ : ℝ) {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) :
+    AEStronglyMeasurable (beyondWallProfile W₀ hF) (volume.restrict (Ioi (0 : ℝ))) := by
   have hD : MemLp (unitLeftDatum W₀ hF : ℝ → ℂ) 2 (volume.restrict (Ioi (0 : ℝ))) :=
     Lp.memLp (unitLeftDatum W₀ hF)
-  have hφm : AEStronglyMeasurable
+  have h : AEStronglyMeasurable
       (fun x : ℝ => Complex.exp (x : ℂ) * (unitLeftDatum W₀ hF : ℝ → ℂ) x)
       (volume.restrict (Ioi (0 : ℝ))) :=
     ((by fun_prop : Continuous fun x : ℝ => Complex.exp (x : ℂ)).aestronglyMeasurable).mul
       hD.aestronglyMeasurable
+  exact h
+
+/-- The profile beyond the wall has a Laplace integral left of `Re p = −1`. -/
+theorem integrable_exp_mul_beyondWallProfile (W₀ : ℝ) {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {a : ℝ} (ha : a < -1) :
+    Integrable (fun x : ℝ => Real.exp (a * x) * ‖beyondWallProfile W₀ hF x‖)
+      (volume.restrict (Ioi (0 : ℝ))) := by
+  have hD : MemLp (unitLeftDatum W₀ hF : ℝ → ℂ) 2 (volume.restrict (Ioi (0 : ℝ))) :=
+    Lp.memLp (unitLeftDatum W₀ hF)
   have hw : 0 < ((-a - 1 : ℝ) : ℂ).re := by
     rw [Complex.ofReal_re]
     linarith
   have hI : Integrable
       (fun x : ℝ => (unitLeftDatum W₀ hF : ℝ → ℂ) x * expRay ((-a - 1 : ℝ) : ℂ) x)
       (volume.restrict (Ioi (0 : ℝ))) := integrableOn_laplaceRay hD hw
-  have hφ : Integrable (fun x : ℝ => Real.exp (a * x) * ‖beyondWallProfile W₀ hF x‖)
-      (volume.restrict (Ioi (0 : ℝ))) := by
-    refine hI.norm.congr (Eventually.of_forall fun x => ?_)
-    show ‖(unitLeftDatum W₀ hF : ℝ → ℂ) x * expRay ((-a - 1 : ℝ) : ℂ) x‖ =
-      Real.exp (a * x) * ‖beyondWallProfile W₀ hF x‖
-    unfold beyondWallProfile
-    rw [norm_mul, norm_mul, norm_expRay, Complex.norm_exp, Complex.ofReal_re, Complex.ofReal_re,
-      show -((-a - 1) * x) = a * x + x by ring, Real.exp_add]
-    ring
-  have h := integral_stateHeatSymbol_mul_laplace (μ := volume.restrict (Ioi (0 : ℝ))) hε T a
-    (φ := beyondWallProfile W₀ hF) hφm hφ
-  have e1 : ∀ t : ℝ, stateMeromorphic W₀ F (a + t * I - 8) =
+  refine hI.norm.congr (Eventually.of_forall fun x => ?_)
+  show ‖(unitLeftDatum W₀ hF : ℝ → ℂ) x * expRay ((-a - 1 : ℝ) : ℂ) x‖ =
+    Real.exp (a * x) * ‖beyondWallProfile W₀ hF x‖
+  unfold beyondWallProfile
+  rw [norm_mul, norm_mul, norm_expRay, Complex.norm_exp, Complex.ofReal_re, Complex.ofReal_re,
+    show -((-a - 1) * x) = a * x + x by ring, Real.exp_add]
+  ring
+
+/-- Left of `Re p = −1` the continuation is the Laplace integral of the profile beyond the wall. -/
+theorem stateMeromorphic_eq_integral_beyondWallProfile {W₀ : ℝ} {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {a : ℝ} (ha : a < -1) (t : ℝ) :
+    stateMeromorphic W₀ F (a + t * I - 8) =
       ∫ x : ℝ in Ioi (0 : ℝ), Complex.exp (((a : ℂ) + t * I) * x) * beyondWallProfile W₀ hF x := by
-    intro t
-    have hzre : (-((a : ℂ) + t * I) - 1).re = -a - 1 := by simp
-    have hz : 0 < (-((a : ℂ) + t * I) - 1).re := by
-      rw [hzre]
-      linarith
-    have hs := stateMeromorphic_eq_laplaceRay_left (W₀ := W₀) hF (c := 1) (by norm_num)
-      (by norm_num) hz
-    have hp : -(-((a : ℂ) + t * I) - 1 + ((1 : ℝ) : ℂ)) - 8 = (a : ℂ) + t * I - 8 := by
-      push_cast
-      ring
-    rw [hp] at hs
-    rw [hs]
-    unfold laplaceRay
-    refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
-    show (unitLeftDatum W₀ hF : ℝ → ℂ) x * expRay (-((a : ℂ) + t * I) - 1) x =
-      Complex.exp (((a : ℂ) + t * I) * x) * beyondWallProfile W₀ hF x
-    unfold beyondWallProfile expRay
-    have hx : -((-((a : ℂ) + t * I) - 1) * (x : ℂ)) = ((a : ℂ) + t * I) * x + x := by ring
-    rw [hx, Complex.exp_add]
+  have hzre : (-((a : ℂ) + t * I) - 1).re = -a - 1 := by simp
+  have hz : 0 < (-((a : ℂ) + t * I) - 1).re := by
+    rw [hzre]
+    linarith
+  have hs := stateMeromorphic_eq_laplaceRay_left (W₀ := W₀) hF (c := 1) (by norm_num)
+    (by norm_num) hz
+  have hp : -(-((a : ℂ) + t * I) - 1 + ((1 : ℝ) : ℂ)) - 8 = (a : ℂ) + t * I - 8 := by
+    push_cast
     ring
+  rw [hp] at hs
+  rw [hs]
+  unfold laplaceRay
+  refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
+  show (unitLeftDatum W₀ hF : ℝ → ℂ) x * expRay (-((a : ℂ) + t * I) - 1) x =
+    Complex.exp (((a : ℂ) + t * I) * x) * beyondWallProfile W₀ hF x
+  unfold beyondWallProfile expRay
+  have hx : -((-((a : ℂ) + t * I) - 1) * (x : ℂ)) = ((a : ℂ) + t * I) * x + x := by ring
+  rw [hx, Complex.exp_add]
+  ring
+
+/-- Left of `Re p = −1` the Gaussian line integral of the continuation is the heated profile beyond
+the wall. -/
+theorem integral_stateHeatSymbol_mul_stateMeromorphic_left {W₀ : ℝ} {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {ε : ℝ} (hε : 0 < ε) (T : ℝ) {a : ℝ} (ha : a < -1) :
+    ∫ t : ℝ, stateHeatSymbol ε T (a + t * I) * stateMeromorphic W₀ F (a + t * I - 8) =
+      2 * Real.pi * heatedBeyondWall ε W₀ hF T := by
+  have h := integral_stateHeatSymbol_mul_laplace (μ := volume.restrict (Ioi (0 : ℝ))) hε T a
+    (φ := beyondWallProfile W₀ hF) (aestronglyMeasurable_beyondWallProfile W₀ hF)
+    (integrable_exp_mul_beyondWallProfile W₀ hF ha)
   unfold heatedBeyondWall
   rw [← h]
   refine integral_congr_ae (Eventually.of_forall fun t => ?_)
   show stateHeatSymbol ε T (a + t * I) * stateMeromorphic W₀ F (a + t * I - 8) =
     stateHeatSymbol ε T (a + t * I) *
       ∫ x : ℝ in Ioi (0 : ℝ), Complex.exp (((a : ℂ) + t * I) * x) * beyondWallProfile W₀ hF x
-  rw [e1 t]
+  rw [stateMeromorphic_eq_integral_beyondWallProfile hF ha t]
 
 /-! ### The zero series on both sides of the wall -/
 

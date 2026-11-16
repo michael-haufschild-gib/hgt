@@ -72,6 +72,7 @@ theorem integrable_exp_of_nonnegative_tail_of_real_continuation
       Integrable fun u => |f u| *Real.exp (x*u) := by
     apply integrable_abs_exp_of_tail hm hf hs (T := T)
     exact hx.norm.congr (Eventually.of_forall fun u => by
+      change ‖f u*Real.exp (x*u)‖ = |f u| * Real.exp (x*u)
       rw [Real.norm_eq_abs,abs_mul,abs_of_pos (Real.exp_pos _)])
   have h0 : laplaceMass ν σ = ⊤ := by
     by_contra h
@@ -88,10 +89,15 @@ theorem integrable_exp_of_nonnegative_tail_of_real_continuation
       (hmass _).mpr (hto _ (integrable_abs_exp_nonneg hf hs (half_pos hcpos).le))
     exact hfin (hc.2 _ (by linarith only [hcpos]))
   let head : ℝ → ℝ := (Ici (-T)).indicator f
-  have hhead := differentiable_laplace_of_head (hm.indicator measurableSet_Ici)
-    (hf.indicator measurableSet_Ici)
-    (fun u hu => by simp only [Set.indicator]; split_ifs <;> simp [hs u hu])
-    (fun u hu => by exact indicator_of_notMem (not_le.mpr hu) f)
+  have hhead : Differentiable ℂ (negativeHalfLineLaplace (cx head)) :=
+    differentiable_laplace_of_head (T := T) (hm.indicator measurableSet_Ici)
+      (hf.indicator measurableSet_Ici)
+      (fun u hu => by
+        change (Ici (-T)).indicator f u = 0
+        by_cases hmem : u ∈ Ici (-T)
+        · rw [indicator_of_mem hmem,hs u hu]
+        · exact indicator_of_notMem hmem f)
+      (fun u hu => indicator_of_notMem (not_le.mpr hu) f)
   let Φ : ℂ → ℂ := fun w => G w-negativeHalfLineLaplace (cx head) w
   have hΦ (x : ℝ) (hx : κ < x) : AnalyticAt ℂ Φ (x : ℂ) :=
     (hG x hx).sub (hhead.analyticAt _)
@@ -116,7 +122,8 @@ theorem integrable_exp_of_nonnegative_tail_of_real_continuation
         simp only [head,Set.indicator]; split_ifs <;> simp
     dsimp only [Φ]
     rw [← heq x hx,negativeHalfLineLaplace_ofReal,negativeHalfLineLaplace_ofReal,
-      complexLaplace_ofReal,laplaceReal_tailMeasure hm hT hpos,← Complex.ofReal_sub]
+      GaloisForLFunctions.RHTower.complexLaplace_ofReal,
+      laplaceReal_tailMeasure hm hT hpos,← Complex.ofReal_sub]
     congr 1
     linarith only [hsplit]
   have hray (x : ℝ) (hx : c < x) : Φ (x : ℂ) = complexLaplace ν (x : ℂ) := by
@@ -129,10 +136,10 @@ theorem integrable_exp_of_nonnegative_tail_of_real_continuation
       filter_upwards [isOpen_Ioi.mem_nhds (show (0:ℝ)<1 by norm_num)] with t ht
       exact hinit t ht
     exact hA.eqOn_of_preconnected_of_eventuallyEq hB isPreconnected_Ioi
-      (by linarith only [hc0]) he hx
+      (show (1 : ℝ) ∈ Ioi c from lt_of_le_of_lt hc0 zero_lt_one) he hx
   obtain ⟨δ,hδ,hball⟩ := (hΦ c hκc).exists_ball_analyticOnNhd
   exact false_of_analyticAt_abscissa hc hδ hball
-    (fun x hx _ => by rw [hray x hx,complexLaplace_ofReal])
+    (fun x hx _ => by rw [hray x hx,GaloisForLFunctions.RHTower.complexLaplace_ofReal])
 
 
 /-- The Landau obstruction depends only on an almost-everywhere tail sign. -/

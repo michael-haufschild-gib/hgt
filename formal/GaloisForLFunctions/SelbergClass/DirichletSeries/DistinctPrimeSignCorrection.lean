@@ -2,6 +2,7 @@ import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
 import Mathlib.Analysis.Complex.LocallyUniformLimit
 import Mathlib.Analysis.Complex.CauchyIntegral
 import Mathlib.NumberTheory.SumPrimeReciprocals
+import Mathlib.Analysis.SpecialFunctions.Pow.Complex
 import Mathlib.Tactic.FunProp
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.FieldSimp
@@ -22,6 +23,17 @@ namespace GaloisForLFunctions.SelbergClass
 /-- Entire prime-decay function, written without a branch-dependent logarithm. -/
 def distinctPrimeDecay (p : Nat.Primes) (s : ℂ) : ℂ :=
   Complex.exp (-(s * (Real.log (p : ℕ) : ℂ)))
+
+/-- Positive prime bases identify exponential decay with the usual complex power. -/
+theorem distinctPrimeDecay_eq_cpow (p : Nat.Primes) (s : ℂ) :
+    distinctPrimeDecay p s = (p : ℂ) ^ (-s) := by
+  have hp : (p : ℂ) ≠ 0 := by exact_mod_cast p.prop.ne_zero
+  have hlog : Complex.log (p : ℂ) = (Real.log (p : ℕ) : ℂ) := by
+    simpa only [Complex.ofReal_natCast] using
+      (Complex.ofReal_log (Nat.cast_nonneg (p : ℕ))).symm
+  rw [distinctPrimeDecay, Complex.cpow_def_of_ne_zero hp, hlog]
+  congr 1
+  ring
 
 /-- The quadratic Euler correction, with the prime two removed. -/
 def oddPrimeCorrectionFactor (p : Nat.Primes) (s : ℂ) : ℂ :=
@@ -57,7 +69,8 @@ private theorem norm_distinctPrimeDecay_lt_one (p : Nat.Primes) {s : ℂ}
   have hp : (1 : ℝ) < (p : ℕ) := by exact_mod_cast p.prop.one_lt
   linarith only [mul_pos hs (Real.log_pos hp)]
 
-private theorem one_sub_distinctPrimeDecay_ne_zero (p : Nat.Primes) {s : ℂ}
+/-- Positive real part keeps every geometric denominator away from zero. -/
+theorem one_sub_distinctPrimeDecay_ne_zero (p : Nat.Primes) {s : ℂ}
     (hs : 0 < s.re) : 1 - distinctPrimeDecay p s ≠ 0 := by
   intro h
   have hn := norm_distinctPrimeDecay_lt_one p hs
@@ -170,6 +183,13 @@ theorem multipliableLocallyUniformlyOn_oddPrimeCorrection {σ : ℝ} (hσ : 1 / 
   have he : (fun (p : Nat.Primes) (s : ℂ) => 1 + (oddPrimeCorrectionFactor p s - 1)) =
       oddPrimeCorrectionFactor := by funext p s; ring
   rwa [he] at h
+
+/-- The local factors converge to the defined product at every point of its half-plane. -/
+theorem hasProd_oddPrimeCorrection {s : ℂ} (hs : 1 / 2 < s.re) :
+    HasProd (fun p => oddPrimeCorrectionFactor p s) (oddPrimeCorrection s) := by
+  have hσ : 1 / 2 < (1 / 2 + s.re) / 2 := by linarith only [hs]
+  have hsσ : (1 / 2 + s.re) / 2 < s.re := by linarith only [hs]
+  exact (multipliableLocallyUniformlyOn_oddPrimeCorrection hσ).hasProdLocallyUniformlyOn.hasProd hsσ
 
 /-- Absolute summability of the local deficits controls all possible product zeros. -/
 theorem summable_norm_oddPrimeCorrectionFactor_sub_one {s : ℂ} (hs : 1 / 2 < s.re) :

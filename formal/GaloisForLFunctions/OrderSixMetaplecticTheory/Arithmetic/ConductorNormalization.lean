@@ -1,6 +1,7 @@
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheDilateCorrelationAtEveryPrimaryPrimeHasADoublePole
 import GaloisForLFunctions.MetaplecticMobiusDescent.CubicReciprocityAtACommonCharacteristic
 import GaloisForLFunctions.HTGeometry.Analysis.ReciprocalPowerProducts
+import Mathlib.Topology.Algebra.InfiniteSum.Order
 
 /-!
 # Uniform normalization of the prime dilate factors
@@ -19,7 +20,7 @@ open scoped BigOperators Classical
 namespace GaloisForLFunctions.OrderSixMetaplecticTheory
 
 open Finset MetaplecticMobiusDescent MetaplecticMobiusDescent.Eisenstein
-  MetaplecticMobiusDescent.CubicEisenstein
+  MetaplecticMobiusDescent.CubicEisenstein MetaplecticMobiusDescent.CubicJacobi
 
 namespace PrimaryPrime
 
@@ -55,8 +56,10 @@ theorem mul_conj_eq_of_conductorNorm_eq (P Q : PrimaryPrime)
     (h : P.conductorNorm = Q.conductorNorm) :
     P.p * conjO P.p = Q.p * conjO Q.p := by
   apply ringComplex_injective
-  rw [map_mul, map_mul, ringComplex_conjO, ringComplex_conjO,
-    Complex.mul_conj', Complex.mul_conj']
+  rw [map_mul, map_mul, ringComplex_conjO, ringComplex_conjO]
+  change ringComplex P.p * (starRingEnd ℂ) (ringComplex P.p) =
+    ringComplex Q.p * (starRingEnd ℂ) (ringComplex Q.p)
+  rw [Complex.mul_conj', Complex.mul_conj']
   have he : ‖ringComplex P.p‖ ^ 2 = ‖ringComplex Q.p‖ ^ 2 := by
     rw [← P.conductorNorm_cast, ← Q.conductorNorm_cast, h]
   exact_mod_cast he
@@ -124,6 +127,16 @@ theorem dilateFactor_div_norm_power (P : PrimaryPrime) :
   push_cast
   rfl
 
+/-- The phase in the cubic-twist double-pole coefficient has modulus one. -/
+theorem twistFactor_norm (P : PrimaryPrime) :
+    ‖ringComplex (symbol 9 P.p) * star (normalizedCubicUnitGauss P.p)‖ = 1 := by
+  have h9 : IsCoprime (9 : O) P.p := by
+    have h := P.isCoprime_three.pow_left (m := 2)
+    norm_num at h
+    exact h
+  rw [norm_mul, norm_star, normalizedCubicUnitGauss_prime_norm P.p P.prime P.primary,
+    symbol_norm_one 9 P.p P.primary h9, mul_one]
+
 end PrimaryPrime
 
 /-- Norm repetitions in a finite primary-prime set have multiplicity at most two. -/
@@ -143,9 +156,7 @@ theorem conductorNorm_fiber_card_le_two (S : Finset PrimaryPrime) (q : ℕ) :
         exact PrimaryPrime.p_injective he
     exact hc.trans Finset.card_le_two
   · have he : (S.filter fun P => P.conductorNorm = q) = ∅ := by
-      ext P
-      simp only [mem_empty, iff_false]
-      exact fun hP => h ⟨P, hP⟩
+      simpa using h
     rw [he, card_empty]
     omega
 
@@ -183,12 +194,19 @@ private theorem inverse_square_product_lt_four (S : Finset PrimaryPrime) :
   have hf : (∏ q ∈ S.image PrimaryPrime.conductorNorm,
       a q ^ (S.filter fun P => P.conductorNorm = q).card) =
       ∏ P ∈ S, a P.conductorNorm := by
-    rw [← prod_fiberwise_of_maps_to (fun P hP => mem_image_of_mem _ hP)
-      (fun P : PrimaryPrime => a P.conductorNorm)]
-    apply prod_congr rfl
-    intro q _
-    rw [← prod_const]
-    exact prod_congr rfl fun P hP => by rw [(mem_filter.mp hP).2]
+    calc
+      _ = ∏ q ∈ S.image PrimaryPrime.conductorNorm,
+          ∏ P ∈ S.filter (fun P => P.conductorNorm = q), a P.conductorNorm := by
+        apply prod_congr rfl
+        intro q _
+        calc
+          _ = ∏ _P ∈ S.filter (fun P => P.conductorNorm = q), a q :=
+            (Finset.prod_const _).symm
+          _ = _ := prod_congr rfl fun P hP => by rw [(mem_filter.mp hP).2]
+      _ = _ := prod_fiberwise_of_maps_to (s := S) (t := S.image PrimaryPrime.conductorNorm)
+        (g := PrimaryPrime.conductorNorm)
+        (fun P hP => mem_image_of_mem PrimaryPrime.conductorNorm hP)
+        (fun P : PrimaryPrime => a P.conductorNorm)
   have hbound : (∏ P ∈ S, a P.conductorNorm) ≤
       (∏ q ∈ S.image PrimaryPrime.conductorNorm, a q) ^ 2 := by
     rw [← hf, ← prod_pow]
@@ -220,6 +238,35 @@ theorem conductorSquareCorrection_bounds (S : Finset PrimaryPrime) :
     linarith only [h]
   · exact Finset.prod_le_one (fun P _ => P.conductorSquare_pos.le)
       (fun P _ => sub_le_self _ (by positivity))
+
+/-- The correction decreases as more primary primes are included. -/
+theorem conductorSquareCorrection_antitone : Antitone conductorSquareCorrection := by
+  intro S T hST
+  exact Finset.prod_le_prod_of_subset_of_le_one hST
+    (fun P _ => P.conductorSquare_pos.le)
+    (fun P _ _ => sub_le_self _ (by positivity))
+
+/-- The square-power correction converges over all primary primes, without choosing an ordering. -/
+theorem conductorSquare_multipliable :
+    Multipliable (fun P : PrimaryPrime => 1 - 1 / (P.conductorNorm : ℝ) ^ 2) := by
+  have hb : BddBelow (Set.range conductorSquareCorrection) := by
+    refine ⟨1 / 4, ?_⟩
+    rintro _ ⟨S, rfl⟩
+    exact (conductorSquareCorrection_bounds S).1.le
+  exact ⟨⨅ S, conductorSquareCorrection S,
+    tendsto_atTop_ciInf conductorSquareCorrection_antitone hb⟩
+
+/-- The infinite square-power conductor correction. -/
+def conductorSquareConstant : ℝ :=
+  ∏' P : PrimaryPrime, (1 - 1 / (P.conductorNorm : ℝ) ^ 2)
+
+/-- The infinite correction is positive and uniformly separated from zero. -/
+theorem conductorSquareConstant_bounds :
+    (1 / 4 : ℝ) ≤ conductorSquareConstant ∧ conductorSquareConstant ≤ 1 := by
+  exact ⟨le_hasProd_of_le_prod conductorSquare_multipliable.hasProd
+      (fun S => (conductorSquareCorrection_bounds S).1.le),
+    hasProd_le_of_prod_le conductorSquare_multipliable.hasProd
+      (fun S => (conductorSquareCorrection_bounds S).2)⟩
 
 /-- The first-order Euler weight that remains after removing the bounded correction. -/
 def conductorFirstOrderWeight (S : Finset PrimaryPrime) : ℝ :=
@@ -270,9 +317,59 @@ theorem normalizedDilateProduct_bounds (S : Finset PrimaryPrime) :
     Real.norm_of_nonneg (conductorSquareCorrection_pos S).le]
   exact conductorSquareCorrection_bounds S
 
+/-- Product of the prime dilate residue weights after removing their norm and first-order factors.
+The common spectral coefficient `216π³r³` is omitted at each prime. -/
+def normalizedDilateResidueProduct (S : Finset PrimaryPrime) : ℂ :=
+  ∏ P ∈ S, (((‖ringComplex P.p‖ : ℂ) ^ (1 / 3 : ℂ)) / P.dilateFactor (4 / 3)) /
+    (((1 - 1 / (P.conductorNorm : ℝ)) ^ 2 : ℝ) : ℂ)
+
+theorem normalizedDilateResidueProduct_eq (S : Finset PrimaryPrime) :
+    normalizedDilateResidueProduct S = (normalizedDilateProduct S)⁻¹ := by
+  unfold normalizedDilateResidueProduct normalizedDilateProduct
+  rw [← prod_inv_distrib]
+  apply prod_congr rfl
+  intro P _
+  simp only [div_eq_mul_inv, mul_inv_rev, inv_inv]
+  ring
+
+/-- The normalized prime residue weights have uniformly bounded products. -/
+theorem normalizedDilateResidueProduct_bounds (S : Finset PrimaryPrime) :
+    1 ≤ ‖normalizedDilateResidueProduct S‖ ∧ ‖normalizedDilateResidueProduct S‖ < 4 := by
+  rw [normalizedDilateResidueProduct_eq, normalizedDilateProduct_eq, norm_inv,
+    Complex.norm_real, Real.norm_of_nonneg (conductorSquareCorrection_pos S).le]
+  have h := conductorSquareCorrection_bounds S
+  constructor
+  · exact (one_le_inv₀ (conductorSquareCorrection_pos S)).mpr h.2
+  · rw [← one_div, div_lt_iff₀ (conductorSquareCorrection_pos S)]
+    linarith only [h.1]
+
+/-- The corresponding weights of the cubic-twist residues, including their actual Gauss phases. -/
+def normalizedCubicTwistResidueProduct (S : Finset PrimaryPrime) : ℂ :=
+  ∏ P ∈ S, (((‖ringComplex P.p‖ : ℂ) ^ (1 / 3 : ℂ)) /
+    (P.dilateFactor (4 / 3) *
+      (ringComplex (symbol 9 P.p) * star (normalizedCubicUnitGauss P.p)))) /
+    (((1 - 1 / (P.conductorNorm : ℝ)) ^ 2 : ℝ) : ℂ)
+
+theorem normalizedCubicTwistResidueProduct_norm (S : Finset PrimaryPrime) :
+    ‖normalizedCubicTwistResidueProduct S‖ = ‖normalizedDilateResidueProduct S‖ := by
+  unfold normalizedCubicTwistResidueProduct normalizedDilateResidueProduct
+  rw [norm_prod, norm_prod]
+  apply prod_congr rfl
+  intro P _
+  simp only [norm_div, norm_mul, P.twistFactor_norm, mul_one]
+
+/-- Unit Gauss phases preserve the uniform bounds for the cubic-twist residue weights. -/
+theorem normalizedCubicTwistResidueProduct_bounds (S : Finset PrimaryPrime) :
+    1 ≤ ‖normalizedCubicTwistResidueProduct S‖ ∧
+      ‖normalizedCubicTwistResidueProduct S‖ < 4 := by
+  rw [normalizedCubicTwistResidueProduct_norm]
+  exact normalizedDilateResidueProduct_bounds S
+
 #print axioms PrimaryPrime.eq_or_conj_of_conductorNorm_eq
 #print axioms conductorNorm_fiber_card_le_two
 #print axioms conductorRatio_product_bounds
 #print axioms normalizedDilateProduct_bounds
+#print axioms normalizedCubicTwistResidueProduct_bounds
+#print axioms conductorSquareConstant_bounds
 
 end GaloisForLFunctions.OrderSixMetaplecticTheory
