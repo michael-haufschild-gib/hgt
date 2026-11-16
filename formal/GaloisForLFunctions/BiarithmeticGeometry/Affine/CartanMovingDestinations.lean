@@ -117,10 +117,7 @@ theorem splitCartan_all_destinations (a b : ℝ) :
       splitCartan_infinite_destination
     have he : a • (![1, 0] : Fin 2 → ℝ) = ![a, b] := by
       ext i
-      fin_cases i
-      · change b * (a / b) = a
-        field_simp
-      · simp
+      fin_cases i <;> simp [hb]
     rw [he] at h
     exact h
   · right
@@ -128,7 +125,10 @@ theorem splitCartan_all_destinations (a b : ℝ) :
       (splitCartan_finite_destination (a / b))
     have he : b • (![a / b, 1] : Fin 2 → ℝ) = ![a, b] := by
       ext i
-      fin_cases i <;> simp [hb]
+      fin_cases i
+      · change b * (a / b) = a
+        field_simp
+      · simp
     rw [he] at h
     exact h
 

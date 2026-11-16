@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Seventy-five helper modules passed final plain Lean checks and are umbrella-wired, including actual low angular completed-source energy, central physical tuples and Gaussian tail bounds.
+- **Verified:** Seventy-six helper modules passed final plain Lean checks and are umbrella-wired, including actual low angular completed-source energy, central physical tuples, Gaussian tails and exact probe reassembly.
 - **Missing:** Actual physical low-probe bound, angular prime-slot estimates, high moment induction and both common-signal estimates.
 
 ## Receiver
@@ -107,7 +107,9 @@ of compensated tuples into the original radial kernel and angular selected inver
 the actual Gram inequality and inverse-row mass, giving `C(1+|t|)^degree Z^(3/16+254ε)`.
 `AngularGaussianTails` gives arbitrary remote-scale power decay for actual angular physical
 families and bounds their compensation mass by the original physical scale mass.
-Dyadic summation and reassembly of the full physical low bound remain pending.
+`AngularGaussianReassembly.angularCompensatedPhysicalProbe_common_gaussian` identifies
+the actual compensated angular probe with its Gaussian dyad expansion, including all selected-prime phases.
+Quantitative dyadic summation and the final physical low bound remain pending.
 
 ## Verified reciprocal growth
 

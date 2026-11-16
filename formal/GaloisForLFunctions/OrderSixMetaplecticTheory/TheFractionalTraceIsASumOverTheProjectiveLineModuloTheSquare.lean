@@ -193,7 +193,7 @@ theorem exists_fracRow (a b c d : O) (hdet : a * d - b * c = 1) :
     obtain ⟨s, t, hs⟩ := P.exists_sqLift (e * d)
     refine ⟨.inr (.inr s), ?_⟩
     simp only [fracRow]
-    exact ⟨3 * P.sK * (d * f - 3 * c * t) - P.sM * c, by linear_combination (3 * P.sK * d) * hef - (9 * P.sK * c) * hs⟩
+    exact ⟨3 * P.sK * (d * f - 3 * c * t) - P.sM * c, by linear_combination (-3 * P.sK * d) * hef - (9 * P.sK * c) * hs⟩
 
 /-- The coset `g_i⁻¹(Γ(3) ∩ Γ₀(q²))`. -/
 def fracCoset (i : P.FracIndex) : levelThree ⧸ P.levelSqGroup := ((P.fracRep i)⁻¹ : levelThree)

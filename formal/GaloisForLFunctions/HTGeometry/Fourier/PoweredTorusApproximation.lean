@@ -43,8 +43,8 @@ theorem coordinateMode_star (i : ι) (a : ℤ) :
   exact (torusCharacter_neg_index (Finsupp.single i a) x).symm.trans
     (congrArg (fun v => torusCharacter v x) (Finsupp.single_neg i a).symm)
 
-/-- Polynomial reconstruction of the positive coordinate. -/
 omit [DecidableEq ι] in
+/-- Polynomial reconstruction of the positive coordinate. -/
 theorem adjacentPowers_recover_coordinate (i : ι) (n : ℕ) :
     coordinateMode i ((n : ℤ) + 1) ^ (n + 1) *
       coordinateMode i (-((n : ℤ) + 2)) ^ n = coordinateMode i 1 := by
@@ -53,8 +53,8 @@ theorem adjacentPowers_recover_coordinate (i : ι) (n : ℕ) :
   push_cast
   ring
 
-/-- A single product recovers the conjugate coordinate. -/
 omit [DecidableEq ι] in
+/-- A single product recovers the conjugate coordinate. -/
 theorem adjacentPowers_recover_conjugate (i : ι) (n : ℕ) :
     coordinateMode i ((n : ℤ) + 1) * coordinateMode i (-((n : ℤ) + 2)) =
       coordinateMode i (-1) := by

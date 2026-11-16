@@ -41,19 +41,17 @@ theorem ofReal_twoShellRealLaplace (a t : ℝ) :
 
 theorem hasDerivAt_twoShellRealLaplace (a t : ℝ) :
     HasDerivAt (twoShellRealLaplace a) (twoShellRealLaplace₁ a t) t := by
-  convert ((Real.hasDerivAt_cosh t).const_mul (Real.cosh (2 * a))).add
+  have h := ((Real.hasDerivAt_cosh t).const_mul (Real.cosh (2 * a))).add
     (((Real.hasDerivAt_cosh (2 * t)).comp t
-      ((hasDerivAt_id t).const_mul 2)).const_mul (Real.cosh a)) using 1 <;>
-    simp only [twoShellRealLaplace, twoShellRealLaplace₁, Pi.add_apply,
-      Function.comp_apply] <;> ring
+      ((hasDerivAt_id t).const_mul 2)).const_mul (Real.cosh a))
+  exact h.congr_deriv (by unfold twoShellRealLaplace₁; ring)
 
 theorem hasDerivAt_twoShellRealLaplace₁ (a t : ℝ) :
     HasDerivAt (twoShellRealLaplace₁ a) (twoShellRealLaplace₂ a t) t := by
-  convert ((Real.hasDerivAt_sinh t).const_mul (Real.cosh (2 * a))).add
+  have h := ((Real.hasDerivAt_sinh t).const_mul (Real.cosh (2 * a))).add
     (((Real.hasDerivAt_sinh (2 * t)).comp t
-      ((hasDerivAt_id t).const_mul 2)).const_mul (2 * Real.cosh a)) using 1 <;>
-    simp only [twoShellRealLaplace₁, twoShellRealLaplace₂, Pi.add_apply,
-      Function.comp_apply] <;> ring
+      ((hasDerivAt_id t).const_mul 2)).const_mul (2 * Real.cosh a))
+  exact h.congr_deriv (by unfold twoShellRealLaplace₂; ring)
 
 /-- Exact positive numerator of the logarithmic curvature. -/
 theorem twoShellRealLaplace_curvature (a t : ℝ) :

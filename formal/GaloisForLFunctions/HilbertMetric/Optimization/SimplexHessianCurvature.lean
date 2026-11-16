@@ -111,8 +111,8 @@ theorem diagonalHessianOperator_rankOne (a u v : ι → ℝ) :
   intro i _
   ring
 
-/-- Every diagonal matrix is acted on coordinatewise by the squared coefficients. -/
 omit [Fintype ι] in
+/-- Every diagonal matrix is acted on coordinatewise by the squared coefficients. -/
 theorem diagonalHessianOperator_diagonal (a v : ι → ℝ) :
     diagonalHessianOperator a (Matrix.diagonal v) =
       Matrix.diagonal (fun i => a i ^ 2 * v i) := by
