@@ -251,4 +251,187 @@ theorem summable_fourShiftCoeff {σ : ℝ} (hσ : 4 < σ) :
         nlinarith [sq_nonneg (x - y), mul_nonneg (sq_nonneg (x - y)) hp]
       exact key
 
+
+/-! ### The remainder of the Hecke-at-four trace -/
+
+theorem fourRemainder_automorphy (M : levelThree) (w : HyperbolicSpace) :
+    fourRemainder (complexMatrix M • w) = (complexCharacter M)⁻¹ * fourRemainder w := by
+  rw [fourRemainder, fourRemainder, sourceFourTrace_automorphy, sourceTheta_automorphy, ← complexCharacter_sq_eq_inv]
+  ring
+
+theorem fourRemainder_remainderData : RemainderData fourRemainder where
+  automorphy := fourRemainder_automorphy
+  measurable := fourRemainder_continuous.measurable
+  bounded := fourRemainder_bounded
+  high := norm_fourRemainder_strip 2 two_pos
+  memLp := fourRemainder_memLp
+
+/-! ### The constant term as Bessel series -/
+
+theorem thetaSqRemainder_eq (v : ℝ) (hv : 0 < v) :
+    thetaSqRemainder v = besselRemainder (fun h => rationalSourceResidualFourierCoefficient h ^ 2) v := by
+  rw [thetaSqRemainder, besselRemainder]
+  refine tsum_congr fun h => ?_
+  by_cases hh : h = 0
+  · simp [hh]
+  · rw [if_neg hh, if_neg hh, sourceAmplitude_mul_neg v hv h hh, besselSq]
+    ring
+
+theorem summable_amplitude_mul {a b : O → ℂ} (ha : Summable (fun h => ‖a h‖)) (hb : Summable (fun h => ‖b h‖))
+    (f : O → O) : Summable (fun h => a h * b (f h)) := by
+  refine Summable.of_norm_bounded (ha.mul_right (∑' k : O, ‖b k‖)) fun h => ?_
+  rw [norm_mul]
+  exact mul_le_mul_of_nonneg_left (hb.le_tsum (f h) fun k _ => norm_nonneg _) (norm_nonneg _)
+
+theorem tsum_four_amplitude (v : ℝ) (hv : 0 < v) :
+    ∑' h : O, rationalSourceModeAmplitude (2 * v) h * rationalSourceModeAmplitude (v / 2) (-(4 * h)) =
+      thetaConstant ^ 2 * (v : ℂ) ^ (4 / 3 : ℂ) + 1 / 4 * besselRemainder fourShiftCoeff (2 * v) := by
+  have hs := summable_amplitude_mul (rationalSourceModeAmplitude_summable (2 * v) (by positivity))
+    (rationalSourceModeAmplitude_summable (v / 2) (by positivity)) (fun h => -(4 * h))
+  rw [hs.tsum_eq_add_tsum_ite 0, sourceAmplitude_four_zero v hv, besselRemainder, ← tsum_mul_left]
+  congr 1
+  refine tsum_congr fun h => ?_
+  by_cases hh : h = 0
+  · simp [hh]
+  · rw [if_neg hh, if_neg hh, sourceAmplitude_four_shift v hv h hh, fourShiftCoeff, besselSq]
+    have e : 4 * Real.pi * ‖cuspFrequency h‖ * (2 * v) = 8 * Real.pi * ‖cuspFrequency h‖ * v := by ring
+    rw [e]
+    push_cast
+    ring
+
+theorem cubeRootF_zero : cubeRootF 0 = 0 := by
+  unfold cubeRootF
+  rw [if_neg (by decide), if_neg (by decide), if_neg (by decide)]
+
+theorem tsum_twist_amplitude (v : ℝ) (hv : 0 < v) :
+    ∑' h : O, cubeRootF (red h) * (rationalSourceModeAmplitude (v / 2) h * rationalSourceModeAmplitude (v / 2) (-h)) =
+      besselRemainder cubicTwistCoeff (v / 2) := by
+  rw [besselRemainder]
+  refine tsum_congr fun h => ?_
+  by_cases hh : h = 0
+  · simp [hh, red_zero, cubeRootF_zero]
+  · rw [if_neg hh, sourceAmplitude_mul_neg (v / 2) (by positivity) h hh, cubicTwistCoeff, besselSq]
+    ring
+
+theorem integral_sourceThetaSq_periodDomain (v : ℝ) (hv : 0 < v) :
+    ∫ z in periodDomain, sourceTheta (upperPoint z v hv) ^ 2 =
+      periodArea * (thetaConstant ^ 2 * (v : ℂ) ^ (4 / 3 : ℂ) + thetaSqRemainder v) := by
+  simp_rw [sourceTheta, cubicSourceResidualFunction_fourier_expansion]
+  rw [integral_cuspCharacterSeries_sq _ (rationalSourceModeAmplitude_summable v hv), tsum_amplitude_mul_neg v hv,
+    rationalSourceModeAmplitude_zero]
+  have hv0 : (v : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hv.ne'
+  rw [show (4 / 3 : ℂ) = 2 / 3 + 2 / 3 by norm_num, Complex.cpow_add _ _ hv0]
+  ring
+
+/-- **The constant term of `G'`.** `a₀(G')(v) = 8|P| (¼R₄(2v) + R_χ(v/2) − R(v))`. -/
+theorem cuspConstantTerm_fourRemainder (v : ℝ) (hv : 0 < v) :
+    cuspConstantTerm fourRemainder v = 8 * periodArea * (1 / 4 * besselRemainder fourShiftCoeff (2 * v) +
+      besselRemainder cubicTwistCoeff (v / 2) -
+        besselRemainder (fun h => rationalSourceResidualFourierCoefficient h ^ 2) v) := by
+  have hlift : ∀ z, cuspCoordinateLift (v, z) = upperPoint z v hv := fun z => cuspCoordinateLift_positive v z hv
+  have hc1 : Continuous (fun z : ℂ => sourceFourTrace (upperPoint z v hv)) := sourceFourTrace_continuous v hv
+  have hc2 : Continuous (fun z : ℂ => sourceTheta (upperPoint z v hv) ^ 2) := by
+    have h := cuspCharacterSeries_continuous _ (rationalSourceModeAmplitude_summable v hv)
+    simp_rw [sourceTheta, cubicSourceResidualFunction_fourier_expansion]
+    exact h.pow 2
+  rw [cuspConstantTerm]
+  simp_rw [hlift, fourRemainder]
+  rw [integral_sub (integrableOn_periodDomain_of_continuous _ hc1)
+    ((integrableOn_periodDomain_of_continuous _ hc2).const_mul 8), integral_const_mul,
+    integral_sourceFourTrace v hv, integral_sourceThetaSq_periodDomain v hv, tsum_four_amplitude v hv,
+    tsum_twist_amplitude v hv, thetaSqRemainder_eq v hv]
+  ring
+
+
+/-! ### The Mellin transform and the double pole -/
+
+theorem two_cpow_identities (s : ℂ) :
+    1 / 4 * (2 : ℂ) ^ (2 - s) = (2 : ℂ) ^ (-s) ∧ (((1 / 2 : ℝ) : ℂ)) ^ (2 - s) = (2 : ℂ) ^ (s - 2) := by
+  have h2 : (2 : ℂ) ≠ 0 := two_ne_zero
+  constructor
+  · rw [Complex.cpow_sub _ _ h2, Complex.cpow_neg, show (2 : ℂ) ^ (2 : ℂ) = 4 by norm_num]
+    field_simp
+  · have harg : (2 : ℂ).arg ≠ Real.pi := by
+      rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, Complex.arg_ofReal_of_nonneg (by norm_num)]
+      exact Real.pi_ne_zero.symm
+    rw [show (((1 / 2 : ℝ) : ℂ)) = (2 : ℂ)⁻¹ by push_cast; ring, Complex.inv_cpow _ _ harg, ← Complex.cpow_neg]
+    ring_nf
+
+/-- **The Mellin identity.** For `4 < Re s < 13/3`:
+`∫_{D_Γ} G' E(s) = 8|P| M(s) (2^{−s} D₄(s) + 2^{s−2} L_χ(s) − D(s))`. -/
+theorem integral_fourRemainder_mul_eisenstein (s : ℂ) (hs4 : 4 < s.re) (hs : s.re < 13 / 3) :
+    ∫ w in levelSet, fourRemainder w * hyperbolicEisenstein s w ∂hyperbolicVolume =
+      8 * periodArea * (besselSqMellin s * ((2 : ℂ) ^ (-s) * besselDirichlet fourShiftCoeff s +
+        (2 : ℂ) ^ (s - 2) * besselDirichlet cubicTwistCoeff s - thetaSqDirichlet s)) := by
+  have hG := fourRemainder_remainderData
+  have hs23 : 2 / 3 < s.re := by linarith
+  rw [hG.integral_mul_eisenstein s (by linarith) hs]
+  set R4 := besselRemainder fourShiftCoeff
+  set Rχ := besselRemainder cubicTwistCoeff
+  set R := besselRemainder (fun h => rationalSourceResidualFourierCoefficient h ^ 2)
+  have hpt : ∀ v ∈ Set.Ioi (0 : ℝ),
+      (v : ℂ) ^ s * (∫ z in periodDomain, fourRemainder (cuspCoordinateLift (v, z))) / (v : ℂ) ^ 3 =
+        8 * periodArea * (1 / 4 * ((v : ℂ) ^ s * R4 (2 * v) / (v : ℂ) ^ 3) +
+          (v : ℂ) ^ s * Rχ (1 / 2 * v) / (v : ℂ) ^ 3 - (v : ℂ) ^ s * R v / (v : ℂ) ^ 3) := by
+    intro v (hv : 0 < v)
+    have hc := cuspConstantTerm_fourRemainder v hv
+    rw [cuspConstantTerm] at hc
+    rw [hc, show v / 2 = 1 / 2 * v by ring]
+    ring
+  have hI4base := integrableOn_besselRemainder fourShiftCoeff s hs23 (summable_fourShiftCoeff hs4)
+  have hIχbase := integrableOn_besselRemainder cubicTwistCoeff s hs23 (summable_cubicTwistCoeff hs4)
+  have hI := integrableOn_besselRemainder _ s hs23 (summable_sq_coeff hs4)
+  have hI4 := integrableOn_mellin_comp_mul R4 s two_pos hI4base
+  have hIχ := integrableOn_mellin_comp_mul Rχ s (by norm_num : (0 : ℝ) < 1 / 2) hIχbase
+  have J1 : IntegrableOn (fun v : ℝ => 1 / 4 * ((v : ℂ) ^ s * R4 (2 * v) / (v : ℂ) ^ 3)) (Set.Ioi 0) :=
+    hI4.const_mul _
+  have J12 : IntegrableOn (fun v : ℝ => 1 / 4 * ((v : ℂ) ^ s * R4 (2 * v) / (v : ℂ) ^ 3) +
+      (v : ℂ) ^ s * Rχ (1 / 2 * v) / (v : ℂ) ^ 3) (Set.Ioi 0) := J1.add hIχ
+  have J3 : IntegrableOn (fun v : ℝ => (v : ℂ) ^ s * R v / (v : ℂ) ^ 3) (Set.Ioi 0) := hI
+  rw [setIntegral_congr_fun measurableSet_Ioi hpt, integral_const_mul,
+    integral_sub J12 J3, integral_add J1 hIχ,
+    integral_const_mul, integral_mellin_comp_mul R4 s two_pos,
+    integral_mellin_comp_mul Rχ s (by norm_num : (0 : ℝ) < 1 / 2),
+    integral_besselRemainder fourShiftCoeff s hs23 (summable_fourShiftCoeff hs4),
+    integral_besselRemainder cubicTwistCoeff s hs23 (summable_cubicTwistCoeff hs4),
+    integral_besselRemainder _ s hs23 (summable_sq_coeff hs4)]
+  obtain ⟨h1, h2⟩ := two_cpow_identities s
+  have hD : besselDirichlet (fun h => rationalSourceResidualFourierCoefficient h ^ 2) s = thetaSqDirichlet s := rfl
+  rw [hD, h2, show ((2 : ℝ) : ℂ) = 2 by norm_num, ← h1]
+  ring
+
+/-- **The two-adic cubic twist has the double pole of the theta square.**
+`M(s) (2^{−s} D₄(s) + 2^{s−2} L_χ(s))`, with `D₄(s) = Σ_{h≠0} T(h)T(−4h)(4π|ξ_h|)^{−s}` and
+`L_χ(s) = Σ_{h≠0} χ(h)T(h)²(4π|ξ_h|)^{−s}` (`χ(h)` the cube root of unity `≡ h mod 2`), continues to
+`{1 < Re s < 13/3, Im s > 0}` and to a punctured neighbourhood of `4/3`, and
+`(s − 4/3)² M(s)(2^{−s}D₄(s) + 2^{s−2}L_χ(s)) → 108π³r³ ≠ 0`. -/
+theorem twoAdicCubicTwist_double_pole :
+    ∃ Λ : ℂ → ℂ,
+      (∀ s : ℂ, 4 < s.re → s.re < 13 / 3 → 0 < s.im →
+        Λ s = besselSqMellin s * ((2 : ℂ) ^ (-s) * besselDirichlet fourShiftCoeff s +
+          (2 : ℂ) ^ (s - 2) * besselDirichlet cubicTwistCoeff s)) ∧
+      (∀ s : ℂ, 1 < s.re → s.re < 13 / 3 → 0 < s.im → DifferentiableAt ℂ Λ s) ∧
+      (∀ᶠ s in 𝓝[≠] (4 / 3 : ℂ), DifferentiableAt ℂ Λ s) ∧
+      Tendsto (fun s => (s - 4 / 3) ^ 2 * Λ s) (𝓝[≠] (4 / 3 : ℂ))
+        (𝓝 (108 * (Real.pi : ℂ) ^ 3 * constantArithmeticResidue ^ 3)) ∧
+      (108 * (Real.pi : ℂ) ^ 3 * constantArithmeticResidue ^ 3 ≠ 0) := by
+  obtain ⟨Λ, hΛ, hΛd, hΛn, hΛl, hne⟩ := thetaSqDirichlet_double_pole
+  have hG := fourRemainder_remainderData
+  have hP : (8 * periodArea : ℂ) ≠ 0 :=
+    mul_ne_zero (by norm_num) (Complex.ofReal_ne_zero.mpr periodAreaReal_pos.ne')
+  refine ⟨fun s => Λ s + (8 * periodArea)⁻¹ * hG.pairing s, fun s hs4 hs hi => ?_, fun s hs1 hs hi => ?_, ?_, ?_,
+    hne⟩
+  · show Λ s + (8 * periodArea)⁻¹ * hG.pairing s = _
+    rw [hΛ s hs4 hs hi, ← hG.pairing_eq s hs4 hs hi, integral_fourRemainder_mul_eisenstein s hs4 hs,
+      inv_mul_cancel_left₀ hP]
+    ring
+  · exact (hΛd s hs1 hs hi).add ((hG.pairing_differentiableAt s hs1 hs hi).const_mul _)
+  · filter_upwards [hΛn, hG.pairing_near_four_thirds.1] with s h1 h2
+    exact h1.add (h2.const_mul _)
+  · have h2 := hG.pairing_near_four_thirds.2
+    have hsum := hΛl.add (h2.const_mul (8 * periodArea)⁻¹)
+    rw [mul_zero, add_zero] at hsum
+    refine hsum.congr' (Eventually.of_forall fun s => ?_)
+    ring
+
 end GaloisForLFunctions.OrderSixMetaplecticTheory

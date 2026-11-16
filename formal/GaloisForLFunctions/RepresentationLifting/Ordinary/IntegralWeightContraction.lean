@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SymmetricSquareMatrix
+import GaloisForLFunctions.HTGeometry.TruncatedToeplitz
 import Mathlib.Data.ZMod.Basic
 
 /-!+# Integral contraction onto the highest-weight space
@@ -20,7 +21,7 @@ variable {ι : Type*}
 def contraction (w : ι → ℕ) (a : ℤ) (r : ℕ) : (ι → ℤ) →ₗ[ℤ] (ι → ℤ) where
   toFun v i := a ^ (r * w i) * v i
   map_add' v u := by ext i; exact mul_add _ _ _
-  map_smul' c v := by ext i; simp only [Pi.smul_apply, smul_eq_mul]; ring
+  map_smul' c v := by ext i; simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply]; ring
 
 /-- Projection onto the summands of weight zero. -/
 def highestProjection (w : ι → ℕ) : (ι → ℤ) →ₗ[ℤ] (ι → ℤ) where
@@ -70,7 +71,9 @@ theorem contraction_mod_level (w : ι → ℕ) (p r : ℕ) (v : ι → ℤ) (i :
   have h := congrFun (contraction_eq_projection_add w p r v) i
   simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul] at h
   rw [h]
-  simp
+  have hz : (p : ZMod (p ^ r)) ^ r = 0 := by
+    simpa only [Nat.cast_pow] using (ZMod.natCast_self (p ^ r))
+  simp [hz]
 
 /-- Differences with their highest-weight component removed acquire the full level factor. -/
 theorem contraction_difference_divisible (w : ι → ℕ) (a : ℤ) (r : ℕ)
@@ -80,6 +83,33 @@ theorem contraction_difference_divisible (w : ι → ℕ) (a : ℤ) (r : ℕ)
   refine ⟨contractionError w a r (v - u), ?_⟩
   rw [contraction_eq_projection_add]
   abel
+
+/-- For every integer base at least two, the fixed lattice is exactly the highest-weight lattice. -/
+theorem contraction_fixed_iff (w : ι → ℕ) (p : ℕ) (v : ι → ℤ) :
+    contraction w (p + 2) 1 v = v ↔ highestProjection w v = v := by
+  constructor
+  · intro hv
+    ext i
+    by_cases h : w i = 0
+    · simp [highestProjection, h]
+    · have he := congrFun hv i
+      change (p + 2 : ℤ) ^ (1 * w i) * v i = v i at he
+      rw [one_mul] at he
+      have hp : 1 < (p + 2 : ℤ) := by omega
+      have hn : (p + 2 : ℤ) ^ w i - 1 ≠ 0 := by
+        have := one_lt_pow₀ hp h
+        omega
+      have hz : ((p + 2 : ℤ) ^ w i - 1) * v i = 0 := by
+        linear_combination he
+      have hi : v i = 0 := (mul_eq_zero.mp hz).resolve_left hn
+      simp [highestProjection, h, hi]
+  · intro hv
+    calc
+      contraction w (p + 2) 1 v = contraction w (p + 2) 1 (highestProjection w v) :=
+        congrArg (contraction w (p + 2) 1) hv.symm
+      _ = highestProjection w v := congrArg (fun f : (ι → ℤ) →ₗ[ℤ] (ι → ℤ) => f v)
+        (contraction_highestProjection w (p + 2) 1)
+      _ = v := hv
 
 open GaloisForLFunctions.HTGeometry in
 /-- The corpus's symmetric-square action has deficits `0,1,2`. -/
@@ -100,9 +130,42 @@ theorem symmetricSquare_mod_level (p r : ℕ) (v : Fin 3 → ℤ) (i : Fin 3) :
   rw [symmetricSquare_contraction, contraction_mod_level]
   fin_cases i <;> simp [highestProjection]
 
+/-- The same normalized weights on the basis `1,X,…,X^(N-1)` of a jet space. -/
+def jetWeightMatrix (N : ℕ) (a : ℤ) (r : ℕ) : Matrix (Fin N) (Fin N) ℤ :=
+  Matrix.diagonal (fun i => a ^ (r * i.val))
+
+theorem jetWeightMatrix_mulVec (N : ℕ) (a : ℤ) (r : ℕ) (v : Fin N → ℤ) :
+    (jetWeightMatrix N a r).mulVec v = contraction Fin.val a r v := by
+  funext i
+  exact Matrix.mulVec_diagonal _ _ _
+
+open GaloisForLFunctions.HTGeometry Polynomial in
+/-- Integral cocharacter covariance of jet multiplication; no inverse of the scaling factor is used. -/
+theorem jetWeightMatrix_toeplitz (N : ℕ) (a : ℤ) (r : ℕ) (P : ℤ[X]) :
+    jetWeightMatrix N a r * toeplitz N P =
+      toeplitz N (P.comp (C (a ^ r) * X)) * jetWeightMatrix N a r := by
+  ext i j
+  rw [jetWeightMatrix, Matrix.diagonal_mul, Matrix.mul_diagonal]
+  simp only [toeplitz_apply, comp_C_mul_X_coeff]
+  by_cases hji : j.val ≤ i.val
+  · simp only [if_pos hji, ← pow_mul]
+    have he : r * i.val = r * (i.val - j.val) + r * j.val := by
+      rw [← Nat.mul_add, Nat.sub_add_cancel hji]
+    rw [he, pow_add]
+    ring
+  · simp [hji]
+
+/-- Jet contraction reduces to the constant-weight projection at every integral level. -/
+theorem jetWeightMatrix_mod_level (N p r : ℕ) (v : Fin N → ℤ) (i : Fin N) :
+    ((jetWeightMatrix N p r).mulVec v i : ZMod (p ^ r)) =
+      if i.val = 0 then (v i : ZMod (p ^ r)) else 0 := by
+  rw [jetWeightMatrix_mulVec, contraction_mod_level]
+  by_cases hi : i.val = 0 <;> simp [highestProjection, hi]
+
 end
 
 end GaloisForLFunctions.RepresentationLifting.IntegralOrdinary
 
 #print axioms GaloisForLFunctions.RepresentationLifting.IntegralOrdinary.contraction_eq_projection_add
 #print axioms GaloisForLFunctions.RepresentationLifting.IntegralOrdinary.symmetricSquare_mod_level
+#print axioms GaloisForLFunctions.RepresentationLifting.IntegralOrdinary.jetWeightMatrix_toeplitz

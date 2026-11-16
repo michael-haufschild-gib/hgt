@@ -98,6 +98,13 @@ the quadratic Gauss sum of the row at the odd part of the column.
    `Λ₀(2(1 + ρ)/3)`.
 7. *Heath-Brown recursion* (MMD, order three). Poisson in the long variable turns a character matrix of
    order `k` into Gauss sums of order `k`; principal dual frequencies give the cross term.
+8. *Hecke at the inert prime 2* (OSM). The correlation `θ(Aw)θ(A⁻¹w)` lives on the level-2 subgroup `Γ_A`
+   because the 2-adic nebentypus of the two Hecke points cancels; its trace back to `Γ(3)` runs over
+   `P¹(𝔽₄)` and its constant term is a shifted square plus a cubic twist at `2`, produced by the Gauss sum
+   of `𝔽₄`. No Eisenstein series of level `2` is needed: the trace lives where `E_{Γ(3)}` already does.
+9. *Subtract the square, keep the remainder bounded* (OSM). `Tr F − 8θ²` has no growth; a bounded remainder
+   with `O(v^{−7/3})` decay unfolds against `E(s)` to the Mellin transform of its constant term and has at
+   most a simple pole at `4/3`, so the double pole of the twisted combination equals that of `D`.
 
 ## 5. Pillar theorems
 
@@ -131,13 +138,18 @@ the quadratic Gauss sum of the row at the odd part of the column.
 | Positive main term | `G(X) = κX^{2/3} + O(X^{13/20})` with `κ > 0`: `C² > 0`, `r > 0`, `L(1, χ₋₃) > 0` (the cleared cube zeta is positive on the real ray), `M(4/3) > 0`; the smoothed sum is real for every `X` | `gaussianSmoothedUntwistedTheta_positive_main_term`, `LFunction_chi3D_one_isPosReal`, `star_gaussianSmoothedUntwistedTheta` |
 | The order-six family is 2-ramified | `Φ(c) = Γ(c) χ₂(c) G̃(c)²` with `χ₂ = (·/−2)₃²`; `Γ(ωc) = Γ(c)` and `χ₂(ω) ≠ 1`, so `χ₂` is orthogonal to every `ω`-invariant function modulo `4`: at every column the 2-adic phase `\overline{r(n, c)}Γ(c)χ₂(c)` has mean zero, and the family contains no untwisted theta square and no twist unramified at `2`, at every column and in every layer; `ω₆(c̄) = \overline{ω₆(c)}`, so the smoothed order-six first moment is real | `rowRootNumber_eq_weil_mul_cubicTwo`, `sum_mul_cubicTwoChar_eq_zero`, `sum_column_phase_mul_cubicTwoChar`, `sum_layer_phase_mul_cubicTwoChar`, `star_gaussianSmoothedOrderSix` |
 | The order-six family twists the plain squares | `(ω²λ²)² = 9`, so the coefficient of the 3-adic twist `S_{ω²λ²}` is `\overline{G̃(c)}²`, and `ω₆(c) = Γ(c)χ₂(c)\overline{(ω²λ²/c)₃²σ(c)}`: the family is the 2-adic Weil twist of `\overline{S_{ω²λ²}}`, the plain mean of the squared Gauss sums; its Rankin–Selberg weight `(T(ω²λ²)/T(1))²` is nonnegative real | `twisted_coefficient_eq_plain_square`, `orderSixWeight_eq_conj_plain`, `plain_square_weight_nonneg` |
+| The Hecke-at-four trace | `F = θ(A·)θ(A⁻¹·)`, `A = diag(√2, 1/√2)`, has multiplier `κ²` on `Γ_A = Γ(3) ∩ {2 ∣ b, 2 ∣ c}`; `Γ(3)/Γ_A` is the set of ordered pairs of distinct points of `P¹(𝔽₄)`; the trace `Tr F` is `κ²`-automorphic on `Γ(3)`, `SL₂(ℤ)`-invariant, and a phased sum of products of `θ` at Hecke points | `heckeFourCorrelation_automorphy`, `heckeFourTrace_automorphy`, `heckeFourTrace_eq_hecke`, `heckeFourTrace_rational` |
+| The trace reads the cubic twist at 2 | `∫_P Tr F(z + jv) = 8|P|(Σ_h b(2v, h)b(v/2, −4h) + Σ_h χ(h)b(v/2, h)b(v/2, −h))`, `χ(h)` the cube root of unity `≡ h mod 2` (the Gauss sum `Σ_u uψ(hu²) = 2χ(h)` of `𝔽₄`) | `integral_sourceFourTrace`, `gaussFour` |
+| The trace is eight theta squares up to a bounded remainder | `G' = Tr F − 8θ²` is bounded, `O(v^{−7/3})` above any height, and decays at the ramified cusps (Hecke points of a ramified cusp are ramified) | `fourRemainder_bounded`, `norm_fourRemainder_strip`, `sourceTheta_hecke_ramified` |
+| Bounded remainders have at most a simple pole | the Rankin–Selberg integral of a bounded `κ⁻¹`-automorphic function with `O(v^{−7/3})` decay is the Mellin transform of its constant term on `2 < Re s < 13/3`, continues to `1 < Re s < 13/3`, and `(s − 4/3)²Λ_G → 0` | `RemainderData`, `pairing_eq`, `pairing_near_four_thirds` |
+| The 2-adic cubic twist has the double pole of `θ²` | with `D₄(s) = Σ T(h)T(−4h)(4π|ξ_h|)^{−s}` and `L_χ(s) = Σ χ(h)T(h)²(4π|ξ_h|)^{−s}`: `M(s)(2^{−s}D₄(s) + 2^{s−2}L_χ(s))` continues to `1 < Re s < 13/3` and `(s − 4/3)²` times it tends to `108π³r³ ≠ 0`, the double pole of `D` | `twoAdicCubicTwist_double_pole` |
 
 ## 6. Questions
 
 | # | Question |
 |---|---|
 | Q1 | **Bridge.** Is the row-root-number series at every column a combination, with coefficients of bounded conductor, of Rankin–Selberg series of the cubic theta function? Pointwise the answer is Hasse–Davenport at the columns: a shifted theta product times the quadratic Gauss sum at the odd part of the column. Open: the series-level statement in the theta coefficients `T` (the 3-adic twist `(9/c)₃` between `G̃` and `T`) and the class restriction modulo `4` of the Weil index. |
-| Q2 | **Residues.** The residue at `2/3` of the actual row family at column `n` and under bounded reweighting: the order-six theta coefficients. By Q1 they are residues of shifted cubic theta products with quadratic twists. Closed form? Which reweightings kill them? Known: `S₁` (the family reweighted by `\overline{G}(9/·)₃`) has a nonzero residue (STCC); it is a positive real number and the theta scalar `C` is real (conjugation symmetry). The actual family is orthogonal to `S₁` and to every twist unramified at `2` (its 2-adic phase has mean zero modulo `4`): its residue is a combination of residues of theta squares twisted by characters ramified at `2`. Its 3-adic part is the twist `S_{ω²λ²} = Σ \overline{G̃(c)}² N(c)^{−w}` (the plain mean of the squared Gauss sums), not `S₁`. |
+| Q2 | **Residues.** The residue at `2/3` of the actual row family at column `n` and under bounded reweighting: the order-six theta coefficients. By Q1 they are residues of shifted cubic theta products with quadratic twists. Closed form? Which reweightings kill them? Known: `S₁` (the family reweighted by `\overline{G}(9/·)₃`) has a nonzero residue (STCC); it is a positive real number and the theta scalar `C` is real (conjugation symmetry). The actual family is orthogonal to `S₁` and to every twist unramified at `2` (its 2-adic phase has mean zero modulo `4`): its residue is a combination of residues of theta squares twisted by characters ramified at `2`. Its 3-adic part is the twist `S_{ω²λ²} = Σ \overline{G̃(c)}² N(c)^{−w}` (the plain mean of the squared Gauss sums), not `S₁`. The first 2-ramified residue: `2^{−s}D₄ + 2^{s−2}L_χ` (shifted square and cubic twist at `2` of `T²`) has the double pole `108π³r³` of `D`. |
 | Q3 | **Remainder.** The remainder exponent of the first moment, for one column and on average over columns. At the unit layer it is the zero-free region of `ζ_K` read at `3w − 1`, from both sides: `(1 + Θ)/3` is reached through the seed, and a zero `ρ` with `Λ₀(2(1 + ρ)/3) ≠ 0` forbids every exponent below `(1 + Re ρ)/3`. Open: the actual family and the columns. |
 | Q4 | **Functional equation** of `Z(w; n)` with explicit column dependence: needs the continuation of the cubic Eisenstein series across `Re s = 1`. |
 | Q5 | **Sextic large sieve** `B₆(M, N)`. A square stops the floor bin at `5/6` whatever its cross term; the sieve matters for the mean over columns of the remainders, not for the main term. |
@@ -177,8 +189,9 @@ the quadratic Gauss sum of the row at the odd part of the column.
    smoothing turn remainders into holomorphy and force the zeros of `ζ_K`. (Lean)
 5. Conjugation and reflection: `c ↦ c̄` on symbols, Gauss sums, both cusp Dirichlet series and the Whittaker
    factors; reflection of continued cusp coefficients across the real axis; reality of residues. (Lean)
-6. Cubic Eisenstein series of `Γ(3) ∩ Γ₀(m)` with cubic nebentypus `(d/m)₃`, and the Rankin–Selberg series of
-   `θ` with its dilates. (open)
+6. Hecke correlation traces: `θ(Aw)θ(A⁻¹w)` traced from `Γ_A` to `Γ(3)`, its coset geometry over `P¹(𝔽₄)`,
+   its constant term, and the bounded-remainder Rankin–Selberg lemma. (Lean, at the prime `2`)
+   Cubic Eisenstein series of `Γ(3) ∩ Γ₀(m)` with cubic nebentypus `(d/m)₃` at other `m`. (open)
    Concretely: the spectral theory of MMD (energy graph, resolvent, Eisenstein series) on `L²(H\ℍ³)` for
    finite-index `H ≤ Γ_ker`; the 2-adic covers only see `θ`'s expansion at `∞` and the four rational cusps.
 7. Quadratic twists of `θ` (translates by `(1/q)O`, level `q²`) and the 3-adic layer `(ω², 2)` (translates by
@@ -230,8 +243,9 @@ evaluation before Cauchy–Schwarz); Q7 is O3.
    Klein group (all nonzero). `S₁` gives one relation: splitting off the rows divisible by `−2` (twisted
    multiplicativity) ties the odd untwisted residue to the odd `χ₂`-twisted residue. Products `T(c)T(pc)` reduce
    to cubic twists of `T(c)²` by the prime recurrence, so the 2-ramified twists are the new objects.
-2. Cubic Eisenstein series with cubic nebentypus on `Γ(3) ∩ Γ₀(m)`: the Rankin–Selberg series of `θ(w)θ(A_m w)`,
-   first at the prime `m = −2` (the conductor phase at column `1`).
+2. The Rankin–Selberg series of `θ(w)θ(A_m w)`: done at `m = 2` by the Hecke-at-four trace (the combination
+   `2^{−s}D₄ + 2^{s−2}L_χ` has the double pole of `D`). Open: separate `D₄` from `L_χ` (Patterson's relations at
+   `2`), and odd primes `m`.
 3. Quadratic twists of `θ` and their cusp growth: does a quadratic twist keep the double pole?
 4. The 3-adic theta coefficients `T(uλ^m)` and the layer `(ω², 2)` that carries `(9/c)₃`. Known: `T(uλ) = 0`,
    `T(u) = 0` for `u ≠ ±1` (STCC); conjugation pairs `T(uλ^m)` with `T(ū(−ω²)^mλ^m)`, so `T(ω²λ²)` is real.

@@ -7,7 +7,8 @@ For a bipartite matrix `X`, the homogeneous separability defect is
 `trace X • X - partialTraceRight X ⊗ partialTraceLeft X`. Both partial traces vanish.
 For two product clusters it factors as a tensor product of the differences of their
 trace-weighted marginals. This gives an exact separability test for the cluster model
-of Rivetti–Fodor–Björnson–Skoglund, Proposition 2, arXiv:2611.08007.
+of Rivetti–Fodor–Björnson–Skoglund, Proposition 2, arXiv:2611.08007. Without
+positive covariance normalization, a trace-zero degeneracy must also be included.
 -/
 
 noncomputable section
@@ -74,6 +75,30 @@ theorem product_eq_zero_iff (A : Matrix m m ℂ) (B : Matrix n n ℂ) :
       exact (mul_eq_zero.mp hentry).resolve_left hij
   · rintro (rfl | rfl) <;> simp
 
+/-- Zero defect means a product matrix, or exactly the trace-zero degeneracy
+where at least one marginal vanishes. -/
+theorem kroneckerDefect_eq_zero_iff (X : Matrix (m × n) (m × n) ℂ) :
+    kroneckerDefect X = 0 ↔
+      (∃ A : Matrix m m ℂ, ∃ B : Matrix n n ℂ, X = A ⊗ₖ B) ∨
+        (X.trace = 0 ∧ (partialTraceRight X = 0 ∨ partialTraceLeft X = 0)) := by
+  constructor
+  · intro h
+    have he : X.trace • X = partialTraceRight X ⊗ₖ partialTraceLeft X :=
+      sub_eq_zero.mp h
+    by_cases ht : X.trace = 0
+    · right
+      refine ⟨ht, (product_eq_zero_iff _ _).mp ?_⟩
+      rw [← he, ht, zero_smul]
+    · left
+      refine ⟨X.trace⁻¹ • partialTraceRight X, partialTraceLeft X, ?_⟩
+      calc
+        X = X.trace⁻¹ • (X.trace • X) := by
+          rw [smul_smul, inv_mul_cancel₀ ht, one_smul]
+        _ = _ := by rw [he, smul_kronecker]
+  · rintro (⟨A, B, rfl⟩ | ⟨ht, hm⟩)
+    · exact kroneckerDefect_product A B
+    · rw [kroneckerDefect, ht, zero_smul, (product_eq_zero_iff _ _).mpr hm, sub_self]
+
 /-- Exact two-cluster rigidity: the defect vanishes precisely when a marginal pair
 is proportional with its trace as normalization. -/
 theorem kroneckerDefect_two_clusters_eq_zero_iff
@@ -126,3 +151,9 @@ theorem kroneckerDefect_clusters {ι : Type*} [Fintype ι]
     (fun i => A i u.1 v.1) (fun i => B i u.2 v.2)
 
 end HilbertMetric.Correlation
+
+#print axioms HilbertMetric.Correlation.kroneckerDefect_mem_crossFibre
+#print axioms HilbertMetric.Correlation.kroneckerDefect_product
+#print axioms HilbertMetric.Correlation.kroneckerDefect_eq_zero_iff
+#print axioms HilbertMetric.Correlation.kroneckerDefect_two_clusters_eq_zero_iff
+#print axioms HilbertMetric.Correlation.kroneckerDefect_clusters

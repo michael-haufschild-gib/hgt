@@ -160,3 +160,11 @@ theorem angularGaussianVariance_eq_zero_iff (θ s : ℝ) :
       zero_pow, neg_zero, Real.exp_zero, sub_self, zero_mul, zero_div]
 
 end HilbertMetric.Correlation
+
+#print axioms HilbertMetric.Correlation.integral_angular_cos
+#print axioms HilbertMetric.Correlation.integral_angular_cos_sq
+#print axioms HilbertMetric.Correlation.angularGaussianVariance_eq
+#print axioms HilbertMetric.Correlation.angularGaussianVariance_bounds
+#print axioms HilbertMetric.Correlation.angularGaussianVariance_parallel
+#print axioms HilbertMetric.Correlation.angularGaussianVariance_perpendicular
+#print axioms HilbertMetric.Correlation.angularGaussianVariance_eq_zero_iff

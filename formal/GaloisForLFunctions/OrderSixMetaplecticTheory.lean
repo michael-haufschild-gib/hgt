@@ -24,6 +24,8 @@ import GaloisForLFunctions.OrderSixMetaplecticTheory.TheHeckeAtFourTraceReadsThe
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheHeckeAtFourTraceIsInvariantUnderTheModularGroup
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheHeckePointsOfARamifiedCuspAreRamified
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheHeckeAtFourTraceIsEightThetaSquaresUpToABoundedRemainder
+import GaloisForLFunctions.OrderSixMetaplecticTheory.BoundedRemaindersHaveAtMostASimplePoleAtFourThirds
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheTwoAdicCubicTwistHasTheDoublePoleOfTheThetaSquare
 
 /-!
 # Order-Six Metaplectic Theory over ℚ(ω)
@@ -31,6 +33,7 @@ import GaloisForLFunctions.OrderSixMetaplecticTheory.TheHeckeAtFourTraceIsEightT
 Umbrella for the order-six Kubota series of the row root numbers of the cubic-theta probe: the
 identification of the row root numbers with conjugate squared theta coefficients, the column, tower and
 layer laws, the analytic tools that evaluate first moments on the cubic cover (real-segment continuation,
-remainder ↔ zeros of `ζ_{ℚ(ω)}`), and the conjugation symmetry that makes the theta scalar real and the
-main term of the squared theta series positive. See `OrderSixMetaplecticTheory/README.md`.
+remainder ↔ zeros of `ζ_{ℚ(ω)}`), the conjugation symmetry that makes the theta scalar real and the
+main term of the squared theta series positive, and the Hecke-at-four trace that gives the 2-adic cubic twist
+of the theta square its double pole. See `OrderSixMetaplecticTheory/README.md`.
 -/

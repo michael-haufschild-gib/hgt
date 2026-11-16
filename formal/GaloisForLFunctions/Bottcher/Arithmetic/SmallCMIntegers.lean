@@ -88,4 +88,44 @@ theorem cm_integer_gap (x : 𝓞 K) :
       ∃ φ : K →+* ℂ, Real.sqrt 2 ≤ ‖φ (x : K)‖ := by
   simpa only [not_forall, not_lt, not_or] using not_congr (small_cm_integer_iff x).symm
 
+/-- At the sharp endpoint, the only extra integers have CM norm exactly two.
+An embedding on the boundary forces this equality in the field itself. -/
+theorem closed_small_cm_integer_iff (x : 𝓞 K) :
+    (∀ φ : K →+* ℂ, ‖φ (x : K)‖ ≤ Real.sqrt 2) ↔
+      x = 0 ∨ IsOfFinOrder x ∨ x * ringOfIntegersComplexConj K x = 2 := by
+  constructor
+  · intro h
+    by_cases htwo : x * ringOfIntegersComplexConj K x = 2
+    · exact Or.inr (Or.inr htwo)
+    · have hs : ∀ φ : K →+* ℂ, ‖φ (x : K)‖ < Real.sqrt 2 := by
+        intro φ
+        apply lt_of_le_of_ne (h φ)
+        intro he
+        apply htwo
+        have heq : φ ((x : K) * complexConj K (x : K)) = φ (2 : K) := by
+          rw [map_mul, complexEmbedding_complexConj, Complex.mul_conj,
+            Complex.normSq_eq_norm_sq, he, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2),
+            map_ofNat]
+          norm_num
+        apply Subtype.val_injective
+        change (x : K) * complexConj K (x : K) = (2 : K)
+        exact φ.injective heq
+      rcases (small_cm_integer_iff x).mp hs with hz | hu
+      · exact Or.inl hz
+      · exact Or.inr (Or.inl hu)
+  · rintro (hz | hu | htwo) φ
+    · exact ((small_cm_integer_iff x).mpr (Or.inl hz) φ).le
+    · exact ((small_cm_integer_iff x).mpr (Or.inr hu) φ).le
+    · have he := congrArg (fun z : 𝓞 K => φ (z : K)) htwo
+      change φ ((x : K) * complexConj K (x : K)) = φ (2 : K) at he
+      rw [map_mul, complexEmbedding_complexConj, Complex.mul_conj,
+        Complex.normSq_eq_norm_sq, map_ofNat] at he
+      have hs : ‖φ (x : K)‖ ^ 2 = 2 := by exact_mod_cast he
+      nlinarith only [hs, norm_nonneg (φ (x : K)),
+        Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2), Real.sqrt_nonneg (2 : ℝ)]
+
 end Bottcher.Arithmetic
+
+#print axioms Bottcher.Arithmetic.small_cm_integer_iff
+#print axioms Bottcher.Arithmetic.cm_integer_gap
+#print axioms Bottcher.Arithmetic.closed_small_cm_integer_iff

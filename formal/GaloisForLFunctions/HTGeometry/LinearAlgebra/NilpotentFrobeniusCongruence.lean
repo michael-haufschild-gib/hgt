@@ -58,6 +58,28 @@ private theorem mul_jetResidueGram {R : Type*} [CommRing R] (N : ℕ)
     simp only [jetResidueGram, if_neg hne, mul_zero]
   · simp
 
+theorem jetResidueGram_transpose {R : Type*} [Zero R] [One R] (N : ℕ) :
+    (jetResidueGram (R := R) N)ᵀ = jetResidueGram N := by
+  ext i j
+  simp only [jetResidueGram, Matrix.transpose_apply, add_comm (j : ℕ) (i : ℕ)]
+
+/-- Reversal is its own inverse, including for the zero-dimensional jet space. -/
+theorem jetResidueGram_mul_self {R : Type*} [CommRing R] (N : ℕ) :
+    jetResidueGram (R := R) N * jetResidueGram N = 1 := by
+  ext i j
+  rw [jetResidueGram_mul]
+  by_cases hij : i = j
+  · subst j
+    simp only [jetResidueGram, Fin.val_rev, Matrix.one_apply]
+    rw [if_pos (by omega)]
+    simp
+  · have hne : N - (i.val + 1) + j.val + 1 ≠ N := by
+      intro h
+      apply hij
+      apply Fin.ext
+      omega
+    simp only [jetResidueGram, Fin.val_rev, if_neg hne, Matrix.one_apply, if_neg hij]
+
 /-- Multiplication of jets is self-adjoint for the residue pairing. -/
 theorem toeplitz_residue_adjoint {R : Type*} [CommRing R] (N : ℕ) (P : R[X]) :
     (toeplitz N P)ᵀ * jetResidueGram N = jetResidueGram N * toeplitz N P := by
@@ -66,7 +88,7 @@ theorem toeplitz_residue_adjoint {R : Type*} [CommRing R] (N : ℕ) (P : R[X]) :
   simp only [Matrix.transpose_apply, toeplitz_apply, Fin.val_rev]
   have hiff : i.val ≤ N - (j.val + 1) ↔ j.val ≤ N - (i.val + 1) := by omega
   have hdiff : N - (j.val + 1) - i.val = N - (i.val + 1) - j.val := by omega
-  rw [hiff, hdiff]
+  simp only [hiff, hdiff]
 
 private theorem toeplitz_eq_of_trunc_eq {R : Type*} [CommRing R] (N : ℕ)
     (P Q : R[X]) (h : PowerSeries.trunc N (P : PowerSeries R) =
@@ -115,6 +137,18 @@ def correctedJetResidueGram (n : ℕ) (P : ℝ[X]) :
     Matrix (Fin (n + 1)) (Fin (n + 1)) ℂ :=
   (jetResidueGram (n + 1) * toeplitz (n + 1) (1 + X * P)).map Complex.ofRealHom
 
+theorem correctedJetResidueGram_isHermitian (n : ℕ) (P : ℝ[X]) :
+    (correctedJetResidueGram n P).IsHermitian := by
+  have hreal : (jetResidueGram (n + 1) * toeplitz (n + 1) (1 + X * P))ᵀ =
+      jetResidueGram (n + 1) * toeplitz (n + 1) (1 + X * P) := by
+    rw [Matrix.transpose_mul, jetResidueGram_transpose, toeplitz_residue_adjoint]
+  ext i j
+  have h := congrArg (fun M : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ => M i j) hreal
+  change star (((jetResidueGram (R := ℝ) (n + 1) * toeplitz (n + 1) (1 + X * P)) j i : ℝ) : ℂ) =
+    (((jetResidueGram (R := ℝ) (n + 1) * toeplitz (n + 1) (1 + X * P)) i j : ℝ) : ℂ)
+  rw [Complex.star_def, Complex.conj_ofReal]
+  exact congrArg Complex.ofReal h
+
 /-- Positive, negative, and null indices are unchanged by every nilpotent jet correction. -/
 theorem correctedJetResidueGram_inertia (n : ℕ) (P : ℝ[X]) :
     hermPosIndex (correctedJetResidueGram n P) =
@@ -141,6 +175,26 @@ theorem correctedJetResidueGram_inertia (n : ℕ) (P : ℝ[X]) :
     rfl
   rw [← hc]
   exact ⟨posIndex_conjugate _ hS, negIndex_conjugate _ hS, nullIndex_conjugate _ hS⟩
+
+/-- The corrected residue form is nonsingular for every correction polynomial. -/
+theorem correctedJetResidueGram_nullIndex (n : ℕ) (P : ℝ[X]) :
+    hermNullIndex (correctedJetResidueGram n P) = 0 := by
+  rw [(correctedJetResidueGram_inertia n P).2.2]
+  have hmap : (jetResidueGram (R := ℝ) (n + 1)).map Complex.ofRealHom =
+      jetResidueGram (R := ℂ) (n + 1) := by
+    ext i j
+    simp [jetResidueGram]
+  rw [hmap, hermNullIndex]
+  have hk : LinearMap.ker (jetResidueGram (R := ℂ) (n + 1)).mulVecLin = ⊥ := by
+    apply le_antisymm _ bot_le
+    intro v hv
+    change (jetResidueGram (R := ℂ) (n + 1)).mulVec v = 0 at hv
+    have h := congrArg (jetResidueGram (R := ℂ) (n + 1)).mulVec hv
+    rw [Matrix.mulVec_mulVec, jetResidueGram_mul_self, Matrix.one_mulVec,
+      Matrix.mulVec_zero] at h
+    exact (Submodule.mem_bot ℂ).mpr h
+  rw [hk]
+  simp
 
 end
 

@@ -96,6 +96,7 @@ import GaloisForLFunctions.RepresentationLifting.Descent.SemilinearAveraging
 import GaloisForLFunctions.RepresentationLifting.Descent.SemilinearCohomology
 import GaloisForLFunctions.RepresentationLifting.Descent.FiniteAutomorphismAtiyah
 import GaloisForLFunctions.RepresentationLifting.Descent.GaloisTwistedTensorDescent
+import GaloisForLFunctions.RepresentationLifting.Ordinary.IntegralWeightContraction
 
 /-!
 # Representation lifting and quadratic extensions

@@ -41,7 +41,8 @@ theorem kummerComplexSquare_eq (z : ℂ) : kummerComplexSquare z = ‖z‖ ^ 2 :
     ((kummerTraceConstant 2 (kummerSquareIndex 0 0))⁻¹ ^ kummerExponent (2 ^ (0 + 1)) 1)
     0 1
   norm_num [kummerSquareIndex, kummerExponent] at hg
-  have hg' : ((2 * g : ℕ) : ℝ) = 2 := by exact_mod_cast hg
+  have hg0 : g = 1 := hg
+  have hg' : ((2 * g : ℕ) : ℝ) = 2 := by rw [hg0]; norm_num
   rw [kummerComplexSquare, primePowerKummerCurveDatum_toeplitz,
     primePowerKummerCurveDatum_toeplitz]
   simp only [Finset.sum_singleton, pow_zero, mul_one]
@@ -78,9 +79,9 @@ theorem zetaKummerSquareSum_tendsto {f : ℝ → ℂ}
     (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f) :
     Tendsto (fun S : Finset zetaZeroConfig.carrier => zetaKummerSquareSum S f)
       atTop (𝓝 (configurationSquareMass zetaZeroConfig f)) := by
-  simpa only [zetaKummerSquareSum, kummerComplexSquare_eq, configurationSquareMass] using
-    (summable_squareMass_of_temperedConfig zetaZeroConfig temperedConfig_zetaZeroConfig
-      hf hfc).hasSum
+  simp only [zetaKummerSquareSum, kummerComplexSquare_eq, configurationSquareMass]
+  exact (summable_squareMass_of_temperedConfig zetaZeroConfig temperedConfig_zetaZeroConfig
+    hf hfc).hasSum
 
 /-- The reflection corrections are themselves positive finite-field sums with an
 unconditionally convergent limit. -/
@@ -113,8 +114,8 @@ theorem zetaKummerReflectionSum_tendsto {f : ℝ → ℂ}
         rw [zeroConfigSquareSummand_reflectPerm]
         dsimp only [u, v]
         ring
-  simpa only [zetaKummerReflectionSum, kummerComplexSquare_eq,
-    configurationReflectionDefect] using hd.hasSum
+  simp only [zetaKummerReflectionSum, kummerComplexSquare_eq, configurationReflectionDefect]
+  exact hd.hasSum
 
 /-- The literal arithmetic functional differs from the positive finite-field limit by
 exactly the zero-reflection defect. -/
@@ -157,7 +158,7 @@ theorem actualZeta_weil_nonneg_iff_reflection_le_squareMass {f : ℝ → ℂ}
       configurationReflectionDefect zetaZeroConfig f ≤ configurationSquareMass zetaZeroConfig f := by
   have h := zeta_squareMass_sub_re_W_eq_reflectionDefect hf hfc
   rw [RHTower.zeta_W_eq_weilFullFunctional_mixed hf hfc hf hfc] at h
-  linarith
+  constructor <;> intro hpos <;> linarith only [h, hpos]
 
 /-- The global bound needed to transfer the sign is exactly the Riemann hypothesis. -/
 theorem riemannHypothesis_iff_zeta_reflection_le_squareMass :
@@ -181,9 +182,18 @@ theorem riemannHypothesis_iff_kummer_positive_limit_actualWeil :
   · intro hRH f hf hfc
     have hd : configurationReflectionDefect zetaZeroConfig f = 0 := by
       unfold configurationReflectionDefect
-      apply tsum_eq_zero
-      intro ρ
-      have hre := SquareRootThreshold.riemannHypothesis_iff_zetaZeroConfig_onLine.mp hRH ρ ρ.2
+      refine (tsum_congr (fun ρ : zetaZeroConfig.carrier => ?_)).trans tsum_zero
+      have hre : (ρ : ℂ).re = 1 / 2 := by
+        rcases ρ.2 with ⟨hz, hre0, hre1⟩
+        refine hRH ρ hz ?_ ?_
+        · rintro ⟨n, hn⟩
+          have he := congrArg Complex.re hn
+          simp at he
+          have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+          linarith only [he, hn0, hre0]
+        · intro h
+          rw [h] at hre1
+          norm_num at hre1
       have hc : conj (gammaOf ρ) = gammaOf ρ := by
         apply Complex.ext
         · simp only [Complex.conj_re]

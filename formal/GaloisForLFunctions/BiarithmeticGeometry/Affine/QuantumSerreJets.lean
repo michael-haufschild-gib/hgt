@@ -77,6 +77,49 @@ theorem quantumSerre_oneSidedJet (n : ℕ) (q : ℂˣ) :
   ext i j
   simp only [quantumSerre_jet_apply, mul_zero, ite_self, Matrix.zero_apply]
 
+private theorem quantumSerre_of_weyl (q : ℂˣ) (X Y : Matrix ι ι ℂ)
+    (h : X * Y = (q : ℂ) • (Y * X)) : quantumSerre q X Y = 0 := by
+  have hp (k : ℕ) : X ^ k * Y = (q : ℂ) ^ k • (Y * X ^ k) := by
+    induction k with
+    | zero => simp only [pow_zero, one_mul, mul_one, one_smul]
+    | succ k hk =>
+      rw [pow_succ, mul_assoc, h, Matrix.mul_smul, ← mul_assoc, hk,
+        Matrix.smul_mul, smul_smul, mul_assoc, ← pow_succ,
+        mul_comm (q : ℂ), ← pow_succ]
+  have h₂ : X ^ 2 * Y * X = (q : ℂ) ^ 2 • (Y * X ^ 3) := by
+    rw [hp, Matrix.smul_mul, mul_assoc, ← pow_succ]
+  have h₁ : X * Y * X ^ 2 = (q : ℂ) • (Y * X ^ 3) := by
+    rw [h, Matrix.smul_mul, mul_assoc,
+      show X * X ^ 2 = X ^ 3 by noncomm_ring]
+  have hc : (q : ℂ) ^ 3 - ((q : ℂ) + 1 + (q : ℂ)⁻¹) * (q : ℂ) ^ 2 +
+      ((q : ℂ) + 1 + (q : ℂ)⁻¹) * (q : ℂ) - 1 = 0 := by
+    have hq : (q : ℂ) ≠ 0 := Units.ne_zero q
+    field_simp
+    ring
+  unfold quantumSerre
+  rw [hp, h₂, h₁, smul_smul, smul_smul]
+  calc
+    _ = ((q : ℂ) ^ 3 - ((q : ℂ) + 1 + (q : ℂ)⁻¹) * (q : ℂ) ^ 2 +
+        ((q : ℂ) + 1 + (q : ℂ)⁻¹) * (q : ℂ) - 1) • (Y * X ^ 3) := by module
+    _ = 0 := by rw [hc, zero_smul]
+
+/-- The nilpotent jet shift and its clock satisfy both affine Serre relations. -/
+theorem quantumSerre_oneSidedJet_both (n : ℕ) (q : ℂˣ) :
+    quantumSerre q (truncatedJetClock n q) (boundaryCompletedJetShift n 0) = 0 ∧
+      quantumSerre q (boundaryCompletedJetShift n 0) (truncatedJetClock n q) = 0 := by
+  refine ⟨quantumSerre_oneSidedJet n q, ?_⟩
+  have h := truncatedJetClock_oneSidedShift_weyl n (q : ℂ)
+  have hi : boundaryCompletedJetShift n 0 * truncatedJetClock n q =
+      ((q⁻¹ : ℂˣ) : ℂ) •
+        (truncatedJetClock n q * boundaryCompletedJetShift n 0) := by
+    rw [h, smul_smul, Units.val_inv_eq_inv_val, inv_mul_cancel₀ (Units.ne_zero q), one_smul]
+  have hs := quantumSerre_of_weyl q⁻¹ _ _ hi
+  have hc : ((q⁻¹ : ℂˣ) : ℂ) + 1 + (((q⁻¹ : ℂˣ) : ℂ))⁻¹ =
+      (q : ℂ) + 1 + (q : ℂ)⁻¹ := by
+    rw [Units.val_inv_eq_inv_val, inv_inv]
+    ring
+  simpa only [quantumSerre, hc] using hs
+
 /-- Serre closure has three scalar resonance alternatives, while Weyl closure
 has only the middle one. The statement also includes a vanishing wrap. -/
 theorem quantumSerre_jet_eq_zero_iff (n : ℕ) (q : ℂˣ) (h : ℂ) :
@@ -100,3 +143,7 @@ theorem quantumSerre_jet_eq_zero_iff (n : ℕ) (q : ℂˣ) (h : ℂ) :
     simp only [quantumSerre_jet_apply, hc.mpr he, ite_self, Matrix.zero_apply]
 
 end GaloisForLFunctions.BiarithmeticGeometry
+
+#print axioms GaloisForLFunctions.BiarithmeticGeometry.quantumSerre_diagonal_eq_zero_iff
+#print axioms GaloisForLFunctions.BiarithmeticGeometry.quantumSerre_oneSidedJet_both
+#print axioms GaloisForLFunctions.BiarithmeticGeometry.quantumSerre_jet_eq_zero_iff

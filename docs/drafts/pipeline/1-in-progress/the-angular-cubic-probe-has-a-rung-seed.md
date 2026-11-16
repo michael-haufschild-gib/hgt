@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Thirty-four helper modules passed final plain Lean checks and are umbrella-wired.
+- **Verified:** Thirty-eight helper modules passed final plain Lean checks and are umbrella-wired.
 - **Missing:** Angular source moment induction and both common-signal estimates.
 
 ## Receiver
@@ -117,7 +117,7 @@ The normalized order `r≥1` satisfies
 The angular factor has modulus one, so the absolute reflection scale is independent of `r`.
 This removes the apparent extra height powers; it does not establish reflected energy bounds.
 
-## Source smoothness and missing kernel bridge
+## Higher source and reflected kernels
 
 `BesselArgumentSmoothness` uses the adjacent-order argument derivative to give `K_ν(exp u)` infinite real smoothness for every complex `ν`; its
 integral representation gives `|K_ν(x)|≤C_(ν,δ) exp(-x)` for every `x≥δ>0`.
@@ -164,7 +164,7 @@ and entire normalized angular Dirichlet continuation at every finite source cusp
 logarithmic derivatives with Euler-weighted Mellin inversion. The imaginary-axis multiplier
 is unitary, preserving every absolute Fourier moment; compact sources give rapid decay
 of the Mellin data on common vertical strips. `AngularKernelBounds` proves arbitrary polynomial radial decay for every logarithmic
-derivative, including uniform bounds on bounded logarithmic intervals. Source-seminorm kernel bounds are verified; uniform height separation remains unverified.
+derivative, including uniform bounds on bounded logarithmic intervals. Source-seminorm kernel bounds and uniform height separation with the terminal small-scale gain are verified.
 
 `AngularSourceSmoothing` proves entire smoothing integrands, exponential strip bounds and
 contour shifting between integrable vertical lines. Its exact initial/reflected line formulas
@@ -184,3 +184,21 @@ Fourier residue; the original smoothing multiplier is multiplied by exactly this
 `AngularKernelSeminorms` controls the Mellin data and every finite collection of weighted
 Euler derivatives by finitely many Schwartz seminorms of a compactly supported source.
 The same source bound gives `x^(1/4)` at zero and arbitrary inverse powers at infinity.
+
+`AngularSmallScale` extracts `min(1,R^(1/4))` from every compact logarithmic window.
+The remaining canonical Fourier density is integrable, with weighted integral and pointwise
+bounds controlled by finite source seminorms. For actual norm-twisted compact sources,
+one polynomial height order works for all positive scales.
+
+`AngularKernelContraction` separates finite angular arithmetic sources under one integrable
+Fourier density. Reciprocal source windows retain the square-root/cube denominators and
+the terminal factor `min(1,R^(1/4))`, with polynomial height bounds uniform in all four scales.
+
+`AngularPhysicalRows` proves exact angular-kernel separation into the original frozen
+arithmetic branches, under a common integrable density with polynomial height control.
+Actual denominator and frequency phases still require their arithmetic identification.
+
+`AngularPhysicalEnergy` applies the filtered arithmetic energy theorem to separated angular
+kernels. The original reflected exponent, terminal dual width and surviving-branch factor
+are unchanged; the height degree is uniform in arithmetic types. Its bounded weight slots
+still need identification with the actual angular denominator and frequency characters.

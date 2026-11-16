@@ -93,18 +93,18 @@ theorem primeMixedForm_probe {p q : ℝ} (hp : 1 / 2 < p) (hq : 1 / 2 < q) :
   have sq := summable_vonMangoldt_div_rpow (σ := 1 / 2 + q) (by linarith)
   unfold primeMixedForm
   simp_rw [primePairTerm_probe hpq, mul_add, vonMangoldtAtom_mul_exp_eq]
-  rw [tsum_div_const, tsum_add sq sp, add_comm]
+  rw [tsum_div_const, sq.tsum_add sp, add_comm]
 
 /-! ### The Gamma part -/
 
 theorem re_one_div_probe (p r : ℝ) :
     (1 / ((p : ℂ) + I * r)).re = p / (p ^ 2 + r ^ 2) := by
-  simp [Complex.div_re, Complex.normSq_apply]
+  simp [Complex.normSq_apply]
   ring
 
 theorem im_one_div_probe (p r : ℝ) :
     (1 / ((p : ℂ) + I * r)).im = -r / (p ^ 2 + r ^ 2) := by
-  simp [Complex.div_im, Complex.normSq_apply]
+  simp [Complex.normSq_apply]
   ring
 
 /-- The Fourier pairing of two probes splits into two Poisson kernels. -/
@@ -146,7 +146,7 @@ theorem gamma_poisson_probe {p : ℝ} (hp : 0 < p) :
         ((r / 2 : ℝ) : ℂ) * I)).re + Real.eulerMascheroniConstant) -
         (Real.eulerMascheroniConstant + Real.log Real.pi) * poissonWeight p r) := by
     funext r
-    rw [gammaBracket_eq_re_digamma_half, poissonWeight]
+    rw [gammaBracket_eq_re_digamma_half, poissonWeight_eq]
     have : 0 < p ^ 2 + r ^ 2 := by positivity
     field_simp
     ring
@@ -171,12 +171,12 @@ theorem gammaMixedForm_probe {p q : ℝ} (hp : 0 < p) (hq : 0 < q) :
   have ip : Integrable fun r => p / (p ^ 2 + r ^ 2) * EF.gammaBracket r :=
     ((integrable_poissonWeight_mul_gammaBracket hp).const_mul Real.pi).congr
       (Eventually.of_forall fun r => by
-        rw [poissonWeight]; have : 0 < p ^ 2 + r ^ 2 := by positivity
+        simp only [poissonWeight_eq]; have : 0 < p ^ 2 + r ^ 2 := by positivity
         field_simp)
   have iq : Integrable fun r => q / (q ^ 2 + r ^ 2) * EF.gammaBracket r :=
     ((integrable_poissonWeight_mul_gammaBracket hq).const_mul Real.pi).congr
       (Eventually.of_forall fun r => by
-        rw [poissonWeight]; have : 0 < q ^ 2 + r ^ 2 := by positivity
+        simp only [poissonWeight_eq]; have : 0 < q ^ 2 + r ^ 2 := by positivity
         field_simp)
   unfold gammaMixedForm
   simp_rw [gammaFourierPair_probe hp hq, div_mul_eq_mul_div, add_mul]
@@ -191,11 +191,13 @@ theorem polePart_probe {p q : ℝ} (hp : 1 / 2 < p) (hq : 1 / 2 < q) :
       (1 / (p + 1 / 2) + 1 / (p - 1 / 2) + (1 / (q + 1 / 2) + 1 / (q - 1 / 2))) / (p + q) := by
   rw [coshHalfMoment_probe hp, coshHalfMoment_probe hq, sinhHalfMoment_probe hp,
     sinhHalfMoment_probe hq]
-  have h1 : p + 1 / 2 ≠ 0 := by linarith
-  have h2 : p - 1 / 2 ≠ 0 := by linarith
-  have h3 : q + 1 / 2 ≠ 0 := by linarith
-  have h4 : q - 1 / 2 ≠ 0 := by linarith
+  have h1 : 2 * p + 1 ≠ 0 := by linarith
+  have h2 : 2 * p - 1 ≠ 0 := by linarith
+  have h3 : 2 * q + 1 ≠ 0 := by linarith
+  have h4 : 2 * q - 1 ≠ 0 := by linarith
   have h5 : p + q ≠ 0 := by linarith
+  rw [show p + 1 / 2 = (2 * p + 1) / 2 by ring, show p - 1 / 2 = (2 * p - 1) / 2 by ring,
+    show q + 1 / 2 = (2 * q + 1) / 2 by ring, show q - 1 / 2 = (2 * q - 1) / 2 by ring]
   field_simp
   ring
 
@@ -212,7 +214,7 @@ theorem logDeriv_xiCent_ofReal_eq_re {p : ℝ} (hp : 1 / 2 < p) :
     logDeriv xiCent (p : ℂ) = ((logDeriv xiCent (p : ℂ)).re : ℂ) := by
   have h := logDeriv_xiCent_conj (v := (p : ℂ)) (by simpa using hp)
   rw [Complex.conj_ofReal] at h
-  exact (Complex.conj_eq_iff_re.mp h.symm)
+  exact (Complex.conj_eq_iff_re.mp h.symm).symm
 
 /-- The probe symbol is `(log ξ)'(½ + p)`. -/
 theorem probeSymbol_eq_logDeriv_xiCent {p : ℝ} (hp : 1 / 2 < p) :
@@ -229,10 +231,11 @@ theorem probeSymbol_eq_logDeriv_xiCent {p : ℝ} (hp : 1 / 2 < p) :
     rw [← Complex.ofReal_inv, Complex.ofReal_re]; ring_nf
   have hre2 : (((1 / 2 + p : ℝ) : ℂ) - 1)⁻¹.re = 1 / (p - 1 / 2) := by
     rw [show ((1 / 2 + p : ℝ) : ℂ) - 1 = ((p - 1 / 2 : ℝ) : ℂ) by push_cast; ring,
-      ← Complex.ofReal_inv, Complex.ofReal_re, one_div]
+      ← Complex.ofReal_inv, Complex.ofReal_re]
+    ring
   simp only [Complex.add_re, Complex.sub_re, hre1, hre2, Complex.neg_re, Complex.div_re,
     Complex.ofReal_re, Complex.ofReal_im]
-  simp [Complex.normSq_apply]
+  simp
   ring
 
 /-- Bare mixed Weil form on the half-line: Gamma part minus prime part plus pole part. -/
