@@ -45,7 +45,3 @@ theorem evolve_constraintHamiltonian_eq_zero_iff {d k : ℕ}
     constraintEnergy_evolve_eq_zero_iff]
 
 end GaloisForLFunctions.HTGeometry.Quantum
-
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_evolveMatrix
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_evolve_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.evolve_constraintHamiltonian_eq_zero_iff

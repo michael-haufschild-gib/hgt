@@ -92,12 +92,3 @@ theorem trace_chargePinch_mul_chargePinch (charge : ι → κ) (A B : Matrix ι 
   rw [← trace_chargePinch_mul, chargePinch_idempotent]
 
 end GaloisForLFunctions.HTGeometry.Quantum
-
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.chargeProjection_isHermitian
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.chargePinch_apply
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.chargePinch_posSemidef
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.chargePinch_idempotent
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_chargePinch
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.chargePinch_eq_self_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_chargePinch_mul
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_chargePinch_mul_chargePinch

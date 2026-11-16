@@ -128,12 +128,3 @@ theorem embedDensity_injective (e : ι ↪ κ) : Function.Injective (embedDensit
   simpa only [compress_embedDensity] using hc
 
 end GaloisForLFunctions.HTGeometry.Quantum
-
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.coordinateEmbedding_isometry
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.coordinateProjection_eq_diagonal
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.coordinateProjection_isHermitian
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.coordinateProjection_idempotent
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.coordinateProjection_embedDensity
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.compress_embedDensity
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.exists_embedDensity_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.embedDensity_injective

@@ -173,7 +173,8 @@ theorem mem_complementaryPair_orbit_iff (P Q : ComplementaryPair K V) :
 
 /-- A finite basis identifies automorphisms with the matrix general linear group. -/
 def automorphismMatrixEquiv :
-    (V ≃ₗ[K] V) ≃* Matrix.GL (Fin (Module.finrank K V)) K :=
+    (V ≃ₗ[K] V) ≃*
+      (Matrix (Fin (Module.finrank K V)) (Fin (Module.finrank K V)) K)ˣ :=
   (LinearMap.GeneralLinearGroup.generalLinearEquiv K V).symm.trans
     (Units.mapEquiv (LinearMap.toMatrixAlgEquiv (Module.finBasis K V)).toMulEquiv)
 
@@ -204,12 +205,15 @@ theorem card_complementaryPair_mul_card_blocks (P : ComplementaryPair K V) :
     Nat.card {Q : ComplementaryPair K V // Module.finrank K Q.1.1 = Module.finrank K P.1.1} *
       Nat.card (P.1.1 ≃ₗ[K] P.1.1) * Nat.card (P.1.2 ≃ₗ[K] P.1.2) =
       Nat.card (V ≃ₗ[K] V) := by
-  have horbit : MulAction.orbit (V ≃ₗ[K] V) P =
-      {Q : ComplementaryPair K V | Module.finrank K Q.1.1 = Module.finrank K P.1.1} :=
-    Set.ext fun Q => mem_complementaryPair_orbit_iff P Q
+  let e : MulAction.orbit (V ≃ₗ[K] V) P ≃
+      {Q : ComplementaryPair K V // Module.finrank K Q.1.1 = Module.finrank K P.1.1} :=
+    { toFun x := ⟨x.1, (mem_complementaryPair_orbit_iff P x.1).mp x.2⟩
+      invFun x := ⟨x.1, (mem_complementaryPair_orbit_iff P x.1).mpr x.2⟩
+      left_inv _ := rfl
+      right_inv _ := rfl }
   have h := MulAction.card_orbit_mul_card_stabilizer_eq_card_group (V ≃ₗ[K] V) P
   simp only [← Nat.card_eq_fintype_card] at h
-  rw [Nat.card_congr (Equiv.setCongr horbit),
+  rw [Nat.card_congr e,
     Nat.card_congr (complementaryPairStabilizerEquiv P), Nat.card_prod] at h
   simpa only [mul_assoc] using h
 
