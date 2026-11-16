@@ -65,8 +65,10 @@ theorem reciprocalLattice_nat_injective {b : ℝ} (h : Irrational (b ^ 2)) (c : 
   intro x y he
   have hxy := (reciprocalLattice_injective_iff b c).mpr h he
   apply Prod.ext
-  · exact_mod_cast congrArg Prod.fst hxy
-  · exact_mod_cast congrArg Prod.snd hxy
+  · have hfst : (x.1 : ℤ) = (y.1 : ℤ) := congrArg Prod.fst hxy
+    exact_mod_cast hfst
+  · have hsnd : (x.2 : ℤ) = (y.2 : ℤ) := congrArg Prod.snd hxy
+    exact_mod_cast hsnd
 
 /-- Distinct primes give a nonresonant reciprocal spacing. -/
 def reciprocalPrimeSpacing (p q : ℕ) : ℝ := Real.sqrt (Real.log q / Real.log p)

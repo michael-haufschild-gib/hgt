@@ -128,10 +128,10 @@ theorem inv_add_inv_sub_eq {p z : ℂ} (hp : p - z ≠ 0) (hz : z ≠ 0) :
 def laplaceMass (F : ℝ → ℝ) (σ : ℝ) : ℝ := ∫ u, |F u| * Real.exp (σ * u)
 
 theorem laplaceMass_nonneg (F : ℝ → ℝ) (σ : ℝ) : 0 ≤ laplaceMass F σ :=
-  integral_nonneg fun u => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
+  integral_nonneg fun _ => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
 
 theorem halfPoleMass_nonneg (F : ℝ → ℝ) : 0 ≤ halfPoleMass F :=
-  integral_nonneg fun u => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
+  integral_nonneg fun _ => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
 
 theorem norm_laplace_le_laplaceMass {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {σ : ℝ}
     (hσ : -4 < σ) {p : ℂ} (hp : σ ≤ p.re) :
@@ -155,7 +155,7 @@ theorem norm_deriv_laplace_le {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDoma
     show -(8 / 2) < z.re
     linarith
   have h := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (c := p) (R := 1) one_pos
-    (hLap.mono hsub).diffContOnCl_ball (C := laplaceMass F (-3)) fun z hz => by
+    (hLap.diffContOnCl_ball hsub) (C := laplaceMass F (-3)) fun z hz => by
       refine norm_laplace_le_laplaceMass hF (by norm_num) ?_
       have := (re_mem_of_mem_closedBall (sphere_subset_closedBall hz)).2
       linarith
@@ -279,9 +279,9 @@ theorem tendsto_zeroSum_div {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain
   have hm0 := halfPoleMass_nonneg F
   have hre : ∀ (n : ℕ) (q : XiZeroCopy), (n : ℝ) + 1 / 2 ≤ ‖-((n : ℂ) + 1) - zeroCoord q‖ := by
     intro n q
-    have hz := (abs_lt.mp (abs_re_zeroCoord_lt q)).2
+    have hz := (abs_lt.mp (abs_re_zeroCoord_lt q)).1
     have h := Complex.abs_re_le_norm (-((n : ℂ) + 1) - zeroCoord q)
-    have h2 := neg_abs_le ((-((n : ℂ) + 1) - zeroCoord q).re)
+    have h2 := neg_le_abs ((-((n : ℂ) + 1) - zeroCoord q).re)
     simp only [Complex.sub_re, Complex.neg_re, Complex.add_re, Complex.natCast_re,
       Complex.one_re] at h h2
     linarith

@@ -166,9 +166,9 @@ theorem cubicCauchyKernel_eq {X S : ℝ} (hX : 0 < X) (hS : 0 < S) :
   have hpow (x : ℝ) (hx : 0 < x) : (x ^ (2 / 3 : ℝ)) ^ 2 = x ^ (4 / 3 : ℝ) := by
     rw [← Real.rpow_two, ← Real.rpow_mul hx.le]
     norm_num
-  simp only [cubicCauchyKernel, weightedReciprocalCubic, reciprocalCubic,
-    cubicDenominator, hs, hpow X hX, hpow S hS, Real.rpow_neg hS.le,
-    div_eq_mul_inv, mul_inv]
+  unfold cubicCauchyKernel weightedReciprocalCubic reciprocalCubic cubicDenominator
+  rw [hs, hpow X hX, hpow S hS, Real.rpow_neg hS.le]
+  simp only [div_eq_mul_inv, mul_inv]
   ring
 
 #print axioms strictConvexOn_reciprocalCubic
