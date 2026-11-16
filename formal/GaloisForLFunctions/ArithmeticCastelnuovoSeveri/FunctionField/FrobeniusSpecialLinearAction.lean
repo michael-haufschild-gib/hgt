@@ -41,7 +41,6 @@ private theorem matrixRow_map (M N : SpecialLinearGroup (Fin 2) K) (i : Fin 2) :
       algebraMap E L (algebraMap K E
         (((N : Matrix (Fin 2) (Fin 2) K) * (M : Matrix (Fin 2) (Fin 2) K)) i 1))
   simp only [Matrix.mul_apply, Fin.sum_univ_two, map_add, map_mul]
-  change _ = _
   dsimp only [D, frobeniusSpecialLinearDenominator]
   ring
 
@@ -89,7 +88,7 @@ theorem frobeniusSpecialLinearAut_one : frobeniusSpecialLinearAut K E γ R 1 = 1
 def frobeniusSpecialLinearAction : SpecialLinearGroup (Fin 2) K →* (L ≃ₐ[E] L) where
   toFun M := frobeniusSpecialLinearAut K E γ R M⁻¹
   map_one' := by rw [inv_one, frobeniusSpecialLinearAut_one]
-  map_mul' M N := by rw [mul_inv_rev, frobeniusSpecialLinearAut_mul]
+  map_mul' M N := by rw [_root_.mul_inv_rev, frobeniusSpecialLinearAut_mul]
 
 /-- The determinant-one action is faithful, including its central matrices. -/
 theorem frobeniusSpecialLinearAction_injective :
@@ -113,7 +112,7 @@ def frobeniusSpecialLinearRelativeAction :
     intro a
     have h : frobeniusSpecialLinearAut K E γ R (M * N)⁻¹ =
         frobeniusSpecialLinearAut K E γ R M⁻¹ * frobeniusSpecialLinearAut K E γ R N⁻¹ := by
-      rw [mul_inv_rev, frobeniusSpecialLinearAut_mul]
+      rw [_root_.mul_inv_rev, frobeniusSpecialLinearAut_mul]
     exact congrArg (fun σ : L ≃ₐ[E] L => σ a) h
 
 /-- The invariant-field action recovers every determinant-one matrix uniquely. -/

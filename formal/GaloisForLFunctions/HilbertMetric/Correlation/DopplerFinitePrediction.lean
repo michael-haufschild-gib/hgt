@@ -97,7 +97,8 @@ def dopplerPredictionCoefficients (w : ι → NNReal) (mean : ι → ℝ) (varia
   finitePredictionCoefficients (dopplerObservationMap w mean variance time target noise)
     (KernelHilbert.vector (dopplerObservationKernel w mean variance time target noise) none)
 
-private theorem dopplerObservationMap_single (w : ι → NNReal) (mean : ι → ℝ)
+/-- A coordinate pilot coefficient synthesizes its canonical covariance vector. -/
+theorem dopplerObservationMap_single (w : ι → NNReal) (mean : ι → ℝ)
     (variance : ι → NNReal) {n : ℕ} (time : Fin n → ℝ) (target : ℝ)
     (noise : Fin n → NNReal) (i : Fin n) :
     dopplerObservationMap w mean variance time target noise (EuclideanSpace.single i 1) =

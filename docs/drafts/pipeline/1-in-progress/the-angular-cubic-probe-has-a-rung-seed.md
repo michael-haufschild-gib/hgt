@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Sixty-two helper modules passed final plain Lean checks and are umbrella-wired.
+- **Verified:** Sixty-five helper modules passed final plain Lean checks and are umbrella-wired.
 - **Missing:** Actual low completed-source energy, angular prime-slot estimates, high moment induction and both common-signal estimates.
 
 ## Receiver
@@ -295,3 +295,12 @@ with one polynomial height degree uniform in arithmetic families.
 
 `AngularSlotRows` gives exact sector restriction and injective prime-tuple reindexing
 for whole angular rows. Finite sector aggregation retains the original cubic quotient-cardinality cost.
+
+`AngularLowGlobalEnergy` combines all finite sectors and actual prime tuples, preserving
+the low-sector exponent and uniform polynomial height cost.
+
+`AngularLowGeometry` makes the height degree uniform across finite cusp geometry.
+Actual arithmetic scale bounds give exponent `(5/6−2d)+504η−O₀/2`.
+
+`AngularSlotSplits` identifies angular dyadic rows with supported original prime choices.
+Dyadic partition and completion retain the original finite cardinality cost.

@@ -16,7 +16,7 @@ noncomputable section
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open Polynomial Matrix
 open scoped IntermediateField
-variable (K E : Type*) [Field K] [Fintype K] [Field E] [Algebra K E]
+variable (K E : Type*) [Field K] [Fintype K] [Field E]
     (γ : Eˣ) (R : ℕ)
 local notation "q" => Fintype.card K
 local notation "k" => q ^ 2 - q

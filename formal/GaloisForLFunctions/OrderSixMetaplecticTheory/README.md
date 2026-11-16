@@ -98,10 +98,14 @@ the quadratic Gauss sum of the row at the odd part of the column.
    `Λ₀(2(1 + ρ)/3)`.
 7. *Heath-Brown recursion* (MMD, order three). Poisson in the long variable turns a character matrix of
    order `k` into Gauss sums of order `k`; principal dual frequencies give the cross term.
-8. *Hecke at the inert prime 2* (OSM). The correlation `θ(Aw)θ(A⁻¹w)` lives on the level-2 subgroup `Γ_A`
+8. *Hecke at a primary prime* (OSM), first at the inert prime 2. The correlation `θ(Aw)θ(A⁻¹w)` lives on the level-2 subgroup `Γ_A`
    because the 2-adic nebentypus of the two Hecke points cancels; its trace back to `Γ(3)` runs over
    `P¹(𝔽₄)` and its constant term is a shifted square plus a cubic twist at `2`, produced by the Gauss sum
-   of `𝔽₄`. No Eisenstein series of level `2` is needed: the trace lives where `E_{Γ(3)}` already does.
+   of `𝔽₄`. No Eisenstein series of level `2` is needed: the trace lives where `E_{Γ(3)}` already does. At a
+   general primary prime `p` the cosets are the pairs of distinct points of `P¹(O/p)`, the dilate cosets give the
+   shifted square at `p²`, and the phased cosets give the Gauss sum `g(χ², 9k)`, which Patterson's relation turns
+   into the dilate correlation `|p|T(k)T(kp)`. Patterson again reduces the shifted square to the dilate correlation,
+   so one trace isolates the cubic twist at `p`.
 9. *Subtract the square, keep the remainder bounded* (OSM). `Tr F − 8θ²` has no growth; a bounded remainder
    with `O(v^{−7/3})` decay unfolds against `E(s)` to the Mellin transform of its constant term and has at
    most a simple pole at `4/3`, so the double pole of the twisted combination equals that of `D`.
@@ -144,13 +148,15 @@ the quadratic Gauss sum of the row at the odd part of the column.
 | Bounded remainders have at most a simple pole | the Rankin–Selberg integral of a bounded `κ⁻¹`-automorphic function with `O(v^{−7/3})` decay is the Mellin transform of its constant term on `2 < Re s < 13/3`, continues to `1 < Re s < 13/3`, and `(s − 4/3)²Λ_G → 0` | `RemainderData`, `pairing_eq`, `pairing_near_four_thirds` |
 | The 2-adic cubic twist has the double pole of `θ²` | with `D₄(s) = Σ T(h)T(−4h)(4π|ξ_h|)^{−s}` and `L_χ(s) = Σ χ(h)T(h)²(4π|ξ_h|)^{−s}`: `M(s)(2^{−s}D₄(s) + 2^{s−2}L_χ(s))` continues to `1 < Re s < 13/3` and `(s − 4/3)²` times it tends to `108π³r³ ≠ 0`, the double pole of `D` | `twoAdicCubicTwist_double_pole` |
 | Patterson at two separates the twist | `T(h)T(−4h)` vanishes unless `v₂(h) ≡ 1 mod 3`, so `D₄ = 2·2^{−s}\overline{G̃(−2)}(1 − 4·2^{−3s})^{−1}L_χ`, and `χ(h) = (h/−2)₃`; hence `(s − 4/3)²M(s)L_χ(s) → 108π³r³/c(4/3)`, `c(4/3) = 2^{−2/3}(1 + ⅔\overline{G̃(−2)}) ≠ 0`: the cubic twist at 2 of the theta square keeps the double pole | `besselDirichlet_fourShiftCoeff`, `cubicTwistCoeff_eq_symbol`, `cubicTwistAtTwo_double_pole` |
+| The Hecke trace at every primary prime | for primary `p`, `F = θ(A_p·)θ(A_p⁻¹·)`, `A_p = diag(√p, 1/√p)`, has multiplier `κ²` on `Γ_p = Γ(3) ∩ {p ∣ b, p ∣ c}`; `Γ(3)/Γ_p` = ordered pairs of distinct points of `P¹(O/p)`; the trace is `SL₂(ℤ)`-invariant and `Tr_p − 2N(p)θ²` is a bounded remainder; its constant term is `N(p)|P|(2c²v^{4/3} + 2|p|^{−2}R_{p²}(|p|v) + |p|R_{dil}(v/|p|))`: the twisted cosets carry the Gauss sum `g(χ², 9k)`, which Patterson's relation turns into `|p|T(k)T(kp)` | `heckeTrace_eq_hecke`, `heckeTrace_rational`, `remainder_remainderData`, `twistedCoeff_eq_gauss`, `integral_sourceHeckeTrace_bessel` |
+| Every cubic twist keeps the double pole | for every primary prime `p` (`ρ = |p|`): `(s − 4/3)²M(s)Σ_{p∤k}T(k)T(kp)(4π|ξ_k|)^{−s} → 216π³r³/c_p(4/3)` and `(s − 4/3)²M(s)Σ_k(k/p)₃T(k)²(4π|ξ_k|)^{−s} → 216π³r³/(c_p(4/3)(9/p)₃\overline{G̃(p)}) ≠ 0`, `c_p(4/3) = ρ^{1/3}(N(p) + 1)/(N(p) − 1)` | `dilateCorrelation_double_pole`, `cubicTwistAtPrime_double_pole`, `dilateFactor_four_thirds` |
 
 ## 6. Questions
 
 | # | Question |
 |---|---|
 | Q1 | **Bridge.** Is the row-root-number series at every column a combination, with coefficients of bounded conductor, of Rankin–Selberg series of the cubic theta function? Pointwise the answer is Hasse–Davenport at the columns: a shifted theta product times the quadratic Gauss sum at the odd part of the column. Open: the series-level statement in the theta coefficients `T` (the 3-adic twist `(9/c)₃` between `G̃` and `T`) and the class restriction modulo `4` of the Weil index. |
-| Q2 | **Residues.** The residue at `2/3` of the actual row family at column `n` and under bounded reweighting: the order-six theta coefficients. By Q1 they are residues of shifted cubic theta products with quadratic twists. Closed form? Which reweightings kill them? Known: `S₁` (the family reweighted by `\overline{G}(9/·)₃`) has a nonzero residue (STCC); it is a positive real number and the theta scalar `C` is real (conjugation symmetry). The actual family is orthogonal to `S₁` and to every twist unramified at `2` (its 2-adic phase has mean zero modulo `4`): its residue is a combination of residues of theta squares twisted by characters ramified at `2`. Its 3-adic part is the twist `S_{ω²λ²} = Σ \overline{G̃(c)}² N(c)^{−w}` (the plain mean of the squared Gauss sums), not `S₁`. The first 2-ramified residue: the cubic twist `L_χ = Σ(h/−2)₃T(h)²(4π|ξ_h|)^{−s}` has a double pole with leading coefficient `108π³r³/c(4/3)`, `c(4/3) = 2^{−2/3}(1 + ⅔\overline{G̃(−2)}) ≠ 0` (Hecke-at-four trace plus Patterson's relations at `2`). Open: the Klein twists `η` and the 3-adic layer `ω²λ²` of this twist. |
+| Q2 | **Residues.** The residue at `2/3` of the actual row family at column `n` and under bounded reweighting: the order-six theta coefficients. By Q1 they are residues of shifted cubic theta products with quadratic twists. Closed form? Which reweightings kill them? Known: `S₁` (the family reweighted by `\overline{G}(9/·)₃`) has a nonzero residue (STCC); it is a positive real number and the theta scalar `C` is real (conjugation symmetry). The actual family is orthogonal to `S₁` and to every twist unramified at `2` (its 2-adic phase has mean zero modulo `4`): its residue is a combination of residues of theta squares twisted by characters ramified at `2`. Its 3-adic part is the twist `S_{ω²λ²} = Σ \overline{G̃(c)}² N(c)^{−w}` (the plain mean of the squared Gauss sums), not `S₁`. Every cubic twist keeps the double pole: for every primary prime `p`, `L_{χ_p} = Σ(k/p)₃T(k)²(4π|ξ_k|)^{−s}` has leading coefficient `216π³r³/(c_p(4/3)(9/p)₃\overline{G̃(p)})`, `c_p(4/3) = |p|^{1/3}(N(p) + 1)/(N(p) − 1)`, and the dilate correlation `Σ_{p∤k}T(k)T(kp)` has `216π³r³/c_p(4/3)` (Hecke trace at `p` plus Patterson at `p`); at `p = −2` this is the 2-ramified twist `L_χ`. Open: the Klein twists `η` and the 3-adic layer `ω²λ²` of this twist. |
 | Q3 | **Remainder.** The remainder exponent of the first moment, for one column and on average over columns. At the unit layer it is the zero-free region of `ζ_K` read at `3w − 1`, from both sides: `(1 + Θ)/3` is reached through the seed, and a zero `ρ` with `Λ₀(2(1 + ρ)/3) ≠ 0` forbids every exponent below `(1 + Re ρ)/3`. Open: the actual family and the columns. |
 | Q4 | **Functional equation** of `Z(w; n)` with explicit column dependence: needs the continuation of the cubic Eisenstein series across `Re s = 1`. |
 | Q5 | **Sextic large sieve** `B₆(M, N)`. A square stops the floor bin at `5/6` whatever its cross term; the sieve matters for the mean over columns of the remainders, not for the main term. |
@@ -190,9 +196,10 @@ the quadratic Gauss sum of the row at the odd part of the column.
    smoothing turn remainders into holomorphy and force the zeros of `ζ_K`. (Lean)
 5. Conjugation and reflection: `c ↦ c̄` on symbols, Gauss sums, both cusp Dirichlet series and the Whittaker
    factors; reflection of continued cusp coefficients across the real axis; reality of residues. (Lean)
-6. Hecke correlation traces: `θ(Aw)θ(A⁻¹w)` traced from `Γ_A` to `Γ(3)`, its coset geometry over `P¹(𝔽₄)`,
-   its constant term, and the bounded-remainder Rankin–Selberg lemma. (Lean, at the prime `2`)
-   Cubic Eisenstein series of `Γ(3) ∩ Γ₀(m)` with cubic nebentypus `(d/m)₃` at other `m`. (open)
+6. Hecke correlation traces at every primary prime: `θ(A_pw)θ(A_p⁻¹w)` traced from `Γ_p` to `Γ(3)`, its coset geometry
+   over `P¹(O/p)`, Bezout factorization of the Hecke points, invariance under `SL₂(ℤ)`, the constant term with the
+   Gauss sum of `χ²`, the bounded-remainder Rankin–Selberg lemma, and Patterson's reduction. (Lean) Composite
+   moduli and cubic Eisenstein series of `Γ(3) ∩ Γ₀(m)` with nebentypus. (open)
    Concretely: the spectral theory of MMD (energy graph, resolvent, Eisenstein series) on `L²(H\ℍ³)` for
    finite-index `H ≤ Γ_ker`; the 2-adic covers only see `θ`'s expansion at `∞` and the four rational cusps.
 7. Quadratic twists of `θ` (translates by `(1/q)O`, level `q²`) and the 3-adic layer `(ω², 2)` (translates by
@@ -244,9 +251,9 @@ evaluation before Cauchy–Schwarz); Q7 is O3.
    Klein group (all nonzero). `S₁` gives one relation: splitting off the rows divisible by `−2` (twisted
    multiplicativity) ties the odd untwisted residue to the odd `χ₂`-twisted residue. Products `T(c)T(pc)` reduce
    to cubic twists of `T(c)²` by the prime recurrence, so the 2-ramified twists are the new objects.
-2. The Rankin–Selberg series of `θ(w)θ(A_m w)`: done at `m = 2` by the Hecke-at-four trace (the combination
-   `2^{−s}D₄ + 2^{s−2}L_χ` has the double pole of `D`). Done: `D₄` and `L_χ` separate by Patterson's relations at `2`, and `L_χ` alone has the
-   double pole. Open: odd primes `m` (the cubic twist at every column prime).
+2. The Rankin–Selberg series of `θ(w)θ(A_m w)`: done at every primary prime `m = p` (the dilate correlation and the
+   cubic twist `L_{χ_p}` have explicit double poles). Open: composite columns `n` (twists by `(·/n)₃`, Hecke traces at
+   products of primes) and the coherence of `c_p(4/3)` across columns.
 3. Quadratic twists of `θ` and their cusp growth: does a quadratic twist keep the double pole?
 4. The 3-adic theta coefficients `T(uλ^m)` and the layer `(ω², 2)` that carries `(9/c)₃`. Known: `T(uλ) = 0`,
    `T(u) = 0` for `u ≠ ±1` (STCC); conjugation pairs `T(uλ^m)` with `T(ū(−ω²)^mλ^m)`, so `T(ω²λ²)` is real.

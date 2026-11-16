@@ -125,3 +125,4 @@ Characteristic-two quadratic sequences, ideal-power lifts of free-group represen
 graded self-extensions, cyclic norm differentials, modular trace formulas,
 and trace restriction criteria in group cohomology.
 -/
+import GaloisForLFunctions.RepresentationLifting.Exterior.SymplecticRankSlice

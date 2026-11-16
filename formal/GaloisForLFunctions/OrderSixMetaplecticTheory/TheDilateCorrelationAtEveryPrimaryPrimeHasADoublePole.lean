@@ -209,6 +209,242 @@ theorem besselDirichlet_shiftSqCoeff (s : ℂ) (hs : 4 < s.re) :
         rw [tsum_mul_left, tsum_mul_tsum_of_summable_norm hqsum hgsum]
     _ = _ := by
         rw [tsum_geometric_of_norm_lt_one hq, hD]
+        simp only [htdef, hρc]
+        ring
+
+end PrimaryPrime
+
+
+namespace PrimaryPrime
+
+variable (P : PrimaryPrime)
+
+/-! ### The factor `c_p` -/
+
+/-- `c_p(s) = 2ρ^{−s}·ρρ^{−s}(1 − ρ²ρ^{−3s})^{−1} + ρ^{s−1}`: the dilate combination is `c_p(s)D_{dil}(s)`. -/
+def dilateFactor (s : ℂ) : ℂ :=
+  2 * ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s) * ((‖ringComplex P.p‖ : ℂ) * ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s) *
+    (1 - (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3)⁻¹) +
+      ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (s - 1)
+
+theorem combination_eq (s : ℂ) (hs : 4 < s.re) :
+    2 * ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s) * besselDirichlet P.shiftSqCoeff s +
+        ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (s - 1) * besselDirichlet P.dilateCoeff s =
+      P.dilateFactor s * besselDirichlet P.dilateCoeff s := by
+  rw [P.besselDirichlet_shiftSqCoeff s hs, dilateFactor]
+  ring
+
+theorem rho_ne_zero : ((‖ringComplex P.p‖ : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr P.norm_pos.ne'
+
+theorem rho_cpow_ne_zero (s : ℂ) : ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s) ≠ 0 := by
+  rw [Complex.cpow_def_of_ne_zero P.rho_ne_zero]
+  exact Complex.exp_ne_zero _
+
+theorem one_sub_ne_zero (s : ℂ) (hs : 2 / 3 < s.re) :
+    1 - (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3 ≠ 0 := by
+  intro h0
+  have h := P.norm_rho_cube_lt s hs
+  rw [show (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3 = 1 by
+    linear_combination -h0, norm_one] at h
+  exact lt_irrefl _ h
+
+/-- `c_p(s)·ρρ^{−s}(1 − ρ²ρ^{−3s}) = 1 + ρ²ρ^{−3s}`. -/
+theorem dilateFactor_mul (s : ℂ) (hs : 2 / 3 < s.re) :
+    P.dilateFactor s * ((‖ringComplex P.p‖ : ℂ) * ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s) *
+      (1 - (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3)) =
+      1 + (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3 := by
+  have h1 := P.one_sub_ne_zero s hs
+  have ht := P.rho_cpow_ne_zero s
+  have hρ := P.rho_ne_zero
+  have hs1 : ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (s - 1) =
+      ((‖ringComplex P.p‖ : ℂ) * ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s))⁻¹ := by
+    rw [Complex.cpow_sub _ _ hρ, Complex.cpow_neg, Complex.cpow_one]
+    field_simp
+  rw [dilateFactor, hs1]
+  generalize ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s) = t at h1 ht ⊢
+  generalize (‖ringComplex P.p‖ : ℂ) = ρ at h1 hρ ⊢
+  have e1 : (1 - ρ ^ 2 * t ^ 3)⁻¹ * (1 - ρ ^ 2 * t ^ 3) = 1 := inv_mul_cancel₀ h1
+  have e2 : (ρ * t)⁻¹ * (ρ * t) = 1 := inv_mul_cancel₀ (mul_ne_zero hρ ht)
+  linear_combination (2 * ρ ^ 2 * t ^ 3) * e1 + (1 - ρ ^ 2 * t ^ 3) * e2
+
+theorem dilateFactor_ne_zero (s : ℂ) (hs : 2 / 3 < s.re) : P.dilateFactor s ≠ 0 := by
+  intro h0
+  have key := P.dilateFactor_mul s hs
+  rw [h0, zero_mul] at key
+  have h := P.norm_rho_cube_lt s hs
+  rw [show (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3 = -1 by
+    linear_combination key.symm, norm_neg, norm_one] at h
+  exact lt_irrefl _ h
+
+theorem dilateFactor_differentiableAt (s : ℂ) (hs : 2 / 3 < s.re) : DifferentiableAt ℂ P.dilateFactor s := by
+  have hne := P.one_sub_ne_zero s hs
+  have hρ := P.rho_ne_zero
+  have ht : DifferentiableAt ℂ (fun s : ℂ => ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) s :=
+    DifferentiableAt.const_cpow (f := fun s : ℂ => -s) differentiableAt_id.neg (Or.inl hρ)
+  have hu : DifferentiableAt ℂ (fun s : ℂ => ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (s - 1)) s :=
+    DifferentiableAt.const_cpow (f := fun s : ℂ => s - 1) (differentiableAt_id.sub_const 1) (Or.inl hρ)
+  have hinv : DifferentiableAt ℂ (fun s : ℂ =>
+      (1 - (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3)⁻¹) s :=
+    ((differentiableAt_const _).sub ((differentiableAt_const _).mul (ht.pow 3))).inv hne
+  change DifferentiableAt ℂ (fun s : ℂ => 2 * ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s) *
+    ((‖ringComplex P.p‖ : ℂ) * ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s) *
+      (1 - (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3)⁻¹) +
+        ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (s - 1)) s
+  exact (((differentiableAt_const _).mul ht).mul (((differentiableAt_const _).mul ht).mul hinv)).add hu
+
+theorem rho_sq_ne_one : (‖ringComplex P.p‖ : ℂ) ^ 2 ≠ 1 := by
+  have h := ringComplex_norm_sq_eq_absNorm_span P.p
+  have hne : Ideal.absNorm (Ideal.span {P.p}) ≠ 1 := by
+    rw [Ne, Ideal.absNorm_eq_one_iff, Ideal.span_singleton_eq_top]
+    exact P.prime.not_unit
+  intro h1
+  apply hne
+  have h1' : ‖ringComplex P.p‖ ^ 2 = 1 := by exact_mod_cast h1
+  rw [h1'] at h
+  exact_mod_cast h.symm
+
+/-- **The factor at `4/3`.** `c_p(4/3) = ρ^{1/3}(ρ² + 1)/(ρ² − 1)`, `ρ² = N(p)`. -/
+theorem dilateFactor_four_thirds :
+    P.dilateFactor (4 / 3) = ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (1 / 3 : ℂ) *
+      (((‖ringComplex P.p‖ : ℂ) ^ 2 + 1) / ((‖ringComplex P.p‖ : ℂ) ^ 2 - 1)) := by
+  have hρ := P.rho_ne_zero
+  have hρ1 := P.rho_sq_ne_one
+  set u : ℂ := ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (1 / 3 : ℂ) with hudef
+  have hu3 : u ^ 3 = ((‖ringComplex P.p‖ : ℝ) : ℂ) := by
+    rw [hudef, ← Complex.cpow_nat_mul]
+    norm_num
+  have hu0 : u ≠ 0 := by
+    intro h0
+    rw [h0, zero_pow (by norm_num)] at hu3
+    exact hρ hu3.symm
+  have ht : ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-(4 / 3 : ℂ)) = (u ^ 4)⁻¹ := by
+    rw [Complex.cpow_neg, hudef, ← Complex.cpow_nat_mul]
+    norm_num
+  have hs1 : ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ ((4 / 3 : ℂ) - 1) = u := by
+    rw [hudef]
+    norm_num
+  rw [dilateFactor, ht, hs1]
+  have hρu : (‖ringComplex P.p‖ : ℂ) = u ^ 3 := hu3.symm
+  rw [hρu]
+  rw [hρu] at hρ1
+  have h6 : u ^ 6 - 1 ≠ 0 := by
+    intro h
+    apply hρ1
+    linear_combination h
+  have hden : 1 - (u ^ 3) ^ 2 * ((u ^ 4)⁻¹) ^ 3 ≠ 0 := by
+    rw [show 1 - (u ^ 3) ^ 2 * ((u ^ 4)⁻¹) ^ 3 = (u ^ 6 - 1) / u ^ 6 by field_simp]
+    exact div_ne_zero h6 (pow_ne_zero 6 hu0)
+  have h6' : (u ^ 3) ^ 2 - 1 ≠ 0 := by
+    rw [show (u ^ 3) ^ 2 - 1 = u ^ 6 - 1 by ring]
+    exact h6
+  field_simp
+  ring
+
+/-! ### The double poles -/
+
+/-- **The dilate correlation at `p` has a double pole.** `M(s)D_{dil}(s)` continues to `{1 < Re s < 13/3, Im s > 0}`
+and to a punctured neighbourhood of `4/3`, and `(s − 4/3)²M(s)D_{dil}(s) → 216π³r³/c_p(4/3)` with
+`c_p(4/3) = ρ^{1/3}(ρ² + 1)/(ρ² − 1)`. -/
+theorem dilateCorrelation_double_pole :
+    ∃ Λ : ℂ → ℂ,
+      (∀ s : ℂ, 4 < s.re → s.re < 13 / 3 → 0 < s.im → Λ s = besselSqMellin s * besselDirichlet P.dilateCoeff s) ∧
+      (∀ s : ℂ, 1 < s.re → s.re < 13 / 3 → 0 < s.im → DifferentiableAt ℂ Λ s) ∧
+      (∀ᶠ s in 𝓝[≠] (4 / 3 : ℂ), DifferentiableAt ℂ Λ s) ∧
+      Tendsto (fun s => (s - 4 / 3) ^ 2 * Λ s) (𝓝[≠] (4 / 3 : ℂ))
+        (𝓝 (2 * (108 * (Real.pi : ℂ) ^ 3 * constantArithmeticResidue ^ 3) / P.dilateFactor (4 / 3))) ∧
+      P.dilateFactor (4 / 3) = ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (1 / 3 : ℂ) *
+        (((‖ringComplex P.p‖ : ℂ) ^ 2 + 1) / ((‖ringComplex P.p‖ : ℂ) ^ 2 - 1)) ∧
+      2 * (108 * (Real.pi : ℂ) ^ 3 * constantArithmeticResidue ^ 3) / P.dilateFactor (4 / 3) ≠ 0 := by
+  obtain ⟨Λ, hΛ, hΛd, hΛn, hΛl⟩ := P.dilateCombination_double_pole
+  obtain ⟨-, -, -, -, -, hne⟩ := thetaSqDirichlet_double_pole
+  have hre43 : (2 / 3 : ℝ) < (4 / 3 : ℂ).re := by norm_num
+  have hc0 : P.dilateFactor (4 / 3) ≠ 0 := P.dilateFactor_ne_zero _ hre43
+  refine ⟨fun s => Λ s / P.dilateFactor s, fun s hs4 hs hi => ?_, fun s hs1 hs hi => ?_, ?_, ?_,
+    P.dilateFactor_four_thirds, div_ne_zero (mul_ne_zero two_ne_zero hne) hc0⟩
+  · have hc := P.dilateFactor_ne_zero s (by linarith)
+    show Λ s / P.dilateFactor s = _
+    rw [hΛ s hs4 hs hi, P.combination_eq s hs4, div_eq_iff hc]
+    ring
+  · exact (hΛd s hs1 hs hi).div (P.dilateFactor_differentiableAt s (by linarith))
+      (P.dilateFactor_ne_zero s (by linarith))
+  · have hre : ∀ᶠ s in 𝓝[≠] (4 / 3 : ℂ), 2 / 3 < s.re :=
+      eventually_nhdsWithin_of_eventually_nhds
+        ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds hre43)
+    filter_upwards [hΛn, hre] with s h1 h2
+    exact h1.div (P.dilateFactor_differentiableAt s h2) (P.dilateFactor_ne_zero s h2)
+  · have hcont : Tendsto P.dilateFactor (𝓝[≠] (4 / 3 : ℂ)) (𝓝 (P.dilateFactor (4 / 3))) :=
+      (P.dilateFactor_differentiableAt _ hre43).continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+    refine (hΛl.div hcont hc0).congr' (Eventually.of_forall fun s => ?_)
+    simp only [Pi.div_apply]
+    ring
+
+/-- The cubic twist `(k/p)₃T(k)²` of the theta square at `p`. -/
+def twistCoeff (k : O) : ℂ := ringComplex (symbol k P.p) * rationalSourceResidualFourierCoefficient k ^ 2
+
+/-- `T(k)T(kp) = (9/p)₃\overline{G̃(p)}(k/p)₃T(k)²`. -/
+theorem dilateCoeff_eq_twist (k : O) :
+    P.dilateCoeff k = ringComplex (symbol 9 P.p) * star (normalizedCubicUnitGauss P.p) * P.twistCoeff k := by
+  by_cases hk : P.p ∣ k
+  · have hs : ringComplex (symbol k P.p) = 0 := by
+      rw [← P.chi_res, (P.res_eq_zero_iff k).mpr hk, MulChar.map_zero]
+    rw [dilateCoeff, if_pos hk, twistCoeff, hs]
+    ring
+  · rw [dilateCoeff, if_neg hk, twistCoeff,
+      rationalSourceResidualFourierCoefficient_prime_normalized P.p P.prime P.primary k hk,
+      symbol_mul_numerator, map_mul]
+    ring
+
+theorem twistFactor_ne_zero : ringComplex (symbol 9 P.p) * star (normalizedCubicUnitGauss P.p) ≠ 0 := by
+  have hG : ‖normalizedCubicUnitGauss P.p‖ = 1 := normalizedCubicUnitGauss_prime_norm P.p P.prime P.primary
+  have h9 : IsCoprime (9 : O) P.p := by
+    have := P.isCoprime_three.pow_left (m := 2)
+    norm_num at this
+    exact this
+  have hs := cubicSymbol_star_mul 9 P.p P.primary h9
+  refine mul_ne_zero (fun h0 => ?_) (fun h0 => ?_)
+  · rw [h0, mul_zero] at hs
+    exact zero_ne_one hs
+  · have : ‖star (normalizedCubicUnitGauss P.p)‖ = 1 := by rw [norm_star, hG]
+    rw [h0, norm_zero] at this
+    exact zero_ne_one this
+
+/-- **Every cubic twist of the theta square keeps the double pole.** For every primary prime `p`,
+`M(s)L_{χ_p}(s)`, `L_{χ_p}(s) = Σ_k (k/p)₃T(k)²(4π|ξ_k|)^{−s}`, continues to `{1 < Re s < 13/3, Im s > 0}` and to a
+punctured neighbourhood of `4/3`, and `(s − 4/3)²M(s)L_{χ_p}(s) → 216π³r³/(c_p(4/3)(9/p)₃\overline{G̃(p)}) ≠ 0`. -/
+theorem cubicTwistAtPrime_double_pole :
+    ∃ Λ : ℂ → ℂ,
+      (∀ s : ℂ, 4 < s.re → s.re < 13 / 3 → 0 < s.im → Λ s = besselSqMellin s * besselDirichlet P.twistCoeff s) ∧
+      (∀ s : ℂ, 1 < s.re → s.re < 13 / 3 → 0 < s.im → DifferentiableAt ℂ Λ s) ∧
+      (∀ᶠ s in 𝓝[≠] (4 / 3 : ℂ), DifferentiableAt ℂ Λ s) ∧
+      Tendsto (fun s => (s - 4 / 3) ^ 2 * Λ s) (𝓝[≠] (4 / 3 : ℂ))
+        (𝓝 (2 * (108 * (Real.pi : ℂ) ^ 3 * constantArithmeticResidue ^ 3) /
+          (P.dilateFactor (4 / 3) * (ringComplex (symbol 9 P.p) * star (normalizedCubicUnitGauss P.p))))) ∧
+      2 * (108 * (Real.pi : ℂ) ^ 3 * constantArithmeticResidue ^ 3) /
+          (P.dilateFactor (4 / 3) * (ringComplex (symbol 9 P.p) * star (normalizedCubicUnitGauss P.p))) ≠ 0 := by
+  obtain ⟨Λ, hΛ, hΛd, hΛn, hΛl, -, hne⟩ := P.dilateCorrelation_double_pole
+  set κ₀ := ringComplex (symbol 9 P.p) * star (normalizedCubicUnitGauss P.p) with hκ₀
+  have hκ := P.twistFactor_ne_zero
+  have hD : ∀ s, besselDirichlet P.dilateCoeff s = κ₀ * besselDirichlet P.twistCoeff s := by
+    intro s
+    rw [besselDirichlet, besselDirichlet, ← tsum_mul_left]
+    refine tsum_congr fun h => ?_
+    split_ifs
+    · ring
+    · rw [P.dilateCoeff_eq_twist]
+      ring
+  refine ⟨fun s => Λ s / κ₀, fun s hs4 hs hi => ?_, fun s hs1 hs hi => (hΛd s hs1 hs hi).div_const _, ?_, ?_, ?_⟩
+  · show Λ s / κ₀ = _
+    rw [hΛ s hs4 hs hi, hD, div_eq_iff hκ]
+    ring
+  · filter_upwards [hΛn] with s h1
+    exact h1.div_const _
+  · have h := hΛl.div_const κ₀
+    rw [div_div] at h
+    refine h.congr' (Eventually.of_forall fun s => ?_)
+    simp only
+    ring
+  · rw [← div_div]
+    exact div_ne_zero hne hκ
 
 end PrimaryPrime
 

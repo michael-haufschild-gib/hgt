@@ -9,7 +9,8 @@ import Mathlib.Tactic
 Four unit complex phases sum to zero exactly when they split into two
 opposite pairs. This geometric part of the short-root-sum classification
 applies to every finite additive character. In odd cyclic order, no such
-four-term cancellation is possible, even with repeated phases.
+four-term cancellation is possible, even with repeated phases. Fourier duality
+then makes the symmetric cyclic inertia operator invertible in odd order.
 -/
 
 noncomputable section
@@ -110,8 +111,3 @@ theorem oddCyclic_symmetricTranslation_bijective (k : ℕ) :
   exact ⟨hi, LinearMap.injective_iff_surjective.mp hi⟩
 
 end GaloisForLFunctions.BiarithmeticGeometry
-
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.finiteCharacter_four_term_zero_iff
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.odd_cyclic_four_term_ne_zero
-
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.oddCyclic_symmetricTranslation_bijective
