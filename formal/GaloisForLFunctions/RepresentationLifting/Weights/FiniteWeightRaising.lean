@@ -1,6 +1,6 @@
 import Mathlib.LinearAlgebra.Matrix.Trace
 import Mathlib.RingTheory.IntegralClosure.IsIntegral.Basic
-import Mathlib.LinearAlgebra.Dimension.Finrank
+import Mathlib.LinearAlgebra.Dimension.Constructions
 import Mathlib.Algebra.Ring.GeomSum
 
 /-!
@@ -15,7 +15,7 @@ mechanism behind the PBW truncation in Zehavi, Claim 3.32, arXiv:2611.18218.
 
 namespace GaloisForLFunctions.RepresentationLifting.Weights
 
-open scoped BigOperators
+open scoped BigOperators Classical
 
 variable {K ι : Type*} [Field K] [Fintype ι] [DecidableEq ι] {w : ℕ}
 
@@ -70,7 +70,7 @@ theorem weightRaisingPart_adjoin_finrank (wt : ι → Fin (w + 1)) (A : Matrix �
     Module.finrank K (Algebra.adjoin K {weightRaisingPart wt A}) ≤ w + 1 := by
   change Module.finrank K (Algebra.adjoin K {weightRaisingPart wt A}).toSubmodule ≤ _
   rw [← weightRaisingPart_power_span]
-  exact (Submodule.finrank_span_le_card _).trans
+  exact (finrank_span_finset_le_card _).trans
     ((Finset.card_image_le).trans_eq (Finset.card_range _))
 
 /-- The inverse of one minus the raising operator is polynomial of degree at most the width. -/

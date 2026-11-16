@@ -24,7 +24,7 @@ local notation "φ" => normalizedKummerHermitianEmbedding p d r m
 /-- Every nonzero trace-zero coefficient choice admits the same Hermitian cover. -/
 def traceChoiceKummerHermitianEmbedding (η : KummerTraceChoices p s) :
     SquareKummerField p s (η.val⁻¹ ^ R) (p ^ (d + 1) - 2) R →ₐ[K] H :=
-  φ.comp (kummerTraceChoiceEquiv p s η (p ^ (d + 1) - 2) R).symm.toAlgHom
+  (φ).comp (kummerTraceChoiceEquiv p s η (p ^ (d + 1) - 2) R).symm.toAlgHom
 
 /-- The changed-coefficient covering is an embedding of the actual fields. -/
 theorem traceChoiceKummerHermitianEmbedding_injective (η : KummerTraceChoices p s) :
@@ -33,7 +33,7 @@ theorem traceChoiceKummerHermitianEmbedding_injective (η : KummerTraceChoices p
 
 /-- Coefficient rescaling preserves the actual subfield inside the Hermitian source. -/
 theorem traceChoiceKummerHermitianEmbedding_fieldRange (η : KummerTraceChoices p s) :
-    (traceChoiceKummerHermitianEmbedding p d r m η).fieldRange = φ.fieldRange := by
+    (traceChoiceKummerHermitianEmbedding p d r m η).fieldRange = (φ).fieldRange := by
   rw [traceChoiceKummerHermitianEmbedding, ← AlgHom.map_fieldRange,
     AlgEquiv.fieldRange_eq_top, ← AlgHom.fieldRange_eq_map]
 
@@ -58,7 +58,7 @@ private def coverReflectionParameter : Fin (2 * ((r + 1) * (m + 1) - 1) + 1) :=
 /-- Reflecting the exponent gives an embedding of the complementary normalized Kummer model. -/
 def reflectedKummerHermitianEmbedding :
     NormalizedKummerField p s d (2 * ((r + 1) * (m + 1) - 1) - r) →ₐ[K] H :=
-  φ.comp (normalizedKummerReflectionEquiv p d ((r + 1) * (m + 1) - 1)
+  (φ).comp (normalizedKummerReflectionEquiv p d ((r + 1) * (m + 1) - 1)
     (coverReflectionParameter r m)).symm.toAlgHom
 
 /-- The reflected covering is an embedding of actual function fields. -/
@@ -68,7 +68,7 @@ theorem reflectedKummerHermitianEmbedding_injective :
 
 /-- Reflection preserves the subfield inside the Hermitian source. -/
 theorem reflectedKummerHermitianEmbedding_fieldRange :
-    (reflectedKummerHermitianEmbedding p d r m).fieldRange = φ.fieldRange := by
+    (reflectedKummerHermitianEmbedding p d r m).fieldRange = (φ).fieldRange := by
   rw [reflectedKummerHermitianEmbedding, ← AlgHom.map_fieldRange,
     AlgEquiv.fieldRange_eq_top, ← AlgHom.fieldRange_eq_map]
 

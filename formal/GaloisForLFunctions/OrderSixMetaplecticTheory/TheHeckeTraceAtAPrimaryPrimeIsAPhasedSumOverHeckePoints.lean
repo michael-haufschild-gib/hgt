@@ -149,7 +149,7 @@ theorem contraction_wMat :
   all_goals (try simp only [hc3] at *)
   all_goals (try rw [← hr])
   all_goals (try field_simp)
-  all_goals (first | ring1 | linear_combination hd | linear_combination -hd)
+  all_goals (first | ring1 | linear_combination hd)
 
 theorem dilation_wMat :
     P.dilation * complexMatrix P.wMat =
@@ -191,6 +191,106 @@ theorem dilation_lowerThree (y : O) (hy : ¬ P.p ∣ y) :
   all_goals (try rw [← hr])
   all_goals (try field_simp)
   all_goals (first | ring1 | linear_combination hd | linear_combination -hd)
+
+
+/-! ### The Hecke points -/
+
+/-- `Θ^{high}(w) = Θ(A_pw)`. -/
+def heckeHigh (Θ : HyperbolicSpace → ℂ) (w : HyperbolicSpace) : ℂ := Θ (P.dilation • w)
+
+/-- `Θ^{(t)}(w) = Θ(A_p⁻¹T_tw)`. -/
+def heckeLow (Θ : HyperbolicSpace → ℂ) (t : O) (w : HyperbolicSpace) : ℂ :=
+  Θ (P.contraction • (complexMatrix (transThree t) • w))
+
+theorem transThree_mul (s t : O) : transThree s * transThree t = transThree (s + t) := by
+  apply Subtype.ext
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [transThree, Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+  ring
+
+theorem complexCharacter_highMat : complexCharacter P.highMat = complexCharacter P.wMat ^ 2 := by
+  have h1 : ((P.highMat : levelThree) : SL(2, O)) 1 0 = 3 * P.wK := rfl
+  have h2 : ((P.highMat : levelThree) : SL(2, O)) 0 0 = P.p ^ 2 := rfl
+  have h3 : ((P.wMat : levelThree) : SL(2, O)) 1 0 = 3 * P.wK := rfl
+  have h4 : ((P.wMat : levelThree) : SL(2, O)) 0 0 = P.p := rfl
+  rw [complexCharacter_eq_symbol, complexCharacter_eq_symbol, h1, h2, h3, h4, pow_two, symbol_mul_denominator,
+    map_mul, pow_two]
+
+theorem complexCharacter_lowMat (y : O) (hy : ¬ P.p ∣ y) :
+    complexCharacter (P.lowMat y hy) = ringComplex (symbol (3 * y) P.p) := rfl
+
+theorem not_dvd_lift (y : {y : P.Res // y ≠ 0}) : ¬ P.p ∣ P.lift y.1 := by
+  rw [← P.res_eq_zero_iff, res_lift]
+  exact y.2
+
+variable {P}
+
+theorem correlation_transThree (Θ : HyperbolicSpace → ℂ)
+    (hΘ : ∀ (M : levelThree) (w : HyperbolicSpace), Θ (complexMatrix M • w) = complexCharacter M * Θ w)
+    (t : O) (w : HyperbolicSpace) :
+    P.heckeCorrelation Θ (complexMatrix (transThree t) • w) = P.heckeHigh Θ w * P.heckeLow Θ t w := by
+  unfold heckeCorrelation heckeHigh heckeLow
+  rw [← mul_smul, P.dilation_transThree, mul_smul, hΘ, complexCharacter_transThree, one_mul]
+
+theorem correlation_wMat (Θ : HyperbolicSpace → ℂ)
+    (hΘ : ∀ (M : levelThree) (w : HyperbolicSpace), Θ (complexMatrix M • w) = complexCharacter M * Θ w)
+    (t : O) (w : HyperbolicSpace) :
+    P.heckeCorrelation Θ (complexMatrix (P.wMat * transThree t) • w) =
+      complexCharacter P.wMat ^ 2 * (P.heckeLow Θ (P.wShift + t) w * P.heckeHigh Θ w) := by
+  unfold heckeCorrelation heckeHigh heckeLow
+  rw [map_mul, ← mul_smul, ← mul_assoc, P.dilation_wMat, ← mul_smul, mul_assoc,
+    ← map_mul complexMatrix (transThree P.wShift), transThree_mul, mul_assoc, mul_smul, hΘ,
+    complexCharacter_highMat, mul_smul, ← mul_assoc P.contraction, P.contraction_wMat, mul_assoc, mul_assoc,
+    mul_smul, hΘ, complexCharacter_lowerThree, one_mul, mul_smul, hΘ, complexCharacter_transThree, one_mul,
+    ← mul_smul, P.dilation_transThree, mul_smul, hΘ, complexCharacter_transThree, one_mul, mul_smul]
+  ring
+
+theorem correlation_lowerThree (Θ : HyperbolicSpace → ℂ)
+    (hΘ : ∀ (M : levelThree) (w : HyperbolicSpace), Θ (complexMatrix M • w) = complexCharacter M * Θ w)
+    (y : O) (hy : ¬ P.p ∣ y) (t : O) (w : HyperbolicSpace) :
+    P.heckeCorrelation Θ (complexMatrix (lowerThree y * transThree t) • w) =
+      ringComplex (symbol (3 * y) P.p) * P.heckeLow Θ (t - P.lowBeta y) w * P.heckeLow Θ t w := by
+  unfold heckeCorrelation heckeLow
+  rw [map_mul, ← mul_smul, ← mul_assoc, P.dilation_lowerThree y hy, mul_assoc, mul_assoc,
+    ← map_mul complexMatrix (transThree (-P.lowBeta y)), transThree_mul, mul_smul, hΘ, P.complexCharacter_lowMat y hy,
+    ← mul_assoc P.contraction, P.contraction_lowerThree, mul_assoc, mul_smul, hΘ, complexCharacter_lowerThree,
+    one_mul, mul_smul, mul_smul, show -P.lowBeta y + t = t - P.lowBeta y by ring]
+
+variable (P)
+
+/-- **The Hecke trace at `p` as a phased sum over Hecke points.** -/
+theorem heckeTrace_eq_hecke (Θ : HyperbolicSpace → ℂ)
+    (hΘ : ∀ (M : levelThree) (w : HyperbolicSpace), Θ (complexMatrix M • w) = complexCharacter M * Θ w)
+    (w : HyperbolicSpace) :
+    P.heckeTrace Θ w =
+      (∑ x : P.Res, P.heckeHigh Θ w * P.heckeLow Θ (P.lift x) w) +
+        ((∑ x : P.Res, P.heckeLow Θ (P.wShift + P.lift x) w * P.heckeHigh Θ w) +
+          ∑ x : P.Res, ∑ y : {y : P.Res // y ≠ 0}, ringComplex (symbol (3 * P.lift y.1) P.p) *
+            P.heckeLow Θ (P.lift x - P.lowBeta (P.lift y.1)) w * P.heckeLow Θ (P.lift x) w) := by
+  rw [P.heckeTrace_eq_sum Θ hΘ, Fintype.sum_sum_type, Fintype.sum_sum_type, Fintype.sum_prod_type]
+  have hW : complexCharacter P.wMat ≠ 0 := by
+    intro h
+    have := norm_complexCharacter P.wMat
+    rw [h, norm_zero] at this
+    exact zero_ne_one this
+  congr 1
+  · refine Finset.sum_congr rfl fun x _ => ?_
+    change (complexCharacter (transThree (P.lift x)) ^ 2)⁻¹ *
+      P.heckeCorrelation Θ (complexMatrix (transThree (P.lift x)) • w) = _
+    rw [complexCharacter_transThree, one_pow, inv_one, one_mul, correlation_transThree Θ hΘ]
+  congr 1
+  · refine Finset.sum_congr rfl fun x _ => ?_
+    change (complexCharacter (P.wMat * transThree (P.lift x)) ^ 2)⁻¹ *
+      P.heckeCorrelation Θ (complexMatrix (P.wMat * transThree (P.lift x)) • w) = _
+    rw [map_mul, complexCharacter_transThree, mul_one, correlation_wMat Θ hΘ, ← mul_assoc,
+      inv_mul_cancel₀ (pow_ne_zero 2 hW), one_mul]
+  · refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => ?_
+    change (complexCharacter (lowerThree (P.lift y.1) * transThree (P.lift x)) ^ 2)⁻¹ *
+      P.heckeCorrelation Θ (complexMatrix (lowerThree (P.lift y.1) * transThree (P.lift x)) • w) = _
+    rw [map_mul, complexCharacter_transThree, complexCharacter_lowerThree, mul_one, one_pow, inv_one, one_mul,
+      correlation_lowerThree Θ hΘ _ (P.not_dvd_lift y)]
 
 end PrimaryPrime
 

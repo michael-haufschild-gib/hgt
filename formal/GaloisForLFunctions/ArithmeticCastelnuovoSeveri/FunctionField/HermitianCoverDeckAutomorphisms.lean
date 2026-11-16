@@ -58,9 +58,12 @@ theorem hermitianCoverDeckAut_fixes_coordinate (u : HermitianCoverParameters p d
   have hb : frobeniusTraceSum p ((d + 1) * (r + 1)) (m + 1)
       (algebraMap K H u.2.val) = 0 := by
     rw [← frobeniusTraceSum_map p (algebraMap K H), u.2.property, map_zero]
+  have htrace : σ (frobeniusTraceSum p ((d + 1) * (r + 1)) (m + 1) x) =
+      frobeniusTraceSum p ((d + 1) * (r + 1)) (m + 1) (σ x) :=
+    frobeniusTraceSum_map p σ.toRingHom ((d + 1) * (r + 1)) (m + 1) x
   rw [normalizedKummerHermitianEmbedding_coordinate]
   change σ (frobeniusTraceSum p ((d + 1) * (r + 1)) (m + 1) x ^ R) = _
-  rw [map_pow, frobeniusTraceSum_map p σ.toRingHom, hσ,
+  rw [map_pow, htrace, hσ,
     frobeniusTraceSum_affine p ((d + 1) * (r + 1)) (m + 1)
       (algebraMap K H a) (algebraMap K H u.2.val) x ha hb,
     mul_pow, ← map_pow, cover_scaling_pow, map_one, one_mul]
@@ -92,7 +95,7 @@ theorem hermitianCoverDeckAut_fixes_embedding (u : HermitianCoverParameters p d 
   exact congrArg (fun f => f x) h
 
 /-- The affine deck automorphism fixes the actual image subfield, so is an automorphism over it. -/
-def hermitianCoverRelativeAut (u : HermitianCoverParameters p d r m) : H ≃ₐ[φ.fieldRange] H :=
+def hermitianCoverRelativeAut (u : HermitianCoverParameters p d r m) : H ≃ₐ[(φ).fieldRange] H :=
   { (hermitianCoverDeckAut p d r m u).toRingEquiv with
     commutes' := fun y => by
       obtain ⟨x, hx⟩ := y.property
@@ -107,8 +110,12 @@ theorem hermitianCoverRelativeAut_injective :
   have hσ : hermitianCoverDeckAut p d r m u = hermitianCoverDeckAut p d r m v := by
     apply AlgEquiv.ext
     intro x
-    exact congrArg (fun σ : H ≃ₐ[φ.fieldRange] H => σ x) h
-  have hp := hermitianAffineAut_injective p s (kummerTraceConstant p s)⁻¹ hσ
+    exact congrArg (fun σ : H ≃ₐ[(φ).fieldRange] H => σ x) h
+  have hp : (u.1.val, (⟨u.2.val, hermitianCoverTraceKernel_fixed p d r m u.2⟩ :
+      squareFrobeniusFixedField p s)) =
+      (v.1.val, (⟨v.2.val, hermitianCoverTraceKernel_fixed p d r m v.2⟩ :
+        squareFrobeniusFixedField p s)) :=
+    hermitianAffineAut_injective p s (kummerTraceConstant p s)⁻¹ hσ
   apply Prod.ext
   · exact Subtype.ext (congrArg Prod.fst hp)
   · exact Subtype.ext (congrArg (fun w : Kˣ × squareFrobeniusFixedField p s => w.2.val) hp)

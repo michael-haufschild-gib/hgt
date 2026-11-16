@@ -27,6 +27,8 @@ open scoped ComplexConjugate ENNReal
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
   CriticalArithmeticCorrelationTheory HTGeometry _root_.RHTower
+open GaloisForLFunctions.RHTower (laplaceMass laplaceReal IsAbscissa laplaceMass_antitone
+  not_summable_iteratedDeriv_beyond_abscissa)
 
 /-! ### Holomorphy from absolute convergence -/
 
@@ -214,7 +216,7 @@ def stateRemainder (F : ℝ → ℝ) (p : ℂ) : ℂ :=
 /-- Off `½` and off the zeros of `ζ(½ + ·)`, the state equation is the confinement term plus the
 remainder. -/
 theorem stateEquation_eq_remainder {W₀ : ℝ} {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
-    {p : ℂ} (hp : p ≠ 1 / 2) (hζ : riemannZeta (1 / 2 + p) ≠ 0) (hp2 : p + 1 / 2 ≠ 0) :
+    {p : ℂ} (hp : p ≠ 1 / 2) (hζ : riemannZeta (1 / 2 + p) ≠ 0) :
     stateEquation W₀ F p = criticalAliasCoefficient W₀ * negativeHalfLineLaplace (cx F) (p - 8) +
       stateRemainder F p := by
   have hs1 : (1 : ℂ) / 2 + p ≠ 1 := by intro h; apply hp; linear_combination h
