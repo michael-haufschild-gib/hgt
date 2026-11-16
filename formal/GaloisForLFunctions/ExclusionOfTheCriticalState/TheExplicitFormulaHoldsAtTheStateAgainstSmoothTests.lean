@@ -398,9 +398,9 @@ theorem criticalState_hasSum_bareMixedEnergy {W₀ : ℝ} (hW : 0 < W₀)
   have h := criticalState_hasSum_zeroSeries_test_left hW hthreshold hF hψ hs fun x hx => by
     show ((G x : ℝ) : ℂ) = 0
     rw [hG0 x hx.le, Complex.ofReal_zero]
-  have hle : (2 : ℕ∞ω) ≤ ∞ := by exact_mod_cast le_top
   have hGd : CriticalHalfLineEnergyDomain G :=
-    criticalHalfLineEnergyDomain_of_compact_negative (hG.of_le hle) hc hG0
+    criticalHalfLineEnergyDomain_of_compact_negative
+      (hG.of_le (WithTop.coe_le_coe.mpr le_top)) hc hG0
   -- the weak equation of the state turns the confinement pairing into Weil's form
   have hw := criticalHalfLineMixedEnergy_groundState_eq_zero hW hthreshold hF hGd
   rw [criticalHalfLineMixedEnergy_eq_bare_add] at hw

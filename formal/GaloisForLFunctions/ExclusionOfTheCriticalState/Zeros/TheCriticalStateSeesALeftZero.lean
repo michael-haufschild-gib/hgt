@@ -310,8 +310,8 @@ private theorem integral_vertical_one_pole_left {G : ℂ → ℂ} {σ₀ σ₁ :
       have hd0 : (1 + |s.im|) / 2 ≤ ‖s - p₀‖ := norm_sub_ge_of_im_large h1
       have hd1 : (1 + |s.im|) / 2 ≤ ‖s - p₁‖ := norm_sub_ge_of_im_large h2
       have hpos_im : 0 < (1 + |s.im|) / 2 := by positivity
-      have hne0 : s ≠ p₀ := fun e => by rw [e, sub_self, norm_zero] at hd0; linarith
-      have hne1 : s ≠ p₁ := fun e => by rw [e, sub_self, norm_zero] at hd1; linarith
+      have hne0 : s ≠ p₀ := sub_ne_zero.mp (norm_ne_zero_iff.mp (hpos_im.trans_le hd0).ne')
+      have hne1 : s ≠ p₁ := sub_ne_zero.mp (norm_ne_zero_iff.mp (hpos_im.trans_le hd1).ne')
       rw [hR_eq s hne0 hne1]
       have hpair : (s - p₀)⁻¹ - (s - p₁)⁻¹ = -(K : ℂ) / ((s - p₀) * (s - p₁)) := by
         have : p₁ - p₀ = (K : ℂ) := by dsimp [p₁]; ring
@@ -677,7 +677,8 @@ private theorem criticalState_globalRemainder_four {W₀ : ℝ} (hW : 0 < W₀)
   have heq0 := tendsto_nhds_unique hlim1
     (hLap_cont.tendsto.mono_left (nhdsWithin_le_nhds (s := Ioi (0 : ℝ))))
   norm_num at heq0
-  exact heq0
+  rw [heq0]
+  ring
 
 private theorem criticalState_laplace_conj (F : ℝ → ℝ) (w : ℂ) :
     negativeHalfLineLaplace (cx F) (conj w) = conj (negativeHalfLineLaplace (cx F) w) := by
@@ -777,7 +778,8 @@ private theorem criticalState_norm_sq_four_integrable_and_pos {W₀ : ℝ} (hW :
   by_contra hle
   push Not at hle
   have hnonpos := mul_nonpos_of_nonneg_of_nonpos hinv_pos.le hle
-  linarith
+  rw [← hscale] at hnonpos
+  exact not_lt_of_ge hnonpos hrhs_pos
 
 /-! ### Exact single-parameter residue identities -/
 

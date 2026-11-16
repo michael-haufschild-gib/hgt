@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Topology.ProfiniteCircleCharacters
 import GaloisForLFunctions.RHTower.FieldOnePadicValuationUnitDecomposition
+import Mathlib.Topology.Algebra.Nonarchimedean.TotallyDisconnected
 
 /-!
 # Finite conductor of continuous p-adic unit characters
