@@ -161,6 +161,7 @@ theorem norm_fourRemainder_strip (a : ℝ) (ha : 0 < a) :
         ∑ k : Fin 3, ∑ x : Fin 4, ringComplex (uO k) * (θB (-(uO k ^ 2) + tO x) * θB (tO x)) := by
     rw [sourceFourTrace, heckeFourTrace_eq_hecke sourceTheta sourceTheta_automorphy]
     simp only [heckeHigh_source_point, heckeLow_source_point]
+    rfl
   have hident : fourRemainder (upperPoint z v hv) =
       ∑ x : Fin 4, (θA * θB (tO x) - P * Q) + ∑ x : Fin 4, (θB (-1 + tO x) * θA - Q * P) +
         ∑ k : Fin 3, ∑ x : Fin 4, ringComplex (uO k) * (θB (-(uO k ^ 2) + tO x) * θB (tO x) - Q * Q) -
@@ -178,7 +179,7 @@ theorem norm_fourRemainder_strip (a : ℝ) (ha : 0 < a) :
     rw [fourRemainder, htr, Finset.sum_sub_distrib, Finset.sum_sub_distrib, e3, hu]
     simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
     push_cast
-    linear_combination (-8) * hPQ
+    linear_combination 8 * hPQ
   have hEb : ∀ X Y PP QQ : ℂ, ‖PP‖ ≤ M → ‖QQ‖ ≤ M → ‖X - PP‖ ≤ D → ‖Y - QQ‖ ≤ D →
       ‖X * Y - PP * QQ‖ ≤ 2 * M * D + D ^ 2 := fun X Y PP QQ h1 h2 h3 h4 => norm_mul_sub_mul_le h1 h2 h3 h4
   set Eb := 2 * M * D + D ^ 2
@@ -234,5 +235,159 @@ theorem norm_fourRemainder_strip (a : ℝ) (ha : 0 < a) :
   rw [hEbv, hv3]
   have := mul_le_mul_of_nonneg_left hv6 (by positivity : (0 : ℝ) ≤ 64 * C₁ ^ 2)
   nlinarith [norm_nonneg c, Real.rpow_nonneg hv.le (-(7 : ℝ) / 3)]
+
+
+/-! ### The ramified cusps -/
+
+theorem cuspRepresentative_entries (j : Fin 3) :
+    (cuspRepresentative j : SL(2, O)) 0 0 = 1 ∧ (cuspRepresentative j : SL(2, O)) 1 0 = cuspParameter j := by
+  simp [cuspRepresentative, lowerCuspMatrix]
+
+theorem colRes_one_cuspParameter (j : Fin 3) (hj : j ≠ 0) : colRes 1 (cuspParameter j) ≠ 0 := by
+  rw [colRes, cuspResidue_one, cuspParameter_residue]
+  fin_cases j
+  · exact absurd rfl hj
+  · simp [cuspResidueParameter]
+  · simp [cuspResidueParameter]
+
+theorem colRes_cuspRepresentative (j : Fin 3) (hj : j ≠ 0) :
+    colRes ((cuspRepresentative j : SL(2, O)) 0 0) ((cuspRepresentative j : SL(2, O)) 1 0) ≠ 0 := by
+  rw [(cuspRepresentative_entries j).1, (cuspRepresentative_entries j).2]
+  exact colRes_one_cuspParameter j hj
+
+theorem colRes_trans_cuspRepresentative (s : O) (j : Fin 3) (hj : j ≠ 0) :
+    colRes (((transThree s : SL(2, O)) * cuspRepresentative j) 0 0)
+      (((transThree s : SL(2, O)) * cuspRepresentative j) 1 0) ≠ 0 := by
+  have h00 : ((transThree s : SL(2, O)) * cuspRepresentative j) 0 0 = 1 + 3 * s * cuspParameter j := by
+    simp [transThree, cuspRepresentative, lowerCuspMatrix, Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply,
+      Fin.sum_univ_two]
+  have h10 : ((transThree s : SL(2, O)) * cuspRepresentative j) 1 0 = cuspParameter j := by
+    simp [transThree, cuspRepresentative, lowerCuspMatrix, Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply,
+      Fin.sum_univ_two]
+  rw [h00, h10, colRes, cuspResidue_congr (show (3 : O) ∣ 1 + 3 * s * cuspParameter j - 1 from
+    ⟨s * cuspParameter j, by ring⟩)]
+  exact colRes_one_cuspParameter j hj
+
+/-- **`G'` is bounded at the ramified cusps.** -/
+theorem norm_fourRemainder_ramified (a : ℝ) (ha : 0 < a) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ (j : Fin 3), j ≠ 0 → ∀ (z : ℂ) (v : ℝ) (hv : 0 < v), a ≤ v →
+      ‖fourRemainder (integralComplexMatrix (cuspRepresentative j) • upperPoint z v hv)‖ ≤ K := by
+  obtain ⟨C, β, hC, hβ, hhecke⟩ := sourceTheta_hecke_ramified a ha
+  obtain ⟨C', β', hC', hβ', hram⟩ := sourceTheta_ramified_decay a ha
+  refine ⟨20 * C ^ 2 + 8 * C' ^ 2, by positivity, fun j hj z v hv hav => ?_⟩
+  set x := upperPoint z v hv
+  set w := integralComplexMatrix (cuspRepresentative j) • x
+  have he : Real.exp (-(β / 2) * v) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+  have he' : Real.exp (-β' * v) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+  have hH : ‖heckeHigh sourceTheta w‖ ≤ C := by
+    rw [heckeHigh]
+    refine ((hhecke _ (colRes_cuspRepresentative j hj) z v hv hav).1).trans ?_
+    nlinarith
+  have hL : ∀ s : O, ‖heckeLow sourceTheta s w‖ ≤ C := by
+    intro s
+    have hw : complexMatrix (transThree s) • w =
+        integralComplexMatrix ((transThree s : SL(2, O)) * cuspRepresentative j) • x := by
+      rw [map_mul, mul_smul]
+      rfl
+    rw [heckeLow, hw]
+    refine ((hhecke _ (colRes_trans_cuspRepresentative s j hj) z v hv hav).2).trans ?_
+    nlinarith
+  have hθ : ‖sourceTheta w‖ ≤ C' := by
+    refine (hram _ (colRes_cuspRepresentative j hj) z v hv hav).trans ?_
+    nlinarith
+  have hprod : ∀ X Y : ℂ, ‖X‖ ≤ C → ‖Y‖ ≤ C → ‖X * Y‖ ≤ C ^ 2 := fun X Y hX hY => by
+    rw [norm_mul, sq]
+    exact mul_le_mul hX hY (norm_nonneg _) hC
+  have htr : ‖sourceFourTrace w‖ ≤ 20 * C ^ 2 := by
+    rw [sourceFourTrace, heckeFourTrace_eq_hecke sourceTheta sourceTheta_automorphy]
+    refine (norm_add_le _ _).trans ?_
+    have h1 : ‖∑ x : Fin 4, heckeHigh sourceTheta w * heckeLow sourceTheta (tO x) w‖ ≤ 4 * C ^ 2 := by
+      refine (norm_sum_le _ _).trans ?_
+      calc _ ≤ ∑ _x : Fin 4, C ^ 2 := Finset.sum_le_sum fun x _ => hprod _ _ hH (hL _)
+        _ = 4 * C ^ 2 := by simp
+    have h2 : ‖∑ x : Fin 4, heckeLow sourceTheta (-1 + tO x) w * heckeHigh sourceTheta w‖ ≤ 4 * C ^ 2 := by
+      refine (norm_sum_le _ _).trans ?_
+      calc _ ≤ ∑ _x : Fin 4, C ^ 2 := Finset.sum_le_sum fun x _ => hprod _ _ (hL _) hH
+        _ = 4 * C ^ 2 := by simp
+    have h3 : ‖∑ k : Fin 3, ∑ x : Fin 4, ringComplex (uO k) *
+        (heckeLow sourceTheta (-(uO k ^ 2) + tO x) w * heckeLow sourceTheta (tO x) w)‖ ≤ 12 * C ^ 2 := by
+      refine (norm_sum_le _ _).trans ?_
+      calc _ ≤ ∑ _k : Fin 3, 4 * C ^ 2 := by
+            refine Finset.sum_le_sum fun k _ => (norm_sum_le _ _).trans ?_
+            calc _ ≤ ∑ _x : Fin 4, C ^ 2 := Finset.sum_le_sum fun x _ => by
+                  rw [norm_mul, norm_ringComplex_uO, one_mul]
+                  exact hprod _ _ (hL _) (hL _)
+              _ = 4 * C ^ 2 := by simp
+        _ = 12 * C ^ 2 := by simp; ring
+    calc _ ≤ ‖∑ x : Fin 4, heckeHigh sourceTheta w * heckeLow sourceTheta (tO x) w‖ +
+          ‖∑ x : Fin 4, heckeLow sourceTheta (-1 + tO x) w * heckeHigh sourceTheta w‖ +
+            ‖∑ k : Fin 3, ∑ x : Fin 4, ringComplex (uO k) *
+              (heckeLow sourceTheta (-(uO k ^ 2) + tO x) w * heckeLow sourceTheta (tO x) w)‖ :=
+          add_le_add (norm_add_le _ _) le_rfl
+      _ ≤ 4 * C ^ 2 + 4 * C ^ 2 + 12 * C ^ 2 := by gcongr
+      _ = 20 * C ^ 2 := by ring
+  rw [fourRemainder]
+  refine (norm_sub_le _ _).trans ?_
+  rw [norm_mul, norm_pow, show ‖(8 : ℂ)‖ = 8 by norm_num]
+  have hθ2 : ‖sourceTheta w‖ ^ 2 ≤ C' ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hθ 2
+  linarith
+
+/-! ### Boundedness -/
+
+/-- **`G' = Tr F − 8θ_s²` is bounded on hyperbolic three-space.** -/
+theorem fourRemainder_bounded : ∃ B : ℝ, ∀ w : HyperbolicSpace, ‖fourRemainder w‖ ≤ B := by
+  set a₀ := Real.sqrt (2 / 3)
+  have ha₀ : 0 < a₀ := Real.sqrt_pos.mpr (by norm_num)
+  obtain ⟨K₀, hK₀, hstrip⟩ := norm_fourRemainder_strip a₀ ha₀
+  obtain ⟨K₁, hK₁, hram⟩ := norm_fourRemainder_ramified a₀ ha₀
+  refine ⟨K₀ * a₀ ^ (-(7 : ℝ) / 3) + K₁, fun w => ?_⟩
+  obtain ⟨M, z, v, hv, hMw, -, hfloor⟩ := bianchi_reduction_height_floor w
+  obtain ⟨G', j, T, hT, -, hu1, hdec'⟩ := three_cusp_decomposition M⁻¹
+  have hw : w = integralComplexMatrix (G' : SL(2, O)) •
+      (integralComplexMatrix (cuspRepresentative j * T) • upperPoint z v hv) := by
+    rw [← mul_smul, ← map_mul, ← mul_assoc, ← hdec', ← hMw, ← mul_smul, ← map_mul, inv_mul_cancel,
+      map_one, one_smul]
+  rw [hw, norm_fourRemainder_rational]
+  obtain ⟨z', v', hv', hp⟩ := upperPoint_surjective (integralComplexMatrix T • upperPoint z v hv)
+  have hvv : v' = v := by
+    have h := height_upperTriangular T hT hu1 z v hv
+    rw [← hp, hyperbolicHeight_upperPoint] at h
+    exact h
+  subst hvv
+  rw [map_mul, mul_smul, ← hp]
+  by_cases hj : j = 0
+  · subst hj
+    have hc1 : cuspRepresentative 0 = 1 := by
+      ext i k
+      fin_cases i <;> fin_cases k <;> simp [cuspRepresentative, cuspParameter, lowerCuspMatrix]
+    rw [hc1, map_one, one_smul]
+    refine (hstrip z' v' hv' hfloor).trans ?_
+    have : v' ^ (-(7 : ℝ) / 3) ≤ a₀ ^ (-(7 : ℝ) / 3) := Real.rpow_le_rpow_of_nonpos ha₀ hfloor (by norm_num)
+    nlinarith
+  · exact (hram j hj z' v' hv' hfloor).trans (by nlinarith [Real.rpow_nonneg ha₀.le (-(7 : ℝ) / 3)])
+
+/-! ### Square integrability -/
+
+theorem sourceFourTrace_continuous_hyperbolic : Continuous sourceFourTrace := by
+  have h : sourceFourTrace = fun w => ∑ i : CosetIndex,
+      heckeFourCorrelation sourceTheta (complexMatrix (cosetRep i) • w) :=
+    funext (heckeFourTrace_eq_sum sourceTheta sourceTheta_automorphy)
+  rw [h]
+  refine continuous_finsetSum _ fun i _ => ?_
+  unfold heckeFourCorrelation
+  exact (cubicSourceResidualFunction_continuous.comp
+      ((continuous_hyperbolic_action _).comp (continuous_hyperbolic_action _))).mul
+    (cubicSourceResidualFunction_continuous.comp
+      ((continuous_hyperbolic_action _).comp (continuous_hyperbolic_action _)))
+
+theorem fourRemainder_continuous : Continuous fourRemainder :=
+  sourceFourTrace_continuous_hyperbolic.sub (continuous_const.mul (cubicSourceResidualFunction_continuous.pow 2))
+
+/-- `G'` is square integrable on the fundamental domain of `Γ(3)`. -/
+theorem fourRemainder_memLp : MemLp fourRemainder 2 (hyperbolicVolume.restrict levelSet) := by
+  haveI : IsFiniteMeasure (hyperbolicVolume.restrict levelSet) :=
+    isFiniteMeasure_restrict.mpr levelSet_volume_lt_top.ne
+  obtain ⟨B, hB⟩ := fourRemainder_bounded
+  exact MemLp.of_bound fourRemainder_continuous.measurable.aestronglyMeasurable B (Eventually.of_forall hB)
 
 end GaloisForLFunctions.OrderSixMetaplecticTheory

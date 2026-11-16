@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Thirty helper modules passed final plain Lean checks and are umbrella-wired.
+- **Verified:** Thirty-one helper modules passed final plain Lean checks and are umbrella-wired.
 - **Missing:** Angular source moment induction and both common-signal estimates.
 
 ## Receiver
@@ -159,9 +159,12 @@ and entire normalized angular Dirichlet continuation at every finite source cusp
 logarithmic derivatives with Euler-weighted Mellin inversion. The imaginary-axis multiplier
 is unitary, preserving every absolute Fourier moment; compact sources give rapid decay
 of the Mellin data on common vertical strips. `AngularKernelBounds` proves arbitrary polynomial radial decay for every logarithmic
-derivative, including uniform bounds on bounded logarithmic intervals. Exact smoothed
-arithmetic reflection and source-uniform kernel bounds remain unverified.
+derivative, including uniform bounds on bounded logarithmic intervals. Source-uniform kernel bounds remain unverified.
 
 `AngularSourceSmoothing` proves entire smoothing integrands, exponential strip bounds and
 contour shifting between integrable vertical lines. Its exact initial/reflected line formulas
 retain the original radial scale; the reflected multiplier has modulus `cuspWidth²`.
+
+`AngularSmoothedReflection` proves absolute Mellin inversion for angular dual coefficients
+and exact smoothed reflection at every source cusp, with the original conductor scale.
+Finite periodic Fourier inversion and the reflected energy estimates still need their angular extensions.
