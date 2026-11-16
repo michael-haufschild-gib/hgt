@@ -73,8 +73,8 @@ theorem gammaPoleTransport_stride_tendsto_zero (r m : ℕ) :
     omega
   have h := (gammaFactorialConnectionTransport_tendsto_zero.comp hind).const_mul
     (r.factorial : ℝ)
-  simpa only [gammaPoleTransport, gammaFactorialConnectionTransport, mul_zero, div_eq_mul_inv,
-    one_mul] using h
+  simpa only [Function.comp_apply, gammaPoleTransport, gammaFactorialConnectionTransport,
+    mul_zero, div_eq_mul_inv, one_mul] using h
 
 #print axioms gammaPoleTransport_eq_prod
 #print axioms gammaPoleTransport_parallel
