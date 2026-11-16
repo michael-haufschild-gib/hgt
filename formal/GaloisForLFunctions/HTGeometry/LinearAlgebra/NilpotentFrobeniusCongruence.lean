@@ -139,15 +139,16 @@ def correctedJetResidueGram (n : ℕ) (P : ℝ[X]) :
 
 theorem correctedJetResidueGram_isHermitian (n : ℕ) (P : ℝ[X]) :
     (correctedJetResidueGram n P).IsHermitian := by
-  have hreal : (jetResidueGram (n + 1) * toeplitz (n + 1) (1 + X * P))ᵀ =
-      jetResidueGram (n + 1) * toeplitz (n + 1) (1 + X * P) := by
+  let M : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ :=
+    jetResidueGram (n + 1) * toeplitz (n + 1) (1 + X * P)
+  have hreal : Mᵀ = M := by
+    dsimp only [M]
     rw [Matrix.transpose_mul, jetResidueGram_transpose, toeplitz_residue_adjoint]
+  change (M.map Complex.ofRealHom)ᴴ = M.map Complex.ofRealHom
   ext i j
-  have h := congrArg (fun M : Matrix (Fin (n + 1)) (Fin (n + 1)) ℝ => M i j) hreal
-  change star (((jetResidueGram (R := ℝ) (n + 1) * toeplitz (n + 1) (1 + X * P)) j i : ℝ) : ℂ) =
-    (((jetResidueGram (R := ℝ) (n + 1) * toeplitz (n + 1) (1 + X * P)) i j : ℝ) : ℂ)
+  change star ((M j i : ℝ) : ℂ) = ((M i j : ℝ) : ℂ)
   rw [Complex.star_def, Complex.conj_ofReal]
-  exact congrArg Complex.ofReal h
+  exact congrArg Complex.ofReal (congrArg (fun A => A i j) hreal)
 
 /-- Positive, negative, and null indices are unchanged by every nilpotent jet correction. -/
 theorem correctedJetResidueGram_inertia (n : ℕ) (P : ℝ[X]) :
@@ -201,3 +202,5 @@ end
 end GaloisForLFunctions.HTGeometry
 
 #print axioms GaloisForLFunctions.HTGeometry.correctedJetResidueGram_inertia
+#print axioms GaloisForLFunctions.HTGeometry.correctedJetResidueGram_isHermitian
+#print axioms GaloisForLFunctions.HTGeometry.correctedJetResidueGram_nullIndex

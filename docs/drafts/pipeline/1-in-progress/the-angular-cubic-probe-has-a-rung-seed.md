@@ -115,7 +115,8 @@ the global Hadamard identity.
 The normalized order `r≥1` satisfies
 `v^(r−1) Dbar^r(F∘T)(0) = (-conj(c)/c)^r/(|c|²v²) · v₀^(r−1) Dz^r F(v₀,−d/c)`.
 The angular factor has modulus one, so the absolute reflection scale is independent of `r`.
-This removes the apparent extra height powers; it does not establish reflected energy bounds.
+This removes the extra height powers. Angular-kernel physical energy is verified below;
+actual completed-source energy still needs the arithmetic phase identification.
 
 ## Higher source and reflected kernels
 

@@ -45,7 +45,7 @@ theorem hermitianTraceFieldCoordinate_transcendental :
   have hR : 0 < kummerExponent (p ^ (d + 1)) (r + 1) := by
     have h := Finset.single_le_sum (fun i (_ : i ∈ Finset.range (r + 1)) =>
       Nat.zero_le ((p ^ (d + 1)) ^ i)) (Finset.mem_range.mpr (Nat.succ_pos r))
-    simpa only [kummerExponent, pow_zero] using h
+    exact lt_of_lt_of_le Nat.zero_lt_one (by simpa only [kummerExponent, pow_zero] using h)
   intro h
   exact ht (IsIntegral.of_pow hR h.isIntegral).isAlgebraic
 

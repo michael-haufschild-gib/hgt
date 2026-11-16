@@ -61,6 +61,7 @@ theorem frobeniusTraceSum_transcendental {L : Type*} [Field L] [Algebra K L]
     (by rw [(frobeniusTraceSum_polynomial_monic (K := K) p d m).leadingCoeff]; exact one_mem _)
   simpa only [frobeniusTraceSum, map_sum, map_pow, aeval_X] using h
 
+omit [Fact p.Prime] in
 /-- In characteristic `p`, every higher Frobenius term has zero derivative and the linear term survives. -/
 theorem frobeniusTraceSum_polynomial_derivative [CharP K p] (d m : ℕ) :
     derivative (frobeniusTraceSum p (d + 1) (m + 1) (X : K[X])) = 1 := by

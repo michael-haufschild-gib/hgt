@@ -108,6 +108,30 @@ theorem generatorCoboundary_eq (n : ℕ) (F : ReducedCochain n) :
   simp only [generatorCoboundary, hz, smul_zero, Finset.sum_const_zero, add_zero]
   ext <;> dsimp [product, eps, differential] <;> ring
 
+/-- Every interior reduced bar face vanishes because the augmentation ideal has square zero. -/
+theorem augmentation_product_zero (a b : ℝ) : product 0 (a • eps) (b • eps) = 0 := by
+  simp [product, eps]
+
+/-- On arbitrary reduced inputs, the coefficient differential is the full remaining bar formula. -/
+theorem differential_on_inputs (n : ℕ) (F : ReducedCochain n) (x : Fin (n + 1) → ℝ) :
+    cochain (n + 1) (differential n (F fun _ => 1)) x =
+      product 0 (x 0 • eps) (F fun i => x i.succ) +
+        (-1 : ℝ) ^ (n + 1) • product 0 (F fun i => x i.castSucc) (x (Fin.last n) • eps) := by
+  have ht := congrArg (fun G : ReducedCochain n => G (fun i => x i.succ))
+    (cochain_exhaustive n F)
+  have hi := congrArg (fun G : ReducedCochain n => G (fun i => x i.castSucc))
+    (cochain_exhaustive n F)
+  rw [ht, hi]
+  have hfirst := Fin.prod_univ_succ x
+  have hlast := Fin.prod_univ_castSucc x
+  ext
+  · simp [cochain, differential, product, eps, MultilinearMap.mkPiRing_apply]
+  · simp only [cochain, MultilinearMap.mkPiRing_apply, Prod.snd_smul, Prod.snd_add,
+      smul_eq_mul]
+    dsimp [differential, product, eps]
+    linear_combination (F (fun _ => 1)).1 * hfirst +
+      ((-1 : ℝ) ^ (n + 1) * (F (fun _ => 1)).1) * hlast
+
 theorem differential_even (n : ℕ) (u : Dual) : differential (2 * n) u = 0 := by
   ext <;> simp [differential, pow_add, pow_mul]
 
@@ -303,6 +327,20 @@ theorem bv_pairing_generator (n : ℕ) (u : Dual) :
 theorem bv_pairing_unit (n : ℕ) (u : Dual) : pairing (bv n u) one = 0 := by
   simp [pairing, bv, product, one, trace]
 
+/-- The cyclic trace tests uniquely characterize the Frobenius transpose. -/
+theorem bv_characterization (n : ℕ) (u v : Dual) :
+    (pairing v eps = ∑ i ∈ Finset.range n,
+        (-1 : ℝ) ^ (i * (n - 1)) * trace u) ∧ pairing v one = 0 ↔ v = bv n u := by
+  constructor
+  · rintro ⟨he, ho⟩
+    have hε := he.trans (bv_pairing_generator n u).symm
+    have h1 := ho.trans (bv_pairing_unit n u).symm
+    apply Prod.ext
+    · simpa [pairing, product, eps, trace] using hε
+    · simpa [pairing, product, one, trace] using h1
+  · rintro rfl
+    exact ⟨bv_pairing_generator n u, bv_pairing_unit n u⟩
+
 theorem bv_even (n : ℕ) (u : Dual) : bv (2 * n) u = 0 := by
   simp [bv, cyclicMultiplicity_even]
 
@@ -353,6 +391,7 @@ end HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent
 #print axioms HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent.NormalizedComplex.differential_cup
 #print axioms HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent.NormalizedComplex.normalizedCochain_exhaustive
 #print axioms HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent.NormalizedComplex.generatorCoboundary_eq
+#print axioms HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent.NormalizedComplex.differential_on_inputs
 #print axioms HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent.NormalizedComplex.bv_differential
 #print axioms HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent.NormalizedComplex.bvEulerBracket_even
 #print axioms HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent.NormalizedComplex.bvEulerBracket_odd

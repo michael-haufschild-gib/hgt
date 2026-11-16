@@ -191,7 +191,8 @@ theorem amiceUnitPart_prime_atom (p : Nat.Primes) (k : ℕ) (a : ℂ) :
     amiceUnitPart ⟨p.val, p.property.pos⟩ (C a * (X + 1) ^ k) =
       if Nat.Coprime p.val k then C a * (X + 1) ^ k else 0 := by
   have hm : amice (monomial k a) = C a * (X + 1) ^ k := monomial_comp k
-  rw [← hm, amiceUnitPart_amice, deplete_monomial, p.property.coprime_iff_not_dvd]
+  rw [← hm, amiceUnitPart_amice, deplete_monomial]
+  simp only [p.property.coprime_iff_not_dvd]
   by_cases hd : p.val ∣ k <;> simp [hd, amice]
 
 /-- The logarithmic derivative reads atom indices in the ordinary polynomial coordinate. -/
