@@ -78,7 +78,8 @@ theorem hermitianGeometric_effective_principal_iff_constant (f : H) (hf : f ≠ 
     apply hf
     rw [hc, hz, map_zero]
   · rintro ⟨c, hc, heq⟩
-    rw [heq, hermitianGeometricZeroPoleDivisor_constant p s c hc]
+    simpa only [heq, hermitianGeometricZeroPoleDivisor_constant p s c hc] using
+      (le_refl (0 : HermitianGeometricPlaceDivisor p s))
 
 /-- The kernel of the actual principal-divisor map consists precisely of nonzero constants. -/
 theorem hermitianGeometric_principal_eq_zero_iff_constant (f : H) (hf : f ≠ 0) :
@@ -87,7 +88,7 @@ theorem hermitianGeometric_principal_eq_zero_iff_constant (f : H) (hf : f ≠ 0)
   constructor
   · intro h
     apply (hermitianGeometric_effective_principal_iff_constant p s f hf).mp
-    rw [h]
+    simpa only [h] using (le_refl (0 : HermitianGeometricPlaceDivisor p s))
   · rintro ⟨c, hc, heq⟩
     rw [heq, hermitianGeometricZeroPoleDivisor_constant p s c hc]
 
