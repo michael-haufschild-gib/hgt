@@ -36,6 +36,7 @@ theorem posSemidef_iff_positive_trace_tests {A : Matrix ι ι ℂ} (hA : A.IsHer
     simpa only [Matrix.mul_vecMulVec, Matrix.trace_vecMulVec,
       dotProduct_comm, matSesq_eq_dotProduct] using hx
 
+omit [DecidableEq ι] [DecidableEq κ] in
 /-- Trace duality between encoding positive states and compressing observables. -/
 theorem trace_encoding_duality (V : Matrix κ ι ℂ) (B : Matrix κ κ ℂ)
     (X : Matrix ι ι ℂ) :
@@ -51,7 +52,8 @@ theorem compressed_posSemidef_iff (e : ι ↪ κ) (B : selfAdjoint (Matrix κ κ
       ∀ X : {X : Matrix ι ι ℂ // X.PosSemidef},
         0 ≤ (B.1 * (coordinateEmbedding e * X.1 * (coordinateEmbedding e)ᴴ)).trace.re := by
   have hB : B.1ᴴ = B.1 := by
-    simpa only [Matrix.star_eq_conjTranspose] using B.2
+    have hs : star B.1 = B.1 := B.2
+    simpa only [Matrix.star_eq_conjTranspose] using hs
   have hH : ((coordinateEmbedding e)ᴴ * B.1 * coordinateEmbedding e).IsHermitian := by
     simp only [Matrix.IsHermitian, Matrix.conjTranspose_mul,
       Matrix.conjTranspose_conjTranspose, hB, Matrix.mul_assoc]
@@ -59,7 +61,3 @@ theorem compressed_posSemidef_iff (e : ι ↪ κ) (B : selfAdjoint (Matrix κ κ
   simp only [trace_encoding_duality]
 
 end GaloisForLFunctions.HTGeometry.Quantum
-
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.posSemidef_iff_positive_trace_tests
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_encoding_duality
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.compressed_posSemidef_iff

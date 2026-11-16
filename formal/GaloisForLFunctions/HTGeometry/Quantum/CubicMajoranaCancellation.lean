@@ -42,7 +42,7 @@ theorem jordanWignerMajorana_anticommutator {n : ℕ} (p q : Fin n × Fin 2) :
   by_cases h : p = q
   · subst q
     rw [jordanWignerMajorana_sq]
-    simp only [majoranaContraction, if_pos rfl, two_smul]
+    simp [majoranaContraction, two_smul]
   · rw [jordanWignerMajorana_anticommutes h]
     simp [majoranaContraction, h]
 
@@ -73,8 +73,3 @@ theorem particleHoleSquare_posSemidef {ι : Type*} [Fintype ι]
     (Matrix.posSemidef_conjTranspose_mul_self A)
 
 end GaloisForLFunctions.HTGeometry.Quantum
-
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.cubic_anticommutator_expansion
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.jordanWignerMajorana_anticommutator
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.cubicMajorana_anticommutator
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.particleHoleSquare_posSemidef

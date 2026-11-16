@@ -32,9 +32,11 @@ theorem constraintEnergy_innerGramMatrix (C : Matrix κ ι ℂ) (v : ι → E) :
   intro a _
   have h : (C * innerGramMatrix v * Cᴴ) a a =
       inner ℂ (gramConstraintVector C v a) (gramConstraintVector C v a) := by
+    rw [Matrix.mul_assoc]
     simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, innerGramMatrix_apply,
       gramConstraintVector, sum_inner, inner_sum, inner_smul_left, inner_smul_right,
-      ← RCLike.star_def, star_star, Finset.sum_mul, Finset.mul_sum]
+      ← RCLike.star_def, star_star, Finset.mul_sum]
+    conv_rhs => rw [Finset.sum_comm]
     apply Finset.sum_congr rfl
     intro i _
     apply Finset.sum_congr rfl
@@ -66,8 +68,3 @@ theorem constraintHamiltonian_innerGramMatrix_eq_zero_iff
   exact forall_congr' fun s => mul_innerGramMatrix_eq_zero_iff (C s) v
 
 end GaloisForLFunctions.HTGeometry.Quantum
-
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_innerGramMatrix
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_innerGramMatrix_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.mul_innerGramMatrix_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintHamiltonian_innerGramMatrix_eq_zero_iff

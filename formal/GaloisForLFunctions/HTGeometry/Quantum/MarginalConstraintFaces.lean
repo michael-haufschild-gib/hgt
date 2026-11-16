@@ -99,11 +99,3 @@ theorem constrained_partialTraceRight_surjective [Nonempty n]
     exact (partialTraceRight_annihilation_iff (C s) τ).mpr (hC s)
 
 end GaloisForLFunctions.HTGeometry.Quantum
-
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_partialTraceRight
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.partialTraceRight_annihilation_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.partialTraceRight_constraintHamiltonian_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_partialTraceLeft
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.partialTraceLeft_annihilation_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.density_constraintFace_isExposed
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.constrained_partialTraceRight_surjective

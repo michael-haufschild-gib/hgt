@@ -241,10 +241,10 @@ theorem integral_fracCorrelation_middle (h2 : (2 : P.Res) ≠ 0) (x : {x : P.Res
       congr 1
       have ha : (1 + 9 * t * x.1) ≠ 0 := h₁
       have hb' : (1 - 9 * t * x.1) ≠ 0 := h₂
-      rw [div_eq_mul_inv, div_eq_mul_inv, div_eq_mul_inv,
-        show (1 : P.Res) - (9 * t * x.1) ^ 2 = (1 + 9 * t * x.1) * (1 - 9 * t * x.1) by ring, mul_inv]
-      field_simp
-      ring
+      have key : t / (1 + 9 * t * x.1) - -t / (1 - 9 * t * x.1) = 2 * t / (1 - (9 * t * x.1) ^ 2) := by
+        rw [neg_div, sub_neg_eq_add, div_add_div _ _ ha hb']
+        congr 1 <;> ring
+      rw [key]
 
 /-! ### Low points of low points -/
 
@@ -296,6 +296,255 @@ theorem sum_lowLow (r₁ r₂ : O) (z : ℂ) (v : ℝ) (hv : 0 < v) :
   simp_rw [hinner]
   rw [← Finset.mul_sum, P.sum_cuspCharacterSeries_low _ hg1]
   ring
+
+end PrimaryPrime
+
+theorem summable_mul_neg_bdd {c d : O → ℂ} (hc : Summable (fun h => ‖c h‖)) (hd : Summable (fun h => ‖d h‖))
+    (φ : O → ℂ) (M : ℝ) (hφ : ∀ k, ‖φ k‖ ≤ M) : Summable (fun k => c k * d (-k) * φ k) := by
+  have h := ((summable_conv_family hc hd).prod_factor 0).mul_right M
+  refine Summable.of_norm_bounded h fun k => ?_
+  simp only [zero_sub, norm_mul]
+  exact mul_le_mul_of_nonneg_left (hφ k) (by positivity)
+
+namespace PrimaryPrime
+
+variable (P : PrimaryPrime)
+
+theorem sum_tsum_swap {ι : Type*} [Fintype ι] (c d : O → ℂ) (hc : Summable (fun h => ‖c h‖))
+    (hd : Summable (fun h => ‖d h‖)) (g : ι → O → ℂ) (M : ℝ) (hg : ∀ i k, ‖g i k‖ ≤ M) :
+    ∑ i, ∑' k : O, c k * d (-k) * g i k = ∑' k : O, c k * d (-k) * ∑ i, g i k := by
+  rw [← Summable.tsum_finsetSum (fun i _ => summable_mul_neg_bdd hc hd _ M (hg i))]
+  refine tsum_congr fun k => ?_
+  rw [Finset.mul_sum]
+
+theorem norm_chi_traceChar_le (a r : P.Res) : ‖P.chi a * P.traceChar r‖ ≤ 1 := by
+  rw [norm_mul, P.norm_traceChar, mul_one]
+  exact P.norm_chi_le _
+
+theorem norm_sum_chi_traceChar_le (f g : P.Res → P.Res) :
+    ‖∑ t : P.Res, P.chi (f t) * P.traceChar (g t)‖ ≤ Fintype.card P.Res := by
+  refine (norm_sum_le _ _).trans ?_
+  calc ∑ t : P.Res, ‖P.chi (f t) * P.traceChar (g t)‖ ≤ ∑ _t : P.Res, (1 : ℝ) :=
+        Finset.sum_le_sum fun t _ => P.norm_chi_traceChar_le _ _
+    _ = Fintype.card P.Res := by simp
+
+/-- **The middle cusps.** Σ_{x ≢ 0} ∫_P G(L_{qx}w) = |P| Σ_k b(k)b(−k)(N − J + (J − 1)N[q ∣ k]); the high points
+cancel. -/
+theorem integral_middle_sum (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 0 < v) :
+    ∑ x : {x : P.Res // x ≠ 0}, ∫ z in periodDomain,
+        P.fracSum sourceTheta (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv) =
+      periodArea * ∑' k : O, rationalSourceModeAmplitude v k * rationalSourceModeAmplitude v (-k) *
+        (P.normC - P.fracJacobi + (P.fracJacobi - 1) * (if P.p ∣ k then P.normC else 0)) := by
+  set b := rationalSourceModeAmplitude v
+  have hb : Summable (fun h => ‖b h‖) := rationalSourceModeAmplitude_summable v hv
+  have h9 := P.nine_ne_zero'
+  have hsplit : ∀ x : {x : P.Res // x ≠ 0}, ∫ z in periodDomain,
+      P.fracSum sourceTheta (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv) =
+      ∑ t : P.Res, ∫ z in periodDomain, P.fracCorrelation sourceTheta (P.lift t)
+        (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv) := fun x => by
+    unfold fracSum
+    exact integral_finsetSum _ (fun t _ => integrableOn_periodDomain_of_continuous _
+      ((P.continuous_fracCorrelation_source _).comp
+        ((continuous_hyperbolic_action (complexMatrix (lowerThree (P.p * P.lift x.1)))).comp
+          (continuous_upperPoint_z v hv))))
+  simp_rw [hsplit, P.integral_fracCorrelation_middle h2 _ _ v hv, Finset.sum_add_distrib]
+  have hhigh : ∑ x : {x : P.Res // x ≠ 0}, ∑ t : P.Res,
+      (if 1 + 9 * t * x.1 = 0 ∨ 1 - 9 * t * x.1 = 0 then P.chi 2 * (P.chi (3 * x.1))⁻¹ * P.highTerm v else 0) = 0 := by
+    set c0 : ℂ := ∑ s : P.Res, if 1 + s = 0 ∨ 1 - s = 0 then (1 : ℂ) else 0
+    have hK : ∀ x : {x : P.Res // x ≠ 0}, ∑ t : P.Res,
+        (if 1 + 9 * t * x.1 = 0 ∨ 1 - 9 * t * x.1 = 0 then P.chi 2 * (P.chi (3 * x.1))⁻¹ * P.highTerm v else 0) =
+        P.chi 2 * P.highTerm v * c0 * (P.chi (3 * x.1))⁻¹ := by
+      intro x
+      have hbij := (mulRight_bijective₀ (9 * x.1) (mul_ne_zero h9 x.2)).sum_comp
+        (fun s => if 1 + s = 0 ∨ 1 - s = 0 then (1 : ℂ) else 0)
+      rw [show P.chi 2 * P.highTerm v * c0 * (P.chi (3 * x.1))⁻¹ =
+          P.chi 2 * (P.chi (3 * x.1))⁻¹ * P.highTerm v * c0 by ring,
+        show c0 = ∑ i : P.Res, (if 1 + i * (9 * x.1) = 0 ∨ 1 - i * (9 * x.1) = 0 then (1 : ℂ) else 0) from hbij.symm,
+        Finset.mul_sum]
+      refine Finset.sum_congr rfl fun t _ => ?_
+      rw [show t * (9 * x.1) = 9 * t * x.1 by ring]
+      split_ifs <;> ring
+    simp_rw [hK]
+    rw [← Finset.mul_sum, P.sum_chi_three_inv, mul_zero]
+  rw [hhigh, zero_add]
+  have hgen : ∀ x : {x : P.Res // x ≠ 0}, ∑ t : P.Res, P.chi (1 - (9 * t * x.1) ^ 2) *
+      (periodArea * ∑' k : O, b k * b (-k) * P.traceChar (2 * t / (1 - (9 * t * x.1) ^ 2) * P.res k)) =
+      periodArea * ∑' k : O, b k * b (-k) * ∑ t : P.Res, P.chi (1 - (9 * t * x.1) ^ 2) *
+        P.traceChar (2 * t / (1 - (9 * t * x.1) ^ 2) * P.res k) := by
+    intro x
+    rw [← sum_tsum_swap b b hb hb _ 1 (fun t k => P.norm_chi_traceChar_le _ _), Finset.mul_sum]
+    refine Finset.sum_congr rfl fun t _ => ?_
+    rw [show (∑' k : O, b k * b (-k) * (P.chi (1 - (9 * t * x.1) ^ 2) *
+        P.traceChar (2 * t / (1 - (9 * t * x.1) ^ 2) * P.res k))) = P.chi (1 - (9 * t * x.1) ^ 2) *
+        ∑' k : O, b k * b (-k) * P.traceChar (2 * t / (1 - (9 * t * x.1) ^ 2) * P.res k) by
+      rw [← tsum_mul_left]
+      exact tsum_congr fun k => by ring]
+    ring
+  simp_rw [hgen]
+  rw [← Finset.mul_sum, sum_tsum_swap b b hb hb _ _ (fun x k => P.norm_sum_chi_traceChar_le _ _)]
+  congr 1
+  refine tsum_congr fun k => ?_
+  congr 1
+  rw [P.jacobi_double_sum h2 (P.res k), if_congr (P.res_eq_zero_iff k) rfl rfl]
+
+/-- **The cusp 0.** Σ_{s ∈ O/q²} ∫_P G(ST(3s)w) = N²|P| Σ_k b(k)b(−k)
++ N²|P| χ(−4)χ(9)⁻¹ Σ_k b(v/N, k)b(v/N, −k) g_χ(k). -/
+theorem integral_cuspZero_sum (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 0 < v) :
+    ∑ s : P.Res × P.Res, ∫ z in periodDomain, P.fracSum sourceTheta
+        (integralComplexMatrix sO • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv) =
+      P.normC ^ 2 * (periodArea * ∑' k : O, rationalSourceModeAmplitude v k * rationalSourceModeAmplitude v (-k)) +
+        P.normC ^ 2 * (periodArea * (P.chi (-4) * (P.chi 9)⁻¹ *
+          ∑' k : O, rationalSourceModeAmplitude (v / ‖ringComplex P.p‖ / ‖ringComplex P.p‖) k *
+            rationalSourceModeAmplitude (v / ‖ringComplex P.p‖ / ‖ringComplex P.p‖) (-k) *
+              ∑ u : P.Res, P.chi u * P.traceChar (u * P.res k))) := by
+  have hn := P.norm_pos
+  have hv1 : 0 < v / ‖ringComplex P.p‖ := div_pos hv hn
+  set b := rationalSourceModeAmplitude v with hbdef
+  set b₂ := rationalSourceModeAmplitude (v / ‖ringComplex P.p‖ / ‖ringComplex P.p‖)
+  have hb : Summable (fun h => ‖b h‖) := rationalSourceModeAmplitude_summable v hv
+  have hb₂ : Summable (fun h => ‖b₂ h‖) := rationalSourceModeAmplitude_summable _ (div_pos hv1 hn)
+  have hinj : Function.Injective (fun m : O => m * P.p) := fun x y h => mul_right_cancel₀ P.ne_zero h
+  set g : {x : P.Res // x ≠ 0} → O → ℂ := fun x =>
+    cuspConv (P.shiftedLow (v / ‖ringComplex P.p‖) (-P.lowBeta (P.lift x.1) - -P.lowBeta (-P.lift x.1))) b₂
+  have hg : ∀ x, Summable (fun h => ‖g x h‖) := fun x => summable_cuspConv (P.summable_shiftedLow _ hv1 _) hb₂
+  have hg2 : ∀ x, Summable (fun m => ‖g x (m * P.p * P.p)‖) := fun x =>
+    ((hg x).comp_injective hinj).comp_injective hinj
+  have hpt : ∀ z, ∑ s : P.Res × P.Res, P.fracSum sourceTheta
+      (integralComplexMatrix sO • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv) =
+      P.normC ^ 2 * (cuspCharacterSeries b (z + 0) * cuspCharacterSeries b (z + 0)) +
+        ∑ x : {x : P.Res // x ≠ 0}, P.chi (-9 * x.1 ^ 2) * (P.normC ^ 2 *
+          cuspCharacterSeries (fun m => g x (m * P.p * P.p)) z) := by
+    intro z
+    rw [P.sum_fracSum_cuspZero sourceTheta sourceTheta_automorphy sourceTheta_rational_inv, Finset.sum_comm]
+    simp_rw [← Finset.mul_sum, P.sum_lowLow]
+    rw [sourceTheta, cubicSourceResidualFunction_fourier_expansion, add_zero, ← hbdef]
+    ring
+  have hcont : ∀ s : P.Res × P.Res, Continuous (fun z : ℂ => P.fracSum sourceTheta
+      (integralComplexMatrix sO • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv)) := fun s =>
+    P.continuous_fracSum_source.comp ((continuous_hyperbolic_action _).comp
+      ((continuous_hyperbolic_action _).comp (continuous_upperPoint_z v hv)))
+  rw [← integral_finsetSum _ (fun s _ => integrableOn_periodDomain_of_continuous _ (hcont s))]
+  simp_rw [hpt]
+  have hc1 : Continuous (fun z : ℂ => P.normC ^ 2 * (cuspCharacterSeries b (z + 0) * cuspCharacterSeries b (z + 0))) :=
+    continuous_const.mul (((cuspCharacterSeries_continuous b hb).comp (continuous_id.add continuous_const)).mul
+      ((cuspCharacterSeries_continuous b hb).comp (continuous_id.add continuous_const)))
+  have hc2 : ∀ x : {x : P.Res // x ≠ 0}, Continuous (fun z : ℂ => P.chi (-9 * x.1 ^ 2) * (P.normC ^ 2 *
+      cuspCharacterSeries (fun m => g x (m * P.p * P.p)) z)) := fun x =>
+    continuous_const.mul (continuous_const.mul (cuspCharacterSeries_continuous _ (hg2 x)))
+  rw [integral_add (integrableOn_periodDomain_of_continuous _ hc1)
+      (integrable_finsetSum _ fun x _ => integrableOn_periodDomain_of_continuous _ (hc2 x)),
+    integral_const_mul, integral_translate_mul b b hb hb,
+    integral_finsetSum _ fun x _ => integrableOn_periodDomain_of_continuous _ (hc2 x)]
+  have hI : ∀ x : {x : P.Res // x ≠ 0}, ∫ z in periodDomain, P.chi (-9 * x.1 ^ 2) * (P.normC ^ 2 *
+      cuspCharacterSeries (fun m => g x (m * P.p * P.p)) z) = P.chi (-9 * x.1 ^ 2) * (P.normC ^ 2 * (periodArea * g x 0)) := by
+    intro x
+    rw [integral_const_mul, integral_const_mul, PrimaryPrime.integral_cuspCharacterSeries _ (hg2 x), zero_mul, zero_mul]
+  rw [Finset.sum_congr rfl fun x _ => hI x]
+  have hph : ∀ k : O, tracePhase (cuspFrequency k * (0 - 0)) = 1 := by
+    intro k
+    rw [sub_zero, mul_zero, AddChar.map_zero_eq_one]
+  simp_rw [hph, mul_one]
+  congr 1
+  have hg0 : ∀ x : {x : P.Res // x ≠ 0}, g x 0 = ∑' k : O, b₂ k * b₂ (-k) * P.traceChar (-2 * (9 * x.1)⁻¹ * P.res k) := by
+    intro x
+    have hx : ¬ P.p ∣ P.lift x.1 := P.not_dvd_lift x
+    have hx' : ¬ P.p ∣ -P.lift x.1 := fun h => hx (dvd_neg.mp h)
+    simp only [g, cuspConv, zero_sub, shiftedLow]
+    refine tsum_congr fun k => ?_
+    have hβ : P.res (-(-P.lowBeta (P.lift x.1) - -P.lowBeta (-P.lift x.1))) = -2 * (9 * x.1)⁻¹ := by
+      have h1 := P.res_neg_lowBeta (-P.lift x.1) hx'
+      have h2' := P.res_neg_lowBeta (P.lift x.1) hx
+      simp only [map_neg, res_lift] at h1 h2'
+      simp only [map_neg, map_sub, neg_sub]
+      rw [show P.res (P.lowBeta (P.lift x.1)) = -(9 * x.1)⁻¹ by rw [← h2', neg_neg],
+        show P.res (P.lowBeta (-P.lift x.1)) = -(9 * -x.1)⁻¹ by rw [← h1, neg_neg], mul_neg, inv_neg]
+      ring
+    rw [P.phase_eq_psi, P.psi_eq_traceChar, hβ]
+    ring
+  simp_rw [hg0]
+  have hsw : ∑ x : {x : P.Res // x ≠ 0}, P.chi (-9 * x.1 ^ 2) * (P.normC ^ 2 * (periodArea *
+      ∑' k : O, b₂ k * b₂ (-k) * P.traceChar (-2 * (9 * x.1)⁻¹ * P.res k))) =
+      P.normC ^ 2 * (periodArea * ∑ x : {x : P.Res // x ≠ 0},
+        ∑' k : O, b₂ k * b₂ (-k) * (P.chi (-9 * x.1 ^ 2) * P.traceChar (-2 * (9 * x.1)⁻¹ * P.res k))) := by
+    rw [Finset.mul_sum, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [show (∑' k : O, b₂ k * b₂ (-k) * (P.chi (-9 * x.1 ^ 2) * P.traceChar (-2 * (9 * x.1)⁻¹ * P.res k))) =
+        P.chi (-9 * x.1 ^ 2) * ∑' k : O, b₂ k * b₂ (-k) * P.traceChar (-2 * (9 * x.1)⁻¹ * P.res k) by
+      rw [← tsum_mul_left]
+      refine tsum_congr fun k => ?_
+      ring]
+    ring
+  rw [hsw, sum_tsum_swap b₂ b₂ hb₂ hb₂ _ 1 (fun x k => P.norm_chi_traceChar_le _ _)]
+  congr 2
+  rw [← tsum_mul_left]
+  refine tsum_congr fun k => ?_
+  rw [P.gauss_low_sum h2 (P.res k)]
+  ring
+
+/-- The weight of the cusp series of θ_s²: N² + N − J + NJ[q ∣ k]. -/
+def fracWeight (k : O) : ℂ :=
+  P.normC ^ 2 + P.normC - P.fracJacobi + if P.p ∣ k then P.normC * P.fracJacobi else 0
+
+/-- **The constant term of the fractional trace.** -/
+theorem integral_sourceFracTrace (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 0 < v) :
+    ∫ z in periodDomain, P.sourceFracTrace (upperPoint z v hv) =
+      periodArea * (∑' k : O, rationalSourceModeAmplitude v k * rationalSourceModeAmplitude v (-k) * P.fracWeight k +
+        P.normC ^ 2 * (P.chi (-4) * (P.chi 9)⁻¹) *
+          ∑' k : O, rationalSourceModeAmplitude (v / ‖ringComplex P.p‖ / ‖ringComplex P.p‖) k *
+            rationalSourceModeAmplitude (v / ‖ringComplex P.p‖ / ‖ringComplex P.p‖) (-k) *
+              ∑ u : P.Res, P.chi u * P.traceChar (u * P.res k)) := by
+  set b := rationalSourceModeAmplitude v
+  have hb : Summable (fun h => ‖b h‖) := rationalSourceModeAmplitude_summable v hv
+  have hu := continuous_upperPoint_z v hv
+  have e : ∀ z, P.sourceFracTrace (upperPoint z v hv) = P.fracSum sourceTheta (upperPoint z v hv) +
+      (∑ x : {x : P.Res // x ≠ 0}, P.fracSum sourceTheta
+          (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv) +
+        ∑ s : P.Res × P.Res, P.fracSum sourceTheta
+          (integralComplexMatrix sO • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv)) := fun z =>
+    P.fracTrace_eq sourceTheta sourceTheta_automorphy sourceTheta_rational_inv _
+  simp_rw [e]
+  have hA : Continuous (fun z : ℂ => P.fracSum sourceTheta (upperPoint z v hv)) := P.continuous_fracSum_source.comp hu
+  have hB : ∀ x : {x : P.Res // x ≠ 0}, Continuous (fun z : ℂ => P.fracSum sourceTheta
+      (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv)) := fun x =>
+    P.continuous_fracSum_source.comp ((continuous_hyperbolic_action _).comp hu)
+  have hC : ∀ s : P.Res × P.Res, Continuous (fun z : ℂ => P.fracSum sourceTheta
+      (integralComplexMatrix sO • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv)) := fun s =>
+    P.continuous_fracSum_source.comp ((continuous_hyperbolic_action _).comp ((continuous_hyperbolic_action _).comp hu))
+  have hBs : Continuous (fun z : ℂ => ∑ x : {x : P.Res // x ≠ 0}, P.fracSum sourceTheta
+      (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv)) := continuous_finsetSum _ fun x _ => hB x
+  have hCs : Continuous (fun z : ℂ => ∑ s : P.Res × P.Res, P.fracSum sourceTheta
+      (integralComplexMatrix sO • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv)) :=
+    continuous_finsetSum _ fun s _ => hC s
+  rw [integral_add (integrableOn_periodDomain_of_continuous _ hA)
+      (integrableOn_periodDomain_of_continuous (fun z : ℂ => ∑ x : {x : P.Res // x ≠ 0}, P.fracSum sourceTheta
+          (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv) + ∑ s : P.Res × P.Res, P.fracSum sourceTheta
+          (integralComplexMatrix sO • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv)) (hBs.add hCs)),
+    integral_add (integrableOn_periodDomain_of_continuous _ hBs) (integrableOn_periodDomain_of_continuous _ hCs),
+    integral_finsetSum _ fun x _ => integrableOn_periodDomain_of_continuous _ (hB x),
+    integral_finsetSum _ fun s _ => integrableOn_periodDomain_of_continuous _ (hC s),
+    P.integral_fracSum_source h2 v hv, P.integral_middle_sum h2 v hv, P.integral_cuspZero_sum h2 v hv]
+  have hφ₁ : ∀ k : O, ‖(if P.p ∣ k then P.normC else 0)‖ ≤ ‖P.normC‖ := by
+    intro k
+    split_ifs <;> simp
+  have hφ₂ : ∀ k : O, ‖P.normC - P.fracJacobi + (P.fracJacobi - 1) * (if P.p ∣ k then P.normC else 0)‖ ≤
+      ‖P.normC - P.fracJacobi‖ + ‖P.fracJacobi - 1‖ * ‖P.normC‖ := by
+    intro k
+    refine (norm_add_le _ _).trans (add_le_add le_rfl ?_)
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg_left (hφ₁ k) (norm_nonneg _)
+  have s₁ := summable_mul_neg_bdd hb hb _ _ hφ₁
+  have s₂ := summable_mul_neg_bdd hb hb _ _ hφ₂
+  have s₃ : Summable (fun k => P.normC ^ 2 * (b k * b (-k))) := by
+    have := summable_mul_neg_bdd hb hb (fun _ => (1 : ℂ)) 1 (fun _ => by simp)
+    simpa using this.mul_left (P.normC ^ 2)
+  have hsum : (∑' k : O, b k * b (-k) * (if P.p ∣ k then P.normC else 0)) +
+      (∑' k : O, b k * b (-k) * (P.normC - P.fracJacobi + (P.fracJacobi - 1) * (if P.p ∣ k then P.normC else 0))) +
+      P.normC ^ 2 * ∑' k : O, b k * b (-k) = ∑' k : O, b k * b (-k) * P.fracWeight k := by
+    rw [← s₁.tsum_add s₂, ← tsum_mul_left, ← (s₁.add s₂).tsum_add s₃]
+    refine tsum_congr fun k => ?_
+    simp only [fracWeight]
+    split_ifs <;> ring
+  linear_combination periodArea * hsum
 
 end PrimaryPrime
 

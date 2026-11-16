@@ -38,8 +38,8 @@ theorem compression_square_defect {P : Matrix ι ι ℂ}
   simp only [← Matrix.mul_assoc P P, hPP]
   module
 
-/-- Compression of a positive square vanishes only when the full departing operator vanishes. -/
 omit [DecidableEq ι] in
+/-- Compression of a positive square vanishes only when the full departing operator vanishes. -/
 theorem compressed_square_eq_zero_iff {P : Matrix ι ι ℂ}
     (hP : P.IsHermitian) (A : Matrix ι ι ℂ) :
     P * (Aᴴ * A) * P = 0 ↔ A * P = 0 := by
@@ -93,11 +93,3 @@ theorem productStabilizer_compression_defect_eq_zero_iff
     (productStabilizerDensity_mul_self smpl) hρ A
 
 end GaloisForLFunctions.HTGeometry.Quantum
-
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.complement_constraintEnergy_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.compression_square_defect
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.compressed_square_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_compression_square_defect_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_pinching_defect_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.productStabilizer_zero_leakage_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.productStabilizer_compression_defect_eq_zero_iff

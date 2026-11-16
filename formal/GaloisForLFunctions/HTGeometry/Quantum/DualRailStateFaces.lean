@@ -29,6 +29,7 @@ def dualRailBasis : (σ → Bool) ↪ (σ → Bool × Bool) where
 def SingleOccupation (x : σ → Bool × Bool) : Prop :=
   ∀ s, (x s).2 = !(x s).1
 
+omit [Fintype σ] [DecidableEq σ] in
 theorem mem_range_dualRailBasis (x : σ → Bool × Bool) :
     x ∈ Set.range (dualRailBasis (σ := σ)) ↔ SingleOccupation x := by
   constructor
@@ -43,6 +44,7 @@ theorem mem_range_dualRailBasis (x : σ → Bool × Bool) :
 def occupationDefectValue (s : σ) (x : σ → Bool × Bool) : ℂ :=
   (if (x s).1 then 1 else 0) + (if (x s).2 then 1 else 0) - 1
 
+omit [Fintype σ] [DecidableEq σ] in
 theorem occupationDefectValue_eq_zero_iff (s : σ) (x : σ → Bool × Bool) :
     occupationDefectValue s x = 0 ↔ (x s).2 = !(x s).1 := by
   unfold occupationDefectValue
@@ -88,7 +90,7 @@ theorem occupation_constraints_iff_projection
 theorem dualRail_state_iff_zero_occupation_energy
     (ρ : DensityMatrix (σ → Bool × Bool)) :
     (∃ τ : DensityMatrix (σ → Bool), embedDensity dualRailBasis τ = ρ) ↔
-      (constraintHamiltonian (@occupationDefect σ _ _) * ρ.1).trace.re = 0 := by
+      (constraintHamiltonian (occupationDefect (σ := σ)) * ρ.1).trace.re = 0 := by
   rw [exists_embedDensity_iff, trace_constraintHamiltonian_eq_zero_iff _ ρ.2.1,
     occupation_constraints_iff_projection]
 
@@ -96,7 +98,7 @@ theorem dualRail_state_iff_zero_occupation_energy
 theorem dualRail_unique_state_iff_zero_occupation_energy
     (ρ : DensityMatrix (σ → Bool × Bool)) :
     (∃! τ : DensityMatrix (σ → Bool), embedDensity dualRailBasis τ = ρ) ↔
-      (constraintHamiltonian (@occupationDefect σ _ _) * ρ.1).trace.re = 0 := by
+      (constraintHamiltonian (occupationDefect (σ := σ)) * ρ.1).trace.re = 0 := by
   rw [← dualRail_state_iff_zero_occupation_energy]
   constructor
   · rintro ⟨τ, hτ, _⟩
@@ -109,14 +111,7 @@ theorem dualRail_isExposed :
     IsExposed ℝ
       {ρ : Matrix (σ → Bool × Bool) (σ → Bool × Bool) ℂ |
         ρ.trace = 1 ∧ ρ.PosSemidef}
-      (constraintFace (@occupationDefect σ _ _) {ρ | ρ.trace = 1}) :=
+      (constraintFace (occupationDefect (σ := σ)) {ρ | ρ.trace = 1}) :=
   constraintFace_isExposed _ _
 
 end GaloisForLFunctions.HTGeometry.Quantum
-
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.mem_range_dualRailBasis
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.occupationDefectValue_eq_zero_iff
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.occupation_constraints_iff_projection
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.dualRail_state_iff_zero_occupation_energy
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.dualRail_unique_state_iff_zero_occupation_energy
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.dualRail_isExposed

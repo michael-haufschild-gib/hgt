@@ -113,6 +113,7 @@ theorem finrank_swapBlock_range (A B : V →ₗ[K] W) :
 section Matrix
 variable {m n : Type*} [Fintype n]
 
+omit [NeZero (2 : K)] in
 private theorem swapBlock_mulVecLin (A B : Matrix m n K) :
     swapBlock A.mulVecLin B.mulVecLin =
       ((LinearEquiv.sumArrowLequivProdArrow m m K K).toLinearMap.comp
