@@ -49,7 +49,7 @@ theorem infiniteProduct_ge_one (k : ℕ) : 1 ≤ infiniteProduct k :=
 /-- The quadratic infinite product is exactly two. -/
 theorem infiniteProduct_quadratic : infiniteProduct 0 = 2 := by
   have hden : Tendsto (fun n : ℕ => (n : ℝ) + 2) atTop atTop :=
-    tendsto_natCast_atTop_atTop.atTop_add_const_right _ 2
+    tendsto_atTop_add_const_right atTop 2 tendsto_natCast_atTop_atTop
   have hdiv : Tendsto (fun n : ℕ => (2 : ℝ) / ((n : ℝ) + 2)) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop hden
   have heq (n : ℕ) : product 0 n = 2 - 2 / ((n : ℝ) + 2) := by

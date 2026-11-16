@@ -28452,4 +28452,6 @@ import GaloisForLFunctions.RHTower.Representation.EndpointSectorPositivity
 import GaloisForLFunctions.RHTower.FiniteSmoothWeilGramsAndRestrictedIndex
 import GaloisForLFunctions.RHTower.Deninger.LegendreFrobeniusInvariance
 import GaloisForLFunctions.RHTower.Sieve.CoxVinogradovRigidity
+import GaloisForLFunctions.RHTower.Sieve.UniformSmoothPowerMoments
+import GaloisForLFunctions.RHTower.Sieve.SmoothNumberMultisetLowerBound
 

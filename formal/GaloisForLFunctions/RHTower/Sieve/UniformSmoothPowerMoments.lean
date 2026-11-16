@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Analysis.ReciprocalPowerProducts
-import GaloisForLFunctions.RHTower.Sieve.SmoothPrimeReciprocalTail
+import Mathlib.NumberTheory.EulerProduct.Basic
 
 /-!+# Cutoff-independent smooth-number power moments
 
@@ -43,12 +43,11 @@ theorem primesBelow_power_product_lt (k N : ℕ) :
 theorem hasSum_smoothNumbers_inv_pow (k N : ℕ) :
     HasSum (fun n : N.smoothNumbers => 1 / (n : ℝ) ^ (k + 2))
       (∏ p ∈ N.primesBelow, (1 - 1 / (p : ℝ) ^ (k + 2))⁻¹) := by
-  let f := smoothNumbersRpowHom (k + 2)
-  have hf (n : ℕ) : f n = 1 / (n : ℝ) ^ (k + 2) := by
-    simp only [f, smoothNumbersRpowHom_apply]
-    rw [Real.rpow_neg (Nat.cast_nonneg n)]
-    norm_cast
-    simp only [one_div]
+  let f : ℕ →* ℝ :=
+    { toFun := fun n => 1 / (n : ℝ) ^ (k + 2)
+      map_one' := by simp
+      map_mul' := fun m n => by simp only [Nat.cast_mul, mul_pow, one_div, mul_inv] }
+  have hf (n : ℕ) : f n = 1 / (n : ℝ) ^ (k + 2) := rfl
   have hp {p : ℕ} (hp : p.Prime) : ‖f p‖ < 1 := by
     have hp0 : (0 : ℝ) < p := by exact_mod_cast hp.pos
     rw [hf, Real.norm_eq_abs, abs_of_pos (by positivity)]

@@ -3,7 +3,6 @@ import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Finset.Max
 import Mathlib.Data.Real.Basic
 import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Omega
 
 /-!
 # A trichotomy for factor lengths
@@ -129,7 +128,7 @@ private theorem exceptional_split {ι : Type*} [DecidableEq ι]
       insert i (u ∪ v) = u ∪ (v ∪ {i}) := by
         ext k
         simp only [Finset.mem_insert, Finset.mem_union, Finset.mem_singleton,
-          or_assoc, or_comm, or_left_comm]
+          or_comm, or_left_comm]
       _ = s := hs
   rw [hone, factorMass_singleton] at hsumv
   have hwi := hcap i his
@@ -167,6 +166,30 @@ theorem factorMass_trichotomy {ι : Type*} [DecidableEq ι]
     exact hsmall (hnonpos.trans (mul_nonneg (by norm_num) (abs_nonneg t)))
   exact Or.inr (exceptional_split w |t| s hpos (lt_of_not_ge hsmall) hcap hbalanced)
 
+/-- Above three thresholds the exceptional three-factor case disappears. -/
+theorem factorMass_balanced_threshold {ι : Type*} [DecidableEq ι]
+    (w : ι → ℝ) (t : ℝ) (s : Finset ι) :
+    factorMass w s < 3 * |t| ∨
+    (∃ i ∈ s, |t| < |w i|) ∨
+    (∃ u ⊆ s, |t| ≤ factorMass w u ∧ |t| ≤ factorMass w (s \ u)) := by
+  classical
+  by_cases hz : |t| = 0
+  · right; right
+    refine ⟨∅, Finset.empty_subset s, ?_, ?_⟩
+    · rw [factorMass_empty, hz]
+    · rw [Finset.sdiff_empty, hz]
+      simpa only [factorMass_empty] using factorMass_mono w (Finset.empty_subset s)
+  have hpos : 0 < |t| := lt_of_le_of_ne (abs_nonneg t) (Ne.symm hz)
+  rcases factorMass_trichotomy w t s with hsmall | hlarge | hbalanced | hexceptional
+  · left
+    linarith only [hsmall, hpos]
+  · exact Or.inr (Or.inl hlarge)
+  · exact Or.inr (Or.inr hbalanced)
+  · obtain ⟨i, u, v, _, _, _, _, hi, _, _⟩ := hexceptional
+    left
+    linarith only [hi.1, hi.2]
+
 #print axioms factorMass_trichotomy
+#print axioms factorMass_balanced_threshold
 
 end GaloisForLFunctions.ShortIntervalPrimesInProgressions

@@ -122,7 +122,7 @@ so nothing is lost between stages.
 | Q6 | Index law | $\zeta$: finite index at every ratio (Lean); exact count of critical ratios open |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH |
 | Q8 | The arithmetic property that excludes the state | open |
-| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): archimedean resolvent expansion, exact positive-charge cancellation, strict sign restriction and uniform inverse-square-root left decay; leading asymptotics and exclusion open |
+| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): linear terminal square mass $\int_{-h}^0F^2\le Ch$ and positive-real decay $|\mathcal LF(t)|\le\sqrt C/t$; archimedean resolvent expansion, exact positive-charge cancellation, strict sign restriction and uniform inverse-square-root left decay; leading asymptotics and exclusion open |
 
 ## 6. Tools
 
