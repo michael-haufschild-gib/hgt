@@ -31,7 +31,14 @@ theorem trilinear_thresholdCost_eq_iInf {α β γ : Type*}
       ⨅ x : {x // t ≤ H₁ x}, ⨅ y : {y // t ≤ H₂ y}, ⨅ z : {z // t ≤ H₃ z},
         c₁ x + c₂ y + c₃ z := by
   unfold thresholdCost
-  simp_rw [ENNReal.iInf_add, ENNReal.add_iInf]
+  rw [ENNReal.iInf_add, ENNReal.iInf_add]
+  apply iInf_congr
+  intro x
+  rw [ENNReal.add_iInf (a := c₁ x) (f := fun y : {y // t ≤ H₂ y} => c₂ y),
+    ENNReal.iInf_add]
+  apply iInf_congr
+  intro y
+  exact ENNReal.add_iInf
 
 /-- The minimum of three observed levels turns the one-variable cost into a joint lower bound. -/
 theorem trilinear_thresholdCost_le {α β γ : Type*}

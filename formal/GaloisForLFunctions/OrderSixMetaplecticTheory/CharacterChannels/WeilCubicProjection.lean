@@ -32,6 +32,14 @@ def rotate (c : ResidueFour) : ResidueFour := Ideal.Quotient.mk _ omega * c
 /-- The actual ramified phase of the squarefree order-six row. -/
 def phase (c : ResidueFour) : ℂ := fixedDualAverage (rep4 c) * cubicTwoChar (rep4 c)
 
+theorem phase_mk (c : O) :
+    phase (Ideal.Quotient.mk _ c) = fixedDualAverage c * cubicTwoChar c := by
+  have h := mk_rep4 (Ideal.Quotient.mk (Ideal.span {(4 : O)}) c)
+  have h4 : (4 : O) ∣ rep4 (Ideal.Quotient.mk _ c) - c :=
+    Ideal.mem_span_singleton.mp ((Ideal.Quotient.mk_eq_mk_iff_sub_mem _ _).mp h)
+  have h2 := (show (2 : O) ∣ 4 from ⟨2, by norm_num⟩).trans h4
+  rw [phase, fixedDualAverage_eq_of_mod_four _ _ h, cubicTwoChar_congr h2]
+
 theorem rotate_three (c : ResidueFour) : rotate (rotate (rotate c)) = c := by
   have h : (Ideal.Quotient.mk (Ideal.span {(4 : O)}) omega) ^ 3 = 1 := by
     rw [← map_pow, omega_primitive.pow_eq_one, map_one]
@@ -122,13 +130,32 @@ theorem weightedSum_eq_projected (f : ResidueFour → ℂ) :
       ring
     _ = (weightedSum f + cubicTwoChar omega * weightedSum (fun c => f (rotate c)) +
         cubicTwoChar omega ^ 2 * weightedSum (fun c => f (rotate (rotate c)))) / 3 := by
-      rw [Finset.sum_div, Finset.sum_add, Finset.sum_add,
+      rw [← Finset.sum_div, Finset.sum_add_distrib, Finset.sum_add_distrib,
         ← Finset.mul_sum, ← Finset.mul_sum]
       rfl
     _ = weightedSum f := by rw [← h₁, h₂]; ring
 
+/-- Squared cubic Gauss sums collected by their actual residue class modulo four. -/
+def gaussSquareClassMass (S : Finset O) (w : O → ℂ) (r : ResidueFour) : ℂ :=
+  ∑ c ∈ S.filter (fun c => Ideal.Quotient.mk (Ideal.span {(4 : O)}) c = r),
+    normalizedCubicUnitGauss c ^ 2 * w c
+
+/-- The finite order-six row sum is exactly the projected class pairing; no absolute values occur. -/
+theorem finite_row_sum_eq_projected (S : Finset O) (w : O → ℂ) :
+    (∑ c ∈ S, fixedDualAverage c * cubicTwoChar c * normalizedCubicUnitGauss c ^ 2 * w c) =
+      weightedSum (cubicProjection (gaussSquareClassMass S w)) := by
+  rw [weightedSum_eq_projected]
+  unfold weightedSum gaussSquareClassMass
+  simp_rw [Finset.sum_filter, Finset.mul_sum, mul_ite, mul_zero]
+  rw [Finset.sum_comm]
+  apply Finset.sum_congr rfl
+  intro c _
+  simp only [Finset.sum_ite_eq, Finset.mem_univ, if_true, phase_mk]
+  ring
+
 #print axioms cubicProjection_rotate
 #print axioms cubicProjection_idempotent
 #print axioms weightedSum_eq_projected
+#print axioms finite_row_sum_eq_projected
 
 end GaloisForLFunctions.OrderSixMetaplecticTheory.RamifiedCharacterChannel
