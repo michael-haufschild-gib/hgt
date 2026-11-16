@@ -2,7 +2,8 @@ import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic
 
-/-!+# Uniform bounds for reciprocal-power products
+/-!
+# Uniform bounds for reciprocal-power products
 
 The secant bound for powers gives a telescoping majorant for
 `∏_{n=2}^{N+1} (1 - n⁻ˢ)⁻¹`. The quadratic case is exact.

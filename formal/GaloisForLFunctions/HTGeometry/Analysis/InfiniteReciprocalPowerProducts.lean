@@ -1,7 +1,8 @@
 import GaloisForLFunctions.HTGeometry.Analysis.ReciprocalPowerProducts
 import Mathlib.Topology.Algebra.InfiniteSum.Order
 
-/-!+# Infinite reciprocal-power products
+/-!
+# Infinite reciprocal-power products
 
 The uniform finite-product envelope proves convergence without a logarithmic
 series estimate. At exponent two the telescoping limit equals two.

@@ -6,7 +6,7 @@ import Mathlib.Data.Sym.Card
 # A multiset lower bound for smooth integers
 
 Distinct multisets of primes have distinct products. Multisets of size `r`
-over primes below `N` therefore give `multichoose (π(N)) r` smooth integers
+over primes below `N` therefore give `multichoose #(primesBelow N) r` smooth integers
 at most `(N-1)^r`. This is the counting mechanism in Zhang, Proposition 3.1,
 *Square-root logarithmic bounds for the arithmetic complexity of factorial multiples*.
 -/

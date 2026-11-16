@@ -56,7 +56,7 @@ private theorem product_le_scaled_envelope (k a N : ℕ) :
           mul_le_mul ih (factor_le_ratio k (a + N))
             (inv_pos.mpr (factor_pos k (a + N))).le
             (mul_nonneg hr (envelope_pos k (a + N)).le)
-        _ = _ := by rw [mul_assoc, envelope_step]; rfl
+        _ = _ := by rw [mul_assoc, envelope_step]
 
 private theorem product_one_eq_envelope (k : ℕ) : product k 1 = envelope k 1 := by
   have hc : 0 < slope k := lt_of_lt_of_le zero_lt_one (slope_ge_one k)
@@ -86,21 +86,22 @@ private theorem factor_three_lt_ratio (k : ℕ) :
   have hp : 0 < (3 : ℝ) ^ (k + 1 + 2) := by positivity
   have hquot : ((slope (k + 1) * 2 + 1) * 3) / (3 : ℝ) ^ (k + 1 + 2) < 1 := by
     apply (div_lt_one hp).mpr
-    simpa only [pow_succ, mul_lt_mul_right (by norm_num : (0 : ℝ) < 3)] using
+    simpa only [pow_succ] using
       mul_lt_mul_of_pos_right hstrict (by norm_num : (0 : ℝ) < 3)
   have hpos : 0 < 1 - 1 / (3 : ℝ) ^ (k + 1 + 2) := by
-    simpa only [Nat.cast_one] using factor_pos (k + 1) 1
+    convert factor_pos (k + 1) 1 using 1 <;> norm_num
   rw [← one_div, div_lt_div_iff₀ hpos (by positivity), one_mul, mul_sub, mul_one, mul_one_div]
   nlinarith only [hquot]
 
 private theorem product_two_lt_envelope (k : ℕ) : product (k + 1) 2 < envelope (k + 1) 2 := by
   have h := factor_three_lt_ratio k
   have hprod : product (k + 1) 2 = product (k + 1) 1 * (1 - 1 / (3 : ℝ) ^ (k + 1 + 2))⁻¹ := by
-    simpa only [Nat.cast_one] using
+    simpa only [Nat.cast_one, show (1 : ℝ) + 2 = 3 by norm_num] using
       (prod_range_succ (fun n : ℕ => (1 - 1 / ((n : ℝ) + 2) ^ (k + 1 + 2))⁻¹) 1)
   rw [hprod, product_one_eq_envelope]
   exact (mul_lt_mul_of_pos_left h (envelope_pos (k + 1) 1)).trans_eq
-    (by simpa only [Nat.cast_one] using envelope_step (k + 1) 1)
+    (by simpa only [Nat.cast_one, show (1 : ℝ) + 1 = 2 by norm_num,
+      show (1 : ℝ) + 2 = 3 by norm_num] using envelope_step (k + 1) 1)
 
 /-- For every integral exponent above two, the infinite rational envelope is strict. -/
 theorem infiniteProduct_lt_uniform (k : ℕ) :
@@ -114,7 +115,7 @@ theorem infiniteProduct_lt_uniform (k : ℕ) :
     dsimp [U]
     positivity
   have hshift : Tendsto (fun N : ℕ => 2 + N) atTop atTop :=
-    tendsto_atTop.mpr fun b => eventually_atTop.mpr ⟨b, by omega⟩
+    tendsto_atTop.mpr fun b => eventually_atTop.mpr ⟨b, by intro N hN; omega⟩
   have hbound : infiniteProduct (k + 1) ≤ R * U := by
     apply le_of_tendsto' ((product_tendsto (k + 1)).comp hshift)
     intro N

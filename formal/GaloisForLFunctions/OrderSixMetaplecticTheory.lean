@@ -59,6 +59,7 @@ Umbrella for the order-six Kubota series of the row root numbers of the cubic-th
 identification of the row root numbers with conjugate squared theta coefficients, the column, tower and
 layer laws, the analytic tools that evaluate first moments on the cubic cover (real-segment continuation,
 remainder ↔ zeros of `ζ_{ℚ(ω)}`), the conjugation symmetry that makes the theta scalar real and the
-main term of the squared theta series positive, and the Hecke traces at every primary prime that give every
-cubic twist of the theta square its double pole. See `OrderSixMetaplecticTheory/README.md`.
+main term of the squared theta series positive, the Hecke traces at every primary prime that give every
+cubic twist of the theta square its double pole, and the fractional traces that give every conjugate cubic twist
+its double pole. See `OrderSixMetaplecticTheory/README.md`.
 -/

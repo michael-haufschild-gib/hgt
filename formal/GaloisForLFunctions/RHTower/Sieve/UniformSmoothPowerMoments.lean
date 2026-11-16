@@ -1,7 +1,8 @@
 import GaloisForLFunctions.HTGeometry.Analysis.ReciprocalPowerProducts
 import Mathlib.NumberTheory.EulerProduct.Basic
 
-/-!+# Cutoff-independent smooth-number power moments
+/-!
+# Cutoff-independent smooth-number power moments
 
 The reciprocal-power product envelope bounds every finite-prime Euler product.
 The smooth-number Euler expansion transfers it to a uniform moment bound, including

@@ -23,12 +23,13 @@ private theorem squarefree_conductor_bound {q : ℕ} (hq : Squarefree q) :
     (q : ℝ) * (sigma 1 q : ℝ) ≤
       6 ^ q.primeFactors.card * (q.totient : ℝ) ^ 2 := by
   have hqprod : (∏ p ∈ q.primeFactors, (p : ℝ)) = q := by
-    exact_mod_cast Nat.prod_primeFactors_of_squarefree hq
+    rw [← Nat.cast_prod, Nat.prod_primeFactors_of_squarefree hq]
   have hsigprod : (∏ p ∈ q.primeFactors, (sigma 1 p : ℝ)) = sigma 1 q := by
     exact_mod_cast (isMultiplicative_sigma (k := 1)).prod_primeFactors hq
   have hphiNat : q.totient = ∏ p ∈ q.primeFactors, (p - 1) := by
     rw [Nat.totient_eq_div_primeFactors_mul,
-      Nat.prod_primeFactors_of_squarefree hq, Nat.div_self hq.ne_zero, one_mul]
+      Nat.prod_primeFactors_of_squarefree hq, Nat.div_self (Nat.pos_of_ne_zero hq.ne_zero),
+      one_mul]
   have hphi : (q.totient : ℝ) = ∏ p ∈ q.primeFactors, ((p : ℝ) - 1) := by
     rw [hphiNat, Nat.cast_prod]
     apply prod_congr rfl
@@ -46,7 +47,7 @@ private theorem squarefree_conductor_bound {q : ℕ} (hq : Squarefree q) :
       prod_le_prod (fun p _ => by positivity)
         (fun _ hp => prime_local_conductor_bound (Nat.prime_of_mem_primeFactors hp))
     _ = 6 ^ q.primeFactors.card * (q.totient : ℝ) ^ 2 := by
-      rw [prod_mul_distrib, prod_const, ← prod_pow, ← hphi]
+      rw [prod_mul_distrib, prod_const, prod_pow, ← hphi]
 
 /-- The squarefree mollifier's conductor error is controlled by its number of prime factors. -/
 theorem sqfreeTotientInv_conductor_error_le (q : ℕ) :
@@ -60,6 +61,7 @@ theorem sqfreeTotientInv_conductor_error_le (q : ℕ) :
     rw [sqfreeTotientInv_apply, if_pos hq, hsum, div_pow, one_pow, one_div, ← div_eq_mul_inv]
     exact (div_le_iff₀ (sq_pos_of_pos hphi)).mpr (squarefree_conductor_bound hq)
   · rw [sqfreeTotientInv_apply, if_neg hq]
+    simp only [zero_pow (by omega : 2 ≠ 0), mul_zero]
     positivity
 
 #print axioms sqfreeTotientInv_conductor_error_le

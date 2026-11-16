@@ -84,7 +84,8 @@ theorem reciprocalRatCharacter_divisor_sum_pos (χ : DirichletCharacter ℚ N) (
     0 < ∑ d ∈ (n + 1).divisors, χ (d : ZMod N) / (d : ℚ) := by
   have h := reciprocalRealCharacter_divisor_sum_pos
     (χ.ringHomComp (Rat.castHom ℝ)) n
-  simp only [MulChar.ringHomComp_apply, Rat.castHom_apply] at h
+  simp only [MulChar.ringHomComp_apply] at h
+  change (0 : ℝ) < ∑ d ∈ (n + 1).divisors, (χ (d : ZMod N) : ℝ) / (d : ℝ) at h
   exact_mod_cast h
 
 /-- The positive rational character sum prevents any rational correction from
@@ -99,7 +100,9 @@ theorem irrational_sqrt_five_character_divisor_coefficient
   have h := (hs.mul_ratCast (q :=
     (∑ d ∈ (n + 1).divisors, χ (d : ZMod N) / (d : ℚ)) / 2)
     (div_ne_zero hq.ne' (by norm_num))).add_ratCast r
-  convert h using 1 <;> push_cast <;> ring
+  convert h using 1
+  push_cast
+  ring
 
 #print axioms reciprocalRealCharacter_divisor_product
 #print axioms reciprocalRealCharacter_divisor_sum_pos
