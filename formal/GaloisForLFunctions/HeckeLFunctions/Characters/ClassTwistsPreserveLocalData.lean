@@ -79,7 +79,8 @@ theorem same_residue_iff_unique_class_twist (ψ₀ ψ₁ : HeckeCharacter 𝔪) 
       change ψ₁ (fullRayResidueClass 𝔪 g) = ψ₀ (fullRayResidueClass 𝔪 g) at heq
       rw [hfull] at heq
       change ψ₁ c / ψ₀ c = 1
-      rw [heq, div_self]
+      rw [heq]
+      exact div_self' (ψ₀ c)
     let e : {ψ : HeckeCharacter 𝔪 // (toClassGroup 𝔪).ker ≤ ψ.ker} ≃
         (ClassGroup (𝓞 K) →* ℂˣ) :=
       (toClassGroup 𝔪).liftOfSurjective (toClassGroup_surjective 𝔪)
@@ -87,7 +88,8 @@ theorem same_residue_iff_unique_class_twist (ψ₀ ψ₁ : HeckeCharacter 𝔪) 
     have hχ : χ.comp (toClassGroup 𝔪) = ψ₁ / ψ₀ :=
       congrArg Subtype.val (e.symm_apply_apply ⟨ψ₁ / ψ₀, hk⟩)
     have hrepr : ψ₁ = classTwist 𝔪 ψ₀ χ := by
-      rw [classTwist, hχ, mul_comm, div_mul_cancel]
+      rw [classTwist, hχ]
+      exact ((_root_.mul_comm ψ₀ (ψ₁ / ψ₀)).trans (_root_.div_mul_cancel ψ₁ ψ₀)).symm
     refine ⟨χ, hrepr, ?_⟩
     intro η hη
     apply MonoidHom.ext

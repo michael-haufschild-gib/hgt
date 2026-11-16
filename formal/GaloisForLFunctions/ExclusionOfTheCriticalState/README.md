@@ -179,6 +179,7 @@ $JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula).
 | Finite index needs arithmetic | Confinement compactness gives it for every configuration |
 | Functional equation + Euler product + positive coefficients exclude | Positive Euler twins have all three and an off-line zero |
 | The sign law is soft | It uses that $\zeta$ has no real zero in $(\tfrac12,1)$; prime-two deformations can have one |
+| Real-axis nonvanishing separates $\zeta$ from the positive Euler twins | Their entire completions are strictly positive on the whole real axis despite off-line zeros; their logarithmic coefficients, rather than their ordinary coefficients, fail positivity |
 | The exponent 8 is canonical | Any confinement exponent works; 8 only fixes the shift of the residue transport |
 | The Gamma pairing continues only by deforming the Fourier contour | Its Lévy form converges on $\operatorname{Re}p>-\tfrac12$, and its symbol is the functional equation |
 | Continuation past the strip needs the explicit formula | Left of the strip the Euler parts cancel; the remainder is head term, prime heads and charges |

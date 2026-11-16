@@ -67,10 +67,7 @@ theorem padicMatrixHaar_trace_fiber (n : ℕ) (t : ℤ_[p]) :
   have hle : (padicMatrixHaar p (n + 1)).real {A | Matrix.trace A = t} ≤
       (padicMatrixHaar p (n + 1)).real
         {A | padicMatrixTraceResidue p k n A = PadicInt.toZModPow k t} := by
-    apply measureReal_mono
-    intro A hA
-    change PadicInt.toZModPow k (Matrix.trace A) = PadicInt.toZModPow k t
-    rw [hA]
+    exact measureReal_mono (fun A hA => congrArg (PadicInt.toZModPow k) hA)
   rw [padicMatrixHaar_trace_residue] at hle
   have hlt : 1 / (p : ℝ) ^ k <
       (padicMatrixHaar p (n + 1)).real {A | Matrix.trace A = t} := by

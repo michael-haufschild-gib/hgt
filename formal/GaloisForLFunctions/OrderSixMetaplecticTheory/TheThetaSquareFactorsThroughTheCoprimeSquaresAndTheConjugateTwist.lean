@@ -210,6 +210,7 @@ theorem thetaSq_euler (s : ℂ) (hs : 4 < s.re) :
     intro h
     simp only [hFc, hF, coprimeCoeff]
     split_ifs <;> simp
+    all_goals positivity
   have hF1_le : ∀ h, ‖F1 h‖ ≤ ‖F h‖ := by
     intro h
     simp only [hF1]
@@ -271,8 +272,10 @@ theorem thetaSq_euler (s : ℂ) (hs : 4 < s.re) :
       rw [if_pos hx, if_neg hx0]
       simp only [hF, if_neg (mul_ne_zero hx0 P.ne_zero), pCoeff, if_neg hx, hw_mul]
       ring
-  rw [hD, hsum, h3, h1]
-  ring
+  have hDc : besselDirichlet P.coprimeCoeff s = ∑' h, Fc h := rfl
+  rw [h3, h1] at hsum
+  rw [hD, hDc]
+  linear_combination hsum
 
 end PrimaryPrime
 

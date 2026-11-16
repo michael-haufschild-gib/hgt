@@ -39,6 +39,7 @@ theorem padicFittingDegreeProbability_eq_product (d k : ℕ) :
       (∏ i : Fin k, (1 - 1 / (p : ℝ) ^ (d + (i : ℕ) + 1))) / (p : ℝ) ^ d := by
   rw [padicFittingDegreeProbability_eq, fittingDegreeDensity_eq_product, Nat.card_zmod]
   push_cast
+  rfl
 
 /-- The residue-degree probabilities form a probability law. -/
 theorem sum_padicFittingDegreeProbability (n : ℕ) :
