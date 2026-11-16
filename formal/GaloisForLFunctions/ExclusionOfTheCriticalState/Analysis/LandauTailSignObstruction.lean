@@ -12,9 +12,10 @@ moment in that interval to converge. Continuity of the profile is unnecessary.
 -/
 
 noncomputable section
-open MeasureTheory Set Filter Topology
+open MeasureTheory Set Filter Topology Zeta23
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
-open ArithmeticHodgeTheoryOfDegenerations HTGeometry _root_.RHTower
+open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
+  CriticalArithmeticCorrelationTheory HTGeometry _root_.RHTower
 open GaloisForLFunctions.RHTower (laplaceMass laplaceReal IsAbscissa complexLaplace
   hasDerivAt_complexLaplace complexLaplace_ofReal false_of_analyticAt_abscissa)
 
@@ -69,8 +70,9 @@ theorem integrable_exp_of_nonnegative_tail_of_real_continuation
       rw [Real.norm_eq_abs,abs_mul,abs_of_pos (Real.exp_pos _)]
   have hfrom (x : ℝ) (hx : IntegrableOn (fun u => f u*Real.exp (x*u)) (Iio (-T))) :
       Integrable fun u => |f u| *Real.exp (x*u) := by
-    apply integrable_abs_exp_of_tail hm hf hs
-    simpa only [Real.norm_eq_abs,abs_mul,abs_of_pos (Real.exp_pos _)] using hx.norm
+    apply integrable_abs_exp_of_tail hm hf hs (T := T)
+    exact hx.norm.congr (Eventually.of_forall fun u => by
+      rw [Real.norm_eq_abs,abs_mul,abs_of_pos (Real.exp_pos _)])
   have h0 : laplaceMass ν σ = ⊤ := by
     by_contra h
     exact hnot (hfrom σ ((hmass σ).mp h))
@@ -88,7 +90,7 @@ theorem integrable_exp_of_nonnegative_tail_of_real_continuation
   let head : ℝ → ℝ := (Ici (-T)).indicator f
   have hhead := differentiable_laplace_of_head (hm.indicator measurableSet_Ici)
     (hf.indicator measurableSet_Ici)
-    (fun u hu => by simp only [head,Set.indicator]; split_ifs <;> simp [hs u hu])
+    (fun u hu => by simp only [Set.indicator]; split_ifs <;> simp [hs u hu])
     (fun u hu => by exact indicator_of_notMem (not_le.mpr hu) f)
   let Φ : ℂ → ℂ := fun w => G w-negativeHalfLineLaplace (cx head) w
   have hΦ (x : ℝ) (hx : κ < x) : AnalyticAt ℂ Φ (x : ℂ) :=
@@ -154,8 +156,8 @@ theorem integrable_exp_of_signed_tail_of_real_continuation
         rw [← heq x hx,negativeHalfLineLaplace_ofReal,Complex.ofReal_mul]
   have hh := integrable_exp_of_nonnegative_tail_of_real_continuation
     (measurable_const.mul hm) (hf.const_mul s)
-    (fun u hu => by rw [hs u hu,mul_zero])
+    (fun u hu => by change s*f u = 0; rw [hs u hu,mul_zero])
     (fun x hx => analyticAt_const.mul (hG x hx)) heq' hT hpos hσ
-  simpa only [abs_mul,habs,one_mul] using hh
+  simpa only [Pi.mul_apply,abs_mul,habs,one_mul] using hh
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

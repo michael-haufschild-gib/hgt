@@ -128,8 +128,6 @@ private theorem cexp_mul_levyHead_probe_five {q : ℂ} (hq : -4 < q.re) {L : ℝ
 
 private theorem laplace_probe_five {q : ℂ} (hq : -4 < q.re) :
     negativeHalfLineLaplace (cx (probe 5)) q = 1 / ((5 : ℂ) + q) := by
-  have h5q : (5 : ℂ) + q ≠ 0 := by
-    intro e; have := congrArg Complex.re e; simp at this; linarith
   unfold negativeHalfLineLaplace cx
   have h1 : (∫ u : ℝ, cexp (q * u) * (probe 5 u : ℂ)) =
       ∫ u in Iio (0 : ℝ), cexp (((5 : ℂ) + q) * u) := by
@@ -141,15 +139,9 @@ private theorem laplace_probe_five {q : ℂ} (hq : -4 < q.re) :
       congr 1; push_cast; ring
     · rw [indicator_of_notMem (not_lt.mpr hu), probe_of_nonneg hu,
         Complex.ofReal_zero, mul_zero]
-  rw [h1]
-  have h2 := integral_comp_neg_Ioi (0 : ℝ) (fun u : ℝ => cexp (((5 : ℂ) + q) * u))
-  rw [neg_zero, integral_Iic_eq_integral_Iio] at h2
-  rw [← h2]
-  have hsub : (fun x : ℝ => cexp (((5 : ℂ) + q) * (-x : ℝ))) =
-      fun x : ℝ => cexp ((-((5 : ℂ) + q)) * x) := by
-    funext x; congr 1; push_cast; ring
-  rw [hsub, integral_exp_mul_complex_Ioi (by simp; linarith)]
-  field_simp [h5q]
+  rw [h1, ← integral_Iic_eq_integral_Iio,
+    integral_exp_mul_complex_Iic (by simp; linarith) 0]
+  simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero]
 
 private theorem hasSum_modelPrimeHead_powerLogCoeff {p : ℕ} (hp : p.Prime) {γ : ℂ}
     (hγ : ‖γ‖ < p) {q : ℂ} (hq4 : -4 < q.re) (hq : q.re < -(1 / 2)) :

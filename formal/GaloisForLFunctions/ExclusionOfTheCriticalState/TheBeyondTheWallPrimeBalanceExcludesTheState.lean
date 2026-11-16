@@ -124,9 +124,8 @@ theorem differentiableOn_archimedeanWallTail {F : ℝ → ℝ} (hF : CriticalHal
       rw [hcast_rk] at hL
       have hden : δ * ((k : ℝ) + 1) ≤ ‖(2 * ((k : ℂ) + 1) + 1 / 2) - p‖ := by
         have hre_le : δ * ((k : ℝ) + 1) ≤ ((2 * ((k : ℂ) + 1) + 1 / 2) - p).re := by
-          simp only [Complex.sub_re, Complex.add_re, Complex.mul_re, Complex.ofReal_re,
-            Complex.natCast_re, Complex.one_re, Complex.div_ofNat_re, Complex.ofReal_im,
-            Complex.natCast_im, Complex.one_im, add_zero, mul_zero, sub_zero]
+          rw [← hcast_rk, Complex.sub_re, Complex.ofReal_re]
+          dsimp [rk]
           have hδ1 : δ ≤ 1 := min_le_right _ _
           have hδ2 : δ ≤ 5 / 2 - σ := min_le_left _ _
           nlinarith [Nat.cast_nonneg (α := ℝ) k]
@@ -577,18 +576,9 @@ theorem not_forall_wallPrimeBalance_continues_past_zero {δ : ℝ} (hδ : 0 < δ
           congr 1; push_cast; ring
         · rw [indicator_of_notMem (not_lt.mpr hu), probe_of_nonneg hu,
             Complex.ofReal_zero, mul_zero]
-      rw [h1]
-      have h2 := integral_comp_neg_Ioi (0 : ℝ)
-        (fun u : ℝ => cexp (((5 : ℂ) + centredZero c) * u))
-      rw [neg_zero, integral_Iic_eq_integral_Iio] at h2
-      rw [← h2]
-      have hsub : (fun x : ℝ => cexp (((5 : ℂ) + centredZero c) * (-x : ℝ))) =
-          fun x : ℝ => cexp ((-((5 : ℂ) + centredZero c)) * x) := by
-        funext x; congr 1; push_cast; ring
-      rw [hsub, integral_exp_mul_complex_Ioi (by simp; linarith [hz_abs.1])]
-      have hne : (5 : ℂ) + centredZero c ≠ 0 := by
-        intro e; have := congrArg Complex.re e; simp at this; linarith [hz_abs.1]
-      field_simp [hne]
+      rw [h1, ← integral_Iic_eq_integral_Iio,
+        integral_exp_mul_complex_Iic (by simp; linarith [hz_abs.1]) 0]
+      simp only [Complex.ofReal_zero, mul_zero, Complex.exp_zero]
     rw [hlap]
     exact one_div_ne_zero fun e => by
       have := congrArg Complex.re e; simp at this

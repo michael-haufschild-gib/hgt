@@ -28,7 +28,14 @@ theorem readout_replicate (k : ℕ) (score : V → V → ℝ) (value post : V �
   classical
   have hrep : historyMultiplicity (Prod.fst : ι × Fin (k + 1) → ι) = fun _ => k + 1 := by
     funext i
-    simp [historyMultiplicity, Fintype.sum_prod_type]
+    unfold historyMultiplicity
+    rw [Fintype.sum_prod_type]
+    calc
+      _ = ∑ j : ι, if j = i then k + 1 else 0 := by
+        apply Finset.sum_congr rfl
+        intro j _
+        by_cases hj : j = i <;> simp [hj]
+      _ = _ := by simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
   have hid : historyMultiplicity (id : ι → ι) = fun _ => 1 := by
     funext i
     change (∑ j : ι, if j = i then 1 else 0) = 1
@@ -52,6 +59,13 @@ def occupationCount (n m : ℕ) (b : Bool) : ℕ := if b then m else n - m
 /-- The two feature values associated with occupancy. -/
 def occupationValues (occupied vacant : V) (b : Bool) : V := if b then occupied else vacant
 
+omit [AddCommGroup V] [Module ℝ V] in
+private theorem occupationTokens_eq_values_comp (n : ℕ) (occupied vacant : V)
+    (S : Finset (Fin n)) :
+    occupationTokens n occupied vacant S = occupationValues occupied vacant ∘ sampleIndicator S := by
+  funext i
+  rfl
+
 private theorem historyMultiplicity_sampleIndicator (n : ℕ) (S : Finset (Fin n)) :
     historyMultiplicity (sampleIndicator S) = occupationCount n S.card := by
   have hc (b : Bool) : historyMultiplicity (sampleIndicator S) b =
@@ -70,10 +84,9 @@ theorem occupation_refine_eq_countRefine (n : ℕ) (score : V → V → ℝ)
     refine score value post (occupationTokens n occupied vacant S) depth (fun _ => initial) =
       countRefine (occupationCount n S.card) score value post
         (occupationValues occupied vacant) depth (fun _ => initial) ∘ sampleIndicator S := by
-  have h := refine_eq_countRefine (sampleIndicator S) score value post
-    (occupationValues occupied vacant) (fun _ => initial) depth
-  simpa only [historyMultiplicity_sampleIndicator, occupationTokens,
-    occupationValues, Function.comp_def] using h
+  rw [occupationTokens_eq_values_comp,
+    show (fun _ : Fin n => initial) = (fun _ : Bool => initial) ∘ sampleIndicator S from rfl,
+    refine_eq_countRefine, historyMultiplicity_sampleIndicator]
 
 /-- The occupation readout has an explicit two-state formula at every depth. -/
 theorem occupation_readout_eq_countReadout (n : ℕ) (score : V → V → ℝ)
@@ -82,10 +95,7 @@ theorem occupation_readout_eq_countReadout (n : ℕ) (score : V → V → ℝ)
     readout score value post poolScore output depth initial (occupationTokens n occupied vacant S) =
       countReadout (occupationCount n S.card) score value post poolScore output depth initial
         (occupationValues occupied vacant) := by
-  have h := readout_eq_countReadout (sampleIndicator S) score value post
-    poolScore output depth initial (occupationValues occupied vacant)
-  simpa only [historyMultiplicity_sampleIndicator, occupationTokens,
-    occupationValues, Function.comp_def] using h
+  rw [occupationTokens_eq_values_comp, readout_eq_countReadout, historyMultiplicity_sampleIndicator]
 
 omit [AddCommGroup V] [Module ℝ V] in
 /-- The two-state softmax includes the exact vacant and occupied multiplicities. -/

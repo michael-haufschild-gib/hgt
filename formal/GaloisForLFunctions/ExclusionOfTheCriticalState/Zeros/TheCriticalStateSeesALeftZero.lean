@@ -151,17 +151,15 @@ private theorem integrable_cauchy_pair_vertical {p₀ : ℂ} {K σ : ℝ}
   refine hsub.congr (Eventually.of_forall fun t => ?_)
   dsimp only [Function.comp_def]
   have e1 : ((σ : ℂ) + t * I) - p₀ = (a : ℂ) + (t - p₀.im : ℝ) * I := by
-    apply Complex.ext <;> simp [a] <;> ring
+    apply Complex.ext <;> simp [a]
   have e2 : ((σ : ℂ) + t * I) - (p₀ + K) = (b : ℂ) + (t - p₀.im : ℝ) * I := by
-    apply Complex.ext <;> simp [b] <;> ring
+    apply Complex.ext <;> simp [b]
   rw [e1, e2]
 
 private theorem integral_cauchy_pair_vertical {p₀ : ℂ} {K σ : ℝ} (hK : 0 < K)
     (h1 : p₀.re ≠ σ) (h2 : p₀.re + K ≠ σ) :
     (∫ t : ℝ, ((((σ : ℂ) + t * I) - p₀)⁻¹ - (((σ : ℂ) + t * I) - (p₀ + K))⁻¹)) =
-      if p₀.re < σ ∧ σ < p₀.re + K then (2 * Real.pi : ℂ)
-      else if σ < p₀.re then 0
-      else -(2 * Real.pi : ℂ) := by
+      if p₀.re < σ ∧ σ < p₀.re + K then (2 * Real.pi : ℂ) else 0 := by
   set a := σ - p₀.re
   set b := σ - (p₀.re + K)
   have ha : a ≠ 0 := sub_ne_zero.mpr h1.symm
@@ -205,12 +203,10 @@ private theorem integral_cauchy_pair_vertical {p₀ : ℂ} {K σ : ℝ} (hK : 0 
     rw [if_pos ha_pos, if_neg hb_neg]; push_cast; ring
   · rw [if_neg hsep]
     by_cases hlt : σ < p₀.re
-    · rw [if_pos hlt]
-      have ha_neg : ¬ 0 < a := by dsimp [a]; linarith
+    · have ha_neg : ¬ 0 < a := by dsimp [a]; linarith
       have hb_neg : ¬ 0 < b := by dsimp [b]; linarith
       rw [if_neg ha_neg, if_neg hb_neg]; push_cast; ring
-    · rw [if_neg hlt]
-      have ha_pos : 0 < a := by
+    · have ha_pos : 0 < a := by
         rcases lt_or_gt_of_ne h1 with hp | hp
         · dsimp [a]; linarith
         · exact absurd hp hlt
@@ -286,12 +282,13 @@ private theorem integral_vertical_one_pole_left {G : ℂ → ℂ} {σ₀ σ₁ :
     have hC₀n := abs_nonneg C₀
     set Cfar : ℝ := 4 * B + 4 * ‖G p₀‖ * K
     set Ctot : ℝ := (|C₀| + 1) * (1 + T₀ ^ 2) + Cfar
+    have hMσ : -σ₀ ≤ M := (le_max_right _ _).trans hM
     refine integral_vertical_line_shift_of_decay (Φ := R) (c₁ := σ₀) (c₂ := -M) (C := Ctot)
       (fun s hs => hR_diff s (by
-        rcases Set.mem_uIcc.mp hs with h | h <;> linarith [h.1, h.2]))
+        rcases Set.mem_uIcc.mp hs with h | h <;> linarith [h.1, h.2, hMσ]))
       (fun s hs => ?_)
     have hs_mem : -M ≤ s.re ∧ s.re ≤ σ₀ := by
-      rcases Set.mem_uIcc.mp hs with h | h <;> constructor <;> linarith [h.1, h.2]
+      rcases Set.mem_uIcc.mp hs with h | h <;> constructor <;> linarith [h.1, h.2, hMσ]
     rcases le_or_gt |s.im| T₀ with hnear | hfar
     · have hqin : (s.re, s.im) ∈ Icc (-M) σ₀ ×ˢ Icc (-T₀) T₀ :=
         ⟨hs_mem, abs_le.mp hnear⟩
@@ -408,7 +405,7 @@ private theorem integral_vertical_one_pole_left {G : ℂ → ℂ} {σ₀ σ₁ :
       have hp_zero : (∫ t : ℝ, ((((-M : ℂ) + t * I) - p₀)⁻¹ - (((-M : ℂ) + t * I) - p₁)⁻¹)) = 0 := by
         have hc := integral_cauchy_pair_vertical (p₀ := p₀) (K := K) (σ := -M) hK
           (by linarith) (by linarith)
-        rw [if_neg (by intro h; linarith [h.1]), if_pos (by linarith)] at hc
+        rw [if_neg (by intro h; linarith [h.1])] at hc
         simpa only [Complex.ofReal_neg] using hc
       rw [integral_congr_ae (Eventually.of_forall (congrFun heqM)), integral_sub hint1 hint2,
         integral_const_mul, hp_zero, mul_zero, sub_zero]
@@ -506,7 +503,7 @@ private theorem norm_sub_sq_on_four_ge {L : ℝ} (hL : 8 ≤ L) (t : ℝ) :
   have hre : ((L : ℂ) ^ 2 - ((4 : ℂ) + t * I) ^ 2).re = L ^ 2 - 16 + t ^ 2 := by
     have : ((4 : ℂ) + t * I) ^ 2 = ((16 - t ^ 2 : ℝ) : ℂ) + ((8 * t : ℝ) : ℂ) * I := by
       push_cast; ring_nf; rw [I_sq]; ring
-    rw [this]; simp; ring
+    rw [this, ← Complex.ofReal_pow]; simp; ring
   have hpos : (3 / 4 : ℝ) * L ^ 2 + t ^ 2 ≤ L ^ 2 - 16 + t ^ 2 := by nlinarith
   exact hpos.trans ((le_abs_self _).trans (by rw [← hre]; exact Complex.abs_re_le_norm _))
 
@@ -556,8 +553,8 @@ private theorem tendsto_biCauchy_four (t : ℝ) :
     have hinv : Tendsto (fun N : ℝ => ((N : ℂ) ^ 2)⁻¹) atTop (𝓝 0) := by
       have h1 := (Complex.continuous_ofReal.tendsto 0).comp
         (tendsto_inv_atTop_zero.comp (tendsto_pow_atTop (by norm_num : 2 ≠ 0)))
-      exact (by simpa using h1 : Tendsto (fun N : ℝ => ((N ^ 2 : ℝ)⁻¹ : ℂ)) atTop (𝓝 0)).congr
-        fun N => by simp
+      simp only [Complex.ofReal_zero] at h1
+      exact h1.congr fun N => by dsimp [Function.comp_def]; push_cast; rfl
     simpa [div_eq_mul_inv] using hinv.const_mul z
   have hlim : Tendsto (fun N : ℝ => (4 : ℂ) / ((1 - z / (N : ℂ) ^ 2) * (4 - z / (N : ℂ) ^ 2)))
       atTop (𝓝 1) := by
@@ -565,8 +562,9 @@ private theorem tendsto_biCauchy_four (t : ℝ) :
         atTop (𝓝 ((1 - 0) * (4 - 0))) :=
       (tendsto_const_nhds.sub hz).mul (tendsto_const_nhds.sub hz)
     have hq := (tendsto_const_nhds (x := (4 : ℂ))).div hd (by norm_num)
-    convert hq using 2
-    norm_num
+    have h4 : (4 : ℂ) / ((1 - 0) * (4 - 0)) = 1 := by norm_num
+    rw [h4] at hq
+    exact hq
   refine hlim.congr' ?_
   filter_upwards [eventually_ge_atTop (8 : ℝ)] with N hN
   have hN0 : (N : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (by linarith)
@@ -650,9 +648,12 @@ private theorem criticalState_globalRemainder_four {W₀ : ℝ} (hW : 0 < W₀)
     exact continuousAt_const.mul hc1
   have hRem_cont : ContinuousAt (fun ε : ℝ =>
       globalRemainder F (((4 + ε : ℝ) : ℂ) + t * I)) 0 := by
-    have hdiff := differentiableAt_globalRemainder hd
-      (p := ((4 + (0 : ℝ) : ℝ) : ℂ) + t * I)
-      (fun h' => absurd h' (by simp; norm_num))
+    have hxi4 : xi (1 / 2 + (((4 + (0 : ℝ) : ℝ) : ℂ) + t * I)) ≠ 0 :=
+      xi_ne_zero_of_half_le_abs_re (by simp; norm_num)
+    have hdiff : DifferentiableAt ℂ (globalRemainder F) (((4 + (0 : ℝ) : ℝ) : ℂ) + t * I) := by
+      refine differentiableAt_globalRemainder hd fun _ hz => hxi4 ?_
+      rw [xi_eq_half_mul_Gammaℝ_mul_zetaEntire (by rw [re_one_half_add]; simp; norm_num), hz]
+      ring
     exact ContinuousAt.comp (g := globalRemainder F)
       (f := fun ε : ℝ => ((4 + ε : ℝ) : ℂ) + t * I) hdiff.continuousAt
       (by fun_prop : Continuous fun ε : ℝ => ((4 + ε : ℝ) : ℂ) + t * I).continuousAt
@@ -674,7 +675,8 @@ private theorem criticalState_globalRemainder_four {W₀ : ℝ} (hW : 0 < W₀)
   have hlim1 := (hRem_cont.tendsto.mono_left nhdsWithin_le_nhds).congr' hev
   have hlim2 := hLap_cont.tendsto.mono_left nhdsWithin_le_nhds
   have heq0 := tendsto_nhds_unique hlim1 hlim2
-  simpa [add_zero] using heq0
+  norm_num at heq0
+  exact heq0
 
 private theorem criticalState_laplace_conj (F : ℝ → ℝ) (w : ℂ) :
     negativeHalfLineLaplace (cx F) (conj w) = conj (negativeHalfLineLaplace (cx F) w) := by
@@ -704,15 +706,15 @@ private theorem criticalState_norm_sq_four_integrable_and_pos {W₀ : ℝ} (hW :
     rw [Complex.norm_real, Real.norm_eq_abs, sq_abs, mul_pow, ← Real.exp_nat_mul]
     ring_nf
   have hlap_eq : ∀ ξ : ℝ, laplaceRay φ (rayLine 1 ξ) =
-      negativeHalfLineLaplace (cx F) ((-4 : ℂ) + (-2 * Real.pi * ξ : ℝ) * I) := by
+      negativeHalfLineLaplace (cx F) ((-4 : ℂ) + (2 * Real.pi * ξ : ℝ) * I) := by
     intro ξ
     unfold laplaceRay negativeHalfLineLaplace
     have h1 := integral_comp_neg_Ioi (0 : ℝ)
-      (fun u : ℝ => cexp (((-4 : ℂ) + (-2 * Real.pi * ξ : ℝ) * I) * u) * cx F u)
+      (fun u : ℝ => cexp (((-4 : ℂ) + (2 * Real.pi * ξ : ℝ) * I) * u) * cx F u)
     rw [neg_zero] at h1
     have h2 : ∫ u in Iic (0 : ℝ),
-        cexp (((-4 : ℂ) + (-2 * Real.pi * ξ : ℝ) * I) * u) * cx F u =
-        ∫ u : ℝ, cexp (((-4 : ℂ) + (-2 * Real.pi * ξ : ℝ) * I) * u) * cx F u :=
+        cexp (((-4 : ℂ) + (2 * Real.pi * ξ : ℝ) * I) * u) * cx F u =
+        ∫ u : ℝ, cexp (((-4 : ℂ) + (2 * Real.pi * ξ : ℝ) * I) * u) * cx F u :=
       setIntegral_eq_integral_of_forall_compl_eq_zero fun u hu => by
         rw [cx, hd.support u (not_le.mp hu).le, Complex.ofReal_zero, mul_zero]
     rw [← h2, ← h1]
@@ -720,30 +722,27 @@ private theorem criticalState_norm_sq_four_integrable_and_pos {W₀ : ℝ} (hW :
     dsimp [φ, expRay, rayLine, cx]
     rw [Complex.ofReal_mul]
     have hexp : (Real.exp (5 * x) : ℂ) * cexp (-(((1 : ℂ) + (2 * Real.pi * ξ : ℝ) * I) * x)) =
-        cexp (((-4 : ℂ) + (-2 * Real.pi * ξ : ℝ) * I) * (-x : ℝ)) := by
+        cexp (((-4 : ℂ) + (2 * Real.pi * ξ : ℝ) * I) * (-x : ℝ)) := by
       rw [Complex.ofReal_exp, ← Complex.exp_add]
       congr 1; push_cast; ring
     calc ((F (-x) : ℂ) * (Real.exp (5 * x) : ℂ)) *
             cexp (-(((1 : ℂ) + (2 * Real.pi * ξ : ℝ) * I) * x))
         = (F (-x) : ℂ) * ((Real.exp (5 * x) : ℂ) *
             cexp (-(((1 : ℂ) + (2 * Real.pi * ξ : ℝ) * I) * x))) := by ring
-      _ = cexp (((-4 : ℂ) + (-2 * Real.pi * ξ : ℝ) * I) * (-x : ℝ)) * (F (-x) : ℂ) := by
+      _ = cexp (((-4 : ℂ) + (2 * Real.pi * ξ : ℝ) * I) * (-x : ℝ)) * (F (-x) : ℂ) := by
           rw [hexp, mul_comm]
   have hmem_lp := memLp_two_laplaceRay_line hφ2 one_pos
   have hmem_ξ : Integrable fun ξ : ℝ => ‖laplaceRay φ (rayLine 1 ξ)‖ ^ 2 :=
     (memLp_two_iff_integrable_sq_norm hmem_lp.1).mp hmem_lp
   have hplanch := integral_norm_sq_laplaceRay_line hφ2 one_pos
   simp_rw [hlap_eq] at hmem_ξ hplanch
-  have hpi : (-2 * Real.pi : ℝ) ≠ 0 := by linarith [Real.pi_pos]
-  have hint_t : Integrable fun t : ℝ => ‖negativeHalfLineLaplace (cx F) ((-4 : ℂ) + t * I)‖ ^ 2 := by
-    have h := hmem_ξ.comp_mul_left (-2 * Real.pi)⁻¹
-    refine h.congr (Eventually.of_forall fun t => ?_)
-    dsimp only [Function.comp_def]
-    rw [mul_inv_cancel_left₀ hpi]
+  have hpi : (2 * Real.pi : ℝ) ≠ 0 := by positivity
+  have hint_t : Integrable fun t : ℝ => ‖negativeHalfLineLaplace (cx F) ((-4 : ℂ) + t * I)‖ ^ 2 :=
+    (integrable_comp_mul_left_iff
+      (fun t : ℝ => ‖negativeHalfLineLaplace (cx F) ((-4 : ℂ) + t * I)‖ ^ 2) hpi).mp hmem_ξ
   refine ⟨hint_t, ?_⟩
   have hscale := Measure.integral_comp_mul_left
-    (fun t : ℝ => ‖negativeHalfLineLaplace (cx F) ((-4 : ℂ) + t * I)‖ ^ 2) (-2 * Real.pi)
-  dsimp only [Function.comp_def] at hscale
+    (fun t : ℝ => ‖negativeHalfLineLaplace (cx F) ((-4 : ℂ) + t * I)‖ ^ 2) (2 * Real.pi)
   rw [hplanch] at hscale
   have hrhs_pos : 0 < ∫ x in Ioi (0 : ℝ), Real.exp (-(2 * 1 * x)) * ‖φ x‖ ^ 2 := by
     have heq_W8 : (∫ x in Ioi (0 : ℝ), Real.exp (-(2 * 1 * x)) * ‖φ x‖ ^ 2) =
@@ -764,7 +763,7 @@ private theorem criticalState_norm_sq_four_integrable_and_pos {W₀ : ℝ} (hW :
       congr 2; ring
     rw [heq_W8]
     exact zero_lt_one.trans (one_lt_exponential_mass_of_unit_domain hd hF.2.2.2.1)
-  have hinv_pos : 0 < |(-2 * Real.pi)⁻¹| := abs_pos.mpr (inv_ne_zero hpi)
+  have hinv_pos : 0 < |(2 * Real.pi)⁻¹| := abs_pos.mpr (inv_ne_zero hpi)
   rw [smul_eq_mul] at hscale
   nlinarith [hrhs_pos, hscale, hinv_pos]
 
@@ -841,7 +840,7 @@ private theorem integral_singleCauchy_left_line {W₀ : ℝ} (hW : 0 < W₀)
             (by positivity) (by linarith)) (hLap4 s hs) (norm_nonneg _) (by positivity))
             (hRem8 s hs) (norm_nonneg _) (by positivity)
       _ = (2 * L ^ 2 * m4 * KL) / (1 + |s.im|) := by
-          field_simp [(by positivity : (0 : ℝ) < 1 + |s.im|).ne']; ring
+          field_simp [(by positivity : (0 : ℝ) < 1 + |s.im|).ne']
   let b : ℝ → ℝ := fun M => 2 * L ^ 2 * (max m4 C₁ / (max M 0 + 1)) * KL
   have hb0 : ∀ M, 0 ≤ b M := fun M => by dsimp [b]; positivity
   have hbtend : Tendsto b atTop (𝓝 0) := by
@@ -880,10 +879,10 @@ private theorem integral_singleCauchy_left_line {W₀ : ℝ} (hW : 0 < W₀)
             (by positivity) (by linarith)) hLapM (norm_nonneg _) (by positivity))
             (hRem8 _ hs) (norm_nonneg _) (by positivity)
       _ = 2 * L ^ 2 * (max m4 C₁ / (max M 0 + 1)) * KL / (1 + |t|) := by
-          field_simp [(by positivity : (0 : ℝ) < 1 + |t|).ne']; ring
+          field_simp [(by positivity : (0 : ℝ) < 1 + |t|).ne']
   have hmain := integral_vertical_one_pole_left (G := G) (σ₀ := 4) (σ₁ := 5) (p₀ := -(L : ℂ))
     (by norm_num) (by simp; linarith) hG_diff (by positivity) hG_bound hb0 hbtend hbleft
-  norm_num at hmain
+  rw [show ((4 : ℝ) : ℂ) = 4 by norm_num] at hmain
   have hcongr : (fun t : ℝ => singleCauchy L ((4 : ℂ) + t * I) *
         negativeHalfLineLaplace (cx F) ((-4 : ℂ) - t * I) *
         globalRemainder F ((-4 : ℂ) + t * I)) =
@@ -1024,7 +1023,7 @@ private theorem integral_singleCauchy_zero_term {W₀ : ℝ} (hW : 0 < W₀)
     (by norm_num) (by linarith [hz_abs.2]) hH_diff (by positivity) hH_bound hb0 hbtend hbleft
   have hI2 := integral_vertical_one_pole_left (G := H) (σ₀ := 4) (σ₁ := 5) (p₀ := -(L : ℂ))
     (by norm_num) (by simp; linarith) hH_diff (by positivity) hH_bound hb0 hbtend hbleft
-  norm_num at hI1 hI2
+  rw [show ((4 : ℝ) : ℂ) = 4 by norm_num] at hI1 hI2
   -- Integrability of each single-pole piece on `Re w = 4`
   have hint_pole : ∀ p₀ : ℂ, p₀.re < 4 →
       Integrable fun t : ℝ => H ((4 : ℂ) + t * I) / (((4 : ℂ) + t * I) - p₀) := by
@@ -1143,7 +1142,7 @@ private theorem biCauchy_state_identity {W₀ : ℝ} (hW : 0 < W₀)
       (negativeHalfLineLaplace (cx F) (centredZero c) *
         ((((4 : ℂ) + t * I) - centredZero c)⁻¹ - (((-4 : ℂ) + t * I) - centredZero c)⁻¹))
   let dom : XiZeroCopy → ℝ → ℝ := fun c t =>
-    (2600 * N ^ 4 * m4 * halfPoleMass F * ‖centredZero c‖⁻¹ ^ 2) * (1 + t ^ 2)⁻¹
+    (2720 * N ^ 4 * m4 * halfPoleMass F * ‖centredZero c‖⁻¹ ^ 2) * (1 + t ^ 2)⁻¹
   have hterm_norm : ∀ c t, ‖term c t‖ ≤ dom c t := by
     intro c t
     dsimp [term, dom]
@@ -1153,14 +1152,14 @@ private theorem biCauchy_state_identity {W₀ : ℝ} (hW : 0 < W₀)
         have := (abs_lt.mp (abs_re_centredZero_lt c)).1; linarith)
     have h1 : ‖(((4 : ℂ) + t * I) - centredZero c)⁻¹‖ ≤ (9 + 2 * |t|) * ‖centredZero c‖⁻¹ := by
       have hpnorm : ‖(4 : ℂ) + t * I‖ ≤ 4 + |t| :=
-        (Complex.norm_add_le _ _).trans (by simp [Complex.norm_I])
+        (norm_add_le _ _).trans (by simp [Complex.norm_I])
       have := norm_inv_sub_le (p := (4 : ℂ) + t * I) (z := centredZero c) (δ := 1 / 2)
         (P := 4 + |t|) (by norm_num) (centredZero_ne_zero c)
         (half_le_norm_sub_centredZero (by simp) c) hpnorm
       refine this.trans_eq (by ring)
     have h2 : ‖(((-4 : ℂ) + t * I) - centredZero c)⁻¹‖ ≤ (9 + 2 * |t|) * ‖centredZero c‖⁻¹ := by
       have hpnorm : ‖(-4 : ℂ) + t * I‖ ≤ 4 + |t| :=
-        (Complex.norm_add_le _ _).trans (by simp [Complex.norm_I])
+        (norm_add_le _ _).trans (by simp [Complex.norm_I])
       have := norm_inv_sub_le (p := (-4 : ℂ) + t * I) (z := centredZero c) (δ := 1 / 2)
         (P := 4 + |t|) (by norm_num) (centredZero_ne_zero c)
         (half_le_norm_sub_centredZero (by simp) c) hpnorm
@@ -1187,16 +1186,16 @@ private theorem biCauchy_state_identity {W₀ : ℝ} (hW : 0 < W₀)
             mul_le_mul_of_nonneg_left
               (mul_le_mul h1 h2 (norm_nonneg _) (by positivity)) (by norm_num)
         _ = 8 * (9 + 2 * |t|) ^ 2 * ‖centredZero c‖⁻¹ ^ 2 := by ring
-    have hpoly : 8 * (9 + 2 * |t|) ^ 2 ≤ 650 * (1 + t ^ 2) := by
+    have hpoly : 8 * (9 + 2 * |t|) ^ 2 ≤ 680 * (1 + t ^ 2) := by
       nlinarith [sq_nonneg (9 * |t| - 2), sq_abs t, abs_nonneg t]
     have hprod_t : (4 * N ^ 4 / ((1 + t ^ 2) * (1 + t ^ 2))) * (8 * (9 + 2 * |t|) ^ 2) ≤
-        2600 * N ^ 4 * (1 + t ^ 2)⁻¹ := by
-      rw [div_mul_eq_mul_div, le_div_iff₀ (by positivity : 0 < (1 + t ^ 2) * (1 + t ^ 2))]
+        2720 * N ^ 4 * (1 + t ^ 2)⁻¹ := by
+      rw [div_mul_eq_mul_div, div_le_iff₀ (by positivity : 0 < (1 + t ^ 2) * (1 + t ^ 2))]
       calc 4 * N ^ 4 * (8 * (9 + 2 * |t|) ^ 2)
-          ≤ 4 * N ^ 4 * (650 * (1 + t ^ 2)) :=
+          ≤ 4 * N ^ 4 * (680 * (1 + t ^ 2)) :=
             mul_le_mul_of_nonneg_left hpoly (by positivity)
-        _ = 2600 * N ^ 4 * (1 + t ^ 2)⁻¹ * ((1 + t ^ 2) * (1 + t ^ 2)) := by
-            field_simp [(by positivity : (0 : ℝ) < 1 + t ^ 2).ne']; ring
+        _ = 2720 * N ^ 4 * (1 + t ^ 2)⁻¹ * ((1 + t ^ 2) * (1 + t ^ 2)) := by
+            field_simp [(by positivity : (0 : ℝ) < 1 + t ^ 2).ne']
     rw [norm_mul, norm_mul, norm_mul]
     calc ‖biCauchy N ((4 : ℂ) + t * I)‖ * ‖negativeHalfLineLaplace (cx F) ((-4 : ℂ) - t * I)‖ *
             (‖negativeHalfLineLaplace (cx F) (centredZero c)‖ *
@@ -1209,15 +1208,16 @@ private theorem biCauchy_state_identity {W₀ : ℝ} (hW : 0 < W₀)
             (by positivity) (by positivity)
       _ = ((4 * N ^ 4 / ((1 + t ^ 2) * (1 + t ^ 2))) * (8 * (9 + 2 * |t|) ^ 2)) *
             (m4 * halfPoleMass F * ‖centredZero c‖⁻¹ ^ 2) := by ring
-      _ ≤ (2600 * N ^ 4 * (1 + t ^ 2)⁻¹) * (m4 * halfPoleMass F * ‖centredZero c‖⁻¹ ^ 2) :=
-          mul_le_mul_of_nonneg_right hprod_t (by positivity)
+      _ ≤ (2720 * N ^ 4 * (1 + t ^ 2)⁻¹) * (m4 * halfPoleMass F * ‖centredZero c‖⁻¹ ^ 2) :=
+          mul_le_mul_of_nonneg_right hprod_t
+            (mul_nonneg (mul_nonneg hm4_0 (halfPoleMass_nonneg F)) (by positivity))
       _ = _ := by ring
   have hdom_sum : ∀ t, HasSum (fun c => dom c t)
-      ((2600 * N ^ 4 * m4 * halfPoleMass F * (∑' c : XiZeroCopy, ‖centredZero c‖⁻¹ ^ 2)) *
-        (1 + t ^ 2)⁻¹) := fun t => by
-    exact (((summable_inv_sq_centredZero.hasSum.mul_left
-      (2600 * N ^ 4 * m4 * halfPoleMass F)).mul_right (1 + t ^ 2)⁻¹).congr_fun
-      fun c => by dsimp [dom]; ring)
+      ((2720 * N ^ 4 * m4 * halfPoleMass F * (∑' c : XiZeroCopy, ‖centredZero c‖⁻¹ ^ 2)) *
+        (1 + t ^ 2)⁻¹) := fun t =>
+    ((summable_inv_sq_centredZero.hasSum.mul_left
+      (2720 * N ^ 4 * m4 * halfPoleMass F)).mul_right (1 + t ^ 2)⁻¹).congr_fun
+      fun c => by dsimp [dom]
   have hpt_sum : ∀ t : ℝ, HasSum (fun c => term c t)
       (biCauchy N ((4 : ℂ) + t * I) * negativeHalfLineLaplace (cx F) ((-4 : ℂ) - t * I) *
         (globalRemainder F ((4 : ℂ) + t * I) - globalRemainder F ((-4 : ℂ) + t * I))) := by
@@ -1334,7 +1334,7 @@ private theorem biCauchy_state_identity {W₀ : ℝ} (hW : 0 < W₀)
         have hle : (3 / 4 : ℝ) * (1 + t ^ 2) ≤ ‖(L : ℂ) ^ 2 - ((4 : ℂ) + t * I) ^ 2‖ :=
           (by nlinarith : (3 / 4 : ℝ) * (1 + t ^ 2) ≤ (3 / 4) * L ^ 2 + t ^ 2).trans hd0
         exact (div_le_div_of_nonneg_left (by positivity) (by positivity) hle).trans_eq (by
-          field_simp [(by positivity : (0 : ℝ) < 1 + t ^ 2).ne']; ring)
+          field_simp [(by positivity : (0 : ℝ) < 1 + t ^ 2).ne'])
       have hn1 : 1 / 2 ≤ ‖((4 : ℂ) + t * I) - centredZero c‖ :=
         half_le_norm_sub_centredZero (by simp) c
       have hn2 : 1 / 2 ≤ ‖((-4 : ℂ) + t * I) - centredZero c‖ :=
@@ -1389,10 +1389,9 @@ private theorem biCauchy_state_identity {W₀ : ℝ} (hW : 0 < W₀)
       (globalRemainder F (-(L : ℂ)) - globalRemainder F (-(L : ℂ) - 8)) := by
     intro L hL
     have hx1 : xi (1 / 2 + -(L : ℂ)) ≠ 0 := xi_ne_zero_of_half_le_abs_re (by
-      have hre1 : (1 / 2 + -(L : ℂ)).re = 1 / 2 - L := by simp [re_one_half]; ring
-      rw [hre1, abs_of_neg (by linarith)]; linarith)
+      rw [Complex.neg_re, Complex.ofReal_re, abs_of_neg (by linarith)]; linarith)
     have hx2 : xi (1 / 2 + (-(L : ℂ) - 8)) ≠ 0 := xi_ne_zero_of_half_le_abs_re (by
-      have hre2 : (1 / 2 + (-(L : ℂ) - 8)).re = 1 / 2 - L - 8 := by simp [re_one_half]; ring
+      have hre2 : (-(L : ℂ) - 8).re = -L - 8 := by simp
       rw [hre2, abs_of_neg (by linarith)]; linarith)
     obtain ⟨δ₁, hδ₁, hb₁⟩ := exists_zeroFree_ball hx1
     obtain ⟨δ₂, hδ₂, hb₂⟩ := exists_zeroFree_ball hx2
@@ -1518,7 +1517,7 @@ private theorem biCauchy_state_identity {W₀ : ℝ} (hW : 0 < W₀)
       have hle : (3 / 4 : ℝ) * (1 + t ^ 2) ≤ ‖(L : ℂ) ^ 2 - ((4 : ℂ) + t * I) ^ 2‖ :=
         (by nlinarith : (3 / 4 : ℝ) * (1 + t ^ 2) ≤ (3 / 4) * L ^ 2 + t ^ 2).trans hd0
       exact (div_le_div_of_nonneg_left (by positivity) (by positivity) hle).trans_eq (by
-        field_simp [(by positivity : (0 : ℝ) < 1 + t ^ 2).ne']; ring)
+        field_simp [(by positivity : (0 : ℝ) < 1 + t ^ 2).ne'])
     have hrem : ‖globalRemainder F ((-4 : ℂ) + t * I)‖ ≤ KL := by
       have hlt : ((-4 : ℂ) + t * I).re < -(1 / 2) := by simp; norm_num
       rw [globalRemainder, if_neg (not_lt.mpr hlt.le), if_pos hlt]
@@ -1640,7 +1639,7 @@ theorem criticalState_exists_seen_left_centredZero {W₀ : ℝ} (hW : 0 < W₀)
         exact xi_centredZero c
       obtain ⟨c', hc'⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi_neg
       have hzc' : centredZero c' = -centredZero c := by
-        dsimp [centredZero]; rw [hc']; ring
+        rw [centredZero, hc']; ring
       have hlt' : (centredZero c').re < 0 := by rw [hzc']; simp; linarith
       by_cases hL' : negativeHalfLineLaplace (cx F) (centredZero c') = 0
       · rw [← hzc', hL', mul_zero]

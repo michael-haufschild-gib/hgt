@@ -1,8 +1,11 @@
-import GaloisForLFunctions.BezoutValuationIncidence.SingularSeries.TwinPrimeConstant
 import Mathlib.Analysis.Normed.Module.MultipliableUniformlyOn
 import Mathlib.Analysis.Complex.LocallyUniformLimit
 import Mathlib.Analysis.Complex.CauchyIntegral
 import Mathlib.NumberTheory.SumPrimeReciprocals
+import Mathlib.Tactic.FunProp
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Positivity
 
 /-!
 # The odd-prime correction to the distinct-prime sign series
@@ -10,7 +13,6 @@ import Mathlib.NumberTheory.SumPrimeReciprocals
 The local factor `(1 - 2p⁻ˢ)/(1 - p⁻ˢ)²` differs from one by
 `-(p⁻ˢ/(1 - p⁻ˢ))²`. These quadratic deficits give locally uniform
 convergence on `Re s > 1/2`, including points where a local factor vanishes.
-At one, the product is the twin-prime constant.
 -/
 
 noncomputable section
@@ -62,20 +64,61 @@ private theorem one_sub_distinctPrimeDecay_ne_zero (p : Nat.Primes) {s : ℂ}
   rw [← sub_eq_zero.mp h, norm_one] at hn
   exact lt_irrefl _ hn
 
+/-- The quadratic deficit equals the rational Euler correction. -/
+theorem oddPrimeCorrectionFactor_eq (p : Nat.Primes) {s : ℂ} (hs : 0 < s.re) :
+    oddPrimeCorrectionFactor p s =
+      if (p : ℕ) = 2 then 1 else
+        (1 - 2 * distinctPrimeDecay p s) / (1 - distinctPrimeDecay p s) ^ 2 := by
+  unfold oddPrimeCorrectionFactor
+  split_ifs
+  · rfl
+  · have hd := one_sub_distinctPrimeDecay_ne_zero p hs
+    field_simp
+    ring
+
+/-- A local zero occurs precisely when an odd-prime decay equals one half. -/
+theorem oddPrimeCorrectionFactor_eq_zero_iff (p : Nat.Primes) {s : ℂ}
+    (hs : 0 < s.re) :
+    oddPrimeCorrectionFactor p s = 0 ↔
+      (p : ℕ) ≠ 2 ∧ distinctPrimeDecay p s = 1 / 2 := by
+  rw [oddPrimeCorrectionFactor_eq p hs]
+  split_ifs with hp
+  · simp only [hp, ne_eq, not_true_eq_false, false_and, one_ne_zero]
+  · rw [div_eq_zero_iff, or_iff_left (pow_ne_zero 2
+      (one_sub_distinctPrimeDecay_ne_zero p hs))]
+    constructor
+    · intro h
+      refine ⟨hp, ?_⟩
+      linear_combination -h / 2
+    · rintro ⟨_, h⟩
+      rw [h]
+      norm_num
+
 private theorem differentiableOn_oddPrimeCorrectionFactor (p : Nat.Primes) :
     DifferentiableOn ℂ (oddPrimeCorrectionFactor p) {s : ℂ | 0 < s.re} := by
-  intro s hs
   by_cases hp : (p : ℕ) = 2
-  · simp only [oddPrimeCorrectionFactor, if_pos hp]
-    exact differentiableWithinAt_const _
-  · have hx : DifferentiableAt ℂ (distinctPrimeDecay p) s := by
+  · have he : oddPrimeCorrectionFactor p = fun _ => 1 := by
+      funext s
+      exact if_pos hp
+    rw [he]
+    intro s _
+    exact (differentiableAt_const (1 : ℂ)).differentiableWithinAt
+  · intro s hs
+    have he : oddPrimeCorrectionFactor p = fun z =>
+        1 - (distinctPrimeDecay p z / (1 - distinctPrimeDecay p z)) ^ 2 := by
+      funext z
+      exact if_neg hp
+    rw [he]
+    have hx : DifferentiableAt ℂ (distinctPrimeDecay p) s := by
       unfold distinctPrimeDecay
       fun_prop
     have hd : DifferentiableAt ℂ (fun z => 1 - distinctPrimeDecay p z) s :=
-      differentiableAt_const.sub hx
-    have h := differentiableAt_const.sub
+      (differentiableAt_const (1 : ℂ)).sub hx
+    have h : DifferentiableAt ℂ (fun z =>
+        1 - (distinctPrimeDecay p z / (1 - distinctPrimeDecay p z)) ^ 2) s :=
+      (differentiableAt_const (1 : ℂ)).sub
       ((hx.div hd (one_sub_distinctPrimeDecay_ne_zero p hs)).pow 2)
-    simpa only [oddPrimeCorrectionFactor, if_neg hp] using h.differentiableWithinAt
+    exact h.differentiableWithinAt
 
 /-- A summable quadratic majorant, uniform on any strictly positive half-plane. -/
 private theorem norm_oddPrimeCorrectionFactor_sub_one_le (p : Nat.Primes) {σ : ℝ}
@@ -157,17 +200,25 @@ theorem analyticOnNhd_oddPrimeCorrection :
     AnalyticOnNhd ℂ oddPrimeCorrection {s : ℂ | 1 / 2 < s.re} := by
   apply DifferentiableOn.analyticOnNhd ?_ (isOpen_lt continuous_const Complex.continuous_re)
   intro s hs
+  change 1 / 2 < s.re at hs
   let σ : ℝ := (1 / 2 + s.re) / 2
   have hσ : 1 / 2 < σ := by dsimp only [σ]; linarith only [hs]
   have hsσ : σ < s.re := by dsimp only [σ]; linarith only [hs]
+  have hσ0 : 0 < σ := by linarith only [hσ]
   have hU : IsOpen {s : ℂ | σ < s.re} := isOpen_lt continuous_const Complex.continuous_re
   have hd : DifferentiableOn ℂ oddPrimeCorrection {s : ℂ | σ < s.re} :=
     (multipliableLocallyUniformlyOn_oddPrimeCorrection hσ).hasProdLocallyUniformlyOn.differentiableOn
-      (Eventually.of_forall fun _ => by
-        simpa only [Finset.prod_fn] using
-          DifferentiableOn.finsetProd (fun p _ =>
-            (differentiableOn_oddPrimeCorrectionFactor p).mono
-              (fun z hz => (show 0 < σ by linarith only [hσ]).trans hz))) hU
+      (Eventually.of_forall fun S => by
+        classical
+        induction S using Finset.induction_on with
+        | empty =>
+            simp only [Finset.prod_empty]
+            intro z _
+            exact (differentiableAt_const (1 : ℂ)).differentiableWithinAt
+        | @insert p S hp ih =>
+            simp only [Finset.prod_insert hp]
+            exact ((differentiableOn_oddPrimeCorrectionFactor p).mono
+              (fun z hz => hσ0.trans hz)).mul ih) hU
   exact (hd.differentiableAt (hU.mem_nhds hsσ)).differentiableWithinAt
 
 /-- At one, prime decay is the reciprocal prime. -/
@@ -178,33 +229,71 @@ theorem distinctPrimeDecay_one (p : Nat.Primes) :
     Real.exp_log hp]
   rfl
 
-/-- The analytic local correction specializes to the prime-pair factor. -/
-theorem oddPrimeCorrectionFactor_one (p : Nat.Primes) :
-    oddPrimeCorrectionFactor p 1 =
-      (BezoutValuationIncidence.twinPrimeFactor p : ℂ) := by
-  unfold oddPrimeCorrectionFactor BezoutValuationIncidence.twinPrimeFactor
-  split_ifs with hp
-  · simp only [Complex.ofReal_one]
-  · rw [distinctPrimeDecay_one]
-    have hp0 : (p : ℂ) ≠ 0 := by exact_mod_cast p.prop.ne_zero
-    have hp1 : (p : ℂ) - 1 ≠ 0 := by
-      exact sub_ne_zero.mpr (by exact_mod_cast p.prop.ne_one)
-    push_cast
-    field_simp
-    <;> ring
+private theorem norm_distinctPrimeDecay_lt_half (p : Nat.Primes) (hp : 4 ≤ (p : ℕ))
+    {s : ℂ} (hs : 1 / 2 < s.re) : ‖distinctPrimeDecay p s‖ < 1 / 2 := by
+  have hlogp : 0 < Real.log (p : ℕ) :=
+    Real.log_pos (by exact_mod_cast p.prop.one_lt)
+  have hlog4 : Real.log 4 ≤ Real.log (p : ℕ) :=
+    Real.log_le_log (by norm_num) (by exact_mod_cast hp)
+  have hlog : Real.log 4 = 2 * Real.log 2 := by
+    simpa only [show (2 : ℝ) ^ 2 = 4 by norm_num, Nat.cast_ofNat] using Real.log_pow 2 2
+  have he : -(s.re * Real.log (p : ℕ)) < -Real.log 2 := by
+    have hmul := mul_lt_mul_of_pos_right hs hlogp
+    linarith only [hlog4, hlog, hmul]
+  rw [norm_distinctPrimeDecay]
+  calc
+    _ < Real.exp (-Real.log 2) := Real.exp_lt_exp.mpr he
+    _ = 1 / 2 := by rw [Real.exp_neg, Real.exp_log (by norm_num)]; norm_num
 
-/-- The holomorphic correction takes the positive twin-prime value at one. -/
-theorem oddPrimeCorrection_one :
-    oddPrimeCorrection 1 = (BezoutValuationIncidence.twinPrimeConstant : ℂ) := by
-  have h : HasProd BezoutValuationIncidence.twinPrimeFactor
-      BezoutValuationIncidence.twinPrimeConstant := by
-    rw [BezoutValuationIncidence.twinPrimeConstant_eq_singularSeries]
-    exact BezoutValuationIncidence.hasProd_twinPrimeFactor
-  exact ((h.map Complex.ofRealHom Complex.continuous_ofReal).congr_fun
-    oddPrimeCorrectionFactor_one).tprod_eq
+/-- In the convergence half-plane, prime three accounts for every correction zero. -/
+theorem oddPrimeCorrection_eq_zero_iff_three {s : ℂ} (hs : 1 / 2 < s.re) :
+    oddPrimeCorrection s = 0 ↔
+      distinctPrimeDecay ⟨3, Nat.prime_three⟩ s = 1 / 2 := by
+  have hs0 : 0 < s.re := by linarith only [hs]
+  rw [oddPrimeCorrection_eq_zero_iff hs]
+  constructor
+  · rintro ⟨p, hp⟩
+    obtain ⟨hp2, hdecay⟩ := (oddPrimeCorrectionFactor_eq_zero_iff p hs0).mp hp
+    have hp3 : (p : ℕ) = 3 := by
+      by_contra hne
+      have hp4 : 4 ≤ (p : ℕ) := by have h := p.prop.two_le; omega
+      have hn := norm_distinctPrimeDecay_lt_half p hp4 hs
+      rw [hdecay] at hn
+      norm_num at hn
+    have he : p = (⟨3, Nat.prime_three⟩ : Nat.Primes) := Subtype.ext hp3
+    simpa only [he] using hdecay
+  · intro h
+    exact ⟨⟨3, Nat.prime_three⟩,
+      (oddPrimeCorrectionFactor_eq_zero_iff _ hs0).mpr ⟨by norm_num, h⟩⟩
+
+/-- The real prime-three zero lies strictly between one half and one. -/
+theorem log_two_div_log_three_mem :
+    Real.log 2 / Real.log 3 ∈ Set.Ioo (1 / 2 : ℝ) 1 := by
+  have h3 : 0 < Real.log 3 := Real.log_pos (by norm_num)
+  have h23 := Real.log_lt_log (by norm_num : (0 : ℝ) < 2) (by norm_num : (2 : ℝ) < 3)
+  have h34 := Real.log_lt_log (by norm_num : (0 : ℝ) < 3) (by norm_num : (3 : ℝ) < 4)
+  have h4 : Real.log 4 = 2 * Real.log 2 := by
+    simpa only [show (2 : ℝ) ^ 2 = 4 by norm_num, Nat.cast_ofNat] using Real.log_pow 2 2
+  constructor
+  · apply (lt_div_iff₀ h3).mpr
+    linarith only [h34, h4]
+  · exact (div_lt_one h3).mpr h23
+
+/-- The odd-prime correction has an explicit zero inside its holomorphic half-plane. -/
+theorem oddPrimeCorrection_log_two_div_log_three :
+    oddPrimeCorrection (Real.log 2 / Real.log 3 : ℝ) = 0 := by
+  have h3 : Real.log 3 ≠ 0 := (Real.log_pos (by norm_num : (1 : ℝ) < 3)).ne'
+  apply (oddPrimeCorrection_eq_zero_iff_three
+    (by exact log_two_div_log_three_mem.1)).mpr
+  unfold distinctPrimeDecay
+  change Complex.exp (-((↑(Real.log 2 / Real.log 3) : ℂ) * ↑(Real.log 3))) = 1 / 2
+  rw [← Complex.ofReal_mul, div_mul_cancel₀ _ h3, Complex.exp_neg,
+    ← Complex.ofReal_exp, Real.exp_log (by norm_num : (0 : ℝ) < 2)]
+  norm_num
 
 #print axioms multipliableLocallyUniformlyOn_oddPrimeCorrection
 #print axioms analyticOnNhd_oddPrimeCorrection
 #print axioms oddPrimeCorrection_eq_zero_iff
-#print axioms oddPrimeCorrection_one
+#print axioms oddPrimeCorrection_eq_zero_iff_three
+#print axioms oddPrimeCorrection_log_two_div_log_three
 end GaloisForLFunctions.SelbergClass

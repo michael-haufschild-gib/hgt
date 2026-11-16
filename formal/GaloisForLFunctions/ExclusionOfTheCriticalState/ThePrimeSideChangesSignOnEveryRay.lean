@@ -141,7 +141,7 @@ private theorem criticalState_no_entire_reflected_transform {W₀ : ℝ} (hW : 0
         rw [stateXiProduct_eq hd hxi]
         dsimp only [P]
         rw [heq x hx]
-      exact (tendsto_ofReal_nhdsNE (-11)).frequently hev.frequently
+      simpa using (tendsto_ofReal_nhdsNE (-11)).frequently hev.frequently
     have hA : AnalyticOnNhd ℂ (stateXiProduct W₀ F) univ :=
       fun w _ => (differentiable_stateXiProduct hd).analyticAt w
     have hB : AnalyticOnNhd ℂ P univ := fun w _ => hP.analyticAt w

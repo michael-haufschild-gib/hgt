@@ -37,7 +37,6 @@ so nothing is lost between stages.
 | Three remainders | `levyRemainder`, `stripRemainder`, `leftRemainder`, `globalRemainder` | the remainder right of, on, and left of $\operatorname{Re}p=-\tfrac12$ |
 | Continuations | `stateContinuation`, `levyContinuation`, `stateMeromorphic` | $-R(w+8)/a$ on $\operatorname{Re}w>-8$, $>-\tfrac{17}2$, and on $\mathbb C$ |
 | Entire state product | `stateXiProduct` | $E(w)=\xi(w+\tfrac{17}2)\mathcal LF(w)$, extended across the shifted zeros |
-| Left Hardy datum | `leftContinuationDatum` | $G_c\in L^2(0,\infty)$ representing the reflected continuation $\mathcal LF(-(z+c)-8)$ for $\operatorname{Re}z>0$, $\tfrac12<c\le4$ |
 | Averaged state | `averagedState`, `averageSymbol` | $A(t)$: exponential averages of $F(-\cdot)$ at the rates $9,\dots,12$; $\int_0^\infty A(t)e^{-zt}dt=\mathcal LF(z)/((z+9)(z+10)(z+11)(z+12))$ |
 | Heat test, heat kernel | `stateHeatSymbol`, `stateHeatKernel` | $e^{\varepsilon p^2-pT}$; $k_\varepsilon(x)=(4\pi\varepsilon)^{-1/2}e^{-x^2/4\varepsilon}$ |
 | Heated state | `heatedState` | $\int k_\varepsilon(u-T)e^{-8u}F(u)\,du$ |
@@ -90,11 +89,6 @@ so nothing is lost between stages.
    $-\mathcal LF(p)\zeta'/\zeta(\tfrac12-p)-\hat SF(p)$ (Dirichlet series of $\Lambda$ at $\tfrac12-p$). Its Euler part cancels the reflected
    Euler term of the Gamma pairing exactly, and the remainder is $JF+\hat SF+\mathcal LF(\tfrac12)/(p-\tfrac12)+\mathcal LF(-\tfrac12)/(p+\tfrac12)$:
    left of the strip the state is its head term, its prime heads and its two charges.
-   Resolving the head into exponential modes gives
-   $JF(p)=\sum_{k\ge0}\mathcal LF(2k+\tfrac12)/(2k+\tfrac12-p)$.
-   Its first term cancels the positive half-charge exactly. The remaining modes have
-   strictly signed real part after orientation by $\mathcal LF(\tfrac12)$.
-   Both heads, hence the continuation, vanish uniformly in height as the real part tends left.
 9. **Pole removal.** $ZF(p)=\Delta F(p)+\mathcal LF(p)\,\xi'/\xi(\tfrac12+p)$, and $\Delta F$ converges absolutely and is
    holomorphic on $\operatorname{Re}p>-2$, zeros included. With $(s-1)\zeta(s)=2\xi(s)/(s\Gamma_{\mathbb R}(s))$ the Euler term of the
    remainder is $\mathcal LF\cdot(\xi'/\xi-1/s-\Gamma_{\mathbb R}'/\Gamma_{\mathbb R})$, so the defect $BF(1)-BF+ZF$ has no pole: one
@@ -106,26 +100,13 @@ so nothing is lost between stages.
    The cleared state product $E$ is entire. At a seen zero $z=\rho-\tfrac12$ of multiplicity $m$,
    $E$ has order exactly $m-1$ at $z-8$: in $\xi R+\mathcal LF\,\xi'$, only the derivative term contributes
    to the leading jet. Conversely, $E$ has order at least $m$ there exactly when $\mathcal LF(z)=0$.
-11. **A Hardy profile left of the strip.** Carleman's inequality puts
-   $K_F(v)=\int_0^\infty\omega(v+t)F(-t)\,dt$ in $L^2$. After damping by $e^{-cv}$,
-   $\tfrac12<c\le4$, the translated prime profiles sum in $L^2$, and both charges are
-   exponential profiles. Their exact combination $G_c$ represents
-   $\mathcal LF(-(z+c)-8)=\int_0^\infty G_c(v)e^{-zv}\,dv$ for $\operatorname{Re}z>0$.
-   Plancherel bounds every vertical square integral there; Cauchy–Schwarz gives
-   $|\mathcal LF(w)|\le\|G_c\|_2/\sqrt{2(-\operatorname{Re}w-c-8)}$ for $\operatorname{Re}w<-c-8$.
-12. **Vanishing average wall trace.** For $T_hF=F(\cdot+h)$ and $c=\langle F,T_hF\rangle$,
-   the reversed residual $J_h=F-cT_hF$ agrees with $F$ on $(-h,0)$.
-   The spectral gap bounds $\|J_h\|_2^2=O(h)$; nullity and translation give $Q(J_h)=O(h)$.
-   Coercivity then bounds its Lévy energy by $O(h)$, so the logarithmic boundary inequality
-   gives $\log(2/h)\int_{-h}^0F^2\le Ch$. Thus the average square mass tends to zero.
-   Truncation and Cauchy–Schwarz give $\sigma|\mathcal LF(\sigma+iy)|\to0$ uniformly in $y$.
-13. **Bounds off the zeros and the averaged line shift.** At distance $\delta$ from the zeros
+11. **Bounds off the zeros and the averaged line shift.** At distance $\delta$ from the zeros
    $|ZF(p)|\le C(1+|p|)(1+|p|/\delta)$, so the continuation is $O(|w|^2)$ on every vertical line off the
    pole strip. An exponential average of the state at four rates divides the transform by a quartic;
    the inversion line then moves from $\operatorname{Re}w=1$ to $\operatorname{Re}w=\kappa'-8$ for every $\kappa'$ above the
    real parts of the centred zeros. The raw transform does not decay on these lines, so the unaveraged
    $L^2$ law needs more than the width of the zero strip.
-14. **Two lines weigh the zero values.** For entire $H$ of fourth-order decay on $a\le\operatorname{Re}p\le b$,
+12. **Two lines weigh the zero values.** For entire $H$ of fourth-order decay on $a\le\operatorname{Re}p\le b$,
    $a\le-1$, $1\le b$: $\sum_z\mathcal LF(z)H(z)=\frac1{2\pi}\big(\int_{\operatorname{Re}p=b}H\,BF-\int_{\operatorname{Re}p=a}H\,BF\big)$. The zero
    sum integrates term by term and the constant of the explicit formula drops out. For the state the
    right line carries $\mathcal LF$ and the left line its continuation. With $H=e^{\varepsilon p^2-pT}$ each line
@@ -137,14 +118,14 @@ so nothing is lost between stages.
 | # | Question | Status |
 |---|---|---|
 | Q1 | Probe kernel $B(e_p,e_q)=\frac{D(p)+D(q)}{p+q}$ and its zero side | answered (Lean) |
-| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | answered against probes (Lean): for every $F\in\mathcal H$ and $p$ off the zeros, $B(F,e_p)-B(F,e_1)=\sum_z\mathcal LF(z)\big(\tfrac1{p-z}-\tfrac1{1-z}\big)$; for the state, $a(\mathcal LF(w)-\mathcal LF(v))=-\sum_z\mathcal LF(z)\big(\tfrac1{w+8-z}-\tfrac1{v+8-z}\big)$ on $\operatorname{Re}w,\operatorname{Re}v>-4$. In time form (Lean): $\sum_z\mathcal LF(z)e^{\varepsilon z^2-zT}=a\big(\int_{x>0}k_\varepsilon(x-T)F^+(x)dx-\int_{u<0}k_\varepsilon(u-T)e^{-8u}F(u)du\big)$ for every $\varepsilon>0$ and real $T$. The zero side for two general profiles is not used by $(\star)$ and is open |
-| Q3 | State equation, continuation, residues | answered (Lean): $\mathcal LF$ continues to $\mathbb C$, holomorphic off the points $\rho-\tfrac{17}2$ ($\operatorname{Re}\rho>0$), residue $-m_\rho\mathcal LF(\rho-\tfrac12)/a$, a pole at every zero with $\operatorname{Re}\rho\ge\tfrac12$, uniformly vanishing as $\operatorname{Re}w\to-\infty$; left of the strip $-a\mathcal LF(w)=(JF+\hat SF)(w+8)+$ charges |
-| Q4 | Decay law | divergent half (Lean): $\int F^2e^{-bu}<\infty\Rightarrow\operatorname{Re}\rho\le\frac{17-b}2$; uniform vertical $L^2$ bounds on $\operatorname{Re}w\le-\tfrac{17}2-\delta$ for every $\delta>0$ (Lean); convergent half, averaged (Lean): if every centred zero has $\operatorname{Re}z\le\kappa$, then $|A(t)|\le Ce^{-(8-\kappa')t}$ for every $\kappa'>\kappa$; with the seed, every rate below $183001/24000$, beyond the barrier $15/2$. Heated (Lean): for $T\le-4\varepsilon$ the heated state is $-a^{-1}\sum_z\mathcal LF(z)e^{\varepsilon z^2-zT}$ up to $\|F^+e^{-x}\|_2\,k_\varepsilon(T)$. The unaveraged $L^2$ law is open; it is a square-summability of the zero values $\mathcal LF(z)$ against the density of the zeros (*reading*) |
+| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | partial (Lean): probe and heated zero-side identities; two general profiles open |
+| Q3 | State equation, continuation, residues | answered (Lean): global meromorphic continuation, exact residues and uniform left decay |
+| Q4 | Decay law | partial (Lean): divergent law, left Hardy bounds and averaged/heated decay; unaveraged $L^2$ law open |
 | Q5 | Sign law | answered (Lean): one sign on no ray |
 | Q6 | Index law | $\zeta$: finite index at every ratio (Lean); exact count of critical ratios open |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH |
 | Q8 | The arithmetic property that excludes the state | open |
-| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): $\log(2/h)\int_{-h}^0F^2\le Ch$, vanishing average square mass at the wall, and $\sigma|\mathcal LF(\sigma+iy)|\to0$ uniformly in $y$; archimedean resolvent expansion, exact positive-charge cancellation, strict sign restriction and uniform inverse-square-root left decay; leading asymptotics and exclusion open |
+| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): vanishing average wall mass, uniform right $o(1/\sigma)$ decay and charge cancellation; leading asymptotics and exclusion open |
 
 ## 6. Tools
 
@@ -159,7 +140,7 @@ dominations; the functional equation in Lévy form; prime heads and the Dirichle
 of the strip; gluing of three remainders into one continuation; $\zeta\ne0$ on $\operatorname{Re}s=0$; the zero-sum
 calculus (one subtraction, absolute convergence off the zeros, divided-difference sum, pole removal);
 linear growth of every pairing of a profile with a probe; the pole-free forms of the defect, their
-gluing and Liouville; Carleman's inequality and half-line Plancherel for the explicit left Hardy profile. Bounds of the pairing and of the
+gluing and Liouville. Bounds of the pairing and of the
 continuation off the zeros; the Volterra–Laplace calculus of exponential averages; the entire product
 and its difference equation; two-line weighing of the zero values against entire tests; Gaussian line
 integrals of Laplace integrals as heat averages.
@@ -210,9 +191,8 @@ and its comparison with $e^{-8u}F$ at the wall.
 | Improving the exponential barrier is free | By the decay ruler it is a zero-free half-plane: $b$ yields $\Theta\le\frac{17-b}2$ |
 | On-line zeros give a new decay bound $b\le16$ | The state exists only off RH, where off-line zeros already give $b^*<16$ |
 | Finite index needs arithmetic | Confinement compactness gives it for every configuration |
-| Functional equation + Euler product + positive coefficients exclude | Positive Euler twins have all three and an off-line zero |
+| Functional equation + Euler product + positive coefficients exclude | Positive Euler twins retain these and real-axis nonvanishing despite off-line zeros; logarithmic positivity fails |
 | The sign law is soft | It uses that $\zeta$ has no real zero in $(\tfrac12,1)$; prime-two deformations can have one |
-| Real-axis nonvanishing separates $\zeta$ from the positive Euler twins | Their entire completions are strictly positive on the whole real axis despite off-line zeros; their logarithmic coefficients, rather than their ordinary coefficients, fail positivity |
 | The exponent 8 is canonical | Any confinement exponent works; 8 only fixes the shift of the residue transport |
 | The Gamma pairing continues only by deforming the Fourier contour | Its Lévy form converges on $\operatorname{Re}p>-\tfrac12$, and its symbol is the functional equation |
 | Continuation past the strip needs the explicit formula | Left of the strip the Euler parts cancel; the remainder is head term, prime heads and charges |
