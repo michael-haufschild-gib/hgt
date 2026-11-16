@@ -35,6 +35,7 @@ theorem archLevyAntideriv_gt_firstMode {d : ℝ} (hd : 0 < d) :
   have he : 0 < Real.exp (-(5 / 2 : ℝ) * d) := Real.exp_pos _
   rw [show -(1 / 2 : ℝ) * d = -d / 2 by ring] at h
   norm_num only [neg_div, div_neg, neg_neg] at h
+  rw [neg_div]
   linarith only [h, he]
 
 /-- A logarithmic lower bound for the exact boundary coefficient on collars of width at most one. -/

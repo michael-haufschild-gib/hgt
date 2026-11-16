@@ -49,9 +49,8 @@ theorem hermite_critical_damping_all_modes (n : ℕ) :
   unfold scalarDecayRate
   rw [abs_of_nonneg (hermiteModeFrequency_nonneg 0),
     Real.sqrt_eq_zero_of_nonpos, sub_zero]
-  rw [hermiteModeFrequency_sq, hermiteModeFrequency_sq]
-  have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
-  nlinarith only [Real.pi_pos, mul_nonneg Real.pi_pos.le hn]
+  exact sub_nonpos.mpr ((sq_le_sq₀ (hermiteModeFrequency_nonneg 0)
+    (hermiteModeFrequency_nonneg n)).mpr (hermiteModeFrequency_mono (Nat.zero_le n)))
 
 /-- The optimal worst-mode rate is attained at the ground frequency. -/
 theorem hermite_optimal_worst_decay :
@@ -62,10 +61,10 @@ theorem hermite_optimal_worst_decay :
 
 /-- A critically damped Hermite field solves the exact Hamiltonian wave equation. -/
 theorem criticalHermiteMode_ode (n : ℕ) (A B t : ℝ) :
-    (deriv (deriv (criticalScalarMode (hermiteModeFrequency n) A B)) t : ℂ) •
+    ((deriv (deriv (criticalScalarMode (hermiteModeFrequency n) A B)) t : ℝ) : ℂ) •
         hermiteSchwartz n +
       (2 * hermiteModeFrequency n : ℂ) •
-        ((deriv (criticalScalarMode (hermiteModeFrequency n) A B) t : ℂ) •
+        (((deriv (criticalScalarMode (hermiteModeFrequency n) A B) t : ℝ) : ℂ) •
           hermiteSchwartz n) +
       hamiltonianCLM ((criticalScalarMode (hermiteModeFrequency n) A B t : ℂ) •
         hermiteSchwartz n) = 0 := by
@@ -73,9 +72,9 @@ theorem criticalHermiteMode_ode (n : ℕ) (A B t : ℝ) :
   rw [abs_of_nonneg (hermiteModeFrequency_nonneg n), hermiteModeFrequency_sq] at h
   rw [map_smul, hamiltonianCLM_hermiteSchwartz, smul_smul, smul_smul,
     ← add_smul, ← add_smul]
-  have hc : (deriv (deriv (criticalScalarMode (hermiteModeFrequency n) A B)) t : ℂ) +
+  have hc : ((deriv (deriv (criticalScalarMode (hermiteModeFrequency n) A B)) t : ℝ) : ℂ) +
       (2 * hermiteModeFrequency n : ℂ) *
-        (deriv (criticalScalarMode (hermiteModeFrequency n) A B) t : ℂ) +
+        ((deriv (criticalScalarMode (hermiteModeFrequency n) A B) t : ℝ) : ℂ) +
       (criticalScalarMode (hermiteModeFrequency n) A B t : ℂ) *
         (2 * (Real.pi : ℂ) * (2 * n + 1)) = 0 := by
     exact_mod_cast (by linarith only [h] :

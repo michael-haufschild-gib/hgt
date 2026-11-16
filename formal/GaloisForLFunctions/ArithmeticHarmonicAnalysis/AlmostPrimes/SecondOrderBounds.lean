@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.AlmostPrimes.ConvolutionBounds
 import GaloisForLFunctions.HTGeometry.VonMangoldtSelfConvolution
 import GaloisForLFunctions.RHTower.ShortWindowNoGo
+import GaloisForLFunctions.RHTower.VonMangoldtMollifierPolynomialMeanSquare
 
 /-!
 # Smaller second-order almost-prime envelopes
@@ -12,7 +13,7 @@ attained by prime squares; on all integers the constant is `1/2`.
 
 noncomputable section
 
-open Finset ArithmeticFunction
+open Finset ArithmeticFunction MeasureTheory RHTower
 open scoped ArithmeticFunction
 open GaloisForLFunctions.HTGeometry
 
@@ -94,9 +95,24 @@ theorem selfConvolution_harmonic_energy_le (N : ℕ) (hN : 1 ≤ N) :
     _ ≤ _ := mul_le_mul_of_nonneg_left (RHTower.harmonic_Icc_le_one_add_log N hN)
       (by positivity)
 
+/-- The improved second-order energy feeds directly into the critical-line mean-value bound. -/
+theorem selfConvolution_critical_meanSquare_le (N : ℕ) (hN : 1 ≤ N)
+    {T₁ T₂ : ℝ} (hT : T₁ ≤ T₂) :
+    (∫ τ in T₁..T₂,
+      ‖edPoly (fun n => (((Λ * Λ) n : ℝ) : ℂ)) (Icc 1 N) (displacedLinePt 0 τ)‖ ^ 2) ≤
+      (T₂ - T₁ + 8 * N * (1 + Real.log N)) *
+        ((Real.log N ^ 4 / 4) * (1 + Real.log N)) := by
+  have h := integral_normSq_edPoly_displaced_le 0 (fun n => (((Λ * Λ) n : ℝ) : ℂ)) N T₁ T₂
+  simp only [mul_zero, zero_sub, Real.rpow_neg_one, Complex.norm_real, Real.norm_eq_abs,
+    sq_abs, ← div_eq_mul_inv] at h
+  refine h.trans (mul_le_mul_of_nonneg_left (selfConvolution_harmonic_energy_le N hN) ?_)
+  exact add_nonneg (sub_nonneg.mpr hT)
+    (mul_nonneg (by positivity) (add_nonneg zero_le_one (Real.log_natCast_nonneg N)))
+
 #print axioms selfConvolution_primePower_le_quarter
 #print axioms selfConvolution_primeSquare_eq_quarter
 #print axioms selfConvolution_le_half
 #print axioms selfConvolution_harmonic_energy_le
+#print axioms selfConvolution_critical_meanSquare_le
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.AlmostPrimes
