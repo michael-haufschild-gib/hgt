@@ -32,7 +32,7 @@ theorem exists_ball_shell_decomposition (f : compactlySupportedLocallyConstant �
       f.1 x = f.1 0 := by
     obtain ⟨z, hz⟩ := hx
     have hz' : (z : ℚ_[p]) = (p : ℚ_[p]) ^ (-(L : ℤ)) * x := by
-      simpa only [Units.val_zpow_eq_zpow_val, fieldOnePadicPrimeUnit] using hz
+      simpa [fieldOnePadicPrimeUnit] using hz
     have hxz : x = (p : ℚ_[p]) ^ L * (z : ℚ_[p]) := by
       rw [hz', ← mul_assoc, ← zpow_natCast, ← zpow_add₀ hp]
       simp
@@ -45,7 +45,10 @@ theorem exists_ball_shell_decomposition (f : compactlySupportedLocallyConstant �
       f.1 0 * (fieldOnePadicSoninBall p (-(L : ℤ))).1 x +
         ∑ k ∈ Finset.Ico (-(N : ℤ)) (L : ℤ),
           radialValue p f k * (fieldOnePadicSoninShell p (-k)).1 x := by
-    change fieldOnePadicBruhatEvalLinear p x _ = _
+    change fieldOnePadicBruhatEvalLinear p x
+      (f.1 0 • fieldOnePadicSoninBall p (-(L : ℤ)) +
+        ∑ k ∈ Finset.Ico (-(N : ℤ)) (L : ℤ),
+          radialValue p f k • fieldOnePadicSoninShell p (-k)) = _
     simp only [map_add, map_sum, map_smul, fieldOnePadicBruhatEvalLinear_apply,
       smul_eq_mul]
   have hcoord (k : ℤ) (u : ℤ_[p]ˣ) :
@@ -73,7 +76,8 @@ theorem exists_ball_shell_decomposition (f : compactlySupportedLocallyConstant �
       fieldOnePadicSoninBallSet_mem_forward_iff]
     by_cases hhigh : (L : ℤ) ≤ k
     · rw [if_pos (by omega), mul_one]
-      rw [hconst _ ((fieldOnePadicSoninBallSet_mem_forward_iff p _ _ _).mpr (by omega))]
+      rw [hconst _ ((fieldOnePadicSoninBallSet_mem_forward_iff p (-(L : ℤ)) k u).mpr
+        (by omega))]
       have hsum : (∑ j ∈ Finset.Ico (-(N : ℤ)) (L : ℤ), radialValue p f j *
           (fieldOnePadicSoninShell p (-j)).1
             ((fieldOnePadicValuationUnitForward p (Multiplicative.ofAdd k, u) :
@@ -109,7 +113,9 @@ theorem exists_ball_shell_decomposition (f : compactlySupportedLocallyConstant �
   intro x
   rcases eq_or_ne x 0 with rfl | hx
   · rw [heval]
-    simp [fieldOnePadicSoninBall_apply]
+    have hzero : (fieldOnePadicSoninUnitBall p).1 0 = 1 :=
+      fieldOnePadicSoninUnitBall_apply_coe p 0
+    simp [fieldOnePadicSoninBall_apply, hzero]
   · let a : ℚ_[p]ˣ := Units.mk0 x hx
     let z := (fieldOnePadicValuationUnitMulEquiv p).symm a
     have hz : fieldOnePadicValuationUnitForward p

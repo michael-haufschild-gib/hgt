@@ -1,6 +1,5 @@
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.RingRamanujanRadicalMoments
-import Mathlib.RingTheory.LocalRing.MaximalIdeal.Basic
-import Mathlib.Algebra.Group.Submonoid.Units
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCountLawOverEveryFiniteRing
 
 /-!
 # The three values of a local-ring Ramanujan sum
@@ -46,11 +45,14 @@ theorem local_ringRamanujanSum_value (ψ : AddChar R ℂ) (g : R) :
         (Fintype.card (IsLocalRing.maximalIdeal R) : ℂ) else 0) := by
   have hu : (∑ u : Rˣ, ψ (g * (u : R))) =
       ∑ u : {x : R // IsUnit x}, ψ (g * (u : R)) :=
-    Fintype.sum_equiv (unitsEquivIsUnit R) _ _ (fun _ => rfl)
+    Fintype.sum_equiv (ArithmeticHodgeTheoryOfDegenerations.unitsEquivIsUnit R)
+      _ _ (fun _ => rfl)
   have hm : (∑ a : IsLocalRing.maximalIdeal R, ψ (g * (a : R))) =
       ∑ a : {x : R // ¬IsUnit x}, ψ (g * (a : R)) :=
     Fintype.sum_equiv
-      (Equiv.subtypeEquivRight fun x => IsLocalRing.mem_maximalIdeal x) _ _ (fun _ => rfl)
+      (Equiv.subtypeEquivRight (p := fun x : R => x ∈ IsLocalRing.maximalIdeal R)
+        (q := fun x => ¬IsUnit x) (fun x => IsLocalRing.mem_maximalIdeal x))
+      (fun a => ψ (g * (a : R))) (fun a => ψ (g * (a : R))) (fun _ => rfl)
   have hs := Fintype.sum_subtype_add_sum_subtype (fun x : R => IsUnit x)
     (fun x => ψ (g * x))
   rw [← hu, ← hm, sum_maximalIdeal_character] at hs

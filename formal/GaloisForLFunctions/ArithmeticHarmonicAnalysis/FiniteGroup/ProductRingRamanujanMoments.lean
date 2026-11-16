@@ -66,7 +66,7 @@ theorem sum_primeProductRingRamanujanSum_pow
     (p : ι → ℕ) [∀ i, Fact (p i).Prime] (k : ℕ) :
     (∑ g : ∀ i, ZMod (p i),
       productRingRamanujanSum (fun i => (⟨p i, (Fact.out : (p i).Prime).pos⟩ : ℕ+)) g ^ k) =
-      ∏ i, ((p i : ℂ) - 1) ^ k + ((p i : ℂ) - 1) * (-1) ^ k := by
+      ∏ i, (((p i : ℂ) - 1) ^ k + ((p i : ℂ) - 1) * (-1) ^ k) := by
   refine (sum_productRingRamanujanSum_pow
     (fun i => (⟨p i, (Fact.out : (p i).Prime).pos⟩ : ℕ+)) k).trans ?_
   apply prod_congr rfl

@@ -74,7 +74,7 @@ theorem sum_traceRamanujanSum_pow (p : ℕ) [Fact p.Prime]
   have hp : (ZMod.stdAddChar (N := p)) ≠ 1 := by
     simpa using (ZMod.isPrimitive_stdAddChar p) (a := 1) one_ne_zero
   rw [sum_finiteFieldRamanujanSum_pow,
-    if_neg ((finiteFieldTraceCharacter_ne_one_iff _).mpr hp)]
+    if_neg ((finiteFieldTraceCharacter_ne_one_iff (L := F) _).mpr hp)]
 
 /-- The cubic trace-character moment depends only on the extension field's cardinality. -/
 theorem sum_traceRamanujanSum_cube (p : ℕ) [Fact p.Prime]

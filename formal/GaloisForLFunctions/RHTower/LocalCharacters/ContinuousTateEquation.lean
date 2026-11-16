@@ -66,6 +66,27 @@ theorem exists_continuousTatePhase (χ : ℚ_[p]ˣ →ₜ* Circle) :
     rw [hprimal, hdual]
     exact sub_eq_zero.mp (fieldOnePadicRamifiedTateDefectLinear_eq_zero p npos ξ ρ f)
 
+/-- The same equation written as the two absolutely convergent Haar integrals. -/
+theorem exists_continuousTateIntegralPhase (χ : ℚ_[p]ˣ →ₜ* Circle) :
+    ∃ γ : ℂ, ‖γ‖ = 1 ∧ ∀ f : compactlySupportedLocallyConstant ℚ_[p],
+      (∫ a : ℚ_[p]ˣ, fieldOnePadicBruhatFourier p f (a : ℚ_[p]) *
+          (χ a : ℂ)⁻¹ * (Real.sqrt ‖(a : ℚ_[p])‖ : ℂ)
+        ∂fieldOnePadicMultiplicativeHaar p) =
+      γ * (∫ a : ℚ_[p]ˣ, f.1 (a : ℚ_[p]) *
+          (χ a : ℂ) * (Real.sqrt ‖(a : ℚ_[p])‖ : ℂ)
+        ∂fieldOnePadicMultiplicativeHaar p) := by
+  obtain ⟨γ, hγ, h⟩ := exists_continuousTatePhase p χ
+  refine ⟨γ, hγ, fun f => ?_⟩
+  have hf := h f
+  change (∫ a : ℚ_[p]ˣ, fieldOnePadicBruhatFourier p f (a : ℚ_[p]) *
+      ((↑((χ a)⁻¹) : ℂ) * (Real.sqrt ‖(a : ℚ_[p])‖ : ℂ))
+      ∂fieldOnePadicMultiplicativeHaar p) =
+    γ * (∫ a : ℚ_[p]ˣ, f.1 (a : ℚ_[p]) *
+      ((χ a : ℂ) * (Real.sqrt ‖(a : ℚ_[p])‖ : ℂ))
+      ∂fieldOnePadicMultiplicativeHaar p) at hf
+  simpa only [Circle.coe_inv, ← mul_assoc] using hf
+
 #print axioms exists_continuousTatePhase
+#print axioms exists_continuousTateIntegralPhase
 
 end GaloisForLFunctions.RHTower.LocalCharacters

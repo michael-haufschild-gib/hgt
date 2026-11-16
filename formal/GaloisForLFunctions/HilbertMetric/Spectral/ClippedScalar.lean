@@ -1,4 +1,8 @@
-import Mathlib.Tactic
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Data.Real.Basic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
+import Mathlib.Tactic.Push
 
 /-!
 # Quadratic energy with an upper spectral cutoff
@@ -48,7 +52,7 @@ theorem quadratic_le_square (c x : ℝ) : quadratic c x ≤ x ^ 2 :=
 
 theorem defect_nonneg {τ : ℝ} (hτ : 0 ≤ τ) (x : ℝ) : 0 ≤ defect τ x := by
   have h := scalar_dual hτ (x - 1)
-  simpa only [zero_mul, zero_pow (by decide : 2 ≠ 0), sub_zero] using h
+  simpa only [defect, mul_zero, zero_mul, zero_pow (by decide : 2 ≠ 0), sub_zero] using h
 
 theorem defect_eq_square {τ x : ℝ} (h : x ≤ 1 + τ) :
     defect τ x = (x - 1) ^ 2 := quadratic_of_le (by linarith only [h])
@@ -66,7 +70,7 @@ theorem block_dichotomy {ι : Type*} [Fintype ι] (x : ι → ℝ) {τ : ℝ}
   classical
   by_cases h : ∀ i, x i ≤ 1 + τ
   · exact Or.inl (Finset.sum_congr rfl fun i _ => defect_eq_square (h i))
-  · push_neg at h
+  · push Not at h
     obtain ⟨i, hi⟩ := h
     exact Or.inr ((defect_ge_cutoff hτ hi.le).trans
       (Finset.single_le_sum (fun j _ => defect_nonneg hτ (x j)) (Finset.mem_univ i)))

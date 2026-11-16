@@ -1,7 +1,7 @@
 # The prime side changes sign on every ray
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean formalization in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Target:** ECS Q5/Q8; sign restriction on the actual prime-side profile.
 - **Statement:** Both the full left-continuation datum and its prime-minus-pole
   part have both signs on every positive tail, in the almost-everywhere sense.
@@ -63,4 +63,14 @@ is the state's seen left zero. Thus the prime-minus-pole wave itself
 oscillates; archimedean terms are not needed in this sign restriction.
 
 These are sign restrictions, not absence of the critical state.
-Lean formalization remains incomplete; no contribution counted.
+
+## Lean
+
+- `Analysis/LandauTailSignObstruction.lean`:
+  `integrable_exp_of_signed_tail_of_real_continuation`.
+- `ThePrimeSideChangesSignOnEveryRay.lean`:
+  `criticalState_prime_side_changes_sign_on_every_ray`,
+  `criticalState_prime_wave_changes_sign_on_every_ray`, and the unconditional
+  `riemannHypothesis_or_criticalState_prime_wave_changes_sign` alternative.
+
+Both modules passed plain `lake --old env lean` checks and are umbrella-wired.

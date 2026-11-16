@@ -63,7 +63,7 @@ theorem unramifiedTateDefect_dilation_unit (ρ : Circle) (u : ℤ_[p]ˣ)
     unramifiedTatePhase p ρ * criticalTateLinear p (unramifiedCharacter p ρ)
       (fieldOnePadicBruhatDilation p (fieldOnePadicUnitEmbedding p u) f) = _
   rw [← unramifiedCharacter_inv, criticalTateLinear_fourier_dilation,
-    criticalTateLinear_dilation, hw, inv_one, one_mul, one_mul]
+    criticalTateLinear_dilation, hw, inv_one, one_mul, one_mul, unramifiedCharacter_inv]
   rfl
 
 theorem unramifiedTateDefect_projection (ρ : Circle)

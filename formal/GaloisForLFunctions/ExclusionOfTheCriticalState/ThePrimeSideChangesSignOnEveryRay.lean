@@ -55,8 +55,9 @@ private theorem integrable_reflectedRealDatum (D : Lp ℂ 2 halfLineLaplaceMeasu
   by_cases hu : u < 0
   · rw [indicator_of_mem (show -u ∈ Ioi (0:ℝ) from neg_pos.mpr hu),
       reflectedRealDatum,indicator_of_mem (show u ∈ Iio (0:ℝ) from hu),expRay_real_eq]
-    simp only [neg_one_mul,neg_neg,Complex.mul_re,Complex.ofReal_re,
-      Complex.ofReal_im,mul_zero,sub_zero,mul_comm]
+    simp only [Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,mul_zero,sub_zero]
+    rw [show -(1 : ℝ)*(-u) = u by ring]
+    ring
   · rw [indicator_of_notMem (show -u ∉ Ioi (0:ℝ) from fun hh => hu (neg_pos.mp hh)),
       reflectedRealDatum_support D u (not_lt.mp hu)]
 
@@ -294,8 +295,8 @@ private theorem archimedeanWallTail_real (F : ℝ → ℝ) (x : ℝ) :
     have hr : (2*((k:ℂ)+1)+1/2) = ((2*((k:ℝ)+1)+1/2 : ℝ):ℂ) := by
       push_cast
       rfl
-    rw [hr,negativeHalfLineLaplace_ofReal,map_div,map_sub,
-      Complex.conj_ofReal,Complex.conj_ofReal,Complex.conj_ofReal]
+    rw [hr,negativeHalfLineLaplace_ofReal,← Complex.ofReal_sub,
+      ← Complex.ofReal_div,Complex.conj_ofReal]
   apply Complex.ext
   · simp only [Complex.ofReal_re]
   · have hi := congrArg Complex.im hc
@@ -369,7 +370,7 @@ theorem criticalState_prime_wave_not_eventually_signed {W₀ : ℝ} (hW : 0 < W�
   have hpos : ∀ᵐ u ∂volume.restrict (Iio (-T')), 0 ≤ s*f u := by
     change ∀ᵐ v ∂volume.restrict (Ioi T), 0 ≤ s*(D v).re at htail
     exact signed_tail_reflectedRealDatum htail
-  have habs (σ : ℝ) (hσ : -2 < σ) : Integrable fun u => |f u|*Real.exp (σ*u) :=
+  have habs (σ : ℝ) (hσ : -2 < σ) : Integrable fun u => |f u| * Real.exp (σ*u) :=
     integrable_exp_of_signed_tail_of_real_continuation
       (measurable_reflectedRealDatum D) (integrable_reflectedRealDatum D)
       (reflectedRealDatum_support D) hGa heq hsign hT' hpos hσ
