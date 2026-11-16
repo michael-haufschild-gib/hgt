@@ -16,6 +16,7 @@ variable {K E : Type*} [Field K] [Field E] [Algebra K E]
 variable (c : Kˣ) (b R n : ℕ) (u v : E) (hu : Transcendental K u)
     (hv : v ^ (n + 1) = algebraMap K E c * u * (1 - u ^ (b + 1)) ^ R)
 
+include hv in
 private theorem kummerCoordinates_eval :
     (kummerBranchFieldPolynomial c b R n).eval₂ (fracRealize hu) v = 0 := by
   change (X ^ (n + 1) - C (algebraMap K[X] (FractionRing K[X])

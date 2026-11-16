@@ -17,7 +17,7 @@ variable (K E : Type*) [Field K] [Field E] [Algebra K E] [FiniteDimensional K E]
 variable (c : Kˣ) (b R n : ℕ)
 local notation "L" => KummerBranchField c b R n
 local notation "T" => E ⊗[K] L
-local notation "L'" => KummerBranchField (Units.map (algebraMap K E).toMonoidHom c) b R n
+local notation "L'" => KummerBranchField (Units.map (RingHom.toMonoidHom (algebraMap K E)) c) b R n
 
 /-- The literal scalar tensor is a field with its original ring operations. -/
 @[implicit_reducible] def kummerConstantTensorField : Field T :=

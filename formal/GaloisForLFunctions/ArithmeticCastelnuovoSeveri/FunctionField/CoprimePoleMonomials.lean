@@ -107,7 +107,4 @@ theorem squareKummerPoleMonomial_sum_eq_zero_iff
   · intro h
     exact Finset.sum_eq_zero fun i hi => by rw [h i hi, map_zero, zero_mul]
 
-#print axioms squareKummerPoleMonomial_valuation_injective
-#print axioms squareKummerPoleMonomial_sum_eq_zero_iff
-
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

@@ -45,12 +45,12 @@ What no route has: a mechanism that lowers the exponent below the vertex of the 
 | J10 | The elementary bound for cubic character sums from the Stepanov count |
 | J11 | The top-octave statement for ζ as one theorem, composed from two integrated statements |
 
-**(b) Obstacles** — O11 is resolved for rational deformations at one prime; the others remain open. Details in [obstacles summary §2.2](obstacles-summary.md#22-open-obstacles).
+**(b) Obstacles** — O11 is resolved for finite products of rational prime deformations; the others remain open. Details in [obstacles summary §2.2](obstacles-summary.md#22-open-obstacles).
 
 | ID | Family | Problem |
 |---|---|---|
 | O1 | P | Row count U^(1−δ+ε) in the binding bins of the cubic probe |
-| O2 | P | A signed evaluation before Cauchy–Schwarz: the first moment of the row root numbers on long columns |
+| O2 | P | The untwisted squarefree theta series now has an explicit nonzero pole at `2/3` [L] ([`untwistedSquarefreeSeries_holomorphic_simple_pole`](../../../formal/GaloisForLFunctions/SpectralTheoryOfTheCubicCover/TheUntwistedContinuationHasNoMellinPoles.lean#L148)); the signed long-column first moment and a column-uniform remainder remain open |
 | O3 | P | A zero-free half-plane for one Grössencharacter L-function of nonzero infinity type, uniform in the level |
 | O4 | P | A joint completion of a Möbius-signed monomial of period k ≥ 7 at the price k/2 |
 | O5 | P/U | A pole law with a source that does not know the zeros (a pencil through ζ, one Deligne lever), or sign levers at all large periods |
@@ -59,7 +59,7 @@ What no route has: a mechanism that lowers the exponent below the vertex of the 
 | O8 | R | The sign of Weil's form at every aperture |
 | O9 | R | A doubling factor below √2 proved from the window matrices |
 | O10 | R | An effectivity, section or count law whose definition does not contain the sign |
-| O11 | R | **Resolved for rational deformations at one prime:** nonnegative logarithmic coefficients and an entire reflected completion force the reduced rational multiplier to be trivial ([`not_exists_nontrivial_positive_rational_twin`](../../../formal/GaloisForLFunctions/SelbergClass/RationalEulerTwinsCannotHavePositiveLogarithms.lean#L167) [K]). Reciprocal quadratics already fail at `p²,p⁴,p⁶` or `p⁸` |
+| O11 | R | **Resolved for finite products of rational prime deformations:** nonnegative logarithmic coefficients and an entire reflected completion force the reduced rational multiplier to be trivial ([`not_exists_nontrivial_positive_finite_rational_twin`](../../../formal/GaloisForLFunctions/SelbergClass/FinitePrimeRationalEulerRigidity.lean) [K]). Reciprocal quadratics already fail at `p²,p⁴,p⁶` or `p⁸` |
 | O12 | U | AAL: no finite nonempty top layer |
 | O13 | U | Zeros approach the line; landing uniform as σ ↓ ½ |
 | O14 | U | Reality of the heat flow inside near-coincidence clusters for t < ½/log X |
@@ -149,7 +149,7 @@ A candidate has a detector or receiver and no source-to-receiver step.
 | Tensor-power programme | a pole law is equivalent to the width for flow data and abelian bases ([`exists_poleLaw_iff`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TheTensorMomentsOfAFlowDatumHaveBaseLossExactlyOne.lean#L510), [`exists_twistPoleLaw_iff`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/AnAbelianBaseIsARuler.lean#L568)); one Deligne lever or sign levers at all large periods give RH ([`riemannHypothesis_of_deligneLever`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TheThreeLinesOfFrames.lean#L84), [`riemannHypothesis_of_signLevers`](../../../formal/GaloisForLFunctions/TensorPowerProgramme/TheThreeLinesOfFrames.lean#L94)) | O4, O5 | P/U |
 | Green calculus of the window, floor-tree mixing, absolute geometry | index one through ratio three; gluing through the dyadic middle ([`riemannHypothesis_iff_forall_overlap_contraction`](../../../formal/GaloisForLFunctions/MixingArithmeticOfTheFloorTrees/AWindowGluesItsTwoOverlappingPartsThroughItsDyadicMiddle.lean#L519)); top-octave blindness | O9, O10 | R |
 | Selective arithmetic | a window sign at one aperture excludes nothing ([`exists_zetaDensity_positive_window_deep_zeros`](../../../formal/GaloisForLFunctions/SelectiveArithmetic/TheRungSignSurvivesDeepZerosAtZetaDensity.lean#L90)) | a sign with a cluster exclusion | R |
-| Counting and scattering holography, modular horizon, ringdown | rate ⇔ strip; the count door ([`exists_count_tateLimit_iff`](../../../formal/GaloisForLFunctions/CountingHolography/TheCountDoorOfACurveAndOfZ.lean#L39)) | O10; O11 resolved for rational deformations at one prime | R |
+| Counting and scattering holography, modular horizon, ringdown | rate ⇔ strip; the count door ([`exists_count_tateLimit_iff`](../../../formal/GaloisForLFunctions/CountingHolography/TheCountDoorOfACurveAndOfZ.lean#L39)) | O10; O11 resolved for finite products of rational prime deformations | R |
 | Floor-free arithmetic, auxiliary dynamics, exceptional layers, worlds, Euler–FE transport | non-attainment and phase-return receivers of AAL; realizability of finite layers | O12 | U |
 | Galois theory of zeros, nodal geometry, finite free probability | monodromy of the heat flow; collision laws | O14, O16 | U |
 | Verified height rungs, aperture floors | finite rungs; no positive floor of Weil's form holds along unbounded apertures: μ(A) ≤ K·exp((11/2)A − π·e^(2(A−2))) for A ≥ 3 [L] ([`not_exists_positive_floor_along`](../../../formal/GaloisForLFunctions/ArithmeticCompensationTheory/TheApertureFloorMustDecayDoublyExponentially.lean#L110)) | none that transfers | U |

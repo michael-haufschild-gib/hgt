@@ -43,11 +43,13 @@ theorem finiteFieldTraceCharacter_primitive (ψ : AddChar K R) (hψ : ψ ≠ 1) 
     (finiteFieldTraceCharacter (L := L) ψ).IsPrimitive :=
   AddChar.IsPrimitive.of_ne_one ((finiteFieldTraceCharacter_ne_one_iff ψ).mpr hψ)
 
+omit [Fintype K] [Finite L] in
 /-- Every base-field automorphism preserves a trace-pulled additive character. -/
 theorem finiteFieldTraceCharacter_algEquiv (ψ : AddChar K R) (σ : L ≃ₐ[K] L) (x : L) :
     finiteFieldTraceCharacter ψ (σ x) = finiteFieldTraceCharacter ψ x :=
   congrArg ψ (Algebra.trace_eq_of_algEquiv σ x)
 
+omit [Fintype K] in
 /-- Pulling an additive character through a tower of traces equals direct trace pullback. -/
 theorem finiteFieldTraceCharacter_tower
     {M : Type*} [Field M] [Finite M] [Algebra K M] [Algebra L M] [IsScalarTower K L M]

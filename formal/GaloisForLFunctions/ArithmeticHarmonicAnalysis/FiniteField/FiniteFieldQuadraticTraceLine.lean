@@ -12,6 +12,7 @@ field, including in characteristic two.
 namespace GaloisForLFunctions.ArithmeticHarmonicAnalysis
 variable {K L : Type*} [Field K] [Field L] [Finite K] [Finite L] [Algebra K L]
 variable (hdegree : Module.finrank K L = 2)
+include hdegree
 
 /-- The trace-zero subspace of a quadratic finite-field extension has dimension one. -/
 theorem finiteField_quadratic_trace_kernel_finrank :

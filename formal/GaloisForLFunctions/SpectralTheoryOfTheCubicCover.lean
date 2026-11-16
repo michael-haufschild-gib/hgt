@@ -22,6 +22,30 @@ import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.PartialCuspSubtractions
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRotatedThetaProductReadsTheRotatedCorrelation
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheRotatedCorrelationHasADoublePole
 import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheThreeDivisibleLayerHasASimplePole
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheOppositeTranslationsPreserveTheCubicMultiplier
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheTranslatedThetaProductHasOneCuspSubtraction
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheTranslationPhaseSeparatesTheUnramifiedSquare
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheTranslatedThetaProductReadsThePhasedSquare
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheTranslatedDifferenceIsTheUnramifiedSquare
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheTranslatedCorrelationHasADoublePole
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheUnramifiedThetaSquareHasADoublePole
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheUnramifiedSquareFactorsThroughTheUntwistedSeries
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheUntwistedSquarefreeThetaSeriesHasASimplePole
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheUntwistedContinuationHasNoMellinPoles
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.MaximumDiskOccupancy
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCubicScatteringHasPolynomialGrowth
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCompletedThetaSquaresHavePolynomialGrowth
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCubeZetaReciprocalHasPolynomialGrowth
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheThetaCorrectionHasOnlyTheCubicPole
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCubicThetaCorrectionHasAHolomorphicRepresentative
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheThetaMellinReciprocalHasExponentialGrowth
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheUntwistedSquarefreeSeriesIsHolomorphicInitially
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheCubicThetaPairingsAreBoundedOnVerticalStrips
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheUntwistedContinuationHasOnlyTheCubicPole
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheUntwistedThetaSeriesHasGaussianVerticalDecay
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheThetaGaussianSmoothingIsAnArithmeticSum
+
+import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.TheUntwistedThetaSeriesHasASmoothedMainTerm
 
 /-!
 # Spectral Theory of the Cubic Cover
@@ -44,6 +68,10 @@ twisted multiplicativity of the theta coefficients across `h = u λ^m gen I`, th
 series into twisted squarefree series times `Z₀(3s/2 − 1)`, and the simple pole of their combination; the
 linear cusp subtraction of `θ_s`, the rotation `R = diag(ω, ω²)` and the two-cusp renormalization of
 `θ_s(R·)θ_s(R⁻¹·)`, partial cusp subtractions, and the double pole of the rotated correlation
-`Σ T(ωh)T(h)|ξ_h|^{−s}` (leading coefficient `54π³r³`), which reads only the three-divisible layer. See `SpectralTheoryOfTheCubicCover/README.md`.
+`Σ T(ωh)T(h)|ξ_h|^{−s}` (leading coefficient `54π³r³`), which reads only the three-divisible layer;
+opposite translations by `±ω`, their single-cusp subtraction and phase selector, and the resulting
+nonzero simple pole of the actual untwisted squarefree theta series at `2/3`; its filled continuation
+on `5/8<Re w<13/6` and Gaussian-smoothed arithmetic main term with remainder `O_a(X^a)`
+for every `5/8<a<2/3`.
+See `SpectralTheoryOfTheCubicCover/README.md`.
 -/
-import GaloisForLFunctions.SpectralTheoryOfTheCubicCover.MaximumDiskOccupancy

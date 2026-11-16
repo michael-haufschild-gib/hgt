@@ -45,7 +45,7 @@ theorem hermitianTranslationGroup_isPGroup : IsPGroup p HK := by
   apply IsPGroup.of_card (n := (s + 1) * 3)
   exact (hermitianTranslationGroup_card p s).trans (pow_mul p (s + 1) 3).symm
 
-variable (E : Type*) [Field E] [Algebra K E]
+variable (E : Type*) [Field E] [Algebra (SquareConstantField p s) E]
 local notation "H" => HermitianAffinePoint p s E
 
 /-- Rational Hermitian translations form a permutation representation over every constant extension. -/

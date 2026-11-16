@@ -111,7 +111,7 @@ theorem translatedSubtraction_integrableOn_periodDomain (v : ℝ) (hv : 0 < v) :
     rw [cuspCoordinateLift_positive v z hv, translatedSubtraction_eq_partial,
       partialSubtraction_upper _ inl_mem_translationCusps _ _ le_rfl z v hv (not_le.mp hv2)]
 
-/-- **The constant term of `G_U`.** `a₀(G_U)(v) = |P| (c² v^{4/3} + R_U(v)) − a₀(H_R)(v)`. -/
+/-- The constant term after removing the sole growing cusp profile. -/
 theorem cuspConstantTerm_translatedRenormalized (v : ℝ) (hv : 0 < v) :
     cuspConstantTerm translatedRenormalized v =
       periodArea * (thetaCoeff ^ 2 * ((v ^ ((4 : ℝ) / 3) : ℝ) : ℂ) + besselRemainder translatedCoeff v) -
@@ -274,7 +274,6 @@ theorem clearedTransScatter_four_thirds :
   have h3 : (4 : ℂ) / 3 - 1 = 1 / 3 := by norm_num
   rw [h3]
   field_simp
-  ring
 
 /-! ### The Mellin identity -/
 

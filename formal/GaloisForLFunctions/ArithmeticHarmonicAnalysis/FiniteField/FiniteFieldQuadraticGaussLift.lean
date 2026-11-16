@@ -18,6 +18,7 @@ variable {K L R : Type*} [Field K] [Field L] [Fintype K] [Fintype L]
 variable (hdegree : Module.finrank K L = 2)
 
 private theorem sum_comp_fiber_card {A B : Type*} [Fintype A] [Fintype B]
+    [DecidableEq B]
     (f : A → B) (F : B → R) :
     (∑ a : A, F (f a)) =
       ∑ b : B, ((Finset.univ.filter (fun a : A => f a = b)).card : R) * F b := by
@@ -32,10 +33,12 @@ private theorem sum_comp_fiber_card {A B : Type*} [Fintype A] [Fintype B]
       Finset.sum_congr rfl (fun a ha => congrArg F (Finset.mem_filter.mp ha).2)
     _ = _ := by rw [Finset.sum_const, nsmul_eq_mul]
 
+include hdegree in
 /-- Every weight has total multiplicity two across ordered base-field pairs and quadratic trace-and-norm fibers. -/
 theorem finiteField_quadratic_weighted_fibers (F : K × K → R) :
     (∑ x : K × K, F (x.1 + x.2, x.1 * x.2)) +
       (∑ x : L, F (Algebra.trace K L x, Algebra.norm K x)) = 2 * ∑ v : K × K, F v := by
+  classical
   let f : K × K → K × K := fun x => (x.1 + x.2, x.1 * x.2)
   let g : L → K × K := fun x => (Algebra.trace K L x, Algebra.norm K x)
   change (∑ x : K × K, F (f x)) + (∑ x : L, F (g x)) = _
@@ -46,8 +49,13 @@ theorem finiteField_quadratic_weighted_fibers (F : K × K → R) :
   have hv : (Finset.univ.filter (fun x : K × K => f x = (t, n))).card +
       (Finset.univ.filter (fun x : L => g x = (t, n))).card = 2 := by
     simpa only [f, g, Prod.mk.injEq] using finiteField_quadratic_trace_norm_fiber_card hdegree t n
-  rw [← add_mul, ← Nat.cast_add, hv]
+  rw [← add_mul]
+  have hvR : ((Finset.univ.filter (fun x : K × K => f x = (t, n))).card : R) +
+      ((Finset.univ.filter (fun x : L => g x = (t, n))).card : R) = 2 := by
+    simpa only [Nat.cast_add, Nat.cast_ofNat] using congrArg (Nat.cast : ℕ → R) hv
+  exact congrArg (fun z : R => z * F (t, n)) hvR
 
+include hdegree in
 /-- The exact quadratic lifting identity includes an explicit correction for two trivial characters. -/
 theorem finiteField_quadratic_gauss_formula (χ : MulChar K R) (ψ : AddChar K R) :
     (∑ x : L, χ (Algebra.norm K x) * ψ (Algebra.trace K L x)) =
@@ -70,6 +78,7 @@ theorem finiteField_quadratic_gauss_formula (χ : MulChar K R) (ψ : AddChar K R
   rw [add_comm]
   exact h
 
+include hdegree in
 /-- A nontrivial multiplicative or additive character gives quadratic Gauss lifting with the negative square. -/
 theorem finiteField_quadratic_gauss_lift [IsDomain R] (χ : MulChar K R) (ψ : AddChar K R)
     (h : χ ≠ 1 ∨ ψ ≠ 1) :

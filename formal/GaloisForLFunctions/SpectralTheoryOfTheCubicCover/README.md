@@ -8,20 +8,22 @@ Namespace `GaloisForLFunctions.SpectralTheoryOfTheCubicCover`; umbrella
 
 The cubic-theta probe reads the zeros of `ζ` through a family of rows `u ∈ ℤ[ω]`. CRF reduced the
 binding part of its floor bin (B175) to one first moment: the root number of row `u` is
-`G(u) γ₂(u)²`, a phase of bounded conductor times the square of the cubic theta coefficient
-(`rowRootNumber_eq_thetaPhase_mul_sq`), and the long columns are first moments of these squares over
-the rows. Whether they carry a main term of size `U^{2/3}` — and what it is — is a question about the
-square of the cubic theta function `θ` on the cubic metaplectic cover of `SL₂` over `ℚ(ζ₃)`.
+`G(u) γ₂(u)²`, a phase times the square of the normalized cubic Gauss sum
+(`rowRootNumber_eq_thetaPhase_mul_sq`). STCC’s Fourier-square weight uses the conjugate Gauss sum;
+passing to the row-root moment also requires its conductor phase. The untwisted squarefree series has a Gaussian-smoothed main term of size `U^{2/3}`,
+with a remainder `O_a(U^a)` for every `5/8<a<2/3`. The remaining phase and column dependence
+belong to the long-column problem.
 
 The tool for squares of automorphic forms is the Rankin–Selberg method: unfold `θ²` against an
 Eisenstein series and read the Dirichlet series `Σ_ν T(ν)² N(ν)^{−w}` of the squared Fourier
-coefficients from the analytic behaviour of the Eisenstein series. On the cubic cover this needs
-three things the corpus does not have together: an unfolding identity on hyperbolic three-space, a
-continuation of the cubic Eisenstein series as a function, and a renormalization for `θ²`, which is
-not square integrable. MMD has built the spectral side — the quotient, its self-adjoint Laplacian,
-a Fredholm pencil below the continuous spectrum, the meromorphic resolvent at `8/9`, the matching of
-the Eisenstein series with "seed + resolvent correction", the nonzero residue `θ` and its Fourier
-coefficients. STCC builds the Rankin–Selberg layer on top.
+coefficients from the analytic behaviour of the Eisenstein series. On the cubic cover, `θ²` is
+not square integrable; subtracting its four rational cusp profiles leaves a bounded remainder.
+MMD supplies the quotient, its self-adjoint Laplacian, the Fredholm pencil and resolvent, and the
+identity of the Eisenstein series with its seed plus resolvent correction. STCC unfolds the bounded
+remainder and computes the explicit scattering of the cusp subtraction. Opposite translations
+then separate the untwisted squarefree series and identify its nonzero simple pole at `2/3`.
+Real spectral removability and vertical resolvent bounds extend it across the real axis and
+permit a Gaussian Mellin contour shift to an actual arithmetic asymptotic.
 
 ## 2. Objects
 
@@ -67,6 +69,12 @@ coefficients. STCC builds the Rankin–Selberg layer on top.
    cusps contribute `1 + 3 = 4`. So `(s − 4/3)² M(s) D(s) → 12π c² r = 108 π³ r³ ≠ 0`.
 5. *Cube frequencies.* `D(w) = \overline{C}² ζ_K(3w − 1) S(w)` on unramified indices; a double pole of `D`
    is a simple pole of `S`: the squarefree part is coherent at `2/3`.
+6. *Gaussian arithmetic transfer.* Compact forcing grows linearly in height, cancelled by the
+   self-adjoint resolvent bound. Cutoff-independent spectral residues remove real poles except
+   `4/3`; the Hecke seed controls cube removal on `Re w>5/8`. With
+   `W(y)=exp(−(log y)²/4)/(2√π)`, shifting the Mellin contour gives
+   `Σ_A σ(A)W(N(A)/X)=exp(4/9)R X^(2/3)+O_a(X^a)` for `5/8<a<2/3`, `R≠0`
+   (`gaussianSmoothedUntwistedTheta_main_term`).
 
 ## 5. Pillar theorems
 
@@ -94,6 +102,7 @@ coefficients. STCC builds the Rankin–Selberg layer on top.
 | the cube frequencies factor out: `A B³` determines `A` (squarefree) and `B`; `T_s(gen(A)gen(B)³)² = \overline{C}² N(B) σ(A)` with `|σ(A)| = 1`; for `Re w > 1`, `Σ_I N(I)^{−w} T_s(gen I)² = \overline{C}² Z₀(3w − 1) Σ_{A sqfree} N(A)^{−w} σ(A)` (unramified ideals) | `thetaSquarefreePart_mul_cube`, `thetaCubePart_mul_cube`, `sourceCoefficient_sq`, `thetaSquareDirichlet_eq` | SQ5 |
 | Hecke bound `|T_s(h)| ≤ C(1 + |ξ_h|)` at every frequency, from `θ_s ∈ L²` and the cusp-height count `#{x : v_x(w) ≥ Y} ≤ K/Y²` | `sourceCoefficient_hecke_bound`, `card_cuspCosets_height_le` | SQ5 |
 | Mellin link: `∫_0^∞ v^s R(v) v^{−3} dv = M(s) Σ_{h≠0} T_s(h)²(4π|ξ_h|)^{−s}` (`Re s > 4`), `M` holomorphic on `Re s > 2/3`, `M(4/3) ≠ 0` | `integral_thetaSqRemainder`, `besselSqMellin_differentiableAt`, `besselSqMellin_four_thirds_ne_zero` | SQ4 |
+| the positive-ray and cosh Bessel kernels agree; `M(s)=2^(s−3) Γ(s/2+1/3) Γ(s/2)^2 Γ(s/2−1/3)/Γ(s) ≠ 0` on `Re s>2/3`; the untwisted continuation is holomorphic on its upper strip | `schlafliBesselK_eq_modifiedBesselKOrder`, `besselSqMellin_ne_zero`, `untwistedSquarefreeSeries_holomorphic_simple_pole` | SQ4, SQ5 |
 | the Eisenstein pairing of an `L²` function splits into seed term and resolvent correction; the correction pairing is holomorphic off `ℝ` and has at most a simple pole at `4/3` | `integral_mul_eisenstein_eq`, `levelPairing_correction_analyticAt`, `levelPairing_correction_center` | SQ2 |
 | the rational cusp subtraction `H`: multiplier `κ⁻¹`, `= c² f(v)` above height `1/2`; its scattering `Mellin(a₀(H) − |P|c²f) = c² Φ(s) f̃(s)` (`Re s > 10/3`) | `cuspSubtraction_upper`, `integral_scatterPart`, `sub_mul_scatterTotal` | SQ4, SQ6 |
 | `G = θ_s² − H` is bounded on `ℍ³`, `O(v^{−7/3})` high in the cusp, square integrable | `renormalizedThetaSq_bounded`, `renormalizedThetaSq_memLp` | SQ4, SQ6 |
@@ -103,6 +112,8 @@ coefficients. STCC builds the Rankin–Selberg layer on top.
 | rotated correlations `C_ε = Σ T(εh) T(h) |ξ_h|^{−s}` split the same way with twists `S_{ε²uλ^m}`; for `ε ≠ ±1` only frequencies divisible by 3 contribute | `rotatedCorrelation_eq_zeta_mul`, `rotatedCorrelation_eq_three_layer` | SQ5 |
 | the rotated product `θ_s(R·)θ_s(R⁻¹·)` (`R = diag(ω, ω²)`) has multiplier `κ⁻¹`; renormalized by the two-cusp subtraction `h(R·)h(R⁻¹·)` (`h` the linear subtraction of `θ_s`) it is bounded; **`(s − 4/3)² M(s) C_ω(s) → 54π³r³`**, half of `D` | `rotatedRenormalized_bounded`, `rotatedCorrelation_double_pole` | SQ5 |
 | the three-divisible twisted combination `Q₃` has a simple pole with half the residue of `Q`: the coefficients at frequencies divisible by 3 are not negligible | `threeLayerCombination_simple_pole` | SQ5 |
+| opposite translations by `±ω` leave one growing cusp and read `C_U(s)=Σ T(h)²e(2ωξ_h)(4π‖ξ_h‖)^{−s}`; its completed double-pole coefficient is `27π³r³` | `thetaLinear_translation_mul`, `translatedCorrelation_double_pole` | SQ5 |
+| `D−C_U=(3/2)D₀`; the two primary signs give `D₀(s)=2(4π‖ξ₁‖)^{−s} C̄²Z₀(3s/2−1)S₁(s/2)`; **the actual untwisted squarefree series has a nonzero simple pole at `w=2/3`**, with residue `untwistedThetaResidue` | `thetaSqDirichlet_sub_translated`, `unramifiedSquare_eq_squarefree`, `untwistedSquarefreeSeries_simple_pole` | SQ5 |
 | `θ²` has multiplier `κ⁻¹`; its constant term is `|P|(c² v^{4/3} + Σ_h a(v, h) a(v, −h))`, `c = 3πr`, `a(v, h)a(v, −h) = T(h)T(−h)v²K_{1/3}(4π|ξ_h|v)²`; Rankin–Selberg: `∫_{D_Γ} θ² E(·∣ψ) = |P| ∫_0^∞ ψ(v)(c²v^{4/3} + Σ_h a(v,h)a(v,−h)) v^{−3} dv`, unconditional for continuous `ψ` of compact support in `(0, ∞)` | `thetaSq_automorphy`, `integral_thetaSq_periodDomain`, `thetaAmplitude_mul_neg`, `integral_thetaSq_mul_incompleteEisenstein_of_compact` | SQ3 |
 
 ## 6. Questions
@@ -113,7 +124,7 @@ coefficients. STCC builds the Rankin–Selberg layer on top.
 | SQ2 | Is `E(w, s)` meromorphic on `Re s > 1` as a function on `ℍ³`, with the single pole `4/3`, and of polynomial growth on vertical lines? | not needed: pairings of `L²` functions with `E(s)` continue by MMD's resolvent (Lean); the pointwise form stays open |
 | SQ3 | The constant term of `θ²`: `c² v^{4/3} + Σ_ν T(ν)T(−ν) W_ν(v)²`, `T(−ν) = T(ν)` | yes (Lean) |
 | SQ4 | The renormalized `R(θ², s)`: continuation past `4/3`, the double pole, its leading coefficient | yes for `θ_s`: `(s − 4/3)² M(s)D(s) → 108π³r³` (Lean) |
-| SQ5 | The main term of `Σ_{N(ν) ≤ X} T(ν)² ω(N(ν)/X)` and of the squarefree part `S` | partly: `D = \overline{C}² Z₀ · Q` with `Q = 2(4π|ξ₁|)^{−s} S(s/2) + (3-divisible layer)` and `Q` has a simple pole; the three-divisible part `Q₃` read by rotations has exactly half of it (Lean); separating `S` needs the ramified values `T(uλ^m)`, `m ≥ 2` (nine Patterson residues) or a Hecke-at-9 relation; contour shift open |
+| SQ5 | The main term of `Σ_{N(ν) ≤ X} T(ν)² ω(N(ν)/X)` and of the squarefree part `S` | the actual untwisted `S₁` is separated by opposite translations and has an explicit nonzero simple pole at `2/3` (Lean); the contour shift and smoothed asymptotic remain open |
 | SQ6 | The other cusps of `Γ` where `θ` has a constant term | for `θ_s`: the four rational cusps, none at the two ramified classes (Lean) |
 | SQ7 | The twisted versions read by the long columns: `θ · θ_n` for the column index `n` | open |
 
@@ -161,8 +172,8 @@ of Fourier coefficients.
 
 ## 12. Open research topics
 
-1. The pass from `Σ_{h ∈ ℤ[ω]∖0} T_s(h)² |h|^{−s}` to the squarefree series `S` (units and ramified
-   frequencies), and the contour shift that turns the double pole into a smoothed first moment.
+1. The contour shift turning the isolated simple pole of the untwisted squarefree series into a
+   smoothed first moment, with a controlled remainder.
 2. The triple product `∫ θ³` and the next Laurent coefficient of `R(θ², s)`.
 3. The products `θ(z) θ(nz)` and their constant terms (the column twists of CRF).
 4. Uniformity in the column index (the remainder of the long columns).

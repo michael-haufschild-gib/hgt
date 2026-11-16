@@ -33,7 +33,8 @@ def hermitianKummerRadicalCoordinate : H :=
 /-- Multiplication by the trace constant recovers the polynomial coordinate. -/
 theorem hermitianKummerAdditiveCoordinate_recover :
     algebraMap K H (η : K) * hermitianKummerAdditiveCoordinate p s = algebraMap K[X] H X := by
-  rw [hermitianKummerAdditiveCoordinate, ← mul_assoc, ← map_mul, mul_inv_cancel₀ η.ne_zero,
+  rw [hermitianKummerAdditiveCoordinate, ← mul_assoc, ← map_mul,
+    mul_inv_cancel₀ (kummerTraceConstant p s).ne_zero,
     map_one, one_mul]
 
 /-- The constructed field satisfies the usual Hermitian equation over its actual constants. -/
@@ -53,10 +54,12 @@ theorem hermitianKummerField_equation :
     rw [mul_assoc, hbranch]
   have hη : ((η : K)⁻¹) ^ Q = -(η : K)⁻¹ := by
     rw [inv_pow, kummerTraceConstant_frobenius, inv_neg]
+  have hηmap := congrArg (algebraMap K H) hη
+  rw [map_pow, map_neg] at hηmap
   rw [hroot]
   change algebraMap K H (η : K)⁻¹ * (y - y ^ Q) =
     (algebraMap K H (η : K)⁻¹ * y) ^ Q + algebraMap K H (η : K)⁻¹ * y
-  rw [mul_pow, ← map_pow, hη, map_neg]
+  rw [mul_pow, hηmap]
   ring
 
 /-- The additive Hermitian coordinate is transcendental over the actual constants. -/

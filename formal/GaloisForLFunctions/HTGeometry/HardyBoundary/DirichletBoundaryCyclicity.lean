@@ -1,0 +1,169 @@
+import GaloisForLFunctions.HTGeometry.HardyBoundary.PolynomialDirichletEnergy
+import Mathlib.NumberTheory.Harmonic.Bounds
+import Mathlib.NumberTheory.Harmonic.Int
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Tactic
+
+/-!
+# A boundary zero does not obstruct Dirichlet approximation
+
+The harmonic kernels from Chen–Fang–Guo's introduction
+(https://arxiv.org/abs/2611.16997, §1.1) have value one at the boundary point one
+and full Dirichlet coefficient energy tending to zero. Their complements are
+multiples of `1 - X`. Thus polynomial multiples of `1 - X` approximate the
+constant polynomial in the full Dirichlet norm, although every approximant
+vanishes at one. The approximation errors and their energies are explicit.
+-/
+
+open Polynomial Finset Filter
+open scoped BigOperators Topology
+
+namespace HTGeometry.DirichletBoundaryCyclicity
+
+noncomputable section
+
+/-- Harmonic normalization for a polynomial of degree at most `N`. -/
+def harmonicMass (N : ℕ) : ℝ := harmonic (N + 1)
+
+theorem harmonicMass_pos (N : ℕ) : 0 < harmonicMass N := by
+  unfold harmonicMass
+  exact_mod_cast harmonic_pos (Nat.succ_ne_zero N)
+
+theorem harmonicMass_eq_sum (N : ℕ) :
+    harmonicMass N = ∑ k ∈ range (N + 1), (k + 1 : ℝ)⁻¹ := by
+  simp only [harmonicMass, harmonic, Rat.cast_sum, Rat.cast_inv,
+    Rat.cast_add, Rat.cast_natCast, Rat.cast_one, Nat.cast_add, Nat.cast_one]
+
+/-- The minimum-energy degree-bounded polynomial with boundary value one. -/
+def boundaryKernel (N : ℕ) : Polynomial ℝ :=
+  ∑ k ∈ range (N + 1), monomial k ((k + 1 : ℝ)⁻¹ / harmonicMass N)
+
+theorem boundaryKernel_coeff (N k : ℕ) :
+    (boundaryKernel N).coeff k =
+      if k < N + 1 then (k + 1 : ℝ)⁻¹ / harmonicMass N else 0 := by
+  simp [boundaryKernel, coeff_monomial]
+
+/-- Exact boundary interpolation, despite the vanishing energy limit. -/
+theorem boundaryKernel_eval_one (N : ℕ) : (boundaryKernel N).eval 1 = 1 := by
+  simp only [boundaryKernel, eval_finsetSum, eval_monomial, one_pow, mul_one,
+    ← Finset.sum_div, ← harmonicMass_eq_sum]
+  exact div_self (harmonicMass_pos N).ne'
+
+/-- The full Dirichlet energy of the normalized harmonic kernel is exactly reciprocal harmonic mass. -/
+theorem boundaryKernel_energy (N : ℕ) :
+    coefficientEnergy (boundaryKernel N) = (harmonicMass N)⁻¹ := by
+  unfold coefficientEnergy
+  rw [tsum_eq_sum (s := range (N + 1)) (fun k hk => by
+    simp only [mem_range, not_lt] at hk
+    rw [boundaryKernel_coeff, if_neg (not_lt.mpr hk), zero_pow (by omega), mul_zero])]
+  have hterm (k : ℕ) :
+      (k + 1 : ℝ) * ((k + 1 : ℝ)⁻¹ / harmonicMass N)^2 =
+        (harmonicMass N)⁻¹ ^ 2 * (k + 1 : ℝ)⁻¹ := by
+    have hk : (k + 1 : ℝ) ≠ 0 := by positivity
+    field_simp [hk]
+  calc
+    _ = ∑ k ∈ range (N + 1), (harmonicMass N)⁻¹ ^ 2 * (k + 1 : ℝ)⁻¹ := by
+      apply sum_congr rfl
+      intro k hk
+      rw [boundaryKernel_coeff, if_pos (mem_range.mp hk), hterm]
+    _ = (harmonicMass N)⁻¹ ^ 2 * harmonicMass N := by
+      rw [← mul_sum, ← harmonicMass_eq_sum]
+    _ = (harmonicMass N)⁻¹ := by field_simp
+
+/-- Square completion identifies the unique energy-minimizing coefficient profile. -/
+theorem harmonic_energy_decomposition (N : ℕ) (a : ℕ → ℝ) :
+    (∑ k ∈ range (N + 1), (k + 1 : ℝ) * (a k)^2) =
+      (∑ k ∈ range (N + 1), a k)^2 / harmonicMass N +
+      ∑ k ∈ range (N + 1), (k + 1 : ℝ) *
+        (a k - (∑ j ∈ range (N + 1), a j) / harmonicMass N * (k + 1 : ℝ)⁻¹)^2 := by
+  have hshift (c : ℝ) :
+      (∑ k ∈ range (N + 1), (k + 1 : ℝ) * (a k - c * (k + 1 : ℝ)⁻¹)^2) =
+        (∑ k ∈ range (N + 1), (k + 1 : ℝ) * (a k)^2) -
+          2 * c * (∑ k ∈ range (N + 1), a k) + c^2 * harmonicMass N := by
+    have hterm (k : ℕ) :
+        (k + 1 : ℝ) * (a k - c * (k + 1 : ℝ)⁻¹)^2 =
+          (k + 1 : ℝ) * (a k)^2 - (2*c) * a k + c^2 * (k + 1 : ℝ)⁻¹ := by
+      have hk : (k + 1 : ℝ) ≠ 0 := by positivity
+      field_simp
+      ring
+    simp_rw [hterm]
+    rw [sum_add_distrib, sum_sub_distrib, ← mul_sum, ← mul_sum, ← harmonicMass_eq_sum]
+  rw [hshift]
+  have hH := (harmonicMass_pos N).ne'
+  field_simp
+  ring
+
+/-- The optimal boundary evaluation cost is reciprocal harmonic mass. -/
+theorem harmonic_boundary_cost (N : ℕ) (a : ℕ → ℝ) :
+    (∑ k ∈ range (N + 1), a k)^2 / harmonicMass N ≤
+      ∑ k ∈ range (N + 1), (k + 1 : ℝ) * (a k)^2 := by
+  rw [harmonic_energy_decomposition N a]
+  exact le_add_of_nonneg_right (sum_nonneg (fun k _ =>
+    mul_nonneg (by positivity) (sq_nonneg _)))
+
+/-- Finite degree restores boundary evaluation, with exactly harmonic growth of its cost. -/
+theorem eval_one_sq_le (p : Polynomial ℝ) :
+    (p.eval 1)^2 ≤ harmonicMass p.natDegree * coefficientEnergy p := by
+  have h := harmonic_boundary_cost p.natDegree p.coeff
+  rw [div_le_iff₀ (harmonicMass_pos p.natDegree)] at h
+  simpa only [eval_eq_sum_range, one_pow, mul_one, one_mul, coefficientEnergy_eq_sum,
+    mul_comm] using h
+
+/-- The complement belongs to the polynomial ideal generated by `1 - X`. -/
+theorem exists_polynomial_approximant (N : ℕ) :
+    ∃ p : Polynomial ℝ, 1 - (1 - X) * p = boundaryKernel N := by
+  have hd : X - C (1 : ℝ) ∣ 1 - boundaryKernel N := by
+    rw [dvd_iff_isRoot, IsRoot, eval_sub, eval_one, boundaryKernel_eval_one, sub_self]
+  obtain ⟨p, hp⟩ := hd
+  refine ⟨-p, ?_⟩
+  simp only [Polynomial.C_1] at hp
+  linear_combination hp
+
+/-- Polynomial multiples of `1 - X` with the harmonic kernels as exact errors. -/
+def approximant (N : ℕ) : Polynomial ℝ := (exists_polynomial_approximant N).choose
+
+theorem approximant_error (N : ℕ) :
+    1 - (1 - X) * approximant N = boundaryKernel N :=
+  (exists_polynomial_approximant N).choose_spec
+
+theorem approximant_eval_one (N : ℕ) : ((1 - X) * approximant N).eval 1 = 0 := by
+  simp
+
+/-- The exact errors tend to zero in the full Dirichlet coefficient norm. -/
+theorem approximant_energy_tendsto :
+    Tendsto (fun N => coefficientEnergy (1 - (1 - X) * approximant N)) atTop (𝓝 0) := by
+  simp only [approximant_error, boundaryKernel_energy]
+  have hlog : Tendsto (fun N : ℕ => Real.log (N + 1 + 1 : ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp
+      (tendsto_atTop_add_const_right atTop 1
+        (tendsto_atTop_add_const_right atTop 1 tendsto_natCast_atTop_atTop))
+  have hmass : Tendsto harmonicMass atTop atTop :=
+    tendsto_atTop_mono (fun N => by
+      simpa only [Nat.cast_add, Nat.cast_one, harmonicMass] using
+        log_add_one_le_harmonic (N + 1)) hlog
+  exact tendsto_inv_atTop_zero.comp hmass
+
+/-- No degree-independent constant controls boundary evaluation by Dirichlet energy. -/
+theorem no_uniform_boundary_evaluation_bound :
+    ¬ ∃ C : ℝ, ∀ p : Polynomial ℝ, (p.eval 1)^2 ≤ C * coefficientEnergy p := by
+  rintro ⟨C, hC⟩
+  have ht := Filter.Tendsto.const_mul (-C) approximant_energy_tendsto
+  have hb : ∀ᶠ N : ℕ in atTop,
+      (-C) * coefficientEnergy (1 - (1 - X) * approximant N) ≤ -1 := by
+    apply Filter.Eventually.of_forall
+    intro N
+    have h := hC (boundaryKernel N)
+    rw [boundaryKernel_eval_one, one_pow] at h
+    rw [approximant_error]
+    linarith only [h]
+  have hz : (0 : ℝ) ≤ -1 := by simpa only [mul_zero] using le_of_tendsto ht hb
+  norm_num at hz
+
+#print axioms boundaryKernel_energy
+#print axioms harmonic_energy_decomposition
+#print axioms eval_one_sq_le
+#print axioms approximant_energy_tendsto
+#print axioms no_uniform_boundary_evaluation_bound
+
+end
+end HTGeometry.DirichletBoundaryCyclicity

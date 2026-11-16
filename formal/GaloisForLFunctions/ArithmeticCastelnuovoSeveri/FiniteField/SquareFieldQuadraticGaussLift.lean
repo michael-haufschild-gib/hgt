@@ -23,7 +23,8 @@ theorem squareConstantField_middle_finrank : Module.finrank K E = 2 := by
   have hcK : Nat.card K = p ^ (s + 1) := by
     rw [kummerAuxiliaryField_card, Nat.gcd_eq_right (dvd_mul_left (s + 1) 2)]
   have hcE : Nat.card E = p ^ (2 * (s + 1)) := squareConstantField_card p s
-  have hc := Module.natCard_eq_pow_finrank (K := K) (V := E)
+  have hc : Nat.card E = Nat.card K ^ Module.finrank K E :=
+    Module.natCard_eq_pow_finrank
   rw [hcE, hcK] at hc
   have he : p ^ (2 * (s + 1)) = (p ^ (s + 1)) ^ 2 := by
     rw [← pow_mul, Nat.mul_comm 2 (s + 1)]

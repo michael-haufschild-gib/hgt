@@ -65,7 +65,7 @@ theorem hermitianTranslationPolynomialCoordinate_transcendental (P : HK) :
   have he : φ (η : K)⁻¹ * hermitianTranslationPolynomialCoordinate p s P =
       (hermitianTranslatedGenericPoint p s P).val.2 := by
     rw [hermitianTranslationPolynomialCoordinate, ← mul_assoc, ← map_mul,
-      inv_mul_cancel₀ η.ne_zero, map_one, one_mul]
+      inv_mul_cancel₀ (kummerTraceConstant p s).ne_zero, map_one, one_mul]
   rw [he] at hi'
   exact hermitianTranslatedGenericPoint_transcendental p s P hi'.isAlgebraic
 
@@ -82,7 +82,7 @@ private theorem hermitianTranslation_branch (P : HK) :
   change T.val.1 ^ (Q + 1) = φ (η : K)⁻¹ * w * (1 - w ^ (Q - 2 + 1)) ^ 1
   rw [pow_one, mul_assoc, hw]
   have hη : φ (η : K)⁻¹ * φ (η : K) = 1 := by
-    rw [← map_mul, inv_mul_cancel₀ η.ne_zero, map_one]
+    rw [← map_mul, inv_mul_cancel₀ (kummerTraceConstant p s).ne_zero, map_one]
   have hηQ : (φ (η : K)) ^ Q = -φ (η : K) := by
     rw [← map_pow, kummerTraceConstant_frobenius, map_neg]
   calc
@@ -120,7 +120,7 @@ theorem hermitianTranslationFieldHom_additive (P : HK) :
     hermitianTranslationFieldHom p s P u = φ P.val.2 + u + (φ P.val.1) ^ Q * v := by
   rw [hermitianKummerAdditiveCoordinate, map_mul, AlgHom.commutes,
     hermitianTranslationFieldHom_coordinate, hermitianTranslationPolynomialCoordinate,
-    ← mul_assoc, ← map_mul, inv_mul_cancel₀ η.ne_zero, map_one, one_mul]
+    ← mul_assoc, ← map_mul, inv_mul_cancel₀ (kummerTraceConstant p s).ne_zero, map_one, one_mul]
   rfl
 
 /-- Both original generators lie in the image of the translation homomorphism. -/

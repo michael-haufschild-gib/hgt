@@ -15,22 +15,21 @@ namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 variable (p : ℕ) [Fact p.Prime] (s : ℕ)
 local notation "Q" => p ^ (s + 1)
 local notation "K" => SquareConstantField p s
-variable (E : Type*) [Field E] [Algebra K E]
+variable (E : Type*) [Field E] [Algebra (SquareConstantField p s) E]
 local notation "H" => HermitianAffinePoint p s E
 local notation "HK" => HermitianAffinePoint p s K
 local notation "φ" => algebraMap K E
 
-local instance hermitianTranslationCharP : CharP E p :=
-  charP_of_injective_algebraMap (algebraMap K E).injective p
-
 private theorem hermitianTranslation_frobenius_add (x y : E) :
     (x + y) ^ Q = x ^ Q + y ^ Q := by
+  letI : CharP E p := charP_of_injective_algebraMap (algebraMap K E).injective p
   change iterateFrobenius E p (s + 1) (x + y) =
     iterateFrobenius E p (s + 1) x + iterateFrobenius E p (s + 1) y
   exact map_add _ _ _
 
 private theorem hermitianTranslation_frobenius_neg (x : E) :
     (-x) ^ Q = -(x ^ Q) := by
+  letI : CharP E p := charP_of_injective_algebraMap (algebraMap K E).injective p
   change iterateFrobenius E p (s + 1) (-x) =
     -(iterateFrobenius E p (s + 1) x)
   exact map_neg _ _

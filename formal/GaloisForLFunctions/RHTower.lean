@@ -4548,6 +4548,7 @@ import GaloisForLFunctions.RHTower.DeterminantLineDivisorBlindness
 import GaloisForLFunctions.RHTower.DetuningDetection
 import GaloisForLFunctions.RHTower.DiagonalCharacter
 import GaloisForLFunctions.RHTower.DigammaIntegralRepresentation
+import GaloisForLFunctions.RHTower.Coulomb.RegularizedPartialWaves
 import GaloisForLFunctions.RHTower.DiagonalEllTwoOperator
 import GaloisForLFunctions.RHTower.DiagonalMultiplierSpectrum
 import GaloisForLFunctions.RHTower.DiagrammaticPowerCounting
@@ -4701,6 +4702,7 @@ import GaloisForLFunctions.RHTower.DiscInsideHorn
 import GaloisForLFunctions.RHTower.DiscJump
 import GaloisForLFunctions.RHTower.DiscWindow
 import GaloisForLFunctions.RHTower.DiscreteMarkovRenewal
+import GaloisForLFunctions.RHTower.Probability.ObstacleGreen
 import GaloisForLFunctions.RHTower.DiscreteRecurrenceDirichletBound
 import GaloisForLFunctions.RHTower.DiscreteSteinhaus
 import GaloisForLFunctions.RHTower.DiscreteVanDerCorput
