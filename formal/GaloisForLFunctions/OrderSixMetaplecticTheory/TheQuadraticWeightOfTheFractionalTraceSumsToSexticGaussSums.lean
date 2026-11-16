@@ -196,7 +196,7 @@ theorem jacobi_double_sum_lam (h2 : (2 : P.Res) ≠ 0) (κ : P.Res) :
       (P.chi (1 - (9 * t * x.1) ^ 2) * P.traceChar (2 * t / (1 - (9 * t * x.1) ^ 2) * κ)) =
       ∑ x : {x : P.Res // x ≠ 0}, (fun x => ∑ t : P.Res, P.lam t * f (9 * t * x) t) x.1 := rfl
   rw [hL, P.sum_ne_zero_eq (fun x => ∑ t : P.Res, P.lam t * f (9 * t * x) t), hstep3]
-  simp only [Finset.mul_sum]
+  show (∑ x : P.Res, ∑ t : P.Res, P.lam t * f (9 * t * x) t) - P.lam (2 * κ) * G = _
   rw [Finset.sum_comm]
   have hfull : ∑ t : P.Res, ∑ x : P.Res, P.lam t * f (9 * t * x) t = ∑ s : P.Res, G * P.lam (2 * κ) *
       (P.chi (1 - s ^ 2) * P.lam (1 - s ^ 2)) := by
@@ -290,7 +290,8 @@ theorem sum_lam_middleMain (h2 : (2 : P.Res) ≠ 0) (A B : ℂ) :
         ((P.chi (3 * x.1))⁻¹ * P.lam (9 * x.1)) := by
     intro x
     have h := hscale x (fun s => if 1 + s = 0 ∨ 1 - s = 0 then P.chi 2 * (P.chi (3 * x.1))⁻¹ * A else 0)
-    rw [h, Finset.mul_sum, Finset.mul_sum]
+    rw [h]
+    simp only [Finset.mul_sum, Finset.sum_mul]
     refine Finset.sum_congr rfl fun s _ => ?_
     split_ifs <;> ring
   have hB : ∀ x : {x : P.Res // x ≠ 0}, ∑ t : P.Res, P.lam t * (P.chi (1 - (9 * t * x.1) ^ 2) * B) =

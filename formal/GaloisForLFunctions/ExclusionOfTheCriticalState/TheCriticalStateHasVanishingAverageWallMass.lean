@@ -178,7 +178,7 @@ theorem criticalState_terminal_average_tendsto_zero {W₀ : ℝ} (hW : 0 < W₀)
 
 private theorem norm_laplace_le_absolute_real_integral (F : ℝ → ℝ) (z : ℂ) :
     ‖negativeHalfLineLaplace (cx F) z‖ ≤ ∫ u,|F u| *Real.exp (z.re*u) := by
-  change ‖∫ u,Complex.exp (z*(u:ℂ))*(F u:ℂ)‖ ≤ _
+  change ‖∫ u : ℝ,Complex.exp (z*(u:ℂ))*(F u:ℂ)‖ ≤ _
   refine (norm_integral_le_integral_norm _).trans_eq ?_
   apply integral_congr_ae
   exact Eventually.of_forall fun u => by
