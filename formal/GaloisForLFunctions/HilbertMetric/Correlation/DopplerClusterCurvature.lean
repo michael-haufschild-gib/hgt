@@ -183,4 +183,3 @@ theorem dopplerAgingDefect_zero_iff_constant_coherence (w : ι → NNReal)
     linarith only [hc]
 
 end HilbertMetric.Correlation
-

@@ -120,5 +120,3 @@ theorem finiteKernelSignal_covariance_and_properness (x y : X) :
       Complex.zero_im] <;> ring
 
 end GaloisForLFunctions.HTGeometry
-
-#print axioms GaloisForLFunctions.HTGeometry.finiteKernelSignal_mean

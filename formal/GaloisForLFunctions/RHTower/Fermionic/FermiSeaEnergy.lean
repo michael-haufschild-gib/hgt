@@ -8,8 +8,9 @@ import Mathlib.Tactic
 
 For the half-filled equally spaced spectrum, moving `q` particles across the
 Fermi edge costs at least `q²` units of energy. Distinct occupied levels force
-two triangular contributions. This is the combinatorial energy mechanism in
-Slonim's exterior-power estimates.
+two triangular contributions. Explicit nearest-edge configurations attain
+the bound at every admissible excitation count. This is the combinatorial
+energy mechanism in Slonim's exterior-power estimates.
 -/
 
 noncomputable section
@@ -233,6 +234,3 @@ theorem fermi_quadratic_cost_is_sharp (q r : ℕ) :
   simpa only [hT] using fermiExcitationNumber_sq_le_cost T
 
 end RHTower.ParityForecast
-
-
-

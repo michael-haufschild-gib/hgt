@@ -13,7 +13,7 @@ constant field containing the finite field of order `q`.
 noncomputable section
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open Polynomial Matrix ArithmeticHarmonicAnalysis
-variable (K E : Type*) [Field K] [Fintype K] [Field E] [Algebra K E]
+variable (K E : Type*) [Field K] [Fintype K] [Field E]
 
 /-- The covariance degree at a geometric branch exponent is a Frobenius power. -/
 theorem frobeniusDickson_radical_index (r : ℕ) :
@@ -44,6 +44,11 @@ local notation "x" => algebraMap E[X] L X
 local notation "z" => AdjoinRoot.root
   (frobeniusKummerFieldPolynomial γ (q - 2) R ((q ^ 2 - q) * R + q))
 
+local instance frobeniusDicksonInvariantAlgebra :
+    Algebra (frobeniusSpecialLinearInvariantField K E γ R) L :=
+  inferInstanceAs (Algebra (frobeniusSpecialLinearInvariantField K E γ R)
+    (FrobeniusSpecialLinearField K E γ R))
+
 /-- The constructed field satisfies the literal geometric-exponent curve equation. -/
 theorem frobeniusDicksonField_root_equation :
     z ^ (q ^ (r + 2) + 1) =
@@ -55,6 +60,8 @@ theorem frobeniusDicksonField_root_equation :
 theorem frobeniusDicksonField_invariant_finrank :
     Module.finrank (frobeniusSpecialLinearInvariantField K E γ R) L = q * (q ^ 2 - 1) :=
   frobeniusSpecialLinearInvariant_finrank K E γ R
+
+variable [Algebra K E]
 
 /-- The geometric-exponent field is Galois over its explicit invariant subfield. -/
 theorem frobeniusDicksonField_invariant_isGalois :

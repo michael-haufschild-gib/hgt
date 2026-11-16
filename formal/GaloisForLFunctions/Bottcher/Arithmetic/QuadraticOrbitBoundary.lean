@@ -114,4 +114,3 @@ theorem quadraticOrbit_bounded_boundary_iff (c : ℂ) :
       norm_num [criticalOrbit_one]
 
 end Bottcher.Arithmetic
-

@@ -174,6 +174,3 @@ theorem crossingClock_pole_or_derivative_jets (z p t : ℝ) :
       ring
 
 end GaloisForLFunctions.BiarithmeticGeometry
-
-
-

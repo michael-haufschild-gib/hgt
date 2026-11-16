@@ -5,8 +5,8 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Sixty-five helper modules passed final plain Lean checks and are umbrella-wired.
-- **Missing:** Actual low completed-source energy, angular prime-slot estimates, high moment induction and both common-signal estimates.
+- **Verified:** Seventy-one helper modules passed final plain Lean checks and are umbrella-wired, including actual low angular completed-source energy, the physical-probe identity and exact selected-prime phases.
+- **Missing:** Actual physical low-probe bound, angular prime-slot estimates, high moment induction and both common-signal estimates.
 
 ## Receiver
 
@@ -76,12 +76,13 @@ Existing `ProbeRow.spectralSummand_mul_fixed_twist` factors any multiplicative
 column coefficient while retaining the radial physical row. `spectralRow` and
 `spectralRow_eq_gaussianCompleted` already accept arbitrary multiplicative
 coefficients bounded by one. This is distinct from the failed angular-physical
-compensation above. The actual direct probe, principal comparison and high-source
-moment estimates still require their angular extensions. In particular,
-`InverseReflectedPhase.low_original_completed_energy` and its sub-seven-eighths
-variant require `CanonicalCoefficientClass.FactorsModulo Q Ψ`; the angular twist
-fails this premise. Angular reflection must extend these low completed-sum
-estimates as well as the high plain-slot moment induction.
+compensation above. `AngularPhysicalProbe.angularMarkedPhysicalProbe_eq_gaussian_rows`
+identifies the actual direct angular probe with its Gaussian completed-source rows.
+Its low bound, principal comparison and high-source moments remain open. The finite-order low estimates
+require `CanonicalCoefficientClass.FactorsModulo Q Ψ`; the angular twist fails this premise.
+`angular_low_original_completed_energy` now bounds the actual angular completed source,
+requiring periodicity only of its finite coefficient. High plain-slot moment induction
+and the sub-seven-eighths angular estimate remain open.
 
 In `bareSourceCoefficient`, the target character occurs only as `targetMonoid η A`;
 the Fourier frequency is a separate variable `H`. A direct angular replacement therefore
@@ -93,8 +94,12 @@ the free frequency coordinate `N(p)^(-6z)` is unchanged.
 The ideal Euler-product draft weights `I·J³`; multiplicativity and the existing absolute
 majorant preserve excluded and finitely marked products. This global draft is not Lean-verified.
 Angular compensation must also multiply selected-prime weights by `conj(ψ₆(p))^ℓ`.
-Completed-source energy allows bounded prime weights, but their exact insertion into
-the physical compensation identity remains unproved.
+`AngularSelectedWeights` verifies this phase in the compensation and slot-splitting
+identities, preserves the original norm bounds and gives exact canonical ideal reindexing.
+`AngularPhysicalInverseSource` applies finite ray correction and period puncturing,
+identifying the corrected physical inverse rows with actual angular ideal polynomials.
+Their energy retains the original finite correction and unit-orbit costs.
+Physical low-bound assembly remains pending.
 
 ## Verified reciprocal growth
 
@@ -296,11 +301,9 @@ with one polynomial height degree uniform in arithmetic families.
 `AngularSlotRows` gives exact sector restriction and injective prime-tuple reindexing
 for whole angular rows. Finite sector aggregation retains the original cubic quotient-cardinality cost.
 
-`AngularLowGlobalEnergy` combines all finite sectors and actual prime tuples, preserving
-the low-sector exponent and uniform polynomial height cost.
-
-`AngularLowGeometry` makes the height degree uniform across finite cusp geometry.
-Actual arithmetic scale bounds give exponent `(5/6−2d)+504η−O₀/2`.
-
-`AngularSlotSplits` identifies angular dyadic rows with supported original prime choices.
-Dyadic partition and completion retain the original finite cardinality cost.
+`AngularLowCompleted.angular_low_original_completed_energy` bounds actual marked angular
+completed sums by `C(1+|θ|)^degree Z^((5/6−2d)+507η)` in squared row norm.
+Its fiber estimate retains the saving `N(rowPowerfulPart J)^(-1/2)`.
+Global sector completion, common cusp geometry, supported prime-choice reindexing and
+inactive-slot aggregation feed finite Fourier reconstruction and representative-fiber summation.
+Exact puncturing removes bad slots. Periodicity is required only of the original finite coefficient.

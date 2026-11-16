@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RepresentationLifting.OperatorKernels.CyclicOperatorHom
 import GaloisForLFunctions.RepresentationLifting.OperatorKernels.TruncatedShiftDefects
+import GaloisForLFunctions.RepresentationLifting.OperatorKernels.NoncommutativeCyclicHom
 
 /-!
 # Exact Hom dimensions for truncated cyclic modules
@@ -44,8 +45,17 @@ theorem finrank_truncatedCyclicHom (m n : ℕ) :
   rw [finrank_cyclicOperatorHom, map_pow, aeval_X,
     truncatedShift_pow, finrank_truncatedShift_kernel_min, min_comm]
 
+/-- The same exact defect over the full noncommutative endomorphism algebra,
+using its cyclic left quotient rather than a polynomial presentation. -/
+theorem finrank_fullOperatorCyclicHom (n k : ℕ) :
+    Module.finrank K
+      (CyclicLeftQuotient (truncatedShift (R := K) (M := K) n k)
+        →ₗ[Module.End K (Fin n → K)] (Fin n → K)) = min n k := by
+  rw [finrank_endCyclicHom, finrank_truncatedShift_kernel_min]
+
 end GaloisForLFunctions.RepresentationLifting
 
 #print axioms GaloisForLFunctions.RepresentationLifting.finrank_truncatedShift_kernel_min
 #print axioms GaloisForLFunctions.RepresentationLifting.finrank_truncatedCyclicHom
+#print axioms GaloisForLFunctions.RepresentationLifting.finrank_fullOperatorCyclicHom
 

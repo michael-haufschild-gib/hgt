@@ -194,4 +194,3 @@ theorem primitivePolynomialGram_add_cyclotomic (n : ℕ) (P Q H : ℂ[X]) :
   simp only [eval_add, eval_mul, hr, zero_mul, add_zero]
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
-

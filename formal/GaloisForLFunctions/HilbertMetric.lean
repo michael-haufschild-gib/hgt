@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HilbertMetric.Correlation.DopplerGaussianPrediction
 import GaloisForLFunctions.HilbertMetric.Correlation.ComplexGaussianPrediction
 import GaloisForLFunctions.HilbertMetric.Correlation.ProperKernelGaussian
 import GaloisForLFunctions.HilbertMetric.Correlation.FiniteKernelGaussian

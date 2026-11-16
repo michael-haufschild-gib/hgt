@@ -400,3 +400,4 @@ import GaloisForLFunctions.BezoutValuationIncidence.Sieve.AffineCollisionMass
 import GaloisForLFunctions.BezoutValuationIncidence.Sieve.OffsetCollisionMass
 import GaloisForLFunctions.BezoutValuationIncidence.Sieve.PeriodicProfiles
 import GaloisForLFunctions.BezoutValuationIncidence.Sieve.AffineIncidences
+import GaloisForLFunctions.BezoutValuationIncidence.Finite.SubsetSumRecovery

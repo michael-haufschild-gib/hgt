@@ -202,5 +202,3 @@ theorem periodicCriticalOrbit_zero_or_unit [IsDomain R] (d n : ℕ) (c : R) :
   · exact Or.inl hp
 
 end Bottcher.Arithmetic
-
-

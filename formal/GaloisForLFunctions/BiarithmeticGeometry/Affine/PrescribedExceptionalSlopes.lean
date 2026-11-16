@@ -166,5 +166,3 @@ theorem countable_iff_diffuse_probability_exceptionalSlopes (S : Set ℝ) :
     exact (exceptionalSpectralSlopes_countable_iff μ).mpr hn
 
 end GaloisForLFunctions.BiarithmeticGeometry
-
-

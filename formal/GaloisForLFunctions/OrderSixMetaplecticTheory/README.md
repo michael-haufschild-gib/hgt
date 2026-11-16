@@ -183,6 +183,7 @@ the quadratic Gauss sum of the row at the odd part of the column.
 | The phase of the theta scalar `C` is an analytic unknown | conjugation conjugates both Gauss-sum series behind `ρ(1)`, so reflection makes their residues real: `C ∈ ℝ`, and the `S₁` residue is positive |
 | Reflecting a continued coefficient needs its values on the real segment | the resolvent identification holds at every nonreal spectral parameter; the initial region in the lower half-plane and the identity theorem suffice |
 | The positive main term of `S₁` is the main term of the order-six family | the 2-adic phase `Γ(c)(c/−2)₃²` of the family has mean zero modulo `4`; only theta squares twisted by characters ramified at `2` contribute, and the 3-adic partner is `S_{ω²λ²}` (plain squares), whose weight in `D` is `(T(ω²λ²)/T(1))²` |
+| The Hecke traces at primes give the column dependence of the order-six family | they reach the twists `χ_q = (·/q)₃` of the theta square; the family at column `q` is the conjugate of the `χ̄_q`-twist, and the sixth-power columns need the `q`-free part of `D`, both of which need Eisenstein series of level `q` with cubic nebentypus |
 
 ## 8. Tools this programme develops
 
