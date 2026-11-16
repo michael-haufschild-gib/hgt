@@ -61,7 +61,8 @@ theorem gramEffectiveDimension_hasDerivAt (A : Matrix m n ℂ) (t : ℝ) :
     have h := (hasDerivAt_const t (gramSpectrum A i)).fun_div
       ((Real.hasDerivAt_exp t).const_add (gramSpectrum A i))
       (add_pos_of_nonneg_of_pos (spectrum_nonneg A i) (Real.exp_pos t)).ne'
-    convert! h using 1 <;> ring
+    convert! h using 1
+    ring
   have hsum := HasDerivAt.fun_sum (u := Finset.univ) (fun i _ => hd i)
   simpa only [← gramEffectiveDimension_spectral, Finset.sum_neg_distrib, gramDimensionSlope] using hsum
 
@@ -125,6 +126,7 @@ theorem gramDimensionSlope_hasDerivAt (A : Matrix m n ℂ) (t : ℝ) :
       (add_pos_of_nonneg_of_pos (spectrum_nonneg A i) (Real.exp_pos t)).ne'
     have h := ((Real.hasDerivAt_exp t).const_mul (gramSpectrum A i)).fun_div
       (((Real.hasDerivAt_exp t).const_add (gramSpectrum A i)).pow 2) (pow_ne_zero _ hn)
+    simp only [Pi.pow_apply] at h
     convert! h using 1
     field_simp
     ring

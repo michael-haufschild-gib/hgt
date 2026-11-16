@@ -30,7 +30,8 @@ theorem frobeniusKummerField_algHom_ext
           rw [f.commutes, g.commutes] }
       inv_mem' := fun _ hx => (f.toRingHom.eqLocusField g.toRingHom).inv_mem hx }
   have htop : E = ⊤ := frobeniusKummerField_eq_top_of_coordinate_root_mem c b R n E hy hz
-  ext x
+  apply AlgHom.ext
+  intro x
   have hx : x ∈ E := by rw [htop]; trivial
   exact hx
 

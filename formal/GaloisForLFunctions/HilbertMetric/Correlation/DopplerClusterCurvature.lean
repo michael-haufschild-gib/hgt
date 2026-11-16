@@ -139,3 +139,48 @@ theorem deriv_deriv_normSq_dopplerClusterKernel_zero (w : ι → NNReal)
 
 end HilbertMetric.Correlation
 
+namespace HilbertMetric.Correlation
+variable {ι : Type*} [Fintype ι]
+
+/-- Zero initial aging is equivalent to no loss of coherence at any time. -/
+theorem dopplerAgingDefect_zero_iff_constant_coherence (w : ι → NNReal)
+    (mean : ι → ℝ) (variance : ι → NNReal) :
+    dopplerAgingDefect w mean variance = 0 ↔
+      ∀ t, ‖dopplerClusterKernel w mean variance t‖ = ∑ i, (w i : ℝ) := by
+  constructor
+  · intro hz t
+    have hzero := (dopplerAgingDefect_eq_zero_iff w mean variance).mp hz
+    by_cases hi : ∃ i, w i ≠ 0
+    · obtain ⟨i, hi⟩ := hi
+      have hK : dopplerClusterKernel w mean variance t =
+          Complex.ofReal (∑ j, (w j : ℝ)) * Complex.exp ((t : ℂ) * mean i * Complex.I) := by
+        rw [dopplerClusterKernel, Complex.ofReal_sum, Finset.sum_mul]
+        apply Finset.sum_congr rfl
+        intro j _
+        by_cases hj : w j = 0
+        · simp only [hj, NNReal.coe_zero, Complex.ofReal_zero, zero_mul]
+        · have hv := (hzero.1 j).resolve_left hj
+          have hm := ((hzero.2 j i).resolve_left hj).resolve_left hi
+          simp only [hv, hm, NNReal.coe_zero, Complex.ofReal_zero, zero_mul,
+            zero_div, sub_zero]
+      have hmass : 0 ≤ ∑ j, (w j : ℝ) := Finset.sum_nonneg fun j _ => (w j).coe_nonneg
+      rw [hK, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg hmass,
+        Complex.norm_exp]
+      simp only [Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+        Complex.I_re, Complex.I_im, mul_zero, zero_mul, sub_zero, add_zero,
+        Real.exp_zero, mul_one]
+    · have hw : ∀ i, w i = 0 := by simpa only [not_exists, not_not] using hi
+      simp only [dopplerClusterKernel, hw, NNReal.coe_zero, Complex.ofReal_zero,
+        zero_mul, Finset.sum_const_zero, norm_zero]
+  · intro h
+    have he : (fun t : ℝ => ‖dopplerClusterKernel w mean variance t‖ ^ 2) =
+        fun _ => (∑ i, (w i : ℝ)) ^ 2 := funext fun t => congrArg (fun x : ℝ => x ^ 2) (h t)
+    have hc := deriv_deriv_normSq_dopplerClusterKernel_zero w mean variance
+    rw [he] at hc
+    have hd : deriv (fun _ : ℝ => (∑ i, (w i : ℝ)) ^ 2) = fun _ => 0 :=
+      funext fun t => deriv_const t _
+    rw [hd, deriv_const] at hc
+    linarith only [hc]
+
+end HilbertMetric.Correlation
+

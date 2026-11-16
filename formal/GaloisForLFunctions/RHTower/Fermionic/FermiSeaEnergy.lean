@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.FermionicFockIsospectrality
+import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Data.Finset.Sort
 import Mathlib.Tactic
 
@@ -139,6 +140,99 @@ theorem fermiExcitationNumber_lt_of_cost_lt_sq {k : ℕ}
     nlinarith only [hq, Nat.cast_nonneg (α := ℝ) (fermiExcitationNumber S), Nat.cast_nonneg (α := ℝ) m]
   exact_mod_cast hr
 
+/-- Occupied levels after the nearest `q` particle-hole moves at half filling `q+r`. -/
+def fermiEdgeLevels (q r : ℕ) : Finset ℕ :=
+  Ico r (q + r) ∪ Ico (2 * q + r) (2 * (q + r))
+
+private theorem edge_intervals_disjoint (q r : ℕ) :
+    Disjoint (Ico r (q + r)) (Ico (2 * q + r) (2 * (q + r))) := by
+  apply disjoint_left.mpr
+  intro j hj hj'
+  simp only [mem_Ico] at hj hj'
+  omega
+
+private theorem fermiEdgeLevels_card (q r : ℕ) : (fermiEdgeLevels q r).card = q + r := by
+  rw [fermiEdgeLevels, card_union_of_disjoint (edge_intervals_disjoint q r),
+    Nat.card_Ico, Nat.card_Ico]
+  omega
+
+private theorem fermiEdgeLevels_lt (q r j : ℕ) (hj : j ∈ fermiEdgeLevels q r) :
+    j < 2 * (q + r) := by
+  simp only [fermiEdgeLevels, mem_union, mem_Ico] at hj
+  omega
+
+private def fermiEdgeEmbedding (q r : ℕ) :
+    (fermiEdgeLevels q r) ↪ Fin (2 * (q + r)) where
+  toFun j := ⟨j.val, fermiEdgeLevels_lt q r j.val j.property⟩
+  inj' := by
+    intro i j h
+    apply Subtype.ext
+    exact congrArg Fin.val h
+
+/-- The nearest-excitation configuration as an actual exterior-power basis index. -/
+def fermiEdgeState (q r : ℕ) : Set.powersetCard (Fin (2 * (q + r))) (q + r) :=
+  ⟨(fermiEdgeLevels q r).attach.map (fermiEdgeEmbedding q r), by
+    change ((fermiEdgeLevels q r).attach.map (fermiEdgeEmbedding q r)).card = q + r
+    rw [card_map, card_attach, fermiEdgeLevels_card]⟩
+
+/-- The exterior configuration has exactly the advertised occupied levels. -/
+theorem occupiedLevels_fermiEdgeState (q r : ℕ) :
+    occupiedLevels (fermiEdgeState q r) = fermiEdgeLevels q r := by
+  ext j
+  simp only [occupiedLevels, fermiEdgeState, fermiEdgeEmbedding, mem_map, Function.Embedding.coeFn_mk]
+  constructor
+  · rintro ⟨i, ⟨k, _, rfl⟩, rfl⟩
+    exact k.property
+  · intro hj
+    exact ⟨⟨j, fermiEdgeLevels_lt q r j hj⟩, ⟨⟨j, hj⟩, mem_attach _ _, rfl⟩, rfl⟩
+
+/-- Precisely `q` particles cross the edge in the nearest-excitation configuration. -/
+theorem fermiExcitationNumber_edge (q r : ℕ) :
+    fermiExcitationNumber (fermiEdgeState q r) = q := by
+  rw [fermiExcitationNumber, occupiedLevels_fermiEdgeState]
+  have he : fermiEdgeLevels q r \ Ico (q + r) (2 * (q + r)) = Ico r (q + r) := by
+    ext j
+    simp only [fermiEdgeLevels, mem_sdiff, mem_union, mem_Ico]
+    omega
+  rw [he, Nat.card_Ico]
+  omega
+
+private theorem two_mul_sum_Ico (a n : ℕ) :
+    2 * (∑ j ∈ Ico a (a + n), (j : ℝ)) = (n : ℝ) * (2 * a + n - 1) := by
+  induction n with
+  | zero => simp only [add_zero, Ico_self, sum_empty, mul_zero, Nat.cast_zero, zero_mul]
+  | succ n ih =>
+    rw [Nat.add_succ, sum_Ico_succ_top (by omega)]
+    push_cast
+    nlinarith only [ih]
+
+/-- The quadratic lower bound is attained at every excitation number and every larger half filling. -/
+theorem fermiExcitationCost_edge (q r : ℕ) :
+    fermiExcitationCost (fermiEdgeState q r) = (q : ℝ) ^ 2 := by
+  rw [fermiExcitationCost, occupiedLevels_fermiEdgeState, fermiEdgeLevels,
+    sum_union (edge_intervals_disjoint q r)]
+  have htop := two_mul_sum_Ico (q + r) (q + r)
+  have hlo := two_mul_sum_Ico r q
+  have hhi := two_mul_sum_Ico (2 * q + r) r
+  rw [show q + r + (q + r) = 2 * (q + r) by omega] at htop
+  rw [show r + q = q + r by omega] at hlo
+  rw [show 2 * q + r + r = 2 * (q + r) by omega] at hhi
+  push_cast at htop hlo hhi
+  linarith only [htop, hlo, hhi]
+
+/-- Exact minimum excitation cost, realized by an explicit state in the existing fermionic basis. -/
+theorem fermi_quadratic_cost_is_sharp (q r : ℕ) :
+    ∃ S : Set.powersetCard (Fin (2 * (q + r))) (q + r),
+      fermiExcitationNumber S = q ∧ fermiExcitationCost S = (q : ℝ) ^ 2 ∧
+      ∀ T : Set.powersetCard (Fin (2 * (q + r))) (q + r),
+        fermiExcitationNumber T = q → fermiExcitationCost S ≤ fermiExcitationCost T := by
+  refine ⟨fermiEdgeState q r, fermiExcitationNumber_edge q r,
+    fermiExcitationCost_edge q r, ?_⟩
+  intro T hT
+  rw [fermiExcitationCost_edge]
+  simpa only [hT] using fermiExcitationNumber_sq_le_cost T
+
 end RHTower.ParityForecast
+
 
 

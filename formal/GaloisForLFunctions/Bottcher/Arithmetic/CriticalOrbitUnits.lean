@@ -203,5 +203,4 @@ theorem periodicCriticalOrbit_zero_or_unit [IsDomain R] (d n : ℕ) (c : R) :
 
 end Bottcher.Arithmetic
 
-#print axioms Bottcher.Arithmetic.periodicCriticalOrbit_zero_or_unit
 

@@ -94,7 +94,7 @@ theorem squaredResolventFilter_mellin (t r v : ℝ) :
   change mellin (fun u : ℝ => (fun x : ℝ => (1 + (x : ℂ)) ^ (-(2 : ℂ)))
     (u ^ (-Real.exp t))) _ = _
   rw [mellin_comp_rpow (fun x : ℝ => (1 + (x : ℂ)) ^ (-(2 : ℂ))) _ (-Real.exp t), he, mellin_base (filterStripShape_bounds r v).1 (filterStripShape_bounds r v).2]
-  simp only [abs_neg, abs_of_pos (Real.exp_pos t), Complex.real_smul, Complex.ofReal_inv, smul_eq_mul]
+  simp only [abs_neg, abs_of_pos (Real.exp_pos t), Complex.real_smul, Complex.ofReal_inv]
 
 theorem squaredResolventFilter_cancellation (t : ℝ) :
     mellin (squaredResolventFilter t) (-(Real.exp t : ℂ)) = (Real.exp t : ℂ)⁻¹ := by
@@ -129,7 +129,8 @@ theorem gradientFlowFilter_mellin (t r v : ℝ) :
     (u ^ (-Real.exp t))) _ = _
   rw [mellin_comp_rpow (fun x : ℝ => (Real.exp (-(2 * x)) : ℂ)) _ (-Real.exp t), he,
     mellin_exp_neg_mul_finiteExponentialSumMellin (by norm_num) (by simpa only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, Complex.ofReal_im, zero_mul, mul_zero, sub_zero, add_zero] using Real.exp_pos r)]
-  simp only [abs_neg, abs_of_pos (Real.exp_pos t), Complex.real_smul, Complex.ofReal_inv, smul_eq_mul]
+  simp only [abs_neg, abs_of_pos (Real.exp_pos t), Complex.real_smul, Complex.ofReal_inv]
+  norm_cast
 
 #print axioms filterStripShape_range
 #print axioms squaredResolventFilter_convergent

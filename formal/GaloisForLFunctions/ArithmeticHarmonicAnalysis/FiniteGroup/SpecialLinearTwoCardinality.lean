@@ -65,7 +65,7 @@ private theorem specialLinearTwoCellMap_bijective : Function.Bijective (specialL
         rw [ha, h, zero_mul, mul_zero, sub_self] at hdet
         exact zero_ne_one hdet
       refine ⟨.inr (Units.mk0 (M 1 0) hc, M 1 1 / M 1 0), ?_⟩
-      apply SpecialLinearGroup.ext
+      apply Matrix.SpecialLinearGroup.ext
       intro i j
       fin_cases i <;> fin_cases j
       · exact ha.symm
@@ -77,7 +77,7 @@ private theorem specialLinearTwoCellMap_bijective : Function.Bijective (specialL
       · change (M 1 1 / M 1 0) * M 1 0 = M 1 1
         exact div_mul_cancel₀ _ hc
     · refine ⟨.inl (Units.mk0 (M 0 0) ha, M 1 0, M 0 1 / M 0 0), ?_⟩
-      apply SpecialLinearGroup.ext
+      apply Matrix.SpecialLinearGroup.ext
       intro i j
       fin_cases i <;> fin_cases j
       · rfl

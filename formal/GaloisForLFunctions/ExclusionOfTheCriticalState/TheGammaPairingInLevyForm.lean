@@ -405,4 +405,210 @@ theorem differentiableOn_levyTail {F : ℝ → ℝ} (hF : CriticalHalfLineEnergy
     · exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by nlinarith)) (abs_nonneg _)
     · simp [hF.support u hu]
 
+theorem measurable_archLevyDensity' : Measurable archLevyDensity := by
+  unfold archLevyDensity; fun_prop
+
+/-- **The Lévy pairing is holomorphic on `Re p > -½`.** -/
+theorem differentiableOn_levyGamma {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) :
+    DifferentiableOn ℂ (levyGamma F) {p : ℂ | -(1 / 2) < p.re} := by
+  have hU : IsOpen {p : ℂ | -(1 / 2) < p.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hLap := differentiableOn_laplace_of_sq hF.meas hF.support hF.exponential
+  have hLapU : DifferentiableOn ℂ (negativeHalfLineLaplace (cx F)) {p : ℂ | -(1 / 2) < p.re} :=
+    hLap.mono fun p hp => by show -(8 / 2) < p.re; have : -(1 / 2) < p.re := hp; linarith
+  refine (hLapU.const_mul _).add ?_
+  refine differentiableOn_integral_of_locally_bounded (ν := volume)
+    (F := fun (x : ℝ) (p : ℂ) => levyIntegrand F p x) hU ?_ ?_ ?_
+  · intro x
+    by_cases hx : 0 < x
+    · have hk : DifferentiableOn ℂ (fun p => levyKernel F p x) {p : ℂ | -(1 / 2) < p.re} := by
+        unfold levyKernel
+        refine (hLapU.mul (by fun_prop : Differentiable ℂ fun p : ℂ =>
+          (2 : ℂ) - cexp (-(p * x))).differentiableOn).sub
+          ((by fun_prop : Differentiable ℂ fun p : ℂ => cexp (p * x)).differentiableOn.mul
+            ((differentiableOn_levyTail hF x).mono fun p hp => by
+              show -4 < p.re; have : -(1 / 2) < p.re := hp; linarith))
+      refine (hk.const_mul ((archLevyDensity x : ℂ))).congr fun p _ => ?_
+      simp [levyIntegrand, Set.indicator, hx]
+    · refine (differentiableOn_const (c := (0 : ℂ))).congr fun p _ => ?_
+      simp [levyIntegrand, Set.indicator, hx]
+  · intro p _
+    have hm : AEStronglyMeasurable (fun x : ℝ => (archLevyDensity x : ℂ) * levyKernel F p x) volume := by
+      unfold levyKernel
+      exact ((Complex.measurable_ofReal.comp measurable_archLevyDensity').aestronglyMeasurable).mul
+        (((aestronglyMeasurable_const.mul ((by fun_prop : Continuous fun x : ℝ =>
+          (2 : ℂ) - cexp (-(p * x))).aestronglyMeasurable)).sub
+          (((by fun_prop : Continuous fun x : ℝ => cexp (p * x)).aestronglyMeasurable).mul
+            (stronglyMeasurable_levyTail hF.meas p).aestronglyMeasurable)))
+    exact hm.indicator measurableSet_Ioi
+  · intro z₀ hz₀
+    have hz₀' : -(1 / 2) < z₀.re := hz₀
+    set r := (z₀.re + 1 / 2) / 2 with hrdef
+    have hr : 0 < r := by rw [hrdef]; linarith
+    set P := max 1 (‖z₀‖ + r) with hPdef
+    have hP1 : 1 ≤ P := le_max_left _ _
+    set x₁ := 1 / P with hx₁
+    have hx₁pos : 0 < x₁ := by rw [hx₁]; positivity
+    have hx₁1 : x₁ ≤ 1 := by rw [hx₁, div_le_one (by linarith)]; exact hP1
+    set C := halfPoleMass F with hC
+    set M₂ := ∫ u, F u ^ 2 with hM₂
+    set M₀ := max 2 (3 / (2 * x₁) * Real.exp (1 / 2)) with hM₀
+    have hball : ∀ p ∈ closedBall z₀ r, -(1 / 2) + r ≤ p.re ∧ ‖p‖ ≤ P := by
+      intro p hp
+      rw [mem_closedBall, dist_eq_norm] at hp
+      have h1 := (abs_le.mp ((Complex.abs_re_le_norm (p - z₀)).trans hp)).1
+      simp only [Complex.sub_re] at h1
+      refine ⟨by rw [hrdef] at h1 ⊢; linarith, ?_⟩
+      have h2 : ‖p‖ ≤ ‖z₀‖ + r := by
+        have := norm_sub_norm_le p z₀; linarith
+      exact h2.trans (le_max_right _ _)
+    set g : ℝ → ℝ := fun x =>
+      (Ioc 0 x₁).indicator (fun x => 3 / (2 * x) * (4 * C * P * x +
+        9 * (Real.sqrt x * (M₂ + 1) / 2))) x +
+      (Ioi x₁).indicator (fun x => M₀ * Real.exp (-(x / 2)) * (C * 3) +
+        M₀ * C * Real.exp (-(r * x))) x with hg
+    refine ⟨r, hr, fun z hz => ?_, g, ?_, fun x p hp => ?_⟩
+    · have := (hball z hz).1; show -(1 / 2) < z.re; linarith
+    · -- integrability of the dominating function
+      have hnear : IntegrableOn (fun x : ℝ => 3 / (2 * x) * (4 * C * P * x +
+          9 * (Real.sqrt x * (M₂ + 1) / 2))) (Ioc 0 x₁) := by
+        have hrpow : IntegrableOn (fun x : ℝ => x ^ (-(1 / 2) : ℝ)) (Ioc 0 x₁) := by
+          rw [integrableOn_Ioc_iff_integrableOn_Ioo, intervalIntegral.integrableOn_Ioo_rpow_iff hx₁pos]
+          norm_num
+        have hconst : IntegrableOn (fun _ : ℝ => 6 * C * P) (Ioc 0 x₁) :=
+          integrableOn_const (by rw [Real.volume_Ioc]; exact ENNReal.ofReal_ne_top)
+        refine (hconst.add (hrpow.const_mul (27 / 4 * (M₂ + 1)))).congr_fun (fun x hx => ?_)
+          measurableSet_Ioc
+        have hx0 : 0 < x := hx.1
+        simp only [Pi.add_apply]
+        rw [Real.rpow_neg hx0.le, ← Real.sqrt_eq_rpow]
+        set s := Real.sqrt x with hsdef
+        have hs2 : x = s ^ 2 := (Real.sq_sqrt hx0.le).symm
+        have hsp : 0 < s := Real.sqrt_pos.mpr hx0
+        clear_value s
+        subst hs2
+        field_simp
+        ring
+      have hfar : IntegrableOn (fun x : ℝ => M₀ * Real.exp (-(x / 2)) * (C * 3) +
+          M₀ * C * Real.exp (-(r * x))) (Ioi x₁) := by
+        have e1 : IntegrableOn (fun x : ℝ => Real.exp (-(1 / 2) * x)) (Ioi x₁) :=
+          exp_neg_integrableOn_Ioi _ (by norm_num)
+        have e2 : IntegrableOn (fun x : ℝ => Real.exp (-r * x)) (Ioi x₁) :=
+          exp_neg_integrableOn_Ioi _ hr
+        refine (IntegrableOn.add (e1.const_mul (M₀ * (C * 3))) (e2.const_mul (M₀ * C))).congr_fun
+          (fun x _ => ?_) measurableSet_Ioi
+        simp only [Pi.add_apply]
+        rw [show -(x / 2) = -(1 / 2) * x by ring, show -(r * x) = -r * x by ring]
+        ring
+      exact (hnear.integrable_indicator measurableSet_Ioc).add
+        (hfar.integrable_indicator measurableSet_Ioi)
+    · -- the pointwise bound
+      obtain ⟨hpre, hpP⟩ := hball p hp
+      have hp12 : -(1 / 2) ≤ p.re := by linarith
+      have hC0 : 0 ≤ C := le_trans (norm_nonneg _) (norm_laplace_le_halfPoleMass hF hp12)
+      have hM₀0 : 0 ≤ M₀ := le_trans (by norm_num) (le_max_left _ _)
+      have hgnn : 0 ≤ g x := by
+        simp only [hg]
+        refine add_nonneg (Set.indicator_nonneg (fun y hy => ?_) _)
+          (Set.indicator_nonneg (fun y _ => by positivity) _)
+        have hy0 : 0 < y := hy.1
+        positivity
+      by_cases hx : 0 < x
+      · have hval : levyIntegrand F p x = (archLevyDensity x : ℂ) * levyKernel F p x := by
+          simp [levyIntegrand, Set.indicator, hx]
+        rw [hval, norm_mul, Complex.norm_real, Real.norm_of_nonneg (archLevyDensity_pos hx).le]
+        by_cases hx1 : x ≤ x₁
+        · have hxP : P * x ≤ 1 := by
+            have := mul_le_mul_of_nonneg_left hx1 (by linarith : (0 : ℝ) ≤ P)
+            rw [hx₁, mul_one_div_cancel (by linarith)] at this; exact this
+          have hω := archLevyDensity_le_near hx (hx1.trans hx₁1)
+          have hK := norm_levyKernel_le_near hF hpP hp12 hx hxP
+          have hgx : g x = 3 / (2 * x) * (4 * C * P * x + 9 * (Real.sqrt x * (M₂ + 1) / 2)) := by
+            simp only [hg, Set.indicator, Set.mem_Ioc, hx, hx1, true_and, Set.mem_Ioi,
+              not_lt.mpr hx1, if_true, if_false, add_zero]
+          rw [hgx]
+          exact mul_le_mul hω hK (norm_nonneg _) (by positivity)
+        · have hx1' : x₁ < x := lt_of_not_ge hx1
+          have hω : archLevyDensity x ≤ M₀ * Real.exp (-(x / 2)) := by
+            rcases le_or_gt 1 x with h1 | h1
+            · exact (archLevyDensity_le_far h1).trans
+                (mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.exp_pos _).le)
+            · have h3 := archLevyDensity_le_near hx h1.le
+              have h4 : 3 / (2 * x) ≤ 3 / (2 * x₁) :=
+                div_le_div_of_nonneg_left (by norm_num) (by positivity) (by linarith)
+              have h5 : 1 ≤ Real.exp (1 / 2) * Real.exp (-(x / 2)) := by
+                rw [← Real.exp_add]; exact Real.one_le_exp (by linarith)
+              calc archLevyDensity x ≤ 3 / (2 * x₁) := h3.trans h4
+                _ ≤ 3 / (2 * x₁) * (Real.exp (1 / 2) * Real.exp (-(x / 2))) :=
+                    le_mul_of_one_le_right (by positivity) h5
+                _ = 3 / (2 * x₁) * Real.exp (1 / 2) * Real.exp (-(x / 2)) := by ring
+                _ ≤ M₀ * Real.exp (-(x / 2)) :=
+                    mul_le_mul_of_nonneg_right (le_max_right _ _) (Real.exp_pos _).le
+          have hK := norm_levyKernel_le_far hF hp12 hx.le
+          have hexp : Real.exp (-(x / 2)) * Real.exp (-(p.re * x)) ≤ Real.exp (-(r * x)) := by
+            rw [← Real.exp_add]; exact Real.exp_le_exp.mpr (by nlinarith)
+          have hgx : g x = M₀ * Real.exp (-(x / 2)) * (C * 3) + M₀ * C * Real.exp (-(r * x)) := by
+            simp only [hg, Set.indicator, Set.mem_Ioc, hx, true_and, hx1, if_false, zero_add,
+              Set.mem_Ioi, hx1', if_true]
+          rw [hgx]
+          calc archLevyDensity x * ‖levyKernel F p x‖
+              ≤ M₀ * Real.exp (-(x / 2)) * (C * (3 + Real.exp (-(p.re * x)))) :=
+                mul_le_mul hω hK (norm_nonneg _) (by positivity)
+            _ = M₀ * Real.exp (-(x / 2)) * (C * 3) +
+                  M₀ * C * (Real.exp (-(x / 2)) * Real.exp (-(p.re * x))) := by ring
+            _ ≤ M₀ * Real.exp (-(x / 2)) * (C * 3) + M₀ * C * Real.exp (-(r * x)) := by
+                gcongr
+      · have : levyIntegrand F p x = 0 := by simp [levyIntegrand, Set.indicator, hx]
+        rw [this, norm_zero]; exact hgnn
+
+/-- At real exponents `p > 4` the Lévy pairing is the Gamma form of the probe. -/
+theorem levyGamma_ofReal {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {p : ℝ} (hp : 4 < p) :
+    levyGamma F p = (gammaMixedForm F (probe p) : ℂ) := by
+  rw [gammaMixedForm_probe_levy hF hp]
+  unfold levyGamma
+  rw [negativeHalfLineLaplace_ofReal]
+  have hint : (∫ x, levyIntegrand F (p : ℂ) x) = ((∫ x in Ioi 0, archLevyDensity x *
+      ((∫ u, F u * Real.exp (p * u)) * (2 - Real.exp (-(p * x))) -
+        Real.exp (p * x) * ∫ u in Iio (-x), F u * Real.exp (p * u)) : ℝ) : ℂ) := by
+    rw [← integral_complex_ofReal, ← integral_indicator measurableSet_Ioi]
+    refine integral_congr_ae (Eventually.of_forall fun x => ?_)
+    by_cases hx : 0 < x
+    · simp only [levyIntegrand, Set.indicator, Set.mem_Ioi, hx, if_true]
+      unfold levyKernel levyTail
+      rw [negativeHalfLineLaplace_ofReal]
+      have ht : (∫ u : ℝ in Iio (-x), cexp ((p : ℂ) * u) * (F u : ℂ)) =
+          ((∫ u in Iio (-x), F u * Real.exp (p * u) : ℝ) : ℂ) := by
+        rw [← integral_complex_ofReal]
+        refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+        push_cast; ring
+      rw [ht]
+      push_cast
+      ring
+    · simp [levyIntegrand, Set.indicator, hx]
+  rw [hint]
+  push_cast
+  ring
+
+/-- **The Lévy pairing is the Fourier-side Gamma pairing on `Re p > 0`.** -/
+theorem levyGamma_eq_stateGamma {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {p : ℂ}
+    (hp : 0 < p.re) : levyGamma F p = stateGamma F p := by
+  have hU : IsOpen {p : ℂ | 0 < p.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hdiff : DifferentiableOn ℂ (fun p => levyGamma F p - stateGamma F p) {p : ℂ | 0 < p.re} :=
+    ((differentiableOn_levyGamma hF).mono fun q hq => by
+      show -(1 / 2) < q.re; have : 0 < q.re := hq; linarith).sub (differentiableOn_stateGamma hF)
+  have hreal : ∀ x : ℝ, 4 < x → (fun p => levyGamma F p - stateGamma F p) x = 0 := by
+    intro x hx
+    have hγ : gammaMixedForm F (probe x) = 1 / (2 * Real.pi) *
+        ∫ r : ℝ, (paperFT (cx F) (r : ℂ) / ((x : ℂ) - I * r)).re * EF.gammaBracket r := by
+      unfold gammaMixedForm
+      congr 1
+      refine integral_congr_ae (Eventually.of_forall fun r => ?_)
+      dsimp only
+      rw [gammaFourierPair_probe_right F (by linarith : (0 : ℝ) < x)]
+    show levyGamma F x - stateGamma F x = 0
+    rw [levyGamma_ofReal hF hx, stateGamma_ofReal, hγ, sub_self]
+  have h := (hdiff.analyticOnNhd hU).eqOn_zero_of_preconnected_of_frequently_eq_zero
+    (convex_halfSpace_re_gt 0).isPreconnected (show 0 < (5 : ℂ).re by norm_num)
+    (frequently_eq_zero_of_real hreal) hp
+  simpa [sub_eq_zero] using h
+
 end GaloisForLFunctions.ExclusionOfTheCriticalState

@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Sixty helper modules passed final plain Lean checks and are umbrella-wired.
+- **Verified:** Sixty-two helper modules passed final plain Lean checks and are umbrella-wired.
 - **Missing:** Actual low completed-source energy, angular prime-slot estimates, high moment induction and both common-signal estimates.
 
 ## Receiver
@@ -13,6 +13,9 @@
 `grossenHalfPlane_step` fixes weight `k` and takes the zero supremum over all finite ray
 characters at that weight. Constants and height orders may depend on `k`. The correction
 identifies the next level `6k+1`; the receiver itself supplies no detector estimate.
+
+The inverse-target detector branch uses the conjugate of moments based on `η.inverse`.
+Its angular extension therefore needs both infinity-type orientations throughout the moment estimates.
 
 Finite-order estimates use periodic `HeckeFamily.Character` coefficients. Multiplication by
 `idealPsiSix^k` preserves multiplicativity and unit bounds, but does not preserve finite
@@ -285,3 +288,10 @@ arbitrary radial decay and one height degree uniform in the arithmetic families.
 
 `AngularCenteredRows` gives the same conductor decay for centered angular plain rows
 with equal product scales, including rows whose finite character is principal.
+
+`AngularLowFullSector` absorbs arbitrary radial tails into retained low-sector energy.
+Whole angular sectors retain exponent `(5/6−2d)+200η+π+κ+ρLpool−O₀/2`
+with one polynomial height degree uniform in arithmetic families.
+
+`AngularSlotRows` gives exact sector restriction and injective prime-tuple reindexing
+for whole angular rows. Finite sector aggregation retains the original cubic quotient-cardinality cost.

@@ -21,6 +21,7 @@ local notation "L" => FrobeniusSpecialLinearField K E γ R
 local notation "x" => algebraMap E[X] L X
 local notation "z" => AdjoinRoot.root (frobeniusKummerFieldPolynomial γ (q - 2) R n)
 
+omit [Field K] [Algebra K E] in
 /-- A linear expression in the actual transcendental coordinate determines both constant coefficients. -/
 theorem frobeniusSpecialLinearField_linearCoordinate_injective :
     Function.Injective (fun a : E × E => algebraMap E L a.1 * x + algebraMap E L a.2) := by
@@ -73,7 +74,7 @@ theorem frobeniusSpecialLinearAut_injective :
     frobeniusSpecialLinearField_linearCoordinate_injective K E γ R hnum
   have h00 : M 0 0 = N 0 0 := (algebraMap K E).injective (congrArg Prod.fst htop)
   have h01 : M 0 1 = N 0 1 := (algebraMap K E).injective (congrArg Prod.snd htop)
-  apply SpecialLinearGroup.ext
+  apply Matrix.SpecialLinearGroup.ext
   intro i j
   fin_cases i <;> fin_cases j
   · exact h00

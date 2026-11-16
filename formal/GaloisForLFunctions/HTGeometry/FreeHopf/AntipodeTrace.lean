@@ -111,7 +111,7 @@ theorem antipodeWordMatrix_trace (n : ℕ) :
           (-1 : k) ^ n * (if w.Palindrome then 1 else 0) := by
         apply Finset.sum_congr rfl
         intro w hw
-        rw [mem_wordsOfLength.mp hw, List.Palindrome.iff_reverse_eq]
+        simp only [mem_wordsOfLength.mp hw, List.Palindrome.iff_reverse_eq]
       _ = (-1 : k) ^ n * ∑ w ∈ wordsOfLength (A := A) n,
           (if w.Palindrome then 1 else 0) := by rw [Finset.mul_sum]
       _ = _ := by rw [← Finset.sum_filter]; simp [palindromeWords]

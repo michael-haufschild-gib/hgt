@@ -1,0 +1,4 @@
+import GaloisForLFunctions.ExclusionOfTheCriticalState.TheGammaPairingInLevyForm
+open GaloisForLFunctions.ExclusionOfTheCriticalState
+#print axioms levyGamma_eq_stateGamma
+#print axioms differentiableOn_levyGamma

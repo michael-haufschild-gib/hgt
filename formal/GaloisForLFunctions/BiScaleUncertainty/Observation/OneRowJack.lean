@@ -50,7 +50,7 @@ theorem oneRowJack_binary {ι : Type*} [Fintype ι] [DecidableEq ι]
     intro i
     by_cases hi : i ∈ S
     · simp [hi]
-    · simp only [if_neg hi, rescale_zero, ← coeff_zero_eq_constantCoeff_apply,
+    · simp only [if_neg hi, rescale_zero, RingHom.comp_apply, ← coeff_zero_eq_constantCoeff_apply,
         jackFactor_coeff, Ring.multichoose_zero_right, map_one]
   unfold oneRowJack
   simp only [hf]
@@ -127,6 +127,28 @@ theorem oneRowJack_permutation {ι : Type*} [Fintype ι]
   unfold oneRowJack
   rw [e.prod_comp (fun i => rescale (x i) (jackFactor theta))]
 
+
+/-- Nonempty binary support keeps every one-row degree positive; empty support has only degree zero. -/
+theorem oneRowJack_binary_pos_iff {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (t : ℝ) (n : ℕ) (S : Finset ι) :
+    0 < oneRowJack (Real.exp t) n (fun i => if i ∈ S then 1 else 0) ↔ S.Nonempty ∨ n = 0 := by
+  rw [oneRowJack_binary]
+  by_cases hn : n = 0
+  · subst n; simp
+  by_cases hs : S.Nonempty
+  · have hm : 0 < (S.card : ℝ) * Real.exp t := mul_pos
+      (by exact_mod_cast Finset.card_pos.mpr hs) (Real.exp_pos t)
+    have hc : 0 < Ring.multichoose ((S.card : ℝ) * Real.exp t) n := by
+      rw [jack_multichoose_pochhammer]
+      apply div_pos
+      · simpa only [Polynomial.ascPochhammer_smeval_eq_eval] using ascPochhammer_pos n _ hm
+      · exact_mod_cast Nat.factorial_pos n
+    exact iff_of_true (div_pos hc (jack_multichoose_exp_pos t n)) (Or.inl hs)
+  · have he : S = ∅ := Finset.not_nonempty_iff_eq_empty.mp hs
+    obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hn
+    simp [he, Ring.multichoose_zero_succ]
+
+#print axioms oneRowJack_binary_pos_iff
 #print axioms oneRowJack_homogeneous
 #print axioms oneRowJack_permutation
 #print axioms oneRowJack_binary_pochhammer
