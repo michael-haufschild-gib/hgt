@@ -117,7 +117,8 @@ theorem cuspConstantTerm_fracRemainder (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 
     intro k
     unfold fracWeight
     refine (norm_add_le _ _).trans (add_le_add le_rfl ?_)
-    split_ifs <;> simp <;> positivity
+    split_ifs <;> simp
+    positivity
   have s1 := summable_mul_neg_bdd hb hb _ _ hW
   have s2 := summable_mul_neg_bdd hb hb (fun _ => (1 : ℂ)) 1 (fun _ => by simp)
   have hsplit : ∑' k : O, b k * b (-k) * P.fracWeight k - P.fracMain * ∑' k : O, b k * b (-k) =

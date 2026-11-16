@@ -1,6 +1,6 @@
 import GaloisForLFunctions.RepresentationLifting.Probability.NilpotentReduction
 import GaloisForLFunctions.RepresentationLifting.Probability.NilpotentMatrixCardinality
-import Mathlib.Data.ZMod.Basic
+import Mathlib.Algebra.Field.ZMod
 
 /-!
 # Nilpotent matrices modulo prime powers
@@ -77,7 +77,7 @@ theorem card_primePower_nilpotent_matrices (r n : ℕ) :
     (fun B hB => ⟨r + 1, primePowerMatrixReduction_kernel_pow p r B hB⟩)
   have hsize (q : ℕ) : Nat.card (Matrix (Fin n) (Fin n) (ZMod q)) = q ^ (n * n) := by
     simp only [Matrix, Nat.card_fun, Nat.card_fin, Nat.card_zmod, ← pow_mul]
-  rw [hsize, hsize, card_nilpotent_matrices, Nat.card_zmod, ← pow_mul] at hc
+  rw [hsize, hsize, card_nilpotent_matrices (ZMod p) n, Nat.card_zmod, ← pow_mul] at hc
   apply Nat.eq_of_mul_eq_mul_right (pow_pos (Fact.out : p.Prime).pos (n * n))
   rw [hc, ← pow_add, ← pow_add]
   congr 1
@@ -95,7 +95,7 @@ theorem primePower_nilpotent_matrix_density (r n : ℕ) :
   rw [card_primePower_nilpotent_matrices]
   simp only [Matrix, Nat.card_fun, Nat.card_fin, Nat.card_zmod,
     ← pow_mul, Nat.cast_pow]
-  rw [he]
+  rw [Nat.mul_assoc, he]
   simp only [pow_add]
   field_simp
 

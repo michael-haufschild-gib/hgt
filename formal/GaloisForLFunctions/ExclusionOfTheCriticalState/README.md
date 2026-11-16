@@ -36,6 +36,7 @@ so nothing is lost between stages.
 | Prime heads | `primeHead` | $\hat SF(p)=\sum\Lambda(n)n^{p-1/2}H_{\log n}(p)$ |
 | Three remainders | `levyRemainder`, `stripRemainder`, `leftRemainder`, `globalRemainder` | the remainder right of, on, and left of $\operatorname{Re}p=-\tfrac12$ |
 | Continuations | `stateContinuation`, `levyContinuation`, `stateMeromorphic` | $-R(w+8)/a$ on $\operatorname{Re}w>-8$, $>-\tfrac{17}2$, and on $\mathbb C$ |
+| Entire state product | `stateXiProduct` | $E(w)=\xi(w+\tfrac{17}2)\mathcal LF(w)$, extended across the shifted zeros |
 | Left Hardy datum | `leftContinuationDatum` | $G_c\in L^2(0,\infty)$ representing the reflected continuation $\mathcal LF(-(z+c)-8)$ for $\operatorname{Re}z>0$, $\tfrac12<c\le4$ |
 | Centred zeros, zero sum | `centredZero`, `zeroSum` | $z=\rho-\tfrac12$ with multiplicity; $ZF(p)=\sum_z\mathcal LF(z)\big(\tfrac1{p-z}-\tfrac1{1-z}\big)$ |
 | Divided-difference sum | `dividedTerm`, `dividedSum` | $\Delta F(p)=\sum_z\big(\tfrac{\mathcal LF(z)-\mathcal LF(p)}{p-z}-\tfrac{\mathcal LF(z)}{1-z}-\tfrac{\mathcal LF(p)}{z}\big)$, holomorphic at the zeros |
@@ -98,6 +99,9 @@ so nothing is lost between stages.
    and tails are bounded on their half-planes, $\Gamma_{\mathbb R}'/\Gamma_{\mathbb R}$ is linear, both sums are quadratic. The glued
    defect is entire of order $O(|p|^2)$, vanishes at $1$ and is $o(|p|)$ along the negative axis; its
    divided difference at $1$ is zero. No bound for $\zeta'/\zeta$ inside the strip is used.
+   The cleared state product $E$ is entire. At a seen zero $z=\rho-\tfrac12$ of multiplicity $m$,
+   $E$ has order exactly $m-1$ at $z-8$: in $\xi R+\mathcal LF\,\xi'$, only the derivative term contributes
+   to the leading jet. Conversely, $E$ has order at least $m$ there exactly when $\mathcal LF(z)=0$.
 11. **A Hardy profile left of the strip.** Carleman's inequality puts
    $K_F(v)=\int_0^\infty\omega(v+t)F(-t)\,dt$ in $L^2$. After damping by $e^{-cv}$,
    $\tfrac12<c\le4$, the translated prime profiles sum in $L^2$, and both charges are
@@ -161,6 +165,7 @@ $JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula).
 | Linear growth of the pairings with a probe | `exists_bound_levyGamma`, `exists_bound_levyRegularPart`, `exists_bound_leftRemainder` | unconditional |
 | Explicit formula on the domain against probes | `entireDefect_eq_zero`, `globalRemainder_sub_eq_zeroSum`, `globalRemainder_sub_eq_tsum` | unconditional |
 | $(\star)$: the state is the Cauchy transform of its values at the zeros | `criticalState_starEquation`, `criticalState_zeroValues_cauchy`, `riemannHypothesis_or_criticalState_starEquation` | unconditional |
+| Exact multiplicities of the entire state product; full multiplicity detects unseen zeros | `criticalState_stateXiProduct_order`, `le_analyticOrderAt_stateXiProduct_iff`, `stateXiProduct_first_nonzero_jet` | unconditional (for the state or energy-domain profile) |
 
 ## 8. Traps
 

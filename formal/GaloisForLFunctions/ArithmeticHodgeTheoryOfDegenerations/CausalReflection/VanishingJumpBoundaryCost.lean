@@ -112,6 +112,8 @@ theorem CriticalHalfLineEnergyDomain.jump_boundary_exact_tendsto_zero
       have hx : 0 < x := lt_trans hd hdx
       have hN : 0 ≤ ∫ u in Ioo (-d) 0, K (F u) 0 :=
         integral_nonneg fun u => hK (F u) 0
+      change ‖archLevyDensity x * (∫ u in Ioo (-d) 0, K (F u) 0)‖ ≤
+        archLevyDensity x * ∫ u, K (F u) (F (u + x))
       rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (archLevyDensity_pos hx).le hN)]
       apply mul_le_mul_of_nonneg_left _ (archLevyDensity_pos hx).le
       calc

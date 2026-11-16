@@ -39,6 +39,25 @@ private theorem analyticOrderAt_mul_add_mul_deriv {f g r : ℂ → ℂ} {z : ℂ
   change analyticOrderAt (f * r + g * deriv f) z + 1 = _
   rw [analyticOrderAt_add_eq_right_of_lt hlt, hgd, hd]
 
+/-- If the derivative coefficient also vanishes, neither summand can have smaller order
+than the original function. -/
+private theorem le_analyticOrderAt_mul_add_mul_deriv {f g r : ℂ → ℂ} {z : ℂ}
+    (hf : AnalyticAt ℂ f z) (hg : AnalyticAt ℂ g z) (hr : AnalyticAt ℂ r z)
+    (hfz : f z = 0) (hgz : g z = 0) :
+    analyticOrderAt f z ≤ analyticOrderAt (fun w => f w * r w + g w * deriv f w) z := by
+  have hd : analyticOrderAt (deriv f) z + 1 = analyticOrderAt f z := by
+    simpa only [hfz, sub_zero] using hf.analyticOrderAt_deriv_add_one
+  have hgpos : 1 ≤ analyticOrderAt g z :=
+    (ENat.add_one_le_iff (by simp : (0 : ℕ∞) ≠ ⊤)).mpr
+      (bot_lt_iff_ne_bot.mpr (analyticOrderAt_ne_zero.mpr ⟨hg, hgz⟩))
+  change analyticOrderAt f z ≤ analyticOrderAt (f * r + g * deriv f) z
+  apply le_trans _ le_analyticOrderAt_add
+  apply le_min
+  · rw [analyticOrderAt_mul hf hr]
+    exact le_self_add
+  · rw [analyticOrderAt_mul hg hf.deriv, ← hd, add_comm]
+    exact add_le_add_left hgpos _
+
 theorem analyticAt_regularRemainder {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
     {p : ℂ} (hp : -2 < p.re) : AnalyticAt ℂ (regularRemainder F) p := by
   have hd : DifferentiableOn ℂ (regularRemainder F) {w : ℂ | -2 < w.re} :=
@@ -51,6 +70,26 @@ private theorem analyticAt_energyLaplace {F : ℝ → ℝ} (hF : CriticalHalfLin
     fun w hw => (differentiableAt_laplace hF hw).differentiableWithinAt
   exact hd.analyticAt ((isOpen_lt continuous_const Complex.continuous_re).mem_nhds hp)
 
+private theorem analyticOrderAt_xi_half_add (z : ℂ) :
+    analyticOrderAt (fun p : ℂ => xi (1 / 2 + p)) z = analyticOrderAt xi (1 / 2 + z) := by
+  apply analyticOrderAt_comp_of_deriv_ne_zero (by fun_prop)
+  rw [((hasDerivAt_id z).const_add (1 / 2 : ℂ)).deriv]
+  exact one_ne_zero
+
+private theorem deriv_xi_half_add :
+    deriv (fun p : ℂ => xi (1 / 2 + p)) = fun p => deriv xi (1 / 2 + p) := by
+  funext p
+  simpa only [one_mul, mul_one] using
+    ((xi_differentiable (1 / 2 + p)).hasDerivAt.comp p
+      ((hasDerivAt_id p).const_add (1 / 2 : ℂ))).deriv
+
+private theorem clearedRemainder_eventually_eq (F : ℝ → ℝ) {z : ℂ} (hz : -2 < z.re) :
+    clearedRemainder F =ᶠ[𝓝 z]
+      (fun p => xi (1 / 2 + p) * regularRemainder F p +
+        negativeHalfLineLaplace (cx F) p * deriv xi (1 / 2 + p)) := by
+  filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds hz] with p hp
+  exact clearedRemainder_of_gt hp
+
 /-- At any seen zero, the cleared pairing has exactly one fewer zero than `ξ`. -/
 theorem analyticOrderAt_clearedRemainder_add_one {F : ℝ → ℝ}
     (hF : CriticalHalfLineEnergyDomain F) {z : ℂ} (hxi : xi (1 / 2 + z) = 0)
@@ -59,25 +98,26 @@ theorem analyticOrderAt_clearedRemainder_add_one {F : ℝ → ℝ}
   have hz : -2 < z.re := by
     have := (abs_lt.mp (abs_re_lt_of_xi_eq_zero hxi)).1
     linarith
-  have hshift : analyticOrderAt (fun p : ℂ => xi (1 / 2 + p)) z =
-      analyticOrderAt xi (1 / 2 + z) := by
-    apply analyticOrderAt_comp_of_deriv_ne_zero (by fun_prop)
-    simp only [deriv_const_add, deriv_id'', ne_eq, one_ne_zero, not_false_eq_true]
-  have hderiv : deriv (fun p : ℂ => xi (1 / 2 + p)) = fun p => deriv xi (1 / 2 + p) := by
-    funext p
-    simpa only [one_mul, mul_one] using
-      ((xi_differentiable (1 / 2 + p)).hasDerivAt.comp p
-        ((hasDerivAt_id p).const_add (1 / 2 : ℂ))).deriv
-  have heq : clearedRemainder F =ᶠ[𝓝 z]
-      (fun p => xi (1 / 2 + p) * regularRemainder F p +
-        negativeHalfLineLaplace (cx F) p * deriv xi (1 / 2 + p)) := by
-    filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds hz] with p hp
-    exact clearedRemainder_of_gt hp
-  rw [analyticOrderAt_congr heq]
+  rw [analyticOrderAt_congr (clearedRemainder_eventually_eq F hz)]
   have h := analyticOrderAt_mul_add_mul_deriv
     (differentiable_xi_half_add.analyticAt z) (analyticAt_energyLaplace hF (by linarith))
-    (analyticAt_regularRemainder hF hz) hxi (by rw [hshift]; exact xi_order_ne_top _) hL
-  simpa only [hderiv, hshift] using h
+    (analyticAt_regularRemainder hF hz) hxi
+    (by rw [analyticOrderAt_xi_half_add]; exact xi_order_ne_top _) hL
+  simpa only [deriv_xi_half_add, analyticOrderAt_xi_half_add] using h
+
+/-- At an unseen zero, clearing the pairing preserves at least the full multiplicity of `ξ`. -/
+theorem le_analyticOrderAt_clearedRemainder_of_laplace_eq_zero {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {z : ℂ} (hxi : xi (1 / 2 + z) = 0)
+    (hL : negativeHalfLineLaplace (cx F) z = 0) :
+    analyticOrderAt xi (1 / 2 + z) ≤ analyticOrderAt (clearedRemainder F) z := by
+  have hz : -2 < z.re := by
+    have := (abs_lt.mp (abs_re_lt_of_xi_eq_zero hxi)).1
+    linarith
+  rw [analyticOrderAt_congr (clearedRemainder_eventually_eq F hz)]
+  have h := le_analyticOrderAt_mul_add_mul_deriv
+    (differentiable_xi_half_add.analyticAt z) (analyticAt_energyLaplace hF (by linarith))
+    (analyticAt_regularRemainder hF hz) hxi hL
+  simpa only [deriv_xi_half_add, analyticOrderAt_xi_half_add] using h
 
 /-- Translation and the nonzero normalization preserve the order of the cleared pairing. -/
 theorem analyticOrderAt_stateXiProduct {W₀ : ℝ} (hW : 0 < W₀) {F : ℝ → ℝ}
@@ -107,6 +147,25 @@ theorem analyticOrderAt_stateXiProduct_add_one {W₀ : ℝ} (hW : 0 < W₀) {F :
   rw [analyticOrderAt_stateXiProduct hW hF, sub_add_cancel]
   exact analyticOrderAt_clearedRemainder_add_one hF hxi hL
 
+/-- Full multiplicity in the cleared product detects precisely the zeros invisible to the
+profile's Laplace transform. -/
+theorem le_analyticOrderAt_stateXiProduct_iff {W₀ : ℝ} (hW : 0 < W₀) {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {z : ℂ} (hxi : xi (1 / 2 + z) = 0) :
+    analyticOrderAt xi (1 / 2 + z) ≤ analyticOrderAt (stateXiProduct W₀ F) (z - 8) ↔
+      negativeHalfLineLaplace (cx F) z = 0 := by
+  constructor
+  · intro h
+    by_contra hL
+    have heq := analyticOrderAt_stateXiProduct_add_one hW hF hxi hL
+    have hfinite : analyticOrderAt (stateXiProduct W₀ F) (z - 8) ≠ ⊤ := by
+      intro htop
+      exact xi_order_ne_top _ (by rw [← heq, htop, top_add])
+    have hlt := (ENat.add_one_le_iff hfinite).mp heq.le
+    exact (not_lt_of_ge h) hlt
+  · intro hL
+    rw [analyticOrderAt_stateXiProduct hW hF, sub_add_cancel]
+    exact le_analyticOrderAt_clearedRemainder_of_laplace_eq_zero hF hxi hL
+
 /-- Every zero on or right of the line loses exactly one unit of multiplicity in the
 entire product attached to a critical state. -/
 theorem criticalState_stateXiProduct_order {W₀ : ℝ} (hW : 0 < W₀)
@@ -118,5 +177,53 @@ theorem criticalState_stateXiProduct_order {W₀ : ℝ} (hW : 0 < W₀)
   analyticOrderAt_stateXiProduct_add_one hW (criticalHalfLineEnergyDomain_of_groundState hF)
     (xi_centredZero c)
     (criticalHalfLineGroundState_closedRightHalfPlaneLaplace_ne_zero hW hthreshold hF hc)
+
+/-- Natural-number multiplicities satisfy the same exact drop at every seen zero. -/
+theorem analyticOrderNatAt_stateXiProduct_add_one {W₀ : ℝ} (hW : 0 < W₀) {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {z : ℂ} (hxi : xi (1 / 2 + z) = 0)
+    (hL : negativeHalfLineLaplace (cx F) z ≠ 0) :
+    analyticOrderNatAt (stateXiProduct W₀ F) (z - 8) + 1 =
+      analyticOrderNatAt xi (1 / 2 + z) := by
+  have heq := analyticOrderAt_stateXiProduct_add_one hW hF hxi hL
+  have hfinite : analyticOrderAt (stateXiProduct W₀ F) (z - 8) ≠ ⊤ := by
+    intro htop
+    exact xi_order_ne_top _ (by rw [← heq, htop, top_add])
+  simpa [analyticOrderNatAt, ENat.toNat_add, hfinite] using congrArg ENat.toNat heq
+
+/-- If a seen zero of `ξ` has multiplicity `m`, the first nonzero jet of the entire
+state product is precisely its `(m - 1)`-st derivative. -/
+theorem stateXiProduct_first_nonzero_jet {W₀ : ℝ} (hW : 0 < W₀) {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {z : ℂ} (hxi : xi (1 / 2 + z) = 0)
+    (hL : negativeHalfLineLaplace (cx F) z ≠ 0) :
+    let m := analyticOrderNatAt xi (1 / 2 + z)
+    (∀ j < m - 1, iteratedDeriv j (stateXiProduct W₀ F) (z - 8) = 0) ∧
+      iteratedDeriv (m - 1) (stateXiProduct W₀ F) (z - 8) ≠ 0 := by
+  have heq := analyticOrderAt_stateXiProduct_add_one hW hF hxi hL
+  have hfinite : analyticOrderAt (stateXiProduct W₀ F) (z - 8) ≠ ⊤ := by
+    intro htop
+    exact xi_order_ne_top _ (by rw [← heq, htop, top_add])
+  have hnat := analyticOrderNatAt_stateXiProduct_add_one hW hF hxi hL
+  apply (analyticOrderAt_eq_nat_iff_iteratedDeriv_eq_zero
+    ((differentiable_stateXiProduct hF).analyticAt (z - 8))).mp
+  rw [← Nat.cast_analyticOrderNatAt hfinite]
+  congr 1
+  omega
+
+/-- Either RH holds, or an actual critical state has an entire cleared transform whose
+zeros on and right of the line have exactly the multiplicities of `ξ` minus one. -/
+theorem riemannHypothesis_or_criticalState_exact_multiplicities :
+    RiemannHypothesis ∨
+      ∃ (W₀ : ℝ) (F : ℝ → ℝ), 0 < W₀ ∧
+        (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal) ∧
+        IsCriticalHalfLineGroundState W₀ F ∧
+        Differentiable ℂ (stateXiProduct W₀ F) ∧
+        ∀ c : XiZeroCopy, 0 ≤ (centredZero c).re →
+          analyticOrderAt (stateXiProduct W₀ F) (centredZero c - 8) + 1 =
+            analyticOrderAt xi (1 / 2 + centredZero c) := by
+  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hRH | ⟨W₀, F, hW, ht, hF⟩
+  · exact Or.inl hRH
+  · exact Or.inr ⟨W₀, F, hW, ht, hF,
+      differentiable_stateXiProduct (criticalHalfLineEnergyDomain_of_groundState hF),
+      fun _ hc => criticalState_stateXiProduct_order hW ht hF hc⟩
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

@@ -122,7 +122,7 @@ theorem hermitianGeometric_principal_eq_iff_constant_multiple
       (hermitianGeometric_principal_eq_zero_iff_constant p s (f / g) (div_ne_zero hf hg)).mp hdiv
     exact ⟨c, hc, ((eq_div_iff hg).mp heq.symm).symm⟩
   · rintro ⟨c, hc, heq⟩
-    have hmap : algebraMap E H c ≠ 0 := (map_ne_zero _).mpr hc
+    have hmap : algebraMap E H c ≠ 0 := (_root_.map_ne_zero _).mpr hc
     rw [heq, hermitianGeometricZeroPoleDivisor_mul p s _ g hmap hg,
       hermitianGeometricZeroPoleDivisor_constant p s c hc, zero_add]
 
