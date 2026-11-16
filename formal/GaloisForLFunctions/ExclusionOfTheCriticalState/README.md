@@ -36,6 +36,7 @@ so nothing is lost between stages.
 | Prime heads | `primeHead` | $\hat SF(p)=\sum\Lambda(n)n^{p-1/2}H_{\log n}(p)$ |
 | Three remainders | `levyRemainder`, `stripRemainder`, `leftRemainder`, `globalRemainder` | the remainder right of, on, and left of $\operatorname{Re}p=-\tfrac12$ |
 | Continuations | `stateContinuation`, `levyContinuation`, `stateMeromorphic` | $-R(w+8)/a$ on $\operatorname{Re}w>-8$, $>-\tfrac{17}2$, and on $\mathbb C$ |
+| Left Hardy datum | `leftContinuationDatum` | $G_c\in L^2(0,\infty)$ representing the reflected continuation $\mathcal LF(-(z+c)-8)$ for $\operatorname{Re}z>0$, $\tfrac12<c\le4$ |
 | Centred zeros, zero sum | `centredZero`, `zeroSum` | $z=\rho-\tfrac12$ with multiplicity; $ZF(p)=\sum_z\mathcal LF(z)\big(\tfrac1{p-z}-\tfrac1{1-z}\big)$ |
 | Divided-difference sum | `dividedTerm`, `dividedSum` | $\Delta F(p)=\sum_z\big(\tfrac{\mathcal LF(z)-\mathcal LF(p)}{p-z}-\tfrac{\mathcal LF(z)}{1-z}-\tfrac{\mathcal LF(p)}{z}\big)$, holomorphic at the zeros |
 | Defect | `explicitDefect`, `rightFormDefect`, `stripFormDefect`, `entireDefect` | $BF(1)-BF(p)+ZF(p)$ with $BF=$ `globalRemainder`, and its pole-free forms |
@@ -84,6 +85,11 @@ so nothing is lost between stages.
    $-\mathcal LF(p)\zeta'/\zeta(\tfrac12-p)-\hat SF(p)$ (Dirichlet series of $\Lambda$ at $\tfrac12-p$). Its Euler part cancels the reflected
    Euler term of the Gamma pairing exactly, and the remainder is $JF+\hat SF+\mathcal LF(\tfrac12)/(p-\tfrac12)+\mathcal LF(-\tfrac12)/(p+\tfrac12)$:
    left of the strip the state is its head term, its prime heads and its two charges.
+   Resolving the head into exponential modes gives
+   $JF(p)=\sum_{k\ge0}\mathcal LF(2k+\tfrac12)/(2k+\tfrac12-p)$.
+   Its first term cancels the positive half-charge exactly. The remaining modes have
+   strictly signed real part after orientation by $\mathcal LF(\tfrac12)$.
+   Both heads, hence the continuation, vanish uniformly in height as the real part tends left.
 9. **Pole removal.** $ZF(p)=\Delta F(p)+\mathcal LF(p)\,\xi'/\xi(\tfrac12+p)$, and $\Delta F$ converges absolutely and is
    holomorphic on $\operatorname{Re}p>-2$, zeros included. With $(s-1)\zeta(s)=2\xi(s)/(s\Gamma_{\mathbb R}(s))$ the Euler term of the
    remainder is $\mathcal LF\cdot(\xi'/\xi-1/s-\Gamma_{\mathbb R}'/\Gamma_{\mathbb R})$, so the defect $BF(1)-BF+ZF$ has no pole: one
@@ -91,12 +97,14 @@ so nothing is lost between stages.
 10. **Liouville on the defect.** The Lévy pairing and the regular part grow linearly on $\operatorname{Re}p\ge0$, heads
    and tails are bounded on their half-planes, $\Gamma_{\mathbb R}'/\Gamma_{\mathbb R}$ is linear, both sums are quadratic. The glued
    defect is entire of order $O(|p|^2)$, vanishes at $1$ and is $o(|p|)$ along the negative axis; its
-   divided difference at $1$ is zero. No bound for $\zeta'/\zeta$ inside the strip is used. Resolving the
-   head into exponential modes gives
-   $JF(p)=\sum_{k\ge0}\mathcal LF(2k+\tfrac12)/(2k+\tfrac12-p)$.
-   Its first term cancels the positive half-charge exactly. The remaining modes have
-   strictly signed real part after orientation by $\mathcal LF(\tfrac12)$.
-   Both heads, hence the continuation, vanish uniformly in height as the real part tends left.
+   divided difference at $1$ is zero. No bound for $\zeta'/\zeta$ inside the strip is used.
+11. **A Hardy profile left of the strip.** Carleman's inequality puts
+   $K_F(v)=\int_0^\infty\omega(v+t)F(-t)\,dt$ in $L^2$. After damping by $e^{-cv}$,
+   $\tfrac12<c\le4$, the translated prime profiles sum in $L^2$, and both charges are
+   exponential profiles. Their exact combination $G_c$ represents
+   $\mathcal LF(-(z+c)-8)=\int_0^\infty G_c(v)e^{-zv}\,dv$ for $\operatorname{Re}z>0$.
+   Plancherel bounds every vertical square integral there; Cauchy–Schwarz gives
+   $|\mathcal LF(w)|\le\|G_c\|_2/\sqrt{2(-\operatorname{Re}w-c-8)}$ for $\operatorname{Re}w<-c-8$.
 
 ## 5. Questions
 
@@ -105,12 +113,12 @@ so nothing is lost between stages.
 | Q1 | Probe kernel $B(e_p,e_q)=\frac{D(p)+D(q)}{p+q}$ and its zero side | answered (Lean) |
 | Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | answered against probes (Lean): for every $F\in\mathcal H$ and $p$ off the zeros, $B(F,e_p)-B(F,e_1)=\sum_z\mathcal LF(z)\big(\tfrac1{p-z}-\tfrac1{1-z}\big)$; for the state, $a(\mathcal LF(w)-\mathcal LF(v))=-\sum_z\mathcal LF(z)\big(\tfrac1{w+8-z}-\tfrac1{v+8-z}\big)$ on $\operatorname{Re}w,\operatorname{Re}v>-4$. The zero side for two general profiles is not used by $(\star)$ and is open |
 | Q3 | State equation, continuation, residues | answered (Lean): $\mathcal LF$ continues to $\mathbb C$, holomorphic off the points $\rho-\tfrac{17}2$ ($\operatorname{Re}\rho>0$), residue $-m_\rho\mathcal LF(\rho-\tfrac12)/a$, a pole at every zero with $\operatorname{Re}\rho\ge\tfrac12$, uniformly vanishing as $\operatorname{Re}w\to-\infty$; left of the strip $-a\mathcal LF(w)=(JF+\hat SF)(w+8)+$ charges |
-| Q4 | Decay law | divergent half (Lean): $\int F^2e^{-bu}<\infty\Rightarrow\operatorname{Re}\rho\le\frac{17-b}2$; convergent half open |
+| Q4 | Decay law | divergent half (Lean): $\int F^2e^{-bu}<\infty\Rightarrow\operatorname{Re}\rho\le\frac{17-b}2$; uniform vertical $L^2$ bounds on $\operatorname{Re}w\le-\tfrac{17}2-\delta$ for every $\delta>0$ (Lean); convergent half open |
 | Q5 | Sign law | answered (Lean): one sign on no ray |
 | Q6 | Index law | $\zeta$: finite index at every ratio (Lean); exact count of critical ratios open |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH |
 | Q8 | The arithmetic property that excludes the state | open |
-| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): archimedean resolvent expansion, exact positive-charge cancellation, strict sign restriction and uniform left decay; leading asymptotics and exclusion open |
+| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): archimedean resolvent expansion, exact positive-charge cancellation, strict sign restriction and uniform inverse-square-root left decay; leading asymptotics and exclusion open |
 
 ## 6. Tools
 
@@ -125,10 +133,10 @@ dominations; the functional equation in Lévy form; prime heads and the Dirichle
 of the strip; gluing of three remainders into one continuation; $\zeta\ne0$ on $\operatorname{Re}s=0$; the zero-sum
 calculus (one subtraction, absolute convergence off the zeros, divided-difference sum, pole removal);
 linear growth of every pairing of a profile with a probe; the pole-free forms of the defect, their
-gluing and Liouville.
+gluing and Liouville; Carleman's inequality and half-line Plancherel for the explicit left Hardy profile.
 
-**To build.** The inversion from vertical-line bounds to decay, for the convergent half of the decay law; the exact critical-ratio count; the leading asymptotics of
-$JF$ and $\hat SF$ as $p\to-\infty$, beyond their uniform vanishing (the wall seen from the left formula).
+**To build.** Vertical square bounds toward the pole strip and their transfer to weighted decay of the original state, for the convergent half of the decay law; the exact critical-ratio count; the leading asymptotics of
+$JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula).
 
 ## 7. Pillar theorems
 

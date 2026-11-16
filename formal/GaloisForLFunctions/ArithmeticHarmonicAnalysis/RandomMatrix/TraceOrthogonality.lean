@@ -139,22 +139,17 @@ theorem integral_trace_polynomial_energy (s : Finset ℕ) (c : ℕ → ℂ) :
     rw [map_mul]
     ring
   simp_rw [hexpand]
-  rw [integral_finset_sum s (fun m _ =>
-    (continuous_finset_sum s (fun n _ => hc m n)).integrable_of_hasCompactSupport
+  rw [integral_finsetSum s (fun m _ =>
+    (continuous_finsetSum s (fun n _ => hc m n)).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _))]
   apply sum_congr rfl
   intro m hm
-  rw [integral_finset_sum s (fun n _ =>
+  rw [integral_finsetSum s (fun n _ =>
     (hc m n).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)),
     sum_eq_single m]
   · rw [integral_const_mul]
   · intro n _ hnm
     rw [integral_const_mul, integral_trace_pow_pair_eq_zero m n hnm.symm, mul_zero]
   · exact fun h => (h hm).elim
-
-#print axioms integral_traceWord_pair_eq_zero
-#print axioms integrable_traceWord_pair
-#print axioms integral_trace_pow_pair_eq_zero
-#print axioms integral_trace_polynomial_energy
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.RandomMatrix

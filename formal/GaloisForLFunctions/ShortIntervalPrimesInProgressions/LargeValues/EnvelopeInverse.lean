@@ -10,6 +10,7 @@ level inequalities gives its threshold cost exactly, as in equation (8.1).
 No large-value estimate is assumed: these are identities of the exponent profiles.
 -/
 
+noncomputable section
 namespace GaloisForLFunctions.ShortIntervalPrimesInProgressions
 
 /-- The combined large-value exponent in the cost coordinate `x = βν`. -/

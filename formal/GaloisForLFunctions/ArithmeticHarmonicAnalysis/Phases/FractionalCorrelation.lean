@@ -115,10 +115,4 @@ theorem centeredMangoldt_fractional_correlation (s : Finset ℕ) (k : ℕ)
           (Real.log_le_log (zero_lt_one.trans_le (hN.trans (hs n hn).1)) (hs n hn).2)) le_rfl)
     _ = _ := by simp only [sum_const, nsmul_eq_mul]
 
-#print axioms fractional_correlation_taylor
-#print axioms exists_fractional_correlation_saving
-#print axioms almostPrime_fractional_correlation
-#print axioms moebius_fractional_correlation
-#print axioms centeredMangoldt_fractional_correlation
-
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.Phases

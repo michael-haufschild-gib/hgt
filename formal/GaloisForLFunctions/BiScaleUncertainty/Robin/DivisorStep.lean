@@ -65,9 +65,4 @@ theorem normalized_divisor_step_iff (p : Nat.Primes) (v m : ℕ)
     have hmul := mul_lt_mul_of_pos_left h hC
     nlinarith only [hmul]
 
-#print axioms normalized_divisor_step_iff
-#print axioms stepThreshold_succ_lt
-#print axioms robinLocal_ratio_succ_lt
-#print axioms robinLocal_strict_logConcave
-
 end GaloisForLFunctions.BiScaleUncertainty.Robin

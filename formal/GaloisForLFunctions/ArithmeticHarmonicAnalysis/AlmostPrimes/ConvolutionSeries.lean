@@ -44,8 +44,4 @@ theorem convolution_lseries (k : ℕ) {s : ℂ} (hs : 1 < s.re) :
   rw [LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs] at h
   exact h
 
-#print axioms convolution_lseries
-#print axioms convolution_eq_zero_below
-#print axioms convolution_eq_zero_of_card_lt
-
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.AlmostPrimes

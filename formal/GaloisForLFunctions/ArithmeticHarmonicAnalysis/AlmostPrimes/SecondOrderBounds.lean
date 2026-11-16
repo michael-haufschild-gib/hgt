@@ -109,10 +109,4 @@ theorem selfConvolution_critical_meanSquare_le (N : ℕ) (hN : 1 ≤ N)
   exact add_nonneg (sub_nonneg.mpr hT)
     (mul_nonneg (by positivity) (add_nonneg zero_le_one (Real.log_natCast_nonneg N)))
 
-#print axioms selfConvolution_primePower_le_quarter
-#print axioms selfConvolution_primeSquare_eq_quarter
-#print axioms selfConvolution_le_half
-#print axioms selfConvolution_harmonic_energy_le
-#print axioms selfConvolution_critical_meanSquare_le
-
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.AlmostPrimes

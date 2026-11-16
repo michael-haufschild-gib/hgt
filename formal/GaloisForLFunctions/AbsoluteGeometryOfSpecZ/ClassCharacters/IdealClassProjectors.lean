@@ -1,4 +1,5 @@
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheClassCharactersTogetherCarryTheContactsOfTheIdealsOfTrivialClass
+import GaloisForLFunctions.RHTower.Deninger.DeningerFiniteCharacterBasis
 
 /-!
 # Fourier projectors onto every ideal class
@@ -44,7 +45,7 @@ theorem finiteClassFourier_projector {ι : Type*} (label : ι → G) (S : Finset
     (∑ χ : G →* ℂˣ, ((χ target⁻¹ : ℂˣ) : ℂ) * finiteClassFourier label S weight χ) =
       (Fintype.card (G →* ℂˣ) : ℂ) * ∑ i ∈ S.filter (fun i => label i = target), weight i := by
   simp only [finiteClassFourier, Finset.mul_sum]
-  rw [Finset.sum_comm, Finset.sum_filter, Finset.mul_sum]
+  rw [Finset.sum_comm, Finset.sum_filter]
   apply Finset.sum_congr rfl
   intro i _
   have hi : (∑ χ : G →* ℂˣ,
@@ -64,13 +65,15 @@ theorem classCharacterProjector_mul (a b g : G) :
 variable (K : Type*) [Field K] [NumberField K]
 
 /-- Fourier projection of any finite weighted family of nonzero ideals onto any ideal class. -/
-theorem idealClassFourier_projector (S : Finset (Ideal (𝓞 K))⁰)
-    (weight : (Ideal (𝓞 K))⁰ → ℂ) (C : ClassGroup (𝓞 K)) :
+theorem idealClassFourier_projector (S : Finset ↥(nonZeroDivisors (Ideal (𝓞 K))))
+    (weight : ↥(nonZeroDivisors (Ideal (𝓞 K))) → ℂ) (C : ClassGroup (𝓞 K)) :
     (∑ χ : ClassGroup (𝓞 K) →* ℂˣ,
       ((χ C⁻¹ : ℂˣ) : ℂ) * finiteClassFourier ClassGroup.mk0 S weight χ) =
-      (Fintype.card (ClassGroup (𝓞 K) →* ℂˣ) : ℂ) *
-        ∑ I ∈ S.filter (fun I => ClassGroup.mk0 I = C), weight I :=
-  finiteClassFourier_projector ClassGroup.mk0 S weight C
+      (Nat.card (ClassGroup (𝓞 K)) : ℂ) *
+        ∑ I ∈ S.filter (fun I => ClassGroup.mk0 I = C), weight I := by
+  have h := finiteClassFourier_projector ClassGroup.mk0 S weight C
+  rw [← Nat.card_eq_fintype_card, RHTower.deningerCharacter_card] at h
+  exact h
 
 #print axioms finiteClassFourier_projector
 #print axioms classCharacterProjector_mul

@@ -68,7 +68,4 @@ theorem convolution_critical_meanSquare_le (k N : ℕ) (hN : 1 ≤ N)
   exact add_nonneg (sub_nonneg.mpr hT)
     (mul_nonneg (by positivity) (add_nonneg zero_le_one (Real.log_natCast_nonneg N)))
 
-#print axioms convolution_meanSquare_le
-#print axioms convolution_critical_meanSquare_le
-
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.AlmostPrimes

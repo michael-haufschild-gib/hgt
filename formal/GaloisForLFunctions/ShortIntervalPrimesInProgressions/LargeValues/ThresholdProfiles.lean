@@ -1,5 +1,4 @@
-import Mathlib.Data.ENNReal.Operations
-import Mathlib.Tactic.Linarith
+import Mathlib.Data.ENNReal.BigOperators
 
 /-!
 # One-variable threshold costs for products
