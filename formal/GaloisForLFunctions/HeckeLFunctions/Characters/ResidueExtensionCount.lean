@@ -105,8 +105,12 @@ def residueExtensionEquiv
     invFun ψ := ⟨ψ.val, (residue_fiber_iff_principal_fiber 𝔪 φ hφ ψ.val).mpr ψ.property⟩
     left_inv _ := Subtype.ext rfl
     right_inv _ := Subtype.ext rfl }
-  refine e₁.trans ((CharacterExtensions.extensionEquiv (toClassGroup 𝔪).ker
-    (principalRayCharacter 𝔪 φ hφ)).trans ?_)
+  let e₂ : {ψ : HeckeCharacter 𝔪 //
+        ψ.comp (toClassGroup 𝔪).ker.subtype = principalRayCharacter 𝔪 φ hφ} ≃
+      (RayClassGroup 𝔪 ⧸ (toClassGroup 𝔪).ker →* ℂˣ) :=
+    CharacterExtensions.extensionEquiv (G := RayClassGroup 𝔪) ((toClassGroup 𝔪).ker)
+      (principalRayCharacter 𝔪 φ hφ)
+  refine e₁.trans (e₂.trans ?_)
   exact {
     toFun χ := χ.comp e.symm.toMonoidHom
     invFun χ := χ.comp e.toMonoidHom
@@ -143,7 +147,7 @@ theorem card_residueExtensions
   · rw [if_neg hφ]
     letI : IsEmpty {ψ : HeckeCharacter 𝔪 // rayResidueCharacter 𝔪 ψ = φ} :=
       ⟨fun ψ => hφ ((residueExtensions_nonempty_iff 𝔪 φ).mp ⟨ψ⟩)⟩
-    exact Nat.card_eq_zero_of_isEmpty
+    exact Nat.card_eq_zero.mpr (Or.inl inferInstance)
 
 #print axioms residueExtensionEquiv
 #print axioms residueExtensions_nonempty_iff

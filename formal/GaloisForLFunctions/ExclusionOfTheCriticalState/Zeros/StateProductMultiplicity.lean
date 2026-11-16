@@ -228,7 +228,3 @@ theorem riemannHypothesis_or_criticalState_exact_multiplicities :
       fun _ hc => criticalState_stateXiProduct_order hW ht hF hc⟩
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState
-
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.riemannHypothesis_or_criticalState_exact_multiplicities
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.le_analyticOrderAt_stateXiProduct_iff
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.stateXiProduct_first_nonzero_jet
