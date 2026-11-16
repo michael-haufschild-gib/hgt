@@ -5,8 +5,8 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Forty-six helper modules passed final plain Lean checks and are umbrella-wired.
-- **Missing:** Actual low completed-source energy, high moment induction and both common-signal estimates.
+- **Verified:** Forty-eight helper modules passed final plain Lean checks and are umbrella-wired.
+- **Missing:** Actual low completed-source energy, angular prime-slot estimates, high moment induction and both common-signal estimates.
 
 ## Receiver
 
@@ -84,9 +84,11 @@ In `bareSourceCoefficient`, the target character occurs only as `targetMonoid η
 the Fourier frequency is a separate variable `H`. A direct angular replacement therefore
 weights `A`, whereas the failed compensation weights `H`. Extending the exact principal
 series still requires proving its angular Euler factorization and common-signal bounds.
-The local extension under verification replaces the prime numerator by
+`AngularPrincipalCoefficients.directAngularPrimeSeries_rational` replaces the prime numerator by
 `ψ₆(p)^ℓ·η(p)` and its correction phase by `ψ₆(p)^(6ℓ+1)·η(p)^6`;
 the free frequency coordinate `N(p)^(-6z)` is unchanged.
+The ideal Euler-product draft weights `I·J³`; multiplicativity and the existing absolute
+majorant preserve excluded and finitely marked products. This global draft is not Lean-verified.
 
 ## Verified reciprocal growth
 
@@ -200,16 +202,16 @@ the terminal factor `min(1,R^(1/4))`, with polynomial height bounds uniform in a
 
 `AngularPhysicalRows` proves exact angular-kernel separation into the original frozen
 arithmetic branches, under a common integrable density with polynomial height control.
-Actual row identification must insert the separated denominator and frequency phases.
+`AngularDyadicRows` supplies the exact denominator and frequency weights.
 
 `AngularPhysicalEnergy` applies the filtered arithmetic energy theorem to separated angular
 kernels. The original reflected exponent, terminal dual width and surviving-branch factor
-are unchanged; the height degree is uniform in arithmetic types. Its bounded weight slots
-still need the exact angular row identity.
+are unchanged; the height degree is uniform in arithmetic types. `AngularDyadicRows` identifies the actual angular row with its bounded weight slots;
+assembling completed-source energy remains pending.
 
 `AngularPhaseIdeals` identifies the extra denominator phase exactly as
 `idealPsiSix(span{c})^(2k)`. It is trivial on units, bounded by one, and common to all
-finite Fourier residues of a controlled cusp. The row/slot/column insertion remains pending.
+finite Fourier residues of a controlled cusp. Row/slot/column insertion is verified below.
 
 `AngularRowPhases.angular_reflected_denominator_phase` separates the actual reflected
 ideal character into fixed-conductor, row and slot factors. The opposite frequency
@@ -238,3 +240,6 @@ cube ideal arrays. The column phase preserves coefficient bounds; the series con
 
 `AngularDyadicBlocks` splits the absolutely convergent angular series into summable
 dyadic blocks and identifies each block with the finite filtered physical source.
+
+`AngularDyadicRows.angularLiteralDyadicRow_eq_physical` inserts exactly the fixed-conductor,
+row-ideal, slot-ideal and opposite-frequency phases into the bounded physical weight slots.

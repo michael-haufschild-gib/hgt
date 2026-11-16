@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FunctionField.HermitianTraceFieldEmbedding
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FunctionField.KummerFieldGenerators
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FiniteField.KummerNormFibers
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.FiniteField.SquareFieldTraceFibers
 
@@ -76,17 +77,24 @@ private theorem hermitianAffine_equation (ξ : Kˣ) (a : squareFrobeniusFixedFie
   have ha : (a.val : K) ^ Q = a.val := a.property
   have hn : ((ξ : K) ^ (Q + 1)) ^ Q = (ξ : K) ^ (Q + 1) :=
     squareConstantField_norm_fixed p s ξ
+  have hnmap : (algebraMap K H ((ξ : K) ^ (Q + 1))) ^ Q =
+      algebraMap K H ((ξ : K) ^ (Q + 1)) :=
+    (map_pow (algebraMap K H) ((ξ : K) ^ (Q + 1)) Q).symm.trans
+      (congrArg (algebraMap K H) hn)
+  have hamap : (algebraMap K H a.val) ^ Q = algebraMap K H a.val :=
+    (map_pow (algebraMap K H) a.val Q).symm.trans (congrArg (algebraMap K H) ha)
   have hw : w - w ^ Q = algebraMap K H ((ξ : K) ^ (Q + 1)) * (y - y ^ Q) := by
     change (algebraMap K H ((ξ : K) ^ (Q + 1)) * y + algebraMap K H a.val) -
       (algebraMap K H ((ξ : K) ^ (Q + 1)) * y + algebraMap K H a.val) ^ p ^ (s + 1) = _
-    rw [add_pow_char_pow, mul_pow, ← map_pow, ← map_pow, hn, ha]
+    rw [add_pow_char_pow, mul_pow, hnmap, hamap]
     ring
   have hwprod : w * (1 - w ^ (Q - 1)) = w - w ^ Q := by
     rw [mul_sub, mul_one, ← pow_succ', Nat.sub_add_cancel (by omega : 1 ≤ Q)]
   change (algebraMap K H ξ * z) ^ (Q + 1) =
     algebraMap K H c * w * (1 - w ^ (Q - 2 + 1)) ^ 1
   rw [pow_one, show Q - 2 + 1 = Q - 1 by omega,
-    mul_assoc (algebraMap K H c), hwprod, hw, mul_pow, hz, ← map_pow]
+    mul_assoc (algebraMap K H c), hwprod, hw, mul_pow, hz,
+    ← map_pow (algebraMap K H) (ξ : K) (Q + 1)]
   ring
 
 /-- The affine Hermitian substitutions extend to constant-field homomorphisms. -/
@@ -154,14 +162,18 @@ theorem hermitianAffineAut_injective :
   have hz := congrArg (fun σ : H ≃ₐ[K] H => σ
     (AdjoinRoot.root (kummerBranchFieldPolynomial c (p ^ (s + 1) - 2) 1
       (p ^ (s + 1))))) h
-  change hermitianAffineHom p s c ξ a _ = hermitianAffineHom p s c μ b _ at hz
+  change hermitianAffineHom p s c ξ a
+      (AdjoinRoot.root (kummerBranchFieldPolynomial c (p ^ (s + 1) - 2) 1 (p ^ (s + 1)))) =
+    hermitianAffineHom p s c μ b
+      (AdjoinRoot.root (kummerBranchFieldPolynomial c (p ^ (s + 1) - 2) 1 (p ^ (s + 1)))) at hz
   rw [hermitianAffineHom_root, hermitianAffineHom_root] at hz
   have hξ : ξ = μ := Units.ext ((algebraMap K H).injective
     (mul_right_cancel₀ (kummerBranchField_root_ne_zero c (p ^ (s + 1) - 2) 1
       (p ^ (s + 1))) hz))
   subst μ
   have hy := congrArg (fun σ : H ≃ₐ[K] H => σ (algebraMap K[X] H X)) h
-  change hermitianAffineHom p s c ξ a _ = hermitianAffineHom p s c ξ b _ at hy
+  change hermitianAffineHom p s c ξ a (algebraMap K[X] H X) =
+    hermitianAffineHom p s c ξ b (algebraMap K[X] H X) at hy
   rw [hermitianAffineHom_coordinate, hermitianAffineHom_coordinate] at hy
   have ha : a = b := Subtype.ext ((algebraMap K H).injective
     (add_left_cancel (show algebraMap K H ((ξ : K) ^ (p ^ (s + 1) + 1)) *

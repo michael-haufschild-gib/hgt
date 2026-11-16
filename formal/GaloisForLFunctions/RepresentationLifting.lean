@@ -107,6 +107,7 @@ import GaloisForLFunctions.RepresentationLifting.Filtered.OreCyclicHilbert
 import GaloisForLFunctions.RepresentationLifting.Symplectic.ObservationDefects
 
 import GaloisForLFunctions.RepresentationLifting.Spinor.GordonIdentities
+import GaloisForLFunctions.RepresentationLifting.Exterior.PfaffianHomogeneity
 
 /-!
 # Representation lifting and quadratic extensions

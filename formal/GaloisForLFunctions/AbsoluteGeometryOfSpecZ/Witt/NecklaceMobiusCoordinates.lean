@@ -22,6 +22,7 @@ theorem ghost_necklace_moebius (x : ghostRing) (n : ℕ+) :
     (f := fun d => (d : ℤ) * necklace (toNat x.val) d)
     (g := toNat x.val)).mp
       (fun m hm => (x.property.eq_sum_necklace m (Nat.ne_of_gt hm)).symm) n n.pos
+  simp only [Int.cast_id] at h
   rw [Nat.sum_divisorsAntidiagonal' (fun i j => (moebius i : ℤ) * toNat x.val j)] at h
   exact h.symm
 
