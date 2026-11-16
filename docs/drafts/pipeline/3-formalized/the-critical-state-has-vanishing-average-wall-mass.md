@@ -1,7 +1,7 @@
 # The critical state has vanishing average wall mass
 
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper); Lean verification in progress
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 - **Target:** ECS Q9; boundary decay of the actual critical state.
 - **Statement:** `log(2/h) ∫(-h,0) F² ≤ C h` for `0<h≤1`; consequently
   the terminal average square mass tends to zero and
@@ -31,8 +31,23 @@ Multiplication by `t` and passage to infinity therefore give `t LF(t)→0`.
 The same proof for `|F|`, together with
 `|LF(σ+iy)|≤∫|F(u)|exp(σu)du`, makes the conclusion uniform in `y`.
 
-No boundary value or arithmetic exclusion is assumed. No contribution counted
-before the complete actual-state package passes Lean.
+No pointwise boundary trace is asserted. No arithmetic exclusion follows.
+
+## Lean
+
+- `HTGeometry/Analysis/VanishingCumulativeLaplaceBound.lean`:
+  `terminal_average_tendsto_zero_of_log_bound`,
+  `abs_laplace_le_of_local_terminal_square_mass`,
+  `tendsto_mul_laplace_of_vanishing_terminal_square_average`.
+- `ExclusionOfTheCriticalState/TheCriticalStateHasVanishingAverageWallMass.lean`:
+  `criticalState_terminal_square_mass_logarithmic_gain`,
+  `criticalState_terminal_average_tendsto_zero`,
+  `criticalState_uniform_right_laplace_o_inv`,
+  `riemannHypothesis_or_criticalState_vanishing_wall_trace`.
+
+Both modules passed final `lake --old env lean` checks and are umbrella-wired.
+The entire boundary-regularity package counts once; the earlier linear bound
+and generic analytic helpers carry no separate count.
 
 ## Further questions
 

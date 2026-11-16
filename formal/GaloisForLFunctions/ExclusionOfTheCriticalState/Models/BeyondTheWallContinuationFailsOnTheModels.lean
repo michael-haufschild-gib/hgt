@@ -411,10 +411,8 @@ theorem not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff {p : ℕ} (hp : p.
     refine ((hf₁_diff.mul hf₂_diff).differentiableOn.mul hRreg_diff).add ?_
     refine (DifferentiableOn.div (differentiableOn_const 1)
       ((differentiableOn_const 5).add differentiableOn_id) fun q hq e => ?_).mul
-      ((hf₁_diff.mul hf₂_diff).ContDiff.contDiffAt.differentiableAt_deriv
-        (by norm_num) |> fun _ => ?_)
-    · have := congrArg Complex.re e; simp at this; linarith [hq.1]
-    · exact ((hf₁_diff.mul hf₂_diff).deriv).differentiableOn
+      (fun q _ => (((hf₁_diff.mul hf₂_diff).analyticAt q).deriv).differentiableAt.differentiableWithinAt)
+    have := congrArg Complex.re e; simp at this; linarith [hq.1]
   -- Show `LHS =ᶠ[𝓝 (-1)] RHS` using the explicit series on `-2 < Re q < -1/2`
   have hm1_in : (-1 : ℂ) ∈ V := ⟨by simp; norm_num, by simp; norm_num⟩
   have hev_m1 : LHS =ᶠ[𝓝 (-1 : ℂ)] RHS := by
@@ -484,11 +482,15 @@ theorem not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff {p : ℕ} (hp : p.
               rw [← Real.exp_add]; congr 1; ring
           _ < 1 := Real.exp_lt_one_iff.mpr (mul_neg_of_neg_of_pos (by linarith) hl)
       linarith
+    have hderiv_f1 : deriv f₁ q = deriv xi (1 / 2 + q) := by
+      simpa only [Function.comp_def, one_mul, mul_one] using
+        ((xi_differentiable (1 / 2 + q)).hasDerivAt.comp q
+          ((hasDerivAt_id q).const_add (1 / 2 : ℂ))).deriv
     have hCR : f₁ q * (archimedeanWallTail (probe 5) q + wallPrimeBalance (probe 5) q) =
         f₁ q * regularRemainder (probe 5) q + (1 / ((5 : ℂ) + q)) * deriv f₁ q := by
       rw [← globalRemainder_eq_archimedeanWallTail_add_wallPrimeBalance hd5 hqh,
         ← clearedRemainder_eq hd5 hxi_ne, clearedRemainder_of_gt hq.1,
-        laplace_probe_five hq4, deriv_xi_half_add]
+        laplace_probe_five hq4, hderiv_f1]
     have hderiv_prod : deriv F₁₂ q = deriv f₁ q * f₂ q + f₁ q * deriv f₂ q :=
       deriv_mul (hf₁_diff q) (hf₂_diff q)
     dsimp [LHS, RHS, F₁₂, Rreg]

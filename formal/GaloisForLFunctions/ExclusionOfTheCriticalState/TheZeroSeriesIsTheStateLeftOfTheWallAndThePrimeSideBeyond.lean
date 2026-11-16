@@ -241,12 +241,13 @@ theorem integral_stateHeatSymbol_mul_laplace_right {F : ℝ → ℝ}
     rw [Complex.ofReal_mul, Complex.ofReal_exp, ← mul_assoc, ← Complex.exp_add, hx]
   have e2 : (∫ u : ℝ, ((stateHeatKernel ε (u - T) : ℝ) : ℂ) *
         ((Real.exp (-(8 * u)) * F u : ℝ) : ℂ)) = ((heatedState ε F T : ℝ) : ℂ) := by
-    unfold heatedState
-    rw [← integral_ofReal]
+    have h1 : (∫ u : ℝ, ((stateHeatKernel ε (u - T) * (Real.exp (-(8 * u)) * F u) : ℝ) : ℂ)) =
+        ((heatedState ε F T : ℝ) : ℂ) := integral_ofReal
+    rw [← h1]
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
     show ((stateHeatKernel ε (u - T) : ℝ) : ℂ) * ((Real.exp (-(8 * u)) * F u : ℝ) : ℂ) =
       ((stateHeatKernel ε (u - T) * (Real.exp (-(8 * u)) * F u) : ℝ) : ℂ)
-    rw [Complex.ofReal_mul]
+    rw [Complex.ofReal_mul (stateHeatKernel ε (u - T))]
   rw [← e2, ← h]
   refine integral_congr_ae (Eventually.of_forall fun t => ?_)
   show stateHeatSymbol ε T (b + t * I) * negativeHalfLineLaplace (cx F) (b + t * I - 8) =
@@ -357,8 +358,7 @@ theorem criticalState_hasSum_heated_zeroSeries {W₀ : ℝ} (hW : 0 < W₀)
       (criticalAliasCoefficient W₀ : ℂ) := by
     field_simp
   convert h using 1
-  linear_combination
-    (-(((heatedState ε F T : ℝ) : ℂ) - heatedBeyondWall ε W₀ hd T)) * hc
+  linear_combination (((heatedState ε F T : ℝ) : ℂ) - heatedBeyondWall ε W₀ hd T) * hc
 
 /-- Left of the wall the prime side is a Gaussian: for `T ≤ −4ε` the heated profile beyond the
 wall is at most `‖F⁺ e^{−x}‖₂ · k_ε(T)`. The left line is moved to `Re p = T/(2ε)`. -/

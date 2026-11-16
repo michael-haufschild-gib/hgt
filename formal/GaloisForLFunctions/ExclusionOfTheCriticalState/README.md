@@ -109,6 +109,12 @@ so nothing is lost between stages.
    $\mathcal LF(-(z+c)-8)=\int_0^\infty G_c(v)e^{-zv}\,dv$ for $\operatorname{Re}z>0$.
    Plancherel bounds every vertical square integral there; Cauchy–Schwarz gives
    $|\mathcal LF(w)|\le\|G_c\|_2/\sqrt{2(-\operatorname{Re}w-c-8)}$ for $\operatorname{Re}w<-c-8$.
+12. **Vanishing average wall trace.** For $T_hF=F(\cdot+h)$ and $c=\langle F,T_hF\rangle$,
+   the reversed residual $J_h=F-cT_hF$ agrees with $F$ on $(-h,0)$.
+   The spectral gap bounds $\|J_h\|_2^2=O(h)$; nullity and translation give $Q(J_h)=O(h)$.
+   Coercivity then bounds its Lévy energy by $O(h)$, so the logarithmic boundary inequality
+   gives $\log(2/h)\int_{-h}^0F^2\le Ch$. Thus the average square mass tends to zero.
+   Truncation and Cauchy–Schwarz give $\sigma|\mathcal LF(\sigma+iy)|\to0$ uniformly in $y$.
 
 ## 5. Questions
 
@@ -122,7 +128,7 @@ so nothing is lost between stages.
 | Q6 | Index law | $\zeta$: finite index at every ratio (Lean); exact count of critical ratios open |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH |
 | Q8 | The arithmetic property that excludes the state | open |
-| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): linear terminal square mass $\int_{-h}^0F^2\le Ch$ and positive-real decay $|\mathcal LF(t)|\le\sqrt C/t$; archimedean resolvent expansion, exact positive-charge cancellation, strict sign restriction and uniform inverse-square-root left decay; leading asymptotics and exclusion open |
+| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): $\log(2/h)\int_{-h}^0F^2\le Ch$, vanishing average square mass at the wall, and $\sigma|\mathcal LF(\sigma+iy)|\to0$ uniformly in $y$; archimedean resolvent expansion, exact positive-charge cancellation, strict sign restriction and uniform inverse-square-root left decay; leading asymptotics and exclusion open |
 
 ## 6. Tools
 
