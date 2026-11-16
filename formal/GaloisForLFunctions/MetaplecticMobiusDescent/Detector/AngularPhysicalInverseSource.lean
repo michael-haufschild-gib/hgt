@@ -19,7 +19,8 @@ open ProbeRow ProbeCompleted CanonicalQuadraticSieve RayFourExpansion
 noncomputable section
 local notation "O" => Eisenstein.O
 local notation "Id" => Ideal O
-local instance : Fintype Oˣ := @Fintype.ofFinite _ cubic_units_finite
+local instance angularPhysicalInverseSourceUnits : Fintype Oˣ :=
+  @Fintype.ofFinite _ cubic_units_finite
 
 /-- Finite ray correction acts on the finite coefficient of an angular completed source. -/
 theorem angular_correctedPhysicalRow_eq_periodic_inverse (ℓ : ℕ) (η : HeckeFamily.Character)

@@ -34,6 +34,7 @@ theorem hermitianTangentDifference_equation_of_fixed
     (P U : HermitianAffinePoint p s E) (hP : P.val.1 ^ (Q * Q) = P.val.1) :
     hermitianTangentDifference p s E P U ^ Q + hermitianTangentDifference p s E P U =
       (U.val.1 - P.val.1) ^ (Q + 1) := by
-  rw [hermitianTangentDifference_equation, hP, pow_succ]
+  rw [hermitianTangentDifference_equation, hP]
+  exact (pow_succ (U.val.1 - P.val.1) Q).symm
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

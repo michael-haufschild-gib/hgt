@@ -28,6 +28,7 @@ private theorem branch_ne_zero : kummerBranch c b R ≠ 0 := by
   rw [kummerBranch_coeff_one, coeff_zero] at hc
   exact Units.ne_zero c hc
 
+omit [Fact p.Prime] [Algebra (SquareConstantField p s) E] in
 /-- Every finite base prime has a prime in the actual enlarged normalization. -/
 theorem squareKummerExtension_exists_primeAbove (v : HeightOneSpectrum E[X]) :
     ∃ w : HeightOneSpectrum B, w.asIdeal.LiesOver v.asIdeal := by
@@ -86,6 +87,7 @@ theorem squareKummerExtension_finitePlace_ramification (π : E[X]) (hπ : Irredu
   change N ∣ (Ideal.span {π}).ramificationIdx' w.asIdeal *
     multiplicity (Ideal.span {π}) (Ideal.span {kummerBranch c b R}) at h
   rw [multiplicity_eq_of_emultiplicity_eq Ideal.emultiplicity_eq_emultiplicity_span] at h
+  change N ∣ multiplicity π (kummerBranch c b R) * (Ideal.span {π}).ramificationIdx' w.asIdeal
   simpa only [Nat.mul_comm] using h
 
 /-- The exact formula at a rational base point uses ordinary root multiplicity. -/

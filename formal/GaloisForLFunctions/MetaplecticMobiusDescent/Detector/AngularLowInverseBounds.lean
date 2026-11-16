@@ -20,7 +20,8 @@ open CanonicalQuadraticSieve RayFourExpansion
 noncomputable section
 local notation "O" => Eisenstein.O
 local notation "Id" => Ideal O
-local instance : Fintype Oˣ := @Fintype.ofFinite _ cubic_units_finite
+local instance angularLowInverseBoundsUnits : Fintype Oˣ :=
+  @Fintype.ofFinite _ cubic_units_finite
 
 theorem angular_low_selected_physical_energy (ℓ : ℕ) (η : HeckeFamily.Character) (S : Finset Id)
     (hS : ∀P∈S,P.IsMaximal) (hbad : fixedBadPrimes⊆S)

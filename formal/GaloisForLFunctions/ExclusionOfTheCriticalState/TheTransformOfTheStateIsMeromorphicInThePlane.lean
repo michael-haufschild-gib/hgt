@@ -42,11 +42,10 @@ theorem vonMangoldtAtom_mul_cexp_eq_term (p : ℂ) (n : ℕ) :
     rw [if_pos hn, Complex.cpow_def_of_ne_zero (by exact_mod_cast hn0), ← Complex.ofReal_natCast,
       ← Complex.ofReal_log hpos.le, Real.sqrt_eq_rpow, Real.rpow_def_of_pos hpos]
     push_cast
-    have e : cexp ((Real.log n : ℂ) * (1 / 2 - p)) * cexp (p * Real.log n) =
-        cexp ((Real.log n : ℂ) * (1 / 2)) := by
-      rw [← Complex.exp_add]; congr 1; ring
-    rw [← e]
-    field_simp
+    rw [div_mul_eq_mul_div, div_eq_div_iff (Complex.exp_ne_zero _) (Complex.exp_ne_zero _),
+      mul_assoc, ← Complex.exp_add]
+    congr 2
+    ring
 
 theorem summable_vonMangoldtAtom_mul_cexp {p : ℂ} (hp : p.re < -(1 / 2)) :
     Summable fun n : ℕ => (vonMangoldtAtom n : ℂ) * cexp (p * Real.log n) :=
@@ -186,8 +185,9 @@ theorem logDeriv_zetaEntire_sub {p : ℂ} (hs : (1 : ℂ) / 2 - p ≠ 1)
     logDeriv zetaEntire (1 / 2 - p) =
       deriv riemannZeta (1 / 2 - p) / riemannZeta (1 / 2 - p) - 1 / (p + 1 / 2) := by
   have h := Sieve.logDeriv_riemannZeta_eq hs hζ
-  rw [logDeriv_apply riemannZeta] at h
-  rw [h, show (1 : ℂ) / 2 - p - 1 = -(p + 1 / 2) by ring]
+  rw [logDeriv_apply riemannZeta, show (1 : ℂ) / 2 - p - 1 = -(p + 1 / 2) by ring,
+    one_div_neg_eq_neg_one_div] at h
+  rw [h]
   ring
 
 /-- On the strip the Lévy form of the remainder is the strip form. -/
@@ -306,11 +306,12 @@ theorem differentiableAt_globalRemainder {F : ℝ → ℝ} (hF : CriticalHalfLin
   · have heq : globalRemainder F =ᶠ[𝓝 p] leftRemainder F := by
       filter_upwards [(isOpen_lt Complex.continuous_re continuous_const).mem_nhds h] with q hq
       have hq' : q.re < -(1 / 2) := hq
-      simp [globalRemainder, not_lt.mpr hq'.le, hq']
+      unfold globalRemainder
+      rw [if_neg (not_lt.mpr hq'.le), if_pos hq']
     exact (differentiableAt_leftRemainder hF h).congr_of_eventuallyEq heq
   · -- on the line `Re p = -½`: the three forms agree near `p`
     have hζ₁ : riemannZeta (1 / 2 + p) ≠ 0 := riemannZeta_ne_zero_of_re_eq_zero (by simp [h])
-    have hζ₂ : riemannZeta (1 / 2 - p) ≠ 0 := riemannZeta_ne_zero_of_one_le_re (by simp [h])
+    have hζ₂ : riemannZeta (1 / 2 - p) ≠ 0 := riemannZeta_ne_zero_of_one_le_re (by norm_num [h])
     have e₁ : ∀ᶠ q in 𝓝 p, riemannZeta (1 / 2 + q) ≠ 0 :=
       ((continuous_const.add continuous_id).tendsto p).eventually (eventually_riemannZeta_ne_zero hζ₁)
     have e₂ : ∀ᶠ q in 𝓝 p, riemannZeta (1 / 2 - q) ≠ 0 :=
@@ -335,7 +336,8 @@ theorem differentiableAt_globalRemainder {F : ℝ → ℝ} (hF : CriticalHalfLin
   · have heq : globalRemainder F =ᶠ[𝓝 p] levyRemainder F := by
       filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds h] with q hq
       have hq' : -(1 / 2) < q.re := hq
-      simp [globalRemainder, hq']
+      unfold globalRemainder
+      rw [if_pos hq']
     exact (differentiableAt_levyRemainder hF h (hp h)).congr_of_eventuallyEq heq
 
 theorem stateMeromorphic_eq_levyContinuation {W₀ : ℝ} {F : ℝ → ℝ} {w : ℂ}
@@ -383,6 +385,7 @@ theorem exists_bound_stateMeromorphic_left {W₀ : ℝ} (hW : 0 < W₀) {F : ℝ
   set σ := -(1 / 2) - min δ 1 with hσdef
   have hmin : 0 < min δ 1 := lt_min hδ one_pos
   have hmin1 : min δ 1 ≤ 1 := min_le_right _ _
+  have hminδ : min δ 1 ≤ δ := min_le_left _ _
   have hσ4 : -4 < σ := by rw [hσdef]; linarith
   have hσh : σ < -(1 / 2) := by rw [hσdef]; linarith
   have hsum := summable_primeHead_bound (F := F) hσh
@@ -426,8 +429,7 @@ theorem exists_bound_stateMeromorphic_left {W₀ : ℝ} (hW : 0 < W₀) {F : ℝ
       ≤ ‖levyHeadTerm F p‖ + ‖primeHead F p‖ +
           ‖negativeHalfLineLaplace (cx F) (1 / 2) / (p - 1 / 2)‖ +
           ‖negativeHalfLineLaplace (cx F) (-(1 / 2)) / (p + 1 / 2)‖ :=
-        (norm_add_le _ _).trans (add_le_add_right ((norm_add_le _ _).trans
-          (add_le_add_right (norm_add_le _ _) _)) _)
+        norm_add₄_le
     _ ≤ _ := by gcongr
 
 /-! ### The dichotomy -/
