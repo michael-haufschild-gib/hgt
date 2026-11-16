@@ -109,12 +109,23 @@ the quadratic Gauss sum of the row at the odd part of the column.
 9. *Subtract the square, keep the remainder bounded* (OSM). `Tr F − 8θ²` has no growth; a bounded remainder
    with `O(v^{−7/3})` decay unfolds against `E(s)` to the Mellin transform of its constant term and has at
    most a simple pole at `4/3`, so the double pole of the twisted combination equals that of `D`.
-10. *Opposite fractional translations* (OSM). A single translation by `3t/q` does not preserve `κ`; the product
-   `θ(T_tw)θ(T_{−t}w)` does, on `Γ(3) ∩ Γ₀(q²)`, because the two denominators multiply to `a² − (3tc/q)²`. The trace
+10. *Opposite fractional translations* (OSM). A translation by `3t/q` is not in `Γ(3)`: under `δ ∈ Γ(3) ∩ Γ₀(q²)` it moves
+   `θ(T_t·)` to `κ(M_t)θ(T_{td²}·)`. The product `θ(T_tw)θ(T_{−t}w)` has the multiplier `κ(δ)²`, because the two
+   denominators multiply to `a² − (3tc/q)²`. The trace
    reads three kinds of pairs: the `q`-divisible frequencies at `∞`, Jacobi phases `χ(1 − s²)` over the middle cusps,
    and low points of low points with phases `χ(−9t²)` over `0`, whose Gauss sums `Σ_tχ(9t²)ψ(c/t)` produce the
    **conjugate** character `χ̄_q` — unreachable by Hecke traces, which only see `χ_q`. The main coefficient
    `N² + N + (N − 1)J` carries the cubic–quadratic Jacobi sum: order six enters through the trace geometry.
+   Weights on `t` must be invariant under squares (`t ↦ td²`): the constant `1` and the quadratic character `λ`.
+   The weight `λ` removes the `θ²` main term (`Σλ = 0`) and turns the Gauss sums of the cusp `0` into sextic ones.
+
+11. *The quadratic grading* (OSM). Characters modulo `q` split into the cubic grade `{1, χ, χ̄}` and the quadratic
+   grade `{λ, λχ, λχ̄}`. A trace weighted by `λ` sees only the quadratic grade: orthogonality removes every term of
+   the cubic grade, including `θ²`. Its relations among double poles are therefore homogeneous; the cubic grade has
+   the inhomogeneous anchor `D`. (Paper.) Single translates already carry `κ(M_t) = κ(δ)`: the symbol `(c/b)₃`
+   depends on `b` only modulo `9q` times the prime-to-3 part of `c/q²`, which divides `3tc/q`. So every ratio pair sum
+   `Σ_tλ(t)θ(T_tw)θ(T_{ct}w)` traces to `Γ(3)`. At level `q²` they all give the relation of `G_λ`, because
+   `Σ_s(λχ)((1 + s)(1 + cs)) = λ(−c)χ(2)χ̄(c(1 − c))J₆`.
 
 ## 5. Pillar theorems
 
@@ -159,6 +170,8 @@ the quadratic Gauss sum of the row at the odd part of the column.
 | The fractional trace | for an odd primary prime `q`, `G = Σ_{t ∈ O/q}θ(T_tw)θ(T_{−t}w)` (`T_t`: translation by `3t/q`) has multiplier `κ²` on `Γ(3) ∩ Γ₀(q²)`; its trace to `Γ(3)` is `SL₂(ℤ)`-invariant (`S⁻¹T_tS = δ_tT_tγ₀` with one `γ₀` for all `t`); the cosets are `P¹(O/q²)`: the cusp `∞`, the `N − 1` middle cusps `3qx` (Jacobi phases `χ(1 − s²)`, cubic reciprocity), and the `N²` classes over `0` (low points of low points) | `fracSum_automorphy`, `fracTrace_rational`, `fracTrace_eq`, `fracCorrelation_lowerThree`, `fracSum_sO` |
 | The fractional trace is a Jacobi multiple of `θ²` | `Tr G − (N² + N + (N − 1)J)θ²` is a bounded remainder, `J = Σ_sχ(1 − s²) = −χ(4)q` the Jacobi sum of the cubic and the quadratic character of `O/q`; its constant term is `|P|(−NJ R_{cop}(v) + N²χ(−4)χ(9)⁻¹R_g(v/N))`, `g(k) = χ(k)⁻¹g_χ` | `fracRemainder_remainderData`, `integral_sourceFracTrace`, `cuspConstantTerm_fracRemainder`, `fracJacobi_eq_primary` |
 | The conjugate cubic twist keeps the double pole | for every odd primary prime `q`, `(s − 4/3)²M(s)Σ_kχ_q(k)⁻¹T(k)²(4π|ξ_k|)^{−s} → g_χ⁻¹A(4/3)⁻¹NJ(1 − N⁻¹)·108π³r³ ≠ 0`, `A(s) = N²χ(−4)χ(9)⁻¹N^{s−2} + NJρ^{−s}χ(9)⁻¹g_{χ²}²ρ⁻²g_χ⁻¹` (non-vanishing on `Re s > 2/3`); the Euler identity `(1 − ρ^{2−3s})D = D_{cop} + ρ^{−s}D_q` puts the `q`-divisible part of `θ²` on the conjugate twist | `conjugateCubicTwist_double_pole`, `conjugateTwist_relation`, `thetaSq_euler`, `conjFactor_ne_zero` |
+| The quadratic fractional trace | for the quadratic character `λ` of `O/q`, `G_λ = Σ_tλ(t)θ(T_tw)θ(T_{−t}w)` has multiplier `κ²` on `Γ(3) ∩ Γ₀(q²)` (the weight is invariant under squares); its trace is `SL₂(ℤ)`-invariant and is itself a bounded remainder: every main value cancels against `λ`. The cusp `∞` and the middle cusps read the quadratic twist with weight `g_λλ(2k)J₆`, `J₆ = Σ_s(χλ)(1 − s²) = J(λ, χλ) ≠ 0`; the cusp `0` reads the sextic Gauss sums `g_{χλ}(k) = (χ̄λ)(k)g_{χλ}` | `fracSumW_automorphy`, `fracTraceW_rational`, `sourceFracTraceW_remainderData`, `integral_sourceFracTraceW`, `lamJacobi_eq`, `sexticGaussAt_eq` |
+| The sextic twist is the quadratic twist | `(s − 4/3)²M(s)(g_λJ₆λ(2)L_λ(s) + N²χ(−4)χ(9)⁻¹λ(−2)g_{χλ}N^{s−2}L_{χ̄λ}(s)) → 0`, `L_ψ = Σ_kψ(k)T(k)²(4π|ξ_k|)^{−s}`; every factor is nonzero, so `M·L_{χ̄λ}` continues past `4/3` with leading coefficient `cL` if and only if `M·L_λ` does with `L`, `c = −g_λJ₆λ(2)/(N²χ(−4)χ(9)⁻¹λ(−2)g_{χλ}N^{−2/3})` | `sexticTwist_relation`, `sexticTwist_double_pole_iff`, `sexticRatio_ne_zero` |
 | Uniform prime-factor normalization | `c_p(4/3)N(p)^{−1/6}(1 − N(p)^{−1})² = 1 − N(p)^{−2}`. Equal norms determine primary primes up to conjugation, so each norm occurs at most twice: `1/4 < C(S) = ∏_{p∈S}(1 − N(p)^{−2}) ≤ 1` for every finite primary-prime set. The unordered infinite product converges to a constant in `[1/4, 1]`. Normalized dilate and cubic-twist prime residue products have modulus in `[1, 4)`; the Gauss phases have modulus one. | `PrimaryPrime.eq_or_conj_of_conductorNorm_eq`, `normalizedDilateProduct_eq`, `normalizedDilateProduct_bounds`, `conductorSquare_multipliable`, `conductorSquareConstant_bounds`, `normalizedCubicTwistResidueProduct_bounds` |
 | Composite cubic phase and dilate bridge | For `m = ∏_{p∈S}p`, put `κ_m = (9/m)₃\overline{G̃(m)}`. The coprime dilate series equals `κ_m` times the cubic-twist series, coefficient by coefficient; `‖κ_m‖ = 1` and `(κ_m/∏_{p∈S}κ_p)³ = 1`. Adding a new prime `p` multiplies this phase correction by `(p/m)₃`. Twisted coefficient magnitudes are bounded by `‖T(k)‖²`, uniformly in `S`, giving weighted absolute summability for `σ > 4`. | `compositeDilateCoeff_eq_twist`, `compositeDilateDirichlet_eq`, `cubicConductorPhase_norm`, `compositePhaseCorrection_cube`, `compositePhaseCorrection_insert`, `summable_compositeDilateCoeff` |
 
@@ -169,7 +182,7 @@ Composite analytic continuation and residue factorization remain open.
 | # | Question |
 |---|---|
 | Q1 | **Bridge.** Is the row-root-number series at every column a combination, with coefficients of bounded conductor, of Rankin–Selberg series of the cubic theta function? Pointwise the answer is Hasse–Davenport at the columns: a shifted theta product times the quadratic Gauss sum at the odd part of the column. Open: the series-level statement in the theta coefficients `T` (the 3-adic twist `(9/c)₃` between `G̃` and `T`) and the class restriction modulo `4` of the Weil index. |
-| Q2 | **Residues.** The residue at `2/3` of the actual row family at column `n` and under bounded reweighting: the order-six theta coefficients. By Q1 they are residues of shifted cubic theta products with quadratic twists. Closed form? Which reweightings kill them? Known: `S₁` (the family reweighted by `\overline{G}(9/·)₃`) has a nonzero residue (STCC); it is a positive real number and the theta scalar `C` is real (conjugation symmetry). The actual family is orthogonal to `S₁` and to every twist unramified at `2` (its 2-adic phase has mean zero modulo `4`): its residue is a combination of residues of theta squares twisted by characters ramified at `2`. Its 3-adic part is the twist `S_{ω²λ²} = Σ \overline{G̃(c)}² N(c)^{−w}` (the plain mean of the squared Gauss sums), not `S₁`. Every cubic twist keeps the double pole: for every primary prime `p`, `L_{χ_p} = Σ(k/p)₃T(k)²(4π|ξ_k|)^{−s}` has leading coefficient `216π³r³/(c_p(4/3)(9/p)₃\overline{G̃(p)})`, `c_p(4/3) = |p|^{1/3}(N(p) + 1)/(N(p) − 1)`, and the dilate correlation `Σ_{p∤k}T(k)T(kp)` has `216π³r³/c_p(4/3)` (Hecke trace at `p` plus Patterson at `p`); at `p = −2` this is the 2-ramified twist `L_χ`. The conjugate twist `L_{χ̄_q}` keeps the double pole at every odd primary prime `q` (fractional trace, leading coefficient with the Jacobi sum `J = −χ(4)q`). Open: the Klein twists `η`, the 3-adic layer `ω²λ²`, and twists of composite conductor (`4q`, `q₁q₂`). |
+| Q2 | **Residues.** The residue at `2/3` of the actual row family at column `n` and under bounded reweighting: the order-six theta coefficients. By Q1 they are residues of shifted cubic theta products with quadratic twists. Closed form? Which reweightings kill them? Known: `S₁` (the family reweighted by `\overline{G}(9/·)₃`) has a nonzero residue (STCC); it is a positive real number and the theta scalar `C` is real (conjugation symmetry). The actual family is orthogonal to `S₁` and to every twist unramified at `2` (its 2-adic phase has mean zero modulo `4`): its residue is a combination of residues of theta squares twisted by characters ramified at `2`. Its 3-adic part is the twist `S_{ω²λ²} = Σ \overline{G̃(c)}² N(c)^{−w}` (the plain mean of the squared Gauss sums), not `S₁`. Every cubic twist keeps the double pole: for every primary prime `p`, `L_{χ_p} = Σ(k/p)₃T(k)²(4π|ξ_k|)^{−s}` has leading coefficient `216π³r³/(c_p(4/3)(9/p)₃\overline{G̃(p)})`, `c_p(4/3) = |p|^{1/3}(N(p) + 1)/(N(p) − 1)`, and the dilate correlation `Σ_{p∤k}T(k)T(kp)` has `216π³r³/c_p(4/3)` (Hecke trace at `p` plus Patterson at `p`); at `p = −2` this is the 2-ramified twist `L_χ`. The conjugate twist `L_{χ̄_q}` keeps the double pole at every odd primary prime `q` (fractional trace, leading coefficient with the Jacobi sum `J = −χ(4)q`). At a prime column the family carries the sextic symbol `χ̄_qλ_q`; the conjugate sextic twist `L_{χ̄λ}` has a double pole exactly when the quadratic twist `L_λ` does, with an explicit nonzero ratio (quadratic fractional trace). For `N(q) ≡ 3 mod 4` both vanish identically (`λ(−1) = −1`, `T` even). Open: the quadratic twists `L_λ` and the Klein twists `η` (one question: do quadratic twists keep the double pole?), the 3-adic layer `ω²λ²`, and twists of composite conductor (`4q`, `q₁q₂`). |
 | Q3 | **Remainder.** The remainder exponent of the first moment, for one column and on average over columns. At the unit layer it is the zero-free region of `ζ_K` read at `3w − 1`, from both sides: `(1 + Θ)/3` is reached through the seed, and a zero `ρ` with `Λ₀(2(1 + ρ)/3) ≠ 0` forbids every exponent below `(1 + Re ρ)/3`. Open: the actual family and the columns. |
 | Q4 | **Functional equation** of `Z(w; n)` with explicit column dependence: needs the continuation of the cubic Eisenstein series across `Re s = 1`. |
 | Q5 | **Sextic large sieve** `B₆(M, N)`. A square stops the floor bin at `5/6` whatever its cross term; the sieve matters for the mean over columns of the remainders, not for the main term. |
@@ -196,7 +209,8 @@ Composite analytic continuation and residue factorization remain open.
 | The phase of the theta scalar `C` is an analytic unknown | conjugation conjugates both Gauss-sum series behind `ρ(1)`, so reflection makes their residues real: `C ∈ ℝ`, and the `S₁` residue is positive |
 | Reflecting a continued coefficient needs its values on the real segment | the resolvent identification holds at every nonreal spectral parameter; the initial region in the lower half-plane and the identity theorem suffice |
 | The positive main term of `S₁` is the main term of the order-six family | the 2-adic phase `Γ(c)(c/−2)₃²` of the family has mean zero modulo `4`; only theta squares twisted by characters ramified at `2` contribute, and the 3-adic partner is `S_{ω²λ²}` (plain squares), whose weight in `D` is `(T(ω²λ²)/T(1))²` |
-| The Hecke traces at primes give the column dependence of the order-six family | they reach the twists `χ_q = (·/q)₃` of the theta square; the family at column `q` is the conjugate of the `χ̄_q`-twist, and the sixth-power columns need the `q`-free part of `D`, both of which need Eisenstein series of level `q` with cubic nebentypus |
+| The Hecke traces at primes give the column dependence of the order-six family | they reach the twists `χ_q = (·/q)₃`; the fractional traces reach `χ̄_q`; the family at column `q` carries the sextic symbol `χ̄_qλ_q`, whose twist is tied to the quadratic twist `L_λ` |
+| A second `λ`-weighted trace decides the quadratic twist | every `λ`-weighted trace is homogeneous in the quadratic grade, and at level `q²` all pair traces give the single relation of `G_λ`: traces fix the ratio of the double poles of `L_λ` and `L_{χ̄λ}`, not their value |
 
 ## 8. Tools this programme develops
 
@@ -218,8 +232,9 @@ Composite analytic continuation and residue factorization remain open.
    Composite moduli (`4q`, `q₁q₂`) and cubic Eisenstein series of `Γ(3) ∩ Γ₀(m)` with nebentypus. (open)
    Concretely: the spectral theory of MMD (energy graph, resolvent, Eisenstein series) on `L²(H\ℍ³)` for
    finite-index `H ≤ Γ_ker`; the 2-adic covers only see `θ`'s expansion at `∞` and the four rational cusps.
-7. Quadratic twists of `θ` (translates by `(1/q)O`, level `q²`) and the 3-adic layer `(ω², 2)` (translates by
-   `λ^{−1}O`, level `3λ`). (open)
+7. Quadratic twists of `θ`: `λ`-weighted fractional traces at level `q²` (Lean); an input outside the traces that fixes
+   the common double pole of the quadratic grade (open). The 3-adic layer `(ω², 2)` (translates by `λ^{−1}O`, level
+   `3λ`). (open)
 8. A sextic large sieve over `ℤ[ω]`. (open)
 
 ## 9. Position in the corpus
@@ -270,7 +285,10 @@ evaluation before Cauchy–Schwarz); Q7 is O3.
 2. The Rankin–Selberg series of `θ(w)θ(A_m w)`: done at every primary prime `m = p` (the dilate correlation and the
    cubic twist `L_{χ_p}` have explicit double poles). Open: composite columns `n` (twists by `(·/n)₃`, Hecke traces at
    products of primes) and the coherence of `c_p(4/3)` across columns.
-3. Quadratic twists of `θ` and their cusp growth: does a quadratic twist keep the double pole?
+3. Quadratic twists of `θ`: does `L_λ = Σ_kλ_q(k)T(k)²(4π|ξ_k|)^{−s}` keep the double pole? The conjugate sextic twist at
+   `q` has the same answer (Lean). Traces fix only ratios inside the quadratic grade. Candidate inputs: the residual
+   spectrum of `Γ(3) ∩ Γ₀(q²)` (spanned by `θ` and `θ_λ = Σ_tλ(t)θ(T_t·)`, whose constant term at `∞` vanishes, if
+   complete), or the cube factorization `L_λ = C̄²L(3s/2 − 1, λ̃)·X_λ(s)`, whose cube factor has no pole.
 4. The 3-adic theta coefficients `T(uλ^m)` and the layer `(ω², 2)` that carries `(9/c)₃`. Known: `T(uλ) = 0`,
    `T(u) = 0` for `u ≠ ±1` (STCC); conjugation pairs `T(uλ^m)` with `T(ū(−ω²)^mλ^m)`, so `T(ω²λ²)` is real.
 5. The Weil index `Γ(c)` on classes modulo `4`: class-restricted residues and their signs (the unrestricted

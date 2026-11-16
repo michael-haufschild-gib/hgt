@@ -59,11 +59,16 @@ theorem exists_ball_shell_decomposition (f : compactlySupportedLocallyConstant �
     have hrad : f.1 ((fieldOnePadicValuationUnitForward p
         (Multiplicative.ofAdd k, u) : ℚ_[p]ˣ) : ℚ_[p]) = radialValue p f k := by
       unfold radialValue
-      rw [← hunit u]
-      congr 1
-      dsimp [fieldOnePadicValuationUnitForward]
-      simp only [mul_one]
-      ring
+      have hmul : ((u : ℤ_[p]) : ℚ_[p]) *
+          ((fieldOnePadicValuationUnitForward p (Multiplicative.ofAdd k, 1) : ℚ_[p]ˣ) :
+            ℚ_[p]) =
+          ((fieldOnePadicValuationUnitForward p (Multiplicative.ofAdd k, u) : ℚ_[p]ˣ) :
+            ℚ_[p]) := by
+        dsimp [fieldOnePadicValuationUnitForward]
+        simp only [mul_one]
+        ring
+      rw [← hmul]
+      exact hunit u _
     rw [heval, fieldOnePadicSoninBall_apply_eq_indicator,
       fieldOnePadicSoninBallSet_mem_forward_iff]
     by_cases hhigh : (L : ℤ) ≤ k

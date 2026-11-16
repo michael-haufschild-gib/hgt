@@ -34,7 +34,9 @@ theorem ramanujanSupercharacterTable_sq (M : ℕ+) :
   change (∑ r : RamanujanDivisorClass M,
       ramanujanLagCoefficient d.val ((M : ℕ) / r.val) *
       ramanujanLagCoefficient r.val ((M : ℕ) / k.val)) = _
-  rw [← Finset.sum_subtype (M : ℕ).divisors (fun _ => Iff.rfl)]
+  rw [← Finset.sum_subtype (M : ℕ).divisors (fun _ => Iff.rfl)
+    (fun r : ℕ => ramanujanLagCoefficient d.val ((M : ℕ) / r) *
+      ramanujanLagCoefficient r ((M : ℕ) / k.val))]
   rw [sum_divisors_ramanujan_reciprocal M.pos
     (Nat.dvd_of_mem_divisors d.property) (Nat.dvd_of_mem_divisors k.property)]
   by_cases h : d = k

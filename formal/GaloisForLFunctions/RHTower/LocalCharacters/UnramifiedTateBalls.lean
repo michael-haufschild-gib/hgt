@@ -78,7 +78,7 @@ theorem criticalTateLinear_unramified_unitBall (ρ : Circle) :
     unfold connesPadicRadial connesPadicUnitBallProfile
     by_cases hk : 0 ≤ Padic.valuation (a : ℚ_[p])
     · rw [if_pos hk, if_pos hk, one_mul,
-        ← Int.toNat_of_nonneg hk, zpow_natCast]
+        ← Int.toNat_of_nonneg hk, zpow_natCast, Int.toNat_natCast]
     · rw [if_neg hk, if_neg hk, zero_mul]
   change (∫ a, (fieldOnePadicSoninBall p 0).1 (a : ℚ_[p]) *
     criticalTateWeight p (unramifiedCharacter p ρ) a
@@ -90,6 +90,7 @@ theorem criticalTateLinear_unramified_unitBall (ρ : Circle) :
 def unramifiedTatePhase (ρ : Circle) : ℂ :=
   (1 - unramifiedRatio p ρ) / (1 - unramifiedRatio p ρ⁻¹)
 
+omit [Fact p.Prime] in
 theorem unramifiedRatio_inv (ρ : Circle) :
     unramifiedRatio p ρ⁻¹ = conj (unramifiedRatio p ρ) := by
   simp only [unramifiedRatio, Circle.coe_inv_eq_conj, map_div₀, Complex.conj_ofReal]
