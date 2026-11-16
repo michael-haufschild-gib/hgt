@@ -52,6 +52,7 @@ theorem polynomialGeometricResidue_eq_iff (w : HeightOneSpectrum B) (b : B) (a :
   change polynomialGeometricResidue K B w b = a ↔
     polynomialGeometricResidue K B w (b - algebraMap K B a) = 0
   rw [map_sub, AlgHom.commutes, sub_eq_zero]
+  simp
 
 /-- Subtracting the geometric residue gives a function vanishing at the actual finite place. -/
 theorem polynomialGeometricResidue_sub_lt_one

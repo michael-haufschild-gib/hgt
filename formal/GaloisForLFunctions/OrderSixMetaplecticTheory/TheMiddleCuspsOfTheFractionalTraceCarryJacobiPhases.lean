@@ -78,7 +78,10 @@ theorem fracShift_mul_lowerThree (T X e r : O) (hr : e * (1 + 9 * T * X) + P.p *
       Matrix.mul_apply, Fin.sum_univ_two, map_ofNat]
   all_goals (try field_simp)
   all_goals (first | ring1 | linear_combination (3 * ringComplex T) * h | linear_combination (-(3 * ringComplex T)) * h |
-    linear_combination (9 * ringComplex T * ringComplex X) * h | linear_combination (-(9 * ringComplex T * ringComplex X)) * h)
+    linear_combination (9 * ringComplex T * ringComplex X) * h | linear_combination (-(9 * ringComplex T * ringComplex X)) * h |
+    linear_combination (9 * ringComplex T * ringComplex X - ringComplex T) * h |
+    linear_combination (ringComplex T - 9 * ringComplex T * ringComplex X) * h |
+    linear_combination (-ringComplex T) * h)
 
 /-- **The generic phase is `χ(a)`** (cubic reciprocity). -/
 theorem complexCharacter_midMat (T X e r : O) (hr : e * (1 + 9 * T * X) + P.p * r = 1) :
@@ -101,7 +104,7 @@ def topMat (T X a : O) (ha : 1 + 9 * T * X = P.p * a) : levelThree :=
       obtain ⟨u, hu⟩ := P.three_dvd_sub_one
       intro i j
       fin_cases i <;> fin_cases j
-      · exact ⟨-(a * u) + 3 * T * X, by simp; linear_combination ha - a * hu⟩
+      · exact ⟨-(a * u) + 3 * T * X, by simp; linear_combination -ha - a * hu⟩
       · exact ⟨T, by simp⟩
       · exact ⟨X, by simp⟩
       · simpa using P.three_dvd_sub_one)⟩
@@ -122,7 +125,7 @@ theorem fracShift_mul_lowerThree_high (T X a : O) (ha : 1 + 9 * T * X = P.p * a)
   all_goals (try rw [← hr])
   all_goals (try rw [← hr] at h)
   all_goals (try field_simp)
-  all_goals (first | ring1 | linear_combination h | linear_combination -h)
+  all_goals (first | ring1 | linear_combination h)
 
 /-- **The high phase is `χ(3x)⁻¹`.** -/
 theorem complexCharacter_topMat (T X a : O) (ha : 1 + 9 * T * X = P.p * a) :
@@ -131,12 +134,84 @@ theorem complexCharacter_topMat (T X a : O) (ha : 1 + 9 * T * X = P.p * a) :
   show ringComplex (symbol (3 * X) a) * ringComplex (symbol (3 * X) P.p) = 1
   have hla : lambda ^ 2 ∣ a - 1 := by
     obtain ⟨u, hu⟩ := P.three_dvd_sub_one
-    exact lambda_sq_dvd_three.trans ⟨-(a * u) + 3 * T * X, by linear_combination ha - a * hu⟩
+    exact lambda_sq_dvd_three.trans ⟨-(a * u) + 3 * T * X, by linear_combination -ha - a * hu⟩
   have hpa : lambda ^ 2 ∣ a * P.p - 1 := by
     rw [mul_comm, ← ha]
     exact (lambda_sq_dvd_three.trans (dvd_mul_right 3 3)).trans ⟨T * X, by ring⟩
   rw [← map_mul, ← symbol_mul_denominator, symbol_denominator_congr (3 * X) _ 1 hpa (by simp)
-    ⟨T * X, by linear_combination ha⟩ ⟨3 * T, by linear_combination ha⟩, symbol_one, map_one]
+    ⟨T * X, by linear_combination -ha⟩ ⟨3 * T, by linear_combination -ha⟩, symbol_one, map_one]
+
+
+section Points
+
+variable (Θ : HyperbolicSpace → ℂ)
+  (hΘ : ∀ (M : levelThree) (w : HyperbolicSpace), Θ (complexMatrix M • w) = complexCharacter M * Θ w)
+include hΘ
+
+/-- The generic point: `Θ(T_tL_{qx}w) = χ(1 + 9tx) Θ(T_{t/(1+9tx)}w)`. -/
+theorem theta_mid_generic (x : {x : P.Res // x ≠ 0}) (T : O) (hT : 1 + 9 * P.res T * x.1 ≠ 0) (w : HyperbolicSpace) :
+    Θ (P.fracShift T • complexMatrix (lowerThree (P.p * P.lift x.1)) • w) =
+      P.chi (1 + 9 * P.res T * x.1) * Θ (P.fracShift (P.lift (P.res T / (1 + 9 * P.res T * x.1))) • w) := by
+  set X := P.lift x.1
+  have hres : P.res (1 + 9 * T * X) = 1 + 9 * P.res T * x.1 := by simp [X, map_ofNat]
+  set e := P.lift (1 + 9 * P.res T * x.1)⁻¹
+  have h0 : P.res (1 - e * (1 + 9 * T * X)) = 0 := by
+    rw [map_sub, map_mul, hres, res_lift, map_one, inv_mul_cancel₀ hT, sub_self]
+  obtain ⟨r, hr⟩ := (P.res_eq_zero_iff _).mp h0
+  have hr' : e * (1 + 9 * T * X) + P.p * r = 1 := by linear_combination -hr
+  rw [← mul_smul, P.fracShift_mul_lowerThree T X e r hr', mul_smul, hΘ, P.complexCharacter_midMat, hres,
+    ← P.theta_fracShift_lift Θ hΘ (T * e)]
+  congr 3
+  rw [map_mul, res_lift, div_eq_mul_inv]
+
+/-- The high point: `Θ(T_tL_{qx}w) = χ(3x)⁻¹ Θ(A_q²w)` when `1 + 9tx ≡ 0`. -/
+theorem theta_mid_high (x : {x : P.Res // x ≠ 0}) (T : O) (hT : 1 + 9 * P.res T * x.1 = 0) (w : HyperbolicSpace) :
+    Θ (P.fracShift T • complexMatrix (lowerThree (P.p * P.lift x.1)) • w) =
+      (P.chi (3 * x.1))⁻¹ * Θ (P.dilation • P.dilation • w) := by
+  set X := P.lift x.1
+  have hres : P.res (1 + 9 * T * X) = 0 := by simpa [X, map_ofNat] using hT
+  obtain ⟨a, ha⟩ := (P.res_eq_zero_iff _).mp hres
+  have hκ := P.complexCharacter_topMat T X a ha
+  have h3 : P.res (3 * X) = 3 * x.1 := by simp [X, map_ofNat]
+  rw [h3] at hκ
+  rw [← mul_smul, P.fracShift_mul_lowerThree_high T X a ha, mul_smul, hΘ, mul_smul, eq_inv_of_mul_eq_one_left hκ]
+
+/-- **The pairs over the middle cusps.** For `s = 9tx`: a Jacobi phase `χ(1 − s²)` on two fractional translations,
+or (at `s = ∓1`) the high point `A_q²w` with phase `χ(2)χ(3x)⁻¹`. -/
+theorem fracCorrelation_lowerThree (h2 : (2 : P.Res) ≠ 0) (x : {x : P.Res // x ≠ 0}) (t : P.Res) (w : HyperbolicSpace) :
+    P.fracCorrelation Θ (P.lift t) (complexMatrix (lowerThree (P.p * P.lift x.1)) • w) =
+      if 1 + 9 * t * x.1 = 0 then
+        P.chi 2 * (P.chi (3 * x.1))⁻¹ * (Θ (P.dilation • P.dilation • w) * Θ (P.fracShift (P.lift (-t / 2)) • w))
+      else if 1 - 9 * t * x.1 = 0 then
+        P.chi 2 * (P.chi (3 * x.1))⁻¹ * (Θ (P.dilation • P.dilation • w) * Θ (P.fracShift (P.lift (t / 2)) • w))
+      else
+        P.chi (1 - (9 * t * x.1) ^ 2) *
+          (Θ (P.fracShift (P.lift (t / (1 + 9 * t * x.1))) • w) * Θ (P.fracShift (P.lift (-t / (1 - 9 * t * x.1))) • w)) := by
+  have hn : P.res (-P.lift t) = -t := by rw [map_neg, res_lift]
+  have hp : P.res (P.lift t) = t := res_lift _ _
+  unfold fracCorrelation
+  split_ifs with h1 h1'
+  · have hm : 1 + 9 * P.res (-P.lift t) * x.1 ≠ 0 := by
+      rw [hn, show 1 + 9 * -t * x.1 = 2 - (1 + 9 * t * x.1) by ring, h1, sub_zero]
+      exact h2
+    rw [P.theta_mid_high Θ hΘ x _ (by rw [hp]; exact h1), P.theta_mid_generic Θ hΘ x _ hm, hn,
+      show 1 + 9 * -t * x.1 = 2 by linear_combination -h1]
+    ring
+  · have hm : 1 + 9 * P.res (P.lift t) * x.1 ≠ 0 := by
+      rw [hp, show 1 + 9 * t * x.1 = 2 - (1 - 9 * t * x.1) by ring, h1', sub_zero]
+      exact h2
+    rw [P.theta_mid_generic Θ hΘ x _ hm, P.theta_mid_high Θ hΘ x _ (by rw [hn]; linear_combination h1'), hp,
+      show 1 + 9 * t * x.1 = 2 by linear_combination -h1']
+    ring
+  · have hm1 : 1 + 9 * P.res (P.lift t) * x.1 ≠ 0 := by rw [hp]; exact h1
+    have hm2 : 1 + 9 * P.res (-P.lift t) * x.1 ≠ 0 := by
+      rw [hn, show 1 + 9 * -t * x.1 = 1 - 9 * t * x.1 by ring]; exact h1'
+    rw [P.theta_mid_generic Θ hΘ x _ hm1, P.theta_mid_generic Θ hΘ x _ hm2, hp, hn,
+      show 1 + 9 * -t * x.1 = 1 - 9 * t * x.1 by ring, show -t / (1 - 9 * t * x.1) = -t / (1 - 9 * t * x.1) from rfl,
+      show (1 : P.Res) - (9 * t * x.1) ^ 2 = (1 + 9 * t * x.1) * (1 - 9 * t * x.1) by ring, map_mul]
+    ring
+
+end Points
 
 end PrimaryPrime
 

@@ -45,7 +45,7 @@ theorem archForm_abs_le {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) 
   have hA := domain_abs hF
   rw [hA.archForm_eq_levyEnergy, hF.archForm_eq_levyEnergy]
   simp only [sq_abs]
-  apply add_le_add_left
+  apply add_le_add le_rfl
   apply integral_mono_ae hA.integrableOn_levyIntegrand hF.integrableOn_levyIntegrand
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
   apply mul_le_mul_of_nonneg_left _ (archLevyDensity_pos hx).le
@@ -107,7 +107,8 @@ theorem criticalState_modulus_energy_pos {W₀ : ℝ} (hW : 0 < W₀)
     · simpa only [sq_abs] using hF.2.2.2.1
     · intro T hT
       have hg := lowGammaForm_le_archForm_of_integrable hd.gamma hT
-      unfold truncatedWeilForm criticalHalfLineFullEnergy at hle ⊢
+      unfold criticalHalfLineFullEnergy at hle
+      unfold truncatedWeilForm
       linarith only [hg, hle]
   apply criticalState_not_eventually_signed hW ht hG (s := 1) (Or.inl rfl) 0
   exact Eventually.of_forall fun u => by simpa only [one_mul] using abs_nonneg (F u)
