@@ -49,7 +49,8 @@ theorem positive_part_square_bound {Q : Matrix ι ι ℂ} (hQ : Q.IsHermitian) (
     exact le_rfl
   have h := sum_sq_lower_of_card_pos_le hb c
   rw [← rtrace_hermPosPart, ← frobSq_hermPosPart] at h
-  simpa only [rtrace, frobSq, (hermPosPart_posSemidef hQ).isHermitian.eq] using h
+  simpa only [rtrace, frobSq, (hermPosPart_posSemidef hQ).isHermitian.eq,
+    RCLike.re_to_complex] using h
 
 /-- A Hermitian perturbation costs only its number of positive eigenvalues. -/
 theorem threshold {P Q : Matrix ι ι ℂ} (hP : P.PosSemidef) (hQ : Q.IsHermitian)
