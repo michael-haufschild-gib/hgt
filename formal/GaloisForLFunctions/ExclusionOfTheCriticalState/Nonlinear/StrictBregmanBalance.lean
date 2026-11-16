@@ -19,7 +19,8 @@ namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
   CriticalArithmeticCorrelationTheory _root_.RHTower HilbertMetric.Probability
 
-private theorem arctan_zero_jump_strict {a : ℝ} (ha : a ≠ 0) :
+/-- Three strictly ordered jump densities against the zero boundary value. -/
+theorem arctan_zero_jump_strict {a : ℝ} (ha : a ≠ 0) :
     0 < Real.arctan a ^ 2 ∧
       Real.arctan a ^ 2 < a * Real.arctan a ∧ a * Real.arctan a < a ^ 2 := by
   have hp (x : ℝ) (hx : 0 < x) :

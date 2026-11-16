@@ -24,6 +24,7 @@ variable (T : HermitianAffinePoint p s L) (hT : Transcendental E T.val.2)
 /-- Restoring the trace unit gives the polynomial coordinate of the target point. -/
 def hermitianPointPolynomialCoordinate : L := φ (η : E) * T.val.2
 
+include hT in
 /-- Multiplication by the trace unit preserves transcendence of the additive coordinate. -/
 theorem hermitianPointPolynomialCoordinate_transcendental :
     Transcendental E (hermitianPointPolynomialCoordinate p s E L T) := by

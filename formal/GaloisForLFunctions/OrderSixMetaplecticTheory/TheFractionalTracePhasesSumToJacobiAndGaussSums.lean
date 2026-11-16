@@ -40,6 +40,11 @@ theorem sum_traceChar_mul (c : P.Res) :
   rw [AddChar.sum_mulShift _ (principalTraceChar_primitive P.p P.ne_zero)]
   split_ifs <;> simp [normC]
 
+theorem sum_ne_zero_eq (f : P.Res → ℂ) : ∑ x : {x : P.Res // x ≠ 0}, f x.1 = ∑ x : P.Res, f x - f 0 := by
+  rw [Fintype.sum_eq_add_sum_compl (0 : P.Res) f,
+    Finset.sum_subtype _ (fun x => by simp : ∀ x, x ∈ ({0}ᶜ : Finset P.Res) ↔ x ≠ 0)]
+  ring
+
 theorem chi_ne_zero_of_ne (u : P.Res) (hu : u ≠ 0) : P.chi u ≠ 0 := by
   intro h0
   have h := P.chi_cube u hu
@@ -149,9 +154,8 @@ theorem sum_chi_three_inv : ∑ x : {x : P.Res // x ≠ 0}, (P.chi (3 * x.1))⁻
     rw [(mulLeft_bijective₀ (3 : P.Res) h3).sum_comp (fun u => (P.chi u)⁻¹)]
     simp_rw [P.chi_inv_eq]
     exact MulChar.sum_eq_zero_of_ne_one P.chi_sq_ne_one
-  rw [Fintype.sum_eq_add_sum_compl (0 : P.Res),
-    Finset.sum_subtype _ (fun x => by simp : ∀ x, x ∈ ({0}ᶜ : Finset P.Res) ↔ x ≠ 0)] at hfull
-  simpa [MulChar.map_zero] using hfull
+  rw [P.sum_ne_zero_eq (fun x => (P.chi (3 * x))⁻¹), hfull]
+  simp [MulChar.map_zero]
 
 /-- The low–low phases cancel: Σ_{x ≢ 0} χ(−9x²) = 0. -/
 theorem sum_chi_low : ∑ x : {x : P.Res // x ≠ 0}, P.chi (-9 * x.1 ^ 2) = 0 := by
@@ -160,9 +164,8 @@ theorem sum_chi_low : ∑ x : {x : P.Res // x ≠ 0}, P.chi (-9 * x.1 ^ 2) = 0 :
     have : ∀ u : P.Res, P.chi u ^ 2 = (P.chi ^ 2) u := fun u => by rw [MulChar.pow_apply' _ (by norm_num)]
     simp_rw [this]
     rw [MulChar.sum_eq_zero_of_ne_one P.chi_sq_ne_one, mul_zero]
-  rw [Fintype.sum_eq_add_sum_compl (0 : P.Res),
-    Finset.sum_subtype _ (fun x => by simp : ∀ x, x ∈ ({0}ᶜ : Finset P.Res) ↔ x ≠ 0)] at hfull
-  simpa [MulChar.map_zero] using hfull
+  rw [P.sum_ne_zero_eq (fun x => P.chi (-9 * x ^ 2)), hfull]
+  simp [MulChar.map_zero]
 
 /-- **The cusp-0 phases are a cubic Gauss sum.** Σ_{x ≢ 0} χ(−9x²)ψ(−2κ/(9x)) = χ(−4)χ(9)⁻¹ Σ_u χ(u)ψ(uκ). -/
 theorem gauss_low_sum (h2 : (2 : P.Res) ≠ 0) (κ : P.Res) :
@@ -184,16 +187,15 @@ theorem gauss_low_sum (h2 : (2 : P.Res) ≠ 0) (κ : P.Res) :
     refine Finset.sum_congr rfl fun u _ => ?_
     rw [hinv u]
     by_cases hu : u = 0
-    · simp [hσ, hu]
+    · simp [hσ, hu, MulChar.map_zero]
     · have e : -9 * σ u ^ 2 = (-4) * 9⁻¹ * u⁻¹ ^ 2 := by
         simp only [hσ]
         field_simp
         ring
       rw [e, map_mul, map_mul, map_pow, hinvχ 9 h9, hinvχ u hu, P.chi_inv_sq u hu]
       ring
-  rw [Fintype.sum_eq_add_sum_compl (0 : P.Res),
-    Finset.sum_subtype _ (fun x => by simp : ∀ x, x ∈ ({0}ᶜ : Finset P.Res) ↔ x ≠ 0)] at hfull
-  simpa [hσ, MulChar.map_zero] using hfull
+  rw [P.sum_ne_zero_eq (fun x => P.chi (-9 * x ^ 2) * P.traceChar (σ x * κ)), hfull]
+  simp [MulChar.map_zero]
 
 end PrimaryPrime
 
