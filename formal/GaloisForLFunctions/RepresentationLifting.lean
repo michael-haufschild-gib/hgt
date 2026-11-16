@@ -125,6 +125,7 @@ import GaloisForLFunctions.RepresentationLifting.Spinor.GordonIdentities
 import GaloisForLFunctions.RepresentationLifting.Spinor.DiracTensorReduction
 import GaloisForLFunctions.RepresentationLifting.Spinor.NullPolarization
 import GaloisForLFunctions.RepresentationLifting.Exterior.PfaffianHomogeneity
+import GaloisForLFunctions.RepresentationLifting.Exterior.PfaffianDifferential
 import GaloisForLFunctions.RepresentationLifting.Exterior.PfaffianSlopeCollisions
 
 /-!
@@ -143,3 +144,4 @@ import GaloisForLFunctions.RepresentationLifting.OperatorKernels.IndependentJetP
 import GaloisForLFunctions.RepresentationLifting.Differential.OddQuadraticPrimitives
 import GaloisForLFunctions.RepresentationLifting.Differential.MeromorphicQuadraticPrimitives
 import GaloisForLFunctions.RepresentationLifting.Filtered.SpectralReparametrization
+import GaloisForLFunctions.RepresentationLifting.OperatorKernels.LocalMortality

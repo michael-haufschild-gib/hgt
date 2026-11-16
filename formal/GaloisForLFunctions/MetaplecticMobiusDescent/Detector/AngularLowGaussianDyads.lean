@@ -145,7 +145,7 @@ theorem angular_low_remote_gaussian_dyads (ℓ : ℕ) (S : Finset Id) (hS : ∀P
   refine ⟨?_,?_⟩
   · convert hh.1 using 1
     funext j
-    split_ifs with h <;> simp_all only [ite_true, ite_false]
+    split_ifs with h <;> simp_all only
   · have hhFinal := hh.2.trans (show _≤ C0*Z^(-1:ℝ) from by
       have hm := angular_compensation_scale_mass_bound ℓ η (calibrationForSet S hS) ell hell hsum b Z hZ.1.le T hT hnorm J W hW
       calc
@@ -155,7 +155,7 @@ theorem angular_low_remote_gaussian_dyads (ℓ : ℕ) (S : Finset Id) (hS : ∀P
           (by have hb := lowLength_bounds ell hell hsum J;linarith) hN') (by dsimp [C0];positivity))
     convert hhFinal using 1 <;> first
     | rfl
-    | apply tsum_congr; intro j; split_ifs with h <;> simp_all only [ite_true, ite_false]
+    | apply tsum_congr; intro j; split_ifs with h <;> simp_all only
 
 theorem angular_low_central_gaussian_dyads (ℓ : ℕ) (η : HeckeFamily.Character) (S : Finset Id)
     (hS : ∀P∈S,P.IsMaximal) (hbad : fixedBadPrimes⊆S)

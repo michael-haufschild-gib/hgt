@@ -16,8 +16,9 @@ noncomputable section
 namespace GaloisForLFunctions.HilbertMetric
 
 open MeasureTheory
+open scoped ComplexConjugate
 
-private theorem real_inner_complex (z w : ℂ) : inner ℝ z w = (w * star z).re := by
+private theorem real_inner_complex (z w : ℂ) : inner ℝ z w = (w * conj z).re := by
   rw [real_inner_eq_re_inner (𝕜 := ℂ), RCLike.inner_apply]
   rfl
 

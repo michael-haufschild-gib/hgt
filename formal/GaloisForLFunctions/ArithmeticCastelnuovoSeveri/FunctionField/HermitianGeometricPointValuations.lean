@@ -36,8 +36,9 @@ private theorem transported_constant (w : HeightOneSpectrum B)
 private theorem additive_shift (b : E) :
     u - algebraMap E H b = algebraMap E H ((η : E)⁻¹) *
       algebraMap E[X] H (X - C ((η : E) * b)) := by
-  rw [hermitianExtensionAdditiveCoordinate, map_sub, mul_sub,
-    ← IsScalarTower.algebraMap_apply E E[X] H, ← map_mul]
+  have hC : algebraMap E[X] H (C ((η : E) * b)) = algebraMap E H ((η : E) * b) :=
+    (IsScalarTower.algebraMap_apply E E[X] H ((η : E) * b)).symm
+  rw [hermitianExtensionAdditiveCoordinate, map_sub, mul_sub, hC, ← map_mul]
   congr 1
   rw [← mul_assoc, inv_mul_cancel₀ (hermitianExtensionTraceConstant p s E).ne_zero, one_mul]
 
