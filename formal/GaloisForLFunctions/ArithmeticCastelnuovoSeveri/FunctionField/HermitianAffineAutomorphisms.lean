@@ -66,7 +66,13 @@ private theorem hermitianAffine_equation (ξ : Kˣ) (a : squareFrobeniusFixedFie
   let w := hermitianAffineCoordinate p s c ξ a
   have hQ : 2 ≤ Q := Nat.one_lt_pow (Nat.succ_ne_zero s) (Fact.out : p.Prime).one_lt
   have hz : z ^ (Q + 1) = algebraMap K H c * (y - y ^ Q) := by
-    simpa only [Nat.zero_add, Nat.mul_one] using hermitianTraceSource_root_pow p c s 0 0
+    have hbranch : y * (1 - y ^ (Q - 2 + 1)) = y - y ^ Q := by
+      rw [show Q - 2 + 1 = Q - 1 by omega, mul_sub, mul_one, ← pow_succ',
+        Nat.sub_add_cancel (by omega : 1 ≤ Q)]
+    rw [kummerBranchField_root_pow, ← IsScalarTower.algebraMap_apply, kummerBranch]
+    simp only [map_mul, map_pow, map_sub, map_one, pow_one]
+    change algebraMap K H c * y * (1 - y ^ (Q - 2 + 1)) = _
+    rw [mul_assoc, hbranch]
   have ha : (a.val : K) ^ Q = a.val := a.property
   have hn : ((ξ : K) ^ (Q + 1)) ^ Q = (ξ : K) ^ (Q + 1) :=
     squareConstantField_norm_fixed p s ξ

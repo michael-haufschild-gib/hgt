@@ -115,6 +115,68 @@ theorem integral_semicircle_reciprocalTrace_mul (n m : ℕ) :
   simp only [Nat.add_right_cancel_iff]
   split_ifs <;> ring
 
+/-- The derivative used in the Casimir calculation is a second-kind character,
+including the spectral endpoints where a square-root formula is singular. -/
+theorem hasDerivAt_reciprocalTraceCharacter (n : ℕ) (x : ℝ) :
+    HasDerivAt (reciprocalTraceCharacter (n + 1))
+      (((n : ℝ) + 1) * spectralCharacter n x) x := by
+  have h := (((Chebyshev.T ℝ ((n + 1 : ℕ) : ℤ)).hasDerivAt (x / 2)).comp x
+    ((hasDerivAt_id x).div_const 2)).const_mul 2
+  have hd : 2 * ((Chebyshev.T ℝ ((n + 1 : ℕ) : ℤ)).derivative.eval (x / 2) * (1 / 2)) =
+      ((n : ℝ) + 1) * spectralCharacter n x := by
+    simp [Chebyshev.T_derivative_eq_U, spectralCharacter] <;> ring
+  rw [hd] at h
+  exact h
+
+theorem deriv_reciprocalTraceCharacter (n : ℕ) (x : ℝ) :
+    deriv (reciprocalTraceCharacter (n + 1)) x =
+      ((n : ℝ) + 1) * spectralCharacter n x :=
+  (hasDerivAt_reciprocalTraceCharacter n x).deriv
+
+/-- At the repeated-root endpoint the derivative is the square of the degree. -/
+theorem deriv_reciprocalTraceCharacter_two (n : ℕ) :
+    deriv (reciprocalTraceCharacter (n + 1)) 2 = ((n : ℝ) + 1) ^ 2 := by
+  rw [deriv_reciprocalTraceCharacter]
+  simp only [spectralCharacter, ContinuousMap.coe_mk, div_self (by norm_num : (2 : ℝ) ≠ 0),
+    Chebyshev.U_eval_one, Int.cast_natCast]
+  ring
+
+/-- Differentiation turns reciprocal traces into an orthogonal family under the semicircle law. -/
+theorem integral_semicircle_reciprocalTrace_deriv_mul (n m : ℕ) :
+    (∫ x, deriv (reciprocalTraceCharacter (n + 1)) x *
+      deriv (reciprocalTraceCharacter (m + 1)) x
+      ∂(semicircleSpectralLaw : Measure ℝ)) =
+      if n = m then ((n : ℝ) + 1) ^ 2 else 0 := by
+  simp_rw [deriv_reciprocalTraceCharacter]
+  have he (x : ℝ) :
+      (((n : ℝ) + 1) * spectralCharacter n x) *
+        (((m : ℝ) + 1) * spectralCharacter m x) =
+      (((n : ℝ) + 1) * ((m : ℝ) + 1)) *
+        (spectralCharacter n x * spectralCharacter m x) := by ring
+  simp_rw [he]
+  rw [integral_const_mul, integral_spectralCharacter_mul]
+  split_ifs with h
+  · subst m
+    ring
+  · exact mul_zero _
+
+/-- Odd-degree trace derivatives have positive geometric prime means. -/
+theorem integral_kesten_reciprocalTrace_deriv_odd (p : Nat.Primes) (n : ℕ) :
+    (∫ x, deriv (reciprocalTraceCharacter (2 * n + 1)) x
+      ∂(kestenSpectralLaw p : Measure ℝ)) =
+      (2 * (n : ℝ) + 1) * (p : ℝ)⁻¹ ^ n := by
+  simp_rw [deriv_reciprocalTraceCharacter]
+  rw [integral_const_mul, integral_kesten_spectralCharacter_even]
+  simp only [Nat.cast_mul, Nat.cast_ofNat]
+
+/-- Even-degree trace derivatives have zero prime mean. -/
+theorem integral_kesten_reciprocalTrace_deriv_even (p : Nat.Primes) (n : ℕ) :
+    (∫ x, deriv (reciprocalTraceCharacter (2 * n + 2)) x
+      ∂(kestenSpectralLaw p : Measure ℝ)) = 0 := by
+  rw [show 2 * n + 2 = (2 * n + 1) + 1 by omega]
+  simp_rw [deriv_reciprocalTraceCharacter]
+  rw [integral_const_mul, integral_kesten_spectralCharacter_odd, mul_zero]
+
 end GaloisForLFunctions.SelbergClass.Primon
 
 #print axioms GaloisForLFunctions.SelbergClass.Primon.reciprocalTraceCharacter_eq_sub
@@ -123,3 +185,7 @@ end GaloisForLFunctions.SelbergClass.Primon
 #print axioms GaloisForLFunctions.SelbergClass.Primon.integral_kesten_reciprocalTrace_even_neg
 #print axioms GaloisForLFunctions.SelbergClass.Primon.kestenPolynomial_eq_reciprocalTrace
 #print axioms GaloisForLFunctions.SelbergClass.Primon.integral_semicircle_reciprocalTrace_mul
+#print axioms GaloisForLFunctions.SelbergClass.Primon.deriv_reciprocalTraceCharacter_two
+#print axioms GaloisForLFunctions.SelbergClass.Primon.integral_semicircle_reciprocalTrace_deriv_mul
+#print axioms GaloisForLFunctions.SelbergClass.Primon.integral_kesten_reciprocalTrace_deriv_odd
+#print axioms GaloisForLFunctions.SelbergClass.Primon.integral_kesten_reciprocalTrace_deriv_even

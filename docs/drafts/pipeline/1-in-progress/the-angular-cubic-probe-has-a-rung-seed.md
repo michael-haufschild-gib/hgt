@@ -5,8 +5,8 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Forty-two helper modules passed final plain Lean checks and are umbrella-wired.
-- **Missing:** Angular source moment induction and both common-signal estimates.
+- **Verified:** Forty-five helper modules passed final plain Lean checks and are umbrella-wired.
+- **Missing:** Actual low completed-source energy, high moment induction and both common-signal estimates.
 
 ## Receiver
 
@@ -84,6 +84,9 @@ In `bareSourceCoefficient`, the target character occurs only as `targetMonoid η
 the Fourier frequency is a separate variable `H`. A direct angular replacement therefore
 weights `A`, whereas the failed compensation weights `H`. Extending the exact principal
 series still requires proving its angular Euler factorization and common-signal bounds.
+The local extension under verification replaces the prime numerator by
+`ψ₆(p)^ℓ·η(p)` and its correction phase by `ψ₆(p)^(6ℓ+1)·η(p)^6`;
+the free frequency coordinate `N(p)^(-6z)` is unchanged.
 
 ## Verified reciprocal growth
 
@@ -222,3 +225,13 @@ the original integral trace phase and opposite frequency character inside the se
 Exact finite phase inversion and absolute source summability discharge this identity.
 Controlled strata retain their original local bracket product, multiplied by denominator
 character `elemPsiSix(c∏p)^(2k)` and opposite frequency character.
+
+`AngularMixedReflection.angular_mixed_smoothed_eq_reflected` proves exact reflection of
+the mixed finite Fourier source. Angular denominator and frequency characters leave
+the original mixed active brackets and conductor scale unchanged.
+
+`AngularKernelTails` proves absolute squarefree–cube summability and arbitrary
+radial tail decay, with cost `(scale²·ρ⁶)^(-1)` controlled by finite source seminorms.
+
+`AngularLiteralArrays` reindexes actual mixed reflection into ramified, squarefree and
+cube ideal arrays. The column phase preserves coefficient bounds; the series converges absolutely.

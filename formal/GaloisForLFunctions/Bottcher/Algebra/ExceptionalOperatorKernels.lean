@@ -47,7 +47,7 @@ theorem exceptionalPoly_operator_kernel (E : Finset ℂ) (z : ℂ) (T : V →ₗ
     change (exceptionalPoly E).eval z • T v = 0 ↔ T v = 0
     simp only [smul_eq_zero, hc, false_or]
 
-/-- The operator quotient jumps to its full dimension exactly on the prescribed scalar locus. -/
+/-- On the exceptional locus the quotient is full; elsewhere its original dimension is preserved. -/
 theorem exceptionalPoly_observation_defect [FiniteDimensional ℂ V] [FiniteDimensional ℂ W]
     (E : Finset ℂ) (z : ℂ) (T : V →ₗ[ℂ] U) :
     Module.finrank ℂ ((V →ₗ[ℂ] W) ⧸
@@ -55,20 +55,45 @@ theorem exceptionalPoly_observation_defect [FiniteDimensional ℂ V] [FiniteDime
       if z ∈ E then Module.finrank ℂ W * Module.finrank ℂ V
       else Module.finrank ℂ W * Module.finrank ℂ T.ker := by
   classical
-  rw [finrank_compositionCokernel, exceptionalPoly_operator_kernel]
-  split_ifs <;> simp only [finrank_top]
+  rw [finrank_compositionCokernel]
+  by_cases hz : z ∈ E
+  · rw [if_pos hz]
+    have hk := (exceptionalPoly_operator_kernel E z T).trans (if_pos hz)
+    exact congrArg (Module.finrank ℂ W * ·)
+      ((congrArg (fun S : Submodule ℂ V => Module.finrank ℂ S) hk).trans (finrank_top ℂ V))
+  · rw [if_neg hz]
+    have hk := (exceptionalPoly_operator_kernel E z T).trans (if_neg hz)
+    exact congrArg (Module.finrank ℂ W * ·)
+      (congrArg (fun S : Submodule ℂ V => Module.finrank ℂ S) hk)
+
+/-- A nonzero operator changes kernel at precisely the prescribed exceptional parameters. -/
+theorem exceptionalPoly_kernel_change_set (E : Finset ℂ) (T : V →ₗ[ℂ] U) :
+    {z | LinearMap.ker ((exceptionalPoly E).eval z • T) ≠ T.ker} =
+      {z | z ∈ E ∧ T ≠ 0} := by
+  classical
+  ext z
+  change LinearMap.ker ((exceptionalPoly E).eval z • T) ≠ T.ker ↔ z ∈ E ∧ T ≠ 0
+  rw [exceptionalPoly_operator_kernel]
+  by_cases hz : z ∈ E
+  · rw [if_pos hz]
+    constructor
+    · intro h
+      refine ⟨hz, fun ht => h ?_⟩
+      rw [ht, LinearMap.ker_zero]
+    · rintro ⟨_, ht⟩ h
+      exact ht (LinearMap.ext fun v => h.le (Submodule.mem_top))
+  · simp [hz]
 
 /-- There are only finitely many parameters at which scalar removal can change the kernel. -/
 theorem exceptionalPoly_kernel_changes_finite (E : Finset ℂ) (T : V →ₗ[ℂ] U) :
     Set.Finite {z | LinearMap.ker ((exceptionalPoly E).eval z • T) ≠ T.ker} := by
-  apply E.finite_toSet.subset
-  intro z hz
-  by_contra h
-  exact hz (by rw [exceptionalPoly_operator_kernel, if_neg h])
+  rw [exceptionalPoly_kernel_change_set]
+  exact E.finite_toSet.subset fun _ hz => hz.1
 
 end Bottcher
 
 #print axioms Bottcher.exceptionalPoly_eval_eq_zero_iff
 #print axioms Bottcher.exceptionalPoly_operator_kernel
 #print axioms Bottcher.exceptionalPoly_observation_defect
+#print axioms Bottcher.exceptionalPoly_kernel_change_set
 #print axioms Bottcher.exceptionalPoly_kernel_changes_finite

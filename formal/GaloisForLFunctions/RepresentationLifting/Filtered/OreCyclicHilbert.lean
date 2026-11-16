@@ -23,6 +23,8 @@ open OperatorKernels
 variable {K W : Type*} [Field K] [Differential K]
   [AddCommGroup W] [Module K W]
 
+local instance : DecidableEq (DiffOp K) := Classical.decEq _
+
 /-- Truncated coefficients followed by the cyclic quotient map. -/
 def oreTruncatedQuotient (d : DiffOp K) (n : ℕ) :
     (Fin n → K) →ₗ[K] (DiffOp K ⧸ leftMultiples d) :=
@@ -101,8 +103,7 @@ theorem oreTruncatedQuotient_finrank_ker (d : DiffOp K) (n : ℕ) :
   classical
   have h := LinearMap.finrank_range_add_finrank_ker (oreTruncatedQuotient d n)
   rw [oreTruncatedQuotient_finrank_range] at h
-  simp only [Module.finrank_pi, Module.finrank_self, Finset.sum_const,
-    Finset.card_univ, Fintype.card_fin, smul_eq_mul, mul_one] at h
+  simp only [Module.finrank_pi, Fintype.card_fin] at h
   split_ifs at h ⊢ <;> omega
 
 /-- Each unresolved coefficient relation contributes one full copy of the observation space. -/

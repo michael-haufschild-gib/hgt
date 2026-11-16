@@ -174,8 +174,3 @@ theorem tensorMultiplicity_normalized_cubic_error (χ ψ θ : GenuineCharacter G
     linarith only [hb]
 
 end GaloisForLFunctions
-
-#print axioms GaloisForLFunctions.tensorMultiplicity_identity_term
-#print axioms GaloisForLFunctions.tensorMultiplicity_cubic_error
-#print axioms GaloisForLFunctions.tensorMultiplicity_positive_or_cubic_mass_large
-#print axioms GaloisForLFunctions.tensorMultiplicity_normalized_cubic_error

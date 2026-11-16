@@ -17,7 +17,7 @@ namespace GaloisForLFunctions.RepresentationLifting.OperatorKernels
 
 open GaloisForLFunctions.HTGeometry
 
-variable {K W : Type*} [Field K] [DecidableEq K]
+variable {K W : Type*} [Field K]
   [AddCommGroup W] [Module K W]
 
 /-- The family includes the nilpotent fibre at zero and every nonzero scalar fibre. -/
@@ -30,6 +30,8 @@ theorem powerFiberPolynomial_monic (n : ℕ) (a : K) :
 @[simp] theorem powerFiberPolynomial_natDegree (n : ℕ) (a : K) :
     (powerFiberPolynomial n a).natDegree = n + 1 :=
   natDegree_X_pow_sub_C
+
+variable [DecidableEq K]
 
 /-- Arbitrary observation spaces see exactly the common-divisor multiplicity. -/
 theorem powerFiber_observation_defect [FiniteDimensional K W]

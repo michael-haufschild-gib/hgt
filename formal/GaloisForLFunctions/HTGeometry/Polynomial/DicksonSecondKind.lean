@@ -94,9 +94,3 @@ theorem dickson_parameter_differential_energy (a : R) (n : ℕ) :
   linear_combination -(n + 1 : R[X]) ^ 2 * dickson_parameter_pell a n
 
 end GaloisForLFunctions.HTGeometry
-
-#print axioms GaloisForLFunctions.HTGeometry.dickson_second_cassini
-#print axioms GaloisForLFunctions.HTGeometry.dickson_second_addition
-#print axioms GaloisForLFunctions.HTGeometry.dickson_parameter_pell
-#print axioms GaloisForLFunctions.HTGeometry.dickson_parameter_derivative
-#print axioms GaloisForLFunctions.HTGeometry.dickson_parameter_differential_energy

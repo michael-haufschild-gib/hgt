@@ -1,6 +1,7 @@
 import GaloisForLFunctions.Bottcher.Dynamics
 import GaloisForLFunctions.Bottcher.Arithmetic.SmallCMIntegers
 import GaloisForLFunctions.Bottcher.Arithmetic.SmallCMUnits
+import GaloisForLFunctions.Bottcher.Arithmetic.UnicriticalOrbitBounds
 import GaloisForLFunctions.Bottcher.GreenFunction
 import GaloisForLFunctions.Bottcher.ComplexLogBound
 import GaloisForLFunctions.Bottcher.BottcherCoord
@@ -111,6 +112,7 @@ import GaloisForLFunctions.Bottcher.ConnectedTranscendence
 import GaloisForLFunctions.Bottcher.ConnectedRepellingFibreInput
 import GaloisForLFunctions.Bottcher.PeriodicPointAvoidance
 import GaloisForLFunctions.Bottcher.ConnectedRepellingPeriodicAvoidance
+import GaloisForLFunctions.Bottcher.Algebra.ExceptionalOperatorKernels
 import GaloisForLFunctions.Bottcher.ConnectedRepellingEventual
 import GaloisForLFunctions.Bottcher.FixedPointSeparable
 import GaloisForLFunctions.Bottcher.ConnectedRepellingNoParabolic
