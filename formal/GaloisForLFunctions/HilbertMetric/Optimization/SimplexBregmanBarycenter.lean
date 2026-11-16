@@ -48,7 +48,7 @@ theorem simplexLogChart_eq_iff (c d : Fin (n + 1) → ℝ) :
       apply congrArg Real.exp
       simpa only [simplexLogChart_eq] using congrFun h i
     have hzero : simplexSampling c 0 = simplexSampling d 0 := by
-      have hs := Finset.sum_congr (s := Finset.univ) rfl (fun i _ => hp i)
+      have hs := Finset.sum_congr (s₁ := Finset.univ) rfl (fun i _ => hp i)
       rw [← Finset.sum_mul, ← Finset.sum_mul,
         simplexSampling_sum, simplexSampling_sum, one_mul, one_mul] at hs
       exact hs.symm

@@ -40,9 +40,12 @@ theorem primeTwoPrimeGauge_independentPreimage_formula (k : ℕ)
 
 /-- The automatic compatibility also holds inside each actual arithmetic cutoff. -/
 theorem primeTwoPrimeCutoff_independentPreimages_eq (k N : ℕ) :
-    independentPreimages (primeTwoPrimeCutoffEquiv R k N).toLinearMap =
-      backwardOrbits (primeTwoPrimeCutoffEquiv R k N).toLinearMap :=
-  independentPreimages_eq_backwardOrbits _ (primeTwoPrimeCutoffEquiv R k N).injective
+    independentPreimages (R := R) (M := ↥(primeChainCutoff R k N))
+        (primeTwoPrimeCutoffEquiv R k N).toLinearMap =
+      backwardOrbits (R := R) (M := ↥(primeChainCutoff R k N))
+        (primeTwoPrimeCutoffEquiv R k N).toLinearMap :=
+  independentPreimages_eq_backwardOrbits (R := R) (M := ↥(primeChainCutoff R k N))
+    _ (primeTwoPrimeCutoffEquiv R k N).injective
 
 #print axioms primeTailShear_independentRoot_eq_zero
 #print axioms primeTwoPrimeGauge_independentPreimage_formula

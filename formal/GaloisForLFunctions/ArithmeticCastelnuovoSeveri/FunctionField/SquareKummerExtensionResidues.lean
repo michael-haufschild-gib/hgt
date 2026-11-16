@@ -93,7 +93,7 @@ theorem squareKummerExtension_exists_radical_residue
       rw [map_sub]
       exact sub_eq_zero.mpr hγ.symm
     have hv := (w.valuation L).mem_maximalIdeal_iff.mp
-      ((IsLocalRing.residue_eq_zero_iff W).mp hz)
+      ((IsLocalRing.residue_eq_zero_iff (u - f γ)).mp hz)
     change w.valuation L (z - (f γ : L)) < 1 at hv
     rw [heightOnePolynomialConstantHom_coe] at hv
     exact hv

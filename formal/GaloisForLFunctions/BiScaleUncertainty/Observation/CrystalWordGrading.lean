@@ -37,11 +37,11 @@ theorem modifiedMajorFrom_balance (w : List DyckStep) (k : ℕ) :
   | nil => simp [modifiedMajorFrom, comajorFrom]
   | cons a w ih =>
     cases w with
-    | nil => cases a <;> simp [modifiedMajorFrom, comajorFrom]
+    | nil => cases a <;> simp [modifiedMajorFrom, comajorFrom, Nat.add_comm]
     | cons b w =>
       have h := ih (k + 1)
       cases a <;> cases b <;>
-        simp [modifiedMajorFrom, comajorFrom, List.count_cons] at h ⊢ <;> omega
+        simp [modifiedMajorFrom, comajorFrom] at h ⊢ <;> omega
 
 /-- The two statistics differ by exactly the number of down-steps. -/
 theorem modifiedMajor_eq_comajor_add_count (w : List DyckStep) :

@@ -31,7 +31,8 @@ theorem squareKummerExtension_exists_aut_radical_residue
     squareKummerExtension_exists_radical_residue p s E c b R x β hβ hpow w
   have hγ : γ ≠ 0 := by
     intro h0
-    have hz := hγpow.symm.trans (by rw [h0, zero_pow (Nat.succ_ne_zero _)])
+    have hz : (kummerBranch c b R).eval x = 0 :=
+      hγpow.symm.trans (by rw [h0, zero_pow (Nat.succ_ne_zero _)])
     exact pow_ne_zero N hβ (hpow.trans hz)
   let ξ : Eˣ := Units.mk0 (β / γ) (div_ne_zero hβ hγ)
   have hξ : ξ ∈ rootsOfUnity N E := by

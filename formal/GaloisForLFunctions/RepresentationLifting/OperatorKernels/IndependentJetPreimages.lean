@@ -30,12 +30,12 @@ theorem truncatedShift_independentPreimages_iff (N : ℕ) (x : ℕ → Fin N →
   · intro hx
     have hzero := truncatedShift_independentRoot_eq_zero N ⟨x, hx⟩
     refine ⟨hzero, fun n => ?_⟩
-    apply (truncatedShift_eq_zero_iff N n (x n)).mp
-    rw [← truncatedShift_pow]
+    apply (truncatedShift_eq_zero_iff (R := R) N n (x n)).mp
+    rw [← truncatedShift_pow (R := R)]
     exact (hx n).trans hzero
   · rintro ⟨hzero, hx⟩ n
     rw [truncatedShift_pow, hzero]
-    exact (truncatedShift_eq_zero_iff N n (x n)).mpr (hx n)
+    exact (truncatedShift_eq_zero_iff (R := R) N n (x n)).mpr (hx n)
 
 /-- Compatibility removes all the independent terminal-coefficient freedom. -/
 theorem truncatedShift_backwardOrbit_eq_zero (N : ℕ)

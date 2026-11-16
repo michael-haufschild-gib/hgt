@@ -87,7 +87,8 @@ theorem dualNumber_idempotent_iff (x : DualNumber K) :
   · intro h
     have ha : x.fst * x.fst = x.fst := congrArg TrivSqZeroExt.fst h
     have hb : x.fst * x.snd + x.snd * x.fst = x.snd := by
-      simpa only [TrivSqZeroExt.snd_mul, smul_eq_mul, op_smul_eq_smul] using
+      simpa only [TrivSqZeroExt.snd_mul, smul_eq_mul, op_smul_eq_smul,
+        mul_comm x.snd x.fst] using
         congrArg TrivSqZeroExt.snd h
     have hz : x.fst * (x.fst - 1) = 0 := by linear_combination ha
     rcases mul_eq_zero.mp hz with hzero | hone
@@ -128,7 +129,8 @@ theorem dualNumber_unique_trace_decomposition (x : DualNumber K) :
 /-- In characteristic two the regular representation loses even the scalar part,
 although the residue representation still detects the unit. -/
 theorem dualNumber_modular_regular_vs_residue [CharP K 2] :
-    Matrix.trace (Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) K) 0 0 1) = 0 ∧
+    Matrix.trace (Matrix.fromBlocks (1 : Matrix (Fin 1) (Fin 1) K)
+      (0 : Matrix (Fin 1) (Fin 1) K) 0 (1 : Matrix (Fin 1) (Fin 1) K)) = 0 ∧
       Matrix.trace (dualNumberResidueMatrix (1 : DualNumber K)) = 1 := by
   constructor
   · rw [trace_dualNumberBlock, two_mul, CharTwo.add_self_eq_zero]

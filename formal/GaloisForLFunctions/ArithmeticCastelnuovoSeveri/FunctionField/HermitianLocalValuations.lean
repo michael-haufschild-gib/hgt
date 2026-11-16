@@ -19,7 +19,7 @@ theorem valuation_add_power_of_lt_one {E : Type*} [Field E]
     (V : Valuation E (WithZero (Multiplicative ℤ)))
     (n : ℕ) (hn : 1 < n) (t : E) (ht : V t < 1) : V (t ^ n + t) = V t := by
   by_cases ht0 : t = 0
-  · simp only [ht0, zero_pow (by omega : n ≠ 0), zero_add]
+  · simp only [ht0, zero_pow (Nat.ne_of_gt (lt_trans Nat.zero_lt_one hn)), zero_add]
   · apply V.map_add_eq_of_lt_right
     rw [map_pow]
     exact pow_lt_self_of_lt_one₀ (pos_iff_ne_zero.mpr (V.ne_zero_iff.mpr ht0)) ht hn

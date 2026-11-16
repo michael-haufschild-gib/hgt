@@ -30,7 +30,11 @@ Q5 sign law via Landau; Q4 decay law (divergent half). Stage 5 entry points: wal
 - Note: b ≤ 16 via on-line zeros is weaker than C4 off RH (state exists only off RH) — not pursued.
 - C6 (PROVED, Lean) finite index at every ratio: `exists_bound_orthonormal_nonpositive` (TheConfinedFormHasFiniteIndexAtEveryRatio). Mechanism: Q_R = Q_{2R} + (a(R)/2)W₈ bounds W₈ on the nonpositive cone; corpus compactness `exists_domain_limit_of_smooth_energy_limit`; greedy 1/2-separated sequence (`exists_seq_of_forall_finset_exists`). Q6 for ζ answered.
 - Assessment: stage 5 ⇔ (★) has no solution ⇔ no eigenvector of the Cauchy matrix 1/(8+z'-z) of the zeros with negative eigenvalue; holds for every configuration without right zeros and fails for prime-two deformations; decay exponent of the state = PNT error exponent (barrier with PNT cancellation is circular).
-- Next: residue law (Q3a right half); exact index count (Q6 exact) via Pontryagin + translation; zero side on domain (Q2, heavy).
+- C7 (PROVED, Lean) residue law right of the line: `riemannHypothesis_or_criticalState_poles_at_zeros` (TheTransformOfTheStateHasPolesAtTheZeros).
+- C8 (PROVED, Lean) Gamma pairing in Lévy form, holomorphic on Re p > -1/2: `levyGamma_eq_stateGamma`, `differentiableOn_levyGamma` (TheGammaPairingInLevyForm). Prime tail holomorphic on Re p > -4; continuation to Re w > -17/2 with a pole at every zero with Re ρ ≥ 1/2: `riemannHypothesis_or_criticalState_poles_across_line` (TheStateContinuesAcrossTheCriticalLine).
+- C9 (PROVED, Lean) functional equation in Lévy form: `levySymbol_eq_neg_logDeriv` (2θ'(0)+g(p) = -(ζ'/ζ(1/2+p)+ζ'/ζ(1/2-p)) on |Re p|<1/2), `levyGamma_eq_reflected_euler` (TheGammaPairingIsTheFunctionalEquationOnTheStrip). Mechanism: Lévy–Khintchine of θ' on the line + identity theorem on the cleared product.
+- C10 (PROVED, Lean) the state is meromorphic in the plane: `riemannHypothesis_or_criticalState_meromorphic` (holomorphic off ρ-17/2, residue law, pole for Re ρ ≥ 1/2, bounded on Re w ≤ -17/2-δ); left formula `stateMeromorphic_eq_left`: -a LF(w) = J+Ŝ+LF(1/2)/(w+15/2)+LF(-1/2)/(w+17/2) (TheTransformOfTheStateIsMeromorphicInThePlane). Mechanism: three remainders glued; left of the strip the Euler parts of reflected Gamma term and prime tail cancel.
+- Next: (★) as Mittag-Leffler expansion (needs horizontal-segment bounds of ζ'/ζ in the strip); asymptotics of J, Ŝ as p → -∞ (wall); exact index count (Q6 exact).
 
 ## Log
 - 2026-11-16 — created; README draft written.

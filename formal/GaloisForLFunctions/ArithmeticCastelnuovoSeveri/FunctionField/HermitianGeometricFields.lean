@@ -62,7 +62,7 @@ theorem hermitianGeometricTangentFunction_eq (P : HermitianAffinePoint p s E) :
           (hermitianExtensionRadicalCoordinate p s E - algebraMap E H P.val.1) := by
   simp only [hermitianGeometricTangentFunction, hermitianTangentDifference,
     hermitianTangentPolynomial, hermitianGeometricConstantPoint, hermitianExtensionGenericPoint,
-    eval_add, eval_mul, eval_sub, eval_C, eval_X, map_pow]
+    eval_add, eval_mul, eval_sub, eval_pow, eval_C, eval_X, map_pow]
   ring
 
 /-- The tangent equation holds in the actual geometric function field for every geometric point. -/
@@ -92,7 +92,7 @@ theorem hermitianGeometricRadical_sub_ne_zero (a : E) :
   rw [sub_eq_zero.mp h, ← map_pow] at heq
   have heval : aeval (hermitianExtensionAdditiveCoordinate p s E) f = 0 := by
     simp only [f, map_sub, map_add, map_pow, aeval_X, aeval_C]
-    exact sub_eq_zero.mpr heq.symm
+    simpa only [map_pow] using sub_eq_zero.mpr heq.symm
   exact hf ((transcendental_iff.mp
     (hermitianExtensionAdditiveCoordinate_transcendental p s E)) f heval)
 

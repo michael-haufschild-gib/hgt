@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Seventy-one helper modules passed final plain Lean checks and are umbrella-wired, including actual low angular completed-source energy, the physical-probe identity and exact selected-prime phases.
+- **Verified:** Seventy-three helper modules passed final plain Lean checks and are umbrella-wired, including actual low angular completed-source energy and normalized physical inverse-row bounds.
 - **Missing:** Actual physical low-probe bound, angular prime-slot estimates, high moment induction and both common-signal estimates.
 
 ## Receiver
@@ -99,6 +99,10 @@ identities, preserves the original norm bounds and gives exact canonical ideal r
 `AngularPhysicalInverseSource` applies finite ray correction and period puncturing,
 identifying the corrected physical inverse rows with actual angular ideal polynomials.
 Their energy retains the original finite correction and unit-orbit costs.
+`AngularLowInverseBounds.angular_low_physical_inverse_normalized` bounds actual normalized
+inverse-row mass by `C(1+|t|)^degree Z^(507ε/2)` at physical scales `Z^(17/48)` and `Z^(23/48)`.
+`AngularLowSeparation.angular_compensation_tuple_low_polynomial` gives exact Mellin separation
+of compensated tuples into the original radial kernel and angular selected inverse rows.
 Physical low-bound assembly remains pending.
 
 ## Verified reciprocal growth
