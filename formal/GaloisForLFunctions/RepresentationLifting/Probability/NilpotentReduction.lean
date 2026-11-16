@@ -24,7 +24,12 @@ def additivePredicateReductionEquiv (f : R →+ S) (hf : Function.Surjective f)
   let ef (y : {y : S // Q y}) : {x : R // f x = y.1} ≃ f.ker := by
     let x := (hf y.1).choose
     have hx : f x = y.1 := (hf y.1).choose_spec
-    simpa only [Set.preimage, Set.mem_singleton_iff, hx] using f.fiberEquivKer x
+    let e₀ : {z : R // f z = y.1} ≃ (f ⁻¹' {f x}) :=
+      { toFun := fun z => ⟨z.1, z.2.trans hx.symm⟩
+        invFun := fun z => ⟨z.1, z.2.trans hx⟩
+        left_inv := fun _ => rfl
+        right_inv := fun _ => rfl }
+    exact e₀.trans (f.fiberEquivKer x)
   exact e.symm.trans ((Equiv.sigmaCongrRight ef).trans (Equiv.sigmaEquivProd _ _))
 
 /-- Pullback of any predicate preserves its counting proportion. -/
@@ -51,16 +56,9 @@ theorem isNilpotent_map_iff_of_nilpotent_kernel (f : R →+* S)
 /-- Nilpotent lifts are parameterized by a nilpotent residue and an additive-kernel element. -/
 def nilpotentReductionEquiv (f : R →+* S) (hf : Function.Surjective f)
     (hker : ∀ x : R, f x = 0 → IsNilpotent x) :
-    {x : R // IsNilpotent x} ≃ ({y : S // IsNilpotent y} × f.toAddMonoidHom.ker) := by
-  let e := Equiv.sigmaSubtypeFiberEquivSubtype f
+    {x : R // IsNilpotent x} ≃ ({y : S // IsNilpotent y} × f.toAddMonoidHom.ker) :=
+  additivePredicateReductionEquiv f.toAddMonoidHom hf IsNilpotent IsNilpotent
     (fun x => (isNilpotent_map_iff_of_nilpotent_kernel f hker x).symm)
-  let ef (y : {y : S // IsNilpotent y}) :
-      {x : R // f x = y.1} ≃ f.toAddMonoidHom.ker := by
-    let x := (hf y.1).choose
-    have hx : f x = y.1 := (hf y.1).choose_spec
-    simpa only [Set.preimage, Set.mem_singleton_iff, hx] using
-      f.toAddMonoidHom.fiberEquivKer x
-  exact e.symm.trans ((Equiv.sigmaCongrRight ef).trans (Equiv.sigmaEquivProd _ _))
 
 /-- Each nilpotent residue has exactly one kernel-sized fiber of nilpotent lifts. -/
 theorem card_nilpotent_reduction (f : R →+* S) (hf : Function.Surjective f)

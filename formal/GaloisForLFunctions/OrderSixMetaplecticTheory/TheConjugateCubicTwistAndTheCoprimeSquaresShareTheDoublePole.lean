@@ -68,7 +68,7 @@ theorem summable_coprimeCoeff {σ : ℝ} (hσ : 4 < σ) :
 
 theorem summable_gaussCoeff {σ : ℝ} (hσ : 4 < σ) :
     Summable (fun h : O => if h = 0 then 0 else ‖P.gaussCoeff h‖ * ‖cuspFrequency h‖ ^ (-σ)) := by
-  refine Summable.of_nonneg_of_le (fun h => ?_) (fun h => ?_) ((summable_sq_coeff hσ).mul_left (Fintype.card P.Res))
+  refine Summable.of_nonneg_of_le (fun h => ?_) (fun h => ?_) ((summable_sq_coeff hσ).mul_left (Fintype.card P.Res : ℝ))
   · split_ifs <;> positivity
   · split_ifs with hh
     · simp
@@ -117,7 +117,7 @@ theorem cuspConstantTerm_fracRemainder (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 
     intro k
     unfold fracWeight
     refine (norm_add_le _ _).trans (add_le_add le_rfl ?_)
-    split_ifs <;> simp
+    split_ifs <;> simp <;> positivity
   have s1 := summable_mul_neg_bdd hb hb _ _ hW
   have s2 := summable_mul_neg_bdd hb hb (fun _ => (1 : ℂ)) 1 (fun _ => by simp)
   have hsplit : ∑' k : O, b k * b (-k) * P.fracWeight k - P.fracMain * ∑' k : O, b k * b (-k) =
@@ -129,7 +129,7 @@ theorem cuspConstantTerm_fracRemainder (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 
       ring
     rw [e]
     simp_rw [P.fracWeight_sub]
-    rw [P.tsum_amplitude_phase _ (by simp) v hv, ← besselRemainder_const_mul]
+    rw [tsum_amplitude_phase _ (by simp) v hv, ← besselRemainder_const_mul]
     congr 1
     funext h
     unfold coprimeCoeff
@@ -138,7 +138,7 @@ theorem cuspConstantTerm_fracRemainder (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 
       rationalSourceModeAmplitude (v / ‖ringComplex P.p‖ / ‖ringComplex P.p‖) (-k) *
         ∑ u : P.Res, P.chi u * P.traceChar (u * P.res k) =
       besselRemainder P.gaussCoeff (v / ‖ringComplex P.p‖ / ‖ringComplex P.p‖) :=
-    P.tsum_amplitude_phase P.gaussAt P.gaussAt_zero _ (div_pos (div_pos hv hn) hn)
+    tsum_amplitude_phase P.gaussAt P.gaussAt_zero _ (div_pos (div_pos hv hn) hn)
   rw [hgauss]
   linear_combination periodArea * hsplit
 
@@ -189,7 +189,7 @@ theorem integral_fracRemainder_mul_eisenstein (h2 : (2 : P.Res) ≠ 0) (s : ℂ)
   rw [setIntegral_congr_fun measurableSet_Ioi hpt, integral_const_mul, integral_sub J1 J2, integral_const_mul,
     integral_const_mul, integral_mellin_comp_mul RG s hb,
     integral_besselRemainder P.gaussCoeff s hs23 (P.summable_gaussCoeff hs4),
-    integral_besselRemainder P.coprimeCoeff s hs23 (P.summable_coprimeCoeff hs4), P.real_cpow_sq_inv ρ hn s]
+    integral_besselRemainder P.coprimeCoeff s hs23 (P.summable_coprimeCoeff hs4), real_cpow_sq_inv ρ hn s]
   ring
 
 /-- **The conjugate-twist relation at q.** The Gauss-weighted conjugate twist and the q-coprime squares share
