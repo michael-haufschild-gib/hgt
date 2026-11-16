@@ -67,7 +67,10 @@ private theorem product_one_eq_envelope (k : ℕ) : product k 1 = envelope k 1 :
   have hd : 2 * (slope k + 1) - 1 ≠ 0 := by linarith
   norm_num only [product, prod_range_one, Nat.cast_zero, zero_add, envelope, Nat.cast_one]
   rw [he]
-  field_simp
+  have hf : 1 - 1 / (2 * (slope k + 1)) =
+      (2 * (slope k + 1) - 1) / (2 * (slope k + 1)) := by field_simp
+  rw [hf, inv_div]
+  apply (div_eq_div_iff hd (by positivity)).mpr
   ring
 
 private theorem factor_three_lt_ratio (k : ℕ) :

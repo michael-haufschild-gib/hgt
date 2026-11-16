@@ -13,7 +13,7 @@ coefficients require no separate assumptions.
 
 noncomputable section
 open Matrix
-open scoped BigOperators ComplexConjugate
+open scoped BigOperators ComplexConjugate NNReal
 namespace GaloisForLFunctions.HTGeometry
 
 /-- Rectangular Hilbert--Schmidt Cauchy--Schwarz, with arbitrary finite index types. -/
@@ -65,12 +65,38 @@ theorem fourCornerEnergy_eq_rows
   simp only [fourCornerEnergy, finiteMatrixHilbertSchmidtSq_eq_sum_norm_sq,
     Matrix.mul_apply, Matrix.conjTranspose_apply]
 
+/-- The signed four-corner sum is real and nonnegative because it is a Gram energy. -/
+theorem fourCornerEnergy_eq_four_sum
+    {ι κ : Type*} [Fintype ι] [Fintype κ] [DecidableEq ι] (A : Matrix ι κ ℂ) :
+    (fourCornerEnergy A : ℂ) =
+      ∑ i, ∑ k, ∑ j, ∑ l, A i j * star (A k j) * star (A i l) * A k l := by
+  have hpoint (i k : ι) : ((‖∑ j, A i j * star (A k j)‖ ^ 2 : ℝ) : ℂ) =
+      ∑ j, ∑ l, A i j * star (A k j) * star (A i l) * A k l := by
+    rw [← Complex.normSq_eq_norm_sq, ← Complex.mul_conj, map_sum, Finset.sum_mul_sum]
+    apply Finset.sum_congr rfl
+    intro j _
+    apply Finset.sum_congr rfl
+    intro l _
+    simp only [map_mul, starRingEnd_apply, star_star]
+    ring
+  simp only [fourCornerEnergy_eq_rows, Complex.ofReal_sum, hpoint]
+
 /-- The same four-corner energy can be read from either side of the matrix. -/
 theorem fourCornerEnergy_conjTranspose
     {ι κ : Type*} [Fintype ι] [Fintype κ] [DecidableEq ι] [DecidableEq κ]
     (A : Matrix ι κ ℂ) : fourCornerEnergy Aᴴ = fourCornerEnergy A := by
   simp only [fourCornerEnergy, Matrix.conjTranspose_conjTranspose]
   exact finiteMatrixHilbertSchmidtSq_gram_duality A
+
+/-- Column correlations give the same energy as row correlations. -/
+theorem fourCornerEnergy_eq_columns
+    {ι κ : Type*} [Fintype ι] [Fintype κ] [DecidableEq ι] [DecidableEq κ]
+    (A : Matrix ι κ ℂ) :
+    fourCornerEnergy A = ∑ j, ∑ l, ‖∑ i, star (A i j) * A i l‖ ^ 2 := by
+  unfold fourCornerEnergy
+  rw [← finiteMatrixHilbertSchmidtSq_gram_duality A]
+  simp only [finiteMatrixHilbertSchmidtSq_eq_sum_norm_sq, Matrix.mul_apply,
+    Matrix.conjTranspose_apply]
 
 private def coefficientColumn {κ : Type*} (b : κ → ℂ) : Matrix κ Unit ℂ := fun j _ => b j
 
@@ -126,8 +152,29 @@ theorem norm_bilinear_fourth_le_fourCornerEnergy
       mul_le_mul_of_nonneg_left (weightedColumnEnergy_sq_le_fourCornerEnergy A b) (sq_nonneg _)
     _ = _ := by ring
 
+/-- Weighted incidence collision mass is controlled by the two covariance collision masses. -/
+theorem finiteWeightedIncidence_collision_bound
+    {h x y : Type*} [Fintype h] [Fintype x] [Fintype y]
+    [DecidableEq h] [DecidableEq x] [DecidableEq y]
+    (sourceWeight : x → ℝ≥0) (source : x → h → ℂ)
+    (targetWeight : y → ℝ≥0) (target : y → h → ℂ) :
+    finiteMatrixHilbertSchmidtSq
+        (finiteWeightedIncidenceMatrix sourceWeight source targetWeight target) ^ 2 ≤
+      finiteMatrixHilbertSchmidtSq (finiteWeightedCovarianceMatrix sourceWeight source) *
+        finiteMatrixHilbertSchmidtSq (finiteWeightedCovarianceMatrix targetWeight target) := by
+  have hbound := finiteMatrixHilbertSchmidtSq_cross_gram_sq_le
+    (finiteWeightedSynthesisMatrix sourceWeight source)
+    (finiteWeightedSynthesisMatrix targetWeight target)
+  rw [finiteMatrixHilbertSchmidtSq_gram_duality (finiteWeightedSynthesisMatrix sourceWeight source),
+    finiteMatrixHilbertSchmidtSq_gram_duality (finiteWeightedSynthesisMatrix targetWeight target),
+    finiteWeightedSynthesisMatrix_mul_conjTranspose,
+    finiteWeightedSynthesisMatrix_mul_conjTranspose] at hbound
+  exact hbound
+
 #print axioms finiteMatrixHilbertSchmidtSq_cross_gram_sq_le
+#print axioms fourCornerEnergy_eq_four_sum
 #print axioms weightedColumnEnergy_sq_le_fourCornerEnergy
 #print axioms norm_bilinear_fourth_le_fourCornerEnergy
+#print axioms finiteWeightedIncidence_collision_bound
 
 end GaloisForLFunctions.HTGeometry

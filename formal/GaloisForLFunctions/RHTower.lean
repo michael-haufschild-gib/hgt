@@ -5399,6 +5399,8 @@ import GaloisForLFunctions.RHTower.Sieve.SquareWindowEnergyUnderRH
 import GaloisForLFunctions.RHTower.Sieve.CurvedPhaseBlockSum
 import GaloisForLFunctions.RHTower.Sieve.DifferencePhaseCurvature
 import GaloisForLFunctions.RHTower.Sieve.BilinearCauchySchwarz
+import GaloisForLFunctions.RHTower.Sieve.BilinearFourCornerEnergy
+import GaloisForLFunctions.RHTower.Sieve.CurvedFourCornerEnergy
 import GaloisForLFunctions.RHTower.Sieve.TypeIICorrelation
 import GaloisForLFunctions.RHTower.Sieve.TypeIIEnergyBound
 import GaloisForLFunctions.RHTower.Sieve.TypeIBound

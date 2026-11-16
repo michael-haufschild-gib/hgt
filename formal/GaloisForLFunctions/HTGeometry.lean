@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Homology.AugmentationUnitWedge
+import GaloisForLFunctions.HTGeometry.Valuation.ConcaveDworkWeight
+import GaloisForLFunctions.HTGeometry.Valuation.DworkPermutationWeight
 import GaloisForLFunctions.HTGeometry.Homology.CyclicOneFunctor
 import GaloisForLFunctions.HTGeometry.Homology.SquareZeroCyclicExterior
 import GaloisForLFunctions.HTGeometry.Homology.ProductCyclicOne
@@ -16842,6 +16844,7 @@ import GaloisForLFunctions.HTGeometry.NormalizedWindingHom
 import GaloisForLFunctions.HTGeometry.PointedPacketTransport
 import GaloisForLFunctions.HTGeometry.PuncturedWindingBaseChange
 import GaloisForLFunctions.HTGeometry.CrouzeixGramEnergy
+import GaloisForLFunctions.HTGeometry.Analysis.FourCornerCoefficientRemoval
 import GaloisForLFunctions.HTGeometry.CrouzeixWeightedIncidence
 import GaloisForLFunctions.HTGeometry.CrouzeixKrausEnergy
 import GaloisForLFunctions.HTGeometry.CrouzeixObservationEnergy
@@ -17970,4 +17973,6 @@ import GaloisForLFunctions.HTGeometry.Quantum.CompressedPositiveDuality
 import GaloisForLFunctions.HTGeometry.AbelianZetaGas.ChargeSectorReduction
 import GaloisForLFunctions.HTGeometry.Analysis.ReciprocalPowerProducts
 import GaloisForLFunctions.HTGeometry.Analysis.InfiniteReciprocalPowerProducts
+import GaloisForLFunctions.HTGeometry.Analysis.WallisSubproducts
 import GaloisForLFunctions.HTGeometry.Analysis.LinearCumulativeLaplaceBound
+import GaloisForLFunctions.HTGeometry.Analysis.VanishingCumulativeLaplaceBound
