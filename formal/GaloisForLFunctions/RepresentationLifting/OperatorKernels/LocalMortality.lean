@@ -62,7 +62,7 @@ theorem exists_common_survivor_iff [Module.Finite R M]
     (∃ x : M, ∀ T ∈ S, T x ≠ 0) ↔ (0 : Module.End R M) ∉ S := by
   classical
   rw [zero_mem_submonoid_iff_pointwise_killable]
-  push_neg
+  push Not
   rfl
 
 #print axioms exists_annihilator_finset

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.BiScaleUncertainty.KreinIncrementAndChordCascade
+import GaloisForLFunctions.BiScaleUncertainty.Observation.CrystalWordGrading
 import GaloisForLFunctions.BiScaleUncertainty.Spectral.NestedProjectionEnergy
 import GaloisForLFunctions.BiScaleUncertainty.Solenoidal.ToroidalFourier
 import GaloisForLFunctions.BiScaleUncertainty.Solenoidal.RadialSkewFields

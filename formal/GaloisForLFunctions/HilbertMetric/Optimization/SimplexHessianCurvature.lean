@@ -27,8 +27,35 @@ def diagonalStatisticalConnection (a : ι → ℝ)
 theorem diagonalStatisticalConnection_constant (a u v x : ι → ℝ) :
     diagonalStatisticalConnection a (fun _ => u) (fun _ => v) x =
       diagonalDifference a u v := by
-  simp only [diagonalStatisticalConnection, fderiv_const,
-    ContinuousLinearMap.zero_apply, zero_add]
+  have hd : fderiv ℝ (fun _ : ι → ℝ => v) x = 0 :=
+    congrFun (fderiv_const (𝕜 := ℝ) (E := ι → ℝ) v) x
+  rw [diagonalStatisticalConnection, hd]
+  simp
+
+theorem diagonalStatisticalConnection_constant_fun (a u v : ι → ℝ) :
+    diagonalStatisticalConnection a (fun _ => u) (fun _ => v) =
+      fun _ => diagonalDifference a u v :=
+  funext (diagonalStatisticalConnection_constant a u v)
+
+/-- Symmetry of the constant Christoffel coefficients gives zero torsion. -/
+theorem diagonalStatisticalConnection_torsion (a u v x : ι → ℝ) :
+    diagonalStatisticalConnection a (fun _ => u) (fun _ => v) x =
+      diagonalStatisticalConnection a (fun _ => v) (fun _ => u) x := by
+  simp only [diagonalStatisticalConnection_constant]
+  funext i
+  dsimp only [diagonalDifference]
+  ring
+
+/-- The covariant derivative of the Euclidean metric is the fully symmetric diagonal cubic. -/
+theorem diagonalStatisticalConnection_cubic (a u v w x : ι → ℝ) :
+    (∑ i, -(diagonalStatisticalConnection a (fun _ => u) (fun _ => v) x i * w i +
+      v i * diagonalStatisticalConnection a (fun _ => u) (fun _ => w) x i)) =
+      ∑ i, (-2 * a i) * u i * v i * w i := by
+  simp only [diagonalStatisticalConnection_constant]
+  apply Finset.sum_congr rfl
+  intro i _
+  dsimp only [diagonalDifference]
+  ring
 
 /-- The curvature vanishes on the constant frame, hence all its coordinate components vanish. -/
 theorem diagonalStatisticalConnection_flat (a u v w x : ι → ℝ) :
@@ -36,7 +63,7 @@ theorem diagonalStatisticalConnection_flat (a u v w x : ι → ℝ) :
         (diagonalStatisticalConnection a (fun _ => v) (fun _ => w)) x -
       diagonalStatisticalConnection a (fun _ => v)
         (diagonalStatisticalConnection a (fun _ => u) (fun _ => w)) x = 0 := by
-  simp only [diagonalStatisticalConnection_constant]
+  simp only [diagonalStatisticalConnection_constant_fun]
   funext i
   simp only [Pi.sub_apply, Pi.zero_apply, diagonalDifference]
   ring
@@ -47,11 +74,26 @@ def diagonalHessianTensor (a u v w z : ι → ℝ) : ℝ :=
       diagonalDifference a v (diagonalDifference a u w) i -
       diagonalDifference a u (diagonalDifference a v w) i) * z i
 
+omit [DecidableEq ι] in
 theorem diagonalHessianTensor_eq (a u v w z : ι → ℝ) :
     diagonalHessianTensor a u v w z = ∑ i, a i ^ 2 * u i * v i * w i * z i := by
   apply Finset.sum_congr rfl
   intro i _
   dsimp only [diagonalDifference]
+  ring
+
+/-- The tensor is the negative covariant derivative for the actual constant-frame connection. -/
+theorem diagonalHessianTensor_connection (a u v w z x : ι → ℝ) :
+    diagonalHessianTensor a u v w z =
+      ∑ i, -(diagonalStatisticalConnection a (fun _ => u)
+          (fun _ => diagonalDifference a v w) x i -
+        diagonalDifference a
+          (diagonalStatisticalConnection a (fun _ => u) (fun _ => v) x) w i -
+        diagonalDifference a v
+          (diagonalStatisticalConnection a (fun _ => u) (fun _ => w) x) i) * z i := by
+  simp only [diagonalStatisticalConnection_constant]
+  apply Finset.sum_congr rfl
+  intro i _
   ring
 
 /-- Curvature operator in the Frobenius metric; it preserves symmetric matrices. -/
@@ -64,12 +106,13 @@ theorem diagonalHessianOperator_rankOne (a u v : ι → ℝ) :
       diagonalHessianTensor a u u v v := by
   rw [diagonalHessianTensor_eq]
   simp only [diagonalHessianOperator, Matrix.diagonal_apply]
-  simp only [ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [ite_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
   apply Finset.sum_congr rfl
   intro i _
   ring
 
 /-- Every diagonal matrix is acted on coordinatewise by the squared coefficients. -/
+omit [Fintype ι] in
 theorem diagonalHessianOperator_diagonal (a v : ι → ℝ) :
     diagonalHessianOperator a (Matrix.diagonal v) =
       Matrix.diagonal (fun i => a i ^ 2 * v i) := by
@@ -80,7 +123,7 @@ theorem diagonalHessianOperator_energy (a : ι → ℝ) (A : Matrix ι ι ℝ) :
     (∑ i, ∑ j, diagonalHessianOperator a A i j * A i j) =
       ∑ i, (a i * A i i) ^ 2 := by
   simp only [diagonalHessianOperator, Matrix.diagonal_apply, ite_mul, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, if_true]
   apply Finset.sum_congr rfl
   intro i _
   ring
@@ -110,7 +153,10 @@ theorem simplexHessian_weighted_response (c g : Fin (n + 1) → ℝ) :
         (Matrix.diagonal (fun i => g i - simplexDualMean c g)) =
       Matrix.diagonal (weightedSimplexResponse c g) := by
   rw [diagonalHessianOperator_diagonal]
-  simp only [simplexStatisticalCoefficient_sq, weightedSimplexResponse]
+  congr 1
+  funext i
+  rw [simplexStatisticalCoefficient_sq]
+  rfl
 
 /-- No diagonal curvature is invisible; the kernel consists exactly of off-diagonal tensors. -/
 theorem simplexHessian_kernel (c : Fin (n + 1) → ℝ)
@@ -127,6 +173,8 @@ theorem simplexHessian_kernel (c : Fin (n + 1) → ℝ)
     simp only [diagonalHessianOperator, h, mul_zero, Matrix.diagonal_zero, Matrix.zero_apply]
 
 #print axioms diagonalStatisticalConnection_flat
+#print axioms diagonalStatisticalConnection_cubic
+#print axioms diagonalHessianTensor_connection
 #print axioms diagonalHessianOperator_rankOne
 #print axioms simplexHessian_normalized_spectrum
 #print axioms simplexHessian_weighted_response

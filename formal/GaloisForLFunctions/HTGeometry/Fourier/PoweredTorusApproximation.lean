@@ -25,6 +25,7 @@ theorem coordinateMode_add (i : ι) (a b : ℤ) :
   exact (congrArg (fun v => torusCharacter v x) (Finsupp.single_add i a b)).trans
     (torusCharacter_add_index _ _ x)
 
+omit [DecidableEq ι] in
 theorem coordinateMode_nat_mul (i : ι) (k : ℕ) (a : ℤ) :
     coordinateMode i ((k : ℤ) * a) = coordinateMode i a ^ k := by
   induction k with
@@ -43,6 +44,7 @@ theorem coordinateMode_star (i : ι) (a : ℤ) :
     (congrArg (fun v => torusCharacter v x) (Finsupp.single_neg i a).symm)
 
 /-- Polynomial reconstruction of the positive coordinate. -/
+omit [DecidableEq ι] in
 theorem adjacentPowers_recover_coordinate (i : ι) (n : ℕ) :
     coordinateMode i ((n : ℤ) + 1) ^ (n + 1) *
       coordinateMode i (-((n : ℤ) + 2)) ^ n = coordinateMode i 1 := by
@@ -52,6 +54,7 @@ theorem adjacentPowers_recover_coordinate (i : ι) (n : ℕ) :
   ring
 
 /-- A single product recovers the conjugate coordinate. -/
+omit [DecidableEq ι] in
 theorem adjacentPowers_recover_conjugate (i : ι) (n : ℕ) :
     coordinateMode i ((n : ℤ) + 1) * coordinateMode i (-((n : ℤ) + 2)) =
       coordinateMode i (-1) := by
@@ -101,7 +104,9 @@ theorem adjacentPowerTorusAlgebra_star_mem (n : ℕ) :
 def adjacentPowerTorusStarAlgebra (ι : Type*) [DecidableEq ι] (n : ℕ) :
     StarSubalgebra ℂ C(UnitAddTorus ι, ℂ) where
   toSubalgebra := adjacentPowerTorusAlgebra ι n
-  star_mem' := adjacentPowerTorusAlgebra_star_mem n
+  star_mem' := by
+    change adjacentPowerTorusAlgebra ι n ≤ star (adjacentPowerTorusAlgebra ι n)
+    exact adjacentPowerTorusAlgebra_star_mem n
 
 /-- The recovered coordinates distinguish every pair of torus points. -/
 theorem adjacentPowerTorusStarAlgebra_separatesPoints (n : ℕ) :

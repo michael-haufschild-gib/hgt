@@ -179,7 +179,7 @@ theorem angular_low_central_compensated_tuple (ℓ : ℕ) (η : HeckeFamily.Char
       _≤(‖lowUnselectedWeight slots J W Yp p‖*Real.sqrt (3*q/L))*(G*V) := by
         have hh3 := hh.trans hh2
         simp only [G,V,div_eq_mul_inv,mul_assoc] at hh3 ⊢
-        convert hh3 using 1 <;> first | rfl | (congr 7 <;> rfl)
+        convert hh3 using 1 <;> rfl
       _≤(‖lowUnselectedWeight slots J W Yp p‖*Real.sqrt (3*q/L))*
           (Ci*(1+‖t‖)^degree*Z^(3/16+254*ε)) :=
         mul_le_mul_of_nonneg_left hGV (by positivity)
