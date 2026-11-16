@@ -49,7 +49,7 @@ theorem error_eq (c W : ℕ → ℝ) (n : ℕ) :
   | zero => simp
   | succ n ih =>
     rw [value_succ, Finset.sum_range_succ]
-    unfold residual
+    unfold residual at ih ⊢
     linarith only [ih]
 
 /-- Residual control is local to the complete chain and needs no global bound. -/
@@ -57,7 +57,7 @@ theorem abs_error_le_certificate (c W : ℕ → ℝ) (n : ℕ) :
     |W n - value c n| ≤ certificate c W n := by
   rw [error_eq]
   exact (abs_add_le _ _).trans
-    (add_le_add_left (Finset.abs_sum_le_sum_abs _ _) _)
+    (add_le_add_right (Finset.abs_sum_le_sum_abs _ _) _)
 
 /-- Both signs of the value are certified from the same residual variation. -/
 theorem value_mem_certificate_interval (c W : ℕ → ℝ) (n : ℕ) :
@@ -104,7 +104,7 @@ theorem fixed_iff (c W : ℕ → ℝ) : step c W = W ↔ W = value c := by
     funext n
     have he := error_eq c W n
     rw [h0, hr] at he
-    simpa using he
+    exact sub_eq_zero.mp (by simpa using he)
   · rintro rfl
     funext n
     cases n with

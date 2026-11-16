@@ -235,3 +235,5 @@ import GaloisForLFunctions.ArithmeticHarmonicAnalysis.Coleman.FormalLogarithmicJ
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.Coleman.MomentFunctionalJets
 
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.QuantumWalk.SoninCompression
+
+import GaloisForLFunctions.ArithmeticHarmonicAnalysis.Coleman.NormalizedUnitCongruences

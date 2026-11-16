@@ -153,7 +153,10 @@ theorem integral_ratioCorrelation_middle (h2 : (2 : P.Res) ≠ 0) (c : P.Res) (h
           3 * ringComplex (P.lift (t / (1 + 9 * t * x.1)) - P.lift (c * t / (1 + c * (9 * t * x.1)))) /
             ringComplex P.p by rw [map_sub]; ring, P.tracePhase_low, map_sub, res_lift, res_lift]
       congr 1
-      field_simp
+      have hA : (1 + 9 * t * x.1) ≠ 0 := h₁
+      have hB : (1 + c * (9 * t * x.1)) ≠ 0 := h₂
+      rw [div_sub_div _ _ hA hB]
+      congr 2
       ring
 
 /-- **The middle cusps.** `Σ_{x≢0}∫_P G^{(c)}_λ(L_{qx}w) = |P|Σ_kb(k)b(−k)g_λλ((1 − c)k)(J_c − 1)`. -/
@@ -176,7 +179,7 @@ theorem integral_middle_sumR (h2 : (2 : P.Res) ≠ 0) (c : P.Res) (hc1 : c ≠ 1
         ((continuous_hyperbolic_action (complexMatrix (lowerThree (P.p * P.lift x.1)))).comp
           (continuous_upperPoint_z v hv)))))]
     simp_rw [integral_const_mul]
-  simp_rw [hsplit, P.integral_ratioCorrelation_middle h2 c hc1 _ _ v hv, mul_add, Finset.sum_add_distrib]
+  simp_rw [hsplit, P.integral_ratioCorrelation_middle h2 c hc1 _ _ v hv, mul_add (P.lam _), Finset.sum_add_distrib]
   simp only [← hbdef]
   obtain ⟨g, hgs⟩ : ∃ g : P.Res → ℂ, ∀ s, g s = if 1 + s = 0 then P.chi (1 + c * s) * P.highTerm v
       else if 1 + c * s = 0 then P.chi (1 + s) * P.highTerm v else 0 := ⟨_, fun s => rfl⟩

@@ -11,7 +11,7 @@ the existing finite-window inequality, with all zero multiplicities unchanged.
 -/
 
 open Matrix RiemannGaussian
-open scoped ComplexOrder NNReal
+open scoped Classical ComplexOrder NNReal
 namespace GaloisForLFunctions.ZeroConfigurationGeometry
 open HilbertMetric.Clipped
 noncomputable section
@@ -54,7 +54,8 @@ theorem etaWindow_clipped_dominates_rank (cutoff : d → ℕ) (T c : ℝ≥0) :
   have hr : ((pairedEtaTopPrefixFiniteZeroWindowOnLineBlock cutoff T).rank : ℝ) ≤
       (spectralCriticalZetaZeroWindow T).card := by
     exact_mod_cast pairedEtaTopPrefixFiniteZeroWindowOnLineBlock_rank_le_card cutoff T
-  have hp := mul_le_mul_of_nonneg_left hr (div_nonneg (sq_nonneg (c : ℝ)) (by norm_num))
+  have hp := mul_le_mul_of_nonneg_left hr
+    (div_nonneg (sq_nonneg (c : ℝ)) (by norm_num : (0 : ℝ) ≤ 4))
   have hm := pairedEtaTopPrefixFiniteZeroWindowOnLineBlock_rtrace_eq_mass cutoff (T : ℝ)
   simp only [HermitianInertia.rtrace, RCLike.re_to_complex] at hm
   rw [hm] at h
