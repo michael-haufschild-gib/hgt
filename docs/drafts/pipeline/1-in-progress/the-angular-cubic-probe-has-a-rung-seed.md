@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Thirty-one helper modules passed final plain Lean checks and are umbrella-wired.
+- **Verified:** Thirty-four helper modules passed final plain Lean checks and are umbrella-wired.
 - **Missing:** Angular source moment induction and both common-signal estimates.
 
 ## Receiver
@@ -79,6 +79,11 @@ moment estimates still require their angular extensions. In particular,
 variant require `CanonicalCoefficientClass.FactorsModulo Q Ψ`; the angular twist
 fails this premise. Angular reflection must extend these low completed-sum
 estimates as well as the high plain-slot moment induction.
+
+In `bareSourceCoefficient`, the target character occurs only as `targetMonoid η A`;
+the Fourier frequency is a separate variable `H`. A direct angular replacement therefore
+weights `A`, whereas the failed compensation weights `H`. Extending the exact principal
+series still requires proving its angular Euler factorization and common-signal bounds.
 
 ## Verified reciprocal growth
 
@@ -159,7 +164,7 @@ and entire normalized angular Dirichlet continuation at every finite source cusp
 logarithmic derivatives with Euler-weighted Mellin inversion. The imaginary-axis multiplier
 is unitary, preserving every absolute Fourier moment; compact sources give rapid decay
 of the Mellin data on common vertical strips. `AngularKernelBounds` proves arbitrary polynomial radial decay for every logarithmic
-derivative, including uniform bounds on bounded logarithmic intervals. Source-uniform kernel bounds remain unverified.
+derivative, including uniform bounds on bounded logarithmic intervals. Source-seminorm kernel bounds are verified; uniform height separation remains unverified.
 
 `AngularSourceSmoothing` proves entire smoothing integrands, exponential strip bounds and
 contour shifting between integrable vertical lines. Its exact initial/reflected line formulas
@@ -167,4 +172,15 @@ retain the original radial scale; the reflected multiplier has modulus `cuspWidt
 
 `AngularSmoothedReflection` proves absolute Mellin inversion for angular dual coefficients
 and exact smoothed reflection at every source cusp, with the original conductor scale.
-Finite periodic Fourier inversion and the reflected energy estimates still need their angular extensions.
+`AngularFiniteReflection` proves the actual angular completed sum has finite-cusp reflection
+in arbitrary cusp coordinates and exact unit/ramified/squarefree/cube reindexing.
+The reflected energy estimates still need their angular extensions.
+
+`AngularCuspPhase` proves the extra denominator phase is multiplicative and has modulus
+one for nonzero denominators. Sixfold jet increments remove fixed cusp unit rotations.
+For controlled cusps it separates across denominator factors and is independent of the finite
+Fourier residue; the original smoothing multiplier is multiplied by exactly this phase.
+
+`AngularKernelSeminorms` controls the Mellin data and every finite collection of weighted
+Euler derivatives by finitely many Schwartz seminorms of a compactly supported source.
+The same source bound gives `x^(1/4)` at zero and arbitrary inverse powers at infinity.

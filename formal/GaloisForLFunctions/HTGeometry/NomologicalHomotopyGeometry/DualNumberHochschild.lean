@@ -161,3 +161,8 @@ theorem euler_phi_bracket (x y : Dual) :
 end
 
 end HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent
+
+#print axioms HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent.normalized_bilinear_iff
+#print axioms HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent.unique_cyclic_representative
+#print axioms HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent.deformedProduct_assoc
+#print axioms HTGeometry.NomologicalHomotopyGeometry.CyclicAInfinityLaw.DualNumberEvent.euler_phi_bracket

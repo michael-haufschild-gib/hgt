@@ -34,7 +34,7 @@ are recovered exactly. The actual sextic twists and exact cusp-width normalizati
 verified. The actual angular Dirichlet reflection has the original conductor factor and
 Gamma shifts by `3k`, with vertical degree independent of `k`. Entire-source Mellin convergence
 and normalized angular continuation are verified. Smooth angular kernels and arbitrary radial decay of every logarithmic derivative are verified.
-Exact smoothed angular reflection at every source cusp is verified. Source-uniform kernel bounds remain open. Low completed-sum reflection,
+Exact smoothed angular reflection and finite-cusp reflection of the actual completed sum are verified. The extra cusp phase is multiplicative in the denominator and independent of finite residue. Finite source-seminorm bounds for angular kernel derivatives are verified; uniform height separation remains open. Low completed-sum reflection,
 high moment induction and the common-signal estimates remain open; no further contribution counted.
 
 ## Completion gate

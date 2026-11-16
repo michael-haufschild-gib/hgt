@@ -1,4 +1,5 @@
 import GaloisForLFunctions.Bottcher.Dynamics
+import GaloisForLFunctions.Bottcher.Arithmetic.SmallCMIntegers
 import GaloisForLFunctions.Bottcher.GreenFunction
 import GaloisForLFunctions.Bottcher.ComplexLogBound
 import GaloisForLFunctions.Bottcher.BottcherCoord

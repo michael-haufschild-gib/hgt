@@ -23,7 +23,8 @@ private theorem exists_bounded_sum (S : Finset ι) (u : ι → ℕ) (n : ℕ)
   induction S using Finset.induction generalizing n with
   | empty =>
       refine ⟨fun _ => 0, fun _ => Nat.zero_le _, ?_⟩
-      simpa using hn
+      simp only [sum_empty] at hn ⊢
+      omega
   | @insert a S ha ih =>
       have hrem : n - min (u a) n ≤ ∑ i ∈ S, u i := by
         rw [sum_insert ha] at hn
@@ -32,31 +33,42 @@ private theorem exists_bounded_sum (S : Finset ι) (u : ι → ℕ) (n : ℕ)
       refine ⟨Function.update f a (min (u a) n), ?_, ?_⟩
       · intro i
         by_cases hi : i = a
-        · subst i; simp only [Function.update_same]; exact min_le_left _ _
+        · subst i; simp [Function.update]
         · simpa only [Function.update_of_ne hi] using hf i
-      · rw [sum_insert ha, Function.update_same]
+      · rw [sum_insert ha]
         have hS : ∑ i ∈ S, Function.update f a (min (u a) n) i = ∑ i ∈ S, f i := by
           apply sum_congr rfl
           intro i hi
           exact Function.update_of_ne (ne_of_mem_of_not_mem hi ha) _ _
         rw [hS, hsum]
+        rw [show Function.update f a (min (u a) n) a = min (u a) n by simp [Function.update]]
         omega
 
 private theorem exists_sum_between [Fintype ι] (l u : ι → ℕ) (s : ℕ)
     (hlu : ∀ i, l i ≤ u i) (hl : (∑ i, l i) ≤ s) (hu : s ≤ ∑ i, u i) :
     ∃ a : ι → ℕ, (∀ i, l i ≤ a i ∧ a i ≤ u i) ∧ ∑ i, a i = s := by
   have hcap : s - ∑ i, l i ≤ ∑ i, (u i - l i) := by
-    rw [Finset.sum_tsub_distrib (fun i _ => hlu i)]
+    rw [Finset.sum_tsub_distrib univ (fun i _ => hlu i)]
     omega
+
   obtain ⟨f, hf, hsum⟩ := exists_bounded_sum univ (fun i => u i - l i)
     (s - ∑ i, l i) hcap
   refine ⟨fun i => l i + f i, ?_, ?_⟩
   · intro i
+    dsimp only
     have := hf i
     have := hlu i
     omega
   · rw [sum_add_distrib, hsum]
     omega
+
+/-- Every integer between zero and total capacity is attained by a bounded integral vector. -/
+theorem bounded_sum_exists_iff [Fintype ι] (u : ι → ℕ) (s : ℕ) :
+    s ≤ ∑ i, u i ↔ ∃ a : ι → ℕ, (∀ i, a i ≤ u i) ∧ ∑ i, a i = s := by
+  constructor
+  · exact exists_bounded_sum univ u s
+  · rintro ⟨a, ha, rfl⟩
+    exact sum_le_sum fun i _ => ha i
 
 /-- Exact integral decomposition criterion for a box intersected with a degree hyperplane. -/
 theorem bounded_degree_decomposition_iff [Fintype ι] (k s : ℕ) (b α : ι → ℕ) :
@@ -72,7 +84,9 @@ theorem bounded_degree_decomposition_iff [Fintype ι] (k s : ℕ) (b α : ι →
         refine ⟨fun j => Fin.elim0 j, fun j => Fin.elim0 j, fun j => Fin.elim0 j, ?_⟩
         intro i
         have hi := h.2 i
-        simpa using hi.symm
+        simp only [zero_mul] at hi
+        simp only [Fin.sum_univ_zero]
+        omega
     | succ k ih =>
         let l : ι → ℕ := fun i => α i - k * b i
         let u : ι → ℕ := fun i => min (α i) (b i)
@@ -113,7 +127,7 @@ theorem bounded_degree_decomposition_iff [Fintype ι] (k s : ℕ) (b α : ι →
         have hrest : (∑ i, (α i - a i)) = k * s ∧
             ∀ i, α i - a i ≤ k * b i := by
           constructor
-          · rw [Finset.sum_tsub_distrib (fun i _ => haα i), h.1, has, Nat.succ_mul]
+          · rw [Finset.sum_tsub_distrib univ (fun i _ => haα i), h.1, has, Nat.succ_mul]
             omega
           · intro i
             have hi := (ha i).1
@@ -132,11 +146,14 @@ theorem bounded_degree_decomposition_iff [Fintype ι] (k s : ℕ) (b α : ι →
         · intro i
           rw [Fin.sum_univ_succ]
           simp only [Fin.cons_zero, Fin.cons_succ, hβα]
-          exact Nat.add_sub_of_le (haα i)
+          have := haα i
+          omega
   · rintro ⟨β, hβs, hβb, hβα⟩
     constructor
-    · simp only [← hβα, sum_comm (f := fun i j => β j i), hβs,
-        sum_const, card_univ, Fintype.card_fin, smul_eq_mul]
+    · calc
+        (∑ i, α i) = ∑ i, ∑ j, β j i := sum_congr rfl fun i _ => (hβα i).symm
+        _ = ∑ j, ∑ i, β j i := sum_comm
+        _ = k * s := by simp only [hβs, sum_const, card_univ, Fintype.card_fin, smul_eq_mul]
     · intro i
       rw [← hβα i]
       calc
@@ -144,3 +161,5 @@ theorem bounded_degree_decomposition_iff [Fintype ι] (k s : ℕ) (b α : ι →
         _ = k * b i := by simp
 
 end GaloisForLFunctions.VeroneseIdeal
+
+#print axioms GaloisForLFunctions.VeroneseIdeal.bounded_degree_decomposition_iff
