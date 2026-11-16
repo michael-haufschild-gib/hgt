@@ -107,6 +107,28 @@ theorem oneRowJack_binary_meixner {ι : Type*} [Fintype ι] [DecidableEq ι]
   rw [oneRowJack_binary]
   simp only [Ring.multichoose_eq, RHTower.meixnerPrimeBinomialCoeff, mul_div_assoc]
 
+
+/-- The generating coefficient is homogeneous of its declared degree. -/
+theorem oneRowJack_homogeneous {ι : Type*} [Fintype ι]
+    (theta c : ℝ) (n : ℕ) (x : ι → ℝ) :
+    oneRowJack theta n (fun i => c * x i) = c ^ n * oneRowJack theta n x := by
+  have hp : (∏ i, rescale (c * x i) (jackFactor theta)) =
+      rescale c (∏ i, rescale (x i) (jackFactor theta)) := by
+    rw [map_prod]
+    apply Finset.prod_congr rfl
+    intro i _
+    rw [rescale_rescale, mul_comm]
+  simp only [oneRowJack, hp, coeff_rescale, mul_div_assoc]
+
+/-- Relabeling the coordinates leaves the observation invariant. -/
+theorem oneRowJack_permutation {ι : Type*} [Fintype ι]
+    (theta : ℝ) (n : ℕ) (x : ι → ℝ) (e : ι ≃ ι) :
+    oneRowJack theta n (fun i => x (e i)) = oneRowJack theta n x := by
+  unfold oneRowJack
+  rw [e.prod_comp (fun i => rescale (x i) (jackFactor theta))]
+
+#print axioms oneRowJack_homogeneous
+#print axioms oneRowJack_permutation
 #print axioms oneRowJack_binary_pochhammer
 #print axioms jack_multichoose_exp_pos
 #print axioms oneRowJack_single

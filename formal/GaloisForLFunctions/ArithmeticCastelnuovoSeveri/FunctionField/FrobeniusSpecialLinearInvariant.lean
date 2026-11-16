@@ -22,11 +22,12 @@ local notation "L" => FrobeniusSpecialLinearField K E γ R
 local notation "x" => algebraMap E[X] L X
 local notation "z" => AdjoinRoot.root (frobeniusKummerFieldPolynomial γ (q - 2) R n)
 
-private theorem quotientPower_cancel {H : Type*} [Field H] (g A B : H) (i j k : ℕ)
+private theorem quotientPower_cancel {H : Type*} [Field H] (g A B : H) (i j ℓ : ℕ)
     (hg : g ≠ 0) (hA : A ≠ 0) (hB : B ≠ 0) :
-    (B ^ (j * k) * B ^ i) / (g ^ k * A ^ k * B ^ (j * k)) =
-      g⁻¹ ^ k * B ^ i / A ^ k := by
-  field_simp [hg, hA, hB] <;> ring
+    (B ^ (j * ℓ) * B ^ i) / (g ^ ℓ * A ^ ℓ * B ^ (j * ℓ)) =
+      g⁻¹ ^ ℓ * B ^ i / A ^ ℓ := by
+  field_simp [hg, hA, hB]
+  simp only [one_div, ← mul_pow, mul_inv_cancel₀ hg, one_pow]
 
 /-- The quotient of the two factors with equal projective denominator weight. -/
 def frobeniusSpecialLinearInvariant : L :=

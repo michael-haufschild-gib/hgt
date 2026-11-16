@@ -91,11 +91,14 @@ theorem primitivePolynomialEnergy_integral_gap (n : ℕ) (P : ℤ[X]) :
   rw [henergy]
   by_cases hβ : β = 0
   · left
-    simp only [hβ, map_zero, ZeroMemClass.coe_zero, Complex.normSq_zero, sum_const_zero]
+    simp only [hβ, map_zero, sum_const_zero]
   · right
-    have hβK : (β : K) ≠ 0 := by exact_mod_cast hβ
+    have hβK : (β : K) ≠ 0 := by
+      intro h
+      apply hβ
+      exact Subtype.ext h
     have hb := card_le_sum_of_norm_product (fun σ : K →+* ℂ => σ (β : K))
-      (fun σ => map_ne_zero hβK) (HTGeometry.one_le_prod_norm_embeddings β hβ)
+      (fun σ => (_root_.map_ne_zero σ).mpr hβK) (HTGeometry.one_le_prod_norm_embeddings β hβ)
     have hcard : Fintype.card (K →+* ℂ) = m.totient := by
       rw [Fintype.card_congr e, Fintype.card_coe]
       exact (Complex.isPrimitiveRoot_exp m hm.ne').card_primitiveRoots
@@ -103,5 +106,92 @@ theorem primitivePolynomialEnergy_integral_gap (n : ℕ) (P : ℤ[X]) :
 
 end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
 
-#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.primitivePolynomialEnergy_zero_iff_cyclotomic_dvd
-#print axioms GaloisForLFunctions.CriticalArithmeticCorrelationTheory.primitivePolynomialEnergy_integral_gap
+
+/-!
+# Ramanujan Gram matrices for arbitrary polynomial observables
+
+The primitive-root evaluation pairing is a coefficient quadratic form with
+Ramanujan-sum entries. Its positivity and exact cyclotomic kernel turn
+arithmetic Fourier coefficients into a nondegenerate quotient norm.
+-/
+
+noncomputable section
+open Finset Polynomial
+open scoped ComplexConjugate
+namespace GaloisForLFunctions.CriticalArithmeticCorrelationTheory
+open ArithmeticEffectivityTheory
+
+/-- Evaluation pairing on the primitive-root spectrum. -/
+def primitivePolynomialGram (n : ℕ) (P Q : ℂ[X]) : ℂ :=
+  ∑ ζ ∈ primitiveRoots n ℂ, conj (P.eval ζ) * Q.eval ζ
+
+private theorem conjugate_pow_residue {n : ℕ} (hn : 0 < n) {ζ : ℂ}
+    (hζ : ζ ^ n = 1) (i : ℕ) : conj (ζ ^ i) = ζ ^ (n - i % n) := by
+  have hζ0 : ζ ≠ 0 := by
+    intro h
+    rw [h, zero_pow hn.ne'] at hζ
+    exact zero_ne_one hζ
+  have hnorm : ‖ζ‖ = 1 := Complex.norm_eq_one_of_pow_eq_one hζ hn.ne'
+  rw [pow_eq_pow_mod i hζ]
+  have hsq : Complex.normSq (ζ ^ (i % n)) = 1 := by
+    rw [← Complex.sq_norm, norm_pow, hnorm, one_pow, one_pow]
+  apply mul_right_cancel₀ (pow_ne_zero (i % n) hζ0)
+  rw [← Complex.normSq_eq_conj_mul_self, hsq, Complex.ofReal_one,
+    ← pow_add, Nat.sub_add_cancel (Nat.mod_lt i hn).le, hζ]
+
+/-- Every polynomial pairing has an exact arithmetic Gram expansion. -/
+theorem primitivePolynomialGram_eq_ramanujan (n : ℕ) (P Q : ℂ[X]) :
+    primitivePolynomialGram (n + 1) P Q =
+      ∑ i ∈ P.support, ∑ j ∈ Q.support,
+        conj (P.coeff i) * Q.coeff j * ramanujanSum (n + 1) (n + 1 - i % (n + 1) + j) := by
+  unfold primitivePolynomialGram
+  simp only [Polynomial.eval_eq_sum, Polynomial.sum_def, map_sum, map_mul,
+    Finset.sum_mul, Finset.mul_sum]
+  simp_rw [Finset.sum_comm (s := Q.support) (t := P.support)]
+  rw [sum_comm]
+  apply sum_congr rfl
+  intro i _
+  rw [sum_comm]
+  apply sum_congr rfl
+  intro j _
+  simp only [ramanujanSum, Finset.mul_sum]
+  apply sum_congr rfl
+  intro ζ hζ
+  rw [conjugate_pow_residue (by omega : 0 < n + 1)
+    ((mem_primitiveRoots (by omega : 0 < n + 1)).mp hζ).pow_eq_one i, pow_add]
+  ring
+
+/-- The self-pairing is precisely the complex image of the real energy. -/
+theorem primitivePolynomialGram_self (n : ℕ) (P : ℂ[X]) :
+    primitivePolynomialGram n P P = (primitivePolynomialEnergy n P : ℂ) := by
+  simp only [primitivePolynomialGram, primitivePolynomialEnergy, Complex.ofReal_sum,
+    Complex.normSq_eq_conj_mul_self]
+
+/-- All coefficient Ramanujan quadratic forms are nonnegative. -/
+theorem ramanujanPolynomialQuadratic_nonneg (n : ℕ) (P : ℂ[X]) :
+    0 ≤ (∑ i ∈ P.support, ∑ j ∈ P.support,
+      conj (P.coeff i) * P.coeff j * ramanujanSum (n + 1) (n + 1 - i % (n + 1) + j)).re := by
+  rw [← primitivePolynomialGram_eq_ramanujan, primitivePolynomialGram_self, Complex.ofReal_re]
+  exact primitivePolynomialEnergy_nonneg _ _
+
+/-- The arithmetic Gram kernel is exactly cyclotomic divisibility. -/
+theorem ramanujanPolynomialQuadratic_zero_iff (n : ℕ) (P : ℂ[X]) :
+    (∑ i ∈ P.support, ∑ j ∈ P.support,
+      conj (P.coeff i) * P.coeff j * ramanujanSum (n + 1) (n + 1 - i % (n + 1) + j)) = 0 ↔
+      cyclotomic (n + 1) ℂ ∣ P := by
+  rw [← primitivePolynomialGram_eq_ramanujan, primitivePolynomialGram_self,
+    Complex.ofReal_eq_zero, primitivePolynomialEnergy_zero_iff_cyclotomic_dvd]
+
+/-- Adding a cyclotomic multiple leaves every spectral pairing unchanged. -/
+theorem primitivePolynomialGram_add_cyclotomic (n : ℕ) (P Q H : ℂ[X]) :
+    primitivePolynomialGram (n + 1) (P + cyclotomic (n + 1) ℂ * H) Q =
+      primitivePolynomialGram (n + 1) P Q := by
+  apply sum_congr rfl
+  intro ζ hζ
+  have hr := ((mem_primitiveRoots (by omega : 0 < n + 1)).mp hζ).isRoot_cyclotomic
+    (by omega : 0 < n + 1)
+  change (cyclotomic (n + 1) ℂ).eval ζ = 0 at hr
+  simp only [eval_add, eval_mul, hr, zero_mul, add_zero]
+
+end GaloisForLFunctions.CriticalArithmeticCorrelationTheory
+

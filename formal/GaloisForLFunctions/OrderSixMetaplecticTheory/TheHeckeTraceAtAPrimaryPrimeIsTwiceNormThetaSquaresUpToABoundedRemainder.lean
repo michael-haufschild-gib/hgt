@@ -245,12 +245,162 @@ theorem norm_remainder_strip (a : ℝ) (ha : 0 < a) :
       (C₁ * ρ ^ 3) ^ 2 * (1 / v ^ 6) := by
     rw [hEbdef, hMdef, hDdef]
     field_simp
-    ring
   rw [hEbv, hv3]
   have h6 := mul_le_mul_of_nonneg_left hv6 (by positivity : (0 : ℝ) ≤ (C₁ * ρ ^ 3) ^ 2)
   have hNN : 0 ≤ N * (N + 4) := by positivity
   nlinarith [mul_le_mul_of_nonneg_left h6 hNN, norm_nonneg c, Real.rpow_nonneg hv.le (-(7 : ℝ) / 3),
     Real.rpow_nonneg hn.le ((2 : ℝ) / 3)]
+
+end PrimaryPrime
+
+
+namespace PrimaryPrime
+
+variable (P : PrimaryPrime)
+
+/-! ### The ramified cusps -/
+
+/-- **`G'_p` is bounded at the ramified cusps.** -/
+theorem norm_remainder_ramified (a : ℝ) (ha : 0 < a) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ (j : Fin 3), j ≠ 0 → ∀ (z : ℂ) (v : ℝ) (hv : 0 < v), a ≤ v →
+      ‖P.remainder (integralComplexMatrix (cuspRepresentative j) • upperPoint z v hv)‖ ≤ K := by
+  have hn := P.norm_pos
+  obtain ⟨C, β, hC, hβ, hhecke⟩ := P.sourceTheta_hecke_ramified a ha
+  obtain ⟨C', β', hC', hβ', hram⟩ := sourceTheta_ramified_decay a ha
+  set N : ℝ := (Fintype.card P.Res : ℝ) with hNdef
+  have hN0 : 0 ≤ N := by positivity
+  refine ⟨N * (N + 2) * C ^ 2 + 2 * N * C' ^ 2, by positivity, fun j hj z v hv hav => ?_⟩
+  set x := upperPoint z v hv
+  set w := integralComplexMatrix (cuspRepresentative j) • x
+  have hβp : 0 < β / ‖ringComplex P.p‖ := div_pos hβ hn
+  have he : Real.exp (-(β / ‖ringComplex P.p‖) * v) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+  have he' : Real.exp (-β' * v) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+  have hH : ‖P.heckeHigh sourceTheta w‖ ≤ C := by
+    rw [heckeHigh]
+    refine ((hhecke _ (colRes_cuspRepresentative j hj) z v hv hav).1).trans ?_
+    nlinarith
+  have hL : ∀ s : O, ‖P.heckeLow sourceTheta s w‖ ≤ C := by
+    intro s
+    have hw : complexMatrix (transThree s) • w =
+        integralComplexMatrix ((transThree s : SL(2, O)) * cuspRepresentative j) • x := by
+      rw [map_mul, mul_smul]
+      rfl
+    rw [heckeLow, hw]
+    refine ((hhecke _ (colRes_trans_cuspRepresentative s j hj) z v hv hav).2).trans ?_
+    nlinarith
+  have hθ : ‖sourceTheta w‖ ≤ C' := by
+    refine (hram _ (colRes_cuspRepresentative j hj) z v hv hav).trans ?_
+    nlinarith
+  have hprod : ∀ X Y : ℂ, ‖X‖ ≤ C → ‖Y‖ ≤ C → ‖X * Y‖ ≤ C ^ 2 := fun X Y hX hY => by
+    rw [norm_mul, sq]
+    exact mul_le_mul hX hY (norm_nonneg _) hC
+  have hcardS : (Fintype.card {y : P.Res // y ≠ 0} : ℝ) ≤ N := by
+    rw [hNdef]
+    exact_mod_cast Fintype.card_subtype_le _
+  have htr : ‖P.sourceHeckeTrace w‖ ≤ N * (N + 2) * C ^ 2 := by
+    rw [sourceHeckeTrace, P.heckeTrace_eq_hecke sourceTheta sourceTheta_automorphy]
+    have h1 : ‖∑ x : P.Res, P.heckeHigh sourceTheta w * P.heckeLow sourceTheta (P.lift x) w‖ ≤ N * C ^ 2 := by
+      refine (norm_sum_le _ _).trans ?_
+      calc _ ≤ ∑ _x : P.Res, C ^ 2 := Finset.sum_le_sum fun x _ => hprod _ _ hH (hL _)
+        _ = N * C ^ 2 := by simp [hNdef]
+    have h2 : ‖∑ x : P.Res, P.heckeLow sourceTheta (P.wShift + P.lift x) w * P.heckeHigh sourceTheta w‖ ≤
+        N * C ^ 2 := by
+      refine (norm_sum_le _ _).trans ?_
+      calc _ ≤ ∑ _x : P.Res, C ^ 2 := Finset.sum_le_sum fun x _ => hprod _ _ (hL _) hH
+        _ = N * C ^ 2 := by simp [hNdef]
+    have h3 : ‖∑ x : P.Res, ∑ y : {y : P.Res // y ≠ 0}, ringComplex (symbol (3 * P.lift y.1) P.p) *
+        P.heckeLow sourceTheta (P.lift x - P.lowBeta (P.lift y.1)) w * P.heckeLow sourceTheta (P.lift x) w‖ ≤
+        N * (N * C ^ 2) := by
+      refine (norm_sum_le _ _).trans ?_
+      calc _ ≤ ∑ _x : P.Res, N * C ^ 2 := by
+            refine Finset.sum_le_sum fun x _ => (norm_sum_le _ _).trans ?_
+            calc _ ≤ ∑ _y : {y : P.Res // y ≠ 0}, C ^ 2 := Finset.sum_le_sum fun y _ => by
+                  rw [mul_assoc, norm_mul]
+                  exact (mul_le_of_le_one_left (norm_nonneg _) (P.norm_symbol_le y)).trans (hprod _ _ (hL _) (hL _))
+              _ = (Fintype.card {y : P.Res // y ≠ 0} : ℝ) * C ^ 2 := by simp
+              _ ≤ N * C ^ 2 := mul_le_mul_of_nonneg_right hcardS (by positivity)
+        _ = N * (N * C ^ 2) := by simp [hNdef]
+    calc _ ≤ ‖∑ x : P.Res, P.heckeHigh sourceTheta w * P.heckeLow sourceTheta (P.lift x) w‖ +
+          (‖∑ x : P.Res, P.heckeLow sourceTheta (P.wShift + P.lift x) w * P.heckeHigh sourceTheta w‖ +
+            ‖∑ x : P.Res, ∑ y : {y : P.Res // y ≠ 0}, ringComplex (symbol (3 * P.lift y.1) P.p) *
+              P.heckeLow sourceTheta (P.lift x - P.lowBeta (P.lift y.1)) w * P.heckeLow sourceTheta (P.lift x) w‖) :=
+          (norm_add_le _ _).trans (add_le_add le_rfl (norm_add_le _ _))
+      _ ≤ N * C ^ 2 + (N * C ^ 2 + N * (N * C ^ 2)) := by gcongr
+      _ = N * (N + 2) * C ^ 2 := by ring
+  rw [remainder]
+  refine (norm_sub_le _ _).trans ?_
+  rw [norm_mul, norm_mul, norm_pow, Complex.norm_natCast, show ‖(2 : ℂ)‖ = 2 by norm_num]
+  have hθ2 : ‖sourceTheta w‖ ^ 2 ≤ C' ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hθ 2
+  have := mul_le_mul_of_nonneg_left hθ2 (by positivity : (0 : ℝ) ≤ 2 * N)
+  linarith
+
+/-! ### Boundedness and square integrability -/
+
+/-- **`G'_p = Tr_pθ_s − 2N(p)θ_s²` is bounded on hyperbolic three-space.** -/
+theorem remainder_bounded : ∃ B : ℝ, ∀ w : HyperbolicSpace, ‖P.remainder w‖ ≤ B := by
+  set a₀ := Real.sqrt (2 / 3)
+  have ha₀ : 0 < a₀ := Real.sqrt_pos.mpr (by norm_num)
+  obtain ⟨K₀, hK₀, hstrip⟩ := P.norm_remainder_strip a₀ ha₀
+  obtain ⟨K₁, hK₁, hram⟩ := P.norm_remainder_ramified a₀ ha₀
+  refine ⟨K₀ * a₀ ^ (-(7 : ℝ) / 3) + K₁, fun w => ?_⟩
+  obtain ⟨M, z, v, hv, hMw, -, hfloor⟩ := bianchi_reduction_height_floor w
+  obtain ⟨G', j, T, hT, -, hu1, hdec'⟩ := three_cusp_decomposition M⁻¹
+  have hw : w = integralComplexMatrix (G' : SL(2, O)) •
+      (integralComplexMatrix (cuspRepresentative j * T) • upperPoint z v hv) := by
+    rw [← mul_smul, ← map_mul, ← mul_assoc, ← hdec', ← hMw, ← mul_smul, ← map_mul, inv_mul_cancel,
+      map_one, one_smul]
+  rw [hw, P.norm_remainder_rational]
+  obtain ⟨z', v', hv', hp⟩ := upperPoint_surjective (integralComplexMatrix T • upperPoint z v hv)
+  have hvv : v' = v := by
+    have h := height_upperTriangular T hT hu1 z v hv
+    rw [← hp, hyperbolicHeight_upperPoint] at h
+    exact h
+  subst hvv
+  rw [map_mul, mul_smul, ← hp]
+  by_cases hj : j = 0
+  · subst hj
+    have hc1 : cuspRepresentative 0 = 1 := by
+      ext i k
+      fin_cases i <;> fin_cases k <;> simp [cuspRepresentative, cuspParameter, lowerCuspMatrix]
+    rw [hc1, map_one, one_smul]
+    refine (hstrip z' v' hv' hfloor).trans ?_
+    have : v' ^ (-(7 : ℝ) / 3) ≤ a₀ ^ (-(7 : ℝ) / 3) := Real.rpow_le_rpow_of_nonpos ha₀ hfloor (by norm_num)
+    nlinarith
+  · exact (hram j hj z' v' hv' hfloor).trans (by nlinarith [Real.rpow_nonneg ha₀.le (-(7 : ℝ) / 3)])
+
+theorem sourceHeckeTrace_continuous : Continuous P.sourceHeckeTrace := by
+  have h : P.sourceHeckeTrace = fun w => ∑ i : P.Index,
+      (complexCharacter (P.rep i) ^ 2)⁻¹ * P.heckeCorrelation sourceTheta (complexMatrix (P.rep i) • w) :=
+    funext (P.heckeTrace_eq_sum sourceTheta sourceTheta_automorphy)
+  rw [h]
+  refine continuous_finsetSum _ fun i _ => continuous_const.mul ?_
+  unfold heckeCorrelation
+  exact (cubicSourceResidualFunction_continuous.comp
+      ((continuous_hyperbolic_action _).comp (continuous_hyperbolic_action _))).mul
+    (cubicSourceResidualFunction_continuous.comp
+      ((continuous_hyperbolic_action _).comp (continuous_hyperbolic_action _)))
+
+theorem remainder_continuous : Continuous P.remainder :=
+  P.sourceHeckeTrace_continuous.sub (continuous_const.mul (cubicSourceResidualFunction_continuous.pow 2))
+
+theorem remainder_memLp : MemLp P.remainder 2 (hyperbolicVolume.restrict levelSet) := by
+  haveI : IsFiniteMeasure (hyperbolicVolume.restrict levelSet) :=
+    isFiniteMeasure_restrict.mpr levelSet_volume_lt_top.ne
+  obtain ⟨B, hB⟩ := P.remainder_bounded
+  exact MemLp.of_bound P.remainder_continuous.measurable.aestronglyMeasurable B (Eventually.of_forall hB)
+
+theorem remainder_automorphy (M : levelThree) (w : HyperbolicSpace) :
+    P.remainder (complexMatrix M • w) = (complexCharacter M)⁻¹ * P.remainder w := by
+  rw [remainder, remainder, P.sourceHeckeTrace_automorphy, sourceTheta_automorphy, ← complexCharacter_sq_eq_inv]
+  ring
+
+/-- **`G'_p` is a bounded remainder.** -/
+theorem remainder_remainderData : RemainderData P.remainder where
+  automorphy := P.remainder_automorphy
+  measurable := P.remainder_continuous.measurable
+  bounded := P.remainder_bounded
+  high := P.norm_remainder_strip 2 two_pos
+  memLp := P.remainder_memLp
 
 end PrimaryPrime
 

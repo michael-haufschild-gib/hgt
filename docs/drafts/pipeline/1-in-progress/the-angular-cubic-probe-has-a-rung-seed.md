@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Fifty-eight helper modules passed final plain Lean checks and are umbrella-wired.
+- **Verified:** Sixty helper modules passed final plain Lean checks and are umbrella-wired.
 - **Missing:** Actual low completed-source energy, angular prime-slot estimates, high moment induction and both common-signal estimates.
 
 ## Receiver
@@ -279,3 +279,9 @@ strata. Overlap zeros remove unsupported tuples; finite Fourier and inactive-pri
 
 `AngularResidualSources` reconstructs actual marked angular sums through supported active
 slots and residual rows, preserving inactive-prime factors and finite Fourier coefficients.
+
+`AngularFamilyTails` bounds omitted dyadic blocks of whole angular reflected rows with
+arbitrary radial decay and one height degree uniform in the arithmetic families.
+
+`AngularCenteredRows` gives the same conductor decay for centered angular plain rows
+with equal product scales, including rows whose finite character is principal.

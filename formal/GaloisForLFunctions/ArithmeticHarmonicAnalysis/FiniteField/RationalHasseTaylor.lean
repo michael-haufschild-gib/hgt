@@ -66,7 +66,7 @@ private theorem map_hasse (n : ℕ) (P : K[X]) :
     Polynomial.hasseDeriv n (P.map (algebraMap K (RatFunc K))) =
       (Polynomial.hasseDeriv n P).map (algebraMap K (RatFunc K)) := by
   induction P using Polynomial.induction_on' with
-  | add P Q hP hQ => simp [Polynomial.map_add, hP, hQ]
+  | add P Q hP hQ => simp only [Polynomial.map_add, map_add, hP, hQ]
   | monomial k a => simp only [Polynomial.map_monomial, Polynomial.hasseDeriv_monomial,
       map_mul, map_natCast]
 

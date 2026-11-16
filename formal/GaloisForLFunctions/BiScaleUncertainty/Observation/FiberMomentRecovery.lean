@@ -72,6 +72,7 @@ private theorem fiber_zero_of_moments (w node : Fin d → K)
 theorem first_moments_eq_iff_fiber_weights (u v node : Fin d → K) :
     (∀ k : Fin d, finiteModalSequence u node k = finiteModalSequence v node k) ↔
       ∀ z : K, modalFiberWeight u node z = modalFiberWeight v node z := by
+  classical
   constructor
   · intro h
     have hz : ∀ k : Fin d, finiteModalSequence (u - v) node k = 0 := by

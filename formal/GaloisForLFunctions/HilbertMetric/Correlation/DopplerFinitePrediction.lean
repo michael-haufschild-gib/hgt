@@ -159,5 +159,3 @@ theorem dopplerFiniteRisk_minimizer_iff (w : ι → NNReal) (mean : ι → ℝ)
 
 end HilbertMetric.Correlation
 
-#print axioms HilbertMetric.Correlation.dopplerFiniteRisk_decomposition
-#print axioms HilbertMetric.Correlation.dopplerFiniteRisk_minimizer_iff

@@ -26,6 +26,8 @@ private theorem continuous_character_list (l : List ℕ) :
   | cons j l ih =>
     simp only [List.map_cons, List.sum_cons]
     convert (spectralCharacter j).continuous.add ih using 1
+    funext x
+    rfl
 
 private theorem integral_character_list (f : C(ℝ, ℝ)) (l : List ℕ) :
     (∫ x, f x * (l.map fun j => spectralCharacter j x).sum
@@ -116,7 +118,8 @@ theorem tensorMultiplicityAlgebra_finrank (n : ℕ) :
   simp only [Module.finrank_matrix, Fintype.card_fin, Module.finrank_self, mul_one]
   change (∑ k : Fin (n + 1),
     (fun j : ℕ => tensorSpinMultiplicity n j * tensorSpinMultiplicity n j) k) = _
-  rw [Fin.sum_univ_eq_sum_range]
+  rw [Fin.sum_univ_eq_sum_range (fun j : ℕ =>
+    tensorSpinMultiplicity n j * tensorSpinMultiplicity n j)]
   simpa only [pow_two] using tensorSpinMultiplicity_energy n
 
 /-- Dimension carried by highest weights at most the cutoff. -/

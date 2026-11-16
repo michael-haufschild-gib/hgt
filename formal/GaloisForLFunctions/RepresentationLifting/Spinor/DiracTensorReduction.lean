@@ -25,7 +25,7 @@ theorem weylCoordinates_reconstruct (A : WeylBlock) :
     ∑ μ, weylCoordinates A μ • hlsWeylSigma μ = A := by
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp [Fin.sum_univ_four, weylCoordinates, hlsWeylSigma, Matrix.smul_apply,
+    simp [Fin.sum_univ_four, weylCoordinates, hlsWeylSigma,
       smul_eq_mul] <;> ring_nf <;> simp [Complex.I_sq] <;> ring
 
 /-- Explicit scalar, pseudoscalar, vector, axial-vector and six bivector synthesis. -/
@@ -50,7 +50,7 @@ private theorem synthesis_blocks (s p : ℂ) (v a : Fin 4 → ℂ) (e b : Fin 3 
   ext i j
   rcases i with i | i <;> rcases j with j | j <;>
     fin_cases i <;> fin_cases j <;>
-    simp [hlsWeylSigma, hlsWeylBarSigma, Matrix.mul_apply, Fin.sum_univ_two,
+    simp [hlsWeylSigma, hlsWeylBarSigma,
       Matrix.smul_apply, smul_eq_mul] <;> ring_nf <;> simp [Complex.I_sq] <;> ring
 
 /-- Every spinor matrix has the full sixteen-component Dirac decomposition. -/
@@ -74,9 +74,8 @@ theorem diracSynthesis_surjective :
       (A 3 + D 3) / 2 - Complex.I * (Complex.I * (A 3 - D 3) / 2)] : Fin 4 → ℂ) = A := by
     ext i; fin_cases i <;> simp <;> ring_nf <;> simp [Complex.I_sq] <;> ring
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
-    Matrix.cons_val_three, hA]
+    Matrix.cons_val_three, Matrix.head_cons, Matrix.tail_cons, hA]
   have hdiag : ∀ x y : ℂ, (x + y) / 2 + (y - x) / 2 = y := by intros; ring
-  have hvec : ∀ x y : ℂ, (x - y) / 2 + (x + y) / 2 = x := by intros; ring
   have hcross : ∀ x y : ℂ, (x + y) / 2 + Complex.I * (Complex.I * (x - y) / 2) = y := by
     intros; ring_nf; simp [Complex.I_sq] <;> ring
   have hD : (![ (A 0 + D 0) / 2 + (D 0 - A 0) / 2,
@@ -138,7 +137,7 @@ theorem bivectorMean_residual (m : ℝ) (p q : HLSMinkowskiVector) (μ : Fin 4) 
     module
   rw [mul_smul_comm, smul_mul_assoc, hid, momentumSlash_square, momentumSlash_square]
   simp only [← sub_smul, mul_smul_comm, smul_mul_assoc, smul_sub, smul_smul,
-    mul_one, one_mul, diracNumerator, Complex.ofReal_sub, Complex.ofReal_pow]
+    mul_one, one_mul, Complex.ofReal_sub, Complex.ofReal_pow]
 
 /-- The mean-momentum tensor reduction on explicit Lorentz orbits, including zero mass. -/
 theorem bivectorMean_lorentzOrbit (m : ℝ) (g h : hlsLorentzGroup) (μ : Fin 4) :
@@ -155,7 +154,7 @@ theorem bivectorMean_lorentzOrbit (m : ℝ) (g h : hlsLorentzGroup) (μ : Fin 4)
     hlsRestMomentum_mass_shell, sub_self] at hh
   simp only [Complex.ofReal_zero, mul_zero, zero_smul, sub_self, mul_sub, sub_mul,
     mul_smul_comm, smul_mul_assoc, mul_one] at hh
-  exact sub_eq_zero.mp hh
+  simpa only [mul_sub] using sub_eq_zero.mp hh
 
 #print axioms bivectorMean_residual
 #print axioms bivectorMean_lorentzOrbit

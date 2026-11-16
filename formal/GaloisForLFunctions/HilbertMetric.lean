@@ -156,3 +156,4 @@ import GaloisForLFunctions.HilbertMetric.Correlation.DopplerClusterKernel
 import GaloisForLFunctions.HilbertMetric.Correlation.DopplerClusterCurvature
 import GaloisForLFunctions.HilbertMetric.Correlation.DopplerPilotPrediction
 import GaloisForLFunctions.HilbertMetric.Correlation.FiniteGramPrediction
+import GaloisForLFunctions.HilbertMetric.Correlation.DopplerFinitePrediction

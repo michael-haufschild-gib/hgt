@@ -139,7 +139,8 @@ theorem angular_original_family_row_tail_uniform_degree (ℓ : ℕ) (lo hi : ℝ
     have hrw : ‖r K*aw P.val.val‖≤1 := by
       rw [norm_mul]
       exact (mul_le_mul hr (haw P.val.val P.val.property) (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
-    rw [wt,norm_mul]
+    dsimp only [wt]
+    rw [norm_mul]
     exact (mul_le_mul hrw (angularCuspDenominatorPhase_norm_le_one ℓ _) (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)
   have hh := finite_weighted_truncation_norm block wt J _ hs hw he
   change ‖(∑' i,∑ P : L,wt P*block P i)-∑ i∈J,∑ P : L,wt P*block P i‖≤ _
