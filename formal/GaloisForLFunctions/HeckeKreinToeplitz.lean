@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HeckeKreinToeplitz.Index.ClippedHyperbolicPairs
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.FiniteIndexPolynomialGrowth
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.TwoColumnPhaseDeficit
 import GaloisForLFunctions.HeckeKreinToeplitz.Index.ClosedFiniteNegativeSubspaces

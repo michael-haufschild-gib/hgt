@@ -96,11 +96,8 @@ theorem gaussianDistance_clustered_mixed_lower (x : (Σ b, ι b) → κ → ℝ)
         ((finiteGaussianDistanceGram x t).map Complex.ofReal)) := by
   have hm := mixed_block_defects (gaussianDistance_complex_hermitian x t)
     (fun i => by simp [finiteGaussianDistanceGram]) doubled τ
-  apply le_trans ?_ hm
-  apply add_le_add_right
-  apply Finset.sum_le_sum
-  intro b _
-  exact gaussianDistance_clipped_overlap (fun k => x ⟨b, k⟩) t τ
+  exact (add_le_add (Finset.sum_le_sum fun b _ =>
+    gaussianDistance_clipped_overlap (fun k => x ⟨b, k⟩) t τ) le_rfl).trans hm
 
 #print axioms gaussianDistance_clustered_mixed_lower
 

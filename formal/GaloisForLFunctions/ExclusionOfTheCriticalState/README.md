@@ -34,6 +34,8 @@ so nothing is lost between stages.
 | Lévy pairing | `levyGamma`, `levyKernel`, `levyTail` | $\Gamma F(p)=2\theta'(0)\mathcal LF(p)+\int_0^\infty\omega(x)\big[\mathcal LF(p)(2-e^{-px})-e^{px}\!\int_{u<-x}Fe^{pu}\big]dx$ |
 | Lévy symbol, heads | `levySymbol`, `levyHead`, `levyHeadTerm` | $g(p)=\int\omega(x)(2-e^{-px}-e^{px})dx$; $H_x(p)=\int_{-x}^0Fe^{pu}$; $JF(p)=\int\omega(x)e^{px}H_x(p)dx$ |
 | Prime heads | `primeHead` | $\hat SF(p)=\sum\Lambda(n)n^{p-1/2}H_{\log n}(p)$ |
+| Wall tail, prime-pole balance | `archimedeanWallTail`, `wallPrimeBalance`, `wallPrimeWaveDatumLp` | $J_{\ge1}F(p)=\sum_{k\ge0}\tfrac{\mathcal LF(2(k+1)+1/2)}{2(k+1)+1/2-p}$; $\Phi_F(p)=\hat SF(p)+\tfrac{\mathcal LF(-1/2)}{p+1/2}$ and its $L^2(0,\infty)$ Hardy datum |
+| Beyond-the-wall continuation | `HasBeyondTheWallPrimeContinuation`, `ZetaBeyondTheWallPrimeContinuation`, `PurePrimeHeadContinuation`, `ModelBeyondTheWallPrimeContinuation` | holomorphic continuation of $\Phi_F$ (or $\hat SG$ on $\mathcal LG(-\tfrac12)=0$, or $\Phi_c(F,\cdot)$) from $\operatorname{Re}p<-\tfrac12$ to $\operatorname{Re}p<0$ |
 | Three remainders | `levyRemainder`, `stripRemainder`, `leftRemainder`, `globalRemainder` | the remainder right of, on, and left of $\operatorname{Re}p=-\tfrac12$ |
 | Continuations | `stateContinuation`, `levyContinuation`, `stateMeromorphic` | $-R(w+8)/a$ on $\operatorname{Re}w>-8$, $>-\tfrac{17}2$, and on $\mathbb C$ |
 | Entire state product | `stateXiProduct` | $E(w)=\xi(w+\tfrac{17}2)\mathcal LF(w)$, extended across the shifted zeros |
@@ -140,10 +142,10 @@ so nothing is lost between stages.
 
 **Q8 criterion.** For every $F\in\mathcal H$, require the [prime-pole balance](TheBeyondTheWallPrimeBalanceExcludesTheState.lean)
 $\Phi_F(p)=\hat SF(p)+\mathcal LF(-\tfrac12)/(p+\tfrac12)$ to extend holomorphically from
-$\operatorname{Re}p<-\tfrac12$ to $\operatorname{Re}p<0$. Every critical state
-[sees a left zero](Zeros/TheCriticalStateSeesALeftZero.lean), which forces a pole in this balance;
-the criterion therefore excludes the state. It [fails on prime-two deformations and positive passive Euler twins](Models/BeyondTheWallContinuationFailsOnTheModels.lean),
-including twins matching any finite $\zeta$ prefix. Proving it for $\zeta$ remains open and is equivalent to RH.
+$\operatorname{Re}p<-\tfrac12$ to $\operatorname{Re}p<0$ — equivalently, on the pole-neutral subspace $\mathcal LG(-\tfrac12)=0$, require the bare prime-head series $\hat SG(p)$ alone to extend holomorphically to $\operatorname{Re}p<0$. Because $J_{\ge1}F$ is holomorphic throughout $\operatorname{Re}p<\tfrac52$ and every critical state
+[sees a left zero](Zeros/TheCriticalStateSeesALeftZero.lean) ($-\tfrac12<\operatorname{Re}z_0<0$, $\mathcal LF(z_0)\ne0$), which forces a pole in $\Phi_F$ at $z_0$,
+the criterion excludes the state directly and is sharp at the boundary $\operatorname{Re}p=0$. It [fails unconditionally on prime-two deformations and positive passive Euler twins](Models/BeyondTheWallContinuationFailsOnTheModels.lean),
+including real-axis-positive twins matching any finite $\zeta$ prefix. Proving it for $\zeta$ remains open and is equivalent to RH.
 
 ## 6. Tools
 
@@ -202,6 +204,9 @@ and its comparison with $e^{-8u}F$ at the wall.
 | The zero series is the state left of the wall and the prime side beyond it | `criticalState_hasSum_heated_zeroSeries`, `criticalState_heatedState_add_zeroSeries_le` | unconditional |
 | The explicit formula at the state against smooth tests: $\sum_z\mathcal LF(z)\hat\psi(z)=a(\langle\psi,F^+\rangle-\langle\psi,e^{-8u}F\rangle)$; Weil's form of the state and a test is its zero side | `criticalState_hasSum_zeroSeries_test`, `criticalState_hasSum_zeroSeries_test_left`, `criticalState_hasSum_zeroSeries_test_right`, `criticalState_hasSum_bareMixedEnergy` | unconditional |
 | The explicit formula at the state against the whole domain, Gaussian summation: $\lim_{\varepsilon\to0^+}\sum_z\mathcal LF(z)\mathcal LG(-z)e^{\varepsilon z^2}=B(F,G)$; the zero values are a negative vector: the limit at $G=F$ is $-a\int F^2e^{-8u}<0$, and a zero on the line contributes $\lvert\mathcal LF(z)\rvert^2e^{-\varepsilon(\operatorname{Im}z)^2}\ge0$ | `criticalState_hasSum_zeroPairing_heated`, `criticalState_tendsto_zeroPairing`, `criticalState_tendsto_zeroNorm`, `criticalState_zeroNorm_limit_neg`, `laplace_mul_laplace_neg_of_re_eq_zero` | unconditional |
+| Every critical state sees a left zero ($-\tfrac12<\operatorname{Re}z_0<0$, $\mathcal LF(z_0)\ne0$) and has a left-strip pole | `criticalState_exists_seen_left_centredZero`, `criticalState_exists_seen_left_zetaZero`, `criticalState_has_left_strip_pole`, `riemannHypothesis_or_criticalState_sees_left_zero` | unconditional |
+| $J_{\ge1}F$ is holomorphic on $\operatorname{Re}p<\tfrac52$; beyond-the-wall prime-pole continuation (and pure prime-head continuation on $\mathcal LG(-\tfrac12)=0$) excludes the critical state and is sharp at $\operatorname{Re}p=0$ | `differentiableOn_archimedeanWallTail`, `criticalState_not_hasBeyondTheWallPrimeContinuation`, `no_criticalState_of_beyondTheWallPrimeContinuation`, `no_criticalState_of_purePrimeHeadContinuation`, `zetaBeyondTheWallPrimeContinuation_iff_no_criticalState`, `not_forall_wallPrimeBalance_continues_past_zero` | unconditional |
+| Beyond-the-wall prime-pole continuation fails on every prime-two deformation ($\tfrac12<\theta<1$) and on positive passive real-axis-positive Euler twins beyond every finite prefix | `not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff`, `primeTwo_not_modelBeyondTheWallPrimeContinuation`, `exists_positive_euler_twin_failing_beyondTheWallContinuation` | unconditional |
 
 ## 8. Traps
 

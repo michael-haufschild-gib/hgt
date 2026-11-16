@@ -1,3 +1,4 @@
+import GaloisForLFunctions.BiScaleUncertainty.Observation.ClippedCorrelationPowers
 import GaloisForLFunctions.BiScaleUncertainty.KreinIncrementAndChordCascade
 import GaloisForLFunctions.BiScaleUncertainty.Robin.StepThreshold
 import GaloisForLFunctions.BiScaleUncertainty.Robin.LocalDivisorGain

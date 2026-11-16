@@ -72,8 +72,10 @@ theorem defectEnergy_eq_shift {A : Matrix η η ℂ} (hA : A.IsHermitian) (τ : 
       specMap_sub, specMap_id, specMap_constant]
     simp
   rw [hs, energy, RiemannGaussian.HermitianRankTrace.specMap,
-    Unitary.conjStarAlgAut_apply, spectralSum_unitary, spectralSum_diagonal,
-    defectEnergy, spectralSum_eq hA]
+    Unitary.conjStarAlgAut_apply, spectralSum_unitary]
+  change defectEnergy τ A = spectralSum (quadratic τ)
+    (diagonal fun i => ((hA.eigenvalues i - 1 : ℝ) : ℂ))
+  rw [spectralSum_diagonal, defectEnergy, spectralSum_eq hA]
   rfl
 
 end Centering
