@@ -62,7 +62,8 @@ theorem gaussAt2_eq (h : O) (hh : ¬ P.p ∣ h) :
   have ha : (9 : P.Res) * P.res h ≠ 0 := mul_ne_zero P.nine_ne_zero' hx
   have := P.sum_mulChar_shift (P.chi ^ 2) (9 * P.res h) 1 ha
   simp only [mul_one] at this
-  simp only [gaussAt2, map_one, mul_one, map_mul, map_ofNat]
+  simp only [gaussAt2, map_one, mul_one]
+  rw [show P.res (9 * h) = 9 * P.res h by rw [map_mul, map_ofNat]]
   exact this
 
 /-- **The square shift.** g₁ g₂(9h)² = χ(9)⁻¹g₂² g(h) for q ∤ h. -/
@@ -72,14 +73,13 @@ theorem gauss_sq_shift (h : O) (hh : ¬ P.p ∣ h) :
   have h9 := P.nine_ne_zero'
   have hA := P.chi_cube 9 h9
   have hB := P.chi_cube (P.res h) hx
-  rw [P.gaussAt2_eq h hh, P.gaussAt_eq h, MulChar.pow_apply' _ (by norm_num), map_mul, inv_pow,
-    P.chi_inv_eq_sq 9 h9, P.chi_inv_eq_sq _ hx, ← inv_pow, P.chi_inv_eq_sq _ (mul_ne_zero h9 hx), map_mul]
-  set A := P.chi 9
-  set B := P.chi (P.res h)
-  set g₁ := P.gaussAt 1
-  set g₂ := P.gaussAt2 1
-  linear_combination (g₁ * g₂ ^ 2 * A ^ 2 * B ^ 2 * (B ^ 6 * (A ^ 3 + 1))) * hA +
-    (g₁ * g₂ ^ 2 * A ^ 2 * B ^ 2 * (B ^ 3 + 1)) * hB
+  rw [P.gaussAt2_eq h hh, P.gaussAt_eq h, MulChar.pow_apply' _ (by norm_num), map_mul, P.chi_inv_eq_sq 9 h9,
+    P.chi_inv_eq_sq _ hx]
+  have e : ((P.chi 9 * P.chi (P.res h)) ^ 2)⁻¹ = P.chi 9 * P.chi (P.res h) := by
+    refine inv_eq_of_mul_eq_one_right ?_
+    linear_combination (P.chi (P.res h) ^ 3) * hA + hB
+  rw [e]
+  ring
 
 /-! ### Norms -/
 

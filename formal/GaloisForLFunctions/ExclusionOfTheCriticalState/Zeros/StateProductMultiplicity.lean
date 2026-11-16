@@ -74,8 +74,7 @@ private theorem analyticOrderAt_xi_half_add (z : ℂ) :
     analyticOrderAt (fun p : ℂ => xi (1 / 2 + p)) z = analyticOrderAt xi (1 / 2 + z) := by
   apply analyticOrderAt_comp_of_deriv_ne_zero (f := xi)
     (g := fun p : ℂ => 1 / 2 + p) (by fun_prop)
-  rw [((hasDerivAt_id z).const_add (1 / 2 : ℂ)).deriv]
-  exact one_ne_zero
+  simp
 
 private theorem deriv_xi_half_add :
     deriv (fun p : ℂ => xi (1 / 2 + p)) = fun p => deriv xi (1 / 2 + p) := by
@@ -91,7 +90,7 @@ private theorem clearedRemainder_eventually_eq (F : ℝ → ℝ) {z : ℂ} (hz :
   filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds hz] with p hp
   exact clearedRemainder_of_gt hp
 
-/-- At any seen zero, the cleared pairing has exactly one fewer zero than `ξ`. -/
+/-- At any seen zero, the cleared pairing has order exactly one less than `ξ`. -/
 theorem analyticOrderAt_clearedRemainder_add_one {F : ℝ → ℝ}
     (hF : CriticalHalfLineEnergyDomain F) {z : ℂ} (hxi : xi (1 / 2 + z) = 0)
     (hL : negativeHalfLineLaplace (cx F) z ≠ 0) :
@@ -140,8 +139,8 @@ theorem analyticOrderAt_stateXiProduct {W₀ : ℝ} (hW : 0 < W₀) {F : ℝ →
     (g := fun v : ℂ => v + 8) (by fun_prop)
   simp
 
-/-- A seen zero of multiplicity `m` gives a zero of multiplicity `m - 1` in the entire state
-product, independently of whether the original zero is simple. -/
+/-- At a seen zero of multiplicity `m`, the entire state product has order `m - 1` at the
+shifted point, independently of whether the original zero is simple. -/
 theorem analyticOrderAt_stateXiProduct_add_one {W₀ : ℝ} (hW : 0 < W₀) {F : ℝ → ℝ}
     (hF : CriticalHalfLineEnergyDomain F) {z : ℂ} (hxi : xi (1 / 2 + z) = 0)
     (hL : negativeHalfLineLaplace (cx F) z ≠ 0) :
@@ -211,8 +210,8 @@ theorem stateXiProduct_first_nonzero_jet {W₀ : ℝ} (hW : 0 < W₀) {F : ℝ �
   congr 1
   omega
 
-/-- Either RH holds, or an actual critical state has an entire cleared transform whose
-zeros on and right of the line have exactly the multiplicities of `ξ` minus one. -/
+/-- Either RH holds, or an actual critical state's entire cleared transform has order `m - 1`
+at the shifted copy of every `ξ`-zero of multiplicity `m` on or right of the critical line. -/
 theorem riemannHypothesis_or_criticalState_exact_multiplicities :
     RiemannHypothesis ∨
       ∃ (W₀ : ℝ) (F : ℝ → ℝ), 0 < W₀ ∧
