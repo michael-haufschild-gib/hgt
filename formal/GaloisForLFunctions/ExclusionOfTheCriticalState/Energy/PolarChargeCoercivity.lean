@@ -103,7 +103,9 @@ def polarChargeNeutralPart (F G : ℝ → ℝ) : ℝ → ℝ :=
 theorem domain_polarChargeNeutralPart {F G : ℝ → ℝ}
     (hF : CriticalHalfLineEnergyDomain F) (hG : CriticalHalfLineEnergyDomain G) :
     CriticalHalfLineEnergyDomain (polarChargeNeutralPart F G) := by
-  simpa only [polarChargeNeutralPart, neg_mul, sub_eq_add_neg] using
+  change CriticalHalfLineEnergyDomain (fun u => G u -
+    (growingPolarCharge G / growingPolarCharge F) * F u)
+  simpa only [neg_mul, sub_eq_add_neg] using
     hG.add_const_mul hF (-(growingPolarCharge G / growingPolarCharge F))
 
 theorem growingPolarCharge_polarChargeNeutralPart {F G : ℝ → ℝ}
@@ -131,7 +133,9 @@ theorem fullEnergy_polarChargeNeutralPart {W₀ : ℝ} (hW : 0 < W₀)
     criticalHalfLineMixedEnergy_groundState_eq_zero hW ht hF hG,
     criticalHalfLineFullEnergy_groundState_eq_zero hW ht hF,
     mul_zero, mul_zero, add_zero, add_zero] at h
-  simpa only [polarChargeNeutralPart, neg_mul, sub_eq_add_neg] using h
+  change criticalHalfLineFullEnergy W₀ (fun u => G u -
+    (growingPolarCharge G / growingPolarCharge F) * F u) = criticalHalfLineFullEnergy W₀ G
+  simpa only [neg_mul, sub_eq_add_neg] using h
 
 /-- Vanishing of one charge removes the entire quadratic pole form. -/
 theorem fullEnergy_of_growingPolarCharge_zero (R : ℝ) {G : ℝ → ℝ}
@@ -163,7 +167,8 @@ private theorem charge_ordinary_neutralPart {F G : ℝ → ℝ}
     (hF : CriticalHalfLineEnergyDomain F) (hG : CriticalHalfLineEnergyDomain G) :
     growingPolarCharge (criticalHalfLineNeutralPart F G) = growingPolarCharge G -
       (∫ u, F u * G u) * growingPolarCharge F := by
-  simpa only [criticalHalfLineNeutralPart, neg_mul, sub_eq_add_neg] using
+  change growingPolarCharge (fun u => G u - (∫ v, F v * G v) * F u) = _
+  simpa only [neg_mul, sub_eq_add_neg] using
     growingPolarCharge_add_const_mul hG hF (-(∫ u, F u * G u))
 
 /-- The transverse gap survives replacing ordinary orthogonality by charge cancellation. -/
@@ -188,11 +193,10 @@ theorem criticalState_charge_zero_coercivity {W₀ : ℝ} (hW : 0 < W₀)
   have hc := growingPolarCharge_sq_le_confinementMass hN
   rw [charge_ordinary_neutralPart hdF hG, hz, zero_sub] at hc
   have hm := criticalHalfLine_exponential_mass_add_const_mul_le hN hdF (∫ u, F u * G u)
-  have he : (fun u => criticalHalfLineNeutralPart F G u + (∫ v, F v * G v) * F u) = G := by
-    funext u
+  have he (u : ℝ) : criticalHalfLineNeutralPart F G u + (∫ v, F v * G v) * F u = G u := by
     dsimp only [criticalHalfLineNeutralPart]
     ring
-  rw [he] at hm
+  simp_rw [he] at hm
   have hd := mul_le_mul_of_nonneg_left hm (by positivity : 0 ≤ 9 * growingPolarCharge F ^ 2)
   have hp := mul_le_mul_of_nonneg_right hc (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hM)
   have hb : 9 * growingPolarCharge F ^ 2 * (∫ u, G u ^ 2 * Real.exp (-(8 * u))) ≤
@@ -236,17 +240,15 @@ theorem criticalState_one_charge_coercivity {W₀ : ℝ} (hW : 0 < W₀)
     integral_nonneg fun u => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le
   let C := γ * (∫ u, F u ^ 2 * Real.exp (-(8 * u))) / growingPolarCharge F ^ 2
   have hC : 0 ≤ C := div_nonneg (mul_nonneg hγ.le hM) (sq_nonneg _)
-  have hden : 0 < 2 * (1 + C) := by positivity
-  refine ⟨γ / (2 * (1 + C)), div_pos hγ hden, ?_⟩
+  refine ⟨(γ / 2) / (1 + C), by positivity, ?_⟩
   intro G hG
   have hm := criticalHalfLine_exponential_mass_add_const_mul_le
     (domain_polarChargeNeutralPart hdF hG) hdF (growingPolarCharge G / growingPolarCharge F)
-  have he : (fun u => polarChargeNeutralPart F G u +
-      (growingPolarCharge G / growingPolarCharge F) * F u) = G := by
-    funext u
+  have he (u : ℝ) : polarChargeNeutralPart F G u +
+      (growingPolarCharge G / growingPolarCharge F) * F u = G u := by
     dsimp only [polarChargeNeutralPart]
     ring
-  rw [he] at hm
+  simp_rw [he] at hm
   have hs := mul_le_mul_of_nonneg_left hm (by positivity : 0 ≤ γ / 2)
   have hc : γ / 2 * (2 * (∫ u, polarChargeNeutralPart F G u ^ 2 * Real.exp (-(8 * u))) +
       2 * (growingPolarCharge G / growingPolarCharge F) ^ 2 *
@@ -280,14 +282,7 @@ theorem riemannHypothesis_or_one_polar_charge_coercivity :
   · obtain ⟨η, hη, h⟩ := criticalState_one_charge_coercivity hW ht hF
     exact Or.inr ⟨W₀, F, η, hW, ht, hF, hη, fun G hG => h hG⟩
 
-#print axioms confinementMass_charge_decomposition
-#print axioms growingPolarCharge_sq_le_confinementMass
-#print axioms fullEnergy_polarChargeNeutralPart
-#print axioms fullEnergy_of_growingPolarCharge_zero
 #print axioms fullEnergy_eq_chargeNeutral_poleFreeForm
-#print axioms criticalState_charge_zero_coercivity
-#print axioms criticalState_energy_controls_chargeNeutralPart
-#print axioms criticalState_one_charge_coercivity
 #print axioms riemannHypothesis_or_one_polar_charge_coercivity
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

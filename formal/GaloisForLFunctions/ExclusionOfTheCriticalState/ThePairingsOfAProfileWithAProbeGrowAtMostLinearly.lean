@@ -38,7 +38,7 @@ theorem re_half_arg (w : ℂ) : (w / 2).re = w.re / 2 := by
   rw [show w / 2 = ((1 / 2 : ℝ) : ℂ) * w by push_cast; ring, Complex.re_ofReal_mul]
   ring
 
-theorem half_re : ((1 : ℂ) / 2).re = 1 / 2 := by
+theorem re_one_half : ((1 : ℂ) / 2).re = 1 / 2 := by
   rw [show (1 : ℂ) / 2 = ((1 / 2 : ℝ) : ℂ) by push_cast; ring, Complex.ofReal_re]
 
 /-- `Γℝ'/Γℝ` is holomorphic on `Re s > 0`. -/
@@ -104,7 +104,7 @@ theorem exists_bound_logDeriv_Gammaℝ :
 /-! ### The Gamma pairing -/
 
 /-- The unit weight on `(0, 1]`. -/
-def unitWeight (x : ℝ) : ℝ := (Ioc (0 : ℝ) 1).indicator (fun _ => (1 : ℝ)) x
+def unitIntervalWeight (x : ℝ) : ℝ := (Ioc (0 : ℝ) 1).indicator (fun _ => (1 : ℝ)) x
 
 /-- The part of the dominating profile of the Lévy integrand that does not depend on the exponent:
 `x^{-1/2}` on `(0, 1]` and `e^{-x/2}` beyond. -/
@@ -112,7 +112,7 @@ def levyFixedDominator (C M : ℝ) (x : ℝ) : ℝ :=
   (Ioc (0 : ℝ) 1).indicator (fun x => 27 / 4 * (M + 1) * x ^ (-(1 / 2) : ℝ)) x +
     (Ioi (1 : ℝ)).indicator (fun x => 8 * C * Real.exp (-(1 / 2) * x)) x
 
-theorem integrable_unitWeight : Integrable unitWeight :=
+theorem integrable_unitIntervalWeight : Integrable unitIntervalWeight :=
   (integrableOn_const (by rw [Real.volume_Ioc]; exact ENNReal.ofReal_ne_top)).integrable_indicator
     measurableSet_Ioc
 
@@ -128,7 +128,7 @@ theorem integrable_levyFixedDominator (C M : ℝ) : Integrable (levyFixedDominat
     hexp.const_mul _
   exact (h1.integrable_indicator measurableSet_Ioc).add (h2.integrable_indicator measurableSet_Ioi)
 
-theorem unitWeight_nonneg (x : ℝ) : 0 ≤ unitWeight x :=
+theorem unitIntervalWeight_nonneg (x : ℝ) : 0 ≤ unitIntervalWeight x :=
   Set.indicator_nonneg (fun _ _ => zero_le_one) x
 
 theorem levyFixedDominator_nonneg {C M : ℝ} (hC : 0 ≤ C) (hM : 0 ≤ M) (x : ℝ) :
@@ -139,12 +139,12 @@ theorem levyFixedDominator_nonneg {C M : ℝ} (hC : 0 ≤ C) (hM : 0 ≤ M) (x :
     (Set.indicator_nonneg (fun y _ => mul_nonneg (mul_nonneg (by norm_num) hC)
       (Real.exp_pos _).le) x)
 
-theorem unitWeight_of_mem {x : ℝ} (hx : 0 < x) (hx1 : x ≤ 1) : unitWeight x = 1 := by
-  unfold unitWeight
+theorem unitIntervalWeight_of_mem {x : ℝ} (hx : 0 < x) (hx1 : x ≤ 1) : unitIntervalWeight x = 1 := by
+  unfold unitIntervalWeight
   exact Set.indicator_of_mem (show x ∈ Ioc (0 : ℝ) 1 from ⟨hx, hx1⟩) _
 
-theorem unitWeight_of_gt {x : ℝ} (hx1 : 1 < x) : unitWeight x = 0 := by
-  unfold unitWeight
+theorem unitIntervalWeight_of_gt {x : ℝ} (hx1 : 1 < x) : unitIntervalWeight x = 0 := by
+  unfold unitIntervalWeight
   exact Set.indicator_of_notMem (show x ∉ Ioc (0 : ℝ) 1 from fun h => not_le.mpr hx1 h.2) _
 
 theorem levyFixedDominator_near (C M : ℝ) {x : ℝ} (hx : 0 < x) (hx1 : x ≤ 1) :
@@ -164,7 +164,7 @@ profile, with `C` the half-pole mass: for `(1+|p|) x ≤ 1` by the near bound of
 it by the far bound and `1/x < 1 + |p|`. -/
 theorem norm_levyIntegrand_le {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {p : ℂ}
     (hp : 0 ≤ p.re) (x : ℝ) :
-    ‖levyIntegrand F p x‖ ≤ 6 * halfPoleMass F * (1 + ‖p‖) * unitWeight x +
+    ‖levyIntegrand F p x‖ ≤ 6 * halfPoleMass F * (1 + ‖p‖) * unitIntervalWeight x +
       levyFixedDominator (halfPoleMass F) (∫ u, F u ^ 2) x := by
   set C := halfPoleMass F with hC
   set M := ∫ u, F u ^ 2 with hM
@@ -187,7 +187,7 @@ theorem norm_levyIntegrand_le {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDoma
         _ = 4 * C := by ring
     rw [hval, norm_mul, Complex.norm_real, Real.norm_of_nonneg (archLevyDensity_pos hx).le]
     rcases le_or_gt x 1 with hx1 | hx1
-    · rw [unitWeight_of_mem hx hx1, levyFixedDominator_near C M hx hx1, mul_one]
+    · rw [unitIntervalWeight_of_mem hx hx1, levyFixedDominator_near C M hx hx1, mul_one]
       have hω := archLevyDensity_le_near hx hx1
       have hrp : 0 ≤ 27 / 4 * (M + 1) * x ^ (-(1 / 2) : ℝ) :=
         mul_nonneg (mul_nonneg (by norm_num) (by linarith)) (Real.rpow_nonneg hx.le _)
@@ -213,7 +213,7 @@ theorem norm_levyIntegrand_le {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDoma
               mul_le_mul hω' hfar (norm_nonneg _) (mul_nonneg (by norm_num) hP0)
           _ = 6 * C * P := by ring
           _ ≤ 6 * C * P + 27 / 4 * (M + 1) * x ^ (-(1 / 2) : ℝ) := le_add_of_nonneg_right hrp
-    · rw [unitWeight_of_gt hx1, levyFixedDominator_far C M hx1, mul_zero, zero_add]
+    · rw [unitIntervalWeight_of_gt hx1, levyFixedDominator_far C M hx1, mul_zero, zero_add]
       have hω := archLevyDensity_le_far hx1.le
       calc archLevyDensity x * ‖levyKernel F p x‖
           ≤ 2 * Real.exp (-(x / 2)) * (4 * C) :=
@@ -224,27 +224,27 @@ theorem norm_levyIntegrand_le {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDoma
   · have hval : levyIntegrand F p x = 0 := by simp [levyIntegrand, Set.indicator, hx]
     rw [hval, norm_zero]
     exact add_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hC0) hP0)
-      (unitWeight_nonneg x)) (levyFixedDominator_nonneg hC0 hM0 x)
+      (unitIntervalWeight_nonneg x)) (levyFixedDominator_nonneg hC0 hM0 x)
 
 /-- **The Gamma pairing in Lévy form is `O(1 + |p|)` on `Re p ≥ 0`.** -/
 theorem exists_bound_levyGamma {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ p : ℂ, 0 ≤ p.re → ‖levyGamma F p‖ ≤ K * (1 + ‖p‖) := by
   have hC0 : 0 ≤ halfPoleMass F := halfPoleMass_nonneg F
   have hM0 : 0 ≤ ∫ u, F u ^ 2 := integral_nonneg fun u => sq_nonneg _
-  have hA0 : 0 ≤ ∫ x, unitWeight x := integral_nonneg unitWeight_nonneg
+  have hA0 : 0 ≤ ∫ x, unitIntervalWeight x := integral_nonneg unitIntervalWeight_nonneg
   have hB0 : 0 ≤ ∫ x, levyFixedDominator (halfPoleMass F) (∫ u, F u ^ 2) x :=
     integral_nonneg (levyFixedDominator_nonneg hC0 hM0)
   have hθ0 := abs_nonneg (gammaHardyPhaseRate 0)
-  refine ⟨2 * |gammaHardyPhaseRate 0| * halfPoleMass F + 6 * halfPoleMass F * (∫ x, unitWeight x) +
+  refine ⟨2 * |gammaHardyPhaseRate 0| * halfPoleMass F + 6 * halfPoleMass F * (∫ x, unitIntervalWeight x) +
     ∫ x, levyFixedDominator (halfPoleMass F) (∫ u, F u ^ 2) x, by positivity, fun p hp => ?_⟩
   have hpn := norm_nonneg p
   have hL := norm_laplace_le_halfPoleMass hF (by linarith : -(1 / 2) ≤ p.re)
-  have hint : ‖∫ x, levyIntegrand F p x‖ ≤ 6 * halfPoleMass F * (1 + ‖p‖) * (∫ x, unitWeight x) +
+  have hint : ‖∫ x, levyIntegrand F p x‖ ≤ 6 * halfPoleMass F * (1 + ‖p‖) * (∫ x, unitIntervalWeight x) +
       ∫ x, levyFixedDominator (halfPoleMass F) (∫ u, F u ^ 2) x := by
-    have hg1 := integrable_unitWeight.const_mul (6 * halfPoleMass F * (1 + ‖p‖))
+    have hg1 := integrable_unitIntervalWeight.const_mul (6 * halfPoleMass F * (1 + ‖p‖))
     have hg2 := integrable_levyFixedDominator (halfPoleMass F) (∫ u, F u ^ 2)
     calc ‖∫ x, levyIntegrand F p x‖
-        ≤ ∫ x, (6 * halfPoleMass F * (1 + ‖p‖) * unitWeight x +
+        ≤ ∫ x, (6 * halfPoleMass F * (1 + ‖p‖) * unitIntervalWeight x +
             levyFixedDominator (halfPoleMass F) (∫ u, F u ^ 2) x) :=
           norm_integral_le_of_norm_le (hg1.add hg2)
             (Eventually.of_forall fun x => norm_levyIntegrand_le hF hp x)
@@ -298,7 +298,7 @@ theorem norm_div_add_half_le (c : ℂ) {p : ℂ} (hp : 1 / 2 ≤ |p.re + 1 / 2|)
     ‖c / (p + 1 / 2)‖ ≤ 2 * ‖c‖ := by
   have h1 : 1 / 2 ≤ ‖p + 1 / 2‖ := by
     have h := Complex.abs_re_le_norm (p + 1 / 2)
-    rw [Complex.add_re, half_re] at h
+    rw [Complex.add_re, re_one_half] at h
     linarith
   rw [norm_div, div_le_iff₀ (by linarith)]
   nlinarith [mul_le_mul_of_nonneg_left h1 (norm_nonneg c)]
@@ -316,7 +316,7 @@ theorem exists_bound_leftRemainder {F : ℝ → ℝ} (hF : CriticalHalfLineEnerg
     have h1 : 1 ≤ ‖p - 1 / 2‖ := by
       have h := Complex.abs_re_le_norm (p - 1 / 2)
       have h2 := neg_le_abs ((p - 1 / 2).re)
-      rw [Complex.sub_re, half_re] at h h2
+      rw [Complex.sub_re, re_one_half] at h h2
       linarith
     exact div_le_self (norm_nonneg _) h1
   have hP2 := norm_div_add_half_le (negativeHalfLineLaplace (cx F) (-(1 / 2))) (p := p) (by
@@ -339,11 +339,11 @@ theorem exists_bound_levyRegularPart {F : ℝ → ℝ} (hF : CriticalHalfLineEne
   obtain ⟨KΓ, hKΓ0, hΓ⟩ := exists_bound_levyGamma hF
   obtain ⟨KT, hT⟩ := exists_bound_stateTail hF
   have hKT0 : 0 ≤ KT := (norm_nonneg _).trans (hT 0 (by simp))
-  have hm0 := laplaceMass_nonneg F (-3)
+  have hm0 := transformMass_nonneg F (-3)
   have hc0 := norm_nonneg (negativeHalfLineLaplace (cx F) (-(1 / 2)))
-  refine ⟨KΓ + laplaceMass F (-3) + KT + 2 * ‖negativeHalfLineLaplace (cx F) (-(1 / 2))‖,
+  refine ⟨KΓ + transformMass F (-3) + KT + 2 * ‖negativeHalfLineLaplace (cx F) (-(1 / 2))‖,
     by positivity, fun p hp => ?_⟩
-  have hD := norm_dslope_laplace_le hF (a := 1 / 2) (p := p) (by rw [half_re]; norm_num)
+  have hD := norm_dslope_laplace_le hF (a := 1 / 2) (p := p) (by rw [re_one_half]; norm_num)
     (by linarith)
   have hP2 := norm_div_add_half_le (negativeHalfLineLaplace (cx F) (-(1 / 2))) (p := p) (by
     have h := le_abs_self (p.re + 1 / 2)

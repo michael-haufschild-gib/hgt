@@ -39,11 +39,11 @@ open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
 
 /-! ### The completed factorisation -/
 
-theorem re_half_add (p : ℂ) : ((1 : ℂ) / 2 + p).re = 1 / 2 + p.re := by
-  rw [Complex.add_re, half_re]
+theorem re_one_half_add (p : ℂ) : ((1 : ℂ) / 2 + p).re = 1 / 2 + p.re := by
+  rw [Complex.add_re, re_one_half]
 
-theorem re_half_sub (p : ℂ) : ((1 : ℂ) / 2 - p).re = 1 / 2 - p.re := by
-  rw [Complex.sub_re, half_re]
+theorem re_one_half_sub (p : ℂ) : ((1 : ℂ) / 2 - p).re = 1 / 2 - p.re := by
+  rw [Complex.sub_re, re_one_half]
 
 theorem norm_half_one : ‖(1 : ℂ) / 2‖ = 1 / 2 := by
   rw [show (1 : ℂ) / 2 = ((1 / 2 : ℝ) : ℂ) by push_cast; ring, Complex.norm_real,
@@ -94,11 +94,11 @@ theorem xi_half_sub_eq (p : ℂ) : xi (1 / 2 - p) = xi (1 / 2 + p) := by
 theorem xi_ne_zero_of_half_le_abs_re {p : ℂ} (hp : 1 / 2 ≤ |p.re|) : xi (1 / 2 + p) ≠ 0 := by
   intro h0
   obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_xi_eq_zero h0
-  have hz : zeroCoord q = p := by
-    unfold zeroCoord
+  have hz : centredZero q = p := by
+    unfold centredZero
     rw [hq]
     ring
-  have := abs_re_zeroCoord_lt q
+  have := abs_re_centredZero_lt q
   rw [hz] at this
   linarith
 
@@ -139,7 +139,7 @@ theorem rightFormDefect_eq {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain 
   have hg : globalRemainder F p = levyRemainder F p := by
     rw [globalRemainder, if_pos hp]
   unfold rightFormDefect explicitDefect
-  rw [hg, levyRemainder_eq_add, logDeriv_zetaEntire_eq_xi (by rw [re_half_add]; linarith) hxi,
+  rw [hg, levyRemainder_eq_add, logDeriv_zetaEntire_eq_xi (by rw [re_one_half_add]; linarith) hxi,
     zeroSum_eq_dividedSum_add hF hxi]
   ring
 
@@ -147,7 +147,7 @@ theorem stripFormDefect_eq_sub_stripRemainder {F : ℝ → ℝ} (hF : CriticalHa
     {p : ℂ} (hp : p.re < 1 / 2) (hxi : xi (1 / 2 + p) ≠ 0) :
     stripFormDefect F p = globalRemainder F 1 - stripRemainder F p + zeroSum F p := by
   have hne : p ≠ 1 / 2 := fun h => by
-    rw [h, half_re] at hp
+    rw [h, re_one_half] at hp
     exact lt_irrefl _ hp
   have hxi' : xi (1 / 2 - p) ≠ 0 := by
     rw [xi_half_sub_eq]
@@ -157,7 +157,7 @@ theorem stripFormDefect_eq_sub_stripRemainder {F : ℝ → ℝ} (hF : CriticalHa
   have hinv : ((1 : ℂ) / 2 - p)⁻¹ = -(p - 1 / 2)⁻¹ := by
     rw [show (1 : ℂ) / 2 - p = -(p - 1 / 2) by ring, inv_neg]
   unfold stripFormDefect stripRemainder
-  rw [logDeriv_zetaEntire_eq_xi (by rw [re_half_sub]; linarith) hxi', hld, hinv,
+  rw [logDeriv_zetaEntire_eq_xi (by rw [re_one_half_sub]; linarith) hxi', hld, hinv,
     zeroSum_eq_dividedSum_add hF hxi, dslope_of_ne _ hne, slope_def_field]
   ring
 
@@ -166,15 +166,15 @@ theorem globalRemainder_eq_stripRemainder {F : ℝ → ℝ} (hF : CriticalHalfLi
     {p : ℂ} (hp4 : -4 < p.re) (hp : p.re < 1 / 2) (hxi : xi (1 / 2 + p) ≠ 0) :
     globalRemainder F p = stripRemainder F p := by
   rcases lt_trichotomy (-(1 / 2)) p.re with h1 | h1 | h1
-  · have hre1 : 0 < ((1 : ℂ) / 2 + p).re := by rw [re_half_add]; linarith
-    have hre2 : 0 < ((1 : ℂ) / 2 - p).re := by rw [re_half_sub]; linarith
+  · have hre1 : 0 < ((1 : ℂ) / 2 + p).re := by rw [re_one_half_add]; linarith
+    have hre2 : 0 < ((1 : ℂ) / 2 - p).re := by rw [re_one_half_sub]; linarith
     have hne1 : (1 : ℂ) / 2 + p ≠ 1 := fun h => by
       have := congrArg Complex.re h
-      rw [re_half_add, Complex.one_re] at this
+      rw [re_one_half_add, Complex.one_re] at this
       linarith
     have hne2 : (1 : ℂ) / 2 - p ≠ 1 := fun h => by
       have := congrArg Complex.re h
-      rw [re_half_sub, Complex.one_re] at this
+      rw [re_one_half_sub, Complex.one_re] at this
       linarith
     have hζ1 : riemannZeta (1 / 2 + p) ≠ 0 := fun h =>
       hxi ((xi_eq_zero_iff_riemannZeta_of_re_pos hre1 hne1).mpr h)
@@ -215,7 +215,7 @@ theorem differentiableAt_dslope_laplace {F : ℝ → ℝ} (hF : CriticalHalfLine
 
 theorem differentiableAt_rightFormDefect {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
     {p : ℂ} (hp : -(1 / 2) < p.re) : DifferentiableAt ℂ (rightFormDefect F) p := by
-  have hre : 0 < ((1 : ℂ) / 2 + p).re := by rw [re_half_add]; linarith
+  have hre : 0 < ((1 : ℂ) / 2 + p).re := by rw [re_one_half_add]; linarith
   have hadd : DifferentiableAt ℂ (fun p : ℂ => (1 : ℂ) / 2 + p) p :=
     (differentiableAt_const _).add differentiableAt_id
   have hinv : DifferentiableAt ℂ (fun p : ℂ => ((1 : ℂ) / 2 + p)⁻¹) p :=
@@ -234,7 +234,7 @@ theorem differentiableAt_rightFormDefect {F : ℝ → ℝ} (hF : CriticalHalfLin
 theorem differentiableAt_stripFormDefect {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
     {p : ℂ} (hp2 : -2 < p.re) (hp : p.re < 1 / 2) :
     DifferentiableAt ℂ (stripFormDefect F) p := by
-  have hre : 0 < ((1 : ℂ) / 2 - p).re := by rw [re_half_sub]; linarith
+  have hre : 0 < ((1 : ℂ) / 2 - p).re := by rw [re_one_half_sub]; linarith
   have hsub : DifferentiableAt ℂ (fun p : ℂ => (1 : ℂ) / 2 - p) p :=
     (differentiableAt_const _).sub differentiableAt_id
   have hG : DifferentiableAt ℂ (fun p : ℂ => logDeriv Complex.Gammaℝ (1 / 2 - p)) p :=
@@ -251,9 +251,9 @@ theorem differentiableAt_stripFormDefect {F : ℝ → ℝ} (hF : CriticalHalfLin
     negativeHalfLineLaplace (cx F) p * logDeriv Complex.Gammaℝ (1 / 2 - p) +
     dslope (negativeHalfLineLaplace (cx F)) (-(1 / 2)) p - levyHeadTerm F p + stateTail F p) p
   exact ((((((differentiableAt_const _).add (differentiableAt_dividedSum hF hp2)).add
-    (differentiableAt_dslope_laplace hF (by rw [half_re]; norm_num) (by linarith))).sub
+    (differentiableAt_dslope_laplace hF (by rw [re_one_half]; norm_num) (by linarith))).sub
     ((differentiableAt_laplace hF (by linarith)).mul hG)).add
-    (differentiableAt_dslope_laplace hF (by rw [Complex.neg_re, half_re]; norm_num)
+    (differentiableAt_dslope_laplace hF (by rw [Complex.neg_re, re_one_half]; norm_num)
       (by linarith))).sub hJ).add hT
 
 theorem differentiableAt_explicitDefect {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
@@ -353,14 +353,14 @@ theorem exists_bound_rightFormDefect {F : ℝ → ℝ} (hF : CriticalHalfLineEne
   obtain ⟨CΓ, hCΓ0, hΓ⟩ := exists_bound_logDeriv_Gammaℝ
   have hm0 := halfPoleMass_nonneg F
   refine ⟨‖globalRemainder F 1‖ + KR + halfPoleMass F * (2 + 2 * CΓ) +
-    4 * laplaceMass F (-3) * (∑' q : XiZeroCopy, ‖zeroCoord q‖⁻¹ ^ 2), fun p hp => ?_⟩
+    4 * transformMass F (-3) * (∑' q : XiZeroCopy, ‖centredZero q‖⁻¹ ^ 2), fun p hp => ?_⟩
   have hpn := norm_nonneg p
   have hX2 := one_le_one_add_norm_sq p
   have hXX := one_add_norm_le_sq p
   have hR' := hR p hp
   have hL := norm_laplace_le_halfPoleMass hF (by linarith : -(1 / 2) ≤ p.re)
   have hΔ := norm_dividedSum_le hF (by linarith : -2 ≤ p.re)
-  have hG := hΓ (1 / 2 + p) (by rw [re_half_add]; linarith)
+  have hG := hΓ (1 / 2 + p) (by rw [re_one_half_add]; linarith)
   have hsn : ‖(1 : ℂ) / 2 + p‖ ≤ 1 + ‖p‖ := by
     have h := norm_add_le ((1 : ℂ) / 2) p
     rw [norm_half_one] at h
@@ -369,7 +369,7 @@ theorem exists_bound_rightFormDefect {F : ℝ → ℝ} (hF : CriticalHalfLineEne
     rw [norm_inv]
     have h := Complex.abs_re_le_norm ((1 : ℂ) / 2 + p)
     have h2 := le_abs_self (((1 : ℂ) / 2 + p).re)
-    rw [re_half_add] at h h2
+    rw [re_one_half_add] at h h2
     have h3 : (1 : ℝ) / 2 ≤ ‖(1 : ℂ) / 2 + p‖ := by linarith
     have := inv_anti₀ (by norm_num : (0 : ℝ) < 1 / 2) h3
     norm_num at this
@@ -413,11 +413,11 @@ theorem exists_bound_rightFormDefect {F : ℝ → ℝ} (hF : CriticalHalfLineEne
       _ = _ := by ring
   calc ‖rightFormDefect F p‖
       ≤ ‖globalRemainder F 1‖ + KR * (1 + ‖p‖) + halfPoleMass F * (2 + CΓ * (2 + ‖p‖)) +
-          4 * laplaceMass F (-3) * (∑' q : XiZeroCopy, ‖zeroCoord q‖⁻¹ ^ 2) * (1 + ‖p‖) ^ 2 := by
+          4 * transformMass F (-3) * (∑' q : XiZeroCopy, ‖centredZero q‖⁻¹ ^ 2) * (1 + ‖p‖) ^ 2 := by
         linarith
     _ ≤ ‖globalRemainder F 1‖ * (1 + ‖p‖) ^ 2 + KR * (1 + ‖p‖) ^ 2 +
           halfPoleMass F * (2 + 2 * CΓ) * (1 + ‖p‖) ^ 2 +
-          4 * laplaceMass F (-3) * (∑' q : XiZeroCopy, ‖zeroCoord q‖⁻¹ ^ 2) * (1 + ‖p‖) ^ 2 := by
+          4 * transformMass F (-3) * (∑' q : XiZeroCopy, ‖centredZero q‖⁻¹ ^ 2) * (1 + ‖p‖) ^ 2 := by
         linarith
     _ = _ := by ring
 
@@ -429,26 +429,26 @@ theorem exists_bound_stripFormDefect {F : ℝ → ℝ} (hF : CriticalHalfLineEne
   obtain ⟨KT, hT⟩ := exists_bound_stateTail hF
   have hKJ0 : 0 ≤ KJ := (norm_nonneg _).trans (hJ 0 (by simp))
   have hKT0 : 0 ≤ KT := (norm_nonneg _).trans (hT 0 (by simp))
-  have hm3 := laplaceMass_nonneg F (-3)
+  have hm3 := transformMass_nonneg F (-3)
   refine ⟨‖globalRemainder F 1‖ +
-    4 * laplaceMass F (-3) * (∑' q : XiZeroCopy, ‖zeroCoord q‖⁻¹ ^ 2) +
-    2 * laplaceMass F (-3) + laplaceMass F (-3) * (2 * CΓ) + KJ + KT, fun p hp1 hp0 => ?_⟩
+    4 * transformMass F (-3) * (∑' q : XiZeroCopy, ‖centredZero q‖⁻¹ ^ 2) +
+    2 * transformMass F (-3) + transformMass F (-3) * (2 * CΓ) + KJ + KT, fun p hp1 hp0 => ?_⟩
   have hpn := norm_nonneg p
   have hX2 := one_le_one_add_norm_sq p
   have hXX := one_add_norm_le_sq p
   have hΔ := norm_dividedSum_le hF (by linarith : -2 ≤ p.re)
-  have hD1 := norm_dslope_laplace_le hF (a := 1 / 2) (p := p) (by rw [half_re]; norm_num)
+  have hD1 := norm_dslope_laplace_le hF (a := 1 / 2) (p := p) (by rw [re_one_half]; norm_num)
     (by linarith)
   have hD2 := norm_dslope_laplace_le hF (a := -(1 / 2)) (p := p)
-    (by rw [Complex.neg_re, half_re]; norm_num) (by linarith)
-  have hL := norm_laplace_le_laplaceMass hF (σ := -3) (by norm_num) (by linarith : (-3 : ℝ) ≤ p.re)
-  have hG := hΓ (1 / 2 - p) (by rw [re_half_sub]; linarith)
+    (by rw [Complex.neg_re, re_one_half]; norm_num) (by linarith)
+  have hL := norm_laplace_le_transformMass hF (σ := -3) (by norm_num) (by linarith : (-3 : ℝ) ≤ p.re)
+  have hG := hΓ (1 / 2 - p) (by rw [re_one_half_sub]; linarith)
   have hsn : ‖(1 : ℂ) / 2 - p‖ ≤ 1 + ‖p‖ := by
     have h := norm_sub_le ((1 : ℂ) / 2) p
     rw [norm_half_one] at h
     linarith
   have hprod : ‖negativeHalfLineLaplace (cx F) p * logDeriv Complex.Gammaℝ (1 / 2 - p)‖ ≤
-      laplaceMass F (-3) * (CΓ * (2 + ‖p‖)) := by
+      transformMass F (-3) * (CΓ * (2 + ‖p‖)) := by
     rw [norm_mul]
     exact mul_le_mul hL (hG.trans (mul_le_mul_of_nonneg_left (by linarith) hCΓ0))
       (norm_nonneg _) hm3
@@ -468,28 +468,28 @@ theorem exists_bound_stripFormDefect {F : ℝ → ℝ} (hF : CriticalHalfLineEne
     exact norm_add_le _ _
   have t1 : ‖globalRemainder F 1‖ ≤ ‖globalRemainder F 1‖ * (1 + ‖p‖) ^ 2 :=
     le_mul_of_one_le_right (norm_nonneg _) hX2
-  have t2 : 2 * laplaceMass F (-3) ≤ 2 * laplaceMass F (-3) * (1 + ‖p‖) ^ 2 :=
+  have t2 : 2 * transformMass F (-3) ≤ 2 * transformMass F (-3) * (1 + ‖p‖) ^ 2 :=
     le_mul_of_one_le_right (by linarith) hX2
-  have t3 : laplaceMass F (-3) * (CΓ * (2 + ‖p‖)) ≤
-      laplaceMass F (-3) * (2 * CΓ) * (1 + ‖p‖) ^ 2 := by
+  have t3 : transformMass F (-3) * (CΓ * (2 + ‖p‖)) ≤
+      transformMass F (-3) * (2 * CΓ) * (1 + ‖p‖) ^ 2 := by
     have h1 : CΓ * (2 + ‖p‖) ≤ 2 * CΓ * (1 + ‖p‖) := by nlinarith [mul_nonneg hCΓ0 hpn]
     have h2 : 2 * CΓ * (1 + ‖p‖) ≤ 2 * CΓ * (1 + ‖p‖) ^ 2 :=
       mul_le_mul_of_nonneg_left hXX (by linarith)
-    calc laplaceMass F (-3) * (CΓ * (2 + ‖p‖))
-        ≤ laplaceMass F (-3) * (2 * CΓ * (1 + ‖p‖) ^ 2) :=
+    calc transformMass F (-3) * (CΓ * (2 + ‖p‖))
+        ≤ transformMass F (-3) * (2 * CΓ * (1 + ‖p‖) ^ 2) :=
           mul_le_mul_of_nonneg_left (h1.trans h2) hm3
       _ = _ := by ring
   have t4 : KJ ≤ KJ * (1 + ‖p‖) ^ 2 := le_mul_of_one_le_right hKJ0 hX2
   have t5 : KT ≤ KT * (1 + ‖p‖) ^ 2 := le_mul_of_one_le_right hKT0 hX2
   calc ‖stripFormDefect F p‖
       ≤ ‖globalRemainder F 1‖ +
-          4 * laplaceMass F (-3) * (∑' q : XiZeroCopy, ‖zeroCoord q‖⁻¹ ^ 2) * (1 + ‖p‖) ^ 2 +
-          2 * laplaceMass F (-3) + laplaceMass F (-3) * (CΓ * (2 + ‖p‖)) + KJ + KT := by
+          4 * transformMass F (-3) * (∑' q : XiZeroCopy, ‖centredZero q‖⁻¹ ^ 2) * (1 + ‖p‖) ^ 2 +
+          2 * transformMass F (-3) + transformMass F (-3) * (CΓ * (2 + ‖p‖)) + KJ + KT := by
         linarith
     _ ≤ ‖globalRemainder F 1‖ * (1 + ‖p‖) ^ 2 +
-          4 * laplaceMass F (-3) * (∑' q : XiZeroCopy, ‖zeroCoord q‖⁻¹ ^ 2) * (1 + ‖p‖) ^ 2 +
-          2 * laplaceMass F (-3) * (1 + ‖p‖) ^ 2 +
-          laplaceMass F (-3) * (2 * CΓ) * (1 + ‖p‖) ^ 2 + KJ * (1 + ‖p‖) ^ 2 +
+          4 * transformMass F (-3) * (∑' q : XiZeroCopy, ‖centredZero q‖⁻¹ ^ 2) * (1 + ‖p‖) ^ 2 +
+          2 * transformMass F (-3) * (1 + ‖p‖) ^ 2 +
+          transformMass F (-3) * (2 * CΓ) * (1 + ‖p‖) ^ 2 + KJ * (1 + ‖p‖) ^ 2 +
           KT * (1 + ‖p‖) ^ 2 := by
         linarith
     _ = _ := by ring
@@ -500,7 +500,7 @@ theorem exists_bound_explicitDefect {F : ℝ → ℝ} (hF : CriticalHalfLineEner
   obtain ⟨KL, hLft⟩ := exists_bound_leftRemainder hF
   have hKL0 : 0 ≤ KL := (norm_nonneg _).trans (hLft (-1) (by simp))
   refine ⟨‖globalRemainder F 1‖ + KL +
-    6 * halfPoleMass F * (∑' q : XiZeroCopy, ‖zeroCoord q‖⁻¹ ^ 2), fun p hp => ?_⟩
+    6 * halfPoleMass F * (∑' q : XiZeroCopy, ‖centredZero q‖⁻¹ ^ 2), fun p hp => ?_⟩
   have hX2 := one_le_one_add_norm_sq p
   have hlt : p.re < -(1 / 2) := by linarith
   have hg : globalRemainder F p = leftRemainder F p := by
@@ -519,7 +519,7 @@ theorem exists_bound_explicitDefect {F : ℝ → ℝ} (hF : CriticalHalfLineEner
   have t2 : KL ≤ KL * (1 + ‖p‖) ^ 2 := le_mul_of_one_le_right hKL0 hX2
   calc ‖explicitDefect F p‖
       ≤ ‖globalRemainder F 1‖ * (1 + ‖p‖) ^ 2 + KL * (1 + ‖p‖) ^ 2 +
-          6 * halfPoleMass F * (∑' q : XiZeroCopy, ‖zeroCoord q‖⁻¹ ^ 2) * (1 + ‖p‖) ^ 2 := by
+          6 * halfPoleMass F * (∑' q : XiZeroCopy, ‖centredZero q‖⁻¹ ^ 2) * (1 + ‖p‖) ^ 2 := by
         linarith
     _ = _ := by ring
 
@@ -675,8 +675,8 @@ theorem globalRemainder_sub_eq_zeroSum {F : ℝ → ℝ} (hF : CriticalHalfLineE
 theorem globalRemainder_sub_eq_tsum {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {p q : ℂ}
     (hp : xi (1 / 2 + p) ≠ 0) (hq : xi (1 / 2 + q) ≠ 0) :
     globalRemainder F p - globalRemainder F q =
-      ∑' c : XiZeroCopy, negativeHalfLineLaplace (cx F) (zeroCoord c) *
-        ((p - zeroCoord c)⁻¹ - (q - zeroCoord c)⁻¹) := by
+      ∑' c : XiZeroCopy, negativeHalfLineLaplace (cx F) (centredZero c) *
+        ((p - centredZero c)⁻¹ - (q - centredZero c)⁻¹) := by
   obtain ⟨δ, hδ, hb⟩ := exists_zeroFree_ball hp
   obtain ⟨ε, hε, hb'⟩ := exists_zeroFree_ball hq
   have sp := summable_zeroSum_term hF hδ (hb p (mem_ball_self hδ))
@@ -715,8 +715,8 @@ theorem criticalState_starEquation {W₀ : ℝ} (hW : 0 < W₀)
     (hv : -4 < v.re) :
     (criticalAliasCoefficient W₀ : ℂ) *
         (negativeHalfLineLaplace (cx F) w - negativeHalfLineLaplace (cx F) v) =
-      -∑' c : XiZeroCopy, negativeHalfLineLaplace (cx F) (zeroCoord c) *
-        ((w + 8 - zeroCoord c)⁻¹ - (v + 8 - zeroCoord c)⁻¹) := by
+      -∑' c : XiZeroCopy, negativeHalfLineLaplace (cx F) (centredZero c) *
+        ((w + 8 - centredZero c)⁻¹ - (v + 8 - centredZero c)⁻¹) := by
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
   have ha : (criticalAliasCoefficient W₀ : ℂ) ≠ 0 := by
     exact_mod_cast (criticalAliasCoefficient_positive hW).ne'
@@ -745,13 +745,13 @@ theorem criticalState_zeroValues_cauchy {W₀ : ℝ} (hW : 0 < W₀)
     (hthreshold : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) (c₁ c₂ : XiZeroCopy) :
     (criticalAliasCoefficient W₀ : ℂ) *
-        (negativeHalfLineLaplace (cx F) (zeroCoord c₁) -
-          negativeHalfLineLaplace (cx F) (zeroCoord c₂)) =
-      -∑' c : XiZeroCopy, negativeHalfLineLaplace (cx F) (zeroCoord c) *
-        ((zeroCoord c₁ + 8 - zeroCoord c)⁻¹ - (zeroCoord c₂ + 8 - zeroCoord c)⁻¹) :=
+        (negativeHalfLineLaplace (cx F) (centredZero c₁) -
+          negativeHalfLineLaplace (cx F) (centredZero c₂)) =
+      -∑' c : XiZeroCopy, negativeHalfLineLaplace (cx F) (centredZero c) *
+        ((centredZero c₁ + 8 - centredZero c)⁻¹ - (centredZero c₂ + 8 - centredZero c)⁻¹) :=
   criticalState_starEquation hW hthreshold hF
-    (by have := (abs_lt.mp (abs_re_zeroCoord_lt c₁)).1; linarith)
-    (by have := (abs_lt.mp (abs_re_zeroCoord_lt c₂)).1; linarith)
+    (by have := (abs_lt.mp (abs_re_centredZero_lt c₁)).1; linarith)
+    (by have := (abs_lt.mp (abs_re_centredZero_lt c₂)).1; linarith)
 
 /-- **Either RH holds, or the critical state exists and is the Cauchy transform of its own values
 at the zeros.** -/
@@ -763,8 +763,8 @@ theorem riemannHypothesis_or_criticalState_starEquation :
         ∀ w v : ℂ, -4 < w.re → -4 < v.re →
           (criticalAliasCoefficient W₀ : ℂ) *
               (negativeHalfLineLaplace (cx F) w - negativeHalfLineLaplace (cx F) v) =
-            -∑' c : XiZeroCopy, negativeHalfLineLaplace (cx F) (zeroCoord c) *
-              ((w + 8 - zeroCoord c)⁻¹ - (v + 8 - zeroCoord c)⁻¹) := by
+            -∑' c : XiZeroCopy, negativeHalfLineLaplace (cx F) (centredZero c) *
+              ((w + 8 - centredZero c)⁻¹ - (v + 8 - centredZero c)⁻¹) := by
   rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hRH | ⟨W₀, F, hW, ht, hF⟩
   · exact Or.inl hRH
   · exact Or.inr ⟨W₀, F, hW, ht, hF, fun w v hw hv => criticalState_starEquation hW ht hF hw hv⟩

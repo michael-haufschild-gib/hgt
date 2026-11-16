@@ -22,7 +22,7 @@ theorem projectiveDelayNormalize_eq_pivot
     projectiveDelayNormalize Q = matrixPivotRepresentative (Fin.last n) Q := by
   ext i j
   by_cases hij : i = j <;>
-    simp [projectiveDelayNormalize, matrixPivotRepresentative, Matrix.one_apply, hij]
+    simp [projectiveDelayNormalize, matrixPivotRepresentative, hij]
 
 /-- The finite projective panel and all trace-zero tests have exactly the same fibers. -/
 theorem projectiveDelayPanel_eq_iff_traceZero_observations

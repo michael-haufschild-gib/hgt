@@ -27,7 +27,10 @@ theorem constraintEnergy_partialTraceRight (C : Matrix m m ℂ)
   cases isEmpty_or_nonempty m
   · simp [constraintEnergy, Matrix.trace]
   cases isEmpty_or_nonempty n
-  · simp [constraintEnergy, partialTraceRight, Matrix.trace]
+  · have h : partialTraceRight ρ = 0 := by
+      ext i j
+      simp [_root_.HTGeometry.ConstraintRelativity.partialTraceRight]
+    simp [constraintEnergy, h, Matrix.trace]
   unfold constraintEnergy
   rw [Matrix.conjTranspose_kronecker, Matrix.conjTranspose_one,
     ← trace_partialTraceRight,
@@ -56,7 +59,10 @@ theorem constraintEnergy_partialTraceLeft (C : Matrix n n ℂ)
   cases isEmpty_or_nonempty n
   · simp [constraintEnergy, Matrix.trace]
   cases isEmpty_or_nonempty m
-  · simp [constraintEnergy, partialTraceLeft, Matrix.trace]
+  · have h : partialTraceLeft ρ = 0 := by
+      ext i j
+      simp [_root_.HTGeometry.ConstraintRelativity.partialTraceLeft]
+    simp [constraintEnergy, h, Matrix.trace]
   unfold constraintEnergy
   rw [Matrix.conjTranspose_kronecker, Matrix.conjTranspose_one,
     ← trace_partialTraceLeft,
