@@ -2,11 +2,12 @@
 
 - **Stage:** 1-in-progress
 - **Type:** CONJECTURE
-- **Obstacle:** O3; no contribution counted.
+- **Obstacle:** O3; the low-probe subresult is formalized; the rung seed remains open.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Seventy-seven helper modules passed final plain Lean checks and are umbrella-wired, including actual low angular completed-source energy, central physical tuples, Gaussian tails, exact probe reassembly and summable dyads.
-- **Missing:** Actual physical low-probe bound, angular prime-slot estimates, high moment induction and both common-signal estimates.
+- **Verified:** Seventy-eight modules passed final plain Lean checks and are umbrella-wired, closing the [actual low-probe bound](../3-formalized/the-direct-angular-cubic-probe-satisfies-the-low-bound.md).
+- **Missing:** Angular prime-slot estimates, high moment induction and both common-signal estimates.
+- **Research focus:** Remaining angular work is deferred in favor of ECS README questions.
 
 ## Receiver
 
@@ -78,7 +79,7 @@ column coefficient while retaining the radial physical row. `spectralRow` and
 coefficients bounded by one. This is distinct from the failed angular-physical
 compensation above. `AngularPhysicalProbe.angularMarkedPhysicalProbe_eq_gaussian_rows`
 identifies the actual direct angular probe with its Gaussian completed-source rows.
-Its low bound, principal comparison and high-source moments remain open. The finite-order low estimates
+Its low bound is now proved; principal comparison and high-source moments remain open. The finite-order low estimates
 require `CanonicalCoefficientClass.FactorsModulo Q Ψ`; the angular twist fails this premise.
 `angular_low_original_completed_energy` now bounds the actual angular completed source,
 requiring periodicity only of its finite coefficient. High plain-slot moment induction
@@ -110,7 +111,8 @@ families and bounds their compensation mass by the original physical scale mass.
 `AngularGaussianReassembly.angularCompensatedPhysicalProbe_common_gaussian` identifies
 the actual compensated angular probe with its Gaussian dyad expansion, including all selected-prime phases.
 `AngularLowGaussianDyads.angular_low_all_gaussian_dyads` proves summability and total
-norm at most `C Z^(3/16+256ε)`; final physical probe assembly remains pending.
+norm at most `C Z^(3/16+256ε)`. `AngularLowProbe.angularCompensatedPhysicalProbe_low`
+and `angular_original_ray_compensatedPhysicalProbe_low` close the actual physical estimate.
 
 ## Verified reciprocal growth
 
@@ -142,8 +144,8 @@ the global Hadamard identity.
 The normalized order `r≥1` satisfies
 `v^(r−1) Dbar^r(F∘T)(0) = (-conj(c)/c)^r/(|c|²v²) · v₀^(r−1) Dz^r F(v₀,−d/c)`.
 The angular factor has modulus one, so the absolute reflection scale is independent of `r`.
-This removes the extra height powers. Angular-kernel physical energy is verified below;
-actual completed-source energy still needs source reconstruction and energy assembly.
+This removes the extra height powers. Angular-kernel and actual completed-source energy
+are verified below.
 
 ## Higher source and reflected kernels
 
@@ -174,8 +176,8 @@ and both acquire radial factor `length^(3k)`. The frequency scale is purely imag
 its sixth-power normalization cancels the cusp-width power exactly.
 
 At `r=6k+1`, the verified radial kernel is `v^(6k)` times the original kernel with
-coefficient multiplied by `length^(3k)`. Low reflected energies, high moment induction
-and both common-signal estimates remain open. No seed or new contribution is claimed.
+coefficient multiplied by `length^(3k)`. Low reflected energies are proved. High moment
+induction and both common-signal estimates remain open. No seed is claimed.
 
 `AngularSourceMellin` proves the exact shifted transform:
 `M angularRadial(k,r,a,q)(2s) = besselMellinFactor(q,s+3k) Σ a_h r_h^(1/2−s)`.

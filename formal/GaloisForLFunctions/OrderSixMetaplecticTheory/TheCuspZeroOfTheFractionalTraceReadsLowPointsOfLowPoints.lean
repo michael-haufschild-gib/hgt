@@ -79,6 +79,65 @@ theorem fracShift_mul_sO (t : O) :
   rw [P.fracShift_eq, mul_assoc, P.dilation_S, ← mul_assoc, mul_assoc P.contraction, h1, ← mul_assoc,
     P.contraction_S, mul_assoc, mul_assoc, mul_assoc]
 
+
+theorem complexCharacter_lowMat (y : O) (hy : ¬ P.p ∣ y) :
+    complexCharacter (P.lowMat y hy) = ringComplex (symbol (3 * y) P.p) := by
+  rw [complexCharacter_eq_symbol]
+  rfl
+
+section Points
+
+variable (Θ : HyperbolicSpace → ℂ)
+  (hΘ : ∀ (M : levelThree) (w : HyperbolicSpace), Θ (complexMatrix M • w) = complexCharacter M * Θ w)
+  (hΘr : ∀ (r : SL(2, ℤ)) (w : HyperbolicSpace), Θ (integralComplexMatrix (rationalEmbedding r) • w) = Θ w)
+include hΘ hΘr
+
+/-- `Θ(T_tSy) = (−3t/q)₃ Θ(A_q⁻¹T(−β_{−t})A_q⁻¹y)` for `q ∤ t`. -/
+theorem theta_fracShift_sO (t : O) (ht : ¬ P.p ∣ t) (y : HyperbolicSpace) :
+    Θ (P.fracShift t • integralComplexMatrix sO • y) =
+      ringComplex (symbol (3 * -t) P.p) * P.heckeLow Θ (-P.lowBeta (-t)) (P.contraction • y) := by
+  have ht' : ¬ P.p ∣ -t := fun h => ht (dvd_neg.mp h)
+  have hS : ∀ x, Θ (integralComplexMatrix sO • x) = Θ x := hΘr ModularGroup.S
+  rw [← mul_smul, P.fracShift_mul_sO, mul_smul, hS, P.dilation_lowerThree (-t) ht', mul_smul, mul_smul, mul_smul,
+    hΘ, P.complexCharacter_lowMat]
+  rfl
+
+/-- **The fractional correlation at `S` is a sum of low points of low points.** -/
+theorem fracSum_sO (y : HyperbolicSpace) :
+    P.fracSum Θ (integralComplexMatrix sO • y) = Θ y ^ 2 +
+      ∑ x : {x : P.Res // x ≠ 0}, P.chi (-9 * x.1 ^ 2) *
+        (P.heckeLow Θ (-P.lowBeta (-P.lift x.1)) (P.contraction • y) *
+          P.heckeLow Θ (-P.lowBeta (P.lift x.1)) (P.contraction • y)) := by
+  have hS : ∀ x, Θ (integralComplexMatrix sO • x) = Θ x := hΘr ModularGroup.S
+  unfold fracSum
+  rw [Fintype.sum_eq_add_sum_compl (0 : P.Res),
+    Finset.sum_subtype _ (fun x => by simp : ∀ x, x ∈ ({0}ᶜ : Finset P.Res) ↔ x ≠ 0)]
+  congr 1
+  · rw [show P.lift 0 = P.lift (P.res 0) by rw [map_zero], P.fracCorrelation_lift Θ hΘ, fracCorrelation, neg_zero,
+      P.fracShift_zero, one_smul, hS, pow_two]
+  · refine Finset.sum_congr rfl fun x _ => ?_
+    have hx : ¬ P.p ∣ P.lift x.1 := fun h => x.2 (P.res_lift_eq_zero h)
+    have hx' : ¬ P.p ∣ -P.lift x.1 := fun h => hx (dvd_neg.mp h)
+    rw [fracCorrelation, P.theta_fracShift_sO Θ hΘ hΘr _ hx, P.theta_fracShift_sO Θ hΘ hΘr _ hx', neg_neg,
+      ← P.chi_res, ← P.chi_res, mul_mul_mul_comm, ← map_mul]
+    congr 2
+    simp only [map_mul, map_neg, res_lift, map_ofNat]
+    ring
+
+/-- **The classes over the cusp `0`.** `Σ_{s ∈ O/q²} G_Θ(ST(3s)w) = N(q)²Θ(w)² + (low points of low points)`. -/
+theorem sum_fracSum_cuspZero (w : HyperbolicSpace) :
+    ∑ s : P.Res × P.Res, P.fracSum Θ (integralComplexMatrix sO • complexMatrix (transThree (P.sqLift s)) • w) =
+      (Fintype.card P.Res : ℂ) ^ 2 * Θ w ^ 2 +
+        ∑ s : P.Res × P.Res, ∑ x : {x : P.Res // x ≠ 0}, P.chi (-9 * x.1 ^ 2) *
+          (P.heckeLow Θ (-P.lowBeta (-P.lift x.1)) (P.contraction • complexMatrix (transThree (P.sqLift s)) • w) *
+            P.heckeLow Θ (-P.lowBeta (P.lift x.1)) (P.contraction • complexMatrix (transThree (P.sqLift s)) • w)) := by
+  simp_rw [P.fracSum_sO Θ hΘ hΘr, hΘ, complexCharacter_transThree, one_mul]
+  rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ, Fintype.card_prod, nsmul_eq_mul]
+  push_cast
+  ring
+
+end Points
+
 end PrimaryPrime
 
 end GaloisForLFunctions.OrderSixMetaplecticTheory

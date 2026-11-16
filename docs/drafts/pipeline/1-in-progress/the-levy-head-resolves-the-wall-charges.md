@@ -17,11 +17,18 @@ The `k=0` term cancels `LF(1/2)/(p-1/2)` in `leftRemainder`. Thus left of the st
 `-a LF(w)` should equal the remaining archimedean modes, prime heads and the single
 charge `LF(-1/2)/(w+17/2)`. This is an exact state identity, not an exclusion claim.
 
+For the actual state, the positive-real Laplace values are real, nonzero and have
+one sign. Consequently the mode weights should share that sign: after orientation,
+the archimedean head is a positive Stieltjes transform despite the profile changing
+sign on every ray. This gives a sign restriction on the remaining prime-head/charge
+balance.
+
 ## Proof obligations
 
 1. Exponential-mode Fubini identity on the full energy domain, without trace assumptions.
 2. Absolute resolvent summability and equality with the actual head term.
 3. Exact charge cancellation in `stateMeromorphic_eq_left`.
-4. Uniform decay as the real part tends left; no pointwise values of the profile assumed.
+4. Common sign of actual-state mode weights and the resulting head restriction.
+5. Uniform decay as the real part tends left; no pointwise values of the profile assumed.
 
 No result counted before Lean formalization. No external novelty or axiom checks.

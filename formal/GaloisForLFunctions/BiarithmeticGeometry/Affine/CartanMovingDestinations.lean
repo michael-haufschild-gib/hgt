@@ -127,7 +127,7 @@ theorem splitCartan_all_destinations (a b : ℝ) :
       ext i
       fin_cases i
       · change b * (a / b) = a
-        field_simp
+        field_simp [hb]
       · simp
     rw [he] at h
     exact h

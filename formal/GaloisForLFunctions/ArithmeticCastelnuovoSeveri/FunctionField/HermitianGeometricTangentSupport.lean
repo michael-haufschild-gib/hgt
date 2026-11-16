@@ -109,15 +109,16 @@ theorem hermitianGeometricPointValuation_tangent_all
   · subst U
     by_cases hF : hermitianFrobeniusPoint p s E P = P
     · have hfix := (hermitianFrobeniusPoint_eq_self_iff p s E P).mp hF
-      simpa only [if_pos rfl, if_pos hF.symm, if_pos hfix] using
+      simpa only [if_pos rfl, if_pos hF.symm, if_pos hfix, if_pos True.intro] using
         hermitianGeometricPointValuation_tangent p s P
     · have hfix : P.val.1 ^ (Q * Q) ≠ P.val.1 :=
         fun h => hF ((hermitianFrobeniusPoint_eq_self_iff p s E P).mpr h)
-      simpa only [if_pos rfl, if_neg (Ne.symm hF), if_neg hfix, Nat.add_zero] using
+      simpa only [if_pos rfl, if_neg (Ne.symm hF), if_neg hfix, if_pos True.intro,
+        Nat.add_zero] using
         hermitianGeometricPointValuation_tangent p s P
   · by_cases hUF : U = hermitianFrobeniusPoint p s E P
     · subst U
-      simpa only [if_neg hUP, if_pos rfl, Nat.zero_add, Nat.cast_one] using
+      simpa only [if_neg hUP, if_pos rfl, if_pos True.intro, Nat.zero_add, Nat.cast_one] using
         hermitianGeometricPointValuation_tangent_frobenius p s P hUP
     · simpa only [if_neg hUP, if_neg hUF, Nat.zero_add, Nat.cast_zero,
         neg_zero, WithZero.exp_zero] using
