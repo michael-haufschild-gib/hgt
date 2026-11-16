@@ -74,7 +74,9 @@ theorem powerTaylor_remainder (c : ℝ) (k : ℕ) {N x : ℝ}
       (abs_nonneg ((descPochhammer ℝ (k + 1)).eval c))
   have h := taylor_mean_remainder_bound (by linarith only [hN]) hf hx hd
   rw [← powerTaylor_eq_taylorWithin c k hN x, Real.norm_eq_abs] at h
-  convert h using 1 <;> unfold powerTaylorConstant <;> ring
+  convert h using 1
+  unfold powerTaylorConstant
+  ring
 
 /-- A block of length `N^θ` loses exactly the exponent `c-(k+1)(1-θ)`. -/
 theorem powerTaylor_short_remainder (c θ : ℝ) (k : ℕ) {N x : ℝ}

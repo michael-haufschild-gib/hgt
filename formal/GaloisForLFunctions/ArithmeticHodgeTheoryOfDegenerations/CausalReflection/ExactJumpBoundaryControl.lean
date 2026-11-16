@@ -23,9 +23,11 @@ theorem archLevyAntideriv_gt_firstMode {d : ℝ} (hd : 0 < d) :
   have h5 := integrableOn_exp_mul_Ioi (by norm_num : -(5 / 2 : ℝ) < 0) d
   have h := setIntegral_mono_on (h1.add h5) (integrableOn_archLevyDensity_Ioi hd)
     measurableSet_Ioi (fun x hx => by
+      change Real.exp (-(1 / 2 : ℝ) * x) + Real.exp (-(5 / 2 : ℝ) * x) ≤ archLevyDensity x
       simpa only [show -(1 / 2 : ℝ) * x = -x / 2 by ring,
         show -(5 / 2 : ℝ) * x = -5 * x / 2 by ring] using
           archLevyDensity_ge_twoMode (lt_trans hd hx))
+  simp only [Pi.add_apply] at h
   rw [integral_add h1 h5,
     integral_exp_mul_Ioi (by norm_num : -(1 / 2 : ℝ) < 0),
     integral_exp_mul_Ioi (by norm_num : -(5 / 2 : ℝ) < 0),

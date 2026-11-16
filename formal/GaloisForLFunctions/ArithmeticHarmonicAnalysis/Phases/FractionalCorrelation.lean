@@ -7,7 +7,7 @@ import GaloisForLFunctions.RHTower.Sieve.MollifierShortRange
 # Fractional phases in weighted arithmetic correlations
 
 The short-block Taylor bound supplies the concrete phase error in the
-corpus's Bourgain perturbation inequality. It applies to arbitrary complex
+Bourgain perturbation inequality. It applies to arbitrary complex
 weights; higher von Mangoldt weights additionally have an explicit
 logarithmic envelope. Frequencies are measured in radians.
 -/
@@ -104,7 +104,7 @@ theorem centeredMangoldt_fractional_correlation (s : Finset ℕ) (k : ℕ)
   apply mul_le_mul_of_nonneg_left _
     (mul_nonneg (mul_nonneg (abs_nonneg ξ) (powerTaylorConstant_nonneg c k))
       (Real.rpow_nonneg (zero_le_one.trans hN) _))
-  calc ∑ n ∈ s, ‖(Λ n : ℂ) - 1‖ ≤ ∑ _n ∈ s, Real.log (N + N ^ θ) + 1 := by
+  calc ∑ n ∈ s, ‖(Λ n : ℂ) - 1‖ ≤ ∑ _n ∈ s, (Real.log (N + N ^ θ) + 1) := by
         apply sum_le_sum
         intro n hn
         have h := norm_sub_le (Λ n : ℂ) (1 : ℂ)
@@ -113,5 +113,11 @@ theorem centeredMangoldt_fractional_correlation (s : Finset ℕ) (k : ℕ)
         exact h.trans (add_le_add_right (ArithmeticFunction.vonMangoldt_le_log.trans
           (Real.log_le_log (zero_lt_one.trans_le (hN.trans (hs n hn).1)) (hs n hn).2)) 1)
     _ = _ := by simp only [sum_const, nsmul_eq_mul]
+
+#print axioms fractional_correlation_taylor
+#print axioms exists_fractional_correlation_saving
+#print axioms almostPrime_fractional_correlation
+#print axioms moebius_fractional_correlation
+#print axioms centeredMangoldt_fractional_correlation
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.Phases

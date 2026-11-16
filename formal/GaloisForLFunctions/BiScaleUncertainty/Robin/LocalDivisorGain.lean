@@ -83,4 +83,12 @@ theorem robinLocal_ratio_gt_iff (p : Nat.Primes) (v : ℕ) {L : ℝ} (hL : 1 < L
   simpa only [stepBalance, sub_pos] using
     (stepBalance_pos_iff v hL (by linarith only [hL, hp] : -L < Real.log (p : ℕ)))
 
+/-- Strict log-concavity of the local divisor factors along every prime tower. -/
+theorem robinLocal_strict_logConcave (p : Nat.Primes) (v : ℕ) :
+    robinLocal p v * robinLocal p (v + 2) < robinLocal p (v + 1) ^ 2 := by
+  have h := robinLocal_ratio_succ_lt p v
+  rw [div_lt_div_iff₀ (robinLocal_pos p.property (v + 1))
+    (robinLocal_pos p.property v)] at h
+  nlinarith only [h]
+
 end GaloisForLFunctions.BiScaleUncertainty.Robin

@@ -171,6 +171,21 @@ theorem mem_complementaryPair_orbit_iff (P Q : ComplementaryPair K V) :
     exact ⟨complementaryPairEquiv P Q a b, complementaryPairEquiv_smul P Q a b⟩
 
 
+/-- Every dimension from zero to the ambient dimension occurs as the first summand. -/
+theorem exists_complementaryPair_dimension (d : Fin (Module.finrank K V + 1)) :
+    ∃ P : ComplementaryPair K V, Module.finrank K P.1.1 = (d : ℕ) := by
+  let b := Module.finBasis K V
+  let f : Fin (d : ℕ) → Fin (Module.finrank K V) :=
+    fun i => ⟨i.val, lt_of_lt_of_le i.isLt (Nat.le_of_lt_succ d.isLt)⟩
+  have hf : Function.Injective f := by
+    intro i j h
+    exact Fin.ext (congrArg (fun z : Fin (Module.finrank K V) => z.val) h)
+  have hi : LinearIndependent K (fun i => b (f i)) := b.linearIndependent.comp f hf
+  let U := Submodule.span K (Set.range (fun i => b (f i)))
+  obtain ⟨W, hW⟩ := U.exists_isCompl
+  refine ⟨⟨(U, W), hW⟩, ?_⟩
+  simpa only [Fintype.card_fin] using finrank_span_eq_card hi
+
 /-- A finite basis identifies automorphisms with the matrix general linear group. -/
 def automorphismMatrixEquiv :
     (V ≃ₗ[K] V) ≃*
@@ -223,5 +238,6 @@ end FiniteField
 #print axioms mem_complementaryPair_orbit_iff
 #print axioms card_complementaryPair_mul_card_blocks
 #print axioms card_automorphisms_eq_prod
+#print axioms exists_complementaryPair_dimension
 
 end GaloisForLFunctions.RepresentationLifting.OperatorKernels

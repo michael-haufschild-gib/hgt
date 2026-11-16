@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.DirichletConvolutionExponential
 /-!
 # Dirichlet series of almost-prime coefficients
 
-The Dirichlet powers of von Mangoldt agree with the corpus's convolution
+The Dirichlet powers of von Mangoldt agree with the sequence convolution
 powers. Their series is the corresponding power of `-ζ'/ζ` throughout
 the half-plane of absolute convergence; their support starts at `2^k`.
 -/
@@ -43,5 +43,9 @@ theorem convolution_lseries (k : ℕ) {s : ℂ} (hs : 1 < s.re) :
   have h := lseriesSummable_dirichletConvPow (LSeriesSummable_vonMangoldt hs) k
   rw [LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs] at h
   exact h
+
+#print axioms convolution_lseries
+#print axioms convolution_eq_zero_below
+#print axioms convolution_eq_zero_of_card_lt
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.AlmostPrimes
