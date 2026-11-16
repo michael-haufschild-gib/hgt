@@ -1,3 +1,4 @@
+import GaloisForLFunctions.BiarithmeticGeometry.Affine.CountableExceptionalDirections
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.DirectionalSpectralWiener
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.SubgroupFactorialOrders
 import GaloisForLFunctions.BiarithmeticGeometry.Affine.QuantumSerreJets

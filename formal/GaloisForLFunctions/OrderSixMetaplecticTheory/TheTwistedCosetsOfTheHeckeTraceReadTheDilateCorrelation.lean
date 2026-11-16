@@ -241,7 +241,7 @@ theorem cpow_mul_mul_cpow_div (a v : ℝ) (ha : 0 < a) (hv : 0 < v) :
 
 theorem norm_cuspFrequency_dilate (h : O) :
     ‖cuspFrequency (-(h * P.p) * P.p)‖ = ‖cuspFrequency h‖ * ‖ringComplex P.p‖ ^ 2 := by
-  rw [cuspFrequency_mul_right, neg_mul, cuspFrequency_neg, norm_mul, norm_neg, cuspFrequency_mul_right, norm_mul]
+  rw [cuspFrequency_mul_right, cuspFrequency_neg, norm_mul, norm_neg, cuspFrequency_mul_right, norm_mul]
   ring
 
 /-- **The dilate terms are the shifted square at `p²`.** -/

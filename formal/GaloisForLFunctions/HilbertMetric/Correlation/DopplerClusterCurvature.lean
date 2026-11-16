@@ -82,38 +82,45 @@ private theorem coherence_curvature_scalar (m p q : ℝ) :
     Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
   ring
 
-/-- The actual second derivative of squared temporal coherence is the negative variance defect. -/
-theorem deriv_deriv_normSq_dopplerClusterKernel_zero (w : ι → NNReal)
-    (mean : ι → ℝ) (variance : ι → NNReal) :
-    deriv (deriv (fun t : ℝ => ‖dopplerClusterKernel w mean variance t‖ ^ 2)) 0 =
-      -2 * dopplerAgingDefect w mean variance := by
-  let K := dopplerClusterKernel w mean variance
-  let V := clusterVelocity w mean variance
-  let A := clusterAcceleration w mean variance
-  have hK (t : ℝ) : HasDerivAt K (V t) t := clusterKernel_deriv w mean variance t
-  have hV (t : ℝ) : HasDerivAt V (A t) t := clusterVelocity_deriv w mean variance t
-  have hnorm (t : ℝ) :
-      HasDerivAt (fun s : ℝ => ‖K s‖ ^ 2) ((V t * star (K t) + K t * star (V t)).re) t := by
-    have h := Complex.reCLM.hasFDerivAt.comp_hasDerivAt t ((hK t).mul (hK t).star)
-    have h' : HasDerivAt (fun s : ℝ => (K s * star (K s)).re)
-        ((V t * star (K t) + K t * star (V t)).re) t := by
-      simpa only [Function.comp_def, Pi.mul_apply, Complex.reCLM_apply] using h
-    apply h'.congr_of_eventuallyEq
-    apply Filter.Eventually.of_forall
-    intro s
-    change ‖K s‖ ^ 2 = (K s * conj (K s)).re
-    rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
+private theorem norm_square_deriv (K V : ℝ → ℂ) (t : ℝ)
+    (hK : HasDerivAt K (V t) t) :
+    HasDerivAt (fun s : ℝ => ‖K s‖ ^ 2)
+      ((V t * star (K t) + K t * star (V t)).re) t := by
+  have h := Complex.reCLM.hasFDerivAt.comp_hasDerivAt t (hK.mul hK.star)
+  have h' : HasDerivAt (fun s : ℝ => (K s * star (K s)).re)
+      ((V t * star (K t) + K t * star (V t)).re) t := by
+    simpa only [Function.comp_def, Pi.mul_apply, Complex.reCLM_apply] using h
+  apply h'.congr_of_eventuallyEq
+  apply Filter.Eventually.of_forall
+  intro s
+  change ‖K s‖ ^ 2 = (K s * conj (K s)).re
+  rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
+
+private theorem norm_square_second_deriv (K V A : ℝ → ℂ)
+    (hK : ∀ t, HasDerivAt K (V t) t) (hV : HasDerivAt V (A 0) 0) :
+    deriv (deriv (fun t : ℝ => ‖K t‖ ^ 2)) 0 =
+      (A 0 * star (K 0) + V 0 * star (V 0) +
+        (V 0 * star (V 0) + K 0 * star (A 0))).re := by
   have hderiv : deriv (fun t : ℝ => ‖K t‖ ^ 2) =
-      fun t => (V t * star (K t) + K t * star (V t)).re := funext fun t => (hnorm t).deriv
+      fun t => (V t * star (K t) + K t * star (V t)).re :=
+    funext fun t => (norm_square_deriv K V t (hK t)).deriv
   rw [hderiv]
-  have hh := ((hV 0).mul (hK 0).star).add ((hK 0).mul (hV 0).star)
+  have hh := (hV.mul (hK 0).star).add ((hK 0).mul hV.star)
   have hre := Complex.reCLM.hasFDerivAt.comp_hasDerivAt 0 hh
   have hre' : HasDerivAt (fun t : ℝ => (V t * star (K t) + K t * star (V t)).re)
       ((A 0 * star (K 0) + V 0 * star (V 0) +
         (V 0 * star (V 0) + K 0 * star (A 0))).re) 0 := by
     simpa only [Function.comp_def, Pi.add_apply, Pi.mul_apply, Complex.reCLM_apply] using hre
-  rw [hre'.deriv]
-  dsimp only [K, V, A]
+  exact hre'.deriv
+
+/-- The actual second derivative of squared temporal coherence is the negative variance defect. -/
+theorem deriv_deriv_normSq_dopplerClusterKernel_zero (w : ι → NNReal)
+    (mean : ι → ℝ) (variance : ι → NNReal) :
+    deriv (deriv (fun t : ℝ => ‖dopplerClusterKernel w mean variance t‖ ^ 2)) 0 =
+      -2 * dopplerAgingDefect w mean variance := by
+  rw [norm_square_second_deriv (dopplerClusterKernel w mean variance)
+    (clusterVelocity w mean variance) (clusterAcceleration w mean variance)
+    (clusterKernel_deriv w mean variance) (clusterVelocity_deriv w mean variance 0)]
   rw [clusterKernel_zero, clusterVelocity_zero, clusterAcceleration_zero]
   simpa only [dopplerAgingDefect, Complex.ofReal_sum, Complex.ofReal_mul,
     Complex.ofReal_add, Complex.ofReal_pow] using

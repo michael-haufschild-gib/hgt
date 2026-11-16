@@ -107,6 +107,46 @@ private theorem common_divisor_periodic_points_unit [IsDomain R]
   apply (dvd_unicriticalSecant d a x y hx hy).trans
   exact Finset.dvd_prod_of_mem _ (mem_range.mpr (by omega : 0 < n + 1))
 
+private theorem unicriticalSecant_split (d : ℕ) (x y : R) :
+    unicriticalSecant d x y =
+      x * (∑ i ∈ range (d + 1), x ^ i * y ^ (d - i)) + y * y ^ d := by
+  rw [unicriticalSecant, show d + 2 = (d + 1) + 1 by omega, sum_range_succ']
+  simp only [pow_zero, one_mul, Nat.add_sub_cancel, Nat.sub_zero, mul_sum]
+  rw [show y ^ (d + 1) = y * y ^ d by rw [pow_succ]; ring]
+  congr 1
+  apply sum_congr rfl
+  intro i hi
+  rw [show d + 1 - (i + 1) = d - i by omega, pow_succ]
+  ring
+
+/-- Distinct periodic points of a unicritical polynomial generate the unit ideal. -/
+theorem unicritical_periodic_points_coprime [IsDomain R]
+    (d n : ℕ) (c x y : R) :
+    unicriticalRingIterate d c (n + 1) x ≠ x ∨
+      unicriticalRingIterate d c (n + 1) y ≠ y ∨ x = y ∨ IsCoprime x y := by
+  by_cases hx : unicriticalRingIterate d c (n + 1) x = x
+  · right
+    by_cases hy : unicriticalRingIterate d c (n + 1) y = y
+    · right
+      by_cases hxy : x = y
+      · exact Or.inl hxy
+      · right
+        have hp := secant_product_transport d (n + 1) c x y
+        rw [hx, hy] at hp
+        have hprod : (∏ j ∈ range (n + 1), unicriticalSecant d
+            (unicriticalRingIterate d c j x) (unicriticalRingIterate d c j y)) = 1 :=
+          mul_right_cancel₀ (sub_ne_zero.mpr hxy) (hp.trans (one_mul _).symm)
+        rw [prod_range_succ', unicriticalRingIterate, unicriticalSecant_split] at hprod
+        simp only [show unicriticalRingIterate d c 0 y = y from rfl] at hprod
+        let B := ∏ j ∈ range n, unicriticalSecant d
+          (unicriticalRingIterate d c (j + 1) x) (unicriticalRingIterate d c (j + 1) y)
+        refine ⟨B * (∑ i ∈ range (d + 1), x ^ i * y ^ (d - i)), B * y ^ d, ?_⟩
+        change _ = 1
+        dsimp only [B]
+        linear_combination hprod
+    · exact Or.inl hy
+  · exact Or.inl hx
+
 /-- A periodic critical tail either identifies the shifted points or forces their critical divisor
   to be a unit. No number-field or integrality assumption is required. -/
 theorem criticalOrbit_collision_or_unit [IsDomain R] (d m n r : ℕ) (c : R) :
@@ -144,3 +184,5 @@ end Bottcher.Arithmetic
 
 #print axioms Bottcher.Arithmetic.ringCriticalOrbit_dvd_multiple
 #print axioms Bottcher.Arithmetic.criticalOrbit_collision_or_unit
+
+#print axioms Bottcher.Arithmetic.unicritical_periodic_points_coprime

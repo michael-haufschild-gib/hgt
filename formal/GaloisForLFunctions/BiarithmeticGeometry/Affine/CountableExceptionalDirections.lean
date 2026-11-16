@@ -113,5 +113,3 @@ theorem not_mem_exceptionalSpectralSlopes_iff_mean_square_decay
 
 end GaloisForLFunctions.BiarithmeticGeometry
 
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.exceptionalSpectralSlopes_countable_iff
-#print axioms GaloisForLFunctions.BiarithmeticGeometry.not_mem_exceptionalSpectralSlopes_iff_mean_square_decay

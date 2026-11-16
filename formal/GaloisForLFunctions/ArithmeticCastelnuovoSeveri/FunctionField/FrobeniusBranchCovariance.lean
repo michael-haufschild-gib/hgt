@@ -45,7 +45,9 @@ theorem finiteField_frobeniusBranch_covariance
   have h2 : 1 + (u ^ q - u) ^ (q - 1) =
       (1 + (x ^ q - x) ^ (q - 1)) / D ^ (q ^ 2 - q) :=
     finiteField_mobius_dicksonFactor a b c d x (by rw [hdet]; exact one_ne_zero) hx hden
-  change γ * (u ^ q - u) * (1 + (u ^ q - u) ^ (q - 1)) ^ R = _
+  change γ * (u ^ q - u) * (1 + (u ^ q - u) ^ (q - 1)) ^ R =
+    (γ * (x ^ q - x) * (1 + (x ^ q - x) ^ (q - 1)) ^ R) /
+      D ^ (q + 1 + (q ^ 2 - q) * R)
   rw [h2, h1, div_pow, ← pow_mul, pow_add]
   simp only [div_eq_mul_inv, mul_inv_rev]
   ring
