@@ -106,6 +106,8 @@ import GaloisForLFunctions.RepresentationLifting.OperatorKernels.PolynomialFiber
 import GaloisForLFunctions.RepresentationLifting.Filtered.OreCyclicHilbert
 import GaloisForLFunctions.RepresentationLifting.Symplectic.ObservationDefects
 
+import GaloisForLFunctions.RepresentationLifting.Spinor.GordonIdentities
+
 /-!
 # Representation lifting and quadratic extensions
 

@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Forty-five helper modules passed final plain Lean checks and are umbrella-wired.
+- **Verified:** Forty-six helper modules passed final plain Lean checks and are umbrella-wired.
 - **Missing:** Actual low completed-source energy, high moment induction and both common-signal estimates.
 
 ## Receiver
@@ -235,3 +235,6 @@ radial tail decay, with cost `(scale²·ρ⁶)^(-1)` controlled by finite source
 
 `AngularLiteralArrays` reindexes actual mixed reflection into ramified, squarefree and
 cube ideal arrays. The column phase preserves coefficient bounds; the series converges absolutely.
+
+`AngularDyadicBlocks` splits the absolutely convergent angular series into summable
+dyadic blocks and identifies each block with the finite filtered physical source.

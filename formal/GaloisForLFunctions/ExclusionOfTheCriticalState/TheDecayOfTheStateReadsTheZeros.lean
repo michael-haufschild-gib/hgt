@@ -86,17 +86,21 @@ theorem differentiableAt_laplace_sub_eight {F : ℝ → ℝ} {κ : ℝ}
   have hf : DifferentiableAt ℂ (fun p : ℂ => p - 8) p := differentiableAt_id.sub_const (8 : ℂ)
   exact DifferentiableAt.comp (g := negativeHalfLineLaplace (cx F)) (f := fun p : ℂ => p - 8) p hg hf
 
-/-- **The state equation holds on the Euler half-plane.** -/
+/-- **The state equation holds on the Euler half-plane** `Re p > max 1 (κ + 8)` whenever the transform
+is holomorphic on `Re w > κ`, `κ ≤ -4`. -/
 theorem stateEquation_eqOn_zero {W₀ : ℝ} (hW : 0 < W₀)
     (hthreshold : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
-    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {κ : ℝ} (hκ : κ ≤ -7)
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {κ : ℝ} (hκ : κ ≤ -4)
     (hLap : DifferentiableOn ℂ (negativeHalfLineLaplace (cx F)) {w : ℂ | κ < w.re}) :
-    EqOn (stateEquation W₀ F) 0 {p : ℂ | 1 < p.re} := by
+    EqOn (stateEquation W₀ F) 0 {p : ℂ | max 1 (κ + 8) < p.re} := by
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
-  have hU : IsOpen {p : ℂ | 1 < p.re} := isOpen_lt continuous_const Complex.continuous_re
-  have hdiff : DifferentiableOn ℂ (stateEquation W₀ F) {p : ℂ | 1 < p.re} := by
+  have hU : IsOpen {p : ℂ | max 1 (κ + 8) < p.re} :=
+    isOpen_lt continuous_const Complex.continuous_re
+  have hdiff : DifferentiableOn ℂ (stateEquation W₀ F) {p : ℂ | max 1 (κ + 8) < p.re} := by
     intro p hp
-    have hp' : 1 < p.re := hp
+    have hp1 : max 1 (κ + 8) < p.re := hp
+    have hp' : 1 < p.re := lt_of_le_of_lt (le_max_left _ _) hp1
+    have hp8 : κ + 8 < p.re := lt_of_le_of_lt (le_max_right _ _) hp1
     have hpos : p ∈ {p : ℂ | 0 < p.re} := show 0 < p.re by linarith
     have hopen0 : IsOpen {p : ℂ | 0 < p.re} := isOpen_lt continuous_const Complex.continuous_re
     have hL := differentiableAt_laplace_of_on hLap (w := p) (by linarith)
@@ -113,7 +117,8 @@ theorem stateEquation_eqOn_zero {W₀ : ℝ} (hW : 0 < W₀)
       (by intro h; have := congrArg Complex.re h; simp at this; linarith)
     exact (((((hL8.const_mul _).add hG).add (hL.mul hZ)).sub hT).add hP).differentiableWithinAt
   exact (hdiff.analyticOnNhd hU).eqOn_zero_of_preconnected_of_frequently_eq_zero
-    (convex_halfSpace_re_gt 1).isPreconnected (show 1 < (5 : ℂ).re by norm_num)
+    (convex_halfSpace_re_gt _).isPreconnected
+    (show max 1 (κ + 8) < (5 : ℂ).re by rw [max_lt_iff]; norm_num; linarith)
     (frequently_eq_zero_of_real fun x hx => stateEquation_ofReal_eq_zero hW hthreshold hF hx)
 
 /-- The state equation with the Euler denominator `ζ(½ + p)` cleared. -/
@@ -173,13 +178,14 @@ theorem stateEquationCleared_eqOn_zero {W₀ : ℝ} (hW : 0 < W₀)
         rw [show (2 + I : ℂ).re = 2 by simp, max_lt_iff]; exact ⟨by norm_num, by linarith⟩,
       show 0 < (2 + I : ℂ).im by simp⟩
   have hev : stateEquationCleared W₀ F =ᶠ[𝓝 (2 + I)] 0 := by
-    have hO : IsOpen ({p : ℂ | 1 < p.re} ∩ clearedRegion b) :=
+    have hO : IsOpen ({p : ℂ | 1 < p.re} ∩ clearedRegion κ) :=
       (isOpen_lt continuous_const Complex.continuous_re).inter (isOpen_clearedRegion κ)
     filter_upwards [hO.mem_nhds ⟨show 1 < (2 + I : ℂ).re by simp, hmem⟩] with p hp
     have hζ : riemannZeta (1 / 2 + p) ≠ 0 :=
       riemannZeta_ne_zero_of_one_le_re (by simp; linarith [show 1 < p.re from hp.1])
     rw [stateEquationCleared_eq_mul hζ,
-      stateEquation_eqOn_zero hW hthreshold hF hκ hLap hp.1]
+      stateEquation_eqOn_zero hW hthreshold hF (by linarith) hLap
+        (show max 1 (κ + 8) < p.re by rw [max_eq_left (by linarith)]; exact hp.1)]
     simp
   exact (hdiff.analyticOnNhd (isOpen_clearedRegion κ)).eqOn_zero_of_preconnected_of_eventuallyEq_zero
     hconv.isPreconnected hmem hev
@@ -287,7 +293,7 @@ theorem zero_re_le_of_laplace_holomorphic {W₀ : ℝ} (hW : 0 < W₀)
     (hLap : DifferentiableOn ℂ (negativeHalfLineLaplace (cx F)) {w : ℂ | κ < w.re}) {ρ : ℂ}
     (hζ : riemannZeta ρ = 0) (hρ : 1 / 2 < ρ.re) : ρ.re ≤ κ + 17 / 2 := by
   by_contra hlt
-  push_neg at hlt
+  have hlt : κ + 17 / 2 < ρ.re := lt_of_not_ge hlt
   have him : ρ.im ≠ 0 :=
     LiouvilleHyperbolaCutoffOscillation.im_ne_zero_of_zero_mem_strip hζ (by linarith)
   -- move to the upper half-plane by conjugation

@@ -20,6 +20,8 @@ theorem hermitianKummerCoverIndex_eq_traceIndex :
     hermitianKummerCoverIndex d r m =
       kummerSquareIndex ((d + 1) * (r + 1) - 1) m := by
   apply Nat.succ.inj
+  change hermitianKummerCoverIndex d r m + 1 =
+    kummerSquareIndex ((d + 1) * (r + 1) - 1) m + 1
   rw [hermitianKummerCoverIndex_succ, kummerSquareIndex_succ,
     Nat.sub_add_cancel (Nat.mul_pos (Nat.succ_pos d) (Nat.succ_pos r))]
 
@@ -44,12 +46,12 @@ theorem hermitianCoverTraceKernel_card :
     Nat.card (HermitianCoverTraceKernel p d r m) = p ^ ((d + 1) * (r + 1) * m) := by
   have he : (d + 1) * (r + 1) - 1 + 1 = (d + 1) * (r + 1) :=
     Nat.sub_add_cancel (Nat.mul_pos (Nat.succ_pos d) (Nat.succ_pos r))
-  have htype : HermitianCoverTraceKernel p d r m =
-      SquareRelativeTraceKernel p ((d + 1) * (r + 1) - 1) m :=
-    congrArg (fun t : ℕ × ℕ =>
-      {a : SquareConstantField p t.1 // frobeniusTraceSum p t.2 (m + 1) a = 0})
-      (Prod.ext (hermitianKummerCoverIndex_eq_traceIndex d r m) he.symm)
-  exact (congrArg Nat.card htype).trans
+  have hpair : (hermitianKummerCoverIndex d r m, (d + 1) * (r + 1)) =
+      (kummerSquareIndex ((d + 1) * (r + 1) - 1) m, (d + 1) * (r + 1) - 1 + 1) :=
+    Prod.ext (hermitianKummerCoverIndex_eq_traceIndex d r m) he.symm
+  have hc := congrArg (fun t : ℕ × ℕ =>
+    Nat.card {a : SquareConstantField p t.1 // frobeniusTraceSum p t.2 (m + 1) a = 0}) hpair
+  exact hc.trans
     ((squareRelativeTraceKernel_card p ((d + 1) * (r + 1) - 1) m).trans
       (congrArg (fun N : ℕ => p ^ (N * m)) he))
 

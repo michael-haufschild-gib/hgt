@@ -2,6 +2,7 @@ import GaloisForLFunctions.Bottcher.Dynamics
 import GaloisForLFunctions.Bottcher.Arithmetic.SmallCMIntegers
 import GaloisForLFunctions.Bottcher.Arithmetic.SmallCMUnits
 import GaloisForLFunctions.Bottcher.Arithmetic.UnicriticalOrbitBounds
+import GaloisForLFunctions.Bottcher.Arithmetic.CriticalParameterIntegrality
 import GaloisForLFunctions.Bottcher.GreenFunction
 import GaloisForLFunctions.Bottcher.ComplexLogBound
 import GaloisForLFunctions.Bottcher.BottcherCoord

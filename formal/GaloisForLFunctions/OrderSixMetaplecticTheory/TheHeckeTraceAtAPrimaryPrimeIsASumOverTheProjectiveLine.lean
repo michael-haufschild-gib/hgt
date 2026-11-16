@@ -86,7 +86,11 @@ noncomputable instance (P : PrimaryPrime) : Field P.Res := Ideal.Quotient.field 
 noncomputable instance (P : PrimaryPrime) : Fintype P.Res := Fintype.ofFinite _
 
 /-- Reduction modulo `p`. -/
-abbrev res (x : O) : P.Res := Ideal.Quotient.mk _ x
+abbrev res : O →+* P.Res := Ideal.Quotient.mk (Ideal.span {P.p})
+
+@[simp] theorem res_three : P.res 3 = 3 := map_ofNat P.res 3
+
+@[simp] theorem res_nine : P.res 9 = 9 := map_ofNat P.res 9
 
 theorem res_eq_zero_iff (x : O) : P.res x = 0 ↔ P.p ∣ x := by
   rw [Ideal.Quotient.eq_zero_iff_mem, Ideal.mem_span_singleton]
@@ -103,7 +107,12 @@ theorem three_ne_zero' : (3 : P.Res) ≠ 0 := by
     rw [Ne, res_eq_zero_iff]
     intro h
     exact P.prime.not_unit (P.isCoprime_three.symm.isUnit_of_dvd' (dvd_refl _) h)
-  simpa using h
+  rwa [res_three] at h
+
+theorem nine_ne_zero' : (9 : P.Res) ≠ 0 := by
+  have h := mul_ne_zero P.three_ne_zero' P.three_ne_zero'
+  norm_num at h
+  exact h
 
 /-! ### Representatives -/
 
@@ -216,6 +225,7 @@ theorem exists_repRes (a b c d : P.Res) (hdet : a * d - b * c = 1) :
     ∃ i : P.Index, a * (P.repRes i).2.1 - b * (P.repRes i).1 = 0 ∧
       c * (P.repRes i).2.2.2 - d * (P.repRes i).2.2.1 = 0 := by
   have h3 := P.three_ne_zero'
+  have h9 := P.nine_ne_zero'
   have hk := P.res_wK_ne_zero
   by_cases ha : a = 0
   · have hc : c ≠ 0 := by
@@ -241,7 +251,7 @@ theorem exists_repRes (a b c d : P.Res) (hdet : a * d - b * c = 1) :
         ring
       · simp only [repRes]
         field_simp
-        linear_combination (3 * c) * hdet
+        linear_combination (-9 * c) * hdet
 
 /-- The coset `δ_i⁻¹Γ_p`. -/
 def cosetOf (i : P.Index) : levelThree ⧸ P.heckeGroup := ((P.rep i)⁻¹ : levelThree)

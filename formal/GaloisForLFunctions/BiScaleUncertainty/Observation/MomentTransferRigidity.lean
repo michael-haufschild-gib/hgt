@@ -67,7 +67,7 @@ theorem arithmeticMoment_node_transfer (r : ℕ) (k : Fin (r + 1)) :
   have hs := finiteWeilMomentWeights_moment (finiteWeilArithmeticNodes r)
     (finiteWeilArithmeticNodes_injective r) (k.val + 1) (by have := k.isLt; omega)
   have he : r + 1 = k.val + 1 ↔ k.val = r := by omega
-  rw [he] at hs
+  simp only [he] at hs
   convert hs using 1
   apply Finset.sum_congr rfl
   intro i _
