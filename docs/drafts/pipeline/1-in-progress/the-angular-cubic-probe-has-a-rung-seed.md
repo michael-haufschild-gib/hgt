@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Forty-eight helper modules passed final plain Lean checks and are umbrella-wired.
+- **Verified:** Fifty-one helper modules passed final plain Lean checks and are umbrella-wired.
 - **Missing:** Actual low completed-source energy, angular prime-slot estimates, high moment induction and both common-signal estimates.
 
 ## Receiver
@@ -89,6 +89,9 @@ series still requires proving its angular Euler factorization and common-signal 
 the free frequency coordinate `N(p)^(-6z)` is unchanged.
 The ideal Euler-product draft weights `I·J³`; multiplicativity and the existing absolute
 majorant preserve excluded and finitely marked products. This global draft is not Lean-verified.
+Angular compensation must also multiply selected-prime weights by `conj(ψ₆(p))^ℓ`.
+Completed-source energy allows bounded prime weights, but their exact insertion into
+the physical compensation identity remains unproved.
 
 ## Verified reciprocal growth
 
@@ -243,3 +246,14 @@ dyadic blocks and identifies each block with the finite filtered physical source
 
 `AngularDyadicRows.angularLiteralDyadicRow_eq_physical` inserts exactly the fixed-conductor,
 row-ideal, slot-ideal and opposite-frequency phases into the bounded physical weight slots.
+
+`AngularDyadicEnergy.angular_sector_normalized_literal_energy_uniform_degree` bounds
+the actual angular dyadic rows with the original reflected exponents and terminal dual widths.
+Its polynomial height order is independent of arithmetic types and scales.
+
+`AngularMarkedSources` proves angular twisting commutes with row characters and fixed-factor
+extraction. Actual marked completed rows join the original free prime family exactly.
+
+`AngularLowSectorEnergy` combines angular dyadic energy with surviving-branch widths.
+Retained low sectors satisfy the original exponent `(5/6−2d)+200η+π+κ+ρLpool−O₀/2`,
+with polynomial height cost independent of arithmetic types and scales.

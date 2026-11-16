@@ -100,10 +100,45 @@ theorem thresholdFloquetRecovery_bound (N : ℕ) (f : DeningerMeyerCap) (ξ : �
   rw [thresholdFloquetRecovery, deningerFloquetSample_poissonSource]
   exact thresholdInverse_noisy_bound N _ _ e
 
+/-- Inversion using an estimated multiplier rather than the exact zeta value. -/
+def calibratedFloquetRecovery (N : ℕ) (z : ℂ) (f : DeningerMeyerCap) (ξ : ℝ) (e : ℂ) : ℂ :=
+  thresholdInverse N z * (deningerFloquetSample (deningerPoissonSource f) ξ + e)
+
+/-- Calibration error and observation noise enter through one exact effective-noise term. -/
+theorem calibratedFloquetRecovery_error (N : ℕ) (z : ℂ) (f : DeningerMeyerCap)
+    (ξ : ℝ) (e : ℂ) :
+    ‖calibratedFloquetRecovery N z f ξ e -
+        mellin ((f : 𝓢(ℝ, ℂ)) : ℝ → ℂ) (deningerCriticalLine ξ)‖ ^ 2 =
+      if 1 ≤ (N + 1 : ℝ) * ‖z‖ ^ 2 then
+        ‖(riemannZeta (deningerCriticalLine ξ) - z) *
+          mellin ((f : 𝓢(ℝ, ℂ)) : ℝ → ℂ) (deningerCriticalLine ξ) + e‖ ^ 2 / ‖z‖ ^ 2
+      else ‖mellin ((f : 𝓢(ℝ, ℂ)) : ℝ → ℂ) (deningerCriticalLine ξ)‖ ^ 2 := by
+  rw [calibratedFloquetRecovery, deningerFloquetSample_poissonSource]
+  have he (u : ℂ) : riemannZeta (deningerCriticalLine ξ) * u + e =
+      z * u + ((riemannZeta (deningerCriticalLine ξ) - z) * u + e) := by ring
+  rw [he, thresholdInverse_noisy_error]
+
+/-- Stability under simultaneous calibration and observation errors. -/
+theorem calibratedFloquetRecovery_bound (N : ℕ) (z : ℂ) (f : DeningerMeyerCap)
+    (ξ : ℝ) (e : ℂ) :
+    ‖calibratedFloquetRecovery N z f ξ e -
+        mellin ((f : 𝓢(ℝ, ℂ)) : ℝ → ℂ) (deningerCriticalLine ξ)‖ ^ 2 ≤
+      (N + 1 : ℝ) * ‖(riemannZeta (deningerCriticalLine ξ) - z) *
+        mellin ((f : 𝓢(ℝ, ℂ)) : ℝ → ℂ) (deningerCriticalLine ξ) + e‖ ^ 2 +
+        if 1 ≤ (N + 1 : ℝ) * ‖z‖ ^ 2 then 0 else
+          ‖mellin ((f : 𝓢(ℝ, ℂ)) : ℝ → ℂ) (deningerCriticalLine ξ)‖ ^ 2 := by
+  rw [calibratedFloquetRecovery, deningerFloquetSample_poissonSource]
+  have he (u : ℂ) : riemannZeta (deningerCriticalLine ξ) * u + e =
+      z * u + ((riemannZeta (deningerCriticalLine ξ) - z) * u + e) := by ring
+  rw [he]
+  exact thresholdInverse_noisy_bound N _ _ _
+
 #print axioms thresholdInverse_norm_sq
 #print axioms thresholdFloquetRecovery_exact
 #print axioms thresholdFloquetRecovery_error
 #print axioms thresholdFloquetRecovery_bound
+#print axioms calibratedFloquetRecovery_error
+#print axioms calibratedFloquetRecovery_bound
 
 end GaloisForLFunctions.BiScaleUncertainty.Observation
 

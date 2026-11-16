@@ -45,13 +45,15 @@ private theorem sum_map_mul {R : Type*} [Semiring R] (l : List ℕ) (c : R) (f :
 /-- Tensoring doubles the dimension of every constituent. -/
 theorem spinBranch_dimension (j : ℕ) :
     ((spinBranch j).map fun k => k + 1).sum = 2 * (j + 1) := by
-  cases j <;> simp [spinBranch] <;> omega
+  cases j <;> simp [spinBranch]
+  omega
 
 /-- The Casimir increment is six times the constituent dimension. -/
 theorem spinBranch_casimir (j : ℕ) :
     ((spinBranch j).map fun k => (k + 1) * k * (k + 2)).sum =
       2 * ((j + 1) * j * (j + 2)) + 6 * (j + 1) := by
-  cases j <;> simp [spinBranch] <;> ring
+  cases j <;> simp [spinBranch]
+  ring
 
 /-- The branching rule is an identity of the corpus's actual spectral characters. -/
 theorem spinBranch_character (j : ℕ) (x : ℝ) :
@@ -124,9 +126,54 @@ theorem tensorSpin_tail_bound (n L : ℕ) :
   · rw [if_neg hj, mul_zero]
     exact Nat.zero_le _
 
+/-- The next Casimir moment closes on the first two moments. -/
+theorem spinBranch_casimir_square (j : ℕ) :
+    ((spinBranch j).map fun k => (k + 1) * (k * (k + 2)) ^ 2).sum =
+      2 * ((j + 1) * (j * (j + 2)) ^ 2) +
+        20 * ((j + 1) * j * (j + 2)) + 18 * (j + 1) := by
+  cases j <;> simp [spinBranch]
+  ring
+
+/-- The fourth weight moment is exact; the additive form avoids natural-number subtraction. -/
+theorem tensorSpin_casimir_square_moment (n : ℕ) :
+    ((tensorSpinWeights n).map fun j => (j + 1) * (j * (j + 2)) ^ 2).sum +
+      6 * n * 2 ^ n = 15 * n ^ 2 * 2 ^ n := by
+  induction n with
+  | zero => simp [tensorSpinWeights]
+  | succ n ih =>
+    rw [tensorSpinWeights, sum_flatMap_spin]
+    simp_rw [spinBranch_casimir_square]
+    rw [List.sum_map_add, List.sum_map_add, sum_map_mul, sum_map_mul, sum_map_mul,
+      tensorSpin_casimir_moment, tensorSpin_dimension, pow_succ]
+    nlinarith only [ih]
+
+/-- The fourth moment gives a quartic tail bound for the same actual constituent distribution. -/
+theorem tensorSpin_tail_bound_fourth (n L : ℕ) :
+    ((L + 1) * (L + 3)) ^ 2 * tensorSpinTailDimension n L + 6 * n * 2 ^ n ≤
+      15 * n ^ 2 * 2 ^ n := by
+  have hb : ((L + 1) * (L + 3)) ^ 2 * tensorSpinTailDimension n L ≤
+      ((tensorSpinWeights n).map fun j => (j + 1) * (j * (j + 2)) ^ 2).sum := by
+    rw [tensorSpinTailDimension, ← sum_map_mul]
+    apply List.sum_le_sum
+    intro j _
+    by_cases hj : L + 1 ≤ j
+    · rw [if_pos hj]
+      have hprod : (L + 1) * (L + 3) ≤ j * (j + 2) :=
+        Nat.mul_le_mul hj (by omega)
+      calc
+        _ ≤ (j * (j + 2)) ^ 2 * (j + 1) :=
+          Nat.mul_le_mul_right (j + 1) (Nat.pow_le_pow_left hprod 2)
+        _ = _ := by ring
+    · rw [if_neg hj, mul_zero]
+      exact Nat.zero_le _
+  have hm := tensorSpin_casimir_square_moment n
+  omega
+
 end GaloisForLFunctions.RepresentationLifting.Symplectic
 
 #print axioms GaloisForLFunctions.RepresentationLifting.Symplectic.tensorSpin_character
 #print axioms GaloisForLFunctions.RepresentationLifting.Symplectic.tensorSpin_dimension
 #print axioms GaloisForLFunctions.RepresentationLifting.Symplectic.tensorSpin_casimir_moment
 #print axioms GaloisForLFunctions.RepresentationLifting.Symplectic.tensorSpin_tail_bound
+#print axioms GaloisForLFunctions.RepresentationLifting.Symplectic.tensorSpin_casimir_square_moment
+#print axioms GaloisForLFunctions.RepresentationLifting.Symplectic.tensorSpin_tail_bound_fourth

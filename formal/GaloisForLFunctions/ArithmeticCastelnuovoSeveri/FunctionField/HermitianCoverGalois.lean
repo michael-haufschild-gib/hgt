@@ -16,7 +16,7 @@ namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open ArithmeticHarmonicAnalysis
 variable (p : ℕ) [Fact p.Prime] (d r m : ℕ)
 local notation "H" => HermitianKummerField p (hermitianKummerCoverIndex d r m)
-local notation "J" => (normalizedKummerHermitianEmbedding p d r m).fieldRange
+local notation "J" => AlgHom.fieldRange (normalizedKummerHermitianEmbedding p d r m)
 
 /-- The actual Hermitian source is finite-dimensional over the image of the normalized cover. -/
 instance normalizedKummerHermitianEmbedding_finiteDimensional : FiniteDimensional J H :=

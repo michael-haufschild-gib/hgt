@@ -4,6 +4,7 @@ import GaloisForLFunctions.Bottcher.Arithmetic.SmallCMUnits
 import GaloisForLFunctions.Bottcher.Arithmetic.UnicriticalOrbitBounds
 import GaloisForLFunctions.Bottcher.Arithmetic.CriticalParameterIntegrality
 import GaloisForLFunctions.Bottcher.Arithmetic.CMCriticalOrbits
+import GaloisForLFunctions.Bottcher.Arithmetic.CMCriticalClassification
 import GaloisForLFunctions.Bottcher.GreenFunction
 import GaloisForLFunctions.Bottcher.ComplexLogBound
 import GaloisForLFunctions.Bottcher.BottcherCoord

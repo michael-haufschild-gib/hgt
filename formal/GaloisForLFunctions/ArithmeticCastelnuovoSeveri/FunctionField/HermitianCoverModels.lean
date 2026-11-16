@@ -21,6 +21,13 @@ local notation "H" => HermitianKummerField p s
 local notation "R" => kummerExponent (p ^ (d + 1)) (r + 1)
 local notation "φ" => normalizedKummerHermitianEmbedding p d r m
 
+private theorem fieldRange_comp_equiv {F E E' L : Type*}
+    [Field F] [Field E] [Field E'] [Field L]
+    [Algebra F E] [Algebra F E'] [Algebra F L]
+    (f : E →ₐ[F] L) (e : E' ≃ₐ[F] E) :
+    (f.comp e.toAlgHom).fieldRange = f.fieldRange := by
+  rw [← AlgHom.map_fieldRange, AlgEquiv.fieldRange_eq_top, ← AlgHom.fieldRange_eq_map]
+
 /-- Every nonzero trace-zero coefficient choice admits the same Hermitian cover. -/
 def traceChoiceKummerHermitianEmbedding (η : KummerTraceChoices p s) :
     SquareKummerField p s (η.val⁻¹ ^ R) (p ^ (d + 1) - 2) R →ₐ[K] H :=
@@ -33,9 +40,8 @@ theorem traceChoiceKummerHermitianEmbedding_injective (η : KummerTraceChoices p
 
 /-- Coefficient rescaling preserves the actual subfield inside the Hermitian source. -/
 theorem traceChoiceKummerHermitianEmbedding_fieldRange (η : KummerTraceChoices p s) :
-    (traceChoiceKummerHermitianEmbedding p d r m η).fieldRange = (φ).fieldRange := by
-  rw [traceChoiceKummerHermitianEmbedding, ← AlgHom.map_fieldRange,
-    AlgEquiv.fieldRange_eq_top, ← AlgHom.fieldRange_eq_map]
+    (traceChoiceKummerHermitianEmbedding p d r m η).fieldRange = (φ).fieldRange :=
+  fieldRange_comp_equiv (φ) (kummerTraceChoiceEquiv p s η (p ^ (d + 1) - 2) R).symm
 
 /-- The exact covering degree holds for every trace-zero coefficient choice. -/
 theorem traceChoiceKummerHermitianEmbedding_finrank (η : KummerTraceChoices p s) :
@@ -55,11 +61,16 @@ private def coverReflectionParameter : Fin (2 * ((r + 1) * (m + 1) - 1) + 1) :=
     have h : (r + 1) * (m + 1) = r + 1 + (r + 1) * m := by ring
     omega⟩
 
+private def coverReflectionEquiv :
+    NormalizedKummerField p s d r ≃ₐ[K]
+      NormalizedKummerField p s d (2 * ((r + 1) * (m + 1) - 1) - r) :=
+  normalizedKummerReflectionEquiv p d ((r + 1) * (m + 1) - 1)
+    (coverReflectionParameter r m)
+
 /-- Reflecting the exponent gives an embedding of the complementary normalized Kummer model. -/
 def reflectedKummerHermitianEmbedding :
     NormalizedKummerField p s d (2 * ((r + 1) * (m + 1) - 1) - r) →ₐ[K] H :=
-  (φ).comp (normalizedKummerReflectionEquiv p d ((r + 1) * (m + 1) - 1)
-    (coverReflectionParameter r m)).symm.toAlgHom
+  (φ).comp (coverReflectionEquiv p d r m).symm.toAlgHom
 
 /-- The reflected covering is an embedding of actual function fields. -/
 theorem reflectedKummerHermitianEmbedding_injective :
@@ -68,9 +79,8 @@ theorem reflectedKummerHermitianEmbedding_injective :
 
 /-- Reflection preserves the subfield inside the Hermitian source. -/
 theorem reflectedKummerHermitianEmbedding_fieldRange :
-    (reflectedKummerHermitianEmbedding p d r m).fieldRange = (φ).fieldRange := by
-  rw [reflectedKummerHermitianEmbedding, ← AlgHom.map_fieldRange,
-    AlgEquiv.fieldRange_eq_top, ← AlgHom.fieldRange_eq_map]
+    (reflectedKummerHermitianEmbedding p d r m).fieldRange = (φ).fieldRange :=
+  fieldRange_comp_equiv (φ) (coverReflectionEquiv p d r m).symm
 
 /-- The reflected cover has the same exact extension degree. -/
 theorem reflectedKummerHermitianEmbedding_finrank :

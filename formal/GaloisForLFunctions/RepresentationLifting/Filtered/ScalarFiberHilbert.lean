@@ -1,6 +1,7 @@
 import Mathlib.RingTheory.AdjoinRoot
 import Mathlib.LinearAlgebra.TensorProduct.Basis
 import Mathlib.LinearAlgebra.Dimension.Constructions
+import Mathlib.FieldTheory.KummerPolynomial
 
 /-!
 # Filtered dimensions survive scalar specialization
@@ -35,6 +36,17 @@ def scalarFiberBasis (m : ℕ) (a : K) : Module.Basis (Fin (m + 1)) K (ScalarFib
     scalarFiberBasis m a i = AdjoinRoot.root (X ^ (m + 1) - C a) ^ (i : ℕ) := by
   simp [scalarFiberBasis, Module.Basis.reindex_apply, PowerBasis.basis_eq_pow]
 
+/-- Reduction by the monic relation never increases a monomial's degree. -/
+theorem scalarFiber_power_reduction (m : ℕ) (a : K) (k : ℕ) :
+    AdjoinRoot.root (X ^ (m + 1) - C a) ^ k =
+      a ^ (k / (m + 1)) • scalarFiberBasis m a
+        ⟨k % (m + 1), Nat.mod_lt _ (Nat.succ_pos m)⟩ := by
+  rw [scalarFiberBasis_apply]
+  conv_lhs => rw [← Nat.mod_add_div k (m + 1), pow_add, pow_mul,
+    root_X_pow_sub_C_pow]
+  rw [Algebra.smul_def, map_pow]
+  exact mul_comm _ _
+
 /-- Two independent scalar power relations, realized as the tensor product of their quotients. -/
 abbrev ScalarBox (m n : ℕ) (a b : K) := ScalarFiber m a ⊗[K] ScalarFiber n b
 
@@ -46,8 +58,8 @@ def scalarBoxBasis (m n : ℕ) (a b : K) :
 @[simp] theorem scalarBoxBasis_apply (m n : ℕ) (a b : K)
     (i : Fin (m + 1)) (j : Fin (n + 1)) :
     scalarBoxBasis m n a b (i, j) =
-      AdjoinRoot.root (X ^ (m + 1) - C a) ^ (i : ℕ) ⊗ₜ[K]
-        AdjoinRoot.root (X ^ (n + 1) - C b) ^ (j : ℕ) := by
+      (AdjoinRoot.root (X ^ (m + 1) - C a) ^ (i : ℕ)) ⊗ₜ[K]
+        (AdjoinRoot.root (X ^ (n + 1) - C b) ^ (j : ℕ)) := by
   simp [scalarBoxBasis]
 
 /-- The whole quotient has the expected complete-intersection dimension. -/
@@ -64,6 +76,46 @@ abbrev ScalarBoxDegreeIndex (m n d : ℕ) :=
 def scalarBoxFiltered (m n : ℕ) (a b : K) (d : ℕ) : Submodule K (ScalarBox m n a b) :=
   Submodule.span K (Set.range fun ij : ScalarBoxDegreeIndex m n d =>
     scalarBoxBasis m n a b ij.val)
+
+/-- All monomials below the cutoff lie in the rectangular filtration, including unreduced powers. -/
+theorem scalarBox_monomial_mem (m n : ℕ) (a b : K) (i j : ℕ) :
+    (AdjoinRoot.root (X ^ (m + 1) - C a) ^ i) ⊗ₜ[K]
+      (AdjoinRoot.root (X ^ (n + 1) - C b) ^ j) ∈ scalarBoxFiltered m n a b (i + j + 1) := by
+  rw [scalarFiber_power_reduction, scalarFiber_power_reduction, TensorProduct.smul_tmul_smul]
+  apply Submodule.smul_mem
+  apply Submodule.subset_span
+  refine ⟨⟨(⟨i % (m + 1), Nat.mod_lt _ (Nat.succ_pos m)⟩,
+    ⟨j % (n + 1), Nat.mod_lt _ (Nat.succ_pos n)⟩), ?_⟩, ?_⟩
+  · have hi := Nat.mod_le i (m + 1)
+    have hj := Nat.mod_le j (n + 1)
+    change i % (m + 1) + j % (n + 1) < i + j + 1
+    omega
+  · exact Module.Basis.tensorProduct_apply _ _ _ _
+
+/-- Increasing the cutoff enlarges the filtered space. -/
+theorem scalarBoxFiltered_mono (m n : ℕ) (a b : K) :
+    Monotone (scalarBoxFiltered m n a b) := by
+  intro d e hde
+  apply Submodule.span_mono
+  rintro _ ⟨ij, rfl⟩
+  exact ⟨⟨ij.val, lt_of_lt_of_le ij.property hde⟩, rfl⟩
+
+/-- The standard-monomial filtration equals the actual total-degree monomial filtration. -/
+theorem scalarBoxFiltered_eq_degree_span (m n : ℕ) (a b : K) (d : ℕ) :
+    scalarBoxFiltered m n a b d = Submodule.span K
+      (Set.range fun ij : {ij : ℕ × ℕ // ij.1 + ij.2 < d} =>
+        (AdjoinRoot.root (X ^ (m + 1) - C a) ^ ij.val.1) ⊗ₜ[K]
+          (AdjoinRoot.root (X ^ (n + 1) - C b) ^ ij.val.2)) := by
+  apply le_antisymm
+  · apply Submodule.span_le.mpr
+    rintro _ ⟨ij, rfl⟩
+    apply Submodule.subset_span
+    exact ⟨⟨((ij.val.1 : ℕ), (ij.val.2 : ℕ)), ij.property⟩,
+      (scalarBoxBasis_apply m n a b ij.val.1 ij.val.2).symm⟩
+  · apply Submodule.span_le.mpr
+    rintro _ ⟨ij, rfl⟩
+    exact scalarBoxFiltered_mono m n a b (Nat.succ_le_of_lt ij.property)
+      (scalarBox_monomial_mem m n a b ij.val.1 ij.val.2)
 
 /-- Every filtered dimension is an explicit lattice-point count independent of the parameters. -/
 theorem scalarBoxFiltered_finrank (m n : ℕ) (a b : K) (d : ℕ) :
@@ -89,12 +141,14 @@ theorem scalarBoxTransport_filtered (m n : ℕ) (a b a' b' : K) (d : ℕ) :
       scalarBoxFiltered m n a' b' d := by
   unfold scalarBoxFiltered
   rw [Submodule.map_span, ← Set.range_comp]
-  congr 1
+  apply congrArg (Submodule.span K)
+  apply congrArg Set.range
   funext ij
   exact Module.Basis.equiv_apply _ _ _ _
 
 end GaloisForLFunctions.RepresentationLifting.Filtered
 
 #print axioms GaloisForLFunctions.RepresentationLifting.Filtered.scalarBox_finrank
+#print axioms GaloisForLFunctions.RepresentationLifting.Filtered.scalarBoxFiltered_eq_degree_span
 #print axioms GaloisForLFunctions.RepresentationLifting.Filtered.scalarBoxFiltered_specialization
 #print axioms GaloisForLFunctions.RepresentationLifting.Filtered.scalarBoxTransport_filtered

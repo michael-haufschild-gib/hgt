@@ -63,7 +63,7 @@ theorem weightRaisingPart_power_span (wt : ι → Fin (w + 1)) (A : Matrix ι ι
   have h := Submodule.span_range_natDegree_eq_adjoin
     (R := K) (x := weightRaisingPart wt A) (Polynomial.monic_X_pow (w + 1))
     (by simpa using weightRaisingPart_nilpotent wt A)
-  simpa only [Polynomial.natDegree_X_pow] using h
+  simpa only [Polynomial.natDegree_X_pow, Finset.coe_image] using h
 
 /-- Weight multiplicities do not enlarge the dimension of the one-generator algebra. -/
 theorem weightRaisingPart_adjoin_finrank (wt : ι → Fin (w + 1)) (A : Matrix ι ι K) :

@@ -239,12 +239,16 @@ theorem correlation_wMat (Θ : HyperbolicSpace → ℂ)
     (t : O) (w : HyperbolicSpace) :
     P.heckeCorrelation Θ (complexMatrix (P.wMat * transThree t) • w) =
       complexCharacter P.wMat ^ 2 * (P.heckeLow Θ (P.wShift + t) w * P.heckeHigh Θ w) := by
+  have h1 : Θ (P.dilation • (complexMatrix (P.wMat * transThree t) • w)) =
+      complexCharacter P.wMat ^ 2 * Θ (P.contraction • (complexMatrix (transThree (P.wShift + t)) • w)) := by
+    rw [map_mul, mul_smul, ← mul_smul P.dilation, P.dilation_wMat, mul_smul, mul_smul, hΘ,
+      complexCharacter_highMat, ← mul_smul (complexMatrix (transThree P.wShift)), ← map_mul, transThree_mul]
+  have h2 : Θ (P.contraction • (complexMatrix (P.wMat * transThree t) • w)) = Θ (P.dilation • w) := by
+    rw [map_mul, mul_smul, ← mul_smul P.contraction, P.contraction_wMat, mul_smul, mul_smul, hΘ,
+      complexCharacter_lowerThree, one_mul, hΘ, complexCharacter_transThree, one_mul, ← mul_smul,
+      P.dilation_transThree, mul_smul, hΘ, complexCharacter_transThree, one_mul]
   unfold heckeCorrelation heckeHigh heckeLow
-  rw [map_mul, ← mul_smul, ← mul_assoc, P.dilation_wMat, ← mul_smul, mul_assoc,
-    ← map_mul complexMatrix (transThree P.wShift), transThree_mul, mul_assoc, mul_smul, hΘ,
-    complexCharacter_highMat, mul_smul, ← mul_assoc P.contraction, P.contraction_wMat, mul_assoc, mul_assoc,
-    mul_smul, hΘ, complexCharacter_lowerThree, one_mul, mul_smul, hΘ, complexCharacter_transThree, one_mul,
-    ← mul_smul, P.dilation_transThree, mul_smul, hΘ, complexCharacter_transThree, one_mul, mul_smul]
+  rw [h1, h2]
   ring
 
 theorem correlation_lowerThree (Θ : HyperbolicSpace → ℂ)
@@ -252,11 +256,17 @@ theorem correlation_lowerThree (Θ : HyperbolicSpace → ℂ)
     (y : O) (hy : ¬ P.p ∣ y) (t : O) (w : HyperbolicSpace) :
     P.heckeCorrelation Θ (complexMatrix (lowerThree y * transThree t) • w) =
       ringComplex (symbol (3 * y) P.p) * P.heckeLow Θ (t - P.lowBeta y) w * P.heckeLow Θ t w := by
+  have h1 : Θ (P.dilation • (complexMatrix (lowerThree y * transThree t) • w)) =
+      ringComplex (symbol (3 * y) P.p) * Θ (P.contraction • (complexMatrix (transThree (t - P.lowBeta y)) • w)) := by
+    rw [map_mul, mul_smul, ← mul_smul P.dilation, P.dilation_lowerThree y hy, mul_smul, mul_smul, hΘ,
+      P.complexCharacter_lowMat y hy, ← mul_smul (complexMatrix (transThree (-P.lowBeta y))), ← map_mul,
+      transThree_mul, show -P.lowBeta y + t = t - P.lowBeta y by ring]
+  have h2 : Θ (P.contraction • (complexMatrix (lowerThree y * transThree t) • w)) =
+      Θ (P.contraction • (complexMatrix (transThree t) • w)) := by
+    rw [map_mul, mul_smul, ← mul_smul P.contraction, P.contraction_lowerThree, mul_smul, hΘ,
+      complexCharacter_lowerThree, one_mul]
   unfold heckeCorrelation heckeLow
-  rw [map_mul, ← mul_smul, ← mul_assoc, P.dilation_lowerThree y hy, mul_assoc, mul_assoc,
-    ← map_mul complexMatrix (transThree (-P.lowBeta y)), transThree_mul, mul_smul, hΘ, P.complexCharacter_lowMat y hy,
-    ← mul_assoc P.contraction, P.contraction_lowerThree, mul_assoc, mul_smul, hΘ, complexCharacter_lowerThree,
-    one_mul, mul_smul, mul_smul, show -P.lowBeta y + t = t - P.lowBeta y by ring]
+  rw [h1, h2]
 
 variable (P)
 
