@@ -30,7 +30,7 @@ namespace GaloisForLFunctions.OrderSixMetaplecticTheory
 
 open MetaplecticMobiusDescent MetaplecticMobiusDescent.Eisenstein MetaplecticMobiusDescent.CubicKubota
   MetaplecticMobiusDescent.CubicEisenstein SpectralTheoryOfTheCubicCover
-  MetaplecticMobiusDescent.CubicEisenstein.RationalSource
+  MetaplecticMobiusDescent.CubicEisenstein.RationalSource MetaplecticMobiusDescent.CubicJacobi
 
 /-! ### Patterson's relations at the inert prime `2` -/
 
@@ -213,6 +213,7 @@ theorem norm_four_mul_cube_lt (s : ℂ) (hs : 2 / 3 < s.re) : ‖4 * ((2 : ℂ) 
   have h4 : (2 : ℝ) ^ (-2 : ℝ) = 1 / 4 := by
     rw [Real.rpow_neg (by norm_num), show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
     norm_num
+  rw [h4] at h
   linarith
 
 theorem one_sub_four_mul_cube_ne_zero (s : ℂ) (hs : 2 / 3 < s.re) : 1 - 4 * ((2 : ℂ) ^ (-s)) ^ 3 ≠ 0 := by
