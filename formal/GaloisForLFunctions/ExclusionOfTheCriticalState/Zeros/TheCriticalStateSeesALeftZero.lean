@@ -45,8 +45,7 @@ private theorem integral_scaled_inv_sq_add_sq {a : ℝ} (ha : a ≠ 0) :
     have hsq : |a| ^ 2 = a ^ 2 := sq_abs a
     field_simp [ha, ha2.ne']
     nlinarith [hsq]
-  rw [hpt, integral_const_mul, Measure.integral_comp_mul_left (fun x : ℝ => (1 + x ^ 2)⁻¹)
-    (inv_ne_zero ha2.ne')]
+  rw [hpt, integral_const_mul, Measure.integral_comp_mul_left (fun x : ℝ => (1 + x ^ 2)⁻¹) |a|⁻¹]
   simp only [inv_inv, abs_abs, smul_eq_mul, integral_univ_inv_one_add_sq]
   split_ifs with hpos
   · rw [abs_of_pos hpos]
@@ -63,15 +62,16 @@ private theorem integrable_scaled_inv_sq_add_sq {a : ℝ} (ha : a ≠ 0) :
   have hm : 0 < min (a ^ 2) 1 := lt_min ha2 one_pos
   refine hdom.mono' (by
     refine Continuous.aestronglyMeasurable ?_
-    exact continuous_const.div (continuous_const.add (continuous_pow 2))
-      fun u => by nlinarith [sq_nonneg u]) (Eventually.of_forall fun u => ?_)
+    exact continuous_const.div (by fun_prop : Continuous fun u : ℝ => a ^ 2 + u ^ 2)
+      fun u => (by nlinarith [sq_nonneg u] : 0 < a ^ 2 + u ^ 2).ne')
+      (Eventually.of_forall fun u => ?_)
   rw [Real.norm_eq_abs, abs_div, abs_of_pos (by nlinarith [sq_nonneg u] : 0 < a ^ 2 + u ^ 2)]
   have hle : min (a ^ 2) 1 * (1 + u ^ 2) ≤ a ^ 2 + u ^ 2 := by
     have h1 : min (a ^ 2) 1 ≤ a ^ 2 := min_le_left _ _
     have h2 : min (a ^ 2) 1 ≤ 1 := min_le_right _ _
     nlinarith [sq_nonneg u]
-  rw [div_mul_eq_mul_div, ← div_eq_mul_inv]
-  exact div_le_div_of_nonneg_left (abs_nonneg a) hm hle
+  rw [← div_eq_mul_inv, div_div]
+  exact div_le_div_of_nonneg_left (abs_nonneg a) (mul_pos hm (by positivity)) hle
 
 private theorem integrable_odd_diff_cauchy {a b : ℝ} (ha : a ≠ 0) (hb : b ≠ 0) :
     Integrable fun u : ℝ => u * ((a ^ 2 + u ^ 2)⁻¹ - (b ^ 2 + u ^ 2)⁻¹) := by
@@ -82,15 +82,16 @@ private theorem integrable_odd_diff_cauchy {a b : ℝ} (ha : a ≠ 0) (hb : b �
   have hdom : Integrable fun u : ℝ => (|b ^ 2 - a ^ 2| / m ^ 2) * (1 + u ^ 2)⁻¹ :=
     integrable_inv_one_add_sq.const_mul _
   have hcont : Continuous fun u : ℝ => u * ((a ^ 2 + u ^ 2)⁻¹ - (b ^ 2 + u ^ 2)⁻¹) :=
-    continuous_id.mul (((continuous_const.add (continuous_pow 2)).inv₀
-      fun u => by nlinarith [sq_nonneg u]).sub
-      ((continuous_const.add (continuous_pow 2)).inv₀ fun u => by nlinarith [sq_nonneg u]))
+    continuous_id.mul (((by fun_prop : Continuous fun u : ℝ => a ^ 2 + u ^ 2).inv₀
+      fun u => (by nlinarith [sq_nonneg u] : 0 < a ^ 2 + u ^ 2).ne').sub
+      ((by fun_prop : Continuous fun u : ℝ => b ^ 2 + u ^ 2).inv₀
+        fun u => (by nlinarith [sq_nonneg u] : 0 < b ^ 2 + u ^ 2).ne'))
   refine hdom.mono' hcont.aestronglyMeasurable (Eventually.of_forall fun u => ?_)
   have hda : 0 < a ^ 2 + u ^ 2 := by nlinarith [sq_nonneg u]
   have hdb : 0 < b ^ 2 + u ^ 2 := by nlinarith [sq_nonneg u]
   have hpt : u * ((a ^ 2 + u ^ 2)⁻¹ - (b ^ 2 + u ^ 2)⁻¹) =
       u * (b ^ 2 - a ^ 2) / ((a ^ 2 + u ^ 2) * (b ^ 2 + u ^ 2)) := by
-    field_simp [hda.ne', hdb.ne']
+    field_simp [hda.ne', hdb.ne']; ring
   rw [hpt, Real.norm_eq_abs, abs_div, abs_mul, abs_of_pos (mul_pos hda hdb)]
   have hma : m * (1 + u ^ 2) ≤ a ^ 2 + u ^ 2 := by
     have h1 : m ≤ a ^ 2 := (min_le_left _ _).trans (min_le_left _ _)
@@ -106,22 +107,20 @@ private theorem integrable_odd_diff_cauchy {a b : ℝ} (ha : a ≠ 0) (hb : b �
   have hu : |u| ≤ 1 + u ^ 2 := by nlinarith [sq_nonneg (|u| - 1), sq_abs u]
   have hnum : |u| * |b ^ 2 - a ^ 2| * (m ^ 2 * (1 + u ^ 2)) ≤
       |b ^ 2 - a ^ 2| * (m ^ 2 * (1 + u ^ 2) ^ 2) := by
-    have : |u| * (1 + u ^ 2) ≤ (1 + u ^ 2) ^ 2 := by
-      rw [sq]; exact mul_le_mul_of_nonneg_right hu (by positivity)
-    nlinarith [mul_nonneg (abs_nonneg (b ^ 2 - a ^ 2)) (sq_nonneg m)]
-  rw [div_mul_eq_mul_div, ← div_eq_mul_inv, div_le_div_iff₀ (mul_pos hda hdb)
+    have h1 : |u| * (1 + u ^ 2) ≤ (1 + u ^ 2) ^ 2 := by nlinarith [hu, sq_nonneg u]
+    nlinarith [h1, mul_nonneg (abs_nonneg (b ^ 2 - a ^ 2)) (sq_nonneg m)]
+  rw [← div_eq_mul_inv, div_div, div_le_div_iff₀ (mul_pos hda hdb)
     (mul_pos (sq_pos_of_pos hm) (by positivity))]
-  calc |u| * |b ^ 2 - a ^ 2| * (m ^ 2 * (1 + u ^ 2))
-      ≤ |b ^ 2 - a ^ 2| * (m ^ 2 * (1 + u ^ 2) ^ 2) := hnum
-    _ ≤ |b ^ 2 - a ^ 2| * ((a ^ 2 + u ^ 2) * (b ^ 2 + u ^ 2)) :=
-      mul_le_mul_of_nonneg_left hprod (abs_nonneg _)
+  exact hnum.trans (mul_le_mul_of_nonneg_left hprod (abs_nonneg _))
 
 private theorem integral_odd_diff_cauchy_eq_zero (a b : ℝ) :
     (∫ u : ℝ, u * ((a ^ 2 + u ^ 2)⁻¹ - (b ^ 2 + u ^ 2)⁻¹)) = 0 := by
-  have h := integral_comp_neg (fun u : ℝ => u * ((a ^ 2 + u ^ 2)⁻¹ - (b ^ 2 + u ^ 2)⁻¹))
-  have hneg : (fun u : ℝ => (-u) * ((a ^ 2 + (-u) ^ 2)⁻¹ - (b ^ 2 + (-u) ^ 2)⁻¹)) =
+  have h := Measure.integral_comp_mul_left
+    (fun u : ℝ => u * ((a ^ 2 + u ^ 2)⁻¹ - (b ^ 2 + u ^ 2)⁻¹)) (-1)
+  have hneg : (fun u : ℝ => (-1 * u) * ((a ^ 2 + (-1 * u) ^ 2)⁻¹ - (b ^ 2 + (-1 * u) ^ 2)⁻¹)) =
       fun u : ℝ => -(u * ((a ^ 2 + u ^ 2)⁻¹ - (b ^ 2 + u ^ 2)⁻¹)) := by
     funext u; ring
+  simp only [inv_neg, inv_one, abs_neg, abs_one, one_smul] at h
   rw [hneg, integral_neg] at h
   linarith
 
@@ -145,16 +144,16 @@ private theorem integrable_cauchy_pair_vertical {p₀ : ℂ} {K σ : ℝ}
     apply Complex.ext <;> simp [div_eq_mul_inv] <;> ring
   have hint_u : Integrable fun u : ℝ => (((a : ℂ) + u * I)⁻¹ - ((b : ℂ) + u * I)⁻¹) := by
     rw [hdecomp]
-    exact (Complex.continuous_ofReal.comp_integrable
+    exact (Complex.ofRealCLM.integrable_comp
       ((integrable_scaled_inv_sq_add_sq ha).sub (integrable_scaled_inv_sq_add_sq hb))).sub
-      ((Complex.continuous_ofReal.comp_integrable (integrable_odd_diff_cauchy ha hb)).const_mul I)
+      ((Complex.ofRealCLM.integrable_comp (integrable_odd_diff_cauchy ha hb)).const_mul I)
   have hsub := hint_u.comp_sub_right p₀.im
   refine hsub.congr (Eventually.of_forall fun t => ?_)
   dsimp only [Function.comp_def]
   have e1 : ((σ : ℂ) + t * I) - p₀ = (a : ℂ) + (t - p₀.im : ℝ) * I := by
-    apply Complex.ext <;> simp [a]; ring
+    apply Complex.ext <;> simp [a] <;> ring
   have e2 : ((σ : ℂ) + t * I) - (p₀ + K) = (b : ℂ) + (t - p₀.im : ℝ) * I := by
-    apply Complex.ext <;> simp [b]; ring
+    apply Complex.ext <;> simp [b] <;> ring
   rw [e1, e2]
 
 private theorem integral_cauchy_pair_vertical {p₀ : ℂ} {K σ : ℝ} (hK : 0 < K)
@@ -169,12 +168,13 @@ private theorem integral_cauchy_pair_vertical {p₀ : ℂ} {K σ : ℝ} (hK : 0 
   have hb : b ≠ 0 := sub_ne_zero.mpr h2.symm
   have hshift : (∫ t : ℝ, ((((σ : ℂ) + t * I) - p₀)⁻¹ - (((σ : ℂ) + t * I) - (p₀ + K))⁻¹)) =
       ∫ u : ℝ, (((a : ℂ) + u * I)⁻¹ - ((b : ℂ) + u * I)⁻¹) := by
-    rw [← integral_sub_right_eq_self _ p₀.im]
+    rw [← integral_add_right_eq_self _ p₀.im]
     refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+    dsimp only
     have e1 : ((σ : ℂ) + (t + p₀.im : ℝ) * I) - p₀ = (a : ℂ) + t * I := by
-      apply Complex.ext <;> simp [a]; ring
+      apply Complex.ext <;> simp [a] <;> ring
     have e2 : ((σ : ℂ) + (t + p₀.im : ℝ) * I) - (p₀ + K) = (b : ℂ) + t * I := by
-      apply Complex.ext <;> simp [b]; ring
+      apply Complex.ext <;> simp [b] <;> ring
     rw [e1, e2]
   rw [hshift]
   have hdecomp : (fun u : ℝ => (((a : ℂ) + u * I)⁻¹ - ((b : ℂ) + u * I)⁻¹)) =
@@ -189,31 +189,36 @@ private theorem integral_cauchy_pair_vertical {p₀ : ℂ} {K σ : ℝ} (hK : 0 
     apply Complex.ext <;> simp [div_eq_mul_inv] <;> ring
   have hintR : Integrable fun u : ℝ =>
       ((a / (a ^ 2 + u ^ 2) - b / (b ^ 2 + u ^ 2) : ℝ) : ℂ) :=
-    Complex.continuous_ofReal.comp_integrable
+    Complex.ofRealCLM.integrable_comp
       ((integrable_scaled_inv_sq_add_sq ha).sub (integrable_scaled_inv_sq_add_sq hb))
   have hintI : Integrable fun u : ℝ =>
       I * ((u * ((a ^ 2 + u ^ 2)⁻¹ - (b ^ 2 + u ^ 2)⁻¹) : ℝ) : ℂ) :=
-    (Complex.continuous_ofReal.comp_integrable (integrable_odd_diff_cauchy ha hb)).const_mul I
+    (Complex.ofRealCLM.integrable_comp (integrable_odd_diff_cauchy ha hb)).const_mul I
   rw [hdecomp, integral_sub hintR hintI, integral_const_mul, integral_complex_ofReal,
     integral_complex_ofReal, integral_odd_diff_cauchy_eq_zero, Complex.ofReal_zero, mul_zero,
     sub_zero, integral_sub (integrable_scaled_inv_sq_add_sq ha) (integrable_scaled_inv_sq_add_sq hb),
     integral_scaled_inv_sq_add_sq ha, integral_scaled_inv_sq_add_sq hb]
-  split_ifs with hsep hlt
-  · have ha_pos : 0 < a := by dsimp [a]; linarith [hsep.1]
+  by_cases hsep : p₀.re < σ ∧ σ < p₀.re + K
+  · rw [if_pos hsep]
+    have ha_pos : 0 < a := by dsimp [a]; linarith [hsep.1]
     have hb_neg : ¬ 0 < b := by dsimp [b]; linarith [hsep.2]
     rw [if_pos ha_pos, if_neg hb_neg]; push_cast; ring
-  · have ha_neg : ¬ 0 < a := by dsimp [a]; linarith
-    have hb_neg : ¬ 0 < b := by dsimp [b]; linarith
-    rw [if_neg ha_neg, if_neg hb_neg]; push_cast; ring
-  · have ha_pos : 0 < a := by
-      rcases lt_or_gt_of_ne h1 with hp | hp
-      · dsimp [a]; linarith
-      · exact absurd hp hlt
-    have hb_pos : 0 < b := by
-      rcases lt_or_gt_of_ne h2 with hp2 | hp2
-      · dsimp [b]; linarith
-      · exfalso; exact hsep ⟨by dsimp [a] at ha_pos; linarith, hp2⟩
-    rw [if_pos ha_pos, if_pos hb_pos]; push_cast; ring
+  · rw [if_neg hsep]
+    by_cases hlt : σ < p₀.re
+    · rw [if_pos hlt]
+      have ha_neg : ¬ 0 < a := by dsimp [a]; linarith
+      have hb_neg : ¬ 0 < b := by dsimp [b]; linarith
+      rw [if_neg ha_neg, if_neg hb_neg]; push_cast; ring
+    · rw [if_neg hlt]
+      have ha_pos : 0 < a := by
+        rcases lt_or_gt_of_ne h1 with hp | hp
+        · dsimp [a]; linarith
+        · exact absurd hp hlt
+      have hb_pos : 0 < b := by
+        rcases lt_or_gt_of_ne h2 with hp2 | hp2
+        · dsimp [b]; linarith
+        · exfalso; exact hsep ⟨by dsimp [a] at ha_pos; linarith, hp2⟩
+      rw [if_pos ha_pos, if_pos hb_pos]; push_cast; ring
 
 /-! ### One-pole vertical residue evaluation by `dslope` -/
 
@@ -275,7 +280,7 @@ private theorem integral_vertical_one_pole_left {G : ℂ → ℂ} {σ₀ σ₁ :
     have hKpt : IsCompact (Icc (-M) σ₀ ×ˢ Icc (-T₀) T₀) := isCompact_Icc.prod isCompact_Icc
     have hRcont : ContinuousOn (fun q : ℝ × ℝ => R ((q.1 : ℂ) + q.2 * I))
         (Icc (-M) σ₀ ×ˢ Icc (-T₀) T₀) := fun q hq =>
-      ((hR_diff _ hq.1.2).continuousAt.comp
+      ((hR_diff _ (by simp [hq.1.2])).continuousAt.comp
         (by fun_prop : Continuous fun q : ℝ × ℝ => (q.1 : ℂ) + q.2 * I).continuousAt).continuousWithinAt
     obtain ⟨C₀, hC₀⟩ := hKpt.exists_bound_of_continuousOn hRcont
     have hC₀n := abs_nonneg C₀
@@ -364,26 +369,19 @@ private theorem integral_vertical_one_pole_left {G : ℂ → ℂ} {σ₀ σ₁ :
       have hdomM : ∀ t : ℝ, ‖G ((-M : ℂ) + t * I) / (((-M : ℂ) + t * I) - p₀)‖ ≤
           (Cp * b M) * (1 + t ^ 2)⁻¹ := by
         intro t
+        have hreM : ((-M : ℂ) + t * I).re = -M := by simp
+        have himM : ((-M : ℂ) + t * I).im = t := by simp
         have hgap : 1 ≤ |((-M : ℂ) + t * I).re - p₀.re| := by
-          simp only [Complex.add_re, Complex.neg_re, Complex.ofReal_re, Complex.mul_re,
-            Complex.I_re, mul_zero, add_zero]
-          rw [abs_of_nonpos (by linarith)]
+          rw [hreM, abs_of_nonpos (by linarith)]
           linarith
         have hw := one_add_abs_le_norm_sub_of_re_gap one_pos hgap
-        simp only [Complex.add_im, Complex.neg_im, Complex.ofReal_im, Complex.mul_im,
-          Complex.ofReal_re, Complex.I_im, mul_one, neg_zero, zero_add, div_one,
-          show 1 + (1 + |p₀.im|) = Cp by dsimp [Cp]; ring] at hw
+        rw [himM, div_one, show 1 + (1 + |p₀.im|) = Cp by dsimp [Cp]; ring] at hw
         have hnpos : 0 < ‖((-M : ℂ) + t * I) - p₀‖ := by
           have : 0 < 1 + |t| := by positivity
           nlinarith
         rw [norm_div, div_le_iff₀ hnpos]
         have hG := hbleft M hM2 t
         have hsq : 1 + t ^ 2 ≤ (1 + |t|) ^ 2 := by nlinarith [sq_abs t, abs_nonneg t]
-        have h1 : ‖G ((-M : ℂ) + t * I)‖ * (1 + |t|) ≤ b M :=
-          (le_div_iff₀ (by positivity : 0 < 1 + |t|)).mp hG
-        have h2 : (1 + t ^ 2)⁻¹ * (1 + |t|) ≤ (1 + |t|)⁻¹ * (1 + |t|) ^ 2 := by
-          rw [inv_mul_eq_div, inv_mul_eq_div, div_le_div_iff₀ (by positivity) (by positivity)]
-          nlinarith [hsq, abs_nonneg t]
         calc ‖G ((-M : ℂ) + t * I)‖ ≤ b M / (1 + |t|) := hG
           _ = (Cp * b M / (1 + |t|) ^ 2) * ((1 + |t|) / Cp) := by
               field_simp [hCp.ne', (by positivity : (0 : ℝ) < 1 + |t|).ne']
@@ -396,19 +394,22 @@ private theorem integral_vertical_one_pole_left {G : ℂ → ℂ} {σ₀ σ₁ :
       have hint1 : Integrable fun t : ℝ => G ((-M : ℂ) + t * I) / (((-M : ℂ) + t * I) - p₀) := by
         have hcont : Continuous fun t : ℝ => G ((-M : ℂ) + t * I) / (((-M : ℂ) + t * I) - p₀) := by
           rw [continuous_iff_continuousAt]; intro t
-          exact ((hdiff _ (by simp; linarith)).continuousAt.comp (by fun_prop)).div
-            (by fun_prop) (fun e => by have := congrArg Complex.re e; simp at this; linarith)
+          have hd1 : ContinuousAt (G ∘ fun s : ℝ => (-M : ℂ) + s * I) t :=
+            ContinuousAt.comp (hdiff _ (by simp; linarith)).continuousAt
+              (by fun_prop : Continuous fun s : ℝ => (-M : ℂ) + s * I).continuousAt
+          exact hd1.div (by fun_prop) (fun e => by have := congrArg Complex.re e; simp at this; linarith)
         exact (integrable_inv_one_add_sq.const_mul (Cp * b M)).mono'
           hcont.aestronglyMeasurable (Eventually.of_forall hdomM)
       have hint2 : Integrable fun t : ℝ =>
-          G p₀ * ((((-M : ℂ) + t * I) - p₀)⁻¹ - (((-M : ℂ) + t * I) - p₁)⁻¹) :=
-        (integrable_cauchy_pair_vertical (p₀ := p₀) (K := K) (σ := -M)
+          G p₀ * ((((-M : ℂ) + t * I) - p₀)⁻¹ - (((-M : ℂ) + t * I) - p₁)⁻¹) := by
+        have hi := (integrable_cauchy_pair_vertical (p₀ := p₀) (K := K) (σ := -M)
           (by linarith) (by linarith)).const_mul (G p₀)
+        simpa only [Complex.ofReal_neg] using hi
       have hp_zero : (∫ t : ℝ, ((((-M : ℂ) + t * I) - p₀)⁻¹ - (((-M : ℂ) + t * I) - p₁)⁻¹)) = 0 := by
         have hc := integral_cauchy_pair_vertical (p₀ := p₀) (K := K) (σ := -M) hK
           (by linarith) (by linarith)
         rw [if_neg (by intro h; linarith [h.1]), if_pos (by linarith)] at hc
-        exact hc
+        simpa only [Complex.ofReal_neg] using hc
       rw [integral_congr_ae (Eventually.of_forall (congrFun heqM)), integral_sub hint1 hint2,
         integral_const_mul, hp_zero, mul_zero, sub_zero]
       refine (norm_integral_le_of_norm_le (integrable_inv_one_add_sq.const_mul (Cp * b M))
@@ -425,7 +426,7 @@ private theorem integral_vertical_one_pole_left {G : ℂ → ℂ} {σ₀ σ₁ :
         G p₀ * (((((σ₀ : ℂ) + t * I) - p₀)⁻¹ - (((σ₀ : ℂ) + t * I) - p₁)⁻¹)) := by
     funext t
     exact hR_eq _ (fun e => by have := congrArg Complex.re e; simp at this; linarith)
-      (fun e => by have := congrArg Complex.re e; simp [hp₁re] at this; linarith)
+      (fun e => by have := congrArg Complex.re e; simp [hp₁re] at this)
   have hint_G : Integrable fun t : ℝ => G ((σ₀ : ℂ) + t * I) / (((σ₀ : ℂ) + t * I) - p₀) := by
     set δ₀ := σ₀ - p₀.re
     have hδ₀ : 0 < δ₀ := sub_pos.mpr hp₀
@@ -433,29 +434,30 @@ private theorem integral_vertical_one_pole_left {G : ℂ → ℂ} {σ₀ σ₁ :
     have hCδ : 0 < Cδ := by dsimp [Cδ]; positivity
     have hcont : Continuous fun t : ℝ => G ((σ₀ : ℂ) + t * I) / (((σ₀ : ℂ) + t * I) - p₀) := by
       rw [continuous_iff_continuousAt]; intro t
-      exact ((hdiff _ (by simp; linarith)).continuousAt.comp (by fun_prop)).div
-        (by fun_prop) (fun e => by have := congrArg Complex.re e; simp at this; linarith)
+      have hd1 : ContinuousAt (G ∘ fun s : ℝ => (σ₀ : ℂ) + s * I) t :=
+        ContinuousAt.comp (hdiff _ (by simp; linarith)).continuousAt
+          (by fun_prop : Continuous fun s : ℝ => (σ₀ : ℂ) + s * I).continuousAt
+      exact hd1.div (by fun_prop) (fun e => by have := congrArg Complex.re e; simp at this; linarith)
     refine (integrable_inv_one_add_sq.const_mul (Cδ * B)).mono'
       hcont.aestronglyMeasurable (Eventually.of_forall fun t => ?_)
+    have hre0 : ((σ₀ : ℂ) + t * I).re = σ₀ := by simp
+    have him0 : ((σ₀ : ℂ) + t * I).im = t := by simp
     have hgap : δ₀ ≤ |((σ₀ : ℂ) + t * I).re - p₀.re| := by
-      simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_re, Complex.I_re, mul_zero, add_zero]
-      rw [abs_of_pos hδ₀]
+      rw [hre0]; exact (abs_of_pos hδ₀).ge
     have hw := one_add_abs_le_norm_sub_of_re_gap hδ₀ hgap
-    simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
-      Complex.I_im, mul_one, zero_add] at hw
+    rw [him0, show 1 + (1 + |p₀.im|) / δ₀ = Cδ by rfl] at hw
     have hnpos : 0 < ‖((σ₀ : ℂ) + t * I) - p₀‖ := by
       have : 0 < 1 + |t| := by positivity
       nlinarith
     rw [norm_div, div_le_iff₀ hnpos]
     have hG := hbound ((σ₀ : ℂ) + t * I) (by simp)
-    simp only [Complex.add_im, Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re,
-      Complex.I_im, mul_one, zero_add] at hG
+    rw [him0] at hG
     have hsq : 1 + t ^ 2 ≤ (1 + |t|) ^ 2 := by nlinarith [sq_abs t, abs_nonneg t]
     calc ‖G ((σ₀ : ℂ) + t * I)‖ ≤ B / (1 + |t|) := hG
       _ = (Cδ * B / (1 + |t|) ^ 2) * ((1 + |t|) / Cδ) := by
           field_simp [hCδ.ne', (by positivity : (0 : ℝ) < 1 + |t|).ne']
       _ ≤ (Cδ * B * (1 + t ^ 2)⁻¹) * ‖((σ₀ : ℂ) + t * I) - p₀‖ := by
-          refine mul_le_mul ?_ ((div_le_iff₀ hCδ).mpr (by dsimp [Cδ] at hw ⊢; linarith))
+          refine mul_le_mul ?_ ((div_le_iff₀ hCδ).mpr (by linarith))
             (by positivity) (mul_nonneg (mul_nonneg hCδ.le hB0) (by positivity))
           rw [div_eq_mul_inv]
           exact mul_le_mul_of_nonneg_left (inv_anti₀ (by positivity) hsq) (mul_nonneg hCδ.le hB0)

@@ -3,7 +3,7 @@ import GaloisForLFunctions.RHTower.Sieve.IntervalMultiples
 
 /-!+# Lower bounds from positive Euler factors
 
-The product `(1 - T)⁻¹ (1 - T^d)⁻¹` has degree-`n` coefficient
+For positive `d`, the product `(1 - T)⁻¹ (1 - T^d)⁻¹` has degree-`n` coefficient
 `⌊n/d⌋ + 1`. The degree-one infinity factor and any actual affine place
 therefore give a quantitative lower bound for the elliptic zeta coefficients.
 In particular, none of those coefficients vanishes.
@@ -15,7 +15,7 @@ open scoped BigOperators
 
 namespace GaloisForLFunctions.ArithmeticEffectivityTheory
 
-/-- Two geometric Euler factors count the possible multiples of the second degree. -/
+/-- Coefficient formula for two geometric factors, including the degree-zero convention. -/
 theorem geometricPair_coeff {R : Type*} [CommRing R] (d n : ℕ) :
     PowerSeries.coeff n
       (deningerBigWittGeom (1 : R) 1 * deningerBigWittGeom 1 d) =

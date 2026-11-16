@@ -40,7 +40,7 @@ theorem centeredMinimumPairing_eq_neg_max (N : ℕ) (c d : ℕ → ℝ) (L : ℝ
   have hconstant : (∑ i ∈ Icc 1 (N + 1), ∑ j ∈ Icc 1 (N + 1),
       centeredHarmonicWeight N c i * centeredHarmonicWeight N d j * L) = 0 := by
     simp_rw [mul_assoc, ← mul_sum, ← sum_mul, sum_centeredHarmonicWeight,
-      zero_mul, mul_zero, sum_const_zero]
+      zero_mul]
   unfold centeredMinimumPairing
   simp_rw [hmin, mul_sub, sum_sub_distrib]
   rw [hconstant, zero_sub]
@@ -75,7 +75,6 @@ theorem abs_centeredMinimumPairing_le (N : ℕ) (c d : ℕ → ℝ) (L : ℝ) :
         (mul_nonneg (abs_nonneg _) (abs_nonneg _))
     _ = _ := by
       simp_rw [mul_assoc, ← mul_sum, ← sum_mul]
-      ring
 
 #print axioms centeredMinimumPairing_eq_neg_max
 #print axioms centeredMinimumPairing_scale_invariant
