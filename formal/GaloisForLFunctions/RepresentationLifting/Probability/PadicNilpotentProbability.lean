@@ -23,7 +23,9 @@ theorem padicMatrixHaar_topNil (n : ℕ) :
     (padicMatrixHaar p n).real {A | IsTopologicallyNilpotent A} = 1 / (p : ℝ) ^ n := by
   simp_rw [padicMatrix_topNil_iff_residue_nil]
   rw [padicMatrixHaar_residue_probability]
-  exact_mod_cast primePower_nilpotent_matrix_density p 0 n
+  have h := congrArg (fun x : ℚ => (x : ℝ)) (primePower_nilpotent_matrix_density p 0 n)
+  push_cast at h
+  exact h
 
 /-- Finite residue of the trace, as an additive quotient. -/
 def padicMatrixTraceResidue (k n : ℕ) :
@@ -58,7 +60,7 @@ theorem padicMatrixHaar_trace_residue (k n : ℕ) (r : ZMod (p ^ k)) :
 /-- Every exact trace fiber has zero Haar measure in positive matrix dimension. -/
 theorem padicMatrixHaar_trace_fiber (n : ℕ) (t : ℤ_[p]) :
     padicMatrixHaar p (n + 1) {A | Matrix.trace A = t} = 0 := by
-  apply measureReal_eq_zero_iff.mp
+  apply (measureReal_eq_zero_iff (μ := padicMatrixHaar p (n + 1))).mp
   apply le_antisymm ?_ measureReal_nonneg
   by_contra! hpos
   obtain ⟨k, hk⟩ := PadicInt.exists_pow_neg_lt p hpos

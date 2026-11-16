@@ -39,22 +39,26 @@ theorem padicFittingDegreeProbability_eq_product (d k : ℕ) :
       (∏ i : Fin k, (1 - 1 / (p : ℝ) ^ (d + (i : ℕ) + 1))) / (p : ℝ) ^ d := by
   rw [padicFittingDegreeProbability_eq, fittingDegreeDensity_eq_product, Nat.card_zmod]
   push_cast
-  rfl
 
 /-- The residue-degree probabilities form a probability law. -/
 theorem sum_padicFittingDegreeProbability (n : ℕ) :
     (∑ d : Fin (n + 1), padicFittingDegreeProbability p n (d : ℕ)) = 1 := by
   simp_rw [padicFittingDegreeProbability_eq]
-  exact_mod_cast sum_fittingDegreeDensity (ZMod p) n
+  have h := congrArg (fun x : ℚ => (x : ℝ)) (sum_fittingDegreeDensity (ZMod p) n)
+  push_cast at h
+  exact h
 
 /-- Geometric tail bound, uniform in matrix size. -/
 theorem padicFittingDegreeProbability_tail_le (d k : ℕ) :
     (∑ i : Fin (k + 1), padicFittingDegreeProbability p (d + k) (d + (i : ℕ))) ≤
       (1 / (p : ℝ) ^ d) / (1 - 1 / (p : ℝ)) := by
   simp_rw [padicFittingDegreeProbability_eq]
-  exact_mod_cast (show (∑ i : Fin (k + 1), fittingDegreeDensity (ZMod p) (d + k)
-      (d + (i : ℕ))) ≤ (1 / (p : ℚ) ^ d) / (1 - 1 / (p : ℚ)) by
-    simpa only [Nat.card_zmod] using sum_fittingDegreeDensity_tail_le (ZMod p) d k)
+  have hq : (∑ i : Fin (k + 1), fittingDegreeDensity (ZMod p) (d + k)
+      (d + (i : ℕ))) ≤ (1 / (p : ℚ) ^ d) / (1 - 1 / (p : ℚ)) := by
+    simpa only [Nat.card_zmod] using sum_fittingDegreeDensity_tail_le (ZMod p) d k
+  have hr := (Rat.cast_le (K := ℝ)).mpr hq
+  push_cast at hr
+  exact hr
 
 #print axioms padicFittingDegreeProbability_eq_product
 #print axioms sum_padicFittingDegreeProbability
