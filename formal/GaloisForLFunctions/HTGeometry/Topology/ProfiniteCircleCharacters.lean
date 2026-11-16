@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.HTGeometry.ProfiniteCircleCharacters
 variable {G : Type*} [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
   [CompactSpace G] [TotallyDisconnectedSpace G]
 
-/-- A small arc contains no nontrivial subgroup of the circle. -/
+/-- The kernel of every continuous circle character is open. -/
 theorem isOpen_ker (χ : G →ₜ* Circle) : IsOpen (χ.toMonoidHom.ker : Set G) := by
   obtain ⟨U, hU⟩ := ProfiniteGrp.exist_openNormalSubgroup_sub_open_nhds_of_one
     ((Circle.isOpen_centeredArc (π / 2)).preimage χ.continuous)
@@ -66,6 +66,7 @@ theorem exists_uniform_exponent (χ : G →ₜ* Circle) :
     (pow_card_eq_one' (x := ⟨χ g, ⟨g, rfl⟩⟩))
 
 #print axioms isOpen_ker
+#print axioms isLocallyConstant
 #print axioms finite_range
 #print axioms exists_uniform_exponent
 

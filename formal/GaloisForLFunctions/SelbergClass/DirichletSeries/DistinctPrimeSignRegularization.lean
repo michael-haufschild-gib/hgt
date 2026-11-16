@@ -6,10 +6,12 @@ import GaloisForLFunctions.RHTower.Sieve.MoebiusLogarithmicNormalization
 import Mathlib.Analysis.Calculus.IteratedDeriv.Lemmas
 
 /-!
-# The distinct-prime correction and the twin-prime constant
+# The distinct-prime continuation and its double zero
 
-At one, the normally convergent odd-prime correction is exactly half the
-gap-two Hardy–Littlewood singular series.
+The arithmetic Dirichlet series factors into reciprocal zeta, the prime-two
+correction and a normally convergent odd-prime product. At one, the last
+factor is half the gap-two Hardy–Littlewood singular series. The first two
+factors have simple zeros, giving the exact curvature `8 C₂ log 2`.
 -/
 
 noncomputable section
@@ -58,8 +60,9 @@ theorem distinctPrimeSignContinuation_eq_LSeries {s : ℂ} (hs : 1 < s.re) :
     have hd := one_sub_distinctPrimeDecay_ne_zero p hs0
     by_cases hp : p = correctionPrimeTwo
     · subst p
-      simp only [if_pos rfl, oddPrimeCorrectionFactor, correctionPrimeTwo, mul_one]
-      dsimp only [distinctPrimeTwoCorrection, correctionPrimeTwo] at hd ⊢
+      have hfactor : oddPrimeCorrectionFactor correctionPrimeTwo s = 1 := if_pos rfl
+      rw [if_pos (rfl : correctionPrimeTwo = correctionPrimeTwo), hfactor, mul_one]
+      dsimp only [distinctPrimeTwoCorrection]
       field_simp
     · have hp2 : (p : ℕ) ≠ 2 := fun he => hp (Subtype.ext he)
       rw [if_neg hp, one_mul, oddPrimeCorrectionFactor_eq p hs0, if_neg hp2]

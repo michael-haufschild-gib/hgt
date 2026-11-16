@@ -39,6 +39,8 @@ import GaloisForLFunctions.OrderSixMetaplecticTheory.TheHeckeTraceAtAPrimaryPrim
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheDilateCorrelationAtAPrimaryPrimeCarriesTheDoublePole
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheDilateCorrelationAtEveryPrimaryPrimeHasADoublePole
 import GaloisForLFunctions.OrderSixMetaplecticTheory.Arithmetic.ConductorNormalization
+import GaloisForLFunctions.OrderSixMetaplecticTheory.Arithmetic.ConductorZetaNormalization
+import GaloisForLFunctions.OrderSixMetaplecticTheory.Arithmetic.CompositeTwistPhase
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheOppositeFractionalTranslationsHaveTheSquareMultiplier
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheFractionalTraceIsInvariantUnderTheModularGroup
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheFractionalTraceIsASumOverTheProjectiveLineModuloTheSquare
@@ -54,6 +56,9 @@ import GaloisForLFunctions.OrderSixMetaplecticTheory.TheThetaSquareFactorsThroug
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheConjugateCubicTwistAtEveryOddPrimaryPrimeHasADoublePole
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheWeightedFractionalTraceIsInvariantUnderTheModularGroup
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheQuadraticWeightOfTheFractionalTraceSumsToSexticGaussSums
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheConstantTermOfTheQuadraticFractionalTraceReadsTheSexticTwist
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheQuadraticFractionalTraceIsABoundedRemainder
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheSexticTwistAndTheQuadraticTwistShareTheDoublePole
 
 /-!
 # Order-Six Metaplectic Theory over ℚ(ω)
@@ -63,6 +68,7 @@ identification of the row root numbers with conjugate squared theta coefficients
 layer laws, the analytic tools that evaluate first moments on the cubic cover (real-segment continuation,
 remainder ↔ zeros of `ζ_{ℚ(ω)}`), the conjugation symmetry that makes the theta scalar real and the
 main term of the squared theta series positive, the Hecke traces at every primary prime that give every
-cubic twist of the theta square its double pole, and the fractional traces that give every conjugate cubic twist
-its double pole. See `OrderSixMetaplecticTheory/README.md`.
+cubic twist of the theta square its double pole, the fractional traces that give every conjugate cubic twist
+its double pole, and the quadratic fractional traces that tie the conjugate sextic twist to the quadratic
+twist. See `OrderSixMetaplecticTheory/README.md`.
 -/

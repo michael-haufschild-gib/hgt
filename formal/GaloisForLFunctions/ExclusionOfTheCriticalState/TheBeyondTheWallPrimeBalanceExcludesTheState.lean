@@ -74,8 +74,10 @@ private theorem norm_laplace_pos_real_le {F : ℝ → ℝ} (hF : CriticalHalfLin
       have hX2 : (1 / (2 * s)) * F u ^ 2 = X ^ 2 / 2 := by
         dsimp [X]; rw [div_pow, sq_abs, hss]; ring
       have hY2 : (s / 2) * Real.exp ((2 * r) * u) = Y ^ 2 / 2 := by
-        dsimp [Y]; rw [mul_pow, hss, sq (Real.exp (r * u)), ← Real.exp_add]
-        congr 2; ring
+        dsimp [Y]
+        rw [mul_pow, hss, sq (Real.exp (r * u)), ← Real.exp_add,
+          show r * u + r * u = (2 * r) * u by ring]
+        ring
       rw [hXY, hX2, hY2]
       nlinarith [sq_nonneg (X - Y)]
     · simp [cx, hF.support u hu, probe_of_nonneg hu]
@@ -182,7 +184,8 @@ theorem globalRemainder_eq_archimedeanWallTail_add_wallPrimeBalance {F : ℝ →
 the sum of translated prime profiles minus the `s = 1` exponential polar charge. -/
 def wallPrimeWaveDatumLp {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
     {c : ℝ} (hc : c ≤ 4) (hc0 : 1 / 2 < c) : Lp ℂ 2 halfLineLaplaceMeasure :=
-  primeHeadProfileLp hF hc -
+  let head : Lp ℂ 2 halfLineLaplaceMeasure := primeHeadProfileLp hF hc
+  head -
     negativeHalfLineLaplace (cx F) (-(1 / 2)) •
       halfLineLaplaceFeature ((c - 1 / 2 : ℝ) : ℂ)
         (by simp only [Complex.ofReal_re]; linarith only [hc0])
@@ -192,13 +195,16 @@ def wallPrimeWaveDatumLp {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
 theorem laplaceRay_wallPrimeWaveDatumLp {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
     {c : ℝ} (hc : c ≤ 4) (hc0 : 1 / 2 < c) {z : ℂ} (hz : 0 < z.re) :
     laplaceRay (wallPrimeWaveDatumLp hF hc hc0) z = wallPrimeBalance F (-(z + c)) := by
+  let head : Lp ℂ 2 halfLineLaplaceMeasure := primeHeadProfileLp hF hc
   have hm : 0 < ((c - 1 / 2 : ℝ) : ℂ).re := by simp only [Complex.ofReal_re]; linarith only [hc0]
   rw [← halfLineLaplaceTransform_eq_laplaceRay _ hz]
-  change inner ℂ (halfLineLaplaceFeature z hz) (wallPrimeWaveDatumLp hF hc hc0) = _
-  simp only [wallPrimeWaveDatumLp, inner_sub_right, inner_smul_right]
-  have hb : inner ℂ (halfLineLaplaceFeature z hz) (primeHeadProfileLp hF hc) =
+  change inner ℂ (halfLineLaplaceFeature z hz)
+    (head - negativeHalfLineLaplace (cx F) (-(1 / 2)) •
+      halfLineLaplaceFeature ((c - 1 / 2 : ℝ) : ℂ) hm) = _
+  rw [inner_sub_right, inner_smul_right]
+  have hb : inner ℂ (halfLineLaplaceFeature z hz) head =
       primeHead F (-(z + c)) :=
-    (halfLineLaplaceTransform_eq_laplaceRay _ hz).trans (laplaceRay_primeHeadProfile hF hc hc0 hz)
+    (halfLineLaplaceTransform_eq_laplaceRay head hz).trans (laplaceRay_primeHeadProfile hF hc hc0 hz)
   have hminus : inner ℂ (halfLineLaplaceFeature z hz)
       (halfLineLaplaceFeature ((c - 1 / 2 : ℝ) : ℂ) hm) = 1 / (z + ((c - 1 / 2 : ℝ) : ℂ)) := by
     simpa only [RCLike.star_def, Complex.conj_ofReal] using inner_halfLineLaplaceFeature hz hm
@@ -220,9 +226,14 @@ theorem polarWallTerm_eq_continuumMainTerm {F : ℝ → ℝ} (hF : CriticalHalfL
   have hsub_set : (∫ x : ℝ, (Iio (0 : ℝ)).indicator
       (fun u => cexp (-(1 / 2 : ℂ) * u) * cx F u) (v - x)) =
       ∫ u in Iio (0 : ℝ), cexp (-(1 / 2 : ℂ) * u) * cx F u := by
+    let g := (Iio (0 : ℝ)).indicator fun u : ℝ => cexp (-(1 / 2 : ℂ) * u) * cx F u
+    have htr := integral_add_right_eq_self (μ := volume) (fun y : ℝ => g ((-1 : ℝ) * y)) (-v)
+    have hmul := Measure.integral_comp_mul_left g (-1 : ℝ)
+    simp only [inv_neg, inv_one, abs_neg, abs_one, one_smul] at hmul
     rw [← integral_indicator measurableSet_Iio]
-    exact integral_comp_sub_left
-      ((Iio (0 : ℝ)).indicator fun u => cexp (-(1 / 2 : ℂ) * u) * cx F u) v
+    refine (integral_congr_ae (Eventually.of_forall fun x => ?_)).trans (htr.trans hmul)
+    dsimp only [g]
+    congr 1; ring
   rw [h2, ← hsub_set, ← integral_mul_const]
   have hind : (fun x : ℝ => (Iio (0 : ℝ)).indicator
         (fun u => cexp (-(1 / 2 : ℂ) * u) * cx F u) (v - x) * (Real.exp (v / 2) : ℂ)) =
@@ -300,7 +311,7 @@ theorem hasBeyondTheWallPrimeContinuation_of_substripPrimeHardyWave {F : ℝ →
     simp only [expRay]
     rw [mul_assoc, ← Complex.exp_add]
     congr 2; ring
-  exact ((hcomp.congr hcongr).differentiableAt (hU.mem_nhds hpδ)).differentiableWithinAt
+  exact ((hcomp.congr hcongr.symm).differentiableAt (hU.mem_nhds hpδ)).differentiableWithinAt
 
 /-! ### Direct single-state exclusion and exact equivalences -/
 
@@ -335,7 +346,7 @@ theorem not_wallPrimeBalance_continues_of_seen_zero {F : ℝ → ℝ}
     have hxi_ne : xi (1 / 2 + p) ≠ 0 :=
       xi_ne_zero_of_half_le_abs_re (by have := neg_le_abs p.re; linarith)
     rw [clearedRemainder_eq hF hxi_ne,
-      globalRemainder_eq_archimedeanWallTail_add_wallPrimeBalance hF hp', heqH hp']
+      globalRemainder_eq_archimedeanWallTail_add_wallPrimeBalance hF hp', ← heqH hp']
   have hEqOn := hCR_an.eqOn_of_preconnected_of_eventuallyEq hG_an hU_pre hp1_in hev_eq
   set z₀ := centredZero c
   have hz₀_in : z₀ ∈ U := hc
@@ -352,7 +363,9 @@ theorem not_wallPrimeBalance_continues_of_seen_zero {F : ℝ → ℝ}
       show p.re < 5 / 2 by linarith).add hH).analyticAt (hU_open.mem_nhds hz₀_in)
   have hord_ge : analyticOrderAt xi (1 / 2 + z₀) ≤ analyticOrderAt G z₀ := by
     rw [← hord_xi]
-    dsimp [G]
+    change analyticOrderAt (fun p : ℂ => xi (1 / 2 + p)) z₀ ≤
+      analyticOrderAt ((fun p : ℂ => xi (1 / 2 + p)) *
+        fun p : ℂ => archimedeanWallTail F p + H p) z₀
     rw [analyticOrderAt_mul (differentiable_xi_half_add.analyticAt z₀) hK_an]
     exact le_self_add
   rw [← analyticOrderAt_congr hz₀_eq] at hord_ge
@@ -421,7 +434,7 @@ theorem beyondTheWallPrimeContinuation_of_riemannHypothesis (hRH : RiemannHypoth
         simp at hpos
         linarith [Nat.cast_nonneg (α := ℝ) n]
       have : (1 / 2 + p).re = 1 / 2 + p.re := re_one_half_add p
-      rw [hc, hre_half] at this
+      rw [← hc, hre_half] at this
       linarith
     have hdiff_rem : DifferentiableAt ℂ (globalRemainder F) p := by
       refine differentiableAt_globalRemainder hF fun hp0 hz => hxi_ne ?_
@@ -431,7 +444,8 @@ theorem beyondTheWallPrimeContinuation_of_riemannHypothesis (hRH : RiemannHypoth
       ((differentiableOn_archimedeanWallTail hF).differentiableAt
         ((isOpen_lt Complex.continuous_re continuous_const).mem_nhds
           (by linarith : p.re < 5 / 2)))).differentiableWithinAt
-  · rw [globalRemainder_eq_archimedeanWallTail_add_wallPrimeBalance hF hp]
+  · dsimp only
+    rw [globalRemainder_eq_archimedeanWallTail_add_wallPrimeBalance hF hp]
     ring
 
 /-- **Exact equivalence with `RiemannHypothesis`.** -/
@@ -460,12 +474,16 @@ private theorem laplace_causalTranslate_one {F : ℝ → ℝ} (_hF : CriticalHal
     negativeHalfLineLaplace (cx fun u => F (u + 1)) w =
       cexp (-w) * negativeHalfLineLaplace (cx F) w := by
   unfold negativeHalfLineLaplace cx
-  rw [← integral_add_right_eq_self (fun u : ℝ => cexp (w * (u - 1)) * (F u : ℂ)) 1,
-    ← integral_const_mul]
-  refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-  simp only [add_sub_cancel_right]
-  rw [← mul_assoc, ← Complex.exp_add]
-  congr 2; push_cast; ring
+  have htr := integral_add_right_eq_self (μ := volume)
+    (fun u : ℝ => cexp (w * ((u : ℂ) - 1)) * (F u : ℂ)) 1
+  rw [← integral_const_mul]
+  refine (integral_congr_ae (Eventually.of_forall fun u => ?_)).trans
+    (htr.trans (integral_congr_ae (Eventually.of_forall fun u => ?_)))
+  · dsimp only
+    congr 2; push_cast; ring
+  · dsimp only
+    rw [← mul_assoc, ← Complex.exp_add]
+    congr 2; ring
 
 /-- **Pure prime-head exclusion:** holomorphic continuation of `primeHead G` alone on the
 pole-neutral subspace `L G(-½) = 0` suffices to exclude the critical state directly (via the
@@ -486,15 +504,15 @@ theorem no_criticalState_of_purePrimeHeadContinuation (hpure : PurePrimeHeadCont
         (cexp (-w) - (Real.exp (1 / 2) : ℂ)) * negativeHalfLineLaplace (cx F) w := by
     intro w hw
     have hiT : Integrable fun u : ℝ => cexp (w * u) * cx (fun v => F (v + 1)) u := by
-      refine (integrable_abs_mul_exp_of_sq hdT.meas hdT.support hdT.exponential
-        (by linarith : -(8 / 2 : ℝ) < w.re)).mono'
+      refine (integrable_abs_mul_exp_of_sq (c := w.re) hdT.meas hdT.support hdT.exponential
+        (by linarith)).mono'
         (((by fun_prop : Continuous fun u : ℝ => cexp (w * u)).measurable.mul
           (Complex.measurable_ofReal.comp hdT.meas)).aestronglyMeasurable)
         (Eventually.of_forall fun u => ?_)
       rw [norm_mul, norm_cexp_mul_ofReal, cx, Complex.norm_real, Real.norm_eq_abs, mul_comm]
     have hiF : Integrable fun u : ℝ => cexp (w * u) * cx F u := by
-      refine (integrable_abs_mul_exp_of_sq hd.meas hd.support hd.exponential
-        (by linarith : -(8 / 2 : ℝ) < w.re)).mono'
+      refine (integrable_abs_mul_exp_of_sq (c := w.re) hd.meas hd.support hd.exponential
+        (by linarith)).mono'
         (((by fun_prop : Continuous fun u : ℝ => cexp (w * u)).measurable.mul
           (Complex.measurable_ofReal.comp hd.meas)).aestronglyMeasurable)
         (Eventually.of_forall fun u => ?_)
@@ -505,7 +523,11 @@ theorem no_criticalState_of_purePrimeHeadContinuation (hpure : PurePrimeHeadCont
       funext u; dsimp [G, cx]; push_cast; ring
     unfold negativeHalfLineLaplace
     rw [integral_congr_ae (Eventually.of_forall (congrFun hsplit)),
-      integral_add hiT (hiF.const_mul _), integral_const_mul, laplace_causalTranslate_one hd hw]
+      integral_add hiT (hiF.const_mul _), integral_const_mul]
+    change negativeHalfLineLaplace (cx fun v => F (v + 1)) w +
+        ((-Real.exp (1 / 2) : ℝ) : ℂ) * negativeHalfLineLaplace (cx F) w =
+      (cexp (-w) - (Real.exp (1 / 2) : ℂ)) * negativeHalfLineLaplace (cx F) w
+    rw [laplace_causalTranslate_one hd hw]
     push_cast; ring
   have hLG_half : negativeHalfLineLaplace (cx G) (-(1 / 2)) = 0 := by
     rw [hLap_lin (-(1 / 2)) (by rw [Complex.neg_re, re_one_half]; norm_num)]
@@ -556,7 +578,7 @@ theorem not_forall_wallPrimeBalance_continues_past_zero {δ : ℝ} (hδ : 0 < δ
         exact xi_centredZero c₀
       obtain ⟨c', hc'⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi_neg
       refine ⟨c', ?_⟩
-      have : centredZero c' = -centredZero c₀ := by unfold centredZero; rw [hc']; ring
+      have : centredZero c' = -centredZero c₀ := by rw [centredZero, hc']; ring
       rw [this]; simp; linarith
   obtain ⟨c, hc⟩ := hex_c
   have hd5 : CriticalHalfLineEnergyDomain (probe 5) :=
@@ -570,11 +592,12 @@ theorem not_forall_wallPrimeBalance_continues_past_zero {δ : ℝ} (hδ : 0 < δ
           ∫ u in Iio (0 : ℝ), cexp (((5 : ℂ) + centredZero c) * u) := by
         rw [← integral_indicator measurableSet_Iio]
         refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+        dsimp only
         rcases lt_or_ge u 0 with hu | hu
         · rw [indicator_of_mem (mem_Iio.mpr hu), probe_of_neg hu, Complex.ofReal_exp,
             ← Complex.exp_add]
           congr 1; push_cast; ring
-        · rw [indicator_of_notMem (not_lt.mpr hu), probe_of_nonneg hu,
+        · rw [indicator_of_notMem (show u ∉ Iio (0 : ℝ) by simp [hu]), probe_of_nonneg hu,
             Complex.ofReal_zero, mul_zero]
       rw [h1, ← integral_Iic_eq_integral_Iio,
         integral_exp_mul_complex_Iic (by simp; linarith [hz_abs.1]) 0]

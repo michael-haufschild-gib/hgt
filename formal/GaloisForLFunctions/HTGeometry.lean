@@ -10,6 +10,7 @@ import GaloisForLFunctions.HTGeometry.Lattices.IntegralFourEnergy
 import GaloisForLFunctions.HTGeometry.Homology.AugmentedHochschildOne
 import GaloisForLFunctions.HTGeometry.GroupAlgebras.FirstJet
 import GaloisForLFunctions.HTGeometry.Topology.NoetherianComponents
+import GaloisForLFunctions.HTGeometry.Topology.ProfiniteCircleCharacters
 import GaloisForLFunctions.HTGeometry.Topology.ClopenComponents
 import GaloisForLFunctions.HTGeometry.Topology.ClopenComponentSubsets
 import GaloisForLFunctions.HTGeometry.GroupAlgebras.CharacterFirstJet

@@ -32,11 +32,10 @@ and the arithmetic property `ModelBeyondTheWallPrimeContinuation c` asserting th
 
 noncomputable section
 open MeasureTheory Set Filter Zeta23 Complex Metric Topology
-open SelbergClass.PositiveFiniteEuler BlackHoleRingdown BlackHoleRingdown.PositiveEulerHorizon
-
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
   CriticalArithmeticCorrelationTheory HTGeometry _root_.RHTower
+  SelbergClass.PositiveFiniteEuler BlackHoleRingdown BlackHoleRingdown.PositiveEulerHorizon
 
 /-! ### Parameterized beyond-the-wall prime-pole balance -/
 
@@ -103,12 +102,13 @@ private theorem cexp_mul_levyHead_probe_five {q : ℂ} (hq : -4 < q.re) {L : ℝ
         · rw [indicator_of_mem (mem_Ici.mpr hLu), indicator_of_mem ⟨hLu, hu⟩, probe_of_neg hu,
             Complex.ofReal_exp, ← Complex.exp_add]
           congr 1; push_cast; ring
-        · rw [indicator_of_notMem hLu, indicator_of_notMem (fun h => hLu h.1)]
-      · rw [indicator_of_notMem (fun h => not_lt.mpr hu h.2)]
+        · rw [indicator_of_notMem (show u ∉ Ici (-L) by simp [hLu]),
+            indicator_of_notMem (show u ∉ Ico (-L) 0 by simp [hLu])]
+      · rw [indicator_of_notMem (show u ∉ Ico (-L) 0 by simp [hu])]
         by_cases hLu : -L ≤ u
         · rw [indicator_of_mem (mem_Ici.mpr hLu), probe_of_nonneg hu,
             Complex.ofReal_zero, mul_zero]
-        · rw [indicator_of_notMem hLu]
+        · rw [indicator_of_notMem (show u ∉ Ici (-L) by simp [hLu])]
     rw [hsplit, ← integral_Ioc_eq_integral_Ico,
       ← intervalIntegral.integral_of_le (by linarith : -L ≤ 0)]
     have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt
@@ -133,11 +133,12 @@ private theorem laplace_probe_five {q : ℂ} (hq : -4 < q.re) :
       ∫ u in Iio (0 : ℝ), cexp (((5 : ℂ) + q) * u) := by
     rw [← integral_indicator measurableSet_Iio]
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+    dsimp only
     rcases lt_or_ge u 0 with hu | hu
     · rw [indicator_of_mem (mem_Iio.mpr hu), probe_of_neg hu, Complex.ofReal_exp,
         ← Complex.exp_add]
       congr 1; push_cast; ring
-    · rw [indicator_of_notMem (not_lt.mpr hu), probe_of_nonneg hu,
+    · rw [indicator_of_notMem (show u ∉ Iio (0 : ℝ) by simp [hu]), probe_of_nonneg hu,
         Complex.ofReal_zero, mul_zero]
   rw [h1, ← integral_Iic_eq_integral_Iio,
     integral_exp_mul_complex_Iic (by simp; linarith) 0]

@@ -40,7 +40,8 @@ theorem eq_one_of_reductions (u : ℤ_[p]ˣ)
   apply Units.ext
   apply PadicInt.ext_of_toZModPow.mp
   intro n
-  simpa only [map_one, Units.val_one] using congrArg Units.val (h n)
+  have hu : PadicInt.toZModPow n (u : ℤ_[p]) = 1 := congrArg Units.val (h n)
+  simpa only [map_one, Units.val_one] using hu
 
 /-- Every continuous unit character kills a congruence kernel of finite depth. -/
 theorem exists_reduction_ker_le (χ : ℤ_[p]ˣ →ₜ* Circle) :
@@ -53,7 +54,9 @@ theorem exists_reduction_ker_le (χ : ℤ_[p]ˣ →ₜ* Circle) :
     apply Set.eq_empty_iff_forall_notMem.mpr
     rintro u ⟨hu, huK⟩
     have hu1 : u = 1 := eq_one_of_reductions p u (fun n => Set.mem_iInter.mp huK n)
-    exact hu (hu1 ▸ χ.toMonoidHom.ker.one_mem)
+    apply hu
+    rw [hu1]
+    exact χ.toMonoidHom.ker.one_mem
   obtain ⟨n, hn⟩ := (ProfiniteCircleCharacters.isOpen_ker χ).isClosed_compl.isCompact
     |>.elim_directed_family_closed K hc hi hm.directed_ge
   refine ⟨n, fun u hu => ?_⟩

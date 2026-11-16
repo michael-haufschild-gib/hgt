@@ -41,6 +41,7 @@ so nothing is lost between stages.
 | Heat test, heat kernel | `stateHeatSymbol`, `stateHeatKernel` | $e^{\varepsilon p^2-pT}$; $k_\varepsilon(x)=(4\pi\varepsilon)^{-1/2}e^{-x^2/4\varepsilon}$ |
 | Heated state | `heatedState` | $\int k_\varepsilon(u-T)e^{-8u}F(u)\,du$ |
 | Profile beyond the wall | `beyondWallProfile`, `heatedBeyondWall` | $F^+$ on $x>0$: archimedean head, prime heads and the two charges, with $\mathcal LF(w)=\int_0^\infty F^+(x)e^{(w+8)x}dx$ for $\operatorname{Re}w<-9$; its heat average |
+| Transform of a test, pairings | `laplaceTest`, `statePairing`, `beyondWallPairing` | $\hat\psi(p)=\int\psi(u)e^{-pu}du$; $\int\psi(u)e^{-8u}F(u)\,du$; $\int_0^\infty\psi(x)F^+(x)\,dx$ |
 | Centred zeros, zero sum | `centredZero`, `zeroSum` | $z=\rho-\tfrac12$ with multiplicity; $ZF(p)=\sum_z\mathcal LF(z)\big(\tfrac1{p-z}-\tfrac1{1-z}\big)$ |
 | Divided-difference sum | `dividedTerm`, `dividedSum` | $\Delta F(p)=\sum_z\big(\tfrac{\mathcal LF(z)-\mathcal LF(p)}{p-z}-\tfrac{\mathcal LF(z)}{1-z}-\tfrac{\mathcal LF(p)}{z}\big)$, holomorphic at the zeros |
 | Defect | `explicitDefect`, `rightFormDefect`, `stripFormDefect`, `entireDefect` | $BF(1)-BF(p)+ZF(p)$ with $BF=$ `globalRemainder`, and its pole-free forms |
@@ -111,14 +112,17 @@ so nothing is lost between stages.
    sum integrates term by term and the constant of the explicit formula drops out. For the state the
    right line carries $\mathcal LF$ and the left line its continuation. With $H=e^{\varepsilon p^2-pT}$ each line
    integral is a heat average (Fubini and one Gaussian integral): the series $\sum_z\mathcal LF(z)e^{-zu}$ is
-   $-a\,e^{-8u}F(u)$ left of the wall and $a\,F^+(u)$ beyond it.
+   $-a\,e^{-8u}F(u)$ left of the wall and $a\,F^+(u)$ beyond it. With $H=\hat\psi$, $\hat\psi(p)=\int\psi(u)e^{-pu}du$ for a
+   smooth test of compact support, Fourier inversion on each line replaces the Gaussian integral and the
+   identity holds against $\psi$ itself, with no singular part at the wall; left of the wall the weak
+   equation turns the pairing with $e^{-8u}F$ into Weil's form.
 
 ## 5. Questions
 
 | # | Question | Status |
 |---|---|---|
 | Q1 | Probe kernel $B(e_p,e_q)=\frac{D(p)+D(q)}{p+q}$ and its zero side | answered (Lean) |
-| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | partial (Lean): probe and heated zero-side identities; two general profiles open |
+| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | partial (Lean): probe and heated zero-side identities; at the state, against every smooth test; two general profiles open |
 | Q3 | State equation, continuation, residues | answered (Lean): global meromorphic continuation, exact residues and uniform left decay |
 | Q4 | Decay law | partial (Lean): divergent law, left Hardy bounds and averaged/heated decay; unaveraged $L^2$ law open |
 | Q5 | Sign law | answered (Lean): one sign on no ray |
@@ -150,7 +154,8 @@ linear growth of every pairing of a profile with a probe; the pole-free forms of
 gluing and Liouville. Bounds of the pairing and of the
 continuation off the zeros; the Volterra–Laplace calculus of exponential averages; the entire product
 and its difference equation; two-line weighing of the zero values against entire tests; Gaussian line
-integrals of Laplace integrals as heat averages.
+integrals of Laplace integrals as heat averages; Fourier inversion on vertical lines for transforms of
+smooth tests and Parseval on a line for Laplace integrals.
 
 **To build.** Vertical square bounds toward the pole strip and their transfer to weighted decay of the original state, for the convergent half of the decay law; the exact critical-ratio count; the leading asymptotics of
 $JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula); the square-summability of the zero values behind the
@@ -187,6 +192,7 @@ and its comparison with $e^{-8u}F$ at the wall.
 | The averaged state decays at the rate of the zeros, beyond the barrier | `exists_bound_averagedState`, `criticalState_averaged_decay_beyond_barrier`, `riemannHypothesis_or_criticalState_averaged_decay` | unconditional |
 | Two vertical lines cut out the zero series | `hasSum_zeroValues_two_lines`, `criticalState_hasSum_zeroValues_two_lines` | unconditional |
 | The zero series is the state left of the wall and the prime side beyond it | `criticalState_hasSum_heated_zeroSeries`, `criticalState_heatedState_add_zeroSeries_le` | unconditional |
+| The explicit formula at the state against smooth tests: $\sum_z\mathcal LF(z)\hat\psi(z)=a(\langle\psi,F^+\rangle-\langle\psi,e^{-8u}F\rangle)$; Weil's form of the state and a test is its zero side | `criticalState_hasSum_zeroSeries_test`, `criticalState_hasSum_zeroSeries_test_left`, `criticalState_hasSum_zeroSeries_test_right`, `criticalState_hasSum_bareMixedEnergy` | unconditional |
 
 ## 8. Traps
 

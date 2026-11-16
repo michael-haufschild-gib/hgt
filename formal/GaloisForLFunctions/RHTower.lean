@@ -1,4 +1,7 @@
 import GaloisForLFunctions.RHTower.Fermionic.FermiSeaEnergy
+import GaloisForLFunctions.RHTower.LocalCharacters.PadicFiniteConductor
+import GaloisForLFunctions.RHTower.LocalCharacters.PadicCharacterDecomposition
+import GaloisForLFunctions.RHTower.LocalCharacters.PrimitiveTateCharacterCompleteness
 import GaloisForLFunctions.RHTower.Deninger.DeningerCyclicSourceClasses
 import GaloisForLFunctions.RHTower.Deninger.DeningerCyclicExterior
 import GaloisForLFunctions.RHTower.Deninger.DeningerHiddenPrimeCyclic

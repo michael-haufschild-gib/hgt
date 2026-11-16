@@ -25,11 +25,12 @@ def coordinateCharacter (n : ℕ) (θ : (ZMod (p ^ n))ˣ →* Circle) (ρ : Circ
       θ (fieldOnePadicUnitReduction p n (x.2 * y.2)) = _
     rw [zpow_add, map_mul, map_mul]
     ac_rfl
-  continuous_toFun :=
-    ((continuous_of_discreteTopology : Continuous (fun k : Multiplicative ℤ => ρ ^ k.toAdd))
-      .comp continuous_fst).mul
-      (((continuous_of_discreteTopology : Continuous θ).comp
-        (fieldOnePadicUnitReduction_continuous p n)).comp continuous_snd)
+  continuous_toFun := by
+    have hval : Continuous (fun k : Multiplicative ℤ => ρ ^ k.toAdd) :=
+      continuous_of_discreteTopology
+    have hang := (continuous_of_discreteTopology : Continuous θ).comp
+      (fieldOnePadicUnitReduction_continuous p n)
+    exact (hval.comp continuous_fst).mul (hang.comp continuous_snd)
 
 /-- Every finite angular character and circle phase define a continuous p-adic character. -/
 def padicCharacter (n : ℕ) (θ : (ZMod (p ^ n))ˣ →* Circle) (ρ : Circle) :
