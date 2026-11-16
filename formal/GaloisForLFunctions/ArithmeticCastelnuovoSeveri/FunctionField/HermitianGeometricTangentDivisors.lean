@@ -35,7 +35,7 @@ theorem hermitianGeometricTangent_zeroPoleDivisor (P : HermitianAffinePoint p s 
   apply Prod.ext
   · change -finiteValuationDivisor B H (hermitianGeometricTangentFunction p s P) = _
     rw [hermitianGeometricTangent_finiteValuationDivisor]
-    simp
+    simp [add_comm]
   · change -WithZero.log (hermitianGeometricInfinityValuation p s
       (hermitianGeometricTangentFunction p s P)) = _
     rw [hermitianGeometricInfinityValuation_tangent, WithZero.log_exp]

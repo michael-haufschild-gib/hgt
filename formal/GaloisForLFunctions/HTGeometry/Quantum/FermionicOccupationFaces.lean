@@ -73,3 +73,9 @@ theorem pairedOccupation_isExposed (n : ℕ) :
   constraintFace_isExposed _ _
 
 end GaloisForLFunctions.HTGeometry.Quantum
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.pairedSiteDefect_eq_pauliZ
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.pairedOccupationHamiltonian_posSemidef
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.pairedOccupation_zero_iff
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.pairedOccupation_zero_iff_contracted
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.pairedOccupation_isExposed

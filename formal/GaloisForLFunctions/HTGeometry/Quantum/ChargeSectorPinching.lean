@@ -25,7 +25,11 @@ def chargeProjection (charge : ι → κ) (q : κ) : Matrix ι ι ℂ :=
 theorem chargeProjection_isHermitian (charge : ι → κ) (q : κ) :
     (chargeProjection charge q).IsHermitian := by
   ext i j
-  simp [chargeProjection, Matrix.conjTranspose_apply, Matrix.diagonal_apply, eq_comm]
+  by_cases h : i = j
+  · subst j
+    by_cases hc : charge i = q <;>
+      simp [chargeProjection, Matrix.conjTranspose_apply, hc]
+  · simp [chargeProjection, Matrix.conjTranspose_apply, Matrix.diagonal_apply, h, Ne.symm h]
 
 /-- Delete all matrix entries connecting different conserved charges. -/
 def chargePinch (charge : ι → κ) (A : Matrix ι ι ℂ) : Matrix ι ι ℂ :=
@@ -34,9 +38,8 @@ def chargePinch (charge : ι → κ) (A : Matrix ι ι ℂ) : Matrix ι ι ℂ :
 
 theorem chargePinch_apply (charge : ι → κ) (A : Matrix ι ι ℂ) (i j : ι) :
     chargePinch charge A i j = if charge i = charge j then A i j else 0 := by
-  have hi : charge i ∈ Finset.univ.image charge := Finset.mem_image_of_mem _ (Finset.mem_univ i)
   simp [chargePinch, chargeProjection, Matrix.sum_apply, Matrix.diagonal_mul,
-    Matrix.mul_diagonal, hi, eq_comm]
+    Matrix.mul_diagonal, eq_comm]
 
 /-- Block reduction preserves the positive cone. -/
 theorem chargePinch_posSemidef (charge : ι → κ) {A : Matrix ι ι ℂ}
@@ -89,3 +92,12 @@ theorem trace_chargePinch_mul_chargePinch (charge : ι → κ) (A B : Matrix ι 
   rw [← trace_chargePinch_mul, chargePinch_idempotent]
 
 end GaloisForLFunctions.HTGeometry.Quantum
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.chargeProjection_isHermitian
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.chargePinch_apply
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.chargePinch_posSemidef
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.chargePinch_idempotent
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_chargePinch
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.chargePinch_eq_self_iff
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_chargePinch_mul
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_chargePinch_mul_chargePinch

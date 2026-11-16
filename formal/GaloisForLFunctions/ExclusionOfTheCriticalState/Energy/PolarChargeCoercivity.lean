@@ -257,7 +257,6 @@ theorem criticalState_one_charge_coercivity {W₀ : ℝ} (hW : 0 < W₀)
         C * growingPolarCharge G ^ 2 := by
     dsimp only [C]
     field_simp [hq]
-    <;> ring
   rw [hc] at hs
   have hb : γ / 2 * (∫ u, G u ^ 2 * Real.exp (-(8 * u))) ≤
       criticalHalfLineFullEnergy W₀ G + C * growingPolarCharge G ^ 2 :=

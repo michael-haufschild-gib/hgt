@@ -34,15 +34,14 @@ theorem constraintEnergy_innerGramMatrix (C : Matrix κ ι ℂ) (v : ι → E) :
       inner ℂ (gramConstraintVector C v a) (gramConstraintVector C v a) := by
     simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, innerGramMatrix_apply,
       gramConstraintVector, sum_inner, inner_sum, inner_smul_left, inner_smul_right,
-      star_star, Finset.sum_mul]
-    rw [Finset.sum_comm]
+      ← RCLike.star_def, star_star, Finset.sum_mul, Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro i _
     apply Finset.sum_congr rfl
     intro j _
     ring
   rw [Matrix.diag_apply, h, inner_self_eq_norm_sq_to_K]
-  simp
+  norm_cast
 
 /-- Zero observed energy detects the actual Hilbert-space relations, in every dimension. -/
 theorem constraintEnergy_innerGramMatrix_eq_zero_iff (C : Matrix κ ι ℂ) (v : ι → E) :
@@ -67,3 +66,8 @@ theorem constraintHamiltonian_innerGramMatrix_eq_zero_iff
   exact forall_congr' fun s => mul_innerGramMatrix_eq_zero_iff (C s) v
 
 end GaloisForLFunctions.HTGeometry.Quantum
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_innerGramMatrix
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintEnergy_innerGramMatrix_eq_zero_iff
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.mul_innerGramMatrix_eq_zero_iff
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.constraintHamiltonian_innerGramMatrix_eq_zero_iff

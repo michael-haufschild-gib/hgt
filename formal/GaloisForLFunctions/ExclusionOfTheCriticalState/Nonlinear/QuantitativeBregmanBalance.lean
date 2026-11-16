@@ -38,9 +38,13 @@ theorem arctanGapKernel_boundary_pos (i : Fin 3) {a : ℝ} (ha : a ≠ 0) :
     0 < arctanGapKernel i a 0 := by
   have h := arctan_zero_jump_strict ha
   fin_cases i
-  · simpa only [arctanGapKernel, Real.arctan_zero, sub_zero] using h.1
-  · simpa only [arctanGapKernel, Real.arctan_zero, sub_zero] using sub_pos.mpr h.2.1
-  · simpa only [arctanGapKernel, Real.arctan_zero, sub_zero] using sub_pos.mpr h.2.2
+  · change 0 < (Real.arctan a - Real.arctan 0) ^ 2
+    simpa only [Real.arctan_zero, sub_zero] using h.1
+  · change 0 < (a - 0) * (Real.arctan a - Real.arctan 0) -
+      (Real.arctan a - Real.arctan 0) ^ 2
+    simpa only [Real.arctan_zero, sub_zero] using sub_pos.mpr h.2.1
+  · change 0 < (a - 0) ^ 2 - (a - 0) * (Real.arctan a - Real.arctan 0)
+    simpa only [Real.arctan_zero, sub_zero] using sub_pos.mpr h.2.2
 
 /-- The three terminal moments, with the same ordering as the jump kernels. -/
 def arctanBoundaryMoment (i : Fin 3) (d : ℝ) (F : ℝ → ℝ) : ℝ :=
@@ -51,7 +55,17 @@ theorem arctanGapKernel_boundary (i : Fin 3) (a : ℝ) :
     arctanGapKernel i a 0 =
       ![Real.arctan a ^ 2, Real.arctan a * (a - Real.arctan a),
         a * (a - Real.arctan a)] i := by
-  fin_cases i <;> simp only [arctanGapKernel, Real.arctan_zero, sub_zero] <;> ring
+  fin_cases i
+  · change (Real.arctan a - Real.arctan 0) ^ 2 = Real.arctan a ^ 2
+    rw [Real.arctan_zero, sub_zero]
+  · change (a - 0) * (Real.arctan a - Real.arctan 0) -
+      (Real.arctan a - Real.arctan 0) ^ 2 = Real.arctan a * (a - Real.arctan a)
+    rw [Real.arctan_zero, sub_zero, sub_zero]
+    ring
+  · change (a - 0) ^ 2 - (a - 0) * (Real.arctan a - Real.arctan 0) =
+      a * (a - Real.arctan a)
+    rw [Real.arctan_zero, sub_zero, sub_zero]
+    ring
 
 /-- The three consecutive gaps in the nonlinear energy chain. -/
 def arctanGapEnergy (i : Fin 3) (F : ℝ → ℝ) : ℝ :=
@@ -115,26 +129,34 @@ theorem arctanGapEnergy_eq_integral {F : ℝ → ℝ}
   have ha := (domain_arctan hF).integrableOn_levyIntegrand
   have hm := integrableOn_arctanDissipation hF
   have hf := hF.integrableOn_levyIntegrand
+  simp only [Function.comp_apply] at ha
   fin_cases i
   · rfl
-  · change arctanLevyDissipation F - levyEnergy (Real.arctan ∘ F) = _
-    unfold arctanLevyDissipation levyMixed levyEnergy
+  · change (∫ x in Ioi (0 : ℝ), archLevyDensity x * ∫ u,
+        (F u - F (u + x)) * (Real.arctan (F u) - Real.arctan (F (u + x)))) -
+      (∫ x in Ioi (0 : ℝ), archLevyDensity x * ∫ u,
+        (Real.arctan (F u) - Real.arctan (F (u + x))) ^ 2) =
+      ∫ x in Ioi (0 : ℝ), archLevyDensity x * ∫ u,
+        ((F u - F (u + x)) * (Real.arctan (F u) - Real.arctan (F (u + x))) -
+          (Real.arctan (F u) - Real.arctan (F (u + x))) ^ 2)
     rw [← integral_sub hm ha]
     apply setIntegral_congr_fun measurableSet_Ioi
     intro x _
     dsimp only [Function.comp_apply]
     obtain ⟨ha', hm', _⟩ := integrable_arctanJump_parts hF x
     rw [← mul_sub, ← integral_sub hm' ha']
-    rfl
-  · change levyEnergy F - arctanLevyDissipation F = _
-    unfold arctanLevyDissipation levyMixed levyEnergy
+  · change (∫ x in Ioi (0 : ℝ), archLevyDensity x * ∫ u, (F u - F (u + x)) ^ 2) -
+      (∫ x in Ioi (0 : ℝ), archLevyDensity x * ∫ u,
+        (F u - F (u + x)) * (Real.arctan (F u) - Real.arctan (F (u + x)))) =
+      ∫ x in Ioi (0 : ℝ), archLevyDensity x * ∫ u,
+        ((F u - F (u + x)) ^ 2 -
+          (F u - F (u + x)) * (Real.arctan (F u) - Real.arctan (F (u + x))))
     rw [← integral_sub hf hm]
     apply setIntegral_congr_fun measurableSet_Ioi
     intro x _
     dsimp only [Function.comp_apply]
     obtain ⟨_, hm', hf'⟩ := integrable_arctanJump_parts hF x
     rw [← mul_sub, ← integral_sub hf' hm']
-    rfl
 
 /-- The terminal moment is finite because the jump of length `d` crosses the endpoint. -/
 theorem integrableOn_arctanBoundaryMoment {F : ℝ → ℝ}
@@ -223,7 +245,7 @@ theorem criticalState_arctan_balance_terminal_lower {W₀ : ℝ} (hW : 0 < W₀)
     simp only [arctanBoundaryMoment, arctanGapKernel, Real.arctan_zero, sub_zero]
     apply integral_mono hA.sq.integrableOn hi.integrableOn
     intro u
-    simpa only [Real.arctan_zero, sub_zero] using (arctan_jump_bounds (F u) 0).1
+    simpa only [Function.comp_apply, Real.arctan_zero, sub_zero] using (arctan_jump_bounds (F u) 0).1
   have hp := lt_of_lt_of_le (criticalState_arctanBoundaryMoment_pos hW ht hF 0 hd) hm
   refine ⟨mul_pos (mul_pos (by norm_num) (Real.exp_pos _)) hp, ?_⟩
   rw [← criticalState_arctan_balance hW ht hF]

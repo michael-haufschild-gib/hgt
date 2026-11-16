@@ -19,6 +19,11 @@ For `1/2<c<4`, confinement bounds each damped summand's `L²` norm by
 `Λ(n)n^(-1/2-c) ‖F(u)e^(-cu)‖₂`; the coefficient sum converges. The two charges
 are Laplace transforms of exponentials after damping beyond `1/2`.
 
+The stronger target is an explicit half-line `L²` profile whose Laplace transform
+equals `stateMeromorphic W₀ F (-(z+c)-8)` for `Re z>0` and `1/2<c≤4`.
+Its four terms are the damped archimedean Hankel profile, the Hilbert-space prime
+sum and the two exponential charge profiles, scaled by `-1/a`.
+
 ## Remaining proof
 
 Formalize the Hankel identity, its `L²` bound, the prime-profile summation and the

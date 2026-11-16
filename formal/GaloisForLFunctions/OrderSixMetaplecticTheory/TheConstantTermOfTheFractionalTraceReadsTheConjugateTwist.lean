@@ -167,4 +167,136 @@ theorem integral_high_mul (u : O) (v : ℝ) (hv : 0 < v) :
 
 end PrimaryPrime
 
+namespace PrimaryPrime
+
+variable (P : PrimaryPrime)
+
+/-! ### Continuity in the horizontal variable -/
+
+theorem continuous_upperPoint_z (v : ℝ) (hv : 0 < v) : Continuous (fun z : ℂ => upperPoint z v hv) := by
+  have hcoord : Continuous (fun z : ℂ => (⟨(z, v), hv⟩ : UpperCoordinates)) := by fun_prop
+  exact upperCoordinatesHomeomorph.continuous.comp hcoord
+
+theorem continuous_fracSum_source : Continuous (P.fracSum sourceTheta) := by
+  unfold fracSum fracCorrelation
+  exact continuous_finsetSum _ fun x _ =>
+    (cubicSourceResidualFunction_continuous.comp (continuous_hyperbolic_action _)).mul
+      (cubicSourceResidualFunction_continuous.comp (continuous_hyperbolic_action _))
+
+theorem continuous_fracCorrelation_source (t : O) : Continuous (P.fracCorrelation sourceTheta t) := by
+  unfold fracCorrelation
+  exact (cubicSourceResidualFunction_continuous.comp (continuous_hyperbolic_action _)).mul
+    (cubicSourceResidualFunction_continuous.comp (continuous_hyperbolic_action _))
+
+/-- The constant term of the high pairs, \`|P| Σ_h b(N(q)v, h)b(v, −q²h)\`. -/
+def highTerm (v : ℝ) : ℂ :=
+  periodArea * ∑' h : O, rationalSourceModeAmplitude (‖ringComplex P.p‖ * (‖ringComplex P.p‖ * v)) h *
+    rationalSourceModeAmplitude v (-(h * P.p ^ 2))
+
+theorem norm_chi_le (u : P.Res) : ‖P.chi u‖ ≤ 1 := by
+  by_cases hu : u = 0
+  · rw [hu, MulChar.map_zero, norm_zero]
+    exact zero_le_one
+  · have h := P.chi_cube u hu
+    have h3 : ‖P.chi u‖ ^ 3 = 1 := by rw [← norm_pow, h, norm_one]
+    have h0 : 0 ≤ ‖P.chi u‖ := norm_nonneg _
+    nlinarith [sq_nonneg (‖P.chi u‖ - 1), sq_nonneg ‖P.chi u‖]
+
+theorem norm_traceChar (r : P.Res) : ‖P.traceChar r‖ = 1 := AddChar.norm_apply _ _
+
+/-- **One pair over a middle cusp.** -/
+theorem integral_fracCorrelation_middle (h2 : (2 : P.Res) ≠ 0) (x : {x : P.Res // x ≠ 0}) (t : P.Res) (v : ℝ)
+    (hv : 0 < v) :
+    ∫ z in periodDomain, P.fracCorrelation sourceTheta (P.lift t)
+        (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv) =
+      (if 1 + 9 * t * x.1 = 0 ∨ 1 - 9 * t * x.1 = 0 then P.chi 2 * (P.chi (3 * x.1))⁻¹ * P.highTerm v else 0) +
+        P.chi (1 - (9 * t * x.1) ^ 2) * (periodArea * ∑' k : O, rationalSourceModeAmplitude v k *
+          rationalSourceModeAmplitude v (-k) * P.traceChar (2 * t / (1 - (9 * t * x.1) ^ 2) * P.res k)) := by
+  have hb : Summable (fun h => ‖rationalSourceModeAmplitude v h‖) := rationalSourceModeAmplitude_summable v hv
+  simp_rw [P.fracCorrelation_lowerThree sourceTheta sourceTheta_automorphy h2 x t]
+  by_cases h₁ : 1 + 9 * t * x.1 = 0
+  · have hsq : (1 : P.Res) - (9 * t * x.1) ^ 2 = 0 := by linear_combination (1 - 9 * t * x.1) * h₁
+    simp_rw [if_pos h₁]
+    rw [if_pos (Or.inl h₁), hsq, MulChar.map_zero, zero_mul, add_zero, integral_const_mul, P.integral_high_mul,
+      highTerm]
+  · by_cases h₂ : 1 - 9 * t * x.1 = 0
+    · have hsq : (1 : P.Res) - (9 * t * x.1) ^ 2 = 0 := by linear_combination (1 + 9 * t * x.1) * h₂
+      simp_rw [if_neg h₁, if_pos h₂]
+      rw [if_pos (Or.inr h₂), hsq, MulChar.map_zero, zero_mul, add_zero, integral_const_mul, P.integral_high_mul,
+        highTerm]
+    · have hsq : (1 : P.Res) - (9 * t * x.1) ^ 2 ≠ 0 := by
+        rw [show (1 : P.Res) - (9 * t * x.1) ^ 2 = (1 + 9 * t * x.1) * (1 - 9 * t * x.1) by ring]
+        exact mul_ne_zero h₁ h₂
+      simp_rw [if_neg h₁, if_neg h₂]
+      rw [if_neg (not_or.mpr ⟨h₁, h₂⟩), zero_add, integral_const_mul]
+      simp_rw [P.sourceTheta_fracShift]
+      rw [integral_translate_mul _ _ hb hb]
+      congr 2
+      refine tsum_congr fun k => ?_
+      congr 1
+      rw [show 3 * ringComplex (P.lift (t / (1 + 9 * t * x.1))) / ringComplex P.p -
+          3 * ringComplex (P.lift (-t / (1 - 9 * t * x.1))) / ringComplex P.p =
+          3 * ringComplex (P.lift (t / (1 + 9 * t * x.1)) - P.lift (-t / (1 - 9 * t * x.1))) / ringComplex P.p by
+        rw [map_sub]; ring, P.tracePhase_low, map_sub, res_lift, res_lift]
+      congr 1
+      have ha : (1 + 9 * t * x.1) ≠ 0 := h₁
+      have hb' : (1 - 9 * t * x.1) ≠ 0 := h₂
+      rw [div_eq_mul_inv, div_eq_mul_inv, div_eq_mul_inv,
+        show (1 : P.Res) - (9 * t * x.1) ^ 2 = (1 + 9 * t * x.1) * (1 - 9 * t * x.1) by ring, mul_inv]
+      field_simp
+      ring
+
+/-! ### Low points of low points -/
+
+/-- **Averaging over \`O/q²\`.** The pairs of low points of low points average to a cusp series in \`z\`. -/
+theorem sum_lowLow (r₁ r₂ : O) (z : ℂ) (v : ℝ) (hv : 0 < v) :
+    ∑ s : P.Res × P.Res, P.heckeLow sourceTheta r₁
+        (P.contraction • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv) *
+      P.heckeLow sourceTheta r₂ (P.contraction • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv) =
+      P.normC ^ 2 * cuspCharacterSeries (fun m => cuspConv (P.shiftedLow (v / ‖ringComplex P.p‖) (r₂ - r₁))
+        (rationalSourceModeAmplitude (v / ‖ringComplex P.p‖ / ‖ringComplex P.p‖)) (m * P.p * P.p)) z := by
+  have hn := P.norm_pos
+  have hP := P.ringComplex_ne_zero
+  have hv1 : 0 < v / ‖ringComplex P.p‖ := div_pos hv hn
+  set b := rationalSourceModeAmplitude (v / ‖ringComplex P.p‖ / ‖ringComplex P.p‖)
+  have hb : Summable (fun h => ‖b h‖) := rationalSourceModeAmplitude_summable _ (div_pos hv1 hn)
+  set g := cuspConv (P.shiftedLow (v / ‖ringComplex P.p‖) (r₂ - r₁)) b
+  have hg : Summable (fun h => ‖g h‖) := summable_cuspConv (P.summable_shiftedLow _ hv1 _) hb
+  have hinj : Function.Injective (fun m : O => m * P.p) := fun x y h => mul_right_cancel₀ P.ne_zero h
+  have hg1 : Summable (fun m => ‖g (m * P.p)‖) := hg.comp_injective hinj
+  have hpt : ∀ s : P.Res × P.Res, P.heckeLow sourceTheta r₁
+      (P.contraction • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv) *
+      P.heckeLow sourceTheta r₂ (P.contraction • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv) =
+      cuspCharacterSeries g ((((z + 3 * ringComplex (P.lift s.1)) / ringComplex P.p + 3 * ringComplex r₂) +
+        3 * ringComplex (P.lift s.2)) / ringComplex P.p) := by
+    intro s
+    rw [transThree_smul_upperPoint, P.contraction_upperPoint, P.heckeLow_source, P.heckeLow_source]
+    have e1 : ((z + 3 * ringComplex (P.sqLift s)) / ringComplex P.p + 3 * ringComplex r₁) / ringComplex P.p =
+        (((z + 3 * ringComplex (P.lift s.1)) / ringComplex P.p + 3 * ringComplex r₂) + 3 * ringComplex (P.lift s.2)) /
+          ringComplex P.p + -(3 * ringComplex (r₂ - r₁)) / ringComplex P.p := by
+      simp only [sqLift, map_add, map_mul, map_sub]
+      field_simp
+      ring
+    have e2 : ((z + 3 * ringComplex (P.sqLift s)) / ringComplex P.p + 3 * ringComplex r₂) / ringComplex P.p =
+        (((z + 3 * ringComplex (P.lift s.1)) / ringComplex P.p + 3 * ringComplex r₂) + 3 * ringComplex (P.lift s.2)) /
+          ringComplex P.p := by
+      simp only [sqLift, map_add, map_mul]
+      field_simp
+      ring
+    rw [e1, e2, cuspCharacterSeries_translate]
+    exact cuspCharacterSeries_mul (P.summable_shiftedLow _ hv1 _) hb _
+  simp_rw [hpt]
+  rw [Fintype.sum_prod_type]
+  have hinner : ∀ s₀ : P.Res, ∑ s₁ : P.Res, cuspCharacterSeries g
+      ((((z + 3 * ringComplex (P.lift s₀)) / ringComplex P.p + 3 * ringComplex r₂) + 3 * ringComplex (P.lift s₁)) /
+        ringComplex P.p) =
+      P.normC * cuspCharacterSeries (fun m => g (m * P.p)) ((z + 3 * ringComplex (P.lift s₀)) / ringComplex P.p) := by
+    intro s₀
+    rw [P.sum_cuspCharacterSeries_low g hg, cuspCharacterSeries_period]
+  simp_rw [hinner]
+  rw [← Finset.mul_sum, P.sum_cuspCharacterSeries_low _ hg1]
+  ring
+
+end PrimaryPrime
+
 end GaloisForLFunctions.OrderSixMetaplecticTheory

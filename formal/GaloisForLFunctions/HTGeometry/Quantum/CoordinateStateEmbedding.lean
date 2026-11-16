@@ -22,6 +22,7 @@ variable {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq
 def coordinateEmbedding (e : ι ↪ κ) : Matrix κ ι ℂ :=
   fun x a => if x = e a then 1 else 0
 
+omit [Fintype ι] in
 theorem coordinateEmbedding_isometry (e : ι ↪ κ) :
     (coordinateEmbedding e)ᴴ * coordinateEmbedding e = 1 := by
   ext a b
@@ -40,11 +41,12 @@ theorem coordinateProjection_eq_diagonal (e : ι ↪ κ) :
   ext x y
   by_cases hx : x ∈ Set.range e
   · obtain ⟨a, rfl⟩ := hx
-    have ha : e a ∈ Set.range e := ⟨a, rfl⟩
     rw [coordinateProjection, Matrix.mul_apply, Finset.sum_eq_single a]
-    · simp only [coordinateEmbedding, Matrix.conjTranspose_apply, if_pos rfl,
-        star_one, one_mul, Matrix.diagonal_apply, if_pos ha]
-      split <;> simp_all only [ite_true, ite_false, star_one, star_zero, eq_comm]
+    · by_cases hy : y = e a
+      · subst y
+        simp [coordinateEmbedding, Matrix.conjTranspose_apply, Matrix.diagonal_apply]
+      · simp [coordinateEmbedding, Matrix.conjTranspose_apply, Matrix.diagonal_apply,
+          hy, Ne.symm hy]
     · intro b _ hba
       have hab : e a ≠ e b := fun h => hba (e.injective h).symm
       simp only [coordinateEmbedding, if_neg hab, zero_mul]
@@ -126,3 +128,12 @@ theorem embedDensity_injective (e : ι ↪ κ) : Function.Injective (embedDensit
   simpa only [compress_embedDensity] using hc
 
 end GaloisForLFunctions.HTGeometry.Quantum
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.coordinateEmbedding_isometry
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.coordinateProjection_eq_diagonal
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.coordinateProjection_isHermitian
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.coordinateProjection_idempotent
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.coordinateProjection_embedDensity
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.compress_embedDensity
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.exists_embedDensity_iff
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.embedDensity_injective

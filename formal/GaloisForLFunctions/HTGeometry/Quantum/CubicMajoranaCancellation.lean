@@ -73,3 +73,8 @@ theorem particleHoleSquare_posSemidef {ι : Type*} [Fintype ι]
     (Matrix.posSemidef_conjTranspose_mul_self A)
 
 end GaloisForLFunctions.HTGeometry.Quantum
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.cubic_anticommutator_expansion
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.jordanWignerMajorana_anticommutator
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.cubicMajorana_anticommutator
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.particleHoleSquare_posSemidef

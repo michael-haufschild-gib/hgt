@@ -93,4 +93,6 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.HeckeChargeS
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.HeckeArithmeticSections
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.HeckeGluingComparison
 
+import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.FiniteField.PrimePowerIntersection
+
 /-! Arithmetic counts, critical torsion compensation and completed prime geometry. -/

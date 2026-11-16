@@ -36,6 +36,9 @@ so nothing is lost between stages.
 | Prime heads | `primeHead` | $\hat SF(p)=\sum\Lambda(n)n^{p-1/2}H_{\log n}(p)$ |
 | Three remainders | `levyRemainder`, `stripRemainder`, `leftRemainder`, `globalRemainder` | the remainder right of, on, and left of $\operatorname{Re}p=-\tfrac12$ |
 | Continuations | `stateContinuation`, `levyContinuation`, `stateMeromorphic` | $-R(w+8)/a$ on $\operatorname{Re}w>-8$, $>-\tfrac{17}2$, and on $\mathbb C$ |
+| Centred zeros, zero sum | `centredZero`, `zeroSum` | $z=\rho-\tfrac12$ with multiplicity; $ZF(p)=\sum_z\mathcal LF(z)\big(\tfrac1{p-z}-\tfrac1{1-z}\big)$ |
+| Divided-difference sum | `dividedTerm`, `dividedSum` | $\Delta F(p)=\sum_z\big(\tfrac{\mathcal LF(z)-\mathcal LF(p)}{p-z}-\tfrac{\mathcal LF(z)}{1-z}-\tfrac{\mathcal LF(p)}{z}\big)$, holomorphic at the zeros |
+| Defect | `explicitDefect`, `rightFormDefect`, `stripFormDefect`, `entireDefect` | $BF(1)-BF(p)+ZF(p)$ with $BF=$ `globalRemainder`, and its pole-free forms |
 | Nonpositive cone | `NonpositiveUnitTest`, `confinementBound` | smooth unit half-line tests with $Q_R\le0$ |
 
 ## 3. Language
@@ -80,7 +83,15 @@ so nothing is lost between stages.
 8. **Euler cancellation left of the strip.** For $\operatorname{Re}p<-\tfrac12$ the prime tail is
    $-\mathcal LF(p)\zeta'/\zeta(\tfrac12-p)-\hat SF(p)$ (Dirichlet series of $\Lambda$ at $\tfrac12-p$). Its Euler part cancels the reflected
    Euler term of the Gamma pairing exactly, and the remainder is $JF+\hat SF+\mathcal LF(\tfrac12)/(p-\tfrac12)+\mathcal LF(-\tfrac12)/(p+\tfrac12)$:
-   left of the strip the state is its head term, its prime heads and its two charges. Resolving the
+   left of the strip the state is its head term, its prime heads and its two charges.
+9. **Pole removal.** $ZF(p)=\Delta F(p)+\mathcal LF(p)\,\xi'/\xi(\tfrac12+p)$, and $\Delta F$ converges absolutely and is
+   holomorphic on $\operatorname{Re}p>-2$, zeros included. With $(s-1)\zeta(s)=2\xi(s)/(s\Gamma_{\mathbb R}(s))$ the Euler term of the
+   remainder is $\mathcal LF\cdot(\xi'/\xi-1/s-\Gamma_{\mathbb R}'/\Gamma_{\mathbb R})$, so the defect $BF(1)-BF+ZF$ has no pole: one
+   pole-free form right of $\operatorname{Re}p=-\tfrac12$, one on $-2<\operatorname{Re}p<\tfrac12$ with the reflected Euler factor.
+10. **Liouville on the defect.** The Lévy pairing and the regular part grow linearly on $\operatorname{Re}p\ge0$, heads
+   and tails are bounded on their half-planes, $\Gamma_{\mathbb R}'/\Gamma_{\mathbb R}$ is linear, both sums are quadratic. The glued
+   defect is entire of order $O(|p|^2)$, vanishes at $1$ and is $o(|p|)$ along the negative axis; its
+   divided difference at $1$ is zero. No bound for $\zeta'/\zeta$ inside the strip is used. Resolving the
    head into exponential modes gives
    $JF(p)=\sum_{k\ge0}\mathcal LF(2k+\tfrac12)/(2k+\tfrac12-p)$.
    Its first term cancels the positive half-charge exactly. The remaining modes have
@@ -92,7 +103,7 @@ so nothing is lost between stages.
 | # | Question | Status |
 |---|---|---|
 | Q1 | Probe kernel $B(e_p,e_q)=\frac{D(p)+D(q)}{p+q}$ and its zero side | answered (Lean) |
-| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | open; given Q3, $(\star)$ is the Mittag-Leffler expansion of the continuation and needs bounds on horizontal segments of the strip |
+| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | answered against probes (Lean): for every $F\in\mathcal H$ and $p$ off the zeros, $B(F,e_p)-B(F,e_1)=\sum_z\mathcal LF(z)\big(\tfrac1{p-z}-\tfrac1{1-z}\big)$; for the state, $a(\mathcal LF(w)-\mathcal LF(v))=-\sum_z\mathcal LF(z)\big(\tfrac1{w+8-z}-\tfrac1{v+8-z}\big)$ on $\operatorname{Re}w,\operatorname{Re}v>-4$. The zero side for two general profiles is not used by $(\star)$ and is open |
 | Q3 | State equation, continuation, residues | answered (Lean): $\mathcal LF$ continues to $\mathbb C$, holomorphic off the points $\rho-\tfrac{17}2$ ($\operatorname{Re}\rho>0$), residue $-m_\rho\mathcal LF(\rho-\tfrac12)/a$, a pole at every zero with $\operatorname{Re}\rho\ge\tfrac12$, uniformly vanishing as $\operatorname{Re}w\to-\infty$; left of the strip $-a\mathcal LF(w)=(JF+\hat SF)(w+8)+$ charges |
 | Q4 | Decay law | divergent half (Lean): $\int F^2e^{-bu}<\infty\Rightarrow\operatorname{Re}\rho\le\frac{17-b}2$; convergent half open |
 | Q5 | Sign law | answered (Lean): one sign on no ray |
@@ -111,10 +122,12 @@ Cauchy estimates); the pole-free remainder across $p=\tfrac12$; confinement comp
 nonpositive cone; the Gamma pairing in Lévy form with near/far dominations of the Lévy kernel; the
 prime tail on $\operatorname{Re}p>-4$ from the confinement mass; the Lévy symbol and the head term with their
 dominations; the functional equation in Lévy form; prime heads and the Dirichlet series of $\Lambda$ left
-of the strip; gluing of three remainders into one continuation; $\zeta\ne0$ on $\operatorname{Re}s=0$.
+of the strip; gluing of three remainders into one continuation; $\zeta\ne0$ on $\operatorname{Re}s=0$; the zero-sum
+calculus (one subtraction, absolute convergence off the zeros, divided-difference sum, pole removal);
+linear growth of every pairing of a profile with a probe; the pole-free forms of the defect, their
+gluing and Liouville.
 
-**To build.** Bounds on horizontal segments of the strip, for the Mittag-Leffler form $(\star)$; vertical-line
-bounds for the convergent half of the decay law; the exact critical-ratio count; the leading asymptotics of
+**To build.** The inversion from vertical-line bounds to decay, for the convergent half of the decay law; the exact critical-ratio count; the leading asymptotics of
 $JF$ and $\hat SF$ as $p\to-\infty$, beyond their uniform vanishing (the wall seen from the left formula).
 
 ## 7. Pillar theorems
@@ -136,6 +149,10 @@ $JF$ and $\hat SF$ as $p\to-\infty$, beyond their uniform vanishing (the wall se
 | Continuation across the line; a pole at every zero with $\operatorname{Re}\rho\ge\tfrac12$ | `riemannHypothesis_or_criticalState_poles_across_line` | unconditional |
 | Functional equation in Lévy form | `levySymbol_eq_neg_logDeriv`, `levyGamma_eq_reflected_euler` | unconditional |
 | The state is meromorphic in the plane; prime heads left of the strip | `riemannHypothesis_or_criticalState_meromorphic`, `stateMeromorphic_eq_left` | unconditional |
+| The zero sum converges after one subtraction; pole removal | `summable_zeroSum_term`, `differentiableAt_dividedSum`, `zeroSum_eq_dividedSum_add` | unconditional |
+| Linear growth of the pairings with a probe | `exists_bound_levyGamma`, `exists_bound_levyRegularPart`, `exists_bound_leftRemainder` | unconditional |
+| Explicit formula on the domain against probes | `entireDefect_eq_zero`, `globalRemainder_sub_eq_zeroSum`, `globalRemainder_sub_eq_tsum` | unconditional |
+| $(\star)$: the state is the Cauchy transform of its values at the zeros | `criticalState_starEquation`, `criticalState_zeroValues_cauchy`, `riemannHypothesis_or_criticalState_starEquation` | unconditional |
 
 ## 8. Traps
 
@@ -152,6 +169,8 @@ $JF$ and $\hat SF$ as $p\to-\infty$, beyond their uniform vanishing (the wall se
 | The exponent 8 is canonical | Any confinement exponent works; 8 only fixes the shift of the residue transport |
 | The Gamma pairing continues only by deforming the Fourier contour | Its Lévy form converges on $\operatorname{Re}p>-\tfrac12$, and its symbol is the functional equation |
 | Continuation past the strip needs the explicit formula | Left of the strip the Euler parts cancel; the remainder is head term, prime heads and charges |
+| $(\star)$ needs bounds for $\zeta'/\zeta$ on horizontal segments of the strip | Pole removal and Liouville use linear growth of the pairings and $\sum_z\lvert z\rvert^{-2}<\infty$ only |
+| $\sum_z\mathcal LF(z)/(w+8-z)$ converges | $\mathcal LF(z)$ is bounded and need not decay; the sum converges after one subtraction, and $(\star)$ is a two-point identity |
 
 ## 9. Context
 
@@ -187,7 +206,9 @@ $\zeta$ as poles shifted by the confinement exponent: every zero in the strip is
 with residue $-m_\rho\mathcal LF(\rho-\tfrac12)/a$, nonzero on and right of the line. Right of the strip the equation
 is read in prime coordinates; across it the Gamma pairing is the functional equation in Lévy form; left of
 it the Euler parts cancel and $-a\mathcal LF(w)$ is the head term, the prime heads and the charges at $w+8$:
-the prime side seen from beyond the wall. Decay, sign and index laws are theorems and are compatible with
-the existence of the state. What remains is the arithmetic contradiction (Q7–Q9): the two descriptions
+the prime side seen from beyond the wall. The explicit formula holds on the whole domain against probes,
+so the state is the Cauchy transform of its own values at the zeros: $(\star)$ is a theorem, and stage 5
+says that this Cauchy system has no solution in $\mathcal H$. Decay, sign and index laws are theorems and are
+compatible with the existence of the state. What remains is the arithmetic contradiction (Q7–Q9): the two descriptions
 of one meromorphic function, by its poles at the zeros and by its prime heads left of the strip, must be
 shown incompatible.

@@ -59,3 +59,7 @@ theorem compressed_posSemidef_iff (e : ι ↪ κ) (B : selfAdjoint (Matrix κ κ
   simp only [trace_encoding_duality]
 
 end GaloisForLFunctions.HTGeometry.Quantum
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.posSemidef_iff_positive_trace_tests
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.trace_encoding_duality
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.compressed_posSemidef_iff

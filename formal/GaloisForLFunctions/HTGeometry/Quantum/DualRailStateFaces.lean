@@ -113,3 +113,10 @@ theorem dualRail_isExposed :
   constraintFace_isExposed _ _
 
 end GaloisForLFunctions.HTGeometry.Quantum
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.mem_range_dualRailBasis
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.occupationDefectValue_eq_zero_iff
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.occupation_constraints_iff_projection
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.dualRail_state_iff_zero_occupation_energy
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.dualRail_unique_state_iff_zero_occupation_energy
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.dualRail_isExposed
