@@ -31,13 +31,14 @@ theorem readout_replicate (k : ℕ) (score : V → V → ℝ) (value post : V �
     simp [historyMultiplicity, Fintype.sum_prod_type]
   have hid : historyMultiplicity (id : ι → ι) = fun _ => 1 := by
     funext i
-    simp [historyMultiplicity]
+    change (∑ j : ι, if j = i then 1 else 0) = 1
+    simp only [Finset.sum_ite_eq', Finset.mem_univ, if_true]
   have hbase := readout_eq_countReadout (id : ι → ι) score value post
     poolScore output depth initial input
   simp only [Function.comp_id, hid] at hbase
   calc
     _ = countReadout (fun _ : ι => k + 1) score value post poolScore output depth initial input := by
-      simpa only [hrep] using
+      simpa only [hrep, Function.comp_def] using
         readout_eq_countReadout (Prod.fst : ι × Fin (k + 1) → ι)
           score value post poolScore output depth initial input
     _ = countReadout (fun _ : ι => 1) score value post poolScore output depth initial input := by
@@ -72,7 +73,7 @@ theorem occupation_refine_eq_countRefine (n : ℕ) (score : V → V → ℝ)
   have h := refine_eq_countRefine (sampleIndicator S) score value post
     (occupationValues occupied vacant) (fun _ => initial) depth
   simpa only [historyMultiplicity_sampleIndicator, occupationTokens,
-    occupationValues, Function.comp_apply] using h
+    occupationValues, Function.comp_def] using h
 
 /-- The occupation readout has an explicit two-state formula at every depth. -/
 theorem occupation_readout_eq_countReadout (n : ℕ) (score : V → V → ℝ)
@@ -84,15 +85,16 @@ theorem occupation_readout_eq_countReadout (n : ℕ) (score : V → V → ℝ)
   have h := readout_eq_countReadout (sampleIndicator S) score value post
     poolScore output depth initial (occupationValues occupied vacant)
   simpa only [historyMultiplicity_sampleIndicator, occupationTokens,
-    occupationValues, Function.comp_apply] using h
+    occupationValues, Function.comp_def] using h
 
+omit [AddCommGroup V] [Module ℝ V] in
 /-- The two-state softmax includes the exact vacant and occupied multiplicities. -/
 theorem countPool_occupation (n m : ℕ) (score : V → ℝ) (value : V → W) (x : Bool → V) :
     countPool (occupationCount n m) score value x =
       ((m : ℝ) * Real.exp (score (x true)) + (n - m : ℕ) * Real.exp (score (x false)))⁻¹ •
         (((m : ℝ) * Real.exp (score (x true))) • value (x true) +
           ((n - m : ℕ) * Real.exp (score (x false))) • value (x false)) := by
-  simp [countPool, occupationCount, Fintype.sum_bool]
+  simp [countPool, occupationCount]
 
 #print axioms readout_replicate
 #print axioms occupation_refine_eq_countRefine

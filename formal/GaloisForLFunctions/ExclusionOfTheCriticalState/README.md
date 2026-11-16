@@ -38,6 +38,10 @@ so nothing is lost between stages.
 | Continuations | `stateContinuation`, `levyContinuation`, `stateMeromorphic` | $-R(w+8)/a$ on $\operatorname{Re}w>-8$, $>-\tfrac{17}2$, and on $\mathbb C$ |
 | Entire state product | `stateXiProduct` | $E(w)=\xi(w+\tfrac{17}2)\mathcal LF(w)$, extended across the shifted zeros |
 | Left Hardy datum | `leftContinuationDatum` | $G_c\in L^2(0,\infty)$ representing the reflected continuation $\mathcal LF(-(z+c)-8)$ for $\operatorname{Re}z>0$, $\tfrac12<c\le4$ |
+| Averaged state | `averagedState`, `averageSymbol` | $A(t)$: exponential averages of $F(-\cdot)$ at the rates $9,\dots,12$; $\int_0^\infty A(t)e^{-zt}dt=\mathcal LF(z)/((z+9)(z+10)(z+11)(z+12))$ |
+| Heat test, heat kernel | `stateHeatSymbol`, `stateHeatKernel` | $e^{\varepsilon p^2-pT}$; $k_\varepsilon(x)=(4\pi\varepsilon)^{-1/2}e^{-x^2/4\varepsilon}$ |
+| Heated state | `heatedState` | $\int k_\varepsilon(u-T)e^{-8u}F(u)\,du$ |
+| Profile beyond the wall | `beyondWallProfile`, `heatedBeyondWall` | $F^+$ on $x>0$: archimedean head, prime heads and the two charges, with $\mathcal LF(w)=\int_0^\infty F^+(x)e^{(w+8)x}dx$ for $\operatorname{Re}w<-9$; its heat average |
 | Centred zeros, zero sum | `centredZero`, `zeroSum` | $z=\rho-\tfrac12$ with multiplicity; $ZF(p)=\sum_z\mathcal LF(z)\big(\tfrac1{p-z}-\tfrac1{1-z}\big)$ |
 | Divided-difference sum | `dividedTerm`, `dividedSum` | $\Delta F(p)=\sum_z\big(\tfrac{\mathcal LF(z)-\mathcal LF(p)}{p-z}-\tfrac{\mathcal LF(z)}{1-z}-\tfrac{\mathcal LF(p)}{z}\big)$, holomorphic at the zeros |
 | Defect | `explicitDefect`, `rightFormDefect`, `stripFormDefect`, `entireDefect` | $BF(1)-BF(p)+ZF(p)$ with $BF=$ `globalRemainder`, and its pole-free forms |
@@ -115,15 +119,27 @@ so nothing is lost between stages.
    Coercivity then bounds its Lévy energy by $O(h)$, so the logarithmic boundary inequality
    gives $\log(2/h)\int_{-h}^0F^2\le Ch$. Thus the average square mass tends to zero.
    Truncation and Cauchy–Schwarz give $\sigma|\mathcal LF(\sigma+iy)|\to0$ uniformly in $y$.
+13. **Bounds off the zeros and the averaged line shift.** At distance $\delta$ from the zeros
+   $|ZF(p)|\le C(1+|p|)(1+|p|/\delta)$, so the continuation is $O(|w|^2)$ on every vertical line off the
+   pole strip. An exponential average of the state at four rates divides the transform by a quartic;
+   the inversion line then moves from $\operatorname{Re}w=1$ to $\operatorname{Re}w=\kappa'-8$ for every $\kappa'$ above the
+   real parts of the centred zeros. The raw transform does not decay on these lines, so the unaveraged
+   $L^2$ law needs more than the width of the zero strip.
+14. **Two lines weigh the zero values.** For entire $H$ of fourth-order decay on $a\le\operatorname{Re}p\le b$,
+   $a\le-1$, $1\le b$: $\sum_z\mathcal LF(z)H(z)=\frac1{2\pi}\big(\int_{\operatorname{Re}p=b}H\,BF-\int_{\operatorname{Re}p=a}H\,BF\big)$. The zero
+   sum integrates term by term and the constant of the explicit formula drops out. For the state the
+   right line carries $\mathcal LF$ and the left line its continuation. With $H=e^{\varepsilon p^2-pT}$ each line
+   integral is a heat average (Fubini and one Gaussian integral): the series $\sum_z\mathcal LF(z)e^{-zu}$ is
+   $-a\,e^{-8u}F(u)$ left of the wall and $a\,F^+(u)$ beyond it.
 
 ## 5. Questions
 
 | # | Question | Status |
 |---|---|---|
 | Q1 | Probe kernel $B(e_p,e_q)=\frac{D(p)+D(q)}{p+q}$ and its zero side | answered (Lean) |
-| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | answered against probes (Lean): for every $F\in\mathcal H$ and $p$ off the zeros, $B(F,e_p)-B(F,e_1)=\sum_z\mathcal LF(z)\big(\tfrac1{p-z}-\tfrac1{1-z}\big)$; for the state, $a(\mathcal LF(w)-\mathcal LF(v))=-\sum_z\mathcal LF(z)\big(\tfrac1{w+8-z}-\tfrac1{v+8-z}\big)$ on $\operatorname{Re}w,\operatorname{Re}v>-4$. The zero side for two general profiles is not used by $(\star)$ and is open |
+| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | answered against probes (Lean): for every $F\in\mathcal H$ and $p$ off the zeros, $B(F,e_p)-B(F,e_1)=\sum_z\mathcal LF(z)\big(\tfrac1{p-z}-\tfrac1{1-z}\big)$; for the state, $a(\mathcal LF(w)-\mathcal LF(v))=-\sum_z\mathcal LF(z)\big(\tfrac1{w+8-z}-\tfrac1{v+8-z}\big)$ on $\operatorname{Re}w,\operatorname{Re}v>-4$. In time form (Lean): $\sum_z\mathcal LF(z)e^{\varepsilon z^2-zT}=a\big(\int_{x>0}k_\varepsilon(x-T)F^+(x)dx-\int_{u<0}k_\varepsilon(u-T)e^{-8u}F(u)du\big)$ for every $\varepsilon>0$ and real $T$. The zero side for two general profiles is not used by $(\star)$ and is open |
 | Q3 | State equation, continuation, residues | answered (Lean): $\mathcal LF$ continues to $\mathbb C$, holomorphic off the points $\rho-\tfrac{17}2$ ($\operatorname{Re}\rho>0$), residue $-m_\rho\mathcal LF(\rho-\tfrac12)/a$, a pole at every zero with $\operatorname{Re}\rho\ge\tfrac12$, uniformly vanishing as $\operatorname{Re}w\to-\infty$; left of the strip $-a\mathcal LF(w)=(JF+\hat SF)(w+8)+$ charges |
-| Q4 | Decay law | divergent half (Lean): $\int F^2e^{-bu}<\infty\Rightarrow\operatorname{Re}\rho\le\frac{17-b}2$; uniform vertical $L^2$ bounds on $\operatorname{Re}w\le-\tfrac{17}2-\delta$ for every $\delta>0$ (Lean); convergent half open |
+| Q4 | Decay law | divergent half (Lean): $\int F^2e^{-bu}<\infty\Rightarrow\operatorname{Re}\rho\le\frac{17-b}2$; uniform vertical $L^2$ bounds on $\operatorname{Re}w\le-\tfrac{17}2-\delta$ for every $\delta>0$ (Lean); convergent half, averaged (Lean): if every centred zero has $\operatorname{Re}z\le\kappa$, then $|A(t)|\le Ce^{-(8-\kappa')t}$ for every $\kappa'>\kappa$; with the seed, every rate below $183001/24000$, beyond the barrier $15/2$. Heated (Lean): for $T\le-4\varepsilon$ the heated state is $-a^{-1}\sum_z\mathcal LF(z)e^{\varepsilon z^2-zT}$ up to $\|F^+e^{-x}\|_2\,k_\varepsilon(T)$. The unaveraged $L^2$ law is open; it is a square-summability of the zero values $\mathcal LF(z)$ against the density of the zeros (*reading*) |
 | Q5 | Sign law | answered (Lean): one sign on no ray |
 | Q6 | Index law | $\zeta$: finite index at every ratio (Lean); exact count of critical ratios open |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH |
@@ -143,10 +159,15 @@ dominations; the functional equation in Lévy form; prime heads and the Dirichle
 of the strip; gluing of three remainders into one continuation; $\zeta\ne0$ on $\operatorname{Re}s=0$; the zero-sum
 calculus (one subtraction, absolute convergence off the zeros, divided-difference sum, pole removal);
 linear growth of every pairing of a profile with a probe; the pole-free forms of the defect, their
-gluing and Liouville; Carleman's inequality and half-line Plancherel for the explicit left Hardy profile.
+gluing and Liouville; Carleman's inequality and half-line Plancherel for the explicit left Hardy profile. Bounds of the pairing and of the
+continuation off the zeros; the Volterra–Laplace calculus of exponential averages; the entire product
+and its difference equation; two-line weighing of the zero values against entire tests; Gaussian line
+integrals of Laplace integrals as heat averages.
 
 **To build.** Vertical square bounds toward the pole strip and their transfer to weighted decay of the original state, for the convergent half of the decay law; the exact critical-ratio count; the leading asymptotics of
-$JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula).
+$JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula); the square-summability of the zero values behind the
+unaveraged decay law; $F^+$ in prime form (the remainder of the prime number theorem averaged by $F$)
+and its comparison with $e^{-8u}F$ at the wall.
 
 ## 7. Pillar theorems
 
@@ -172,6 +193,12 @@ $JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula).
 | Explicit formula on the domain against probes | `entireDefect_eq_zero`, `globalRemainder_sub_eq_zeroSum`, `globalRemainder_sub_eq_tsum` | unconditional |
 | $(\star)$: the state is the Cauchy transform of its values at the zeros | `criticalState_starEquation`, `criticalState_zeroValues_cauchy`, `riemannHypothesis_or_criticalState_starEquation` | unconditional |
 | Exact multiplicities of the entire state product; full multiplicity detects unseen zeros | `criticalState_stateXiProduct_order`, `le_analyticOrderAt_stateXiProduct_iff`, `stateXiProduct_first_nonzero_jet` | unconditional (for the state or energy-domain profile) |
+| $\xi(w+\tfrac{17}2)\mathcal LF(w)$ is entire | `differentiable_stateXiProduct`, `riemannHypothesis_or_criticalState_xi_mul_entire` | unconditional |
+| $(\star)$ normalised at the left end; the Cauchy system of the zero values | `criticalState_starEquation_normalised`, `criticalState_zeroValues_cauchy_normalised` | unconditional |
+| The continuation is $O(\lvert w\rvert^2)$ off the zeros | `norm_globalRemainder_le_of_dist`, `norm_stateMeromorphic_le_of_re` | unconditional |
+| The averaged state decays at the rate of the zeros, beyond the barrier | `exists_bound_averagedState`, `criticalState_averaged_decay_beyond_barrier`, `riemannHypothesis_or_criticalState_averaged_decay` | unconditional |
+| Two vertical lines cut out the zero series | `hasSum_zeroValues_two_lines`, `criticalState_hasSum_zeroValues_two_lines` | unconditional |
+| The zero series is the state left of the wall and the prime side beyond it | `criticalState_hasSum_heated_zeroSeries`, `criticalState_heatedState_add_zeroSeries_le` | unconditional |
 
 ## 8. Traps
 
@@ -191,6 +218,8 @@ $JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula).
 | Continuation past the strip needs the explicit formula | Left of the strip the Euler parts cancel; the remainder is head term, prime heads and charges |
 | $(\star)$ needs bounds for $\zeta'/\zeta$ on horizontal segments of the strip | Pole removal and Liouville use linear growth of the pairings and $\sum_z\lvert z\rvert^{-2}<\infty$ only |
 | $\sum_z\mathcal LF(z)/(w+8-z)$ converges | $\mathcal LF(z)$ is bounded and need not decay; the sum converges after one subtraction, and $(\star)$ is a two-point identity |
+| The convergent half of the decay law is a line shift of $(\star)$ | The continuation does not decay on vertical lines; the shift works after averaging |
+| $F(u)=-a^{-1}e^{8u}\sum_z\mathcal LF(z)e^{-zu}$ pointwise | The series is a distribution on the line; heated it converges absolutely, and left of the wall it differs from the state by the prime side behind a Gaussian |
 
 ## 9. Context
 
@@ -231,4 +260,5 @@ so the state is the Cauchy transform of its own values at the zeros: $(\star)$ i
 says that this Cauchy system has no solution in $\mathcal H$. Decay, sign and index laws are theorems and are
 compatible with the existence of the state. What remains is the arithmetic contradiction (Q7–Q9): the two descriptions
 of one meromorphic function, by its poles at the zeros and by its prime heads left of the strip, must be
-shown incompatible.
+shown incompatible. In time this is one series: $\sum_z\mathcal LF(z)e^{-zu}$ is $-a\,e^{-8u}F(u)$ left of the wall
+and $a\,F^+(u)$ beyond it.

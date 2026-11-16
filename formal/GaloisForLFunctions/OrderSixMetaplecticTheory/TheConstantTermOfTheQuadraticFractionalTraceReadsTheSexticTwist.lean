@@ -118,7 +118,9 @@ theorem integral_middle_sumW (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 0 < v) :
       ∑ t : P.Res, P.lam t * ∫ z in periodDomain, P.fracCorrelation sourceTheta (P.lift t)
         (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv) := fun x => by
     unfold fracSumW
-    rw [integral_finsetSum _ (fun t _ => integrableOn_periodDomain_of_continuous _
+    rw [integral_finsetSum _ (fun t _ => integrableOn_periodDomain_of_continuous
+      (fun z => P.lam t * P.fracCorrelation sourceTheta (P.lift t)
+        (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv))
       (continuous_const.mul ((P.continuous_fracCorrelation_source _).comp
         ((continuous_hyperbolic_action (complexMatrix (lowerThree (P.p * P.lift x.1)))).comp
           (continuous_upperPoint_z v hv)))))]
@@ -127,8 +129,8 @@ theorem integral_middle_sumW (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 0 < v) :
   simp only [← hbdef]
   have hhigh : ∑ x : {x : P.Res // x ≠ 0}, ∑ t : P.Res, P.lam t *
       (if 1 + 9 * t * x.1 = 0 ∨ 1 - 9 * t * x.1 = 0 then P.chi 2 * (P.chi (3 * x.1))⁻¹ * P.highTerm v else 0) = 0 := by
-    rw [← P.sum_lam_middleMain h2 (P.highTerm v) 0]
-    refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun t _ => ?_
+    refine (Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun t _ => ?_).trans
+      (P.sum_lam_middleMain h2 (P.highTerm v) 0)
     congr 1
     unfold middleMain
     by_cases h₁ : 1 + 9 * t * x.1 = 0
@@ -184,6 +186,7 @@ theorem integral_cuspZero_sumW (h2 : (2 : P.Res) ≠ 0) (v : ℝ) (hv : 0 < v) :
       zero_add]
     rw [Finset.sum_comm]
     simp_rw [← Finset.mul_sum, P.sum_lowLow]
+    rfl
   have hcont : ∀ s : P.Res × P.Res, Continuous (fun z : ℂ => P.fracSumW P.lam sourceTheta
       (integralComplexMatrix sO • complexMatrix (transThree (P.sqLift s)) • upperPoint z v hv)) := fun s =>
     P.continuous_fracSumW_source.comp ((continuous_hyperbolic_action _).comp

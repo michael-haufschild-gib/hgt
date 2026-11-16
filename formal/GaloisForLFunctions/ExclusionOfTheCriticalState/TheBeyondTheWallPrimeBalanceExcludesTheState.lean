@@ -104,7 +104,7 @@ theorem differentiableOn_archimedeanWallTail {F : ℝ → ℝ} (hF : CriticalHal
     exact (hr.mul_left C).congr fun k => by push_cast; rfl
   have hU : IsOpen {p : ℂ | p.re < σ} := isOpen_lt Complex.continuous_re continuous_const
   have hd : DifferentiableOn ℂ (archimedeanWallTail F) {p : ℂ | p.re < σ} := by
-    refine Complex.differentiableOn_tsum_of_summable_norm hsum (fun k => ?_) hU
+    refine differentiableOn_tsum_of_summable_norm hsum (fun k => ?_) hU
       (fun k p hp => ?_)
     · intro p hp
       have hp' : p.re < σ := hp
@@ -213,7 +213,6 @@ theorem polarWallTerm_eq_continuumMainTerm {F : ℝ → ℝ} (hF : CriticalHalfL
     (v : ℝ) :
     negativeHalfLineLaplace (cx F) (-(1 / 2)) * (Real.exp (v / 2) : ℂ) =
       ∫ x in Ioi v, (F (v - x) : ℂ) * (Real.exp (x / 2) : ℂ) := by
-  have h1 := integral_comp_sub_left (fun u : ℝ => cexp (-(1 / 2 : ℂ) * u) * cx F u) v
   have h2 : (∫ u : ℝ, cexp (-(1 / 2 : ℂ) * u) * cx F u) =
       ∫ u in Iio (0 : ℝ), cexp (-(1 / 2 : ℂ) * u) * cx F u :=
     (setIntegral_eq_integral_of_forall_compl_eq_zero fun u hu => by
@@ -425,7 +424,11 @@ theorem beyondTheWallPrimeContinuation_of_riemannHypothesis (hRH : RiemannHypoth
       have : (1 / 2 + p).re = 1 / 2 + p.re := re_one_half_add p
       rw [hc, hre_half] at this
       linarith
-    exact ((differentiableAt_globalRemainder_of_xi_ne_zero hF hxi_ne).sub
+    have hdiff_rem : DifferentiableAt ℂ (globalRemainder F) p := by
+      refine differentiableAt_globalRemainder hF fun hp0 hz => hxi_ne ?_
+      rw [xi_eq_half_mul_Gammaℝ_mul_zetaEntire (by rw [re_one_half_add]; linarith), hz]
+      ring
+    exact (hdiff_rem.sub
       ((differentiableOn_archimedeanWallTail hF).differentiableAt
         ((isOpen_lt Complex.continuous_re continuous_const).mem_nhds
           (by linarith : p.re < 5 / 2)))).differentiableWithinAt
@@ -453,8 +456,8 @@ theorem zetaBeyondTheWallPrimeContinuation_iff_no_criticalState :
 
 /-! ### Pole-neutral pure prime-head exclusion and boundary sharpness -/
 
-private theorem laplace_causalTranslate_one {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
-    {w : ℂ} (hw : -4 < w.re) :
+private theorem laplace_causalTranslate_one {F : ℝ → ℝ} (_hF : CriticalHalfLineEnergyDomain F)
+    {w : ℂ} (_hw : -4 < w.re) :
     negativeHalfLineLaplace (cx fun u => F (u + 1)) w =
       cexp (-w) * negativeHalfLineLaplace (cx F) w := by
   unfold negativeHalfLineLaplace cx
@@ -463,7 +466,7 @@ private theorem laplace_causalTranslate_one {F : ℝ → ℝ} (hF : CriticalHalf
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
   simp only [add_sub_cancel_right]
   rw [← mul_assoc, ← Complex.exp_add]
-  congr 2; ring
+  congr 2; push_cast; ring
 
 /-- **Pure prime-head exclusion:** holomorphic continuation of `primeHead G` alone on the
 pole-neutral subspace `L G(-½) = 0` suffices to exclude the critical state directly (via the
@@ -484,13 +487,15 @@ theorem no_criticalState_of_purePrimeHeadContinuation (hpure : PurePrimeHeadCont
         (cexp (-w) - (Real.exp (1 / 2) : ℂ)) * negativeHalfLineLaplace (cx F) w := by
     intro w hw
     have hiT : Integrable fun u : ℝ => cexp (w * u) * cx (fun v => F (v + 1)) u := by
-      refine (integrable_abs_mul_exp_of_domain hdT hw).mono'
+      refine (integrable_abs_mul_exp_of_sq hdT.meas hdT.support hdT.exponential
+        (by linarith : -(8 / 2 : ℝ) < w.re)).mono'
         (((by fun_prop : Continuous fun u : ℝ => cexp (w * u)).measurable.mul
           (Complex.measurable_ofReal.comp hdT.meas)).aestronglyMeasurable)
         (Eventually.of_forall fun u => ?_)
       rw [norm_mul, norm_cexp_mul_ofReal, cx, Complex.norm_real, Real.norm_eq_abs, mul_comm]
     have hiF : Integrable fun u : ℝ => cexp (w * u) * cx F u := by
-      refine (integrable_abs_mul_exp_of_domain hd hw).mono'
+      refine (integrable_abs_mul_exp_of_sq hd.meas hd.support hd.exponential
+        (by linarith : -(8 / 2 : ℝ) < w.re)).mono'
         (((by fun_prop : Continuous fun u : ℝ => cexp (w * u)).measurable.mul
           (Complex.measurable_ofReal.comp hd.meas)).aestronglyMeasurable)
         (Eventually.of_forall fun u => ?_)

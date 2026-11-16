@@ -33,8 +33,8 @@ def countPool (count : A → ℕ) (score : V → ℝ) (value : V → W) (x : A �
   (∑ a, (count a : ℝ) * Real.exp (score (x a)))⁻¹ •
     ∑ a, ((count a : ℝ) * Real.exp (score (x a))) • value (x a)
 
-/-- Grouping repeated tokens preserves the normalized weighted sum exactly. -/
 omit [AddCommGroup V] [Module ℝ V] in
+/-- Grouping repeated tokens preserves the normalized weighted sum exactly. -/
 theorem pool_eq_countPool (label : ι → A) (score : V → ℝ)
     (value : V → W) (x : A → V) :
     pool score value (x ∘ label) = countPool (historyMultiplicity label) score value x := by
@@ -92,8 +92,8 @@ theorem readout_eq_countReadout (label : ι → A) (score : V → V → ℝ)
   rw [show (fun _ : ι => initial) = (fun _ : A => initial) ∘ label from rfl,
     refine_eq_countRefine, pool_eq_countPool]
 
-/-- A common positive integer factor cancels from both softmax sums, including the empty case. -/
 omit [DecidableEq A] [AddCommGroup V] [Module ℝ V] in
+/-- A common positive integer factor cancels from both softmax sums, including the empty case. -/
 theorem countPool_scale (k : ℕ) (count : A → ℕ) (score : V → ℝ)
     (value : V → W) (x : A → V) :
     countPool (fun a => (k + 1) * count a) score value x = countPool count score value x := by
@@ -102,8 +102,8 @@ theorem countPool_scale (k : ℕ) (count : A → ℕ) (score : V → ℝ)
   simp only [Nat.cast_mul, mul_assoc, ← Finset.mul_sum, ← smul_smul, ← Finset.smul_sum]
   rw [mul_inv_rev, smul_smul, mul_assoc, inv_mul_cancel₀ hk, mul_one]
 
-/-- Repeating every symbol equally leaves every compressed block unchanged. -/
 omit [DecidableEq A] in
+/-- Repeating every symbol equally leaves every compressed block unchanged. -/
 theorem countBlock_scale (k : ℕ) (count : A → ℕ) (score : V → V → ℝ)
     (value post : V → V) (x : A → V) :
     countBlock (fun a => (k + 1) * count a) score value post x =
@@ -111,8 +111,8 @@ theorem countBlock_scale (k : ℕ) (count : A → ℕ) (score : V → V → ℝ)
   funext a
   rw [countBlock, countBlock, countPool_scale]
 
-/-- Uniform replication leaves the full compressed trajectory unchanged. -/
 omit [DecidableEq A] in
+/-- Uniform replication leaves the full compressed trajectory unchanged. -/
 theorem countRefine_scale (k : ℕ) (count : A → ℕ) (score : V → V → ℝ)
     (value post : V → V) (input y : A → V) (depth : ℕ) :
     countRefine (fun a => (k + 1) * count a) score value post input depth y =
@@ -121,8 +121,8 @@ theorem countRefine_scale (k : ℕ) (count : A → ℕ) (score : V → V → ℝ
   | zero => rfl
   | succ depth ih => rw [countRefine, countRefine, ih, countBlock_scale]
 
-/-- The readout depends on relative symbol counts, not their common positive integer scale. -/
 omit [DecidableEq A] in
+/-- The readout depends on relative symbol counts, not their common positive integer scale. -/
 theorem countReadout_scale (k : ℕ) (count : A → ℕ) (score : V → V → ℝ)
     (value post : V → V) (poolScore : V → ℝ) (output : V → W)
     (depth : ℕ) (initial : V) (input : A → V) :
