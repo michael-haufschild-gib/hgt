@@ -34,7 +34,6 @@ theorem frobeniusSpecialLinearAut_fixes_invariant (M : SpecialLinearGroup (Fin 2
   let u := frobeniusSpecialLinearCoordinate K E γ R M
   let B : L := 1 + (x ^ q - x) ^ (q - 1)
   letI : Algebra K L := Algebra.compHom L (algebraMap K E)
-  letI : IsScalarTower K E L := IsScalarTower.of_algebraMap_eq' rfl
   have hdet : M 0 0 * M 1 1 - M 0 1 * M 1 0 ≠ 0 := by
     have he : M 0 0 * M 1 1 - M 0 1 * M 1 0 = 1 := by
       simpa only [Matrix.det_fin_two] using M.property

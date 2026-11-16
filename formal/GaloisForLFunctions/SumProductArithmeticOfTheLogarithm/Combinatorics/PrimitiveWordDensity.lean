@@ -62,7 +62,40 @@ theorem tendsto_necklace_primitive_density (a : ℕ) :
   field_simp
   ring
 
+/-- A larger alphabet's primitive necklaces eventually dominate every polynomially weighted
+word count over the next smaller alphabet. -/
+theorem eventually_polynomial_word_count_lt_necklace (a d : ℕ) :
+    ∀ᶠ n : ℕ in atTop,
+      (n + 1) ^ d * (a + 1) ^ (n + 1) < necklaceCount (a + 2) (n + 1) := by
+  let A : ℝ := ((a + 2 : ℕ) : ℝ)
+  let B : ℝ := ((a + 1 : ℕ) : ℝ)
+  have hA : 0 < A := by dsimp [A]; positivity
+  have hB : 0 ≤ B := by dsimp [B]; positivity
+  have hBA : B < A := by dsimp [A, B]; exact_mod_cast (by omega : a + 1 < a + 2)
+  have ht := (tendsto_pow_const_mul_const_pow_of_lt_one (d + 1)
+    (div_nonneg hB hA.le) ((div_lt_one hA).mpr hBA)).comp (tendsto_add_atTop_nat 1)
+  have hs := ht.eventually_lt_const (by norm_num : (0 : ℝ) < 1 / 2)
+  have hb := (tendsto_necklace_primitive_density a).eventually_const_lt
+    (by norm_num : (1 / 2 : ℝ) < 1)
+  filter_upwards [hs, hb] with n hs hb
+  have hc := hs.trans hb
+  have hp : 0 < ((n + 1 : ℕ) : ℝ) := by positivity
+  have he : (((n + 1 : ℕ) : ℝ) ^ (d + 1) * (B / A) ^ (n + 1)) =
+      (((n + 1 : ℕ) : ℝ) * ((((n + 1 : ℕ) : ℝ) ^ d) * B ^ (n + 1))) /
+        A ^ (n + 1) := by
+    rw [div_pow, pow_succ]
+    ring
+  change (((n + 1 : ℕ) : ℝ) ^ (d + 1) * (B / A) ^ (n + 1)) <
+    (((n + 1) * necklaceCount (a + 2) (n + 1) : ℕ) : ℝ) / A ^ (n + 1) at hc
+  rw [he, div_lt_div_iff_of_pos_right (pow_pos hA _), Nat.cast_mul] at hc
+  have hres : (((n + 1 : ℕ) : ℝ) ^ d) * B ^ (n + 1) <
+      (necklaceCount (a + 2) (n + 1) : ℝ) := by
+    nlinarith only [hc, hp]
+  exact_mod_cast hres
+
 end GaloisForLFunctions.SumProductArithmeticOfTheLogarithm
 
 #print axioms GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.necklace_relative_error_bound
 #print axioms GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.tendsto_necklace_primitive_density
+
+#print axioms GaloisForLFunctions.SumProductArithmeticOfTheLogarithm.eventually_polynomial_word_count_lt_necklace

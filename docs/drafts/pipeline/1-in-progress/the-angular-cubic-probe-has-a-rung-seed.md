@@ -5,7 +5,7 @@
 - **Obstacle:** O3; no contribution counted.
 - **Target:** An unconditional zero-free half-plane `Re w>b`, `b<1`, for actual
   `grossenLFunction` with positive infinity type.
-- **Verified:** Fifty-six helper modules passed final plain Lean checks and are umbrella-wired.
+- **Verified:** Fifty-seven helper modules passed final plain Lean checks and are umbrella-wired.
 - **Missing:** Actual low completed-source energy, angular prime-slot estimates, high moment induction and both common-signal estimates.
 
 ## Receiver
@@ -273,3 +273,6 @@ retaining finite Fourier and inactive-prime weights and the exact angular reflec
 
 `AngularReindexing` transports actual angular cusp reflection through prime-family
 equivalences and pullbacks of controlled cusp data, preserving both angular phases.
+
+`AngularFrozenSources` reconstructs actual marked angular tuples from controlled reflected
+strata. Overlap zeros remove unsupported tuples; finite Fourier and inactive-prime weights remain exact.

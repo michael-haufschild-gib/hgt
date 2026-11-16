@@ -23,7 +23,7 @@ theorem coord_add (x y : ghostRing) (n : ℕ+) :
   have hxy := ghostComponent_eq_sum_coord (x + y) M
   have hx := ghostComponent_eq_sum_coord x M
   have hy := ghostComponent_eq_sum_coord y M
-  simpa only [map_add, hx, hy, Finset.sum_add_distrib, mul_add] using hxy.symm
+  simpa only [map_add, hx, hy, Finset.sum_add_distrib, mul_add, M] using hxy.symm
 
 private theorem sum_divisors_multiple (k n : ℕ+) (b : ℕ → ℤ) :
     (∑ d ∈ ((k : ℕ) * n).divisors,
@@ -54,7 +54,10 @@ theorem coord_verschiebung (k : ℕ+) (x : ghostRing) (n : ℕ+) :
     (b' := fun d => if (k : ℕ) ∣ d then coord x (d / k) else 0) _ n n.ne_zero
   intro m hm
   let M : ℕ+ := ⟨m, Nat.pos_of_ne_zero hm⟩
-  rw [← ghostComponent_eq_sum_coord (verschiebung k x) M]
+  have hcomp := ghostComponent_eq_sum_coord (verschiebung k x) M
+  change ghostComponent M (verschiebung k x) =
+    ∑ d ∈ m.divisors, (d : ℤ) * coord (verschiebung k x) d at hcomp
+  rw [← hcomp]
   change (verschiebung k x).val M = _
   simp_rw [mul_ite, mul_zero]
   by_cases hkM : (k : ℕ) ∣ M
@@ -81,14 +84,16 @@ theorem teichmuller_add_neg (a : ℤ) :
   rw [map_add, ghostComponent_teichmuller, ghostComponent_teichmuller]
   change _ = (verschiebung 2 (teichmuller (a ^ 2))).val n
   by_cases hn : 2 ∣ (n : ℕ)
-  · obtain ⟨m, hm⟩ := PNat.dvd_iff.mpr hn
+  · have hpn : (2 : ℕ+) ∣ n := PNat.dvd_iff.mpr (by simpa using hn)
+    obtain ⟨m, hm⟩ := hpn
     rw [hm]
     change a ^ (2 * (m : ℕ)) + (-a) ^ (2 * (m : ℕ)) =
       (verschiebungFun 2 (teichmuller (a ^ 2)).val) (2 * m)
     rw [verschiebungFun_mul, teichmuller_apply, pow_mul, pow_mul]
     ring
-  · rw [verschiebung_apply, if_neg hn]
-    have ho : Odd (n : ℕ) := Nat.odd_iff_not_even.mpr (by simpa only [even_iff_two_dvd] using hn)
+  · rw [verschiebung_apply]
+    simp only [show ((2 : ℕ+) : ℕ) = 2 by decide, if_neg hn]
+    have ho : Odd (n : ℕ) := Nat.not_even_iff_odd.mp (by simpa only [even_iff_two_dvd] using hn)
     rw [ho.neg_pow]
     exact add_neg_cancel _
 
@@ -97,6 +102,7 @@ theorem opposite_necklace_coordinates (a : ℤ) (n : ℕ+) :
     coord (teichmuller a) n + coord (teichmuller (-a)) n =
       if 2 ∣ (n : ℕ) then coord (teichmuller (a ^ 2)) ((n : ℕ) / 2) else 0 := by
   rw [← coord_add, teichmuller_add_neg, coord_verschiebung]
+  rfl
 
 end GaloisForLFunctions.AbsoluteGeometryOfSpecZ
 

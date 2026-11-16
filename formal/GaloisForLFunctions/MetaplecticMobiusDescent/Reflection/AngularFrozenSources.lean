@@ -54,6 +54,23 @@ theorem angular_original_chosen_reflected_source_eq {N a c : Eis} {mode : Bool}
     funext x
     exact original_active_exponent D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask B T x
   rw [hj,original_active_marks_eq_slots D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask B T]
+
+private theorem angular_original_selected_controlled_value {N a c : Eis} {mode : Bool}
+    (C : ControlledStratumArithmetic (PF).generator N a c mode)
+    (C₀ : ControlledStratumArithmetic (PS).generator N a c mode)
+    (hC : C₀=originalChosenControlled D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S B T C)
+    (s : FixedCuspShape (ControlledStratumArithmetic.fixedCusp a c mode)) (hc : c≠0)
+    (W : ℝ→ℂ) (X : ℝ) :
+    angularMixedReflectedValue ℓ C₀ s (PS).generator_ne_zero hc (PS).generator_good
+      (fun i => Sum.elim (fun P : FreePrimeIndex D.movingIdeal Q₀ =>
+        (UniqueFactorizationMonoid.normalizedFactors D.movingIdeal).count P.val.val%6)
+        (fun _ : σ => 0) i.val) (activeMarks (markedActiveSet E B T) markedSumSlots) W X=
+    angularMixedReflectedValue ℓ C s (PF).generator_ne_zero hc (PF).generator_good
+      (reflectedExponent (fun b : B => completedLocalExponent R F b.val.val))
+      (slotIndices B (PrimeIndex K) T) W X := by
+  subst C₀
+  exact angular_original_chosen_reflected_source_eq ℓ D R I F Q₀
+    hR hI hF hm hf hz hbad hcop hpow hmask S B T C s hc W X
 end
 
 section
@@ -123,15 +140,21 @@ private theorem angular_original_controlled_source_sum
         (((poolPrimeFamily R (Ideal.span {m}*F) Q₀).restrict B).reflected K hK (S.restrict T)).generator_good
         (reflectedExponent (fun b : B => completedLocalExponent R F b.val.val))
         (slotIndices B (PrimeIndex K) T) W X := by
-  rw [original_fiber_inactive_sum D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S hSodd]
+  refine (original_fiber_inactive_sum D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S hSodd
+    (fun A => angularMixedReflectedValue ℓ (CC A) s ((Pall).restrict A).generator_ne_zero hc
+      ((Pall).restrict A).generator_good (fun i => Jall i.val)
+      (activeMarks A markedSumSlots) W X)).trans ?_
   apply Finset.sum_congr rfl
   intro B hB
   apply Finset.sum_congr rfl
   intro T hT
-  congr 1
-  rw [hCC B T]
-  exact angular_original_chosen_reflected_source_eq ℓ D R I F Q₀ hR hI hF hm hf hz hbad hcop hpow hmask S B T
-    (C B T) s hc W X
+  exact congrArg (fun value : ℂ =>
+    ((∏ b∈(Finset.univ:Finset (FreeReflection.pool R (Ideal.span {m}*F) Q₀))\B,
+      if completedLocalExponent R F b.val=0 then 1-(Ideal.absNorm b.val:ℂ)⁻¹ else 0)*
+      ∏ t∈(Finset.univ:Finset σ)\T,(Ideal.absNorm (S.ideal t):ℂ)⁻¹)*value)
+    (angular_original_selected_controlled_value ℓ D R I F Q₀
+      hR hI hF hm hf hz hbad hcop hpow hmask S B T (C B T)
+      (CC (markedActiveSet E B T)) (hCC B T) s hc W X)
 
 theorem angular_original_selected_reflected_expansion
     (hS : Pairwise (Function.onFun IsCoprime S.ideal))

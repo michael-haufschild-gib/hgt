@@ -49,7 +49,8 @@ theorem spectralCharacter_fusion_shifted (m n : ℕ) (x : ℝ) :
     have h := spectralCharacter_addition m (m + n) x
     have hi₁ : m + 1 + n = m + n + 1 := by omega
     have hi₂ : m + (m + n) + 2 = n + 2 * (m + 1) := by omega
-    rw [hi₁, hi₂] at h ⊢
+    rw [hi₂] at h
+    rw [hi₁]
     linarith only [h]
 
 /-- The unconditional symmetric Clebsch–Gordan formula. -/
@@ -71,7 +72,7 @@ theorem integral_spectralCharacter_triple (m n k : ℕ) :
       ∂(semicircleSpectralLaw : Measure ℝ)) =
       if ∃ i < min m n + 1, max m n - min m n + 2 * i = k then 1 else 0 := by
   simp_rw [spectralCharacter_fusion, Finset.sum_mul]
-  rw [integral_finset_sum]
+  rw [integral_finsetSum]
   · simp_rw [integral_spectralCharacter_mul]
     split_ifs with h
     · obtain ⟨i, hi, hik⟩ := h
@@ -95,6 +96,7 @@ theorem integral_spectralCharacter_sq_mul (m k : ℕ) :
   simp only [pow_two]
   rw [integral_spectralCharacter_triple]
   congr 1
+  apply propext
   simp only [min_self, max_self, Nat.sub_self, zero_add]
   constructor
   · rintro ⟨i, hi, he⟩

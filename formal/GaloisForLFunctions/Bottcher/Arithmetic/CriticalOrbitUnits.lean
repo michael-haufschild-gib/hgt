@@ -6,8 +6,9 @@ import Mathlib.Tactic
 # Divisibility and units in unicritical critical orbits
 
 Critical iterates at multiple indices are divisible by the earlier iterate.
-On a periodic tail, the secants between two distinct shifted orbits multiply
-to one. Their common critical divisor must consequently be a unit.
+Secants between distinct periodic orbits multiply to one. Splitting the
+initial secant gives a Bezout identity for the two periodic points, and
+their common critical divisor must consequently be a unit.
 -/
 
 noncomputable section
@@ -141,7 +142,6 @@ theorem unicritical_periodic_points_coprime [IsDomain R]
         let B := ∏ j ∈ range n, unicriticalSecant d
           (unicriticalRingIterate d c (j + 1) x) (unicriticalRingIterate d c (j + 1) y)
         refine ⟨B * (∑ i ∈ range (d + 1), x ^ i * y ^ (d - i)), B * y ^ d, ?_⟩
-        change _ = 1
         dsimp only [B]
         linear_combination hprod
     · exact Or.inl hy
@@ -180,9 +180,28 @@ theorem criticalOrbit_collision_or_unit [IsDomain R] (d m n r : ℕ) (c : R) :
       exact common_divisor_periodic_points_unit d n c _ _ _ hx hy hs hxp hyp
   · exact Or.inl hp
 
+/-- A periodic critical orbit consists only of zero and units, over any integral domain. -/
+theorem periodicCriticalOrbit_zero_or_unit [IsDomain R] (d n : ℕ) (c : R) :
+    ringCriticalOrbit d c (n + 1) ≠ 0 ∨
+      ∀ r, ringCriticalOrbit d c r = 0 ∨ IsUnit (ringCriticalOrbit d c r) := by
+  by_cases hp : ringCriticalOrbit d c (n + 1) = 0
+  · right
+    intro r
+    by_cases hr : ringCriticalOrbit d c r = 0
+    · exact Or.inl hr
+    · right
+      apply common_divisor_periodic_points_unit d n c
+        (ringCriticalOrbit d c r) (ringCriticalOrbit d c r) 0
+        (dvd_refl _) (dvd_zero _) hr
+      · change unicriticalRingIterate d c (n + 1) (unicriticalRingIterate d c r 0) = _
+        rw [← ringIterate_add, Nat.add_comm (n + 1), ringIterate_add]
+        change unicriticalRingIterate d c r (ringCriticalOrbit d c (n + 1)) = _
+        rw [hp]
+        rfl
+      · exact hp
+  · exact Or.inl hp
+
 end Bottcher.Arithmetic
 
-#print axioms Bottcher.Arithmetic.ringCriticalOrbit_dvd_multiple
-#print axioms Bottcher.Arithmetic.criticalOrbit_collision_or_unit
+#print axioms Bottcher.Arithmetic.periodicCriticalOrbit_zero_or_unit
 
-#print axioms Bottcher.Arithmetic.unicritical_periodic_points_coprime

@@ -53,7 +53,7 @@ theorem graphReflection_antisymplectic (T : H →L[ℂ] H) (p q : H × H) :
     sympForm (graphReflection T p) (graphReflection T q) = -sympForm p q := by
   simp only [sympForm, graphReflection_apply, inner_sub_left, inner_sub_right,
     inner_smul_left, inner_smul_right, graphSymmetrization_inner]
-  norm_num
+  simp only [map_ofNat]
   ring
 
 /-- Positive eigenvectors are exactly the graph of the symmetrized operator. -/
@@ -107,8 +107,87 @@ theorem graphReflection_common_fixed (S T : H →L[ℂ] H) (p : H × H) :
   · rintro ⟨hT, hST⟩
     exact ⟨hT.trans hST.symm, hT⟩
 
+/-- The positive eigenspace, expressed as the kernel of reflection minus identity. -/
+def graphReflectionPositive (T : H →L[ℂ] H) : Submodule ℂ (H × H) :=
+  LinearMap.ker ((graphReflection T).toLinearMap - LinearMap.id)
+
+/-- The negative eigenspace, expressed as the kernel of reflection plus identity. -/
+def graphReflectionNegative (T : H →L[ℂ] H) : Submodule ℂ (H × H) :=
+  LinearMap.ker ((graphReflection T).toLinearMap + LinearMap.id)
+
+@[simp] theorem mem_graphReflectionPositive (T : H →L[ℂ] H) (p : H × H) :
+    p ∈ graphReflectionPositive T ↔ p.2 = graphSymmetrization T p.1 := by
+  change graphReflection T p - p = 0 ↔ _
+  rw [sub_eq_zero, graphReflection_fixed_iff, mem_operatorGraph]
+
+@[simp] theorem mem_graphReflectionNegative (T : H →L[ℂ] H) (p : H × H) :
+    p ∈ graphReflectionNegative T ↔ p.1 = 0 := by
+  change graphReflection T p + p = 0 ↔ _
+  rw [add_eq_zero_iff_eq_neg, graphReflection_neg_iff]
+
+/-- Graph coordinates identify the positive eigenspace with the original space. -/
+def graphReflectionPositiveEquiv (T : H →L[ℂ] H) : H ≃ₗ[ℂ] graphReflectionPositive T where
+  toFun x := ⟨(x, graphSymmetrization T x), by simp⟩
+  invFun p := p.val.1
+  left_inv _ := rfl
+  right_inv p := by
+    apply Subtype.ext
+    exact Prod.ext rfl ((mem_graphReflectionPositive T p.val).mp p.property).symm
+  map_add' _ _ := by apply Subtype.ext; ext <;> simp
+  map_smul' _ _ := by apply Subtype.ext; ext <;> simp
+
+/-- Vertical coordinates identify the negative eigenspace with the same original space. -/
+def graphReflectionNegativeEquiv (T : H →L[ℂ] H) : H ≃ₗ[ℂ] graphReflectionNegative T where
+  toFun y := ⟨(0, y), by simp⟩
+  invFun p := p.val.2
+  left_inv _ := rfl
+  right_inv p := by
+    apply Subtype.ext
+    exact Prod.ext ((mem_graphReflectionNegative T p.val).mp p.property).symm rfl
+  map_add' _ _ := by apply Subtype.ext; ext <;> simp
+  map_smul' _ _ := by apply Subtype.ext; ext <;> simp
+
+/-- The two eigenvalue sectors have exactly equal dimensions. -/
+theorem graphReflection_eigenspace_finrank (T : H →L[ℂ] H) :
+    Module.finrank ℂ (graphReflectionPositive T) = Module.finrank ℂ H ∧
+      Module.finrank ℂ (graphReflectionNegative T) = Module.finrank ℂ H :=
+  ⟨(graphReflectionPositiveEquiv T).finrank_eq.symm,
+    (graphReflectionNegativeEquiv T).finrank_eq.symm⟩
+
+/-- The common positive sector retains precisely the kernel of the operator difference. -/
+def graphReflectionCommonEquiv (S T : H →L[ℂ] H) :
+    LinearMap.ker ((graphSymmetrization S - graphSymmetrization T).toLinearMap) ≃ₗ[ℂ]
+      (graphReflectionPositive S ⊓ graphReflectionPositive T : Submodule ℂ (H × H)) where
+  toFun x := ⟨(x.val, graphSymmetrization T x.val), by
+    have hx : graphSymmetrization S x.val = graphSymmetrization T x.val :=
+      sub_eq_zero.mp x.property
+    simp only [Submodule.mem_inf, mem_graphReflectionPositive]
+    exact ⟨hx.symm, trivial⟩⟩
+  invFun p := ⟨p.val.1, by
+    obtain ⟨hS, hT⟩ := p.property
+    have heS := (mem_graphReflectionPositive S p.val).mp hS
+    have heT := (mem_graphReflectionPositive T p.val).mp hT
+    change graphSymmetrization S p.val.1 - graphSymmetrization T p.val.1 = 0
+    rw [← heS, ← heT, sub_self]⟩
+  left_inv _ := rfl
+  right_inv p := by
+    apply Subtype.ext
+    exact Prod.ext rfl ((mem_graphReflectionPositive T p.val).mp p.property.2).symm
+  map_add' _ _ := by apply Subtype.ext; ext <;> simp
+  map_smul' _ _ := by apply Subtype.ext; ext <;> simp
+
+/-- The dimension of the common fixed space is the nullity of the operator difference. -/
+theorem graphReflection_common_finrank (S T : H →L[ℂ] H) :
+    Module.finrank ℂ (graphReflectionPositive S ⊓ graphReflectionPositive T :
+      Submodule ℂ (H × H)) =
+        Module.finrank ℂ (LinearMap.ker ((graphSymmetrization S - graphSymmetrization T).toLinearMap)) :=
+  (graphReflectionCommonEquiv S T).finrank_eq.symm
+
 end GaloisForLFunctions.RepresentationLifting.Symplectic
 
 #print axioms GaloisForLFunctions.RepresentationLifting.Symplectic.graphReflection_antisymplectic
 #print axioms GaloisForLFunctions.RepresentationLifting.Symplectic.graphReflection_fixed_iff
 #print axioms GaloisForLFunctions.RepresentationLifting.Symplectic.graphReflection_common_fixed
+
+#print axioms GaloisForLFunctions.RepresentationLifting.Symplectic.graphReflection_eigenspace_finrank
+#print axioms GaloisForLFunctions.RepresentationLifting.Symplectic.graphReflection_common_finrank

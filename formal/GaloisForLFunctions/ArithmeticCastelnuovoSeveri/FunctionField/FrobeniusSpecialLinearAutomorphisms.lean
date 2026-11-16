@@ -22,6 +22,7 @@ abbrev FrobeniusSpecialLinearField (γ : Eˣ) (R : ℕ) :=
   FrobeniusKummerField γ (Fintype.card K - 2) R
     (((Fintype.card K) ^ 2 - Fintype.card K) * R + Fintype.card K)
 
+omit [Fintype K] in
 private theorem matrix_det_one (M : SpecialLinearGroup (Fin 2) K) :
     M 0 0 * M 1 1 - M 0 1 * M 1 0 = 1 := by
   simpa only [Matrix.det_fin_two] using M.property
@@ -76,6 +77,7 @@ theorem frobeniusSpecialLinearDenominator_ne_zero (M : SpecialLinearGroup (Fin 2
   rw [map_sub, map_mul, map_mul, map_one, hc, hd, mul_zero, mul_zero, sub_self] at he
   exact zero_ne_one he
 
+omit [Algebra K E] in
 /-- The actual radical equation has the two Frobenius branch factors. -/
 theorem frobeniusSpecialLinearField_root_equation :
     z ^ (n + 1) = algebraMap E L γ * (x ^ q - x) * (1 + (x ^ q - x) ^ (q - 1)) ^ R := by
@@ -90,6 +92,7 @@ theorem frobeniusSpecialLinearField_root_equation :
       rw [frobeniusKummerBranch_aeval, Nat.sub_add_cancel hq,
         show q - 2 + 1 = q - 1 by omega]
 
+omit [Algebra K E] in
 /-- The first Frobenius branch factor is nonzero at the actual rational coordinate. -/
 theorem frobeniusSpecialLinearField_additive_ne_zero : x ^ q - x ≠ 0 := by
   intro h
@@ -120,7 +123,6 @@ private theorem transformed_root_eval (M : SpecialLinearGroup (Fin 2) K) :
       aeval u (frobeniusKummerBranch γ (q - 2) R) :=
     congrArg (fun g : E[X] →ₐ[E] L => g (frobeniusKummerBranch γ (q - 2) R)) hhom
   letI : Algebra K L := Algebra.compHom L (algebraMap K E)
-  letI : IsScalarTower K E L := IsScalarTower.of_algebraMap_eq' rfl
   have hc := finiteField_frobeniusBranch_covariance (M 0 0) (M 0 1) (M 1 0) (M 1 1)
     (algebraMap E L γ) x R (matrix_det_one K M)
     (frobeniusSpecialLinearField_additive_ne_zero K E γ R) (frobeniusSpecialLinearDenominator_ne_zero K E γ R M)
@@ -131,8 +133,10 @@ private theorem transformed_root_eval (M : SpecialLinearGroup (Fin 2) K) :
     ← frobeniusSpecialLinearField_root_equation K E γ R] at hc
   change (X ^ (n + 1) - C (algebraMap E[X] F (frobeniusKummerBranch γ (q - 2) R))).eval₂
     f (z / D) = 0
-  rw [eval₂_sub, eval₂_pow, eval₂_X, eval₂_C, sub_eq_zero, div_pow, hf,
-    frobeniusKummerBranch_aeval, Nat.sub_add_cancel (show 2 ≤ q from Fintype.one_lt_card),
+  rw [eval₂_sub, eval₂_pow, eval₂_X, eval₂_C, sub_eq_zero, div_pow]
+  change z ^ (n + 1) / D ^ (n + 1) =
+    f (algebraMap E[X] F (frobeniusKummerBranch γ (q - 2) R))
+  rw [hf, frobeniusKummerBranch_aeval, Nat.sub_add_cancel (show 2 ≤ q from Fintype.one_lt_card),
     show q - 2 + 1 = q - 1 by have hq : 2 ≤ q := Fintype.one_lt_card; omega]
   exact hc.symm
 
@@ -167,7 +171,8 @@ theorem frobeniusSpecialLinearHom_surjective (M : SpecialLinearGroup (Fin 2) K) 
   let e := frobeniusSpecialLinearBaseEquiv K E M
   have hbase (a : F) : algebraMap F L a ∈ f.fieldRange := by
     refine ⟨algebraMap F L (e.symm a), ?_⟩
-    rw [frobeniusSpecialLinearHom_base, e.apply_symm_apply]
+    exact (frobeniusSpecialLinearHom_base K E γ R M (e.symm a)).trans
+      (congrArg (algebraMap F L) (e.apply_symm_apply a))
   have hx : x ∈ f.fieldRange := by
     rw [IsScalarTower.algebraMap_apply E[X] F L]
     exact hbase _

@@ -55,19 +55,22 @@ private theorem clusterVelocity_deriv (w : ι → NNReal) (mean : ι → ℝ)
     (clusterPhase_deriv (mean i) (variance i) t).cexp).congr_deriv (by ring)
 
 private theorem clusterKernel_zero (w : ι → NNReal) (mean : ι → ℝ) (variance : ι → NNReal) :
-    dopplerClusterKernel w mean variance 0 = ((∑ i, (w i : ℝ)) : ℂ) := by
+    dopplerClusterKernel w mean variance 0 = Complex.ofReal (∑ i, (w i : ℝ)) := by
   simp only [dopplerClusterKernel, Complex.ofReal_zero, zero_mul, zero_pow (by omega : 2 ≠ 0),
-    mul_zero, zero_div, sub_zero, Complex.exp_zero, mul_one]
+    mul_zero, zero_div, sub_zero, Complex.exp_zero, mul_one, Complex.ofReal_sum]
 
 private theorem clusterVelocity_zero (w : ι → NNReal) (mean : ι → ℝ) (variance : ι → NNReal) :
-    clusterVelocity w mean variance 0 = ((∑ i, (w i : ℝ) * mean i) : ℂ) * Complex.I := by
+    clusterVelocity w mean variance 0 = Complex.ofReal (∑ i, (w i : ℝ) * mean i) * Complex.I := by
   simp only [clusterVelocity, Complex.ofReal_zero, zero_mul, zero_pow (by omega : 2 ≠ 0),
-    mul_zero, zero_div, sub_zero, Complex.exp_zero, mul_one, Finset.sum_mul, mul_assoc]
+    mul_zero, zero_div, sub_zero, Complex.exp_zero, mul_one, Finset.sum_mul, mul_assoc,
+    Complex.ofReal_sum, Complex.ofReal_mul]
 
 private theorem clusterAcceleration_zero (w : ι → NNReal) (mean : ι → ℝ) (variance : ι → NNReal) :
-    clusterAcceleration w mean variance 0 = -((∑ i, (w i : ℝ) * (mean i ^ 2 + variance i)) : ℂ) := by
+    clusterAcceleration w mean variance 0 =
+      -Complex.ofReal (∑ i, (w i : ℝ) * (mean i ^ 2 + variance i)) := by
   simp only [clusterAcceleration, Complex.ofReal_zero, zero_mul, zero_pow (by omega : 2 ≠ 0),
-    mul_zero, zero_div, sub_zero, Complex.exp_zero, mul_one, mul_pow, Complex.I_sq]
+    mul_zero, zero_div, sub_zero, Complex.exp_zero, mul_one, mul_pow, Complex.I_sq,
+    Complex.ofReal_sum, Complex.ofReal_mul, Complex.ofReal_add, Complex.ofReal_pow]
   rw [← Finset.sum_neg_distrib]
   apply Finset.sum_congr rfl
   intro i _
@@ -113,20 +116,26 @@ private theorem norm_square_second_deriv (K V A : ℝ → ℂ)
     simpa only [Function.comp_def, Pi.add_apply, Pi.mul_apply, Complex.reCLM_apply] using hre
   exact hre'.deriv
 
+private theorem coherence_curvature_at_zero (w : ι → NNReal)
+    (mean : ι → ℝ) (variance : ι → NNReal) :
+    (clusterAcceleration w mean variance 0 * star (dopplerClusterKernel w mean variance 0) +
+      clusterVelocity w mean variance 0 * star (clusterVelocity w mean variance 0) +
+      (clusterVelocity w mean variance 0 * star (clusterVelocity w mean variance 0) +
+        dopplerClusterKernel w mean variance 0 * star (clusterAcceleration w mean variance 0))).re =
+      -2 * dopplerAgingDefect w mean variance := by
+  simp only [clusterKernel_zero, clusterVelocity_zero, clusterAcceleration_zero]
+  exact coherence_curvature_scalar (∑ i, (w i : ℝ)) (∑ i, (w i : ℝ) * mean i)
+    (∑ i, (w i : ℝ) * (mean i ^ 2 + variance i))
+
 /-- The actual second derivative of squared temporal coherence is the negative variance defect. -/
 theorem deriv_deriv_normSq_dopplerClusterKernel_zero (w : ι → NNReal)
     (mean : ι → ℝ) (variance : ι → NNReal) :
     deriv (deriv (fun t : ℝ => ‖dopplerClusterKernel w mean variance t‖ ^ 2)) 0 =
-      -2 * dopplerAgingDefect w mean variance := by
-  rw [norm_square_second_deriv (dopplerClusterKernel w mean variance)
+      -2 * dopplerAgingDefect w mean variance :=
+  (norm_square_second_deriv (dopplerClusterKernel w mean variance)
     (clusterVelocity w mean variance) (clusterAcceleration w mean variance)
-    (clusterKernel_deriv w mean variance) (clusterVelocity_deriv w mean variance 0)]
-  rw [clusterKernel_zero, clusterVelocity_zero, clusterAcceleration_zero]
-  simpa only [dopplerAgingDefect, Complex.ofReal_sum, Complex.ofReal_mul,
-    Complex.ofReal_add, Complex.ofReal_pow] using
-    coherence_curvature_scalar (∑ i, (w i : ℝ)) (∑ i, (w i : ℝ) * mean i)
-      (∑ i, (w i : ℝ) * (mean i ^ 2 + variance i))
+    (clusterKernel_deriv w mean variance) (clusterVelocity_deriv w mean variance 0)).trans
+      (coherence_curvature_at_zero w mean variance)
 
 end HilbertMetric.Correlation
 
-#print axioms HilbertMetric.Correlation.deriv_deriv_normSq_dopplerClusterKernel_zero
