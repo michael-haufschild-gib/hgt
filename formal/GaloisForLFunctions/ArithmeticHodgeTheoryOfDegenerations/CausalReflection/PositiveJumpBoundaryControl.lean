@@ -40,6 +40,7 @@ theorem CriticalHalfLineEnergyDomain.jump_boundary_lower
       _ = ∫ u in Ioo (-d) 0, K (F u) (F (u + x)) := by
         apply setIntegral_congr_fun measurableSet_Ioo
         intro u hu
+        change K (F u) 0 = K (F u) (F (u + x))
         rw [hF.support (u + x) (by linarith only [hu.1, hx])]
       _ ≤ _ := setIntegral_le_integral (hi x (lt_of_lt_of_le hd hx))
         (Eventually.of_forall fun u => hK (F u) (F (u + x)))

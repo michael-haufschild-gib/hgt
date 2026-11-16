@@ -80,7 +80,12 @@ so nothing is lost between stages.
 8. **Euler cancellation left of the strip.** For $\operatorname{Re}p<-\tfrac12$ the prime tail is
    $-\mathcal LF(p)\zeta'/\zeta(\tfrac12-p)-\hat SF(p)$ (Dirichlet series of $\Lambda$ at $\tfrac12-p$). Its Euler part cancels the reflected
    Euler term of the Gamma pairing exactly, and the remainder is $JF+\hat SF+\mathcal LF(\tfrac12)/(p-\tfrac12)+\mathcal LF(-\tfrac12)/(p+\tfrac12)$:
-   left of the strip the state is its head term, its prime heads and its two charges.
+   left of the strip the state is its head term, its prime heads and its two charges. Resolving the
+   head into exponential modes gives
+   $JF(p)=\sum_{k\ge0}\mathcal LF(2k+\tfrac12)/(2k+\tfrac12-p)$.
+   Its first term cancels the positive half-charge exactly. The remaining modes have
+   strictly signed real part after orientation by $\mathcal LF(\tfrac12)$.
+   Both heads, hence the continuation, vanish uniformly in height as the real part tends left.
 
 ## 5. Questions
 
@@ -88,13 +93,13 @@ so nothing is lost between stages.
 |---|---|---|
 | Q1 | Probe kernel $B(e_p,e_q)=\frac{D(p)+D(q)}{p+q}$ and its zero side | answered (Lean) |
 | Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | open; given Q3, $(\star)$ is the Mittag-Leffler expansion of the continuation and needs bounds on horizontal segments of the strip |
-| Q3 | State equation, continuation, residues | answered (Lean): $\mathcal LF$ continues to $\mathbb C$, holomorphic off the points $\rho-\tfrac{17}2$ ($\operatorname{Re}\rho>0$), residue $-m_\rho\mathcal LF(\rho-\tfrac12)/a$, a pole at every zero with $\operatorname{Re}\rho\ge\tfrac12$, bounded on $\operatorname{Re}w\le-\tfrac{17}2-\delta$; left of the strip $-a\mathcal LF(w)=(JF+\hat SF)(w+8)+$ charges |
+| Q3 | State equation, continuation, residues | answered (Lean): $\mathcal LF$ continues to $\mathbb C$, holomorphic off the points $\rho-\tfrac{17}2$ ($\operatorname{Re}\rho>0$), residue $-m_\rho\mathcal LF(\rho-\tfrac12)/a$, a pole at every zero with $\operatorname{Re}\rho\ge\tfrac12$, uniformly vanishing as $\operatorname{Re}w\to-\infty$; left of the strip $-a\mathcal LF(w)=(JF+\hat SF)(w+8)+$ charges |
 | Q4 | Decay law | divergent half (Lean): $\int F^2e^{-bu}<\infty\Rightarrow\operatorname{Re}\rho\le\frac{17-b}2$; convergent half open |
 | Q5 | Sign law | answered (Lean): one sign on no ray |
 | Q6 | Index law | $\zeta$: finite index at every ratio (Lean); exact count of critical ratios open |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH |
 | Q8 | The arithmetic property that excludes the state | open |
-| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | open |
+| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): archimedean resolvent expansion, exact positive-charge cancellation, strict sign restriction and uniform left decay; leading asymptotics and exclusion open |
 
 ## 6. Tools
 
@@ -109,8 +114,8 @@ dominations; the functional equation in Lévy form; prime heads and the Dirichle
 of the strip; gluing of three remainders into one continuation; $\zeta\ne0$ on $\operatorname{Re}s=0$.
 
 **To build.** Bounds on horizontal segments of the strip, for the Mittag-Leffler form $(\star)$; vertical-line
-bounds for the convergent half of the decay law; the exact critical-ratio count; the asymptotics of
-$JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula).
+bounds for the convergent half of the decay law; the exact critical-ratio count; the leading asymptotics of
+$JF$ and $\hat SF$ as $p\to-\infty$, beyond their uniform vanishing (the wall seen from the left formula).
 
 ## 7. Pillar theorems
 

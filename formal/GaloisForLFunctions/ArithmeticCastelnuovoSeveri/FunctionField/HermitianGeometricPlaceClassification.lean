@@ -26,7 +26,7 @@ local notation "V₀" => hermitianGeometricPointValuation p s O
 local notation "V∞" => hermitianGeometricInfinityValuation p s
 
 /-- The additive coordinate is not integral at geometric infinity. -/
-theorem hermitianGeometricInfinity_additive_notMem : u ∉ V∞.valuationSubring := by
+theorem hermitianGeometricInfinity_additive_notMem : u ∉ (V∞).valuationSubring := by
   have hlt : (1 : WithZero (Multiplicative ℤ)) < V∞ u := by
     rw [hermitianGeometricInfinityValuation_additive, ← WithZero.exp_zero, WithZero.exp_lt_exp]
     omega
@@ -35,7 +35,7 @@ theorem hermitianGeometricInfinity_additive_notMem : u ∉ V∞.valuationSubring
 
 /-- The geometric infinity valuation defines a proper constant-field place. -/
 def hermitianGeometricInfinityConstantPlace : ConstantFieldPlaces E H := by
-  refine ⟨V∞.valuationSubring, ?_, ?_⟩
+  refine ⟨(V∞).valuationSubring, ?_, ?_⟩
   · intro h
     apply hermitianGeometricInfinity_additive_notMem p s
     rw [h]
@@ -49,7 +49,7 @@ def hermitianGeometricInfinityConstantPlace : ConstantFieldPlaces E H := by
 
 /-- A constant-field place where the additive coordinate has a pole is the constructed infinity place. -/
 theorem hermitianGeometric_infinity_of_additive_notMem
-    (W : ConstantFieldPlaces E H) (hu : u ∉ W.val) : W.val = V∞.valuationSubring := by
+    (W : ConstantFieldPlaces E H) (hu : u ∉ W.val) : W.val = (V∞).valuationSubring := by
   let f := hermitianGeometricInversionHom p s
   let W' := W.val.comap f.toRingHom
   have hproper : W' ≠ ⊤ := by
@@ -101,12 +101,12 @@ theorem hermitianGeometric_infinity_of_additive_notMem
   have hwo : w = hermitianGeometricPointPrime p s O := by
     rw [← hP]
     exact (hermitianGeometricPointPrime_closedPoint p s w).symm
-  have he : W' = V₀.valuationSubring := by
+  have he : W' = (V₀).valuationSubring := by
     rw [← hw, hwo, hermitianGeometricPointPrime_valuation]
   ext x
-  change x ∈ W.val ↔ f x ∈ V₀.valuationSubring
-  have hm : f x ∈ W' ↔ f x ∈ V₀.valuationSubring := by rw [he]
-  change f (f x) ∈ W.val ↔ f x ∈ V₀.valuationSubring at hm
+  change x ∈ W.val ↔ f x ∈ (V₀).valuationSubring
+  have hm : f x ∈ W' ↔ f x ∈ (V₀).valuationSubring := by rw [he]
+  change f (f x) ∈ W.val ↔ f x ∈ (V₀).valuationSubring at hm
   have hff : f (f x) = x := hermitianGeometricInversion_involutive p s x
   rwa [hff] at hm
 

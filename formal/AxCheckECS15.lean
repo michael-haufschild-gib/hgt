@@ -1,6 +1,0 @@
-import GaloisForLFunctions.ExclusionOfTheCriticalState.TheExplicitFormulaHoldsOnTheEnergyDomainAgainstProbes
-open GaloisForLFunctions.ExclusionOfTheCriticalState
-#print axioms globalRemainder_sub_eq_zeroSum
-#print axioms globalRemainder_sub_eq_tsum
-#print axioms riemannHypothesis_or_criticalState_starEquation
-#print axioms criticalState_zeroValues_cauchy

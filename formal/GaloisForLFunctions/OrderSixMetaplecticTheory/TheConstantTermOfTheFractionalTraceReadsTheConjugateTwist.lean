@@ -1,4 +1,4 @@
-import GaloisForLFunctions.OrderSixMetaplecticTheory.F6ANAME
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheFractionalTracePhasesSumToJacobiAndGaussSums
 
 /-!
 # The constant term of the fractional trace reads the conjugate twist
@@ -49,15 +49,14 @@ theorem integral_translate_mul (c d : O → ℂ) (hc : Summable (fun h => ‖c h
   simp_rw [cuspCharacterSeries_translate]
   change ∫ z in periodDomain, cuspCharacterSeries c' z * cuspCharacterSeries d' z = _
   simp_rw [cuspCharacterSeries_mul hc' hd']
-  rw [integral_cuspCharacterSeries _ (summable_cuspConv hc' hd')]
+  rw [PrimaryPrime.integral_cuspCharacterSeries _ (summable_cuspConv hc' hd')]
   congr 1
   unfold cuspConv
   refine tsum_congr fun k => ?_
   simp only [c', d', zero_sub, cuspFrequency, map_neg]
-  rw [mul_sub, AddChar.map_sub_eq_div, show -cuspFrequency k * β = -(cuspFrequency k * β) by ring]
-  · simp only [cuspFrequency]
-    rw [show -(ringComplex k / ringComplex traceLambda) * β = -(ringComplex k / ringComplex traceLambda * β) by ring,
-      AddChar.map_neg_eq_inv]
-    ring
+  rw [mul_sub, AddChar.map_sub_eq_div,
+    show -ringComplex k / (3 * ringComplex traceLambda) * β = -(ringComplex k / (3 * ringComplex traceLambda) * β) by ring,
+    AddChar.map_neg_eq_inv]
+  ring
 
 end GaloisForLFunctions.OrderSixMetaplecticTheory

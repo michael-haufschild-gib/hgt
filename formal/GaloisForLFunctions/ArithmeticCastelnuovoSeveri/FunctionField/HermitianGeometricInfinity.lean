@@ -28,7 +28,7 @@ private theorem origin_radical : V₀ z = WithZero.exp (-1 : ℤ) := by
 
 private theorem origin_additive : V₀ u = WithZero.exp (-((Q + 1 : ℕ) : ℤ)) := by
   have hQ : Q ≠ 0 := pow_ne_zero _ (Fact.out : p.Prime).ne_zero
-  have hfix : O.val.1 ^ (Q * Q) = O.val.1 := by
+  have hfix : (O).val.1 ^ (Q * Q) = (O).val.1 := by
     change (0 : E) ^ (Q * Q) = 0
     exact zero_pow (mul_ne_zero hQ hQ)
   have ht : hermitianGeometricTangentFunction p s O = u := by
@@ -41,7 +41,7 @@ private theorem origin_additive : V₀ u = WithZero.exp (-((Q + 1 : ℕ) : ℤ))
 
 /-- The actual normalized geometric infinity valuation obtained by coordinate inversion. -/
 def hermitianGeometricInfinityValuation : Valuation H (WithZero (Multiplicative ℤ)) :=
-  V₀.comap (hermitianGeometricInversionHom p s).toRingHom
+  (V₀).comap (hermitianGeometricInversionHom p s).toRingHom
 
 local notation "V" => hermitianGeometricInfinityValuation p s
 
@@ -87,7 +87,7 @@ theorem hermitianGeometricInfinityValuation_tangent (P : HermitianAffinePoint p 
     have hlt : V (φ P.val.2) < V u := by
       rw [hermitianGeometricInfinityValuation_additive]
       exact lt_of_le_of_lt (hc P.val.2) h1
-    rw [V.map_sub_eq_of_lt_left hlt, hermitianGeometricInfinityValuation_additive]
+    rw [(V).map_sub_eq_of_lt_left hlt, hermitianGeometricInfinityValuation_additive]
   have htail : V ((φ P.val.1) ^ Q * (z - φ P.val.1)) <
       WithZero.exp ((Q + 1 : ℕ) : ℤ) := by
     by_cases ha : P.val.1 = 0
@@ -99,10 +99,10 @@ theorem hermitianGeometricInfinityValuation_tangent (P : HermitianAffinePoint p 
         rw [hermitianGeometricInfinityValuation_constant p s _ ha,
           hermitianGeometricInfinityValuation_radical, ← WithZero.exp_zero, WithZero.exp_lt_exp]
         exact hQ
-      rw [V.map_sub_eq_of_lt_left hlt, hermitianGeometricInfinityValuation_radical,
+      rw [(V).map_sub_eq_of_lt_left hlt, hermitianGeometricInfinityValuation_radical,
         WithZero.exp_lt_exp]
       omega
   rw [hermitianGeometricTangentFunction_eq, map_pow]
-  rw [V.map_sub_eq_of_lt_left (by rw [hu]; exact htail), hu]
+  rw [(V).map_sub_eq_of_lt_left (by rw [hu]; exact htail), hu]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

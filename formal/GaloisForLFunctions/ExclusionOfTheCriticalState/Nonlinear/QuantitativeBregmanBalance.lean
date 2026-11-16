@@ -122,6 +122,7 @@ theorem arctanGapEnergy_eq_integral {F : ℝ → ℝ}
     rw [← integral_sub hm ha]
     apply setIntegral_congr_fun measurableSet_Ioi
     intro x _
+    dsimp only [Function.comp_apply]
     obtain ⟨ha', hm', _⟩ := integrable_arctanJump_parts hF x
     rw [← mul_sub, ← integral_sub hm' ha']
     rfl
@@ -130,6 +131,7 @@ theorem arctanGapEnergy_eq_integral {F : ℝ → ℝ}
     rw [← integral_sub hf hm]
     apply setIntegral_congr_fun measurableSet_Ioi
     intro x _
+    dsimp only [Function.comp_apply]
     obtain ⟨_, hm', hf'⟩ := integrable_arctanJump_parts hF x
     rw [← mul_sub, ← integral_sub hf' hm']
     rfl
@@ -140,6 +142,7 @@ theorem integrableOn_arctanBoundaryMoment {F : ℝ → ℝ}
     IntegrableOn (fun u => arctanGapKernel i (F u) 0) (Ioo (-d) 0) := by
   refine (integrable_arctanGapKernel hF i d).integrableOn.congr_fun ?_ measurableSet_Ioo
   intro u hu
+  change arctanGapKernel i (F u) (F (u + d)) = arctanGapKernel i (F u) 0
   rw [hF.support (u + d) (by linarith only [hu.1])]
 
 /-- An explicit exponential coefficient turns each terminal moment into a full-energy floor. -/
@@ -206,6 +209,31 @@ theorem criticalState_arctan_quantitative_interval {W₀ : ℝ} (hW : 0 < W₀)
     levyEnergy F - arctanArithmeticBalance W₀ F at h2
   exact ⟨h0, by linarith only [h1], by linarith only [h2]⟩
 
+/-- The signed arithmetic side must pay an explicit positive nonlinear boundary moment. -/
+theorem criticalState_arctan_balance_terminal_lower {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {d : ℝ} (hd : 0 < d) :
+    0 < (2 * Real.exp (-d / 2)) * (∫ u in Ioo (-d) 0, F u * Real.arctan (F u)) ∧
+      (2 * Real.exp (-d / 2)) * (∫ u in Ioo (-d) 0, F u * Real.arctan (F u)) ≤
+        arctanArithmeticBalance W₀ F := by
+  have hD := criticalHalfLineEnergyDomain_of_groundState hF
+  have hA := domain_arctan hD
+  have hi := integrable_mul_of_memLp hD.memLp_real hA.memLp_real
+  have hm : arctanBoundaryMoment 0 d F ≤ ∫ u in Ioo (-d) 0, F u * Real.arctan (F u) := by
+    simp only [arctanBoundaryMoment, arctanGapKernel, Real.arctan_zero, sub_zero]
+    apply integral_mono hA.sq.integrableOn hi.integrableOn
+    intro u
+    simpa only [Real.arctan_zero, sub_zero] using (arctan_jump_bounds (F u) 0).1
+  have hp := lt_of_lt_of_le (criticalState_arctanBoundaryMoment_pos hW ht hF 0 hd) hm
+  refine ⟨mul_pos (mul_pos (by norm_num) (Real.exp_pos _)) hp, ?_⟩
+  rw [← criticalState_arctan_balance hW ht hF]
+  have hb := hD.jump_boundary_lower
+    (K := fun a b => (a - b) * (Real.arctan a - Real.arctan b))
+    (fun a b => (sq_nonneg _).trans (arctan_jump_bounds a b).1)
+    (fun x _ => (integrable_arctanJump_parts hD x).2.1)
+    (integrableOn_arctanDissipation hD) hd
+  simpa only [Real.arctan_zero, sub_zero, arctanLevyDissipation, levyMixed, Function.comp_apply] using hb
+
 /-- Every state in the unconditional alternative satisfies all three terminal bounds at every scale. -/
 theorem riemannHypothesis_or_criticalState_quantitative_bregman_balance :
     RiemannHypothesis ∨ ∃ (W₀ : ℝ) (F : ℝ → ℝ), 0 < W₀ ∧
@@ -224,6 +252,7 @@ theorem riemannHypothesis_or_criticalState_quantitative_bregman_balance :
 
 #print axioms arctanGapEnergy_eq_integral
 #print axioms arctanBoundaryMoment_lower
+#print axioms criticalState_arctan_balance_terminal_lower
 #print axioms riemannHypothesis_or_criticalState_quantitative_bregman_balance
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState
