@@ -44,8 +44,9 @@ def hullReflection : Module.End ℂ (reflectionHull p) :=
     (hullReflection p x : ZeroSpace) = zeroReflection x := rfl
 
 theorem hullReflection_sq : hullReflection p * hullReflection p = 1 := by
-  ext x
-  exact zeroReflection_involutive x
+  apply LinearMap.ext
+  intro x
+  exact Subtype.ext (zeroReflection_involutive x)
 
 /-- Averaging the order-two action selects its fixed vectors. -/
 def hullPositive : Module.End ℂ (reflectionHull p) :=

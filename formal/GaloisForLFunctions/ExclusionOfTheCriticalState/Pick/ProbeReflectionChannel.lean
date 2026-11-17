@@ -200,7 +200,7 @@ private theorem reflectionDephasing_average (t : NNReal) (A : ZeroObservable) :
     reflectionDephasing t A =
       (((1 + Real.exp (-(t : ℝ))) / 2 : ℝ) : ℂ) • A +
       (((1 - Real.exp (-(t : ℝ))) / 2 : ℝ) : ℂ) • reflectedObservable A := by
-  simpa only [Complex.ofReal_div, Complex.ofReal_add, Complex.ofReal_sub,
+  simpa only [reflectionDephasing, Complex.ofReal_div, Complex.ofReal_add, Complex.ofReal_sub,
     Complex.ofReal_one, Complex.ofReal_ofNat] using
     reflectionAttenuation_eq_average (Real.exp (-(t : ℝ)) : ℂ) A
 
@@ -233,11 +233,14 @@ theorem reflectionDephasing_square_energy (t : NNReal) (T : ZeroObservable) (x :
       (1 + Real.exp (-(t : ℝ))) / 2 * ‖T x‖ ^ 2 +
       (1 - Real.exp (-(t : ℝ))) / 2 * ‖T (zeroReflection x)‖ ^ 2 := by
   rw [reflectionDephasing_average]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.mul_apply, reflectedObservable, inner_add_right, inner_smul_right]
+  simp only [add_apply, smul_apply, mul_apply_eq_comp, reflectedObservable,
+    inner_add_right, inner_smul_right]
   rw [← zeroReflection_inner_left, ContinuousLinearMap.adjoint_inner_right,
     ContinuousLinearMap.adjoint_inner_right, inner_self_eq_norm_sq_to_K,
     inner_self_eq_norm_sq_to_K]
+  change ((((1 + Real.exp (-(t : ℝ))) / 2 : ℝ) : ℂ) * (‖T x‖ : ℂ) ^ 2 +
+    (((1 - Real.exp (-(t : ℝ))) / 2 : ℝ) : ℂ) *
+      (‖T (zeroReflection x)‖ : ℂ) ^ 2).re = _
   simp only [← Complex.ofReal_pow, ← Complex.ofReal_mul, ← Complex.ofReal_add,
     Complex.ofReal_re]
 
