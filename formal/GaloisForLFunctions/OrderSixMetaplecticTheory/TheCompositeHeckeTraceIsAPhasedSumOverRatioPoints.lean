@@ -592,9 +592,7 @@ theorem contraction_wl (y : O) :
   all_goals (try simp only [hc3] at *)
   all_goals (try simp only [← hp, ← hq])
   all_goals (try field_simp)
-  all_goals (first | ring1 | linear_combination he | linear_combination R.Q.root ^ 2 * he | linear_combination -(R.Q.root ^ 2) * he |
-    linear_combination (1 + R.Q.root ^ 2) * he | linear_combination -(1 + R.Q.root ^ 2) * he |
-    linear_combination (2 + R.Q.root ^ 2) * he)
+  all_goals (first | ring1 | linear_combination he)
 
 theorem dilation_lw (y : O) (hy : ¬ R.P.p ∣ y) :
     R.dilation * complexMatrix (lowerThree (R.Q.p * y) * R.wQ) =
@@ -633,9 +631,7 @@ theorem contraction_lw (y : O) :
   all_goals (try simp only [hc3] at *)
   all_goals (try simp only [← hp, ← hq])
   all_goals (try field_simp)
-  all_goals (first | ring1 | linear_combination he | linear_combination R.P.root ^ 2 * he | linear_combination -(R.P.root ^ 2) * he |
-    linear_combination (1 + R.P.root ^ 2) * he | linear_combination -(1 + R.P.root ^ 2) * he |
-    linear_combination (2 + R.P.root ^ 2) * he)
+  all_goals (first | ring1 | linear_combination he)
 
 end PrimaryPair
 

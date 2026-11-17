@@ -39,9 +39,10 @@ private theorem zero_of_stronglyMeasurable_weak_zero
       hclosed.closure_subset_iff.mpr fun v hv => ht ⟨v, hv⟩
     exact hclosure (hSC hs)
   obtain ⟨t, ht⟩ := hz.exists
-  rw [inner_self_eq_norm_sq_to_K, norm_shift] at ht
-  have hnorm := congrArg Complex.re ht
-  simp only [← Complex.ofReal_pow, Complex.ofReal_re, Complex.zero_re] at hnorm
+  rw [inner_self_eq_norm_sq_to_K] at ht
+  change (‖shift t u‖ : ℂ) ^ 2 = 0 at ht
+  rw [norm_shift] at ht
+  have hnorm : ‖u‖ ^ 2 = 0 := by exact_mod_cast ht
   exact norm_eq_zero.mp (sq_eq_zero_iff.mp hnorm)
 
 /-- A translation orbit is almost everywhere strongly measurable exactly when its vector is zero. -/

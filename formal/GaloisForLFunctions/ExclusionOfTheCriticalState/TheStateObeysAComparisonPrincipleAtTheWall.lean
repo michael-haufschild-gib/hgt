@@ -411,9 +411,8 @@ theorem IsHalfLineEnergyMinimizer.integral_mixedJump_le {R : ℝ} (hR : 0 < R) {
           lt_of_lt_of_le hlog2 (Real.log_le_log (by norm_num) (by exact_mod_cast hn))
         have ha0 : 0 ≤ vonMangoldtAtom n := by
           unfold vonMangoldtAtom
-          split_ifs
-          · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
-          · exact le_rfl
+          rw [if_pos hn]
+          exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
         have hfirst : ∫ t, F t * G (t - Real.log n) = 0 := by
           refine integral_eq_zero_of_ae (Eventually.of_forall fun t => ?_)
           show F t * G (t - Real.log n) = 0
@@ -546,7 +545,7 @@ theorem IsHalfLineEnergyMinimizer.exists_wall_comparison {R : ℝ} (hR : 0 < R) 
   -- almost everywhere: `G` is bounded and vanishes on `(−k, −k/2]`
   have hae : ∀ᵐ u : ℝ, G u ≤ C + B ∧ (-k < u → u ≤ -(k / 2) → G u = 0) := by
     filter_upwards [hC] with u hu
-    have hλF : collarCutoff k u * F u ≤ C :=
+    have hcF : collarCutoff k u * F u ≤ C :=
       calc collarCutoff k u * F u ≤ collarCutoff k u * |F u| :=
             mul_le_mul_of_nonneg_left (le_abs_self _) (collarCutoff_nonneg k u)
         _ ≤ 1 * C := mul_le_mul (collarCutoff_le_one k u) hu (abs_nonneg _) zero_le_one
@@ -555,10 +554,10 @@ theorem IsHalfLineEnergyMinimizer.exists_wall_comparison {R : ℝ} (hR : 0 < R) 
     · rw [hGval]
       refine max_le ?_ hCB
       have h := (abs_le.mp (hψB u)).1
-      linarith only [hλF, h]
+      linarith only [hcF, h]
     · intro h1 h2
       rw [hGval]
-      exact max_eq_right (by linarith only [hλF, hψtop u h1 h2])
+      exact max_eq_right (by linarith only [hcF, hψtop u h1 h2])
   -- almost everywhere: `F ≤ G + ψ + F 1_{(−∞, −k]}`
   have hP1 : ∀ᵐ v : ℝ, F v ≤ (G v + ψ v) + (Iic (-k)).indicator F v := by
     filter_upwards [hC] with v hv
