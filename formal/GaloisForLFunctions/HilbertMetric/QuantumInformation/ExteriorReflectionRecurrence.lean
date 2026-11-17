@@ -41,8 +41,8 @@ private theorem multiplicityPolynomial_derivative (s t : ℕ) :
       (C ((t : ℂ) - (s : ℂ)) - C ((s : ℂ) + (t : ℂ)) * X) *
         ((1 - X) ^ s * (1 + X) ^ t) := by
   calc
-    _ = ((1 - X) * derivative ((1 - X) ^ s)) * (1 + X) * (1 + X) ^ t +
-        ((1 + X) * derivative ((1 + X) ^ t)) * (1 - X) * (1 - X) ^ s := by
+    _ = ((1 - X : Polynomial ℂ) * derivative ((1 - X) ^ s)) * (1 + X) * (1 + X) ^ t +
+        ((1 + X : Polynomial ℂ) * derivative ((1 + X) ^ t)) * (1 - X) * (1 - X) ^ s := by
       rw [derivative_mul]
       ring
     _ = _ := by

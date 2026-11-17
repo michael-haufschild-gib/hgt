@@ -203,3 +203,17 @@ import GaloisForLFunctions.RepresentationLifting.Hecke.PermutationSpecialization
 import GaloisForLFunctions.RepresentationLifting.Hecke.PermutationKernel
 
 import GaloisForLFunctions.RepresentationLifting.InnerProduct.ReflectionGramRealization
+
+import GaloisForLFunctions.RepresentationLifting.Hecke.CubicExtension
+
+import GaloisForLFunctions.RepresentationLifting.Hecke.KernelWordAlgebra
+
+import GaloisForLFunctions.RepresentationLifting.Differential.CartierGapSpace
+
+import GaloisForLFunctions.RepresentationLifting.Differential.CartierMultiplicativity
+
+import GaloisForLFunctions.RepresentationLifting.Differential.TruncatedVectorFields
+
+import GaloisForLFunctions.RepresentationLifting.Differential.MonogenicDerivations
+
+import GaloisForLFunctions.RepresentationLifting.Differential.TruncatedDerivations

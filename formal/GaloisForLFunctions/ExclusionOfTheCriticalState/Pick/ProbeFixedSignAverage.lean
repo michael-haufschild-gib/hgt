@@ -34,7 +34,7 @@ theorem signImbalance_count {n : ℕ} (τ : Fin n → Bool) :
   have hc : (∑ i : Fin n, if τ i = false then (1 : ℝ) else 0) =
       ((Finset.univ.filter (fun i => τ i = false)).card : ℝ) := by
     rw [Finset.sum_ite]
-    simp only [Finset.sum_const, Finset.sum_const_zero, nsmul_eq_mul, mul_one, add_zero]
+    simp only [Finset.sum_const, nsmul_eq_mul, mul_one, mul_zero, add_zero]
   rw [signImbalance]
   simp_rw [he, Finset.sum_sub_distrib, ← Finset.mul_sum]
   rw [hc]
@@ -92,7 +92,7 @@ theorem twirl_weightedProbeMatrix_posSemidef {n : ℕ} (p a : Fin (n + 2) → �
     have hm : (n + 1 : ℂ) ≠ 0 := by exact_mod_cast (by omega : n + 1 ≠ 0)
     field_simp [hn, hm]
     ring
-  rw [twirl_two_parameter_decomposition, hqval, hbval]
+  rw [twirl_two_parameter_decomposition, hbval, hqval]
   have hones : Matrix.PosSemidef (fun (_ _ : Fin (n + 2)) => (1 : ℂ)) :=
     HTGeometry.isPSDKernel_one.posSemidef (fun i : Fin (n + 2) => i)
   have hI : (1 : Matrix (Fin (n + 2)) (Fin (n + 2)) ℂ).PosSemidef := by
@@ -120,7 +120,7 @@ theorem permutedSignEnergy_eq_twirl {n : ℕ} (p a : Fin n → ℝ) (τ : Fin n 
   change (((|a (σ i)| * signCoefficient τ i) * (|a (σ j)| * signCoefficient τ j) *
     safeProbeEntry (p (σ i)) (p (σ j)) : ℝ) : ℂ) =
     (signCoefficient τ i : ℂ) *
-      ((|a (σ i)| * |a (σ j)| * safeProbeEntry (p (σ i)) (p (σ j)) : ℝ) *
+      ((|a (σ i)| * |a (σ j)| * safeProbeEntry (p (σ i)) (p (σ j)) : ℝ) : ℂ) *
         (signCoefficient τ j : ℂ)
   push_cast
   ring
@@ -245,7 +245,7 @@ theorem permutedSignEnergy_odd_pos_iff {n : ℕ}
   constructor
   · intro h
     by_contra ha
-    push_neg at ha
+    push Not at ha
     have hz := (permutedSignEnergy_zero_iff p a τ).mpr (Or.inl ha)
     rw [hz] at h
     exact (lt_irrefl 0) h

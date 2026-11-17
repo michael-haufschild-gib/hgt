@@ -238,7 +238,11 @@ $\Phi_F(p)=\hat SF(p)+\mathcal LF(-\tfrac12)/(p+\tfrac12)$ to extend holomorphic
 $\operatorname{Re}p<-\tfrac12$ to $\operatorname{Re}p<0$ — equivalently, on the pole-neutral subspace $\mathcal LG(-\tfrac12)=0$, require the bare prime-head series $\hat SG(p)$ alone to extend holomorphically to $\operatorname{Re}p<0$. Because $J_{\ge1}F$ is holomorphic throughout $\operatorname{Re}p<\tfrac52$ and every critical state
 [sees a left zero](Zeros/TheCriticalStateSeesALeftZero.lean) ($-\tfrac12<\operatorname{Re}z_0<0$, $\mathcal LF(z_0)\ne0$), which forces a pole in $\Phi_F$ at $z_0$,
 the criterion excludes the state directly and is sharp at the boundary $\operatorname{Re}p=0$. It [fails unconditionally on prime-two deformations and positive passive Euler twins](Models/BeyondTheWallContinuationFailsOnTheModels.lean),
-including real-axis-positive twins matching any finite $\zeta$ prefix. Proving it for $\zeta$ remains open and is equivalent to RH.
+including real-axis-positive twins matching any finite $\zeta$ prefix. The heads at all proper prime powers
+converge holomorphically on $\operatorname{Re}p<0$. Their only pole on the imaginary axis for a critical state
+has residue $-\mathcal LF(0)/2$ at zero. Their absolute wave is $O_{F,\varepsilon}(e^{\varepsilon x})$ for
+every $\varepsilon>0$. The open cancellation is between ordinary primes and the polar term.
+[Proper prime powers in the prime wave](Wall/TheProperPrimePowersInThePrimeWave.lean).
 
 ## 6. Tools
 
@@ -409,6 +413,7 @@ $\sum_n\Lambda(n)n^{-1/2}F(x-\log n)$ at $x\to0^+$, need it; this is stage 5.
 | Wall amplitude at every ratio: every minimizer $F$ of the confined form at a ratio $R>0$ has an amplitude $\ell$ with $\int_{v>k}F(-v)\frac{dv}v\big/\sqrt{\log(1/k)}\to2\ell$ and $\sqrt{\log(1/\lvert u\rvert)}\,F(u)\to\ell$ essentially as $u\to0^-$ | `halfLineEnergyMinimizer_exists_wallAmplitude` | unconditional |
 | Energy of the cut state, every ratio: a profile of $\mathcal H$ vanishing on $[-h,\infty)$ has $Q_R(H)\ge\lambda(R)\int H^2+a(R)(1-e^{-8h})\int H^2e^{-8u}$; sharp cuts of bounded profiles lie in $\mathcal H$; if $\lvert F\rvert\le B$ on $[-2k,0)$ then $a(R)(1-e^{-8k})\int_{u<-k}F^2e^{-8u}\le\tfrac12\int_{v>k}F(-v)\frac{dv}v\int_{-k}^0F+KBk+B^2k$ | `criticalHalfLineFullEnergy_ge_ground_add_terminal_wall`, `criticalHalfLineEnergyDomain_wallExterior`, `halfLineEnergyMinimizer_exists_wall_energy_le` | unconditional |
 | The wall amplitude is the derivative of the ground energy: for a minimizer $F$ at a ratio $R>0$ with amplitude $\ell$ at the wall, $\ell^2=8a(R)\int F^2e^{-8u}=-8R\lambda'(R)$; $k^{-1}\int_{-k}^0F\cdot\sqrt{\log(1/k)}\to\ell$; $\ell^2\ge8a(R)>0$ and $\ell F>0$ almost everywhere near the wall; at every ratio $\log(1/k)\int(F(u)-F(u+k))^2du\le(8a(R)M+\varepsilon)k$ for small $k$ | `IsWallAmplitude.sq_eq`, `IsWallAmplitude.hasDerivAt_groundEnergy`, `IsWallAmplitude.tendsto_terminalMean`, `IsWallAmplitude.exists_ae_mul_pos`, `halfLineEnergyMinimizer_eventually_log_mul_sq_increment_le`, `halfLineEnergyMinimizer_exists_wallAmplitude_sq` | unconditional |
+| Modulus of continuity at every ratio $R>0$, $M=\int F^2e^{-8u}$: $\frac{\log(1/k)}k\int(F(u)-F(u+k))^2du\to8a(R)M$ and $\frac{\log(1/k)}k\int_{-k}^0F^2\to8a(R)M$, while $\frac{\log(1/k)}k\int_{u\le-k}(F(u)-F(u+k))^2du\to0$; $\bigl(k^{-1}\int_{-k}^0F\bigr)^2\log(1/k)\to8a(R)M$ | `halfLineEnergyMinimizer_tendsto_log_div_mul_sq_increment`, `halfLineEnergyMinimizer_tendsto_log_div_mul_terminal_sq`, `halfLineEnergyMinimizer_tendsto_log_div_mul_interior_sq_increment`, `halfLineEnergyMinimizer_tendsto_sq_terminalMean_mul_log` | unconditional |
 
 ## 8. Traps
 

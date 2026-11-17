@@ -48,7 +48,7 @@ theorem sectorCharacter_eq_subsetSum {r : ℕ} (ε : Fin r → ZMod 2) (k : ℕ)
 /-- Exterior reflection characters are real, so their product orthogonality is Hermitian orthogonality. -/
 theorem conj_sectorCharacter {r : ℕ} (ε : Fin r → ZMod 2) (k : ℕ) :
     conj (sectorCharacter ε k) = sectorCharacter ε k := by
-  rw [sectorCharacter_eq_subsetSum, sectorCharacter_eq_subsetSum]
+  rw [sectorCharacter_eq_subsetSum]
   simp only [map_sum]
   apply Finset.sum_congr rfl
   intro T _
@@ -80,7 +80,7 @@ theorem sectorCharacter_orthogonality (r k l : ℕ) :
   simp_rw [sum_signOf_subsetSum_mul]
   by_cases hkl : k = l
   · subst l
-    simp only [if_pos rfl, Subtype.val_inj, Finset.sum_ite_eq,
+    simp only [Subtype.val_inj, Finset.sum_ite_eq,
       Finset.mem_univ, if_true, Finset.sum_const, Finset.card_univ, nsmul_eq_mul,
       sector_dimension]
     ring

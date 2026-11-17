@@ -17988,3 +17988,5 @@ import GaloisForLFunctions.HTGeometry.GroupCharacter.QuaternionSquareIndicator
 import GaloisForLFunctions.HTGeometry.PolynomialODE.HeunFormalTermination
 import GaloisForLFunctions.HTGeometry.PolynomialODE.HeunNormalizedSeries
 import GaloisForLFunctions.HTGeometry.PolynomialODE.HeunResonantBranch
+
+import GaloisForLFunctions.HTGeometry.PolynomialODE.HeunResonanceObstruction

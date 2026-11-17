@@ -66,6 +66,7 @@ theorem exterior_signOperator_basis {r k : ℕ} (S : Finset (Fin r))
     rw [Finset.prod_subtype T.val (fun _ => Iff.rfl)]
     exact Fintype.prod_equiv (powersetOrderEquiv T) _ _ (fun _ => rfl)
   rw [hp]
+  rw [fermionicSectorBasis, exteriorPower.basis_apply, exteriorPower.ιMulti_family]
   rfl
 
 /-- The signed exterior trace is the exact subset-character sum. -/
@@ -74,7 +75,7 @@ theorem exterior_signOperator_trace {r : ℕ} (S : Finset (Fin r)) (k : ℕ) :
       (exteriorPower.map k (signOperator S)) =
       ∑ T : Set.powersetCard (Fin r) k,
         ∏ j ∈ T.val, if j ∈ S then (-1 : ℂ) else 1 := by
-  rw [LinearMap.trace_eq_matrix_trace (fermionicSectorBasis r k)]
+  rw [LinearMap.trace_eq_matrix_trace ℂ (fermionicSectorBasis r k)]
   unfold Matrix.trace
   apply Finset.sum_congr rfl
   intro T _
@@ -93,7 +94,8 @@ private theorem signMatrix_minor_det {r : ℕ} (S T : Finset (Fin r)) :
       Matrix.diagonal (fun j : T => if j.val ∈ S then (-1 : ℂ) else 1) := by
     ext i j
     simp only [signMatrix, Matrix.submatrix_apply, Matrix.diagonal_apply, Subtype.ext_iff]
-  rw [he, Matrix.det_diagonal, Finset.prod_coe_sort]
+  rw [he, Matrix.det_diagonal]
+  exact Finset.prod_coe_sort T (fun j : Fin r => if j ∈ S then (-1 : ℂ) else 1)
 
 /-- The character polynomial gathers all exterior-sector traces. -/
 def characterPolynomial {r : ℕ} (S : Finset (Fin r)) : Polynomial ℂ :=
@@ -106,7 +108,12 @@ theorem exterior_signOperator_trace_eq_coeff {r : ℕ} (S : Finset (Fin r)) (k :
   rw [exterior_signOperator_trace, characterPolynomial,
     Matrix.coeff_det_one_add_X_smul_eq_sum_minors]
   simp_rw [signMatrix_minor_det]
-  rw [Set.powersetCard.coe_finset, Finset.sum_coe_sort]
+  exact (Finset.sum_subtype (p := fun T => T ∈ Set.powersetCard (Fin r) k)
+    (Finset.univ.powersetCard k)
+    (fun T => by
+      change T ∈ Finset.univ.powersetCard k ↔ T.card = k
+      simp only [Finset.mem_powersetCard, Finset.subset_univ, true_and])
+    (fun T => ∏ j ∈ T, if j ∈ S then (-1 : ℂ) else 1)).symm
 
 /-- The full exterior character depends only on the number of negative one-particle directions. -/
 theorem characterPolynomial_eq {r : ℕ} (S : Finset (Fin r)) :
@@ -120,8 +127,8 @@ theorem characterPolynomial_eq {r : ℕ} (S : Finset (Fin r)) :
     by_cases h : i = j
     · subst j
       by_cases hi : i ∈ S <;>
-        simp [signMatrix, Matrix.diagonal_apply, hi, sub_eq_add_neg]
-    · simp [signMatrix, Matrix.diagonal_apply, h]
+        simp [signMatrix, hi, sub_eq_add_neg]
+    · simp [signMatrix, h]
   rw [characterPolynomial, he, Matrix.det_diagonal, Finset.prod_ite]
   have hs : Finset.univ.filter (fun i : Fin r => i ∈ S) = S := by ext i; simp
   have hc : Finset.univ.filter (fun i : Fin r => i ∉ S) = Sᶜ := by ext i; simp
