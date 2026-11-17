@@ -46,7 +46,8 @@ private lemma tail_density_integrable {F : ℝ → ℝ} (hF : CriticalHalfLineEn
       linarith)
   simpa only [mul_comm] using h
 
-private lemma tail_power_integrable {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
+/-- Every tail-coordinate monomial is integrable against the damped state density. -/
+lemma integrable_tailProbeMonomial {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
     (T : ℝ) (n : ℕ) : Integrable
       (fun u => Real.exp (u+T)^n*(F u*Real.exp (10*(u+T)))) (volume.restrict (Iio (-T))) := by
   apply (tail_density_integrable hF T).bdd_mul
@@ -86,11 +87,11 @@ theorem tailProbeQuadratic_eq_integral {F : ℝ → ℝ} (hF : CriticalHalfLineE
     ring
   simp_rw [he]
   rw [integral_finsetSum _ (fun i _ => integrable_finsetSum _
-    (fun j _ => (tail_power_integrable hF T (i+j)).const_mul _))]
+    (fun j _ => (integrable_tailProbeMonomial hF T (i+j)).const_mul _))]
   unfold tailProbeQuadratic
   apply Finset.sum_congr rfl
   intro i _
-  rw [integral_finsetSum _ (fun j _ => (tail_power_integrable hF T (i+j)).const_mul _)]
+  rw [integral_finsetSum _ (fun j _ => (integrable_tailProbeMonomial hF T (i+j)).const_mul _)]
   simp only [integral_const_mul,← tailProbeMoment_eq_coordinate]
 
 /-- Every tail admits a finite moment quadratic form of each strict sign. -/

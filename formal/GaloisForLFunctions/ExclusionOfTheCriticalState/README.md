@@ -191,20 +191,25 @@ so nothing is lost between stages.
    the wave on $\operatorname{Re}p=s$ is finite, and if $\sigma<2s$ the moment $16-4s$ lies below $16-2\sigma$; the Agmon
    bound gives $P(s)$. Admissible $s<\sigma$ exist whenever $\sigma>\kappa$, so the infimum of the abscissae with
    $P(\sigma)$ is $\kappa$: $P(\kappa)$ holds, and with the ruler the decay rate is $17-2\Theta$.
+23. **Pole of the moments.** Let $b_\rho=17-2\operatorname{Re}\rho$. If $M(b_\rho-\eta)=\int F^2e^{-(b_\rho-\eta)u}<\infty$, the
+   cleared state equation holds at $p=\rho-\tfrac12+\eta$, on the edge of the half-plane of convergence:
+   $a\mathcal LF(p-8)=-\mathcal LF(p)\tfrac{\zeta'}{\zeta}(\tfrac12+p)-(\Gamma F-TF+\text{pole})(p)$. Times $\eta$ the right side
+   tends to $-m_\rho\mathcal LF(\rho-\tfrac12)\neq0$; on the left Cauchy–Schwarz gives $\eta\lvert\mathcal LF(p-8)\rvert^2\le M(b_\rho-\eta)$.
+   So $\eta M(b_\rho-\eta)$ stays above the squared residue of $\mathcal LF$ at the transported zero.
 
 ## 5. Questions
 
 | # | Question | Status |
 |---|---|---|
 | Q1 | Probe kernel $B(e_p,e_q)=\frac{D(p)+D(q)}{p+q}$ and its zero side | answered (Lean) |
-| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | partial (Lean): probe and heated zero-side identities; at the state, against every smooth test, with Gaussian summation against every profile of $\mathcal H$, and absolutely against tilt-regular profiles; $(\star)$ as a one-point identity with square-summable zero values; two general profiles open |
+| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | answered (Lean): for every pair of profiles of $\mathcal H$ the zero pairing with Gaussian summation is Weil's form, $\lim_{\varepsilon\to0^+}\sum_z\mathcal LF(z)\mathcal LG(-z)e^{\varepsilon z^2}=W(F,G)$ (`tendsto_heatedZeroPairing`); without summation it converges absolutely when both unit tilts lie in $\mathcal H$ (`hasSum_bareMixedEnergy_of_unitTilts`), in particular at the state; $(\star)$ is a one-point identity with square-summable zero values. For a general profile the unsummed series needs one subtraction (Traps) |
 | Q3 | State equation, continuation, residues | answered (Lean): global meromorphic continuation, exact residues and uniform left decay |
-| Q4 | Decay law | answered (Lean): for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $\int F^2e^{-bu}<\infty$ for every $b<16-2\kappa$; the decay rate is $b^*=17-2\Theta$, $\Theta$ the supremum of the real parts of the zeros; unconditionally $\int F^2e^{-bu}<\infty$ for $b<15+\tfrac{3001}{12000}$. Also in Lean: left Hardy bounds, averaged/heated decay, and the transform side: $\mathcal LF$ converges exactly on $\operatorname{Re}w>\Theta-\tfrac{17}2$, with $(\star)$ at every point and Plancherel on every line. Open: the endpoint $b=b^*$ and pointwise decay |
+| Q4 | Decay law | answered (Lean): for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $\int F^2e^{-bu}<\infty$ for every $b<16-2\kappa$; the decay rate is $b^*=17-2\Theta$, $\Theta$ the supremum of the real parts of the zeros; unconditionally $\int F^2e^{-bu}<\infty$ for $b<15+\tfrac{3001}{12000}$. Also in Lean: left Hardy bounds, averaged/heated decay, and the transform side: $\mathcal LF$ converges exactly on $\operatorname{Re}w>\Theta-\tfrac{17}2$, with $(\star)$ at every point and Plancherel on every line. At the exponent $b_\rho=17-2\operatorname{Re}\rho$ of every zero the moment is infinite, with $\liminf_{\eta\to0^+}\eta\int F^2e^{-(b_\rho-\eta)u}\ge(m_\rho\lvert\mathcal LF(\rho-\tfrac12)\rvert/a)^2$; hence a finite moment at $b$ puts the zeros in $\operatorname{Re}\rho<\tfrac{17-b}2$, and the moment at $b^*$ is infinite when $\Theta$ is attained. Open: the endpoint $b=b^*$ when $\Theta$ is not attained, and pointwise decay |
 | Q5 | Sign law | answered (Lean): one sign on no ray |
-| Q6 | Index law | $\zeta$: finite index at every ratio (Lean); exact count of critical ratios open |
-| Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH |
+| Q6 | Index law | answered (Lean): finite index at every ratio; some confined Gram matrix has $n$ negative squares iff $\zeta$ has at least $n$ zeros right of the line (`confinedIndex_law`); the index is bounded over all ratios iff finitely many zeros lie off the line (`confinedIndexBounded_tfae`); under a finite layer the critical ladder has one rung per right zero (`criticalLadder_iff_rightZeros`). Open: the growth of the index in the ratio when infinitely many zeros lie right of the line |
+| Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH. Restricted to a finite off-line layer it is B13 in six equivalent forms (`finiteLayer_ecs_b13_tfae`) |
 | Q8 | The arithmetic property that excludes the state | criterion and model separation proved (Lean): beyond-the-wall prime-pole continuation; proof for $\zeta$ open |
-| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): vanishing average wall mass, uniform right $o(1/\sigma)$ decay and charge cancellation; leading asymptotics and exclusion open |
+| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): vanishing average wall mass, uniform right $o(1/\sigma)$ decay and charge cancellation; $F^+$ in prime form almost everywhere (`beyondWallProfile_primeForm`) and the Abel-mean form of the heads left of the strip ([Wall/](Wall/TheWallSeenFromTheLeft.lean)); coercivity of the collar and softness of its weak equation beyond $(\star)$ ([Collar/](Collar/TheCollarWeakEquationIsSoftBeyondStar.lean)); the critical ratio of the charge hyperplane ([Energy/](Energy/TheChargeHyperplaneHasItsOwnCriticalRatio.lean)). Exclusion open |
 
 **Q8 criterion.** For every $F\in\mathcal H$, require the [prime-pole balance](TheBeyondTheWallPrimeBalanceExcludesTheState.lean)
 $\Phi_F(p)=\hat SF(p)+\mathcal LF(-\tfrac12)/(p+\tfrac12)$ to extend holomorphically from
@@ -245,9 +250,20 @@ $(w+2+iT)^{-2}$, Plancherel on lines, Hölder); the state equation on the zero-f
 multiplier and the lower bound $\tfrac12\log-K$; square integrability on vertical lines of the head term, of
 the prime tail and of the transform under decay; the descent of the abscissa of decay by an infimum.
 
-**To build.** The endpoint moment $b=17-2\Theta$ and pointwise decay of the state; the exact critical-ratio count; the leading asymptotics of
-$JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula); $F^+$ in prime form (the remainder of the prime number theorem averaged by $F$)
-and its comparison with $e^{-8u}F$ at the wall.
+[Reflection walk on the actual probe span](Pick/ProbeReflectionWalk.lean): with zero reflection $R$
+and orthogonal probe projection $Q$, $W=R(2Q-1)$ is a surjective linear isometry and
+$QW^nQ=T_n(QRQ)Q$ (`ProbeWalk.walkEquiv`, `ProbeWalk.walk_compression`). The probe matrix
+coefficients of $QRQ$ are exactly the bare Weil kernel (`ProbeWalk.signal_inner_probe`).
+
+[Tail-moment forward differences](Wall/TailProbeDifferences.lean): writing $s_k=$ `tailProbeMoment F T k`,
+the functional with moments $s_{n+k}-s_k$ integrates each polynomial $P(e^{u+T})$ against
+$(e^{n(u+T)}-1)F(u)e^{10(u+T)}$ on $u<-T$ (`momentFunctional_tailProbeDifference`).
+The same identity holds for polynomial squares and the actual critical state
+(`tailProbeDifference_square`, `riemannHypothesis_or_tailProbeDifferences`).
+
+**To build.** The endpoint moment $b=17-2\Theta$ when $\Theta$ is not attained, and pointwise decay of the state
+(both need regularity of $F$ or a Hilbert inequality on the zeros without the logarithm); the growth of the index in
+the ratio; the comparison of $F^+$ with $e^{-8u}F$ at the wall, which is stage 5.
 
 ## 7. Pillar theorems
 
@@ -296,6 +312,7 @@ and its comparison with $e^{-8u}F$ at the wall.
 | The state equation on the zero-free strip: under $\int F^2e^{-bu}<\infty$, $\mathcal LF(p)A(p)=-a\mathcal LF(p-8)-J_G(p-2)+T_F(p)-\mathcal LF(-\tfrac12)/(p+\tfrac12)$ on $\kappa<\operatorname{Re}p<\tfrac12$, $16-b<2\operatorname{Re}p$; $\lvert A(s+it)\rvert\ge\tfrac12\log(\lvert t\rvert+4)-K$; $\int\log^2(\lvert t\rvert+4)\lvert\mathcal LF(s+it)\rvert^2dt<\infty$ for $b>16-2s$ | `laplace_mul_stripMultiplier_eq`, `exists_half_log_sub_le_norm_stripMultiplier`, `integrable_log_sq_mul_norm_sq_laplace_line` | unconditional |
 | The decay law: for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $\int F^2e^{-bu}<\infty$ for every $b<16-2\kappa$; $\sup\{b:\int F^2e^{-bu}<\infty\}=17-2\Theta$; unconditionally $b<15+\tfrac{3001}{12000}$ | `forall_re_centredZero_le_iff_integrable_sq_mul_exp`, `isLUB_integrable_sq_mul_exp`, `integrable_sq_mul_exp_of_zero_abscissa_sharp`, `integrable_sq_mul_exp_seed` | unconditional |
 | The transform converges exactly right of the transported zeros: for $0\le\kappa\le1$, the centred zeros lie in $\operatorname{Re}z\le\kappa$ iff $\mathcal LF$ is holomorphic on $\operatorname{Re}w>\kappa-8$; there the continuation is the transform, $a\mathcal LF(w)=-\sum_z\mathcal LF(z)/(w+8-z)$, and $\int\lvert\mathcal LF(\sigma+it)\rvert^2dt=2\pi\int F^2e^{2\sigma u}du$; the state equation and two logarithms hold on all of $\kappa<\operatorname{Re}p<\tfrac12$ | `forall_re_centredZero_le_iff_differentiableOn_laplace`, `stateMeromorphic_eq_laplace_right_of_zeros`, `criticalState_hasSum_starEquation_right_of_zeros`, `integral_norm_sq_stateMeromorphic_line_right_of_zeros`, `laplace_mul_stripMultiplier_eq_right_of_zeros`, `integrable_log_sq_mul_norm_sq_laplace_line_right_of_zeros` | unconditional |
+| The moments $M(b)=\int F^2e^{-bu}$ have a pole at the exponent $b_\rho=17-2\operatorname{Re}\rho$ of every zero right of the line: $\liminf_{\eta\to0^+}\eta\,M(b_\rho-\eta)\ge(m_\rho\lvert\mathcal LF(\rho-\tfrac12)\rvert/a)^2>0$ and $M(b_\rho)=\infty$; a finite $M(b)$ puts every zero in $\operatorname{Re}\rho<\tfrac{17-b}2$; if $\Theta$ is attained, $M(b)<\infty$ iff $b<17-2\Theta$ | `criticalState_eventually_le_mul_moment_of_zero`, `criticalState_not_integrable_at_zero_exponent`, `zero_re_lt_of_integrable_sq_mul_exp`, `integrable_sq_mul_exp_iff_of_attained` | unconditional |
 
 ## 8. Traps
 
@@ -333,6 +350,18 @@ and its comparison with $e^{-8u}F$ at the wall.
 | FrustratedArithmeticDirichletForms | frustration of the even sector |
 | BlackHoleRingdown, SelbergClass, HTGeometry | prime-two deformations, positive twins, Euler-log positivity (O11) |
 | MetaplecticMobiusDescent | the seed $\Theta\le20999/24000$: decay rate $17-2\Theta\ge183001/12000$ |
+
+| Subfolder | Content |
+|---|---|
+| (top level) | probe kernel, state equation and its continuation, $(\star)$, residues, sign law, finite index, decay law and its transform side |
+| Zeros/ | zero pairing of two profiles, zero Parseval identity, multiplicities of the entire state product, the seen left zero |
+| Index/ | null vectors of the confined form, critical ladder, index law, bounded-index stratum, finite layer and B13 |
+| Pick/ | the confined form on probes as Pick matrices: RH and the critical ratio decided on real nodes, Krein form on the zeros |
+| Modes/ | mode expansions of the averaged state and of the heated profile beyond the wall; no finite mode set |
+| Decay/ | sharp exponential barrier of the comparison argument, thick-lag form of the finite layer |
+| Wall/, Collar/, Energy/ | profile beyond the wall in prime form, trivial-zero form of the archimedean tail, the wall seen from the left; collar coercivity and softness; charge hyperplane |
+| Models/ | critical states of tempered configurations with a finite off-line layer, of curves over finite fields, of Beurling and twin models; failure of the stage 5 criterion on the models |
+| Nonlinear/, Certificates/, Analysis/ | nonlinear tests of the state (modulus, Bregman, flat potentials), finite certificates for probe matrices, Landau's obstruction for measurable tails |
 
 ## 10. Success criteria and contributions
 

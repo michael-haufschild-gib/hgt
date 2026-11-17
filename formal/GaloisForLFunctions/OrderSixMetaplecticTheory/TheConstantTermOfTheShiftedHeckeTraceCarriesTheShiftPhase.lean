@@ -60,10 +60,6 @@ namespace PrimaryPrime
 
 variable (P : PrimaryPrime)
 
-theorem three_dvd_sq_sub_one : (3 : O) ∣ P.p ^ 2 - 1 := by
-  obtain ⟨t, ht⟩ := P.three_dvd_sub_one
-  exact ⟨t * (P.p + 1), by linear_combination (P.p + 1) * ht⟩
-
 /-- **The dilate pairs carry `φ_b`.** `e(ξ_hb)e(ξ_{−p²h}(−b)) = e(2ξ_hb)`, since `3 ∣ p² − 1`. -/
 theorem dilatePhase (b h : O) :
     tracePhase (cuspFrequency h * ringComplex b) *
@@ -240,7 +236,12 @@ theorem integral_sourceHeckeShiftTrace (b : O) (v : ℝ) (hv : 0 < v) :
     rw [← pairPhase b k]
     simp only [lowShift, phAmp, zero_sub]
     ring
-  rw [integral_add ((integrableOn_periodDomain_of_continuous _ hc1).add (integrableOn_periodDomain_of_continuous _ hc2))
+  have hc12 : Continuous (fun z : ℂ =>
+      cuspCharacterSeries (phAmp (‖ringComplex P.p‖ * v) b) (ringComplex P.p * z) *
+          ((Fintype.card P.Res : ℂ) * cuspCharacterSeries (fun m => phAmp (v / ‖ringComplex P.p‖) (-b) (m * P.p)) z) +
+        ((Fintype.card P.Res : ℂ) * cuspCharacterSeries (fun m => phAmp (v / ‖ringComplex P.p‖) b (m * P.p)) z) *
+          cuspCharacterSeries (phAmp (‖ringComplex P.p‖ * v) (-b)) (ringComplex P.p * z)) := hc1.add hc2
+  rw [integral_add (integrableOn_periodDomain_of_continuous _ hc12)
       (integrable_finsetSum _ fun y _ => integrableOn_periodDomain_of_continuous _ (hc3 y)),
     integral_add (integrableOn_periodDomain_of_continuous _ hc1) (integrableOn_periodDomain_of_continuous _ hc2),
     I1, I2, integral_finsetSum _ fun y _ => integrableOn_periodDomain_of_continuous _ (hc3 y),
@@ -265,7 +266,8 @@ theorem shift_series_eq_phased (b : O) (v : ℝ) (hv : 0 < v) :
         ((‖ringComplex P.p‖ : ℂ) ^ 2)⁻¹ * besselRemainder (P.phShiftSq b) (‖ringComplex P.p‖ * v) := by
   have hp := P.norm_pos
   have hpc : (‖ringComplex P.p‖ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hp.ne'
-  have hs := (summable_amplitude_mul
+  have hs : Summable (fun h : O => rationalSourceModeAmplitude (‖ringComplex P.p‖ * v) h *
+      rationalSourceModeAmplitude (v / ‖ringComplex P.p‖) (-(h * P.p) * P.p) * shiftPhase b h) := (summable_amplitude_mul
     (a := fun h => rationalSourceModeAmplitude (‖ringComplex P.p‖ * v) h * shiftPhase b h)
     (by simpa only [norm_mul, norm_shiftPhase, mul_one] using
       rationalSourceModeAmplitude_summable (‖ringComplex P.p‖ * v) (mul_pos hp hv))

@@ -1,5 +1,7 @@
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheRowRootNumbersAreConjugateThetaSquares
 import GaloisForLFunctions.OrderSixMetaplecticTheory.CharacterChannels.WeilCubicProjection
+import GaloisForLFunctions.OrderSixMetaplecticTheory.CharacterChannels.ClippedPhaseCovariance
+import GaloisForLFunctions.OrderSixMetaplecticTheory.CharacterChannels.WeilPolynomialFilters
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheCubicResolventHasSimplePolesOnTheRealSegment
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheSeedDefectReadsTheConstantTerm
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheEisensteinCorrectionIsHolomorphicOnTheRealSegment
@@ -80,6 +82,12 @@ import GaloisForLFunctions.OrderSixMetaplecticTheory.TheShiftedFractionalTraceIs
 import GaloisForLFunctions.OrderSixMetaplecticTheory.ThePhasedConjugateTwistCarriesAQuarterOfTheDoublePole
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheUnramifiedConjugateTwistCarriesHalfTheDoublePole
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheUnitLayerOfTheConjugateCubicTwistHasASimplePole
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheShiftedHeckeTraceAtAPrimaryPrimeIsASumOverShiftedHeckePoints
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheConstantTermOfTheShiftedHeckeTraceCarriesTheShiftPhase
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheShiftedHeckeTraceIsTwiceNormTranslatedProductsUpToABoundedRemainder
+import GaloisForLFunctions.OrderSixMetaplecticTheory.ThePhasedCubicTwistCarriesAQuarterOfTheDoublePole
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheUnitLayerOfTheCubicTwistHasASimplePole
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheTwistedUnitLayersAreGaussSumMultiplesOfTheUntwistedResidue
 
 /-!
 # Order-Six Metaplectic Theory over ℚ(ω)
@@ -92,6 +100,6 @@ main term of the squared theta series positive, the Hecke traces at every primar
 cubic twist of the theta square its double pole, the fractional traces that give every conjugate cubic twist
 its double pole, the quadratic fractional traces that tie the conjugate sextic twist to the quadratic
 twist, the grade factorization of every twisted theta square through its cube factor, the long columns as
-layers of twisted theta squares, and the shifted fractional traces that isolate the unit layer of every conjugate cubic
-twist. See `OrderSixMetaplecticTheory/README.md`.
+layers of twisted theta squares, and the shifted fractional and Hecke traces that isolate the unit layer of every cubic
+twist, with its residue a Gauss-sum multiple of the untwisted one. See `OrderSixMetaplecticTheory/README.md`.
 -/
