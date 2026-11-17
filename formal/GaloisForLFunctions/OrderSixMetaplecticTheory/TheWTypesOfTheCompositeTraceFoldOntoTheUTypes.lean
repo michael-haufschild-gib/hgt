@@ -153,6 +153,72 @@ theorem phase_WU :
   field_simp
   linear_combination (-1 : ℂ) * hc
 
+/-! ### The blocks -/
+
+/-- `Σ_{x mod m} Θ^{ll}_x`. -/
+def llSum (Θ : HyperbolicSpace → ℂ) (w : HyperbolicSpace) : ℂ :=
+  ∑ x₁ : R.P.Res, ∑ x₂ : R.Q.Res, R.ll Θ (R.crt x₁ x₂) w
+
+/-- `Σ_{u mod q} Θ^{hl}_u`. -/
+def hlSum (Θ : HyperbolicSpace → ℂ) (w : HyperbolicSpace) : ℂ := ∑ u : R.Q.Res, R.hl Θ (R.Q.lift u) w
+
+/-- `Σ_{u mod p} Θ^{lh}_u`. -/
+def lhSum (Θ : HyperbolicSpace → ℂ) (w : HyperbolicSpace) : ℂ := ∑ u : R.P.Res, R.lh Θ (R.P.lift u) w
+
+/-- The `(U, L)` block. -/
+def ulBlock (Θ : HyperbolicSpace → ℂ) (w : HyperbolicSpace) : ℂ :=
+  ∑ x₁ : R.P.Res, ∑ x₂ : R.Q.Res, ∑ y₂ : {y : R.Q.Res // y ≠ 0},
+    ringComplex (symbol (3 * R.yUL y₂) R.Q.p) *
+      R.hl Θ (R.P.p * R.crt x₁ x₂ - R.Q.lowBeta (R.yUL y₂)) w * R.ll Θ (R.crt x₁ x₂) w
+
+/-- The `(L, U)` block. -/
+def luBlock (Θ : HyperbolicSpace → ℂ) (w : HyperbolicSpace) : ℂ :=
+  ∑ x₁ : R.P.Res, ∑ y₁ : {y : R.P.Res // y ≠ 0}, ∑ x₂ : R.Q.Res,
+    ringComplex (symbol (3 * R.yLU y₁) R.P.p) *
+      R.lh Θ (R.Q.p * R.crt x₁ x₂ - R.P.lowBeta (R.yLU y₁)) w * R.ll Θ (R.crt x₁ x₂) w
+
+/-- The `(L, L)` block. -/
+def llBlock (Θ : HyperbolicSpace → ℂ) (w : HyperbolicSpace) : ℂ :=
+  ∑ x₁ : R.P.Res, ∑ y₁ : {y : R.P.Res // y ≠ 0}, ∑ x₂ : R.Q.Res, ∑ y₂ : {y : R.Q.Res // y ≠ 0},
+    ringComplex (symbol (3 * R.crt y₁.1 y₂.1) (R.P.p * R.Q.p)) *
+      R.ll Θ (R.crt x₁ x₂ - R.mLowBeta (R.crt y₁.1 y₂.1)) w * R.ll Θ (R.crt x₁ x₂) w
+
+/-! ### Residues of the Bezout data -/
+
+theorem Q_res_pDelta : R.Q.res R.pDelta = R.pInv := by
+  have h := congrArg R.Q.res R.p_det
+  simp only [map_sub, map_mul, map_one, R.Q.res_nine, R.Q.res_p, zero_mul, mul_zero, sub_zero] at h
+  rw [pInv]
+  exact eq_inv_of_mul_eq_one_right h
+
+theorem P_res_qDelta : R.P.res R.qDelta = R.qInv := by
+  have h := congrArg R.P.res R.q_det
+  simp only [map_sub, map_mul, map_one, R.P.res_nine, R.P.res_p, zero_mul, mul_zero, sub_zero] at h
+  rw [qInv]
+  exact eq_inv_of_mul_eq_one_right h
+
+theorem Q_res_wlBeta (y : O) (hy : ¬ R.Q.p ∣ y) :
+    R.Q.res (R.wlBeta y) * (9 * R.Q.res (R.wlC y)) = -1 := by
+  have h := congrArg R.Q.res (R.wl_det y hy)
+  simp only [map_sub, map_mul, map_one, map_pow, R.Q.res_nine, R.Q.res_p, zero_mul, mul_zero, zero_sub] at h
+  linear_combination -h
+
+theorem P_res_lwBeta (y : O) (hy : ¬ R.P.p ∣ y) :
+    R.P.res (R.lwBeta y) * (9 * R.P.res (R.lwC y)) = -1 := by
+  have h := congrArg R.P.res (R.lw_det y hy)
+  simp only [map_sub, map_mul, map_one, map_pow, R.P.res_nine, R.P.res_p, zero_mul, mul_zero, zero_sub] at h
+  linear_combination -h
+
+theorem Q_res_lowBeta (y : O) (hy : ¬ R.Q.p ∣ y) : R.Q.res (R.Q.lowBeta y) * (9 * R.Q.res y) = -1 := by
+  have h := congrArg R.Q.res (R.Q.low_det y hy)
+  simp only [map_sub, map_mul, map_one, R.Q.res_nine, R.Q.res_p, zero_mul, zero_sub] at h
+  linear_combination -h
+
+theorem P_res_lowBeta (y : O) (hy : ¬ R.P.p ∣ y) : R.P.res (R.P.lowBeta y) * (9 * R.P.res y) = -1 := by
+  have h := congrArg R.P.res (R.P.low_det y hy)
+  simp only [map_sub, map_mul, map_one, R.P.res_nine, R.P.res_p, zero_mul, zero_sub] at h
+  linear_combination -h
+
 end PrimaryPair
 
 end GaloisForLFunctions.OrderSixMetaplecticTheory
