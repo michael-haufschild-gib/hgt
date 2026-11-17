@@ -75,9 +75,14 @@ theorem IsHalfLineEnergyMinimizer.translation_difference_energy
       (fun u => F (u + h) - F u) := by
     funext u
     ring
+  have hMd : (∫ u, (F (u + h) - F u) ^ 2) = ∫ u, (F (u + h) + (-1) * F u) ^ 2 :=
+    integral_congr_ae (Eventually.of_forall fun u => by
+      show (F (u + h) - F u) ^ 2 = (F (u + h) + (-1) * F u) ^ 2
+      ring)
   rw [hdiff, hT, hF.2.2, hw] at hE
-  rw [hdiff, hmT, hF.2.1] at hM
-  linear_combination hE - criticalHalfLineGroundEnergy R * hM
+  rw [hmT, hF.2.1] at hM
+  linear_combination hE - criticalHalfLineGroundEnergy R * hM -
+    criticalHalfLineGroundEnergy R * hMd
 
 #print axioms criticalHalfLineFullEnergy_arch_coercive_remainder
 #print axioms IsHalfLineEnergyMinimizer.translation_difference_energy

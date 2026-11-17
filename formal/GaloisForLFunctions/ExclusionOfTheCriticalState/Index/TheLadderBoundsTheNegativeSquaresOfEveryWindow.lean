@@ -30,6 +30,11 @@ local notation "W8" => criticalHalfLineExponentialPair
 
 variable {m : ℕ} {R : Fin (m + 1) → ℝ} {Φ : Fin (m + 1) → ℝ → ℝ}
 
+private theorem alias_lt {R S : ℝ} (hR : 0 < R) (hRS : R < S) :
+    criticalAliasCoefficient S < criticalAliasCoefficient R := by
+  rw [criticalAliasCoefficient_eq_div R, criticalAliasCoefficient_eq_div S]
+  exact div_lt_div_of_pos_left (criticalAliasCoefficient_positive one_pos) hR hRS
+
 /-- **The ladder bounds the index at every ratio up to its top.** For `0 < r ≤ R_m` the confined
 Gram matrix of half-line tests has at most `#{i : R_i < r}` negative squares. -/
 theorem IsCriticalLadder.hermNegIndex_confinedGram_le (hL : IsCriticalLadder m R Φ) {r : ℝ}
@@ -102,12 +107,12 @@ theorem IsCriticalLadder.fullEnergy_sum_neg (hL : IsCriticalLadder m R Φ) {r : 
   have hf : ∀ i, f i ≤ 0 := by
     intro i
     rcases lt_or_ge (R i) r with h | h
-    · have := criticalAliasCoefficient_lt (hL.pos i) h
+    · have := alias_lt (hL.pos i) h
       exact mul_nonpos_of_nonneg_of_nonpos (sq_nonneg _)
         (mul_nonpos_of_nonpos_of_nonneg (by linarith) (hpos i).le)
     · simp only [f, hc0 i h]; ring_nf; exact le_rfl
   have hf₀ : f i₀ < 0 := by
-    have := criticalAliasCoefficient_lt (hL.pos i₀) hi₀
+    have := alias_lt (hL.pos i₀) hi₀
     exact mul_neg_of_pos_of_neg (pow_pos_of_ne_zero' hc₀)
       (mul_neg_of_neg_of_pos (by linarith) (hpos i₀))
   have hle : ∑ i, f i ≤ f i₀ := by

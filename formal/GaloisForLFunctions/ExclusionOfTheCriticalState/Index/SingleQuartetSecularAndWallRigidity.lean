@@ -152,20 +152,37 @@ private theorem xiZeroCopy_mem_zetaZeroConfig (q : XiZeroCopy) :
     (xi_eq_zero_of_mem_divisor_support q.1)
   exact ⟨hζ, h0, h1⟩
 
+private theorem finite_xiZeroCopy_fiber (z : ℂ) :
+    Set.Finite {q : XiZeroCopy | (q.1 : ℂ) = z} := by
+  by_cases hz : z ∈ (MeromorphicOn.divisor xi Set.univ).support
+  · let ρ_s : XiDivisorSupport := ⟨z, hz⟩
+    refine ((Set.finite_univ :
+      Set.Finite (Set.univ : Set (Fin (((MeromorphicOn.divisor xi Set.univ) z).toNat)))).image
+      (fun k => (⟨ρ_s, k⟩ : XiZeroCopy))).subset fun q hq => ?_
+    have hρ : q.1 = ρ_s := Subtype.ext hq
+    cases q with | mk ρ k =>
+    dsimp only at hρ
+    subst hρ
+    exact ⟨k, Set.mem_univ k, rfl⟩
+  · have hemp : {q : XiZeroCopy | (q.1 : ℂ) = z} = ∅ :=
+      Set.eq_empty_of_forall_notMem fun q hq => hz (hq ▸ q.1.2)
+    rw [hemp]
+    exact Set.finite_empty
+
 theorem HasSingleOffLineQuartet.finiteOffLine_copies {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀) :
-    {q : XiZeroCopy | (q.1 : ℂ).re ≠ 1 / 2}.Finite := by
-  have hq_fin : (zeroQuartetSet ρ₀).Finite :=
-    (((Set.finite_singleton _).insert _).insert _).insert _
-  have hsupp_fin : {ρ : XiDivisorSupport | (ρ : ℂ) ∈ zeroQuartetSet ρ₀}.Finite :=
-    hq_fin.preimage Subtype.val_injective.injOn
-  have hsigma : ({ρ : XiDivisorSupport | (ρ : ℂ) ∈ zeroQuartetSet ρ₀}.sigma
-      fun ρ => (Set.univ : Set (Fin (Int.toNat ((MeromorphicOn.divisor xi Set.univ) (ρ : ℂ)))))).Finite :=
-    hsupp_fin.sigma fun _ => Set.finite_univ
-  refine hsigma.subset fun q hne => ?_
+    Set.Finite {q : XiZeroCopy | (q.1 : ℂ).re ≠ 1 / 2} := by
+  refine (((finite_xiZeroCopy_fiber ρ₀).union (finite_xiZeroCopy_fiber (conj ρ₀))).union
+    ((finite_xiZeroCopy_fiber (1 - ρ₀)).union (finite_xiZeroCopy_fiber (1 - conj ρ₀)))).subset
+    fun q hne => ?_
   have hmem : (q.1 : ℂ) ∈ {ρ ∈ zetaZeroConfig.carrier | ρ.re ≠ 1 / 2} :=
     ⟨xiZeroCopy_mem_zetaZeroConfig q, hne⟩
   rw [hq.2.2] at hmem
-  exact ⟨hmem, Set.mem_univ _⟩
+  simp only [zeroQuartetSet, Set.mem_insert_iff, Set.mem_singleton_iff] at hmem
+  rcases hmem with h1 | h2 | h3 | h4
+  · exact Or.inl (Or.inl h1)
+  · exact Or.inl (Or.inr h2)
+  · exact Or.inr (Or.inl h3)
+  · exact Or.inr (Or.inr h4)
 
 theorem HasSingleOffLineQuartet.finiteOffLine {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀) :
     BacklundConverse.FiniteOffLine := by
@@ -240,6 +257,7 @@ theorem leftCentredZeros_eq_singleQuartet {ρ₀ : ℂ} (hq : HasSingleOffLineQu
       refine ⟨xiZeroCopy_mem_zetaZeroConfig q, ?_⟩
       rw [hq_eq]; simp; linarith
     rw [hq.2.2] at hmem
+    simp only [zeroQuartetSet, Set.mem_insert_iff, Set.mem_singleton_iff] at hmem
     rcases hmem with h1 | h2 | h3 | h4
     · exfalso; have := congrArg Complex.re h1; simp at this; linarith [hq.1]
     · exfalso; have := congrArg Complex.re h2; simp at this; linarith [hq.1]
@@ -271,8 +289,10 @@ private theorem card_offLineFiber_eq_quartetCopyMult {hfin : BacklundConverse.Fi
       exact eq_of_heq h2)
     (fun q hq => ?_)
   · refine Finset.mem_filter.mpr ⟨mem_offLineCopyFinset.mpr ?_, rfl⟩
-    change ((z - 1 / 2).re) ≠ 0
-    simp; exact sub_ne_zero.mpr hz_re
+    change (z - 1 / 2).re ≠ 0
+    rw [Complex.sub_re]
+    norm_num
+    intro h0; apply hz_re; linarith
   · obtain ⟨hq_off, hq_val⟩ := Finset.mem_filter.mp hq
     have hρ_eq : q.1 = ρ_s := Subtype.ext hq_val
     cases q with | mk ρ k =>
@@ -381,20 +401,22 @@ theorem bareMixedEnergy_singleQuartet {ρ₀ : ℂ} (hq : HasSingleOffLineQuarte
           negativeHalfLineLaplace (cx G) (1 / 2 - ρ)) (q.1 : ℂ) := by
     refine Finset.sum_congr rfl fun q _ => ?_
     dsimp only
-    rw [centredZero, show -(centredZero q) = 1 / 2 - (q.1 : ℂ) by rw [centredZero]; ring]
+    rw [centredZero]
+    congr 2
+    ring
   rw [hsum, sum_offLineCopyFinset_of_singleQuartet hq]
-  set z₊ : ℂ := ρ₀ - 1 / 2
-  set z₋ : ℂ := 1 / 2 - conj ρ₀
-  have hc₁ : conj ρ₀ - 1 / 2 = conj z₊ := by
-    dsimp [z₊]; apply Complex.ext <;> simp
-  have hz1 : (1 : ℂ) / 2 - ρ₀ = conj z₋ := by
-    dsimp [z₋]; apply Complex.ext <;> simp
-  have hz2 : (1 : ℂ) - ρ₀ - 1 / 2 = conj z₋ := by
-    dsimp [z₋]; apply Complex.ext <;> simp <;> ring
-  have hz3 : (1 : ℂ) / 2 - (1 - ρ₀) = z₊ := by dsimp [z₊]; ring
-  have hz4 : (1 : ℂ) - conj ρ₀ - 1 / 2 = z₋ := by dsimp [z₋]; ring
-  have hz5 : (1 : ℂ) / 2 - (1 - conj ρ₀) = conj z₊ := by
-    dsimp [z₊]; apply Complex.ext <;> simp <;> ring
+  set zPos : ℂ := ρ₀ - 1 / 2
+  set zNeg : ℂ := 1 / 2 - conj ρ₀
+  have hc₁ : conj ρ₀ - 1 / 2 = conj zPos := by
+    dsimp [zPos]; apply Complex.ext <;> simp
+  have hz1 : (1 : ℂ) / 2 - ρ₀ = conj zNeg := by
+    dsimp [zNeg]; apply Complex.ext <;> simp
+  have hz2 : (1 : ℂ) - ρ₀ - 1 / 2 = conj zNeg := by
+    dsimp [zNeg]; apply Complex.ext <;> simp <;> ring
+  have hz3 : (1 : ℂ) / 2 - (1 - ρ₀) = zPos := by dsimp [zPos]; ring
+  have hz4 : (1 : ℂ) - conj ρ₀ - 1 / 2 = zNeg := by dsimp [zNeg]; ring
+  have hz5 : (1 : ℂ) / 2 - (1 - conj ρ₀) = conj zPos := by
+    dsimp [zPos]; apply Complex.ext <;> simp <;> ring
   have hreal_F : ∀ w : ℂ, negativeHalfLineLaplace (cx F) (conj w) =
       conj (negativeHalfLineLaplace (cx F) w) := fun w => by
     simpa [cx] using negativeHalfLineLaplace_real_conj F w
@@ -402,15 +424,15 @@ theorem bareMixedEnergy_singleQuartet {ρ₀ : ℂ} (hq : HasSingleOffLineQuarte
       conj (negativeHalfLineLaplace (cx G) w) := fun w => by
     simpa [cx] using negativeHalfLineLaplace_real_conj G w
   have hdot : dotProduct (quartetEvalVec ρ₀ F) (quartetSwapMatrix *ᵥ quartetEvalVec ρ₀ G) =
-      (negativeHalfLineLaplace (cx F) z₊).re * (negativeHalfLineLaplace (cx G) z₋).re +
-        (negativeHalfLineLaplace (cx F) z₊).im * (negativeHalfLineLaplace (cx G) z₋).im +
-        (negativeHalfLineLaplace (cx F) z₋).re * (negativeHalfLineLaplace (cx G) z₊).re +
-        (negativeHalfLineLaplace (cx F) z₋).im * (negativeHalfLineLaplace (cx G) z₊).im := by
+      (negativeHalfLineLaplace (cx F) zPos).re * (negativeHalfLineLaplace (cx G) zNeg).re +
+        (negativeHalfLineLaplace (cx F) zPos).im * (negativeHalfLineLaplace (cx G) zNeg).im +
+        (negativeHalfLineLaplace (cx F) zNeg).re * (negativeHalfLineLaplace (cx G) zPos).re +
+        (negativeHalfLineLaplace (cx F) zNeg).im * (negativeHalfLineLaplace (cx G) zPos).im := by
     rw [quartetSwapMatrix_mulVec]
     simp only [quartetEvalVec, dotProduct, Fin.sum_univ_four, Matrix.cons_val_zero,
       Matrix.cons_val_one, Matrix.cons_val]
     ring
-  rw [hdot, hc₁, hz1, hz2, hz3, hz4, hz5, hreal_G z₋, hreal_F z₊, hreal_F z₋, hreal_G z₊]
+  rw [hdot, hc₁, hz1, hz2, hz3, hz4, hz5, hreal_G zNeg, hreal_F zPos, hreal_F zNeg, hreal_G zPos]
   simp only [Complex.mul_re, Complex.mul_im, Complex.add_re, Complex.conj_re, Complex.conj_im,
     Complex.natCast_re, Complex.natCast_im]
   ring
@@ -575,9 +597,10 @@ private theorem solvesResolvent_quartetLinearComb {ρ₀ : ℂ} (hq : HasSingleO
       (isW8Target_of_domain ((hΦ 3).1.const_mul (c 3))) (isW8Target_quartetModeTarget hq i),
     w8Pair_const_mul_left, w8Pair_const_mul_left,
     w8Pair_const_mul_left, w8Pair_const_mul_left]
-  simp only [w8Pair_comm (Φ _) (quartetModeTarget ρ₀ i),
-    w8Pair_quartetModeTarget_eq hq (hΦ _).1 i, Matrix.mulVec, dotProduct, Fin.sum_univ_four,
-    quartetOnLineGram]
+  rw [w8Pair_comm (Φ 0), w8Pair_comm (Φ 1), w8Pair_comm (Φ 2), w8Pair_comm (Φ 3),
+    w8Pair_quartetModeTarget_eq hq (hΦ 0).1 i, w8Pair_quartetModeTarget_eq hq (hΦ 1).1 i,
+    w8Pair_quartetModeTarget_eq hq (hΦ 2).1 i, w8Pair_quartetModeTarget_eq hq (hΦ 3).1 i]
+  simp only [Matrix.mulVec, dotProduct, Fin.sum_univ_four, quartetOnLineGram]
   ring
 
 private theorem quartetEvalVec_congr_ae {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀)
@@ -587,7 +610,7 @@ private theorem quartetEvalVec_congr_ae {ρ₀ : ℂ} (hq : HasSingleOffLineQuar
   ext i
   rw [← w8Pair_quartetModeTarget_eq hq h₁ i, ← w8Pair_quartetModeTarget_eq hq h₂ i]
   unfold w8Pair
-  exact integral_congr_ae (hae.mono fun u hu => by rw [hu])
+  exact integral_congr_ae (hae.mono fun u hu => by dsimp only; rw [hu])
 
 private theorem setIntegral_Iio_w8_eq' {F G : ℝ → ℝ} (hF0 : ∀ u, 0 ≤ u → F u = 0) :
     (∫ u in Iio (0 : ℝ), F u * G u * Real.exp (-(8 * u))) = w8Pair F G :=
@@ -802,8 +825,6 @@ theorem quartetSecularDet_pos_below_threshold {ρ₀ : ℂ} (hq : HasSingleOffLi
         lt_of_le_of_ne (criticalAliasCoefficient_antitone hR hRW.le)
           fun heq => hRW.ne (criticalAliasCoefficient_injective_positive hR hW heq.symm)
       have hchange := criticalHalfLineFullEnergy_change_ratio R W₀ hsol_X.1
-      rw [setIntegral_eq_integral_of_forall_compl_eq_zero (fun u hu => by
-        rw [hsol_X.1.support u (not_lt.mp hu)]; simp)] at hchange
       change criticalHalfLineFullEnergy R X = criticalHalfLineFullEnergy W₀ X +
         (criticalAliasCoefficient R - criticalAliasCoefficient W₀) * w8Mass X at hchange
       have hQR_pos : 0 < criticalHalfLineFullEnergy R X := by
@@ -815,7 +836,7 @@ theorem quartetSecularDet_pos_below_threshold {ρ₀ : ℂ} (hq : HasSingleOffLi
   have h1_neg : (M 1).det < 0 := lt_of_le_of_ne (not_lt.mp hnot_pos)
     (hne0 1 (right_mem_Icc.mpr zero_le_one))
   have hmem0 : (0 : ℝ) ∈ Icc ((M 1).det) ((M 0).det) := ⟨h1_neg.le, by rw [hM0]; norm_num⟩
-  obtain ⟨t, ht_mem, ht0⟩ := isPreconnected_Icc.intermediate_value₂
+  obtain ⟨t, ht_mem, ht0⟩ := isPreconnected_Icc.intermediate_value
     (right_mem_Icc.mpr zero_le_one) (left_mem_Icc.mpr zero_le_one) hcont.continuousOn hmem0
   exact hne0 t ht_mem ht0
 
@@ -1002,8 +1023,7 @@ theorem singleQuartet_complete_twoRung_ladder {ρ₀ : ℂ} (hq : HasSingleOffLi
       linarith
     have hE₀ : criticalHalfLineFullEnergy R F₀ < 0 := by
       have hc := criticalHalfLineFullEnergy_change_ratio R W₀ hF₀.1
-      rw [hE_null hF₀, zero_add, setIntegral_eq_integral_of_forall_compl_eq_zero (fun u hu => by
-        rw [hF₀.1.support u (not_lt.mp hu)]; simp)] at hc
+      rw [hE_null hF₀, zero_add] at hc
       have hlt : criticalAliasCoefficient R < criticalAliasCoefficient W₀ :=
         lt_of_le_of_ne (criticalAliasCoefficient_antitone hW (hWR₂.trans hR_gt).le)
           fun heq => (hWR₂.trans hR_gt).ne' (criticalAliasCoefficient_injective_positive hR_pos hW heq)
@@ -1011,8 +1031,7 @@ theorem singleQuartet_complete_twoRung_ladder {ρ₀ : ℂ} (hq : HasSingleOffLi
       exact mul_neg_of_neg_of_pos (sub_neg.mpr hlt) (nullVector_confinementMass_pos hF₀)
     have hE₁ : criticalHalfLineFullEnergy R F₁ < 0 := by
       have hc := criticalHalfLineFullEnergy_change_ratio R R₂ hF₁.1
-      rw [hE_null hF₁, zero_add, setIntegral_eq_integral_of_forall_compl_eq_zero (fun u hu => by
-        rw [hF₁.1.support u (not_lt.mp hu)]; simp)] at hc
+      rw [hE_null hF₁, zero_add] at hc
       have hlt : criticalAliasCoefficient R < criticalAliasCoefficient R₂ :=
         lt_of_le_of_ne (criticalAliasCoefficient_antitone hR₂_pos hR_gt.le)
           fun heq => hR_gt.ne' (criticalAliasCoefficient_injective_positive hR_pos hR₂_pos heq)
@@ -1029,7 +1048,6 @@ theorem singleQuartet_complete_twoRung_ladder {ρ₀ : ℂ} (hq : HasSingleOffLi
       have ht2 : t ^ 2 * criticalHalfLineFullEnergy R F₁ ≤ 0 :=
         mul_nonpos_of_nonneg_of_nonpos (sq_nonneg t) hE₁.le
       linarith
-  obtain ⟨R₁, hWR₁, hR₁_pos_charge⟩ := criticalState_no_negative_plane_beyond_threshold hW ht hF₀_gs
   obtain ⟨R₁', hWR₁', hcharge⟩ := criticalState_chargeHyperplane_nonneg_beyond_threshold hW ht hF₀_gs
   have hR₁'_le_R₂ : R₁' ≤ R₂ := by
     by_contra hgt
@@ -1124,12 +1142,14 @@ theorem singleQuartet_alias_sum_le {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet �
         fun u => c₁ ^ 2 * (F₁ u ^ 2 * Real.exp (-(8 * u))) := by funext u; dsimp [e₁]; ring
     unfold w8Mass
     rw [hfun, integral_const_mul]
+    change c₁ ^ 2 * w8Mass F₁ = 1
     dsimp [c₁]; rw [inv_pow, Real.sq_sqrt hw₁_pos.le, inv_mul_cancel₀ hw₁_pos.ne']
   have hm₂ : w8Mass e₂ = 1 := by
     have hfun : (fun u => e₂ u ^ 2 * Real.exp (-(8 * u))) =
         fun u => c₂ ^ 2 * (F₂ u ^ 2 * Real.exp (-(8 * u))) := by funext u; dsimp [e₂]; ring
     unfold w8Mass
     rw [hfun, integral_const_mul]
+    change c₂ ^ 2 * w8Mass F₂ = 1
     dsimp [c₂]; rw [inv_pow, Real.sq_sqrt hw₂_pos.le, inv_mul_cancel₀ hw₂_pos.ne']
   have ho : w8Pair e₁ e₂ = 0 := by
     have horth := (confinedNullVectors_orthogonal hR₁ hR₂ hne hF₁ hF₂).1
@@ -1137,15 +1157,15 @@ theorem singleQuartet_alias_sum_le {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet �
     dsimp [e₁, e₂]
     rw [w8Pair_const_mul_left, w8Pair_comm F₁ _, w8Pair_const_mul_left, w8Pair_comm F₂ F₁,
       horth, mul_zero, mul_zero]
-  set z₊ : ℂ := ρ₀ - 1 / 2
-  set z₋ : ℂ := 1 / 2 - conj ρ₀
+  set zPos : ℂ := ρ₀ - 1 / 2
+  set zNeg : ℂ := 1 / 2 - conj ρ₀
   set δ : ℝ := ρ₀.re - 1 / 2
   have hδ_pos : 0 < δ := sub_pos.mpr hq.1
   have hδ_lt : δ < 1 / 2 := by dsimp [δ]; linarith [hq.re_lt_one]
-  have hz₊_re : z₊.re = δ := by simp [z₊, δ]
-  have hz₋_re : z₋.re = -δ := by simp [z₋, δ]
-  have hw₊ : -4 < z₊.re := by linarith
-  have hw₋ : -4 < z₋.re := by linarith
+  have hzPos_re : zPos.re = δ := by simp [zPos, δ]
+  have hzNeg_re : zNeg.re = -δ := by simp [zNeg, δ]
+  have hwPos : -4 < zPos.re := by linarith
+  have hwNeg : -4 < zNeg.re := by linarith
   have hnorm_bessel : ∀ {w : ℂ} (hw : -4 < w.re),
       ‖negativeHalfLineLaplace (cx e₁) w‖ ^ 2 + ‖negativeHalfLineLaplace (cx e₂) w‖ ^ 2 ≤
         1 / (8 + 2 * w.re) := by
@@ -1163,16 +1183,16 @@ theorem singleQuartet_alias_sum_le {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet �
         (negativeHalfLineLaplace (cx e₂) w).re ^ 2 + (negativeHalfLineLaplace (cx e₂) w).im ^ 2 := by
       rw [Complex.sq_norm, Complex.normSq_apply]; ring
     linarith [w8Mass_modeCos_add_modeSin hw]
-  have hb₊ := hnorm_bessel hw₊
-  have hb₋ := hnorm_bessel hw₋
-  rw [hz₊_re] at hb₊
-  rw [hz₋_re] at hb₋
-  -- Bound each `a(R_i)` by `4 m ‖L e_i(z₊)‖ ‖L e_i(z₋)‖`
+  have hbPos := hnorm_bessel hwPos
+  have hbNeg := hnorm_bessel hwNeg
+  rw [hzPos_re] at hbPos
+  rw [hzNeg_re] at hbNeg
+  -- Bound each `a(R_i)` by `4 m ‖L e_i(zPos)‖ ‖L e_i(zNeg)‖`
   have halias_le : ∀ {R : ℝ} {F : ℝ → ℝ} (hF : IsConfinedNullVector R F) (c : ℝ)
       (hm : w8Mass (fun u => c * F u) = 1),
       criticalAliasCoefficient R ≤ 4 * (quartetCopyMult ρ₀ : ℝ) *
-        ‖negativeHalfLineLaplace (cx fun u => c * F u) z₊‖ *
-          ‖negativeHalfLineLaplace (cx fun u => c * F u) z₋‖ := by
+        ‖negativeHalfLineLaplace (cx fun u => c * F u) zPos‖ *
+          ‖negativeHalfLineLaplace (cx fun u => c * F u) zNeg‖ := by
     intro R F hF c hm
     set e : ℝ → ℝ := fun u => c * F u
     have he_dom : CriticalHalfLineEnergyDomain e := hF.1.const_mul c
@@ -1215,26 +1235,26 @@ theorem singleQuartet_alias_sum_le {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet �
     have hpar := bareMixedEnergy_self_singleQuartet hq he_dom
     rw [hbare_e] at hpar
     have hon_nn := onLineEnergy_nonneg e
-    have hre_neg : -(negativeHalfLineLaplace (cx e) z₊ *
-        conj (negativeHalfLineLaplace (cx e) z₋)).re ≤
-        ‖negativeHalfLineLaplace (cx e) z₊‖ * ‖negativeHalfLineLaplace (cx e) z₋‖ := by
+    have hre_neg : -(negativeHalfLineLaplace (cx e) zPos *
+        conj (negativeHalfLineLaplace (cx e) zNeg)).re ≤
+        ‖negativeHalfLineLaplace (cx e) zPos‖ * ‖negativeHalfLineLaplace (cx e) zNeg‖ := by
       have habs := Complex.abs_re_le_norm
-        (negativeHalfLineLaplace (cx e) z₊ * conj (negativeHalfLineLaplace (cx e) z₋))
+        (negativeHalfLineLaplace (cx e) zPos * conj (negativeHalfLineLaplace (cx e) zNeg))
       rw [norm_mul, Complex.norm_conj] at habs
       exact (neg_le_abs _).trans habs
     have hm_nn : (0 : ℝ) ≤ 4 * (quartetCopyMult ρ₀ : ℝ) := by positivity
     nlinarith [mul_le_mul_of_nonneg_left hre_neg hm_nn]
   have ha₁ := halias_le hF₁ c₁ hm₁
   have ha₂ := halias_le hF₂ c₂ hm₂
-  set u₁ := ‖negativeHalfLineLaplace (cx e₁) z₊‖
-  set u₂ := ‖negativeHalfLineLaplace (cx e₂) z₊‖
-  set v₁ := ‖negativeHalfLineLaplace (cx e₁) z₋‖
-  set v₂ := ‖negativeHalfLineLaplace (cx e₂) z₋‖
+  set u₁ := ‖negativeHalfLineLaplace (cx e₁) zPos‖
+  set u₂ := ‖negativeHalfLineLaplace (cx e₂) zPos‖
+  set v₁ := ‖negativeHalfLineLaplace (cx e₁) zNeg‖
+  set v₂ := ‖negativeHalfLineLaplace (cx e₂) zNeg‖
   have hcs2 : (u₁ * v₁ + u₂ * v₂) ^ 2 ≤ (u₁ ^ 2 + u₂ ^ 2) * (v₁ ^ 2 + v₂ ^ 2) := by
     nlinarith [sq_nonneg (u₁ * v₂ - u₂ * v₁)]
   have hprod_le : (u₁ ^ 2 + u₂ ^ 2) * (v₁ ^ 2 + v₂ ^ 2) ≤
       (1 / (8 + 2 * δ)) * (1 / (8 - 2 * δ)) :=
-    mul_le_mul hb₊ hb₋ (add_nonneg (sq_nonneg _) (sq_nonneg _)) (by linarith)
+    mul_le_mul hbPos hbNeg (add_nonneg (sq_nonneg _) (sq_nonneg _)) (by linarith)
   have hden_eq : (8 + 2 * δ) * (8 - 2 * δ) = 4 * (16 - δ ^ 2) := by ring
   have h16_pos : 0 < 16 - δ ^ 2 := by nlinarith
   have hrhs_sq : (1 / (8 + 2 * δ)) * (1 / (8 - 2 * δ)) =
@@ -1277,8 +1297,9 @@ theorem singleQuartet_hasBeyondTheWallPrimeContinuation_iff {ρ₀ : ℂ}
     · rw [h1]
       have hconj : (1 : ℂ) / 2 - ρ₀ = conj (1 / 2 - conj ρ₀) := by
         apply Complex.ext <;> simp
+      have h0' : negativeHalfLineLaplace (fun u => (G u : ℂ)) (1 / 2 - conj ρ₀) = 0 := h0
       rw [hconj, show cx G = fun u => (G u : ℂ) from rfl, negativeHalfLineLaplace_real_conj,
-        h0, map_zero]
+        h0', map_zero]
     · rwa [h2]
 
 /-- **Evaluation at `½ - conj ρ₀` is an `ℝ`-linear isomorphism on the two-rung span `ℝ F₀ ⊕ ℝ F₁`.** -/
@@ -1301,16 +1322,6 @@ theorem singleQuartet_leftPair_isolator_isomorphism {ρ₀ : ℂ} (hq : HasSingl
   have hRs : ∀ i : Fin 2, 0 < ![R₁, R₂] i := fun i => by fin_cases i <;> assumption
   have hFs : ∀ i : Fin 2, IsConfinedNullVector (![R₁, R₂] i) (![F₀, F₁] i) := fun i => by
     fin_cases i <;> assumption
-  let z_up : ℂ := if 0 < ρ₀.im then 1 / 2 - conj ρ₀ else 1 / 2 - ρ₀
-  have hz_up_mem : z_up ∈ upperLeftCentredZeros hq.finiteOffLine := by
-    refine Finset.mem_filter.mpr ⟨?_, ?_⟩
-    · rw [leftCentredZeros_eq_singleQuartet hq]
-      dsimp [z_up]; split_ifs <;> simp
-    · dsimp [z_up]
-      split_ifs with him
-      · simp; linarith
-      · have hneg : ρ₀.im < 0 := lt_of_le_of_ne (not_lt.mp him) hq.im_ne_zero
-        simp; linarith
   let Lmap : (Fin 2 → ℝ) →ₗ[ℝ] (ℝ × ℝ) := {
     toFun := fun c =>
       let v := negativeHalfLineLaplace (cx fun u => c 0 * F₀ u + c 1 * F₁ u) (1 / 2 - conj ρ₀)
@@ -1345,6 +1356,7 @@ theorem singleQuartet_leftPair_isolator_isomorphism {ρ₀ : ℂ} (hq : HasSingl
       ((hF₀.1.const_mul _).add_const_mul hF₁.1 _) hq.finiteOffLine).mp hcont
     have hinj := orthogonalNullSpan_eval_upperLeft_injective hRs hFs horth_pair hq.finiteOffLine
     apply hinj
+    rw [map_zero]
     ext z
     · dsimp [upperLeftEvalMap]
       have hsum2 : (fun u => ∑ i : Fin 2, c i * (![F₀, F₁] i) u) =
@@ -1363,10 +1375,11 @@ theorem singleQuartet_leftPair_isolator_isomorphism {ρ₀ : ℂ} (hq : HasSingl
   obtain ⟨c, hc⟩ := hsurj_L (w₀.re, w₀.im)
   refine ⟨(c 0, c 1), Complex.ext (congrArg Prod.fst hc) (congrArg Prod.snd hc), ?_⟩
   rintro ⟨s, t⟩ hst
-  have hL_eq : Lmap ![s, t] = Lmap c := by
+  have hL_st : Lmap ![s, t] = (w₀.re, w₀.im) := by
     dsimp [Lmap]
-    rw [hst, hc]
-  have hc_eq := hinj_L hL_eq
+    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
+    rw [hst]
+  have hc_eq := hinj_L (hL_st.trans hc.symm)
   exact Prod.ext (congrFun hc_eq 0) (congrFun hc_eq 1)
 
 /-- **Direct-sum Krein and beyond-the-wall decomposition of the energy domain (`E-Q6` + `E-Q1`).**
@@ -1475,7 +1488,7 @@ theorem singleQuartet_directSum_primeContinuation {ρ₀ : ℂ} (hq : HasSingleO
           (fun u => G u - (st.1 * F₀ u + st.2 * F₁ u)) := by
         rw [singleQuartet_hasBeyondTheWallPrimeContinuation_iff hq hcont_dom, hsub_eq,
           laplace_cx_add hG (hP_dom.const_mul (-1)) hw, laplace_cx_const_mul, hst_eq]
-        ring
+        push_cast; ring
       exact ⟨hcont_dom, hcont,
         (bareMixedEnergy_nonneg_of_hasBeyondTheWallPrimeContinuation hcont_dom hq.finiteOffLine
           hcont).2⟩
@@ -1487,11 +1500,12 @@ theorem singleQuartet_directSum_primeContinuation {ρ₀ : ℂ} (hq : HasSingleO
       have hsub_eq : (fun u => G u - (s * F₀ u + t * F₁ u)) = fun u => G u + (-1) * P u := by
         funext u; dsimp [P]; ring
       rw [hsub_eq, laplace_cx_add hG (hP_dom.const_mul (-1)) hw, laplace_cx_const_mul] at h0
+      push_cast at h0
       linear_combination -h0
 
 /-- **Existence of a pole-neutral ladder state whose bare `primeHead` fails continuation.**
-Under `HasSingleOffLineQuartet ρ₀`, some nonzero combination `H_* = s • F₀ + t • F₁` has vanishing
-`ζ(1)` pole residue `L H_*(-½) = 0`, yet `primeHead H_*` fails holomorphic continuation to `Re p < 0`. -/
+Under `HasSingleOffLineQuartet ρ₀`, some nonzero combination `Hstar = s • F₀ + t • F₁` has vanishing
+`ζ(1)` pole residue `L Hstar(-½) = 0`, yet `primeHead Hstar` fails holomorphic continuation to `Re p < 0`. -/
 theorem singleQuartet_exists_poleNeutral_no_primeHeadContinuation {ρ₀ : ℂ}
     (hq : HasSingleOffLineQuartet ρ₀)
     {R₁ R₂ : ℝ} (hR₁ : 0 < R₁) (hR₂ : 0 < R₂) (hne : R₁ ≠ R₂)
@@ -1504,12 +1518,15 @@ theorem singleQuartet_exists_poleNeutral_no_primeHeadContinuation {ρ₀ : ℂ}
       negativeHalfLineLaplace (cx G) (-(1 / 2)) =
         (((negativeHalfLineLaplace (cx G) (-(1 / 2))).re : ℝ) : ℂ) := by
     intro G
-    have hc : conj (-(1 / 2 : ℂ)) = -(1 / 2 : ℂ) := by apply Complex.ext <;> simp
-    have hr := negativeHalfLineLaplace_real_conj G (-(1 / 2))
+    have hc : conj (-(1 / 2 : ℂ)) = -(1 / 2 : ℂ) := by
+      apply Complex.ext <;> norm_num
+    have hr : negativeHalfLineLaplace (cx G) (conj (-(1 / 2))) =
+        conj (negativeHalfLineLaplace (cx G) (-(1 / 2))) :=
+      negativeHalfLineLaplace_real_conj G (-(1 / 2))
     rw [hc] at hr
     have him0 : (negativeHalfLineLaplace (cx G) (-(1 / 2))).im = 0 :=
-      Complex.conj_eq_iff_im.mp (by simpa [cx] using hr.symm)
-    exact Complex.ext (by simp) (by simp [him0])
+      Complex.conj_eq_iff_im.mp hr.symm
+    exact Complex.ext (Complex.ofReal_re _).symm (him0.trans (Complex.ofReal_im _).symm)
   set r₀ : ℝ := (negativeHalfLineLaplace (cx F₀) (-(1 / 2))).re
   set r₁ : ℝ := (negativeHalfLineLaplace (cx F₁) (-(1 / 2))).re
   have hex : ∃ s t : ℝ, (s, t) ≠ (0, 0) ∧ s * r₀ + t * r₁ = 0 := by
@@ -1519,10 +1536,10 @@ theorem singleQuartet_exists_poleNeutral_no_primeHeadContinuation {ρ₀ : ℂ}
       simp only [Prod.mk.injEq, neg_eq_zero] at he
       exact ⟨he.2, he.1⟩
   obtain ⟨s, t, hst, hlin⟩ := hex
-  set H_* : ℝ → ℝ := fun u => s * F₀ u + t * F₁ u
-  have hH_dom : CriticalHalfLineEnergyDomain H_* := (hF₀.1.const_mul s).add_const_mul hF₁.1 t
-  have hpole : negativeHalfLineLaplace (cx H_*) (-(1 / 2)) = 0 := by
-    dsimp [H_*]
+  set Hstar : ℝ → ℝ := fun u => s * F₀ u + t * F₁ u
+  have hH_dom : CriticalHalfLineEnergyDomain Hstar := (hF₀.1.const_mul s).add_const_mul hF₁.1 t
+  have hpole : negativeHalfLineLaplace (cx Hstar) (-(1 / 2)) = 0 := by
+    dsimp [Hstar]
     rw [laplace_cx_add (hF₀.1.const_mul s) (hF₁.1.const_mul t) (by norm_num : (-4 : ℝ) < (-(1 / 2 : ℂ)).re),
       laplace_cx_const_mul, laplace_cx_const_mul, hreal_pole F₀, hreal_pole F₁]
     exact_mod_cast hlin
@@ -1585,15 +1602,15 @@ theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
     (hq : HasSingleOffLineQuartet ρ₀) {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F₀ : ℝ → ℝ} (hF₀ : IsCriticalHalfLineGroundState W₀ F₀) :
-    let z₊ : ℂ := ρ₀ - 1 / 2
-    let c₊ : ℂ := -(criticalAliasCoefficient W₀ : ℂ)⁻¹ *
-      negativeHalfLineLaplace (cx F₀) z₊ * averageSymbol (z₊ - 8)
+    let zPos : ℂ := ρ₀ - 1 / 2
+    let cPos : ℂ := -(criticalAliasCoefficient W₀ : ℂ)⁻¹ *
+      negativeHalfLineLaplace (cx F₀) zPos * averageSymbol (zPos - 8)
     ∃ K : ℝ, ∀ t : ℝ, 0 < t →
       |averagedState F₀ t -
-          2 * (quartetCopyMult ρ₀ : ℝ) * (c₊ * Complex.exp ((z₊ - 8) * (t : ℂ))).re| ≤
+          2 * (quartetCopyMult ρ₀ : ℝ) * (cPos * Complex.exp ((zPos - 8) * (t : ℂ))).re| ≤
         K * Real.exp (-(8 * t)) := by
-  intro z₊ c₊
-  have hfin_right : {q : XiZeroCopy | 0 < (centredZero q).re}.Finite :=
+  intro zPos cPos
+  have hfin_right : Set.Finite {q : XiZeroCopy | 0 < (centredZero q).re} :=
     hq.finiteOffLine_copies.subset fun q hpos => by
       rw [centredZero, Complex.sub_re] at hpos
       norm_num at hpos
@@ -1622,11 +1639,11 @@ theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
       ∑ q ∈ offLineCopyFinset hq.finiteOffLine, g (q.1 : ℂ) := by
     refine Finset.sum_congr rfl fun q _ => ?_
     simp only [g, zeroModeCoeff, centredZero]
-  have hg_pos1 : g ρ₀ = c₊ * Complex.exp ((z₊ - 8) * (t : ℂ)) := by
-    dsimp [g, c₊, z₊]
+  have hg_pos1 : g ρ₀ = cPos * Complex.exp ((zPos - 8) * (t : ℂ)) := by
+    dsimp [g, cPos, zPos]
     rw [if_pos (by simp; linarith [hq.1])]
-  have hg_pos2 : g (conj ρ₀) = conj (c₊ * Complex.exp ((z₊ - 8) * (t : ℂ))) := by
-    dsimp [g, c₊, z₊]
+  have hg_pos2 : g (conj ρ₀) = conj (cPos * Complex.exp ((zPos - 8) * (t : ℂ))) := by
+    dsimp [g, cPos, zPos]
     rw [if_pos (by simp; linarith [hq.1])]
     have hc_z : conj ρ₀ - 1 / 2 = conj (ρ₀ - 1 / 2) := by apply Complex.ext <;> simp
     have hc_8 : conj ρ₀ - 1 / 2 - 8 = conj (ρ₀ - 1 / 2 - 8) := by apply Complex.ext <;> simp
@@ -1644,10 +1661,10 @@ theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
   have hval : ∑ q ∈ hfin_right.toFinset,
       zeroModeCoeff W₀ F₀ q * Complex.exp ((centredZero q - 8) * (t : ℂ)) =
       ((2 * (quartetCopyMult ρ₀ : ℝ) *
-        (c₊ * Complex.exp ((z₊ - 8) * (t : ℂ))).re : ℝ) : ℂ) := by
+        (cPos * Complex.exp ((zPos - 8) * (t : ℂ))).re : ℝ) : ℂ) := by
     rw [hsum_eq, hsum_g, sum_offLineCopyFinset_of_singleQuartet hq g,
       hg_pos1, hg_pos2, hg_neg1, hg_neg2, add_zero, add_zero]
-    set M := c₊ * Complex.exp ((z₊ - 8) * (t : ℂ))
+    set M := cPos * Complex.exp ((zPos - 8) * (t : ℂ))
     have hre : M + conj M = ((2 * M.re : ℝ) : ℂ) := by
       apply Complex.ext <;> simp [two_mul]
     rw [hre]
@@ -1802,8 +1819,13 @@ theorem hasSingleOffLineQuartet_iff_chebyshevPsi_singleWave {ρ₀ : ℂ}
         · left; simp [lagPole, h1]
         · right; simp [lagPole, h2]
       · rcases hmem_pair q hq_mem with h1 | h2
-        · right; unfold lagPole; rw [h1]; apply Complex.ext <;> simp
-        · left; unfold lagPole; rw [h2]; apply Complex.ext <;> simp
+        · right; dsimp only; unfold lagPole; rw [h1]; apply Complex.ext <;> simp
+        · left; dsimp only; unfold lagPole; rw [h2]; apply Complex.ext <;> simp
+    have hmem_of_xi : ∀ {z : ℂ}, xi z = 0 → z ∈ zetaZeroConfig.carrier := by
+      intro z hxi
+      obtain ⟨q, hq_eq⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi
+      rw [← hq_eq]
+      exact xiZeroCopy_mem_zetaZeroConfig q
     refine ⟨hre, hmem, ?_⟩
     ext ρ
     simp only [Set.mem_setOf_eq, zeroQuartetSet, Set.mem_insert_iff, Set.mem_singleton_iff]
@@ -1825,7 +1847,11 @@ theorem hasSingleOffLineQuartet_iff_chebyshevPsi_singleWave {ρ₀ : ℂ}
         · left; unfold lagPole at hp1; rw [hq_eq] at hp1; linear_combination hp1
         · right; unfold lagPole at hp2; rw [hq_eq] at hp2; linear_combination hp2
       rcases lt_or_gt_of_ne hρ_ne with hlt | hgt
-      · have hrefl : 1 - ρ ∈ zetaZeroConfig.carrier := zetaZeroConfig.reflect_mem ρ hρ_mem
+      · obtain ⟨hζ_ρ, hρ0, hρ1⟩ := hρ_mem
+        have hne1_ρ : ρ ≠ 1 := fun h => by rw [h] at hρ1; norm_num at hρ1
+        have hxi_ρ := (RHTower.xi_eq_zero_iff_riemannZeta_of_re_pos hρ0 hne1_ρ).mpr hζ_ρ
+        have hrefl : 1 - ρ ∈ zetaZeroConfig.carrier :=
+          hmem_of_xi (by rw [xi_one_sub]; exact hxi_ρ)
         have hrefl_gt : 1 / 2 < (1 - ρ).re := by simp; linarith
         rcases hright_case hrefl hrefl_gt with h1 | h2
         · right; right; left; linear_combination -h1
@@ -1833,12 +1859,7 @@ theorem hasSingleOffLineQuartet_iff_chebyshevPsi_singleWave {ρ₀ : ℂ}
       · rcases hright_case hρ_mem hgt with h1 | h2
         · left; exact h1
         · right; left; exact h2
-    · have hmem_of_xi : ∀ {z : ℂ}, xi z = 0 → z ∈ zetaZeroConfig.carrier := by
-        intro z hxi
-        obtain ⟨q, hq_eq⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi
-        rw [← hq_eq]
-        exact xiZeroCopy_mem_zetaZeroConfig q
-      obtain ⟨hxi_c, hxi_r, hxi_rc⟩ := xi_quartet_eq_zero hxi₀
+    · obtain ⟨hxi_c, hxi_r, hxi_rc⟩ := xi_quartet_eq_zero hxi₀
       rintro (rfl | rfl | rfl | rfl)
       · exact ⟨hmem, by linarith⟩
       · exact ⟨hmem_of_xi hxi_c, by simp; linarith⟩
@@ -1861,7 +1882,8 @@ theorem eq1_global_and_profile_synthesis :
         ∀ q : XiZeroCopy, (centredZero q).re < 0 →
           negativeHalfLineLaplace (cx F) (centredZero q) = 0)) :=
   ⟨zetaBeyondTheWallPrimeContinuation_iff_riemannHypothesis,
-    purePrimeHeadContinuation_iff_riemannHypothesis,
+    purePrimeHeadContinuation_iff_zetaBeyondTheWallPrimeContinuation.trans
+      zetaBeyondTheWallPrimeContinuation_iff_riemannHypothesis,
     fun hF => hasBeyondTheWallPrimeContinuation_iff_vanish_leftZeros hF⟩
 
 /-- **Single-quartet model realization vs. Beurling–Lévy joint rigidity (`E-Q6` arithmetic boundary).**
@@ -1873,16 +1895,16 @@ theorem eq1_global_and_profile_synthesis :
    equation up to `L²` strip defect uniquely forces `ζ_B = ζ` (`beurling_levy_rigidity_forces_zeta`). -/
 theorem singleQuartet_realized_in_models {β : ℝ} (hβ : 1 / 2 < β) :
     (∃ (e : ℕ → ℤ) (ρ : ℂ),
-      WorldsOfTheZeroConfiguration.PrimeEdits.TwoSidedEdits.IsEdit e ∧
+      WorldsOfTheZeroConfiguration.TwoSidedEdits.IsEdit e ∧
       ρ.im ≠ 0 ∧ 1 / 2 < ρ.re ∧
       SumProductArithmeticOfTheLogarithm.IsIntegerNormFakeAt
-        (WorldsOfTheZeroConfiguration.PrimeEdits.TwoSidedEdits.editSystem e) β ∧
+        (WorldsOfTheZeroConfiguration.TwoSidedEdits.editSystem e) β ∧
       WorldsOfTheZeroConfiguration.HasFakeZeroSet
-        (WorldsOfTheZeroConfiguration.PrimeEdits.TwoSidedEdits.editSystem e)
+        (WorldsOfTheZeroConfiguration.TwoSidedEdits.editSystem e)
         {ρ, (starRingEnd ℂ) ρ} ∧
       ∃ G : ℂ → ℂ, DifferentiableOn ℂ G {s : ℂ | 1 / 2 < s.re} ∧
         (∀ s : ℂ, 1 < s.re → G s =
-          (s - 1) * (WorldsOfTheZeroConfiguration.PrimeEdits.TwoSidedEdits.editSystem e).zetaSeriesC s) ∧
+          (s - 1) * (WorldsOfTheZeroConfiguration.TwoSidedEdits.editSystem e).zetaSeriesC s) ∧
         ∀ x : ℝ, 1 / 2 < x → G (x : ℂ) ≠ 0) ∧
     (∀ {ρ : ℂ} (h0 : 0 ≤ ρ.re) (h1 : ρ.re ≤ 1), ρ.re ≠ 1 / 2 →
       ∃ hfin : (ModelStates.offLineSet (ModelStates.quartetConfig ρ h0 h1)).Finite,

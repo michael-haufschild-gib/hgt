@@ -17982,3 +17982,4 @@ import GaloisForLFunctions.HTGeometry.Analysis.LinearCumulativeLaplaceBound
 import GaloisForLFunctions.HTGeometry.Analysis.VanishingCumulativeLaplaceBound
 import GaloisForLFunctions.HTGeometry.PrimeRadial.ResidueColumnRankSurfaces
 import GaloisForLFunctions.HTGeometry.PolynomialODE.HeunAnalyticResonance
+import GaloisForLFunctions.HTGeometry.GroupCharacter.FiniteSquareIndicator
