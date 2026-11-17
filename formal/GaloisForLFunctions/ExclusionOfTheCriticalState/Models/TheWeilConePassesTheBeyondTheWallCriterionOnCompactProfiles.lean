@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Models.BeyondTheWallContinuationFailsOnTheModels
 import GaloisForLFunctions.RHTower.WeilFullConeHerglotzCriticalHalfPlane
 import GaloisForLFunctions.RHTower.WeilFullConeExposedPoint
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Decay.SubexponentialThickTailGivesTheAbscissaLaw
 
 /-!
 # The Weil cone passes the beyond-the-wall criterion on compact profiles
@@ -56,7 +57,7 @@ theorem levyHead_eq_laplace_of_head {F : ℝ → ℝ} {A x : ℝ} (hA : ∀ u, u
   by_cases hu : -x ≤ u
   · rw [indicator_of_mem (mem_Ici.mpr hu)]; rfl
   · rw [indicator_of_notMem (show u ∉ Ici (-x) by simpa using hu)]
-    have : F u = 0 := hA u (by push_neg at hu; linarith)
+    have : F u = 0 := hA u (by push Not at hu; linarith)
     simp [cx, this]
 
 /-- The model atom times `n^p` is the Dirichlet term of `λ` at `½ − p`. -/
@@ -83,13 +84,13 @@ theorem modelAtom_mul_cexp_eq_term {c : ℕ → ℂ} {lam : ℕ → ℝ}
     rw [hs, h1]
     field_simp
 
-/-- **The balance of a compact profile.** If `F = 0` left of `−A`, `A ≥ 0`, and `λ` is Weil-positive,
+/-- **The balance of a compact profile.** If `F = 0` left of `−A` and `λ` is Weil-positive,
 then on `Re p < −½` the model balance is `D(p) + L F(p) L_λ(½ − p) + L F(−½)/(p + ½)`, where
 `D(p) = Σ_{n < N} a_n n^p (H_{log n}F(p) − L F(p))`, `N = ⌈e^A⌉`. -/
 theorem modelWallPrimeBalance_eq_of_head {c : ℕ → ℂ} {lam : ℕ → ℝ}
     (hW : _root_.RHTower.WeilPositiveFull lam)
     (hc : ∀ n, 2 ≤ n → modelAtom c n = (lam n : ℂ) / (Real.sqrt n : ℂ)) {F : ℝ → ℝ}
-    {A : ℝ} (hA0 : 0 ≤ A) (hA : ∀ u, u < -A → F u = 0) {p : ℂ} (hp : p.re < -(1 / 2)) :
+    {A : ℝ} (hA : ∀ u, u < -A → F u = 0) {p : ℂ} (hp : p.re < -(1 / 2)) :
     modelWallPrimeBalance c F p =
       (∑ n ∈ Finset.range ⌈Real.exp A⌉₊, modelAtom c n * cexp (p * Real.log n) *
           (levyHead F p (Real.log n) - negativeHalfLineLaplace (cx F) p)) +
@@ -185,7 +186,7 @@ theorem modelCompactContinuation_of_weilPositiveFull {c : ℕ → ℂ} {lam : �
         from _root_.RHTower.WeilSpectral.weilContinuation_eq hW hs1]
       simp only [Ar, _root_.RHTower.WeilHerglotz.weilFunction]
       ring
-    rw [modelWallPrimeBalance_eq_of_head hW hc (le_max_right A₀ 0) hA hp', hL]
+    rw [modelWallPrimeBalance_eq_of_head hW hc hA hp', hL]
     simp only [H]
     rw [dslope_of_ne _ hne', slope_def_module, smul_eq_mul]
     have e1 : p - -(1 / 2) = p + 1 / 2 := by ring
