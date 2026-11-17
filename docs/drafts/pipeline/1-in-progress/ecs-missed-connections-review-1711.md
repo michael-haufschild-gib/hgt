@@ -29,7 +29,7 @@ Each E-M item names corpus results that ECS does not import. The task is the the
 | E-M18 | explicit window lengths and constants for the excursions: an isolating test leaves one mode at the top, so without AAL m_ν ≥ c e^{(Θ−½)νℓ} at every large level (window length 1, c = m|LF(z₀)|/(2a(B+1))), and c e^{(Θ−½)νℓ} ≤ m_ν ≤ C_ε e^{(Θ−½+ε)νℓ}. No Turán bound with coefficients is needed | Decay/WithoutTheAbscissaLawTheWindowMassesReachTheRateAtEveryLevel.lean | formalized (`criticalState_windowMass_ge_of_not_asymptoticAbscissaLaw`, `criticalState_windowMass_two_sided_of_not_asymptoticAbscissaLaw`) |
 | E-M13 | size of F⁺ from the prime number theorem: Ω± at the rate of every seen zero is the peer E-J11 module (Decay/TheSignLawHoldsAtTheRateOfTheZeros.lean), the exact-rate mean square the peer E-J12 module, the size at the wall the owner module TheStateAndThePrimeSideHaveExactLogarithmicLawsAtTheWall.lean (aF⁺(x)/√log(1/x) → −s√(8aM)), and without AAL F⁺ is a finite oscillation (E-M14). A pointwise upper bound at infinity needs integration by parts against ψ, i.e. regularity of F (E-T5, E-M10) | — | covered; pointwise upper bound reduced to E-M10 |
 | E-M21 | functional model of the translates (reading): in L²(u<0) the orbit is total (LF outer), so the compressed model space is trivial; in the W₈ norm its obstruction set is the zero set of LF on Re w > −4 (E-M11), not the zeros of ζ, which appear as the poles ρ − 17/2 of the continuation (riemannHypothesis_or_criticalState_meromorphic) and drive the mode expansion (criticalState_hasSum_averagedState) and its incompleteness (criticalState_not_finite_modeSum) | — | no theorem beyond E-M11 and the existing continuation/mode theorems; NO POSITIVE SALVAGE FOUND beyond E-M11 |
-| E-M10 | continuity of the state at the wall and the pointwise edge law from the CHT window theory (weighted_window_bounded_and_edge_law): χF (cutoff to a window at the wall) solves the completed window equation of W_Λ with bounded forcing (weak equation tested with χV + Lévy commutator [γ, χ] bounded + prime/pole commutators bounded) | — | in progress (the owner C43 does the essential limit by a comparison principle; this item gives a continuous representative via the Green representation) |
+| E-M10 | continuity of the state and the pointwise edge law from the CHT window theory: the reflected cut state χF solves the logarithmic window equation E(f, u) = ⟨f, g⟩ with bounded forcing, so left_edge_of_bounded applies | Wall/TheCutStateSolvesTheLogarithmicWindowEquation.lean, Wall/TheStateIsContinuousWithAPointwiseLawAtTheWall.lean | formalized: `cut_logarithmic_equation`, `cutForcing_bounded`, `criticalState_cut_logarithmic_equation`, `logarithmicFullForm_reflected_cut_eq`, `criticalState_exists_continuous_near_wall`, `criticalState_continuous_pointwise_wall_law` (Φ continuous on u < 0, F = Φ a.e., Φ(−t)√log(1/t) → s√(8aM), Φ(−t)² log(1/t) → 8aM, sΦ > 0 on (−k₀, 0)) |
 
 Peers: the E-J loop (card ecs-just-work-items-review-1711.md) owns E-J10–E-J15. New modules only; one import line each in the ECS umbrella.
 
@@ -59,13 +59,21 @@ Let F ∈ H vanish left of −A and N = ⌈e^A⌉. For log n ≥ A the Lévy hea
 ### E-M17
 For σ ≥ 1 and |t − Im z| ≤ 2h the kernel (σ + it − z)⁻¹ has real part (σ − Re z)/|σ + it − z|² ≥ ½/((σ+½)² + 4h²) = c₁. A window (T − h, T + h] contains n ≥ log T zero copies (exists_xiZeroCount_window_ge_log, exists_finset_xiZeroCopy_window). For t in the window |Σ_cluster| ≥ Re Σ ≥ nc₁, so ∫|Σ|² ≥ 2h(nc₁)² while Σ|c|² = n. Since n → ∞, no constant K works.
 
-### E-M10 (plan)
-1. Dictionary: for real window functions with finite logarithmic energy, the completed CHT form weightedForm Λ a equals ECS bareMixedEnergy (arch: Plancherel, gammaBracket = 2θ'; prime: translations log n ≤ 2a; pole: cosh/sinh moments), via smooth sources and density.
-2. Commutator: gammaMixedForm(χF, V) − gammaMixedForm(F, χV) = ⟨V, h⟩, h(y) = ∫ω(x − y)(χ(y) − χ(x))F(x)dx, |h| ≤ ‖χ'‖‖F‖_∞∫|z|ω(z)dz; prime and pole commutators are bounded likewise.
-3. Equation: weightedForm(u, v) = ⟨g, v⟩ for all v (smooth v by 1–2 and the weak equation with test χV; all v by density), g bounded.
-4. weighted_window_bounded_and_edge_law: u agrees on the right half of the window with the continuous Green representative and u(a − t)√log(1/t) converges.
+### E-M10 (paper proof)
+1. Kernel split: ω = ν + r, ν(t) = e^{−t}/(2t) the Lévy density of the logarithmic form, r = archLogRemainder ≥ 0 integrable.
+2. Window identity (half-line coordinates): for G ∈ H carried by [−2A, 0] and W = χF (χ = 0 left of −2A, 1 right of −A, Lipschitz 1/A),
+   ∫GW + ∫ν∫ΔGΔW = levyMixed(W, G) − ∫r∫ΔGΔW; levyMixed(W, G) = levyMixed(F, χG) + ∫G·[χ, L]F (commutator h(y) = ∫ω(t)[F(y−t)(χ(y)−χ(y−t)) + F(y+t)(χ(y)−χ(y+t))]dt, |h| ≤ 2C∫ω min(t/A, 2)); levyMixed(F, χG) = γ(F, χG) − 2θ'(0)∫GW; the weak equation with test χG turns γ(F, χG) into ∫χG·P − ∫G χ·pole − ∫G·conf, P = Σ Λ(n)n^{−1/2}(F(y − log n) + F(y + log n)) bounded on the window by |F(u)| ≤ Ce^u; the r-term is ∫G·(second difference average). Hence ∫GW + ∫ν∫ΔGΔW = ∫Gφ with φ essentially bounded on [−2A, 0].
+3. Reflection x = −A − u maps [−2A, 0] onto [−A, A], the wall to the left edge. The logarithmic form is mass plus ν-jump form; a complex test f of finite logarithmic energy splits into real and imaginary coordinates in H (their jumps are dominated by those of f, so the Lévy energy is finite); conjugate symmetry gives E(f, u) = ⟨f, g⟩ for all f.
+4. left_edge_of_bounded: F(v) = Ψ(−v) a.e. on [−A, 0) with Ψ continuous and Ψ(t)√log(1/t) → L. Gluing A = 1, 2, … (continuous functions a.e. equal on an open set agree) gives Φ continuous on u < 0.
+5. The limit: by the in-measure wall law, for small k most of (−k, −k/2) has |√log(1/k)F − s√(8aM)| < δ; there Φ(u)√log(1/|u|) differs from √log(1/k)Φ(u) by at most |X| log 2/log(1/k). So Re L = s√(8aM); squares and the sign follow.
 
 ## Conjecture ledger
+| ID | Conjecture | Status |
+|---|---|---|
+| C2 | the state has a representative continuous on ℝ, zero on [0, ∞), |Φ(u)| ≤ Ce^{2u} everywhere | proved: Wall/ThePrimeWaveAtTheWallIsTheBoundedOrderOfTheWallLaw.lean, `criticalState_exists_continuous_representative` (Φ(u) → 0 at the wall since Φ(u)² log(1/|u|) converges; a.e. bounds of continuous functions hold everywhere) |
+| C3 | bounded order of the wall law: a F⁺(x) + W(x)/2 → ∫F(u)ρ(−u)du − Σ_n Λ(n)n^{−1/2}Φ(−log n) (ess-lim, x → 0⁺), ρ = κ + 1/(2t) | proved: same module, `criticalState_bounded_order_at_wall` (archimedean part by dominated convergence, `tendsto_collarWave_add_half_wallPotential`; prime wave continuous on x ≤ 1, `continuousOn_primeWave`). The primes enter the wall at the bounded order through the values Φ(−log n) |
+| C4 | the same with L(x) = ∫_{v>x}F(−v)/v dv in place of W(x) (W − L → 0 since Φ(0⁻) = 0) | open |
+| E-J14 | (peer item) continuity near the wall and Φ(−t)√log(1/t) → ℓ, ℓ² = 8aM | proved by E-M10: `criticalState_continuous_pointwise_wall_law` |
 
 ## Log
 - 2026-11-17 — created in 1-in-progress

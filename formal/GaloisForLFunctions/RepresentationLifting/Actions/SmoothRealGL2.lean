@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RepresentationLifting.Actions.SmoothGL2CentralCharacter
+import GaloisForLFunctions.RepresentationLifting.Actions.SmoothConnectedActions
 import GaloisForLFunctions.RepresentationLifting.Differential.NilpotentDividedPowerConnection
 import GaloisForLFunctions.HTGeometry.InvolutiveSubspaceParityDecomposition
 import Mathlib.Analysis.SpecialFunctions.Sqrt
@@ -9,7 +9,7 @@ import Mathlib.Topology.Algebra.Group.Matrix
 /-!
 # Smooth real GL₂ actions and the characteristic-two boundary
 
-Every finite-dimensional smooth action of GL₂(ℝ) kills all scalar matrices
+Every smooth action of GL₂(ℝ) kills all scalar matrices
 and is determined by a unique involution acting on negative determinants.
 In characteristic different from two, every invariant subspace splits into
 the two sign sectors. In characteristic two, actions are classified by a
@@ -21,6 +21,7 @@ The determinant descent from arXiv:2611.20896, Lemma 2.2, combines with
 connectedness of positive real scalars to remove any central-character
 premise over ℝ. The characteristic-two example gives the exact obstruction
 to extending the semisimplicity conclusion to that characteristic.
+Smoothness means that each vector is fixed on some identity neighborhood.
 -/
 
 noncomputable section
@@ -119,40 +120,26 @@ private theorem continuous_scalar :
     change Continuous (fun u : ℝˣ => if i = j then ((u⁻¹ : ℝˣ) : ℝ) else 0)
     split_ifs <;> fun_prop
 
-/-- Every finite-dimensional smooth real GL₂ action kills its entire center. -/
-theorem smooth_scalar_trivial [FiniteDimensional k V]
+/-- Every smooth real GL₂ action kills its entire center. -/
+theorem smooth_scalar_trivial
     (ρ : GeneralLinearGroup (Fin 2) ℝ →* (V ≃ₗ[k] V))
     (hρ : ∀ v : V, ∀ᶠ g in 𝓝 (1 : GeneralLinearGroup (Fin 2) ℝ), ρ g v = v)
     (u : ℝˣ) : ρ (GeneralLinearGroup.scalar (Fin 2) u) = 1 := by
-  letI : TopologicalSpace (V ≃ₗ[k] V) := ⊥
-  letI : DiscreteTopology (V ≃ₗ[k] V) := ⟨rfl⟩
-  let b := Module.finBasis k V
-  have he : ∀ᶠ g in 𝓝 (1 : GeneralLinearGroup (Fin 2) ℝ),
-      ∀ i : Fin (Module.finrank k V), ρ g (b i) = b i :=
-    Filter.eventually_all.mpr (fun i => hρ (b i))
-  have hk : ∀ᶠ g in 𝓝 (1 : GeneralLinearGroup (Fin 2) ℝ), ρ g = 1 := by
-    filter_upwards [he] with g hg
-    apply LinearEquiv.toLinearMap_injective
-    exact b.ext (fun i => hg i)
-  have hc : Continuous ρ := by
-    apply continuous_of_continuousAt_one ρ
-    change Tendsto ρ (𝓝 1) (𝓝 (ρ 1))
-    rw [map_one]
-    exact tendsto_const_nhds.congr' (hk.mono (fun _ h => h.symm))
   have hp (v : ℝˣ) (hv : 0 < (v : ℝ)) : ρ (GeneralLinearGroup.scalar (Fin 2) v) = 1 := by
-    have hpath : Continuous (fun t : ℝ => ρ (GeneralLinearGroup.scalar (Fin 2) (expUnit t))) :=
-      hc.comp (continuous_scalar.comp continuous_expUnit)
-    have hloc := (IsLocallyConstant.iff_continuous _).mpr hpath
-    have heq := hloc.apply_eq_of_preconnectedSpace (Real.log (v : ℝ)) 0
+    have h0 : GeneralLinearGroup.scalar (Fin 2) (expUnit 0) = 1 := by
+      have he : expUnit 0 = 1 := by ext; exact Real.exp_zero
+      rw [he, map_one]
+    have heq := ConnectedActions.connected_family_trivial ρ hρ
+      (fun t : ℝ => GeneralLinearGroup.scalar (Fin 2) (expUnit t))
+      (continuous_scalar.comp continuous_expUnit) 0 h0 (Real.log (v : ℝ))
     have hv' : expUnit (Real.log (v : ℝ)) = v := Units.ext (Real.exp_log hv)
-    have h0 : expUnit 0 = 1 := by ext; exact Real.exp_zero
-    simpa only [hv', h0, map_one] using heq
+    simpa only [hv'] using heq
   by_cases hu : 0 < (u : ℝ)
   · exact hp u hu
   · have hn : (u : ℝ) < 0 := (lt_or_gt_of_ne u.ne_zero).resolve_right hu
     have hm : ρ (GeneralLinearGroup.scalar (Fin 2) (-u)) = 1 :=
       hp (-u) (by simpa using neg_pos.mpr hn)
-    obtain ⟨χ, hχ, _⟩ := DiscreteGL2.finiteDimensional_smooth_det_factor ρ hρ
+    obtain ⟨χ, hχ, _⟩ := ConnectedActions.smooth_det_factor ρ hρ
     have hneg : ρ (GeneralLinearGroup.scalar (Fin 2) (-1 : ℝˣ)) = 1 := by
       rw [← hχ]
       change χ (GeneralLinearGroup.det (GeneralLinearGroup.scalar (Fin 2) (-1 : ℝˣ))) = 1
@@ -161,13 +148,13 @@ theorem smooth_scalar_trivial [FiniteDimensional k V]
     have hu' : u = (-1 : ℝˣ) * (-u) := by simp
     rw [hu', map_mul, map_mul, hneg, hm, one_mul]
 
-/-- Every finite-dimensional smooth real GL₂ action is determined by one involution and determinant sign. -/
-theorem smooth_sign_classification [FiniteDimensional k V]
+/-- Every smooth real GL₂ action is determined by one involution and determinant sign. -/
+theorem smooth_sign_classification
     (ρ : GeneralLinearGroup (Fin 2) ℝ →* (V ≃ₗ[k] V))
     (hρ : ∀ v : V, ∀ᶠ g in 𝓝 (1 : GeneralLinearGroup (Fin 2) ℝ), ρ g v = v) :
     ∃! J : V ≃ₗ[k] V, J * J = 1 ∧ ∀ g,
       ρ g = if 0 < (GeneralLinearGroup.det g : ℝ) then 1 else J := by
-  obtain ⟨χ, hχ, _⟩ := DiscreteGL2.finiteDimensional_smooth_det_factor ρ hρ
+  obtain ⟨χ, hχ, _⟩ := ConnectedActions.smooth_det_factor ρ hρ
   have he (g : GeneralLinearGroup (Fin 2) ℝ) : χ (GeneralLinearGroup.det g) = ρ g :=
     congrArg (fun f : GeneralLinearGroup (Fin 2) ℝ →* (V ≃ₗ[k] V) => f g) hχ
   have hs (u : ℝˣ) : χ (u ^ 2) = 1 := by
@@ -188,7 +175,7 @@ theorem smooth_sign_classification [FiniteDimensional k V]
     not_lt_of_ge zero_le_one, if_false] using h
 
 /-- In characteristic different from two every invariant subspace splits into the two determinant-sign sectors. -/
-theorem smooth_invariant_subspace_splits [FiniteDimensional k V] (h2 : (2 : k) ≠ 0)
+theorem smooth_invariant_subspace_splits (h2 : (2 : k) ≠ 0)
     (ρ : GeneralLinearGroup (Fin 2) ℝ →* (V ≃ₗ[k] V))
     (hρ : ∀ v : V, ∀ᶠ g in 𝓝 (1 : GeneralLinearGroup (Fin 2) ℝ), ρ g v = v) :
     ∃ J : V ≃ₗ[k] V, J * J = 1 ∧
@@ -249,8 +236,8 @@ theorem squareZeroInvolution_sq (N : Module.End k V) (hN : N ^ 2 = 0) :
   ext v
   exact (squareZeroInvolution N hN).left_inv v
 
-/-- Every finite-dimensional smooth real GL₂ action in characteristic two is a unique square-zero sign action. -/
-theorem smooth_action_classification [FiniteDimensional k V]
+/-- Every smooth real GL₂ action in characteristic two is a unique square-zero sign action. -/
+theorem smooth_action_classification
     (ρ : GeneralLinearGroup (Fin 2) ℝ →* (V ≃ₗ[k] V))
     (hρ : ∀ v : V, ∀ᶠ g in 𝓝 (1 : GeneralLinearGroup (Fin 2) ℝ), ρ g v = v) :
     ∃! N : Module.End k V, N ^ 2 = 0 ∧ ∀ g,
