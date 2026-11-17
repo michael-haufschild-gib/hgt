@@ -87,6 +87,3 @@ theorem tendsto_coprimeHarmonicSine_plateau (q : ℕ) {x : ℝ}
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
-
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.coprime_sawtooth_floor_formula
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_coprimeHarmonicSine_plateau

@@ -13,6 +13,8 @@ mechanisms used by Ding et al., arXiv:2611.21555, Theorem 3.1 and Lemma 5.3.
 -/
 
 noncomputable section
+-- Use monoid powers rather than the more general scalar-action powers on signs.
+local attribute [-instance] Int.instUnitsPow
 open scoped BigOperators
 namespace GaloisForLFunctions.GaloisTheoryOfZeros.FibreSignedPerm
 variable {α H : Type*} [Group H] [Fintype H]

@@ -133,11 +133,12 @@ theorem classWeight_ne_zero (h2 : (2 : P.Res) ≠ 0) (hρ : 27 ≤ ‖ringComple
   rw [← hρdef, e6] at hχc
   -- the three deviations from `1`
   have b1 : ‖P.principalAlpha (4 / 3) - 1‖ ≤ 1 / (t ^ 6 - 1) := by
-    rw [h1, div_le_div_iff₀ hApos (by nlinarith [pow_le_pow_left₀ (by norm_num) ht3 6])]
-    nlinarith [hA]
+    rw [h1, div_le_div_iff₀ hApos (by linarith)]
+    nlinarith only [hA]
   have b3 : ‖P.conjAlpha (4 / 3)‖ ≤ t ^ 4 / (t ^ 6 - 1) := by
-    rw [hχc, div_le_div_iff₀ hApos (by nlinarith [pow_le_pow_left₀ (by norm_num) ht3 6])]
-    nlinarith [hA, pow_nonneg (by linarith : (0 : ℝ) ≤ t) 4]
+    rw [hχc, div_le_div_iff₀ hApos (by linarith)]
+    have h4 : 0 ≤ t ^ 4 := by positivity
+    nlinarith only [mul_le_mul_of_nonneg_left hA h4]
   have h729 : 729 ≤ t ^ 6 := by
     have := pow_le_pow_left₀ (by norm_num : (0 : ℝ) ≤ 3) ht3 6
     norm_num at this
@@ -147,13 +148,21 @@ theorem classWeight_ne_zero (h2 : (2 : P.Res) ≠ 0) (hρ : 27 ≤ ‖ringComple
   have bb : 2 * t ^ 5 / (t ^ 6 + 1) ≤ 2 / 3 := by
     rw [div_le_iff₀ (by positivity)]
     have h5 : 0 ≤ t ^ 5 := by positivity
-    nlinarith [mul_le_mul_of_nonneg_left ht3 h5]
+    have h35 : t ^ 5 * 3 ≤ t ^ 6 := by
+      have := mul_le_mul_of_nonneg_left ht3 h5
+      rw [show t ^ 5 * t = t ^ 6 by ring] at this
+      exact this
+    linarith
   have bc : t ^ 4 / (t ^ 6 - 1) ≤ 1 / 8 := by
     rw [div_le_iff₀ h6p]
     have h4 : 0 ≤ t ^ 4 := by positivity
-    have ht9 : 9 ≤ t ^ 2 := by nlinarith
-    have h81 : 81 ≤ t ^ 4 := by nlinarith
-    nlinarith [mul_le_mul_of_nonneg_left ht9 h4]
+    have ht9 : 9 ≤ t ^ 2 := by nlinarith only [ht3]
+    have h81 : 81 ≤ t ^ 4 := by nlinarith only [ht9]
+    have h96 : t ^ 4 * 9 ≤ t ^ 6 := by
+      have := mul_le_mul_of_nonneg_left ht9 h4
+      rw [show t ^ 4 * t ^ 2 = t ^ 6 by ring] at this
+      exact this
+    linarith
   have hsum : 1 / (t ^ 6 - 1) + 2 * t ^ 5 / (t ^ 6 + 1) + t ^ 4 / (t ^ 6 - 1) < 1 := by linarith
   intro h0
   have hrel : (1 : ℂ) = -((P.principalAlpha (4 / 3) - 1) + c⁻¹ * P.unitWeight (4 / 3) +
