@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Pick.TheConfinedPickMatricesCountTheZerosRightOfTheLine
 import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingProjection
 import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingInertia
+import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingRestoration
 
 /-!
 # Optimal bounded approximations of the actual Weil probe matrices
@@ -26,6 +27,10 @@ private theorem admissibleProbe_hermitian {N : ℕ} (p : Fin N → {x : ℝ // 1
 /-- Clip both tails of the actual arithmetic probe matrix. -/
 def clippedWeilProbe {N : ℕ} (p : Fin N → {x : ℝ // 1 ≤ x}) (c : ℝ≥0) :
     Matrix (Fin N) (Fin N) ℂ := matrix (admissibleProbe_hermitian p) c
+
+/-- Spectral coefficient change restoring the original Weil form after positive clipping. -/
+def weilProbeRestorer {N : ℕ} (p : Fin N → {x : ℝ // 1 ≤ x}) (c : ℝ≥0) :
+    Matrix (Fin N) (Fin N) ℂ := restoreMatrix (admissibleProbe_hermitian p) c
 
 /-- The regularized Weil matrix obeys both spectral caps unconditionally. -/
 theorem clippedWeilProbe_bounds {N : ℕ} (p : Fin N → {x : ℝ // 1 ≤ x}) (c : ℝ≥0) :
@@ -114,6 +119,21 @@ theorem clippedWeilProbe_inertia {N : ℕ}
         hermNullIndex (probeGram fun i => (p i).val) :=
   matrix_inertia (admissibleProbe_hermitian p) (c + 1) (by positivity)
 
+/-- Every exact arithmetic null vector survives bounded spectral regularization. -/
+theorem clippedWeilProbe_kernel {N : ℕ}
+    (p : Fin N → {x : ℝ // 1 ≤ x}) (c : ℝ≥0) :
+    LinearMap.ker (clippedWeilProbe p (c + 1)).mulVecLin =
+      LinearMap.ker (probeGram fun i => (p i).val).mulVecLin :=
+  matrix_kernel (admissibleProbe_hermitian p) (c + 1) (by positivity)
+
+/-- Explicit spectral rescaling recovers every original signed Weil quadratic value. -/
+theorem clippedWeilProbe_quadratic_transport {N : ℕ}
+    (p : Fin N → {x : ℝ // 1 ≤ x}) (c : ℝ≥0) (v : Fin N → ℂ) :
+    hermQuad (clippedWeilProbe p (c + 1))
+        (weilProbeRestorer p (c + 1) *ᵥ v) =
+      hermQuad (probeGram fun i => (p i).val) v :=
+  matrix_quadratic_transport (admissibleProbe_hermitian p) (c + 1) (by positivity) v
+
 #print axioms clippedWeilProbe_bounds
 #print axioms weilProbe_frobSq_arithmetic
 #print axioms clippedWeilProbe_error_moment
@@ -121,6 +141,8 @@ theorem clippedWeilProbe_inertia {N : ℕ}
 #print axioms clippedWeilProbe_pythagorean
 #print axioms clippedWeilProbe_stable
 #print axioms clippedWeilProbe_inertia
+#print axioms clippedWeilProbe_kernel
+#print axioms clippedWeilProbe_quadratic_transport
 
 end
 end GaloisForLFunctions.ExclusionOfTheCriticalState

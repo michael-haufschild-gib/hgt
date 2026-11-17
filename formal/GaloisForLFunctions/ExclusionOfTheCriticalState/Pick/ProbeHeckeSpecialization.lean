@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Pick.ProbeReflectionHull
+import Mathlib.Algebra.Polynomial.AlgebraMap
 
 /-!
 # A Hecke specialization on the actual reflection hull
@@ -12,7 +13,7 @@ of Kim--Lee--Oh, arXiv:2611.20790, Remark 3.2 and Theorem 3.7, for `S₂`.
 
 noncomputable section
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState.ProbeWalk
-open Polynomial
+open _root_.Polynomial
 variable {N : ℕ} (p : Fin N → {x : ℝ // 1 ≤ x})
 
 private theorem hullPositive_mul_hullNegative : hullPositive p * hullNegative p = 0 := by
@@ -72,14 +73,14 @@ theorem hullHecke_pow (q : ℂ) (n : ℕ) :
     rw [pow_succ, ih, hullHecke]
     simp only [add_mul, mul_sub, smul_mul_assoc, mul_smul_comm,
       hullPositive_mul_hullNegative, hullNegative_mul_hullPositive,
-      smul_zero, sub_zero, zero_sub, hp, hn, pow_succ]
+      smul_zero, hp, hn, pow_succ]
     module
 
 /-- Every polynomial in the Hecke generator is evaluated separately on its two sectors. -/
-theorem hullHecke_polynomial (q : ℂ) (f : ℂ[X]) :
+theorem hullHecke_polynomial (q : ℂ) (f : _root_.Polynomial ℂ) :
     aeval (hullHecke p q) f =
       f.eval (q ^ 2) • hullPositive p + f.eval (-1) • hullNegative p := by
-  induction f using Polynomial.induction_on' with
+  induction f using _root_.Polynomial.induction_on' with
   | add f g hf hg =>
     simp only [map_add, hf, hg, eval_add, add_smul]
     abel
@@ -88,7 +89,7 @@ theorem hullHecke_polynomial (q : ℂ) (f : ℂ[X]) :
     simp only [eval_monomial, smul_add, smul_smul]
 
 /-- Character specialization holds for every polynomial Hecke observable. -/
-theorem hullHecke_polynomial_character (q : ℂ) (f : ℂ[X]) :
+theorem hullHecke_polynomial_character (q : ℂ) (f : _root_.Polynomial ℂ) :
     LinearMap.trace ℂ (reflectionHull p) (aeval (hullHecke p q) f) =
       f.eval (q ^ 2) * (Module.finrank ℂ (LinearMap.range (hullPositive p)) : ℂ) +
         f.eval (-1) * (Module.finrank ℂ (LinearMap.range (hullNegative p)) : ℂ) := by

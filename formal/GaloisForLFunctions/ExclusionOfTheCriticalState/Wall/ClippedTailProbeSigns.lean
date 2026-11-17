@@ -14,6 +14,8 @@ open Matrix Polynomial
 open scoped ComplexOrder NNReal
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open HTGeometry HilbertMetric.SymmetricClipping
+open ArithmeticHodgeTheoryOfDegenerations ArithmeticHarmonicAnalysis.Coleman
+open BiScaleUncertainty.Observation
 noncomputable section
 
 /-- The actual tail moment matrix on an arbitrary finite exponent set. -/
@@ -32,12 +34,22 @@ theorem tailProbeMatrix_quadratic (F : ℝ → ℝ) (T : ℝ) (P : Polynomial �
       tailProbeQuadratic F T P := by
   simp only [hermQuad, dotProduct, mulVec, Pi.star_apply, Complex.star_def,
     Complex.conj_ofReal, Finset.mul_sum, Complex.re_sum, tailProbeMatrix,
-    ← Complex.ofReal_mul, Complex.ofReal_re, Finset.sum_coe_sort, tailProbeQuadratic]
-  apply Finset.sum_congr rfl
-  intro i _
-  apply Finset.sum_congr rfl
-  intro j _
-  ring
+    ← Complex.ofReal_mul, Complex.ofReal_re, tailProbeQuadratic]
+  calc
+    _ = ∑ i ∈ P.support, ∑ j : P.support,
+        P.coeff i * (tailProbeMoment F T (i + j.val) * P.coeff j.val) :=
+      Finset.sum_coe_sort P.support _
+    _ = ∑ i ∈ P.support, ∑ j ∈ P.support,
+        P.coeff i * (tailProbeMoment F T (i + j) * P.coeff j) := by
+      apply Finset.sum_congr rfl
+      intro i _
+      exact Finset.sum_coe_sort P.support _
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro i _
+      apply Finset.sum_congr rfl
+      intro j _
+      ring
 
 /-- Bounded spectral regularization of the tail matrix, at a strictly positive cap. -/
 def clippedTailProbeMatrix (F : ℝ → ℝ) (T : ℝ) (s : Finset ℕ) (c : ℝ≥0) : Matrix s s ℂ :=
@@ -49,7 +61,7 @@ theorem clippedTailProbeMatrix_signs (F : ℝ → ℝ) (T : ℝ) (s : Finset ℕ
       ((-clippedTailProbeMatrix F T s c).PosSemidef ↔ (-tailProbeMatrix F T s).PosSemidef) :=
   ⟨matrix_posSemidef_iff _ _ (by positivity), matrix_neg_posSemidef_iff _ _ (by positivity)⟩
 
-/-- A negative polynomial-square test survives every positive spectral cutoff. -/
+/-- A negative square test certifies a negative direction after every positive cutoff. -/
 theorem clippedTailProbeMatrix_not_posSemidef {F : ℝ → ℝ} {T : ℝ} {P : Polynomial ℝ}
     (h : tailProbeQuadratic F T P < 0) (c : ℝ≥0) :
     ¬(clippedTailProbeMatrix F T P.support c).PosSemidef := by
@@ -60,7 +72,7 @@ theorem clippedTailProbeMatrix_not_posSemidef {F : ℝ → ℝ} {T : ℝ} {P : P
   rw [tailProbeMatrix_quadratic] at hq
   exact (not_lt.mpr hq) h
 
-/-- A positive polynomial-square test also survives clipping. -/
+/-- A positive square test likewise certifies a positive direction after clipping. -/
 theorem clippedTailProbeMatrix_not_negSemidef {F : ℝ → ℝ} {T : ℝ} {P : Polynomial ℝ}
     (h : 0 < tailProbeQuadratic F T P) (c : ℝ≥0) :
     ¬(-clippedTailProbeMatrix F T P.support c).PosSemidef := by

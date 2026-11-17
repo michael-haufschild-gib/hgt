@@ -37,9 +37,12 @@ theorem zeroCarrier_reflection_fixed_iff (z : zetaZeroConfig.carrier) :
 theorem reflectionEnergy_zeroBasis (z : zetaZeroConfig.carrier) :
     reflectionEnergy (zeroBasis z) = if (z : ℂ).re = 1 / 2 then 1 else 0 := by
   classical
-  rw [reflectionEnergy, zeroBasis, zeroReflection_apply, reflectVec_single,
+  change (inner ℂ (zeroReflection (lp.single 2 z (1 : ℂ))) (lp.single 2 z (1 : ℂ))).re = _
+  rw [zeroReflection_apply, reflectVec_single,
     inner_single_single]
-  simp only [zeroCarrier_reflection_fixed_iff, apply_ite, Complex.one_re, Complex.zero_re]
+  by_cases hz : (z : ℂ).re = 1 / 2
+  · simp only [zeroCarrier_reflection_fixed_iff, if_pos hz, Complex.one_re]
+  · simp only [zeroCarrier_reflection_fixed_iff, if_neg hz, Complex.zero_re]
 
 /-- Off-line coordinates split equally between the two Weil sectors. -/
 theorem sector_masses_zeroBasis (z : zetaZeroConfig.carrier) :
@@ -78,8 +81,9 @@ theorem zeroBasis_projective_loss_zero_iff (z : zetaZeroConfig.carrier) (u v : C
   classical
   rw [zeroBasis_projective_loss]
   by_cases hz : (z : ℂ).re = 1 / 2
-  · simp only [if_pos hz, hz, true_or]
-  · simp only [if_neg hz, hz, false_or, mul_eq_zero,
+  · simp [hz]
+  · rw [if_neg hz]
+    simp only [hz, false_or, mul_eq_zero,
       show (1 / 4 : ℝ) ≠ 0 by norm_num, false_or, sq_eq_zero_iff, norm_eq_zero, sub_eq_zero]
     exact ⟨Subtype.ext, congrArg Subtype.val⟩
 

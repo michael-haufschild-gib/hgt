@@ -190,10 +190,10 @@ theorem cubicUnitLayerCont_eq_upper (s : ℂ) (hs4 : 4 < s.re) (hs : s.re < 13 /
   have hE0 : E ≠ 0 := P.eulerFactorQ_ne_zero (by linarith)
   have hC20 : C2 ≠ 0 := pow_ne_zero 2 scalar_star_ne_zero
   have hcd0 : cd ≠ 0 := by rw [hcd]; exact mul_ne_zero (mul_ne_zero (mul_ne_zero hC20 (by norm_num)) hZ0) hE0
-  set X := P.remainderComb s with hX
-  have hXe : X = P.remainder_remainderData.pairing s - P.heckeShiftRemainder_remainderData.pairing s := by
-    rw [hX, remainderComb, hPh, hPs]
-  have key : 2 * ((2 / 3) * (completedThetaSq s - completedTranslated s)) + (2 / 3) * N⁻¹ * X =
+  have hXe : P.remainderComb s =
+      P.remainder_remainderData.pairing s - P.heckeShiftRemainder_remainderData.pairing s := by
+    rw [remainderComb, hPh, hPs]
+  have key : 2 * ((2 / 3) * (completedThetaSq s - completedTranslated s)) + (2 / 3) * N⁻¹ * P.remainderComb s =
       M * δ * κ * besselDirichlet P.unramTwistCoeff s := by
     rw [hXe]
     linear_combination (4 / 3 : ℂ) * e₁ - (4 / 3 : ℂ) * e₂ + (2 / 3) * N⁻¹ * e₃ - (2 / 3) * N⁻¹ * e₄ +
@@ -210,13 +210,13 @@ theorem cubicUnitLayerCont_eq_upper (s : ℂ) (hs4 : 4 < s.re) (hs : s.re < 13 /
       (2 * W * C2 * (2 / 3) * Z) / M) =
         (s - 4 / 3) * (2 * ((2 / 3) * (completedThetaSq s - completedTranslated s))) /
           (δ * κ * (2 * W * cd) * M) := by
-    rw [unitWeight, hcd]
+    rw [unitWeight, ← hδ, ← hκ, ← hE, hcd]
     field_simp
+  have h2 : P.remainderWeight s * P.remainderComb s =
+      (s - 4 / 3) * ((2 / 3) * N⁻¹ * P.remainderComb s) / (δ * κ * (2 * W * cd) * M) := by
+    rw [remainderWeight, ← hδ, ← hκ, ← hW, ← hcddef, ← hM, ← hN]
     ring
-  have h2 : P.remainderWeight s * X = (s - 4 / 3) * ((2 / 3) * N⁻¹ * X) / (δ * κ * (2 * W * cd) * M) := by
-    rw [remainderWeight]
-    ring
-  rw [cubicUnitLayerCont, hs2, hUT, h1, h2, div_add_div_same, ← mul_add, key, div_eq_iff hQ]
+  rw [cubicUnitLayerCont, hs2, hUT, h1, h2, ← add_div, ← mul_add, key, div_eq_iff hQ]
   linear_combination (δ * κ * M) * hL
 
 theorem cubicUnitLayerCont_differentiableAt (w : ℂ) (hw : 5 / 8 < w.re) (hB : w.re < 13 / 6)
@@ -296,12 +296,11 @@ theorem cubicUnitLayerCont_simple_pole :
       (mul_ne_zero (mul_ne_zero (P.dilateFactor_ne_zero _ hre43) P.twistFactor_ne_zero)
         (P.eulerFactorQ_ne_zero hre43))
   have hA : Tendsto (fun w : ℂ => P.unitWeight (2 * w)) (𝓝[≠] (2 / 3 : ℂ)) (𝓝 (P.unitWeight (4 / 3))) := by
-    have hc : ContinuousAt (fun w : ℂ => P.unitWeight (2 * w)) (2 / 3) := by
-      apply ContinuousAt.comp (g := P.unitWeight) _ (continuous_const.mul continuous_id).continuousAt
-      rw [h43]
-      exact hAd.continuousAt
+    have hc : ContinuousAt (fun w : ℂ => P.unitWeight (2 * w)) (2 / 3) :=
+      ContinuousAt.comp_of_eq (g := P.unitWeight) (f := fun w : ℂ => 2 * w) hAd.continuousAt
+        (continuous_const_mul (2 : ℂ)).continuousAt (by norm_num)
     have h := hc.tendsto.mono_left (nhdsWithin_le_nhds (s := {(2 / 3 : ℂ)}ᶜ))
-    rwa [h43] at h
+    simpa only [h43] using h
   -- the remainder factor `b(s) = B_p(s)/(s − 4/3)` is continuous at `4/3`
   set b : ℂ → ℂ := fun s => (2 / 3) * ((Fintype.card P.Res : ℂ) * periodArea)⁻¹ /
     (P.dilateFactor s * (ringComplex (symbol 9 P.p) * star (normalizedCubicUnitGauss P.p)) *
@@ -316,12 +315,11 @@ theorem cubicUnitLayerCont_simple_pole :
           P.combinationDenom_four_thirds_ne_zero))
         (besselSqMellin_ne_zero _ hre43))
   have hbt : Tendsto (fun w : ℂ => b (2 * w)) (𝓝[≠] (2 / 3 : ℂ)) (𝓝 (b (4 / 3))) := by
-    have hc : ContinuousAt (fun w : ℂ => b (2 * w)) (2 / 3) := by
-      apply ContinuousAt.comp (g := b) _ (continuous_const.mul continuous_id).continuousAt
-      rw [h43]
-      exact hbd.continuousAt
+    have hc : ContinuousAt (fun w : ℂ => b (2 * w)) (2 / 3) :=
+      ContinuousAt.comp_of_eq (g := b) (f := fun w : ℂ => 2 * w) hbd.continuousAt
+        (continuous_const_mul (2 : ℂ)).continuousAt (by norm_num)
     have h := hc.tendsto.mono_left (nhdsWithin_le_nhds (s := {(2 / 3 : ℂ)}ᶜ))
-    rwa [h43] at h
+    simpa only [h43] using h
   have hX : Tendsto (fun s => (s - 4 / 3) ^ 2 * P.remainderComb s) (𝓝[≠] (4 / 3 : ℂ)) (𝓝 0) := by
     have h := P.remainder_remainderData.regPairing_near_four_thirds.sub
       P.heckeShiftRemainder_remainderData.regPairing_near_four_thirds
@@ -345,68 +343,73 @@ theorem cubicUnitLayerCont_simple_pole :
 
 theorem norm_dilateFactor_inv_le (a : ℝ) (ha : 2 / 3 < a) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ s : ℂ, a ≤ s.re → ‖(P.dilateFactor s)⁻¹‖ ≤ C := by
-  set ρ : ℝ := ‖ringComplex P.p‖ with hρ
-  have hρ0 : 0 < ρ := P.norm_pos
-  have hρ1 : 1 < ρ := by
+  have hρ0 : 0 < ‖ringComplex P.p‖ := P.norm_pos
+  have hρ1 : 1 < ‖ringComplex P.p‖ := by
     have h := ringComplex_norm_sq_eq_absNorm_span P.p
     have hN : (1 : ℝ) < Ideal.absNorm (Ideal.span {P.p} : Ideal O) := by exact_mod_cast P.one_lt_absNorm
     nlinarith
-  set x₀ : ℝ := ρ ^ 2 * (ρ ^ (-a)) ^ 3 with hx₀
+  have hnt : ∀ s : ℂ, ‖((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)‖ = ‖ringComplex P.p‖ ^ (-s.re) := fun s => by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hρ0, Complex.neg_re]
+  have hnx : ∀ s : ℂ, ‖(‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3‖ =
+      ‖ringComplex P.p‖ ^ 2 * (‖ringComplex P.p‖ ^ (-s.re)) ^ 3 := fun s => by
+    rw [norm_mul, norm_pow, norm_pow, hnt, Complex.norm_real, Real.norm_of_nonneg hρ0.le]
+  obtain ⟨x₀, hx₀⟩ : ∃ x₀ : ℝ, x₀ = ‖ringComplex P.p‖ ^ 2 * (‖ringComplex P.p‖ ^ (-a)) ^ 3 := ⟨_, rfl⟩
   have hx₀1 : x₀ < 1 := by
     have h := P.norm_rho_cube_lt (a : ℂ) (by simpa using ha)
-    rw [norm_mul, norm_pow, norm_pow, Complex.norm_cpow_eq_rpow_re_of_pos hρ0, Complex.norm_real,
-      Real.norm_of_nonneg hρ0.le] at h
+    rw [hnx] at h
+    rw [hx₀]
     simpa using h
-  have hx₀0 : 0 ≤ x₀ := by positivity
-  refine ⟨ρ * ρ ^ (-a) * 2 / (1 - x₀), by
-    apply div_nonneg _ (by linarith)
-    positivity, fun s hs => ?_⟩
+  refine ⟨‖ringComplex P.p‖ * ‖ringComplex P.p‖ ^ (-a) * 2 / (1 - x₀),
+    div_nonneg (by positivity) (by linarith), fun s hs => ?_⟩
   have hs23 : 2 / 3 < s.re := by linarith
   have key := P.dilateFactor_mul s hs23
   have hne := P.one_sub_ne_zero s hs23
-  set t : ℂ := ((ρ : ℝ) : ℂ) ^ (-s) with ht
-  have htn : ‖t‖ = ρ ^ (-s.re) := by
-    rw [ht, Complex.norm_cpow_eq_rpow_re_of_pos hρ0, Complex.neg_re]
-  have htle : ρ ^ (-s.re) ≤ ρ ^ (-a) := Real.rpow_le_rpow_of_exponent_le hρ1.le (by linarith)
-  have hxle : ‖(ρ : ℂ) ^ 2 * t ^ 3‖ ≤ x₀ := by
-    rw [norm_mul, norm_pow, norm_pow, htn, Complex.norm_real, Real.norm_of_nonneg hρ0.le]
+  have ht0 := P.rho_cpow_ne_zero s
+  have hA0 : (‖ringComplex P.p‖ : ℂ) * ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s) *
+      (1 - (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3) ≠ 0 :=
+    mul_ne_zero (mul_ne_zero (Complex.ofReal_ne_zero.mpr hρ0.ne') ht0) hne
+  have htle : ‖ringComplex P.p‖ ^ (-s.re) ≤ ‖ringComplex P.p‖ ^ (-a) :=
+    Real.rpow_le_rpow_of_exponent_le hρ1.le (by linarith)
+  have hxle : ‖(‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3‖ ≤ x₀ := by
+    rw [hnx, hx₀]
     exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity) htle 3) (by positivity)
-  have hd0 : P.dilateFactor s ≠ 0 := P.dilateFactor_ne_zero s hs23
-  have hinv : (P.dilateFactor s)⁻¹ = ((ρ : ℂ) * t * (1 - (ρ : ℂ) ^ 2 * t ^ 3)) / (1 + (ρ : ℂ) ^ 2 * t ^ 3) := by
-    have h1 : 1 + (ρ : ℂ) ^ 2 * t ^ 3 ≠ 0 := by
-      rw [← key]
-      exact mul_ne_zero hd0 (mul_ne_zero (mul_ne_zero (Complex.ofReal_ne_zero.mpr hρ0.ne')
-        (P.rho_cpow_ne_zero s)) hne)
-    rw [eq_div_iff h1, ← key]
-    field_simp
-  rw [hinv, norm_div, norm_mul, norm_mul, Complex.norm_real, Real.norm_of_nonneg hρ0.le, htn]
-  have hnum : ‖1 - (ρ : ℂ) ^ 2 * t ^ 3‖ ≤ 2 := by
-    have := norm_sub_le (1 : ℂ) ((ρ : ℂ) ^ 2 * t ^ 3)
+  have hinv : (P.dilateFactor s)⁻¹ = ((‖ringComplex P.p‖ : ℂ) * ((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s) *
+      (1 - (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3)) /
+        (1 + (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3) := by
+    rw [← key]
+    exact (div_mul_cancel_right₀ hA0 _).symm
+  set x := (‖ringComplex P.p‖ : ℂ) ^ 2 * (((‖ringComplex P.p‖ : ℝ) : ℂ) ^ (-s)) ^ 3 with hx
+  have hnum : ‖1 - x‖ ≤ 2 := by
+    have := norm_sub_le (1 : ℂ) x
     rw [norm_one] at this
     linarith
-  have hden : 1 - x₀ ≤ ‖1 + (ρ : ℂ) ^ 2 * t ^ 3‖ := by
-    have := norm_sub_norm_le (1 : ℂ) (-((ρ : ℂ) ^ 2 * t ^ 3))
+  have hden : 1 - x₀ ≤ ‖1 + x‖ := by
+    have := norm_sub_norm_le (1 : ℂ) (-x)
     rw [norm_one, norm_neg, sub_neg_eq_add] at this
     linarith
-  rw [div_le_div_iff₀ (by linarith) (by linarith)]
+  rw [hinv, norm_div, norm_mul, norm_mul, Complex.norm_real, Real.norm_of_nonneg hρ0.le, hnt,
+    div_le_div_iff₀ (by linarith) (by linarith)]
   calc
-    ρ * ρ ^ (-s.re) * ‖1 - (ρ : ℂ) ^ 2 * t ^ 3‖ * (1 - x₀) ≤ ρ * ρ ^ (-a) * 2 * (1 - x₀) := by
-      gcongr
-    _ ≤ ρ * ρ ^ (-a) * 2 * ‖1 + (ρ : ℂ) ^ 2 * t ^ 3‖ := by gcongr
+    ‖ringComplex P.p‖ * ‖ringComplex P.p‖ ^ (-s.re) * ‖1 - x‖ * (1 - x₀) ≤
+        ‖ringComplex P.p‖ * ‖ringComplex P.p‖ ^ (-a) * 2 * (1 - x₀) := by gcongr
+    _ ≤ ‖ringComplex P.p‖ * ‖ringComplex P.p‖ ^ (-a) * 2 * ‖1 + x‖ := by gcongr
 
 theorem norm_eulerFactorQ_inv_le (a : ℝ) (ha : 2 / 3 < a) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ s : ℂ, a ≤ s.re → ‖(P.eulerFactorQ s)⁻¹‖ ≤ C := by
-  set N : ℝ := (Ideal.absNorm (Ideal.span {P.p} : Ideal O) : ℝ) with hN
-  have hN1 : 1 < N := by exact_mod_cast P.one_lt_absNorm
-  set y₀ : ℝ := N ^ (-(3 * (a / 2) - 1)) with hy₀
-  have hy₀1 : y₀ < 1 := Real.rpow_lt_one_of_one_lt_of_neg hN1 (by linarith)
-  refine ⟨(1 - y₀)⁻¹, (inv_pos.mpr (by linarith)).le, fun s hs => ?_⟩
-  have hy : ‖unramifiedNormWeight (3 * (s / 2) - 1) (Ideal.span {P.p})‖ ≤ y₀ := by
+  have hN1 : (1 : ℝ) < (Ideal.absNorm (Ideal.span {P.p} : Ideal O) : ℝ) := by
+    exact_mod_cast P.one_lt_absNorm
+  have hy₀1 : (Ideal.absNorm (Ideal.span {P.p} : Ideal O) : ℝ) ^ (-(3 * (a / 2) - 1)) < 1 :=
+    Real.rpow_lt_one_of_one_lt_of_neg hN1 (by linarith)
+  refine ⟨(1 - (Ideal.absNorm (Ideal.span {P.p} : Ideal O) : ℝ) ^ (-(3 * (a / 2) - 1)))⁻¹,
+    (inv_pos.mpr (by linarith)).le, fun s hs => ?_⟩
+  have hy : ‖unramifiedNormWeight (3 * (s / 2) - 1) (Ideal.span {P.p})‖ ≤
+      (Ideal.absNorm (Ideal.span {P.p} : Ideal O) : ℝ) ^ (-(3 * (a / 2) - 1)) := by
     rw [P.normWeight_primeIdeal, Complex.norm_natCast_cpow_of_pos (by have := P.one_lt_absNorm; omega)]
     apply Real.rpow_le_rpow_of_exponent_le hN1.le
     rw [Complex.neg_re, cubeZeta_re]
     linarith
-  have hE : 1 - y₀ ≤ ‖P.eulerFactorQ s‖ := by
+  have hE : 1 - (Ideal.absNorm (Ideal.span {P.p} : Ideal O) : ℝ) ^ (-(3 * (a / 2) - 1)) ≤
+      ‖P.eulerFactorQ s‖ := by
     have := norm_sub_norm_le (1 : ℂ) (unramifiedNormWeight (3 * (s / 2) - 1) (Ideal.span {P.p}))
     rw [norm_one] at this
     rw [eulerFactorQ]
@@ -444,7 +447,7 @@ theorem cubicUnitLayerCont_gaussian_bound (a : ℝ) (ha : 5 / 8 < a) (ha2 : a �
     have hWexp : P.remainderWeight (2 * w) = (2 * w - 4 / 3) * c₀ * (P.dilateFactor (2 * w))⁻¹ *
         (unitFrequencyWeight (2 * w))⁻¹ * (clearedCubeZeta (2 * w))⁻¹ * (P.eulerFactorQ (2 * w))⁻¹ *
           (besselSqMellin (2 * w))⁻¹ := by
-      rw [remainderWeight, combinationDenom, hc₀]
+      rw [remainderWeight, ← hκ, combinationDenom, hc₀]
       simp only [div_eq_mul_inv, mul_inv]
       ring
     have hX : ‖P.remainderComb (2 * w)‖ ≤ Kh + Ks := by
@@ -457,20 +460,19 @@ theorem cubicUnitLayerCont_gaussian_bound (a : ℝ) (ha : 5 / 8 < a) (ha2 : a �
       linarith only [h, norm_nonneg w]
     have hz : ‖(clearedCubeZeta (2 * w))⁻¹‖ ≤ Kz * (4 * (1 + ‖w‖) ^ 2) := by
       refine (hkz _ hsa hi1).trans (mul_le_mul_of_nonneg_left ?_ hKz)
-      rw [hi, abs_mul]
       have h := Complex.abs_im_le_norm w
-      norm_num
-      nlinarith only [h, abs_nonneg w.im, norm_nonneg w]
+      have h2 := mul_le_mul h h (abs_nonneg _) (norm_nonneg _)
+      rw [hi, abs_mul, abs_two]
+      nlinarith only [h, h2, abs_nonneg w.im, norm_nonneg w]
     have hw1 : 1 ≤ 1 + ‖w‖ := by linarith [norm_nonneg w]
     rw [hWexp, norm_mul, norm_mul, norm_mul, norm_mul, norm_mul, norm_mul, norm_mul]
+    have g1 := hkd _ hsa
+    have g2 := hkw _ (by linarith) hs4
+    have g3 := hke _ hsa
+    have g4 := hkm w hwa hw2 hwi
     calc
       _ ≤ (2 * (1 + ‖w‖)) * ‖c₀‖ * Kd * Kw * (Kz * (4 * (1 + ‖w‖) ^ 2)) * Ke *
-          (Km * Real.exp (4 * Real.pi * |w.im|)) * (Kh + Ks) := by
-        gcongr
-        · exact hkd _ hsa
-        · exact hkw _ (by linarith) hs4
-        · exact hke _ hsa
-        · exact hkm w hwa hw2 hwi
+          (Km * Real.exp (4 * Real.pi * |w.im|)) * (Kh + Ks) := by gcongr
       _ = _ := by ring
   obtain ⟨C₂, hC₂, hc₂⟩ := gaussian_bound_of_exp_growth (by linarith : (0 : ℝ) ≤ a)
     (by positivity : 0 ≤ 8 * ‖c₀‖ * Kd * Kw * Kz * Ke * Km * (Kh + Ks)) 3 hf
@@ -479,10 +481,14 @@ theorem cubicUnitLayerCont_gaussian_bound (a : ℝ) (ha : 5 / 8 < a) (ha2 : a �
   have hsa : 2 * a ≤ (2 * w).re := by rw [hr]; linarith
   have hi0 : w.im ≠ 0 := by intro h; rw [h, abs_zero] at hwi; linarith
   have hA : ‖P.unitWeight (2 * w)‖ ≤ 2 * Kd * ‖κ⁻¹‖ * Ke := by
-    rw [unitWeight, div_eq_mul_inv, mul_inv, mul_inv, norm_mul, norm_mul, norm_mul]
-    norm_num
-    have := hkd _ hsa
-    have := hke _ hsa
+    have he : P.unitWeight (2 * w) =
+        2 * (P.dilateFactor (2 * w))⁻¹ * κ⁻¹ * (P.eulerFactorQ (2 * w))⁻¹ := by
+      rw [unitWeight, ← hκ]
+      simp only [div_eq_mul_inv, mul_inv]
+      ring
+    rw [he, norm_mul, norm_mul, norm_mul, show ‖(2 : ℂ)‖ = 2 by norm_num]
+    have h1 := hkd _ hsa
+    have h2 := hke _ hsa
     gcongr
   rw [cubicUnitLayerCont, mul_add, add_mul]
   refine (norm_add_le _ _).trans (add_le_add ?_ (hc₂ w hwa hw2 hwi))
@@ -518,7 +524,7 @@ theorem cubicUnitLayer_smoothed_main_term (a : ℝ) (ha : 5 / 8 < a) (ha' : a < 
     (fun w hwa hw2 hp => P.cubicUnitLayerCont_differentiableAt w (by linarith) (by linarith) hp)
     P.cubicUnitLayerCont_simple_pole hC (fun t => ?_)
   rw [P.idealSeries_cubicUnitCoeff]
-  exact P.cubicUnitLayerCont_eq_series _ (by simp) (by simp; norm_num)
+  exact P.cubicUnitLayerCont_eq_series _ (by norm_num) (by norm_num)
 
 end PrimaryPrime
 

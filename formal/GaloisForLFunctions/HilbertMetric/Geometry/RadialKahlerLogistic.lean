@@ -64,8 +64,7 @@ theorem parameter_exp (n : ℕ) (t : ℝ) :
   have hn : (n + 2 : ℝ) ≠ 0 := by positivity
   have he : 1 + Real.exp (2 * t) ≠ 0 := by positivity
   simp only [div_pow, mul_pow, pow_succ]
-  field_simp [hn, he]
-  ring
+  field_simp [hn, he] <;> ring
 
 /-- The extremal flux occurs at radial scale `exp(2t) = n + 1`. -/
 theorem flux_criticalScale (n : ℕ) : flux n (criticalScale n) = n + 1 := by
@@ -73,8 +72,7 @@ theorem flux_criticalScale (n : ℕ) : flux n (criticalScale n) = n + 1 := by
   rw [show (2 : ℝ) * (Real.log (n + 1) / 2) = Real.log (n + 1) by ring,
     Real.exp_log (by positivity)]
   have hn : (1 + (n + 1 : ℝ)) ≠ 0 := by positivity
-  field_simp [hn]
-  ring
+  field_simp [hn] <;> ring
 
 theorem parameter_pos (n : ℕ) (t : ℝ) : 0 < parameter n t := by
   change 0 < (flux n t) ^ (n + 1) * (1 - flux n t / (n + 2))

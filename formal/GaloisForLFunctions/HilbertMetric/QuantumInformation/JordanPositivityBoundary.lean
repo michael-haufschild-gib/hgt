@@ -37,7 +37,7 @@ theorem jordanSymbol_pair_det_neg_iff {n : ℕ} (r : Fin n → ℝ) (i j : Fin n
     (((jordanSymbol r).submatrix ![i, j] ![i, j]).det).re < 0 ↔ r i ≠ r j := by
   rw [jordanSymbol_pair_det, Complex.ofReal_re]
   have he : rate r i = rate r j ↔ r i = r j := Real.exp_injective.eq_iff
-  rw [← he]
+  simp only [ne_eq, ← he]
   constructor
   · intro h hz
     rw [hz, sub_self, zero_pow (by decide), neg_zero, zero_div] at h
@@ -46,14 +46,16 @@ theorem jordanSymbol_pair_det_neg_iff {n : ℕ} (r : Fin n → ℝ) (i j : Fin n
     have hs : 0 < (rate r i - rate r j) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr h)
     linarith only [hs]
 
+/-- The constant rank-one matrix. -/
+def constantOneGram (n : ℕ) : Matrix (Fin n) (Fin n) ℂ := fun _ _ => 1
+
 /-- The all-ones matrix is an explicit Gram in every dimension. -/
 theorem constantOneGram_posSemidef (n : ℕ) :
-    (fun _ _ : Fin n => (1 : ℂ)).PosSemidef := by
-  have heq : (fun _ _ : Fin n => (1 : ℂ)) =
-      (fun (_ : Fin 1) (_ : Fin n) => (1 : ℂ))ᴴ *
-        (fun (_ : Fin 1) (_ : Fin n) => (1 : ℂ)) := by
+    (constantOneGram n).PosSemidef := by
+  let B : Matrix (Fin 1) (Fin n) ℂ := fun _ _ => 1
+  have heq : constantOneGram n = Bᴴ * B := by
     ext i j
-    simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, star_one, one_mul,
+    simp only [constantOneGram, B, Matrix.mul_apply, Matrix.conjTranspose_apply, star_one, one_mul,
       Fin.sum_univ_one]
   rw [heq]
   exact posSemidef_conjTranspose_mul_self _
@@ -78,10 +80,11 @@ theorem jordanSymbol_posSemidef_iff {n : ℕ} (r : Fin n → ℝ) :
       rw [heq]
       exact Matrix.PosSemidef.zero
     | succ n =>
-      have heq : jordanSymbol r = (rate r 0 : ℂ) • (fun _ _ : Fin (n + 1) => (1 : ℂ)) := by
+      have heq : jordanSymbol r = (rate r 0 : ℂ) • constantOneGram (n + 1) := by
         ext i j
         rw [jordanSymbol_apply]
-        simp only [rate, h i 0, h j 0, Matrix.smul_apply, smul_eq_mul, mul_one]
+        change ((rate r i : ℂ) + (rate r j : ℂ)) / 2 = (rate r 0 : ℂ) * 1
+        simp only [rate, h i 0, h j 0, mul_one]
         ring
       rw [heq]
       exact (constantOneGram_posSemidef (n + 1)).smul (by exact_mod_cast (rate_pos r 0).le)

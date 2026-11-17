@@ -64,18 +64,21 @@ def negativeMass (x : ZeroSpace) : ℝ := ‖negativePart x‖ ^ 2
 /-- Signed energy of an arbitrary actual zero-coordinate vector. -/
 def reflectionEnergy (x : ZeroSpace) : ℝ := (inner ℂ (zeroReflection x) x).re
 
+private theorem re_inner_self (x : ZeroSpace) : (inner ℂ x x).re = ‖x‖ ^ 2 :=
+  (norm_sq_eq_re_inner (𝕜 := ℂ) x).symm
+
 theorem sector_mass_sum (x : ZeroSpace) :
     positiveMass x + negativeMass x = ‖x‖ ^ 2 := by
   have h := congrArg Complex.re (sector_inner_sum x x)
   unfold positiveMass negativeMass
-  simpa only [Complex.add_re, ← norm_sq_eq_re_inner (𝕜 := ℂ)] using h
+  simpa only [Complex.add_re, re_inner_self] using h
 
 /-- The signed Weil energy is the exact difference of the sector masses. -/
 theorem reflectionEnergy_eq_mass_difference (x : ZeroSpace) :
     reflectionEnergy x = positiveMass x - negativeMass x := by
   have h := congrArg Complex.re (sector_inner_difference x x)
   unfold reflectionEnergy positiveMass negativeMass
-  simpa only [Complex.sub_re, ← norm_sq_eq_re_inner (𝕜 := ℂ)] using h.symm
+  simpa only [Complex.sub_re, re_inner_self] using h.symm
 
 private theorem scalar_phase_loss (a b : ℝ) (u v : Circle) :
     (a + b) ^ 2 - Complex.normSq ((a : ℂ) + (conj (u : ℂ) * (v : ℂ)) * (b : ℂ)) =
