@@ -94,7 +94,7 @@ private theorem rotation_pow_channel (a : ℂ) (ha : a ^ 3 = 1) (f : ResidueFour
     rw [pow_succ']
     change unitRotation ((unitRotation ^ n) (rotationChannel a f)) = _
     rw [ih, map_smul, rotationChannel_eigen a ha,
-      smul_smul, pow_succ]
+      smul_smul, ← pow_succ]
 
 /-- Polynomial rotation acts diagonally on each character channel. -/
 theorem rotation_polynomial_channel (a : ℂ) (ha : a ^ 3 = 1) (p : ℂ[X])
@@ -127,7 +127,10 @@ theorem weightedSum_unitRotation (f : ResidueFour → ℂ) :
   calc
     _ = cubicTwoChar omega ^ 2 * (cubicTwoChar omega * weightedSum (unitRotation f)) := by
       rw [← mul_assoc, ← pow_succ, cubic_phase_cube, one_mul]
-    _ = _ := by rw [← weightedSum_rotation]; rfl
+    _ = _ := by
+      change cubicTwoChar omega ^ 2 *
+        (cubicTwoChar omega * weightedSum (fun c => f (rotate c))) = _
+      rw [← weightedSum_rotation f]
 
 private theorem weightedSum_rotation_pow (n : ℕ) (f : ResidueFour → ℂ) :
     weightedSum ((unitRotation ^ n) f) = (cubicTwoChar omega ^ 2) ^ n * weightedSum f := by

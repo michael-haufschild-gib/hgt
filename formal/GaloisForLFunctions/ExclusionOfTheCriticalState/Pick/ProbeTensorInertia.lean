@@ -21,9 +21,9 @@ noncomputable section
 
 private theorem probeGram_hermQuad {n : ℕ} (p : Fin n → ℝ) (c : Fin n → ℂ) :
     hermQuad (probeGram (fun i => node (p i))) c = complexProbeQuadratic n p c := by
-  unfold hermQuad complexProbeQuadratic dotProduct Matrix.mulVec
+  unfold hermQuad complexProbeQuadratic
   congr 1
-  simp only [Finset.mul_sum]
+  simp only [Matrix.mulVec, dotProduct, Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro i _
   apply Finset.sum_congr rfl
@@ -118,14 +118,15 @@ private theorem probe_index_zero_of_collapsed {n : ℕ} (p : Fin n → ℝ)
   obtain ⟨W, hd, hW⟩ := exists_isPosDefOn_finrank_eq_posIndex
     (-(probeGram (fun i => node (p i))))
   have hw : W = ⊥ := by
-    apply Submodule.eq_bot_iff.mpr
+    apply le_antisymm ?_ bot_le
     intro c hc
+    change c = 0
     by_contra hz
     have hp := hW c hc hz
     rw [hermQuad_neg] at hp
     linarith only [hp, hq c]
   rw [hw] at hd
-  simpa using hd.symm
+  simpa [hermNegIndex] using hd.symm
 
 /-- A negative probe direction forces a positive plane in the same finite matrix. -/
 theorem negative_probe_has_two_positive {n : ℕ} (p : Fin n → ℝ) :

@@ -66,10 +66,14 @@ theorem filteredTailMoment_square_nonnegative_iff {F : ℝ → ℝ}
   constructor
   · intro h
     filter_upwards [h] with u hu
-    exact (mul_nonneg_iff_of_pos_right (Real.exp_pos _)).mp (by simpa only [mul_assoc] using hu)
+    change 0 ≤ q.eval (Real.exp (u + T)) * (F u * Real.exp (10 * (u + T))) at hu
+    rw [← mul_assoc] at hu
+    exact (mul_nonneg_iff_of_pos_right (Real.exp_pos _)).mp hu
   · intro h
     filter_upwards [h] with u hu
-    simpa only [mul_assoc] using mul_nonneg hu (Real.exp_pos (10 * (u + T))).le
+    change 0 ≤ q.eval (Real.exp (u + T)) * (F u * Real.exp (10 * (u + T)))
+    rw [← mul_assoc]
+    exact mul_nonneg hu (Real.exp_pos (10 * (u + T))).le
 
 private theorem polynomial_exp_tail_sign {q : ℝ[X]} (hq : q ≠ 0) (T : ℝ) :
     ∃ b : ℝ, (∀ u < b, 0 < q.eval (Real.exp (u + T))) ∨
@@ -140,7 +144,7 @@ theorem criticalState_filteredTailMoment_both_signs {W₀ : ℝ} (hW : 0 < W₀)
       ∃ P : ℝ[X], _root_.HTGeometry.momentFunctional (filteredTailMoment F T r) (P ^ 2) < 0 := by
     have h := mt (filteredTailMoment_square_nonnegative_iff hd T r).mp
       (criticalState_filtered_density_not_nonnegative hW ht hF T hr)
-    push_neg at h
+    push Not at h
     exact h
   refine ⟨hn q hq, ?_⟩
   obtain ⟨P, hP⟩ := hn (-q) (neg_ne_zero.mpr hq)

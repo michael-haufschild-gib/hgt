@@ -38,8 +38,9 @@ theorem inner_phaseVector (f : ResidueFour → ℂ) :
   apply Finset.sum_congr rfl
   intro r _
   change inner ℂ (star (phase r)) (f r) = phase r * f r
-  simp only [RCLike.inner_apply, star_star]
-  ring
+  rw [RCLike.inner_apply]
+  change f r * star (star (phase r)) = phase r * f r
+  rw [star_star, mul_comm]
 
 theorem phaseVector_ne_zero : phaseVector ≠ 0 := by
   intro h
@@ -68,15 +69,18 @@ def coherentClassVector (f : ResidueFour → ℂ) : ClassHilbert :=
 
 theorem coherentClassVector_formula (f : ResidueFour → ℂ) :
     coherentClassVector f = (weightedSum f / (phaseMass : ℂ)) • phaseVector := by
-  rw [coherentClassVector, phaseLine, Submodule.starProjection_singleton, inner_phaseVector]
+  change (ℂ ∙ phaseVector).starProjection (classVector f) = _
+  rw [Submodule.starProjection_singleton, inner_phaseVector]
   rfl
 
 /-- Projection preserves the actual signed pairing exactly. -/
 theorem coherentClassVector_pairing (f : ResidueFour → ℂ) :
     inner ℂ phaseVector (coherentClassVector f) = weightedSum f := by
-  rw [coherentClassVector_formula, inner_smul_right, inner_self_eq_norm_sq_to_K,
-    ← Complex.ofReal_pow]
-  change weightedSum f / (phaseMass : ℂ) * (phaseMass : ℂ) = weightedSum f
+  have hv : inner ℂ phaseVector phaseVector = (phaseMass : ℂ) := by
+    rw [inner_self_eq_norm_sq_to_K]
+    change (algebraMap ℝ ℂ) ‖phaseVector‖ ^ 2 = (algebraMap ℝ ℂ) (‖phaseVector‖ ^ 2)
+    exact (map_pow _ _ _).symm
+  rw [coherentClassVector_formula, inner_smul_right, hv]
   exact div_mul_cancel₀ _ (Complex.ofReal_ne_zero.mpr (ne_of_gt phaseMass_pos))
 
 theorem weightedSum_coherentClassVector (f : ResidueFour → ℂ) :

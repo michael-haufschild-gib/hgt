@@ -100,8 +100,7 @@ theorem inner_phaseRotate (u : Circle) (x y : ZeroSpace) :
   simp only [phaseRotate, inner_add_left, inner_add_right,
     inner_smul_left, inner_smul_right, sector_inner_orthogonal,
     sector_inner_orthogonal_rev, mul_zero, zero_add, add_zero]
-  rw [← mul_assoc, Complex.conj_mul', Circle.norm_coe]
-  norm_num only [one_pow, Complex.ofReal_one, one_mul]
+  rw [← mul_assoc, Complex.mul_conj, Circle.normSq_coe, Complex.ofReal_one, one_mul]
   exact sector_inner_sum y x
 
 /-- The reflection commutes with orbital phase rotations. -/
@@ -109,7 +108,6 @@ theorem zeroReflection_phaseRotate (u : Circle) (x : ZeroSpace) :
     zeroReflection (phaseRotate u x) = phaseRotate u (zeroReflection x) := by
   simp only [phaseRotate, positivePart, negativePart, map_add, map_sub,
     map_smul, zeroReflection_involutive]
-  module
 
 /-- Rotating sectors preserves the indefinite Weil pairing, not merely its norm bound. -/
 theorem weil_inner_phaseRotate (u : Circle) (x y : ZeroSpace) :

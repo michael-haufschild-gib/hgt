@@ -205,6 +205,12 @@ so nothing is lost between stages.
    moments makes the threshold $\tfrac92-\Theta$ sharp. A tilt whose unit tilt lies in $\mathcal H$ is an
    admissible test with square-summable zero values: the weak equation against it reads
    $\sum_z\mathcal LF(z)\mathcal LF(-z-c)=-a\int F^2e^{-(8+c)u}$.
+25. **Translation defect.** For $k\ge0$ the translate $\tau_kF(u)=F(u+k)$ lies in $\mathcal H$ and its zero values
+   are $e^{-zk}\mathcal LF(z)$. The heated zero series integrated against $G(T-k)$ gives
+   $W(\tau_kF,G)=a\bigl(\int_0^kF^+(x)G(x-k)\,dx-\int e^{-8u}F(u)G(u-k)\,du\bigr)$ for every $G\in\mathcal H$: on the
+   collar $-k<u<0$ the translated state fails the weak equation by the prime side. The state is orthogonal to
+   $\tau_kF$ for the full form, so $G=F$ leaves the wall law
+   $\int_0^kF^+(x)F(x-k)\,dx=-(1-e^{-8k})\int F(u)F(u+k)e^{-8u}du$, with no prime sum.
 
 ## 5. Questions
 
@@ -218,7 +224,7 @@ so nothing is lost between stages.
 | Q6 | Index law | answered (Lean): finite index at every ratio; some confined Gram matrix has $n$ negative squares iff $\zeta$ has at least $n$ zeros right of the line (`confinedIndex_law`); the index is bounded over all ratios iff finitely many zeros lie off the line (`confinedIndexBounded_tfae`); under a finite layer the critical ladder has one rung per right zero (`criticalLadder_iff_rightZeros`). Open: the growth of the index in the ratio when infinitely many zeros lie right of the line |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH. Restricted to a finite off-line layer it is B13 in six equivalent forms (`finiteLayer_ecs_b13_tfae`) |
 | Q8 | The arithmetic property that excludes the state | criterion and model separation proved (Lean): beyond-the-wall prime-pole continuation; proof for $\zeta$ open |
-| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): vanishing average wall mass, uniform right $o(1/\sigma)$ decay and charge cancellation; $F^+$ in prime form almost everywhere (`beyondWallProfile_primeForm`) and the Abel-mean form of the heads left of the strip ([Wall/](Wall/TheWallSeenFromTheLeft.lean)); coercivity of the collar and softness of its weak equation beyond $(\star)$ ([Collar/](Collar/TheCollarWeakEquationIsSoftBeyondStar.lean)); the critical ratio of the charge hyperplane ([Energy/](Energy/TheChargeHyperplaneHasItsOwnCriticalRatio.lean)). Exclusion open |
+| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): vanishing average wall mass, uniform right $o(1/\sigma)$ decay and charge cancellation; $F^+$ in prime form almost everywhere (`beyondWallProfile_primeForm`) and the Abel-mean form of the heads left of the strip ([Wall/](Wall/TheWallSeenFromTheLeft.lean)); coercivity of the collar and softness of its weak equation beyond $(\star)$ ([Collar/](Collar/TheCollarWeakEquationIsSoftBeyondStar.lean)); the critical ratio of the charge hyperplane ([Energy/](Energy/TheChargeHyperplaneHasItsOwnCriticalRatio.lean)). The wall law $\int_0^kF^+(x)F(x-k)\,dx=-(1-e^{-8k})\int F(u)F(u+k)e^{-8u}du$ with boundary value $-8\int F^2e^{-8u}$ as $k\to0^+$, and positive mass of $F^+$ on $(0,k)$ for small $k$ (`criticalState_beyondWallPairing_translate`, `criticalState_tendsto_beyondWallPairing_div`, `criticalState_eventually_integral_sq_beyondWallProfile_pos`). Exclusion open |
 
 **Q8 criterion.** For every $F\in\mathcal H$, require the [prime-pole balance](TheBeyondTheWallPrimeBalanceExcludesTheState.lean)
 $\Phi_F(p)=\hat SF(p)+\mathcal LF(-\tfrac12)/(p+\tfrac12)$ to extend holomorphically from
@@ -289,10 +295,15 @@ actual critical state retains square tests of both signs on every tail
 (`riemannHypothesis_or_indefinite_polynomial_tail_filters`). Finite filtering cannot restore
 positivity; the exact density sign criterion describes the surviving positivity cone.
 
+[Translation defect](ThePrimeSideBeyondTheWallIsTheDefectOfTheTranslatedState.lean): two-sided tests against the
+heated zero series (`criticalState_hasSum_zeroPairing_heated_translate`), the full form at the translated state
+(`criticalState_mixedEnergy_translate`) and its bound as a functional on $\mathcal H$
+(`criticalState_sq_mixedEnergy_translate_le`).
+
 **To build.** The endpoint moment $b=17-2\Theta$ when $\Theta$ is not attained, and pointwise decay of the state
 (both need regularity of $F$ or a Hilbert inequality on the zeros without the logarithm); the shifted zero pairing on
 $\tfrac72-\Theta\le c<\tfrac{17}2-2\Theta$ (a logarithm on the lines left of $\Theta-\tfrac92$); the growth of the index in
-the ratio; the comparison of $F^+$ with $e^{-8u}F$ at the wall, which is stage 5.
+the ratio; an evaluation of the collar pairing $\int_0^kF^+(x)F(x-k)\,dx$ from the prime form of $F^+$ to set against the wall law, which is stage 5.
 
 ## 7. Pillar theorems
 
@@ -343,6 +354,7 @@ the ratio; the comparison of $F^+$ with $e^{-8u}F$ at the wall, which is stage 5
 | The transform converges exactly right of the transported zeros: for $0\le\kappa\le1$, the centred zeros lie in $\operatorname{Re}z\le\kappa$ iff $\mathcal LF$ is holomorphic on $\operatorname{Re}w>\kappa-8$; there the continuation is the transform, $a\mathcal LF(w)=-\sum_z\mathcal LF(z)/(w+8-z)$, and $\int\lvert\mathcal LF(\sigma+it)\rvert^2dt=2\pi\int F^2e^{2\sigma u}du$; the state equation and two logarithms hold on all of $\kappa<\operatorname{Re}p<\tfrac12$ | `forall_re_centredZero_le_iff_differentiableOn_laplace`, `stateMeromorphic_eq_laplace_right_of_zeros`, `criticalState_hasSum_starEquation_right_of_zeros`, `integral_norm_sq_stateMeromorphic_line_right_of_zeros`, `laplace_mul_stripMultiplier_eq_right_of_zeros`, `integrable_log_sq_mul_norm_sq_laplace_line_right_of_zeros` | unconditional |
 | The moments $M(b)=\int F^2e^{-bu}$ have a pole at the exponent $b_\rho=17-2\operatorname{Re}\rho$ of every zero right of the line: $\liminf_{\eta\to0^+}\eta\,M(b_\rho-\eta)\ge(m_\rho\lvert\mathcal LF(\rho-\tfrac12)\rvert/a)^2>0$ and $M(b_\rho)=\infty$; a finite $M(b)$ puts every zero in $\operatorname{Re}\rho<\tfrac{17-b}2$; if $\Theta$ is attained, $M(b)<\infty$ iff $b<17-2\Theta$ | `criticalState_eventually_le_mul_moment_of_zero`, `criticalState_not_integrable_at_zero_exponent`, `zero_re_lt_of_integrable_sq_mul_exp`, `integrable_sq_mul_exp_iff_of_attained` | unconditional |
 | The decay law in the energy norm: for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $e^{-cu}F\in\mathcal H$ for every $c<4-\kappa$; $\sup\{c:e^{-cu}F\in\mathcal H\}=\tfrac92-\Theta$, and if $\Theta$ is attained the tilt lies in $\mathcal H$ iff $c<\tfrac92-\Theta$; $\int\log(\lvert t\rvert+4)\lvert\mathcal LF(s+it)\rvert^2dt<\infty$ for $s>\Theta-\tfrac92$; for $c<\tfrac72-\Theta$, $\sum_z\lvert\mathcal LF(z-c)\rvert^2<\infty$ and $\sum_z\mathcal LF(z)\mathcal LF(-z-c)=-a\int F^2e^{-(8+c)u}du$ | `forall_re_centredZero_le_iff_tilt_mem_energyDomain`, `isLUB_tilt_mem_energyDomain`, `tilt_mem_energyDomain_iff_of_attained`, `integrable_log_mul_norm_sq_laplace_line_of_lt`, `criticalState_summable_norm_sq_shifted_zeroValues`, `criticalState_hasSum_shifted_zeroPairing` | unconditional |
+| The wall law: for $k\ge0$ and $G\in\mathcal H$, $E(\tau_kF,G)=a\bigl(\int_0^kF^+(x)G(x-k)\,dx+(e^{8k}-1)\int e^{-8u}F(u)G(u-k)\,du\bigr)$; for $G=F$, $\int_0^kF^+(x)F(x-k)\,dx=-(1-e^{-8k})\int F(u)F(u+k)e^{-8u}du$ and $k^{-1}\int_0^kF^+(x)F(x-k)\,dx\to-8\int F^2e^{-8u}$; $\bigl((1-e^{-8k})\int F(u)F(u+k)e^{-8u}du\bigr)^2\le\int_0^k\lvert F^+\rvert^2\int_{-k}^0F^2$; for $G$ carried by $[-k,0)$, $a\lvert\int_0^kF^+(x)G(x-k)\,dx\rvert^2\le(e^{8k}-1)\int F^2e^{-8u}\,E(G)$ | `criticalState_mixedEnergy_translate`, `criticalState_beyondWallPairing_translate`, `criticalState_tendsto_beyondWallPairing_div`, `criticalState_wall_uncertainty`, `criticalState_norm_sq_beyondWallPairing_collar_le` | unconditional |
 
 ## 8. Traps
 
@@ -367,6 +379,7 @@ the ratio; the comparison of $F^+$ with $e^{-8u}F$ at the wall, which is stage 5
 | The growth law of $F^+$ is the mirror of the decay law | On the zero-free strip the multiplier of the state equation is $-\tfrac{\zeta'}{\zeta}(\tfrac12-p)$: logarithmic on $\kappa<\operatorname{Re}p<\tfrac12$, sublogarithmic on $\operatorname{Re}p<-\kappa$. The left lines gain no logarithm, so the descent does not start there; the rate of the zeros is known for the heated profile only |
 | One Agmon step reaches the zeros | From the abscissa $\sigma$ a step reaches only $s$ with $(\tfrac12+\kappa)\sigma<s(\tfrac12-\kappa+2\sigma)$ and $\sigma<2s$: the mass of the wave on the new line is paid by interpolating two logarithms at $\sigma$ with one on the critical line; the abscissa reaches $\kappa$ as an infimum |
 | $F(u)=-a^{-1}e^{8u}\sum_z\mathcal LF(z)e^{-zu}$ pointwise | The series is a distribution on the line; heated it converges absolutely, and left of the wall it differs from the state by the prime side behind a Gaussian |
+| $F^+$ is reached only by tests supported beyond the wall | The translate $\tau_kF$ is a profile of $\mathcal H$, and its full form against $G\in\mathcal H$ is the pairing of $F^+$ on $(0,k)$ with $G(\cdot-k)$ plus a confinement term; against $F$ itself the pairing is the weighted autocorrelation of the state |
 
 ## 9. Context
 

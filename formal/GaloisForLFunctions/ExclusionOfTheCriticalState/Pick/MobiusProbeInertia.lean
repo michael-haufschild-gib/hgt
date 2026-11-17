@@ -45,7 +45,7 @@ theorem mobiusGram_normalized_congruence {n : ℕ} (r τ υ : ℝ) (p : Fin n �
     by_cases h : i = j
     · subst j
       simp only [mobiusNormalizingMatrix, Matrix.conjTranspose_apply, Matrix.diagonal_apply,
-        if_pos rfl, star_mul, Complex.star_def, Complex.conj_ofReal, Complex.conj_conj]
+        ite_true, Complex.star_def, map_mul, Complex.conj_ofReal, Complex.conj_conj]
     · simp only [mobiusNormalizingMatrix, Matrix.conjTranspose_apply, Matrix.diagonal_apply,
         if_neg h, if_neg (Ne.symm h), star_zero]
   rw [hs]
