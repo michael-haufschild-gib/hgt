@@ -37,6 +37,7 @@ import GaloisForLFunctions.CompactHyperbolicSurfaces.BergmanProjection
 import GaloisForLFunctions.CompactHyperbolicSurfaces.AreaIntegrality
 import GaloisForLFunctions.CompactHyperbolicSurfaces.EntireSelbergZeta
 import GaloisForLFunctions.CompactHyperbolicSurfaces.TheSelbergZetaIsASpectralModelOfAFiniteLayer
+import GaloisForLFunctions.CompactHyperbolicSurfaces.TheSymmetricShiftOfTheSelbergEulerProduct
 
 /-!
 # Compact hyperbolic surfaces

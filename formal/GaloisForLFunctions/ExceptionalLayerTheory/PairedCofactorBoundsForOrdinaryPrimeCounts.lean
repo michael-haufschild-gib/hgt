@@ -113,10 +113,7 @@ private theorem countSeries_on_euler {s : ℂ} (hs : 1 < s.re) (V W : ℕ) :
   rw [LSeries_convolution' (hΛ.sub hζ) hgs, LSeries_sub hΛ hζ,
     ArithmeticFunction.LSeries_vonMangoldt_eq_deriv_riemannZeta_div hs, LSeries_eq_dirPoly hg]
   have hZ : LSeries (fun n => ((zeta n : ℕ) : ℂ)) s = riemannZeta s := by
-    rw [← LSeries_one_eq_riemannZeta hs]
-    apply LSeries_congr
-    intro n hn
-    simp [ArithmeticFunction.zeta_apply, hn]
+    exact ArithmeticFunction.LSeries_zeta_eq_riemannZeta hs
   rw [hZ, countSeries]
   congr 1
   unfold dirPoly
@@ -159,8 +156,8 @@ theorem shortCofactor_eq_zero_of_count_bound (V W : ℕ) {b K : ℝ} (hb : 0 ≤
   have htop : meromorphicOrderAt F ρ = ⊤ := by
     by_contra h
     exact (hmero.meromorphicOrderAt_ne_top_of_isPreconnected
-      (Complex.convex_halfSpace_re_gt b).isPreconnected hρ
-      (show b < (2 : ℂ).re by norm_num; linarith only [hb1]) h) h2
+      (convex_halfSpace_re_gt b).isPreconnected hρ
+      (show b < (2 : ℂ).re by simpa using hb1.trans (by norm_num : (1 : ℝ) < 2)) h) h2
   have hagree : countSeries V W =ᶠ[𝓝[≠] ρ] G := by
     filter_upwards [meromorphicOrderAt_eq_top_iff.mp htop] with s hs
     exact sub_eq_zero.mp hs
