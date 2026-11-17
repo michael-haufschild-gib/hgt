@@ -55,3 +55,5 @@ theorem tendsto_harmonicSine (x : ℝ) :
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_harmonicSine

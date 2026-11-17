@@ -326,12 +326,12 @@ theorem beyondWallProfile_re (W₀ : ℝ) {F : ℝ → ℝ} (hd : CriticalHalfLi
   rw [beyondWallProfile, unitLeftDatum, ← Complex.ofReal_exp, Complex.re_ofReal_mul]
 
 /-- **A one-sided growth bound beyond the wall hides the left zeros.** If `s Re F⁺ ≤ e^{cx}` almost
-everywhere on a ray `x > T`, `c < ½`, then every zero with `0 < Re ρ < ½ - c` is unseen:
+everywhere on a ray `x > T`, then every zero with `0 < Re ρ < ½ - c` is unseen:
 `LF(ρ - ½) = 0`. -/
 theorem criticalState_unseen_of_beyondWall_le_exp {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {s c T : ℝ}
-    (hsign : s = 1 ∨ s = -1) (hc : c < 1 / 2)
+    (hsign : s = 1 ∨ s = -1)
     (hle : ∀ᵐ x ∂volume.restrict (Ioi T),
       s * (beyondWallProfile W₀ (criticalHalfLineEnergyDomain_of_groundState hF) x).re ≤
         Real.exp (c * x))
@@ -465,13 +465,12 @@ theorem criticalState_beyondWall_not_tail_le_exp {W₀ : ℝ} (hW : 0 < W₀)
     let hd := criticalHalfLineEnergyDomain_of_groundState hF
     (¬ ∀ᵐ x ∂volume.restrict (Ioi T), (beyondWallProfile W₀ hd x).re ≤ Real.exp (c * x)) ∧
       ¬ ∀ᵐ x ∂volume.restrict (Ioi T), -Real.exp (c * x) ≤ (beyondWallProfile W₀ hd x).re := by
-  have hc2 : c < 1 / 2 := by linarith
   constructor
   · intro h
-    exact hseen (criticalState_unseen_of_beyondWall_le_exp hW ht hF (s := 1) (Or.inl rfl) hc2
+    exact hseen (criticalState_unseen_of_beyondWall_le_exp hW ht hF (s := 1) (Or.inl rfl)
       (by simpa only [one_mul] using h) hζ hρ0 (by linarith))
   · intro h
-    exact hseen (criticalState_unseen_of_beyondWall_le_exp hW ht hF (s := -1) (Or.inr rfl) hc2
+    exact hseen (criticalState_unseen_of_beyondWall_le_exp hW ht hF (s := -1) (Or.inr rfl)
       (by filter_upwards [h] with x hx; linarith) hζ hρ0 (by linarith))
 
 /-- **The prime side grows exponentially in both signs.** For some `c₀ > 0` (half the distance of a

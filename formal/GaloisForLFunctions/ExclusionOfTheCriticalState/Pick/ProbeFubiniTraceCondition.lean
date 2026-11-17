@@ -49,7 +49,7 @@ theorem reflectionTraceDefect_zeroBasis (z : zetaZeroConfig.carrier) :
     reflectionTraceDefect (zeroBasis z) = if (z : ℂ).re = 1 / 2 then 0 else 3 / 4 := by
   classical
   rw [reflectionTraceDefect_eq, levi_negativePart_zeroBasis]
-  by_cases hz : (z : ℂ).re = 1 / 2 <;> simp only [if_pos hz, if_neg hz] <;> norm_num
+  by_cases hz : (z : ℂ).re = 1 / 2 <;> simp only [hz, if_true, if_false] <;> norm_num
 
 #print axioms reflectionTraceDefect_eq
 #print axioms reflectionTraceDefect_mass

@@ -142,10 +142,53 @@ theorem parameter_image_univ (n : ℕ) : parameter n '' univ = Ioc 0 (peak n) :=
       obtain ⟨t, _, ht⟩ := ha
       exact ⟨t, mem_univ _, by rw [parameter, ht, hay]⟩
 
+/-- Every positive subcritical parameter has exactly two logarithmic radial scales. -/
+theorem parameter_two_scale_classification (n : ℕ) (y : ℝ) :
+    (0 < y ∧ y < peak n) ↔
+      ∃ a b : ℝ, a < criticalScale n ∧ criticalScale n < b ∧
+        parameter n a = y ∧ parameter n b = y ∧
+        ∀ t : ℝ, parameter n t = y ↔ t = a ∨ t = b := by
+  constructor
+  · intro hy
+    obtain ⟨a, b, ha0, hac, hcb, hb1, hay, hby, hroots⟩ :=
+      (profile_two_branch_classification n y).mp hy
+    have ha : a ∈ Ioo (0 : ℝ) (n + 2) := ⟨ha0, by linarith only [hac]⟩
+    have hb : b ∈ Ioo (0 : ℝ) (n + 2) :=
+      ⟨lt_trans (by positivity : (0 : ℝ) < n + 1) hcb, hb1⟩
+    rw [← flux_image_univ] at ha hb
+    obtain ⟨a', _, ha'⟩ := ha
+    obtain ⟨b', _, hb'⟩ := hb
+    have hac' : a' < criticalScale n := by
+      by_contra h
+      have hm := (flux_strictMono n).monotone (le_of_not_gt h)
+      rw [flux_criticalScale, ha'] at hm
+      linarith only [hac, hm]
+    have hcb' : criticalScale n < b' := by
+      by_contra h
+      have hm := (flux_strictMono n).monotone (le_of_not_gt h)
+      rw [flux_criticalScale, hb'] at hm
+      linarith only [hcb, hm]
+    refine ⟨a', b', hac', hcb', ?_, ?_, ?_⟩
+    · rw [parameter, ha', hay]
+    · rw [parameter, hb', hby]
+    · intro t
+      have hr := hroots ⟨flux n t, (flux_pos n t).le⟩
+      change profile n (flux n t) = y ↔ flux n t = a ∨ flux n t = b at hr
+      rw [← ha', ← hb', (flux_strictMono n).injective.eq_iff,
+        (flux_strictMono n).injective.eq_iff] at hr
+      exact hr
+  · rintro ⟨a, b, ha, _, hay, _, _⟩
+    refine ⟨hay ▸ parameter_pos n a, ?_⟩
+    have h := parameter_strictMonoOn n ha.le
+      (show criticalScale n ≤ criticalScale n from le_rfl) ha
+    rw [(parameter_eq_peak_iff n (criticalScale n)).mpr rfl, hay] at h
+    exact h
+
 #print axioms parameter_exp
 #print axioms parameter_eq_peak_iff
 #print axioms parameter_strictMonoOn
 #print axioms parameter_strictAntiOn
 #print axioms parameter_image_univ
+#print axioms parameter_two_scale_classification
 
 end GaloisForLFunctions.HilbertMetric.RadialKahler

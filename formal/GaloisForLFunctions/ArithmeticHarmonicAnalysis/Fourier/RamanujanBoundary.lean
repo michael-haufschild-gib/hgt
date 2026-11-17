@@ -58,3 +58,6 @@ theorem tendsto_ramanujan_harmonicSine (q : ℕ) (x : ℝ) :
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.sum_ramanujan_harmonicSine
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_ramanujan_harmonicSine

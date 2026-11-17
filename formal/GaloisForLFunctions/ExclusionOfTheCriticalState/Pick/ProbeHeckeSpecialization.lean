@@ -16,13 +16,14 @@ namespace GaloisForLFunctions.ExclusionOfTheCriticalState.ProbeWalk
 open _root_.Polynomial
 variable {N : ℕ} (p : Fin N → {x : ℝ // 1 ≤ x})
 
-private theorem hullPositive_mul_hullNegative : hullPositive p * hullNegative p = 0 := by
+/-- The fixed and odd reflection projectors have disjoint images. -/
+theorem hullPositive_mul_hullNegative : hullPositive p * hullNegative p = 0 := by
   unfold hullPositive hullNegative
   simp only [smul_mul_assoc, mul_smul_comm, add_mul, mul_sub,
     one_mul, mul_one, hullReflection_sq]
   module
 
-private theorem hullNegative_mul_hullPositive : hullNegative p * hullPositive p = 0 := by
+theorem hullNegative_mul_hullPositive : hullNegative p * hullPositive p = 0 := by
   unfold hullPositive hullNegative
   simp only [smul_mul_assoc, mul_smul_comm, sub_mul, mul_add,
     one_mul, mul_one, hullReflection_sq]

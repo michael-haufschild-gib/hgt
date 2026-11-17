@@ -44,7 +44,8 @@ open MeasureTheory Set Filter Topology Complex
 open scoped ComplexConjugate ComplexOrder Matrix ENNReal NNReal
 
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
-open HTGeometry _root_.RHTower CriticalArithmeticCorrelationTheory
+open HTGeometry _root_.RHTower CriticalArithmeticCorrelationTheory ArithmeticHodgeTheoryOfDegenerations
+  ArithmeticCastelnuovoSeveri StripBochnerWeilForcing
 
 /-! ### Beurling measures -/
 
@@ -79,7 +80,7 @@ theorem integrable_vonMangoldtMeasure {f : ℝ → ℝ}
     simp only [lintegral_smul_measure, lintegral_dirac, smul_eq_mul]
     have e : ∀ n : ℕ, ENNReal.ofReal (ArithmeticFunction.vonMangoldt n) * ‖f (Real.log n)‖ₑ =
         ENNReal.ofReal (ArithmeticFunction.vonMangoldt n * |f (Real.log n)|) := fun n => by
-      rw [ENNReal.ofReal_mul ArithmeticFunction.vonMangoldt_nonneg, ← ofReal_norm_eq_enorm,
+      rw [ENNReal.ofReal_mul ArithmeticFunction.vonMangoldt_nonneg, ← ofReal_norm,
         Real.norm_eq_abs]
     simp_rw [e]
     rw [← ENNReal.ofReal_tsum_of_nonneg
@@ -313,11 +314,13 @@ theorem differentiableAt_beurlingLogDeriv {ν : Measure ℝ} (hν : IsBeurlingMe
   have hs1 : 1 < ((1 : ℂ) / 2 + w).re := by simp; linarith
   have hlin : DifferentiableAt ℂ (fun w : ℂ => 1 / 2 + w) w :=
     (differentiableAt_const _).add differentiableAt_id
-  unfold beurlingLogDeriv
-  refine ((((differentiableAt_const _).div (differentiableAt_id.add_const _) h1).add
-    ((differentiableAt_const _).div (differentiableAt_id.sub_const _) h2)).add ?_).sub ?_
-  · exact (differentiableAt_logDeriv_Gammaℝ hs).comp w hlin
-  · exact (differentiableAt_beurlingLaplaceC hν hs1).comp w hlin
+  have d1 : DifferentiableAt ℂ (fun z : ℂ => 1 / (z + 1 / 2)) w := by fun_prop (disch := exact h1)
+  have d2 : DifferentiableAt ℂ (fun z : ℂ => 1 / (z - 1 / 2)) w := by fun_prop (disch := exact h2)
+  have d3 : DifferentiableAt ℂ (fun z : ℂ => logDeriv Gammaℝ (1 / 2 + z)) w :=
+    (differentiableAt_logDeriv_Gammaℝ hs).comp w hlin
+  have d4 : DifferentiableAt ℂ (fun z : ℂ => ∫ t, cexp (-((1 / 2 + z) * t)) ∂ν) w :=
+    (differentiableAt_beurlingLaplaceC hν hs1).comp w hlin
+  exact ((d1.add d2).add d3).sub d4
 
 /-- On real points the complex symbol is the real probe symbol. -/
 theorem beurlingLogDeriv_ofReal (ν : Measure ℝ) {p : ℝ} (hp : 1 / 2 < p) :
@@ -421,7 +424,7 @@ theorem probe_forms_nonneg_of_caratheodory {ν : Measure ℝ} (hν : IsBeurlingM
     push_cast
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
     rw [hGD _ (by simpa using hp i), hGD _ (by simpa using hp j),
-      ← Complex.conj_ofReal (p j), ← beurlingWeilForm_probe_eq_caratheodory hν (hp i) (hp j)]
+      beurlingWeilForm_probe_eq_caratheodory hν (hp i) (hp j), Complex.conj_ofReal]
     ring
   rw [hval] at hM
   exact Complex.zero_le_real.mp hM
@@ -438,7 +441,7 @@ theorem beurling_probe_forms_nonneg_iff {ν : Measure ℝ} (hν : IsBeurlingMeas
         (∀ z : ℂ, 0 < z.re → 0 ≤ (G z).re) ∧
         ∀ w : ℂ, 1 / 2 < w.re → G w = beurlingLogDeriv ν w :=
   ⟨exists_caratheodory_extension_of_probe_forms_nonneg hν hS hp₀ hacc,
-    fun ⟨_, hGd, hGre, hGD⟩ n p c hp =>
+    fun ⟨_, hGd, hGre, hGD⟩ _ p c hp =>
       probe_forms_nonneg_of_caratheodory hν hGd hGre hGD p c fun i => hS _ (hp i)⟩
 
 /-- **Positivity propagates.** Positivity on an accumulating node set gives positivity on all
@@ -505,7 +508,7 @@ theorem exists_beurling_probe_form_neg_of_zero {ν : Measure ℝ} (hν : IsBeurl
     ∃ (n : ℕ) (p c : Fin n → ℝ), (∀ i, p i ∈ S) ∧
       ∑ i, ∑ j, c i * c j * beurlingWeilForm ν (probe (p i)) (probe (p j)) < 0 := by
   by_contra hcon
-  push_neg at hcon
+  push Not at hcon
   exact beurling_ne_zero_of_probe_forms_nonneg hν hS hp₀ hacc hcon hY hYne hYD z₀ hz₀ hY0
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

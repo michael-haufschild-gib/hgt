@@ -252,3 +252,4 @@ import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClipping
 import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingProjection
 import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingInertia
 import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingOrder
+import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingRestoration

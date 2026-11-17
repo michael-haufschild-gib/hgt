@@ -25,7 +25,7 @@ theorem sum_Icc_harmonicSine (N : ℕ) (x : ℝ) :
   | zero => simp [harmonicSine]
   | succ N ih =>
     rw [sum_Icc_succ_top (by omega), ih]
-    exact (sum_range_succ _ _).symm
+    exact (Finset.sum_range_succ _ _).symm
 
 /-- A divisor restriction decimates both the cutoff and the phase. -/
 theorem sum_dvd_harmonicSine {d : ℕ} (hd : 0 < d) (N : ℕ) (x : ℝ) :
@@ -79,6 +79,7 @@ theorem tendsto_divisorFilter_harmonicSine (D : Finset ℕ) (a : ℕ → ℝ)
     exact ((tendsto_harmonicSine ((d : ℝ) * x)).comp
       (tendsto_add_atTop_nat 1 |>.comp (HTGeometry.tendsto_natDiv_atTop (hD d hd)))).const_mul _
   convert h using 1
+  congr 1
   rw [mul_sum]
   apply sum_congr rfl
   intro d _
@@ -89,7 +90,6 @@ theorem divisorFilter_moebius {q : ℕ} (hq : q ≠ 0) (n : ℕ) :
     divisorFilter q.divisors (fun d => (μ d : ℝ)) n = if n.Coprime q then 1 else 0 := by
   rw [divisorFilter, ← sum_filter, ← HTGeometry.divisors_gcd_eq_filter n hq,
     HTGeometry.sum_divisors_moebius_real]
-  rfl
 
 /-- Sine harmonics restricted to integers coprime to the modulus. -/
 def coprimeHarmonicSine (q N : ℕ) (x : ℝ) : ℝ :=
@@ -109,3 +109,6 @@ theorem tendsto_coprimeHarmonicSine (q : ℕ) (x : ℝ) :
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_divisorFilter_harmonicSine
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_coprimeHarmonicSine

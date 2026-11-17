@@ -31,6 +31,7 @@ theorem tendsto_primeSquareWave_packet {ι : Type*} (s : Finset ι) (c a : ι �
     exact (_root_.RHTower.tendsto_dilated_vonMangoldt_sign_sum
       (ha i hi).1 (ha i hi).2).const_mul _
   convert h using 1
+  congr 1
   rw [mul_sum, ← sum_sub_distrib]
   exact sum_congr rfl fun i _ => by ring
 
@@ -60,5 +61,28 @@ theorem tendsto_primeSquareWave_endpoint_cancellation :
   rw [heq] at h
   simpa only [primeSquareWave, one_mul] using h
 
+/-- Odd prime powers give the same cancellation, with the parity filter retained. -/
+theorem tendsto_odd_primeSquareWave_endpoint_cancellation :
+    Tendsto (fun T : ℝ =>
+      ((∑ m ∈ (Ioc 0 ⌊T⌋₊).filter (fun m => Odd m),
+        (vonMangoldt m : ℝ) * Real.sign (Real.sin (T / m))) / T -
+       (∑ m ∈ (Ioc 0 ⌊T⌋₊).filter (fun m => Odd m),
+        (vonMangoldt m : ℝ) * Real.sign (Real.sin (2 * T / m))) / T) / 4 -
+      Real.log 2 / (2 * Real.pi)) atTop (𝓝 0) := by
+  have h1 := _root_.RHTower.tendsto_dilated_vonMangoldt_sign_sum_odd
+    (by norm_num : (0 : ℝ) < 1) (by linarith [Real.two_le_pi] : (1 : ℝ) ≤ Real.pi)
+  have h2 := _root_.RHTower.tendsto_dilated_vonMangoldt_sign_sum_odd
+    (by norm_num : (0 : ℝ) < 2) Real.two_le_pi
+  have h := ((h1.sub h2).div_const 4).sub_const (Real.log 2 / (2 * Real.pi))
+  have heq : ((1 - 2 * 1 * Real.log 2 / Real.pi) -
+      (1 - 2 * 2 * Real.log 2 / Real.pi)) / 4 - Real.log 2 / (2 * Real.pi) = 0 := by ring
+  rw [heq] at h
+  simpa only [one_mul] using h
+
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_primeSquareWave_packet
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_primeSquareWave_second_difference
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_primeSquareWave_endpoint_cancellation
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_odd_primeSquareWave_endpoint_cancellation

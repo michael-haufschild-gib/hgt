@@ -18,7 +18,7 @@ Each E-M item names corpus results that ECS does not import. The task is the the
 
 | Item | Target theorem | Module (ECS/) | Status |
 |---|---|---|---|
-| E-M20 | ¬AAL ⇒ Θ attained by an isolated top; then moments finite exactly for b < 17 − 2Θ, endpoint infinite, and the window masses ∫_{W_ν}abs F·e^{−8u} have exact rate Θ − ½ (≤ C e^{aνℓ} for every a > Θ − ½ at all levels; syndetic excursions above C e^{aνℓ} for every a < Θ − ½, gap = size of the top). Unattained Θ ⇒ AAL | Decay/WithoutTheAbscissaLawTheWindowMassesHaveTheRateOfTheZeros.lean | in progress |
+| E-M20 | ¬AAL ⇒ Θ attained by an isolated top; then moments finite exactly for b < 17 − 2Θ, endpoint infinite, and the window masses ∫_{W_ν}abs F·e^{−8u} have exact rate Θ − ½ (≤ C e^{aνℓ} for every a > Θ − ½ at all levels; syndetic excursions above C e^{aνℓ} for every a < Θ − ½, gap = size of the top). Unattained Θ ⇒ AAL | Decay/WithoutTheAbscissaLawTheWindowMassesHaveTheRateOfTheZeros.lean | formalized (`criticalState_exact_window_rate_of_not_asymptoticAbscissaLaw`, `criticalState_endpoint_regimes`) |
 | E-M16 | transport of negative vectors between index pictures | — | not started |
 | E-M11 | totality of the orbit of the state in the energy norm | — | not started |
 | E-M14 | prime-side rows of stage 2 beyond E-J15 | — | not started (peer E-J15 in progress: Index/StageTwoHasPrimeSideRows.lean) |

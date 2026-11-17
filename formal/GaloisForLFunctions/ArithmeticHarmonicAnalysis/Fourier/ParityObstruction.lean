@@ -25,7 +25,7 @@ theorem tendsto_harmonicSine_one_sixth :
     rw [sawtooth, Int.fract_eq_self.mpr ⟨by norm_num, by norm_num⟩]
     norm_num
   rw [hv] at h
-  convert h using 1 <;> ring
+  convert h using 1 <;> congr 1 <;> ring
 
 /-- Odd terms have the square-wave value at the same phase. -/
 theorem tendsto_coprimeHarmonicSine_two_one_sixth :
@@ -33,7 +33,7 @@ theorem tendsto_coprimeHarmonicSine_two_one_sixth :
   have h := tendsto_coprimeHarmonicSine_plateau 0
     (by norm_num : (0 : ℝ) < 1 / 6) (by norm_num)
   norm_num [Nat.totient_prime Nat.prime_two] at h
-  convert h using 1 <;> ring
+  convert h using 1 <;> congr 1 <;> ring
 
 /-- On the whole first half-period, the parity correction is an explicit affine function. -/
 theorem tendsto_parity_correction_first_cell {x : ℝ} (hx : 0 < x) (hxhalf : x < 1 / 2) :
@@ -45,14 +45,28 @@ theorem tendsto_parity_correction_first_cell {x : ℝ} (hx : 0 < x) (hxhalf : x 
   rw [hv] at hfull
   have hodd := tendsto_coprimeHarmonicSine_plateau 0 hx (by simpa using hxhalf)
   norm_num [Nat.totient_prime Nat.prime_two] at hodd
-  convert hfull.sub hodd using 1 <;> ring
+  convert hfull.sub hodd using 1 <;> congr 1 <;> ring
 
 /-- The even terms omitted by the parity restriction retain a nonzero limit. -/
 theorem tendsto_parity_correction_one_sixth :
     Tendsto (fun N => harmonicSine N (1 / 6) - coprimeHarmonicSine 2 N (1 / 6))
       atTop (𝓝 (Real.pi / 12)) := by
   convert tendsto_harmonicSine_one_sixth.sub
-    tendsto_coprimeHarmonicSine_two_one_sixth using 1 <;> ring
+    tendsto_coprimeHarmonicSine_two_one_sixth using 1 <;> congr 1 <;> ring
+
+/-- At the rational phase `T/m = 1`, the correction is `(π - 2)/4`. -/
+theorem tendsto_parity_correction_unit_phase :
+    Tendsto (fun N => harmonicSine N (1 / (2 * Real.pi)) -
+      coprimeHarmonicSine 2 N (1 / (2 * Real.pi))) atTop (𝓝 ((Real.pi - 2) / 4)) := by
+  have hx : 1 / (2 * Real.pi) < (1 / 2 : ℝ) := by
+    apply (div_lt_iff₀ (by positivity : 0 < 2 * Real.pi)).mpr
+    linarith [Real.two_le_pi]
+  have h := tendsto_parity_correction_first_cell
+    (by positivity : (0 : ℝ) < 1 / (2 * Real.pi)) hx
+  convert h using 1
+  congr 1
+  field_simp [Real.pi_ne_zero]
+  ring
 
 /-- Replacing the parity-restricted series by the unrestricted series is not an `o(1)` error. -/
 theorem parity_correction_not_tendsto_zero :
@@ -70,3 +84,7 @@ theorem nearDiagonalSubst_odd_excludes_even {m r : ℤ} (hm : Odd m) (hr : Even 
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.parity_correction_not_tendsto_zero
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_parity_correction_unit_phase
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.nearDiagonalSubst_odd_excludes_even

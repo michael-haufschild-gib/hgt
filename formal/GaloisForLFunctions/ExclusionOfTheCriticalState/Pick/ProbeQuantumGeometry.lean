@@ -1,3 +1,4 @@
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Pick.ProbeSectorMassPairings
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Pick.ProbeZeroPhaseSensitivity
 import GaloisForLFunctions.HTGeometry.QuantumGeometricTensorGram
 
@@ -14,17 +15,6 @@ is precisely genuine mixing of the positive and negative sectors.
 noncomputable section
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState.ProbeWalk
 open ArithmeticCastelnuovoSeveri Zeta23
-
-/-- The reflection expectation is real and equals the signed Weil energy. -/
-theorem inner_reflection_eq_energy (x : ZeroSpace) :
-    inner ℂ x (zeroReflection x) = (reflectionEnergy x : ℂ) := by
-  have hself (y : ZeroSpace) : inner ℂ y y = ((‖y‖ ^ 2 : ℝ) : ℂ) := by
-    rw [inner_self_eq_norm_sq_to_K]
-    change (‖y‖ : ℂ) ^ 2 = ((‖y‖ ^ 2 : ℝ) : ℂ)
-    rw [Complex.ofReal_pow]
-  rw [← zeroReflection_inner_left, ← sector_inner_difference x x, hself, hself,
-    reflectionEnergy_eq_mass_difference]
-  simp only [positiveMass, negativeMass, Complex.ofReal_sub]
 
 /-- Berry curvature of the reflection tangent pair is the signed Weil energy. -/
 theorem reflectionPair_berry (x : ZeroSpace) :
@@ -74,7 +64,7 @@ theorem zeroBasis_reflectionPair_independent_iff (z : zetaZeroConfig.carrier) :
   classical
   rw [reflectionPair_independent_iff, (sector_masses_zeroBasis z).1,
     (sector_masses_zeroBasis z).2]
-  by_cases hz : (z : ℂ).re = 1 / 2 <;> simp [hz]
+  by_cases hz : (z : ℂ).re = 1 / 2 <;> norm_num [hz]
 
 #print axioms inner_reflection_eq_energy
 #print axioms reflectionPair_berry

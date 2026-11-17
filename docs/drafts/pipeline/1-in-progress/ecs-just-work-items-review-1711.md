@@ -18,8 +18,8 @@ Close the assembly-level gaps of the ECS route listed in §4 of the report: the 
 
 | Item | Module (ECS/) | Status |
 |---|---|---|
-| E-J15 prime-side rows of stage 2 | Index/StageTwoHasPrimeSideRows.lean | in progress |
-| E-J11 sign law at the rate of the zeros | | not started |
+| E-J15 prime-side rows of stage 2 | Index/StageTwoHasPrimeSideRows.lean | formalized: `stageTwo_primeSide_tfae` (B13 ⇔ finite layer ⇒ real-amplitude positivity above X ⇔ bounded confined index ⇒ no critical state ⇔ finite wave law ⇒ empty wave ⇔ finite wave law ⇒ positivity above X); `confinedIndexBounded_iff_exists_finiteWaveLaw`; `no_criticalState_iff_jasRealPositiveAbove_of_finiteOffLine`; `riemannHypothesis_iff_exists_finiteWaveLaw_empty` |
+| E-J11 sign law at the rate of the zeros | Decay/TheSignLawHoldsAtTheRateOfTheZeros.lean | formalized: Landau against an exponential (`integrable_exp_of_tail_le_exp`); (a) `criticalState_re_le_of_tail_le_exp`, `criticalState_not_tail_le_exp`, Θ-form `criticalState_omega_pm` (both signs exceed e^{cu} for c > 17/2 − Θ, square moments finite for b < 17 − 2Θ); (b) `criticalState_unseen_of_beyondWall_le_exp`, `criticalState_beyondWall_not_tail_le_exp` (any seen zero, c < ½ − Re ρ), `criticalState_beyondWall_omega_pm`; dichotomy `riemannHypothesis_or_criticalState_omega_pm` |
 | E-J12 mean squares at the exact rate | | not started |
 | E-J13 trace inequality of the ladder | | not started |
 | E-J10 ladder in Pick form | | not started |

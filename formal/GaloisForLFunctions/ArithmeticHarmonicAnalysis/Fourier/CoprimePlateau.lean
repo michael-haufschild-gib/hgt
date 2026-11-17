@@ -44,7 +44,6 @@ theorem coprime_sawtooth_plateau {q : ℕ} (hq : 1 < q) {x : ℝ}
     have hd0 : (d : ℝ) ≠ 0 := by exact_mod_cast (Nat.pos_of_mem_divisors hd).ne'
     rw [sawtooth_divisor_first_cell hq0 hx hxq hd]
     field_simp
-    ring
   rw [sum_congr rfl hterm, sum_sub_distrib, ← sum_mul,
     HTGeometry.sum_divisors_moebius_real, if_neg hq.ne', zero_mul, zero_sub,
     ← sum_div, _root_.RHTower.Sieve.sum_moebius_div_divisors_eq_totient_div hq0]
@@ -55,7 +54,7 @@ theorem coprime_sawtooth_floor_formula {q : ℕ} (hq : 1 < q) (x : ℝ) :
     -Real.pi * (∑ d ∈ q.divisors, (μ d : ℝ) / d * sawtooth ((d : ℝ) * x)) =
       Real.pi * ((∑ d ∈ q.divisors, (μ d : ℝ) / d * ⌊(d : ℝ) * x⌋) +
         ((q.totient : ℝ) / q) / 2 -
-        (∑ d ∈ q.divisors.filter (fun d => Int.fract ((d : ℝ) * x) = 0),
+        (∑ d ∈ q.divisors.filter (fun d : ℕ => Int.fract ((d : ℝ) * x) = 0),
           (μ d : ℝ) / d) / 2) := by
   have hsaw (y : ℝ) : sawtooth y = y - ⌊y⌋ - 1 / 2 +
       (if Int.fract y = 0 then 1 / 2 else 0) := by
@@ -69,7 +68,7 @@ theorem coprime_sawtooth_floor_formula {q : ℕ} (hq : 1 < q) (x : ℝ) :
     intro d hd
     have hd0 : (d : ℝ) ≠ 0 := by exact_mod_cast (Nat.pos_of_mem_divisors hd).ne'
     rw [hsaw]
-    split_ifs <;> field_simp <;> ring
+    split_ifs <;> (field_simp; ring)
   rw [sum_congr rfl hterm, sum_add_distrib, sum_sub_distrib, sum_sub_distrib,
     ← sum_mul, HTGeometry.sum_divisors_moebius_real, if_neg hq.ne', zero_mul,
     ← sum_div, _root_.RHTower.Sieve.sum_moebius_div_divisors_eq_totient_div (by omega),
@@ -88,3 +87,6 @@ theorem tendsto_coprimeHarmonicSine_plateau (q : ℕ) {x : ℝ}
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.coprime_sawtooth_floor_formula
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_coprimeHarmonicSine_plateau
