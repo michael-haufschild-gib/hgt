@@ -21,6 +21,12 @@ finitely many off-line zeros always form such a top layer
   is empty or its top ordinates satisfy an integer relation with odd coefficient sum;
 * `riemannHypothesis_of_finiteOffLine_of_eventuallyGroundNotOdd_of_subsingleton`: one top ordinate
   (in particular a single off-line quartet) is excluded by step 1 outright.
+* `finiteOffLine_imp_riemannHypothesis_or_balance_nonpos`: **the exact residue.** Under step 1 a
+  finite off-line set is empty, or the leading-order parity balance `F` of its top layer is `≤ 0` at
+  every aperture phase `θ(a) = −2a·t`. Such a layer has odd top relations
+  (`evenTopRelations_false_of_balance_nonpos`); by `CCMParityDeepLimit` and
+  `CCMParityLargeHeightCluster` its depth is not small and its height is not large relative to its
+  ordinate shape.
 -/
 
 open Complex
@@ -30,6 +36,7 @@ noncomputable section
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
 open _root_.RHTower _root_.RHTower.CCMParityQuartet _root_.RHTower.CCMParityTopLayer
+  _root_.RHTower.CCMParityCauchy
 open GaloisForLFunctions.SquareRootThreshold (zetaZeroWidth)
 
 /-- **The parity half of Connes' step 1**: at every large aperture the CCM restricted Weil form has
@@ -116,5 +123,32 @@ theorem riemannHypothesis_of_finiteOffLine_of_eventuallyGroundNotOdd_of_subsingl
     (h : zetaTopOrdinates.Subsingleton) : RiemannHypothesis :=
   riemannHypothesis_of_finiteOffLine_of_eventuallyGroundNotOdd hg hF
     (topOrdinatesHaveEvenRelations_of_subsingleton h)
+
+/-- **The exact residue of step 1 on the finite stratum.** Under step 1 a finite off-line set is
+empty, or its top layer has a nonpositive parity balance at every aperture phase. -/
+theorem finiteOffLine_imp_riemannHypothesis_or_balance_nonpos
+    (hg : EventuallyGroundNotOdd) (hF : BacklundConverse.FiniteOffLine) :
+    RiemannHypothesis ∨ ∃ (m : ℕ) (t : Fin m → ℝ) (h : FiniteTopLayer zetaZeroWidth t),
+      ∀ a : ℝ, ccmParityBalance zetaZeroWidth t h.mult (aperturePhase t a) ≤ 0 := by
+  by_cases hRH : RiemannHypothesis
+  · exact Or.inl hRH
+  obtain ⟨m, t, h⟩ := SquareRootThreshold.exists_finiteTopLayer_of_finite_offLine hF
+    (nonempty_offLine_of_not_riemannHypothesis hRH)
+  refine Or.inr ⟨m, t, h, fun a => not_lt.mp fun hpos => ?_⟩
+  obtain ⟨A, hA⟩ := hg
+  obtain ⟨a', ha', hodd⟩ := exists_aperture_ground_odd h ⟨a, hpos⟩ A
+  obtain ⟨u, hu, hne⟩ := hA a' ha'
+  exact hne (hodd u hu)
+
+/-- A top layer whose parity balance is nonpositive along the whole aperture line has an integer
+relation among its ordinates with odd coefficient sum. -/
+theorem evenTopRelations_false_of_balance_nonpos {m : ℕ} {t : Fin m → ℝ}
+    (h : FiniteTopLayer zetaZeroWidth t)
+    (hle : ∀ a : ℝ, ccmParityBalance zetaZeroWidth t h.mult (aperturePhase t a) ≤ 0) :
+    ¬ TopOrdinatesHaveEvenRelations := by
+  intro hrel
+  obtain ⟨a, -, hpos⟩ := ccm_exists_large_aperture_odd_wins_of_even_relations h.pos h.injective
+    h.t_pos h.mult_pos h.nonempty (hrel m t h.injective (mem_zetaTopOrdinates_of_finiteTopLayer h)) 0
+  exact absurd (hle a) (not_le.mpr hpos)
 
 end GaloisForLFunctions.ExceptionalLayerTheory

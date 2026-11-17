@@ -205,7 +205,7 @@ theorem exists_compact_profile_laplace_ne_zero (z₀ : ℂ) :
     (fun _ : Fin 1 => -z₀) (fun a b _ => Subsingleton.elim a b) (fun _ => 1)
   have h1 := hval 0
   rw [laplaceTest_eq_integral] at h1
-  have hψ2 : ContDiff ℝ 2 ψ := hψ.of_le (by exact_mod_cast le_top)
+  have hψ2 : ContDiff ℝ 2 ψ := hψ.of_le (WithTop.coe_le_coe.mpr le_top)
   have hz : ∀ u, 0 ≤ u → ψ u = 0 := fun u hu => hsupp u fun hm => absurd hm.2 (not_lt.mpr hu)
   have hz1 : ∀ u, u < -1 → ψ u = 0 := fun u hu => hsupp u fun hm => absurd hm.1 (not_lt.mpr hu.le)
   set G₁ : ℝ → ℝ := fun u => (ψ u).re
@@ -269,6 +269,3 @@ theorem modelCompactContinuation_eulerLog_iff_riemannHypothesis :
       div_mul_cancel₀ _ hlog_ne]
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState
-
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.modelCompactContinuation_of_weilPositiveFull
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.modelCompactContinuation_eulerLog_iff_riemannHypothesis

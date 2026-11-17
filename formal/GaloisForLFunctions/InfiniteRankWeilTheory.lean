@@ -41,6 +41,7 @@ import GaloisForLFunctions.InfiniteRankWeilTheory.PrimeCollisionsHaveCollisionSi
 import GaloisForLFunctions.InfiniteRankWeilTheory.ThePrecisionCostOfForcedVanishing
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheInfiniteRankWeilProof
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheLinearAbscissaLawInWeilTowers
+import GaloisForLFunctions.InfiniteRankWeilTheory.TheFiniteStratumIsAMetricZeroOneLaw
 
 /-!
 # Infinite-rank Weil theory over Spec ℤ
