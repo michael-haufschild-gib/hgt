@@ -241,7 +241,7 @@ theorem criticalState_tendsto_meanSquare_ratedHeatedBeyondWall {W₀ : ℝ} (hW 
               (cexp (((-(zetaZeroAbscissa - 1 / 2) * u : ℝ) : ℂ)) * cexp (-centredZero q * u)) := by
             ring
         _ = _ := by
-            rw [← Complex.exp_add]
+            rw [← Complex.exp_add, hκdef]
             congr 2
             push_cast
             ring
@@ -331,7 +331,10 @@ theorem mirrorModeMass_pos_iff {W₀ : ℝ} (hW : 0 < W₀)
   have hsre : Summable fun p => (mirrorPairTerm ε F p).re := Complex.reCLM.summable hs
   have hre : ∀ p, (mirrorPairTerm ε F p).re = if (centredZero p.1).im = (centredZero p.2).im then
       ‖heatedZeroCoeff ε F p.1‖ ^ 2 else 0 := fun p => by
-    rw [mirrorPairTerm_eq]; split_ifs <;> simp
+    rw [mirrorPairTerm_eq]
+    split_ifs
+    · exact Complex.ofReal_re _
+    · exact Complex.zero_re
   have hb : ∀ q, heatedZeroCoeff ε F q = 0 ↔ negativeHalfLineLaplace (cx F) (centredZero q) = 0 :=
     fun q => by
       unfold heatedZeroCoeff stateHeatSymbol

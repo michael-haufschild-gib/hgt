@@ -19,7 +19,7 @@ Each E-M item names corpus results that ECS does not import. The task is the the
 | Item | Target theorem | Module (ECS/) | Status |
 |---|---|---|---|
 | E-M20 | ¬AAL ⇒ Θ attained by an isolated top; then moments finite exactly for b < 17 − 2Θ, endpoint infinite, and the window masses ∫_{W_ν}abs F·e^{−8u} have exact rate Θ − ½ (≤ C e^{aνℓ} for every a > Θ − ½ at all levels; syndetic excursions above C e^{aνℓ} for every a < Θ − ½, gap = size of the top). Unattained Θ ⇒ AAL | Decay/WithoutTheAbscissaLawTheWindowMassesHaveTheRateOfTheZeros.lean | formalized (`criticalState_exact_window_rate_of_not_asymptoticAbscissaLaw`, `criticalState_endpoint_regimes`) |
-| E-M16 | transport of negative vectors between index pictures | — | not started |
+| E-M16 | transport of the ladder to the window picture: for 0 < r ≤ R_m every confined Gram matrix of window tests has ≤ #{i : R_i < r} negative squares, and the rungs below r span a negative space; at r ≤ R_k no window family carries k + 1 negative squares (the window ladder dominates the ECS ladder). The counts of the other pictures agree by transitivity (not restated) | Index/TheLadderBoundsTheNegativeSquaresOfEveryWindow.lean | formalized (`IsCriticalLadder.hermNegIndex_confinedGram_le`, `IsCriticalLadder.fullEnergy_sum_neg`, `IsCriticalLadder.hermNegIndex_confinedGram_le_of_le`) |
 | E-M11 | totality of the orbit of the state in the energy norm | — | not started |
 | E-M14 | ¬AAL (⟺ ψ(x) − x a single finite oscillation, ZCG) ⇒ the heated prime side F⁺_ε(T) = a⁻¹Σ_{bottom} LF(z)e^{εz²−zT} + O(e^{κ₂T}), a finite oscillation at rate Θ − ½ with the frequencies of the top; ¬AAL ⇒ real-amplitude positivity fails above every X for σ ∈ (Θ−½, Θ+½); B13 ⟺ (finite layer ⇒ ψ − x is not a single finite oscillation). The ψ-wave and positivity rows are the peer E-J15 module | Modes/WithoutTheAbscissaLawThePrimeSideIsAFiniteOscillation.lean | formalized (`criticalState_heatedBeyondWall_finiteOscillation`, `not_jasRealPositiveAbove_of_not_asymptoticAbscissaLaw`, `b13_iff_finiteOffLine_not_primeErrorIsFiniteOscillation`) |
 | E-M15 | rigidity rows of the model table | — | not started |
@@ -43,6 +43,9 @@ Under ¬AAL take the isolated top S on Re = Θ (Θ = zetaZeroAbscissa by E-M20),
 
 ### E-M19
 For a window test H with Q(H) < 0: a(R*(H)) = −Q(H)/M₈(H), so Q_{R*}(H) = Q(H) + a(R*)M₈(H) = 0 and Q_{W₀}(H) = (a(W₀) − a(R*))W₈(H) ≤ a(1)(R* − W₀)W₈(H)/W₀² (R* ≥ R₁(A) ≥ W₀). Normalize G = cH, W₈(G) = W₈(F). The second critical ratio R₂ > W₀ gives Q_{W₀}(X) ≥ (a(W₀) − a(R₂))W₈(X) on the W₈-complement of F, hence W₈(G − sF) ≤ 2Q_{W₀}(G)/(a(W₀) − a(R₂)) for a sign s, and Q_{W₀}(G − sF) = Q_{W₀}(G). Both are ≤ C(R* − W₀). G vanishes left of −A, so W₈(G − sF) ≥ ∫_{u<−A}F²e^{−8u} =: τ(A); taking the infimum over H, R₁(A) ≥ W₀ + τ(A)/C. τ(A) > 0 because F has both signs on every ray.
+
+### E-M16
+Let 0 < r ≤ R_m and suppose a half-line family has N + 1 negative squares, N = #{i : R_i < r}. Realification (exists_real_negative_orthogonal_family) gives X ∈ H with Q_r(X) < 0, W₈-orthogonal to the N rungs below r. Put c_i = W₈(Φ_i, X)/W₈(Φ_i) and Z = X − Σ_{R_i ≥ r} c_iΦ_i; then Z is W₈-orthogonal to all rungs, Q_r(Z) ≥ 0 (floor), and Q_r(X) = Q_r(Z) + Σ_{R_i ≥ r} c_i²(a(r) − a(R_i))W₈(Φ_i) ≥ 0, a contradiction. Conversely Q_r(Σ_{R_i<r} c_iΦ_i) = Σ c_i²(a(r) − a(R_i))W₈(Φ_i) < 0 for c ≠ 0. If r ≤ R_k, monotonicity of the rungs gives #{i : R_i < r} ≤ k.
 
 ## Conjecture ledger
 

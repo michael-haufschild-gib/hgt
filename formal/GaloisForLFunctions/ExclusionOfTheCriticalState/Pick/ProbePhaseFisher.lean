@@ -47,6 +47,9 @@ theorem phaseQuantumFisher_value (t : ℝ) (x : ZeroSpace) :
   have hn : ‖timePhase t x‖ = ‖x‖ := (phaseRotationEquiv (Circle.exp t)).norm_map x
   rw [hn]
 
+private theorem phaseQuantumFisher_at_zero (t : ℝ) : phaseQuantumFisher t 0 = 0 := by
+  rw [phaseQuantumFisher_value, norm_zero, zero_pow (by decide : 4 ≠ 0), div_zero]
+
 /-- Every zero-coordinate vector has a Fisher value in the closed unit interval. -/
 theorem phaseQuantumFisher_bounds (t : ℝ) (x : ZeroSpace) :
     0 ≤ phaseQuantumFisher t x ∧ phaseQuantumFisher t x ≤ 1 := by
@@ -55,7 +58,8 @@ theorem phaseQuantumFisher_bounds (t : ℝ) (x : ZeroSpace) :
   · exact div_nonneg (mul_nonneg (by norm_num)
       (mul_nonneg (sq_nonneg _) (sq_nonneg _))) (pow_nonneg (norm_nonneg _) _)
   · by_cases hx : x = 0
-    · simp [hx]
+    · rw [hx, norm_zero, zero_pow (by decide : 4 ≠ 0), div_zero]
+      exact zero_le_one
     · apply (div_le_iff₀ (pow_pos (norm_pos_iff.mpr hx) 4)).mpr
       simpa only [one_mul] using sector_mass_product_le x
 
@@ -63,19 +67,30 @@ theorem phaseQuantumFisher_bounds (t : ℝ) (x : ZeroSpace) :
 theorem phaseQuantumFisher_zero_iff (t : ℝ) (x : ZeroSpace) :
     phaseQuantumFisher t x = 0 ↔ zeroReflection x = x ∨ zeroReflection x = -x := by
   by_cases hx : x = 0
-  · simp [phaseQuantumFisher_value, hx]
+  · rw [hx, phaseQuantumFisher_at_zero]
+    exact iff_of_true rfl (Or.inl (map_zero zeroReflection))
   · rw [phaseQuantumFisher_value, div_eq_zero_iff]
-    simp only [(pow_pos (norm_pos_iff.mpr hx) 4).ne', or_false, mul_eq_zero,
-      OfNat.ofNat_ne_zero, false_or, sector_mass_product_zero_iff]
+    simp only [(pow_pos (norm_pos_iff.mpr hx) 4).ne', or_false]
+    rw [mul_eq_zero]
+    simp only [OfNat.ofNat_ne_zero, false_or]
+    exact sector_mass_product_zero_iff x
 
 /-- Maximal Fisher information is exactly nonzero balanced-sector mass. -/
 theorem phaseQuantumFisher_eq_one_iff (t : ℝ) (x : ZeroSpace) :
     phaseQuantumFisher t x = 1 ↔ x ≠ 0 ∧ reflectionEnergy x = 0 := by
   by_cases hx : x = 0
-  · simp [phaseQuantumFisher_value, hx]
-  · rw [phaseQuantumFisher_value, div_eq_iff (pow_pos (norm_pos_iff.mpr hx) 4).ne', one_mul]
-    simp only [hx, not_false_eq_true, true_and]
-    exact sector_mass_product_max_iff x
+  · rw [hx, phaseQuantumFisher_at_zero]
+    norm_num
+  · rw [phaseQuantumFisher_value]
+    have hd := (pow_pos (norm_pos_iff.mpr hx) 4).ne'
+    constructor
+    · intro h
+      refine ⟨hx, (sector_mass_product_max_iff x).mp ?_⟩
+      simpa only [one_mul] using (div_eq_iff hd).mp h
+    · intro h
+      apply (div_eq_iff hd).mpr
+      rw [one_mul]
+      exact (sector_mass_product_max_iff x).mpr h.2
 
 /-- A single zero has zero Fisher information on the critical line and maximal information off it. -/
 theorem phaseQuantumFisher_zeroBasis (t : ℝ) (z : zetaZeroConfig.carrier) :

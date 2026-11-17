@@ -404,7 +404,9 @@ theorem bareMixedEnergy_singleQuartet {ρ₀ : ℂ} (hq : HasSingleOffLineQuarte
     rw [centredZero]
     congr 2
     ring
-  rw [hsum, sum_offLineCopyFinset_of_singleQuartet hq]
+  rw [hsum, sum_offLineCopyFinset_of_singleQuartet hq
+    (fun ρ : ℂ => negativeHalfLineLaplace (cx F) (ρ - 1 / 2) *
+      negativeHalfLineLaplace (cx G) (1 / 2 - ρ))]
   set zPos : ℂ := ρ₀ - 1 / 2
   set zNeg : ℂ := 1 / 2 - conj ρ₀
   have hc₁ : conj ρ₀ - 1 / 2 = conj zPos := by
@@ -412,17 +414,17 @@ theorem bareMixedEnergy_singleQuartet {ρ₀ : ℂ} (hq : HasSingleOffLineQuarte
   have hz1 : (1 : ℂ) / 2 - ρ₀ = conj zNeg := by
     dsimp [zNeg]; apply Complex.ext <;> simp
   have hz2 : (1 : ℂ) - ρ₀ - 1 / 2 = conj zNeg := by
-    dsimp [zNeg]; apply Complex.ext <;> simp <;> ring
+    dsimp [zNeg]; (apply Complex.ext <;> simp); ring
   have hz3 : (1 : ℂ) / 2 - (1 - ρ₀) = zPos := by dsimp [zPos]; ring
   have hz4 : (1 : ℂ) - conj ρ₀ - 1 / 2 = zNeg := by dsimp [zNeg]; ring
   have hz5 : (1 : ℂ) / 2 - (1 - conj ρ₀) = conj zPos := by
-    dsimp [zPos]; apply Complex.ext <;> simp <;> ring
+    dsimp [zPos]; (apply Complex.ext <;> simp); ring
   have hreal_F : ∀ w : ℂ, negativeHalfLineLaplace (cx F) (conj w) =
-      conj (negativeHalfLineLaplace (cx F) w) := fun w => by
-    simpa [cx] using negativeHalfLineLaplace_real_conj F w
+      conj (negativeHalfLineLaplace (cx F) w) := fun w =>
+    negativeHalfLineLaplace_real_conj F w
   have hreal_G : ∀ w : ℂ, negativeHalfLineLaplace (cx G) (conj w) =
-      conj (negativeHalfLineLaplace (cx G) w) := fun w => by
-    simpa [cx] using negativeHalfLineLaplace_real_conj G w
+      conj (negativeHalfLineLaplace (cx G) w) := fun w =>
+    negativeHalfLineLaplace_real_conj G w
   have hdot : dotProduct (quartetEvalVec ρ₀ F) (quartetSwapMatrix *ᵥ quartetEvalVec ρ₀ G) =
       (negativeHalfLineLaplace (cx F) zPos).re * (negativeHalfLineLaplace (cx G) zNeg).re +
         (negativeHalfLineLaplace (cx F) zPos).im * (negativeHalfLineLaplace (cx G) zNeg).im +
@@ -433,7 +435,7 @@ theorem bareMixedEnergy_singleQuartet {ρ₀ : ℂ} (hq : HasSingleOffLineQuarte
       Matrix.cons_val_one, Matrix.cons_val]
     ring
   rw [hdot, hc₁, hz1, hz2, hz3, hz4, hz5, hreal_G zNeg, hreal_F zPos, hreal_F zNeg, hreal_G zPos]
-  simp only [Complex.mul_re, Complex.mul_im, Complex.add_re, Complex.conj_re, Complex.conj_im,
+  simp only [Complex.mul_re, Complex.add_re, Complex.conj_re, Complex.conj_im,
     Complex.natCast_re, Complex.natCast_im]
   ring
 
@@ -1201,7 +1203,8 @@ theorem singleQuartet_alias_sum_le {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet �
       w8Pair_self] at hnull_F
     have hbare_e : bareMixedEnergy e e = -criticalAliasCoefficient R := by
       have hsc : bareMixedEnergy e e = c ^ 2 * bareMixedEnergy F F := by
-        have h1 := criticalHalfLineFullEnergy_const_mul R c F
+        have h1 : criticalHalfLineFullEnergy R e = c ^ 2 * criticalHalfLineFullEnergy R F := by
+          dsimp [e]; rw [criticalHalfLineFullEnergy_const_mul]
         have h1' : criticalHalfLineFullEnergy R e =
             bareMixedEnergy e e + criticalAliasCoefficient R * w8Mass e := by
           have ha1 := criticalHalfLineFullEnergy_add_const_mul R he_dom he_dom 1
@@ -1223,7 +1226,6 @@ theorem singleQuartet_alias_sum_le {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet �
           have hfun : (fun u => (c * F u) ^ 2 * Real.exp (-(8 * u))) =
               fun u => c ^ 2 * (F u ^ 2 * Real.exp (-(8 * u))) := by funext u; ring
           rw [hfun, integral_const_mul]
-        change criticalHalfLineFullEnergy R e = c ^ 2 * criticalHalfLineFullEnergy R F at h1
         rw [h1', h2', hw_sc] at h1
         linarith
       have hw_sc : 1 = c ^ 2 * w8Mass F := by
@@ -1231,7 +1233,12 @@ theorem singleQuartet_alias_sum_le {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet �
         have hfun : (fun u => (c * F u) ^ 2 * Real.exp (-(8 * u))) =
             fun u => c ^ 2 * (F u ^ 2 * Real.exp (-(8 * u))) := by funext u; ring
         rw [hfun, integral_const_mul]
-      nlinarith
+      have hbf : bareMixedEnergy F F = -(criticalAliasCoefficient R * w8Mass F) := by linarith
+      calc bareMixedEnergy e e = c ^ 2 * bareMixedEnergy F F := hsc
+        _ = c ^ 2 * -(criticalAliasCoefficient R * w8Mass F) := by rw [hbf]
+        _ = -criticalAliasCoefficient R * (c ^ 2 * w8Mass F) := by ring
+        _ = -criticalAliasCoefficient R * 1 := by rw [← hw_sc]
+        _ = -criticalAliasCoefficient R := mul_one _
     have hpar := bareMixedEnergy_self_singleQuartet hq he_dom
     rw [hbare_e] at hpar
     have hon_nn := onLineEnergy_nonneg e
@@ -1253,8 +1260,10 @@ theorem singleQuartet_alias_sum_le {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet �
   have hcs2 : (u₁ * v₁ + u₂ * v₂) ^ 2 ≤ (u₁ ^ 2 + u₂ ^ 2) * (v₁ ^ 2 + v₂ ^ 2) := by
     nlinarith [sq_nonneg (u₁ * v₂ - u₂ * v₁)]
   have hprod_le : (u₁ ^ 2 + u₂ ^ 2) * (v₁ ^ 2 + v₂ ^ 2) ≤
-      (1 / (8 + 2 * δ)) * (1 / (8 - 2 * δ)) :=
-    mul_le_mul hbPos hbNeg (add_nonneg (sq_nonneg _) (sq_nonneg _)) (by linarith)
+      (1 / (8 + 2 * δ)) * (1 / (8 - 2 * δ)) := by
+    rw [show 8 + 2 * -δ = 8 - 2 * δ by ring] at hbNeg
+    exact mul_le_mul hbPos hbNeg (add_nonneg (sq_nonneg _) (sq_nonneg _))
+      (by positivity : (0 : ℝ) ≤ 1 / (8 + 2 * δ))
   have hden_eq : (8 + 2 * δ) * (8 - 2 * δ) = 4 * (16 - δ ^ 2) := by ring
   have h16_pos : 0 < 16 - δ ^ 2 := by nlinarith
   have hrhs_sq : (1 / (8 + 2 * δ)) * (1 / (8 - 2 * δ)) =
@@ -1375,9 +1384,9 @@ theorem singleQuartet_leftPair_isolator_isomorphism {ρ₀ : ℂ} (hq : HasSingl
   obtain ⟨c, hc⟩ := hsurj_L (w₀.re, w₀.im)
   refine ⟨(c 0, c 1), Complex.ext (congrArg Prod.fst hc) (congrArg Prod.snd hc), ?_⟩
   rintro ⟨s, t⟩ hst
+  dsimp only at hst
   have hL_st : Lmap ![s, t] = (w₀.re, w₀.im) := by
     dsimp [Lmap]
-    simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
     rw [hst]
   have hc_eq := hinj_L (hL_st.trans hc.symm)
   exact Prod.ext (congrFun hc_eq 0) (congrFun hc_eq 1)
@@ -1612,6 +1621,8 @@ theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
   intro zPos cPos
   have hfin_right : Set.Finite {q : XiZeroCopy | 0 < (centredZero q).re} :=
     hq.finiteOffLine_copies.subset fun q hpos => by
+      change 0 < (centredZero q).re at hpos
+      change (q.1 : ℂ).re ≠ 1 / 2
       rw [centredZero, Complex.sub_re] at hpos
       norm_num at hpos
       linarith
@@ -1650,10 +1661,11 @@ theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
     have hc_t : (conj ρ₀ - 1 / 2 - 8) * (t : ℂ) = conj ((ρ₀ - 1 / 2 - 8) * (t : ℂ)) := by
       apply Complex.ext <;> simp
     have havg_conj : ∀ w : ℂ, averageSymbol (conj w) = conj (averageSymbol w) := fun w => by
-      unfold averageSymbol; simp
-    rw [hc_z, show cx F₀ = fun u => (F₀ u : ℂ) from rfl, negativeHalfLineLaplace_real_conj,
-      hc_8, havg_conj, hc_t, Complex.exp_conj]
-    simp [cx]
+      unfold averageSymbol
+      simp only [map_inv₀, map_mul, map_add, map_ofNat]
+    rw [hc_t, hc_8, hc_z, show cx F₀ = fun u => (F₀ u : ℂ) from rfl,
+      negativeHalfLineLaplace_real_conj, havg_conj, Complex.exp_conj]
+    simp
   have hg_neg1 : g (1 - ρ₀) = 0 := by
     dsimp [g]; rw [if_neg (by simp; linarith [hq.1])]
   have hg_neg2 : g (1 - conj ρ₀) = 0 := by

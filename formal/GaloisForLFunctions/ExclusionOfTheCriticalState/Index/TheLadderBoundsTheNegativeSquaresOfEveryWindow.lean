@@ -87,7 +87,7 @@ theorem IsCriticalLadder.hermNegIndex_confinedGram_le (hL : IsCriticalLadder m R
 
 /-- **The rungs below `r` are a negative space at ratio `r`.** A combination of rungs that vanishes
 on the rungs at or above `r` and not on all rungs below `r` has negative energy at ratio `r`. -/
-theorem IsCriticalLadder.fullEnergy_sum_neg (hL : IsCriticalLadder m R Φ) {r : ℝ} (hr0 : 0 < r)
+theorem IsCriticalLadder.fullEnergy_sum_neg (hL : IsCriticalLadder m R Φ) {r : ℝ}
     (c : Fin (m + 1) → ℝ) (hc0 : ∀ i, r ≤ R i → c i = 0) (hc : ∃ i, R i < r ∧ c i ≠ 0) :
     criticalHalfLineFullEnergy r (fun u => ∑ i, c i * Φ i u) < 0 := by
   classical
@@ -113,7 +113,7 @@ theorem IsCriticalLadder.fullEnergy_sum_neg (hL : IsCriticalLadder m R Φ) {r : 
     · simp only [f, hc0 i h]; ring_nf; exact le_rfl
   have hf₀ : f i₀ < 0 := by
     have := alias_lt (hL.pos i₀) hi₀
-    exact mul_neg_of_pos_of_neg (pow_pos_of_ne_zero' hc₀)
+    exact mul_neg_of_pos_of_neg (lt_of_le_of_ne (sq_nonneg _) (Ne.symm (pow_ne_zero 2 hc₀)))
       (mul_neg_of_neg_of_pos (by linarith) (hpos i₀))
   have hle : ∑ i, f i ≤ f i₀ := by
     have h := Finset.sum_le_sum_of_subset_of_nonneg (f := fun i => -f i)
@@ -140,7 +140,3 @@ theorem IsCriticalLadder.hermNegIndex_confinedGram_le_of_le (hL : IsCriticalLadd
   exact (Finset.card_le_card hsub).trans (by simp)
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState
-
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.IsCriticalLadder.hermNegIndex_confinedGram_le
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.IsCriticalLadder.fullEnergy_sum_neg
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.IsCriticalLadder.hermNegIndex_confinedGram_le_of_le
