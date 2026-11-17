@@ -10,7 +10,7 @@ Write `ω` for the Lévy density of the Gamma form and, for a cutoff `δ > 0`,
 
 `𝔏_δ X(u) = ∫_{|t| > δ} ω(|t|) (X(u) − X(u − t)) dt` (`cutoffLevy`).
 
-**Comparison principle** (`IsHalfLineEnergyMinimizer.exists_wall_comparison`). There is a constant
+**Comparison principle** (`halfLineEnergyMinimizer_exists_wall_comparison`). There is a constant
 `M`, depending only on `F`, with the following property. Let `0 < k ≤ 1/2` and let `ψ` be a
 bounded profile of the energy domain carried by `(−k, 0)` with `ψ ≥ C` on `(−k, −k/2]`. Compare
 `F` on `(−k, 0)` with the function equal to `ψ` there and to `F` left of `−k`: if for all small `δ`
@@ -349,7 +349,7 @@ theorem collarCutoff_lipschitz {k : ℝ} (hk : 0 < k) (u v : ℝ) :
 /-- The weak equation bounds the jump form of a minimizer against a nonnegative test carried by
 `(−1/2, 0)` by a multiple of the mass of the test. Of the prime row only the backward shifts
 meet the support of the test, and there the minimizer decays exponentially. -/
-theorem IsHalfLineEnergyMinimizer.integral_mixedJump_le {R : ℝ} (hR : 0 < R) {F : ℝ → ℝ}
+theorem halfLineEnergyMinimizer_integral_mixedJump_le {R : ℝ} (hR : 0 < R) {F : ℝ → ℝ}
     (hF : IsHalfLineEnergyMinimizer R F) {C C₁ : ℝ} (hC : ∀ᵐ u : ℝ, |F u| ≤ C)
     (hC₁0 : 0 ≤ C₁) (hC₁ : ∀ᵐ u : ℝ, |F u| ≤ C₁ * Real.exp (1 * u)) {G : ℝ → ℝ}
     (hG : CriticalHalfLineEnergyDomain G) (hG0 : ∀ u, 0 ≤ G u)
@@ -492,7 +492,7 @@ the domain, carried by `(−k, 0)` and at least the essential bound of the minim
 `(−k, −k/2]`, for which the function equal to `ψ` on `(−k, 0)` and to the minimizer left of
 `−k` is a strict supersolution of the cutoff Lévy operators on `(−k/2, −δ]`, with the margin
 `M + 1` fixed by the minimizer. -/
-theorem IsHalfLineEnergyMinimizer.exists_wall_comparison {R : ℝ} (hR : 0 < R) {F : ℝ → ℝ}
+theorem halfLineEnergyMinimizer_exists_wall_comparison {R : ℝ} (hR : 0 < R) {F : ℝ → ℝ}
     (hF : IsHalfLineEnergyMinimizer R F) :
     ∃ C M : ℝ, 0 ≤ C ∧ 0 ≤ M ∧ (∀ᵐ u : ℝ, |F u| ≤ C) ∧
       ∀ k : ℝ, 0 < k → k ≤ 1 / 2 → ∀ ψ : ℝ → ℝ, CriticalHalfLineEnergyDomain ψ →
@@ -577,8 +577,8 @@ theorem IsHalfLineEnergyMinimizer.exists_wall_comparison {R : ℝ} (hR : 0 < R) 
     rw [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)]
     by_cases hv : v ∈ Iic (-k)
     · rw [indicator_of_mem hv]
-    · rw [indicator_of_notMem hv]
-      positivity
+    · rw [indicator_of_notMem hv, zero_pow two_ne_zero]
+      exact sq_nonneg _
   have hXC : ∀ᵐ v : ℝ, (Iic (-k)).indicator F v ≤ C := by
     filter_upwards [hC] with v hv
     by_cases hmem : v ∈ Iic (-k)
@@ -589,6 +589,7 @@ theorem IsHalfLineEnergyMinimizer.exists_wall_comparison {R : ℝ} (hR : 0 < R) 
   have hGψm : Measurable fun v => G v + ψ v := hG.meas.add hψ.meas
   have hGψ2 : Integrable fun v => (G v + ψ v) ^ 2 :=
     integrable_sq_add_of_integrable_sq hG.meas hψ.meas hG.sq hψ.sq
+  have hsumm : Measurable fun v => (G v + ψ v) + (Iic (-k)).indicator F v := hGψm.add hXm
   have hsum2 : Integrable fun v => ((G v + ψ v) + (Iic (-k)).indicator F v) ^ 2 :=
     integrable_sq_add_of_integrable_sq hGψm hXm hGψ2 hX2
   -- the large jumps of `(F, G)` dominate the barrier term
@@ -635,11 +636,19 @@ theorem IsHalfLineEnergyMinimizer.exists_wall_comparison {R : ℝ} (hR : 0 < R) 
         have hconv : lineConvolution (symCutoffKernel δ) F u ≤
             lineConvolution (symCutoffKernel δ) G u + lineConvolution (symCutoffKernel δ) ψ u +
               lineConvolution (symCutoffKernel δ) ((Iic (-k)).indicator F) u := by
-          have h1 := lineConvolution_symCutoffKernel_mono hδ hF.1.meas hF.1.sq (hGψm.add hXm)
-            hsum2 hP1 u
-          rw [lineConvolution_symCutoffKernel_add hδ hGψm hGψ2 hXm hX2,
-            lineConvolution_symCutoffKernel_add hδ hG.meas hG.sq hψ.meas hψ.sq] at h1
-          exact h1
+          have h1 : lineConvolution (symCutoffKernel δ) F u ≤
+              lineConvolution (symCutoffKernel δ)
+                (fun v => (G v + ψ v) + (Iic (-k)).indicator F v) u :=
+            lineConvolution_symCutoffKernel_mono hδ hF.1.meas hF.1.sq hsumm hsum2 hP1 u
+          have e1 : lineConvolution (symCutoffKernel δ)
+                (fun v => (G v + ψ v) + (Iic (-k)).indicator F v) u =
+              lineConvolution (symCutoffKernel δ) (fun v => G v + ψ v) u +
+                lineConvolution (symCutoffKernel δ) ((Iic (-k)).indicator F) u :=
+            lineConvolution_symCutoffKernel_add hδ hGψm hGψ2 hXm hX2 u
+          have e2 : lineConvolution (symCutoffKernel δ) (fun v => G v + ψ v) u =
+              lineConvolution (symCutoffKernel δ) G u + lineConvolution (symCutoffKernel δ) ψ u :=
+            lineConvolution_symCutoffKernel_add hδ hG.meas hG.sq hψ.meas hψ.sq u
+          linarith only [h1, e1, e2]
         have hlevy : cutoffLevy δ G u + (cutoffLevy δ ψ u -
             lineConvolution (symCutoffKernel δ) ((Iic (-k)).indicator F) u) ≤
             cutoffLevy δ F u := by
@@ -702,7 +711,7 @@ theorem IsHalfLineEnergyMinimizer.exists_wall_comparison {R : ℝ} (hR : 0 < R) 
     have hnn := integral_cutoffLevy_mul_self_nonneg hδ hG
     linarith only [hint, hnn]
   -- the weak equation, and the limit `δ → 0`
-  have hJ := hF.integral_mixedJump_le hR hC hC₁0 hC₁ hG hG0
+  have hJ := halfLineEnergyMinimizer_integral_mixedJump_le hR hF hC hC₁0 hC₁ hG hG0
     (fun u hu => hGleft u (by linarith only [hu, hk2]))
   rw [← hMdef] at hJ
   have hle : ∀ᶠ δ : ℝ in 𝓝[>] 0, ∫ u, G u ≤
