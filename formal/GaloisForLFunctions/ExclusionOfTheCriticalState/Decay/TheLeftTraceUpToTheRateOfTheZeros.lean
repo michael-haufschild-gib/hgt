@@ -4,13 +4,17 @@ import GaloisForLFunctions.ExclusionOfTheCriticalState.TheExplicitFormulaHoldsOn
 import GaloisForLFunctions.ExclusionOfTheCriticalState.TheZeroCauchyTransformIsSquareIntegrableUpToALogarithm
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Modes.TheHeatedProfileBeyondTheWallHasAMeanSquareAtTheExactRate
 import GaloisForLFunctions.HTGeometry.LaplaceRayInjective
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheProfileBeyondTheWallInPrimeForm
 
 /-!
 # The left trace up to the rate of the zeros
 
 On the reflected zero-free strip the continued state is the sum of the reflected
 Euler multiplier, the two wall terms, and the truncated prime tail. Each term
-has finite square mass with respect to unweighted Lebesgue measure.
+has finite square mass with respect to unweighted Lebesgue measure. Poisson
+majorization and Laplace injectivity identify the Hardy datum with the unheated
+profile. Thus both the profile and the prime sum after polar subtraction lie
+in weighted square mean for every exponent above the centred zero abscissa.
 -/
 
 noncomputable section
@@ -125,7 +129,8 @@ theorem integrable_norm_sq_stateMeromorphic_reflected_line {W₀ : ℝ} (hW : 0 
   refine ((memLp_two_iff_integrable_sq_norm htrace.aestronglyMeasurable).mp htrace).congr
     (Eventually.of_forall fun t => ?_)
   change ‖_ * (-_)‖^2 = ‖stateMeromorphic W₀ F (p t-8)‖^2
-  rw [heq, div_eq_mul_inv, mul_comm]
+  simp only [heq, div_eq_mul_inv, Pi.neg_apply, Pi.sub_apply, Pi.add_apply, Pi.mul_apply]
+  rw [mul_comm ((criticalAliasCoefficient W₀ : ℂ))⁻¹]
 
 #print axioms integrable_norm_sq_stateMeromorphic_reflected_line
 
@@ -358,5 +363,38 @@ theorem memLp_damped_beyondWallProfile_of_abscissa {W₀ : ℝ} (hW : 0 < W₀)
     exact Real.exp_le_exp.mpr (neg_le_neg (mul_le_mul_of_nonneg_right hcd (le_of_lt hx)))
 
 #print axioms memLp_damped_beyondWallProfile_of_abscissa
+
+/-- The prime sum with its polar main term removed has finite damped square mass
+at every exponent above the centred zero abscissa. -/
+theorem memLp_damped_prime_sum_sub_pole_of_abscissa {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {d : ℝ}
+    (hd : zetaZeroAbscissa-1/2 < d) :
+    MemLp (fun x : ℝ => expRay (d:ℂ) x *
+      ((∑' n : ℕ, (primeAtom n : ℂ) * (F (x-Real.log n) : ℂ)) -
+        negativeHalfLineLaplace (cx F) (-(1/2)) * (Real.exp (x/2):ℂ)))
+      2 (volume.restrict (Ioi (0:ℝ))) := by
+  have hdom := criticalHalfLineEnergyDomain_of_groundState hF
+  have hd0 : 0 < d := (sub_nonneg.mpr half_le_zetaZeroAbscissa).trans_lt hd
+  have hp := (memLp_damped_beyondWallProfile_of_abscissa hW ht hF hd).const_mul
+    (-(criticalAliasCoefficient W₀ : ℂ))
+  have hJ := memLp_dampedLevyHeadProfile hdom hd0.le
+  have hE := (memLp_two_expRay_restrict (w := (d:ℂ)+1/2) (by simp; linarith) 0).const_mul
+    (negativeHalfLineLaplace (cx F) (1/2))
+  refine MemLp.ae_eq ?_ ((hp.sub hJ).add hE)
+  filter_upwards [beyondWallProfile_primeForm hW hdom] with x hx
+  have he : expRay ((d:ℂ)+1/2) x = expRay (d:ℂ) x * (Real.exp (-(x/2)):ℂ) := by
+    unfold expRay
+    rw [Complex.ofReal_exp, ← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  change -(criticalAliasCoefficient W₀ : ℂ)*(expRay (d:ℂ) x*beyondWallProfile W₀ hdom x)
+    - levyHeadProfile F x * expRay (d:ℂ) x +
+      negativeHalfLineLaplace (cx F) (1/2)*expRay ((d:ℂ)+1/2) x = _
+  rw [he]
+  linear_combination (expRay (d:ℂ) x)*hx.2
+
+#print axioms memLp_damped_prime_sum_sub_pole_of_abscissa
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

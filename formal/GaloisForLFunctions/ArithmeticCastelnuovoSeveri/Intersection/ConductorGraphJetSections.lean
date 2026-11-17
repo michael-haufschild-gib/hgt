@@ -64,7 +64,8 @@ private theorem selectorFactor_same (g : ℕ → R) (h i j : ℕ)
     Ideal.Quotient.mk I (selectorFactor g h i j) = Ideal.Quotient.mk I (C (rowFactor g h i j)) := by
   by_cases he : i = j
   · simp [selectorFactor, rowFactor, he]
-  rw [selectorFactor, rowFactor, if_neg he, ← sub_eq_zero, ← map_sub]
+  simp only [selectorFactor, rowFactor, if_neg he]
+  rw [← sub_eq_zero, ← map_sub]
   apply Ideal.Quotient.eq_zero_iff_mem.mpr
   have hn : (C (g i) - X)^h ∈ I := by
     rw [← neg_sub, neg_eq_neg_one_mul, mul_pow]
@@ -81,7 +82,7 @@ private theorem jetSelector_at (S : Finset ℕ) (g : ℕ → R) (h i j : ℕ) (h
       if i = j then Ideal.Quotient.mk I (C (jetRow S g h i)) else 0 := by
   by_cases he : i = j
   · subst j
-    simp only [if_pos rfl, jetSelector, jetRow, map_prod]
+    simp only [jetSelector, jetRow, map_prod]
     exact prod_congr rfl fun k _ => selectorFactor_same g h i k I hz
   rw [if_neg he]
   apply Ideal.Quotient.eq_zero_iff_mem.mpr
@@ -101,7 +102,7 @@ theorem graphJetSection_restrict (S : Finset ℕ) (g : ℕ → R) (h : ℕ) (dat
   change _ ∈ I
   apply Ideal.Quotient.eq_zero_iff_mem.mp
   rw [map_sub, sub_eq_zero, graphJetSection, map_sum, sum_eq_single j]
-  · simp only [map_mul, jetSelector_at S g h j j hj I hz, if_pos rfl, graphJetMultiplier,
+  · simp only [map_mul, jetSelector_at S g h j j hj I hz, if_true, graphJetMultiplier,
       ← prod_erase_mul S _ hj, map_mul]
     ring
   · intro i _ hne
@@ -123,6 +124,41 @@ theorem conductorJetMultiplier_ne_zero (S : Finset ℕ) (h : ℕ) (hS : 0 ∉ S)
   · rw [rowFactor, if_neg he]
     exact pow_ne_zero _ (sub_ne_zero.mpr (conductorContact_graph_ne
       (fun e => hS (e ▸ hi)) (fun e => hS (e ▸ hj)) he))
+
+private theorem contact_le_larger {i j : ℕ} (hi : 0 < i) (hij : i < j) :
+    conductorContact i j ≤ j := by
+  have hj := hi.trans hij
+  have hsmall : (conductorGraph i).coeff j = 0 :=
+    coeff_eq_zero_of_natDegree_lt ((conductorGraph_natDegree hi.ne').trans_lt hij)
+  let r := ∏ p ∈ j.primeFactors, p
+  have htop : (conductorGraph j).coeff j = (r:ℤ) := by
+    simp [r, conductorGraph, coeff_monomial, Nat.mem_divisors, hj.ne']
+  have hdiv := Int.natAbs_dvd_natAbs.mpr (content_dvd_coeff (p := conductorGraph i - conductorGraph j) j)
+  rw [coeff_sub, hsmall, htop, zero_sub, Int.natAbs_neg, Int.natAbs_natCast] at hdiv
+  have hr : 0 < r := prod_pos fun p hp => (Nat.prime_of_mem_primeFactors hp).pos
+  exact (Nat.le_of_dvd hr hdiv).trans (Nat.le_of_dvd hj (Nat.prod_primeFactors_dvd j))
+
+/-- The same clearing polynomial controls all residue characteristics. Its
+integer content is bounded using the top coefficient of each graph difference. -/
+theorem conductorJetMultiplier_content_le (S : Finset ℕ) (h s : ℕ) (hs : 1 ≤ s)
+    (hS : ∀ i ∈ S, 0 < i ∧ i ≤ s) :
+    verticalContent (graphJetMultiplier S conductorGraph h) ≤ s^(2*h*S.card*S.card) := by
+  have hc (i j) (hi : i ∈ S) (hj : j ∈ S) (he : i ≠ j) : conductorContact i j ≤ s := by
+    rcases lt_or_gt_of_ne he with hlt | hgt
+    · exact (contact_le_larger (hS _ hi).1 hlt).trans (hS _ hj).2
+    · rw [conductorContact_comm]
+      exact (contact_le_larger (hS _ hj).1 hgt).trans (hS _ hi).2
+  have hr (i) (hi : i ∈ S) : verticalContent (jetRow S conductorGraph h i) ≤ (s^(2*h))^S.card := by
+    rw [jetRow, map_prod, ← prod_const]
+    apply prod_le_prod (fun _ _ => Nat.zero_le _)
+    intro j hj
+    by_cases he : i = j
+    · simp only [rowFactor, if_pos he, map_one]
+      exact one_le_pow₀ hs
+    · simp only [rowFactor, if_neg he, map_pow]
+      exact Nat.pow_le_pow_left (hc i j hi hj he) _
+  rw [graphJetMultiplier, map_prod, pow_mul, pow_mul, ← prod_const]
+  exact prod_le_prod (fun _ _ => Nat.zero_le _) hr
 
 private theorem norm_upperJetPower {A : Type*} [CommRing A] (e : A →+* ℂ) (h : ℕ) (x y : A) :
     ‖e (upperJetPower h x y)‖ ≤ (‖e x‖ + ‖e y‖)^(2*h) := by
@@ -194,6 +230,7 @@ theorem graphJetSection_norm {R : Type*} [CommRing R] (S : Finset ℕ) (g : ℕ 
 
 #print axioms graphJetSection_restrict
 #print axioms conductorJetMultiplier_ne_zero
+#print axioms conductorJetMultiplier_content_le
 #print axioms graphJetSection_norm
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

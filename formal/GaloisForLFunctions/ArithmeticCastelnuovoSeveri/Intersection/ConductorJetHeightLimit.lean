@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.Intersection.ConductorGraphJetSections
+import GaloisForLFunctions.BiarithmeticGaugeGeometry.EuclideanCellRemainderAndPolarNeutralCollapse
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
 /-!
@@ -35,6 +36,42 @@ private theorem graph_disk_bound (e : ℤ[X] →+* ℂ) (he : ‖e X‖ ≤ 1) (
 /-- Maximum uniform jet order for ceiling-rounded weights of size C m / √N. -/
 def meshJetOrder (C : ℕ) (m : ℕ) : ℕ := ⌈(C : ℝ)*m / Real.sqrt m.sqrt⌉₊ + 1
 
+/-- The order covers both integer thickenings used for the lower and upper
+graph on the logarithmic mesh, with arbitrary signs of the two samples. -/
+theorem sampledGraph_jetOrders_le (C m i : ℕ) (hm : 0 < m) (hi : m.sqrt ≤ i)
+    (x y : ℝ) (hx : |x| ≤ C) (hy : |y| ≤ C) :
+    ⌊(m:ℝ)*(Real.sqrt i * BiarithmeticGaugeGeometry.logCellWidth i * x)⌋.natAbs ≤ meshJetOrder C m ∧
+    ⌊(m:ℝ)*(y / Real.sqrt i)⌋.natAbs ≤ meshJetOrder C m := by
+  have hN : 0 < m.sqrt := Nat.sqrt_pos.mpr hm
+  have hi0 := hN.trans_le hi
+  have hr : 0 < Real.sqrt (i:ℝ) := Real.sqrt_pos.mpr (Nat.cast_pos.mpr hi0)
+  have hn : 0 < Real.sqrt (m.sqrt:ℝ) := Real.sqrt_pos.mpr (Nat.cast_pos.mpr hN)
+  have hnr := Real.sqrt_le_sqrt (show (m.sqrt:ℝ) ≤ i by exact_mod_cast hi)
+  have hcell : Real.sqrt i * BiarithmeticGaugeGeometry.logCellWidth i ≤ 1 / Real.sqrt i := calc
+    _ ≤ Real.sqrt i * (1/(i:ℝ)) := mul_le_mul_of_nonneg_left
+      (BiarithmeticGaugeGeometry.logCellWidth_le_inv hi0) hr.le
+    _ = _ := by field_simp [hr.ne', (Nat.cast_pos.mpr hi0 : (0:ℝ)<i).ne']; nlinarith only [Real.sq_sqrt (Nat.cast_nonneg i)]
+  have hweight : (C:ℝ) / Real.sqrt i ≤ (C:ℝ) / Real.sqrt m.sqrt :=
+    div_le_div_of_nonneg_left (Nat.cast_nonneg C) hn hnr
+  have hf (z : ℝ) (hz : |z| ≤ (C:ℝ) / Real.sqrt m.sqrt) :
+      ⌊(m:ℝ)*z⌋.natAbs ≤ meshJetOrder C m := by
+    have hab : |(m:ℝ)*z| ≤ (C:ℝ)*m / Real.sqrt m.sqrt := by
+      rw [abs_mul, abs_of_nonneg (Nat.cast_nonneg _), mul_comm (C:ℝ), mul_div_assoc]
+      exact mul_le_mul_of_nonneg_left hz (Nat.cast_nonneg m)
+    have hceil := Nat.le_ceil ((C:ℝ)*m / Real.sqrt m.sqrt)
+    rw [← Nat.cast_le (α := ℝ), Nat.cast_natAbs, Int.cast_abs, meshJetOrder, Nat.cast_add, Nat.cast_one, abs_le]
+    constructor
+    · linarith only [Int.lt_floor_add_one ((m:ℝ)*z), (abs_le.mp hab).1, hceil]
+    · linarith only [Int.floor_le ((m:ℝ)*z), (abs_le.mp hab).2, hceil]
+  constructor
+  · apply hf
+    rw [abs_mul, abs_of_nonneg (mul_nonneg hr.le (BiarithmeticGaugeGeometry.logCellWidth_pos hi0).le)]
+    exact (mul_le_mul hcell hx (abs_nonneg _) (by positivity)).trans
+      ((show (1/Real.sqrt i)*(C:ℝ) = C / Real.sqrt i by ring).le.trans hweight)
+  · apply hf
+    rw [abs_div, abs_of_nonneg hr.le]
+    exact (div_le_div_of_nonneg_right hy hr.le).trans hweight
+
 /-- One exponent bounds both the common denominator and the sum of selectors. -/
 def meshJetLogBound (B C m : ℕ) : ℝ :=
   let s := (B+1)*m.sqrt
@@ -47,7 +84,7 @@ private theorem log_sqrt_decay (A : ℝ) :
     Tendsto (fun m : ℕ => (A+2*Real.log (m.sqrt:ℝ)) / Real.sqrt m.sqrt) atTop (𝓝 0) := by
   have ht : Tendsto (fun m : ℕ => (m.sqrt:ℝ)) atTop atTop :=
     tendsto_natCast_atTop_atTop.comp jet_mesh_atTop
-  have hl := (Asymptotics.isLittleO_log_rpow_atTop (by norm_num : (0:ℝ)<1/2)).tendsto_div_nhds_zero
+  have hl := (isLittleO_log_rpow_atTop (by norm_num : (0:ℝ)<1/2)).tendsto_div_nhds_zero
   have hl' : Tendsto (fun m : ℕ => Real.log (m.sqrt:ℝ) / Real.sqrt m.sqrt) atTop (𝓝 0) := by
     simpa only [Function.comp_def, Real.sqrt_eq_rpow] using hl.comp ht
   have hc := tendsto_const_nhds (x := A) (f := (atTop : Filter ℕ))
@@ -127,8 +164,10 @@ theorem conductorMeshJetSections (B C m : ℕ) (data : ℕ → Polynomial ℤ[X]
   intro S h
   let s := (B+1)*m.sqrt
   have hs : S.card ≤ s := by
+    dsimp [S]
     rw [Nat.card_Icc]
     dsimp [s]
+    rw [Nat.add_mul, Nat.one_mul]
     have := Nat.le_max_left 1 m.sqrt
     omega
   have hS : 0 ∉ S := by simp [S]
@@ -148,7 +187,7 @@ theorem conductorMeshJetSections (B C m : ℕ) (data : ℕ → Polynomial ℤ[X]
   have hx : 2*h*S.card*(S.card+1) ≤ 2*h*s*(s+1) := by gcongr
   have hpow := pow_le_pow_right₀ hU hx
   change max _ _ ≤ Real.exp (((2*h*s*(s+1)+1 : ℕ):ℝ)*Real.log U)
-  rw [← Real.rpow_def_of_pos (zero_lt_one.trans_le hU), Real.rpow_natCast, pow_succ]
+  rw [mul_comm _ (Real.log U), ← Real.rpow_def_of_pos (zero_lt_one.trans_le hU), Real.rpow_natCast, pow_succ]
   apply max_le
   · exact (hD.trans hpow).trans (le_mul_of_one_le_right (by positivity) hU)
   · rw [mul_one] at hF

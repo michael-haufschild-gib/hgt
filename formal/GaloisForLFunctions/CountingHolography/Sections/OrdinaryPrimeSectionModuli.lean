@@ -16,7 +16,6 @@ namespace GaloisForLFunctions.CountingHolography.Sections
 
 open Filter Topology Finset ArithmeticFunction AbsoluteGeometryOfSpecZ
 open BiScaleUncertainty.ChebyshevGauge
-open scoped ArithmeticFunction.vonMangoldt
 
 private def atomWidth : ℝ := Real.exp (Real.log 3 + 5 + 4)
 
@@ -63,7 +62,7 @@ private def properCost : ℝ := 3 * (Real.log 4 + 4) * atomWidth
 proper-power rows, including when the horizon and mesh vary independently. -/
 theorem properContactMass_le {N : ℕ} (a : Fin N → ℤ) (ha : ∀ i, 0 ≤ a i)
     (L n : ℕ) (S : Finset ℕ) (hS : ∀ k ∈ S, 0 < k ∧ ¬ k.Prime) :
-    ∑ k ∈ S, contactMultiplicity (packet a) L n k * Λ k ≤
+    ∑ k ∈ S, contactMultiplicity (packet a) L n k * vonMangoldt k ≤
       (2 * atomWidth * properCost) * (∑ i, (a i : ℝ))^2 := by
   let J := Ioc n (n+L*n)
   let f := degreeSample (packet a) n
@@ -93,14 +92,14 @@ theorem properContactMass_le {N : ℕ} (a : Fin N → ℤ) (ha : ∀ i, 0 ≤ a 
     rw [← mul_sum, mul_comm atomWidth]
     exact mul_le_mul_of_nonneg_left (harmonicSample_le J (hx i) (zero_le_one.trans hD)
       (ha1 i) (atom_window hn' i)) (hc i)
-  have hrow (j : ℕ) (hj : j ∈ J) : ∑ k ∈ S, (Λ k / Real.sqrt k) * f (j*k) ≤ properCost*M := by
+  have hrow (j : ℕ) (hj : j ∈ J) : ∑ k ∈ S, (vonMangoldt k / Real.sqrt k) * f (j*k) ≤ properCost*M := by
     have hj' : 0 < j := hn'.trans (mem_Ioc.mp hj).1
     simp_rw [hfr, mul_sum]
     rw [sum_comm, mul_sum]
     apply sum_le_sum
     intro i _
-    calc ∑ k ∈ S, (Λ k / Real.sqrt k) * (c i * meshAtom i n (j*k))
-        = c i * ∑ k ∈ S, (Λ k / Real.sqrt k) * meshAtom i n (j*k) := by
+    calc ∑ k ∈ S, (vonMangoldt k / Real.sqrt k) * (c i * meshAtom i n (j*k))
+        = c i * ∑ k ∈ S, (vonMangoldt k / Real.sqrt k) * meshAtom i n (j*k) := by
           rw [mul_sum]
           exact sum_congr rfl fun k _ => by ring
       _ ≤ c i * properCost := mul_le_mul_of_nonneg_left
@@ -117,7 +116,7 @@ def ordinaryPrimeModulus {N : ℕ} (a : Fin N → ℤ) : ℕ :=
     ⌊contactMultiplicity (packet a) (3*windowEnd N) (resolution a) k⌋₊
 
 private theorem log_modulusOn (S : Finset ℕ) (e : ℕ → ℕ) :
-    Real.log ((∏ k ∈ S, contactBase k ^ e k : ℕ) : ℝ) = ∑ k ∈ S, (e k : ℝ) * Λ k := by
+    Real.log ((∏ k ∈ S, contactBase k ^ e k : ℕ) : ℝ) = ∑ k ∈ S, (e k : ℝ) * vonMangoldt k := by
   push_cast
   rw [Real.log_prod (fun k _ => (pow_pos (Nat.cast_pos.mpr (contactBase_pos k) : (0:ℝ) < _) _).ne')]
   simp only [Real.log_pow, log_contactBase]
@@ -141,11 +140,11 @@ theorem effective_modulus_difference_bound :
     exact mul_nonneg (by positivity) (sum_nonneg fun j _ =>
       div_nonneg (mul_nonneg (hf _) (hf _)) (Nat.cast_nonneg _))
   have he : Real.log (contactModulus a) - Real.log (ordinaryPrimeModulus a) =
-      ∑ k ∈ S, (⌊x k⌋₊ : ℝ) * Λ k := by
+      ∑ k ∈ S, (⌊x k⌋₊ : ℝ) * vonMangoldt k := by
     unfold contactModulus ordinaryPrimeModulus
     rw [log_modulusOn, log_modulusOn]
     exact sub_eq_iff_eq_add.mpr ((sum_filter_add_sum_filter_not (Icc 2 L) Nat.Prime
-      (fun k => (⌊x k⌋₊ : ℝ) * Λ k)).symm.trans (add_comm _ _))
+      (fun k => (⌊x k⌋₊ : ℝ) * vonMangoldt k)).symm.trans (add_comm _ _))
   rw [he]
   refine ⟨sum_nonneg fun k _ => mul_nonneg (Nat.cast_nonneg _) vonMangoldt_nonneg, ?_⟩
   refine (sum_le_sum (fun k (_ : k ∈ S) =>
