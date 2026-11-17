@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Pick.ProbeReflectionChannel
 import GaloisForLFunctions.HTGeometry.FiniteInvolutiveClockDephasing
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import Mathlib.Analysis.Complex.RealDeriv
 
 /-!
 # The reflection Lindblad flow on actual zero observables
@@ -45,14 +46,15 @@ private theorem odd_reflectionFlow (t : ℝ) (A : ZeroObservable) :
 theorem reflectionFlow_hasDerivAt (t : ℝ) (A : ZeroObservable) :
     HasDerivAt (fun s : ℝ => reflectionFlow s A)
       (reflectionGenerator (reflectionFlow t A)) t := by
-  have h := (Complex.hasDerivAt_ofReal t).neg.cexp
+  have hreal : HasDerivAt (fun s : ℝ => (s : ℂ)) (1 : ℂ) t :=
+    Complex.ofRealCLM.hasDerivAt
+  have h := hreal.neg.cexp
   have hd := (h.smul_const (oddObservable A)).const_add (evenObservable A)
+  simp only [Pi.neg_apply, ← Complex.ofReal_neg, ← Complex.ofReal_exp,
+    mul_neg_one] at hd
+  simp only [Complex.ofReal_neg, neg_smul] at hd
   rw [reflectionGenerator, odd_reflectionFlow]
-  convert hd using 1
-  · funext s
-    simp only [reflectionFlow, reflectionAttenuation, ← Complex.ofReal_neg,
-      ← Complex.ofReal_exp]
-  · simp only [← Complex.ofReal_neg, ← Complex.ofReal_exp, mul_neg_one, neg_smul]
+  simpa only [reflectionFlow, reflectionAttenuation] using hd
 
 /-- The bounded generator vanishes precisely on the actual reflection commutant. -/
 theorem reflectionGenerator_zero_iff (A : ZeroObservable) :

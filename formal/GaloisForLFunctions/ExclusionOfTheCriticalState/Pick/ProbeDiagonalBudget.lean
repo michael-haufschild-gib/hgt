@@ -19,7 +19,8 @@ def probeDiagonalEnergy {n : ℕ} (p a : Fin n → ℝ) : ℝ :=
 
 theorem probeDiagonalEnergy_nonneg {n : ℕ} (p a : Fin n → ℝ) :
     0 ≤ probeDiagonalEnergy p a :=
-  Finset.sum_nonneg fun i _ => mul_nonneg (sq_nonneg _) (probeEntry_pos _ _).le
+  Finset.sum_nonneg fun i _ =>
+    mul_nonneg (sq_nonneg |a i|) (probeEntry_pos (p i) (p i)).le
 
 private theorem pair_diagonal_bound {n : ℕ} (p a : Fin n → ℝ) (i j : Fin n) :
     2 * |a i| * |a j| * safeProbeEntry (p i) (p j) ≤
@@ -104,8 +105,10 @@ private theorem alignedEnergy_eq_card_diagonal_iff_pairs {n : ℕ} (p a : Fin n 
     have hsum : (∑ i, ∑ j, twoProbeQuadratic (p i) (p j) |a i| (-|a j|)) = 0 := by
       linarith only [hs]
     have hij := Finset.single_le_sum (fun j _ => hn i j) (Finset.mem_univ j)
-    have hi := Finset.single_le_sum
-      (fun i _ => Finset.sum_nonneg (fun j _ => hn i j)) (Finset.mem_univ i)
+    have hi : (∑ k, twoProbeQuadratic (p i) (p k) |a i| (-|a k|)) ≤
+        ∑ k, ∑ l, twoProbeQuadratic (p k) (p l) |a k| (-|a l|) :=
+      Finset.single_le_sum
+        (fun k _ => Finset.sum_nonneg (fun l _ => hn k l)) (Finset.mem_univ i)
     rw [hsum] at hi
     exact le_antisymm (hij.trans hi) (hn i j)
   · intro h
@@ -123,7 +126,7 @@ theorem alignedEnergy_eq_card_diagonal_iff {n : ℕ} (p a : Fin n → ℝ) :
     by_cases ha : ∀ i, a i = 0
     · exact Or.inl ha
     · right
-      push_neg at ha
+      push Not at ha
       obtain ⟨i, hi⟩ := ha
       have hall (j : Fin n) : node (p i) = node (p j) ∧ |a i| = |a j| := by
         have hz := (twoProbeQuadratic_zero_iff (p i) (p j) |a i| (-|a j|)).mp (h i j)

@@ -99,7 +99,7 @@ theorem twirl_entry_classification {n : ℕ}
   · subst j
     have ht := congrArg (fun M : Matrix (Fin (n + 2)) (Fin (n + 2)) ℂ => M 0 0)
       (twirl_submatrix A (Equiv.swap 0 i))
-    simpa only [Matrix.submatrix_apply, Equiv.swap_apply_left, if_pos rfl] using ht
+    simpa only [Matrix.submatrix_apply, Equiv.swap_apply_left, if_true] using ht
   · have h01 : (0 : Fin (n + 2)) ≠ 1 := by
       intro he
       have hv := congrArg Fin.val he
@@ -128,7 +128,7 @@ theorem twirl_diagonal_value {n : ℕ}
     twirl A 0 0 = Matrix.trace A / (n + 2 : ℂ) := by
   have ht := trace_twirl A
   change (∑ i, twirl A i i) = Matrix.trace A at ht
-  simp_rw [twirl_entry_classification, if_pos rfl] at ht
+  simp_rw [twirl_entry_classification, if_true] at ht
   simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
     Nat.cast_add, Nat.cast_ofNat] at ht
   have hn : (n + 2 : ℂ) ≠ 0 := by
@@ -178,7 +178,7 @@ theorem twirl_bilinear_energy {n : ℕ}
     rw [twirl_entry_classification]
     by_cases h : i = j
     · subst j
-      simp only [if_pos rfl]
+      simp only [if_true]
       ring
     · simp only [if_neg h, add_zero]
       ring

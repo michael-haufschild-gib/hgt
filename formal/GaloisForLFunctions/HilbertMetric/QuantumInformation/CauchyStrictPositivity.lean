@@ -37,7 +37,8 @@ private theorem cauchySymbol_det_ne_of_injective {n : ℕ} (r : Fin n → ℝ)
     ext i j
     change ((1 / (rate r i + rate r j) : ℝ) : ℂ) =
       ((rate r i : ℂ) + (rate r j : ℂ))⁻¹
-    simp only [Complex.ofReal_div, Complex.ofReal_add, Complex.ofReal_one, one_div]
+    push_cast
+    simp only [one_div]
   have hsum (i j : Fin n) : (rate r i : ℂ) + (rate r j : ℂ) ≠ 0 := by
     rw [← Complex.ofReal_add]
     exact Complex.ofReal_ne_zero.mpr (add_pos (rate_pos r i) (rate_pos r j)).ne'
