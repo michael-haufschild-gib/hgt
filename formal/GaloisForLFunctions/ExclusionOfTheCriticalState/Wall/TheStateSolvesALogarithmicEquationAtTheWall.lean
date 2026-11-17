@@ -319,7 +319,7 @@ theorem isBoundedWallForcing_mass {V : ℝ → ℝ} (hV : AEStronglyMeasurable V
 /-- Integration against a continuous function is a bounded wall forcing (the collar is compact). -/
 theorem isBoundedWallForcing_continuous {k : ℝ → ℝ} (hk : Continuous k) :
     IsBoundedWallForcing fun G => ∫ y, G y * k y := by
-  obtain ⟨C, hC⟩ := (isCompact_Icc (a := -(1 / 2 : ℝ)) (b := 0)).exists_bound_of_continuousOn'
+  obtain ⟨C, hC⟩ := (isCompact_Icc (a := -(1 / 2 : ℝ)) (b := 0)).exists_bound_of_continuousOn
     (f := k) hk.continuousOn
   exact ⟨k, hk.aestronglyMeasurable,
     ⟨C, Eventually.of_forall fun y hy => by simpa only [Real.norm_eq_abs] using hC y hy⟩,
@@ -540,7 +540,7 @@ theorem levyMixed_ramp_commutator {F G : ℝ → ℝ} (hF : CriticalHalfLineEner
       (∫ u, (wallRamp u - wallRamp (u + x)) * (F (u + x) * G u)) -
         ∫ u, (wallRamp u - wallRamp (u + x)) * (F u * G (u + x)) := by
     rw [← integral_sub iA iB, ← integral_sub iP iQ]
-    exact integral_congr_ae (Eventually.of_forall fun u => by simp only [Pi.sub_apply]; ring)
+    exact integral_congr_ae (Eventually.of_forall fun u => by ring)
   have hQ : (∫ u, (wallRamp u - wallRamp (u + x)) * (F u * G (u + x))) =
       ∫ u, (wallRamp (u + -1 * x) - wallRamp u) * (F (u + -1 * x) * G u) := by
     have h := integral_add_right_eq_self (μ := volume)
@@ -578,5 +578,261 @@ theorem isBoundedWallForcing_commutator {F : ℝ → ℝ} (hF : CriticalHalfLine
     (Eventually.of_forall fun u => abs_kernel_translate_le integrableOn_fourteen_exp
       abs_rampKernelLeft_le hC (Or.inr rfl) u)
   exact (hk₁.sub hk₂).congr fun G hG => (levyMixed_ramp_commutator hF hG.domain).symm
+
+/-! ### The backward prime wave -/
+
+/-- The backward prime wave \`Σ_n Λ(n) n^{−½} F(y − log n)\` of a half-line profile. -/
+def backwardPrimeWave (F : ℝ → ℝ) (y : ℝ) : ℝ :=
+  ∑' n : ℕ, vonMangoldtAtom n * F (y - Real.log n)
+
+theorem vonMangoldtAtom_nonneg' (n : ℕ) : 0 ≤ vonMangoldtAtom n := by
+  unfold vonMangoldtAtom
+  split_ifs
+  · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
+  · exact le_rfl
+
+/-- The weights \`Λ(n) n^{−½} e^{−2 log n}\` are summable. -/
+theorem summable_vonMangoldtAtom_mul_exp :
+    Summable fun n : ℕ => vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) := by
+  refine Summable.of_nonneg_of_le
+    (fun n => mul_nonneg (vonMangoldtAtom_nonneg' n) (Real.exp_pos _).le) (fun n => ?_)
+    (summable_vonMangoldt_mul_rpow (by norm_num : (1 : ℝ) < 2))
+  have hΛ : (0 : ℝ) ≤ ArithmeticFunction.vonMangoldt n := ArithmeticFunction.vonMangoldt_nonneg
+  unfold vonMangoldtAtom
+  split_ifs with hn
+  · have hn0 : (0 : ℝ) < n := by exact_mod_cast (show 0 < n by omega)
+    have hsq : 1 ≤ Real.sqrt n := Real.one_le_sqrt.mpr (by exact_mod_cast (show 1 ≤ n by omega))
+    have he : Real.exp (-(2 * Real.log n)) = (n : ℝ) ^ (-(2 : ℝ)) := by
+      rw [Real.rpow_def_of_pos hn0]
+      congr 1
+      ring
+    rw [he]
+    exact mul_le_mul_of_nonneg_right (div_le_self hΛ hsq) (Real.rpow_nonneg hn0.le _)
+  · rw [zero_mul]
+    exact mul_nonneg hΛ (Real.rpow_nonneg (Nat.cast_nonneg n) _)
+
+/-- Almost everywhere, every backward prime term is bounded by \`C e^{2y}\` times a summable weight. -/
+theorem ae_abs_primeTerm_le {F : ℝ → ℝ} {C : ℝ} (hb : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) :
+    ∀ᵐ y : ℝ, ∀ n : ℕ, |vonMangoldtAtom n * F (y - Real.log n)| ≤
+      C * Real.exp (2 * y) * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n))) := by
+  have hall : ∀ᵐ y : ℝ, ∀ n : ℕ, |F (y - Real.log n)| ≤ C * Real.exp (2 * (y - Real.log n)) :=
+    ae_all_iff.mpr fun n =>
+      (measurePreserving_sub_right (volume : Measure ℝ) (Real.log n)).quasiMeasurePreserving.ae hb
+  filter_upwards [hall] with y hy n
+  rw [abs_mul, abs_of_nonneg (vonMangoldtAtom_nonneg' n)]
+  have he : C * Real.exp (2 * (y - Real.log n)) =
+      C * Real.exp (2 * y) * Real.exp (-(2 * Real.log n)) := by
+    rw [mul_assoc, ← Real.exp_add]
+    ring_nf
+  calc vonMangoldtAtom n * |F (y - Real.log n)| ≤
+        vonMangoldtAtom n * (C * Real.exp (2 * (y - Real.log n))) :=
+        mul_le_mul_of_nonneg_left (hy n) (vonMangoldtAtom_nonneg' n)
+    _ = _ := by rw [he]; ring
+
+theorem aestronglyMeasurable_backwardPrimeWave {F : ℝ → ℝ} (hFm : Measurable F) {C : ℝ}
+    (hb : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) :
+    AEStronglyMeasurable (backwardPrimeWave F) volume := by
+  refine aestronglyMeasurable_of_tendsto_ae atTop
+    (f := fun N y => ∑ n ∈ Finset.range N, vonMangoldtAtom n * F (y - Real.log n))
+    (fun N => (Finset.measurable_sum _ fun n _ =>
+      measurable_const.mul (hFm.comp (measurable_id.sub_const _))).aestronglyMeasurable) ?_
+  filter_upwards [ae_abs_primeTerm_le hb] with y hy
+  have hs : Summable fun n : ℕ => vonMangoldtAtom n * F (y - Real.log n) :=
+    Summable.of_norm_bounded (summable_vonMangoldtAtom_mul_exp.mul_left (C * Real.exp (2 * y)))
+      fun n => by rw [Real.norm_eq_abs]; exact hy n
+  exact hs.hasSum.tendsto_sum_nat
+
+/-- On the collar the backward prime wave is bounded. -/
+theorem ae_abs_backwardPrimeWave_le {F : ℝ → ℝ} {C : ℝ} (hC0 : 0 ≤ C)
+    (hb : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) :
+    ∀ᵐ y, y ∈ Icc (-(1 / 2 : ℝ)) 0 → |backwardPrimeWave F y| ≤
+      C * ∑' n : ℕ, vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) := by
+  filter_upwards [ae_abs_primeTerm_le hb] with y hy hmem
+  have hS := summable_vonMangoldtAtom_mul_exp
+  have h1 := tsum_of_norm_bounded ((hS.mul_left (C * Real.exp (2 * y))).hasSum)
+    (fun n => by rw [Real.norm_eq_abs]; exact hy n)
+  rw [Real.norm_eq_abs, tsum_mul_left] at h1
+  unfold backwardPrimeWave
+  refine h1.trans ?_
+  have he : Real.exp (2 * y) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith [hmem.2])
+  have hS0 : 0 ≤ ∑' n : ℕ, vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) :=
+    tsum_nonneg fun n => mul_nonneg (vonMangoldtAtom_nonneg' n) (Real.exp_pos _).le
+  calc C * Real.exp (2 * y) * ∑' n : ℕ, vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) ≤
+        C * 1 * ∑' n : ℕ, vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) := by gcongr
+    _ = _ := by ring
+
+/-- **The backward prime pairing of a wall test is integration against the backward prime wave.** -/
+theorem tsum_primePairing_eq_backwardPrimeWave {F : ℝ → ℝ} (hFm : Measurable F)
+    (hF2 : Integrable fun u => F u ^ 2) {C : ℝ} (hC0 : 0 ≤ C)
+    (hb : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) {G : ℝ → ℝ} (hG : IsWallTest G) :
+    (∑' n : ℕ, vonMangoldtAtom n * ∫ t, F t * G (t + Real.log n)) =
+      ∫ y, backwardPrimeWave F y * G y := by
+  have hFL : MemLp F 2 volume := (memLp_two_iff_integrable_sq hFm.aestronglyMeasurable).mpr hF2
+  have hGL := hG.domain.memLp_real
+  have hshift : ∀ n : ℕ, (∫ t, F t * G (t + Real.log n)) = ∫ y, F (y - Real.log n) * G y :=
+    fun n => by
+      have h := integral_sub_right_eq_self (μ := volume) (fun t => F t * G (t + Real.log n))
+        (Real.log n)
+      simp only [sub_add_cancel] at h
+      exact h.symm
+  have hint : ∀ n : ℕ, Integrable fun y => vonMangoldtAtom n * F (y - Real.log n) * G y :=
+    fun n => by
+      have h := integrable_mul_of_memLp
+        (hFL.comp_measurePreserving (measurePreserving_sub_right volume (Real.log n))) hGL
+      refine (h.const_mul (vonMangoldtAtom n)).congr (Eventually.of_forall fun y => ?_)
+      simp only [Function.comp_apply]
+      ring
+  have hbound : ∀ n : ℕ, (∫ y, ‖vonMangoldtAtom n * F (y - Real.log n) * G y‖) ≤
+      C * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n))) * ∫ y, ‖G y‖ := fun n => by
+    rw [← integral_const_mul]
+    refine integral_mono_of_nonneg (Eventually.of_forall fun y => norm_nonneg _)
+      (hG.domain.integrable.norm.const_mul _) ?_
+    filter_upwards [ae_abs_primeTerm_le hb] with y hy
+    by_cases hm : y ∈ Icc (-(1 / 2 : ℝ)) 0
+    · have he : Real.exp (2 * y) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith [hm.2])
+      have hw : 0 ≤ vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) :=
+        mul_nonneg (vonMangoldtAtom_nonneg' n) (Real.exp_pos _).le
+      rw [norm_mul, Real.norm_eq_abs]
+      calc |vonMangoldtAtom n * F (y - Real.log n)| * ‖G y‖ ≤
+            (C * Real.exp (2 * y) * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n)))) * ‖G y‖ :=
+            mul_le_mul_of_nonneg_right (hy n) (norm_nonneg _)
+        _ ≤ (C * 1 * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n)))) * ‖G y‖ := by gcongr
+        _ = _ := by ring
+    · rw [hG.vanish y hm, norm_zero, mul_zero, norm_zero, mul_zero]
+  have hsum : Summable fun n : ℕ => ∫ y, ‖vonMangoldtAtom n * F (y - Real.log n) * G y‖ :=
+    Summable.of_nonneg_of_le (fun n => integral_nonneg fun y => norm_nonneg _) hbound
+      ((summable_vonMangoldtAtom_mul_exp.mul_left C).mul_right _)
+  calc (∑' n : ℕ, vonMangoldtAtom n * ∫ t, F t * G (t + Real.log n))
+      = ∑' n : ℕ, ∫ y, vonMangoldtAtom n * F (y - Real.log n) * G y := by
+        congr 1
+        funext n
+        rw [hshift, ← integral_const_mul]
+        exact integral_congr_ae (Eventually.of_forall fun y => by ring)
+    _ = ∫ y, ∑' n : ℕ, vonMangoldtAtom n * F (y - Real.log n) * G y :=
+        integral_tsum_of_summable_integral_norm hint hsum
+    _ = ∫ y, backwardPrimeWave F y * G y := by
+        unfold backwardPrimeWave
+        exact integral_congr_ae (Eventually.of_forall fun y => tsum_mul_right)
+
+/-- The backward prime pairing of \`χG\` is a bounded wall forcing. -/
+theorem isBoundedWallForcing_primeWave {F : ℝ → ℝ} (hFm : Measurable F)
+    (hF2 : Integrable fun u => F u ^ 2) {C : ℝ} (hC0 : 0 ≤ C)
+    (hb : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) :
+    IsBoundedWallForcing fun G => ∑' n : ℕ, vonMangoldtAtom n *
+      ∫ t, F t * (wallRamp (t + Real.log n) * G (t + Real.log n)) := by
+  refine ⟨fun y => wallRamp y * backwardPrimeWave F y,
+    continuous_wallRamp.aestronglyMeasurable.mul (aestronglyMeasurable_backwardPrimeWave hFm hb),
+    ⟨C * ∑' n : ℕ, vonMangoldtAtom n * Real.exp (-(2 * Real.log n)), ?_⟩, fun G hG => ?_⟩
+  · filter_upwards [ae_abs_backwardPrimeWave_le hC0 hb] with y hy hm
+    rw [abs_mul]
+    calc |wallRamp y| * |backwardPrimeWave F y| ≤ 1 * |backwardPrimeWave F y| :=
+          mul_le_mul_of_nonneg_right (abs_wallRamp_le_one y) (abs_nonneg _)
+      _ ≤ _ := by rw [one_mul]; exact hy hm
+  · refine (tsum_primePairing_eq_backwardPrimeWave hFm hF2 hC0 hb hG.ramp).trans ?_
+    exact integral_congr_ae (Eventually.of_forall fun y => by ring)
+
+/-! ### The pole and the confinement -/
+
+/-- The pole pairing of \`χG\` is a bounded wall forcing. -/
+theorem isBoundedWallForcing_pole (F : ℝ → ℝ) :
+    IsBoundedWallForcing fun G =>
+      2 * coshHalfMoment F * coshHalfMoment (fun u => wallRamp u * G u) -
+        2 * sinhHalfMoment F * sinhHalfMoment (fun u => wallRamp u * G u) := by
+  have hc : Continuous fun y : ℝ => wallRamp y * Real.cosh (y / 2) :=
+    continuous_wallRamp.mul (Real.continuous_cosh.comp (continuous_id.div_const 2))
+  have hs : Continuous fun y : ℝ => wallRamp y * Real.sinh (y / 2) :=
+    continuous_wallRamp.mul (Real.continuous_sinh.comp (continuous_id.div_const 2))
+  refine (((isBoundedWallForcing_continuous hc).const_mul (2 * coshHalfMoment F)).sub
+    ((isBoundedWallForcing_continuous hs).const_mul (2 * sinhHalfMoment F))).congr fun G _ => ?_
+  have e1 : coshHalfMoment (fun u => wallRamp u * G u) =
+      ∫ y, G y * (wallRamp y * Real.cosh (y / 2)) := by
+    unfold coshHalfMoment
+    exact integral_congr_ae (Eventually.of_forall fun y => by ring)
+  have e2 : sinhHalfMoment (fun u => wallRamp u * G u) =
+      ∫ y, G y * (wallRamp y * Real.sinh (y / 2)) := by
+    unfold sinhHalfMoment
+    exact integral_congr_ae (Eventually.of_forall fun y => by ring)
+  rw [e1, e2]
+
+/-- The confinement pairing of \`χG\` against an essentially bounded profile is a bounded wall
+forcing. -/
+theorem isBoundedWallForcing_confinement {F : ℝ → ℝ} (hFm : Measurable F) {C : ℝ}
+    (hC : ∀ᵐ u, |F u| ≤ C) :
+    IsBoundedWallForcing fun G => ∫ u in Iio 0, F u * (wallRamp u * G u) * Real.exp (-(8 * u)) := by
+  refine ⟨(Iio 0).indicator fun u => wallRamp u * F u * Real.exp (-(8 * u)),
+    (((measurable_wallRamp.mul hFm).mul (by fun_prop)).indicator measurableSet_Iio).aestronglyMeasurable,
+    ⟨C * Real.exp 4, ?_⟩, fun G _ => ?_⟩
+  · filter_upwards [hC] with u hu hmem
+    have hC0 : 0 ≤ C := (abs_nonneg _).trans hu
+    by_cases hneg : u ∈ Iio (0 : ℝ)
+    · rw [indicator_of_mem hneg, abs_mul, abs_mul, abs_of_nonneg (wallRamp_nonneg u),
+        abs_of_pos (Real.exp_pos _)]
+      have he : Real.exp (-(8 * u)) ≤ Real.exp 4 := Real.exp_le_exp.mpr (by linarith [hmem.1])
+      calc wallRamp u * |F u| * Real.exp (-(8 * u)) ≤ 1 * C * Real.exp 4 := by
+            gcongr
+            exact wallRamp_le_one u
+        _ = C * Real.exp 4 := by ring
+    · rw [indicator_of_notMem hneg, abs_zero]
+      positivity
+  · show (∫ u in Iio 0, F u * (wallRamp u * G u) * Real.exp (-(8 * u))) =
+      ∫ y, G y * (Iio 0).indicator (fun u => wallRamp u * F u * Real.exp (-(8 * u))) y
+    rw [← integral_indicator measurableSet_Iio]
+    refine integral_congr_ae (Eventually.of_forall fun u => ?_)
+    by_cases h : u ∈ Iio (0 : ℝ)
+    · simp only [indicator_of_mem h]
+      ring
+    · simp only [indicator_of_notMem h, mul_zero]
+
+/-! ### The logarithmic equation at the wall -/
+
+open CanonicalSystemOfTheWindowTower in
+/-- **The state solves a logarithmic equation at the wall.** For \`U = χF\`, the logarithmic full
+form \`G ↦ ∫ U G + ∫_{x>0} ν(x) ∫ ΔₓU ΔₓG\` is a bounded wall forcing: it integrates every wall test
+against a function bounded on the collar \`[−½, 0]\`. -/
+theorem criticalState_logarithmic_equation_at_wall {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
+    IsBoundedWallForcing fun G => (∫ u, wallRamp u * F u * G u) +
+      ∫ x in Ioi 0, logReferenceLevyDensity x *
+        ∫ u, (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x)) := by
+  have hd := criticalHalfLineEnergyDomain_of_groundState hF
+  obtain ⟨C, hC0, hbexp, hb⟩ := criticalState_ae_abs_le hW ht hF
+  have hU : CriticalHalfLineEnergyDomain fun u => wallRamp u * F u :=
+    criticalHalfLineEnergyDomain_lipschitz_mul hd measurable_wallRamp abs_wallRamp_le_one
+      abs_wallRamp_sub_le
+  have hUb : ∀ᵐ u, |wallRamp u * F u| ≤ C := hb.mono fun u hu => by
+    rw [abs_mul]
+    calc |wallRamp u| * |F u| ≤ 1 * C :=
+          mul_le_mul (abs_wallRamp_le_one u) hu (abs_nonneg _) zero_le_one
+      _ = C := one_mul C
+  have hM := isBoundedWallForcing_mass hU.meas.aestronglyMeasurable hUb
+  have hR := isBoundedWallForcing_remainderJump hU hUb
+  have hK := isBoundedWallForcing_commutator hd hb
+  have hP := isBoundedWallForcing_primeWave hd.meas hd.sq hC0 hbexp
+  have hPo := isBoundedWallForcing_pole F
+  have hCf := isBoundedWallForcing_confinement hd.meas hb
+  refine ((((((hM.sub hR).add hK).add hP).sub hPo).sub
+    (hCf.const_mul (criticalAliasCoefficient W₀))).sub
+      (hM.const_mul (2 * gammaHardyPhaseRate 0))).congr fun G hG => ?_
+  have hχG := hG.ramp
+  have hlevy := gammaMixedForm_eq_levy hd hχG.domain
+  have hwall := criticalState_wall_equation hW ht hF hχG
+  have hsplit : (∫ x in Ioi 0, logReferenceLevyDensity x *
+        ∫ u, (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x))) =
+      levyMixed (fun u => wallRamp u * F u) G - ∫ x in Ioi 0, archLogRemainder x *
+        ∫ u, (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x)) := by
+    unfold levyMixed
+    rw [← integral_sub (integrableOn_levyMixedIntegrand hU hG.domain)
+      (integrableOn_remainderJump hU hG.domain)]
+    refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
+    simp only [archLogRemainder]
+    ring
+  have hmass : (∫ u, F u * (wallRamp u * G u)) = ∫ u, wallRamp u * F u * G u :=
+    integral_congr_ae (Eventually.of_forall fun u => by ring)
+  rw [hmass] at hlevy
+  rw [hsplit]
+  linarith
+
+#print axioms criticalState_logarithmic_equation_at_wall
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

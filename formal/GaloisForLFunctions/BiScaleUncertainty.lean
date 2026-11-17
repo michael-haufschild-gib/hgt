@@ -726,3 +726,5 @@ import GaloisForLFunctions.BiScaleUncertainty.Sieve.MinimumKernelCancellation
 
 import GaloisForLFunctions.BiScaleUncertainty.Spectral.EvenGridQuantumWalk
 import GaloisForLFunctions.BiScaleUncertainty.Spectral.EvenGridQuantumReturn
+import GaloisForLFunctions.BiScaleUncertainty.Observation.CoordinateNegativeFamilies
+import GaloisForLFunctions.BiScaleUncertainty.Observation.CoordinateTailDensity

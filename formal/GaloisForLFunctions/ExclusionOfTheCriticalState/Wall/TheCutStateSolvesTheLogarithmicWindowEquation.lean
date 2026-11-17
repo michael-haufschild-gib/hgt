@@ -41,14 +41,6 @@ open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
 open CanonicalSystemOfTheWindowTower (logReferenceLevyDensity archLogRemainder
   measurable_archLogRemainder archLogRemainder_nonneg integrableOn_archLogRemainder)
 
-#check @Integrable.mul_prod
-#check @Integrable.mul_bdd
-#check @integral_tsum_of_summable_integral_norm
-#check @Integrable.integral_prod_left
-#check @norm_integral_le_of_norm_le
-#check @MemLp.of_le
-#check @setIntegral_congr_fun
-
 /-! ### The cutoff of the window -/
 
 /-- The cutoff of the window `[−2A, 0]`: `0` left of `−2A`, `1` right of `−A`, linear between. -/
@@ -114,8 +106,8 @@ private theorem memLp_two_shift_sub {F : ℝ → ℝ} (hF : MemLp F 2 volume) (x
 private theorem integrable_bdd_mul {f g : ℝ → ℝ} (hg : Integrable g)
     (hf : AEStronglyMeasurable f volume) {C : ℝ} (hb : ∀ᵐ x, |f x| ≤ C) :
     Integrable fun x => f x * g x :=
-  (hg.mul_bdd hf (hb.mono fun x hx => (Real.norm_eq_abs _).trans_le hx)).congr
-    (Eventually.of_forall fun x => mul_comm _ _)
+  (hg.mul_bdd hf (hb.mono fun _ hx => (Real.norm_eq_abs _).trans_le hx)).congr
+    (Eventually.of_forall fun _ => mul_comm _ _)
 
 /-- A function bounded on `[−2A, 0]` pairs integrably with a profile carried by `[−2A, 0]`. -/
 private theorem integrable_mul_of_window {G T : ℝ → ℝ} (hG1 : Integrable G)
@@ -606,7 +598,7 @@ private theorem abs_poleWave_le (F : ℝ → ℝ) {A y : ℝ} (hy : y ∈ Icc (-
     _ ≤ 2 * |coshHalfMoment F| * Real.exp A + 2 * |sinhHalfMoment F| * Real.exp A := by gcongr
     _ = _ := by ring
 
-private theorem pole_pairing_eq {F G χ : ℝ → ℝ} (hGm : Measurable G) (hG1 : Integrable G)
+private theorem pole_pairing_eq {F G χ : ℝ → ℝ} (hG1 : Integrable G)
     (hχm : Measurable χ) (hχ : ∀ u, |χ u| ≤ 1) {A : ℝ}
     (hGA : ∀ y, G y ≠ 0 → y ∈ Icc (-(2 * A)) 0) :
     Integrable (fun y => G y * (χ y * poleWave F y)) ∧
@@ -772,7 +764,7 @@ theorem cut_logarithmic_equation {R : ℝ} {F χ G : ℝ → ℝ} (hFd : Critica
   simp only [criticalHalfLineMixedEnergy] at hE
   obtain ⟨hPi, hP1, hP2⟩ := primeMixedForm_eq_integral_statePrimeWave
     (G := fun u => χ u * G u) hFm hC hCe hFd.support (hχm.mul hG.meas) hχG.integrable hχGA
-  obtain ⟨i3, hpole⟩ := pole_pairing_eq (F := F) hG.meas hG.integrable hχm hχ hGA
+  obtain ⟨i3, hpole⟩ := pole_pairing_eq (F := F) hG.integrable hχm hχ hGA
   have hconf := confinement_pairing_eq R F G χ
   have hmass : (∫ u, F u * (χ u * G u)) = ∫ u, G u * (χ u * F u) :=
     integral_congr_ae (ae_of_all _ fun u =>
