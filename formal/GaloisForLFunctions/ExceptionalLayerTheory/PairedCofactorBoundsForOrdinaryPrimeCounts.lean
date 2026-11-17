@@ -123,7 +123,7 @@ private theorem countSeries_on_euler {s : ℂ} (hs : 1 < s.re) (V W : ℕ) :
 at every strip zero strictly to the right of the bound's exponent. -/
 theorem shortCofactor_eq_zero_of_count_bound (V W : ℕ) {b K : ℝ} (hb : 0 ≤ b) (hb1 : b < 1)
     (hcount : ∀ N : ℕ, 1 ≤ N → |cofactorCountError V W N| ≤ K * (N : ℝ) ^ b)
-    {ρ : ℂ} (hρ : b < ρ.re) (hρ1 : ρ.re < 1) (hz : riemannZeta ρ = 0) :
+    {ρ : ℂ} (hρ : b < ρ.re) (hz : riemannZeta ρ = 0) :
     dirPoly W (typeIIShort V) ρ = 0 := by
   let c := fun n => (cofactorCountCoeff V W n : ℂ)
   have hc0 : c 0 = 0 := by simp [c]
@@ -206,9 +206,17 @@ theorem riemannHypothesis_iff_paired_cofactor_count_bounds :
         dirPoly W (typeIIShort V) ρ = 0 := by
       obtain ⟨K, hK⟩ := hV W hW
       exact shortCofactor_eq_zero_of_count_bound V W (by linarith only [hb])
-        (hbρ.trans hhi) hK hbρ hhi hz
+        (hbρ.trans hhi) hK hbρ hz
     rcases hdetect _ le_rfl with h | h
     · exact h (hkill _ (by simp))
     · exact h (hkill _ (by simp))
+
+#print axioms norm_dirPoly_zeta_convolution_sub_le
+#print axioms norm_dyadic_shortCofactor_sub_le
+#print axioms lseries_restrictedPrimeConvolution
+#print axioms restrictedPrimeSeries_residue_at_zero
+#print axioms riemannHypothesis_iff_cofinal_restrictedPrimeResidues
+#print axioms cofactorCountError_eq
+#print axioms riemannHypothesis_iff_paired_cofactor_count_bounds
 
 end GaloisForLFunctions.ExceptionalLayerTheory

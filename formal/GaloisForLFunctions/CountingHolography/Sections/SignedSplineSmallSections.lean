@@ -57,7 +57,7 @@ private theorem source_compact {N : ℕ} (a : Fin N → ℤ) : HasCompactSupport
     (hasCompactSupport_cubicSpline.comp_homeomorph (Homeomorph.subRight (Real.log ((i : ℝ) + 1)))).mul_left
   have he : splineSource a = ∑ i, F i := by
     funext u
-    exact (Finset.sum_apply _ _ _).symm
+    simp only [Finset.sum_apply, F, splineSource]
   rw [he]
   exact HasCompactSupport.finset_sum fun i _ => hs i
 
@@ -125,8 +125,8 @@ theorem tendsto_splineDegree {N : ℕ} (a : Fin N → ℤ) :
     · subst a
       have hq : integerProbe N 0 = 0 := by simpa using integerProbe_smul N 0 (0 : Fin N → ℤ)
       have h := (tendsto_const_nhds (x := (0 : ℝ)) (f := (atTop : Filter ℕ)))
-      simpa [D, packet, splineSource, meshDegree, logRadius, sampledDegree, degreeForm,
-        degreeContact, degreePairing, degreeSample, hq] using h
+      simp [D, packet, splineSource, meshDegree, logRadius, sampledDegree, degreeForm,
+        degreeContact, degreePairing, degreeSample, hq]
     · have hr := resolution_pos ha
       have hm : Tendsto (fun m : ℕ => resolution (m • a)) atTop atTop := by
         refine tendsto_atTop_mono (f := id) (fun m => ?_) tendsto_id

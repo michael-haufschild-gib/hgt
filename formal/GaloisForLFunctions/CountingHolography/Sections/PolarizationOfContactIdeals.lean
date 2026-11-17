@@ -83,4 +83,7 @@ theorem contactGenerator_add (f g : ℝ → ℝ) (L n : ℕ) :
   have hk : (contactBase k : ℚ) ≠ 0 := (Nat.cast_pos.mpr (contactBase_pos k)).ne'
   rw [contactMultiplicity_add, heq, zpow_add₀ hk, zpow_add₀ hk, zpow_add₀ hk, zpow_natCast]
 
+#print axioms card_contactRing
+#print axioms contactGenerator_add
+
 end GaloisForLFunctions.CountingHolography.Sections
