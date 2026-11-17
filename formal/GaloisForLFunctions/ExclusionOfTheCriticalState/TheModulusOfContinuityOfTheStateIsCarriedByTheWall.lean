@@ -642,14 +642,16 @@ theorem sq_mul_measureReal_terminal_le {g : ℝ → ℝ} (hg : Measurable g) {k 
   have hfin : volume (Ioo (-k) (0 : ℝ) ∩ {u | δ ≤ |g u|}) ≠ ⊤ :=
     ((measure_mono inter_subset_left).trans_lt measure_Ioo_lt_top).ne
   have h1 : δ ^ 2 * volume.real (Ioo (-k) (0 : ℝ) ∩ {u | δ ≤ |g u|}) ≤
-      ∫ u in Ioo (-k) 0 ∩ {u | δ ≤ |g u|}, g u ^ 2 :=
-    setIntegral_ge_of_const_le hE hfin (fun u hu => by
+      ∫ u in Ioo (-k) 0 ∩ {u | δ ≤ |g u|}, g u ^ 2 := by
+    have h := setIntegral_ge_of_const_le (c := δ ^ 2) hE hfin (fun u hu => by
       have h : δ ≤ |g u| := hu.2
       show δ ^ 2 ≤ g u ^ 2
       rw [← sq_abs (g u)]
       exact pow_le_pow_left₀ hδ h 2) (hgi.mono_set inter_subset_left)
+    rwa [smul_eq_mul, mul_comm] at h
   exact h1.trans (setIntegral_mono_set hgi (Eventually.of_forall fun u => sq_nonneg (g u))
-    (HasSubset.Subset.eventuallyLE inter_subset_left))
+    (LE.le.eventuallyLE
+      (show Ioo (-k) (0 : ℝ) ∩ {u | δ ≤ |g u|} ≤ Ioo (-k) 0 from inter_subset_left)))
 
 /-- `e^{8k} − 1 ≤ 8k (1 + η)` for `0 ≤ k ≤ log(1 + η)/8`. -/
 theorem exp_eight_mul_sub_one_le {k η : ℝ} (hk : 0 ≤ k) (hη : 0 < η)
@@ -796,12 +798,12 @@ theorem criticalState_eventually_log_mul_sq_increment_le {W₀ : ℝ} (hW : 0 < 
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ k : ℝ in 𝓝[>] 0,
       Real.log (1 / k) * ∫ u, (F u - F (u + k)) ^ 2 ≤
-        (8 * criticalAliasCoefficient W₀ * ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)) + ε) * k := by
+        (8 * criticalAliasCoefficient W₀ * (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) + ε) * k := by
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
   have ha := criticalAliasCoefficient_positive hW
   have hM := criticalState_exponentialMass_pos hW hF
   obtain ⟨Q, hQdef⟩ : ∃ Q : ℝ,
-      Q = 8 * criticalAliasCoefficient W₀ * ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)) := ⟨_, rfl⟩
+      Q = 8 * criticalAliasCoefficient W₀ * (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) := ⟨_, rfl⟩
   have hQ : 0 < Q := by
     rw [hQdef]
     exact mul_pos (mul_pos (by norm_num) ha) hM
@@ -927,11 +929,11 @@ theorem criticalState_tendsto_log_div_mul_sq_increment {W₀ : ℝ} (hW : 0 < W�
     (hthreshold : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
     Tendsto (fun k : ℝ => Real.log (1 / k) / k * ∫ u, (F u - F (u + k)) ^ 2) (𝓝[>] 0)
-      (𝓝 (8 * criticalAliasCoefficient W₀ * ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)))) := by
+      (𝓝 (8 * criticalAliasCoefficient W₀ * (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))))) := by
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
   have hlow := criticalState_tendsto_sq_terminalMean_mul_log hW hthreshold hF
   obtain ⟨Q, hQdef⟩ : ∃ Q : ℝ,
-      Q = 8 * criticalAliasCoefficient W₀ * ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)) := ⟨_, rfl⟩
+      Q = 8 * criticalAliasCoefficient W₀ * (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) := ⟨_, rfl⟩
   have hup : ∀ ε : ℝ, 0 < ε → ∀ᶠ k : ℝ in 𝓝[>] 0,
       Real.log (1 / k) * ∫ u, (F u - F (u + k)) ^ 2 ≤ (Q + ε) * k := fun ε hε => by
     rw [hQdef]
@@ -963,7 +965,7 @@ theorem criticalState_tendsto_log_div_mul_terminal_sq {W₀ : ℝ} (hW : 0 < W�
     (hthreshold : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
     Tendsto (fun k : ℝ => Real.log (1 / k) / k * ∫ u in Ioo (-k) 0, F u ^ 2) (𝓝[>] 0)
-      (𝓝 (8 * criticalAliasCoefficient W₀ * ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)))) := by
+      (𝓝 (8 * criticalAliasCoefficient W₀ * (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))))) := by
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
     (criticalState_tendsto_sq_terminalMean_mul_log hW hthreshold hF)
@@ -1026,10 +1028,10 @@ theorem criticalState_meanSquare_wall_law {W₀ : ℝ} (hW : 0 < W₀)
       (∀ᶠ k : ℝ in 𝓝[>] 0, 0 < s * ∫ u in Ioo (-k) 0, F u) ∧
       Tendsto (fun k : ℝ => 1 / k * ∫ u in Ioo (-k) 0,
           (Real.sqrt (Real.log (1 / k)) * F u -
-            s * Real.sqrt (8 * criticalAliasCoefficient W₀ * ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)))) ^ 2) (𝓝[>] 0) (𝓝 0) ∧
+            s * Real.sqrt (8 * criticalAliasCoefficient W₀ * (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))))) ^ 2) (𝓝[>] 0) (𝓝 0) ∧
       (∀ δ : ℝ, 0 < δ → Tendsto (fun k : ℝ => volume.real (Ioo (-k) 0 ∩
           {u | δ ≤ |Real.sqrt (Real.log (1 / k)) * F u -
-            s * Real.sqrt (8 * criticalAliasCoefficient W₀ * ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)))|}) / k) (𝓝[>] 0) (𝓝 0)) ∧
+            s * Real.sqrt (8 * criticalAliasCoefficient W₀ * (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))))|}) / k) (𝓝[>] 0) (𝓝 0)) ∧
       Tendsto (fun k : ℝ => volume.real (Ioo (-k) 0 ∩ {u | s * F u ≤ 0}) / k)
         (𝓝[>] 0) (𝓝 0) := by
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
@@ -1037,11 +1039,11 @@ theorem criticalState_meanSquare_wall_law {W₀ : ℝ} (hW : 0 < W₀)
   have hM := criticalState_exponentialMass_pos hW hF
   obtain ⟨s, hs, hsign, hmean, -, -⟩ := criticalState_wall_laws hW hthreshold hF
   have hT2 := criticalState_tendsto_log_div_mul_terminal_sq hW hthreshold hF
-  have hQ : 0 < 8 * criticalAliasCoefficient W₀ * ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)) :=
+  have hQ : 0 < 8 * criticalAliasCoefficient W₀ * (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) :=
     mul_pos (mul_pos (by norm_num) ha) hM
   refine ⟨s, hs, hsign.mono fun k hk => hk.1, ?_⟩
   obtain ⟨Q, hQdef⟩ : ∃ Q : ℝ,
-      Q = 8 * criticalAliasCoefficient W₀ * ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)) := ⟨_, rfl⟩
+      Q = 8 * criticalAliasCoefficient W₀ * (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) := ⟨_, rfl⟩
   rw [← hQdef] at hmean hT2 hQ ⊢
   obtain ⟨c, hcdef⟩ : ∃ c : ℝ, c = s * Real.sqrt Q := ⟨_, rfl⟩
   rw [← hcdef] at hmean ⊢

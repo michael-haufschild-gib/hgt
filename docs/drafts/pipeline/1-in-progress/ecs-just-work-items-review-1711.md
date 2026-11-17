@@ -31,6 +31,9 @@ Close the assembly-level gaps of the ECS route listed in §4 of the report: the 
 (a) B13 ⇒ row: FiniteOffLine ⇒ RH ⇒ real-amplitude positivity above some X (exists_jasRealPositiveAbove_one_of_riemannHypothesis). Row ⇒ B13: FiniteOffLine and positivity above X give RH (riemannHypothesis_iff_finiteOffLine_and_jasRealPositiveAbove). Under a finite layer: no critical state ⇔ RH (beyond-the-wall prime continuation) ⇔ positivity above some X.
 (b) ConfinedIndexBounded ⇔ FiniteOffLine (confinedIndexBounded_tfae) ⇔ {Re ≠ ½} finite (Im of the spectral point is ½ − Re ρ) ⇔ finite wave law (finite_offLine_iff_exists_offLineWave). The empty wave law is RH (von Koch both ways). So B13 ⇔ (finite wave law ⇒ empty wave law) ⇔ (finite wave law ⇒ positivity above some X).
 
+### E-J10 (plan)
+Fix a ladder Φ_0..Φ_k, ratios R_0 ≤ … ≤ R_k. (1) R ≤ R_k: Q_R is block diagonal against the rungs (null vectors pair through W₈ only) and ≥ 0 on their W₈-complement (floor), so Q_R(X) ≥ −Σ_{R_i<R}(a(R_i)−a(R))W₈(Φ_i,X)²/W₈(Φ_i): every Pick matrix is PSD plus a rank-≤k correction, index ≤ k. (2) R > R_k: Q_R is negative definite on span Φ. Window recovery (exists_window_energy_recovery) gives window tests H_i^n → Φ_i in L² with W₈ bounded and limsup Q_R(H_i^n) ≤ Q_R(Φ_i); lower semicontinuity under L² convergence with bounded W₈ (exists_domain_limit_of_smooth_energy_limit) applied to H_i^n ± H_j^n plus the parallelogram law gives convergence of every Gram entry, so the window Gram is eventually negative definite; window tests → probe sums (zero coordinates in ℓ², |G − P| ≤ εe^{6u}) transfers it to an integer Pick matrix with k+1 negative squares.
+
 ## Conjecture ledger
 
 ## Log

@@ -23,10 +23,10 @@ Each E-M item names corpus results that ECS does not import. The task is the the
 | E-M11 | totality of the orbit of the state in the energy norm | — | not started |
 | E-M14 | ¬AAL (⟺ ψ(x) − x a single finite oscillation, ZCG) ⇒ the heated prime side F⁺_ε(T) = a⁻¹Σ_{bottom} LF(z)e^{εz²−zT} + O(e^{κ₂T}), a finite oscillation at rate Θ − ½ with the frequencies of the top; ¬AAL ⇒ real-amplitude positivity fails above every X for σ ∈ (Θ−½, Θ+½); B13 ⟺ (finite layer ⇒ ψ − x is not a single finite oscillation). The ψ-wave and positivity rows are the peer E-J15 module | Modes/WithoutTheAbscissaLawThePrimeSideIsAFiniteOscillation.lean | formalized (`criticalState_heatedBeyondWall_finiteOscillation`, `not_jasRealPositiveAbove_of_not_asymptoticAbscissaLaw`, `b13_iff_finiteOffLine_not_primeErrorIsFiniteOscillation`) |
 | E-M15 | rigidity rows of the model table | — | not started |
-| E-M12 | mean squares of the mode series (= E-J12) | — | not started (peer item E-J12) |
+| E-M12 | mean squares of the mode series at the exact rate via `tendsto_meanSquare_of_tendsto_add_tsum` | Modes/TheAveragedStateHasAMeanSquareAtTheExactRate.lean, Modes/TheHeatedProfileBeyondTheWallHasAMeanSquareAtTheExactRate.lean (E-J loop, E-J12) | covered by the E-J loop: the connection is used there |
 | E-M19 | stability of the window problem: a negative window test, normalized, is within C(R*(H) − W₀) of ±F in W₈ and Q_{W₀}; near-critical window tests converge to the state; R₁(A) ≥ W₀ + c∫_{u<−A}F²e^{−8u}, so no window attains W₀ | Index/TheWindowThresholdsExceedTheCriticalRatioByTheMassBeyondTheWindow.lean | formalized (`criticalState_window_stability`, `criticalState_tendsto_of_windowTests`, `criticalState_windowThreshold_ge`, `criticalState_lt_windowThreshold`) |
 | E-M17 | a space in which (★) is a reproducing formula | — | not started |
-| E-M18 | Turán bounds with coefficients for mode sums | — | not started |
+| E-M18 | explicit window lengths and constants for the excursions: an isolating test leaves one mode at the top, so without AAL m_ν ≥ c e^{(Θ−½)νℓ} at every large level (window length 1, c = m|LF(z₀)|/(2a(B+1))), and c e^{(Θ−½)νℓ} ≤ m_ν ≤ C_ε e^{(Θ−½+ε)νℓ}. No Turán bound with coefficients is needed | Decay/WithoutTheAbscissaLawTheWindowMassesReachTheRateAtEveryLevel.lean | formalized (`criticalState_windowMass_ge_of_not_asymptoticAbscissaLaw`, `criticalState_windowMass_two_sided_of_not_asymptoticAbscissaLaw`) |
 | E-M13 | size of F⁺ from the prime number theorem | — | not started |
 | E-M21 | functional model of the translates | — | not started |
 | E-M10 | pointwise edge law (= E-J14) | — | not started (peer item E-J14) |
@@ -46,6 +46,9 @@ For a window test H with Q(H) < 0: a(R*(H)) = −Q(H)/M₈(H), so Q_{R*}(H) = Q(
 
 ### E-M16
 Let 0 < r ≤ R_m and suppose a half-line family has N + 1 negative squares, N = #{i : R_i < r}. Realification (exists_real_negative_orthogonal_family) gives X ∈ H with Q_r(X) < 0, W₈-orthogonal to the N rungs below r. Put c_i = W₈(Φ_i, X)/W₈(Φ_i) and Z = X − Σ_{R_i ≥ r} c_iΦ_i; then Z is W₈-orthogonal to all rungs, Q_r(Z) ≥ 0 (floor), and Q_r(X) = Q_r(Z) + Σ_{R_i ≥ r} c_i²(a(r) − a(R_i))W₈(Φ_i) ≥ 0, a contradiction. Conversely Q_r(Σ_{R_i<r} c_iΦ_i) = Σ c_i²(a(r) − a(R_i))W₈(Φ_i) < 0 for c ≠ 0. If r ≤ R_k, monotonicity of the rungs gives #{i : R_i < r} ≤ k.
+
+### E-M18
+Under ¬AAL take the isolated top S, q₀ ∈ S, z₀ = q₀ − ½. A smooth ψ₀ on (−ℓ, 0) interpolates ψ̂₀ = 1 at z₀ and 0 at the other centred zeros of S. The level sum Σ_q LF(z_q)ψ̂₀(z_q)e^{νℓz_q} equals −a⟨e^{−8u}F, ψ₀(· + νℓ)⟩ (criticalState_levelSum_laplaceTest), bounded by aB·m_ν. Its top part is m·LF(z₀)e^{νℓz₀}, of modulus κR^ν with κ = m|LF(z₀)| > 0 (LF ≠ 0 on Re w ≥ 0), R = e^{ℓ(Θ−½)}; the rest is ≤ (Σ|b|)r^ν, r = e^{ℓ(Θ₂−½)} < R. For ν large (Σ|b|)(r/R)^ν ≤ κ/2, so κR^ν/2 ≤ a(B+1)m_ν.
 
 ## Conjecture ledger
 

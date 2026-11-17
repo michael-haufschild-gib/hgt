@@ -209,6 +209,3 @@ theorem criticalState_windowMass_two_sided_of_not_asymptoticAbscissaLaw
     fun _ hε => criticalState_windowMass_le hW hthreshold hF hℓ (by linarith)⟩
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState
-
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.criticalState_windowMass_ge_of_not_asymptoticAbscissaLaw
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.criticalState_windowMass_two_sided_of_not_asymptoticAbscissaLaw

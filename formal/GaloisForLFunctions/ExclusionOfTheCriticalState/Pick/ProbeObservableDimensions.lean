@@ -98,9 +98,9 @@ theorem hullEvenObservable_finrank :
     Module.finrank ℂ (LinearMap.range (hullEvenObservable p)) =
       (positiveProbeGram p).rank ^ 2 + (negativeProbeGram p).rank ^ 2 := by
   letI : Module.Free ℂ (LinearMap.range (hullEvenObservable p)) :=
-    Module.Free.of_divisionRing ℂ _
+    Module.Free.of_divisionRing ℂ (LinearMap.range (hullEvenObservable p))
   letI : Module.Free ℂ (LinearMap.ker (hullEvenObservable p)) :=
-    Module.Free.of_divisionRing ℂ _
+    Module.Free.of_divisionRing ℂ (LinearMap.ker (hullEvenObservable p))
   have ht : LinearMap.trace ℂ (Module.End ℂ (reflectionHull p)) (hullEvenObservable p) =
       (Module.finrank ℂ (LinearMap.range (hullEvenObservable p)) : ℂ) :=
     LinearMap.IsProj.trace (R := ℂ) (M := Module.End ℂ (reflectionHull p))
@@ -119,9 +119,9 @@ theorem hullOddObservable_finrank :
     Module.finrank ℂ (LinearMap.range (hullOddObservable p)) =
       2 * (positiveProbeGram p).rank * (negativeProbeGram p).rank := by
   letI : Module.Free ℂ (LinearMap.range (hullOddObservable p)) :=
-    Module.Free.of_divisionRing ℂ _
+    Module.Free.of_divisionRing ℂ (LinearMap.range (hullOddObservable p))
   letI : Module.Free ℂ (LinearMap.ker (hullOddObservable p)) :=
-    Module.Free.of_divisionRing ℂ _
+    Module.Free.of_divisionRing ℂ (LinearMap.ker (hullOddObservable p))
   have ht : LinearMap.trace ℂ (Module.End ℂ (reflectionHull p)) (hullOddObservable p) =
       (Module.finrank ℂ (LinearMap.range (hullOddObservable p)) : ℂ) :=
     LinearMap.IsProj.trace (R := ℂ) (M := Module.End ℂ (reflectionHull p))
