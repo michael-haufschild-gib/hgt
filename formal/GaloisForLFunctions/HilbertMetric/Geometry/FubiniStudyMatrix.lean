@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HilbertMetric.Geometry.FubiniStudyTraceCondition
 import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Analysis.Matrix.Order
 import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
 /-!
@@ -31,7 +32,12 @@ private theorem sum_conj_mul (n : ℕ) (z : EuclideanSpace ℂ (Fin n)) :
 /-- The metric determinant is the exact radial Monge–Ampère density. -/
 theorem det_metricMatrix {n : ℕ} (z : EuclideanSpace ℂ (Fin n)) :
     (metricMatrix z).det = ((1 / denominator z ^ (n + 1) : ℝ) : ℂ) := by
-  rw [metricMatrix, Matrix.det_smul, Matrix.det_one_add_replicateCol_mul_replicateRow]
+  have hdet : (1 + replicateCol (Fin 1) (fun i => -(denominator z : ℂ)⁻¹ * z i) *
+      replicateRow (Fin 1) (fun i => conj (z i))).det =
+      1 + (fun i => conj (z i)) ⬝ᵥ (fun i => -(denominator z : ℂ)⁻¹ * z i) :=
+    Matrix.det_one_add_replicateCol_mul_replicateRow (ι := Fin 1)
+      (fun i => -(denominator z : ℂ)⁻¹ * z i) (fun i => conj (z i))
+  rw [metricMatrix, Matrix.det_smul, hdet]
   simp only [Fintype.card_fin]
   have hs : (fun i => conj (z i)) ⬝ᵥ (fun i => -(denominator z : ℂ)⁻¹ * z i) =
       -(denominator z : ℂ)⁻¹ * ((‖z‖ ^ 2 : ℝ) : ℂ) := by
@@ -48,7 +54,8 @@ theorem det_metricMatrix {n : ℕ} (z : EuclideanSpace ℂ (Fin n)) :
     simp only [denominator, Complex.ofReal_add, Complex.ofReal_one]
     ring
   rw [hu, ← pow_succ]
-  simp only [Complex.ofReal_div, Complex.ofReal_pow, Complex.ofReal_one, one_div, inv_pow]
+  push_cast
+  simp only [one_div, inv_pow]
 
 /-- The matrix entries are the differentiated projective metric coefficients. -/
 theorem metricMatrix_apply {n : ℕ} (z : EuclideanSpace ℂ (Fin n)) (i j : Fin n) :
@@ -76,7 +83,8 @@ theorem metricMatrix_mulVec {n : ℕ} (z w : EuclideanSpace ℂ (Fin n)) (i : Fi
   simp_rw [metricMatrix_apply, sub_mul, Finset.sum_sub_distrib]
   have hd : (∑ j, (if i = j then 1 else 0) / (denominator z : ℂ) * w j) =
       w i / (denominator z : ℂ) := by
-    simp only [ite_div, zero_div, ite_mul, zero_mul, Finset.sum_ite_eq]
+    simp only [ite_div, zero_div, ite_mul, zero_mul, Finset.sum_ite_eq,
+      Finset.mem_univ, if_true]
     ring
   have hr : (∑ j, z i * conj (z j) / (denominator z : ℂ) ^ 2 * w j) =
       z i * inner ℂ z w / (denominator z : ℂ) ^ 2 := by
@@ -108,7 +116,7 @@ theorem metricMatrix_isHermitian {n : ℕ} (z : EuclideanSpace ℂ (Fin n)) :
   rw [metricMatrix_apply, metricMatrix_apply]
   by_cases h : i = j
   · subst j
-    simp only [if_pos rfl, map_sub, map_div₀, map_pow, map_one, map_mul,
+    simp only [if_true, map_sub, map_div₀, map_pow, map_one, map_mul,
       Complex.conj_ofReal, Complex.conj_conj]
     ring
   · simp only [if_neg h, if_neg (Ne.symm h), map_sub, map_div₀, map_pow, map_zero,

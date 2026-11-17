@@ -36,13 +36,19 @@ theorem hasFDerivAt_potential_direction (z x : E) :
     funext w
     rw [fderiv_potential_apply, div_eq_mul_inv]
   rw [he]
-  convert h using 1
-  ext y
-  change (-4 * inner ℝ z x / denominator z ^ 2) * inner ℝ z y +
-    (2 / denominator z) * inner ℝ x y =
-    (2 * inner ℝ z x) * ((-1 / denominator z ^ 2) * (2 * inner ℝ z y)) +
-      (denominator z)⁻¹ * (2 * inner ℝ x y)
-  ring
+  have hmap : ((-4 * inner ℝ z x / denominator z ^ 2) • innerSL ℝ z +
+      (2 / denominator z) • innerSL ℝ x) =
+      ((2 * inner ℝ z x) • ((-1 / denominator z ^ 2) • ((2 : ℝ) • innerSL ℝ z)) +
+        (denominator z)⁻¹ • ((2 : ℝ) • innerSL ℝ x)) := by
+    apply ContinuousLinearMap.ext
+    intro y
+    change (-4 * inner ℝ z x / denominator z ^ 2) * inner ℝ z y +
+      (2 / denominator z) * inner ℝ x y =
+      (2 * inner ℝ z x) * ((-1 / denominator z ^ 2) * (2 * inner ℝ z y)) +
+        (denominator z)⁻¹ * (2 * inner ℝ x y)
+    ring
+  rw [hmap]
+  exact h
 
 /-- Pullback of the projective potential by a real scalar dilation. -/
 def dilatedPotential (r : ℝ) (z : E) : ℝ := potential (r • z)
@@ -76,6 +82,7 @@ theorem dilatedHessian_eq (r : ℝ) (z x y : E) :
     dilatedHessian r z x y = hessian (r • z) (r • x) (r • y) := by
   have h := (hasFDerivAt_potential_direction (r • z) (r • x)).comp z
     (dilation r).hasFDerivAt
+  simp only [Function.comp_def] at h
   unfold dilatedHessian
   simp_rw [fderiv_dilatedPotential_apply]
   rw [h.fderiv, hessian_formula]

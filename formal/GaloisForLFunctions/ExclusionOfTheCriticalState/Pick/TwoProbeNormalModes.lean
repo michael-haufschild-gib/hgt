@@ -37,7 +37,6 @@ private theorem normalizedProbeEnergy_formula (s t u v : ℝ) :
   unfold normalizedProbeEnergy twoProbeQuadratic probeCorrelation
   rw [← probeAmplitude_sq s, ← probeAmplitude_sq t]
   field_simp [(probeAmplitude_pos s).ne', (probeAmplitude_pos t).ne']
-  ring
 
 /-- The symmetric and antisymmetric coordinates diagonalize the actual two-probe energy. -/
 theorem normalizedProbeEnergy_modes (s t u v : ℝ) :

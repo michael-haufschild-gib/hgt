@@ -95,7 +95,7 @@ theorem dephased_probe_determinant_pos_iff (s t a b : ℝ) :
       rw [hz] at h
       norm_num at h
     · intro h
-      have hlt := lt_of_le_of_ne hle (Ne.symm h)
+      have hlt := lt_of_le_of_ne hle h
       nlinarith only [hp, hlt, mul_pos (sub_pos.mpr hlt) (by linarith only [hp] :
         0 < 1 + dephasedProbeCorrelation s t a b)]
   rw [he, ne_eq, dephasedProbeCorrelation_eq_one_iff, not_and_or]
@@ -114,8 +114,8 @@ theorem dephasedTwoProbeEnergy_zero_iff (s t a b u v : ℝ) :
       zero_mul, add_zero, one_mul, sq_eq_zero_iff]
   · rw [if_neg hc]
     have hlt : dephasedProbeCorrelation s t a b < 1 :=
-      lt_of_le_of_ne hle (Ne.symm (fun h => hc
-        ((dephasedProbeCorrelation_eq_one_iff s t a b).mp h)))
+      lt_of_le_of_ne hle (fun h => hc
+        ((dephasedProbeCorrelation_eq_one_iff s t a b).mp h))
     constructor
     · intro h
       rw [dephasedTwoProbeEnergy_modes] at h

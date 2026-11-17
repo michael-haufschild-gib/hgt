@@ -12,6 +12,7 @@ family has exactly two distinct potentials, distinguished at the center.
 -/
 
 noncomputable section
+open Matrix
 open scoped BigOperators ComplexConjugate ComplexOrder
 namespace GaloisForLFunctions.HilbertMetric.RadialKahler
 open FubiniStudy
@@ -104,7 +105,6 @@ theorem solutionMatrix_quadratic (n : ℕ) (t : ℝ) (z v : Coordinate n) :
     ring
   rw [he, metricMatrix_quadratic, solutionLevi_eq]
   simp only [Complex.ofReal_mul]
-  ring
 
 /-- The determinant of the differentiated radial metric has its exact closed density. -/
 theorem det_solutionMatrix (n : ℕ) (t : ℝ) (z : Coordinate n) :
@@ -163,7 +163,7 @@ theorem solution_mongeAmpere (n : ℕ) (t : ℝ) (z : Coordinate n) :
   congr 1
   have hb : 1 + Real.exp (2 * t) ≠ 0 := by positivity
   have hd := (denominator_pos (Real.exp t • z)).ne'
-  field_simp [hb, hd] <;> ring
+  field_simp [hb, hd]
 
 /-- The central value strictly records the logarithmic radial scale. -/
 theorem solution_zero (n : ℕ) (t : ℝ) :

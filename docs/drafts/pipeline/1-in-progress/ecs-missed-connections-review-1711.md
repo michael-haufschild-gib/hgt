@@ -72,7 +72,10 @@ For σ ≥ 1 and |t − Im z| ≤ 2h the kernel (σ + it − z)⁻¹ has real pa
 |---|---|---|
 | C2 | the state has a representative continuous on ℝ, zero on [0, ∞), |Φ(u)| ≤ Ce^{2u} everywhere | proved: Wall/ThePrimeWaveAtTheWallIsTheBoundedOrderOfTheWallLaw.lean, `criticalState_exists_continuous_representative` (Φ(u) → 0 at the wall since Φ(u)² log(1/|u|) converges; a.e. bounds of continuous functions hold everywhere) |
 | C3 | bounded order of the wall law: a F⁺(x) + W(x)/2 → ∫F(u)ρ(−u)du − Σ_n Λ(n)n^{−1/2}Φ(−log n) (ess-lim, x → 0⁺), ρ = κ + 1/(2t) | proved: same module, `criticalState_bounded_order_at_wall` (archimedean part by dominated convergence, `tendsto_collarWave_add_half_wallPotential`; prime wave continuous on x ≤ 1, `continuousOn_primeWave`). The primes enter the wall at the bounded order through the values Φ(−log n) |
-| C4 | the same with L(x) = ∫_{v>x}F(−v)/v dv in place of W(x) (W − L → 0 since Φ(0⁻) = 0) | open |
+| C4 | the same with L(x) = ∫_{v>x}F(−v)/v dv in place of W(x) | proved: same module, `criticalState_bounded_order_at_wall_logMoment` (scaling v = xw: W − L = ∫_{w>0} Φ(−xw)k(w)dw, k(w) = 1/(1+w) − 1_{w>1}/w integrable; dominated convergence with Φ(0) = 0, `tendsto_wallPotential_sub_wallLogMoment`) — the bounded remainder of the owner's C40 (iv) converges |
+| C5 | the modulus of the state at the wall is sharp: no bound |Φ(−t)| ≤ C t^α, α > 0, near the wall | proved: Wall/TheStateHasALastZeroBeforeTheWall.lean, `criticalState_not_holder_at_wall` |
+| C9 | nodal structure: the continuous state has zeros left of every point and a last zero u₁ < 0 with sΦ > 0 on (u₁, 0) | proved: same module, `criticalState_nodal_structure` (sign changes on every ray + intermediate value theorem; u₁ the largest point of a compact zero set) |
+| C10 | the state keeps one sign on the whole prime-blind collar (−log 2, 0), i.e. u₁ ≤ −log 2 | open; no paper proof |
 | E-J14 | (peer item) continuity near the wall and Φ(−t)√log(1/t) → ℓ, ℓ² = 8aM | proved by E-M10: `criticalState_continuous_pointwise_wall_law` |
 
 ## Log

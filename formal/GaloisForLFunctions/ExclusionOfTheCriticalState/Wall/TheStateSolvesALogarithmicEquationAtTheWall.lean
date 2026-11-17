@@ -4,31 +4,35 @@ import GaloisForLFunctions.CanonicalSystemOfTheWindowTower.TheWeilSymbolIsALogar
 import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.CausalReflection.ConfiningMinimizerExponentialBarriers
 
 /-!
-# The state solves a logarithmic equation at the wall
+# The state solves a logarithmic equation on every window of the half-line
 
-Write \`ω\` for the Lévy density of the Gamma form, \`ν(x) = e^{−x}/(2x)\` for the Lévy density of the
-logarithmic multiplier \`½ log(1 + ξ²)\`, and \`r = ω − ν\`, a bounded integrable kernel. Let \`χ\` be the
-ramp equal to \`0\` left of \`−½\` and to \`1\` right of \`−¼\` (\`wallRamp\`), and \`U = χF\` the state cut off
-near the wall. Wall tests are profiles of the energy domain carried by the collar \`[−½, 0]\`.
+Write `ω` for the Lévy density of the Gamma form, `ν(x) = e^{−x}/(2x)` for the Lévy density of the
+logarithmic multiplier `½ log(1 + ξ²)`, and `r = ω − ν`, a bounded integrable kernel. Fix a window
+`[c, d]` with `d ≤ 0` and a Lipschitz cutoff `χ` with values in `[0, 1]` that vanishes on the negative
+half-line outside the window (`IsWindowCutoff`); `U = χF` is the state cut off to the window. Tests are
+profiles of the energy domain carried by the window (`IsCarriedTest`).
 
-**Theorem** (\`criticalState_logarithmic_equation_at_wall\`). There is a function \`g\`, bounded on the
-collar, such that for every wall test \`G\`
+**Theorem** (`criticalState_logarithmic_equation_on_window`). There is a function `g`, bounded on the
+window, such that for every test `G`
 
-  \`∫ U G + ∫_{x>0} ν(x) ∫ (U(u) − U(u+x)) (G(u) − G(u+x)) du dx = ∫ G g\`.
+  `∫ U G + ∫_{x>0} ν(x) ∫ (U(u) − U(u+x)) (G(u) − G(u+x)) du dx = ∫ G g`.
 
-The left side is the logarithmic full form of \`(U, G)\`: \`U\` solves the logarithmic equation on the
-collar with a bounded forcing.
+The left side is the logarithmic full form of `(U, G)`: `U` solves the logarithmic equation on the
+window with a bounded forcing.
 
-Mechanism. The jump form of \`ν\` is the Gamma jump form minus the jump form of \`r\`, and the latter
-is a mass term minus two convolutions with \`r\` (\`isBoundedWallForcing_remainderJump\`). Moving \`χ\`
-from \`F\` to the test costs the commutator
-\`∫_{x>0} ω(x) ∫ (χ(u) − χ(u+x)) (F(u+x) G(u) − F(u) G(u+x))\`, a convolution with a kernel bounded
-by \`ω(x) min(4x, 1) ≤ 14 e^{−x/2}\` (\`isBoundedWallForcing_commutator\`). Against the test \`χG\`, which
-lies on the collar, the weak equation is the collar equation: no forward prime translate enters,
-and the Gamma form equals the backward prime wave minus the pole and confinement terms
-(\`criticalState_wall_equation\`). Every term integrates \`G\` against a function bounded on the
-collar: the state is essentially bounded, \`|F(u)| ≤ C e^{2u}\`, so the backward prime wave
-\`Σ Λ(n) n^{−½} F(u − log n)\` converges absolutely and is bounded there.
+Mechanism. The jump form of `ν` is the Gamma jump form minus the jump form of `r`, which is a mass
+term minus two convolutions with `r` (`isBoundedForcingOn_remainderJump`). Moving `χ` from `F` to the
+test costs the commutator `∫_{x>0} ω(x) ∫ (χ(u) − χ(u+x)) (F(u+x) G(u) − F(u) G(u+x))`, a
+convolution with a kernel bounded by `ω(x) min(Λx, 1) ≤ (3Λ + 2) e^{−x/2}`
+(`levyMixed_cutoff_commutator`). Against `χG` the weak equation is the window equation
+(`criticalState_window_equation`): the Gamma form is the prime wave
+`Σ Λ(n) n^{−½} (F(u + log n) + F(u − log n))` minus the pole and confinement pairings. The state is
+essentially bounded with `|F(u)| ≤ C e^{2u}`, so on the window the backward wave converges absolutely
+and the forward wave has finitely many terms, `F` vanishing on `[0, ∞)`. Every term integrates `G`
+against a function bounded on the window.
+
+The wall ramp (`wallRamp`, window `[−½, 0]`) and the interior cutoff around a point `p`
+(`interiorCutoff`, window `[p − ¾, p + ¼]`) are window cutoffs.
 -/
 
 noncomputable section
@@ -41,9 +45,9 @@ open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
 /-! ### Moving a kernel onto the test -/
 
 /-- **A kernel bounded by an integrable function of the lag moves onto the test.** If
-\`|φ(x, u)| ≤ m(x)\` for \`x > 0\` with \`m\` integrable on \`(0, ∞)\`, and \`F, G\` are square integrable, then
-\`x ↦ ∫ φ(x,u) F(u + σx) G(u) du\` is integrable on \`(0, ∞)\` and
-\`∫_{x>0} ∫ φ(x,u) F(u + σx) G(u) du dx = ∫ (∫_{x>0} φ(x,u) F(u + σx) dx) G(u) du\`. -/
+`|φ(x, u)| ≤ m(x)` for `x > 0` with `m` integrable on `(0, ∞)`, and `F, G` are square integrable, then
+`x ↦ ∫ φ(x,u) F(u + σx) G(u) du` is integrable on `(0, ∞)` and
+`∫_{x>0} ∫ φ(x,u) F(u + σx) G(u) du dx = ∫ (∫_{x>0} φ(x,u) F(u + σx) dx) G(u) du`. -/
 theorem kernel_translate_pairing {m : ℝ → ℝ} (hm : IntegrableOn m (Ioi 0))
     {φ : ℝ → ℝ → ℝ} (hφ : Measurable (Function.uncurry φ))
     (hφm : ∀ x ∈ Ioi (0 : ℝ), ∀ u, |φ x u| ≤ m x) {F G : ℝ → ℝ} (hFm : Measurable F)
@@ -91,7 +95,7 @@ theorem kernel_translate_pairing {m : ℝ → ℝ} (hm : IntegrableOn m (Ioi 0))
   rw [hswap]
   exact integral_congr_ae (Eventually.of_forall fun u => integral_mul_const (G u) _)
 
-/-- The kernel integral \`u ↦ ∫_{x>0} φ(x,u) F(u + σx) dx\` is strongly measurable. -/
+/-- The kernel integral `u ↦ ∫_{x>0} φ(x,u) F(u + σx) dx` is strongly measurable. -/
 theorem stronglyMeasurable_kernel_translate {φ : ℝ → ℝ → ℝ}
     (hφ : Measurable (Function.uncurry φ)) {F : ℝ → ℝ} (hFm : Measurable F) (σ : ℝ) :
     StronglyMeasurable fun u => ∫ x in Ioi 0, φ x u * F (u + σ * x) := by
@@ -99,7 +103,7 @@ theorem stronglyMeasurable_kernel_translate {φ : ℝ → ℝ → ℝ}
     (hφ.comp measurable_swap).mul (hFm.comp (measurable_fst.add (measurable_snd.const_mul σ)))
   exact h.stronglyMeasurable.integral_prod_right' (ν := volume.restrict (Ioi (0 : ℝ)))
 
-/-- A kernel integral of an essentially bounded profile is bounded: \`|∫ φ F(u ± x)| ≤ C ∫ m\`. -/
+/-- A kernel integral of an essentially bounded profile is bounded: `|∫ φ F(u ± x)| ≤ C ∫ m`. -/
 theorem abs_kernel_translate_le {m : ℝ → ℝ} (hm : IntegrableOn m (Ioi 0)) {φ : ℝ → ℝ → ℝ}
     (hφm : ∀ x ∈ Ioi (0 : ℝ), ∀ u, |φ x u| ≤ m x) {F : ℝ → ℝ} {C : ℝ}
     (hb : ∀ᵐ v, |F v| ≤ C) {σ : ℝ} (hσ : σ = 1 ∨ σ = -1) (u : ℝ) :
@@ -124,9 +128,58 @@ theorem abs_kernel_translate_le {m : ℝ → ℝ} (hm : IntegrableOn m (Ioi 0)) 
   calc |φ x u| * |F (u + σ * x)| ≤ m x * C := mul_le_mul h1 hFx (abs_nonneg _) hm0
     _ = C * m x := mul_comm _ _
 
-/-! ### The wall ramp -/
+/-! ### Window cutoffs -/
 
-/-- The wall ramp: \`0\` left of \`−½\`, \`1\` right of \`−¼\`, linear in between. -/
+/-- A **window cutoff** for `[c, d]`: continuous, with values in `[0, 1]`, Lipschitz with constant `Λ`,
+and zero on the negative half-line outside `[c, d]`. -/
+structure IsWindowCutoff (c d Λ : ℝ) (χ : ℝ → ℝ) : Prop where
+  continuous : Continuous χ
+  nonneg : ∀ u, 0 ≤ χ u
+  le_one : ∀ u, χ u ≤ 1
+  lipschitz : ∀ u v, |χ u - χ v| ≤ Λ * |u - v|
+  vanish : ∀ u, u ∉ Icc c d → u < 0 → χ u = 0
+
+theorem IsWindowCutoff.abs_le_one {c d Λ : ℝ} {χ : ℝ → ℝ} (hχ : IsWindowCutoff c d Λ χ) (u : ℝ) :
+    |χ u| ≤ 1 := by
+  rw [abs_of_nonneg (hχ.nonneg u)]
+  exact hχ.le_one u
+
+theorem IsWindowCutoff.lipschitz_nonneg {c d Λ : ℝ} {χ : ℝ → ℝ} (hχ : IsWindowCutoff c d Λ χ) :
+    0 ≤ Λ := by
+  have h := (abs_nonneg _).trans (hχ.lipschitz 0 1)
+  rwa [zero_sub, abs_neg, abs_one, mul_one] at h
+
+/-- A jump of a window cutoff over a lag `x > 0` is at most `min(Λx, 1)`. -/
+theorem IsWindowCutoff.abs_sub_shift_le {c d Λ : ℝ} {χ : ℝ → ℝ} (hχ : IsWindowCutoff c d Λ χ)
+    {x : ℝ} (hx : 0 < x) (u : ℝ) : |χ u - χ (u + x)| ≤ min (Λ * x) 1 := by
+  refine le_min ?_ ?_
+  · have h := hχ.lipschitz u (u + x)
+    rwa [show u - (u + x) = -x by ring, abs_neg, abs_of_pos hx] at h
+  · rw [abs_le]
+    constructor <;> linarith [hχ.nonneg u, hχ.le_one u, hχ.nonneg (u + x), hχ.le_one (u + x)]
+
+/-- `ω(x) min(Λx, 1) ≤ (3Λ + 2) e^{−x/2}`: the commutator kernel of a cutoff is integrable. -/
+theorem archLevyDensity_mul_min_le {Λ x : ℝ} (hΛ : 0 ≤ Λ) (hx : 0 < x) :
+    archLevyDensity x * min (Λ * x) 1 ≤ (3 * Λ + 2) * Real.exp (-(x / 2)) := by
+  have hm0 : 0 ≤ min (Λ * x) 1 := le_min (mul_nonneg hΛ hx.le) zero_le_one
+  rcases le_total x 1 with h1 | h1
+  · have h2 := archLevyDensity_le_near hx h1
+    have hexp : (1 : ℝ) / 2 ≤ Real.exp (-(x / 2)) := by
+      have := Real.add_one_le_exp (-(x / 2))
+      linarith
+    calc archLevyDensity x * min (Λ * x) 1 ≤ 3 / (2 * x) * (Λ * x) :=
+          mul_le_mul h2 (min_le_left _ _) hm0 (by positivity)
+      _ = 3 / 2 * Λ := by
+          rw [div_mul_eq_mul_div, div_eq_iff (by positivity)]
+          ring
+      _ ≤ (3 * Λ + 2) * Real.exp (-(x / 2)) := by
+          nlinarith [mul_nonneg (by linarith : (0 : ℝ) ≤ 3 * Λ + 2) (sub_nonneg.mpr hexp)]
+  · have h2 := archLevyDensity_le_far h1
+    calc archLevyDensity x * min (Λ * x) 1 ≤ 2 * Real.exp (-(x / 2)) * 1 :=
+          mul_le_mul h2 (min_le_right _ _) hm0 (by positivity)
+      _ ≤ (3 * Λ + 2) * Real.exp (-(x / 2)) := by nlinarith [Real.exp_pos (-(x / 2))]
+
+/-- The wall ramp: `0` left of `−½`, `1` right of `−¼`, linear in between. -/
 def wallRamp (u : ℝ) : ℝ := min (max (4 * u + 2) 0) 1
 
 theorem continuous_wallRamp : Continuous wallRamp := by
@@ -159,173 +212,130 @@ theorem abs_wallRamp_sub_le (u v : ℝ) : |wallRamp u - wallRamp v| ≤ 4 * |u -
   refine max_le ((abs_max_sub_max_le_max _ _ _ _).trans ?_) (by positivity)
   rw [sub_self, abs_zero]
   refine max_le (le_of_eq ?_) (by positivity)
-  rw [show 4 * u + 2 - (4 * v + 2) = 4 * (u - v) by ring, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 4)]
+  rw [show 4 * u + 2 - (4 * v + 2) = 4 * (u - v) by ring, abs_mul,
+    abs_of_pos (by norm_num : (0 : ℝ) < 4)]
 
-/-- A jump of the ramp over a lag \`x > 0\` is at most \`min(4x, 1)\`. -/
-theorem abs_wallRamp_sub_shift_le {x : ℝ} (hx : 0 < x) (u : ℝ) :
-    |wallRamp u - wallRamp (u + x)| ≤ min (4 * x) 1 := by
-  refine le_min ?_ ?_
-  · have h := abs_wallRamp_sub_le u (u + x)
-    rwa [show u - (u + x) = -x by ring, abs_neg, abs_of_pos hx] at h
-  · rw [abs_le]
-    constructor <;> linarith [wallRamp_nonneg u, wallRamp_le_one u, wallRamp_nonneg (u + x),
-      wallRamp_le_one (u + x)]
+theorem isWindowCutoff_wallRamp : IsWindowCutoff (-(1 / 2)) 0 4 wallRamp :=
+  ⟨continuous_wallRamp, wallRamp_nonneg, wallRamp_le_one, abs_wallRamp_sub_le, fun u hu hu0 =>
+    wallRamp_of_le (by
+      by_contra h
+      exact hu ⟨le_of_lt (not_le.mp h), hu0.le⟩)⟩
 
-/-- \`ω(x) min(4x, 1) ≤ 14 e^{−x/2}\`: the commutator kernel of the ramp is integrable. -/
-theorem archLevyDensity_mul_min_le {x : ℝ} (hx : 0 < x) :
-    archLevyDensity x * min (4 * x) 1 ≤ 14 * Real.exp (-(x / 2)) := by
-  have hω := (archLevyDensity_pos hx).le
-  rcases le_total x 1 with h1 | h1
-  · have h2 := archLevyDensity_le_near hx h1
-    have hexp : (1 : ℝ) / 2 ≤ Real.exp (-(x / 2)) := by
-      have := Real.add_one_le_exp (-(x / 2))
-      linarith
-    calc archLevyDensity x * min (4 * x) 1 ≤ 3 / (2 * x) * (4 * x) :=
-          mul_le_mul h2 (min_le_left _ _) (le_min (by positivity) zero_le_one) (by positivity)
-      _ = 6 := by field_simp; ring
-      _ ≤ 14 * Real.exp (-(x / 2)) := by linarith
-  · have h2 := archLevyDensity_le_far h1
-    calc archLevyDensity x * min (4 * x) 1 ≤ 2 * Real.exp (-(x / 2)) * 1 :=
-          mul_le_mul h2 (min_le_right _ _) (le_min (by positivity) zero_le_one) (by positivity)
-      _ ≤ 14 * Real.exp (-(x / 2)) := by nlinarith [Real.exp_pos (-(x / 2))]
+/-- The interior cutoff around `p`: `1` on `[p − ½, p + ⅛]`, `0` outside `[p − ¾, p + ¼]`, linear in
+between. -/
+def interiorCutoff (p u : ℝ) : ℝ := max (min (min (4 * (u - p) + 3) 1) (2 - 8 * (u - p))) 0
 
-/-! ### Wall tests and the wall equation -/
+theorem continuous_interiorCutoff (p : ℝ) : Continuous (interiorCutoff p) := by
+  unfold interiorCutoff
+  fun_prop
 
-/-- A **wall test** is a profile of the energy domain carried by the collar \`[−½, 0]\`. -/
-structure IsWallTest (G : ℝ → ℝ) : Prop where
+theorem interiorCutoff_eq_one {p u : ℝ} (h1 : p - 1 / 2 ≤ u) (h2 : u ≤ p + 1 / 8) :
+    interiorCutoff p u = 1 := by
+  have hA : (1 : ℝ) ≤ 4 * (u - p) + 3 := by linarith
+  have hB : (1 : ℝ) ≤ 2 - 8 * (u - p) := by linarith
+  unfold interiorCutoff
+  rw [min_eq_right hA, min_eq_left hB, max_eq_left zero_le_one]
+
+theorem isWindowCutoff_interiorCutoff (p : ℝ) :
+    IsWindowCutoff (p - 3 / 4) (p + 1 / 4) 8 (interiorCutoff p) := by
+  refine ⟨continuous_interiorCutoff p, fun u => le_max_right _ _, fun u => ?_, fun u v => ?_,
+    fun u hu _ => ?_⟩
+  · exact max_le ((min_le_left _ _).trans (min_le_right _ _)) zero_le_one
+  · unfold interiorCutoff
+    refine (abs_max_sub_max_le_max _ _ _ _).trans ?_
+    rw [sub_self, abs_zero]
+    refine max_le ((abs_min_sub_min_le_max _ _ _ _).trans (max_le
+      ((abs_min_sub_min_le_max _ _ _ _).trans (max_le ?_ ?_)) ?_)) (by positivity)
+    · rw [show 4 * (u - p) + 3 - (4 * (v - p) + 3) = 4 * (u - v) by ring, abs_mul,
+        abs_of_pos (by norm_num : (0 : ℝ) < 4)]
+      nlinarith [abs_nonneg (u - v)]
+    · rw [sub_self, abs_zero]
+      positivity
+    · rw [show 2 - 8 * (u - p) - (2 - 8 * (v - p)) = -8 * (u - v) by ring, abs_mul]
+      norm_num
+  · unfold interiorCutoff
+    rcases not_and_or.mp (show ¬(p - 3 / 4 ≤ u ∧ u ≤ p + 1 / 4) from hu) with h | h
+    · exact max_eq_right ((min_le_left _ _).trans ((min_le_left _ _).trans (by linarith)))
+    · exact max_eq_right ((min_le_right _ _).trans (by linarith))
+
+/-! ### Carried tests and bounded forcings -/
+
+/-- A **test carried by `[c, d]`** is a profile of the energy domain vanishing outside `[c, d]`. -/
+structure IsCarriedTest (c d : ℝ) (G : ℝ → ℝ) : Prop where
   domain : CriticalHalfLineEnergyDomain G
-  vanish : ∀ x, x ∉ Icc (-(1 / 2 : ℝ)) 0 → G x = 0
+  vanish : ∀ x, x ∉ Icc c d → G x = 0
 
-theorem one_half_lt_log_two : (1 / 2 : ℝ) < Real.log 2 := by
-  have := Real.log_two_gt_d9
-  norm_num at this ⊢
-  linarith
+/-- A cutoff keeps the tests of its window. -/
+theorem IsCarriedTest.cutoff {c d Λ : ℝ} {χ G : ℝ → ℝ} (hχ : IsWindowCutoff c d Λ χ)
+    (hG : IsCarriedTest c d G) : IsCarriedTest c d fun u => χ u * G u :=
+  ⟨criticalHalfLineEnergyDomain_lipschitz_mul hG.domain hχ.continuous.measurable hχ.abs_le_one
+    hχ.lipschitz, fun x hx => by rw [hG.vanish x hx, mul_zero]⟩
 
-/-- The ramp keeps wall tests: \`χG\` is a wall test. -/
-theorem IsWallTest.ramp {G : ℝ → ℝ} (hG : IsWallTest G) :
-    IsWallTest fun u => wallRamp u * G u :=
-  ⟨criticalHalfLineEnergyDomain_lipschitz_mul hG.domain measurable_wallRamp abs_wallRamp_le_one
-    abs_wallRamp_sub_le, fun x hx => by rw [hG.vanish x hx, mul_zero]⟩
-
-/-- A wall test meets a half-line profile only through backward prime translates. -/
-theorem primePairTerm_wall_left {F G : ℝ → ℝ} (hF : ∀ u, 0 ≤ u → F u = 0)
-    (hG : ∀ x, x ∉ Icc (-(1 / 2 : ℝ)) 0 → G x = 0) (n : ℕ) :
-    primePairTerm F G n = vonMangoldtAtom n * ∫ t, F t * G (t + Real.log n) := by
-  unfold primePairTerm
-  rcases lt_or_ge n 2 with hn | hn
-  · rw [vonMangoldtAtom_eq_zero_of_lt_two hn, zero_mul, zero_mul]
-  · have hlog : Real.log 2 ≤ Real.log n := Real.log_le_log (by norm_num) (by exact_mod_cast hn)
-    have h12 := one_half_lt_log_two
-    have h0 : (fun t => F t * G (t - Real.log n)) = fun _ => 0 := by
-      funext t
-      by_cases ht : 0 ≤ t
-      · rw [hF t ht, zero_mul]
-      · rw [hG (t - Real.log n) fun hm => by linarith [hm.1], mul_zero]
-    rw [h0, integral_zero, zero_add]
-
-/-- The transposed prime term of a wall test is the same backward translate. -/
-theorem primePairTerm_wall_right {F G : ℝ → ℝ} (hF : ∀ u, 0 ≤ u → F u = 0)
-    (hG : ∀ x, x ∉ Icc (-(1 / 2 : ℝ)) 0 → G x = 0) (n : ℕ) :
-    primePairTerm G F n = vonMangoldtAtom n * ∫ t, F t * G (t + Real.log n) := by
-  unfold primePairTerm
-  rcases lt_or_ge n 2 with hn | hn
-  · rw [vonMangoldtAtom_eq_zero_of_lt_two hn, zero_mul, zero_mul]
-  · have hlog : Real.log 2 ≤ Real.log n := Real.log_le_log (by norm_num) (by exact_mod_cast hn)
-    have h12 := one_half_lt_log_two
-    have h0 : (fun t => G t * F (t + Real.log n)) = fun _ => 0 := by
-      funext t
-      by_cases ht : t ∈ Icc (-(1 / 2 : ℝ)) 0
-      · rw [hF (t + Real.log n) (by linarith [ht.1]), mul_zero]
-      · rw [hG t ht, zero_mul]
-    have hs : (∫ t, G t * F (t - Real.log n)) = ∫ t, F t * G (t + Real.log n) := by
-      have h := integral_add_right_eq_self (μ := volume)
-        (fun t => G t * F (t - Real.log n)) (Real.log n)
-      simp only [add_sub_cancel_right] at h
-      rw [← h]
-      exact integral_congr_ae (Eventually.of_forall fun t => mul_comm _ _)
-    rw [h0, integral_zero, add_zero, hs]
-
-/-- **The wall equation.** Against a wall test the Gamma form of the state is its backward prime
-wave minus the pole and confinement pairings. -/
-theorem criticalState_wall_equation {W₀ : ℝ} (hW : 0 < W₀)
-    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
-    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {G : ℝ → ℝ} (hG : IsWallTest G) :
-    gammaMixedForm F G = (∑' n : ℕ, vonMangoldtAtom n * ∫ t, F t * G (t + Real.log n)) -
-      (2 * coshHalfMoment F * coshHalfMoment G - 2 * sinhHalfMoment F * sinhHalfMoment G) -
-        criticalAliasCoefficient W₀ * ∫ u in Iio 0, F u * G u * Real.exp (-(8 * u)) := by
-  have hweak := criticalHalfLineMixedEnergy_groundState_eq_zero hW ht hF hG.domain
-  unfold criticalHalfLineMixedEnergy primeMixedForm at hweak
-  simp_rw [primePairTerm_wall_left hF.2.2.2.2.2.1 hG.vanish,
-    primePairTerm_wall_right hF.2.2.2.2.2.1 hG.vanish] at hweak
-  linarith
-
-/-! ### Bounded wall forcings -/
-
-/-- A functional on wall tests is a **bounded wall forcing** when it integrates the test against a
-function bounded on the collar. -/
-def IsBoundedWallForcing (Λ : (ℝ → ℝ) → ℝ) : Prop :=
+/-- A functional on the tests of `[c, d]` is a **bounded forcing** when it integrates the test against
+a function bounded on the window. -/
+def IsBoundedForcingOn (c d : ℝ) (T : (ℝ → ℝ) → ℝ) : Prop :=
   ∃ h : ℝ → ℝ, AEStronglyMeasurable h volume ∧
-    (∃ C, ∀ᵐ y, y ∈ Icc (-(1 / 2 : ℝ)) 0 → |h y| ≤ C) ∧ ∀ G, IsWallTest G → Λ G = ∫ y, G y * h y
+    (∃ C, ∀ᵐ y, y ∈ Icc c d → |h y| ≤ C) ∧ ∀ G, IsCarriedTest c d G → T G = ∫ y, G y * h y
 
-theorem IsWallTest.integrable_mul {G h : ℝ → ℝ} (hG : IsWallTest G)
+theorem IsCarriedTest.integrable_mul {c d : ℝ} {G h : ℝ → ℝ} (hG : IsCarriedTest c d G)
     (hh : AEStronglyMeasurable h volume) {C : ℝ}
-    (hC : ∀ᵐ y, y ∈ Icc (-(1 / 2 : ℝ)) 0 → |h y| ≤ C) : Integrable fun y => G y * h y := by
+    (hC : ∀ᵐ y, y ∈ Icc c d → |h y| ≤ C) : Integrable fun y => G y * h y := by
   refine (hG.domain.integrable.norm.const_mul C).mono'
     (hG.domain.meas.aestronglyMeasurable.mul hh) ?_
   filter_upwards [hC] with y hy
-  by_cases hm : y ∈ Icc (-(1 / 2 : ℝ)) 0
+  by_cases hm : y ∈ Icc c d
   · rw [Real.norm_eq_abs, abs_mul, Real.norm_eq_abs, mul_comm C]
     exact mul_le_mul_of_nonneg_left (hy hm) (abs_nonneg _)
   · simp only [hG.vanish y hm, zero_mul, norm_zero, mul_zero, le_refl]
 
-theorem IsBoundedWallForcing.congr {Λ₁ Λ₂ : (ℝ → ℝ) → ℝ} (h : IsBoundedWallForcing Λ₁)
-    (he : ∀ G, IsWallTest G → Λ₁ G = Λ₂ G) : IsBoundedWallForcing Λ₂ := by
+theorem IsBoundedForcingOn.congr {c d : ℝ} {T₁ T₂ : (ℝ → ℝ) → ℝ} (h : IsBoundedForcingOn c d T₁)
+    (he : ∀ G, IsCarriedTest c d G → T₁ G = T₂ G) : IsBoundedForcingOn c d T₂ := by
   obtain ⟨g, hm, hC, hg⟩ := h
   exact ⟨g, hm, hC, fun G hG => (he G hG).symm.trans (hg G hG)⟩
 
-theorem IsBoundedWallForcing.add {Λ₁ Λ₂ : (ℝ → ℝ) → ℝ} (h₁ : IsBoundedWallForcing Λ₁)
-    (h₂ : IsBoundedWallForcing Λ₂) : IsBoundedWallForcing fun G => Λ₁ G + Λ₂ G := by
+theorem IsBoundedForcingOn.add {c d : ℝ} {T₁ T₂ : (ℝ → ℝ) → ℝ} (h₁ : IsBoundedForcingOn c d T₁)
+    (h₂ : IsBoundedForcingOn c d T₂) : IsBoundedForcingOn c d fun G => T₁ G + T₂ G := by
   obtain ⟨g₁, hm₁, ⟨C₁, hC₁⟩, he₁⟩ := h₁
   obtain ⟨g₂, hm₂, ⟨C₂, hC₂⟩, he₂⟩ := h₂
   refine ⟨fun y => g₁ y + g₂ y, hm₁.add hm₂, ⟨C₁ + C₂, ?_⟩, fun G hG => ?_⟩
   · filter_upwards [hC₁, hC₂] with y h1 h2 hy
     exact (abs_add_le _ _).trans (add_le_add (h1 hy) (h2 hy))
-  · show Λ₁ G + Λ₂ G = ∫ y, G y * (g₁ y + g₂ y)
+  · show T₁ G + T₂ G = ∫ y, G y * (g₁ y + g₂ y)
     rw [he₁ G hG, he₂ G hG,
       ← integral_add (hG.integrable_mul hm₁ hC₁) (hG.integrable_mul hm₂ hC₂)]
     exact integral_congr_ae (Eventually.of_forall fun y => (mul_add _ _ _).symm)
 
-theorem IsBoundedWallForcing.const_mul {Λ : (ℝ → ℝ) → ℝ} (h : IsBoundedWallForcing Λ) (c : ℝ) :
-    IsBoundedWallForcing fun G => c * Λ G := by
+theorem IsBoundedForcingOn.const_mul {c d : ℝ} {T : (ℝ → ℝ) → ℝ} (h : IsBoundedForcingOn c d T)
+    (a : ℝ) : IsBoundedForcingOn c d fun G => a * T G := by
   obtain ⟨g, hm, ⟨C, hC⟩, he⟩ := h
-  refine ⟨fun y => c * g y, hm.const_mul c, ⟨|c| * C, ?_⟩, fun G hG => ?_⟩
+  refine ⟨fun y => a * g y, hm.const_mul a, ⟨|a| * C, ?_⟩, fun G hG => ?_⟩
   · filter_upwards [hC] with y h1 hy
     rw [abs_mul]
-    exact mul_le_mul_of_nonneg_left (h1 hy) (abs_nonneg c)
-  · show c * Λ G = ∫ y, G y * (c * g y)
+    exact mul_le_mul_of_nonneg_left (h1 hy) (abs_nonneg a)
+  · show a * T G = ∫ y, G y * (a * g y)
     rw [he G hG, ← integral_const_mul]
     exact integral_congr_ae (Eventually.of_forall fun y => by ring)
 
-theorem IsBoundedWallForcing.sub {Λ₁ Λ₂ : (ℝ → ℝ) → ℝ} (h₁ : IsBoundedWallForcing Λ₁)
-    (h₂ : IsBoundedWallForcing Λ₂) : IsBoundedWallForcing fun G => Λ₁ G - Λ₂ G :=
+theorem IsBoundedForcingOn.sub {c d : ℝ} {T₁ T₂ : (ℝ → ℝ) → ℝ} (h₁ : IsBoundedForcingOn c d T₁)
+    (h₂ : IsBoundedForcingOn c d T₂) : IsBoundedForcingOn c d fun G => T₁ G - T₂ G :=
   (h₁.add (h₂.const_mul (-1))).congr fun G _ => by ring
 
-/-- Integration against an essentially bounded function is a bounded wall forcing. -/
-theorem isBoundedWallForcing_mass {V : ℝ → ℝ} (hV : AEStronglyMeasurable V volume) {C : ℝ}
-    (hC : ∀ᵐ u, |V u| ≤ C) : IsBoundedWallForcing fun G => ∫ u, V u * G u :=
+/-- Integration against an essentially bounded function is a bounded forcing. -/
+theorem isBoundedForcingOn_mass {c d : ℝ} {V : ℝ → ℝ} (hV : AEStronglyMeasurable V volume)
+    {C : ℝ} (hC : ∀ᵐ u, |V u| ≤ C) : IsBoundedForcingOn c d fun G => ∫ u, V u * G u :=
   ⟨V, hV, ⟨C, hC.mono fun _ h _ => h⟩, fun _ _ =>
     integral_congr_ae (Eventually.of_forall fun _ => mul_comm _ _)⟩
 
-/-- Integration against a continuous function is a bounded wall forcing (the collar is compact). -/
-theorem isBoundedWallForcing_continuous {k : ℝ → ℝ} (hk : Continuous k) :
-    IsBoundedWallForcing fun G => ∫ y, G y * k y := by
-  obtain ⟨C, hC⟩ := (isCompact_Icc (a := -(1 / 2 : ℝ)) (b := 0)).exists_bound_of_continuousOn
+/-- Integration against a continuous function is a bounded forcing (the window is compact). -/
+theorem isBoundedForcingOn_continuous {c d : ℝ} {k : ℝ → ℝ} (hk : Continuous k) :
+    IsBoundedForcingOn c d fun G => ∫ y, G y * k y := by
+  obtain ⟨C, hC⟩ := (isCompact_Icc (a := c) (b := d)).exists_bound_of_continuousOn
     (f := k) hk.continuousOn
   exact ⟨k, hk.aestronglyMeasurable,
     ⟨C, Eventually.of_forall fun y hy => by simpa only [Real.norm_eq_abs] using hC y hy⟩,
     fun _ _ => rfl⟩
 
-/-- The state is essentially bounded, with \`|F(u)| ≤ C e^{2u}\`. -/
+/-- The state is essentially bounded, with `|F(u)| ≤ C e^{2u}`. -/
 theorem criticalState_ae_abs_le {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
@@ -339,10 +349,10 @@ theorem criticalState_ae_abs_le {W₀ : ℝ} (hW : 0 < W₀)
     exact hC
   · exact hu.trans (mul_le_of_le_one_right hC (Real.exp_le_one_iff.mpr (by linarith)))
 
-/-! ### The remainder kernel \`r = ω − ν\` -/
+/-! ### The remainder kernel `r = ω − ν` -/
 
 open CanonicalSystemOfTheWindowTower in
-/-- The jump integrand of the remainder kernel is integrable: \`0 ≤ r ≤ ω\`. -/
+/-- The jump integrand of the remainder kernel is integrable: `0 ≤ r ≤ ω`. -/
 theorem integrableOn_remainderJump {U G : ℝ → ℝ} (hU : CriticalHalfLineEnergyDomain U)
     (hG : CriticalHalfLineEnergyDomain G) :
     IntegrableOn (fun x => archLogRemainder x * ∫ u, (U u - U (u + x)) * (G u - G (u + x)))
@@ -371,7 +381,7 @@ theorem integrableOn_logJump {U G : ℝ → ℝ} (hU : CriticalHalfLineEnergyDom
   simp only [Pi.sub_apply, archLogRemainder]
   ring
 
-/-- Expansion of a jump pairing: \`∫ ΔU ΔG = 2 ∫ UG − ∫ U(u − x) G(u) − ∫ U(u + x) G(u)\`. -/
+/-- Expansion of a jump pairing: `∫ ΔU ΔG = 2 ∫ UG − ∫ U(u − x) G(u) − ∫ U(u + x) G(u)`. -/
 theorem integral_jump_mul_jump_eq {U G : ℝ → ℝ} (hU : MemLp U 2 volume) (hG : MemLp G 2 volume)
     (x : ℝ) :
     (∫ u, (U u - U (u + x)) * (G u - G (u + x))) =
@@ -399,7 +409,7 @@ theorem integral_jump_mul_jump_eq {U G : ℝ → ℝ} (hU : MemLp U 2 volume) (h
   ring
 
 open CanonicalSystemOfTheWindowTower in
-/-- **The remainder jump form is a mass term minus two convolutions with \`r\`.** -/
+/-- **The remainder jump form is a mass term minus two convolutions with `r`.** -/
 theorem remainderJump_eq {U G : ℝ → ℝ} (hUm : Measurable U) (hGm : Measurable G)
     (hU2 : Integrable fun u => U u ^ 2) (hG2 : Integrable fun u => G u ^ 2) :
     (∫ x in Ioi 0, archLogRemainder x * ∫ u, (U u - U (u + x)) * (G u - G (u + x))) =
@@ -435,83 +445,87 @@ theorem remainderJump_eq {U G : ℝ → ℝ} (hUm : Measurable U) (hGm : Measura
   ring
 
 open CanonicalSystemOfTheWindowTower in
-/-- The remainder jump form against an essentially bounded profile is a bounded wall forcing. -/
-theorem isBoundedWallForcing_remainderJump {U : ℝ → ℝ} (hU : CriticalHalfLineEnergyDomain U)
+/-- The remainder jump form against an essentially bounded profile is a bounded forcing on every window. -/
+theorem isBoundedForcingOn_remainderJump {c d : ℝ} {U : ℝ → ℝ} (hU : CriticalHalfLineEnergyDomain U)
     {C : ℝ} (hC : ∀ᵐ u, |U u| ≤ C) :
-    IsBoundedWallForcing fun G =>
+    IsBoundedForcingOn c d fun G =>
       ∫ x in Ioi 0, archLogRemainder x * ∫ u, (U u - U (u + x)) * (G u - G (u + x)) := by
   have hφ : Measurable (Function.uncurry fun x (_ : ℝ) => archLogRemainder x) :=
     measurable_archLogRemainder.comp measurable_fst
   have hb : ∀ x ∈ Ioi (0 : ℝ), ∀ u : ℝ,
       |(fun x (_ : ℝ) => archLogRemainder x) x u| ≤ archLogRemainder x := fun x hx _ =>
     (abs_of_nonneg (archLogRemainder_nonneg hx)).le
-  have hk : ∀ σ : ℝ, (σ = 1 ∨ σ = -1) → IsBoundedWallForcing fun G =>
+  have hk : ∀ σ : ℝ, (σ = 1 ∨ σ = -1) → IsBoundedForcingOn c d fun G =>
       ∫ u, (∫ x in Ioi 0, archLogRemainder x * U (u + σ * x)) * G u := fun σ hσ =>
-    isBoundedWallForcing_mass
+    isBoundedForcingOn_mass
       (stronglyMeasurable_kernel_translate hφ hU.meas σ).aestronglyMeasurable
       (Eventually.of_forall fun u =>
         abs_kernel_translate_le integrableOn_archLogRemainder hb hC hσ u)
-  refine ((((isBoundedWallForcing_mass hU.meas.aestronglyMeasurable hC).const_mul
+  refine ((((isBoundedForcingOn_mass hU.meas.aestronglyMeasurable hC).const_mul
     (2 * ∫ x in Ioi 0, archLogRemainder x)).sub (hk (-1) (Or.inr rfl))).sub
       (hk 1 (Or.inl rfl))).congr fun G hG => ?_
   rw [remainderJump_eq hU.meas hG.domain.meas hU.sq hG.domain.sq]
 
-/-! ### The commutator of the ramp -/
+/-! ### The commutator of a cutoff -/
 
 /-- The kernel of the commutator on forward translates. -/
-def rampKernelRight (x u : ℝ) : ℝ := archLevyDensity x * (wallRamp u - wallRamp (u + x))
+def cutoffKernelRight (χ : ℝ → ℝ) (x u : ℝ) : ℝ := archLevyDensity x * (χ u - χ (u + x))
 
 /-- The kernel of the commutator on backward translates. -/
-def rampKernelLeft (x u : ℝ) : ℝ := archLevyDensity x * (wallRamp (u + -1 * x) - wallRamp u)
+def cutoffKernelLeft (χ : ℝ → ℝ) (x u : ℝ) : ℝ := archLevyDensity x * (χ (u + -1 * x) - χ u)
 
-theorem measurable_rampKernelRight : Measurable (Function.uncurry rampKernelRight) :=
+theorem measurable_cutoffKernelRight {χ : ℝ → ℝ} (hχ : Continuous χ) :
+    Measurable (Function.uncurry (cutoffKernelRight χ)) :=
   (measurable_archLevyDensity.comp measurable_fst).mul
-    ((measurable_wallRamp.comp measurable_snd).sub
-      (measurable_wallRamp.comp (measurable_snd.add measurable_fst)))
+    ((hχ.measurable.comp measurable_snd).sub (hχ.measurable.comp (measurable_snd.add measurable_fst)))
 
-theorem measurable_rampKernelLeft : Measurable (Function.uncurry rampKernelLeft) :=
+theorem measurable_cutoffKernelLeft {χ : ℝ → ℝ} (hχ : Continuous χ) :
+    Measurable (Function.uncurry (cutoffKernelLeft χ)) :=
   (measurable_archLevyDensity.comp measurable_fst).mul
-    ((measurable_wallRamp.comp (measurable_snd.add (measurable_fst.const_mul (-1)))).sub
-      (measurable_wallRamp.comp measurable_snd))
+    ((hχ.measurable.comp (measurable_snd.add (measurable_fst.const_mul (-1)))).sub
+      (hχ.measurable.comp measurable_snd))
 
-theorem abs_rampKernelRight_le :
-    ∀ x ∈ Ioi (0 : ℝ), ∀ u, |rampKernelRight x u| ≤ 14 * Real.exp (-(x / 2)) := by
+theorem abs_cutoffKernelRight_le {c d Λ : ℝ} {χ : ℝ → ℝ} (hχ : IsWindowCutoff c d Λ χ) :
+    ∀ x ∈ Ioi (0 : ℝ), ∀ u, |cutoffKernelRight χ x u| ≤ (3 * Λ + 2) * Real.exp (-(x / 2)) := by
   intro x hx u
   have hx0 : (0 : ℝ) < x := hx
-  unfold rampKernelRight
+  unfold cutoffKernelRight
   rw [abs_mul, abs_of_pos (archLevyDensity_pos hx0)]
-  exact (mul_le_mul_of_nonneg_left (abs_wallRamp_sub_shift_le hx0 u)
-    (archLevyDensity_pos hx0).le).trans (archLevyDensity_mul_min_le hx0)
+  exact (mul_le_mul_of_nonneg_left (hχ.abs_sub_shift_le hx0 u)
+    (archLevyDensity_pos hx0).le).trans (archLevyDensity_mul_min_le hχ.lipschitz_nonneg hx0)
 
-theorem abs_rampKernelLeft_le :
-    ∀ x ∈ Ioi (0 : ℝ), ∀ u, |rampKernelLeft x u| ≤ 14 * Real.exp (-(x / 2)) := by
+theorem abs_cutoffKernelLeft_le {c d Λ : ℝ} {χ : ℝ → ℝ} (hχ : IsWindowCutoff c d Λ χ) :
+    ∀ x ∈ Ioi (0 : ℝ), ∀ u, |cutoffKernelLeft χ x u| ≤ (3 * Λ + 2) * Real.exp (-(x / 2)) := by
   intro x hx u
   have hx0 : (0 : ℝ) < x := hx
-  unfold rampKernelLeft
+  unfold cutoffKernelLeft
   rw [abs_mul, abs_of_pos (archLevyDensity_pos hx0)]
-  have h := abs_wallRamp_sub_shift_le hx0 (u + -1 * x)
+  have h := hχ.abs_sub_shift_le hx0 (u + -1 * x)
   rw [show u + -1 * x + x = u by ring] at h
   exact (mul_le_mul_of_nonneg_left h (archLevyDensity_pos hx0).le).trans
-    (archLevyDensity_mul_min_le hx0)
+    (archLevyDensity_mul_min_le hχ.lipschitz_nonneg hx0)
 
-theorem integrableOn_fourteen_exp : IntegrableOn (fun x : ℝ => 14 * Real.exp (-(x / 2))) (Ioi 0) :=
-  integrableOn_exp_neg_half.const_mul 14
+theorem integrableOn_cutoffKernelBound (Λ : ℝ) :
+    IntegrableOn (fun x : ℝ => (3 * Λ + 2) * Real.exp (-(x / 2))) (Ioi 0) :=
+  integrableOn_exp_neg_half.const_mul _
 
-/-- **The commutator of the ramp with the Lévy form** is two kernel convolutions:
-\`levyMixed (χF) G − levyMixed F (χG) = ∫ (∫ κ₊ F(u + x)) G − ∫ (∫ κ₋ F(u − x)) G\`. -/
-theorem levyMixed_ramp_commutator {F G : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
-    (hG : CriticalHalfLineEnergyDomain G) :
-    levyMixed (fun u => wallRamp u * F u) G - levyMixed F (fun u => wallRamp u * G u) =
-      (∫ u, (∫ x in Ioi 0, rampKernelRight x u * F (u + 1 * x)) * G u) -
-        ∫ u, (∫ x in Ioi 0, rampKernelLeft x u * F (u + -1 * x)) * G u := by
-  have hU := criticalHalfLineEnergyDomain_lipschitz_mul hF measurable_wallRamp
-    abs_wallRamp_le_one abs_wallRamp_sub_le
-  have hχG := criticalHalfLineEnergyDomain_lipschitz_mul hG measurable_wallRamp
-    abs_wallRamp_le_one abs_wallRamp_sub_le
-  obtain ⟨i₁, e₁⟩ := kernel_translate_pairing integrableOn_fourteen_exp measurable_rampKernelRight
-    abs_rampKernelRight_le hF.meas hG.meas hF.sq hG.sq 1
-  obtain ⟨i₂, e₂⟩ := kernel_translate_pairing integrableOn_fourteen_exp measurable_rampKernelLeft
-    abs_rampKernelLeft_le hF.meas hG.meas hF.sq hG.sq (-1)
+/-- **The commutator of a cutoff with the Lévy form** is two kernel convolutions:
+`levyMixed (χF) G − levyMixed F (χG) = ∫ (∫ κ₊ F(u + x)) G − ∫ (∫ κ₋ F(u − x)) G`. -/
+theorem levyMixed_cutoff_commutator {c d Λ : ℝ} {χ : ℝ → ℝ} (hχ : IsWindowCutoff c d Λ χ)
+    {F G : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) (hG : CriticalHalfLineEnergyDomain G) :
+    levyMixed (fun u => χ u * F u) G - levyMixed F (fun u => χ u * G u) =
+      (∫ u, (∫ x in Ioi 0, cutoffKernelRight χ x u * F (u + 1 * x)) * G u) -
+        ∫ u, (∫ x in Ioi 0, cutoffKernelLeft χ x u * F (u + -1 * x)) * G u := by
+  have hU := criticalHalfLineEnergyDomain_lipschitz_mul hF hχ.continuous.measurable hχ.abs_le_one
+    hχ.lipschitz
+  have hχG := criticalHalfLineEnergyDomain_lipschitz_mul hG hχ.continuous.measurable
+    hχ.abs_le_one hχ.lipschitz
+  obtain ⟨i₁, e₁⟩ := kernel_translate_pairing (integrableOn_cutoffKernelBound Λ)
+    (measurable_cutoffKernelRight hχ.continuous) (abs_cutoffKernelRight_le hχ) hF.meas hG.meas
+    hF.sq hG.sq 1
+  obtain ⟨i₂, e₂⟩ := kernel_translate_pairing (integrableOn_cutoffKernelBound Λ)
+    (measurable_cutoffKernelLeft hχ.continuous) (abs_cutoffKernelLeft_le hχ) hF.meas hG.meas
+    hF.sq hG.sq (-1)
   have hA := integrableOn_levyMixedIntegrand hU hG
   have hB := integrableOn_levyMixedIntegrand hF hχG
   have hFL := hF.memLp_real
@@ -522,68 +536,68 @@ theorem levyMixed_ramp_commutator {F G : ℝ → ℝ} (hF : CriticalHalfLineEner
   rw [← integral_sub hA hB, ← e₁, ← e₂, ← integral_sub i₁ i₂]
   refine setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_
   have hx0 : (0 : ℝ) < x := hx
-  have hχb : ∀ᵐ u ∂volume, ‖wallRamp u - wallRamp (u + x)‖ ≤ 1 := Eventually.of_forall fun u => by
+  have hχb : ∀ᵐ u ∂volume, ‖χ u - χ (u + x)‖ ≤ 1 := Eventually.of_forall fun u => by
     rw [Real.norm_eq_abs]
-    exact (abs_wallRamp_sub_shift_le hx0 u).trans (min_le_right _ _)
-  have hχm : AEStronglyMeasurable (fun u => wallRamp u - wallRamp (u + x)) volume :=
-    (continuous_wallRamp.sub (continuous_wallRamp.comp (continuous_add_const x))).aestronglyMeasurable
+    exact (hχ.abs_sub_shift_le hx0 u).trans (min_le_right _ _)
+  have hχm : AEStronglyMeasurable (fun u => χ u - χ (u + x)) volume :=
+    (hχ.continuous.sub (hχ.continuous.comp (continuous_add_const x))).aestronglyMeasurable
   have iA : Integrable fun u =>
-      (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x)) :=
+      (χ u * F u - χ (u + x) * F (u + x)) * (G u - G (u + x)) :=
     integrable_mul_of_memLp (hUL.sub (memLp_two_shift hUL x)) (hGL.sub (memLp_two_shift hGL x))
   have iB : Integrable fun u =>
-      (F u - F (u + x)) * (wallRamp u * G u - wallRamp (u + x) * G (u + x)) :=
+      (F u - F (u + x)) * (χ u * G u - χ (u + x) * G (u + x)) :=
     integrable_mul_of_memLp (hFL.sub (memLp_two_shift hFL x)) (hχGL.sub (memLp_two_shift hχGL x))
   have iP := (integrable_mul_of_memLp (memLp_two_shift hFL x) hGL).bdd_mul hχm hχb
   have iQ := (integrable_mul_of_memLp hFL (memLp_two_shift hGL x)).bdd_mul hχm hχb
-  have hAB : (∫ u, (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x))) -
-      (∫ u, (F u - F (u + x)) * (wallRamp u * G u - wallRamp (u + x) * G (u + x))) =
-      (∫ u, (wallRamp u - wallRamp (u + x)) * (F (u + x) * G u)) -
-        ∫ u, (wallRamp u - wallRamp (u + x)) * (F u * G (u + x)) := by
+  have hAB : (∫ u, (χ u * F u - χ (u + x) * F (u + x)) * (G u - G (u + x))) -
+      (∫ u, (F u - F (u + x)) * (χ u * G u - χ (u + x) * G (u + x))) =
+      (∫ u, (χ u - χ (u + x)) * (F (u + x) * G u)) -
+        ∫ u, (χ u - χ (u + x)) * (F u * G (u + x)) := by
     rw [← integral_sub iA iB, ← integral_sub iP iQ]
     exact integral_congr_ae (Eventually.of_forall fun u => by ring)
-  have hQ : (∫ u, (wallRamp u - wallRamp (u + x)) * (F u * G (u + x))) =
-      ∫ u, (wallRamp (u + -1 * x) - wallRamp u) * (F (u + -1 * x) * G u) := by
+  have hQ : (∫ u, (χ u - χ (u + x)) * (F u * G (u + x))) =
+      ∫ u, (χ (u + -1 * x) - χ u) * (F (u + -1 * x) * G u) := by
     have h := integral_add_right_eq_self (μ := volume)
-      (fun u => (wallRamp (u + -1 * x) - wallRamp u) * (F (u + -1 * x) * G u)) x
+      (fun u => (χ (u + -1 * x) - χ u) * (F (u + -1 * x) * G u)) x
     simp only [show ∀ u : ℝ, u + x + -1 * x = u from fun u => by ring] at h
     exact h
-  have e1 : (∫ u, rampKernelRight x u * F (u + 1 * x) * G u) =
-      archLevyDensity x * ∫ u, (wallRamp u - wallRamp (u + x)) * (F (u + x) * G u) := by
+  have e1 : (∫ u, cutoffKernelRight χ x u * F (u + 1 * x) * G u) =
+      archLevyDensity x * ∫ u, (χ u - χ (u + x)) * (F (u + x) * G u) := by
     rw [← integral_const_mul]
     exact integral_congr_ae (Eventually.of_forall fun u => by
-      simp only [rampKernelRight, one_mul]; ring)
-  have e2 : (∫ u, rampKernelLeft x u * F (u + -1 * x) * G u) =
-      archLevyDensity x * ∫ u, (wallRamp (u + -1 * x) - wallRamp u) * (F (u + -1 * x) * G u) := by
+      simp only [cutoffKernelRight, one_mul]; ring)
+  have e2 : (∫ u, cutoffKernelLeft χ x u * F (u + -1 * x) * G u) =
+      archLevyDensity x * ∫ u, (χ (u + -1 * x) - χ u) * (F (u + -1 * x) * G u) := by
     rw [← integral_const_mul]
-    exact integral_congr_ae (Eventually.of_forall fun u => by simp only [rampKernelLeft]; ring)
+    exact integral_congr_ae (Eventually.of_forall fun u => by simp only [cutoffKernelLeft]; ring)
   show archLevyDensity x *
-      (∫ u, (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x))) -
+      (∫ u, (χ u * F u - χ (u + x) * F (u + x)) * (G u - G (u + x))) -
     archLevyDensity x *
-      (∫ u, (F u - F (u + x)) * (wallRamp u * G u - wallRamp (u + x) * G (u + x))) =
-    (∫ u, rampKernelRight x u * F (u + 1 * x) * G u) -
-      ∫ u, rampKernelLeft x u * F (u + -1 * x) * G u
+      (∫ u, (F u - F (u + x)) * (χ u * G u - χ (u + x) * G (u + x))) =
+    (∫ u, cutoffKernelRight χ x u * F (u + 1 * x) * G u) -
+      ∫ u, cutoffKernelLeft χ x u * F (u + -1 * x) * G u
   rw [e1, e2, ← hQ, ← mul_sub, ← mul_sub, hAB]
 
-/-- The commutator of the ramp against an essentially bounded profile is a bounded wall forcing. -/
-theorem isBoundedWallForcing_commutator {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {C : ℝ}
-    (hC : ∀ᵐ u, |F u| ≤ C) :
-    IsBoundedWallForcing fun G =>
-      levyMixed (fun u => wallRamp u * F u) G - levyMixed F (fun u => wallRamp u * G u) := by
-  have hk₁ := isBoundedWallForcing_mass
-    (stronglyMeasurable_kernel_translate measurable_rampKernelRight hF.meas 1).aestronglyMeasurable
-    (Eventually.of_forall fun u => abs_kernel_translate_le integrableOn_fourteen_exp
-      abs_rampKernelRight_le hC (Or.inl rfl) u)
-  have hk₂ := isBoundedWallForcing_mass
-    (stronglyMeasurable_kernel_translate measurable_rampKernelLeft hF.meas (-1)).aestronglyMeasurable
-    (Eventually.of_forall fun u => abs_kernel_translate_le integrableOn_fourteen_exp
-      abs_rampKernelLeft_le hC (Or.inr rfl) u)
-  exact (hk₁.sub hk₂).congr fun G hG => (levyMixed_ramp_commutator hF hG.domain).symm
+/-- The commutator of a cutoff against an essentially bounded profile is a bounded forcing. -/
+theorem isBoundedForcingOn_commutator {c d Λ : ℝ} {χ : ℝ → ℝ} (hχ : IsWindowCutoff c d Λ χ)
+    {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {C : ℝ} (hC : ∀ᵐ u, |F u| ≤ C) :
+    IsBoundedForcingOn c d fun G =>
+      levyMixed (fun u => χ u * F u) G - levyMixed F (fun u => χ u * G u) := by
+  have hk₁ := isBoundedForcingOn_mass (c := c) (d := d)
+    (stronglyMeasurable_kernel_translate (measurable_cutoffKernelRight hχ.continuous) hF.meas 1).aestronglyMeasurable
+    (Eventually.of_forall fun u => abs_kernel_translate_le (integrableOn_cutoffKernelBound Λ)
+      (abs_cutoffKernelRight_le hχ) hC (Or.inl rfl) u)
+  have hk₂ := isBoundedForcingOn_mass (c := c) (d := d)
+    (stronglyMeasurable_kernel_translate (measurable_cutoffKernelLeft hχ.continuous) hF.meas (-1)).aestronglyMeasurable
+    (Eventually.of_forall fun u => abs_kernel_translate_le (integrableOn_cutoffKernelBound Λ)
+      (abs_cutoffKernelLeft_le hχ) hC (Or.inr rfl) u)
+  exact (hk₁.sub hk₂).congr fun G hG => (levyMixed_cutoff_commutator hχ hF hG.domain).symm
 
-/-! ### The backward prime wave -/
+/-! ### The prime wave -/
 
-/-- The backward prime wave \`Σ_n Λ(n) n^{−½} F(y − log n)\` of a half-line profile. -/
-def backwardPrimeWave (F : ℝ → ℝ) (y : ℝ) : ℝ :=
-  ∑' n : ℕ, vonMangoldtAtom n * F (y - Real.log n)
+/-- The prime wave `Σ_n Λ(n) n^{−½} (F(y + log n) + F(y − log n))` of a half-line profile. -/
+def primeWave (F : ℝ → ℝ) (y : ℝ) : ℝ :=
+  ∑' n : ℕ, vonMangoldtAtom n * (F (y + Real.log n) + F (y - Real.log n))
 
 theorem vonMangoldtAtom_nonneg' (n : ℕ) : 0 ≤ vonMangoldtAtom n := by
   unfold vonMangoldtAtom
@@ -591,7 +605,7 @@ theorem vonMangoldtAtom_nonneg' (n : ℕ) : 0 ≤ vonMangoldtAtom n := by
   · exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
   · exact le_rfl
 
-/-- The weights \`Λ(n) n^{−½} e^{−2 log n}\` are summable. -/
+/-- The backward weights `Λ(n) n^{−½} e^{−2 log n}` are summable. -/
 theorem summable_vonMangoldtAtom_mul_exp :
     Summable fun n : ℕ => vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) := by
   refine Summable.of_nonneg_of_le
@@ -611,7 +625,7 @@ theorem summable_vonMangoldtAtom_mul_exp :
   · rw [zero_mul]
     exact mul_nonneg hΛ (Real.rpow_nonneg (Nat.cast_nonneg n) _)
 
-/-- Almost everywhere, every backward prime term is bounded by \`C e^{2y}\` times a summable weight. -/
+/-- Almost everywhere, every backward prime term is bounded by `C e^{2y}` times a summable weight. -/
 theorem ae_abs_primeTerm_le {F : ℝ → ℝ} {C : ℝ} (hb : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) :
     ∀ᵐ y : ℝ, ∀ n : ℕ, |vonMangoldtAtom n * F (y - Real.log n)| ≤
       C * Real.exp (2 * y) * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n))) := by
@@ -629,153 +643,284 @@ theorem ae_abs_primeTerm_le {F : ℝ → ℝ} {C : ℝ} (hb : ∀ᵐ u, |F u| �
         mul_le_mul_of_nonneg_left (hy n) (vonMangoldtAtom_nonneg' n)
     _ = _ := by rw [he]; ring
 
-theorem aestronglyMeasurable_backwardPrimeWave {F : ℝ → ℝ} (hFm : Measurable F) {C : ℝ}
-    (hb : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) :
-    AEStronglyMeasurable (backwardPrimeWave F) volume := by
-  refine aestronglyMeasurable_of_tendsto_ae atTop
-    (f := fun N y => ∑ n ∈ Finset.range N, vonMangoldtAtom n * F (y - Real.log n))
-    (fun N => (Finset.measurable_sum _ fun n _ =>
-      measurable_const.mul (hFm.comp (measurable_id.sub_const _))).aestronglyMeasurable) ?_
-  filter_upwards [ae_abs_primeTerm_le hb] with y hy
-  have hs : Summable fun n : ℕ => vonMangoldtAtom n * F (y - Real.log n) :=
-    Summable.of_norm_bounded (summable_vonMangoldtAtom_mul_exp.mul_left (C * Real.exp (2 * y)))
-      fun n => by rw [Real.norm_eq_abs]; exact hy n
-  exact hs.hasSum.tendsto_sum_nat
+/-- The forward weights: `Λ(n) n^{−½}` for the `n < e^{−y}`, whose forward translate of `y` stays left
+of the wall. -/
+def forwardWeight (y : ℝ) (n : ℕ) : ℝ := if (n : ℝ) * Real.exp y < 1 then vonMangoldtAtom n else 0
 
-/-- On the collar the backward prime wave is bounded. -/
-theorem ae_abs_backwardPrimeWave_le {F : ℝ → ℝ} {C : ℝ} (hC0 : 0 ≤ C)
-    (hb : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) :
-    ∀ᵐ y, y ∈ Icc (-(1 / 2 : ℝ)) 0 → |backwardPrimeWave F y| ≤
+theorem forwardWeight_nonneg (y : ℝ) (n : ℕ) : 0 ≤ forwardWeight y n := by
+  unfold forwardWeight
+  split_ifs
+  · exact vonMangoldtAtom_nonneg' n
+  · exact le_rfl
+
+theorem summable_forwardWeight (y : ℝ) : Summable (forwardWeight y) := by
+  refine summable_of_ne_finset_zero (s := Finset.range (⌈Real.exp (-y)⌉₊ + 1)) fun n hn => ?_
+  rw [Finset.mem_range, not_lt] at hn
+  unfold forwardWeight
+  rw [if_neg (not_lt.mpr ?_)]
+  have h1 : Real.exp (-y) ≤ n := by
+    have hc := Nat.le_ceil (Real.exp (-y))
+    have hn' : (⌈Real.exp (-y)⌉₊ : ℝ) ≤ n := by exact_mod_cast (by omega : ⌈Real.exp (-y)⌉₊ ≤ n)
+    linarith
+  calc (1 : ℝ) = Real.exp (-y) * Real.exp y := by rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+    _ ≤ n * Real.exp y := mul_le_mul_of_nonneg_right h1 (Real.exp_pos _).le
+
+theorem forwardWeight_anti {y z : ℝ} (hyz : y ≤ z) (n : ℕ) : forwardWeight z n ≤ forwardWeight y n := by
+  unfold forwardWeight
+  split_ifs with h1 h2
+  · exact le_rfl
+  · exact absurd (lt_of_le_of_lt (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hyz)
+      (Nat.cast_nonneg n)) h1) h2
+  · exact vonMangoldtAtom_nonneg' n
+  · exact le_rfl
+
+/-- A forward prime translate reaching the wall vanishes. -/
+theorem forward_eq_zero {F : ℝ → ℝ} (hsupp : ∀ u, 0 ≤ u → F u = 0) {y : ℝ} {n : ℕ}
+    (hn : ¬(n : ℝ) * Real.exp y < 1) : F (y + Real.log n) = 0 := by
+  apply hsupp
+  rw [not_lt] at hn
+  have hn0 : (0 : ℝ) < n := by
+    rcases (Nat.cast_nonneg (α := ℝ) n).lt_or_eq with h | h
+    · exact h
+    · rw [← h, zero_mul] at hn
+      linarith
+  have h := Real.log_nonneg hn
+  rw [Real.log_mul hn0.ne' (Real.exp_pos y).ne', Real.log_exp] at h
+  linarith
+
+/-- Almost everywhere, each term of the prime wave is bounded by a summable weight. -/
+theorem ae_abs_primeWaveTerm_le {F : ℝ → ℝ} (hsupp : ∀ u, 0 ≤ u → F u = 0) {C : ℝ}
+    (hbexp : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) (hb : ∀ᵐ u, |F u| ≤ C) :
+    ∀ᵐ y : ℝ, ∀ n : ℕ, |vonMangoldtAtom n * (F (y + Real.log n) + F (y - Real.log n))| ≤
+      C * forwardWeight y n +
+        C * Real.exp (2 * y) * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n))) := by
+  have hfw : ∀ᵐ y : ℝ, ∀ n : ℕ, |F (y + Real.log n)| ≤ C :=
+    ae_all_iff.mpr fun n =>
+      (measurePreserving_add_right (volume : Measure ℝ) (Real.log n)).quasiMeasurePreserving.ae hb
+  filter_upwards [hfw, ae_abs_primeTerm_le hbexp] with y h1 h2 n
+  rw [mul_add]
+  refine (abs_add_le _ _).trans (add_le_add ?_ (h2 n))
+  rw [abs_mul, abs_of_nonneg (vonMangoldtAtom_nonneg' n)]
+  unfold forwardWeight
+  split_ifs with h
+  · rw [mul_comm C]
+    exact mul_le_mul_of_nonneg_left (h1 n) (vonMangoldtAtom_nonneg' n)
+  · rw [forward_eq_zero hsupp h, abs_zero, mul_zero, mul_zero]
+
+theorem summable_primeWaveBound (C y : ℝ) : Summable fun n : ℕ =>
+    C * forwardWeight y n +
+      C * Real.exp (2 * y) * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n))) :=
+  ((summable_forwardWeight y).mul_left C).add (summable_vonMangoldtAtom_mul_exp.mul_left _)
+
+theorem aestronglyMeasurable_primeWave {F : ℝ → ℝ} (hFm : Measurable F)
+    (hsupp : ∀ u, 0 ≤ u → F u = 0) {C : ℝ} (hbexp : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u))
+    (hb : ∀ᵐ u, |F u| ≤ C) : AEStronglyMeasurable (primeWave F) volume := by
+  refine aestronglyMeasurable_of_tendsto_ae atTop
+    (f := fun N y => ∑ n ∈ Finset.range N,
+      vonMangoldtAtom n * (F (y + Real.log n) + F (y - Real.log n)))
+    (fun N => (Finset.measurable_sum _ fun n _ => measurable_const.mul
+      ((hFm.comp (measurable_id.add_const _)).add
+        (hFm.comp (measurable_id.sub_const _)))).aestronglyMeasurable) ?_
+  filter_upwards [ae_abs_primeWaveTerm_le hsupp hbexp hb] with y hy
+  exact (Summable.of_norm_bounded (summable_primeWaveBound C y)
+    fun n => by rw [Real.norm_eq_abs]; exact hy n).hasSum.tendsto_sum_nat
+
+/-- On a window of the half-line the prime wave is bounded. -/
+theorem ae_abs_primeWave_le {F : ℝ → ℝ} (hsupp : ∀ u, 0 ≤ u → F u = 0) {C : ℝ} (hC0 : 0 ≤ C)
+    (hbexp : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) (hb : ∀ᵐ u, |F u| ≤ C) {c d : ℝ} (hd : d ≤ 0) :
+    ∀ᵐ y, y ∈ Icc c d → |primeWave F y| ≤ C * (∑' n : ℕ, forwardWeight c n) +
       C * ∑' n : ℕ, vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) := by
-  filter_upwards [ae_abs_primeTerm_le hb] with y hy hmem
-  have hS := summable_vonMangoldtAtom_mul_exp
-  have h1 := tsum_of_norm_bounded ((hS.mul_left (C * Real.exp (2 * y))).hasSum)
-    (fun n => by rw [Real.norm_eq_abs]; exact hy n)
-  rw [Real.norm_eq_abs, tsum_mul_left] at h1
-  unfold backwardPrimeWave
+  filter_upwards [ae_abs_primeWaveTerm_le hsupp hbexp hb] with y hy hm
+  have h1 := tsum_of_norm_bounded (summable_primeWaveBound C y).hasSum
+    fun n => by rw [Real.norm_eq_abs]; exact hy n
+  rw [Real.norm_eq_abs] at h1
   refine h1.trans ?_
-  have he : Real.exp (2 * y) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith [hmem.2])
+  rw [((summable_forwardWeight y).mul_left C).tsum_add
+    (summable_vonMangoldtAtom_mul_exp.mul_left _), tsum_mul_left, tsum_mul_left]
+  have he : Real.exp (2 * y) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith [hm.2])
+  have hfw : ∑' n : ℕ, forwardWeight y n ≤ ∑' n : ℕ, forwardWeight c n :=
+    Summable.tsum_le_tsum (fun n => forwardWeight_anti hm.1 n) (summable_forwardWeight y)
+      (summable_forwardWeight c)
   have hS0 : 0 ≤ ∑' n : ℕ, vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) :=
     tsum_nonneg fun n => mul_nonneg (vonMangoldtAtom_nonneg' n) (Real.exp_pos _).le
-  calc C * Real.exp (2 * y) * ∑' n : ℕ, vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) ≤
-        C * 1 * ∑' n : ℕ, vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) := by gcongr
-    _ = _ := by ring
+  have h2 := mul_le_mul_of_nonneg_left hfw hC0
+  have h3 := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right he hS0) hC0
+  linarith
 
-/-- **The backward prime pairing of a wall test is integration against the backward prime wave.** -/
-theorem tsum_primePairing_eq_backwardPrimeWave {F : ℝ → ℝ} (hFm : Measurable F)
-    (hF2 : Integrable fun u => F u ^ 2) {C : ℝ} (hC0 : 0 ≤ C)
-    (hb : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) {G : ℝ → ℝ} (hG : IsWallTest G) :
-    (∑' n : ℕ, vonMangoldtAtom n * ∫ t, F t * G (t + Real.log n)) =
-      ∫ y, backwardPrimeWave F y * G y := by
+/-- A prime pair term is the integral of the test against the two prime translates. -/
+theorem primePairTerm_eq_wave {F G : ℝ → ℝ} (hF : MemLp F 2 volume) (hG : MemLp G 2 volume)
+    (n : ℕ) : primePairTerm F G n =
+      vonMangoldtAtom n * ∫ y, G y * (F (y + Real.log n) + F (y - Real.log n)) := by
+  unfold primePairTerm
+  have e1 : (∫ t, F t * G (t - Real.log n)) = ∫ y, F (y + Real.log n) * G y := by
+    have h := integral_add_right_eq_self (μ := volume) (fun t => F t * G (t - Real.log n))
+      (Real.log n)
+    simp only [add_sub_cancel_right] at h
+    exact h.symm
+  have e2 : (∫ t, F t * G (t + Real.log n)) = ∫ y, F (y - Real.log n) * G y := by
+    have h := integral_sub_right_eq_self (μ := volume) (fun t => F t * G (t + Real.log n))
+      (Real.log n)
+    simp only [sub_add_cancel] at h
+    exact h.symm
+  have i1 : Integrable fun y => F (y + Real.log n) * G y :=
+    integrable_mul_of_memLp (memLp_two_shift hF (Real.log n)) hG
+  have i2 : Integrable fun y => F (y - Real.log n) * G y :=
+    integrable_mul_of_memLp
+      (hF.comp_measurePreserving (measurePreserving_sub_right volume (Real.log n))) hG
+  rw [e1, e2, ← integral_add i1 i2]
+  congr 1
+  exact integral_congr_ae (Eventually.of_forall fun y => by ring)
+
+/-- The transposed prime pair term is the same integral. -/
+theorem primePairTerm_swap_eq_wave {F G : ℝ → ℝ} (hF : MemLp F 2 volume) (hG : MemLp G 2 volume)
+    (n : ℕ) : primePairTerm G F n =
+      vonMangoldtAtom n * ∫ y, G y * (F (y + Real.log n) + F (y - Real.log n)) := by
+  unfold primePairTerm
+  have i1 : Integrable fun y => G y * F (y - Real.log n) :=
+    integrable_mul_of_memLp hG
+      (hF.comp_measurePreserving (measurePreserving_sub_right volume (Real.log n)))
+  have i2 : Integrable fun y => G y * F (y + Real.log n) :=
+    integrable_mul_of_memLp hG (memLp_two_shift hF (Real.log n))
+  rw [← integral_add i1 i2]
+  congr 1
+  exact integral_congr_ae (Eventually.of_forall fun y => by ring)
+
+/-- **The prime pairing of a test is integration against the prime wave.** -/
+theorem tsum_primePairing_eq_primeWave {F : ℝ → ℝ} (hFm : Measurable F)
+    (hF2 : Integrable fun u => F u ^ 2) (hsupp : ∀ u, 0 ≤ u → F u = 0) {C : ℝ} (hC0 : 0 ≤ C)
+    (hbexp : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) (hb : ∀ᵐ u, |F u| ≤ C) {c d : ℝ} (hd : d ≤ 0)
+    {G : ℝ → ℝ} (hG : IsCarriedTest c d G) :
+    (∑' n : ℕ, vonMangoldtAtom n * ∫ y, G y * (F (y + Real.log n) + F (y - Real.log n))) =
+      ∫ y, G y * primeWave F y := by
   have hFL : MemLp F 2 volume := (memLp_two_iff_integrable_sq hFm.aestronglyMeasurable).mpr hF2
   have hGL := hG.domain.memLp_real
-  have hshift : ∀ n : ℕ, (∫ t, F t * G (t + Real.log n)) = ∫ y, F (y - Real.log n) * G y :=
-    fun n => by
-      have h := integral_sub_right_eq_self (μ := volume) (fun t => F t * G (t + Real.log n))
-        (Real.log n)
-      simp only [sub_add_cancel] at h
-      exact h.symm
-  have hint : ∀ n : ℕ, Integrable fun y => vonMangoldtAtom n * F (y - Real.log n) * G y :=
-    fun n => by
-      have h := integrable_mul_of_memLp
-        (hFL.comp_measurePreserving (measurePreserving_sub_right volume (Real.log n))) hGL
-      refine (h.const_mul (vonMangoldtAtom n)).congr (Eventually.of_forall fun y => ?_)
-      simp only [Function.comp_apply]
-      ring
-  have hbound : ∀ n : ℕ, (∫ y, ‖vonMangoldtAtom n * F (y - Real.log n) * G y‖) ≤
-      C * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n))) * ∫ y, ‖G y‖ := fun n => by
+  have hint : ∀ n : ℕ, Integrable fun y =>
+      G y * (vonMangoldtAtom n * (F (y + Real.log n) + F (y - Real.log n))) := fun n => by
+    have h1 := integrable_mul_of_memLp hGL (memLp_two_shift hFL (Real.log n))
+    have h2 := integrable_mul_of_memLp hGL
+      (hFL.comp_measurePreserving (measurePreserving_sub_right volume (Real.log n)))
+    refine ((h1.add h2).const_mul (vonMangoldtAtom n)).congr (Eventually.of_forall fun y => ?_)
+    simp only [Pi.add_apply, Function.comp_apply]
+    ring
+  have hbound : ∀ n : ℕ, (∫ y, ‖G y * (vonMangoldtAtom n *
+      (F (y + Real.log n) + F (y - Real.log n)))‖) ≤
+        (C * forwardWeight c n + C * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n)))) *
+          ∫ y, ‖G y‖ := fun n => by
     rw [← integral_const_mul]
     refine integral_mono_of_nonneg (Eventually.of_forall fun y => norm_nonneg _)
       (hG.domain.integrable.norm.const_mul _) ?_
-    filter_upwards [ae_abs_primeTerm_le hb] with y hy
-    by_cases hm : y ∈ Icc (-(1 / 2 : ℝ)) 0
+    filter_upwards [ae_abs_primeWaveTerm_le hsupp hbexp hb] with y hy
+    by_cases hm : y ∈ Icc c d
     · have he : Real.exp (2 * y) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith [hm.2])
-      have hw : 0 ≤ vonMangoldtAtom n * Real.exp (-(2 * Real.log n)) :=
-        mul_nonneg (vonMangoldtAtom_nonneg' n) (Real.exp_pos _).le
-      rw [norm_mul, Real.norm_eq_abs]
-      calc |vonMangoldtAtom n * F (y - Real.log n)| * ‖G y‖ ≤
-            (C * Real.exp (2 * y) * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n)))) * ‖G y‖ :=
-            mul_le_mul_of_nonneg_right (hy n) (norm_nonneg _)
-        _ ≤ (C * 1 * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n)))) * ‖G y‖ := by gcongr
-        _ = _ := by ring
-    · rw [hG.vanish y hm, norm_zero, mul_zero, norm_zero, mul_zero]
-  have hsum : Summable fun n : ℕ => ∫ y, ‖vonMangoldtAtom n * F (y - Real.log n) * G y‖ :=
+      have hs := mul_nonneg (vonMangoldtAtom_nonneg' n) (Real.exp_pos (-(2 * Real.log n))).le
+      have h2 := mul_le_mul_of_nonneg_left (forwardWeight_anti hm.1 n) hC0
+      have h3 := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right he hs) hC0
+      have hw : |vonMangoldtAtom n * (F (y + Real.log n) + F (y - Real.log n))| ≤
+          C * forwardWeight c n + C * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n))) := by
+        have := hy n
+        nlinarith
+      rw [norm_mul, Real.norm_eq_abs (vonMangoldtAtom n * _), mul_comm]
+      exact mul_le_mul_of_nonneg_right hw (norm_nonneg _)
+    · rw [hG.vanish y hm, norm_zero, zero_mul, norm_zero, mul_zero]
+  have hw : Summable fun n : ℕ =>
+      C * forwardWeight c n + C * (vonMangoldtAtom n * Real.exp (-(2 * Real.log n))) :=
+    ((summable_forwardWeight c).mul_left C).add (summable_vonMangoldtAtom_mul_exp.mul_left C)
+  have hsum : Summable fun n : ℕ => ∫ y, ‖G y * (vonMangoldtAtom n *
+      (F (y + Real.log n) + F (y - Real.log n)))‖ :=
     Summable.of_nonneg_of_le (fun n => integral_nonneg fun y => norm_nonneg _) hbound
-      ((summable_vonMangoldtAtom_mul_exp.mul_left C).mul_right _)
-  calc (∑' n : ℕ, vonMangoldtAtom n * ∫ t, F t * G (t + Real.log n))
-      = ∑' n : ℕ, ∫ y, vonMangoldtAtom n * F (y - Real.log n) * G y := by
+      (hw.mul_right _)
+  calc (∑' n : ℕ, vonMangoldtAtom n * ∫ y, G y * (F (y + Real.log n) + F (y - Real.log n)))
+      = ∑' n : ℕ, ∫ y, G y * (vonMangoldtAtom n *
+          (F (y + Real.log n) + F (y - Real.log n))) := by
         congr 1
         funext n
-        rw [hshift, ← integral_const_mul]
+        rw [← integral_const_mul]
         exact integral_congr_ae (Eventually.of_forall fun y => by ring)
-    _ = ∫ y, ∑' n : ℕ, vonMangoldtAtom n * F (y - Real.log n) * G y :=
+    _ = ∫ y, ∑' n : ℕ, G y * (vonMangoldtAtom n *
+          (F (y + Real.log n) + F (y - Real.log n))) :=
         integral_tsum_of_summable_integral_norm hint hsum
-    _ = ∫ y, backwardPrimeWave F y * G y := by
-        unfold backwardPrimeWave
-        exact integral_congr_ae (Eventually.of_forall fun y => tsum_mul_right)
+    _ = ∫ y, G y * primeWave F y := by
+        unfold primeWave
+        exact integral_congr_ae (Eventually.of_forall fun y => tsum_mul_left)
 
-/-- The backward prime pairing of \`χG\` is a bounded wall forcing. -/
-theorem isBoundedWallForcing_primeWave {F : ℝ → ℝ} (hFm : Measurable F)
-    (hF2 : Integrable fun u => F u ^ 2) {C : ℝ} (hC0 : 0 ≤ C)
-    (hb : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) :
-    IsBoundedWallForcing fun G => ∑' n : ℕ, vonMangoldtAtom n *
-      ∫ t, F t * (wallRamp (t + Real.log n) * G (t + Real.log n)) := by
-  refine ⟨fun y => wallRamp y * backwardPrimeWave F y,
-    continuous_wallRamp.aestronglyMeasurable.mul (aestronglyMeasurable_backwardPrimeWave hFm hb),
-    ⟨C * ∑' n : ℕ, vonMangoldtAtom n * Real.exp (-(2 * Real.log n)), ?_⟩, fun G hG => ?_⟩
-  · filter_upwards [ae_abs_backwardPrimeWave_le hC0 hb] with y hy hm
-    rw [abs_mul]
-    calc |wallRamp y| * |backwardPrimeWave F y| ≤ 1 * |backwardPrimeWave F y| :=
-          mul_le_mul_of_nonneg_right (abs_wallRamp_le_one y) (abs_nonneg _)
-      _ ≤ _ := by rw [one_mul]; exact hy hm
-  · refine (tsum_primePairing_eq_backwardPrimeWave hFm hF2 hC0 hb hG.ramp).trans ?_
-    exact integral_congr_ae (Eventually.of_forall fun y => by ring)
+/-- **The window equation.** Against a test of a window of the half-line, the Gamma form of the
+state is its prime wave minus the pole and confinement pairings. -/
+theorem criticalState_window_equation {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {c d : ℝ} (hd : d ≤ 0) {G : ℝ → ℝ}
+    (hG : IsCarriedTest c d G) :
+    gammaMixedForm F G = (∫ y, G y * primeWave F y) -
+      (2 * coshHalfMoment F * coshHalfMoment G - 2 * sinhHalfMoment F * sinhHalfMoment G) -
+        criticalAliasCoefficient W₀ * ∫ u in Iio 0, F u * G u * Real.exp (-(8 * u)) := by
+  have hdF := criticalHalfLineEnergyDomain_of_groundState hF
+  obtain ⟨C, hC0, hbexp, hb⟩ := criticalState_ae_abs_le hW ht hF
+  have hweak := criticalHalfLineMixedEnergy_groundState_eq_zero hW ht hF hG.domain
+  unfold criticalHalfLineMixedEnergy primeMixedForm at hweak
+  simp_rw [primePairTerm_eq_wave hdF.memLp_real hG.domain.memLp_real,
+    primePairTerm_swap_eq_wave hdF.memLp_real hG.domain.memLp_real] at hweak
+  rw [tsum_primePairing_eq_primeWave hdF.meas hdF.sq hF.2.2.2.2.2.1 hC0 hbexp hb hd hG] at hweak
+  linarith
+
+/-- The prime pairing of `χG` is a bounded forcing. -/
+theorem isBoundedForcingOn_primeWave {c d Λ : ℝ} (hd : d ≤ 0) {χ : ℝ → ℝ}
+    (hχ : IsWindowCutoff c d Λ χ) {F : ℝ → ℝ} (hFm : Measurable F)
+    (hsupp : ∀ u, 0 ≤ u → F u = 0) {C : ℝ} (hC0 : 0 ≤ C)
+    (hbexp : ∀ᵐ u, |F u| ≤ C * Real.exp (2 * u)) (hb : ∀ᵐ u, |F u| ≤ C) :
+    IsBoundedForcingOn c d fun G => ∫ y, (χ y * G y) * primeWave F y := by
+  refine ⟨fun y => χ y * primeWave F y, hχ.continuous.aestronglyMeasurable.mul
+    (aestronglyMeasurable_primeWave hFm hsupp hbexp hb), ⟨C * (∑' n : ℕ, forwardWeight c n) +
+      C * ∑' n : ℕ, vonMangoldtAtom n * Real.exp (-(2 * Real.log n)), ?_⟩, fun G _ =>
+    integral_congr_ae (Eventually.of_forall fun y => by ring)⟩
+  filter_upwards [ae_abs_primeWave_le hsupp hC0 hbexp hb hd] with y hy hm
+  rw [abs_mul]
+  calc |χ y| * |primeWave F y| ≤ 1 * |primeWave F y| :=
+        mul_le_mul_of_nonneg_right (hχ.abs_le_one y) (abs_nonneg _)
+    _ ≤ _ := by rw [one_mul]; exact hy hm
 
 /-! ### The pole and the confinement -/
 
-/-- The pole pairing of \`χG\` is a bounded wall forcing. -/
-theorem isBoundedWallForcing_pole (F : ℝ → ℝ) :
-    IsBoundedWallForcing fun G =>
-      2 * coshHalfMoment F * coshHalfMoment (fun u => wallRamp u * G u) -
-        2 * sinhHalfMoment F * sinhHalfMoment (fun u => wallRamp u * G u) := by
-  have hc : Continuous fun y : ℝ => wallRamp y * Real.cosh (y / 2) :=
-    continuous_wallRamp.mul (Real.continuous_cosh.comp (continuous_id.div_const 2))
-  have hs : Continuous fun y : ℝ => wallRamp y * Real.sinh (y / 2) :=
-    continuous_wallRamp.mul (Real.continuous_sinh.comp (continuous_id.div_const 2))
-  refine (((isBoundedWallForcing_continuous hc).const_mul (2 * coshHalfMoment F)).sub
-    ((isBoundedWallForcing_continuous hs).const_mul (2 * sinhHalfMoment F))).congr fun G _ => ?_
-  have e1 : coshHalfMoment (fun u => wallRamp u * G u) =
-      ∫ y, G y * (wallRamp y * Real.cosh (y / 2)) := by
+/-- The pole pairing of `χG` is a bounded forcing. -/
+theorem isBoundedForcingOn_pole {c d : ℝ} {χ : ℝ → ℝ} (hχ : Continuous χ) (F : ℝ → ℝ) :
+    IsBoundedForcingOn c d fun G =>
+      2 * coshHalfMoment F * coshHalfMoment (fun u => χ u * G u) -
+        2 * sinhHalfMoment F * sinhHalfMoment (fun u => χ u * G u) := by
+  have hc : Continuous fun y : ℝ => χ y * Real.cosh (y / 2) :=
+    hχ.mul (Real.continuous_cosh.comp (continuous_id.div_const 2))
+  have hs : Continuous fun y : ℝ => χ y * Real.sinh (y / 2) :=
+    hχ.mul (Real.continuous_sinh.comp (continuous_id.div_const 2))
+  refine (((isBoundedForcingOn_continuous hc).const_mul (2 * coshHalfMoment F)).sub
+    ((isBoundedForcingOn_continuous hs).const_mul (2 * sinhHalfMoment F))).congr fun G _ => ?_
+  have e1 : coshHalfMoment (fun u => χ u * G u) = ∫ y, G y * (χ y * Real.cosh (y / 2)) := by
     unfold coshHalfMoment
     exact integral_congr_ae (Eventually.of_forall fun y => by ring)
-  have e2 : sinhHalfMoment (fun u => wallRamp u * G u) =
-      ∫ y, G y * (wallRamp y * Real.sinh (y / 2)) := by
+  have e2 : sinhHalfMoment (fun u => χ u * G u) = ∫ y, G y * (χ y * Real.sinh (y / 2)) := by
     unfold sinhHalfMoment
     exact integral_congr_ae (Eventually.of_forall fun y => by ring)
   rw [e1, e2]
 
-/-- The confinement pairing of \`χG\` against an essentially bounded profile is a bounded wall
-forcing. -/
-theorem isBoundedWallForcing_confinement {F : ℝ → ℝ} (hFm : Measurable F) {C : ℝ}
-    (hC : ∀ᵐ u, |F u| ≤ C) :
-    IsBoundedWallForcing fun G => ∫ u in Iio 0, F u * (wallRamp u * G u) * Real.exp (-(8 * u)) := by
-  refine ⟨(Iio 0).indicator fun u => wallRamp u * F u * Real.exp (-(8 * u)),
-    (((measurable_wallRamp.mul hFm).mul (by fun_prop)).indicator measurableSet_Iio).aestronglyMeasurable,
-    ⟨C * Real.exp 4, ?_⟩, fun G _ => ?_⟩
+/-- The confinement pairing of `χG` against an essentially bounded profile is a bounded forcing. -/
+theorem isBoundedForcingOn_confinement {c d Λ : ℝ} {χ : ℝ → ℝ} (hχ : IsWindowCutoff c d Λ χ)
+    {F : ℝ → ℝ} (hFm : Measurable F) {C : ℝ} (hC : ∀ᵐ u, |F u| ≤ C) :
+    IsBoundedForcingOn c d fun G =>
+      ∫ u in Iio 0, F u * (χ u * G u) * Real.exp (-(8 * u)) := by
+  refine ⟨(Iio 0).indicator fun u => χ u * F u * Real.exp (-(8 * u)),
+    (((hχ.continuous.measurable.mul hFm).mul (by fun_prop)).indicator
+      measurableSet_Iio).aestronglyMeasurable, ⟨C * Real.exp (-(8 * c)), ?_⟩, fun G _ => ?_⟩
   · filter_upwards [hC] with u hu hmem
     have hC0 : 0 ≤ C := (abs_nonneg _).trans hu
     by_cases hneg : u ∈ Iio (0 : ℝ)
-    · rw [indicator_of_mem hneg, abs_mul, abs_mul, abs_of_nonneg (wallRamp_nonneg u),
+    · rw [indicator_of_mem hneg, abs_mul, abs_mul, abs_of_nonneg (hχ.nonneg u),
         abs_of_pos (Real.exp_pos _)]
-      have he : Real.exp (-(8 * u)) ≤ Real.exp 4 := Real.exp_le_exp.mpr (by linarith [hmem.1])
-      calc wallRamp u * |F u| * Real.exp (-(8 * u)) ≤ 1 * C * Real.exp 4 := by
+      have he : Real.exp (-(8 * u)) ≤ Real.exp (-(8 * c)) :=
+        Real.exp_le_exp.mpr (by linarith [hmem.1])
+      calc χ u * |F u| * Real.exp (-(8 * u)) ≤ 1 * C * Real.exp (-(8 * c)) := by
             gcongr
-            exact wallRamp_le_one u
-        _ = C * Real.exp 4 := by ring
+            exact hχ.le_one u
+        _ = C * Real.exp (-(8 * c)) := by ring
     · rw [indicator_of_notMem hneg, abs_zero]
       positivity
-  · show (∫ u in Iio 0, F u * (wallRamp u * G u) * Real.exp (-(8 * u))) =
-      ∫ y, G y * (Iio 0).indicator (fun u => wallRamp u * F u * Real.exp (-(8 * u))) y
+  · show (∫ u in Iio 0, F u * (χ u * G u) * Real.exp (-(8 * u))) =
+      ∫ y, G y * (Iio 0).indicator (fun u => χ u * F u * Real.exp (-(8 * u))) y
     rw [← integral_indicator measurableSet_Iio]
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
     by_cases h : u ∈ Iio (0 : ℝ)
@@ -783,56 +928,56 @@ theorem isBoundedWallForcing_confinement {F : ℝ → ℝ} (hFm : Measurable F) 
       ring
     · simp only [indicator_of_notMem h, mul_zero]
 
-/-! ### The logarithmic equation at the wall -/
+/-! ### The logarithmic equation on a window -/
 
 open CanonicalSystemOfTheWindowTower in
-/-- **The state solves a logarithmic equation at the wall.** For \`U = χF\`, the logarithmic full
-form \`G ↦ ∫ U G + ∫_{x>0} ν(x) ∫ ΔₓU ΔₓG\` is a bounded wall forcing: it integrates every wall test
-against a function bounded on the collar \`[−½, 0]\`. -/
-theorem criticalState_logarithmic_equation_at_wall {W₀ : ℝ} (hW : 0 < W₀)
+/-- **The state solves a logarithmic equation on every window of the half-line.** For a cutoff `χ`
+of a window `[c, d]`, `d ≤ 0`, and `U = χF`, the logarithmic full form
+`G ↦ ∫ U G + ∫_{x>0} ν(x) ∫ ΔₓU ΔₓG` is a bounded forcing on the window. -/
+theorem criticalState_logarithmic_equation_on_window {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
-    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
-    IsBoundedWallForcing fun G => (∫ u, wallRamp u * F u * G u) +
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {c d Λ : ℝ} (hd : d ≤ 0) {χ : ℝ → ℝ}
+    (hχ : IsWindowCutoff c d Λ χ) :
+    IsBoundedForcingOn c d fun G => (∫ u, χ u * F u * G u) +
       ∫ x in Ioi 0, logReferenceLevyDensity x *
-        ∫ u, (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x)) := by
-  have hd := criticalHalfLineEnergyDomain_of_groundState hF
+        ∫ u, (χ u * F u - χ (u + x) * F (u + x)) * (G u - G (u + x)) := by
+  have hdF := criticalHalfLineEnergyDomain_of_groundState hF
   obtain ⟨C, hC0, hbexp, hb⟩ := criticalState_ae_abs_le hW ht hF
-  have hU : CriticalHalfLineEnergyDomain fun u => wallRamp u * F u :=
-    criticalHalfLineEnergyDomain_lipschitz_mul hd measurable_wallRamp abs_wallRamp_le_one
-      abs_wallRamp_sub_le
-  have hUb : ∀ᵐ u, |wallRamp u * F u| ≤ C := hb.mono fun u hu => by
+  have hU : CriticalHalfLineEnergyDomain fun u => χ u * F u :=
+    criticalHalfLineEnergyDomain_lipschitz_mul hdF hχ.continuous.measurable hχ.abs_le_one
+      hχ.lipschitz
+  have hUb : ∀ᵐ u, |χ u * F u| ≤ C := hb.mono fun u hu => by
     rw [abs_mul]
-    calc |wallRamp u| * |F u| ≤ 1 * C :=
-          mul_le_mul (abs_wallRamp_le_one u) hu (abs_nonneg _) zero_le_one
+    calc |χ u| * |F u| ≤ 1 * C := mul_le_mul (hχ.abs_le_one u) hu (abs_nonneg _) zero_le_one
       _ = C := one_mul C
-  have hM := isBoundedWallForcing_mass hU.meas.aestronglyMeasurable hUb
-  have hR := isBoundedWallForcing_remainderJump hU hUb
-  have hK := isBoundedWallForcing_commutator hd hb
-  have hP := isBoundedWallForcing_primeWave hd.meas hd.sq hC0 hbexp
-  have hPo := isBoundedWallForcing_pole F
-  have hCf := isBoundedWallForcing_confinement hd.meas hb
+  have hM := isBoundedForcingOn_mass (c := c) (d := d) hU.meas.aestronglyMeasurable hUb
+  have hR := isBoundedForcingOn_remainderJump (c := c) (d := d) hU hUb
+  have hK := isBoundedForcingOn_commutator hχ hdF hb
+  have hP := isBoundedForcingOn_primeWave hd hχ hdF.meas hF.2.2.2.2.2.1 hC0 hbexp hb
+  have hPo := isBoundedForcingOn_pole (c := c) (d := d) hχ.continuous F
+  have hCf := isBoundedForcingOn_confinement hχ hdF.meas hb
   refine ((((((hM.sub hR).add hK).add hP).sub hPo).sub
     (hCf.const_mul (criticalAliasCoefficient W₀))).sub
       (hM.const_mul (2 * gammaHardyPhaseRate 0))).congr fun G hG => ?_
-  have hχG := hG.ramp
-  have hlevy := gammaMixedForm_eq_levy hd hχG.domain
-  have hwall := criticalState_wall_equation hW ht hF hχG
+  have hχG := hG.cutoff hχ
+  have hlevy := gammaMixedForm_eq_levy hdF hχG.domain
+  have hwall := criticalState_window_equation hW ht hF hd hχG
   have hsplit : (∫ x in Ioi 0, logReferenceLevyDensity x *
-        ∫ u, (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x))) =
-      levyMixed (fun u => wallRamp u * F u) G - ∫ x in Ioi 0, archLogRemainder x *
-        ∫ u, (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x)) := by
+        ∫ u, (χ u * F u - χ (u + x) * F (u + x)) * (G u - G (u + x))) =
+      levyMixed (fun u => χ u * F u) G - ∫ x in Ioi 0, archLogRemainder x *
+        ∫ u, (χ u * F u - χ (u + x) * F (u + x)) * (G u - G (u + x)) := by
     unfold levyMixed
     rw [← integral_sub (integrableOn_levyMixedIntegrand hU hG.domain)
       (integrableOn_remainderJump hU hG.domain)]
     refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
     simp only [archLogRemainder]
     ring
-  have hmass : (∫ u, F u * (wallRamp u * G u)) = ∫ u, wallRamp u * F u * G u :=
+  have hmass : (∫ u, F u * (χ u * G u)) = ∫ u, χ u * F u * G u :=
     integral_congr_ae (Eventually.of_forall fun u => by ring)
   rw [hmass] at hlevy
   rw [hsplit]
   linarith
 
-#print axioms criticalState_logarithmic_equation_at_wall
+#print axioms criticalState_logarithmic_equation_on_window
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

@@ -34,7 +34,8 @@ theorem spinFilterCoherence_exp (s t : ℝ) :
     spinFilterCoherence (Real.exp ((s - t) / 2) : ℂ) = coherence s t := by
   rw [spinFilterCoherence_eq, Complex.ofReal_re, Complex.norm_real, Real.norm_eq_abs,
     abs_of_pos (Real.exp_pos _), coherence_eq_cosh_inv, Real.cosh_eq, Real.exp_neg]
-  field_simp [Real.exp_ne_zero] <;> ring
+  field_simp [Real.exp_ne_zero]
+  ring
 
 /-- Two-rate Cauchy dephasing is the existing explicit two-Kraus spin channel. -/
 theorem two_rate_channel_eq_spinFilter (s t : ℝ) (A : Matrix (Fin 2) (Fin 2) ℂ) :
@@ -43,8 +44,7 @@ theorem two_rate_channel_eq_spinFilter (s t : ℝ) (A : Matrix (Fin 2) (Fin 2) �
   rw [spinFilterChannel_entries, spinFilterCoherence_exp]
   ext i j
   fin_cases i <;> fin_cases j <;>
-    simp only [channel, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
-      coherence_self, coherence_symm t s, Complex.ofReal_one, one_mul]
+    norm_num [channel, coherence_self, coherence_symm t s]
 
 /-- The two-rate channel is an exact mixture of identity and Pauli phase flip. -/
 theorem two_rate_channel_phaseFlip (s t : ℝ) (A : Matrix (Fin 2) (Fin 2) ℂ) :

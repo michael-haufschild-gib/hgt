@@ -325,12 +325,28 @@ $\lvert r\rvert\ge R$, the inequality $\int(1-\cos kr)\Psi\le Pk+B\int(1-\cos kr
 $\log(1/k)\int(1-\cos kr)\Phi\le(P+\varepsilon)k$ for small $k$; Chebyshev on a terminal interval
 (`sq_mul_measureReal_terminal_le`).
 
+[Comparison principle](TheStateObeysAComparisonPrincipleAtTheWall.lean) and
+[barriers](EveryConfinedGroundStateHasAnAmplitudeAtTheWall.lean), at every confinement ratio: the cutoff Lévy operator
+$\mathfrak L_\delta X=2\Omega(\delta)X-K_\delta\star X$, whose pairing with a test is the jump form over the lags
+$h>\delta$ (`cutoffLevy`, `integral_cutoffLevy_mul`); its value $\sqrt{\log(1/k)}+O(1)$ on the inverse root logarithm
+and its lower bound on a ramp ([profile](TheLevyOperatorIsConstantOnTheInverseRootLogarithm.lean),
+`neg_four_le_cutoffLevy_collarRamp`); bounded profiles decreasing towards the wall in the domain
+([domain](BoundedProfilesDecreasingTowardsTheWallLieInTheEnergyDomain.lean)); the action of the part of $F$ left of
+a collar through its logarithmic moment (`abs_exterior_sub_half_wallLogMoment_le`); the barrier lemma and its
+integrated form (`halfLineEnergyMinimizer_exists_wall_barrier`, `wallLogMoment_le_of_ae_le`).
+[Cut states](TheEnergyOfAConfinedGroundStateCutAtTheWall.lean): the two pieces of a profile cut at $-k$
+(`wallExterior`, `wallCollar`), the energy of a piece of a minimizer as its pairing with the rest
+(`halfLineEnergyMinimizer_fullEnergy_eq_sub_mixed`), and the pairing across the cut split by jump length, prime
+row and pole row (`neg_mixedEnergy_wallExterior_wallCollar_le`).
+
 **To build.** The endpoint moment $b=17-2\Theta$ when $\Theta$ is not attained, and pointwise decay of the state
 (both need regularity of $F$ or a Hilbert inequality on the zeros without the logarithm); the shifted zero pairing on
 $\tfrac72-\Theta\le c<\tfrac{17}2-2\Theta$ (a logarithm on the lines left of $\Theta-\tfrac92$); the growth of the index in
 the ratio; pointwise regularity of $F$ on $u<0$: the wall law holds in mean square on $(-k,0)$; its pointwise form
 $F(u)^2\log(1/\lvert u\rvert)\to8aM$ and the bounded order of $aF^+$ at the wall, where the primes enter through
-$\sum_n\Lambda(n)n^{-1/2}F(x-\log n)$ at $x\to0^+$, need it; this is stage 5.
+$\sum_n\Lambda(n)n^{-1/2}F(x-\log n)$ at $x\to0^+$, need it; this is stage 5. The value of the wall amplitude $\ell(R)$ of a
+confined ground state at a general ratio: at the critical ratio $\ell^2=8aM$; the expected law is
+$\ell(R)^2=8a(R)M_R=-8R\lambda'(R)$, the derivative of the ground energy in the ratio.
 
 ## 7. Pillar theorems
 
@@ -386,6 +402,10 @@ $\sum_n\Lambda(n)n^{-1/2}F(x-\log n)$ at $x\to0^+$, need it; this is stage 5.
 | Laws of the wall, $M=\int F^2e^{-8u}$: $\bigl(k^{-1}\int_{-k}^0F\bigr)^2\log(1/k)\to8aM$; $\bigl(\int_{v>k}F(-v)\frac{dv}v\bigr)^2/\log(1/k)\to32aM$; $\lvert aF^+(x)+\tfrac12\int_{v>x}F(-v)\frac{dv}v\rvert\le B$ for almost every $0<x<1$ and $aF^+(x)/\sqrt{\log(1/x)}\to-s\sqrt{8aM}$ essentially as $x\to0^+$; $\log(2/k)\int_{-k}^0F^2\ge4aMk$ for small $k$ | `criticalState_tendsto_sq_terminalMean_mul_log`, `criticalState_tendsto_sq_wallLogMoment_div_log`, `criticalState_exists_ae_norm_beyondWall_add_wallLogMoment_le`, `criticalState_wall_laws`, `criticalState_eventually_le_log_mul_terminal_square_mass` | unconditional |
 | Orientation of the wall: $\mathcal LF(\sigma)=\sigma\int_{h>0}\bigl(\int_{-h}^0F\bigr)e^{-\sigma h}dh$ for $\sigma>0$; $\mathcal LF(\tfrac12)\int_{-k}^0F>0$ and $\mathcal LF(\tfrac12)\int_{v>k}F(-v)\frac{dv}v>0$ for all small $k$; $\mathcal LF(\tfrac12)\operatorname{Re}F^+(x)<0$ for almost every small $x>0$ | `integral_mul_exp_eq_laplace_terminalMass`, `criticalState_eventually_halfCharge_mul_terminalMass_pos`, `criticalState_exists_ae_halfCharge_mul_beyondWall_neg` | unconditional |
 | Modulus of continuity: $\frac{\log(1/k)}k\int(F(u)-F(u+k))^2du\to8aM$ and $\frac{\log(1/k)}k\int_{-k}^0F^2\to8aM$, while $\frac{\log(1/k)}k\int_{u\le-k}(F(u)-F(u+k))^2du\to0$; wall law in mean square $k^{-1}\int_{-k}^0\bigl(\sqrt{\log(1/k)}\,F-s\sqrt{8aM}\bigr)^2\to0$, and $\lvert\{u\in(-k,0):sF(u)\le0\}\rvert/k\to0$ | `criticalState_tendsto_log_div_mul_sq_increment`, `criticalState_tendsto_log_div_mul_terminal_sq`, `criticalState_tendsto_log_div_mul_interior_sq_increment`, `criticalState_meanSquare_wall_law` | unconditional |
+| Comparison principle at the wall, every ratio: a minimizer lies below every bounded barrier of $\mathcal H$ on a collar $(-k,0)$ on which the cutoff Lévy operators of the barrier exceed the action of the part of $F$ left of the collar by a fixed constant | `halfLineEnergyMinimizer_exists_wall_comparison` | unconditional |
+| The cutoff Lévy operators are constant on the inverse root logarithm: $\lvert\mathfrak L_\delta[(\log(1/\lvert u\rvert))^{-1/2}1_{(-k,0)}](-t)-\sqrt{\log(1/k)}\rvert\le9$ for $\delta\le t<k/2$, $k\le\tfrac14$; bounded profiles decreasing towards the wall lie in $\mathcal H$ | `abs_cutoffLevy_wallLogProfile_sub_le`, `criticalHalfLineEnergyDomain_of_antitone_collar` | unconditional |
+| Wall amplitude at every ratio: every minimizer $F$ of the confined form at a ratio $R>0$ has an amplitude $\ell$ with $\int_{v>k}F(-v)\frac{dv}v\big/\sqrt{\log(1/k)}\to2\ell$ and $\sqrt{\log(1/\lvert u\rvert)}\,F(u)\to\ell$ essentially as $u\to0^-$ | `halfLineEnergyMinimizer_exists_wallAmplitude` | unconditional |
+| Energy of the cut state, every ratio: a profile of $\mathcal H$ vanishing on $[-h,\infty)$ has $Q_R(H)\ge\lambda(R)\int H^2+a(R)(1-e^{-8h})\int H^2e^{-8u}$; sharp cuts of bounded profiles lie in $\mathcal H$; if $\lvert F\rvert\le B$ on $[-2k,0)$ then $a(R)(1-e^{-8k})\int_{u<-k}F^2e^{-8u}\le\tfrac12\int_{v>k}F(-v)\frac{dv}v\int_{-k}^0F+KBk+B^2k$ | `criticalHalfLineFullEnergy_ge_ground_add_terminal_wall`, `criticalHalfLineEnergyDomain_wallExterior`, `halfLineEnergyMinimizer_exists_wall_energy_le` | unconditional |
 
 ## 8. Traps
 

@@ -29,7 +29,7 @@ theorem flux_pos (n : ℕ) (t : ℝ) : 0 < flux n t :=
 theorem flux_lt_endpoint (n : ℕ) (t : ℝ) : flux n t < n + 2 := by
   have h := mul_lt_mul_of_pos_left (_root_.HTGeometry.logisticVar_lt_one t)
     (by positivity : (0 : ℝ) < n + 2)
-  simpa only [mul_one] using h
+  simpa only [flux, mul_one] using h
 
 theorem flux_strictMono (n : ℕ) : StrictMono (flux n) := by
   intro x y hxy
@@ -64,7 +64,8 @@ theorem parameter_exp (n : ℕ) (t : ℝ) :
   have hn : (n + 2 : ℝ) ≠ 0 := by positivity
   have he : 1 + Real.exp (2 * t) ≠ 0 := by positivity
   simp only [div_pow, mul_pow, pow_succ]
-  field_simp [hn, he] <;> ring
+  field_simp [hn, he]
+  ring
 
 /-- The extremal flux occurs at radial scale `exp(2t) = n + 1`. -/
 theorem flux_criticalScale (n : ℕ) : flux n (criticalScale n) = n + 1 := by
@@ -72,7 +73,8 @@ theorem flux_criticalScale (n : ℕ) : flux n (criticalScale n) = n + 1 := by
   rw [show (2 : ℝ) * (Real.log (n + 1) / 2) = Real.log (n + 1) by ring,
     Real.exp_log (by positivity)]
   have hn : (1 + (n + 1 : ℝ)) ≠ 0 := by positivity
-  field_simp [hn] <;> ring
+  field_simp [hn]
+  ring
 
 theorem parameter_pos (n : ℕ) (t : ℝ) : 0 < parameter n t := by
   change 0 < (flux n t) ^ (n + 1) * (1 - flux n t / (n + 2))
@@ -87,9 +89,9 @@ theorem parameter_le_peak (n : ℕ) (t : ℝ) : parameter n t ≤ peak n :=
 /-- The maximal parameter has exactly one logarithmic scale. -/
 theorem parameter_eq_peak_iff (n : ℕ) (t : ℝ) :
     parameter n t = peak n ↔ t = criticalScale n := by
-  change profile n (⟨flux n t, (flux_pos n t).le⟩ : NNReal) = peak n ↔ _
-  rw [profile_eq_peak_iff]
-  change flux n t = n + 1 ↔ _
+  have h : parameter n t = peak n ↔ flux n t = n + 1 :=
+    profile_eq_peak_iff n ⟨flux n t, (flux_pos n t).le⟩
+  rw [h]
   rw [← flux_criticalScale]
   exact (flux_strictMono n).injective.eq_iff
 

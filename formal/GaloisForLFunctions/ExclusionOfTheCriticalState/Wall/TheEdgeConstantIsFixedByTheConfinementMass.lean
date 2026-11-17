@@ -4,19 +4,19 @@ import GaloisForLFunctions.ExclusionOfTheCriticalState.TheStateHasOneSignAtTheWa
 /-!
 # The edge constant is fixed by the confinement mass
 
-Let \`Φ\` be continuous with \`Φ(s) √log(1/s) → ℓ\` as \`s → 0⁺\`. Then
-* the mean \`k⁻¹ ∫_0^k Φ\` is \`ℓ/√log(1/k) · (1 + o(1))\` (\`tendsto_mean_mul_sqrt_log\`): with
-  \`A = log(1/k) ≤ B = log(1/s)\`, \`|Φ(s)√A − ℓ| ≤ |Φ(s)√B − ℓ| + |ℓ| (B − A)/A\` and
-  \`k⁻¹ ∫_0^k (log k − log s) ds = 1\`;
-* the logarithmic moment \`∫_k^δ Φ(v)/v dv\` is \`2ℓ √log(1/k) · (1 + o(1))\`
-  (\`tendsto_logMoment_div_sqrt_log\`), since \`−2√log(1/v)\` is a primitive of \`1/(v √log(1/v))\`.
+Let `Φ` be continuous with `Φ(s) √log(1/s) → ℓ` as `s → 0⁺`. Then
+* the mean `k⁻¹ ∫_0^k Φ` is `ℓ/√log(1/k) · (1 + o(1))` (`tendsto_mean_mul_sqrt_log`): with
+  `A = log(1/k) ≤ B = log(1/s)`, `|Φ(s)√A − ℓ| ≤ |Φ(s)√B − ℓ| + |ℓ| (B − A)/A` and
+  `k⁻¹ ∫_0^k (log k − log s) ds = 1`;
+* the logarithmic moment `∫_k^δ Φ(v)/v dv` is `2ℓ √log(1/k) · (1 + o(1))`
+  (`tendsto_logMoment_div_sqrt_log`), since `−2√log(1/v)` is a primitive of `1/(v √log(1/v))`.
 
 For the critical state the law of the wall in the mean says that the product of the terminal mean
-and the logarithmic moment tends to \`16 a ∫ F² e^{−8u}\`. With the continuous edge of the state:
+and the logarithmic moment tends to `16 a ∫ F² e^{−8u}`. With the continuous edge of the state:
 
-**Theorem** (\`criticalState_pointwise_edge_law\`). The state agrees near the wall with a continuous
-function \`Φ\`, \`F(−s) √log(1/s) → ℓ\`, and \`ℓ² = 8 a(W₀) ∫ F² e^{−8u}\`. In particular \`ℓ ≠ 0\`: near the
-wall the state has one strict sign and \`|F(−s)| ~ |ℓ|/√log(1/s)\`.
+**Theorem** (`criticalState_pointwise_edge_law`). The state agrees near the wall with a continuous
+function `Φ`, `F(−s) √log(1/s) → ℓ`, and `ℓ² = 8 a(W₀) ∫ F² e^{−8u}`. In particular `ℓ ≠ 0`: near the
+wall the state has one strict sign and `|F(−s)| ~ |ℓ|/√log(1/s)`.
 -/
 
 noncomputable section
@@ -27,8 +27,8 @@ open ArithmeticHodgeTheoryOfDegenerations _root_.RHTower
 
 /-! ### Means and logarithmic moments of a profile with a logarithmic edge -/
 
-/-- **The mean of a logarithmic edge.** If \`Φ(s) √log(1/s) → ℓ\`, then
-\`(k⁻¹ ∫_0^k Φ) √log(1/k) → ℓ\`. -/
+/-- **The mean of a logarithmic edge.** If `Φ(s) √log(1/s) → ℓ`, then
+`(k⁻¹ ∫_0^k Φ) √log(1/k) → ℓ`. -/
 theorem tendsto_mean_mul_sqrt_log {Φ : ℝ → ℝ} (hΦ : Continuous Φ) {ℓ : ℝ}
     (hψ : Tendsto (fun s => Φ s * Real.sqrt (Real.log (1 / s))) (𝓝[>] 0) (𝓝 ℓ)) :
     Tendsto (fun k => (∫ s in (0)..k, Φ s) / k * Real.sqrt (Real.log (1 / k))) (𝓝[>] 0)
@@ -120,7 +120,7 @@ theorem tendsto_mean_mul_sqrt_log {Φ : ℝ → ℝ} (hΦ : Continuous Φ) {ℓ 
         simpa only [Real.norm_eq_abs] using hnorm
     _ < ε * k := by nlinarith
 
-/-- \`−2√log(1/v)\` is a primitive of \`1/(v √log(1/v))\` on \`(0, 1)\`. -/
+/-- `−2√log(1/v)` is a primitive of `1/(v √log(1/v))` on `(0, 1)`. -/
 theorem hasDerivAt_neg_two_sqrt_log {v : ℝ} (hv0 : 0 < v) (hv1 : v < 1) :
     HasDerivAt (fun v => -(2 * Real.sqrt (Real.log (1 / v))))
       (1 / (v * Real.sqrt (Real.log (1 / v)))) v := by
@@ -140,8 +140,8 @@ theorem hasDerivAt_neg_two_sqrt_log {v : ℝ} (hv0 : 0 < v) (hv1 : v < 1) :
   rw [e] at hs
   exact hs
 
-/-- **The logarithmic moment of a logarithmic edge.** If \`Φ(s) √log(1/s) → ℓ\` and \`0 < δ < 1\`, then
-\`(∫_k^δ Φ(v)/v dv) / √log(1/k) → 2ℓ\`. -/
+/-- **The logarithmic moment of a logarithmic edge.** If `Φ(s) √log(1/s) → ℓ` and `0 < δ < 1`, then
+`(∫_k^δ Φ(v)/v dv) / √log(1/k) → 2ℓ`. -/
 theorem tendsto_logMoment_div_sqrt_log {Φ : ℝ → ℝ} (hΦ : Continuous Φ) {ℓ : ℝ}
     (hψ : Tendsto (fun s => Φ s * Real.sqrt (Real.log (1 / s))) (𝓝[>] 0) (𝓝 ℓ)) {δ : ℝ}
     (hδ0 : 0 < δ) (hδ1 : δ < 1) :
@@ -256,7 +256,7 @@ theorem tendsto_logMoment_div_sqrt_log {Φ : ℝ → ℝ} (hΦ : Continuous Φ) 
 
 /-! ### The pointwise edge law at the wall -/
 
-/-- \`√log(1/k) → ∞\` as \`k → 0⁺\`. -/
+/-- `√log(1/k) → ∞` as `k → 0⁺`. -/
 theorem tendsto_sqrt_log_one_div : Tendsto (fun k : ℝ => Real.sqrt (Real.log (1 / k))) (𝓝[>] 0) atTop := by
   have h1 : Tendsto (fun k : ℝ => Real.log (1 / k)) (𝓝[>] 0) atTop := by
     refine (Filter.tendsto_neg_atBot_atTop.comp Real.tendsto_log_nhdsGT_zero).congr fun k => ?_
@@ -290,7 +290,7 @@ theorem criticalState_wallLogMoment_eq_edge {F Φ : ℝ → ℝ} (hFm : Measurab
   rw [uIoc_of_le hk.le] at hsI
   rw [hs ⟨hk0.trans hsI.1, by linarith [hsI.2]⟩]
 
-/-- The logarithmic moment of the state grows like \`2ℓ √log(1/k)\`. -/
+/-- The logarithmic moment of the state grows like `2ℓ √log(1/k)`. -/
 theorem tendsto_wallLogMoment_div_sqrt_log {F Φ : ℝ → ℝ} (hFm : Measurable F) (hFi : Integrable F)
     (hΦ : Continuous Φ) (hFΦ : ∀ᵐ s, s ∈ Ioo (0 : ℝ) (1 / 4) → F (-s) = Φ s) {ℓ : ℝ}
     (hψ : Tendsto (fun s => Φ s * Real.sqrt (Real.log (1 / s))) (𝓝[>] 0) (𝓝 ℓ)) :
@@ -306,8 +306,8 @@ theorem tendsto_wallLogMoment_div_sqrt_log {F Φ : ℝ → ℝ} (hFm : Measurabl
   rw [criticalState_wallLogMoment_eq_edge hFm hFi hFΦ hk hk', add_div]
 
 /-- **The pointwise edge law at the wall.** The state agrees almost everywhere near the wall with a
-continuous function \`Φ\`, \`Φ(s) √log(1/s) → ℓ\` as \`s → 0⁺\`, and the edge constant is fixed by the
-confinement mass: \`ℓ² = 8 a(W₀) ∫ F² e^{−8u}\`. -/
+continuous function `Φ`, `Φ(s) √log(1/s) → ℓ` as `s → 0⁺`, and the edge constant is fixed by the
+confinement mass: `ℓ² = 8 a(W₀) ∫ F² e^{−8u}`. -/
 theorem criticalState_pointwise_edge_law {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
@@ -335,7 +335,7 @@ theorem criticalState_pointwise_edge_law {W₀ : ℝ} (hW : 0 < W₀)
   have h := tendsto_nhds_unique hmine (criticalState_tendsto_terminalMean_mul_wallLogMoment hW ht hF)
   linear_combination h / 2
 
-/-- The confinement mass of the state is at least its mass: \`∫ F² e^{−8u} ≥ ∫ F² = 1\`. -/
+/-- The confinement mass of the state is at least its mass: `∫ F² e^{−8u} ≥ ∫ F² = 1`. -/
 theorem criticalState_one_le_confinementMass {W₀ : ℝ} {F : ℝ → ℝ}
     (hF : IsCriticalHalfLineGroundState W₀ F) : 1 ≤ ∫ u, F u ^ 2 * Real.exp (-(8 * u)) := by
   rw [← hF.2.2.2.1]
@@ -346,8 +346,8 @@ theorem criticalState_one_le_confinementMass {W₀ : ℝ} {F : ℝ → ℝ}
   · exact le_mul_of_one_le_right (sq_nonneg _) (Real.one_le_exp (by linarith))
 
 /-- **The state has a strict sign at the wall.** The edge constant does not vanish, so near the wall
-the state is, almost everywhere, of the strict sign of \`ℓ\`, and \`|F(−s)| √log(1/s) → |ℓ|\` with
-\`ℓ² ≥ 8 a(W₀) > 0\`. -/
+the state is, almost everywhere, of the strict sign of `ℓ`, and `|F(−s)| √log(1/s) → |ℓ|` with
+`ℓ² ≥ 8 a(W₀) > 0`. -/
 theorem criticalState_edge_constant_ne_zero {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
@@ -374,11 +374,111 @@ theorem criticalState_edge_constant_ne_zero {W₀ : ℝ} (hW : 0 < W₀)
     hδs ⟨Metric.mem_ball.mpr (by rw [Real.dist_eq, sub_zero, abs_of_pos hs0]; exact hsδ), hs0⟩
   rw [hs ⟨hs0, hs4⟩]
   have hsq : 0 ≤ Real.sqrt (Real.log (1 / s)) := Real.sqrt_nonneg _
-  by_contra hneg
-  push_neg at hneg
-  nlinarith [mul_nonneg_of_nonpos_of_nonneg hneg hsq]
+  rw [← mul_assoc] at h
+  exact (pos_and_pos_or_neg_and_neg_of_mul_pos h).elim (fun h' => h'.1)
+    fun h' => absurd h'.2 (not_lt.mpr hsq)
 
 #print axioms criticalState_pointwise_edge_law
 #print axioms criticalState_edge_constant_ne_zero
+
+/-! ### The profile beyond the wall -/
+
+/-- The Stieltjes potential of the state grows like `2ℓ √log(1/x)`: it differs from the logarithmic
+moment by a bounded amount. -/
+theorem tendsto_wallPotential_div_sqrt_log {F Φ : ℝ → ℝ} (hFm : Measurable F) (hFi : Integrable F)
+    {C : ℝ} (hb : ∀ᵐ u, |F u| ≤ C) (hΦ : Continuous Φ)
+    (hFΦ : ∀ᵐ s, s ∈ Ioo (0 : ℝ) (1 / 4) → F (-s) = Φ s) {ℓ : ℝ}
+    (hψ : Tendsto (fun s => Φ s * Real.sqrt (Real.log (1 / s))) (𝓝[>] 0) (𝓝 ℓ)) :
+    Tendsto (fun x => wallPotential F x / Real.sqrt (Real.log (1 / x))) (𝓝[>] 0) (𝓝 (2 * ℓ)) := by
+  have hB := tendsto_wallLogMoment_div_sqrt_log hFm hFi hΦ hFΦ hψ
+  have hup := (tendsto_const_nhds (x := 5 * C)).div_atTop tendsto_sqrt_log_one_div
+  have hlo := (tendsto_const_nhds (x := -(5 * C))).div_atTop tendsto_sqrt_log_one_div
+  have hbd : ∀ᶠ x in 𝓝[>] (0 : ℝ), |wallPotential F x - wallLogMoment F x| ≤ 5 * C := by
+    filter_upwards [self_mem_nhdsWithin] with x hx
+    have hx0 : (0 : ℝ) < x := hx
+    have h := abs_wallPotential_sub_wallLogMoment_le hFm hFi hb hx0 le_rfl
+    rwa [mul_assoc, ← Real.rpow_add hx0, add_neg_cancel, Real.rpow_zero, mul_one,
+      show C + 4 * C = 5 * C by ring] at h
+  have hdiff : Tendsto (fun x => (wallPotential F x - wallLogMoment F x) /
+      Real.sqrt (Real.log (1 / x))) (𝓝[>] 0) (𝓝 0) := by
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlo hup ?_ ?_
+    · filter_upwards [hbd] with x hx
+      exact div_le_div_of_nonneg_right (by linarith [(abs_le.mp hx).1]) (Real.sqrt_nonneg _)
+    · filter_upwards [hbd] with x hx
+      exact div_le_div_of_nonneg_right (by linarith [(abs_le.mp hx).2]) (Real.sqrt_nonneg _)
+  have h := hB.add hdiff
+  rw [add_zero] at h
+  refine h.congr fun x => ?_
+  rw [← add_div]
+  ring_nf
+
+/-- **The profile beyond the wall at the wall.** With the edge constant `ℓ` of the state,
+`a F⁺(x) = −ℓ √log(1/x) (1 + o(1))` as `x → 0⁺`: for every `ε > 0` there is `δ > 0` with
+`‖a F⁺(x) + ℓ √log(1/x)‖ ≤ ε √log(1/x)` for almost every `x ∈ (0, δ)`. -/
+theorem criticalState_beyondWall_edge_law {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
+    ∃ Φ : ℝ → ℝ, Continuous Φ ∧ (∀ᵐ s, s ∈ Ioo (0 : ℝ) (1 / 4) → F (-s) = Φ s) ∧
+      ∃ ℓ : ℝ, Tendsto (fun s => Φ s * Real.sqrt (Real.log (1 / s))) (𝓝[>] 0) (𝓝 ℓ) ∧
+        ℓ ^ 2 = 8 * criticalAliasCoefficient W₀ * (∫ u, F u ^ 2 * Real.exp (-(8 * u))) ∧
+        ∀ ε > 0, ∃ δ > 0, ∀ᵐ x ∂(volume.restrict (Ioo (0 : ℝ) δ)),
+          ‖(criticalAliasCoefficient W₀ : ℂ) *
+              beyondWallProfile W₀ (criticalHalfLineEnergyDomain_of_groundState hF) x +
+            ((ℓ * Real.sqrt (Real.log (1 / x)) : ℝ) : ℂ)‖ ≤ ε * Real.sqrt (Real.log (1 / x)) := by
+  obtain ⟨Φ, hΦc, hFΦ, ℓ, hψ, hℓ⟩ := criticalState_pointwise_edge_law hW ht hF
+  refine ⟨Φ, hΦc, hFΦ, ℓ, hψ, hℓ, fun ε hε => ?_⟩
+  have hd := criticalHalfLineEnergyDomain_of_groundState hF
+  obtain ⟨C, -, -, hb⟩ := criticalState_ae_abs_le hW ht hF
+  obtain ⟨B, hB0, hBae⟩ := criticalState_exists_ae_norm_beyondWall_add_wallPotential_le hW ht hF
+  have hP := tendsto_wallPotential_div_sqrt_log hd.meas hd.integrable hb hΦc hFΦ hψ
+  have hP' : Tendsto (fun x => (1 / 2 * wallPotential F x) / Real.sqrt (Real.log (1 / x)))
+      (𝓝[>] 0) (𝓝 ℓ) := by
+    have h := hP.const_mul (1 / 2)
+    rw [show 1 / 2 * (2 * ℓ) = ℓ by ring] at h
+    exact h.congr fun x => by ring
+  have hev1 : ∀ᶠ x in 𝓝[>] (0 : ℝ),
+      |(1 / 2 * wallPotential F x) / Real.sqrt (Real.log (1 / x)) - ℓ| < ε / 2 :=
+    (Metric.tendsto_nhds.mp hP') (ε / 2) (half_pos hε) |>.mono fun x hx => by
+      rwa [Real.dist_eq] at hx
+  have hev2 : ∀ᶠ x in 𝓝[>] (0 : ℝ), 2 * B / ε < Real.sqrt (Real.log (1 / x)) :=
+    tendsto_sqrt_log_one_div.eventually_gt_atTop _
+  have hev3 : ∀ᶠ x in 𝓝[>] (0 : ℝ), x < 1 :=
+    mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds one_pos)
+  obtain ⟨δ, hδ, hδs⟩ := Metric.mem_nhdsWithin_iff.mp ((hev1.and hev2).and hev3)
+  refine ⟨min δ 1, lt_min hδ one_pos, ?_⟩
+  have hsub : Ioo (0 : ℝ) (min δ 1) ⊆ Ioo 0 1 := Ioo_subset_Ioo_right (min_le_right _ _)
+  filter_upwards [ae_restrict_of_ae_restrict_of_subset hsub hBae,
+    ae_restrict_mem measurableSet_Ioo] with x hx hmem
+  have hx0 : (0 : ℝ) < x := hmem.1
+  have hxδ : x < δ := lt_of_lt_of_le hmem.2 (min_le_left _ _)
+  obtain ⟨⟨h1, h2⟩, h3⟩ : _ := hδs
+    ⟨Metric.mem_ball.mpr (by rw [Real.dist_eq, sub_zero, abs_of_pos hx0]; exact hxδ), hx0⟩
+  have hL : 0 < Real.sqrt (Real.log (1 / x)) := lt_of_le_of_lt (by positivity) h2
+  have hpot : |1 / 2 * wallPotential F x - ℓ * Real.sqrt (Real.log (1 / x))| ≤
+      ε / 2 * Real.sqrt (Real.log (1 / x)) := by
+    have e : 1 / 2 * wallPotential F x - ℓ * Real.sqrt (Real.log (1 / x)) =
+        ((1 / 2 * wallPotential F x) / Real.sqrt (Real.log (1 / x)) - ℓ) *
+          Real.sqrt (Real.log (1 / x)) := by
+      field_simp
+    rw [e, abs_mul, abs_of_pos hL]
+    exact mul_le_mul_of_nonneg_right h1.le hL.le
+  have hBε : B ≤ ε / 2 * Real.sqrt (Real.log (1 / x)) := by
+    rw [div_lt_iff₀ hε] at h2
+    linarith
+  calc ‖(criticalAliasCoefficient W₀ : ℂ) * beyondWallProfile W₀ hd x +
+        ((ℓ * Real.sqrt (Real.log (1 / x)) : ℝ) : ℂ)‖ ≤
+      ‖(criticalAliasCoefficient W₀ : ℂ) * beyondWallProfile W₀ hd x +
+          ((1 / 2 * wallPotential F x : ℝ) : ℂ)‖ +
+        ‖((ℓ * Real.sqrt (Real.log (1 / x)) : ℝ) : ℂ) - ((1 / 2 * wallPotential F x : ℝ) : ℂ)‖ := by
+        refine le_trans (le_of_eq ?_) (norm_add_le _ _)
+        congr 1
+        ring
+    _ ≤ B + ε / 2 * Real.sqrt (Real.log (1 / x)) := by
+        refine add_le_add hx ?_
+        rw [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs, abs_sub_comm]
+        exact hpot
+    _ ≤ ε * Real.sqrt (Real.log (1 / x)) := by linarith
+
+#print axioms criticalState_beyondWall_edge_law
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

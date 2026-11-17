@@ -17,6 +17,9 @@ potential `W(x) = ∫_{v>0} F(−v)/(x + v) dv`, as `x → 0⁺` (essentially)
   `a F⁺(x) + W(x)/2 → ∫ F(u) ρ(−u) du − Σ_n Λ(n) n^{−1/2} Φ(−log n)`.
 
 The first term is archimedean (dominated convergence, `tendsto_collarWave_add_half_wallPotential`).
+The same holds with the logarithmic moment `L(x) = ∫_{v>x} F(−v)/v dv` in place of `W(x)`
+(`criticalState_bounded_order_at_wall_logMoment`): after the scaling `v = xw`,
+`W(x) − L(x) = ∫_{w>0} Φ(−xw) k(w) dw` with an integrable kernel `k`, and `Φ(0) = 0`.
 The second is the **prime wave at the wall**: the series `Σ_n Λ(n) n^{−1/2} Φ(x − log n)` converges
 uniformly on `x ≤ 1` (`|Φ(u)| ≤ C e^{2u}`, `Σ Λ(n) n^{−3/2} < ∞`), so it is continuous at the wall
 (`continuousOn_primeWave`). The leading order `−W(x)/2` of the wall is the same for every model
@@ -359,15 +362,15 @@ private theorem wallPotential_sub_wallLogMoment_eq {G : ℝ → ℝ} (hGm : Meas
   have hWi : IntegrableOn (fun w => G (-(x * w)) / (1 + w)) (Ioi 0) := by
     have := (integrableOn_Ioi_comp_mul_left_iff (fun v => G (-v) / (x + v)) 0 hx).mpr
       (by rw [mul_zero]; exact integrableOn_div_add hnm hni hx)
-    refine (this.const_mul x).congr_fun (fun w hw => ?_) measurableSet_Ioi
-    simp only
+    refine IntegrableOn.congr_fun (this.const_mul x) (fun w _ => ?_) measurableSet_Ioi
+    show x * (G (-(x * w)) / (x + x * w)) = G (-(x * w)) / (1 + w)
     rw [show x + x * w = x * (1 + w) by ring, mul_div_assoc', mul_div_mul_left _ _ hx.ne']
   have hWe : wallPotential G x = ∫ w in Ioi 0, G (-(x * w)) / (1 + w) := by
     have e : wallPotential G x = x * ∫ w in Ioi 0, G (-(x * w)) / (x + x * w) := by
       rw [hW, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hx.ne', one_mul]; rfl
     rw [e, ← integral_const_mul]
     refine setIntegral_congr_fun measurableSet_Ioi fun w _ => ?_
-    simp only
+    show x * (G (-(x * w)) / (x + x * w)) = G (-(x * w)) / (1 + w)
     rw [show x + x * w = x * (1 + w) by ring, mul_div_assoc', mul_div_mul_left _ _ hx.ne']
   -- the logarithmic moment
   have hL := integral_comp_mul_left_Ioi (fun v => G (-v) / v) 1 hx
@@ -375,15 +378,15 @@ private theorem wallPotential_sub_wallLogMoment_eq {G : ℝ → ℝ} (hGm : Meas
   have hLi : IntegrableOn (fun w => G (-(x * w)) / w) (Ioi 1) := by
     have := (integrableOn_Ioi_comp_mul_left_iff (fun v => G (-v) / v) 1 hx).mpr
       (by rw [mul_one]; exact integrableOn_div_self hnm hni hx)
-    refine (this.const_mul x).congr_fun (fun w hw => ?_) measurableSet_Ioi
-    simp only
+    refine IntegrableOn.congr_fun (this.const_mul x) (fun w _ => ?_) measurableSet_Ioi
+    show x * (G (-(x * w)) / (x * w)) = G (-(x * w)) / w
     rw [mul_div_assoc', mul_div_mul_left _ _ hx.ne']
   have hLe : wallLogMoment G x = ∫ w in Ioi 1, G (-(x * w)) / w := by
     have e : wallLogMoment G x = x * ∫ w in Ioi 1, G (-(x * w)) / (x * w) := by
       rw [hL, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hx.ne', one_mul]; rfl
     rw [e, ← integral_const_mul]
     refine setIntegral_congr_fun measurableSet_Ioi fun w _ => ?_
-    simp only
+    show x * (G (-(x * w)) / (x * w)) = G (-(x * w)) / w
     rw [mul_div_assoc', mul_div_mul_left _ _ hx.ne']
   have hLind : (∫ w in Ioi 1, G (-(x * w)) / w) =
       ∫ w in Ioi 0, (Ioi (1 : ℝ)).indicator (fun w => G (-(x * w)) / w) w := by
@@ -398,7 +401,7 @@ private theorem wallPotential_sub_wallLogMoment_eq {G : ℝ → ℝ} (hGm : Meas
 
 /-- **The potential and the logarithmic moment agree at the wall** for a profile with a continuous
 representative vanishing at the wall. -/
-theorem tendsto_wallPotential_sub_wallLogMoment {F Φ : ℝ → ℝ} (hFm : Measurable F)
+theorem tendsto_wallPotential_sub_wallLogMoment {F Φ : ℝ → ℝ}
     (hFi : Integrable F) (hFΦ : F =ᵐ[volume] Φ) (hΦ : Continuous Φ) (hΦ0 : Φ 0 = 0) {C : ℝ}
     (hC : ∀ u, u ≤ 0 → |Φ u| ≤ C) :
     Tendsto (fun x => wallPotential F x - wallLogMoment F x) (𝓝[>] 0) (𝓝 0) := by
@@ -406,9 +409,13 @@ theorem tendsto_wallPotential_sub_wallLogMoment {F Φ : ℝ → ℝ} (hFm : Meas
   have hΦi : Integrable Φ := hFi.congr hFΦ
   have hneg : ∀ᵐ v ∂volume, F (-v) = Φ (-v) := ae_comp_neg hFΦ
   have hWF : ∀ x, wallPotential F x = wallPotential Φ x := fun x =>
-    integral_congr_ae (ae_restrict_of_ae (hneg.mono fun v hv => by rw [hv]))
+    integral_congr_ae (ae_restrict_of_ae (hneg.mono fun v hv => by
+      show F (-v) / (x + v) = Φ (-v) / (x + v)
+      rw [hv]))
   have hLF : ∀ x, wallLogMoment F x = wallLogMoment Φ x := fun x =>
-    integral_congr_ae (ae_restrict_of_ae (hneg.mono fun v hv => by rw [hv]))
+    integral_congr_ae (ae_restrict_of_ae (hneg.mono fun v hv => by
+      show F (-v) / v = Φ (-v) / v
+      rw [hv]))
   have hk := integrableOn_wallCompareKernel
   have hlim : Tendsto (fun x : ℝ => ∫ w in Ioi 0, Φ (-(x * w)) * wallCompareKernel w) (𝓝[>] 0)
       (𝓝 (∫ _w in Ioi (0 : ℝ), (0 : ℝ))) := by
@@ -426,8 +433,8 @@ theorem tendsto_wallPotential_sub_wallLogMoment {F Φ : ℝ → ℝ} (hFm : Meas
       exact mul_le_mul_of_nonneg_right (hC _ hxw) (abs_nonneg _)
     · refine ae_of_all _ fun w => ?_
       have ht : Tendsto (fun x : ℝ => -(x * w)) (𝓝[>] 0) (𝓝 0) := by
-        have h := ((continuous_mul_right w).neg.tendsto (0 : ℝ))
-        rw [zero_mul, neg_zero] at h
+        have h : Tendsto (fun x : ℝ => -(x * w)) (𝓝 0) (𝓝 0) :=
+          Continuous.tendsto' (by fun_prop) 0 0 (by simp)
         exact h.mono_left nhdsWithin_le_nhds
       have := ((hΦ.tendsto 0).comp ht).mul_const (wallCompareKernel w)
       rwa [hΦ0, zero_mul] at this
@@ -456,7 +463,7 @@ theorem criticalState_bounded_order_at_wall_logMoment {W₀ : ℝ} (hW : 0 < W�
   refine ⟨Φ, hcont, hFΦ, hΦpos, fun ε hε => ?_⟩
   have hCw : ∀ u, u ≤ 0 → |Φ u| ≤ C := fun u hu =>
     (hbound u).trans (mul_le_of_le_one_right hC0 (Real.exp_le_one_iff.mpr (by linarith)))
-  have hWL := tendsto_wallPotential_sub_wallLogMoment hFd.meas hFd.integrable hFΦ hcont
+  have hWL := tendsto_wallPotential_sub_wallLogMoment hFd.integrable hFΦ hcont
     (hΦpos 0 le_rfl) hCw
   obtain ⟨δ₁, hδ₁, hae⟩ := criticalState_bounded_order_of_rep hW hFd hcont hFΦ hbound
     (half_pos hε)

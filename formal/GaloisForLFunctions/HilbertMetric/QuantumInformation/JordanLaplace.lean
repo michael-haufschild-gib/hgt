@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HilbertMetric.QuantumInformation.CauchyDephasing
 import GaloisForLFunctions.HTGeometry.HalfLineExponentialPacketGram
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+import Mathlib.Analysis.Complex.RealDeriv
 
 /-!
 # Laplace representation of inverse Jordan evolution
@@ -56,15 +58,21 @@ theorem heatSandwich_hasDerivAt {n : ℕ} (r : Fin n → ℝ)
     (A : Matrix (Fin n) (Fin n) ℂ) (t : ℝ) (i j : Fin n) :
     HasDerivAt (fun s : ℝ => heatSandwich r A s i j)
       (-2 * jordan r (heatSandwich r A t) i j) t := by
-  have hi := ((Complex.hasDerivAt_ofReal t).const_mul (-(rate r i : ℂ))).cexp
-  have hj := ((Complex.hasDerivAt_ofReal t).const_mul (-(rate r j : ℂ))).cexp
+  have hreal : HasDerivAt (fun s : ℝ => (s : ℂ)) (1 : ℂ) t :=
+    Complex.ofRealCLM.hasDerivAt
+  have hi := (hreal.const_mul (-(rate r i : ℂ))).cexp
+  have hj := (hreal.const_mul (-(rate r j : ℂ))).cexp
   have h := (hi.mul hj).const_mul (A i j)
-  rw [jordan_apply]
-  convert h using 1
-  · funext s
-    exact heatSandwich_apply r A s i j
-  · rw [heatSandwich_apply]
+  have hd : A i j *
+      (Complex.exp (-(rate r i : ℂ) * (t : ℂ)) * (-(rate r i : ℂ) * 1) *
+        Complex.exp (-(rate r j : ℂ) * (t : ℂ)) +
+        Complex.exp (-(rate r i : ℂ) * (t : ℂ)) *
+          (Complex.exp (-(rate r j : ℂ) * (t : ℂ)) * (-(rate r j : ℂ) * 1))) =
+      -2 * jordan r (heatSandwich r A t) i j := by
+    rw [jordan_apply, heatSandwich_apply]
     ring
+  rw [hd] at h
+  simpa only [heatSandwich_apply, Pi.mul_apply] using h
 
 /-- Heat evolution has the exact additive semigroup law. -/
 theorem rateHeat_add {n : ℕ} (r : Fin n → ℝ) (s t : ℝ) :
