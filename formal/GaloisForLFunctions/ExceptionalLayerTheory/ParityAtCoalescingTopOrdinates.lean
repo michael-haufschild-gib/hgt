@@ -47,7 +47,7 @@ private theorem moment_bound {δ : ℝ} (hδ : 0 < δ) {v : ℝ → ℝ}
     (hv : MemLp v 2 halfMeasure) (hu : ∫ s, v s ^ 2 ∂halfMeasure = 1) (r : ℝ) :
     ‖moment δ r v‖ ≤ Real.sqrt (1 / (2 * δ)) := by
   have h := norm_integral_mul_sq_le_of_memLp (hv.ofReal (K := ℂ)) (wave_memLp hδ r)
-  change ‖moment δ r v‖ ^ 2 ≤ _ at h
+  change ‖moment δ r v‖ ^ 2 ≤ (∫ s, ‖(v s : ℂ)‖ ^ 2 ∂halfMeasure) * _ at h
   simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs, hu, one_mul, wave_norm,
     ← Real.exp_nat_mul] at h
   have he : ∀ s : ℝ, (2 : ℕ) * -(δ * s) = -(2 * δ) * s := fun s => by push_cast; ring
@@ -65,8 +65,10 @@ private theorem moment_sub_bound {δ : ℝ} (hδ : 0 < δ) {v : ℝ → ℝ}
   have hd := norm_integral_mul_sq_le_of_memLp hv' (hr.sub ht)
   have hi : (∫ s, (v s : ℂ) * (wave δ r - wave δ t) s ∂halfMeasure) =
       moment δ r v - moment δ t v := by
-    simp only [Pi.sub_apply, mul_sub, moment, integral_sub (hv'.integrable_mul hr)
-      (hv'.integrable_mul ht)]
+    simp only [Pi.sub_apply, mul_sub, moment]
+    exact integral_sub (hv'.integrable_mul hr) (hv'.integrable_mul ht)
+  change ‖∫ s, (v s : ℂ) * (wave δ r - wave δ t) s ∂halfMeasure‖ ^ 2 ≤
+    (∫ s, ‖(v s : ℂ)‖ ^ 2 ∂halfMeasure) * _ at hd
   rw [hi] at hd
   simp only [Complex.norm_real, Real.norm_eq_abs, sq_abs, hu, one_mul] at hd
   have hm := HTGeometry.integral_sq_mul_exp_neg_mul_Ioi h2δ
@@ -142,6 +144,135 @@ private theorem form_transport {m : ℕ} {δ : ℝ} (hδ : 0 < δ) {v : ℝ → 
   rw [← mul_sub, abs_mul, abs_of_nonneg (hM j)]
   exact (mul_le_mul_of_nonneg_left (reading_sub_le hδ hv hu a (t j) r) (hM j)).trans_eq
     (by ring)
+
+private theorem form_le_unit {m : ℕ} {δ : ℝ} (hδ : 0 < δ) {t : Fin m → ℝ}
+    (ht : Function.Injective t) (htpos : ∀ i, 0 < t i) (hm : 0 < m)
+    (M θ : Fin m → ℝ) {v : ℝ → ℝ} (hv : MemLp v 2 halfMeasure)
+    (hu : ∫ s, v s ^ 2 ∂halfMeasure = 1) :
+    halfLineForm δ t M θ v ≤ max (ccmLambdaMax δ t M θ) 0 := by
+  obtain ⟨x, hp, hn⟩ := exists_realProfile_projection hδ ht htpos hv
+  rw [← halfLineForm_congr M θ hp, ← quadForm_eq_halfLineForm hδ]
+  rw [hu] at hn
+  calc _ ≤ ccmLambdaMax δ t M θ * normForm δ t x :=
+        quadForm_le_lambdaMax_mul hδ ht htpos hm M θ x
+    _ ≤ max (ccmLambdaMax δ t M θ) 0 * 1 :=
+        mul_le_mul (le_max_left _ _) hn (normForm_nonneg hδ t x) (le_max_right _ _)
+    _ = _ := mul_one _
+
+private def singletonHeight (r : ℝ) : Fin 1 → ℝ := fun _ => r
+
+private theorem singleton_form (δ a r : ℝ) (v : ℝ → ℝ) :
+    halfLineForm δ (singletonHeight r) 1 (aperturePhase (singletonHeight r) a) v =
+      reading δ a r v := by simp [form_eq_sum, singletonHeight]
+
+/-- The strict singleton gap survives any splitting whose total displacement cost, counted
+with multiplicity, is less than half the gap times the total mass. -/
+theorem parityBalance_pos_of_transport {m : ℕ} {δ r : ℝ} (hδ : 0 < δ) (hr : 0 < r)
+    (a : ℝ) {t M : Fin m → ℝ} (ht : Function.Injective t) (htpos : ∀ j, 0 < t j)
+    (hm : 0 < m) (hM : ∀ j, 0 < M j)
+    (hgap : 2 * (parityTransportCost δ a * ∑ j, M j * |t j - r|) <
+      (∑ j, M j) * (ccmLambdaMax δ (fun _ : Fin 1 => r) 1 (fun _ => -2 * r * a) -
+        max (ccmLambdaMax δ (fun _ : Fin 1 => r) 1 (halfTurn (fun _ => -2 * r * a))) 0)) :
+    0 < ccmParityBalance δ t M (aperturePhase t a) := by
+  let s := singletonHeight r
+  let φ := aperturePhase s a
+  let θ := aperturePhase t a
+  let L := ccmLambdaMax δ s 1 φ
+  let B := max (ccmLambdaMax δ s 1 (halfTurn φ)) 0
+  let W := ∑ j, M j
+  let E := parityTransportCost δ a * ∑ j, M j * |t j - r|
+  have hs : Function.Injective s := fun _ _ _ => Subsingleton.elim _ _
+  have hspos : ∀ i, 0 < s i := fun _ => hr
+  have hW : 0 ≤ W := Finset.sum_nonneg fun j _ => (hM j).le
+  have hE : 0 ≤ E := by
+    dsimp [E, parityTransportCost]
+    exact mul_nonneg (by positivity) (Finset.sum_nonneg fun j _ =>
+      mul_nonneg (hM j).le (abs_nonneg _))
+  change 2 * E < W * (L - B) at hgap
+  -- A singleton maximizing profile tests the split operator from below.
+  obtain ⟨x, hx, hxmax, -⟩ := exists_isMaxOn_quadForm hδ hs hspos (by decide) 1 φ
+  let v := realProfile δ s x
+  have hv := memLp_realProfile hδ s x
+  have hv1 : ∫ u, v u ^ 2 ∂halfMeasure = 1 := (normForm_eq_integral hδ s x).symm.trans hx
+  have hvL : reading δ a r v = L :=
+    (singleton_form δ a r v).symm.trans ((quadForm_eq_halfLineForm hδ s 1 φ x).symm.trans hxmax)
+  have hvE := (abs_le.mp (form_transport hδ hv hv1 a r t M fun j => (hM j).le)).1
+  rw [hvL] at hvE
+  have hlow : W * L - E ≤ max (ccmLambdaMax δ t M θ) 0 := by
+    have hle := form_le_unit hδ ht htpos hm M θ hv hv1
+    change -E ≤ halfLineForm δ t M θ v - W * L at hvE
+    linarith only [hle, hvE]
+  -- The maximizing profile of the reflected split operator tests the singleton floor.
+  obtain ⟨y, hy, hymax, -⟩ := exists_isMaxOn_quadForm hδ ht htpos hm M (halfTurn θ)
+  let u := realProfile δ t y
+  have hum := memLp_realProfile hδ t y
+  have hu1 : ∫ z, u z ^ 2 ∂halfMeasure = 1 := (normForm_eq_integral hδ t y).symm.trans hy
+  have huQ : halfLineForm δ t M θ u = -ccmLambdaMax δ t M (halfTurn θ) := by
+    change halfLineForm δ t M θ (realProfile δ t y) = _
+    rw [← quadForm_eq_halfLineForm hδ, ← hymax, quadForm_halfTurn, neg_neg]
+  have huB := halfLineForm_ge hδ hs hspos (by decide) 1 φ hum
+  change -(B * (∫ z, u z ^ 2 ∂halfMeasure)) ≤ halfLineForm δ s 1 φ u at huB
+  rw [hu1, mul_one, singleton_form] at huB
+  have huE := (abs_le.mp (form_transport hδ hum hu1 a r t M fun j => (hM j).le)).1
+  rw [huQ] at huE
+  change -E ≤ -ccmLambdaMax δ t M (halfTurn θ) - W * reading δ a r u at huE
+  have hWB := mul_le_mul_of_nonneg_left huB hW
+  have hupper : ccmLambdaMax δ t M (halfTurn θ) ≤ W * B + E := by linarith only [hWB, huE]
+  have hB : 0 ≤ B := le_max_right _ _
+  have hpos : 0 < W * L - E := by
+    rw [mul_sub] at hgap
+    linarith only [hgap, hE, mul_nonneg hW hB]
+  have htop : 0 < ccmLambdaMax δ t M θ := (lt_max_iff.mp (hpos.trans_le hlow)).resolve_right
+    (lt_irrefl _)
+  rw [max_eq_left htop.le] at hlow
+  change 0 < ccmLambdaMax δ t M θ - ccmLambdaMax δ t M (halfTurn θ)
+  rw [mul_sub] at hgap
+  linarith only [hgap, hlow, hupper]
+
+/-- At every positive depth and height, a common aperture has positive balance for every
+finite layer with sufficiently small multiplicity-weighted mean distance to that height. -/
+theorem exists_aperture_positive_of_concentrated_ordinates {δ r : ℝ} (hδ : 0 < δ)
+    (hr : 0 < r) : ∃ a ε : ℝ, 0 < ε ∧ ∀ {m : ℕ} (t M : Fin m → ℝ),
+      Function.Injective t → (∀ j, 0 < t j) → 0 < m → (∀ j, 0 < M j) →
+      (∑ j, M j * |t j - r|) < ε * ∑ j, M j →
+      0 < ccmParityBalance δ t M (aperturePhase t a) := by
+  let s := singletonHeight r
+  have hs : Function.Injective s := fun _ _ _ => Subsingleton.elim _ _
+  have hpos : ∀ j, 0 < s j := fun _ => hr
+  obtain ⟨a, -, hF⟩ := ccm_exists_large_aperture_odd_wins (m := 1) hδ hs hpos
+    (M := 1) (fun _ => zero_lt_one) (by decide) (fun k hk hsum => hk (by
+      have hz : (k 0 : ℝ) * r = 0 := by simpa [s, singletonHeight] using hsum
+      have hk0 : k 0 = 0 := by exact_mod_cast (mul_eq_zero.mp hz).resolve_right hr.ne'
+      funext i
+      simpa [Subsingleton.elim i 0] using hk0)) 0
+  let L := ccmLambdaMax δ s 1 (aperturePhase s a)
+  let B := max (ccmLambdaMax δ s 1 (halfTurn (aperturePhase s a))) 0
+  have hBL : B < L := max_lambdaMax_halfTurn_lt_of_balance_pos hδ hs hpos (by decide) 1 _ hF
+  let K := parityTransportCost δ a
+  have hK : 0 < K := by dsimp [K, parityTransportCost]; positivity
+  let ε := (L - B) / (2 * K)
+  have hε : 0 < ε := div_pos (sub_pos.mpr hBL) (by positivity)
+  refine ⟨a, ε, hε, fun t M ht htpos hm hM hnear => ?_⟩
+  apply parityBalance_pos_of_transport hδ hr a ht htpos hm hM
+  have h := mul_lt_mul_of_pos_left hnear (by positivity : 0 < 2 * K)
+  have hcancel : 2 * K * ε = L - B := by
+    dsimp [ε]; field_simp
+  change 2 * (K * _) < _ * (L - B)
+  rw [← mul_assoc (2 * K) ε, hcancel, mul_comm (L - B)] at h
+  simpa only [mul_assoc] using h
+
+/-- A concentrated finite top layer forces reflection-odd restricted Weil ground states at
+arbitrarily large apertures, for all multiplicities and all integer relations. -/
+theorem concentrated_top_ordinates_force_odd_ground {δ r : ℝ} (hδ : 0 < δ) (hr : 0 < r) :
+    ∃ ε : ℝ, 0 < ε ∧ ∀ {m : ℕ} {t : Fin m → ℝ} (h : FiniteTopLayer δ t),
+      (∑ j, h.mult j * |t j - r|) < ε * ∑ j, h.mult j →
+      ∀ A : ℝ, ∃ a : SuzukiPositiveAperture, A < a.1 ∧ ∀ u : CCMArchimedeanFormDomain a,
+        ccmRestrictedWeilSourceQuadratic a u =
+          ccmRestrictedWeilGroundEnergy a * ‖ccmArchimedeanFormToAperture a u‖ ^ 2 →
+          ccmArchimedeanFormReflection a u = -u := by
+  obtain ⟨a, ε, hε, hpos⟩ := exists_aperture_positive_of_concentrated_ordinates hδ hr
+  exact ⟨ε, hε, fun h hnear => exists_aperture_ground_odd h
+    ⟨a, hpos _ _ h.injective h.t_pos h.nonempty h.mult_pos hnear⟩⟩
 
 end
 

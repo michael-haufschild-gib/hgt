@@ -100,4 +100,6 @@ theorem signedDivisorHeight_eq {A : ℕ} (hA : 0 < A) (X B : ℕ) (u v : ℕ →
     simpa only [Int.cast_mul, Int.cast_natCast] using congrArg (fun z : ℤ => (z : ℝ)) hu
   rw [hv', ← mul_assoc, mul_comm _ ((u i).sign : ℝ), hu']
 
+#print axioms signedDivisorHeight_eq
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

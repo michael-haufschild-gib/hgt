@@ -178,4 +178,10 @@ theorem verticalIntersection_eq (S T : Finset ℕ) (a b : ℕ → ℕ) :
   simp only [eval_pow, eval_sub, eval_X, eval_C, map_pow, ← pow_mul, conductorContact,
     Nat.mul_comm (b j)]
 
+#print axioms conductorGraph_natDegree
+#print axioms conductorContact_mul_prime_pow
+#print axioms log_conductorContact_mul
+#print axioms conductorContact_of_incomparable
+#print axioms verticalIntersection_eq
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

@@ -42,7 +42,6 @@ private theorem spine_weights {A : ℕ} (hA : 0 < A) (X B : ℕ) (c d : ℕ → 
   rw [lowerWeight, upperWeight, Nat.cast_mul, Real.sqrt_mul hi'.le]
   field_simp [Real.sqrt_ne_zero'.mpr hi', Real.sqrt_ne_zero'.mpr
     (Nat.cast_pos.mpr (mem_Icc.mp ht).1)]
-  <;> ring
 
 private theorem lowerWeight_le {i : ℕ} (hi : 0 < i) (c : ℕ → ℝ) :
     |lowerWeight c i| ≤ |c i| := by
@@ -79,7 +78,12 @@ private theorem round_product_le (x y s C : ℝ) (hs : 1 ≤ s) (hx : |x| ≤ C)
           (abs_add_le _ _).trans (add_le_add_left (abs_add_le _ _) _)
        _ ≤ (s*C + s*C) + 1 := by
          simp only [abs_mul, abs_of_nonneg hs0]
-         gcongr <;> first | assumption | positivity | exact mul_le_one₀ he (abs_nonneg _) hd
+         apply add_le_add _ (mul_le_one₀ he (abs_nonneg _) hd)
+         apply add_le_add
+         · exact (mul_le_of_le_one_right (mul_nonneg hs0 (abs_nonneg x)) hd).trans
+             (mul_le_mul_of_nonneg_left hx hs0)
+         · exact (mul_le_of_le_one_right (mul_nonneg hs0 (abs_nonneg y)) he).trans
+             (mul_le_mul_of_nonneg_left hy hs0)
        _ ≤ s*(2*C+1) := by linarith only [hs]
 
 private theorem mesh_tendsto : Tendsto Nat.sqrt atTop atTop :=
@@ -91,6 +95,7 @@ private theorem mesh_div_tendsto :
     (tendsto_one_div_atTop_nhds_zero_nat.comp mesh_tendsto)
   filter_upwards [eventually_ge_atTop 1] with m hm
   have h : 0 < m.sqrt := Nat.sqrt_pos.mpr hm
+  simp only [Function.comp_apply]
   rw [div_le_div_iff₀ (Nat.cast_pos.mpr hm) (Nat.cast_pos.mpr h), one_mul]
   exact_mod_cast Nat.sqrt_le m
 
@@ -120,7 +125,7 @@ private theorem rounded_height_bound {m B : ℕ} (hm : 0 < m) (R C : ℝ) (f g :
   rw [sampledGraphHeight, signedDivisorHeight_eq hN, spine_weights hN]
   change |2*(∑ i ∈ S, ∑ t ∈ T, (⌊(m:ℝ)*x i⌋ : ℝ)*(⌊(m:ℝ)*y (i*t)⌋ : ℝ)*Λ t)/(m:ℝ)^2 -
     2*(∑ i ∈ S, ∑ t ∈ T, x i*y (i*t)*Λ t)| ≤ _
-  rw [div_sub' (pow_ne_zero 2 hm'.ne'), abs_div, abs_of_nonneg (sq_nonneg _),
+  rw [div_sub' (pow_ne_zero 2 hm'.ne'), abs_div, abs_of_nonneg (sq_nonneg (m:ℝ)),
     div_le_iff₀ (sq_pos_of_pos hm')]
   rw [show ∀ z : ℝ, (m:ℝ)^2*(2*z) = 2*((m:ℝ)^2*z) by intro; ring, ← mul_sub, abs_mul]
   have hrows : |(∑ i ∈ S, ∑ t ∈ T, (⌊(m:ℝ)*x i⌋ : ℝ)*(⌊(m:ℝ)*y (i*t)⌋ : ℝ)*Λ t) -
