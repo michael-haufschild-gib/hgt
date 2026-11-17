@@ -1238,8 +1238,8 @@ theorem quartetAlias_eq_secular_extremal_roots {ρ₀ : ℂ} (hq : HasSingleOffL
     · exact le_rfl
   have hLeast : IsLeast (quartetSecularRootSet hq) (criticalAliasCoefficient R₂) := ⟨hmemR₂, hlb⟩
   refine ⟨hroot_eq, haR₂_pos, ha_lt, hGreat, hSup, hLeast, ?_, hdet_gt⟩
-  exact le_antisymm (csInf_le ⟨criticalAliasCoefficient R₂, hlb⟩ hmemR₂)
-    (le_csInf ⟨criticalAliasCoefficient R₂, hmemR₂⟩ hlb)
+  exact le_antisymm (le_csInf ⟨criticalAliasCoefficient R₂, hmemR₂⟩ hlb)
+    (csInf_le ⟨criticalAliasCoefficient R₂, hlb⟩ hmemR₂)
 
 private theorem w8Mass_modeCos_add_modeSin {w : ℂ} (hw : -4 < w.re) :
     w8Mass (modeCos w) + w8Mass (modeSin w) = 1 / (8 + 2 * w.re) := by
@@ -1948,16 +1948,16 @@ theorem nullVector_averagedState_eq_modes {R : ℝ} (hR : 0 < R)
       have hA := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin
         (xi_half_add_ne_zero_of_re hw)).mul_left (averageSymbol w)
       have h9 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -9)
-        (by convert xi_half_add_ofReal_ne_zero (-9) using 3 <;> norm_num)).mul_left
+        (by convert xi_half_add_ofReal_ne_zero (-9) using 3; norm_num)).mul_left
           (1 / 6 * (w + 9)⁻¹)
       have h10 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -10)
-        (by convert xi_half_add_ofReal_ne_zero (-10) using 3 <;> norm_num)).mul_left
+        (by convert xi_half_add_ofReal_ne_zero (-10) using 3; norm_num)).mul_left
           (1 / 2 * (w + 10)⁻¹)
       have h11 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -11)
-        (by convert xi_half_add_ofReal_ne_zero (-11) using 3 <;> norm_num)).mul_left
+        (by convert xi_half_add_ofReal_ne_zero (-11) using 3; norm_num)).mul_left
           (1 / 2 * (w + 11)⁻¹)
       have h12 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -12)
-        (by convert xi_half_add_ofReal_ne_zero (-12) using 3 <;> norm_num)).mul_left
+        (by convert xi_half_add_ofReal_ne_zero (-12) using 3; norm_num)).mul_left
           (1 / 6 * (w + 12)⁻¹)
       have hC := hA.sub (((h9.sub h10).add h11).sub h12)
       have hLF : stateMeromorphic R F w = negativeHalfLineLaplace (cx F) w :=
@@ -2120,8 +2120,9 @@ theorem singleQuartet_nullVector_averagedState_singleConjugatePair {ρ₀ : ℂ}
             conj (negativeHalfLineLaplace (cx F) (1 / 2 - conj ρ₀))).re +
         criticalAliasCoefficient R * w8Mass F = 0 at hnull
       rw [hL0, zero_mul, Complex.zero_re, mul_zero, add_zero] at hnull
+      have hw8_pos : 0 < w8Mass F := nullVector_confinementMass_pos hF
       have hpos := add_pos_of_nonneg_of_pos (onLineEnergy_nonneg F)
-        (mul_pos (criticalAliasCoefficient_positive hR) (nullVector_confinementMass_pos hF))
+        (mul_pos (criticalAliasCoefficient_positive hR) hw8_pos)
       linarith
     have havg_ne : averageSymbol (zPos - 8) ≠ 0 := by
       unfold averageSymbol
@@ -2475,7 +2476,7 @@ theorem exists_singleOffLineQuartet_ecs_tfae :
         · exact ⟨hq.2.1, hq.1⟩
         · have hmem_c : conj ρ₀ ∈ {z ∈ zetaZeroConfig.carrier | z.re ≠ 1 / 2} := by
             rw [hq.2.2]; exact Or.inr (Or.inl rfl)
-          exact ⟨hmem_c.1, by simp; exact hq.1⟩
+          exact ⟨hmem_c.1, by simp; linarith [hq.1]⟩
     rw [hset]
     exact Set.encard_pair (quartet_points_pairwise_ne hq.1 hq.im_ne_zero).1
   tfae_have 2 → 1 := by
@@ -2502,7 +2503,7 @@ theorem exists_singleOffLineQuartet_ecs_tfae :
     have hsub : ({ρ₀, conj ρ₀} : Set ℂ) ⊆ ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig := by
       rintro z (rfl | rfl)
       · exact ⟨hmem₀, hre₀⟩
-      · exact ⟨hmem_of_xi hxi_c, by simp; exact hre₀⟩
+      · exact ⟨hmem_of_xi hxi_c, by simp; linarith⟩
     have hright_eq : ({ρ₀, conj ρ₀} : Set ℂ) = ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig :=
       ((Set.finite_singleton _).insert _).eq_of_subset_of_encard_le hsub
         (by rw [h2, Set.encard_pair hne_conj])
@@ -2520,7 +2521,8 @@ theorem exists_singleOffLineQuartet_ecs_tfae :
         rw [← hright_eq] at hrefl
         rcases hrefl with h1 | h2
         · right; right; left; linear_combination -h1
-        · right; right; right; linear_combination -h2
+        · rw [Set.mem_singleton_iff] at h2
+          right; right; right; linear_combination -h2
       · have hright : ρ ∈ ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig := ⟨hρ_mem, hgt⟩
         rw [← hright_eq] at hright
         rcases hright with rfl | rfl
@@ -2590,8 +2592,9 @@ theorem no_singleOffLineQuartet_iff_rh_or_four_le_rightZeros :
     | coe n =>
       rcases eq_or_ne n 0 with rfl | hn0
       · left
-        rw [heven, hk, Nat.cast_zero, mul_zero] at *
-        exact rightZeros_zeta_eq_empty_iff.mp (Set.encard_eq_zero.mp heven)
+        have h0 : (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard = 0 := by
+          rw [heven, hk]; simp
+        exact rightZeros_zeta_eq_empty_iff.mp (Set.encard_eq_zero.mp h0)
       · rcases eq_or_ne n 1 with rfl | hn1
         · exfalso
           apply hne2
@@ -2646,7 +2649,7 @@ theorem singleQuartet_realized_in_models {β : ℝ} (hβ : 1 / 2 < β) :
         (ModelStates.configEnergy hfin).energy F + a * ‖F‖ ^ 2 = 0 ∧
         ∀ G : ModelStates.ConfSpace, (ModelStates.configEnergy hfin).Admissible G →
           0 ≤ (ModelStates.configEnergy hfin).energy G + a * ‖G‖ ^ 2) ∧
-    (∀ (N : ℕ) {σ : ℝ}, 1 / 2 < σ → σ < 1 →
+    (∀ {σ : ℝ}, 1 / 2 < σ → σ < 1 →
       ∃ (F : RHTower.ExtendedSelbergClass) (s : ℂ), F.coeff.IsMultiplicative ∧ F.coeff 1 = 1 ∧
         (∀ n : ℕ, n ≠ 0 → (F.coeff n).im = 0 ∧ 1 ≤ (F.coeff n).re) ∧ s.re = σ ∧ F s = 0 ∧
         ∃ (h0 : 0 ≤ s.re) (h1 : s.re ≤ 1)
@@ -2659,7 +2662,7 @@ theorem singleQuartet_realized_in_models {β : ℝ} (hβ : 1 / 2 < β) :
   ⟨WorldsOfTheZeroConfiguration.exists_isEdit_fake_without_real_zero hβ,
     fun h0 h1 hre => ModelStates.quartet_criticalState h0 h1 hre,
     ModelStates.overRegular_quartet_criticalState,
-    fun N _ h0 h1 => ModelStates.positiveTwin_quartet_criticalState N h0 h1⟩
+    fun h0 h1 => ModelStates.positiveTwin_quartet_criticalState 1 h0 h1⟩
 
 #print axioms bareMixedEnergy_singleQuartet
 #print axioms exists_confinedNullVector_iff_quartetSecularDet_eq_zero

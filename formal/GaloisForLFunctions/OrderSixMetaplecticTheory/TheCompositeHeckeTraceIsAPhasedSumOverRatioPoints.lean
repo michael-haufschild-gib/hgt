@@ -182,7 +182,7 @@ theorem contraction_wM :
   all_goals (try simp only [hc3] at *)
   all_goals (try rw [← hp, ← hq])
   all_goals (try field_simp)
-  all_goals (first | ring1 | linear_combination hd | linear_combination -hd)
+  all_goals (first | ring1 | linear_combination hd)
 
 theorem exists_mHighBezout : ∃ n M : O, (R.P.p * R.Q.p) ^ 2 * n - 9 * R.mK * M = 1 := by
   have hk : IsCoprime (R.P.p * R.Q.p) R.mK := ⟨R.mDelta, -9, by linear_combination R.m_det⟩
@@ -238,6 +238,201 @@ theorem dilation_wM :
     linear_combination (-1) * hh + ringComplex R.mHighM * hd |
     linear_combination (-ringComplex R.mDelta) * hh +
       (R.P.root ^ 2 * R.Q.root ^ 2 * ringComplex R.mHighN) * hd)
+
+/-! ### The ratio types: `U` at one prime, `W` at the other -/
+
+theorem contraction_wQ :
+    R.Q.contraction * complexMatrix R.wQ =
+      complexMatrix (lowerThree (R.P.p * R.qK)) * complexMatrix (transThree 1) * R.Q.dilation := by
+  have hr := R.Q.root_sq
+  have hr0 := R.Q.root_ne_zero
+  have hc3 := PrimaryPrime.ringComplex_three
+  have hd := congrArg ringComplex R.q_det
+  simp only [map_sub, map_mul, map_one, map_ofNat] at hd
+  rw [← hr] at hd
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PrimaryPrime.contraction, PrimaryPrime.dilation, complexDiagonal, complexMatrix_apply, lowerThree,
+      transThree, wQ, Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+  all_goals (try simp only [hc3] at *)
+  all_goals (try rw [← hr])
+  all_goals (try field_simp)
+  all_goals (first | ring1 | linear_combination hd)
+
+theorem contraction_wP :
+    R.P.contraction * complexMatrix R.wP =
+      complexMatrix (lowerThree (R.Q.p * R.pK)) * complexMatrix (transThree 1) * R.P.dilation := by
+  have hr := R.P.root_sq
+  have hr0 := R.P.root_ne_zero
+  have hc3 := PrimaryPrime.ringComplex_three
+  have hd := congrArg ringComplex R.p_det
+  simp only [map_sub, map_mul, map_one, map_ofNat] at hd
+  rw [← hr] at hd
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PrimaryPrime.contraction, PrimaryPrime.dilation, complexDiagonal, complexMatrix_apply, lowerThree,
+      transThree, wP, Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+  all_goals (try simp only [hc3] at *)
+  all_goals (try rw [← hr])
+  all_goals (try field_simp)
+  all_goals (first | ring1 | linear_combination hd)
+
+theorem exists_qHighBezout : ∃ n M : O, R.Q.p ^ 2 * n - 9 * (R.P.p * R.qK) * M = 1 := by
+  have hk : IsCoprime R.Q.p (R.P.p * R.qK) := ⟨R.qDelta, -9, by linear_combination R.q_det⟩
+  obtain ⟨u, v, h⟩ := (R.isCoprime_nine_q.symm.mul_right hk).pow_left (m := 2)
+  exact ⟨u, -v, by linear_combination h⟩
+
+theorem exists_pHighBezout : ∃ n M : O, R.P.p ^ 2 * n - 9 * (R.Q.p * R.pK) * M = 1 := by
+  have hk : IsCoprime R.P.p (R.Q.p * R.pK) := ⟨R.pDelta, -9, by linear_combination R.p_det⟩
+  obtain ⟨u, v, h⟩ := (R.isCoprime_nine_p.symm.mul_right hk).pow_left (m := 2)
+  exact ⟨u, -v, by linear_combination h⟩
+
+def qHighN : O := R.exists_qHighBezout.choose
+def qHighM : O := R.exists_qHighBezout.choose_spec.choose
+theorem qHigh_det : R.Q.p ^ 2 * R.qHighN - 9 * (R.P.p * R.qK) * R.qHighM = 1 :=
+  R.exists_qHighBezout.choose_spec.choose_spec
+
+def pHighN : O := R.exists_pHighBezout.choose
+def pHighM : O := R.exists_pHighBezout.choose_spec.choose
+theorem pHigh_det : R.P.p ^ 2 * R.pHighN - 9 * (R.Q.p * R.pK) * R.pHighM = 1 :=
+  R.exists_pHighBezout.choose_spec.choose_spec
+
+theorem three_dvd_sq_mul_sub_one {n : O} (hn : (3 : O) ∣ n - 1) {a b : O} (h : n ^ 2 * a - 9 * b = 1) :
+    (3 : O) ∣ a - 1 := by
+  obtain ⟨t, ht⟩ := hn
+  exact ⟨3 * b - a * t * (n + 1), by linear_combination h - a * (n + 1) * ht⟩
+
+/-- `[[q², 3M], [3pk', n]]`. -/
+def qHighMat : levelThree :=
+  ⟨⟨!![R.Q.p ^ 2, 3 * R.qHighM; 3 * (R.P.p * R.qK), R.qHighN], by
+      rw [Matrix.det_fin_two_of]; linear_combination R.qHigh_det⟩,
+    levelThree_of_entries _ (by
+      obtain ⟨t, ht⟩ := R.Q.three_dvd_sub_one
+      intro i j
+      fin_cases i <;> fin_cases j
+      · exact ⟨t * (R.Q.p + 1), by simp; linear_combination (R.Q.p + 1) * ht⟩
+      · simp
+      · simp
+      · simpa using three_dvd_sq_mul_sub_one R.Q.three_dvd_sub_one
+          (show R.Q.p ^ 2 * R.qHighN - 9 * (R.P.p * R.qK * R.qHighM) = 1 by linear_combination R.qHigh_det))⟩
+
+/-- `A_p[[q², 3M], [3pk', n]]A_p⁻¹ = [[q², 3pM], [3k', n]]`. -/
+def qHighUp : levelThree :=
+  ⟨⟨!![R.Q.p ^ 2, 3 * (R.P.p * R.qHighM); 3 * R.qK, R.qHighN], by
+      rw [Matrix.det_fin_two_of]; linear_combination R.qHigh_det⟩,
+    levelThree_of_entries _ (by
+      obtain ⟨t, ht⟩ := R.Q.three_dvd_sub_one
+      intro i j
+      fin_cases i <;> fin_cases j
+      · exact ⟨t * (R.Q.p + 1), by simp; linear_combination (R.Q.p + 1) * ht⟩
+      · simp
+      · simp
+      · simpa using three_dvd_sq_mul_sub_one R.Q.three_dvd_sub_one
+          (show R.Q.p ^ 2 * R.qHighN - 9 * (R.P.p * R.qK * R.qHighM) = 1 by linear_combination R.qHigh_det))⟩
+
+/-- `[[p², 3M], [3qk'', n]]`. -/
+def pHighMat : levelThree :=
+  ⟨⟨!![R.P.p ^ 2, 3 * R.pHighM; 3 * (R.Q.p * R.pK), R.pHighN], by
+      rw [Matrix.det_fin_two_of]; linear_combination R.pHigh_det⟩,
+    levelThree_of_entries _ (by
+      obtain ⟨t, ht⟩ := R.P.three_dvd_sub_one
+      intro i j
+      fin_cases i <;> fin_cases j
+      · exact ⟨t * (R.P.p + 1), by simp; linear_combination (R.P.p + 1) * ht⟩
+      · simp
+      · simp
+      · simpa using three_dvd_sq_mul_sub_one R.P.three_dvd_sub_one
+          (show R.P.p ^ 2 * R.pHighN - 9 * (R.Q.p * R.pK * R.pHighM) = 1 by linear_combination R.pHigh_det))⟩
+
+/-- `A_q[[p², 3M], [3qk'', n]]A_q⁻¹ = [[p², 3qM], [3k'', n]]`. -/
+def pHighUp : levelThree :=
+  ⟨⟨!![R.P.p ^ 2, 3 * (R.Q.p * R.pHighM); 3 * R.pK, R.pHighN], by
+      rw [Matrix.det_fin_two_of]; linear_combination R.pHigh_det⟩,
+    levelThree_of_entries _ (by
+      obtain ⟨t, ht⟩ := R.P.three_dvd_sub_one
+      intro i j
+      fin_cases i <;> fin_cases j
+      · exact ⟨t * (R.P.p + 1), by simp; linear_combination (R.P.p + 1) * ht⟩
+      · simp
+      · simp
+      · simpa using three_dvd_sq_mul_sub_one R.P.three_dvd_sub_one
+          (show R.P.p ^ 2 * R.pHighN - 9 * (R.Q.p * R.pK * R.pHighM) = 1 by linear_combination R.pHigh_det))⟩
+
+/-- The shift `f' = qn − Mδ'`. -/
+def qShift : O := R.Q.p * R.qHighN - R.qHighM * R.qDelta
+
+/-- The shift `f'' = pn − Mδ''`. -/
+def pShift : O := R.P.p * R.pHighN - R.pHighM * R.pDelta
+
+theorem dilation_wQ :
+    R.Q.dilation * complexMatrix R.wQ =
+      complexMatrix R.qHighMat * R.Q.contraction * complexMatrix (transThree R.qShift) := by
+  have hr := R.Q.root_sq
+  have hr0 := R.Q.root_ne_zero
+  have hc3 := PrimaryPrime.ringComplex_three
+  have hd := congrArg ringComplex R.q_det
+  have hh := congrArg ringComplex R.qHigh_det
+  simp only [map_sub, map_mul, map_one, map_ofNat, map_pow] at hd hh
+  rw [← hr] at hd hh
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PrimaryPrime.contraction, PrimaryPrime.dilation, complexDiagonal, complexMatrix_apply, qHighMat,
+      transThree, wQ, qShift, Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+  all_goals (try simp only [hc3] at *)
+  all_goals (try rw [← hr])
+  all_goals (try field_simp)
+  all_goals (first | ring1 | linear_combination hd | linear_combination -hd |
+    linear_combination (-1) * hh + ringComplex R.qHighM * hd |
+    linear_combination (-ringComplex R.qDelta) * hh + (R.Q.root ^ 2 * ringComplex R.qHighN) * hd)
+
+theorem dilation_wP :
+    R.P.dilation * complexMatrix R.wP =
+      complexMatrix R.pHighMat * R.P.contraction * complexMatrix (transThree R.pShift) := by
+  have hr := R.P.root_sq
+  have hr0 := R.P.root_ne_zero
+  have hc3 := PrimaryPrime.ringComplex_three
+  have hd := congrArg ringComplex R.p_det
+  have hh := congrArg ringComplex R.pHigh_det
+  simp only [map_sub, map_mul, map_one, map_ofNat, map_pow] at hd hh
+  rw [← hr] at hd hh
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PrimaryPrime.contraction, PrimaryPrime.dilation, complexDiagonal, complexMatrix_apply, pHighMat,
+      transThree, wP, pShift, Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+  all_goals (try simp only [hc3] at *)
+  all_goals (try rw [← hr])
+  all_goals (try field_simp)
+  all_goals (first | ring1 | linear_combination hd | linear_combination -hd |
+    linear_combination (-1) * hh + ringComplex R.pHighM * hd |
+    linear_combination (-ringComplex R.pDelta) * hh + (R.P.root ^ 2 * ringComplex R.pHighN) * hd)
+
+theorem dilP_qHighMat : R.P.dilation * complexMatrix R.qHighMat = complexMatrix R.qHighUp * R.P.dilation := by
+  have hr := R.P.root_sq
+  have hr0 := R.P.root_ne_zero
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PrimaryPrime.dilation, complexDiagonal, complexMatrix_apply, qHighMat, qHighUp,
+      Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+  all_goals (try rw [← hr])
+  all_goals (try field_simp)
+  all_goals (try ring1)
+
+theorem dilQ_pHighMat : R.Q.dilation * complexMatrix R.pHighMat = complexMatrix R.pHighUp * R.Q.dilation := by
+  have hr := R.Q.root_sq
+  have hr0 := R.Q.root_ne_zero
+  apply Matrix.SpecialLinearGroup.ext
+  intro i j
+  fin_cases i <;> fin_cases j <;>
+    simp [PrimaryPrime.dilation, complexDiagonal, complexMatrix_apply, pHighMat, pHighUp,
+      Matrix.SpecialLinearGroup.coe_mul, Matrix.mul_apply, Fin.sum_univ_two]
+  all_goals (try rw [← hr])
+  all_goals (try field_simp)
+  all_goals (try ring1)
 
 end PrimaryPair
 

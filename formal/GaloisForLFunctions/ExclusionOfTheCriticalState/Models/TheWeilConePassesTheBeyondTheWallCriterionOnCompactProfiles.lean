@@ -268,3 +268,6 @@ theorem modelCompactContinuation_eulerLog_iff_riemannHypothesis :
       div_mul_cancel₀ _ hlog_ne]
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState
+
+#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.modelCompactContinuation_of_weilPositiveFull
+#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.modelCompactContinuation_eulerLog_iff_riemannHypothesis

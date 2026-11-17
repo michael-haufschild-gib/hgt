@@ -11,7 +11,7 @@ pinching limit admits a finite positive product-Gram decomposition exactly
 when the rates are injective; coordinate projections give the decomposition.
 
 This separates Choi positivity from partial-transpose positivity in the
-states-over-time construction of Hoogsteder and Riera.
+states-over-time construction of Matt Hoogsteder-Riera.
 -/
 
 noncomputable section
@@ -96,7 +96,7 @@ private theorem partialTranspose_pair_det {n : ℕ} (k : ℕ) (r : Fin n → ℝ
     partialTransposeFirst, iterateChoi_apply, hij, Ne.symm hij,
     and_self, if_true, if_false, coherence_symm (r j) (r i), zero_mul, zero_sub, pow_two]
 
-/-- Every finite iterate in dimension at least two has nonpositive partial transpose. -/
+/-- Every finite iterate in dimension at least two has a partial transpose that is not positive semidefinite. -/
 theorem iterateChoi_not_positive_partialTranspose (n k : ℕ) (r : Fin (n + 2) → ℝ) :
     ¬ (partialTransposeFirst (iterateChoi k r)).PosSemidef := by
   intro h
@@ -236,14 +236,14 @@ private theorem coordinateProductGram_apply {n : ℕ} (i j : Fin n × Fin n) :
   by_cases h1 : i.1 = j.1 <;> by_cases h2 : i.2 = j.2
   · have hij : i = j := Prod.ext h1 h2
     subst j
-    simp only [if_pos rfl, and_true]
+    simp only [if_true, and_true]
     by_cases hi : i.1 = i.2
     · simp [hi]
     · have hz (a : Fin n) :
           (if a = i.1 then (1 : ℂ) else 0) * (if a = i.2 then 1 else 0) = 0 := by
         by_cases ha : a = i.1
         · subst a
-          simp only [if_pos rfl, if_neg hi, mul_zero]
+          simp only [if_neg hi, mul_zero]
         · simp only [if_neg ha, zero_mul]
       simp only [hz, Finset.sum_const_zero, if_neg hi]
   · have hij : i ≠ j := fun h => h2 (congrArg Prod.snd h)
