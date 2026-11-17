@@ -23,7 +23,7 @@ theorem sawtooth_divisor_first_cell {q : ℕ} (hq : 0 < q) {x : ℝ}
     sawtooth ((d : ℝ) * x) = (d : ℝ) * x - 1 / 2 := by
   have hd0 : (0 : ℝ) < d := by exact_mod_cast Nat.pos_of_mem_divisors hd
   have hq0 : (0 : ℝ) < q := by exact_mod_cast hq
-  have hdq : (d : ℝ) ≤ q := by exact_mod_cast Nat.le_of_mem_divisors hd
+  have hdq : (d : ℝ) ≤ q := by exact_mod_cast Nat.le_of_dvd hq (Nat.dvd_of_mem_divisors hd)
   have hdxx : (d : ℝ) * x < 1 := by
     calc (d : ℝ) * x ≤ (q : ℝ) * x := mul_le_mul_of_nonneg_right hdq hx.le
       _ < (q : ℝ) * (q : ℝ)⁻¹ := mul_lt_mul_of_pos_left hxq hq0
@@ -48,6 +48,32 @@ theorem coprime_sawtooth_plateau {q : ℕ} (hq : 1 < q) {x : ℝ}
   rw [sum_congr rfl hterm, sum_sub_distrib, ← sum_mul,
     HTGeometry.sum_divisors_moebius_real, if_neg hq.ne', zero_mul, zero_sub,
     ← sum_div, _root_.RHTower.Sieve.sum_moebius_div_divisors_eq_totient_div hq0]
+  ring
+
+/-- The complete profile is a step function with half-jump values at resonances. -/
+theorem coprime_sawtooth_floor_formula {q : ℕ} (hq : 1 < q) (x : ℝ) :
+    -Real.pi * (∑ d ∈ q.divisors, (μ d : ℝ) / d * sawtooth ((d : ℝ) * x)) =
+      Real.pi * ((∑ d ∈ q.divisors, (μ d : ℝ) / d * ⌊(d : ℝ) * x⌋) +
+        ((q.totient : ℝ) / q) / 2 -
+        (∑ d ∈ q.divisors.filter (fun d => Int.fract ((d : ℝ) * x) = 0),
+          (μ d : ℝ) / d) / 2) := by
+  have hsaw (y : ℝ) : sawtooth y = y - ⌊y⌋ - 1 / 2 +
+      (if Int.fract y = 0 then 1 / 2 else 0) := by
+    have hf := Int.floor_add_fract y
+    rw [sawtooth]
+    split_ifs with h <;> linarith
+  have hterm : ∀ d ∈ q.divisors,
+      (μ d : ℝ) / d * sawtooth ((d : ℝ) * x) =
+        (μ d : ℝ) * x - (μ d : ℝ) / d * ⌊(d : ℝ) * x⌋ - (μ d : ℝ) / d / 2 +
+          (if Int.fract ((d : ℝ) * x) = 0 then (μ d : ℝ) / d else 0) / 2 := by
+    intro d hd
+    have hd0 : (d : ℝ) ≠ 0 := by exact_mod_cast (Nat.pos_of_mem_divisors hd).ne'
+    rw [hsaw]
+    split_ifs <;> field_simp <;> ring
+  rw [sum_congr rfl hterm, sum_add_distrib, sum_sub_distrib, sum_sub_distrib,
+    ← sum_mul, HTGeometry.sum_divisors_moebius_real, if_neg hq.ne', zero_mul,
+    ← sum_div, _root_.RHTower.Sieve.sum_moebius_div_divisors_eq_totient_div (by omega),
+    ← sum_div, ← sum_filter]
   ring
 
 /-- The coprime Fourier series has the exact totient-density plateau. -/

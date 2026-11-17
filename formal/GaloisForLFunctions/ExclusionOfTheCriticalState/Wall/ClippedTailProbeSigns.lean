@@ -14,8 +14,7 @@ open Matrix Polynomial
 open scoped ComplexOrder NNReal
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open HTGeometry HilbertMetric.SymmetricClipping
-open ArithmeticHodgeTheoryOfDegenerations ArithmeticHarmonicAnalysis.Coleman
-open BiScaleUncertainty.Observation
+open ArithmeticHodgeTheoryOfDegenerations BiScaleUncertainty.Observation
 noncomputable section
 
 /-- The actual tail moment matrix on an arbitrary finite exponent set. -/
@@ -38,12 +37,15 @@ theorem tailProbeMatrix_quadratic (F : ℝ → ℝ) (T : ℝ) (P : Polynomial �
   calc
     _ = ∑ i ∈ P.support, ∑ j : P.support,
         P.coeff i * (tailProbeMoment F T (i + j.val) * P.coeff j.val) :=
-      Finset.sum_coe_sort P.support _
+      Finset.sum_coe_sort (M := ℝ) P.support
+        (fun i => ∑ j : P.support,
+          P.coeff i * (tailProbeMoment F T (i + j.val) * P.coeff j.val))
     _ = ∑ i ∈ P.support, ∑ j ∈ P.support,
         P.coeff i * (tailProbeMoment F T (i + j) * P.coeff j) := by
       apply Finset.sum_congr rfl
       intro i _
-      exact Finset.sum_coe_sort P.support _
+      exact Finset.sum_coe_sort (M := ℝ) P.support
+        (fun j => P.coeff i * (tailProbeMoment F T (i + j) * P.coeff j))
     _ = _ := by
       apply Finset.sum_congr rfl
       intro i _

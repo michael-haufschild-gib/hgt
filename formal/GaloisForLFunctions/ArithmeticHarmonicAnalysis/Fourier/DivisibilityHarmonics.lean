@@ -21,8 +21,11 @@ noncomputable section
 theorem sum_Icc_harmonicSine (N : ℕ) (x : ℝ) :
     (∑ n ∈ Icc 1 N, Real.sin ((n : ℝ) * (2 * Real.pi * x)) / (n : ℝ)) =
       harmonicSine (N + 1) x := by
-  rw [harmonicSine, ← sum_Ico_eq_sub _ (by omega : 0 ≤ 1) (by omega : 1 ≤ N + 1)]
-  simp [Nat.Ico_succ_right]
+  induction N with
+  | zero => simp [harmonicSine]
+  | succ N ih =>
+    rw [sum_Icc_succ_top (by omega), ih]
+    exact (sum_range_succ _ _).symm
 
 /-- A divisor restriction decimates both the cutoff and the phase. -/
 theorem sum_dvd_harmonicSine {d : ℕ} (hd : 0 < d) (N : ℕ) (x : ℝ) :

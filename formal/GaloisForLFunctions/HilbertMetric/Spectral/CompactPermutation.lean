@@ -93,7 +93,7 @@ theorem isCompact_permutationOperator_sub_one_iff {ι : Type*} (e : Equiv.Perm �
           mul_one, mul_zero, Finset.sum_ite_eq, Set.Finite.mem_toFinset,
           Set.mem_setOf_eq]
         by_cases hj : e j = j
-        · simp [defect_apply, hj]
+        · simp [permutationOperator_apply, hj]
         · simp [hj]
       rw [hx]
       apply Submodule.sum_mem

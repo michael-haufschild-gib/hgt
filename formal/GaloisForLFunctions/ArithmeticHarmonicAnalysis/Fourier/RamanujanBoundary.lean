@@ -19,7 +19,7 @@ noncomputable section
 /-- The existing Ramanujan lag coefficient is a finite divisibility filter. -/
 theorem ramanujanLagCoefficient_eq_divisorFilter (q n : ℕ) :
     ramanujanLagCoefficient q n =
-      divisorFilter q.divisors (fun d => _root_.RHTower.moebiusReal (q / d) * d) n := by
+      divisorFilter q.divisors (fun d => BezoutValuationIncidence.moebiusReal (q / d) * d) n := by
   apply sum_congr rfl
   intro d _
   split_ifs <;> simp only [mul_zero]
@@ -28,7 +28,7 @@ theorem ramanujanLagCoefficient_eq_divisorFilter (q n : ℕ) :
 theorem sum_ramanujan_harmonicSine (q N : ℕ) (x : ℝ) :
     (∑ n ∈ Icc 1 N, ramanujanLagCoefficient q n *
       (Real.sin ((n : ℝ) * (2 * Real.pi * x)) / (n : ℝ))) =
-      ∑ d ∈ q.divisors, _root_.RHTower.moebiusReal (q / d) *
+      ∑ d ∈ q.divisors, BezoutValuationIncidence.moebiusReal (q / d) *
         harmonicSine (N / d + 1) ((d : ℝ) * x) := by
   simp_rw [ramanujanLagCoefficient_eq_divisorFilter]
   rw [sum_divisorFilter_harmonicSine _ _ (fun _ hd => Nat.pos_of_mem_divisors hd)]
@@ -42,13 +42,13 @@ theorem tendsto_ramanujan_harmonicSine (q : ℕ) (x : ℝ) :
     Tendsto (fun N => ∑ n ∈ Icc 1 N, ramanujanLagCoefficient q n *
       (Real.sin ((n : ℝ) * (2 * Real.pi * x)) / (n : ℝ))) atTop
       (𝓝 (-Real.pi * ∑ d ∈ q.divisors,
-        _root_.RHTower.moebiusReal (q / d) * sawtooth ((d : ℝ) * x))) := by
+        BezoutValuationIncidence.moebiusReal (q / d) * sawtooth ((d : ℝ) * x))) := by
   have h := tendsto_divisorFilter_harmonicSine q.divisors
-    (fun d => _root_.RHTower.moebiusReal (q / d) * d)
+    (fun d => BezoutValuationIncidence.moebiusReal (q / d) * d)
     (fun _ hd => Nat.pos_of_mem_divisors hd) x
   have hvalue : (∑ d ∈ q.divisors,
-      _root_.RHTower.moebiusReal (q / d) * d / d * sawtooth ((d : ℝ) * x)) =
-      ∑ d ∈ q.divisors, _root_.RHTower.moebiusReal (q / d) * sawtooth ((d : ℝ) * x) := by
+      BezoutValuationIncidence.moebiusReal (q / d) * d / d * sawtooth ((d : ℝ) * x)) =
+      ∑ d ∈ q.divisors, BezoutValuationIncidence.moebiusReal (q / d) * sawtooth ((d : ℝ) * x) := by
     apply sum_congr rfl
     intro d hd
     have hd0 : (d : ℝ) ≠ 0 := by exact_mod_cast (Nat.pos_of_mem_divisors hd).ne'

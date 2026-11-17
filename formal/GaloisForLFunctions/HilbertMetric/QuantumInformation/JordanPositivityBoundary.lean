@@ -46,7 +46,7 @@ theorem jordanSymbol_pair_det_neg_iff {n : ℕ} (r : Fin n → ℝ) (i j : Fin n
     have hs : 0 < (rate r i - rate r j) ^ 2 := sq_pos_of_ne_zero (sub_ne_zero.mpr h)
     linarith only [hs]
 
-/-- The constant rank-one matrix. -/
+/-- The constant all-ones matrix. -/
 def constantOneGram (n : ℕ) : Matrix (Fin n) (Fin n) ℂ := fun _ _ => 1
 
 /-- The all-ones matrix is an explicit Gram in every dimension. -/

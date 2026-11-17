@@ -130,7 +130,7 @@ theorem criticalState_windowMass_le {W₀ : ℝ} (hW : 0 < W₀)
     simp only [g]
     rw [integral_const_mul, integral_add (integrableOn_const (C := (1 : ℝ)) hSfin) hint.integrableOn,
       setIntegral_const, hvol, smul_eq_mul, mul_one]
-    refine mul_le_mul_of_nonneg_left (add_le_add_left ?_ _) (by positivity)
+    refine mul_le_mul_of_nonneg_left (add_le_add le_rfl ?_) (by positivity)
     exact setIntegral_le_integral hint (Eventually.of_forall fun u => by positivity)
   have hE : E = Real.exp (a * ℓ) * Real.exp (a * ν * ℓ) := by
     simp only [E]; rw [← Real.exp_add]; congr 1; push_cast; ring
