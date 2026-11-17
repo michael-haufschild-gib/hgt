@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.TheStateEquationHoldsOnTheZeroFreePartOfTheStrip
 import GaloisForLFunctions.ExclusionOfTheCriticalState.TheLevyHeadIsAHardyTransform
 import GaloisForLFunctions.ExclusionOfTheCriticalState.LogarithmicEnergiesInterpolateBetweenVerticalLines
+import GaloisForLFunctions.RHTower.WeilArchReLevyPoleForm
 
 /-!
 # The state has a squared logarithmic energy on the lines of its decay
@@ -101,7 +102,7 @@ theorem log_sub_le_re_symbol {s : ℝ} (hs0 : 0 ≤ s) (hs : s < 1 / 2) (t : ℝ
   rw [Complex.add_re, h3, h4] at h2
   rw [Complex.add_re, h3]
   have h5 := WeilWorkPBAP.joint_gamma_lower_log t
-  rw [gammaBracket_eq_two_mul_gammaHardyPhaseRate] at h5
+  rw [WeilLevyPole.gammaBracket_eq_two_mul_gammaHardyPhaseRate] at h5
   have h6 : Real.log (|t| + 4) ≤ Real.log 4 + Real.log (2 + |t|) := by
     have h := Real.log_le_log (by positivity : (0 : ℝ) < |t| + 4)
       (show |t| + 4 ≤ 4 * (2 + |t|) by linarith [abs_nonneg t])
@@ -289,7 +290,7 @@ theorem norm_stateTail_factor_eq (F : ℝ → ℝ) (s ℓ t : ℝ) :
         push_cast
         ring
       rw [Set.indicator_apply, if_pos (show u ∈ Iio (-ℓ) from hu), if_pos hu,
-        Complex.ofReal_mul, Complex.ofReal_exp]
+        Complex.ofReal_mul (Real.exp (s * (u + ℓ))) (F u), Complex.ofReal_exp]
       linear_combination (F u : ℂ) * e
     · rw [Set.indicator_apply, if_neg (show u ∉ Iio (-ℓ) from hu), if_neg hu]
       simp

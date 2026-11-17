@@ -21,16 +21,17 @@ Mechanism (Agmon). Test the weak equation with `G_N = ψ_N F`, `ψ_N = e^{-2c ma
   `a ∫ ψ_N F² e^{-8u} = prime(F, G_N) - pole(F, G_N) - γ(F, G_N)`.
 
 * `γ(F, G_N)` is the jump energy of `ψ_N^{1/2} F` minus a commutator and a mass term; the
-  commutator is bounded by `∫ F² e^{-4cu}`, a moment below the barrier because `4c < 15`.
+  commutator is bounded by the moment `∫ F² e^{-4cu}`.
 * The backward halves of the prime and pole terms pair `G_N` with `F` further to the left and
-  are bounded by moments below the barrier.
+  are bounded by moments of exponent below `4c`.
 * The forward halves combine to the wave:
   `(forward prime - forward pole)² ≤ M ∫ G_N² e^{-2σv} ≤ M ∫ ψ_N F² e^{-8v}`, since
   `ψ_N e^{-2σv} ≤ e^{-8v}`. The mass `M` of `N(1/2 + p) L F(p)` on `Re p = σ` is finite for
   `σ > 1/4 + κ/2`: there `|N|²` grows at most like a logarithm, which the Gamma energy pays.
 
 So `Y_N = ∫ ψ_N F² e^{-8u}` satisfies `a Y_N ≤ √(M Y_N) + K` and is bounded in `N`; Fatou's
-lemma gives `∫ F² e^{-(16 - 2σ)u} < ∞`.
+lemma gives `∫ F² e^{-(16 - 2σ)u} < ∞`. The argument uses only `M < ∞` on the line and the moment
+`∫ F² e^{-4cu} < ∞`, `4c = 16 - 4σ`; for `σ > 1/4 + κ/2` both hold a priori.
 -/
 
 noncomputable section
@@ -51,6 +52,20 @@ theorem integrable_abs_mul_exp_neg_of_decay {F : ℝ → ℝ} (hFm : Measurable 
     (Eventually.of_forall fun u => ?_)
   show |F u| * Real.exp (-m * u) = |F u| * Real.exp (-(m * u))
   rw [neg_mul]
+
+/-- The square moments of a profile on the negative half-line decrease with the exponent. -/
+theorem integrable_sq_mul_exp_of_le {F : ℝ → ℝ} (hFm : Measurable F)
+    (hsupp : ∀ u, 0 ≤ u → F u = 0) {b b' : ℝ}
+    (hb : Integrable fun u => F u ^ 2 * Real.exp (-(b * u))) (hbb : b' ≤ b) :
+    Integrable fun u => F u ^ 2 * Real.exp (-(b' * u)) := by
+  refine hb.mono' ((hFm.pow_const 2).mul (by fun_prop)).aestronglyMeasurable
+    (Eventually.of_forall fun u => ?_)
+  rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)]
+  rcases le_or_gt 0 u with hu | hu
+  · rw [hsupp u hu]
+    simp
+  · have hprod := mul_nonpos_of_nonneg_of_nonpos (sub_nonneg.mpr hbb) hu.le
+    exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) (sq_nonneg _)
 
 theorem mul_truncatedTilt_mul_nonneg (c N : ℝ) (F : ℝ → ℝ) (u : ℝ) :
     0 ≤ F u * (truncatedTilt c N u * F u) := by
@@ -675,18 +690,22 @@ theorem integrable_norm_sq_zetaRegularLogDeriv_mul_laplace {κ σ : ℝ} (hκ : 
 
 /-! ### The Agmon bound past the barrier -/
 
-/-- **The weighted confinement masses are bounded uniformly in the truncation.** With
-`c = 4 - σ` and `σ` a line to the right of the zeros and of `1/4 + κ/2`, the weak equation
-against `e^{-2c max(u, -N)} F` bounds `∫ e^{-2c max(u, -N)} F² e^{-8u}`. -/
+/-- **The weighted confinement masses are bounded uniformly in the truncation.** Let `σ < 1` be
+a line to the right of the zeros on which the wave has finite mass `∫ |N|² |L F|²`, and let
+`c = 4 - σ` with `∫ F² e^{-4cu} < ∞`. Then the weak equation against `e^{-2c max(u, -N)} F`
+bounds `∫ e^{-2c max(u, -N)} F² e^{-8u}`. -/
 theorem exists_integral_truncatedTilt_mul_sq_mul_exp_le {κ σ c : ℝ} (hκ : 0 ≤ κ)
-    (hzero : ∀ q : XiZeroCopy, (centredZero q).re ≤ κ) (hκσ : κ < σ) (hσ : 1 / 4 + κ / 2 < σ)
+    (hzero : ∀ q : XiZeroCopy, (centredZero q).re ≤ κ) (hκσ : κ < σ)
     (hσ1 : σ < 1) (hcσ : c + σ = 4) {W₀ : ℝ} (hW : 0 < W₀)
     (hthreshold : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
-    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F)
+    (hB : Integrable fun t : ℝ =>
+      ‖zetaRegularLogDeriv (1 / 2 + ((σ : ℂ) + (t : ℂ) * I))‖ ^ 2 *
+        ‖negativeHalfLineLaplace (cx F) ((σ : ℂ) + (t : ℂ) * I)‖ ^ 2)
+    (h4 : Integrable fun u => F u ^ 2 * Real.exp (-(4 * c * u))) :
     ∃ K : ℝ, ∀ N : ℝ,
       (∫ u, truncatedTilt (2 * c) N u * (F u ^ 2 * Real.exp (-(8 * u)))) ≤ K := by
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
-  have hdec := (criticalHalfLineGroundState_exponential_bounds hW hthreshold hF).2
   have hc0 : (0 : ℝ) ≤ c := by linarith
   have hc1 : (1 : ℝ) ≤ c := by linarith
   have h2c0 : (0 : ℝ) ≤ 2 * c := by linarith
@@ -694,16 +713,14 @@ theorem exists_integral_truncatedTilt_mul_sq_mul_exp_le {κ σ c : ℝ} (hκ : 0
   have ha : 0 < a := by
     rw [hadef]
     exact criticalAliasCoefficient_positive hW
-  have h2 : Integrable fun u => F u ^ 2 * Real.exp (-(2 * c * u)) := hdec (2 * c) (by linarith)
-  have h4 : Integrable fun u => F u ^ 2 * Real.exp (-(4 * c * u)) := hdec (4 * c) (by linarith)
+  have h2 : Integrable fun u => F u ^ 2 * Real.exp (-(2 * c * u)) :=
+    integrable_sq_mul_exp_of_le hd.meas hd.support h4 (by linarith)
   have hJ4 : Integrable fun u => |F u| * Real.exp (-(4 * u)) :=
-    integrable_abs_mul_exp_neg_of_decay hd.meas hd.support (hdec 14 (by norm_num)) (by norm_num)
+    integrable_abs_mul_exp_neg_of_decay hd.meas hd.support h4 (by linarith)
   have hJ1 : Integrable fun v => |F v| * Real.exp (-((2 * c - 4) * v)) :=
-    integrable_abs_mul_exp_neg_of_decay hd.meas hd.support (hdec 14 (by norm_num)) (by linarith)
+    integrable_abs_mul_exp_neg_of_decay hd.meas hd.support h4 (by linarith)
   have hJ2 : Integrable fun v => |F v| * Real.exp (-((2 * c - 1 / 2) * v)) :=
-    integrable_abs_mul_exp_neg_of_decay hd.meas hd.support (hdec (15 - 2 * σ) (by linarith))
-      (by linarith)
-  have hB := integrable_norm_sq_zetaRegularLogDeriv_mul_laplace hκ hzero hκσ hσ hd
+    integrable_abs_mul_exp_neg_of_decay hd.meas hd.support h4 (by linarith)
   obtain ⟨M, hMdef⟩ : ∃ M : ℝ, M = (2 * Real.pi)⁻¹ * ∫ t : ℝ,
       ‖zetaRegularLogDeriv (1 / 2 + ((σ : ℂ) + (t : ℂ) * I))‖ ^ 2 *
         ‖negativeHalfLineLaplace (cx F) ((σ : ℂ) + (t : ℂ) * I)‖ ^ 2 := ⟨_, rfl⟩
@@ -840,16 +857,21 @@ theorem exists_integral_truncatedTilt_mul_sq_mul_exp_le {κ σ c : ℝ} (hκ : 0
         div_le_div_of_nonneg_right hfin ha.le
     _ = _ := by ring
 
-/-- **Decay on a line to the right of the zeros.** If every centred zero has `Re z ≤ κ` and
-`max(κ, 1/4 + κ/2) < σ < 1`, then `∫ F² e^{-(16 - 2σ)u} du < ∞`. -/
-theorem integrable_sq_mul_exp_of_right_line {κ σ : ℝ} (hκ : 0 ≤ κ)
-    (hzero : ∀ q : XiZeroCopy, (centredZero q).re ≤ κ) (hκσ : κ < σ) (hσ : 1 / 4 + κ / 2 < σ)
+/-- **Decay from the mass of the wave on a line.** Let every centred zero have `Re z ≤ κ` and
+`κ < σ < 1`. If the wave has finite mass `∫ |N(1/2 + σ + it)|² |L F(σ + it)|² dt` on the line
+and `∫ F² e^{-(16 - 4σ)u} < ∞`, then `∫ F² e^{-(16 - 2σ)u} du < ∞`. -/
+theorem integrable_sq_mul_exp_of_line_mass {κ σ : ℝ} (hκ : 0 ≤ κ)
+    (hzero : ∀ q : XiZeroCopy, (centredZero q).re ≤ κ) (hκσ : κ < σ)
     (hσ1 : σ < 1) {W₀ : ℝ} (hW : 0 < W₀)
     (hthreshold : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
-    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F)
+    (hB : Integrable fun t : ℝ =>
+      ‖zetaRegularLogDeriv (1 / 2 + ((σ : ℂ) + (t : ℂ) * I))‖ ^ 2 *
+        ‖negativeHalfLineLaplace (cx F) ((σ : ℂ) + (t : ℂ) * I)‖ ^ 2)
+    (h4 : Integrable fun u => F u ^ 2 * Real.exp (-(4 * (4 - σ) * u))) :
     Integrable fun u => F u ^ 2 * Real.exp (-((16 - 2 * σ) * u)) := by
-  obtain ⟨K, hK⟩ := exists_integral_truncatedTilt_mul_sq_mul_exp_le hκ hzero hκσ hσ hσ1
-    (c := 4 - σ) (by ring) hW hthreshold hF
+  obtain ⟨K, hK⟩ := exists_integral_truncatedTilt_mul_sq_mul_exp_le hκ hzero hκσ hσ1
+    (c := 4 - σ) (by ring) hW hthreshold hF hB h4
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
   have hc0 : (0 : ℝ) ≤ 2 * (4 - σ) := by linarith
   have h0 : ∀ u, 0 ≤ F u ^ 2 * Real.exp (-((16 - 2 * σ) * u)) := fun u =>
@@ -899,6 +921,21 @@ theorem integrable_sq_mul_exp_of_right_line {κ σ : ℝ} (hκ : 0 ≤ κ)
           (truncatedTilt (2 * (4 - σ)) N u * (F u ^ 2 * Real.exp (-(8 * u))))) atTop := hfat
     _ ≤ ENNReal.ofReal K := liminf_le_of_frequently_le' (Frequently.of_forall hN)
     _ < ⊤ := ENNReal.ofReal_lt_top
+
+/-- **Decay on a line to the right of the zeros.** If every centred zero has `Re z ≤ κ` and
+`max(κ, 1/4 + κ/2) < σ < 1`, then `∫ F² e^{-(16 - 2σ)u} du < ∞`: there the mass of the wave is
+paid by the Gamma energy and the moment `16 - 4σ` lies below the barrier. -/
+theorem integrable_sq_mul_exp_of_right_line {κ σ : ℝ} (hκ : 0 ≤ κ)
+    (hzero : ∀ q : XiZeroCopy, (centredZero q).re ≤ κ) (hκσ : κ < σ) (hσ : 1 / 4 + κ / 2 < σ)
+    (hσ1 : σ < 1) {W₀ : ℝ} (hW : 0 < W₀)
+    (hthreshold : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
+    Integrable fun u => F u ^ 2 * Real.exp (-((16 - 2 * σ) * u)) :=
+  integrable_sq_mul_exp_of_line_mass hκ hzero hκσ hσ1 hW hthreshold hF
+    (integrable_norm_sq_zetaRegularLogDeriv_mul_laplace hκ hzero hκσ hσ
+      (criticalHalfLineEnergyDomain_of_groundState hF))
+    ((criticalHalfLineGroundState_exponential_bounds hW hthreshold hF).2 (4 * (4 - σ))
+      (by linarith))
 
 /-- **The state decays past the barrier at the rate of the zeros.** If every centred zero has
 `Re z ≤ κ`, then the critical state has the square moments `∫ F² e^{-bu} du < ∞` for every

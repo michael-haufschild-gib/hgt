@@ -76,6 +76,10 @@ import GaloisForLFunctions.OrderSixMetaplecticTheory.OppositeTranslationsByThird
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheShiftedFractionalTraceHasTheSquareMultiplier
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheShiftedFractionalTraceIsASumOverShiftedPoints
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheConstantTermOfTheShiftedFractionalTraceCarriesTheShiftPhase
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheShiftedFractionalTraceIsAJacobiMultipleOfTheTranslatedProduct
+import GaloisForLFunctions.OrderSixMetaplecticTheory.ThePhasedConjugateTwistCarriesAQuarterOfTheDoublePole
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheUnramifiedConjugateTwistCarriesHalfTheDoublePole
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheUnitLayerOfTheConjugateCubicTwistHasASimplePole
 
 /-!
 # Order-Six Metaplectic Theory over ℚ(ω)
@@ -87,6 +91,7 @@ remainder ↔ zeros of `ζ_{ℚ(ω)}`), the conjugation symmetry that makes the 
 main term of the squared theta series positive, the Hecke traces at every primary prime that give every
 cubic twist of the theta square its double pole, the fractional traces that give every conjugate cubic twist
 its double pole, the quadratic fractional traces that tie the conjugate sextic twist to the quadratic
-twist, the grade factorization of every twisted theta square through its cube factor, and the long columns as
-layers of twisted theta squares. See `OrderSixMetaplecticTheory/README.md`.
+twist, the grade factorization of every twisted theta square through its cube factor, the long columns as
+layers of twisted theta squares, and the shifted fractional traces that isolate the unit layer of every conjugate cubic
+twist. See `OrderSixMetaplecticTheory/README.md`.
 -/

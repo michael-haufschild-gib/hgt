@@ -58,7 +58,7 @@ so nothing is lost between stages.
   the prime part split into the Euler term $\mathcal LF(p)\sum\Lambda(n)n^{-1/2-p}$ and the prime tail
   $TF(p)=\sum\Lambda(n)n^{p-1/2}\int_{u<-\log n}F(u)e^{pu}du$.
 - **Seen zero**: a zero $z=\rho-\tfrac12$ with $\mathcal LF(z)\neq0$; all zeros with $\operatorname{Re}z\ge0$ are seen.
-- **Decay exponent** $b^*=\sup\{b:\int F^2e^{-bu}<\infty\}$; **holomorphy abscissa** $\kappa^*$ of $\mathcal LF$.
+- **Decay exponent** $b^*=\sup\{b:\int F^2e^{-bu}<\infty\}$; **holomorphy abscissa** $\kappa^*$ of $\mathcal LF$. By the decay law $b^*=17-2\Theta$ and $\kappa^*=\Theta-\tfrac{17}2$.
 - **Critical ratio** of $Q_R$: a ratio where a null direction appears; **index** at $R$: the largest
   orthonormal family in the nonpositive cone.
 - **Soft property**: holds for the states of every symmetric configuration. **Arithmetic property**:
@@ -164,7 +164,33 @@ so nothing is lost between stages.
    $\sigma>\tfrac14+\tfrac\kappa2$, where the Gamma energy pays the logarithm of $|N|^2$. In the weak equation
    tested on $\psi_NF$, $\psi_N=e^{-2c\max(u,-N)}$, $c=4-\sigma$, the forward term is absorbed because
    $\psi_Ne^{-2\sigma v}\le e^{-8v}$; the commutator and the backward halves are moments below the barrier.
-   So $\int\psi_NF^2e^{-8u}$ is bounded in $N$ and $b^*\ge\tfrac{31}2-\kappa$.
+   So $\int\psi_NF^2e^{-8u}$ is bounded in $N$ and $b^*\ge\tfrac{31}2-\kappa$. The bound uses only the mass of the wave on
+   the line and the moment $\int F^2e^{-(16-4\sigma)u}$.
+20. **Logarithmic energies interpolate between vertical lines.** For a Hardy function $G$ of the right
+   half-plane, $E_k(\sigma)=\int\log^k(|t|+4)|G(\sigma+it)|^2dt$ is finite on convex combinations of
+   $(\sigma_0,k_0)$, $(\sigma_1,k_1)$, $0\le k_j\le2$. The window $(w+2+iT)^{-2}$ keeps the Hardy class and
+   localizes at height $-T$; for the windowed function Plancherel on a line is $\int_0^\infty|h(x)|^2e^{-2\sigma x}dx$, $h$ its Paley–Wiener datum,
+   log-convex in $\sigma$ by Hölder; integrating over $T$ against $\log^k(|T|+4)$ (Hölder in $T$, Tonelli)
+   restores the weight, since $\int\log^k(|T|+4)\,|t+T+i(\sigma+2)|^{-4}dT\asymp\log^k(|t|+4)$.
+21. **The state equation on the zero-free strip.** If $\int F^2e^{-bu}<\infty$, the continuation equals the
+   transform on $\operatorname{Re}w>\max(\kappa-8,-\tfrac b2)$ (identity theorem), and on
+   $\kappa<\operatorname{Re}p<\tfrac12$, $16-b<2\operatorname{Re}p$:
+   $\mathcal LF(p)\,A(p)=-a\,\mathcal LF(p-8)-J_G(p-2)+T_F(p)-\mathcal LF(-\tfrac12)/(p+\tfrac12)$ with
+   $A=2\theta'(0)+g+N(\tfrac12+\cdot)-1/(\cdot-\tfrac12)$, $G=e^{2\min(u,0)}F$ and $T_F$ the prime tail: the first
+   mode of the head term cancels the pole of the difference quotient at $\tfrac12$. Under the Lévy measure
+   $2-2\cosh(sx)\cos(tx)\ge(2-2\cos tx)+(2-2\cosh sx)$, so
+   $\operatorname{Re}(2\theta'(0)+g(s+it))\ge2\theta'(t)+g(s)\ge\log(|t|+4)-C$; $N$ is sublogarithmic; hence
+   $|A(s+it)|\ge\tfrac12\log(|t|+4)-K$. Every term on the right is square integrable on the line (Plancherel
+   under the decay, the head term as a Hardy function, the prime tail by Cauchy–Schwarz over $n$ and
+   Plancherel for the truncated profiles). So $E_2(s)<\infty$ for $b>16-2s$: two logarithms on the lines of
+   decay, one more than the Gamma energy.
+22. **Descent of the abscissa of decay.** $P(\sigma)$: $\int F^2e^{-bu}<\infty$ for all $b<16-2\sigma$. Given
+   $P(\sigma)$ and $\kappa<s<\sigma<\tfrac12$: two logarithms on a line slightly right of $\sigma$, one on
+   $\operatorname{Re}p=0$, hence $1+s/\sigma^+$ on $\operatorname{Re}p=s$ by interpolation, against the cost
+   $2\theta\to2(\tfrac12-s)/(\tfrac12-\kappa)$ of $|N|^2$. If $(\tfrac12+\kappa)\sigma<s(\tfrac12-\kappa+2\sigma)$ the mass of
+   the wave on $\operatorname{Re}p=s$ is finite, and if $\sigma<2s$ the moment $16-4s$ lies below $16-2\sigma$; the Agmon
+   bound gives $P(s)$. Admissible $s<\sigma$ exist whenever $\sigma>\kappa$, so the infimum of the abscissae with
+   $P(\sigma)$ is $\kappa$: $P(\kappa)$ holds, and with the ruler the decay rate is $17-2\Theta$.
 
 ## 5. Questions
 
@@ -173,7 +199,7 @@ so nothing is lost between stages.
 | Q1 | Probe kernel $B(e_p,e_q)=\frac{D(p)+D(q)}{p+q}$ and its zero side | answered (Lean) |
 | Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | partial (Lean): probe and heated zero-side identities; at the state, against every smooth test, with Gaussian summation against every profile of $\mathcal H$, and absolutely against tilt-regular profiles; $(\star)$ as a one-point identity with square-summable zero values; two general profiles open |
 | Q3 | State equation, continuation, residues | answered (Lean): global meromorphic continuation, exact residues and uniform left decay |
-| Q4 | Decay law | partial (Lean): divergent law, left Hardy bounds, averaged/heated decay, and the unaveraged law up to one logarithm on the transform side: $\int\lvert\mathcal LF(\sigma-8+it)\rvert^2\,dt/\log(\lvert t\rvert+4)\lesssim\sum_z\lvert\mathcal LF(z)\rvert^2$ on every line right of the transported zeros; the barrier $b=15$ is passed: $\int F^2e^{-bu}<\infty$ for $b<\tfrac{31}2-\kappa$ when the centred zeros have $\operatorname{Re}z\le\kappa$, unconditionally for $b<15+\tfrac{3001}{24000}$; the sharp exponent $16-2\kappa$ open |
+| Q4 | Decay law | answered (Lean): for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $\int F^2e^{-bu}<\infty$ for every $b<16-2\kappa$; the decay rate is $b^*=17-2\Theta$, $\Theta$ the supremum of the real parts of the zeros; unconditionally $\int F^2e^{-bu}<\infty$ for $b<15+\tfrac{3001}{12000}$. Also in Lean: left Hardy bounds, averaged/heated decay, and the transform side: $\mathcal LF$ converges exactly on $\operatorname{Re}w>\Theta-\tfrac{17}2$, with $(\star)$ at every point and Plancherel on every line. Open: the endpoint $b=b^*$ and pointwise decay |
 | Q5 | Sign law | answered (Lean): one sign on no ray |
 | Q6 | Index law | $\zeta$: finite index at every ratio (Lean); exact count of critical ratios open |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH |
@@ -213,10 +239,14 @@ a right half-plane; the analytic logarithmic weight and the weighted Hilbert ine
 over the zeros. The regular part of $\zeta'/\zeta$ with its logarithmic and Phragmén–Lindelöf bounds and the
 Euler sum $\sum\Lambda(n)n^{-1/2-p}=1/(p-\tfrac12)-N(\tfrac12+p)$; the Hardy-space calculus of the forward
 prime-minus-pole wave; the splitting of the prime and pole forms into forward and backward halves; the
-Agmon commutator with moments below the barrier.
+Agmon commutator, and the Agmon bound from the mass of the wave on one line and one moment.
+Logarithmic energies of Hardy functions on vertical lines and their interpolation (windows
+$(w+2+iT)^{-2}$, Plancherel on lines, Hölder); the state equation on the zero-free part of the strip, its
+multiplier and the lower bound $\tfrac12\log-K$; square integrability on vertical lines of the head term, of
+the prime tail and of the transform under decay; the descent of the abscissa of decay by an infimum.
 
-**To build.** The bootstrap from $b<\tfrac{31}2-\kappa$ to the sharp exponent $16-2\kappa$ (logarithmic energies of the damped state on vertical lines from the state equation, their interpolation, and the Agmon bound with the improved moments); the exact critical-ratio count; the leading asymptotics of
-$JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula); the removal of the logarithm from the line bound and its transfer to weighted decay of the state; $F^+$ in prime form (the remainder of the prime number theorem averaged by $F$)
+**To build.** The endpoint moment $b=17-2\Theta$ and pointwise decay of the state; the exact critical-ratio count; the leading asymptotics of
+$JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula); $F^+$ in prime form (the remainder of the prime number theorem averaged by $F$)
 and its comparison with $e^{-8u}F$ at the wall.
 
 ## 7. Pillar theorems
@@ -261,7 +291,11 @@ and its comparison with $e^{-8u}F$ at the wall.
 | Weighted Hilbert inequality on the zeros without separation: $\int\lvert\sum_zc_z/(\sigma+it-z)\rvert^2\tfrac{dt}{\log(\lvert t\rvert+4)}\le\tfrac{160\pi D(\lvert C_0\rvert+2)}\delta\sum_z\lvert c_z\rvert^2$ for $\delta\le\sigma-\operatorname{Re}z\le D$; the continuation of the state lies in $L^2(dt/\log)$ on every line right of the transported zeros, unconditionally for $\operatorname{Re}w>-8+\tfrac{8999}{24000}$ | `integrable_and_integral_norm_sq_tsum_zeroCauchy_le`, `criticalState_integral_norm_sq_stateMeromorphic_line_le_of_abscissa`, `criticalState_integral_norm_sq_stateMeromorphic_line_le_seed` | unconditional |
 | The regular part of $\zeta'/\zeta$ is sublogarithmic right of the zeros: $\lvert N(s_0+iT)\rvert\le C\log^{(b-s_0)/(b-a)}(\lvert T\rvert+4)$; $\lvert N\rvert^2\lesssim\log$ on $\operatorname{Re}s>\tfrac34+\tfrac\kappa2$, unconditionally on $\operatorname{Re}s>\tfrac{44999}{48000}$ | `exists_norm_zetaRegularLogDeriv_le_rpow`, `exists_norm_sq_zetaRegularLogDeriv_line_le_log`, `exists_norm_sq_zetaRegularLogDeriv_line_le_log_seed`, `tsum_vonMangoldtAtom_mul_cexp_neg` | unconditional |
 | The forward prime-minus-pole wave is bounded in mean square: $(\text{forward prime}-\text{forward pole})(F,G)^2\le\tfrac1{2\pi}\int\lvert N(\tfrac12+\sigma+it)\rvert^2\lvert\mathcal LF(\sigma+it)\rvert^2dt\cdot\int G^2e^{-2\sigma v}$ on every line right of the zeros; the mass is finite for $\sigma>\tfrac14+\tfrac\kappa2$ | `isHalfPlaneHardy_primeWaveHardy`, `sq_forwardPrimeForm_sub_forwardPoleForm_le`, `integrable_norm_sq_zetaRegularLogDeriv_mul_laplace` | unconditional |
-| The state decays past the barrier: $\int F^2e^{-bu}<\infty$ for every $b<\tfrac{31}2-\kappa$ when the centred zeros have $\operatorname{Re}z\le\kappa$; unconditionally for $b<15+\tfrac{3001}{24000}$ | `integrable_sq_mul_exp_of_zero_abscissa`, `integrable_sq_mul_exp_past_barrier` | unconditional |
+| The Agmon bound: if the wave has finite mass on $\operatorname{Re}p=\sigma$, $\kappa<\sigma<1$, and $\int F^2e^{-(16-4\sigma)u}<\infty$, then $\int F^2e^{-(16-2\sigma)u}<\infty$; a priori for $\sigma>\tfrac14+\tfrac\kappa2$, so $\int F^2e^{-bu}<\infty$ for $b<\tfrac{31}2-\kappa$ | `integrable_sq_mul_exp_of_line_mass`, `integrable_sq_mul_exp_of_zero_abscissa` | unconditional |
+| Logarithmic energies interpolate between vertical lines: for a Hardy function $G$ of the right half-plane, $\int\log^k(\lvert t\rvert+4)\lvert G(\sigma+it)\rvert^2dt<\infty$ at $(\sigma_0,k_0)$ and $(\sigma_1,k_1)$, $0\le k_j\le2$, gives it at every convex combination | `integrable_log_rpow_mul_norm_sq_line_interp`, `lintegral_norm_sq_line_interp` | unconditional |
+| The state equation on the zero-free strip: under $\int F^2e^{-bu}<\infty$, $\mathcal LF(p)A(p)=-a\mathcal LF(p-8)-J_G(p-2)+T_F(p)-\mathcal LF(-\tfrac12)/(p+\tfrac12)$ on $\kappa<\operatorname{Re}p<\tfrac12$, $16-b<2\operatorname{Re}p$; $\lvert A(s+it)\rvert\ge\tfrac12\log(\lvert t\rvert+4)-K$; $\int\log^2(\lvert t\rvert+4)\lvert\mathcal LF(s+it)\rvert^2dt<\infty$ for $b>16-2s$ | `laplace_mul_stripMultiplier_eq`, `exists_half_log_sub_le_norm_stripMultiplier`, `integrable_log_sq_mul_norm_sq_laplace_line` | unconditional |
+| The decay law: for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $\int F^2e^{-bu}<\infty$ for every $b<16-2\kappa$; $\sup\{b:\int F^2e^{-bu}<\infty\}=17-2\Theta$; unconditionally $b<15+\tfrac{3001}{12000}$ | `forall_re_centredZero_le_iff_integrable_sq_mul_exp`, `isLUB_integrable_sq_mul_exp`, `integrable_sq_mul_exp_of_zero_abscissa_sharp`, `integrable_sq_mul_exp_seed` | unconditional |
+| The transform converges exactly right of the transported zeros: for $0\le\kappa\le1$, the centred zeros lie in $\operatorname{Re}z\le\kappa$ iff $\mathcal LF$ is holomorphic on $\operatorname{Re}w>\kappa-8$; there the continuation is the transform, $a\mathcal LF(w)=-\sum_z\mathcal LF(z)/(w+8-z)$, and $\int\lvert\mathcal LF(\sigma+it)\rvert^2dt=2\pi\int F^2e^{2\sigma u}du$; the state equation and two logarithms hold on all of $\kappa<\operatorname{Re}p<\tfrac12$ | `forall_re_centredZero_le_iff_differentiableOn_laplace`, `stateMeromorphic_eq_laplace_right_of_zeros`, `criticalState_hasSum_starEquation_right_of_zeros`, `integral_norm_sq_stateMeromorphic_line_right_of_zeros`, `laplace_mul_stripMultiplier_eq_right_of_zeros`, `integrable_log_sq_mul_norm_sq_laplace_line_right_of_zeros` | unconditional |
 
 ## 8. Traps
 
@@ -280,9 +314,10 @@ and its comparison with $e^{-8u}F$ at the wall.
 | Continuation past the strip needs the explicit formula | Left of the strip the Euler parts cancel; the remainder is head term, prime heads and charges |
 | $(\star)$ needs bounds for $\zeta'/\zeta$ on horizontal segments of the strip | Pole removal and Liouville use linear growth of the pairings and $\sum_z\lvert z\rvert^{-2}<\infty$ only |
 | $\sum_z\mathcal LG(z)/(p-z)$ converges for $G\in\mathcal H$ | For a general profile the values are bounded and the sum needs one subtraction; for the state and for tilt-regular profiles the values are square-summable and the sum converges absolutely |
-| The convergent half of the decay law is a line shift of $(\star)$ | No pointwise decay on vertical lines is known; the shift works after averaging, and unaveraged the lines carry $L^2(dt/\log)$ |
+| The convergent half of the decay law is a line shift of $(\star)$ | No pointwise decay on vertical lines is known, and the Hilbert inequality on the zeros gives only $L^2(dt/\log)$. The lines right of the transported zeros carry $L^2(dt)$ as a consequence of the decay law, which is proved in time by the Agmon bound |
 | A Hilbert inequality for $\sum_zc_z/(w-z)$ needs separated zeros | The unit-window count suffices at the price of one logarithm; a cluster of $N$ zeros loses a factor of order $N$, so the count alone cannot remove the weight |
-| The barrier $b=15$ of the comparison argument is the decay rate of the state | It is the price of absolute values in the forward prime sum; the forward prime and pole waves cancel to $-N\mathcal LF$, and $b^*\ge\tfrac{31}2-\kappa$ |
+| The barrier $b=15$ of the comparison argument is the decay rate of the state | It is the price of absolute values in the forward prime sum; the forward prime and pole waves cancel to $-N\mathcal LF$, and $b^*=17-2\Theta$ |
+| One Agmon step reaches the zeros | From the abscissa $\sigma$ a step reaches only $s$ with $(\tfrac12+\kappa)\sigma<s(\tfrac12-\kappa+2\sigma)$ and $\sigma<2s$: the mass of the wave on the new line is paid by interpolating two logarithms at $\sigma$ with one on the critical line; the abscissa reaches $\kappa$ as an infimum |
 | $F(u)=-a^{-1}e^{8u}\sum_z\mathcal LF(z)e^{-zu}$ pointwise | The series is a distribution on the line; heated it converges absolutely, and left of the wall it differs from the state by the prime side behind a Gaussian |
 
 ## 9. Context
@@ -297,7 +332,7 @@ and its comparison with $e^{-8u}F$ at the wall.
 | ArithmeticOrientationGeometry | orientation index = seen right zeros |
 | FrustratedArithmeticDirichletForms | frustration of the even sector |
 | BlackHoleRingdown, SelbergClass, HTGeometry | prime-two deformations, positive twins, Euler-log positivity (O11) |
-| MetaplecticMobiusDescent | the seed $\Theta\le20999/24000$: decay exponent at most $183001/12000$ |
+| MetaplecticMobiusDescent | the seed $\Theta\le20999/24000$: decay rate $17-2\Theta\ge183001/12000$ |
 
 ## 10. Success criteria and contributions
 
@@ -328,8 +363,9 @@ shown incompatible. In time this is one series: $\sum_z\mathcal LF(z)e^{-zu}$ is
 and $a\,F^+(u)$ beyond it. Paired with the state itself the series gives $-a\int F^2e^{-8u}<0$: the zero values
 form a negative vector of the zero pairing, and the zeros on the line contribute nonnegative terms.
 The zero values are square-summable, so the Cauchy system is an equation in $\ell^2$ of the zeros: $(\star)$
-holds at one point with an absolutely convergent sum, and on every vertical line right of the transported
-zeros the continuation is square-integrable up to one logarithm, with norm bounded by the square sum of
-the zero values. The state itself decays faster than the comparison barrier allows: the forward prime
-sum and the pole wave cancel to the regular part of $\zeta'/\zeta$, and $b^*\ge\tfrac{31}2-\kappa$ against the
-ruler's $b^*\le16-2\kappa$.
+holds at every point right of the transported zeros with an absolutely convergent sum, and on every
+vertical line there the continuation is the transform and is square integrable:
+$\int|\mathcal LF(\sigma+it)|^2dt=2\pi\int F^2e^{2\sigma u}du$. The state itself decays exactly at the rate of the zeros: the forward prime
+sum and the pole wave cancel to the regular part of $\zeta'/\zeta$, the state equation gives the transform
+two logarithms on the lines of decay, and the abscissa of decay descends to the zeros:
+$\sup\{b:\int F^2e^{-bu}<\infty\}=17-2\Theta$.

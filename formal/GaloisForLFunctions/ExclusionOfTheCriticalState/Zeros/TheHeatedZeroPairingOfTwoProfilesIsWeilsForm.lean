@@ -128,6 +128,7 @@ theorem laplace_stateHeatKernel {ε : ℝ} (hε : 0 < ε) (w : ℂ) :
   have e4 : (0 : ℂ) - w ^ 2 / (4 * ((-(1 / (4 * ε)) : ℝ) : ℂ)) = (ε : ℂ) * w ^ 2 := by
     push_cast
     field_simp
+    ring
   have e5 : A * Real.sqrt (4 * Real.pi * ε) = 1 := by
     rw [hA, mul_assoc, ← Real.sqrt_mul (by positivity),
       show Real.pi / ε * (4 * Real.pi * ε) = (2 * Real.pi) ^ 2 by field_simp; ring,
@@ -145,9 +146,10 @@ theorem integrable_stateHeatKernel_mul_exp_abs {ε : ℝ} (hε : 0 < ε) (c : �
   refine ((integrable_tiltedHeatKernel hε c).add (integrable_tiltedHeatKernel hε (-c))).mono'
     ((continuous_stateHeatKernel ε).mul (by fun_prop)).aestronglyMeasurable
     (Eventually.of_forall fun y => ?_)
-  unfold tiltedHeatKernel
-  rw [Real.norm_of_nonneg (mul_nonneg (stateHeatKernel_pos hε y).le (Real.exp_pos _).le),
-    ← mul_add]
+  rw [Real.norm_of_nonneg (mul_nonneg (stateHeatKernel_pos hε y).le (Real.exp_pos _).le)]
+  show stateHeatKernel ε y * Real.exp (c * |y|) ≤
+    stateHeatKernel ε y * Real.exp (c * y) + stateHeatKernel ε y * Real.exp (-c * y)
+  rw [← mul_add]
   refine mul_le_mul_of_nonneg_left ?_ (stateHeatKernel_pos hε y).le
   rcases le_total 0 y with hy | hy
   · rw [abs_of_nonneg hy]; linarith [Real.exp_pos (-c * y)]
@@ -163,21 +165,20 @@ theorem integral_stateHeatKernel_mul_exp_four_le {ε : ℝ} (hε : 0 < ε) :
     have h2 : ((∫ u, stateHeatKernel ε u * Real.exp (c * u) : ℝ) : ℂ) =
         ((Real.exp (ε * c ^ 2) : ℝ) : ℂ) := by rw [h]; push_cast; ring_nf
     exact_mod_cast h2
+  have i4 : Integrable fun y => stateHeatKernel ε y * Real.exp (4 * y) :=
+    integrable_tiltedHeatKernel hε 4
+  have i4' : Integrable fun y => stateHeatKernel ε y * Real.exp (-4 * y) :=
+    integrable_tiltedHeatKernel hε (-4)
   calc ∫ y, stateHeatKernel ε y * Real.exp (4 * |y|)
       ≤ ∫ y, (stateHeatKernel ε y * Real.exp (4 * y) + stateHeatKernel ε y * Real.exp (-4 * y)) := by
-        refine integral_mono (integrable_stateHeatKernel_mul_exp_abs hε 4)
-          ((integrable_tiltedHeatKernel hε 4).add (integrable_tiltedHeatKernel hε (-4))) fun y => ?_
+        refine integral_mono (integrable_stateHeatKernel_mul_exp_abs hε 4) (i4.add i4') fun y => ?_
         rw [← mul_add]
         refine mul_le_mul_of_nonneg_left ?_ (stateHeatKernel_pos hε y).le
         rcases le_total 0 y with hy | hy
         · rw [abs_of_nonneg hy]; linarith [Real.exp_pos (-4 * y)]
         · rw [abs_of_nonpos hy, show 4 * -y = -4 * y by ring]; linarith [Real.exp_pos (4 * y)]
     _ = 2 * Real.exp (16 * ε) := by
-        rw [integral_add (integrable_tiltedHeatKernel hε 4) (integrable_tiltedHeatKernel hε (-4))]
-        have h1 := hl 4
-        have h2 := hl (-4)
-        unfold tiltedHeatKernel at *
-        rw [h1, h2]
+        rw [integral_add i4 i4', hl 4, hl (-4)]
         ring_nf
 
 theorem hasDerivAt_stateHeatKernel (ε y : ℝ) :
@@ -186,7 +187,7 @@ theorem hasDerivAt_stateHeatKernel (ε y : ℝ) :
     ((2 * Real.pi)⁻¹ * Real.sqrt (Real.pi / ε))
   refine h.congr_deriv ?_
   unfold stateHeatKernel
-  simp only [Nat.cast_ofNat, show (2 : ℕ) - 1 = 1 from rfl, pow_one]
+  simp only [Pi.neg_apply, Nat.cast_ofNat, show (2 : ℕ) - 1 = 1 from rfl, pow_one]
   ring
 
 /-- The derivative `k_ε' = −(y/2ε) k_ε` of the heat kernel. -/
@@ -235,10 +236,10 @@ theorem contDiff_plateau₂ : ContDiff ℝ ∞ plateau₂ := by
 theorem one_le_infty : (1 : WithTop ℕ∞) ≤ ∞ := WithTop.coe_le_coe.mpr le_top
 
 theorem hasDerivAt_plateau (y : ℝ) : HasDerivAt plateau (plateau₁ y) y :=
-  ((contDiff_plateau.differentiable one_le_infty) y).hasDerivAt
+  ((contDiff_plateau.differentiable (by simp)) y).hasDerivAt
 
 theorem hasDerivAt_plateau₁ (y : ℝ) : HasDerivAt plateau₁ (plateau₂ y) y :=
-  ((contDiff_plateau₁.differentiable one_le_infty) y).hasDerivAt
+  ((contDiff_plateau₁.differentiable (by simp)) y).hasDerivAt
 
 theorem hasCompactSupport_plateau₁ : HasCompactSupport plateau₁ := hasCompactSupport_plateau.deriv
 
@@ -360,7 +361,7 @@ theorem laplace_eq_of_hasDerivAt {u u' : ℝ → ℝ} (hu : ∀ y, HasDerivAt u 
   have hV : ∀ y : ℝ, HasDerivAt (fun x : ℝ => w⁻¹ * cexp (w * x)) (cexp (w * y)) y := fun y => by
     have h := ((((hasDerivAt_id y).ofReal_comp).const_mul w).cexp).const_mul w⁻¹
     refine h.congr_deriv ?_
-    simp only [id, mul_one]
+    simp only [id, Complex.ofReal_one, mul_one]
     field_simp
   have hU : ∀ y : ℝ, HasDerivAt (cx u) (cx u' y) y := fun y => (hu y).ofReal_comp
   have hcU : HasCompactSupport (cx u) := hcs.comp_left Complex.ofReal_zero
@@ -393,7 +394,6 @@ theorem laplace_cutHeatKernel_eq (ε : ℝ) (k : ℕ) {w : ℂ} (hw : w ≠ 0) :
     laplace_eq_of_hasDerivAt (hasDerivAt_cutHeatKernel₁ ε k) (continuous_cutHeatKernel₁ ε k)
       (hasCompactSupport_cutHeatKernel₁ ε k) (continuous_cutHeatKernel₂ ε k)
       (hasCompactSupport_cutHeatKernel₂ ε k) hw]
-  rw [inv_pow]
   ring
 
 /-- A pointwise Gaussian majorant for the second derivative of the cut kernels, uniform in `k`. -/
@@ -406,8 +406,8 @@ theorem exists_cutHeatKernel₂_majorant {ε : ℝ} (hε : 0 < ε) :
     hasCompactSupport_plateau₂
   have hA₁0 : 0 ≤ A₁ := (norm_nonneg _).trans (hA₁ 0)
   have hA₂0 : 0 ≤ A₂ := (norm_nonneg _).trans (hA₂ 0)
-  set A : ℝ := (2 * Real.pi)⁻¹ * Real.sqrt (Real.pi / ε)
-  have hA0 : 0 ≤ A := by positivity
+  obtain ⟨A, hA⟩ : ∃ A : ℝ, A = (2 * Real.pi)⁻¹ * Real.sqrt (Real.pi / ε) := ⟨_, rfl⟩
+  have hA0 : 0 ≤ A := by rw [hA]; positivity
   set C₀ : ℝ := 1 / (2 * ε) + 1 / (4 * ε ^ 2) + A₁ / ε + A₂
   have hC₀ : 0 ≤ C₀ := by positivity
   refine ⟨A * Real.exp (ε / 2) * C₀ * (1 + 16 * ε), fun k y => ?_⟩
@@ -479,8 +479,8 @@ theorem exists_cutHeatKernel₂_majorant {ε : ℝ} (hε : 0 < ε) :
           nlinarith
   -- the Gaussian factor
   have hgauss : g * Real.exp (|y| / 2) ≤ A * Real.exp (ε / 2) * Real.exp (-(1 / (8 * ε)) * y ^ 2) := by
-    show A * Real.exp (-(y ^ 2 / (4 * ε))) * Real.exp (|y| / 2) ≤ _
-    rw [mul_assoc, mul_assoc, ← Real.exp_add, ← Real.exp_add]
+    have hk : g = A * Real.exp (-(y ^ 2 / (4 * ε))) := by rw [hA]; rfl
+    rw [hk, mul_assoc, mul_assoc, ← Real.exp_add, ← Real.exp_add]
     refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hA0
     have hsq : 0 ≤ (|y| - 2 * ε) ^ 2 / (8 * ε) := by positivity
     have e : -(y ^ 2 / (4 * ε)) + |y| / 2 =
@@ -735,9 +735,9 @@ theorem abs_profileCorr_le {F G : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomai
   set f : ℝ → ℝ := fun t => |F t| * Real.exp (-(4 * t))
   set g : ℝ → ℝ := fun t => |G (t - s)| * Real.exp (-(4 * (t - s)))
   have hf2 : ∀ t, f t ^ 2 = F t ^ 2 * Real.exp (-(8 * t)) := fun t => by
-    simp only [f]; rw [mul_pow, sq_abs, sq, ← Real.exp_add]; congr 2; ring
+    simp only [f]; rw [mul_pow, sq_abs, ← Real.exp_nat_mul]; congr 2; push_cast; ring
   have hg2 : ∀ t, g t ^ 2 = G (t - s) ^ 2 * Real.exp (-(8 * (t - s))) := fun t => by
-    simp only [g]; rw [mul_pow, sq_abs, sq, ← Real.exp_add]; congr 2; ring
+    simp only [g]; rw [mul_pow, sq_abs, ← Real.exp_nat_mul]; congr 2; push_cast; ring
   have hfm : AEStronglyMeasurable f volume :=
     ((continuous_abs.measurable.comp hF.meas).mul (by fun_prop)).aestronglyMeasurable
   have hgm : AEStronglyMeasurable g volume :=
@@ -753,7 +753,7 @@ theorem abs_profileCorr_le {F G : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomai
     · rw [hF.support t h1, zero_mul, abs_zero]; positivity
     by_cases h2 : 0 ≤ t - s
     · rw [hGs _ h2, mul_zero, abs_zero]; positivity
-    push_neg at h1 h2
+    push Not at h1 h2
     simp only [f, g]
     rw [abs_mul]
     have he : Real.exp (-(4 * |s|)) * (|F t| * Real.exp (-(4 * t)) *
@@ -835,7 +835,36 @@ theorem tendsto_profileCorr_leftCut {F G : ℝ → ℝ} (hF : CriticalHalfLineEn
       rw [Real.norm_eq_abs, abs_mul]
       exact mul_le_mul_of_nonneg_left (abs_leftCut_le G k _) (abs_nonneg _))
     (Eventually.of_forall fun t => tendsto_const_nhds.congr'
-      ((leftCut_eventually_eq G (t - s)).mono fun k hk => by rw [hk]))
+      ((leftCut_eventually_eq G (t - s)).mono fun k hk => by simp only [hk]))
+
+theorem continuous_profileCorr {F G : ℝ → ℝ} (hFm : Measurable F) (hGm : Measurable G)
+    (hF2 : Integrable fun t => F t ^ 2) (hG2 : Integrable fun t => G t ^ 2) :
+    Continuous (profileCorr F G) := by
+  have h := continuous_profileCorrelation (p := cx F) (q := cx G)
+    (Complex.measurable_ofReal.comp hFm) (Complex.measurable_ofReal.comp hGm)
+    (by simpa [cx, Complex.norm_real, Real.norm_eq_abs, sq_abs] using hF2)
+    (by simpa [cx, Complex.norm_real, Real.norm_eq_abs, sq_abs] using hG2)
+  have e : profileCorr F G = fun s => (profileCorrelation (cx F) (cx G) (-s)).re := by
+    funext s
+    unfold profileCorr profileCorrelation
+    rw [show (∫ T, cx F T * cx G (T + -s)) = ((∫ t, F t * G (t - s) : ℝ) : ℂ) by
+      rw [← integral_complex_ofReal]
+      exact integral_congr_ae (Eventually.of_forall fun t => by
+        simp only [cx, sub_eq_add_neg]; push_cast; ring)]
+    rw [Complex.ofReal_re]
+  rw [e]
+  exact Complex.continuous_re.comp (h.comp continuous_neg)
+
+theorem measurable_profileCorr_leftCut {F G : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
+    (hG : CriticalHalfLineEnergyDomain G) (k : ℕ) (s : ℝ) :
+    Measurable fun y => profileCorr F (leftCut G k) (s + y) := by
+  have hG2 : Integrable fun t => leftCut G k t ^ 2 :=
+    hG.sq.mono' ((measurable_leftCut hG.meas k).pow_const 2).aestronglyMeasurable
+      (Eventually.of_forall fun u => by
+        rw [Real.norm_of_nonneg (sq_nonneg _), ← sq_abs, ← sq_abs (G u)]
+        exact pow_le_pow_left₀ (abs_nonneg _) (abs_leftCut_le G k u) 2)
+  exact ((continuous_profileCorr hF.meas (measurable_leftCut hG.meas k) hF.sq hG2).comp
+    (continuous_const.add continuous_id)).measurable
 
 /-! ### The prime side of the heated tests -/
 
@@ -853,12 +882,14 @@ theorem integral_mul_heatedCut (ε : ℝ) {F G : ℝ → ℝ} (hF : CriticalHalf
         ((measurable_fst.sub_const s).sub measurable_snd)))).aestronglyMeasurable
   have hΦ : Integrable Φ (volume.prod volume) := by
     refine (integrable_prod_iff hΦm).mpr ⟨Eventually.of_forall fun t => ?_, ?_⟩
-    · refine (((integrable_leftCut hG k).comp_sub_left (t - s)).const_mul (B * |F t|)).mono'
-        (((continuous_cutHeatKernel ε k).measurable.mul ((measurable_leftCut hG.meas k).comp
-          (measurable_const.sub measurable_id))).const_mul _).aestronglyMeasurable
+    · have hml := measurable_leftCut hG.meas k
+      have hmk := (continuous_cutHeatKernel ε k).measurable
+      refine (((integrable_leftCut hG k).comp_sub_left (t - s)).abs.const_mul (B * |F t|)).mono'
+        (by fun_prop : Measurable fun y => F t * (cutHeatKernel ε k y *
+          leftCut G k (t - s - y))).aestronglyMeasurable
         (Eventually.of_forall fun y => ?_)
       simp only [Φ]
-      rw [Real.norm_eq_abs, abs_mul, abs_mul, Real.norm_eq_abs]
+      rw [Real.norm_eq_abs, abs_mul, abs_mul]
       have := hB y
       rw [Real.norm_eq_abs] at this
       calc |F t| * (|cutHeatKernel ε k y| * |leftCut G k (t - s - y)|)
@@ -884,7 +915,7 @@ theorem integral_mul_heatedCut (ε : ℝ) {F G : ℝ → ℝ} (hF : CriticalHalf
         _ = B * |F t| * ∫ y, |leftCut G k (t - s - y)| := integral_const_mul _ _
         _ = B * |F t| * ∫ u, |leftCut G k u| := by
             congr 1
-            exact integral_sub_left_eq_self (fun u => |leftCut G k u|) (t - s)
+            exact integral_sub_left_eq_self (fun u => |leftCut G k u|) volume (t - s)
         _ = B * (∫ u, |leftCut G k u|) * ‖F t‖ := by rw [Real.norm_eq_abs]; ring
   have hswap := integral_integral_swap (f := fun t y => Φ (t, y)) hΦ
   have hL : ∫ t, F t * heatedCut ε G k (t - s) = ∫ t, ∫ y, Φ (t, y) := by
@@ -976,44 +1007,17 @@ theorem tendsto_cutHeatAverage {ε : ℝ} (hε : 0 < ε) {F G : ℝ → ℝ}
   refine tendsto_integral_of_dominated_convergence (fun y => stateHeatKernel ε y * corrConst F G)
     (fun k => ((continuous_cutHeatKernel ε k).measurable.mul
       (measurable_profileCorr_leftCut hF hG k s)).aestronglyMeasurable)
-    ((integrable_stateHeatKernel_mul_exp_abs hε 0).mul_const _ |>.congr
-      (Eventually.of_forall fun y => by simp))
+    (((integrable_tiltedHeatKernel hε 0).congr (Eventually.of_forall fun y => by
+      simp [tiltedHeatKernel])).mul_const _)
     (fun k => Eventually.of_forall fun y => ?_)
     (Eventually.of_forall fun y => (tendsto_cutHeatKernel ε y).mul
       (tendsto_profileCorr_leftCut hF hG (s + y)))
   rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (cutHeatKernel_nonneg hε k y)]
   refine mul_le_mul (cutHeatKernel_le hε k y) ((abs_profileCorr_leftCut_le hF hG k (s + y)).trans ?_)
     (abs_nonneg _) (stateHeatKernel_pos hε y).le
-  exact mul_le_of_le_one_left (corrConst_nonneg F G) (Real.exp_le_one_iff.mpr (by positivity))
+  exact mul_le_of_le_one_left (corrConst_nonneg F G)
+    (Real.exp_le_one_iff.mpr (neg_nonpos.mpr (by positivity)))
 
-theorem continuous_profileCorr {F G : ℝ → ℝ} (hFm : Measurable F) (hGm : Measurable G)
-    (hF2 : Integrable fun t => F t ^ 2) (hG2 : Integrable fun t => G t ^ 2) :
-    Continuous (profileCorr F G) := by
-  have h := continuous_profileCorrelation (p := cx F) (q := cx G)
-    (Complex.measurable_ofReal.comp hFm) (Complex.measurable_ofReal.comp hGm)
-    (by simpa [cx, Complex.norm_real, Real.norm_eq_abs, sq_abs] using hF2)
-    (by simpa [cx, Complex.norm_real, Real.norm_eq_abs, sq_abs] using hG2)
-  have e : profileCorr F G = fun s => (profileCorrelation (cx F) (cx G) (-s)).re := by
-    funext s
-    unfold profileCorr profileCorrelation
-    rw [show (∫ T, cx F T * cx G (T + -s)) = ((∫ t, F t * G (t - s) : ℝ) : ℂ) by
-      rw [← integral_complex_ofReal]
-      exact integral_congr_ae (Eventually.of_forall fun t => by
-        simp only [cx, sub_eq_add_neg]; push_cast; ring)]
-    rw [Complex.ofReal_re]
-  rw [e]
-  exact Complex.continuous_re.comp (h.comp continuous_neg)
-
-theorem measurable_profileCorr_leftCut {F G : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
-    (hG : CriticalHalfLineEnergyDomain G) (k : ℕ) (s : ℝ) :
-    Measurable fun y => profileCorr F (leftCut G k) (s + y) := by
-  have hG2 : Integrable fun t => leftCut G k t ^ 2 :=
-    hG.sq.mono' ((measurable_leftCut hG.meas k).pow_const 2).aestronglyMeasurable
-      (Eventually.of_forall fun u => by
-        rw [Real.norm_of_nonneg (sq_nonneg _), ← sq_abs, ← sq_abs (G u)]
-        exact pow_le_pow_left₀ (abs_nonneg _) (abs_leftCut_le G k u) 2)
-  exact ((continuous_profileCorr hF.meas (measurable_leftCut hG.meas k) hF.sq hG2).comp
-    (continuous_const.add continuous_id)).measurable
 
 /-! ### The form side of the heated tests -/
 
@@ -1110,17 +1114,21 @@ theorem continuous_gammaFourierPair {f g : ℝ → ℝ} (hf : Integrable f) (hg 
 theorem integrable_gammaGrowth (c : ℝ) :
     Integrable fun r : ℝ => (1 + r ^ 2)⁻¹ * (c + 2 * Real.sqrt (1 + |r|)) := by
   have h2 : Integrable fun r : ℝ => (1 + |r|) ^ (-(3 / 2 : ℝ)) := by
-    have := integrable_one_add_norm (E := ℝ) (r := 3 / 2) (by norm_num)
+    have := integrable_one_add_norm (E := ℝ) (μ := volume) (r := 3 / 2) (by norm_num)
     simpa [Real.norm_eq_abs] using this
+  have hcont : Continuous fun r : ℝ => (1 + r ^ 2)⁻¹ * (c + 2 * Real.sqrt (1 + |r|)) :=
+    ((by fun_prop : Continuous fun r : ℝ => 1 + r ^ 2).inv₀ (fun r => by positivity)).mul
+      (continuous_const.add (continuous_const.mul
+        (Real.continuous_sqrt.comp (continuous_const.add continuous_abs))))
   refine ((integrable_inv_one_add_sq.mul_const |c|).add (h2.const_mul 4)).mono'
-    (by fun_prop) (Eventually.of_forall fun r => ?_)
+    hcont.aestronglyMeasurable (Eventually.of_forall fun r => ?_)
   have hx : 0 < 1 + |r| := by positivity
   have hs : 0 ≤ Real.sqrt (1 + |r|) := Real.sqrt_nonneg _
   have e : Real.sqrt (1 + |r|) / (1 + |r|) ^ 2 = (1 + |r|) ^ (-(3 / 2 : ℝ)) := by
     rw [Real.sqrt_eq_rpow, ← Real.rpow_natCast, ← Real.rpow_sub hx]; norm_num
   have hle : (1 + r ^ 2)⁻¹ ≤ 2 / (1 + |r|) ^ 2 := by
     rw [inv_eq_one_div, div_le_div_iff₀ (by positivity) (by positivity)]
-    nlinarith [sq_abs r, abs_nonneg r]
+    nlinarith [sq_abs r, abs_nonneg r, sq_nonneg (|r| - 1)]
   rw [Real.norm_eq_abs]
   calc |(1 + r ^ 2)⁻¹ * (c + 2 * Real.sqrt (1 + |r|))|
       ≤ (1 + r ^ 2)⁻¹ * (|c| + 2 * Real.sqrt (1 + |r|)) := by
@@ -1205,9 +1213,14 @@ theorem tendsto_gammaMixedForm_heatedCut {ε : ℝ} (hε : 0 < ε) {F G : ℝ �
     have him := (Complex.continuous_im.tendsto _).comp hH
     have h := ((hre.const_mul (paperFT (cx F) r).re).add
       (him.const_mul (paperFT (cx F) r).im)).mul_const (EF.gammaBracket r)
-    convert h using 2
-    simp only [Complex.re_ofReal_mul, Complex.im_ofReal_mul]
-    ring
+    have hv : Real.exp (-(ε * r ^ 2)) * ((paperFT (cx F) r).re * (paperFT (cx G) r).re +
+        (paperFT (cx F) r).im * (paperFT (cx G) r).im) * EF.gammaBracket r =
+        ((paperFT (cx F) r).re * (((Real.exp (-(ε * r ^ 2)) : ℝ) : ℂ) * paperFT (cx G) r).re +
+          (paperFT (cx F) r).im * (((Real.exp (-(ε * r ^ 2)) : ℝ) : ℂ) * paperFT (cx G) r).im) *
+          EF.gammaBracket r := by
+      rw [Complex.re_ofReal_mul, Complex.im_ofReal_mul]; ring
+    rw [hv]
+    exact h
   unfold gammaMixedForm heatedGamma
   refine Tendsto.const_mul _ (tendsto_integral_of_dominated_convergence _
     (fun k => ((continuous_gammaFourierPair hF.integrable
@@ -1265,7 +1278,9 @@ theorem tendsto_realLaplace_heatedCut {ε : ℝ} (hε : 0 < ε) {G : ℝ → ℝ
     ring
   rw [e2] at h
   have h' := h.congr e1
-  simpa using (Complex.continuous_re.tendsto _).comp h'
+  have h3 := (Complex.continuous_re.tendsto _).comp h'
+  simp only [Function.comp_def, Complex.ofReal_re] at h3
+  exact h3
 
 theorem tendsto_coshHalfMoment_heatedCut {ε : ℝ} (hε : 0 < ε) {G : ℝ → ℝ}
     (hG : CriticalHalfLineEnergyDomain G) :
@@ -1358,7 +1373,8 @@ theorem tendsto_heatAverage {F G : ℝ → ℝ} (hF : CriticalHalfLineEnergyDoma
   have hM : ∀ y : ℝ, ‖((profileCorr F G (s + y) : ℝ) : ℂ)‖ ≤ corrConst F G := fun y => by
     rw [Complex.norm_real, Real.norm_eq_abs]
     exact (abs_profileCorr_le' hF hG _).trans
-      (mul_le_of_le_one_left (corrConst_nonneg F G) (Real.exp_le_one_iff.mpr (by positivity)))
+      (mul_le_of_le_one_left (corrConst_nonneg F G)
+        (Real.exp_le_one_iff.mpr (neg_nonpos.mpr (by positivity))))
   have h := tendsto_integral_tiltedHeatKernel_mul hC hM 0
   have e : ∀ ε : ℝ, (∫ y, ((tiltedHeatKernel ε 0 y : ℝ) : ℂ) * ((profileCorr F G (s + y) : ℝ) : ℂ)) =
       ((heatAverage ε F G s : ℝ) : ℂ) := fun ε => by
@@ -1367,7 +1383,9 @@ theorem tendsto_heatAverage {F G : ℝ → ℝ} (hF : CriticalHalfLineEnergyDoma
     refine integral_congr_ae (Eventually.of_forall fun y => ?_)
     simp
   simp only [e, add_zero] at h
-  simpa using (Complex.continuous_re.tendsto _).comp h
+  have h3 := (Complex.continuous_re.tendsto _).comp h
+  simp only [Function.comp_def, Complex.ofReal_re] at h3
+  exact h3
 
 theorem tendsto_heatedPrime {F G : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
     (hG : CriticalHalfLineEnergyDomain G) :
@@ -1417,14 +1435,15 @@ theorem tendsto_heatedGamma {F G : ℝ → ℝ} (hF : CriticalHalfLineEnergyDoma
     (fun r => |gammaFourierPair F G r * EF.gammaBracket r|)
     (Eventually.of_forall fun ε => (((by fun_prop : Continuous fun r : ℝ =>
       Real.exp (-(ε * r ^ 2))).mul hc).mul WeilHerglotz.continuous_gammaBracket).aestronglyMeasurable)
-    (self_mem_nhdsWithin.mono fun ε (hε : 0 < ε) => Eventually.of_forall fun r => ?_)
+    (eventually_mem_nhdsWithin.mono fun ε (hε : ε ∈ Ioi (0 : ℝ)) => Eventually.of_forall fun r => ?_)
     hi.abs (Eventually.of_forall fun r => ?_))
   · rw [Real.norm_eq_abs, mul_assoc, abs_mul, abs_of_pos (Real.exp_pos _)]
+    have hε' : 0 < ε := hε
     exact mul_le_of_le_one_left (abs_nonneg _) (Real.exp_le_one_iff.mpr (by
       have := sq_nonneg r; nlinarith))
   · have h0 : Tendsto (fun ε : ℝ => Real.exp (-(ε * r ^ 2))) (𝓝[>] 0) (𝓝 1) := by
       have := ((by fun_prop : Continuous fun ε : ℝ => Real.exp (-(ε * r ^ 2))).tendsto 0).mono_left
-        nhdsWithin_le_nhds
+        (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
       simpa using this
     simpa [mul_assoc] using (h0.mul_const (gammaFourierPair F G r * EF.gammaBracket r))
 
@@ -1433,7 +1452,7 @@ theorem tendsto_heatedForm {F G : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomai
     Tendsto (fun ε : ℝ => heatedForm ε F G) (𝓝[>] 0) (𝓝 (bareMixedEnergy F G)) := by
   have he : Tendsto (fun ε : ℝ => Real.exp (ε / 4)) (𝓝[>] 0) (𝓝 1) := by
     have := ((by fun_prop : Continuous fun ε : ℝ => Real.exp (ε / 4)).tendsto 0).mono_left
-      nhdsWithin_le_nhds
+      (nhdsWithin_le_nhds (s := Ioi (0 : ℝ)))
     simpa using this
   have h := ((tendsto_heatedGamma hF hG).sub (tendsto_heatedPrime hF hG)).add
     (he.mul_const (2 * coshHalfMoment F * coshHalfMoment G - 2 * sinhHalfMoment F * sinhHalfMoment G))
