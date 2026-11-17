@@ -41,15 +41,15 @@ theorem cubicProjector_polynomial (p : ℂ[X]) (f : ResidueFour → ℂ) :
     cubicProjector cubicProjector_idempotent p
   exact congrArg (fun A : Module.End ℂ (ResidueFour → ℂ) => A f) h
 
-private theorem weightedSum_add (f g : ResidueFour → ℂ) :
+theorem weightedSum_add (f g : ResidueFour → ℂ) :
     weightedSum (f + g) = weightedSum f + weightedSum g := by
   simp only [weightedSum, Pi.add_apply, mul_add, Finset.sum_add_distrib]
 
-private theorem weightedSum_sub (f g : ResidueFour → ℂ) :
+theorem weightedSum_sub (f g : ResidueFour → ℂ) :
     weightedSum (f - g) = weightedSum f - weightedSum g := by
   simp only [weightedSum, Pi.sub_apply, mul_sub, Finset.sum_sub_distrib]
 
-private theorem weightedSum_smul (a : ℂ) (f : ResidueFour → ℂ) :
+theorem weightedSum_smul (a : ℂ) (f : ResidueFour → ℂ) :
     weightedSum (a • f) = a * weightedSum f := by
   simp only [weightedSum, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
   apply Finset.sum_congr rfl

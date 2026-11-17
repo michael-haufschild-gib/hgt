@@ -36,7 +36,7 @@ open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
 
 /-! ### Laplace transforms on the zero strip -/
 
-theorem norm_cexp_mul_ofReal_le {w : ℂ} (hw : |w.re| ≤ 1 / 2) (u : ℝ) :
+theorem norm_cexp_mul_ofReal_le_of_abs_re {w : ℂ} (hw : |w.re| ≤ 1 / 2) (u : ℝ) :
     ‖cexp (w * u)‖ ≤ Real.exp (|u| / 2) := by
   rw [Complex.norm_exp, show (w * (u : ℂ)).re = w.re * u by simp]
   refine Real.exp_le_exp.mpr ((le_abs_self _).trans ?_)
@@ -47,7 +47,7 @@ theorem norm_cexp_mul_cx_le {w : ℂ} (hw : |w.re| ≤ 1 / 2) (f : ℝ → ℝ) 
     ‖cexp (w * u) * cx f u‖ ≤ |f u| * Real.exp (|u| / 2) := by
   change ‖cexp (w * u) * ((f u : ℝ) : ℂ)‖ ≤ _
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, mul_comm]
-  exact mul_le_mul_of_nonneg_left (norm_cexp_mul_ofReal_le hw u) (abs_nonneg _)
+  exact mul_le_mul_of_nonneg_left (norm_cexp_mul_ofReal_le_of_abs_re hw u) (abs_nonneg _)
 
 theorem integrable_cexp_mul_cx {f : ℝ → ℝ} (hfm : AEStronglyMeasurable f volume)
     (hf : Integrable fun u => |f u| * Real.exp (|u| / 2)) {w : ℂ} (hw : |w.re| ≤ 1 / 2) :

@@ -99,8 +99,9 @@ theorem twoProbeQuadratic_zero_iff (s t u v : ℝ) :
     twoProbeQuadratic s t u v = 0 ↔
       if node s = node t then u + v = 0 else u = 0 ∧ v = 0 := by
   by_cases hst : node s = node t
-  · rw [if_pos hst, twoProbeQuadratic_coincident s t u v hst,
-      mul_eq_zero, or_iff_right (probeEntry_pos s s).ne', sq_eq_zero_iff]
+  · have hA : safeProbeEntry s s ≠ 0 := (probeEntry_pos s s).ne'
+    rw [if_pos hst, twoProbeQuadratic_coincident s t u v hst,
+      mul_eq_zero, or_iff_right hA, sq_eq_zero_iff]
   · rw [if_neg hst]
     constructor
     · intro hz
@@ -130,7 +131,9 @@ theorem twoSupport_probe_collapse {n : ℕ} (s t : ℝ) (σ : Fin n → Bool) (c
   intro i _
   apply Finset.sum_congr rfl
   intro j _
-  cases hi : σ i <;> cases hj : σ j <;> simp [hi, hj, safeProbeEntry] <;> ring
+  have hsym : bareMixedEnergy (probe (node t)) (probe (node s)) =
+      bareMixedEnergy (probe (node s)) (probe (node t)) := safeProbeEntry_symm t s
+  cases σ i <;> cases σ j <;> simp [safeProbeEntry, hsym] <;> ring
 
 /-- The complete kernel of any finite two-support family is determined by coefficient fibers. -/
 theorem twoSupport_probe_zero_iff {n : ℕ} (s t : ℝ) (σ : Fin n → Bool) (c : Fin n → ℝ) :

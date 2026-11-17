@@ -196,6 +196,15 @@ so nothing is lost between stages.
    $a\mathcal LF(p-8)=-\mathcal LF(p)\tfrac{\zeta'}{\zeta}(\tfrac12+p)-(\Gamma F-TF+\text{pole})(p)$. Times $\eta$ the right side
    tends to $-m_\rho\mathcal LF(\rho-\tfrac12)\neq0$; on the left Cauchy–Schwarz gives $\eta\lvert\mathcal LF(p-8)\rvert^2\le M(b_\rho-\eta)$.
    So $\eta M(b_\rho-\eta)$ stays above the squared residue of $\mathcal LF$ at the transported zero.
+24. **Agmon in the energy norm.** For $\varphi=e^{-c\max(u,-N)}$ the jump energy of $\varphi F$ is the Gamma pairing
+   of $F$ with $\varphi^2F$ up to a commutator bounded by the moment $4c$. The weak equation against $\varphi^2F$
+   turns the pairing into prime minus pole minus the confinement term $a\int\varphi^2F^2e^{-8u}$, which is dropped.
+   The forward halves are the wave on a line $\operatorname{Re}p=s$ just right of the zeros against
+   $\int F^2e^{-(4c+2s)u}$. All moments lie below the decay rate exactly when $c<4-\kappa$; Fatou in the lag
+   gives $e^{-cu}F\in\mathcal H$. The exponential field of a tilt is the moment $8+2c$, so the pole of the
+   moments makes the threshold $\tfrac92-\Theta$ sharp. A tilt whose unit tilt lies in $\mathcal H$ is an
+   admissible test with square-summable zero values: the weak equation against it reads
+   $\sum_z\mathcal LF(z)\mathcal LF(-z-c)=-a\int F^2e^{-(8+c)u}$.
 
 ## 5. Questions
 
@@ -204,7 +213,7 @@ so nothing is lost between stages.
 | Q1 | Probe kernel $B(e_p,e_q)=\frac{D(p)+D(q)}{p+q}$ and its zero side | answered (Lean) |
 | Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | answered (Lean): for every pair of profiles of $\mathcal H$ the zero pairing with Gaussian summation is Weil's form, $\lim_{\varepsilon\to0^+}\sum_z\mathcal LF(z)\mathcal LG(-z)e^{\varepsilon z^2}=W(F,G)$ (`tendsto_heatedZeroPairing`); without summation it converges absolutely when both unit tilts lie in $\mathcal H$ (`hasSum_bareMixedEnergy_of_unitTilts`), in particular at the state; $(\star)$ is a one-point identity with square-summable zero values. For a general profile the unsummed series needs one subtraction (Traps) |
 | Q3 | State equation, continuation, residues | answered (Lean): global meromorphic continuation, exact residues and uniform left decay |
-| Q4 | Decay law | answered (Lean): for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $\int F^2e^{-bu}<\infty$ for every $b<16-2\kappa$; the decay rate is $b^*=17-2\Theta$, $\Theta$ the supremum of the real parts of the zeros; unconditionally $\int F^2e^{-bu}<\infty$ for $b<15+\tfrac{3001}{12000}$. Also in Lean: left Hardy bounds, averaged/heated decay, and the transform side: $\mathcal LF$ converges exactly on $\operatorname{Re}w>\Theta-\tfrac{17}2$, with $(\star)$ at every point and Plancherel on every line. At the exponent $b_\rho=17-2\operatorname{Re}\rho$ of every zero the moment is infinite, with $\liminf_{\eta\to0^+}\eta\int F^2e^{-(b_\rho-\eta)u}\ge(m_\rho\lvert\mathcal LF(\rho-\tfrac12)\rvert/a)^2$; hence a finite moment at $b$ puts the zeros in $\operatorname{Re}\rho<\tfrac{17-b}2$, and the moment at $b^*$ is infinite when $\Theta$ is attained. Open: the endpoint $b=b^*$ when $\Theta$ is not attained, and pointwise decay |
+| Q4 | Decay law | answered (Lean): for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $\int F^2e^{-bu}<\infty$ for every $b<16-2\kappa$; the decay rate is $b^*=17-2\Theta$, $\Theta$ the supremum of the real parts of the zeros; unconditionally $\int F^2e^{-bu}<\infty$ for $b<15+\tfrac{3001}{12000}$. Also in Lean: left Hardy bounds, averaged/heated decay, and the transform side: $\mathcal LF$ converges exactly on $\operatorname{Re}w>\Theta-\tfrac{17}2$, with $(\star)$ at every point and Plancherel on every line. At the exponent $b_\rho=17-2\operatorname{Re}\rho$ of every zero the moment is infinite, with $\liminf_{\eta\to0^+}\eta\int F^2e^{-(b_\rho-\eta)u}\ge(m_\rho\lvert\mathcal LF(\rho-\tfrac12)\rvert/a)^2$; hence a finite moment at $b$ puts the zeros in $\operatorname{Re}\rho<\tfrac{17-b}2$, and the moment at $b^*$ is infinite when $\Theta$ is attained. In the energy norm: $e^{-cu}F\in\mathcal H$ for every $c<\tfrac92-\Theta$, the supremum of such tilts, with one logarithm on every line $\operatorname{Re}w>\Theta-\tfrac92$; for $c<\tfrac72-\Theta$ the moments are zero pairings, $\sum_z\mathcal LF(z)\mathcal LF(-z-c)=-a\int F^2e^{-(8+c)u}$. Open: the endpoint $b=b^*$ when $\Theta$ is not attained, and pointwise decay |
 | Q5 | Sign law | answered (Lean): one sign on no ray |
 | Q6 | Index law | answered (Lean): finite index at every ratio; some confined Gram matrix has $n$ negative squares iff $\zeta$ has at least $n$ zeros right of the line (`confinedIndex_law`); the index is bounded over all ratios iff finitely many zeros lie off the line (`confinedIndexBounded_tfae`); under a finite layer the critical ladder has one rung per right zero (`criticalLadder_iff_rightZeros`). Open: the growth of the index in the ratio when infinitely many zeros lie right of the line |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH. Restricted to a finite off-line layer it is B13 in six equivalent forms (`finiteLayer_ecs_b13_tfae`) |
@@ -244,7 +253,8 @@ a right half-plane; the analytic logarithmic weight and the weighted Hilbert ine
 over the zeros. The regular part of $\zeta'/\zeta$ with its logarithmic and Phragmén–Lindelöf bounds and the
 Euler sum $\sum\Lambda(n)n^{-1/2-p}=1/(p-\tfrac12)-N(\tfrac12+p)$; the Hardy-space calculus of the forward
 prime-minus-pole wave; the splitting of the prime and pole forms into forward and backward halves; the
-Agmon commutator, and the Agmon bound from the mass of the wave on one line and one moment.
+Agmon commutator, the Agmon bound from the mass of the wave on one line and one moment, and its
+energy form with the passage from bounded jump energies of truncated tilts to the domain.
 Logarithmic energies of Hardy functions on vertical lines and their interpolation (windows
 $(w+2+iT)^{-2}$, Plancherel on lines, Hölder); the state equation on the zero-free part of the strip, its
 multiplier and the lower bound $\tfrac12\log-K$; square integrability on vertical lines of the head term, of
@@ -255,14 +265,33 @@ and orthogonal probe projection $Q$, $W=R(2Q-1)$ is a surjective linear isometry
 $QW^nQ=T_n(QRQ)Q$ (`ProbeWalk.walkEquiv`, `ProbeWalk.walk_compression`). The probe matrix
 coefficients of $QRQ$ are exactly the bare Weil kernel (`ProbeWalk.signal_inner_probe`).
 
+[Chebyshev leakage](Pick/ChebyshevLeakage.lean): for $x$ in the probe span,
+$\|T_n(QRQ)x\|^2+\|(1-Q)W^nx\|^2=\|x\|^2$.
+Every order is contractive; equality holds exactly when $W^nx$ returns to that span
+(`ProbeWalk.chebyshev_leakage_identity`, `ProbeWalk.chebyshev_norm_eq_iff_return`).
+
+[Reflection-sector Gram decomposition](Pick/ProbeSectorGrams.lean): the actual Weil matrix is
+$K=G_+-G_-$, while the ordinary probe Gram matrix is $G=G_++G_-$, with $G_\pm\succeq0$.
+Thus $G\pm K\succeq0$ in the original probe coordinates, including dependent families
+(`ProbeWalk.probeGram_eq_sector_difference`, `ProbeWalk.hilbertProbeGram_sub_probeGram_posSemidef`).
+
 [Tail-moment forward differences](Wall/TailProbeDifferences.lean): writing $s_k=$ `tailProbeMoment F T k`,
 the functional with moments $s_{n+k}-s_k$ integrates each polynomial $P(e^{u+T})$ against
 $(e^{n(u+T)}-1)F(u)e^{10(u+T)}$ on $u<-T$ (`momentFunctional_tailProbeDifference`).
 The same identity holds for polynomial squares and the actual critical state
 (`tailProbeDifference_square`, `riemannHypothesis_or_tailProbeDifferences`).
 
+[Polynomial tail filters](Wall/PolynomialTailFilters.lean): the filtered moments
+$\sum_jq_js_{k+j}$ have nonnegative square tests exactly when
+$q(e^{u+T})F(u)\ge0$ almost everywhere on $u<-T$
+(`filteredTailMoment_square_nonnegative_iff`). Every nonzero real polynomial filter of an
+actual critical state retains square tests of both signs on every tail
+(`riemannHypothesis_or_indefinite_polynomial_tail_filters`). Finite filtering cannot restore
+positivity; the exact density sign criterion describes the surviving positivity cone.
+
 **To build.** The endpoint moment $b=17-2\Theta$ when $\Theta$ is not attained, and pointwise decay of the state
-(both need regularity of $F$ or a Hilbert inequality on the zeros without the logarithm); the growth of the index in
+(both need regularity of $F$ or a Hilbert inequality on the zeros without the logarithm); the shifted zero pairing on
+$\tfrac72-\Theta\le c<\tfrac{17}2-2\Theta$ (a logarithm on the lines left of $\Theta-\tfrac92$); the growth of the index in
 the ratio; the comparison of $F^+$ with $e^{-8u}F$ at the wall, which is stage 5.
 
 ## 7. Pillar theorems
@@ -313,6 +342,7 @@ the ratio; the comparison of $F^+$ with $e^{-8u}F$ at the wall, which is stage 5
 | The decay law: for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $\int F^2e^{-bu}<\infty$ for every $b<16-2\kappa$; $\sup\{b:\int F^2e^{-bu}<\infty\}=17-2\Theta$; unconditionally $b<15+\tfrac{3001}{12000}$ | `forall_re_centredZero_le_iff_integrable_sq_mul_exp`, `isLUB_integrable_sq_mul_exp`, `integrable_sq_mul_exp_of_zero_abscissa_sharp`, `integrable_sq_mul_exp_seed` | unconditional |
 | The transform converges exactly right of the transported zeros: for $0\le\kappa\le1$, the centred zeros lie in $\operatorname{Re}z\le\kappa$ iff $\mathcal LF$ is holomorphic on $\operatorname{Re}w>\kappa-8$; there the continuation is the transform, $a\mathcal LF(w)=-\sum_z\mathcal LF(z)/(w+8-z)$, and $\int\lvert\mathcal LF(\sigma+it)\rvert^2dt=2\pi\int F^2e^{2\sigma u}du$; the state equation and two logarithms hold on all of $\kappa<\operatorname{Re}p<\tfrac12$ | `forall_re_centredZero_le_iff_differentiableOn_laplace`, `stateMeromorphic_eq_laplace_right_of_zeros`, `criticalState_hasSum_starEquation_right_of_zeros`, `integral_norm_sq_stateMeromorphic_line_right_of_zeros`, `laplace_mul_stripMultiplier_eq_right_of_zeros`, `integrable_log_sq_mul_norm_sq_laplace_line_right_of_zeros` | unconditional |
 | The moments $M(b)=\int F^2e^{-bu}$ have a pole at the exponent $b_\rho=17-2\operatorname{Re}\rho$ of every zero right of the line: $\liminf_{\eta\to0^+}\eta\,M(b_\rho-\eta)\ge(m_\rho\lvert\mathcal LF(\rho-\tfrac12)\rvert/a)^2>0$ and $M(b_\rho)=\infty$; a finite $M(b)$ puts every zero in $\operatorname{Re}\rho<\tfrac{17-b}2$; if $\Theta$ is attained, $M(b)<\infty$ iff $b<17-2\Theta$ | `criticalState_eventually_le_mul_moment_of_zero`, `criticalState_not_integrable_at_zero_exponent`, `zero_re_lt_of_integrable_sq_mul_exp`, `integrable_sq_mul_exp_iff_of_attained` | unconditional |
+| The decay law in the energy norm: for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $e^{-cu}F\in\mathcal H$ for every $c<4-\kappa$; $\sup\{c:e^{-cu}F\in\mathcal H\}=\tfrac92-\Theta$, and if $\Theta$ is attained the tilt lies in $\mathcal H$ iff $c<\tfrac92-\Theta$; $\int\log(\lvert t\rvert+4)\lvert\mathcal LF(s+it)\rvert^2dt<\infty$ for $s>\Theta-\tfrac92$; for $c<\tfrac72-\Theta$, $\sum_z\lvert\mathcal LF(z-c)\rvert^2<\infty$ and $\sum_z\mathcal LF(z)\mathcal LF(-z-c)=-a\int F^2e^{-(8+c)u}du$ | `forall_re_centredZero_le_iff_tilt_mem_energyDomain`, `isLUB_tilt_mem_energyDomain`, `tilt_mem_energyDomain_iff_of_attained`, `integrable_log_mul_norm_sq_laplace_line_of_lt`, `criticalState_summable_norm_sq_shifted_zeroValues`, `criticalState_hasSum_shifted_zeroPairing` | unconditional |
 
 ## 8. Traps
 
@@ -334,6 +364,7 @@ the ratio; the comparison of $F^+$ with $e^{-8u}F$ at the wall, which is stage 5
 | The convergent half of the decay law is a line shift of $(\star)$ | No pointwise decay on vertical lines is known, and the Hilbert inequality on the zeros gives only $L^2(dt/\log)$. The lines right of the transported zeros carry $L^2(dt)$ as a consequence of the decay law, which is proved in time by the Agmon bound |
 | A Hilbert inequality for $\sum_zc_z/(w-z)$ needs separated zeros | The unit-window count suffices at the price of one logarithm; a cluster of $N$ zeros loses a factor of order $N$, so the count alone cannot remove the weight |
 | The barrier $b=15$ of the comparison argument is the decay rate of the state | It is the price of absolute values in the forward prime sum; the forward prime and pole waves cancel to $-N\mathcal LF$, and $b^*=17-2\Theta$ |
+| The growth law of $F^+$ is the mirror of the decay law | On the zero-free strip the multiplier of the state equation is $-\tfrac{\zeta'}{\zeta}(\tfrac12-p)$: logarithmic on $\kappa<\operatorname{Re}p<\tfrac12$, sublogarithmic on $\operatorname{Re}p<-\kappa$. The left lines gain no logarithm, so the descent does not start there; the rate of the zeros is known for the heated profile only |
 | One Agmon step reaches the zeros | From the abscissa $\sigma$ a step reaches only $s$ with $(\tfrac12+\kappa)\sigma<s(\tfrac12-\kappa+2\sigma)$ and $\sigma<2s$: the mass of the wave on the new line is paid by interpolating two logarithms at $\sigma$ with one on the critical line; the abscissa reaches $\kappa$ as an infimum |
 | $F(u)=-a^{-1}e^{8u}\sum_z\mathcal LF(z)e^{-zu}$ pointwise | The series is a distribution on the line; heated it converges absolutely, and left of the wall it differs from the state by the prime side behind a Gaussian |
 
