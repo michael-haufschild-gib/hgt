@@ -29,15 +29,19 @@ theorem det_ker_le (f : GeneralLinearGroup (Fin 2) K →* H) (hf : ContinuousAt 
   obtain ⟨s, rfl⟩ := hg'
   change f (SpecialLinearGroup.toGL s) = 1
   apply DiscreteSL2.hom_trivial (f.comp SpecialLinearGroup.toGL) ?_ s
-  have hc := hf.comp SpecialLinearGroup.continuous_toGL.continuousAt
-  simpa only [map_one] using hc
+  have hc : ContinuousAt (SpecialLinearGroup.toGL : SpecialLinearGroup (Fin 2) K → _) 1 :=
+    SpecialLinearGroup.continuous_toGL.continuousAt
+  have hf' : ContinuousAt f (SpecialLinearGroup.toGL (1 : SpecialLinearGroup (Fin 2) K)) := by
+    simpa only [map_one] using hf
+  exact hf'.comp hc
 
 /-- Every continuous homomorphism from GL₂ to a discrete group factors uniquely through determinant. -/
 theorem existsUnique_det_factor (f : GeneralLinearGroup (Fin 2) K →* H)
     (hf : ContinuousAt f 1) :
     ∃! χ : Kˣ →* H, χ.comp GeneralLinearGroup.det = f := by
   let d : GeneralLinearGroup (Fin 2) K →* Kˣ := GeneralLinearGroup.det
-  let e := d.liftOfSurjective GeneralLinearGroup.det_surjective
+  let e : {g : GeneralLinearGroup (Fin 2) K →* H // d.ker ≤ g.ker} ≃ (Kˣ →* H) :=
+    d.liftOfSurjective GeneralLinearGroup.det_surjective
   refine ⟨e ⟨f, det_ker_le f hf⟩, ?_, ?_⟩
   · exact congrArg Subtype.val (e.symm_apply_apply ⟨f, det_ker_le f hf⟩)
   · intro χ hχ
@@ -91,9 +95,9 @@ theorem centralCharacter_square {k V : Type*} [Field k] [AddCommGroup V]
     simp only [Fintype.card_fin, pow_two]
   apply LinearMap.ext
   intro v
+  change (ρ g) ((ρ g) v) = (c (GeneralLinearGroup.det g) : k) • v
   have hv := congrArg (fun e : V ≃ₗ[k] V => e v) he
-  simpa only [pow_two, Module.End.mul_apply, LinearMap.smul_apply, Module.End.one_apply,
-    map_mul, LinearEquiv.mul_apply] using hv.trans (hc (GeneralLinearGroup.det g) v)
+  simpa only [map_mul, LinearEquiv.mul_apply] using hv.trans (hc (GeneralLinearGroup.det g) v)
 
 /-- Finite-dimensional smooth GL₂ actions with central character have semisimple image algebra in odd characteristic. -/
 theorem centralCharacter_imageAlgebra_isSemisimple {k V : Type*} [Field k] [PerfectField k]

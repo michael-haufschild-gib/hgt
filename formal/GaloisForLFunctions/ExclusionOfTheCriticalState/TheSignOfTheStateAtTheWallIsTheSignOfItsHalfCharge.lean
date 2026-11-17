@@ -70,8 +70,8 @@ theorem integral_mul_exp_eq_laplace_terminalMass {F : ℝ → ℝ} (hFi : Integr
     show (∫ v in Ioo 0 h, F (-v)) * Real.exp (-(σ * h)) =
       (∫ u in Ioo (-h) 0, F u) * Real.exp (-(σ * h))
     rw [setIntegral_Ioo_neg F 0 h, neg_zero]
-  rw [h1, ← h3, ← hswap, h2]
-  field_simp
+  have e : ∀ X : ℝ, σ * (X / σ) = X := fun X => by field_simp
+  rw [h1, ← h3, ← hswap, h2, e]
 
 /-- **A one-signed terminal mass orients the transform at large real points.** If
 `s ∫_{−h}^0 F > 0` on `0 < h < δ`, then `s ∫ F(u) e^{σu} du > 0` for all large `σ`. -/

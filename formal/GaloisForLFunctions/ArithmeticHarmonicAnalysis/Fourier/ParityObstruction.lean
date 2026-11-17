@@ -85,6 +85,3 @@ theorem nearDiagonalSubst_odd_excludes_even {m r : ℤ} (hm : Odd m) (hr : Even 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
 
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.parity_correction_not_tendsto_zero
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_parity_correction_unit_phase
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.nearDiagonalSubst_odd_excludes_even
