@@ -27,12 +27,12 @@ theorem kernel_commutator_det (t : ℂ) :
 /-- Every kernel vector is uniquely represented by its first two coordinates. -/
 def kernelEmbedding (t : ℂ) : (Fin 2 → ℂ) →ₗ[ℂ] Triple where
   toFun v := (v 0, v 1, -t ^ 2 * v 0 - t * v 1)
-  map_add' _ _ := by ext <;> (simp only [Pi.add_apply, Prod.fst_add, Prod.snd_add]; ring)
-  map_smul' _ _ := by ext <;> (simp only [Pi.smul_apply, Prod.smul_fst, Prod.smul_snd, smul_eq_mul, RingHom.id_apply]; ring)
+  map_add' _ _ := by ext <;> simp only [Pi.add_apply, Prod.fst_add, Prod.snd_add] <;> ring
+  map_smul' _ _ := by ext <;> simp only [Pi.smul_apply, Prod.smul_fst, Prod.smul_snd, smul_eq_mul, RingHom.id_apply] <;> ring
 
 theorem kernelEmbedding_left (t : ℂ) (v : Fin 2 → ℂ) :
     permutationLeft t (kernelEmbedding t v) = kernelEmbedding t (kernelLeft t *ᵥ v) := by
-  ext <;> (simp [permutationLeft, kernelEmbedding, kernelLeft, dotProduct, Fin.sum_univ_two]; ring)
+  ext <;> simp [permutationLeft, kernelEmbedding, kernelLeft, dotProduct, Fin.sum_univ_two] <;> ring
 
 theorem kernelEmbedding_right (t : ℂ) (v : Fin 2 → ℂ) :
     permutationRight t (kernelEmbedding t v) = kernelEmbedding t (kernelRight t *ᵥ v) := by

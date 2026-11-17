@@ -320,7 +320,7 @@ theorem isBoundedWallForcing_mass {V : ℝ → ℝ} (hV : AEStronglyMeasurable V
 theorem isBoundedWallForcing_continuous {k : ℝ → ℝ} (hk : Continuous k) :
     IsBoundedWallForcing fun G => ∫ y, G y * k y := by
   obtain ⟨C, hC⟩ := (isCompact_Icc (a := -(1 / 2 : ℝ)) (b := 0)).exists_bound_of_continuousOn'
-    hk.continuousOn
+    (f := k) hk.continuousOn
   exact ⟨k, hk.aestronglyMeasurable,
     ⟨C, Eventually.of_forall fun y hy => by simpa only [Real.norm_eq_abs] using hC y hy⟩,
     fun _ _ => rfl⟩
@@ -350,7 +350,7 @@ theorem integrableOn_remainderJump {U G : ℝ → ℝ} (hU : CriticalHalfLineEne
   have h := (integrableOn_levyMixedIntegrand hU hG).bdd_mul (c := 1)
     (f := fun x => archLogRemainder x / archLevyDensity x)
     ((measurable_archLogRemainder.div measurable_archLevyDensity).aestronglyMeasurable) ?_
-  · refine IntegrableOn.congr_fun (show IntegrableOn _ (Ioi 0) from h) (fun x hx => ?_)
+  · refine IntegrableOn.congr_fun (show IntegrableOn _ (Ioi 0) volume from h) (fun x hx => ?_)
       measurableSet_Ioi
     have hω := (archLevyDensity_pos hx).ne'
     field_simp
@@ -428,10 +428,10 @@ theorem remainderJump_eq {U G : ℝ → ℝ} (hUm : Measurable U) (hGm : Measura
     ring
   have hc : IntegrableOn (fun x => 2 * (∫ u, U u * G u) * archLogRemainder x) (Ioi 0) :=
     integrableOn_archLogRemainder.const_mul _
-  rw [setIntegral_congr_fun measurableSet_Ioi hpt, integral_sub (hc.sub iM) iP,
-    integral_sub hc iM, integral_const_mul]
-  simp only at eM eP
-  rw [eM, eP]
+  have j1 : IntegrableOn (fun x => 2 * (∫ u, U u * G u) * archLogRemainder x -
+      ∫ u, archLogRemainder x * U (u + -1 * x) * G u) (Ioi 0) := hc.sub iM
+  rw [setIntegral_congr_fun measurableSet_Ioi hpt, integral_sub j1 iP, integral_sub hc iM,
+    integral_const_mul, eM, eP]
   ring
 
 open CanonicalSystemOfTheWindowTower in
@@ -455,7 +455,6 @@ theorem isBoundedWallForcing_remainderJump {U : ℝ → ℝ} (hU : CriticalHalfL
     (2 * ∫ x in Ioi 0, archLogRemainder x)).sub (hk (-1) (Or.inr rfl))).sub
       (hk 1 (Or.inl rfl))).congr fun G hG => ?_
   rw [remainderJump_eq hU.meas hG.domain.meas hU.sq hG.domain.sq]
-  ring
 
 /-! ### The commutator of the ramp -/
 
@@ -527,11 +526,13 @@ theorem levyMixed_ramp_commutator {F G : ℝ → ℝ} (hF : CriticalHalfLineEner
     rw [Real.norm_eq_abs]
     exact (abs_wallRamp_sub_shift_le hx0 u).trans (min_le_right _ _)
   have hχm : AEStronglyMeasurable (fun u => wallRamp u - wallRamp (u + x)) volume :=
-    (continuous_wallRamp.sub (continuous_wallRamp.comp (continuous_add_right x))).aestronglyMeasurable
-  have iA := integrable_mul_of_memLp (hUL.sub (memLp_two_shift hUL x))
-    (hGL.sub (memLp_two_shift hGL x))
-  have iB := integrable_mul_of_memLp (hFL.sub (memLp_two_shift hFL x))
-    (hχGL.sub (memLp_two_shift hχGL x))
+    (continuous_wallRamp.sub (continuous_wallRamp.comp (continuous_add_const x))).aestronglyMeasurable
+  have iA : Integrable fun u =>
+      (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x)) :=
+    integrable_mul_of_memLp (hUL.sub (memLp_two_shift hUL x)) (hGL.sub (memLp_two_shift hGL x))
+  have iB : Integrable fun u =>
+      (F u - F (u + x)) * (wallRamp u * G u - wallRamp (u + x) * G (u + x)) :=
+    integrable_mul_of_memLp (hFL.sub (memLp_two_shift hFL x)) (hχGL.sub (memLp_two_shift hχGL x))
   have iP := (integrable_mul_of_memLp (memLp_two_shift hFL x) hGL).bdd_mul hχm hχb
   have iQ := (integrable_mul_of_memLp hFL (memLp_two_shift hGL x)).bdd_mul hχm hχb
   have hAB : (∫ u, (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x))) -
@@ -555,7 +556,12 @@ theorem levyMixed_ramp_commutator {F G : ℝ → ℝ} (hF : CriticalHalfLineEner
       archLevyDensity x * ∫ u, (wallRamp (u + -1 * x) - wallRamp u) * (F (u + -1 * x) * G u) := by
     rw [← integral_const_mul]
     exact integral_congr_ae (Eventually.of_forall fun u => by simp only [rampKernelLeft]; ring)
-  simp only
+  show archLevyDensity x *
+      (∫ u, (wallRamp u * F u - wallRamp (u + x) * F (u + x)) * (G u - G (u + x))) -
+    archLevyDensity x *
+      (∫ u, (F u - F (u + x)) * (wallRamp u * G u - wallRamp (u + x) * G (u + x))) =
+    (∫ u, rampKernelRight x u * F (u + 1 * x) * G u) -
+      ∫ u, rampKernelLeft x u * F (u + -1 * x) * G u
   rw [e1, e2, ← hQ, ← mul_sub, ← mul_sub, hAB]
 
 /-- The commutator of the ramp against an essentially bounded profile is a bounded wall forcing. -/
