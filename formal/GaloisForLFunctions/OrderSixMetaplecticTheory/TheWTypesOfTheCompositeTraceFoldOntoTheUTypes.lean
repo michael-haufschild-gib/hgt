@@ -40,9 +40,9 @@ theorem sum_add_right {F : Type*} [AddGroup F] [Fintype F] (f : F → ℂ) (c : 
 
 theorem sum_mul_add {F : Type*} [Field F] [Fintype F] (f : F → ℂ) (a c : F) (ha : a ≠ 0) :
     ∑ x : F, f (a * x + c) = ∑ x : F, f x := by
-  calc ∑ x : F, f (a * x + c) = ∑ x : F, (fun y => f (y + c)) (Equiv.mulLeft₀ a ha x) := rfl
-    _ = ∑ y : F, (fun y => f (y + c)) y := Equiv.sum_comp _ _
-    _ = ∑ x : F, f x := sum_add_right f c
+  rw [Fintype.sum_bijective (fun x => a * x) ⟨fun x y h => mul_left_cancel₀ ha h, fun y => ⟨a⁻¹ * y, by simp [ha]⟩⟩ (fun x => f (a * x + c))
+    (fun y => f (y + c)) (fun x => rfl)]
+  exact sum_add_right f c
 
 theorem sum_neg_units {F : Type*} [Field F] [Fintype F] (f : {y : F // y ≠ 0} → ℂ) :
     ∑ y : {y : F // y ≠ 0}, f ⟨-y.1, neg_ne_zero.mpr y.2⟩ = ∑ y, f y := by

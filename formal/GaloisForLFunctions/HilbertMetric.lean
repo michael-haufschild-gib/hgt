@@ -261,3 +261,4 @@ import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingOrder
 import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingRestoration
 import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingZeroBoundary
 import GaloisForLFunctions.HilbertMetric.Spectral.DenseNegativeFamilies
+import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingComposition
