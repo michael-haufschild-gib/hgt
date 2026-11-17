@@ -276,7 +276,7 @@ theorem IsWallTest.integrable_mul {G h : ℝ → ℝ} (hG : IsWallTest G)
   by_cases hm : y ∈ Icc (-(1 / 2 : ℝ)) 0
   · rw [Real.norm_eq_abs, abs_mul, Real.norm_eq_abs, mul_comm C]
     exact mul_le_mul_of_nonneg_left (hy hm) (abs_nonneg _)
-  · rw [hG.vanish y hm, zero_mul, norm_zero, norm_zero, mul_zero]
+  · simp only [hG.vanish y hm, zero_mul, norm_zero, mul_zero, le_refl]
 
 theorem IsBoundedWallForcing.congr {Λ₁ Λ₂ : (ℝ → ℝ) → ℝ} (h : IsBoundedWallForcing Λ₁)
     (he : ∀ G, IsWallTest G → Λ₁ G = Λ₂ G) : IsBoundedWallForcing Λ₂ := by
@@ -290,7 +290,8 @@ theorem IsBoundedWallForcing.add {Λ₁ Λ₂ : (ℝ → ℝ) → ℝ} (h₁ : I
   refine ⟨fun y => g₁ y + g₂ y, hm₁.add hm₂, ⟨C₁ + C₂, ?_⟩, fun G hG => ?_⟩
   · filter_upwards [hC₁, hC₂] with y h1 h2 hy
     exact (abs_add_le _ _).trans (add_le_add (h1 hy) (h2 hy))
-  · rw [he₁ G hG, he₂ G hG,
+  · show Λ₁ G + Λ₂ G = ∫ y, G y * (g₁ y + g₂ y)
+    rw [he₁ G hG, he₂ G hG,
       ← integral_add (hG.integrable_mul hm₁ hC₁) (hG.integrable_mul hm₂ hC₂)]
     exact integral_congr_ae (Eventually.of_forall fun y => (mul_add _ _ _).symm)
 
@@ -301,7 +302,8 @@ theorem IsBoundedWallForcing.const_mul {Λ : (ℝ → ℝ) → ℝ} (h : IsBound
   · filter_upwards [hC] with y h1 hy
     rw [abs_mul]
     exact mul_le_mul_of_nonneg_left (h1 hy) (abs_nonneg c)
-  · rw [he G hG, ← integral_const_mul]
+  · show c * Λ G = ∫ y, G y * (c * g y)
+    rw [he G hG, ← integral_const_mul]
     exact integral_congr_ae (Eventually.of_forall fun y => by ring)
 
 theorem IsBoundedWallForcing.sub {Λ₁ Λ₂ : (ℝ → ℝ) → ℝ} (h₁ : IsBoundedWallForcing Λ₁)
@@ -317,7 +319,7 @@ theorem isBoundedWallForcing_mass {V : ℝ → ℝ} (hV : AEStronglyMeasurable V
 /-- Integration against a continuous function is a bounded wall forcing (the collar is compact). -/
 theorem isBoundedWallForcing_continuous {k : ℝ → ℝ} (hk : Continuous k) :
     IsBoundedWallForcing fun G => ∫ y, G y * k y := by
-  obtain ⟨C, hC⟩ := isCompact_Icc.exists_bound_of_continuousOn' (a := -(1 / 2 : ℝ)) (b := 0)
+  obtain ⟨C, hC⟩ := (isCompact_Icc (a := -(1 / 2 : ℝ)) (b := 0)).exists_bound_of_continuousOn'
     hk.continuousOn
   exact ⟨k, hk.aestronglyMeasurable,
     ⟨C, Eventually.of_forall fun y hy => by simpa only [Real.norm_eq_abs] using hC y hy⟩,
@@ -348,7 +350,8 @@ theorem integrableOn_remainderJump {U G : ℝ → ℝ} (hU : CriticalHalfLineEne
   have h := (integrableOn_levyMixedIntegrand hU hG).bdd_mul (c := 1)
     (f := fun x => archLogRemainder x / archLevyDensity x)
     ((measurable_archLogRemainder.div measurable_archLevyDensity).aestronglyMeasurable) ?_
-  · refine h.congr_fun (fun x hx => ?_) measurableSet_Ioi
+  · refine IntegrableOn.congr_fun (show IntegrableOn _ (Ioi 0) from h) (fun x hx => ?_)
+      measurableSet_Ioi
     have hω := (archLevyDensity_pos hx).ne'
     field_simp
   · filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
@@ -390,8 +393,9 @@ theorem integral_jump_mul_jump_eq {U G : ℝ → ℝ} (hU : MemLp U 2 volume) (h
       fun u => ((U u * G u - U u * G (u + x)) - U (u + x) * G u) + U (u + x) * G (u + x) := by
     funext u
     ring
-  rw [hexp, integral_add ((i1.sub i2).sub i3) i4, integral_sub (i1.sub i2) i3,
-    integral_sub i1 i2, e4, e2, e3]
+  have j12 : Integrable (fun u => U u * G u - U u * G (u + x)) := i1.sub i2
+  have j123 : Integrable (fun u => U u * G u - U u * G (u + x) - U (u + x) * G u) := j12.sub i3
+  rw [hexp, integral_add j123 i4, integral_sub j12 i3, integral_sub i1 i2, e4, e2, e3]
   ring
 
 open CanonicalSystemOfTheWindowTower in

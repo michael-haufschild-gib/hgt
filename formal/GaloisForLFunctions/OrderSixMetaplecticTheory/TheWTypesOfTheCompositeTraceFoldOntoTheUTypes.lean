@@ -219,6 +219,124 @@ theorem P_res_lowBeta (y : O) (hy : ¬ R.P.p ∣ y) : R.P.res (R.P.lowBeta y) * 
   simp only [map_sub, map_mul, map_one, R.P.res_nine, R.P.res_p, zero_mul, zero_sub] at h
   linear_combination -h
 
+theorem Q_p_ne : R.Q.res R.P.p ≠ 0 := R.Q_res_p_ne_zero
+theorem P_q_ne : R.P.res R.Q.p ≠ 0 := R.P_res_q_ne_zero
+
+theorem Q_res_yUL (y : {y : R.Q.Res // y ≠ 0}) : R.Q.res (R.yUL y) = y.1 * R.pInv := by
+  rw [yUL, R.Q.res_lift]
+
+theorem P_res_yLU (y : {y : R.P.Res // y ≠ 0}) : R.P.res (R.yLU y) = y.1 * R.qInv := by
+  rw [yLU, R.P.res_lift]
+
+theorem Q_res_wlC (y : {y : R.Q.Res // y ≠ 0}) : R.Q.res (R.wlC (R.yWL y)) = y.1 * R.pInv := by
+  rw [wlC, yWL, map_add, map_mul, map_mul, map_pow, R.Q.res_lift, R.Q.res_p, zero_mul, add_zero, R.Q_res_pDelta]
+  have hp := R.Q_p_mul_pInv
+  linear_combination y.1 * R.pInv * (R.Q.res R.P.p * R.pInv + 1) * hp
+
+theorem P_res_lwC (y : {y : R.P.Res // y ≠ 0}) : R.P.res (R.lwC (R.yLW y)) = y.1 * R.qInv := by
+  rw [lwC, yLW, map_add, map_mul, map_mul, map_pow, R.P.res_lift, R.P.res_p, zero_mul, add_zero, R.P_res_qDelta]
+  have hq := R.P_q_mul_qInv
+  linear_combination y.1 * R.qInv * (R.P.res R.Q.p * R.qInv + 1) * hq
+
+theorem Q_res_wlShift (y : {y : R.Q.Res // y ≠ 0}) :
+    R.Q.res (R.wlShift (R.yWL y)) = R.pInv + (9 * y.1)⁻¹ := by
+  have hb := R.Q_res_wlBeta (R.yWL y) (R.not_dvd_yWL y)
+  rw [R.Q_res_wlC] at hb
+  have hy := y.2
+  have hp := R.Q_p_ne
+  have h9 := R.Q.nine_ne_zero'
+  have hβ : R.Q.res (R.wlBeta (R.yWL y)) = -(9 * (y.1 * R.pInv))⁻¹ := by
+    rw [pInv] at hb ⊢
+    field_simp
+    linear_combination hb
+  rw [wlShift, map_sub, map_mul, map_mul, map_mul, map_add, map_mul, map_mul, R.Q.res_p, R.Q.res_nine, hβ,
+    R.Q_res_pDelta, yWL, R.Q.res_lift, R.Q_res_pDelta]
+  rw [pInv]
+  field_simp
+  ring
+
+theorem P_res_lwShift (y : {y : R.P.Res // y ≠ 0}) :
+    R.P.res (R.lwShift (R.yLW y)) = R.qInv + (9 * y.1)⁻¹ := by
+  have hb := R.P_res_lwBeta (R.yLW y) (R.not_dvd_yLW y)
+  rw [R.P_res_lwC] at hb
+  have hy := y.2
+  have hq := R.P_q_ne
+  have h9 := R.P.nine_ne_zero'
+  have hβ : R.P.res (R.lwBeta (R.yLW y)) = -(9 * (y.1 * R.qInv))⁻¹ := by
+    rw [qInv] at hb ⊢
+    field_simp
+    linear_combination hb
+  rw [lwShift, map_sub, map_mul, map_mul, map_mul, map_add, map_mul, map_mul, R.P.res_p, R.P.res_nine, hβ,
+    R.P_res_qDelta, yLW, R.P.res_lift, R.P_res_qDelta]
+  rw [qInv]
+  field_simp
+  ring
+
+theorem Q_res_lowBeta_yUL (y : {y : R.Q.Res // y ≠ 0}) :
+    R.Q.res (R.Q.lowBeta (R.yUL y)) = -(9 * (y.1 * R.pInv))⁻¹ := by
+  have hb := R.Q_res_lowBeta (R.yUL y) (R.not_dvd_yUL y)
+  rw [R.Q_res_yUL] at hb
+  have hy := y.2
+  have hp := R.pInv_ne_zero
+  have h9 := R.Q.nine_ne_zero'
+  field_simp
+  linear_combination hb
+
+theorem P_res_lowBeta_yLU (y : {y : R.P.Res // y ≠ 0}) :
+    R.P.res (R.P.lowBeta (R.yLU y)) = -(9 * (y.1 * R.qInv))⁻¹ := by
+  have hb := R.P_res_lowBeta (R.yLU y) (R.not_dvd_yLU y)
+  rw [R.P_res_yLU] at hb
+  have hy := y.2
+  have hq := R.qInv_ne_zero
+  have h9 := R.P.nine_ne_zero'
+  field_simp
+  linear_combination hb
+
+/-- `y ↦ −y` on the units of a residue field. -/
+def negY {F : Type*} [Field F] (y : {y : F // y ≠ 0}) : {y : F // y ≠ 0} := ⟨-y.1, neg_ne_zero.mpr y.2⟩
+
+/-- **The `(W, L)` phase is a `(U, L)` phase**: `κ(W'_p)^{−2}κ(M_y) = (3c/q)₃ = (3y'/q)₃`. -/
+theorem phase_WL (y : {y : R.Q.Res // y ≠ 0}) :
+    (complexCharacter R.wP ^ 2)⁻¹ * complexCharacter (R.wlMat (R.yWL y) (R.not_dvd_yWL y)) =
+      ringComplex (symbol (3 * R.yUL (negY y)) R.Q.p) := by
+  set c := R.wlC (R.yWL y)
+  have hW : complexCharacter (R.wlMat (R.yWL y) (R.not_dvd_yWL y)) =
+      complexCharacter R.wP ^ 2 * ringComplex (symbol (3 * c) R.Q.p) := by
+    rw [complexCharacter_eq_symbol, complexCharacter_eq_symbol,
+      show ((R.wlMat (R.yWL y) (R.not_dvd_yWL y) : levelThree) : SL(2, O)) 1 0 = 3 * c from rfl,
+      show ((R.wlMat (R.yWL y) (R.not_dvd_yWL y) : levelThree) : SL(2, O)) 0 0 = R.P.p ^ 2 * R.Q.p from rfl,
+      show ((R.wP : levelThree) : SL(2, O)) 1 0 = 3 * (R.Q.p * R.pK) from rfl,
+      show ((R.wP : levelThree) : SL(2, O)) 0 0 = R.P.p from rfl, symbol_mul_denominator, symbol_pow_denominator,
+      symbol_congr (show R.P.p ∣ 3 * c - 3 * (R.Q.p * R.pK) from
+        ⟨3 * R.P.p * R.yWL y, by simp only [c, wlC]; ring⟩)]
+    simp only [map_mul, map_pow]
+  have hc : R.Q.p ∣ 3 * c - -(3 * R.yUL (negY y)) := by
+    rw [← R.Q.res_eq_zero_iff, map_sub, map_neg, map_mul, map_mul, R.Q.res_three, R.Q_res_wlC, R.Q_res_yUL]
+    simp [negY]
+  rw [hW, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero 2 (R.complexCharacter_ne_zero R.wP)), one_mul,
+    symbol_congr hc, symbol_neg_numerator _ _ R.Q.primary]
+
+/-- **The `(L, W)` phase is an `(L, U)` phase.** -/
+theorem phase_LW (y : {y : R.P.Res // y ≠ 0}) :
+    (complexCharacter R.wQ ^ 2)⁻¹ * complexCharacter (R.lwMat (R.yLW y) (R.not_dvd_yLW y)) =
+      ringComplex (symbol (3 * R.yLU (negY y)) R.P.p) := by
+  set c := R.lwC (R.yLW y)
+  have hW : complexCharacter (R.lwMat (R.yLW y) (R.not_dvd_yLW y)) =
+      complexCharacter R.wQ ^ 2 * ringComplex (symbol (3 * c) R.P.p) := by
+    rw [complexCharacter_eq_symbol, complexCharacter_eq_symbol,
+      show ((R.lwMat (R.yLW y) (R.not_dvd_yLW y) : levelThree) : SL(2, O)) 1 0 = 3 * c from rfl,
+      show ((R.lwMat (R.yLW y) (R.not_dvd_yLW y) : levelThree) : SL(2, O)) 0 0 = R.Q.p ^ 2 * R.P.p from rfl,
+      show ((R.wQ : levelThree) : SL(2, O)) 1 0 = 3 * (R.P.p * R.qK) from rfl,
+      show ((R.wQ : levelThree) : SL(2, O)) 0 0 = R.Q.p from rfl, symbol_mul_denominator, symbol_pow_denominator,
+      symbol_congr (show R.Q.p ∣ 3 * c - 3 * (R.P.p * R.qK) from
+        ⟨3 * R.Q.p * R.yLW y, by simp only [c, lwC]; ring⟩)]
+    simp only [map_mul, map_pow]
+  have hc : R.P.p ∣ 3 * c - -(3 * R.yLU (negY y)) := by
+    rw [← R.P.res_eq_zero_iff, map_sub, map_neg, map_mul, map_mul, R.P.res_three, R.P_res_lwC, R.P_res_yLU]
+    simp [negY]
+  rw [hW, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero 2 (R.complexCharacter_ne_zero R.wQ)), one_mul,
+    symbol_congr hc, symbol_neg_numerator _ _ R.P.primary]
+
 end PrimaryPair
 
 end GaloisForLFunctions.OrderSixMetaplecticTheory
