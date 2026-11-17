@@ -74,7 +74,7 @@ theorem channelPower_tendsto_pinching {n : ℕ} (r : Fin n → ℝ)
   apply tendsto_pi_nhds.mpr
   intro j
   by_cases h : r i = r j
-  · simpa only [channelPower, pinching, if_pos h, h, coherence_self,
+  · simpa only [channelPower, pinching, h, if_true, coherence_self,
       Complex.ofReal_one, one_pow, one_mul] using
       (tendsto_const_nhds : Tendsto (fun _ : ℕ => A i j) atTop (𝓝 (A i j)))
   · have hlt : coherence (r i) (r j) < 1 := by
@@ -109,7 +109,7 @@ theorem pinching_channelPower {n : ℕ} (k : ℕ) (r : Fin n → ℝ)
   classical
   ext i j
   by_cases h : r i = r j
-  · simp only [pinching, if_pos h, channelPower, h, coherence_self,
+  · simp only [pinching, channelPower, h, if_true, coherence_self,
       Complex.ofReal_one, one_pow, one_mul]
   · simp only [pinching, if_neg h]
 

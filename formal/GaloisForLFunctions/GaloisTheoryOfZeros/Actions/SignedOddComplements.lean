@@ -13,8 +13,6 @@ mechanisms used by Ding et al., arXiv:2611.21555, Theorem 3.1 and Lemma 5.3.
 -/
 
 noncomputable section
--- Use monoid powers rather than the more general scalar-action powers on signs.
-local attribute [-instance] Int.instUnitsPow
 open scoped BigOperators
 namespace GaloisForLFunctions.GaloisTheoryOfZeros.FibreSignedPerm
 variable {α H : Type*} [Group H] [Fintype H]
@@ -23,6 +21,7 @@ variable {α H : Type*} [Group H] [Fintype H]
 def normChoice (ρ : H →* FibreSignedPerm α) : α → ℤˣ :=
   fun i => ∏ g : H, (ρ g).sign i
 
+attribute [-instance] Int.instUnitsPow in
 private theorem odd_power_sign {n : ℕ} (hn : Odd n) (u : ℤˣ) : u ^ n = u := by
   have hu : u * u = 1 := by
     rcases Int.units_eq_one_or u with rfl | rfl <;> rfl

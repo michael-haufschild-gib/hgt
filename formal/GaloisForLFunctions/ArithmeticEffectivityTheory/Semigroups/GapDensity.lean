@@ -30,7 +30,8 @@ theorem mem_gapsBelow (m : ℕ) (k : ℕ → ℕ) (N i : ℕ) :
     i ∈ gapsBelow m k N ↔ i < N ∧ i ∉ carrier m k := by
   simp only [gapsBelow, Finset.mem_filter, Finset.mem_range]
 
-private def reflectAllowedIntoGaps (m : ℕ) (k : ℕ → ℕ) (hK : Kunz m k)
+/-- Reflection about a gap sends allowed exponents to missing exponents. -/
+def reflectAllowedIntoGaps (m : ℕ) (k : ℕ → ℕ) (hK : Kunz m k)
     (n : ℕ) (hn : n ∉ carrier m k) :
     allowedBelow m k (n + 1) → gapsBelow m k (n + 1) := fun i =>
   ⟨n - i.val, (mem_gapsBelow m k (n + 1) _).mpr ⟨by omega, by
@@ -40,7 +41,7 @@ private def reflectAllowedIntoGaps (m : ℕ) (k : ℕ → ℕ) (hK : Kunz m k)
     rw [Nat.sub_add_cancel (by omega : i.val ≤ n)] at hsum
     exact hn hsum⟩⟩
 
-private theorem reflectAllowedIntoGaps_injective (m : ℕ) (k : ℕ → ℕ) (hK : Kunz m k)
+theorem reflectAllowedIntoGaps_injective (m : ℕ) (k : ℕ → ℕ) (hK : Kunz m k)
     (n : ℕ) (hn : n ∉ carrier m k) :
     Function.Injective (reflectAllowedIntoGaps m k hK n hn) := by
   intro i j hij

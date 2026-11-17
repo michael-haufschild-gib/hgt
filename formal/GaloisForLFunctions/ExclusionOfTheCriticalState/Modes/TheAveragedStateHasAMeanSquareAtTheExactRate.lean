@@ -37,11 +37,13 @@ def extremalCopies : Set XiZeroCopy := {q | (centredZero q).re = zetaZeroAbsciss
 def ratedAveragedState (F : ℝ → ℝ) (t : ℝ) : ℝ :=
   Real.exp ((17 / 2 - zetaZeroAbscissa) * t) * averagedState F t
 
+/-- The pair term `m_q conj m_{q'}` of two extremal copies with equal ordinates, `0` otherwise. -/
+def extremalPairTerm (W₀ : ℝ) (F : ℝ → ℝ) (p : extremalCopies × extremalCopies) : ℂ :=
+  if (centredZero p.1).im - (centredZero p.2).im = 0 then
+    zeroModeCoeff W₀ F p.1 * (starRingEnd ℂ) (zeroModeCoeff W₀ F p.2) else 0
+
 /-- The extremal mode mass `Re Σ m_q conj m_{q'}` over extremal pairs with equal ordinates. -/
-def extremalModeMass (W₀ : ℝ) (F : ℝ → ℝ) : ℝ :=
-  (∑' p : extremalCopies × extremalCopies,
-    if (centredZero p.1).im - (centredZero p.2).im = 0 then
-      zeroModeCoeff W₀ F p.1 * (starRingEnd ℂ) (zeroModeCoeff W₀ F p.2) else 0).re
+def extremalModeMass (W₀ : ℝ) (F : ℝ → ℝ) : ℝ := (∑' p, extremalPairTerm W₀ F p).re
 
 theorem re_centredZero_le_abscissa (q : XiZeroCopy) :
     (centredZero q).re ≤ zetaZeroAbscissa - 1 / 2 := by
@@ -84,10 +86,11 @@ theorem criticalState_tendsto_meanSquare_ratedAveragedState {W₀ : ℝ} (hW : 0
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
     Tendsto (fun T : ℝ => T⁻¹ * ∫ u in (0 : ℝ)..T, ratedAveragedState F u ^ 2) atTop
       (𝓝 (extremalModeMass W₀ F)) := by
+  classical
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
   set κ : ℝ := zetaZeroAbscissa - 1 / 2 with hκdef
   have hκ : 0 ≤ κ := by linarith [half_le_zetaZeroAbscissa]
-  set m : XiZeroCopy → ℂ := zeroModeCoeff W₀ F with hmdef
+  let m : XiZeroCopy → ℂ := zeroModeCoeff W₀ F
   have hm : Summable fun q => ‖m q‖ := criticalState_summable_norm_zeroModeCoeff hW ht hF
   set E : Set XiZeroCopy := extremalCopies with hEdef
   -- the full modes at the rate, split into the extremal line and the rest
@@ -127,10 +130,12 @@ theorem criticalState_tendsto_meanSquare_ratedAveragedState {W₀ : ℝ} (hW : 0
   -- the extremal almost-periodic sum
   let c : E → ℂ := fun q => -m q
   let μ : E → ℝ := fun q => (centredZero q).im
+  have hmE : Summable fun q : E => ‖m q‖ := hm.subtype E
   have hc : Summable fun q : E => ‖c q‖ := by
-    simpa only [c, norm_neg] using hm.subtype E
-  have h0 : (∑' q : E, if μ q = 0 then c q else 0) = 0 :=
-    (tsum_congr fun q => if_neg (im_centredZero_ne_zero q)).trans tsum_zero
+    simpa only [c, norm_neg] using hmE
+  have h0 : (∑' q : E, if μ q = 0 then c q else 0) = 0 := by
+    refine (tsum_congr fun q => ?_).trans tsum_zero
+    exact if_neg (im_centredZero_ne_zero q)
   have hS : ∀ u : ℝ, (∑' q : E, c q * cexp ((μ q : ℂ) * I * u)) = -∑' q, Pin q u := fun u => by
     rw [← tsum_neg, tsum_subtype E (fun q => -(m q * cexp (((centredZero q).im : ℂ) * I * u)))]
     refine tsum_congr fun q => ?_
@@ -148,7 +153,7 @@ theorem criticalState_tendsto_meanSquare_ratedAveragedState {W₀ : ℝ} (hW : 0
       unfold zeroModeSeries
       rw [← tsum_mul_left]
       refine tsum_congr fun q => ?_
-      simp only [P, hmdef]
+      simp only [P, m]
       rw [Complex.ofReal_exp, mul_left_comm, ← Complex.exp_add]
       congr 2
       push_cast
@@ -157,11 +162,8 @@ theorem criticalState_tendsto_meanSquare_ratedAveragedState {W₀ : ℝ} (hW : 0
       tsum_congr (hPsplit · u), (sPin u).tsum_add (sPout u hu.le)]
     ring
   -- the remainder tends to zero
-  have hR : Tendsto (fun u : ℝ => ∑' q, Pout q u) atTop (𝓝 0) := by
-    have h := tendsto_tsum_of_dominated_convergence (𝓕 := atTop) (f := fun u q => Pout q u)
-      (g := fun _ => (0 : ℂ)) hm (fun q => ?_)
-      (eventually_ge_atTop 0 |>.mono fun u hu q => hnormPout q u hu)
-    · simpa using h
+  have hpt : ∀ q, Tendsto (fun u : ℝ => Pout q u) atTop (𝓝 0) := by
+    intro q
     by_cases hq : q ∈ E
     · simp only [Pout, if_pos hq]
       exact tendsto_const_nhds
@@ -178,6 +180,11 @@ theorem criticalState_tendsto_meanSquare_ratedAveragedState {W₀ : ℝ} (hW : 0
       refine he.congr fun u => ?_
       rw [norm_mul, norm_cexp_mul_ofReal]
       simp only [Complex.sub_re, Complex.ofReal_re]
+  have hR : Tendsto (fun u : ℝ => ∑' q, Pout q u) atTop (𝓝 0) := by
+    have h := tendsto_tsum_of_dominated_convergence (𝓕 := atTop) (f := fun u q => Pout q u)
+      (g := fun _ => (0 : ℂ)) hm hpt
+      ((eventually_ge_atTop 0).mono fun u hu q => hnormPout q u hu)
+    simpa using h
   have hA : Tendsto (fun u : ℝ => ((Real.exp ((8 - κ) * u) : ℝ) : ℂ) * archimedeanModes W₀ F u)
       atTop (𝓝 0) := by
     set K : ℝ := ‖stateMeromorphic W₀ F (-9)‖ + ‖stateMeromorphic W₀ F (-10)‖ +
@@ -208,7 +215,7 @@ theorem criticalState_tendsto_meanSquare_ratedAveragedState {W₀ : ℝ} (hW : 0
   rw [norm_zero, sq, zero_mul, zero_add, extremalModeMass]
   congr 1
   refine tsum_congr fun p => ?_
-  simp only [c, μ, map_neg, neg_mul_neg]
+  simp only [extremalPairTerm, c, μ, m, map_neg, neg_mul_neg]
 
 /-- The coefficient of an extremal mode is not zero. -/
 theorem zeroModeCoeff_ne_zero_of_re_nonneg {W₀ : ℝ} (hW : 0 < W₀)
@@ -234,54 +241,54 @@ theorem zeroModeCoeff_ne_zero_of_re_nonneg {W₀ : ℝ} (hW : 0 < W₀)
   unfold zeroModeCoeff
   exact mul_ne_zero (mul_ne_zero (neg_ne_zero.mpr (inv_ne_zero ha)) hL) hA
 
-/-- The pair terms of the extremal mass are nonnegative reals, positive on the diagonal. -/
-private theorem extremalPair_re {W₀ : ℝ} {F : ℝ → ℝ} (p : extremalCopies × extremalCopies) :
-    0 ≤ (if (centredZero p.1).im - (centredZero p.2).im = 0 then
-      zeroModeCoeff W₀ F p.1 * (starRingEnd ℂ) (zeroModeCoeff W₀ F p.2) else 0).re ∧
-    (p.1 = p.2 → (if (centredZero p.1).im - (centredZero p.2).im = 0 then
-      zeroModeCoeff W₀ F p.1 * (starRingEnd ℂ) (zeroModeCoeff W₀ F p.2) else 0).re =
-        ‖zeroModeCoeff W₀ F p.1‖ ^ 2) := by
-  obtain ⟨⟨q₁, h₁⟩, ⟨q₂, h₂⟩⟩ := p
-  have hsame : (centredZero q₁).im - (centredZero q₂).im = 0 → centredZero q₁ = centredZero q₂ :=
-    fun h => Complex.ext (by rw [show (centredZero q₁).re = _ from h₁,
-      show (centredZero q₂).re = _ from h₂]) (sub_eq_zero.mp h)
-  have hcoef : centredZero q₁ = centredZero q₂ → zeroModeCoeff W₀ F q₁ = zeroModeCoeff W₀ F q₂ :=
-    fun h => by unfold zeroModeCoeff; rw [h]
-  have hsq : ∀ w : ℂ, (w * (starRingEnd ℂ) w).re = ‖w‖ ^ 2 := fun w => by
-    rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
-  constructor
-  · simp only
-    split_ifs with h
-    · rw [← hcoef (hsame h), hsq]; positivity
-    · simp
-  · intro hp
-    simp only [Prod.mk.injEq, Subtype.mk.injEq] at hp ⊢
-    subst hp
-    simp only [sub_self, if_true, hsq]
+private theorem re_mul_conj_self (w : ℂ) : (w * (starRingEnd ℂ) w).re = ‖w‖ ^ 2 := by
+  rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq]
 
-theorem summable_extremalPair {W₀ : ℝ} (hW : 0 < W₀)
+/-- The pair terms are nonnegative reals: equal ordinates on the extremal line mean equal zeros. -/
+theorem extremalPairTerm_re_nonneg (W₀ : ℝ) (F : ℝ → ℝ) (p : extremalCopies × extremalCopies) :
+    0 ≤ (extremalPairTerm W₀ F p).re := by
+  unfold extremalPairTerm
+  split_ifs with h
+  · have h₁ : (centredZero (p.1 : XiZeroCopy)).re = zetaZeroAbscissa - 1 / 2 := p.1.2
+    have h₂ : (centredZero (p.2 : XiZeroCopy)).re = zetaZeroAbscissa - 1 / 2 := p.2.2
+    have hz : centredZero (p.1 : XiZeroCopy) = centredZero (p.2 : XiZeroCopy) :=
+      Complex.ext (h₁.trans h₂.symm) (sub_eq_zero.mp h)
+    have hc : zeroModeCoeff W₀ F p.1 = zeroModeCoeff W₀ F p.2 := by
+      unfold zeroModeCoeff; rw [hz]
+    rw [← hc, re_mul_conj_self]
+    positivity
+  · simp
+
+theorem extremalPairTerm_diag (W₀ : ℝ) (F : ℝ → ℝ) (q : extremalCopies) :
+    (extremalPairTerm W₀ F (q, q)).re = ‖zeroModeCoeff W₀ F q‖ ^ 2 := by
+  unfold extremalPairTerm
+  rw [if_pos (sub_self _), re_mul_conj_self]
+
+theorem summable_extremalPairTerm {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
-    Summable fun p : extremalCopies × extremalCopies =>
-      if (centredZero p.1).im - (centredZero p.2).im = 0 then
-        zeroModeCoeff W₀ F p.1 * (starRingEnd ℂ) (zeroModeCoeff W₀ F p.2) else 0 := by
-  have hm := (criticalState_summable_norm_zeroModeCoeff hW ht hF).subtype extremalCopies
+    Summable (extremalPairTerm W₀ F) := by
+  have hm : Summable fun q : extremalCopies => ‖zeroModeCoeff W₀ F q‖ :=
+    (criticalState_summable_norm_zeroModeCoeff hW ht hF).subtype extremalCopies
+  have hmc : Summable fun q : extremalCopies => ‖(starRingEnd ℂ) (zeroModeCoeff W₀ F q)‖ := by
+    simpa only [Complex.norm_conj] using hm
   have hpair : Summable fun p : extremalCopies × extremalCopies =>
-      ‖zeroModeCoeff W₀ F p.1 * (starRingEnd ℂ) (zeroModeCoeff W₀ F p.2)‖ := by
-    have h := Summable.mul_norm (f := fun q : extremalCopies => zeroModeCoeff W₀ F q)
-      (g := fun q : extremalCopies => (starRingEnd ℂ) (zeroModeCoeff W₀ F q)) hm
-      (by simpa only [Complex.norm_conj] using hm)
-    simpa only [norm_mul] using h
+      ‖zeroModeCoeff W₀ F p.1‖ * ‖(starRingEnd ℂ) (zeroModeCoeff W₀ F p.2)‖ :=
+    Summable.mul_norm (f := fun q : extremalCopies => zeroModeCoeff W₀ F q)
+      (g := fun q : extremalCopies => (starRingEnd ℂ) (zeroModeCoeff W₀ F q)) hm hmc
   refine Summable.of_norm_bounded hpair fun p => ?_
-  split_ifs <;> simp
+  unfold extremalPairTerm
+  split_ifs
+  · rw [norm_mul]
+  · rw [norm_zero]; positivity
 
 /-- **The attained dichotomy.** The extremal mode mass is positive iff `Θ` is attained. -/
 theorem extremalModeMass_pos_iff {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
     0 < extremalModeMass W₀ F ↔ ∃ ρ : ℂ, riemannZeta ρ = 0 ∧ ρ.re = zetaZeroAbscissa := by
-  have hs := summable_extremalPair hW ht hF
-  have hsre := Complex.reCLM.summable hs
+  have hs := summable_extremalPairTerm hW ht hF
+  have hsre : Summable fun p => (extremalPairTerm W₀ F p).re := Complex.reCLM.summable hs
   constructor
   · intro hpos
     by_contra hno
@@ -308,12 +315,10 @@ theorem extremalModeMass_pos_iff {W₀ : ℝ} (hW : 0 < W₀)
       linarith [half_le_zetaZeroAbscissa]
     have hne := zeroModeCoeff_ne_zero_of_re_nonneg hW ht hF hq0
     rw [extremalModeMass, Complex.re_tsum hs]
-    let p : extremalCopies × extremalCopies := (⟨q, hqE⟩, ⟨q, hqE⟩)
-    have hp := (extremalPair_re (W₀ := W₀) (F := F) p).2 rfl
-    refine lt_of_lt_of_le ?_ (hsre.le_tsum p fun p' _ => (extremalPair_re p').1)
-    simp only [Complex.reCLM_apply]
-    rw [hp]
-    exact pow_pos (norm_pos_iff.mpr hne) 2
+    have hdiag := extremalPairTerm_diag W₀ F ⟨q, hqE⟩
+    have hle := hsre.le_tsum (⟨q, hqE⟩, ⟨q, hqE⟩) fun p _ => extremalPairTerm_re_nonneg W₀ F p
+    rw [hdiag] at hle
+    exact lt_of_lt_of_le (pow_pos (norm_pos_iff.mpr hne) 2) hle
 
 /-- If `Θ` is not attained the averaged state is `o(e^{-(17/2 - Θ)t})` in mean square. -/
 theorem extremalModeMass_eq_zero_of_not_attained {W₀ : ℝ} {F : ℝ → ℝ}

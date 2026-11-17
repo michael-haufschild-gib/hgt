@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.ShiftPairLocalIntersectionAlgebra
 import Mathlib.RingTheory.TensorProduct.Maps
+import Mathlib.RingTheory.TensorProduct.Finite
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 
 /-!

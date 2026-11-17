@@ -34,8 +34,7 @@ theorem hullHecke_reciprocal_products (q : ℂ) (f : _root_.Polynomial ℂ) :
     hullPositive_mul_hullNegative, hullNegative_mul_hullPositive, hp, hn,
     smul_zero, add_zero, zero_add]
   by_cases ha : f.eval (q ^ 2) = 0 <;> by_cases hb : f.eval (-1) = 0 <;>
-    simp only [ha, hb, if_pos, if_neg, inv_zero, zero_mul, mul_zero,
-      mul_inv_cancel₀, inv_mul_cancel₀, zero_smul, one_smul, and_self]
+    simp [ha, hb]
 
 /-- The support projection acts identically on the observable from either side. -/
 theorem hullHecke_support_absorbs (q : ℂ) (f : _root_.Polynomial ℂ) :
@@ -48,8 +47,7 @@ theorem hullHecke_support_absorbs (q : ℂ) (f : _root_.Polynomial ℂ) :
     hullPositive_mul_hullNegative, hullNegative_mul_hullPositive, hp, hn,
     smul_zero, add_zero, zero_add]
   by_cases ha : f.eval (q ^ 2) = 0 <;> by_cases hb : f.eval (-1) = 0 <;>
-    simp only [ha, hb, if_pos, if_neg, zero_mul, mul_zero, one_mul, mul_one,
-      zero_smul, and_self]
+    simp [ha, hb]
 
 /-- The surviving sectors form a genuine projection, even at exceptional parameters. -/
 theorem hullHeckeSupport_idempotent (q : ℂ) (f : _root_.Polynomial ℂ) :
@@ -61,7 +59,7 @@ theorem hullHeckeSupport_idempotent (q : ℂ) (f : _root_.Polynomial ℂ) :
     smul_smul, hullPositive_mul_hullNegative, hullNegative_mul_hullPositive,
     hp, hn, smul_zero, add_zero, zero_add]
   by_cases ha : f.eval (q ^ 2) = 0 <;> by_cases hb : f.eval (-1) = 0 <;>
-    simp only [ha, hb, if_pos, if_neg, zero_mul, one_mul]
+    simp [ha, hb]
 
 /-- The entire observable image is the sum of its surviving reflection sectors. -/
 theorem hullHecke_polynomial_range (q : ℂ) (f : _root_.Polynomial ℂ) :
@@ -105,7 +103,7 @@ theorem hullHecke_polynomial_rank (q : ℂ) (f : _root_.Polynomial ℂ) :
     (LinearMap.IsIdempotentElem.isProj_range _ (hullPositive_idempotent p)).trace,
     (LinearMap.IsIdempotentElem.isProj_range _ (hullNegative_idempotent p)).trace]
   by_cases ha : f.eval (q ^ 2) = 0 <;> by_cases hb : f.eval (-1) = 0 <;>
-    simp only [ha, hb, if_pos, if_neg, zero_smul, one_smul]
+    simp [ha, hb]
 
 #print axioms hullHecke_reciprocal_products
 #print axioms hullHecke_polynomial_range

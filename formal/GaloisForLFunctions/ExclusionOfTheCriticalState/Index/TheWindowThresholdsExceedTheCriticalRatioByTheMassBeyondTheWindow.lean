@@ -29,7 +29,7 @@ open MeasureTheory Set Filter Topology Zeta23
 
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri CriticalArithmeticCorrelationTheory
-  CohomologyOfWindowsOfSpecZ WindowTowerOfSpecZ
+  CohomologyOfWindowsOfSpecZ WindowTowerOfSpecZ SpacingScaleHarmonicAnalysis
 
 local notation "W8" => criticalHalfLineExponentialPair
 
@@ -49,7 +49,7 @@ theorem isWindowTest_eq_zero_of_nonneg {A : ℝ} {H : ℝ → ℝ} (hH : IsWindo
 
 theorem exponentialMass_eight_eq (H : ℝ → ℝ) :
     exponentialMass 8 H = ∫ u, H u ^ 2 * Real.exp (-(8 * u)) :=
-  integral_congr_ae (Eventually.of_forall fun u => mul_comm _ _)
+  integral_congr_ae (Eventually.of_forall fun _ => mul_comm _ _)
 
 /-- A window test with \`Q(H) < 0\` has positive confinement mass. -/
 theorem exponentialMass_pos_of_weilQuad_neg {A : ℝ} {H : ℝ → ℝ} (hH : IsWindowTest A H)
@@ -75,7 +75,6 @@ theorem criticalAliasCoefficient_testCriticalMultiple {H : ℝ → ℝ} (hQ : we
   have hm := hM.ne'
   unfold criticalAliasCoefficient testCriticalMultiple splineAtom
   field_simp
-  ring
 
 /-- **A negative window test is a null direction at its critical multiple**:
 \`Q_{R*(H)}(H) = 0\`. -/
@@ -228,7 +227,9 @@ theorem criticalState_tendsto_of_windowTests {W₀ : ℝ} (hW : 0 < W₀)
     ring
   refine ⟨s, hs, ?_, ?_⟩
   · exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim
-      (fun k => criticalHalfLineExponentialPair_self_nonneg _) hW8
+      (fun k => by
+        rw [criticalHalfLineExponentialPair_self]
+        exact integral_nonneg fun u => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le) hW8
   · exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hlim
       (fun k => criticalHalfLineFullEnergy_nonneg_at_windowThreshold hW ht (hD k)) hQW
 
@@ -288,7 +289,8 @@ theorem criticalState_windowThreshold_ge {W₀ : ℝ} (hW : 0 < W₀)
     exact setIntegral_le_integral hX.exponential
       (ae_of_all _ fun u => by simp only [Pi.zero_apply]; positivity)
   have h := htail.trans hW8
-  rw [inv_mul_le_iff₀ hC]
+  have h' : C⁻¹ * ∫ u in Iio (-A), F u ^ 2 * Real.exp (-(8 * u)) ≤ testCriticalMultiple H - W₀ := by
+    rw [inv_mul_le_iff₀ hC]; exact h
   linarith
 
 /-- **No window attains the critical ratio**: \`W₀ < R₁(A)\` for every \`A ≥ 0\`. -/
