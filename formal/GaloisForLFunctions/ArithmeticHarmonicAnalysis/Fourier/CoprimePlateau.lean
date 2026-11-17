@@ -68,7 +68,7 @@ theorem coprime_sawtooth_floor_formula {q : ℕ} (hq : 1 < q) (x : ℝ) :
     intro d hd
     have hd0 : (d : ℝ) ≠ 0 := by exact_mod_cast (Nat.pos_of_mem_divisors hd).ne'
     rw [hsaw]
-    split_ifs <;> (field_simp; ring)
+    split_ifs <;> field_simp <;> ring
   rw [sum_congr rfl hterm, sum_add_distrib, sum_sub_distrib, sum_sub_distrib,
     ← sum_mul, HTGeometry.sum_divisors_moebius_real, if_neg hq.ne', zero_mul,
     ← sum_div, _root_.RHTower.Sieve.sum_moebius_div_divisors_eq_totient_div (by omega),

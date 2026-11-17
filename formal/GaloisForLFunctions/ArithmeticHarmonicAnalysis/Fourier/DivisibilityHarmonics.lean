@@ -109,6 +109,3 @@ theorem tendsto_coprimeHarmonicSine (q : ℕ) (x : ℝ) :
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis
-
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_divisorFilter_harmonicSine
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.tendsto_coprimeHarmonicSine

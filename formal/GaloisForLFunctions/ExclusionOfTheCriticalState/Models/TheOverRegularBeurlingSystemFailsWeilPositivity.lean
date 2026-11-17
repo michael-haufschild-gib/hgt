@@ -97,8 +97,8 @@ theorem ofReal_primeNumerator_mul_cexp (μ ν γ : ℝ) (s : ℂ) (t : ℝ) :
   push_cast
   linear_combination (cexp (-(s * t)) * cexp ((1 - μ : ℂ) * t)) * ecos
 
-theorem modeRate_re_pos {μ ν γ : ℝ} (hμ : 0 ≤ μ) (hlow : 0 ≤ 3 * μ - 1 - ν)
-    (hhigh : 0 ≤ 3 * μ - 1 + ν) (h4 : 0 ≤ 4 * μ - 1) {s : ℂ} (hs : 1 < s.re) (k : Fin 6) :
+theorem modeRate_re_pos {μ ν γ : ℝ} (hlow : 0 ≤ 3 * μ - 1 - ν) (hhigh : 0 ≤ 3 * μ - 1 + ν)
+    {s : ℂ} (hs : 1 < s.re) (k : Fin 6) :
     0 < (modeRate μ ν γ s k).re := by
   fin_cases k <;> simp [modeRate] <;> linarith
 
@@ -112,15 +112,14 @@ theorem integral_Ioi_sum_cexp {ι : Type*} (S : Finset ι) (a c : ι → ℂ)
 
 /-- **The Laplace transform of the von Mangoldt measure**: the six modes of `E`. -/
 theorem integral_cexp_overRegularMeasure {μ ν γ : ℝ} (hμ : 0 ≤ μ) (hlow : 0 ≤ 3 * μ - 1 - ν)
-    (hhigh : 0 ≤ 3 * μ - 1 + ν) (h4 : 0 ≤ 4 * μ - 1) {s : ℂ} (hs : 1 < s.re) :
+    (hhigh : 0 ≤ 3 * μ - 1 + ν) {s : ℂ} (hs : 1 < s.re) :
     (∫ t, cexp (-(s * t)) ∂overRegularMeasure μ ν γ) =
       ∑ k, modeCoeff k / modeRate μ ν γ s k := by
   unfold overRegularMeasure
   rw [integral_withDensity_eq_integral_smul (measurable_toNNReal_primeNumerator μ ν γ),
     ← integral_Ioi_sum_cexp Finset.univ modeCoeff (modeRate μ ν γ s)
-      fun k _ => modeRate_re_pos hμ hlow hhigh h4 hs k]
+      fun k _ => modeRate_re_pos hlow hhigh hs k]
   refine setIntegral_congr_fun measurableSet_Ioi fun t ht => ?_
-  simp only
   rw [NNReal.smul_def, Real.coe_toNNReal _ (primeNumerator_nonneg hμ (le_of_lt ht)),
     Complex.real_smul, ofReal_primeNumerator_mul_cexp]
 
@@ -135,7 +134,7 @@ theorem sum_modeCoeff_div (μ ν γ : ℝ) (s : ℂ) :
 
 /-- **The von Mangoldt measure of the over-regular system is a Beurling measure.** -/
 theorem isBeurlingMeasure_overRegularMeasure {μ ν γ : ℝ} (hμ : 0 ≤ μ)
-    (hlow : 0 ≤ 3 * μ - 1 - ν) (hhigh : 0 ≤ 3 * μ - 1 + ν) (h4 : 0 ≤ 4 * μ - 1) :
+    (hlow : 0 ≤ 3 * μ - 1 - ν) (hhigh : 0 ≤ 3 * μ - 1 + ν) :
     IsBeurlingMeasure (overRegularMeasure μ ν γ) where
   support := by
     refine withDensity_absolutelyContinuous _ _ ?_
@@ -151,8 +150,8 @@ theorem isBeurlingMeasure_overRegularMeasure {μ ν γ : ℝ} (hμ : 0 ≤ μ)
     have hC : Integrable (fun t : ℝ => ∑ k, modeCoeff k * cexp (-modeRate μ ν γ σ k * t))
         (volume.restrict (Ioi 0)) :=
       integrable_finsetSum _ fun k _ =>
-        (integrableOn_cexp_neg_mul (modeRate_re_pos hμ hlow hhigh h4 hs k)).const_mul _
-    refine hC.mono (((continuous_primeNumerator μ ν γ).real_toNNReal.smul
+        (integrableOn_cexp_neg_mul (modeRate_re_pos hlow hhigh hs k)).const_mul _
+    refine hC.mono (((continuous_real_toNNReal.comp (continuous_primeNumerator μ ν γ)).smul
       (by fun_prop : Continuous fun t : ℝ => Real.exp (-(σ * t)))).aestronglyMeasurable) ?_
     refine (ae_restrict_iff' measurableSet_Ioi).mpr (Eventually.of_forall fun t ht => ?_)
     rw [← ofReal_primeNumerator_mul_cexp, NNReal.smul_def,
@@ -195,10 +194,11 @@ theorem overRegularXi_eq {μ ν γ : ℝ} (hlow : 0 ≤ 3 * μ - 1 - ν) (hhigh 
     push_cast; ring
   have hq2' : w + (1 / 2 + ((3 * μ - 1 + ν : ℝ) : ℂ)) = (1 / 2 + w) + (3 * μ - 1 + ν) := by
     push_cast; ring
-  rw [hq1', hq2']
+  have e0 : w + 1 / 2 = 1 / 2 + w := by ring
+  have e3 : w + (1 / 2 + ((4 * μ - 1 : ℝ) : ℂ)) = 1 / 2 + w + (4 * μ - 1) := by push_cast; ring
+  rw [hq1', hq2', e0, e3]
+  generalize (1 : ℂ) / 2 + w = s at hq1 hq2 hs1 ⊢
   field_simp
-  push_cast
-  ring
 
 theorem differentiableAt_overRegularRational {μ ν γ : ℝ} (hlow : 0 ≤ 3 * μ - 1 - ν)
     (hhigh : 0 ≤ 3 * μ - 1 + ν) {w : ℂ} (hw : 0 < w.re) :
@@ -220,7 +220,7 @@ theorem analyticOnNhd_overRegularXi {μ ν γ : ℝ} (hlow : 0 ≤ 3 * μ - 1 - 
 
 /-- The completed zeta has no zero on `Re w > ½`. -/
 theorem overRegularXi_ne_zero {μ ν γ : ℝ} (hμ : 0 < μ) (hlow : 0 ≤ 3 * μ - 1 - ν)
-    (hhigh : 0 ≤ 3 * μ - 1 + ν) (h4 : 0 ≤ 4 * μ - 1) {w : ℂ} (hw : 1 / 2 < w.re) :
+    (hhigh : 0 ≤ 3 * μ - 1 + ν) {w : ℂ} (hw : 1 / 2 < w.re) :
     overRegularXi μ ν γ w ≠ 0 := by
   unfold overRegularXi overRegularRational
   refine mul_ne_zero (Gammaℝ_ne_zero_of_re_pos (by simp; linarith))
@@ -243,58 +243,62 @@ theorem logDeriv_linear_mul {g : ℂ → ℂ} {b w : ℂ} (hb : w + b ≠ 0) (hg
   rw [logDeriv_mul (f := fun z : ℂ => z + b) w hb hg (differentiableAt_id.add_const b) hdg,
     logDeriv_add_const]
 
+/-- Logarithmic derivative of a quotient of products of linear factors. -/
+theorem logDeriv_four_div_two {b₀ b₁ b₂ b₃ b₄ b₅ w : ℂ} (n0 : w + b₀ ≠ 0) (n1 : w + b₁ ≠ 0)
+    (n2 : w + b₂ ≠ 0) (n3 : w + b₃ ≠ 0) (n4 : w + b₄ ≠ 0) (n5 : w + b₅ ≠ 0) :
+    logDeriv (fun z => (z + b₀) * ((z + b₁) * ((z + b₂) * (z + b₃))) / ((z + b₄) * (z + b₅))) w =
+      1 / (w + b₀) + 1 / (w + b₁) + 1 / (w + b₂) + 1 / (w + b₃) -
+        (1 / (w + b₄) + 1 / (w + b₅)) := by
+  have hP : logDeriv (fun z => (z + b₀) * ((z + b₁) * ((z + b₂) * (z + b₃)))) w =
+      1 / (w + b₀) + 1 / (w + b₁) + 1 / (w + b₂) + 1 / (w + b₃) := by
+    rw [logDeriv_linear_mul (g := fun z => (z + b₁) * ((z + b₂) * (z + b₃))) n0
+        (mul_ne_zero n1 (mul_ne_zero n2 n3)) (by fun_prop),
+      logDeriv_linear_mul (g := fun z => (z + b₂) * (z + b₃)) n1 (mul_ne_zero n2 n3) (by fun_prop),
+      logDeriv_linear_mul (g := fun z => z + b₃) n2 n3 (by fun_prop), logDeriv_add_const]
+    ring
+  have hQ : logDeriv (fun z => (z + b₄) * (z + b₅)) w = 1 / (w + b₄) + 1 / (w + b₅) := by
+    rw [logDeriv_linear_mul (g := fun z => z + b₅) n4 n5 (by fun_prop), logDeriv_add_const]
+  rw [← hP, ← hQ]
+  exact logDeriv_div (f := fun z => (z + b₀) * ((z + b₁) * ((z + b₂) * (z + b₃))))
+    (g := fun z => (z + b₄) * (z + b₅)) w
+    (mul_ne_zero n0 (mul_ne_zero n1 (mul_ne_zero n2 n3))) (mul_ne_zero n4 n5)
+    (by fun_prop) (by fun_prop)
+
 /-- **The logarithmic derivative of the completed zeta is the Beurling symbol** on `Re w > ½`. -/
 theorem logDeriv_overRegularXi {μ ν γ : ℝ} (hμ : 0 < μ) (hlow : 0 ≤ 3 * μ - 1 - ν)
-    (hhigh : 0 ≤ 3 * μ - 1 + ν) (h4 : 0 ≤ 4 * μ - 1) {w : ℂ} (hw : 1 / 2 < w.re) :
+    (hhigh : 0 ≤ 3 * μ - 1 + ν) {w : ℂ} (hw : 1 / 2 < w.re) :
     logDeriv (overRegularXi μ ν γ) w = beurlingLogDeriv (overRegularMeasure μ ν γ) w := by
   have hs : 0 < ((1 : ℂ) / 2 + w).re := by simp; linarith
   have hs1 : 1 < ((1 : ℂ) / 2 + w).re := by simp; linarith
-  set b₀ : ℂ := 1 / 2
-  set b₁ : ℂ := 1 / 2 - (((1 - μ : ℝ) : ℂ) + γ * I)
-  set b₂ : ℂ := 1 / 2 - (((1 - μ : ℝ) : ℂ) - γ * I)
-  set b₃ : ℂ := 1 / 2 + ((4 * μ - 1 : ℝ) : ℂ)
-  set b₄ : ℂ := 1 / 2 + ((3 * μ - 1 - ν : ℝ) : ℂ)
-  set b₅ : ℂ := 1 / 2 + ((3 * μ - 1 + ν : ℝ) : ℂ)
-  have n0 : w + b₀ ≠ 0 := ne_zero_of_re_pos (by simp [b₀]; linarith)
-  have n1 : w + b₁ ≠ 0 := ne_zero_of_re_pos (by simp [b₁]; linarith)
-  have n2 : w + b₂ ≠ 0 := ne_zero_of_re_pos (by simp [b₂]; linarith)
-  have n3 : w + b₃ ≠ 0 := ne_zero_of_re_pos (by simp [b₃]; linarith)
-  have n4 : w + b₄ ≠ 0 := ne_zero_of_re_pos (by simp [b₄]; linarith)
-  have n5 : w + b₅ ≠ 0 := ne_zero_of_re_pos (by simp [b₅]; linarith)
-  have hP : logDeriv (fun z => (z + b₀) * ((z + b₁) * ((z + b₂) * (z + b₃)))) w =
-      1 / (w + b₀) + 1 / (w + b₁) + 1 / (w + b₂) + 1 / (w + b₃) := by
-    rw [logDeriv_linear_mul n0 (mul_ne_zero n1 (mul_ne_zero n2 n3)) (by fun_prop),
-      logDeriv_linear_mul n1 (mul_ne_zero n2 n3) (by fun_prop),
-      logDeriv_linear_mul n2 n3 (by fun_prop), logDeriv_add_const]
-    ring
-  have hQ : logDeriv (fun z => (z + b₄) * (z + b₅)) w = 1 / (w + b₄) + 1 / (w + b₅) := by
-    rw [logDeriv_linear_mul n4 n5 (by fun_prop), logDeriv_add_const]
+  have n0 : w + 1 / 2 ≠ 0 := ne_zero_of_re_pos (by simp; linarith)
+  have n1 : w + (1 / 2 - (((1 - μ : ℝ) : ℂ) + γ * I)) ≠ 0 := ne_zero_of_re_pos (by simp; linarith)
+  have n2 : w + (1 / 2 - (((1 - μ : ℝ) : ℂ) - γ * I)) ≠ 0 := ne_zero_of_re_pos (by simp; linarith)
+  have n3 : w + (1 / 2 + ((4 * μ - 1 : ℝ) : ℂ)) ≠ 0 := ne_zero_of_re_pos (by simp; linarith)
+  have n4 : w + (1 / 2 + ((3 * μ - 1 - ν : ℝ) : ℂ)) ≠ 0 := ne_zero_of_re_pos (by simp; linarith)
+  have n5 : w + (1 / 2 + ((3 * μ - 1 + ν : ℝ) : ℂ)) ≠ 0 := ne_zero_of_re_pos (by simp; linarith)
   have hR : logDeriv (overRegularRational μ ν γ) w =
-      1 / (w + b₀) + 1 / (w + b₁) + 1 / (w + b₂) + 1 / (w + b₃) -
-        (1 / (w + b₄) + 1 / (w + b₅)) := by
-    rw [← hP, ← hQ]
-    exact logDeriv_div (f := fun z => (z + b₀) * ((z + b₁) * ((z + b₂) * (z + b₃))))
-      (g := fun z => (z + b₄) * (z + b₅)) w
-      (mul_ne_zero n0 (mul_ne_zero n1 (mul_ne_zero n2 n3))) (mul_ne_zero n4 n5)
-      (by fun_prop) (by fun_prop)
+      1 / (w + 1 / 2) + 1 / (w + (1 / 2 - (((1 - μ : ℝ) : ℂ) + γ * I))) +
+        1 / (w + (1 / 2 - (((1 - μ : ℝ) : ℂ) - γ * I))) + 1 / (w + (1 / 2 + ((4 * μ - 1 : ℝ) : ℂ))) -
+        (1 / (w + (1 / 2 + ((3 * μ - 1 - ν : ℝ) : ℂ))) +
+          1 / (w + (1 / 2 + ((3 * μ - 1 + ν : ℝ) : ℂ)))) :=
+    logDeriv_four_div_two n0 n1 n2 n3 n4 n5
   have hΓd : DifferentiableAt ℂ Gammaℝ (1 / 2 + w) := differentiableAt_Gammaℝ_of_re_pos hs
+  have hlin : DifferentiableAt ℂ (fun z : ℂ => 1 / 2 + z) w :=
+    (differentiableAt_const _).add differentiableAt_id
   have hΓ : logDeriv (fun z : ℂ => Gammaℝ (1 / 2 + z)) w = logDeriv Gammaℝ (1 / 2 + w) := by
-    have h := logDeriv_comp (f := Gammaℝ) (g := fun z : ℂ => 1 / 2 + z) hΓd
-      ((differentiableAt_const _).add differentiableAt_id)
+    have h := logDeriv_comp (f := Gammaℝ) (g := fun z : ℂ => 1 / 2 + z) hΓd hlin
     rw [show (fun z : ℂ => Gammaℝ (1 / 2 + z)) = Gammaℝ ∘ fun z : ℂ => 1 / 2 + z from rfl, h,
       deriv_const_add, deriv_id'', mul_one]
   have hRne : overRegularRational μ ν γ w ≠ 0 :=
     div_ne_zero (mul_ne_zero n0 (mul_ne_zero n1 (mul_ne_zero n2 n3))) (mul_ne_zero n4 n5)
-  have hL := integral_cexp_overRegularMeasure (μ := μ) (ν := ν) (γ := γ) hμ.le hlow hhigh h4 hs1
+  have hL := integral_cexp_overRegularMeasure (μ := μ) (ν := ν) (γ := γ) hμ.le hlow hhigh hs1
   rw [sum_modeCoeff_div] at hL
   unfold overRegularXi
   rw [logDeriv_mul (f := fun z : ℂ => Gammaℝ (1 / 2 + z)) (g := overRegularRational μ ν γ) w
-    (Gammaℝ_ne_zero_of_re_pos hs) hRne
-    (hΓd.comp w ((differentiableAt_const _).add differentiableAt_id))
+    (Gammaℝ_ne_zero_of_re_pos hs) hRne (hΓd.comp w hlin)
     (differentiableAt_overRegularRational hlow hhigh (by linarith)), hΓ, hR]
   unfold beurlingLogDeriv
   rw [hL]
-  simp only [b₀, b₁, b₂, b₃, b₄, b₅]
   ring
 
 /-! ### Weil positivity fails -/
@@ -311,11 +315,10 @@ theorem overRegular_exists_probe_form_neg {μ ν γ : ℝ} (hμ2 : μ < 1 / 2) (
   have hμ : 0 < μ := by linarith
   have hlow : 0 ≤ 3 * μ - 1 - ν := by linarith
   have hhigh : 0 ≤ 3 * μ - 1 + ν := by linarith
-  have h4 : 0 ≤ 4 * μ - 1 := by linarith
   refine exists_beurling_probe_form_neg_of_zero (isBeurlingMeasure_overRegularMeasure hμ.le hlow
-    hhigh h4) hS hp₀ hacc (analyticOnNhd_overRegularXi hlow hhigh)
-    (fun w hw => overRegularXi_ne_zero hμ hlow hhigh h4 hw)
-    (fun w hw => logDeriv_overRegularXi hμ hlow hhigh h4 hw) ?_ (overRegularXi_root μ ν γ)
+    hhigh) hS hp₀ hacc (analyticOnNhd_overRegularXi hlow hhigh)
+    (fun w hw => overRegularXi_ne_zero hμ hlow hhigh hw)
+    (fun w hw => logDeriv_overRegularXi hμ hlow hhigh hw) ?_ (overRegularXi_root μ ν γ)
   simp
   linarith
 
@@ -345,8 +348,18 @@ theorem overRegular_not_exists_caratheodory {μ ν γ : ℝ} (hμ2 : μ < 1 / 2)
   obtain ⟨n, p, c, hp, hneg⟩ := overRegular_exists_probe_form_neg_Ioo (γ := γ) hμ2 hν1 hν0
     (a := 1) (b := 2) (by norm_num) (by norm_num)
   have h := probe_forms_nonneg_of_caratheodory
-    (isBeurlingMeasure_overRegularMeasure hμ.le (by linarith) (by linarith) (by linarith))
+    (isBeurlingMeasure_overRegularMeasure hμ.le (by linarith) (by linarith))
     hGd hGre hGD p c fun i => by linarith [(hp i).1]
   linarith
+
+
+#print axioms beurlingWeilForm_vonMangoldtMeasure
+#print axioms beurling_probe_forms_nonneg_iff
+#print axioms beurling_ne_zero_of_probe_forms_nonneg
+#print axioms beurlingConfinedForm_probe
+#print axioms beurlingProbeSymbol_vonMangoldtMeasure
+#print axioms overRegularXi_eq
+#print axioms overRegular_exists_probe_form_neg_Ioo
+#print axioms overRegular_not_exists_caratheodory
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

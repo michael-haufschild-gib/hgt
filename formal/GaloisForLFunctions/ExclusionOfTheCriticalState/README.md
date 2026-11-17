@@ -231,7 +231,7 @@ so nothing is lost between stages.
 | Q6 | Index law | answered (Lean): finite index at every ratio; some confined Gram matrix has $n$ negative squares iff $\zeta$ has at least $n$ zeros right of the line (`confinedIndex_law`); the index is bounded over all ratios iff finitely many zeros lie off the line (`confinedIndexBounded_tfae`); under a finite layer the critical ladder has one rung per right zero (`criticalLadder_iff_rightZeros`). Open: the growth of the index in the ratio when infinitely many zeros lie right of the line |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH. Restricted to a finite off-line layer it is B13 in six equivalent forms (`finiteLayer_ecs_b13_tfae`) |
 | Q8 | The arithmetic property that excludes the state | criterion and model separation proved (Lean): beyond-the-wall prime-pole continuation; proof for $\zeta$ open |
-| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): vanishing average wall mass, uniform right $o(1/\sigma)$ decay and charge cancellation; $F^+$ in prime form almost everywhere (`beyondWallProfile_primeForm`) and the Abel-mean form of the heads left of the strip ([Wall/](Wall/TheWallSeenFromTheLeft.lean)); coercivity of the collar and softness of its weak equation beyond $(\star)$ ([Collar/](Collar/TheCollarWeakEquationIsSoftBeyondStar.lean)); the critical ratio of the charge hyperplane ([Energy/](Energy/TheChargeHyperplaneHasItsOwnCriticalRatio.lean)). The wall law $\int_0^kF^+(x)F(x-k)\,dx=-(1-e^{-8k})\int F(u)F(u+k)e^{-8u}du$ with boundary value $-8\int F^2e^{-8u}$ as $k\to0^+$, and positive mass of $F^+$ on $(0,k)$ for small $k$ (`criticalState_beyondWallPairing_translate`, `criticalState_tendsto_beyondWallPairing_div`, `criticalState_eventually_integral_sq_beyondWallProfile_pos`). The laws of the wall: one sign $s=\pm1$ of the terminal mean $\mu(k)=k^{-1}\int_{-k}^0F$ with $\mu(k)\sqrt{\log(1/k)}\to s\sqrt{8aM}$ and $aF^+(x)/\sqrt{\log(1/x)}\to-s\sqrt{8aM}$ essentially as $x\to0^+$, $M=\int F^2e^{-8u}$ (`criticalState_wall_laws`); the logarithmic gain of the terminal mass is sharp. Exclusion open |
+| Q9 | Wall, collar, charges $\mathcal LF(\pm\tfrac12)$ | partial (Lean): vanishing average wall mass, uniform right $o(1/\sigma)$ decay and charge cancellation; $F^+$ in prime form almost everywhere (`beyondWallProfile_primeForm`) and the Abel-mean form of the heads left of the strip ([Wall/](Wall/TheWallSeenFromTheLeft.lean)); coercivity of the collar and softness of its weak equation beyond $(\star)$ ([Collar/](Collar/TheCollarWeakEquationIsSoftBeyondStar.lean)); the critical ratio of the charge hyperplane ([Energy/](Energy/TheChargeHyperplaneHasItsOwnCriticalRatio.lean)). The wall law $\int_0^kF^+(x)F(x-k)\,dx=-(1-e^{-8k})\int F(u)F(u+k)e^{-8u}du$ with boundary value $-8\int F^2e^{-8u}$ as $k\to0^+$, and positive mass of $F^+$ on $(0,k)$ for small $k$ (`criticalState_beyondWallPairing_translate`, `criticalState_tendsto_beyondWallPairing_div`, `criticalState_eventually_integral_sq_beyondWallProfile_pos`). The laws of the wall: one sign $s=\pm1$ of the terminal mean $\mu(k)=k^{-1}\int_{-k}^0F$ with $\mu(k)\sqrt{\log(1/k)}\to s\sqrt{8aM}$ and $aF^+(x)/\sqrt{\log(1/x)}\to-s\sqrt{8aM}$ essentially as $x\to0^+$, $M=\int F^2e^{-8u}$ (`criticalState_wall_laws`); $s$ is the sign of the half-charge $\mathcal LF(\tfrac12)$, and $\mathcal LF(\tfrac12)\operatorname{Re}F^+(x)<0$ for almost every small $x$ (`criticalState_eventually_halfCharge_mul_terminalMass_pos`, `criticalState_exists_ae_halfCharge_mul_beyondWall_neg`); the logarithmic gain of the terminal mass is sharp. Exclusion open |
 
 **Q8 criterion.** For every $F\in\mathcal H$, require the [prime-pole balance](TheBeyondTheWallPrimeBalanceExcludesTheState.lean)
 $\Phi_F(p)=\hat SF(p)+\mathcal LF(-\tfrac12)/(p+\tfrac12)$ to extend holomorphically from
@@ -312,13 +312,16 @@ heated zero series (`criticalState_hasSum_zeroPairing_heated_translate`), the fu
 moment of a profile (`wallPotential`, `wallLogMoment`, `abs_wallPotential_sub_wallLogMoment_le`), the collar kernel
 at the wall (`abs_collarKernel_add_inv_le`), the bounded prime wave (`ae_norm_primeWave_le`), integration by parts
 against a tail weight (`integral_Ioi_mul_integral_Ioi_eq`, `wallLogMoment_eq_wallMeanMoment_sub`,
-`hasDerivAt_wallMeanMoment`) and the logarithmic growth law (`tendsto_sq_div_log_of_hasDerivAt`).
+`hasDerivAt_wallMeanMoment`), the logarithmic growth law (`tendsto_sq_div_log_of_hasDerivAt`) and the
+transform as a Laplace average of the terminal mass
+([orientation](TheSignOfTheStateAtTheWallIsTheSignOfItsHalfCharge.lean), `integral_mul_exp_eq_laplace_terminalMass`,
+`exists_forall_pos_mul_integral_mul_exp`).
 
 **To build.** The endpoint moment $b=17-2\Theta$ when $\Theta$ is not attained, and pointwise decay of the state
 (both need regularity of $F$ or a Hilbert inequality on the zeros without the logarithm); the shifted zero pairing on
 $\tfrac72-\Theta\le c<\tfrac{17}2-2\Theta$ (a logarithm on the lines left of $\Theta-\tfrac92$); the growth of the index in
-the ratio; the pointwise form of the laws of the wall, $F(u)^2\log(1/\lvert u\rvert)\to8aM$ (it needs regularity of $F$ at the wall), and
-the sign $s$ of the wall in terms of the charges, which is stage 5.
+the ratio; pointwise regularity of $F$ on $u<0$: it is needed for the pointwise law $F(u)^2\log(1/\lvert u\rvert)\to8aM$ and for the
+bounded order of $aF^+$ at the wall, where the primes enter through $\sum_n\Lambda(n)n^{-1/2}F(x-\log n)$ at $x\to0^+$, which is stage 5.
 
 ## 7. Pillar theorems
 
@@ -372,6 +375,7 @@ the sign $s$ of the wall in terms of the charges, which is stage 5.
 | The wall law: for $k\ge0$ and $G\in\mathcal H$, $E(\tau_kF,G)=a\bigl(\int_0^kF^+(x)G(x-k)\,dx+(e^{8k}-1)\int e^{-8u}F(u)G(u-k)\,du\bigr)$; for $G=F$, $\int_0^kF^+(x)F(x-k)\,dx=-(1-e^{-8k})\int F(u)F(u+k)e^{-8u}du$ and $k^{-1}\int_0^kF^+(x)F(x-k)\,dx\to-8\int F^2e^{-8u}$; $\bigl((1-e^{-8k})\int F(u)F(u+k)e^{-8u}du\bigr)^2\le\int_0^k\lvert F^+\rvert^2\int_{-k}^0F^2$; for $G$ carried by $[-k,0)$, $a\lvert\int_0^kF^+(x)G(x-k)\,dx\rvert^2\le(e^{8k}-1)\int F^2e^{-8u}\,E(G)$ | `criticalState_mixedEnergy_translate`, `criticalState_beyondWallPairing_translate`, `criticalState_tendsto_beyondWallPairing_div`, `criticalState_wall_uncertainty`, `criticalState_norm_sq_beyondWallPairing_collar_le` | unconditional |
 | Sign at the wall: $\lvert aF^+(x)+\tfrac12\Phi(x)\rvert\le B$ for almost every $0<x<1$, $\Phi(x)=\int_{v>0}F(-v)\frac{dv}{x+v}$; $\bigl(k^{-1}\int_{-k}^0F\bigr)\int_{v>k}F(-v)\frac{dv}v\to16a\int F^2e^{-8u}$; one sign $s=\pm1$ with $s\int_{-k}^0F>0$ and $s\int_{v>k}F(-v)\frac{dv}v>0$ for all small $k$; $\int_0^k\lvert F^+\rvert^2\ge ck\log(2/k)$ | `criticalState_exists_ae_norm_beyondWall_add_wallPotential_le`, `criticalState_tendsto_terminalMean_mul_wallLogMoment`, `criticalState_exists_sign_at_wall`, `criticalState_eventually_log_le_integral_sq_beyondWallProfile` | unconditional |
 | Laws of the wall, $M=\int F^2e^{-8u}$: $\bigl(k^{-1}\int_{-k}^0F\bigr)^2\log(1/k)\to8aM$; $\bigl(\int_{v>k}F(-v)\frac{dv}v\bigr)^2/\log(1/k)\to32aM$; $\lvert aF^+(x)+\tfrac12\int_{v>x}F(-v)\frac{dv}v\rvert\le B$ for almost every $0<x<1$ and $aF^+(x)/\sqrt{\log(1/x)}\to-s\sqrt{8aM}$ essentially as $x\to0^+$; $\log(2/k)\int_{-k}^0F^2\ge4aMk$ for small $k$ | `criticalState_tendsto_sq_terminalMean_mul_log`, `criticalState_tendsto_sq_wallLogMoment_div_log`, `criticalState_exists_ae_norm_beyondWall_add_wallLogMoment_le`, `criticalState_wall_laws`, `criticalState_eventually_le_log_mul_terminal_square_mass` | unconditional |
+| Orientation of the wall: $\mathcal LF(\sigma)=\sigma\int_{h>0}\bigl(\int_{-h}^0F\bigr)e^{-\sigma h}dh$ for $\sigma>0$; $\mathcal LF(\tfrac12)\int_{-k}^0F>0$ and $\mathcal LF(\tfrac12)\int_{v>k}F(-v)\frac{dv}v>0$ for all small $k$; $\mathcal LF(\tfrac12)\operatorname{Re}F^+(x)<0$ for almost every small $x>0$ | `integral_mul_exp_eq_laplace_terminalMass`, `criticalState_eventually_halfCharge_mul_terminalMass_pos`, `criticalState_exists_ae_halfCharge_mul_beyondWall_neg` | unconditional |
 
 ## 8. Traps
 
@@ -398,6 +402,7 @@ the sign $s$ of the wall in terms of the charges, which is stage 5.
 | $F(u)=-a^{-1}e^{8u}\sum_z\mathcal LF(z)e^{-zu}$ pointwise | The series is a distribution on the line; heated it converges absolutely, and left of the wall it differs from the state by the prime side behind a Gaussian |
 | $F^+$ is reached only by tests supported beyond the wall | The translate $\tau_kF$ is a profile of $\mathcal H$, and its full form against $G\in\mathcal H$ is the pairing of $F^+$ on $(0,k)$ with $G(\cdot-k)$ plus a confinement term; against $F$ itself the pairing is the weighted autocorrelation of the state |
 | Evaluate the collar pairing $\int_0^kF^+(x)F(x-k)\,dx$ from the prime form of $F^+$ and set it against the wall law | The substitution returns the weak equation $E(F,\tau_kF)=0$, which is the wall law. The information is in the kernel of the collar wave at the wall, $\kappa(t)=-\tfrac1{2t}+O(e^{t/2})$ |
+| Exclude the state at the leading order of the wall | The collar kernel is archimedean and the prime wave enters $aF^+$ as a bounded term: the laws of the wall use of $\Lambda$ only $\sum_n\Lambda(n)n^{-2}<\infty$. The wall amplitude is the Weil energy of the state, $8aM=-8\,\mathrm{bare}(F)$ |
 
 ## 9. Context
 
@@ -459,4 +464,6 @@ vertical line there the continuation is the transform and is square integrable:
 $\int|\mathcal LF(\sigma+it)|^2dt=2\pi\int F^2e^{2\sigma u}du$. The state itself decays exactly at the rate of the zeros: the forward prime
 sum and the pole wave cancel to the regular part of $\zeta'/\zeta$, the state equation gives the transform
 two logarithms on the lines of decay, and the abscissa of decay descends to the zeros:
-$\sup\{b:\int F^2e^{-bu}<\infty\}=17-2\Theta$.
+$\sup\{b:\int F^2e^{-bu}<\infty\}=17-2\Theta$. At the wall both descriptions of the series are explicit to leading order:
+with $M=\int F^2e^{-8u}$ and $s$ the sign of the half-charge $\mathcal LF(\tfrac12)$, the terminal mean of the state is
+$s\sqrt{8aM/\log(1/k)}$ and the prime side is $-s\,a^{-1}\sqrt{8aM\log(1/x)}$; the primes enter one order below.

@@ -29,7 +29,7 @@ theorem hullNegative_mul_hullPositive : hullNegative p * hullPositive p = 0 := b
     one_mul, mul_one, hullReflection_sq]
   module
 
-/-- A polynomial family of rank-one Hecke actions on the actual finite probe hull. -/
+/-- A polynomial family of `S₂` Hecke actions on the actual finite probe hull. -/
 def hullHecke (q : ℂ) : Module.End ℂ (reflectionHull p) :=
   q ^ 2 • hullPositive p - hullNegative p
 

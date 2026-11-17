@@ -29,6 +29,11 @@ theorem coherence_pos (s t : ℝ) : 0 < coherence s t := by
   unfold coherence
   positivity
 
+theorem coherence_symm (s t : ℝ) : coherence s t = coherence t s := by
+  unfold coherence
+  rw [add_comm (Real.exp s)]
+  ring
+
 theorem coherence_defect (s t : ℝ) :
     1 - coherence s t = (Real.exp (s / 2) - Real.exp (t / 2)) ^ 2 /
       (Real.exp s + Real.exp t) := by
@@ -82,8 +87,10 @@ private theorem rateDiagonal_conjTranspose {n : ℕ} (r : Fin n → ℝ) :
   ext i j
   by_cases h : i = j
   · subst j
-    simp [rateDiagonal, Matrix.conjTranspose_apply]
-  · simp [rateDiagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply, h, Ne.symm h]
+    simp only [rateDiagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply_eq,
+      Complex.star_def, Complex.conj_ofReal]
+  · simp only [rateDiagonal, Matrix.conjTranspose_apply, Matrix.diagonal_apply,
+      if_neg h, if_neg (Ne.symm h), star_zero]
 
 /-- The correlation matrix of the Cauchy channel. -/
 def symbol {n : ℕ} (r : Fin n → ℝ) : Matrix (Fin n) (Fin n) ℂ :=

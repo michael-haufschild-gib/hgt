@@ -51,7 +51,7 @@ open scoped ComplexConjugate
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
-  CriticalArithmeticCorrelationTheory HTGeometry _root_.RHTower
+  CriticalArithmeticCorrelationTheory SpacingScaleHarmonicAnalysis HTGeometry _root_.RHTower
 
 /-! ### 1. Exact individual profile criterion for beyond-the-wall prime continuation -/
 
@@ -101,24 +101,27 @@ private theorem differentiableAt_extendedGlobalRemainder_of_order_le {F : ℝ �
     by_cases hfz₀ : f z₀ ≠ 0
     · have hf_nhds : ∀ᶠ w in 𝓝 z₀, f w ≠ 0 := hf.continuousAt.eventually_ne hfz₀
       filter_upwards [hf_eq, hg_eq, hf₁_nhds, hf_nhds] with w hfw hgw hf₁w hfw_ne
-      simp only [extendedGlobalRemainder, if_pos hfw_ne]
+      have hfw_ne' : xi (1 / 2 + w) ≠ 0 := hfw_ne
+      rw [extendedGlobalRemainder, if_pos hfw_ne']
       simp only [smul_eq_mul] at hfw hgw
       have hpow : (w - z₀) ^ m ≠ 0 := fun hp0 => hfw_ne (by rw [hfw, hp0, zero_mul])
       change g w / f w = h w
       rw [hgw, hfw, mul_div_mul_left _ _ hpow]
     · push Not at hfz₀
-      obtain ⟨U, hU_sub, hU_open, hz₀U⟩ := eventually_nhds_iff.mp
+      obtain ⟨U, hU_sub, hU_open, hz₀U⟩ := _root_.eventually_nhds_iff.mp
         (hf_eq.and (hg_eq.and hf₁_nhds))
-      refine eventually_nhds_iff.mpr ⟨U, fun w hw => ?_, hU_open, hz₀U⟩
+      refine _root_.eventually_nhds_iff.mpr ⟨U, fun w hw => ?_, hU_open, hz₀U⟩
       by_cases hwz : w = z₀
       · subst hwz
-        simp only [extendedGlobalRemainder, if_neg (not_not.mpr hfz₀)]
+        have hfz₀' : ¬ xi (1 / 2 + w) ≠ 0 := not_not.mpr hfz₀
+        rw [extendedGlobalRemainder, if_neg hfz₀']
         exact hlim
       · obtain ⟨hfw, hgw, hf₁w⟩ := hU_sub w hw
         simp only [smul_eq_mul] at hfw hgw
         have hpow : (w - z₀) ^ m ≠ 0 := pow_ne_zero m (sub_ne_zero.mpr hwz)
         have hfw_ne : f w ≠ 0 := by rw [hfw]; exact mul_ne_zero hpow hf₁w
-        simp only [extendedGlobalRemainder, if_pos hfw_ne]
+        have hfw_ne' : xi (1 / 2 + w) ≠ 0 := hfw_ne
+        rw [extendedGlobalRemainder, if_pos hfw_ne']
         change g w / f w = h w
         rw [hgw, hfw, mul_div_mul_left _ _ hpow]
   exact hh_an.differentiableAt.congr_of_eventuallyEq hev_eq
@@ -155,7 +158,7 @@ theorem hasBeyondTheWallPrimeContinuation_iff_vanish_leftZeros {F : ℝ → ℝ}
           exact differentiableAt_extendedGlobalRemainder_of_order_le hF (by rwa [hcomp])
         · have hord0 : analyticOrderAt (fun w : ℂ => xi (1 / 2 + w)) p = 0 :=
             (differentiable_xi_half_add.analyticAt p).analyticOrderAt_eq_zero.mpr hxi
-          exact differentiableAt_extendedGlobalRemainder_of_order_le hF (by rw [hord0]; exact zero_le _)
+          exact differentiableAt_extendedGlobalRemainder_of_order_le hF (by rw [hord0]; exact bot_le)
       have hdiff_arch : DifferentiableAt ℂ (archimedeanWallTail F) p :=
         (differentiableOn_archimedeanWallTail hF).differentiableAt
           ((isOpen_lt Complex.continuous_re continuous_const).mem_nhds (by linarith : p.re < 5 / 2))
@@ -164,7 +167,8 @@ theorem hasBeyondTheWallPrimeContinuation_iff_vanish_leftZeros {F : ℝ → ℝ}
       have hxi_ne : xi (1 / 2 + p) ≠ 0 :=
         xi_ne_zero_of_half_le_abs_re (by have := neg_le_abs p.re; linarith)
       dsimp only
-      rw [extendedGlobalRemainder, if_pos hxi_ne, ← clearedRemainder_eq hF hxi_ne,
+      rw [extendedGlobalRemainder, if_pos hxi_ne, clearedRemainder_eq hF hxi_ne,
+        mul_div_cancel_left₀ _ hxi_ne,
         globalRemainder_eq_archimedeanWallTail_add_wallPrimeBalance hF hp']
       ring
 
@@ -179,10 +183,18 @@ theorem purePrimeHeadContinuation_profile_iff_vanish_leftZeros {G : ℝ → ℝ}
       ∀ q : XiZeroCopy, (centredZero q).re < 0 →
         negativeHalfLineLaplace (cx G) (centredZero q) = 0 := by
   have hbal : wallPrimeBalance G = primeHead G := by
-    funext p; simp [wallPrimeBalance, hpole]
+    funext p
+    unfold wallPrimeBalance
+    rw [hpole, zero_div, add_zero]
   rw [← hasBeyondTheWallPrimeContinuation_iff_vanish_leftZeros hG]
   unfold HasBeyondTheWallPrimeContinuation
   rw [hbal]
+
+private theorem xi_half_add_conj_zero {z : ℂ} (hxi : xi (1 / 2 + z) = 0) :
+    xi (1 / 2 + conj z) = 0 := by
+  have heq : (1 : ℂ) / 2 + conj z = conj (1 / 2 + z) := by
+    apply Complex.ext <;> simp
+  rw [heq, xi_conj, hxi, map_zero]
 
 /-- Under `FiniteOffLine`, `HasBeyondTheWallPrimeContinuation F` holds if and only if `L F` vanishes
 on the finite set `upperLeftCentredZeros hfin`. -/
@@ -204,20 +216,21 @@ theorem hasBeyondTheWallPrimeContinuation_iff_vanish_upperLeft_of_finiteOffLine
     have hxi : xi (1 / 2 + z) = 0 := xi_centredZero q
     have him_ne : z.im ≠ 0 := xi_half_add_im_ne_zero hxi
     rcases lt_or_gt_of_ne him_ne with him_neg | him_pos
-    · have hcz_mem : conj z ∈ upperLeftCentredZeros hfin := by
-        rw [upperLeftCentredZeros, Finset.mem_filter, mem_leftCentredZeros_iff]
-        refine ⟨⟨by simpa using hq, ?_⟩, by simpa using him_neg⟩
-        have hc : (1 : ℂ) / 2 + conj z = conj (1 / 2 + z) := by simp
-        rw [hc, xi_conj, hxi, map_zero]
+    · have hcz_mem : conj z ∈ upperLeftCentredZeros hfin :=
+        Finset.mem_filter.mpr ⟨(mem_leftCentredZeros_iff hfin).mpr
+          ⟨by simpa using hq, xi_half_add_conj_zero hxi⟩, by simp; linarith⟩
       have hcz := h (conj z) hcz_mem
-      have hreal : negativeHalfLineLaplace (cx F) (conj z) =
-          conj (negativeHalfLineLaplace (cx F) z) := by
-        simpa [cx] using negativeHalfLineLaplace_real_conj F z
-      rw [hreal] at hcz
-      exact conj_eq_zero.mp hcz
+      rw [show cx F = fun u => (F u : ℂ) from rfl, negativeHalfLineLaplace_real_conj] at hcz
+      have hc0 := congrArg conj hcz
+      rwa [Complex.conj_conj, map_zero] at hc0
     · exact h z (Finset.mem_filter.mpr ⟨(mem_leftCentredZeros_iff hfin).mpr ⟨hq, hxi⟩, him_pos⟩)
 
 /-! ### 2. Domain-wide zero Parseval and polarized Krein decomposition under `FiniteOffLine` -/
+
+private theorem centredZero_reflect_eq (q : XiZeroCopy) :
+    centredZero (xiZeroCopyReflectEquiv q) = -centredZero q := by
+  simp only [centredZero, xiZeroCopy_reflect_val]
+  ring
 
 private theorem norm_cexp_eps_centredZero_sq_le {ε : ℝ} (hε : 0 < ε) (q : XiZeroCopy) :
     ‖Complex.exp ((ε : ℂ) * centredZero q ^ 2)‖ ≤
@@ -228,9 +241,11 @@ private theorem norm_cexp_eps_centredZero_sq_le {ε : ℝ} (hε : 0 < ε) (q : X
   have hre_sq : z.re ^ 2 ≤ 1 / 4 := by
     have h1 := sq_le_sq.mpr (by simpa using hzre : |z.re| ≤ |1 / 2|)
     linarith
-  have hnorm_sq : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := Complex.sq_norm z
+  have hnorm_sq : ‖z‖ ^ 2 = z.re ^ 2 + z.im ^ 2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    ring
   have hexp_re : ((ε : ℂ) * z ^ 2).re = ε * (z.re ^ 2 - z.im ^ 2) := by
-    simp [sq, Complex.mul_re]
+    simp only [sq, Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im]
     ring
   have hdiff : z.re ^ 2 - z.im ^ 2 ≤ 1 / 2 - ‖z‖ ^ 2 := by linarith
   have hexp1 : Real.exp (ε * (z.re ^ 2 - z.im ^ 2)) ≤
@@ -283,12 +298,8 @@ theorem norm_laplace_neg_centredZero_le_domain {G : ℝ → ℝ}
     (hG : CriticalHalfLineEnergyDomain G) (q : XiZeroCopy) :
     ‖negativeHalfLineLaplace (cx G) (-centredZero q)‖ ≤
       ((∫ u : ℝ, G u ^ 2 * Real.exp (-(8 * u))) + ∫ u : ℝ, probe 1 u) / 2 := by
-  set r := xiZeroCopyReflectEquiv q
-  have hr : centredZero r = -centredZero q := by
-    simp [r, centredZero, xiZeroCopyReflectEquiv]
-    ring
-  rw [← hr]
-  exact norm_laplace_pos_centredZero_le hG r
+  rw [← centredZero_reflect_eq q]
+  exact norm_laplace_pos_centredZero_le hG (xiZeroCopyReflectEquiv q)
 
 /-- Absolute summability of the heated zero pairing for any two energy-domain profiles at `ε > 0`. -/
 theorem summable_heatedZeroPairing_of_domain {F G : ℝ → ℝ}
@@ -393,12 +404,13 @@ theorem onLineMixed_comm (F G : ℝ → ℝ) : onLineMixed F G = onLineMixed G F
   have h := Complex.conj_re
     (negativeHalfLineLaplace (cx F) (centredZero q) *
       conj (negativeHalfLineLaplace (cx G) (centredZero q)))
-  simpa [mul_comm] using h.symm
+  simp only [map_mul, Complex.conj_conj, mul_comm] at h
+  exact h.symm
 
 theorem onLineMixed_self (G : ℝ → ℝ) : onLineMixed G G = onLineEnergy G := by
   unfold onLineMixed onLineEnergy zeroValueMass
   refine tsum_congr fun q => ?_
-  rw [Complex.mul_conj', Complex.ofReal_re]
+  rw [Complex.mul_conj', ← Complex.ofReal_pow, Complex.ofReal_re]
 
 theorem onLineEnergy_nonneg (G : ℝ → ℝ) : 0 ≤ onLineEnergy G :=
   tsum_nonneg fun q => zeroValueMass_nonneg G q
@@ -564,8 +576,7 @@ theorem bareMixedEnergy_nonneg_of_hasBeyondTheWallPrimeContinuation {G : ℝ →
     rcases lt_or_gt_of_ne hne with hneg | hpos
     · rw [hvan q hneg, zero_mul]
     · set r := xiZeroCopyReflectEquiv q
-      have hr : centredZero r = -centredZero q := by
-        simp [r, centredZero, xiZeroCopyReflectEquiv]; ring
+      have hr : centredZero r = -centredZero q := centredZero_reflect_eq q
       have hr_neg : (centredZero r).re < 0 := by rw [hr, Complex.neg_re]; linarith
       rw [← hr, hvan r hr_neg, mul_zero]
   rw [hoff0, Complex.zero_re, add_zero, onLineMixed_self] at heq
@@ -584,17 +595,13 @@ theorem bareMixedEnergy_nonneg_of_vanish_upperRight {G : ℝ → ℝ}
     have hxi : xi (1 / 2 + z) = 0 := xi_centredZero q
     have him_ne : z.im ≠ 0 := xi_half_add_im_ne_zero hxi
     rcases lt_or_gt_of_ne him_ne with him_neg | him_pos
-    · have hcz_mem : conj z ∈ upperRightCentredZeros hfin := by
-        rw [upperRightCentredZeros, Finset.mem_filter, mem_rightCentredZeros_iff]
-        refine ⟨⟨by simpa using hq, ?_⟩, by simpa using him_neg⟩
-        have hc : (1 : ℂ) / 2 + conj z = conj (1 / 2 + z) := by simp
-        rw [hc, xi_conj, hxi, map_zero]
+    · have hcz_mem : conj z ∈ upperRightCentredZeros hfin :=
+        Finset.mem_filter.mpr ⟨(mem_rightCentredZeros_iff hfin).mpr
+          ⟨by simpa using hq, xi_half_add_conj_zero hxi⟩, by simp; linarith⟩
       have hcz := hvan (conj z) hcz_mem
-      have hreal : negativeHalfLineLaplace (cx G) (conj z) =
-          conj (negativeHalfLineLaplace (cx G) z) := by
-        simpa [cx] using negativeHalfLineLaplace_real_conj G z
-      rw [hreal] at hcz
-      exact conj_eq_zero.mp hcz
+      rw [show cx G = fun u => (G u : ℂ) from rfl, negativeHalfLineLaplace_real_conj] at hcz
+      have hc0 := congrArg conj hcz
+      rwa [Complex.conj_conj, map_zero] at hc0
     · exact hvan z (Finset.mem_filter.mpr ⟨(mem_rightCentredZeros_iff hfin).mpr ⟨hq, hxi⟩, him_pos⟩)
   have heq := bareMixedEnergy_eq_onLineMixed_add_re_offLine hG hG hfin
   have hoff0 : ∑ q ∈ offLineCopyFinset hfin,
@@ -604,8 +611,7 @@ theorem bareMixedEnergy_nonneg_of_vanish_upperRight {G : ℝ → ℝ}
     have hne : (centredZero q).re ≠ 0 := mem_offLineCopyFinset.mp hq
     rcases lt_or_gt_of_ne hne with hneg | hpos
     · set r := xiZeroCopyReflectEquiv q
-      have hr : centredZero r = -centredZero q := by
-        simp [r, centredZero, xiZeroCopyReflectEquiv]; ring
+      have hr : centredZero r = -centredZero q := centredZero_reflect_eq q
       have hr_pos : 0 < (centredZero r).re := by rw [hr, Complex.neg_re]; linarith
       rw [← hr, hright r hr_pos, mul_zero]
     · rw [hright q hpos, zero_mul]
@@ -613,6 +619,12 @@ theorem bareMixedEnergy_nonneg_of_vanish_upperRight {G : ℝ → ℝ}
   exact ⟨heq, heq ▸ onLineEnergy_nonneg G⟩
 
 /-! ### 3. Transfer of the Birman–Schwinger on-line resolvent to `ζ` on the energy domain -/
+
+private theorem setIntegral_Iio_w8_eq {F G : ℝ → ℝ} (hF0 : ∀ u, 0 ≤ u → F u = 0) :
+    (∫ u in Iio (0 : ℝ), F u * G u * Real.exp (-(8 * u))) =
+      ∫ u : ℝ, F u * G u * Real.exp (-(8 * u)) :=
+  setIntegral_eq_integral_of_forall_compl_eq_zero fun u hu => by
+    rw [hF0 u (not_lt.mp hu), zero_mul, zero_mul]
 
 /-- A measurable half-line profile `y` square-integrable against the confinement weight `e^{-8u}`. -/
 def IsW8Target (y : ℝ → ℝ) : Prop :=
@@ -633,23 +645,23 @@ theorem w8Pair_self (F : ℝ → ℝ) : w8Pair F F = w8Mass F :=
   integral_congr_ae (Eventually.of_forall fun u => by ring)
 
 theorem w8Mass_nonneg (F : ℝ → ℝ) : 0 ≤ w8Mass F :=
-  integral_nonneg fun u => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le
+  integral_nonneg fun u => mul_nonneg (sq_nonneg (F u)) (Real.exp_pos (-(8 * u))).le
 
 theorem isW8Target_of_domain {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) : IsW8Target F :=
   ⟨hF.meas, hF.support, hF.exponential⟩
 
 theorem isW8Target_const_mul {y : ℝ → ℝ} (hy : IsW8Target y) (c : ℝ) :
     IsW8Target (fun u => c * y u) := by
-  refine ⟨hy.1.const_mul c, fun u hu => by rw [hy.2.1 u hu, mul_zero], ?_⟩
+  refine ⟨hy.1.const_mul c, fun u hu => by dsimp only; rw [hy.2.1 u hu, mul_zero], ?_⟩
   exact (hy.2.2.const_mul (c ^ 2)).congr (Eventually.of_forall fun u => by ring)
 
 theorem isW8Target_add {y₁ y₂ : ℝ → ℝ} (h₁ : IsW8Target y₁) (h₂ : IsW8Target y₂) :
     IsW8Target (fun u => y₁ u + y₂ u) := by
-  refine ⟨h₁.1.add h₂.1, fun u hu => by rw [h₁.2.1 u hu, h₂.2.1 u hu, add_zero], ?_⟩
+  refine ⟨h₁.1.add h₂.1, fun u hu => by dsimp only; rw [h₁.2.1 u hu, h₂.2.1 u hu, add_zero], ?_⟩
   refine ((h₁.2.2.add h₂.2.2).const_mul 2).mono'
     (((h₁.1.add h₂.1).pow_const 2).mul (by fun_prop)).aestronglyMeasurable
     (Eventually.of_forall fun u => ?_)
-  dsimp only
+  dsimp only [Pi.add_apply]
   rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)]
   have he : 0 ≤ Real.exp (-(8 * u)) := (Real.exp_pos _).le
   nlinarith [sq_nonneg (y₁ u - y₂ u), he]
@@ -658,7 +670,7 @@ theorem integrable_w8Pair {F G : ℝ → ℝ} (hF : IsW8Target F) (hG : IsW8Targ
     Integrable fun u : ℝ => F u * G u * Real.exp (-(8 * u)) := by
   refine ((hF.2.2.add hG.2.2).div_const 2).mono'
     ((hF.1.mul hG.1).mul (by fun_prop)).aestronglyMeasurable (Eventually.of_forall fun u => ?_)
-  dsimp only
+  dsimp only [Pi.add_apply]
   rw [Real.norm_eq_abs, abs_le]
   have he : 0 ≤ Real.exp (-(8 * u)) := (Real.exp_pos _).le
   constructor <;> nlinarith [sq_nonneg (F u + G u), sq_nonneg (F u - G u), he]
@@ -686,17 +698,20 @@ theorem w8Mass_add_const_mul {F G : ℝ → ℝ} (hF : IsW8Target F) (hG : IsW8T
   have h1 := hF.2.2
   have h2 := (integrable_w8Pair hF hG).const_mul (2 * c)
   have h3 := hG.2.2.const_mul (c ^ 2)
+  have h12 : Integrable fun u =>
+      F u ^ 2 * Real.exp (-(8 * u)) + (2 * c) * (F u * G u * Real.exp (-(8 * u))) := h1.add h2
   have hfun : (fun u => (F u + c * G u) ^ 2 * Real.exp (-(8 * u))) =
       fun u => (F u ^ 2 * Real.exp (-(8 * u)) +
         (2 * c) * (F u * G u * Real.exp (-(8 * u)))) +
         c ^ 2 * (G u ^ 2 * Real.exp (-(8 * u))) := by
     funext u; ring
-  rw [hfun, integral_add (h1.add h2) h3, integral_add h1 h2, integral_const_mul, integral_const_mul]
+  rw [hfun, integral_add h12 h3, integral_add h1 h2, integral_const_mul, integral_const_mul]
 
 theorem sq_w8Pair_le {F G : ℝ → ℝ} (hF : IsW8Target F) (hG : IsW8Target G) :
     w8Pair F G ^ 2 ≤ w8Mass F * w8Mass G := by
   set f : ℝ → ℝ := fun u => F u * Real.exp (-(4 * u))
   set g : ℝ → ℝ := fun u => G u * Real.exp (-(4 * u))
+  have hexp4 : Measurable fun u : ℝ => Real.exp (-(4 * u)) := by fun_prop
   have hf2 : (fun u => f u ^ 2) = fun u => F u ^ 2 * Real.exp (-(8 * u)) := by
     funext u; dsimp [f]; rw [mul_pow, sq (Real.exp (-(4 * u))), ← Real.exp_add]; congr 2; ring
   have hg2 : (fun u => g u ^ 2) = fun u => G u ^ 2 * Real.exp (-(8 * u)) := by
@@ -708,11 +723,12 @@ theorem sq_w8Pair_le {F G : ℝ → ℝ} (hF : IsW8Target F) (hG : IsW8Target G)
     calc F u * Real.exp (-(4 * u)) * (G u * Real.exp (-(4 * u)))
         = F u * G u * (Real.exp (-(4 * u)) * Real.exp (-(4 * u))) := by ring
       _ = F u * G u * Real.exp (-(8 * u)) := by rw [he]
-  have hcs := sq_integral_mul_le
-    (hF.1.mul (by fun_prop)).aestronglyMeasurable
-    (hG.1.mul (by fun_prop)).aestronglyMeasurable
-    (by rw [hf2]; exact hF.2.2) (by rw [hg2]; exact hG.2.2)
-  simpa [w8Pair, w8Mass, hfg, hf2, hg2] using hcs
+  have hfm : AEStronglyMeasurable f volume := (hF.1.mul hexp4).aestronglyMeasurable
+  have hgm : AEStronglyMeasurable g volume := (hG.1.mul hexp4).aestronglyMeasurable
+  have hfi : Integrable (fun u => f u ^ 2) := by rw [hf2]; exact hF.2.2
+  have hgi : Integrable (fun u => g u ^ 2) := by rw [hg2]; exact hG.2.2
+  have hcs := sq_integral_mul_le hfm hgm hfi hgi
+  simpa only [w8Pair, w8Mass, hfg, hf2, hg2] using hcs
 
 private theorem laplace_cx_integrable_of_domain {F : ℝ → ℝ}
     (hF : CriticalHalfLineEnergyDomain F) {w : ℂ} (hw : -4 < w.re) :
@@ -771,11 +787,18 @@ theorem onLineEnergy_add_const_mul {F G : ℝ → ℝ}
       onLineEnergy F + 2 * c * onLineMixed F G + c ^ 2 * onLineEnergy G := by
   have hcG : CriticalHalfLineEnergyDomain (fun u => c * G u) := hG.const_mul c
   have hFG : CriticalHalfLineEnergyDomain (fun u => F u + c * G u) := hF.add_const_mul hG c
-  rw [← onLineMixed_self, onLineMixed_add_left hF hcG hFG hfin,
-    onLineMixed_comm F _, onLineMixed_add_left hF hcG hF hfin,
-    onLineMixed_comm (fun u => c * G u) _, onLineMixed_add_left hF hcG hcG hfin,
-    onLineMixed_const_mul_left, onLineMixed_const_mul_left, onLineMixed_comm G _,
-    onLineMixed_const_mul_left, onLineMixed_self, onLineMixed_self, onLineMixed_comm G F]
+  have h1 := onLineMixed_add_left hF hcG hFG hfin
+  have h2 : onLineMixed F (fun u => F u + c * G u) = onLineEnergy F + c * onLineMixed F G := by
+    rw [onLineMixed_comm F _, onLineMixed_add_left hF hcG hF hfin, onLineMixed_const_mul_left,
+      onLineMixed_self, onLineMixed_comm G F]
+  have h3 : onLineMixed (fun u => c * G u) (fun u => F u + c * G u) =
+      c * onLineMixed F G + c ^ 2 * onLineEnergy G := by
+    rw [onLineMixed_comm (fun u => c * G u) _, onLineMixed_add_left hF hcG hcG hfin,
+      onLineMixed_comm F _, onLineMixed_const_mul_left, onLineMixed_comm G F,
+      onLineMixed_const_mul_left, onLineMixed_comm G _, onLineMixed_const_mul_left,
+      onLineMixed_self]
+    ring
+  rw [← onLineMixed_self, h1, h2, h3]
   ring
 
 /-- Variational weak equation defining the Birman–Schwinger on-line resolvent `X = R_a(y)` on
@@ -822,7 +845,8 @@ theorem solvesZetaOnLineResolvent_energy_le {a : ℝ} (ha : 0 < a) {y X : ℝ �
   have heq := hX.2 X hX.1
   rw [onLineMixed_self, w8Pair_self] at heq
   have hcs := sq_w8Pair_le hy (isW8Target_of_domain hX.1)
-  have h1 : (onLineEnergy X + a * w8Mass X) ^ 2 ≤ w8Mass y * w8Mass X := by linarith
+  have h1 : (onLineEnergy X + a * w8Mass X) ^ 2 ≤ w8Mass y * w8Mass X := by
+    rwa [← heq] at hcs
   have h2 : a * (onLineEnergy X + a * w8Mass X) ^ 2 ≤
       w8Mass y * (onLineEnergy X + a * w8Mass X) := by
     have hnn := onLineEnergy_nonneg X
@@ -846,21 +870,27 @@ private theorem tendsto_w8Pair_of_L2_tendsto {U : ℕ → ℝ → ℝ} {F g : �
   have htail_lim : Tendsto (fun K : ℕ =>
       ∫ u : ℝ, Set.indicator (Iic (-(K : ℝ))) (fun x => g x ^ 2 * Real.exp (-(8 * x))) u)
       atTop (𝓝 0) := by
-    simpa using tendsto_integral_of_dominated_convergence
+    have hdom := tendsto_integral_of_dominated_convergence
+      (F := fun (K : ℕ) (u : ℝ) =>
+        Set.indicator (Iic (-(K : ℝ))) (fun x => g x ^ 2 * Real.exp (-(8 * x))) u)
+      (f := fun _ : ℝ => (0 : ℝ))
       (fun x => g x ^ 2 * Real.exp (-(8 * x)))
       (fun K => hg.2.2.aestronglyMeasurable.indicator measurableSet_Iic) hg.2.2
       (fun K => Eventually.of_forall fun x => by
         by_cases hx : x ∈ Iic (-(K : ℝ))
-        · simp [hx, mul_nonneg (sq_nonneg _) (Real.exp_pos _).le]
-        · simp [hx, mul_nonneg (sq_nonneg _) (Real.exp_pos _).le])
+        · rw [Set.indicator_of_mem hx,
+            Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)]
+        · rw [Set.indicator_of_notMem hx, norm_zero]
+          exact mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)
       (Eventually.of_forall fun x => tendsto_const_nhds.congr' <| by
         obtain ⟨N, hN⟩ := exists_nat_gt (-x)
         filter_upwards [eventually_ge_atTop N] with K hK
         have hxK : x ∉ Iic (-(K : ℝ)) := by
-          rw [mem_Iic, not_le]
+          rw [Set.mem_Iic, not_le]
           have : (N : ℝ) ≤ K := by exact_mod_cast hK
           linarith
-        simp [hxK])
+        exact (Set.indicator_of_notMem hxK _).symm)
+    simpa only [integral_zero] using hdom
   set δ : ℝ := (ε / (4 * (Real.sqrt M + 1))) ^ 2
   have hδ : 0 < δ := by positivity
   obtain ⟨K, hK⟩ := (htail_lim.eventually (gt_mem_nhds hδ)).exists
@@ -871,7 +901,7 @@ private theorem tendsto_w8Pair_of_L2_tendsto {U : ℕ → ℝ → ℝ} {F g : �
       (w8Mass g * Real.exp (8 * (K : ℝ))) * ∫ u, (U n u - F u) ^ 2) atTop (𝓝 0) := by
     simpa using hL2.const_mul (w8Mass g * Real.exp (8 * (K : ℝ)))
   obtain ⟨N, hN⟩ := eventually_atTop.mp
-    (hhead_lim.eventually (gt_mem_nhds ((ε / 2) ^ 2)))
+    (hhead_lim.eventually (gt_mem_nhds (by positivity : (0 : ℝ) < (ε / 2) ^ 2)))
   refine ⟨N, fun n hn => ?_⟩
   rw [Real.dist_eq]
   set D : ℝ → ℝ := fun u => U n u - F u
@@ -880,13 +910,14 @@ private theorem tendsto_w8Pair_of_L2_tendsto {U : ℕ → ℝ → ℝ} {F g : �
   have hwD : w8Mass D ≤ 4 * M := by
     have h := w8Mass_add_const_mul (hU n) hF (-1)
     have hcs := sq_w8Pair_le (hU n) hF
-    have habs : |w8Pair (U n) F| ≤ M := by
-      have hsq : w8Pair (U n) F ^ 2 ≤ M ^ 2 :=
-        hcs.trans (mul_le_mul (hwU n) hwF (w8Mass_nonneg F) hM)
-      exact (abs_le_of_sq_le_sq' hsq hM).2
+    have hneg_le : -M ≤ w8Pair (U n) F := by
+      have hsq : w8Pair (U n) F ^ 2 ≤ M ^ 2 := by
+        rw [sq M]
+        exact hcs.trans (mul_le_mul (hwU n) hwF (w8Mass_nonneg F) hM)
+      exact (abs_le_of_sq_le_sq' hsq hM).1
     have hsub : (fun u => U n u + (-1) * F u) = D := by funext u; dsimp [D]; ring
     rw [hsub] at h
-    linarith [(abs_le.mp habs).1]
+    linarith [hwU n, hwF]
   have hdiff_eq : w8Pair g (U n) - w8Pair g F = w8Pair g D := by
     have h := w8Pair_add_left (hU n) (isW8Target_const_mul hF (-1)) hg
     rw [w8Pair_comm _ g, w8Pair_comm (U n) g, w8Pair_const_mul_left, w8Pair_comm F g] at h
@@ -906,7 +937,7 @@ private theorem tendsto_w8Pair_of_L2_tendsto {U : ℕ → ℝ → ℝ} {F g : �
     refine integral_congr_ae (Eventually.of_forall fun u => ?_)
     by_cases hu : u ≤ -(K : ℝ)
     · have hnot : u ∉ Ioi (-(K : ℝ)) := not_lt.mpr hu
-      simp [mem_Iic.mpr hu, hnot]
+      simp [Set.mem_Iic.mpr hu, hnot]
     · have hgt : u ∈ Ioi (-(K : ℝ)) := not_le.mp hu
       simp [hu, hgt]
   -- Bound `|I₁| < ε / 2`
@@ -931,34 +962,38 @@ private theorem tendsto_w8Pair_of_L2_tendsto {U : ℕ → ℝ → ℝ} {F g : �
             = g u * D u * (Real.exp (-(4 * u)) * Real.exp (-(4 * u))) := by ring
           _ = g u * D u * Real.exp (-(8 * u)) := by rw [he]
       · simp [f₁, hu]
-    have hcs := sq_integral_mul_le
-      ((hg.1.mul (by fun_prop)).indicator measurableSet_Iic).aestronglyMeasurable
-      (hD.1.mul (by fun_prop)).aestronglyMeasurable
-      (by rw [hf₁_sq]; exact hg.2.2.indicator measurableSet_Iic)
-      (by rw [hf₂_sq]; exact hD.2.2)
-    simpa [I₁, AK, w8Mass, hprod, hf₁_sq, hf₂_sq] using hcs
+    have hexp4 : Measurable fun u : ℝ => Real.exp (-(4 * u)) := by fun_prop
+    have hf₁m : AEStronglyMeasurable f₁ volume :=
+      ((hg.1.mul hexp4).indicator measurableSet_Iic).aestronglyMeasurable
+    have hf₂m : AEStronglyMeasurable f₂ volume := (hD.1.mul hexp4).aestronglyMeasurable
+    have hf₁i : Integrable (fun u => f₁ u ^ 2) := by
+      rw [hf₁_sq]; exact hg.2.2.indicator measurableSet_Iic
+    have hf₂i : Integrable (fun u => f₂ u ^ 2) := by
+      rw [hf₂_sq]; exact hD.2.2
+    have hcs := sq_integral_mul_le hf₁m hf₂m hf₁i hf₂i
+    simpa only [I₁, AK, w8Mass, hprod, hf₁_sq, hf₂_sq] using hcs
   have hI₁_lt : |I₁| < ε / 2 := by
     have hsq_lt : I₁ ^ 2 < (ε / 2) ^ 2 := by
       have h1 : AK * w8Mass D ≤ δ * (4 * M) :=
         mul_le_mul hK.le hwD (w8Mass_nonneg D) hδ.le
       have h2 : δ * (4 * M) < (ε / 2) ^ 2 := by
         dsimp [δ]
-        have hden : 0 < Real.sqrt M + 1 := by positivity
+        have hden : 0 < 4 * (Real.sqrt M + 1) := by positivity
+        rw [div_pow, div_mul_eq_mul_div, div_lt_iff₀ (sq_pos_of_pos hden)]
         have hM_sq : Real.sqrt M ^ 2 = M := Real.sq_sqrt hM
         have hlt_sq : 4 * M < 4 * (Real.sqrt M + 1) ^ 2 := by
           nlinarith [Real.sqrt_nonneg M, hM_sq]
-        calc (ε / (4 * (Real.sqrt M + 1))) ^ 2 * (4 * M)
-            = ε ^ 2 * (4 * M) / (16 * (Real.sqrt M + 1) ^ 2) := by ring
-          _ < ε ^ 2 * (4 * (Real.sqrt M + 1) ^ 2) / (16 * (Real.sqrt M + 1) ^ 2) := by
-              exact div_lt_div_of_pos_right (mul_lt_mul_of_pos_left hlt_sq (sq_pos_of_pos hε))
-                (by positivity)
-          _ = (ε / 2) ^ 2 := by field_simp; ring
+        have hrhs : (ε / 2) ^ 2 * (4 * (Real.sqrt M + 1)) ^ 2 =
+            ε ^ 2 * (4 * (Real.sqrt M + 1) ^ 2) := by ring
+        rw [hrhs]
+        exact mul_lt_mul_of_pos_left hlt_sq (sq_pos_of_pos hε)
       exact hI₁_sq.trans_lt (h1.trans_lt h2)
-    exact abs_lt_of_sq_lt_sq' hsq_lt (by positivity) |>.2
+    exact abs_lt.mpr (abs_lt_of_sq_lt_sq' hsq_lt (by positivity))
   -- Bound `|I₂| < ε / 2`
   have hI₂_sq : I₂ ^ 2 ≤ (w8Mass g * Real.exp (8 * (K : ℝ))) * ∫ u, D u ^ 2 := by
     set f₁ : ℝ → ℝ := fun u => |g u| * Real.exp (-(4 * u)) * Real.exp (4 * (K : ℝ))
     set f₂ : ℝ → ℝ := fun u => |D u|
+    have hexp4 : Measurable fun u : ℝ => Real.exp (-(4 * u)) := by fun_prop
     have hf₁_sq : (fun u => f₁ u ^ 2) =
         fun u => Real.exp (8 * (K : ℝ)) * (g u ^ 2 * Real.exp (-(8 * u))) := by
       funext u; dsimp [f₁]
@@ -967,7 +1002,6 @@ private theorem tendsto_w8Pair_of_L2_tendsto {U : ℕ → ℝ → ℝ} {F g : �
       ring_nf
     have hD_sq_int : Integrable fun u => D u ^ 2 := by
       refine hD.2.2.mono' (hD.1.pow_const 2).aestronglyMeasurable (Eventually.of_forall fun u => ?_)
-      dsimp only
       rw [Real.norm_of_nonneg (sq_nonneg _)]
       rcases le_or_gt 0 u with hu | hu
       · rw [hD.2.1 u hu]; simp
@@ -983,27 +1017,27 @@ private theorem tendsto_w8Pair_of_L2_tendsto {U : ℕ → ℝ → ℝ} {F g : �
         · rw [abs_mul, abs_mul, abs_of_pos (Real.exp_pos _)]
           have hexp : Real.exp (-(8 * u)) ≤ Real.exp (-(4 * u)) * Real.exp (4 * (K : ℝ)) := by
             rw [← Real.exp_add]
-            exact Real.exp_le_exp.mpr (by linarith [mem_Ioi.mp hu])
+            exact Real.exp_le_exp.mpr (by linarith [Set.mem_Ioi.mp hu])
           calc |g u| * |D u| * Real.exp (-(8 * u))
               ≤ |g u| * |D u| * (Real.exp (-(4 * u)) * Real.exp (4 * (K : ℝ))) :=
                 mul_le_mul_of_nonneg_left hexp (by positivity)
             _ = |g u| * Real.exp (-(4 * u)) * Real.exp (4 * (K : ℝ)) * |D u| := by ring
-      · simp only [hu, Set.indicator_of_notMem, abs_zero, f₁, f₂]
+      · rw [Set.indicator_of_notMem hu, abs_zero]
+        dsimp only [f₁, f₂]
         positivity
     have hf₁_int : Integrable fun u => f₁ u ^ 2 := by
       rw [hf₁_sq]; exact hg.2.2.const_mul _
     have hf₂_int : Integrable fun u => f₂ u ^ 2 := by
       simpa [f₂, sq_abs] using hD_sq_int
-    have hprod_int := integrable_mul_of_sq_integrable
-      (((continuous_abs.measurable.comp hg.1).mul (by fun_prop)).mul measurable_const).aestronglyMeasurable
-      (continuous_abs.measurable.comp hD.1).aestronglyMeasurable hf₁_int hf₂_int
+    have hf₁_meas : AEStronglyMeasurable f₁ volume :=
+      (((continuous_abs.measurable.comp hg.1).mul hexp4).mul measurable_const).aestronglyMeasurable
+    have hf₂_meas : AEStronglyMeasurable f₂ volume :=
+      (continuous_abs.measurable.comp hD.1).aestronglyMeasurable
+    have hprod_int := integrable_mul_of_sq_integrable hf₁_meas hf₂_meas hf₁_int hf₂_int
     have habs_le : |I₂| ≤ ∫ u, f₁ u * f₂ u :=
       abs_integral_le_integral_abs.trans
         (integral_mono (hint.indicator measurableSet_Ioi).abs hprod_int hpt)
-    have hnn_rhs : 0 ≤ ∫ u, f₁ u * f₂ u := integral_nonneg fun u => by dsimp [f₁, f₂]; positivity
-    have hcs := sq_integral_mul_le
-      (((continuous_abs.measurable.comp hg.1).mul (by fun_prop)).mul measurable_const).aestronglyMeasurable
-      (continuous_abs.measurable.comp hD.1).aestronglyMeasurable hf₁_int hf₂_int
+    have hcs := sq_integral_mul_le hf₁_meas hf₂_meas hf₁_int hf₂_int
     calc I₂ ^ 2 = |I₂| ^ 2 := (sq_abs I₂).symm
       _ ≤ (∫ u, f₁ u * f₂ u) ^ 2 := pow_le_pow_left₀ (abs_nonneg _) habs_le 2
       _ ≤ (∫ u, f₁ u ^ 2) * (∫ u, f₂ u ^ 2) := hcs
@@ -1012,7 +1046,7 @@ private theorem tendsto_w8Pair_of_L2_tendsto {U : ℕ → ℝ → ℝ} {F g : �
           rw [integral_const_mul, w8Mass, mul_comm (Real.exp _)]
   have hI₂_lt : |I₂| < ε / 2 := by
     have hsq_lt : I₂ ^ 2 < (ε / 2) ^ 2 := hI₂_sq.trans_lt (hN n hn)
-    exact (abs_lt_of_sq_lt_sq' hsq_lt (by positivity)).2
+    exact abs_lt.mpr (abs_lt_of_sq_lt_sq' hsq_lt (by positivity))
   rw [hsplit_int]
   calc |I₁ + I₂| ≤ |I₁| + |I₂| := abs_add_le _ _
     _ < ε / 2 + ε / 2 := add_lt_add hI₁_lt hI₂_lt
@@ -1031,7 +1065,7 @@ def modeSin (w : ℂ) : ℝ → ℝ :=
 theorem isW8Target_modeCos {w : ℂ} (hw : -4 < w.re) : IsW8Target (modeCos w) := by
   refine ⟨((by fun_prop : Measurable fun u : ℝ =>
       Real.exp ((w.re + 8) * u) * Real.cos (w.im * u)).indicator measurableSet_Iio),
-    fun u hu => Set.indicator_of_notMem (not_lt.mpr hu) _, ?_⟩
+    fun u hu => by rw [modeCos, Set.indicator_of_notMem (show u ∉ Iio (0 : ℝ) from not_lt.mpr hu)], ?_⟩
   have ha : 0 < 2 * w.re + 8 := by linarith
   have hdom : Integrable (Set.indicator (Iio (0 : ℝ)) fun u => Real.exp ((2 * w.re + 8) * u)) :=
     ((integrableOn_exp_mul_Iic ha 0).mono_set Iio_subset_Iic_self).integrable_indicator
@@ -1043,7 +1077,8 @@ theorem isW8Target_modeCos {w : ℂ} (hw : -4 < w.re) : IsW8Target (modeCos w) :
     (Eventually.of_forall fun u => ?_)
   dsimp only [modeCos]
   by_cases hu : u < 0
-  · simp only [mem_Iio.mpr hu, Set.indicator_of_mem,
+  · have hu' : u ∈ Iio (0 : ℝ) := Set.mem_Iio.mpr hu
+    rw [Set.indicator_of_mem hu', Set.indicator_of_mem hu',
       Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)]
     have hc : Real.cos (w.im * u) ^ 2 ≤ 1 := Real.cos_sq_le_one _
     have he : Real.exp ((w.re + 8) * u) ^ 2 * Real.exp (-(8 * u)) =
@@ -1059,7 +1094,7 @@ theorem isW8Target_modeCos {w : ℂ} (hw : -4 < w.re) : IsW8Target (modeCos w) :
 theorem isW8Target_modeSin {w : ℂ} (hw : -4 < w.re) : IsW8Target (modeSin w) := by
   refine ⟨((by fun_prop : Measurable fun u : ℝ =>
       Real.exp ((w.re + 8) * u) * Real.sin (w.im * u)).indicator measurableSet_Iio),
-    fun u hu => Set.indicator_of_notMem (not_lt.mpr hu) _, ?_⟩
+    fun u hu => by rw [modeSin, Set.indicator_of_notMem (show u ∉ Iio (0 : ℝ) from not_lt.mpr hu)], ?_⟩
   have ha : 0 < 2 * w.re + 8 := by linarith
   have hdom : Integrable (Set.indicator (Iio (0 : ℝ)) fun u => Real.exp ((2 * w.re + 8) * u)) :=
     ((integrableOn_exp_mul_Iic ha 0).mono_set Iio_subset_Iic_self).integrable_indicator
@@ -1071,7 +1106,8 @@ theorem isW8Target_modeSin {w : ℂ} (hw : -4 < w.re) : IsW8Target (modeSin w) :
     (Eventually.of_forall fun u => ?_)
   dsimp only [modeSin]
   by_cases hu : u < 0
-  · simp only [mem_Iio.mpr hu, Set.indicator_of_mem,
+  · have hu' : u ∈ Iio (0 : ℝ) := Set.mem_Iio.mpr hu
+    rw [Set.indicator_of_mem hu', Set.indicator_of_mem hu',
       Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)]
     have hs : Real.sin (w.im * u) ^ 2 ≤ 1 := Real.sin_sq_le_one _
     have he : Real.exp ((w.re + 8) * u) ^ 2 * Real.exp (-(8 * u)) =
@@ -1088,17 +1124,21 @@ theorem w8Pair_modeCos_eq_re_laplace {G : ℝ → ℝ} (hG : CriticalHalfLineEne
     {w : ℂ} (hw : -4 < w.re) :
     w8Pair (modeCos w) G = (negativeHalfLineLaplace (cx G) w).re := by
   unfold negativeHalfLineLaplace w8Pair
-  rw [← Complex.re_integral (laplace_cx_integrable_of_domain hG hw)]
+  have hclm := Complex.reCLM.integral_comp_comm (laplace_cx_integrable_of_domain hG hw)
+  change (∫ u : ℝ, (Complex.exp (w * (u : ℂ)) * cx G u).re) =
+    (∫ u : ℝ, Complex.exp (w * (u : ℂ)) * cx G u).re at hclm
+  rw [← hclm]
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
   rcases lt_or_ge u 0 with hu | hu
-  · simp only [modeCos, mem_Iio.mpr hu, Set.indicator_of_mem, cx]
+  · have hu' : u ∈ Iio (0 : ℝ) := Set.mem_Iio.mpr hu
+    simp only [modeCos, Set.indicator_of_mem hu', cx]
     have hw_split : w * (u : ℂ) = ((w.re * u : ℝ) : ℂ) + ((w.im * u : ℝ) : ℂ) * I := by
       apply Complex.ext <;> simp
-    rw [hw_split, Complex.exp_add_mul_I, Complex.ofReal_exp]
+    rw [hw_split, Complex.exp_add_mul_I, ← Complex.ofReal_exp, ← Complex.ofReal_cos,
+      ← Complex.ofReal_sin]
     have he : Real.exp ((w.re + 8) * u) * Real.exp (-(8 * u)) = Real.exp (w.re * u) := by
       rw [← Real.exp_add]; congr 1; ring
     simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
-      Complex.cos_ofReal_re, Complex.cos_ofReal_im, Complex.sin_ofReal_re, Complex.sin_ofReal_im,
       Complex.I_re, Complex.I_im]
     calc Real.exp ((w.re + 8) * u) * Real.cos (w.im * u) * G u * Real.exp (-(8 * u))
         = (Real.exp ((w.re + 8) * u) * Real.exp (-(8 * u))) * Real.cos (w.im * u) * G u := by ring
@@ -1110,18 +1150,22 @@ theorem w8Pair_modeSin_eq_im_laplace {G : ℝ → ℝ} (hG : CriticalHalfLineEne
     {w : ℂ} (hw : -4 < w.re) :
     w8Pair (modeSin w) G = (negativeHalfLineLaplace (cx G) w).im := by
   unfold negativeHalfLineLaplace w8Pair
-  rw [← Complex.im_integral (laplace_cx_integrable_of_domain hG hw)]
+  have hclm := Complex.imCLM.integral_comp_comm (laplace_cx_integrable_of_domain hG hw)
+  change (∫ u : ℝ, (Complex.exp (w * (u : ℂ)) * cx G u).im) =
+    (∫ u : ℝ, Complex.exp (w * (u : ℂ)) * cx G u).im at hclm
+  rw [← hclm]
   refine integral_congr_ae (Eventually.of_forall fun u => ?_)
   rcases lt_or_ge u 0 with hu | hu
-  · simp only [modeSin, mem_Iio.mpr hu, Set.indicator_of_mem, cx]
+  · have hu' : u ∈ Iio (0 : ℝ) := Set.mem_Iio.mpr hu
+    simp only [modeSin, Set.indicator_of_mem hu', cx]
     have hw_split : w * (u : ℂ) = ((w.re * u : ℝ) : ℂ) + ((w.im * u : ℝ) : ℂ) * I := by
       apply Complex.ext <;> simp
-    rw [hw_split, Complex.exp_add_mul_I, Complex.ofReal_exp]
+    rw [hw_split, Complex.exp_add_mul_I, ← Complex.ofReal_exp, ← Complex.ofReal_cos,
+      ← Complex.ofReal_sin]
     have he : Real.exp ((w.re + 8) * u) * Real.exp (-(8 * u)) = Real.exp (w.re * u) := by
       rw [← Real.exp_add]; congr 1; ring
     simp only [Complex.add_im, Complex.mul_im, Complex.mul_re, Complex.ofReal_re,
-      Complex.ofReal_im, Complex.cos_ofReal_re, Complex.cos_ofReal_im, Complex.sin_ofReal_re,
-      Complex.sin_ofReal_im, Complex.I_re, Complex.I_im]
+      Complex.ofReal_im, Complex.I_re, Complex.I_im]
     calc Real.exp ((w.re + 8) * u) * Real.sin (w.im * u) * G u * Real.exp (-(8 * u))
         = (Real.exp ((w.re + 8) * u) * Real.exp (-(8 * u))) * Real.sin (w.im * u) * G u := by ring
       _ = Real.exp (w.re * u) * Real.sin (w.im * u) * G u := by rw [he]
@@ -1135,8 +1179,7 @@ private theorem criticalHalfLineFullEnergy_eq_bare_add {R : ℝ} {F : ℝ → �
   have hfun : (fun u => F u + 1 * F u) = fun u => (2 : ℝ) * F u := by funext u; ring
   rw [hfun, criticalHalfLineFullEnergy_const_mul] at h1
   have hmix : criticalHalfLineMixedEnergy R F F = criticalHalfLineFullEnergy R F := by linarith
-  rw [← hmix, criticalHalfLineMixedEnergy_eq_bare_add,
-    setIntegral_Iio_confinement_eq_univ hF.support]
+  rw [← hmix, criticalHalfLineMixedEnergy_eq_bare_add, setIntegral_Iio_w8_eq hF.support]
   unfold w8Mass
   congr 2
   exact integral_congr_ae (Eventually.of_forall fun u => by ring)
@@ -1148,25 +1191,27 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
     {a : ℝ} (ha : 0 < a) {y : ℝ → ℝ} (hy : IsW8Target y) :
     ∃ X : ℝ → ℝ, SolvesZetaOnLineResolvent a y X := by
   let J : (ℝ → ℝ) → ℝ := fun X => onLineEnergy X + a * w8Mass X - 2 * w8Pair y X
+  have h2ab_all : ∀ {X : ℝ → ℝ}, CriticalHalfLineEnergyDomain X →
+      2 * w8Pair y X ≤ (a / 2) * w8Mass X + (2 / a) * w8Mass y := by
+    intro X hX
+    have hcs := sq_w8Pair_le hy (isW8Target_of_domain hX)
+    set u := Real.sqrt (a / 2) * Real.sqrt (w8Mass X)
+    set v := Real.sqrt (2 / a) * Real.sqrt (w8Mass y)
+    have hu2 : u ^ 2 = (a / 2) * w8Mass X := by
+      dsimp [u]; rw [mul_pow, Real.sq_sqrt (by positivity), Real.sq_sqrt (w8Mass_nonneg X)]
+    have hv2 : v ^ 2 = (2 / a) * w8Mass y := by
+      dsimp [v]; rw [mul_pow, Real.sq_sqrt (by positivity), Real.sq_sqrt (w8Mass_nonneg y)]
+    have huv : (u * v) ^ 2 = w8Mass y * w8Mass X := by
+      rw [mul_pow, hu2, hv2]; field_simp
+    have hle_uv : w8Pair y X ≤ u * v := by
+      refine (abs_le_of_sq_le_sq' (hcs.trans_eq huv.symm) ?_).2
+      dsimp [u, v]; positivity
+    nlinarith [sq_nonneg (u - v), hu2, hv2, hle_uv]
   have hcoercive : ∀ {X : ℝ → ℝ}, CriticalHalfLineEnergyDomain X →
       (a / 2) * w8Mass X - (2 / a) * w8Mass y ≤ J X := by
     intro X hX
-    have hcs := sq_w8Pair_le hy (isW8Target_of_domain hX)
-    have h2ab : 2 * w8Pair y X ≤ (a / 2) * w8Mass X + (2 / a) * w8Mass y := by
-      set u := Real.sqrt (a / 2) * Real.sqrt (w8Mass X)
-      set v := Real.sqrt (2 / a) * Real.sqrt (w8Mass y)
-      have hu2 : u ^ 2 = (a / 2) * w8Mass X := by
-        dsimp [u]; rw [mul_pow, Real.sq_sqrt (by positivity), Real.sq_sqrt (w8Mass_nonneg X)]
-      have hv2 : v ^ 2 = (2 / a) * w8Mass y := by
-        dsimp [v]; rw [mul_pow, Real.sq_sqrt (by positivity), Real.sq_sqrt (w8Mass_nonneg y)]
-      have huv : (u * v) ^ 2 = w8Mass y * w8Mass X := by
-        rw [mul_pow, hu2, hv2]; field_simp; ring
-      have habs : |w8Pair y X| ≤ u * v := by
-        refine (abs_le_of_sq_le_sq' (hcs.trans_eq huv.symm) ?_).2
-        dsimp [u, v]; positivity
-      nlinarith [sq_nonneg (u - v), hu2, hv2, (abs_le.mp habs).2]
     dsimp [J]
-    linarith [onLineEnergy_nonneg X, h2ab]
+    linarith [onLineEnergy_nonneg X, h2ab_all hX]
   set S : Set ℝ := {e : ℝ | ∃ X : ℝ → ℝ, CriticalHalfLineEnergyDomain X ∧ J X = e}
   have h0_dom : CriticalHalfLineEnergyDomain (fun _ : ℝ => (0 : ℝ)) := by
     simpa using (criticalHalfLineEnergyDomain_probe (by norm_num : (4 : ℝ) < 5)).const_mul 0
@@ -1205,19 +1250,15 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
     rcases le_or_gt 0 u with hu | hu
     · rw [(hDX n).support u hu]; simp
     · exact le_mul_of_one_le_right (sq_nonneg _) (Real.one_le_exp (by linarith))
-  have hon_X (n : ℕ) : onLineEnergy (X n) ≤ 1 + (2 / a) * w8Mass y + a * M₀ := by
-    have hcs := sq_w8Pair_le hy (isW8Target_of_domain (hDX n))
-    have h2ab : 2 * w8Pair y (X n) ≤ a * M₀ + (2 / a) * w8Mass y := by
-      have hc := hcoercive (hDX n)
-      have hw := w8Mass_nonneg (X n)
-      dsimp [J] at hc
-      linarith [onLineEnergy_nonneg (X n), hw8_X n, mul_le_mul_of_nonneg_left (hw8_X n) ha.le]
+  have hon_X (n : ℕ) : onLineEnergy (X n) ≤ 1 + (2 / a) * w8Mass y := by
     have hJ := hJX_le_one n
+    have h2ab := h2ab_all (hDX n)
+    have haw : 0 ≤ (a / 2) * w8Mass (X n) := mul_nonneg (half_pos ha).le (w8Mass_nonneg (X n))
     dsimp [J] at hJ
-    linarith [w8Mass_nonneg (X n), mul_nonneg ha.le (w8Mass_nonneg (X n))]
+    linarith
   set P₁ : ℝ := ∫ u : ℝ, probe 1 u
   have hP₁_nn : 0 ≤ P₁ := integral_nonneg fun u => probe_nonneg 1 u
-  set B₀ : ℝ := (1 + (2 / a) * w8Mass y + a * M₀) +
+  set B₀ : ℝ := (1 + (2 / a) * w8Mass y) +
     (offLineCopyFinset hfin).card * ((M₀ + P₁) / 2) ^ 2 +
     criticalAliasCoefficient 1 * M₀
   have hE1_X (n : ℕ) : criticalHalfLineFullEnergy 1 (X n) ≤ B₀ := by
@@ -1228,16 +1269,17 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
           negativeHalfLineLaplace (cx (X n)) (-centredZero q)).re ≤
         (offLineCopyFinset hfin).card * ((M₀ + P₁) / 2) ^ 2 := by
       refine (Complex.re_le_norm _).trans ((norm_sum_le _ _).trans ?_)
+      have hbd_M : ((∫ u : ℝ, X n u ^ 2 * Real.exp (-(8 * u))) + ∫ u : ℝ, probe 1 u) / 2 ≤
+          (M₀ + P₁) / 2 :=
+        div_le_div_of_nonneg_right (add_le_add (hw8_X n) le_rfl) (by norm_num)
       have hterm : ∀ q ∈ offLineCopyFinset hfin,
           ‖negativeHalfLineLaplace (cx (X n)) (centredZero q) *
             negativeHalfLineLaplace (cx (X n)) (-centredZero q)‖ ≤ ((M₀ + P₁) / 2) ^ 2 := by
         intro q _
         rw [norm_mul, sq]
-        have b1 := (norm_laplace_pos_centredZero_le (hDX n) q).trans
-          (by dsimp [w8Mass, P₁] at hw8_X ⊢; linarith [hw8_X n])
-        have b2 := (norm_laplace_neg_centredZero_le_domain (hDX n) q).trans
-          (by dsimp [w8Mass, P₁] at hw8_X ⊢; linarith [hw8_X n])
-        exact mul_le_mul b1 b2 (norm_nonneg _) (by positivity)
+        exact mul_le_mul ((norm_laplace_pos_centredZero_le (hDX n) q).trans hbd_M)
+          ((norm_laplace_neg_centredZero_le_domain (hDX n) q).trans hbd_M)
+          (norm_nonneg _) (by positivity)
       simpa using Finset.sum_le_card_nsmul (offLineCopyFinset hfin) _ _ hterm
     have ha1 := (criticalAliasCoefficient_positive one_pos).le
     dsimp [B₀]
@@ -1251,14 +1293,14 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
   have hDY (n : ℕ) : CriticalHalfLineEnergyDomain (Y n) := (hDX n).const_mul c
   have hmass_Y (n : ℕ) : (∫ u, Y n u ^ 2) ≤ 1 := by
     have hfun : (fun u => Y n u ^ 2) = fun u => c ^ 2 * X n u ^ 2 := by funext u; dsimp [Y]; ring
-    rw [hfun, integral_const_mul, hc_sq, inv_mul_le_iff₀ (by positivity)]
-    linarith [hsq_X n]
+    rw [hfun, integral_const_mul, hc_sq, inv_mul_le_iff₀ (by positivity), mul_one]
+    exact (hsq_X n).trans (by linarith)
   have hw8_Y (n : ℕ) : w8Mass (Y n) ≤ 1 := by
     have hfun : (fun u => Y n u ^ 2 * Real.exp (-(8 * u))) =
         fun u => c ^ 2 * (X n u ^ 2 * Real.exp (-(8 * u))) := by funext u; dsimp [Y]; ring
     unfold w8Mass
-    rw [hfun, integral_const_mul, hc_sq, inv_mul_le_iff₀ (by positivity)]
-    linarith [hw8_X n]
+    rw [hfun, integral_const_mul, hc_sq, inv_mul_le_iff₀ (by positivity), mul_one]
+    exact (hw8_X n).trans (by linarith)
   have hE1_Y (n : ℕ) : criticalHalfLineFullEnergy 1 (Y n) ≤ c ^ 2 * max B₀ 0 := by
     dsimp [Y]
     rw [criticalHalfLineFullEnergy_const_mul]
@@ -1271,11 +1313,13 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
   have hmH1 (n : ℕ) : (∫ u, H n u ^ 2) ≤ 1 := (hmH n).trans (hmass_Y n)
   have hH8_le (n : ℕ) : (∫ u, H n u ^ 2 * Real.exp (-(8 * u))) ≤ 2 :=
     (hH8 n).trans (by unfold w8Mass at hw8_Y; linarith [hw8_Y n])
-  have hE1_H (n : ℕ) : criticalHalfLineFullEnergy 1 (H n) ≤ c ^ 2 * max B₀ 0 + 1 := by
+  set E_top : ℝ := c ^ 2 * max B₀ 0 + 1
+  have hE1_H (n : ℕ) : criticalHalfLineFullEnergy 1 (H n) ≤ E_top := by
     have h1 : 1 / ((n : ℝ) + 1) ≤ 1 :=
       div_le_one_of_le₀ (by linarith [Nat.cast_nonneg (α := ℝ) n]) (by positivity)
+    dsimp [E_top]
     linarith [heH n, hE1_Y n, h1]
-  have hweil_H (n : ℕ) : weilQuad (H n) ≤ c ^ 2 * max B₀ 0 + 1 := by
+  have hweil_H (n : ℕ) : weilQuad (H n) ≤ E_top := by
     have h := hE1_H n
     rw [criticalHalfLineFullEnergy,
       ← weilQuad_eq_arch_sub_prime_add_pole (hHwin n).contDiff (hHwin n).hasCompactSupport] at h
@@ -1283,7 +1327,7 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
         ∫ u in Iio 0, H n u ^ 2 * Real.exp (-(8 * u)) :=
       mul_nonneg (criticalAliasCoefficient_positive one_pos).le
         (integral_nonneg fun u => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)
-    linarith
+    linarith only [h, hp]
   obtain ⟨F₀, s, hs, hF₀m, hF₀i, hF₀2, _, hF₀8, hw8_F₀, hF₀s, hL2_HF₀, hL1_HF₀, -⟩ :=
     exists_strong_negative_limit_of_bounded_weilQuad
       (fun n => (hHwin n).contDiff) (fun n => (hHwin n).hasCompactSupport)
@@ -1296,7 +1340,7 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
   have hC_arch : 0 ≤ C_arch := add_nonneg
     (mul_nonneg (by norm_num) vonMangoldtThreeHalvesMass_nonneg)
     (mul_nonneg (by norm_num) (integral_nonneg fun u => (Real.exp_pos _).le))
-  have harch_H (n : ℕ) : archForm (H n) ≤ (c ^ 2 * max B₀ 0 + 1) + C_arch * 3 := by
+  have harch_H (n : ℕ) : archForm (H n) ≤ E_top + C_arch * 3 := by
     have hsrc : exponentialSourceMass (H n) ≤ 3 := by
       have h := (exponentialSourceMass_le_of_support (Y := 0) le_rfl
         (hDH n).meas.aestronglyMeasurable (hDH n).sq (hDH n).exponential
@@ -1344,7 +1388,7 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
       exact hd.sq.congr (Eventually.of_forall fun u => by dsimp; ring)
     rw [← integral_const_mul, ← integral_const_mul, ← integral_add (hi1.const_mul 2) (hi2.const_mul 2)]
     refine integral_mono hdy ((hi1.const_mul 2).add (hi2.const_mul 2)) fun u => ?_
-    dsimp only
+    dsimp only [Pi.add_apply]
     nlinarith [sq_nonneg ((H (s j) u - Y (s j) u) + (H (s j) u - F₀ u))]
   have hL2_XX : Tendsto (fun j => ∫ u, (X (s j) u - Xstar u) ^ 2) atTop (𝓝 0) := by
     have hfun : ∀ j, (∫ u, (X (s j) u - Xstar u) ^ 2) =
@@ -1354,7 +1398,9 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
       refine integral_congr_ae (Eventually.of_forall fun u => ?_)
       dsimp [Y, Xstar]
       field_simp [hc_pos.ne']
-    simpa [hfun] using hL2_YF₀.const_mul ((c⁻¹) ^ 2)
+    have h0 := hL2_YF₀.const_mul ((c⁻¹) ^ 2)
+    rw [mul_zero] at h0
+    exact h0.congr fun j => (hfun j).symm
   -- Pass `J (X (s j))` to the limit `Xstar` via `tendsto_w8Pair_of_L2_tendsto`
   set M_tot : ℝ := max M₀ (w8Mass Xstar)
   have hM_tot : 0 ≤ M_tot := le_max_of_le_left hM₀_nn
@@ -1386,8 +1432,10 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
           hM_tot hw8_X_tot hw8_Xstar_tot hL2_XX
     have hsq_eq : ∀ G : ℝ → ℝ, zeroValueMass G q =
         (negativeHalfLineLaplace (cx G) (centredZero q)).re ^ 2 +
-          (negativeHalfLineLaplace (cx G) (centredZero q)).im ^ 2 :=
-      fun G => Complex.sq_norm _
+          (negativeHalfLineLaplace (cx G) (centredZero q)).im ^ 2 := fun G => by
+      unfold zeroValueMass
+      rw [Complex.sq_norm, Complex.normSq_apply]
+      ring
     simpa [hsq_eq] using (hre_lim.pow 2).add (him_lim.pow 2)
   have hblock_le : ∀ T : Finset onLineCopies,
       ∑ q ∈ T, zeroValueMass Xstar q ≤ L - a * w8Mass Xstar + 2 * w8Pair y Xstar := by
@@ -1403,8 +1451,9 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
         simpa [two_mul] using this
       exact (h1.add h2).sub (hy_lim.const_mul 2)
     have hupper_lim : Tendsto (fun j => L + 1 / ((s j : ℝ) + 1)) atTop (𝓝 L) := by
-      simpa using tendsto_const_nhds.add
+      have h0 := (tendsto_const_nhds (x := L)).add
         (tendsto_one_div_add_atTop_nhds_zero_nat.comp hs.tendsto_atTop)
+      rwa [add_zero] at h0
     have hle_L : (∑ q ∈ T, zeroValueMass Xstar q) + a * w8Mass Xstar - 2 * w8Pair y Xstar ≤ L := by
       refine le_of_tendsto_of_tendsto hT_lim hupper_lim (Eventually.of_forall fun j => ?_)
       have hsum_le : ∑ q ∈ T, zeroValueMass (X (s j)) q ≤ onLineEnergy (X (s j)) :=
@@ -1438,9 +1487,10 @@ theorem exists_zetaOnLineResolvent (hfin : BacklundConverse.FiniteOffLine)
     have hw8_t := w8Mass_add_const_mul (isW8Target_of_domain hDXstar)
       (isW8Target_of_domain hG) t
     have hy_t : w8Pair y (fun u => Xstar u + t * G u) = w8Pair y Xstar + t * w8Pair y G := by
-      rw [w8Pair_comm y, w8Pair_add_left (isW8Target_of_domain hDXstar)
-        (isW8Target_const_mul (isW8Target_of_domain hG) t) hy, w8Pair_const_mul_left,
-        w8Pair_comm Xstar y, w8Pair_comm G y]
+      have h1 := w8Pair_add_left (isW8Target_of_domain hDXstar)
+        (isW8Target_const_mul (isW8Target_of_domain hG) t) hy
+      have h2 := w8Pair_const_mul_left t G y
+      rw [w8Pair_comm y _, h1, h2, w8Pair_comm Xstar y, w8Pair_comm G y]
     dsimp [J] at hmin
     rw [hon_t, hw8_t, hy_t] at hmin
     linarith
@@ -1604,13 +1654,13 @@ theorem nullVector_ae_eq_offLineResolvent_of_finiteOffLine {R : ℝ} (hR : 0 < R
         (isW8Target_const_mul (isW8Target_modeSin hw) β) (isW8Target_of_domain hG),
       w8Pair_const_mul_left, w8Pair_const_mul_left,
       w8Pair_modeCos_eq_re_laplace hG hw, w8Pair_modeSin_eq_im_laplace hG hw]
-    linarith [hc.2 G hG, hs.2 G hG]
+    linear_combination α * hc.2 G hG + β * hs.2 G hG
   have hsol_sum := solvesZetaOnLineResolvent_finset_sum (offLineCopyFinset hfin) hfin hyTerm hXTerm
   have hsol_F : SolvesZetaOnLineResolvent a (fun u => ∑ q ∈ offLineCopyFinset hfin, yTerm q u) F := by
     refine ⟨hF.1, fun G hG => ?_⟩
     have hnull := hF.2.2 G hG
     rw [criticalHalfLineMixedEnergy_eq_bare_add,
-      setIntegral_Iio_confinement_eq_univ hF.1.support,
+      setIntegral_Iio_w8_eq hF.1.support,
       bareMixedEnergy_eq_onLineMixed_add_re_offLine hF.1 hG hfin] at hnull
     have hw_eq : (∫ u : ℝ, F u * G u * Real.exp (-(8 * u))) = w8Pair F G := rfl
     rw [hw_eq] at hnull
@@ -1861,7 +1911,7 @@ theorem nullVector_crossWallLaw {R₁ R₂ : ℝ} (hR₁ : 0 < R₁) {F₁ F₂ 
       _ = ((Real.exp (-(8 * k)) : ℝ) : ℂ) *
             ((∫ u : ℝ, F₁ (u + k) * F₂ u * Real.exp (-(8 * u)) : ℝ) : ℂ) := by rw [← hsh]
   rw [hbare, hsp] at hdef
-  push_cast
+  rw [Complex.ofReal_sub, Complex.ofReal_mul]
   linear_combination -hdef
 
 /-- **Diagonal wall law for any confined null vector `(R, F)` (`R > 0`).** -/
@@ -1874,8 +1924,7 @@ theorem nullVector_diagonalWallLaw {R : ℝ} (hR : 0 < R) {F : ℝ → ℝ}
   have ha : (criticalAliasCoefficient R : ℂ) ≠ 0 :=
     Complex.ofReal_ne_zero.mpr (criticalAliasCoefficient_positive hR).ne'
   apply mul_left_cancel₀ ha
-  rw [hc]
-  push_cast
+  rw [hc, Complex.ofReal_sub, Complex.ofReal_mul, Complex.ofReal_sub, Complex.ofReal_one]
   ring
 
 #print axioms hasBeyondTheWallPrimeContinuation_iff_vanish_leftZeros

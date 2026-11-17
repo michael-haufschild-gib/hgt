@@ -12,6 +12,7 @@ cutoff. Its exponent set can lie in any prescribed cofinite residue columns.
 
 noncomputable section
 open Matrix
+open scoped NNReal
 open _root_.Polynomial
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open HTGeometry HilbertMetric.SymmetricClipping

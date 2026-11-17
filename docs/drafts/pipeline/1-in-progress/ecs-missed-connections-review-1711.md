@@ -21,7 +21,7 @@ Each E-M item names corpus results that ECS does not import. The task is the the
 | E-M20 | ¬AAL ⇒ Θ attained by an isolated top; then moments finite exactly for b < 17 − 2Θ, endpoint infinite, and the window masses ∫_{W_ν}abs F·e^{−8u} have exact rate Θ − ½ (≤ C e^{aνℓ} for every a > Θ − ½ at all levels; syndetic excursions above C e^{aνℓ} for every a < Θ − ½, gap = size of the top). Unattained Θ ⇒ AAL | Decay/WithoutTheAbscissaLawTheWindowMassesHaveTheRateOfTheZeros.lean | formalized (`criticalState_exact_window_rate_of_not_asymptoticAbscissaLaw`, `criticalState_endpoint_regimes`) |
 | E-M16 | transport of negative vectors between index pictures | — | not started |
 | E-M11 | totality of the orbit of the state in the energy norm | — | not started |
-| E-M14 | prime-side rows of stage 2 beyond E-J15 | — | not started (peer E-J15 in progress: Index/StageTwoHasPrimeSideRows.lean) |
+| E-M14 | ¬AAL (⟺ ψ(x) − x a single finite oscillation, ZCG) ⇒ the heated prime side F⁺_ε(T) = a⁻¹Σ_{bottom} LF(z)e^{εz²−zT} + O(e^{κ₂T}), a finite oscillation at rate Θ − ½ with the frequencies of the top; ¬AAL ⇒ real-amplitude positivity fails above every X for σ ∈ (Θ−½, Θ+½); B13 ⟺ (finite layer ⇒ ψ − x is not a single finite oscillation). The ψ-wave and positivity rows are the peer E-J15 module | Modes/WithoutTheAbscissaLawThePrimeSideIsAFiniteOscillation.lean | formalized (`criticalState_heatedBeyondWall_finiteOscillation`, `not_jasRealPositiveAbove_of_not_asymptoticAbscissaLaw`, `b13_iff_finiteOffLine_not_primeErrorIsFiniteOscillation`) |
 | E-M15 | rigidity rows of the model table | — | not started |
 | E-M12 | mean squares of the mode series (= E-J12) | — | not started (peer item E-J12) |
 | E-M19 | the state as a limit of window states | — | not started |
