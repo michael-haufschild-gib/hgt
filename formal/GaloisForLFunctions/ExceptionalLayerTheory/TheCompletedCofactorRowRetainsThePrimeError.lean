@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.ChebyshevPsiLogSummatory
 import GaloisForLFunctions.RHTower.DirichletDivisorAsymptotic
 import GaloisForLFunctions.RHTower.HarmonicStirlingExactBounds
 import GaloisForLFunctions.RHTower.ZetaLittlewoodDeficit
+import GaloisForLFunctions.RHTower.RouteECofactorSquarefreeHarmonic
 
 /-!
 # Completing the divisor row retains the original prime error
@@ -105,7 +106,39 @@ theorem abs_completedCofactor_sub_prime_sub_mean_le (V N : ℕ) :
   exact (mul_le_mul_of_nonneg_left (abs_completeDivisorError_add_le (N / d)) (abs_nonneg _)).trans_eq
     (by ring)
 
+/-- Uniform cost of completing the divisor row when the Möbius cutoff also moves. -/
+theorem abs_completedCofactor_sub_prime_sub_mean_le_sqrt (V N : ℕ) :
+    |cofactorCountError V N N - (Chebyshev.psi N - N) -
+      2 * Real.eulerMascheroniConstant * ∑ d ∈ Icc 1 N,
+        truncAF (moebius : ArithmeticFunction ℝ) V d * (N / d : ℕ)| ≤
+      50 * Real.sqrt N * Real.sqrt V := by
+  let μ := truncAF (moebius : ArithmeticFunction ℝ) V
+  have hsum : (∑ d ∈ Icc 1 N, |μ d| * Real.sqrt (N / d : ℕ)) ≤
+      Real.sqrt N * (2 * Real.sqrt V) := by
+    calc
+      _ = ∑ d ∈ Icc 1 (min N V), |μ d| * Real.sqrt (N / d : ℕ) := by
+        apply (sum_subset (Icc_subset_Icc_right (min_le_left N V)) _).symm
+        intro d hd hnot
+        have hdV : V < d := by
+          by_contra! h
+          exact hnot (mem_Icc.mpr ⟨(mem_Icc.mp hd).1, le_min (mem_Icc.mp hd).2 h⟩)
+        simp only [μ, truncAF_apply_of_gt hdV, abs_zero, zero_mul]
+      _ ≤ ∑ d ∈ Icc 1 (min N V), Real.sqrt N * (Real.sqrt d)⁻¹ := by
+        apply sum_le_sum
+        intro d _
+        calc
+          _ ≤ Real.sqrt (N / d : ℕ) := mul_le_of_le_one_left (Real.sqrt_nonneg _) (abs_truncAF_moebius_le_one V d)
+          _ ≤ Real.sqrt ((N : ℝ) / d) := Real.sqrt_le_sqrt (Nat.cast_div_le (m := N) (n := d))
+          _ = _ := by rw [Real.sqrt_div (Nat.cast_nonneg _), div_eq_mul_inv]
+      _ ≤ _ := by
+        rw [← mul_sum]
+        apply mul_le_mul_of_nonneg_left _ (Real.sqrt_nonneg _)
+        exact (sum_le_sum_of_subset_of_nonneg (Icc_subset_Icc_right (min_le_right N V))
+          (fun d _ _ => inv_nonneg.mpr (Real.sqrt_nonneg d))).trans (sum_sqrtInv_le V)
+  exact (abs_completedCofactor_sub_prime_sub_mean_le V N).trans
+    ((mul_le_mul_of_nonneg_left hsum (by norm_num : (0 : ℝ) ≤ 25)).trans_eq (by ring))
+
 #print axioms abs_completeDivisorError_add_le
-#print axioms abs_completedCofactor_sub_prime_sub_mean_le
+#print axioms abs_completedCofactor_sub_prime_sub_mean_le_sqrt
 
 end GaloisForLFunctions.ExceptionalLayerTheory

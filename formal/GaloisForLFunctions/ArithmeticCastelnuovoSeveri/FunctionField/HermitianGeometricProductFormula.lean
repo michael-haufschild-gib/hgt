@@ -50,9 +50,9 @@ private theorem finite_normalization (A : W →₀ ℤ) :
     rw [hermitianGeometricPointPrime_closedPoint]
     apply Prod.ext
     · change n • Finsupp.single w (1 : ℤ) = _
-      rw [Finsupp.smul_single, zsmul_eq_mul, mul_one]
+      rw [Finsupp.smul_single, smul_eq_mul, mul_one]
     · change n • (-1 : ℤ) = -n
-      rw [zsmul_eq_mul, mul_neg_one]
+      rw [smul_eq_mul, mul_neg_one]
 
 /-- Every actual divisor is equivalent up to prime-to-characteristic torsion to its degree at infinity. -/
 theorem hermitianPlaceDegree_primeToChar_principal (A : Div) :
@@ -63,10 +63,10 @@ theorem hermitianPlaceDegree_primeToChar_principal (A : Div) :
   rw [hu, hD]
   congr 1
   apply Prod.ext
-  · change A.1 = A.1 - _ • 0
+  · change A.1 = A.1 - degH A • 0
     rw [smul_zero, sub_zero]
   · change -(finiteDegree p s A.1) = A.2 - (finiteDegree p s A.1 + A.2) • (1 : ℤ)
-    rw [zsmul_eq_mul, mul_one]
+    rw [smul_eq_mul, mul_one]
     abel
 
 /-- A function with divisor supported at the unique infinity place has zero divisor. -/
@@ -79,7 +79,8 @@ theorem hermitianInfinity_principal_iff (z : ℤ) :
       ((hermitianGeometric_effective_principal_iff_constant p s _ v.toMul.ne_zero).1 he)
     change divH v = 0 at hz
     rw [hv] at hz
-    simpa only [Prod.snd_smul, zsmul_eq_mul, mul_one, Prod.snd_zero] using congrArg Prod.snd hz
+    have hval : t • (1 : ℤ) = 0 := congrArg Prod.snd hz
+    simpa only [smul_eq_mul, mul_one] using hval
   refine ⟨?_, fun h => by rw [h, zero_smul]; exact (divH).range.zero_mem⟩
   rintro ⟨u, hu⟩
   rcases le_total 0 z with h | h
@@ -101,7 +102,9 @@ theorem hermitianPlaceDegree_principal (u : Additive Hˣ) : degH (divH u) = 0 :=
 abbrev HermitianGeometricPicard := Div ⧸ (divH).range
 
 local notation "Pic" => HermitianGeometricPicard p s
-local notation "cl" => QuotientAddGroup.mk' (divH).range
+/-- Projection of actual place divisors to their divisor classes. -/
+abbrev hermitianGeometricClass : Div →+ Pic := QuotientAddGroup.mk' (divH).range
+local notation "cl" => hermitianGeometricClass p s
 
 /-- Degree on the Picard group. -/
 def hermitianPicardDegree : Pic →+ ℤ :=
@@ -113,7 +116,7 @@ local notation "δ" => hermitianPicardDegree p s
 theorem hermitianPicardDegree_infinity (z : ℤ) : δ (z • cl ∞ₕ) = z := by
   rw [map_zsmul]
   change z • (finiteDegree p s 0 + 1) = z
-  rw [map_zero, zero_add, zsmul_eq_mul, mul_one]
+  rw [map_zero, zero_add, smul_eq_mul, mul_one]
 
 /-- Torsion in the geometric class group is exactly degree zero, with prime-to-p annihilators. -/
 theorem hermitianPicardDegree_zero_iff (c : Pic) :
@@ -126,7 +129,7 @@ theorem hermitianPicardDegree_zero_iff (c : Pic) :
     rw [h, zero_smul, sub_zero] at hmem
     refine ⟨n, hn, hp, ?_⟩
     rw [← map_nsmul]
-    exact QuotientAddGroup.eq_zero_iff.mpr hmem
+    exact (QuotientAddGroup.eq_zero_iff _).mpr hmem
   · rintro ⟨n, hn, _, h⟩
     have he := congrArg δ h
     rw [map_nsmul, map_zero, nsmul_eq_mul] at he

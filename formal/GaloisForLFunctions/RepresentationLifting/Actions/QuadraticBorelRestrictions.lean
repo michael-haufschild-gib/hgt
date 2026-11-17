@@ -29,7 +29,7 @@ def quadraticRestrictedOrbit (q : K) : Set (K × K) :=
 
 private theorem matrix_intertwiner {A B C : Mat} (hd : B.det ≠ 0) (h : B * A = C * B) :
     IsConj A C := by
-  obtain ⟨g, hg⟩ := Matrix.isUnit_iff_isUnit_det.mpr (isUnit_iff_ne_zero.mpr hd)
+  obtain ⟨g, hg⟩ := (Matrix.isUnit_iff_isUnit_det B).mpr (isUnit_iff_ne_zero.mpr hd)
   exact ⟨g, hg ▸ h⟩
 
 private theorem companion_sq (q : K) : (quadraticCompanion q)^2 = q • (1 : Mat) := by
@@ -43,8 +43,8 @@ theorem quadraticCompanion_orbit_square (q : K) (Y : Mat) (h : IsConj (quadratic
   obtain ⟨g,hg⟩ := h.pow 2
   have he := hg.eq
   rw [companion_sq, mul_smul_comm, mul_one] at he
-  have hm := congrArg (fun Z : Mat => Z * (g⁻¹ : Matˣ).val) he
-  simpa only [smul_mul_assoc, mul_assoc, Units.mul_inv, mul_one] using hm.symm
+  apply g.isUnit.mul_right_cancel
+  simpa only [smul_mul_assoc, one_mul] using he.symm
 
 /-- A restriction is present exactly when its lower coordinate is nonzero or its upper
 coordinate is a square root of the orbit parameter. -/

@@ -51,6 +51,15 @@ theorem sectionMatrix_eq_atomGram (N : ℕ) : sectionMatrix N = atomGram N := by
 def finiteSectionMatrix (N m : ℕ) : Matrix (Fin N) (Fin N) ℂ :=
   fun i j => (mixedRayHeight i j m : ℂ)
 
+theorem finiteSectionMatrix_isHermitian (N m : ℕ) : (finiteSectionMatrix N m).IsHermitian := by
+  ext i j : 1
+  change (starRingEnd ℂ) ((mixedRayHeight j i m : ℝ) : ℂ) = (mixedRayHeight i j m : ℂ)
+  rw [Complex.conj_ofReal]
+  congr 1
+  unfold mixedRayHeight
+  rw [add_comm (Pi.single j (1 : ℤ)) (Pi.single i 1)]
+  ring
+
 /-- Each strictly negative direction persists at sufficiently large finite
 multiplicity. No sign or nonsingularity condition is imposed on the nullspace. -/
 theorem eventually_le_finiteSectionIndex (N : ℕ) :

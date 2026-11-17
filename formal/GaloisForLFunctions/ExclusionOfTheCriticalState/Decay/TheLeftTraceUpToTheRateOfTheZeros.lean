@@ -36,11 +36,11 @@ private theorem memLp_div_line {f : ℝ → ℂ} (hf : Continuous f) {C : ℝ}
   apply Eventually.of_forall
   intro t
   change ‖‖f t / ((b:ℂ)+(t:ℂ)*I)‖^2‖ ≤ C^2 * (Real.pi/|b| * halfPlanePoisson |b| t)
+  have hnorm : ‖(b:ℂ)+(t:ℂ)*I‖^2 = b^2+t^2 := by
+    rw [Complex.sq_norm, Complex.normSq_apply]
+    simp [sq]
   rw [Real.norm_of_nonneg (sq_nonneg _), norm_div, div_pow, pi_div_mul_halfPlanePoisson hb',
-    sq_abs, Complex.sq_norm, Complex.normSq_apply]
-  simp only [Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im,
-    Complex.mul_I_re, Complex.mul_I_im, neg_zero, add_zero, zero_add]
-  rw [div_eq_mul_inv, ← sq, ← sq]
+    sq_abs, hnorm, div_eq_mul_inv]
   exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (norm_nonneg _) (hC t) 2) (by positivity)
 
 /-- On `Θ - 1/2 < c < 1/2`, the continuation at `-8-c+it` has an ordinary
@@ -84,10 +84,10 @@ theorem integrable_norm_sq_stateMeromorphic_reflected_line {W₀ : ℝ} (hW : 0 
     (integrable_norm_sq_levyHeadTerm_line hd (neg_lt_zero.mpr hc0))
   have tail := (memLp_two_iff_integrable_sq_norm hT.aestronglyMeasurable).mpr
     (integrable_norm_sq_stateTail_line_of_neg_four_lt hd (by linarith : -4 < -c))
-  have slope := memLp_div_line (hL.sub continuous_const)
+  have slope := memLp_div_line (hL.sub (continuous_const (y := L (-(1/2)))))
     (C := transformMass F (-c) + ‖L (-(1/2))‖)
-    (fun t => (norm_sub_le _ _).trans (add_le_add_right
-      (norm_laplace_le_transformMass hd (by linarith : -4 < -c) (hpR t).ge) _))
+    (fun t => (norm_sub_le _ _).trans (add_le_add
+      (norm_laplace_le_transformMass hd (by linarith : -4 < -c) (hpR t).ge) le_rfl))
     (b := -c+1/2) (by linarith)
   have pole := memLp_div_line (continuous_const (y := L (1/2))) (fun _ => le_rfl)
     (b := -c-1/2) (by linarith)
@@ -246,10 +246,11 @@ private theorem hardy_reflected_state {W₀ : ℝ} (hW : 0 < W₀)
     (fun w hw => ?_) (by positivity) (fun w hw => ?_) ?_⟩
   · have he (w : ℂ) : stateMeromorphic W₀ F (-(w+(c:ℂ))-8) =
         -globalRemainder F (P w)/criticalAliasCoefficient W₀ := by
-      unfold stateMeromorphic; rw [sub_add_cancel]; rfl
+      unfold stateMeromorphic; rw [sub_add_cancel]
     simp_rw [he]
-    exact (((differentiableAt_globalRemainder_of_xi_ne_zero hd
-      (xi_ne_zero_of_dist hδ (hdist w hw))).comp w (by dsimp [P]; fun_prop)).neg.div_const _
+    have hP : DifferentiableAt ℂ P w := by dsimp [P]; fun_prop
+    have hR := differentiableAt_globalRemainder_of_xi_ne_zero hd (xi_ne_zero_of_dist hδ (hdist w hw))
+    exact ((hR.comp w hP).neg).div_const _
   · let x := 1+‖w‖
     have hx : 1 ≤ x := by dsimp [x]; linarith only [norm_nonneg w]
     have hp : 1+‖P w‖ ≤ C*x := by
@@ -258,7 +259,8 @@ private theorem hardy_reflected_state {W₀ : ℝ} (hW : 0 < W₀)
       simp only [P, norm_neg, C, x]
       nlinarith only [h, mul_nonneg (abs_nonneg c) (norm_nonneg w)]
     have hd' : 1+‖P w‖/δ ≤ (1+1/δ)*(1+‖P w‖) := by
-      have hi : 0 ≤ 1/δ := by positivity
+      rw [div_eq_mul_inv, one_div]
+      have hi : 0 ≤ δ⁻¹ := by positivity
       nlinarith only [hi, norm_nonneg (P w)]
     have hq : (1+‖P w‖)*(1+‖P w‖/δ) ≤ (1+1/δ)*(C*x)^2 := by
       calc _ ≤ (C*x)*((1+1/δ)*(C*x)) :=
@@ -277,7 +279,8 @@ private theorem hardy_reflected_state {W₀ : ℝ} (hW : 0 < W₀)
   · have hi := (integrable_norm_sq_stateMeromorphic_reflected_line hW ht hF hc hc2).comp_neg
     refine hi.congr (Eventually.of_forall fun t => ?_)
     change ‖stateMeromorphic W₀ F (((-c:ℝ):ℂ)+((-t:ℝ):ℂ)*I-8)‖^2 = _
-    congr 3 <;> push_cast <;> ring
+    have e : ((-c:ℝ):ℂ)+((-t:ℝ):ℂ)*I = -((t:ℂ)*I+(c:ℂ)) := by push_cast; ring
+    rw [e]
 
 /-- In the reflected zero-free strip the actual profile has finite damped square
 mass. The Hardy datum agrees with the prime and archimedean profile by injectivity
@@ -310,7 +313,6 @@ theorem memLp_damped_beyondWallProfile_of_lt_half {W₀ : ℝ} (hW : 0 < W₀)
       rw [mul_assoc, ← Complex.exp_add]; congr 2; ring
     have he : laplaceRay f (w+(b:ℂ)) = laplaceRay U w := by
       rw [← isHalfPlaneHardy_eq_laplaceRay hhard hwb]
-      change stateMeromorphic W₀ F (-((w+(b:ℂ))+(c:ℂ))-8) = laplaceRay U w
       have ea : (w+(b:ℂ))+(c:ℂ) = w+1 := by dsimp [b]; push_cast; ring
       rw [ea]
       exact stateMeromorphic_eq_laplaceRay_left hd (c := 1) (by norm_num) (by norm_num) hw

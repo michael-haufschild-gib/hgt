@@ -34,7 +34,7 @@ private theorem octave_apply (t d : ℕ) :
       rcases Nat.eq_zero_or_pos d with rfl | hpos
       · exact ArithmeticFunction.map_zero
       · exact typeIIShort_apply_eq_zero_of_le hpos (by omega)
-  · simp only [if_neg hhi, hhi, and_false, if_false]
+  · simp only [hhi, and_false, if_false]
 
 private theorem mu_zero_of_four_dvd {k : ℕ} (hk : 4 ∣ k) : moebiusReal k = 0 := by
   have h : ArithmeticFunction.moebius k = 0 := by

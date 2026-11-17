@@ -556,6 +556,7 @@ theorem card_cascadeUnconsumed_succ {S : Finset ℕ} {φ : ℕ → ℕ → ℕ} 
       (factorLayer S (k + 1)).card - (cascadeUnconsumed S φ k).card := by
   obtain ⟨m, rfl⟩ : ∃ m, k = m + 1 := ⟨k - 1, by omega⟩
   obtain ⟨hinj, hsub⟩ := hvalid (m + 1) hk1 hkK
+  change (cascadeUnconsumed S φ (m + 1)).image (φ (m + 1)) ⊆ factorLayer S (m + 2) at hsub
   change (factorLayer S (m + 2) \ (cascadeUnconsumed S φ (m + 1)).image (φ (m + 1))).card =
     (factorLayer S (m + 2)).card - (cascadeUnconsumed S φ (m + 1)).card
   have hsdiff := card_sdiff_add_card_eq_card hsub

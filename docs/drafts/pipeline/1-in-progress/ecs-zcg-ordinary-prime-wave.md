@@ -17,3 +17,9 @@ Write $E(N)=\psi(N)-N$. For each $1/2<b<1$, prove that arbitrarily large $V$ sat
 $$\left|\sum_{d\le\min(N,W)} b_V(d) E(\lfloor N/d\rfloor)\right|
 \le K_{b,V,W}N^b \qquad (N\ge1)$$
 at both $W=V^2$ and $W=2V^2$. Equivalence to RH is formalized. Even a bound for $b<\Re\rho$ derived under the single-quartet hypothesis would exclude that quartet. [Proof and Lean declarations](../3-formalized/paired-vaughan-cofactors-at-strip-zeros.md)
+
+## Adjacent cutoffs
+
+For arbitrarily large $t$, $p=2t+1$ is prime with $p\equiv7\pmod8$. Put $A_t(M)=C_{t,2t}(M)$. On $(t,2t]$ the cofactor is exactly $\mu$. Increasing $t$ by one changes three endpoints. At $t+1$ and $2t+2$ the Möbius value vanishes because four divides them. The sole change is $-1$ at $p$. Hence $A_{t+1}(pN)-A_t(pN)=N-\psi(N)$ for every $N$, including inside the first octave. [Formal recovery theorem](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/AdjacentVaughanOctavesRecoverTheOrdinaryPrimeCount.lean)
+
+Under one quartet, the averaged state on each rung and this signed count each carry one conjugate pair. Their nonzero coefficients determine a positive amplitude and a fixed logarithmic delay. An independent estimate on the delayed counts that saves a power below the common frequency amplitude would exclude that quartet.

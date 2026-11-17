@@ -244,6 +244,11 @@ has residue $-\mathcal LF(0)/2$ at zero. Their absolute wave is $O_{F,\varepsilo
 every $\varepsilon>0$. The open cancellation is between ordinary primes and the polar term.
 [Proper prime powers in the prime wave](Wall/TheProperPrimePowersInThePrimeWave.lean).
 
+On $0\le c\le1$, the wall translation estimate and exponential confinement give
+$\int\log^m(4+|t|)|\mathcal LF(-c+it)|^2\,dt<\infty$ for every integer $m\ge0$.
+Thus the pole-removed reflected Euler multiplier times the state trace lies in $L^2(dt)$
+for $\Theta-1/2<c\le1$. [Reflected logarithmic moments](Decay/LogarithmicMomentsOnTheReflectedLines.lean).
+
 ## 6. Tools
 
 **Developed.** Probe calculus (`probe`, moments, confinement pairings, Fourier transform); probe kernel
