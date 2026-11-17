@@ -120,4 +120,13 @@ theorem hermitianFrobenius_hit_progressions (P : H) (V : Set H) :
     rw [(hermitianFrobenius_iterate_eq_iff p s P _ _).2 he]
     exact (Finset.mem_filter.mp hr).2
 
+#print axioms squareFrobenius_coordinate_fixed_iff
+#print axioms hermitianFrobenius_iterate_coordinates
+#print axioms hermitianFrobenius_return_iff
+#print axioms hermitianFrobenius_minimalPeriod
+#print axioms hermitianFrobenius_iterate_eq_iff
+#print axioms hermitianFrobenius_tangent_return_iff
+#print axioms hermitianFrobenius_hit_progressions
+#print axioms hermitianOrbitDegree_pos
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

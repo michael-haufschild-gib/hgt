@@ -146,17 +146,17 @@ private theorem rounded_height_bound {m B : ℕ} (hm : 0 < m) (R C : ℝ) (f g :
   rw [abs_of_pos (by norm_num : (0:ℝ)<2)]
   calc _ ≤ 2*(S.card * (D * ∑ t ∈ T, Λ t)) := by gcongr
        _ ≤ 2*((N:ℝ)*B * (D * ∑ t ∈ T, Λ t)) := by gcongr
-       _ = _ := by dsimp [D,N,T]; field_simp; ring
+       _ = _ := by dsimp [D,N,T]; field_simp
 
 /-- A single growing integral divisor family recovers the full signed prime
 pairing. Both mesh and graph multiplicities vary along the same sequence. -/
-theorem exists_tendsto_sampledGraphHeight {f g : ℝ → ℝ}
+theorem tendsto_sampledGraphHeight_of_support {f g : ℝ → ℝ}
     (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g) (hfc : HasCompactSupport f)
-    (hgc : HasCompactSupport g) :
-    ∃ R : ℝ, 0 < R ∧ ∃ B : ℕ, 1 ≤ B ∧
-      Tendsto (fun m : ℕ => sampledGraphHeight m B R f g / (m:ℝ)^2)
-        atTop (𝓝 (smoothPrimePair f g)) := by
-  obtain ⟨R,hR,B,hB,hs⟩ := exists_tendsto_primeSpine hf hg hfc hgc
+    (hgc : HasCompactSupport g) {R : ℝ} {B : ℕ} (hB : 1 ≤ B)
+    (hw : ∀ u, u ≤ -R ∨ Real.log B - R ≤ u → f u = 0 ∧ g u = 0) :
+    Tendsto (fun m : ℕ => sampledGraphHeight m B R f g / (m:ℝ)^2)
+      atTop (𝓝 (smoothPrimePair f g)) := by
+  obtain ⟨D, _, hd⟩ := exists_primeSpine_source_rate hf hg hfc R hB hw
   obtain ⟨Cf,hCf⟩ := hfc.exists_bound_of_continuous hf.continuous
   obtain ⟨Cg,hCg⟩ := hgc.exists_bound_of_continuous hg.continuous
   let C := max Cf Cg
@@ -170,7 +170,23 @@ theorem exists_tendsto_sampledGraphHeight {f g : ℝ → ℝ}
     apply squeeze_zero' (Eventually.of_forall fun _ => abs_nonneg _)
       ((eventually_ge_atTop 1).mono fun m hm => rounded_height_bound hm R C f g h1 h2)
     simpa only [zero_mul] using mesh_div_tendsto.mul_const (2 * (B:ℝ) * (2*C+1) * ∑ t ∈ Icc 1 B, Λ t)
-  refine ⟨R,hR,B,hB,?_⟩
+  have hs : Tendsto P atTop (𝓝 (smoothPrimePair f g)) := by
+    rw [tendsto_iff_dist_tendsto_zero]
+    simp only [Real.dist_eq]
+    exact squeeze_zero' (Eventually.of_forall fun _ => abs_nonneg _)
+      ((eventually_ge_atTop 1).mono fun n hn => hd n hn) (tendsto_const_div_atTop_nhds_zero_nat D)
   simpa only [Function.comp_def, sub_add_cancel, zero_add, H,P] using he.add (hs.comp mesh_tendsto)
+
+/-- Every compact real C² pair admits a common window for the graph construction. -/
+theorem exists_tendsto_sampledGraphHeight {f g : ℝ → ℝ}
+    (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g) (hfc : HasCompactSupport f)
+    (hgc : HasCompactSupport g) :
+    ∃ R : ℝ, 0 < R ∧ ∃ B : ℕ, 1 ≤ B ∧
+      Tendsto (fun m : ℕ => sampledGraphHeight m B R f g / (m:ℝ)^2)
+        atTop (𝓝 (smoothPrimePair f g)) := by
+  obtain ⟨R,hR,B,hB,_,_,hs,_⟩ := exists_compact_logSamples_rate hf hg hfc hgc
+  exact ⟨R,hR,B,hB,tendsto_sampledGraphHeight_of_support hf hg hfc hgc hB hs⟩
+
+#print axioms exists_tendsto_sampledGraphHeight
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

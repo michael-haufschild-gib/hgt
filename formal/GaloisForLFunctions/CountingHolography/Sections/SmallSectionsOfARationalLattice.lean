@@ -58,7 +58,7 @@ theorem sectionHeight_bounds {d A : ℝ} (hd : 0 < d) :
     max (A - Real.log d) 0 - 1 ≤ sectionHeight d A ∧
       (sectionHeight d A : ℝ) ≤ max (A - Real.log d) 0 + Real.log 3 := by
   let x := A - Real.log d
-  have he : Real.exp A / d = Real.exp x := by rw [x, Real.exp_sub, Real.exp_log hd]
+  have he : Real.exp A / d = Real.exp x := by simp only [x, Real.exp_sub, Real.exp_log hd]
   let r := ⌊Real.exp x⌋₊
   have hfloor : (r : ℝ) ≤ Real.exp x := Nat.floor_le (Real.exp_pos _).le
   have hnext : Real.exp x < (r : ℝ) + 1 := Nat.lt_floor_add_one _

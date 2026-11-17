@@ -15,7 +15,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.CountingHolography.Sections
 
-open Finset Filter Topology MeasureTheory AbsoluteGeometryOfSpecZ
+open Finset Filter Topology MeasureTheory AbsoluteGeometryOfSpecZ Zeta23
 open scoped ArithmeticFunction.vonMangoldt
 
 /-- At a prime power the residue prime imposes the local condition. -/
@@ -102,15 +102,17 @@ theorem tendsto_meshDegree {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hc : HasCo
     {K : ℕ} (hK : 1 ≤ K) (hs : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) :
     Tendsto (meshDegree f (3*K)) atTop
       (𝓝 ((_root_.RHTower.weilFullFunctional (fun k => (Λ k : ℝ))
-        (Zeta23.EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re)) := by
+        (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re)) := by
   have hp := ((tendsto_sampledDegree hf.continuous hK hs (-(1/2))).mul
     (tendsto_sampledDegree hf.continuous hK hs (1/2))).const_mul 2
   have hj := tendsto_degreeForm_add_contacts hf hc hK hs
-  change Tendsto _ _ (𝓝 ((_root_.RHTower.weilPoleTerm _).re - _)) at hj
+  change Tendsto _ _ (𝓝 ((_root_.RHTower.weilPoleTerm
+    (EF.weilTest (fun u => (f u : ℂ)) (fun u => (f u : ℂ)))).re - _)) at hj
   rw [weilPoleTerm_packet hf.continuous hc] at hj
-  have h := hp.sub hj
-  simpa only [meshDegree, logRadius, ← sub_sub, neg_div, one_div, neg_mul,
-    inv_mul_eq_div, neg_div', sub_sub_cancel_left] using h
+  have he (u : ℝ) : -(1 / 2 : ℝ) * u = -u / 2 := by ring
+  have he' (u : ℝ) : (1 / 2 : ℝ) * u = u / 2 := by ring
+  simp only [he, he'] at hp
+  simpa only [meshDegree, logRadius, sub_add_eq_sub_sub, sub_sub_cancel] using hp.sub hj
 
 /-- All three parts of the unrounded mesh use divisor multiplicities quadratically. -/
 theorem meshDegree_mul (c : ℝ) (f : ℝ → ℝ) (L n : ℕ) :

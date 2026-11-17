@@ -77,7 +77,9 @@ private theorem dirPoly_short_eq (V : ℕ) {W : ℕ} (hW : 1 ≤ W) (s : ℂ) :
     dirPoly W (typeIIShort V) s =
       1 - dirPoly W ((zeta : ArithmeticFunction ℝ) * truncAF moebius V) s := by
   unfold dirPoly
-  simp only [typeIIShort, ArithmeticFunction.sub_apply, Complex.ofReal_sub, sub_mul, sum_sub_distrib]
+  have hsub (n : ℕ) : typeIIShort V n = (1 : ArithmeticFunction ℝ) n -
+      ((zeta : ArithmeticFunction ℝ) * truncAF moebius V) n := rfl
+  simp only [hsub, Complex.ofReal_sub, sub_mul, sum_sub_distrib]
   congr 1
   rw [sum_eq_single 1]
   · simp
@@ -119,8 +121,36 @@ theorem norm_centredShortCofactor_sub_one_le {V W : ℕ} (hW : 1 ≤ W) (hVW : V
         simpa only [truncAF_apply, if_pos (mem_Icc.mp hd).2, μ] using abs_truncAF_moebius_le_one V d
       _ = V := by simp
   rw [centredShortCofactor, dirPoly_short_eq _ hW]
-  rw [← norm_neg, show -(1 - _ + _ - 1 : ℂ) = _ - _ by ring]
+  rw [← norm_neg, show ∀ x y : ℂ, -(1 - x + y - 1) = x - y from fun x y => by ring]
   exact he.trans (mul_le_mul_of_nonneg_right hmass
     (mul_nonneg (partialSumRate_nonneg hs) (Real.rpow_nonneg (Nat.cast_nonneg _) _)))
+
+/-- At two adjacent dyadic cutoffs, subtraction cancels the continuum term
+exactly. This bound involves only the two raw Dirichlet polynomials. -/
+theorem norm_dyadic_shortCofactor_sub_le {V W : ℕ} (hW : 1 ≤ W) (hVW : V ≤ W)
+    {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) (hz : riemannZeta s = 0) :
+    let r := (2 : ℂ) ^ (1 - s)
+    ‖dirPoly (2 * W) (typeIIShort V) s - r * dirPoly W (typeIIShort V) s - (1 - r)‖ ≤
+      (1 + ‖r‖) * ((V : ℝ) * (partialSumRate s * (W : ℝ) ^ (-s.re))) := by
+  intro r
+  have hWd : W ≤ 2 * W := by omega
+  have hpow : ((2 * W : ℕ) : ℂ) ^ (1 - s) = r * (W : ℂ) ^ (1 - s) := by
+    simpa [r] using Complex.mul_cpow_ofReal_nonneg (by norm_num : 0 ≤ (2 : ℝ))
+      (Nat.cast_nonneg W) (1 - s)
+  have hid : dirPoly (2 * W) (typeIIShort V) s - r * dirPoly W (typeIIShort V) s - (1 - r) =
+      (centredShortCofactor V (2 * W) s - 1) - r * (centredShortCofactor V W s - 1) := by
+    unfold centredShortCofactor
+    rw [hpow]
+    ring
+  have hsmall := norm_centredShortCofactor_sub_one_le hW hVW hs hs1 hz
+  have hbig := norm_centredShortCofactor_sub_one_le (hW.trans hWd) (hVW.trans hWd) hs hs1 hz
+  have hdec := Real.rpow_le_rpow_of_nonpos (by exact_mod_cast hW : (0 : ℝ) < W)
+    (by exact_mod_cast hWd : (W : ℝ) ≤ ((2 * W : ℕ) : ℝ)) (neg_nonpos.mpr hs.le)
+  have hbig' := hbig.trans (mul_le_mul_of_nonneg_left
+    (mul_le_mul_of_nonneg_left hdec (partialSumRate_nonneg hs)) (Nat.cast_nonneg V))
+  rw [hid]
+  refine (norm_sub_le _ _).trans ?_
+  rw [norm_mul, add_mul, one_mul]
+  exact add_le_add hbig' (mul_le_mul_of_nonneg_left hsmall (norm_nonneg _))
 
 end GaloisForLFunctions.ExceptionalLayerTheory
