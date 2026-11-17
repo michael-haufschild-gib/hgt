@@ -109,8 +109,10 @@ theorem trace_diagonal_mul_inverseJordan {n : ℕ} (r : Fin n → ℝ)
   unfold trace
   apply Finset.sum_congr rfl
   intro i _
+  change (diagonal (fun j => (rate r j : ℂ)) * inverseJordan r A) i i = A i i
   rw [diagonal_mul, inverseJordan]
-  field_simp [rate_sum_ne r i i]
+  have hi : (rate r i : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (rate_pos r i).ne'
+  field_simp [hi]
   ring
 
 /-- The inverse is linear in the prescribed data. -/

@@ -76,7 +76,7 @@ theorem jordanSymbol_posSemidef_iff {n : ℕ} (r : Fin n → ℝ) :
     | zero =>
       have heq : jordanSymbol r = 0 := by ext i; exact Fin.elim0 i
       rw [heq]
-      exact Matrix.posSemidef_zero
+      exact Matrix.PosSemidef.zero
     | succ n =>
       have heq : jordanSymbol r = (rate r 0 : ℂ) • (fun _ _ : Fin (n + 1) => (1 : ℂ)) := by
         ext i j
@@ -97,7 +97,7 @@ theorem jordan_has_positive_counterexample_iff {n : ℕ} (r : Fin n → ℝ) :
     | zero =>
       have hz : jordan r A = 0 := by ext i; exact Fin.elim0 i
       rw [hz]
-      exact Matrix.posSemidef_zero
+      exact Matrix.PosSemidef.zero
     | succ n =>
       have hj : jordan r A = (rate r 0 : ℂ) • A := by
         ext i j

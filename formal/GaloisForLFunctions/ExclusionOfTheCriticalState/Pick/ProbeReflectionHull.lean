@@ -34,7 +34,8 @@ theorem zeroReflection_mem_reflectionHull {x : ZeroSpace} (hx : x ∈ reflection
   change zeroReflection (u + zeroReflection w) ∈ reflectionHull p
   rw [map_add, zeroReflection_involutive]
   exact (reflectionHull p).add_mem
-    (le_sup_right (Submodule.mem_map.mpr ⟨u, hu, rfl⟩)) (le_sup_left hw)
+    ((le_sup_right : (probeSpace p).map zeroReflection.toLinearMap ≤ reflectionHull p)
+      (Submodule.mem_map.mpr ⟨u, hu, rfl⟩)) (probeSpace_le_reflectionHull p hw)
 
 /-- Restriction of the genuine zero reflection, without assuming probe-span invariance. -/
 def hullReflection : Module.End ℂ (reflectionHull p) :=
@@ -59,14 +60,14 @@ def hullNegative : Module.End ℂ (reflectionHull p) :=
 theorem hullPositive_idempotent : IsIdempotentElem (hullPositive p) := by
   change hullPositive p * hullPositive p = hullPositive p
   unfold hullPositive
-  simp only [smul_mul_assoc, mul_smul_comm, smul_smul, add_mul, mul_add,
+  simp only [smul_mul_assoc, mul_smul_comm, add_mul, mul_add,
     one_mul, mul_one, hullReflection_sq]
   module
 
 theorem hullNegative_idempotent : IsIdempotentElem (hullNegative p) := by
   change hullNegative p * hullNegative p = hullNegative p
   unfold hullNegative
-  simp only [smul_mul_assoc, mul_smul_comm, smul_smul, sub_mul, mul_sub,
+  simp only [smul_mul_assoc, mul_smul_comm, sub_mul, mul_sub,
     one_mul, mul_one, hullReflection_sq]
   module
 
@@ -105,7 +106,7 @@ theorem hullPositive_dimension :
     (Module.finrank ℂ (LinearMap.range (hullPositive p)) : ℂ) =
       ((Module.finrank ℂ (reflectionHull p) : ℂ) +
         LinearMap.trace ℂ (reflectionHull p) (hullReflection p)) / 2 := by
-  rw [← (hullPositive_idempotent p).isProj_range.trace]
+  rw [← (LinearMap.IsIdempotentElem.isProj_range _ (hullPositive_idempotent p)).trace]
   simp only [hullPositive, map_smul, map_add, LinearMap.trace_one, smul_eq_mul]
   ring
 
@@ -114,7 +115,7 @@ theorem hullNegative_dimension :
     (Module.finrank ℂ (LinearMap.range (hullNegative p)) : ℂ) =
       ((Module.finrank ℂ (reflectionHull p) : ℂ) -
         LinearMap.trace ℂ (reflectionHull p) (hullReflection p)) / 2 := by
-  rw [← (hullNegative_idempotent p).isProj_range.trace]
+  rw [← (LinearMap.IsIdempotentElem.isProj_range _ (hullNegative_idempotent p)).trace]
   simp only [hullNegative, map_smul, map_sub, LinearMap.trace_one, smul_eq_mul]
   ring
 

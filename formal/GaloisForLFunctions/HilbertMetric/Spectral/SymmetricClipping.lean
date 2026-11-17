@@ -30,7 +30,8 @@ theorem matrix_bounds {A : Matrix ι ι ℂ} (hA : A.IsHermitian) (c : ℝ≥0) 
   constructor
   · rw [matrix, ← Clipped.specMap_constant hA (c : ℝ), ← specMap_sub]
     exact specMap_posSemidef hA fun i => sub_nonneg.mpr (clip_bounds c _).2
-  · rw [matrix, ← Clipped.specMap_constant hA (-(c : ℝ)), ← specMap_sub]
+  · rw [matrix, ← Complex.ofReal_neg, ← Clipped.specMap_constant hA (-(c : ℝ)),
+      ← specMap_sub]
     exact specMap_posSemidef hA fun i => sub_nonneg.mpr (clip_bounds c _).1
 
 theorem error_eq_specMap {A : Matrix ι ι ℂ} (hA : A.IsHermitian) (c : ℝ≥0) :

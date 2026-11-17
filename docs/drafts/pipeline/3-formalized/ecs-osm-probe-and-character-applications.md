@@ -1,7 +1,7 @@
 # Five applications of probe and character calculus
 
-- **Stage:** 1-in-progress
-- **Type:** CANDIDATE
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean)
 
 ## Results
 
@@ -49,3 +49,9 @@ nonnegative iff $q(e^{u+T})F(u)\ge0$ almost everywhere on that tail.
 Both the obstruction and this positive classification have dependency-closed
 proofs and Lean formalizations. The unconditional ECS conclusion is an RH/state
 dichotomy; no critical-state existence premise is added.
+
+## Verification
+
+All five modules pass individual `lake --old env lean` source checks.
+Their main declarations' transitive axiom audits contain only `propext`,
+`Classical.choice`, and `Quot.sound`. No additional analytic premise is used.

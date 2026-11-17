@@ -35,6 +35,7 @@ def phaseRotationEquiv (u : Circle) : ZeroSpace ≃ₗᵢ[ℂ] ZeroSpace where
         rw [phaseRotate_mul, mul_inv_cancel, phaseRotate_one] }
   norm_map' := by
     intro x
+    change ‖phaseRotate u x‖ = ‖x‖
     have h : ‖phaseRotate u x‖ ^ 2 = ‖x‖ ^ 2 := by
       rw [norm_sq_eq_re_inner (𝕜 := ℂ), norm_sq_eq_re_inner (𝕜 := ℂ), inner_phaseRotate]
     nlinarith only [h, norm_nonneg (phaseRotate u x), norm_nonneg x]
@@ -43,11 +44,15 @@ def phaseRotationEquiv (u : Circle) : ZeroSpace ≃ₗᵢ[ℂ] ZeroSpace where
 def phaseRepresentation : Circle →* (ZeroSpace ≃ₗᵢ[ℂ] ZeroSpace) where
   toFun := phaseRotationEquiv
   map_one' := by
-    ext x
+    apply LinearIsometryEquiv.ext
+    intro x
+    change phaseRotate 1 x = x
     exact phaseRotate_one x
   map_mul' := by
     intro u v
-    ext x
+    apply LinearIsometryEquiv.ext
+    intro x
+    change phaseRotate (u * v) x = phaseRotate u (phaseRotate v x)
     exact (phaseRotate_mul u v x).symm
 
 /-- Hilbert mass in the positive reflection sector. -/
@@ -62,37 +67,43 @@ def reflectionEnergy (x : ZeroSpace) : ℝ := (inner ℂ (zeroReflection x) x).r
 theorem sector_mass_sum (x : ZeroSpace) :
     positiveMass x + negativeMass x = ‖x‖ ^ 2 := by
   have h := congrArg Complex.re (sector_inner_sum x x)
-  simpa only [inner_self_eq_norm_sq_to_K, ← Complex.ofReal_pow, Complex.add_re,
-    Complex.ofReal_re, positiveMass, negativeMass] using h
+  unfold positiveMass negativeMass
+  simpa only [Complex.add_re, ← norm_sq_eq_re_inner (𝕜 := ℂ)] using h
 
 /-- The signed Weil energy is the exact difference of the sector masses. -/
 theorem reflectionEnergy_eq_mass_difference (x : ZeroSpace) :
     reflectionEnergy x = positiveMass x - negativeMass x := by
   have h := congrArg Complex.re (sector_inner_difference x x)
-  simpa only [inner_self_eq_norm_sq_to_K, ← Complex.ofReal_pow, Complex.sub_re,
-    Complex.ofReal_re, reflectionEnergy, positiveMass, negativeMass] using h.symm
+  unfold reflectionEnergy positiveMass negativeMass
+  simpa only [Complex.sub_re, ← norm_sq_eq_re_inner (𝕜 := ℂ)] using h.symm
 
 private theorem scalar_phase_loss (a b : ℝ) (u v : Circle) :
     (a + b) ^ 2 - Complex.normSq ((a : ℂ) + (conj (u : ℂ) * (v : ℂ)) * (b : ℂ)) =
       a * b * ‖(u : ℂ) - (v : ℂ)‖ ^ 2 := by
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_sub, Complex.normSq_add]
-  simp only [Complex.normSq_mul, Complex.normSq_conj, Circle.normSq_coe, one_mul,
+  simp only [Complex.normSq_conj, Circle.normSq_coe, one_mul,
     Complex.normSq_ofReal, map_mul, Complex.conj_ofReal,
     Complex.mul_re, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
-    Complex.conj_re, Complex.conj_im, mul_zero, zero_mul, sub_zero, add_zero]
+    Complex.conj_re, Complex.conj_im, mul_zero, zero_mul, sub_zero]
   ring
 
 /-- Exact projective overlap loss for all phases and all zero-coordinate vectors. -/
 theorem phaseRotate_projective_loss (u v : Circle) (x : ZeroSpace) :
     ‖x‖ ^ 4 - ‖inner ℂ (phaseRotate u x) (phaseRotate v x)‖ ^ 2 =
       positiveMass x * negativeMass x * ‖(u : ℂ) - (v : ℂ)‖ ^ 2 := by
-  rw [phaseRotate_overlap, inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K,
-    ← Complex.ofReal_pow, ← Complex.ofReal_pow, ← Complex.normSq_eq_norm_sq]
+  have hself (y : ZeroSpace) : inner ℂ y y = ((‖y‖ ^ 2 : ℝ) : ℂ) := by
+    rw [inner_self_eq_norm_sq_to_K]
+    change (‖y‖ : ℂ) ^ 2 = ((‖y‖ ^ 2 : ℝ) : ℂ)
+    rw [Complex.ofReal_pow]
+  rw [phaseRotate_overlap, hself, hself]
+  change ‖x‖ ^ 4 - ‖(positiveMass x : ℂ) +
+    (conj (u : ℂ) * (v : ℂ)) * (negativeMass x : ℂ)‖ ^ 2 = _
   have hpow : ‖x‖ ^ 4 = (positiveMass x + negativeMass x) ^ 2 := by
     rw [sector_mass_sum]
     ring
   rw [hpow]
-  exact scalar_phase_loss (positiveMass x) (negativeMass x) u v
+  simpa only [Complex.normSq_eq_norm_sq] using
+    scalar_phase_loss (positiveMass x) (negativeMass x) u v
 
 /-- The phase-geometry numerator is exactly the deficit of squared Weil energy. -/
 theorem sector_mass_product (x : ZeroSpace) :
@@ -119,9 +130,27 @@ theorem sector_mass_product_zero_iff (x : ZeroSpace) :
     exact eq_comm
   rw [hp, hn, or_comm]
 
+/-- Projective phase sensitivity never exceeds the squared Hilbert mass. -/
+theorem sector_mass_product_le (x : ZeroSpace) :
+    4 * (positiveMass x * negativeMass x) ≤ ‖x‖ ^ 4 := by
+  rw [sector_mass_product]
+  exact sub_le_self _ (sq_nonneg _)
+
+/-- Maximal phase sensitivity occurs exactly at zero signed Weil energy. -/
+theorem sector_mass_product_max_iff (x : ZeroSpace) :
+    4 * (positiveMass x * negativeMass x) = ‖x‖ ^ 4 ↔ reflectionEnergy x = 0 := by
+  rw [sector_mass_product]
+  constructor
+  · intro h
+    apply sq_eq_zero_iff.mp
+    linarith only [h]
+  · intro h
+    rw [h, zero_pow (by norm_num), sub_zero]
+
 #print axioms phaseRotate_projective_loss
 #print axioms phaseRepresentation
 #print axioms sector_mass_product
 #print axioms sector_mass_product_zero_iff
+#print axioms sector_mass_product_max_iff
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState.ProbeWalk
