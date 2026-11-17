@@ -115,7 +115,7 @@ theorem unitizedPacket_eq_iff {n m : ℕ} (d e : ℂ)
     have hw : inner ℂ w w = 1 := by
       rw [inner_self_eq_norm_sq_to_K]
       have hn : ‖w‖ = 1 := by
-        change ‖lp.single 2 (0 : ℝ) (1 : ℂ)‖ = 1
+        change ‖(lp.single 2 (0 : ℝ) (1 : ℂ) : Space)‖ = 1
         rw [lp.norm_single (by norm_num), norm_one]
       rw [hn]
       norm_num

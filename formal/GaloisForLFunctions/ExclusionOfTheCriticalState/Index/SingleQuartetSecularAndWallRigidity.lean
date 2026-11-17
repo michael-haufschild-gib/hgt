@@ -23,14 +23,16 @@ coupling to individual beyond-the-wall prime continuation:
    entire half-line energy domain, Weil's bare mixed form splits into the Hermitian on-line pairing
    plus the `4 × 4` off-line block `2 m · v_Fᵀ J₄ v_G` at `(z₊, z₋) = (ρ₀ - ½, ½ - conj ρ₀)`.
 
-2. **Exact `4 × 4` Birman–Schwinger secular equation and first-root characterization of `a(W₀)`
-   (`quartetSecularMatrix`, `nullVector_iff_secularKernel`,
-   `exists_confinedNullVector_iff_quartetSecularDet_eq_zero`,
-   `quartetSecularDet_pos_below_threshold`).**
+2. **Exact `4 × 4` Birman–Schwinger secular equation and closed-form root characterization of `a(W₀)`
+   (`quartetSecularMatrixAt`, `quartetSecularRootSet`, `quartetSecularMatrix`,
+   `nullVector_iff_secularKernel`, `exists_confinedNullVector_iff_quartetSecularDet_eq_zero`,
+   `quartetSecularDet_pos_below_threshold`, `singleQuartet_groundAlias_eq_secularSup`,
+   `quartetAlias_eq_secular_extremal_roots`).**
    Evaluating the four real on-line mode resolvents at `(z₊, z₋)` forms the `4 × 4` symmetric on-line
    resolvent matrix `G_on(a)`. Confined null vectors `(R, F)` (`R > 0`, `a = a(R)`) stand in a.e.
    bijection with nonzero kernel vectors of `I₄ + 2 m G_on(a(R)) J₄`; hence `R` carries a confined
-   null vector iff `det(I₄ + 2 m G_on(a(R)) J₄) = 0`, and `det > 0` for all `0 < R < W₀`.
+   null vector iff `det(I₄ + 2 m G_on(a(R)) J₄) = 0`, `det > 0` for all `0 < R < W₀` (`a > a(W₀)`),
+   and the positive secular root set is `{a(W₀), a(R₂)}` with `a(W₀) = sSup` and `a(R₂) = sInf`.
 
 3. **Complete two-rung spectral ladder, 1D simplicity, Cauchy interlacing, and Bessel trace bound
    (`singleQuartet_complete_twoRung_ladder`, `singleQuartet_alias_sum_le`).**
@@ -50,16 +52,20 @@ coupling to individual beyond-the-wall prime continuation:
    `B < 0` on `(ℝ F₀ ⊕ ℝ F₁) \ {0}` and `B ≥ 0` on the continuation hyperplane, and producing a
    nonzero pole-neutral ladder state whose bare `primeHead` fails holomorphic continuation to `Re p < 0`.
 
-5. **Two-rung wall laws, prime/PNT form of `F₀⁺, F₁⁺`, two-mode `averagedState`, and exact single-wave
-   Chebyshev equivalence (`singleQuartet_twoRung_wall_and_primeForm`,
+5. **Two-rung wall laws, prime/PNT form of `F₀⁺, F₁⁺`, nondegenerate two-mode `averagedState` for both
+   rungs, and exact single-wave Chebyshev equivalence (`singleQuartet_twoRung_wall_and_primeForm`,
+   `nullVector_averagedState_finiteLayer`, `singleQuartet_nullVector_averagedState_singleConjugatePair`,
    `singleQuartet_averagedState_singleConjugatePair`,
    `hasSingleOffLineQuartet_iff_chebyshevPsi_singleWave`).**
    Both rungs satisfy the diagonal and cross-rung wall laws and the a.e. prime/PNT representations of
-   `F₀⁺, F₁⁺`; `averagedState F₀` equals `2 m Re(c₊ e^{(z₊ - 8)t}) + O(e^{-8t})`; and for any strip
-   zero `ρ₀` of `ζ` with `1/2 < Re ρ₀`, `HasSingleOffLineQuartet ρ₀` holds **iff**
-   `ψ(x) - x = -2 m Re(x^{ρ₀}/ρ₀) + O(√x log² x)`.
+   `F₀⁺, F₁⁺`; for every confined null vector `(R, F)` (`R > 0`) under `HasSingleOffLineQuartet ρ₀`
+   (in particular both `F₀` and `F₁`), `averagedState F` equals `2 m Re(c₊ e^{(z₊ - 8)t}) + O(e^{-8t})`
+   with `c₊ ≠ 0`; and for any strip zero `ρ₀` of `ζ` with `1/2 < Re ρ₀`, `HasSingleOffLineQuartet ρ₀`
+   holds **iff** `ψ(x) - x = -2 m Re(x^{ρ₀}/ρ₀) + O(√x log² x)`.
 
-6. **Global `E-Q1` equivalence and single-quartet model separation (`eq1_global_and_profile_synthesis`,
+6. **Global `E-Q1` equivalence, six-way ECS characterization of `E-Q6`, minimal B13 stratum dichotomy,
+   and single-quartet model separation (`eq1_global_and_profile_synthesis`,
+   `exists_singleOffLineQuartet_ecs_tfae`, `no_singleOffLineQuartet_iff_rh_or_four_le_rightZeros`,
    `singleQuartet_realized_in_models`).**
 -/
 
@@ -505,11 +511,38 @@ theorem quartetOnLineGram_symm {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀
   rw [← w8Pair_quartetModeTarget_eq hq hj.1 i, ← w8Pair_quartetModeTarget_eq hq hi.1 j,
     ← hi.2 _ hj.1, ← hj.2 _ hi.1, onLineMixed_comm, w8Pair_comm]
 
+/-- **The `4 × 4` Birman–Schwinger secular matrix `I₄ + 2 m G_on(a) J₄` in the spectral parameter
+`a > 0`, defined purely from `ρ₀`, `quartetCopyMult ρ₀`, and the on-line resolvent.** -/
+def quartetSecularMatrixAt {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀) {a : ℝ} (ha : 0 < a) :
+    Matrix (Fin 4) (Fin 4) ℝ :=
+  1 + (2 * (quartetCopyMult ρ₀ : ℝ)) • (quartetOnLineGram hq ha * quartetSwapMatrix)
+
+/-- **The positive root set of the `4 × 4` single-quartet secular determinant.** -/
+def quartetSecularRootSet {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀) : Set ℝ :=
+  {a : ℝ | ∃ ha : 0 < a, (quartetSecularMatrixAt hq ha).det = 0}
+
 /-- **The `4 × 4` secular matrix `I₄ + 2 m G_on(a(R)) J₄` of the single quartet at ratio `R > 0`.** -/
 def quartetSecularMatrix {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀) {R : ℝ} (hR : 0 < R) :
     Matrix (Fin 4) (Fin 4) ℝ :=
   1 + (2 * (quartetCopyMult ρ₀ : ℝ)) •
     (quartetOnLineGram hq (criticalAliasCoefficient_positive hR) * quartetSwapMatrix)
+
+theorem quartetSecularMatrix_eq_at {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀) {R : ℝ} (hR : 0 < R) :
+    quartetSecularMatrix hq hR = quartetSecularMatrixAt hq (criticalAliasCoefficient_positive hR) :=
+  rfl
+
+private theorem quartetSecularMatrixAt_congr {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀)
+    {a₁ a₂ : ℝ} (ha₁ : 0 < a₁) (ha₂ : 0 < a₂) (heq : a₁ = a₂) :
+    quartetSecularMatrixAt hq ha₁ = quartetSecularMatrixAt hq ha₂ := by
+  subst heq; rfl
+
+private theorem criticalAliasCoefficient_inv_apply {a : ℝ} (ha : 0 < a) :
+    0 < criticalAliasCoefficient 1 / a ∧
+      criticalAliasCoefficient (criticalAliasCoefficient 1 / a) = a := by
+  have h1 : 0 < criticalAliasCoefficient 1 := criticalAliasCoefficient_positive one_pos
+  refine ⟨div_pos h1 ha, ?_⟩
+  rw [criticalAliasCoefficient_eq_div]
+  field_simp [h1.ne', ha.ne']
 
 private theorem isW8Target_quartetComb {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀)
     (c : Fin 4 → ℝ) :
@@ -842,6 +875,44 @@ theorem quartetSecularDet_pos_below_threshold {ρ₀ : ℂ} (hq : HasSingleOffLi
     (right_mem_Icc.mpr zero_le_one) (left_mem_Icc.mpr zero_le_one) hcont.continuousOn hmem0
   exact hne0 t ht_mem ht0
 
+/-- **Closed-form supremum formula for `a(W₀)` from `ρ₀` and the on-line resolvent.**
+Under `HasSingleOffLineQuartet ρ₀`, `criticalAliasCoefficient W₀` is the greatest positive root of
+`det(I₄ + 2 m G_on(a) J₄) = 0`, with `det > 0` for every `a > criticalAliasCoefficient W₀`. -/
+theorem singleQuartet_groundAlias_eq_secularSup {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀)
+    {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F₀ : ℝ → ℝ} (hF₀ : IsCriticalHalfLineGroundState W₀ F₀) :
+    IsGreatest (quartetSecularRootSet hq) (criticalAliasCoefficient W₀) ∧
+    criticalAliasCoefficient W₀ = sSup (quartetSecularRootSet hq) ∧
+    (∀ {a : ℝ} (ha : 0 < a), criticalAliasCoefficient W₀ < a →
+      0 < (quartetSecularMatrixAt hq ha).det) := by
+  obtain ⟨hdetW, hpos_below⟩ := quartetSecularDet_pos_below_threshold hq hW ht hF₀
+  have hdet_gt : ∀ {a : ℝ} (ha : 0 < a), criticalAliasCoefficient W₀ < a →
+      0 < (quartetSecularMatrixAt hq ha).det := by
+    intro a ha hgt
+    set R : ℝ := criticalAliasCoefficient 1 / a
+    obtain ⟨hR, heq⟩ := criticalAliasCoefficient_inv_apply ha
+    have hRW : R < W₀ := by
+      by_contra hge
+      have hle : criticalAliasCoefficient R ≤ criticalAliasCoefficient W₀ :=
+        criticalAliasCoefficient_antitone hW (not_lt.mp hge)
+      rw [heq] at hle
+      linarith
+    have hp := hpos_below hR hRW
+    rwa [quartetSecularMatrix_eq_at,
+      quartetSecularMatrixAt_congr hq (criticalAliasCoefficient_positive hR) ha heq] at hp
+  have hmemW : criticalAliasCoefficient W₀ ∈ quartetSecularRootSet hq :=
+    ⟨criticalAliasCoefficient_positive hW, by rwa [← quartetSecularMatrix_eq_at]⟩
+  have hub : ∀ a ∈ quartetSecularRootSet hq, a ≤ criticalAliasCoefficient W₀ := by
+    rintro a ⟨ha, hdet0⟩
+    by_contra hnot_le
+    linarith [hdet_gt ha (not_le.mp hnot_le)]
+  have hGreat : IsGreatest (quartetSecularRootSet hq) (criticalAliasCoefficient W₀) :=
+    ⟨hmemW, hub⟩
+  refine ⟨hGreat, ?_, hdet_gt⟩
+  exact le_antisymm (le_csSup ⟨criticalAliasCoefficient W₀, hub⟩ hmemW)
+    (csSup_le ⟨criticalAliasCoefficient W₀, hmemW⟩ hub)
+
 /-! ### 3. Complete two-rung spectral ladder, 1D simplicity, Cauchy interlacing, and trace bound -/
 
 private theorem criticalHalfLineMixedEnergy_add_const_mul_left (R : ℝ) {F₁ F₂ G : ℝ → ℝ}
@@ -1083,6 +1154,92 @@ theorem singleQuartet_complete_twoRung_ladder {ρ₀ : ℂ} (hq : HasSingleOffLi
       (by rw [w8Pair_comm]; exact horth_w8) hG hnull,
     hno_plane, hplane_above, R₁', hWR₁', hR₁'_le_R₂,
     fun R hR hRR G hG hz => hcharge R hR hRR hG hz⟩
+
+/-- **Exact two-element secular root set and extremal formulas for `a(W₀)` and `a(R₂)`.**
+Under `HasSingleOffLineQuartet ρ₀`, for the two ladder ratios `0 < W₀ < R₂`, the positive root set
+of `det(I₄ + 2 m G_on(a) J₄) = 0` is `{a(W₀), a(R₂)}` (`0 < a(R₂) < a(W₀)`), giving
+`a(W₀) = sSup (quartetSecularRootSet hq)` (`IsGreatest`) and
+`a(R₂) = sInf (quartetSecularRootSet hq)` (`IsLeast`). -/
+theorem quartetAlias_eq_secular_extremal_roots {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀)
+    {W₀ R₂ : ℝ} (hW : 0 < W₀) (hWR₂ : W₀ < R₂)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F₀ F₁ : ℝ → ℝ} (hF₀ : IsCriticalHalfLineGroundState W₀ F₀)
+    (hF₁ : IsConfinedNullVector R₂ F₁) :
+    quartetSecularRootSet hq = {criticalAliasCoefficient W₀, criticalAliasCoefficient R₂} ∧
+    0 < criticalAliasCoefficient R₂ ∧
+    criticalAliasCoefficient R₂ < criticalAliasCoefficient W₀ ∧
+    IsGreatest (quartetSecularRootSet hq) (criticalAliasCoefficient W₀) ∧
+    criticalAliasCoefficient W₀ = sSup (quartetSecularRootSet hq) ∧
+    IsLeast (quartetSecularRootSet hq) (criticalAliasCoefficient R₂) ∧
+    criticalAliasCoefficient R₂ = sInf (quartetSecularRootSet hq) ∧
+    (∀ {a : ℝ} (ha : 0 < a), criticalAliasCoefficient W₀ < a →
+      0 < (quartetSecularMatrixAt hq ha).det) := by
+  have hR₂ : 0 < R₂ := hW.trans hWR₂
+  have hF₀_null : IsConfinedNullVector W₀ F₀ := isConfinedNullVector_of_groundState hW ht hF₀
+  obtain ⟨hGreat, hSup, hdet_gt⟩ := singleQuartet_groundAlias_eq_secularSup hq hW ht hF₀
+  have haR₂_pos : 0 < criticalAliasCoefficient R₂ := criticalAliasCoefficient_positive hR₂
+  have ha_lt : criticalAliasCoefficient R₂ < criticalAliasCoefficient W₀ :=
+    lt_of_le_of_ne (criticalAliasCoefficient_antitone hW hWR₂.le) fun heq =>
+      hWR₂.ne' (criticalAliasCoefficient_injective_positive hR₂ hW heq)
+  have hroot_eq :
+      quartetSecularRootSet hq = {criticalAliasCoefficient W₀, criticalAliasCoefficient R₂} := by
+    ext a
+    simp only [quartetSecularRootSet, Set.mem_setOf_eq, Set.mem_insert_iff, Set.mem_singleton_iff]
+    constructor
+    · rintro ⟨ha, hdet0⟩
+      set R : ℝ := criticalAliasCoefficient 1 / a
+      obtain ⟨hR, heq⟩ := criticalAliasCoefficient_inv_apply ha
+      have hdetR : (quartetSecularMatrix hq hR).det = 0 := by
+        rwa [quartetSecularMatrix_eq_at,
+          quartetSecularMatrixAt_congr hq (criticalAliasCoefficient_positive hR) ha heq]
+      obtain ⟨G, hG⟩ := (exists_confinedNullVector_iff_quartetSecularDet_eq_zero hq hR).mpr hdetR
+      have hR_cases : R = W₀ ∨ R = R₂ := by
+        by_contra hne_both
+        push Not at hne_both
+        obtain ⟨hneW, hneR₂⟩ := hne_both
+        let Rs : Fin 3 → ℝ := ![W₀, R₂, R]
+        let Fs : Fin 3 → ℝ → ℝ := ![F₀, F₁, G]
+        have hRs : ∀ i, 0 < Rs i := fun i => by fin_cases i <;> assumption
+        have hFs : ∀ i, IsConfinedNullVector (Rs i) (Fs i) := fun i => by
+          fin_cases i <;> assumption
+        have horth3 : ∀ i j : Fin 3, i ≠ j →
+            (∫ u : ℝ, Fs i u * Fs j u * Real.exp (-(8 * u))) = 0 := by
+          intro i j hij
+          have hRS_ne : Rs i ≠ Rs j := by
+            fin_cases i <;> fin_cases j <;> simp only [ne_eq, not_true_eq_false] at hij
+            · exact hWR₂.ne
+            · exact hneW.symm
+            · exact hWR₂.ne'
+            · exact hneR₂.symm
+            · exact hneW
+            · exact hneR₂
+          have ho := (confinedNullVectors_orthogonal (hRs i) (hRs j) hRS_ne (hFs i) (hFs j)).1
+          rwa [setIntegral_eq_integral_of_forall_compl_eq_zero (fun u hu => by
+            rw [(hFs i).1.support u (not_lt.mp hu), zero_mul, zero_mul])] at ho
+        have hcard := (card_orthogonalNullVectors_le_rightZeros_of_finiteOffLine
+          hRs hFs horth3 hq.finiteOffLine).1
+        rw [card_rightCentredZeros_singleQuartet hq] at hcard
+        omega
+      rcases hR_cases with rfl | rfl
+      · exact Or.inl heq.symm
+      · exact Or.inr heq.symm
+    · rintro (rfl | rfl)
+      · exact hGreat.1
+      · refine ⟨haR₂_pos, ?_⟩
+        rw [← quartetSecularMatrix_eq_at]
+        exact (exists_confinedNullVector_iff_quartetSecularDet_eq_zero hq hR₂).mp ⟨F₁, hF₁⟩
+  have hmemR₂ : criticalAliasCoefficient R₂ ∈ quartetSecularRootSet hq := by
+    rw [hroot_eq]; exact Or.inr rfl
+  have hlb : ∀ a ∈ quartetSecularRootSet hq, criticalAliasCoefficient R₂ ≤ a := by
+    intro a ha_mem
+    rw [hroot_eq] at ha_mem
+    rcases ha_mem with rfl | rfl
+    · exact ha_lt.le
+    · exact le_rfl
+  have hLeast : IsLeast (quartetSecularRootSet hq) (criticalAliasCoefficient R₂) := ⟨hmemR₂, hlb⟩
+  refine ⟨hroot_eq, haR₂_pos, ha_lt, hGreat, hSup, hLeast, ?_, hdet_gt⟩
+  exact le_antisymm (csInf_le ⟨criticalAliasCoefficient R₂, hlb⟩ hmemR₂)
+    (le_csInf ⟨criticalAliasCoefficient R₂, hmemR₂⟩ hlb)
 
 private theorem w8Mass_modeCos_add_modeSin {w : ℂ} (hw : -4 < w.re) :
     w8Mass (modeCos w) + w8Mass (modeSin w) = 1 / (8 + 2 * w.re) := by
@@ -1605,20 +1762,379 @@ theorem singleQuartet_twoRung_wall_and_primeForm
       with x hp hpnt
     exact ⟨hp.1, hpnt⟩
 
-/-- **Under a single off-line quartet, `averagedState F₀` equals one conjugate mode pair up to
-`O(e^{-8t})`.** -/
-theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
-    (hq : HasSingleOffLineQuartet ρ₀) {W₀ : ℝ} (hW : 0 < W₀)
-    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
-    {F₀ : ℝ → ℝ} (hF₀ : IsCriticalHalfLineGroundState W₀ F₀) :
-    let zPos : ℂ := ρ₀ - 1 / 2
-    let cPos : ℂ := -(criticalAliasCoefficient W₀ : ℂ)⁻¹ *
-      negativeHalfLineLaplace (cx F₀) zPos * averageSymbol (zPos - 8)
+private theorem domain_summable_sq_zeroValues_of_finiteOffLine {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) (hfin : BacklundConverse.FiniteOffLine) :
+    Summable fun q : XiZeroCopy => ‖negativeHalfLineLaplace (cx F) (centredZero q)‖ ^ 2 := by
+  haveI : Finite ↑onLineCopiesᶜ := (compl_onLineCopies_finite_of_finiteOffLine hfin).to_subtype
+  exact Summable.add_compl (s := onLineCopies)
+    (domain_zeroParseval_of_finiteOffLine hF hfin).1 Summable.of_finite
+
+private theorem domain_summable_norm_zeroModeCoeff_of_finiteOffLine (R : ℝ) {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) (hfin : BacklundConverse.FiniteOffLine) :
+    Summable fun q => ‖zeroModeCoeff R F q‖ := by
+  have hp : ∀ q : XiZeroCopy, (1 / 2 : ℝ) ≤ ‖(-1 : ℂ) - centredZero q‖ := fun q => by
+    have hre := (abs_lt.mp (abs_re_centredZero_lt q)).1
+    have h := Complex.abs_re_le_norm ((-1 : ℂ) - centredZero q)
+    rw [Complex.sub_re, Complex.neg_re, Complex.one_re, abs_of_neg (by linarith)] at h
+    linarith
+  have hs := summable_norm_mul_inv_sub_centredZero
+    (domain_summable_sq_zeroValues_of_finiteOffLine hF hfin) (by norm_num : (0 : ℝ) < 1 / 2) hp
+  refine (hs.mul_left ‖(criticalAliasCoefficient R : ℂ)⁻¹‖).of_nonneg_of_le
+    (fun q => norm_nonneg _) fun q => ?_
+  unfold zeroModeCoeff
+  rw [norm_mul, norm_mul, norm_neg, norm_mul, mul_assoc]
+  gcongr
+  exact norm_averageSymbol_centredZero_sub_le q
+
+private theorem domain_averagedState_exp_three_le {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ t : ℝ, 0 < t → |averagedState F t| ≤ B * Real.exp (-(3 * t)) := by
+  set g : ℝ → ℝ := fun u => (F u ^ 2 * Real.exp (-(8 * u)) + probe 2 u) / 2
+  have hg : Integrable g := (hF.exponential.add (integrable_probe (by norm_num : (0 : ℝ) < 2))).div_const 2
+  have hg_neg : Integrable fun h : ℝ => g (-h) := hg.comp_neg
+  have hg_nn : ∀ h : ℝ, 0 ≤ g (-h) := fun h =>
+    div_nonneg (add_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le) (probe_nonneg 2 (-h)))
+      (by norm_num)
+  set I : ℝ := ∫ h : ℝ, g (-h)
+  have hI_nn : 0 ≤ I := integral_nonneg hg_nn
+  have hexp_b : ∀ {b : ℝ}, 3 ≤ b → ∀ {t : ℝ}, 0 < t →
+      |expAverage b F t| ≤ I * Real.exp (-(3 * t)) := by
+    intro b hb t ht
+    rw [expAverage_eq_setIntegral b F ht]
+    have hmaj : Integrable (fun h : ℝ => Real.exp (-(3 * t)) * g (-h))
+        (volume.restrict (Ioc (0 : ℝ) t)) := (hg_neg.const_mul (Real.exp (-(3 * t)))).restrict
+    refine (Real.norm_eq_abs _).ge.trans ((norm_integral_le_of_norm_le hmaj ?_).trans ?_)
+    · refine (ae_restrict_iff' measurableSet_Ioc).mpr (Eventually.of_forall fun h hh => ?_)
+      rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
+      have hexp1 : Real.exp (-(b * (t - h))) ≤ Real.exp (-(3 * t)) * Real.exp (3 * h) := by
+        rw [← Real.exp_add]
+        refine Real.exp_le_exp.mpr ?_
+        have hdiff : 0 ≤ (b - 3) * (t - h) := mul_nonneg (by linarith) (sub_nonneg.mpr hh.2)
+        linarith
+      have hneg_h : -h < 0 := neg_lt_zero.mpr hh.1
+      have hsq_F : (|F (-h)| * Real.exp (-(4 * (-h)))) ^ 2 = F (-h) ^ 2 * Real.exp (-(8 * (-h))) := by
+        rw [mul_pow, sq_abs, sq (Real.exp (-(4 * (-h)))), ← Real.exp_add]; congr 2; ring
+      have hsq_e : Real.exp (-h) ^ 2 = probe 2 (-h) := by
+        rw [probe_of_neg hneg_h, sq, ← Real.exp_add]; congr 1; ring
+      have hprod : (|F (-h)| * Real.exp (-(4 * (-h)))) * Real.exp (-h) =
+          Real.exp (3 * h) * |F (-h)| := by
+        rw [mul_assoc, ← Real.exp_add, mul_comm |F (-h)|]; congr 2; ring
+      have hle_g : Real.exp (3 * h) * |F (-h)| ≤ g (-h) := by
+        dsimp [g]
+        nlinarith [sq_nonneg (|F (-h)| * Real.exp (-(4 * (-h))) - Real.exp (-h)),
+          hsq_F, hsq_e, hprod]
+      calc Real.exp (-(b * (t - h))) * |F (-h)|
+          ≤ (Real.exp (-(3 * t)) * Real.exp (3 * h)) * |F (-h)| :=
+            mul_le_mul_of_nonneg_right hexp1 (abs_nonneg _)
+        _ = Real.exp (-(3 * t)) * (Real.exp (3 * h) * |F (-h)|) := by ring
+        _ ≤ Real.exp (-(3 * t)) * g (-h) :=
+            mul_le_mul_of_nonneg_left hle_g (Real.exp_pos _).le
+    · calc ∫ h in Ioc (0 : ℝ) t, Real.exp (-(3 * t)) * g (-h)
+          ≤ ∫ h : ℝ, Real.exp (-(3 * t)) * g (-h) :=
+            setIntegral_le_integral (hg_neg.const_mul _)
+              (Eventually.of_forall fun h => mul_nonneg (Real.exp_pos _).le (hg_nn h))
+        _ = I * Real.exp (-(3 * t)) := by rw [integral_const_mul, mul_comm]
+  refine ⟨2 * I, by positivity, fun t ht => ?_⟩
+  obtain ⟨l9, u9⟩ := abs_le.mp (hexp_b (by norm_num : (3 : ℝ) ≤ 9) ht)
+  obtain ⟨l10, u10⟩ := abs_le.mp (hexp_b (by norm_num : (3 : ℝ) ≤ 10) ht)
+  obtain ⟨l11, u11⟩ := abs_le.mp (hexp_b (by norm_num : (3 : ℝ) ≤ 11) ht)
+  obtain ⟨l12, u12⟩ := abs_le.mp (hexp_b (by norm_num : (3 : ℝ) ≤ 12) ht)
+  unfold averagedState
+  rw [abs_le]
+  constructor <;> linarith
+
+private theorem nullVector_hasSum_stateMeromorphic_of_finiteOffLine {R : ℝ}
+    (hF : IsConfinedNullVector R F) (hfin : BacklundConverse.FiniteOffLine)
+    {w : ℂ} (hw : xi (1 / 2 + (w + 8)) ≠ 0) :
+    HasSum (fun q : XiZeroCopy => -(criticalAliasCoefficient R : ℂ)⁻¹ *
+        (negativeHalfLineLaplace (cx F) (centredZero q) * (w + 8 - centredZero q)⁻¹))
+      (stateMeromorphic R F w) := by
+  have h := (hasSum_zeroValues_cauchy hF.1
+    (domain_summable_sq_zeroValues_of_finiteOffLine hF.1 hfin) hw).mul_left
+      (-(criticalAliasCoefficient R : ℂ)⁻¹)
+  have e : stateMeromorphic R F w =
+      -(criticalAliasCoefficient R : ℂ)⁻¹ * globalRemainder F (w + 8) := by
+    unfold stateMeromorphic; ring
+  rwa [← e] at h
+
+/-- **Exact zero-mode expansion of `averagedState F` for any confined null vector under `FiniteOffLine`.** -/
+theorem nullVector_averagedState_eq_modes {R : ℝ} (hR : 0 < R)
+    {F : ℝ → ℝ} (hF : IsConfinedNullVector R F) (hfin : BacklundConverse.FiniteOffLine)
+    {t : ℝ} (ht : 0 < t) :
+    (averagedState F t : ℂ) = zeroModeSeries R F t + archimedeanModes R F t := by
+  have hS_sum : Summable fun q => ‖zeroModeCoeff R F q‖ :=
+    domain_summable_norm_zeroModeCoeff_of_finiteOffLine R hF.1 hfin
+  obtain ⟨B, hB0, hB⟩ := domain_averagedState_exp_three_le hF.1
+  set S : ℝ := ∑' q, ‖zeroModeCoeff R F q‖
+  set K : ℝ := ‖stateMeromorphic R F (-9)‖ + ‖stateMeromorphic R F (-10)‖ +
+    ‖stateMeromorphic R F (-11)‖ + ‖stateMeromorphic R F (-12)‖
+  have hS0 : 0 ≤ S := tsum_nonneg fun q => norm_nonneg _
+  have hK0 : 0 ≤ K := by positivity
+  have hcA : Continuous fun s : ℝ => ((averagedState F s : ℝ) : ℂ) :=
+    Complex.continuous_ofReal.comp (continuous_averagedState hF.1.integrable)
+  have hcZ_Ici : ContinuousOn (zeroModeSeries R F) (Ici 0) := by
+    refine continuousOn_tsum (fun q => (by fun_prop : Continuous fun s : ℝ =>
+        zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * s)).continuousOn)
+      hS_sum fun q s hs => ?_
+    rw [norm_mul]
+    calc ‖zeroModeCoeff R F q‖ * ‖Complex.exp ((centredZero q - 8) * s)‖
+        ≤ ‖zeroModeCoeff R F q‖ * 1 :=
+          mul_le_mul_of_nonneg_left ((norm_cexp_zeroMode_le q hs).trans
+            (Real.exp_le_one_iff.mpr (by nlinarith [mem_Ici.mp hs]))) (norm_nonneg _)
+      _ = ‖zeroModeCoeff R F q‖ := mul_one _
+  have hcZ : ContinuousOn (zeroModeSeries R F) (Ioi 0) := hcZ_Ici.mono Ioi_subset_Ici_self
+  have hcR : Continuous (archimedeanModes R F) := by unfold archimedeanModes; fun_prop
+  have hφc : ContinuousOn (fun s : ℝ => ((averagedState F s : ℝ) : ℂ) - zeroModeSeries R F s -
+      archimedeanModes R F s) (Ioi 0) :=
+    (hcA.continuousOn.sub hcZ).sub hcR.continuousOn
+  have bA : ∀ s : ℝ, 0 < s → ‖((averagedState F s : ℝ) : ℂ)‖ ≤ B * Real.exp (-(3 * s)) :=
+    fun s hs => by rw [Complex.norm_real, Real.norm_eq_abs]; exact hB s hs
+  have bZ : ∀ s : ℝ, 0 < s → ‖zeroModeSeries R F s‖ ≤ S * Real.exp (-(3 * s)) := by
+    intro s hs
+    have hb : ∀ q, ‖zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * s)‖ ≤
+        ‖zeroModeCoeff R F q‖ * Real.exp (-(15 / 2 * s)) := fun q => by
+      rw [norm_mul]
+      exact mul_le_mul_of_nonneg_left (norm_cexp_zeroMode_le q hs.le) (norm_nonneg _)
+    have h15 : ‖zeroModeSeries R F s‖ ≤ S * Real.exp (-(15 / 2 * s)) := by
+      unfold zeroModeSeries; dsimp [S]; rw [← tsum_mul_right]
+      exact (norm_tsum_le_tsum_norm
+        ((hS_sum.mul_right _).of_nonneg_of_le (fun q => norm_nonneg _) hb)).trans
+        (Summable.tsum_le_tsum hb
+          ((hS_sum.mul_right _).of_nonneg_of_le (fun q => norm_nonneg _) hb)
+          (hS_sum.mul_right _))
+    exact h15.trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) hS0)
+  have bR : ∀ s : ℝ, 0 < s → ‖archimedeanModes R F s‖ ≤ K * Real.exp (-(3 * s)) := fun s hs =>
+    (norm_archimedeanModes_le R F hs.le).trans
+      (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) hK0)
+  have hmem : MemLp (fun s : ℝ => ((averagedState F s : ℝ) : ℂ) - zeroModeSeries R F s -
+      archimedeanModes R F s) 2 (volume.restrict (Ioi (0 : ℝ))) := by
+    refine ((memLp_two_expRay_restrict (w := 3) (by norm_num) 0).const_mul
+      (((B + S + K : ℝ)) : ℂ)).of_le (hφc.aestronglyMeasurable measurableSet_Ioi)
+      ((ae_restrict_iff' measurableSet_Ioi).mpr (Eventually.of_forall fun s hs => ?_))
+    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (by positivity), norm_expRay,
+      show -((3 : ℂ).re * s) = -(3 * s) by simp]
+    calc ‖((averagedState F s : ℝ) : ℂ) - zeroModeSeries R F s - archimedeanModes R F s‖
+        ≤ ‖((averagedState F s : ℝ) : ℂ)‖ + ‖zeroModeSeries R F s‖ + ‖archimedeanModes R F s‖ :=
+          (norm_sub_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
+      _ ≤ (B + S + K) * Real.exp (-(3 * s)) := by nlinarith [bA s hs, bZ s hs, bR s hs]
+  have hlap : ∀ w : ℂ, 0 < w.re → laplaceRay (fun s : ℝ => ((averagedState F s : ℝ) : ℂ) -
+      zeroModeSeries R F s - archimedeanModes R F s) w = 0 := by
+    intro w hw
+    have ha : (criticalAliasCoefficient R : ℂ) ≠ 0 := by
+      exact_mod_cast (criticalAliasCoefficient_positive hR).ne'
+    have hexp : ∀ s : ℝ, 0 < s → ‖expRay w s‖ ≤ 1 := fun s hs => by
+      rw [norm_expRay]; exact Real.exp_le_one_iff.mpr (by nlinarith)
+    have hint : ∀ f : ℝ → ℂ, ContinuousOn f (Ioi 0) → ∀ M : ℝ,
+        (∀ s : ℝ, 0 < s → ‖f s‖ ≤ M * Real.exp (-(3 * s))) →
+          IntegrableOn (fun s => f s * expRay w s) (Ioi 0) := by
+      intro f hf M hM
+      refine ((exp_neg_integrableOn_Ioi 0 (by norm_num : (0 : ℝ) < 3)).const_mul M).mono'
+        ((hf.mul (continuous_expRay w).continuousOn).aestronglyMeasurable measurableSet_Ioi)
+        ((ae_restrict_iff' measurableSet_Ioi).mpr (Eventually.of_forall fun s hs => ?_))
+      rw [norm_mul, show -3 * s = -(3 * s) by ring]
+      calc ‖f s‖ * ‖expRay w s‖ ≤ M * Real.exp (-(3 * s)) * 1 :=
+            mul_le_mul (hM s hs) (hexp s hs) (norm_nonneg _) ((norm_nonneg _).trans (hM s hs))
+        _ = M * Real.exp (-(3 * s)) := mul_one _
+    have iA := hint _ hcA.continuousOn _ bA
+    have iZ := hint _ hcZ _ bZ
+    have iR := (integral_archimedeanModes_mul_expRay R F hw).1
+    have vA : ∫ s in Ioi (0 : ℝ), ((averagedState F s : ℝ) : ℂ) * expRay w s =
+        averageSymbol w * negativeHalfLineLaplace (cx F) w := by
+      rw [← integral_averagedState_laplace hF.1 hw]
+      refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
+      simp only [expRay]; ring
+    have hsum_trans : HasSum (fun q => zeroModeCoeff R F q * (w + 8 - centredZero q)⁻¹)
+        (averageSymbol w * negativeHalfLineLaplace (cx F) w - archimedeanTransform R F w) := by
+      have hA := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin
+        (xi_half_add_ne_zero_of_re hw)).mul_left (averageSymbol w)
+      have h9 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -9)
+        (by convert xi_half_add_ofReal_ne_zero (-9) using 3 <;> norm_num)).mul_left
+          (1 / 6 * (w + 9)⁻¹)
+      have h10 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -10)
+        (by convert xi_half_add_ofReal_ne_zero (-10) using 3 <;> norm_num)).mul_left
+          (1 / 2 * (w + 10)⁻¹)
+      have h11 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -11)
+        (by convert xi_half_add_ofReal_ne_zero (-11) using 3 <;> norm_num)).mul_left
+          (1 / 2 * (w + 11)⁻¹)
+      have h12 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -12)
+        (by convert xi_half_add_ofReal_ne_zero (-12) using 3 <;> norm_num)).mul_left
+          (1 / 6 * (w + 12)⁻¹)
+      have hC := hA.sub (((h9.sub h10).add h11).sub h12)
+      have hLF : stateMeromorphic R F w = negativeHalfLineLaplace (cx F) w :=
+        nullVector_stateMeromorphic_eq_laplace hR hF (by linarith)
+      have hv : averageSymbol w * negativeHalfLineLaplace (cx F) w - archimedeanTransform R F w =
+          averageSymbol w * stateMeromorphic R F w -
+            (1 / 6 * (w + 9)⁻¹ * stateMeromorphic R F (-9) -
+              1 / 2 * (w + 10)⁻¹ * stateMeromorphic R F (-10) +
+              1 / 2 * (w + 11)⁻¹ * stateMeromorphic R F (-11) -
+              1 / 6 * (w + 12)⁻¹ * stateMeromorphic R F (-12)) := by
+        rw [hLF]; unfold archimedeanTransform; ring
+      rw [hv]
+      refine hC.congr_fun fun q => ?_
+      rw [averageSymbol_mul_zeroResolvent ha hw (abs_re_centredZero_lt q)]
+      unfold zeroModeCoeff; ring
+    have hsum_int : HasSum (fun q => zeroModeCoeff R F q * (w + 8 - centredZero q)⁻¹)
+        (∫ s in Ioi (0 : ℝ), zeroModeSeries R F s * expRay w s) := by
+      have hlt : ∀ q : XiZeroCopy, (centredZero q - 8).re < w.re := fun q => by
+        have := (abs_lt.mp (abs_re_centredZero_lt q)).2
+        have hre : (centredZero q - 8).re = (centredZero q).re - 8 := by simp
+        linarith
+      have hI : ∀ q : XiZeroCopy, Integrable (fun s : ℝ => zeroModeCoeff R F q *
+          (Complex.exp ((centredZero q - 8) * s) * expRay w s)) (volume.restrict (Ioi 0)) :=
+        fun q => (integrableOn_cexp_mul_expRay (hlt q)).const_mul _
+      have hN : ∀ q : XiZeroCopy, ∫ s in Ioi (0 : ℝ), ‖zeroModeCoeff R F q *
+          (Complex.exp ((centredZero q - 8) * s) * expRay w s)‖ =
+            ‖zeroModeCoeff R F q‖ * (w.re - (centredZero q - 8).re)⁻¹ := fun q => by
+        simp_rw [norm_mul (zeroModeCoeff R F q)]
+        rw [integral_const_mul, integral_norm_cexp_mul_expRay (hlt q)]
+      have hS_int : Summable fun q : XiZeroCopy => ∫ s in Ioi (0 : ℝ), ‖zeroModeCoeff R F q *
+          (Complex.exp ((centredZero q - 8) * s) * expRay w s)‖ := by
+        simp_rw [hN]
+        refine (hS_sum.mul_right (2 / 15)).of_nonneg_of_le
+          (fun q => mul_nonneg (norm_nonneg _) (inv_nonneg.mpr (by linarith [hlt q])))
+          fun q => mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
+        have := (abs_lt.mp (abs_re_centredZero_lt q)).2
+        have hre : (centredZero q - 8).re = (centredZero q).re - 8 := by simp
+        rw [hre]
+        calc (w.re - ((centredZero q).re - 8))⁻¹ ≤ (15 / 2 : ℝ)⁻¹ :=
+              inv_anti₀ (by norm_num) (by linarith)
+          _ = 2 / 15 := by norm_num
+      have h := hasSum_integral_of_summable_integral_norm hI hS_int
+      have hval : ∫ s in Ioi (0 : ℝ), zeroModeSeries R F s * expRay w s =
+          ∫ s in Ioi (0 : ℝ), ∑' q, zeroModeCoeff R F q *
+            (Complex.exp ((centredZero q - 8) * s) * expRay w s) := by
+        refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
+        simp only [zeroModeSeries]; rw [← tsum_mul_right]; exact tsum_congr fun q => by ring
+      rw [hval]
+      refine h.congr_fun fun q => ?_
+      rw [integral_const_mul, integral_cexp_mul_expRay (hlt q)]
+      congr 2; ring
+    have vZ := hsum_int.unique hsum_trans
+    have iAZ : IntegrableOn (fun x : ℝ => ((averagedState F x : ℝ) : ℂ) * expRay w x -
+        zeroModeSeries R F x * expRay w x) (Ioi 0) := iA.sub iZ
+    have hpt : ∀ x : ℝ, (((averagedState F x : ℝ) : ℂ) - zeroModeSeries R F x -
+        archimedeanModes R F x) * expRay w x = ((averagedState F x : ℝ) : ℂ) * expRay w x -
+          zeroModeSeries R F x * expRay w x - archimedeanModes R F x * expRay w x := fun x => by ring
+    unfold laplaceRay
+    simp_rw [hpt]
+    rw [integral_sub iAZ iR, integral_sub iA iZ, vA, vZ,
+      (integral_archimedeanModes_mul_expRay R F hw).2]
+    ring
+  have hae := ae_eq_zero_of_laplaceRay_eq_zero hmem hlap
+  have heq := Measure.eqOn_open_of_ae_eq (f := fun s : ℝ => ((averagedState F s : ℝ) : ℂ) -
+      zeroModeSeries R F s - archimedeanModes R F s) (g := fun _ => (0 : ℂ))
+    hae isOpen_Ioi hφc continuousOn_const
+  have h0 := heq ht
+  simp only at h0
+  linear_combination h0
+
+/-- **Under `FiniteOffLine`, `averagedState F` of every confined null vector `(R, F)` (`R > 0`)
+equals its finite right-zero mode sum up to `O(e^{-8t})`.** -/
+theorem nullVector_averagedState_finiteLayer {R : ℝ} (hR : 0 < R)
+    {F : ℝ → ℝ} (hF : IsConfinedNullVector R F) (hfin : BacklundConverse.FiniteOffLine)
+    (hfin_right : Set.Finite {q : XiZeroCopy | 0 < (centredZero q).re}) :
     ∃ K : ℝ, ∀ t : ℝ, 0 < t →
-      |averagedState F₀ t -
+      ‖(averagedState F t : ℂ) - ∑ q ∈ hfin_right.toFinset,
+          zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ))‖ ≤
+        K * Real.exp (-(8 * t)) := by
+  have hS := domain_summable_norm_zeroModeCoeff_of_finiteOffLine R hF.1 hfin
+  refine ⟨(∑' q, ‖zeroModeCoeff R F q‖) + (‖stateMeromorphic R F (-9)‖ +
+    ‖stateMeromorphic R F (-10)‖ + ‖stateMeromorphic R F (-11)‖ +
+    ‖stateMeromorphic R F (-12)‖), fun t ht => ?_⟩
+  have hs : Summable fun q => zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) := by
+    refine Summable.of_norm_bounded (hS.mul_right (Real.exp (-(15 / 2 * t)))) fun q => ?_
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg_left (norm_cexp_zeroMode_le q ht.le) (norm_nonneg _)
+  have hle : ∀ q, ‖(if 0 < (centredZero q).re then
+      zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0)‖ ≤
+        ‖zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ))‖ := fun q => by
+    split_ifs <;> simp
+  have hsR := Summable.of_norm_bounded hs.norm hle
+  have hb : ∀ q, ‖zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) -
+      (if 0 < (centredZero q).re then
+        zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0)‖ ≤
+        ‖zeroModeCoeff R F q‖ * Real.exp (-(8 * t)) := fun q => by
+    split_ifs with h
+    · rw [sub_self, norm_zero]; positivity
+    · rw [sub_zero, norm_mul, norm_cexp_zeroMode]
+      refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (norm_nonneg _)
+      nlinarith [not_lt.mp h]
+  have e_fin : ∑' q : XiZeroCopy, (if 0 < (centredZero q).re then
+      zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0) =
+      ∑ q ∈ hfin_right.toFinset,
+        zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) := by
+    rw [tsum_eq_sum (s := hfin_right.toFinset) fun q hq => if_neg (by simpa using hq)]
+    exact Finset.sum_congr rfl fun q hq => if_pos (by simpa using hq)
+  rw [← e_fin]
+  have e2 : (averagedState F t : ℂ) - ∑' q : XiZeroCopy, (if 0 < (centredZero q).re then
+      zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0) =
+      (∑' q, (zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) -
+        (if 0 < (centredZero q).re then
+          zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0))) +
+        archimedeanModes R F t := by
+    rw [nullVector_averagedState_eq_modes hR hF hfin ht, hs.tsum_sub hsR]
+    unfold zeroModeSeries; ring
+  rw [e2]
+  have h1 : ‖∑' q, (zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) -
+      (if 0 < (centredZero q).re then
+        zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0))‖ ≤
+      (∑' q, ‖zeroModeCoeff R F q‖) * Real.exp (-(8 * t)) := by
+    rw [← tsum_mul_right]
+    have hn := (hS.mul_right (Real.exp (-(8 * t)))).of_nonneg_of_le (fun q => norm_nonneg _) hb
+    exact (norm_tsum_le_tsum_norm hn).trans (Summable.tsum_le_tsum hb hn (hS.mul_right _))
+  have h2 := (norm_archimedeanModes_le R F ht.le).trans
+    (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) (by positivity) :
+      _ ≤ (‖stateMeromorphic R F (-9)‖ + ‖stateMeromorphic R F (-10)‖ +
+        ‖stateMeromorphic R F (-11)‖ + ‖stateMeromorphic R F (-12)‖) * Real.exp (-(8 * t)))
+  calc _ ≤ _ := norm_add_le _ _
+    _ ≤ _ := add_le_add h1 h2
+    _ = _ := by ring
+
+/-- **Nondegenerate single-conjugate-pair asymptotic of `averagedState F` for every rung `(R, F)`.**
+Under `HasSingleOffLineQuartet ρ₀`, for every confined null vector `(R, F)` (`R > 0`) — in particular
+both `(W₀, F₀)` and `(R₂, F₁)` — the mode amplitude `cPos` is strictly nonzero and `averagedState F t`
+equals `2 m Re(cPos e^{(zPos - 8)t})` up to `O(e^{-8t})`. -/
+theorem singleQuartet_nullVector_averagedState_singleConjugatePair {ρ₀ : ℂ}
+    (hq : HasSingleOffLineQuartet ρ₀) {R : ℝ} (hR : 0 < R)
+    {F : ℝ → ℝ} (hF : IsConfinedNullVector R F) :
+    let zPos : ℂ := ρ₀ - 1 / 2
+    let cPos : ℂ := -(criticalAliasCoefficient R : ℂ)⁻¹ *
+      negativeHalfLineLaplace (cx F) zPos * averageSymbol (zPos - 8)
+    cPos ≠ 0 ∧
+    ∃ K : ℝ, ∀ t : ℝ, 0 < t →
+      |averagedState F t -
           2 * (quartetCopyMult ρ₀ : ℝ) * (cPos * Complex.exp ((zPos - 8) * (t : ℂ))).re| ≤
         K * Real.exp (-(8 * t)) := by
   intro zPos cPos
+  have hcPos_ne : cPos ≠ 0 := by
+    have ha_ne : -(criticalAliasCoefficient R : ℂ)⁻¹ ≠ 0 :=
+      neg_ne_zero.mpr (inv_ne_zero (by exact_mod_cast (criticalAliasCoefficient_positive hR).ne'))
+    have hL_ne : negativeHalfLineLaplace (cx F) zPos ≠ 0 := by
+      intro hL0
+      have hnull := hF.2.2 F hF.1
+      rw [criticalHalfLineMixedEnergy_eq_bare_add, setIntegral_Iio_w8_eq' hF.1.support,
+        w8Pair_self, bareMixedEnergy_self_singleQuartet hq hF.1] at hnull
+      change onLineEnergy F +
+        4 * (quartetCopyMult ρ₀ : ℝ) *
+          (negativeHalfLineLaplace (cx F) zPos *
+            conj (negativeHalfLineLaplace (cx F) (1 / 2 - conj ρ₀))).re +
+        criticalAliasCoefficient R * w8Mass F = 0 at hnull
+      rw [hL0, zero_mul, Complex.zero_re, mul_zero, add_zero] at hnull
+      have hpos := add_pos_of_nonneg_of_pos (onLineEnergy_nonneg F)
+        (mul_pos (criticalAliasCoefficient_positive hR) (nullVector_confinementMass_pos hF))
+      linarith
+    have havg_ne : averageSymbol (zPos - 8) ≠ 0 := by
+      unfold averageSymbol
+      have hpos_ne : ∀ u : ℂ, 0 < u.re → u ≠ 0 := fun u hu h0 => by
+        rw [h0, Complex.zero_re] at hu; exact lt_irrefl 0 hu
+      have hz_pos : 0 < zPos.re := by dsimp [zPos]; simp; linarith [hq.1]
+      exact inv_ne_zero (mul_ne_zero (mul_ne_zero (mul_ne_zero
+        (hpos_ne _ (by simp; linarith))
+        (hpos_ne _ (by simp; linarith)))
+        (hpos_ne _ (by simp; linarith)))
+        (hpos_ne _ (by simp; linarith)))
+    exact mul_ne_zero (mul_ne_zero ha_ne hL_ne) havg_ne
+  refine ⟨hcPos_ne, ?_⟩
   have hfin_right : Set.Finite {q : XiZeroCopy | 0 < (centredZero q).re} :=
     hq.finiteOffLine_copies.subset fun q hpos => by
       change 0 < (centredZero q).re at hpos
@@ -1626,13 +2142,13 @@ theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
       rw [centredZero, Complex.sub_re] at hpos
       norm_num at hpos
       linarith
-  obtain ⟨K, hK⟩ := criticalState_averagedState_finiteLayer hW ht hF₀ hfin_right
+  obtain ⟨K, hK⟩ := nullVector_averagedState_finiteLayer hR hF hq.finiteOffLine hfin_right
   refine ⟨K, fun t ht_pos => ?_⟩
   have hsum_eq : ∑ q ∈ hfin_right.toFinset,
-      zeroModeCoeff W₀ F₀ q * Complex.exp ((centredZero q - 8) * (t : ℂ)) =
+      zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) =
       ∑ q ∈ offLineCopyFinset hq.finiteOffLine,
         if 0 < (centredZero q).re then
-          zeroModeCoeff W₀ F₀ q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0 := by
+          zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0 := by
     rw [← Finset.sum_filter]
     refine Finset.sum_congr ?_ fun _ _ => rfl
     ext q
@@ -1640,13 +2156,13 @@ theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
     exact ⟨fun h => ⟨h.ne', h⟩, fun h => h.2⟩
   let g : ℂ → ℂ := fun ρ =>
     if 0 < (ρ - 1 / 2).re then
-      (-(criticalAliasCoefficient W₀ : ℂ)⁻¹ *
-        negativeHalfLineLaplace (cx F₀) (ρ - 1 / 2) * averageSymbol (ρ - 1 / 2 - 8)) *
+      (-(criticalAliasCoefficient R : ℂ)⁻¹ *
+        negativeHalfLineLaplace (cx F) (ρ - 1 / 2) * averageSymbol (ρ - 1 / 2 - 8)) *
         Complex.exp ((ρ - 1 / 2 - 8) * (t : ℂ))
     else 0
   have hsum_g : (∑ q ∈ offLineCopyFinset hq.finiteOffLine,
       if 0 < (centredZero q).re then
-        zeroModeCoeff W₀ F₀ q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0) =
+        zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0) =
       ∑ q ∈ offLineCopyFinset hq.finiteOffLine, g (q.1 : ℂ) := by
     refine Finset.sum_congr rfl fun q _ => ?_
     simp only [g, zeroModeCoeff, centredZero]
@@ -1663,7 +2179,7 @@ theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
     have havg_conj : ∀ w : ℂ, averageSymbol (conj w) = conj (averageSymbol w) := fun w => by
       unfold averageSymbol
       simp only [map_inv₀, map_mul, map_add, map_ofNat]
-    rw [hc_t, hc_8, hc_z, show cx F₀ = fun u => (F₀ u : ℂ) from rfl,
+    rw [hc_t, hc_8, hc_z, show cx F = fun u => (F u : ℂ) from rfl,
       negativeHalfLineLaplace_real_conj, havg_conj, Complex.exp_conj]
     simp
   have hg_neg1 : g (1 - ρ₀) = 0 := by
@@ -1671,7 +2187,7 @@ theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
   have hg_neg2 : g (1 - conj ρ₀) = 0 := by
     dsimp [g]; rw [if_neg (by simp; linarith [hq.1])]
   have hval : ∑ q ∈ hfin_right.toFinset,
-      zeroModeCoeff W₀ F₀ q * Complex.exp ((centredZero q - 8) * (t : ℂ)) =
+      zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) =
       ((2 * (quartetCopyMult ρ₀ : ℝ) *
         (cPos * Complex.exp ((zPos - 8) * (t : ℂ))).re : ℝ) : ℂ) := by
     rw [hsum_eq, hsum_g, sum_offLineCopyFinset_of_singleQuartet hq g,
@@ -1684,6 +2200,22 @@ theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
   have hbound := hK t ht_pos
   rw [hval, ← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs] at hbound
   exact hbound
+
+/-- **Under a single off-line quartet, `averagedState F₀` equals one conjugate mode pair up to
+`O(e^{-8t})`.** -/
+theorem singleQuartet_averagedState_singleConjugatePair {ρ₀ : ℂ}
+    (hq : HasSingleOffLineQuartet ρ₀) {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F₀ : ℝ → ℝ} (hF₀ : IsCriticalHalfLineGroundState W₀ F₀) :
+    let zPos : ℂ := ρ₀ - 1 / 2
+    let cPos : ℂ := -(criticalAliasCoefficient W₀ : ℂ)⁻¹ *
+      negativeHalfLineLaplace (cx F₀) zPos * averageSymbol (zPos - 8)
+    ∃ K : ℝ, ∀ t : ℝ, 0 < t →
+      |averagedState F₀ t -
+          2 * (quartetCopyMult ρ₀ : ℝ) * (cPos * Complex.exp ((zPos - 8) * (t : ℂ))).re| ≤
+        K * Real.exp (-(8 * t)) :=
+  (singleQuartet_nullVector_averagedState_singleConjugatePair hq hW
+    (isConfinedNullVector_of_groundState hW ht hF₀)).2
 
 private theorem cpow_ofReal_pos_conj {x : ℝ} (hx : 0 < x) (w : ℂ) :
     (x : ℂ) ^ (conj w) = conj ((x : ℂ) ^ w) := by
@@ -1898,12 +2430,193 @@ theorem eq1_global_and_profile_synthesis :
       zetaBeyondTheWallPrimeContinuation_iff_riemannHypothesis,
     fun hF => hasBeyondTheWallPrimeContinuation_iff_vanish_leftZeros hF⟩
 
+/-- **Six-way unconditional ECS characterization of the single-quartet stratum (`E-Q6`).**
+The following six statements are unconditionally equivalent:
+1. `∃ ρ₀ : ℂ, HasSingleOffLineQuartet ρ₀` (`ζ` has a single off-line quartet);
+2. `(rightZeros zetaZeroConfig).encard = 2` (two distinct zeros right of the critical line);
+3. `¬ RiemannHypothesis ∧ (rightZeros zetaZeroConfig).encard ≤ 2` (minimal non-RH zero stratum);
+4. `realPacketNegIndex = 2` (Weil packet negative index equals `2`);
+5. `¬ RiemannHypothesis ∧ ∀ R > 0, ∀ S H, (∀ s, IsHalfLineTest (H s)) → hermNegIndex (confinedGram R H) ≤ 2`
+   (non-RH with maximal confined negative index `2` across all ratios);
+6. `∃ ρ₀ ∈ zetaZeroConfig.carrier, 1/2 < ρ₀.re ∧ ψ(x) - x = -2 m Re(x^{ρ₀}/ρ₀) + O(√x log² x)`. -/
+theorem exists_singleOffLineQuartet_ecs_tfae :
+    [∃ ρ₀ : ℂ, HasSingleOffLineQuartet ρ₀,
+      (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard = 2,
+      ¬ RiemannHypothesis ∧ (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard ≤ 2,
+      realPacketNegIndex = 2,
+      ¬ RiemannHypothesis ∧
+        ∀ (R : ℝ), 0 < R → ∀ (S : Finset ℝ) (H : S → ℝ → ℝ),
+          (∀ s, IsHalfLineTest (H s)) → hermNegIndex (confinedGram R H) ≤ 2,
+      ∃ ρ₀ ∈ zetaZeroConfig.carrier, 1 / 2 < ρ₀.re ∧
+        ∃ K : ℝ, ∀ x : ℝ, 16 ≤ x →
+          |Chebyshev.psi x - x + 2 * (quartetCopyMult ρ₀ : ℝ) * ((x : ℂ) ^ ρ₀ / ρ₀).re| ≤
+            K * Real.sqrt x * Real.log x ^ 2].TFAE := by
+  tfae_have 1 ↔ 6 := by
+    constructor
+    · rintro ⟨ρ₀, hq⟩
+      exact ⟨ρ₀, hq.2.1, hq.1, (hasSingleOffLineQuartet_iff_chebyshevPsi_singleWave hq.1 hq.2.1).mp hq⟩
+    · rintro ⟨ρ₀, hmem, hre, hwave⟩
+      exact ⟨ρ₀, (hasSingleOffLineQuartet_iff_chebyshevPsi_singleWave hre hmem).mpr hwave⟩
+  tfae_have 1 → 2 := by
+    rintro ⟨ρ₀, hq⟩
+    have hset : ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig = {ρ₀, conj ρ₀} := by
+      ext ρ
+      change (ρ ∈ zetaZeroConfig.carrier ∧ 1 / 2 < ρ.re) ↔ ρ = ρ₀ ∨ ρ = conj ρ₀
+      constructor
+      · rintro ⟨hmem, hgt⟩
+        have hoff : ρ ∈ {z ∈ zetaZeroConfig.carrier | z.re ≠ 1 / 2} := ⟨hmem, by linarith⟩
+        rw [hq.2.2] at hoff
+        rcases hoff with rfl | rfl | rfl | rfl
+        · exact Or.inl rfl
+        · exact Or.inr rfl
+        · exfalso; simp at hgt; linarith [hq.1]
+        · exfalso; simp at hgt; linarith [hq.1]
+      · rintro (rfl | rfl)
+        · exact ⟨hq.2.1, hq.1⟩
+        · have hmem_c : conj ρ₀ ∈ {z ∈ zetaZeroConfig.carrier | z.re ≠ 1 / 2} := by
+            rw [hq.2.2]; exact Or.inr (Or.inl rfl)
+          exact ⟨hmem_c.1, by simp; exact hq.1⟩
+    rw [hset]
+    exact Set.encard_pair (quartet_points_pairwise_ne hq.1 hq.im_ne_zero).1
+  tfae_have 2 → 1 := by
+    intro h2
+    obtain ⟨ρ₀, _, -, hmem_eq⟩ := Set.encard_eq_two.mp h2
+    have hρ₀ : ρ₀ ∈ ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig := by
+      rw [hmem_eq]; exact Or.inl rfl
+    change ρ₀ ∈ zetaZeroConfig.carrier ∧ 1 / 2 < ρ₀.re at hρ₀
+    obtain ⟨hmem₀, hre₀⟩ := hρ₀
+    have hxi₀ : xi ρ₀ = 0 := by
+      obtain ⟨hζ, h0, h1⟩ := hmem₀
+      have hne1 : ρ₀ ≠ 1 := fun h => by rw [h] at h1; norm_num at h1
+      exact (RHTower.xi_eq_zero_iff_riemannZeta_of_re_pos h0 hne1).mpr hζ
+    have him_ne : ρ₀.im ≠ 0 := by
+      obtain ⟨q, hq_eq⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi₀
+      have h := four_lt_abs_zeroOrdinate q
+      rw [zeroOrdinate, hq_eq] at h
+      intro h0; rw [h0, abs_zero] at h; linarith
+    have hne_conj : ρ₀ ≠ conj ρ₀ := (quartet_points_pairwise_ne hre₀ him_ne).1
+    have hmem_of_xi : ∀ {z : ℂ}, xi z = 0 → z ∈ zetaZeroConfig.carrier := fun {z} hxi => by
+      obtain ⟨q, hq_eq⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi
+      exact hq_eq ▸ xiZeroCopy_mem_zetaZeroConfig q
+    obtain ⟨hxi_c, hxi_r, hxi_rc⟩ := xi_quartet_eq_zero hxi₀
+    have hsub : ({ρ₀, conj ρ₀} : Set ℂ) ⊆ ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig := by
+      rintro z (rfl | rfl)
+      · exact ⟨hmem₀, hre₀⟩
+      · exact ⟨hmem_of_xi hxi_c, by simp; exact hre₀⟩
+    have hright_eq : ({ρ₀, conj ρ₀} : Set ℂ) = ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig :=
+      ((Set.finite_singleton _).insert _).eq_of_subset_of_encard_le hsub
+        (by rw [h2, Set.encard_pair hne_conj])
+    refine ⟨ρ₀, hre₀, hmem₀, ?_⟩
+    ext ρ
+    simp only [Set.mem_setOf_eq, zeroQuartetSet, Set.mem_insert_iff, Set.mem_singleton_iff]
+    constructor
+    · rintro ⟨hρ_mem, hρ_ne⟩
+      rcases lt_or_gt_of_ne hρ_ne with hlt | hgt
+      · obtain ⟨hζ_ρ, hρ0, hρ1⟩ := hρ_mem
+        have hne1_ρ : ρ ≠ 1 := fun h => by rw [h] at hρ1; norm_num at hρ1
+        have hxi_ρ := (RHTower.xi_eq_zero_iff_riemannZeta_of_re_pos hρ0 hne1_ρ).mpr hζ_ρ
+        have hrefl : 1 - ρ ∈ ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig :=
+          ⟨hmem_of_xi (by rw [xi_one_sub]; exact hxi_ρ), by simp; linarith⟩
+        rw [← hright_eq] at hrefl
+        rcases hrefl with h1 | h2
+        · right; right; left; linear_combination -h1
+        · right; right; right; linear_combination -h2
+      · have hright : ρ ∈ ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig := ⟨hρ_mem, hgt⟩
+        rw [← hright_eq] at hright
+        rcases hright with rfl | rfl
+        · exact Or.inl rfl
+        · exact Or.inr (Or.inl rfl)
+    · rintro (rfl | rfl | rfl | rfl)
+      · exact ⟨hmem₀, by linarith⟩
+      · exact ⟨hmem_of_xi hxi_c, by simp; linarith⟩
+      · exact ⟨hmem_of_xi hxi_r, by simp; linarith⟩
+      · exact ⟨hmem_of_xi hxi_rc, by simp; linarith⟩
+  tfae_have 2 ↔ 3 := by
+    constructor
+    · intro h2
+      refine ⟨fun hrh => ?_, h2.le⟩
+      have hemp := rightZeros_zeta_eq_empty_iff.mpr hrh
+      rw [hemp, Set.encard_empty] at h2
+      norm_num at h2
+    · rintro ⟨hnrh, hle⟩
+      exact le_antisymm hle (two_le_rightZeros_encard_of_not_RH hnrh)
+  tfae_have 2 ↔ 4 := by rw [realPacketNegIndex_eq_rightZeros]
+  tfae_have 3 ↔ 5 := by
+    refine and_congr_right fun _ => ?_
+    constructor
+    · intro hle R hR S H hH
+      by_contra hnot_le
+      have hge3 : 3 ≤ hermNegIndex (confinedGram R H) := by omega
+      have h3 : (3 : ℕ∞) ≤ (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard :=
+        (confinedIndex_law 3).mp ⟨R, hR, S, H, hH, hge3⟩
+      have hbad := h3.trans hle
+      norm_num at hbad
+    · intro hmax
+      by_contra hnot_le
+      have hge3 : (3 : ℕ∞) ≤ (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard := by
+        cases hcard : (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard with
+        | top => exact le_top
+        | coe n =>
+          rw [hcard] at hnot_le
+          norm_cast at hnot_le ⊢
+          omega
+      obtain ⟨R, hR, S, H, hH, h3⟩ := (confinedIndex_law 3).mpr hge3
+      have hle2 := hmax R hR S H hH
+      omega
+  tfae_finish
+
+/-- **Smallest-case B13 dichotomy (`E-Q6` consequence).**
+Excluding a single off-line quartet (`∀ ρ₀, ¬ HasSingleOffLineQuartet ρ₀`) is unconditionally
+equivalent to `RiemannHypothesis` or at least **four** distinct zeros right of the critical line
+(`4 ≤ realPacketNegIndex`). -/
+theorem no_singleOffLineQuartet_iff_rh_or_four_le_rightZeros :
+    (∀ ρ₀ : ℂ, ¬ HasSingleOffLineQuartet ρ₀) ↔
+      (RiemannHypothesis ∨
+        (4 : ℕ∞) ≤ (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard) := by
+  have h12 := exists_singleOffLineQuartet_ecs_tfae.out 0 1
+  have hno_iff : (∀ ρ₀ : ℂ, ¬ HasSingleOffLineQuartet ρ₀) ↔
+      (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard ≠ 2 := by
+    rw [← not_exists, not_iff_not]
+    exact h12
+  rw [hno_iff]
+  have heven := zeta_rightZeros_encard_eq_two_mul_sectorZeros 1
+  constructor
+  · intro hne2
+    cases hk : (sectorZeros zetaZeroConfig 1).encard with
+    | top =>
+      right
+      rw [heven, hk]
+      simp
+    | coe n =>
+      rcases eq_or_ne n 0 with rfl | hn0
+      · left
+        rw [heven, hk, Nat.cast_zero, mul_zero] at *
+        exact rightZeros_zeta_eq_empty_iff.mp (Set.encard_eq_zero.mp heven)
+      · rcases eq_or_ne n 1 with rfl | hn1
+        · exfalso
+          apply hne2
+          rw [heven, hk]
+          norm_num
+        · right
+          rw [heven, hk]
+          have h2 : 2 ≤ n := by omega
+          exact_mod_cast Nat.mul_le_mul_left 2 h2
+  · rintro (hrh | hge4) h2
+    · rw [rightZeros_zeta_eq_empty_iff.mpr hrh, Set.encard_empty] at h2
+      norm_num at h2
+    · rw [h2] at hge4
+      norm_num at hge4
+
 /-- **Single-quartet model realization vs. Beurling–Lévy joint rigidity (`E-Q6` arithmetic boundary).**
 1. Every two-sided rational-prime edit at `β > 1/2` realizes an integer-norm Beurling system whose
    fake off-line zeros right of the line are **one** non-real conjugate pair `{ρ, conj ρ}` with no
    real zero in `(1/2, ∞)` (`exists_isEdit_fake_without_real_zero`), and the abstract quartet
    `quartetConfig ρ` carries a confined critical state (`ModelStates.quartet_criticalState`).
-2. Adjoining **both** a nonnegative Beurling prime system (`Λ_B ≥ 0`) **and** the `Γ_ℝ` functional
+2. Both the over-regular Beurling zeta (`Λ ≥ 0`, no functional equation) and positive degree-one
+   Euler twins at every `σ ∈ (1/2, 1)` (functional equation, fake Euler product) vanish off the
+   critical line and carry confined quartet critical states (`overRegular_quartet_criticalState`,
+   `positiveTwin_quartet_criticalState`).
+3. Adjoining **both** a nonnegative Beurling prime system (`Λ_B ≥ 0`) **and** the `Γ_ℝ` functional
    equation up to `L²` strip defect uniquely forces `ζ_B = ζ` (`beurling_levy_rigidity_forces_zeta`). -/
 theorem singleQuartet_realized_in_models {β : ℝ} (hβ : 1 / 2 < β) :
     (∃ (e : ℕ → ℤ) (ρ : ℂ),
@@ -1924,21 +2637,47 @@ theorem singleQuartet_realized_in_models {β : ℝ} (hβ : 1 / 2 < β) :
           (ModelStates.configEnergy hfin).Admissible F ∧ ‖F‖ = 1 ∧
           (ModelStates.configEnergy hfin).energy F + a * ‖F‖ ^ 2 = 0 ∧
           ∀ G : ModelStates.ConfSpace, (ModelStates.configEnergy hfin).Admissible G →
-            0 ≤ (ModelStates.configEnergy hfin).energy G + a * ‖G‖ ^ 2) :=
+            0 ≤ (ModelStates.configEnergy hfin).energy G + a * ‖G‖ ^ 2) ∧
+    (RHTower.BeurlingOverRegularIntegers.overRegularZeta (2 / 5) (1 / 10) 1 ((3 / 5 : ℝ) + I) = 0 ∧
+      ∃ (h0 : 0 ≤ (((3 / 5 : ℝ) : ℂ) + I).re) (h1 : (((3 / 5 : ℝ) : ℂ) + I).re ≤ 1)
+        (hfin : (ModelStates.offLineSet (ModelStates.quartetConfig _ h0 h1)).Finite)
+        (a : ℝ) (F : ModelStates.ConfSpace), 0 < a ∧
+        (ModelStates.configEnergy hfin).Admissible F ∧ ‖F‖ = 1 ∧
+        (ModelStates.configEnergy hfin).energy F + a * ‖F‖ ^ 2 = 0 ∧
+        ∀ G : ModelStates.ConfSpace, (ModelStates.configEnergy hfin).Admissible G →
+          0 ≤ (ModelStates.configEnergy hfin).energy G + a * ‖G‖ ^ 2) ∧
+    (∀ (N : ℕ) {σ : ℝ}, 1 / 2 < σ → σ < 1 →
+      ∃ (F : RHTower.ExtendedSelbergClass) (s : ℂ), F.coeff.IsMultiplicative ∧ F.coeff 1 = 1 ∧
+        (∀ n : ℕ, n ≠ 0 → (F.coeff n).im = 0 ∧ 1 ≤ (F.coeff n).re) ∧ s.re = σ ∧ F s = 0 ∧
+        ∃ (h0 : 0 ≤ s.re) (h1 : s.re ≤ 1)
+          (hfin : (ModelStates.offLineSet (ModelStates.quartetConfig s h0 h1)).Finite)
+          (a : ℝ) (G : ModelStates.ConfSpace), 0 < a ∧
+          (ModelStates.configEnergy hfin).Admissible G ∧ ‖G‖ = 1 ∧
+          (ModelStates.configEnergy hfin).energy G + a * ‖G‖ ^ 2 = 0 ∧
+          ∀ H : ModelStates.ConfSpace, (ModelStates.configEnergy hfin).Admissible H →
+            0 ≤ (ModelStates.configEnergy hfin).energy H + a * ‖H‖ ^ 2) :=
   ⟨WorldsOfTheZeroConfiguration.exists_isEdit_fake_without_real_zero hβ,
-    fun h0 h1 hre => ModelStates.quartet_criticalState h0 h1 hre⟩
+    fun h0 h1 hre => ModelStates.quartet_criticalState h0 h1 hre,
+    ModelStates.overRegular_quartet_criticalState,
+    fun N _ h0 h1 => ModelStates.positiveTwin_quartet_criticalState N h0 h1⟩
 
 #print axioms bareMixedEnergy_singleQuartet
 #print axioms exists_confinedNullVector_iff_quartetSecularDet_eq_zero
 #print axioms quartetSecularDet_pos_below_threshold
+#print axioms singleQuartet_groundAlias_eq_secularSup
 #print axioms singleQuartet_complete_twoRung_ladder
+#print axioms quartetAlias_eq_secular_extremal_roots
 #print axioms singleQuartet_alias_sum_le
 #print axioms singleQuartet_directSum_primeContinuation
 #print axioms singleQuartet_exists_poleNeutral_no_primeHeadContinuation
 #print axioms singleQuartet_twoRung_wall_and_primeForm
+#print axioms nullVector_averagedState_finiteLayer
+#print axioms singleQuartet_nullVector_averagedState_singleConjugatePair
 #print axioms singleQuartet_averagedState_singleConjugatePair
 #print axioms hasSingleOffLineQuartet_iff_chebyshevPsi_singleWave
 #print axioms eq1_global_and_profile_synthesis
+#print axioms exists_singleOffLineQuartet_ecs_tfae
+#print axioms no_singleOffLineQuartet_iff_rh_or_four_le_rightZeros
 #print axioms singleQuartet_realized_in_models
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingZeroBoundary
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.ClippedTailProbeSigns
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.CofiniteColumnTailTests
 import GaloisForLFunctions.HilbertMetric.Spectral.SymmetricClippingRestoration
@@ -106,5 +107,40 @@ theorem riemannHypothesis_or_common_clipped_column_witnesses :
 
 #print axioms tailProbeMatrix_quadratic_of_support_subset
 #print axioms riemannHypothesis_or_common_clipped_column_witnesses
+
+/-- The same finite column matrix is indefinite at exactly the nonzero spectral cutoffs. -/
+theorem criticalState_common_clipped_column_cutoff_iff {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F)
+    (T : ℝ) (m : ℕ) (k : ℕ → ℕ) :
+    ∃ s : Finset ℕ, (∀ n ∈ s, n ∈ carrier m k) ∧
+      ∀ c : ℝ≥0, (∃ v w : s → ℂ,
+        hermQuad (matrix (tailProbeMatrix_hermitian F T s) c) v < 0 ∧
+          0 < hermQuad (matrix (tailProbeMatrix_hermitian F T s) c) w) ↔ c ≠ 0 := by
+  classical
+  obtain ⟨s, hsc, hs⟩ := criticalState_common_clipped_column_witnesses hW ht hF T m k
+  refine ⟨s, hsc, ?_⟩
+  intro c
+  constructor
+  · intro h
+    exact ((matrix_both_signs_iff (tailProbeMatrix_hermitian F T s) c).mp h).1
+  · intro hc
+    exact hs c (lt_of_le_of_ne (zero_le : (0 : ℝ≥0) ≤ c) (Ne.symm hc))
+
+/-- RH or every cofinite column choice admits a fixed matrix with this exact cutoff boundary. -/
+theorem riemannHypothesis_or_common_clipped_column_cutoff_iff :
+    RiemannHypothesis ∨ ∃ (W₀ : ℝ) (F : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ ∀ (T : ℝ) (m : ℕ) (k : ℕ → ℕ),
+        ∃ s : Finset ℕ, (∀ n ∈ s, n ∈ carrier m k) ∧
+          ∀ c : ℝ≥0, (∃ v w : s → ℂ,
+            hermQuad (matrix (tailProbeMatrix_hermitian F T s) c) v < 0 ∧
+              0 < hermQuad (matrix (tailProbeMatrix_hermitian F T s) c) w) ↔ c ≠ 0 := by
+  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with
+    hRH | ⟨W₀, F, hW, ht, hF⟩
+  · exact Or.inl hRH
+  · exact Or.inr ⟨W₀, F, hW, ht, hF, criticalState_common_clipped_column_cutoff_iff hW ht hF⟩
+
+#print axioms riemannHypothesis_or_common_clipped_column_cutoff_iff
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

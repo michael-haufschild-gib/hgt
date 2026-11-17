@@ -122,8 +122,8 @@ theorem mul_norm_sq_laplace_le_of_orbit {F : ℝ → ℝ} (hF : CriticalHalfLine
       congr 1
       exact Finset.sum_congr rfl fun i _ => by ring
     unfold negativeHalfLineLaplace at htr ⊢
-    rw [hsplit, integral_sub hiG (integrable_finset_sum _ fun i _ => (hint i).const_mul _),
-      integral_finset_sum _ fun i _ => (hint i).const_mul _]
+    rw [hsplit, integral_sub hiG (integrable_finsetSum _ fun i _ => (hint i).const_mul _),
+      integral_finsetSum _ fun i _ => (hint i).const_mul _]
     simp only [integral_const_mul, htr, mul_zero, Finset.sum_const_zero, sub_zero]
   rwa [hL] at h
 
@@ -159,7 +159,3 @@ theorem laplace_ne_zero_of_orbit_dense {F : ℝ → ℝ} (hF : CriticalHalfLineE
   linarith
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState
-
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.mul_norm_sq_laplace_le_of_orbit
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.div_le_exponentialMass_probe_sub_orbit
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.laplace_ne_zero_of_orbit_dense

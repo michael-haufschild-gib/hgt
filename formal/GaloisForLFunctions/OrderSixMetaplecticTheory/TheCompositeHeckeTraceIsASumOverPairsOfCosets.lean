@@ -292,10 +292,10 @@ def gOf : R.Index → levelThree
 /-- The lower-triangular parameter `y` of the representative. -/
 def yOf : R.Index → O
   | (.inr (.inr (_, y₁)), .inr (.inr (_, y₂))) => R.crt y₁.1 y₂.1
-  | (.inl _, .inr (.inr (_, y₂))) => R.crt 0 y₂.1
-  | (.inr (.inr (_, y₁)), .inl _) => R.crt y₁.1 0
-  | (.inr (.inl _), .inr (.inr (_, y₂))) => R.crt 0 (y₂.1 * R.Q.res R.pDelta * R.pInv)
-  | (.inr (.inr (_, y₁)), .inr (.inl _)) => R.crt (y₁.1 * R.P.res R.qDelta * R.qInv) 0
+  | (.inl _, .inr (.inr (_, y₂))) => R.P.p * R.Q.lift (y₂.1 * R.pInv)
+  | (.inr (.inr (_, y₁)), .inl _) => R.Q.p * R.P.lift (y₁.1 * R.qInv)
+  | (.inr (.inl _), .inr (.inr (_, y₂))) => R.P.p * R.Q.lift (y₂.1 * R.Q.res R.pDelta * R.pInv ^ 2)
+  | (.inr (.inr (_, y₁)), .inr (.inl _)) => R.Q.p * R.P.lift (y₁.1 * R.P.res R.qDelta * R.qInv ^ 2)
   | _ => 0
 
 /-- The translation parameter `x` of the representative. -/
@@ -405,11 +405,12 @@ theorem rep_mul_inv_P (ij : R.Index) : R.rep ij * (R.P.rep ij.1)⁻¹ ∈ R.P.he
     linear_combination 3 * R.P.res R.P.wK * (R.P.res R.P.wDelta - R.P.res R.pDelta) * hKp +
       3 * R.P.res R.P.wDelta * e2'
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes]
-    ring
+    linear_combination 3 * y₁.1 * hq
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes, R.P.res_p, wQ]
     constructor
     · linear_combination 3 * hq
-    · linear_combination (3 * y₁.1 * R.P.res R.qDelta + 27 * y₁.1 ^ 2 * R.P.res R.qDelta * R.qInv) * hq
+    · linear_combination (3 * y₁.1 * R.P.res R.qDelta * (R.P.res R.Q.p * R.qInv + 1) +
+        27 * R.qInv * y₁.1 ^ 2 * R.P.res R.qDelta * (R.P.res R.Q.p * R.qInv)) * hq
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes]
     ring
 
@@ -436,7 +437,7 @@ theorem rep_mul_inv_Q (ij : R.Index) : R.rep ij * (R.Q.rep ij.2)⁻¹ ∈ R.Q.he
     linear_combination 3 * R.Q.res R.Q.wK * (R.Q.res R.Q.wDelta - R.Q.res R.qDelta) * hKq +
       3 * R.Q.res R.Q.wDelta * e2'
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes]
-    ring
+    linear_combination 3 * y₂.1 * hp
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes, R.Q.res_p, wP]
     linear_combination 3 * hp
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes, R.Q.res_p, wM]
@@ -445,7 +446,8 @@ theorem rep_mul_inv_Q (ij : R.Index) : R.rep ij * (R.Q.rep ij.2)⁻¹ ∈ R.Q.he
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes, R.Q.res_p, wP]
     constructor
     · linear_combination 3 * hp
-    · linear_combination (3 * y₂.1 * R.Q.res R.pDelta + 27 * y₂.1 ^ 2 * R.Q.res R.pDelta * R.pInv) * hp
+    · linear_combination (3 * y₂.1 * R.Q.res R.pDelta * (R.Q.res R.P.p * R.pInv + 1) +
+        27 * R.pInv * y₂.1 ^ 2 * R.Q.res R.pDelta * (R.Q.res R.P.p * R.pInv)) * hp
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes]
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes, wQ, R.Q.res_p]
     linear_combination 3 * R.Q.res R.Q.wK * (R.Q.res R.Q.wDelta - R.Q.res R.qDelta) * hKq +

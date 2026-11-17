@@ -46,16 +46,12 @@ theorem criticalHalfLineEnergyDomain_sub {F G : ℝ → ℝ} (hF : CriticalHalfL
     (hG : CriticalHalfLineEnergyDomain G) : CriticalHalfLineEnergyDomain fun u => F u - G u := by
   simpa only [neg_one_mul, ← sub_eq_add_neg] using hF.add_const_mul hG (-1)
 
-theorem IsWindowTest.mono {A B : ℝ} {H : ℝ → ℝ} (h : IsWindowTest A H) (hAB : A ≤ B) :
-    IsWindowTest B H :=
-  ⟨h.contDiff, fun y hy => h.vanish y fun hy' => hy ⟨by linarith [hy'.1], hy'.2⟩⟩
-
-theorem IsWindowTest.add_const_mul {A : ℝ} {H K : ℝ → ℝ} (hH : IsWindowTest A H)
+theorem isWindowTest_add_const_mul {A : ℝ} {H K : ℝ → ℝ} (hH : IsWindowTest A H)
     (hK : IsWindowTest A K) (c : ℝ) : IsWindowTest A fun u => H u + c * K u :=
   ⟨hH.contDiff.add (contDiff_const.mul hK.contDiff), fun y hy => by
     rw [hH.vanish y hy, hK.vanish y hy]; ring⟩
 
-theorem IsWindowTest.finsetSum {ι : Type*} (s : Finset ι) {A : ℝ} {H : ι → ℝ → ℝ}
+theorem isWindowTest_finsetSum {ι : Type*} (s : Finset ι) {A : ℝ} {H : ι → ℝ → ℝ}
     (hH : ∀ i, IsWindowTest A (H i)) (c : ι → ℝ) : IsWindowTest A fun u => ∑ i ∈ s, c i * H i u :=
   ⟨ContDiff.sum fun i _ => contDiff_const.mul (hH i).contDiff, fun y hy => by
     simp [(hH _).vanish y hy]⟩
@@ -187,12 +183,9 @@ theorem fullEnergy_le_of_tendsto_sq {R : ℝ} (hR : 0 < R) {U : ℕ → ℝ → 
         ring
       have hlim : Tendsto (fun n => 2 * (r n ^ 2 * ∫ u, (U n u - Y u) ^ 2) +
           2 * ((r n - c) ^ 2 * m)) atTop (𝓝 0) := by
-        have h1 := (hr2lim.mul hL2).const_mul 2
-        have h2 := (((hrlim.sub_const c).pow 2).mul_const m).const_mul 2
-        rw [sub_self, mul_zero, mul_zero] at h1
-        rw [← hc, sub_self] at h2
-        norm_num at h2
-        simpa using h1.add h2
+        have h := ((hr2lim.mul hL2).const_mul 2).add
+          ((((hrlim.sub_const c).pow 2).mul_const m).const_mul 2)
+        rwa [show 2 * (1 / m * 0) + 2 * ((c - c) ^ 2 * m) = 0 by simp] at h
       exact squeeze_zero (fun n => integral_nonneg fun u => sq_nonneg _) hb hlim
     have hFY : (∫ u, (F u - c * Y u) ^ 2) = 0 := by
       have hb : ∀ n, (∫ u, (F u - c * Y u) ^ 2) ≤
@@ -273,9 +266,9 @@ theorem exists_isWindowRecovery {R : ℝ} (hR : 0 < R) {Φ : ℝ → ℝ}
     have h3 : 0 ≤ ∫ u, H (ns n) u ^ 2 := integral_nonneg fun u => sq_nonneg _
     nlinarith [neg_abs_le μ, le_abs_self μ, le_abs_self C, abs_nonneg μ]
   have hup : ∀ n, Q R (H (ns n)) ≤ Q R Φ + 1 := fun n => by
-    have := heH (ns n)
-    have : 1 / ((ns n : ℝ) + 1) ≤ 1 := div_le_one_of_le₀ (by linarith [Nat.cast_nonneg (α := ℝ)
-      (ns n)]) (by positivity)
+    have h1 := heH (ns n)
+    have h0 : (0 : ℝ) ≤ (ns n : ℝ) := Nat.cast_nonneg _
+    have h2 : 1 / ((ns n : ℝ) + 1) ≤ 1 := div_le_one_of_le₀ (by linarith) (by positivity)
     linarith
   obtain ⟨L', -, φ, hφ, hlim⟩ := tendsto_subseq_of_bounded (Metric.isBounded_Icc
     (-(|μ| * |C|)) (Q R Φ + 1)) (x := fun n => Q R (H (ns n))) fun n => ⟨hlow n, hup n⟩
@@ -305,10 +298,11 @@ private theorem recovery_combination {R : ℝ} {Φ Ψ : ℝ → ℝ} {H K : ℕ 
     ⟨2 * MH + 2 * MK, fun n => ?_⟩⟩
   · obtain ⟨A, -, hA⟩ := hH.window n
     obtain ⟨B, -, hB⟩ := hK.window n
-    exact ((hA.mono (le_max_left A B)).add_const_mul (hB.mono (le_max_right A B)) c).contDiff
+    exact (isWindowTest_add_const_mul (hA.mono (le_max_left A B)) (hB.mono (le_max_right A B)) c).contDiff
   · obtain ⟨A, -, hA⟩ := hH.window n
     obtain ⟨B, -, hB⟩ := hK.window n
-    exact ((hA.mono (le_max_left A B)).add_const_mul (hB.mono (le_max_right A B)) c).hasCompactSupport
+    exact (isWindowTest_add_const_mul (hA.mono (le_max_left A B)) (hB.mono (le_max_right A B))
+      c).hasCompactSupport
   · have hb : ∀ n, (∫ u, ((H n u + c * K n u) - (Φ u + c * Ψ u)) ^ 2) ≤
         2 * (∫ u, (H n u - Φ u) ^ 2) + 2 * ∫ u, (K n u - Ψ u) ^ 2 := fun n => by
       have h := integral_sq_add_le (f := fun u => H n u - Φ u) (g := fun u => c * (K n u - Ψ u))
@@ -323,37 +317,24 @@ private theorem recovery_combination {R : ℝ} {Φ Ψ : ℝ → ℝ} {H K : ℕ 
     have hlim := (hH.sq.const_mul 2).add (hK.sq.const_mul 2)
     rw [mul_zero, add_zero] at hlim
     exact squeeze_zero (fun n => integral_nonneg fun u => sq_nonneg _) hb hlim
-  · have h := integral_sq_add_le (f := fun u => H n u * Real.exp (-(4 * u)))
-      (g := fun u => c * K n u * Real.exp (-(4 * u)))
-      (by
-        refine (hH.domain n).exponential.congr (Eventually.of_forall fun u => ?_)
-        show H n u ^ 2 * Real.exp (-(8 * u)) = (H n u * Real.exp (-(4 * u))) ^ 2
-        rw [mul_pow, sq (Real.exp _), ← Real.exp_add]; congr 2; ring)
-      (by
-        refine ((hK.domain n).exponential.const_mul (c ^ 2)).congr
-          (Eventually.of_forall fun u => ?_)
-        show c ^ 2 * (K n u ^ 2 * Real.exp (-(8 * u))) = (c * K n u * Real.exp (-(4 * u))) ^ 2
-        rw [mul_pow, mul_pow, sq (Real.exp _), ← Real.exp_add]
-        ring_nf)
-    have e1 : ∀ f : ℝ → ℝ, (∫ u, (f u * Real.exp (-(4 * u))) ^ 2) =
-        ∫ u, f u ^ 2 * Real.exp (-(8 * u)) := fun f =>
-      integral_congr_ae (Eventually.of_forall fun u => by
-        show (f u * Real.exp (-(4 * u))) ^ 2 = f u ^ 2 * Real.exp (-(8 * u))
-        rw [mul_pow, sq (Real.exp _), ← Real.exp_add]; congr 2; ring)
-    have e2 : (∫ u, (c * K n u * Real.exp (-(4 * u))) ^ 2) =
-        ∫ u, K n u ^ 2 * Real.exp (-(8 * u)) := by
-      rw [show (fun u => (c * K n u * Real.exp (-(4 * u))) ^ 2) =
-          fun u => (K n u * Real.exp (-(4 * u))) ^ 2 by
-        funext u; rw [mul_pow, mul_pow, mul_pow, hc, one_mul]]
-      exact e1 _
-    rw [e1, e2] at h
-    have hsum := e1 (fun u => H n u + c * K n u)
-    rw [← hsum]
-    refine le_trans (le_of_eq (integral_congr_ae (Eventually.of_forall fun u => ?_)))
-      (h.trans (by linarith [hMH n, hMK n]))
-    show ((H n u + c * K n u) * Real.exp (-(4 * u))) ^ 2 =
-      (H n u * Real.exp (-(4 * u)) + c * K n u * Real.exp (-(4 * u))) ^ 2
-    ring
+  · have hint : Integrable fun u => 2 * (H n u ^ 2 * Real.exp (-(8 * u))) +
+        2 * (K n u ^ 2 * Real.exp (-(8 * u))) :=
+      ((hH.domain n).exponential.const_mul 2).add ((hK.domain n).exponential.const_mul 2)
+    have hle : (∫ u, (H n u + c * K n u) ^ 2 * Real.exp (-(8 * u))) ≤
+        ∫ u, (2 * (H n u ^ 2 * Real.exp (-(8 * u))) + 2 * (K n u ^ 2 * Real.exp (-(8 * u)))) := by
+      refine integral_mono_of_nonneg (Eventually.of_forall fun u => by positivity) hint
+        (Eventually.of_forall fun u => ?_)
+      have he := Real.exp_pos (-(8 * u))
+      have hcb : c ^ 2 * K n u ^ 2 = K n u ^ 2 := by rw [hc, one_mul]
+      have h1 : (H n u + c * K n u) ^ 2 ≤ 2 * H n u ^ 2 + 2 * K n u ^ 2 := by
+        nlinarith [sq_nonneg (H n u - c * K n u)]
+      have h2 := mul_le_mul_of_nonneg_right h1 he.le
+      show (H n u + c * K n u) ^ 2 * Real.exp (-(8 * u)) ≤
+        2 * (H n u ^ 2 * Real.exp (-(8 * u))) + 2 * (K n u ^ 2 * Real.exp (-(8 * u)))
+      linarith
+    rw [integral_add ((hH.domain n).exponential.const_mul 2)
+      ((hK.domain n).exponential.const_mul 2), integral_const_mul, integral_const_mul] at hle
+    linarith [hMH n, hMK n]
 
 /-- **Polarization.** The mixed energies of two window recoveries converge. -/
 theorem IsWindowRecovery.tendsto_mixedEnergy {R : ℝ} (hR : 0 < R) {Φ Ψ : ℝ → ℝ}
@@ -367,15 +348,19 @@ theorem IsWindowRecovery.tendsto_mixedEnergy {R : ℝ} (hR : 0 < R) {Φ Ψ : ℝ
   set N : ℕ → ℝ := fun n => Q R (fun u => H n u + (-1) * K n u) with hN
   have ePn : ∀ n, P n = Q R (H n) + 2 * criticalHalfLineMixedEnergy R (H n) (K n) + Q R (K n) :=
     fun n => by
-      rw [hP, criticalHalfLineFullEnergy_add_const_mul R (hH.domain n) (hK.domain n)]; ring
+      show Q R (fun u => H n u + 1 * K n u) = _
+      rw [criticalHalfLineFullEnergy_add_const_mul R (hH.domain n) (hK.domain n)]; ring
   have eNn : ∀ n, N n = Q R (H n) - 2 * criticalHalfLineMixedEnergy R (H n) (K n) + Q R (K n) :=
     fun n => by
-      rw [hN, criticalHalfLineFullEnergy_add_const_mul R (hH.domain n) (hK.domain n)]; ring
-  set P∞ := Q R (fun u => Φ u + 1 * Ψ u)
-  set N∞ := Q R (fun u => Φ u + (-1) * Ψ u)
-  have ePi : P∞ = Q R Φ + 2 * criticalHalfLineMixedEnergy R Φ Ψ + Q R Ψ := by
+      show Q R (fun u => H n u + (-1) * K n u) = _
+      rw [criticalHalfLineFullEnergy_add_const_mul R (hH.domain n) (hK.domain n)]; ring
+  set Pinf := Q R (fun u => Φ u + 1 * Ψ u)
+  set Ninf := Q R (fun u => Φ u + (-1) * Ψ u)
+  have ePi : Pinf = Q R Φ + 2 * criticalHalfLineMixedEnergy R Φ Ψ + Q R Ψ := by
+    show Q R (fun u => Φ u + 1 * Ψ u) = _
     rw [criticalHalfLineFullEnergy_add_const_mul R hΦ hΨ]; ring
-  have eNi : N∞ = Q R Φ - 2 * criticalHalfLineMixedEnergy R Φ Ψ + Q R Ψ := by
+  have eNi : Ninf = Q R Φ - 2 * criticalHalfLineMixedEnergy R Φ Ψ + Q R Ψ := by
+    show Q R (fun u => Φ u + (-1) * Ψ u) = _
     rw [criticalHalfLineFullEnergy_add_const_mul R hΦ hΨ]; ring
   -- bounds
   obtain ⟨CH, hCH⟩ := exists_mass_bound hH.domain hΦ hH.sq
@@ -401,21 +386,23 @@ theorem IsWindowRecovery.tendsto_mixedEnergy {R : ℝ} (hR : 0 < R) {Φ Ψ : ℝ
   set hi := 2 * UH + 2 * UK - lo
   have hPN : ∀ n, P n + N n = 2 * Q R (H n) + 2 * Q R (K n) := fun n => by
     rw [ePn, eNn]; ring
-  have hPb : ∀ n, P n ∈ Icc lo hi := fun n => ⟨hlowc n 1 (by norm_num), by
-    have := hPN n; have := hlowc n (-1) (by norm_num); have := hUH ⟨n, rfl⟩; have := hUK ⟨n, rfl⟩
-    simp only [hN] at *; linarith⟩
-  have hNb : ∀ n, N n ∈ Icc lo hi := fun n => ⟨hlowc n (-1) (by norm_num), by
-    have := hPN n; have := hlowc n 1 (by norm_num); have := hUH ⟨n, rfl⟩; have := hUK ⟨n, rfl⟩
-    simp only [hP] at *; linarith⟩
-  have hsumlim : Tendsto (fun n => P n + N n) atTop (𝓝 (P∞ + N∞)) := by
+  have hPlo : ∀ n, lo ≤ P n := fun n => hlowc n 1 (by norm_num)
+  have hNlo : ∀ n, lo ≤ N n := fun n => hlowc n (-1) (by norm_num)
+  have hQH : ∀ n, Q R (H n) ≤ UH := fun n => hUH ⟨n, rfl⟩
+  have hQK : ∀ n, Q R (K n) ≤ UK := fun n => hUK ⟨n, rfl⟩
+  have hPb : ∀ n, P n ∈ Icc lo hi := fun n => ⟨hPlo n, by
+    have := hPN n; have := hNlo n; have := hQH n; have := hQK n; linarith⟩
+  have hNb : ∀ n, N n ∈ Icc lo hi := fun n => ⟨hNlo n, by
+    have := hPN n; have := hPlo n; have := hQH n; have := hQK n; linarith⟩
+  have hsumlim : Tendsto (fun n => P n + N n) atTop (𝓝 (Pinf + Ninf)) := by
     have h := (hH.energy.const_mul 2).add (hK.energy.const_mul 2)
-    have e : 2 * Q R Φ + 2 * Q R Ψ = P∞ + N∞ := by rw [ePi, eNi]; ring
+    have e : 2 * Q R Φ + 2 * Q R Ψ = Pinf + Ninf := by rw [ePi, eNi]; ring
     rw [e] at h
     exact h.congr fun n => (hPN n).symm
   -- every subsequence has a further subsequence along which both converge to the targets
   have key : ∀ ns : ℕ → ℕ, Tendsto ns atTop atTop → ∃ ms : ℕ → ℕ,
-      Tendsto (fun n => P (ns (ms n))) atTop (𝓝 P∞) ∧
-        Tendsto (fun n => N (ns (ms n))) atTop (𝓝 N∞) := by
+      Tendsto (fun n => P (ns (ms n))) atTop (𝓝 Pinf) ∧
+        Tendsto (fun n => N (ns (ms n))) atTop (𝓝 Ninf) := by
     intro ns hns
     obtain ⟨Lp, -, φ₁, hφ₁, hlim₁⟩ := tendsto_subseq_of_bounded (Metric.isBounded_Icc lo hi)
       (x := fun n => P (ns n)) fun n => hPb (ns n)
@@ -425,22 +412,26 @@ theorem IsWindowRecovery.tendsto_mixedEnergy {R : ℝ} (hR : 0 < R) {Φ Ψ : ℝ
       hns.comp (hφ₁.comp hφ₂).tendsto_atTop
     have hP' : Tendsto (fun n => P (ns (φ₁ (φ₂ n)))) atTop (𝓝 Lp) :=
       hlim₁.comp hφ₂.tendsto_atTop
-    have hgeP : P∞ ≤ Lp := fullEnergy_le_of_tendsto_sq hR (fun n => hDp _) (fun n => hCp _)
-      (fun n => hSp _) (hΦ.add_const_mul hΨ 1) (hLp.comp hsub) (fun n => hMp _) hP'
-    have hgeN : N∞ ≤ Ln := fullEnergy_le_of_tendsto_sq hR (fun n => hDm _) (fun n => hCm _)
-      (fun n => hSm _) (hΦ.add_const_mul hΨ (-1)) (hLm.comp hsub) (fun n => hMm _) hlim₂
-    have hsum : Lp + Ln = P∞ + N∞ :=
+    have hgeP : Pinf ≤ Lp := fullEnergy_le_of_tendsto_sq hR
+      (U := fun n u => H (ns (φ₁ (φ₂ n))) u + 1 * K (ns (φ₁ (φ₂ n))) u)
+      (fun n => hDp _) (fun n => hCp _) (fun n => hSp _) (hΦ.add_const_mul hΨ 1) (hLp.comp hsub)
+      (fun n => hMp _) hP'
+    have hgeN : Ninf ≤ Ln := fullEnergy_le_of_tendsto_sq hR
+      (U := fun n u => H (ns (φ₁ (φ₂ n))) u + (-1) * K (ns (φ₁ (φ₂ n))) u)
+      (fun n => hDm _) (fun n => hCm _) (fun n => hSm _) (hΦ.add_const_mul hΨ (-1)) (hLm.comp hsub)
+      (fun n => hMm _) hlim₂
+    have hsum : Lp + Ln = Pinf + Ninf :=
       tendsto_nhds_unique (hP'.add hlim₂) (hsumlim.comp hsub)
-    have hp : Lp = P∞ := by linarith
-    have hn : Ln = N∞ := by linarith
+    have hp : Lp = Pinf := by linarith
+    have hn : Ln = Ninf := by linarith
     exact ⟨fun n => φ₁ (φ₂ n), by rw [← hp]; exact hP', by rw [← hn]; exact hlim₂⟩
-  have hPlim : Tendsto P atTop (𝓝 P∞) := tendsto_of_subseq_tendsto fun ns hns =>
+  have hPlim : Tendsto P atTop (𝓝 Pinf) := tendsto_of_subseq_tendsto fun ns hns =>
     let ⟨ms, h, _⟩ := key ns hns; ⟨ms, h⟩
-  have hNlim : Tendsto N atTop (𝓝 N∞) := tendsto_of_subseq_tendsto fun ns hns =>
+  have hNlim : Tendsto N atTop (𝓝 Ninf) := tendsto_of_subseq_tendsto fun ns hns =>
     let ⟨ms, _, h⟩ := key ns hns; ⟨ms, h⟩
   have hmix : ∀ n, criticalHalfLineMixedEnergy R (H n) (K n) = (P n - N n) / 4 := fun n => by
     rw [ePn, eNn]; ring
-  have hmixlim : criticalHalfLineMixedEnergy R Φ Ψ = (P∞ - N∞) / 4 := by
+  have hmixlim : criticalHalfLineMixedEnergy R Φ Ψ = (Pinf - Ninf) / 4 := by
     rw [ePi, eNi]; ring
   rw [hmixlim]
   exact ((hPlim.sub hNlim).div_const 4).congr fun n => (hmix n).symm
