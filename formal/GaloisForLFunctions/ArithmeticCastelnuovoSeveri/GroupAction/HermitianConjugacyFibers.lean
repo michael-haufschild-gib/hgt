@@ -61,8 +61,8 @@ theorem hermitianTranslation_isConj_iff (P U : G) :
         change _ = U.val.2 - P.val.2 at hc
         linear_combination hc
 
-/-- Orbital support is a singleton on the center and a whole vertical fiber elsewhere. -/
 open scoped Classical in
+/-- Orbital support is a singleton on the center and a whole vertical fiber elsewhere. -/
 theorem hermitian_conjugatesOf (P : G) :
     conjugatesOf P = if P.val.1 = 0 then {P} else {U : G | U.val.1 = P.val.1} := by
   ext U
@@ -120,5 +120,11 @@ theorem hermitian_translation_class_number :
     Nat.card_congr he, hermitianTranslation_center_card,
     ← Nat.card_congr (unitsEquivNeZero (G₀ := k₀)), Nat.card_units, squareConstantField_card,
     Nat.mul_comm 2 (s+1), pow_mul]
+
+#print axioms hermitianTranslation_isConj_iff
+#print axioms hermitian_conjugatesOf
+#print axioms hermitian_conjugates_card
+#print axioms hermitian_translation_class_number
+#print axioms hermitianConjClassesEquiv
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

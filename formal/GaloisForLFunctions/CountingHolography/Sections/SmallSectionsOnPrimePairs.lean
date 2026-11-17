@@ -26,14 +26,16 @@ def contactModulus {N : ℕ} (a : Fin N → ℤ) : ℕ :=
 
 theorem generator_eq_contactModulus {N : ℕ} (a : Fin N → ℤ) (ha : ∀ i, 0 ≤ a i) :
     generator a = (contactModulus a : ℚ) := by
-  have hf (u : ℝ) : 0 ≤ packet a u :=
-    sum_nonneg fun i _ => mul_nonneg (Int.cast_nonneg.mpr (ha i)) (cubicSpline_nonneg _)
+  have hf (u : ℝ) : 0 ≤ packet a u := by
+    unfold packet splineSource
+    exact sum_nonneg fun i _ => mul_nonneg (Int.cast_nonneg.mpr (ha i)) (cubicSpline_nonneg _)
   unfold generator contactGenerator contactModulus
   push_cast
   apply prod_congr rfl
   intro k _
-  have he : 0 ≤ contactMultiplicity (packet a) (3*windowEnd N) (resolution a) k :=
-    mul_nonneg (by positivity) (sum_nonneg fun j _ =>
+  have he : 0 ≤ contactMultiplicity (packet a) (3*windowEnd N) (resolution a) k := by
+    unfold contactMultiplicity
+    exact mul_nonneg (by positivity) (sum_nonneg fun j _ =>
       div_nonneg (mul_nonneg (hf _) (hf _)) (Nat.cast_nonneg _))
   rw [← Int.natCast_floor_eq_floor he, zpow_natCast]
 

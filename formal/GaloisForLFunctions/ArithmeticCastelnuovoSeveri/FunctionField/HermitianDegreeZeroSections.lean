@@ -34,7 +34,7 @@ theorem hermitianDegreeZeroPart_primeToChar_principal (D : Pts →₀ ℤ) :
   refine ⟨Q ^ (2*d) - 1, Nat.sub_pos_of_lt hN, ?_, -hermitianOrbitTangent p s D (2*d), ?_⟩
   · exact (Nat.coprime_self_sub_left hN.le).2 (Nat.coprime_one_left _)
       |>.of_dvd_right hp
-  · rw [hermitianEvenOrbit_principal, ← Int.natCast_zsmul, Nat.cast_sub hN.le, Nat.cast_pow,
+  · rw [hermitianEvenOrbit_principal, ← natCast_zsmul, Nat.cast_sub hN.le, Nat.cast_pow,
       Nat.cast_pow, Nat.cast_one]
 
 private theorem principal_effective_zero (u : Additive Hˣ) (hu : 0 ≤ divH u) : divH u = 0 := by
@@ -126,5 +126,12 @@ theorem hermitianLineHomSections_classification (D C : Pts →₀ ℤ) :
       rintro rfl
       exact hf (by simpa using hc.symm)
   · exact Or.inl ((hermitianLineHomSections_trivial_iff p s D C).2 h)
+
+#print axioms hermitianDegreeZeroPart_primeToChar_principal
+#print axioms hermitianDegreeZero_effective_iff
+#print axioms hermitianLineHom_effective_iff
+#print axioms hermitianLineHomSections_eq
+#print axioms hermitianLineHomSections_trivial_iff
+#print axioms hermitianLineHomSections_classification
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

@@ -119,4 +119,12 @@ theorem zeroBasis_torus_indistinguishable_iff (ρ : zetaZeroConfig.carrier) (z w
       (ρ : ℂ).re = 1/2 ∨ ∃ r : ℝˣ, Units.map Complex.ofRealHom.toMonoidHom r * w = z :=
   (zeroBasis_projective_loss_zero_iff _ _ _).trans (or_congr_right' (conjugationPhase_eq_iff z w))
 
+#print axioms conjugationPhase_surjective
+#print axioms conjugationPhase_kernel
+#print axioms conjugationPhase_eq_iff
+#print axioms conjugationPhase_chord
+#print axioms torusProbeAction_range
+#print axioms torusProbe_projective_loss
+#print axioms zeroBasis_torus_indistinguishable_iff
+
 end GaloisForLFunctions.ExclusionOfTheCriticalState.ProbeWalk

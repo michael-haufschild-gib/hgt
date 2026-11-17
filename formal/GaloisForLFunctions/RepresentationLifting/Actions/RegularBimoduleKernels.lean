@@ -91,4 +91,9 @@ theorem regularBimoduleKernels_finrank {k : Type*} [Field k] [Fintype ι] [Finty
   rw [← (regularOrbitalEquiv (ι := ι) (G := G) (R := k)).finrank_eq, Module.finrank_pi]
   simp only [Fintype.card_prod, pow_two, mul_assoc]
 
+#print axioms regularKernelMatrix_right_iff
+#print axioms regularOrbitalMatrix_trace
+#print axioms regularBimoduleKernels_finrank
+#print axioms regularOrbitalEquiv
+
 end GaloisForLFunctions.RepresentationLifting

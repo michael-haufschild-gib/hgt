@@ -2,6 +2,8 @@ import GaloisForLFunctions.ExclusionOfTheCriticalState.Decay.LogarithmicMomentsO
 import GaloisForLFunctions.ExclusionOfTheCriticalState.TheStateHasSquaredLogarithmicEnergyOnTheLinesOfItsDecay
 import GaloisForLFunctions.ExclusionOfTheCriticalState.TheExplicitFormulaHoldsOnTheEnergyDomainAgainstProbes
 import GaloisForLFunctions.ExclusionOfTheCriticalState.TheZeroCauchyTransformIsSquareIntegrableUpToALogarithm
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Modes.TheHeatedProfileBeyondTheWallHasAMeanSquareAtTheExactRate
+import GaloisForLFunctions.HTGeometry.LaplaceRayInjective
 
 /-!
 # The left trace up to the rate of the zeros
@@ -126,5 +128,209 @@ theorem integrable_norm_sq_stateMeromorphic_reflected_line {W₀ : ℝ} (hW : 0 
   rw [heq, div_eq_mul_inv, mul_comm]
 
 #print axioms integrable_norm_sq_stateMeromorphic_reflected_line
+
+/-- The square of a resolvent absorbs quadratic growth on the closed right half-plane. -/
+private theorem regulated_norm_le {g : ℂ → ℂ} {B : ℝ} (hB : 0 ≤ B)
+    (hg : ∀ z : ℂ, 0 ≤ z.re → ‖g z‖ ≤ B*(1+‖z‖)^2)
+    {ε : ℝ} (hε : 0 < ε) {z : ℂ} (hz : 0 ≤ z.re) :
+    ‖g z / (1+(ε:ℂ)*z)^2‖ ≤ B*(1+2/ε)^2 := by
+  let q := 1+(ε:ℂ)*z
+  have h1 : 1 ≤ ‖q‖ := by
+    have h := Complex.re_le_norm q
+    have he : q.re = 1+ε*z.re := by simp [q]
+    linarith only [h, he, mul_nonneg hε.le hz]
+  have h2 : ε*‖z‖ ≤ ‖q‖+1 := by
+    have h := norm_sub_le q 1
+    simpa [q, norm_mul, Real.norm_of_nonneg hε.le] using h
+  have h3 : 1+‖z‖ ≤ (1+2/ε)*‖q‖ := by
+    have h4 : ‖z‖ ≤ (2/ε)*‖q‖ := by
+      rw [div_mul_eq_mul_div, le_div_iff₀ hε]
+      linarith only [h2, h1]
+    linarith only [h1, h4]
+  change ‖g z / q^2‖ ≤ _
+  rw [norm_div, norm_pow, div_le_iff₀ (sq_pos_of_pos (zero_lt_one.trans_le h1))]
+  calc ‖g z‖ ≤ B*(1+‖z‖)^2 := hg z hz
+    _ ≤ B*((1+2/ε)*‖q‖)^2 := mul_le_mul_of_nonneg_left
+      (pow_le_pow_left₀ (by positivity) h3 2) hB
+    _ = _ := by ring
+
+/-- An ordinary square-integrable boundary trace bounds every interior line.
+Regularize the quadratic growth before applying the Poisson inequality. -/
+private theorem hardy_of_quadratic_bound {g : ℂ → ℂ}
+    (hdiff : ∀ z : ℂ, 0 ≤ z.re → DifferentiableAt ℂ g z)
+    {B : ℝ} (hB : 0 ≤ B) (hg : ∀ z : ℂ, 0 ≤ z.re → ‖g z‖ ≤ B*(1+‖z‖)^2)
+    (ht : Integrable fun t : ℝ => ‖g ((t:ℂ)*I)‖^2) :
+    IsHalfPlaneHardy g ((2*Real.pi)⁻¹ * ∫ t : ℝ, ‖g ((t:ℂ)*I)‖^2) := by
+  have hmaj (d : ℝ) (hd : 0 < d) (y : ℝ) :
+      ‖g ((d:ℂ)+(y:ℂ)*I)‖^2 ≤ ∫ t : ℝ, halfPlanePoisson d (t-y)*‖g ((t:ℂ)*I)‖^2 := by
+    let z := (d:ℂ)+(y:ℂ)*I
+    have hreg (ε : ℝ) (hε : 0 < ε) :
+        ‖g z / (1+(ε:ℂ)*z)^2‖^2 ≤
+          ∫ t : ℝ, halfPlanePoisson d (t-y)*‖g ((t:ℂ)*I)‖^2 := by
+      have hden (v : ℂ) (hv : 0 ≤ v.re) : 1+(ε:ℂ)*v ≠ 0 := by
+        intro e
+        have h := congrArg Complex.re e
+        simp at h
+        linarith only [h, mul_nonneg hε.le hv]
+      have h' (v : ℂ) (hv : 0 ≤ v.re) : DifferentiableAt ℂ
+          (fun w : ℂ => g w / (1+(ε:ℂ)*w)^2) v :=
+        (hdiff v hv).div (by fun_prop) (pow_ne_zero 2 (hden v hv))
+      have hJ := norm_sq_apply_le_integral_halfPlanePoisson h'
+        (fun v hv => regulated_norm_le hB hg hε hv) hd y
+      simp only [Complex.ofReal_zero, zero_add] at hJ
+      refine hJ.trans (integral_mono_of_nonneg (Eventually.of_forall fun t =>
+        mul_nonneg (halfPlanePoisson_pos hd _).le (sq_nonneg _))
+        (integrable_halfPlanePoisson_sub_mul ht hd y) (Eventually.of_forall fun t => ?_))
+      apply mul_le_mul_of_nonneg_left _ (halfPlanePoisson_pos hd _).le
+      apply pow_le_pow_left₀ (norm_nonneg _)
+      rw [norm_div, norm_pow]
+      apply div_le_self (norm_nonneg _)
+      apply one_le_pow₀
+      calc (1:ℝ) = (1+(ε:ℂ)*((t:ℂ)*I)).re := by simp
+        _ ≤ _ := Complex.re_le_norm _
+    have hm : ContinuousAt (fun ε : ℝ => ‖g z / (1+(ε:ℂ)*z)^2‖^2) 0 := by
+      apply ContinuousAt.pow
+      apply ContinuousAt.norm
+      exact continuousAt_const.div (by fun_prop) (by simp)
+    have hlim := hm.tendsto.mono_left (nhdsWithin_le_nhds (s := Ioi (0:ℝ)))
+    simpa only [Complex.ofReal_zero, zero_mul, add_zero, one_pow, div_one] using
+      le_of_tendsto hlim (eventually_mem_nhdsWithin.mono fun ε hε => hreg ε hε)
+  have hc (d : ℝ) (hd : 0 < d) : Continuous fun ξ => g (rayLine d ξ) :=
+    continuous_iff_continuousAt.mpr fun ξ => (hdiff _ (by simp [hd.le])).continuousAt.comp
+      (by unfold rayLine; fun_prop : ContinuousAt (rayLine d) ξ)
+  have hline (d : ℝ) (hd : 0 < d) :
+      Integrable (fun ξ => ‖g (rayLine d ξ)‖^2) ∧
+      (∫ ξ, ‖g (rayLine d ξ)‖^2) ≤ (2*Real.pi)⁻¹ * ∫ t : ℝ, ‖g ((t:ℂ)*I)‖^2 := by
+    let J := fun y : ℝ => ∫ t : ℝ, halfPlanePoisson d (t-y)*‖g ((t:ℂ)*I)‖^2
+    obtain ⟨hJi, hJe⟩ := integrable_integral_halfPlanePoisson_mul ht hd
+    have hJ : Integrable fun ξ => J (2*Real.pi*ξ) :=
+      hJi.comp_mul_left' (by positivity : 2*Real.pi ≠ 0)
+    have hpt (ξ : ℝ) : ‖g (rayLine d ξ)‖^2 ≤ J (2*Real.pi*ξ) := hmaj d hd _
+    have hi := hJ.mono' ((hc d hd).norm.pow 2).aestronglyMeasurable (Eventually.of_forall
+      fun ξ => by simpa only [Pi.pow_apply, Real.norm_of_nonneg (sq_nonneg _)] using hpt ξ)
+    refine ⟨hi, (integral_mono hi hJ hpt).trans_eq ?_⟩
+    rw [Measure.integral_comp_mul_left J (2*Real.pi), abs_of_pos (by positivity), smul_eq_mul]
+    exact congrArg ((2*Real.pi)⁻¹ * ·) hJe
+  exact ⟨fun z hz => (hdiff z (le_of_lt hz)).differentiableWithinAt,
+    fun d hd => (memLp_two_iff_integrable_sq_norm (hc d hd).aestronglyMeasurable).mpr (hline d hd).1,
+    fun d hd => (hline d hd).2⟩
+
+/-- The continued state is Hardy on the half-plane beyond a reflected zero-free line. -/
+private theorem hardy_reflected_state {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {c : ℝ}
+    (hc : zetaZeroAbscissa - 1/2 < c) (hc2 : c < 1/2) :
+    ∃ M, IsHalfPlaneHardy (fun w : ℂ => stateMeromorphic W₀ F (-(w+(c:ℂ))-8)) M := by
+  let κ := zetaZeroAbscissa - 1/2
+  let δ := c-κ
+  have hδ : 0 < δ := sub_pos.mpr hc
+  let P := fun w : ℂ => -(w+(c:ℂ))
+  have hdist (w : ℂ) (hw : 0 ≤ w.re) (q : XiZeroCopy) : δ ≤ ‖P w-centredZero q‖ := by
+    have h := Complex.abs_re_le_norm (P w - centredZero q)
+    have h' := neg_le_abs (P w - centredZero q).re
+    have hq := neg_abscissa_le_re_centredZero q
+    have he : (P w-centredZero q).re = -w.re-c-(centredZero q).re := by simp [P]; ring
+    rw [he] at h h'
+    dsimp [δ, κ]
+    linarith only [h, h', hw, hq]
+  have hd := criticalHalfLineEnergyDomain_of_groundState hF
+  let A := ‖globalRemainder F 1‖
+  let H := 3 * halfPoleMass F * (∑' q : XiZeroCopy, ‖centredZero q‖⁻¹^2)
+  let C := 1+|c|
+  have hA : 0 ≤ A := norm_nonneg _
+  have hH : 0 ≤ H := mul_nonneg (mul_nonneg (by norm_num) (halfPoleMass_nonneg F))
+    (tsum_nonneg fun _ => sq_nonneg _)
+  have hC : 0 ≤ C := by dsimp [C]; positivity
+  have ha := criticalAliasCoefficient_positive hW
+  refine ⟨_, hardy_of_quadratic_bound (B := (A+H*(1+1/δ)*C^2)/criticalAliasCoefficient W₀)
+    (fun w hw => ?_) (by positivity) (fun w hw => ?_) ?_⟩
+  · have he (w : ℂ) : stateMeromorphic W₀ F (-(w+(c:ℂ))-8) =
+        -globalRemainder F (P w)/criticalAliasCoefficient W₀ := by
+      unfold stateMeromorphic; rw [sub_add_cancel]; rfl
+    simp_rw [he]
+    exact (((differentiableAt_globalRemainder_of_xi_ne_zero hd
+      (xi_ne_zero_of_dist hδ (hdist w hw))).comp w (by dsimp [P]; fun_prop)).neg.div_const _
+  · let x := 1+‖w‖
+    have hx : 1 ≤ x := by dsimp [x]; linarith only [norm_nonneg w]
+    have hp : 1+‖P w‖ ≤ C*x := by
+      have h := norm_add_le w (c:ℂ)
+      simp only [Complex.norm_real, Real.norm_eq_abs] at h
+      simp only [P, norm_neg, C, x]
+      nlinarith only [h, mul_nonneg (abs_nonneg c) (norm_nonneg w)]
+    have hd' : 1+‖P w‖/δ ≤ (1+1/δ)*(1+‖P w‖) := by
+      have hi : 0 ≤ 1/δ := by positivity
+      nlinarith only [hi, norm_nonneg (P w)]
+    have hq : (1+‖P w‖)*(1+‖P w‖/δ) ≤ (1+1/δ)*(C*x)^2 := by
+      calc _ ≤ (C*x)*((1+1/δ)*(C*x)) :=
+          mul_le_mul hp (hd'.trans (mul_le_mul_of_nonneg_left hp (by positivity)))
+            (by positivity) (mul_nonneg hC (zero_le_one.trans hx))
+        _ = _ := by ring
+    have hbound := norm_globalRemainder_le_of_dist hd hδ (hdist w hw)
+    change ‖globalRemainder F (P w)‖ ≤ A + H*((1+‖P w‖)*(1+‖P w‖/δ)) at hbound
+    unfold stateMeromorphic
+    rw [sub_add_cancel, norm_div, norm_neg, Complex.norm_real, Real.norm_of_nonneg ha.le]
+    change ‖globalRemainder F (P w)‖ / criticalAliasCoefficient W₀ ≤ _ * x^2
+    rw [div_mul_eq_mul_div]
+    apply div_le_div_of_nonneg_right _ ha.le
+    nlinarith only [hbound, mul_le_mul_of_nonneg_left hq hH,
+      mul_le_mul_of_nonneg_left (one_le_pow₀ hx (n := 2)) hA]
+  · have hi := (integrable_norm_sq_stateMeromorphic_reflected_line hW ht hF hc hc2).comp_neg
+    refine hi.congr (Eventually.of_forall fun t => ?_)
+    change ‖stateMeromorphic W₀ F (((-c:ℝ):ℂ)+((-t:ℝ):ℂ)*I-8)‖^2 = _
+    congr 3 <;> push_cast <;> ring
+
+/-- In the reflected zero-free strip the actual profile has finite damped square
+mass. The Hardy datum agrees with the prime and archimedean profile by injectivity
+of the Laplace transform on a common half-plane. -/
+theorem memLp_damped_beyondWallProfile_of_lt_half {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {c : ℝ}
+    (hc : zetaZeroAbscissa-1/2 < c) (hc2 : c < 1/2) :
+    MemLp (fun x : ℝ => expRay (c:ℂ) x *
+      beyondWallProfile W₀ (criticalHalfLineEnergyDomain_of_groundState hF) x)
+      2 (volume.restrict (Ioi (0:ℝ))) := by
+  obtain ⟨M, hhard⟩ := hardy_reflected_state hW ht hF hc hc2
+  let G := fun w : ℂ => stateMeromorphic W₀ F (-(w+(c:ℂ))-8)
+  let f := hardyDatum G hhard
+  have hf : MemLp f 2 (volume.restrict (Ioi (0:ℝ))) := memLp_two_hardyDatum hhard
+  let hd := criticalHalfLineEnergyDomain_of_groundState hF
+  let U : ℝ → ℂ := unitLeftDatum W₀ hd
+  let b := 1-c
+  have hb : 0 ≤ b := by dsimp [b]; linarith
+  have hU : MemLp U 2 (volume.restrict (Ioi (0:ℝ))) := Lp.memLp (unitLeftDatum W₀ hd)
+  have hf' := (memLp_two_rayDamp hf hb).restrict (s := Ioi (0:ℝ))
+  have heq : ∀ᵐ x ∂(volume.restrict (Ioi (0:ℝ))), rayDamp f b x - U x = 0 := by
+    apply ae_eq_zero_of_laplaceRay_eq_zero (hf'.sub hU)
+    intro w hw
+    have hwb : 0 < (w+(b:ℂ)).re := by simp only [Complex.add_re, Complex.ofReal_re]; linarith
+    have hs : laplaceRay (rayDamp f b) w = laplaceRay f (w+(b:ℂ)) := by
+      apply setIntegral_congr_fun measurableSet_Ioi
+      intro x hx
+      simp only [rayDamp, indicator_of_mem hx, expRay]
+      rw [mul_assoc, ← Complex.exp_add]; congr 2; ring
+    have he : laplaceRay f (w+(b:ℂ)) = laplaceRay U w := by
+      rw [← isHalfPlaneHardy_eq_laplaceRay hhard hwb]
+      change stateMeromorphic W₀ F (-((w+(b:ℂ))+(c:ℂ))-8) = laplaceRay U w
+      have ea : (w+(b:ℂ))+(c:ℂ) = w+1 := by dsimp [b]; push_cast; ring
+      rw [ea]
+      exact stateMeromorphic_eq_laplaceRay_left hd (c := 1) (by norm_num) (by norm_num) hw
+    change (∫ x in Ioi (0:ℝ), (rayDamp f b x - U x)*expRay w x) = 0
+    simp_rw [sub_mul]
+    rw [integral_sub (integrableOn_laplaceRay hf' hw) (integrableOn_laplaceRay hU hw)]
+    exact sub_eq_zero.mpr (hs.trans he)
+  apply MemLp.ae_eq _ hf
+  filter_upwards [heq, ae_restrict_mem measurableSet_Ioi] with x hx hx0
+  simp only [rayDamp, indicator_of_mem hx0] at hx
+  change f x = expRay (c:ℂ) x * (Complex.exp (x:ℂ)*U x)
+  rw [← sub_eq_zero.mp hx]
+  unfold expRay
+  have hh : Complex.exp (-((c:ℂ)*(x:ℂ))) * Complex.exp (x:ℂ) *
+      Complex.exp (-((b:ℂ)*(x:ℂ))) = 1 := by
+    rw [← Complex.exp_add, ← Complex.exp_add]
+    dsimp [b]; push_cast
+    rw [show -((c:ℂ)*(x:ℂ)) + x + -((1-c)*(x:ℂ)) = 0 by ring, Complex.exp_zero]
+  linear_combination -(f x)*hh
+
+#print axioms memLp_damped_beyondWallProfile_of_lt_half
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

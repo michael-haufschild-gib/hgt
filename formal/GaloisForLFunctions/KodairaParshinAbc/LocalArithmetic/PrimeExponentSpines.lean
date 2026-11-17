@@ -142,4 +142,16 @@ theorem primePowerCosetOrder_isGreatest (q : ℚˣ) (n : ℤ) :
   obtain ⟨u, _, hu⟩ := primePowerCosetOrder_attained q n
   exact ⟨⟨u, hu⟩, by rintro _ ⟨v, rfl⟩; exact firstPrimeExponent_twist_le q v n⟩
 
+#print axioms primeExponent_class_iff
+#print axioms firstPrimeExponent_ge_iff
+#print axioms firstPrimeExponent_eq_iff
+#print axioms firstPrimeExponent_finite_range
+#print axioms firstPrimeExponent_mul_ge
+#print axioms firstPrimeExponent_mul_eq
+#print axioms primePowerCosetOrder_ge_iff
+#print axioms primePowerCosetOrder_mul_pow
+#print axioms firstPrimeExponent_twist_le
+#print axioms primePowerCosetOrder_attained
+#print axioms primePowerCosetOrder_isGreatest
+
 end GaloisForLFunctions.KodairaParshinAbc

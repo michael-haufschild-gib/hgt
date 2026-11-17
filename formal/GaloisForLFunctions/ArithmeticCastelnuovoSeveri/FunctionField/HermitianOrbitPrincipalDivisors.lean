@@ -105,4 +105,11 @@ theorem hermitianEvenOrbit_principal (D : Pts →₀ ℤ) :
     ((hermitianFrobeniusDivisor_support_period p s D).const_mul 2).isFixedPt.eq,
     Even.neg_pow (even_two_mul _), sub_smul, one_smul, neg_sub]
 
+#print axioms hermitianFrobeniusDivisor_iterate
+#print axioms hermitianSupportPeriod_pos
+#print axioms hermitianFrobeniusDivisor_support_period
+#print axioms hermitianOrbitTangent_divisor
+#print axioms hermitianOrbitTangent_support_divisor
+#print axioms hermitianEvenOrbit_principal
+
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri
