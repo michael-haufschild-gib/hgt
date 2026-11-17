@@ -19,8 +19,9 @@ theorem properPowerContactWindow_le (S : Finset ℕ) {Q : ℕ} {D : ℝ}
     ∑ k ∈ S, Λ k / Real.sqrt k ≤ 3 * (Real.log 4 + 4) * D := by
   have hC : 0 ≤ 3 * (Real.log 4 + 4) := by positivity
   by_cases hQ : Q = 0
-  · have h : S = ∅ := eq_empty_iff_forall_notMem.mpr fun k hk =>
-      (Nat.not_lt_zero k) (lt_of_lt_of_le (hS k hk).1 (by simpa [hQ] using (hS k hk).2.1))
+  · have h : S = ∅ := eq_empty_iff_forall_notMem.mpr fun k hk => by
+      obtain ⟨hk0, hkQ, _⟩ := hS k hk
+      omega
     simpa [h] using mul_nonneg hC hD
   have hr : 0 < Real.sqrt Q := Real.sqrt_pos_of_pos (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hQ))
   have hsub : S ⊆ (Ioc 0 Q).filter (fun k => ¬ k.Prime) := by
@@ -33,7 +34,9 @@ theorem properPowerContactWindow_le (S : Finset ℕ) {Q : ℕ} {D : ℝ}
       _ = Chebyshev.psi Q - Chebyshev.theta Q := by
           rw [Chebyshev.psi_sub_theta_eq_sum_not_prime, Nat.floor_natCast]
       _ ≤ _ := GreenCalculusOfThePrimeFreeWindow.psi_sub_theta_le_three_mul_sqrt _
-  apply (le_div_iff₀' hr).mp
+  suffices h : Real.sqrt Q * (∑ k ∈ S, Λ k / Real.sqrt k) ≤
+      Real.sqrt Q * (3 * (Real.log 4 + 4) * D) from
+    le_of_not_gt fun he => (not_lt_of_ge h) (mul_lt_mul_of_pos_left he hr)
   rw [Finset.mul_sum]
   calc ∑ k ∈ S, Real.sqrt Q * (Λ k / Real.sqrt k)
       ≤ ∑ k ∈ S, D * Λ k := by
