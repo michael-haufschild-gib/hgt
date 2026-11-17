@@ -137,11 +137,17 @@ theorem criticalState_tendsto_meanSquare_ratedAveragedState {W₀ : ℝ} (hW : 0
     refine (tsum_congr fun q => ?_).trans tsum_zero
     exact if_neg (im_centredZero_ne_zero q)
   have hS : ∀ u : ℝ, (∑' q : E, c q * cexp ((μ q : ℂ) * I * u)) = -∑' q, Pin q u := fun u => by
-    rw [← tsum_neg, tsum_subtype E (fun q => -(m q * cexp (((centredZero q).im : ℂ) * I * u)))]
-    refine tsum_congr fun q => ?_
-    by_cases hq : q ∈ E
-    · simp only [indicator_of_mem hq, Pin, if_pos hq]
-    · simp only [indicator_of_notMem hq, Pin, if_neg hq, neg_zero]
+    calc (∑' q : E, c q * cexp ((μ q : ℂ) * I * u))
+        = ∑' q : XiZeroCopy,
+            E.indicator (fun q => -(m q * cexp (((centredZero q).im : ℂ) * I * u))) q := by
+          rw [← tsum_subtype]
+          exact tsum_congr fun q => by simp only [c, μ, neg_mul]
+      _ = -∑' q, Pin q u := by
+          rw [← tsum_neg]
+          refine tsum_congr fun q => ?_
+          by_cases hq : q ∈ E
+          · simp only [indicator_of_mem hq, Pin, if_pos hq]
+          · simp only [indicator_of_notMem hq, Pin, if_neg hq, neg_zero]
   -- the rated state is the extremal sum plus a vanishing remainder
   have hsplit : ∀ u : ℝ, 0 < u →
       (ratedAveragedState F u : ℂ) + (∑' q : E, c q * cexp ((μ q : ℂ) * I * u)) - 0 =
@@ -273,13 +279,13 @@ theorem summable_extremalPairTerm {W₀ : ℝ} (hW : 0 < W₀)
   have hmc : Summable fun q : extremalCopies => ‖(starRingEnd ℂ) (zeroModeCoeff W₀ F q)‖ := by
     simpa only [Complex.norm_conj] using hm
   have hpair : Summable fun p : extremalCopies × extremalCopies =>
-      ‖zeroModeCoeff W₀ F p.1‖ * ‖(starRingEnd ℂ) (zeroModeCoeff W₀ F p.2)‖ :=
+      ‖zeroModeCoeff W₀ F p.1 * (starRingEnd ℂ) (zeroModeCoeff W₀ F p.2)‖ :=
     Summable.mul_norm (f := fun q : extremalCopies => zeroModeCoeff W₀ F q)
       (g := fun q : extremalCopies => (starRingEnd ℂ) (zeroModeCoeff W₀ F q)) hm hmc
   refine Summable.of_norm_bounded hpair fun p => ?_
   unfold extremalPairTerm
   split_ifs
-  · rw [norm_mul]
+  · exact le_rfl
   · rw [norm_zero]; positivity
 
 /-- **The attained dichotomy.** The extremal mode mass is positive iff `Θ` is attained. -/
@@ -342,10 +348,11 @@ theorem criticalState_meanSquare_attained_dichotomy {W₀ : ℝ} (hW : 0 < W₀)
         ratedAveragedState F u ^ 2) atTop (𝓝 L)) ∧
     ((¬ ∃ ρ : ℂ, riemannZeta ρ = 0 ∧ ρ.re = zetaZeroAbscissa) →
       Tendsto (fun T : ℝ => T⁻¹ * ∫ u in (0 : ℝ)..T, ratedAveragedState F u ^ 2) atTop (𝓝 0)) :=
-  ⟨fun h => ⟨_, (extremalModeMass_pos_iff hW ht hF).mpr h,
-      criticalState_tendsto_meanSquare_ratedAveragedState hW ht hF⟩,
-    fun h => extremalModeMass_eq_zero_of_not_attained h ▸
-      criticalState_tendsto_meanSquare_ratedAveragedState hW ht hF⟩
+  by
+  refine ⟨fun h => ⟨_, (extremalModeMass_pos_iff hW ht hF).mpr h,
+    criticalState_tendsto_meanSquare_ratedAveragedState hW ht hF⟩, fun h => ?_⟩
+  have hlim := criticalState_tendsto_meanSquare_ratedAveragedState hW ht hF
+  rwa [extremalModeMass_eq_zero_of_not_attained h] at hlim
 
 #print axioms criticalState_tendsto_meanSquare_ratedAveragedState
 #print axioms extremalModeMass_pos_iff

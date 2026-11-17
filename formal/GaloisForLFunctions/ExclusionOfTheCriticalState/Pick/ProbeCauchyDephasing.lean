@@ -5,7 +5,7 @@ import GaloisForLFunctions.HilbertMetric.QuantumInformation.CauchyDephasingLimit
 # Trace-preserving dephasing of the actual Weil probe matrix
 
 Cauchy dephasing preserves each positive reflection-sector Gram, hence the
-two-sided Hilbert bound on the indefinite Weil matrix. Every finite iterate
+two-sided Hilbert bound on the signed Weil matrix. Every finite iterate
 has exactly the original diagonal and trace. Its limit retains precisely
 the blocks whose chosen logarithmic rates coincide.
 -/

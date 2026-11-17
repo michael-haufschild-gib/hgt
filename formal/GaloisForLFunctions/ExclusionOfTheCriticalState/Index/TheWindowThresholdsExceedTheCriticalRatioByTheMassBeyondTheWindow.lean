@@ -303,8 +303,3 @@ theorem criticalState_lt_windowThreshold {W₀ : ℝ} (hW : 0 < W₀)
   exact lt_of_lt_of_le (EReal.coe_lt_coe_iff.mpr (lt_add_of_pos_right _ (mul_pos hc hτ))) (h A hA)
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState
-
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.criticalState_window_stability
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.criticalState_tendsto_of_windowTests
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.criticalState_windowThreshold_ge
-#print axioms GaloisForLFunctions.ExclusionOfTheCriticalState.criticalState_lt_windowThreshold
