@@ -32,10 +32,12 @@ theorem coordinate_automorphism (n : ℕ)
         y i = Φ (Φ.symm y) i := by rw [Φ.apply_symm_apply]
         _ = Φ.symm y (f i) := he i _
         _ = Φ.symm y (f j) := congrArg (Φ.symm y) hij
-        _ = y j := by rw [← he, Φ.apply_symm_apply]
+        _ = Φ (Φ.symm y) j := (he j _).symm
+        _ = y j := congrFun (Φ.apply_symm_apply y) j
     by_contra hne
     have h := hall (Pi.single i 1)
-    simpa only [Pi.single_eq_same, Pi.single_eq_of_ne (Ne.symm hne)] using h
+    exact one_ne_zero (by
+      simpa only [Pi.single_eq_same, Pi.single_eq_of_ne (Ne.symm hne)] using h)
   let σ : Equiv.Perm (Fin n) := Equiv.ofBijective f
     ⟨hinj, Finite.surjective_of_injective hinj⟩
   refine ⟨σ, fun x i => he i x, ?_⟩
@@ -43,10 +45,10 @@ theorem coordinate_automorphism (n : ℕ)
   apply Equiv.ext
   intro i
   by_contra hne
-  have h : (Pi.single (σ i) 1 : Fin n → ℂ) (τ i) = 1 := by
-    rw [← hτ, he]
-    exact Pi.single_eq_same _ _
-  simpa only [Pi.single_eq_of_ne hne] using h
+  have h := (hτ (Pi.single (σ i) 1) i).symm.trans (he i (Pi.single (σ i) 1))
+  change (Pi.single (σ i) 1 : Fin n → ℂ) (τ i) =
+    (Pi.single (σ i) 1 : Fin n → ℂ) (σ i) at h
+  exact zero_ne_one (by simpa only [Pi.single_eq_of_ne hne, Pi.single_eq_same] using h)
 
 /-- Every primitive coordinate idempotent is transported to one primitive coordinate. -/
 theorem coordinate_idempotent_transport (n : ℕ)
@@ -68,7 +70,7 @@ theorem coordinate_value_multiset (n : ℕ)
   have hfun : Φ x = x ∘ σ := funext fun i => hσ x i
   rw [hfun, ← Multiset.map_map]
   congr 1
-  exact Equiv.multiset_map_univ σ
+  exact Multiset.map_univ_val_equiv σ
 
 #print axioms coordinate_automorphism
 #print axioms coordinate_idempotent_transport

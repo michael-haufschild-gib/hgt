@@ -49,6 +49,8 @@ so nothing is lost between stages.
 | Divided-difference sum | `dividedTerm`, `dividedSum` | $\Delta F(p)=\sum_z\big(\tfrac{\mathcal LF(z)-\mathcal LF(p)}{p-z}-\tfrac{\mathcal LF(z)}{1-z}-\tfrac{\mathcal LF(p)}{z}\big)$, holomorphic at the zeros |
 | Defect | `explicitDefect`, `rightFormDefect`, `stripFormDefect`, `entireDefect` | $BF(1)-BF(p)+ZF(p)$ with $BF=$ `globalRemainder`, and its pole-free forms |
 | Nonpositive cone | `NonpositiveUnitTest`, `confinementBound` | smooth unit half-line tests with $Q_R\le0$ |
+| Regular part of $\zeta'/\zeta$ | `zetaRegularLogDeriv`, `gaugedLogDeriv` | $N(s)=\zeta'/\zeta(s)+\tfrac1{s-1}$, the logarithmic derivative of $(s-1)\zeta(s)$ |
+| Forward prime-minus-pole wave | `forwardPrimeForm`, `forwardPoleWave`, `forwardPoleForm`, `primeWaveTransform`, `primeWaveHardy` | $A(v)=\sum\Lambda(n)n^{-1/2}F(v+\log n)-e^{-v/2}\int_{u>v}F(u)e^{u/2}du$, with transform $-N(\tfrac12+p)\mathcal LF(p)$; the two forms pair $A$ with $G$ |
 
 ## 3. Language
 
@@ -125,15 +127,53 @@ so nothing is lost between stages.
    $C(s)=\int p(T)q(T+s)\,dT$ of two square-integrable profiles; $C$ is continuous and bounded, and the
    limit is $C(0)$. The term beyond the wall vanishes in the limit because its profiles have disjoint
    supports. No smoothness of $G$ and no bound for the zero values is used.
+14. **Agmon localization.** A bounded Lipschitz multiplier maps $\mathcal H$ to itself: a Lipschitz jump
+   is paid near the origin of the Lévy density, a bounded one far out. For the truncated tilt
+   $\varphi=e^{-c\max(u,-N)}$ the jump of $\varphi F$ squared is the jump of $F$ times the jump of $\varphi^2F$
+   plus a commutator $F(u)F(u+x)(\varphi(u)-\varphi(u+x))^2$; the weak equation tested on $\varphi^2F$ bounds the
+   first term uniformly in $N$, and Fatou gives $e^{-cu}F\in\mathcal H$ for $0\le c\le1$.
+15. **Sampling at unit depth.** A profile of $\mathcal H$ lives on $u<0$, so $\mathcal LH(d+i\gamma)$ is the Poisson
+   average of its boundary values. Jensen's inequality and the unit-window count
+   $\sum_\rho(1+(t-\gamma_\rho)^2)^{-1}\le8(C_0+\log(|t|+4))$ give
+   $\sum_\rho|\mathcal LH(w_\rho)|^2\lesssim\int\log(|t|+4)\,|\mathcal LH(it)|^2dt$ for points at depth
+   $\tfrac12\le\operatorname{Re}w_\rho\le\tfrac32$ and heights $\pm\gamma_\rho$: the Gamma energy is the norm that
+   controls the values at the zeros. Applied to the unit tilt, the values $\mathcal LF(\pm z)$ of the state
+   are square-summable.
+16. **Removal of the summation method.** With square-summable values the Gaussian-regularised sums
+   converge dominatedly: $\sum_z\mathcal LF(z)\mathcal LG(-z)=B(F,G)$ absolutely for tilt-regular $G$, and
+   $\sum_z\mathcal LF(z)/(p-z)$ converges absolutely and tends to $0$ as $p\to-\infty$. The subtraction point of
+   $(\star)$ moves to $-\infty$ and $(\star)$ becomes a one-point identity.
+17. **Self-duality against an analytic weight.** For a finite Cauchy sum $C=\sum c_z/(p-z)$ and
+   $\Lambda(p)=\log(p-\sigma+4)$ on $\operatorname{Re}p\ge\sigma$:
+   $X=\int|C|^2\operatorname{Re}(1/\Lambda)=\operatorname{Re}\int\bar C\,(C/\Lambda)$. Each term of $\bar C$ is the Cauchy kernel
+   of a reflected zero $2\sigma-\bar z$, the values of $C/\Lambda$ there are Poisson averages, and the
+   unit-window count is absorbed by $|\Lambda|^{-2}\log\lesssim\operatorname{Re}(1/\Lambda)$; so
+   $X^2\lesssim(\sum|c_z|^2)X$. No separation of the zeros is used; the logarithm is their unit-window count.
+18. **Sublogarithmic regular part.** $N=\zeta'/\zeta+1/(s-1)$ is $O(\log|t|)$ on every half-plane right of
+   the zeros (partial fractions and the unit-window count) and bounded right of $\operatorname{Re}s=1$.
+   Phragmén–Lindelöf with the gauge $e^{(s-iT)^2-c(b-s)}$, $c=\log\log|T|/(b-a)$, interpolates:
+   $|N(s_0+iT)|\lesssim\log^{(b-s_0)/(b-a)}|T|$. If the zeros have $\operatorname{Re}\rho\le\tfrac12+\kappa$, then
+   $|N|^2\lesssim\log$ on $\operatorname{Re}s>\tfrac34+\tfrac\kappa2$.
+19. **Forward cancellation and the Agmon bound past the barrier.** Against the pointwise barrier
+   $e^{\beta u}$ the forward prime sum costs $e^{-(\beta+1/2)u}$, which confinement absorbs only for
+   $\beta<\tfrac{15}2$. The forward prime sum and the forward half of the pole term carry the same pole
+   $1/(p-\tfrac12)$; their difference has transform $-N(\tfrac12+p)\mathcal LF(p)$, a Hardy function on
+   $\operatorname{Re}p>\sigma$ (Jensen for the Poisson average with the regulator $1/(1+\varepsilon(p-\sigma))$,
+   Paley–Wiener, polarized Plancherel on $\operatorname{Re}p=1$). Pairing it with $G$ costs
+   $\lVert e^{-\sigma v}G\rVert_2$ times the mass $M$ of $N\mathcal LF$ on $\operatorname{Re}p=\sigma$; $M$ is finite for
+   $\sigma>\tfrac14+\tfrac\kappa2$, where the Gamma energy pays the logarithm of $|N|^2$. In the weak equation
+   tested on $\psi_NF$, $\psi_N=e^{-2c\max(u,-N)}$, $c=4-\sigma$, the forward term is absorbed because
+   $\psi_Ne^{-2\sigma v}\le e^{-8v}$; the commutator and the backward halves are moments below the barrier.
+   So $\int\psi_NF^2e^{-8u}$ is bounded in $N$ and $b^*\ge\tfrac{31}2-\kappa$.
 
 ## 5. Questions
 
 | # | Question | Status |
 |---|---|---|
 | Q1 | Probe kernel $B(e_p,e_q)=\frac{D(p)+D(q)}{p+q}$ and its zero side | answered (Lean) |
-| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | partial (Lean): probe and heated zero-side identities; at the state, against every smooth test and, with Gaussian summation, against every profile of $\mathcal H$; two general profiles open |
+| Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | partial (Lean): probe and heated zero-side identities; at the state, against every smooth test, with Gaussian summation against every profile of $\mathcal H$, and absolutely against tilt-regular profiles; $(\star)$ as a one-point identity with square-summable zero values; two general profiles open |
 | Q3 | State equation, continuation, residues | answered (Lean): global meromorphic continuation, exact residues and uniform left decay |
-| Q4 | Decay law | partial (Lean): divergent law, left Hardy bounds and averaged/heated decay; unaveraged $L^2$ law open |
+| Q4 | Decay law | partial (Lean): divergent law, left Hardy bounds, averaged/heated decay, and the unaveraged law up to one logarithm on the transform side: $\int\lvert\mathcal LF(\sigma-8+it)\rvert^2\,dt/\log(\lvert t\rvert+4)\lesssim\sum_z\lvert\mathcal LF(z)\rvert^2$ on every line right of the transported zeros; the barrier $b=15$ is passed: $\int F^2e^{-bu}<\infty$ for $b<\tfrac{31}2-\kappa$ when the centred zeros have $\operatorname{Re}z\le\kappa$, unconditionally for $b<15+\tfrac{3001}{24000}$; the sharp exponent $16-2\kappa$ open |
 | Q5 | Sign law | answered (Lean): one sign on no ray |
 | Q6 | Index law | $\zeta$: finite index at every ratio (Lean); exact count of critical ratios open |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH |
@@ -166,10 +206,17 @@ and its difference equation; two-line weighing of the zero values against entire
 integrals of Laplace integrals as heat averages; Fourier inversion on vertical lines for transforms of
 smooth tests and Parseval on a line for Laplace integrals; correlations of square-integrable profiles
 against tilted heat kernels (Fubini, continuity of translation in $L^2$, approximate identity).
+Stability of $\mathcal H$ under bounded Lipschitz multipliers and the Agmon tilt of the state; Poisson
+sampling of transforms at the zeros in the logarithmic energy norm; removal of Gaussian summation for
+square-summable sequences; Poisson reproduction, Jensen's inequality and the reflected Cauchy formula on
+a right half-plane; the analytic logarithmic weight and the weighted Hilbert inequality for Cauchy sums
+over the zeros. The regular part of $\zeta'/\zeta$ with its logarithmic and Phragmén–Lindelöf bounds and the
+Euler sum $\sum\Lambda(n)n^{-1/2-p}=1/(p-\tfrac12)-N(\tfrac12+p)$; the Hardy-space calculus of the forward
+prime-minus-pole wave; the splitting of the prime and pole forms into forward and backward halves; the
+Agmon commutator with moments below the barrier.
 
-**To build.** Vertical square bounds toward the pole strip and their transfer to weighted decay of the original state, for the convergent half of the decay law; the exact critical-ratio count; the leading asymptotics of
-$JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula); the square-summability of the zero values behind the
-unaveraged decay law; $F^+$ in prime form (the remainder of the prime number theorem averaged by $F$)
+**To build.** The bootstrap from $b<\tfrac{31}2-\kappa$ to the sharp exponent $16-2\kappa$ (logarithmic energies of the damped state on vertical lines from the state equation, their interpolation, and the Agmon bound with the improved moments); the exact critical-ratio count; the leading asymptotics of
+$JF$ and $\hat SF$ as $p\to-\infty$ (the wall seen from the left formula); the removal of the logarithm from the line bound and its transfer to weighted decay of the state; $F^+$ in prime form (the remainder of the prime number theorem averaged by $F$)
 and its comparison with $e^{-8u}F$ at the wall.
 
 ## 7. Pillar theorems
@@ -207,6 +254,14 @@ and its comparison with $e^{-8u}F$ at the wall.
 | Every critical state sees a left zero ($-\tfrac12<\operatorname{Re}z_0<0$, $\mathcal LF(z_0)\ne0$) and has a left-strip pole | `criticalState_exists_seen_left_centredZero`, `criticalState_exists_seen_left_zetaZero`, `criticalState_has_left_strip_pole`, `riemannHypothesis_or_criticalState_sees_left_zero` | unconditional |
 | $J_{\ge1}F$ is holomorphic on $\operatorname{Re}p<\tfrac52$; beyond-the-wall prime-pole continuation (and pure prime-head continuation on $\mathcal LG(-\tfrac12)=0$) excludes the critical state and is sharp at $\operatorname{Re}p=0$ | `differentiableOn_archimedeanWallTail`, `criticalState_not_hasBeyondTheWallPrimeContinuation`, `no_criticalState_of_beyondTheWallPrimeContinuation`, `no_criticalState_of_purePrimeHeadContinuation`, `zetaBeyondTheWallPrimeContinuation_iff_no_criticalState`, `not_forall_wallPrimeBalance_continues_past_zero` | unconditional |
 | Beyond-the-wall prime-pole continuation fails on every prime-two deformation ($\tfrac12<\theta<1$) and on positive passive real-axis-positive Euler twins beyond every finite prefix | `not_modelBeyondTheWallPrimeContinuation_eulerLogCoeff`, `primeTwo_not_modelBeyondTheWallPrimeContinuation`, `exists_positive_euler_twin_failing_beyondTheWallContinuation` | unconditional |
+| $\mathcal H$ is stable under bounded Lipschitz multipliers; the tilted state $e^{-cu}F$, $0\le c\le1$, lies in $\mathcal H$ | `criticalHalfLineEnergyDomain_lipschitz_mul`, `criticalHalfLineEnergyDomain_exp_mul_groundState` | unconditional |
+| The energy norm controls the values at the zeros: $\sum_\rho\lvert\mathcal LH(w_\rho)\rvert^2\le\tfrac{16}\pi\int(C_0+\log(\lvert t\rvert+4))\lvert\mathcal LH(it)\rvert^2dt$ at unit depth | `tsum_norm_sq_laplace_zeros_le`, `summable_norm_sq_laplace_centredZero` | unconditional |
+| The zero values of the state are square-summable; $\sum_z\mathcal LF(z)\mathcal LG(-z)=B(F,G)$ absolutely for tilt-regular $G$; the zero Parseval identity $\sum_{\mathrm{on}}\lvert\mathcal LF(z)\rvert^2+\sum_{\mathrm{off}}\mathcal LF(z)\mathcal LF(-z)=-a\int F^2e^{-8u}$ without a finiteness hypothesis | `criticalState_summable_norm_sq_zeroValues`, `criticalState_hasSum_zeroPairing`, `criticalState_hasSum_zeroNorm`, `criticalState_zeroParseval` | unconditional |
+| One-point $(\star)$: $a\,\mathcal LF(w)=-\sum_z\mathcal LF(z)/(w+8-z)$ absolutely; Mittag-Leffler expansion of the continuation; the Cauchy system $a\,c_{z'}=-\sum_zc_z/(z'+8-z)$ has a nonzero square-summable solution | `criticalState_hasSum_starEquation`, `criticalState_hasSum_stateMeromorphic`, `criticalState_hasSum_zeroValues_cauchy`, `criticalState_exists_zeroValue_ne_zero` | unconditional |
+| Weighted Hilbert inequality on the zeros without separation: $\int\lvert\sum_zc_z/(\sigma+it-z)\rvert^2\tfrac{dt}{\log(\lvert t\rvert+4)}\le\tfrac{160\pi D(\lvert C_0\rvert+2)}\delta\sum_z\lvert c_z\rvert^2$ for $\delta\le\sigma-\operatorname{Re}z\le D$; the continuation of the state lies in $L^2(dt/\log)$ on every line right of the transported zeros, unconditionally for $\operatorname{Re}w>-8+\tfrac{8999}{24000}$ | `integrable_and_integral_norm_sq_tsum_zeroCauchy_le`, `criticalState_integral_norm_sq_stateMeromorphic_line_le_of_abscissa`, `criticalState_integral_norm_sq_stateMeromorphic_line_le_seed` | unconditional |
+| The regular part of $\zeta'/\zeta$ is sublogarithmic right of the zeros: $\lvert N(s_0+iT)\rvert\le C\log^{(b-s_0)/(b-a)}(\lvert T\rvert+4)$; $\lvert N\rvert^2\lesssim\log$ on $\operatorname{Re}s>\tfrac34+\tfrac\kappa2$, unconditionally on $\operatorname{Re}s>\tfrac{44999}{48000}$ | `exists_norm_zetaRegularLogDeriv_le_rpow`, `exists_norm_sq_zetaRegularLogDeriv_line_le_log`, `exists_norm_sq_zetaRegularLogDeriv_line_le_log_seed`, `tsum_vonMangoldtAtom_mul_cexp_neg` | unconditional |
+| The forward prime-minus-pole wave is bounded in mean square: $(\text{forward prime}-\text{forward pole})(F,G)^2\le\tfrac1{2\pi}\int\lvert N(\tfrac12+\sigma+it)\rvert^2\lvert\mathcal LF(\sigma+it)\rvert^2dt\cdot\int G^2e^{-2\sigma v}$ on every line right of the zeros; the mass is finite for $\sigma>\tfrac14+\tfrac\kappa2$ | `isHalfPlaneHardy_primeWaveHardy`, `sq_forwardPrimeForm_sub_forwardPoleForm_le`, `integrable_norm_sq_zetaRegularLogDeriv_mul_laplace` | unconditional |
+| The state decays past the barrier: $\int F^2e^{-bu}<\infty$ for every $b<\tfrac{31}2-\kappa$ when the centred zeros have $\operatorname{Re}z\le\kappa$; unconditionally for $b<15+\tfrac{3001}{24000}$ | `integrable_sq_mul_exp_of_zero_abscissa`, `integrable_sq_mul_exp_past_barrier` | unconditional |
 
 ## 8. Traps
 
@@ -224,8 +279,10 @@ and its comparison with $e^{-8u}F$ at the wall.
 | The Gamma pairing continues only by deforming the Fourier contour | Its Lévy form converges on $\operatorname{Re}p>-\tfrac12$, and its symbol is the functional equation |
 | Continuation past the strip needs the explicit formula | Left of the strip the Euler parts cancel; the remainder is head term, prime heads and charges |
 | $(\star)$ needs bounds for $\zeta'/\zeta$ on horizontal segments of the strip | Pole removal and Liouville use linear growth of the pairings and $\sum_z\lvert z\rvert^{-2}<\infty$ only |
-| $\sum_z\mathcal LF(z)/(w+8-z)$ converges | $\mathcal LF(z)$ is bounded and need not decay; the sum converges after one subtraction, and $(\star)$ is a two-point identity |
-| The convergent half of the decay law is a line shift of $(\star)$ | The continuation does not decay on vertical lines; the shift works after averaging |
+| $\sum_z\mathcal LG(z)/(p-z)$ converges for $G\in\mathcal H$ | For a general profile the values are bounded and the sum needs one subtraction; for the state and for tilt-regular profiles the values are square-summable and the sum converges absolutely |
+| The convergent half of the decay law is a line shift of $(\star)$ | No pointwise decay on vertical lines is known; the shift works after averaging, and unaveraged the lines carry $L^2(dt/\log)$ |
+| A Hilbert inequality for $\sum_zc_z/(w-z)$ needs separated zeros | The unit-window count suffices at the price of one logarithm; a cluster of $N$ zeros loses a factor of order $N$, so the count alone cannot remove the weight |
+| The barrier $b=15$ of the comparison argument is the decay rate of the state | It is the price of absolute values in the forward prime sum; the forward prime and pole waves cancel to $-N\mathcal LF$, and $b^*\ge\tfrac{31}2-\kappa$ |
 | $F(u)=-a^{-1}e^{8u}\sum_z\mathcal LF(z)e^{-zu}$ pointwise | The series is a distribution on the line; heated it converges absolutely, and left of the wall it differs from the state by the prime side behind a Gaussian |
 
 ## 9. Context
@@ -270,3 +327,9 @@ of one meromorphic function, by its poles at the zeros and by its prime heads le
 shown incompatible. In time this is one series: $\sum_z\mathcal LF(z)e^{-zu}$ is $-a\,e^{-8u}F(u)$ left of the wall
 and $a\,F^+(u)$ beyond it. Paired with the state itself the series gives $-a\int F^2e^{-8u}<0$: the zero values
 form a negative vector of the zero pairing, and the zeros on the line contribute nonnegative terms.
+The zero values are square-summable, so the Cauchy system is an equation in $\ell^2$ of the zeros: $(\star)$
+holds at one point with an absolutely convergent sum, and on every vertical line right of the transported
+zeros the continuation is square-integrable up to one logarithm, with norm bounded by the square sum of
+the zero values. The state itself decays faster than the comparison barrier allows: the forward prime
+sum and the pole wave cancel to the regular part of $\zeta'/\zeta$, and $b^*\ge\tfrac{31}2-\kappa$ against the
+ruler's $b^*\le16-2\kappa$.

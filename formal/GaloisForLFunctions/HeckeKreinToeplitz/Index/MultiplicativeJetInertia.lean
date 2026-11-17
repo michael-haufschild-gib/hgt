@@ -23,13 +23,18 @@ private theorem integralNodes_injective (d : ℕ) :
     Function.Injective (fun i : Fin d => (i.val : ℝ)) := by
   intro i j h
   apply Fin.ext
+  change (i.val : ℝ) = (j.val : ℝ) at h
   exact_mod_cast h
 
 private theorem jetHankel_eq {d : ℕ} (a : Fin d → ℝ) :
     multiplicativeJetHankel a =
       HTGeometry.algebraicHankelMatrix
         (HTGeometry.finiteModalSequence a (fun i => (i.val : ℝ))) d := by
-  simp only [multiplicativeJetHankel, multiplicativeJet_ofFn, HTGeometry.finiteModalSequence]
+  unfold multiplicativeJetHankel
+  congr 1
+  funext k
+  rw [multiplicativeJet_ofFn]
+  rfl
 
 /-- Negative directions in the full jet Hankel block count precisely negative coefficients. -/
 theorem sigNeg_multiplicativeJetHankel {d : ℕ} (a : Fin d → ℝ) :

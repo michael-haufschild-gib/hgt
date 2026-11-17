@@ -81,6 +81,7 @@ theorem integrable_gamma_of_lintegral_levy_ne_top {G : ℝ → ℝ} (hG1 : Integ
 theorem integrableOn_exp_neg_half : IntegrableOn (fun x : ℝ => Real.exp (-(x / 2))) (Ioi 0) := by
   refine (exp_neg_integrableOn_Ioi 0 (by norm_num : (0 : ℝ) < 1 / 2)).congr_fun
     (fun x _ => ?_) measurableSet_Ioi
+  show Real.exp (-(1 / 2) * x) = Real.exp (-(x / 2))
   congr 1
   ring
 

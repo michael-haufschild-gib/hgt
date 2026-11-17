@@ -20,6 +20,7 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 def correlationPowerGram (f : C_c(ℝ, ℝ)) (p : ℕ) (time : ι → ℝ) : Matrix ι ι ℂ :=
   fun i j => ((autocorr f (time i - time j) ^ p : ℝ) : ℂ)
 
+omit [Fintype ι] [DecidableEq ι] in
 theorem correlationPowerGram_hermitian (f : C_c(ℝ, ℝ)) (p : ℕ) (time : ι → ℝ) :
     (correlationPowerGram f p time).IsHermitian := by
   ext i j
@@ -37,7 +38,10 @@ theorem correlationPower_clippedDefect (f : C_c(ℝ, ℝ)) (p : ℕ) (time : ι 
   rw [trace_square hH] at h
   have ht : (trace (correlationPowerGram f p time)).re =
       (Fintype.card ι : ℝ) * autocorr f 0 ^ p := by
-    simp [trace, diag, correlationPowerGram]
+    change (∑ i : ι, ((autocorr f (time i - time i) ^ p : ℝ) : ℂ)).re = _
+    simp only [sub_self]
+    rw [Complex.re_sum]
+    simp only [Complex.ofReal_re, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
   simpa only [ht, correlationPowerGram, Complex.normSq_ofReal, ← pow_two, ← pow_mul] using h
 
 /-- Tensor-source squared correlations retain an explicit fourth-order overlap surplus. -/
@@ -45,8 +49,7 @@ theorem schurSquare_clippedDefect (f : C_c(ℝ, ℝ)) (time : ι → ℝ) (τ : 
     min ((∑ i, ∑ j, autocorr f (time i - time j) ^ 4) -
       2 * ((Fintype.card ι : ℝ) * SchurSquare.profile f 0) + Fintype.card ι) ((τ : ℝ) ^ 2) ≤
         defectEnergy τ (Matrix.of fun i j => (SchurSquare.profile f (time i - time j) : ℂ)) := by
-  simpa only [SchurSquare.profile, correlationPowerGram, Matrix.of_apply] using
-    correlationPower_clippedDefect f 2 time τ
+  exact correlationPower_clippedDefect f 2 time τ
 
 #print axioms correlationPower_clippedDefect
 #print axioms schurSquare_clippedDefect

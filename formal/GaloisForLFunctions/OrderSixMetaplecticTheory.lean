@@ -59,6 +59,23 @@ import GaloisForLFunctions.OrderSixMetaplecticTheory.TheQuadraticWeightOfTheFrac
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheConstantTermOfTheQuadraticFractionalTraceReadsTheSexticTwist
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheQuadraticFractionalTraceIsABoundedRemainder
 import GaloisForLFunctions.OrderSixMetaplecticTheory.TheSexticTwistAndTheQuadraticTwistShareTheDoublePole
+import GaloisForLFunctions.OrderSixMetaplecticTheory.EachFractionalTranslateCarriesTheKubotaCharacter
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheRatioPairsCarryTwistedSexticJacobiSums
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheRatioTracesReadTheRelationOfTheOppositePairs
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheQuadraticGradeVanishesWhenMinusOneIsNotASquare
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheTwistedThetaSquareFactorsThroughATwistedCubeFactor
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheCubicTwistsOfTheSquarefreeCombinationHaveSimplePoles
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheQuadraticGradeCubeFactorIsAnEntireHeckeLFunction
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheLongColumnsAreLayersOfTwistedThetaSquares
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheWeilIndexIsAKleinCombination
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheResidueOfTheQuadraticRelationIsAThetaPeriod
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheTwistedRemaindersReadTheZerosOfTheCubeFactor
+import GaloisForLFunctions.OrderSixMetaplecticTheory.EveryLayerIsTheUnitLayerOfAnEvenTwist
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheFamilyLayerIsTheUnramifiedDilateCorrelationAtNine
+import GaloisForLFunctions.OrderSixMetaplecticTheory.OppositeTranslationsByThirdsHaveTheSquareMultiplier
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheShiftedFractionalTraceHasTheSquareMultiplier
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheShiftedFractionalTraceIsASumOverShiftedPoints
+import GaloisForLFunctions.OrderSixMetaplecticTheory.TheConstantTermOfTheShiftedFractionalTraceCarriesTheShiftPhase
 
 /-!
 # Order-Six Metaplectic Theory over ℚ(ω)
@@ -69,6 +86,7 @@ layer laws, the analytic tools that evaluate first moments on the cubic cover (r
 remainder ↔ zeros of `ζ_{ℚ(ω)}`), the conjugation symmetry that makes the theta scalar real and the
 main term of the squared theta series positive, the Hecke traces at every primary prime that give every
 cubic twist of the theta square its double pole, the fractional traces that give every conjugate cubic twist
-its double pole, and the quadratic fractional traces that tie the conjugate sextic twist to the quadratic
-twist. See `OrderSixMetaplecticTheory/README.md`.
+its double pole, the quadratic fractional traces that tie the conjugate sextic twist to the quadratic
+twist, the grade factorization of every twisted theta square through its cube factor, and the long columns as
+layers of twisted theta squares. See `OrderSixMetaplecticTheory/README.md`.
 -/

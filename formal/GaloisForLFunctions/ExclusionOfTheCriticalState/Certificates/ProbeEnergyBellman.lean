@@ -46,6 +46,15 @@ theorem quadratic_interval (K : ℕ → ℕ → ℝ) (c W : ℕ → ℝ) (n : �
       quadratic K c n ≤ W n + certificate (shell K c) W n := by
   simpa only [value_shell] using value_mem_certificate_interval (shell K c) W n
 
+private theorem certificate_quadratic_zero (K : ℕ → ℕ → ℝ) (c : ℕ → ℝ) (n : ℕ) :
+    certificate (shell K c) (quadratic K c) n = 0 := by
+  have h0 : quadratic K c 0 = 0 := by simp [quadratic]
+  have hr : residual (shell K c) (quadratic K c) = 0 := by
+    funext j
+    simp only [FiniteBellman.residual, quadratic_succ, Pi.zero_apply]
+    ring
+  simp only [certificate, h0, hr, Pi.zero_apply, abs_zero, Finset.sum_const_zero, add_zero]
+
 /-- A negative quadratic form has a residual certificate, and every such certificate is sound. -/
 theorem negative_certificate_iff (K : ℕ → ℕ → ℝ) (c : ℕ → ℝ) (n : ℕ) :
     (∃ W : ℕ → ℝ, W n + certificate (shell K c) W n < 0) ↔ quadratic K c n < 0 := by
@@ -54,12 +63,7 @@ theorem negative_certificate_iff (K : ℕ → ℕ → ℝ) (c : ℕ → ℝ) (n 
     exact lt_of_le_of_lt (quadratic_interval K c W n).2 hW
   · intro h
     refine ⟨quadratic K c, ?_⟩
-    have hr : residual (shell K c) (quadratic K c) = 0 := by
-      funext j
-      simp only [residual, quadratic_succ, Pi.zero_apply]
-      ring
-    simpa only [certificate, quadratic, Finset.range_zero, Finset.sum_empty, abs_zero,
-      hr, Pi.zero_apply, Finset.sum_const_zero, add_zero, zero_add] using h
+    simpa only [certificate_quadratic_zero, add_zero] using h
 
 /-- Positive energies admit the corresponding complete lower certificate. -/
 theorem positive_certificate_iff (K : ℕ → ℕ → ℝ) (c : ℕ → ℝ) (n : ℕ) :
@@ -69,12 +73,7 @@ theorem positive_certificate_iff (K : ℕ → ℕ → ℝ) (c : ℕ → ℝ) (n 
     exact lt_of_lt_of_le hW (quadratic_interval K c W n).1
   · intro h
     refine ⟨quadratic K c, ?_⟩
-    have hr : residual (shell K c) (quadratic K c) = 0 := by
-      funext j
-      simp only [residual, quadratic_succ, Pi.zero_apply]
-      ring
-    simpa only [certificate, quadratic, Finset.range_zero, Finset.sum_empty, abs_zero,
-      hr, Pi.zero_apply, Finset.sum_const_zero, add_zero, zero_add, sub_zero] using h
+    simpa only [certificate_quadratic_zero, sub_zero] using h
 
 /-- The actual Weil kernel on probes whose exponents always lie in the energy domain. -/
 def weilKernel (p : ℕ → ℝ) (i j : ℕ) : ℝ :=
@@ -95,7 +94,9 @@ theorem weil_shell_symbol (p c : ℕ → ℝ) (n : ℕ) :
   simp only [he, Finset.mul_sum]
   have hd : (probeSymbol (5 + |p n|) + probeSymbol (5 + |p n|)) /
       ((5 + |p n|) + (5 + |p n|)) = probeSymbol (5 + |p n|) / (5 + |p n|) := by
-    ring
+    have h0 : (5 : ℝ) + |p n| ≠ 0 := by positivity
+    have h1 : (5 : ℝ) + |p n| + (5 + |p n|) ≠ 0 := by positivity
+    field_simp <;> ring
   rw [hd]
   congr 1
   · ring

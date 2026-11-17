@@ -121,7 +121,7 @@ theorem integral_high_mul_comm (u : O) (v : ℝ) (hv : 0 < v) :
   exact integral_congr_ae (Filter.Eventually.of_forall fun z => mul_comm _ _)
 
 /-- **One ratio pair over a middle cusp, integrated.** -/
-theorem integral_ratioCorrelation_middle (h2 : (2 : P.Res) ≠ 0) (c : P.Res) (hc1 : c ≠ 1)
+theorem integral_ratioCorrelation_middle (c : P.Res) (hc1 : c ≠ 1)
     (x : {x : P.Res // x ≠ 0}) (t : P.Res) (v : ℝ) (hv : 0 < v) :
     ∫ z in periodDomain, P.ratioCorrelation c sourceTheta t
         (complexMatrix (lowerThree (P.p * P.lift x.1)) • upperPoint z v hv) =
@@ -179,7 +179,7 @@ theorem integral_middle_sumR (h2 : (2 : P.Res) ≠ 0) (c : P.Res) (hc1 : c ≠ 1
         ((continuous_hyperbolic_action (complexMatrix (lowerThree (P.p * P.lift x.1)))).comp
           (continuous_upperPoint_z v hv)))))]
     simp_rw [integral_const_mul]
-  simp_rw [hsplit, P.integral_ratioCorrelation_middle h2 c hc1 _ _ v hv, mul_add (P.lam _), Finset.sum_add_distrib]
+  simp_rw [hsplit, P.integral_ratioCorrelation_middle c hc1 _ _ v hv, mul_add (P.lam _), Finset.sum_add_distrib]
   simp only [← hbdef]
   obtain ⟨g, hgs⟩ : ∃ g : P.Res → ℂ, ∀ s, g s = if 1 + s = 0 then P.chi (1 + c * s) * P.highTerm v
       else if 1 + c * s = 0 then P.chi (1 + s) * P.highTerm v else 0 := ⟨_, fun s => rfl⟩

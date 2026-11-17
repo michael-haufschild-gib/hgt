@@ -58,7 +58,7 @@ theorem exists_common_window {ι : Type*} [Fintype ι] {H : ι → ℝ → ℝ} 
     (le_abs_self _).trans (Finset.single_le_sum (fun j _ => abs_nonneg (A j)) (Finset.mem_univ i))
   linarith [h.1]
 
-variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+variable {ι : Type*} [Fintype ι]
 
 /-- The Gram matrix `∫ H_i H_j e^{−8u}` of the confinement mass. -/
 def confinementGram (H : ι → ℝ → ℝ) : Matrix ι ι ℂ :=
@@ -71,7 +71,7 @@ def confinedGram (R : ℝ) (H : ι → ℝ → ℝ) : Matrix ι ι ℂ :=
 /-- The Hermitian form is additive in the matrix and real-homogeneous. -/
 theorem hermQuad_add_smul (A B : Matrix ι ι ℂ) (t : ℝ) (x : ι → ℂ) :
     hermQuad (A + (t : ℂ) • B) x = hermQuad A x + t * hermQuad B x := by
-  simp only [hermQuad, Matrix.add_mulVec, Matrix.smul_mulVec_assoc, dotProduct_add, dotProduct_smul,
+  simp only [hermQuad, Matrix.add_mulVec, Matrix.smul_mulVec, dotProduct_add, dotProduct_smul,
     Complex.add_re, smul_eq_mul, Complex.re_ofReal_mul]
 
 /-- On real coefficients the confinement form is `∫ (Σ y_i H_i)² e^{−8u}`. -/
@@ -90,10 +90,10 @@ theorem hermQuad_confinementGram_ofReal {H : ι → ℝ → ℝ} (hc : ∀ i, Co
     rw [Finset.sum_mul]
     refine Finset.sum_congr rfl fun j _ => ?_
     ring
-  rw [hexp, integral_finset_sum _ fun i _ => integrable_finset_sum _ fun j _ => (hint i j).const_mul _]
+  rw [hexp, integral_finsetSum _ fun i _ => integrable_finsetSum _ fun j _ => (hint i j).const_mul _]
   simp only [hermQuad, dotProduct, mulVec, confinementGram, Pi.star_apply, Complex.re_sum]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [integral_finset_sum _ fun j _ => (hint i j).const_mul _, Finset.mul_sum, Complex.re_sum]
+  rw [integral_finsetSum _ fun j _ => (hint i j).const_mul _, Finset.mul_sum, Complex.re_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
   rw [integral_const_mul, Complex.star_def, Complex.conj_ofReal, ← Complex.ofReal_mul,
     ← Complex.ofReal_mul, Complex.ofReal_re]
@@ -102,7 +102,7 @@ theorem hermQuad_confinementGram_ofReal {H : ι → ℝ → ℝ} (hc : ∀ i, Co
 /-- The confinement form is nonnegative. -/
 theorem hermQuad_confinementGram_nonneg {H : ι → ℝ → ℝ} (hc : ∀ i, Continuous (H i))
     (hs : ∀ i, HasCompactSupport (H i)) (x : ι → ℂ) : 0 ≤ hermQuad (confinementGram H) x := by
-  rw [hermQuad_eq_re_add_im (fun i j => Complex.ofReal_im _),
+  rw [hermQuad_eq_re_add_im (G := confinementGram H) (fun i j => Complex.ofReal_im _),
     hermQuad_confinementGram_ofReal hc hs, hermQuad_confinementGram_ofReal hc hs]
   exact add_nonneg (integral_nonneg fun u => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)
     (integral_nonneg fun u => mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)
@@ -132,29 +132,23 @@ theorem hermQuad_confinedGram_ofReal (R : ℝ) {H : ι → ℝ → ℝ} (hH : �
     exact tendsto_nhds_unique h1 h2
   have hI : (∫ u in Iio 0, G u ^ 2 * Real.exp (-(8 * u))) = ∫ u, G u ^ 2 * Real.exp (-(8 * u)) := by
     refine setIntegral_eq_integral_of_forall_compl_eq_zero fun u hu => ?_
-    rcases (not_lt.mp hu).lt_or_eq with h | h
+    rcases (not_lt.mp (show ¬ u < 0 from hu)).lt_or_eq with h | h
     · rw [hGv u fun hm => absurd hm.2 (not_le.mpr h)]; ring
     · rw [← h, hG0]; ring
   rw [criticalHalfLineFullEnergy, hI]
-  ring
 
 /-! ### The confinement coefficient -/
 
-theorem criticalAliasCoefficient_eq_div {R : ℝ} : criticalAliasCoefficient R = criticalAliasCoefficient 1 / R := by
-  have h := criticalAliasCoefficient_inv R⁻¹
-  rw [inv_inv] at h
-  rw [h, div_eq_mul_inv]
-
 theorem criticalAliasCoefficient_antitone {R S : ℝ} (hR : 0 < R) (hRS : R ≤ S) :
     criticalAliasCoefficient S ≤ criticalAliasCoefficient R := by
-  rw [criticalAliasCoefficient_eq_div, criticalAliasCoefficient_eq_div (R := R)]
+  rw [criticalAliasCoefficient_eq_div S, criticalAliasCoefficient_eq_div R]
   exact div_le_div_of_nonneg_left (criticalAliasCoefficient_positive one_pos).le hR hRS
 
 theorem tendsto_criticalAliasCoefficient_atTop :
     Tendsto criticalAliasCoefficient atTop (𝓝 0) := by
   have h := tendsto_inv_atTop_zero.const_mul (criticalAliasCoefficient 1)
   rw [mul_zero] at h
-  exact h.congr fun R => by rw [criticalAliasCoefficient_eq_div, div_eq_mul_inv]
+  exact h.congr fun R => by rw [criticalAliasCoefficient_eq_div R, div_eq_mul_inv]
 
 /-! ### Monotonicity and the upper bound -/
 
@@ -173,13 +167,15 @@ matrix has at most as many negative squares as `ζ` has zeros right of the line.
 theorem hermNegIndex_confinedGram_le {R : ℝ} (hR : 0 < R) {H : ι → ℝ → ℝ}
     (hH : ∀ i, ContDiff ℝ 2 (H i)) (hs : ∀ i, HasCompactSupport (H i)) :
     (hermNegIndex (confinedGram R H) : ℕ∞) ≤ {ρ ∈ zetaZeroConfig.carrier | 1 / 2 < ρ.re}.encard := by
-  refine le_trans (by exact_mod_cast hermNegIndex_le_of_hermQuad_le _ _ fun x => ?_)
+  have hle : hermNegIndex (confinedGram R H) ≤ hermNegIndex (weilGram Λw fun i => cx (H i)) := by
+    refine hermNegIndex_le_of_hermQuad_le _ _ fun x => ?_
+    rw [confinedGram, hermQuad_add_smul]
+    have h0 := hermQuad_confinementGram_nonneg (fun i => (hH i).continuous) hs x
+    have ha := (criticalAliasCoefficient_positive hR).le
+    nlinarith
+  exact (by exact_mod_cast hle : (hermNegIndex (confinedGram R H) : ℕ∞) ≤ _).trans
     (negIndex_weilGram_le_offLineCount (fun i => cx (H i)) (fun i => cx_contDiff (hH i))
       fun i => (hs i).comp_left Complex.ofReal_zero)
-  rw [confinedGram, hermQuad_add_smul]
-  have h0 := hermQuad_confinementGram_nonneg (fun i => (hH i).continuous) hs x
-  have ha := (criticalAliasCoefficient_positive hR).le
-  nlinarith
 
 /-! ### The lower bound at large ratios -/
 
@@ -211,17 +207,24 @@ theorem exists_halfLineTests_eventually_le_hermNegIndex {n : ℕ}
     have : (s : ℝ) ≤ ∑ s ∈ S, |s| :=
       (le_abs_self _).trans (Finset.single_le_sum (fun j _ => abs_nonneg j) s.2)
     simp only [c]; linarith)
+  have hfun : (fun s : S => cx (H s)) = fun s : S => ArithmeticCastelnuovoSeveri.translate
+      ((s : ℝ) + c) (cx BiScaleUncertainty.ChebyshevGauge.cubicSpline) :=
+    funext fun s => cx_scaleShift_eq_translate _ _
   have hW : weilGram Λw (fun s => cx (H s)) =
       weilGram Λw (fun s : S => ArithmeticCastelnuovoSeveri.translate (s : ℝ)
-        (cx BiScaleUncertainty.ChebyshevGauge.cubicSpline)) :=
-    weilGram_translate_add Λw _ S c
+        (cx BiScaleUncertainty.ChebyshevGauge.cubicSpline)) := by
+    rw [hfun, weilGram_translate_add]
   refine ⟨S, H, hH, ?_⟩
   have hlim : ∀ a b, Tendsto (fun R => confinedGram R H a b) atTop
       (𝓝 (weilGram Λw (fun s => cx (H s)) a b)) := fun a b => by
     have h := ((Complex.continuous_ofReal.tendsto 0).comp tendsto_criticalAliasCoefficient_atTop).mul_const
       (confinementGram H a b)
     simp only [Function.comp_def, Complex.ofReal_zero, zero_mul] at h
-    simpa [confinedGram] using tendsto_const_nhds.add h
+    have h2 : Tendsto (fun R => weilGram Λw (fun s => cx (H s)) a b +
+        (criticalAliasCoefficient R : ℂ) * confinementGram H a b) atTop
+        (𝓝 (weilGram Λw (fun s => cx (H s)) a b)) := by
+      simpa only [add_zero] using tendsto_const_nhds.add h
+    exact h2.congr fun R => by simp only [confinedGram, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
   filter_upwards [eventually_le_hermNegIndex (weilGram_isHermitian _ _) hlim] with R hR
   rw [hW] at hR
   exact hS.trans hR

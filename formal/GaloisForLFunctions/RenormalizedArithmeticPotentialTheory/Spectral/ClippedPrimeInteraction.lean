@@ -25,7 +25,10 @@ theorem primeInteraction_hermitian (N : ℕ) (t : ℝ) :
   ext i j
   simp only [primeInteraction, Matrix.conjTranspose_apply, Matrix.smul_apply,
     Matrix.map_apply, smul_eq_mul, star_mul, Complex.star_def, Complex.conj_ofReal]
-  rw [(fullPrimeMatrix_isHermitian N).apply i j]
+  have hs : fullPrimeMatrix N j i = fullPrimeMatrix N i j := by
+    simpa using (fullPrimeMatrix_isHermitian N).apply i j
+  rw [hs]
+  exact mul_comm _ _
 
 theorem primeInteraction_diagonal (N : ℕ) (t : ℝ) (i : PrimeHorizonIndex N) :
     primeInteraction N t i i = 0 := by

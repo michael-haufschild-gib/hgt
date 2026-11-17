@@ -36,7 +36,9 @@ private theorem map_iterate_invariantDerivative {R S : Type*} [CommRing R] [Comm
 private theorem map_jet {R S : Type*} [CommRing R] [CommRing S]
     (f : R →+* S) (g : R⟦X⟧) (k : ℕ) :
     f (Formal.jet k g) = Formal.jet k (PowerSeries.map f g) := by
-  simp only [Formal.jet, ← map_iterate_invariantDerivative, PowerSeries.constantCoeff_map]
+  unfold Formal.jet
+  rw [← map_iterate_invariantDerivative]
+  rfl
 
 /-- An integral division-series unit as a member of the existing normalized group. -/
 def integralNormalizedUnit (n : ℕ) (g : ℤ⟦X⟧) : gomesNormalizedFormalUnitGroup :=
@@ -48,7 +50,7 @@ def integralNormalizedUnit (n : ℕ) (g : ℤ⟦X⟧) : gomesNormalizedFormalUni
 
 private theorem integralNormalizedUnit_logarithmicJet (n k : ℕ) (g : ℤ⟦X⟧) :
     Formal.logarithmicJet k (integralNormalizedUnit n g).val =
-      (Formal.logarithmicJet k (Formal.congruenceUnit n g) : ℂ) := by
+      ((Formal.logarithmicJet k (Formal.congruenceUnit n g) : ℤ) : ℂ) := by
   change Formal.jet k (Formal.logarithmicDerivative (integralNormalizedUnit n g).val) =
     (Int.castRingHom ℂ) (Formal.jet k (Formal.logarithmicDerivative (Formal.congruenceUnit n g)))
   rw [map_jet]
@@ -67,10 +69,31 @@ theorem integralNormalizedUnit_logarithmicJet_integral (n k : ℕ) (g : ℤ⟦X�
       (n : ℂ) * (z : ℂ) := by
   obtain ⟨z, hz⟩ := Formal.dvd_logarithmicJet_congruenceUnit n k g
   refine ⟨z, ?_⟩
-  rw [integralNormalizedUnit_logarithmicJet, hz]
-  push_cast
-  rfl
+  rw [integralNormalizedUnit_logarithmicJet]
+  exact_mod_cast hz
+
+/-- The first logarithmic jet gives the exact congruence level times the initial coefficient. -/
+theorem Formal.logarithmicJet_zero_congruenceUnit {R : Type*} [CommRing R]
+    (n : ℕ) (g : R⟦X⟧) :
+    Formal.logarithmicJet 0 (Formal.congruenceUnit n g) = (n : R) * constantCoeff g := by
+  have hc : constantCoeff (((Formal.congruenceUnit n g)⁻¹ : R⟦X⟧ˣ) : R⟦X⟧) = 1 := by
+    have h := congrArg (constantCoeff : R⟦X⟧ →+* R)
+      (show (Formal.congruenceUnit n g : R⟦X⟧) *
+        (((Formal.congruenceUnit n g)⁻¹ : R⟦X⟧ˣ) : R⟦X⟧) = 1 by simp)
+    simpa [Formal.coe_congruenceUnit, Formal.divisionSeries] using h
+  change constantCoeff (Formal.invariantDerivative (Formal.congruenceUnit n g : R⟦X⟧) *
+    (((Formal.congruenceUnit n g)⁻¹ : R⟦X⟧ˣ) : R⟦X⟧)) = _
+  rw [map_mul, hc, mul_one, Formal.coe_congruenceUnit, Formal.invariantDerivative_add,
+    Formal.invariantDerivative_mul, Formal.invariantDerivative_divisionSeries]
+  simp [Formal.invariantDerivative, Formal.divisionSeries]
+
+/-- The first jet of the basic division unit is exactly `n`, so the congruence is sharp. -/
+theorem Formal.logarithmicJet_zero_basicUnit (n : ℕ) :
+    Formal.logarithmicJet 0 (Formal.congruenceUnit n (1 : ℤ⟦X⟧)) = (n : ℤ) := by
+  rw [Formal.logarithmicJet_zero_congruenceUnit, map_one, mul_one]
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.Coleman
 
 #print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.Coleman.integralNormalizedUnit_logarithmicJet_integral
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.Coleman.Formal.logarithmicJet_zero_basicUnit

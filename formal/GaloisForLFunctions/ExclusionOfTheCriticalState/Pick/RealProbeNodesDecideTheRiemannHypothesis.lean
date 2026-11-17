@@ -284,4 +284,7 @@ theorem riemannHypothesis_iff_integer_pick_nonneg :
     refine this.trans_eq (Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_)
     rw [hpk i, hpk j, bareMixedEnergy_probe (hk _ (hk5 i)) (hk _ (hk5 j))]
 
+#print axioms riemannHypothesis_iff_probe_forms_nonneg
+#print axioms riemannHypothesis_iff_integer_pick_nonneg
+
 end GaloisForLFunctions.ExclusionOfTheCriticalState

@@ -25,9 +25,17 @@ theorem threePoint_complex_hermitian (d p q r : ℝ) :
 theorem threePoint_clippedDefect (d p q r : ℝ) (τ : ℝ≥0) :
     min (3 * (d - 1) ^ 2 + 2 * (p ^ 2 + q ^ 2 + r ^ 2)) ((τ : ℝ) ^ 2) ≤
       defectEnergy τ ((threePointCorrelationMatrix d p q r).map Complex.ofReal) := by
+  have ht : (trace ((threePointCorrelationMatrix d p q r).map Complex.ofReal)).re = 3 * d := by
+    simp [trace, diag, threePointCorrelationMatrix, Fin.sum_univ_three]
+    ring
+  have hs : (trace (((threePointCorrelationMatrix d p q r).map Complex.ofReal) *
+      ((threePointCorrelationMatrix d p q r).map Complex.ofReal))).re =
+      3 * d ^ 2 + 2 * (p ^ 2 + q ^ 2 + r ^ 2) := by
+    rw [trace_square (threePoint_complex_hermitian d p q r)]
+    simp [threePointCorrelationMatrix, Fin.sum_univ_three]
+    ring
   have h := defectEnergy_min_bound (threePoint_complex_hermitian d p q r) τ
-  rw [trace_square (threePoint_complex_hermitian d p q r)] at h
-  simp [trace, diag, threePointCorrelationMatrix, Fin.sum_univ_three] at h
+  rw [ht, hs, Fintype.card_fin] at h
   convert h using 1
   congr 1
   ring
