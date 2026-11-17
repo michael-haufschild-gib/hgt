@@ -1,6 +1,8 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.Intersection.ConductorGraphContacts
 import GaloisForLFunctions.SurfaceOfSpecZ.TheTwoHalfProducts
 import Mathlib.Algebra.Polynomial.Reverse
+import Mathlib.RingTheory.Polynomial.ContentIdeal
+import Mathlib.Data.ZMod.QuotientRing
 
 /-!
 # The pole pairing on the conductor graphs
@@ -19,6 +21,21 @@ open scoped ArithmeticFunction.vonMangoldt
 
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
+/-- The closed subscheme of Spec ℤ on which every coefficient of the
+elimination determinant vanishes. -/
+abbrev VerticalContactRing (S T : Finset ℕ) (a b : ℕ → ℕ) :=
+  ℤ ⧸ ((conductorDivisor S a).resultant (conductorDivisor T b)).contentIdeal
+
+/-- The vertical order counts the residue ring defined by all the coefficient
+relations. A common horizontal component gives an infinite ring of Nat.card zero. -/
+theorem card_verticalContactRing (S T : Finset ℕ) (a b : ℕ → ℕ) :
+    Nat.card (VerticalContactRing S T a b) = verticalIntersection S T a b := by
+  let F := (conductorDivisor S a).resultant (conductorDivisor T b)
+  change Nat.card (ℤ ⧸ F.contentIdeal) = F.content.natAbs
+  rw [Submodule.IsPrincipal.contentIdeal_eq_span_content_of_isPrincipal
+    (inferInstance : F.contentIdeal.IsPrincipal), Nat.card_congr (Int.quotientSpanEquivZMod _).toEquiv,
+    Nat.card_zmod]
+
 /-- Elimination in the reciprocal coordinates U = 1/T and Z = 1/Y. -/
 def infinityGraphMinor (i j : ℕ) : ℤ[X] :=
   (conductorGraph j).reverse * X^i - (conductorGraph i).reverse * X^j
@@ -33,7 +50,8 @@ private theorem infinityGraphMinor_order {i j : ℕ} (hij : i < j) :
     rw [h, natDegree_zero] at e
     exact hj0 e.symm
   have h0 : L.coeff 0 ≠ 0 := by
-    simp [L, coeff_mul_X_pow', (by omega : ¬ j-i ≤ 0), hG]
+    simpa only [L, coeff_sub, coeff_zero_reverse, coeff_mul_X_pow',
+      if_neg (by omega : ¬ j-i ≤ 0), sub_zero] using leadingCoeff_ne_zero.mpr hG
   have hL : L ≠ 0 := fun he => h0 (by rw [he, coeff_zero])
   have he : infinityGraphMinor i j = L * X^i := by
     rw [infinityGraphMinor, sub_mul, mul_assoc, ← pow_add, Nat.sub_add_cancel hij.le]
@@ -71,6 +89,7 @@ theorem conductorGraph_pole_and_prime {i t : ℕ} (hi : 0 < i) (ht : 1 < t) :
   rw [SurfaceOfSpecZ.sqrt_mul_two_cosh (Nat.cast_pos.mpr hi) (Nat.cast_pos.mpr hit)]
   exact_mod_cast h.symm
 
+#print axioms card_verticalContactRing
 #print axioms conductorGraph_pole_and_prime
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

@@ -88,7 +88,8 @@ private theorem normalizedSpline_height_limit {n : ℕ} (a : Fin n → ℤ) :
   obtain ⟨hr,hc⟩ := spline_regular a
   have hf : ContDiff ℝ 2 (normalizedSpline a) := hr.div_const _
   have hfc : HasCompactSupport (normalizedSpline a) := by
-    simpa only [normalizedSpline, div_eq_mul_inv, Pi.mul_def] using
+    change HasCompactSupport (fun u => conductorSpline a u / (conductorThickness a : ℝ))
+    simpa only [div_eq_mul_inv, Pi.mul_def] using
       (hc.mul_right (f' := fun _ : ℝ => (conductorThickness a : ℝ)⁻¹))
   have hB : 1 ≤ splineHorizon n :=
     Nat.mul_pos (Nat.succ_pos _) (Nat.one_le_ceil_iff.mpr (Real.exp_pos _))
@@ -122,15 +123,14 @@ theorem conductorSplineHeight_tate (n : ℕ) (a : Fin n → ℤ) :
       atTop (𝓝 (_root_.RHTower.primeSum (conductorSpline a))) := by
   by_cases ha : a = 0
   · subst a
-    have h0 := tendsto_const_nhds (x := (0:ℝ)) (f := (atTop : Filter ℕ))
-    simpa [conductorSplineHeight, conductorThickness, conductorSpline, _root_.RHTower.primeSum] using h0
+    simp [conductorSplineHeight, conductorThickness, conductorSpline, _root_.RHTower.primeSum]
   have hh := thickness_pos ha
   have ht : Tendsto (fun m : ℕ => m * conductorThickness a) atTop atTop :=
     tendsto_atTop_mono (f := id) (fun m => Nat.le_mul_of_pos_right m hh) tendsto_id
   rw [← unscale_prime a hh.ne']
   apply (((normalizedSpline_height_limit a).comp ht).const_mul ((conductorThickness a : ℝ)^2)).congr'
   filter_upwards [eventually_ge_atTop 1] with m hm
-  have hmh := Nat.mul_ne_zero hm.ne' hh.ne'
+  have hmh := Nat.mul_ne_zero (Nat.ne_of_gt hm) hh.ne'
   change (conductorThickness a : ℝ)^2 *
     (sampledGraphHeight (m * conductorThickness a) _ _ (normalizedSpline a) (normalizedSpline a) /
       ((m * conductorThickness a : ℕ) : ℝ)^2) = conductorSplineHeight (m • a) / (m:ℝ)^2

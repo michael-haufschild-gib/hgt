@@ -33,7 +33,10 @@ private theorem packet_window {N : ℕ} (a : Fin N → ℤ) :
   have hK : 0 < windowEnd N := Nat.ceil_pos.mpr (Real.exp_pos _)
   have hlog : shift + Real.log (N+1 : ℝ) + 5 ≤ Real.log (windowEnd N) :=
     (Real.le_log_iff_exp_le (by exact_mod_cast hK)).mpr (Nat.le_ceil _)
-  refine ⟨hK, fun u hu => sum_eq_zero fun i _ => ?_⟩
+  refine ⟨hK, fun u hu => ?_⟩
+  unfold packet splineSource
+  apply sum_eq_zero
+  intro i _
   apply mul_eq_zero_of_right
   apply cubicSpline_eq_zero
   rcases hu with hl | hr
@@ -52,17 +55,20 @@ private theorem source_compact {N : ℕ} (a : Fin N → ℤ) : HasCompactSupport
   let F := fun (i : Fin N) (u : ℝ) => (a i : ℝ) * cubicSpline (u - Real.log ((i : ℝ) + 1))
   have hs (i : Fin N) : HasCompactSupport (F i) :=
     (hasCompactSupport_cubicSpline.comp_homeomorph (Homeomorph.subRight (Real.log ((i : ℝ) + 1)))).mul_left
-  simpa only [splineSource, F, Finset.sum_apply] using
-    (HasCompactSupport.finset_sum (s := Finset.univ) fun i _ => hs i)
+  have he : splineSource a = ∑ i, F i := by
+    funext u
+    exact (Finset.sum_apply _ _ _).symm
+  rw [he]
+  exact HasCompactSupport.finset_sum fun i _ => hs i
 
 
 theorem integerProbe_eq_source {N : ℕ} (a : Fin N → ℤ) :
     integerProbe N a = (_root_.RHTower.weilFullFunctional (fun k => (Λ k : ℝ))
       (EF.weilTest (cx (splineSource a)) (cx (splineSource a)))).re := by
-  let F := fun i : Fin N => translate (Real.log ((i : ℝ) + 1)) (cx cubicSpline)
+  let F := fun i : Fin N => ArithmeticCastelnuovoSeveri.translate (Real.log ((i : ℝ) + 1)) (cx cubicSpline)
   have he : (∑ i, conj (a i : ℂ) • F i) = cx (splineSource a) := by
     funext u
-    simp [F, cx, splineSource, translate, Finset.sum_apply]
+    simp [F, cx, splineSource, ArithmeticCastelnuovoSeveri.translate, Finset.sum_apply]
   exact (hermQuad_weilGram _ F (fun i => translate_contDiff (cx_contDiff contDiff_cubicSpline) _)
     (fun i => translate_hasCompactSupport (cx_hasCompactSupport hasCompactSupport_cubicSpline) _)
     (fun i => (a i : ℂ))).trans (by rw [he])
@@ -72,7 +78,12 @@ theorem tendsto_packetMeshDegree {N : ℕ} (a : Fin N → ℤ) :
   have hf : ContDiff ℝ 2 (packet a) := (source_smooth a).comp (contDiff_id.sub contDiff_const)
   have hc : HasCompactSupport (packet a) := (source_compact a).comp_homeomorph (Homeomorph.subRight shift)
   have h := tendsto_meshDegree hf hc (packet_window a).1 (packet_window a).2
-  rwa [packet, weilTest_packet_translate, ← integerProbe_eq_source] at h
+  rw [integerProbe_eq_source]
+  have he : EF.weilTest (cx (packet a)) (cx (packet a)) =
+      EF.weilTest (cx (splineSource a)) (cx (splineSource a)) :=
+    weilTest_packet_translate (splineSource a) shift
+  change Tendsto _ _ (𝓝 ((_root_.RHTower.weilFullFunctional _ (EF.weilTest (cx (packet a)) (cx (packet a)))).re)) at h
+  rwa [he] at h
 
 private theorem packet_smul {N : ℕ} (a : Fin N → ℤ) (m : ℕ) :
     packet (m • a) = fun u => (m : ℝ) * packet a u := by
@@ -85,7 +96,7 @@ def resolution {N : ℕ} (a : Fin N → ℤ) : ℕ := ∑ i, (a i).natAbs
 
 private theorem resolution_smul {N : ℕ} (a : Fin N → ℤ) (m : ℕ) :
     resolution (m • a) = m * resolution a := by
-  simp [resolution, Pi.smul_apply, nsmul_eq_mul, Int.natAbs_mul, Finset.mul_sum]
+  simp [resolution, Pi.smul_apply, Int.natAbs_mul, Finset.mul_sum]
 
 private theorem resolution_pos {N : ℕ} {a : Fin N → ℤ} (ha : a ≠ 0) : 0 < resolution a := by
   obtain ⟨i, hi⟩ : ∃ i, a i ≠ 0 := by simpa [funext_iff] using ha
@@ -158,8 +169,8 @@ private theorem tendsto_sectionHeight {d A : ℕ → ℝ} (hd : ∀ m, 0 < d m) 
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le' (by simpa using hmax.sub (hC 1))
     (by simpa using hmax.add (hC (Real.log 3)))
   · filter_upwards with m
-    rw [← sub_div]
-    exact div_le_div_of_nonneg_right (sectionHeight_bounds (A := A m) (hd m)).1 (sq_nonneg _)
+    simpa only [sub_div, one_div] using
+      div_le_div_of_nonneg_right (sectionHeight_bounds (A := A m) (hd m)).1 (sq_nonneg (m : ℝ))
   · filter_upwards with m
     rw [← add_div]
     exact div_le_div_of_nonneg_right (sectionHeight_bounds (A := A m) (hd m)).2 (sq_nonneg _)
@@ -177,9 +188,9 @@ def dualCount {N : ℕ} (a : Fin N → ℤ) : ℕ :=
 theorem dualCount_tateLimit {N : ℕ} (a : Fin N → ℤ) :
     Tendsto (fun m : ℕ => (dualCount (m • a) : ℝ) / (m : ℝ)^2) atTop
       (𝓝 (max (-integerProbe N a) 0)) := by
+  have hd (m : ℕ) : 0 < (generator (m • a) : ℝ) := by exact_mod_cast contactGenerator_pos _ _ _
   refine tendsto_sectionHeight (d := fun m : ℕ => (generator (m • a) : ℝ)⁻¹)
-    (A := fun m => -radius (m • a)) (fun m => inv_pos.mpr (by exact_mod_cast
-    contactGenerator_pos (packet (m • a)) (3 * windowEnd N) (resolution (m • a)))) ?_
+    (A := fun m => -radius (m • a)) (fun m => inv_pos.mpr (hd m)) ?_
   apply (tendsto_splineDegree a).neg.congr
   intro m
   rw [Real.log_inv]

@@ -18,7 +18,9 @@ local notation "E" => HermitianGeometricConstants p s
 local notation "H" => HermitianAffinePoint p s E
 local notation "F" => hermitianFrobeniusPoint p s E
 local notation "Q" => p ^ (s + 1)
-local notation "degX" => fun P : H => (minpoly k₀ P.val.1).natDegree
+/-- Degree of the first-coordinate field over the square constants. -/
+abbrev hermitianAbscissaDegree (P : H) : ℕ := (minpoly k₀ P.val.1).natDegree
+local notation "degX" => hermitianAbscissaDegree p s
 
 /-- Vertical displacement during one full cycle of the abscissa. -/
 def hermitianFiberDisplacement (P : H) : E := (F^[degX P] P).val.2 - P.val.2
@@ -36,7 +38,7 @@ private theorem tangent_increment (P : H) :
     (F P).val.2 - P.val.2 = P.val.1 ^ Q * ((F P).val.1 - P.val.1) := by
   have h := hermitianTangent_eval_frobenius p s E P
   simp only [hermitianTangentPolynomial, eval_add, eval_C, eval_mul, eval_sub, eval_X] at h
-  change P.val.2 ^ (Q * Q) - P.val.2 = _
+  change P.val.2 ^ (Q * Q) - P.val.2 = P.val.1 ^ Q * (P.val.1 ^ (Q * Q) - P.val.1)
   rw [← h]
   ring
 
@@ -58,7 +60,8 @@ theorem hermitianFrobenius_vertical_difference (P U : H) (h : P.val.1 = U.val.1)
 theorem hermitianFiberDisplacement_eq (P U : H) (h : P.val.1 = U.val.1) :
     hermitianFiberDisplacement p s P = hermitianFiberDisplacement p s U := by
   unfold hermitianFiberDisplacement
-  rw [h]
+  have hdeg : degX P = degX U := congrArg (fun x : E => (minpoly k₀ x).natDegree) h
+  rw [hdeg]
   linear_combination hermitianFrobenius_vertical_difference p s P U h (degX U)
 
 /-- The displacement is in the kernel of the relative trace on the square field. -/
@@ -84,7 +87,6 @@ theorem hermitianFrobenius_ordinate_sum (P : H) (n : ℕ) :
   | succ n ih =>
     rw [Finset.sum_range_succ, ← ih, iterate_succ_apply']
     have h := tangent_increment p s (F^[n] P)
-    rw [iterate_succ_apply' F n P]
     linear_combination h
 
 /-- Each completed base orbit adds another copy of the same vertical displacement. -/
@@ -96,7 +98,7 @@ theorem hermitianFrobenius_fiber_translation (P : H) (k : ℕ) :
     let U := F^[degX P] P
     have hx : U.val.1 = P.val.1 := (abscissa_return p s P _).2 dvd_rfl
     have h := hermitianFrobenius_vertical_difference p s U P hx (degX P * k)
-    rw [Nat.mul_succ, iterate_add_apply, succ_nsmul]
+    rw [Nat.mul_succ (degX P) k, iterate_add_apply, succ_nsmul]
     change (F^[degX P * k] U).val.2 = _
     change _ = U.val.2 - P.val.2 at h
     change _ = P.val.2 + (k • hermitianFiberDisplacement p s P + (U.val.2 - P.val.2))
@@ -110,9 +112,10 @@ theorem hermitianFrobenius_fiber_return_iff (P : H) (k : ℕ) :
   have hval : F^[degX P * k] P = P ↔ (F^[degX P * k] P).val = P.val :=
     ⟨congrArg Subtype.val, Subtype.ext⟩
   rw [hval, Prod.ext_iff, hermitianFrobenius_fiber_translation,
-    (abscissa_return p s P _).2 (dvd_mul_right _ _), true_and,
+    (abscissa_return p s P _).2 (dvd_mul_right _ _), and_iff_right rfl,
     add_eq_left, nsmul_eq_mul, mul_eq_zero, CharP.cast_eq_zero_iff E p]
 
+open scoped Classical in
 /-- Exact degree of every lift, decided by the vertical displacement alone. -/
 theorem hermitianOrbitDegree_fiber_formula (P : H) :
     hermitianOrbitDegree p s P =
@@ -124,7 +127,7 @@ theorem hermitianOrbitDegree_fiber_formula (P : H) :
   have hr : IsPeriodicPt F r P := (hermitianFrobenius_return_iff p s P r).2 dvd_rfl
   by_cases h : hermitianFiberDisplacement p s P = 0
   · rw [if_pos h]
-    apply Nat.dvd_antisymm _ hd
+    refine Nat.dvd_antisymm ?_ hd
     apply (hermitianFrobenius_return_iff p s P d).1
     have ht := (hermitianFrobenius_fiber_return_iff p s P 1).2 (Or.inr h)
     simpa only [Nat.mul_one] using ht

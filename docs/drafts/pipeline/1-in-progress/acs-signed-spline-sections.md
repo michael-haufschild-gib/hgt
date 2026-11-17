@@ -1,5 +1,13 @@
 # Small sections on signed spline rays
 
-Construct a fractional ideal of ℚ from the prime-power contact rows of a signed integer spline. Give it the real metric from the two poles and the renormalized degree-point jets. Its small sections are the multiples of its positive generator inside one real interval.
+**Open target.** For each integer spline ray and every ε > 0, exhibit a nonzero rational section after increasing the logarithmic radius by εm² for all sufficiently large m.
 
-The signed logarithmic degree should converge after division by the squared ray parameter to the complete spline Weil form. The remaining effectivity question is whether each ray admits a nonzero section after an arbitrarily small quadratic enlargement of the interval.
+At resolution n, sample the signed spline f at log(j/n). For each prime power k = pʳ in the support window, impose the integral valuation
+
+    floor((2/√k) Σⱼ fⱼ fⱼₖ / j).
+
+Negative valuations permit denominators. Let d be the positive rational generator of the resulting lattice. The logarithmic radius A is twice the product of the two sampled pole degrees minus the degree-point jet pairing with its diagonal counterterm. The small sections have coordinates z ∈ ℤ satisfying |dz| ≤ exp A.
+
+On a fixed window, rounding all finite places changes the signed degree by at most Σₖ Λ(k), independently of the mesh and the coefficients. Before rounding, the signed degree converges to the full Weil form by logarithmic quadrature, including both poles. A nonzero section exists exactly when log d ≤ A. This leaves the arithmetic comparison of the least nonzero section with the real radius.
+
+[Degree-point lattice](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/DegreePointSectionLattice.lean) · [Small sections](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/SmallSectionsOfARationalLattice.lean)

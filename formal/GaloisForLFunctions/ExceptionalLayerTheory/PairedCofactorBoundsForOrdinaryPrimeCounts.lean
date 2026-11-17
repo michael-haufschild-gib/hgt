@@ -99,6 +99,7 @@ private theorem countSeries_on_euler {s : ℂ} (hs : 1 < s.re) (V W : ℕ) :
   have hconv : (fun n => (cofactorCountCoeff V W n : ℂ)) =
       ((fun n => (f n : ℂ)) ⍟ fun n => (g n : ℂ)) := by
     funext n
+    rw [LSeries.convolution_def]
     exact coe_mul_apply _ _ _
   have hζeq : (fun n => (((zeta : ArithmeticFunction ℝ) n : ℝ) : ℂ)) =
       fun n => ((zeta n : ℕ) : ℂ) := by
@@ -164,18 +165,18 @@ theorem shortCofactor_eq_zero_of_count_bound (V W : ℕ) {b K : ℝ} (hb : 0 ≤
     filter_upwards [meromorphicOrderAt_eq_top_iff.mp htop] with s hs
     exact sub_eq_zero.mp hs
   have hGlim := (hG.differentiableAt (hopen.mem_nhds hρ)).continuousAt.tendsto.mono_left
-    nhdsWithin_le_nhds
+    (nhdsWithin_le_nhds (s := ({ρ}ᶜ : Set ℂ)))
   have hlin : Tendsto (fun s : ℂ => s - ρ) (𝓝[≠] ρ) (𝓝 0) :=
-    ((continuous_id.sub continuous_const).tendsto' ρ 0 (sub_self ρ)).mono_left nhdsWithin_le_nhds
+    ((continuous_id.sub continuous_const).tendsto' ρ 0 (sub_self ρ)).mono_left (nhdsWithin_le_nhds (s := ({ρ}ᶜ : Set ℂ)))
   have hzero : Tendsto (fun s => (s - ρ) * countSeries V W s) (𝓝[≠] ρ) (𝓝 0) := by
     apply (tendsto_congr' (Filter.EventuallyEq.mul Filter.EventuallyEq.rfl hagree)).mpr
     simpa only [zero_mul] using hlin.mul hGlim
   obtain ⟨m, hm, hmres⟩ := RHTower.neg_logDeriv_zeta_zero_residue hz
   have hρne := RHTower.riemannZeta_zero_ne_one hz
   have hZlim := (differentiableAt_riemannZeta hρne).continuousAt.tendsto.mono_left
-    nhdsWithin_le_nhds
+    (nhdsWithin_le_nhds (s := ({ρ}ᶜ : Set ℂ)))
   have hDlim := (differentiable_dirPoly W (typeIIShort V) ρ).continuousAt.tendsto.mono_left
-    nhdsWithin_le_nhds
+    (nhdsWithin_le_nhds (s := ({ρ}ᶜ : Set ℂ)))
   have hres : Tendsto (fun s => (s - ρ) * countSeries V W s) (𝓝[≠] ρ)
       (𝓝 (-(m : ℂ) * dirPoly W (typeIIShort V) ρ)) := by
     convert (hmres.sub (hlin.mul hZlim)).mul hDlim using 1

@@ -61,6 +61,7 @@ private theorem exp_shiftEulerLog {z : ℂ} (hz : ‖z‖ < 1) (θ : ℝ) :
   rw [hsum.tsum_eq]
   simp only [sub_neg_eq_add, Complex.exp_add, Complex.exp_neg, Complex.exp_log (hne hz),
     Complex.exp_log (hne (hsmall θ)), Complex.exp_log (hne (hsmall (-θ)))]
+  rw [div_eq_mul_inv, ← inv_pow]
   ring
 
 namespace CompactQuotient
@@ -230,6 +231,7 @@ theorem exists_shifted_selberg_positive_euler_model :
       unfold shiftQuotient
       rw [heq _ hs, heq _ (show 1 < (s + h * I).re by simpa using hs),
         heq _ (show 1 < (s - h * I).re by simpa using hs)]
+    change HasProd _ (shiftQuotient Z (h * I) s)
     rw [hEqQ]
     exact CompactQuotient.hasProd_shiftEulerLog hhyp h hs
   · exact fun s h0 h1 => quotient_reflects (G := X.reflectionFactor) hFE h h0 h1
@@ -249,6 +251,9 @@ theorem exists_shifted_selberg_positive_euler_model :
   · ext s
     exact ⟨fun ⟨hs, hz⟩ => ⟨hs, (quotient_divisor_sign hd hNZ hreal hs hh).2.mp hz⟩,
       fun ⟨hs, hz⟩ => ⟨hs, (quotient_divisor_sign hd hNZ hreal hs hh).2.mpr hz⟩⟩
+
+#print axioms shiftLogCoeff_nonneg
+#print axioms exists_shifted_selberg_positive_euler_model
 
 end
 
