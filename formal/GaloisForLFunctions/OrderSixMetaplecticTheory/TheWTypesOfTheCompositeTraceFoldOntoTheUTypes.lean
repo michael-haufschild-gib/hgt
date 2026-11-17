@@ -247,7 +247,7 @@ theorem Q_res_wlShift (y : {y : R.Q.Res // y ≠ 0}) :
   have h9 := R.Q.nine_ne_zero'
   have hβ : R.Q.res (R.wlBeta (R.yWL y)) = -(9 * (y.1 * R.pInv))⁻¹ := by
     rw [pInv] at hb ⊢
-    field_simp
+    field_simp at hb ⊢
     linear_combination hb
   rw [wlShift, map_sub, map_mul, map_mul, map_mul, map_add, map_mul, map_mul, R.Q.res_p, R.Q.res_nine, hβ,
     R.Q_res_pDelta, yWL, R.Q.res_lift, R.Q_res_pDelta]
@@ -264,7 +264,7 @@ theorem P_res_lwShift (y : {y : R.P.Res // y ≠ 0}) :
   have h9 := R.P.nine_ne_zero'
   have hβ : R.P.res (R.lwBeta (R.yLW y)) = -(9 * (y.1 * R.qInv))⁻¹ := by
     rw [qInv] at hb ⊢
-    field_simp
+    field_simp at hb ⊢
     linear_combination hb
   rw [lwShift, map_sub, map_mul, map_mul, map_mul, map_add, map_mul, map_mul, R.P.res_p, R.P.res_nine, hβ,
     R.P_res_qDelta, yLW, R.P.res_lift, R.P_res_qDelta]
@@ -313,7 +313,7 @@ theorem phase_WL (y : {y : R.Q.Res // y ≠ 0}) :
   have hc : R.Q.p ∣ 3 * c - -(3 * R.yUL (negY y)) := by
     rw [← R.Q.res_eq_zero_iff, map_sub, map_neg, map_mul, map_mul, R.Q.res_three, R.Q_res_wlC, R.Q_res_yUL]
     simp [negY]
-  rw [hW, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero 2 (R.complexCharacter_ne_zero R.wP)), one_mul,
+  rw [hW, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero 2 (PrimaryPair.complexCharacter_ne_zero R.wP)), one_mul,
     symbol_congr hc, symbol_neg_numerator _ _ R.Q.primary]
 
 /-- **The `(L, W)` phase is an `(L, U)` phase.** -/
@@ -334,7 +334,7 @@ theorem phase_LW (y : {y : R.P.Res // y ≠ 0}) :
   have hc : R.P.p ∣ 3 * c - -(3 * R.yLU (negY y)) := by
     rw [← R.P.res_eq_zero_iff, map_sub, map_neg, map_mul, map_mul, R.P.res_three, R.P_res_lwC, R.P_res_yLU]
     simp [negY]
-  rw [hW, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero 2 (R.complexCharacter_ne_zero R.wQ)), one_mul,
+  rw [hW, ← mul_assoc, inv_mul_cancel₀ (pow_ne_zero 2 (PrimaryPair.complexCharacter_ne_zero R.wQ)), one_mul,
     symbol_congr hc, symbol_neg_numerator _ _ R.P.primary]
 
 end PrimaryPair

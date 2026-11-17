@@ -344,7 +344,7 @@ theorem wallLogProfile_inRow_bounds {k δ t : ℝ} (hk4 : k ≤ 1 / 4) (hδ : 0 
         have h3 : (t - (t - h)) / (2 * (t - h)) ≤ 2 * h / t := by
           rw [div_le_div_iff₀ (mul_pos two_pos hs) ht]
           nlinarith only [mul_nonneg hh0.le
-            (by linarith only [hsmall] : (0 : ℝ) ≤ 3 * t - 4 * h)]
+            (by linarith only [hsmall, ht] : (0 : ℝ) ≤ 3 * t - 4 * h)]
         exact ⟨sub_nonneg.mpr h1, h2.trans h3⟩
     refine ⟨mul_nonneg hω0 hv.1, ?_⟩
     calc archLevyDensity h * (c - wallLogProfile k (-t + h))

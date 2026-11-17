@@ -102,7 +102,7 @@ private theorem ae_comp_sub_right {p : ℝ → Prop} (h : ∀ᵐ v, p v) (t : �
   (measurePreserving_sub_right volume t).quasiMeasurePreserving.ae h
 
 private theorem ae_comp_sub_left {p : ℝ → Prop} (h : ∀ᵐ v, p v) (y : ℝ) : ∀ᵐ t, p (y - t) :=
-  (measurePreserving_sub_left volume y).quasiMeasurePreserving.ae h
+  (Measure.measurePreserving_sub_left volume y).quasiMeasurePreserving.ae h
 
 private theorem ae_comp_add_left {p : ℝ → Prop} (h : ∀ᵐ v, p v) (y : ℝ) : ∀ᵐ t, p (y + t) :=
   (measurePreserving_add_left volume y).quasiMeasurePreserving.ae h
@@ -114,7 +114,7 @@ private theorem memLp_two_shift_sub {F : ℝ → ℝ} (hF : MemLp F 2 volume) (x
 private theorem integrable_bdd_mul {f g : ℝ → ℝ} (hg : Integrable g)
     (hf : AEStronglyMeasurable f volume) {C : ℝ} (hb : ∀ᵐ x, |f x| ≤ C) :
     Integrable fun x => f x * g x :=
-  (hg.mul_bdd hf (hb.mono fun x hx => by rwa [Real.norm_eq_abs])).congr
+  (hg.mul_bdd hf (hb.mono fun x hx => (Real.norm_eq_abs _).trans_le hx)).congr
     (Eventually.of_forall fun x => mul_comm _ _)
 
 /-- A function bounded on `[−2A, 0]` pairs integrably with a profile carried by `[−2A, 0]`. -/
@@ -305,8 +305,8 @@ private theorem integral_commutator_jump_eq {χ F G : ℝ → ℝ} (hχm : Measu
       ∫ y, G y * (F (y - t) * (χ y - χ (y - t)) + F (y + t) * (χ y - χ (y + t))) := by
   have hb : ∀ u v, |χ u - χ v| ≤ 2 := fun u v => abs_sub_le_two (hχ u) (hχ v)
   have hmul : ∀ {f : ℝ → ℝ}, MemLp f 2 volume → MemLp (fun u => χ u * f u) 2 volume :=
-    fun {f} hf => hf.of_le (hχm.aestronglyMeasurable.mul hf.1) (ae_of_all _ fun u => by
-      rw [norm_mul]; exact mul_le_of_le_one_left (norm_nonneg _) (by simpa using hχ u))
+    fun {f} hf => hf.of_le (hχm.aestronglyMeasurable.mul hf.1) (ae_of_all _ fun u =>
+      (norm_mul _ _).trans_le (mul_le_of_le_one_left (norm_nonneg _) (by simpa using hχ u)))
   have hχF := hmul hF
   have hχG := hmul hG
   have ha : Integrable fun u => (χ u * F u - χ (u + t) * F (u + t)) * (G u - G (u + t)) :=
@@ -318,13 +318,13 @@ private theorem integral_commutator_jump_eq {χ F G : ℝ → ℝ} (hχm : Measu
   have hm3 : Measurable fun y => χ y - χ (y - t) := hχm.sub (hχm.comp (measurable_sub_const t))
   have hp : Integrable fun u => F u * G (u + t) * (χ (u + t) - χ u) :=
     (integrable_mul_of_memLp hF (memLp_two_shift hG t)).mul_bdd hm1.aestronglyMeasurable
-      (ae_of_all _ fun u => by rw [Real.norm_eq_abs]; exact hb _ _)
+      (ae_of_all _ fun u => (Real.norm_eq_abs _).trans_le (hb _ _))
   have hq : Integrable fun u => F (u + t) * G u * (χ u - χ (u + t)) :=
     (integrable_mul_of_memLp (memLp_two_shift hF t) hG).mul_bdd hm2.aestronglyMeasurable
-      (ae_of_all _ fun u => by rw [Real.norm_eq_abs]; exact hb _ _)
+      (ae_of_all _ fun u => (Real.norm_eq_abs _).trans_le (hb _ _))
   have hp' : Integrable fun y => F (y - t) * G y * (χ y - χ (y - t)) :=
     (integrable_mul_of_memLp (memLp_two_shift_sub hF t) hG).mul_bdd hm3.aestronglyMeasurable
-      (ae_of_all _ fun u => by rw [Real.norm_eq_abs]; exact hb _ _)
+      (ae_of_all _ fun u => (Real.norm_eq_abs _).trans_le (hb _ _))
   rw [← integral_sub ha hb']
   calc (∫ u, ((χ u * F u - χ (u + t) * F (u + t)) * (G u - G (u + t)) -
           (F u - F (u + t)) * (χ u * G u - χ (u + t) * G (u + t))))
@@ -408,7 +408,9 @@ theorem levyMixed_mul_left_sub_mul_right {χ F G : ℝ → ℝ} (hF : CriticalHa
       rw [Real.norm_eq_abs, abs_mul, abs_mul, abs_of_pos (archLevyDensity_pos ht)]
       calc archLevyDensity p.1 * (|G p.2| * |F (p.2 - p.1) * (χ p.2 - χ (p.2 - p.1)) +
             F (p.2 + p.1) * (χ p.2 - χ (p.2 + p.1))|)
-          ≤ archLevyDensity p.1 * (|G p.2| * (2 * C * min (Λ * p.1) 2)) := by gcongr
+          ≤ archLevyDensity p.1 * (|G p.2| * (2 * C * min (Λ * p.1) 2)) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hk (abs_nonneg _))
+              (archLevyDensity_pos ht).le
         _ = 2 * C * (archLevyDensity p.1 * min (Λ * p.1) 2) * |G p.2| := by ring
   have hfun : (fun t => archLevyDensity t *
       ((∫ u, (χ u * F u - χ (u + t) * F (u + t)) * (G u - G (u + t))) -
@@ -462,7 +464,7 @@ def statePrimeWave (F : ℝ → ℝ) (y : ℝ) : ℝ :=
 
 theorem measurable_statePrimeWave {F : ℝ → ℝ} (hFm : Measurable F) :
     Measurable (statePrimeWave F) :=
-  Measurable.tsum fun n => measurable_const.mul
+  Measurable.tsum fun _ => measurable_const.mul
     ((hFm.comp (measurable_sub_const _)).add (hFm.comp (measurable_add_const _)))
 
 /-- The summable majorant of the prime atoms on `[−2A, 0]`. -/
@@ -483,7 +485,7 @@ private theorem abs_primeAtom_le {F : ℝ → ℝ} {C A y : ℝ} (hsupp : ∀ v,
   have hb1 : |F (y - Real.log n)| ≤ C * Real.exp (-(1 * Real.log n)) :=
     h1.trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith [hy.2])) hC)
   have hb2 : |F (y + Real.log n)| ≤ C * Real.exp (2 * A) * Real.exp (-(1 * Real.log n)) := by
-    rcases le_or_lt 0 (y + Real.log n) with h | h
+    rcases le_or_gt 0 (y + Real.log n) with h | h
     · rw [hsupp _ h, abs_zero]
       exact mul_nonneg (mul_nonneg hC (Real.exp_pos _).le) (Real.exp_pos _).le
     · calc |F (y + Real.log n)| ≤ C * Real.exp (y + Real.log n) := h2
@@ -531,13 +533,13 @@ theorem primeMixedForm_eq_integral_statePrimeWave {F G : ℝ → ℝ} (hFm : Mea
       ((hFm.comp (measurable_sub_const _)).add (hFm.comp (measurable_add_const _))))
   have hTi : ∀ n, Integrable (primeAtomTerm F G n) := fun n =>
     (hG1.abs.mul_const (primeAtomMajorant C A n)).mono' (hTm n).aestronglyMeasurable
-      (hbd.mono fun y hy => by rw [Real.norm_eq_abs]; exact hy n)
+      (hbd.mono fun y hy => (Real.norm_eq_abs _).trans_le (hy n))
   have hsum : Summable fun n => ∫ y, ‖primeAtomTerm F G n y‖ := by
     refine Summable.of_nonneg_of_le (fun n => integral_nonneg fun _ => norm_nonneg _)
       (fun n => ?_) ((summable_primeAtomMajorant C A).mul_left (∫ y, |G y|))
     rw [← integral_mul_const]
     exact integral_mono_ae (hTi n).norm (hG1.abs.mul_const _)
-      (hbd.mono fun y hy => by rw [Real.norm_eq_abs]; exact hy n)
+      (hbd.mono fun y hy => (Real.norm_eq_abs _).trans_le (hy n))
   have htsum := integral_tsum_of_summable_integral_norm hTi hsum
   have hwave : (fun y => ∑' n, primeAtomTerm F G n y) = fun y => G y * statePrimeWave F y := by
     ext y; simp only [primeAtomTerm, statePrimeWave]; rw [tsum_mul_left]
@@ -570,10 +572,10 @@ theorem primeMixedForm_eq_integral_statePrimeWave {F G : ℝ → ℝ} (hFm : Mea
     intro n
     have ha : Integrable fun t => G t * F (t - Real.log n) :=
       hG1.mul_bdd (hFm.comp (measurable_sub_const _)).aestronglyMeasurable
-        ((ae_comp_sub_right hCb _).mono fun y hy => by rwa [Real.norm_eq_abs])
+        ((ae_comp_sub_right hCb _).mono fun y hy => (Real.norm_eq_abs _).trans_le hy)
     have hb : Integrable fun t => G t * F (t + Real.log n) :=
       hG1.mul_bdd (hFm.comp (measurable_add_const _)).aestronglyMeasurable
-        ((ae_comp_add_right hCb _).mono fun y hy => by rwa [Real.norm_eq_abs])
+        ((ae_comp_add_right hCb _).mono fun y hy => (Real.norm_eq_abs _).trans_le hy)
     rw [primePairTerm, ← integral_add ha hb, ← integral_const_mul]
     congr 1; ext y; simp only [primeAtomTerm]; ring
   refine ⟨hint, ?_, ?_⟩
@@ -616,12 +618,14 @@ private theorem pole_pairing_eq {F G χ : ℝ → ℝ} (hGm : Measurable G) (hG1
   have hwin : ∀ {k : ℝ → ℝ}, Continuous k → (∀ u, |k u| ≤ Real.exp (|u| / 2)) →
       Integrable fun y => χ y * G y * k y := by
     intro k hk hkb
-    refine integrable_mul_of_window (G := fun y => χ y * G y) hχG1
+    refine integrable_mul_of_window (G := fun y => χ y * G y) (K := Real.exp A) hχG1
       hk.measurable.aestronglyMeasurable (fun y hy => hGA y (right_ne_zero_of_mul hy))
       (ae_of_all _ fun y hy => (hkb y).trans (Real.exp_le_exp.mpr ?_))
     rw [abs_of_nonpos hy.2]; linarith [hy.1]
-  have hc := hwin (k := fun u => Real.cosh (u / 2)) (by fun_prop) abs_cosh_half_le_exp
-  have hs := hwin (k := fun u => Real.sinh (u / 2)) (by fun_prop) abs_sinh_half_le_exp
+  have hc : Integrable fun y => χ y * G y * Real.cosh (y / 2) :=
+    hwin (by fun_prop) abs_cosh_half_le_exp
+  have hs : Integrable fun y => χ y * G y * Real.sinh (y / 2) :=
+    hwin (by fun_prop) abs_sinh_half_le_exp
   have hP : Integrable fun y => G y * (χ y * poleWave F y) := by
     refine ((hc.const_mul (2 * coshHalfMoment F)).sub
       (hs.const_mul (2 * sinhHalfMoment F))).congr (ae_of_all _ fun y => ?_)
@@ -747,8 +751,8 @@ theorem cut_logarithmic_equation {R : ℝ} {F χ G : ℝ → ℝ} (hFd : Critica
     rw [abs_mul]; exact (mul_le_of_le_one_left (abs_nonneg _) (hχ u)).trans hu
   have hχGA : ∀ y, χ y * G y ≠ 0 → y ∈ Icc (-(2 * A)) 0 :=
     fun y hy => hGA y (right_ne_zero_of_mul hy)
-  obtain ⟨hrI, hrem⟩ := integral_archLogRemainder_jump hG.meas hG.integrable hG.memLp_real
-    (hχm.mul hFm) hWd.memLp_real hWb
+  obtain ⟨hrI, hrem⟩ := integral_archLogRemainder_jump (W := fun u => χ u * F u) hG.meas
+    hG.integrable hG.memLp_real (hχm.mul hFm) hWd.memLp_real hWb
   have hsplit : (∫ t in Ioi 0, logReferenceLevyDensity t *
         ∫ u, (G u - G (u + t)) * (χ u * F u - χ (u + t) * F (u + t))) =
       levyMixed G (fun u => χ u * F u) - ∫ t in Ioi 0, archLogRemainder t *
@@ -766,8 +770,8 @@ theorem cut_logarithmic_equation {R : ℝ} {F χ G : ℝ → ℝ} (hFd : Critica
   have hlevy := gammaMixedForm_eq_levy hFd hχG
   have hE := hweak _ hχG
   simp only [criticalHalfLineMixedEnergy] at hE
-  obtain ⟨hPi, hP1, hP2⟩ := primeMixedForm_eq_integral_statePrimeWave hFm hC hCe hFd.support
-    (hχm.mul hG.meas) hχG.integrable hχGA
+  obtain ⟨hPi, hP1, hP2⟩ := primeMixedForm_eq_integral_statePrimeWave
+    (G := fun u => χ u * G u) hFm hC hCe hFd.support (hχm.mul hG.meas) hχG.integrable hχGA
   obtain ⟨i3, hpole⟩ := pole_pairing_eq (F := F) hG.meas hG.integrable hχm hχ hGA
   have hconf := confinement_pairing_eq R F G χ
   have hmass : (∫ u, F u * (χ u * G u)) = ∫ u, G u * (χ u * F u) :=
