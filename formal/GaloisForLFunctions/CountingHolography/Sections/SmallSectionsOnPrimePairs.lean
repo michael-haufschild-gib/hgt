@@ -28,7 +28,7 @@ theorem generator_eq_contactModulus {N : ℕ} (a : Fin N → ℤ) (ha : ∀ i, 0
     generator a = (contactModulus a : ℚ) := by
   have hf (u : ℝ) : 0 ≤ packet a u := by
     unfold packet splineSource
-    exact sum_nonneg fun i _ => mul_nonneg (Int.cast_nonneg.mpr (ha i)) (cubicSpline_nonneg _)
+    exact sum_nonneg fun i _ => mul_nonneg (by exact_mod_cast ha i) (cubicSpline_nonneg _)
   unfold generator contactGenerator contactModulus
   push_cast
   apply prod_congr rfl

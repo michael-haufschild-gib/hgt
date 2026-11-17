@@ -333,4 +333,28 @@ theorem memLp_damped_beyondWallProfile_of_lt_half {W₀ : ℝ} (hW : 0 < W₀)
 
 #print axioms memLp_damped_beyondWallProfile_of_lt_half
 
+/-- The unheated profile beyond the wall is in weighted square mean at every
+exponent strictly greater than the centred zero abscissa. -/
+theorem memLp_damped_beyondWallProfile_of_abscissa {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {d : ℝ}
+    (hd : zetaZeroAbscissa-1/2 < d) :
+    MemLp (fun x : ℝ => expRay (d:ℂ) x *
+      beyondWallProfile W₀ (criticalHalfLineEnergyDomain_of_groundState hF) x)
+      2 (volume.restrict (Ioi (0:ℝ))) := by
+  have hκ : zetaZeroAbscissa-1/2 < 1/2 := by
+    by_contra! hh
+    obtain ⟨ρ, hρ, hgt⟩ := exists_zetaZero_lt_re (b := 20999/24000) (by linarith)
+    exact MetaplecticMobiusDescent.CubicEisenstein.riemannZeta_ne_zero_of_sub_seven_eighths_lt_re hgt hρ
+  obtain ⟨c, hc, hc'⟩ := exists_between (lt_min hd hκ)
+  have hcd := (lt_min_iff.mp hc').1.le
+  refine (memLp_damped_beyondWallProfile_of_lt_half hW ht hF hc (lt_min_iff.mp hc').2).mono ?_ ?_
+  · exact (continuous_expRay _).aestronglyMeasurable.mul (aestronglyMeasurable_beyondWallProfile _ _)
+  · filter_upwards [ae_restrict_mem (μ := (volume : Measure ℝ)) measurableSet_Ioi] with x hx
+    rw [norm_mul, norm_mul, norm_expRay, norm_expRay, Complex.ofReal_re, Complex.ofReal_re]
+    apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
+    exact Real.exp_le_exp.mpr (neg_le_neg (mul_le_mul_of_nonneg_right hcd (le_of_lt hx)))
+
+#print axioms memLp_damped_beyondWallProfile_of_abscissa
+
 end GaloisForLFunctions.ExclusionOfTheCriticalState

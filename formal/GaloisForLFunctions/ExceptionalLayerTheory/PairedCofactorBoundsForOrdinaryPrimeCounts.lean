@@ -3,6 +3,7 @@ import GaloisForLFunctions.HeckeLFunctions.HeckeLFunctionsContinuePastTheLineReO
 import GaloisForLFunctions.RHTower.ChebyshevErrorExponentLaw
 import GaloisForLFunctions.RHTower.DirichletSummatorySwap
 import GaloisForLFunctions.RHTower.BurnolIntegrand
+import GaloisForLFunctions.RHTower.Sieve.VaughanTypeIRestricted
 
 /-!
 # Paired cofactor bounds for ordinary prime counts
@@ -31,7 +32,8 @@ def cofactorCountCoeff (V W : ℕ) : ArithmeticFunction ℝ :=
 def cofactorCountError (V W N : ℕ) : ℝ :=
   ∑ n ∈ Icc 1 N, cofactorCountCoeff V W n
 
-private theorem prime_excess_prefix (N : ℕ) :
+/-- Summing the density-subtracted von Mangoldt weight gives the ordinary prime error. -/
+theorem sum_vonMangoldt_sub_zeta (N : ℕ) :
     (∑ n ∈ Icc 1 N, (vonMangoldt - (zeta : ArithmeticFunction ℝ)) n) =
       Chebyshev.psi N - N := by
   have hterm (n : ℕ) (hn : n ∈ Icc 1 N) :
@@ -52,7 +54,7 @@ theorem cofactorCountError_eq (V W N : ℕ) :
     cofactorCountError V W N = ∑ d ∈ Icc 1 (min N W), typeIIShort V d *
       (Chebyshev.psi (N / d : ℕ) - (N / d : ℕ)) := by
   rw [cofactorCountError, cofactorCountCoeff, mul_comm, RHTower.sum_Icc_mul_apply]
-  simp_rw [prime_excess_prefix, truncAF_apply, ite_mul, zero_mul, ← sum_filter]
+  simp_rw [sum_vonMangoldt_sub_zeta, truncAF_apply, ite_mul, zero_mul, ← sum_filter]
   congr 1
   ext d
   simp only [mem_filter, mem_Icc, le_min_iff]
@@ -104,7 +106,7 @@ private theorem countSeries_on_euler {s : ℂ} (hs : 1 < s.re) (V W : ℕ) :
   have hζeq : (fun n => (((zeta : ArithmeticFunction ℝ) n : ℝ) : ℂ)) =
       fun n => ((zeta n : ℕ) : ℂ) := by
     funext n
-    simp [ArithmeticFunction.natCoe_apply]
+    by_cases hn : n = 0 <;> simp [ArithmeticFunction.natCoe_apply, ArithmeticFunction.zeta_apply, hn]
   have hζ := ArithmeticFunction.LSeriesSummable_zeta_iff.mpr hs
   have hΛ := ArithmeticFunction.LSeriesSummable_vonMangoldt hs
   have hgs := LSeriesSummable_of_supportedIn hg s
@@ -131,7 +133,7 @@ theorem shortCofactor_eq_zero_of_count_bound (V W : ℕ) {b K : ℝ} (hb : 0 ≤
   have hreal (x : ℝ) (hx : 1 ≤ x) : ‖∑ k ∈ Icc 1 ⌊x⌋₊, c k‖ ≤ K * x ^ b := by
     change ‖∑ k ∈ Icc 1 ⌊x⌋₊, (cofactorCountCoeff V W k : ℂ)‖ ≤ _
     rw [← Complex.ofReal_sum, Complex.norm_real, Real.norm_eq_abs]
-    exact (hcount _ (Nat.one_le_floor_iff.mpr hx)).trans
+    exact (hcount _ ((Nat.one_le_floor_iff x).mpr hx)).trans
       (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg _)
         (Nat.floor_le (zero_le_one.trans hx)) hb) hK)
   let D := {s : ℂ | b < s.re}
@@ -166,7 +168,9 @@ theorem shortCofactor_eq_zero_of_count_bound (V W : ℕ) {b K : ℝ} (hb : 0 ≤
   have hlin : Tendsto (fun s : ℂ => s - ρ) (𝓝[≠] ρ) (𝓝 0) :=
     ((continuous_id.sub continuous_const).tendsto' ρ 0 (sub_self ρ)).mono_left (nhdsWithin_le_nhds (s := ({ρ}ᶜ : Set ℂ)))
   have hzero : Tendsto (fun s => (s - ρ) * countSeries V W s) (𝓝[≠] ρ) (𝓝 0) := by
-    apply (tendsto_congr' (Filter.EventuallyEq.mul Filter.EventuallyEq.rfl hagree)).mpr
+    have hprod : (fun s => (s - ρ) * countSeries V W s) =ᶠ[𝓝[≠] ρ] fun s => (s - ρ) * G s :=
+      hagree.mono fun s hs => congrArg ((s - ρ) * ·) hs
+    apply (tendsto_congr' hprod).mpr
     simpa only [zero_mul] using hlin.mul hGlim
   obtain ⟨m, hm, hmres⟩ := RHTower.neg_logDeriv_zeta_zero_residue hz
   have hρne := RHTower.riemannZeta_zero_ne_one hz
@@ -182,7 +186,7 @@ theorem shortCofactor_eq_zero_of_count_bound (V W : ℕ) {b K : ℝ} (hb : 0 ≤
       ring
     · rw [zero_mul, sub_zero]
   exact (mul_eq_zero.mp (tendsto_nhds_unique hres hzero)).resolve_left
-    (neg_ne_zero.mpr (Nat.cast_ne_zero.mpr hm.ne'))
+    (neg_ne_zero.mpr (Nat.cast_ne_zero.mpr (by omega : m ≠ 0)))
 
 /-- RH is equivalent to power bounds for pairs of signed ordinary prime counts.
 The cutoffs can depend on the exponent and the bound on the cutoff. -/
@@ -211,6 +215,79 @@ theorem riemannHypothesis_iff_paired_cofactor_count_bounds :
     · exact h (hkill _ (by simp))
     · exact h (hkill _ (by simp))
 
+/-- Centred counts of the ordinary long-prime convolution with its finite head deleted. -/
+def restrictedCofactorCount (U V W N : ℕ) : ℝ :=
+  ∑ n ∈ Icc 1 N, ((typeIILong U - (zeta : ArithmeticFunction ℝ)) *
+    truncAF (typeIIShort V) W) n
+
+/-- Deleting the prime head changes the count by the prefix of a convolution
+supported through `U * W`. This formula includes horizons inside the head. -/
+theorem cofactorCount_sub_restricted (U V W N : ℕ) :
+    cofactorCountError V W N - restrictedCofactorCount U V W N =
+      ∑ n ∈ Icc 1 (min N (U * W)), (truncAF vonMangoldt U * truncAF (typeIIShort V) W) n := by
+  rw [cofactorCountError, restrictedCofactorCount, ← sum_sub_distrib]
+  let h := truncAF (vonMangoldt : ArithmeticFunction ℝ) U
+  let g := truncAF (typeIIShort V) W
+  have hdiff : cofactorCountCoeff V W - (typeIILong U - (zeta : ArithmeticFunction ℝ)) * g =
+      h * g := by
+    unfold cofactorCountCoeff typeIILong
+    change (vonMangoldt - (zeta : ArithmeticFunction ℝ)) * g - (vonMangoldt - h - zeta) * g = h*g
+    rw [← sub_mul]
+    congr 1
+    abel
+  have he (n : ℕ) := DFunLike.congr_fun hdiff n
+  change (∑ n ∈ Icc 1 N, (cofactorCountCoeff V W n -
+    ((typeIILong U - (zeta : ArithmeticFunction ℝ)) * g) n)) = _
+  simp_rw [show ∀ n, cofactorCountCoeff V W n - ((typeIILong U - (zeta : ArithmeticFunction ℝ)) *
+    g) n = (h * g) n from he]
+  apply (sum_subset (Icc_subset_Icc_right (min_le_left N (U*W))) _).symm
+  intro n hn hnot
+  obtain ⟨hn1, hnN⟩ := mem_Icc.mp hn
+  exact truncAF_conv_apply_of_gt (show U * W < n by
+    by_contra! h
+    exact hnot (mem_Icc.mpr ⟨hn1, le_min hnN h⟩))
+
+private theorem transfer_count_bound {a f : ℕ → ℝ} {b M : ℝ} (hb : 0 ≤ b)
+    (hd : ∀ N, |a N - f N| ≤ M)
+    (hf : ∃ K : ℝ, ∀ N : ℕ, 1 ≤ N → |f N| ≤ K * (N : ℝ) ^ b) :
+    ∃ K : ℝ, ∀ N : ℕ, 1 ≤ N → |a N| ≤ K * (N : ℝ) ^ b := by
+  obtain ⟨K, hK⟩ := hf
+  have hM : 0 ≤ M := (abs_nonneg _).trans (hd 1)
+  refine ⟨M + K, fun N hN => ?_⟩
+  have hone : 1 ≤ (N : ℝ) ^ b := Real.one_le_rpow (by exact_mod_cast hN) hb
+  calc
+    |a N| = |(a N - f N) + f N| := by rw [sub_add_cancel]
+    _ ≤ |a N - f N| + |f N| := abs_add_le _ _
+    _ ≤ M + K * (N : ℝ) ^ b := add_le_add (hd N) (hK N hN)
+    _ ≤ (M + K) * (N : ℝ) ^ b := by
+      rw [add_mul]
+      exact add_le_add_right (le_mul_of_one_le_right hM hone) _
+
+/-- Each fixed power bound survives deletion of any finite prime head. -/
+theorem restrictedCofactorCount_power_iff (U V W : ℕ) {b : ℝ} (hb : 0 ≤ b) :
+    (∃ K : ℝ, ∀ N : ℕ, 1 ≤ N → |restrictedCofactorCount U V W N| ≤ K * (N : ℝ) ^ b) ↔
+      ∃ K : ℝ, ∀ N : ℕ, 1 ≤ N → |cofactorCountError V W N| ≤ K * (N : ℝ) ^ b := by
+  let h := truncAF (vonMangoldt : ArithmeticFunction ℝ) U * truncAF (typeIIShort V) W
+  have hd (N : ℕ) : |cofactorCountError V W N - restrictedCofactorCount U V W N| ≤
+      ∑ n ∈ Icc 1 (U * W), |h n| := by
+    rw [cofactorCount_sub_restricted]
+    exact (abs_sum_le_sum_abs _ _).trans (sum_le_sum_of_subset_of_nonneg
+      (Icc_subset_Icc_right (min_le_right N (U * W))) (fun n _ _ => abs_nonneg (h n)))
+  exact ⟨transfer_count_bound hb hd, transfer_count_bound hb (fun N => (abs_sub_comm _ _).le.trans (hd N))⟩
+
+/-- The paired-count criterion uses the actual long-prime Vaughan coefficients,
+with an arbitrary finite choice of deleted prime head at each Möbius cutoff. -/
+theorem riemannHypothesis_iff_paired_restricted_count_bounds (U : ℕ → ℕ) :
+    RiemannHypothesis ↔ ∀ b : ℝ, 1 / 2 < b → b < 1 →
+      ∃ᶠ V : ℕ in atTop, ∀ W ∈ ({V ^ 2, 2 * V ^ 2} : Finset ℕ), ∃ K : ℝ,
+        ∀ N : ℕ, 1 ≤ N → |restrictedCofactorCount (U V) V W N| ≤ K * (N : ℝ) ^ b := by
+  rw [riemannHypothesis_iff_paired_cofactor_count_bounds]
+  constructor <;> intro h b hb hb1
+  · exact (h b hb hb1).mono fun V hV W hW =>
+      (restrictedCofactorCount_power_iff (U V) V W (by linarith only [hb])).mpr (hV W hW)
+  · exact (h b hb hb1).mono fun V hV W hW =>
+      (restrictedCofactorCount_power_iff (U V) V W (by linarith only [hb])).mp (hV W hW)
+
 #print axioms norm_dirPoly_zeta_convolution_sub_le
 #print axioms norm_dyadic_shortCofactor_sub_le
 #print axioms lseries_restrictedPrimeConvolution
@@ -218,5 +295,6 @@ theorem riemannHypothesis_iff_paired_cofactor_count_bounds :
 #print axioms riemannHypothesis_iff_cofinal_restrictedPrimeResidues
 #print axioms cofactorCountError_eq
 #print axioms riemannHypothesis_iff_paired_cofactor_count_bounds
+#print axioms riemannHypothesis_iff_paired_restricted_count_bounds
 
 end GaloisForLFunctions.ExceptionalLayerTheory

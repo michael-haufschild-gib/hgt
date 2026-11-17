@@ -13,4 +13,7 @@ Put r = 2^{1−ρ}. Subtracting r times the width-W polynomial from the width-2W
 
 ## Remaining estimate
 
-For the ordinary coefficients $(\Lambda-\Lambda_{\le U})*(b_V\mathbf{1}_{n\le W})$, bound the centred partial counts at both widths W and 2W. The constants may depend on each fixed cutoff. A half-power bound at arbitrarily large paired cutoffs would test every right-hand zero, including those in infinite configurations.
+Write $E(N)=\psi(N)-N$. For each $1/2<b<1$, prove that arbitrarily large $V$ satisfy
+$$\left|\sum_{d\le\min(N,W)} b_V(d) E(\lfloor N/d\rfloor)\right|
+\le K_{b,V,W}N^b \qquad (N\ge1)$$
+at both $W=V^2$ and $W=2V^2$. Equivalence to RH is formalized. Even a bound for $b<\Re\rho$ derived under the single-quartet hypothesis would exclude that quartet. [Proof and Lean declarations](../3-formalized/paired-vaughan-cofactors-at-strip-zeros.md)

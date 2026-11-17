@@ -36,6 +36,7 @@ theorem hermitianDegreeZeroPart_primeToChar_principal (D : Pts →₀ ℤ) :
       |>.of_dvd_right hp
   · rw [hermitianEvenOrbit_principal, ← natCast_zsmul, Nat.cast_sub hN.le, Nat.cast_pow,
       Nat.cast_pow, Nat.cast_one]
+    simp only [d, Nat.cast_pow]
 
 private theorem principal_effective_zero (u : Additive Hˣ) (hu : 0 ≤ divH u) : divH u = 0 := by
   let f : H := (u.toMul : Hˣ)
@@ -83,7 +84,7 @@ theorem hermitianLineHomSections_eq (D C : Pts →₀ ℤ) :
 
 /-- Distinct normalized divisor classes have zero Hom space. -/
 theorem hermitianLineHomSections_trivial_iff (D C : Pts →₀ ℤ) :
-    hermitianLineHomSections p s D C = {0} ↔ D₀ D - D₀ C ∉ divH.range := by
+    hermitianLineHomSections p s D C = {0} ↔ D₀ D - D₀ C ∉ (divH).range := by
   rw [hermitianLineHomSections_eq]
   constructor
   · rintro he ⟨u, hu⟩
@@ -104,7 +105,7 @@ theorem hermitianLineHomSections_trivial_iff (D C : Pts →₀ ℤ) :
 theorem hermitianLineHomSections_classification (D C : Pts →₀ ℤ) :
     hermitianLineHomSections p s D C = {0} ∨
       ∃ g : Hˣ, hermitianLineHomSections p s D C = Set.range (fun c : E => algebraMap E H c * g) := by
-  by_cases h : D₀ D - D₀ C ∈ divH.range
+  by_cases h : D₀ D - D₀ C ∈ (divH).range
   · obtain ⟨v, hv⟩ := h
     let g := v.toMul
     have hg : hermitianGeometricZeroPoleDivisor p s (g : H) = D₀ D - D₀ C := hv

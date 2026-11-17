@@ -190,7 +190,10 @@ theorem card_unmatchedSet_eq :
 
 theorem card_unmatchedSet_eq_sub :
     M.unmatchedSet.card = (squarefreeOf S).card - 2 * M.sources.card := by
-  rw [unmatchedSet, card_sdiff M.matchedSet_subset, M.card_matchedSet]
+  have hs := card_sdiff_add_card_eq_card M.matchedSet_subset
+  have hm := M.card_matchedSet
+  rw [unmatchedSet]
+  omega
 
 /-- Matched pairs cancel identically in the unweighted Möbius sum. -/
 theorem sum_moebius_matchedSet : ∑ n ∈ M.matchedSet, μ n = 0 := by
@@ -254,7 +257,7 @@ noncomputable def hallDeficiency (R : ℕ → ℕ → Prop) (S : Finset ℕ) : �
 theorem sub_card_bipNeighbors_le_hallDeficiency (R : ℕ → ℕ → Prop) (S : Finset ℕ)
     {U : Finset ℕ} (hU : U ⊆ posParity S) :
     U.card - (bipNeighbors R S U).card ≤ hallDeficiency R S :=
-  le_max' _ _ (mem_image_of_mem _ (mem_powerset.mpr hU))
+  le_max' _ _ (mem_image_of_mem (fun V => V.card - (bipNeighbors R S V).card) (mem_powerset.mpr hU))
 
 theorem card_le_card_bipNeighbors_add_hallDeficiency (R : ℕ → ℕ → Prop) (S : Finset ℕ)
     {U : Finset ℕ} (hU : U ⊆ posParity S) :
@@ -286,25 +289,29 @@ theorem card_pos_sub_neg_le_hallDeficiency (R : ℕ → ℕ → Prop) (S : Finse
 theorem OppositeParityMatching.sources_card_le_sub_hallDeficiency
     {R : ℕ → ℕ → Prop} {S : Finset ℕ} (M : OppositeParityMatching R S) :
     M.sources.card ≤ (posParity S).card - hallDeficiency R S := by
-  classical
-  obtain ⟨U, hU, hdef⟩ := exists_subset_attaining_hallDeficiency R S
-  have himg : (M.sources ∩ U).image M.partner ⊆ bipNeighbors R S U := by
-    intro b hb
-    obtain ⟨a, ha, rfl⟩ := mem_image.mp hb
-    obtain ⟨haM, haU⟩ := mem_inter.mp ha
-    unfold bipNeighbors
-    exact mem_biUnion.mpr ⟨a, haU, mem_filter.mpr ⟨M.partner_mem a haM, M.adj a haM⟩⟩
-  have hcap : (M.sources ∩ U).card ≤ (bipNeighbors R S U).card := by
-    rw [← card_image_of_injOn (M.injOn.mono (coe_subset.mpr inter_subset_left))]
-    exact card_le_card himg
-  have hcomp : (M.sources \ U).card ≤ (posParity S \ U).card :=
-    card_le_card (sdiff_subset_sdiff M.sources_subset (Subset.refl U))
-  have hsplitM : (M.sources ∩ U).card + (M.sources \ U).card = M.sources.card :=
-    card_inter_add_card_sdiff M.sources U
-  have hsplitP : U.card + (posParity S \ U).card = (posParity S).card := by
-    rw [add_comm]
-    exact card_sdiff_add_card_eq_card hU
-  omega
+  rcases Nat.eq_zero_or_pos (hallDeficiency R S) with hd0 | hdpos
+  · rw [hd0, Nat.sub_zero]
+    exact card_le_card M.sources_subset
+  · classical
+    obtain ⟨U, hU, hdef⟩ := exists_subset_attaining_hallDeficiency R S
+    have himg : (M.sources ∩ U).image M.partner ⊆ bipNeighbors R S U := by
+      intro b hb
+      obtain ⟨a, ha, rfl⟩ := mem_image.mp hb
+      obtain ⟨haM, haU⟩ := mem_inter.mp ha
+      unfold bipNeighbors
+      exact mem_biUnion.mpr ⟨a, haU, mem_filter.mpr ⟨M.partner_mem a haM, M.adj a haM⟩⟩
+    have hcap : (M.sources ∩ U).card ≤ (bipNeighbors R S U).card := by
+      rw [← card_image_of_injOn (M.injOn.mono (coe_subset.mpr inter_subset_left))]
+      exact card_le_card himg
+    have hcomp : (M.sources \ U).card ≤ (posParity S \ U).card :=
+      card_le_card (sdiff_subset_sdiff M.sources_subset (Subset.refl U))
+    have hsplitM : (M.sources ∩ U).card + (M.sources \ U).card = M.sources.card :=
+      card_inter_add_card_sdiff M.sources U
+    have hsplitP : U.card + (posParity S \ U).card = (posParity S).card := by
+      rw [add_comm]
+      exact card_sdiff_add_card_eq_card hU
+    have hNU : (bipNeighbors R S U).card + hallDeficiency R S = U.card := by omega
+    omega
 
 /-- **Ore's deficiency attainment theorem**: there exists an `R`-matching of exact cardinality
 `#S₊ - hallDeficiency R S`. -/
@@ -363,22 +370,19 @@ theorem exists_matching_card_eq_sub_hallDeficiency (R : ℕ → ℕ → Prop) (S
     have := card_filter_add_card_filter_not (s := (Finset.univ : Finset {a // a ∈ posParity S}))
       (p := fun a => (g a).isLeft)
     simpa [good, bad] using this
-  let uninr : {a // a ∈ bad} → Fin d := fun x =>
-    match hgx : g x.1 with
-    | Sum.inr j => j
-    | Sum.inl b => False.elim ((mem_filter.mp x.2).2 (by simp [hgx]))
-  have huninr_inj : Function.Injective uninr := by
-    intro x y hxy
-    dsimp only [uninr] at hxy
+  have hbad_inr : ∀ x : {a // a ∈ bad}, ∃ j : Fin d, g x.1 = Sum.inr j := by
+    intro x
     cases hgx : g x.1 with
     | inl b => exact False.elim ((mem_filter.mp x.2).2 (by simp [hgx]))
-    | inr jx =>
-      cases hgy : g y.1 with
-      | inl b => exact False.elim ((mem_filter.mp y.2).2 (by simp [hgy]))
-      | inr jy =>
-        rw [hgx, hgy] at hxy
-        subst hxy
-        exact Subtype.ext (hginj (hgx.trans hgy.symm))
+    | inr j => exact ⟨j, rfl⟩
+  let uninr : {a // a ∈ bad} → Fin d := fun x => (hbad_inr x).choose
+  have huninr_inj : Function.Injective uninr := by
+    intro x y hxy
+    have hx := (hbad_inr x).choose_spec
+    have hy := (hbad_inr y).choose_spec
+    change (hbad_inr x).choose = (hbad_inr y).choose at hxy
+    rw [hxy] at hx
+    exact Subtype.ext (hginj (hx.trans hy.symm))
   have hbad_le : bad.card ≤ d := by
     simpa only [Fintype.card_coe, Fintype.card_fin] using Fintype.card_le_of_injective uninr huninr_inj
   let sources : Finset ℕ := good.image Subtype.val
@@ -395,7 +399,7 @@ theorem exists_matching_card_eq_sub_hallDeficiency (R : ℕ → ℕ → Prop) (S
     intro n hn
     obtain ⟨a, _, rfl⟩ := mem_image.mp hn
     exact a.2
-  have hpartner_spec : ∀ n ∈ sources, g ⟨n, hsources_sub ‹_›⟩ = Sum.inl (partner n) := by
+  have hpartner_spec : ∀ n (hn : n ∈ sources), g ⟨n, hsources_sub hn⟩ = Sum.inl (partner n) := by
     intro n hn
     obtain ⟨a, ha, rfl⟩ := mem_image.mp hn
     have hleft : (g a).isLeft := (mem_filter.mp ha).2
@@ -461,7 +465,22 @@ theorem minUnmatched_ore_decomposition (R : ℕ → ℕ → Prop) (S : Finset �
     have hdiff := card_pos_sub_neg_le_hallDeficiency R S
     have hsq := card_squarefreeOf S
     rw [sum_moebius_eq_card_pos_sub_neg, hallExcessZ, sum_moebius_eq_card_pos_sub_neg]
-    omega
+    rcases le_total ((posParity S).card : ℤ) ((negParity S).card : ℤ) with hle | hle
+    · have habs : |((posParity S).card : ℤ) - ((negParity S).card : ℤ)| =
+          ((negParity S).card : ℤ) - ((posParity S).card : ℤ) := by
+        rw [abs_of_nonpos (by omega)]; ring
+      have hmax : max (0 : ℤ) (((posParity S).card : ℤ) - ((negParity S).card : ℤ)) = 0 :=
+        max_eq_left (by omega)
+      rw [habs, hmax]
+      omega
+    · have habs : |((posParity S).card : ℤ) - ((negParity S).card : ℤ)| =
+          ((posParity S).card : ℤ) - ((negParity S).card : ℤ) :=
+        abs_of_nonneg (by omega)
+      have hmax : max (0 : ℤ) (((posParity S).card : ℤ) - ((negParity S).card : ℤ)) =
+          ((posParity S).card : ℤ) - ((negParity S).card : ℤ) :=
+        max_eq_right (by omega)
+      rw [habs, hmax]
+      omega
   constructor
   · intro M
     have hM := M.sources_card_le_sub_hallDeficiency
@@ -491,7 +510,8 @@ theorem isolatedVertices_subset_unmatched {R : ℕ → ℕ → Prop} {S : Finset
     isolatedVertices R S ⊆ M.unmatchedSet := by
   classical
   intro n hn
-  rw [OppositeParityMatching.unmatchedSet, mem_sdiff, squarefreeOf_eq_posParity_union_negParity]
+  rw [OppositeParityMatching.unmatchedSet, OppositeParityMatching.matchedSet,
+    squarefreeOf_eq_posParity_union_negParity, mem_sdiff, mem_union, mem_union]
   rcases mem_union.mp hn with hpos | hneg
   · obtain ⟨hnP, hiso⟩ := mem_filter.mp hpos
     refine ⟨Or.inl hnP, ?_⟩
@@ -534,10 +554,13 @@ theorem card_cascadeUnconsumed_succ {S : Finset ℕ} {φ : ℕ → ℕ → ℕ} 
     (hvalid : IsValidLayerCascade S φ K) (hk1 : 1 ≤ k) (hkK : k ≤ K) :
     (cascadeUnconsumed S φ (k + 1)).card =
       (factorLayer S (k + 1)).card - (cascadeUnconsumed S φ k).card := by
-  obtain ⟨hinj, hsub⟩ := hvalid k hk1 hkK
-  obtain ⟨m, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : k ≠ 0)
-  simp only [cascadeUnconsumed]
-  rw [card_sdiff hsub, card_image_of_injOn hinj]
+  obtain ⟨m, rfl⟩ : ∃ m, k = m + 1 := ⟨k - 1, by omega⟩
+  obtain ⟨hinj, hsub⟩ := hvalid (m + 1) hk1 hkK
+  change (factorLayer S (m + 2) \ (cascadeUnconsumed S φ (m + 1)).image (φ (m + 1))).card =
+    (factorLayer S (m + 2)).card - (cascadeUnconsumed S φ (m + 1)).card
+  have hsdiff := card_sdiff_add_card_eq_card hsub
+  have himg := card_image_of_injOn hinj
+  omega
 
 theorem sum_moebius_factorLayer (S : Finset ℕ) (j : ℕ) :
     ∑ n ∈ factorLayer S j, μ n = (-1 : ℤ) ^ j * ((factorLayer S j).card : ℤ) := by
@@ -576,13 +599,14 @@ theorem intCast_card_cascadeUnconsumed {S : Finset ℕ} {φ : ℕ → ℕ → �
       ((cascadeUnconsumed S φ (k + 1)).card : ℤ) =
         (-1 : ℤ) ^ (k + 1) *
           ∑ n ∈ S.filter (fun n => 1 ≤ n.primeFactors.card ∧ n.primeFactors.card ≤ k + 1), μ n := by
-  classical
   have hsq_eq : ∀ L : ℕ,
       ∑ n ∈ S.filter (fun n => 1 ≤ n.primeFactors.card ∧ n.primeFactors.card ≤ L), μ n =
         ∑ j ∈ Finset.Icc 1 L, (-1 : ℤ) ^ j * ((factorLayer S j).card : ℤ) := by
     intro L
-    have hsub : S.filter (fun n => Squarefree n ∧ 1 ≤ n.primeFactors.card ∧ n.primeFactors.card ≤ L) ⊆
-        S.filter (fun n => 1 ≤ n.primeFactors.card ∧ n.primeFactors.card ≤ L) :=
+    let F := S.filter (fun n => 1 ≤ n.primeFactors.card ∧ n.primeFactors.card ≤ L)
+    change ∑ n ∈ F, μ n = _
+    classical
+    have hsub : S.filter (fun n => Squarefree n ∧ 1 ≤ n.primeFactors.card ∧ n.primeFactors.card ≤ L) ⊆ F :=
       fun n hn => by
         obtain ⟨hnS, _, h1, h2⟩ := mem_filter.mp hn
         exact mem_filter.mpr ⟨hnS, h1, h2⟩
@@ -601,7 +625,6 @@ theorem intCast_card_cascadeUnconsumed {S : Finset ℕ} {φ : ℕ → ℕ → �
   | succ m ih =>
     have hmK : m ≤ K := by omega
     have hprev := ih hmK
-    rw [hsq_eq (m + 1)] at hprev
     have hcard := card_cascadeUnconsumed_succ hvalid (by omega : 1 ≤ m + 1) hk
     have hle : (cascadeUnconsumed S φ (m + 1)).card ≤ (factorLayer S (m + 2)).card := by
       obtain ⟨hinj, hsub⟩ := hvalid (m + 1) (by omega) hk
@@ -636,8 +659,10 @@ theorem upward_cascade_necessary_and_exhaustion {S : Finset ℕ} {φ : ℕ → �
   · have hsum_eq :
         ∑ n ∈ S.filter (fun n => 1 ≤ n.primeFactors.card ∧ n.primeFactors.card ≤ K + 1), μ n =
           ∑ n ∈ S, μ n := by
-      classical
-      refine sum_subset (filter_subset _ S) fun n hnS hnot => ?_
+      let F := S.filter (fun n => 1 ≤ n.primeFactors.card ∧ n.primeFactors.card ≤ K + 1)
+      have hFsub : F ⊆ S := filter_subset _ S
+      change ∑ n ∈ F, μ n = ∑ n ∈ S, μ n
+      refine sum_subset hFsub fun n hnS hnot => ?_
       by_cases hsq : Squarefree n
       · have h0 : n ≠ 0 := hsq.ne_zero
         have hn1 : n ≠ 1 := fun heq => h1 (heq ▸ hnS)

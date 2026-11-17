@@ -122,4 +122,28 @@ theorem harmonicSample_le (S : Finset ℕ) {f : ℕ → ℝ} {X D : ℝ}
       simp only [sum_const, Nat.card_Ioc, Nat.sub_zero, nsmul_eq_mul, mul_one_div]
       exact (div_le_iff₀ hX).mpr (Nat.floor_le (mul_nonneg hD hX.le))
 
+/-- Sum first over multiples of each lower degree. A uniform contact bound
+for each multiple row costs only the logarithmic mass at the lower degrees. -/
+theorem properPowerPairing_le (S J : Finset ℕ) (f g : ℕ → ℝ) {B M : ℝ}
+    (hB : 0 ≤ B) (hf : ∀ j, 0 ≤ f j)
+    (hrow : ∀ j ∈ J, ∑ k ∈ S, (Λ k / Real.sqrt k) * g (j*k) ≤ B)
+    (hmass : ∑ j ∈ J, f j / j ≤ M) :
+    ∑ k ∈ S, (2 / Real.sqrt k * ∑ j ∈ J, f j * g (j*k) / j) * Λ k ≤ 2 * M * B := by
+  calc ∑ k ∈ S, (2 / Real.sqrt k * ∑ j ∈ J, f j * g (j*k) / j) * Λ k
+      = ∑ k ∈ S, ∑ j ∈ J, (2 * (f j / j)) * ((Λ k / Real.sqrt k) * g (j*k)) := by
+        apply sum_congr rfl
+        intro k _
+        rw [mul_sum, sum_mul]
+        exact sum_congr rfl fun j _ => by ring
+    _ = ∑ j ∈ J, (2 * (f j / j)) * ∑ k ∈ S, (Λ k / Real.sqrt k) * g (j*k) := by
+        rw [sum_comm]
+        exact sum_congr rfl fun j _ => (mul_sum ..).symm
+    _ ≤ ∑ j ∈ J, (2 * (f j / j)) * B := sum_le_sum fun j hj =>
+      mul_le_mul_of_nonneg_left (hrow j hj) (mul_nonneg (by norm_num) (div_nonneg (hf j) (Nat.cast_nonneg _)))
+    _ ≤ _ := by
+      rw [← sum_mul, ← mul_sum]
+      exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmass (by norm_num)) hB
+
+#print axioms properPowerContactWindow_le
+
 end GaloisForLFunctions.CountingHolography.Sections
