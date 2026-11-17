@@ -124,7 +124,6 @@ theorem tendsto_splineDegree {N : ℕ} (a : Fin N → ℤ) :
     by_cases ha : a = 0
     · subst a
       have hq : integerProbe N 0 = 0 := by simpa using integerProbe_smul N 0 (0 : Fin N → ℤ)
-      have h := (tendsto_const_nhds (x := (0 : ℝ)) (f := (atTop : Filter ℕ)))
       simp [D, packet, splineSource, meshDegree, logRadius, sampledDegree, degreeForm,
         degreeContact, degreePairing, degreeSample, hq]
     · have hr := resolution_pos ha

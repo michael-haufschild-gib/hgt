@@ -85,4 +85,7 @@ theorem sectionHeight_bounds {d A : ℝ} (hd : 0 < d) :
   exact ⟨by linarith [Nat.lt_floor_add_one (Real.log (2 * (r : ℝ) + 1))],
     (Nat.floor_le (by linarith [le_max_right x 0])).trans (by linarith)⟩
 
+#print axioms sectionHeight_bounds
+#print axioms exists_nonzero_smallSection
+
 end GaloisForLFunctions.CountingHolography.Sections

@@ -1007,7 +1007,972 @@ theorem exists_card_layerTargets_ge (m : ℕ) (B : ℝ) :
     have h1 : Real.log (R ^ (1 / (2 * ((m : ℝ) + 1))) / 2) ≤ Real.log M :=
       Real.log_le_log (by positivity) hM_ge
     rw [Real.log_div (by positivity) (by norm_num), Real.log_rpow hR0] at h1
-    have hlog2_small : Real.log 2 ≤ Real.log R / (4 * ((m : ℝ) + 1)) := by
-      -- Wait: check if `4 * (m + 1) * Real.log 2 ≤ Real.log R`!
-      sorry
-  sorry
+    have hlog12 : Real.log 12 ≤ 1 / (2 * ((m : ℝ) + 1)) * Real.log R := by
+      have := Real.log_le_log (by norm_num : (0 : ℝ) < 12) hM12
+      rwa [Real.log_rpow hR0] at this
+    have hlog2_le : 2 * Real.log 2 ≤ Real.log 12 := by
+      have h4 : (2 : ℝ) * Real.log 2 = Real.log 4 := by
+        rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.log_pow]; ring
+      rw [h4]
+      exact Real.log_le_log (by norm_num) (by norm_num)
+    have hhalf : 1 / (2 * ((m : ℝ) + 1)) * Real.log R =
+        2 * (Real.log R / (4 * ((m : ℝ) + 1))) := by ring
+    linarith
+  have hS_ge : Real.log (Real.log R) - K₂ + (m : ℝ) ≤
+      ∑ p ∈ largePrimesLE M, 1 / (p : ℝ) := by
+    have h1 := RHTower.Sieve.le_mertensS hM2
+    have h2 := sum_largePrimesLE_ge M
+    have h3 : Real.log (Real.log R / (4 * ((m : ℝ) + 1))) ≤ RHTower.Sieve.logLog M :=
+      Real.log_le_log (by positivity) hlogM
+    rw [Real.log_div hL0.ne' (by positivity)] at h3
+    unfold RHTower.Sieve.mertensS at h1
+    simp only [K₂]
+    linarith
+  have hm_le_S : (m : ℝ) ≤ ∑ p ∈ largePrimesLE M, 1 / (p : ℝ) := by linarith
+  have hP1 : ∀ p ∈ largePrimesLE M, 1 ≤ p := fun p hp => by
+    have := (mem_filter.mp hp).2; omega
+  have hpow_ge : (Real.log (Real.log R) - K₂) ^ m ≤
+      (m.factorial : ℝ) *
+        ∑ T ∈ (largePrimesLE M).powersetCard m, (1 / (∏ p ∈ T, (p : ℝ))) := by
+    have hsub_ge : Real.log (Real.log R) - K₂ ≤
+        (∑ p ∈ largePrimesLE M, 1 / (p : ℝ)) - m := by linarith
+    have hpow_mono : (Real.log (Real.log R) - K₂) ^ m ≤
+        ((∑ p ∈ largePrimesLE M, 1 / (p : ℝ)) - m) ^ m := by
+      gcongr; linarith
+    exact hpow_mono.trans (le_factorial_mul_sum_inv_prod_powersetCard hP1 m hm_le_S)
+  have hfac_pos : (0 : ℝ) < m.factorial := by exact_mod_cast Nat.factorial_pos _
+  have hsum_T_ge : (Real.log (Real.log R) - K₂) ^ m / (m.factorial : ℝ) ≤
+      ∑ T ∈ (largePrimesLE M).powersetCard m, (1 / (∏ p ∈ T, (p : ℝ))) := by
+    rw [div_le_iff₀ hfac_pos, mul_comm]
+    exact hpow_ge
+  have hq_each : ∀ q ∈ ({2, 3, 5} : Finset ℕ),
+      (1 - ε) * (v - u) / (q * Real.log R) *
+          ((Real.log (Real.log R) - K₂) ^ m / (m.factorial : ℝ)) ≤
+        ∑ T ∈ (largePrimesLE M).powersetCard m,
+          ((windowPrimes (u / (q * ∏ p ∈ T, p)) (v / (q * ∏ p ∈ T, p))).card : ℝ) := by
+    intro q hq
+    have hq_pos : (0 : ℝ) < q := by exact_mod_cast (small_cofactor_cases hq).1.pos
+    have hcoef0 : 0 ≤ (1 - ε) * (v - u) / (q * Real.log R) := by
+      have : 0 ≤ 1 - ε := by norm_num [ε]
+      positivity
+    calc (1 - ε) * (v - u) / (q * Real.log R) *
+            ((Real.log (Real.log R) - K₂) ^ m / (m.factorial : ℝ))
+        ≤ (1 - ε) * (v - u) / (q * Real.log R) *
+            ∑ T ∈ (largePrimesLE M).powersetCard m, (1 / (∏ p ∈ T, (p : ℝ))) :=
+          mul_le_mul_of_nonneg_left hsum_T_ge hcoef0
+      _ = ∑ T ∈ (largePrimesLE M).powersetCard m,
+            (1 - ε) * (v - u) / (q * Real.log R) * (1 / (∏ p ∈ T, (p : ℝ))) := mul_sum _ _ _
+      _ ≤ ∑ T ∈ (largePrimesLE M).powersetCard m,
+            ((windowPrimes (u / (q * ∏ p ∈ T, p)) (v / (q * ∏ p ∈ T, p))).card : ℝ) :=
+          sum_le_sum (hwin q hq)
+  rw [card_layerTargets hM5 hMu huv]
+  push_cast
+  rw [sum_insert (by decide), sum_insert (by decide), sum_singleton]
+  have h2 := hq_each 2 (by decide)
+  have h3 := hq_each 3 (by decide)
+  have h5 := hq_each 5 (by decide)
+  push_cast at h2 h3 h5
+  have heq_61 :
+      (1 - ε) * (v - u) / (2 * Real.log R) *
+          ((Real.log (Real.log R) - K₂) ^ m / (m.factorial : ℝ)) +
+        (1 - ε) * (v - u) / (3 * Real.log R) *
+          ((Real.log (Real.log R) - K₂) ^ m / (m.factorial : ℝ)) +
+        (1 - ε) * (v - u) / (5 * Real.log R) *
+          ((Real.log (Real.log R) - K₂) ^ m / (m.factorial : ℝ)) =
+      (61 / 60) * (v - u) / ((m.factorial : ℝ) * Real.log R) *
+        (Real.log (Real.log R) - K₂) ^ m := by
+    simp only [ε]
+    field_simp
+    ring
+  linarith
+
+private theorem bernoulli_one_sub {δ : ℝ} (hδ0 : 0 ≤ δ) (hδ1 : δ ≤ 1) :
+    ∀ m : ℕ, 1 - (m : ℝ) * δ ≤ (1 - δ) ^ m
+  | 0 => by simp
+  | m + 1 => by
+    have hih := bernoulli_one_sub hδ0 hδ1 m
+    have h1 : (1 - (m : ℝ) * δ) * (1 - δ) ≤ (1 - δ) ^ m * (1 - δ) :=
+      mul_le_mul_of_nonneg_right hih (by linarith)
+    rw [pow_succ]
+    push_cast
+    nlinarith [sq_nonneg δ]
+
+/-- Single-layer cellwise injection from any subset `U ⊆ factorLayer (Ioc R (2R)) (m + 1)` into
+`factorLayer (Ioc R (2R)) (m + 2)` via `{2, 3, 5}`-cofactor targets in the same log-power cell. -/
+theorem exists_single_layer_cell_matching (m : ℕ) {B : ℝ} (hB : 0 < B) :
+    ∃ R₀ : ℕ, ∀ R : ℕ, R₀ ≤ R →
+      ∀ U : Finset ℕ, U ⊆ factorLayer (Ioc R (2 * R)) (m + 1) →
+        ∃ ψ : ℕ → ℕ, Set.InjOn ψ ↑U ∧
+          U.image ψ ⊆ factorLayer (Ioc R (2 * R)) (m + 2) ∧
+          ∀ n ∈ U, |(ψ n : ℝ) - n| ≤ 2 * R / Real.log R ^ B ∧
+            ∃ q d r : ℕ, (q = 2 ∨ q = 3 ∨ q = 5) ∧ r.Prime ∧ 5 < r ∧
+              Squarefree d ∧ d.primeFactors.card = m ∧ ψ n = q * d * r := by
+  obtain ⟨K₁, R₁, _, hup⟩ := exists_card_kPrimesIn_le (m + 1) (by omega) B
+  obtain ⟨K₂, R₂, _, hlow⟩ := exists_card_layerTargets_ge m B
+  set A_gap : ℝ := |K₁| + |K₂| + 1
+  have hev : ∀ᶠ R : ℝ in atTop,
+      R₁ ≤ R ∧ R₂ ≤ R ∧ 80 ≤ R ∧ 1 ≤ Real.log R ∧
+      |K₁| + 1 ≤ Real.log (Real.log R) ∧
+      200 * ((m : ℝ) + 1) * A_gap + |K₁| ≤ Real.log (Real.log R) :=
+    (eventually_ge_atTop _).and ((eventually_ge_atTop _).and
+      ((eventually_ge_atTop _).and ((Real.tendsto_log_atTop.eventually_ge_atTop 1).and
+        (((Real.tendsto_log_atTop.comp Real.tendsto_log_atTop).eventually_ge_atTop _).and
+          ((Real.tendsto_log_atTop.comp Real.tendsto_log_atTop).eventually_ge_atTop _)))))
+  obtain ⟨X, hX⟩ := eventually_atTop.mp hev
+  refine ⟨⌈X⌉₊, fun R hR U hU => ?_⟩
+  classical
+  have hRX : X ≤ (R : ℝ) := (Nat.le_ceil X).trans (by exact_mod_cast hR)
+  obtain ⟨hR₁, hR₂, hR80, hL1, hll1, hll_big⟩ := hX R hRX
+  obtain ⟨hM5, hMR, hlowR⟩ := hlow R hR₂
+  set M := ⌊(R : ℝ) ^ (1 / (2 * ((m : ℝ) + 1)))⌋₊
+  have hR0 : (0 : ℝ) < R := by linarith
+  have hL0 : 0 < Real.log R := by linarith
+  set x : ℝ := Real.log R ^ B
+  have hx1 : 1 ≤ x := Real.one_le_rpow hL1 hB.le
+  obtain ⟨hJ1, hhlow, hhup, hJh⟩ := cell_scale hR0 hx1
+  set h : ℝ := (R : ℝ) / ⌊x⌋₊
+  have hh0 : 0 < h := by positivity
+  -- Compare `(1 + 1/100) * (ℓ + K₁)^m ≤ (61/60) * (ℓ - K₂)^m` via Bernoulli
+  set ℓ : ℝ := Real.log (Real.log R)
+  have hℓK1_pos : 1 ≤ ℓ + K₁ := by have := neg_abs_le K₁; linarith
+  have hratio_pow : (1 + 1 / 100) * (ℓ + K₁) ^ m ≤ (61 / 60) * (ℓ - K₂) ^ m := by
+    set δ : ℝ := 1 / (200 * ((m : ℝ) + 1))
+    have hδ0 : 0 ≤ δ := by positivity
+    have hδ1 : δ ≤ 1 := by
+      rw [div_le_one (by positivity)]
+      have : (0 : ℝ) ≤ m := Nat.cast_nonneg m
+      linarith
+    have hstep_δ : (1 - δ) * (ℓ + K₁) ≤ ℓ - K₂ := by
+      have hK_le : K₁ + K₂ ≤ A_gap := by
+        simp only [A_gap]
+        linarith [le_abs_self K₁, le_abs_self K₂]
+      have hδ_mul : δ * (ℓ + K₁) ≥ A_gap := by
+        simp only [δ]
+        rw [ge_iff_le, le_div_iff₀ (by positivity)]
+        have hK1_abs : -|K₁| ≤ K₁ := neg_abs_le K₁
+        have : A_gap * (200 * ((m : ℝ) + 1)) ≤ ℓ + K₁ := by linarith
+        linarith
+      linarith
+    have hpow_step : (1 - δ) ^ m * (ℓ + K₁) ^ m ≤ (ℓ - K₂) ^ m := by
+      rw [← mul_pow]
+      exact pow_le_pow_left₀ (mul_nonneg (by linarith) (by linarith)) hstep_δ m
+    have hbern : 199 / 200 ≤ (1 - δ) ^ m := by
+      have hb := bernoulli_one_sub hδ0 hδ1 m
+      have hmδ : (m : ℝ) * δ ≤ 1 / 200 := by
+        simp only [δ]
+        rw [mul_one_div, div_le_div_iff₀ (by positivity) (by norm_num)]
+        have : (0 : ℝ) ≤ m := Nat.cast_nonneg m
+        linarith
+      linarith
+    have hpos_pow : 0 ≤ (ℓ + K₁) ^ m := by positivity
+    calc (1 + 1 / 100) * (ℓ + K₁) ^ m
+        ≤ (61 / 60) * (199 / 200) * (ℓ + K₁) ^ m :=
+          mul_le_mul_of_nonneg_right (by norm_num) hpos_pow
+      _ ≤ (61 / 60) * ((1 - δ) ^ m * (ℓ + K₁) ^ m) := by
+          have := mul_le_mul_of_nonneg_right hbern hpos_pow
+          linarith
+      _ ≤ (61 / 60) * (ℓ - K₂) ^ m := by gcongr
+  have hcell : ∀ i < ⌊x⌋₊, (R : ℝ) ≤ R + i * h ∧ (R : ℝ) + i * h ≤ R + (i + 1) * h ∧
+      (R : ℝ) + (i + 1) * h ≤ 2 * R ∧ (R : ℝ) / x ≤ R + (i + 1) * h - (R + i * h) := by
+    intro i hi
+    have hi' : (i : ℝ) + 1 ≤ ⌊x⌋₊ := by exact_mod_cast hi
+    have h1 : (0 : ℝ) ≤ i * h := by positivity
+    have h2 : ((i : ℝ) + 1) * h ≤ ⌊x⌋₊ * h := by gcongr
+    refine ⟨by linarith, by linarith, by linarith, by linarith⟩
+  have hU_mem : ∀ n ∈ U, (R : ℝ) < n ∧ (n : ℝ) ≤ 2 * R ∧
+      Squarefree n ∧ n.primeFactors.card = m + 1 := by
+    intro n hn
+    obtain ⟨hnIoc, hsq, hcard⟩ := mem_filter.mp (hU hn)
+    obtain ⟨hnR, hn2R⟩ := mem_Ioc.mp hnIoc
+    exact ⟨by exact_mod_cast hnR, by exact_mod_cast hn2R, hsq, hcard⟩
+  have hUc : ∀ n ∈ U, cellIndex R h n < ⌊x⌋₊ := by
+    intro n hn
+    obtain ⟨h1, h2, -⟩ := hU_mem n hn
+    exact cellIndex_lt hh0 h1 (by rw [hJh]; push_cast at h2; linarith)
+  set T_all := (range ⌊x⌋₊).biUnion fun i =>
+    layerTargets m M ((R : ℝ) + i * h) ((R : ℝ) + (i + 1) * h)
+  have hcount : ∀ i, (U.filter (cellIndex R h · = i)).card ≤
+      (T_all.filter (cellIndex R h · = i)).card := by
+    intro i
+    by_cases hi : i < ⌊x⌋₊
+    · obtain ⟨hu, huv, hv, hgap⟩ := hcell i hi
+      have hsub1 : U.filter (cellIndex R h · = i) ⊆
+          kPrimesIn (m + 1) ((R : ℝ) + i * h) ((R : ℝ) + (i + 1) * h) := by
+        intro n hn
+        obtain ⟨hnU, hni⟩ := mem_filter.mp hn
+        obtain ⟨h1, -, hsq, hcard⟩ := hU_mem n hnU
+        obtain ⟨h3, h4⟩ := cellIndex_spec hh0 h1
+        rw [hni] at h3 h4
+        exact (mem_kPrimesIn (by linarith) (by linarith)).mpr ⟨h3, h4, hsq, hcard⟩
+      have hsub2 : layerTargets m M ((R : ℝ) + i * h) ((R : ℝ) + (i + 1) * h) ⊆
+          T_all.filter (cellIndex R h · = i) := by
+        intro n hn
+        obtain ⟨h3, h4, -⟩ := mem_layerTargets hM5 (hMR.trans hu) huv hn
+        exact mem_filter.mpr ⟨mem_biUnion.mpr ⟨i, mem_range.mpr hi, hn⟩,
+          cellIndex_eq hh0 h3 h4⟩
+      have hup_i := hup R hR₁ _ _ hu huv (by push_cast; exact hv) hgap
+      simp only [Nat.add_sub_cancel] at hup_i
+      have hlow_i := hlowR _ _ hu huv (by push_cast; exact hv) hgap
+      have hfac_pos : (0 : ℝ) < (m.factorial : ℝ) * Real.log R := by
+        have : (0 : ℝ) < m.factorial := by exact_mod_cast Nat.factorial_pos _
+        positivity
+      have hw_nn : 0 ≤ (((R : ℝ) + (i + 1) * h) - ((R : ℝ) + i * h)) /
+          ((m.factorial : ℝ) * Real.log R) :=
+        div_nonneg (by linarith) hfac_pos.le
+      have hmid : (1 + 1 / 100) * (((R : ℝ) + (i + 1) * h) - ((R : ℝ) + i * h)) /
+            ((m.factorial : ℝ) * Real.log R) * (ℓ + K₁) ^ m ≤
+          (61 / 60) * (((R : ℝ) + (i + 1) * h) - ((R : ℝ) + i * h)) /
+            ((m.factorial : ℝ) * Real.log R) * (ℓ - K₂) ^ m := by
+        have hm := mul_le_mul_of_nonneg_left hratio_pow hw_nn
+        linarith [show (1 + 1 / 100) * (((R : ℝ) + (i + 1) * h) - ((R : ℝ) + i * h)) /
+              ((m.factorial : ℝ) * Real.log R) * (ℓ + K₁) ^ m =
+            (((R : ℝ) + (i + 1) * h) - ((R : ℝ) + i * h)) /
+              ((m.factorial : ℝ) * Real.log R) * ((1 + 1 / 100) * (ℓ + K₁) ^ m) by ring,
+          show (61 / 60) * (((R : ℝ) + (i + 1) * h) - ((R : ℝ) + i * h)) /
+              ((m.factorial : ℝ) * Real.log R) * (ℓ - K₂) ^ m =
+            (((R : ℝ) + (i + 1) * h) - ((R : ℝ) + i * h)) /
+              ((m.factorial : ℝ) * Real.log R) * ((61 / 60) * (ℓ - K₂) ^ m) by ring]
+      have hle_real : ((kPrimesIn (m + 1) ((R : ℝ) + i * h) ((R : ℝ) + (i + 1) * h)).card : ℝ) ≤
+          (layerTargets m M ((R : ℝ) + i * h) ((R : ℝ) + (i + 1) * h)).card :=
+        hup_i.trans (hmid.trans hlow_i)
+      have hle_nat : (kPrimesIn (m + 1) ((R : ℝ) + i * h) ((R : ℝ) + (i + 1) * h)).card ≤
+          (layerTargets m M ((R : ℝ) + i * h) ((R : ℝ) + (i + 1) * h)).card := by
+        exact_mod_cast hle_real
+      exact (card_le_card hsub1).trans (hle_nat.trans (card_le_card hsub2))
+    · have hemp : U.filter (cellIndex R h · = i) = ∅ := by
+        refine filter_eq_empty_iff.mpr fun n hn hni => hi ?_
+        rw [← hni]; exact hUc n hn
+      rw [hemp]; exact Nat.zero_le _
+  obtain ⟨ψ, hinj, hψ⟩ := exists_cellwise_injOn (cellIndex R h) U T_all hcount
+  have hψ_props : ∀ n ∈ U, ψ n ∈ factorLayer (Ioc R (2 * R)) (m + 2) ∧
+      |(ψ n : ℝ) - n| ≤ 2 * R / Real.log R ^ B ∧
+      ∃ q d r : ℕ, (q = 2 ∨ q = 3 ∨ q = 5) ∧ r.Prime ∧ 5 < r ∧
+        Squarefree d ∧ d.primeFactors.card = m ∧ ψ n = q * d * r := by
+    intro n hn
+    obtain ⟨hψT, hψc⟩ := hψ n hn
+    obtain ⟨i, hi, hmem_lt⟩ := mem_biUnion.mp hψT
+    have hi' := mem_range.mp hi
+    obtain ⟨hu, huv, hv, -⟩ := hcell i hi'
+    obtain ⟨hlt, hle, hsq_ψ, hcard_ψ, hex⟩ :=
+      mem_layerTargets hM5 (hMR.trans hu) huv hmem_lt
+    have hci : cellIndex R h (ψ n) = i := cellIndex_eq hh0 hlt hle
+    obtain ⟨h1, -, -⟩ := hU_mem n hn
+    obtain ⟨h3, h4⟩ := cellIndex_spec hh0 h1
+    rw [← hψc, hci] at h3 h4
+    have hψ_Ioc : ψ n ∈ Ioc R (2 * R) := by
+      refine mem_Ioc.mpr ⟨?_, ?_⟩
+      · exact_mod_cast (show (R : ℝ) < ψ n by linarith)
+      · exact_mod_cast (show (ψ n : ℝ) ≤ (2 * R : ℕ) by push_cast; linarith)
+    refine ⟨mem_filter.mpr ⟨hψ_Ioc, hsq_ψ, hcard_ψ⟩, ?_, hex⟩
+    rw [abs_le]
+    constructor <;> linarith
+  refine ⟨ψ, hinj, ?_, fun n hn => ⟨(hψ_props n hn).2.1, (hψ_props n hn).2.2⟩⟩
+  intro y hy
+  obtain ⟨n, hn, rfl⟩ := mem_image.mp hy
+  exact (hψ_props n hn).1
+
+/-! ### 4. Assembling `K`-layer cascades into disjoint opposite-parity matchings -/
+
+/-- Disjoint union of two opposite-parity matchings on `S` with disjoint `matchedSet`s. -/
+noncomputable def OppositeParityMatching.disjointUnion {R : ℕ → ℕ → Prop} {S : Finset ℕ}
+    (M₁ M₂ : OppositeParityMatching R S) (hdisj : Disjoint M₁.matchedSet M₂.matchedSet) :
+    OppositeParityMatching R S := by
+  classical
+  have hs_disj : Disjoint M₁.sources M₂.sources :=
+    Disjoint.mono subset_union_left subset_union_left hdisj
+  have ht_disj : Disjoint M₁.targets M₂.targets :=
+    Disjoint.mono subset_union_right subset_union_right hdisj
+  refine
+    { sources := M₁.sources ∪ M₂.sources
+      partner := fun a => if a ∈ M₁.sources then M₁.partner a else M₂.partner a
+      sources_subset := union_subset M₁.sources_subset M₂.sources_subset
+      injOn := ?_
+      partner_mem := ?_
+      adj := ?_ }
+  · intro x hx y hy hxy
+    rcases mem_union.mp (mem_coe.mp hx) with hx1 | hx2 <;>
+      rcases mem_union.mp (mem_coe.mp hy) with hy1 | hy2
+    · simp only [if_pos hx1, if_pos hy1] at hxy
+      exact M₁.injOn hx1 hy1 hxy
+    · have hy_not : y ∉ M₁.sources := disjoint_left.mp hs_disj hx1 ▸ fun h =>
+        False.elim (disjoint_left.mp hs_disj h hy2)
+      simp only [if_pos hx1, if_neg (disjoint_right.mp hs_disj hy2)] at hxy
+      exact False.elim (disjoint_left.mp ht_disj (mem_image_of_mem _ hx1)
+        (hxy ▸ mem_image_of_mem _ hy2))
+    · simp only [if_neg (disjoint_right.mp hs_disj hx2), if_pos hy1] at hxy
+      exact False.elim (disjoint_left.mp ht_disj (mem_image_of_mem _ hy1)
+        (hxy.symm ▸ mem_image_of_mem _ hx2))
+    · simp only [if_neg (disjoint_right.mp hs_disj hx2),
+        if_neg (disjoint_right.mp hs_disj hy2)] at hxy
+      exact M₂.injOn hx2 hy2 hxy
+  · intro a ha
+    rcases mem_union.mp ha with ha1 | ha2
+    · rw [if_pos ha1]; exact M₁.partner_mem a ha1
+    · rw [if_neg (disjoint_right.mp hs_disj ha2)]; exact M₂.partner_mem a ha2
+  · intro a ha
+    rcases mem_union.mp ha with ha1 | ha2
+    · rw [if_pos ha1]; exact M₁.adj a ha1
+    · rw [if_neg (disjoint_right.mp hs_disj ha2)]; exact M₂.adj a ha2
+
+theorem OppositeParityMatching.disjointUnion_spec {R : ℕ → ℕ → Prop} {S : Finset ℕ}
+    (M₁ M₂ : OppositeParityMatching R S) (hdisj : Disjoint M₁.matchedSet M₂.matchedSet) :
+    (M₁.disjointUnion M₂ hdisj).matchedSet = M₁.matchedSet ∪ M₂.matchedSet ∧
+      (M₁.disjointUnion M₂ hdisj).sources.card = M₁.sources.card + M₂.sources.card := by
+  classical
+  have hs_disj : Disjoint M₁.sources M₂.sources :=
+    Disjoint.mono subset_union_left subset_union_left hdisj
+  have htar : (M₁.disjointUnion M₂ hdisj).targets = M₁.targets ∪ M₂.targets := by
+    ext b
+    simp only [OppositeParityMatching.targets, OppositeParityMatching.disjointUnion,
+      mem_image, mem_union]
+    constructor
+    · rintro ⟨a, ha1 | ha2, rfl⟩
+      · rw [if_pos ha1]; exact Or.inl ⟨a, ha1, rfl⟩
+      · rw [if_neg (disjoint_right.mp hs_disj ha2)]; exact Or.inr ⟨a, ha2, rfl⟩
+    · rintro (⟨a, ha1, rfl⟩ | ⟨a, ha2, rfl⟩)
+      · exact ⟨a, Or.inl ha1, if_pos ha1⟩
+      · exact ⟨a, Or.inr ha2, if_neg (disjoint_right.mp hs_disj ha2)⟩
+  refine ⟨?_, card_union_of_disjoint hs_disj⟩
+  simp only [OppositeParityMatching.matchedSet, htar]
+  change (M₁.sources ∪ M₂.sources) ∪ (M₁.targets ∪ M₂.targets) =
+    (M₁.sources ∪ M₁.targets) ∪ (M₂.sources ∪ M₂.targets)
+  ext x; simp only [mem_union]; tauto
+
+/-- Single-step opposite-parity matching induced by an injection `ψ : U ↪ factorLayer S (k + 1)`
+with `U ⊆ factorLayer S k` along a symmetric relation `R`. -/
+noncomputable def singleStepMatching {R : ℕ → ℕ → Prop} (hRsym : Symmetric R) {S : Finset ℕ}
+    {k : ℕ} {U : Finset ℕ} {ψ : ℕ → ℕ}
+    (hU : U ⊆ factorLayer S k) (hinj : Set.InjOn ψ ↑U)
+    (himg : U.image ψ ⊆ factorLayer S (k + 1)) (hadj : ∀ m ∈ U, R m (ψ m)) :
+    {M : OppositeParityMatching R S //
+      M.matchedSet = U ∪ U.image ψ ∧ M.sources.card = U.card} := by
+  classical
+  rcases Nat.even_or_odd k with hk_even | hk_odd
+  · -- `k` even: `U ⊆ posParity S` and `ψ(U) ⊆ negParity S`
+    have hU_pos : U ⊆ posParity S := by
+      intro a ha
+      obtain ⟨haS, hsq, hcard⟩ := mem_filter.mp (hU ha)
+      refine mem_filter.mpr ⟨haS, ?_⟩
+      rw [moebius_eq_neg_one_pow_omega hsq, hcard]
+      exact hk_even.neg_one_pow
+    have hψ_neg : ∀ a ∈ U, ψ a ∈ negParity S := by
+      intro a ha
+      obtain ⟨hbS, hsq, hcard⟩ := mem_filter.mp (himg (mem_image_of_mem ψ ha))
+      refine mem_filter.mpr ⟨hbS, ?_⟩
+      rw [moebius_eq_neg_one_pow_omega hsq, hcard]
+      exact (hk_even.add_one).neg_one_pow
+    let M : OppositeParityMatching R S :=
+      { sources := U
+        partner := ψ
+        sources_subset := hU_pos
+        injOn := hinj
+        partner_mem := hψ_neg
+        adj := hadj }
+    exact ⟨M, rfl, rfl⟩
+  · -- `k` odd: `V = ψ(U) ⊆ posParity S` and `U ⊆ negParity S`
+    let V := U.image ψ
+    have hV_pos : V ⊆ posParity S := by
+      intro b hb
+      obtain ⟨hbS, hsq, hcard⟩ := mem_filter.mp (himg hb)
+      refine mem_filter.mpr ⟨hbS, ?_⟩
+      rw [moebius_eq_neg_one_pow_omega hsq, hcard]
+      exact (hk_odd.add_odd odd_one).neg_one_pow
+    have hU_neg : U ⊆ negParity S := by
+      intro a ha
+      obtain ⟨haS, hsq, hcard⟩ := mem_filter.mp (hU ha)
+      refine mem_filter.mpr ⟨haS, ?_⟩
+      rw [moebius_eq_neg_one_pow_omega hsq, hcard]
+      exact hk_odd.neg_one_pow
+    let invψ : ℕ → ℕ := fun b =>
+      if hb : b ∈ V then (mem_image.mp hb).choose else 0
+    have hinv_spec : ∀ b (hb : b ∈ V), invψ b ∈ U ∧ ψ (invψ b) = b := by
+      intro b hb
+      dsimp only [invψ]
+      rw [dif_pos hb]
+      exact (mem_image.mp hb).choose_spec
+    have hinv_eq : ∀ a ∈ U, invψ (ψ a) = a := by
+      intro a ha
+      have hb : ψ a ∈ V := mem_image_of_mem ψ ha
+      obtain ⟨hu, hψu⟩ := hinv_spec (ψ a) hb
+      exact hinj hu ha hψu
+    have hinv_inj : Set.InjOn invψ ↑V := by
+      intro b₁ hb₁ b₂ hb₂ heq
+      have h1 := (hinv_spec b₁ hb₁).2
+      have h2 := (hinv_spec b₂ hb₂).2
+      rw [← h1, ← h2, heq]
+    have hV_img : V.image invψ = U := by
+      ext a
+      simp only [mem_image]
+      constructor
+      · rintro ⟨b, hb, rfl⟩; exact (hinv_spec b hb).1
+      · intro ha; exact ⟨ψ a, mem_image_of_mem ψ ha, hinv_eq a ha⟩
+    let M : OppositeParityMatching R S :=
+      { sources := V
+        partner := invψ
+        sources_subset := hV_pos
+        injOn := hinv_inj
+        partner_mem := fun b hb => hU_neg (hinv_spec b hb).1
+        adj := fun b hb => by
+          obtain ⟨hu, hψu⟩ := hinv_spec b hb
+          rw [← hψu]
+          exact hRsym (hadj _ hu) }
+    refine ⟨M, ?_, card_image_of_injOn hinj⟩
+    change V ∪ V.image invψ = U ∪ V
+    rw [hV_img, union_comm]
+
+/-- Inductive assembly of any valid `K`-layer cascade into a single disjoint
+`OppositeParityMatching` covering all squarefree layers `1 ≤ ω(n) ≤ K`. -/
+noncomputable def matchingOfLayerCascade {R : ℕ → ℕ → Prop} (hRsym : Symmetric R) (S : Finset ℕ)
+    (φ : ℕ → ℕ → ℕ) :
+    ∀ K : ℕ, IsValidLayerCascade S φ K →
+      (∀ k : ℕ, 1 ≤ k → k ≤ K → ∀ m ∈ cascadeUnconsumed S φ k, R m (φ k m)) →
+      {M : OppositeParityMatching R S //
+        M.matchedSet = (Finset.Icc 1 K).biUnion (factorLayer S) ∪
+          (if K = 0 then ∅ else (cascadeUnconsumed S φ K).image (φ K)) ∧
+        M.sources.card = ∑ k ∈ Finset.Icc 1 K, (cascadeUnconsumed S φ k).card}
+  | 0, _, _ =>
+    ⟨{ sources := ∅
+       partner := id
+       sources_subset := empty_subset _
+       injOn := Set.injOn_empty _
+       partner_mem := fun _ h => False.elim (notMem_empty _ h)
+       adj := fun _ h => False.elim (notMem_empty _ h) },
+     by simp [OppositeParityMatching.matchedSet, OppositeParityMatching.targets],
+     by simp⟩
+  | K + 1, hvalid, hadj => by
+    classical
+    have hvalid_K : IsValidLayerCascade S φ K :=
+      fun k hk1 hkK => hvalid k hk1 (by omega)
+    have hadj_K : ∀ k : ℕ, 1 ≤ k → k ≤ K → ∀ m ∈ cascadeUnconsumed S φ k, R m (φ k m) :=
+      fun k hk1 hkK => hadj k hk1 (by omega)
+    obtain ⟨M_K, hMK_set, hMK_card⟩ := matchingOfLayerCascade hRsym S φ K hvalid_K hadj_K
+    obtain ⟨hinj_top, hsub_top⟩ := hvalid (K + 1) (by omega) le_rfl
+    obtain ⟨M_top, hMtop_set, hMtop_card⟩ := singleStepMatching hRsym
+      (cascadeUnconsumed_subset_factorLayer S φ (K + 1)) hinj_top hsub_top
+      (hadj (K + 1) (by omega) le_rfl)
+    have hdisj : Disjoint M_K.matchedSet M_top.matchedSet := by
+      rw [hMK_set, hMtop_set, disjoint_left]
+      intro x hxK hxTop
+      have hU_sub := cascadeUnconsumed_subset_factorLayer S φ (K + 1)
+      rcases mem_union.mp hxK with hxIcc | hxImgK
+      · obtain ⟨j, hjIcc, hxj⟩ := mem_biUnion.mp hxIcc
+        have hjK : j ≤ K := (mem_Icc.mp hjIcc).2
+        rcases mem_union.mp hxTop with hxU | hxV
+        · exact disjoint_left.mp (disjoint_factorLayer (by omega : j ≠ K + 1)) hxj (hU_sub hxU)
+        · exact disjoint_left.mp (disjoint_factorLayer (by omega : j ≠ K + 2)) hxj (hsub_top hxV)
+      · rcases Nat.eq_zero_or_pos K with rfl | hKpos
+        · simp at hxImgK
+        · rw [if_neg hKpos.ne'] at hxImgK
+          obtain ⟨j, rfl⟩ : ∃ j, K = j + 1 := ⟨K - 1, by omega⟩
+          rcases mem_union.mp hxTop with hxU | hxV
+          · change x ∈ factorLayer S (j + 2) \
+              (cascadeUnconsumed S φ (j + 1)).image (φ (j + 1)) at hxU
+            exact (mem_sdiff.mp hxU).2 hxImgK
+          · have hsub_prev := (hvalid (j + 1) (by omega) (by omega)).2
+            exact disjoint_left.mp (disjoint_factorLayer (by omega : j + 2 ≠ j + 3))
+              (hsub_prev hxImgK) (hsub_top hxV)
+    refine ⟨M_K.disjointUnion M_top hdisj, ?_, ?_⟩
+    · rw [(M_K.disjointUnion_spec M_top hdisj).1, hMK_set, hMtop_set, if_neg (Nat.succ_ne_zero K)]
+      have hIcc_step : Finset.Icc 1 (K + 1) = insert (K + 1) (Finset.Icc 1 K) := by
+        ext j; simp only [mem_Icc, mem_insert]; omega
+      rw [hIcc_step, biUnion_insert]
+      rcases Nat.eq_zero_or_pos K with rfl | hKpos
+      · simp [cascadeUnconsumed, union_comm]
+      · rw [if_neg hKpos.ne']
+        obtain ⟨j, rfl⟩ : ∃ j, K = j + 1 := ⟨K - 1, by omega⟩
+        have hsub_prev : (cascadeUnconsumed S φ (j + 1)).image (φ (j + 1)) ⊆
+            factorLayer S (j + 2) := (hvalid (j + 1) (by omega) (by omega)).2
+        have hunion_mid : (cascadeUnconsumed S φ (j + 1)).image (φ (j + 1)) ∪
+            cascadeUnconsumed S φ (j + 2) = factorLayer S (j + 2) := by
+          change (cascadeUnconsumed S φ (j + 1)).image (φ (j + 1)) ∪
+            (factorLayer S (j + 2) \ (cascadeUnconsumed S φ (j + 1)).image (φ (j + 1))) =
+              factorLayer S (j + 2)
+          exact union_sdiff_of_subset hsub_prev
+        ext x
+        simp only [mem_union]
+        have hmid_iff : (x ∈ (cascadeUnconsumed S φ (j + 1)).image (φ (j + 1)) ∨
+            x ∈ cascadeUnconsumed S φ (j + 2)) ↔ x ∈ factorLayer S (j + 2) := by
+          rw [← mem_union, hunion_mid]
+        tauto
+    · rw [(M_K.disjointUnion_spec M_top hdisj).2, hMK_card, hMtop_card]
+      have hIcc_step : Finset.Icc 1 (K + 1) = insert (K + 1) (Finset.Icc 1 K) := by
+        ext j; simp only [mem_Icc, mem_insert]; omega
+      rw [hIcc_step, sum_insert (by simp), add_comm]
+
+private theorem exists_valid_cascade_up_to :
+    ∀ (K : ℕ) {B : ℝ} (_hB : 0 < B),
+      ∃ R₀ : ℕ, ∀ R : ℕ, R₀ ≤ R →
+        ∃ φ : ℕ → ℕ → ℕ,
+          IsValidLayerCascade (Ioc R (2 * R)) φ K ∧
+          ∀ k : ℕ, 1 ≤ k → k ≤ K → ∀ n ∈ cascadeUnconsumed (Ioc R (2 * R)) φ k,
+            |(φ k n : ℝ) - n| ≤ 2 * R / Real.log R ^ B ∧
+            ∃ q d r : ℕ, (q = 2 ∨ q = 3 ∨ q = 5) ∧ r.Prime ∧ 5 < r ∧
+              Squarefree d ∧ d.primeFactors.card = k - 1 ∧ φ k n = q * d * r
+  | 0, _, _ =>
+    ⟨0, fun _ _ => ⟨fun _ _ => 0, fun _ hk1 hk0 => by omega, fun _ hk1 hk0 => by omega⟩⟩
+  | K + 1, B, hB => by
+    obtain ⟨R₁, ih⟩ := exists_valid_cascade_up_to K hB
+    obtain ⟨R₂, hstep⟩ := exists_single_layer_cell_matching K hB
+    refine ⟨max R₁ R₂, fun R hR => ?_⟩
+    obtain ⟨φ₀, hval₀, hprop₀⟩ := ih R (le_of_max_le_left hR)
+    set S := Ioc R (2 * R)
+    obtain ⟨ψ, hinjψ, himgψ, hpropψ⟩ := hstep R (le_of_max_le_right hR)
+      (cascadeUnconsumed S φ₀ (K + 1))
+      (cascadeUnconsumed_subset_factorLayer S φ₀ (K + 1))
+    let φ : ℕ → ℕ → ℕ := fun k => if k = K + 1 then ψ else φ₀ k
+    have hU_agree : ∀ j ≤ K + 1, cascadeUnconsumed S φ j = cascadeUnconsumed S φ₀ j := by
+      intro j hj
+      induction j with
+      | zero => rfl
+      | succ i ihi =>
+        rcases Nat.eq_zero_or_pos i with rfl | hipos
+        · rfl
+        · obtain ⟨t, rfl⟩ : ∃ t, i = t + 1 := ⟨i - 1, by omega⟩
+          have ht_ne : t + 1 ≠ K + 1 := by omega
+          simp only [cascadeUnconsumed, ihi (by omega), φ, if_neg ht_ne]
+    refine ⟨φ, fun k hk1 hk => ?_, fun k hk1 hk n hn => ?_⟩
+    · rw [hU_agree k hk]
+      rcases eq_or_lt_of_le hk with rfl | hlt
+      · simp only [φ, if_pos rfl]
+        exact ⟨hinjψ, himgψ⟩
+      · simp only [φ, if_neg hlt.ne]
+        exact hval₀ k hk1 (by omega)
+    · rw [hU_agree k hk] at hn
+      rcases eq_or_lt_of_le hk with rfl | hlt
+      · simp only [φ, if_pos rfl, Nat.add_sub_cancel]
+        exact hpropψ n hn
+      · simp only [φ, if_neg hlt.ne]
+        exact hprop₀ k hk1 (by omega) n hn
+
+/-- **All-finite-layer cellwise matching (`K ≥ 1`, `B > 0`)**: For all sufficiently large `R`,
+sequential cellwise `{2, 3, 5}`-cofactor injections match **100% of squarefree integers in
+`(R, 2R]` with `1 ≤ ω(n) ≤ K`** into a single disjoint opposite-parity matching `M` at cell
+scale `≤ 2R / (log R)^B`, with zero unweighted Möbius sum, literal dipole representation, and
+uniform `Γ`-Sobolev norm bound `‖T_{R,K}‖_δ² ≤ C R^{1-δ} (log log R)^{2(K-1)} / (log R)^{2B+2}`. -/
+theorem exists_all_finite_layers_cell_matching (K : ℕ) (hK : 1 ≤ K) {B : ℝ} (hB : 0 < B) :
+    ∃ C : ℝ, 0 < C ∧ ∃ R₀ : ℕ, ∀ R : ℕ, R₀ ≤ R →
+      ∃ (φ : ℕ → ℕ → ℕ)
+        (M : OppositeParityMatching
+          (fun a b => |(b : ℝ) - a| ≤ 2 * R / Real.log R ^ B) (Ioc R (2 * R))),
+        IsValidLayerCascade (Ioc R (2 * R)) φ K ∧
+        (∀ k : ℕ, 1 ≤ k → k ≤ K → ∀ n ∈ cascadeUnconsumed (Ioc R (2 * R)) φ k,
+          |(φ k n : ℝ) - n| ≤ 2 * R / Real.log R ^ B ∧
+          ∃ q d r : ℕ, (q = 2 ∨ q = 3 ∨ q = 5) ∧ r.Prime ∧ 5 < r ∧
+            Squarefree d ∧ d.primeFactors.card = k - 1 ∧ φ k n = q * d * r) ∧
+        M.matchedSet = (Finset.Icc 1 K).biUnion (factorLayer (Ioc R (2 * R))) ∪
+          (cascadeUnconsumed (Ioc R (2 * R)) φ K).image (φ K) ∧
+        (∀ n ∈ Ioc R (2 * R), Squarefree n → 1 ≤ n.primeFactors.card →
+          n.primeFactors.card ≤ K → n ∈ M.matchedSet) ∧
+        ∑ n ∈ M.matchedSet, μ n = 0 ∧
+        (∀ t : ℝ, ∑ a ∈ M.sources, (atom a t - atom (M.partner a) t) =
+          ∑ n ∈ M.matchedSet, ((μ n : ℤ) : ℝ) * atom n t) ∧
+        ∀ δ : ℝ, 0 ≤ δ → δ ≤ 1 →
+          gammaNorm δ (fun t => ∑ n ∈ M.matchedSet, ((μ n : ℤ) : ℝ) * atom n t) ^ 2 ≤
+            C * (R : ℝ) ^ (1 - δ) * Real.log (Real.log R) ^ (2 * (K - 1)) /
+              Real.log R ^ (2 * B + 2) := by
+  obtain ⟨R_cas, hcas⟩ := exists_valid_cascade_up_to K hB
+  -- Collect upper-bound constants across `1 ≤ k ≤ K`
+  choose K_up R_up hR_up3 hcard_up using
+    fun k : {k : ℕ // k ∈ Finset.Icc 1 K} =>
+      exists_card_kPrimesIn_le k.1 (mem_Icc.mp k.2).1 B
+  set R_max : ℝ := Finset.univ.sup'
+    ⟨⟨1, mem_Icc.mpr ⟨le_rfl, hK⟩⟩, mem_univ _⟩ R_up
+  set K_max : ℝ := Finset.univ.sup'
+    ⟨⟨1, mem_Icc.mpr ⟨le_rfl, hK⟩⟩, mem_univ _⟩ (fun k => |K_up k|)
+  set W₀ : ℝ := 2 * (K : ℝ) * (2 : ℝ) ^ (K - 1)
+  have hc := jetConst_nonneg 1
+  have hev : ∀ᶠ R : ℝ in atTop,
+      R_max ≤ R ∧ 3 ≤ R ∧ 1 ≤ Real.log R ∧ K_max + 1 ≤ Real.log (Real.log R) :=
+    (eventually_ge_atTop _).and ((eventually_ge_atTop _).and
+      ((Real.tendsto_log_atTop.eventually_ge_atTop 1).and
+        ((Real.tendsto_log_atTop.comp Real.tendsto_log_atTop).eventually_ge_atTop _)))
+  obtain ⟨X, hX⟩ := eventually_atTop.mp hev
+  refine ⟨64 * jetConst 1 ^ 2 * W₀ ^ 2 + 1, by positivity, max R_cas ⌈X⌉₊, fun R hR => ?_⟩
+  have hRX : X ≤ (R : ℝ) := (Nat.le_ceil X).trans (by exact_mod_cast le_of_max_le_right hR)
+  obtain ⟨hR_sup, hR3, hL1, hll_sup⟩ := hX R hRX
+  have hR0 : (0 : ℝ) < R := by linarith
+  have hL0 : 0 < Real.log R := by linarith
+  obtain ⟨φ, hvalid, hprops⟩ := hcas R (le_of_max_le_left hR)
+  set S := Ioc R (2 * R)
+  have hsym : Symmetric (fun a b : ℕ => |(b : ℝ) - a| ≤ 2 * R / Real.log R ^ B) := by
+    intro a b hab
+    rwa [abs_sub_comm]
+  obtain ⟨M, hM_set, hM_card⟩ := matchingOfLayerCascade hsym S φ K hvalid
+    (fun k hk1 hkK n hn => (hprops k hk1 hkK n hn).1)
+  rw [if_neg (by omega : K ≠ 0)] at hM_set
+  have hcov : ∀ n ∈ S, Squarefree n → 1 ≤ n.primeFactors.card →
+      n.primeFactors.card ≤ K → n ∈ M.matchedSet := by
+    intro n hnS hsq h1 hleK
+    rw [hM_set]
+    exact mem_union_left _ (mem_biUnion.mpr ⟨n.primeFactors.card, mem_Icc.mpr ⟨h1, hleK⟩,
+      mem_filter.mpr ⟨hnS, hsq, rfl⟩⟩)
+  have hlit : ∀ t : ℝ, ∑ a ∈ M.sources, (atom a t - atom (M.partner a) t) =
+      ∑ n ∈ M.matchedSet, ((μ n : ℤ) : ℝ) * atom n t := by
+    intro t
+    have h := sum_dipoles_eq_literal M.sources M.partner (-1) M.injOn
+      M.disjoint_sources_targets
+      (fun a ha => ⟨by simpa using (mem_filter.mp (M.sources_subset ha)).2,
+        (mem_filter.mp (M.partner_mem a ha)).2⟩) t
+    change ∑ a ∈ M.sources, (atom a t - atom (M.partner a) t) =
+      ∑ n ∈ M.sources ∪ M.sources.image M.partner, ((μ n : ℤ) : ℝ) * atom n t
+    rw [← h]
+    refine sum_congr rfl fun a _ => ?_
+    push_cast; ring
+  refine ⟨φ, M, hvalid, hprops, hM_set, hcov, M.sum_moebius_matchedSet, hlit,
+    fun δ hδ0 hδ1 => ?_⟩
+  -- Bound `M.sources.card` across `1 ≤ k ≤ K`
+  have hx1 : 1 ≤ Real.log R ^ B := Real.one_le_rpow hL1 hB.le
+  have hgap : (R : ℝ) / Real.log R ^ B ≤ 2 * R - R := by
+    rw [show (2 : ℝ) * R - R = R by ring]
+    exact div_le_self hR0.le hx1
+  have hk_bound : ∀ k ∈ Finset.Icc 1 K,
+      ((cascadeUnconsumed S φ k).card : ℝ) ≤
+        2 * (2 : ℝ) ^ (K - 1) * Real.log (Real.log R) ^ (K - 1) * R / Real.log R := by
+    intro k hkIcc
+    have hk1 := (mem_Icc.mp hkIcc).1
+    have hkK := (mem_Icc.mp hkIcc).2
+    let ksub : {j : ℕ // j ∈ Finset.Icc 1 K} := ⟨k, hkIcc⟩
+    have hRk : R_up ksub ≤ R := (le_sup' R_up (mem_univ ksub)).trans hR_sup
+    have hKk : |K_up ksub| ≤ K_max := le_sup' (fun j => |K_up j|) (mem_univ ksub)
+    have hup_k := hcard_up ksub R hRk R (2 * R) le_rfl (by linarith) le_rfl hgap
+    have hU_le : (cascadeUnconsumed S φ k).card ≤ (kPrimesIn k R (2 * R)).card := by
+      have hcast2R : ((2 * R : ℕ) : ℝ) = 2 * (R : ℝ) := by push_cast; ring
+      rw [← hcast2R, kPrimesIn_nat_eq_factorLayer]
+      exact card_le_card (cascadeUnconsumed_subset_factorLayer S φ k)
+    have hfac_ge1 : (1 : ℝ) ≤ (k - 1).factorial := by exact_mod_cast Nat.factorial_pos _
+    have hll_pos : 1 ≤ Real.log (Real.log R) := by
+      have : 0 ≤ K_max := (abs_nonneg _).trans hKk
+      linarith
+    have hll_step : Real.log (Real.log R) + K_up ksub ≤ 2 * Real.log (Real.log R) := by
+      have := le_abs_self (K_up ksub)
+      linarith
+    have hpow_le : (Real.log (Real.log R) + K_up ksub) ^ (k - 1) ≤
+        (2 * Real.log (Real.log R)) ^ (K - 1) := by
+      have h1 : (Real.log (Real.log R) + K_up ksub) ^ (k - 1) ≤
+          (2 * Real.log (Real.log R)) ^ (k - 1) :=
+        pow_le_pow_left₀ (by have := neg_abs_le (K_up ksub); linarith) hll_step _
+      have h2 : (2 * Real.log (Real.log R)) ^ (k - 1) ≤
+          (2 * Real.log (Real.log R)) ^ (K - 1) :=
+        pow_le_pow_right₀ (by linarith) (by omega)
+      exact h1.trans h2
+    calc ((cascadeUnconsumed S φ k).card : ℝ)
+        ≤ (kPrimesIn k R (2 * R)).card := by exact_mod_cast hU_le
+      _ ≤ (1 + 1 / 100) * (2 * R - R) / (((k - 1).factorial : ℝ) * Real.log R) *
+            (Real.log (Real.log R) + K_up ksub) ^ (k - 1) := hup_k
+      _ ≤ 2 * R / (1 * Real.log R) * (2 * Real.log (Real.log R)) ^ (K - 1) := by
+          have hnum : (1 + 1 / 100) * (2 * (R : ℝ) - R) ≤ 2 * R := by linarith
+          have hden : 1 * Real.log R ≤ ((k - 1).factorial : ℝ) * Real.log R := by gcongr
+          have hdiv : (1 + 1 / 100) * (2 * (R : ℝ) - R) / (((k - 1).factorial : ℝ) * Real.log R) ≤
+              2 * R / (1 * Real.log R) := by
+            calc (1 + 1 / 100) * (2 * (R : ℝ) - R) / (((k - 1).factorial : ℝ) * Real.log R)
+                ≤ 2 * R / (((k - 1).factorial : ℝ) * Real.log R) :=
+                  div_le_div_of_nonneg_right hnum (by positivity)
+              _ ≤ 2 * R / (1 * Real.log R) :=
+                  div_le_div_of_nonneg_left (by positivity) (by positivity) hden
+          exact mul_le_mul hdiv hpow_le
+            (pow_nonneg (by have := neg_abs_le (K_up ksub); linarith) _) (by positivity)
+      _ = 2 * (2 : ℝ) ^ (K - 1) * Real.log (Real.log R) ^ (K - 1) * R / Real.log R := by
+          rw [mul_pow]; ring
+  have hN_sources : (M.sources.card : ℝ) ≤
+      (W₀ * Real.log (Real.log R) ^ (K - 1)) * R / Real.log R := by
+    rw [hM_card]
+    push_cast
+    calc ∑ k ∈ Finset.Icc 1 K, ((cascadeUnconsumed S φ k).card : ℝ)
+        ≤ ∑ _k ∈ Finset.Icc 1 K,
+            (2 * (2 : ℝ) ^ (K - 1) * Real.log (Real.log R) ^ (K - 1) * R / Real.log R) :=
+          sum_le_sum hk_bound
+      _ = ((Finset.Icc 1 K).card : ℝ) *
+            (2 * (2 : ℝ) ^ (K - 1) * Real.log (Real.log R) ^ (K - 1) * R / Real.log R) := by
+          rw [sum_const, nsmul_eq_mul]
+      _ = (W₀ * Real.log (Real.log R) ^ (K - 1)) * R / Real.log R := by
+          have hIcc_card : (Finset.Icc 1 K).card = K := by simp [Nat.card_Icc]; omega
+          rw [hIcc_card]
+          simp only [W₀]; ring
+  have hfun_eq : (fun t => ∑ n ∈ M.matchedSet, ((μ n : ℤ) : ℝ) * atom n t) =
+      fun t => ∑ a ∈ M.sources, (atom a t - atom (M.partner a) t) := by
+    funext t; exact (hlit t).symm
+  rw [hfun_eq]
+  have hsrc_band : ∀ a ∈ M.sources, (R : ℝ) ≤ a ∧ (a : ℝ) ≤ 2 * R := by
+    intro a ha
+    obtain ⟨haR, ha2R⟩ := mem_Ioc.mp (mem_filter.mp (M.sources_subset ha)).1
+    exact ⟨by exact_mod_cast haR.le, by exact_mod_cast ha2R⟩
+  have htar_band : ∀ a ∈ M.sources, (R : ℝ) ≤ M.partner a ∧ (M.partner a : ℝ) ≤ 2 * R := by
+    intro a ha
+    obtain ⟨hbR, hb2R⟩ := mem_Ioc.mp (mem_filter.mp (M.partner_mem a ha)).1
+    exact ⟨by exact_mod_cast hbR.le, by exact_mod_cast hb2R⟩
+  have hgn := gammaNorm_matched_le' hδ0 hδ1 hR0 M.sources M.partner hsrc_band htar_band M.adj
+  have hsq := matched_energy_sq_le hR0 hL0 hc hN_sources (gammaNorm_nonneg _ _) hgn
+  have hpow2 : (W₀ * Real.log (Real.log R) ^ (K - 1)) ^ 2 =
+      W₀ ^ 2 * Real.log (Real.log R) ^ (2 * (K - 1)) := by
+    rw [mul_pow, ← pow_mul, mul_comm (K - 1) 2]
+  calc gammaNorm δ (fun t => ∑ a ∈ M.sources, (atom a t - atom (M.partner a) t)) ^ 2
+      ≤ 64 * jetConst 1 ^ 2 * (W₀ * Real.log (Real.log R) ^ (K - 1)) ^ 2 *
+          (R : ℝ) ^ (1 - δ) / Real.log R ^ (2 * B + 2) := hsq
+    _ = 64 * jetConst 1 ^ 2 * W₀ ^ 2 *
+          ((R : ℝ) ^ (1 - δ) * Real.log (Real.log R) ^ (2 * (K - 1)) /
+            Real.log R ^ (2 * B + 2)) := by
+          rw [hpow2]; ring
+    _ ≤ (64 * jetConst 1 ^ 2 * W₀ ^ 2 + 1) *
+          ((R : ℝ) ^ (1 - δ) * Real.log (Real.log R) ^ (2 * (K - 1)) /
+            Real.log R ^ (2 * B + 2)) := by
+          gcongr; linarith
+    _ = _ := by ring
+
+/-! ### 5. Linear unmatched remainder after any finite depth `K` and cofactor-grading depletion -/
+
+/-- Exact squarefree count of the dyadic block `(R, 2R]`:
+`|#squarefreeOf(Ioc R (2R)) - (6/π²) R| ≤ 3 √R + 1` for every `R ≥ 1`. -/
+theorem abs_card_squarefreeOf_dyadic_sub_le {R : ℕ} (hR : 1 ≤ R) :
+    |((squarefreeOf (Ioc R (2 * R))).card : ℝ) - 6 / Real.pi ^ (2 : ℕ) * R| ≤
+      3 * Real.sqrt R + 1 := by
+  let M_cut := Nat.sqrt (2 * R) + 1
+  have hM1 : 1 ≤ M_cut := by omega
+  have hRM : R + R ≤ M_cut ^ (2 : ℕ) := by
+    have hlt := Nat.lt_succ_sqrt (2 * R)
+    rw [sq]
+    omega
+  have hwin := RHTower.Sieve.abs_window_squarefree_sub_le (t := R) (L := R) (R := M_cut) hM1 hRM
+  have hsum_sq : ∑ n ∈ Finset.Ioc R (R + R), ((μ n : ℤ) : ℝ) ^ (2 : ℕ) =
+      ((squarefreeOf (Ioc R (2 * R))).card : ℝ) := by
+    classical
+    rw [← two_mul R]
+    have hsub : squarefreeOf (Ioc R (2 * R)) ⊆ Ioc R (2 * R) := filter_subset _ _
+    rw [← sum_subset hsub (fun n hn hnot => by
+      have hns : ¬ Squarefree n := fun hsq => hnot (mem_filter.mpr ⟨hn, hsq⟩)
+      simp [ArithmeticFunction.moebius_eq_zero_of_not_squarefree hns])]
+    have h1 : ∀ n ∈ squarefreeOf (Ioc R (2 * R)), ((μ n : ℤ) : ℝ) ^ (2 : ℕ) = 1 := by
+      intro n hn
+      rcases moebius_eq_one_or_neg_one_of_squarefree (mem_filter.mp hn).2 with h | h <;>
+        simp [h]
+    rw [sum_congr rfl h1, sum_const, nsmul_eq_mul, mul_one]
+  rw [hsum_sq, RHTower.Sieve.squarefreeDensity_eq] at hwin
+  have hR_pos : (0 : ℝ) < R := by exact_mod_cast hR
+  have hsqrt_pos : 0 < Real.sqrt R := Real.sqrt_pos.mpr hR_pos
+  have hM_up : (M_cut : ℝ) ≤ 2 * Real.sqrt R + 1 := by
+    have hns : (Nat.sqrt (2 * R) : ℝ) ≤ 2 * Real.sqrt R := by
+      have hsq : ((Nat.sqrt (2 * R) : ℝ)) ^ 2 ≤ (2 * Real.sqrt R) ^ 2 := by
+        have h1 : (Nat.sqrt (2 * R)) ^ 2 ≤ 2 * R := by
+          rw [sq]; exact Nat.sqrt_le (2 * R)
+        have h1' : ((Nat.sqrt (2 * R) : ℝ)) ^ 2 ≤ 2 * (R : ℝ) := by exact_mod_cast h1
+        rw [mul_pow, Real.sq_sqrt hR_pos.le]
+        linarith
+      exact (pow_le_pow_iff_left₀ (Nat.cast_nonneg _) (by positivity) two_ne_zero).mp hsq
+    simp only [M_cut, Nat.cast_add, Nat.cast_one]
+    linarith
+  have hM_low : Real.sqrt R ≤ (M_cut : ℝ) := by
+    have hsq : (Real.sqrt R) ^ 2 ≤ (M_cut : ℝ) ^ 2 := by
+      rw [Real.sq_sqrt hR_pos.le]
+      have : R ≤ M_cut ^ (2 : ℕ) := by omega
+      exact_mod_cast this
+    exact (pow_le_pow_iff_left₀ hsqrt_pos.le (Nat.cast_nonneg _) two_ne_zero).mp hsq
+  have hdiv_le : (R : ℝ) / (M_cut : ℝ) ≤ Real.sqrt R := by
+    calc (R : ℝ) / (M_cut : ℝ) ≤ (R : ℝ) / Real.sqrt R :=
+          div_le_div_of_nonneg_left hR_pos.le hsqrt_pos hM_low
+      _ = Real.sqrt R := Real.div_sqrt
+  have hrw : (R : ℝ) * (6 / Real.pi ^ (2 : ℕ)) = 6 / Real.pi ^ (2 : ℕ) * R := by ring
+  rw [hrw] at hwin
+  linarith
+
+/-- **Linear unmatched tail after any finite number `K` of factor layers**: For every fixed `K`
+and `ε > 0`, eventually for every `R` and every matching `M` on `(R, 2R]` supported on integers
+with at most `K + 1` prime factors, at least `(6/π² - ε) R` squarefree integers remain unmatched. -/
+theorem eventually_unmatched_after_finite_layers_ge (K : ℕ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ R₀ : ℕ, ∀ R : ℕ, R₀ ≤ R →
+      ∀ {Rel : ℕ → ℕ → Prop} (M : OppositeParityMatching Rel (Ioc R (2 * R))),
+        (∀ n ∈ M.matchedSet, n.primeFactors.card ≤ K + 1) →
+        (6 / Real.pi ^ (2 : ℕ) - ε) * (R : ℝ) ≤ (M.unmatchedSet.card : ℝ) := by
+  choose K_up R_up _ hcard_up using
+    fun k : {k : ℕ // k ∈ Finset.Icc 1 (K + 1)} =>
+      exists_card_kPrimesIn_le k.1 (mem_Icc.mp k.2).1 1
+  set R_max : ℝ := Finset.univ.sup'
+    ⟨⟨1, mem_Icc.mpr ⟨le_rfl, by omega⟩⟩, mem_univ _⟩ R_up
+  set K_max : ℝ := Finset.univ.sup'
+    ⟨⟨1, mem_Icc.mpr ⟨le_rfl, by omega⟩⟩, mem_univ _⟩ (fun k => |K_up k|)
+  set C_tot : ℝ := 2 * ((K : ℝ) + 1) * (2 : ℝ) ^ K
+  -- `Real.log (Real.log R) ^ K / Real.log R → 0` and `1 / √R → 0`
+  have hll_o : Tendsto (fun L : ℝ => Real.log L ^ K / L) atTop (𝓝 0) := by
+    have h := tendsto_pow_log_div_mul_add_atTop 1 0 K one_ne_zero
+    simpa using h
+  have hratio_0 : Tendsto (fun R : ℝ => C_tot * (Real.log (Real.log R) ^ K / Real.log R))
+      atTop (𝓝 0) := by
+    simpa using (hll_o.comp Real.tendsto_log_atTop).const_mul C_tot
+  have hev_small : ∀ᶠ R : ℝ in atTop,
+      C_tot * (Real.log (Real.log R) ^ K / Real.log R) ≤ ε / 2 :=
+    hratio_0.eventually (ge_mem_nhds (by positivity))
+  have hev : ∀ᶠ R : ℝ in atTop,
+      R_max ≤ R ∧ 4 ≤ R ∧ 1 ≤ Real.log R ∧ K_max + 1 ≤ Real.log (Real.log R) ∧
+      (16 / ε) ^ 2 ≤ R ∧
+      C_tot * (Real.log (Real.log R) ^ K / Real.log R) ≤ ε / 2 :=
+    (eventually_ge_atTop _).and ((eventually_ge_atTop _).and
+      ((Real.tendsto_log_atTop.eventually_ge_atTop 1).and
+        (((Real.tendsto_log_atTop.comp Real.tendsto_log_atTop).eventually_ge_atTop _).and
+          ((eventually_ge_atTop _).and hev_small))))
+  obtain ⟨X, hX⟩ := eventually_atTop.mp hev
+  refine ⟨max 1 ⌈X⌉₊, fun R hR Rel M hM_top => ?_⟩
+  have hR1 : 1 ≤ R := le_of_max_le_left hR
+  have hRX : X ≤ (R : ℝ) := (Nat.le_ceil X).trans (by exact_mod_cast le_of_max_le_right hR)
+  obtain ⟨hR_sup, hR4, hL1, hll_sup, hR_sq, hsmall⟩ := hX R hRX
+  have hR0 : (0 : ℝ) < R := by linarith
+  have hL0 : 0 < Real.log R := by linarith
+  set S := Ioc R (2 * R)
+  -- `M.matchedSet ⊆ (Icc 1 (K + 1)).biUnion (factorLayer S)`
+  have hM_sub : M.matchedSet ⊆ (Finset.Icc 1 (K + 1)).biUnion (factorLayer S) := by
+    intro n hn
+    have hsq_mem := M.matchedSet_subset hn
+    obtain ⟨hnIoc, hsq⟩ := mem_filter.mp hsq_mem
+    have hn_gt1 : 1 < n := lt_of_le_of_lt hR1 (mem_Ioc.mp hnIoc).1
+    have hcard_pos : 1 ≤ n.primeFactors.card :=
+      card_pos.mpr ⟨n.minFac, Nat.mem_primeFactors.mpr
+        ⟨Nat.minFac_prime hn_gt1.ne', Nat.minFac_dvd n, by omega⟩⟩
+    exact mem_biUnion.mpr ⟨n.primeFactors.card, mem_Icc.mpr ⟨hcard_pos, hM_top n hn⟩,
+      mem_filter.mpr ⟨hnIoc, hsq, rfl⟩⟩
+  have hgap : (R : ℝ) / Real.log R ^ (1 : ℝ) ≤ 2 * R - R := by
+    rw [Real.rpow_one, show (2 : ℝ) * R - R = R by ring]
+    exact div_le_self hR0.le hL1
+  have hlayer_le : ∀ k ∈ Finset.Icc 1 (K + 1),
+      ((factorLayer S k).card : ℝ) ≤
+        2 * (2 : ℝ) ^ K * Real.log (Real.log R) ^ K * R / Real.log R := by
+    intro k hkIcc
+    let ksub : {j : ℕ // j ∈ Finset.Icc 1 (K + 1)} := ⟨k, hkIcc⟩
+    have hRk : R_up ksub ≤ R := (le_sup' R_up (mem_univ ksub)).trans hR_sup
+    have hKk : |K_up ksub| ≤ K_max := le_sup' (fun j => |K_up j|) (mem_univ ksub)
+    have hup_k := hcard_up ksub R hRk R (2 * R) le_rfl (by linarith) le_rfl hgap
+    have hcast2R : ((2 * R : ℕ) : ℝ) = 2 * (R : ℝ) := by push_cast; ring
+    have heq_fl : factorLayer S k = kPrimesIn k R (2 * R) := (kPrimesIn_nat_eq_factorLayer k R (2 * R)).symm
+    have hfac_ge1 : (1 : ℝ) ≤ (k - 1).factorial := by exact_mod_cast Nat.factorial_pos _
+    have hll_pos : 1 ≤ Real.log (Real.log R) := by
+      have : 0 ≤ K_max := (abs_nonneg _).trans hKk
+      linarith
+    have hll_step : Real.log (Real.log R) + K_up ksub ≤ 2 * Real.log (Real.log R) := by
+      have := le_abs_self (K_up ksub)
+      linarith
+    have hpow_le : (Real.log (Real.log R) + K_up ksub) ^ (k - 1) ≤
+        (2 * Real.log (Real.log R)) ^ K := by
+      have hkK : k - 1 ≤ K := by have := (mem_Icc.mp hkIcc).2; omega
+      exact (pow_le_pow_left₀ (by have := neg_abs_le (K_up ksub); linarith) hll_step _).trans
+        (pow_le_pow_right₀ (by linarith) hkK)
+    rw [heq_fl]
+    calc ((kPrimesIn k R ((2 * R : ℕ) : ℝ)).card : ℝ)
+        ≤ (1 + 1 / 100) * (2 * R - R) / (((k - 1).factorial : ℝ) * Real.log R) *
+            (Real.log (Real.log R) + K_up ksub) ^ (k - 1) := by
+          rw [hcast2R]; exact hup_k
+      _ ≤ 2 * R / (1 * Real.log R) * (2 * Real.log (Real.log R)) ^ K := by
+          have hdiv : (1 + 1 / 100) * (2 * (R : ℝ) - R) / (((k - 1).factorial : ℝ) * Real.log R) ≤
+              2 * R / (1 * Real.log R) := by
+            calc (1 + 1 / 100) * (2 * (R : ℝ) - R) / (((k - 1).factorial : ℝ) * Real.log R)
+                ≤ 2 * R / (((k - 1).factorial : ℝ) * Real.log R) :=
+                  div_le_div_of_nonneg_right (by linarith) (by positivity)
+              _ ≤ 2 * R / (1 * Real.log R) :=
+                  div_le_div_of_nonneg_left (by positivity) (by positivity) (by gcongr)
+          exact mul_le_mul hdiv hpow_le
+            (pow_nonneg (by have := neg_abs_le (K_up ksub); linarith) _) (by positivity)
+      _ = 2 * (2 : ℝ) ^ K * Real.log (Real.log R) ^ K * R / Real.log R := by
+          rw [mul_pow]; ring
+  have hM_card_le : (M.matchedSet.card : ℝ) ≤ (ε / 2) * R := by
+    have hnat : M.matchedSet.card ≤ ∑ k ∈ Finset.Icc 1 (K + 1), (factorLayer S k).card :=
+      (card_le_card hM_sub).trans card_biUnion_le
+    calc (M.matchedSet.card : ℝ)
+        ≤ ∑ k ∈ Finset.Icc 1 (K + 1), ((factorLayer S k).card : ℝ) := by exact_mod_cast hnat
+      _ ≤ ∑ _k ∈ Finset.Icc 1 (K + 1),
+            (2 * (2 : ℝ) ^ K * Real.log (Real.log R) ^ K * R / Real.log R) :=
+          sum_le_sum hlayer_le
+      _ = C_tot * (Real.log (Real.log R) ^ K / Real.log R) * R := by
+          rw [sum_const, nsmul_eq_mul]
+          have hIcc_c : (Finset.Icc 1 (K + 1)).card = K + 1 := by simp [Nat.card_Icc]
+          rw [hIcc_c]
+          simp only [C_tot]; push_cast; ring
+      _ ≤ (ε / 2) * R := mul_le_mul_of_nonneg_right hsmall hR0.le
+  -- Squarefree count lower bound on `(R, 2R]`
+  have hsq_low : (6 / Real.pi ^ (2 : ℕ) - ε / 2) * R ≤ ((squarefreeOf S).card : ℝ) := by
+    have habs := abs_card_squarefreeOf_dyadic_sub_le hR1
+    have hsqrt_err : 3 * Real.sqrt R + 1 ≤ (ε / 2) * R := by
+      have h1 : 3 * Real.sqrt R + 1 ≤ 4 * Real.sqrt R := by
+        have : 1 ≤ Real.sqrt R := (Real.le_sqrt (by norm_num) hR0.le).mpr (by linarith)
+        linarith
+      have h2 : 4 * Real.sqrt R ≤ (ε / 2) * R := by
+        have hsq_ineq : (4 * Real.sqrt R) ^ 2 ≤ ((ε / 2) * R) ^ 2 := by
+          rw [mul_pow, Real.sq_sqrt hR0.le]
+          have h16 : (16 : ℝ) ≤ (ε / 2) ^ 2 * R := by
+            rw [div_pow] at hR_sq
+            have hε2 : 0 < ε ^ 2 := by positivity
+            rw [div_le_iff₀ hε2] at hR_sq
+            linarith
+          nlinarith
+        exact (pow_le_pow_iff_left₀ (by positivity) (by positivity) two_ne_zero).mp hsq_ineq
+      linarith
+    have hlow1 := (abs_le.mp habs).1
+    linarith
+  have hsdiff : M.unmatchedSet.card + M.matchedSet.card = (squarefreeOf S).card :=
+    card_sdiff_add_card_eq_card M.matchedSet_subset
+  have hsdiff_real : (M.unmatchedSet.card : ℝ) =
+      ((squarefreeOf S).card : ℝ) - (M.matchedSet.card : ℝ) := by
+    have : (M.unmatchedSet.card : ℝ) + (M.matchedSet.card : ℝ) = ((squarefreeOf S).card : ℝ) := by
+      exact_mod_cast hsdiff
+    linarith
+  rw [hsdiff_real]
+  linarith
+
+/-- **Prescribed-cofactor gcd stratification of `factorLayer S k`**: for any `M₀ ≥ 1`,
+`factorLayer S k` partitions into disjoint strata indexed by `g ∈ M₀.divisors` (`g = gcd(n, M₀)`),
+tracking exact cofactor consumption on `P₀`. -/
+theorem factorLayer_card_eq_sum_gcd_strata (S : Finset ℕ) (k M₀ : ℕ) (hM₀ : 1 ≤ M₀) :
+    (factorLayer S k).card =
+      ∑ g ∈ M₀.divisors, ((factorLayer S k).filter (fun n => Nat.gcd n M₀ = g)).card := by
+  classical
+  have hpart : factorLayer S k =
+      M₀.divisors.biUnion (fun g => (factorLayer S k).filter (fun n => Nat.gcd n M₀ = g)) := by
+    ext n
+    simp only [mem_biUnion, mem_filter, Nat.mem_divisors]
+    constructor
+    · intro hn
+      exact ⟨Nat.gcd n M₀, ⟨Nat.gcd_dvd_right n M₀, by omega⟩, hn, rfl⟩
+    · rintro ⟨_, _, hn, _⟩
+      exact hn
+  conv_lhs => rw [hpart]
+  rw [card_biUnion]
+  intro g₁ _ g₂ _ hne
+  simp only [Function.onFun]
+  rw [disjoint_left]
+  intro n h₁ h₂
+  exact hne ((mem_filter.mp h₁).2.symm.trans (mem_filter.mp h₂).2)
+
+/-- Every `{2, 3, 5}`-divisible target in `factorLayer (Ioc R (2R)) (k + 1)` arises as `q * m`
+for some `q ∈ {2, 3, 5}` and `m ∈ factorLayer (Ioc (R / q) (2 * R / q)) k`, bounding the total
+`{2, 3, 5}`-divisible `(k+1)`-prime supply by `∑_{q ∈ {2, 3, 5}} #Q_k(R/q, 2R/q)` and forcing
+single-prime `{2, 3, 5}` supply ratio `(31/30) log log R / k < 1` once `k > (31/30) log log R`. -/
+theorem smallCofactor_divisible_card_le_and_threshold (R k : ℕ) :
+    ((factorLayer (Ioc R (2 * R)) (k + 1)).filter (fun n => ¬ Nat.Coprime n 30)).card ≤
+      ∑ q ∈ ({2, 3, 5} : Finset ℕ), (factorLayer (Ioc (R / q) (2 * R / q)) k).card ∧
+    ((31 / 30 : ℝ) * Real.log (Real.log R) < (k : ℝ) → 0 < (k : ℝ) →
+      (31 / 30 : ℝ) * Real.log (Real.log R) / (k : ℝ) < 1) := by
+  refine ⟨?_, fun hlt hk0 => (div_lt_one hk0).mpr hlt⟩
+  have hsub : (factorLayer (Ioc R (2 * R)) (k + 1)).filter (fun n => ¬ Nat.Coprime n 30) ⊆
+      ({2, 3, 5} : Finset ℕ).biUnion
+        (fun q => (factorLayer (Ioc (R / q) (2 * R / q)) k).image (q * ·)) := by
+    intro n hn
+    obtain ⟨hn_fl, hnot_cop⟩ := mem_filter.mp hn
+    obtain ⟨hnIoc, hsq, hcard⟩ := mem_filter.mp hn_fl
+    obtain ⟨hnR, hn2R⟩ := mem_Ioc.mp hnIoc
+    obtain ⟨q, hqp, hqn, hq30⟩ := Nat.Prime.not_coprime_iff_dvd.mp hnot_cop
+    have hq_mem : q ∈ ({2, 3, 5} : Finset ℕ) := by
+      have h30 : (30 : ℕ) = 2 * 3 * 5 := by norm_num
+      rw [h30] at hq30
+      rcases (Nat.Prime.dvd_mul hqp).mp hq30 with h23 | h5
+      · rcases (Nat.Prime.dvd_mul hqp).mp h23 with h2 | h3
+        · have := (Nat.prime_dvd_prime_iff_eq hqp Nat.prime_two).mp h2; subst this; decide
+        · have := (Nat.prime_dvd_prime_iff_eq hqp Nat.prime_three).mp h3; subst this; decide
+      · have := (Nat.prime_dvd_prime_iff_eq hqp (by norm_num : Nat.Prime 5)).mp h5
+        subst this; decide
+    have hn_sf : n ∈ sfLayer (2 * R) (k + 1) :=
+      mem_sfLayer.mpr ⟨by omega, hn2R, hsq, hcard⟩
+    have hq_pf : q ∈ n.primeFactors := Nat.mem_primeFactors.mpr ⟨hqp, hqn, by omega⟩
+    obtain ⟨_, hm_sf, hmul⟩ := div_prime_mem_sfLayer hn_sf hq_pf
+    obtain ⟨_, _, hsq_m, hcard_m⟩ := mem_sfLayer.mp hm_sf
+    refine mem_biUnion.mpr ⟨q, hq_mem, mem_image.mpr ⟨n / q, ?_, hmul⟩⟩
+    refine mem_filter.mpr ⟨mem_Ioc.mpr ⟨?_, ?_⟩, hsq_m, hcard_m⟩
+    · rw [Nat.div_lt_iff_lt_mul hqp.pos, mul_comm]; exact (hmul.symm ▸ hnR)
+    · exact Nat.div_le_div_right hn2R
+  exact (card_le_card hsub).trans (card_biUnion_le.trans (sum_le_sum fun _ _ => card_image_le))
+
+end GaloisForLFunctions.QuantitativeFactorizationMatching
+

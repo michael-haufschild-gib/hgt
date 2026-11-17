@@ -24,8 +24,9 @@ private theorem prescribed_shear (a d : k₀) (ha : a ≠ 0) (hd : d ^ Q = -d) :
   refine ⟨-(d * t / a ^ Q), ?_⟩
   have hneg (b : k₀) : (-b) ^ Q = -(b ^ Q) := map_neg (iterateFrobenius k₀ p (s+1)) b
   rw [hneg, div_pow, mul_pow, squareConstantField_frobenius_sq, hd]
-  field_simp [ha, pow_ne_zero _ ha]
-  linear_combination (norm := ring) d * a * a ^ Q * ht
+  simp only [neg_mul, neg_div, neg_neg, mul_neg, sub_neg_eq_add, div_mul_cancel₀ _ ha]
+  rw [mul_comm (a ^ Q) (_ / _), div_mul_cancel₀ _ (pow_ne_zero _ ha)]
+  linear_combination d * ht
 
 /-- Two translations are conjugate exactly on nonvertical abscissa fibers and on central singletons. -/
 theorem hermitianTranslation_isConj_iff (P U : G) :
@@ -40,13 +41,14 @@ theorem hermitianTranslation_isConj_iff (P U : G) :
     exact mul_right_cancel (((hermitianTranslation_commutes_iff p s P).2 hP g).trans he)
   · rintro ⟨hx, hcentral⟩
     by_cases hP : P.val.1 = 0
-    · rw [hcentral hP]
+    · exact (hcentral hP) ▸ IsConj.refl _
     · let d := U.val.2 - P.val.2
       have hd : d ^ Q = -d := by
         have hU := U.property
         rw [← hx] at hU
         change (U.val.2 - P.val.2) ^ Q = -(U.val.2 - P.val.2)
-        rw [sub_pow_char_pow]
+        rw [show (U.val.2 - P.val.2) ^ Q = U.val.2 ^ Q - P.val.2 ^ Q from
+          map_sub (iterateFrobenius k₀ p (s+1)) _ _]
         linear_combination hU - P.property
       obtain ⟨c, hc⟩ := prescribed_shear p s P.val.1 d hP hd
       let g := hermitianAffinePointWithFirst p s c

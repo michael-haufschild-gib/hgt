@@ -148,4 +148,7 @@ theorem meshDegree_mul (c : ℝ) (f : ℝ → ℝ) (L n : ℕ) :
   simp only [meshDegree, logRadius, hp, hd, hc]
   ring
 
+#print axioms tendsto_meshDegree
+#print axioms contact_rounding_bounds
+
 end GaloisForLFunctions.CountingHolography.Sections

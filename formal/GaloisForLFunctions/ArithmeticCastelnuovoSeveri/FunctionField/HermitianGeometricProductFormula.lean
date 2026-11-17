@@ -135,6 +135,24 @@ theorem hermitianPicardDegree_zero_iff (c : Pic) :
     rw [map_nsmul, map_zero, nsmul_eq_mul] at he
     exact (mul_eq_zero.mp he).resolve_left (Int.natCast_ne_zero.mpr hn.ne')
 
+/-- No geometric divisor class has nontrivial characteristic-power torsion. -/
+theorem hermitianPicard_p_power_injective (n : ℕ) :
+    Function.Injective (fun c : Pic => p^n • c) := by
+  intro x y hxy
+  let c := x-y
+  have hz : p^n • c = 0 := by simp only [c, nsmul_sub, hxy, sub_self]
+  have hdeg : δ c = 0 := by
+    have hd := congrArg δ hz
+    rw [map_nsmul, map_zero, nsmul_eq_mul] at hd
+    exact (mul_eq_zero.mp hd).resolve_left
+      (Int.natCast_ne_zero.mpr (pow_ne_zero n (Fact.out : p.Prime).ne_zero))
+  obtain ⟨m, _, hm, ht⟩ := (hermitianPicardDegree_zero_iff p s c).1 hdeg
+  have hdiv := Nat.dvd_gcd (addOrderOf_dvd_iff_nsmul_eq_zero.mpr ht)
+    (addOrderOf_dvd_iff_nsmul_eq_zero.mpr hz)
+  rw [(hm.pow_right n).gcd_eq_one] at hdiv
+  have h1 := addOrderOf_dvd_iff_nsmul_eq_zero.mp hdiv
+  exact sub_eq_zero.mp (by simpa only [one_nsmul] using h1 : c = 0)
+
 /-- Explicit splitting by degree into the free infinity class and the degree-zero subgroup. -/
 def hermitianPicardSplit : Pic ≃+ ℤ × (δ).ker where
   toFun c := (δ c, ⟨c - δ c • cl ∞ₕ, by
@@ -155,13 +173,17 @@ def hermitianPicardSplit : Pic ≃+ ℤ × (δ).ker where
     apply Prod.ext (map_add δ x y)
     apply Subtype.ext
     change x + y - δ (x+y) • cl ∞ₕ = (x - δ x • cl ∞ₕ) + (y - δ y • cl ∞ₕ)
-    rw [map_add, add_smul]; abel
+    have split : (δ x + δ y) • cl ∞ₕ = δ x • cl ∞ₕ + δ y • cl ∞ₕ :=
+      map_add (zmultiplesHom Pic (cl ∞ₕ)) (δ x) (δ y)
+    rw [map_add, split]
+    abel
 
 #print axioms hermitianPlaceDegree_primeToChar_principal
 #print axioms hermitianInfinity_principal_iff
 #print axioms hermitianPlaceDegree_principal
 #print axioms hermitianPicardDegree_infinity
 #print axioms hermitianPicardDegree_zero_iff
+#print axioms hermitianPicard_p_power_injective
 #print axioms hermitianPicardSplit
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

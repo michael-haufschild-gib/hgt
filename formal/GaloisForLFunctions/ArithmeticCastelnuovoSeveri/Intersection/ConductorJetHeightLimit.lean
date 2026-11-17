@@ -158,6 +158,7 @@ theorem conductorMeshJetSections (B C m : ℕ) (data : ℕ → Polynomial ℤ[X]
     let h := meshJetOrder C m
     ∃ (D : ℤ[X]) (F : Polynomial ℤ[X]), D ≠ 0 ∧
       (∀ j ∈ S, (X - Polynomial.C (conductorGraph j))^h ∣ F - Polynomial.C D * data j) ∧
+      (verticalContent D : ℝ) ≤ Real.exp (meshJetLogBound B C m) ∧
       ∀ e : Polynomial ℤ[X] →+* ℂ, ‖e X‖ ≤ 1 → ‖e (Polynomial.C X)‖ ≤ 1 →
         (∀ j ∈ S, ‖e (data j)‖ ≤ 1) →
         max ‖e (Polynomial.C D)‖ ‖e F‖ ≤ Real.exp (meshJetLogBound B C m) := by
@@ -171,23 +172,39 @@ theorem conductorMeshJetSections (B C m : ℕ) (data : ℕ → Polynomial ℤ[X]
     have := Nat.le_max_left 1 m.sqrt
     omega
   have hS : 0 ∉ S := by simp [S]
+  have hindex (i) (hi : i ∈ S) : 0 < i ∧ i ≤ s := by
+    obtain ⟨hl,hu⟩ := mem_Icc.mp hi
+    exact ⟨(Nat.le_max_left 1 m.sqrt).trans hl, hu.trans
+      (Nat.mul_le_mul_right _ (Nat.le_succ B))⟩
+  let U : ℝ := 2*(1+(s:ℝ)^2)
+  have hU : 1 ≤ U := by dsimp [U]; nlinarith only [sq_nonneg (s:ℝ)]
+  have hsU : (s:ℝ)+1 ≤ U := by dsimp [U]; nlinarith only [sq_nonneg ((s:ℝ)-1)]
+  have hsc : (S.card:ℝ) ≤ U := (by exact_mod_cast hs : (S.card:ℝ) ≤ s).trans
+    ((le_add_of_nonneg_right zero_le_one).trans hsU)
+  have hbound : Real.exp (meshJetLogBound B C m) = U^(2*h*s*(s+1))*U := by
+    change Real.exp (((2*h*s*(s+1)+1 : ℕ):ℝ)*Real.log U) = _
+    rw [mul_comm _ (Real.log U), ← Real.rpow_def_of_pos (zero_lt_one.trans_le hU), Real.rpow_natCast, pow_succ]
   refine ⟨_, _, conductorJetMultiplier_ne_zero S h hS, fun j hj =>
-    graphJetSection_restrict S conductorGraph h data hj, ?_⟩
+    graphJetSection_restrict S conductorGraph h data hj, ?_, ?_⟩
+  · rw [hbound]
+    have hc := conductorJetMultiplier_content_le S h (s+1) (Nat.succ_pos _) fun i hi =>
+      ⟨(hindex _ hi).1, (hindex _ hi).2.trans (Nat.le_succ s)⟩
+    have hc' : (verticalContent (graphJetMultiplier S conductorGraph h):ℝ) ≤
+        ((s:ℝ)+1)^(2*h*S.card*S.card) := by exact_mod_cast hc
+    refine hc'.trans ((pow_le_pow_left₀ (by positivity) hsU _).trans ?_)
+    apply (pow_le_pow_right₀ hU (show 2*h*S.card*S.card ≤ 2*h*s*(s+1) from Nat.mul_le_mul
+      (Nat.mul_le_mul_left _ hs) (hs.trans (Nat.le_succ s)))).trans
+    exact le_mul_of_one_le_right (by positivity) hU
   intro e hY hT hdata
   have hg (i) (hi : i ∈ S) : ‖e (Polynomial.C (conductorGraph i))‖ ≤ (s:ℝ)^2 := by
     apply (graph_disk_bound (e.comp Polynomial.C) hT i).trans
     apply pow_le_pow_left₀ (Nat.cast_nonneg _)
-    exact_mod_cast ((mem_Icc.mp hi).2.trans (by dsimp [s]; exact Nat.mul_le_mul_right _ (Nat.le_succ B)))
+    exact_mod_cast (hindex _ hi).2
   obtain ⟨hD,hF⟩ := graphJetSection_norm S conductorGraph h data e (sq_nonneg _) zero_le_one hY hg hdata
-  let U : ℝ := 2*(1+(s:ℝ)^2)
-  have hU : 1 ≤ U := by dsimp [U]; nlinarith only [sq_nonneg (s:ℝ)]
-  have hsc : (S.card:ℝ) ≤ U := by
-    have hs' : (S.card:ℝ) ≤ s := by exact_mod_cast hs
-    dsimp only [U]; nlinarith only [hs', sq_nonneg ((s:ℝ)-1)]
-  have hx : 2*h*S.card*(S.card+1) ≤ 2*h*s*(s+1) := by gcongr
+  have hx : 2*h*S.card*(S.card+1) ≤ 2*h*s*(s+1) := Nat.mul_le_mul (Nat.mul_le_mul_left _ hs)
+    (Nat.succ_le_succ hs)
   have hpow := pow_le_pow_right₀ hU hx
-  change max _ _ ≤ Real.exp (((2*h*s*(s+1)+1 : ℕ):ℝ)*Real.log U)
-  rw [mul_comm _ (Real.log U), ← Real.rpow_def_of_pos (zero_lt_one.trans_le hU), Real.rpow_natCast, pow_succ]
+  rw [hbound]
   apply max_le
   · exact (hD.trans hpow).trans (le_mul_of_one_le_right (by positivity) hU)
   · rw [mul_one] at hF

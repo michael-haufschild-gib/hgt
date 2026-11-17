@@ -57,7 +57,10 @@ theorem hermitianAffineClass_frobenius (P : Pts) : J (F P) = -(Q • J P) := by
   have hz := (QuotientAddGroup.eq_zero_iff _).2 he
   change cl (_ + _) = 0 at hz
   rw [map_add, map_zsmul, natCast_zsmul] at hz
-  exact eq_neg_of_add_eq_zero_right hz
+  change Q • J P + J (F P) = 0 at hz
+  calc
+    J (F P) = -(Q • J P) + (Q • J P + J (F P)) := by abel
+    _ = -(Q • J P) := by rw [hz, add_zero]
 
 /-- The full square-Frobenius orbit maps to an integer-power orbit in the Picard group. -/
 theorem hermitianAffineClass_iterate (P : Pts) (n : ℕ) :

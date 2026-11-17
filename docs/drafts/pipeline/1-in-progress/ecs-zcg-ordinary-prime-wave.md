@@ -23,3 +23,7 @@ at both $W=V^2$ and $W=2V^2$. Equivalence to RH is formalized. Even a bound for 
 For arbitrarily large $t$, $p=2t+1$ is prime with $p\equiv7\pmod8$. Put $A_t(M)=C_{t,2t}(M)$. On $(t,2t]$ the cofactor is exactly $\mu$. Increasing $t$ by one changes three endpoints. At $t+1$ and $2t+2$ the Möbius value vanishes because four divides them. The sole change is $-1$ at $p$. Hence $A_{t+1}(pN)-A_t(pN)=N-\psi(N)$ for every $N$, including inside the first octave. [Formal recovery theorem](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/AdjacentVaughanOctavesRecoverTheOrdinaryPrimeCount.lean)
 
 Under one quartet, the averaged state on each rung and this signed count each carry one conjugate pair. Their nonzero coefficients determine a positive amplitude and a fixed logarithmic delay. An independent estimate on the delayed counts that saves a power below the common frequency amplitude would exclude that quartet.
+
+## Coincident products
+
+For fixed distinct cofactors $d,e$, write $g=\gcd(d,e)$. At a common product $n=\operatorname{lcm}(d,e)k$ the two long prime weights are $\Lambda((e/g)k)$ and $\Lambda((d/g)k)$. For $k>1$ both can survive only when both reduced cofactors and $k$ are powers of the same prime. This gives an arithmetic test for which terms of the quadratic count can need cancellation.
