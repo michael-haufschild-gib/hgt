@@ -101,13 +101,16 @@ theorem criticalState_eventually_tilted_sq_increment_le {W₀ : ℝ} (hW : 0 < W
   intro G
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
   have hg := criticalHalfLineEnergyDomain_exp_mul_groundState hW ht hF hc hc1
-  have hnear : Tendsto (fun k : ℝ => k^2) (𝓝[>] 0) (𝓝[>] 0) :=
-    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
-      (by
-        simpa using (((continuous_id.pow 2).continuousAt (x := (0 : ℝ))).tendsto.mono_left
-          nhdsWithin_le_nhds)) (self_mem_nhdsWithin.mono fun k (hk : 0 < k) => sq_pos_of_pos hk)
+  have hkpos : ∀ᶠ k : ℝ in 𝓝[>] 0, 0 < k := self_mem_nhdsWithin
+  have hnear : Tendsto (fun k : ℝ => k^2) (𝓝[>] 0) (𝓝[>] 0) := by
+    apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
+    · have he : Tendsto (fun k : ℝ => k^2) (𝓝 0) (𝓝 ((0:ℝ)^2)) :=
+        (tendsto_id (x := 𝓝 (0:ℝ))).pow 2
+      simpa using he.mono_left nhdsWithin_le_nhds
+    · exact hkpos.mono fun k hk => sq_pos_of_pos hk
   have hlog : ∀ᶠ h : ℝ in 𝓝[>] 0, 1 ≤ Real.log (1/h) := by
-    simpa only [one_div] using (Real.tendsto_log_atTop.comp tendsto_inv_nhdsGT_zero).eventually_ge_atTop 1
+    simpa only [one_div, Function.comp_apply] using
+      (Real.tendsto_log_atTop.comp tendsto_inv_nhdsGT_zero).eventually_ge_atTop 1
   let M := ∫ u, F u ^ 2 * Real.exp (-(8*u))
   let B := 8 * criticalAliasCoefficient W₀ * M + 1
   let C := 2 * (∫ u, F u ^ 2) + (2+2*Real.exp 8)*M
@@ -121,7 +124,7 @@ theorem criticalState_eventually_tilted_sq_increment_le {W₀ : ℝ} (hW : 0 < W
     exact (le_mul_of_one_le_left hmass hlogk).trans hwall
   have hinc := tilted_increment_le hd hc hc1 hk hk1.le hg
   change k * (∫ u, (G u - G (u+k^2))^2) ≤ 2*(∫ u, (F u - F (u+k^2))^2) + k^2*C at hinc
-  apply (mul_le_mul_left hk).mp
+  apply (mul_le_mul_iff_right₀ (show 0 < k from hk)).mp
   nlinarith only [hinc, hsmall]
 
 /-- Sum the Fourier mass on geometric shells. A translation by the reciprocal of the
@@ -147,7 +150,7 @@ private theorem integrable_log_moments_of_increment {G : ℝ → ℝ}
     apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
     · exact (tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num : 0 ≤ (1/2:ℝ))
         (by norm_num)).comp (tendsto_add_atTop_nat 1)
-    · exact Eventually.of_forall fun n => pow_pos (by norm_num) _
+    · exact Eventually.of_forall fun n => pow_pos (by norm_num : (0:ℝ)<1/2) (n+1)
   have hshell : ∀ᶠ n in atTop, ∫ t in S n, P t ≤ (256*Real.pi*K)*a n := by
     filter_upwards [ha.eventually hK, eventually_ge_atTop 2] with n hn hn2
     let h := (a n)^2
@@ -271,6 +274,8 @@ theorem integrable_norm_sq_reflected_euler_mul_laplace {W₀ : ℝ} (hW : 0 < W�
   apply (hL.const_mul (C^2)).mono' ((hcont.mul htcont).norm.pow 2).aestronglyMeasurable
   apply Eventually.of_forall
   intro t
+  change ‖‖zetaRegularLogDeriv (1/2 + p t) *
+    negativeHalfLineLaplace (cx F) (((-c:ℝ):ℂ) + (t:ℂ)*I)‖^2‖ ≤ _
   rw [Real.norm_of_nonneg (sq_nonneg _), norm_mul, mul_pow]
   have h := hN (p t) (hp t).ge
   rw [him, abs_neg] at h

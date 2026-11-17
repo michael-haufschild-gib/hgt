@@ -1,12 +1,26 @@
-# Vertical contacts for signed conductor divisors
+# Vertical contacts of signed conductor divisors
 
-- **Stage** 1-in-progress
-- **Route** ACS arithmetic section count on integer translates of the cubic spline.
+**Route** ACS arithmetic sections on signed integer spline probes.
 
-For conductor (n), use the integral graph (Y=G_n(T)), where
-(G_n(T)=\sum_{d\mid n}\operatorname{rad}(d)T^d). Its horizontal degree is (n).
-The content of (G_i-G_j) is (p) at any proper ratio (p^r), and (1) at every other distinct pair. The first changed power of (p) gives a coefficient of absolute value (p). Two changed primes force coprime coefficients. Gauss's lemma then computes the vertical order of the Sylvester resultant for two thickened unions, including arbitrary multiplicities.
+For conductor $n$, take the integral graph $Y=G_n(T)$ with
+$G_n(T)=\sum_{d\mid n}\operatorname{rad}(d)T^d$. Its degree is $n$.
+For distinct conductors the content of $G_i-G_j$ is $p$ at a ratio $p^r$
+in either direction and $1$ otherwise. Indeed, the first changed power of
+each prime gives a coefficient of absolute value $p$. When only the
+$p$-exponent changes, every changed divisor contains $p$. Gauss's lemma
+therefore computes the vertical order of one Sylvester determinant for two
+thickened divisors, with the product of the graph multiplicities on each
+pair. There is no triple correction.
 
-At mesh index (i) use signed lower weight (\sqrt i\log(1+1/i)f_i) and upper weight (g_i/\sqrt i). Their product at (j=it) supplies the log-cell measure and the factor (1/\sqrt t). Round both multiplicities after dilation. On a mesh starting at (\lfloor\sqrt m\rfloor), the normalized rounding error is (O_{f,g,B}(m^{-1/2})). Compare the logarithms of the two oriented restriction orders with the full smooth prime pairing.
+On a log mesh put $w_i=\log(1+1/i)$. Give the lower graph signed weight
+$\sqrt i\,w_i f_i$ and the upper graph weight $g_j/\sqrt j$.
+At $j=it$ the product is $w_i f_i g_{it}/\sqrt t$. Round each weight
+after dilation by $m$. At each base use one resultant for agreeing signs
+and one for opposing signs. The difference of their log orders reads
+the signed product. With mesh starting at $\lfloor\sqrt m\rfloor$,
+rounding costs $O_{f,g,B}(m^{-1/2})$ after division by $m^2$.
+Logarithmic quadrature then gives the full smooth prime pairing.
 
-**Remaining ACS problem.** Realize the debit from same-sign contacts together with the real-place diagonal and both pole moments as the size of one effective object. Horizontal degree alone does not give that comparison.
+**Remaining problem.** Construct one effective object that pays the
+same-sign contact debit together with the real-place diagonal and both
+pole moments on every signed ray.

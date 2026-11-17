@@ -39,7 +39,7 @@ private theorem phase_pow_sum (θ : ℝ) (n : ℕ) :
   ring_nf
 
 /-- Exponentiating the positive coefficient series gives the local factor itself. -/
-theorem exp_shiftEulerLog {z : ℂ} (hz : ‖z‖ < 1) (θ : ℝ) :
+private theorem exp_shiftEulerLog {z : ℂ} (hz : ‖z‖ < 1) (θ : ℝ) :
     Complex.exp (∑' n : ℕ, (shiftLogCoeff θ n : ℂ) * z ^ n) =
       (1 - z * phase θ) * (1 - z * phase (-θ)) / (1 - z) ^ 2 := by
   have hsmall (φ : ℝ) : ‖z * phase φ‖ < 1 := by simpa only [norm_mul, norm_phase, mul_one] using hz
@@ -50,12 +50,14 @@ theorem exp_shiftEulerLog {z : ℂ} (hz : ‖z‖ < 1) (θ : ℝ) :
   have h := HTGeometry.hasSum_neg_log_sub hz
   have hs := ((h.add h).sub (HTGeometry.hasSum_neg_log_sub (hsmall θ))).sub
     (HTGeometry.hasSum_neg_log_sub (hsmall (-θ)))
-  have hsum : HasSum (fun n : ℕ => (shiftLogCoeff θ n : ℂ) * z ^ n) _ := by
+  have hsum : HasSum (fun n : ℕ => (shiftLogCoeff θ n : ℂ) * z ^ n)
+      (-Complex.log (1 - z) + -Complex.log (1 - z) - -Complex.log (1 - z * phase θ) -
+        -Complex.log (1 - z * phase (-θ))) := by
     apply hs.congr_fun
     intro n
     simp only [shiftLogCoeff, Complex.ofReal_div, Complex.ofReal_mul, Complex.ofReal_sub,
       Complex.ofReal_ofNat, Complex.ofReal_one, Complex.ofReal_natCast, mul_pow]
-    linear_combination -(z ^ n / (n : ℂ)) * (phase_pow_sum θ n)
+    linear_combination (z ^ n / (n : ℂ)) * (phase_pow_sum θ n)
   rw [hsum.tsum_eq]
   simp only [sub_neg_eq_add, Complex.exp_add, Complex.exp_neg, Complex.exp_log (hne hz),
     Complex.exp_log (hne (hsmall θ)), Complex.exp_log (hne (hsmall (-θ)))]
@@ -87,10 +89,14 @@ theorem hasProd_shiftEulerLog {X : CompactQuotient} (hhyp : ∀ γ : X.Γ, γ �
   have hn := eulerZeta_ne_zero (X := X) hhyp hs
   have hprod : HasProd (fun x => X.eulerFactor x (s + h * I) * X.eulerFactor x (s - h * I) /
       (X.eulerFactor x s * X.eulerFactor x s)) (shiftQuotient X.eulerZeta (h * I) s) := by
-    unfold HasProd at *
-    simpa only [Finset.prod_div_distrib, Finset.prod_mul_distrib, shiftQuotient, sq] using
-      (hp.mul hm).div (ho.mul ho) (mul_ne_zero hn hn)
-  apply hprod.congr
+    have hnum := hp.mul hm
+    have hden := ho.mul ho
+    rw [HasProd] at hnum hden ⊢
+    convert hnum.div hden (mul_ne_zero hn hn) using 1
+    · ext S
+      exact Finset.prod_div_distrib _ _
+    · rw [shiftQuotient, sq]
+  apply hprod.congr_fun
   intro x
   have hz : ‖X.shiftEulerVariable x s‖ < 1 := by
     rw [shiftEulerVariable, norm_eulerTerm]
@@ -152,7 +158,8 @@ private theorem quotient_pole {Z : ℂ → ℂ} (hd : Differentiable ℂ Z) (hne
   change meromorphicOrderAt ((fun z => Z (z + c) * Z (z - c)) / Z ^ 2) s < 0
   rw [meromorphicOrderAt_div hnum.meromorphicAt ((hd.analyticAt s).meromorphicAt.pow 2), hn,
     meromorphicOrderAt_pow (hd.analyticAt s).meromorphicAt, ← hk]
-  exact_mod_cast (by omega : (0 : ℤ) - 2 * k < 0)
+  rw [sub_eq_add_neg, zero_add]
+  exact WithTop.coe_lt_coe.mpr (by omega : -(2 * k) < 0)
 
 private theorem quotient_divisor_sign {Z : ℂ → ℂ} (hd : Differentiable ℂ Z) (hne : ∃ z, Z z ≠ 0)
     (hreal : ∀ s, inExceptionalStrip s → Z s = 0 → s.im = 0)
@@ -172,8 +179,8 @@ private theorem quotient_divisor_sign {Z : ℂ → ℂ} (hd : Differentiable ℂ
     have hneg := quotient_pole hd hne hz hp hm
     simp [not_lt.mpr hneg.le, hp, hm, hz, hneg]
   · have hq : AnalyticAt ℂ (shiftQuotient Z c) s := by
-      have hP := (hd.analyticAt (s + c)).comp (by fun_prop : AnalyticAt ℂ (fun z : ℂ => z + c) s)
-      have hM := (hd.analyticAt (s - c)).comp (by fun_prop : AnalyticAt ℂ (fun z : ℂ => z - c) s)
+      have hP : AnalyticAt ℂ (fun z => Z (z + c)) s := (hd.analyticAt _).comp (by fun_prop)
+      have hM : AnalyticAt ℂ (fun z => Z (z - c)) s := (hd.analyticAt _).comp (by fun_prop)
       exact (hP.mul hM).div ((hd.analyticAt s).pow 2) (pow_ne_zero _ hz)
     by_cases hnum : Z (s + c) = 0 ∨ Z (s - c) = 0
     · have hzero : shiftQuotient Z c s = 0 := by
@@ -185,6 +192,63 @@ private theorem quotient_divisor_sign {Z : ℂ → ℂ} (hd : Differentiable ℂ
       have ho := meromorphicOrderAt_eq_zero_of_analyticAt_ne_zero hq hunit
       exact ⟨iff_of_false (by rw [← show c = h * I from rfl, ho]; exact lt_irrefl _) hnum,
         iff_of_false (by rw [← show c = h * I from rfl, ho]; exact lt_irrefl _) hz⟩
+
+/-- A positive height translates every exceptional real zero twice. The original real zeros
+are precisely the off-line poles. The Euler logarithm is given coefficient by coefficient,
+and the reflection multiplier is the same quotient of the Selberg multipliers. -/
+theorem exists_shifted_selberg_positive_euler_model :
+    ∃ (X : CompactQuotient) (A : Set ℂ) (F : ℝ → ℂ → ℂ),
+      A.Finite ∧ A.Nonempty ∧ (∀ s ∈ A, s.im = 0) ∧ ∀ h : ℝ, 0 < h →
+      Meromorphic (F h) ∧
+      (∀ s : ℂ, 1 < s.re → HasProd (fun x : X.PClass × ℕ =>
+        Complex.exp (∑' n : ℕ, (shiftLogCoeff (h * X.classLen x.1.1) n : ℂ) *
+          X.shiftEulerVariable x s ^ n)) (F h s)) ∧
+      (∀ s : ℂ, 0 < s.re → s.re < 1 → F h (1 - s) =
+        F h s * shiftQuotient X.reflectionFactor (h * I) s) ∧
+      {s : ℂ | inExceptionalStrip s ∧ 0 < meromorphicOrderAt (F h) s} =
+        ((fun z : ℂ => z + h * I) '' A) ∪ ((fun z : ℂ => z - h * I) '' A) ∧
+      {s : ℂ | inExceptionalStrip s ∧ meromorphicOrderAt (F h) s < 0} = A := by
+  obtain ⟨_, X, Z, _, hhyp, hd, _, hprod, hFE, hfin, hne, hset⟩ :=
+    exists_selbergZeta_small_eigenvalue
+  let A := {s : ℂ | inExceptionalStrip s ∧ Z s = 0}
+  have hA : A = {s : ℂ | 0 < s.re ∧ s.re < 1 ∧ s.re ≠ 1 / 2 ∧ Z s = 0} := by
+    ext s
+    simp only [A, inExceptionalStrip, mem_setOf_eq, and_assoc]
+  have hreal (s : ℂ) (hs : inExceptionalStrip s) (hz : Z s = 0) : s.im = 0 := by
+    have hmem : s ∈ {s : ℂ | 0 < s.re ∧ s.re < 1 ∧ s.re ≠ 1 / 2 ∧ Z s = 0} :=
+      ⟨hs.1, hs.2.1, hs.2.2, hz⟩
+    rw [hset] at hmem
+    obtain ⟨_, _, _, he | he⟩ := hmem <;> rw [he, Complex.ofReal_im]
+  have heq (s : ℂ) (hs : 1 < s.re) : Z s = X.eulerZeta s := (hprod s hs).tprod_eq.symm
+  have hNZ : ∃ z, Z z ≠ 0 := ⟨2, by
+    rw [heq 2 (by norm_num)]
+    exact CompactQuotient.eulerZeta_ne_zero hhyp (by norm_num)⟩
+  refine ⟨X, A, fun h => shiftQuotient Z (h * I), hA.symm ▸ hfin, hA.symm ▸ hne,
+    fun s hs => hreal s hs.1 hs.2, fun h hh => ⟨quotient_meromorphic hd _, ?_, ?_, ?_, ?_⟩⟩
+  · intro s hs
+    have hEqQ : shiftQuotient Z (h * I) s = shiftQuotient X.eulerZeta (h * I) s := by
+      unfold shiftQuotient
+      rw [heq _ hs, heq _ (show 1 < (s + h * I).re by simpa using hs),
+        heq _ (show 1 < (s - h * I).re by simpa using hs)]
+    rw [hEqQ]
+    exact CompactQuotient.hasProd_shiftEulerLog hhyp h hs
+  · exact fun s h0 h1 => quotient_reflects (G := X.reflectionFactor) hFE h h0 h1
+  · ext s
+    constructor
+    · rintro ⟨hs, hz⟩
+      rcases (quotient_divisor_sign hd hNZ hreal hs hh).1.mp hz with hp | hm
+      · exact Or.inr ⟨_, ⟨(exceptional_translate s h).mpr hs, hp⟩, add_sub_cancel_right ..⟩
+      · exact Or.inl ⟨_, ⟨(exceptional_sub_translate s h).mpr hs, hm⟩, sub_add_cancel ..⟩
+    · rintro (⟨z, hz, rfl⟩ | ⟨z, hz, rfl⟩)
+      · have hs := (exceptional_translate z h).mpr hz.1
+        exact ⟨hs, (quotient_divisor_sign hd hNZ hreal hs hh).1.mpr
+          (Or.inr (by rw [add_sub_cancel_right]; exact hz.2))⟩
+      · have hs := (exceptional_sub_translate z h).mpr hz.1
+        exact ⟨hs, (quotient_divisor_sign hd hNZ hreal hs hh).1.mpr
+          (Or.inl (by rw [sub_add_cancel]; exact hz.2))⟩
+  · ext s
+    exact ⟨fun ⟨hs, hz⟩ => ⟨hs, (quotient_divisor_sign hd hNZ hreal hs hh).2.mp hz⟩,
+      fun ⟨hs, hz⟩ => ⟨hs, (quotient_divisor_sign hd hNZ hreal hs hh).2.mpr hz⟩⟩
 
 end
 

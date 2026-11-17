@@ -14,7 +14,8 @@ noncomputable section
 
 open Complex Finset ArithmeticFunction Filter Topology
 open scoped LSeries.notation
-open RHTower.Sieve RHTower.WeilFiniteType
+open RHTower.Sieve hiding dirPoly
+open RHTower.WeilFiniteType
 open GaloisForLFunctions.TransHorizonIncidenceMechanics (partialSumRate)
 
 namespace GaloisForLFunctions.ExceptionalLayerTheory

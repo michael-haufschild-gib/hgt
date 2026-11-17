@@ -82,7 +82,7 @@ private theorem tendsto_sampledDegree {f : ℝ → ℝ} (hf : Continuous f) {K :
     (hs : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) (t : ℝ) :
     Tendsto (sampledDegree f (3*K) · t) atTop (𝓝 (∫ u, f u * Real.exp (t*u))) := by
   have hL : 1 ≤ 3*K := by omega
-  have hlog : 0 ≤ Real.log (1 + ((3*K : ℕ) : ℝ)) := Real.log_nonneg (by positivity)
+  have hlog : 0 ≤ Real.log (1 + ((3*K : ℕ) : ℝ)) := Real.log_nonneg (by linarith only [Nat.cast_nonneg (α := ℝ) (3*K)])
   have he : (∫ u in (0:ℝ)..Real.log (1 + ((3*K : ℕ) : ℝ)), f u * Real.exp (t*u)) =
       ∫ u, f u * Real.exp (t*u) := by
     rw [intervalIntegral.integral_of_le hlog]
@@ -112,7 +112,9 @@ theorem tendsto_meshDegree {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hc : HasCo
   have he (u : ℝ) : -(1 / 2 : ℝ) * u = -u / 2 := by ring
   have he' (u : ℝ) : (1 / 2 : ℝ) * u = u / 2 := by ring
   simp only [he, he'] at hp
-  simpa only [meshDegree, logRadius, sub_add_eq_sub_sub, sub_sub_cancel] using hp.sub hj
+  change Tendsto (fun n => 2 * (sampledDegree f (3*K) n (-(1/2)) * sampledDegree f (3*K) n (1/2)) -
+    degreeForm f (3*K) n - 2 * degreeContact f (3*K) n) atTop _
+  simpa only [packetTest, sub_add_eq_sub_sub, sub_sub_cancel] using hp.sub hj
 
 /-- All three parts of the unrounded mesh use divisor multiplicities quadratically. -/
 theorem meshDegree_mul (c : ℝ) (f : ℝ → ℝ) (L n : ℕ) :
@@ -139,8 +141,9 @@ theorem meshDegree_mul (c : ℝ) (f : ℝ → ℝ) (L n : ℕ) :
     rw [mul_sum]
     apply sum_congr rfl
     intro k _
-    rw [mul_left_comm (c^2), mul_sum]
+    rw [mul_left_comm (c^2)]
     congr 1
+    rw [mul_sum]
     exact sum_congr rfl fun j _ => by simp only [hs]; ring
   simp only [meshDegree, logRadius, hp, hd, hc]
   ring

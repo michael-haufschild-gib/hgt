@@ -226,40 +226,54 @@ theorem abs_tailProfile_le {F : ℝ → ℝ} {s : ℝ} (hs : 0 ≤ s) (ℓ u : �
   · rw [abs_zero]
     exact abs_nonneg _
 
-theorem sq_tailProfile_le {F : ℝ → ℝ} {s : ℝ} (hs : 0 ≤ s) (ℓ u : ℝ) :
+/-- On the truncated tail the confinement weight absorbs every tilt down to `s = -4`. -/
+theorem sq_tailProfile_le_of_neg_four_le {F : ℝ → ℝ} {s : ℝ} (hs : -4 ≤ s) (ℓ u : ℝ) :
     tailProfile F s ℓ u ^ 2 ≤ Real.exp (-(8 * ℓ)) * (F u ^ 2 * Real.exp (-(8 * u))) := by
-  have h0 : 0 ≤ Real.exp (-(8 * ℓ)) * (F u ^ 2 * Real.exp (-(8 * u))) :=
-    mul_nonneg (Real.exp_pos _).le (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le)
   unfold tailProfile
-  split_ifs with h
-  · have e1 : Real.exp (s * (u + ℓ)) ≤ 1 :=
-      Real.exp_le_one_iff.mpr (mul_nonpos_of_nonneg_of_nonpos hs (by linarith))
-    have e2 : 1 ≤ Real.exp (-(8 * ℓ)) * Real.exp (-(8 * u)) := by
-      rw [← Real.exp_add]
-      exact Real.one_le_exp (by linarith)
-    have e3 : Real.exp (s * (u + ℓ)) ^ 2 ≤ 1 := pow_le_one₀ (Real.exp_pos _).le e1
-    calc (Real.exp (s * (u + ℓ)) * F u) ^ 2 = Real.exp (s * (u + ℓ)) ^ 2 * F u ^ 2 := by ring
-      _ ≤ 1 * F u ^ 2 := mul_le_mul_of_nonneg_right e3 (sq_nonneg _)
-      _ ≤ Real.exp (-(8 * ℓ)) * Real.exp (-(8 * u)) * F u ^ 2 :=
-          mul_le_mul_of_nonneg_right e2 (sq_nonneg _)
-      _ = _ := by ring
+  split_ifs with hu
+  · have he : Real.exp (s * (u + ℓ)) ^ 2 ≤ Real.exp (-(8 * ℓ)) * Real.exp (-(8 * u)) := by
+      rw [← Real.exp_nat_mul, ← Real.exp_add]
+      apply Real.exp_le_exp.mpr
+      push_cast
+      nlinarith only [mul_nonpos_of_nonneg_of_nonpos (show 0 ≤ s+4 by linarith)
+        (show u+ℓ ≤ 0 by linarith)]
+    rw [mul_pow]
+    exact (mul_le_mul_of_nonneg_right he (sq_nonneg (F u))).trans_eq (by ring)
   · rw [zero_pow two_ne_zero]
-    exact h0
+    positivity
+
+theorem sq_tailProfile_le {F : ℝ → ℝ} {s : ℝ} (hs : 0 ≤ s) (ℓ u : ℝ) :
+    tailProfile F s ℓ u ^ 2 ≤ Real.exp (-(8 * ℓ)) * (F u ^ 2 * Real.exp (-(8 * u))) :=
+  sq_tailProfile_le_of_neg_four_le (by linarith) ℓ u
+
+theorem integrable_tailProfile_of_neg_four_lt {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
+    {s : ℝ} (hs : -4 < s) (ℓ : ℝ) : Integrable (tailProfile F s ℓ) := by
+  apply ((integrable_abs_mul_exp_of_domain hF hs).const_mul (Real.exp (s*ℓ))).mono'
+    (measurable_tailProfile hF.meas s ℓ).aestronglyMeasurable
+  apply Eventually.of_forall
+  intro u
+  unfold tailProfile
+  split_ifs
+  · rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _), mul_add, Real.exp_add]
+    exact le_of_eq (by ring)
+  · rw [norm_zero]
+    positivity
 
 theorem integrable_tailProfile {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {s : ℝ}
     (hs : 0 ≤ s) (ℓ : ℝ) : Integrable (tailProfile F s ℓ) :=
-  hF.integrable.abs.mono' (measurable_tailProfile hF.meas s ℓ).aestronglyMeasurable
-    (Eventually.of_forall fun u => by
-      rw [Real.norm_eq_abs]
-      exact abs_tailProfile_le hs ℓ u)
+  integrable_tailProfile_of_neg_four_lt hF (by linarith) ℓ
 
-theorem integrable_sq_tailProfile {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {s : ℝ}
-    (hs : 0 ≤ s) (ℓ : ℝ) : Integrable fun u => tailProfile F s ℓ u ^ 2 :=
+theorem integrable_sq_tailProfile_of_neg_four_le {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
+    {s : ℝ} (hs : -4 ≤ s) (ℓ : ℝ) : Integrable fun u => tailProfile F s ℓ u ^ 2 :=
   (hF.exponential.const_mul (Real.exp (-(8 * ℓ)))).mono'
     ((measurable_tailProfile hF.meas s ℓ).pow_const 2).aestronglyMeasurable
     (Eventually.of_forall fun u => by
       rw [Real.norm_of_nonneg (sq_nonneg _)]
-      exact sq_tailProfile_le hs ℓ u)
+      exact sq_tailProfile_le_of_neg_four_le hs ℓ u)
+
+theorem integrable_sq_tailProfile {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {s : ℝ}
+    (hs : 0 ≤ s) (ℓ : ℝ) : Integrable fun u => tailProfile F s ℓ u ^ 2 :=
+  integrable_sq_tailProfile_of_neg_four_le hF (by linarith) ℓ
 
 /-- One term of the prime tail on the line `Re p = s` is a unimodular multiple of the Fourier
 transform of the truncated profile. -/
@@ -297,13 +311,13 @@ theorem norm_stateTail_factor_eq (F : ℝ → ℝ) (s ℓ t : ℝ) :
   rw [h, norm_mul, Complex.norm_exp_ofReal_mul_I, one_mul]
 
 /-- Plancherel for the truncated profile: its transform has mass at most `2π e^{-8ℓ} W₈`. -/
-theorem lintegral_norm_sq_paperFT_tailProfile_le {F : ℝ → ℝ}
-    (hF : CriticalHalfLineEnergyDomain F) {s : ℝ} (hs : 0 ≤ s) (ℓ : ℝ) :
+theorem lintegral_norm_sq_paperFT_tailProfile_le_of_neg_four_lt {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {s : ℝ} (hs : -4 < s) (ℓ : ℝ) :
     (∫⁻ t : ℝ, ENNReal.ofReal (‖paperFT (cx (tailProfile F s ℓ)) (t : ℂ)‖ ^ 2)) ≤
       ENNReal.ofReal (2 * Real.pi *
         (Real.exp (-(8 * ℓ)) * ∫ u, F u ^ 2 * Real.exp (-(8 * u)))) := by
-  have hi := integrable_tailProfile hF hs ℓ
-  have h2 := integrable_sq_tailProfile hF hs ℓ
+  have hi := integrable_tailProfile_of_neg_four_lt hF hs ℓ
+  have h2 := integrable_sq_tailProfile_of_neg_four_le hF hs.le ℓ
   have hP := integrable_norm_sq_paperFT_cx hi h2
   rw [← ofReal_integral_eq_lintegral_ofReal hP (Eventually.of_forall fun t => sq_nonneg _)]
   refine ENNReal.ofReal_le_ofReal ?_
@@ -320,7 +334,14 @@ theorem lintegral_norm_sq_paperFT_tailProfile_le {F : ℝ → ℝ}
   rw [hpl]
   refine mul_le_mul_of_nonneg_left ?_ (by positivity)
   rw [← integral_const_mul]
-  exact integral_mono h2 (hF.exponential.const_mul _) fun u => sq_tailProfile_le hs ℓ u
+  exact integral_mono h2 (hF.exponential.const_mul _) fun u => sq_tailProfile_le_of_neg_four_le hs.le ℓ u
+
+theorem lintegral_norm_sq_paperFT_tailProfile_le {F : ℝ → ℝ}
+    (hF : CriticalHalfLineEnergyDomain F) {s : ℝ} (hs : 0 ≤ s) (ℓ : ℝ) :
+    (∫⁻ t : ℝ, ENNReal.ofReal (‖paperFT (cx (tailProfile F s ℓ)) (t : ℂ)‖ ^ 2)) ≤
+      ENNReal.ofReal (2 * Real.pi *
+        (Real.exp (-(8 * ℓ)) * ∫ u, F u ^ 2 * Real.exp (-(8 * u)))) :=
+  lintegral_norm_sq_paperFT_tailProfile_le_of_neg_four_lt hF (by linarith) ℓ
 
 theorem summable_vonMangoldtAtom_mul_exp_neg_one_log :
     Summable fun n : ℕ => vonMangoldtAtom n * Real.exp (-(1 * Real.log n)) :=
@@ -342,11 +363,11 @@ theorem ennreal_sq_half_mul_half (x y : ENNReal) :
     ← ENNReal.rpow_mul]
   norm_num
 
-/-- **The prime tail is square integrable on every line `Re p = s ≥ 0`.** Cauchy–Schwarz over
+/-- **The prime tail is square integrable on every line `Re p = s > -4`.** Cauchy–Schwarz over
 the prime powers with the weights `Λ(n) n^{-3/2}`, then Plancherel for each truncated profile,
 whose mass beyond `-log n` is at most `n^{-8} ∫ F² e^{-8u}`. -/
-theorem integrable_norm_sq_stateTail_line {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
-    {s : ℝ} (hs : 0 ≤ s) :
+theorem integrable_norm_sq_stateTail_line_of_neg_four_lt {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
+    {s : ℝ} (hs : -4 < s) :
     Integrable fun t : ℝ => ‖stateTail F ((s : ℂ) + (t : ℂ) * I)‖ ^ 2 := by
   have hcont : Continuous fun t : ℝ => stateTail F ((s : ℂ) + (t : ℂ) * I) :=
     (differentiableOn_stateTail_strip hF).continuousOn.comp_continuous (by fun_prop) fun t => by
@@ -423,7 +444,7 @@ theorem integrable_norm_sq_stateTail_line {F : ℝ → ℝ} (hF : CriticalHalfLi
       _ ≤ ENNReal.ofReal (vonMangoldtAtom n * Real.exp (1 * Real.log n)) *
             ENNReal.ofReal (2 * Real.pi * (Real.exp (-(8 * Real.log n)) * W)) := by
           rw [hW]
-          exact mul_le_mul' le_rfl (lintegral_norm_sq_paperFT_tailProfile_le hF hs _)
+          exact mul_le_mul' le_rfl (lintegral_norm_sq_paperFT_tailProfile_le_of_neg_four_lt hF hs _)
       _ = ENNReal.ofReal (vonMangoldtAtom n * Real.exp (1 * Real.log n) *
             (2 * Real.pi * (Real.exp (-(8 * Real.log n)) * W))) := (ENNReal.ofReal_mul hc).symm
       _ ≤ ENNReal.ofReal (2 * Real.pi * W *
@@ -446,7 +467,7 @@ theorem integrable_norm_sq_stateTail_line {F : ℝ → ℝ} (hF : CriticalHalfLi
       (vonMangoldtAtom n * Real.exp (1 * Real.log n) *
         ‖paperFT (cx (tailProfile F s (Real.log n))) (t : ℂ)‖ ^ 2)) volume := fun n =>
     (continuous_const.mul ((continuous_paperFT_cx
-      (integrable_tailProfile hF hs _)).norm.pow 2)).measurable.ennreal_ofReal.aemeasurable
+      (integrable_tailProfile_of_neg_four_lt hF hs _)).norm.pow 2)).measurable.ennreal_ofReal.aemeasurable
   calc (∫⁻ t : ℝ, ENNReal.ofReal (‖stateTail F ((s : ℂ) + (t : ℂ) * I)‖ ^ 2))
       ≤ ∫⁻ t : ℝ, (∑' n : ℕ, ENNReal.ofReal
             (vonMangoldtAtom n * Real.exp (-(1 * Real.log n)))) *
@@ -466,6 +487,11 @@ theorem integrable_norm_sq_stateTail_line {F : ℝ → ℝ} (hF : CriticalHalfLi
         rw [← ENNReal.ofReal_tsum_of_nonneg
           (fun n => mul_nonneg (mul_nonneg (by positivity) hW0) (hv0 n)) (hsum.mul_left _)]
         exact ENNReal.ofReal_lt_top
+
+theorem integrable_norm_sq_stateTail_line {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
+    {s : ℝ} (hs : 0 ≤ s) :
+    Integrable fun t : ℝ => ‖stateTail F ((s : ℂ) + (t : ℂ) * I)‖ ^ 2 :=
+  integrable_norm_sq_stateTail_line_of_neg_four_lt hF (by linarith)
 
 /-! ### The squared logarithmic energy -/
 

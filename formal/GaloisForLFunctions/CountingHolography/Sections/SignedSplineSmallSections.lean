@@ -85,7 +85,7 @@ def resolution {N : ℕ} (a : Fin N → ℤ) : ℕ := ∑ i, (a i).natAbs
 
 private theorem resolution_smul {N : ℕ} (a : Fin N → ℤ) (m : ℕ) :
     resolution (m • a) = m * resolution a := by
-  simp [resolution, Pi.smul_apply, nsmul_eq_mul, Finset.mul_sum]
+  simp [resolution, Pi.smul_apply, nsmul_eq_mul, Int.natAbs_mul, Finset.mul_sum]
 
 private theorem resolution_pos {N : ℕ} {a : Fin N → ℤ} (ha : a ≠ 0) : 0 < resolution a := by
   obtain ⟨i, hi⟩ : ∃ i, a i ≠ 0 := by simpa [funext_iff] using ha
@@ -112,9 +112,10 @@ theorem tendsto_splineDegree {N : ℕ} (a : Fin N → ℤ) :
   have hD : Tendsto D atTop (𝓝 (integerProbe N a)) := by
     by_cases ha : a = 0
     · subst a
+      have hq : integerProbe N 0 = 0 := by simpa using integerProbe_smul N 0 (0 : Fin N → ℤ)
       have h := (tendsto_const_nhds (x := (0 : ℝ)) (f := (atTop : Filter ℕ)))
       simpa [D, packet, splineSource, meshDegree, logRadius, sampledDegree, degreeForm,
-        degreeContact, degreePairing, degreeSample, integerProbe, HTGeometry.hermQuad] using h
+        degreeContact, degreePairing, degreeSample, hq] using h
     · have hr := resolution_pos ha
       have hm : Tendsto (fun m : ℕ => resolution (m • a)) atTop atTop := by
         refine tendsto_atTop_mono (f := id) (fun m => ?_) tendsto_id
@@ -126,7 +127,7 @@ theorem tendsto_splineDegree {N : ℕ} (a : Fin N → ℤ) :
       exact (mul_div_cancel_left₀ _ (by positivity : (m : ℝ)^2 ≠ 0)).symm
   let C : ℝ := ∑ k ∈ Icc 2 L, Λ k
   have hC : Tendsto (fun m : ℕ => C / (m : ℝ)^2) atTop (𝓝 0) := by
-    simpa [div_eq_mul_inv] using inv_sq_tendsto.const_mul C
+    simpa only [div_eq_mul_inv, mul_zero] using inv_sq_tendsto.const_mul C
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hD (by simpa using hD.add hC)
   · filter_upwards with m
     apply div_le_div_of_nonneg_right _ (sq_nonneg _)
@@ -166,7 +167,8 @@ private theorem tendsto_sectionHeight {d A : ℕ → ℝ} (hd : ∀ m, 0 < d m) 
 theorem splineCount_tateLimit {N : ℕ} (a : Fin N → ℤ) :
     Tendsto (fun m : ℕ => (splineCount (m • a) : ℝ) / (m : ℝ)^2) atTop
       (𝓝 (max (integerProbe N a) 0)) :=
-  tendsto_sectionHeight (fun m => by exact_mod_cast contactGenerator_pos _ _ _) (tendsto_splineDegree a)
+  tendsto_sectionHeight (d := fun m => (generator (m • a) : ℝ)) (A := fun m => radius (m • a))
+    (fun m => by exact_mod_cast contactGenerator_pos _ _ _) (tendsto_splineDegree a)
 
 /-- Small sections of the inverse ideal with the reciprocal radius. -/
 def dualCount {N : ℕ} (a : Fin N → ℤ) : ℕ :=
@@ -175,9 +177,13 @@ def dualCount {N : ℕ} (a : Fin N → ℤ) : ℕ :=
 theorem dualCount_tateLimit {N : ℕ} (a : Fin N → ℤ) :
     Tendsto (fun m : ℕ => (dualCount (m • a) : ℝ) / (m : ℝ)^2) atTop
       (𝓝 (max (-integerProbe N a) 0)) := by
-  refine tendsto_sectionHeight (fun m => inv_pos.mpr (by exact_mod_cast
+  refine tendsto_sectionHeight (d := fun m : ℕ => (generator (m • a) : ℝ)⁻¹)
+    (A := fun m => -radius (m • a)) (fun m => inv_pos.mpr (by exact_mod_cast
     contactGenerator_pos (packet (m • a)) (3 * windowEnd N) (resolution (m • a)))) ?_
-  simpa only [Real.log_inv, neg_sub_neg, neg_div, neg_sub] using (tendsto_splineDegree a).neg
+  apply (tendsto_splineDegree a).neg.congr
+  intro m
+  rw [Real.log_inv]
+  ring
 
 /-- The difference of two natural-valued heights realizes the complete signed form. -/
 theorem splineCount_sub_dualCount_tateLimit {N : ℕ} (a : Fin N → ℤ) :
@@ -227,5 +233,9 @@ theorem riemannHypothesis_iff_smallSections_with_slack :
     have hmul := (div_lt_iff₀ hm2).mp hm
     have hz' := (exists_nonzero_smallSection (by exact_mod_cast contactGenerator_pos _ _ _)).mp hz
     linarith only [hmul, hz']
+
+#print axioms splineCount_sub_dualCount_tateLimit
+#print axioms riemannHypothesis_iff_dualCount_subquadratic
+#print axioms riemannHypothesis_iff_smallSections_with_slack
 
 end GaloisForLFunctions.CountingHolography.Sections

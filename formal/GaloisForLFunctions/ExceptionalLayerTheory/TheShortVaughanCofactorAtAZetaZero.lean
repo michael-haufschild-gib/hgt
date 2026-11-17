@@ -17,7 +17,8 @@ term the multiplier at a zero differs from one by at most `C(s) V W^(-Re s)`.
 noncomputable section
 
 open Complex Finset ArithmeticFunction Filter Topology
-open RHTower.Sieve RHTower.WeilFiniteType
+open RHTower.Sieve hiding dirPoly
+open RHTower.WeilFiniteType
 open GaloisForLFunctions.TransHorizonIncidenceMechanics
   (cpowPartialSum norm_cpowPartialSum_sub_le partialSumRate partialSumRate_nonneg ofReal_div_cpow)
 
@@ -49,7 +50,7 @@ private theorem weighted_cell_error (a : ℝ) {W d : ℕ} (hd : 1 ≤ d) (hdW : 
         (cpowPartialSum s (W / d) - ((((W : ℝ) / d : ℝ) : ℂ) ^ (1 - s)) / (1 - s) -
           riemannZeta s) := by
     unfold cutoffIntegral
-    linear_combination -(a : ℂ) / (1 - s) * hmain
+    linear_combination (a : ℂ) / (1 - s) * hmain
   rw [hfac, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
     Complex.norm_natCast_cpow_of_pos hd, Complex.neg_re]
   refine (mul_le_mul_of_nonneg_left he (by positivity)).trans_eq ?_
@@ -60,11 +61,11 @@ private theorem weighted_cell_error (a : ℝ) {W d : ℕ} (hd : 1 ≤ d) (hdW : 
 The error depends on its total absolute mass. -/
 theorem norm_dirPoly_zeta_convolution_sub_le (f : ArithmeticFunction ℝ) {W : ℕ}
     {s : ℂ} (hs : 0 < s.re) (hs1 : s ≠ 1) :
-    ‖dirPoly W ((zeta : ArithmeticFunction ℝ) * f) s -
+    ‖dirPoly W ((zeta : ArithmeticFunction ℝ) * f : ArithmeticFunction ℝ) s -
         (∑ d ∈ Icc 1 W, (f d : ℂ) / d) * ((W : ℂ) ^ (1 - s) / (1 - s)) -
         dirPoly W f s * riemannZeta s‖ ≤
       (∑ d ∈ Icc 1 W, |f d|) * (partialSumRate s * (W : ℝ) ^ (-s.re)) := by
-  have hexpand : dirPoly W ((zeta : ArithmeticFunction ℝ) * f) s =
+  have hexpand : dirPoly W ((zeta : ArithmeticFunction ℝ) * f : ArithmeticFunction ℝ) s =
       ∑ d ∈ Icc 1 W, (f d : ℂ) * (d : ℂ) ^ (-s) * cpowPartialSum s (W / d) := by
     unfold dirPoly
     simp_rw [ArithmeticFunction.coe_zeta_mul_apply, Complex.ofReal_sum]
@@ -75,7 +76,7 @@ theorem norm_dirPoly_zeta_convolution_sub_le (f : ArithmeticFunction ℝ) {W : �
 
 private theorem dirPoly_short_eq (V : ℕ) {W : ℕ} (hW : 1 ≤ W) (s : ℂ) :
     dirPoly W (typeIIShort V) s =
-      1 - dirPoly W ((zeta : ArithmeticFunction ℝ) * truncAF moebius V) s := by
+      1 - dirPoly W ((zeta : ArithmeticFunction ℝ) * truncAF moebius V : ArithmeticFunction ℝ) s := by
   unfold dirPoly
   have hsub (n : ℕ) : typeIIShort V n = (1 : ArithmeticFunction ℝ) n -
       ((zeta : ArithmeticFunction ℝ) * truncAF moebius V) n := rfl
@@ -84,7 +85,7 @@ private theorem dirPoly_short_eq (V : ℕ) {W : ℕ} (hW : 1 ≤ W) (s : ℂ) :
   rw [sum_eq_single 1]
   · simp
   · intro n _ hn
-    simp [ArithmeticFunction.one_apply, hn]
+    simp [hn]
   · exact fun h => False.elim (h (mem_Icc.mpr ⟨le_rfl, hW⟩))
 
 /-- The short cofactor Dirichlet polynomial with its finite cutoff pole removed. -/
@@ -100,7 +101,7 @@ theorem norm_centredShortCofactor_sub_one_le {V W : ℕ} (hW : 1 ≤ W) (hVW : V
     ‖centredShortCofactor V W s - 1‖ ≤
       (V : ℝ) * (partialSumRate s * (W : ℝ) ^ (-s.re)) := by
   let μ := (moebius : ArithmeticFunction ℝ)
-  have restrictSum {E : Type*} [AddCommMonoid E] (g : ℕ → ℝ → E) (hg : ∀ d, g d 0 = 0) :
+  have restrictSum {E : Type} [AddCommMonoid E] (g : ℕ → ℝ → E) (hg : ∀ d, g d 0 = 0) :
       (∑ d ∈ Icc 1 W, g d (truncAF μ V d)) = ∑ d ∈ Icc 1 V, g d (μ d) := by
     rw [← sum_subset (Icc_subset_Icc_right hVW)
       (fun d hdW hdV => show g d (truncAF μ V d) = 0 by
