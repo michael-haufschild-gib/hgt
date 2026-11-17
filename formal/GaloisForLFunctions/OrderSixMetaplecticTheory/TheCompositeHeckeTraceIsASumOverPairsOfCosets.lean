@@ -324,9 +324,13 @@ theorem rep_entries (ij : R.Index) :
       3 * R.xOf ij * (3 * R.yOf ij * ((R.gOf ij : levelThree) : SL(2, O)) 0 0 +
         ((R.gOf ij : levelThree) : SL(2, O)) 1 0) +
       (3 * R.yOf ij * ((R.gOf ij : levelThree) : SL(2, O)) 0 1 + ((R.gOf ij : levelThree) : SL(2, O)) 1 1) := by
+  have h : (((R.rep ij : levelThree) : SL(2, O)) : Matrix (Fin 2) (Fin 2) O) =
+      !![1, 0; 3 * R.yOf ij, 1] * (((R.gOf ij : levelThree) : SL(2, O)) : Matrix (Fin 2) (Fin 2) O) *
+        !![1, 3 * R.xOf ij; 0, 1] := rfl
   refine ⟨?_, ?_, ?_, ?_⟩ <;>
-  · simp [rep, lowerThree, transThree, Matrix.mul_apply, Fin.sum_univ_two]
-    try ring
+  · simp only [h, Matrix.mul_apply, Fin.sum_univ_two, Matrix.of_apply, Matrix.cons_val', Matrix.cons_val_zero,
+      Matrix.cons_val_one, Matrix.empty_val', Matrix.cons_val_fin_one]
+    ring
 
 /-! ### The rows of the representatives -/
 
@@ -340,12 +344,12 @@ theorem Q_nine_mK : 9 * R.Q.res R.mK = -1 := by
   simp only [map_sub, map_mul, map_one, R.Q.res_nine, R.Q.res_p, mul_zero, zero_mul, zero_sub] at h
   linear_combination -h
 
-theorem P_nine_pK : 9 * R.P.res (R.Q.p * R.pK) = -1 := by
+theorem P_nine_pK : 9 * (R.P.res R.Q.p * R.P.res R.pK) = -1 := by
   have h := congrArg R.P.res R.p_det
   simp only [map_sub, map_mul, map_one, R.P.res_nine, R.P.res_p, zero_mul, zero_sub] at h
   linear_combination -h
 
-theorem Q_nine_qK : 9 * R.Q.res (R.P.p * R.qK) = -1 := by
+theorem Q_nine_qK : 9 * (R.Q.res R.P.p * R.Q.res R.qK) = -1 := by
   have h := congrArg R.Q.res R.q_det
   simp only [map_sub, map_mul, map_one, R.Q.res_nine, R.Q.res_p, zero_mul, zero_sub] at h
   linear_combination -h
@@ -388,13 +392,13 @@ theorem rep_mul_inv_P (ij : R.Index) : R.rep ij * (R.P.rep ij.1)⁻¹ ∈ R.P.he
   have e2' := eq_of_nine_eq h9 hKp hk
   rcases ij with ⟨x₁ | x₁ | ⟨x₁, y₁⟩, x₂ | x₂ | ⟨x₂, y₂⟩⟩
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes]
-  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, wQ, hq0]
+  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, R.P.res_p, wQ]
     linear_combination 3 * hq
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes]
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes, wP, R.P.res_p]
     linear_combination 3 * R.P.res R.P.wK * (R.P.res R.P.wDelta - R.P.res R.pDelta) * hKp +
       3 * R.P.res R.P.wDelta * e2'
-  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, wM, hm0]
+  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, R.P.res_p, wM]
     linear_combination 3 * R.P.res R.P.wK * (R.P.res R.P.wDelta - R.P.res R.mDelta) * hKm +
       3 * R.P.res R.P.wDelta * e1'
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes, wP, R.P.res_p]
@@ -402,7 +406,7 @@ theorem rep_mul_inv_P (ij : R.Index) : R.rep ij * (R.P.rep ij.1)⁻¹ ∈ R.P.he
       3 * R.P.res R.P.wDelta * e2'
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes]
     ring
-  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, wQ, hq0]
+  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, R.P.res_p, wQ]
     constructor
     · linear_combination 3 * hq
     · linear_combination (3 * y₁.1 * R.P.res R.qDelta + 27 * y₁.1 ^ 2 * R.P.res R.qDelta * R.qInv) * hq
@@ -433,12 +437,12 @@ theorem rep_mul_inv_Q (ij : R.Index) : R.rep ij * (R.Q.rep ij.2)⁻¹ ∈ R.Q.he
       3 * R.Q.res R.Q.wDelta * e2'
   · simp [gOf, xOf, yOf, PrimaryPrime.repRes]
     ring
-  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, wP, hp0]
+  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, R.Q.res_p, wP]
     linear_combination 3 * hp
-  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, wM, hm0]
+  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, R.Q.res_p, wM]
     linear_combination 3 * R.Q.res R.Q.wK * (R.Q.res R.Q.wDelta - R.Q.res R.mDelta) * hKm +
       3 * R.Q.res R.Q.wDelta * e1'
-  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, wP, hp0]
+  · simp [gOf, xOf, yOf, PrimaryPrime.repRes, R.Q.res_p, wP]
     constructor
     · linear_combination 3 * hp
     · linear_combination (3 * y₂.1 * R.Q.res R.pDelta + 27 * y₂.1 ^ 2 * R.Q.res R.pDelta * R.pInv) * hp
