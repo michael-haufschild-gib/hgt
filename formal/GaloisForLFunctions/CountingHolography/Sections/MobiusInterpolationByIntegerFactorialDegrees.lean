@@ -43,8 +43,8 @@ theorem factorialFloorReading_prefix (R : Type*) [CommRing R] (m : ℕ) {k : ℕ
   have h := congrArg (fun z : ℤ => (z:R)) (mobius_floor_nat m hk)
   simp only [factorialFloorReading,prefixFactorialCoeffs,map_sum,Finsupp.linearCombination_single,
     smul_eq_mul]
-  push_cast at h
-  exact h
+  by_cases hkm : k ≤ m <;>
+    simp only [hkm,ite_true,ite_false,Int.cast_sum,Int.cast_mul,Int.cast_natCast,Int.cast_one,Int.cast_zero] at h ⊢ <;> exact h
 
 /-- The unique positive-degree presentation of the prescribed finite samples. -/
 def sampleFactorialCoeffs {R : Type*} [CommRing R] (L : ℕ) (f : ℕ → R) : ℕ →₀ R :=
@@ -62,7 +62,7 @@ theorem factorialFloorReading_sample {R : Type*} [CommRing R] (L : ℕ) (f : ℕ
     · simp [h,show ¬ k ≤ k-1 by omega]
     · simp [h.le,show k ≤ m-1 by omega,h.ne']
   rw [sum_congr rfl fun m _ => step m]
-  simp [mem_Icc,hk]
+  simp [mem_Icc,show 1 ≤ k from hk]
 
 /-- The balance of the factorial presentation reads the sample at one. -/
 theorem sampleFactorialCoeffs_balance {R : Type*} [CommRing R] (L : ℕ) (f : ℕ → R) :

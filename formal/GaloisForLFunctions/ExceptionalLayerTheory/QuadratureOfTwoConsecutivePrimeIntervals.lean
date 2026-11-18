@@ -146,7 +146,7 @@ theorem singleQuartet_two_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuart
   refine ⟨4*L,by positivity,fun t ht ht16 => ?_⟩
   let B := L*Real.exp ((t+2*h)/2)*(1+(t+2*h)^2)
   let E (s : ℝ) := Chebyshev.theta (Real.exp s)-Real.exp s
-  have bound {s : ℝ} (hs : t≤s) (hs' : s≤t+2*h) : |E s+m*(powerMode ρ s).re|≤B := by
+  have bound {s : ℝ} (hs : t ≤ s) (hs' : s ≤ t+2*h) : |E s+m*(powerMode ρ s).re| ≤ B := by
     apply (hE s (ht.trans hs) (ht16.trans (Real.exp_le_exp.mpr hs))).trans
     exact mul_le_mul (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith only [hs'])) hL)
       (add_le_add (le_refl 1) ((sq_le_sq₀ (ht.trans hs) (by linarith only [ht,hh])).mpr hs'))

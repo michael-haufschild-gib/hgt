@@ -269,13 +269,14 @@ theorem mobiusFactorialSample_mertens_step {W W' : ℝ → ℝ} {B L C σ : ℝ}
   rw [Real.norm_eq_abs,Real.norm_eq_abs,abs_of_nonneg (sub_nonneg.mpr huv)] at h
   exact h.trans (mul_le_of_le_one_right (by dsimp only [D]; positivity) (by linarith only [hvu]))
 
-private def pSeriesMass (σ : ℝ) := ∑' k : ℕ, ((k:ℝ)^(1+σ))⁻¹
+/-- Positive-degree reciprocal power sum for the rounding error. -/
+def factorialInterpolationPSeries (σ : ℝ) := ∑' k : ℕ, ((k:ℝ)^(1+σ))⁻¹
 
 private theorem sum_unit_rounding {b : ℝ → ℝ} {D B σ y : ℝ} (hD : 0 ≤ D)
     (hB : 0 ≤ B) (hσ : 0 < σ) (hy : 0 < y)
     (h : ∀ u v, 0 < u → u ≤ v → v ≤ u+1 → |b v-b u| ≤ D*(B/u)^σ/u)
     (v : ℕ → ℝ) (hv : ∀ k, (k:ℝ)*y ≤ v k ∧ v k ≤ k*y+1) (N : ℕ) :
-    (∑ k ∈ Icc 1 N, |b (v k)-b (k*y)|) ≤ pSeriesMass σ*(D*(B/y)^σ/y) := by
+    (∑ k ∈ Icc 1 N, |b (v k)-b (k*y)|) ≤ factorialInterpolationPSeries σ*(D*(B/y)^σ/y) := by
   let E := D*(B/y)^σ/y
   have hE : 0 ≤ E := by dsimp only [E]; positivity
   have hs := (Real.summable_nat_rpow_inv.mpr (by linarith only [hσ] : 1 < 1+σ))
@@ -295,7 +296,7 @@ theorem roundedFactorialReading_mertens_error {W W' : ℝ → ℝ} {B L C σ : �
     (hW : ∀ x, B < x → W x=0) (hD : ∀ x, 0 < x → HasDerivAt W (W' x) x)
     (hLip : ∀ a b : ℝ, 0 < a → a ≤ b → |b*W' b-a*W' a| ≤ L*(b-a))
     (hM : ∀ n : ℕ, 0 < n → |mertens n| ≤ C*(n:ℝ)^σ) {y : ℝ} (hy : 0 < y) :
-    |roundedFactorialReading W B y-W y| ≤ pSeriesMass σ*(C*L*B*(B/y)^σ/y) := by
+    |roundedFactorialReading W B y-W y| ≤ factorialInterpolationPSeries σ*(C*L*B*(B/y)^σ/y) := by
   rw [roundedFactorialReading,← sum_mobiusFactorialSample W B hW hy,← sum_sub_distrib]
   have hh := @mobiusFactorialSample_mertens_step W W' B L C σ hB hL hC hσ.le hW hD hLip hM
   exact (abs_sum_le_sum_abs _ _).trans (sum_unit_rounding (mul_nonneg (mul_nonneg hC hL) hB) hB hσ hy
@@ -332,7 +333,7 @@ theorem roundedFactorialReading_mertens_small {W W' : ℝ → ℝ} {B L C σ : �
     (hLip : ∀ a b : ℝ, 0 < a → a ≤ b → |b*W' b-a*W' a| ≤ L*(b-a))
     (hM : ∀ n : ℕ, 0 < n → |mertens n| ≤ C*(n:ℝ)^σ) (hsmall : ∀ x, 0 < x → x ≤ 1 → W x = 0)
     {y : ℝ} (hy : 0 < y) (hy₁ : y ≤ 1) :
-    |roundedFactorialReading W B y-W y| ≤ pSeriesMass σ*(C*L*B*B^σ) := by
+    |roundedFactorialReading W B y-W y| ≤ factorialInterpolationPSeries σ*(C*L*B*B^σ) := by
   have hh := @mobiusFactorialSample_mertens_step W W' B L C σ hB hL hC hσ.le hW hD hLip hM
   have h := sum_unit_rounding (mul_nonneg (mul_nonneg hC hL) hB) hB hσ zero_lt_one
     (fun u v => hh (u := u) (v := v)) (fun k => ((k+1:ℕ):ℝ))

@@ -46,7 +46,7 @@ theorem distinctPrimeLogMoment_eq_sum_primeFactors (N : ℕ) :
       rw [hi,distinctPrimeLogMoment,← prime_set,sum_filter]
       exact sum_congr rfl fun p _ => by by_cases h : p.Prime <;> simp [f,h]
     _ = ∑ n ∈ Icc 1 N, ∑ p ∈ n.divisors, f p := h.symm
-    _ = _ := sum_congr rfl fun n _ => by rw [← hp,sum_filter]; rfl
+    _ = _ := sum_congr rfl fun n _ => by rw [← hp,sum_filter]
 
 /-- Reciprocal Mangoldt mass of all proper prime powers. -/
 def repeatedPrimeLogDensity : ℝ := ∑' d : ℕ, primePowerPart d/(d:ℝ)
@@ -88,11 +88,13 @@ private theorem defect_sum (N : ℕ) :
     intro d _
     by_cases hd : d.Prime <;> simp [g,primePowerPart,hd,ArithmeticOfSquareRootPrecision.vonMangoldtWeight,
       vonMangoldt_apply_prime]
-  have ht := (hw.hasSum.mul_left (N:ℝ)).sub hg
-  convert ht using 1
-  · funext d; dsimp only [defect,g,Pi.sub_apply]; ring
-  · change _=(N:ℝ)*repeatedPrimeLogDensity-_
-    linarith only [hmain]
+  have he : defect N = fun d => (N:ℝ)*(primePowerPart d/d)-g d := by
+    funext d
+    dsimp only [defect,g]
+    ring
+  rw [he,show distinctPrimeLogMoment N-Real.log (N.factorial:ℕ)+N*repeatedPrimeLogDensity =
+    (N:ℝ)*repeatedPrimeLogDensity-∑ d ∈ Ioc 0 N, g d by linarith only [hmain]]
+  exact (hw.hasSum.mul_left (N:ℝ)).sub hg
 
 /-- At each integer cutoff the centered prime moment is exactly the positive
 sum of the fractional remainders of its proper-prime-power divisors. -/
@@ -124,7 +126,7 @@ theorem triangularDistinctPrimeLogMoment_average {N : ℕ} (hN : 0 < N) :
 private abbrev shellConstant : ℝ := 3*(Real.log 4+4)
 
 private theorem prefix_le (M : ℕ) :
-    (∑ d ∈ Ioc 0 M, primePowerPart d)≤shellConstant*Real.sqrt M := by
+    (∑ d ∈ Ioc 0 M, primePowerPart d) ≤ shellConstant*Real.sqrt M := by
   apply le_trans _ (GreenCalculusOfThePrimeFreeWindow.psi_sub_theta_le_three_mul_sqrt M)
   rw [Chebyshev.psi_sub_theta_eq_sum_not_prime,Nat.floor_natCast,sum_filter]
   exact le_of_eq (sum_congr rfl fun d _ => by by_cases h : d.Prime <;> simp [primePowerPart,h])
@@ -193,7 +195,7 @@ theorem distinctPrimeLogMoment_sqrt_upper {N : ℕ} (hN : 0<N) :
   have hs := sum_le_sum_of_subset_of_nonneg (f := defect N) hsub (fun d _ _ => defect_nonneg N d)
   rw [sum_insert (by simp),show defect N 0=0 by simp [defect],zero_add] at hs
   exact (hs.trans (defect_through_shell hN j)).trans (by
-    have hC : 0≤shellConstant := by dsimp only [shellConstant]; positivity
+    have hC : 0 ≤ shellConstant := by dsimp only [shellConstant]; positivity
     have hpos : 0≤4*shellConstant*Real.sqrt N/(2:ℝ)^j := by positivity
     dsimp only [shellConstant] at *
     linarith only [hpos])
