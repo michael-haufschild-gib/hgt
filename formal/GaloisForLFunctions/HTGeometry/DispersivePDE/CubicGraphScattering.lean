@@ -80,8 +80,12 @@ theorem common_slope_solves_iff (ρ a b v s t A : ℝ) :
 theorem common_slope_tau_positive (ρ a b v s t τ x y : ℝ) :
     0 < (scatteringJet 1 ρ (1 - coherence a b ^ 2) (Real.exp a) v s (Real.exp b) v t).u τ x y := by
   rw [← contrast_sq_eq_coherence_loss]
-  change 0 < 1 * (1 + (_ + _)) + contrast a b ^ 2 * _
-  unfold mondalExpWave
+  have wave (ω k l h : ℝ) : (mondalExpWaveJet ω k l h).u τ x y =
+      mondalExpWave ω k l h τ x y := by
+    change 1 + _ + (-1) = _
+    ring
+  simp only [scatteringJet,mondalTwoExponentialTauJet,realEvolutionJetKPAdd,
+    realEvolutionJetKPScale,realEvolutionJetKPConst,wave,mondalExpWave]
   positivity
 
 #print axioms scattering_residual

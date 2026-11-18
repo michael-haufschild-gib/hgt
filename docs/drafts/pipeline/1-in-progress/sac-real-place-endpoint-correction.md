@@ -20,3 +20,11 @@ $$
 $$
 
 This would retain the real contribution as one positive quadratic form after arbitrary signed endpoint gluing. The Chebyshev remainder, the fractional boundary and the diagonal constant still enter the full pairing. [Flat-divisor gauge](../../../../formal/GaloisForLFunctions/HodgeTheoryOfAFixedPart/WeilsFormInTheGaugeOfTheFlatTail.lean)
+
+**Comparison with integer block curvature.** Remove the centered monomial from the real-place measure. Its moments are $C_d(k)=2D_d(k)-d^2\{1/(k+d)-1/(k+d+1)\}$. Write $B_d(x)=S_d(x)^2-d^2x^{d-1}$, where $S_d(x)=\sum_{j<d}x^j$. The real-place density is then $(1-x)B_d(x)$, while the finite-place block curvature $K_d(n)$ has density $x^{dn}(1-x^d)B_d(x)/(-\log x)$. Both contain the same positive polynomial. The inequality $x\le(1-x)/(-\log x)\le1$ gives
+
+$$
+\sum_{r,j<d} C_d(dn+r+j+1)\ \le K_d(n)-K_d(n+1)\ \le\sum_{r,j<d} C_d(dn+r+j).
+$$
+
+The inequalities should persist as quadratic forms after arbitrary signed endpoint shifts: insert the same square $P(x^d)^2$ into each integral. This tests the price of the **actual** mixed finite-place variation against the real-place metric at two adjacent cuts. Evaluating a single positive endpoint does not prove the quadratic-form comparison.

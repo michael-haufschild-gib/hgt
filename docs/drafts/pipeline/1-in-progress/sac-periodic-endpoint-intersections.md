@@ -11,3 +11,11 @@ $$
 $$
 
 Thus the first signed moment is the obstruction to cubic decay. For nonnegative weights with zero first moment the second moment gives a positive intersection, even for an incomplete, asymmetric residue block. For signed weights the next error should be uniform in the absolute second moment. This identifies a larger class than the complete residue blocks.
+
+**Mixed endpoints.** Put $K_d(n)=\Delta^2 A_d(n)$ and $S_d(x)=1+x+\cdots+x^{d-1}$. Integrating each difference of logarithms over its unit increment, then writing the reciprocal as a power integral, gives
+
+$$
+ K_d(n)=d\int_0^1\!\int_0^1 x^{dn+dy}\{S_d(x)^2-d^2x^{d-1}\}\,dx\,dy.
+$$
+
+The expression in braces equals $\sum_{0\le i<j<d}x^{d-1-(j-i)}(1-x^{j-i})^2$: the two off-diagonal products with gap $j-i$ pair by reflection. Gluing signed shifts in both variables inserts the product $P(x^d)Q(x^d)$ of their endpoint polynomials. Its supremum on the unit interval therefore prices the entire mixed curvature with constant $K_d(n)$, including limits under uniform convergence of the mixed polynomials. This would give effectivity and cubic decay on unbounded conductor supports from factorization alone. The lower family in this construction contains every graph up to the endpoint.

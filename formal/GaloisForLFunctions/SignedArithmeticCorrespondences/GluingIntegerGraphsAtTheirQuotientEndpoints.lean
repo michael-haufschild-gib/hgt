@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.Intersection.SignedConductorDivisors
-import GaloisForLFunctions.RHTower.QuasiRHQuotientHeadAndFiniteContactAbscissaLaw
+import GaloisForLFunctions.RHTower.PsiRemainderRecursion
 
 /-!
 # The finite part of a mixed integral graph intersection
@@ -82,7 +82,7 @@ theorem height_eq_quotient (X N : ℕ) (u b : ℕ → ℤ) :
     simp only [mem_filter, mem_Icc]
     have hle := (Nat.div_le_self j i).trans (mem_Icc.mp hj).2
     omega
-  rw [hset]
+  rw [hset,chebyshevPsi]
 
 private theorem glue_quotients (X N : ℕ) (u b : ℕ → ℤ) (F : ℕ → ℝ) :
     ∑ k ∈ range (N+1), quotientCoefficient X N u b k * F k =
@@ -149,86 +149,16 @@ theorem mixed_height_budget_iff (W : ℕ → ℝ≥0) (C : ℝ≥0) :
     | zero => simp [psiRemainder, chebyshevPsi, mul_nonneg C.coe_nonneg (W 0).coe_nonneg]
     | succ k => exact h _ (Nat.succ_pos _)
 
-/-- One constant works for every support and both integer divisors. The variation
-is measured after cancellation between all pairs sharing a quotient. -/
-theorem mixed_height_bound (ε : ℝ) (hε : 0 < ε) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (X N : ℕ) (u b : ℕ → ℤ),
-      |signedDivisorHeight 1 X N u (upperDivisor N b) - poleProduct X N u b +
-        fractionalBoundary X N u b| ≤
-      C * ∑ k ∈ range (N+1), |quotientCoefficient X N u b k| * (k : ℝ)^(zetaZeroAbscissa+ε) := by
-  obtain ⟨C,hC,hbound⟩ := exists_psiRemainder_le_rpow_zetaZeroAbscissa ε hε
-  exact ⟨C,hC,(mixed_height_budget_iff
-    (fun k => ⟨_, Real.rpow_nonneg (Nat.cast_nonneg k) _⟩) ⟨C,hC⟩).2 hbound⟩
-
-/-- A completed endpoint profile can have infinitely many signed jumps.
-The same constant controls its pairing with the Chebyshev error at every
-cutoff. The resulting series is absolutely convergent in weighted variation. -/
-theorem completed_endpoint_budget (ε : ℝ) (hε : 0 < ε) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ a : ℕ → ℝ,
-      Summable (fun k => |a k|*(k : ℝ)^(zetaZeroAbscissa+ε)) →
-      Summable (fun k => a k*psiRemainder k) ∧
-      |∑' k, a k*psiRemainder k| ≤ C * ∑' k, |a k|*(k : ℝ)^(zetaZeroAbscissa+ε) := by
-  obtain ⟨C,hC,hbound⟩ := exists_psiRemainder_le_rpow_zetaZeroAbscissa ε hε
-  refine ⟨C,hC,fun a ha => ?_⟩
-  have hterm (k : ℕ) : ‖a k*psiRemainder k‖ ≤ C * (|a k|*(k : ℝ)^(zetaZeroAbscissa+ε)) := by
-    rw [Real.norm_eq_abs, abs_mul, mul_left_comm]
-    apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
-    rcases Nat.eq_zero_or_pos k with rfl | hk
-    · rw [psiRemainder, chebyshevPsi]
-      simp only [Icc_eq_empty_of_lt Nat.zero_lt_one, sum_empty, Nat.cast_zero, sub_zero, abs_zero]
-      exact mul_nonneg hC (Real.rpow_nonneg (by norm_num) _)
-    · exact hbound _ hk
-  have hmajor := ha.mul_left C
-  have hsum : Summable (fun k => a k*psiRemainder k) := Summable.of_norm_bounded hmajor hterm
-  refine ⟨hsum, ?_⟩
-  rw [← Real.norm_eq_abs, ← tsum_mul_left]
-  exact (norm_tsum_le_tsum_norm hsum.norm).trans (hsum.norm.tsum_le_tsum hterm hmajor)
-
 /-- The exact support of the mixed quotient coefficients lies below the largest
 upper endpoint, independently of the number of lower graphs. -/
-private theorem quotientCoefficient_eq_zero {N k : ℕ} (hk : N < k) (X : ℕ) (u b : ℕ → ℤ) :
+theorem quotientCoefficient_eq_zero {N k : ℕ} (hk : N < k) (X : ℕ) (u b : ℕ → ℤ) :
     quotientCoefficient X N u b k = 0 := by
   refine sum_eq_zero fun i _ => sum_eq_zero fun j hj => ?_
   exact if_neg (ne_of_lt (((Nat.div_le_self j i).trans (mem_Icc.mp hj).2).trans_lt hk))
 
-/-- Distance from a finite integral intersection to a prescribed infinite
-endpoint profile. The right side prices only the variation left after gluing.
-This gives convergence along every exhaustion approaching the same profile
-in weighted variation, with one constant for both supports. -/
-theorem distance_to_completed_intersection (ε : ℝ) (hε : 0 < ε) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ (X N : ℕ) (u b : ℕ → ℤ) (a : ℕ → ℝ),
-      Summable (fun k => |a k|*(k : ℝ)^(zetaZeroAbscissa+ε)) →
-      let c := quotientCoefficient X N u b
-      |signedDivisorHeight 1 X N u (upperDivisor N b) - poleProduct X N u b +
-        fractionalBoundary X N u b - ∑' k, a k*psiRemainder k| ≤
-        C * ∑' k, |c k-a k|*(k : ℝ)^(zetaZeroAbscissa+ε) := by
-  obtain ⟨C,hC,hpair⟩ := completed_endpoint_budget ε hε
-  refine ⟨C,hC,fun X N u b a ha => ?_⟩
-  let c := quotientCoefficient X N u b
-  have hc {k : ℕ} (hk : k ∉ range (N+1)) : c k = 0 :=
-    quotientCoefficient_eq_zero (by simpa only [mem_range,not_lt,Nat.succ_le_iff] using hk) X u b
-  have hcw : Summable (fun k => |c k|*(k : ℝ)^(zetaZeroAbscissa+ε)) :=
-    summable_of_ne_finset_zero (s := range (N+1)) fun k hk => by simp [hc hk]
-  have hce := (hpair c hcw).1
-  have hae := (hpair a ha).1
-  have hdiff : Summable (fun k => |c k-a k|*(k : ℝ)^(zetaZeroAbscissa+ε)) := by
-    refine Summable.of_nonneg_of_le (fun k => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)) ?_ (hcw.add ha)
-    intro k
-    simpa only [Pi.add_apply, ← add_mul] using
-      mul_le_mul_of_nonneg_right (abs_sub (c k) (a k)) (Real.rpow_nonneg (Nat.cast_nonneg k) (zetaZeroAbscissa+ε))
-  have h := (hpair (fun k => c k-a k) hdiff).2
-  have he : (∑' k, c k*psiRemainder k) = ∑ k ∈ range (N+1), c k*psiRemainder k :=
-    tsum_eq_sum fun k hk => by simp only [hc hk,zero_mul]
-  rw [mixed_height_finite_part]
-  change |(∑ k ∈ range (N+1), c k*psiRemainder k) - _| ≤ _
-  rw [← he,← hce.tsum_sub hae]
-  simpa only [sub_mul] using h
-
-#print axioms distance_to_completed_intersection
-#print axioms completed_endpoint_budget
+#print axioms exists_upper_endpoints
 #print axioms height_eq_quotient
-#print axioms mixed_height_budget_iff
 #print axioms mixed_height_finite_part
-#print axioms mixed_height_bound
+#print axioms mixed_height_budget_iff
 
 end GaloisForLFunctions.SignedArithmeticCorrespondences

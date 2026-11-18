@@ -24,6 +24,10 @@ Let \(A\) consist of products \(qr\in(u,v]\) with both factors prime and \(s/K<q
 \]
 The height at which this holds is independent of both cell endpoints. For each \(q\), the prime number theorem bounds the number of possible \(r\) in the exact interval \((u/q,v/q]\). Summing over the balanced primes \(q\) uses one more factor of \(1/\log s\) than counting the available primes in \((u,v]\). This supplies spare partners even inside partial octaves. [Prime supply for balanced products](PrimeSupplyForBalancedProducts.lean)
 
+## Simultaneous transport and its boundary
+
+For each negative cofactor \(c\), order the eligible products \(qr\) and primes \(p\) in the sharp quotient interval. Pair equal ranks. Exactly the first \(\min(\#\{p\},\#\{qr\})\) entries of each row are used. Deleting the largest prime from \(cp\), or the largest two from \(cqr\), recovers the same \(c\). Thus rows can choose different aspect ratios and act simultaneously, with no repeated integer. For fixed aspect ratio and logarithmic relative width, every eligible product at sufficiently large quotient scale is paired. Its original ordered fibre has no positive vertex even in the full octave. [Ranked transport and exact boundary](TransportAcrossOrderedFibres.lean)
+
 ## What the calculus must prove
 
 1. Transport a growing family from deficient ordered fibres, with a formula for losses at both sharp endpoints. A neighbour for each source leaves target collisions unresolved.

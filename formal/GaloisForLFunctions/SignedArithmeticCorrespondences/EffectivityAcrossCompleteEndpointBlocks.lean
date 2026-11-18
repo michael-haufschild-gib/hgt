@@ -49,7 +49,8 @@ def blockHeight (d n : ℕ) : ℝ :=
 /-- The displacement of a pair of residues from the center of its block. -/
 def offset (d r j : ℕ) : ℝ := ((r : ℝ) + j + 1) / d - 1
 
-private theorem offset_bounds {d r j : ℕ} (hr : r < d) (hj : j < d) :
+/-- Every pair of residues lies strictly between the adjacent integer offsets. -/
+theorem offset_bounds {d r j : ℕ} (hr : r < d) (hj : j < d) :
     -1 < offset d r j ∧ offset d r j < 1 := by
   have hd : (0 : ℝ) < d := Nat.cast_pos.mpr (Nat.zero_lt_of_lt hr)
   have hr' : (r : ℝ)+1 ≤ d := by exact_mod_cast hr

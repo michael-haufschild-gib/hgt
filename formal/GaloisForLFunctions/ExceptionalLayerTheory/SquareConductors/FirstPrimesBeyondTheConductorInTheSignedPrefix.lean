@@ -17,11 +17,12 @@ open Finset Filter ArithmeticFunction
 open GaloisForLFunctions.CountingHolography.Sections
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-private def cofactorAtom (p v : ℕ) : ℝ := if p.Coprime v then innerJump 1 v else 0
+/-- The signed inner coefficient after imposing coprimality at a fixed prime. -/
+def signedCoprimeCofactor (p v : ℕ) : ℝ := if p.Coprime v then innerJump 1 v else 0
 
-private theorem cofactorAtom_prefix :
+private theorem signedCoprimeCofactor_prefix :
     ∃ A : ℝ, 0 ≤ A ∧ ∀ {p : ℕ}, p.Prime → 4 < p → ∀ K : ℕ,
-      |∑ v ∈ Icc 1 K, cofactorAtom p v| ≤ A := by
+      |∑ v ∈ Icc 1 K, signedCoprimeCofactor p v| ≤ A := by
   have hm := (abs_nonneg _).trans (abs_prefix_le_mass (R := 2) (by decide) 0)
   refine ⟨2*(2+mass 2),by positivity,fun {p} hp hp4 K => ?_⟩
   have hi (k : ℕ) : Ioc 0 k=Icc 1 k := by ext v; simp only [mem_Icc,mem_Ioc]; omega
@@ -46,18 +47,18 @@ uniformly in the real mesh and the far quotient endpoint. -/
 theorem signed_cofactor_mesh_interval :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {p : ℕ}, p.Prime → 4 < p → ∀ b l m : ℕ, 0 < m →
       ∀ {d : ℝ}, 0 < d →
-      |∑ v ∈ Ioc l m, cofactorAtom p v*quotientMeshProfile b (v*d)| ≤ C*(1+Real.log m) := by
-  obtain ⟨A,hA,ha⟩ := cofactorAtom_prefix
+      |∑ v ∈ Ioc l m, signedCoprimeCofactor p v*quotientMeshProfile b (v*d)| ≤ C*(1+Real.log m) := by
+  obtain ⟨A,hA,ha⟩ := signedCoprimeCofactor_prefix
   obtain ⟨D,hD,hv⟩ := quotientMeshProfile_product_variation
   refine ⟨6*A*D,by positivity,fun {p} hp h₄ b l m hm d hd => ?_⟩
   let V (k : ℕ) := quotientMeshProfile b (k*d)
   let H := 1+Real.log (m:ℝ)
   have hH : 1 ≤ H := le_add_of_nonneg_right (Real.log_natCast_nonneg _)
   have hK (K : ℕ) (hKm : K ≤ m) :
-      |∑ v ∈ Icc 1 K, cofactorAtom p v*V v| ≤ 3*A*D*H := by
-    rw [_root_.HTGeometry.sum_mul_eq_partial_mul_diff_ring (cofactorAtom p) V]
+      |∑ v ∈ Icc 1 K, signedCoprimeCofactor p v*V v| ≤ 3*A*D*H := by
+    rw [_root_.HTGeometry.sum_mul_eq_partial_mul_diff_ring (signedCoprimeCofactor p) V]
     have hcell (v : ℕ) (hvm : v ∈ Icc 1 K) :
-        |(∑ j ∈ Icc 1 v, cofactorAtom p j)*(V v-V (v+1))| ≤ (2*A*D)*(1/(v:ℝ)) := by
+        |(∑ j ∈ Icc 1 v, signedCoprimeCofactor p j)*(V v-V (v+1))| ≤ (2*A*D)*(1/(v:ℝ)) := by
       have hpos : (0:ℝ) < v := Nat.cast_pos.mpr (mem_Icc.mp hvm).1
       have he : |V v - V (v+1)| ≤ 2*D/v := by
         rw [abs_sub_comm]
@@ -70,18 +71,18 @@ theorem signed_cofactor_mesh_interval :
       (sum_le_sum_of_subset_of_nonneg (Icc_subset_Icc_right hKm) (fun v _ _ => by positivity)).trans
         (_root_.RHTower.sum_Icc_one_div_le hm)
     have hc := hs.trans (mul_le_mul_of_nonneg_left hhar (by positivity))
-    have hl : |(∑ v ∈ Icc 1 K, cofactorAtom p v)*V (K+1)| ≤ A*D := by
+    have hl : |(∑ v ∈ Icc 1 K, signedCoprimeCofactor p v)*V (K+1)| ≤ A*D := by
       rw [abs_mul]
       exact mul_le_mul (ha hp h₄ K) (hv b (Nat.cast_pos.mpr (Nat.succ_pos K)) hd).1 (abs_nonneg _) hA
     apply (abs_add_le _ _).trans ((add_le_add hc hl).trans ?_)
     linarith only [le_mul_of_one_le_right (mul_nonneg hA hD) hH]
   by_cases hlm : l ≤ m
   · have hi (k : ℕ) : Ioc 0 k=Icc 1 k := by ext v; simp only [mem_Icc,mem_Ioc]; omega
-    have hs := sum_Ioc_consecutive (fun v => cofactorAtom p v*V v) (Nat.zero_le l) hlm
+    have hs := sum_Ioc_consecutive (fun v => signedCoprimeCofactor p v*V v) (Nat.zero_le l) hlm
     rw [hi,hi] at hs
-    change |∑ v ∈ Ioc l m, cofactorAtom p v*V v| ≤ _
-    rw [show (∑ v ∈ Ioc l m, cofactorAtom p v*V v) =
-      (∑ v ∈ Icc 1 m, cofactorAtom p v*V v)-(∑ v ∈ Icc 1 l, cofactorAtom p v*V v) by linarith only [hs]]
+    change |∑ v ∈ Ioc l m, signedCoprimeCofactor p v*V v| ≤ _
+    rw [show (∑ v ∈ Ioc l m, signedCoprimeCofactor p v*V v) =
+      (∑ v ∈ Icc 1 m, signedCoprimeCofactor p v*V v)-(∑ v ∈ Icc 1 l, signedCoprimeCofactor p v*V v) by linarith only [hs]]
     exact (abs_sub _ _).trans ((add_le_add (hK m le_rfl) (hK l hlm)).trans_eq (by dsimp only [H]; ring))
   · rw [Ioc_eq_empty_of_le (le_of_not_ge hlm),sum_empty,abs_zero]
     exact mul_nonneg (by positivity) (zero_le_one.trans hH)
@@ -101,7 +102,7 @@ private theorem firstPrimeSpline_mesh {U n p : ℕ} (hn : 0 < n) (hp : 0<p)
     (n:ℝ)^2*firstPrimeSpline U n p =
       let b := splineHorizon n+1
       let I := Ioc (U/p) (min (splineHorizon n/p) n)
-      (n:ℝ)*∑ v ∈ I, cofactorAtom p v*
+      (n:ℝ)*∑ v ∈ I, signedCoprimeCofactor p v*
         (quotientMeshProfile b ((v:ℝ)*(p/(n:ℝ)^2))-quotientMeshProfile 1 ((v:ℝ)*(p/(n:ℝ)^2))) := by
   let L := splineHorizon n
   let b := L+1
@@ -114,7 +115,7 @@ private theorem firstPrimeSpline_mesh {U n p : ℕ} (hn : 0 < n) (hp : 0<p)
       simpa only [Nat.mul_comm v p] using (Nat.le_div_iff_mul_le hp).mp (hv₂.trans (min_le_left _ _))⟩
   have cell (k : ℕ) (hk : k ∈ Icc 1 L) :
       cappedCoprimeSlice 1 1 k (max (productLower 1 k) U) n p =
-        ∑ v ∈ I, if p*v ≤ k then cofactorAtom p v*w v k else 0 := by
+        ∑ v ∈ I, if p*v ≤ k then signedCoprimeCofactor p v*w v k else 0 := by
     have hkl := (mem_Icc.mp hk).2
     have hi : I.filter (fun v => p*v ≤ k) = Ioc (U/p) (min (k/p) n) := by
       ext v
@@ -123,11 +124,11 @@ private theorem firstPrimeSpline_mesh {U n p : ℕ} (hn : 0 < n) (hp : 0<p)
     rw [←sum_filter,hi,cappedCoprimeSlice,max_eq_right (hY k hkl),sum_filter]
     apply sum_congr rfl
     intro v _
-    by_cases hc : p.Coprime v <;> simp [cofactorAtom,w,hc,Nat.div_div_eq_div_mul]
-  have he : firstPrimeSpline U n p = ∑ v ∈ I, cofactorAtom p v*
+    by_cases hc : p.Coprime v <;> simp [signedCoprimeCofactor,w,hc,Nat.div_div_eq_div_mul]
+  have he : firstPrimeSpline U n p = ∑ v ∈ I, signedCoprimeCofactor p v*
       ∑ k ∈ Ico (p*v) b, z k*w v k := by
     unfold firstPrimeSpline splineCountReading
-    calc _ = ∑ k ∈ Icc 1 L, ∑ v ∈ I, if p*v≤k then cofactorAtom p v*(z k*w v k) else 0 := by
+    calc _ = ∑ k ∈ Icc 1 L, ∑ v ∈ I, if p*v≤k then signedCoprimeCofactor p v*(z k*w v k) else 0 := by
               apply sum_congr rfl
               intro k hk
               rw [cell k hk,sum_mul]
@@ -157,13 +158,15 @@ private theorem firstPrimeSpline_mesh {U n p : ℕ} (hn : 0 < n) (hp : 0<p)
   rw [hsum,one_cell_mesh,sampledSpline,hd]
   have hn' := (Nat.cast_pos.mpr (α := ℝ) hn).ne'
   have hs (x : ℝ) : (n:ℝ)^2*(x/n)=n*x := by field_simp
-  linear_combination cofactorAtom p v*(hprofile+hs (dyadicSpline ((v:ℝ)*(p/(n:ℝ)^2))))
+  linear_combination signedCoprimeCofactor p v*(hprofile+hs (dyadicSpline ((v:ℝ)*(p/(n:ℝ)^2))))
 
-/-- The original capped coprime product restricted to first primes larger
-than the conductor. All product and quotient endpoints are retained. -/
-def aboveConductorFirstPrimeReading (U n : ℕ) : ℝ :=
-  splineCountReading n (fun k => ordinaryFactorTail (max 4 n) k
+/-- The capped product after a sharp lower cut on its first prime. -/
+def firstPrimeReadingAbove (P U n : ℕ) : ℝ :=
+  splineCountReading n (fun k => ordinaryFactorTail (max 4 P) k
     (cappedCoprimeSlice 1 1 k (max (productLower 1 k) U) n))
+
+/-- The original product restricted to first primes above the conductor. -/
+abbrev aboveConductorFirstPrimeReading (U n : ℕ) := firstPrimeReadingAbove n U n
 
 /-- In the retained row ordinary factorization recovers the first prime
 from the product, even if that product is less than the conductor square. -/
@@ -183,7 +186,7 @@ theorem aboveConductorFirstPrimeReading_eq (U n : ℕ) :
       ordinaryFactorTail (max 4 n) k (fun p =>
         ∑ v ∈ Ioc (max (productLower 1 k) U /p) (min (k/p) n),
           innerJump 1 v*centeredPrimeWeight 1 (k/(p*v)))) := by
-  unfold aboveConductorFirstPrimeReading
+  unfold aboveConductorFirstPrimeReading firstPrimeReadingAbove
   congr 1
   funext k
   unfold ordinaryFactorTail
@@ -201,31 +204,31 @@ theorem aboveConductorFirstPrimeReading_eq (U n : ℕ) :
     (hu.trans (min_le_right _ _))).1
   rw [if_pos hc,Nat.div_div_eq_div_mul]
 
-private theorem firstPrime_price_partition (U n : ℕ) :
-    cappedUpperProductReading U n n-aboveConductorFirstPrimeReading U n =
-      ∑ p ∈ (Ioc 4 n).filter Nat.Prime, vonMangoldt p*firstPrimeSpline U n p := by
-  let S := (Ioc 4 n).filter Nat.Prime
+private theorem firstPrime_price_partition (P₀ U n : ℕ) :
+    cappedUpperProductReading U n n-firstPrimeReadingAbove P₀ U n =
+      ∑ p ∈ (Ioc 4 P₀).filter Nat.Prime, vonMangoldt p*firstPrimeSpline U n p := by
+  let S := (Ioc 4 P₀).filter Nat.Prime
   let F (k : ℕ) := cappedCoprimeSlice 1 1 k (max (productLower 1 k) U) n
-  have row (k : ℕ) : ordinaryFactorTail 4 k (F k)-ordinaryFactorTail (max 4 n) k (F k) =
+  have row (k : ℕ) : ordinaryFactorTail 4 k (F k)-ordinaryFactorTail (max 4 P₀) k (F k) =
       ∑ p ∈ S, vonMangoldt p*F k p := by
     let P := (Ioc 4 k).filter Nat.Prime
     let f (p : ℕ) := vonMangoldt p*F k p
-    have hlo : P.filter (· ≤ n) = S.filter (· ≤ k) := by
+    have hlo : P.filter (· ≤ P₀) = S.filter (· ≤ k) := by
       ext p; simp only [P,S,mem_filter,mem_Ioc]; tauto
-    have hhi : P.filter (fun p => ¬p ≤ n) = (Ioc (max 4 n) k).filter Nat.Prime := by
+    have hhi : P.filter (fun p => ¬p ≤ P₀) = (Ioc (max 4 P₀) k).filter Nat.Prime := by
       ext p; simp only [P,mem_filter,mem_Ioc,max_lt_iff,not_le]; tauto
     have hkeep : ∑ p ∈ S.filter (· ≤ k), f p = ∑ p ∈ S, f p := by
       apply sum_subset (filter_subset _ _)
       intro p hp hnot
       have hkp := lt_of_not_ge fun h => hnot (mem_filter.mpr ⟨hp,h⟩)
       simp [f,F,cappedCoprimeSlice,Nat.div_eq_of_lt hkp]
-    have h := sum_filter_add_sum_filter_not P (· ≤ n) f
+    have h := sum_filter_add_sum_filter_not P (· ≤ P₀) f
     rw [hlo,hhi,hkeep] at h
-    change (∑ p ∈ P, f p)-(∑ p ∈ (Ioc (max 4 n) k).filter Nat.Prime, f p) = _
+    change (∑ p ∈ P, f p)-(∑ p ∈ (Ioc (max 4 P₀) k).filter Nat.Prime, f p) = _
     linarith only [h]
   let z (k : ℕ) := sampledSpline n k-sampledSpline n (k+1)
   change (∑ k ∈ Icc 1 (splineHorizon n), ordinaryFactorTail 4 k (F k)*z k) -
-    (∑ k ∈ Icc 1 (splineHorizon n), ordinaryFactorTail (max 4 n) k (F k)*z k) = _
+    (∑ k ∈ Icc 1 (splineHorizon n), ordinaryFactorTail (max 4 P₀) k (F k)*z k) = _
   rw [←sum_sub_distrib]
   simp_rw [←sub_mul,row,sum_mul]
   rw [sum_comm]
@@ -236,12 +239,12 @@ private theorem firstPrime_price_partition (U n : ℕ) :
   exact sum_congr rfl fun k _ => mul_assoc _ _ _
 
 private theorem small_first_prime_price :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ {U n : ℕ}, 0<n → (∀ k ≤ splineHorizon n, productLower 1 k ≤ U) →
-      |(n:ℝ)^2*(cappedUpperProductReading U n n-aboveConductorFirstPrimeReading U n)| ≤
-        C*(n:ℝ)^2*conductorLog n := by
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (P₀ : ℕ) {U n : ℕ}, 0<n → (∀ k ≤ splineHorizon n, productLower 1 k ≤ U) →
+      |(n:ℝ)^2*(cappedUpperProductReading U n n-firstPrimeReadingAbove P₀ U n)| ≤
+        C*(n:ℝ)*P₀*conductorLog n := by
   obtain ⟨A,hA,h⟩ := signed_cofactor_mesh_interval
-  refine ⟨14*A,by positivity,fun {U n} hn hY => ?_⟩
-  let S := (Ioc 4 n).filter Nat.Prime
+  refine ⟨14*A,by positivity,fun P₀ {U n} hn hY => ?_⟩
+  let S := (Ioc 4 P₀).filter Nat.Prime
   let H := conductorLog n
   have hH : 0 ≤ H := zero_le_one.trans (conductorLog_one_le n)
   have hn' : (0:ℝ) < n := Nat.cast_pos.mpr hn
@@ -252,7 +255,7 @@ private theorem small_first_prime_price :
     let l := U/p
     let b := splineHorizon n+1
     let d := (p:ℝ)/(n:ℝ)^2
-    let X (c : ℕ) := ∑ v ∈ Ioc l m, cofactorAtom p v*quotientMeshProfile c (v*d)
+    let X (c : ℕ) := ∑ v ∈ Ioc l m, signedCoprimeCofactor p v*quotientMeshProfile c (v*d)
     rw [firstPrimeSpline_mesh hn hp.pos hY]
     simp_rw [mul_sub]
     rw [sum_sub_distrib,abs_mul,abs_of_pos hn']
@@ -267,10 +270,10 @@ private theorem small_first_prime_price :
       exact (h hp hp4 c l m hm (div_pos (Nat.cast_pos.mpr hp.pos) (sq_pos_of_pos hn'))).trans
         (mul_le_mul_of_nonneg_left (add_le_add (le_refl (1:ℝ)) (hlog.trans hlo)) hA)
     exact (abs_sub _ _).trans ((add_le_add (hx b) (hx 1)).trans_eq (by ring))
-  have hs : S ⊆ Icc 1 n := fun p hp => mem_Icc.mpr
+  have hs : S ⊆ Icc 1 P₀ := fun p hp => mem_Icc.mpr
     ⟨(mem_filter.mp hp).2.pos,(mem_Ioc.mp (mem_filter.mp hp).1).2⟩
   have hmass := (sum_le_sum_of_subset_of_nonneg hs (fun p _ _ => (show 0 ≤ vonMangoldt p from vonMangoldt_nonneg))).trans
-    (_root_.RHTower.sum_vonMangoldt_Icc_le_seven n)
+    (_root_.RHTower.sum_vonMangoldt_Icc_le_seven P₀)
   rw [firstPrime_price_partition,mul_sum]
   apply (abs_sum_le_sum_abs _ _).trans
   calc _ ≤ ∑ p ∈ S, vonMangoldt p*(n*(2*A*H)) := by
@@ -278,7 +281,7 @@ private theorem small_first_prime_price :
             intro p hp
             rw [mul_left_comm,abs_mul,abs_of_nonneg vonMangoldt_nonneg]
             exact mul_le_mul_of_nonneg_left (prime p hp) vonMangoldt_nonneg
-       _ ≤ (7*(n:ℝ))*(n*(2*A*H)) := by
+       _ ≤ (7*(P₀:ℝ))*(n*(2*A*H)) := by
             rw [←sum_mul]
             exact mul_le_mul_of_nonneg_right hmass (by positivity)
        _ = _ := by dsimp only [H]; ring
@@ -302,17 +305,24 @@ private theorem eventually_seventeenNinths_above_lower :
        _ = (n:ℝ)^(8/9:ℝ)*(n:ℝ)^(1:ℝ) := by rw [Real.rpow_one]
        _ = _ := by rw [←Real.rpow_add hn',show (8/9:ℝ)+1=17/9 by norm_num]
 
-/-- The original seventeen-ninths signed prefix retains all its supercubic
-growth on first primes larger than the conductor, uniformly on every
-terminal fragment. Each retained product has a unique such prime. -/
-theorem seventeenNinths_first_primes_beyond_conductor :
+private theorem linear_first_prime_cut_fragments (P : ℕ → ℕ) {K : ℝ} (hK : 0≤K)
+    (hP : ∀ {n : ℕ}, 0<n → (P n:ℝ)≤K*n) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ J M : ℕ,
       |∑ n ∈ Ioc J M, (n:ℝ)^2*(cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n n -
-        aboveConductorFirstPrimeReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n)| ≤ C*(M:ℝ)^3*conductorLog M := by
-  obtain ⟨A,hA,h⟩ := small_first_prime_price
+        firstPrimeReadingAbove (P n) ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n)| ≤ C*(M:ℝ)^3*conductorLog M := by
+  obtain ⟨C,hC,hsmall⟩ := small_first_prime_price
+  let A := C*K
+  have hA : 0≤A := mul_nonneg hC hK
+  have h {n U : ℕ} (hn : 0<n) (hY : ∀ k ≤ splineHorizon n, productLower 1 k≤U) :
+      |(n:ℝ)^2*(cappedUpperProductReading U n n-firstPrimeReadingAbove (P n) U n)| ≤
+        A*(n:ℝ)^2*conductorLog n := by
+    apply (hsmall (P n) hn hY).trans
+    exact (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (hP hn)
+      (mul_nonneg hC (Nat.cast_nonneg n))) (zero_le_one.trans (conductorLog_one_le n))).trans_eq
+      (by dsimp only [A]; ring)
   obtain ⟨k,hk⟩ := Filter.eventually_atTop.mp eventually_seventeenNinths_above_lower
   let U (n : ℕ) := ⌊(n:ℝ)^(17/9:ℝ)⌋₊
-  let E (n : ℕ) := (n:ℝ)^2*(cappedUpperProductReading (U n) n n-aboveConductorFirstPrimeReading (U n) n)
+  let E (n : ℕ) := (n:ℝ)^2*(cappedUpperProductReading (U n) n n-firstPrimeReadingAbove (P n) (U n) n)
   let D := ∑ n ∈ range k, |E n|
   have hD : 0 ≤ D := sum_nonneg fun _ _ => abs_nonneg _
   refine ⟨A+D,add_nonneg hA hD,fun J M => ?_⟩
@@ -337,18 +347,85 @@ theorem seventeenNinths_first_primes_beyond_conductor :
   exact (mul_le_mul_of_nonneg_right (Nat.cast_le.mpr (Nat.sub_le M J)) (mul_nonneg (add_nonneg hA hD) hX)).trans_eq
     (by dsimp only [X]; ring)
 
-/-- At every exponent above three, a one-sided bound on the entire signed
-prefix is equivalent to the same bound on the unique-large-prime part. -/
-theorem prefix_upper_iff_first_primes_beyond_conductor {η : ℝ} (hη : 0 < η) :
+/-- Removing all first primes at most the conductor costs one cubic
+logarithm on every terminal fragment. -/
+theorem seventeenNinths_first_primes_beyond_conductor :
+    ∃ C : ℝ, 0≤C ∧ ∀ J M : ℕ,
+      |∑ n ∈ Ioc J M, (n:ℝ)^2*(cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n n -
+        aboveConductorFirstPrimeReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n)| ≤ C*(M:ℝ)^3*conductorLog M :=
+  linear_first_prime_cut_fragments id (K := 1) zero_le_one (fun {_} _ => by simp)
+
+/-- All primes above this threshold have natural complementary upper bound
+at most the conductor, even at the last spline horizon. -/
+def capFreeFirstPrimeCut (n : ℕ) := max n (splineHorizon n/(n+1))
+
+private theorem capFreeFirstPrimeCut_linear :
+    ∃ K : ℝ, 0≤K ∧ ∀ {n : ℕ}, 0<n → (capFreeFirstPrimeCut n:ℝ)≤K*n := by
+  obtain ⟨T,_,hL⟩ := successorSquare_window_bound
+  refine ⟨1+T^2,by positivity,fun {n} hn => ?_⟩
+  have hn' := Nat.cast_nonneg (α := ℝ) n
+  have ht := mul_nonneg (sq_nonneg T) hn'
+  have hq : ((splineHorizon n/(n+1):ℕ):ℝ) ≤ T^2*n := by
+    apply Nat.cast_div_le.trans
+    apply (div_le_iff₀ (Nat.cast_pos.mpr (Nat.succ_pos n) : (0:ℝ)<(n+1:ℕ))).mpr
+    apply (hL hn).trans
+    push_cast
+    nlinarith only [ht]
+  rw [capFreeFirstPrimeCut,Nat.cast_max]
+  exact max_le (by linarith only [ht]) (by linarith only [hq,hn'])
+
+/-- The surviving ordinary-prime reading. The cofactor has only the
+original lower product endpoint and the natural upper product endpoint. -/
+def capFreeFirstPrimeReading (U n : ℕ) : ℝ :=
+  splineCountReading n (fun k => ordinaryFactorTail (max 4 (capFreeFirstPrimeCut n)) k
+    (fun p => ∑ v ∈ Ioc (max (productLower 1 k) U/p) (k/p),
+      innerJump 1 v*centeredPrimeWeight 1 (k/(p*v))))
+
+theorem capFreeFirstPrimeReading_eq (n U : ℕ) :
+    firstPrimeReadingAbove (capFreeFirstPrimeCut n) U n = capFreeFirstPrimeReading U n := by
+  unfold firstPrimeReadingAbove capFreeFirstPrimeReading splineCountReading
+  apply sum_congr rfl
+  intro k hk
+  congr 1
+  unfold ordinaryFactorTail
+  apply sum_congr rfl
+  intro p hp
+  congr 1
+  obtain ⟨hip,hpr⟩ := mem_filter.mp hp
+  have hP := (le_max_right 4 _).trans_lt (mem_Ioc.mp hip).1
+  obtain ⟨hnp,hlp⟩ := max_lt_iff.mp hP
+  have hkpn : k/p≤n := Nat.le_of_lt_succ ((Nat.div_lt_iff_lt_mul hpr.pos).mpr
+    ((mem_Icc.mp hk).2.trans_lt (by simpa only [Nat.mul_comm] using
+      (Nat.div_lt_iff_lt_mul (Nat.succ_pos n)).mp hlp)))
+  rw [cappedCoprimeSlice,min_eq_left hkpn,sum_filter]
+  apply sum_congr rfl
+  intro v hv
+  obtain ⟨hl,hu⟩ := mem_Ioc.mp hv
+  rw [if_pos (first_prime_above_conductor_unique hpr hnp ((Nat.zero_le _).trans_lt hl)
+    (hu.trans hkpn)).1,Nat.div_div_eq_div_mul]
+
+/-- The entire artificial cofactor cap and coprimality restriction disappear
+from the full signed prefix at cubic-logarithmic error on every fragment. -/
+theorem seventeenNinths_cap_free_first_prime_fragments :
+    ∃ C : ℝ, 0≤C ∧ ∀ J M : ℕ,
+      |∑ n ∈ Ioc J M, (n:ℝ)^2*(cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n n -
+        capFreeFirstPrimeReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n)| ≤ C*(M:ℝ)^3*conductorLog M := by
+  obtain ⟨K,hK,hP⟩ := capFreeFirstPrimeCut_linear
+  simpa only [capFreeFirstPrimeReading_eq] using linear_first_prime_cut_fragments capFreeFirstPrimeCut hK hP
+
+private theorem prefix_upper_iff_of_cubic_log_error (R : ℕ → ℕ → ℝ)
+    (herr : ∃ C : ℝ, 0≤C ∧ ∀ J M : ℕ,
+      |∑ n ∈ Ioc J M, (n:ℝ)^2*(cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n n -
+        R ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n)| ≤ C*(M:ℝ)^3*conductorLog M) {η : ℝ} (hη : 0 < η) :
     (∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ, 0 < M →
       (∑ n ∈ Ioc 0 M, (n:ℝ)^2*cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n n) ≤ C*(M:ℝ)^(3+η)) ↔
     ∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ, 0 < M →
-      (∑ n ∈ Ioc 0 M, (n:ℝ)^2*aboveConductorFirstPrimeReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n) ≤ C*(M:ℝ)^(3+η) := by
-  obtain ⟨A,hA,h⟩ := seventeenNinths_first_primes_beyond_conductor
+      (∑ n ∈ Ioc 0 M, (n:ℝ)^2*R ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n) ≤ C*(M:ℝ)^(3+η) := by
+  obtain ⟨A,hA,h⟩ := herr
   obtain ⟨D,hD,hd⟩ := conductorLog_subpower hη
   let U (n : ℕ) := ⌊(n:ℝ)^(17/9:ℝ)⌋₊
   let V (M : ℕ) := ∑ n ∈ Ioc 0 M, (n:ℝ)^2*cappedUpperProductReading (U n) n n
-  let W (M : ℕ) := ∑ n ∈ Ioc 0 M, (n:ℝ)^2*aboveConductorFirstPrimeReading (U n) n
+  let W (M : ℕ) := ∑ n ∈ Ioc 0 M, (n:ℝ)^2*R (U n) n
   have gap (M : ℕ) (hM : 0 < M) : |V M-W M| ≤ A*D*(M:ℝ)^(3+η) := by
     simp only [V,W,←sum_sub_distrib,←mul_sub]
     apply (h 0 M).trans
@@ -363,6 +440,24 @@ theorem prefix_upper_iff_first_primes_beyond_conductor {η : ℝ} (hη : 0 < η)
   · linarith only [(abs_le.mp (gap M hM)).1,hC' M hM]
   · linarith only [(abs_le.mp (gap M hM)).2,hC' M hM]
 
+/-- At every exponent above three, a one-sided bound on the entire signed
+prefix is equivalent to the same bound on the unique-large-prime part. -/
+theorem prefix_upper_iff_first_primes_beyond_conductor {η : ℝ} (hη : 0 < η) :
+    (∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ, 0 < M →
+      (∑ n ∈ Ioc 0 M, (n:ℝ)^2*cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n n) ≤ C*(M:ℝ)^(3+η)) ↔
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ, 0 < M →
+      (∑ n ∈ Ioc 0 M, (n:ℝ)^2*aboveConductorFirstPrimeReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n) ≤ C*(M:ℝ)^(3+η) :=
+  prefix_upper_iff_of_cubic_log_error _ seventeenNinths_first_primes_beyond_conductor hη
+
+/-- For the full one-sided bound it suffices to use unrestricted
+complementary factors with their natural product endpoints. -/
+theorem prefix_upper_iff_cap_free_first_primes {η : ℝ} (hη : 0 < η) :
+    (∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ, 0 < M →
+      (∑ n ∈ Ioc 0 M, (n:ℝ)^2*cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n n) ≤ C*(M:ℝ)^(3+η)) ↔
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ, 0 < M →
+      (∑ n ∈ Ioc 0 M, (n:ℝ)^2*capFreeFirstPrimeReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n) ≤ C*(M:ℝ)^(3+η) :=
+  prefix_upper_iff_of_cubic_log_error _ seventeenNinths_cap_free_first_prime_fragments hη
+
 #print axioms signed_cofactor_mesh_interval
 #print axioms first_prime_above_conductor_unique
 #print axioms aboveConductorFirstPrimeReading_eq
@@ -370,4 +465,7 @@ theorem prefix_upper_iff_first_primes_beyond_conductor {η : ℝ} (hη : 0 < η)
 #print axioms firstPrime_price_partition
 #print axioms seventeenNinths_first_primes_beyond_conductor
 #print axioms prefix_upper_iff_first_primes_beyond_conductor
+#print axioms capFreeFirstPrimeReading_eq
+#print axioms seventeenNinths_cap_free_first_prime_fragments
+#print axioms prefix_upper_iff_cap_free_first_primes
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

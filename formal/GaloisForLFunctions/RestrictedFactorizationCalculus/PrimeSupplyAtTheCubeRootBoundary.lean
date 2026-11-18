@@ -31,9 +31,16 @@ private theorem cube_band_mass {s : ℝ} (hs : 2 ≤ s)
   have hab : s^2/2 ≤ 2*s^3 := by nlinarith only [mul_le_mul_of_nonneg_right hs (sq_nonneg s),sq_nonneg s]
   have hset : windowPrimes (s^2/2) (2*s^3) =
       Nat.primesLE ⌊2*s^3⌋₊ \ Nat.primesLE ⌊s^2/2⌋₊ := by
-    ext q
-    simp only [windowPrimes, mem_filter, mem_Ioc, mem_sdiff, Nat.mem_primesLE]
-    omega
+    apply Finset.ext
+    intro q
+    rw [Finset.mem_sdiff, Nat.mem_primesLE, Nat.mem_primesLE]
+    change q ∈ (Ioc _ _).filter Nat.Prime ↔ _
+    simp only [mem_filter,mem_Ioc]
+    constructor
+    · rintro ⟨⟨hlo,hhi⟩,hp⟩
+      exact ⟨⟨hhi,hp⟩,fun h => hlo.not_ge h.1⟩
+    · rintro ⟨⟨hhi,hp⟩,hn⟩
+      exact ⟨⟨lt_of_not_ge (fun h => hn ⟨h,hp⟩),hhi⟩,hp⟩
   have haN : 1 ≤ ⌊s^2/2⌋₊ := (Nat.one_le_floor_iff _).2 (by linarith only [ha])
   have hA : s^2/4 ≤ (⌊s^2/2⌋₊ : ℝ) := by
     linarith only [Nat.lt_floor_add_one (s^2/2),ha]
@@ -44,6 +51,7 @@ private theorem cube_band_mass {s : ℝ} (hs : 2 ≤ s)
   have hl := Real.log_le_log (show 0 < s^2/4 by positivity) hA
   rw [Real.log_mul (by norm_num) (by positivity),Real.log_pow] at hu
   rw [Real.log_div (by positivity) (by norm_num),Real.log_pow] at hl
+  norm_num1 at hu hl
   rw [hset]
   linarith only [mertensFirst_general_block haN (Nat.floor_le_floor hab), hL, hu, hl]
 
@@ -59,6 +67,7 @@ private theorem cube_logs {s : ℝ} (hs : 2 ≤ s) (hL : 10*Real.log 2 ≤ Real.
   rw [Real.log_div (by positivity) (by norm_num),Real.log_pow] at hlo
   rw [Real.log_mul (by norm_num) (by positivity),Real.log_pow] at hup
   rw [Real.log_div (by positivity) hq0.ne', Real.log_pow]
+  norm_num1 at hlo hup ⊢
   have hlog := Real.log_nonneg (show 1 ≤ s by linarith only [hs])
   have h1 : 0 ≤ Real.log q - 19/10 * Real.log s := by linarith only [hlo,hL]
   have h2 : 0 ≤ 41/10 * Real.log s - Real.log q := by linarith only [hup,hL,hlog]
@@ -66,11 +75,11 @@ private theorem cube_logs {s : ℝ} (hs : 2 ≤ s) (hL : 10*Real.log 2 ≤ Real.
   · linarith only [hup,hL,hlog]
   · nlinarith only [mul_nonneg h1 h2,sq_nonneg (Real.log s)]
 
-/-- The whole cube-root band fits simultaneously in every sharp quotient
-cell of fixed logarithmic relative width. -/
-theorem eventually_cubeProducts_capacity (B : ℕ) :
+/-- The whole cube-root band uses at most nine tenths of the prime supply,
+uniformly in every sharp quotient cell of fixed logarithmic relative width. -/
+theorem eventually_cubeProducts_nine_tenths (B : ℕ) :
     ∀ᶠ s : ℝ in atTop, ∀ u v : ℝ, s^6 ≤ u → u ≤ v → v ≤ 2*s^6 →
-      s^6 / Real.log s ^ B ≤ v-u → (cubeProducts s u v).card ≤ (windowPrimes u v).card := by
+      s^6 / Real.log s ^ B ≤ v-u → 10*(cubeProducts s u v).card ≤ 9*(windowPrimes u v).card := by
   obtain ⟨A,_,hupper⟩ := exists_card_windowPrimes_le B (by norm_num : (0:ℝ)<1/100)
   obtain ⟨H,_,hlower⟩ := exists_card_windowPrimes_div_ge B (by norm_num : (0:ℝ)<1/100)
   filter_upwards [eventually_ge_atTop (max 2 (max A H)),
@@ -134,8 +143,19 @@ theorem eventually_cubeProducts_capacity (B : ℕ) :
       linarith only [h])
   rw [mul_div_cancel_left₀ _ (by norm_num : (2:ℝ) ≠ 0),
     mul_div_cancel_left₀ _ (by norm_num : (2:ℝ) ≠ 0)] at hlow
-  exact_mod_cast hprice.trans (le_trans (by
-    rw [div_le_div_iff₀ (by positivity) (by positivity),hbig]
-    nlinarith only [mul_le_mul_of_nonneg_right h10 hlen, mul_nonneg hlen hlog.le]) hlow)
+  have hratio : 10*((v-u)/(7*Real.log s)) ≤
+      9*((1-1/100)*(2*v-2*u)/(2*Real.log (2*s^6))) := by
+    rw [← mul_div_assoc,← mul_div_assoc,div_le_div_iff₀ (by positivity) (by positivity),hbig]
+    nlinarith only [mul_le_mul_of_nonneg_right h10 hlen, mul_nonneg hlen hlog.le]
+  exact_mod_cast (mul_le_mul_of_nonneg_left hprice (by norm_num : (0:ℝ) ≤ 10)).trans
+    (hratio.trans (mul_le_mul_of_nonneg_left hlow (by norm_num : (0:ℝ) ≤ 9)))
+
+/-- Every semiprime in the cube-root band can be assigned a distinct prime. -/
+theorem eventually_cubeProducts_capacity (B : ℕ) :
+    ∀ᶠ s : ℝ in atTop, ∀ u v : ℝ, s^6 ≤ u → u ≤ v → v ≤ 2*s^6 →
+      s^6 / Real.log s ^ B ≤ v-u → (cubeProducts s u v).card ≤ (windowPrimes u v).card := by
+  filter_upwards [eventually_cubeProducts_nine_tenths B] with s hs u v hu huv hv hw
+  have := hs u v hu huv hv hw
+  omega
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

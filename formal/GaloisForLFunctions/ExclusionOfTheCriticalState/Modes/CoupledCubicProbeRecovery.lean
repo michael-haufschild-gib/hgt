@@ -22,7 +22,6 @@ structure Row (V : Type*) where
   linearY : V
   cubicX : V
   cubicY : V
-  deriving DecidableEq
 
 /-- Apply a common observation map to each coefficient. -/
 def Row.map {V W : Type*} (f : V → W) (r : Row V) : Row W :=

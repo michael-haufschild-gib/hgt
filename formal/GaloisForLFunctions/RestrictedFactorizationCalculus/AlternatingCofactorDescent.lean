@@ -13,7 +13,7 @@ classes, each two-edge step removes exactly two prime factors.
 noncomputable section
 
 open Finset
-open scoped ArithmeticFunction.Moebius
+open scoped Classical ArithmeticFunction.Moebius
 open GaloisForLFunctions.QuantitativeFactorizationMatching
 
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus

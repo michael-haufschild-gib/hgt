@@ -63,16 +63,23 @@ private theorem moment_leading {q a b c : ℝ} (hab : a < b) (hbc : b < c)
       ring
     _ = _ := quadratic_trace hab hbc v.1 v.2.1 v.2.2
 
-/-- One affine numerator cannot yield three strictly positive residues.
+/-- Value of an affine numerator divided by the derivative at a simple root. -/
+def affineResidue (a b c A B : ℝ) : ℝ := (A*a+B) / ((a-b)*(a-c))
+
+/-- An affine numerator cannot yield three strictly positive residues.
 Their sum vanishes because a linear polynomial has zero quadratic coefficient. -/
 theorem affine_trace_obstruction (x h k A B : ℝ) :
-    ¬ (0 < (A*x+B) / ((x-(x+Real.exp h))*(x-(x+Real.exp h+Real.exp k))) ∧
-      0 < (A*(x+Real.exp h)+B) / (((x+Real.exp h)-(x+Real.exp h+Real.exp k))*((x+Real.exp h)-x)) ∧
-      0 < (A*(x+Real.exp h+Real.exp k)+B) / (((x+Real.exp h+Real.exp k)-x)*((x+Real.exp h+Real.exp k)-(x+Real.exp h)))) := by
+    let y := x+Real.exp h
+    let z := y+Real.exp k
+    ¬ (0 < affineResidue x y z A B ∧ 0 < affineResidue y z x A B ∧
+        0 < affineResidue z x y A B) := by
+  intro y z
   rintro ⟨h₁,h₂,h₃⟩
   have hs := quadratic_trace (lt_add_of_pos_right x (Real.exp_pos h))
-    (lt_add_of_pos_right (x+Real.exp h) (Real.exp_pos k)) 0 A B
+    (lt_add_of_pos_right y (Real.exp_pos k)) 0 A B
+  change traceDual x y z (fun t => 0*t^2+A*t+B) = 0 at hs
   simp only [traceDual, zero_mul, zero_add] at hs
+  unfold affineResidue at h₁ h₂ h₃
   linarith only [h₁,h₂,h₃,hs]
 
 /-- Every member has a positive, normalized three-root law whose complete

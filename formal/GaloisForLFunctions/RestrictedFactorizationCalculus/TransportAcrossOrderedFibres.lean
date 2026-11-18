@@ -14,7 +14,7 @@ noncomputable section
 
 open Finset RHTower
 open ArithmeticFunction hiding id
-open scoped ArithmeticFunction.Moebius
+open scoped Classical ArithmeticFunction.Moebius
 open GaloisForLFunctions.QuantitativeFactorizationMatching
 
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus

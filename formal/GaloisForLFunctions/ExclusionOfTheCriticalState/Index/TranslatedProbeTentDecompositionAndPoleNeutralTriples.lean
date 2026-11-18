@@ -123,16 +123,6 @@ theorem primeMixedForm_shiftProfile_probe_eq (p R : ℝ) :
       primePairTerm (probe p) (shiftProfile (probe p) R) n := by
     intro n
     unfold primePairTerm shiftProfile
-    have h1 : (∫ t, probe p (t + R) * probe p (t - Real.log n)) =
-        ∫ u, probe p u * probe p (u + Real.log n + R) := by
-      rw [← integral_add_right_eq_self (fun u => probe p u * probe p (u - R - Real.log n)) R]
-      simp only [add_sub_cancel_right]
-      refine integral_congr_ae (Eventually.of_forall fun u => ?_)
-      rw [mul_comm]
-      have htr := integral_add_right_eq_self
-        (fun s => probe p s * probe p (s + Real.log n + R)) (-Real.log n - R)
-      exact rfl
-    -- Direct change of variables `u = t - Real.log n` and `u = t + Real.log n`:
     have ha : (∫ t, probe p (t + R) * probe p (t - Real.log n)) =
         ∫ u, probe p u * probe p (u + Real.log n + R) := by
       rw [← integral_add_right_eq_self (fun u => probe p (u + Real.log n + R) * probe p u)

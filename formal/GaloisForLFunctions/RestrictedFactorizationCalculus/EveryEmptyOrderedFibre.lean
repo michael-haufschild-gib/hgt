@@ -13,7 +13,7 @@ Removing that prime with `r` puts the source in the cube-root exchange band.
 noncomputable section
 
 open Finset Filter ArithmeticFunction
-open scoped ArithmeticFunction.Moebius
+open scoped Classical ArithmeticFunction.Moebius
 open GaloisForLFunctions.QuantitativeFactorizationMatching
 
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus
@@ -125,7 +125,8 @@ private theorem eventually_quotient_ge (R : ℝ) : ∀ᶠ X : ℕ in atTop,
 /-- Every negative integer in an empty ordered fibre, at every sufficiently
 large dyadic cutoff, belongs to one common restricted matching. -/
 theorem eventually_every_empty_fibre_covered : ∀ᶠ X : ℕ in atTop,
-    ∃ M : OppositeParityMatching GlobalDyadicOneTwoRel (Ioc X (2*X)),
+    ∀ A : OppositeParityMatching OrderedExchange (Ioc X (2*X)),
+      ∃ M : OppositeParityMatching GlobalDyadicOneTwoRel (Ioc X (2*X)), A.sources ⊆ M.sources ∧
       (negParity (Ioc X (2*X))).filter (fun n => fibrePos X (evenPrefixCofactor n) = ∅) ⊆
         M.targets := by
   obtain ⟨Z,hex⟩ := exists_cube_root_exchange
@@ -137,8 +138,9 @@ theorem eventually_every_empty_fibre_covered : ∀ᶠ X : ℕ in atTop,
   have hV0 : 0 ≤ V := by linarith only [hV]
   have hV1 : 1 ≤ V := by linarith only [hV]
   filter_upwards [eventually_ge_atTop 1,eventually_quotient_ge (V^6)] with X hX hlarge
-  obtain ⟨M,hM⟩ := hex X
-  refine ⟨M,fun n hn => ?_⟩
+  intro A
+  obtain ⟨M,hA,hM⟩ := hex X A
+  refine ⟨M,hA,fun n hn => ?_⟩
   obtain ⟨hn,hbad⟩ := mem_filter.mp hn
   let a := evenPrefixCofactor n
   obtain ⟨ha,he,r,hr,hnr,ht⟩ := mem_fibreNeg_structure hX
@@ -194,7 +196,7 @@ theorem eventually_every_empty_fibre_covered : ∀ᶠ X : ℕ in atTop,
     rw [hzc]
     exact (hlarge n hn).trans (le_mul_of_one_le_right (by positivity) hq1)
   have hqt : t < (q:ℝ) := hdt.trans_le (by exact_mod_cast le_max' _ d hd)
-  have hq2 := pow_lt_pow_left₀ ht0 hqt (by decide : 2 ≠ 0)
+  have hq2 := pow_lt_pow_left₀ hqt ht0 (by decide : 2 ≠ 0)
   rw [ht2] at hq2
   have hq3 : z^6 < (q:ℝ)^3 := by
     rw [hzc]; nlinarith only [mul_lt_mul_of_pos_right hq2 hq0]
@@ -220,7 +222,8 @@ theorem eventually_transported_empty_fibre_mass :
   obtain ⟨C,hC,X₀,hX₀⟩ := eventually_evenPrefixFibre_debt_ge
   refine ⟨C,hC,?_⟩
   filter_upwards [eventually_every_empty_fibre_covered,eventually_ge_atTop X₀] with X h hX
-  obtain ⟨M,hM⟩ := h
+  obtain ⟨A,_⟩ := exists_matching_card_eq_sub_hallDeficiency OrderedExchange (Ioc X (2*X))
+  obtain ⟨M,_,hM⟩ := h A
   refine ⟨M,(hX₀ X hX).1.trans (by
     exact_mod_cast card_le_card (fun n hn => mem_filter.mpr ⟨hM hn,(mem_filter.mp hn).2⟩)),?_⟩
   exact disjoint_left.mpr fun n hleft hright =>

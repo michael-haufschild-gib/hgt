@@ -136,8 +136,8 @@ theorem exists_cosine_boundaryStep_of_bounded_thetaRadial {γ : ℝ} {m : ℕ}
       rw [stepAmplitude_carrier hΘ, expSeriesCarrier]
       apply tsum_eq_sum
       intro r hr
-      have hne : (r.1 : ℂ).re ≠ β := fun he => hr (hf.mem_toFinset.mpr he)
-      simp only [a, stepAmplitude, primeErrorBoundaryAmplitude, if_neg hne, mul_zero, zero_mul]
+      have hne : (r.1 : ℂ).re ≠ zetaZeroAbscissa := fun he => hr (hf.mem_toFinset.mpr he)
+      simp only [stepAmplitude, primeErrorBoundaryAmplitude, if_neg hne, mul_zero, zero_mul]
     have he := congrArg Complex.re hfin
     rw [Complex.ofReal_re, Complex.re_sum] at he
     rw [he, show B * expChar ω t = ∑ r ∈ S, b r * expChar ω t from Finset.sum_mul S b _, Complex.re_sum]
@@ -189,7 +189,8 @@ private theorem exists_cosine_crest {ω : ℝ} (hω : 0 < ω) (φ t : ℝ) :
   let s := ((k:ℝ)*Real.pi-φ)/ω
   have hcenter : ω*s+φ = k*Real.pi := by
     dsimp only [s]
-    field_simp [hω.ne'] <;> ring
+    field_simp [hω.ne']
+    ring
   have ht : |ω*(t-s)| ≤ Real.pi/2 := by
     have he : ω*(t-s) = ((ω*t+φ)/Real.pi-k)*Real.pi := by
       rw [sub_mul, div_mul_cancel₀ _ Real.pi_ne_zero]
@@ -292,6 +293,7 @@ theorem signed_prime_increment_on_extremal_wave {γ σ : ℝ} {m : ℕ}
   have hw0 (t : ℝ) : 0 ≤ w t := (Real.exp_pos _).le
   obtain ⟨q,K,φ,_,hK,hD⟩ := exists_cosine_boundaryStep_of_bounded_thetaRadial hΘ hγ hm hb
   let ω := |xiCopyOrdinate q|
+  change ∀ t, D t = K*Real.cos (ω*t+φ) at hD
   have hω : 0 < ω := (by norm_num : (0:ℝ)<4).trans (four_lt_abs_xiCopyOrdinate q)
   obtain ⟨V,hV,hUV⟩ := exists_continuous_normalizedPrimeIncrement_approx β hh.le
   have hUVw : ∀ᶠ t : ℝ in atTop, |V t-U t| ≤ w t := by
@@ -347,7 +349,7 @@ theorem signed_prime_increment_on_extremal_wave {γ σ : ℝ} {m : ℕ}
   have hs : (U t-D t)^2 ≤ (2*M+2)*w t := by
     nlinarith only [hm',he,sq_nonneg ((V t-D t)+(V t-U t))]
   have hpol : 2*|D t*(U t-D t)| ≤ w t+(U t-D t)^2 := by
-    rw [← abs_of_pos zero_lt_two,← abs_mul,show (2:ℝ)*(D t*(U t-D t)) =
+    rw [← abs_of_pos (show (0:ℝ) < 2 from zero_lt_two),← abs_mul,show (2:ℝ)*(D t*(U t-D t)) =
       (U t^2-D t^2)-(U t-D t)^2 by ring]
     refine (abs_sub _ _).trans ?_
     rw [abs_of_nonneg (sq_nonneg _)]

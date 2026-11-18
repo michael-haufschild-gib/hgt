@@ -101,7 +101,7 @@ private theorem ae_cosine_ne_zero {ω : ℝ} (hω : 0 < ω) (φ : ℝ) :
   have hc := (GaloisForLFunctions.HTGeometry.countable_sin_shift_eq_zero v).preimage
     (f := fun t : ℝ => ω*t) (fun _ _ h => mul_left_cancel₀ hω.ne' h)
   have hh : ∀ᵐ t : ℝ, t ∉ (fun t : ℝ => ω*t) ⁻¹' {z | Real.sin (z-v) = 0} :=
-    (ae_iff.mpr (hc.measure_zero volume))
+    hc.ae_notMem volume
   filter_upwards [hh] with t ht
   change Real.sin (ω*t-v) ≠ 0 at ht
   simpa only [v,sub_neg_eq_add,← add_assoc,Real.sin_add_pi_div_two] using ht
@@ -135,6 +135,7 @@ theorem integrableOn_tail_signed_prime_increment {γ s : ℝ} {m : ℕ}
     linarith only [(div_lt_iff₀ hden).mp hlo]
   obtain ⟨q,K,φ,_,hK,hD⟩ := exists_cosine_boundaryStep_of_bounded_thetaRadial hΘ hγ hm hb
   let ω := |xiCopyOrdinate q|
+  change ∀ t, D t = K*Real.cos (ω*t+φ) at hD
   have hω : 0 < ω := (by norm_num : (0:ℝ)<4).trans (four_lt_abs_xiCopyOrdinate q)
   obtain ⟨M,hM⟩ := signed_prime_increment_on_extremal_wave hτ hτβ hγ hm hb
   obtain ⟨T,hT⟩ := eventually_atTop.mp hM

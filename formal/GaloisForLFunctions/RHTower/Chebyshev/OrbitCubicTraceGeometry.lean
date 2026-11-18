@@ -1,12 +1,12 @@
 import GaloisForLFunctions.RHTower.AnharmonicOrbitCubicDiscriminant
 
 /-!
-# Hessian shape and real trace weights of the anharmonic orbit cubic
+# Hessian shape and interlacing of the anharmonic orbit cubic
 
 Oller (arXiv:2611.17965, §§3–4) uses the Hessian shape of a binary cubic
 and the trace-dual coordinates obtained by division by its derivative.
-For this family the Hessian shape is constant. The quadratic numerator
-X(X−1) yields positive trace-one weights on all three roots.
+For this family the Hessian shape is constant. Two fixed poles at zero
+and one separate the three real roots of every member.
 -/
 
 noncomputable section
@@ -113,4 +113,11 @@ theorem roots_straddle_poles (q : ℝ) :
   exact ⟨a,b,c,lt_of_le_of_ne ha.2 (hn0 _ ea),lt_of_le_of_ne hb.1 (hn0 _ eb).symm,
     lt_of_le_of_ne hb.2 (hn1 _ eb),lt_of_le_of_ne hc'.1 (hn1 _ ec).symm,ea,eb,ec⟩
 
+#print axioms hessian_shape
+#print axioms hessian_sq
+#print axioms binary_rotate
+#print axioms hexagonal_minima
+#print axioms shortest_binary_unit
+#print axioms arrowhead_secular
+#print axioms roots_straddle_poles
 end RHTower.OrbitCubic

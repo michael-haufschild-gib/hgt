@@ -127,10 +127,10 @@ theorem real_conductor_mesh_sampling :
         (conductorDerivativeProfile (z/x^2)) x := by
       have hq' : HasDerivAt (fun y : ℝ => z/y^2) (-(2*z)/x^3) x := by
         refine ((hasDerivAt_const x z).div ((hasDerivAt_id x).pow 2) (sq_pos_of_pos hx).ne').congr_deriv ?_
-        dsimp only [id,Pi.pow_apply]; field_simp <;> ring
+        dsimp only [id,Pi.pow_apply]; field_simp; ring
       have hΦ := (contDiff_six_dyadicSpline.differentiable (by simp)).differentiableAt (x := z/x^2)
       refine ((hasDerivAt_id x).mul (hΦ.hasDerivAt.comp x hq')).congr_deriv ?_
-      dsimp [conductorDerivativeProfile]; field_simp <;> ring
+      dsimp [conductorDerivativeProfile]; field_simp; ring
     have hd' (j : ℕ) := ((hd ((j:ℝ)*q)).sub (hd (((j+1:ℕ):ℝ)*q))).mul_const (centeredPrimeWeight 1 j)
     have hsum := HasDerivAt.fun_sum (u := range b) fun j _ => hd' j
     simpa only [weightedMesh,quotientMeshProfile,Pi.sub_apply,mul_sum,mul_sub,←mul_div_assoc,←mul_assoc] using hsum
@@ -169,7 +169,7 @@ theorem quotientMeshProfile_product_variation :
     obtain ⟨_,hx',hD⟩ := (h b hs hx).2
     rwa [show deriv F x = _ from hD.deriv,Real.norm_eq_abs]
   have hlip := (convex_Ioi (0:ℝ)).norm_image_sub_le_of_norm_deriv_le hdiff hder
-    (show t ∈ Set.Ioi (0:ℝ) from ht') (show (1:ℝ) ∈ Set.Ioi 0 from zero_lt_one)
+    (Set.mem_Ioi.mpr ht') (Set.mem_Ioi.mpr (zero_lt_one : (0:ℝ)<1))
   simp only [F,one_pow,div_one,one_mul,hratio,Real.norm_eq_abs,abs_sub_comm 1 t,
     abs_of_nonneg (sub_nonneg.mpr ht)] at hlip
   let v := quotientMeshProfile b (q*d)
@@ -351,8 +351,10 @@ theorem rescaled_shell_integral_exchange (b Q H : ℕ) (L U c α β : ℝ)
     have heq : F q = {t | keep q t}.indicator (fun t => B t*((vonMangoldt q-1)*q)) := by
       funext t
       by_cases ht : keep q t
-      · exact (if_pos ht).trans (Set.indicator_of_mem (show t ∈ {y | keep q y} from ht) _).symm
-      · exact (if_neg ht).trans (Set.indicator_of_notMem (show t ∉ {y | keep q y} from ht) _).symm
+      · rw [Set.indicator_of_mem (show t ∈ {y | keep q y} from ht)]
+        exact if_pos ht
+      · rw [Set.indicator_of_notMem (show t ∉ {y | keep q y} from ht)]
+        exact if_neg ht
     rw [heq]
     exact ((intervalIntegrable_iff_integrableOn_Ioc_of_le hTZ).mp hbase).indicator hm
   calc _ = ∑ q ∈ S, ∫ t in T..Z, F q t := by
@@ -428,7 +430,7 @@ theorem rescaled_shell_integral_bound :
              exact fun x _ => (zpow_negSucc x 12).symm
          _ = _ := by
              rw [integral_zpow (Or.inr ⟨by norm_num,hzero⟩)]
-             norm_num [zpow_negSucc] <;> ring
+             norm_num [zpow_negSucc] <;> simp only [inv_pow] <;> ring
   rw [hi] at h
   have hdrop := mul_nonneg hB (inv_nonneg.mpr (pow_nonneg (hT.trans_le hTZ).le 12))
   dsimp only [B] at h hdrop

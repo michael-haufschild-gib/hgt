@@ -668,25 +668,37 @@ theorem singleQuartet_universal_twoPrime_chebyshev_span {ρ₀ : ℂ}
         _ ≤ |η (u * x)| + |α * η x| + |β * η ((q₀ : ℝ) * x)| :=
             add_le_add (abs_sub _ _) le_rfl
         _ = _ := by rw [abs_mul, abs_mul]
-    have h1 : |α| * |η x| ≤ 8 * |K| * |α| * (Real.sqrt x * Real.log x ^ 2) := by
+    have h0 : |η (u * x)| ≤ C₀ * (Real.sqrt (u * x) * Real.log (u * x) ^ 2) := by
+      dsimp [C₀]
+      calc |η (u * x)|
+          ≤ |K| * (Real.sqrt (u * x) * Real.log (u * x) ^ 2) := by linarith [hη_ux]
+        _ ≤ 8 * (|K| + 2) * (Real.sqrt (u * x) * Real.log (u * x) ^ 2) :=
+            mul_le_mul_of_nonneg_right (by linarith [abs_nonneg K]) (by positivity)
+    have h1 : |α| * |η x| ≤ C₀ * |α| * (Real.sqrt x * Real.log x ^ 2) := by
+      dsimp [C₀]
       calc |α| * |η x|
-          ≤ |α| * (|K| * Real.sqrt x * Real.log x ^ 2) :=
-            mul_le_mul_of_nonneg_left hη_x (abs_nonneg α)
-        _ ≤ 8 * |K| * |α| * (Real.sqrt x * Real.log x ^ 2) := by
-            have : 0 ≤ |α| * |K| * (Real.sqrt x * Real.log x ^ 2) := by positivity
-            linarith
-    have h2 : |β| * |η ((q₀ : ℝ) * x)| ≤ 8 * |K| * |β| * (Real.sqrt x * Real.log x ^ 2) := by
+          ≤ |α| * (|K| * (Real.sqrt x * Real.log x ^ 2)) :=
+            mul_le_mul_of_nonneg_left (by linarith [hη_x]) (abs_nonneg α)
+        _ = |K| * (|α| * (Real.sqrt x * Real.log x ^ 2)) := by ring
+        _ ≤ 8 * (|K| + 2) * (|α| * (Real.sqrt x * Real.log x ^ 2)) :=
+            mul_le_mul_of_nonneg_right (by linarith [abs_nonneg K]) (by positivity)
+        _ = 8 * (|K| + 2) * |α| * (Real.sqrt x * Real.log x ^ 2) := by ring
+    have h2 : |β| * |η ((q₀ : ℝ) * x)| ≤ C₀ * |β| * (Real.sqrt x * Real.log x ^ 2) := by
+      dsimp [C₀]
       calc |β| * |η ((q₀ : ℝ) * x)|
           ≤ |β| * (8 * |K| * (Real.sqrt x * Real.log x ^ 2)) :=
             mul_le_mul_of_nonneg_left hη_qx (abs_nonneg β)
-        _ = 8 * |K| * |β| * (Real.sqrt x * Real.log x ^ 2) := by ring
-    have h0 : |η (u * x)| ≤ C₀ * (Real.sqrt (u * x) * Real.log (u * x) ^ 2) := by
-      dsimp [C₀]
-      have : 0 ≤ Real.sqrt (u * x) * Real.log (u * x) ^ 2 := by positivity
-      nlinarith [abs_nonneg K]
-    dsimp [C₀] at h0 ⊢
-    have hrx : 0 ≤ (|α| + |β|) * Real.sqrt x * Real.log x ^ 2 := by positivity
-    nlinarith [htri, h0, h1, h2]
+        _ = 8 * |K| * (|β| * (Real.sqrt x * Real.log x ^ 2)) := by ring
+        _ ≤ 8 * (|K| + 2) * (|β| * (Real.sqrt x * Real.log x ^ 2)) :=
+            mul_le_mul_of_nonneg_right (by linarith [abs_nonneg K]) (by positivity)
+        _ = 8 * (|K| + 2) * |β| * (Real.sqrt x * Real.log x ^ 2) := by ring
+    calc |η (u * x) - α * η x - β * η ((q₀ : ℝ) * x)|
+        ≤ C₀ * (Real.sqrt (u * x) * Real.log (u * x) ^ 2) +
+            C₀ * |α| * (Real.sqrt x * Real.log x ^ 2) +
+            C₀ * |β| * (Real.sqrt x * Real.log x ^ 2) :=
+          htri.trans (add_le_add (add_le_add h0 h1) h2)
+      _ = C₀ * (Real.sqrt (u * x) * Real.log (u * x) ^ 2 +
+            (|α| + |β|) * Real.sqrt x * Real.log x ^ 2) := by ring
   · -- Companion `θ` bound by transferring `|ψ - θ| ≤ 2 √y log² y`.
     set ηθ : ℝ → ℝ := fun y => (Chebyshev.theta y - y) - W y
     have hηθ_le : ∀ {y : ℝ}, 16 ≤ y → |ηθ y| ≤ (|K| + 2) * Real.sqrt y * Real.log y ^ 2 := by
@@ -721,24 +733,33 @@ theorem singleQuartet_universal_twoPrime_chebyshev_span {ρ₀ : ℂ}
         _ ≤ (|K| + 2) * (8 * (Real.sqrt x * Real.log x ^ 2)) :=
             mul_le_mul_of_nonneg_left (hscale_q hx) (by positivity)
         _ = 8 * (|K| + 2) * (Real.sqrt x * Real.log x ^ 2) := by ring
+    have h0 : |ηθ (u * x)| ≤ C₀ * (Real.sqrt (u * x) * Real.log (u * x) ^ 2) := by
+      dsimp [C₀]
+      calc |ηθ (u * x)|
+          ≤ (|K| + 2) * (Real.sqrt (u * x) * Real.log (u * x) ^ 2) := by linarith [hθ_ux]
+        _ ≤ 8 * (|K| + 2) * (Real.sqrt (u * x) * Real.log (u * x) ^ 2) :=
+            mul_le_mul_of_nonneg_right (by linarith [abs_nonneg K]) (by positivity)
     have h1 : |α| * |ηθ x| ≤ C₀ * |α| * (Real.sqrt x * Real.log x ^ 2) := by
       dsimp [C₀]
       calc |α| * |ηθ x|
-          ≤ |α| * ((|K| + 2) * Real.sqrt x * Real.log x ^ 2) :=
-            mul_le_mul_of_nonneg_left hθ_x (abs_nonneg α)
-        _ ≤ 8 * (|K| + 2) * |α| * (Real.sqrt x * Real.log x ^ 2) := by
-            have : 0 ≤ |α| * (|K| + 2) * (Real.sqrt x * Real.log x ^ 2) := by positivity
-            linarith
+          ≤ |α| * ((|K| + 2) * (Real.sqrt x * Real.log x ^ 2)) :=
+            mul_le_mul_of_nonneg_left (by linarith [hθ_x]) (abs_nonneg α)
+        _ = (|K| + 2) * (|α| * (Real.sqrt x * Real.log x ^ 2)) := by ring
+        _ ≤ 8 * (|K| + 2) * (|α| * (Real.sqrt x * Real.log x ^ 2)) :=
+            mul_le_mul_of_nonneg_right (by linarith [abs_nonneg K]) (by positivity)
+        _ = 8 * (|K| + 2) * |α| * (Real.sqrt x * Real.log x ^ 2) := by ring
     have h2 : |β| * |ηθ ((q₀ : ℝ) * x)| ≤ C₀ * |β| * (Real.sqrt x * Real.log x ^ 2) := by
       calc |β| * |ηθ ((q₀ : ℝ) * x)|
           ≤ |β| * (C₀ * (Real.sqrt x * Real.log x ^ 2)) :=
             mul_le_mul_of_nonneg_left hθ_qx (abs_nonneg β)
         _ = C₀ * |β| * (Real.sqrt x * Real.log x ^ 2) := by ring
-    have h0 : |ηθ (u * x)| ≤ C₀ * (Real.sqrt (u * x) * Real.log (u * x) ^ 2) := by
-      dsimp [C₀]
-      have : 0 ≤ (|K| + 2) * (Real.sqrt (u * x) * Real.log (u * x) ^ 2) := by positivity
-      linarith
-    nlinarith [htri, h0, h1, h2]
+    calc |ηθ (u * x) - α * ηθ x - β * ηθ ((q₀ : ℝ) * x)|
+        ≤ C₀ * (Real.sqrt (u * x) * Real.log (u * x) ^ 2) +
+            C₀ * |α| * (Real.sqrt x * Real.log x ^ 2) +
+            C₀ * |β| * (Real.sqrt x * Real.log x ^ 2) :=
+          htri.trans (add_le_add (add_le_add h0 h1) h2)
+      _ = C₀ * (Real.sqrt (u * x) * Real.log (u * x) ^ 2 +
+            (|α| + |β|) * Real.sqrt x * Real.log x ^ 2) := by ring
 
 /-! ## 4. Zero-pinned fractional-part Mellin equivalences and upper-range divisor concentration -/
 

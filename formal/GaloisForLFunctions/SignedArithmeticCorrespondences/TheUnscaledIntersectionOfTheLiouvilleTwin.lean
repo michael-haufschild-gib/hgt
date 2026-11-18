@@ -68,7 +68,25 @@ theorem tendsto_contact_add_liouville {f g : ℝ → ℝ}
   convert h using 1 <;>
     norm_num [ccmRealExponentialMoment, ccmRealExponentialTilt, mul_assoc]
 
+/-- Keeping the ordinary pole normalization on the sign twin reverses both
+profiles' leading cross term. Its discrepancy is present already at order √X. -/
+theorem tendsto_liouville_contact {f g : ℝ → ℝ}
+    (hf : ContDiff ℝ 2 f) (hg : ContDiff ℝ 2 g)
+    (hfc : HasCompactSupport f) (hgc : HasCompactSupport g) :
+    Tendsto (fun t : ℝ => Real.exp (-(1/2)*t) * contact SelectiveArithmetic.liouvilleWeight f g t)
+      atTop (𝓝 (-(2*ccmRealExponentialMoment (-(1/2)) f * ccmRealExponentialMoment (1/2) g))) := by
+  have hone : Tendsto (fun t : ℝ => Real.exp (-(1/2)*t) * contact (fun n => Λ n) f g t)
+      atTop (𝓝 (2*ccmRealExponentialMoment (-(1/2)) f * ccmRealExponentialMoment (1/2) g)) := by
+    convert tendsto_power_contact (1 : ℕ+) hf hg hfc hgc using 1 <;> norm_num [powerWeight]
+  have hdec : Tendsto (fun t : ℝ => Real.exp (-(1/2)*t)) atTop (𝓝 0) := by
+    simpa only [neg_mul,Function.comp_def] using Real.tendsto_exp_atBot.comp
+      (tendsto_neg_atTop_atBot.comp (Filter.Tendsto.const_mul_atTop (by norm_num : (0:ℝ)<1/2) tendsto_id))
+  have h := (hdec.mul (tendsto_contact_add_liouville hf hg hfc hgc)).sub hone
+  rw [zero_mul,zero_sub] at h
+  exact h.congr fun t => by dsimp only; ring
+
 #print axioms contact_add_liouville
 #print axioms tendsto_contact_add_liouville
+#print axioms tendsto_liouville_contact
 
 end GaloisForLFunctions.SignedArithmeticCorrespondences

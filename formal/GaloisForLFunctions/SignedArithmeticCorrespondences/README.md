@@ -19,6 +19,16 @@ $$
 
 The object to bound is $I_X-P_X$. Its two terms may grow even when the difference is small. Taking absolute values of the intersections before gluing destroys cancellations in the test itself. The same problem occurs for conductor products whose reduced numerator and denominator both have quartic logarithmic height. [Integral graph contacts and pole moments](../ArithmeticCastelnuovoSeveri/Intersection/PoleMomentsFromSeparatedGraphContacts.lean) · [Reduced conductor heights](../CountingHolography/Sections/QuarticHeightsOfTheReducedSquarePrefix.lean)
 
+## Perfect-power contacts
+
+At prime ratio $p^k$, retaining the perfect $d$-th powers retains exactly the exponents divisible by $d$. This filter has a different pair of limiting degrees for every $d$. With $b=1/d-1/2$ and $M_a(f)=\int f(u)e^{au}\,du$, the directed height satisfies
+
+$$
+X^{-b}I_X^{[d]}(f,g)\longrightarrow (2/d)M_{-b}(f)M_b(g).
+$$
+
+The proof gives an identity at every separation. Put $a=(d-1)/2$, $F(u)=f(du)e^{au}$ and $G(v)=g(dv)e^{-av}$. Then $I^{[d]}_{Y^d}(f,g)=dY^{-a}I_Y(F,G)$. At $d=2$, the unscaled square contact tends to $(\int f)(\int g)$. Thus a term invisible after division by $\sqrt X$ survives in the finite part. [Exact descent and limit](PowerContactsAndTheirOppositeDegrees.lean)
+
 ## How to measure a glued intersection
 
 On the positive real axis a graph displacement tests the signed measure $d\psi(y)-dy$ against $h(\log(y/X))/\sqrt y$. Summation by parts moves its primitive $\psi(y)-y$ onto variations of the *combined* profile. An effective bound must specify the norm paid by that profile and keep the terms at any cuts. A pole-subtracted bound uniform in support size would permit a passage to completed intersections if those norms remain controlled in the limit.

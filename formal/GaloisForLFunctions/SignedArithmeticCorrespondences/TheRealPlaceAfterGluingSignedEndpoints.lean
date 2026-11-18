@@ -74,8 +74,8 @@ theorem realEndpoint_mixed (i L : ℕ) (hi : 0 < i) (S T : Finset ℕ) (u v : �
   have h (x : ℝ) : (x^L*(1-x)*(∑ a ∈ range i, x^a)^2) *
         (∑ j ∈ S, u j*x^j)*(∑ k ∈ T, v k*x^k) =
       ∑ j ∈ S, ∑ k ∈ T, (u j*v k)*(x^(L+j+k)*w x) := by
-    simp only [mul_sum,sum_mul,pow_add,w,geom]
-    rw [sum_comm]
+    rw [mul_assoc, sum_mul_sum]
+    simp only [mul_sum,pow_add,w,geom]
     exact sum_congr rfl fun j _ => sum_congr rfl fun k _ => by ring
   simp only [h,mul_sum]
   rw [intervalIntegral.integral_finsetSum (fun j _ => Continuous.intervalIntegrable (by fun_prop) _ _)]

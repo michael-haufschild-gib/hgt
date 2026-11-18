@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RestrictedFactorizationCalculus.PrimeSupplyAtTheCubeRootBoundary
-import GaloisForLFunctions.RestrictedFactorizationCalculus.TransportAcrossOrderedFibres
+import GaloisForLFunctions.RestrictedFactorizationCalculus.AlternatingCofactorDescent
 
 /-!
 # Disjoint prime mergers on the cube-root band
@@ -12,7 +12,7 @@ of `2T`. Every pair in this band is merged, for all cofactors at once.
 noncomputable section
 
 open Finset Filter RHTower
-open scoped ArithmeticFunction.Moebius
+open scoped Classical ArithmeticFunction.Moebius
 open GaloisForLFunctions.QuantitativeFactorizationMatching
 
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus
@@ -44,15 +44,16 @@ private theorem small_factor_upper {z : ℝ} {q r : ℕ} (hz : 0 ≤ z) (hqr : q
 /-- The dyadic one-to-two graph simultaneously covers every ordered pair
 above half the cube root in every sufficiently large quotient cell. -/
 theorem exists_cube_root_exchange :
-    ∃ Z : ℝ, ∀ X : ℕ, ∃ M : OppositeParityMatching GlobalDyadicOneTwoRel (Ioc X (2*X)),
+    ∃ Z : ℝ, ∀ (X : ℕ) (A : OppositeParityMatching OrderedExchange (Ioc X (2*X))),
+      ∃ M : OppositeParityMatching GlobalDyadicOneTwoRel (Ioc X (2*X)), A.sources ⊆ M.sources ∧
       ∀ c ∈ Icc 1 (2*X), μ c = -1 → Z ≤ sixthScale X c → ∀ q r : ℕ,
         q.Prime → r.Prime → q < r → (∀ d ∈ c.primeFactors, d < q) →
         c*(q*r) ∈ Ioc X (2*X) → sixthScale X c ^ 2 / 2 < q → c*(q*r) ∈ M.targets := by
   obtain ⟨T,hT⟩ := eventually_atTop.mp (eventually_cubeProducts_capacity 0)
-  refine ⟨max 2 T, fun X => ?_⟩
+  refine ⟨max 2 T, fun X A => ?_⟩
   let K := fun c => 2 * sixthScale X c
-  obtain ⟨M,_,hM⟩ := exists_ranked_transport K X (2*X)
-  refine ⟨M,fun c hc hμ hz q r hq hr hqr htop hn hqlo => ?_⟩
+  obtain ⟨B,M,hA,hB,hrows,_⟩ := exists_combined_cofactor_descent X K A
+  refine ⟨M,hA,fun c hc hμ hz q r hq hr hqr htop hn hqlo => ?_⟩
   let z := sixthScale X c
   have hz2 : 2 ≤ z := (le_max_left _ _).trans hz
   have hz0 : 0 < z := by linarith only [hz2]
@@ -103,6 +104,6 @@ theorem exists_cube_root_exchange :
     h6.le (by rw [hu,← h6]; linarith only [pow_nonneg hz0.le 6]) hu.le (by
       rw [hu,← h6,pow_zero,div_one]; linarith)
   have hprime := primeRow_eq_of_product hcn (le_refl (2*X)) hw
-  exact (hM c hc hμ).2.2 (q*r) hw (hprime ▸ (card_le_card hsub).trans hcap)
+  exact hB (hrows c hc hμ (q*r) hw (by rw [hprime]; exact (card_le_card hsub).trans hcap))
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

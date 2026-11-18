@@ -19,8 +19,7 @@ private def simpleCell (a : ℕ) : SimpleFunc ℝ ℝ :=
   (SimpleFunc.const ℝ 1).restrict (Ico (Real.log a) (Real.log ((a+1:ℕ):ℝ)))
 
 private theorem simpleCell_apply (a : ℕ) (x : ℝ) : simpleCell a x = rawCell a x := by
-  simp only [simpleCell,SimpleFunc.coe_restrict _ measurableSet_Ico,SimpleFunc.coe_const,rawCell]
-  rfl
+  simp only [simpleCell,SimpleFunc.coe_restrict _ measurableSet_Ico,SimpleFunc.coe_const,rawCell] <;> rfl
 
 private def pairSimple (q d : ℕ → ℝ) (X : ℕ) : SimpleFunc ℝ ℝ :=
   ∑ a ∈ Finset.Icc 1 X,

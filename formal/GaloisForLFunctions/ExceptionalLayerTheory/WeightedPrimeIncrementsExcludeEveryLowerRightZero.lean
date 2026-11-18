@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.TheWeightedMassOfTheSignedPrimeIncrement
-import GaloisForLFunctions.ExceptionalLayerTheory.ABoundedPrimeRadiusSeparatesTheTopPairFromTheOtherZeros
+import GaloisForLFunctions.RHTower.FiniteOffLineConverse
 
 /-!
 # Weighted ordinary-prime increments and the zeros below the extremal pair
@@ -64,6 +64,53 @@ private theorem integrable_weighted_of_step {E : ℝ → ℝ} {h s T : ℝ}
   change F (y+h)*(1-q) ≤ _
   linarith only [hmain]
 
+/-- Removing the extremal logarithmic trace is exactly the finite-wave
+subtraction for the set of all multiplicity copies on the extremal line. -/
+private theorem mul_exp_boundaryTrace_eq_neg_top_wave {β : ℝ}
+    (hf : {q : XiZeroCopy | (q.1 : ℂ).re = β}.Finite) (t : ℝ) :
+    Real.exp (β*t)*primeErrorBoundaryTrace β t = -(offLineWave hf.toFinset (Real.exp t)).re := by
+  classical
+  let f := fun q : XiZeroCopy => if (q.1 : ℂ).re = β then
+    Complex.exp (((q.1 : ℂ)-(β:ℂ))*(t:ℂ))/(q.1:ℂ) else 0
+  have hsum : (∑' q, f q) = ∑ q ∈ hf.toFinset, f q := by
+    apply tsum_eq_sum
+    intro q hq
+    exact if_neg (fun he => hq (hf.mem_toFinset.mpr he))
+  have hc : (Real.exp (β*t) : ℂ) * (∑' q, f q) = offLineWave hf.toFinset (Real.exp t) := by
+    rw [hsum,Finset.mul_sum,offLineWave]
+    apply Finset.sum_congr rfl
+    intro q hq
+    simp only [f, if_pos (hf.mem_toFinset.mp hq)]
+    rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast Real.exp_ne_zero t),
+      ← Complex.ofReal_log (Real.exp_pos t).le, Real.log_exp, ← mul_div_assoc,
+      Complex.ofReal_exp, ← Complex.exp_add]
+    congr 2
+    push_cast
+    ring
+  change Real.exp (β*t)*(-(∑' q, f q).re) = _
+  rw [mul_neg,← hc,Complex.re_ofReal_mul]
+
+/-- The ordinary-prime error with the extremal wave removed. -/
+def subtractedTheta (β t : ℝ) :=
+  thetaLogError t-Real.exp (β*t)*primeErrorBoundaryTrace β t
+
+private theorem subtractedTheta_step (β h t : ℝ) :
+    subtractedTheta β (t+h)-subtractedTheta β t = Real.exp (β*t)*
+      (normalizedPrimeIncrement β h t - boundaryStep β h (primeErrorBoundaryTrace β) t) := by
+  simp only [subtractedTheta,normalizedPrimeIncrement,logStepIncrement,boundaryStep,mul_add,Real.exp_add]
+  field_simp <;> ring
+
+private theorem lagPole_notMem_linePoles_of_ne_re {β : ℝ}
+    (hf : {p : XiZeroCopy | (p.1 : ℂ).re = β}.Finite) (q : XiZeroCopy) (hq : (q.1 : ℂ).re ≠ β) :
+    lagPole q ∉ offLinePoles hf.toFinset := by
+  rintro (⟨p,hp,he⟩ | ⟨p,hp,he⟩)
+  all_goals
+    have hpβ : (p.1 : ℂ).re = β := hf.mem_toFinset.mp hp
+    have hz := congrArg Complex.re he
+    simp only [lagPole,Complex.conj_re,Complex.sub_re] at hz
+    apply hq
+    linarith only [hz,hpβ]
+
 private theorem intervalIntegrable_subtractedTheta {β : ℝ} (hβ : 1/2 < β) (a b : ℝ) :
     IntervalIntegrable (subtractedTheta β) volume a b := by
   have hF : Continuous (primeErrorBoundaryTrace β) := by
@@ -117,7 +164,8 @@ private theorem weighted_theta_mass {γ s : ℝ} {m : ℕ} (hΘ : 1/2 < zetaZero
     (fun x _ => (Real.hasDerivAt_exp x).hasDerivWithinAt) Real.exp_injective.injOn]
   apply hg.norm.congr_fun _ measurableSet_Ioi
   intro t _
-  have hf := finite_top_of_bounded_thetaRadial hΘ hγ hb
+  have hf : {q : XiZeroCopy | (q.1 : ℂ).re = β}.Finite :=
+    finite_top_of_bounded_thetaRadial hΘ hγ hb
   dsimp only [g,subtractedTheta,thetaLogError]
   rw [mul_exp_boundaryTrace_eq_neg_top_wave hf,sub_neg_eq_add,norm_mul,
     Real.norm_of_nonneg (Real.exp_pos _).le,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _),
@@ -172,7 +220,8 @@ private theorem re_le_of_weighted_theta_mass (S : Finset XiZeroCopy) {s : ℝ}
     let x := Real.exp u
     have hx : 1 < x := Real.one_lt_exp_iff.mpr hu
     have hid := subtractedLag_log_mul_sqrt S hx
-    have ht := mul_le_mul_of_nonneg_left (htail x hx) (Real.exp_pos u).le
+    have ht : x * (-(∫ y in Ioi x, P y/y^2)) ≤ x*(x^(s-1)*M) :=
+      mul_le_mul_of_nonneg_left (htail x hx) (Real.exp_pos u).le
     change subtractedLag S (Real.log x)*Real.sqrt x =
       -(x*∫ y in Ioi x, P y/y^2)-Real.log (2*Real.pi)+trivialZeroSeriesReal x at hid
     rw [show Real.log x = u from Real.log_exp u] at hid
