@@ -72,7 +72,7 @@ private theorem inv_sqrt_cell {u x : ℝ} (hu : 0 < u) (hux : u ≤ x) (hx : x �
       (u/(Real.sqrt x*(Real.sqrt x+Real.sqrt u)))*(x-u) := by
     rw [show x-u = (Real.sqrt x-Real.sqrt u)*(Real.sqrt x+Real.sqrt u) by
       nlinarith only [Real.sq_sqrt hu.le,Real.sq_sqrt (hu.trans_le hux).le]]
-    field_simp [h1.ne',h2.ne',(add_pos h2 h1).ne'] <;> ring
+    field_simp [h1.ne',h2.ne',(add_pos h2 h1).ne']
   rw [le_div_iff₀ (mul_pos hu h1),he]
   have hh : u/(Real.sqrt x*(Real.sqrt x+Real.sqrt u)) ≤ 1 := by
     rw [div_le_one (mul_pos h2 (add_pos h2 h1))]
@@ -99,7 +99,7 @@ private theorem integrated_atom_diff {Φ : ℝ → ℝ} (hi : Integrable Φ) {u 
            change |a*Φ (t-Real.log u)-b*Φ (t-Real.log x)| ≤ _
            rw [he,show a*Φ (t-Real.log x+h)-b*Φ (t-Real.log x) =
              a*(Φ (t-Real.log x+h)-Φ (t-Real.log x)) + (a-b)*Φ (t-Real.log x) by ring]
-           exact (abs_add_le ..).trans_eq (by rw [abs_mul,abs_mul,abs_of_nonneg ha,abs_of_nonneg hab,abs_sub_comm])
+           exact (abs_add_le ..).trans_eq (by rw [abs_mul,abs_mul,abs_of_nonneg ha,abs_of_nonneg hab,abs_sub_comm]; rfl)
     _ = a*(∫ t, |Φ t-Φ (t+h)|) + (a-b)*(∫ t, |Φ t|) := by
            rw [integral_add hf hg,integral_const_mul,integral_const_mul,
              integral_sub_right_eq_self (fun t => |Φ t-Φ (t+h)|),integral_sub_right_eq_self (fun t => |Φ t|)]
@@ -146,7 +146,7 @@ theorem tendsto_integerCellDefect_of_L1_modulus {Φ : ℝ → ℝ} (hc : Continu
   have hp := atomDiff_integrable_prod hc hi hn
   have hv := (integerCellDefect_L1_le hc hi hn).2.trans (setIntegral_mono_on
     hp.norm.integral_prod_left (by simp) measurableSet_Ioc H)
-  have heq (b : ℝ) : (∫ _x in Ioc (n:ℝ) (n+1), b) = b := by simp [Real.volume_Ioc]
+  have heq (b : ℝ) : (∫ _x in Ioc (n:ℝ) (n+1), b) = b := by simp
   rw [heq] at hv
   rw [Real.dist_eq,sub_zero,abs_of_nonneg (mul_nonneg hn'.le (integral_nonneg fun _ => abs_nonneg _))]
   calc _ ≤ (n:ℝ)*((ε/2)/n+1/((n:ℝ)*Real.sqrt n)*A) := mul_le_mul_of_nonneg_left hv hn'.le

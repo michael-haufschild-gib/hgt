@@ -1,9 +1,0 @@
-# Shared prime factors in the balanced product
-
-**Route** PVC. **Stage** 1-in-progress.
-
-For the corrected two-factor coefficient $B_D(n)=\sum_{uv=n,\,u,v>D}\Lambda(u)g_D(v)$, isolate the pairs with a common prime factor. The first target is the entire single-prime family $uv=p^a$, including the diagonal $u=v$. For $p>2(D+1)$, only the first divisor in the stencil jumps at $p$, giving $g_D(p)=-1$ and $B_D(p^2)=-\log p$. Thus the leading diagonal should have the same square-root cancellation as the proper-power measure. Cubes and higher powers have Mangoldt mass $O(X^{1/3})$ after subtracting the prime squares from $\psi(X)-\theta(X)$. The remaining shared-factor configurations have $u=p^a$ and $v=p^b t$ with $t>1$ coprime to $p$.
-
-For a base $p\le U$, each $p^a$ contributes at most $O((D+1)\log p)$ to a prefix before imposing a gcd restriction, because the complementary coefficient has bounded partial sums. All powers of all such bases cost $O((D+1)U\log X)$ in prefix discrepancy. This fits the large-cell density estimate for $U=\lfloor X^{1/800000}\rfloor$. The problem left by this subtraction is the genuinely growing common prime.
-
-For a fixed first factor $u$, split the $(v,k)$ hyperbola at $\sqrt{X/u}$. At most this many small $v$ or small $k$ occur on either side. The opposite interval has sum $O(R)$ or $O(D+1)$ even with $uv>Y$. This gives $O((D+1)R\sqrt{X/u})$ per $u$. Summing over proper prime powers $u$ costs $O((D+1)R\sqrt X\log^2 X)$. For a prime $p>2(D+1)$ dividing $v$, writing $v=pt$ gives $g_D(pt)=g_D(t)-\mathbf1_{t=1}$. Division by $p^2$ gives the same bound for the shared-prime pairs. Short first factors $u\le2(D+1)$ have $O((D+1)^2)$ prefix discrepancy. For each target $b>1/2$, this would remove all nonprime first factors and all shared primes at a cost $o(X^b)$ if the outer transfer is established uniformly for $1\le R\le X^{10^{-5}}$ and both inner and outer cutoff exponents are chosen below $(b-1/2)/4$.

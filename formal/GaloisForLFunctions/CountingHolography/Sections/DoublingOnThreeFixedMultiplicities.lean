@@ -76,6 +76,32 @@ private theorem lower_of_doubling_difference {F : ℕ → ℝ} {r C : ℝ} (hr :
   have h := (le_div_iff₀ (zero_lt_one.trans_le (scale_ge_one n))).mp (nonneg_of_doubling hg hstep hn)
   linarith only [h]
 
+/-- A lower bound for the second forward doubling difference descends to
+the sequence at the same sublinear power of the square-root conductor. -/
+theorem lower_of_second_doubling_difference {F : ℕ → ℝ} {r C : ℝ} (hr : r < 1)
+    (hlim : Tendsto (fun n : ℕ => F n/((n:ℝ)+1)) atTop (𝓝 0))
+    (hd : ∀ n : ℕ, 0 < n → -(C*((n:ℝ)+1)^r) ≤
+      4*F n-4*F (2*n+1)+F (2*(2*n+1)+1)) :
+    ∃ A : ℝ, ∀ n : ℕ, 0 < n → -(A*((n:ℝ)+1)^r) ≤ F n := by
+  let g := fun n : ℕ => 2*F n-F (2*n+1)
+  have hu : Tendsto (fun n : ℕ => 2*n+1) atTop atTop :=
+    tendsto_atTop_mono (f := id) (fun n => by dsimp; omega) tendsto_id
+  change Tendsto (fun n => F n/scale n) atTop (𝓝 0) at hlim
+  have hg : Tendsto (fun n => g n/scale n) atTop (𝓝 0) := by
+    have ht := (hlim.const_mul 2).sub ((hlim.comp hu).const_mul 2)
+    simp only [mul_zero,sub_zero] at ht
+    apply ht.congr fun n => ?_
+    change 2*(F n/scale n)-2*(F (2*n+1)/scale (2*n+1)) = (2*F n-F (2*n+1))/scale n
+    rw [scale_step]
+    field_simp [(zero_lt_one.trans_le (scale_ge_one n)).ne'] <;> ring
+  obtain ⟨K,hK⟩ := lower_of_doubling_difference hr hg (C := C) (fun n hn => by
+    dsimp only [g,scale]
+    linarith only [hd n hn])
+  exact lower_of_doubling_difference hr hlim (C := K) (fun n hn => by
+    have h := hK n hn
+    dsimp only [g] at h
+    linarith only [h])
+
 private theorem trace_bound {s : ℝ} (hs : 0 ≤ s) (hw : zetaZeroWidth ≤ s) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 0 < n → |squareTrace n| ≤ C*(scale n)^(2*s) := by
   obtain ⟨C,hC⟩ := (zeta_splineOrbit_rate_iff_zetaZeroWidth_le hs).mpr hw
@@ -172,9 +198,9 @@ theorem successorSquare_degree_sublinear :
     linarith only [ZeroForcingCalculus.zetaZeroWidth_le_sub_three_eighths])).const_mul A
   apply squeeze_zero_norm' _ (by simpa only [mul_zero] using he)
   filter_upwards [eventually_ge_atTop 1] with n hn
-  have hh := div_le_div_of_nonneg_right (hA n hn) (zero_le_one.trans (scale_ge_one n))
-  simpa only [Real.norm_eq_abs,abs_div,abs_of_nonneg (zero_le_one.trans (scale_ge_one n)),
-    scale,mul_div_assoc] using hh
+  change |integerProbe _ (successorSquareTriple n)/scale n| ≤ A*((scale n)^(2*zetaZeroWidth)/scale n)
+  rw [abs_div,abs_of_nonneg (zero_le_one.trans (scale_ge_one n)),← mul_div_assoc]
+  exact div_le_div_of_nonneg_right (hA n hn) (zero_le_one.trans (scale_ge_one n))
 
 /-- The width is detected by three fixed coefficients, with a single
 negative graph and a uniformly bounded positive pole-free coefficient mass. -/

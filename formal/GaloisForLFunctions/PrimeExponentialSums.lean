@@ -7,6 +7,7 @@ import GaloisForLFunctions.PrimeExponentialSums.DyadicPrimeSums
 import GaloisForLFunctions.PrimeExponentialSums.PrimesOffMajorArcs
 import GaloisForLFunctions.PrimeExponentialSums.ReciprocalPhasesNearTheSquareRoot
 import GaloisForLFunctions.PrimeExponentialSums.FractionalPartsOfReciprocalPrimes
+import GaloisForLFunctions.PrimeExponentialSums.FractionalPartsOnIntegerReciprocalBlocks
 
 /-!
 # Exponential sums over primes

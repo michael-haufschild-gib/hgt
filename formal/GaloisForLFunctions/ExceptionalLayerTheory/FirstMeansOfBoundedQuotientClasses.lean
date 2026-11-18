@@ -105,7 +105,8 @@ def lastClassFirstMeanExcess (q X : ℕ) : ℝ :=
 def lastClassIntegerCount (q M : ℕ) : ℝ :=
   ∑ n ∈ Icc 1 M, ((zeta : ArithmeticFunction ℝ)*lastClassCoefficients q) n
 
-private theorem weighted_eq_sum_prefix (f : ℕ → ℝ) (N : ℕ) :
+/-- Each coefficient occurs once for each later endpoint in the discrete first mean. -/
+theorem triangular_weighted_sum_eq_sum_prefix (f : ℕ → ℝ) (N : ℕ) :
     (∑ d ∈ Icc 1 N, f d*((N:ℝ)-d)) = ∑ k ∈ range N, ∑ d ∈ Icc 1 k, f d := by
   induction N with
   | zero => simp
@@ -120,7 +121,7 @@ theorem lastClassFirstMeanExcess_eq_sum (q X : ℕ) (hq : 2 ≤ q) :
       ∑ k ∈ range X, (lastClassPrimeMass q k-lastClassIntegerCount q k) := by
   let f := (vonMangoldt-(zeta : ArithmeticFunction ℝ))*lastClassCoefficients q
   change ramp f X = _
-  rw [ramp_on_cell f (n := X) le_rfl (by linarith),weighted_eq_sum_prefix]
+  rw [ramp_on_cell f (n := X) le_rfl (by linarith),triangular_weighted_sum_eq_sum_prefix]
   refine sum_congr rfl fun k _ => ?_
   rw [lastClassPrimeMass_eq_prefix q hq,lastClassIntegerCount,← sum_sub_distrib]
   refine sum_congr rfl fun n _ => ?_

@@ -1,9 +1,0 @@
-# Integer quadrature for the confined state
-
-Let Φ be the continuous representative, $N(t)=\sum_{n\ge1}n^{-1/2}\Phi(t-\log n)$ and $A=\int e^{-u/2}\Phi(u)du$. Then $T^{-1}\int_0^T|N(t)-Ae^{t/2}|dt\to0$. This replaces continuous centering of the ordinary-prime wave by the integer weights $1_{\mathbb P}(n)\log n-1$ with vanishing mean absolute error.
-
-**Translation input.** Write $D_h=\Phi(\cdot)-\Phi(\cdot+h)$ for $0<h<e^{-1}$. On $u<\log h$, exponential confinement bounds the $L^1$ norm by $O(h^2)$. On $[\log h,-h]$, Cauchy–Schwarz bounds it by $\sqrt{\log(1/h)}\|D_h\|_{L^2(u\le-h)}=o(\sqrt h)$ by the interior increment law. On $[-h,0]$ boundedness gives $O(h)$. Thus $\|D_h\|_1=o(\sqrt h)$.
-
-**Unit cells.** Compare the integer atom at $n$ with the integral over $[n,n+1]$. Displacing its translated profile by $h=\log(x/n)\le 1/n$ costs $o(1/n)$ in global $L^1$ after weighting by $n^{-1/2}$. Replacing $n^{-1/2}$ by $x^{-1/2}$ costs $O(n^{-3/2})$. For $n\le e^{2T}$ the sum is $o(T)$ by the harmonic bound. The remaining integer and continuous tails on $[0,T]$ are $O(e^{-T})$ by $|\Phi(u)|\ll e^{2u}$ and summation of $n^{-5/2}$. The integral on $(0,1)$ vanishes for $t\ge0$, and $x=e^{t-u}$ identifies the entire continuous integral with $Ae^{t/2}$. The prime-centered weights still require a signed estimate at distant prime pairs.
-
-**Mean-square question.** The wall portion of a cell increment lies in $[\log n,\log(n+1)]$, disjoint from the wall portions of the other cells. Its square mass is summable. The interior portions have cell $L^2$ norm $o(1/(n\sqrt{\log n}))$. Can this disjointness give vanishing mean square for the entire integer reference error?

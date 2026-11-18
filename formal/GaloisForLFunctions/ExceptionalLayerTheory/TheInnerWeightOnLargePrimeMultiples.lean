@@ -30,7 +30,9 @@ private theorem innerJump_eq_neg_increment {t : ℕ} (ht : 2 ≤ t) (D : ℕ) :
   change (if t=0 then 0 else 1-factorialPrefix (D+1) t)-
     (if t-1=0 then 0 else 1-factorialPrefix (D+1) (t-1)) = _
   rw [if_neg (by omega),if_neg (by omega)]
-  simp only [floorJump,stencil_sub,factorialPrefix]
+  have he : stencil (D+1) (floorJump t) = factorialPrefix (D+1) t-factorialPrefix (D+1) (t-1) :=
+    stencil_sub (D+1) (fun d => ((t/d : ℕ) : ℝ)) (fun d => (((t-1)/d : ℕ) : ℝ))
+  rw [he]
   ring
 
 /-- Multiplying by a prime beyond the divisor support preserves the inner
@@ -46,7 +48,10 @@ theorem innerJump_prime_multiple {D p t : ℕ} (hD : 1 ≤ D) (hp : p.Prime)
   have hsame (d : ℕ) (hd : d ∈ Icc 1 (2*(D+1))) : floorJump (p*t) d = floorJump t d := by
     obtain ⟨hd₁,hd₂⟩ := mem_Icc.mp hd
     have hcop := (hp.coprime_iff_not_dvd.mpr (Nat.not_dvd_of_pos_of_lt hd₁ (hd₂.trans_lt hlarge))).symm
-    rw [floorJump_eq (by omega : 1 ≤ p*t),floorJump_eq ht,hcop.dvd_mul_left]
+    rw [floorJump_eq (by omega : 1 ≤ p*t),floorJump_eq ht]
+    by_cases h : d ∣ t
+    · rw [if_pos (hcop.dvd_mul_left.mpr h),if_pos h]
+    · rw [if_neg (fun hd => h (hcop.dvd_mul_left.mp hd)),if_neg h]
   have he := abs_stencil_le (Nat.succ_pos D) (M := 0) (fun d => floorJump (p*t) d-floorJump t d)
     (fun d hd => by rw [hsame d hd,sub_self,abs_zero])
   rw [mul_zero,abs_nonpos_iff,stencil_sub,sub_eq_zero] at he
@@ -63,7 +68,7 @@ theorem sum_innerJump_prime_multiple {D p : ℕ} (hD : 1 ≤ D) (hp : p.Prime)
   | succ T ih =>
     rw [sum_Icc_succ_top (by omega),sum_Icc_succ_top (by omega),ih,
       innerJump_prime_multiple hD hp hlarge (Nat.succ_pos T)]
-    rcases T with _ | T <;> simp <;> ring
+    rcases T with _ | T <;> (simp; try ring)
 
 /-- The bound for shared-prime prefixes is independent of both the prime
 and the summation length. -/

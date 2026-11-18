@@ -93,12 +93,12 @@ theorem degreeSum_uniform_error {G : ℝ → ℝ} (hc : Continuous G) {B K : ℝ
   rw [hmesh]
   exact hbound.trans_eq (by ring)
 
-private theorem packet_bounds_four : ∃ K : ℝ, 0 ≤ K ∧ ∀ (N : ℕ) (a : Fin N → ℤ),
-    (∑ i, |(a i : ℝ)|) ≤ 4 → (∀ u, |packet a u| ≤ 4) ∧
+private theorem packet_bounds {M : ℝ} (hM : 0 ≤ M) : ∃ K : ℝ, 0 ≤ K ∧ ∀ (N : ℕ) (a : Fin N → ℤ),
+    (∑ i, |(a i : ℝ)|) ≤ M → (∀ u, |packet a u| ≤ M) ∧
       ∀ u v, |packet a v-packet a u| ≤ K*|v-u| := by
   obtain ⟨K,hK⟩ := ContDiff.lipschitzWith_of_hasCompactSupport
     hasCompactSupport_cubicSpline contDiff_cubicSpline (by norm_num)
-  refine ⟨4*(K : ℝ),by positivity,fun N a ha => ⟨fun u => ?_,fun u v => ?_⟩⟩
+  refine ⟨M*(K : ℝ),by positivity,fun N a ha => ⟨fun u => ?_,fun u v => ?_⟩⟩
   · unfold packet splineSource
     refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum fun i _ => ?_).trans ha)
     rw [abs_mul,abs_of_nonneg (cubicSpline_nonneg _)]
@@ -123,25 +123,26 @@ def integratedContact {N : ℕ} (a : Fin N → ℤ) (k : ℕ) : ℝ :=
   2/Real.sqrt k * ∫ u in (0:ℝ)..Real.log (1+((3*windowEnd N : ℕ) : ℝ)),
     packet a u*packet a (u+Real.log k)
 
-/-- Every prime row of every divisor of total variation at most four has
-the same quadrature constant, including when the horizon and lag vary. -/
-theorem contactMultiplicity_uniform_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (a : Fin N → ℤ),
-    (∑ i, |(a i : ℝ)|) ≤ 4 → ∀ {r k : ℕ}, 0 < r → 0 < k →
+/-- A total variation bound supplies one quadrature constant for all
+prime rows, including when the horizon and lag vary. -/
+theorem contactMultiplicity_error_at_mass {M : ℝ} (hM : 0 ≤ M) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (a : Fin N → ℤ),
+    (∑ i, |(a i : ℝ)|) ≤ M → ∀ {r k : ℕ}, 0 < r → 0 < k →
     |contactMultiplicity (packet a) (3*windowEnd N) r k-integratedContact a k| ≤
       (2/Real.sqrt k)*(C/r) := by
-  obtain ⟨K,hK,h⟩ := packet_bounds_four
-  refine ⟨2*(8*K+16),by positivity,fun N a ha {r k} hr hk => ?_⟩
+  obtain ⟨K,hK,h⟩ := packet_bounds hM
+  refine ⟨2*(2*M*K+M^2),by positivity,fun N a ha {r k} hr hk => ?_⟩
   let L := 3*windowEnd N
   let f := packet a
   let G := fun u : ℝ => f u*f (u+Real.log k)
   obtain ⟨hf,hl⟩ := h N a ha
-  have hfb (u) : |f u| ≤ 4 := hf u
+  have hfb (u) : |f u| ≤ M := hf u
   have hfl (u v) : |f v-f u| ≤ K*|v-u| := hl u v
-  have hg (u) : |G u| ≤ 16 := by
+  have hg (u) : |G u| ≤ M^2 := by
     unfold G
     rw [abs_mul]
-    exact (mul_le_mul (hfb _) (hfb _) (abs_nonneg _) (by norm_num)).trans_eq (by norm_num)
-  have hgl (u v) : |G v-G u| ≤ (8*K)*|v-u| := by
+    exact (mul_le_mul (hfb _) (hfb _) (abs_nonneg _) hM).trans_eq (sq M).symm
+  have hgl (u v) : |G v-G u| ≤ (2*M*K)*|v-u| := by
     have ht := hfl (u+Real.log k) (v+Real.log k)
     rw [add_sub_add_right_eq_sub] at ht
     have he : G v-G u = (f v-f u)*f (v+Real.log k) +
@@ -150,7 +151,7 @@ theorem contactMultiplicity_uniform_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : �
     refine (abs_add_le _ _).trans ?_
     rw [abs_mul,abs_mul]
     have h₁ := mul_le_mul (hfl u v) (hfb (v+Real.log k)) (abs_nonneg _) (by positivity)
-    have h₂ := mul_le_mul (hfb u) ht (abs_nonneg _) (by norm_num)
+    have h₂ := mul_le_mul (hfb u) ht (abs_nonneg _) hM
     linarith only [h₁,h₂]
   have hwin := packet_window a
   have h₀ : G 0 = 0 := by
@@ -165,7 +166,7 @@ theorem contactMultiplicity_uniform_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : �
     linarith only [Nat.cast_nonneg (α := ℝ) (windowEnd N)]
   have hc : Continuous f := (packet_contDiff a).continuous
   have he := degreeSum_uniform_error (G := G) (hc.mul (hc.comp (continuous_id.add continuous_const)))
-    (mul_nonneg (by norm_num) hK) hg hgl L hr h₀ h₁
+    (mul_nonneg (mul_nonneg two_pos.le hM) hK) hg hgl L hr h₀ h₁
   have heq : (∑ j ∈ Ioc r (r+L*r), G (Real.log ((j:ℝ)/r))/j) =
       ∑ j ∈ Ioc r (r+L*r), degreeSample f r j*degreeSample f r (j*k)/j := by
     apply sum_congr rfl
@@ -179,6 +180,12 @@ theorem contactMultiplicity_uniform_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : �
   unfold contactMultiplicity integratedContact
   rw [← mul_sub,abs_mul,abs_of_nonneg (by positivity : 0 ≤ 2/Real.sqrt k)]
   exact mul_le_mul_of_nonneg_left he (by positivity)
+
+/-- Uniform contact error for the three square conductors of mass four. -/
+theorem contactMultiplicity_uniform_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (a : Fin N → ℤ),
+    (∑ i, |(a i : ℝ)|) ≤ 4 → ∀ {r k : ℕ}, 0 < r → 0 < k →
+    |contactMultiplicity (packet a) (3*windowEnd N) r k-integratedContact a k| ≤
+      (2/Real.sqrt k)*(C/r) := contactMultiplicity_error_at_mass (by norm_num)
 
 #print axioms contactMultiplicity_uniform_error
 

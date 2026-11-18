@@ -76,14 +76,14 @@ private theorem centered_prime_block :
   obtain ⟨hl,hu⟩ := block_frequency_range hX h1 hlarge hlo hhi hd'
   exact hblock A B ((X : ℝ)/d) hA hAB hB hl hu
 
-/-- All ordinary primes in the band straddling the square root contribute
-at most the square-root error at the original horizon. -/
-theorem centered_prime_square_root_band :
-    ∃ K : ℝ, 0 ≤ K ∧ ∀ X : ℕ, 1 ≤ X →
-      let R := ⌊(X : ℝ)^(1/100000 : ℝ)⌋₊
-      let L := ⌈(X : ℝ)^(49999/100000 : ℝ)⌉₊
-      let U := ⌊(X : ℝ)^(50001/100000 : ℝ)⌋₊+1
-      |∑ p ∈ (Ico L U).filter Nat.Prime, Real.log p*centeredPrimeWeight R (X/p)| ≤ K*Real.sqrt X := by
+/-- Any sharp subinterval of the reciprocal-prime band saves a fixed
+power below the square root, uniformly in the factorial cutoff. -/
+theorem centered_prime_subinterval :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ R X L U : ℕ, 1 ≤ R → 1 ≤ X → 1 ≤ L →
+      (R : ℝ) ≤ (X : ℝ)^(1/100000 : ℝ) → (X : ℝ)^(49999/100000 : ℝ) ≤ L →
+      (U : ℝ) ≤ 2*(X : ℝ)^(50001/100000 : ℝ) →
+      |∑ p ∈ (Ico L U).filter Nat.Prime, Real.log p*centeredPrimeWeight R (X/p)| ≤
+        K*(X : ℝ)^(4997/10000 : ℝ) := by
   obtain ⟨C,hC,hblock⟩ := centered_prime_block
   obtain ⟨D,hD,hm⟩ := mass_uniform
   obtain ⟨F,hF,hweight⟩ := centeredPrimeWeight_uniform
@@ -94,8 +94,7 @@ theorem centered_prime_square_root_band :
   obtain ⟨Y,hY⟩ := Filter.eventually_atTop.mp (hthreshold.and hlog)
   let K := 1+8000*(1+D)*C+14*F*(1+|Y|)^2
   have hK : 0 ≤ K := by dsimp [K]; positivity
-  refine ⟨K,hK,fun X hX => ?_⟩
-  intro R L U
+  refine ⟨K,hK,fun R X L U hrlo hX hL hrhi hllo humax => ?_⟩
   have hx : (1 : ℝ) ≤ X := by exact_mod_cast hX
   have hx0 := (zero_lt_one.trans_le hx)
   let P (b : ℝ) := (X : ℝ)^b
@@ -104,15 +103,7 @@ theorem centered_prime_square_root_band :
   have mono {a b : ℝ} (h : a ≤ b) : P a ≤ P b := Real.rpow_le_rpow_of_exponent_le hx h
   have mul (a b : ℝ) : P a*P b=P (a+b) := (Real.rpow_add hx0 _ _).symm
   have powr (a b : ℝ) : (P a)^b = P (a*b) := (Real.rpow_mul hx0.le _ _).symm
-  have hrlo : 1 ≤ R := (Nat.one_le_floor_iff _).mpr (Real.one_le_rpow hx (by norm_num))
-  have hrhi : (R : ℝ) ≤ P (1/100000) := Nat.floor_le (pos _).le
-  have hllo : P (49999/100000) ≤ (L : ℝ) := Nat.le_ceil _
-  have hL : 1 ≤ L := Nat.one_le_ceil_iff.mpr (pos _)
-  have humax : (U : ℝ) ≤ 2*P (50001/100000) := by
-    have hf := Nat.floor_le (pos (50001/100000)).le
-    have h1 := Real.one_le_rpow hx (by norm_num : (0 : ℝ) ≤ 50001/100000)
-    change ((⌊P (50001/100000)⌋₊+1 : ℕ) : ℝ) ≤ _
-    push_cast; linarith only [hf,h1]
+  change (R : ℝ) ≤ P (1/100000) at hrhi
   have huX : (U : ℝ) ≤ 2*X := humax.trans <| mul_le_mul_of_nonneg_left
     ((mono (by norm_num : (50001/100000 : ℝ) ≤ 1)).trans_eq one) (by norm_num)
   by_cases hlu : L ≤ U
@@ -155,8 +146,8 @@ theorem centered_prime_square_root_band :
       have h2 := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2)
       linarith only [hl,h2,hlogX,Real.log_natCast_nonneg X]
     have ht := htotal.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hlU (by norm_num : (0 : ℝ) ≤ 2)) (by positivity))
-    have he : P (1/10000)*(P (1/100000)*P E) ≤ Real.sqrt X := by
-      rw [mul (1/100000) E,mul,Real.sqrt_eq_rpow]
+    have he : P (1/10000)*(P (1/100000)*P E) ≤ P (4997/10000) := by
+      rw [mul (1/100000) E,mul]
       apply mono
       dsimp [E]; norm_num
     have hcoef : 8000*(1+D)*C ≤ K := by
@@ -176,11 +167,34 @@ theorem centered_prime_square_root_band :
       (mul_le_mul_of_nonneg_left (huX.trans (mul_le_mul_of_nonneg_left hY' (by norm_num : (0 : ℝ) ≤ 2)))
         (by norm_num : (0 : ℝ) ≤ 7))
       (by positivity) (by positivity)
-    have hroot : 1 ≤ Real.sqrt X := (Real.one_le_sqrt).mpr hx
+    have hroot : 1 ≤ P (4997/10000) := Real.one_le_rpow hx (by norm_num)
     apply hsmall.trans (hb.trans _)
     apply le_trans _ (le_mul_of_one_le_right hK hroot)
     dsimp [K]; linarith only [mul_nonneg (show 0 ≤ 8000*(1+D) by positivity) hC]
 
+/-- The whole ordinary-prime band contributes at most square-root error. -/
+theorem centered_prime_square_root_band :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ X : ℕ, 1 ≤ X →
+      let R := ⌊(X : ℝ)^(1/100000 : ℝ)⌋₊
+      let L := ⌈(X : ℝ)^(49999/100000 : ℝ)⌉₊
+      let U := ⌊(X : ℝ)^(50001/100000 : ℝ)⌋₊+1
+      |∑ p ∈ (Ico L U).filter Nat.Prime, Real.log p*centeredPrimeWeight R (X/p)| ≤ K*Real.sqrt X := by
+  obtain ⟨K,hK,h⟩ := centered_prime_subinterval
+  refine ⟨K,hK,fun X hX => ?_⟩
+  intro R L U
+  have hx : (1 : ℝ) ≤ X := by exact_mod_cast hX
+  have hone (b : ℝ) (hb : 0 ≤ b) := Real.one_le_rpow hx hb
+  have hu : (U : ℝ) ≤ 2*(X : ℝ)^(50001/100000 : ℝ) := by
+    dsimp [U]; push_cast
+    linarith only [Nat.floor_le (Real.rpow_nonneg (Nat.cast_nonneg X) (50001/100000 : ℝ)),
+      hone (50001/100000) (by norm_num)]
+  apply (h R X L U ((Nat.one_le_floor_iff _).mpr (hone _ (by norm_num))) hX
+    (Nat.one_le_ceil_iff.mpr (Real.rpow_pos_of_pos (zero_lt_one.trans_le hx) _))
+    (Nat.floor_le (by positivity)) (Nat.le_ceil _) hu).trans
+  rw [Real.sqrt_eq_rpow]
+  exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hx (by norm_num)) hK
+
+#print axioms centered_prime_subinterval
 #print axioms centered_prime_square_root_band
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

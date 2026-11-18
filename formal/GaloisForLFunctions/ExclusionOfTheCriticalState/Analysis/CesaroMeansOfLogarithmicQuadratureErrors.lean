@@ -108,7 +108,7 @@ theorem tendsto_abs_cesaro_of_cell_errors {f : ℕ → ℝ → ℝ} (hi : ∀ k,
       integral_finsetSum _ (fun k _ => (hi k).abs.integrableOn)]
     apply add_le_add
     · exact sum_le_sum fun k _ => setIntegral_le_integral (hi k).abs (Eventually.of_forall fun _ => abs_nonneg _)
-    · simp [Real.volume_Ioc,hT0.le]
+    · simp [hT0.le]
   rw [Real.dist_eq,sub_zero,abs_of_nonneg (div_nonneg (integral_nonneg fun _ => abs_nonneg _) hT0.le)]
   calc _ ≤ ((B+η*(1+Real.log M))+T*(C*Real.exp (2*T)/M))/T :=
            div_le_div_of_nonneg_right (hfi.trans (add_le_add_left (hB M hM) _)) hT0.le

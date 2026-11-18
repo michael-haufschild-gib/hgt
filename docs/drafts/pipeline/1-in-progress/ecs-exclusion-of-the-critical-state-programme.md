@@ -21,6 +21,7 @@ state's probe identity in prime coordinates; Q6 finite index law; Q2/Q3 zero sid
 Q5 sign law via Landau; Q4 decay law (divergent half). Stage 5 entry points: wall, collar, charges, difference equation.
 
 ## Conjecture ledger
+- Integer centering (Lean). The continuous pole and density-one integer reference differ by vanishing absolute Cesàro mean. This reduces the signed error to the weights $1_{\mathbb P}(n)\log n-1$. [Proof](../3-formalized/ecs-integer-quadrature-for-the-critical-state.md). Fixed prime sieves preserve the limit. Removing every prime through T² costs $e^{o(T)}$ in cumulative absolute error and leaves only even gaps on late intervals. [Growing sieve](../3-formalized/ecs-growing-sieve-for-integer-centering.md).
 - C1 (PROVED, Lean) probe kernel: `bareMixedEnergy_probe` = (D(p)+D(q))/(p+q), `probeSymbol_eq_logDeriv_xiCent`, zero side `bareMixedEnergy_probe_eq_zeroSide` (WeilsFormOnProbesIsTheCaratheodoryKernelOfXi). Q1 answered.
 - C2 (PROVED, Lean) state equation on probes in prime coordinates: `criticalState_probeEquation` (TheStateEquationOnProbes).
 - C3 (PROVED, Lean) holomorphic extension: `differentiableOn_laplace_of_sq`, `differentiableOn_stateGamma`, `differentiableOn_stateTail`, `stateEquation_ofReal_eq_zero`.

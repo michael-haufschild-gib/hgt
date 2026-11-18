@@ -21,7 +21,8 @@ open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri CriticalAr
 /-- The density-one integer reference wave at the same weights as the prime wave. -/
 def integerReferenceWave (Φ : ℝ → ℝ) (t : ℝ) : ℝ := ∑' k : ℕ, continuousIntegerAtom Φ ((k:ℝ)+1) t
 
-private theorem integerAtom_bound {Φ : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
+/-- Exponential confinement bounds the full positive integer tail by an inverse square. -/
+theorem continuousIntegerAtom_bound {Φ : ℝ → ℝ} {C : ℝ}
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) {x : ℝ} (hx : 1 ≤ x) (t : ℝ) :
     |continuousIntegerAtom Φ x t| ≤ (C*Real.exp (2*t))*(1/x^2) := by
   have hx0 := zero_lt_one.trans_le hx
@@ -29,6 +30,23 @@ private theorem integerAtom_bound {Φ : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
   rw [continuousIntegerAtom,abs_mul,abs_inv,abs_of_nonneg (Real.sqrt_nonneg _)]
   calc _ ≤ 1*(C*Real.exp (2*(t-Real.log x))) := mul_le_mul hinv (hb _) (abs_nonneg _) zero_le_one
     _ = _ := by rw [mul_sub,Real.exp_sub,two_mul (Real.log x),Real.exp_add,Real.exp_log hx0]; ring
+
+/-- The integer atoms converge absolutely at every translate. -/
+theorem summable_continuousIntegerAtom {Φ : ℝ → ℝ} {C : ℝ}
+    (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
+    Summable (fun n : ℕ => continuousIntegerAtom Φ n t) := by
+  apply (summable_nat_add_iff 1).1
+  have hs := (summable_nat_add_iff (f := fun n : ℕ => 1/(n:ℝ)^2) 1).2
+    (Real.summable_one_div_nat_pow.mpr (by norm_num))
+  exact Summable.of_norm_bounded (hs.mul_left (C*Real.exp (2*t))) fun k => by
+    simpa only [Real.norm_eq_abs] using
+      continuousIntegerAtom_bound hb (by exact_mod_cast Nat.succ_pos k : (1:ℝ) ≤ (k+1:ℕ)) t
+
+/-- The zero-index atom vanishes, so the full natural series gives the reference. -/
+theorem tsum_continuousIntegerAtom {Φ : ℝ → ℝ} {C : ℝ} (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
+    (∑' n : ℕ, continuousIntegerAtom Φ n t) = integerReferenceWave Φ t := by
+  have h := (summable_continuousIntegerAtom hb t).sum_add_tsum_nat_add 1
+  simpa [Finset.sum_range_one,continuousIntegerAtom,Nat.cast_add_one,integerReferenceWave] using h.symm
 
 private theorem integerCell_bound {Φ : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) {n : ℕ} (hn : 1 ≤ n) (t : ℝ) :
@@ -38,44 +56,44 @@ private theorem integerCell_bound {Φ : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
   have hn0 := zero_lt_one.trans_le hn'
   have h : ∀ x ∈ Ioc (n:ℝ) (n+1), |continuousIntegerAtom Φ n t-continuousIntegerAtom Φ x t| ≤ B+B := by
     intro x hx
-    apply (abs_sub _ _).trans (add_le_add (integerAtom_bound hC hb hn' _) _)
-    apply (integerAtom_bound hC hb (hn'.trans hx.1.le) _).trans
+    apply (abs_sub _ _).trans (add_le_add (continuousIntegerAtom_bound hb hn' _) _)
+    apply (continuousIntegerAtom_bound hb (hn'.trans hx.1.le) _).trans
     exact mul_le_mul_of_nonneg_left (one_div_le_one_div_of_le (sq_pos_of_pos hn0) (pow_le_pow_left₀ hn0.le hx.1.le 2)) (by positivity)
   calc _ ≤ ∫ x in Ioc (n:ℝ) (n+1), |continuousIntegerAtom Φ n t-continuousIntegerAtom Φ x t| := abs_integral_le_integral_abs
     _ ≤ ∫ _x in Ioc (n:ℝ) (n+1), (B+B) := integral_mono_of_nonneg (Eventually.of_forall fun _ => abs_nonneg _)
       (by simp) ((ae_restrict_iff' measurableSet_Ioc).2 (Eventually.of_forall h))
-    _ = _ := by simp [Real.volume_Ioc,B]; ring
+    _ = _ := by simp [B]; ring
 
-private theorem atom_integrableOn_Ici {Φ : ℝ → ℝ} (hc : Continuous Φ) {C : ℝ} (hC : 0 ≤ C)
+private theorem atom_integrableOn_Ici {Φ : ℝ → ℝ} (hc : Continuous Φ) {C : ℝ}
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) : IntegrableOn (fun x => continuousIntegerAtom Φ x t) (Ici 1) := by
   rw [integrableOn_Ici_iff_integrableOn_Ioi]
   apply ((integrableOn_Ioi_rpow_of_lt (by norm_num : (-2:ℝ) < -1) (by norm_num : (0:ℝ)<1)).const_mul (C*Real.exp (2*t))).mono'
     (by unfold continuousIntegerAtom; fun_prop)
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with x hx
   have hx' : 1 < x := hx
-  simpa only [Real.norm_eq_abs,Real.rpow_neg (zero_le_one.trans hx'.le),Real.rpow_ofNat,one_div] using integerAtom_bound hC hb hx'.le t
+  simpa only [Real.norm_eq_abs,Real.rpow_neg (zero_le_one.trans hx'.le),Real.rpow_ofNat,one_div] using continuousIntegerAtom_bound hb hx'.le t
 
-private theorem cell_sum {Φ : ℝ → ℝ} (hc : Continuous Φ) {C : ℝ} (hC : 0 ≤ C)
+private theorem cell_sum {Φ : ℝ → ℝ} (hc : Continuous Φ) {C : ℝ}
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
     HasSum (fun k : ℕ => integerCellDefect Φ (k+1) t)
       (integerReferenceWave Φ t - ∫ x in Ici 1, continuousIntegerAtom Φ x t) := by
-  have hi := atom_integrableOn_Ici hc hC hb t
-  have hz := Complex.reCLM.hasSum (hasSum_integral_Ico_unit (c := 1) hi.ofReal)
+  have hi := atom_integrableOn_Ici hc hb t
+  have hz : HasSum (fun k : ℕ => ((∫ x in Ioc ((k:ℝ)+1) ((k:ℝ)+1+1), continuousIntegerAtom Φ x t : ℝ):ℂ))
+      ((∫ x in Ici 1, continuousIntegerAtom Φ x t : ℝ):ℂ) := by
+    simp only [← integral_complex_ofReal]
+    simpa only [integral_Ico_eq_integral_Ioc,add_comm (1:ℝ)] using
+      (hasSum_integral_Ico_unit (f := fun x => (continuousIntegerAtom Φ x t:ℂ)) (c := 1) hi.ofReal)
   have hcell : HasSum (fun k : ℕ => ∫ x in Ioc ((k:ℝ)+1) ((k:ℝ)+1+1), continuousIntegerAtom Φ x t)
       (∫ x in Ici 1, continuousIntegerAtom Φ x t) := by
-    simpa only [integral_complex_ofReal,Complex.reCLM_apply,Complex.ofReal_re,integral_Ico_eq_integral_Ioc,
-      add_comm (1:ℝ)] using hz
-  have hbase := (summable_nat_add_iff (f := fun n : ℕ => 1/(n:ℝ)^2) 1).2
-    (Real.summable_one_div_nat_pow.mpr (by norm_num))
-  have hs : Summable (fun k : ℕ => continuousIntegerAtom Φ ((k:ℝ)+1) t) :=
-    Summable.of_norm_bounded (hbase.mul_left (C*Real.exp (2*t))) fun k => by
-      simpa only [Nat.cast_add_one,Real.norm_eq_abs] using integerAtom_bound hC hb (show 1 ≤ (k:ℝ)+1 by positivity) t
+    exact Complex.reCLM.hasSum hz
+  have hs : Summable (fun k : ℕ => continuousIntegerAtom Φ ((k:ℝ)+1) t) := by
+    simpa only [Nat.cast_add_one] using (summable_nat_add_iff 1).2 (summable_continuousIntegerAtom hb t)
   apply (hs.hasSum.sub hcell).congr_fun
   intro k
-  have hsub : Ioc ((k:ℝ)+1) ((k:ℝ)+1+1) ⊆ Ici 1 := fun x hx => (by positivity : 1 ≤ (k:ℝ)+1).trans hx.1.le
-  simp only [integerCellDefect,Nat.cast_add_one,Pi.sub_apply]
+  have hsub : Ioc ((k:ℝ)+1) ((k:ℝ)+1+1) ⊆ Ici 1 := fun x hx => (le_add_of_nonneg_left (Nat.cast_nonneg k) : 1 ≤ (k:ℝ)+1).trans hx.1.le
+  simp only [integerCellDefect,Nat.cast_add_one]
   rw [integral_sub (by simp) (hi.mono_set hsub)]
-  simp [Real.volume_Ioc]
+  simp
 
 /-- The continuous positive-axis density integrates to the precise polar wave. -/
 private theorem continuum_atom {Φ : ℝ → ℝ} (hs : ∀ u, 0 ≤ u → Φ u = 0) {t : ℝ} (ht : 0 ≤ t) :
@@ -112,10 +130,10 @@ theorem criticalState_integerReference_zero_mean_error {W₀ : ℝ} (hW : 0 < W�
     (fun k t => by simpa only [Nat.cast_add_one] using integerCell_bound hC hb (Nat.succ_pos k) t)
     (by simpa only [Function.comp_def,Nat.cast_add_one] using hz)
   have ha : (∫ u, Real.exp (-u/2)*F u) = ∫ u, Real.exp (-u/2)*Φ u :=
-    integral_congr_ae (heq.mono fun u hu => by rw [hu])
+    integral_congr_ae (heq.mono fun u hu => congrArg (fun y => Real.exp (-u/2)*y) hu)
   have h (t : ℝ) (ht : 0 ≤ t) : (∑' k, integerCellDefect Φ (k+1) t) =
       integerReferenceWave Φ t - Real.exp (t/2)*(∫ u, Real.exp (-u/2)*F u) := by
-    rw [(cell_sum hΦ hC hb t).tsum_eq,continuum_atom hs ht,ha]
+    rw [(cell_sum hΦ hb t).tsum_eq,continuum_atom hs ht,ha]
   refine ⟨Φ,hΦ,heq,⟨C,hC,hb⟩,fun T => (hsum.1 T).congr_fun (fun t ht => h t ht.1.le) measurableSet_Ioc,hsum.2.congr fun T => ?_⟩
   congr 1
   exact setIntegral_congr_fun measurableSet_Ioc fun t ht => congrArg abs (h t ht.1.le)
@@ -124,18 +142,14 @@ theorem criticalState_integerReference_zero_mean_error {W₀ : ℝ} (hW : 0 < W�
 def integerCentredPrimeWave (Φ : ℝ → ℝ) (t : ℝ) : ℝ :=
   ∑' n : ℕ, ((if n.Prime then Real.log n else 0)-1)*continuousIntegerAtom Φ n t
 
-private theorem integerCentredPrimeWave_eq {Φ : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
+private theorem integerCentredPrimeWave_eq {Φ : ℝ → ℝ} {C : ℝ}
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
     integerCentredPrimeWave Φ t = (ordinaryPrimeWave Φ t).re - integerReferenceWave Φ t := by
   let a := fun n : ℕ => continuousIntegerAtom Φ n t
   let D := C*Real.exp (2*t)
   let q := fun n : ℕ => Real.log (n:ℝ)*a n
   let P : Set ℕ := {p | p.Prime}
-  have ha : Summable a := by
-    apply (summable_nat_add_iff 1).1
-    have hs := (summable_nat_add_iff (f := fun n : ℕ => 1/(n:ℝ)^2) 1).2 (Real.summable_one_div_nat_pow.mpr (by norm_num))
-    exact Summable.of_norm_bounded (hs.mul_left D) fun k => by
-      simpa only [a,D,Real.norm_eq_abs] using integerAtom_bound hC hb (by exact_mod_cast Nat.succ_pos k : (1:ℝ) ≤ (k+1:ℕ)) t
+  have ha : Summable a := summable_continuousIntegerAtom hb t
   have hq : Summable (fun p : Nat.Primes => q p) := by
     have hs := GaloisForLFunctions.summable_log_nat_div_sq.comp_injective
       (show Function.Injective (fun p : Nat.Primes => (p:ℕ)) from Subtype.coe_injective)
@@ -143,7 +157,7 @@ private theorem integerCentredPrimeWave_eq {Φ : ℝ → ℝ} {C : ℝ} (hC : 0 
     have hp : (1:ℝ) ≤ (p:ℕ) := by exact_mod_cast p.property.one_le
     have hl := Real.log_nonneg hp
     rw [Real.norm_eq_abs,show q (p:ℕ) = Real.log (p:ℕ)*a p from rfl,abs_mul,abs_of_nonneg hl]
-    calc _ ≤ Real.log (p:ℕ)*(D*(1/(p:ℕ)^2)) := mul_le_mul_of_nonneg_left (integerAtom_bound hC hb hp t) hl
+    calc _ ≤ Real.log (p:ℕ)*(D*(1/(p:ℕ)^2)) := mul_le_mul_of_nonneg_left (continuousIntegerAtom_bound hb hp t) hl
       _ = _ := by dsimp only [Function.comp_apply]; ring
   have hq' : Summable (P.indicator q) := (summable_subtype_iff_indicator).1 hq
   have hpr : ordinaryPrimeWave Φ t = ((∑' n, P.indicator q n : ℝ):ℂ) := by
@@ -154,10 +168,7 @@ private theorem integerCentredPrimeWave_eq {Φ : ℝ → ℝ} {C : ℝ} (hC : 0 
     simp only [Complex.ofRealCLM_apply,q,a,continuousIntegerAtom,vonMangoldtAtom,if_pos p.property.two_le,
       ArithmeticFunction.vonMangoldt_apply_prime p.property,Complex.ofReal_mul,Complex.ofReal_div,Complex.ofReal_inv]
     ring
-  have hna := ha.sum_add_tsum_nat_add 1
-  have ha0 : a 0 = 0 := by simp [a,continuousIntegerAtom]
-  have ht : (∑' n, a n) = integerReferenceWave Φ t := by
-    simpa only [Finset.sum_range_one,ha0,zero_add,a,Nat.cast_add_one,integerReferenceWave] using hna.symm
+  have ht : (∑' n, a n) = integerReferenceWave Φ t := tsum_continuousIntegerAtom hb t
   rw [hpr,Complex.ofReal_re,← ht]
   unfold integerCentredPrimeWave
   rw [← hq'.tsum_sub ha]
@@ -185,7 +196,7 @@ theorem riemannHypothesis_or_integer_centred_prime_error : RiemannHypothesis ∨
   refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hΦ,heq,h.congr fun T => ?_⟩
   congr 1
   apply setIntegral_congr_fun measurableSet_Ioc fun t _ => ?_
-  rw [integerCentredPrimeWave_eq hC hb,hL,Complex.ofReal_re]
+  rw [integerCentredPrimeWave_eq hb,hL,Complex.ofReal_re]
   congr 1; ring
 
 #print axioms criticalState_integerReference_zero_mean_error

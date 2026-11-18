@@ -22,7 +22,9 @@ positive square-root conductors. -/
 def unitTripleDegree (x : ℝ) : ℝ := 3*realSplineTrace 0 - 2*realSplineTrace (shortLag x) +
   2*(realSplineTrace (2*x) - realSplineTrace (2*x+shortLag x))
 
-private theorem trace_lipschitz :
+/-- Trace increments cost the lag displacement times the exponential at the
+actual zero width. The constant is the first absolute spectral moment. -/
+theorem realSplineTrace_increment :
     ∃ L : ℝ, 0 ≤ L ∧ ∀ s t : ℝ, 0 ≤ s → s ≤ t →
       |realSplineTrace t - realSplineTrace s| ≤ L*(t-s)*Real.exp (zetaZeroWidth*t) := by
   let L := ∑' z : ℂ, ‖lagCoeff zetaZeroConfig (boxSpline 1 3) z‖ * ‖z‖
@@ -49,7 +51,7 @@ square-root conductors, uniformly over all balanced unit triples. -/
 theorem unitTripleDegree_error :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 0 ≤ x →
       |unitTripleDegree x-realSplineTrace 0| ≤ C*Real.exp ((2*zetaZeroWidth-1)*x) := by
-  obtain ⟨L,hL,h⟩ := trace_lipschitz
+  obtain ⟨L,hL,h⟩ := realSplineTrace_increment
   let a := zetaZeroWidth
   have ha : 0 ≤ a := zetaZeroWidth_nonneg
   refine ⟨8*L*Real.exp (2*a),by positivity,fun x hx => ?_⟩
@@ -208,13 +210,13 @@ theorem mass_three_classification {N : ℕ} {a : Fin N → ℤ} (ha : positivePo
     by_cases h : j=i
     · subst j
       have h₁ : (1:ℝ) ≤ a i := by exact_mod_cast (show (1:ℤ) ≤ a i by omega)
-      have he : b i = a i-1 := by simp [b,Pi.single_apply,hik]
+      have he : b i = a i-1 := by simp [b,hik]
       rw [he,if_pos rfl,if_neg hik,add_zero,Int.cast_sub,Int.cast_one,
         abs_of_nonneg (sub_nonneg.mpr h₁),abs_of_nonneg (zero_le_one.trans h₁),sub_add_cancel]
     by_cases h' : j=k
     · subst j
       have h₁ : (a k : ℝ) ≤ -1 := by exact_mod_cast (show a k ≤ -1 by omega)
-      have he : b k = a k+1 := by simp [b,Pi.single_apply,h]
+      have he : b k = a k+1 := by simp [b,h]
       rw [he,if_neg h,if_pos rfl,add_zero,Int.cast_add,Int.cast_one,
         abs_of_nonpos (by linarith only [h₁] : (a k : ℝ)+1 ≤ 0),
         abs_of_nonpos (by linarith only [h₁] : (a k : ℝ) ≤ 0)]
@@ -308,7 +310,7 @@ theorem ordinaryPrimeGenerator_mass_three_bound :
   linarith only [(abs_le.mp hlim).2,mul_le_mul_of_nonneg_right hcoeff (sq_nonneg (m : ℝ))]
 
 /-- Both orientations of a pair of balanced unit triples together have
-bounded logarithmic prime product. The individual degrees can be unbounded. -/
+bounded logarithmic prime product because their mixed degrees cancel. -/
 theorem paired_mass_three_prime_products : ∃ H : ℝ, 0 ≤ H ∧ ∀ (N : ℕ) (a b : Fin N → ℤ),
     positivePoleDegree a = 0 → positivePoleDegree b = 0 →
     (∑ i, |(a i : ℝ)|) ≤ 3 → (∑ i, |(b i : ℝ)|) ≤ 3 →

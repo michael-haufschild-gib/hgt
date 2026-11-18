@@ -30,7 +30,8 @@ private lemma reciprocal_phase_d2 (T x : ℝ) (hx : x≠0) :
   field_simp
   ring
 
-private theorem norm_reciprocal_phase_sum_le
+/-- The second derivative test for a shifted reciprocal phase on a sharp integer interval. -/
+theorem norm_reciprocal_phase_sum_le
     (T a B : ℝ) (N : ℕ) (hT : 0<T) (ha : 0<a)
     (hN : 1≤N) (hspan : a+(N-1:ℕ)≤B) (hlam : 2*T/B^(3 : ℕ)≤1) :
     ‖∑ n ∈ range N, Complex.exp (((2*Real.pi*(T/(a+n)):ℝ):ℂ)*Complex.I)‖ ≤

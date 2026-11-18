@@ -16,13 +16,15 @@ namespace GaloisForLFunctions.CountingHolography.Sections
 open Finset Filter Topology ArithmeticFunction AbsoluteGeometryOfSpecZ
 open ArithmeticScatteringHolography SquareRootThreshold
 
-private def ordinaryPrimeLags (L : ℕ) := (Icc 2 L).filter Nat.Prime
+/-- Ordinary prime degrees in the finite contact window. -/
+def ordinaryPrimeLags (L : ℕ) := (Icc 2 L).filter Nat.Prime
 
 /-- The continuous ordinary-prime contact sum of the integer spline. -/
 def ordinaryPrimeContact {N : ℕ} (a : Fin N → ℤ) :=
   ∑ k ∈ ordinaryPrimeLags (3*windowEnd N), integratedContact a k*vonMangoldt k
 
-private theorem ordinaryPrimeLagSums (L : ℕ) :
+/-- The two log-weight bounds for floor loss and harmonic quadrature. -/
+theorem ordinaryPrimeLagSums (L : ℕ) :
     (∑ k ∈ ordinaryPrimeLags L, vonMangoldt k) ≤ 7*L ∧
     (∑ k ∈ ordinaryPrimeLags L, vonMangoldt k/Real.sqrt k) ≤ 34*Real.sqrt L := by
   have hs {k : ℕ} (hk : k ∈ ordinaryPrimeLags L) : 2 ≤ k ∧ k ≤ L := mem_Icc.mp (mem_filter.mp hk).1
@@ -50,12 +52,13 @@ theorem ordinaryFloorLoss_bounds {N : ℕ} (a : Fin N → ℤ) :
 
 /-- Adding the exact floor loss leaves only the uniform quadrature error.
 The bound has square-root dependence on the length of the prime window. -/
-theorem ordinaryPrimeContact_sampling_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (a : Fin N → ℤ),
-    (∑ i, |(a i : ℝ)|) ≤ 4 → ∀ m : ℕ, 0 < resolution (m • a) →
+theorem ordinaryPrimeContact_sampling_at_mass {M : ℝ} (hM : 0 ≤ M) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (a : Fin N → ℤ),
+    (∑ i, |(a i : ℝ)|) ≤ M → ∀ m : ℕ, 0 < resolution (m • a) →
       let L := 3*windowEnd N
       |Real.log (ordinaryPrimeGenerator (m • a) : ℝ)+ordinaryFloorLoss (m • a)-
         (m:ℝ)^2*ordinaryPrimeContact a| ≤ ((m:ℝ)^2*C/resolution (m • a))*Real.sqrt L := by
-  obtain ⟨C,hC,h⟩ := contactMultiplicity_uniform_error
+  obtain ⟨C,hC,h⟩ := contactMultiplicity_error_at_mass hM
   refine ⟨68*C,by positivity,fun N a ha m hr => ?_⟩
   let r := resolution (m • a)
   let L := 3*windowEnd N
@@ -95,6 +98,14 @@ theorem ordinaryPrimeContact_sampling_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : 
           exact mul_le_mul_of_nonneg_left (ordinaryPrimeLagSums L).2 hD
     _ = _ := by dsimp only [D,t,r,L]; ring
 
+/-- Sampling on a horizon of arbitrary length at total variation four. -/
+theorem ordinaryPrimeContact_sampling_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (a : Fin N → ℤ),
+    (∑ i, |(a i : ℝ)|) ≤ 4 → ∀ m : ℕ, 0 < resolution (m • a) →
+      let L := 3*windowEnd N
+      |Real.log (ordinaryPrimeGenerator (m • a) : ℝ)+ordinaryFloorLoss (m • a)-
+        (m:ℝ)^2*ordinaryPrimeContact a| ≤ ((m:ℝ)^2*C/resolution (m • a))*Real.sqrt L :=
+  ordinaryPrimeContact_sampling_at_mass (by norm_num)
+
 /-- The two errors in an ordinary prime product, with their dependence
 on the window length and the actual mesh resolution. -/
 theorem ordinaryPrimeContact_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (a : Fin N → ℤ),
@@ -110,7 +121,8 @@ theorem ordinaryPrimeContact_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (a :
   rw [abs_le]
   constructor <;> linarith only [hlo,hhi,hf,hf',Nat.cast_nonneg (α := ℝ) (3*windowEnd N)]
 
-private theorem square_window_bound : ∃ A : ℝ, 1 ≤ A ∧ ∀ {n : ℕ}, 0 < n →
+/-- The prime horizon on the three squares grows at most quadratically. -/
+theorem successorSquare_window_bound : ∃ A : ℝ, 1 ≤ A ∧ ∀ {n : ℕ}, 0 < n →
     ((3*windowEnd ((2*n+1)^2+1) : ℕ):ℝ) ≤ (A*n)^2 := by
   let E := Real.exp (Real.log 3+10)
   let A := 33*E+3
@@ -144,7 +156,7 @@ a constant times n m, simultaneously at every positive multiplicity. -/
 theorem successorSquare_contact_error_all : ∃ D : ℝ, 0 ≤ D ∧ ∀ {n m : ℕ}, 0 < n → 0 < m →
     |Real.log (ordinaryPrimeGenerator (m • successorSquareTriple n) : ℝ) -
       (m:ℝ)^2*ordinaryPrimeContact (successorSquareTriple n)| ≤ D*((n:ℝ)^2+n*m) := by
-  obtain ⟨A,hA,hL⟩ := square_window_bound
+  obtain ⟨A,hA,hL⟩ := successorSquare_window_bound
   obtain ⟨C,hC,hc⟩ := ordinaryPrimeContact_error
   have hA' := zero_le_one.trans hA
   refine ⟨7*A^2+C*A,by positivity,fun {n m} hn hm => ?_⟩
@@ -200,6 +212,66 @@ theorem successorSquare_contact_degree : ∃ A : ℝ, 0 ≤ A ∧ ∀ {n : ℕ},
   rw [abs_le]
   constructor <;> apply (mul_le_mul_iff_right₀ ht).mp <;>
     linarith only [hlo,hhi,hlo',hhi']
+
+/-- After division by the square-root conductor, the signed prime contact
+tends to zero through every integer conductor. -/
+theorem successorSquare_contact_sublinear :
+    Tendsto (fun n : ℕ => ordinaryPrimeContact (successorSquareTriple n)/((n:ℝ)+1)) atTop (𝓝 0) := by
+  let X := fun n : ℕ => (n:ℝ)+1
+  let P := fun n => ordinaryPrimeContact (successorSquareTriple n)
+  let Q := fun n => integerProbe _ (successorSquareTriple n)
+  obtain ⟨D,_,h⟩ := successorSquare_contact_degree
+  have hX : Tendsto X atTop atTop := tendsto_atTop_mono
+    (f := fun n : ℕ => (n:ℝ)) (fun _ => le_add_of_nonneg_right zero_le_one) tendsto_natCast_atTop_atTop
+  have he : Tendsto (fun n => (P n+Q n)/X n) atTop (𝓝 0) := by
+    apply squeeze_zero_norm' (a := fun n => D/X n) _ (tendsto_const_nhds.div_atTop hX)
+    filter_upwards [eventually_ge_atTop 1] with n hn
+    rw [Real.norm_eq_abs,abs_div,abs_of_nonneg (show 0 ≤ X n by unfold X; positivity)]
+    exact div_le_div_of_nonneg_right (h hn) (by unfold X; positivity)
+  have hq : Tendsto (fun n => Q n/X n) atTop (𝓝 0) := successorSquare_degree_sublinear
+  simpa only [add_div,add_sub_cancel_right,sub_zero,P,X] using he.sub hq
+
+/-- The signed logarithm is uniformly negligible relative to n m²
+as the squared multiplicity grows compared with n. -/
+theorem successorSquare_log_negligible {ε : ℝ} (hε : 0 < ε) :
+    ∃ K : ℝ, 1 ≤ K ∧ ∀ᶠ n : ℕ in atTop, ∀ {m : ℕ}, K*n ≤ (m:ℝ)^2 →
+      |Real.log (ordinaryPrimeGenerator (m • successorSquareTriple n) : ℝ)| ≤ ε*n*(m:ℝ)^2 := by
+  obtain ⟨D,hD,h⟩ := successorSquare_contact_error_all
+  let K := max 1 (4*D/ε)
+  have hK : 1 ≤ K := le_max_left _ _
+  have hDK : 4*D ≤ K*ε := (div_le_iff₀ hε).mp (le_max_right _ _)
+  have hnear := successorSquare_contact_sublinear.abs.eventually_le_const (show |(0:ℝ)| < ε/4 by
+    rw [abs_zero]; positivity)
+  refine ⟨K,hK,?_⟩
+  filter_upwards [hnear,eventually_ge_atTop ⌈K^2⌉₊,eventually_ge_atTop 1] with n hp hnK hn
+  intro m hmn
+  have hn' : (1:ℝ) ≤ n := by exact_mod_cast hn
+  have hn0 := zero_le_one.trans hn'
+  have hK2 : K^2 ≤ (n:ℝ) := (Nat.le_ceil _).trans (by exact_mod_cast hnK)
+  have hn2 := (le_mul_of_one_le_left hn0 hK).trans hmn
+  have hKm := le_of_pow_le_pow_left₀ two_ne_zero (Nat.cast_nonneg (α := ℝ) m) (hK2.trans hn2)
+  have hm : 0 < m := by exact_mod_cast zero_lt_one.trans_le (hK.trans hKm)
+  let P := ordinaryPrimeContact (successorSquareTriple n)
+  let t := (m:ℝ)^2
+  let z := Real.log (ordinaryPrimeGenerator (m • successorSquareTriple n) : ℝ)
+  have ht : 0 ≤ t := sq_nonneg _
+  change |P/((n:ℝ)+1)| ≤ ε/4 at hp
+  have hx : 0 < (n:ℝ)+1 := by positivity
+  rw [abs_div,abs_of_pos hx] at hp
+  have hp' : |P| ≤ ε/2*n := by
+    linarith only [(div_le_iff₀ hx).mp hp,
+      mul_le_mul_of_nonneg_left hn' hε.le]
+  have h₁ : 4*D*n ≤ ε*t := calc
+    _ ≤ (K*ε)*n := mul_le_mul_of_nonneg_right hDK hn0
+    _ = ε*(K*n) := by ring
+    _ ≤ _ := mul_le_mul_of_nonneg_left hmn hε.le
+  have h₂ : 4*D ≤ ε*m := hDK.trans (by rw [mul_comm]; exact mul_le_mul_of_nonneg_left hKm hε.le)
+  have herr : |z-t*P| ≤ D*((n:ℝ)^2+n*m) := h hn hm
+  have hab := abs_add_le (z-t*P) (t*P)
+  rw [sub_add_cancel,abs_mul,abs_of_nonneg ht] at hab
+  have h₂' := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right h₂ (Nat.cast_nonneg (α := ℝ) m)) hn0
+  dsimp only [t] at *
+  linarith only [hab,herr,mul_le_mul_of_nonneg_right h₁ hn0,h₂',mul_le_mul_of_nonneg_left hp' ht]
 
 private theorem square_degree_window_error : ∃ E : ℝ, 0 ≤ E ∧ ∀ {n m : ℕ}, 0 < n → 0 < m →
     (m:ℝ) ≤ 2*((n:ℝ)+1) →
@@ -356,6 +428,7 @@ theorem subThreeEighths_stripMultiplicity_power :
 #print axioms ordinaryPrimeContact_sampling_error
 #print axioms ordinaryPrimeContact_error
 #print axioms riemannHypothesis_iff_diagonal_successorSquare_power
+#print axioms successorSquare_log_negligible
 #print axioms subThreeEighths_stripMultiplicity_power
 
 end GaloisForLFunctions.CountingHolography.Sections

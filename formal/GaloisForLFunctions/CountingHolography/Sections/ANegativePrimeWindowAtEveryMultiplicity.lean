@@ -3,6 +3,7 @@ import GaloisForLFunctions.BiScaleUncertainty.InteriorOfBoxSplines
 import GaloisForLFunctions.CountingHolography.Sections.ReducedOrdinaryPrimeProducts
 import GaloisForLFunctions.CountingHolography.Sections.SmallMultiplicitiesOnSquareConductors
 import GaloisForLFunctions.RHTower.XiMassShellPrimeMass
+import GaloisForLFunctions.RHTower.Sieve.PrimePairShiftSum
 
 /-!
 # A prime window in the denominator at every multiplicity
@@ -154,7 +155,8 @@ theorem successorSquareWindowScale_bounds (n : ℕ) :
   rw [show Real.log 3+5+Real.log ((N:ℝ)+1)+5 = (Real.log 3+10)+Real.log ((N:ℝ)+1) by ring,
     Real.exp_add (Real.log 3+10) (Real.log ((N:ℝ)+1)),Real.exp_log (by positivity : 0 < (N:ℝ)+1)]
 
-private def windowPrimes (n : ℕ) :=
+/-- The ordinary primes in the separated upper contact interval. -/
+def successorSquareWindowPrimes (n : ℕ) :=
   (Ioc ⌊successorSquareWindowScale n/3⌋₊ ⌊successorSquareWindowScale n/2⌋₊).filter Nat.Prime
 
 /-- Every proportional interval eventually contains at least half its
@@ -176,27 +178,24 @@ theorem proportional_prime_mass {u v : ℝ} (hu : 0 < u) (huv : u < v) :
   linarith only [(abs_le.mp hl).2,(abs_le.mp ht).1,congrArg (fun y : ℝ => y*x) he]
 
 private theorem denominator_window_mass :
-    ∀ᶠ n : ℕ in atTop, successorSquareWindowScale n/12 ≤ ∑ k ∈ windowPrimes n, Real.log k := by
+    ∀ᶠ n : ℕ in atTop, successorSquareWindowScale n/12 ≤ ∑ k ∈ successorSquareWindowPrimes n, Real.log k := by
   have hn := (tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop
   have hW : Tendsto successorSquareWindowScale atTop atTop :=
     tendsto_atTop_mono (fun n => (successorSquareWindowScale_bounds n).1) hn
   have hm := proportional_prime_mass (u := (1:ℝ)/3) (v := (1:ℝ)/2) (by norm_num) (by norm_num)
   filter_upwards [hW.eventually hm] with n h
-  simpa only [windowPrimes,one_div_mul_eq_div,show ((1:ℝ)/2-1/3)/2 = 1/12 by norm_num] using h
+  simpa only [successorSquareWindowPrimes,one_div_mul_eq_div,show ((1:ℝ)/2-1/3)/2 = 1/12 by norm_num] using h
 
-/-- At every positive multiplicity the log contribution of ordinary primes
-in the denominator grows at least quadratically in the conductor parameter. -/
-theorem successorSquare_denominator_lower : ∀ᶠ n : ℕ in atTop, ∀ m : ℕ, 0 < m →
-    (n:ℝ)^2/12 ≤ Real.log (ordinaryPrimeGenerator (m • successorSquareTriple n)).den := by
-  filter_upwards [denominator_window_mass,eventually_ge_atTop 1] with n hmass hn
-  intro m hm
+/-- The product of all ordinary primes of the window divides the
+denominator in lowest terms, even at multiplicity one. -/
+theorem successorSquare_window_product_dvd {n m : ℕ} (hn : 0 < n) (hm : 0 < m) :
+    (∏ k ∈ successorSquareWindowPrimes n, k) ∣ (ordinaryPrimeGenerator (m • successorSquareTriple n)).den := by
   let d := successorSquareTriple n
   let a := m • d
   let W := successorSquareWindowScale n
   let L := 3*windowEnd ((2*n+1)^2+1)
   let S := (Icc 2 L).filter Nat.Prime
   let x := contactMultiplicity (packet a) L (resolution a)
-  let cost := fun k => ((⌊x k⌋₊ : ℝ)-(⌊x k⌋ : ℝ))*vonMangoldt k
   have hW := successorSquareWindowScale_bounds n
   have hlarge : 9 ≤ (windowEnd ((2*n+1)^2+1) : ℝ) := hW.2.1.trans hW.2.2
   have hL : 11 ≤ L := by
@@ -204,48 +203,47 @@ theorem successorSquare_denominator_lower : ∀ᶠ n : ℕ in atTop, ∀ m : ℕ
     dsimp only [L]
     omega
   have hr : 0 < resolution a := hm.trans_le (successorSquare_resolution_ge n m)
-  have hmem {k : ℕ} (hk : k ∈ windowPrimes n) : k.Prime ∧ W/3 < k ∧ (k:ℝ) ≤ W/2 := by
+  have hmem {k : ℕ} (hk : k ∈ successorSquareWindowPrimes n) : k.Prime ∧ W/3 < k ∧ (k:ℝ) ≤ W/2 := by
     obtain ⟨hi,hp⟩ := mem_filter.mp hk
     obtain ⟨hl,hu⟩ := mem_Ioc.mp hi
     exact ⟨hp,(Nat.floor_lt (by linarith only [hW.2.1] : 0 ≤ W/3)).mp hl,
       (Nat.cast_le.mpr hu).trans (Nat.floor_le (by linarith only [hW.2.1] : 0 ≤ W/2))⟩
-  have hs : windowPrimes n ⊆ S := by
+  have hs : successorSquareWindowPrimes n ⊆ S := by
     intro k hk
     obtain ⟨hp,_,hu⟩ := hmem hk
     have he : (k:ℝ) ≤ windowEnd ((2*n+1)^2+1) := by linarith only [hu,hW.2.1,hW.2.2]
     have hnat : k ≤ windowEnd ((2*n+1)^2+1) := by exact_mod_cast he
     exact mem_filter.mpr ⟨mem_Icc.mpr ⟨hp.two_le,by dsimp only [L]; omega⟩,hp⟩
-  have hcost {k : ℕ} (hk : k ∈ windowPrimes n) : Real.log k ≤ cost k := by
-    obtain ⟨hp,hl,hu⟩ := hmem hk
-    have hneg : x k < 0 := by
-      unfold x a
-      rw [packet_smul,contactMultiplicity_scale]
-      exact mul_neg_of_pos_of_neg (sq_pos_of_pos (Nat.cast_pos.mpr hm))
-        (successorSquare_negative_window hn hr hL hl hu)
-    have hfloor : ⌊x k⌋ ≤ -1 := by
-      have := Int.floor_le (x k)
-      have ht : ((⌊x k⌋:ℤ):ℝ) < 0 := this.trans_lt hneg
-      have ht' : ⌊x k⌋ < 0 := by exact_mod_cast ht
-      omega
-    have hreal : ((⌊x k⌋:ℤ):ℝ) ≤ -1 := by exact_mod_cast hfloor
-    have he : Real.log k = vonMangoldt k := by
-      rw [← log_contactBase,contactBase,if_pos hp.isPrimePow,hp.minFac_eq]
-    rw [he]
-    unfold cost
-    apply le_mul_of_one_le_left vonMangoldt_nonneg
-    rw [Nat.floor_of_nonpos hneg.le,Nat.cast_zero]
-    linarith only [hreal]
-  have hpos (k : ℕ) : 0 ≤ cost k := by
-    apply mul_nonneg _ vonMangoldt_nonneg
-    apply sub_nonneg.mpr
-    have he : ⌊x k⌋ ≤ (⌊x k⌋₊ : ℤ) := by rw [← Int.floor_toNat]; omega
-    exact_mod_cast he
-  rw [log_ordinaryPrimeGenerator_den,log_ordinaryPrimeModulus,log_ordinaryPrimeGenerator,← sum_sub_distrib]
-  calc _ ≤ W/12 := div_le_div_of_nonneg_right hW.1 (by norm_num)
-    _ ≤ _ := hmass
-    _ ≤ ∑ k ∈ windowPrimes n, cost k := sum_le_sum fun _ hk => hcost hk
-    _ ≤ ∑ k ∈ S, cost k := sum_le_sum_of_subset_of_nonneg hs fun k _ _ => hpos k
-    _ = _ := sum_congr rfl fun _ _ => sub_mul ..
+  apply (_root_.RHTower.Sieve.prod_dvd_iff_forall_dvd (fun k hk => (hmem hk).1) _).mpr
+  intro k hk
+  obtain ⟨hp,hl,hu⟩ := hmem hk
+  letI : Fact k.Prime := ⟨hp⟩
+  have hneg : x k < 0 := by
+    unfold x a
+    rw [packet_smul,contactMultiplicity_scale]
+    exact mul_neg_of_pos_of_neg (sq_pos_of_pos (Nat.cast_pos.mpr hm))
+      (successorSquare_negative_window hn hr hL hl hu)
+  by_contra hnot
+  have he := (HTGeometry.Arithmetic.nonneg_val_iff_not_dvd_den k (ordinaryPrimeGenerator a)).mpr hnot
+  rw [← _root_.RHTower.deningerRatExp_apply_of_prime hp,ordinaryPrimeGenerator_exponent,if_pos (hs hk)] at he
+  have hnon : (0:ℝ) ≤ (⌊x k⌋:ℤ) := by exact_mod_cast he
+  exact hneg.not_ge (hnon.trans (Int.floor_le _))
+
+/-- At every positive multiplicity the log contribution of ordinary primes
+in the reduced denominator grows at least quadratically in the conductor parameter. -/
+theorem successorSquare_denominator_lower : ∀ᶠ n : ℕ in atTop, ∀ m : ℕ, 0 < m →
+    (n:ℝ)^2/12 ≤ Real.log (ordinaryPrimeGenerator (m • successorSquareTriple n)).den := by
+  filter_upwards [denominator_window_mass,eventually_ge_atTop 1] with n hmass hn
+  intro m hm
+  let q := ordinaryPrimeGenerator (m • successorSquareTriple n)
+  have hk (k : ℕ) (hk : k ∈ successorSquareWindowPrimes n) : 0 < k := (mem_filter.mp hk).2.pos
+  have hprod : 0 < ∏ k ∈ successorSquareWindowPrimes n, k := prod_pos hk
+  have hq : (∏ k ∈ successorSquareWindowPrimes n, k) ≤ q.den :=
+    Nat.le_of_dvd (Nat.pos_of_ne_zero q.den_nz) (successorSquare_window_product_dvd hn hm)
+  have hh := Real.log_le_log (Nat.cast_pos.mpr hprod : (0:ℝ) < _) (Nat.cast_le.mpr hq)
+  rw [Nat.cast_prod,Real.log_prod (fun k h => (Nat.cast_pos.mpr (hk k h) : (0:ℝ) < _).ne')] at hh
+  exact (div_le_div_of_nonneg_right (successorSquareWindowScale_bounds n).1 (by norm_num : (0:ℝ) ≤ 12)).trans
+    (hmass.trans hh)
 
 /-- On the square-root multiplicity range the denominator forces exponential
 decay of the actual rational generator, uniformly in the multiplicity. -/
@@ -273,6 +271,7 @@ theorem small_multiplicity_exponential_decay : ∃ C : ℝ, 0 < C ∧
     mul_le_mul_of_nonneg_right hh (Nat.cast_nonneg (α := ℝ) n)]
 
 #print axioms successorSquare_negative_window
+#print axioms successorSquare_window_product_dvd
 #print axioms successorSquare_denominator_lower
 #print axioms small_multiplicity_exponential_decay
 

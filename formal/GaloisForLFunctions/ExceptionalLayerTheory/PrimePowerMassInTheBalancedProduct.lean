@@ -15,7 +15,8 @@ noncomputable section
 open Finset ArithmeticFunction RHTower
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-private theorem jump_bound (D v : ℕ) : |innerJump D v| ≤ 2*(1+mass (D+1)) := by
+/-- Differencing two bounded prefixes bounds each complementary coefficient. -/
+theorem innerJump_pointwise_bound (D v : ℕ) : |innerJump D v| ≤ 2*(1+mass (D+1)) := by
   rcases v with _ | v
   · rw [show innerJump D 0 = 0 from sub_self _,abs_zero]
     have h := (abs_nonneg _).trans (innerJump_prefix_bound D 0)
@@ -31,7 +32,7 @@ the sum of the Mangoldt weights over the divisors is exactly log n. -/
 theorem balancedProduct_bound (D n : ℕ) :
     |balancedProduct D n| ≤ (2*(1+mass (D+1)))*Real.log n := by
   let M := 2*(1+mass (D+1))
-  have hM : 0 ≤ M := (abs_nonneg _).trans (jump_bound D 0)
+  have hM : 0 ≤ M := (abs_nonneg _).trans (innerJump_pointwise_bound D 0)
   unfold balancedProduct
   apply (abs_sum_le_sum_abs _ _).trans
   calc
@@ -39,7 +40,7 @@ theorem balancedProduct_bound (D n : ℕ) :
       apply sum_le_sum
       intro p _
       rw [abs_mul,abs_of_nonneg vonMangoldt_nonneg,mul_comm]
-      exact mul_le_mul_of_nonneg_right (jump_bound D _) vonMangoldt_nonneg
+      exact mul_le_mul_of_nonneg_right (innerJump_pointwise_bound D _) vonMangoldt_nonneg
     _ ≤ ∑ p ∈ n.divisorsAntidiagonal, M*vonMangoldt p.1 :=
       sum_le_sum_of_subset_of_nonneg (filter_subset ..) (fun _ _ _ => mul_nonneg hM vonMangoldt_nonneg)
     _ = _ := by rw [←mul_sum,Nat.sum_divisorsAntidiagonal (fun a _ => vonMangoldt a),vonMangoldt_sum]
@@ -140,7 +141,7 @@ def singlePrimeError (D n : ℕ) : ℝ := if IsPrimePow n then balancedProduct D
 private theorem error_bound {D n X : ℕ} (hn : n ≤ X) :
     |singlePrimeError D n| ≤ (1+2*(1+mass (D+1))*Real.log X/Real.log 2)*vonMangoldt n := by
   let M := 2*(1+mass (D+1))
-  have hm : 0 ≤ M := (abs_nonneg _).trans (jump_bound D 0)
+  have hm : 0 ≤ M := (abs_nonneg _).trans (innerJump_pointwise_bound D 0)
   have hl := Real.log_natCast_nonneg X
   have h2 : 0 < Real.log 2 := Real.log_pos (by norm_num)
   unfold singlePrimeError
@@ -175,7 +176,7 @@ theorem singlePrimeError_mass {D X : ℕ} (hD : 1 ≤ D) (hX : 1 ≤ X) :
   classical
   let T := (2*(D+1))^2
   let C := 1+2*(1+mass (D+1))*Real.log X/Real.log 2
-  have hm := (abs_nonneg _).trans (jump_bound D 0)
+  have hm := (abs_nonneg _).trans (innerJump_pointwise_bound D 0)
   have hC : 0 ≤ C := by dsimp [C]; have := Real.log_natCast_nonneg X; positivity
   let S := (Ioc 0 T) ∪ higherPowers X
   have hs (n : ℕ) (hn : n ∈ Ioc 0 X) (hnot : n ∉ S) : singlePrimeError D n = 0 := by

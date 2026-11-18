@@ -20,29 +20,16 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory
 private def primeSymbolRemainder (q : ℕ) (A : ℝ) (s : ℂ) : ℂ :=
   (-deriv riemannZeta s / riemannZeta s)*lastQuotientClassSymbol q s - A*riemannZeta s
 
-private theorem symbol_vanishes_of_mass_bound (q : ℕ) [NeZero q] (hq : 2 ≤ q)
-    {A b K : ℝ} (hb : 0 ≤ b) (hb1 : b < 1)
-    (hbound : ∀ N : ℕ, 1 ≤ N → |lastClassPrimeMass q N - A*N| ≤ K*(N:ℝ)^b)
+/-- A holomorphic continuation of the centered prime symbol through a zeta zero
+forces the quotient-class multiplier to vanish there. -/
+theorem lastQuotientClassSymbol_vanishes_of_continuation (q : ℕ) [NeZero q]
+    {A b : ℝ} (hb1 : b < 1) (G : ℂ → ℂ)
+    (hG : DifferentiableOn ℂ G {s : ℂ | b < s.re})
+    (heq : ∀ s : ℂ, 2<s.re →
+      (-deriv riemannZeta s / riemannZeta s)*lastQuotientClassSymbol q s - A*riemannZeta s = G s)
     {ρ : ℂ} (hρ : b < ρ.re) (hz : riemannZeta ρ = 0) : lastQuotientClassSymbol q ρ = 0 := by
-  let c := fun n : ℕ => if n = 0 then (0:ℂ) else ((lastClassPrimeCoeff q n - A : ℝ) : ℂ)
-  have hc0 : c 0 = 0 := by simp [c]
-  have hK : 0 ≤ K := by simpa using (abs_nonneg _).trans (hbound 1 le_rfl)
-  have hreal (x : ℝ) (hx : 1 ≤ x) : ‖∑ n ∈ Icc 1 ⌊x⌋₊, c n‖ ≤ K*x^b := by
-    let M := ⌊x⌋₊
-    have he : (∑ n ∈ Icc 1 M, c n) = ((lastClassPrimeMass q M - A*M : ℝ) : ℂ) := by
-      calc
-        _ = ∑ n ∈ Icc 1 M, ((lastClassPrimeCoeff q n - A : ℝ) : ℂ) :=
-          sum_congr rfl fun n hn => if_neg (Nat.ne_of_gt (mem_Icc.mp hn).1)
-        _ = _ := by
-          rw [← Complex.ofReal_sum,sum_sub_distrib,lastClassPrimeMass_eq_prefix q hq]
-          simp only [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel,mul_comm A]
-    rw [he,Complex.norm_real,Real.norm_eq_abs]
-    exact (hbound M ((Nat.one_le_floor_iff x).mpr hx)).trans (mul_le_mul_of_nonneg_left
-      (Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.floor_le (zero_le_one.trans hx)) hb) hK)
   let D := {s : ℂ | b < s.re}
-  let G := HeckeLFunctions.growthCont c b
   have hopen : IsOpen D := isOpen_lt continuous_const Complex.continuous_re
-  have hG : DifferentiableOn ℂ G D := HeckeLFunctions.differentiableOn_growthCont hc0 hb hreal
   let F := primeSymbolRemainder q A - G
   have hmero : MeromorphicOn F D := by
     apply MeromorphicOn.sub _ (hG.analyticOnNhd hopen).meromorphicOn
@@ -52,27 +39,17 @@ private theorem symbol_vanishes_of_mass_bound (q : ℕ) [NeZero q] (hq : 2 ≤ q
     exact ((hZ.deriv.neg.div hZ).mul
       ((differentiable_lastQuotientClassSymbol q).analyticAt s).meromorphicAt).sub
       (hA.mul hZ)
-  have h2 : meromorphicOrderAt F (2:ℂ) = ⊤ := by
+  have h2 : meromorphicOrderAt F (3:ℂ) = ⊤ := by
     apply meromorphicOrderAt_eq_top_iff.mpr
-    have hnb : {s : ℂ | 1 < s.re} ∈ 𝓝 (2:ℂ) :=
+    have hnb : {s : ℂ | 2 < s.re} ∈ 𝓝 (3:ℂ) :=
       (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by norm_num)
     filter_upwards [nhdsWithin_le_nhds hnb] with s hs
-    obtain ⟨hf,he⟩ := lastClassPrimeCoeff_series q hs
-    let f := fun n => (lastClassPrimeCoeff q n : ℂ)
-    have hd {n : ℕ} (hn : n ≠ 0) : c n = (f - (A:ℂ) • (1 : ℕ → ℂ)) n := by
-      simp [c,hn,f]
-    have ha := (LSeriesSummable_one_iff.mpr hs).smul (A:ℂ)
-    have hc := (LSeriesSummable_congr s hd).mpr (hf.sub ha)
-    apply sub_eq_zero.mpr
-    change primeSymbolRemainder q A s = HeckeLFunctions.growthCont c b s
-    rw [HeckeLFunctions.growthCont_eq_LSeries hc0 hb hreal (hb1.trans hs) hc,LSeries_congr hd s,
-      LSeries_sub hf ha,LSeries_smul,LSeries_one_eq_riemannZeta hs]
-    exact congrArg (· - (A:ℂ)*riemannZeta s) he.symm
+    exact sub_eq_zero.mpr (heq s hs)
   have htop : meromorphicOrderAt F ρ = ⊤ := by
     by_contra h
     exact (hmero.meromorphicOrderAt_ne_top_of_isPreconnected
       (convex_halfSpace_re_gt b).isPreconnected hρ
-      (show b < (2:ℂ).re by simpa using hb1.trans (by norm_num : (1:ℝ)<2)) h) h2
+      (show b < (3:ℂ).re by simpa using hb1.trans (by norm_num : (1:ℝ)<3)) h) h2
   have hgerm : primeSymbolRemainder q A =ᶠ[𝓝[≠] ρ] G :=
     (meromorphicOrderAt_eq_top_iff.mp htop).mono fun _ e => sub_eq_zero.mp e
   have hlin : Tendsto (fun s : ℂ => s-ρ) (𝓝[≠] ρ) (𝓝 0) :=
@@ -96,6 +73,40 @@ private theorem symbol_vanishes_of_mass_bound (q : ℕ) [NeZero q] (hq : 2 ≤ q
     · simp
   exact (mul_eq_zero.mp (tendsto_nhds_unique hlim hzero)).resolve_left
     (neg_ne_zero.mpr (Nat.cast_ne_zero.mpr (by omega : m ≠ 0)))
+
+private theorem symbol_vanishes_of_mass_bound (q : ℕ) [NeZero q] (hq : 2 ≤ q)
+    {A b K : ℝ} (hb : 0 ≤ b) (hb1 : b < 1)
+    (hbound : ∀ N : ℕ, 1 ≤ N → |lastClassPrimeMass q N - A*N| ≤ K*(N:ℝ)^b)
+    {ρ : ℂ} (hρ : b < ρ.re) (hz : riemannZeta ρ = 0) : lastQuotientClassSymbol q ρ = 0 := by
+  let c := fun n : ℕ => if n = 0 then (0:ℂ) else ((lastClassPrimeCoeff q n - A : ℝ) : ℂ)
+  have hc0 : c 0 = 0 := by simp [c]
+  have hK : 0 ≤ K := by simpa using (abs_nonneg _).trans (hbound 1 le_rfl)
+  have hreal (x : ℝ) (hx : 1 ≤ x) : ‖∑ n ∈ Icc 1 ⌊x⌋₊, c n‖ ≤ K*x^b := by
+    let M := ⌊x⌋₊
+    have he : (∑ n ∈ Icc 1 M, c n) = ((lastClassPrimeMass q M - A*M : ℝ) : ℂ) := by
+      calc
+        _ = ∑ n ∈ Icc 1 M, ((lastClassPrimeCoeff q n - A : ℝ) : ℂ) :=
+          sum_congr rfl fun n hn => if_neg (Nat.ne_of_gt (mem_Icc.mp hn).1)
+        _ = _ := by
+          rw [← Complex.ofReal_sum,sum_sub_distrib,lastClassPrimeMass_eq_prefix q hq]
+          simp only [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel,mul_comm A]
+    rw [he,Complex.norm_real,Real.norm_eq_abs]
+    exact (hbound M ((Nat.one_le_floor_iff x).mpr hx)).trans (mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.floor_le (zero_le_one.trans hx)) hb) hK)
+  apply lastQuotientClassSymbol_vanishes_of_continuation q (A := A) hb1 (HeckeLFunctions.growthCont c b)
+    (HeckeLFunctions.differentiableOn_growthCont hc0 hb hreal) _ hρ hz
+  intro s hs'
+  have hs : 1<s.re := lt_trans (by norm_num : (1:ℝ)<2) hs'
+  obtain ⟨hf,he⟩ := lastClassPrimeCoeff_series q hs
+  let f := fun n => (lastClassPrimeCoeff q n : ℂ)
+  have hd {n : ℕ} (hn : n ≠ 0) : c n = (f - (A:ℂ) • (1 : ℕ → ℂ)) n := by
+    simp [c,hn,f]
+  have ha := (LSeriesSummable_one_iff.mpr hs).smul (A:ℂ)
+  have hc := (LSeriesSummable_congr s hd).mpr (hf.sub ha)
+  change primeSymbolRemainder q A s = HeckeLFunctions.growthCont c b s
+  rw [HeckeLFunctions.growthCont_eq_LSeries hc0 hb hreal (hb1.trans hs) hc,LSeries_congr hd s,
+    LSeries_sub hf ha,LSeries_smul,LSeries_one_eq_riemannZeta hs]
+  exact congrArg (· - (A:ℂ)*riemannZeta s) he.symm
 
 private theorem mass_bound_of_gcd_bound (j : ℕ) {b A K : ℝ} (hb : 1/2 ≤ b)
     (hg : ∀ N : ℕ, |Real.log (dyadicBinomialGcd j N) - A*(2^(j+1)*N : ℕ)| ≤

@@ -22,7 +22,7 @@ For ordinary primes counted once, put $A(N)=\pi(N)-\sum_{2\le n\le N}1/\log n$. 
 
 A zero with real part $\beta>1/2$ forces each sign of $E$ to have harmonic mass $\gg_\rho N^\beta$ on every sufficiently large interval $(\sqrt N,N]$. This also holds when the zero abscissa is unattained. RH is equivalent to a bound $O_b(N^b)$ for either sign on arbitrarily distant such intervals, for every $1/2<b<1$. An independent arithmetic upper bound for one sign remains open. [Local mean and sign criterion](alternating-divisor-kernel-at-an-arbitrary-right-zero.md)
 
-Intersecting divisibility conditions from successive central binomial coefficients gives a gcd whose large prime divisors select a single residue class of the quotient. Can its logarithm be estimated to square-root accuracy? [Dyadic binomial common divisors](dyadic-binomial-common-prime-divisors.md)
+Intersecting divisibility conditions from successive central binomial coefficients gives a gcd whose large prime divisors select a single residue class of the quotient. RH is equivalent to cumulative error $O(N^{1+b})$ about a linear slope at cofinally many depths for every $1/2<b<1$. An independent arithmetic estimate remains open. [First-mean criterion](../3-formalized/the-first-means-of-dyadic-binomial-gcds.md) · [Dyadic binomial common divisors](dyadic-binomial-common-prime-divisors.md)
 
 Under one quartet, what is the size of the surviving wave when the cofactor symbol vanishes at $\rho$ to order $k$? In log coordinates the derivative of the filtered logarithmic-integral mode is $e^{\rho t}\sum_d f(d)d^{-\rho}/(t-\log d)$. Its first nonzero inverse-power coefficient is $(-1)^kD^{(k)}(\rho)$. This predicts oscillation of order $x^{\Re\rho}/\log^{k+1}x$ in the actual count.
 

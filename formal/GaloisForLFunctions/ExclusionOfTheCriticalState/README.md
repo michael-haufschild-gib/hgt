@@ -262,6 +262,8 @@ increment recovers $8a\int F^2e^{-8u}$ after taking the prime limit and then the
 At every sufficiently late time, **all distinct ordinary-prime pairs of positive additive gap at most**
 $K$ contribute $O(K)$ in absolute value, uniformly in $K$. Hence gaps up to $o(t)$ contribute $o(t)$.
 [Short additive gaps](Wall/ShortAdditiveGapsInTheOrdinaryPrimeWave.lean).
+Subtracting one unit of density at every integer replaces the continuous pole with vanishing absolute Cesàro error. The cell estimate uses $\|F-F(\cdot+h)\|_1=o(\sqrt h)$ from the interior increment law. [Integer centering](Wall/TheIntegerWaveHasVanishingMeanAbsoluteError.lean).
+Removing every prime factor up to $T^2$ from the integer reference, with density normalization, costs $e^{o(T)}$ in cumulative absolute error on $[0,T]$. Fixed sieves retain vanishing absolute Cesàro error. On each late interval $[\eta T,T]$, removing two eliminates every odd-gap cross term. [Growing sieve](Wall/RemovingSmallPrimesFromTheDensityReference.lean).
 
 The unheated wall profile has a zero expansion in $L^2(0,\infty)$ on the unit damping line.
 After polar subtraction, removing the entire left-zero contribution from the ordinary-prime

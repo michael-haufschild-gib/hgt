@@ -157,7 +157,7 @@ theorem exponentialProbeHankel_prescribed_zeros {n : ℕ} {t : ℝ} (ht : -5 < t
   obtain ⟨c,hc⟩ := Matrix.mulVec_surjective_iff_isUnit.mpr hM b
   have h₁ : f c a = 1 := congrFun hc 0
   have h₀ (i : Fin n) : f c (r i) = 0 := congrFun hc i.succ
-  have hne : c ≠ 0 := fun h => by simpa [f,h] using h₁
+  have hne : c ≠ 0 := fun h => by simp [f,h] at h₁
   refine ⟨c,⟨h₁,fun m => ⟨fun hm => ?_,fun ⟨i,hi⟩ => hi ▸ h₀ i⟩⟩,?_⟩
   · by_contra hu
     apply exponentialProbeHankel_zero_bound ht j c hne

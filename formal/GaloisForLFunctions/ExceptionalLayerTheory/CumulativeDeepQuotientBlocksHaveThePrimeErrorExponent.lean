@@ -18,10 +18,10 @@ open Finset ArithmeticFunction
 
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
-private abbrev prefix (f : ArithmeticFunction ℝ) (N : ℕ) := ∑ m ∈ Icc 1 N, f m
+private abbrev partialMass (f : ArithmeticFunction ℝ) (N : ℕ) := ∑ m ∈ Icc 1 N, f m
 
 private abbrev powerBound (f : ArithmeticFunction ℝ) (s : ℝ) :=
-  ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, |prefix f N| ≤ C*(N:ℝ)^s
+  ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, |partialMass f N| ≤ C*(N:ℝ)^s
 
 private def timesIndex (f : ArithmeticFunction ℝ) : ArithmeticFunction ℝ :=
   ⟨fun n => (n:ℝ)*f n,by simp⟩
@@ -36,7 +36,7 @@ private theorem bounded_convolution {f g : ArithmeticFunction ℝ} {s : ℝ} (hs
   have hZ : 0 ≤ Z := tsum_nonneg fun n => Real.rpow_nonneg (Nat.cast_nonneg n) _
   have hz := Real.summable_nat_rpow.mpr (by linarith only [hs] : -s < -1)
   refine ⟨C*Z,mul_nonneg hC hZ,fun N => ?_⟩
-  rw [prefix,RHTower.sum_Icc_mul_apply]
+  rw [partialMass,RHTower.sum_Icc_mul_apply]
   apply (abs_sum_le_sum_abs _ _).trans
   calc
     _ ≤ ∑ d ∈ Icc 1 N, (C*(N:ℝ)^s)*(d:ℝ)^(-s) := by
@@ -72,16 +72,16 @@ private theorem timesIndex_bound (f : ArithmeticFunction ℝ) {b : ℝ} (hb : 0 
   obtain ⟨C,hC,hf⟩ := hf
   refine ⟨3*C,by positivity,fun N => ?_⟩
   rcases Nat.eq_zero_or_pos N with rfl | hN
-  · simp [prefix,Real.zero_rpow (show b+1 ≠ 0 by linarith)]
-  have expand : prefix (timesIndex f) N = prefix f N*((N:ℝ)+1) - ∑ n ∈ Icc 1 N, prefix f n := by
+  · simp [partialMass,Real.zero_rpow (show b+1 ≠ 0 by linarith)]
+  have expand : partialMass (timesIndex f) N = partialMass f N*((N:ℝ)+1) - ∑ n ∈ Icc 1 N, partialMass f n := by
     have he := sum_smul_eq_prefix_differences (fun n => f n) (fun n : ℕ => (n:ℝ)) N
     have hdiff (x : ℝ) : x-(x+1) = -1 := by ring
     simp only [smul_eq_mul,Nat.cast_add,Nat.cast_one,hdiff,mul_neg,mul_one,sum_neg_distrib] at he
     calc
       _ = ∑ n ∈ Icc 1 N, f n*(n:ℝ) := sum_congr rfl fun n _ => mul_comm _ _
-      _ = _ := by simpa only [prefix,sub_eq_add_neg] using he
+      _ = _ := by simpa only [partialMass,sub_eq_add_neg] using he
   have hN0 : 0 < (N:ℝ) := by exact_mod_cast hN
-  have hsum : |∑ n ∈ Icc 1 N, prefix f n| ≤ N*(C*(N:ℝ)^b) := by
+  have hsum : |∑ n ∈ Icc 1 N, partialMass f n| ≤ N*(C*(N:ℝ)^b) := by
     apply (abs_sum_le_sum_abs _ _).trans
     calc
       _ ≤ ∑ _n ∈ Icc 1 N, C*(N:ℝ)^b := sum_le_sum fun n hn =>
@@ -100,9 +100,9 @@ private theorem withoutIndex_bound (f : ArithmeticFunction ℝ) {b : ℝ} (hb : 
     (hf : powerBound (timesIndex f) (b+1)) : powerBound f b := by
   obtain ⟨C,hC,hf⟩ := hf
   refine ⟨C+C/b,by positivity,fun N => ?_⟩
-  have hrep : prefix f N =
-      prefix (timesIndex f) N*((N:ℝ)+1)⁻¹ +
-        ∑ n ∈ Icc 1 N, prefix (timesIndex f) n*((n:ℝ)⁻¹-((n:ℝ)+1)⁻¹) := by
+  have hrep : partialMass f N =
+      partialMass (timesIndex f) N*((N:ℝ)+1)⁻¹ +
+        ∑ n ∈ Icc 1 N, partialMass (timesIndex f) n*((n:ℝ)⁻¹-((n:ℝ)+1)⁻¹) := by
     have he := sum_smul_eq_prefix_differences (fun n => timesIndex f n)
       (fun n : ℕ => (n:ℝ)⁻¹) N
     simp only [smul_eq_mul,Nat.cast_add,Nat.cast_one] at he
@@ -110,16 +110,16 @@ private theorem withoutIndex_bound (f : ArithmeticFunction ℝ) {b : ℝ} (hb : 
     refine sum_congr rfl fun n hn => ?_
     rw [timesIndex_apply,mul_comm (n:ℝ),mul_assoc,mul_inv_cancel₀
       (by exact_mod_cast (Nat.ne_of_gt (mem_Icc.mp hn).1)),mul_one]
-  have head : |prefix (timesIndex f) N*((N:ℝ)+1)⁻¹| ≤ C*(N:ℝ)^b := by
+  have head : |partialMass (timesIndex f) N*((N:ℝ)+1)⁻¹| ≤ C*(N:ℝ)^b := by
     rw [abs_mul,abs_of_nonneg (by positivity : 0 ≤ ((N:ℝ)+1)⁻¹)]
     rcases Nat.eq_zero_or_pos N with rfl | hn
-    · simp [prefix,Real.zero_rpow hb.ne']
+    · simp [partialMass,Real.zero_rpow hb.ne']
     have hn0 : 0 < (N:ℝ) := by exact_mod_cast hn
     have h := mul_le_mul (hf N) (inv_anti₀ hn0 (by linarith : (N:ℝ)≤N+1))
       (by positivity) (mul_nonneg hC (Real.rpow_nonneg hn0.le _))
     rwa [Real.rpow_add_one hn0.ne',mul_assoc C, mul_assoc ((N:ℝ)^b),
       mul_inv_cancel₀ hn0.ne',mul_one] at h
-  have htail : |∑ n ∈ Icc 1 N, prefix (timesIndex f) n*((n:ℝ)⁻¹-((n:ℝ)+1)⁻¹)| ≤
+  have htail : |∑ n ∈ Icc 1 N, partialMass (timesIndex f) n*((n:ℝ)⁻¹-((n:ℝ)+1)⁻¹)| ≤
       C*((N:ℝ)^b/b) := by
     apply (abs_sum_le_sum_abs _ _).trans
     calc
@@ -150,7 +150,7 @@ def deepBlockPrimeExcess (q N : ℕ) : ℝ :=
     quotientClassMassOf (fun m => vonMangoldt m-1) q (q*M-r)
 
 private theorem deepBlockPrimeExcess_eq {N q : ℕ} (hq : N < q) :
-    deepBlockPrimeExcess q N = prefix ((zeta : ArithmeticFunction ℝ)*
+    deepBlockPrimeExcess q N = partialMass ((zeta : ArithmeticFunction ℝ)*
       timesIndex (vonMangoldt - (zeta : ArithmeticFunction ℝ))) N := by
   refine sum_congr rfl fun M hM => ?_
   rw [sum_quotientClassMassOf_deep_block _ (mem_Icc.mp hM).1 ((mem_Icc.mp hM).2.trans_lt hq),

@@ -109,7 +109,7 @@ private theorem square_profile {n k : ℕ} (hn : 0 < n) :
       (∑ j, (d i:ℝ)*(d j:ℝ)*splineAutoCorr (-l-Real.log ((i:ℝ)+1)+Real.log ((j:ℝ)+1))) =
         R (Real.log ((i:ℝ)+1))*(d i:ℝ) := by
     let f := fun z : ℝ => splineAutoCorr (-l-Real.log ((i:ℝ)+1)+Real.log z)
-    calc _ = (∑ j, f ((j:ℝ)+1)*(d j:ℝ))*(d i:ℝ) := by
+    calc _ = (∑ j : Fin ((2*n+1)^2+1), f ((j:ℝ)+1)*(d j:ℝ))*(d i:ℝ) := by
               rw [sum_mul]
               exact sum_congr rfl fun _ _ => by dsimp only [f]; ring
       _ = _ := by
@@ -120,7 +120,7 @@ private theorem square_profile {n k : ℕ} (hn : 0 < n) :
     (-l-Real.log ((i:ℝ)+1)+Real.log ((j:ℝ)+1))) = _
   simp_rw [hrow]
   rw [sum_successorSquareTriple hn (fun z => R (Real.log z))]
-  simp only [Real.log_one]
+  simp only [Real.log_one,R,s,t,l]
 
 /-- At every lag above a fixed constant the prime measures only the two
 large conductor ratios, with weights two and minus one. -/
@@ -154,7 +154,7 @@ theorem successorSquare_long_contact {n k : ℕ} (hn : 0 < n) (hlarge : 8+Real.l
     2*(splineAutoCorr (-l-s)+2*splineAutoCorr (-l-s+s)-splineAutoCorr (-l-s+t)) -
     (splineAutoCorr (-l-t)+2*splineAutoCorr (-l-t+s)-splineAutoCorr (-l-t+t))) = _
   simp only [sub_zero,sub_add_cancel,h₀,h₁,h₂,h₃,h₄,zero_add,mul_zero,sub_zero,add_zero,
-    show -l+s=s-l by ring,show -l+t=t-l by ring]
+    show -l+s=s-l by ring,show -l+t=t-l by ring,s,t,l]
 
 /-- Relative lags sufficiently near the middle conductor carry a fixed
 positive contact, uniformly in the location of the negative conductor. -/
