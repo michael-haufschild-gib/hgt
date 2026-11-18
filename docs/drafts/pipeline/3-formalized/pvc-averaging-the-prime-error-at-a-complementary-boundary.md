@@ -1,6 +1,6 @@
 # Averaging the prime error at a complementary-factor boundary
 
-**PVC · Formalized.** Write the factorial stencil at $R\ge1$ as $\sum_e c_e f(e)$, with mass $M_R$, support $1\le e\le2R$ and $\sum_e c_e/e=0$. For integers $a>0$ put
+**PVC · Formalized.** Write the factorial stencil at $R\ge1$ as $\sum_e c_e f(e)$, with mass $M_R$, support $1\le e\le2R$ and $\sum_e c_e/e=0$. For integers $a\ge0$ put
 $$
 B_R(a)=1-\sum_e c_e\lfloor a/e\rfloor-(1+\tfrac12\sum_e c_e).
 $$

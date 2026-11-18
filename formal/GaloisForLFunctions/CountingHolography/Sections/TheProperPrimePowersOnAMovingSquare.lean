@@ -131,7 +131,8 @@ private theorem moving_power_sum {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) {W : �
         rw [(hder ht).deriv,show X*(t/X)=t by field_simp]
         ring
       _ = _ := by
-        rw [intervalIntegral.integral_const_mul,intervalIntegral.integral_comp_div _ hX.ne',
+        rw [intervalIntegral.integral_const_mul,intervalIntegral.integral_comp_div
+          (a := a*X) (b := b*X) (fun v : ℝ => deriv W v*powerMass (X*v)) hX.ne',
           mul_div_cancel_right₀ _ hX.ne',mul_div_cancel_right₀ _ hX.ne',smul_eq_mul,
           ← mul_assoc,inv_mul_cancel₀ hX.ne',one_mul]
   change W b*(powerMass (X*b)/Real.sqrt X)-W a*(powerMass (X*a)/Real.sqrt X)-
@@ -190,7 +191,6 @@ private theorem root_profile_mass :
       unfold rootProfile
       rw [he,show v⁻¹=((Real.sqrt v)^2)⁻¹ by rw [Real.sq_sqrt hv₀.le]]
       field_simp [hs.ne']
-      <;> ring
     change deriv rootProfile v*Real.sqrt v+rootProfile v*(1/(2*Real.sqrt v))-
       splineAutoCorr (Real.log v)*v⁻¹=_
     rw [hcancel]; ring

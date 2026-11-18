@@ -39,7 +39,7 @@ theorem primeReciprocalReading_den_exponent (a : Nat.Primes →₀ ℤ) (p : Nat
   let x := primeReciprocalReading a
   letI : Fact (p:ℕ).Prime := ⟨p.property⟩
   have hp : 1 < ((p:ℕ):ℚ) := by exact_mod_cast p.property.one_lt
-  have hp0 : (0:ℚ)<(p:ℕ) := zero_lt_one.trans hp
+  have hp0 : (0:ℚ) < (p:ℕ) := zero_lt_one.trans hp
   rw [Nat.factorization_def _ p.property]
   by_cases h : (p:ℤ) ∣ a p
   · rw [if_pos h]

@@ -156,7 +156,7 @@ theorem sum_centered_quotient_to_sqrt :
   have hL : (L : ℝ)≤P := Nat.floor_le hP
   have hhalf : P≤Real.sqrt N := by
     rw [Real.sqrt_eq_rpow]; exact Real.rpow_le_rpow_of_exponent_le hn (by norm_num)
-  have hLs : L≤s := by
+  have hLs : L ≤ s := by
     apply Nat.le_sqrt.mpr
     have hz := mul_self_le_mul_self (Nat.cast_nonneg L) (hL.trans hhalf)
     rw [Real.mul_self_sqrt (Nat.cast_nonneg N)] at hz

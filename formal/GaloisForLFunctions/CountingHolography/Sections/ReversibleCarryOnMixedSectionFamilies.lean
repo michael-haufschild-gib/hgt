@@ -240,7 +240,8 @@ theorem centeredCarry_maps_Icc_iff {K r₀ r₁ r₂ : ℕ} (hKr : K ≤ r₀) :
   constructor
   · intro h
     obtain ⟨h₂, h₁⟩ := bounds_of_centeredCarry_maps_Icc h
-    rwa [min_eq_left hKr] at h₁
+    rw [min_eq_left hKr] at h₁
+    exact ⟨h₂, h₁⟩
   · rintro ⟨h₂, h₁⟩ z₁ hz₁ z₂ hz₂
     exact centeredCarry_maps_Icc_of_bounds h₂ h₁ hz₁ hz₂
 
@@ -312,7 +313,8 @@ theorem eventually_centeredCarry_sections_of_window {N : ℕ} {v₀ v₁ v₂ : 
     have hK_le : K m ≤ M * sectionRadius (m • v₀) := by
       have : K m ≤ M * 1 := by dsimp [M]; omega
       exact this.trans (Nat.mul_le_mul_left M h₀)
-    dsimp [M] at hnat hK_le; omega
+    change M * sectionRadius (m • v₀) + K m ≤ sectionRadius (m • v₁)
+    linarith only [hnat, hK_le]
 
 /-- Conversely, if `centeredCarry (K m)` maps `S(m(kb))²` into `S(m(kb + a)) × S(m(kb - a))`
 cofinally often for any schedule `K` at cofinal translations `k` of a positive
@@ -681,7 +683,7 @@ private theorem sum_extend_zero {ι κ : Type*} [Fintype ι] [Fintype κ] [Decid
     intro ℓ hℓ
     have hz : Function.extend e u 0 ℓ = 0 :=
       Function.extend_apply' _ _ _ fun ⟨i, hi⟩ => hℓ (Finset.mem_image.mpr ⟨i, Finset.mem_univ _, hi⟩)
-    rw [hz, Pi.zero_apply, Int.cast_zero, mul_zero]
+    rw [hz, Int.cast_zero, mul_zero]
   rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image e)) fun ℓ _ hℓ => hoff ℓ hℓ,
     Finset.sum_image fun i _ j _ h => he h]
   exact Finset.sum_congr rfl fun i _ => by rw [he.extend_apply]
@@ -778,7 +780,8 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
     · exact (hnonpos i₀).not_gt hpos
   let hle : N ≤ p * N := Nat.le_mul_of_pos_left N hp0
   let ePad : Fin N → Fin (p * N) := fun i => ⟨i.val, i.isLt.trans_le hle⟩
-  have hePad : Function.Injective ePad := fun i j hij => Fin.ext (congrArg Fin.val hij)
+  have hePad : Function.Injective ePad :=
+    fun i j hij => Fin.ext (congrArg (Fin.val : Fin (p * N) → ℕ) hij)
   let U : Fin (p * N) → ℤ := padDivisor hle u
   let V : Fin (p * N) → ℤ := CountingHolography.dilate hp0 u
   let b : Fin (p * N) → ℤ := U + V
@@ -787,8 +790,8 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
   have hU_supp {ℓ : Fin (p * N)} (hU : U ℓ ≠ 0) : N / 2 ≤ ℓ.val ∧ ℓ.val < N := by
     by_cases hex : ∃ i : Fin N, ePad i = ℓ
     · obtain ⟨i, rfl⟩ := hex
-      have hui : u i ≠ 0 := by
-        simpa only [U, padDivisor, hePad.extend_apply] using hU
+      have hUeq : U (ePad i) = u i := hePad.extend_apply u 0 i
+      have hui : u i ≠ 0 := by rwa [hUeq] at hU
       refine ⟨?_, i.isLt⟩
       by_contra! hlt
       exact hui (hu_low i hlt)
@@ -846,8 +849,8 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
       have hUi₀ : U (ePad i₀) = u i₀ := hePad.extend_apply u 0 i₀
       have hVi₀ : V (ePad i₀) = 0 :=
         (hdisj (ePad i₀)).resolve_left (by rw [hUi₀]; exact hi₀)
-      simp only [Pi.add_apply, Pi.smul_apply, zsmul_eq_mul, hUi₀, hVi₀, mul_zero, add_zero,
-        Pi.zero_apply] at hval
+      change c₁ • U (ePad i₀) + c₂ • V (ePad i₀) = 0 at hval
+      rw [zsmul_eq_mul, zsmul_eq_mul, hUi₀, hVi₀, mul_zero, add_zero] at hval
       exact mul_ne_zero hc₁ hi₀ hval
     · intro ℓ hℓ
       have hdiv_eq : p * N / (2 * p) = N / 2 := by
@@ -864,11 +867,12 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
     · intro j hj
       have hj' : j < k₀ := hj.trans_le (le_max_left k 1)
       have hexp : (∑ ℓ : Fin (p * N), ((ℓ : ℝ) + 1) ^ j * (((c₁ • U + c₂ • V) ℓ : ℤ) : ℝ)) =
-          (c₁ : ℝ) * (∑ ℓ, ((ℓ : ℝ) + 1) ^ j * (U ℓ : ℝ)) +
-            (c₂ : ℝ) * (∑ ℓ, ((ℓ : ℝ) + 1) ^ j * (V ℓ : ℝ)) := by
+          (c₁ : ℝ) * (∑ ℓ : Fin (p * N), ((ℓ : ℝ) + 1) ^ j * (U ℓ : ℝ)) +
+            (c₂ : ℝ) * (∑ ℓ : Fin (p * N), ((ℓ : ℝ) + 1) ^ j * (V ℓ : ℝ)) := by
         rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl fun ℓ _ => ?_
-        simp only [Pi.add_apply, Pi.smul_apply, zsmul_eq_mul, Int.cast_add, Int.cast_mul]
+        change ((ℓ : ℝ) + 1) ^ j * ((c₁ • U ℓ + c₂ • V ℓ : ℤ) : ℝ) = _
+        simp only [zsmul_eq_mul, Int.cast_add, Int.cast_mul]
         ring
       rw [hexp, hU_mom j hj', hV_mom j hj', mul_zero, mul_zero, add_zero]
   have hb_pos : 0 < integerProbe (p * N) b := by
@@ -878,7 +882,7 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
     simpa only [w, one_smul, neg_one_smul, sub_eq_add_neg] using h
   have ha_pos : 0 < integerProbe (p * N) a := by
     have h := hcomb_pos 3 (-1) (by decide)
-    have h3 : (3 : ℤ) • U = (3 : ℕ) • U := by ext ℓ; simp [zsmul_eq_mul, nsmul_eq_mul]
+    have h3 : (3 : ℤ) • U = (3 : ℕ) • U := by ext ℓ; simp
     rw [h3] at h
     simpa only [a, neg_one_smul, sub_eq_add_neg] using h
   have ha_sum : (∑ ℓ : Fin (p * N), a ℓ) = 0 := by
@@ -887,11 +891,13 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
     simp only [pow_zero, one_mul] at h0U h0V
     have hreal : (∑ ℓ : Fin (p * N), (a ℓ : ℝ)) = 0 := by
       have hexp : (∑ ℓ : Fin (p * N), (a ℓ : ℝ)) =
-          3 * (∑ ℓ, (U ℓ : ℝ)) - ∑ ℓ, (V ℓ : ℝ) := by
+          3 * (∑ ℓ : Fin (p * N), (U ℓ : ℝ)) - ∑ ℓ : Fin (p * N), (V ℓ : ℝ) := by
         rw [Finset.mul_sum, ← Finset.sum_sub_distrib]
         refine Finset.sum_congr rfl fun ℓ _ => ?_
-        change (((3 • U ℓ) - V ℓ : ℤ) : ℝ) = _
-        simp only [nsmul_eq_mul, Int.cast_sub, Int.cast_mul, Int.cast_ofNat]
+        change (((3 : ℕ) • U ℓ - V ℓ : ℤ) : ℝ) = _
+        simp only [nsmul_eq_mul]
+        push_cast
+        ring
       rw [hexp, h0U, h0V]; ring
     exact_mod_cast hreal
   have ha_pos_entry : ∃ ℓ₁, 0 < a ℓ₁ := by

@@ -60,7 +60,7 @@ theorem complete_divisor_error_power :
       exact sum_nonneg fun d _ => inv_nonneg.mpr (Nat.cast_nonneg d)
     rw [abs_of_nonneg hh]
     exact (harmonic_le_one_add_log s).trans (add_le_add_left (Real.log_le_log
-      (by exact_mod_cast hs : (0 : ℝ)<s) (by exact_mod_cast Nat.sqrt_le_self n)) 1)
+      (by exact_mod_cast hs : (0 : ℝ) < s) (by exact_mod_cast Nat.sqrt_le_self n)) 1)
   have hS : |divisorHyperbolaSmoothRemainder n|≤8*J := by
     apply (abs_divisorHyperbolaSmoothRemainder_le hn).trans
     have hl := Real.log_le_log (by positivity : (0 : ℝ)<(n : ℝ)+1)

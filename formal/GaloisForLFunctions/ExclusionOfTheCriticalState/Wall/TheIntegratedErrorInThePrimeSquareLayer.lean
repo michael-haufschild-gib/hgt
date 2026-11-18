@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheLogarithmicLocationsOfThePrimeMassBins
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.ThePrimeNumberTheoremOnTheState
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheFirstAbsoluteMomentOfStateIncrements
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheIntegerWaveHasVanishingMeanAbsoluteError
 
 /-!
 # Integrated error of the prime-square layer
@@ -189,4 +190,166 @@ private theorem integrated_square_error {g : ℝ → ℝ} (hc : Continuous g) (h
     _ = (∫ t, |G t|)/2 := by rw [integral_div]
     _ ≤ _ := (div_le_div_of_nonneg_right hglobal (by norm_num : (0:ℝ) ≤ 2)).trans_eq (by ring)
 
+/-- For every contraction of the critical-state amplitude fixing zero, the error
+in the unaveraged square layer has exponentially small absolute mass on the
+whole late ray. The identity and both sign parts are such contractions. -/
+theorem riemannHypothesis_or_primeSquare_integrated_error : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧
+      ∀ L : ℝ → ℝ, LipschitzWith 1 L → L 0=0 → ∃ B : ℝ, 0 ≤ B ∧ ∀ᶠ V : ℝ in atTop,
+        let E := fun t : ℝ => primePowerLayer (L ∘ Φ) 2 t-(∫ u, L (Φ u))/2
+        IntegrableOn E (Ioi (V+1)) ∧
+          (∫ t in Ioi (V+1), |E t|) ≤ B*Real.exp ((-1/40)*V) := by
+  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hr | ⟨W₀,F,hW,ht,hF⟩
+  · exact Or.inl hr
+  obtain ⟨_,_,Φ,hΦ,he,hs,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  have hi : Integrable Φ := (criticalHalfLineEnergyDomain_of_groundState hF).integrable.congr he
+  obtain ⟨ε,hε,hd⟩ := state_translationCost hW ht hF he
+  refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hΦ,he,fun L hL h0 => ?_⟩
+  have hdist (x y : ℝ) : |L x-L y| ≤ |x-y| := by
+    simpa only [Real.dist_eq,NNReal.coe_one,one_mul] using hL.dist_le_mul x y
+  have hnorm (x : ℝ) : |L x| ≤ |x| := by simpa only [h0,sub_zero] using hdist x 0
+  have hc := hL.continuous.comp hΦ
+  have hg : Integrable (L ∘ Φ) := hi.abs.mono' hc.aestronglyMeasurable
+    (Eventually.of_forall fun u => hnorm (Φ u))
+  refine integrated_square_error hc hg (fun u hu => by simp only [Function.comp_apply,hs u hu,h0])
+    hC (fun u => (hnorm (Φ u)).trans (hb u)) hε (fun d hsmall => ?_)
+  apply le_trans _ (hd d hsmall)
+  exact integral_mono (hg.sub (hg.comp_add_right d)).abs (hi.sub (hi.comp_add_right d)).abs
+    (fun u => hdist (Φ u) (Φ (u+d)))
+
+#print axioms riemannHypothesis_or_primeSquare_integrated_error
+
+/-- The full proper-power correction has an exponentially small absolute error
+on the entire late ray, also after taking either part of the state amplitude. -/
+theorem riemannHypothesis_or_integrated_properPower_error : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧
+      ∀ L : ℝ → ℝ, LipschitzWith 1 L → L 0=0 → ∃ B : ℝ, 0 ≤ B ∧ ∀ᶠ V : ℝ in atTop,
+        let E := fun t : ℝ => (∑' j, vonMangoldtAtom (properPrimePowerIndex j)*
+          L (Φ (t-Real.log (properPrimePowerIndex j))))-(∫ u, L (Φ u))/2
+        IntegrableOn E (Ioi (V+1)) ∧
+          (∫ t in Ioi (V+1), |E t|) ≤ B*Real.exp ((-1/40)*V) := by
+  rcases riemannHypothesis_or_primeSquare_integrated_error with hr | ⟨W₀,F,Φ,hW,ht,hF,hΦ,he,h2⟩
+  · exact Or.inl hr
+  obtain ⟨_,_,Ψ,hΨ,heΨ,hs,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  have heq : Ψ=Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heΨ.symm.trans he)
+  subst Ψ
+  obtain ⟨Ψ,hΨ,heΨ,hfull⟩ := criticalState_properPowerWave_subexponential hW ht hF
+  have heq : Ψ=Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heΨ.symm.trans he)
+  subst Ψ
+  obtain ⟨_,habs⟩ := hfull 1 zero_lt_one
+  refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hΦ,he,fun L hL h0 => ?_⟩
+  let g := L ∘ Φ
+  have hc : Continuous g := hL.continuous.comp hΦ
+  have hg (u) : |g u| ≤ |Φ u| := by
+    simpa only [g,Function.comp_apply,Real.dist_eq,h0,sub_zero,NNReal.coe_one,one_mul]
+      using hL.dist_le_mul (Φ u) 0
+  have hs' (u : ℝ) (hu : 0 ≤ u) : g u=0 := by simp only [g,Function.comp_apply,hs u hu,h0]
+  have hC' (u : ℝ) : |g u| ≤ C := by
+    rcases le_or_gt 0 u with hu | hu
+    · simpa only [hs' u hu,abs_zero] using hC
+    · exact (hg u).trans ((hb u).trans (mul_le_of_le_one_right hC
+        (Real.exp_le_one_iff.mpr (by linarith only [hu]))))
+  obtain ⟨A,hA,hsq⟩ := h2 L hL h0
+  obtain ⟨M,hM,hhi⟩ := cubeOrHigherWave_absolute_exp_bound hs' hC' (b := 1/40) (by norm_num) (by norm_num)
+  let H := fun t : ℝ => ∑' j, vonMangoldtAtom (cubeOrHigherIndex j)*g (t-Real.log (cubeOrHigherIndex j))
+  let S := fun t : ℝ => primePowerLayer g 2 t-(∫ u, g u)/2
+  let E := fun t : ℝ => (∑' j, vonMangoldtAtom (properPrimePowerIndex j)*g (t-Real.log (properPrimePowerIndex j)))-(∫ u, g u)/2
+  have hmH : Measurable H := Measurable.tsum fun _ => measurable_const.mul (hc.measurable.comp (by fun_prop))
+  have hH (t : ℝ) : |H t| ≤ M*Real.exp ((-1/40)*t) := by
+    have ha := (hhi t).1
+    simp only [← Real.norm_eq_abs] at ha
+    exact (norm_tsum_le_tsum_norm ha).trans (by
+      simpa only [Real.norm_eq_abs,neg_div] using (hhi t).2)
+  have hsplit (t : ℝ) (ht0 : 0 ≤ t) : E t=S t+H t := by
+    have hn (n : ℕ) : 0 ≤ vonMangoldtAtom n := by
+      unfold vonMangoldtAtom
+      split_ifs <;> first | exact le_rfl | exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
+    have hsum := Summable.of_nonneg_of_le (fun j => mul_nonneg (hn _) (abs_nonneg _))
+      (fun j => mul_le_mul_of_nonneg_left (hg (t-Real.log (properPrimePowerIndex j))) (hn _)) (habs t ht0).1
+    dsimp only [E,S,H]
+    rw [← square_add_higher_eq_properPower hsum]
+    ring
+  refine ⟨A+40*M,by positivity,?_⟩
+  filter_upwards [hsq,eventually_ge_atTop (0:ℝ)] with V hv hV
+  change IntegrableOn S (Ioi (V+1)) ∧ (∫ t in Ioi (V+1), |S t|) ≤ _ at hv
+  have hexp := (integrableOn_exp_mul_Ioi (by norm_num : (-1/40:ℝ)<0) (V+1)).const_mul M
+  have hInt : IntegrableOn H (Ioi (V+1)) := hexp.mono' hmH.aestronglyMeasurable (Eventually.of_forall hH)
+  have hEq : E =ᵐ[volume.restrict (Ioi (V+1))] fun t => S t+H t :=
+    (ae_restrict_mem measurableSet_Ioi).mono fun t ht => hsplit t (by linarith only [hV,show V+1<t from ht])
+  have heI := (hv.1.add hInt).congr hEq.symm
+  refine ⟨heI,?_⟩
+  have hcost : (∫ t in Ioi (V+1), |H t|) ≤ (40*M)*Real.exp ((-1/40)*V) := by
+    apply (integral_mono hInt.abs hexp hH).trans
+    rw [integral_const_mul,integral_exp_mul_Ioi (by norm_num : (-1/40:ℝ)<0)]
+    have hmono : Real.exp ((-1/40)*(V+1)) ≤ Real.exp ((-1/40)*V) := Real.exp_le_exp.mpr (by linarith)
+    nlinarith only [mul_le_mul_of_nonneg_left hmono hM]
+  calc (∫ t in Ioi (V+1), |E t|) ≤ ∫ t in Ioi (V+1), |S t|+|H t| :=
+         integral_mono_ae heI.abs (hv.1.abs.add hInt.abs) (hEq.mono fun t he => he ▸ abs_add_le ..)
+    _ ≤ _ := by
+      rw [integral_add hv.1.abs hInt.abs,add_mul]
+      exact add_le_add hv.2 hcost
+
+#print axioms riemannHypothesis_or_integrated_properPower_error
+
+private theorem two_sign_distances (x y : ℝ) :
+    |max x 0-max y 0|+|max (-x) 0-max (-y) 0|=|x-y| := by
+  have split (z : ℝ) : max z 0-max (-z) 0=z := by
+    rcases le_or_gt 0 z with hz | hz
+    · rw [max_eq_left hz,max_eq_right (neg_nonpos.mpr hz),sub_zero]
+    · rw [max_eq_right hz.le,max_eq_left (neg_nonneg.mpr hz.le),zero_sub,neg_neg]
+  have ordered (a b : ℝ) (h : a ≤ b) :
+      |max a 0-max b 0|+|max (-a) 0-max (-b) 0|=|a-b| := by
+    rw [abs_of_nonpos (sub_nonpos.mpr (max_le_max_right h 0)),
+      abs_of_nonneg (sub_nonneg.mpr (max_le_max_right (neg_le_neg h) 0)),
+      abs_of_nonpos (sub_nonpos.mpr h)]
+    linarith only [split a,split b]
+  rcases le_total x y with h | h
+  · exact ordered x y h
+  · rw [abs_sub_comm (max x 0),abs_sub_comm (max (-x) 0),abs_sub_comm x y]
+    exact ordered y x h
+
+/-- On the entire late ray both sign parts of the ordinary-prime error agree
+in absolute integral with those of the Mangoldt error after its square charge
+is removed. This comparison permits arbitrary measurable late windows. -/
+theorem riemannHypothesis_or_ordinary_sign_transfer : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ) (B : ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧ 0 ≤ B ∧
+      ∀ᶠ V : ℝ in atTop,
+        let A := ∫ u in Iic (0:ℝ), Φ u*Real.exp (-u/2)
+        let P := fun t : ℝ => (ordinaryPrimeWave Φ t).re-Real.exp (t/2)*A
+        let M := fun t : ℝ => (∑' n : ℕ, ArithmeticFunction.vonMangoldt n*continuousIntegerAtom Φ n t)-
+          Real.exp (t/2)*A-(∫ u, Φ u)/2
+        let D := fun t : ℝ => |max (P t) 0-max (M t) 0|+|max (-P t) 0-max (-M t) 0|
+        IntegrableOn D (Ioi (V+1)) ∧ (∫ t in Ioi (V+1), D t) ≤ B*Real.exp ((-1/40)*V) := by
+  rcases riemannHypothesis_or_integrated_properPower_error with hr | ⟨W₀,F,Φ,hW,ht,hF,hΦ,he,h⟩
+  · exact Or.inl hr
+  obtain ⟨_,_,Ψ,hΨ,heΨ,_,⟨_,_,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  have heq : Ψ=Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heΨ.symm.trans he)
+  subst Ψ
+  obtain ⟨B,hB,hid⟩ := h id LipschitzWith.id rfl
+  refine Or.inr ⟨W₀,F,Φ,B,hW,ht,hF,hΦ,he,hB,?_⟩
+  filter_upwards [hid] with V hv
+  let A := ∫ u in Iic (0:ℝ), Φ u*Real.exp (-u/2)
+  let Q := fun t : ℝ => ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*Φ (t-Real.log (properPrimePowerIndex j))
+  let P := fun t : ℝ => (ordinaryPrimeWave Φ t).re-Real.exp (t/2)*A
+  let M := fun t : ℝ => (∑' n : ℕ, ArithmeticFunction.vonMangoldt n*continuousIntegerAtom Φ n t)-
+    Real.exp (t/2)*A-(∫ u, Φ u)/2
+  have hd (t : ℝ) : |max (P t) 0-max (M t) 0|+|max (-P t) 0-max (-M t) 0|=
+      |Q t-(∫ u, Φ u)/2| := by
+    rw [two_sign_distances]
+    have hs : P t-M t= -(Q t-(∫ u, Φ u)/2) := by
+      dsimp only [P,M,Q]
+      rw [mangoldt_atom_sum_split hb t]
+      ring
+    rw [hs,abs_neg]
+  change IntegrableOn (fun t => |max (P t) 0-max (M t) 0|+|max (-P t) 0-max (-M t) 0|) _ ∧ _
+  simp_rw [hd]
+  exact ⟨hv.1.abs,hv.2⟩
+
+#print axioms riemannHypothesis_or_ordinary_sign_transfer
 end GaloisForLFunctions.ExclusionOfTheCriticalState

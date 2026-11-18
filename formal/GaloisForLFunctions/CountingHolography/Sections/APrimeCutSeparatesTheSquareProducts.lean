@@ -30,19 +30,19 @@ private theorem box_separates {f : ℝ → ℝ} (hf : Integrable f) {c : ℝ} (h
   let g := unif 1 ⋆ f
   have primitive (x y : ℝ) : F y-F x=∫ t in x..y, f t :=
     intervalIntegral.integral_interval_sub_left hf.intervalIntegrable hf.intervalIntegrable
-  have inc {x y : ℝ} (hxy : x≤y) (hy : y≤c) : F x≤F y := by
+  have inc {x y : ℝ} (hxy : x ≤ y) (hy : y ≤ c) : F x ≤ F y := by
     apply sub_nonneg.mp
     rw [primitive,intervalIntegral.integral_of_le hxy]
     exact setIntegral_nonneg measurableSet_Ioc fun t ht => hs.1 t (ht.2.trans hy)
-  have dec {x y : ℝ} (hxy : x≤y) (hx : c≤x) : F y≤F x := by
+  have dec {x y : ℝ} (hxy : x ≤ y) (hx : c ≤ x) : F y ≤ F x := by
     apply sub_nonpos.mp
     rw [primitive,intervalIntegral.integral_of_le hxy]
     exact setIntegral_nonpos measurableSet_Ioc fun t ht => hs.2 t (hx.trans_lt ht.1)
   have hg (x : ℝ) : g x=(1/2:ℝ)*(F (x+1)-F (x-1)) := by
     rw [primitive]; exact box_integral hf x
-  have hleft {x : ℝ} (hx : x≤c-1) : 0≤g x := by
+  have hleft {x : ℝ} (hx : x ≤ c-1) : 0 ≤ g x := by
     rw [hg]; exact mul_nonneg (by norm_num) (sub_nonneg.mpr (inc (by linarith) (by linarith)))
-  have hright {x : ℝ} (hx : c+1≤x) : g x≤0 := by
+  have hright {x : ℝ} (hx : c+1 ≤ x) : g x ≤ 0 := by
     rw [hg]; exact mul_nonpos_of_nonneg_of_nonpos (by norm_num) (sub_nonpos.mpr (dec (by linarith) (by linarith)))
   have hant : AntitoneOn g (Icc (c-1) (c+1)) := by
     intro x hx y hy hxy
@@ -50,13 +50,13 @@ private theorem box_separates {f : ℝ → ℝ} (hf : Integrable f) {c : ℝ} (h
     exact mul_le_mul_of_nonneg_left (sub_le_sub (dec (by linarith) (by linarith only [hx.1]))
       (inc (by linarith) (by linarith only [hy.2]))) (by norm_num)
   have hcont : Continuous g := continuous_unif_convolution one_pos hf
-  obtain ⟨d,hd,hzero⟩ := intermediate_value_Icc' (show c-1≤c+1 by linarith) hcont.continuousOn
+  obtain ⟨d,hd,hzero⟩ := intermediate_value_Icc' (show c-1 ≤ c+1 by linarith) hcont.continuousOn
     (show (0:ℝ) ∈ Icc (g (c+1)) (g (c-1)) from ⟨hright le_rfl,hleft le_rfl⟩)
   refine ⟨d,fun x hx => ?_,fun x hx => ?_⟩
-  · by_cases h : x≤c-1
+  · by_cases h : x ≤ c-1
     · exact hleft h
     exact hzero ▸ hant ⟨le_of_not_ge h,hx.trans hd.2⟩ hd hx
-  · by_cases h : c+1≤x
+  · by_cases h : c+1 ≤ x
     · exact hright h
     exact hzero ▸ hant hd ⟨hd.1.trans hx.le,le_of_not_ge h⟩ hx.le
 
@@ -77,11 +77,11 @@ private theorem boxDifference_step (b : ℝ) (j : ℕ) :
   dsimp only [f]
   ring
 
-private theorem boxDifference_separates {b : ℝ} (hb : 0≤b) (j : ℕ) : ∃ c, separatedAt (boxDifference b j) c := by
+private theorem boxDifference_separates {b : ℝ} (hb : 0 ≤ b) (j : ℕ) : ∃ c, separatedAt (boxDifference b j) c := by
   induction j with
   | zero =>
     refine ⟨1,fun x hx => ?_,fun x hx => ?_⟩
-    · change 0≤2*unif 1 x-unif 1 (x-b)
+    · change 0 ≤ 2*unif 1 x-unif 1 (x-b)
       by_cases hm : x ∈ Icc (-1:ℝ) 1
       · unfold unif
         rw [indicator_of_mem hm]
@@ -90,7 +90,7 @@ private theorem boxDifference_separates {b : ℝ} (hb : 0≤b) (j : ℕ) : ∃ c
       have he : x-b ∉ Icc (-1:ℝ) 1 := fun h => by linarith only [hn,hb,h.1]
       simp [unif,hm,he]
     · have hm : x ∉ Icc (-1:ℝ) 1 := fun h => hx.not_ge h.2
-      change 2*unif 1 x-unif 1 (x-b)≤0
+      change 2*unif 1 x-unif 1 (x-b) ≤ 0
       rw [show unif 1 x=0 from indicator_of_notMem hm _]
       linarith only [unif_nonneg one_pos (x-b)]
   | succ j ih =>
@@ -100,8 +100,8 @@ private theorem boxDifference_separates {b : ℝ} (hb : 0≤b) (j : ℕ) : ∃ c
 
 /-- The two translated eight-box splines change sign in a single direction. -/
 theorem squareLogProfile_has_prime_cut : ∃ c : ℝ,
-    (∀ t ≤ c, 0≤squareLogProfile t) ∧ ∀ t, c<t → squareLogProfile t≤0 := by
-  obtain ⟨c,h⟩ := boxDifference_separates (Real.log_nonneg (by norm_num : (1:ℝ)≤4)) 7
+    (∀ t ≤ c, 0 ≤ squareLogProfile t) ∧ ∀ t, c < t → squareLogProfile t ≤ 0 := by
+  obtain ⟨c,h⟩ := boxDifference_separates (Real.log_nonneg (by norm_num : (1:ℝ) ≤ 4)) 7
   simpa only [separatedAt,boxDifference,squareLogProfile,splineAutoCorr_eq_eight_boxes] using Exists.intro c h
 
 private abbrev lags (n : ℕ) := ordinaryPrimeLags (3*windowEnd ((2*n+1)^2+1))
@@ -109,8 +109,8 @@ private abbrev price (n : ℕ) := ordinaryPrimeGenerator (n • successorSquareT
 
 /-- All misplaced numerator and denominator factors together cost at most
 quadratic log size at one fixed prime cutoff times the conductor square. -/
-theorem square_prime_cut_misplaced_mass : ∃ c C : ℝ, 0≤C ∧ ∀ {n : ℕ}, 0<n →
-    (∑ p ∈ lags n, (if (p:ℝ)≤Real.exp c*(n:ℝ)^2 then max (-(deningerRatExp (price n) p:ℝ)) 0
+theorem square_prime_cut_misplaced_mass : ∃ c C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
+    (∑ p ∈ lags n, (if (p:ℝ) ≤ Real.exp c*(n:ℝ)^2 then max (-(deningerRatExp (price n) p:ℝ)) 0
       else max (deningerRatExp (price n) p:ℝ) 0)*vonMangoldt p) ≤ C*(n:ℝ)^2 := by
   obtain ⟨c,hpos,hneg⟩ := squareLogProfile_has_prime_cut
   obtain ⟨C,hC,hrow⟩ := diagonal_prime_exponent_profile_error
@@ -118,14 +118,14 @@ theorem square_prime_cut_misplaced_mass : ∃ c C : ℝ, 0≤C ∧ ∀ {n : ℕ}
   apply le_trans _ (hrow hn)
   refine Finset.sum_le_sum fun p hp => mul_le_mul_of_nonneg_right ?_ vonMangoldt_nonneg
   have hp' := (Finset.mem_filter.mp hp).2.pos
-  have hn' : 0<(n:ℝ) := Nat.cast_pos.mpr hn
+  have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
   let y := (p:ℝ)/(n:ℝ)^2
-  have hy : 0<y := div_pos (Nat.cast_pos.mpr hp') (sq_pos_of_pos hn')
+  have hy : 0 < y := div_pos (Nat.cast_pos.mpr hp') (sq_pos_of_pos hn')
   have hs := Real.sqrt_pos.mpr hy
   let e : ℝ := deningerRatExp (price n) p
   let f := diagonalPrimeProfile n p
   have he : f=2*(n:ℝ)*(squareLogProfile (Real.log y)/Real.sqrt y) := diagonalPrimeProfile_eq_dilate hn hp'
-  by_cases h : (p:ℝ)≤Real.exp c*(n:ℝ)^2
+  by_cases h : (p:ℝ) ≤ Real.exp c*(n:ℝ)^2
   · rw [if_pos h]
     have hl := (Real.log_le_iff_le_exp hy).mpr ((div_le_iff₀ (sq_pos_of_pos hn')).mpr h)
     have hf : 0 ≤ f := by
@@ -165,7 +165,7 @@ private theorem positive_profile_limit :
   have hF : HasCompactSupport squareLogProfile := hH.mul_left.sub (hH.comp_homeomorph (Homeomorph.subRight (Real.log 4)))
   have hc : Continuous squareLogProfile := (continuous_const.mul continuous_splineAutoCorr).sub
     (continuous_splineAutoCorr.comp (continuous_id.sub continuous_const))
-  let g := fun u : ℝ => if 0≤squareLogProfile u then (1:ℝ) else 0
+  let g := fun u : ℝ => if 0 ≤ squareLogProfile u then (1:ℝ) else 0
   have hg (u : ℝ) : g u*squareLogProfile u=positiveProfile u := by
     dsimp only [g,positiveProfile]
     split_ifs with h
@@ -178,7 +178,7 @@ private theorem positive_profile_limit :
   have ht := (tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop
   refine ((hpnt.comp ht).const_mul 2).congr' ?_
   filter_upwards [eventually_gt_atTop 0] with n hn
-  have hn' : 0<(n:ℝ) := Nat.cast_pos.mpr hn
+  have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
   let F := fun p : ℕ => Real.log p*(positiveProfile (Real.log ((p:ℝ)/(n:ℝ)^2))/Real.sqrt ((p:ℝ)/(n:ℝ)^2))
   have hw : (∑' p : Nat.Primes, F p.val)=∑ p ∈ lags n, F p := by
     simpa only [F,hg] using diagonal_prime_test_window hn g
@@ -190,11 +190,11 @@ private theorem positive_profile_limit :
     have hp := (Finset.mem_filter.mp h).2
     rw [vonMangoldt_apply_prime hp,diagonalPrimeProfile_eq_dilate hn hp.pos]
     let y := (p:ℝ)/(n:ℝ)^2
-    have hy : 0<y := div_pos (Nat.cast_pos.mpr hp.pos) (sq_pos_of_pos hn')
+    have hy : 0 < y := div_pos (Nat.cast_pos.mpr hp.pos) (sq_pos_of_pos hn')
     dsimp only [F,positiveProfile]
     change max (2*(n:ℝ)*(squareLogProfile (Real.log y)/Real.sqrt y)) 0*Real.log p=
       2*(n:ℝ)*(Real.log p*(max (squareLogProfile (Real.log y)) 0/Real.sqrt y))
-    by_cases hz : 0≤squareLogProfile (Real.log y)
+    by_cases hz : 0 ≤ squareLogProfile (Real.log y)
     · rw [max_eq_left hz,max_eq_left (mul_nonneg (by positivity) (div_nonneg hz (Real.sqrt_nonneg y)))]
       ring
     · rw [max_eq_right (le_of_not_ge hz),max_eq_right (mul_nonpos_of_nonneg_of_nonpos (by positivity)
@@ -214,11 +214,11 @@ private theorem cut_integral {c : ℝ} (hc : separatedAt squareLogProfile c) :
   have hb : Real.exp (b/2)=2 := by
     dsimp only [b]
     rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]
-    convert Real.exp_log (by norm_num : (0:ℝ)<2) using 2 <;> ring
+    convert Real.exp_log (by norm_num : (0:ℝ) < 2) using 2 <;> ring
   have hin : (fun u : ℝ => positiveProfile u*Real.exp (u/2))=
       fun u => 2*((Iic c).indicator D u-(Iic (c-b)).indicator D (u-b)) := by
     funext u
-    by_cases hu : u≤c
+    by_cases hu : u ≤ c
     · rw [indicator_of_mem (show u∈Iic c from hu),indicator_of_mem (show u-b∈Iic (c-b) from sub_le_sub_right hu b)]
       have hs : Real.exp (u/2)=Real.exp ((u-b)/2)*2 := by
         rw [← hb,← Real.exp_add]; congr 1; ring
@@ -237,7 +237,7 @@ private theorem cut_integral {c : ℝ} (hc : separatedAt squareLogProfile c) :
 /-- Both reduced logarithms have the same cubic leading constant, equal
 to four times the positive autocorrelation mass in one translating interval. -/
 theorem square_products_at_prime_cut : ∃ c : ℝ,
-    ((∀ t ≤ c, 0≤squareLogProfile t) ∧ ∀ t, c<t → squareLogProfile t≤0) ∧
+    ((∀ t ≤ c, 0 ≤ squareLogProfile t) ∧ ∀ t, c < t → squareLogProfile t ≤ 0) ∧
     let K := 4*∫ t in c-Real.log 4..c, splineAutoCorr t*Real.exp (t/2)
     Tendsto (fun n : ℕ => Real.log (price n).num.natAbs/(n:ℝ)^3) atTop (𝓝 K) ∧
     Tendsto (fun n : ℕ => Real.log (price n).den/(n:ℝ)^3) atTop (𝓝 K) := by
@@ -248,8 +248,8 @@ theorem square_products_at_prime_cut : ∃ c : ℝ,
     have h : Tendsto (fun n : ℕ => C/(n:ℝ)) atTop (𝓝 0) := tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
     apply squeeze_zero_norm' _ h
     filter_upwards [eventually_gt_atTop 0] with n hn
-    have hn' : 0<(n:ℝ) := Nat.cast_pos.mpr hn
-    have he : |Real.log (price n).num.natAbs-P n|≤C*(n:ℝ)^2 := by
+    have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
+    have he : |Real.log (price n).num.natAbs-P n| ≤ C*(n:ℝ)^2 := by
       rw [numerator_log_sum]
       dsimp only [P]
       rw [← Finset.sum_sub_distrib]

@@ -16,7 +16,7 @@ large cutoff, within one doubling interval.
 
 noncomputable section
 
-open Complex
+open Complex Filter Topology
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 open ExclusionOfTheCriticalState VerifiedHeightRungs VerifiedHeightRungs.HadamardBudget
 
@@ -255,5 +255,95 @@ theorem singleQuartet_four_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuar
   change _ ≤ ε*thetaIntervalIncrement u h/A^j
   dsimp only [B] at hl
   linarith only [hl,hread]
+
+private theorem shifted_error_small {β K c : ℝ} (hβ : 1/2<β) (hK : 0≤K) (hc : 0<c) (d : ℝ) :
+    ∀ᶠ t : ℝ in atTop, K*Real.exp ((t+d)/2)*(1+(t+d)^2) ≤ c*Real.exp (β*t) := by
+  let k := 2*(K+1)*Real.exp (β*d)
+  have hk : 0<k := by dsimp only [k]; positivity
+  obtain ⟨L,hL⟩ := eventually_atTop.mp ((Real.isLittleO_exp_mul_rpow_of_lt 2 hβ).def (div_pos hc hk))
+  filter_upwards [eventually_ge_atTop (max L 1-d)] with t ht
+  have htL : L ≤ t+d := by linarith only [ht,le_max_left L 1]
+  have ht1 : 1 ≤ t+d := by linarith only [ht,le_max_right L 1]
+  have he := hL (t+d) htL
+  simp only [Real.norm_eq_abs,Real.rpow_two,show 1/2*(t+d)=(t+d)/2 by ring,abs_mul,
+    abs_of_pos (Real.exp_pos _),abs_of_nonneg (sq_nonneg _)] at he
+  have hpol : 1+(t+d)^2 ≤ 2*(t+d)^2 := by nlinarith only [ht1,sq_nonneg (t+d-1)]
+  calc
+    _ ≤ (2*(K+1))*(Real.exp ((t+d)/2)*(t+d)^2) := by
+      have h := mul_le_mul_of_nonneg_left hpol (mul_nonneg hK (Real.exp_pos _).le)
+      nlinarith only [h,mul_nonneg (Real.exp_pos ((t+d)/2)).le (sq_nonneg (t+d))]
+    _ ≤ _ := (mul_le_mul_of_nonneg_left he (by positivity)).trans_eq (by
+      rw [mul_add,Real.exp_add]; dsimp only [k]; field_simp; ring)
+
+/-- Every large octave contains both signs of the centered ordinary-prime
+logarithm count, each with the exact real exponent of the quartet. -/
+theorem singleQuartet_signed_theta_octave {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) :
+    ∃ c : ℝ, 0<c ∧ ∀ᶠ Y : ℝ in atTop, ∀ ε : ℝ, |ε|=1 →
+      ∃ l u : ℝ, Y≤l ∧ l≤u ∧ u≤2*Y ∧
+        c*Y^ρ.re ≤ ε*((Chebyshev.theta u-u)-(Chebyshev.theta l-l)) := by
+  let h := Real.pi/(2*|ρ.im|)
+  let A := Real.exp (ρ.re*h)
+  let C := 2*(quartetCopyMult ρ:ℝ)*‖(Complex.exp (ρ*(h:ℂ))-1)/ρ‖
+  have ⟨hh,hfit,hC,_⟩ := singleQuartet_two_theta_intervals hq
+  obtain ⟨K,hK,h⟩ := singleQuartet_four_theta_intervals hq
+  let c := C/(2*Real.sqrt 2)
+  have hc : 0<c := div_pos hC (by positivity)
+  have hscale := (quarter_scale hq).2.2.1
+  obtain ⟨T,hT⟩ := eventually_atTop.mp (shifted_error_small hq.1 hK hc (4*h))
+  refine ⟨c,hc,?_⟩
+  filter_upwards [eventually_ge_atTop (max 16 (Real.exp T))] with Y hY
+  have h16 : 16≤Y := (le_max_left _ _).trans hY
+  have hpos : 0<Y := by linarith only [h16]
+  let t := Real.log Y
+  have hy : Real.exp t=Y := Real.exp_log hpos
+  have ht : 0≤t := Real.log_nonneg (by linarith only [h16])
+  have hTt : T≤t := (Real.le_log_iff_exp_le hpos).mpr ((le_max_right _ _).trans hY)
+  intro ε hε
+  obtain ⟨j,hj,hread⟩ := h t ht (by rwa [hy]) ε hε
+  have hj' : (j:ℝ)≤3 := by exact_mod_cast (show j≤3 by omega)
+  let v := t+(j:ℝ)*h
+  have hl : t≤v := le_add_of_nonneg_right (mul_nonneg (Nat.cast_nonneg j) hh.le)
+  have hu : v+h≤t+4*h := by dsimp only [v]; linarith only [mul_le_mul_of_nonneg_right hj' hh.le]
+  have ha : 1≤A^j := one_le_pow₀ hscale.le
+  refine ⟨Real.exp v,Real.exp (v+h),by rw [← hy]; exact Real.exp_le_exp.mpr hl,
+    Real.exp_le_exp.mpr (le_add_of_nonneg_right hh.le),?_,?_⟩
+  · apply (Real.exp_le_exp.mpr hu).trans
+    rw [Real.exp_add,hy,mul_comm]
+    exact mul_le_mul_of_nonneg_right hfit.le hpos.le
+  · have he := hT t hTt
+    have hd : C/Real.sqrt 2=2*c := by dsimp only [c]; ring
+    change C*Real.exp (ρ.re*t)/Real.sqrt 2-_ ≤ ε*thetaIntervalIncrement v h/A^j at hread
+    rw [mul_div_right_comm,hd] at hread
+    have hw : c*Real.exp (ρ.re*t) ≤ ε*thetaIntervalIncrement v h/A^j := by
+      linarith only [he,hread]
+    have hp := (le_div_iff₀ (zero_lt_one.trans_le ha)).mp hw
+    rw [Real.rpow_def_of_pos hpos,mul_comm (Real.log Y) ρ.re]
+    exact (le_mul_of_one_le_right (mul_nonneg hc.le (Real.exp_pos _).le) ha).trans hp
+
+/-- The quartet controls all ordinary-prime error readings at its real exponent. -/
+theorem singleQuartet_theta_error_power {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) :
+    ∃ L : ℝ, 0≤L ∧ ∀ᶠ y : ℝ in atTop, |Chebyshev.theta y-y| ≤ L*y^ρ.re := by
+  obtain ⟨K,hK,h⟩ := theta_mode_bound hq
+  obtain ⟨T,hT⟩ := eventually_atTop.mp (shifted_error_small hq.1 hK (by norm_num : (0:ℝ)<1) 0)
+  let m := 2*(quartetCopyMult ρ:ℝ)
+  have hm : 0≤m := by dsimp only [m]; positivity
+  refine ⟨1+m/‖ρ‖,by positivity,?_⟩
+  filter_upwards [eventually_ge_atTop (max 16 (Real.exp T))] with y hy
+  have h16 : 16≤y := (le_max_left _ _).trans hy
+  have hp : 0<y := by linarith only [h16]
+  let t := Real.log y
+  have he : Real.exp t=y := Real.exp_log hp
+  have ht := (Real.le_log_iff_exp_le hp).mpr ((le_max_right _ _).trans hy)
+  have hsmall := hT t ht
+  simp only [add_zero,one_mul] at hsmall
+  have hθ := (h t (Real.log_nonneg (by linarith only [h16])) (by rwa [he])).trans hsmall
+  rw [he] at hθ
+  have hw := Complex.abs_re_le_norm (powerMode ρ t)
+  rw [powerMode,norm_div,Complex.norm_exp,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,
+    mul_zero,sub_zero] at hw
+  have hsum := abs_sub (Chebyshev.theta y-y+m*(powerMode ρ t).re) (m*(powerMode ρ t).re)
+  rw [add_sub_cancel_right,abs_mul,abs_of_nonneg hm] at hsum
+  rw [Real.rpow_def_of_pos hp,mul_comm (Real.log y) ρ.re]
+  exact (hsum.trans (add_le_add hθ (mul_le_mul_of_nonneg_left hw hm))).trans_eq (by ring)
 
 end GaloisForLFunctions.ExceptionalLayerTheory

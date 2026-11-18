@@ -192,34 +192,60 @@ theorem criticalState_ordinary_and_square_prime_limits {W₀ : ℝ} (hW : 0 < W�
     rw [show 1/2-(2:ℝ)⁻¹ = 0 by norm_num] at h2
     simpa only [zero_mul,Real.exp_zero,one_mul,Complex.ofReal_zero,div_eq_inv_mul] using h2
 
-private abbrev cubeOrHigherIndex (j : Nat.Primes × ℕ) : ℕ := (j.1 : ℕ)^(j.2+3)
+/-- The prime-power indices of exponent at least three. -/
+abbrev cubeOrHigherIndex (j : Nat.Primes × ℕ) : ℕ := (j.1 : ℕ)^(j.2+3)
 
-private theorem summable_cubeOrHigherAtoms :
-    Summable (fun j : Nat.Primes × ℕ => |vonMangoldtAtom (cubeOrHigherIndex j)|) := by
-  have h := (summable_xiPrimeLogHigherValuationThreePlus_term (s := 1/2-0)
-    (by norm_num : (1:ℝ)/3 < ((1:ℂ)/2-0).re)).norm
-  refine h.congr fun j => ?_
-  rw [← vonMangoldtAtom_mul_cexp_eq_term 0]
-  simp only [zero_mul,Complex.exp_zero,mul_one,Complex.norm_real,Real.norm_eq_abs]
+/-- The total variation of all layers above the squares decays exponentially,
+at every rate below one sixth. Only prime powers past the observation time contribute. -/
+theorem cubeOrHigherWave_absolute_exp_bound {g : ℝ → ℝ} (hs : ∀ u, 0 ≤ u → g u=0)
+    {C : ℝ} (hb : ∀ u, |g u| ≤ C) {b : ℝ} (hb0 : 0 ≤ b) (hb1 : b < 1/6) :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ t : ℝ,
+      let a := fun j => vonMangoldtAtom (cubeOrHigherIndex j)*g (t-Real.log (cubeOrHigherIndex j))
+      (Summable fun j => |a j|) ∧ (∑' j, |a j|) ≤ M*Real.exp (-b*t) := by
+  let w := fun j : Nat.Primes × ℕ => |vonMangoldtAtom (cubeOrHigherIndex j)|*
+    Real.exp (b*Real.log (cubeOrHigherIndex j))
+  have hw : Summable w := by
+    have hre : (1:ℝ)/3 < ((1:ℂ)/2-(b:ℂ)).re := by
+      rw [Complex.sub_re,Complex.ofReal_re,show ((1:ℂ)/2).re=(1:ℝ)/2 by norm_num]
+      linarith only [hb1]
+    refine (summable_xiPrimeLogHigherValuationThreePlus_term hre).norm.congr fun j => ?_
+    rw [← vonMangoldtAtom_mul_cexp_eq_term (b:ℂ),norm_mul,Complex.norm_real,Real.norm_eq_abs,
+      norm_cexp_mul_ofReal,Complex.ofReal_re]
+  have hC : 0 ≤ C := (abs_nonneg _).trans (hb 0)
+  refine ⟨(∑' j, w j)*C,mul_nonneg (tsum_nonneg fun j => mul_nonneg (abs_nonneg _) (Real.exp_pos _).le) hC,
+    fun t => ?_⟩
+  let a := fun j => vonMangoldtAtom (cubeOrHigherIndex j)*g (t-Real.log (cubeOrHigherIndex j))
+  have ha (j) : |a j| ≤ w j*C*Real.exp (-b*t) := by
+    let l := Real.log (cubeOrHigherIndex j)
+    have hg : |g (t-l)| ≤ C*Real.exp (b*(l-t)) := by
+      by_cases ht : l ≤ t
+      · rw [hs _ (sub_nonneg.mpr ht),abs_zero]; positivity
+      · exact (hb _).trans (le_mul_of_one_le_right hC (Real.one_le_exp (mul_nonneg hb0 (sub_nonneg.mpr (le_of_not_ge ht)))))
+    change |vonMangoldtAtom (cubeOrHigherIndex j)*g (t-l)| ≤
+      (|vonMangoldtAtom (cubeOrHigherIndex j)|*Real.exp (b*l))*C*Real.exp (-b*t)
+    rw [abs_mul]
+    apply (mul_le_mul_of_nonneg_left hg (abs_nonneg _)).trans_eq
+    rw [mul_sub,Real.exp_sub,neg_mul,Real.exp_neg]
+    ring
+  have hmajor := (hw.mul_right C).mul_right (Real.exp (-b*t))
+  have habs := Summable.of_nonneg_of_le (fun j => abs_nonneg (a j)) ha hmajor
+  refine ⟨habs,(habs.tsum_le_tsum ha hmajor).trans_eq ?_⟩
+  rw [tsum_mul_right,tsum_mul_right]
 
-/-- Every fixed prime power eventually leaves the support. Cubic and higher
-powers have summable absolute weights already at the undamped line. -/
+/-- The exponential absolute bound removes cubic and higher powers at late times. -/
 private theorem tendsto_cubeOrHigherWave {Φ : ℝ → ℝ} (hs : ∀ u, 0 ≤ u → Φ u = 0)
     {C : ℝ} (hΦ : ∀ u, |Φ u| ≤ C) :
     Tendsto (fun t : ℝ => ∑' j, vonMangoldtAtom (cubeOrHigherIndex j)*
       Φ (t-Real.log (cubeOrHigherIndex j))) atTop (𝓝 0) := by
-  let f := fun (t : ℝ) (j : Nat.Primes × ℕ) => vonMangoldtAtom (cubeOrHigherIndex j)*
-    Φ (t-Real.log (cubeOrHigherIndex j))
-  have hlim (j : Nat.Primes × ℕ) : Tendsto (fun t => f t j) atTop (𝓝 0) := by
-    apply tendsto_const_nhds.congr'
-    filter_upwards [eventually_ge_atTop (Real.log (cubeOrHigherIndex j))] with t ht
-    simp only [f,hs _ (sub_nonneg.mpr ht),mul_zero]
-  have h := tendsto_tsum_of_dominated_convergence (f := f) (g := fun _ => (0:ℝ))
-    (summable_cubeOrHigherAtoms.mul_right C) hlim
-    (Eventually.of_forall fun t j => by
-      simp only [f,Real.norm_eq_abs,abs_mul]
-      exact mul_le_mul_of_nonneg_left (hΦ _) (abs_nonneg _))
-  simpa only [tsum_zero] using h
+  obtain ⟨M,_,h⟩ := cubeOrHigherWave_absolute_exp_bound hs hΦ (b := 1/12) (by norm_num) (by norm_num)
+  have h0 := Real.tendsto_exp_atBot.comp (tendsto_id.const_mul_atTop_of_neg
+    (by norm_num : -(1/12:ℝ)<0))
+  apply tendsto_zero_iff_norm_tendsto_zero.mpr
+  apply squeeze_zero (fun _ => norm_nonneg _) _ (by simpa only [mul_zero] using h0.const_mul M)
+  intro t
+  have ha := (h t).1
+  simp only [← Real.norm_eq_abs] at ha
+  exact (norm_tsum_le_tsum_norm ha).trans (by simpa only [Real.norm_eq_abs] using (h t).2)
 
 private theorem square_term_eq (Φ : ℝ → ℝ) (t : ℝ) (p : Nat.Primes) :
     vonMangoldtAtom ((p:ℕ)^2)*Φ (t-Real.log (((p:ℕ)^2:ℕ):ℝ)) =
@@ -231,26 +257,17 @@ private theorem square_term_eq (Φ : ℝ → ℝ) (t : ℝ) (p : Nat.Primes) :
   norm_num only [Nat.cast_ofNat,div_self (by norm_num : (2:ℝ) ≠ 0),neg_one_mul,
     Real.exp_neg,Real.exp_log hp,div_eq_mul_inv]
 
-private theorem tendsto_properPowerWave_of_square {Φ : ℝ → ℝ} {C L : ℝ}
-    (hs : ∀ u, 0 ≤ u → Φ u=0) (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
-    (habs : ∀ t : ℝ, 0 ≤ t → Summable fun j : Nat.Primes × ℕ =>
+/-- Separating exponent two in the absolutely convergent proper-power row. -/
+theorem square_add_higher_eq_properPower {Φ : ℝ → ℝ} {t : ℝ}
+    (habs : Summable fun j : Nat.Primes × ℕ =>
       vonMangoldtAtom (properPrimePowerIndex j)*|Φ (t-Real.log (properPrimePowerIndex j))|)
-    (h2 : Tendsto (primePowerLayer Φ 2) atTop (𝓝 L)) :
-    Tendsto (fun t : ℝ => ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*
-      Φ (t-Real.log (properPrimePowerIndex j))) atTop (𝓝 L) := by
-  have hb' (u : ℝ) : |Φ u| ≤ C := by
-    rcases le_or_gt 0 u with hu | hu
-    · simpa only [hs u hu,abs_zero] using hC
-    · exact (hb u).trans (mul_le_of_le_one_right hC (Real.exp_le_one_iff.mpr (by linarith)))
-  have hboth := h2.add (tendsto_cubeOrHigherWave hs hb')
-  rw [add_zero] at hboth
-  apply hboth.congr'
-  filter_upwards [eventually_ge_atTop (0:ℝ)] with t ht0
+    : primePowerLayer Φ 2 t+(∑' j, vonMangoldtAtom (cubeOrHigherIndex j)*Φ (t-Real.log (cubeOrHigherIndex j))) =
+      ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*Φ (t-Real.log (properPrimePowerIndex j)) := by
   let f := fun j : Nat.Primes × ℕ => vonMangoldtAtom (properPrimePowerIndex j)*
     Φ (t-Real.log (properPrimePowerIndex j))
   have hf : Summable f := by
     apply Summable.of_norm
-    refine (habs t ht0).congr fun j => ?_
+    refine habs.congr fun j => ?_
     have hn : 0 ≤ vonMangoldtAtom (properPrimePowerIndex j) := by
       unfold vonMangoldtAtom
       split_ifs <;> first | exact le_rfl | exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
@@ -269,6 +286,21 @@ private theorem tendsto_properPowerWave_of_square {Φ : ℝ → ℝ} {C L : ℝ}
   rw [hsq,hf.tsum_prod,hshift.tsum_prod]
   simp_rw [hsplit]
   rw [hhead.tsum_add hshift.prod]
+
+private theorem tendsto_properPowerWave_of_square {Φ : ℝ → ℝ} {C L : ℝ}
+    (hs : ∀ u, 0 ≤ u → Φ u=0) (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
+    (habs : ∀ t : ℝ, 0 ≤ t → Summable fun j : Nat.Primes × ℕ =>
+      vonMangoldtAtom (properPrimePowerIndex j)*|Φ (t-Real.log (properPrimePowerIndex j))|)
+    (h2 : Tendsto (primePowerLayer Φ 2) atTop (𝓝 L)) :
+    Tendsto (fun t : ℝ => ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*
+      Φ (t-Real.log (properPrimePowerIndex j))) atTop (𝓝 L) := by
+  have hb' (u : ℝ) : |Φ u| ≤ C := by
+    rcases le_or_gt 0 u with hu | hu
+    · simpa only [hs u hu,abs_zero] using hC
+    · exact (hb u).trans (mul_le_of_le_one_right hC (Real.exp_le_one_iff.mpr (by linarith only [hu])))
+  have hboth := h2.add (tendsto_cubeOrHigherWave hs hb')
+  rw [add_zero] at hboth
+  exact hboth.congr' ((eventually_ge_atTop (0:ℝ)).mono fun t ht => square_add_higher_eq_properPower (habs t ht))
 
 /-- After summing over all proper prime powers, the same half-charge remains.
 The limit is for the unheated signed wave of the continuous representative. -/

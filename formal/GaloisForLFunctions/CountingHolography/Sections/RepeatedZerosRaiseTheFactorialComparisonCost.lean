@@ -76,7 +76,7 @@ private theorem residual_jet_bound (k : ℕ) {m : ℕ} (c : Fin m → ℂ) (a : 
     have hd := Metric.sphere_subset_closedBall hs
     have h := residual_bound c a ha hX hE hcap hmass (hu hd).1 (hu hd).2
     linarith only [h,mul_le_mul_of_nonneg_right (hball hd).1 (norm_nonneg (residual c a X s))]
-  exact Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le k (by norm_num : (0:ℝ)<1/4)
+  exact Complex.norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le k (by norm_num : (0:ℝ) < 1/4)
     (hr.diffContOnCl_ball hu) hb
 
 /-- A critical zero fixes the first-order interpolation target of the
@@ -151,7 +151,7 @@ private theorem polynomial_ray_lower (k : ℕ) (v : ℕ → ℂ) (hv : v k≠0) 
     filter_upwards [eventually_ge_atTop (1:ℝ),eventually_ge_atTop (2*A/‖v (k+1)‖)] with L hL hbig
     have hL' := zero_le_one.trans hL
     let T := ∑ i ∈ range (k+1), (L:ℂ)^i*v i
-    have hT : ‖T‖≤L^k*A := by
+    have hT : ‖T‖ ≤ L^k*A := by
       refine (norm_sum_le _ _).trans ?_
       rw [show L^k*A=∑ i ∈ range (k+1), L^k*‖v i‖ by rw [A,mul_sum]]
       refine sum_le_sum fun i hi => ?_
@@ -168,16 +168,16 @@ private theorem polynomial_ray_lower (k : ℕ) (v : ℕ → ℂ) (hv : v k≠0) 
 every finite factorial approximation of the square prime weight. -/
 theorem factorial_cost_at_critical_zero_of_order {ρ : ℂ} (hρ : ρ ∈ criticalSeen) {k : ℕ}
     (hk : ((k+1:ℕ):ℕ∞) ≤ analyticOrderAt riemannZeta ρ) :
-    ∃ d : ℝ, 0<d ∧ ∀ᶠ X : ℝ in atTop,
-      ∀ {m : ℕ} (c : Fin m → ℂ) (a : Fin m → ℝ), (∀ j, 0<a j) →
+    ∃ d : ℝ, 0 < d ∧ ∀ᶠ X : ℝ in atTop,
+      ∀ {m : ℕ} (c : Fin m → ℂ) (a : Fin m → ℝ), (∀ j, 0 < a j) →
         ∀ B : ℝ, IntegrableOn (fun v => ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖) (Ioi 0) →
-        (∀ v>0, ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖≤B) →
-        (∫ v in Ioi 0, ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖)≤B/X →
-        d*X^(1/2:ℝ)*(Real.log X)^k≤B := by
+        (∀ v > 0, ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖ ≤ B) →
+        (∫ v in Ioi 0, ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖) ≤ B/X →
+        d*X^(1/2:ℝ)*(Real.log X)^k ≤ B := by
   let W := mellin squarePrimeWeight
   let v := fun i : ℕ => (k.choose i:ℂ)*iteratedDeriv (k-i) W ρ
   let K := (k.factorial:ℝ)*4/(1/4:ℝ)^k
-  have hK : 0<K := by dsimp only [K]; positivity
+  have hK : 0 < K := by dsimp only [K]; positivity
   have hv : v k≠0 := by simpa [v,W] using mellin_squarePrimeWeight_ne_zero hρ
   have h₀ : ρ≠0 := fun e => by have h := hρ.2.1; rw [e] at h; norm_num at h
   have h₁ : ρ≠1 := fun e => by have h := hρ.2.1; rw [e] at h; norm_num at h
@@ -212,7 +212,7 @@ theorem factorial_cost_at_critical_zero_of_order {ρ : ℂ} (hρ : ρ ∈ critic
   have heNorm : ‖E ρ‖=X^(1/2:ℝ) := (norm_scale hX ρ).trans (congrArg (X^·) hρ.2.1)
   rw [heNorm] at h
   have hlow := mul_le_mul_of_nonneg_left hpoly (Real.rpow_nonneg hX.le (1/2:ℝ))
-  have hb : X^(1/2:ℝ)*(‖v k‖*(Real.log X)^k/2)≤B*K :=
+  have hb : X^(1/2:ℝ)*(‖v k‖*(Real.log X)^k/2) ≤ B*K :=
     hlow.trans (h.trans_eq (by dsimp only [K]; ring))
   calc _ = (X^(1/2:ℝ)*(‖v k‖*(Real.log X)^k/2))/K := by ring
     _ ≤ B := (div_le_iff₀ hK).mpr hb
@@ -282,7 +282,7 @@ private theorem average_disk_zeros (S : Finset ℝ) (z : ℝ → ℂ) (M : ℂ) 
       refine ⟨J,fun u hu => ((hgd u hu).add (hgd _ (add_nonneg hu hd₀))).div_const _,?_,?_,?_,?_⟩
       · intro u hu w hw
         change ‖(G u w+G (u+d) w)/2‖ ≤ D
-        rw [norm_div,Complex.norm_ofNat,div_le_iff₀ (by norm_num : (0:ℝ)<2)]
+        rw [norm_div,Complex.norm_ofNat,div_le_iff₀ (by norm_num : (0:ℝ) < 2)]
         linarith only [norm_add_le (G u w) (G (u+d) w),hgb u hu w hw,hgb _ (add_nonneg hu hd₀) w hw]
       · intro u hu
         dsimp only [J]; rw [hgc u hu,hgc _ (add_nonneg hu hd₀)]; ring

@@ -1,6 +1,6 @@
 # Centered fractional parts across a product window
 
-**PVC · Paper theorem.** Let $1\le H$, $H^4\le a\le b$, $H\le c\le d$, $Z>0$, $U^2\le HZ$ and $16Z\le HL^2$. For coefficients bounded by $A,B$ on the two factor intervals,
+**PVC · Paper theorem.** For nonnegative integer cutoffs $a,b,c,d,H,L,U$, assume $1\le H$, $H^4\le a\le b$, $H\le c\le d$, $Z>0$, $U^2\le HZ$ and $16Z\le HL^2$. For coefficients bounded by $A,B$ on the two factor intervals,
 $$
 \left|\sum_{\substack{a\le p<b,\ c\le v<d\\L<pv\le U}}
 \alpha_p\beta_v(\{Z/(pv)\}-1/2)\right|

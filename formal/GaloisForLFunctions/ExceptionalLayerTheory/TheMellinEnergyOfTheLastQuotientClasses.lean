@@ -25,12 +25,6 @@ def lastCellIndicator (q n : ℕ) : ℝ := if q ∣ n+1 then 1 else 0
 private theorem lastCellIndicator_zero {q : ℕ} (hq : 2≤q) : lastCellIndicator q 0=0 :=
   if_neg (fun h => by have := Nat.le_of_dvd (by omega : 0<0+1) h; omega)
 
-private theorem lastCellIndicator_bound (q : ℕ) {n : ℕ} (hn : 1≤n) :
-    |lastCellIndicator q n| ≤ 1*(n:ℝ)^(1/2:ℝ) := by
-  have h := Real.one_le_rpow (by exact_mod_cast hn : 1≤(n:ℝ)) (by norm_num : (0:ℝ)≤1/2)
-  unfold lastCellIndicator
-  split <;> simp only [abs_one,abs_zero,one_mul] <;> linarith only [h]
-
 /-- The indicator selects exactly the Mellin cells contributing to the
 Hurwitz difference, throughout its half-plane of absolute cell convergence. -/
 theorem lastQuotientClassSymbol_eq_tsum_cells {q : ℕ} (hq : 2≤q) {s : ℂ} (hs : 0<s.re) :
@@ -232,22 +226,82 @@ theorem lastQuotientClassSymbol_crossEnergy {q r : ℕ} (hq : 2 ≤ q) (hr : 2 �
 
 /-- Exact energy on a vertical line. Its dependence on the width is given by
 the real symbol at twice the real part. -/
-theorem lastQuotientClassSymbol_lineEnergy {q : ℕ} (hq : 2≤q) {σ : ℝ} (hσ : 1/2<σ) :
+theorem lastQuotientClassSymbol_lineEnergy {q : ℕ} (hq : 2≤q) {σ : ℝ} (hσ : 0<σ) :
     (∫ t : ℝ, ‖lastQuotientClassSymbol q ((σ:ℂ)+t*I)/((σ:ℂ)+t*I)‖^2) =
       Real.pi/σ*(lastQuotientClassSymbol q (2*σ:ℝ)).re := by
-  have he := lineEnergy_stepSource_eq (lastCellIndicator_zero hq)
-    (fun _ hn => lastCellIndicator_bound q hn) hσ
-  have hpt (t : ℝ) := mellin_lastCellIndicator hq (s := (σ:ℂ)+t*I) (by simp; linarith only [hσ])
-  simp_rw [hpt] at he
-  rw [he,lastQuotientClassSymbol_eq_tsum_cells hq (by simp only [ofReal_re]; linarith only [hσ])]
-  congr 1
-  have hcast (n : ℕ) : (lastCellIndicator q n:ℂ)*cmellinCell (2*σ:ℝ) n =
-      ((lastCellIndicator q n^2*mellinCell (2*σ) n : ℝ):ℂ) := by
-    rw [ofReal_mul,ArithmeticDefectRigidity.ofReal_mellinCell]
-    unfold lastCellIndicator
-    split <;> simp [cmellinCell]
-  simp_rw [hcast]
-  rw [← ofReal_tsum,ofReal_re]
+  have h := lastQuotientClassSymbol_crossEnergy hq hq hσ
+  simp only [Nat.lcm_self,Complex.conj_mul',← Complex.ofReal_pow,integral_complex_ofReal] at h
+  simpa only [ofReal_re,Complex.re_ofReal_mul] using congrArg Complex.re h
+
+/-- Cumulative jumps strictly after the integer cutoff. -/
+def lastCellTail (q M n : ℕ) : ℝ :=
+  if M < n then lastCellIndicator q n - lastCellIndicator q M else 0
+
+theorem lastCellTail_jump (q M n : ℕ) :
+    lastCellTail q M (n+1)-lastCellTail q M n =
+      if M ≤ n then lastCellIndicator q (n+1)-lastCellIndicator q n else 0 := by
+  rcases lt_trichotomy n M with hn | rfl | hn
+  · simp [lastCellTail,show ¬M<n+1 by omega,hn.not_ge,hn.not_gt]
+  · simp [lastCellTail]
+  · simp [lastCellTail,hn,show M<n+1 by omega,hn.le]
+
+private theorem lastCellTail_abs (q M n : ℕ) : |lastCellTail q M n| ≤ 1 := by
+  unfold lastCellTail lastCellIndicator
+  split_ifs <;> norm_num
+
+/-- The energy of the discarded jumps is bounded uniformly in the width.
+In logarithmic coordinates the tail vanishes past minus the logarithm of
+the cutoff, and its undamped absolute value is at most one. -/
+theorem lastQuotientClassSymbol_tail_energy (q M : ℕ) (hM : 1 ≤ M) {σ : ℝ} (hσ : 0<σ) :
+    (∫ t : ℝ, ‖(∑' n, (lastCellTail q M n:ℂ)*cmellinCell ((σ:ℂ)+t*I) n) /
+      ((σ:ℂ)+t*I)‖^2) ≤ Real.pi/σ*(M:ℝ)^(-2*σ) := by
+  let A := lastCellTail q M
+  let G := _root_.RHTower.logMellinLineSource (stepSource A) (-σ)
+  let S := Iic (-Real.log M)
+  let H := S.indicator (fun u : ℝ => Real.exp (2*σ*u))
+  have hMp : (0:ℝ)<M := by exact_mod_cast (show 0<M by omega)
+  have h2 : 0<2*σ := by linarith only [hσ]
+  have hI := bounded_log_step (lastCellTail_abs q M) hσ
+  have hline := _root_.RHTower.integral_norm_sq_mellin_line_eq_logMellinLineSource hI.1 hI.2
+  have h0 : A 0=0 := by simp [A,lastCellTail]
+  have ht (t : ℝ) : mellin (stepSource A) ((-σ:ℝ)+t*I) =
+      (∑' n, (A n:ℂ)*cmellinCell ((σ:ℂ)+(-t)*I) n)/((σ:ℂ)+(-t)*I) := by
+    rw [show ((-σ:ℝ):ℂ)+t*I = -((σ:ℂ)+(-t)*I) by push_cast; ring]
+    exact bounded_step_mellin h0 (lastCellTail_abs q M) (by simpa using hσ)
+  let F (t : ℝ) := ‖(∑' n, (A n:ℂ)*cmellinCell ((σ:ℂ)+t*I) n)/((σ:ℂ)+t*I)‖^2
+  simp_rw [ht] at hline
+  change (∫ t, F (-t)) = 2*Real.pi*∫ u, ‖G u‖^2 at hline
+  rw [MeasureTheory.integral_neg_eq_self] at hline
+  change (∫ t, F t) ≤ _
+  rw [hline]
+  have hH : Integrable H := (integrableOn_exp_mul_Iic h2 _).integrable_indicator measurableSet_Iic
+  have hdom : ∀ u, ‖G u‖^2 ≤ H u := by
+    intro u
+    simp only [G,_root_.RHTower.logMellinLineSource,neg_neg,norm_smul,Real.norm_eq_abs,
+      abs_of_pos (Real.exp_pos _)]
+    by_cases hu : u ∈ S
+    · rw [show H u=Real.exp (2*σ*u) from indicator_of_mem hu _]
+      have hstep : ‖stepSource A (Real.exp (-u))‖ ≤ 1 := by
+        unfold stepSource
+        split
+        · simpa using lastCellTail_abs q M _
+        · simp
+      have hb := mul_le_of_le_one_right (Real.exp_pos (σ*u)).le hstep
+      apply (pow_le_pow_left₀ (by positivity) hb 2).trans_eq
+      rw [sq,← Real.exp_add,show σ*u+σ*u=2*σ*u by ring]
+    · have hlt : -Real.log (M:ℝ)<u := lt_of_not_ge hu
+      have he : Real.exp (-u)<M := (Real.exp_lt_exp.mpr (by linarith only [hlt] : -u<Real.log (M:ℝ))).trans_eq
+        (Real.exp_log hMp)
+      have hn : ⌊Real.exp (-u)⌋₊ ≤ M := Nat.le_of_lt (Nat.floor_lt (Real.exp_pos _).le |>.mpr he)
+      simp [H,hu,stepSource,A,lastCellTail,hn.not_gt]
+  have hb := integral_mono ((memLp_two_iff_integrable_sq_norm hI.2.1).mp hI.2) hH hdom
+  have he : ∫ u, H u = (M:ℝ)^(-2*σ)/(2*σ) := by
+    rw [show (∫ u, H u)=∫ u in S, Real.exp (2*σ*u) from integral_indicator measurableSet_Iic]
+    rw [integral_exp_mul_Iic h2,Real.rpow_def_of_pos hMp]
+    congr 2
+    ring
+  exact (mul_le_mul_of_nonneg_left hb (by positivity : 0 ≤ 2*Real.pi)).trans_eq
+    (by rw [he]; field_simp; ring)
 
 /-- The weighted square sum over widths converges precisely below the real
 part of the frequency. Equality gives harmonic divergence. -/

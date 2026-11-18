@@ -27,22 +27,22 @@ def squarePrimeEndpoint (n k : ℕ) : ℝ :=
 
 private def err (n k : ℕ) := price n k-(squarePrimeEndpoint n k-squarePrimeEndpoint (2*n) k/8)
 
-private theorem endpoint_zero {n k : ℕ} (hn : 0<n) (hk : k ∉ S n) :
+private theorem endpoint_zero {n k : ℕ} (hn : 0 < n) (hk : k ∉ S n) :
     price n k=0 ∧ squarePrimeEndpoint n k=0 ∧ squarePrimeEndpoint (2*n) k=0 := by
   by_cases hp : k.Prime
-  · have hcut : 3*windowEnd ((2*n+1)^2+1)<k :=
+  · have hcut : 3*windowEnd ((2*n+1)^2+1) < k :=
       lt_of_not_ge fun h => hk (mem_filter.mpr ⟨mem_Icc.mpr ⟨hp.two_le,h⟩,hp⟩)
-    have hkL : (windowEnd ((2*n+1)^2+1):ℝ)<k := by
-      exact_mod_cast (by omega : windowEnd ((2*n+1)^2+1)<k)
+    have hkL : (windowEnd ((2*n+1)^2+1):ℝ) < k := by
+      exact_mod_cast (by omega : windowEnd ((2*n+1)^2+1) < k)
     have hb := (successorSquareWindowScale_bounds n).2.2.trans_lt hkL
     have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
     have hk' : 0 < (k:ℝ) := Nat.cast_pos.mpr hp.pos
-    have hhigh : 0<((2*n:ℕ):ℝ) := by positivity
+    have hhigh : 0 < ((2*n:ℕ):ℝ) := by positivity
     have hsq : (((2*n:ℕ):ℝ))^2 ≤ (((2*n+1:ℕ):ℝ))^2 :=
       pow_le_pow_left₀ hhigh.le (by exact_mod_cast Nat.le_succ (2*n)) 2
     have hlow : (n:ℝ)^2 ≤ (((2*n+1:ℕ):ℝ))^2 :=
-      pow_le_pow_left₀ hn'.le (by exact_mod_cast (by omega : n≤2*n+1)) 2
-    have hz {x : ℝ} (hx : 0<x) (h : x^2≤(((2*n+1:ℕ):ℝ))^2) : splineAutoCorr (Real.log k-Real.log (x^2))=0 := by
+      pow_le_pow_left₀ hn'.le (by exact_mod_cast (by omega : n ≤ 2*n+1)) 2
+    have hz {x : ℝ} (hx : 0 < x) (h : x^2 ≤ (((2*n+1:ℕ):ℝ))^2) : splineAutoCorr (Real.log k-Real.log (x^2))=0 := by
       apply splineAutoCorr_zero_outside
       apply lt_of_lt_of_le _ (le_abs_self _)
       rw [← Real.log_div hk'.ne' (sq_pos_of_pos hx).ne',Real.lt_log_iff_exp_lt (div_pos hk' (sq_pos_of_pos hx)),lt_div_iff₀ (sq_pos_of_pos hx)]
@@ -53,9 +53,9 @@ private theorem endpoint_zero {n k : ℕ} (hn : 0<n) (hk : k ∉ S n) :
     simp only [price,he,if_neg hk,Int.cast_zero,zero_mul,squarePrimeEndpoint,hz hn' hlow,hz hhigh hsq,mul_zero,and_self]
   · simp [price,squarePrimeEndpoint,weight,hp]
 
-private theorem error_row {n k : ℕ} (hn : 0<n) :
+private theorem error_row {n k : ℕ} (hn : 0 < n) :
     err n k=((deningerRatExp (q n) k:ℝ)-diagonalPrimeProfile n k)*weight k := by
-  have hn' : 0<(n:ℝ) := Nat.cast_pos.mpr hn
+  have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
   have he : Real.log (((2*n:ℕ):ℝ)^2)=Real.log ((n:ℝ)^2)+Real.log 4 := by
     push_cast
     rw [mul_pow,Real.log_mul (by norm_num) (sq_pos_of_pos hn').ne']
@@ -66,12 +66,12 @@ private theorem error_row {n k : ℕ} (hn : 0<n) :
     Nat.cast_mul,Nat.cast_ofNat]
   ring
 
-private theorem error_summable {n : ℕ} (hn : 0<n) : Summable (fun k => |err n k|) :=
+private theorem error_summable {n : ℕ} (hn : 0 < n) : Summable (fun k => |err n k|) :=
   summable_of_ne_finset_zero (s := S n) fun k hk => by
     obtain ⟨h₁,h₂,h₃⟩ := endpoint_zero hn hk
     simp [err,h₁,h₂,h₃]
 
-private theorem error_budget : ∃ C : ℝ, 0≤C ∧ ∀ {n : ℕ}, 0<n → (∑' k, |err n k|)≤C*(n:ℝ)^2 := by
+private theorem error_budget : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n → (∑' k, |err n k|) ≤ C*(n:ℝ)^2 := by
   obtain ⟨C,hC,hE⟩ := diagonal_prime_exponent_profile_error
   refine ⟨C,hC,fun {n} hn => ?_⟩
   rw [tsum_eq_sum (s := S n) (fun k hk => by
@@ -82,7 +82,7 @@ private theorem error_budget : ∃ C : ℝ, 0≤C ∧ ∀ {n : ℕ}, 0<n → (�
   rw [error_row hn,abs_mul,weight,if_pos hp,abs_of_nonneg (Real.log_natCast_nonneg _),vonMangoldt_apply_prime hp]
   rfl
 
-private theorem price_sum (n : ℕ) (hn : 0<n) : (∑' k, price n k)=Real.log (q n:ℝ) := by
+private theorem price_sum (n : ℕ) (hn : 0 < n) : (∑' k, price n k)=Real.log (q n:ℝ) := by
   rw [tsum_eq_sum (s := S n) (fun _ hk => (endpoint_zero hn hk).1),q,log_ordinaryPrimeGenerator]
   refine sum_congr rfl fun k hk => ?_
   have hp := (mem_filter.mp hk).2
@@ -90,7 +90,7 @@ private theorem price_sum (n : ℕ) (hn : 0<n) : (∑' k, price n k)=Real.log (q
   change deningerRatExp (q n) k=if k ∈ S n then _ else 0 at he
   rw [price,he,if_pos hk,weight,if_pos hp,vonMangoldt_apply_prime hp]
 
-private theorem endpoint_summable {n : ℕ} (hn : 0<n) : Summable (squarePrimeEndpoint n) :=
+private theorem endpoint_summable {n : ℕ} (hn : 0 < n) : Summable (squarePrimeEndpoint n) :=
   summable_of_ne_finset_zero (s := S n) fun _ hk => (endpoint_zero hn hk).2.1
 
 /-- The positive endpoint has cubic mass with an explicit leading coefficient. -/
@@ -103,13 +103,13 @@ theorem tendsto_squarePrimeEndpoint_mass :
     ((tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop)).const_mul 4
   refine h.congr' ?_
   filter_upwards [eventually_gt_atTop 0] with n hn
-  have hn' : 0<(n:ℝ) := Nat.cast_pos.mpr hn
+  have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
   have hsub : (∑' p : Nat.Primes, squarePrimeEndpoint n p.val)=∑' k, squarePrimeEndpoint n k :=
     tsum_subtype_eq_of_support_subset fun k hk hp => hk (by simp [squarePrimeEndpoint,weight,hp])
   rw [← hsub]
   let L := fun p : Nat.Primes => Real.log (p:ℕ)*(splineAutoCorr (Real.log ((p:ℕ)/(n:ℝ)^2))/Real.sqrt ((p:ℕ)/(n:ℝ)^2))
   have he (p : Nat.Primes) : squarePrimeEndpoint n p.val = (4*(n:ℝ))*L p := by
-    have hp : 0<((p:ℕ):ℝ) := Nat.cast_pos.mpr p.property.pos
+    have hp : 0 < ((p:ℕ):ℝ) := Nat.cast_pos.mpr p.property.pos
     simp only [squarePrimeEndpoint,weight,if_pos p.property,L,Real.log_div hp.ne' (sq_pos_of_pos hn').ne',
       Real.sqrt_div hp.le,Real.sqrt_sq hn'.le]
     field_simp [hn'.ne',(Real.sqrt_pos.mpr hp).ne'] <;> ring
@@ -124,11 +124,11 @@ private def row (n j k : ℕ) := factor j*price (orbit n j) k
 private def tail (n j k : ℕ) := factor j*squarePrimeEndpoint (orbit n j) k
 private def remainder (n : ℕ) (i : ℕ × ℕ) := factor i.1*err (orbit n i.1) i.2
 
-private theorem orbit_pos {n : ℕ} (hn : 0<n) (j : ℕ) : 0<orbit n j :=
-  Nat.mul_pos (pow_pos (by decide : 0<2) j) hn
+private theorem orbit_pos {n : ℕ} (hn : 0 < n) (j : ℕ) : 0 < orbit n j :=
+  Nat.mul_pos (pow_pos (by decide : 0 < 2) j) hn
 
-private theorem orbit_infty {n : ℕ} (hn : 0<n) : Tendsto (orbit n) atTop atTop := by
-  refine tendsto_atTop_mono (f := fun j : ℕ => 2^j) (fun j => ?_) (tendsto_pow_atTop_atTop_of_one_lt (by decide : 1<(2:ℕ)))
+private theorem orbit_infty {n : ℕ} (hn : 0 < n) : Tendsto (orbit n) atTop atTop := by
+  refine tendsto_atTop_mono (f := fun j : ℕ => 2^j) (fun j => ?_) (tendsto_pow_atTop_atTop_of_one_lt (by decide : 1 < (2:ℕ)))
   exact Nat.le_mul_of_pos_right _ hn
 
 private theorem row_split (n j k : ℕ) :
@@ -153,7 +153,7 @@ private theorem summable_geometricError {n : ℕ} (hn : 0 < n) {r : ℝ} (hr : 0
     simp_rw [habs]
     exact (error_summable (orbit_pos hn j)).mul_left _
   · let D := C*(n:ℝ)^2
-    have hgeo := (summable_geometric_of_lt_one (mul_nonneg hr (by norm_num : (0:ℝ)≤4)) hr₄).mul_right D
+    have hgeo := (summable_geometric_of_lt_one (mul_nonneg hr (by norm_num : (0:ℝ) ≤ 4)) hr₄).mul_right D
     apply Summable.of_nonneg_of_le (fun j => tsum_nonneg fun k => abs_nonneg _) _ hgeo
     intro j
     simp_rw [habs]
@@ -168,17 +168,17 @@ private theorem summable_geometricError {n : ℕ} (hn : 0 < n) {r : ℝ} (hr : 0
 private theorem summable_remainder {n : ℕ} (hn : 0 < n) : Summable (remainder n) :=
   summable_geometricError hn (by norm_num : (0:ℝ) ≤ 1/8) (by norm_num)
 
-private theorem tail_eventually_zero {n : ℕ} (hn : 0<n) (k : ℕ) :
+private theorem tail_eventually_zero {n : ℕ} (hn : 0 < n) (k : ℕ) :
     ∀ᶠ j : ℕ in atTop, tail n j k=0 := by
   have ht := Real.tendsto_log_atTop.comp ((tendsto_pow_atTop (α := ℝ) two_ne_zero).comp
     (tendsto_natCast_atTop_atTop.comp (orbit_infty hn)))
   filter_upwards [ht.eventually_gt_atTop (Real.log k+8)] with j hj
-  change Real.log k+8<Real.log ((orbit n j:ℝ)^2) at hj
+  change Real.log k+8 < Real.log ((orbit n j:ℝ)^2) at hj
   have hz := splineAutoCorr_zero_outside (x := Real.log k-Real.log ((orbit n j:ℝ)^2))
     (by linarith only [hj,neg_abs_le (Real.log k-Real.log ((orbit n j:ℝ)^2))])
   simp [tail,squarePrimeEndpoint,hz]
 
-private theorem orbit_column_sum {n : ℕ} (hn : 0<n) (k : ℕ) :
+private theorem orbit_column_sum {n : ℕ} (hn : 0 < n) (k : ℕ) :
     (∑' j, row n j k)=squarePrimeEndpoint n k+∑' j, remainder n (j,k) := by
   obtain ⟨J,hJ⟩ := eventually_atTop.mp (tail_eventually_zero hn k)
   have ht : Summable (fun j => tail n j k) := summable_of_ne_finset_zero (s := range J)
@@ -193,7 +193,7 @@ private theorem orbit_column_sum {n : ℕ} (hn : 0<n) (k : ℕ) :
   rw [hs]
   simp [tail,factor,orbit]
 
-private theorem tail_mass_limit {n : ℕ} (hn : 0<n) :
+private theorem tail_mass_limit {n : ℕ} (hn : 0 < n) :
     Tendsto (fun j => ∑' k, tail n j k) atTop (𝓝 (4*(n:ℝ)^3*squareAutocorrelationMass)) := by
   have h := (tendsto_squarePrimeEndpoint_mass.comp (orbit_infty hn)).const_mul ((n:ℝ)^3)
   rw [show (n:ℝ)^3*(4*squareAutocorrelationMass)=4*(n:ℝ)^3*squareAutocorrelationMass by ring] at h
@@ -212,7 +212,7 @@ private theorem tail_mass_limit {n : ℕ} (hn : 0<n) :
 
 /-- Summing first along each fixed prime and then over the primes exceeds
 the limit in conductor order by exactly four times the positive cubic mass. -/
-theorem dyadic_square_prime_mass_escape {n : ℕ} (hn : 0<n) :
+theorem dyadic_square_prime_mass_escape {n : ℕ} (hn : 0 < n) :
     Tendsto (fun K : ℕ =>
       (∑' p : ℕ, ∑' j : ℕ, (1/8:ℝ)^j*
         (deningerRatExp (ordinaryPrimeGenerator ((2^j*n) • successorSquareTriple (2^j*n))) p:ℝ)*
@@ -246,7 +246,7 @@ theorem dyadic_square_prime_mass_escape {n : ℕ} (hn : 0<n) :
 /-- The two-index family of actual logarithmic valuations cannot be
 summed unconditionally. Its failure at weight one eighth occurs on every
 positive dyadic orbit, including orbits with bounded signed prices. -/
-theorem not_summable_dyadic_square_log_valuations {n : ℕ} (hn : 0<n) :
+theorem not_summable_dyadic_square_log_valuations {n : ℕ} (hn : 0 < n) :
     ¬ Summable (fun i : ℕ × ℕ => (1/8:ℝ)^i.1 *
       ((deningerRatExp (ordinaryPrimeGenerator ((2^i.1*n) • successorSquareTriple (2^i.1*n))) i.2:ℝ)*
         (if i.2.Prime then Real.log i.2 else 0))) := by
@@ -262,11 +262,11 @@ theorem not_summable_dyadic_square_log_valuations {n : ℕ} (hn : 0<n) :
     ∑ j ∈ range K, factor j*Real.log (q (orbit n j):ℝ)) atTop _ at he
   simp_rw [← hprice] at he
   rw [h.tsum_comm] at he
-  have hp : 0<4*(n:ℝ)^3*squareAutocorrelationMass :=
+  have hp : 0 < 4*(n:ℝ)^3*squareAutocorrelationMass :=
     mul_pos (mul_pos (by norm_num) (pow_pos (Nat.cast_pos.mpr hn) 3)) squareAutocorrelationMass_pos
   exact hp.ne' (tendsto_nhds_unique he hzero)
 
-private theorem abs_row_sum {n : ℕ} (hn : 0<n) :
+private theorem abs_row_sum {n : ℕ} (hn : 0 < n) :
     (∑' k, |price n k|)=Real.log (q n).num.natAbs+Real.log (q n).den := by
   rw [tsum_eq_sum (s := S n) (fun k hk => by rw [(endpoint_zero hn hk).1,abs_zero]),
     ← ordinary_absolute_prime_mass (n • successorSquareTriple n)]
@@ -276,8 +276,8 @@ private theorem abs_row_sum {n : ℕ} (hn : 0<n) :
 
 /-- One eighth is exactly the radius of absolute convergence of the
 prime-by-prime dyadic series, on every positive starting conductor. -/
-theorem summable_dyadic_square_log_valuations_iff {n : ℕ} (hn : 0<n) {r : ℝ} (hr : 0≤r) :
-    Summable (fun i : ℕ × ℕ => r^i.1*((deningerRatExp (q (orbit n i.1)) i.2:ℝ)*weight i.2)) ↔ r<1/8 := by
+theorem summable_dyadic_square_log_valuations_iff {n : ℕ} (hn : 0 < n) {r : ℝ} (hr : 0 ≤ r) :
+    Summable (fun i : ℕ × ℕ => r^i.1*((deningerRatExp (q (orbit n i.1)) i.2:ℝ)*weight i.2)) ↔ r < 1/8 := by
   change Summable (fun i : ℕ × ℕ => r^i.1*price (orbit n i.1) i.2) ↔ _
   constructor
   · intro h
@@ -285,13 +285,13 @@ theorem summable_dyadic_square_log_valuations_iff {n : ℕ} (hn : 0<n) {r : ℝ}
     apply not_summable_dyadic_square_log_valuations hn
     apply Summable.of_abs
     refine Summable.of_nonneg_of_le (fun _ => abs_nonneg _) (fun i => ?_) h.abs
-    change |(1/8:ℝ)^i.1*price (orbit n i.1) i.2|≤|r^i.1*price (orbit n i.1) i.2|
-    rw [abs_mul,abs_mul,abs_of_nonneg (pow_nonneg (by norm_num : (0:ℝ)≤1/8) _),abs_of_nonneg (pow_nonneg hr _)]
+    change |(1/8:ℝ)^i.1*price (orbit n i.1) i.2| ≤ |r^i.1*price (orbit n i.1) i.2|
+    rw [abs_mul,abs_mul,abs_of_nonneg (pow_nonneg (by norm_num : (0:ℝ) ≤ 1/8) _),abs_of_nonneg (pow_nonneg hr _)]
     exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by norm_num) (le_of_not_gt he) _) (abs_nonneg _)
   · intro hsmall
     obtain ⟨B,hB,hsize⟩ := successorSquare_products_upper
-    have hgeo := (summable_geometric_of_lt_one (mul_nonneg hr (by norm_num : (0:ℝ)≤8))
-      (show r*8<1 by linarith only [hsmall])).mul_right (3*B*(n:ℝ)^3)
+    have hgeo := (summable_geometric_of_lt_one (mul_nonneg hr (by norm_num : (0:ℝ) ≤ 8))
+      (show r*8 < 1 by linarith only [hsmall])).mul_right (3*B*(n:ℝ)^3)
     apply Summable.of_abs
     simp only [abs_mul,abs_of_nonneg (pow_nonneg hr _)]
     apply (summable_prod_of_nonneg (fun i => mul_nonneg (pow_nonneg hr i.1) (abs_nonneg _))).mpr
@@ -302,13 +302,13 @@ theorem summable_dyadic_square_log_valuations_iff {n : ℕ} (hn : 0<n) {r : ℝ}
     · refine Summable.of_nonneg_of_le (fun j => tsum_nonneg fun k => mul_nonneg (pow_nonneg hr j) (abs_nonneg _))
         (fun j => ?_) hgeo
       let m := orbit n j
-      have hm : 0<m := orbit_pos hn j
-      have hm' : (1:ℝ)≤m := by exact_mod_cast hm
+      have hm : 0 < m := orbit_pos hn j
+      have hm' : (1:ℝ) ≤ m := by exact_mod_cast hm
       obtain ⟨hu,hv⟩ := hsize (m := m) hm
       have hsub := mul_le_mul_of_nonneg_right hm' (sq_nonneg (m:ℝ))
-      have htot : Real.log (q m).num.natAbs+Real.log (q m).den≤3*B*(m:ℝ)^3 := by
-        change Real.log (q m).num.natAbs≤B*m*(m:ℝ)^2 at hu
-        change Real.log (q m).den≤B*((m:ℝ)*(m:ℝ)^2+m^2) at hv
+      have htot : Real.log (q m).num.natAbs+Real.log (q m).den ≤ 3*B*(m:ℝ)^3 := by
+        change Real.log (q m).num.natAbs ≤ B*m*(m:ℝ)^2 at hu
+        change Real.log (q m).den ≤ B*((m:ℝ)*(m:ℝ)^2+m^2) at hv
         linarith only [hu,hv,mul_le_mul_of_nonneg_left hsub hB]
       rw [tsum_mul_left,abs_row_sum (orbit_pos hn j)]
       refine (mul_le_mul_of_nonneg_left htot (pow_nonneg hr j)).trans_eq ?_
@@ -473,7 +473,7 @@ theorem dyadic_square_supercritical_prime_order {n : ℕ} (hn : 0 < n) {r : ℝ}
       (summable_prod_of_nonneg (fun i => hQ₀ (i.2,i.1))).mpr ⟨fun k => hBsum k 1,ha⟩
     have hrows : Tendsto (fun j : ℕ => ∑' k, Q (j,k)) atTop (𝓝 0) := hdouble.prod_symm.prod.tendsto_atTop_zero
     have htail : Tendsto (fun j : ℕ => ∑' k, tail n (j+1) k) atTop (𝓝 0) := by
-      refine squeeze_zero (fun j => tsum_nonneg fun k => mul_nonneg (pow_nonneg (by norm_num : (0:ℝ)≤1/8) _) (endpoint_nonneg _ _)) (fun j => ?_) hrows
+      refine squeeze_zero (fun j => tsum_nonneg fun k => mul_nonneg (pow_nonneg (by norm_num : (0:ℝ) ≤ 1/8) _) (endpoint_nonneg _ _)) (fun j => ?_) hrows
       simp only [tail,factor,Q,B,tsum_mul_left]
       have he : (1/8:ℝ)^(j+1) ≤ r^j := (pow_le_pow_right_of_le_one (by norm_num) (by norm_num)
         (Nat.le_succ j)).trans (pow_le_pow_left₀ (by norm_num) hr.le _)
@@ -515,9 +515,9 @@ theorem dyadic_square_conductor_order {n : ℕ} (hn : 0 < n) {r : ℝ} (hr : 0 �
   dsimp only [m,orbit,A]
   push_cast
   rw [show 2*((2:ℝ)^j*n)=2^j*(2*n) by ring,Real.mul_rpow (by positivity) (by positivity),
-    mul_pow (2:ℝ)^j,← Real.rpow_natCast_mul (by norm_num : (0:ℝ)≤2),
-    show (j:ℝ)*b=b*j by ring,Real.rpow_mul (by norm_num : (0:ℝ)≤2),Real.rpow_natCast,
-    Real.rpow_add (by norm_num : (0:ℝ)<2),Real.rpow_two,mul_pow r,mul_pow (2^2:ℝ)]
+    mul_pow (2:ℝ)^j,← Real.rpow_natCast_mul (by norm_num : (0:ℝ) ≤ 2),
+    show (j:ℝ)*b=b*j by ring,Real.rpow_mul (by norm_num : (0:ℝ) ≤ 2),Real.rpow_natCast,
+    Real.rpow_add (by norm_num : (0:ℝ) < 2),Real.rpow_two,mul_pow r,mul_pow (2^2:ℝ)]
   ring
 
 end GaloisForLFunctions.CountingHolography.Sections

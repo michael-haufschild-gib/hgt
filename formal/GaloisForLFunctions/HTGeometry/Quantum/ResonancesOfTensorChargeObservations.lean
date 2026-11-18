@@ -14,6 +14,7 @@ of the observation, even when the coefficient matrix has zeros.
 
 noncomputable section
 open Finset Matrix
+open scoped ComplexOrder
 namespace GaloisForLFunctions.HTGeometry.Quantum.TensorObservation
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -53,6 +54,7 @@ theorem twist_charpoly (b : ι → ℤ) (z : Circle) (A : Matrix ι ι ℂ) :
     rfl
   rw [twist_eq_conjugate,charpoly_mul_comm _ (phaseMatrix b z)ᴴ,← Matrix.mul_assoc,hu,one_mul]
 
+omit [DecidableEq ι] in
 theorem twist_trace (b : ι → ℤ) (z : Circle) (A : Matrix ι ι ℂ) :
     (twist b z A).trace=A.trace := by
   simp [trace,diag_apply,twist]

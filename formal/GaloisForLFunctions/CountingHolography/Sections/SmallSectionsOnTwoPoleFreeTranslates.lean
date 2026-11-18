@@ -157,7 +157,7 @@ private theorem primeOrbitConductors_spec {p : ℕ} (hp : p.Prime) (j : ℤ) :
     refine ⟨Nat.mul_pos hp' (pow_pos (by decide) _),one_pos,?_⟩
     change Real.log ((p*4^k:ℕ):ℝ)-Real.log 1 = _
     push_cast
-    rw [Real.log_mul (Nat.cast_pos.mpr hp').ne' (pow_pos (by norm_num : (0:ℝ)<4) _).ne',
+    rw [Real.log_mul (Nat.cast_pos.mpr hp').ne' (pow_pos (by norm_num : (0:ℝ) < 4) _).ne',
       Real.log_pow,Real.log_one,sub_zero]
     norm_num
   | negSucc k =>

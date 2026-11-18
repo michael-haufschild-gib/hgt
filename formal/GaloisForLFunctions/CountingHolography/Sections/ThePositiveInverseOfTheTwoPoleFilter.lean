@@ -25,7 +25,7 @@ private theorem step_controlled {ι : Type*} {X f : ι → ℝ} {s : ι → ι} 
   refine ⟨(2+r)*C,mul_nonneg (by linarith only [hr]) hC,fun i => ?_⟩
   have hshift := (h (s i)).trans (mul_le_mul_of_nonneg_left (hs i) hC)
   have htri := abs_sub (2*f i) (f (s i))
-  rw [abs_mul,abs_of_pos (by norm_num : (0:ℝ)<2)] at htri
+  rw [abs_mul,abs_of_pos (by norm_num : (0:ℝ) < 2)] at htri
   unfold step
   linarith only [htri,h i,hshift]
 
@@ -101,7 +101,7 @@ theorem twoPoleTrace_lower_on_orbit {t A : ℝ}
     calc r = Real.exp (w*(2*Real.log 2)) := by dsimp only [r,d]; rw [he]
       _ < Real.exp (Real.log 2) := Real.exp_lt_exp.mpr (by
           dsimp only [w]
-          linarith only [Real.log_pos (by norm_num : (1:ℝ)<2)])
+          linarith only [Real.log_pos (by norm_num : (1:ℝ) < 2)])
       _ = 2 := Real.exp_log (by norm_num)
   have hX (j : ℤ) : 1 ≤ X j := Real.one_le_exp (mul_nonneg hw (abs_nonneg _))
   have hp (j : ℤ) : u (p j) = u j+d := by dsimp only [u,p]; push_cast; ring

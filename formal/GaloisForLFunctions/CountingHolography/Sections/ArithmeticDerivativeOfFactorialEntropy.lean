@@ -40,9 +40,9 @@ theorem factorial_entropy_iff_integral_prime_reciprocal (a : Nat.Primes →₀ �
 
 /-- A half-price entropy is available at some finite horizon exactly for
 squares of positive rationals with integral arithmetic logarithmic derivative. -/
-theorem factorial_half_price_iff_square_integral_derivative {q : ℚ} (hq : 0<q) :
+theorem factorial_half_price_iff_square_integral_derivative {q : ℚ} (hq : 0 < q) :
     (∃ L, (Real.log (q:ℝ),Real.log (q:ℝ)/2)∈factorialJointImage L) ↔
-    ∃ r : ℚ, 0<r ∧ q=r^2 ∧ (primeReciprocalReading (valFinsupp r)).den=1 := by
+    ∃ r : ℚ, 0 < r ∧ q=r^2 ∧ (primeReciprocalReading (valFinsupp r)).den=1 := by
   let a := valFinsupp q
   rw [← primeLogValue_valFinsupp hq]
   constructor
@@ -60,7 +60,7 @@ theorem factorial_half_price_iff_square_integral_derivative {q : ℚ} (hq : 0<q)
       rw [he]
       exact ⟨by ring,dvd_mul_right _ _⟩
     let r : ℚ := ((finsuppUnit b : ℚˣ):ℚ)
-    have hr : 0<r := (finsuppUnit b).property
+    have hr : 0 < r := (finsuppUnit b).property
     have hb' : valFinsupp r=b := valFinsupp_finsuppUnit b
     have he : a=b+b := Finsupp.ext fun p => (hcoords p).1
     refine ⟨r,hr,?_,(primeReciprocalReading_den_one_iff _).mpr (fun p => by rw [hb']; exact (hcoords p).2)⟩
@@ -68,8 +68,8 @@ theorem factorial_half_price_iff_square_integral_derivative {q : ℚ} (hq : 0<q)
       rw [← primeLogValue_valFinsupp hq,← primeLogValue_valFinsupp (sq_pos_of_pos hr),sq,
         valFinsupp_mul hr.ne' hr.ne',hb']
       exact congrArg primeLogValue he
-    exact_mod_cast Real.log_injOn_pos (show (0:ℝ)<(q:ℝ) by exact_mod_cast hq)
-      (show (0:ℝ)<((r^2:ℚ):ℝ) by exact_mod_cast sq_pos_of_pos hr) hlog
+    exact_mod_cast Real.log_injOn_pos (show (0:ℝ) < (q:ℝ) by exact_mod_cast hq)
+      (show (0:ℝ) < ((r^2:ℚ):ℝ) by exact_mod_cast sq_pos_of_pos hr) hlog
   · rintro ⟨r,hr,rfl,hd⟩
     let L := max 10 ((valFinsupp (r^2)).support.sup Subtype.val+1)
     refine ⟨L,(factorial_half_price_attainable_iff (le_max_left 10 _) _).mpr ?_⟩
@@ -100,10 +100,10 @@ private theorem mem_derivative_den {q : ℚ} {p : ℕ} (hp : p.Prime) :
 
 /-- The reduced denominator of the derivative on the actual square
 generators has quadratic log size, including every prime of the outer window. -/
-theorem square_prime_reciprocal_den_order : ∃ C : ℝ, 0≤C ∧ ∀ᶠ n : ℕ in atTop,
+theorem square_prime_reciprocal_den_order : ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ n : ℕ in atTop,
     let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
     let d := (primeReciprocalReading (valFinsupp q)).den
-    successorSquareWindowPrimes n⊆d.primeFactors ∧ (n:ℝ)^2/12≤Real.log d ∧ Real.log d≤C*(n:ℝ)^2 := by
+    successorSquareWindowPrimes n⊆d.primeFactors ∧ (n:ℝ)^2/12 ≤ Real.log d ∧ Real.log d ≤ C*(n:ℝ)^2 := by
   obtain ⟨A,_,hA⟩ := successorSquare_window_bound
   obtain ⟨c,hc,he⟩ := successorSquare_outer_exponents_proper
   refine ⟨7*A^2,by positivity,?_⟩
@@ -113,7 +113,7 @@ theorem square_prime_reciprocal_den_order : ∃ C : ℝ, 0≤C ∧ ∀ᶠ n : �
   let z := primeReciprocalReading (valFinsupp q)
   let S := z.den.primeFactors
   let L := 3*windowEnd ((2*n+1)^2+1)
-  have hscale : (n:ℝ)^2≤c*(n:ℝ)^3 := by
+  have hscale : (n:ℝ)^2 ≤ c*(n:ℝ)^3 := by
     have h := mul_le_mul_of_nonneg_right ((div_le_iff₀ hc).mp hlarge) (sq_nonneg (n:ℝ))
     linarith only [h]
   have hw : successorSquareWindowPrimes n⊆S := by
@@ -122,11 +122,11 @@ theorem square_prime_reciprocal_den_order : ∃ C : ℝ, 0≤C ∧ ∀ᶠ n : �
     obtain ⟨hlo,hhi⟩ := hn hp hscale h
     apply (mem_derivative_den hprime).mpr
     rintro ⟨k,hk⟩
-    change -(p:ℤ)<deningerRatExp q p at hlo
-    change deningerRatExp q p<0 at hhi
+    change -(p:ℤ) < deningerRatExp q p at hlo
+    change deningerRatExp q p < 0 at hhi
     rw [hk] at hlo hhi
-    have hkneg : k<0 := lt_of_not_ge fun h => hhi.not_ge (mul_nonneg (by positivity) h)
-    have hmul := mul_le_mul_of_nonneg_left (show k≤-1 by omega) (show (0:ℤ)≤p by positivity)
+    have hkneg : k < 0 := lt_of_not_ge fun h => hhi.not_ge (mul_nonneg (by positivity) h)
+    have hmul := mul_le_mul_of_nonneg_left (show k ≤ -1 by omega) (show (0:ℤ) ≤ p by positivity)
     linarith only [hmul,hlo]
   have hS : S⊆ordinaryPrimeLags L := by
     intro p h
@@ -146,10 +146,10 @@ theorem square_prime_reciprocal_den_order : ∃ C : ℝ, 0≤C ∧ ∀ᶠ n : �
     exact ((div_le_div_of_nonneg_right (successorSquareWindowScale_bounds n).1 (by norm_num)).trans hm).trans
       (sum_le_sum_of_subset_of_nonneg hw fun p _ _ => Real.log_natCast_nonneg _)
   · rw [hlog]
-    have hsum : (∑ p ∈ S, Real.log p)≤7*(L:ℝ) := by
+    have hsum : (∑ p ∈ S, Real.log p) ≤ 7*(L:ℝ) := by
       calc _ = ∑ p ∈ S, vonMangoldt p := sum_congr rfl fun p h =>
                 (vonMangoldt_apply_prime (Nat.prime_of_mem_primeFactors h)).symm
         _ ≤ _ := (sum_le_sum_of_subset_of_nonneg hS fun _ _ _ => vonMangoldt_nonneg).trans (ordinaryPrimeLagSums L).1
-    exact hsum.trans ((mul_le_mul_of_nonneg_left (hA hp) (by norm_num : (0:ℝ)≤7)).trans_eq (by ring))
+    exact hsum.trans ((mul_le_mul_of_nonneg_left (hA hp) (by norm_num : (0:ℝ) ≤ 7)).trans_eq (by ring))
 
 end GaloisForLFunctions.CountingHolography.Sections

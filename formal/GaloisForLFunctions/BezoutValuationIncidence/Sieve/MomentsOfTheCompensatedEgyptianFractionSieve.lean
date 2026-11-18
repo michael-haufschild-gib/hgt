@@ -13,8 +13,7 @@ least-square correction among unbiased weights on that ray.
 noncomputable section
 open Finset
 open scoped Classical
-namespace GaloisForLFunctions.BezoutValuationIncidence.LocalConditioning
-namespace Moments
+namespace GaloisForLFunctions.BezoutValuationIncidence.LocalConditioning.Moments
 
 variable (p : ℕ) [hp : Fact p.Prime]
 abbrev High := Σ s : Sample (ZMod p), TripleLift p 1 s

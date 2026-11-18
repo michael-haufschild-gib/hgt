@@ -20,7 +20,7 @@ open scoped NNReal
 
 /-- Mellin integral of one prime row in the conductor variable. The
 parameter of the prime weight is s/2 − 1 in the conductor Dirichlet series. -/
-theorem mellin_square_conductor_row {p : ℝ} (hp : 0<p) (s : ℂ) :
+theorem mellin_square_conductor_row {p : ℝ} (hp : 0 < p) (s : ℂ) :
     mellin (fun t : ℝ => (2:ℂ)*squarePrimeWeight (p/t^2)) (2-s) =
       (p:ℂ)^(1-s/2)*mellin squarePrimeWeight (s/2-1) := by
   have he : (fun t : ℝ => (2:ℂ)*squarePrimeWeight (p/t^2)) =
@@ -42,31 +42,31 @@ def realMeshMellinError (W : CompactBVPrimeWindow) (k : ℝ) (s : ℂ) :=
 
 /-- Compact-uniform BV quadrature on the square-root meshes. -/
 theorem realMeshMellinError_uniform (W : CompactBVPrimeWindow) {K : Set ℂ} (hK : IsCompact K) (hne : K.Nonempty) :
-    ∃ Q : ℝ, 0≤Q ∧ ∀ s ∈ K, ∀ k : ℝ, 1≤k → ‖realMeshMellinError W k s‖≤Q/k := by
+    ∃ Q : ℝ, 0 ≤ Q ∧ ∀ s ∈ K, ∀ k : ℝ, 1 ≤ k → ‖realMeshMellinError W k s‖ ≤ Q/k := by
   obtain ⟨B,C,hB,hbound,hLip⟩ := W.exists_mellinWeight_uniform_lipschitz_bound hK hne
   let V := (eVariationOn W.toFun Set.univ).toReal
   let Q := B*V+V*C*(W.upper+1)
-  have hV : 0≤V := ENNReal.toReal_nonneg
-  have htop : 0≤W.upper+1 := by linarith only [W.upper_pos]
+  have hV : 0 ≤ V := ENNReal.toReal_nonneg
+  have htop : 0 ≤ W.upper+1 := by linarith only [W.upper_pos]
   refine ⟨Q,add_nonneg (mul_nonneg hB hV) (mul_nonneg (mul_nonneg hV C.coe_nonneg) htop),?_⟩
   intro s hs k hk
   have hk' := zero_lt_one.trans_le hk
   let N := ⌈W.upper*k⌉₊
   let D := (N:ℝ)/k
-  have hD : 0≤D := div_nonneg (Nat.cast_nonneg _) hk'.le
-  have hlo : W.upper≤D := (le_div_iff₀ hk').mpr (Nat.le_ceil _)
-  have hhi : D≤W.upper+1 := by
+  have hD : 0 ≤ D := div_nonneg (Nat.cast_nonneg _) hk'.le
+  have hlo : W.upper ≤ D := (le_div_iff₀ hk').mpr (Nat.le_ceil _)
+  have hhi : D ≤ W.upper+1 := by
     apply (div_le_iff₀ hk').mpr
-    have he : (N:ℝ)<W.upper*k+1 := Nat.ceil_lt_add_one (mul_nonneg W.upper_pos.le hk'.le)
+    have he : (N:ℝ) < W.upper*k+1 := Nat.ceil_lt_add_one (mul_nonneg W.upper_pos.le hk'.le)
     linarith only [he,hk]
   have hvar := HTGeometry.eVariationOn_mul_le_of_norm_le_of_lipschitzOn
     (f := W.toFun) (h := W.mellinWeight s) (a := 0) (b := D) (Mf := V) (Mh := B)
     hD (W.boundedVariation.mono (Set.subset_univ _)) hV hB
     (fun x _ => W.norm_le_totalVariation x) (fun x _ => hbound s hs x) (hLip s hs).lipschitzOnWith
-  have hv : (eVariationOn (W.mellinIntegrand s) (Set.Icc 0 D)).toReal≤Q := by
+  have hv : (eVariationOn (W.mellinIntegrand s) (Set.Icc 0 D)).toReal ≤ Q := by
     have h := ENNReal.toReal_mono (by simp) hvar
     rw [ENNReal.toReal_ofReal] at h
-    · have hm : (eVariationOn W.toFun (Set.Icc 0 D)).toReal≤V :=
+    · have hm : (eVariationOn W.toFun (Set.Icc 0 D)).toReal ≤ V :=
         ENNReal.toReal_mono W.boundedVariation (eVariationOn.mono _ (Set.subset_univ _))
       calc _ ≤ B*(eVariationOn W.toFun (Set.Icc 0 D)).toReal+V*C*D := by
                 simpa only [CompactBVPrimeWindow.mellinIntegrand,sub_zero] using h
@@ -81,7 +81,7 @@ theorem realMeshMellinError_uniform (W : CompactBVPrimeWindow) {K : Set ℂ} (hK
     (g := W.mellinIntegrand s) (k := k) hk' (n := N)
     (W.mellinIntegrand_integrable s).intervalIntegrable (W.mellinIntegrand_boundedVariationOn s hD)
   rw [realMeshMellinError,← hint]
-  refine le_trans ?_ ((mul_le_mul_of_nonneg_left hv (show 0≤1/k by positivity)).trans_eq (by ring))
+  refine le_trans ?_ ((mul_le_mul_of_nonneg_left hv (show 0 ≤ 1/k by positivity)).trans_eq (by ring))
   simpa only [Nat.cast_add,Nat.cast_one] using hquad
 
 private abbrev lo := Real.exp (-8)
@@ -95,7 +95,7 @@ private theorem rootWindow_regular : ContDiffOn ℝ 1 rootWindowRaw (Set.Icc lo 
   have hF : ContDiff ℝ 1 squareLogProfile := (contDiff_const.mul hH).sub
     (hH.comp (contDiff_id.sub contDiff_const))
   intro x hx
-  have hx' : 0<x := (Real.exp_pos _).trans_le hx.1
+  have hx' : 0 < x := (Real.exp_pos _).trans_le hx.1
   have hl := Real.contDiffAt_log (n := 1) hx'.ne'
   apply ContDiffAt.contDiffWithinAt
   dsimp only [rootWindowRaw]
@@ -111,7 +111,7 @@ def squareConductorBVWindow : CompactBVPrimeWindow where
   eq_zero_off_support _ h := Set.indicator_of_notMem h _
   integrable := (rootWindow_regular.continuousOn.integrableOn_Icc).integrable_indicator measurableSet_Icc
   boundedVariation := by
-    have hl : lo≤hi := (Real.exp_le_exp.mpr (by norm_num : (-8:ℝ)≤8))
+    have hl : lo ≤ hi := (Real.exp_le_exp.mpr (by norm_num : (-8:ℝ) ≤ 8))
     apply CompactBVPrimeWindow.boundedVariationOn_univ_of_eq_zero_off_Icc hl _
       (fun x h => Set.indicator_of_notMem h _)
     have hc : ContDiffOn ℝ 1 ((Set.Icc lo hi).indicator rootWindowRaw) (Set.Icc lo hi) :=
@@ -119,7 +119,7 @@ def squareConductorBVWindow : CompactBVPrimeWindow where
     obtain ⟨C,hC⟩ := hc.exists_lipschitzOnWith (by norm_num) (convex_Icc lo hi) isCompact_Icc
     simpa only [Set.inter_self] using hC.locallyBoundedVariationOn lo hi (Set.left_mem_Icc.mpr hl) (Set.right_mem_Icc.mpr hl)
 
-private theorem squareConductorBVWindow_apply {t : ℝ} (ht : 0<t) :
+private theorem squareConductorBVWindow_apply {t : ℝ} (ht : 0 < t) :
     squareConductorBVWindow t=(2:ℂ)*t*squarePrimeWeight (1/t^2) := by
   have hl : Real.log (1/t^2) = -2*Real.log t := by rw [one_div,Real.log_inv,Real.log_pow]; push_cast; ring
   have he : Real.exp (-Real.log (1/t^2)/2)=t := by rw [hl,show -(-2*Real.log t)/2=Real.log t by ring,Real.exp_log ht]
@@ -130,8 +130,8 @@ private theorem squareConductorBVWindow_apply {t : ℝ} (ht : 0<t) :
   by_cases h : t∈Set.Icc lo hi
   · exact Set.indicator_of_mem h _
   rw [Set.indicator_of_notMem h]
-  have hb := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ)<4)
-  have hb₀ := Real.log_nonneg (by norm_num : (1:ℝ)≤4)
+  have hb := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 4)
+  have hb₀ := Real.log_nonneg (by norm_num : (1:ℝ) ≤ 4)
   have hzero (x : ℝ) (hx : 8 < |x|) := splineAutoCorr_zero_outside hx
   rcases lt_or_ge t lo with htlo|htlo
   · have hx := (Real.log_lt_iff_lt_exp ht).mpr htlo
@@ -173,10 +173,10 @@ def squareValuationReadingError (g : ℝ → ℝ) (n : ℕ) : ℂ :=
 /-- Every Lipschitz reading has holomorphic Dirichlet error throughout
 the half-plane to the right of three. This applies separately to the
 logarithms of the reduced numerator, denominator and their ratio. -/
-theorem analytic_squareValuationReadingError {g : ℝ → ℝ} {K : ℝ≥0} (hg : LipschitzWith K g) :
-    AnalyticOnNhd ℂ (LSeries (squareValuationReadingError g)) {s : ℂ | 3<s.re} := by
+theorem analytic_squareValuationReadingError {g : ℝ → ℝ} {K : ℝ ≥ 0} (hg : LipschitzWith K g) :
+    AnalyticOnNhd ℂ (LSeries (squareValuationReadingError g)) {s : ℂ | 3 < s.re} := by
   obtain ⟨C,hC,h⟩ := diagonal_prime_exponent_profile_error
-  have hbound (n : ℕ) (hn : n≠0) : ‖squareValuationReadingError g n‖≤((K:ℝ)*C)*(n:ℝ)^2 := by
+  have hbound (n : ℕ) (hn : n≠0) : ‖squareValuationReadingError g n‖ ≤ ((K:ℝ)*C)*(n:ℝ)^2 := by
     rw [squareValuationReadingError,Complex.norm_real,Real.norm_eq_abs]
     have hrow (p : ℕ) : |(g (deningerRatExp (q n) p:ℝ)-g (diagonalPrimeProfile n p))*vonMangoldt p| ≤
         K*(|(deningerRatExp (q n) p:ℝ)-diagonalPrimeProfile n p|*vonMangoldt p) := by
@@ -188,8 +188,8 @@ theorem analytic_squareValuationReadingError {g : ℝ → ℝ} {K : ℝ≥0} (hg
     exact mul_le_mul_of_nonneg_left (h (Nat.pos_of_ne_zero hn)) K.coe_nonneg
   have hab := LSeries.abscissaOfAbsConv_le_of_le_const_mul_rpow (f := squareValuationReadingError g)
     (x := 2) ⟨K*C,fun n hn => by simpa only [Real.rpow_two] using hbound n hn⟩
-  have h₃ : LSeries.abscissaOfAbsConv (squareValuationReadingError g)≤(3:EReal) := by
+  have h₃ : LSeries.abscissaOfAbsConv (squareValuationReadingError g) ≤ (3:EReal) := by
     convert hab using 1 <;> norm_num
-  exact fun s hs => LSeries_analyticOnNhd _ s (h₃.trans_lt (by exact_mod_cast hs : (3:EReal)<(s.re:EReal)))
+  exact fun s hs => LSeries_analyticOnNhd _ s (h₃.trans_lt (by exact_mod_cast hs : (3:EReal) < (s.re:EReal)))
 
 end GaloisForLFunctions.CountingHolography.Sections

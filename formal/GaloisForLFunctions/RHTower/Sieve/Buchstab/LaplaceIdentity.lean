@@ -34,9 +34,11 @@ private theorem shift_one (f : ℝ → ℝ) :
   apply integral_congr_ae
   exact Eventually.of_forall fun t => by
     by_cases ht : 1 < t
-    · rw [Set.indicator_of_mem ht,Set.indicator_of_mem (show 0 < t + -1 by linarith)]
-      rfl
-    · rw [Set.indicator_of_notMem ht,Set.indicator_of_notMem (show ¬0 < t + -1 by linarith)]
+    · simp only [Set.indicator_of_mem (show t ∈ Ioi (1:ℝ) from ht),
+        Set.indicator_of_mem (show t + -1 ∈ Ioi (0:ℝ) from by change 0 < t + -1; linarith),
+        sub_eq_add_neg]
+    · simp only [Set.indicator_of_notMem (show t ∉ Ioi (1:ℝ) from ht),
+        Set.indicator_of_notMem (show t + -1 ∉ Ioi (0:ℝ) from by change ¬0 < t + -1; linarith)]
 
 private theorem primitive_bounds {t : ℝ} (ht : 0 ≤ t) : primitive t ∈ Icc 0 t := by
   constructor
@@ -74,7 +76,7 @@ private theorem primitive_laplace (s : Ioi (0:ℝ)) :
     rw [integral_buchstab_initial ⟨zero_le_one,le_rfl⟩,zero_mul]
   rw [hzero,sub_zero,integral_sub hf (hg.const_mul _),integral_const_mul] at hh
   have hcF : laplaceMass s = ∫ t in Ioi (1:ℝ), f t := cut_at_one fun t ht => by
-    simp [f,buchstab,not_le.mpr ht.2]
+    simp [buchstab,not_le.mpr ht.2]
   rw [cut_at_one (f := g) (fun t ht => by simp [g,primitive,
     integral_buchstab_initial (show t ∈ Icc (0:ℝ) 1 from ⟨ht.1.le,ht.2.le⟩)]),hcF]
   apply (eq_div_iff hs.ne').mpr
@@ -133,7 +135,7 @@ theorem laplaceMass_eq_transform (s : Ioi (0:ℝ)) : laplaceMass s = transform s
     apply ((h.const_add 1).mul (hasDerivAt_apertureExtension x)).congr_deriv
     dsimp [apertureExtension,apertureDensity]
     field_simp [hx.ne',show regular x ≠ 0 from (Real.exp_pos _).ne']
-    <;> ring
+    ring
   obtain ⟨c,hc⟩ := isOpen_Ioi.exists_is_const_of_deriv_eq_zero isPreconnected_Ioi
     (fun x hx => (hd x hx).differentiableAt.differentiableWithinAt) (fun x hx => (hd x hx).deriv)
   have hL : Tendsto H atTop (𝓝 1) := by

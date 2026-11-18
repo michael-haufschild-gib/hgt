@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.TwoAndThreeDilationRecurrencesAndSingleQuartetStratum
 import GaloisForLFunctions.RHTower.PrimeLogIncommensuratePhaseClock
+import GaloisForLFunctions.RHTower.EisensteinLineConstantTerm
 import GaloisForLFunctions.ExceptionalLayerTheory.EveryRightZeroForcesBothSignsOfThePrimeError
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheFloorGraphNormAndTopOctaveBlindnessOfWindowGluing
 
@@ -193,5 +194,113 @@ theorem ordinary_prime_recurrences_iff_rh_or_singleQuartet {β γ : ℝ}
   simpa only [← theta_residual_iff (by norm_num : (1:ℝ)≤2),
     ← theta_residual_iff (by norm_num : (1:ℝ)≤3),← theta_residual_iff (by norm_num : (1:ℝ)≤6)]
     using two_prime_product_recurrences_iff_rh_or_singleQuartet hβ hβ' hγ
+
+/-- The signed combination of the original reading and its two dilations
+which distinguishes coherent phases from opposite orientations. -/
+def primeOrientationResidual (β γ : ℝ) (f : ℝ → ℝ) (x : ℝ) : ℝ :=
+  let u := γ*Real.log 2
+  let v := γ*Real.log 3
+  Real.sin u*(f (3*x)/(3:ℝ)^β)-Real.sin v*(f (2*x)/(2:ℝ)^β)+
+    (Real.sin v*Real.cos u-Real.sin u*Real.cos v)*f x
+
+private theorem normalized_reading {a x : ℝ} (ha : 0<a) (hx : 0<x) (ρ c : ℂ) :
+    (c*((a*x:ℝ):ℂ)^ρ).re/a^ρ.re =
+      Real.cos (ρ.im*Real.log a)*(c*(x:ℂ)^ρ).re-
+      Real.sin (ρ.im*Real.log a)*(c*(x:ℂ)^ρ).im := by
+  have hp : (a:ℂ)^ρ = ((a^ρ.re:ℝ):ℂ)*
+      ((Real.cos (ρ.im*Real.log a):ℂ)+(Real.sin (ρ.im*Real.log a):ℂ)*I) := by
+    calc
+      (a:ℂ)^ρ = (a:ℂ)^((ρ.re:ℂ)+(ρ.im:ℂ)*I) := by rw [Complex.re_add_im]
+      _ = _ := by rw [Complex.cpow_add (by exact_mod_cast ha.ne'),← Complex.ofReal_cpow ha.le,
+        _root_.RHTower.cpow_I_mul_eq_exp ha,Complex.exp_mul_I,Complex.ofReal_cos,Complex.ofReal_sin]
+  rw [Complex.ofReal_mul,Complex.mul_cpow_ofReal_nonneg ha.le hx.le,hp]
+  rw [show c*(((a^ρ.re:ℝ):ℂ)*((Real.cos (ρ.im*Real.log a):ℂ)+
+    (Real.sin (ρ.im*Real.log a):ℂ)*I)*(x:ℂ)^ρ)=
+    ((a^ρ.re:ℝ):ℂ)*(((Real.cos (ρ.im*Real.log a):ℂ)+(Real.sin (ρ.im*Real.log a):ℂ)*I)*
+    (c*(x:ℂ)^ρ)) by ring]
+  simp only [Complex.re_ofReal_mul,Complex.mul_re,Complex.add_re,Complex.add_im,
+    Complex.ofReal_re,Complex.ofReal_im,Complex.re_ofReal_mul,Complex.im_ofReal_mul,
+    Complex.I_re,Complex.I_im,mul_zero,mul_one,add_zero,zero_add]
+  exact mul_div_cancel_left₀ _ (Real.rpow_pos_of_pos ha _).ne'
+
+/-- A coherent complex power is annihilated at each positive cutoff. -/
+theorem primeOrientationResidual_power {x : ℝ} (hx : 0<x) (ρ c : ℂ) :
+    primeOrientationResidual ρ.re ρ.im (fun t => (c*(t:ℂ)^ρ).re) x=0 := by
+  unfold primeOrientationResidual
+  dsimp only
+  rw [normalized_reading (by norm_num : (0:ℝ)<3) hx,normalized_reading (by norm_num : (0:ℝ)<2) hx]
+  ring
+
+/-- Reversing exactly one of the two phase orientations gives multiplier
+of modulus twice the absolute product of the two sines. -/
+theorem opposite_orientation_multiplier (u v : ℝ) :
+    ‖(Real.sin u:ℂ)*((Real.cos v:ℂ)-(Real.sin v:ℂ)*I)-
+      (Real.sin v:ℂ)*((Real.cos u:ℂ)+(Real.sin u:ℂ)*I)+
+      ((Real.sin v*Real.cos u-Real.sin u*Real.cos v:ℝ):ℂ)‖ =
+      2*|Real.sin u*Real.sin v| := by
+  have he : (Real.sin u:ℂ)*((Real.cos v:ℂ)-(Real.sin v:ℂ)*I)-
+      (Real.sin v:ℂ)*((Real.cos u:ℂ)+(Real.sin u:ℂ)*I)+
+      ((Real.sin v*Real.cos u-Real.sin u*Real.cos v:ℝ):ℂ) =
+      ((-2*(Real.sin u*Real.sin v):ℝ):ℂ)*I := by push_cast; ring
+  rw [he,norm_mul,Complex.norm_I,mul_one,Complex.norm_real,Real.norm_eq_abs,abs_mul]
+  norm_num
+
+private theorem scaled_sqrt_log {a x : ℝ} (ha : 1≤a) (hax : a≤x) :
+    Real.sqrt (a*x)*Real.log (a*x)^2 ≤
+      (4*Real.sqrt a)*(Real.sqrt x*Real.log x^2) := by
+  have hx := ha.trans hax
+  have hap := zero_lt_one.trans_le ha
+  have hxp := zero_lt_one.trans_le hx
+  have hlog := Real.log_le_log hap hax
+  have hl : (Real.log a+Real.log x)^2 ≤ (2*Real.log x)^2 :=
+    (sq_le_sq₀ (add_nonneg (Real.log_nonneg ha) (Real.log_nonneg hx))
+      (mul_nonneg (by norm_num) (Real.log_nonneg hx))).mpr (by linarith only [hlog])
+  rw [Real.sqrt_mul hap.le,Real.log_mul hap.ne' hxp.ne']
+  exact (mul_le_mul_of_nonneg_left hl (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))).trans_eq (by ring)
+
+/-- On the single-quartet stratum the coherent main term disappears from
+the three signed prime readings, leaving the square-root error. -/
+theorem primeOrientationResidual_singleQuartet {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) :
+    ∃ C : ℝ, ∀ x : ℝ, 16≤x → |primeOrientationResidual ρ.re ρ.im primeError x| ≤
+      C*Real.sqrt x*Real.log x^2 := by
+  let c : ℂ := -(2*(quartetCopyMult ρ:ℂ))/ρ
+  let W (x : ℝ) := (c*(x:ℂ)^ρ).re
+  let η (x : ℝ) := primeError x-W x
+  let P := Real.sin (ρ.im*Real.log 2)/(3:ℝ)^ρ.re
+  let Q := Real.sin (ρ.im*Real.log 3)/(2:ℝ)^ρ.re
+  let R := Real.sin (ρ.im*Real.log 3)*Real.cos (ρ.im*Real.log 2)-
+    Real.sin (ρ.im*Real.log 2)*Real.cos (ρ.im*Real.log 3)
+  obtain ⟨K,hK⟩ := (hasSingleOffLineQuartet_iff_chebyshevPsi_singleWave hq.1 hq.2.1).mp hq
+  have hη (x : ℝ) (hx : 16≤x) : |η x| ≤ |K|*(Real.sqrt x*Real.log x^2) := by
+    have he : W x = -(2*(quartetCopyMult ρ:ℝ)*((x:ℂ)^ρ/ρ).re) := by
+      dsimp only [W,c]
+      rw [show -(2*(quartetCopyMult ρ:ℂ))/ρ*(x:ℂ)^ρ =
+        -(((2*(quartetCopyMult ρ:ℝ):ℝ):ℂ)*((x:ℂ)^ρ/ρ)) by push_cast; ring,
+        Complex.neg_re,Complex.re_ofReal_mul]
+    have hb := hK x hx
+    rw [mul_assoc] at hb
+    simpa only [η,primeError,he,sub_neg_eq_add] using hb.trans
+      (mul_le_mul_of_nonneg_right (le_abs_self K) (mul_nonneg (Real.sqrt_nonneg _) (sq_nonneg _)))
+  refine ⟨|P|*(|K|*(4*Real.sqrt 3))+|Q|*(|K|*(4*Real.sqrt 2))+|R|*|K|,fun x hx => ?_⟩
+  let B := Real.sqrt x*Real.log x^2
+  have hd (a : ℝ) (ha : 1≤a) (hax : a≤x) : |η (a*x)| ≤ (|K|*(4*Real.sqrt a))*B := by
+    have hxa := le_mul_of_one_le_left (show 0≤x by linarith only [hx]) ha
+    exact (hη _ (hx.trans hxa)).trans ((mul_le_mul_of_nonneg_left
+      (scaled_sqrt_log ha hax) (abs_nonneg K)).trans_eq (by dsimp only [B]; ring))
+  have h0 := primeOrientationResidual_power (show 0<x by linarith only [hx]) ρ c
+  change primeOrientationResidual ρ.re ρ.im W x=0 at h0
+  have he : primeOrientationResidual ρ.re ρ.im primeError x = P*η (3*x)-Q*η (2*x)+R*η x := by
+    unfold primeOrientationResidual at h0 ⊢
+    dsimp only [η,P,Q,R]
+    linear_combination h0
+  rw [he]
+  apply (abs_add_le _ _).trans
+  apply (add_le_add_right (abs_sub _ _) _).trans
+  simp only [abs_mul]
+  have h := add_le_add (add_le_add (mul_le_mul_of_nonneg_left
+    (hd 3 (by norm_num) (by linarith only [hx])) (abs_nonneg P))
+    (mul_le_mul_of_nonneg_left (hd 2 (by norm_num) (by linarith only [hx])) (abs_nonneg Q)))
+    (mul_le_mul_of_nonneg_left (hη x hx) (abs_nonneg R))
+  exact h.trans_eq (by dsimp only [B]; ring)
 
 end GaloisForLFunctions.ExceptionalLayerTheory

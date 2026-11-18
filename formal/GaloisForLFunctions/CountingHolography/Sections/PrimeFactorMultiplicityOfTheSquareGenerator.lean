@@ -249,9 +249,4 @@ theorem eventually_square_generator_more_numerator_factors :
   exact (not_lt_of_ge (div_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonneg_of_nonpos (sq_nonneg _) hb)
     (pow_nonneg (Nat.cast_nonneg n) 3))) h
 
-#print axioms diagonal_log_negligible_at_every_logarithmic_order
-#print axioms tendsto_square_generator_prime_test
-#print axioms tendsto_square_generator_prime_multiplicity
-#print axioms eventually_square_generator_more_numerator_factors
-
 end GaloisForLFunctions.CountingHolography.Sections

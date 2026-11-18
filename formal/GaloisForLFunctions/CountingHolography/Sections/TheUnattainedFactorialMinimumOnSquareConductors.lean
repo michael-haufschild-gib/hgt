@@ -100,7 +100,7 @@ theorem successorSquare_outer_exponents_proper :
       rw [← mul_div_assoc]
       apply (div_le_iff₀ (Real.sqrt_pos.mpr (Nat.cast_pos.mpr hp.pos))).mpr
       have hmn' : (m:ℝ)^2*(256*C) ≤ (n:ℝ)^3 := by
-        apply (le_div_iff₀ (by positivity : 0<256*C)).mp
+        apply (le_div_iff₀ (by positivity : 0 < 256*C)).mp
         simpa only [one_div,div_eq_mul_inv,mul_comm] using hmn
       linarith only [hmn',mul_le_mul_of_nonneg_left hroot (by positivity : 0 ≤ (n:ℝ)^2/8)]
     exact (mul_le_mul_of_nonneg_left (hbase.trans (div_le_div_of_nonneg_right
@@ -140,7 +140,7 @@ private theorem coord_attained (p : Nat.Primes) (z : ℤ) :
     ∃ j : ℤ, (z-2*(p:ℤ)*j).natAbs=factorialCoordinateDistance p z := Nat.find_spec _
 
 private theorem coord_lower (p : Nat.Primes) (z j : ℤ) :
-    factorialCoordinateDistance p z≤(z-2*(p:ℤ)*j).natAbs := Nat.find_min' _ ⟨j,rfl⟩
+    factorialCoordinateDistance p z ≤ (z-2*(p:ℤ)*j).natAbs := Nat.find_min' _ ⟨j,rfl⟩
 
 /-- Finite height of the difference between the price and twice the entropy. -/
 def factorialResidualHeight (a b : Nat.Primes →₀ ℤ) : ℝ :=
@@ -148,8 +148,8 @@ def factorialResidualHeight (a b : Nat.Primes →₀ ℤ) : ℝ :=
 
 /-- Strictly above every price prime, all nearest residues can be chosen
 at once. The minimum is the sum of the independent prime distances. -/
-theorem factorialResidualHeight_exact_minimum {L : ℕ} (hL : 10≤L)
-    (a : Nat.Primes →₀ ℤ) (ha : ∀ p ∈ a.support, (p:ℕ)<L) :
+theorem factorialResidualHeight_exact_minimum {L : ℕ} (hL : 10 ≤ L)
+    (a : Nat.Primes →₀ ℤ) (ha : ∀ p ∈ a.support, (p:ℕ) < L) :
     IsLeast {y : ℝ | ∃ b : Nat.Primes →₀ ℤ, (primeLogValue a,primeLogValue b)∈factorialJointImage L ∧
       y=factorialResidualHeight a b}
       (∑ p ∈ a.support, (factorialCoordinateDistance p (a p):ℝ)*Real.log (p:ℕ)) := by

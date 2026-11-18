@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.Sieve.Buchstab.FactorialEnclosures
+import GaloisForLFunctions.RHTower.Sieve.Buchstab.GlobalDelay
 
 /-!
 # Exact range of the Buchstab function beyond its initial cell
@@ -10,7 +10,7 @@ so none can attain it again.
 -/
 
 namespace RHTower.Sieve.Buchstab
-open Set MeasureTheory
+open Set MeasureTheory Filter Topology
 noncomputable section
 
 private theorem exists_log_root : ∃ w ∈ Ioo (1/2 : ℝ) 1, Real.log w + w = 0 := by
@@ -141,10 +141,129 @@ theorem profile_tail_range :
     obtain ⟨x,hx,hxy⟩ := h (show y ∈ Icc (profile 1 0) (profile 1 peakOffset) by rwa [hstart,hpeak])
     exact mem_iUnion.mpr ⟨0, x, ⟨hx.1,hx.2.trans peakOffset_mem.2.le⟩,hxy⟩
 
+private theorem tail_cell {u : ℝ} (hu : 2 ≤ u) :
+    ∃ n : ℕ, ∃ x ∈ Icc (0:ℝ) 1, u = (n:ℝ)+2+x ∧ buchstab u = profile (n+1) x := by
+  let n := ⌊u-2⌋₊
+  let x := u-2-(n:ℝ)
+  have hx : x ∈ Icc (0:ℝ) 1 := by
+    dsimp [x,n]
+    constructor
+    · exact sub_nonneg.mpr (Nat.floor_le (sub_nonneg.mpr hu))
+    · linarith only [Nat.lt_floor_add_one (u-2)]
+  have he : u = (n:ℝ)+2+x := by dsimp [x]; ring
+  refine ⟨n,x,hx,he,?_⟩
+  convert buchstab_cell (n+1) x hx using 2
+  push_cast
+  linarith only [he]
+
+/-- Exact range on the real ray starting at two. -/
+theorem buchstab_tail_range : buchstab '' Ici (2:ℝ) = Icc (1/2) omegaConstant := by
+  rw [← profile_tail_range]
+  ext z
+  constructor
+  · rintro ⟨u,hu,rfl⟩
+    obtain ⟨n,x,hx,_,he⟩ := tail_cell hu
+    exact mem_iUnion.mpr ⟨n,x,hx,he.symm⟩
+  · intro hz
+    obtain ⟨n,x,hx,rfl⟩ := mem_iUnion.mp hz
+    refine ⟨((n+1:ℕ):ℝ)+1+x,?_,buchstab_cell (n+1) x hx⟩
+    change 2 ≤ _
+    push_cast
+    linarith [Nat.cast_nonneg (α := ℝ) n,hx.1]
+
+/-- The first peak is attained at exactly one real argument on the tail. -/
+theorem buchstab_eq_peak_iff (u : Ici (2:ℝ)) :
+    buchstab u = omegaConstant ↔ u.val = 1+1/omegaConstant := by
+  obtain ⟨n,x,hx,he,hv⟩ := tail_cell u.property
+  constructor
+  · intro h
+    rw [hv] at h
+    cases n with
+    | zero =>
+      have hh := (profile_one_eq_peak_iff ⟨x,hx.1⟩).mp h
+      dsimp [peakOffset] at hh
+      push_cast at he
+      linarith
+    | succ n => exact False.elim ((later_profile_lt_peak n x hx).ne h)
+  · intro h
+    have hh := buchstab_cell 1 peakOffset ⟨peakOffset_mem.1.le,peakOffset_mem.2.le⟩
+    rw [(profile_one_eq_peak_iff ⟨peakOffset,peakOffset_mem.1.le⟩).mpr rfl] at hh
+    convert hh using 2
+    rw [h,peakOffset]
+    push_cast
+    ring
+
+private theorem initial_value {u : ℝ} (hu : u ∈ Icc (1:ℝ) 2) : buchstab u = 1/u := by
+  apply (eq_div_iff (zero_lt_one.trans_le hu.1).ne').mpr
+  rw [mul_comm,buchstab_weighted ⟨u,hu.1⟩,integral_buchstab_initial
+    (show u-1 ∈ Icc (0:ℝ) 1 from ⟨by linarith [hu.1],by linarith [hu.2]⟩),add_zero]
+
+private theorem log_value {u : ℝ} (hu : u ∈ Icc (2:ℝ) 3) :
+    buchstab u = (1+Real.log (u-1))/u := by
+  have hx : u-2 ∈ Icc (0:ℝ) 1 := ⟨by linarith [hu.1],by linarith [hu.2]⟩
+  have h := buchstab_cell 1 (u-2) hx
+  rw [show ((1:ℕ):ℝ)+1+(u-2) = u by norm_num; ring,
+    profile_one_formula ⟨u-2,hx.1⟩] at h
+  simpa only [show 1+(u-2) = u-1 by ring,show 2+(u-2) = u by ring] using h
+
+/-- At the first delay junction the one-sided slopes differ by exactly one half. -/
+theorem buchstab_slopes_two :
+    HasDerivWithinAt buchstab (-(1/4)) (Iic 2) 2 ∧ HasDerivWithinAt buchstab (1/4) (Ici 2) 2 := by
+  have hl : HasDerivAt (fun u : ℝ => 1/u) (-(1/4)) 2 := by
+    convert (hasDerivAt_const (2:ℝ) (1:ℝ)).div (hasDerivAt_id 2) (by norm_num) using 1 <;> norm_num
+  have hshift : HasDerivAt (fun u : ℝ => u-1) 1 2 := (hasDerivAt_id (2:ℝ)).sub_const 1
+  have hl' := hshift.log (by norm_num : (2:ℝ)-1 ≠ 0)
+  have hr : HasDerivAt (fun u : ℝ => (1+Real.log (u-1))/u) (1/4) 2 := by
+    convert (hl'.const_add 1).div (hasDerivAt_id _) (by norm_num) using 1 <;> norm_num
+  constructor
+  · apply hl.hasDerivWithinAt.congr_of_eventuallyEq _ (initial_value ⟨by norm_num,le_rfl⟩)
+    filter_upwards [Ioc_mem_nhdsLE (show (1:ℝ)<2 by norm_num)] with t ht
+    exact initial_value ⟨ht.1.le,ht.2⟩
+  · apply hr.hasDerivWithinAt.congr_of_eventuallyEq _ (log_value ⟨le_rfl,by norm_num⟩)
+    filter_upwards [Ico_mem_nhdsGE (show (2:ℝ)<3 by norm_num)] with t ht
+    exact log_value ⟨ht.1,ht.2.le⟩
+
+/-- The initial jump and the first delay corner are the complete real
+singular set for first-order differentiability. -/
+theorem buchstab_differentiableAt_iff (u : ℝ) :
+    DifferentiableAt ℝ buchstab u ↔ u ≠ 1 ∧ u ≠ 2 := by
+  constructor
+  · intro h
+    constructor
+    · rintro rfl
+      have hleft : Tendsto buchstab (𝓝[<] (1:ℝ)) (𝓝 0) := tendsto_const_nhds.congr' (by
+        filter_upwards [self_mem_nhdsWithin] with z hz
+        exact (if_neg (not_le.mpr hz)).symm)
+      have he := tendsto_nhds_unique hleft (h.continuousAt.tendsto.mono_left nhdsWithin_le_nhds)
+      rw [initial_value ⟨le_rfl,by norm_num⟩] at he
+      norm_num at he
+    · rintro rfl
+      obtain ⟨hl,hr⟩ := buchstab_slopes_two
+      have h₁ := (h.hasDerivAt.hasDerivWithinAt (s := Iic 2)).derivWithin (uniqueDiffWithinAt_Iic 2)
+      have h₂ := (h.hasDerivAt.hasDerivWithinAt (s := Ici 2)).derivWithin (uniqueDiffWithinAt_Ici 2)
+      rw [hl.derivWithin (uniqueDiffWithinAt_Iic 2)] at h₁
+      rw [hr.derivWithin (uniqueDiffWithinAt_Ici 2)] at h₂
+      linarith
+  · rintro ⟨h₁,h₂⟩
+    rcases lt_or_gt_of_ne h₁ with hlo | hhi
+    · apply ((hasDerivAt_const u (0:ℝ)).congr_of_eventuallyEq ?_).differentiableAt
+      filter_upwards [gt_mem_nhds hlo] with z hz
+      exact if_neg (not_le.mpr hz)
+    · rcases lt_or_gt_of_ne h₂ with hlo | hhi'
+      · have hd := (hasDerivAt_const u (1:ℝ)).div (hasDerivAt_id u) (zero_lt_one.trans hhi).ne'
+        apply (hd.congr_of_eventuallyEq ?_).differentiableAt
+        filter_upwards [Ioo_mem_nhds hhi hlo] with z hz
+        exact initial_value ⟨hz.1.le,hz.2.le⟩
+      · exact (hasDerivAt_buchstab ⟨u,hhi'⟩).differentiableAt
+
 #print axioms omegaConstant_mul_exp
 #print axioms profile_one_eq_peak_iff
 #print axioms later_profile_lt_peak
 #print axioms profile_tail_range
+#print axioms buchstab_tail_range
+#print axioms buchstab_eq_peak_iff
+#print axioms buchstab_slopes_two
+#print axioms buchstab_differentiableAt_iff
 
 end
 end RHTower.Sieve.Buchstab

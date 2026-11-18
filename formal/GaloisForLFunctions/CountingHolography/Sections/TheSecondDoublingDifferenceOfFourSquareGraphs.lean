@@ -152,7 +152,7 @@ theorem zetaZeroWidth_le_iff_fourSquare_degree {s : ℝ} (hs : 0 ≤ s) (hs' : s
     linarith only [(abs_le.mp (h n)).1,h1,h2,(abs_le.mp (hd n hn)).1,slack n]
   · rintro ⟨A,hA⟩
     obtain ⟨B,hB⟩ := lower_of_second_doubling_difference (F := f) (C := (A+D)/2)
-      (show 2*s<1 by linarith only [hs']) f_sublinear (fun n hn => by
+      (show 2*s < 1 by linarith only [hs']) f_sublinear (fun n hn => by
         change -((A+D)/2*(X n)^(2*s)) ≤ 4*f n-4*f (U n)+f (U (U n))
         have hh := hA n hn
         change -(A*(X n)^(2*s)) ≤ _ at hh

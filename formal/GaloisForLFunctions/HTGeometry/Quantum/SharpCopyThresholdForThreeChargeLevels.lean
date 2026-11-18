@@ -13,6 +13,7 @@ attains this lower bound.
 
 noncomputable section
 open Finset Matrix
+open scoped ComplexOrder
 namespace GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels
 
 private def smallLabel : Fin 3 → ℤ := ![0,1,0]

@@ -31,6 +31,46 @@ theorem continuousIntegerAtom_bound {Φ : ℝ → ℝ} {C : ℝ}
   calc _ ≤ 1*(C*Real.exp (2*(t-Real.log x))) := mul_le_mul hinv (hb _) (abs_nonneg _) zero_le_one
     _ = _ := by rw [mul_sub,Real.exp_sub,two_mul (Real.log x),Real.exp_add,Real.exp_log hx0]; ring
 
+open ArithmeticFunction in
+/-- The full Mangoldt wave splits absolutely into ordinary primes and proper powers. -/
+theorem mangoldt_atom_sum_split {Φ : ℝ → ℝ} {C : ℝ}
+    (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
+    (∑' n : ℕ, vonMangoldt n*continuousIntegerAtom Φ n t) = (ordinaryPrimeWave Φ t).re +
+      ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*Φ (t-Real.log (properPrimePowerIndex j)) := by
+  let v := fun n : ℕ => vonMangoldt n*continuousIntegerAtom Φ n t
+  let f := fun n : ℕ => (vonMangoldtAtom n:ℂ)*(Φ (t-Real.log n):ℂ)
+  have he (n : ℕ) : (v n : ℂ) = f n := by
+    by_cases hn : 2 ≤ n
+    · simp only [v, f, continuousIntegerAtom, vonMangoldtAtom, if_pos hn, div_eq_mul_inv,
+        Complex.ofReal_mul, mul_assoc]
+    · rcases (show n=0 ∨ n=1 by omega) with rfl | rfl <;> simp [v,f,vonMangoldtAtom]
+  have hv : Summable v := by
+    apply Summable.of_norm_bounded (GaloisForLFunctions.summable_log_nat_div_sq.mul_left (C*Real.exp (2*t)))
+    intro n
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · simp [v]
+    have h := continuousIntegerAtom_bound hb (by exact_mod_cast hn : (1:ℝ) ≤ n) t
+    dsimp only [v]
+    rw [Real.norm_eq_abs,abs_mul, abs_of_nonneg vonMangoldt_nonneg]
+    calc _ ≤ Real.log n*((C*Real.exp (2*t))*(1/(n:ℝ)^2)) :=
+              mul_le_mul vonMangoldt_le_log h (abs_nonneg _) (Real.log_natCast_nonneg n)
+      _ = _ := by ring
+  have hf : Summable f := (Complex.ofRealCLM.hasSum hv.hasSum).summable.congr he
+  have hsplit := tsum_eq_ordinary_primes_add_proper_powers hf (fun n hn => by
+    by_contra hp
+    apply hn
+    rw [← he]
+    dsimp only [v]
+    rw [vonMangoldt_eq_zero_iff.2 hp,zero_mul,Complex.ofReal_zero])
+  have ht : (∑' n, f n) = ((∑' n, v n : ℝ):ℂ) := by
+    rw [Complex.ofReal_tsum]; exact tsum_congr fun n => (he n).symm
+  have hj : (∑' j, f (properPrimePowerIndex j)) =
+      ((∑' j, vonMangoldtAtom (properPrimePowerIndex j)*Φ (t-Real.log (properPrimePowerIndex j)) : ℝ):ℂ) := by
+    rw [Complex.ofReal_tsum]
+    exact tsum_congr fun _ => (Complex.ofReal_mul ..).symm
+  rw [ht, hj] at hsplit
+  exact congrArg Complex.re hsplit
+
 /-- The integer atoms converge absolutely at every translate. -/
 theorem summable_continuousIntegerAtom {Φ : ℝ → ℝ} {C : ℝ}
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :

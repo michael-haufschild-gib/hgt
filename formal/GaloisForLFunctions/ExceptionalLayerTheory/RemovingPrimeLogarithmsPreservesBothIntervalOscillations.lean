@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.EveryFiniteCofactorSeesTheOrdinaryPrimeCount
 import GaloisForLFunctions.RHTower.MobiusDiscretePacketEdgeEstimates
+import GaloisForLFunctions.ExceptionalLayerTheory.QuadratureOfTwoConsecutivePrimeIntervals
 
 /-!
 # One-sided oscillation of prime-count increments
@@ -13,7 +14,7 @@ comparisons for both signs of the centered ordinary count.
 
 noncomputable section
 
-open Finset
+open Finset Filter Topology
 
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
@@ -183,5 +184,114 @@ theorem prime_interval_freeze_log {l u : ℕ} (hl : 2 ≤ l) (hlu : l < u) {B : 
     exact div_le_div_of_nonneg_left (sub_nonneg.mpr (hmono le_rfl hlu.le)) (hlog le_rfl) (hmono le_rfl hlu.le)
   exact ⟨neg_le.mp (hneg.trans (mul_le_mul_of_nonneg_right hu hB)),
     hpos.trans (mul_le_mul_of_nonneg_right hu hB)⟩
+
+/-- The log-weighted centered count is exactly the increment of θ(x)−x
+at integer endpoints. -/
+theorem centered_prime_log_interval {l u : ℕ} (hl : 1 ≤ l) (hlu : l ≤ u) :
+    (∑ n ∈ Ioc l u, Real.log n*ordinaryPrimeCountWeight n) =
+      (Chebyshev.theta u-u)-(Chebyshev.theta l-l) := by
+  let f (n : ℕ) : ℝ := if n.Prime then Real.log n else 0
+  have hp (n : ℕ) : (∑ k ∈ Icc 1 n, f k) = Chebyshev.theta n := by
+    rw [Chebyshev.theta_eq_sum_primesLE_log,Nat.primesLE_eq_filter_Icc_one,sum_filter]
+  have he : Icc 1 u = Icc 1 l ∪ Ioc l u := by
+    ext n
+    simp only [mem_Icc,mem_union,mem_Ioc]
+    omega
+  have hd : Disjoint (Icc 1 l) (Ioc l u) := Finset.disjoint_left.mpr
+    fun _ h h' => (mem_Ioc.mp h').1.not_ge (mem_Icc.mp h).2
+  have hθ := hp u
+  rw [he,sum_union hd,hp] at hθ
+  have ha (n : ℕ) (hn : n ∈ Ioc l u) : Real.log n*ordinaryPrimeCountWeight n = f n-1 := by
+    have hn' := (mem_Ioc.mp hn).1
+    have hh := Real.log_pos (show (1:ℝ) < n by exact_mod_cast (show 1<n by omega))
+    change Real.log n*((if n.Prime then 1 else 0)-(Real.log n)⁻¹)=_
+    rw [mul_sub,mul_inv_cancel₀ hh.ne']
+    split <;> simp_all [f]
+  rw [sum_congr rfl ha,sum_sub_distrib]
+  simp only [sum_const,nsmul_eq_mul,mul_one,Nat.card_Ioc,Nat.cast_sub hlu]
+  linarith only [hθ]
+
+/-- Rounding both endpoints costs less than one in a centered interval. -/
+theorem centered_prime_log_interval_real {x y : ℝ} (hx : 1 ≤ x) (hxy : x ≤ y) :
+    |(∑ n ∈ Ioc ⌊x⌋₊ ⌊y⌋₊, Real.log n*ordinaryPrimeCountWeight n)-
+      ((Chebyshev.theta y-y)-(Chebyshev.theta x-x))| ≤ 1 := by
+  rw [centered_prime_log_interval ((Nat.one_le_floor_iff x).mpr hx) (Nat.floor_mono hxy),
+    ← Chebyshev.theta_eq_theta_coe_floor,← Chebyshev.theta_eq_theta_coe_floor,abs_le]
+  have h₁ := Nat.floor_le (zero_le_one.trans hx)
+  have h₂ := Nat.floor_le ((zero_le_one.trans hx).trans hxy)
+  have h₃ := Nat.lt_floor_add_one x
+  have h₄ := Nat.lt_floor_add_one y
+  constructor <;> linarith only [h₁,h₂,h₃,h₄]
+
+/-- At every sufficiently large integer base the largest centered prime
+count in either direction has size at least a constant times Y^β/log(2Y). -/
+theorem singleQuartet_signed_prime_octave {ρ : ℂ} (hq : ExclusionOfTheCriticalState.HasSingleOffLineQuartet ρ) :
+    ∃ c : ℝ, 0<c ∧ ∀ᶠ Y : ℕ in atTop, ∀ ε : ℝ, |ε|=1 →
+      c*(Y:ℝ)^ρ.re ≤ Real.log (2*Y:ℕ)*largestForwardSum (fun n => ε*ordinaryPrimeCountWeight n) Y := by
+  obtain ⟨C,hC,h⟩ := singleQuartet_signed_theta_octave hq
+  have hβ : 0<ρ.re := by linarith only [hq.1]
+  have hp := (Real.tendsto_rpow_atTop hβ).comp tendsto_natCast_atTop_atTop
+  refine ⟨C/2,half_pos hC,?_⟩
+  filter_upwards [tendsto_natCast_atTop_atTop.eventually h,hp.eventually_ge_atTop (2/C),
+    eventually_ge_atTop 2] with Y hY hpow h2
+  intro ε hε
+  obtain ⟨l,u,hl,hlu,hu,hs⟩ := hY ε hε
+  have hy : (1:ℝ)≤Y := by exact_mod_cast (show 1≤Y by omega)
+  have hfl : Y≤⌊l⌋₊ := Nat.le_floor hl
+  have hfu : ⌊u⌋₊≤2*Y := by
+    have he := (Nat.floor_le ((zero_le_one.trans hy).trans (hl.trans hlu))).trans hu
+    exact_mod_cast he
+  have he := centered_prime_log_interval_real (hy.trans hl) hlu
+  let S := ∑ n ∈ Ioc ⌊l⌋₊ ⌊u⌋₊, Real.log n*ordinaryPrimeCountWeight n
+  let E := (Chebyshev.theta u-u)-(Chebyshev.theta l-l)
+  have he' : |ε*(S-E)|≤1 := by rw [abs_mul,hε,one_mul]; exact he
+  have hf := Nat.floor_mono hlu
+  have hI := le_forward (fun n => Real.log n*(ε*ordinaryPrimeCountWeight n))
+    (mem_Icc.mpr ⟨hfl,hf.trans hfu⟩) (mem_Icc.mpr ⟨hfl.trans hf,hfu⟩)
+  have hsum : (∑ n ∈ Ioc ⌊l⌋₊ ⌊u⌋₊, Real.log n*(ε*ordinaryPrimeCountWeight n))= ε*S := by
+    dsimp only [S]; rw [mul_sum]; exact sum_congr rfl fun _ _ => by ring
+  rw [hsum] at hI
+  have hpow' := (div_le_iff₀ hC).mp (show 2/C≤(Y:ℝ)^ρ.re from hpow)
+  have hd := (abs_le.mp he').1
+  change C*(Y:ℝ)^ρ.re ≤ ε*E at hs
+  exact (show C/2*(Y:ℝ)^ρ.re ≤ ε*S by linarith only [hpow',hd,hs]).trans
+    (hI.trans (forward_prime_logarithm_bounds Y h2 ε).2)
+
+/-- Freezing the prime logarithm on any interval inside one octave has
+error O(l^β/log l), uniformly in its upper endpoint. -/
+theorem singleQuartet_prime_interval_freeze_log {ρ : ℂ} (hq : ExclusionOfTheCriticalState.HasSingleOffLineQuartet ρ) :
+    ∃ K : ℝ, 0≤K ∧ ∀ᶠ l : ℕ in atTop, ∀ u : ℕ, l≤u → u≤2*l →
+      |(∑ n ∈ Ioc l u, Real.log n*ordinaryPrimeCountWeight n)-
+        Real.log l*∑ n ∈ Ioc l u, ordinaryPrimeCountWeight n| ≤ K*(l:ℝ)^ρ.re/Real.log l := by
+  obtain ⟨L,hL,h⟩ := singleQuartet_theta_error_power hq
+  obtain ⟨X,hX⟩ := eventually_atTop.mp h
+  let B := 2*L*(2:ℝ)^ρ.re
+  have hB : 0≤B := by dsimp only [B]; positivity
+  refine ⟨Real.log 2*B,mul_nonneg (Real.log_nonneg (by norm_num)) hB,?_⟩
+  filter_upwards [tendsto_natCast_atTop_atTop.eventually_ge_atTop X,eventually_ge_atTop 2] with l hl h2
+  have hp : (1:ℝ)<l := by exact_mod_cast (show 1<l by omega)
+  have hlog := Real.log_pos hp
+  have hβ : 0≤ρ.re := by linarith only [hq.1]
+  have hLpow := Real.rpow_nonneg (Nat.cast_nonneg l) ρ.re
+  intro u hlu hu
+  rcases hlu.eq_or_lt with rfl | hlu
+  · simp only [Ioc_self,sum_empty,mul_zero,sub_zero,abs_zero]
+    positivity
+  have hb (v : ℕ) (hv : l≤v) (hvu : v≤2*l) :
+      |Chebyshev.theta v-v| ≤ L*((2:ℝ)^ρ.re*(l:ℝ)^ρ.re) := by
+    have hv' : (l:ℝ)≤v := by exact_mod_cast hv
+    apply (hX v (hl.trans hv')).trans
+    rw [← Real.mul_rpow (by norm_num) (Nat.cast_nonneg l)]
+    exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg v) (by exact_mod_cast hvu) hβ) hL
+  have hs := prime_interval_freeze_log h2 hlu (mul_nonneg hB hLpow) (fun j hj hju => by
+    rw [centered_prime_log_interval (by omega) hju]
+    exact ((abs_sub _ _).trans (add_le_add (hb u hlu.le hu) (hb j hj (hju.trans hu)))).trans_eq (by
+      dsimp only [B]; ring))
+  have hlogu : Real.log u ≤ Real.log 2+Real.log l := by
+    rw [← Real.log_mul (by norm_num) (zero_lt_one.trans hp).ne']
+    exact Real.log_le_log (by exact_mod_cast (show 0<u by omega)) (by exact_mod_cast hu)
+  apply hs.trans
+  have ht := div_le_div_of_nonneg_right (show Real.log u-Real.log l≤Real.log 2 by linarith only [hlogu]) hlog.le
+  exact (mul_le_mul_of_nonneg_right ht (mul_nonneg hB hLpow)).trans_eq (by ring)
 
 end GaloisForLFunctions.ExceptionalLayerTheory
