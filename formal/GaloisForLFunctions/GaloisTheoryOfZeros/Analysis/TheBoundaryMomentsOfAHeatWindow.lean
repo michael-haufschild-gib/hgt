@@ -82,7 +82,9 @@ theorem heatBoundaryDiscriminant_eq_vandermonde (τ l u : ℂ)
   have hsum (f : ℂ → ℂ) : (∑ i, f (v i)) = ∑ z ∈ Z, (m z : ℂ) * f z := by
     calc
       _ = ∑ j : J, f (j.1 : ℂ) := Fintype.sum_equiv e _ _ fun _ => rfl
-      _ = _ := by simp [J, Fintype.sum_sigma, Finset.sum_coe_sort]
+      _ = _ := by
+        simp [J, Fintype.sum_sigma]
+        exact Finset.sum_attach Z (fun z => (m z : ℂ) * f z)
   refine ⟨v, ?_, fun k => (hm k).trans (hsum (· ^ k)).symm, ?_⟩
   · intro z
     have hs := hsum (fun w => if w = z then (1 : ℂ) else 0)
@@ -201,9 +203,10 @@ private theorem card_increasing_pairs (m : ℕ) :
       apply Finset.sum_congr rfl
       intro i _
       rw [Fin.card_Ioi]
-      rfl
+      change m - 1 - i.val = m - (i.val + 1)
+      omega
     _ = ∑ i : Fin m, (i : ℕ) := Fintype.sum_equiv Fin.revPerm _ _ (fun _ => rfl)
-    _ = _ := by rw [Fin.sum_univ_eq_sum_range, Finset.sum_range_id, Nat.choose_two_right]
+    _ = _ := by rw [Fin.sum_univ_eq_sum_range (fun k : ℕ => k) m, Finset.sum_range_id, Nat.choose_two_right]
 
 /-- The source determinant in an isolating spatial square, in the time
 coordinate `τ+s²`. Its remaining factor is holomorphic and nonzero at zero. -/
@@ -267,7 +270,7 @@ private theorem source_sheet_factor {τ z : ℂ} {m : ℕ} (hm : 2 ≤ m)
     filter_upwards [Filter.eventually_all.mpr (fun i => Filter.eventually_all.mpr (h' i))] with s hs i j hij
     exact by_contra (fun hn => hs i j hn hij)
   have hbase : heatBoundaryDiscriminant τ l u = 0 := by
-    have hwb (t : ℝ) (he : complexHeat τ (RHTower.rectangleBoundaryPath l u t) = 0) := 
+    have hwb (t : ℝ) (he : complexHeat τ (RHTower.rectangleBoundaryPath l u t) = 0) :=
       hiso _ (hbound t) he
     have hzi : inBox l u z := inside_of_close (by simpa using hd)
     apply (heatBoundaryDiscriminant_eq_zero_iff τ l u hx hy (fun t he =>
@@ -342,11 +345,11 @@ theorem IsCollision.boundaryMoment_winding {τ z : ℂ} {m : ℕ}
     exact lt_of_pow_lt_pow_left₀ 2 hδ.le (by simpa only [norm_pow] using hw)
   have hD := ((analyticAt_id.pow (m.choose 2)).mul hVa).congr heq.symm
   refine ⟨squareLower z d,squareUpper z d,inside_of_close (by simpa using hd),hD,
-    hD.analyticOrderAt_eq_natCast.mpr ⟨V,hVa,hv,by simpa using heq⟩,?_⟩
+    hD.analyticOrderAt_eq_natCast.mpr ⟨V,hVa,hv,heq.mono (fun w hw => by simpa only [sub_zero, smul_eq_mul] using hw)⟩,?_⟩
   obtain ⟨R,hR,hball⟩ := Metric.mem_nhds_iff.mp
     (heq.and (hVa.eventually_analyticAt.and (hVa.continuousAt.eventually_ne hv)))
   refine ⟨R,hR,fun a b ha hb hc' hd' hsub => ?_⟩
-  have hw := RHTower.rectIntegral_logDeriv_boxCount (Finset.singleton ()) (fun _ => (0 : ℂ))
+  have hw := RHTower.rectIntegral_logDeriv_boxCount ({()} : Finset Unit) (fun _ => (0 : ℂ))
     (fun _ => m.choose 2) (f := D) (h := V) isOpen_ball (fun _ _ => ⟨ha,hb,hc',hd'⟩)
     hsub (fun w hw => (hball hw).2.1) (fun w hw => (hball hw).2.2)
     (fun w hw => by simpa using (hball hw).1)
@@ -403,14 +406,23 @@ theorem height_cut_transition (F G : ℂ → ℂ) (x a b : ℝ)
     intro y hy
     have hv := hQ y hy
     exact ((hv.1.deriv.continuousAt.div hv.1.continuousAt hv.2).comp hp.continuousAt).continuousWithinAt
-  have hF := (hcont F (fun y hy => ⟨(h y hy).1,(h y hy).2.1⟩)).intervalIntegrable
-  have hG := (hcont G (fun y hy => (h y hy).2.2)).intervalIntegrable
+  have hF : IntervalIntegrable (fun y => logDeriv F (p y)) MeasureTheory.volume a b :=
+    (hcont F (fun y hy => ⟨(h y hy).1,(h y hy).2.1⟩)).intervalIntegrable
+  have hG : IntervalIntegrable (fun y => logDeriv G (p y)) MeasureTheory.volume a b :=
+    (hcont G (fun y hy => (h y hy).2.2)).intervalIntegrable
   unfold verticalTrace
   rw [← intervalIntegral.integral_sub hF hG]
   apply intervalIntegral.integral_congr
   intro y hy
   obtain ⟨hf,hf0,hg,hg0⟩ := h y hy
   exact (logDeriv_div _ hf0 hg0 hf.differentiableAt hg.differentiableAt).symm
+
+#print axioms heatBoundaryDiscriminant_eq_vandermonde
+#print axioms heatBoundaryDiscriminant_eq_zero_iff
+#print axioms IsCollision.boundaryMoment_winding
+#print axioms vandermonde_square_insert_sheet
+#print axioms glued_discriminant_trace
+#print axioms height_cut_transition
 
 end
 

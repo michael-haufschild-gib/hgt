@@ -19,7 +19,7 @@ open _root_.HTGeometry
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
 /-- Two lattice translates fall in the same ball of a finite cover of the orbit. -/
-private theorem lattice_almost_period {f : ℝ → ℝ} (hf : HasTotallyBoundedOrbit f)
+theorem lattice_almost_period {f : ℝ → ℝ} (hf : HasTotallyBoundedOrbit f)
     (p : ℝ) {ε : ℝ} (hε : 0 < ε) :
     ∃ n : ℕ, 0 < n ∧ ∀ t : ℝ, |f (t + n*p) - f t| ≤ ε := by
   classical
@@ -109,7 +109,7 @@ private theorem frequency_of_periodic_abs {f : ℝ → ℝ} (hc : Continuous f)
 
 /-- The multiplier for a normalized increment never vanishes at a real frequency
 when the forward scale is greater than one. -/
-private theorem boundaryStep_coefficient {β h : ℝ} (hβ : 1/2 < β) (hh : 0 < h) :
+theorem boundaryStep_coefficient {β h : ℝ} (hβ : 1/2 < β) (hh : 0 < h) :
     let D := boundaryStep β h (primeErrorBoundaryTrace β)
     Continuous D ∧ IsBohrAlmostPeriodic D ∧
       ∀ q : XiZeroCopy, (q.1 : ℂ).re = β →

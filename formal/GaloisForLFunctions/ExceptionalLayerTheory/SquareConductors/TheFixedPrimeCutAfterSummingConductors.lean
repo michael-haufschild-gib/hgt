@@ -107,7 +107,7 @@ theorem fixed_prime_cut_price_comparison :
     have hlo : squareConductorBVWindow.lower ≤ 1 := he
     have hsmall := mul_le_of_le_one_left (sq_nonneg (N:ℝ)) he
     exact hsmall.trans (pow_le_pow_left₀ (Nat.cast_nonneg N)
-      (le_div_self (Nat.cast_nonneg N) squareConductorBVWindow.lower_pos.le hlo) 2)
+      (le_div_self (Nat.cast_nonneg N) squareConductorBVWindow.lower_pos hlo) 2)
   have hpr : (Ioc 0 H).filter Nat.Prime = ordinaryPrimeLags H := by
     ext p
     simp only [ordinaryPrimeLags,mem_filter,mem_Ioc,mem_Icc]

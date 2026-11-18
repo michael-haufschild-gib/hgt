@@ -20,7 +20,8 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory
 private def stepMultiplier (β h ω : ℝ) : ℂ :=
   (Real.exp (β*h) : ℂ) * expChar ω h - 1
 
-private def stepAmplitude (β h : ℝ) (q : XiZeroCopy) : ℂ :=
+/-- The contribution of one zero copy to a translated boundary increment. -/
+def stepAmplitude (β h : ℝ) (q : XiZeroCopy) : ℂ :=
   stepMultiplier β h (xiCopyOrdinate q) * primeErrorBoundaryAmplitude β q
 
 private theorem char_add_time (ω t h : ℝ) :
@@ -37,7 +38,7 @@ private theorem char_neg_freq (ω t : ℝ) : expChar (-ω) t = conj (expChar ω 
   push_cast
   ring
 
-private theorem stepAmplitude_summable {β : ℝ} (hβ : 1/2 < β) (h : ℝ) :
+theorem stepAmplitude_summable {β : ℝ} (hβ : 1/2 < β) (h : ℝ) :
     Summable fun q => ‖stepAmplitude β h q‖ := by
   refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun q => ?_)
     ((summable_primeErrorBoundaryAmplitude hβ).mul_left (Real.exp (β*h)+1))
@@ -47,7 +48,8 @@ private theorem stepAmplitude_summable {β : ℝ} (hβ : 1/2 < β) (h : ℝ) :
   simpa only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _),
     norm_expChar, mul_one, norm_one] using norm_sub_le ((Real.exp (β*h):ℂ)*expChar (xiCopyOrdinate q) h) 1
 
-private theorem stepAmplitude_carrier {β : ℝ} (hβ : 1/2 < β) (h t : ℝ) :
+/-- The translated increment retains the absolutely convergent boundary expansion. -/
+theorem stepAmplitude_carrier {β : ℝ} (hβ : 1/2 < β) (h t : ℝ) :
     (boundaryStep β h (primeErrorBoundaryTrace β) t : ℂ) =
       expSeriesCarrier (stepAmplitude β h) xiCopyOrdinate t := by
   simp only [boundaryStep, Complex.ofReal_sub, Complex.ofReal_mul, ofReal_primeErrorBoundaryTrace,
@@ -67,9 +69,12 @@ private def pairFrequency (p : XiZeroCopy × XiZeroCopy) : ℝ :=
   xiCopyOrdinate p.1 - xiCopyOrdinate p.2
 
 private theorem summable_norm_pairAmplitude {β : ℝ} (hβ : 1/2 < β) (h : ℝ) :
-    Summable fun p => ‖pairAmplitude β h p‖ :=
-  summable_norm_mul (stepAmplitude_summable hβ h)
-    (by simpa only [Complex.norm_conj] using stepAmplitude_summable hβ h)
+    Summable fun p => ‖pairAmplitude β h p‖ := by
+  let a := stepAmplitude β h
+  have ha : Summable fun q => ‖a q‖ := stepAmplitude_summable hβ h
+  have hconj : Summable fun q => ‖conj (a q)‖ := by simpa only [Complex.norm_conj] using ha
+  change Summable (fun r : XiZeroCopy × XiZeroCopy => ‖a r.1 * conj (a r.2)‖)
+  exact GaloisForLFunctions.summable_norm_mul (b := a) (c := fun q => conj (a q)) ha hconj
 
 private theorem squareStep_carrier {β : ℝ} (hβ : 1/2 < β) (h t : ℝ) :
     ((boundaryStep β h (primeErrorBoundaryTrace β) t ^ 2 : ℝ) : ℂ) =
@@ -86,7 +91,9 @@ private theorem squareStep_carrier {β : ℝ} (hβ : 1/2 < β) (h t : ℝ) :
     _ = _ := by
       rw [hc, expSeriesCarrier_mul ω (fun q => -ω q) (stepAmplitude_summable hβ h)
         (by simpa only [Complex.norm_conj] using stepAmplitude_summable hβ h)]
-      simp only [a, ω, pairAmplitude, pairFrequency, sub_eq_add_neg]
+      have hf : (fun r : XiZeroCopy × XiZeroCopy => ω r.1 + -ω r.2) = pairFrequency :=
+        funext fun r => (sub_eq_add_neg _ _).symm
+      exact congrArg (fun f => expSeriesCarrier (pairAmplitude β h) f t) hf
 
 /-- The sign is strict for every occupied pair because the common step multiplier
 has nonzero modulus. -/
@@ -203,9 +210,44 @@ theorem top_step_phase_separates_ordinates {γ : ℝ} {m : ℕ}
     change (∑' r : S, -(pairAmplitude β h r.val).im) = 0
     rw [tsum_neg, ← Complex.im_tsum hs]
     change -(fiberAmplitude (pairAmplitude β h) pairFrequency d).im = 0
-    rw [hz]; rfl
+    rw [hz, Complex.zero_im, neg_zero]
   exact (hpw.trans_le hle).ne' hzero
 
+/-- Multiplicities included, each phase for the doubled step contains finitely
+many extremal zeros. Its two possible square roots each determine at most one ordinate. -/
+theorem finite_top_double_step_fiber {γ : ℝ} {m : ℕ}
+    (hΘ : 1/2 < zetaZeroAbscissa) (hγ : γ ≠ 0)
+    (hb : ¬ IsLogSqrtSqUnbounded (thetaRadialDiscrepancy zetaZeroAbscissa γ m)) (z : ℂ) :
+    {q : XiZeroCopy | (q.1 : ℂ).re = zetaZeroAbscissa ∧
+      expChar (xiCopyOrdinate q) (2*quarterPeriodStep γ) = z}.Finite := by
+  classical
+  let h := quarterPeriodStep γ
+  let S := fun w : ℂ => {q : XiZeroCopy | (q.1 : ℂ).re = zetaZeroAbscissa ∧
+    expChar (xiCopyOrdinate q) h = w}
+  have hS (w : ℂ) : (S w).Finite := by
+    by_cases hp : (S w).Nonempty
+    · obtain ⟨p,hp⟩ := hp
+      refine (finite_xiOrdinateWindow |xiCopyOrdinate p| 0).subset fun q hq => ?_
+      have he := top_step_phase_separates_ordinates hΘ hγ hb q p hq.1 hp.1 (hq.2.trans hp.2.symm)
+      rw [mem_xiOrdinateWindow_iff, sub_zero]
+      change |xiCopyOrdinate q| ≤ |xiCopyOrdinate p|
+      exact (congrArg abs he).le
+    · exact Set.finite_empty.subset fun _ hq => (hp ⟨_,hq⟩).elim
+  let T := {q : XiZeroCopy | (q.1 : ℂ).re = zetaZeroAbscissa ∧ expChar (xiCopyOrdinate q) (2*h) = z}
+  change T.Finite
+  by_cases ht : T.Nonempty
+  · obtain ⟨p,hp⟩ := ht
+    let w := expChar (xiCopyOrdinate p) h
+    refine ((hS w).union (hS (-w))).subset fun q hq => ?_
+    have hs (r : XiZeroCopy) : expChar (xiCopyOrdinate r) h ^ 2 =
+        expChar (xiCopyOrdinate r) (2*h) := by rw [two_mul, char_add_time, sq]
+    have he := (hs q).trans ((hq.2.trans hp.2.symm).trans (hs p).symm)
+    rcases sq_eq_sq_iff_eq_or_eq_neg.mp he with H | H
+    · exact Or.inl ⟨hq.1,H⟩
+    · exact Or.inr ⟨hq.1,H⟩
+  · exact Set.finite_empty.subset fun _ hq => (ht ⟨_,hq⟩).elim
+
 #print axioms top_step_phase_separates_ordinates
+#print axioms finite_top_double_step_fiber
 
 end GaloisForLFunctions.ExceptionalLayerTheory

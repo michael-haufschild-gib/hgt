@@ -67,7 +67,8 @@ theorem hasDerivAt_testedIntegerWeight {Φ : ℝ → ℝ} (hc : Continuous Φ) {
       Real.exp (0*(T-p))*(integerReferenceWave Φ (T-p)-Real.exp ((T-p)/2)*
         (∫ v, Real.exp (-v/2)*Φ v)))*(-1))) p at h
   simp only [sub_zero,zero_mul,Real.exp_zero,one_mul] at h
-  convert h using 1 <;> ring
+  convert h using 1
+  ring
 
 private theorem tested_atom_integrable {Φ : ℝ → ℝ} (hc : Continuous Φ) (hi : Integrable Φ)
     (T p : ℝ) : Integrable (fun t => (∫ v, Φ v)*continuousIntegerAtom Φ (Real.exp p) t*

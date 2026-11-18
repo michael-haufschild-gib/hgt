@@ -125,6 +125,7 @@ theorem relativeBoundary_eq : relativeBoundary = comparisonBoundary := by
     rw [← ha, ← hb]; field_simp; ring
   rw [hc]
   field_simp
+  subst ha hb
   ring
 
 theorem comparisonDelta_bounds : (27 / 64 : ℝ) < comparisonDelta ∧ comparisonDelta < 57 / 128 := by
@@ -215,7 +216,6 @@ theorem tangentIntercept_eq :
   generalize hd : 45 * r - 14 = d
   have hd0 : d ≠ 0 := by rw [← hd]; linarith
   field_simp
-  (try rw [← hd])
   ring
 
 /-- The tangent at `r∗` is a global minorant of `G` on `[2/3, ∞)`. -/

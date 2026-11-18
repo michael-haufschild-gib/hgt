@@ -289,9 +289,11 @@ theorem exists_regular_heatBox_exhaustion :
   let B := (fun p : ℂ × ℂ => p.1.re) '' multipleZeros
   let C := (fun p : ℂ × ℂ => |p.2.re|) '' multipleZeros
   let E := (fun p : ℂ × ℂ => |p.2.im|) '' multipleZeros
-  have hd : Dense (A ∪ B ∪ C ∪ E)ᶜ :=
-    (((countable_multipleZeros.image _).union (countable_multipleZeros.image _)).union
-      (countable_multipleZeros.image _) |>.union (countable_multipleZeros.image _)).dense_compl ℝ
+  have hA : A.Countable := countable_multipleZeros.image _
+  have hB : B.Countable := countable_multipleZeros.image _
+  have hC : C.Countable := countable_multipleZeros.image _
+  have hE : E.Countable := countable_multipleZeros.image _
+  have hd := (((hA.union hB).union hC).union hE).dense_compl ℝ
   have h (n : ℕ) := hd.exists_mem_open (U := Ioo ((n : ℝ)+1) (n+2)) isOpen_Ioo
     (Set.nonempty_Ioo.mpr (by linarith))
   choose R havoid hrange using h

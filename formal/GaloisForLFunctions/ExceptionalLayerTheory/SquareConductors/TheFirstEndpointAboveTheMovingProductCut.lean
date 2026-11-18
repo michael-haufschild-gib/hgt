@@ -38,10 +38,9 @@ theorem clippedFirstEndpoint_eq {n q : ℕ} (hq : 2 < q) (hL : q ≤ splineHoriz
   rw [sum_Ico_eq_sub _ hqL] at h
   change (∑ k ∈ range (splineHorizon n+1), r k) - (∑ k ∈ range q, r k) =
     (∑ k ∈ range (splineHorizon n+1), r k) + sampledSpline n q at h
-  unfold clippedFirstEndpoint
-  rw [sum_Ico_eq_sub _ hD]
-  change ((∑ k ∈ range (lastProductHorizon n q), r k) - (∑ k ∈ range q, r k)) -
+  change (∑ k ∈ Ico q (lastProductHorizon n q), r k) -
     (∑ k ∈ range (lastProductHorizon n q), r k) = sampledSpline n q
+  rw [sum_Ico_eq_sub r hD]
   linarith only [h]
 
 /-- Returned ordinary-prime mass on the very products above the sharp cut. -/
