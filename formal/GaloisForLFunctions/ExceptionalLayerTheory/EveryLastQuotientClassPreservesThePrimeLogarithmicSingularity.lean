@@ -35,7 +35,7 @@ private theorem exists_lastClass_euler_point {q : ℕ} [NeZero q] (hq : 2≤q) :
     have hd : q ∣ 1 := (ZMod.natCast_eq_zero_iff 1 q).mp (by simpa using hone)
     have := Nat.le_of_dvd one_pos hd
     omega
-  simp [c,lastClassJumps,ZMod.natCast_self,hne] at hzero
+  simp [c,lastClassJumps,hne] at hzero
 
 /-- Every fixed quotient class detects all right zeros through its ordinary-prime
 series. The symbol may have a zero of any finite order at the zeta zero. -/

@@ -57,6 +57,7 @@ theorem integrable_square_derivative_of_fourier_moment {B b : ℝ → ℝ}
       apply integral_mono (RHTower.integrable_norm_sq_fourier hiG h2G) (hM.const_mul _)
       intro ξ
       have hg : 𝓕 g ξ = differenceSymbol (d n) ξ*𝓕 f ξ := fourier_sub_translate f hi _ ξ
+      change ‖𝓕 g ξ‖^2 ≤ (d n)^2*((2*Real.pi*ξ)^2*‖𝓕 f ξ‖^2)
       rw [hg,norm_mul,mul_pow]
       exact (mul_le_mul_of_nonneg_right (square_differenceSymbol_le (d n) ξ) (sq_nonneg _)).trans_eq (mul_assoc ..)
     calc ((d n)^2)⁻¹*_ ≤ ((d n)^2)⁻¹*((d n)^2*(∫ ξ, M ξ)) :=

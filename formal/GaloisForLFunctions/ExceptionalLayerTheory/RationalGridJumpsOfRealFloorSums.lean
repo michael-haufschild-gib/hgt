@@ -1,5 +1,7 @@
 import GaloisForLFunctions.BezoutValuationIncidence.GcdOrbitProjectionAndExactTranslationPeriods
 import GaloisForLFunctions.BiScaleUncertainty.FiniteSieveRealization
+import GaloisForLFunctions.RHTower.Sieve.PrimeCountRelativeWindow
+import GaloisForLFunctions.RHTower.RVCumulantAverage
 import GaloisForLFunctions.RHTower.ZetaStandardTwistDichotomy
 import GaloisForLFunctions.RHTower.EulerDeletionQuasiShuffleConvergence
 
@@ -231,6 +233,83 @@ theorem last_quotient_class_two_floor_identity (t : ℝ) :
     exact_mod_cast (by omega : 1+2*(n/2)=n)
   · rw [if_neg h,eq_sub_iff_add_eq,zero_add]
     exact_mod_cast (by omega : 2*(n/2)=n)
+
+private theorem floors_constant_to_right {ι : Type*} (s : Finset ι) (a : ι → ℝ)
+    (ha : ∀ i ∈ s, 0<a i) (t : ℝ) :
+    ∃ v : ℝ, t<v ∧ ∀ x : ℝ, t≤x → x<v → ∀ i ∈ s, ⌊a i*x⌋=⌊a i*t⌋ := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => exact ⟨t+1,lt_add_one _,by simp⟩
+  | @insert i s hi ih =>
+    have hp := ha i (mem_insert_self ..)
+    obtain ⟨v,hv,h⟩ := ih (fun k hk => ha k (mem_insert_of_mem hk))
+    let z := ((⌊a i*t⌋:ℝ)+1)/(a i)
+    have hz : t<z := (lt_div_iff₀ hp).mpr (by rw [mul_comm]; exact Int.lt_floor_add_one _)
+    refine ⟨min v z,lt_min hv hz,fun x hl hu k hk => ?_⟩
+    rcases mem_insert.mp hk with rfl | hk
+    · apply Int.floor_eq_iff.mpr
+      exact ⟨(Int.floor_le _).trans (mul_le_mul_of_nonneg_left hl hp.le),
+        by simpa only [mul_comm x] using (lt_div_iff₀ hp).mp (lt_of_lt_of_le hu (min_le_right v z))⟩
+    · exact h x hl (hu.trans_le (min_le_left v z)) k hk
+
+/-- Discrepancy of a finite real factorial comparison against the last quotient class. -/
+def floorClassDifference {ι : Type*} (s : Finset ι) (w a : ι → ℝ) (q : ℕ) (t : ℝ) : ℝ :=
+  (if q∣⌊t⌋₊+1 then 1 else 0) - ∑ i ∈ s, w i*(⌊a i*t⌋:ℝ)
+
+/-- Each comparison at period at least three misses a whole interval of positive ratios. -/
+theorem floorClassDifference_interval {ι : Type*} (s : Finset ι) (w a : ι → ℝ)
+    (ha : ∀ i ∈ s, 0<a i) {q : ℕ} (hq : 3≤q) :
+    ∃ u v e : ℝ, 0<u ∧ u<v ∧ 0<e ∧ ∀ x : ℝ, u≤x → x<v → |floorClassDifference s w a q x|=e := by
+  have hf := last_quotient_class_not_finite_real_floors s w a ha hq
+  push_neg at hf
+  obtain ⟨t,ht,hh⟩ := hf
+  obtain ⟨v,hv,h⟩ := floors_constant_to_right s a ha t
+  let z := min v ((⌊t⌋₊:ℝ)+1)
+  have hz : t<z := lt_min hv (Nat.lt_floor_add_one _)
+  obtain ⟨u,hu,hu'⟩ := exists_between hz
+  refine ⟨u,z,|floorClassDifference s w a q t|,ht.trans_lt hu,hu',abs_pos.mpr (sub_ne_zero.mpr hh),
+    fun x hux hx => ?_⟩
+  have ht' := hu.le.trans hux
+  have hfloor : ⌊x⌋₊=⌊t⌋₊ := (Nat.floor_eq_iff (ht.trans ht')).mpr
+    ⟨(Nat.floor_le ht).trans ht',hx.trans_le (min_le_right ..)⟩
+  have hsum : ∑ i ∈ s, w i*(⌊a i*x⌋:ℝ)=∑ i ∈ s, w i*(⌊a i*t⌋:ℝ) := by
+    refine sum_congr rfl fun i hi => ?_
+    rw [h x ht' (hx.trans_le (min_le_left ..)) i hi]
+  rw [floorClassDifference,floorClassDifference,hfloor,hsum]
+
+/-- At every sufficiently large base a fixed relative interval of ordinary
+primes supplies positive linear logarithmic discrepancy for the comparison. -/
+theorem floorClassDifference_prime_mass {ι : Type*} (s : Finset ι) (w a : ι → ℝ)
+    (ha : ∀ i ∈ s, 0<a i) {q : ℕ} (hq : 3≤q) :
+    ∃ l r c : ℝ, 0<l ∧ l<r ∧ 0<c ∧ ∀ᶠ X : ℝ in atTop,
+      c*X ≤ ∑ p ∈ _root_.RHTower.Sieve.primesIn (l*X) (r*X),
+        Real.log p * |floorClassDifference s w a q (X/p)| := by
+  obtain ⟨u,v,e,hu,huv,he,hw⟩ := floorClassDifference_interval s w a ha hq
+  have hv := hu.trans huv
+  have hlr := inv_lt_inv₀ hv hu |>.mpr huv
+  have ht := ((_root_.RHTower.tendsto_chebyshevTheta_div (inv_pos.mpr hu)).sub
+    (_root_.RHTower.tendsto_chebyshevTheta_div (inv_pos.mpr hv))).eventually_const_lt
+      (show (u⁻¹-v⁻¹)/2<u⁻¹-v⁻¹ by linarith only [hlr])
+  refine ⟨v⁻¹,u⁻¹,((u⁻¹-v⁻¹)/2)*e,inv_pos.mpr hv,hlr,mul_pos (half_pos (sub_pos.mpr hlr)) he,?_⟩
+  filter_upwards [ht,eventually_gt_atTop (0:ℝ)] with X hX hx
+  change (u⁻¹-v⁻¹)/2 < Chebyshev.theta (u⁻¹*X)/X-Chebyshev.theta (v⁻¹*X)/X at hX
+  rw [← sub_div,lt_div_iff₀ hx,_root_.RHTower.Sieve.theta_sub_theta_eq_sum_primesIn
+    (mul_le_mul_of_nonneg_right hlr.le hx.le)] at hX
+  have hh (p : ℕ) (hp : p∈_root_.RHTower.Sieve.primesIn (v⁻¹*X) (u⁻¹*X)) :
+      |floorClassDifference s w a q (X/p)|=e := by
+    obtain ⟨hpr,hl,hr⟩ := _root_.RHTower.Sieve.mem_primesIn (mul_nonneg (inv_pos.mpr hv).le hx.le) hp
+    have hpos : 0<(p:ℝ) := by exact_mod_cast hpr.pos
+    rw [inv_mul_eq_div] at hl hr
+    exact hw _ ((le_div_iff₀ hpos).mpr (by simpa only [mul_comm] using (le_div_iff₀ hu).mp hr))
+      ((div_lt_iff₀ hpos).mpr (by simpa only [mul_comm] using (div_lt_iff₀ hv).mp hl))
+  calc
+    _ = ((u⁻¹-v⁻¹)/2*X)*e := by ring
+    _ ≤ _ := (mul_le_mul_of_nonneg_right hX.le he.le).trans_eq (by
+      rw [sum_mul]
+      exact sum_congr rfl fun p hp => by rw [hh p hp])
+
+#print axioms floorClassDifference_interval
+#print axioms floorClassDifference_prime_mass
 
 #print axioms periodic_divisor_sum_iff_gcd
 #print axioms finite_floor_sum_jumps_depend_on_gcd

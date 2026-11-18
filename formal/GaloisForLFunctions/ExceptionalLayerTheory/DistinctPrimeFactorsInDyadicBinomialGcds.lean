@@ -97,7 +97,7 @@ private theorem carry_one_dvd_gcd {j N p : ℕ} (hp : p.Prime)
     (show p.log (2^(j+1)*N)<K by dsimp only [K]; omega)).1
   have h₁ : dyadicQuotientCarry j N p ≤ ∑ r ∈ Ico 1 K, dyadicQuotientCarry j N (p^r) := by
     simpa only [pow_one] using single_le_sum (f := fun r => dyadicQuotientCarry j N (p^r))
-      (fun _ _ => Nat.zero_le _) (mem_Ico.mpr ⟨le_rfl,by omega : 1<K⟩)
+      (fun _ _ => Nat.zero_le _) (show 1 ∈ Ico 1 K from mem_Ico.mpr ⟨le_rfl,hK⟩)
   rw [hc] at h₁
   rw [← Nat.support_factorization,Finsupp.mem_support_iff]
   exact Nat.ne_of_gt (h₁.trans he)

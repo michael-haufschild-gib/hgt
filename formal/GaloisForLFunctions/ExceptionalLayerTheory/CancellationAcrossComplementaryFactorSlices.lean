@@ -40,7 +40,8 @@ private theorem middle_divisor_block :
   have hZ : 0 < Z := div_pos hx₀ hde₀
   have curvature_pos : 0 < curvature := by dsimp [curvature]; positivity
   have hδ : 0 < δ := pos _
-  have curvature_identity : curvature*(4*((d : ℝ)*e)*(A : ℝ)^3)=T := by dsimp [curvature,Z]; field_simp <;> ring
+  have curvature_identity : curvature*(4*((d : ℝ)*e)*(A : ℝ)^3)=T := by
+    dsimp [curvature,Z]; field_simp; ring
   have sqrt_sq := Real.sq_sqrt curvature_pos.le
   have first : (A : ℝ)*Real.sqrt curvature ≤ P (255/1000) := by
     have four : (1 : ℝ) ≤ 4*(d : ℝ) := by linarith only [hd₁]
