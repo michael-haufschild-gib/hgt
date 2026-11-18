@@ -56,9 +56,10 @@ theorem tilted_discrepancy_fractional_test_bound {D : ℝ → ℝ} (hm : Measura
   have hI : Integrable H := (hg.add (hJ.comp_sub_left T)).const_mul C
   have hf (t : ℝ) : ‖f t‖ ≤ H t := by
     have he : f t=C*(g t*J (T-t)) := by
-      dsimp only [f,C,g,J,tiltedFloorTest]
-      rw [show -r*T= -(r*t+r*(T-t)) by ring,Real.exp_neg,Real.exp_add]
-      field_simp [(Real.exp_pos _).ne']
+      have hex : Real.exp (-r*T)*Real.exp (r*t)*Real.exp (r*(T-t))=1 := by
+        rw [← Real.exp_add,← Real.exp_add,show -r*T+r*t+r*(T-t)=0 by ring,Real.exp_zero]
+      calc f t = (Real.exp (-r*T)*Real.exp (r*t)*Real.exp (r*(T-t)))*f t := by rw [hex,one_mul]
+        _ = _ := by dsimp only [f,C,g,J,tiltedFloorTest]; ring
     rw [he,Real.norm_eq_abs,abs_mul,abs_of_pos (Real.exp_pos _ : 0<C),abs_mul]
     apply mul_le_mul_of_nonneg_left _ (Real.exp_pos _).le
     nlinarith only [sq_nonneg (|g t|-|J (T-t)|),sq_abs (g t),sq_abs (J (T-t)),
@@ -117,12 +118,13 @@ theorem criticalState_integerCentred_fractional_response {W₀ : ℝ} (hW : 0 < 
     have he1 : 1 ≤ Real.exp (q*T) := Real.one_le_exp (mul_nonneg hq.le hT)
     have hT' : T ≤ q⁻¹*Real.exp (q*T) := by
       rw [← div_eq_inv_mul,le_div_iff₀ hq]; linarith only [hx]
-    linarith only [he1,hT',add_mul (1:ℝ) q⁻¹ (Real.exp (q*T)),one_mul (Real.exp (q*T))]
+    rw [add_mul,one_mul]
+    exact add_le_add he1 hT'
   have hfirst := (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left htime hC)
     (Real.exp_pos (-T/2)).le)
   have he' : C*((1+q⁻¹)*Real.exp (q*T))*Real.exp (-T/2)= C*(1+q⁻¹)*Real.exp (-r*T) := by
-    rw [mul_assoc C, mul_assoc (1+q⁻¹),← Real.exp_add,
-      show q*T + -T/2= -r*T by dsimp only [q]; ring,mul_assoc]
+    calc _ = (C*(1+q⁻¹))*(Real.exp (q*T)*Real.exp (-T/2)) := by ring
+      _ = _ := by rw [← Real.exp_add,show q*T + -T/2= -r*T by dsimp only [q]; ring]
   rw [add_mul]
   exact add_le_add (h.2.2.trans (hfirst.trans_eq he')) (abs_integral_le_integral_abs.trans (hbound T).2)
 

@@ -32,7 +32,7 @@ private theorem omitted_mangoldt {X T : ℕ} (keep : ℕ → Prop) [DecidablePre
       ∑ p ∈ Icc 1 X, vonMangoldt p*w p| ≤ F*(7*T+(Chebyshev.psi X-Chebyshev.theta X)) := by
   have hsmall : (∑ p ∈ Icc 1 X, (if p≤T then vonMangoldt p else 0)) ≤ 7*T := by
     rw [←sum_filter]
-    apply le_trans _ (chebyshevPsi_le_seven T)
+    apply le_trans _ (_root_.RHTower.chebyshevPsi_le_seven T)
     apply sum_le_sum_of_subset_of_nonneg
     · intro p hp
       exact mem_Icc.mpr ⟨(mem_Icc.mp (mem_filter.mp hp).1).1,(mem_filter.mp hp).2⟩

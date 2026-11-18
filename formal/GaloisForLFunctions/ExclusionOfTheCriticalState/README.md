@@ -250,6 +250,8 @@ ordinary-prime wave $e^{t/2}\mathcal LF(-1/2)+o(e^{t/2})$ directly.
 [Prime number theorem on the state](Wall/ThePrimeNumberTheoremOnTheState.lean).
 For either sign, maximizing over independent weights in $[0,1]$ on every proper prime power gives exactly its positive sign mass at each time. The maximum tends to half the integral of the corresponding sign part of the state. [Sharp sign masses](Wall/TheTwoSignMassesOfTheProperPrimePowers.lean).
 
+Let $m=\int\Phi$. On $t>T$, the sum of the absolute differences of the two sign parts of the ordinary-prime polar error and the literal $(\Lambda(n)-1)$ wave minus $m/2$ has integral $O(e^{-T/40})$. The estimate holds on every measurable subset of the ray. [Sign transfer](Wall/TheIntegratedErrorInThePrimeSquareLayer.lean).
+
 For every energy-domain profile, the gamma means of the ordinary-prime error after polar subtraction
 converge geometrically to $-\mathcal LF(0)/2$. The kernels are $t^n e^{-t}/n!$ on the positive ray.
 [Ordinary-prime gamma averages](Wall/GammaAveragesOfTheOrdinaryPrimeError.lean).

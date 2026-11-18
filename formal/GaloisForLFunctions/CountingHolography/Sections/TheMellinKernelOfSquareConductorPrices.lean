@@ -1,3 +1,5 @@
+import GaloisForLFunctions.RHTower.Suzuki.SuzukiMellinConvolution
+import GaloisForLFunctions.CountingHolography.Sections.SquareGeneratorPrefix
 import GaloisForLFunctions.CountingHolography.Sections.ThePrimeExponentsOnTheSquareDiagonal
 import GaloisForLFunctions.CountingHolography.Sections.CriticalZerosSeparateThePrimeProfileFromFactorialKernels
 import Mathlib.NumberTheory.LSeries.Deriv
@@ -682,5 +684,113 @@ theorem analyticAt_squarePriceRegularContinuation_real {t : ℝ} (ht : 3 < t) :
   have hz : (t:ℂ)/2-1 = ((t/2-1:ℝ):ℂ) := by push_cast; rfl
   rw [hz,he]
   exact Complex.ofReal_ne_zero.mpr hr.ne'
+
+private def linearCutoff := (Set.Ioc (0:ℝ) 1).indicator fun x : ℝ => (x:ℂ)
+
+/-- The signed prime weight of the unweighted prefix is the convolution of
+the single-conductor weight with the linear unit cutoff. -/
+def squarePrefixPrimeWeight := positiveMellinConvolution squarePrimeWeight linearCutoff
+
+private theorem hasMellin_linearCutoff {s : ℂ} (hs : -1 < s.re) :
+    HasMellin linearCutoff s (1/(s+1)) := by
+  let f := fun x : ℝ => (x:ℂ)^s
+  let I := Set.Ioc (0:ℝ) 1
+  have he (x : ℝ) (hx : 0 < x) : (x:ℂ)^(s-1) • linearCutoff x=I.indicator f x := by
+    by_cases h : x ∈ I
+    · rw [linearCutoff,Set.indicator_of_mem h,Set.indicator_of_mem h,smul_eq_mul,← Complex.cpow_one (x:ℂ),
+        ← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hx.ne'),sub_add_cancel]
+    · simp [linearCutoff,I,Set.indicator_of_notMem h]
+  have hi : IntegrableOn f I := (intervalIntegral.intervalIntegrable_cpow' hs).integrableOn_Ioc
+  refine ⟨(hi.integrable_indicator measurableSet_Ioc).integrableOn.congr_fun (fun x hx => (he x hx).symm) measurableSet_Ioi,?_⟩
+  rw [mellin,setIntegral_congr_fun measurableSet_Ioi he,integral_indicator measurableSet_Ioc,
+    Measure.restrict_restrict_of_subset Set.Ioc_subset_Ioi_self,← intervalIntegral.integral_of_le zero_le_one]
+  have hn : s+1 ≠ 0 := fun h => by
+    have hh := congrArg Complex.re h
+    simp only [Complex.add_re,Complex.one_re,Complex.zero_re] at hh
+    linarith
+  simpa only [f,Complex.ofReal_one,Complex.ofReal_zero,Complex.one_cpow,Complex.zero_cpow hn,sub_zero]
+    using integral_cpow (a := 0) (b := 1) (Or.inl hs)
+
+/-- The Mellin multiplier of passing to the complete conductor prefix. -/
+theorem mellin_squarePrefixPrimeWeight {s : ℂ} (hs : -1 < s.re) :
+    mellin squarePrefixPrimeWeight s=mellin squarePrimeWeight s/(s+1) := by
+  have hm : Measurable squarePrimeWeight := by unfold squarePrimeWeight squareLogProfile; fun_prop (disch := exact continuous_splineAutoCorr.measurable)
+  have h := hasMellin_linearCutoff hs
+  simpa only [squarePrefixPrimeWeight,h.2,mul_one_div] using
+    (mellin_positiveMellinConvolution hm (Complex.continuous_ofReal.measurable.indicator measurableSet_Ioc)
+      (mellinConvergent_squarePrimeWeight s) h.1)
+
+/-- The integrated prime profile at v is v times the weighted tail above v. -/
+theorem squarePrefixPrimeWeight_tail {v : ℝ} (hv : 0 < v) :
+    squarePrefixPrimeWeight v=(v:ℂ)*∫ t in Set.Ici v, squarePrimeWeight t/(t:ℂ)^2 := by
+  rw [squarePrefixPrimeWeight,positiveMellinConvolution,← integral_const_mul]
+  have hsub : Set.Ici v ⊆ Set.Ioi (0:ℝ) := fun t ht => hv.trans_le ht
+  rw [← Measure.restrict_restrict_of_subset hsub (μ := volume),← integral_indicator measurableSet_Ici]
+  apply setIntegral_congr_fun measurableSet_Ioi
+  intro t ht
+  by_cases h : v ≤ t
+  · have hx : v/t ∈ Set.Ioc (0:ℝ) 1 := ⟨div_pos hv ht,(div_le_one ht).mpr h⟩
+    rw [linearCutoff,Set.indicator_of_mem hx,Set.indicator_of_mem h,Complex.ofReal_div]
+    ring
+  · have hx : v/t ∉ Set.Ioc (0:ℝ) 1 := fun hh => h ((div_le_one ht).mp hh.2)
+    simp [linearCutoff,Set.indicator_of_notMem hx,Set.indicator_of_notMem (show t ∉ Set.Ici v from h)]
+
+private theorem squarePrefixPrimeWeight_primitive {v : ℝ} (hv : 0 < v) :
+    squarePrefixPrimeWeight v=(v:ℂ)*∫ t in (0:ℝ)..1/Real.sqrt v, squareConductorBVWindow t := by
+  let T := 1/Real.sqrt v
+  let g := (Set.Ici v).indicator fun t : ℝ => squarePrimeWeight t/(t:ℂ)^2
+  have hr := Real.sqrt_pos.mpr hv
+  have hT : 0 < T := one_div_pos.mpr hr
+  have hg : (∫ t in Set.Ioi (0:ℝ), g t)=∫ t in Set.Ici v, squarePrimeWeight t/(t:ℂ)^2 := by
+    rw [show g = _ from rfl,integral_indicator measurableSet_Ici,
+      Measure.restrict_restrict_of_subset (show Set.Ici v ⊆ Set.Ioi (0:ℝ) from fun t ht => hv.trans_le ht)]
+  rw [squarePrefixPrimeWeight_tail hv,← hg,← integral_comp_rpow_Ioi g (show (-2:ℝ) ≠ 0 by norm_num)]
+  congr 1
+  rw [intervalIntegral.integral_of_le hT.le,← Measure.restrict_restrict_of_subset
+    (show Set.Ioc 0 T ⊆ Set.Ioi (0:ℝ) from Set.Ioc_subset_Ioi_self) (μ := volume),← integral_indicator measurableSet_Ioc]
+  apply setIntegral_congr_fun measurableSet_Ioi
+  intro t ht
+  have he : t^(-2:ℝ)=(t^2)⁻¹ := by rw [Real.rpow_neg ht.le,Real.rpow_two]
+  have h₃ : t^((-2:ℝ)-1)=(t^3)⁻¹ := by rw [show (-2:ℝ)-1 = -(3:ℝ) by norm_num,Real.rpow_neg ht.le,show t^(3:ℝ)=t^(3:ℕ) from Real.rpow_natCast t 3]
+  have hiv : v ≤ (t^2)⁻¹ ↔ t ≤ T := by
+    change v ≤ (t^2)⁻¹ ↔ t ≤ 1/Real.sqrt v
+    rw [← one_div,le_div_iff₀ (sq_pos_of_pos ht),le_div_iff₀ hr]
+    have hh : (t*Real.sqrt v)^2 = v*t^2 := by rw [mul_pow,Real.sq_sqrt hv.le,mul_comm]
+    rw [← hh]
+    simpa only [one_pow] using sq_le_sq₀ (mul_nonneg ht.le hr.le) zero_le_one
+  rw [he,h₃]
+  by_cases hh : t ≤ T
+  · rw [Set.indicator_of_mem (show t ∈ Set.Ioc 0 T from ⟨ht,hh⟩),
+      squareConductorBVWindow_apply ht,show g ((t^2)⁻¹)=squarePrimeWeight ((t^2)⁻¹)/(((t^2)⁻¹:ℝ):ℂ)^2
+        from Set.indicator_of_mem (hiv.mpr hh) _,abs_neg,abs_of_pos (by norm_num : (0:ℝ)<2),
+      Complex.real_smul,one_div]
+    push_cast
+    field_simp [Complex.ofReal_ne_zero.mpr ht.ne'] <;> ring
+  · rw [Set.indicator_of_notMem (show t ∉ Set.Ioc 0 T from fun h => hh h.2),
+      show g ((t^2)⁻¹)=0 from Set.indicator_of_notMem (fun h => hh (hiv.mp h)) _,smul_zero]
+
+/-- The same prefix profile in the relative conductor variable. -/
+theorem squarePrefixPrimeWeight_radial {v : ℝ} (hv : 0 < v) :
+    squarePrefixPrimeWeight v = ∫ r in (0:ℝ)..1, (2:ℂ)*r*squarePrimeWeight (v/r^2) := by
+  let T := (Real.sqrt v)⁻¹
+  have hr := Real.sqrt_pos.mpr hv
+  have hT : 0 < T := inv_pos.mpr hr
+  have h := intervalIntegral.integral_comp_mul_right (a := 0) (b := 1) (c := T)
+    (fun t : ℝ => squareConductorBVWindow t) hT.ne'
+  simp only [zero_mul,one_mul] at h
+  have hh : T • (∫ r in (0:ℝ)..1, squareConductorBVWindow (r*T)) =
+      ∫ t in (0:ℝ)..T, squareConductorBVWindow t := by rw [h,smul_smul,mul_inv_cancel₀ hT.ne',one_smul]
+  rw [squarePrefixPrimeWeight_primitive hv,one_div,← hh,Complex.real_smul,← mul_assoc,
+    ← intervalIntegral.integral_const_mul]
+  apply intervalIntegral.integral_congr_uIoo
+  intro r hr₁
+  have hr₀ : 0 < r := (show r ∈ Set.Ioo (0:ℝ) 1 by simpa only [Set.uIoo_of_le zero_le_one] using hr₁).1
+  rw [squareConductorBVWindow_apply (mul_pos hr₀ hT)]
+  have hsq : T^2=v⁻¹ := by dsimp only [T]; rw [inv_pow,Real.sq_sqrt hv.le]
+  have arg : 1/(r*T)^2=v/r^2 := by rw [mul_pow,hsq]; ring
+  rw [arg,Complex.ofReal_mul]
+  have hscale : v*T*T=1 := by rw [mul_assoc,← sq,hsq,mul_inv_cancel₀ hv.ne']
+  have hscale' : (v:ℂ)*(T:ℂ)*(T:ℂ)=1 := by exact_mod_cast hscale
+  linear_combination ((2:ℂ)*r*squarePrimeWeight (v/r^2))*hscale'
 
 end GaloisForLFunctions.CountingHolography.Sections

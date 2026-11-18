@@ -43,13 +43,15 @@ private theorem cell_length (N i : ℕ) :
   have hx₁ : 0 < x+1 := by linarith only [hx]
   have hu := Real.log_le_sub_one_of_pos (div_pos hx₁ hx₀)
   have hl := Real.log_le_sub_one_of_pos (div_pos hx₀ hx₁)
-  rw [Real.log_div hx₁.ne' hx₀.ne',show (x+1)/x-1=1/x by field_simp] at hu
+  rw [Real.log_div hx₁.ne' hx₀.ne',show (x+1)/x-1=1/x by field_simp; ring] at hu
   rw [Real.log_div hx₀.ne' hx₁.ne',show x/(x+1)-1= -(1/(x+1)) by field_simp; ring] at hl
   have hfrac : 2/x ≤ 4/(x+1) := (div_le_div_iff₀ hx₀ hx₁).mpr (by linarith only [hx])
   have hxi : (i:ℝ)+2=x+1 := by dsimp only [x]; ring
   dsimp only [lo,hi]
   rw [hxi]
-  change _ ≤ (2*Real.log (x+1)-_)-(2*Real.log x-_) ∧ _ ≤ _
+  change 2/(x+1) ≤ (2*Real.log (x+1)-2*Real.log N)-(2*Real.log x-2*Real.log N) ∧
+    (2*Real.log (x+1)-2*Real.log N)-(2*Real.log x-2*Real.log N) ≤ 4/(x+1)
+  simp only [div_eq_mul_inv,one_mul] at hu hl hfrac ⊢
   constructor <;> linarith only [hu,hl,hfrac]
 
 private theorem integral_cell_constant (N i : ℕ) (c : ℝ) :
@@ -96,7 +98,7 @@ private theorem positive_cell_envelope : ∃ C : ℝ, 0 < C ∧ ∀ {N i : ℕ},
     exact (h x).trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by
       linarith only [neg_abs_le x,hx.2])) hC.le)
   exact (mass_le hbound).trans ((mul_le_mul_of_nonneg_right (cell_length N i).2
-    (show 0 ≤ C*(y^3/(N:ℝ)^3) by positivity)).trans_eq (by change 4/y*_=4*C*y^2/_; field_simp; ring))
+    (show 0 ≤ C*(y^3/(N:ℝ)^3) by positivity)).trans_eq (by change 4/y*_=4*C*y^2/_; field_simp))
 
 /-- One multiplier makes every central conductor compulsory while keeping
 the integer ceiling of every raw weight globally bounded. -/

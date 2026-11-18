@@ -19,4 +19,4 @@ For independent signs on prime bases, weight every proper power $p^j$ by the sam
 
 For the sharp bounds before inversion, see [the two sign masses of the proper prime powers](../3-formalized/ecs-two-sign-masses-of-proper-prime-powers.md).
 
-**Integrable sign error.** On paper, the absolute error after replacing each proper-power sign mass by its limiting constant integrates to $O(e^{-T/40})$ over the entire late ray. The same bound transfers both sign parts from the twice-centered Mangoldt wave to the ordinary-prime wave. [Proof via prime-square mass bins](../2-fully-proven/ecs-integrated-error-of-the-proper-prime-powers.md).
+**Integrable sign error.** Each extremal proper-power sign mass differs from its limit by $O(e^{-T/40})$ in absolute integral over $t>T$. On every measurable subset of this ray, both sign masses of the ordinary-prime polar error transfer to the literal $(\Lambda(n)-1)$ wave after subtraction of $\frac12\int\Phi$, with the same total error. [Proof via prime-square mass bins](../3-formalized/ecs-integrated-error-of-the-proper-prime-powers.md).
