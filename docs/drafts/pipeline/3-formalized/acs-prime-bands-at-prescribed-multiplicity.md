@@ -11,3 +11,11 @@ Fix $t\ge d>0$. Take $0<e\le\min(1/16,d/4,dF(u)/16)$. For each integer $0\le j\l
 For $7/12<\alpha<1$, all sufficiently late intervals $(x,x+h]$ with $x^\alpha\le h\le x/2$ carry at least $h/2$ in prime logarithmic mass. This follows from the uniform short-interval theorem for $\psi$ and the $O(\sqrt{x}\log x)$ proper-power contribution. Apply it at $x=z_j b$, $h=eb/(Lt)$ whenever $Kt\le b^{1-\alpha}$ with sufficiently large fixed $K$. There are at least $tF(u)/2$ distinct levels. Adding their contributions gives ordinary floor loss at least $eF(u)b/(8L)$ for each prescribed multiplicity.
 
 The two bounds $Km\le(n+1)^{3/2-\alpha}$ and $Km\le(n+1)^{1-w}$ suffice for the prime intervals and the signed degree respectively. Taking $\alpha=7/8$ admits $m\le c(n+1)^{5/8}$. The signed integrated prime contact, all remaining prime powers, the archimedean contribution and global quadrature together cost at most $E(m^2(n+1)^{2w}+nm)$, where $w\le3/8$ is the zeta zero width. Choosing $c$ small absorbs this in half the floor loss, for both the logarithmic ordinary generator and the excess of the full generator over its radius. The original square-root theorem handles $t<d$ for a sufficiently small fixed $d$. The resulting logarithmic margin counts every integer coordinate $|z|\le\exp(c'n^2)$.
+
+## Lean
+
+The fractional-level estimate is `prime_floor_mass_of_profile_crossing`. [PrimeMassAtFractionalLevels.lean](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/PrimeMassAtFractionalLevels.lean)
+
+The square profile and its mesh error are `outerSquareProfile_crosses` and `successorSquare_outer_reading`. The joint bound before floors is `square_cost_before_ordinary_floors`. [TheOuterBandOfSquareContacts.lean](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/TheOuterBandOfSquareContacts.lean) · [TheCostsBeforeOrdinaryPrimeRounding.lean](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/TheCostsBeforeOrdinaryPrimeRounding.lean)
+
+The original floor loss and section theorems are `successorSquare_floor_loss_at_prescribed_multiplicity`, `all_square_sections_at_width_and_prime_scales` and `all_square_sections_through_five_eighths`. [SmallSectionsAtEveryPrescribedMultiplicity.lean](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/SmallSectionsAtEveryPrescribedMultiplicity.lean)

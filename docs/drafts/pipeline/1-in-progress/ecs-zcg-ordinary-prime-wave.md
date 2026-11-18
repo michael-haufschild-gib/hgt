@@ -26,6 +26,8 @@ Intersecting divisibility conditions from successive central binomial coefficien
 
 Under one quartet, what is the size of the surviving wave when the cofactor symbol vanishes at $\rho$ to order $k$? In log coordinates the derivative of the filtered logarithmic-integral mode is $e^{\rho t}\sum_d f(d)d^{-\rho}/(t-\log d)$. Its first nonzero inverse-power coefficient is $(-1)^kD^{(k)}(\rho)$. This predicts oscillation of order $x^{\Re\rho}/\log^{k+1}x$ in the actual count.
 
+The largest prime factor $P(n)$ alone recovers the ordinary prime-error exponent. For $1/2\le b<1$, the bound $\sum_{n\le N}P(n)\log P(n)=\pi^2N^2/12+O(N^{1+b})$ is equivalent to $\psi(N)=N+O(N^b)$. [Proof](../3-formalized/the-largest-prime-factor-recovers-the-prime-error-exponent.md)
+
 ## Adjacent cutoffs
 
 Can $E(N)$ and $E(pN)$ both be $O(N^{1/2+\varepsilon})$ along an unbounded sequence for each of $p=2,3$, allowing different sequences? A single quartet rotates by $\gamma\log p$ under dilation. The two rotations cannot both be multiples of $\pi$.

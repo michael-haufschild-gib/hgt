@@ -33,7 +33,9 @@ private theorem sqrt_div_bound (X u : ℕ) :
   exact hs.trans ((Real.sqrt_le_sqrt (Nat.cast_div_le (m := X) (n := u))).trans_eq
     (Real.sqrt_div (Nat.cast_nonneg X) u))
 
-private theorem divisible_slice {p : ℕ} (hp : 0 < p) (L M : ℕ) (f : ℕ → ℝ) :
+/-- Multiples in a truncated integer interval form the dilate of the
+interval with both endpoints divided by the modulus. -/
+theorem sum_divisible_Ioc {p : ℕ} (hp : 0 < p) (L M : ℕ) (f : ℕ → ℝ) :
     (∑ v ∈ Ioc L M with p ∣ v, f v) = ∑ t ∈ Ioc (L/p) (M/p), f (p*t) := by
   have he : ((Ioc L M).filter fun v => p ∣ v) = (Ioc (L/p) (M/p)).image (fun t => p*t) := by
     ext v
@@ -65,7 +67,7 @@ private theorem slice_difference {p : ℕ} (hp : p.Prime) (D R X Y : ℕ) :
   change (∑ v ∈ S, f v)-(∑ v ∈ S with p.Coprime v, f v) = _
   rw [←hc,add_sub_cancel_right]
   dsimp [S]
-  rw [divisible_slice hp.pos]
+  rw [sum_divisible_Ioc hp.pos]
   simp only [f,Nat.div_div_eq_div_mul,Nat.mul_assoc]
 
 /-- Uniform bounds for a full complementary slice and its shared-prime

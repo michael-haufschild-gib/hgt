@@ -122,15 +122,16 @@ theorem integral_centredMangoldtWave_mul_alternating {Φ : ℝ → ℝ} (hm : Me
     {C : ℝ} (hC : 0 ≤ C) (hc : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (w : ℝ → ℂ)
     (hK : Measurable (logDilationKernel alternatingDivisorCoeff w)) {B : ℝ}
     (hb : ∀ v, ‖logDilationKernel alternatingDivisorCoeff w v‖ ≤ B) (T : ℝ) :
-    (∫ t, (logShiftWave (fun n : ℕ => centredMangoldtCoefficients n / Real.sqrt n) Φ t : ℂ)*
-      logDilationKernel alternatingDivisorCoeff w (T-t)) =
-    ∫ u, (Φ u:ℂ)*logDilationKernel alternatingPrimeExcess w (T-u) := by
-  rw [(integral_logShiftWave_mul_causal (by simp) centred_inverse_square_summable hm hC hc hK
-    (fun _ h => logDilationKernel_of_neg _ _ h) hb T).2.2]
-  apply integral_congr_ae (Eventually.of_forall fun u => ?_)
+    let V := logShiftWave (fun n : ℕ => centredMangoldtCoefficients n / Real.sqrt n) Φ
+    let g := fun t : ℝ => (V t:ℂ)*logDilationKernel alternatingDivisorCoeff w (T-t)
+    let q := fun u : ℝ => (Φ u:ℂ)*logDilationKernel alternatingPrimeExcess w (T-u)
+    Integrable g ∧ Integrable q ∧ (∫ t, g t) = ∫ u, q u := by
   have he : alternatingPrimeExcess = centredMangoldtCoefficients * alternatingDivisorCoeff :=
     mul_comm alternatingDivisorCoeff centredMangoldtCoefficients
-  rw [he,logDilationKernel_mul]
+  dsimp only
+  simp only [he,logDilationKernel_mul]
+  exact integral_logShiftWave_mul_causal (by simp) centred_inverse_square_summable hm hC hc hK
+    (fun _ h => logDilationKernel_of_neg _ _ h) hb T
 
 #print axioms integral_centredMangoldtWave_mul_alternating
 

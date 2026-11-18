@@ -113,9 +113,9 @@ theorem cyclicCoefficientContent_two_valuation (j N : ℕ) :
   intro hd
   have h := hd.trans (content_dvd one_pos hq (Nat.coprime_one_left _) N)
   rw [cyclicCoefficientRow_eq_prod one_pos hq] at h
-  obtain ⟨k,_,hk⟩ := Nat.prime_two.dvd_finset_prod_iff.mp h
+  obtain ⟨k,_,hk⟩ := (Nat.prime_two.prime.dvd_finsetProd_iff _).mp h
   have he : 2 ∣ q*k := dvd_mul_of_dvd_left (by dsimp only [q]; exact dvd_pow_self 2 (by omega)) _
-  have hf : 2 ∣ 1 := (Nat.dvd_add_iff_right he).mp hk
+  have hf : 2 ∣ 1 := (Nat.dvd_add_iff_right he).mpr hk
   omega
 
 private theorem central_two_balance (N : ℕ) :
@@ -157,7 +157,8 @@ private theorem content_primeFactors {q N : ℕ} (hq : 2≤q) :
   intro p hp
   obtain ⟨hpr,hd,_⟩ := Nat.mem_primeFactors.mp hp
   have hrow := hd.trans (content_dvd one_pos (by omega : 1 < q) (Nat.coprime_one_left _) N)
-  obtain ⟨k,hk,hdk⟩ := hpr.dvd_finset_prod_iff.mp hrow
+  change p ∣ ∏ k ∈ (Icc 1 (q*N)).filter (fun k => k%q=1), k at hrow
+  obtain ⟨k,hk,hdk⟩ := (hpr.prime.dvd_finsetProd_iff _).mp hrow
   have hkI := mem_Icc.mp (mem_filter.mp hk).1
   exact Nat.mem_primesLE.mpr ⟨(Nat.le_of_dvd hkI.1 hdk).trans hkI.2,hpr⟩
 

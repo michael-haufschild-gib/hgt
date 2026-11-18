@@ -4,8 +4,10 @@ Put $P(1)=1$ and let $P(n)$ be the largest prime factor of $n$ for $n\ge2$. Does
 
 A complete deep quotient block gives $\sum_{m\mid n}m\Lambda(m)$. In the sum through $N$, removing all proper prime powers costs at most $N(\psi(N)-\vartheta(N))=O(N^{3/2})$. Removing the prime divisors other than $P(n)$ costs at most $N\vartheta(\sqrt N)=O(N^{3/2})$, since two distinct primes exceeding $\sqrt N$ cannot divide the same $n\le N$. Thus $H$ has the same summatory exponent as the complete prime blocks down to $N^{3/2}$. The ordinary integer baseline is $\sum_{n\le N}\sigma(n)=\zeta(2)N^2/2+O(N\log(2N))$, by summing $\lfloor N/d\rfloor(\lfloor N/d\rfloor+1)/2$ over $d$.
 
-Together with the complete-block inversion this predicts, for $1/2\le b<1$,
+Complete-block inversion gives, for $1/2\le b<1$,
 $$H(N)-\frac{\zeta(2)}2N^2=O(N^{1+b})\quad\Longleftrightarrow\quad \psi(N)-N=O(N^b).$$
+[Formal equivalence](../3-formalized/the-largest-prime-factor-recovers-the-prime-error-exponent.md)
+
 Under a single quartet of multiplicity $h$, the complex coefficient of $-2h\Re N^{1+\rho}$ in $H(N)$ should be $\zeta(1+\rho)/(1+\rho)$. Partial summation gives this factor from the weight $m$ and the divisor convolution. The existing divisibility tree already uses $n/P(n)$ as its parent. The open question concerns its edge labels $P(n)$ across successive cutoffs.
 
 At the boundary exponent there is a sharper question. The square levels alone contribute

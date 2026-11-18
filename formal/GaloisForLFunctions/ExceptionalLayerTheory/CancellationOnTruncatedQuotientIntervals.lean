@@ -22,6 +22,44 @@ private theorem quotient_fibre (M N j : ℕ) (hj : 1 ≤ j) :
   have := Nat.div_le_self N j
   omega
 
+private theorem interval_of_prefix {N : ℕ} (a : ℕ → ℝ) {A : ℝ} (hA : 0 ≤ A)
+    (ha : ∀ t ≤ N, |∑ v ∈ Ioc 0 t, a v| ≤ A) (l u : ℕ) (hu : u ≤ N) :
+    |∑ t ∈ Ioc l u, a t| ≤ 2*A := by
+  by_cases hlu : l ≤ u
+  · have he := sum_Ioc_consecutive a (Nat.zero_le l) hlu
+    rw [show (∑ t ∈ Ioc l u, a t) = (∑ t ∈ Ioc 0 u, a t)-(∑ t ∈ Ioc 0 l, a t) by linarith only [he]]
+    exact (abs_sub _ _).trans (by linarith only [ha u hu,ha l (hlu.trans hu)])
+  · rw [Ioc_eq_empty_of_le (by omega),sum_empty,abs_zero]
+    positivity
+
+/-- Above a sharp lower cutoff the cost is proportional to the number of
+possible quotients. Every quotient fibre is a single truncated interval. -/
+theorem abs_quotient_tail_le {N : ℕ} (M : ℕ) (a w : ℕ → ℝ) {A B : ℝ}
+    (hA : 0 ≤ A) (hB : 0 ≤ B)
+    (ha : ∀ t ≤ N, |∑ v ∈ Ioc 0 t, a v| ≤ A) (hw : ∀ j, |w j| ≤ B) :
+    |∑ t ∈ Ioc M N, a t*w (N/t)| ≤ (2*A*B)*((N/(M+1) : ℕ) : ℝ) := by
+  classical
+  have maps : ∀ t ∈ Ioc M N, N/t ∈ Icc 1 (N/(M+1)) := by
+    intro t ht
+    obtain ⟨hl,hu⟩ := mem_Ioc.mp ht
+    refine mem_Icc.mpr ⟨(Nat.one_le_div_iff (by omega : 0<t)).mpr hu,?_⟩
+    exact (Nat.le_div_iff_mul_le (Nat.succ_pos M)).mpr
+      ((Nat.mul_le_mul_left (N/t) hl).trans (Nat.div_mul_le_self N t))
+  rw [←sum_fiberwise_of_maps_to maps]
+  apply (abs_sum_le_sum_abs _ _).trans
+  calc _ ≤ ∑ _j ∈ Icc 1 (N/(M+1)), 2*A*B := by
+            apply sum_le_sum
+            intro j hj
+            let S := (Ioc M N).filter (fun t => N/t=j)
+            have he : (∑ t ∈ S, a t*w (N/t)) = (∑ t ∈ S, a t)*w j := by
+              rw [sum_mul]
+              exact sum_congr rfl fun t ht => by rw [(mem_filter.mp ht).2]
+            rw [he,abs_mul]
+            dsimp [S]
+            rw [quotient_fibre M N j (mem_Icc.mp hj).1]
+            exact mul_le_mul (interval_of_prefix a hA ha _ _ (Nat.div_le_self ..)) (hw _) (abs_nonneg _) (by positivity)
+       _ = _ := by simp [mul_comm]
+
 /-- A bounded quotient weight against bounded prefixes costs at most four
 times the square root, uniformly in the lower truncation. -/
 theorem abs_truncated_quotient_pair {N : ℕ} (L : ℕ) (a w : ℕ → ℝ) {A B : ℝ}
@@ -38,13 +76,7 @@ theorem abs_truncated_quotient_pair {N : ℕ} (L : ℕ) (a w : ℕ → ℝ) {A B
   have hM : M ≤ N := max_le hLN (Nat.sqrt_le_self N)
   have hL : L ≤ M := le_max_left ..
   have hS : s ≤ M := le_max_right ..
-  have hi (l u : ℕ) (hu : u ≤ N) : |∑ t ∈ Ioc l u, a t| ≤ 2*A := by
-    by_cases hlu : l ≤ u
-    · have he := sum_Ioc_consecutive a (Nat.zero_le l) hlu
-      rw [show (∑ t ∈ Ioc l u, a t) = (∑ t ∈ Ioc 0 u, a t)-(∑ t ∈ Ioc 0 l, a t) by linarith only [he]]
-      exact (abs_sub _ _).trans (by linarith only [ha u hu,ha l (hlu.trans hu)])
-    · rw [Ioc_eq_empty_of_le (by omega),sum_empty,abs_zero]
-      positivity
+  have hi := interval_of_prefix a hA ha
   have small : |∑ t ∈ Ioc L M, a t*w (N/t)| ≤ (2*A*B)*s := by
     apply (abs_sum_le_sum_abs _ _).trans
     calc _ ≤ ∑ _t ∈ Ioc L M, 2*A*B := by
@@ -60,28 +92,12 @@ theorem abs_truncated_quotient_pair {N : ℕ} (L : ℕ) (a w : ℕ → ℝ) {A B
               simp only [sum_const,Nat.card_Ioc,nsmul_eq_mul]
               rw [mul_comm]
               exact mul_le_mul_of_nonneg_left (by exact_mod_cast (by dsimp [M]; omega : M-L ≤ s)) (by positivity)
-  have maps : ∀ t ∈ Ioc M N, N/t ∈ Icc 1 s := by
-    intro t ht
-    obtain ⟨hl,hu⟩ := mem_Ioc.mp ht
-    refine mem_Icc.mpr ⟨(Nat.one_le_div_iff (by omega : 0<t)).mpr hu,?_⟩
+  have hcount : N/(M+1) ≤ s := by
     by_contra! h
-    have hsq := Nat.mul_le_mul (show s+1 ≤ N/t by omega) (show s+1 ≤ t by omega)
-    exact (Nat.not_le_of_lt (Nat.lt_succ_sqrt N)) (hsq.trans (Nat.div_mul_le_self N t))
-  have big : |∑ t ∈ Ioc M N, a t*w (N/t)| ≤ (2*A*B)*s := by
-    rw [←sum_fiberwise_of_maps_to maps]
-    apply (abs_sum_le_sum_abs _ _).trans
-    calc _ ≤ ∑ _j ∈ Icc 1 s, 2*A*B := by
-              apply sum_le_sum
-              intro j hj
-              let S := (Ioc M N).filter (fun t => N/t=j)
-              have he : (∑ t ∈ S, a t*w (N/t)) = (∑ t ∈ S, a t)*w j := by
-                rw [sum_mul]
-                exact sum_congr rfl fun t ht => by rw [(mem_filter.mp ht).2]
-              rw [he,abs_mul]
-              dsimp [S]
-              rw [quotient_fibre M N j (mem_Icc.mp hj).1]
-              exact mul_le_mul (hi _ _ (Nat.div_le_self ..)) (hw _) (abs_nonneg _) (by positivity)
-         _ = _ := by simp [mul_comm]
+    have hsq := Nat.mul_le_mul (show s+1 ≤ N/(M+1) by omega) (show s+1 ≤ M+1 by omega)
+    exact (Nat.not_le_of_lt (Nat.lt_succ_sqrt N)) (hsq.trans (Nat.div_mul_le_self N (M+1)))
+  have big := (abs_quotient_tail_le M a w hA hB ha hw).trans
+    (mul_le_mul_of_nonneg_left (by exact_mod_cast hcount : ((N/(M+1) : ℕ) : ℝ) ≤ s) (by positivity))
   rw [←sum_Ioc_consecutive (fun t => a t*w (N/t)) hL hM]
   apply (abs_add_le _ _).trans
   linarith only [small,big]

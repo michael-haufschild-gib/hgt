@@ -42,7 +42,6 @@ theorem cyclicCoefficientRow_eq_prod {q a : ℕ} (ha : 0 < a) (haq : a < q) (N :
   · intro x hx y hy he
     have h₁ := Nat.mod_add_div x q
     have h₂ := Nat.mod_add_div y q
-    dsimp only at he
     rw [he,(mem_filter.mp hx).2] at h₁
     rw [(mem_filter.mp hy).2] at h₂
     omega
@@ -105,7 +104,6 @@ private theorem residue_prefix_card {q r : ℕ} (hr : 0 < r) (hrq : r < q) (T : 
     obtain ⟨_,hry⟩ := mem_filter.mp hy
     have h₁ := Nat.mod_add_div x q
     have h₂ := Nat.mod_add_div y q
-    dsimp only at he
     rw [he,hrx] at h₁
     rw [hry] at h₂
     omega
@@ -120,6 +118,7 @@ private theorem residue_prefix_count {q r : ℕ} (hr : 0 < r) (hrq : r < q) (T :
     (∑ k ∈ Icc 1 T, if k%q=r then 1 else 0) = T/q+(if r≤T%q then 1 else 0) := by
   rw [sum_boole,residue_prefix_card hr hrq,Nat.add_div (by omega : 0 < q)]
   rw [Nat.div_eq_of_lt (by omega : q-r < q),Nat.mod_eq_of_lt (by omega : q-r < q),add_zero]
+  simp only [Nat.cast_id]
   split_ifs <;> omega
 
 /-- Labeling a nonzero residue by m*r, the complete periods contribute N/m
@@ -133,7 +132,7 @@ theorem cyclicCoefficientLevel_at_multiple {q m r : ℕ} (hm : 0 < m) (hr : 0 < 
     change (m*n ≡ m*r [MOD q]) ↔ _
     constructor
     · intro h
-      have he : n ≡ r [MOD q] := h.cancel_left_of_coprime hc.symm
+      have he : n ≡ r [MOD q] := Nat.ModEq.cancel_left_of_coprime hc.symm h
       simpa only [Nat.ModEq,Nat.mod_eq_of_lt hrq] using he
     · intro h
       have he : n ≡ r [MOD q] := by simpa only [Nat.ModEq,Nat.mod_eq_of_lt hrq] using h
@@ -152,7 +151,10 @@ private theorem level_last_indicator (q t : ℕ) (hq : 0 < q) :
     rw [Nat.mul_add,mul_one]
     omega
   · rintro ⟨k,hk⟩
-    have hk' : 0 < k := by by_contra! e; have : k=0 := by omega; simp [this] at hk
+    have hk' : 0 < k := by
+      apply Nat.pos_of_ne_zero
+      rintro rfl
+      simp at hk
     obtain ⟨l,rfl⟩ := Nat.exists_eq_succ_of_ne_zero hk'.ne'
     rw [Nat.mul_succ] at hk
     by_contra! he
@@ -169,8 +171,8 @@ achieves the last-class indicator, including at composite coprime levels. -/
 theorem cyclicCoefficientLevel_last {q m : ℕ} (hq : 2≤q) (hm : 0 < m) (hc : m.Coprime q) (N : ℕ) :
     cyclicCoefficientLevel q N ((m*(q-1))%q) m =
       N/m + (if q ∣ q*N/m+1 then 1 else 0) := by
-  rw [cyclicCoefficientLevel_at_multiple hm (by omega : 0<q-1) (by omega : q-1<q) hc,
-    level_last_indicator q _ (by omega)]
+  rw [cyclicCoefficientLevel_at_multiple hm (by omega : 0<q-1) (by omega : q-1<q) hc]
+  simp only [level_last_indicator q _ (by omega)]
 
 private theorem label_of_coprime {q m a : ℕ} (ha : 0 < a) (haq : a < q)
     (hc : m.Coprime q) :
@@ -200,7 +202,7 @@ theorem cyclicCoefficientLevel_bounds {q m a : ℕ} (hm : 0 < m) (ha : 0 < a)
       cyclicCoefficientLevel q N a m ≤ N/m+1 := by
   obtain ⟨r,hr,hrq,he⟩ := label_of_coprime ha haq hc
   rw [← he,cyclicCoefficientLevel_at_multiple hm hr hrq hc]
-  rw [← level_last_indicator q _ (ha.trans haq)]
+  simp only [← level_last_indicator q _ (ha.trans haq)]
   split_ifs <;> omega
 
 /-- The row valuation is the sum of its level counts through the largest
@@ -211,18 +213,17 @@ theorem factorization_cyclicCoefficientRow {q N a p B : ℕ} (hp : p.Prime)
       ∑ e ∈ Ico 1 B, cyclicCoefficientLevel q N a (p^e) := by
   let S := (Icc 1 (q*N)).filter (fun k => k%q=a)
   have hpos {k : ℕ} (hk : k∈S) : 0 < k := (mem_Icc.mp (mem_filter.mp hk).1).1
-  rw [cyclicCoefficientRow,Nat.factorization_prod (fun k hk => (hpos hk).ne'),Finsupp.finset_sum_apply]
+  rw [cyclicCoefficientRow,Nat.factorization_prod (fun k hk => (hpos hk).ne'),Finsupp.finsetSum_apply]
   calc
     _ = ∑ k ∈ S, ∑ e ∈ Ico 1 B, if p^e ∣ k then 1 else 0 := by
       refine sum_congr rfl fun k hk => ?_
-      rw [sum_boole,Nat.factorization_eq_card_pow_dvd_of_lt hp (hpos hk)
+      rw [sum_boole,Nat.cast_id,Nat.factorization_eq_card_pow_dvd_of_lt hp (hpos hk)
         ((mem_Icc.mp (mem_filter.mp hk).1).2.trans_lt hB)]
     _ = ∑ e ∈ Ico 1 B, ∑ k ∈ S, if p^e ∣ k then 1 else 0 := sum_comm
     _ = _ := by
       refine sum_congr rfl fun e _ => ?_
-      simp only [S,cyclicCoefficientLevel,sum_boole,filter_filter]
-      congr 1
-      exact filter_congr fun k _ => and_comm
+      simp only [S,cyclicCoefficientLevel,sum_boole,filter_filter,Nat.cast_id]
+      exact congrArg Finset.card (filter_congr fun k _ => and_comm)
 
 #print axioms cyclicCoefficientRow_top_bounds
 #print axioms cyclicCoefficientLevel_at_multiple

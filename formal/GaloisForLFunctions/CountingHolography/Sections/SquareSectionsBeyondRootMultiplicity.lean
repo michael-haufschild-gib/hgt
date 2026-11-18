@@ -16,7 +16,7 @@ open Finset Filter Topology ArithmeticScatteringHolography SquareRootThreshold
 
 /-- Before the ordinary floors, the excess above the original radius is at
 most the signed degree bound plus the global mesh error. -/
-theorem square_radius_comparison : ∃ E : ℝ, 1 ≤ E ∧ ∀ {n m : ℕ}, 0 < n → 0 < m →
+private theorem square_radius_comparison : ∃ E : ℝ, 1 ≤ E ∧ ∀ {n m : ℕ}, 0 < n → 0 < m →
     let a := m • successorSquareTriple n
     let g := ((n:ℝ)+1)^zetaZeroWidth
     Real.log (generator a : ℝ)-radius a+ordinaryFloorLoss a ≤ E*((m*g)^2+n*m) := by
