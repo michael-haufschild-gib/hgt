@@ -17,6 +17,7 @@ namespace GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
+omit [DecidableEq ι] in
 /-- Integer linear probes of a vector produce exactly the multiples of its content. -/
 theorem dot_range (v : ι → ℤ) (t : ℤ) :
     (∃ u, u ⬝ᵥ v = t) ↔ content v ∣ t := by
@@ -40,6 +41,7 @@ theorem primitive_direction (v : ι → ℤ) (hv : v ≠ 0) :
     intro hc
     apply hv
     funext i
+    change v i = 0
     simpa only [hc,zero_dvd_iff] using hd i
   let w (i : ι) := v i / content v
   have he : v = content v • w := by
@@ -47,11 +49,9 @@ theorem primitive_direction (v : ι → ℤ) (hv : v ≠ 0) :
     exact (Int.mul_ediv_cancel' (hd i)).symm
   obtain ⟨u,hu⟩ := (dot_range v (content v)).2 dvd_rfl
   refine ⟨w,u,he,?_⟩
-  calc
-    _ = 1 := by
-      apply mul_left_cancel₀ hC
-      rw [← show (content v : ℤ) • (u ⬝ᵥ w) = content v*(u ⬝ᵥ w) from rfl,
-        ← dotProduct_smul,← he,hu,mul_one]
+  apply mul_left_cancel₀ hC
+  rw [← show (content v : ℤ) • (u ⬝ᵥ w) = content v*(u ⬝ᵥ w) from rfl,
+    ← dotProduct_smul,← he,hu,mul_one]
 
 /-- Dilation in the w direction along the kernel of the integral dual u. -/
 def dilation (w u : ι → ℤ) (d : ℤ) : Matrix ι ι ℤ :=
@@ -104,7 +104,7 @@ theorem all_determinants (v : ι → ℤ) (m d : ℤ) :
     · exact ⟨1,(det_one).trans (h₀ hι).symm,fun i => (hι.false i).elim⟩
     · by_cases hz : v=0
       · subst v
-        let w := Pi.single i (1 : ℤ)
+        let w : ι → ℤ := Pi.single i 1
         have hw : w ⬝ᵥ w=1 := by simp [w,single_dotProduct]
         exact ⟨dilation w w d,dilation_det _ _ _ hw,fun j => by simp⟩
       · exact (determinant_realizability v m d hz).2 hd

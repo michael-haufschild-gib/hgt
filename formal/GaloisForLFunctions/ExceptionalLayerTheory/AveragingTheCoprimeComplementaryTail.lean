@@ -150,5 +150,4 @@ theorem averaged_coprime_tail :
   change _≤(C+K*M*B+M*B*E)*d^2*R*J^3*Real.sqrt X
   linarith only [h1,h2,h3,h4]
 
-#print axioms averaged_coprime_tail
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

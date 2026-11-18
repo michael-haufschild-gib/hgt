@@ -148,7 +148,4 @@ theorem factorialStirlingStep_power_bound_iff (F : ℕ → ℝ) {s : ℝ} (hs : 
     have ht := transform_tail hs hC (fun j hj _ => h j hj) (hmass n)
     exact (abs_add_le _ _).trans ((add_le_add (h n hn) ht).trans_eq (by ring))
 
-#print axioms factorialStirlingStep_tail_mass
-#print axioms factorialStirlingStep_power_bound_iff
-
 end GaloisForLFunctions.CountingHolography.Sections

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.CountingHolography.Sections.TheThetaMeanOfTheSquareTrace
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.LogarithmicWindowsOfAZeroThetaMean
+import Mathlib.MeasureTheory.Integral.Prod
 
 /-!
 # A bounded value of the cumulative square trace in every logarithmic window

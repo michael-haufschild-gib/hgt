@@ -48,6 +48,21 @@ private theorem omittedPower_summable {x : ℝ} (hx : 0 ≤ x) : Summable (omitt
 def ordinaryFractionalPrimeLimit (x : ℝ) : ℝ :=
   stirlingMain x-Real.log ((⌊x⌋₊).factorial : ℕ)-∑' n, omittedPower x n
 
+/-- The linear coefficient in the summatory logarithm of the radical counts repeated prime factors. -/
+theorem ordinaryFractionalPrimeLimit_one :
+    ordinaryFractionalPrimeLimit 1 = -1-∑' n : ℕ, if n.Prime then (0:ℝ) else vonMangoldt n/n := by
+  have h (n : ℕ) : omittedPower 1 n = if n.Prime then 0 else vonMangoldt n/(n:ℝ) := by
+    by_cases hp : n.Prime
+    · simp only [omittedPower,if_pos hp]
+    by_cases hn : 2 ≤ n
+    · have hn1 : (1:ℝ) < n := by exact_mod_cast (show 1 < n by omega)
+      rw [omittedPower,if_neg hp,if_neg hp,Int.fract_eq_self.mpr
+        ⟨by positivity,(div_lt_one (zero_lt_one.trans hn1)).mpr hn1⟩]
+      ring
+    · rcases (show n=0 ∨ n=1 by omega) with rfl | rfl <;> simp [omittedPower]
+  rw [ordinaryFractionalPrimeLimit,tsum_congr h]
+  norm_num [stirlingMain]
+
 theorem tendsto_ordinaryFractionalPrimeError {x : ℝ} (hx : 1 ≤ x) :
     Tendsto (ordinaryFractionalPrimeError x) atTop (𝓝 (ordinaryFractionalPrimeLimit x)) := by
   have h := (omittedPower_summable (zero_le_one.trans hx)).hasSum.tendsto_sum_nat

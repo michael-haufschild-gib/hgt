@@ -51,14 +51,14 @@ private theorem powerAtom_sum {r : ℕ} (hr : 0<r) (N : ℕ) (F : ℕ → ℝ) :
     · intro hn
       obtain ⟨a,ha,rfl⟩ := mem_image.mp hn
       obtain ⟨ha,hM⟩ := mem_Icc.mp ha
-      exact mem_filter.mpr ⟨mem_Icc.mpr ⟨pow_pos ha _,(root_cut hr a N).mpr hM⟩,a,rfl⟩
+      exact mem_filter.mpr ⟨mem_Icc.mpr ⟨(show 1 ≤ a^r from one_le_pow₀ ha),(root_cut hr a N).mpr hM⟩,a,rfl⟩
   calc
     _ = ∑ d ∈ T, F d := by
       rw [show T=(Icc 1 N).filter _ from rfl,sum_filter]
       refine sum_congr rfl fun d hd => ?_
       change (perfectPowerArith r d).re*F d=_
       rw [perfectPowerArith_apply (Nat.ne_of_gt (mem_Icc.mp hd).1)]
-      split <;> simp_all only [if_true,if_false,Complex.one_re,Complex.zero_re,one_mul,zero_mul]
+      split <;> simp_all only [Complex.one_re,Complex.zero_re,one_mul,zero_mul]
     _ = _ := by rw [he]; exact sum_image (fun _ _ _ _ h => Nat.pow_left_injective hr.ne' h)
 
 private theorem powerAtom_prefix {r : ℕ} (hr : 0<r) (N : ℕ) :
@@ -67,7 +67,7 @@ private theorem powerAtom_prefix {r : ℕ} (hr : 0<r) (N : ℕ) :
 
 /-- Signed weight of the proper prime powers relative to the positive squares and cubes. -/
 def properPowerLatticeWeight : ArithmeticFunction ℝ :=
-  (⟨primePowerPart,by simp [primePowerPart]⟩ : ArithmeticFunction ℝ)-powerAtom 2-powerAtom 3
+  ⟨fun n => primePowerPart n-powerAtom 2 n-powerAtom 3 n,by simp [primePowerPart]⟩
 
 /-- The integer lattice changes the smooth square and cube main terms by less than two. -/
 theorem properPowerLatticeWeight_prefix (N : ℕ) :
@@ -77,7 +77,7 @@ theorem properPowerLatticeWeight_prefix (N : ℕ) :
     have hi : Icc 1 N=Ioc 0 N := by ext n; simp only [mem_Icc,mem_Ioc]; omega
     rw [hi,Chebyshev.psi_sub_theta_eq_sum_not_prime,Nat.floor_natCast,sum_filter]
     exact sum_congr rfl fun d _ => by by_cases h : d.Prime <;> simp [primePowerPart,h]
-  simp only [properPowerLatticeWeight,ArithmeticFunction.sub_apply,ArithmeticFunction.coe_mk,
+  simp only [properPowerLatticeWeight,ArithmeticFunction.coe_mk,
     sum_sub_distrib,powerAtom_prefix (by norm_num : 0<2),powerAtom_prefix (by norm_num : 0<3),
     hW,properPowerDiscrepancy,Nat.cast_ofNat,← one_div]
   have h₂ := Nat.floor_le (Real.rpow_nonneg (Nat.cast_nonneg N) (1/2:ℝ))
@@ -178,7 +178,7 @@ private theorem weight_formula (N : ℕ) (F : ℕ → ℝ) :
       (∑ a ∈ Icc 1 ⌊(N:ℝ)^(1/3:ℝ)⌋₊, F (a^3)) := by
   have hsplit (d : ℕ) : primePowerPart d=vonMangoldt d-(if d.Prime then Real.log d else 0) := by
     by_cases hd : d.Prime <;> simp [primePowerPart,hd,vonMangoldt_apply_prime]
-  simp only [properPowerLatticeWeight,ArithmeticFunction.sub_apply,ArithmeticFunction.coe_mk,hsplit,
+  simp only [properPowerLatticeWeight,ArithmeticFunction.coe_mk,hsplit,
     sub_mul,sum_sub_distrib,powerAtom_sum (by decide : 0 < 2) N F,
     powerAtom_sum (by decide : 0 < 3) N F,Nat.cast_ofNat,← one_div]
   rw [Nat.primesLE_eq_filter_Icc_one,sum_filter]
@@ -213,9 +213,13 @@ theorem oddQuotientPowerTotal_eq_triangular (N : ℕ) :
     oddQuotientPowerTotal N=N*triangularPrimeProfile (properPowerLatticeWeight*alternatingDivisorCoeff)
       (N:ℝ)⁻¹ := by
   rw [triangularPrimeProfile_sample,oddQuotientPowerTotal]
-  simp_rw [RHTower.sum_Icc_mul_apply,prefix_alternatingDivisorCoeff,discreteQuotientMean,mul_sum]
+  simp only [discreteQuotientMean,mul_sum]
   rw [sum_comm]
-  refine sum_congr rfl fun n hn => (sum_subset (Icc_subset_Icc_right (mem_range.mp hn).le) ?_).symm
+  refine sum_congr rfl fun n hn => ?_
+  rw [RHTower.sum_Icc_mul_apply]
+  simp only [prefix_alternatingDivisorCoeff]
+  symm
+  apply sum_subset (Icc_subset_Icc_right (mem_range.mp hn).le)
   intro d hd hd'
   have hlt : n<d := lt_of_not_ge fun h => hd' (mem_Icc.mpr ⟨(mem_Icc.mp hd).1,h⟩)
   simp [Nat.div_eq_of_lt hlt]
@@ -334,11 +338,4 @@ theorem oddQuotientPowerTotal_series {s : ℂ} (hs : 1 < s.re) :
   rw [← hζ]
   ring
 
-#print axioms oddQuotientPowerCount_finite_formula
-#print axioms oddQuotientPowerTotal_finite_formula
-#print axioms oddQuotientPowerTotal_series
-#print axioms oddQuotientPowerTotal_sub_seven_sixteenths
-#print axioms oddQuotientPowerTotal_quarter_of_rh
-#print axioms oddQuotientPowerTotal_eq_triangular
-#print axioms oddQuotientPowerTotal_bound
 end GaloisForLFunctions.ExceptionalLayerTheory

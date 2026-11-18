@@ -268,8 +268,4 @@ theorem square_products_at_prime_cut : ∃ c : ℝ,
   exact hV.congr fun n => by
     rw [← sub_div,log_ordinaryPrimeGenerator_den,← ordinaryPrimeGenerator_num]
 
-#print axioms square_products_at_prime_cut
-#print axioms squareLogProfile_has_prime_cut
-#print axioms square_prime_cut_misplaced_mass
-
 end GaloisForLFunctions.CountingHolography.Sections

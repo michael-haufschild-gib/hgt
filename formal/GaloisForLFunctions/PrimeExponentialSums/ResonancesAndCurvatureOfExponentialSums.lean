@@ -47,7 +47,7 @@ theorem pair_dispersion (s : Finset ι) (w : ι → NNReal) (f : ι → ℝ) (x 
   intro i _
   apply sum_congr rfl
   intro j _
-  rw [hu,hu,show (inner ℂ (u i) (u j)).re = _ from inner_phase _ _ _ _,← sub_mul]
+  rw [hu,hu,show (inner ℂ (u i) (u j)).re = _ from inner_phase _ _ _ _,← sub_mul (f i) (f j) x]
   ring
 
 private theorem integral_cos (y : ℝ) :
@@ -175,9 +175,11 @@ theorem amplitude_loss_limit (s : Finset ι) (w : ι → NNReal) (f : ι → ℝ
   have h₀ : amplitude s w f 0 = mass s w := by
     apply (full_amplitude_iff _ _ _ _).2
     exact fun _ _ _ _ _ _ => ⟨0,by simp⟩
-  have ht := ((curvature_continuous s w f).continuousAt (x := 0)).div
-    ((continuous_const.add ha).continuousAt) (show mass s w+amplitude s w f 0 ≠ 0 by rw [h₀]; positivity)
-  have H := ht.continuousWithinAt (s := {(0 : ℝ)}ᶜ) |>.tendsto
+  have ht : ContinuousAt (fun x => curvature s w f x/(mass s w+amplitude s w f x)) 0 :=
+    (curvature_continuous s w f).continuousAt.div ((continuous_const.add ha).continuousAt)
+      (show mass s w+amplitude s w f 0 ≠ 0 by rw [h₀]; positivity)
+  have H : Tendsto (fun x => curvature s w f x/(mass s w+amplitude s w f x)) (𝓝[≠] 0)
+      (𝓝 (curvature s w f 0/(mass s w+amplitude s w f 0))) := ht.continuousWithinAt.tendsto
   rw [show curvature s w f 0/(mass s w+amplitude s w f 0) =
       2*Real.pi^2*((∑ i ∈ s,(w i : ℝ)*(f i)^2)-(∑ i ∈ s,(w i : ℝ)*f i)^2/mass s w) by
         rw [curvature_at_zero,h₀]; field_simp [hm.ne']; ring] at H

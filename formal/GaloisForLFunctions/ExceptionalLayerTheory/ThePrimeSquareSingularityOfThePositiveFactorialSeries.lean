@@ -207,7 +207,4 @@ theorem reciprocalFactorialEulerCorrection_no_right_germ (F : ℂ → ℂ) (hF :
     norm_cast at ho
     omega
 
-#print axioms reciprocalFactorialEulerCorrection_no_right_germ
-#print axioms reciprocalFactorialEulerCorrection_square_bounds
-
 end GaloisForLFunctions.ExceptionalLayerTheory

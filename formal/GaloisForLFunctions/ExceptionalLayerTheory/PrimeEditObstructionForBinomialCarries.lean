@@ -84,8 +84,8 @@ private theorem editedPrimeCountWeight_summable {e : ℕ → ℤ} (he : IsEdit e
   have hcongr : ∀ {n : ℕ}, n ≠ 0 → (editedPrimeCountWeight e n : ℂ) =
       ((fun k => (ordinaryPrimeCountWeight k : ℂ)) + (fun k => (e k : ℂ))) n := by
     intro n hn
-    change ((if n = 0 then (0 : ℝ) else ordinaryPrimeCountWeight n + (e n : ℝ)) : ℂ) = _
-    rw [if_neg hn]
+    have hval : editedPrimeCountWeight e n = ordinaryPrimeCountWeight n + (e n : ℝ) := if_neg hn
+    rw [hval]
     push_cast
     rfl
   have hsum_add := (ordinaryPrimeCountWeight_summable hs).add (edit_LSeriesSummable he hs)
@@ -276,7 +276,8 @@ theorem editedLastClassTotal_bound_excludes_fake_zero {e : ℕ → ℤ} (he : Is
       (LSeries_hasDerivAt ((edit_LSeriesSummable he (s := (xm : ℂ))
         (by simpa using hxm1)).abscissaOfAbsConv_le.trans_lt (by exact_mod_cast hxms))).differentiableAt
     have hQ_diff : DifferentiableAt ℂ (editRem e) s :=
-      ((differentiableOn_editRem he).differentiableAt (hU_half.mem_nhds (by linarith only [hs])))
+      ((differentiableOn_editRem he).differentiableAt
+        (hU_half.mem_nhds (show 1 / 2 < s.re by linarith only [hs])))
     have hG_ev : G =ᶠ[𝓝 s] fun w => (w - 1) * (riemannZeta w * Complex.exp (E w + editRem e w)) := by
       filter_upwards [(isOpen_lt continuous_const Complex.continuous_re).mem_nhds hs] with w hw
       rw [hG_eq w hw, editSystem_zetaSeriesC he hw]
@@ -309,7 +310,7 @@ theorem editedLastClassTotal_bound_excludes_fake_zero {e : ℕ → ℤ} (he : Is
       rw [hdGs_eq, hGs_eq]
       field_simp [hs1_ne, hζ_ne, hexp_ne]
       ring
-    change deriv (fun z => L₀ z + E z) s = deriv G s / G s + R s
+    change deriv (L₀ + E) s = deriv G s / G s + R s
     rw [deriv_add hL₀_diff hE_diff, ordinaryPrimeCount_LSeries_deriv hs, hlogG]
     dsimp only [R]
     ring
@@ -372,10 +373,12 @@ theorem editedLastClassTotal_bound_excludes_fake_zero {e : ℕ → ℤ} (he : Is
       exact (hG_an.meromorphicOn.meromorphicOrderAt_ne_top_of_isPreconnected
         (convex_halfSpace_re_gt b).isPreconnected h2U hρ hne2) htop
     have h2_zero : meromorphicOrderAt G 2 = 0 :=
-      meromorphicOrderAt_eq_zero_of_analyticAt_ne_zero (hG_an 2 h2U) hG2_ne
+      GaloisForLFunctions.ZeroForcingCalculus.meromorphicOrderAt_eq_zero_of_analyticAt_ne_zero
+        (hG_an 2 h2U) hG2_ne
     exact WithTop.zero_ne_top (h2_zero.symm.trans h2_top)
   have hG_ord_pos : 0 < meromorphicOrderAt G ρ₀ :=
-    meromorphicOrderAt_pos_of_analyticAt_eq_zero (hG_an ρ₀ hρ) hG0
+    GaloisForLFunctions.ZeroForcingCalculus.meromorphicOrderAt_pos_of_analyticAt_eq_zero
+      (hG_an ρ₀ hρ) hG0
   lift meromorphicOrderAt G ρ₀ to ℤ using hG_ord_ne_top with m hm
   have hm_pos : 0 < m := by exact_mod_cast hG_ord_pos
   have hdG_ord : meromorphicOrderAt (deriv G) ρ₀ = ((m - 1 : ℤ) : WithTop ℤ) :=
@@ -417,7 +420,8 @@ theorem editedLastClassTotal_frequently_large_at_fake_zero {e : ℕ → ℤ} (he
     Real.one_le_rpow (by exact_mod_cast hX) (by linarith only [hb])
   rcases lt_or_ge X T with hsmall | hlarge
   · have hle : |editedLastClassTotal e q X| ≤ S :=
-      single_le_sum (fun j _ => abs_nonneg _) (mem_range.mpr hsmall)
+      single_le_sum (f := fun j => |editedLastClassTotal e q j|)
+        (fun j _ => abs_nonneg _) (mem_range.mpr hsmall)
     exact (hle.trans (le_add_of_nonneg_left (abs_nonneg K))).trans
       (le_mul_of_one_le_right (add_nonneg (abs_nonneg K) hS) hpow)
   · exact (not_lt.mp (hT X hlarge)).trans (mul_le_mul_of_nonneg_right
@@ -502,7 +506,7 @@ theorem exists_sub_sqrt_count_edit_with_carry_obstruction {β : ℝ}
   have hc₀_nonneg : 0 ≤ c₀ := le_max_right c 0
   have hc₀_lt : c₀ < 1 / 2 := max_lt hc_half (by norm_num)
   have hfake₀ : IsIntegerNormFakeAt (editSystem e) c₀ := hfake.mono (le_max_left c 0)
-  obtain ⟨_, _, _, ⟨A, Ccnt, _, hcnt⟩, _⟩ := hfake₀
+  have ⟨_, _, _, ⟨A, Ccnt, _, hcnt⟩, _⟩ := hfake₀
   let C₀ : ℝ := |((editSystem e).countBall 0 : ℝ)|
   let Cterm : ℝ := C₀ + (2 + (2 : ℝ) ^ c₀) * |Ccnt|
   have hCterm0 : 0 ≤ Cterm := by dsimp only [Cterm, C₀]; positivity
@@ -522,7 +526,7 @@ theorem exists_sub_sqrt_count_edit_with_carry_obstruction {β : ℝ}
         have h1 : |2 * ((editSystem e).countBall 0 : ℝ) - ((editSystem e).countBall 0 : ℝ)| = C₀ := by
           dsimp only [C₀]; ring_nf
         have hpow1 : 1 ≤ (X : ℝ) ^ c₀ := Real.one_le_rpow hX1 hc₀_nonneg
-        have hC₀_le : C₀ ≤ Cterm := by dsimp only [Cterm]; positivity
+        have hC₀_le : C₀ ≤ Cterm := le_add_of_nonneg_right (by positivity)
         exact (h1.le.trans hC₀_le).trans (le_mul_of_one_le_right hCterm0 hpow1)
       · have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn_pos
         have h2n1 : (1 : ℝ) ≤ (2 * n : ℕ) := by exact_mod_cast (show 1 ≤ 2 * n by omega)
@@ -713,11 +717,5 @@ theorem exists_binomialDistinctPrime_and_smooth_fifteen_eighths_exact :
       using h0 X hX
   · obtain ⟨Cs, hCs, hs⟩ := hsm
     exact ⟨Cs, hCs, fun X hX => by simpa only [h158] using hs X hX⟩
-
-#print axioms editedLastClassTotal_bound_excludes_fake_zero
-#print axioms editedLastClassTotal_frequently_large_at_fake_zero
-#print axioms exists_isEdit_strict_line_carry_obstruction
-#print axioms exists_sub_sqrt_count_edit_with_carry_obstruction
-#print axioms exists_binomialDistinctPrime_and_smooth_fifteen_eighths_exact
 
 end GaloisForLFunctions.ExceptionalLayerTheory

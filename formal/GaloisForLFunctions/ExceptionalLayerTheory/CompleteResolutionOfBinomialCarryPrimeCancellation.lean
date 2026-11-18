@@ -153,9 +153,4 @@ theorem complete_prime_edit_barrier_and_unconditional_corollaries :
   ⟨fun hβ hβ_hi => exists_sub_sqrt_count_edit_with_carry_obstruction hβ hβ_hi,
    exists_binomialDistinctPrime_and_smooth_fifteen_eighths_exact⟩
 
-#print axioms complete_adjacent_quotient_and_tent_resolution
-#print axioms complete_smooth_division_tree_resolution
-#print axioms complete_growing_quotient_band_resolution
-#print axioms complete_prime_edit_barrier_and_unconditional_corollaries
-
 end GaloisForLFunctions.ExceptionalLayerTheory

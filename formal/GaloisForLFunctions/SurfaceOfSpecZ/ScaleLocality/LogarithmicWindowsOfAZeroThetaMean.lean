@@ -1,6 +1,7 @@
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ThetaLogMoment
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PositiveKernelLeakage
 import GaloisForLFunctions.RHTower.ThetaPrimeDeletionSpectralEscape
+import Mathlib.Topology.Order.IntermediateValue
 
 /-!
 # Logarithmic windows of a function with zero translated theta mean

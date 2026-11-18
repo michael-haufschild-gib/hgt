@@ -154,6 +154,4 @@ theorem tapered_complement_cofactors :
   rw [eq]
   exact (abs_add_le _ _).trans ((add_le_add (hprev V W N) hh).trans_eq (by dsimp [g]; ring))
 
-#print axioms complementTaper_endpoint
-#print axioms tapered_complement_cofactors
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

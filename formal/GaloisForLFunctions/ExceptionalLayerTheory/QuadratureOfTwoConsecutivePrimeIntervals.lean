@@ -169,6 +169,4 @@ theorem singleQuartet_two_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuart
   rw [hn] at hr
   exact hr.trans_eq (by dsimp only [B]; ring)
 
-#print axioms singleQuartet_two_theta_intervals
-
 end GaloisForLFunctions.ExceptionalLayerTheory

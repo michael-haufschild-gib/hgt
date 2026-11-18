@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.Codes.CoordinateArrangementCounts
-import GaloisForLFunctions.HTGeometry.RydbergIndependentSetCorrelators
+import GaloisForLFunctions.HTGeometry.RydbergHardExclusionCumulants
 
 /-!
 # Finite-alphabet realization of blockade occupation laws
@@ -41,11 +41,12 @@ theorem card_blockadeWords (q : ℕ) (S : Finset (RydbergIndependentConfiguratio
 private def oneOccupied (v : V) : RydbergIndependentConfiguration G :=
   ⟨{v}, by simp [SimpleGraph.IsIndepSet]⟩
 
+private def vacant : RydbergIndependentConfiguration G := ⟨∅, by simp [SimpleGraph.IsIndepSet]⟩
+
 private theorem partition_pos (q : ℕ) :
     0 < (blockadeWords G q univ).card := by
-  let C : RydbergIndependentConfiguration G := ⟨∅, by simp [SimpleGraph.IsIndepSet]⟩
   rw [card_blockadeWords]
-  exact sum_pos' (fun _ _ => Nat.zero_le _) ⟨C, mem_univ _, by dsimp [decorationCount]; positivity⟩
+  exact sum_pos' (fun _ _ => Nat.zero_le _) ⟨vacant G, mem_univ _, by dsimp [decorationCount]; positivity⟩
 
 /-- Pushforward of uniform counting measure on allowed marked words. -/
 def blockadeWordLaw (q : ℕ) : RydbergOutcomeLaw G where
@@ -94,8 +95,40 @@ theorem blockadeWordLaw_strict_anticorrelation (q : ℕ) (e : RydbergBlockedPair
   exact mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos (by norm_num)
     (blockadeWordLaw_meanOccupation_pos G q e.left)) (blockadeWordLaw_meanOccupation_pos G q e.right)
 
+/-- The empty configuration gives every site positive vacancy probability. -/
+theorem blockadeWordLaw_meanOccupation_lt_one (q : ℕ) (v : V) :
+    (blockadeWordLaw G q).meanOccupation v < 1 := by
+  rw [← (blockadeWordLaw G q).normalized]
+  unfold RydbergOutcomeLaw.meanOccupation
+  apply sum_lt_sum
+  · intro C _
+    by_cases hv : v ∈ C.sites <;> simp [rydbergOccupationIndicator,hv,(blockadeWordLaw G q).nonnegative]
+  · refine ⟨vacant G,mem_univ _,?_⟩
+    simp only [rydbergOccupationIndicator,vacant, notMem_empty,if_false,mul_zero]
+    apply div_pos (by dsimp [decorationCount]; positivity) (by exact_mod_cast partition_pos G q)
+
+/-- The entire clique cumulant hierarchy is a ratio of finite point counts. -/
+theorem blockadeWordLaw_clique_cumulant (q : ℕ) (K : RydbergBlockedClique G) (s : Finset K.sites) :
+    (blockadeWordLaw G q).blockedCliqueOccupationCumulant K s =
+      (-1:ℝ)^(s.card-1) * (s.card-1).factorial *
+        ((∏ i ∈ s, ((blockadeWords G q (univ.filter (fun C => (i:V) ∈ C.sites))).card : ℝ)) /
+          ((blockadeWords G q univ).card : ℝ)^s.card) := by
+  rw [RydbergOutcomeLaw.blockedCliqueOccupationCumulant_eq]
+  simp only [blockadeWordLaw_meanOccupation,prod_div_distrib,prod_const]
+
+/-- Every clique cumulant has its strict alternating sign at every order. -/
+theorem blockadeWordLaw_clique_cumulant_sign (q : ℕ) (K : RydbergBlockedClique G)
+    (s : Finset K.sites) :
+    0 < (-1:ℝ)^(s.card-1) * (blockadeWordLaw G q).blockedCliqueOccupationCumulant K s := by
+  rw [RydbergOutcomeLaw.blockedCliqueOccupationCumulant_eq]
+  have hs : (-1:ℝ)^(s.card-1) * (-1:ℝ)^(s.card-1) = 1 := by rw [← mul_pow]; simp
+  rw [← mul_assoc, ← mul_assoc,hs,one_mul]
+  exact mul_pos (by exact_mod_cast Nat.factorial_pos _) (prod_pos fun i _ => blockadeWordLaw_meanOccupation_pos G q i)
+
 #print axioms blockadeWordLaw_binary
 #print axioms blockadeWordLaw_strict_anticorrelation
+#print axioms blockadeWordLaw_meanOccupation_lt_one
+#print axioms blockadeWordLaw_clique_cumulant_sign
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.Codes

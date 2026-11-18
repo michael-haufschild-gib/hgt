@@ -225,6 +225,38 @@ theorem robust_iff {a b l r x v : ℝ} (hb : 0≤b) (hd : b<a) :
   · rintro ⟨hW,hv⟩
     exact ⟨_,(strip_iff _ _ _ _ _ hd').2 hv,strip_invariant hb hd hW⟩
 
+/-- The minimum width is attained. At the critical width the entire ordinary
+effective braking envelope survives, including its stationary endpoints. -/
+theorem nonempty_iff {a b l r : ℝ} (hb : 0≤b) (hd : b<a) :
+    (∃ x v, Robust a b l r x v) ↔ distance (a-b) (2*b) ≤ r-l := by
+  constructor
+  · rintro ⟨x,v,h⟩
+    exact ((robust_iff hb hd).1 h).1
+  · intro h
+    have lr := sub_nonneg.mp ((distance_nonneg _ _).trans h)
+    refine ⟨l,0,(robust_iff hb hd).2 ⟨h,?_⟩⟩
+    rw [viable_iff _ _ _ _ _ (sub_pos.mpr hd),neg_zero,
+      distance_of_nonpos _ _ (sub_pos.mpr hd) le_rfl,add_zero]
+    exact ⟨le_rfl,lr⟩
+
+/-- A positive disturbance as large as the control authority rules out every
+bounded robust road, including roads of arbitrary finite width. -/
+theorem no_authority_margin {a b l r x v : ℝ} (hb : 0<b) (hab : a≤b) :
+    ¬Robust a b l r x v := by
+  intro H
+  obtain ⟨m,hm⟩ := exists_nat_gt ((r-l)/(2*b))
+  have hn : (r-l)/(2*b) < ((m+1 : ℕ) : ℝ) :=
+    hm.trans (by exact_mod_cast Nat.lt_succ_self m)
+  have he := (div_lt_iff₀ (mul_pos two_pos hb)).1 hn
+  have bound := necessary_width hb.le H (m+1)
+  have hs : (a-b)*((m+1 : ℕ) : ℝ)*(((m+1 : ℕ) : ℝ)-1)/2 ≤ 0 := by
+    apply div_nonpos_of_nonpos_of_nonneg _ (by norm_num)
+    apply mul_nonpos_of_nonpos_of_nonneg
+      (mul_nonpos_of_nonpos_of_nonneg (sub_nonpos.mpr hab) (Nat.cast_nonneg _))
+    exact sub_nonneg.mpr (by exact_mod_cast Nat.succ_le_succ (Nat.zero_le m))
+  unfold ramp at bound
+  linarith only [he,bound,hs]
+
 end GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance
 
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.distance_le_iff
@@ -234,3 +266,5 @@ end GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.buffer
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.strip_invariant
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.robust_iff
+#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.nonempty_iff
+#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.no_authority_margin

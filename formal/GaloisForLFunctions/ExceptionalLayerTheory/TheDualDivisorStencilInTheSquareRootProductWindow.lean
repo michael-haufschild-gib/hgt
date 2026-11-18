@@ -151,6 +151,4 @@ theorem dual_factorial_window :
   exact h hx (mem_Icc.mp he).1 hbig ((by exact_mod_cast (mem_Icc.mp he).2 : (e : ℝ) ≤ (2*R : ℕ)).trans hcut)
     hF hL hU β hB hβ
 
-#print axioms dual_prime_divisor_window
-#print axioms dual_factorial_window
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

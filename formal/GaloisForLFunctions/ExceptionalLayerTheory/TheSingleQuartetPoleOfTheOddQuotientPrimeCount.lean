@@ -88,6 +88,4 @@ theorem oddQuotientPowerTotal_singleQuartet_exponent {ρ : ℂ} (hq : HasSingleO
     exact (mul_ne_zero (half_ne_zero hq) (div_ne_zero hc (by norm_num)))
       (tendsto_nhds_unique (firstPrimeDivisorMoment_singleQuartet_residue hq) hz)
 
-#print axioms firstPrimeDivisorMoment_singleQuartet_residue
-#print axioms oddQuotientPowerTotal_singleQuartet_exponent
 end GaloisForLFunctions.ExceptionalLayerTheory

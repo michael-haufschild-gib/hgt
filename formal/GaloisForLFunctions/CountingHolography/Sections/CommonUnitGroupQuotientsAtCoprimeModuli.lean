@@ -231,7 +231,7 @@ theorem unitHom_range_dvd_of_pow_eq_one {u M : ℕ} (hu : 0<u)
   let unitExponent := ArithmeticFunction.carmichael u
   obtain ⟨a,ha⟩ := Monoid.exists_orderOf_eq_exponent (Monoid.ExponentExists.of_finite (G := (ZMod u)ˣ))
   have hord : orderOf a=unitExponent := ha.trans (ArithmeticFunction.carmichael_eq_exponent hu.ne').symm
-  have hλ : 0<unitExponent := hord ▸ orderOf_pos a
+  have hExponent : 0<unitExponent := hord ▸ orderOf_pos a
   have h := order_mul_range_dvd_gcd_mul_card f a (hM a)
   have hcard : Nat.card (ZMod u)ˣ=u.totient := by rw [Nat.card_eq_fintype_card,ZMod.card_units_eq_totient]
   rw [hord,hcard,totient_split] at h
@@ -241,7 +241,7 @@ theorem unitHom_range_dvd_of_pow_eq_one {u M : ℕ} (hu : 0<u)
     rw [mul_comm]; exact Nat.div_mul_cancel (Nat.prod_primeFactors_dvd u)
   have hpart : primePowerPart u ∣ 2*unitExponent := Nat.dvd_of_mul_dvd_mul_left hA
     (by rw [hprod]; exact dvd_twice_radical_mul_carmichael hu)
-  apply Nat.dvd_of_mul_dvd_mul_left hλ
+  apply Nat.dvd_of_mul_dvd_mul_left hExponent
   exact h.trans ((Nat.mul_dvd_mul_left (unitExponent.gcd M) (Nat.mul_dvd_mul_right hpart (residueUnitOrder u))).trans
     (dvd_of_eq (by ring)))
 

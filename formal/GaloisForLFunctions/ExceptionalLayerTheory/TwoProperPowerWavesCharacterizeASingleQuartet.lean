@@ -36,29 +36,29 @@ private theorem T_in_interval {y : ℝ} (hy : 1 ≤ y) : 1 ≤ T y ∧ T y ≤ y
   ⟨Real.one_le_rpow hy (by norm_num),by simpa only [Real.rpow_one] using
     Real.rpow_le_rpow_of_exponent_le hy (by norm_num : (2/3:ℝ) ≤ 1)⟩
 
+private theorem two_power_rows {x : ℝ} (hx : 0≤x) :
+    0≤properPowerDiscrepancy x-(E (x^(1/2:ℝ))+E (x^(1/3:ℝ))) ∧
+    properPowerDiscrepancy x-(E (x^(1/2:ℝ))+E (x^(1/3:ℝ)))≤L*x^(1/5:ℝ) := by
+  have hlo := Chebyshev.psi_sub_theta_ge_psi_add_psi_add_psi hx
+  have hhi := Chebyshev.psi_sub_theta_le_psi_add_psi_add_psi x
+  simp only [← one_div] at hlo hhi
+  have h₇ := Chebyshev.psi_nonneg (x^(1/7:ℝ))
+  have h₅ := Chebyshev.psi_le_const_mul_self (Real.rpow_nonneg hx (1/5))
+  dsimp only [properPowerDiscrepancy,E,L] at *
+  constructor <;> linarith only [hlo,hhi,h₇,h₅]
+
 private theorem square_error {y : ℝ} (hy : 1 ≤ y) :
     |properPowerDiscrepancy (y^(2:ℝ))-(E y+E (T y))| ≤ L*B y := by
   have hy0 := zero_le_one.trans hy
-  have hx := Real.rpow_nonneg hy0 (2:ℝ)
-  have hlo := Chebyshev.psi_sub_theta_ge_psi_add_psi_add_psi hx
-  have hhi := Chebyshev.psi_sub_theta_le_psi_add_psi_add_psi (y^(2:ℝ))
-  have htail := Chebyshev.psi_le_const_mul_self (Real.rpow_nonneg hy0 (2/5:ℝ))
-  have hpos := Chebyshev.psi_nonneg (y^(2/7:ℝ))
-  have hn : 0 ≤ L := by dsimp only [L]; positivity
-  have hscale : y^(2/5:ℝ) ≤ B y := calc
-    y^(2/5:ℝ) ≤ y^(1/2:ℝ) := Real.rpow_le_rpow_of_exponent_le hy (by norm_num)
-    _ = Real.sqrt y := (Real.sqrt_eq_rpow _).symm
-    _ ≤ B y := B_lower hy
-  have hbound := mul_le_mul_of_nonneg_left hscale hn
-  simp only [← one_div,← Real.rpow_mul hy0,mul_one_div,div_self (by norm_num : (2:ℝ) ≠ 0),
-    Real.rpow_one] at hlo hhi
-  dsimp only [properPowerDiscrepancy,E,T]
-  rw [← Real.rpow_mul hy0,← Real.rpow_mul hy0]
-  simp only [mul_one_div,div_self (by norm_num : (2:ℝ) ≠ 0),Real.rpow_one]
-  rw [abs_le]
-  dsimp only [L] at hbound ⊢
-  constructor <;> linarith only [hlo,hhi,htail,hpos,hbound,
-    mul_nonneg hn ((Real.sqrt_nonneg _).trans (B_lower hy))]
+  have h := two_power_rows (Real.rpow_nonneg hy0 (2:ℝ))
+  simp only [← Real.rpow_mul hy0,mul_one_div,div_self (by norm_num : (2:ℝ) ≠ 0),
+    Real.rpow_one] at h
+  rw [abs_of_nonneg h.1]
+  apply h.2.trans
+  apply mul_le_mul_of_nonneg_left _ (by dsimp only [L]; positivity)
+  apply le_trans _ (B_lower hy)
+  rw [Real.sqrt_eq_rpow]
+  exact Real.rpow_le_rpow_of_exponent_le hy (by norm_num)
 
 /-- For every model of at most linear growth, square-root accuracy for
 the prime error is equivalent to the same accuracy for the two predicted
@@ -169,6 +169,29 @@ theorem hasSingleOffLineQuartet_iff_two_properPower_waves {ρ : ℂ} (hh : 1/2 <
     rw [sub_neg_eq_add] at he
     linarith only [he,ht]
 
-#print axioms prime_model_iff_two_properPower_waves
-#print axioms hasSingleOffLineQuartet_iff_two_properPower_waves
+/-- At the original cutoff the square and cube have exponents ρ/2 and ρ/3.
+Their common error is a quarter power times a squared logarithm. -/
+theorem singleQuartet_properPower_modes {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ x : ℝ, 1 ≤ x →
+      |properPowerDiscrepancy x +
+        2*(quartetCopyMult ρ:ℝ)*(((x:ℂ)^(ρ/2)/ρ+(x:ℂ)^(ρ/3)/ρ).re)| ≤
+      K*(x^(1/4:ℝ)*(1+Real.log x)^2) := by
+  obtain ⟨K,hK,h⟩ := (hasSingleOffLineQuartet_iff_two_properPower_waves hq.1 hq.2.1).mp hq
+  refine ⟨K,hK,fun x hx => ?_⟩
+  have hx0 := zero_le_one.trans hx
+  have hxpos := zero_lt_one.trans_le hx
+  have hlog := Real.log_nonneg hx
+  have he := h (x^(1/2:ℝ)) (Real.one_le_rpow hx (by norm_num))
+  rw [← Real.rpow_mul hx0,← Real.rpow_mul hx0,show (1/2:ℝ)*2=1 by norm_num,Real.rpow_one,
+    show (1/2:ℝ)*(2/3)=1/3 by norm_num,Real.sqrt_eq_rpow,← Real.rpow_mul hx0,
+    show (1/2:ℝ)*(1/2)=1/4 by norm_num,Real.log_rpow hxpos] at he
+  simp only [quartetPrimeWaveTerm,← Complex.cpow_mul_ofReal_nonneg hx0] at he
+  push_cast at he
+  rw [show (1/2:ℂ)*ρ=ρ/2 by ring,show (1/3:ℂ)*ρ=ρ/3 by ring] at he
+  rw [Complex.add_re,mul_add,← sub_neg_eq_add]
+  convert he.trans (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left
+    ((sq_le_sq₀ (by linarith only [hlog]) (by linarith only [hlog])).mpr
+      (by linarith only [hlog] : 1+(1/2:ℝ)*Real.log x ≤ 1+Real.log x))
+    (Real.rpow_nonneg hx0 (1/4))) hK) using 2 <;> ring
+
 end GaloisForLFunctions.ExceptionalLayerTheory

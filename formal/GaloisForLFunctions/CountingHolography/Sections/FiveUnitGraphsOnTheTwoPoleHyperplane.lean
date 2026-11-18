@@ -265,9 +265,4 @@ theorem fiveUnitDivisor_degree_bound :
   simp_rw [hd,hc]
   exact hb
 
-#print axioms fiveRootMultiplier_bound
-#print axioms summable_quadratic_lag_envelope
-#print axioms fiveUnitTraceForm_bounded
-#print axioms fiveUnitDivisor_degree_bound
-
 end GaloisForLFunctions.CountingHolography.Sections

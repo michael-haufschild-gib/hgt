@@ -120,7 +120,6 @@ theorem large_complement_bound :
             dsimp only [T,N] at he ⊢
             linarith only [he]
 
-#print axioms large_complement_bound
 
 /-- Ordinary prime row through the square-root complementary-factor cutoff. -/
 def cappedProductRow (X : ℕ) : ℝ :=
@@ -181,6 +180,5 @@ theorem bounded_complement_cofactors :
   rw [eq]
   exact (abs_add_le _ _).trans ((add_le_add (hprev V W N) hh).trans_eq (by dsimp [g]; ring))
 
-#print axioms bounded_complement_cofactors
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

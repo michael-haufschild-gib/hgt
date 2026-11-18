@@ -62,7 +62,4 @@ theorem analytic_squareValuationReadingError {g : ℝ → ℝ} {K : ℝ≥0} (hg
     convert hab using 1 <;> norm_num
   exact fun s hs => LSeries_analyticOnNhd _ s (h₃.trans_lt (by exact_mod_cast hs : (3:EReal)<(s.re:EReal)))
 
-#print axioms mellin_square_conductor_row
-#print axioms analytic_squareValuationReadingError
-
 end GaloisForLFunctions.CountingHolography.Sections

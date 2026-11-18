@@ -1042,15 +1042,4 @@ theorem model_firewall_for_two_and_three_clocks {a b β : ℝ}
     · exact Or.inl hζ
     · exact Or.inr ⟨α, k₀, c, σ₁, hc, hσ₁, hfake, hdiff⟩
 
-#print axioms singleQuartet_obeys_all_dilation_recurrences
-#print axioms twoThreeAliasedQuartets_obey_two_and_three_not_five
-#print axioms twoClock_bounded_and_limsup_iff
-#print axioms twoClock_nonCrossResonant_iff_singleQuartet
-#print axioms threeClock_bounded_and_limsup_iff
-#print axioms twoClockPrimeRecurrenceLaw_iff
-#print axioms threeClockPrimeRecurrenceLaw_iff
-#print axioms twoClockPrimeRecurrenceLaw_or_lindelof_finite_stratum
-#print axioms corollaries_of_twoClockPrimeRecurrenceLaw
-#print axioms model_firewall_for_two_and_three_clocks
-
 end GaloisForLFunctions.ExceptionalLayerTheory

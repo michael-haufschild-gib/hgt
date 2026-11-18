@@ -1,5 +1,8 @@
 import Mathlib.NumberTheory.Padics.PadicNorm
 import Mathlib.Data.Nat.Factorization.Basic
+import Mathlib.Data.Nat.Squarefree
+import Mathlib.Data.Nat.GCD.BigOperators
+import Mathlib.RingTheory.Coprime.Lemmas
 import Mathlib.Tactic
 import GaloisForLFunctions.HTGeometry.Arithmetic.IntegralTests
 
@@ -113,7 +116,75 @@ theorem primeReciprocalReading_den_one_iff (a : Nat.Primes →₀ ℤ) :
     rw [primeReciprocalReading_den]
     simp [h]
 
-#print axioms primeReciprocalReading_den
-#print axioms primeReciprocalReading_den_exponent
+private def reciprocalLinear := Finsupp.linearCombination ℤ (fun p : Nat.Primes => (1:ℚ)/(p:ℕ))
+
+private theorem reciprocalLinear_apply (a : Nat.Primes →₀ ℤ) :
+    reciprocalLinear a=primeReciprocalReading a := by
+  simp only [reciprocalLinear,Finsupp.linearCombination_apply,Finsupp.sum,primeReciprocalReading,
+    zsmul_eq_mul,div_eq_mul_inv,one_mul]
+
+private theorem prime_product_inverse_in_range (S : Finset ℕ) (hS : ∀ p ∈ S, Nat.Prime p) :
+    1/((∏ p ∈ S, p:ℕ):ℚ) ∈ LinearMap.range reciprocalLinear := by
+  have hprime {p : ℕ} (hp : p.Prime) : (1:ℚ)/p ∈ LinearMap.range reciprocalLinear := by
+    refine ⟨Finsupp.single (⟨p,hp⟩ : Nat.Primes) (1:ℤ),?_⟩
+    simp only [reciprocalLinear,Finsupp.linearCombination_single,one_smul]
+  induction S using Finset.induction_on with
+  | empty =>
+    have h := (LinearMap.range reciprocalLinear).smul_mem (2:ℤ) (hprime Nat.prime_two)
+    norm_num [zsmul_eq_mul] at h ⊢
+    exact h
+  | @insert p S hp ih =>
+    have hP := hS p (mem_insert_self _ _)
+    have hQ (q : ℕ) (hq : q∈S) := hS q (mem_insert_of_mem hq)
+    let D := ∏ q ∈ S, q
+    have hc : p.Coprime D := Nat.coprime_prod_right_iff.mpr fun q hq =>
+      hP.coprime_iff_not_dvd.mpr fun hd => hp (((hQ q hq).dvd_iff_eq hP.ne_one).mp hd ▸ hq)
+    obtain ⟨r,t,hrt⟩ := hc.isCoprime
+    have hd : (D:ℚ)≠0 := Nat.cast_ne_zero.mpr (prod_pos fun q hq => (hQ q hq).pos).ne'
+    have hq : (p:ℚ)≠0 := Nat.cast_ne_zero.mpr hP.ne_zero
+    have h := (LinearMap.range reciprocalLinear).add_mem
+      ((LinearMap.range reciprocalLinear).smul_mem r (ih hQ))
+      ((LinearMap.range reciprocalLinear).smul_mem t (hprime hP))
+    rw [prod_insert hp,Nat.cast_mul]
+    change 1/((p:ℚ)*D) ∈ _
+    have he : r • ((1:ℚ)/D)+t • ((1:ℚ)/p)=1/((p:ℚ)*D) := by
+      have hh : (r:ℚ)*p+(t:ℚ)*D=1 := by exact_mod_cast hrt
+      simp only [zsmul_eq_mul]
+      field_simp
+      linarith only [hh]
+    exact he ▸ h
+
+/-- The image consists of exactly the rationals with squarefree reduced
+denominator. Bézout joins reciprocals of coprime prime products. -/
+theorem range_primeReciprocalReading (q : ℚ) :
+    (∃ a : Nat.Primes →₀ ℤ, primeReciprocalReading a=q) ↔ Squarefree q.den := by
+  constructor
+  · rintro ⟨a,rfl⟩
+    apply (Nat.squarefree_iff_factorization_le_one (primeReciprocalReading a).den_nz).mpr
+    intro k
+    by_cases hp : k.Prime
+    · have h := primeReciprocalReading_den_exponent a ⟨k,hp⟩
+      change (primeReciprocalReading a).den.factorization k=if (k:ℤ)∣a ⟨k,hp⟩ then 0 else 1 at h
+      rw [h]; split <;> decide
+    · rw [Nat.factorization_eq_zero_of_not_prime _ hp]; exact Nat.zero_le _
+  · intro h
+    have hr := prime_product_inverse_in_range q.den.primeFactors fun p hp => Nat.prime_of_mem_primeFactors hp
+    rw [Nat.prod_primeFactors_of_squarefree h] at hr
+    obtain ⟨a,ha⟩ := (LinearMap.range reciprocalLinear).smul_mem q.num hr
+    refine ⟨a,?_⟩
+    rw [← reciprocalLinear_apply,ha,zsmul_eq_mul,mul_one_div,q.num_div_den]
+
+/-- Adding any vector satisfying the entropy congruences preserves the
+entire reduced denominator of the derivative. -/
+theorem primeReciprocalReading_den_add (a b : Nat.Primes →₀ ℤ) (hb : ∀ p : Nat.Primes, (p:ℤ)∣b p) :
+    (primeReciprocalReading (a+b)).den=(primeReciprocalReading a).den := by
+  apply Nat.factorization_inj (primeReciprocalReading (a+b)).den_nz (primeReciprocalReading a).den_nz
+  ext k
+  by_cases hp : k.Prime
+  · let p : Nat.Primes := ⟨k,hp⟩
+    change (primeReciprocalReading (a+b)).den.factorization (p:ℕ)=(primeReciprocalReading a).den.factorization (p:ℕ)
+    rw [primeReciprocalReading_den_exponent,primeReciprocalReading_den_exponent,Finsupp.add_apply,
+      dvd_add_left (hb p)]
+  · simp only [Nat.factorization_eq_zero_of_not_prime _ hp]
 
 end GaloisForLFunctions.CountingHolography.Sections

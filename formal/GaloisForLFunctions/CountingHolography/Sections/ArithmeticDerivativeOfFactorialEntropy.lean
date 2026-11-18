@@ -38,6 +38,4 @@ theorem factorial_entropy_iff_integral_prime_reciprocal (a : Nat.Primes →₀ �
     intro p
     exact ⟨fun hp => ⟨rfl,hz hp.le⟩,h p,fun hp => by rw [hz hp.ge,Finsupp.zero_apply,mul_zero]⟩
 
-#print axioms factorial_entropy_iff_integral_prime_reciprocal
-
 end GaloisForLFunctions.CountingHolography.Sections

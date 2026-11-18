@@ -968,12 +968,4 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
   · intro x
     exact intBlockCarry.symm_apply_apply (x.1.val, x.2.val)
 
-#print axioms centeredCarry_involutive
-#print axioms centeredCarry_maps_Icc_iff
-#print axioms eventually_centeredCarry_sections_of_window
-#print axioms integerProbe_nonneg_of_cofinal_centeredCarry
-#print axioms natBlockCarry_modEq
-#print axioms eventually_intBlockCarry_positive_ray
-#print axioms exists_mixed_family_reversible_blockCarry
-
 end GaloisForLFunctions.CountingHolography.Sections

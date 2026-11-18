@@ -137,8 +137,4 @@ theorem smoothHaarSource_outer_window {N y : ℕ} (hy : y≤2*N) (hs : 4*N<(y+1)
   rw [he]
   constructor <;> linarith only [hlowR,hupperR,hmod,Nat.cast_nonneg (α := ℝ) (k%2)]
 
-#print axioms smoothHaarSource_outer_window
-#print axioms smoothHaarSource_eq_large_prime_count
-#print axioms smoothHaarSource_first_doubling
-
 end GaloisForLFunctions.ExceptionalLayerTheory

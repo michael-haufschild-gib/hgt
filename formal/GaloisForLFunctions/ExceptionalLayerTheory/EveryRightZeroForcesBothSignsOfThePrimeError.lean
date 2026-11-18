@@ -247,7 +247,6 @@ theorem both_prime_error_peaks_at_every_large_cutoff {ρ : ℂ} (hhalf : 1/2<ρ.
   have hp : 0<c*(N:ℝ)^ρ.re := mul_pos hc (Real.rpow_pos_of_pos (by exact_mod_cast hn) _)
   linarith only [hl,hp]
 
-#print axioms both_prime_error_peaks_at_every_large_cutoff
 
 /-- RH is equivalent to finding one sign of small harmonic mass on arbitrarily distant
 square-root intervals for each exponent above one half. -/
@@ -272,9 +271,5 @@ theorem riemannHypothesis_iff_cofinal_one_signed_prime_means :
       (hK.and_eventually (hcN.and (eventually_power_lt (K := K) hbρ hc))).exists
     exact (not_lt_of_ge ((hlow σ hσ).trans hupper)) hlt
 
-#print axioms both_prime_sign_masses_at_every_large_cutoff
-#print axioms riemannHypothesis_iff_cofinal_one_signed_prime_means
-
-#print axioms exists_right_zero_prime_mass_bound
 
 end GaloisForLFunctions.ExceptionalLayerTheory

@@ -116,7 +116,4 @@ theorem primeLogDivisorSymbol_order (r j : ℕ) {ρ : ℂ} (hb : 1/2<ρ.re) (h1 
       (by linarith only [hb]) h1,(hd j).2]
   norm_cast; ring
 
-#print axioms primeLogDivisorSymbol_euler
-#print axioms primeLogDivisorSymbol_order
-
 end GaloisForLFunctions.ExceptionalLayerTheory

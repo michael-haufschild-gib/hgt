@@ -208,8 +208,4 @@ theorem oddQuotientPowerCount_two_fifths_of_rh (hRH : RiemannHypothesis) {c : ‚Ñ
   norm_num at hc ‚ä¢
   exact hc
 
-#print axioms oddQuotientPowerCount_sub_half
-#print axioms oddQuotientPowerCount_two_fifths_of_rh
-#print axioms oddQuotientPowerCount_hyperbola_bound
-#print axioms oddQuotientPowerCount_eight_seventeenths
 end GaloisForLFunctions.ExceptionalLayerTheory

@@ -210,8 +210,4 @@ theorem distinctPrimeLogMoment_sqrt_lower :
   exact (show Real.sqrt N/8≤(Chebyshev.theta (2*Real.sqrt N)-Chebyshev.theta (Real.sqrt N))/4 by
     linarith only [h₁,h₂,hpos]).trans (distinctPrimeLogMoment_square_window hn)
 
-#print axioms distinctPrimeLogMoment_eq_sum_primeFactors
-#print axioms distinctPrimeLogMoment_sqrt_upper
-#print axioms distinctPrimeLogMoment_sqrt_lower
-
 end GaloisForLFunctions.ExceptionalLayerTheory

@@ -171,5 +171,4 @@ theorem complementary_slice_power_bound :
   apply (add_le_add (add_le_add low middle) top).trans_eq
   dsimp [H,P]; ring
 
-#print axioms complementary_slice_power_bound
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

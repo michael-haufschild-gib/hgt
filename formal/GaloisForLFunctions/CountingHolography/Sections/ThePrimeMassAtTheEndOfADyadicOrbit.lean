@@ -260,8 +260,4 @@ theorem not_summable_dyadic_square_log_valuations {n : ℕ} (hn : 0<n) :
     mul_pos (mul_pos (by norm_num) (pow_pos (Nat.cast_pos.mpr hn) 3)) squareAutocorrelationMass_pos
   exact hp.ne' (tendsto_nhds_unique he hzero)
 
-#print axioms tendsto_squarePrimeEndpoint_mass
-#print axioms dyadic_square_prime_mass_escape
-#print axioms not_summable_dyadic_square_log_valuations
-
 end GaloisForLFunctions.CountingHolography.Sections

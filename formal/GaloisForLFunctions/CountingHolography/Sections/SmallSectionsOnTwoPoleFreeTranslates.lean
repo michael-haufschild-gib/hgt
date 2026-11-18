@@ -210,8 +210,4 @@ theorem riemannHypothesis_iff_twoPolePair_power :
     rw [integerProbe_twoPolePair h₁ h₂,he] at hq
     linarith only [hq]
 
-#print axioms riemannHypothesis_iff_twoPolePair_power
-#print axioms twoPolePair_degrees
-#print axioms integerProbe_twoPolePair
-
 end GaloisForLFunctions.CountingHolography.Sections

@@ -100,7 +100,4 @@ theorem factorialFloorReading_injective {R : Type*} [CommRing R] {a b : ℕ →�
   rw [show c=a-b from rfl,map_sub,h k (Nat.pos_of_ne_zero hk0),sub_self] at hv
   exact Finsupp.mem_support_iff.mp hk hv.symm
 
-#print axioms factorialFloorReading_sample
-#print axioms factorialFloorReading_injective
-
 end GaloisForLFunctions.CountingHolography.Sections

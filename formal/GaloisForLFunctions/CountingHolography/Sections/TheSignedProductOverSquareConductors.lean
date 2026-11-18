@@ -24,8 +24,8 @@ private theorem power_gaps_of_signed_prefix (f : ℕ → ℝ) {θ r C : ℝ}
   let A := 4*C*(2:ℝ)^(r-θ)
   have hA : 0≤A := by dsimp only [A]; positivity
   obtain ⟨X,hX⟩ := eventually_atTop.mp (((eventually_ge_atTop (1:ℝ)).and
-    ((Real.tendsto_rpow_atTop hθ).eventually_ge_atTop 2)).and
-    ((Real.tendsto_rpow_atTop (sub_pos.mpr hθ')).eventually_ge_atTop 2))
+    ((tendsto_rpow_atTop hθ).eventually_ge_atTop 2)).and
+    ((tendsto_rpow_atTop (sub_pos.mpr hθ')).eventually_ge_atTop 2))
   refine ⟨A,hA,fun _ hn => hn.1,1,X,zero_le_one,fun x hx => ?_⟩
   obtain ⟨⟨hx₁,hgrow⟩,hgap⟩ := hX x hx
   have hx₀ := zero_lt_one.trans_le hx₁
@@ -248,10 +248,5 @@ theorem riemannHypothesis_iff_signed_square_generator_product :
     apply riemannHypothesis_iff_zetaZeroWidth_eq_zero.mpr
     exact le_antisymm (he.mpr ⟨Real.log B,Real.log_natCast_nonneg _,fun N =>
       (rational_power_window (squareGeneratorPrefix_pos N) hB N).mpr (h N)⟩) zetaZeroWidth_nonneg
-
-#print axioms zetaZeroWidth_le_iff_square_generator_prefix
-#print axioms riemannHypothesis_iff_signed_square_generator_product
-#print axioms zetaZeroWidth_le_iff_positive_price_abscissa
-#print axioms riemannHypothesis_iff_positive_price_abscissa
 
 end GaloisForLFunctions.CountingHolography.Sections

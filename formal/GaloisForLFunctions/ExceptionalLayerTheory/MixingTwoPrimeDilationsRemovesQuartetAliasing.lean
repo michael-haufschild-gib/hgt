@@ -194,8 +194,4 @@ theorem ordinary_prime_recurrences_iff_rh_or_singleQuartet {β γ : ℝ}
     ← theta_residual_iff (by norm_num : (1:ℝ)≤3),← theta_residual_iff (by norm_num : (1:ℝ)≤6)]
     using two_prime_product_recurrences_iff_rh_or_singleQuartet hβ hβ' hγ
 
-#print axioms ordinary_prime_recurrences_iff_rh_or_singleQuartet
-#print axioms abs_eq_of_two_prime_and_product_cos
-#print axioms two_prime_product_recurrences_iff_singleQuartet
-
 end GaloisForLFunctions.ExceptionalLayerTheory

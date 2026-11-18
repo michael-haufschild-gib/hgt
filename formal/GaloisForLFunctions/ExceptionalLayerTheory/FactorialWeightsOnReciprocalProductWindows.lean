@@ -85,7 +85,6 @@ theorem centered_weight_product_window :
   exact (abs_centered_image_block s (fun q => q.1*q.2) (fun q => α q.1*β q.2) hR hM tests).trans_eq
     (by dsimp [M]; ring)
 
-#print axioms centered_weight_product_window
 
 /-- On the fixed window through the square-root product, both long-variable
 intervals together cost square-root error up to the two logarithms and the
@@ -119,6 +118,5 @@ theorem square_root_window_power_bound :
   dsimp only [T] at hfinal
   linarith only [hfinal]
 
-#print axioms square_root_window_power_bound
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

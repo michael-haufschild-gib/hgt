@@ -55,7 +55,7 @@ theorem buchstab_mem_unit (u : ℝ) : buchstab u ∈ Icc (0:ℝ) 1 := by
 
 theorem measurable_buchstab : Measurable buchstab := by
   have hp : Measurable (fun p : ℕ × ℝ => profile p.1 p.2) :=
-    measurable_from_prod_countable_left fun n => (profile_continuous n).measurable
+    measurable_from_prod_countable_right fun n => (profile_continuous n).measurable
   have hn : Measurable (fun u : ℝ => ⌊u-1⌋₊) := (measurable_id.sub measurable_const).nat_floor
   apply Measurable.ite (measurableSet_Ici (a := (1:ℝ))) _ measurable_const
   exact hp.comp (hn.prodMk ((measurable_id.sub measurable_const).sub hn.natCast))

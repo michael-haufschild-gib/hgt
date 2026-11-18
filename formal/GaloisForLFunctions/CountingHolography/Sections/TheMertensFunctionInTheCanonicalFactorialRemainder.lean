@@ -86,9 +86,6 @@ theorem canonicalFactorialRemainder_power_iff_mertens {s : ℝ} (hs : 1/2≤s) :
   constructor <;> rintro ⟨C,hC,h⟩ <;> refine ⟨C,hC,fun n hn => ?_⟩ <;>
     simpa only [mertens_floorTransform_eq_factorial_remainder hn] using h n hn
 
-#print axioms mertens_floorTransform_eq_factorial_remainder
-#print axioms canonicalFactorialRemainder_power_iff_mertens
-
 /-- The entropy of the canonical factorial prefix approximates its
 logarithmic value to every strict half power exactly under RH. -/
 theorem riemannHypothesis_iff_canonicalFactorialRemainder :
@@ -118,7 +115,5 @@ theorem riemannHypothesis_iff_canonicalFactorialRemainder :
     · simpa [mertensIoc] using hC
     · exact (hb n hn).trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg _)
         (by linarith : (n:ℝ)≤n+1) (by linarith : (0:ℝ)≤1/2+δ)) hC)
-
-#print axioms riemannHypothesis_iff_canonicalFactorialRemainder
 
 end GaloisForLFunctions.CountingHolography.Sections

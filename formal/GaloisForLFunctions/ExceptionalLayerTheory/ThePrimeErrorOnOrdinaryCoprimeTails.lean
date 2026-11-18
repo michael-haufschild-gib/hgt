@@ -152,5 +152,4 @@ theorem ordinary_coprime_tail_sub_primeErrorTail :
   apply (abs_add_le _ _).trans (add_le_add _ (completeComplementTail_sub_primeErrorTail hR D X a))
   exact (abs_add_le _ _).trans ((add_le_add hg ht).trans (by linarith only [h₀]))
 
-#print axioms ordinary_coprime_tail_sub_primeErrorTail
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

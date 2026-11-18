@@ -134,6 +134,4 @@ theorem riemannHypothesis_iff_oddQuotientPowerTotal_quarter :
     obtain ⟨K,hK,hN⟩ := h b hb (hbz.trans hz')
     exact firstPrimeDivisorMoment_zero_residue_of_oddQuotientPowerTotal_bound hb (hbz.trans hz') hK hN hbz hz' hi
 
-#print axioms zero_free_strip_of_oddQuotientPowerTotal
-#print axioms riemannHypothesis_iff_oddQuotientPowerTotal_quarter
 end GaloisForLFunctions.ExceptionalLayerTheory

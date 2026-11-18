@@ -99,7 +99,4 @@ theorem lastQuotientClassSymbol_lineEnergy {q : ℕ} (hq : 2≤q) {σ : ℝ} (h�
   simp_rw [hcast]
   rw [← ofReal_tsum,ofReal_re]
 
-#print axioms lastQuotientClassSymbol_eq_tsum_cells
-#print axioms lastQuotientClassSymbol_lineEnergy
-
 end GaloisForLFunctions.ExceptionalLayerTheory

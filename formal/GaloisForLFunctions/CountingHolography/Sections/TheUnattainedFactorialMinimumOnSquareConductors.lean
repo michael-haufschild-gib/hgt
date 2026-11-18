@@ -130,8 +130,61 @@ theorem successorSquare_half_price_unattained :
   exact no_half (prod_pos fun k _ => zpow_pos (Nat.cast_pos.mpr (contactBase_pos k)) _)
     (mem_filter.mp hp).2 h₂ h₁ L
 
-#print axioms factorial_prices_iff_rational_valuations
-#print axioms successorSquare_outer_exponents_proper
-#print axioms successorSquare_half_price_unattained
+/-- Distance in integer valuation units to the lattice of possible doubled
+entropy coordinates at p. -/
+def factorialCoordinateDistance (p : Nat.Primes) (z : ℤ) : ℕ :=
+  Nat.find (show ∃ d : ℕ, ∃ j : ℤ, (z-2*(p:ℤ)*j).natAbs=d from ⟨_,0,rfl⟩)
+
+private theorem coord_attained (p : Nat.Primes) (z : ℤ) :
+    ∃ j : ℤ, (z-2*(p:ℤ)*j).natAbs=factorialCoordinateDistance p z := Nat.find_spec _
+
+private theorem coord_lower (p : Nat.Primes) (z j : ℤ) :
+    factorialCoordinateDistance p z≤(z-2*(p:ℤ)*j).natAbs := Nat.find_min' _ ⟨j,rfl⟩
+
+/-- Finite height of the difference between the price and twice the entropy. -/
+def factorialResidualHeight (a b : Nat.Primes →₀ ℤ) : ℝ :=
+  ∑ p ∈ a.support ∪ b.support, ((a p-2*b p).natAbs:ℝ)*Real.log (p:ℕ)
+
+/-- Strictly above every price prime, all nearest residues can be chosen
+at once. The minimum is the sum of the independent prime distances. -/
+theorem factorialResidualHeight_exact_minimum {L : ℕ} (hL : 10≤L)
+    (a : Nat.Primes →₀ ℤ) (ha : ∀ p ∈ a.support, (p:ℕ)<L) :
+    IsLeast {y : ℝ | ∃ b : Nat.Primes →₀ ℤ, (primeLogValue a,primeLogValue b)∈factorialJointImage L ∧
+      y=factorialResidualHeight a b}
+      (∑ p ∈ a.support, (factorialCoordinateDistance p (a p):ℝ)*Real.log (p:ℕ)) := by
+  classical
+  let j := fun p : Nat.Primes => Classical.choose (coord_attained p (a p))
+  let B := fun p : Nat.Primes => if p∈a.support then (p:ℤ)*j p else 0
+  have hs (p : Nat.Primes) (hp : B p≠0) : p∈a.support := by
+    by_contra h
+    exact hp (if_neg h)
+  let b := Finsupp.onFinset a.support B hs
+  have hb : b.support ⊆ a.support := fun p hp => hs p (Finsupp.mem_support_iff.mp hp)
+  constructor
+  · refine ⟨b,(factorialJointImage_iff_prime_coordinates hL a b).mpr ?_,?_⟩
+    · intro p
+      by_cases h : p∈a.support
+      · have hp := ha p h
+        have he : b p=(p:ℤ)*j p := if_pos h
+        exact ⟨fun hlt => False.elim (Nat.lt_asymm hp hlt),by rw [he]; exact dvd_mul_right _ _,
+          fun heq => False.elim (hp.ne heq)⟩
+      · have h₀ := Finsupp.notMem_support_iff.mp h
+        have he : b p=0 := if_neg h
+        exact ⟨fun _ => ⟨h₀,he⟩,by rw [he]; exact dvd_zero _,fun _ => by rw [he,h₀,mul_zero]⟩
+    · rw [factorialResidualHeight,Finset.union_eq_left.mpr hb]
+      apply Finset.sum_congr rfl
+      intro p hp
+      have he : b p=(p:ℤ)*j p := if_pos hp
+      have hj := Classical.choose_spec (coord_attained p (a p))
+      rw [he,← mul_assoc,show (a p-2*(p:ℤ)*j p).natAbs=factorialCoordinateDistance p (a p) from hj]
+  · rintro _ ⟨v,hv,rfl⟩
+    have h := (factorialJointImage_iff_prime_coordinates hL a v).mp hv
+    refine (Finset.sum_le_sum (s := a.support) fun p _ => ?_).trans
+      (Finset.sum_le_sum_of_subset_of_nonneg Finset.subset_union_left fun p _ _ =>
+        mul_nonneg (Nat.cast_nonneg _) (Real.log_natCast_nonneg _))
+    obtain ⟨k,hk⟩ := (h p).2.1
+    apply mul_le_mul_of_nonneg_right _ (Real.log_natCast_nonneg _)
+    rw [hk,← mul_assoc]
+    exact_mod_cast coord_lower p (a p) k
 
 end GaloisForLFunctions.CountingHolography.Sections

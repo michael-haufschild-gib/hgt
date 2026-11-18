@@ -55,7 +55,10 @@ theorem complete_divisor_error_power :
   have hJ' := le_mul_of_one_le_right (zero_le_one.trans hJ) hP
   have hH : |H|≤J := by
     have hs := Nat.le_sqrt.mpr (by simpa using hn : 1*1≤n)
-    rw [abs_of_nonneg (by dsimp [H]; positivity)]
+    have hh : 0≤H := by
+      dsimp only [H]; rw [←sum_inv_Icc_eq_ratCast_harmonic]
+      exact sum_nonneg fun d _ => inv_nonneg.mpr (Nat.cast_nonneg d)
+    rw [abs_of_nonneg hh]
     exact (harmonic_le_one_add_log s).trans (add_le_add_left (Real.log_le_log
       (by exact_mod_cast hs : (0 : ℝ)<s) (by exact_mod_cast Nat.sqrt_le_self n)) 1)
   have hS : |divisorHyperbolaSmoothRemainder n|≤8*J := by
@@ -86,5 +89,4 @@ theorem complete_divisor_error_power :
     (show 0≤9+2*K by positivity)
   rw [←hp]; linarith only [hh]
 
-#print axioms complete_divisor_error_power
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

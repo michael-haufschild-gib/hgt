@@ -101,14 +101,14 @@ private theorem order_loss {m K : ℕ} (hm : 0<m) (hS : m.primeFactors⊆ordinar
   let A := ∏ p ∈ m.primeFactors, p
   have hA : 0<A := prod_pos fun p h => (Nat.prime_of_mem_primeFactors h).pos
   have hφ := Nat.totient_pos.mpr hm
-  have hλ : 0<carmichael m := Nat.pos_of_dvd_of_pos (carmichael_dvd_totient m) hφ
-  have h₁ := Real.log_le_log (Nat.cast_pos.mpr hλ) (by exact_mod_cast
+  have hExponent : 0<carmichael m := Nat.pos_of_dvd_of_pos (carmichael_dvd_totient m) hφ
+  have h₁ := Real.log_le_log (Nat.cast_pos.mpr hExponent) (by exact_mod_cast
     (Nat.le_of_dvd hφ (carmichael_dvd_totient m)).trans (Nat.totient_le m) : (carmichael m:ℝ)≤m)
-  have h₂ := Nat.le_of_dvd (Nat.mul_pos hA (Nat.mul_pos (by decide : 0<2) hλ))
+  have h₂ := Nat.le_of_dvd (Nat.mul_pos hA (Nat.mul_pos (by decide : 0<2) hExponent))
     (dvd_twice_radical_mul_carmichael hm)
   have h₃ := Real.log_le_log (Nat.cast_pos.mpr hm) (by exact_mod_cast h₂ :
     (m:ℝ)≤(A:ℝ)*(2*(carmichael m:ℝ)))
-  rw [Real.log_mul (Nat.cast_pos.mpr hA).ne' (by positivity),Real.log_mul two_ne_zero (Nat.cast_pos.mpr hλ).ne'] at h₃
+  rw [Real.log_mul (Nat.cast_pos.mpr hA).ne' (by positivity),Real.log_mul two_ne_zero (Nat.cast_pos.mpr hExponent).ne'] at h₃
   have h₄ : Real.log A≤7*K := prime_product_log hS id fun p h => ⟨(Nat.prime_of_mem_primeFactors h).pos,le_rfl⟩
   exact ⟨sub_nonneg.mpr h₁,by linarith only [h₃,h₄]⟩
 

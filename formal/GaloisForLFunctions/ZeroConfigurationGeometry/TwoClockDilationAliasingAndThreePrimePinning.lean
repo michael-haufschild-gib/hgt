@@ -1179,15 +1179,4 @@ theorem twoClock_unbounded_of_le_sixtySeven {β γ : ℝ} (hβ : 1 / 2 < β)
   exact not_hasPositivePowerLimsup_of_zeroReSup_lt
     ((RHTower.zeroReSup_le_of_forall_re_le hall_half).trans_lt hβ) hlim
 
-#print axioms primeDilationResidual_eq_dilationSetOp
-#print axioms re_eq_and_cos_im_eq_of_not_isSqrtLogSqUnbounded
-#print axioms isCrossResonantPair_unique
-#print axioms dense_exists_isCrossResonantPair
-#print axioms abs_eq_of_threePrime_cos_eq
-#print axioms plantedAliasedDoubleWave_separates_two_and_three_clocks
-#print axioms twoClock_unbounded_of_sub_seven_eighths_lt
-#print axioms hasPositivePowerLimsup_and_all_clocks_unbounded_of_lt_zeroReSup
-#print axioms threeClock_unbounded_of_le_sixtySeven
-#print axioms twoClock_unbounded_of_le_sixtySeven
-
 end GaloisForLFunctions.ZeroConfigurationGeometry

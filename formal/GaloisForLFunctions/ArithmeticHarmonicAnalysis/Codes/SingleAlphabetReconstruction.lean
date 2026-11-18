@@ -55,21 +55,13 @@ private theorem regroup_layers (K : Finset (Finset ι)) (b : ℕ) :
     exact if_neg (fun h => hij (Fin.ext h.symm))
   · simp
 
-/-- An alphabet with more than `2^n` nondistinguished letters determines
-the entire counting polynomial from one point count. -/
-theorem singleAlphabet_eq_iff (K L : Finset (Finset ι)) (extra : ℕ) :
-    let b := 2 ^ Fintype.card ι + extra + 1
-    let D := fun _ : ι => ({0} : Finset (Fin (b+1)))
-    (arrangementWords D K).card = (arrangementWords D L).card ↔
+/-- Ordinary positional uniqueness for two face polynomials whose layer
+sizes are all digits in the specified base. -/
+private theorem layer_digits_reconstruct (K L : Finset (Finset ι)) (b : ℕ) (hb : 0 < b)
+    (hbound : ∀ (S : Finset (Finset ι)) (d : ℕ), (layer S d).card < b) :
+    (arrangementWords (fun _ : ι => ({0} : Finset (Fin (b+1)))) K).card =
+      (arrangementWords (fun _ : ι => ({0} : Finset (Fin (b+1)))) L).card ↔
       arrangementPolynomial K = arrangementPolynomial L := by
-  dsimp only
-  let b := 2 ^ Fintype.card ι + extra + 1
-  have hb : 0 < b := Nat.succ_pos _
-  have hbound (S : Finset (Finset ι)) (d : ℕ) : (layer S d).card < b := by
-    have h := (layer S d).card_le_univ
-    rw [Fintype.card_finset] at h
-    dsimp [b]
-    omega
   let digits (S : Finset (Finset ι)) (i : Fin (Fintype.card ι+1)) : Fin b :=
     ⟨(layer S i).card, hbound S i⟩
   rw [card_pointArrangement, card_pointArrangement, Fintype.card_fin, Nat.add_sub_cancel,
@@ -88,6 +80,19 @@ theorem singleAlphabet_eq_iff (K L : Finset (Finset ι)) (extra : ℕ) :
       rw [he, he]
   · intro h
     exact sum_congr rfl fun i _ => congrArg (· * b ^ i.val) (h i.val)
+
+/-- An alphabet with more than `2^n` nondistinguished letters determines
+the entire counting polynomial from one point count. -/
+theorem singleAlphabet_eq_iff (K L : Finset (Finset ι)) (extra : ℕ) :
+    let b := 2 ^ Fintype.card ι + extra + 1
+    let D := fun _ : ι => ({0} : Finset (Fin (b+1)))
+    (arrangementWords D K).card = (arrangementWords D L).card ↔
+      arrangementPolynomial K = arrangementPolynomial L := by
+  apply layer_digits_reconstruct K L _ (Nat.succ_pos _)
+  intro S d
+  have h := (layer S d).card_le_univ
+  rw [Fintype.card_finset] at h
+  omega
 
 #print axioms singleAlphabet_eq_iff
 

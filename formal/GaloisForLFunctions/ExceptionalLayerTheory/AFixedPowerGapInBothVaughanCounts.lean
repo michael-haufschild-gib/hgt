@@ -77,6 +77,4 @@ theorem fixed_gap_divided_horizon {N v : ℕ} (hN : 1≤N)
   simpa only [show 1-(1/200 : ℝ)=199/200 by norm_num] using
     divided_horizon_lt_power_of_lt_floor (δ := 1/200) hN hv
 
-#print axioms fixed_gap_cofactor_descent
-#print axioms fixed_gap_divided_horizon
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -263,6 +263,8 @@ For $B_d(t)=d^{-1/2}D(t-\log d)$ the naturally ordered Möbius sum is $\Phi(t)$,
 
 For $x\ge1$, the naturally truncated sum $\sum_{n\le Y}\Lambda(n)\{x/n\}-x(\log(Y/x)+1-\gamma)$ tends to $x(\log x-1)-\log(\lfloor x\rfloor!)$, of absolute value at most $1+\log x$. [Fractional-part average of the Mangoldt measure](Analysis/TheFractionalPartAverageOfTheMangoldtMeasure.lean).
 
+With $K(v)=e^{-v/2}\{e^v\}$ and $|\Phi(u)|\le Ce^{2u}$ supported on $u\le0$, the signed integral of the polar-subtracted Mangoldt wave against $K(T-t)$ over $t\le M$ has a limit as $M\to\infty$. Its absolute value is at most $C(1+T)e^{-T/2}$ for every $T\ge0$. [Common physical cutoff](Wall/TheFractionalPartTestOfThePrimeWave.lean).
+
 The equal-prime term of the covariance, divided by the observation time, tends to the
 state autocorrelation at every fixed lag. At zero lag the coefficient is one. The squared
 increment recovers $8a\int F^2e^{-8u}$ after taking the prime limit and then the short-lag limit.

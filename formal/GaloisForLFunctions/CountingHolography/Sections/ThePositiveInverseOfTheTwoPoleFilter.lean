@@ -147,7 +147,4 @@ theorem riemannHypothesis_iff_twoPoleTrace_prime_orbits :
     rw [neg_neg,orbitCorr_splineCycle_eq]
     exact twoPoleTrace_lower_on_orbit (h p hp)
 
-#print axioms twoPoleTrace_lower_on_orbit
-#print axioms riemannHypothesis_iff_twoPoleTrace_prime_orbits
-
 end GaloisForLFunctions.CountingHolography.Sections

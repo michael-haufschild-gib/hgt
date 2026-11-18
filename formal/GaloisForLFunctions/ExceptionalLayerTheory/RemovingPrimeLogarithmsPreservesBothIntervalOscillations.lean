@@ -144,6 +144,4 @@ theorem forward_prime_logarithm_bounds (Y : ℕ) (hY : 2≤Y) (sign : ℝ) :
     · rw [Ioc_eq_empty (le_of_not_gt hlk),sum_empty]
       exact mul_nonneg (hl _ (by omega)).le (forward_nonneg b Y)
 
-#print axioms forward_prime_logarithm_bounds
-
 end GaloisForLFunctions.ExceptionalLayerTheory

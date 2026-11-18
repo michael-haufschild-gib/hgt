@@ -111,5 +111,4 @@ theorem centered_fractional_reciprocal_product_window :
         (fun V V' _ _ hs hv hv' => by rw [sum_comm]; exact block hp hp' ht hv hv' hs))
   exact total.trans_eq (by dsimp [E,G]; ring)
 
-#print axioms centered_fractional_reciprocal_product_window
 end GaloisForLFunctions.PrimeExponentialSums

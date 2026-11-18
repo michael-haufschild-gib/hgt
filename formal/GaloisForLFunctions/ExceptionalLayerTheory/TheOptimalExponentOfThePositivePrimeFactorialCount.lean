@@ -212,7 +212,4 @@ theorem dyadicPositiveFactorialProfile_prime_has_no_smaller_power {b : ℝ} (hb 
   rw [abs_one]
   linarith only [ha,hnp]
 
-#print axioms dyadicPositiveFactorialProfile_prime_has_no_smaller_power
-#print axioms reciprocalFactorial_sum_has_no_smaller_power
-
 end GaloisForLFunctions.ExceptionalLayerTheory

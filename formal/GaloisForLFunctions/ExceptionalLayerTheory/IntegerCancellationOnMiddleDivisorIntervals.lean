@@ -184,5 +184,4 @@ theorem sum_centered_quotient_to_sqrt :
   change P+K*J*P≤(1+K)*J*P
   linarith only [hshort]
 
-#print axioms sum_centered_quotient_to_sqrt
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -120,7 +120,4 @@ theorem lower_degree_iff_horizon_power {ι : Type*} (N : ι → ℕ) (a : (i : �
     apply (mul_le_mul_iff_right₀ ht).mp
     linarith only [(abs_le.mp (he i)).1,(hp i hB).mp (hB' i)]
 
-#print axioms poleBalanced_single_multiplicity_error
-#print axioms lower_degree_iff_horizon_power
-
 end GaloisForLFunctions.CountingHolography.Sections

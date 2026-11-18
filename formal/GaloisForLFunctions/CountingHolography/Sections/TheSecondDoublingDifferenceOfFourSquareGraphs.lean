@@ -192,7 +192,4 @@ theorem riemannHypothesis_iff_fourSquare_horizon_power :
     obtain ⟨A,hA⟩ := he.mpr ⟨B,hB,fun n => h n n.property⟩
     exact ⟨A,fun n hn => hA ⟨n,hn⟩⟩
 
-#print axioms zetaZeroWidth_le_iff_fourSquare_degree
-#print axioms riemannHypothesis_iff_fourSquare_horizon_power
-
 end GaloisForLFunctions.CountingHolography.Sections

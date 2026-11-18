@@ -346,10 +346,4 @@ theorem fixed_width_cofactor_power_descent :
   dsimp only [K]
   rw [Real.rpow_add hn₀,←Real.sqrt_eq_rpow]; ring
 
-#print axioms divided_horizon_lt_complementary_power
-#print axioms fixed_width_cofactor_power_descent
-#print axioms prime_error_on_shorter_horizons
-#print axioms complete_primeErrorTail_identity
-#print axioms complete_primeErrorTail_bound
-#print axioms completeComplementTail_sub_primeErrorTail
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

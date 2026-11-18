@@ -65,7 +65,6 @@ theorem tendsto_mul_transform_zero :
   rw [sub_zero, regular_zero] at h
   refine (h.mono_left nhdsWithin_le_nhds).congr' ?_
   filter_upwards [self_mem_nhdsWithin] with s hs
-  change regular s - s = s * transform s
   rw [regular_eq_mul ⟨s, hs⟩]
   ring
 
