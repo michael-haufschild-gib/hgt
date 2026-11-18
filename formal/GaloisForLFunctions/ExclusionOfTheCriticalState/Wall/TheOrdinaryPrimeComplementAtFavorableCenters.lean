@@ -1,3 +1,5 @@
+import GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations.TheCriticalHalfLineStateIsUniqueUpToSign
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheAbsoluteFirstWindowInTheOriginalTest
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheEarlyMassOfTheSignedFractionalTest
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.AllFuturePrimeIncrementsAtTheSameCenters
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheIntegratedErrorInThePrimeSquareLayer
@@ -275,4 +277,102 @@ theorem riemannHypothesis_or_middle_time_signed_test : RiemannHypothesis ∨
   exact ⟨hall.integrableOn,(setIntegral_le_integral hall (Eventually.of_forall hf0)).trans htotal⟩
 
 #print axioms riemannHypothesis_or_middle_time_signed_test
+
+/-- The two critical representatives give the same oriented first reading.
+Normalization fixes the state up to sign, and both the charge and the atom
+change sign together. -/
+private theorem same_critical_state_window {W V : ℝ} {F G Φ Ψ : ℝ → ℝ}
+    (hW : 0 < W) (hTW : (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (W : EReal))
+    (hTV : (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (V : EReal))
+    (hF : IsCriticalHalfLineGroundState W F) (hG : IsCriticalHalfLineGroundState V G)
+    (hΦ : Continuous Φ) (hΨ : Continuous Ψ) (he : F =ᵐ[volume] Φ) (he' : G =ᵐ[volume] Ψ) :
+    criticalWidthSignedReading Φ = criticalWidthSignedReading Ψ := by
+  have hWV : W = V := by exact_mod_cast hTW.symm.trans hTV
+  subst V
+  rcases criticalHalfLineGroundState_unique_up_to_sign hW hTW hF hG with h | h
+  · exact congrArg criticalWidthSignedReading ((Continuous.ae_eq_iff_eq volume hΦ hΨ).mp
+      (he.symm.trans (h.trans he')))
+  have heq : Φ = fun u => -Ψ u := (Continuous.ae_eq_iff_eq volume hΦ hΨ.neg).mp (by
+    filter_upwards [he,he',h] with u h₁ h₂ h₃
+    change F u = -G u at h₃
+    rwa [h₁,h₂] at h₃)
+  rw [heq]
+  funext t
+  simp only [criticalWidthSignedReading,continuousIntegerAtom,integral_neg,mul_neg,neg_mul,neg_neg]
+
+/-- On every measurable time set the original ordinary-prime test differs
+in absolute integral by o(1) from the signed integer complement confined to
+(T/6,6T]. The square charge belongs to that same complement. -/
+theorem riemannHypothesis_or_original_test_on_middle_complement : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧
+      ∀ ε : ℝ, 0 < ε → ∀ᶠ T : ℝ in atTop, ∀ D : Set ℝ, MeasurableSet D →
+        let m := ∫ u, Φ u
+        let C := fun t : ℝ => m*((∑' n : {j : ℕ // j ∉ wallIntegerWindow t (criticalWallWidth t)},
+          (ArithmeticFunction.vonMangoldt n.val-1)*continuousIntegerAtom Φ n.val t)-m/2)
+        let f := fun t => |m*ordinaryPrimePolarError Φ t-(Ioc (T/6) (6*T)).indicator C t| *
+          fractionalPrimeTest (T-t)
+        IntegrableOn f D ∧ (∫ t in D, f t) < ε := by
+  rcases riemannHypothesis_or_middle_time_signed_test with hr | ⟨W₀,F,Φ,B,hW,hTW,hF,hΦ,he,hB,hcore⟩
+  · exact Or.inl hr
+  rcases riemannHypothesis_or_first_window_absolute_test_vanishes with hr | ⟨V,G,Ψ,_,hTV,hG,hΨ,he',hwin⟩
+  · exact Or.inl hr
+  have hsame := same_critical_state_window hW hTW hTV hF hG hΦ hΨ he he'
+  rw [← hsame] at hwin
+  obtain ⟨_,_,Φ',hc',he'',_,⟨C₀,_,hb⟩,_⟩ := criticalState_exists_continuous_representative hW hTW hF
+  have hΦ' : Φ'=Φ := (Continuous.ae_eq_iff_eq volume hc' hΦ).mp (he''.symm.trans he)
+  subst Φ'
+  let m := ∫ u, Φ u
+  let P := fun t => m*ordinaryPrimePolarError Φ t
+  let S := fun t : ℝ => m*((∑' n : ℕ, (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t)-m/2)
+  let W := criticalWidthSignedReading Φ
+  let C := fun t => S t-W t
+  have hS : Measurable S := measurable_const.mul ((Measurable.tsum (fun n : ℕ => measurable_const.mul
+    (measurable_const.mul (hΦ.measurable.comp (by fun_prop))))).sub measurable_const)
+  have hWm : Measurable (ordinaryPrimeWave Φ) := Measurable.tsum fun q : Nat.Primes =>
+    measurable_const.mul (Complex.continuous_ofReal.measurable.comp (hΦ.measurable.comp (by fun_prop)))
+  have hP : Measurable P := measurable_const.mul ((Complex.continuous_re.measurable.comp hWm).sub (by fun_prop))
+  have hC : Measurable C := hS.sub (measurable_criticalWidthSignedReading hΦ)
+  have hid (t : ℝ) : C t = m*((∑' n : {j : ℕ // j ∉ wallIntegerWindow t (criticalWallWidth t)},
+      (ArithmeticFunction.vonMangoldt n.val-1)*continuousIntegerAtom Φ n.val t)-m/2) := by
+    have h := centered_mangoldt_eq_criticalWidthReading_add_complement hb t
+    change S t = W t + _ at h
+    exact sub_eq_iff_eq_add.mpr (h.trans (add_comm ..))
+  have hrate : Tendsto (fun T : ℝ => B*Real.exp (-T/240)) atTop (𝓝 0) := by
+    have hneg : Tendsto (fun T : ℝ => -T/240) atTop atBot :=
+      tendsto_atBot.2 fun a => eventually_atTop.2 ⟨-240*a,fun _ h => by linarith only [h]⟩
+    simpa only [Function.comp_apply,mul_zero] using (Real.tendsto_exp_atBot.comp hneg).const_mul B
+  refine Or.inr ⟨W₀,F,Φ,hW,hTW,hF,hΦ,he,fun ε hε => ?_⟩
+  filter_upwards [hcore,hwin (ε/2) (half_pos hε),hrate.eventually_lt_const (half_pos hε)] with T hT hW0 hsmall
+  intro D hD
+  let I := Ioc (T/6) (6*T)
+  let K := fun t => fractionalPrimeTest (T-t)
+  let f := fun t => |P t-I.indicator C t| *K t
+  let p := fun t => |P t-I.indicator S t| *K t
+  let w := fun t => |W t| *K t
+  have hcD : IntegrableOn p D ∧ (∫ t in D, p t) ≤ B*Real.exp (-T/240) := hT D hD
+  have hwD : IntegrableOn w D ∧ (∫ t in D, w t) < ε/2 := hW0 D hD
+  have hm : Measurable f := (hP.sub (hC.indicator measurableSet_Ioc)).abs.mul
+    (measurable_fractionalPrimeTest.comp (measurable_const.sub measurable_id))
+  have hK (t : ℝ) : 0 ≤ K t := mul_nonneg (Real.exp_pos _).le (Int.fract_nonneg _)
+  have hle (t : ℝ) : f t ≤ p t+w t := by
+    dsimp only [f,p,w]
+    rw [← add_mul]
+    apply mul_le_mul_of_nonneg_right _ (hK _)
+    by_cases h : t ∈ I
+    · rw [indicator_of_mem h,indicator_of_mem h,show P t-C t=(P t-S t)+W t by dsimp only [C]; ring]
+      exact abs_add_le ..
+    · rw [indicator_of_notMem h,indicator_of_notMem h]
+      exact le_add_of_nonneg_right (abs_nonneg _)
+  have hsum : IntegrableOn (fun t => p t+w t) D := hcD.1.add hwD.1
+  have hfi : IntegrableOn f D := hsum.mono' hm.aestronglyMeasurable (Eventually.of_forall fun t =>
+    (Real.norm_of_nonneg (mul_nonneg (abs_nonneg _) (hK t))).le.trans (hle t))
+  have hsumBound := (integral_mono hfi hsum hle).trans_eq (integral_add hcD.1 hwD.1)
+  have hfinal := hsumBound.trans_lt (add_lt_add (hcD.2.trans_lt hsmall) hwD.2)
+  rw [add_halves] at hfinal
+  dsimp only
+  simpa only [f,P,I,K,hid,m] using And.intro hfi hfinal
+
+#print axioms riemannHypothesis_or_original_test_on_middle_complement
 end GaloisForLFunctions.ExclusionOfTheCriticalState
