@@ -30,7 +30,10 @@ theorem ordinary_absolute_prime_mass {N : ℕ} (a : Fin N → ℤ) :
   rw [ordinaryPrimeGenerator_exponent,if_pos hk,← sub_mul,← add_mul]
   congr 1
   rw [← Int.floor_toNat]
-  have hh (z : ℤ) : |z|=(z.toNat:ℤ)+((z.toNat:ℤ)-z) := by omega
+  have hh (z : ℤ) : |z|=(z.toNat:ℤ)+((z.toNat:ℤ)-z) := by
+    rcases le_or_gt 0 z with hz | hz
+    · rw [abs_of_nonneg hz,Int.toNat_of_nonneg hz]; omega
+    · rw [abs_of_neg hz,Int.toNat_of_nonpos hz.le]; simp
   exact_mod_cast hh _
 
 private theorem profile_small_relative_to_prime :
@@ -71,8 +74,8 @@ private theorem profile_small_relative_to_prime :
       _ ≤ _ := by linarith only [hl]
   · have hl := (Real.log_lt_iff_lt_exp hy).mpr (lt_of_not_ge h)
     have hd₄ := Real.log_nonneg (by norm_num : (1:ℝ)≤4)
-    have h₁ : 8<|Real.log y| := by linarith only [hl,neg_abs_le (Real.log y)]
-    have h₂ : 8<|Real.log y-Real.log 4| := by linarith only [hl,hd₄,neg_abs_le (Real.log y-Real.log 4)]
+    have h₁ : 8 < |Real.log y| := by linarith only [hl,neg_abs_le (Real.log y)]
+    have h₂ : 8 < |Real.log y-Real.log 4| := by linarith only [hl,hd₄,neg_abs_le (Real.log y-Real.log 4)]
     simp [squareLogProfile,splineAutoCorr_zero_outside h₁,splineAutoCorr_zero_outside h₂]
 
 /-- On the interval from −p to p, zero is a nearest point of the lattice
@@ -81,7 +84,8 @@ private theorem abs_le_even_prime_shift {x p : ℝ} (hx : |x| ≤ p) (j : ℤ) :
   rcases eq_or_ne j 0 with rfl | hj
   · simp
   have hp := (abs_nonneg _).trans hx
-  have hj' : (1:ℝ) ≤ |(j:ℝ)| := by exact_mod_cast (show (1:ℤ) ≤ |j| by omega)
+  have hpos : (0:ℤ) < |j| := abs_pos.mpr hj
+  have hj' : (1:ℝ) ≤ |(j:ℝ)| := by exact_mod_cast (show (1:ℤ) ≤ |j| from hpos)
   have h := abs_sub_le (2*p*j) x 0
   rw [sub_zero,sub_zero,abs_sub_comm (2*p*j) x,abs_mul,abs_of_nonneg (mul_nonneg two_pos.le hp)] at h
   linarith only [h,hx,le_mul_of_one_le_right (mul_nonneg two_pos.le hp) hj']
@@ -116,8 +120,11 @@ theorem square_diagonal_finite_place_cost :
   simp only [add_mul,mul_assoc,sum_add_distrib,← mul_sum] at hh
   change Real.log q.num.natAbs+Real.log q.den-_ ≤ _
   rw [← ordinary_absolute_prime_mass a]
-  change (∑ p ∈ S, |e p| * vonMangoldt p)-(2*D)*(n:ℝ)^2 ≤ _
-  linarith only [hh,hd hn]
+  change (∑ p ∈ S, |e p| * vonMangoldt p)-(2*D)*(n:ℝ)^2 ≤
+    ∑ p ∈ S, |e p-2*p*(b p:ℝ)| * vonMangoldt p
+  have herr : (∑ p ∈ S, |e p-f p| * vonMangoldt p)≤D*(n:ℝ)^2 := hd hn
+  simp only [mul_assoc]
+  linarith only [hh,herr]
 
 /-- Every choice of the factorial prime coordinates leaves at least a
 fixed positive multiple of the cubic conductor scale in absolute cost. -/

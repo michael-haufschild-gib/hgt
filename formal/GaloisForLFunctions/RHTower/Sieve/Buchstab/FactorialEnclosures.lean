@@ -26,7 +26,7 @@ def enclosure : ℕ → ℝ × ℝ
 private theorem integral_bounds (n : ℕ) {l u x : ℝ} (hx : x ∈ Icc 0 1)
     (hb : ∀ y ∈ Icc (0:ℝ) 1, profile n y ∈ Icc l u) :
     x * l ≤ ∫ y in (0:ℝ)..x, profile n y ∧ (∫ y in (0:ℝ)..x, profile n y) ≤ x * u := by
-  have hi := (profile_continuous n).intervalIntegrable volume 0 x
+  have hi := (profile_continuous n).intervalIntegrable (μ := volume) 0 x
   constructor
   · have h := intervalIntegral.integral_mono_on hx.1 (intervalIntegrable_const) hi
       (fun y hy => (hb y ⟨hy.1, hy.2.trans hx.2⟩).1)
@@ -41,8 +41,7 @@ theorem profile_mem_enclosure (n : ℕ) : ∀ x ∈ Icc (0:ℝ) 1,
   induction n with
   | zero =>
     intro x hx
-    change (1/2:ℝ) ≤ 1 / ((0:ℝ)+1+max x 0) ∧ 1 / ((0:ℝ)+1+max x 0) ≤ 1
-    rw [max_eq_left hx.1, zero_add]
+    simp only [Set.mem_Icc, enclosure, profile, intervalMass, Nat.cast_zero, zero_add, max_eq_left hx.1]
     have hd : 0 < 1+x := by linarith [hx.1]
     constructor
     · rw [le_div_iff₀ hd]
@@ -91,13 +90,15 @@ theorem enclosure_width (n : ℕ) :
   | succ n ih =>
     change shrink n (enclosure n).2 - shrink n (enclosure n).1 = _
     unfold shrink
+    have hfac : (((n+1+2).factorial : ℕ) : ℝ) =
+        ((n:ℝ)+3) * ((n+2).factorial : ℝ) := by
+      change (((n+2).succ.factorial : ℕ) : ℝ) = _
+      rw [Nat.factorial_succ, Nat.cast_mul]
+      push_cast
+      ring
     rw [show profile n 1 + ((enclosure n).2-profile n 1)/((n:ℝ)+3) -
         (profile n 1 + ((enclosure n).1-profile n 1)/((n:ℝ)+3)) =
-        ((enclosure n).2 - (enclosure n).1)/((n:ℝ)+3) by ring, ih,
-        show n+1+2 = (n+2)+1 by omega, Nat.factorial_succ, Nat.cast_mul, Nat.cast_add,
-        Nat.cast_ofNat]
-    push_cast
-    ring
+        ((enclosure n).2 - (enclosure n).1)/((n:ℝ)+3) by ring, ih, div_div, hfac, mul_comm]
 
 /-- The enclosure contracts by inclusion, so the factorial error also controls
 profiles on every later interval. -/
@@ -109,11 +110,15 @@ theorem enclosure_nested (n : ℕ) :
   have hp : (0:ℝ) < (n:ℝ)+3 := by positivity
   apply Icc_subset_Icc
   · change _ ≤ profile n 1 + ((enclosure n).1-profile n 1)/((n:ℝ)+3)
-    rw [← sub_le_iff_le_add', le_div_iff₀ hp]
-    nlinarith only [mul_nonneg (sub_nonneg.mpr he.1) (sub_nonneg.mpr hd)]
+    have h : (enclosure n).1-profile n 1 ≤ ((enclosure n).1-profile n 1)/((n:ℝ)+3) := by
+      apply (le_div_iff₀ hp).mpr
+      nlinarith only [mul_nonneg (sub_nonneg.mpr he.1) (sub_nonneg.mpr hd)]
+    linarith only [h]
   · change profile n 1 + ((enclosure n).2-profile n 1)/((n:ℝ)+3) ≤ _
-    rw [← le_sub_iff_add_le', div_le_iff₀ hp]
-    nlinarith only [mul_nonneg (sub_nonneg.mpr he.2) (sub_nonneg.mpr hd)]
+    have h : ((enclosure n).2-profile n 1)/((n:ℝ)+3) ≤ (enclosure n).2-profile n 1 := by
+      apply (div_le_iff₀ hp).mpr
+      nlinarith only [mul_nonneg (sub_nonneg.mpr he.2) (sub_nonneg.mpr hd)]
+    linarith only [h]
 
 /-- Arbitrarily far apart cells beyond the same cutoff differ by at most its factorial width. -/
 theorem profile_tail_difference (n a b : ℕ) (x y : Icc (0:ℝ) 1) :
@@ -164,8 +169,10 @@ theorem tendsto_profile_samples (x : ℕ → Icc (0:ℝ) 1) :
   apply tendsto_iff_norm_sub_tendsto_zero.mpr
   have hfac : Tendsto (fun n : ℕ => ((n+2).factorial : ℝ)) atTop atTop :=
     tendsto_natCast_atTop_atTop.comp (factorial_tendsto_atTop.comp (tendsto_add_atTop_nat 2))
-  apply squeeze_zero (fun _ => norm_nonneg _) (fun n => ?_) (tendsto_inv_atTop_zero.comp hfac)
-  simpa only [Real.norm_eq_abs, one_div] using profile_limit_error n (x n)
+  have hnull : Tendsto (fun n : ℕ => 1 / ((n+2).factorial : ℝ)) atTop (𝓝 0) := by
+    simpa only [Function.comp_def, one_div] using (tendsto_inv_atTop_zero.comp hfac)
+  apply squeeze_zero (fun _ => norm_nonneg _) (fun n => ?_) hnull
+  simpa only [Real.norm_eq_abs] using profile_limit_error n (x n)
 
 #print axioms tendsto_profile_samples
 #print axioms profile_tail_difference

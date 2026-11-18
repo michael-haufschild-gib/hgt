@@ -16,9 +16,10 @@ namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity
 open HTGeometry HTGeometry.LoopEisenstein
 variable {F : Type*} [Field F]
 
-private abbrev D (F : Type*) [Field F] := tameDataOfValuation (laurentValuation F)
+/-- Valuation data defining the Laurent tame symbol. -/
+abbrev laurentTameData (F : Type*) [Field F] := tameDataOfValuation (laurentValuation F)
 
-private theorem valuation_uniformizer : (D F).v (laurentXUnit F) = 1 := by
+private theorem valuation_uniformizer : (laurentTameData F).v (laurentXUnit F) = 1 := by
   have h : (((tameUnzero (laurentValuation F) (laurentXUnit F)) : Multiplicative ℤ) :
       WithZero (Multiplicative ℤ)) = ((Multiplicative.ofAdd (-1 : ℤ) : Multiplicative ℤ) :
       WithZero (Multiplicative ℤ)) := by
@@ -29,10 +30,10 @@ private theorem valuation_uniformizer : (D F).v (laurentXUnit F) = 1 := by
   rfl
 
 /-- The Milnor valuation on a Laurent unit is the negative of its infinite degree. -/
-theorem tame_valuation (x : LocalUnit F) : (D F).v x = -degree x := by
-  have h := congrArg (D F).v (laurentUnit_monomial_factor F x)
-  have hv := ((D F).mem_ker_iff _).1 (powerSeriesLaurentUnit_mem_kernel F (laurentUnitPowerSeriesPart F x))
-  rw [(D F).v_mul,(D F).v_zpow,valuation_uniformizer,hv,mul_one,add_zero] at h
+theorem tame_valuation (x : LocalUnit F) : (laurentTameData F).v x = -degree x := by
+  have h := congrArg (laurentTameData F).v (laurentUnit_monomial_factor F x)
+  have hv := ((laurentTameData F).mem_ker_iff _).1 (powerSeriesLaurentUnit_mem_kernel F (laurentUnitPowerSeriesPart F x))
+  rw [(laurentTameData F).v_mul,(laurentTameData F).v_zpow,valuation_uniformizer,hv,mul_one,add_zero] at h
   simpa only [degree,neg_neg] using h
 
 private theorem sign_neg_unit : sign (-1 : LocalUnit F) = -1 := by
@@ -44,8 +45,8 @@ the parity factor when both orders are odd. -/
 theorem tame_signed_degrees (x y : LocalUnit F) :
     laurentTameSymbol F x y =
       (-1 : Fˣ)^(degree x*degree y) * sign x^(-degree y) * sign y^(degree x) := by
-  let z := (D F).symbolUnit x y
-  have hv := ((D F).mem_ker_iff z).1 ((D F).symbolUnit_mem x y)
+  let z := (laurentTameData F).symbolUnit x y
+  have hv := ((laurentTameData F).mem_ker_iff z).1 ((laurentTameData F).symbolUnit_mem x y)
   rw [tame_valuation] at hv
   have ho : (z : LaurentSeries F).order = 0 := by simpa only [degree,neg_neg] using hv
   have ht : laurentTameSymbol F x y=sign z := by

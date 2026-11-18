@@ -207,6 +207,7 @@ import GaloisForLFunctions.HilbertMetric.Correlation.DopplerFinitePrediction
 import GaloisForLFunctions.HilbertMetric.Laplace.TwoShellStrictConvexity
 import GaloisForLFunctions.HilbertMetric.Transport.HalfDensityDefect
 import GaloisForLFunctions.HilbertMetric.Kernels.CubicCauchyConvexity
+import GaloisForLFunctions.HilbertMetric.Kernels.GaussianCollocation
 
 import GaloisForLFunctions.HilbertMetric.QuantumWalk.Compression
 import GaloisForLFunctions.HilbertMetric.QuantumWalk.IdempotentCalculus

@@ -11,6 +11,8 @@ For the converse the Mellin symbol before the triangular mean is
 $$-(1-2^{1-s})\zeta(s)\left(\sum_d w(d)d^{-s}-\zeta(2s)-\zeta(3s)\right).$$
 If $a(n)$ are its coefficients, then $X[A(X)-2A(X/2)]=\sum_{n\le X}(X-n)a(n)$ is linear on each unit interval. Integer bounds therefore imply the same real bounds. Mellin integration gives a holomorphic continuation of the symbol divided by $s(s+1)$ to $\Re s>1/4$. The explicit lattice terms have only real poles in this region. The dyadic factor has no zeros in $1/4<\Re s<1/2$. At half a right zero the remaining residue is proportional to $\zeta(s)(\operatorname{ord}_{2s}\zeta/2+\operatorname{ord}_{3s}\zeta/3)$. Vanishing of all such residues would force $\zeta(\rho/2)=0$ for every right zero, which the reflection-and-halving theorem excludes. [Prime-power continuation and residues](prime-divisor-logarithmic-moments-at-a-finite-top.md)
 
+A single exponent gives a zero-free region. If the finite count has exponent $1/4<b\le1/3$, any zero with real part $\beta>2b$ must satisfy $2-4b\le\beta\le3b$. Indeed, halving and reflecting exclude $2b<\beta<2-4b$. If $\beta>3b$, vanishing of the residue at $\rho/3$ forces a zero there, and its reflection has real part strictly between $2b$ and $2-4b$. For $b<2/7$ the surviving interval is empty, so $\Theta\le2b$.
+
 Can the difference of the ordinary-prime and unrestricted lattice counts satisfy a bound strictly below $N^{\Re\rho/2}$ on the single-quartet stratum?
 
 The cumulative coefficient has a direct inverse. Write $U(x)=\psi(x)-\theta(x)-x^{1/2}-x^{1/3}$ and $E(x)=\psi(x)-x$. The Costa–Pereira inequalities give

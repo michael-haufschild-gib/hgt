@@ -110,6 +110,14 @@ private theorem zero_residue_of_total_bound {b K : ℝ} (hb : 1/4 < b) (hb' : b 
   apply (tendsto_congr' (hlocal.mono fun w hw => congrArg ((w-z)*·) hw)).mpr
   simpa only [zero_mul] using hl.mul (hcont.tendsto.mono_left nhdsWithin_le_nhds)
 
+/-- A single exponent below two sevenths for the finite count bounds the
+real parts of all zeta zeros by twice that exponent. -/
+theorem zero_free_strip_of_oddQuotientPowerTotal {b K : ℝ} (hb : 1/4 < b) (hb' : b < 2/7)
+    (hK : 0 ≤ K) (h : ∀ N : ℕ, 1 ≤ N → |oddQuotientPowerTotal N| ≤ K*(N:ℝ)^(b+1))
+    {s : ℂ} (hs : 2*b < s.re) : riemannZeta s ≠ 0 :=
+  firstPrimeDivisorMoment_zero_free_of_vanishing_residues hb.le hb'
+    (fun _ hz h1 hi => zero_residue_of_total_bound hb (by linarith only [hb']) hK h hz h1 hi) hs
+
 /-- All real main terms have been removed by counting ordinary squares
 and cubes and taking an odd-quotient difference. -/
 theorem riemannHypothesis_iff_oddQuotientPowerTotal_quarter :
@@ -124,5 +132,6 @@ theorem riemannHypothesis_iff_oddQuotientPowerTotal_quarter :
     obtain ⟨K,hK,hN⟩ := h b hb (hbz.trans hz')
     exact zero_residue_of_total_bound hb (hbz.trans hz') hK hN hbz hz' hi
 
+#print axioms zero_free_strip_of_oddQuotientPowerTotal
 #print axioms riemannHypothesis_iff_oddQuotientPowerTotal_quarter
 end GaloisForLFunctions.ExceptionalLayerTheory

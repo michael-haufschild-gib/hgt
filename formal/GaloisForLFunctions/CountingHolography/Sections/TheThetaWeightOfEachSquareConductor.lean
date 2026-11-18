@@ -58,17 +58,21 @@ private theorem integral_cell_constant (N i : ℕ) (c : ℝ) :
     (by positivity : 0 ≤ 2/((i:ℝ)+2)).trans (cell_length N i).1
   rw [setIntegral_const,conductorThetaCell,Real.volume_real_Ioc,max_eq_left hl,smul_eq_mul]
 
+private theorem cell_const_integrable (N i : ℕ) (d : ℝ) :
+    IntegrableOn (fun _ : ℝ => d) (conductorThetaCell N i) :=
+  (continuousOn_const.integrableOn_Icc (a := lo N i) (b := hi N i)).mono_set Ioc_subset_Icc_self
+
 private theorem mass_le {D : ℝ} {N i : ℕ} (hd : ∀ x ∈ conductorThetaCell N i, thetaCuspFullSource x ≤ D) :
     conductorThetaMass N i ≤ (hi N i-lo N i)*D := by
   rw [← integral_cell_constant]
   exact setIntegral_mono_on phi_integrable.integrableOn
-    (integrableOn_const (s := Ioc (lo N i) (hi N i)) (measure_Ioc_lt_top ..).ne)
+    (cell_const_integrable N i _)
     measurableSet_Ioc hd
 
 private theorem le_mass {d : ℝ} {N i : ℕ} (hd : ∀ x ∈ conductorThetaCell N i, d ≤ thetaCuspFullSource x) :
     (hi N i-lo N i)*d ≤ conductorThetaMass N i := by
   rw [← integral_cell_constant]
-  exact setIntegral_mono_on (integrableOn_const (s := Ioc (lo N i) (hi N i)) (measure_Ioc_lt_top ..).ne)
+  exact setIntegral_mono_on (cell_const_integrable N i _)
     phi_integrable.integrableOn measurableSet_Ioc hd
 
 private theorem positive_cell_envelope : ∃ C : ℝ, 0 < C ∧ ∀ {N i : ℕ}, 0 < N →
@@ -143,6 +147,37 @@ theorem square_conductor_theta_weight_bounds : ∃ (A : ℝ) (K : ℕ), 0 < A �
       apply (le_div_iff₀ hy).mpr
       linarith only [hpow]
     exact (by simpa only [one_mul] using h₃).trans (mul_le_mul_of_nonneg_left hlen (by positivity))
+
+/-- Right endpoint after the first i adjacent theta cells. -/
+def conductorThetaEdge (N i : ℕ) := 2*Real.log ((i:ℝ)+1)-2*Real.log N
+
+private theorem edge_succ (N i : ℕ) : conductorThetaEdge N (i+1)=hi N i := by
+  unfold conductorThetaEdge
+  push_cast
+  rw [show (i:ℝ)+1+1=(i:ℝ)+2 by ring]
+
+/-- Integration over complete adjacent cells has exactly two boundary terms. -/
+theorem integral_over_conductorThetaCells (N M : ℕ) {f : ℝ → ℝ} (hf : Integrable f) :
+    ∑ i ∈ Finset.range M, (∫ x in conductorThetaCell N i, f x) =
+      ∫ x in Set.Ioc (conductorThetaEdge N 0) (conductorThetaEdge N M), f x := by
+  have hstep (i : ℕ) : conductorThetaEdge N i ≤ conductorThetaEdge N (i+1) := by
+    rw [edge_succ]
+    change lo N i ≤ hi N i
+    exact sub_nonneg.mp ((by positivity : 0 ≤ 2/((i:ℝ)+2)).trans (cell_length N i).1)
+  have hmono := monotone_nat_of_le_succ hstep
+  have hcell (i : ℕ) : conductorThetaCell N i=Set.Ioc (conductorThetaEdge N i) (conductorThetaEdge N (i+1)) := by
+    rw [edge_succ]; rfl
+  induction M with
+  | zero => simp
+  | succ M ih =>
+    rw [Finset.sum_range_succ,ih,hcell,← intervalIntegral.integral_of_le (hmono (Nat.zero_le M)),
+      ← intervalIntegral.integral_of_le (hstep M),← intervalIntegral.integral_of_le (hmono (Nat.zero_le (M+1)))]
+    exact intervalIntegral.integral_add_adjacent_intervals hf.intervalIntegrable hf.intervalIntegrable
+
+theorem sum_conductorThetaMass_le (N M : ℕ) :
+    ∑ i ∈ Finset.range M, conductorThetaMass N i ≤ ∫ x : ℝ, thetaCuspFullSource x := by
+  simp only [conductorThetaMass,integral_over_conductorThetaCells N M phi_integrable]
+  exact setIntegral_le_integral phi_integrable (ae_of_all _ fun x => (thetaCuspFullSource_pos x).le)
 
 #print axioms square_conductor_theta_weight_bounds
 

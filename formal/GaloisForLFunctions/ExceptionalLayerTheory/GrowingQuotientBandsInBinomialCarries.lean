@@ -793,7 +793,7 @@ theorem exists_outerQuotientPairBand_sub_seven_eighths {β : ℝ}
         have hn_pos : 0 < n := lt_of_le_of_lt (Nat.zero_le A) hnA
         have hlip : |f n - f (n + 1)| ≤ (X : ℝ) / ((n : ℝ) + 1) :=
           discreteQuotientMean_lipschitz binaryCarryProfile binaryCarryProfile_bounds hn_pos X
-        have hAn : (A : ℝ) + 1 ≤ (n : ℝ) + 1 := by exact_mod_cast Nat.add_le_add_right hnA 1
+        have hAn : (A : ℝ) + 1 ≤ (n : ℝ) + 1 := by exact_mod_cast Nat.add_le_add_right hnA.le 1
         have hdiv_le : (X : ℝ) / ((n : ℝ) + 1) ≤ 4 * (Q : ℝ) :=
           (div_le_div_of_nonneg_left (Nat.cast_nonneg X) (by positivity) hAn).trans hA_step
         rw [abs_mul]

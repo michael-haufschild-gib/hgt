@@ -54,7 +54,7 @@ private theorem rescaled_rows {x : ℝ} (hx : 1≤x) {r : ℝ} (hr : r≤2) :
 square-root precision, uniformly at every real cutoff. -/
 theorem three_properPowerDiscrepancies_recover_psi {x : ℝ} (hx : 1≤x) :
     |properPowerDiscrepancy (x^(2:ℝ))-properPowerDiscrepancy (x^(4/3:ℝ))+
-      properPowerDiscrepancy (x^(8/9:ℝ))-(Chebyshev.psi x-x)|≤(4*L+1)*x^(2/5:ℝ) := by
+      properPowerDiscrepancy (x^(8/9:ℝ))-(Chebyshev.psi x-x)|≤(4*(Real.log 4+4)+1)*x^(2/5:ℝ) := by
   have h₂ := rescaled_rows hx (r := 2) (by norm_num)
   have h₄ := rescaled_rows hx (r := 4/3) (by norm_num)
   have h₈ := rescaled_rows hx (r := 8/9) (by norm_num)
@@ -185,6 +185,35 @@ theorem properPowerDiscrepancy_both_signs_below_abscissa {b : ℝ} (hb : b < zer
       change E y < -y^a at hy
       linarith only [hy,ht,hh]
 
+/-- An eventual power bound for either sign bounds the real parts of all
+nontrivial zeros. The constant and the sign may be chosen separately at
+each exponent. -/
+theorem zeroReSup_le_twice_of_properPowerDiscrepancy_one_sided {b K : ℝ}
+    (h : (∀ᶠ x : ℝ in atTop, properPowerDiscrepancy x ≤ K*x^b) ∨
+      (∀ᶠ x : ℝ in atTop, -K*x^b ≤ properPowerDiscrepancy x)) : zeroReSup ≤ 2*b := by
+  by_contra! hbad
+  obtain ⟨c,hbc,hc⟩ := exists_between (show b < zeroReSup/2 by linarith only [hbad])
+  have hg := (tendsto_rpow_atTop (sub_pos.mpr hbc)).eventually_gt_atTop K
+  have hpow : ∀ᶠ x : ℝ in atTop, K*x^b < x^c := by
+    filter_upwards [eventually_gt_atTop (0:ℝ),hg] with x hx he
+    have hv := mul_lt_mul_of_pos_right he (Real.rpow_pos_of_pos hx b)
+    rwa [← Real.rpow_add hx,sub_add_cancel] at hv
+  obtain ⟨hplus,hminus⟩ := properPowerDiscrepancy_both_signs_below_abscissa hc
+  rcases h with h | h
+  · obtain ⟨x,⟨hp,hu⟩,hx⟩ := ((hplus.and_eventually h).and_eventually hpow).exists
+    exact (not_lt_of_ge hu) (hx.trans hp)
+  · obtain ⟨x,⟨hm,hl⟩,hx⟩ := ((hminus.and_eventually h).and_eventually hpow).exists
+    linarith only [hm,hl,hx]
+
+/-- Above half the zero abscissa the same exponent bounds the full
+corrected count uniformly on the real half-line. -/
+theorem properPowerDiscrepancy_bound_above_abscissa {b : ℝ} (hb : zeroReSup/2 < b) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ x : ℝ, 1 ≤ x → |properPowerDiscrepancy x| ≤ K*x^b := by
+  have h := (psi_power_bound_iff_properPowerDiscrepancy (a := 2*b)
+    (by linarith only [hb,half_le_zeroReSup])).mp
+    (exists_abs_chebyshevPsi_sub_le_rpow (by linarith only [hb] : zeroReSup < 2*b))
+  simpa only [show 2*b/2=b by ring] using h
+
 /-- Unconditional exponents for the proper-power count from the sub-seven-eighths strip. -/
 theorem properPowerDiscrepancy_from_zero_free_strip {b : ℝ} (hb : 20999/48000 < b) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ x : ℝ, 1 ≤ x → |properPowerDiscrepancy x| ≤ K*x^b := by
@@ -192,9 +221,7 @@ theorem properPowerDiscrepancy_from_zero_free_strip {b : ℝ} (hb : 20999/48000 
     by_contra! hq
     exact MetaplecticMobiusDescent.CubicEisenstein.riemannZeta_ne_zero_of_sub_seven_eighths_lt_re hq
       (riemannZeta_eq_zero_of_xiZeroCopy q)
-  have h := (psi_power_bound_iff_properPowerDiscrepancy (a := 2*b) (by linarith only [hb])).mp
-    (exists_abs_chebyshevPsi_sub_le_rpow (hΘ.trans_lt (by linarith only [hb])))
-  simpa only [show 2*b/2=b by ring] using h
+  exact properPowerDiscrepancy_bound_above_abscissa (by linarith only [hΘ,hb])
 
 /-- The corrected proper-power count alone characterizes RH at the quarter exponent. -/
 theorem riemannHypothesis_iff_properPowerDiscrepancy_quarter :
@@ -203,9 +230,7 @@ theorem riemannHypothesis_iff_properPowerDiscrepancy_quarter :
   constructor
   · intro hRH b hb _
     have hΘ := zeroReSup_le_of_forall_re_le fun q => (xiZeroCopy_re_eq_half_of_riemannHypothesis hRH q).le
-    have h := (psi_power_bound_iff_properPowerDiscrepancy (a := 2*b) (by linarith only [hb])).mp
-      (exists_abs_chebyshevPsi_sub_le_rpow (hΘ.trans_lt (by linarith only [hb])))
-    simpa only [show 2*b/2=b by ring] using h
+    exact properPowerDiscrepancy_bound_above_abscissa (by linarith only [hΘ,hb])
   · intro h
     apply riemannHypothesis_iff_riemannZeta_ne_zero_of_mem_upper_strip.mpr
     intro z hz hz' hzero
@@ -221,6 +246,8 @@ theorem riemannHypothesis_iff_properPowerDiscrepancy_quarter :
     dsimp only [e] at ht
     linarith only [ht,hz]
 
+#print axioms zeroReSup_le_twice_of_properPowerDiscrepancy_one_sided
+#print axioms properPowerDiscrepancy_bound_above_abscissa
 #print axioms properPowerDiscrepancy_both_signs_below_abscissa
 #print axioms properPowerDiscrepancy_square_tracks_prime_error
 #print axioms properPowerDiscrepancy_from_zero_free_strip

@@ -108,7 +108,7 @@ theorem dualBoundaryHead_bound :
       |dualBoundaryHead X R F U β|≤K*mass R*M*(1+Real.log X)^3*Real.sqrt X := by
   obtain ⟨K,hK,h⟩ := dual_factorial_window
   let E := Real.log 4+4
-  have hE : 0≤E := by dsimp [E]; linarith only [Real.log_natCast_nonneg 4]
+  have hE : 0≤E := add_nonneg (Real.log_nonneg (by norm_num : (1 : ℝ)≤4)) (by norm_num)
   refine ⟨2*E+K,by positivity,?_⟩
   intro X R F U hx hR hbig hd hF hU β M hM hβ
   let L := min U ⌊Real.sqrt X⌋₊

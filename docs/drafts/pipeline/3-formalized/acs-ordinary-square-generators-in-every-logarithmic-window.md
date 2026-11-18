@@ -7,3 +7,5 @@ Write $L(u)=4h(u)-2h(u+\log4)$ for the continuous long lags. Its translated mean
 Choose such a point with $L(u)\ge-1$ and round $e^{u/2}$ upward. The displacement in $2\log n$ is at most two. The difference $Q(D_n)-L(u)$ tends to the fixed short-lag limit as $u\to\infty$, so $Q(D_n)$ is bounded below and the integrated ordinary contact is bounded above on these conductors. After restoring the floors the mesh error costs $O(n)$ at any multiplicity. For $1\le m\le n$ the actual floors save $cn^2$. For $m>n$ the mesh error costs at most $O(m^2)$. One base therefore bounds the ordinary generators simultaneously. [Mesh error](../3-formalized/acs-the-mesh-error-at-diagonal-multiplicity.md) · [Ordinary floors](../3-formalized/acs-prime-floor-loss-on-the-diagonal.md)
 
 The open pointwise comparison requires the same bound at each prescribed conductor.
+
+Lean proves `ordinary_square_generators_in_every_logarithmic_window` and the uniform comparison `all_ordinary_generators_of_degree_floor`. [Formalization](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/OrdinarySquareGeneratorsInEveryLogarithmicWindow.lean)

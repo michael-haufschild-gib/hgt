@@ -1,5 +1,6 @@
 import GaloisForLFunctions.CountingHolography.Sections.SparseSquareConductorsDetectTheZeroWidth
 import GaloisForLFunctions.CountingHolography.Sections.TheDyadicPrimeWeightOfSquareConductors
+import Mathlib.NumberTheory.LSeries.Convergence
 
 /-! # The product over all smaller square conductors
 
@@ -91,43 +92,27 @@ private theorem log_prefix (N : ℕ) : Real.log (squareGeneratorPrefix N:ℝ)=pr
   exact ne_of_gt (by exact_mod_cast (show (0:ℚ)<ordinaryPrimeGenerator (n • successorSquareTriple n) from
     prod_pos fun k _ => zpow_pos (Nat.cast_pos.mpr (contactBase_pos k)) _))
 
-/-- The signed prefix product detects every strip at exponent three plus
-twice its width. -/
-theorem zetaZeroWidth_le_iff_square_generator_prefix {s : ℝ} (hs : 0≤s) (hs' : s<1/2) :
-    zetaZeroWidth≤s ↔ ∃ C : ℝ, 0≤C ∧ ∀ N : ℕ,
-      |Real.log (squareGeneratorPrefix N:ℝ)|≤C*(N:ℝ)^(3+2*s) := by
-  constructor
-  · intro hw
-    obtain ⟨D,hD,h⟩ := successorSquare_diagonal_log_at_width
-    let C := D*2^(2*s)
-    have hC : 0≤C := by dsimp only [C]; positivity
-    refine ⟨C,hC,fun N => ?_⟩
-    rw [log_prefix]
-    by_cases hN : N=0
-    · simp [hN,prefix,hC]
-    have hN₀ : 0<(N:ℝ) := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hN)
-    have hs₀ := mul_nonneg two_pos.le hs
-    have hrow (n : ℕ) (hn : n ∈ Ioc 0 N) : |price n|≤C*(N:ℝ)^(2+2*s) := by
-      obtain ⟨hn₁,hnN⟩ := mem_Ioc.mp hn
-      have hx : (1:ℝ)≤n := by exact_mod_cast hn₁
-      have hxN : (n:ℝ)≤N := by exact_mod_cast hnN
-      have hw' := Real.rpow_le_rpow_of_exponent_le (by linarith only [hx] : 1≤(n:ℝ)+1)
-        (mul_le_mul_of_nonneg_left hw two_pos.le)
-      have hh := Real.rpow_le_rpow (by positivity : 0≤(n:ℝ)+1)
-        (by linarith only [hx,hxN] : (n:ℝ)+1≤2*N) hs₀
-      rw [Real.mul_rpow two_pos.le hN₀.le] at hh
-      have hsq := pow_le_pow_left₀ (Nat.cast_nonneg n : 0≤(n:ℝ)) hxN 2
-      refine (h n hn₁).trans ((mul_le_mul (mul_le_mul_of_nonneg_left hsq hD) (hw'.trans hh)
-        (Real.rpow_nonneg (by positivity) _) (mul_nonneg hD (sq_nonneg _))).trans_eq ?_)
-      rw [Real.rpow_add hN₀,Real.rpow_two]
-      dsimp only [C]
-      ring
-    change |∑ n ∈ Ioc 0 N, price n|≤_
-    refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum hrow).trans_eq ?_)
-    rw [sum_const,nsmul_eq_mul,Nat.card_Ioc,Nat.sub_zero,show (3:ℝ)+2*s=1+(2+2*s) by ring,
-      Real.rpow_add hN₀,Real.rpow_one]
-    ring
-  rintro ⟨C,hC,h⟩
+private theorem price_bound_at_strip {s : ℝ} (hw : zetaZeroWidth≤s) :
+    ∃ C : ℝ, 0≤C ∧ ∀ n : ℕ, 0<n → |price n|≤C*(n:ℝ)^(2+2*s) := by
+  obtain ⟨D,hD,h⟩ := successorSquare_diagonal_log_at_width
+  have hs := zetaZeroWidth_nonneg.trans hw
+  refine ⟨D*2^(2*s),by positivity,fun n hn => ?_⟩
+  have hx : (1:ℝ)≤n := by exact_mod_cast hn
+  have hn' : 0<(n:ℝ) := Nat.cast_pos.mpr hn
+  have hs₀ := mul_nonneg two_pos.le hs
+  have h₁ := Real.rpow_le_rpow_of_exponent_le (by linarith only [hx] : 1≤(n:ℝ)+1)
+    (mul_le_mul_of_nonneg_left hw two_pos.le)
+  have h₂ := Real.rpow_le_rpow (by positivity : 0≤(n:ℝ)+1)
+    (by linarith only [hx] : (n:ℝ)+1≤2*n) hs₀
+  rw [Real.mul_rpow two_pos.le hn'.le] at h₂
+  refine (h n hn).trans ((mul_le_mul_of_nonneg_left (h₁.trans h₂)
+    (mul_nonneg hD (sq_nonneg (n:ℝ)))).trans_eq ?_)
+  rw [Real.rpow_add hn',Real.rpow_two]
+  ring
+
+private theorem width_of_dominating_prefix (f : ℕ → ℝ) (hdom : ∀ n, price n≤f n)
+    {s C : ℝ} (hs : 0≤s) (hC : 0≤C)
+    (h : ∀ N : ℕ, |prefix f N|≤C*(N:ℝ)^(3+2*s)) : zetaZeroWidth≤s := by
   by_contra! hw
   let gap := min (zetaZeroWidth-s) (1/2)
   have hg : 0<gap := lt_min (sub_pos.mpr hw) (by norm_num)
@@ -140,14 +125,37 @@ theorem zetaZeroWidth_le_iff_square_generator_prefix {s : ℝ} (hs : 0≤s) (hs'
   have hθ : 0<θ := by dsimp only [θ]; linarith only [hg₁]
   have hθ' : θ<1 := by dsimp only [θ]; linarith only [hg]
   have hr : θ≤3+2*s := by linarith only [hθ',hs]
-  obtain ⟨A,hA,hE⟩ := power_gaps_of_signed_prefix price hθ hθ' hr hC (fun N => by
-    rw [← log_prefix]; exact h N)
+  obtain ⟨A,hA,hE⟩ := power_gaps_of_signed_prefix f hθ hθ' hr hC h
   have he : 3+2*s-θ=2+2*t := by dsimp only [θ,t]; ring
   apply htw.not_ge
   apply zetaZeroWidth_le_of_sparse_square_logs hθ' hE ht (htw.trans_le zetaZeroWidth_le_half) hA
   intro n hn
   rw [← he]
-  exact hn.2
+  exact (hdom n).trans hn.2
+
+/-- The signed prefix product detects every strip at exponent three plus
+twice its width. -/
+theorem zetaZeroWidth_le_iff_square_generator_prefix {s : ℝ} (hs : 0≤s) (hs' : s<1/2) :
+    zetaZeroWidth≤s ↔ ∃ C : ℝ, 0≤C ∧ ∀ N : ℕ,
+      |Real.log (squareGeneratorPrefix N:ℝ)|≤C*(N:ℝ)^(3+2*s) := by
+  constructor
+  · intro hw
+    obtain ⟨C,hC,hp⟩ := price_bound_at_strip hw
+    refine ⟨C,hC,fun N => ?_⟩
+    rw [log_prefix]
+    by_cases hN : N=0
+    · simp [hN,prefix,show (3:ℝ)+2*s≠0 by linarith]
+    have hN₀ : 0<(N:ℝ) := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hN)
+    have hrow (n : ℕ) (hn : n ∈ Ioc 0 N) : |price n|≤C*(N:ℝ)^(2+2*s) :=
+      (hp n (mem_Ioc.mp hn).1).trans (mul_le_mul_of_nonneg_left
+        (Real.rpow_le_rpow (Nat.cast_nonneg _) (by exact_mod_cast (mem_Ioc.mp hn).2) (by linarith only [hs])) hC)
+    change |∑ n ∈ Ioc 0 N, price n|≤_
+    refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum hrow).trans_eq ?_)
+    rw [sum_const,nsmul_eq_mul,Nat.card_Ioc,Nat.sub_zero,show (3:ℝ)+2*s=1+(2+2*s) by ring,
+      Real.rpow_add hN₀,Real.rpow_one]
+    ring
+  rintro ⟨C,hC,h⟩
+  exact width_of_dominating_prefix price (fun _ => le_rfl) hs hC fun N => (log_prefix N) ▸ h N
 
 private theorem rational_power_window {q : ℚ} (hq : 0<q) {B : ℕ} (hB : 0<B) (N : ℕ) :
     |Real.log (q:ℝ)|≤Real.log B*(N:ℝ)^3 ↔
@@ -159,6 +167,66 @@ private theorem rational_power_window {q : ℚ} (hq : 0<q) {B : ℕ} (hB : 0<B) 
     constructor <;> intro h <;> exact_mod_cast h
   rw [← upper hq,← upper (inv_pos.mpr hq),Rat.cast_inv,Real.log_inv,abs_le]
   constructor <;> rintro ⟨h₁,h₂⟩ <;> constructor <;> linarith only [h₁,h₂]
+
+/-- Positive logarithmic price of the reduced rational generator. -/
+def squarePositiveLogPrice (n : ℕ) : ℂ :=
+  (max (Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n):ℝ)) 0 : ℝ)
+
+private theorem positive_price_norm (n : ℕ) :
+    ‖squarePositiveLogPrice n‖=max (price n) 0 := by
+  rw [squarePositiveLogPrice,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (le_max_right _ _)]
+
+private theorem positive_price_prefix {r : ℝ} (hr : 0≤r)
+    (h : LSeriesSummable squarePositiveLogPrice (r:ℂ)) :
+    ∃ C : ℝ, 0≤C ∧ ∀ N, |prefix (fun n => max (price n) 0) N|≤C*(N:ℝ)^r := by
+  let g (n : ℕ) := ‖LSeries.term squarePositiveLogPrice (r:ℂ) n‖
+  have hg : Summable g := h.norm
+  refine ⟨∑' n, g n,tsum_nonneg (fun _ => norm_nonneg _),fun N => ?_⟩
+  rw [prefix,abs_of_nonneg (sum_nonneg fun _ _ => le_max_right _ _)]
+  have hrow (n : ℕ) (hn : n ∈ Ioc 0 N) : max (price n) 0≤g n*(N:ℝ)^r := by
+    obtain ⟨hpos,hle⟩ := mem_Ioc.mp hn
+    have hp := Real.rpow_pos_of_pos (Nat.cast_pos.mpr hpos : 0<(n:ℝ)) r
+    have he : g n*(n:ℝ)^r=max (price n) 0 := by
+      rw [g,LSeries.norm_term_eq,if_neg hpos.ne',positive_price_norm,Complex.ofReal_re,div_mul_cancel₀ _ hp.ne']
+    exact he.ge.trans (mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow (Nat.cast_nonneg n) (by exact_mod_cast hle) hr) (norm_nonneg _))
+  exact (sum_le_sum hrow).trans ((le_of_eq (sum_mul ..).symm).trans
+    (mul_le_mul_of_nonneg_right (hg.sum_le_tsum _ (fun _ _ => norm_nonneg _)) (Real.rpow_nonneg (Nat.cast_nonneg N) _)))
+
+/-- Above the cubic threshold, the abscissa of absolute convergence for
+the positive log prices measures exactly twice the zeta zero width. -/
+theorem zetaZeroWidth_le_iff_positive_price_abscissa {s : ℝ} (hs : 0≤s) :
+    zetaZeroWidth≤s ↔ LSeries.abscissaOfAbsConv squarePositiveLogPrice≤((3+2*s:ℝ):EReal) := by
+  constructor
+  · intro hw
+    obtain ⟨C,hC,h⟩ := price_bound_at_strip hw
+    have he := LSeries.abscissaOfAbsConv_le_of_le_const_mul_rpow (f := squarePositiveLogPrice)
+      (x := 2+2*s) ⟨C,fun n hn => by
+        rw [positive_price_norm]
+        exact max_le ((le_abs_self _).trans (h _ (Nat.pos_of_ne_zero hn)))
+          (mul_nonneg hC (Real.rpow_nonneg (Nat.cast_nonneg n) _))⟩
+    convert he using 1 <;> norm_cast <;> ring
+  intro h
+  by_contra! hw
+  let t := (s+zetaZeroWidth)/2
+  have hst : s<t := by dsimp only [t]; linarith only [hw]
+  have htw : t<zetaZeroWidth := by dsimp only [t]; linarith only [hw]
+  have ht := hs.trans hst.le
+  have hsum : LSeriesSummable squarePositiveLogPrice ((3+2*t:ℝ):ℂ) :=
+    LSeriesSummable_of_abscissaOfAbsConv_lt_re (h.trans_lt
+      (EReal.coe_lt_coe_iff.mpr (by simpa only [Complex.ofReal_re] using
+        (show 3+2*s<3+2*t by linarith only [hst]))))
+  obtain ⟨C,hC,hP⟩ := positive_price_prefix (by linarith only [ht] : 0≤3+2*t) hsum
+  exact htw.not_ge (width_of_dominating_prefix (fun n => max (price n) 0)
+    (fun n => le_max_left _ _) ht hC hP)
+
+/-- RH is equivalent to abscissa at most three for the positive log prices. -/
+theorem riemannHypothesis_iff_positive_price_abscissa :
+    RiemannHypothesis ↔ LSeries.abscissaOfAbsConv squarePositiveLogPrice≤3 := by
+  have he := zetaZeroWidth_le_iff_positive_price_abscissa (s := 0) le_rfl
+  norm_num at he
+  exact ⟨fun h => he.mp (riemannHypothesis_iff_zetaZeroWidth_eq_zero.mp h).le,
+    fun h => riemannHypothesis_iff_zetaZeroWidth_eq_zero.mpr (le_antisymm (he.mpr h) zetaZeroWidth_nonneg)⟩
 
 /-- One integer base bounds the cumulative rational product in both
 directions exactly when every nontrivial zeta zero lies on the line. -/
@@ -183,5 +251,7 @@ theorem riemannHypothesis_iff_signed_square_generator_product :
 
 #print axioms zetaZeroWidth_le_iff_square_generator_prefix
 #print axioms riemannHypothesis_iff_signed_square_generator_product
+#print axioms zetaZeroWidth_le_iff_positive_price_abscissa
+#print axioms riemannHypothesis_iff_positive_price_abscissa
 
 end GaloisForLFunctions.CountingHolography.Sections

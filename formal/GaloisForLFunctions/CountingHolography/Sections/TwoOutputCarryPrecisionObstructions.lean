@@ -339,14 +339,15 @@ theorem eventually_loglog_clearing_of_subquadratic_fibre {N : ℕ} {b : Fin N �
   obtain ⟨q, hq, hqx, hdiv⟩ := primorial_dvd_cleared_of_fibre (X := X) (ordinalMap b m f)
     hcard_lt hclear hD (by omega) (by dsimp only [X, n] at hs ⊢; omega)
     (by dsimp only [X, n]; omega)
+  have hlog_prim (Y : ℕ) : Real.log (primorial Y) = Chebyshev.theta Y := by
+    rw [Chebyshev.theta_eq_log_primorial, Nat.floor_natCast]
   have hp := primorial_pos X
   have hle := Nat.le_of_dvd (Nat.mul_pos (Nat.mul_pos hp hD) hq) hdiv
   have hlog_p := Real.log_le_log (Nat.cast_pos.mpr (primorial_pos (2 * X))) (Nat.cast_le.mpr hle)
   rw [Nat.cast_mul, Nat.cast_mul,
     Real.log_mul (mul_ne_zero (Nat.cast_pos.mpr hp).ne' (Nat.cast_pos.mpr hD).ne') (Nat.cast_pos.mpr hq).ne',
     Real.log_mul (Nat.cast_pos.mpr hp).ne' (Nat.cast_pos.mpr hD).ne',
-    Chebyshev.theta_eq_log_primorial, Chebyshev.theta_eq_log_primorial,
-    Nat.floor_natCast, Nat.floor_natCast] at hlog_p
+    hlog_prim, hlog_prim] at hlog_p
   have h₁ := (abs_le.mp (hθ X hx₀)).2
   have h₂ := (abs_le.mp (hθ (2 * X) (by omega))).1
   have hlog2X : Real.log (2 * (X : ℝ)) ≤ X / 4 := by

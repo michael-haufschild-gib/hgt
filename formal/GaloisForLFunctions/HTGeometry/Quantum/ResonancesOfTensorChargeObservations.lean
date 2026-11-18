@@ -80,17 +80,60 @@ def frequencies (q b : ι → ℤ) (A : Matrix ι ι ℂ) (n : ℕ) : Finset ℤ
     displacement q p.1 p.2 = 0 ∧ ∀ k, A (p.1 k) (p.2 k) ≠ 0)).image
     (fun p => displacement b p.1 p.2)
 
+private theorem nonzero_word (q : ι → ℤ) (A : Matrix ι ι ℂ) {n : ℕ} (u v : Fin n → ι) :
+    observe q A n u v ≠ 0 ↔ displacement q u v=0 ∧ ∀ k, A (u k) (v k) ≠ 0 := by
+  rw [observe_entry]
+  by_cases h : displacement q u v=0
+  · simp only [h,if_pos,true_and,prod_ne_zero_iff,mem_univ,true_implies]
+  · simp [h]
+
 theorem frequency_iff (q b : ι → ℤ) (A : Matrix ι ι ℂ) (n : ℕ) (d : ℤ) :
     d ∈ frequencies q b A n ↔ ∃ u v : Fin n → ι,
       observe q A n u v ≠ 0 ∧ displacement b u v = d := by
   classical
-  have entry (u v : Fin n → ι) : observe q A n u v ≠ 0 ↔
-      displacement q u v = 0 ∧ ∀ k, A (u k) (v k) ≠ 0 := by
-    rw [observe_entry]
-    split
-    · simp [*]
-    · simp [*]
-  simp only [frequencies,mem_image,mem_filter,mem_univ,true_and,Prod.exists,← entry]
+  simp only [frequencies,mem_image,mem_filter,mem_univ,true_and,Prod.exists,← nonzero_word]
+
+/-- Concatenating nonzero balanced words adds their frequencies and their
+copy counts. Oppositely charged factors may create further frequencies. -/
+theorem add_frequency (q b : ι → ℤ) (A : Matrix ι ι ℂ) {m n : ℕ} {d e : ℤ}
+    (hd : d ∈ frequencies q b A m) (he : e ∈ frequencies q b A n) :
+    d+e ∈ frequencies q b A (m+n) := by
+  obtain ⟨u,v,hu,rfl⟩ := (frequency_iff _ _ _ _ _).1 hd
+  obtain ⟨U,V,hU,rfl⟩ := (frequency_iff _ _ _ _ _).1 he
+  obtain ⟨hq,hA⟩ := (nonzero_word q A u v).1 hu
+  obtain ⟨hQ,hB⟩ := (nonzero_word q A U V).1 hU
+  have hsum (a : ι → ℤ) :
+      displacement a (Fin.addCases u U) (Fin.addCases v V) = displacement a u v + displacement a U V := by
+    simp only [displacement,Fin.sum_univ_add,Fin.addCases_left,Fin.addCases_right]
+  refine (frequency_iff _ _ _ _ _).2 ⟨Fin.addCases u U,Fin.addCases v V,?_,hsum b⟩
+  apply (nonzero_word _ _ _ _).2
+  refine ⟨by rw [hsum,hq,hQ,add_zero],?_⟩
+  intro k
+  refine Fin.addCases (fun i => ?_) (fun j => ?_) k
+  · simpa only [Fin.addCases_left] using hA i
+  · simpa only [Fin.addCases_right] using hB j
+
+/-- Repeating a balanced word realizes every positive multiple with the
+corresponding multiple of the original copy count. -/
+theorem multiple_frequency (q b : ι → ℤ) (A : Matrix ι ι ℂ) {n : ℕ} {d : ℤ}
+    (hd : d ∈ frequencies q b A n) (k : ℕ) : (k : ℤ)*d ∈ frequencies q b A (k*n) := by
+  induction k with
+  | zero =>
+    simp only [Nat.cast_zero,zero_mul]
+    apply (frequency_iff _ _ _ _ _).2
+    exact ⟨Fin.elim0,Fin.elim0,by simp [observe_entry,displacement],by simp [displacement]⟩
+  | succ k ih =>
+    simpa only [Nat.cast_succ,add_mul,one_mul,Nat.succ_mul] using add_frequency q b A ih hd
+
+/-- Exchanging the two words reverses the frequency for the transposed support. -/
+theorem transpose_frequency (q b : ι → ℤ) (A : Matrix ι ι ℂ) {n : ℕ} {d : ℤ}
+    (hd : d ∈ frequencies q b A n) : -d ∈ frequencies q b A.transpose n := by
+  obtain ⟨u,v,hu,rfl⟩ := (frequency_iff _ _ _ _ _).1 hd
+  obtain ⟨hq,hA⟩ := (nonzero_word q A u v).1 hu
+  have swap (a : ι → ℤ) : displacement a v u = -displacement a u v := by
+    simp only [displacement,sum_sub_distrib,neg_sub]
+  refine (frequency_iff _ _ _ _ _).2 ⟨v,u,(nonzero_word _ _ _ _).2 ⟨?_,hA⟩,swap b⟩
+  rw [swap,hq,neg_zero]
 
 /-- Two phases give exactly the same observation when their characters agree
 on every active frequency. -/
@@ -136,5 +179,8 @@ end GaloisForLFunctions.HTGeometry.Quantum.TensorObservation
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.observe_entry
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.observe_twist
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.frequency_iff
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.add_frequency
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.multiple_frequency
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.transpose_frequency
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.indistinguishable_iff
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.frequencies_mono

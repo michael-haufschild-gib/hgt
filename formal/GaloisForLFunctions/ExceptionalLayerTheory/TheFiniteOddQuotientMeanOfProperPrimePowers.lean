@@ -33,7 +33,7 @@ private theorem root_cut {r : ℕ} (hr : 0 < r) (a N : ℕ) :
     rw [← Real.rpow_mul (Nat.cast_nonneg N),inv_mul_cancel₀ hr0.ne',Real.rpow_one]
   rw [← Real.rpow_le_rpow_iff (Nat.cast_nonneg a) (Real.rpow_nonneg (Nat.cast_nonneg N) _) hr0,
     he,Real.rpow_natCast]
-  exact_mod_cast Iff.rfl
+  norm_cast
 
 private theorem powerAtom_sum {r : ℕ} (hr : 0<r) (N : ℕ) (F : ℕ → ℝ) :
     (∑ n ∈ Icc 1 N, powerAtom r n * F n)=∑ a ∈ Icc 1 ⌊(N:ℝ)^((r:ℝ)⁻¹)⌋₊, F (a^r) := by
@@ -86,6 +86,50 @@ theorem properPowerLatticeWeight_prefix (N : ℕ) :
   have hh := Nat.lt_floor_add_one ((N:ℝ)^(1/3:ℝ))
   constructor <;> linarith only [h₂,h₃,hg,hh]
 
+/-- Rounding the two real roots costs at most two in the signed prefix. -/
+theorem properPowerLatticeWeight_abs_sum {b K : ℝ} (hb : 0 ≤ b)
+    (h : ∀ x : ℝ, 1 ≤ x → |properPowerDiscrepancy x| ≤ K*x^b) {n : ℕ} (hn : 1 ≤ n) :
+    |∑ d ∈ Icc 1 n, properPowerLatticeWeight d| ≤ (K+2)*(n:ℝ)^b := by
+  have h1 : (1:ℝ) ≤ n := by exact_mod_cast hn
+  have ht := h n h1
+  have hfl := properPowerLatticeWeight_prefix n
+  have hp := Real.one_le_rpow h1 hb
+  rw [abs_le] at ht ⊢
+  constructor <;> linarith only [hfl.1,hfl.2,ht.1,ht.2,hp]
+
+/-- The unsigned lattice weight grows at most as the square root. The two
+unrestricted power counts pay for replacing the signed sum by absolute values. -/
+theorem properPowerLatticeWeight_sum_abs {b K : ℝ} (hb : 0 ≤ b) (hb' : b ≤ 1/2) (hK : 0 ≤ K)
+    (h : ∀ x : ℝ, 1 ≤ x → |properPowerDiscrepancy x| ≤ K*x^b) {N : ℕ} (hn : 1 ≤ N) :
+    (∑ d ∈ Icc 1 N, |properPowerLatticeWeight d|) ≤ (K+6)*(N:ℝ)^(1/2:ℝ) := by
+  have hatom (r d : ℕ) : 0 ≤ powerAtom r d := by
+    rcases Nat.eq_zero_or_pos d with rfl | hd
+    · simp
+    change 0 ≤ (perfectPowerArith r d).re
+    rw [perfectPowerArith_apply hd.ne']
+    split <;> norm_num
+  have hdom (d : ℕ) : |properPowerLatticeWeight d| ≤ properPowerLatticeWeight d+
+      2*(powerAtom 2 d + powerAtom 3 d) := by
+    have hm : 0 ≤ primePowerPart d := by unfold primePowerPart; split <;> simp [vonMangoldt_nonneg]
+    change |primePowerPart d - powerAtom 2 d - powerAtom 3 d| ≤ _
+    change _ ≤ primePowerPart d - powerAtom 2 d - powerAtom 3 d + _
+    rw [abs_le]
+    constructor <;> linarith only [hm,hatom 2 d,hatom 3 d]
+  have h₁ : (1:ℝ) ≤ N := by exact_mod_cast hn
+  have hprefix := (le_abs_self _).trans (properPowerLatticeWeight_abs_sum hb h hn)
+  have hbound := hprefix.trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le h₁ hb')
+    (by linarith only [hK]))
+  have hfloor (r : ℕ) (hr : 0 < r) : (∑ d ∈ Icc 1 N, powerAtom r d) ≤ (N:ℝ)^((r:ℝ)⁻¹) := by
+    rw [powerAtom_prefix hr]
+    exact Nat.floor_le (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+  have h2 := hfloor 2 (by decide)
+  have h3 := hfloor 3 (by decide)
+  simp only [Nat.cast_ofNat,← one_div] at h2 h3
+  have hscale := Real.rpow_le_rpow_of_exponent_le h₁ (by norm_num : (1/3:ℝ) ≤ 1/2)
+  apply (sum_le_sum fun d (_ : d ∈ Icc 1 N) => hdom d).trans
+  rw [sum_add_distrib,← mul_sum,sum_add_distrib]
+  linarith only [hbound,h2,h3,hscale]
+
 /-- Total over cutoffs below N of the odd-quotient weighted prime-power discrepancy. -/
 def oddQuotientPowerTotal (N : ℕ) : ℝ :=
   ∑ d ∈ Icc 1 N, properPowerLatticeWeight d * discreteQuotientMean (fun n => ((n%2:ℕ):ℝ)) d N
@@ -106,21 +150,52 @@ private theorem weighted_floor_factorial {j N : ℕ} (hj : j≤N) :
   rw [← he,hi]
   exact ArithmeticOfSquareRootPrecision.chebyshevTransform_vonMangoldt j
 
-private theorem odd_log_factorial (N : ℕ) :
-    (∑ d ∈ Icc 1 N, vonMangoldt d*oddQuotientMultiplicity N d)=
-      ∑ j ∈ range N, (Real.log (j.factorial:ℕ)-2*Real.log ((j/2).factorial:ℕ)) := by
-  simp only [oddQuotientMultiplicity,discreteQuotientMean,mul_sum]
-  rw [sum_comm]
-  refine sum_congr rfl fun j hj => ?_
+private theorem factorial_parity {j N : ℕ} (hj : j ≤ N) :
+    (∑ d ∈ Icc 1 N, vonMangoldt d*((j/d%2:ℕ):ℝ)) =
+      Real.log (j.factorial:ℕ)-2*Real.log ((j/2).factorial:ℕ) := by
   have hdiv (d : ℕ) : (j/d)/2=(j/2)/d := by
     rw [Nat.div_div_eq_div_mul,Nat.div_div_eq_div_mul,mul_comm d 2]
   have hval (d : ℕ) : ((j/d%2:ℕ):ℝ)=((j/d:ℕ):ℝ)-2*(((j/2)/d:ℕ):ℝ) := by
     have e : ((j/d%2:ℕ):ℝ)+2*(((j/d)/2:ℕ):ℝ)=((j/d:ℕ):ℝ) := by exact_mod_cast Nat.mod_add_div (j/d) 2
     rw [hdiv] at e
     linarith only [e]
-  rw [← weighted_floor_factorial (mem_range.mp hj).le,← weighted_floor_factorial ((Nat.div_le_self j 2).trans (mem_range.mp hj).le),
+  rw [← weighted_floor_factorial hj,← weighted_floor_factorial ((Nat.div_le_self j 2).trans hj),
     mul_sum,← sum_sub_distrib]
   exact sum_congr rfl fun d _ => by rw [hval]; ring
+
+private theorem odd_log_factorial (N : ℕ) :
+    (∑ d ∈ Icc 1 N, vonMangoldt d*oddQuotientMultiplicity N d)=
+      ∑ j ∈ range N, (Real.log (j.factorial:ℕ)-2*Real.log ((j/2).factorial:ℕ)) := by
+  simp only [oddQuotientMultiplicity,discreteQuotientMean,mul_sum]
+  rw [sum_comm]
+  exact sum_congr rfl fun j hj => factorial_parity (mem_range.mp hj).le
+
+private theorem weight_formula (N : ℕ) (F : ℕ → ℝ) :
+    (∑ d ∈ Icc 1 N, properPowerLatticeWeight d*F d) =
+      (∑ d ∈ Icc 1 N, vonMangoldt d*F d)-
+      (∑ p ∈ Nat.primesLE N, Real.log p*F p)-
+      (∑ a ∈ Icc 1 ⌊(N:ℝ)^(1/2:ℝ)⌋₊, F (a^2))-
+      (∑ a ∈ Icc 1 ⌊(N:ℝ)^(1/3:ℝ)⌋₊, F (a^3)) := by
+  have hsplit (d : ℕ) : primePowerPart d=vonMangoldt d-(if d.Prime then Real.log d else 0) := by
+    by_cases hd : d.Prime <;> simp [primePowerPart,hd,vonMangoldt_apply_prime]
+  simp only [properPowerLatticeWeight,ArithmeticFunction.sub_apply,ArithmeticFunction.coe_mk,hsplit,
+    sub_mul,sum_sub_distrib,powerAtom_sum (by decide : 0 < 2) N F,
+    powerAtom_sum (by decide : 0 < 3) N F,Nat.cast_ofNat,← one_div]
+  rw [Nat.primesLE_eq_filter_Icc_one,sum_filter]
+  simp only [ite_mul,zero_mul]
+
+/-- The sharp odd-quotient count at one cutoff. -/
+def oddQuotientPowerCount (N : ℕ) : ℝ :=
+  ∑ d ∈ Icc 1 N, properPowerLatticeWeight d*((N/d%2:ℕ):ℝ)
+
+/-- The unaveraged count uses ordinary primes with odd quotient, two
+factorials, and unrestricted powers with odd quotient. -/
+theorem oddQuotientPowerCount_finite_formula (N : ℕ) :
+    oddQuotientPowerCount N = (Real.log (N.factorial:ℕ)-2*Real.log ((N/2).factorial:ℕ))-
+      (∑ p ∈ Nat.primesLE N, Real.log p*((N/p%2:ℕ):ℝ))-
+      (∑ a ∈ Icc 1 ⌊(N:ℝ)^(1/2:ℝ)⌋₊, ((N/a^2%2:ℕ):ℝ))-
+      (∑ a ∈ Icc 1 ⌊(N:ℝ)^(1/3:ℝ)⌋₊, ((N/a^3%2:ℕ):ℝ)) := by
+  rw [oddQuotientPowerCount,weight_formula N (fun d => ((N/d%2:ℕ):ℝ)),factorial_parity le_rfl]
 
 /-- One ordinary-prime sum, two unrestricted lattice counts and elementary factorials
 give the entire mean at every integer cutoff. -/
@@ -130,14 +205,8 @@ theorem oddQuotientPowerTotal_finite_formula (N : ℕ) :
       (∑ p ∈ Nat.primesLE N, Real.log p*oddQuotientMultiplicity N p)-
       (∑ a ∈ Icc 1 ⌊(N:ℝ)^(1/2:ℝ)⌋₊, oddQuotientMultiplicity N (a^2))-
       (∑ a ∈ Icc 1 ⌊(N:ℝ)^(1/3:ℝ)⌋₊, oddQuotientMultiplicity N (a^3)) := by
-  have hsplit (d : ℕ) : primePowerPart d=vonMangoldt d-(if d.Prime then Real.log d else 0) := by
-    by_cases hd : d.Prime <;> simp [primePowerPart,hd,vonMangoldt_apply_prime]
-  have hp (r : ℕ) (hr : 0<r) := powerAtom_sum hr N (oddQuotientMultiplicity N)
   change (∑ d ∈ Icc 1 N, properPowerLatticeWeight d*oddQuotientMultiplicity N d)=_
-  simp only [properPowerLatticeWeight,ArithmeticFunction.sub_apply,ArithmeticFunction.coe_mk,hsplit,
-    sub_mul,sum_sub_distrib,odd_log_factorial,hp 2 (by decide),hp 3 (by decide),Nat.cast_ofNat,← one_div]
-  rw [Nat.primesLE_eq_filter_Icc_one,sum_filter]
-  simp only [ite_mul,zero_mul]
+  rw [weight_formula,odd_log_factorial]
 
 /-- The total is the integer triangular mean of a single Dirichlet convolution. -/
 theorem oddQuotientPowerTotal_eq_triangular (N : ℕ) :
@@ -156,14 +225,7 @@ exponent. Integration of the power costs the explicit factor 1/b. -/
 theorem oddQuotientPowerTotal_bound {b K : ℝ} (hb : 0 < b) (hb1 : b < 1) (hK : 0≤K)
     (h : ∀ x : ℝ, 1≤x → |properPowerDiscrepancy x|≤K*x^b) {N : ℕ} (hn : 1≤N) :
     |oddQuotientPowerTotal N| ≤ ((K+2)/b)*(N:ℝ)^(b+1) := by
-  have hdisp (n : ℕ) (hn' : 1≤n) :
-      |∑ d ∈ Icc 1 n, properPowerLatticeWeight d| ≤ (K+2)*(n:ℝ)^b := by
-    have h1 : (1:ℝ)≤n := by exact_mod_cast hn'
-    have ht := h n h1
-    have hfl := properPowerLatticeWeight_prefix n
-    have hp := Real.one_le_rpow h1 hb.le
-    rw [abs_le] at ht ⊢
-    constructor <;> linarith only [hfl.1,hfl.2,ht.1,ht.2,hp]
+  have hdisp (n : ℕ) (hn' : 1 ≤ n) := properPowerLatticeWeight_abs_sum hb.le h hn'
   have hvar := abs_discreteQuotientMean_weighted properPowerLatticeWeight (fun n => ((n%2:ℕ):ℝ))
     (by norm_num) (fun n => ⟨Nat.cast_nonneg _,by exact_mod_cast (show n%2≤1 by omega)⟩) N
   apply hvar.trans
@@ -258,7 +320,7 @@ theorem oddQuotientPowerTotal_series {s : ℂ} (hs : 1 < s.re) :
   have ha := (alternatingDivisor_series_on_euler hs).1
   have hm : cxCoeff (properPowerLatticeWeight*alternatingDivisorCoeff)=
       cxCoeff properPowerLatticeWeight ⍟ cxCoeff alternatingDivisorCoeff := by
-    funext n; rw [LSeries.convolution_def]; exact coe_mul_apply _ _ _
+    funext n; rw [LSeries.convolution_def]; exact _root_.RHTower.Sieve.coe_mul_apply _ _ _
   rw [hm]
   refine ⟨hsum.convolution ha.1,?_⟩
   rw [LSeries_convolution' hsum ha.1,ha.2,he,LSeries_sub (hw.sub h2) h3,LSeries_sub hw h2,hw',
@@ -272,6 +334,7 @@ theorem oddQuotientPowerTotal_series {s : ℂ} (hs : 1 < s.re) :
   rw [← hζ]
   ring
 
+#print axioms oddQuotientPowerCount_finite_formula
 #print axioms oddQuotientPowerTotal_finite_formula
 #print axioms oddQuotientPowerTotal_series
 #print axioms oddQuotientPowerTotal_sub_seven_sixteenths

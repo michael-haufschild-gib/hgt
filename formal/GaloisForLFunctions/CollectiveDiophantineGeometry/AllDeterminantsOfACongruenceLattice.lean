@@ -88,6 +88,27 @@ theorem determinant_realizability (v : ι → ℤ) (m d : ℤ) (hv : v ≠ 0) :
     rw [h₂,show content v*w i+(d-1)*content v*w i=(d*content v)*w i by ring]
     exact dvd_mul_of_dvd_left h _
 
+/-- Classification including the zero normal and the zero-dimensional
+lattice. In positive dimension the congruence imposes exactly one
+divisibility condition on the signed determinant. -/
+theorem all_determinants (v : ι → ℤ) (m d : ℤ) :
+    (∃ A : Matrix ι ι ℤ, A.det=d ∧ ∀ i, m ∣ (A *ᵥ v) i) ↔
+      m ∣ d*content v ∧ (IsEmpty ι → d=1) := by
+  constructor
+  · rintro ⟨A,rfl,h⟩
+    refine ⟨(Finset.dvd_gcd fun i _ => h i).trans (image_content_dvd A v),fun hι => ?_⟩
+    letI := hι
+    rw [Subsingleton.elim A (1 : Matrix ι ι ℤ),det_one]
+  · rintro ⟨hd,h₀⟩
+    rcases isEmpty_or_nonempty ι with hι | ⟨i⟩
+    · exact ⟨1,(det_one).trans (h₀ hι).symm,fun i => (hι.false i).elim⟩
+    · by_cases hz : v=0
+      · subst v
+        let w := Pi.single i (1 : ℤ)
+        have hw : w ⬝ᵥ w=1 := by simp [w,single_dotProduct]
+        exact ⟨dilation w w d,dilation_det _ _ _ hw,fun j => by simp⟩
+      · exact (determinant_realizability v m d hz).2 hd
+
 /-- The attainable cleared rational determinants form the same exact grid,
 independently of the individual positive row denominators. -/
 theorem rational_realizability (v : ι → ℤ) (q : ι → ℕ+) (m d : ℤ) (hv : v ≠ 0) :
@@ -103,4 +124,5 @@ end GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex
 #print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.dilation_apply
 #print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.dilation_det
 #print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.determinant_realizability
+#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.all_determinants
 #print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.rational_realizability

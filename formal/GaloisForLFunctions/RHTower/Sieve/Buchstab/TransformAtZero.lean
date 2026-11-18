@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.MertensProductLaplace
 import GaloisForLFunctions.RHTower.ExponentialIntegralE1Quantile
 import GaloisForLFunctions.RHTower.PrimeVacuumPoleCancellation
+import Mathlib.Analysis.Convex.Deriv
 
 /-!
 # The Buchstab transform and the prime aperture
@@ -99,10 +100,99 @@ theorem tendsto_retention_div_argument :
   rw [regular_eq_mul ⟨s, hs⟩, one_add_transform, mul_inv_rev, retentionQuantile,
     Real.exp_neg, div_eq_mul_inv]
 
+/-- The desingularized retention quantile on the entire real line. -/
+def apertureExtension (s : ℝ) : ℝ := s / regular s
+
+/-- The positive-axis aperture density, continued through zero. -/
+def apertureDensity (s : ℝ) : ℝ := Real.exp (-s) / regular s
+
+private theorem regular_pos (s : ℝ) : 0 < regular s := Real.exp_pos _
+
+theorem apertureExtension_eq_retention (s : Ioi (0:ℝ)) :
+    apertureExtension s = retentionQuantile s := by
+  rw [apertureExtension, div_eq_iff (regular_pos _).ne', regular_eq_mul s,
+    mul_left_comm, retention_mul_transform, mul_one]
+
+private theorem kernel_identity (s : ℝ) : 1-s*einKernel s = Real.exp (-s) := by
+  by_cases hs : s = 0
+  · simp [hs]
+  · rw [einKernel,logIntegralKernel_of_ne hs]
+    have he : Real.exp (-s)*Real.exp s = 1 := by rw [← Real.exp_add,neg_add_cancel,Real.exp_zero]
+    calc
+      _ = 1 - Real.exp (-s)*(Real.exp s-1) := by field_simp [hs] <;> ring
+      _ = _ := by linear_combination -he
+
+/-- The reciprocal pole factor gives a globally positive derivative. -/
+theorem hasDerivAt_apertureExtension (s : ℝ) : HasDerivAt apertureExtension (apertureDensity s) s := by
+  have hh : HasDerivAt apertureExtension
+      ((1 * regular s - s * (regular s * einKernel s)) / regular s ^ 2) s :=
+    (hasDerivAt_id s).div (hasDerivAt_regular s) (regular_pos s).ne'
+  convert hh using 1
+  rw [apertureDensity, ← kernel_identity]
+  field_simp [(regular_pos s).ne']
+  <;> ring
+
+/-- The logarithmic decay rate of the aperture density is exactly `1 + Ein'(s)`. -/
+theorem hasDerivAt_apertureDensity (s : ℝ) :
+    HasDerivAt apertureDensity (-(apertureDensity s) * (1+einKernel s)) s := by
+  have hh : HasDerivAt apertureDensity
+      ((Real.exp (-s)*(-1) * regular s - Real.exp (-s) * (regular s * einKernel s)) /
+        regular s ^ 2) s :=
+    (hasDerivAt_id s).neg.exp.div (hasDerivAt_regular s) (regular_pos s).ne'
+  convert hh using 1
+  rw [apertureDensity]
+  field_simp [(regular_pos s).ne']
+  <;> ring
+
+theorem apertureDensity_strictAnti : StrictAnti apertureDensity := by
+  apply strictAnti_of_deriv_neg
+  intro s
+  rw [(hasDerivAt_apertureDensity s).deriv]
+  exact mul_neg_of_neg_of_pos (neg_lt_zero.mpr (div_pos (Real.exp_pos _) (regular_pos _)))
+    (add_pos zero_lt_one (einKernel_pos s))
+
+/-- The full real continuation is strictly concave, including across the pole location. -/
+theorem apertureExtension_strictConcave : StrictConcaveOn ℝ univ apertureExtension := by
+  apply strictConcaveOn_univ_of_deriv2_neg (continuous_iff_continuousAt.mpr
+    fun x => (hasDerivAt_apertureExtension x).continuousAt)
+  have hd : deriv apertureExtension = apertureDensity := funext fun x => (hasDerivAt_apertureExtension x).deriv
+  intro x
+  change deriv (deriv apertureExtension) x < 0
+  rw [hd, (hasDerivAt_apertureDensity x).deriv]
+  exact mul_neg_of_neg_of_pos (neg_lt_zero.mpr (div_pos (Real.exp_pos _) (regular_pos _)))
+    (add_pos zero_lt_one (einKernel_pos x))
+
+/-- The mass on a finite positive interval is the original retention fraction. -/
+theorem apertureDensity_cumulative (s : Ioi (0:ℝ)) :
+    (∫ x in (0:ℝ)..s.val, apertureDensity x) = retentionQuantile s := by
+  have hc := continuous_iff_continuousAt.mpr (fun x => (hasDerivAt_apertureDensity x).continuousAt)
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt
+    (fun x _ => hasDerivAt_apertureExtension x) (hc.intervalIntegrable 0 s.val)]
+  simp only [apertureExtension_eq_retention s, show apertureExtension 0 = 0 by simp [apertureExtension], sub_zero]
+
+/-- Total positive-axis mass is one. -/
+theorem tendsto_apertureDensity_cumulative :
+    Tendsto (fun s => ∫ x in (0:ℝ)..s, apertureDensity x) atTop (𝓝 1) := by
+  refine tendsto_retentionQuantile_atTop.congr' ?_
+  filter_upwards [eventually_gt_atTop (0:ℝ)] with s hs
+  exact (apertureDensity_cumulative ⟨s,hs⟩).symm
+
+/-- The second derivative at the origin fixes the quadratic correction to retention. -/
+theorem apertureDensity_slope_zero : HasDerivAt apertureDensity (-2*Real.exp Real.eulerMascheroniConstant) 0 := by
+  have he : apertureDensity 0 = Real.exp Real.eulerMascheroniConstant := by
+    simp [apertureDensity,regular_zero,Real.exp_neg]
+  convert hasDerivAt_apertureDensity 0 using 1
+  rw [he]
+  simp [einKernel,logIntegralKernel_zero]
+  <;> ring
+
 #print axioms tendsto_mul_transform_zero
 #print axioms tendsto_transform_finitePart
 #print axioms retention_mul_transform
 #print axioms tendsto_retention_div_argument
+#print axioms apertureExtension_strictConcave
+#print axioms tendsto_apertureDensity_cumulative
+#print axioms apertureDensity_slope_zero
 
 end
 end RHTower.Sieve.Buchstab

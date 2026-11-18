@@ -92,6 +92,30 @@ theorem first_frequency (m : ℕ) : 1 ∈ frequencies (charge m) phaseLabel base
     norm_num [u,v,base]
   · simp [displacement,u,v,Fin.sum_univ_succ,phaseLabel]
 
+/-- The entire visible spectrum is a consecutive interval. Each extra
+block of m+1 copies exposes exactly one further harmonic in each direction. -/
+theorem all_frequencies (m n : ℕ) (d : ℤ) :
+    d ∈ frequencies (charge m) phaseLabel base n ↔ (m+1)*d.natAbs ≤ n := by
+  constructor
+  · intro h
+    have hc := frequency_cost m n d h
+    exact_mod_cast (show ((m+1 : ℕ) : ℤ)*(d.natAbs : ℤ) ≤ n by simpa using hc)
+  · intro h
+    have padded : Monotone (frequencies (charge m) phaseLabel base) :=
+      monotone_nat_of_le_succ fun j => frequencies_mono _ _ _ 0 (by norm_num [base]) j
+    have many (k : ℕ) : (k : ℤ) ∈ frequencies (charge m) phaseLabel base (k*(m+1)) := by
+      simpa only [mul_one] using multiple_frequency _ _ _ (first_frequency m) k
+    have hs : base.transpose = base := by
+      ext i j
+      fin_cases i <;> fin_cases j <;> rfl
+    cases d with
+    | ofNat k =>
+      exact padded (by simpa [Nat.mul_comm] using h) (many k)
+    | negSucc k =>
+      have hh := transpose_frequency _ _ _ (many (k+1))
+      rw [hs] at hh
+      exact padded (by simpa [Nat.mul_comm] using h) hh
+
 /-- The first identifying observation recovers the entire phase, at m+1 copies. -/
 theorem identified_at (m : ℕ) (z w : Circle) :
     observe (charge m) (state z) (m+1) = observe (charge m) (state w) (m+1) ↔ z=w := by
@@ -107,4 +131,5 @@ end GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.frequency_cost
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.invisible_through
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.first_frequency
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.all_frequencies
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.identified_at
