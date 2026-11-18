@@ -22,6 +22,7 @@ variable {ι F : Type*} [Fintype ι] [DecidableEq ι] [Field F]
 def facetFaces (facets : Finset (Finset ι)) : Finset (Finset ι) :=
   facets.biUnion powerset
 
+omit [Fintype ι] in
 theorem mem_facetFaces (facets : Finset (Finset ι)) (s : Finset ι) :
     s ∈ facetFaces facets ↔ IsFaceOf (facets : Set (Finset ι)) s := by
   simp [facetFaces, IsFaceOf]
@@ -94,7 +95,7 @@ theorem card_stanleyReisner_characters [Fintype F] (facets : Finset (Finset ι))
     have := Fintype.card_pos (α := F)
     omega
   refine sum_congr rfl fun s _ => ?_
-  simp [D, card_compl, hF, Fintype.prod_ite_mem]
+  simp [D, card_compl, hF]
 
 /-- The Alexander dual admits exactly the complements of nonfaces. -/
 def dualFaceFamily (facets : Finset (Finset ι)) : Finset (Finset ι) :=

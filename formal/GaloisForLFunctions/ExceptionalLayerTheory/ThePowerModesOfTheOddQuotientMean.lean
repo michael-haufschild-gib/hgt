@@ -491,4 +491,48 @@ theorem oddQuotientPowerTotal_singleQuartet_modes {ρ : ℂ} (hq : ExclusionOfTh
   dsimp only [oddQuotientPowerTotal,parity,A] at *
   constructor <;> linarith only [el,eu,hE.1,hE.2,hscale]
 
+/-- Removing the two unrestricted power lattices from the raw parity mean
+removes real modes with the corresponding alternating zeta multipliers. -/
+theorem oddQuotientPowerTotal_lattice_modes :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 1 ≤ N →
+      |(∑ d ∈ Finset.Icc 1 N, primePowerPart d*discreteQuotientMean parity d N)/(N:ℝ)-
+        oddQuotientPowerTotal N/(N:ℝ)-oddQuotientEtaMode 1 (1/2) N-oddQuotientEtaMode 1 (1/3) N| ≤
+      C*quarterError N := by
+  have h₂ : 0 < (1/2:ℂ).re := by norm_num
+  have h₃ : 0 < (1/3:ℂ).re := by norm_num
+  let c (n : ℕ) := primePowerPart n-properPowerLatticeWeight n-modeJump 1 (1/2) n-modeJump 1 (1/3) n
+  have hp (n : ℕ) (hn : 1 ≤ n) : |∑ d ∈ Finset.Icc 1 n, c d| ≤ 2*quarterError n := by
+    have h₁ : (1:ℝ) ≤ n := by exact_mod_cast hn
+    have hprefix := properPowerLatticeWeight_prefix n
+    have he : (∑ d ∈ Finset.Icc 1 n, primePowerPart d)=Chebyshev.psi n-Chebyshev.theta n := by
+      have hi : Finset.Icc 1 n=Finset.Ioc 0 n := by ext k; simp only [mem_Icc,mem_Ioc]; omega
+      rw [hi,Chebyshev.psi_sub_theta_eq_sum_not_prime,Nat.floor_natCast,sum_filter]
+      exact sum_congr rfl fun d _ => by by_cases h : d.Prime <;> simp [primePowerPart,h]
+    have hm (r : ℕ) : modePrefix 1 (1/(r:ℂ)) n=(n:ℝ)^(1/(r:ℝ)) := by
+      simp only [modePrefix,div_one]
+      have hh := Complex.ofReal_cpow (Nat.cast_nonneg (α := ℝ) n) (1/(r:ℝ))
+      push_cast at hh
+      rw [← hh,ofReal_re]
+    simp only [c,sum_sub_distrib,prefix_modeJump 1 h₂,prefix_modeJump 1 h₃,he,
+      show modePrefix 1 (1/2) n=(n:ℝ)^(1/2:ℝ) from hm 2,
+      show modePrefix 1 (1/3) n=(n:ℝ)^(1/3:ℝ) from hm 3]
+    dsimp only [properPowerDiscrepancy] at hprefix
+    rw [abs_le]
+    have hq := one_le_quarterError h₁
+    constructor <;> linarith only [hprefix.1,hprefix.2,hq]
+  obtain ⟨A,hA,hA'⟩ := modeJump_transfer 1 h₂ (by norm_num : (1/2:ℂ).re < 1)
+  obtain ⟨B,hB,hB'⟩ := modeJump_transfer 1 h₃ (by norm_num : (1/3:ℂ).re < 1)
+  refine ⟨8+A+B,by positivity,fun N hn => ?_⟩
+  have h := transfer_quarterError c (K := 2) (by norm_num) hp hn
+  simp only [c,sub_mul,sum_sub_distrib,sub_div] at h
+  obtain ⟨ll,lu⟩ := abs_le.mp h
+  obtain ⟨al,au⟩ := abs_le.mp (hA' N hn)
+  obtain ⟨bl,bu⟩ := abs_le.mp (hB' N hn)
+  have hh := mul_le_mul_of_nonneg_left (one_le_quarterError (show (1:ℝ)≤N by exact_mod_cast hn))
+    (add_nonneg hA hB)
+  unfold oddQuotientPowerTotal
+  dsimp only [parity] at *
+  rw [abs_le]
+  constructor <;> linarith only [ll,lu,al,au,bl,bu,hh]
+
 end GaloisForLFunctions.ExceptionalLayerTheory

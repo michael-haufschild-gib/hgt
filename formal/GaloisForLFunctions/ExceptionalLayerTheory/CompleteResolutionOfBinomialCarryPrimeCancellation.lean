@@ -70,7 +70,8 @@ theorem complete_adjacent_quotient_and_tent_resolution :
    fun hQ hm hband => ⟨(discreteQuotientMean_binaryCarryProfile_adjacent_intervals hQ hm hband).2.1,
      (discreteQuotientMean_binaryCarryProfile_adjacent_intervals hQ hm hband).2.2⟩,
    mangoldt_binaryCarry_first_total_le_three_halves,
-   fun j hb hb1 h => binomialDistinctPrimeTotal_bound_excludes_zero_and_bounds_zeroReSup j hb hb1 h⟩
+   fun j {_} {_} hb hb1 h =>
+     binomialDistinctPrimeTotal_bound_excludes_zero_and_bounds_zeroReSup j hb hb1 h⟩
 
 /-- Master theorem 2: Complete smooth-integer division-tree laws, Buchstab prime tree,
 unique prime selection by raw complements, and top-octave central-binomial parity aliasing. -/
@@ -92,9 +93,9 @@ theorem complete_smooth_division_tree_resolution :
     (∀ {N r n : ℕ}, N < 2 * r - 1 → r ≤ N → n ≤ N →
       ((2 * n) / (2 * r - 1)) % 2 = ((2 * n) / (2 * r)) % 2 ∧
         ((2 * n) / (2 * r)) % 2 = if r ≤ n then 1 else 0) :=
-  ⟨fun n hy => ⟨(two_mul_smoothIntegerCount_sub_eq_alternating n hy).2,
+  ⟨fun n {_} hy => ⟨(two_mul_smoothIntegerCount_sub_eq_alternating n hy).2,
      two_mul_smoothIntegerCount_sub_eq_middle_octave_cancel n hy⟩,
-   fun M hz hzy => alternatingSmoothSum_buchstab M hz hzy,
+   fun M {_} {_} hz hzy => alternatingSmoothSum_buchstab M hz hzy,
    fun hB g => smooth_complement_uniquely_selects_primes hB g,
    fun hr _ hn => centralBinom_carry_top_octave_aliasing hr hn⟩
 

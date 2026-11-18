@@ -107,7 +107,7 @@ def balRem (K : ℕ) (z : ℤ) : ℤ := (z + K) % (2 * (K : ℤ) + 1) - K
 private theorem ediv_emod_unique {M q r' : ℤ} (hM : 0 < M) (hr0 : 0 ≤ r') (hrM : r' < M) :
     (r' + M * q) / M = q ∧ (r' + M * q) % M = r' := by
   let A := r' + M * q
-  have hdiv : M * (A / M) + A % M = A := Int.ediv_add_emod A M
+  have hdiv : M * (A / M) + A % M = A := Int.mul_ediv_add_emod A M
   have hm0 : 0 ≤ A % M := Int.emod_nonneg A hM.ne'
   have hmM : A % M < M := Int.emod_lt_of_pos A hM
   have hdiff : M * (A / M - q) = r' - A % M := by dsimp [A] at hdiv; linarith only [hdiv]
@@ -131,7 +131,7 @@ theorem balRem_bounds (K : ℕ) (z : ℤ) :
 theorem balRem_add_mul_balQuot (K : ℕ) (z : ℤ) :
     balRem K z + (2 * (K : ℤ) + 1) * balQuot K z = z := by
   unfold balRem balQuot
-  have h := Int.ediv_add_emod (z + K) (2 * (K : ℤ) + 1)
+  have h := Int.mul_ediv_add_emod (z + K) (2 * (K : ℤ) + 1)
   linarith only [h]
 
 /-- Centered Euclidean carry involution on `ℤ × ℤ` at odd modulus `2K + 1`. -/
@@ -166,46 +166,46 @@ theorem centeredCarry_linear_conservation (K : ℕ) (p : ℤ × ℤ) :
   dsimp only [centeredCarry]
   linarith only [balRem_add_mul_balQuot K p.1]
 
-/-- Sufficient condition for `centeredCarry K` to map `[-r₀, r₀]²` into `[-r₊, r₊] × [-r₋, r₋]`. -/
-theorem centeredCarry_maps_Icc_of_bounds {K r₀ r₊ r₋ : ℕ}
-    (h₋ : r₀ ≤ (2 * K + 1) * r₋ + K) (h₊ : (2 * K + 1) * r₀ + K ≤ r₊)
+/-- Sufficient condition for `centeredCarry K` to map `[-r₀, r₀]²` into `[-r₁, r₁] × [-r₂, r₂]`. -/
+theorem centeredCarry_maps_Icc_of_bounds {K r₀ r₁ r₂ : ℕ}
+    (h₂ : r₀ ≤ (2 * K + 1) * r₂ + K) (h₁ : (2 * K + 1) * r₀ + K ≤ r₁)
     {z₁ z₂ : ℤ} (hz₁ : z₁ ∈ Finset.Icc (-(r₀ : ℤ)) r₀) (hz₂ : z₂ ∈ Finset.Icc (-(r₀ : ℤ)) r₀) :
-    (centeredCarry K (z₁, z₂)).1 ∈ Finset.Icc (-(r₊ : ℤ)) r₊ ∧
-      (centeredCarry K (z₁, z₂)).2 ∈ Finset.Icc (-(r₋ : ℤ)) r₋ := by
+    (centeredCarry K (z₁, z₂)).1 ∈ Finset.Icc (-(r₁ : ℤ)) r₁ ∧
+      (centeredCarry K (z₁, z₂)).2 ∈ Finset.Icc (-(r₂ : ℤ)) r₂ := by
   rw [Finset.mem_Icc] at hz₁ hz₂ ⊢
   rw [Finset.mem_Icc]
   obtain ⟨hr_lo, hr_hi⟩ := balRem_bounds K z₁
   have hdecomp := balRem_add_mul_balQuot K z₁
   let M : ℤ := 2 * (K : ℤ) + 1
   have hM : 0 < M := by dsimp [M]; omega
-  have h₋' : (r₀ : ℤ) ≤ M * r₋ + K := by dsimp [M]; exact_mod_cast h₋
-  have h₊' : M * (r₀ : ℤ) + K ≤ r₊ := by dsimp [M]; exact_mod_cast h₊
+  have h₂' : (r₀ : ℤ) ≤ M * r₂ + K := by dsimp [M]; exact_mod_cast h₂
+  have h₁' : M * (r₀ : ℤ) + K ≤ r₁ := by dsimp [M]; exact_mod_cast h₁
   refine ⟨?_, ?_⟩
   · dsimp only [centeredCarry]
     have hmul_lo : -M * (r₀ : ℤ) ≤ M * z₂ := by nlinarith only [hM, hz₂.1]
     have hmul_hi : M * z₂ ≤ M * (r₀ : ℤ) := by nlinarith only [hM, hz₂.2]
-    exact ⟨by dsimp [M] at hmul_lo h₊'; linarith only [hr_lo, hmul_lo, h₊'],
-           by dsimp [M] at hmul_hi h₊'; linarith only [hr_hi, hmul_hi, h₊']⟩
+    exact ⟨by dsimp [M] at hmul_lo h₁'; linarith only [hr_lo, hmul_lo, h₁'],
+           by dsimp [M] at hmul_hi h₁'; linarith only [hr_hi, hmul_hi, h₁']⟩
   · dsimp only [centeredCarry]
-    change -(r₋ : ℤ) ≤ balQuot K z₁ ∧ balQuot K z₁ ≤ r₋
+    change -(r₂ : ℤ) ≤ balQuot K z₁ ∧ balQuot K z₁ ≤ r₂
     have hq_eq : M * balQuot K z₁ = z₁ - balRem K z₁ := by
       dsimp [M]; linarith only [hdecomp]
-    have hlo : -M * ((r₋ : ℤ) + 1) < M * balQuot K z₁ := by
-      rw [hq_eq]; dsimp [M] at h₋' ⊢; linarith only [hz₁.1, hr_hi, h₋']
-    have hhi : M * balQuot K z₁ < M * ((r₋ : ℤ) + 1) := by
-      rw [hq_eq]; dsimp [M] at h₋' ⊢; linarith only [hz₁.2, hr_lo, h₋']
-    have q_gt : -((r₋ : ℤ) + 1) < balQuot K z₁ := by
+    have hlo : -M * ((r₂ : ℤ) + 1) < M * balQuot K z₁ := by
+      rw [hq_eq]; dsimp [M] at h₂' ⊢; linarith only [hz₁.1, hr_hi, h₂']
+    have hhi : M * balQuot K z₁ < M * ((r₂ : ℤ) + 1) := by
+      rw [hq_eq]; dsimp [M] at h₂' ⊢; linarith only [hz₁.2, hr_lo, h₂']
+    have q_gt : -((r₂ : ℤ) + 1) < balQuot K z₁ := by
       by_contra! hle; nlinarith only [hM, hlo, hle]
-    have q_lt : balQuot K z₁ < (r₋ : ℤ) + 1 := by
+    have q_lt : balQuot K z₁ < (r₂ : ℤ) + 1 := by
       by_contra! hge; nlinarith only [hM, hhi, hge]
     omega
 
-/-- Necessary bounds whenever `centeredCarry K` maps `[-r₀, r₀]²` into `[-r₊, r₊] × [-r₋, r₋]`. -/
-theorem bounds_of_centeredCarry_maps_Icc {K r₀ r₊ r₋ : ℕ}
+/-- Necessary bounds whenever `centeredCarry K` maps `[-r₀, r₀]²` into `[-r₁, r₁] × [-r₂, r₂]`. -/
+theorem bounds_of_centeredCarry_maps_Icc {K r₀ r₁ r₂ : ℕ}
     (h : ∀ z₁ ∈ Finset.Icc (-(r₀ : ℤ)) r₀, ∀ z₂ ∈ Finset.Icc (-(r₀ : ℤ)) r₀,
-      (centeredCarry K (z₁, z₂)).1 ∈ Finset.Icc (-(r₊ : ℤ)) r₊ ∧
-        (centeredCarry K (z₁, z₂)).2 ∈ Finset.Icc (-(r₋ : ℤ)) r₋) :
-    r₀ ≤ (2 * K + 1) * r₋ + K ∧ (2 * K + 1) * r₀ + min K r₀ ≤ r₊ := by
+      (centeredCarry K (z₁, z₂)).1 ∈ Finset.Icc (-(r₁ : ℤ)) r₁ ∧
+        (centeredCarry K (z₁, z₂)).2 ∈ Finset.Icc (-(r₂ : ℤ)) r₂) :
+    r₀ ≤ (2 * K + 1) * r₂ + K ∧ (2 * K + 1) * r₀ + min K r₀ ≤ r₁ := by
   let u : ℤ := min (K : ℤ) r₀
   have hu_mem : u ∈ Finset.Icc (-(r₀ : ℤ)) r₀ := by
     rw [Finset.mem_Icc]
@@ -225,65 +225,55 @@ theorem bounds_of_centeredCarry_maps_Icc {K r₀ r₊ r₋ : ℕ}
   dsimp only [centeredCarry] at h2
   have hdecomp := balRem_add_mul_balQuot K r₀
   have hr_hi := (balRem_bounds K r₀).2
-  have hmul : (2 * (K : ℤ) + 1) * balQuot K r₀ ≤ (2 * (K : ℤ) + 1) * r₋ :=
+  have hmul : (2 * (K : ℤ) + 1) * balQuot K r₀ ≤ (2 * (K : ℤ) + 1) * r₂ :=
     Int.mul_le_mul_of_nonneg_left h2 (by omega)
-  have h₋' : (r₀ : ℤ) ≤ (2 * (K : ℤ) + 1) * r₋ + K := by linarith only [hdecomp, hr_hi, hmul]
-  have h₊' : (2 * (K : ℤ) + 1) * r₀ + min (K : ℤ) r₀ ≤ r₊ := by dsimp [u] at h1; linarith only [h1]
-  exact ⟨by exact_mod_cast h₋', by exact_mod_cast h₊'⟩
+  have h₂' : (r₀ : ℤ) ≤ (2 * (K : ℤ) + 1) * r₂ + K := by linarith only [hdecomp, hr_hi, hmul]
+  have h₁' : (2 * (K : ℤ) + 1) * r₀ + min (K : ℤ) r₀ ≤ r₁ := by dsimp [u] at h1; linarith only [h1]
+  exact ⟨by exact_mod_cast h₂', by exact_mod_cast h₁'⟩
 
 /-- Exact necessary-and-sufficient interval condition for `centeredCarry K` when `K ≤ r₀`. -/
-theorem centeredCarry_maps_Icc_iff {K r₀ r₊ r₋ : ℕ} (hKr : K ≤ r₀) :
+theorem centeredCarry_maps_Icc_iff {K r₀ r₁ r₂ : ℕ} (hKr : K ≤ r₀) :
     (∀ z₁ ∈ Finset.Icc (-(r₀ : ℤ)) r₀, ∀ z₂ ∈ Finset.Icc (-(r₀ : ℤ)) r₀,
-      (centeredCarry K (z₁, z₂)).1 ∈ Finset.Icc (-(r₊ : ℤ)) r₊ ∧
-        (centeredCarry K (z₁, z₂)).2 ∈ Finset.Icc (-(r₋ : ℤ)) r₋) ↔
-      r₀ ≤ (2 * K + 1) * r₋ + K ∧ (2 * K + 1) * r₀ + K ≤ r₊ := by
+      (centeredCarry K (z₁, z₂)).1 ∈ Finset.Icc (-(r₁ : ℤ)) r₁ ∧
+        (centeredCarry K (z₁, z₂)).2 ∈ Finset.Icc (-(r₂ : ℤ)) r₂) ↔
+      r₀ ≤ (2 * K + 1) * r₂ + K ∧ (2 * K + 1) * r₀ + K ≤ r₁ := by
   constructor
   · intro h
-    obtain ⟨h₋, h₊⟩ := bounds_of_centeredCarry_maps_Icc h
-    rwa [min_eq_left hKr] at h₊
-  · rintro ⟨h₋, h₊⟩ z₁ hz₁ z₂ hz₂
-    exact centeredCarry_maps_Icc_of_bounds h₋ h₊ hz₁ hz₂
+    obtain ⟨h₂, h₁⟩ := bounds_of_centeredCarry_maps_Icc h
+    rwa [min_eq_left hKr] at h₁
+  · rintro ⟨h₂, h₁⟩ z₁ hz₁ z₂ hz₂
+    exact centeredCarry_maps_Icc_of_bounds h₂ h₁ hz₁ hz₂
 
 /-- Any odd carry schedule `M_m = 2 K_m + 1` whose normalized logarithmic scale `μ`
-lies strictly inside `(Q(v₀) - Q(v₋), Q(v₊) - Q(v₀))` eventually restricts to a
-reversible midpoint section injection `S(m v₀)² ↪ S(m v₊) × S(m v₋)`. -/
-theorem eventually_centeredCarry_sections_of_window {N : ℕ} {v₀ v₊ v₋ : Fin N → ℤ}
-    (hv₀ : 0 < integerProbe N v₀) (hv₊ : 0 < integerProbe N v₊) (hv₋ : 0 < integerProbe N v₋)
+lies strictly inside `(Q(v₀) - Q(v₂), Q(v₁) - Q(v₀))` eventually restricts to a
+reversible midpoint section injection `S(m v₀)² ↪ S(m v₁) × S(m v₂)`. -/
+theorem eventually_centeredCarry_sections_of_window {N : ℕ} {v₀ v₁ v₂ : Fin N → ℤ}
+    (hv₀ : 0 < integerProbe N v₀) (hv₁ : 0 < integerProbe N v₁) (hv₂ : 0 < integerProbe N v₂)
     {K : ℕ → ℕ} {μ : ℝ}
     (hK : Tendsto (fun m : ℕ => Real.log (2 * K m + 1 : ℕ) / (m : ℝ)^2) atTop (𝓝 μ))
-    (hlo : integerProbe N v₀ - integerProbe N v₋ < μ)
-    (hhi : μ < integerProbe N v₊ - integerProbe N v₀) :
-    ∀ᶠ m : ℕ in atTop, mapsDivisorSections (centeredCarry (K m)) (m • v₀) (m • v₊) (m • v₋) := by
+    (hlo : integerProbe N v₀ - integerProbe N v₂ < μ)
+    (hhi : μ < integerProbe N v₁ - integerProbe N v₀) :
+    ∀ᶠ m : ℕ in atTop, mapsDivisorSections (centeredCarry (K m)) (m • v₀) (m • v₁) (m • v₂) := by
   have hr₀ := tendsto_log_sectionRadius hv₀
-  have hr₊ := tendsto_log_sectionRadius hv₊
-  have hr₋ := tendsto_log_sectionRadius hv₋
+  have hr₁ := tendsto_log_sectionRadius hv₁
+  have hr₂ := tendsto_log_sectionRadius hv₂
   have hc2 : Tendsto (fun m : ℕ => Real.log 2 / (m : ℝ)^2) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop
       ((tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop)
-  have hev₋ := ((hK.add hr₋).sub hr₀).eventually_const_lt
-    (show (0 : ℝ) < μ + integerProbe N v₋ - integerProbe N v₀ by linarith)
-  have hev₊_2 := (((hr₊.sub hK).sub hr₀).sub hc2).eventually_const_lt
-    (show (0 : ℝ) < integerProbe N v₊ - μ - integerProbe N v₀ - 0 by linarith)
-  have hr₀_pos : ∀ᶠ m : ℕ in atTop, 1 ≤ sectionRadius (m • v₀) := by
-    filter_upwards [hr₀.eventually_const_lt (half_pos hv₀), eventually_ge_atTop 1] with m hm hm1
+  have hev₂ := ((hK.add hr₂).sub hr₀).eventually_const_lt
+    (show (0 : ℝ) < μ + integerProbe N v₂ - integerProbe N v₀ by linarith)
+  have hev₁ := (((hr₁.sub hK).sub hr₀).sub hc2).eventually_const_lt
+    (show (0 : ℝ) < integerProbe N v₁ - μ - integerProbe N v₀ - 0 by linarith)
+  have hpos {v : Fin N → ℤ} (hv : 0 < integerProbe N v) :
+      ∀ᶠ m : ℕ in atTop, 1 ≤ sectionRadius (m • v) := by
+    filter_upwards [(tendsto_log_sectionRadius hv).eventually_const_lt (half_lt_self hv),
+      eventually_ge_atTop 1] with m hm hm1
     by_contra! h0
-    have hz : sectionRadius (m • v₀) = 0 := by omega
+    have hz : sectionRadius (m • v) = 0 := by omega
     rw [hz, Nat.cast_zero, Real.log_zero, zero_div] at hm
-    linarith [half_pos hv₀]
-  have hr₋_pos : ∀ᶠ m : ℕ in atTop, 1 ≤ sectionRadius (m • v₋) := by
-    filter_upwards [hr₋.eventually_const_lt (half_pos hv₋), eventually_ge_atTop 1] with m hm hm1
-    by_contra! h0
-    have hz : sectionRadius (m • v₋) = 0 := by omega
-    rw [hz, Nat.cast_zero, Real.log_zero, zero_div] at hm
-    linarith [half_pos hv₋]
-  have hr₊_pos : ∀ᶠ m : ℕ in atTop, 1 ≤ sectionRadius (m • v₊) := by
-    filter_upwards [hr₊.eventually_const_lt (half_pos hv₊), eventually_ge_atTop 1] with m hm hm1
-    by_contra! h0
-    have hz : sectionRadius (m • v₊) = 0 := by omega
-    rw [hz, Nat.cast_zero, Real.log_zero, zero_div] at hm
-    linarith [half_pos hv₊]
-  filter_upwards [hev₋, hev₊_2, hr₀_pos, hr₋_pos, hr₊_pos, eventually_ge_atTop 1]
-    with m hm₋ hm₊ h₀ h₋ h₊ hm1
+    linarith [half_pos hv]
+  filter_upwards [hev₂, hev₁, hpos hv₀, hpos hv₂, hpos hv₁, eventually_ge_atTop 1]
+    with m hm₂ hm₁ h₀ h₂ h₁ hm1
   intro z₁ hz₁ z₂ hz₂
   rw [divisorSections_eq_Icc] at hz₁ hz₂ ⊢
   rw [divisorSections_eq_Icc]
@@ -291,34 +281,34 @@ theorem eventually_centeredCarry_sections_of_window {N : ℕ} {v₀ v₊ v₋ : 
   let M : ℕ := 2 * K m + 1
   have hM : 0 < M := by dsimp [M]; omega
   refine centeredCarry_maps_Icc_of_bounds ?_ ?_ hz₁ hz₂
-  · have hd : 0 < (Real.log (M : ℝ) + Real.log (sectionRadius (m • v₋)) -
+  · have hd : 0 < (Real.log (M : ℝ) + Real.log (sectionRadius (m • v₂)) -
         Real.log (sectionRadius (m • v₀))) / (m : ℝ)^2 := by
-      simpa only [M, add_div, sub_div] using hm₋
+      simpa only [M, add_div, sub_div] using hm₂
     have hlog := (lt_div_iff₀ hm2).mp hd
     rw [zero_mul] at hlog
     have hlt : Real.log (sectionRadius (m • v₀)) <
-        Real.log ((M * sectionRadius (m • v₋) : ℕ) : ℝ) := by
-      rw [Nat.cast_mul, Real.log_mul (Nat.cast_pos.mpr hM).ne' (Nat.cast_pos.mpr h₋).ne']
+        Real.log ((M * sectionRadius (m • v₂) : ℕ) : ℝ) := by
+      rw [Nat.cast_mul, Real.log_mul (Nat.cast_pos.mpr hM).ne' (Nat.cast_pos.mpr h₂).ne']
       linarith only [hlog]
-    have hnat : sectionRadius (m • v₀) < M * sectionRadius (m • v₋) := by
+    have hnat : sectionRadius (m • v₀) < M * sectionRadius (m • v₂) := by
       exact_mod_cast (Real.log_lt_log_iff (Nat.cast_pos.mpr h₀)
-        (Nat.cast_pos.mpr (Nat.mul_pos hM h₋))).mp hlt
+        (Nat.cast_pos.mpr (Nat.mul_pos hM h₂))).mp hlt
     dsimp [M] at hnat; omega
-  · have hd : 0 < (Real.log (sectionRadius (m • v₊)) - Real.log (M : ℝ) -
+  · have hd : 0 < (Real.log (sectionRadius (m • v₁)) - Real.log (M : ℝ) -
         Real.log (sectionRadius (m • v₀)) - Real.log 2) / (m : ℝ)^2 := by
-      simpa only [M, sub_div] using hm₊
+      simpa only [M, sub_div] using hm₁
     have hlog := (lt_div_iff₀ hm2).mp hd
     rw [zero_mul] at hlog
     have hlt : Real.log ((2 * M * sectionRadius (m • v₀) : ℕ) : ℝ) <
-        Real.log (sectionRadius (m • v₊)) := by
+        Real.log (sectionRadius (m • v₁)) := by
       rw [Nat.cast_mul, Nat.cast_mul, Nat.cast_ofNat,
         Real.log_mul (mul_ne_zero two_ne_zero (Nat.cast_pos.mpr hM).ne') (Nat.cast_pos.mpr h₀).ne',
         Real.log_mul two_ne_zero (Nat.cast_pos.mpr hM).ne']
       linarith only [hlog]
-    have hnat : 2 * M * sectionRadius (m • v₀) < sectionRadius (m • v₊) := by
+    have hnat : 2 * M * sectionRadius (m • v₀) < sectionRadius (m • v₁) := by
       exact_mod_cast (Real.log_lt_log_iff
         (Nat.cast_pos.mpr (Nat.mul_pos (Nat.mul_pos (by decide) hM) h₀))
-        (Nat.cast_pos.mpr h₊)).mp hlt
+        (Nat.cast_pos.mpr h₁)).mp hlt
     have hK_le : K m ≤ M * sectionRadius (m • v₀) := by
       have : K m ≤ M * 1 := by dsimp [M]; omega
       exact this.trans (Nat.mul_le_mul_left M h₀)
@@ -469,7 +459,7 @@ theorem natBlockCarry_modEq (t : ℕ) {x₁ x₂ x₁' x₂' : ℕ}
     (natBlockCarry x₁ x₂).1 ≡ (natBlockCarry x₁' x₂').1 [MOD 32768 ^ t] ∧
       (natBlockCarry x₁ x₂).2 ≡ (natBlockCarry x₁' x₂').2 [MOD 8 ^ t] := by
   induction t generalizing x₁ x₂ x₁' x₂' with
-  | zero => simp [Nat.ModEq]
+  | zero => simp [Nat.ModEq, Nat.mod_one]
   | succ t ih =>
     have hpow : 512 ^ (t + 1) = 512 * 512 ^ t := by rw [pow_succ, mul_comm]
     rw [hpow] at h₁ h₂
@@ -540,7 +530,7 @@ theorem natBlockCarry_cube_bounds {x₁ x₂ B : ℕ} (hB : 1 ≤ B) (h₁ : x�
         < (32768 ^ (L + 1)) ^ 3 := Nat.pow_lt_pow_left hy₁ (by decide)
       _ = (32768 ^ 3) ^ (L + 1) := by rw [← pow_mul, mul_comm, pow_mul]
       _ = (512 ^ 5) ^ (L + 1) := by rw [show (32768 : ℕ) ^ 3 = 512 ^ 5 by decide]
-      _ = 512 ^ 5 * (512 ^ L) ^ 5 := by rw [pow_succ, mul_comm, ← pow_mul, mul_comm L 5, pow_mul]
+      _ = 512 ^ 5 * (512 ^ L) ^ 5 := by rw [pow_succ, mul_comm, ← pow_mul, mul_comm 5 L, pow_mul]
       _ ≤ 512 ^ 5 * B ^ 5 := Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hpow_le 5)
   · calc (natBlockCarry x₁ x₂).2 ^ 3
         < (8 ^ (L + 1)) ^ 3 := Nat.pow_lt_pow_left hy₂ (by decide)
@@ -578,34 +568,34 @@ def intBlockCarry : ℤ × ℤ ≃ ℤ × ℤ :=
   (zigZagEquiv.prodCongr zigZagEquiv).trans
     (natBlockCarryEquiv.trans (zigZagEquiv.symm.prodCongr zigZagEquiv.symm))
 
-theorem intBlockCarry_maps_Icc_of_cube_bounds {r₀ r₊ r₋ : ℕ} (hr₀ : 1 ≤ r₀)
-    (h₊ : 32 * 512 ^ 5 * r₀ ^ 5 ≤ r₊ ^ 3) (h₋ : 1024 * r₀ ≤ r₋ ^ 3)
+theorem intBlockCarry_maps_Icc_of_cube_bounds {r₀ r₁ r₂ : ℕ} (hr₀ : 1 ≤ r₀)
+    (h₁ : 32 * 512 ^ 5 * r₀ ^ 5 ≤ r₁ ^ 3) (h₂ : 1024 * r₀ ≤ r₂ ^ 3)
     {z₁ z₂ : ℤ} (hz₁ : z₁ ∈ Finset.Icc (-(r₀ : ℤ)) r₀) (hz₂ : z₂ ∈ Finset.Icc (-(r₀ : ℤ)) r₀) :
-    (intBlockCarry (z₁, z₂)).1 ∈ Finset.Icc (-(r₊ : ℤ)) r₊ ∧
-      (intBlockCarry (z₁, z₂)).2 ∈ Finset.Icc (-(r₋ : ℤ)) r₋ := by
+    (intBlockCarry (z₁, z₂)).1 ∈ Finset.Icc (-(r₁ : ℤ)) r₁ ∧
+      (intBlockCarry (z₁, z₂)).2 ∈ Finset.Icc (-(r₂ : ℤ)) r₂ := by
   rw [Finset.mem_Icc] at hz₁ hz₂ ⊢
   rw [Finset.mem_Icc]
   have hx₁ : zigZag z₁ ≤ 2 * r₀ := by unfold zigZag; split_ifs <;> omega
   have hx₂ : zigZag z₂ ≤ 2 * r₀ := by unfold zigZag; split_ifs <;> omega
   obtain ⟨hy₁, hy₂⟩ := natBlockCarry_cube_bounds (B := 2 * r₀) (by omega) hx₁ hx₂
   let y := natBlockCarry (zigZag z₁) (zigZag z₂)
-  have hy₁_le : y.1 ≤ r₊ := by
-    have hcube : y.1 ^ 3 < r₊ ^ 3 := by
+  have hy₁_le : y.1 ≤ r₁ := by
+    have hcube : y.1 ^ 3 < r₁ ^ 3 := by
       calc y.1 ^ 3 < 512 ^ 5 * (2 * r₀) ^ 5 := hy₁
         _ = 32 * 512 ^ 5 * r₀ ^ 5 := by ring
-        _ ≤ r₊ ^ 3 := h₊
+        _ ≤ r₁ ^ 3 := h₁
     by_contra! hgt
     exact hcube.not_ge (Nat.pow_le_pow_left hgt.le 3)
-  have hy₂_le : y.2 ≤ r₋ := by
-    have hcube : y.2 ^ 3 < r₋ ^ 3 := by
+  have hy₂_le : y.2 ≤ r₂ := by
+    have hcube : y.2 ^ 3 < r₂ ^ 3 := by
       calc y.2 ^ 3 < 512 * (2 * r₀) := hy₂
         _ = 1024 * r₀ := by ring
-        _ ≤ r₋ ^ 3 := h₋
+        _ ≤ r₂ ^ 3 := h₂
     by_contra! hgt
     exact hcube.not_ge (Nat.pow_le_pow_left hgt.le 3)
   have hunz (n b : ℕ) (hnb : n ≤ b) : -(b : ℤ) ≤ unZigZag n ∧ unZigZag n ≤ b := by
     unfold unZigZag; split_ifs <;> omega
-  exact ⟨hunz y.1 r₊ hy₁_le, hunz y.2 r₋ hy₂_le⟩
+  exact ⟨hunz y.1 r₁ hy₁_le, hunz y.2 r₂ hy₂_le⟩
 
 /-- Whenever `0 < Q(v₀)`, `5 Q(v₀) < 3 Q(v₁)`, and `Q(v₀) < 3 Q(v₂)`, the single
 parameter-free bijection `intBlockCarry` eventually maps `S(m v₀)²` into
@@ -629,7 +619,7 @@ theorem eventually_intBlockCarry_sections {N : ℕ} {v₀ v₁ v₂ : Fin N → 
     (show (0 : ℝ) < 3 * integerProbe N v₂ - integerProbe N v₀ - 0 by linarith)
   have hpos {v : Fin N → ℤ} (hv : 0 < integerProbe N v) :
       ∀ᶠ m : ℕ in atTop, 1 ≤ sectionRadius (m • v) := by
-    filter_upwards [(tendsto_log_sectionRadius hv).eventually_const_lt (half_pos hv),
+    filter_upwards [(tendsto_log_sectionRadius hv).eventually_const_lt (half_lt_self hv),
       eventually_ge_atTop 1] with m hm hm1
     by_contra! h0
     have hz : sectionRadius (m • v) = 0 := by omega
@@ -685,9 +675,9 @@ theorem eventually_intBlockCarry_positive_ray {N : ℕ} {b : Fin N → ℤ}
 
 private theorem sum_extend_zero {ι κ : Type*} [Fintype ι] [Fintype κ] [DecidableEq κ]
     {e : ι → κ} (he : Function.Injective e) (w : κ → ℝ) (u : ι → ℤ) :
-    (∑ ℓ : κ, w ℓ * (Function.extend e u 0 ℓ : ℝ)) = ∑ i : ι, w (e i) * (u i : ℝ) := by
+    (∑ ℓ : κ, w ℓ * ((Function.extend e u 0 ℓ : ℤ) : ℝ)) = ∑ i : ι, w (e i) * (u i : ℝ) := by
   have hoff : ∀ ℓ, ℓ ∉ Finset.univ.image e →
-      w ℓ * (Function.extend e u 0 ℓ : ℝ) = 0 := by
+      w ℓ * ((Function.extend e u 0 ℓ : ℤ) : ℝ) = 0 := by
     intro ℓ hℓ
     have hz : Function.extend e u 0 ℓ = 0 :=
       Function.extend_apply' _ _ _ fun ⟨i, hi⟩ => hℓ (Finset.mem_image.mpr ⟨i, Finset.mem_univ _, hi⟩)
@@ -701,13 +691,15 @@ private def halfWindowReadings (N k : ℕ) :
   toFun v := (fun i => v (Fin.castLE (Nat.div_le_self N 2) i),
     fun j => ∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * v i)
   map_add' v w := by
-    apply Prod.ext rfl
+    apply Prod.ext
+    · rfl
     funext j
     change ∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * (v i + w i) =
       (∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * v i) + ∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * w i
     simp only [mul_add, Finset.sum_add_distrib]
   map_smul' c v := by
-    apply Prod.ext rfl
+    apply Prod.ext
+    · rfl
     funext j
     change ∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * (c * v i) = c * ∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * v i
     rw [Finset.mul_sum]
@@ -726,7 +718,7 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
         b = U + V ∧ a = 3 • U - V ∧
         (∀ ℓ, U ℓ = 0 ∨ V ℓ = 0) ∧
         (∀ i j : Fin (p * N), U i ≠ 0 → V j ≠ 0 → p * (i.val + 1) < 2 * (j.val + 1)) ∧
-        (∑ ℓ, a ℓ) = 0 ∧ (∃ ℓ₊, 0 < a ℓ₊) ∧ (∃ ℓ₋, a ℓ₋ < 0) ∧
+        (∑ ℓ, a ℓ) = 0 ∧ (∃ ℓ₁, 0 < a ℓ₁) ∧ (∃ ℓ₂, a ℓ₂ < 0) ∧
         0 < integerProbe (p * N) b ∧ 0 < integerProbe (p * N) a ∧
         (∀ᶠ m : ℕ in atTop,
           ∃ h : mapsDivisorSections intBlockCarry
@@ -776,7 +768,7 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
     have h0 := hu_mom 0 (Nat.lt_of_lt_of_le Nat.zero_lt_one (le_max_right k 1))
     simp only [pow_zero, one_mul] at h0
     exact_mod_cast h0
-  obtain ⟨i₊, hi₊⟩ : ∃ i : Fin N, 0 < u i := by
+  obtain ⟨i₁, hi₁⟩ : ∃ i : Fin N, 0 < u i := by
     by_contra! hnonpos
     rcases lt_or_gt_of_ne hi₀ with hneg | hpos
     · have hsplit := (Finset.add_sum_erase Finset.univ u (Finset.mem_univ i₀)).symm
@@ -902,22 +894,22 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
         simp only [nsmul_eq_mul, Int.cast_sub, Int.cast_mul, Int.cast_ofNat]
       rw [hexp, h0U, h0V]; ring
     exact_mod_cast hreal
-  have ha_pos_entry : ∃ ℓ₊, 0 < a ℓ₊ := by
-    refine ⟨ePad i₊, ?_⟩
-    have hUi : U (ePad i₊) = u i₊ := hePad.extend_apply u 0 i₊
-    have hVi : V (ePad i₊) = 0 :=
-      (hdisj (ePad i₊)).resolve_left (by rw [hUi]; omega)
-    change 0 < (3 : ℕ) • U (ePad i₊) - V (ePad i₊)
+  have ha_pos_entry : ∃ ℓ₁, 0 < a ℓ₁ := by
+    refine ⟨ePad i₁, ?_⟩
+    have hUi : U (ePad i₁) = u i₁ := hePad.extend_apply u 0 i₁
+    have hVi : V (ePad i₁) = 0 :=
+      (hdisj (ePad i₁)).resolve_left (by rw [hUi]; omega)
+    change 0 < (3 : ℕ) • U (ePad i₁) - V (ePad i₁)
     rw [nsmul_eq_mul, hUi, hVi]
     omega
-  have ha_neg_entry : ∃ ℓ₋, a ℓ₋ < 0 := by
-    let ℓ₋ := CountingHolography.dilateIndex hp0 N i₊
-    refine ⟨ℓ₋, ?_⟩
-    have hVi : V ℓ₋ = u i₊ :=
-      (CountingHolography.dilateIndex_injective hp0 N).extend_apply u 0 i₊
-    have hUi : U ℓ₋ = 0 :=
-      (hdisj ℓ₋).resolve_right (by rw [hVi]; omega)
-    change (3 : ℕ) • U ℓ₋ - V ℓ₋ < 0
+  have ha_neg_entry : ∃ ℓ₂, a ℓ₂ < 0 := by
+    let ℓ₂ := CountingHolography.dilateIndex hp0 N i₁
+    refine ⟨ℓ₂, ?_⟩
+    have hVi : V ℓ₂ = u i₁ :=
+      (CountingHolography.dilateIndex_injective hp0 N).extend_apply u 0 i₁
+    have hUi : U ℓ₂ = 0 :=
+      (hdisj ℓ₂).resolve_right (by rw [hVi]; omega)
+    change (3 : ℕ) • U ℓ₂ - V ℓ₂ < 0
     rw [nsmul_eq_mul, hUi, hVi]
     omega
   -- Parallelogram calculation of `Q(3b + a)` and `Q(3b - a)` via Hecke dilation isometry.

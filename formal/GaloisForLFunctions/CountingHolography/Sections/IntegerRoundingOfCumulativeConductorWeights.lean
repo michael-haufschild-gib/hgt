@@ -1,7 +1,8 @@
 import Mathlib.Algebra.Order.Floor.Ring
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Real.Archimedean
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Ring
 
 /-!
 # Integer multiplicities from cumulative conductor weights

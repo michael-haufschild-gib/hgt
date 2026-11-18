@@ -118,6 +118,10 @@ private theorem iUnion_scaledPrimeBin {x : ℝ} (hx : 0 < x) :
 /-- Prime at logarithmic mass coordinate x*y, divided by x. -/
 def primeBinReading (x : ℝ) (y : ℝ) : ℝ := ((primeMassBin (x*y):ℝ)+1)/x
 
+theorem primeBinReading_one_pos (y : ℝ) : 0 < primeBinReading 1 y := by
+  unfold primeBinReading
+  positivity
+
 theorem measurable_primeBinReading (x : ℝ) : Measurable (primeBinReading x) := by
   have hn : Measurable (fun y : ℝ => primeMassBin (x*y)) :=
     monotone_primeMassBin.measurable.comp (measurable_const.mul measurable_id)

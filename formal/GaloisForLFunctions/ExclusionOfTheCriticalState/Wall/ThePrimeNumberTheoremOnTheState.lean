@@ -106,6 +106,40 @@ private theorem prime_test_eq_layer {Φ : ℝ → ℝ} (hs : ∀ u, 0 ≤ u → 
     field_simp [hk.ne']; ring
   rw [he]; ring
 
+/-- On logarithmic Chebyshev mass coordinates, the square layer is an exact integral
+of translates. Each interval in the mass coordinate contributes its prime's logarithm. -/
+theorem primeSquareLayer_eq_bin_integral {Φ : ℝ → ℝ} (hc : Continuous Φ)
+    (hs : ∀ u, 0 ≤ u → Φ u=0) {C : ℝ} (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
+    {t : ℝ} (ht : 0 ≤ t) :
+    primePowerLayer Φ 2 t = ∫ r : ℝ,
+      let p := primeBinReading 1 (Real.exp r)
+      Real.exp r/p*Φ (t-2*Real.log p) := by
+  let Ψ := fun u : ℝ => Φ (t+u)
+  have hΨ : Continuous Ψ := hc.comp (continuous_const.add continuous_id)
+  have hsΨ (u : ℝ) (hu : 0 ≤ u) : Ψ u=0 := hs _ (add_nonneg ht hu)
+  have hbΨ (u : ℝ) : |Ψ u| ≤ (C*Real.exp (2*t))*Real.exp (2*u) := by
+    simpa only [Ψ,mul_add,Real.exp_add,mul_assoc] using hb (t+u)
+  have hCΨ : 0 ≤ C*Real.exp (2*t) := mul_nonneg hC (Real.exp_pos _).le
+  have hI := integral_primeBinReading_eq (continuous_primeDilationTest hΨ 2).measurable
+    (mul_nonneg (by norm_num : (0:ℝ) ≤ 2) hCΨ)
+    (fun u _ => primeDilationTest_bound hsΨ hCΨ hbΨ (by norm_num : (1:ℝ) ≤ 2) u)
+    (x := 1) zero_lt_one
+  rw [integral_Ici_eq_integral_Ioi,HTGeometry.integral_Ioi_comp_exp] at hI
+  simp only [div_one] at hI
+  have hP := prime_test_eq_layer hsΨ (by norm_num : (0:ℝ) < 2) 0
+  simp only [zero_div,Real.exp_zero,div_one,mul_zero,one_mul] at hP
+  have hp : primePowerLayer Φ 2 t = primePowerLayer Ψ 2 0 := by
+    simp only [primePowerLayer,Ψ,zero_sub,sub_eq_add_neg]
+  rw [hp,← hP,← hI]
+  apply integral_congr_ae (Eventually.of_forall fun r => ?_)
+  let p := primeBinReading 1 (Real.exp r)
+  have hp0 := primeBinReading_one_pos (Real.exp r)
+  change Real.exp r*primeDilationTest Ψ 2 p = Real.exp r/p*Φ (t-2*Real.log p)
+  rw [primeDilationTest_of_pos hsΨ (by norm_num : (0:ℝ) ≤ 2) hp0]
+  norm_num only [div_self (by norm_num : (2:ℝ) ≠ 0),neg_one_mul,Real.exp_neg,
+    Real.exp_log (show 0 < p from hp0)]
+  simp only [Ψ,neg_mul,sub_eq_add_neg,div_eq_mul_inv,mul_assoc]
+
 /-- A fixed prime-power layer samples the Laplace integral of any continuous confined profile. -/
 theorem tendsto_primePowerLayer_of_confinement {Φ : ℝ → ℝ} (hΦ : Continuous Φ)
     (hs : ∀ u, 0 ≤ u → Φ u=0) {C : ℝ} (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
