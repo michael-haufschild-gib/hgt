@@ -119,7 +119,28 @@ theorem square_diagonal_finite_place_cost :
   change (∑ p ∈ S, |e p| * vonMangoldt p)-(2*D)*(n:ℝ)^2 ≤ _
   linarith only [hh,hd hn]
 
+/-- Every choice of the factorial prime coordinates leaves at least a
+fixed positive multiple of the cubic conductor scale in absolute cost. -/
+theorem square_diagonal_finite_place_cubic_lower :
+    ∃ c : ℝ, 0 < c ∧ ∀ᶠ n : ℕ in atTop, ∀ b : ℕ → ℤ,
+      let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
+      c*(n:ℝ)^3 ≤ ∑ p ∈ ordinaryPrimeLags (3*windowEnd ((2*n+1)^2+1)),
+        |(deningerRatExp q p:ℝ)-2*p*(b p:ℝ)| * vonMangoldt p := by
+  obtain ⟨C,_,hcost⟩ := square_diagonal_finite_place_cost
+  obtain ⟨a,_,ha,_,hden⟩ := successorSquare_denominator_order
+  refine ⟨a/2,half_pos ha,?_⟩
+  filter_upwards [hcost,hden,eventually_ge_atTop 1,
+    tendsto_natCast_atTop_atTop.eventually_ge_atTop (2*C/a)] with n hc hd hn hlarge
+  intro b
+  let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
+  have h₁ : a*((n:ℝ)^2+n*(n:ℝ)^2) ≤ Real.log q.den := (hd (m := n) hn).1
+  have h₂ := mul_le_mul_of_nonneg_right ((div_le_iff₀ ha).mp hlarge) (sq_nonneg (n:ℝ))
+  have h₃ := hc b
+  change Real.log q.num.natAbs+Real.log q.den-C*(n:ℝ)^2 ≤ _ at h₃
+  linarith only [h₁,h₂,h₃,Real.log_natCast_nonneg q.num.natAbs,mul_nonneg ha.le (sq_nonneg (n:ℝ))]
+
 #print axioms ordinary_absolute_prime_mass
 #print axioms square_diagonal_finite_place_cost
+#print axioms square_diagonal_finite_place_cubic_lower
 
 end GaloisForLFunctions.CountingHolography.Sections

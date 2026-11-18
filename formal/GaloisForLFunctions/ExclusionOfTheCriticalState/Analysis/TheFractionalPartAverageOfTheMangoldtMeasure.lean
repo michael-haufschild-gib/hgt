@@ -74,5 +74,67 @@ theorem tendsto_fractionalMangoldtError {x : ℝ} (hx : 1 ≤ x) :
   rw [log_factorial_floor_eq,abs_le]
   constructor <;> linarith only [hm,hm',hs,hs',Real.log_nonneg hx]
 
+open MeasureTheory Set intervalIntegral in
+/-- Logarithmic density of the positive fractional-part test on the
+positive ray. Each interval between consecutive log integers contributes
+the corresponding difference of a logarithm and a harmonic increment. -/
+theorem fractional_density_integral :
+    ∫ v in Ioi (0:ℝ), Real.exp (-v)*Int.fract (Real.exp v) =
+      1-Real.eulerMascheroniConstant := by
+  let f := fun v : ℝ => Real.exp (-v)*Int.fract (Real.exp v)
+  have hm : Measurable f := (by fun_prop : Measurable fun v : ℝ => Real.exp (-v)).mul
+    (measurable_fract.comp Real.measurable_exp)
+  have hbound (v : ℝ) : ‖f v‖ ≤ Real.exp (-v) := by
+    rw [Real.norm_eq_abs, f, abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (Int.fract_nonneg _))]
+    exact mul_le_of_le_one_right (Real.exp_pos _).le (Int.fract_lt_one _).le
+  have hi : IntegrableOn f (Ioi 0) := by
+    have h := integrableOn_exp_mul_Ioi (by norm_num : (-1:ℝ) < 0) 0
+    simp only [neg_one_mul] at h
+    exact h.mono' hm.aestronglyMeasurable.restrict (Eventually.of_forall hbound)
+  have hil {a b : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) : IntervalIntegrable f volume a b :=
+    (intervalIntegrable_iff_integrableOn_Ioc_of_le hab).2
+      (hi.mono_set fun _ h => lt_of_le_of_lt ha h.1)
+  have hcell (n : ℕ) (hn : 1 ≤ n) :
+      ∫ v in Real.log n..Real.log ((n:ℝ)+1), f v =
+        Real.log ((n:ℝ)+1)-Real.log n-1/((n:ℝ)+1) := by
+    have hn0 : (0:ℝ) < n := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hn)
+    have hn1 : (0:ℝ) < (n:ℝ)+1 := by positivity
+    have hab := Real.log_le_log hn0 (le_add_of_nonneg_right zero_le_one)
+    have hae : ∀ᵐ v ∂(volume : Measure ℝ), v ≠ Real.log ((n:ℝ)+1) := by rw [ae_iff]; simp
+    have heq : (∫ v in Real.log n..Real.log ((n:ℝ)+1), f v) =
+        ∫ v in Real.log n..Real.log ((n:ℝ)+1), 1-(n:ℝ)*Real.exp (-v) := by
+      apply integral_congr_ae (hae.mono fun v hv hmem => ?_)
+      rw [uIoc_of_le hab] at hmem
+      have hlow : (n:ℝ) ≤ Real.exp v := (Real.log_le_iff_le_exp hn0).mp hmem.1.le
+      have hupp : Real.exp v < (n:ℝ)+1 := (Real.lt_log_iff_exp_lt hn1).mp (lt_of_le_of_ne hmem.2 hv)
+      have hf : ⌊Real.exp v⌋ = (n:ℤ) := by rw [Int.floor_eq_iff]; push_cast; exact ⟨hlow,hupp⟩
+      dsimp only [f]
+      rw [Int.fract,hf,Int.cast_natCast,mul_sub,← Real.exp_add,neg_add_cancel,Real.exp_zero,mul_comm]
+    rw [heq]
+    have hd (v : ℝ) : HasDerivAt (fun w : ℝ => w+(n:ℝ)*Real.exp (-w)) (1-n*Real.exp (-v)) v := by
+      convert (hasDerivAt_id' v).add (((hasDerivAt_id' v).neg.exp).const_mul (n:ℝ)) using 1 <;> ring
+    rw [integral_eq_sub_of_hasDerivAt (fun v _ => hd v) ((by fun_prop :
+      Continuous (fun v : ℝ => 1-(n:ℝ)*Real.exp (-v))).intervalIntegrable _ _)]
+    rw [Real.exp_neg,Real.exp_neg,Real.exp_log hn0,Real.exp_log hn1]
+    field_simp [hn0.ne',hn1.ne']
+    <;> ring
+  have hpartial (N : ℕ) (hN : 1 ≤ N) :
+      ∫ v in (0:ℝ)..Real.log N, f v = 1-((harmonic N:ℝ)-Real.log N) := by
+    induction N, hN using Nat.le_induction with
+    | base => simp
+    | succ n hn ih =>
+      have hn0 : (0:ℝ) < n := by exact_mod_cast (lt_of_lt_of_le Nat.zero_lt_one hn)
+      have hl := Real.log_nonneg (show (1:ℝ) ≤ n by exact_mod_cast hn)
+      have hstep := Real.log_le_log hn0 (le_add_of_nonneg_right zero_le_one)
+      rw [Nat.cast_succ, ← integral_add_adjacent_intervals (b := Real.log n) (hil le_rfl hl)
+        (hil hl hstep), ih, hcell n hn, harmonic_succ]
+      push_cast
+      ring
+  have hlim := intervalIntegral_tendsto_integral_Ioi (μ := volume) 0 hi
+    (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop)
+  exact tendsto_nhds_unique hlim ((tendsto_const_nhds.sub Real.tendsto_harmonic_sub_log).congr'
+    ((eventually_ge_atTop 1).mono fun n hn => (hpartial n hn).symm))
+
+#print axioms fractional_density_integral
 #print axioms tendsto_fractionalMangoldtError
 end GaloisForLFunctions.ExclusionOfTheCriticalState

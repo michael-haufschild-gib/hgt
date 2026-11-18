@@ -1,12 +1,6 @@
 # Moving divisors in the centered prime wave
 
-Let $D=N-Ae^{t/2}$ be the [integer quadrature error](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/SubcriticalMeanSquareOfTheIntegerQuadrature.lean). The discrepancy of the row of multiples of $d$, after subtracting its own density $Ae^{t/2}/d$, is exactly $d^{-1/2}D(t-\log d)$. For $\alpha>0$, $b\ge0$, $\alpha+b<1/2$ and each fixed $k$, the positive envelope
-\[
- e^{bt}\sum_{d\le e^{\alpha t}}(1+\log d)^k d^{-1/2}|D(t-\log d)|
-\]
-lies in $L^2(0,\infty)$. Choose $b<\beta-\alpha(\beta+1/2)$ with $\beta<1/2$. On the support of each summand, $e^{-(\beta-b)t}\le d^{-(\beta-b)/\alpha}$. The $L^2$ cost of that summand is at most $\|e^{\beta t}D\|_2(1+\log d)^k d^{-1/2+\beta-(\beta-b)/\alpha}$, summable over $d$. This controls all small-divisor coefficients in absolute value, including coefficients selected separately at each time.
-
-[Ordered Möbius inversion](../3-formalized/ecs-ordered-moebius-inversion-of-the-integer-quadrature.md) gives $\sum_d\mu(d)B_d(t)=0$ and $\sum_d-\mu(d)\log d\,B_d(t)=P_\Lambda(t)-Ae^{t/2}$ for $t\ge0$. Here $B_d(t)=d^{-1/2}D(t-\log d)$ and both sums use increasing divisor order. The signed zeroth-moment tail above $e^{\alpha t}$ is the negative small-divisor row. Its first logarithmic moment carries the prime fluctuation up to the small-divisor error.
+The [large-divisor moment theorem](../3-formalized/ecs-large-divisor-moments-of-the-prime-wave.md) controls all small divisors in absolute value and the ordered zeroth moment above the cutoff.
 
 **All divisor scales.** Put $a_d(t)=d^{-1/2}(\log d)^kD(t-\log d)$, $d\ge1$. For $0\le b<1/6$, translation and Tonelli give the exact finite cubic integral
 \[

@@ -1,0 +1,132 @@
+import GaloisForLFunctions.RHTower.Sieve.Buchstab.DelayIntervals
+import Mathlib.Analysis.SpecificLimits.Normed
+import Mathlib.Data.Nat.Factorial.Basic
+
+/-!
+# Nested factorial enclosures for the Buchstab profile
+
+The integral recurrence expresses the new profile as an average whose
+fresh mass has weight at most `1/(n+3)`. Both ends of the old enclosure
+can therefore be contracted towards the common endpoint by that factor.
+-/
+
+namespace RHTower.Sieve.Buchstab
+open MeasureTheory Set Filter Topology
+noncomputable section
+
+/-- Update a bound about the right endpoint of the preceding cell. -/
+private def shrink (n : ℕ) (v : ℝ) : ℝ :=
+  profile n 1 + (v - profile n 1) / ((n:ℝ) + 3)
+
+/-- Recursively propagated lower and upper bounds. -/
+def enclosure : ℕ → ℝ × ℝ
+  | 0 => (1/2, 1)
+  | n+1 => (shrink n (enclosure n).1, shrink n (enclosure n).2)
+
+private theorem integral_bounds (n : ℕ) {l u x : ℝ} (hx : x ∈ Icc 0 1)
+    (hb : ∀ y ∈ Icc (0:ℝ) 1, profile n y ∈ Icc l u) :
+    x * l ≤ ∫ y in (0:ℝ)..x, profile n y ∧ (∫ y in (0:ℝ)..x, profile n y) ≤ x * u := by
+  have hi := (profile_continuous n).intervalIntegrable volume 0 x
+  constructor
+  · have h := intervalIntegral.integral_mono_on hx.1 (intervalIntegrable_const) hi
+      (fun y hy => (hb y ⟨hy.1, hy.2.trans hx.2⟩).1)
+    simpa using h
+  · have h := intervalIntegral.integral_mono_on hx.1 hi (intervalIntegrable_const)
+      (fun y hy => (hb y ⟨hy.1, hy.2.trans hx.2⟩).2)
+    simpa using h
+
+/-- Uniform enclosures on each closed cell, including both junctions. -/
+theorem profile_mem_enclosure (n : ℕ) : ∀ x ∈ Icc (0:ℝ) 1,
+    profile n x ∈ Icc (enclosure n).1 (enclosure n).2 := by
+  induction n with
+  | zero =>
+    intro x hx
+    change (1/2:ℝ) ≤ 1 / ((0:ℝ)+1+max x 0) ∧ 1 / ((0:ℝ)+1+max x 0) ≤ 1
+    rw [max_eq_left hx.1, zero_add]
+    have hd : 0 < 1+x := by linarith [hx.1]
+    constructor
+    · rw [le_div_iff₀ hd]
+      linarith [hx.2]
+    · rw [div_le_iff₀ hd]
+      linarith [hx.1]
+  | succ n ih =>
+    intro x hx
+    have he := ih 1 ⟨zero_le_one, le_rfl⟩
+    obtain ⟨hl,hu⟩ := integral_bounds n hx ih
+    let e := profile n 1
+    let c : ℝ := (n:ℝ)+2
+    have hc : 0 < c := by dsimp [c]; positivity
+    have hd : 0 < c+x := by linarith [hx.1]
+    have hratio : x / (c+x) ≤ 1 / (c+1) := by
+      rw [div_le_div_iff₀ hd (by linarith)]
+      nlinarith only [mul_nonneg hc.le (sub_nonneg.mpr hx.2)]
+    rw [profile_succ_mean n hx.1]
+    change e + ((enclosure n).1-e)/((n:ℝ)+3) ≤
+        (c*e + (∫ y in (0:ℝ)..x, profile n y))/(c+x) ∧
+      (c*e + (∫ y in (0:ℝ)..x, profile n y))/(c+x) ≤ e + ((enclosure n).2-e)/((n:ℝ)+3)
+    rw [show (n:ℝ)+3 = c+1 by dsimp [c]; ring]
+    have splitMean (v : ℝ) : (c*e+x*v)/(c+x) = e+(v-e)*(x/(c+x)) := by
+      field_simp [hd.ne']
+      <;> ring
+    constructor
+    · calc
+        _ ≤ e + ((enclosure n).1-e)*(x/(c+x)) := by
+          have h := mul_le_mul_of_nonpos_left hratio (sub_nonpos.mpr he.1)
+          linarith only [h, div_eq_mul_inv ((enclosure n).1-e) (c+1), one_div (c+1)]
+        _ = _ := (splitMean _).symm
+        _ ≤ _ := div_le_div_of_nonneg_right (add_le_add_right hl _) hd.le
+    · calc
+        _ ≤ (c*e+x*(enclosure n).2)/(c+x) :=
+          div_le_div_of_nonneg_right (add_le_add_right hu _) hd.le
+        _ = _ := splitMean _
+        _ ≤ _ := by
+          have h := mul_le_mul_of_nonneg_left hratio (sub_nonneg.mpr he.2)
+          linarith only [h, div_eq_mul_inv ((enclosure n).2-e) (c+1), one_div (c+1)]
+
+/-- The width is exactly reciprocal factorial, independently of the intervening endpoints. -/
+theorem enclosure_width (n : ℕ) :
+    (enclosure n).2 - (enclosure n).1 = 1 / ((n+2).factorial : ℝ) := by
+  induction n with
+  | zero => norm_num [enclosure, Nat.factorial]
+  | succ n ih =>
+    change shrink n (enclosure n).2 - shrink n (enclosure n).1 = _
+    unfold shrink
+    rw [show profile n 1 + ((enclosure n).2-profile n 1)/((n:ℝ)+3) -
+        (profile n 1 + ((enclosure n).1-profile n 1)/((n:ℝ)+3)) =
+        ((enclosure n).2 - (enclosure n).1)/((n:ℝ)+3) by ring, ih,
+        show n+1+2 = (n+2)+1 by omega, Nat.factorial_succ, Nat.cast_mul, Nat.cast_add,
+        Nat.cast_ofNat]
+    push_cast
+    ring
+
+/-- The enclosure contracts by inclusion, so the factorial error also controls
+profiles on every later interval. -/
+theorem enclosure_nested (n : ℕ) :
+    Icc (enclosure (n+1)).1 (enclosure (n+1)).2 ⊆
+      Icc (enclosure n).1 (enclosure n).2 := by
+  have he := profile_mem_enclosure n 1 ⟨zero_le_one, le_rfl⟩
+  have hd : (1:ℝ) ≤ (n:ℝ)+3 := by positivity
+  have hp : (0:ℝ) < (n:ℝ)+3 := by positivity
+  apply Icc_subset_Icc
+  · change _ ≤ profile n 1 + ((enclosure n).1-profile n 1)/((n:ℝ)+3)
+    rw [← sub_le_iff_le_add', le_div_iff₀ hp]
+    nlinarith only [mul_nonneg (sub_nonneg.mpr he.1) (sub_nonneg.mpr hd)]
+  · change profile n 1 + ((enclosure n).2-profile n 1)/((n:ℝ)+3) ≤ _
+    rw [← le_sub_iff_add_le', div_le_iff₀ hp]
+    nlinarith only [mul_nonneg (sub_nonneg.mpr he.2) (sub_nonneg.mpr hd)]
+
+/-- Arbitrarily far apart cells beyond the same cutoff differ by at most its factorial width. -/
+theorem profile_tail_difference (n a b : ℕ) (x y : Icc (0:ℝ) 1) :
+    |profile (n+a) x - profile (n+b) y| ≤ 1 / ((n+2).factorial : ℝ) := by
+  have nest (k : ℕ) : Icc (enclosure (n+k)).1 (enclosure (n+k)).2 ⊆
+      Icc (enclosure n).1 (enclosure n).2 := by
+    induction k with
+    | zero => exact Subset.rfl
+    | succ k ih => exact (enclosure_nested (n+k)).trans ih
+  have hx := nest a (profile_mem_enclosure _ x x.property)
+  have hy := nest b (profile_mem_enclosure _ y y.property)
+  rw [← enclosure_width, abs_le]
+  constructor <;> linarith only [hx.1, hx.2, hy.1, hy.2]
+
+end
+end RHTower.Sieve.Buchstab

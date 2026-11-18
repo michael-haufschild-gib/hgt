@@ -1,3 +1,4 @@
+import GaloisForLFunctions.SelbergClass.LocalFactors.PowerSumsDetectTheDeterminant
 import GaloisForLFunctions.SelbergClass.DirichletSeries.PrimeRestriction
 import GaloisForLFunctions.SelbergClass.DirichletSeries.DistinctPrimeSign
 import GaloisForLFunctions.SelbergClass.DirichletSeries.DistinctPrimeSignCorrection

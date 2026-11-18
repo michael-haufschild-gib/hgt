@@ -39,13 +39,14 @@ private theorem profile_test_limit {g : ℝ → ℝ} (hg : Continuous g) :
     ring
   change 2*((∑ k ∈ lags n, f k)/(n:ℝ)^2)=_
   rw [hsum]
-  field_simp <;> ring
+  field_simp
 
 private theorem first_limit :
     Tendsto (fun n : ℕ => firstMoment n/(n:ℝ)^3) atTop (𝓝 (-4*Real.log 4*squareAutocorrelationMass)) := by
   have h := profile_test_limit (g := fun u : ℝ => u) continuous_id
-  rw [squareLogProfile_first_half_moment] at h
-  convert h using 1 <;> ring
+  rw [squareLogProfile_first_half_moment,show 2*(-2*Real.log 4*squareAutocorrelationMass)=
+    -4*Real.log 4*squareAutocorrelationMass by ring] at h
+  exact h
 
 /-- Every bounded continuous test of the actual logarithmically weighted
 valuations converges to the difference of two translated positive measures. -/
@@ -84,7 +85,8 @@ theorem tendsto_square_generator_prime_test {g : ℝ → ℝ} (hg : Continuous g
   apply h.congr'
   filter_upwards [] with n
   change _/(n:ℝ)^3+D n/(n:ℝ)^3=_
-  rw [← add_div,D,← sum_add_distrib]
+  dsimp only [D]
+  rw [← add_div,← sum_add_distrib]
   exact congrArg (·/(n:ℝ)^3) (sum_congr rfl fun k _ => by dsimp only [e,T]; ring)
 
 private theorem lags_card_negligible :
@@ -155,7 +157,7 @@ private theorem second_limit : Tendsto (fun n : ℕ => secondMoment n/(n:ℝ)^3)
               exact mul_le_mul_of_nonneg_left (hB _) (by positivity)
       _ = _ := by simp
   rw [Real.norm_eq_abs,abs_div,abs_of_pos (pow_pos hn' 3)]
-  exact (div_le_div_of_nonneg_right hsum (pow_nonneg hn'.le _)).trans_eq (by field_simp <;> ring)
+  exact (div_le_div_of_nonneg_right hsum (pow_nonneg hn'.le _)).trans_eq (by field_simp)
 
 private theorem log_over_power {r : ℝ} (hr : 0<r) :
     Tendsto (fun n : ℕ => T n/(n:ℝ)^r) atTop (𝓝 0) := by
@@ -191,7 +193,7 @@ theorem diagonal_log_negligible_at_every_logarithmic_order (k : ℕ) :
   rw [Real.norm_eq_abs,abs_div,abs_mul,abs_of_nonneg (pow_nonneg hT k),abs_of_pos (pow_pos hn₀ 3)]
   refine (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hb (pow_nonneg hT k)) (pow_pos hn₀ 3).le).trans_eq ?_
   rw [Real.rpow_sub hn₀,Real.rpow_one]
-  field_simp <;> ring
+  field_simp
 
 private theorem comparison_error_limit (C : ℝ) :
     Tendsto (fun n : ℕ => (T n^2/Real.log 2+T n)*(C*(n:ℝ)^2)/(n:ℝ)^3) atTop (𝓝 0) := by
@@ -204,7 +206,7 @@ private theorem comparison_error_limit (C : ℝ) :
   have hn' : 0<(n:ℝ) := Nat.cast_pos.mpr hn
   change C*((T n/(n:ℝ)^(1/2:ℝ))^2/Real.log 2+T n/(n:ℝ)^(1:ℝ))=_
   rw [div_pow,← Real.sqrt_eq_rpow,Real.sq_sqrt hn'.le,Real.rpow_one]
-  field_simp <;> ring
+  field_simp
 
 /-- The excess of numerator prime factors counted with multiplicity is
 asymptotic to a strictly positive constant times n cubed divided by log(n²) squared. -/
@@ -218,7 +220,7 @@ theorem tendsto_square_generator_prime_multiplicity :
   have hdiff : Tendsto (fun n : ℕ => (A n-B n+firstMoment n-secondMoment n)/(n:ℝ)^3) atTop (𝓝 0) := by
     apply squeeze_zero_norm' _ (comparison_error_limit C)
     filter_upwards [eventually_gt_atTop 0] with n hn
-    rw [Real.norm_eq_abs,abs_div,abs_of_nonneg (pow_nonneg (Nat.cast_nonneg _) _)]
+    rw [Real.norm_eq_abs,abs_div,abs_of_nonneg (pow_nonneg (Nat.cast_nonneg (α := ℝ) n) 3)]
     exact div_le_div_of_nonneg_right (ha hn) (pow_nonneg (Nat.cast_nonneg _) _)
   have hs : Tendsto (fun n : ℕ => B n/(n:ℝ)^3) atTop (𝓝 0) := by
     simpa only [B,T,pow_one] using diagonal_log_negligible_at_every_logarithmic_order 1

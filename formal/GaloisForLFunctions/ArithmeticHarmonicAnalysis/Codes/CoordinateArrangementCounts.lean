@@ -57,7 +57,7 @@ theorem card_arrangementWords (D : ∀ i, Finset (A i)) (K : Finset (Finset ι))
     simp only [arrangementWords, mem_filter, mem_univ, true_and, and_iff_right_iff_imp]
     exact fun h => h.symm ▸ hs
   rw [hf, matchSet_fiber, Fintype.card_piFinset]
-  exact prod_congr rfl fun i _ => by split_ifs <;> simp_all
+  exact prod_congr rfl fun i _ => by split_ifs <;> simp_all [card_compl]
 
 variable {F : Type*} [Fintype F]
 
@@ -70,7 +70,10 @@ theorem card_pointArrangement (c : ι → F) (K : Finset (Finset ι)) :
   refine sum_congr rfl fun s _ => ?_
   simp only [card_singleton]
   rw [prod_ite]
-  simp [← Finset.card_compl, Finset.compl_eq_univ_sdiff]
+  simp only [prod_const_one, one_mul, prod_const]
+  congr 1
+  have he : (univ.filter fun x => x ∉ s) = sᶜ := by ext x; simp
+  rw [he, card_compl]
 
 /-- Selecting one layer of the face lattice gives the Hamming sphere about
 an arbitrary word; the layer index counts matches. -/

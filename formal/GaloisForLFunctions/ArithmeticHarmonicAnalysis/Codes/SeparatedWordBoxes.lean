@@ -1,7 +1,7 @@
 import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Data.Finset.Prod
 import Mathlib.InformationTheory.Hamming
-import Mathlib.Tactic
+import Mathlib.Tactic.Linarith
 
 /-!
 # Cross families at full Hamming distance
@@ -54,6 +54,38 @@ theorem oppositeBox_triple (S : Finset (∀ i, A i)) :
     oppositeBox (oppositeBox (oppositeBox S)) = oppositeBox S :=
   Subset.antisymm (oppositeBox_antitone (subset_double_oppositeBox S))
     (subset_double_oppositeBox _)
+
+/-- The opposition relation is the extremal distance relation of Hamming space. -/
+theorem oppositeBox_eq_full_distance (S : Finset (∀ i, A i)) :
+    oppositeBox S = univ.filter (fun y => ∀ x ∈ S, hammingDist x y = Fintype.card ι) := by
+  ext y
+  simp only [mem_oppositeBox, mem_filter, mem_univ, true_and]
+  have he (x : ∀ i, A i) : hammingDist x y = Fintype.card ι ↔ ∀ i, x i ≠ y i := by
+    change (univ.filter _).card = (univ : Finset ι).card ↔ _
+    simp [card_filter_eq_iff]
+  simp_rw [he]
+
+/-- Double opposition recovers the smallest containing coordinate box whenever
+an opposite word exists. If a projection exhausts its alphabet, it gives the whole space. -/
+theorem double_oppositeBox (S : Finset (∀ i, A i)) :
+    oppositeBox (oppositeBox S) =
+      if (oppositeBox S).Nonempty then Fintype.piFinset (fun i => S.image fun x => x i)
+      else univ := by
+  split_ifs with h
+  · have hall := Fintype.piFinset_nonempty.mp h
+    unfold oppositeBox
+    congr 1
+    funext i
+    rw [Fintype.eval_image_piFinset _ i (fun j _ => hall j), compl_compl]
+  · rw [not_nonempty_iff_eq_empty.mp h]
+    ext x
+    simp [mem_oppositeBox]
+
+/-- A full-distance partner exists exactly when each coordinate omits a letter. -/
+theorem oppositeBox_nonempty_iff (S : Finset (∀ i, A i)) :
+    (oppositeBox S).Nonempty ↔ ∀ i, (S.image fun x => x i).card < Fintype.card (A i) := by
+  rw [oppositeBox, Fintype.piFinset_nonempty]
+  simp only [← card_pos, card_compl, Nat.sub_pos_iff_lt]
 
 private theorem balanced_split (a b : ℕ) :
     a * b ≤ ((a+b)/2) * ((a+b+1)/2) := by
