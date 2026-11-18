@@ -20,6 +20,30 @@ open scoped ArithmeticFunction.vonMangoldt
 def upperDivisor (N : ℕ) (b : ℕ → ℤ) (m : ℕ) : ℤ :=
   ∑ j ∈ Icc 1 N, if m ≤ j then b j else 0
 
+/-- Every upper divisor cut at N has an integral endpoint presentation,
+including the terminal jump back to zero. -/
+theorem exists_upper_endpoints (N : ℕ) (v : ℕ → ℤ) :
+    ∃ b : ℕ → ℤ, ∀ m : ℕ, 1 ≤ m → upperDivisor N b m = if m ≤ N then v m else 0 := by
+  let w (j : ℕ) := if j ≤ N then v j else 0
+  refine ⟨fun j => w j-w (j+1), fun m hm => ?_⟩
+  unfold upperDivisor
+  rw [← sum_filter]
+  have hset : (Icc 1 N).filter (fun j => m ≤ j) = Icc m N := by
+    ext j
+    simp only [mem_filter,mem_Icc]
+    omega
+  rw [hset]
+  by_cases h : m ≤ N
+  · have ht (k : ℕ) (hk : m ≤ k) :
+        ∑ j ∈ Icc m k, (w j-w (j+1)) = w m - w (k+1) := by
+      induction k, hk using Nat.le_induction with
+      | base => simp
+      | succ k hk ih =>
+        rw [sum_Icc_succ_top (Nat.le_succ_of_le hk),ih]
+        abel
+    simpa [w,h] using ht N h
+  · simp [Icc_eq_empty_of_lt (lt_of_not_ge h),h]
+
 /-- Total signed multiplicity of pairs terminating in the same quotient cell. -/
 def quotientCoefficient (X N : ℕ) (u b : ℕ → ℤ) (k : ℕ) : ℝ :=
   ∑ i ∈ Icc 1 X, ∑ j ∈ Icc 1 N, if j/i = k then (u i : ℝ)*b j else 0

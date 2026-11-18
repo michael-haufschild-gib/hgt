@@ -49,7 +49,11 @@ private theorem test_regular : ContDiff ℝ 2 squareFactorialTest := by
       (Real.contDiff_exp.contDiffAt.comp x (hl.neg.div_const _)).mul (hF.contDiffAt.comp x hl)
     apply hr.congr_of_eventuallyEq
     filter_upwards [Ioi_mem_nhds hx] with y hy
-    simp [squareFactorialTest,hy,squarePrimeWeight]
+    have hy' : 0 < y := hy
+    have hre : (Complex.exp (-↑(Real.log y) / 2)).re = Real.exp (-Real.log y / 2) := by
+      rw [show -(↑(Real.log y) : ℂ) / 2 = ((-Real.log y / 2 : ℝ) : ℂ) by push_cast; ring,
+        Complex.exp_ofReal_re]
+    simp [squareFactorialTest,hy',squarePrimeWeight,hre]
   · apply (contDiffAt_const (c := (0:ℝ))).congr_of_eventuallyEq
     filter_upwards [Iio_mem_nhds ((le_of_not_gt hx).trans_lt (Real.exp_pos (-8)))] with y hy
     exact test_zero (fun h => hy.not_ge h.1)
@@ -429,9 +433,9 @@ private theorem balancedFloor_integral {j : ℕ} (hj : 0 < j) :
       inv_inv,smul_eq_mul,integral_const_mul]
   rw [hfg,sub_self,zero_add,integral_const_mul]
   congr 1
-  rw [show (∫ x in Set.Ioi (0:ℝ), u x)=∫ x in J, x⁻¹ by
+  rw [show (∫ x in Set.Ioi (0:ℝ), u x)=∫ x in Set.Ioc (1:ℝ) j, x⁻¹ by
         rw [show u=J.indicator (fun x : ℝ => x⁻¹) from rfl,integral_indicator measurableSet_Ioc,
-          Measure.restrict_restrict measurableSet_Ioc,Set.inter_eq_left.mpr (fun x (hx : x ∈ J) => zero_lt_one.trans hx.1)],
+          Measure.restrict_restrict measurableSet_Ioc,Set.inter_eq_left.mpr (fun x (hx : x ∈ Set.Ioc (1:ℝ) j) => zero_lt_one.trans hx.1)],
       ← intervalIntegral.integral_of_le hj₁,integral_inv_of_pos zero_lt_one hj',div_one]
 
 private def coefficients (X : ℝ) (j : ℕ) :=

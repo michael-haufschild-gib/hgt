@@ -38,7 +38,7 @@ private theorem lower_of_step {ι : Type*} {X f : ι → ℝ} {s : ι → ι} {r
   obtain ⟨C,hC,hC'⟩ := hf
   let B := |A| + C
   have hB : 0 ≤ B := add_nonneg (abs_nonneg _) hC
-  have hr0 : 0 ≤ r/2 := half_nonneg hr
+  have hr0 : 0 ≤ r/2 := div_nonneg hr zero_le_two
   have hiter (k : ℕ) : ∀ i, A-f i ≤ B*(r/2)^k*X i := by
     induction k with
     | zero =>

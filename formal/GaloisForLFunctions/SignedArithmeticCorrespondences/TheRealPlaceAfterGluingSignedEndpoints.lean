@@ -83,9 +83,10 @@ theorem realEndpoint_mixed (i L : ℕ) (hi : 0 < i) (S T : Finset ℕ) (u v : �
   rw [intervalIntegral.integral_finsetSum (fun k _ => Continuous.intervalIntegrable (by fun_prop) _ _)]
   refine sum_congr rfl fun k _ => ?_
   rw [intervalIntegral.integral_const_mul]
-  have hm := realEndpoint_moment i (L+j+k) hi
-  change 2*(_*_*realEndpoint i (L+j+k)) = (u j*v k)*(∫ x in (0:ℝ)..1, x^(L+j+k)*((1-x)*(geom i x)^2))
-  simpa only [← mul_assoc, geom] using congrArg (fun y : ℝ => (u j*v k)*y) hm |>.trans' (by ring)
+  have hm : (∫ x in (0:ℝ)..1, x^(L+j+k)*w x) = 2*realEndpoint i (L+j+k) := by
+    simpa only [w,geom,mul_assoc] using (realEndpoint_moment i (L+j+k) hi).symm
+  rw [hm]
+  ring
 
 /-- All Hankel matrices of the real-place correction are positive semidefinite,
 at every degree and every distance from the collision. -/

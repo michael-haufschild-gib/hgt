@@ -12,6 +12,18 @@ Quantitative Factorization Matching partitions a dyadic block by deleting one or
 
 Write a source as \(cqr\) with \(q<r\) its two largest primes. Try the reverse move \(cqr\mapsto cp\), keeping \(c\) and replacing the entire pair. Both endpoints belong to \((L,U]\) exactly when both variable factors belong to \((\lfloor L/c\rfloor,\lfloor U/c\rfloor]\). If \(p>P^+(c)\), deleting the largest prime from the target recovers \(c\). This permits simultaneous injections over different cofactors. Within one cofactor, the relevant quantities are the number of eligible pairs and the number of available primes in the same interval.
 
+## Prime supply in a sharp cell
+
+Fix \(K\ge1\) and nonnegative integers \(B,D\). For sufficiently large \(s\), take any
+\[
+ s^2\le u\le v\le2s^2,\qquad v-u\ge s^2/(\log s)^B .
+\]
+Let \(A\) consist of products \(qr\in(u,v]\) with both factors prime and \(s/K<q\le Ks\). Then
+\[
+ D\,|A|\le\pi(v)-\pi(u).
+\]
+The height at which this holds is independent of both cell endpoints. For each \(q\), the prime number theorem bounds the number of possible \(r\) in the exact interval \((u/q,v/q]\). Summing over the balanced primes \(q\) uses one more factor of \(1/\log s\) than counting the available primes in \((u,v]\). This supplies spare partners even inside partial octaves. [Prime supply for balanced products](PrimeSupplyForBalancedProducts.lean)
+
 ## What the calculus must prove
 
 1. Transport a growing family from deficient ordered fibres, with a formula for losses at both sharp endpoints. A neighbour for each source leaves target collisions unresolved.
