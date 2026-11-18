@@ -38,7 +38,7 @@ theorem mellin_square_conductor_row {p : ℝ} (hp : 0 < p) (s : ℂ) :
   rw [he,mellin_const_smul,mellin_comp_rpow (fun x => squarePrimeWeight (p*x)) (2-s) (-2),mellin_comp_mul_left _ _ hp]
   norm_num only [abs_neg,abs_two,Complex.ofReal_neg,Complex.ofReal_ofNat]
   rw [show (2-s)/(-2:ℂ)=s/2-1 by ring,show -(s/2-1)=1-s/2 by ring]
-  simp only [smul_eq_mul,Complex.real_smul,Complex.ofReal_inv,Complex.ofReal_ofNat]
+  simp only [smul_eq_mul,Complex.real_smul,Complex.ofReal_div,Complex.ofReal_one,Complex.ofReal_ofNat]
   ring
 
 /-- The right-endpoint quadrature error at an arbitrary real mesh density.
@@ -111,8 +111,8 @@ def sqrtMeshErrorTerm (W : CompactBVPrimeWindow) (k : ℕ) (s : ℂ) :=
 private theorem differentiable_sqrtMeshErrorTerm (W : CompactBVPrimeWindow) (k : ℕ) :
     Differentiable ℂ (sqrtMeshErrorTerm W k) := by
   rcases eq_or_ne k 0 with rfl | hk
-  · unfold sqrtMeshErrorTerm
-    simpa only [if_pos rfl] using (differentiable_const (c := (0:ℂ)) : Differentiable ℂ (fun _ : ℂ => (0:ℂ)))
+  · simpa [sqrtMeshErrorTerm] using
+      (differentiable_const (c := (0:ℂ)) : Differentiable ℂ (fun _ : ℂ => (0:ℂ)))
   have h : Differentiable ℂ (fun z : ℂ => (k:ℂ)^(1-z/2)) :=
     ((differentiable_id.div_const (2:ℂ)).const_sub 1).const_cpow (Or.inl (Nat.cast_ne_zero.mpr hk))
   unfold sqrtMeshErrorTerm
@@ -186,7 +186,7 @@ private theorem rootWindow_regular : ContDiffOn ℝ 1 rootWindowRaw (Set.Icc lo 
   have hx' : 0 < x := (Real.exp_pos _).trans_le hx.1
   have hl := (Real.contDiffAt_log (n := 1)).mpr hx'.ne'
   apply ContDiffAt.contDiffWithinAt
-  dsimp only [rootWindowRaw]
+  change ContDiffAt ℝ 1 (fun t : ℝ => ((2*t^2*squareLogProfile (-2*Real.log t):ℝ):ℂ)) x
   fun_prop
 
 /-- The compact conductor window at the square root of each prime. -/
@@ -225,11 +225,11 @@ private theorem squareConductorBVWindow_apply {t : ℝ} (ht : 0 < t) :
   · have hx := (Real.log_lt_iff_lt_exp ht).mpr htlo
     have h₁ : 8 < |(-2:ℝ)*Real.log t| := by linarith only [hx,le_abs_self (-2*Real.log t)]
     have h₂ : 8 < |(-2:ℝ)*Real.log t-Real.log 4| := by linarith only [hx,hb,le_abs_self (-2*Real.log t-Real.log 4)]
-    simp [rootWindowRaw,squareLogProfile,hzero _ h₁,hzero _ h₂]
+    simp only [rootWindowRaw,squareLogProfile,hzero _ h₁,hzero _ h₂,mul_zero,sub_zero,Complex.ofReal_zero]
   · have hx := (Real.lt_log_iff_exp_lt ht).mpr (lt_of_not_ge fun hhi => h ⟨htlo,hhi⟩)
     have h₁ : 8 < |(-2:ℝ)*Real.log t| := by linarith only [hx,neg_abs_le (-2*Real.log t)]
     have h₂ : 8 < |(-2:ℝ)*Real.log t-Real.log 4| := by linarith only [hx,hb₀,neg_abs_le (-2*Real.log t-Real.log 4)]
-    simp [rootWindowRaw,squareLogProfile,hzero _ h₁,hzero _ h₂]
+    simp only [rootWindowRaw,squareLogProfile,hzero _ h₁,hzero _ h₂,mul_zero,sub_zero,Complex.ofReal_zero]
 
 /-- The real-mesh window carries precisely the dyadic Mellin multiplier. -/
 theorem squareConductorBVWindow_transform (s : ℂ) :

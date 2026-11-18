@@ -16,7 +16,8 @@ namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open HTGeometry ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
   CriticalArithmeticCorrelationTheory _root_.RHTower
 
-private theorem measurable_signed_first_window {Φ : ℝ → ℝ} (hc : Continuous Φ) :
+/-- The finite window with its moving integer endpoints is measurable in log time. -/
+theorem measurable_criticalWidthSignedReading {Φ : ℝ → ℝ} (hc : Continuous Φ) :
     Measurable (criticalWidthSignedReading Φ) := by
   let J := fun t => wallIntegerWindow t (criticalWallWidth t)
   let a := fun (n : ℕ) (t : ℝ) => (∫ u, Φ u)*
@@ -296,7 +297,7 @@ theorem riemannHypothesis_or_first_window_absolute_test_vanishes : RiemannHypoth
   · exact Or.inl hr
   obtain ⟨M,hM,hb⟩ := bounded_signed_first_window hW ht hf hc he
   let w := fun t => |criticalWidthSignedReading Φ t|
-  have hm : Measurable w := (measurable_signed_first_window hc).abs
+  have hm : Measurable w := (measurable_criticalWidthSignedReading hc).abs
   have hn (t : ℝ) : 0 ≤ w t := abs_nonneg _
   have ho := tendsto_log_octave_mass hm hn hM hb (fun ε hε => by
     obtain ⟨bad,hB,hmass,hgood⟩ := h ε hε

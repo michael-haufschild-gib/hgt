@@ -214,7 +214,150 @@ private theorem exists_cosine_crest {ω : ℝ} (hω : 0 < ω) (φ t : ℝ) :
   rw [hangle t ht,hangle r (hb.trans ht)]
   exact Real.cos_le_cos_of_nonneg_of_le_pi (abs_nonneg _) (ht.trans (half_le_self Real.pi_pos.le)) hb
 
+private theorem signed_square_exp_bound {u D : ℝ → ℝ} {ω φ K d L : ℝ}
+    (hω : 0 < ω) (hK : 0 < K) (hd : 0 < d) (hL : 0 ≤ L)
+    (hD : ∀ t, D t = K*Real.cos (ω*t+φ)) (hu : Continuous u)
+    (hlim : Tendsto (fun t => u t-D t) atTop (𝓝 0))
+    (hsq : ∀ᶠ t : ℝ in atTop, |u t^2-D t^2| ≤ L*Real.exp (-d*t)) :
+    ∃ M : ℝ, ∀ᶠ t : ℝ in atTop, (u t-D t)^2 ≤ M*Real.exp (-d*t) := by
+  let P := Real.pi/(2*ω)
+  have hc : Continuous D := by rw [funext hD]; fun_prop
+  have hclose : ∀ᶠ t : ℝ in atTop, |u t-D t| < K :=
+    hlim.abs.eventually (gt_mem_nhds (by simpa only [abs_zero] using hK))
+  obtain ⟨T,hT⟩ := eventually_atTop.mp (hsq.and hclose)
+  refine ⟨6*L*Real.exp (d*P), ?_⟩
+  filter_upwards [eventually_ge_atTop (T+P)] with t ht
+  obtain ⟨s,hs,hcrest,hmon⟩ := exists_cosine_crest hω φ t
+  have hleft (r : ℝ) (hr : r ∈ uIcc t s) : t-P ≤ r := by
+    have hrt : |r-t| ≤ P := by
+      have h := abs_sub_le_of_between (t := s) (by rwa [uIcc_comm] : r ∈ uIcc s t)
+      rw [abs_sub_comm s t] at h
+      exact h.trans hs
+    linarith only [(abs_le.mp hrt).1]
+  have ha : |D s| = K := by rw [hD,abs_mul,abs_of_pos hK,hcrest,mul_one]
+  have hsT : T ≤ s := by linarith only [ht,hleft s right_mem_uIcc]
+  have hsg : 0 < u s*D s := by
+    have h : |u s-D s| < |D s| := (hT s hsT).2.trans_eq ha.symm
+    nlinarith only [sq_lt_sq.mpr h,sq_nonneg (u s)]
+  have hlobe (r : ℝ) (hr : r ∈ uIcc t s) : D t^2 ≤ D r^2 := by
+    apply sq_le_sq.mpr
+    rw [hD,hD,abs_mul,abs_mul]
+    exact mul_le_mul_of_nonneg_left (hmon r hr) (abs_nonneg _)
+  have henv (r : ℝ) (hr : r ∈ uIcc t s) :
+      |u r^2-D r^2| ≤ L*(Real.exp (d*P)*Real.exp (-d*t)) := by
+    have h := hleft r hr
+    refine (hT r (by linarith only [ht,h])).1.trans (mul_le_mul_of_nonneg_left ?_ hL)
+    rw [← Real.exp_add,Real.exp_le_exp]
+    linarith only [mul_le_mul_of_nonneg_left h hd.le]
+  exact (sq_sub_le_on_wave_lobe hu.continuousOn hc.continuousOn hsg hlobe henv).trans_eq (by ring)
+
+private theorem eventually_poly_exp_le {a b : ℝ} (hab : a < b) (K : ℝ) :
+    ∀ᶠ t : ℝ in atTop, K*(Real.exp (a*t)*(1+t)^2) ≤ Real.exp (b*t) := by
+  have hlim := (tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 2 (b-a)
+    (sub_pos.mpr hab)).const_mul (4*|K|)
+  rw [mul_zero] at hlim
+  filter_upwards [hlim.eventually (gt_mem_nhds zero_lt_one),eventually_ge_atTop (1:ℝ)] with t ht ht1
+  change 4*|K|*(t^(2:ℝ)*Real.exp (-(b-a)*t)) < 1 at ht
+  rw [Real.rpow_two] at ht
+  have hs : (1+t)^2 ≤ 4*t^2 := by nlinarith only [ht1,sq_nonneg (t-1)]
+  calc _ ≤ |K|*(Real.exp (a*t)*(4*t^2)) :=
+            mul_le_mul (le_abs_self _) (mul_le_mul_of_nonneg_left hs (Real.exp_pos _).le)
+              (mul_nonneg (Real.exp_pos _).le (sq_nonneg _)) (abs_nonneg K)
+    _ = (4*|K|*(t^2*Real.exp (-(b-a)*t)))*Real.exp (b*t) := by
+          rw [show a*t= -(b-a)*t+b*t by ring,Real.exp_add]
+          ring
+    _ ≤ _ := (mul_le_mul_of_nonneg_right ht.le (Real.exp_pos _).le).trans_eq (one_mul _)
+
+/-- At every exponent above the square-root line both the squared signed error
+and its product with the boundary wave have that exponential accuracy. -/
+theorem signed_prime_increment_on_extremal_wave {γ σ : ℝ} {m : ℕ}
+    (hσ : 1/2 < σ) (hσβ : σ < zetaZeroAbscissa) (hγ : γ ≠ 0) (hm : 1 ≤ m)
+    (hb : ¬ IsLogSqrtSqUnbounded (thetaRadialDiscrepancy zetaZeroAbscissa γ m)) :
+    let β := zetaZeroAbscissa
+    let h := quarterPeriodStep γ
+    let D := boundaryStep β h (primeErrorBoundaryTrace β)
+    let U := normalizedPrimeIncrement β h
+    ∃ M : ℝ, ∀ᶠ t : ℝ in atTop, |D t*(U t-D t)|+(U t-D t)^2 ≤ M*Real.exp (-(β-σ)*t) := by
+  intro β h D U
+  let d := β-σ
+  let w := fun t => Real.exp (-d*t)
+  have hd : 0 < d := sub_pos.mpr hσβ
+  have hΘ := hσ.trans hσβ
+  have hh : 0 < h := quarterPeriodStep_pos hγ
+  have hw : Tendsto w atTop (𝓝 0) := by
+    simpa only [w, Real.rpow_zero,one_mul] using
+      tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 0 d hd
+  have hw1 : ∀ᶠ t : ℝ in atTop, w t ≤ 1 :=
+    (hw.eventually (gt_mem_nhds zero_lt_one)).mono fun _ h => h.le
+  have hw0 (t : ℝ) : 0 ≤ w t := (Real.exp_pos _).le
+  obtain ⟨q,K,φ,_,hK,hD⟩ := exists_cosine_boundaryStep_of_bounded_thetaRadial hΘ hγ hm hb
+  let ω := |xiCopyOrdinate q|
+  have hω : 0 < ω := (by norm_num : (0:ℝ)<4).trans (four_lt_abs_xiCopyOrdinate q)
+  obtain ⟨V,hV,hUV⟩ := exists_continuous_normalizedPrimeIncrement_approx β hh.le
+  have hUVw : ∀ᶠ t : ℝ in atTop, |V t-U t| ≤ w t := by
+    have he := eventually_poly_exp_le (a := -β) (b := -d)
+      (by dsimp only [d]; linarith only [hσ]) (h+4)
+    filter_upwards [he,eventually_ge_atTop (1:ℝ)] with t ht ht1
+    refine (hUV t (zero_le_one.trans ht1)).trans (le_trans ?_ ht)
+    rw [div_eq_mul_inv,neg_mul,Real.exp_neg]
+    have hpoly : 2*t+h+2 ≤ (h+4)*(1+t)^2 := by
+      nlinarith only [ht1, hh, mul_nonneg hh.le (sq_nonneg t),
+        mul_nonneg hh.le (zero_le_one.trans ht1), sq_nonneg t]
+    calc _ ≤ ((h+4)*(1+t)^2)*(Real.exp (β*t))⁻¹ :=
+              mul_le_mul_of_nonneg_right hpoly (inv_nonneg.mpr (Real.exp_pos _).le)
+      _ = _ := by ring
+  have hVU : Tendsto (fun t => V t-U t) atTop (𝓝 0) :=
+    squeeze_zero_norm' (by simpa only [Real.norm_eq_abs] using hUVw) hw
+  have hUD : Tendsto (fun t => U t-D t) atTop (𝓝 0) := normalized_increment_sub_trace hΘ h
+  have hVD : Tendsto (fun t => V t-D t) atTop (𝓝 0) := by
+    simpa only [zero_add,sub_add_sub_cancel] using hVU.add hUD
+  obtain ⟨L,hL⟩ := squared_normalizedPrimeIncrement_sub_boundary hΘ hγ hb
+  have hsqU : ∀ᶠ t : ℝ in atTop, |U t^2-D t^2| ≤ w t := by
+    have he := eventually_poly_exp_le (a := -(β-1/2)) (b := -d)
+      (by dsimp only [d]; linarith only [hσ]) L
+    filter_upwards [hL,he] with t ht he'
+    exact ht.trans he'
+  have hU : ∀ᶠ t : ℝ in atTop, |U t| ≤ 1+K := by
+    filter_upwards [hUD.abs.eventually (gt_mem_nhds (by norm_num : |(0:ℝ)| < 1))] with t ht
+    have hDt : |D t| ≤ K := by
+      rw [hD,abs_mul,abs_of_pos hK]
+      exact mul_le_of_le_one_right hK.le (Real.abs_cos_le_one _)
+    calc _ = |(U t-D t)+D t| := by rw [sub_add_cancel]
+      _ ≤ |U t-D t|+|D t| := abs_add_le _ _
+      _ ≤ _ := add_le_add ht.le hDt
+  have hsqV : ∀ᶠ t : ℝ in atTop, |V t^2-D t^2| ≤ (4+2*K)*w t := by
+    filter_upwards [hUVw,hw1,hU,hsqU] with t huv hwle hu hsq
+    have hsum : |V t+U t| ≤ 1+2*(1+K) := by
+      rw [show V t+U t=(V t-U t)+2*U t by ring]
+      refine (abs_add_le _ _).trans (add_le_add (huv.trans hwle) ?_)
+      rw [abs_mul,abs_of_pos zero_lt_two]
+      exact mul_le_mul_of_nonneg_left hu (by norm_num)
+    rw [show V t^2-D t^2 = (V t-U t)*(V t+U t)+(U t^2-D t^2) by ring]
+    refine (abs_add_le _ _).trans ?_
+    rw [abs_mul]
+    have hprod := mul_le_mul huv hsum (abs_nonneg _) (hw0 t)
+    linarith only [hsq,hprod]
+  obtain ⟨M,hM⟩ := signed_square_exp_bound (D := D) hω hK hd (by positivity) hD hV hVD hsqV
+  refine ⟨4*M+5,?_⟩
+  filter_upwards [hM,hw1,hUVw,hsqU] with t hm' hwle huv hsq
+  have he : (V t-U t)^2 ≤ w t := by
+    have hpow : |V t-U t|^2 ≤ (w t)^2 := pow_le_pow_left₀ (abs_nonneg _) huv 2
+    rw [sq_abs] at hpow
+    exact hpow.trans (by simpa only [sq,one_mul] using mul_le_mul_of_nonneg_right hwle (hw0 t))
+  have hs : (U t-D t)^2 ≤ (2*M+2)*w t := by
+    nlinarith only [hm',he,sq_nonneg ((V t-D t)+(V t-U t))]
+  have hpol : 2*|D t*(U t-D t)| ≤ w t+(U t-D t)^2 := by
+    rw [← abs_of_pos zero_lt_two,← abs_mul,show (2:ℝ)*(D t*(U t-D t)) =
+      (U t^2-D t^2)-(U t-D t)^2 by ring]
+    refine (abs_sub _ _).trans ?_
+    rw [abs_of_nonneg (sq_nonneg _)]
+    exact add_le_add_right hsq _
+  change _ ≤ (4*M+5)*w t
+  have hMpos : 0 ≤ M*w t := (sq_nonneg _).trans hm'
+  linarith only [hs,hpol,hMpos,hw0 t]
+
 #print axioms exists_continuous_normalizedPrimeIncrement_approx
 #print axioms exists_cosine_boundaryStep_of_bounded_thetaRadial
+#print axioms signed_prime_increment_on_extremal_wave
 
 end GaloisForLFunctions.ExceptionalLayerTheory

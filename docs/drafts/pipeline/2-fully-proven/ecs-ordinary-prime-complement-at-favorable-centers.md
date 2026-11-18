@@ -21,8 +21,8 @@ On the same $B$ the [large-divisor lower bound](ecs-all-future-prime-increments-
 \]
 The [exterior estimates](../3-formalized/ecs-exterior-mass-of-the-original-fractional-test.md) pay $O_\Phi(e^{-T/12})$ on the left and $O_\Phi(e^{-T/10})$ on the right. In the middle use $K\le1$ and the signed prime-square transfer at $V=T/6-1$, whose tail starts at $V+1$. The square charge in $mS$ is $-m^2/2$ throughout $I_T$. Taking $D$ to be the complement of the favorable time set uses the same error bound; its signed middle contribution is still required.
 
-**Complete middle complement.** Let $C(t)=m\sum_{n\notin J_t}(\Lambda(n)-1)a_n(t)-m^2/2$, where $J_t$ is the actual first window. The [absolute first-window estimate](../1-in-progress/ecs-first-window-in-the-original-fractional-test.md) and $mS=W+C$ yield
+**Complete middle complement.** Let $C(t)=m\sum_{n\notin J_t}(\Lambda(n)-1)a_n(t)-m^2/2$, where $J_t$ is the actual first window. The [absolute first-window estimate](../3-formalized/ecs-first-window-in-the-original-fractional-test.md) and $mS=W+C$ yield
 \[
  \sup_{D\ \mathrm{measurable}}\int_D |mP(t)-\mathbf1_{I_T}(t)C(t)|K(T-t)\,dt\longrightarrow0 .
 \]
-The normalized state is unique up to sign. Changing its sign reverses both $m$ and each atom, so the oriented first-window readings agree pointwise for the two representatives. The triangle inequality then applies on the same $D$, including the complement of the original favorable set. Lean verification pending.
+The normalized state is unique up to sign. Changing its sign reverses both $m$ and each atom, so the oriented first-window readings agree pointwise for the two representatives. The triangle inequality then applies on the same $D$, including the complement of the original favorable set. [Lean proof under verification](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheMiddleTimeComplementOfTheOriginalPrimeTest.lean).

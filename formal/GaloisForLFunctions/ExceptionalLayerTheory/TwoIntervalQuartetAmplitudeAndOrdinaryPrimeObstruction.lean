@@ -3170,4 +3170,8 @@ theorem corollaries_of_twoIntervalRadialExclusionLaw (hlaw : TwoIntervalRadialEx
     exact hno_one ρ ((hasSingleOffLineQuartet_iff_two_properPower_waves hhalf hmem).mpr hbound)
   exact ⟨hno_one, hrh_or_4, hidx_ne2, hgram3, h3clock, hpdr, hppc, hadj⟩
 
+#print axioms not_isLogSqrtSqUnbounded_of_singleQuartet
+#print axioms finiteOffLine_not_radialUnbounded_iff
+#print axioms corollaries_of_twoIntervalRadialExclusionLaw
+
 end GaloisForLFunctions.ExceptionalLayerTheory

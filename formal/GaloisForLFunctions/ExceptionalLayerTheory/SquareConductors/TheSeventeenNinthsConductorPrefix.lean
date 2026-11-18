@@ -362,7 +362,7 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
   rcases Nat.eq_zero_or_pos N with rfl | hN
   · have hM0 : M = 0 := by omega
     rw [hM0, Ioc_self, sum_empty, abs_zero]
-    exact mul_nonneg (mul_nonneg (add_nonneg hF0 hA_nonneg) (Real.rpow_nonneg (le_refl (0 : ℝ)) _))
+    exact mul_nonneg (mul_nonneg (add_nonneg hF0 hA_nonneg) (Real.rpow_nonneg (Nat.cast_nonneg 0) _))
       (zero_le_one.trans (logFactor_one_le 0))
   have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
   have hN0_r : (0 : ℝ) < N := zero_lt_one.trans_le hN1
