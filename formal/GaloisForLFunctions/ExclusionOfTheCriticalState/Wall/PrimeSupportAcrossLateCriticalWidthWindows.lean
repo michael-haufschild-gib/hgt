@@ -40,9 +40,10 @@ theorem tendsto_frozen_chebyshev_window_mean {H : ℝ → ℝ} (hH : ∀ᶠ x in
     exact hprod.congr' <| (hvar.eventually_gt_atTop 0).mono fun x hx => by
       change Chebyshev.psi (a*x+h x)/(a*x+h x)*((a*x+h x)/x)=_
       field_simp [hx.ne'] <;> ring
+  have hzero : Tendsto (fun x : ℝ => (0:ℝ)/x) atTop (𝓝 0) := by
+    simp only [zero_div]; exact tendsto_const_nhds
   have h0 (a : ℝ) (ha : 0 < a) : Tendsto (fun x => Chebyshev.psi (a*x)/x) atTop (𝓝 a) := by
-    simpa only [add_zero] using hscale a ha (fun _ => 0) (Eventually.of_forall fun _ => le_rfl)
-      (by simpa only [zero_div] using (tendsto_const_nhds (x := (0:ℝ)) (f := (atTop : Filter ℝ))))
+    simpa only [add_zero] using hscale a ha (fun _ => 0) (Eventually.of_forall fun _ => le_rfl) hzero
   have hlo := (h0 b hpos).sub (hscale 1 zero_lt_one H (hH.mono fun _ h => h.le) hsub)
   have hup := (hscale b hpos H (hH.mono fun _ h => h.le) hsub).sub (h0 1 zero_lt_one)
   simp only [one_mul] at hlo hup
@@ -157,7 +158,7 @@ private theorem arithmeticWallWidth_sieve : ∃ C : ℝ, 1 ≤ C ∧ ∀ᶠ x in
     apply (Real.sqrt_le_left hx.le).mpr
     rw [sq]; apply mul_le_mul_of_nonneg_left _ hx.le
     linarith only [Real.log_le_sub_one_of_pos hx]
-  have hc := hbound t ht H hlo (hExp.symm ▸ hup)
+  have hc := hbound t ht H hlo (hup.trans hExp.ge)
   rw [hExp] at hc
   have hψ : Chebyshev.psi (x+H)-Chebyshev.psi x =
       ∑ n ∈ Finset.Ioc ⌊x⌋₊ ⌊x+H⌋₊, ArithmeticFunction.vonMangoldt n := by
@@ -301,7 +302,7 @@ private theorem fractional_mass_of_good_centers {A : Set ℝ} (hA : MeasurableSe
     mul_le_mul_of_nonneg_right (hkernel u hu) (inv_nonneg.mpr (hx.trans (hAI hu).1).le))
   rw [integral_const_mul] at hcmp
   refine ⟨hlog,?_⟩
-  calc κ/R^2 = R⁻¹*(κ/R) := by ring
+  calc κ/R^2 = R⁻¹*(κ/R) := by field_simp [hR.ne'] <;> ring
        _ ≤ _ := (mul_le_mul_of_nonneg_left hlog (inv_nonneg.mpr hR.le)).trans hcmp
 
 /-- Restoring the complete integer complement leaves exactly the signed first

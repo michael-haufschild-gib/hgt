@@ -31,8 +31,7 @@ theorem junctionGap_primitive (n : ℕ) (x : Ici (0:ℝ)) :
   have hx : 0 ≤ x.val := x.property
   cases n with
   | zero =>
-    change profile (0+1) x.val - profile 0 (x.val+1) =
-      (∫ t in (0:ℝ)..x.val, profile 0 t)/((0:ℝ)+2+x.val)
+    simp only [junctionGap,Nat.cast_zero,zero_add]
     have hb : profile 0 1 = 1/2 := by norm_num [profile,intervalMass]
     have ht : profile 0 (x.val+1) = 1/(2+x.val) := by
       simp only [profile,intervalMass,Nat.cast_zero,zero_add,max_eq_left (show 0 ≤ x.val+1 by linarith)]
