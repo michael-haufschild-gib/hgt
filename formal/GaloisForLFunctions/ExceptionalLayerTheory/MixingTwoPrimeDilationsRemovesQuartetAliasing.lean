@@ -211,7 +211,7 @@ private theorem normalized_reading {a x : ℝ} (ha : 0<a) (hx : 0<x) (ρ c : ℂ
       ((Real.cos (ρ.im*Real.log a):ℂ)+(Real.sin (ρ.im*Real.log a):ℂ)*I) := by
     calc
       (a:ℂ)^ρ = (a:ℂ)^((ρ.re:ℂ)+(ρ.im:ℂ)*I) := by rw [Complex.re_add_im]
-      _ = _ := by rw [Complex.cpow_add (by exact_mod_cast ha.ne'),← Complex.ofReal_cpow ha.le,
+      _ = _ := by rw [Complex.cpow_add _ _ (by exact_mod_cast ha.ne'),← Complex.ofReal_cpow ha.le,
         _root_.RHTower.cpow_I_mul_eq_exp ha,Complex.exp_mul_I,Complex.ofReal_cos,Complex.ofReal_sin]
   rw [Complex.ofReal_mul,Complex.mul_cpow_ofReal_nonneg ha.le hx.le,hp]
   rw [show c*(((a^ρ.re:ℝ):ℂ)*((Real.cos (ρ.im*Real.log a):ℂ)+
@@ -256,7 +256,7 @@ private theorem scaled_sqrt_log {a x : ℝ} (ha : 1≤a) (hax : a≤x) :
     (sq_le_sq₀ (add_nonneg (Real.log_nonneg ha) (Real.log_nonneg hx))
       (mul_nonneg (by norm_num) (Real.log_nonneg hx))).mpr (by linarith only [hlog])
   rw [Real.sqrt_mul hap.le,Real.log_mul hap.ne' hxp.ne']
-  exact (mul_le_mul_of_nonneg_left hl (mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))).trans_eq (by ring)
+  exact (mul_le_mul_of_nonneg_left hl (mul_nonneg (Real.sqrt_nonneg a) (Real.sqrt_nonneg x))).trans_eq (by ring)
 
 /-- On the single-quartet stratum the coherent main term disappears from
 the three signed prime readings, leaving the square-root error. -/

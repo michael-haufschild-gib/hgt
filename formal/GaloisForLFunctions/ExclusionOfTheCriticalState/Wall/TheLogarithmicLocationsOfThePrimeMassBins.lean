@@ -34,11 +34,14 @@ private theorem theta_power_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 1 ≤ 
   calc _ ≤ |Chebyshev.theta x-Chebyshev.psi x| + |Chebyshev.psi x-x| := abs_sub_le ..
     _ ≤ _ := (add_le_add hd (hψ x hx)).trans_eq (by ring)
 
+private theorem bin_ratio_gt_half : ∀ᶠ y : ℝ in atTop, 1/2 < primeBinReading 1 y/y :=
+  Filter.Tendsto.eventually_const_lt (by norm_num : (1/2:ℝ)<1) tendsto_primeBinReading_one_div
+
 private theorem bin_power_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ y : ℝ in atTop,
     |primeBinReading 1 y-y| ≤ C*y^(9/10:ℝ) := by
   obtain ⟨K,hK,hθ⟩ := theta_power_error
   refine ⟨1+K*2^(9/10:ℝ),by positivity,?_⟩
-  filter_upwards [tendsto_primeBinReading_one_div.eventually_gt_const (by norm_num : (1/2:ℝ)<1),
+  filter_upwards [bin_ratio_gt_half,
     tendsto_primeBinReading_one_div.eventually_lt_const one_lt_two,eventually_ge_atTop (4:ℝ)] with y hlo hhi hy
   let p := primeBinReading 1 y
   have hy0 : 0 < y := by linarith only [hy]
@@ -98,8 +101,7 @@ theorem exists_squareBin_displacement : ∃ B : ℝ, 0 ≤ B ∧ ∀ᶠ v : ℝ 
   have hY : Tendsto (fun v : ℝ => Real.exp (v/2)) atTop atTop :=
     Real.tendsto_exp_atTop.comp (tendsto_id.atTop_div_const (by norm_num : (0:ℝ)<2))
   refine ⟨4*C,by positivity,?_⟩
-  filter_upwards [hY hp,hY (tendsto_primeBinReading_one_div.eventually_gt_const
-    (by norm_num : (1/2:ℝ)<1))] with v hb hlo
+  filter_upwards [hY hp,hY bin_ratio_gt_half] with v hb hlo
   let y := Real.exp (v/2)
   let p := primeBinReading 1 y
   have hy : 0 < y := Real.exp_pos _

@@ -158,6 +158,12 @@ three-quarter cutoff. -/
 def outsideSplinePrimeBand (n : ℕ) : ℝ :=
   splineCountReading n (fun k => longPrimeRow k-splinePrimeBand (splineHorizon n) (n*n.sqrt) k)
 
+private theorem square_le_horizon (n : ℕ) : n^2 ≤ splineHorizon n := by
+  obtain ⟨h₁,_,h₂⟩ := GaloisForLFunctions.CountingHolography.Sections.successorSquareWindowScale_bounds n
+  have h : n^2 ≤ GaloisForLFunctions.CountingHolography.Sections.windowEnd ((2*n+1)^2+1) := by
+    exact_mod_cast h₁.trans h₂
+  exact h.trans (Nat.le_mul_of_pos_left _ (by decide : 0<3))
+
 /-- After deleting the indicated band the full dyadic contact differs from
 the remaining signed products by at most six logarithms on every conductor. -/
 theorem dyadicPrimeContact_outside_band :
@@ -171,14 +177,8 @@ theorem dyadicPrimeContact_outside_band :
   let U := n*n.sqrt
   let H := 1+Real.log L
   have hU : 0<U := Nat.mul_pos hn (Nat.sqrt_pos.mpr hn)
-  have hL : (n:ℝ)^2 ≤ L := by
-    obtain ⟨h₁,_,h₂⟩ := GaloisForLFunctions.CountingHolography.Sections.successorSquareWindowScale_bounds n
-    apply (h₁.trans h₂).trans
-    change _ ≤ ((3*_:ℕ):ℝ)
-    exact_mod_cast Nat.le_mul_of_pos_left _ (by decide : 0<3)
-  have hq : U ≤ L := by
-    apply (Nat.mul_le_mul_left n (Nat.sqrt_le_self n)).trans
-    exact_mod_cast (by simpa only [sq] using hL : (n:ℝ)*n ≤ L)
+  have hq : U ≤ L := (Nat.mul_le_mul_left n (Nat.sqrt_le_self n)).trans
+    (by simpa only [sq] using square_le_horizon n)
   have hlog : 1+Real.log U ≤ H := add_le_add_left
     (Real.log_le_log (by exact_mod_cast hU) (by exact_mod_cast hq)) 1
   have hH : 0≤H := by dsimp [H]; have := Real.log_natCast_nonneg L; positivity
@@ -192,7 +192,49 @@ theorem dyadicPrimeContact_outside_band :
   change A*H^6+B*H^5*(1+Real.log U) ≤ (A+B)*H^6
   linarith only [hh]
 
+private theorem logarithmic_allowance {s : ℝ} (hs : 0<s) :
+    ∃ C : ℝ, 0≤C ∧ ∀ {n : ℕ}, 0<n →
+      (1+Real.log (splineHorizon n))^6 ≤ C*((n:ℝ)+1)^(2*s) := by
+  obtain ⟨A,hA,ha⟩ := GaloisForLFunctions.CountingHolography.Sections.successorSquare_window_bound
+  let a := s/6
+  have hapos : 0<a := div_pos hs (by norm_num)
+  have hA₀ := zero_le_one.trans hA
+  let B := (1+1/a)^6
+  have hB : 0≤B := by dsimp [B]; positivity
+  refine ⟨B*A^(2*s),by positivity,fun {n} hn => ?_⟩
+  let L := splineHorizon n
+  have hL : (1:ℝ)≤L := by exact_mod_cast (pow_pos hn 2).trans_le (square_le_horizon n)
+  have h₁ := Real.one_le_rpow hL hapos.le
+  have hl := Real.log_le_rpow_div (zero_le_one.trans hL) hapos
+  have hbase : 1+Real.log L ≤ (1+1/a)*(L:ℝ)^a := by
+    calc _ ≤ (L:ℝ)^a+(L:ℝ)^a/a := add_le_add h₁ hl
+         _ = _ := by ring
+  have hpow : ((L:ℝ)^a)^6=(L:ℝ)^s := by
+    rw [←Real.rpow_natCast _ 6,←Real.rpow_mul (zero_le_one.trans hL)]
+    congr 1; dsimp [a]; norm_num; ring
+  have hscale : ((A*n)^2)^s=A^(2*s)*(n:ℝ)^(2*s) := by
+    rw [←Real.rpow_two,←Real.rpow_mul (mul_nonneg hA₀ (Nat.cast_nonneg n)),Real.mul_rpow hA₀ (Nat.cast_nonneg n)]
+  apply (pow_le_pow_left₀ (le_add_of_nonneg_right (Real.log_natCast_nonneg L) |>.trans' zero_le_one) hbase 6).trans
+  rw [mul_pow,hpow]
+  apply (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg L) (ha hn) hs.le) hB).trans
+  rw [hscale,←mul_assoc]
+  exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg n)
+    (le_add_of_nonneg_right zero_le_one) (mul_nonneg two_pos.le hs.le)) (by positivity)
+
+/-- At every positive subcritical exponent, a one-sided estimate for the
+remaining products retains the exact strip receiver. -/
+theorem width_iff_outside_spline_band {s : ℝ} (hs : 0<s) (hs' : s<1/2) :
+    SquareRootThreshold.zetaZeroWidth ≤ s ↔ ∃ C : ℝ, ∀ n : ℕ, 0<n →
+      outsideSplinePrimeBand n ≤ C*((n:ℝ)+1)^(2*s) := by
+  obtain ⟨B,hB,h⟩ := dyadicPrimeContact_outside_band
+  obtain ⟨A,_,ha⟩ := logarithmic_allowance hs
+  rw [GaloisForLFunctions.CountingHolography.Sections.zetaZeroWidth_le_iff_dyadicPrimeContact hs.le hs']
+  constructor <;> rintro ⟨C,hC⟩ <;> refine ⟨C+B*A,fun n hn => ?_⟩
+  · linarith only [hC n hn,(abs_le.mp (h hn)).1,mul_le_mul_of_nonneg_left (ha hn) hB]
+  · linarith only [hC n hn,(abs_le.mp (h hn)).2,mul_le_mul_of_nonneg_left (ha hn) hB]
+
 #print axioms splinePrimeBand_mem_remaining
 #print axioms long_prime_band_spline_bound
 #print axioms dyadicPrimeContact_outside_band
+#print axioms width_iff_outside_spline_band
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

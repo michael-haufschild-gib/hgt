@@ -46,7 +46,8 @@ private theorem card_high : Fintype.card (High p) = ((p^2-1)*p)*p^3 := by
   have each (t : Sample (ZMod p)) : Fintype.card (TripleLift p 1 t)=p^3 := by
     simp only [TripleLift,Fintype.card_prod,count_lift,pow_one]
     ring
-  rw [High,Fintype.card_sigma]
+  change Fintype.card (Σ s : Sample (ZMod p), TripleLift p 1 s) = _
+  rw [Fintype.card_sigma]
   simp only [each,sum_const,card_univ,nsmul_eq_mul,Nat.cast_id,count_sample,ZMod.card]
 
 /-- Uniform average on a finite residue space. -/
@@ -125,13 +126,15 @@ the recovered-ray mass. -/
 theorem support_mass (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ) :
     mean (mark (fun t => weight p K r t ≠ 0)) = 1-(p-1)*rayMass p := by
   have hp' : (p : ℝ)≠0 := Nat.cast_ne_zero.mpr hp.out.ne_zero
-  have h := local_law p K r (fun x : ℝ => if x≠0 then 1 else 0)
-  have hi : mark (fun t => weight p K r t≠0) =
-      fun t => if weight p K r t≠0 then (1:ℝ) else 0 := by
+  let F (x : ℝ) : ℝ := if x=0 then 0 else 1
+  have hi : mark (fun t => weight p K r t≠0) = fun t => F (weight p K r t) := by
     funext t
-    by_cases ht : weight p K r t≠0 <;> simp only [mark,ht,ite_true,ite_false]
-  rw [hi,h]
-  simp only [one_ne_zero,ite_true,ne_self,ite_false,hp',mul_zero,mul_one,zero_sub]
+    dsimp only [mark,F]
+    by_cases hw : weight p K r t=0
+    · rw [if_neg (not_not_intro hw),if_pos hw]
+    · rw [if_pos hw,if_neg hw]
+  rw [hi,local_law p K r F,show F 1=1 from if_neg one_ne_zero,
+    show F 0=0 from if_pos rfl,show F p=1 from if_neg hp']
   ring
 
 /-- Exact square-level variance. It approaches one along the primes. -/

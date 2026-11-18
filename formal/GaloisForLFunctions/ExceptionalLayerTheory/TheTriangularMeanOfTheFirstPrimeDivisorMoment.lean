@@ -44,7 +44,9 @@ private theorem sharp_moment_deficit (j N : ℕ) (hj : j ≤ N) :
     have hlt : j<d := lt_of_not_ge fun h => hnot (mem_Icc.mpr ⟨(mem_Icc.mp hd).1,h⟩)
     simp [Nat.div_eq_of_lt hlt]
   have hi : Icc 1 j = Ioc 0 j := by ext n; simp only [mem_Icc,mem_Ioc]; omega
-  rw [hi,ArithmeticOfSquareRootPrecision.chebyshevTransform_vonMangoldt] at hm
+  rw [hi] at hm
+  change ArithmeticOfSquareRootPrecision.chebyshevTransform ArithmeticOfSquareRootPrecision.vonMangoldtWeight j = _ at hm
+  rw [ArithmeticOfSquareRootPrecision.chebyshevTransform_vonMangoldt] at hm
   rw [distinctPrimeLogMoment,hp,hm,Nat.primesLE_eq_filter_Icc_one,sum_filter,← sum_sub_distrib,←sum_neg_distrib]
   exact sum_congr rfl fun d _ => by
     by_cases hd : d.Prime <;> simp [primePowerPart,hd,ArithmeticFunction.vonMangoldt_apply_prime]
@@ -460,17 +462,20 @@ theorem distinctPrimeFirstMeanAt_fractional_kernel {x : ℝ} (hx : 0<x) :
   have hsumEq : (∑ d ∈ Icc 1 n, primePowerPart d*T d) =
       -((∑ j ∈ range n,sharpDeficit j)+(x-n)*sharpDeficit n) := eq_neg_comm.mp hboth
   rw [hsumEq,sub_neg_eq_add] at hscaled
-  convert hscaled using 1
-  · funext d
+  have hterms : (fun d : ℕ => primePowerPart d*averagedFractionalPart (x/d)) =
+      (fun d => (x^2/2*(primePowerPart d/d)-primePowerPart d*T d)/x) := by
+    funext d
     rcases Nat.eq_zero_or_pos d with rfl | hd
     · simp [T,q,averagedFractionalPart]
     have hd' : (0:ℝ)<d := by exact_mod_cast hd
     simp only [Pi.sub_apply,averagedFractionalPart,Nat.floor_div_natCast,T,q,n]
     field_simp [hx.ne',hd'.ne'] <;> ring
-  · change distinctPrimeFirstMeanAt x=(x^2/2*repeatedPrimeLogDensity+
-        ((∑ j ∈ range n,sharpDeficit j)+(x-n)*sharpDeficit n))/x
+  have hvalue : distinctPrimeFirstMeanAt x=(x^2/2*repeatedPrimeLogDensity+
+      ((∑ j ∈ range n,sharpDeficit j)+(x-n)*sharpDeficit n))/x := by
     apply (eq_div_iff hx.ne').mpr
     linear_combination hcell
+  rw [hterms,hvalue]
+  exact hscaled
 
 theorem distinctPrimeFirstMeanAt_nat {N : ℕ} (hN : 1≤N) :
     distinctPrimeFirstMeanAt N = triangularDistinctPrimeLogMoment N := by
