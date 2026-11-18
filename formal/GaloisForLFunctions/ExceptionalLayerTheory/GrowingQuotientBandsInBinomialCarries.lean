@@ -62,9 +62,8 @@ theorem sum_movingOddQuotientBand_eq_ordinaryLastClassTotal (X : ℕ) :
     (∑ Q ∈ range X, movingOddQuotientBand Q X) = ordinaryLastClassTotal 2 X := by
   unfold movingOddQuotientBand movingQuotientSlice ordinaryLastClassTotal quotientClassMassOf
   rw [sum_comm]
-  refine sum_congr rfl fun k hk => ?_
-  have hkX : k < X := mem_range.mp hk
-  simp_rw [← sum_filter (p := fun m => k / m = _)]
+  refine sum_congr rfl fun k _ => ?_
+  simp_rw [sum_filter (p := fun m => k / m = _)]
   calc
     (∑ Q ∈ range X, ∑ m ∈ Icc 1 k, if k / m = 2 * Q + 1 then ordinaryPrimeCountWeight m else 0) =
         ∑ m ∈ Icc 1 k, ∑ Q ∈ range X,
@@ -126,7 +125,7 @@ private theorem slice_multiplicity_identity (f : ℕ → ℝ) {d : ℕ} (hd : 1 
     rw [hset, sum_const, nsmul_eq_mul]
   rw [sum_congr rfl hcount]
   have hM₂ : X / d ≤ X := Nat.div_le_self X d
-  have hM₁₂ : X / (d + 1) ≤ X / d := Nat.div_le_div_right (Nat.le_succ d)
+  have hM₁₂ : X / (d + 1) ≤ X / d := Nat.div_le_div_left (Nat.le_succ d) (by omega)
   have htrim : (∑ m ∈ Icc 1 X, (((Ico (d * m) (min X ((d + 1) * m))).card : ℕ) : ℝ) * f m) =
       ∑ m ∈ Icc 1 (X / d), (((Ico (d * m) (min X ((d + 1) * m))).card : ℕ) : ℝ) * f m := by
     symm
@@ -187,7 +186,7 @@ theorem abs_movingQuotientSlice_le_of_prefix {d : ℕ} (hd : 1 ≤ d) (X : ℕ) 
   rw [movingQuotientSlice_eq_interior_add_boundary_strip hd X]
   let M₁ := X / (d + 1)
   let M₂ := X / d
-  have hM₁₂ : M₁ ≤ M₂ := Nat.div_le_div_right (Nat.le_succ d)
+  have hM₁₂ : M₁ ≤ M₂ := Nat.div_le_div_left (Nat.le_succ d) (by omega)
   rcases Nat.eq_zero_or_pos M₁ with hM₁0 | hM₁_pos
   · have hint : (∑ m ∈ Icc 1 M₁, (m : ℝ) * ordinaryPrimeCountWeight m) = 0 := by simp [hM₁0]
     have hbdry : (∑ m ∈ Ioc M₁ M₂, ((X : ℝ) - (d : ℝ) * m) * ordinaryPrimeCountWeight m) = 0 := by
@@ -372,7 +371,7 @@ theorem exists_movingOddQuotientBand_uniform_and_summable {β : ℝ}
           dsimp only [C]
           ring
         _ = C * ((X : ℝ) / ((d : ℝ) + 1)) ^ (1 + β) := by
-          rw [← Real.rpow_add hX_pos, add_comm]
+          rw [← Real.rpow_add hX_pos, add_comm β 1]
   have hsum_nat : Summable (fun Q : ℕ => (((Q + 1 : ℕ) : ℝ)) ^ (-(1 + β))) :=
     (summable_nat_add_iff 1).mpr (Real.summable_nat_rpow.mpr (by linarith))
   let S := ∑' Q : ℕ, (((Q + 1 : ℕ) : ℝ)) ^ (-(1 + β))
@@ -394,7 +393,8 @@ theorem exists_movingOddQuotientBand_uniform_and_summable {β : ℝ}
           ≤ C * ((X : ℝ) / (((2 * Q + 1 : ℕ) : ℝ) + 1)) ^ (1 + β) := hb
       _ = (C * (X : ℝ) ^ (1 + β)) * (((2 * Q + 1 : ℕ) : ℝ) + 1) ^ (-(1 + β)) := by
         rw [Real.div_rpow (Nat.cast_nonneg X) hden_pos.le, Real.rpow_neg hden_pos.le,
-          div_eq_mul_inv, mul_assoc]
+          div_eq_mul_inv]
+        ring
       _ ≤ (C * (X : ℝ) ^ (1 + β)) * (((Q + 1 : ℕ) : ℝ)) ^ (-(1 + β)) :=
         mul_le_mul_of_nonneg_left hrpow (by positivity)
   calc
@@ -445,7 +445,8 @@ theorem movingQuotientSliceTrivial_lower_bound {d X : ℕ} (hd : 1 ≤ d)
     obtain ⟨j, hj, rfl⟩ := mem_image.mp hm
     obtain ⟨hj1, hj2⟩ := mem_Ioc.mp hj
     exact mem_Icc.mpr ⟨by omega, by omega⟩
-  have hinj : Set.InjOn (fun j : ℕ => 2 * j) J := fun j₁ _ j₂ _ heq => by omega
+  have hinj : Set.InjOn (fun j : ℕ => 2 * j) J := fun _ _ _ _ heq =>
+    Nat.eq_of_mul_eq_mul_left two_pos heq
   have heven_not_prime (j : ℕ) (hj : j ∈ J) : ¬ (2 * j).Prime := by
     have hj_gt : M₁ / 4 < j := (mem_Ioc.mp hj).1
     have hj_ge3 : 3 ≤ j := by omega
@@ -476,7 +477,7 @@ theorem movingQuotientSliceTrivial_lower_bound {d X : ℕ} (hd : 1 ≤ d)
     rw [hw_eq]
     exact mul_le_mul hm_ge hinv_ge (inv_nonneg.mpr hlogX_pos.le) (by positivity)
   have hcard_ge : (M₁ : ℝ) / 8 ≤ (J.card : ℝ) := by
-    have hc : J.card = M₁ / 2 - M₁ / 4 := Nat.card_Ioc
+    have hc : J.card = M₁ / 2 - M₁ / 4 := card_Ioc
     have hnat : M₁ ≤ 8 * (M₁ / 2 - M₁ / 4) := by omega
     have hR : (M₁ : ℝ) ≤ 8 * (J.card : ℝ) := by rw [hc]; exact_mod_cast hnat
     linarith only [hR]
@@ -499,8 +500,8 @@ theorem movingQuotientSliceTrivial_lower_bound {d X : ℕ} (hd : 1 ≤ d)
         rw [sum_const, nsmul_eq_mul]
       _ ≤ ∑ j ∈ J, ((2 * j : ℕ) : ℝ) * |ordinaryPrimeCountWeight (2 * j)| :=
         sum_le_sum hterm_lb
-      _ = ∑ m ∈ J.image (fun j => 2 * j), (m : ℝ) * |ordinaryPrimeCountWeight m| :=
-        (sum_image hinj).symm
+      _ = ∑ m ∈ J.image (fun j : ℕ => 2 * j), (m : ℝ) * |ordinaryPrimeCountWeight m| :=
+        (sum_image (f := fun m : ℕ => (m : ℝ) * |ordinaryPrimeCountWeight m|) hinj).symm
       _ ≤ ∑ m ∈ Icc 1 M₁, (m : ℝ) * |ordinaryPrimeCountWeight m| :=
         sum_le_sum_of_subset_of_nonneg himg_sub fun m _ _ => by positivity
   have hsq : (X : ℝ) ^ 2 / (64 * ((d : ℝ) + 1) ^ 2 * Real.log X) ≤
@@ -531,7 +532,7 @@ private theorem sliceJumpAF_sum_eq {d : ℕ} (hd : 1 ≤ d) (u : ℕ) :
       (if u + 1 = 0 then 0 else (if u + 1 = d then 1 else 0) - (if u + 1 = d + 1 then 1 else 0)) = _
     rw [if_neg (Nat.succ_ne_zero u)]
     have heq : (u + 1 = d + 1) ↔ (u = d) := by omega
-    rw [heq]
+    simp only [heq]
     ring
 
 private theorem sliceJumpAF_supportedIn (d : ℕ) : SupportedIn (d + 1) (sliceJumpAF d) := by
@@ -557,8 +558,7 @@ private theorem exists_sliceJump_euler_point {d : ℕ} (hd : 1 ≤ d) :
   have h1 : sliceJumpAF d d = 1 := by
     change (if d = 0 then (0 : ℝ) else (if d = d then 1 else 0) - (if d = d + 1 then 1 else 0)) = 1
     have hd0 : d ≠ 0 := by omega
-    have hd1 : d ≠ d + 1 := by omega
-    simp [hd0, hd1]
+    simp [hd0]
   linarith only [h0, h1]
 
 /-- Any `O(X^{b + 1})` bound (`1/2 ≤ b < 1`) on even a single moving quotient slice `d ≥ 1`
@@ -620,11 +620,12 @@ theorem movingQuotientSlice_bound_excludes_zero_and_bounds_zeroReSup {d : ℕ} (
     rw [triangularDirichletContinuation_eq_series c hcoef (by linarith only [hs]) (by linarith only [hs])]
     have hs' := (hasSum_nat_add_iff' 1).mpr (hf_sum hs1).hasSum
     simp only [sum_range_one, LSeries.term_zero, sub_zero] at hs'
-    have htsum : (∑' n : ℕ, (c (n + 1) : ℂ) * ((n + 1 : ℕ) : ℂ) ^ (-s)) = LSeries f s := by
-      refine (tsum_congr (g := fun n => LSeries.term f s (n + 1)) fun n => ?_).trans hs'.tsum_eq
-      rw [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), Complex.cpow_neg, div_eq_mul_inv]
-      simp [f]
-    rw [htsum, hconv, LSeries_convolution' ha hg, LSeries_eq_dirPoly hsup]
+    have hL_eq : LSeries f s = LSeries (fun n => (ordinaryPrimeCountWeight n : ℂ)) s * D s := by
+      rw [hconv, LSeries_convolution' ha hg, LSeries_eq_dirPoly hsup]
+    rw [← hL_eq]
+    refine (tsum_congr (g := fun n => LSeries.term f s (n + 1)) fun n => ?_).trans hs'.tsum_eq
+    rw [LSeries.term_of_ne_zero (Nat.succ_ne_zero n), Complex.cpow_neg, div_eq_mul_inv]
+    simp [f]
   obtain ⟨x, hx3, hxD⟩ := exists_sliceJump_euler_point hd
   have hx1 : 1 < x := (by norm_num : (1 : ℝ) < 3).trans hx3
   have hzf : ∀ ρ : ℂ, b < ρ.re → riemannZeta ρ ≠ 0 := by
@@ -702,7 +703,7 @@ theorem exists_outerQuotientPairBand_sub_seven_eighths {β : ℝ}
   refine ⟨5 * K, by positivity, fun Q X hQ => ?_⟩
   let A := X / (2 * Q + 2)
   let B := X / (2 * Q)
-  have hAB : A ≤ B := Nat.div_le_div_right (by omega)
+  have hAB : A ≤ B := Nat.div_le_div_left (by omega) (by omega)
   rcases eq_or_lt_of_le hAB with hEq | hLt
   · simp only [outerQuotientPairBand]
     change |∑ m ∈ Ioc A B, _| ≤ _
@@ -795,7 +796,7 @@ theorem exists_outerQuotientPairBand_sub_seven_eighths {β : ℝ}
         rw [abs_mul]
         exact mul_le_mul (hc_pref_le n hnB) (hlip.trans hdiv_le) (abs_nonneg _) (by positivity)
       have hcard_le : ((Ioc A B).card : ℝ) ≤ B := by
-        rw [Nat.card_Ioc]
+        rw [card_Ioc]
         exact_mod_cast Nat.sub_le B A
       have hQB_le : 4 * (Q : ℝ) * B ≤ 2 * (X : ℝ) := by
         have hmul : 2 * Q * B ≤ X := Nat.mul_div_le X (2 * Q)
@@ -902,11 +903,11 @@ theorem eventually_exists_sqrt_band_near_trivial {ε : ℝ} (hε : 0 < ε) :
   let q₀ := S / 5 + 1
   have hq₀_hi : 4 * q₀ + 2 < S := by omega
   have hS_le_div : S ≤ X / S := (Nat.le_div_iff_mul_le (by omega)).mpr (Nat.sqrt_le X)
-  let L := X / (4 * q₀ + 2)
-  have hSL : S ≤ L := hS_le_div.trans (Nat.div_le_div_right hq₀_hi.le)
-  obtain ⟨p, hp_prime, hp_gt, hp_le⟩ := Nat.exists_prime_lt_and_le_two_mul L (by omega)
-  have h2L_le : 2 * L ≤ X / (2 * q₀) := by
-    have h1 : L ≤ X / (4 * q₀) := Nat.div_le_div_right (by omega)
+  let L₀ := X / (4 * q₀ + 2)
+  have hSL : S ≤ L₀ := hS_le_div.trans (Nat.div_le_div_left hq₀_hi.le (by omega))
+  obtain ⟨p, hp_prime, hp_gt, hp_le⟩ := Nat.exists_prime_lt_and_le_two_mul L₀ (by omega)
+  have h2L_le : 2 * L₀ ≤ X / (2 * q₀) := by
+    have h1 : L₀ ≤ X / (4 * q₀) := Nat.div_le_div_left (by omega) (by omega)
     have h2 : X / (4 * q₀) = (X / (2 * q₀)) / 2 := by
       rw [Nat.div_div_eq_div_mul]
       ring_nf
@@ -923,10 +924,10 @@ theorem eventually_exists_sqrt_band_near_trivial {ε : ℝ} (hε : 0 < ε) :
   let A := X / (2 * Q + 2)
   let B := X / (2 * Q)
   let J := Ioc A B
-  have hSA : S ≤ A := hS_le_div.trans (Nat.div_le_div_right h2Q2_lt.le)
+  have hSA : S ≤ A := hS_le_div.trans (Nat.div_le_div_left h2Q2_lt.le (by omega))
   have hm_gt_S : ∀ m ∈ J, S < m := fun m hm => hSA.trans_lt (mem_Ioc.mp hm).1
   have hcard13 : J.card ≤ 13 := by
-    rw [Nat.card_Ioc]
+    rw [card_Ioc]
     have h5Q : S + 1 ≤ 5 * Q := by omega
     have hX_lt_sq : X < (S + 1) * (S + 1) := Nat.lt_succ_sqrt X
     have hX_lt_Q : X < 2 * Q * (Q + 1) * 13 := by nlinarith only [h5Q, hX_lt_sq, hQ1]

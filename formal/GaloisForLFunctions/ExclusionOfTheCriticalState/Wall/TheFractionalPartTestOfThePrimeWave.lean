@@ -74,6 +74,8 @@ private theorem fractional_prime_prefix (q h : ℝ) :
 `exp (M-u)` after interchanging the integer row with the profile. -/
 theorem integral_mangoldt_fractional_cut {Φ : ℝ → ℝ} (hm : Measurable Φ)
     {C : ℝ} (hC : 0 ≤ C) (hc : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (M T : ℝ) :
+    IntegrableOn (fun t => logShiftWave (fun n : ℕ => vonMangoldt n/Real.sqrt n) Φ t*
+      fractionalPrimeTest (T-t)) (Set.Iic M) ∧
     (∫ t in Set.Iic M, (logShiftWave (fun n : ℕ => vonMangoldt n/Real.sqrt n) Φ t : ℂ)*
       (fractionalPrimeTest (T-t):ℂ)) =
       ∫ u, (Φ u : ℂ)*((Real.exp ((u-T)/2)*(∑ n ∈ Finset.Icc 0 ⌊Real.exp (M-u)⌋₊,
@@ -87,14 +89,20 @@ theorem integral_mangoldt_fractional_cut {Φ : ℝ → ℝ} (hm : Measurable Φ)
       by_cases hv : 0 ≤ v
       · simpa only [K,truncatedTest,if_pos hv,Complex.norm_real,Real.norm_eq_abs] using abs_fractionalPrimeTest_le_one (T-M+v)
       · simp [K,truncatedTest,hv]) M
-  rw [← integral_indicator measurableSet_Iic]
-  calc _ = ∫ t, (logShiftWave (fun n : ℕ => vonMangoldt n/Real.sqrt n) Φ t : ℂ)*K (M-t) := by
-           apply integral_congr_ae (Eventually.of_forall fun t => ?_)
-           by_cases ht : t ≤ M
-           · rw [Set.indicator_of_mem ht,K,truncatedTest,if_pos (sub_nonneg.mpr ht)]
-             rw [show T-M+(M-t)=T-t by ring]
-           · rw [Set.indicator_of_notMem ht,K,truncatedTest,if_neg (not_le.mpr (sub_neg.mpr (lt_of_not_ge ht))),mul_zero]
-    _ = _ := hpre.2.2.trans (integral_congr_ae (Eventually.of_forall fun u => by
+  let W := logShiftWave (fun n : ℕ => vonMangoldt n/Real.sqrt n) Φ
+  have hleft : (Set.Iic M).indicator (fun t => (W t:ℂ)*(fractionalPrimeTest (T-t):ℂ)) =
+      (fun t => (W t:ℂ)*K (M-t)) := by
+    funext t
+    by_cases ht : t ≤ M
+    · rw [Set.indicator_of_mem ht,K,truncatedTest,if_pos (sub_nonneg.mpr ht)]
+      rw [show T-M+(M-t)=T-t by ring]
+    · rw [Set.indicator_of_notMem ht,K,truncatedTest,if_neg (not_le.mpr (sub_neg.mpr (lt_of_not_ge ht))),mul_zero]
+  have hi : IntegrableOn (fun t => (W t:ℂ)*(fractionalPrimeTest (T-t):ℂ)) (Set.Iic M) :=
+    (integrable_indicator_iff measurableSet_Iic).mp (hleft.symm ▸ hpre.1)
+  refine ⟨?_,?_⟩
+  · simpa only [← Complex.ofReal_mul,Complex.ofReal_re] using hi.re
+  · rw [← integral_indicator measurableSet_Iic,hleft]
+    exact hpre.2.2.trans (integral_congr_ae (Eventually.of_forall fun u => by
       rw [show (∑' n : ℕ, ((vonMangoldt n/Real.sqrt n:ℝ):ℂ)*K (M-u-Real.log n)) = _ from
         fractional_prime_prefix (M-u) (T-M),show T-M+(M-u)=T-u by ring,show -(T-u)/2=(u-T)/2 by ring]))
 
@@ -319,13 +327,12 @@ theorem tendsto_mangoldt_fractional_response {Φ : ℝ → ℝ} (hm : Measurable
       change Φ u*_ = 0; rw [hs u (lt_of_not_ge hu).le,zero_mul])]
     apply Complex.ofReal_injective
     rw [← integral_complex_ofReal,← integral_complex_ofReal]
-    simpa only [P,g,Complex.ofReal_mul] using integral_mangoldt_fractional_cut hm hC hb M T
+    simpa only [P,g,Complex.ofReal_mul] using (integral_mangoldt_fractional_cut hm hC hb M T).2
   have heq : (∫ u in Set.Iic (0:ℝ), g u) =
       stirlingTestResponse Φ T+Real.exp (T/2)*(∫ u in Set.Iic (0:ℝ), r u)+c*A := by
     rw [show g=(fun u => stirlingTestTerm Φ T u+Real.exp (T/2)*r u+c*f u) from funext (cut_arithmetic_term Φ hM),
       integral_add (hS.add (hir.const_mul _)) (hf.const_mul _),integral_add hS (hir.const_mul _),
-      integral_const_mul, integral_const_mul]
-    rfl
+      integral_const_mul, integral_const_mul] <;> rfl
   change stirlingTestResponse Φ T+Real.exp (T/2)*(∫ u in Set.Iic (0:ℝ), r u)=
     (∫ t in Set.Iic M, P t*fractionalPrimeTest (T-t)) - A*(∫ t in Set.Iic M, Real.exp (t/2)*fractionalPrimeTest (T-t))
   rw [hphys,heq,integral_polar_fractional_cut hM]

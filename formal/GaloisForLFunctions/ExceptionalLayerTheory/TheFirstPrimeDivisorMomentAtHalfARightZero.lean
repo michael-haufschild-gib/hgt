@@ -59,9 +59,9 @@ private theorem fourth_diff {s : ℂ} (hs : 1/4<s.re) : DifferentiableAt ℂ fou
     have hn : n≠0 := (pow_pos pk.1.prop.pos _).ne'
     have hc : (n:ℂ)≠0 := by exact_mod_cast hn
     have he : (fun z => fourthTerm z pk)=fun z : ℂ => (vonMangoldt n:ℂ)/(n:ℂ)^z :=
-      funext fun _ => LSeries.term_of_ne_zero hn
+      funext fun z => LSeries.term_of_ne_zero hn _ z
     rw [he]
-    exact fun z _ => (differentiableAt_const.div
+    exact fun z _ => ((differentiableAt_const _).div
       (differentiableAt_id.const_cpow (Or.inl hc)) (Complex.cpow_ne_zero_iff.mpr (Or.inl hc))).differentiableWithinAt
   have hb (pk : Nat.Primes × ℕ) (z : ℂ) (hz : z∈U) : ‖fourthTerm z pk‖≤fourthWeight u pk :=
     (LSeries.norm_term_le_of_re_le_re _ (s := (u:ℂ)) (s' := z) hz.le _).trans_eq (fourth_norm (u:ℂ) pk)
@@ -74,7 +74,8 @@ private theorem cube_term (s : ℂ) (p : Nat.Primes) :
   rw [LSeries.term_of_ne_zero (pow_pos p.prop.pos _).ne',vonMangoldt_apply_pow (by norm_num),
     vonMangoldt_apply_prime p.prop,Nat.cast_pow]
   rw [← Complex.cpow_nat_mul' (x := (p:ℂ)) (n := 3) (by simpa [harg] using Real.pi_pos)
-    (by simpa [harg] using Real.pi_pos.le)] <;> norm_num
+    (by simpa [harg] using Real.pi_pos.le)]
+  norm_num
 
 private theorem three_split {s : ℂ} (hs : 1/3<s.re) :
     xiPrimeLogHigherValuationThreePlus s=xiPrimeLogDirichlet (3*s)+fourthTail s := by
@@ -98,9 +99,9 @@ private theorem primeMomentTail_diff {s : ℂ} (hs : 1/4<s.re) : DifferentiableA
   have h2 : 1/2<(2*s).re := by simp; linarith only [hs]
   have h3 : 1/2<(3*s).re := by simp; linarith only [hs]
   exact (((differentiableAt_xiPrimeLogHigherValuation_of_half_lt_re h2).comp s
-    (differentiableAt_const.mul differentiableAt_id)).add
+    (differentiableAt_id.const_mul _)).add
     ((differentiableAt_xiPrimeLogHigherValuation_of_half_lt_re h3).comp s
-    (differentiableAt_const.mul differentiableAt_id))).sub (fourth_diff hs)
+    (differentiableAt_id.const_mul _))).sub (fourth_diff hs)
 
 /-- Continuation of the jump series of the first distinct-prime-divisor moment. -/
 def firstPrimeDivisorMoment (s : ℂ) : ℂ :=
@@ -128,7 +129,7 @@ private theorem flux_diff {z : ℂ} (h1 : z≠1) (hz : riemannZeta z≠0) :
   exact ((h.deriv.differentiableAt.div h.differentiableAt hz).neg)
 
 private theorem flux_residue {z : ℂ} (h1 : z≠1) :
-    ∃ m : ℕ, (riemannZeta z=0 → 0<m) ∧
+    ∃ m : ℕ, (riemannZeta z= 0 → 0 < m) ∧
       Tendsto (fun w => (w-z)*infinitePrimeFlux w) (𝓝[≠] z) (𝓝 (-(m:ℂ))) := by
   by_cases hz : riemannZeta z=0
   · obtain ⟨m,hm,h⟩ := neg_logDeriv_zeta_zero_residue hz
@@ -143,7 +144,7 @@ private theorem scaled_ne_one {z : ℂ} (hi : z.im≠0) {a : ℝ} (ha : a≠0) :
   exact (mul_ne_zero ha hi) (by simpa using congrArg Complex.im he)
 
 private theorem scaled_flux_residue (a : ℝ) (ha : a≠0) {z : ℂ} (hi : z.im≠0) :
-    ∃ m : ℕ, (riemannZeta ((a:ℂ)*z)=0 → 0<m) ∧
+    ∃ m : ℕ, (riemannZeta ((a:ℂ)*z)= 0 → 0 < m) ∧
       Tendsto (fun w => (w-z)*infinitePrimeFlux ((a:ℂ)*w)) (𝓝[≠] z) (𝓝 (-(m:ℂ)/(a:ℂ))) := by
   obtain ⟨m,hm,ht⟩ := flux_residue (scaled_ne_one hi ha)
   have hc : (a:ℂ)≠0 := Complex.ofReal_ne_zero.mpr ha
@@ -161,7 +162,7 @@ private theorem scaled_flux_residue (a : ℝ) (ha : a≠0) {z : ℂ} (hi : z.im�
 /-- A zero at twice the argument and a zero at three times the argument
 contribute nonnegative multiplicities to the same residue factor. -/
 theorem firstPrimeDivisorMoment_residue {z : ℂ} (hs : 1/4<z.re) (hi : z.im≠0) :
-    ∃ m n : ℕ, (riemannZeta (2*z)=0 → 0<m) ∧ (riemannZeta (3*z)=0 → 0<n) ∧
+    ∃ m n : ℕ, (riemannZeta (2*z)= 0 → 0 < m) ∧ (riemannZeta (3*z)= 0 → 0 < n) ∧
       Tendsto (fun w => (w-z)*firstPrimeDivisorMoment w) (𝓝[≠] z)
         (𝓝 (riemannZeta z*((m:ℂ)/2+(n:ℂ)/3))) := by
   obtain ⟨m,hm,h₂⟩ := scaled_flux_residue 2 (by norm_num) hi
@@ -194,7 +195,7 @@ theorem riemannHypothesis_iff_firstPrimeDivisorMoment_quarter :
       · exact riemannZeta_ne_zero_of_one_le_re hv'
     have hm (a : ℝ) (ha : a≠0) (hs : 1/2<((a:ℂ)*z).re) :
         DifferentiableAt ℂ (fun w : ℂ => infinitePrimeFlux ((a:ℂ)*w)) z :=
-      (flux_diff (scaled_ne_one hi ha) (hf hs)).comp z (differentiableAt_const.mul differentiableAt_id)
+      (flux_diff (scaled_ne_one hi ha) (hf hs)).comp z (differentiableAt_id.const_mul _)
     have h2 := hm 2 (by norm_num) (by simp; linarith only [hz])
     have h3 := hm 3 (by norm_num) (by simp; linarith only [hz])
     have ha := HTGeometry.analyticAt_riemannZeta (show z≠1 from fun e => hi (by rw [e,Complex.one_im]))

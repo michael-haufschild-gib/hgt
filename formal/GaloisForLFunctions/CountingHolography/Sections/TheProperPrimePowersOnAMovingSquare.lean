@@ -53,8 +53,9 @@ private theorem power_prefix (y : ℝ) : ∑ k ∈ Icc 0 ⌊y⌋₊, powerWeight
   have hs : Icc 0 ⌊y⌋₊=insert 0 (Ioc 0 ⌊y⌋₊) := by
     ext k; simp only [mem_Icc,mem_insert,mem_Ioc]; omega
   rw [hs,Finset.sum_insert (by simp)]
-  simp only [powerWeight,Nat.not_prime_zero,if_false,vonMangoldt_apply_zero,zero_add]
-  exact sum_congr rfl fun k _ => by by_cases h : k.Prime <;> simp [h]
+  have hzero : powerWeight 0=0 := by simp [powerWeight]
+  rw [hzero,zero_add]
+  exact sum_congr rfl fun k _ => by by_cases h : k.Prime <;> simp [powerWeight,h]
 
 private theorem scaled_power_mass {v : ℝ} (hv : 0 < v) :
     Tendsto (fun X : ℝ => powerMass (X*v)/Real.sqrt X) atTop (𝓝 (Real.sqrt v)) := by

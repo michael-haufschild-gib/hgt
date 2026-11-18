@@ -46,9 +46,11 @@ theorem newton_mean (s : Multiset ℂ) (k : ℕ) (hk : 0 < k) :
     signedExterior s a.1*tracePow s a.2) = _ at h
   rw [interior_sum k (fun i j => signedExterior s i*tracePow s j)] at h
   rw [← sum_erase_add (range k) (fun i => signedExterior s i*tracePow s (k-i)) (mem_range.mpr hk)]
-  simp only [signedExterior,Nat.sub_zero,pow_zero,one_mul,Multiset.esymm] at h ⊢
-  rw [pow_succ] at h
-  linear_combination h
+  have h₀ : signedExterior s 0=1 := by simp [signedExterior,Multiset.esymm]
+  rw [h₀,Nat.sub_zero,one_mul,add_comm,h]
+  unfold signedExterior
+  rw [pow_succ]
+  ring
 
 private theorem mean_square {α : Type*} (S : Finset α) (z : α → ℂ) (u : ℂ)
     (h : (∑ i ∈ S,z i)=(S.card : ℂ)*u) :

@@ -17,24 +17,24 @@ namespace GaloisForLFunctions.PrimeExponentialSums.RamifiedEuler
 
 /-- A local series supported in degrees zero and at least m has a geometric
 tail whose cost starts with the m-th power of the local ratio. -/
-theorem delayed_local_mass (m : ℕ+) (u : ℕ → ℝ) (C q : NNReal)
+theorem delayed_local_mass (m : ℕ+) (u : ℕ → ℝ) (C q : ℝ)
     (hu : ∀ j, 0 ≤ u j) (h₀ : u 0=1) (hz : ∀ j : ℕ, 0<j → j<(m : ℕ) → u j=0)
-    (hb : ∀ j : ℕ, (m : ℕ) ≤ j → u j ≤ (C : ℝ)) (hq : (q : ℝ)<1) :
-    Summable (fun j : ℕ => u j*(q : ℝ)^j) ∧
-      (∑' j : ℕ, u j*(q : ℝ)^j) ≤ 1+(C : ℝ)*(q : ℝ)^(m : ℕ)/(1-q) := by
-  have geom := summable_geometric_of_lt_one q.property hq
-  have htail : ∀ j : ℕ, u (j+m)*(q : ℝ)^(j+(m : ℕ)) ≤
-      ((C : ℝ)*(q : ℝ)^(m : ℕ))*(q : ℝ)^j := by
+    (hb : ∀ j : ℕ, (m : ℕ) ≤ j → u j ≤ C) (hq₀ : 0 ≤ q) (hq : q<1) :
+    Summable (fun j : ℕ => u j*q^j) ∧
+      (∑' j : ℕ, u j*q^j) ≤ 1+C*q^(m : ℕ)/(1-q) := by
+  have geom := summable_geometric_of_lt_one hq₀ hq
+  have htail : ∀ j : ℕ, u (j+(m : ℕ))*q^(j+(m : ℕ)) ≤
+      (C*q^(m : ℕ))*q^j := by
     intro j
-    exact (mul_le_mul_of_nonneg_right (hb (j+m) (Nat.le_add_left _ _))
-      (pow_nonneg q.property _)).trans_eq (by rw [pow_add]; ring)
-  have hs : Summable (fun j : ℕ => u j*(q : ℝ)^j) := by
+    exact (mul_le_mul_of_nonneg_right (hb (j+(m : ℕ)) (Nat.le_add_left _ _))
+      (pow_nonneg hq₀ _)).trans_eq (by rw [pow_add]; ac_rfl)
+  have hs : Summable (fun j : ℕ => u j*q^j) := by
     rw [← summable_nat_add_iff (m : ℕ)]
-    exact Summable.of_nonneg_of_le (fun j => mul_nonneg (hu _) (pow_nonneg q.property _))
+    exact Summable.of_nonneg_of_le (fun j => mul_nonneg (hu _) (pow_nonneg hq₀ _))
       htail (geom.mul_left _)
   refine ⟨hs,?_⟩
   rw [← hs.sum_add_tsum_nat_add (m : ℕ)]
-  have hhead : (∑ j ∈ range (m : ℕ), u j*(q : ℝ)^j)=1 := by
+  have hhead : (∑ j ∈ range (m : ℕ), u j*q^j)=1 := by
     rw [sum_eq_single 0]
     · simp [h₀]
     · intro j hj hne
@@ -43,7 +43,8 @@ theorem delayed_local_mass (m : ℕ+) (u : ℕ → ℝ) (C q : NNReal)
   rw [hhead]
   apply add_le_add_right
   have hh := ((summable_nat_add_iff _).2 hs).tsum_le_tsum htail (geom.mul_left _)
-  simpa only [tsum_mul_left,tsum_geometric_of_lt_one q.property hq,div_eq_mul_inv] using hh
+  rw [tsum_mul_left,tsum_geometric_of_lt_one hq₀ hq] at hh
+  exact hh
 
 /-- Absolute Dirichlet mass as a real multiplicative arithmetic function. -/
 def weightedNorm (f : ArithmeticFunction ℂ) (σ : ℝ) : ArithmeticFunction ℝ where
@@ -76,17 +77,18 @@ theorem delayed_absolute_convergence (m : ℕ+) (C : NNReal) (f : ArithmeticFunc
   have hpos : 0 < σ := pos_of_mul_pos_right (zero_lt_one.trans hσ) hm.le
   let ρ : ℝ := (2 : ℝ)^(-σ)
   have hρ : ρ < 1 := Real.rpow_lt_one_of_one_lt_of_neg one_lt_two (neg_lt_zero.mpr hpos)
-  let rate (n : ℕ) : NNReal := ⟨(n : ℝ)^(-σ),Real.rpow_nonneg (Nat.cast_nonneg _) _⟩
-  have hrate (p : Nat.Primes) : (rate p : ℝ) ≤ ρ :=
+  let rate (n : ℕ) : ℝ := (n : ℝ)^(-σ)
+  have rate_nonneg (n : ℕ) : 0 ≤ rate n := Real.rpow_nonneg (Nat.cast_nonneg _) _
+  have hrate (p : Nat.Primes) : rate p ≤ ρ :=
     Real.rpow_le_rpow_of_nonpos zero_lt_two (by exact_mod_cast p.property.two_le) (neg_nonpos.mpr hpos.le)
   have localMass (p : Nat.Primes) := delayed_local_mass m (fun j => ‖f ((p : ℕ)^j)‖) C (rate p)
     (fun _ => norm_nonneg _) (by simp [hf.map_one])
-    (fun j hj hlt => by rw [hz p j hj hlt,norm_zero]) (hb p) ((hrate p).trans_lt hρ)
+    (fun j hj hlt => by rw [hz p j hj hlt,norm_zero]) (hb p) (rate_nonneg p) ((hrate p).trans_lt hρ)
   let K := (C : ℝ)/(1-ρ)
   have hK : 0 ≤ K := div_nonneg C.property (sub_nonneg.mpr hρ.le)
   let b (n : ℕ) := K*((n : ℝ)^((m : ℝ)*σ))⁻¹
   apply _root_.RHTower.pm_summable_of_multiplicative_local_bound (weightedNorm f σ)
-    (weighted_mul f σ hf) (fun n => mul_nonneg (norm_nonneg _) (rate n).property) (b := b)
+    (weighted_mul f σ hf) (fun n => mul_nonneg (norm_nonneg _) (rate_nonneg n)) (b := b)
   · intro p hp
     simpa only [weighted_prime,rate] using (localMass ⟨p,hp⟩).1
   · intro n
@@ -95,21 +97,24 @@ theorem delayed_absolute_convergence (m : ℕ+) (C : NNReal) (f : ArithmeticFunc
   · intro p hp
     let P : Nat.Primes := ⟨p,hp⟩
     have hl := (localMass P).2
-    have hh : ((rate p : ℝ)^(m : ℕ))=((p : ℝ)^((m : ℝ)*σ))⁻¹ := by
+    have hh : ((rate p)^(m : ℕ))=((p : ℝ)^((m : ℝ)*σ))⁻¹ := by
       change ((p : ℝ)^(-σ))^(m : ℕ) = _
       rw [← Real.rpow_mul_natCast (Nat.cast_nonneg p),show (-σ)*(m : ℕ) = -((m : ℝ)*σ) by ring,
         Real.rpow_neg (Nat.cast_nonneg _)]
     have hd := div_le_div_of_nonneg_left C.property (sub_pos.mpr hρ)
       (sub_le_sub_left (hrate P) 1)
     calc
-      _ ≤ 1+(C : ℝ)*(rate p : ℝ)^(m : ℕ)/(1-rate p) := by
+      _ ≤ 1+(C : ℝ)*(rate p)^(m : ℕ)/(1-rate p) := by
         simpa only [weighted_prime,rate,P] using hl
       _ ≤ 1+b p := by
-        have he := mul_le_mul_of_nonneg_right hd (pow_nonneg (rate p).property (m : ℕ))
+        have he := mul_le_mul_of_nonneg_right hd (pow_nonneg (rate_nonneg p) (m : ℕ))
         dsimp only [b]
         rw [← hh]
         dsimp only [K] at *
-        linarith only [he]
+        apply add_le_add_right
+        calc
+          _ = ((C : ℝ)/(1-rate p))*(rate p)^(m : ℕ) := by ring
+          _ ≤ _ := he
       _ ≤ Real.exp (b p) := by simpa only [add_comm] using Real.add_one_le_exp (b p)
 
 /-- Gou's half-plane for every protected denominator, including the unramified
@@ -117,7 +122,8 @@ case q=1 and the completely protected case q=0. -/
 theorem correction_summable (q : ℕ) (A : ℕ → ℕ → ℂ)
     (hA : ∀ (p : Nat.Primes) (j : ℕ), 0 < j → ‖A p j‖ ≤ 1)
     (σ : ℝ) (hs : 1/2 < σ) : Summable fun n : ℕ => weightedNorm (correction q A) σ n := by
-  apply delayed_absolute_convergence (2 : ℕ+) 2 _ (RHTower.Sieve.localEuler_isMultiplicative _) _ _ σ
+  refine delayed_absolute_convergence (2 : ℕ+) 2 (correction q A)
+    (RHTower.Sieve.localEuler_isMultiplicative _) ?_ ?_ σ ?_
   · intro p j hj hk
     change j < 2 at hk
     obtain rfl : j=1 := by omega
@@ -141,8 +147,9 @@ def powerSelector (m : ℕ+) : ArithmeticFunction ℂ :=
   _root_.RHTower.Sieve.localEuler (fun _ k => if (m : ℕ) ∣ k then 1 else 0)
 
 theorem selector_on_powers (m n : ℕ+) : powerSelector m ((n : ℕ)^(m : ℕ))=1 := by
-  unfold powerSelector
-  rw [RHTower.Sieve.localEuler,if_neg (pow_ne_zero _ n.pos.ne')]
+  change (if (n : ℕ)^(m : ℕ)=0 then (0 : ℂ) else ∏ p ∈ ((n : ℕ)^(m : ℕ)).primeFactors,
+    if (m : ℕ) ∣ ((n : ℕ)^(m : ℕ)).factorization p then 1 else 0)=1
+  rw [if_neg (pow_ne_zero _ n.pos.ne')]
   apply prod_eq_one
   intro p _
   rw [Nat.factorization_pow,Finsupp.smul_apply,smul_eq_mul,if_pos (dvd_mul_right _ _)]
@@ -160,10 +167,11 @@ theorem selector_abscissa (m : ℕ+) (σ : ℝ) :
     rw [← summable_nat_add_iff 1]
     refine h.congr fun n => ?_
     change ‖powerSelector m ((n+1)^(m : ℕ))‖*((((n+1)^(m : ℕ) : ℕ) : ℝ)^(-σ)) = _
-    rw [selector_on_powers m ⟨n+1,Nat.succ_pos _⟩,norm_one,one_mul,Nat.cast_pow,
+    have hsel : powerSelector m ((n+1)^(m : ℕ))=1 := selector_on_powers m ⟨n+1,Nat.succ_pos _⟩
+    rw [hsel,norm_one,one_mul,Nat.cast_pow,
       ← Real.rpow_natCast_mul (Nat.cast_nonneg _),mul_neg,Real.rpow_neg (Nat.cast_nonneg _)]
   · intro hs
-    apply delayed_absolute_convergence m 1 _ (RHTower.Sieve.localEuler_isMultiplicative _) _ _ σ hs
+    refine delayed_absolute_convergence m 1 (powerSelector m) (RHTower.Sieve.localEuler_isMultiplicative _) ?_ ?_ σ hs
     · intro p j hj hlt
       rw [powerSelector,RHTower.Sieve.localEuler_prime_pow,if_neg hj.ne',
         if_neg (fun h => hlt.not_ge (Nat.le_of_dvd hj h))]

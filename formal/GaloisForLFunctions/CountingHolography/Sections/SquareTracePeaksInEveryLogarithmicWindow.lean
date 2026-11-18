@@ -20,7 +20,7 @@ open scoped ComplexConjugate
 
 private abbrev baseCoeff := evenCoeff zetaZeroConfig (boxSpline 1 3)
 private def filteredCoeff (k : ℝ → ℝ) (z : ℂ) :=
-  baseCoeff z*sourceTransform (fun x => (k x:ℂ)) (I*z)
+  baseCoeff z*sourceTransform (fun x => (k x:ℂ)) (Complex.I*z)
 private def squareCoeff (k : ℝ → ℝ) (z : ℂ) :=
   filteredCoeff k z*(Complex.exp (z*(Real.log 4:ℝ))-2)
 
@@ -32,10 +32,13 @@ private theorem finite_filter_square_trace {k : ℝ → ℝ} (hkc : Continuous k
   have hs (v : ℝ) : (∫ x, k x*(2*realSplineTrace (v+x))) =
       ∑ z ∈ S, (filteredCoeff k z*Complex.exp (z*v)).re := by
     simp_rw [two_mul_realSplineTrace_eq_tsum]
-    rw [integral_kernel_cexp_tsum baseCoeff id (by norm_num : (0:ℝ) ≤ 1/2)
+    have hkernel := integral_kernel_cexp_tsum baseCoeff id (by norm_num : (0:ℝ) ≤ 1/2)
       (summable_norm_evenCoeff_spline temperedConfig_zetaZeroConfig)
-      (fun _ hz => abs_re_le_of_evenCoeff_ne_zero hz) hkc hm v]
-    simp only [id_eq,← sourceTransform_I_mul_eq_laplace,← filteredCoeff]
+      (fun _ hz => abs_re_le_of_evenCoeff_ne_zero hz) hkc hm v
+    simp only [id_eq] at hkernel
+    change (∫ x, k x*(∑' z : ℂ, (baseCoeff z*Complex.exp (z*(v+x:ℝ))).re))=_
+    rw [hkernel]
+    simp only [← sourceTransform_I_mul_eq_laplace,← filteredCoeff]
     exact tsum_eq_sum (fun z hz => by rw [hout z hz,zero_mul,Complex.zero_re])
   obtain ⟨A,hA,hF⟩ := realSplineTrace_strip_bound
   have hi (v : ℝ) : Integrable (fun x => k x*(2*realSplineTrace (v+x))) := by
@@ -74,7 +77,7 @@ private theorem square_multiplier_ne {z : ℂ} (hz : z.re < 1/2) :
 
 private theorem squareCoeff_conj (k : ℝ → ℝ) (z : ℂ) :
     squareCoeff k (conj z)=conj (squareCoeff k z) := by
-  simp only [squareCoeff,filteredCoeff,baseCoeff,evenCoeff_conj,sourceTransform_I_mul_conj,
+  simp only [squareCoeff,filteredCoeff,baseCoeff,SquareRootThreshold.evenCoeff_conj,sourceTransform_I_mul_conj,
     map_mul,map_sub,map_ofNat,← Complex.exp_conj,Complex.conj_ofReal]
 
 /-- Below the zero width, every sufficiently late log window contains a
@@ -150,7 +153,8 @@ theorem squareLongTrace_peaks_in_every_logarithmic_window {a : ℝ} (ha : 0 ≤ 
       dsimp only [F]; rw [mul_add,Real.exp_add]; ring
     have hfi := integrable_kernel_of_strip_bound hA (by norm_num : (0:ℝ) ≤ 1/2)
       continuous_squareLongTrace hkc (hm _) hbound t
-    have hni : Integrable (fun x => k x*(-squareLongTrace (t+x))) := by simpa only [mul_neg] using hfi.neg
+    have hni : Integrable (fun x => k x*(-squareLongTrace (t+x))) := by
+      simpa only [mul_neg,neg_one_mul] using hfi.const_mul (-1:ℝ)
     simp_rw [he]
     rw [integral_add (hmi.const_mul _) hni,integral_const_mul,hsum]
   have hleak : Tendsto (fun T : ℝ => (|H|+A)*C*Real.exp (1/2*L-T)) atTop (𝓝 0) := by

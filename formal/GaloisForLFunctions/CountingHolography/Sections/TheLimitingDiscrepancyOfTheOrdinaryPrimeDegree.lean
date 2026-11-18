@@ -65,9 +65,10 @@ private theorem contact_rows {n k : ℕ} (hn : 0 < n) (hk : 0 < k) (hs : 8 < Rea
 private theorem longRow_sum {B : ℝ} (hB : 0 < B) {N : ℕ} (hN : ⌊Real.exp 8*B⌋₊ ≤ N) :
     ∑ k ∈ Ioc 0 N, longRow B k = longProperPowerContact B := by
   unfold longProperPowerContact
-  apply (sum_subset (f := longRow B) (s₁ := Ioc ⌊Real.exp (-9)*B⌋₊ ⌊Real.exp 8*B⌋₊) (s₂ := Ioc 0 N) ?_ ?_).symm
-  · intro k hk
+  have hsub : Ioc ⌊Real.exp (-9)*B⌋₊ ⌊Real.exp 8*B⌋₊ ⊆ Ioc 0 N := by
+    intro k hk
     exact mem_Ioc.mpr ⟨lt_of_le_of_lt (Nat.zero_le _) (mem_Ioc.mp hk).1,(mem_Ioc.mp hk).2.trans hN⟩
+  apply (sum_subset (f := longRow B) hsub ?_).symm
   · intro k hk hbad
     have hk₀ : (0:ℝ) < k := Nat.cast_pos.mpr (mem_Ioc.mp hk).1
     have harg : 8 < |Real.log B-Real.log k| := by
@@ -89,7 +90,7 @@ private theorem shortRow_support {δ : ℝ} (hδ₀ : 0 ≤ δ) (hδ : δ ≤ Re
   have hk' : Real.exp (9+Real.log 9) < (k:ℝ) := (Nat.le_ceil _).trans_lt (Nat.cast_lt.mpr hk)
   have h := Real.log_lt_log (Real.exp_pos _) hk'
   rw [Real.log_exp] at h
-  have hz {u : ℝ} (hu : u < -8) := splineAutoCorr_zero_outside (lt_abs.mpr (Or.inr (by linarith only [hu])))
+  have hz {u : ℝ} (hu : u < -8) : H u=0 := splineAutoCorr_zero_outside (lt_abs.mpr (Or.inr (by linarith only [hu])))
   have h₀ := Real.log_nonneg (by norm_num : (1:ℝ) ≤ 9)
   unfold shortRow
   rw [hz (by linarith only [h,h₀]),hz (by linarith only [h,hδ]),hz (by linarith only [h,h₀,hδ₀])]

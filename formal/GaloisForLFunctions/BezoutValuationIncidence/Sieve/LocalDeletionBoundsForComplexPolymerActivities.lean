@@ -48,8 +48,9 @@ theorem negative_deletion (p c : ι → NNReal) (P : Finset ι) (hc : LocalTest 
     have hCP := hC.trans hQP
     have posC : 0 < negative G p C := by
       have hh := ih C (hC.trans_ssubset hQ) ∅ hCP (empty_subset _)
-      simpa only [sdiff_empty,negative,partition_empty,mul_one] using
-        (exp_cost_pos c (C \ ∅)).trans_le (by simpa only [negative,partition_empty,mul_one] using hh)
+      have hlo : Real.exp (-cost c C) ≤ negative G p C := by
+        simpa only [sdiff_empty,negative,partition_empty,mul_one] using hh
+      exact (exp_cost_pos c C).trans_le hlo
     have hsub : Q \ C ⊆ P.filter (G.Adj i) := by
       intro j hj
       obtain ⟨hjQ,hjC⟩ := mem_sdiff.mp hj

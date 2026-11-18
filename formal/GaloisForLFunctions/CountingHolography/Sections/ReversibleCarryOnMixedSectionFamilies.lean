@@ -262,8 +262,6 @@ theorem eventually_centeredCarry_sections_of_window {N : ℕ} {v₀ v₊ v₋ : 
       ((tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop)
   have hev₋ := ((hK.add hr₋).sub hr₀).eventually_const_lt
     (show (0 : ℝ) < μ + integerProbe N v₋ - integerProbe N v₀ by linarith)
-  have hev₊ := ((hr₊.sub hK).sub hr₀).eventually_const_lt
-    (show (0 : ℝ) < integerProbe N v₊ - μ - integerProbe N v₀ by linarith)
   have hev₊_2 := (((hr₊.sub hK).sub hr₀).sub hc2).eventually_const_lt
     (show (0 : ℝ) < integerProbe N v₊ - μ - integerProbe N v₀ - 0 by linarith)
   have hr₀_pos : ∀ᶠ m : ℕ in atTop, 1 ≤ sectionRadius (m • v₀) := by
@@ -313,8 +311,9 @@ theorem eventually_centeredCarry_sections_of_window {N : ℕ} {v₀ v₊ v₋ : 
     rw [zero_mul] at hlog
     have hlt : Real.log ((2 * M * sectionRadius (m • v₀) : ℕ) : ℝ) <
         Real.log (sectionRadius (m • v₊)) := by
-      rw [Nat.cast_mul, Nat.cast_mul, Real.log_mul (mul_ne_zero two_ne_zero (Nat.cast_pos.mpr hM).ne')
-        (Nat.cast_pos.mpr h₀).ne', Real.log_mul two_ne_zero (Nat.cast_pos.mpr hM).ne', Nat.cast_ofNat]
+      rw [Nat.cast_mul, Nat.cast_mul, Nat.cast_ofNat,
+        Real.log_mul (mul_ne_zero two_ne_zero (Nat.cast_pos.mpr hM).ne') (Nat.cast_pos.mpr h₀).ne',
+        Real.log_mul two_ne_zero (Nat.cast_pos.mpr hM).ne']
       linarith only [hlog]
     have hnat : 2 * M * sectionRadius (m • v₀) < sectionRadius (m • v₊) := by
       exact_mod_cast (Real.log_lt_log_iff
@@ -697,6 +696,23 @@ private theorem sum_extend_zero {ι κ : Type*} [Fintype ι] [Fintype κ] [Decid
     Finset.sum_image fun i _ j _ h => he h]
   exact Finset.sum_congr rfl fun i _ => by rw [he.extend_apply]
 
+private def halfWindowReadings (N k : ℕ) :
+    (Fin N → ℚ) →ₗ[ℚ] ((Fin (N / 2) → ℚ) × (Fin k → ℚ)) where
+  toFun v := (fun i => v (Fin.castLE (Nat.div_le_self N 2) i),
+    fun j => ∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * v i)
+  map_add' v w := by
+    apply Prod.ext rfl
+    funext j
+    change ∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * (v i + w i) =
+      (∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * v i) + ∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * w i
+    simp only [mul_add, Finset.sum_add_distrib]
+  map_smul' c v := by
+    apply Prod.ext rfl
+    funext j
+    change ∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * (c * v i) = c * ∑ i : Fin N, ((i : ℚ) + 1) ^ j.val * v i
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => by ring
+
 /-- For every separation ratio `p ≥ 2`, there is a fixed moment threshold `N₀`
 such that at every horizon `N ≥ N₀`, `ℤ^(p * N)` contains a positive background
 `b` and a genuinely mixed zero-sum signed displacement `a = 3U - V` whose
@@ -724,13 +740,15 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
   obtain ⟨k, hk_pos⟩ := positive_integer_window_moments (2 * p) (by omega)
   let k₀ := max k 1
   refine ⟨2 * k₀ + 2, fun N hN => ?_⟩
-  have hrank : 0 < Module.finrank ℚ (windowMomentKernel N 2 k₀) := by
-    have hr := windowMomentKernel_rank N 2 k₀
+  let T := halfWindowReadings N k₀
+  have hrank : 0 < Module.finrank ℚ (LinearMap.ker T) := by
+    have he := T.finrank_range_add_finrank_ker
+    have hl := Submodule.finrank_le (LinearMap.range T)
+    simp only [Module.finrank_prod, Module.finrank_fintype_fun_eq_card, Fintype.card_fin] at he hl
     omega
-  obtain ⟨v, hv_mem, hv_ne⟩ : ∃ v ∈ windowMomentKernel N 2 k₀, v ≠ 0 := by
+  obtain ⟨v, hv_mem, hv_ne⟩ : ∃ v ∈ LinearMap.ker T, v ≠ 0 := by
     by_contra! hall
-    have hbot : windowMomentKernel N 2 k₀ = ⊥ :=
-      (Submodule.eq_bot_iff _).mpr hall
+    have hbot : LinearMap.ker T = ⊥ := (Submodule.eq_bot_iff _).mpr hall
     rw [hbot, finrank_bot] at hrank
     exact lt_irrefl 0 hrank
   obtain ⟨D, u, hD, hd⟩ := ArithmeticScatteringHolography.exists_common_denominator v
@@ -743,14 +761,14 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
     have hi : (u i : ℚ) = (D : ℚ) * v i := congrFun hu_eq i
     rw [h0, Pi.zero_apply, Int.cast_zero] at hi
     exact (mul_eq_zero.mp hi.symm).resolve_left (Nat.cast_ne_zero.mpr hD.ne')
-  have hu_ker : (fun i => (u i : ℚ)) ∈ windowMomentKernel N 2 k₀ := by
-    rw [hu_eq]; exact (windowMomentKernel N 2 k₀).smul_mem _ hv_mem
+  have hu_ker : T (fun i => (u i : ℚ)) = 0 :=
+    LinearMap.mem_ker.mp (hu_eq ▸ (LinearMap.ker T).smul_mem _ hv_mem)
   have hu_low (i : Fin N) (hi : i.val < N / 2) : u i = 0 := by
-    have h := congrFun (congrArg Prod.fst (hu_ker : _ = 0)) ⟨i.val, hi⟩
+    have h := congrFun (congrArg Prod.fst hu_ker) ⟨i.val, hi⟩
     change (u i : ℚ) = 0 at h
     exact_mod_cast h
   have hu_mom (j : ℕ) (hj : j < k₀) : ∑ i : Fin N, ((i : ℝ) + 1) ^ j * (u i : ℝ) = 0 := by
-    have h := congrFun (congrArg Prod.snd (hu_ker : _ = 0)) ⟨j, hj⟩
+    have h := congrFun (congrArg Prod.snd hu_ker) ⟨j, hj⟩
     change ∑ i : Fin N, ((i : ℚ) + 1) ^ j * (u i : ℚ) = 0 at h
     exact_mod_cast h
   obtain ⟨i₀, hi₀⟩ : ∃ i, u i ≠ 0 := by simpa [funext_iff] using hu_ne
@@ -761,8 +779,9 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
   obtain ⟨i₊, hi₊⟩ : ∃ i : Fin N, 0 < u i := by
     by_contra! hnonpos
     rcases lt_or_gt_of_ne hi₀ with hneg | hpos
-    · have hlt : (∑ i : Fin N, u i) < 0 :=
-        Finset.sum_lt_zero_of_nonpos hnonpos ⟨i₀, Finset.mem_univ _, hneg⟩
+    · have hsplit := (Finset.add_sum_erase Finset.univ u (Finset.mem_univ i₀)).symm
+      have hrest : ∑ i ∈ Finset.univ.erase i₀, u i ≤ 0 :=
+        Finset.sum_nonpos fun i _ => hnonpos i
       omega
     · exact (hnonpos i₀).not_gt hpos
   let hle : N ≤ p * N := Nat.le_mul_of_pos_left N hp0
@@ -839,7 +858,9 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
         Pi.zero_apply] at hval
       exact mul_ne_zero hc₁ hi₀ hval
     · intro ℓ hℓ
-      have hdiv_eq : p * N / (2 * p) = N / 2 := Nat.mul_div_mul_left N 2 hp0
+      have hdiv_eq : p * N / (2 * p) = N / 2 := by
+        rw [mul_comm 2 p]
+        exact Nat.mul_div_mul_left N 2 hp0
       rw [hdiv_eq] at hℓ
       have hU0 : U ℓ = 0 := by by_contra hne; exact hℓ.not_ge (hU_supp hne).1
       have hV0 : V ℓ = 0 := by

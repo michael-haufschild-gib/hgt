@@ -12,3 +12,9 @@ $$-(1-2^{1-s})\zeta(s)\left(\sum_d w(d)d^{-s}-\zeta(2s)-\zeta(3s)\right).$$
 If $a(n)$ are its coefficients, then $X[A(X)-2A(X/2)]=\sum_{n\le X}(X-n)a(n)$ is linear on each unit interval. Integer bounds therefore imply the same real bounds. Mellin integration gives a holomorphic continuation of the symbol divided by $s(s+1)$ to $\Re s>1/4$. The explicit lattice terms have only real poles in this region. The dyadic factor has no zeros in $1/4<\Re s<1/2$. At half a right zero the remaining residue is proportional to $\zeta(s)(\operatorname{ord}_{2s}\zeta/2+\operatorname{ord}_{3s}\zeta/3)$. Vanishing of all such residues would force $\zeta(\rho/2)=0$ for every right zero, which the reflection-and-halving theorem excludes. [Prime-power continuation and residues](prime-divisor-logarithmic-moments-at-a-finite-top.md)
 
 Can the difference of the ordinary-prime and unrestricted lattice counts satisfy a bound strictly below $N^{\Re\rho/2}$ on the single-quartet stratum?
+
+The cumulative coefficient has a direct inverse. Write $U(x)=\psi(x)-\theta(x)-x^{1/2}-x^{1/3}$ and $E(x)=\psi(x)-x$. The Costa–Pereira inequalities give
+$$0\le U(x)-E(x^{1/2})-E(x^{1/3})\le(\log4+4)x^{1/5}.$$
+Substituting $x=y^2,y^{4/3},y^{8/9}$ with alternating signs cancels the two intermediate errors. The last term $E(y^{8/27})$ is $O(y^{8/27})$ by Chebyshev. Hence
+$$E(y)=U(y^2)-U(y^{4/3})+U(y^{8/9})+O(y^{2/5}).$$
+For every $a\ge2/5$, a bound $E(x)=O(x^a)$ is therefore equivalent to $U(x)=O(x^{a/2})$, including the endpoint. The unconditional strip gives $U(x)=O_b(x^b)$ for every $b>20999/48000$. The two lattice counts change its prefix by at most two. [Three-count inversion](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/ThreeProperPrimePowerCountsRecoverThePrimeError.lean) · [Discrete Abel bound for the finite mean](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/AdjacentDenominatorsInDiscreteQuotientMeans.lean)

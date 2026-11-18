@@ -62,11 +62,11 @@ theorem arrangementPolynomial_eq_iff {κ : Type*} [Fintype κ]
       (L.filter fun s : Finset κ => Fintype.card κ - s.card = d).card := by
   constructor
   · intro h d
-    exact_mod_cast (calc
-      (((K.filter fun s : Finset ι => Fintype.card ι - s.card = d).card : ℕ) : ℤ) =
-          ((arrangementPolynomial K).comp (X+1)).coeff d :=
-        (coeff_arrangementPolynomial_translate K d).symm
-      _ = _ := by rw [h, coeff_arrangementPolynomial_translate])
+    have he := congrArg (fun P : ℤ[X] => (P.comp (X+1)).coeff d) h
+    change ((arrangementPolynomial K).comp (X+1)).coeff d =
+      ((arrangementPolynomial L).comp (X+1)).coeff d at he
+    rw [coeff_arrangementPolynomial_translate, coeff_arrangementPolynomial_translate] at he
+    exact_mod_cast he
   · intro h
     have ht : (arrangementPolynomial K).comp (X+1) = (arrangementPolynomial L).comp (X+1) := by
       ext d
@@ -92,6 +92,12 @@ theorem arrangementPolynomial_insert (s : Finset ι) (K : Finset (Finset ι)) :
         by_cases h : t = s <;> simp [h]
       rw [he]
     _ = _ := sum_insert (notMem_erase _ _)
+
+#print axioms coeff_arrangementPolynomial
+#print axioms eval_arrangementPolynomial
+#print axioms arrangementPolynomial_eq_iff
+#print axioms arrangementPolynomial_union_add_inter
+#print axioms arrangementPolynomial_insert
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.Codes

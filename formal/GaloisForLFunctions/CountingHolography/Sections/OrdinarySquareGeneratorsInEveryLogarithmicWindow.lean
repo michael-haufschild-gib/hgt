@@ -42,9 +42,11 @@ private theorem long_trace_in_every_window : ∀ᶠ T : ℝ in atTop, ∃ u : �
     simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos 2) (hlate.trans (show T ≤ T+2 by linarith))
   have he (x : ℝ) : phi x*F (T+x) = -(phi x*squareLongTrace (T+x))-phi x := by
     dsimp only [F]; ring
+  have hneg : Integrable (fun x => -(phi x*squareLongTrace (T+x))) := by
+    simpa only [neg_one_mul] using (thetaMean_squareLongTrace T).1.const_mul (-1:ℝ)
   have hFi : Integrable fun x => phi x*F (T+x) := by
     simp_rw [he]
-    exact (thetaMean_squareLongTrace T).1.neg.sub hi
+    exact hneg.sub hi
   have hlocal (x : ℝ) (hx : |x| ≤ 8*Real.log (T+2)) : -(0:ℝ) ≤ F (T+x) := by
     have h := hbad (T+x) (by simpa only [add_sub_cancel_left] using hx)
     dsimp only [F]; linarith only [h]
@@ -54,7 +56,7 @@ private theorem long_trace_in_every_window : ∀ᶠ T : ℝ in atTop, ∃ u : �
     (fun x => (thetaCuspFullSource_pos x).le) hi (HedenmalmThetaSource.integrable_exp_abs_mul_thetaCuspFullSource _)
     hFi hF (hθ _ (by linarith only [hT])) hlocal
   simp_rw [he] at ht
-  rw [integral_sub (thetaMean_squareLongTrace T).1.neg hi,integral_neg,(thetaMean_squareLongTrace T).2] at ht
+  rw [integral_sub hneg hi,integral_neg,(thetaMean_squareLongTrace T).2] at ht
   simp only [neg_zero,zero_mul,mul_zero,zero_sub] at ht
   linarith only [ht,hsmall]
 

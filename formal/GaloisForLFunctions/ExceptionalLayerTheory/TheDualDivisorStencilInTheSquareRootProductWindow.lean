@@ -47,7 +47,8 @@ private theorem rectangle_eq {X e F L U c : ℕ} (hc : 1 ≤ c) (hu : U ≤ X) (
     dsimp only [centeredQuotient,saw]; rw [Nat.cast_mul,mul_comm (p : ℝ) j,div_mul_eq_div_div]
   by_cases window : L<p*j ∧ p*j≤U
   · by_cases prime : p.Prime
-    · simp [prime,window,fractionalProductTerm,ordinaryLog,hq] <;> ring
+    · simp [prime,window,fractionalProductTerm,ordinaryLog,hq]
+      ring
     · simp [prime,window,fractionalProductTerm,ordinaryLog]
   · simp [window,fractionalProductTerm]
 

@@ -237,7 +237,31 @@ theorem dyadic_square_prime_mass_escape {n : ℕ} (hn : 0<n) :
   simp only [tail,factor,orbit,pow_zero,one_mul]
   ring
 
+/-- The two-index family of actual logarithmic valuations cannot be
+summed unconditionally. Its failure at weight one eighth occurs on every
+positive dyadic orbit, including orbits with bounded signed prices. -/
+theorem not_summable_dyadic_square_log_valuations {n : ℕ} (hn : 0<n) :
+    ¬ Summable (fun i : ℕ × ℕ => (1/8:ℝ)^i.1 *
+      ((deningerRatExp (ordinaryPrimeGenerator ((2^i.1*n) • successorSquareTriple (2^i.1*n))) i.2:ℝ)*
+        (if i.2.Prime then Real.log i.2 else 0))) := by
+  intro h
+  change Summable (Function.uncurry (row n)) at h
+  have hprice (j : ℕ) : (∑' p, row n j p)=factor j*Real.log (q (orbit n j):ℝ) := by
+    simp only [row,tsum_mul_left,price_sum _ (orbit_pos hn j)]
+  have hzero := ((tendsto_const_nhds (x := ∑' j, ∑' p, row n j p)).sub h.prod.hasSum.tendsto_sum_nat)
+  rw [sub_self] at hzero
+  have he := dyadic_square_prime_mass_escape hn
+  simp only [mul_assoc] at he
+  change Tendsto (fun K => (∑' p, ∑' j, row n j p)-
+    ∑ j ∈ range K, factor j*Real.log (q (orbit n j):ℝ)) atTop _ at he
+  simp_rw [← hprice] at he
+  rw [h.tsum_comm] at he
+  have hp : 0<4*(n:ℝ)^3*squareAutocorrelationMass :=
+    mul_pos (mul_pos (by norm_num) (pow_pos (Nat.cast_pos.mpr hn) 3)) squareAutocorrelationMass_pos
+  exact hp.ne' (tendsto_nhds_unique he hzero)
+
 #print axioms tendsto_squarePrimeEndpoint_mass
 #print axioms dyadic_square_prime_mass_escape
+#print axioms not_summable_dyadic_square_log_valuations
 
 end GaloisForLFunctions.CountingHolography.Sections

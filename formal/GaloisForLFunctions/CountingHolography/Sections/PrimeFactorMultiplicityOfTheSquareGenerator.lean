@@ -77,14 +77,13 @@ theorem tendsto_square_generator_prime_test {g : ℝ → ℝ} (hg : Continuous g
               exact (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (hB _) hl) (abs_nonneg _)).trans_eq (by ring)
         _ ≤ _ := by rw [← mul_sum]; exact mul_le_mul_of_nonneg_left (herr hn) hB₀
     rw [Real.norm_eq_abs,abs_div,abs_of_pos (pow_pos hn' _)]
-    exact (div_le_div_of_nonneg_right hh (pow_nonneg hn'.le _)).trans_eq (by field_simp <;> ring)
+    exact (div_le_div_of_nonneg_right hh (pow_nonneg hn'.le _)).trans_eq (by field_simp)
   have h := (profile_test_limit hg).add hlim
   rw [add_zero,squareLogProfile_test_translation hg] at h
   have hh : ∀ z : ℝ, 2*(2*z)=4*z := fun _ => by ring
   rw [hh] at h
   apply h.congr'
   filter_upwards [] with n
-  change _/(n:ℝ)^3+D n/(n:ℝ)^3=_
   dsimp only [D]
   rw [← add_div,← sum_add_distrib]
   exact congrArg (·/(n:ℝ)^3) (sum_congr rfl fun k _ => by dsimp only [e,T]; ring)

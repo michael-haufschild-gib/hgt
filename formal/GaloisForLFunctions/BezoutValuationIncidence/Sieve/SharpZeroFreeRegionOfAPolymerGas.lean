@@ -170,6 +170,42 @@ theorem zero_free_iff (p : ι → NNReal) (P : Finset ι) :
     have h := corner_minimum G p S (fun U hu => H U (hu.trans hs)) w hw
     exact norm_ne_zero_iff.mp ((H S hs).trans_le h).ne'
 
+/-- Setting excluded activities to zero realizes an induced gas inside the full gas. -/
+theorem restrict_activities (P S : Finset ι) (hs : S ⊆ P) (w : ι → R) :
+    partition G P (fun i => if i ∈ S then w i else 0)=partition G S w := by
+  classical
+  have he : S.powerset=P.powerset.filter (fun U => U ⊆ S) := by
+    ext U
+    simp only [mem_filter,mem_powerset]
+    exact ⟨fun h => ⟨h.trans hs,h⟩,And.right⟩
+  simp only [partition,he,sum_filter]
+  apply sum_congr rfl
+  intro U _
+  by_cases hu : U ⊆ S
+  · simp only [if_pos hu]
+    split
+    · exact prod_congr rfl fun i hi => if_pos (hu hi)
+    · rfl
+  · obtain ⟨i,hi,hin⟩ := not_subset.mp hu
+    have hz : (∏ i ∈ U, if i ∈ S then w i else 0)=0 :=
+      prod_eq_zero hi (if_neg hin)
+    simp [hu,hz]
+
+/-- Zero-freeness of the single full partition on its closed polydisc is equivalent
+to strict positivity of the finitely many induced negative-corner values. -/
+theorem full_polydisc_iff (p : ι → NNReal) (P : Finset ι) :
+    (∀ w : ι → ℂ, (∀ i ∈ P, ‖w i‖ ≤ (p i : ℝ)) → partition G P w ≠ 0) ↔
+      ∀ S ⊆ P, 0 < negative G p S := by
+  rw [← zero_free_iff]
+  constructor
+  · intro h S hs w hw
+    have hz := h (fun i => if i ∈ S then w i else 0) (fun i _ => by
+      by_cases hi : i ∈ S
+      · simpa only [if_pos hi] using hw i hi
+      · simp [hi])
+    rwa [restrict_activities G P S hs] at hz
+  · exact fun H => H P Subset.rfl
+
 end GaloisForLFunctions.BezoutValuationIncidence.Sieve.PolymerGas
 
 #print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.PolymerGas.real_partition
@@ -179,3 +215,5 @@ end GaloisForLFunctions.BezoutValuationIncidence.Sieve.PolymerGas
 #print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.PolymerGas.corner_minimum
 #print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.PolymerGas.one_coordinate_zero
 #print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.PolymerGas.zero_free_iff
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.PolymerGas.restrict_activities
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.PolymerGas.full_polydisc_iff

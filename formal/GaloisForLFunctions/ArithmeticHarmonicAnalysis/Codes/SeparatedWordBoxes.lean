@@ -62,7 +62,8 @@ theorem oppositeBox_eq_full_distance (S : Finset (∀ i, A i)) :
   simp only [mem_oppositeBox, mem_filter, mem_univ, true_and]
   have he (x : ∀ i, A i) : hammingDist x y = Fintype.card ι ↔ ∀ i, x i ≠ y i := by
     change (univ.filter _).card = (univ : Finset ι).card ↔ _
-    simp [card_filter_eq_iff]
+    rw [card_filter_eq_iff]
+    simp only [mem_univ, forall_true_left]
   simp_rw [he]
 
 /-- Double opposition recovers the smallest containing coordinate box whenever

@@ -52,24 +52,24 @@ theorem ordinalMap_embedding {N : ℕ} (b : Fin N → ℤ) (m : ℕ) (e : rayPro
     ordinalMap b m e = ordinalEmbedding b m e :=
   rfl
 
+private theorem maxFibre_comp_equiv_le {α α' β β' : Type*} [Fintype α] [Fintype α']
+    [Fintype β] [Fintype β'] (e₁ : α' ≃ α) (e₂ : β ≃ β') (f : α → β) :
+    maxFibre (fun x => e₂ (f (e₁ x))) ≤ maxFibre f := by
+  rw [maxFibre_le_iff]
+  intro y' S' hS'
+  rw [← Finset.card_map e₁.toEmbedding]
+  refine card_le_maxFibre_of_forall_eq f (e₂.symm y') fun x hx => ?_
+  obtain ⟨x', hx', rfl⟩ := Finset.mem_map.mp hx
+  exact e₂.injective (by simpa only [Equiv.coe_toEmbedding, Equiv.apply_symm_apply] using hS' x' hx')
+
 theorem maxFibre_comp_equiv {α α' β β' : Type*} [Fintype α] [Fintype α'] [Fintype β] [Fintype β']
     (e₁ : α' ≃ α) (e₂ : β ≃ β') (f : α → β) :
     maxFibre (fun x => e₂ (f (e₁ x))) = maxFibre f := by
-  have hle : ∀ {γ γ' δ δ' : Type*} [Fintype γ] [Fintype γ'] [Fintype δ] [Fintype δ']
-      (u₁ : γ' ≃ γ) (u₂ : δ ≃ δ') (g : γ → δ),
-      maxFibre (fun x => u₂ (g (u₁ x))) ≤ maxFibre g := by
-    intro γ γ' δ δ' _ _ _ _ u₁ u₂ g
-    rw [maxFibre_le_iff]
-    intro y' S' hS'
-    rw [← Finset.card_map u₁.toEmbedding]
-    refine card_le_maxFibre_of_forall_eq g (u₂.symm y') fun x hx => ?_
-    obtain ⟨x', hx', rfl⟩ := Finset.mem_map.mp hx
-    exact u₂.injective (by simpa only [Equiv.apply_symm_apply] using hS' x' hx')
-  refine le_antisymm (hle e₁ e₂ f) ?_
+  refine le_antisymm (maxFibre_comp_equiv_le e₁ e₂ f) ?_
   have hf : f = fun x => e₂.symm ((fun x' => e₂ (f (e₁ x'))) (e₁.symm x)) := by
     funext x; simp only [Equiv.symm_apply_apply]
   nth_rw 1 [hf]
-  exact hle e₁.symm e₂.symm _
+  exact maxFibre_comp_equiv_le e₁.symm e₂.symm _
 
 theorem maxFibre_ordinalMap {N : ℕ} (b : Fin N → ℤ) (m : ℕ) (f : rayProductMap b m) :
     maxFibre (ordinalMap b m f) = maxFibre f :=
@@ -306,7 +306,7 @@ theorem eventually_loglog_clearing_of_subquadratic_fibre {N : ℕ} {b : Fin N �
   have hfib_lim := ((rayCard_tateLimit hb 3).const_mul 2).sub (rayCard_tateLimit hb 4)
   have hfib_ev := hfib_lim.eventually_const_lt
     (show δ < 2 * ((3 : ℝ)^2 * integerProbe N b) - (4 : ℝ)^2 * integerProbe N b by linarith)
-  have hl := (hr.sub (tendsto_const_nhds.div_atTop
+  have hl := (hr.sub ((tendsto_const_nhds (x := Real.log 20)).div_atTop
     ((tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop))).eventually_const_lt
     (show 9 * integerProbe N b - ε < 9 * integerProbe N b - 0 by linarith)
   filter_upwards [hnat.eventually (eventually_ge_atTop (4 * max 128 X₀)),
@@ -424,7 +424,7 @@ theorem polynomial_rounding_carry_fibre_or_denom {n L s D : ℕ}
     apply Fin.ext
     have hdiv (z : Fin n × Fin n) : v z / D = (f z).2.val := by
       dsimp only [v]
-      rw [mul_comm, Nat.mul_add_div hD, Nat.div_eq_of_lt (hr z), add_zero]
+      rw [Nat.mul_add_div hD, Nat.div_eq_of_lt (hr z), add_zero]
     rw [← hdiv x, ← hdiv y, hv_const x y]
   · exact Or.inr (lt_of_not_ge hn)
 
@@ -466,8 +466,9 @@ theorem eventually_polynomial_carry_quadratic_fibre {N : ℕ} {b : Fin N → ℤ
     linarith only [(lt_div_iff₀ hm2).mp hd, hlog]
   · right
     have hub : n < 3 * D * s := by
-      have : 1 ≤ D * s := Nat.mul_pos hD hs
-      omega
+      have h1 : 1 ≤ D * s := Nat.mul_pos hD hs
+      change n < 2 * D * s + 1 at hlt
+      linarith only [hlt, h1]
     have hlog := Real.log_lt_log (Nat.cast_pos.mpr hn) (Nat.cast_lt.mpr hub)
     rw [log_nat_mul (Nat.mul_pos (by decide) hD) hs, log_nat_mul (by decide) hD] at hlog
     have hd : δ₂ < (Real.log n - Real.log s - Real.log (3 : ℕ)) / (m : ℝ)^2 := by
@@ -492,7 +493,7 @@ def euclideanCarryBoxMap {n L s M : ℕ} (hM : 0 < M) (hL : M * n ≤ L) (hs : n
       have h1 : x.1.val % M < M := Nat.mod_lt _ hM
       have h2 : M * (x.2.val + 1) ≤ M * n := Nat.mul_le_mul_left M x.2.isLt
       linarith⟩,
-   ⟨x.1.val / M, (Nat.div_lt_iff_lt_mul hM).mpr (x.1.isLt.trans_le hs)⟩)
+   ⟨x.1.val / M, (Nat.div_lt_iff_lt_mul hM).mpr (x.1.isLt.trans_le (mul_comm M s ▸ hs))⟩)
 
 theorem euclideanCarryBoxMap_injective {n L s M : ℕ} (hM : 0 < M) (hL : M * n ≤ L) (hs : n ≤ M * s) :
     Function.Injective (euclideanCarryBoxMap hM hL hs) := by
@@ -539,10 +540,12 @@ theorem carryMap_firstPrecision_loss {n L s M p q i j : ℕ}
     by_contra! hsum
     have eqP (a b : Fin n) (h : a.val ≡ b.val [MOD p ^ (r + i)]) :
         (f (a, ⟨0, by omega⟩)).1.val = (f (b, ⟨0, by omega⟩)).1.val :=
-      (hi r _ _ h .rfl).eq_of_lt_of_lt ((hslice_lt a).trans_le hu) ((hslice_lt b).trans_le hu)
+      (hi r (a, ⟨0, by omega⟩) (b, ⟨0, by omega⟩) h .rfl).eq_of_lt_of_lt
+        ((hslice_lt a).trans_le hu) ((hslice_lt b).trans_le hu)
     have eqQ (a b : Fin n) (h : a.val ≡ b.val [MOD q ^ (t + j)]) :
         (f (a, ⟨0, by omega⟩)).1.val = (f (b, ⟨0, by omega⟩)).1.val :=
-      (hj t _ _ h .rfl).eq_of_lt_of_lt ((hslice_lt a).trans_le hv) ((hslice_lt b).trans_le hv)
+      (hj t (a, ⟨0, by omega⟩) (b, ⟨0, by omega⟩) h .rfl).eq_of_lt_of_lt
+        ((hslice_lt a).trans_le hv) ((hslice_lt b).trans_le hv)
     have hconst := constant_of_two_periods (fun a : Fin n => (f (a, ⟨0, by omega⟩)).1.val)
       (pow_pos (by omega) _) ((hc.pow_left _).pow_right _) hsum eqP eqQ
     have h01 := hconst ⟨0, by omega⟩ ⟨1, by omega⟩

@@ -128,6 +128,46 @@ theorem profile_tail_difference (n a b : ℕ) (x y : Icc (0:ℝ) 1) :
   rw [← enclosure_width n, abs_le]
   constructor <;> linarith only [hx.1, hx.2, hy.1, hy.2]
 
+private theorem enclosure_ordered (n : ℕ) : (enclosure n).1 ≤ (enclosure n).2 :=
+  let h := profile_mem_enclosure n 1 ⟨zero_le_one, le_rfl⟩
+  h.1.trans h.2
+
+private theorem enclosure_monotonicity :
+    Monotone (fun n => (enclosure n).1) ∧ Antitone (fun n => (enclosure n).2) := by
+  have h (n : ℕ) := (Icc_subset_Icc_iff (enclosure_ordered (n+1))).mp (enclosure_nested n)
+  exact ⟨monotone_nat_of_le_succ (fun n => (h n).1), antitone_nat_of_succ_le (fun n => (h n).2)⟩
+
+/-- The common limit of the shrinking real intervals. -/
+def enclosureLimit : ℝ := sSup (Set.range (fun n => (enclosure n).1))
+
+theorem enclosureLimit_mem (n : ℕ) :
+    enclosureLimit ∈ Icc (enclosure n).1 (enclosure n).2 := by
+  obtain ⟨hl,hu⟩ := enclosure_monotonicity
+  have hcross (i j : ℕ) : (enclosure i).1 ≤ (enclosure j).2 := by
+    rcases le_total i j with h | h
+    · exact (hl h).trans (enclosure_ordered j)
+    · exact (enclosure_ordered i).trans (hu h)
+  exact ⟨le_csSup ⟨(enclosure 0).2, fun _ ⟨i,hi⟩ => hi ▸ hcross i 0⟩ ⟨n,rfl⟩,
+    csSup_le (Set.range_nonempty _) (fun _ ⟨i,hi⟩ => hi ▸ hcross i n)⟩
+
+/-- Certified uniform factorial error throughout each cell. -/
+theorem profile_limit_error (n : ℕ) (x : Icc (0:ℝ) 1) :
+    |profile n x - enclosureLimit| ≤ 1 / ((n+2).factorial : ℝ) := by
+  have hx := profile_mem_enclosure n x x.property
+  have hl := enclosureLimit_mem n
+  rw [← enclosure_width n, abs_le]
+  constructor <;> linarith only [hx.1, hx.2, hl.1, hl.2]
+
+/-- Sampling anywhere in each cell gives the same real limit. -/
+theorem tendsto_profile_samples (x : ℕ → Icc (0:ℝ) 1) :
+    Tendsto (fun n => profile n (x n)) atTop (𝓝 enclosureLimit) := by
+  apply tendsto_iff_norm_sub_tendsto_zero.mpr
+  have hfac : Tendsto (fun n : ℕ => ((n+2).factorial : ℝ)) atTop atTop :=
+    tendsto_natCast_atTop_atTop.comp (factorial_tendsto_atTop.comp (tendsto_add_atTop_nat 2))
+  apply squeeze_zero (fun _ => norm_nonneg _) (fun n => ?_) (tendsto_inv_atTop_zero.comp hfac)
+  simpa only [Real.norm_eq_abs, one_div] using profile_limit_error n (x n)
+
+#print axioms tendsto_profile_samples
 #print axioms profile_tail_difference
 
 end
