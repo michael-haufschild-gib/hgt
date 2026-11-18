@@ -225,6 +225,71 @@ theorem block_curvature_bounds (d : ℕ+) (n : ℕ) (hn : 1 ≤ n) :
   · linarith only [hlo]
   · linarith only [hhi]
 
+/-- Height of one residue endpoint against the full lower family and its d-fold subtraction. -/
+def residueHeight (d r n : ℕ) : ℝ := prefixHeight (d*n+r) - (d : ℝ)*prefixHeight n
+
+/-- A local curvature after removing its first moment. The two elementary
+logarithmic inequalities leave explicit, strictly positive denominators. -/
+private theorem centered_log_bounds {t z : ℝ} (ht : 1 ≤ t) (hz : -1 < z ∧ z < 1) :
+    let G := t*(t+1)*(Real.log (1+z/(t+1))-Real.log (1+z/t))+z
+    z^2/(t+1+z) ≤ G ∧ G ≤ z^2/(t+z) := by
+  dsimp only
+  have ht0 : 0 < t := by linarith
+  have ht1 : 0 < t+1 := by positivity
+  have htz : 0 < t+z := by linarith [hz.1]
+  have htz' : 0 < t+1+z := by linarith
+  let x := ((t+1+z)/(t+1))/((t+z)/t)
+  have hx : 0 < x := div_pos (div_pos htz' ht1) (div_pos htz ht0)
+  have he : Real.log (1+z/(t+1))-Real.log (1+z/t) = Real.log x := by
+    rw [show 1+z/(t+1) = (t+1+z)/(t+1) by field_simp,
+      show 1+z/t = (t+z)/t by field_simp, ← Real.log_div (div_pos htz' ht1).ne' (div_pos htz ht0).ne']
+  rw [he]
+  have hm : 0 ≤ t*(t+1) := (mul_pos ht0 ht1).le
+  constructor
+  · calc z^2/(t+1+z) = t*(t+1)*(1-x⁻¹)+z := by
+           dsimp [x]
+           field_simp
+           ring
+         _ ≤ _ := add_le_add_right (mul_le_mul_of_nonneg_left (Real.one_sub_inv_le_log_of_pos hx) hm) _
+  · calc _ ≤ t*(t+1)*(x-1)+z :=
+           add_le_add_right (mul_le_mul_of_nonneg_left (Real.log_le_sub_one_of_pos hx) hm) _
+         _ = z^2/(t+z) := by
+           dsimp [x]
+           field_simp
+           ring
+
+/-- For each individual residue the first moment is the entire term of order
+1/n². After it is paid, every residual local contact has the sign of a square.
+Summing this bound permits incomplete, asymmetric sets of residues. -/
+theorem residue_curvature_bounds (d : ℕ+) (n r : ℕ) (hr : r < d) :
+    let t := (n : ℝ)+1
+    let K := residueHeight d r (n+2)-2*residueHeight d r (n+1)+residueHeight d r n
+    let M := ∑ j ∈ range (d : ℕ), offset d r j
+    (∑ j ∈ range (d : ℕ), (offset d r j)^2/(t+1+offset d r j)) ≤ t*(t+1)*K+M ∧
+      t*(t+1)*K+M ≤ ∑ j ∈ range (d : ℕ), (offset d r j)^2/(t+offset d r j) := by
+  intro t K M
+  let F (z : ℝ) := t*(t+1)*(Real.log (1+z/(t+1))-Real.log (1+z/t))+z
+  have hinc (m : ℕ) : residueHeight d r (m+1)-residueHeight d r m =
+      ∑ j ∈ range (d : ℕ), (Real.log (d : ℕ)+Real.log (1+offset d r j/((m:ℝ)+1))) :=
+    residue_increment d m r (mem_range.mpr hr)
+  have hK : K = ∑ j ∈ range (d : ℕ),
+      (Real.log (1+offset d r j/(t+1))-Real.log (1+offset d r j/t)) := by
+    calc K = (residueHeight d r (n+2)-residueHeight d r (n+1)) -
+             (residueHeight d r (n+1)-residueHeight d r n) := by dsimp [K]; ring
+         _ = _ := by
+           rw [hinc (n+1),hinc n,← sum_sub_distrib]
+           refine sum_congr rfl fun j _ => ?_
+           simp only [Nat.cast_succ,t,add_sub_add_left_eq_sub]
+  have he : t*(t+1)*K+M = ∑ j ∈ range (d : ℕ), F (offset d r j) := by
+    rw [hK,mul_sum]
+    exact (sum_add_distrib ..).symm
+  rw [he]
+  have ht : 1 ≤ t := by dsimp [t]; linarith only [Nat.cast_nonneg (R := ℝ) n]
+  constructor
+  · exact sum_le_sum fun j hj => (centered_log_bounds ht (offset_bounds hr (mem_range.mp hj))).1
+  · exact sum_le_sum fun j hj => (centered_log_bounds ht (offset_bounds hr (mem_range.mp hj))).2
+
+#print axioms residue_curvature_bounds
 #print axioms block_curvature
 #print axioms block_curvature_bounds
 

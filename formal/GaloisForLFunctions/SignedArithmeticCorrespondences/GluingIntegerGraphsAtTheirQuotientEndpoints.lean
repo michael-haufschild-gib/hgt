@@ -148,7 +148,7 @@ theorem completed_endpoint_budget (ε : ℝ) (hε : 0 < ε) :
     apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
     rcases Nat.eq_zero_or_pos k with rfl | hk
     · rw [psiRemainder, chebyshevPsi]
-      simp only [Icc_eq_empty_of_lt (by decide : (0:ℕ)<1), sum_empty, Nat.cast_zero, sub_zero, abs_zero]
+      simp only [Icc_eq_empty_of_lt Nat.zero_lt_one, sum_empty, Nat.cast_zero, sub_zero, abs_zero]
       exact mul_nonneg hC (Real.rpow_nonneg (by norm_num) _)
     · exact hbound _ hk
   have hmajor := ha.mul_left C

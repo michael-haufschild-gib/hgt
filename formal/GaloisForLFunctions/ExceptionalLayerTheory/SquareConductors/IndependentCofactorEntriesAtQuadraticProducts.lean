@@ -23,7 +23,7 @@ theorem productFirstPrimes_large_factor {p t b : ℕ} (hp : p.Prime) (hp4 : 4 < 
     obtain ⟨hrD,hrp,_,_,hrb⟩ := mem_filter.mp hr
     have hd := (Nat.mem_divisors.mp hrD).1
     have he : r*((p*t)/r) = p*t := by rw [Nat.mul_comm, Nat.div_mul_cancel hd]
-    have hpdiv : p ∣ r*((p*t)/r) := he ▸ dvd_mul_right p t
+    have hpdiv : p ∣ r*((p*t)/r) := by rw [he]; exact dvd_mul_right p t
     rcases hp.dvd_mul.mp hpdiv with hpr | hpc
     · exact ((Nat.prime_dvd_prime_iff_eq hp hrp).mp hpr).symm
     · have hq := Nat.div_pos (Nat.le_of_dvd hprod hd) hrp.pos
@@ -46,10 +46,11 @@ to the inner stencil with support at 1, 2 and 4. -/
 theorem innerJump_at_odd_cofactor {t : ℕ} (ht : 2 ≤ t) (ho : ¬ 2 ∣ t) :
     innerJump 1 t = -1 := by
   have h4 : ¬ 4 ∣ t := fun h => ho (dvd_trans (by decide : 2 ∣ 4) h)
+  have hμ : ((moebius 1 : ℤ) : ℝ) = 1 := by simp
   rw [innerJump_divisor_stencil ht,stencil]
   norm_num only [show (1+1:ℕ)=2 by decide,show (2*2:ℕ)=4 by decide,
-    sum_Icc_succ_top (by decide : 1 ≤ 1+1),sum_Icc_self,one_dvd,if_true,if_neg ho,if_neg h4,
-    mul_zero,sub_zero,add_zero,moebius_one,Int.cast_one,one_mul,neg_inj]
+    sum_Icc_succ_top (by decide : 1 ≤ 1+1),Icc_self,sum_singleton,one_dvd,if_true,if_neg ho,if_neg h4,
+    mul_zero,sub_zero,add_zero,mul_one,hμ,neg_inj]
 
 /-- Log mass at the newly admitted cofactor, including the signed inner
 jump of the actual fixed-product row. -/
@@ -75,8 +76,7 @@ private theorem signedCofactorEntry_eq {p t n : ℕ} (hp : p.Prime) (hp4 : 4 < p
   rcases lt_trichotomy n t with h | rfl | h
   · simp only [if_neg h.not_ge,if_neg ((Nat.sub_le n 1).trans_lt h).not_ge,if_neg h.ne,
       sum_empty,sub_zero,mul_zero]
-  · simp only [if_pos le_rfl,if_neg (by omega : ¬t ≤ t-1),sum_singleton,sum_empty,
-      sub_zero,vonMangoldt_apply_prime hp]
+  · simp [show ¬n ≤ n-1 by omega,vonMangoldt_apply_prime hp]
   · simp only [if_pos h.le,if_pos (by omega : t ≤ n-1),if_neg h.ne',sub_self,mul_zero]
 
 /-- A single ordinary prime supplies independent diagonal entries throughout
