@@ -184,7 +184,7 @@ theorem square_split_units_kernel_exceeds_quadratic (C : ℝ) :
   rw [div_pow,Real.sq_sqrt hn'.le] at hcmp
   have hbig := (lt_div_iff₀ (pow_pos hn' 3)).mp hcmp
   have he : C/Real.log 2*(T n^2/(n:ℝ))*(n:ℝ)^3 =
-      (C*(n:ℝ)^2/Real.log 2)*T n^2 := by field_simp <;> ring
+      (C*(n:ℝ)^2/Real.log 2)*T n^2 := by field_simp
   rw [he,mul_comm (T n^2)] at hbig
   have h := (div_lt_iff₀ hlog).mp ((mul_lt_mul_iff_left₀ (sq_pos_of_pos hl)).mp hbig)
   exact h.trans_le (splitResidueUnits_kernel_lower _ _ f)

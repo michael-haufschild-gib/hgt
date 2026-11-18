@@ -172,8 +172,7 @@ private theorem cell_error_eq {s : ℂ} (hs : 0 < s.re) (N k : ℕ) :
     (f := fun t => density s t * (tentSum N (k+1:ℕ) : ℂ))
     (g := fun t => density s t * (tentSum N t : ℂ)) (hi.mul_const _)
     (hi.mul_continuousOn (Complex.continuous_ofReal.comp (cont_tent N)).continuousOn),
-    intervalIntegral.integral_mul_const,int_density hs]
-  simp only [ofReal_natCast]
+    intervalIntegral.integral_mul_const,int_density hs] <;> simp only [ofReal_natCast]
 
 private theorem point_bound {s : ℂ} {N : ℕ} (hN : 0 < N) {d t : ℝ}
     (ht : 0 < t) (hdt : t ≤ d) :
@@ -294,7 +293,8 @@ private theorem int_tent {s : ℂ} (hs : 0 < s.re) {j N : ℕ} (hj : 1 ≤ j) (h
   simp only [ofReal_zero,Complex.zero_cpow hsC,Complex.zero_cpow hsp,sub_zero]
   rw [Complex.cpow_add s 1 hxC,Complex.cpow_one]
   have hnC : (N:ℂ)^s=(x:ℂ)^s*(j:ℂ)^s := by
-    simpa only [← ofReal_mul,hxe,ofReal_natCast] using Complex.mul_cpow_ofReal_nonneg hxp.le hj0.le s
+    have hprod : (x:ℂ)*(j:ℂ)=(N:ℂ) := by exact_mod_cast hxe
+    simpa only [ofReal_natCast,hprod] using Complex.mul_cpow_ofReal_nonneg hxp.le hj0.le s
   rw [hnC]
   have hjC : (j:ℂ)^s ≠ 0 := Complex.cpow_ne_zero_iff.mpr (Or.inl (Nat.cast_ne_zero.mpr (by omega)))
   field_simp
@@ -321,7 +321,7 @@ private theorem integral_as_polynomial {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN :
   rw [hpre,mul_sum,sum_div]
   refine sum_congr rfl fun j hj => ?_
   dsimp only [v]
-  rw [intervalIntegral.integral_const_mul,int_tent hs (mem_Icc.mp hj).1 hN]
+  rw [intervalIntegral.integral_const_mul,int_tent hs (mem_Icc.mp hj).1 hN,← div_div]
   ring
 
 /-- The alternating symbol has its dyadic zeta expression throughout the open strip. -/
@@ -337,9 +337,9 @@ theorem paritySymbol_eq_dyadic_zeta {s : ℂ} (hs : 0 < s.re) (hs' : s.re < 1) :
   · intro z _ hz
     have hp : Differentiable ℂ (fun w : ℂ => (2:ℂ)^(-w)) :=
       differentiable_neg.const_cpow (Or.inl (by norm_num))
-    exact (differentiableAt_const.sub (differentiableAt_const.mul (hp z))).mul (differentiableAt_riemannZeta hz)
+    exact ((differentiableAt_const (1:ℂ)).sub ((differentiableAt_const (2:ℂ)).mul (hp z))).mul (differentiableAt_riemannZeta hz)
   · intro z hz
-    exact (alternatingSymbols_eq (by linarith only [hz]) (fun h => by simpa [h] using hz)).1
+    exact (alternatingSymbols_eq (by linarith only [hz]) (fun h => by simp [h] at hz)).1
 
 /-- The unit-cell power masses acquire the triangular alternating multiplier
 eta(s)/(s+1), with a bounded error uniform in the positive integer cutoff. -/
@@ -363,7 +363,7 @@ theorem oddQuotientMean_power_mode {s : ℂ} (hs : 0 < s.re) (hs' : s.re < 1) :
   rw [← paritySymbol_eq_dyadic_zeta hs hs']
   have ht := norm_scaled_growthCont_sub_shortDirichletPrefix (c := alternatingRowCoeffs alt)
     (by simp [alternatingRowCoeffs]) (θ := 0) (K := 1) le_rfl zero_le_one
-    (fun x hx => (alternatingRow_growth x hx).1) hs (by simpa : 0+s.re ≤ s.re) le_rfl hp
+    (fun x hx => (alternatingRow_growth x hx).1) hs (by simp : 0+s.re ≤ s.re) le_rfl hp
   have htail : ‖(N:ℂ)^s*(paritySymbol s-P)‖ ≤ B := by
     simpa only [Nat.floor_natCast,ofReal_natCast,Real.rpow_zero,mul_one,P,B,paritySymbol] using ht
   have he : ‖(N:ℂ)^s*P/(s+1)-(N:ℂ)^s*paritySymbol s/(s+1)‖ ≤ B/‖s+1‖ := by
@@ -418,7 +418,7 @@ private theorem prefix_modeJump (ρ : ℂ) {s : ℂ} (hs : 0<s.re) (n : ℕ) :
     (∑ k ∈ Finset.Icc 1 n, modeJump ρ s k)=modePrefix ρ s n := by
   induction n with
   | zero =>
-    have h : s ≠ 0 := fun e => by simpa [e] using hs
+    have h : s ≠ 0 := fun e => by simp [e] at hs
     simp [modePrefix,Complex.zero_cpow h]
   | succ n ih => rw [sum_Icc_succ_top (by omega : 1 ≤ n+1),ih,modeJump,Nat.add_sub_cancel]; ring
 
@@ -433,7 +433,6 @@ private theorem modeJump_transfer (ρ : ℂ) {s : ℂ} (hs : 0 < s.re) (hs' : s.
   obtain ⟨C,h⟩ := oddQuotientMean_power_mode hs hs'
   refine ⟨|C|/‖ρ‖,div_nonneg (abs_nonneg _) (norm_nonneg _),fun N hN => ?_⟩
   let S := ∑ k ∈ range N, (((k+1:ℕ):ℂ)^s-(k:ℂ)^s)*(discreteQuotientMean parity (k+1) N:ℂ)/(N:ℂ)
-  let T := (N:ℂ)^s*(alternatingDivisorFactor s*riemannZeta s)/(s+1)
   have he : (∑ k ∈ Finset.Icc 1 N, modeJump ρ s k*discreteQuotientMean parity k N)/(N:ℝ)=(S/ρ).re := by
     rw [← Ico_add_one_right_eq_Icc,Finset.sum_Ico_eq_sum_range,Nat.add_sub_cancel,Finset.sum_div]
     dsimp only [S]
@@ -531,7 +530,6 @@ theorem oddQuotientPowerTotal_lattice_modes :
   have hh := mul_le_mul_of_nonneg_left (one_le_quarterError (show (1:ℝ)≤N by exact_mod_cast hn))
     (add_nonneg hA hB)
   unfold oddQuotientPowerTotal
-  dsimp only [parity] at *
   rw [abs_le]
   constructor <;> linarith only [ll,lu,al,au,bl,bu,hh]
 

@@ -153,6 +153,46 @@ theorem long_prime_band_spline_bound :
   have hB : 0≤B := by dsimp [B]; positivity
   exact (mul_le_mul_of_nonneg_right hK (by positivity : 0≤B*H^4*(1+Real.log U))).trans_eq (by ring)
 
+/-- The signed remainder after deleting the long-prime band at the full
+three-quarter cutoff. -/
+def outsideSplinePrimeBand (n : ℕ) : ℝ :=
+  splineCountReading n (fun k => longPrimeRow k-splinePrimeBand (splineHorizon n) (n*n.sqrt) k)
+
+/-- After deleting the indicated band the full dyadic contact differs from
+the remaining signed products by at most six logarithms on every conductor. -/
+theorem dyadicPrimeContact_outside_band :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0<n →
+      |GaloisForLFunctions.CountingHolography.Sections.dyadicPrimeContact n-outsideSplinePrimeBand n| ≤
+        C*(1+Real.log (splineHorizon n))^6 := by
+  obtain ⟨A,hA,ha⟩ := dyadicPrimeContact_long_products
+  obtain ⟨B,hB,hb⟩ := long_prime_band_spline_bound
+  refine ⟨A+B,add_nonneg hA hB,fun {n} hn => ?_⟩
+  let L := splineHorizon n
+  let U := n*n.sqrt
+  let H := 1+Real.log L
+  have hU : 0<U := Nat.mul_pos hn (Nat.sqrt_pos.mpr hn)
+  have hL : (n:ℝ)^2 ≤ L := by
+    obtain ⟨h₁,_,h₂⟩ := GaloisForLFunctions.CountingHolography.Sections.successorSquareWindowScale_bounds n
+    apply (h₁.trans h₂).trans
+    change _ ≤ ((3*_:ℕ):ℝ)
+    exact_mod_cast Nat.le_mul_of_pos_left _ (by decide : 0<3)
+  have hq : U ≤ L := by
+    apply (Nat.mul_le_mul_left n (Nat.sqrt_le_self n)).trans
+    exact_mod_cast (by simpa only [sq] using hL : (n:ℝ)*n ≤ L)
+  have hlog : 1+Real.log U ≤ H := add_le_add_left
+    (Real.log_le_log (by exact_mod_cast hU) (by exact_mod_cast hq)) 1
+  have hH : 0≤H := by dsimp [H]; have := Real.log_natCast_nonneg L; positivity
+  have he : outsideSplinePrimeBand n = splineCountReading n longPrimeRow-
+      splineCountReading n (splinePrimeBand L U) := by
+    unfold outsideSplinePrimeBand splineCountReading
+    simp only [sub_mul,sum_sub_distrib,L,U]
+  rw [he,show ∀ a b c : ℝ, a-(b-c)=(a-b)+c from fun _ _ _ => by ring]
+  apply (abs_add_le _ _).trans ((add_le_add (ha hn) (hb hn hU le_rfl)).trans _)
+  have hh := mul_le_mul_of_nonneg_left hlog (mul_nonneg hB (pow_nonneg hH 5))
+  change A*H^6+B*H^5*(1+Real.log U) ≤ (A+B)*H^6
+  linarith only [hh]
+
 #print axioms splinePrimeBand_mem_remaining
 #print axioms long_prime_band_spline_bound
+#print axioms dyadicPrimeContact_outside_band
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

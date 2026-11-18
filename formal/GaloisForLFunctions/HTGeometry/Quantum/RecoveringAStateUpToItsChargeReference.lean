@@ -26,7 +26,7 @@ theorem observe_charge_rotation (q : ι → ℤ) (A : Matrix ι ι ℂ) (t : Cir
   ext I J
   rw [observe_twist]
   by_cases h : displacement q I J=0
-  · rw [h,zpow_zero,one_mul]
+  · rw [h,_root_.zpow_zero,one_mul]
   · rw [observe_entry,if_neg h,mul_zero]
 
 /-- For Hermitian states the two-copy tensor entries give exactly the
@@ -75,7 +75,7 @@ private theorem signed_block (q : ι → ℤ) {A B : Matrix ι ι ℂ} (hA : A.I
       simp only [edgeGap,Int.negSucc_eq,Int.natCast_succ]
       ring
     rw [ht] at hc
-    simpa only [Int.natAbs_negSucc,Int.negSucc_eq,zpow_neg,zpow_natCast,inv_pow] using hc
+    simpa only [Int.natAbs_negSucc,Int.negSucc_eq,_root_.zpow_neg,_root_.zpow_natCast,inv_pow] using hc
 
 /-- A balanced pair of signed edges forces the corresponding relation
 on their measured phase ratios at precisely its copy cost. -/

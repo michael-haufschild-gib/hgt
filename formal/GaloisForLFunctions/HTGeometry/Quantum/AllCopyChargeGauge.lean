@@ -55,7 +55,7 @@ theorem all_copies_iff_step (q b : ι → ℤ) {A : Matrix ι ι ℂ} (hA : A.Is
     apply (indistinguishable_iff q b A n z w).2
     intro d hd
     obtain ⟨k,rfl⟩ := (some_copy_iff_divisible q b hA d).1 ⟨n,hd⟩
-    rw [zpow_mul,zpow_mul,h]
+    rw [_root_.zpow_mul,_root_.zpow_mul,h]
 
 theorem circle_root (g : ℤ) (hg : g≠0) (x : Circle) : ∃ t : Circle, t^g=x := by
   obtain ⟨a,rfl⟩ := Circle.exp_surjective x
@@ -70,7 +70,7 @@ theorem product_character {E : Type*} (s : Finset E) (x : Circle) (c b : E → �
   induction s using Finset.induction_on with
   | empty => simp
   | insert e s he ih =>
-    rw [sum_insert he,prod_insert he,zpow_add,ih,mul_comm (c e) (b e),zpow_mul]
+    rw [sum_insert he,prod_insert he,_root_.zpow_add,ih,mul_comm (c e) (b e),_root_.zpow_mul]
 
 /-- A circle phase annihilates every balanced integer combination exactly
 when it agrees on every column with one common charge character. -/
@@ -80,7 +80,7 @@ theorem gauge_extension {E : Type*} [Fintype E] [DecidableEq E] (q b : E → ℤ
   · intro h
     by_cases hz : q=0
     · refine ⟨1,fun i => ?_⟩
-      rw [one_zpow]
+      rw [_root_.one_zpow]
       exact h _ ⟨Pi.single i 1,by rw [hz,dotProduct_zero],by rw [single_dotProduct,one_mul]⟩
     obtain ⟨v,u,hv,hu⟩ := primitive_direction q hz
     have hg : content q≠0 := fun he => hz (by simpa only [he,zero_smul] using hv)
@@ -94,15 +94,15 @@ theorem gauge_extension {E : Type*} [Fintype E] [DecidableEq E] (q b : E → ℤ
         ring
       · simp only [sub_dotProduct,single_dotProduct,one_mul,smul_dotProduct,smul_eq_mul]
     have he := h _ hd
-    rw [zpow_sub,← div_eq_mul_inv,div_eq_one] at he
-    rw [he,mul_comm (v i),zpow_mul,← ht,← zpow_mul,congrFun hv i]
+    rw [_root_.zpow_sub,← div_eq_mul_inv,div_eq_one] at he
+    rw [he,mul_comm (v i),_root_.zpow_mul,← ht,← _root_.zpow_mul,congrFun hv i]
   · rintro ⟨t,ht⟩ d ⟨c,hc,rfl⟩
     change x^(∑ e, c e*b e)=1
     rw [product_character]
     simp only [ht]
     rw [← product_character]
     change t^(c ⬝ᵥ q)=1
-    rw [hc,zpow_zero]
+    rw [hc,_root_.zpow_zero]
 
 /-- No number of copies separates two twists precisely when their ratio
 on each occupied edge is induced by one global change of charge phase. -/

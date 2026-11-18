@@ -1,5 +1,6 @@
 import GaloisForLFunctions.CountingHolography.Sections.MobiusInterpolationByIntegerFactorialDegrees
 import GaloisForLFunctions.BezoutValuationIncidence.BezoutSelbergDiagonalCoercivityAndHalfDecorrelation
+import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.MonotoneErrorsInvertAtMertensPrecision
 import GaloisForLFunctions.RHTower.Sieve.DivisorSwap
 import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusDivisorDilationChannels
 
@@ -169,5 +170,175 @@ theorem roundedFactorialReading_error {W : ℝ → ℝ} {B L : ℝ} (hB : 0 ≤ 
   refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum hrow).trans ?_)
   rw [← mul_sum]
   exact (mul_le_mul_of_nonneg_left (reciprocal_square_sum _) (mul_nonneg hL (sq_nonneg _))).trans_eq (by ring)
+
+open ArithmeticOfSquareRootPrecision Filter Topology
+
+/-- Partial summation transfers a Mertens power bound to a compact
+Lipschitz test, uniformly as its dilation varies over positive reals. -/
+theorem mobiusFactorialSample_mertens_bound {W : ℝ → ℝ} {B L C σ : ℝ}
+    (hB : 0 ≤ B) (hL : 0 ≤ L) (hC : 0 ≤ C) (hσ : 0 ≤ σ)
+    (hW : ∀ x, B < x → W x=0)
+    (hLip : ∀ a b : ℝ, 0 < a → a ≤ b → |W b-W a| ≤ L*(b-a))
+    (hM : ∀ n : ℕ, 0 < n → |mertens n| ≤ C*(n:ℝ)^σ) {u : ℝ} (hu : 0 < u) :
+    |mobiusFactorialSample W B u| ≤ (C*L*B)*(B/u)^σ := by
+  let N := ⌊B/u⌋₊
+  let f := fun k : ℕ => W (k*u)
+  have hN : (N:ℝ) ≤ B/u := Nat.floor_le (div_nonneg hB hu.le)
+  have htop : f (N+1)=0 := by
+    apply hW
+    apply (div_lt_iff₀ hu).mp
+    exact_mod_cast Nat.lt_floor_add_one (B/u)
+  have hI : Icc 1 N=Ioc 0 N := by ext d; simp only [mem_Icc,mem_Ioc]; omega
+  have he := sum_moebius_mul_eq f N
+  rw [htop,mul_zero,zero_add] at he
+  rw [mobiusFactorialSample,show ⌊B/u⌋₊=N from rfl,hI]
+  change |∑ d ∈ Ioc 0 N, (moebius d:ℝ)*f d| ≤ _
+  rw [he]
+  have row (k : ℕ) (hk : k ∈ Ioc 0 N) :
+      |mertens k*(f k-f (k+1))| ≤ C*(B/u)^σ*(L*u) := by
+    have hk₀ := (mem_Ioc.mp hk).1
+    have hkN := (Nat.cast_le.mpr (mem_Ioc.mp hk).2).trans hN
+    have hd := hLip ((k:ℝ)*u) ((k:ℝ)*u+u) (mul_pos (Nat.cast_pos.mpr hk₀) hu)
+      (le_add_of_nonneg_right hu.le)
+    have hg : |f k-f (k+1)| ≤ L*u := by
+      rw [abs_sub_comm]
+      simpa only [f,Nat.cast_succ,add_mul,one_mul,add_sub_cancel_left] using hd
+    rw [abs_mul]
+    exact mul_le_mul ((hM k hk₀).trans (mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow (Nat.cast_nonneg k) hkN hσ) hC)) hg (abs_nonneg _)
+      (mul_nonneg hC (Real.rpow_nonneg (div_nonneg hB hu.le) _))
+  refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum row).trans ?_)
+  simp only [sum_const,nsmul_eq_mul,Nat.card_Ioc,Nat.sub_zero]
+  refine (mul_le_mul_of_nonneg_right hN (by positivity)).trans_eq ?_
+  field_simp [hu.ne']; ring
+
+private theorem weighted_derivative_zero {W W' : ℝ → ℝ} {B : ℝ} (hB : 0 ≤ B)
+    (hW : ∀ x, B < x → W x=0) (hD : ∀ x, 0 < x → HasDerivAt W (W' x) x) :
+    ∀ v, B < v → v*W' v=0 := by
+  intro v hv
+  have hl : W =ᶠ[𝓝 v] fun _ => 0 :=
+    eventually_of_mem (Ioi_mem_nhds hv) fun x hx => hW _ hx
+  have hd := (hD v (hB.trans_lt hv)).congr_of_eventuallyEq hl.symm
+  rw [hd.unique (hasDerivAt_const v 0),mul_zero]
+
+/-- Differentiation in the dilation variable replaces the test by v W'(v)
+and divides the resulting Möbius sum by the argument. -/
+theorem hasDerivAt_mobiusFactorialSample {W W' : ℝ → ℝ} {B u : ℝ} (hB : 0 ≤ B) (hu : 0 < u)
+    (hW : ∀ x, B < x → W x=0) (hD : ∀ x, 0 < x → HasDerivAt W (W' x) x) :
+    HasDerivAt (mobiusFactorialSample W B)
+      (mobiusFactorialSample (fun v => v*W' v) B u / u) u := by
+  let N := ⌊B/(u/2)⌋₊
+  let S := Icc 1 N
+  have hhalf := half_pos hu
+  have expand (v : ℝ) (hv : u/2 < v) : mobiusFactorialSample W B v =
+      ∑ d ∈ S, moebiusReal d * W (d*v) :=
+    sample_enlarge (hhalf.trans hv) hW (Nat.floor_mono (div_le_div_of_nonneg_left hB hhalf hv.le))
+  have hzero := weighted_derivative_zero hB hW hD
+  have hd (d : ℕ) (hd : d ∈ S) :
+      HasDerivAt (fun x : ℝ => moebiusReal d * W (d*x)) (moebiusReal d*(W' (d*u)*d)) u :=
+    ((hD _ (mul_pos (Nat.cast_pos.mpr (mem_Icc.mp hd).1) hu)).comp u
+      (by simpa only [mul_one] using (hasDerivAt_id u).const_mul (d:ℝ))).const_mul _
+  have hf := (HasDerivAt.fun_sum hd).congr_of_eventuallyEq
+    (eventually_of_mem (Ioi_mem_nhds (half_lt_self hu)) fun x hx => expand _ hx)
+  convert hf using 1
+  rw [sample_enlarge hu hzero (Nat.floor_mono (div_le_div_of_nonneg_left hB hhalf (half_le_self hu.le))),
+    sum_div]
+  exact sum_congr rfl fun d _ => by field_simp [hu.ne']; ring
+
+/-- Partial summation applied to v W'(v) bounds the change across a
+unit interval by the Mertens power divided by its left endpoint. -/
+theorem mobiusFactorialSample_mertens_step {W W' : ℝ → ℝ} {B L C σ : ℝ}
+    (hB : 0 ≤ B) (hL : 0 ≤ L) (hC : 0 ≤ C) (hσ : 0 ≤ σ)
+    (hW : ∀ x, B < x → W x=0) (hD : ∀ x, 0 < x → HasDerivAt W (W' x) x)
+    (hLip : ∀ a b : ℝ, 0 < a → a ≤ b → |b*W' b-a*W' a| ≤ L*(b-a))
+    (hM : ∀ n : ℕ, 0 < n → |mertens n| ≤ C*(n:ℝ)^σ) {u v : ℝ}
+    (hu : 0 < u) (huv : u ≤ v) (hvu : v ≤ u+1) :
+    |mobiusFactorialSample W B v-mobiusFactorialSample W B u| ≤ C*L*B*(B/u)^σ/u := by
+  let D := C*L*B*(B/u)^σ/u
+  have hd (x : ℝ) (hx : x ∈ Set.Icc u v) := hasDerivAt_mobiusFactorialSample hB (hu.trans_le hx.1) hW hD
+  have hbound (x : ℝ) (hx : x ∈ Set.Icc u v) : ‖deriv (mobiusFactorialSample W B) x‖ ≤ D := by
+    have hx₀ := hu.trans_le hx.1
+    rw [(hd _ hx).deriv,Real.norm_eq_abs,abs_div,abs_of_pos hx₀]
+    have h := mobiusFactorialSample_mertens_bound hB hL hC hσ (weighted_derivative_zero hB hW hD) hLip hM hx₀
+    have hpow := Real.rpow_le_rpow (div_nonneg hB hx₀.le) (div_le_div_of_nonneg_left hB hu hx.1) hσ
+    exact (div_le_div_of_nonneg_right
+      (h.trans (mul_le_mul_of_nonneg_left hpow (mul_nonneg (mul_nonneg hC hL) hB))) hx₀.le).trans
+      (div_le_div_of_nonneg_left (by positivity) hu hx.1)
+  have h := (convex_Icc u v).norm_image_sub_le_of_norm_deriv_le (fun x hx => (hd x hx).differentiableAt)
+    hbound (Set.left_mem_Icc.mpr huv) (Set.right_mem_Icc.mpr huv)
+  rw [Real.norm_eq_abs,Real.norm_eq_abs,abs_of_nonneg (sub_nonneg.mpr huv)] at h
+  exact h.trans (mul_le_of_le_one_right (by dsimp only [D]; positivity) (by linarith only [hvu]))
+
+private def pSeriesMass (σ : ℝ) := ∑' k : ℕ, ((k:ℝ)^(1+σ))⁻¹
+
+private theorem sum_unit_rounding {b : ℝ → ℝ} {D B σ y : ℝ} (hD : 0 ≤ D)
+    (hB : 0 ≤ B) (hσ : 0 < σ) (hy : 0 < y)
+    (h : ∀ u v, 0 < u → u ≤ v → v ≤ u+1 → |b v-b u| ≤ D*(B/u)^σ/u)
+    (v : ℕ → ℝ) (hv : ∀ k, (k:ℝ)*y ≤ v k ∧ v k ≤ k*y+1) (N : ℕ) :
+    (∑ k ∈ Icc 1 N, |b (v k)-b (k*y)|) ≤ pSeriesMass σ*(D*(B/y)^σ/y) := by
+  let E := D*(B/y)^σ/y
+  have hE : 0 ≤ E := by dsimp only [E]; positivity
+  have hs := (Real.summable_nat_rpow_inv.mpr (by linarith only [hσ] : 1 < 1+σ))
+  have row (k : ℕ) (hk : k ∈ Icc 1 N) : |b (v k)-b (k*y)| ≤ ((k:ℝ)^(1+σ))⁻¹*E := by
+    have hk₀ : 0 < (k:ℝ) := Nat.cast_pos.mpr (mem_Icc.mp hk).1
+    refine (h _ _ (mul_pos hk₀ hy) (hv k).1 (hv k).2).trans_eq ?_
+    rw [show B/((k:ℝ)*y)=(B/y)/k by ring,Real.div_rpow (div_nonneg hB hy.le) hk₀.le,Real.rpow_add hk₀,Real.rpow_one]
+    dsimp only [E]; ring
+  refine (sum_le_sum row).trans ?_
+  rw [← sum_mul]
+  exact mul_le_mul_of_nonneg_right (hs.sum_le_tsum _ fun k _ => inv_nonneg.mpr (Real.rpow_nonneg (Nat.cast_nonneg _) _)) hE
+
+/-- The rounded floor response preserves every positive Mertens exponent
+with a tail of order y to the minus one minus that exponent. -/
+theorem roundedFactorialReading_mertens_error {W W' : ℝ → ℝ} {B L C σ : ℝ}
+    (hB : 0 ≤ B) (hL : 0 ≤ L) (hC : 0 ≤ C) (hσ : 0 < σ)
+    (hW : ∀ x, B < x → W x=0) (hD : ∀ x, 0 < x → HasDerivAt W (W' x) x)
+    (hLip : ∀ a b : ℝ, 0 < a → a ≤ b → |b*W' b-a*W' a| ≤ L*(b-a))
+    (hM : ∀ n : ℕ, 0 < n → |mertens n| ≤ C*(n:ℝ)^σ) {y : ℝ} (hy : 0 < y) :
+    |roundedFactorialReading W B y-W y| ≤ pSeriesMass σ*(C*L*B*(B/y)^σ/y) := by
+  rw [roundedFactorialReading,← sum_mobiusFactorialSample W B hW hy,← sum_sub_distrib]
+  have hh := @mobiusFactorialSample_mertens_step W W' B L C σ hB hL hC hσ.le hW hD hLip hM
+  exact (abs_sum_le_sum_abs _ _).trans (sum_unit_rounding (mul_nonneg (mul_nonneg hC hL) hB) hB hσ hy
+    (fun u v => hh (u := u) (v := v)) (fun k => (⌈(k:ℝ)*y⌉₊:ℝ))
+    (fun k => ⟨Nat.le_ceil _,(Nat.ceil_lt_add_one (mul_nonneg (Nat.cast_nonneg _) hy.le)).le⟩) _)
+
+/-- When the unit sample vanishes, balance cancels the full linear
+part of every floor; its fractional part costs at most one coefficient. -/
+theorem roundedFactorialReading_balanced_bound (W : ℝ → ℝ) {B y : ℝ} (hB : 0 ≤ B)
+    (hy : 0 < y) (hW : ∀ x, B < x → W x=0) (h₁ : W 1=0) :
+    |roundedFactorialReading W B y| ≤
+      ∑ j ∈ Icc 1 ⌊B⌋₊, |mobiusFactorialSample W B j-mobiusFactorialSample W B (j+1:ℕ)| := by
+  let c := fun j : ℕ => mobiusFactorialSample W B j-mobiusFactorialSample W B (j+1:ℕ)
+  let I := Icc 1 ⌊B⌋₊
+  have hbal : (∑ j ∈ I, c j*(j:ℝ)) = 0 := by
+    have h := roundedFactorialReading_eq_floor_sum W hB zero_lt_one
+    rw [show (1:ℝ) = (↑(1:ℕ):ℝ) from rfl,roundedFactorialReading_nat W B hW Nat.one_pos] at h
+    simpa only [Nat.cast_one,h₁,div_one,Nat.floor_natCast] using h.symm
+  have hzero : (∑ j ∈ I, c j*((j:ℝ)/y)) = 0 := by
+    simp_rw [← mul_div_assoc]
+    rw [← sum_div,hbal,zero_div]
+  rw [roundedFactorialReading_eq_floor_sum W hB hy]
+  change |∑ j ∈ I, c j*(⌊(j:ℝ)/y⌋₊:ℝ)| ≤ _
+  rw [← sub_zero (∑ j ∈ I, c j*(⌊(j:ℝ)/y⌋₊:ℝ)),← hzero,← sum_sub_distrib]
+  refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun j _ => ?_)
+  rw [← mul_sub,abs_mul,abs_sub_comm,abs_of_nonneg (sub_nonneg.mpr (Nat.floor_le (div_nonneg (Nat.cast_nonneg j) hy.le)))]
+  exact mul_le_of_le_one_right (abs_nonneg _) (by linarith only [Nat.lt_floor_add_one ((j:ℝ)/y)])
+
+/-- Uniform bound at all small degrees for a balanced compact test
+under the same Mertens hypothesis. -/
+theorem roundedFactorialReading_mertens_small {W W' : ℝ → ℝ} {B L C σ : ℝ}
+    (hB : 0 ≤ B) (hL : 0 ≤ L) (hC : 0 ≤ C) (hσ : 0 < σ)
+    (hW : ∀ x, B < x → W x=0) (hD : ∀ x, 0 < x → HasDerivAt W (W' x) x)
+    (hLip : ∀ a b : ℝ, 0 < a → a ≤ b → |b*W' b-a*W' a| ≤ L*(b-a))
+    (hM : ∀ n : ℕ, 0 < n → |mertens n| ≤ C*(n:ℝ)^σ) (hsmall : ∀ x, 0 < x → x ≤ 1 → W x = 0)
+    {y : ℝ} (hy : 0 < y) (hy₁ : y ≤ 1) :
+    |roundedFactorialReading W B y-W y| ≤ pSeriesMass σ*(C*L*B*B^σ) := by
+  have hh := @mobiusFactorialSample_mertens_step W W' B L C σ hB hL hC hσ.le hW hD hLip hM
+  have h := sum_unit_rounding (mul_nonneg (mul_nonneg hC hL) hB) hB hσ zero_lt_one
+    (fun u v => hh (u := u) (v := v)) (fun k => ((k+1:ℕ):ℝ))
+    (fun k => by push_cast; simp) ⌊B⌋₊
+  rw [hsmall y hy hy₁,sub_zero]
+  refine (roundedFactorialReading_balanced_bound W hB hy hW (hsmall 1 one_pos le_rfl)).trans ?_
+  simpa only [mul_one,div_one,abs_sub_comm] using h
 
 end GaloisForLFunctions.CountingHolography.Sections

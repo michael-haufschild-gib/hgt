@@ -96,8 +96,8 @@ theorem coprime_observations (a b n : ℕ) (hab : a.Coprime b) (z w : Circle) :
         have hp := Nat.one_le_iff_ne_zero.mpr (Int.natAbs_ne_zero.mpr hne)
         have hc := Nat.mul_le_mul_left (a+b) hp
         omega
-      rw [hz,mul_zero,zpow_zero,zpow_zero]
-    · rw [zpow_mul,zpow_mul,he]
+      rw [hz,mul_zero,_root_.zpow_zero,_root_.zpow_zero]
+    · rw [_root_.zpow_mul,_root_.zpow_mul,he]
 
 /-- Consecutive gaps r+1,r+2 first detect the (r+1)-st power at exactly
 2r+3 copies. This attains the bound 2Q−1 at every Q≥2. -/

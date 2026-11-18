@@ -248,6 +248,7 @@ For the continuous representative, the signed wave of all proper powers tends to
 $\mathcal LF(0)/2$. Prime squares supply this constant. The prime number theorem gives the
 ordinary-prime wave $e^{t/2}\mathcal LF(-1/2)+o(e^{t/2})$ directly.
 [Prime number theorem on the state](Wall/ThePrimeNumberTheoremOnTheState.lean).
+For either sign, maximizing over independent weights in $[0,1]$ on every proper prime power gives exactly its positive sign mass at each time. The maximum tends to half the integral of the corresponding sign part of the state. [Sharp sign masses](Wall/TheTwoSignMassesOfTheProperPrimePowers.lean).
 
 For every energy-domain profile, the gamma means of the ordinary-prime error after polar subtraction
 converge geometrically to $-\mathcal LF(0)/2$. The kernels are $t^n e^{-t}/n!$ on the positive ray.

@@ -110,7 +110,8 @@ theorem squareLongReading_variation : ∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ,
     have hcoef : (x+1)^2 ≤ 4*x^2 := by nlinarith only [mul_nonneg (show 0 ≤ x-1 by linarith only [hx]) (show 0 ≤ 3*x+1 by positivity)]
     rw [he]
     refine (abs_add_le _ _).trans ?_
-    rw [abs_mul,abs_mul,abs_of_nonneg (by positivity : 0 ≤ 2*x+1),abs_of_nonneg (sq_nonneg _)]
+    rw [abs_mul,abs_mul,abs_of_nonneg (by positivity : 0 ≤ 2*x+1),abs_of_nonneg (sq_nonneg (x+1))]
+    change (2*x+1)*|f x|+(x+1)^2*|f (x+1)-f x| ≤ C*x^(7/4:ℝ)
     have hlow := mul_le_mul (show 2*x+1 ≤ 3*x by linarith only [hx]) h₁ (abs_nonneg _) (by positivity)
     have hhigh := mul_le_mul hcoef h₂ (abs_nonneg _) (by positivity)
     dsimp only [f,C]

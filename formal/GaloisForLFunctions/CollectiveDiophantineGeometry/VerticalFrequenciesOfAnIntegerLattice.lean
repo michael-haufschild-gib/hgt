@@ -43,6 +43,7 @@ private theorem polarization (q b u c : ι → ℤ) :
   unfold minorColumn
   ring
 
+omit [DecidableEq ι] in
 theorem minors_divide_vertical (q b : ι → ℤ) {d : ℤ} (hd : d∈vertical q b) :
     content (minorColumn q b) ∣ content q*d := by
   obtain ⟨c,hc,rfl⟩ := hd

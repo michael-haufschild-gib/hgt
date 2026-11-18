@@ -369,7 +369,7 @@ private theorem weighted_integer_error_L1 {Φ : ℝ → ℝ} {r : ℝ} (hr : 0 <
   have hprod : a*b=Real.exp (r*t)*|D t| := by
     dsimp only [a,b,tiltedIntegerError,D]
     rw [abs_mul,abs_of_pos (Real.exp_pos _),mul_right_comm,← Real.exp_add,
-      show (2*r)*t+-r*t=r*t by ring]
+      show (2*r)*t + -r*t = r*t by ring]
   have hb2 : b^2=Real.exp (-(2*r)*t) := by
     change (Real.exp (-r*t))^2=_
     rw [sq,← Real.exp_add,show -r*t+ -r*t= -(2*r)*t by ring]
@@ -403,7 +403,7 @@ theorem riemannHypothesis_or_integer_mangoldt_sign_transfer : RiemannHypothesis 
   have hD : Continuous D := hc.sub (by fun_prop)
   have hI : IntegrableOn (fun t => Real.exp ((1/40)*t)*|D t|) (Ioi 0) :=
     weighted_integer_error_L1 (by norm_num : (0:ℝ)<1/40) hc
-    (criticalState_subcritical_integer_error hW ht hF hΦ he hC hb (by norm_num) (by norm_num))
+      (criticalState_subcritical_integer_error hW ht hF hΦ he hC hb (by norm_num) (by norm_num))
   let J := ∫ t in Ioi (0:ℝ), Real.exp ((1/40)*t)*|D t|
   have hJ : 0 ≤ J := integral_nonneg fun _ => mul_nonneg (Real.exp_pos _).le (abs_nonneg _)
   refine Or.inr ⟨W₀,F,Φ,J+A,hW,ht,hF,hΦ,he,add_nonneg hJ hA,?_⟩

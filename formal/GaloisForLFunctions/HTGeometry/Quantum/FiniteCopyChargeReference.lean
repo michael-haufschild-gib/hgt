@@ -31,7 +31,7 @@ theorem finite_determination (q b : ι → ℤ) {A : Matrix ι ι ℂ} (ha : A.I
   have hf := pair_frequency q b ha e f u v hc
   have hh := (indistinguishable_iff q b A _ z w).1 (h _ hk) _ hf
   have he : (z/w)^(u*edgeGap b e+v*edgeGap b f)=1 := by rwa [div_zpow,div_eq_one]
-  simpa only [zpow_add,mul_comm u (edgeGap b e),mul_comm v (edgeGap b f),zpow_mul] using he
+  simpa only [_root_.zpow_add,mul_comm u (edgeGap b e),mul_comm v (edgeGap b f),_root_.zpow_mul] using he
 
 /-- With a nonzero diagonal entry all shorter balanced words can be
 padded. One observation at the universal bound therefore suffices. -/
