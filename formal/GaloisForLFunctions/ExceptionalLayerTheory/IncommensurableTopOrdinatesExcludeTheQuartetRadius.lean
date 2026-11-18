@@ -117,9 +117,10 @@ private theorem boundaryStep_coefficient {β h : ℝ} (hβ : 1/2 < β) (hh : 0 <
   let A := Real.exp (β*h)
   have hF : F = expSeriesCarrier (primeErrorBoundaryAmplitude β) xiCopyOrdinate :=
     funext (ofReal_primeErrorBoundaryTrace β)
-  have hc : Continuous F := hF ▸ continuous_expSeriesCarrier (summable_primeErrorBoundaryAmplitude hβ) _
-  have ha : IsBohrAlmostPeriodic F := hF ▸ isBohrAlmostPeriodic_expSeriesCarrier
-    (summable_primeErrorBoundaryAmplitude hβ) _
+  have hc : Continuous F := by
+    rw [hF]; exact continuous_expSeriesCarrier (summable_primeErrorBoundaryAmplitude hβ) _
+  have ha : IsBohrAlmostPeriodic F := by
+    rw [hF]; exact isBohrAlmostPeriodic_expSeriesCarrier (summable_primeErrorBoundaryAmplitude hβ) _
   let G := fun t => (A:ℂ)*F (t+h)
   have hsc := hc.comp (continuous_id.add continuous_const : Continuous (fun t : ℝ => t+h))
   have hsa := isBohrAlmostPeriodic_comp_add_const ha h
@@ -127,9 +128,9 @@ private theorem boundaryStep_coefficient {β h : ℝ} (hβ : 1/2 < β) (hh : 0 <
   have hga : IsBohrAlmostPeriodic G := isBohrAlmostPeriodic_const_mul _ hsa
   have he : (fun t => (D t : ℂ)) = fun t => G t - F t := by
     funext t; simp only [D, boundaryStep, G, A, F, Complex.ofReal_sub, Complex.ofReal_mul]
-  have hdc : Continuous (fun t => (D t : ℂ)) := he ▸ hgc.sub hc
-  have hda : IsBohrAlmostPeriodic (fun t => (D t : ℂ)) :=
-    he ▸ isBohrAlmostPeriodic_sub hgc hga hc ha
+  have hdc : Continuous (fun t => (D t : ℂ)) := by rw [he]; exact hgc.sub hc
+  have hda : IsBohrAlmostPeriodic (fun t => (D t : ℂ)) := by
+    rw [he]; exact isBohrAlmostPeriodic_sub hgc hga hc ha
   refine ⟨Complex.continuous_re.comp hdc, ?_, fun q hq => ?_⟩
   · simpa only [IsBohrAlmostPeriodic, ← Complex.ofReal_sub, Complex.norm_real] using hda
   let ω := xiCopyOrdinate q
@@ -145,7 +146,7 @@ private theorem boundaryStep_coefficient {β h : ℝ} (hβ : 1/2 < β) (hh : 0 <
     ring
   rw [hcoef]
   refine mul_ne_zero (sub_ne_zero.mpr fun hz => ?_) (bohrCoefficient_boundary_ne_zero hβ q hq)
-  have heq := congrArg norm hz
+  have heq := congrArg (fun z : ℂ => ‖z‖) hz
   simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _),
     norm_expChar, mul_one, norm_one, A] at heq
   exact (Real.one_lt_exp_iff.mpr (mul_pos (by linarith only [hβ]) hh)).ne' heq
@@ -176,10 +177,10 @@ theorem top_ordinates_commensurable_of_bounded_thetaRadial {γ : ℝ} {m : ℕ}
   obtain ⟨n, hn, he⟩ := frequency_of_periodic_abs hc ha (by linarith only [hh]) hp (hfreq q hq)
   obtain ⟨k,hk⟩ := Complex.exp_eq_one_iff.mp he
   have him : xiCopyOrdinate q * ((n:ℝ)*(2*h)) = (k:ℝ)*(2*Real.pi) := by
-    simpa [Complex.mul_im, Complex.mul_re] using congrArg Complex.im hk
+    simpa [Complex.mul_im, Complex.mul_re, mul_assoc] using congrArg Complex.im hk
   have hscale : (2*h)*|γ| = Real.pi := by
     dsimp only [h, quarterPeriodStep]
-    field_simp [abs_ne_zero.mpr hγ]
+    field_simp [abs_ne_zero.mpr hγ] <;> ring
   have hprod : xiCopyOrdinate q * (n:ℝ) = (2*(k:ℝ))*|γ| := by
     apply mul_right_cancel₀ Real.pi_ne_zero
     calc (xiCopyOrdinate q*n)*Real.pi = (xiCopyOrdinate q*((n:ℝ)*(2*h)))*|γ| := by
@@ -227,7 +228,7 @@ theorem thetaRadial_unbounded_of_incommensurable_top_pair
   have hb0 : (b:ℝ) ≠ 0 := fun hz => hq0 (by rw [hb,hz,zero_mul])
   apply hind (a/b)
   rw [Rat.cast_div, ha, hb]
-  field_simp
+  field_simp <;> ring
 
 #print axioms thetaRadial_unbounded_of_incommensurable_top_pair
 #print axioms extremal_radial_exclusion_or_commensurable_top

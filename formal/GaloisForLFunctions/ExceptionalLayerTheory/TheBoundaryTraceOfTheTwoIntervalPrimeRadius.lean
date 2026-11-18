@@ -20,8 +20,8 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory
 def thetaLogError (t : ℝ) : ℝ := Chebyshev.theta (Real.exp t) - Real.exp t
 
 /-- Discrepancy of the ordinary-prime radius from the trial quartet amplitude. -/
-def thetaRadialDiscrepancy (β γ : ℝ) (m : ℕ) : ℝ → ℝ :=
-  radialDiscrepancyOf thetaLogError β γ m
+def thetaRadialDiscrepancy (β γ : ℝ) (m : ℕ) (t : ℝ) : ℝ :=
+  radialDiscrepancyOf thetaLogError β γ m t
 
 /-- A step in a trace from which the exponential growth has been removed. -/
 def boundaryStep (β h : ℝ) (f : ℝ → ℝ) (t : ℝ) : ℝ :=
@@ -75,7 +75,7 @@ private theorem normalizedRadius_eq (β h t : ℝ) :
         logStepIncrement thetaLogError (t+h) h / Real.exp (β*h)⟩ : ℂ) /
         (Real.exp (β*t) : ℂ)) := by
     apply Complex.ext
-    · simp [stepPair, hs, Complex.div_ofReal_re]
+    · simp only [stepPair, hs, Complex.div_ofReal_re]
     · simp only [stepPair, hs, Complex.div_ofReal_im, mul_add, Real.exp_add]
       ring
   rw [hz, norm_div, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
@@ -175,7 +175,7 @@ theorem boundaryStep_circle_of_bounded_thetaRadial {γ : ℝ} {m : ℕ}
   have hlim' : Tendsto (fun t => ‖stepPair β h F t‖ - C) atTop (𝓝 0) := by
     apply hlim.congr
     intro t
-    change (_ - C * Real.exp (β*t)) / Real.exp (β*t) -
+    change (twoIntervalRadius thetaLogError h (Real.exp (β*h)) t - C * Real.exp (β*t)) / Real.exp (β*t) -
       (twoIntervalRadius thetaLogError h (Real.exp (β*h)) t / Real.exp (β*t) -
         ‖stepPair β h F t‖) = _
     rw [sub_div, mul_div_cancel_right₀ _ (Real.exp_pos _).ne']
@@ -184,7 +184,9 @@ theorem boundaryStep_circle_of_bounded_thetaRadial {γ : ℝ} {m : ℕ}
     (almostPeriodic_pairNorm_sub (isBohrAlmostPeriodic_primeErrorBoundaryTrace hΘ) β h C) hlim'
   intro t
   have hs := congrArg (fun r : ℝ => r^2) (sub_eq_zero.mp (hnorm t))
-  simpa only [Complex.sq_norm, stepPair, Complex.normSq_mk, sq] using hs
+  change ‖stepPair β h F t‖ ^ 2 = C ^ 2 at hs
+  rw [Complex.sq_norm, stepPair, Complex.normSq_mk] at hs
+  simpa only [pow_two] using hs
 
 /-- If the extremal line is empty, the normalized ordinary-prime discrepancy
 converges to the negative trial radius. Zeros may approach the line from the left. -/

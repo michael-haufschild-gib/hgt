@@ -34,17 +34,18 @@ theorem monotone_shell_conductors {u w : ℕ → ℕ} (hu : Monotone u) (hw : Mo
     obtain ⟨⟨_, hcM⟩, _, hcq, _⟩ := mem_filter.mp hc_mem |>.imp mem_Ioc.mp id
     refine ⟨a, d, haN, Nat.le_succ_of_le (min'_le S _ hc_mem), Nat.succ_le_succ hcM, ?_⟩
     ext n
-    simp only [S, mem_filter, mem_Ioc, mem_Ico]
+    change n ∈ S ↔ n ∈ Ico a d
+    simp only [mem_Ico]
     constructor
     · intro hn
-      exact ⟨min'_le S n ⟨mem_Ioc.mpr hn.1, hn.2⟩,
-        Nat.lt_succ_of_le (le_max' S n ⟨mem_Ioc.mpr hn.1, hn.2⟩)⟩
+      exact ⟨min'_le S n hn, Nat.lt_succ_of_le (le_max' S n hn)⟩
     · rintro ⟨han, hnd⟩
       have hnc : n ≤ S.max' hne := Nat.le_of_lt_succ hnd
-      exact ⟨⟨haN.trans_le han, hnc.trans hcM⟩, hav.trans han,
-        (hu hnc).trans_lt hcq, haq.trans (hw han)⟩
+      exact mem_filter.mpr ⟨mem_Ioc.mpr ⟨haN.trans_le han, hnc.trans hcM⟩,
+        hav.trans han, (hu hnc).trans_lt hcq, haq.trans (hw han)⟩
   · rw [not_nonempty_iff_eq_empty] at hne
     refine ⟨N + 1, N + 1, Nat.lt_succ_self N, le_rfl, Nat.succ_le_succ hNM, ?_⟩
+    change S = _
     rw [hne, Ico_self]
 
 private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Set.Ioi 0))
@@ -91,7 +92,7 @@ private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Set
     have h3 : HasDerivAt (fun r => ∫ u in (0 : ℝ)..r, f_pos u) (g ((n : ℝ) + s)) s := by
       rw [← hf_eq s (by linarith [hs.1])]
       exact (hf_cont.integral_hasStrictDerivAt 0 s).hasDerivAt
-    exact ((h1.sub h2).sub h3).congr_deriv (by dsimp only [id, Function.comp_apply]; ring)
+    exact ((h1.sub h2).sub h3).congr_deriv (by ring)
   have hint_rhs : IntervalIntegrable
       (fun s : ℝ => -((s * (s - 1) / 2) * iteratedDeriv 2 g ((n : ℝ) + s))) volume 0 1 := by
     refine ContinuousOn.intervalIntegrable ?_
@@ -101,7 +102,7 @@ private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Set
       rwa [show deriv (deriv g) = iteratedDeriv 2 g by
         rw [show (2 : ℕ) = 1 + 1 from rfl, iteratedDeriv_succ, iteratedDeriv_one]] at hc
     refine ContinuousOn.neg (((continuousOn_id.mul (continuousOn_id.sub continuousOn_const)).div_const 2).mul ?_)
-    exact hcd2.comp (continuousOn_const.add continuousOn_id) fun s hs => by linarith [hs.1]
+    exact hcd2.comp (continuousOn_const.add continuousOn_id) fun s hs => by linarith [hs.1, hn']
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hdK hint_rhs
   rw [intervalIntegral.integral_neg] at hftc
   have hint_eq : (∫ u in (0 : ℝ)..1, f_pos u) = ∫ t in (n : ℝ)..((n + 1 : ℕ) : ℝ), g t := by
@@ -110,7 +111,7 @@ private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Set
       rw [Set.uIcc_of_le zero_le_one] at hu
       exact hf_eq u (by linarith [hu.1])
     rw [hcongr, intervalIntegral.integral_comp_add_left g (n : ℝ), add_zero]
-    push_cast; rfl
+    push_cast
   have hK1 : K 1 = (1 / 2 : ℝ) * g (n + 1 : ℕ) - ∫ t in (n : ℝ)..((n + 1 : ℕ) : ℝ), g t := by
     dsimp only [K]
     rw [hint_eq]
@@ -150,20 +151,18 @@ private theorem bdiff_iter_sub (r : ℕ) (f g : ℕ → ℝ) :
   induction r with
   | zero => rfl
   | succ r ih =>
-    rw [Function.iterate_succ_apply, Function.iterate_succ_apply, Function.iterate_succ_apply]
-    have h1 : bdiff (fun j => f j - g j) = fun j => bdiff f j - bdiff g j := by
-      funext j; dsimp only [bdiff]; ring
-    rw [h1, ih]
+    funext j
+    simp only [Function.iterate_succ_apply', ih, bdiff]
+    ring
 
 private theorem bdiff_iter_const_mul (r : ℕ) (c : ℝ) (f : ℕ → ℝ) :
     bdiff^[r] (fun j => c * f j) = fun j => c * bdiff^[r] f j := by
   induction r with
   | zero => rfl
   | succ r ih =>
-    rw [Function.iterate_succ_apply, Function.iterate_succ_apply]
-    have h1 : bdiff (fun j => c * f j) = fun j => c * bdiff f j := by
-      funext j; dsimp only [bdiff]; ring
-    rw [h1, ih]
+    funext j
+    simp only [Function.iterate_succ_apply', ih, bdiff]
+    ring
 
 private theorem bdiff_iter_intervalIntegral (r : ℕ) (H : ℕ → ℝ → ℝ)
     (hcont : ∀ j, ContinuousOn (H j) (Set.Icc 0 1)) (j : ℕ) :
@@ -172,8 +171,7 @@ private theorem bdiff_iter_intervalIntegral (r : ℕ) (H : ℕ → ℝ → ℝ)
   induction r generalizing j with
   | zero => rfl
   | succ r ih =>
-    rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
-    dsimp only [bdiff]
+    simp only [Function.iterate_succ_apply', bdiff]
     rw [ih j, ih (j + 1)]
     have hi1 : ContinuousOn (fun s => bdiff^[r] (fun i => H i s) j) (Set.Icc 0 1) := by
       clear ih
@@ -357,7 +355,7 @@ theorem conductor_interval_horizonPair_bound :
             ((j : ℝ) * ((q : ℝ) / (d : ℝ) ^ 2))| := by
       intro j
       have hstep : (fun i => I_seq i - I_seq (i + 1)) = bdiff I_seq := rfl
-      rw [hstep, ← Function.iterate_succ_apply, show 8 + 1 = 9 from rfl, hI_antideriv,
+      rw [hstep, ← Function.iterate_succ_apply, hI_antideriv,
         bdiff_iter_sub, bdiff_iter_const_mul, bdiff_iter_const_mul,
         bdiff_iter_sample_eq, bdiff_iter_sample_eq]
       refine (abs_sub _ _).trans (add_le_add ?_ ?_) <;>
@@ -440,7 +438,7 @@ theorem conductor_interval_horizonPair_bound :
             ((j : ℝ) * ((q : ℝ) / (a : ℝ) ^ 2))| := by
       intro j
       have hstep : (fun i => B_seq i - B_seq (i + 1)) = bdiff B_seq := rfl
-      rw [hstep, ← Function.iterate_succ_apply, show 7 + 1 = 8 from rfl, hB_form,
+      rw [hstep, ← Function.iterate_succ_apply, hB_form,
         bdiff_iter_sub, bdiff_iter_const_mul, bdiff_iter_const_mul,
         bdiff_iter_sample_eq, bdiff_iter_sample_eq]
       refine (abs_sub _ _).trans (add_le_add ?_ ?_) <;>
@@ -512,7 +510,7 @@ theorem conductor_interval_horizonPair_bound :
       linarith [hs.1]
     have hns_hi : (n : ℝ) + s ≤ ((2 * N + 1 : ℕ) : ℝ) := by
       have : ((n + 1 : ℕ) : ℝ) ≤ ((2 * N + 1 : ℕ) : ℝ) := by exact_mod_cast hnd.trans hd2N
-      push_cast at this; linarith [hs.2]
+      push_cast at this ⊢; linarith [hs.2]
     rw [conductorCurvatureProfile_eq_zero_outside fun hmem =>
       (hhi_ratio hj hns_pos hns_hi).not_ge hmem.2, zero_div, mul_zero]
   have hR_bound : |∑ j ∈ range b, (R_seq j - R_seq (j + 1)) * centeredPrimeWeight 1 j| ≤
@@ -536,7 +534,7 @@ theorem conductor_interval_horizonPair_bound :
             conductorCurvatureProfile ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))| := by
       intro j
       have hstep : (fun i => R_seq i - R_seq (i + 1)) = bdiff R_seq := rfl
-      rw [hstep, ← Function.iterate_succ_apply, show 4 + 1 = 5 from rfl]
+      rw [hstep, ← Function.iterate_succ_apply]
       dsimp only [R_seq]
       rw [bdiff_iter_sum 5 (Ico a d)]
       refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun n hn => ?_)
@@ -638,9 +636,9 @@ theorem conductor_interval_horizonPair_bound :
                     conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) j := by
                 funext s
                 rw [bdiff_iter_sample_eq, ← mul_assoc, ← mul_pow, neg_one_mul, neg_neg, one_pow, one_mul]
-              refine continuousOn_const.mul ?_
+              refine continuousOn_const.mul (ContinuousOn.abs ?_)
               rw [heq_5]
-              refine (continuousOn_const.mul ?_).abs
+              refine continuousOn_const.mul ?_
               suffices ∀ r k, ContinuousOn (fun s : ℝ => bdiff^[r] (fun i : ℕ =>
                   conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) k) (Set.Icc 0 1) from
                 this 5 j
@@ -662,7 +660,7 @@ theorem conductor_interval_horizonPair_bound :
                       conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) (k + 1) := by
                   funext s; rw [Function.iterate_succ_apply']; rfl
                 rw [heq']; exact (ihr k).sub (ihr (k + 1))
-            exact (intervalIntegral.integral_finset_sum hint_j).symm
+            exact (intervalIntegral.integral_finsetSum hint_j).symm
         _ ≤ ∑ _n ∈ Ico a d, (1 / (8 * (N : ℝ))) * (K5 * ((q : ℝ) / (N : ℝ) ^ 2) ^ 4) := by
             refine sum_le_sum fun n hn => ?_
             have hpoint : ∀ s ∈ Set.uIoc (0 : ℝ) 1,
@@ -717,14 +715,11 @@ theorem conductor_interval_horizonPair_bound :
   have hK2 : C6 * K8 ≤ K := (le_max_left _ _).trans (le_max_right _ _)
   have hK3 : C3 * K5 ≤ K := (le_max_right _ _).trans (le_max_right _ _)
   have ht1 : 2 * C7 * K9 * (q : ℝ) ^ 8 / (N : ℝ) ^ 14 ≤ K * ((q : ℝ) ^ 8 / (N : ℝ) ^ 14) := by
-    rw [mul_div_assoc]; exact div_le_div_of_nonneg_right
-      (mul_le_mul_of_nonneg_right hK1 (by positivity)) (by positivity)
+    rw [mul_div_assoc]; exact mul_le_mul_of_nonneg_right hK1 (by positivity)
   have ht2 : C6 * K8 * (q : ℝ) ^ 7 / (N : ℝ) ^ 13 ≤ K * ((q : ℝ) ^ 7 / (N : ℝ) ^ 13) := by
-    rw [mul_div_assoc]; exact div_le_div_of_nonneg_right
-      (mul_le_mul_of_nonneg_right hK2 (by positivity)) (by positivity)
+    rw [mul_div_assoc]; exact mul_le_mul_of_nonneg_right hK2 (by positivity)
   have ht3 : C3 * K5 * (q : ℝ) ^ 4 / (N : ℝ) ^ 8 ≤ K * ((q : ℝ) ^ 4 / (N : ℝ) ^ 8) := by
-    rw [mul_div_assoc]; exact div_le_div_of_nonneg_right
-      (mul_le_mul_of_nonneg_right hK3 (by positivity)) (by positivity)
+    rw [mul_div_assoc]; exact mul_le_mul_of_nonneg_right hK3 (by positivity)
   linarith [hI_bound, hB_bound, hR_bound, ht1, ht2, ht3]
 
 /-- General two-variable conductor-smoothed shell bound across `N < n ≤ M ≤ 2N` for any
@@ -794,6 +789,7 @@ theorem conductor_smoothed_shell_bound :
           simpa [Nat.mul_comm] using (Nat.le_div_iff_mul_le hp0).mp hhi
         exact ⟨⟨⟨(Nat.zero_le _).trans_lt hlo,
           hhi.trans (Nat.div_le_div_right hwnW), hvn.trans hnM⟩, hcop⟩, hvn, hlo', hhi'⟩
+    dsimp only
     rw [← sum_filter, hfilt]
     exact sum_congr rfl fun v _ => by ring
   rw [sum_congr rfl hrow_ex]
@@ -854,7 +850,7 @@ theorem conductor_smoothed_shell_bound :
     · exact div_le_div_of_nonneg_right (pow_le_pow_left₀ (Nat.cast_nonneg _) hprod' 4) (by positivity)
   have hcard : Vf.card ≤ W / p := by
     refine (card_le_card (filter_subset _ _)).trans ?_
-    rw [Nat.card_Icc]; exact (Nat.sub_le _ _).trans (min_le_left _ _)
+    rw [Nat.card_Icc, Nat.add_sub_cancel]; exact min_le_left _ _
   have hc : (Vf.card : ℝ) * p ≤ W := by
     exact_mod_cast (Nat.mul_le_mul_right p hcard).trans (Nat.div_mul_le_self W p)
   refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum heach).trans ?_)

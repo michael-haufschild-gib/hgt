@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheEndpointAtQuotientZero
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheFirstEndpointAboveTheMovingProductCut
 import GaloisForLFunctions.CountingHolography.Sections.TheMellinKernelOfSquareConductorPrices
 
 /-!
@@ -17,19 +17,27 @@ open GaloisForLFunctions.SquareRootThreshold
 open _root_.RHTower
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-/-- Complex Dirichlet coefficient of the returned ordinary-prime endpoint. -/
-def firstEndpointPrice (n : ℕ) : ℂ := ((n:ℝ)^2*firstQuotientPrimeEndpoint n : ℝ)
+/-- Returned ordinary-prime endpoint at the seventeen-ninths product cut,
+with the original far horizon in both readings. -/
+def firstEndpointPrice (n : ℕ) : ℂ :=
+  ((n:ℝ)^2*retainedPrimeEndpoint ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n : ℝ)
 
 private def endpointError := squareConductorPrice - firstEndpointPrice
 
 private theorem endpoint_error_abscissa : LSeries.abscissaOfAbsConv endpointError ≤ ((3:ℝ):EReal) := by
   obtain ⟨C,_,h⟩ := firstQuotientPrimeEndpoint_price
-  have he (n : ℕ) (hn : n≠0) : ‖endpointError n‖ ≤ C*(n:ℝ)^(2:ℝ) := by
+  let e (n : ℕ) := squareConductorPrice n - (((n:ℝ)^2*firstQuotientPrimeEndpoint n:ℝ):ℂ)
+  have hagree : endpointError =ᶠ[atTop] e := by
+    filter_upwards [eventually_ge_atTop (1:ℕ), eventually_retainedPrimeEndpoint
+      (by norm_num : (0:ℝ)<17/9) (by norm_num : (17/9:ℝ)<2)] with n hn hc
+    simp only [endpointError, Pi.sub_apply,firstEndpointPrice,e,hc,firstQuotientPrimeEndpoint_eq hn]
+  rw [LSeries.abscissaOfAbsConv_congr' hagree]
+  have he (n : ℕ) (hn : n≠0) : ‖e n‖ ≤ C*(n:ℝ)^(2:ℝ) := by
     change ‖((Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n):ℝ):ℝ):ℂ) -
       (((n:ℝ)^2*firstQuotientPrimeEndpoint n:ℝ):ℂ)‖ ≤ _
     rw [← Complex.ofReal_sub,Complex.norm_real,Real.norm_eq_abs,Real.rpow_two]
     exact h (Nat.pos_of_ne_zero hn)
-  have ha := LSeries.abscissaOfAbsConv_le_of_le_const_mul_rpow (f := endpointError) (x := 2) ⟨C,he⟩
+  have ha := LSeries.abscissaOfAbsConv_le_of_le_const_mul_rpow (f := e) (x := 2) ⟨C,he⟩
   refine ha.trans_eq ?_
   change ((2:ℝ):EReal)+((1:ℝ):EReal)=((3:ℝ):EReal)
   rw [←EReal.coe_add]
