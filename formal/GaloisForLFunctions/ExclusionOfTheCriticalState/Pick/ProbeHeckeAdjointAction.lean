@@ -92,6 +92,12 @@ theorem hullHeckeCommutator_cubic (q : ℂ) (X : A) :
       (q^2 + 1)^2 • hullHeckeCommutator p q X := by
   rw [hullHeckeCommutator_square, hullMixedPart_commutator]
 
+private theorem commutator_smul (q c : ℂ) (Y : A) :
+    hullHeckeCommutator p q (c • Y) = c • hullHeckeCommutator p q Y := by
+  change hullHecke p q * (c • Y) - (c • Y) * hullHecke p q =
+    c • (hullHecke p q * Y - Y * hullHecke p q)
+  rw [mul_smul_comm, smul_mul_assoc, smul_sub]
+
 /-- A mixed observable is a commutator exactly away from the spectral collision or when it vanishes. -/
 theorem hullHeckeCommutator_range_iff (q : ℂ) (X : A) :
     (∃ Y, hullHeckeCommutator p q Y = X) ↔
@@ -101,17 +107,16 @@ theorem hullHeckeCommutator_range_iff (q : ℂ) (X : A) :
     refine ⟨hullMixedPart_commutator p q Y, ?_⟩
     by_cases h : q^2 = -1
     · right
-      rw [hullHeckeCommutator_eq, h]
-      simp
+      rw [hullHeckeCommutator_eq, h, neg_add_cancel, zero_div, zero_smul]
     · exact Or.inl h
   · rintro ⟨hX, h | rfl⟩
     · have hn : (q^2 + 1)^2 ≠ 0 := pow_ne_zero _ (by simpa only [ne_eq, add_eq_zero_iff_eq_neg] using h)
       refine ⟨((q^2 + 1)^2)⁻¹ • hullHeckeCommutator p q X, ?_⟩
       calc
-        _ = ((q^2 + 1)^2)⁻¹ • hullHeckeCommutator p q (hullHeckeCommutator p q X) := by
-          simp only [hullHeckeCommutator, mul_smul_comm, smul_mul_assoc, smul_sub]
+        _ = ((q^2 + 1)^2)⁻¹ • hullHeckeCommutator p q (hullHeckeCommutator p q X) :=
+          commutator_smul p q _ _
         _ = X := by rw [hullHeckeCommutator_square, hX, smul_smul, inv_mul_cancel₀ hn, one_smul]
-    · exact ⟨0, by simp [hullHeckeCommutator]⟩
+    · exact ⟨0, by rw [hullHeckeCommutator, mul_zero, zero_mul, sub_self]⟩
 
 #print axioms hullHeckeCommutator_eq
 #print axioms hullMixedPart_twice

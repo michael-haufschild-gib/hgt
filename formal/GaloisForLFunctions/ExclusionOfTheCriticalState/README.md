@@ -226,7 +226,7 @@ so nothing is lost between stages.
 | Q1 | Probe kernel $B(e_p,e_q)=\frac{D(p)+D(q)}{p+q}$ and its zero side | answered (Lean) |
 | Q2 | Zero side of $B$ on all of $\mathcal H$; zero-coordinate form $(\star)$ | answered (Lean): for every pair of profiles of $\mathcal H$ the zero pairing with Gaussian summation is Weil's form, $\lim_{\varepsilon\to0^+}\sum_z\mathcal LF(z)\mathcal LG(-z)e^{\varepsilon z^2}=W(F,G)$ (`tendsto_heatedZeroPairing`); without summation it converges absolutely when both unit tilts lie in $\mathcal H$ (`hasSum_bareMixedEnergy_of_unitTilts`), in particular at the state; $(\star)$ is a one-point identity with square-summable zero values. For a general profile the unsummed series needs one subtraction (Traps) |
 | Q3 | State equation, continuation, residues | answered (Lean): global meromorphic continuation, exact residues and uniform left decay |
-| Q4 | Decay law | answered (Lean): for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $\int F^2e^{-bu}<\infty$ for every $b<16-2\kappa$; the decay rate is $b^*=17-2\Theta$, $\Theta$ the supremum of the real parts of the zeros; unconditionally $\int F^2e^{-bu}<\infty$ for $b<15+\tfrac{3001}{12000}$. Also in Lean: left Hardy bounds, averaged/heated decay, and the transform side: $\mathcal LF$ converges exactly on $\operatorname{Re}w>\Theta-\tfrac{17}2$, with $(\star)$ at every point and Plancherel on every line. At the exponent $b_\rho=17-2\operatorname{Re}\rho$ of every zero the moment is infinite, with $\liminf_{\eta\to0^+}\eta\int F^2e^{-(b_\rho-\eta)u}\ge(m_\rho\lvert\mathcal LF(\rho-\tfrac12)\rvert/a)^2$; hence a finite moment at $b$ puts the zeros in $\operatorname{Re}\rho<\tfrac{17-b}2$, and the moment at $b^*$ is infinite when $\Theta$ is attained. In the energy norm: $e^{-cu}F\in\mathcal H$ for every $c<\tfrac92-\Theta$, the supremum of such tilts, with one logarithm on every line $\operatorname{Re}w>\Theta-\tfrac92$; for $c<\tfrac72-\Theta$ the moments are zero pairings, $\sum_z\mathcal LF(z)\mathcal LF(-z-c)=-a\int F^2e^{-(8+c)u}$. Open: the endpoint $b=b^*$ when $\Theta$ is not attained, and pointwise decay |
+| Q4 | Decay law | answered (Lean): for $\kappa\ge0$, every centred zero has $\operatorname{Re}z\le\kappa$ iff $\int F^2e^{-bu}<\infty$ for every $b<16-2\kappa$; the decay rate is $b^*=17-2\Theta$, $\Theta$ the supremum of the real parts of the zeros; unconditionally $\int F^2e^{-bu}<\infty$ for $b<15+\tfrac{3001}{12000}$. Also in Lean: left Hardy bounds, averaged/heated decay, and the transform side: $\mathcal LF$ converges exactly on $\operatorname{Re}w>\Theta-\tfrac{17}2$, with $(\star)$ at every point and Plancherel on every line. At the exponent $b_\rho=17-2\operatorname{Re}\rho$ of every zero the moment is infinite, with $\liminf_{\eta\to0^+}\eta\int F^2e^{-(b_\rho-\eta)u}\ge(m_\rho\lvert\mathcal LF(\rho-\tfrac12)\rvert/a)^2$; hence a finite moment at $b$ puts the zeros in $\operatorname{Re}\rho<\tfrac{17-b}2$, and the moment at $b^*$ is infinite when $\Theta$ is attained. In the energy norm: $e^{-cu}F\in\mathcal H$ for every $c<\tfrac92-\Theta$, the supremum of such tilts, with one logarithm on every line $\operatorname{Re}w>\Theta-\tfrac92$; for every complex $w$ with $\Re w<B=9-2\Theta$ the moments are absolutely convergent zero pairings, $\sum_z\mathcal LF(z)\mathcal LF(-z-w)=-a\int F^2e^{-(8+w)u}$. From a real centre $c<B$ the exact continuation radius is $B-c$. Open: the endpoint $b=b^*$ when $\Theta$ is not attained, and pointwise decay |
 | Q5 | Sign law | answered (Lean): one sign on no ray |
 | Q6 | Index law | answered (Lean): finite index at every ratio; some confined Gram matrix has $n$ negative squares iff $\zeta$ has at least $n$ zeros right of the line (`confinedIndex_law`); the index is bounded over all ratios iff finitely many zeros lie off the line (`confinedIndexBounded_tfae`); under a finite layer the critical ladder has one rung per right zero (`criticalLadder_iff_rightZeros`). Open: the growth of the index in the ratio when infinitely many zeros lie right of the line |
 | Q7 | Rigidity: no state for $\zeta$ | open; equivalent to RH. Restricted to a finite off-line layer it is B13 in six equivalent forms (`finiteLayer_ecs_b13_tfae`) |
@@ -241,8 +241,33 @@ the criterion excludes the state directly and is sharp at the boundary $\operato
 including real-axis-positive twins matching any finite $\zeta$ prefix. The heads at all proper prime powers
 converge holomorphically on $\operatorname{Re}p<0$. Their only pole on the imaginary axis for a critical state
 has residue $-\mathcal LF(0)/2$ at zero. Their absolute wave is $O_{F,\varepsilon}(e^{\varepsilon x})$ for
-every $\varepsilon>0$. The open cancellation is between ordinary primes and the polar term.
+every $\varepsilon>0$.
 [Proper prime powers in the prime wave](Wall/TheProperPrimePowersInThePrimeWave.lean).
+
+For the continuous representative, the signed wave of all proper powers tends to
+$\mathcal LF(0)/2$. Prime squares supply this constant. The prime number theorem gives the
+ordinary-prime wave $e^{t/2}\mathcal LF(-1/2)+o(e^{t/2})$ directly.
+[Prime number theorem on the state](Wall/ThePrimeNumberTheoremOnTheState.lean).
+
+For every energy-domain profile, the gamma means of the ordinary-prime error after polar subtraction
+converge geometrically to $-\mathcal LF(0)/2$. The kernels are $t^n e^{-t}/n!$ on the positive ray.
+[Ordinary-prime gamma averages](Wall/GammaAveragesOfTheOrdinaryPrimeError.lean).
+Uniform frequency control gives the same signed limit at every late centre on positive windows
+with uniformly bounded centred second moment. [Bounded-width windows](Wall/PositiveLocalAveragesOfTheOrdinaryPrimeError.lean).
+
+The equal-prime term of the covariance, divided by the observation time, tends to the
+state autocorrelation at every fixed lag. At zero lag the coefficient is one. The squared
+increment recovers $8a\int F^2e^{-8u}$ after taking the prime limit and then the short-lag limit.
+[Equal-prime covariance](Wall/TheEqualPrimeTermOfTheWaveCovariance.lean).
+At every sufficiently late time, **all distinct ordinary-prime pairs of positive additive gap at most**
+$K$ contribute $O(K)$ in absolute value, uniformly in $K$. Hence gaps up to $o(t)$ contribute $o(t)$.
+[Short additive gaps](Wall/ShortAdditiveGapsInTheOrdinaryPrimeWave.lean).
+
+The unheated wall profile has a zero expansion in $L^2(0,\infty)$ on the unit damping line.
+After polar subtraction, removing the entire left-zero contribution from the ordinary-prime
+wave leaves a remainder $E$ with $e^{-st}E\in L^2$ for every $0<s\le1$.
+An independent one-sided subexponential bound before removing those zeros remains open.
+[Unheated wall and ordinary-prime expansions](Modes/UnheatedZeroModesBeyondTheWall.lean).
 
 On $0\le c\le1$, the wall translation estimate and exponential confinement give
 $\int\log^m(4+|t|)|\mathcal LF(-c+it)|^2\,dt<\infty$ for every integer $m\ge0$.
@@ -353,8 +378,7 @@ of an increment at every ratio ([increments](TheIncrementsOfAConfinedGroundState
 `halfLineEnergyMinimizer_fullEnergy_increment`).
 
 **To build.** The endpoint moment $b=17-2\Theta$ when $\Theta$ is not attained, and pointwise decay of the state
-(both need regularity of $F$ or a Hilbert inequality on the zeros without the logarithm); the shifted zero pairing on
-$\tfrac72-\Theta\le c<\tfrac{17}2-2\Theta$ (a logarithm on the lines left of $\Theta-\tfrac92$); the growth of the index in
+(both need regularity of $F$ or a Hilbert inequality on the zeros without the logarithm); the growth of the index in
 the ratio; pointwise regularity of $F$ on $u<0$: the wall law holds in mean square on $(-k,0)$; its pointwise form
 $F(u)^2\log(1/\lvert u\rvert)\to8aM$ and the bounded order of $aF^+$ at the wall, where the primes enter through
 $\sum_n\Lambda(n)n^{-1/2}F(x-\log n)$ at $x\to0^+$, need it; this is stage 5.
@@ -440,9 +464,9 @@ $\sum_n\Lambda(n)n^{-1/2}F(x-\log n)$ at $x\to0^+$, need it; this is stage 5.
 | The convergent half of the decay law is a line shift of $(\star)$ | No pointwise decay on vertical lines is known, and the Hilbert inequality on the zeros gives only $L^2(dt/\log)$. The lines right of the transported zeros carry $L^2(dt)$ as a consequence of the decay law, which is proved in time by the Agmon bound |
 | A Hilbert inequality for $\sum_zc_z/(w-z)$ needs separated zeros | The unit-window count suffices at the price of one logarithm; a cluster of $N$ zeros loses a factor of order $N$, so the count alone cannot remove the weight |
 | The barrier $b=15$ of the comparison argument is the decay rate of the state | It is the price of absolute values in the forward prime sum; the forward prime and pole waves cancel to $-N\mathcal LF$, and $b^*=17-2\Theta$ |
-| The growth law of $F^+$ is the mirror of the decay law | On the zero-free strip the multiplier of the state equation is $-\tfrac{\zeta'}{\zeta}(\tfrac12-p)$: logarithmic on $\kappa<\operatorname{Re}p<\tfrac12$, sublogarithmic on $\operatorname{Re}p<-\kappa$. The left lines gain no logarithm, so the descent does not start there; the rate of the zeros is known for the heated profile only |
+| Infer the endpoint growth of $F^+$ from the decay law | The [unheated profile and the prime sum after polar subtraction](Decay/TheLeftTraceUpToTheRateOfTheZeros.lean) lie in $L^2(e^{-2dx}\,dx)$ for every $d>\Theta-1/2$. The upper bound gives no endpoint estimate at $d=\Theta-1/2$ |
 | One Agmon step reaches the zeros | From the abscissa $\sigma$ a step reaches only $s$ with $(\tfrac12+\kappa)\sigma<s(\tfrac12-\kappa+2\sigma)$ and $\sigma<2s$: the mass of the wave on the new line is paid by interpolating two logarithms at $\sigma$ with one on the critical line; the abscissa reaches $\kappa$ as an infimum |
-| $F(u)=-a^{-1}e^{8u}\sum_z\mathcal LF(z)e^{-zu}$ pointwise | The series is a distribution on the line; heated it converges absolutely, and left of the wall it differs from the state by the prime side behind a Gaussian |
+| $F(u)=-a^{-1}e^{8u}\sum_z\mathcal LF(z)e^{-zu}$ pointwise | For $t>0$ the [unheated series for $-aF(-t)$](Modes/TheUnheatedStateIsTheSumOfItsZeroModes.lean) converges unconditionally in ray $L^2$. Removing all right-zero modes leaves $R$ with $e^{(8-s)t}R\in L^2$ for every $0<s\le8$. Pointwise convergence is open. |
 | $F^+$ is reached only by tests supported beyond the wall | The translate $\tau_kF$ is a profile of $\mathcal H$, and its full form against $G\in\mathcal H$ is the pairing of $F^+$ on $(0,k)$ with $G(\cdot-k)$ plus a confinement term; against $F$ itself the pairing is the weighted autocorrelation of the state |
 | Evaluate the collar pairing $\int_0^kF^+(x)F(x-k)\,dx$ from the prime form of $F^+$ and set it against the wall law | The substitution returns the weak equation $E(F,\tau_kF)=0$, which is the wall law. The information is in the kernel of the collar wave at the wall, $\kappa(t)=-\tfrac1{2t}+O(e^{t/2})$ |
 | Exclude the state at the leading order of the wall | The collar kernel is archimedean and the prime wave enters $aF^+$ as a bounded term: the laws of the wall use of $\Lambda$ only $\sum_n\Lambda(n)n^{-2}<\infty$. The wall amplitude is the Weil energy of the state, $8aM=-8\,\mathrm{bare}(F)$ |
@@ -467,7 +491,7 @@ $\sum_n\Lambda(n)n^{-1/2}F(x-\log n)$ at $x\to0^+$, need it; this is stage 5.
 | Zeros/ | zero pairing of two profiles, zero Parseval identity, multiplicities of the entire state product, the seen left zero |
 | Index/ | null vectors of the confined form, critical ladder, index law, bounded-index stratum, finite layer and B13 |
 | Pick/ | the confined form on probes as Pick matrices: RH and the critical ratio decided on real nodes, Krein form on the zeros |
-| Modes/ | mode expansions of the averaged state and of the heated profile beyond the wall; no finite mode set |
+| Modes/ | averaged and unheated state expansions, heated and unheated wall profiles, subtraction of infinite zero subseries |
 | Decay/ | sharp exponential barrier of the comparison argument, thick-lag form of the finite layer |
 | Wall/, Collar/, Energy/ | profile beyond the wall in prime form, trivial-zero form of the archimedean tail, the wall seen from the left; collar coercivity and softness; charge hyperplane |
 | Models/ | critical states of tempered configurations with a finite off-line layer, of curves over finite fields, of Beurling and twin models; failure of the stage 5 criterion on the models |

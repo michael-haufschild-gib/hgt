@@ -20,12 +20,13 @@ local notation "M" => Matrix (ι × G) (ι × G) R
 /-- Matrices invariant under the left and right diagonal regular translations. -/
 def regularBimoduleKernels : Submodule R M where
   carrier := {T | ∀ (x y a b : G) (i j : ι), T (i,a*x*b) (j,a*y*b) = T (i,x) (j,y)}
-  zero_mem' := by intros; rfl
+  zero_mem' := fun _ _ _ _ _ _ => rfl
   add_mem' h k x y a b i j := congrArg₂ (· + ·) (h x y a b i j) (k x y a b i j)
   smul_mem' r _ h x y a b i j := congrArg (r • ·) (h x y a b i j)
 
 variable {ι G R}
 
+omit [CommRing R] in
 /-- The regular kernel obeys right translation exactly when its coefficients are class functions. -/
 theorem regularKernelMatrix_right_iff (K : ι → ι → G → R) :
     (∀ (g x y : G) (i j : ι), regularKernelMatrix K (i,x*g) (j,y*g) =
@@ -82,7 +83,7 @@ def regularOrbitalEquiv :
 /-- The trace of a central orbital kernel retains just the diagonal identity classes. -/
 theorem regularOrbitalMatrix_trace [Fintype ι] [Fintype G] (K : ι × ι × ConjClasses G → R) :
     (regularOrbitalMatrix K).val.trace = (Fintype.card G : R) * ∑ i, K (i,i,ConjClasses.mk 1) :=
-  trace_regularKernelMatrix _
+  trace_regularKernelMatrix (fun i j g => K (i,j,ConjClasses.mk g))
 
 /-- Finite regular bimodule commutants have one dimension per ordered copy-pair and conjugacy class. -/
 theorem regularBimoduleKernels_finrank {k : Type*} [Field k] [Fintype ι] [Fintype (ConjClasses G)] :

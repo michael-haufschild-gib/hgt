@@ -68,7 +68,8 @@ theorem hermitianAffineClass_iterate (P : Pts) (n : ℕ) :
   induction n with
   | zero => simp
   | succ n ih =>
-    rw [iterate_succ_apply', hermitianAffineClass_frobenius, ih, pow_succ', mul_smul, neg_smul, natCast_zsmul]
+    rw [iterate_succ_apply', hermitianAffineClass_frobenius, ih]
+    simp only [pow_succ' (-((Q:ℕ):ℤ)) n, mul_smul, neg_smul, natCast_zsmul]
 
 /-- The order of every geometric affine point class is positive and prime to the characteristic. -/
 theorem hermitianAffineClass_order_coprime (P : Pts) :

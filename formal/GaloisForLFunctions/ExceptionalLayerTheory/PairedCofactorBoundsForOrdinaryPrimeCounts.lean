@@ -261,7 +261,7 @@ private theorem transfer_count_bound {a f : ℕ → ℝ} {b M : ℝ} (hb : 0 ≤
     _ ≤ M + K * (N : ℝ) ^ b := add_le_add (hd N) (hK N hN)
     _ ≤ (M + K) * (N : ℝ) ^ b := by
       rw [add_mul]
-      exact add_le_add_right (le_mul_of_one_le_right hM hone) _
+      exact add_le_add (le_mul_of_one_le_right hM hone) le_rfl
 
 /-- Each fixed power bound survives deletion of any finite prime head. -/
 theorem restrictedCofactorCount_power_iff (U V W : ℕ) {b : ℝ} (hb : 0 ≤ b) :

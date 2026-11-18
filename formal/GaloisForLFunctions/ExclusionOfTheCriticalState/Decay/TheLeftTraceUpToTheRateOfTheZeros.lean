@@ -159,6 +159,47 @@ private theorem regulated_norm_le {g : ℂ → ℂ} {B : ℝ} (hB : 0 ≤ B)
       (pow_le_pow_left₀ (by positivity) h3 2) hB
     _ = _ := by ring
 
+/-- The boundary square trace majorizes interior values by Poisson convolution,
+even under quadratic growth throughout the half-plane. -/
+theorem norm_sq_le_poisson_of_quadratic_bound {g : ℂ → ℂ}
+    (hdiff : ∀ z : ℂ, 0 ≤ z.re → DifferentiableAt ℂ g z)
+    {B : ℝ} (hB : 0 ≤ B) (hg : ∀ z : ℂ, 0 ≤ z.re → ‖g z‖ ≤ B*(1+‖z‖)^2)
+    (ht : Integrable fun t : ℝ => ‖g ((t:ℂ)*I)‖^2)
+    (d : ℝ) (hd : 0 < d) (y : ℝ) :
+    ‖g ((d:ℂ)+(y:ℂ)*I)‖^2 ≤ ∫ t : ℝ, halfPlanePoisson d (t-y)*‖g ((t:ℂ)*I)‖^2 := by
+  let z := (d:ℂ)+(y:ℂ)*I
+  have hreg (ε : ℝ) (hε : 0 < ε) :
+      ‖g z / (1+(ε:ℂ)*z)^2‖^2 ≤
+        ∫ t : ℝ, halfPlanePoisson d (t-y)*‖g ((t:ℂ)*I)‖^2 := by
+    have hden (v : ℂ) (hv : 0 ≤ v.re) : 1+(ε:ℂ)*v ≠ 0 := by
+      intro e
+      have h := congrArg Complex.re e
+      simp at h
+      linarith only [h, mul_nonneg hε.le hv]
+    have h' (v : ℂ) (hv : 0 ≤ v.re) : DifferentiableAt ℂ
+        (fun w : ℂ => g w / (1+(ε:ℂ)*w)^2) v :=
+      (hdiff v hv).div (by fun_prop) (pow_ne_zero 2 (hden v hv))
+    have hJ := norm_sq_apply_le_integral_halfPlanePoisson h'
+      (fun v hv => regulated_norm_le hB hg hε hv) hd y
+    simp only [Complex.ofReal_zero, zero_add] at hJ
+    refine hJ.trans (integral_mono_of_nonneg (Eventually.of_forall fun t =>
+      mul_nonneg (halfPlanePoisson_pos hd _).le (sq_nonneg _))
+      (integrable_halfPlanePoisson_sub_mul ht hd y) (Eventually.of_forall fun t => ?_))
+    apply mul_le_mul_of_nonneg_left _ (halfPlanePoisson_pos hd _).le
+    apply pow_le_pow_left₀ (norm_nonneg _)
+    rw [norm_div, norm_pow]
+    apply div_le_self (norm_nonneg _)
+    apply one_le_pow₀
+    calc (1:ℝ) = (1+(ε:ℂ)*((t:ℂ)*I)).re := by simp
+      _ ≤ _ := Complex.re_le_norm _
+  have hm : ContinuousAt (fun ε : ℝ => ‖g z / (1+(ε:ℂ)*z)^2‖^2) 0 := by
+    apply ContinuousAt.pow
+    apply ContinuousAt.norm
+    exact continuousAt_const.div (by fun_prop) (by simp)
+  have hlim := hm.tendsto.mono_left (nhdsWithin_le_nhds (s := Ioi (0:ℝ)))
+  simpa only [Complex.ofReal_zero, zero_mul, add_zero, one_pow, div_one] using
+    le_of_tendsto hlim (eventually_mem_nhdsWithin.mono fun ε hε => hreg ε hε)
+
 /-- An ordinary square-integrable boundary trace bounds every interior line.
 Regularize the quadratic growth before applying the Poisson inequality. -/
 private theorem hardy_of_quadratic_bound {g : ℂ → ℂ}
@@ -166,40 +207,7 @@ private theorem hardy_of_quadratic_bound {g : ℂ → ℂ}
     {B : ℝ} (hB : 0 ≤ B) (hg : ∀ z : ℂ, 0 ≤ z.re → ‖g z‖ ≤ B*(1+‖z‖)^2)
     (ht : Integrable fun t : ℝ => ‖g ((t:ℂ)*I)‖^2) :
     IsHalfPlaneHardy g ((2*Real.pi)⁻¹ * ∫ t : ℝ, ‖g ((t:ℂ)*I)‖^2) := by
-  have hmaj (d : ℝ) (hd : 0 < d) (y : ℝ) :
-      ‖g ((d:ℂ)+(y:ℂ)*I)‖^2 ≤ ∫ t : ℝ, halfPlanePoisson d (t-y)*‖g ((t:ℂ)*I)‖^2 := by
-    let z := (d:ℂ)+(y:ℂ)*I
-    have hreg (ε : ℝ) (hε : 0 < ε) :
-        ‖g z / (1+(ε:ℂ)*z)^2‖^2 ≤
-          ∫ t : ℝ, halfPlanePoisson d (t-y)*‖g ((t:ℂ)*I)‖^2 := by
-      have hden (v : ℂ) (hv : 0 ≤ v.re) : 1+(ε:ℂ)*v ≠ 0 := by
-        intro e
-        have h := congrArg Complex.re e
-        simp at h
-        linarith only [h, mul_nonneg hε.le hv]
-      have h' (v : ℂ) (hv : 0 ≤ v.re) : DifferentiableAt ℂ
-          (fun w : ℂ => g w / (1+(ε:ℂ)*w)^2) v :=
-        (hdiff v hv).div (by fun_prop) (pow_ne_zero 2 (hden v hv))
-      have hJ := norm_sq_apply_le_integral_halfPlanePoisson h'
-        (fun v hv => regulated_norm_le hB hg hε hv) hd y
-      simp only [Complex.ofReal_zero, zero_add] at hJ
-      refine hJ.trans (integral_mono_of_nonneg (Eventually.of_forall fun t =>
-        mul_nonneg (halfPlanePoisson_pos hd _).le (sq_nonneg _))
-        (integrable_halfPlanePoisson_sub_mul ht hd y) (Eventually.of_forall fun t => ?_))
-      apply mul_le_mul_of_nonneg_left _ (halfPlanePoisson_pos hd _).le
-      apply pow_le_pow_left₀ (norm_nonneg _)
-      rw [norm_div, norm_pow]
-      apply div_le_self (norm_nonneg _)
-      apply one_le_pow₀
-      calc (1:ℝ) = (1+(ε:ℂ)*((t:ℂ)*I)).re := by simp
-        _ ≤ _ := Complex.re_le_norm _
-    have hm : ContinuousAt (fun ε : ℝ => ‖g z / (1+(ε:ℂ)*z)^2‖^2) 0 := by
-      apply ContinuousAt.pow
-      apply ContinuousAt.norm
-      exact continuousAt_const.div (by fun_prop) (by simp)
-    have hlim := hm.tendsto.mono_left (nhdsWithin_le_nhds (s := Ioi (0:ℝ)))
-    simpa only [Complex.ofReal_zero, zero_mul, add_zero, one_pow, div_one] using
-      le_of_tendsto hlim (eventually_mem_nhdsWithin.mono fun ε hε => hreg ε hε)
+  have hmaj := norm_sq_le_poisson_of_quadratic_bound hdiff hB hg ht
   have hc (d : ℝ) (hd : 0 < d) : Continuous fun ξ => g (rayLine d ξ) :=
     continuous_iff_continuousAt.mpr fun ξ => (hdiff _ (by simp [hd.le])).continuousAt.comp
       (by unfold rayLine; fun_prop : ContinuousAt (rayLine d) ξ)

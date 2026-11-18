@@ -86,14 +86,35 @@ theorem min_dimension_le_one (a : G) :
       exact (min_le_left _ _).trans (by rw [h, finrank_span_singleton hx0])
     · have he : E.space (-a) = ⊥ := by
         apply le_antisymm _ bot_le
-        exact fun x hx => show x = 0 from by_contra fun h => hb ⟨x,hx,h⟩
+        exact fun x hx => show x = 0 from Classical.byContradiction fun h => hb ⟨x,hx,h⟩
       simp [he]
   · have he : E.space a = ⊥ := by
       apply le_antisymm _ bot_le
-      exact fun x hx => show x = 0 from by_contra fun h => ha ⟨x,hx,h⟩
+      exact fun x hx => show x = 0 from Classical.byContradiction fun h => ha ⟨x,hx,h⟩
     simp [he]
 
 end RationalSectionSpaces
+
+/-- Multiplication into a fixed finite-dimensional space of rational
+functions bounds the smaller source dimension. This also applies to
+sections of opposite divisors with a common fixed twist. -/
+theorem min_finrank_le_product_target {k F : Type*} [Field k] [Field F] [Algebra k F]
+    (U V W : Submodule k F) [Module.Finite k W]
+    (h : ∀ x ∈ U, ∀ y ∈ V, x*y ∈ W) :
+    min (Module.finrank k U) (Module.finrank k V) ≤ Module.finrank k W := by
+  by_cases hv : ∃ y ∈ V, y ≠ 0
+  · obtain ⟨y,hy,hy0⟩ := hv
+    let T : U →ₗ[k] W :=
+      { toFun := fun x => ⟨x.val*y, h x.val x.property y hy⟩
+        map_add' := fun x z => Subtype.ext (add_mul _ _ _)
+        map_smul' := fun c x => Subtype.ext (smul_mul_assoc c x.val y) }
+    have hi : Function.Injective T := by
+      intro x z he
+      exact Subtype.ext (mul_right_cancel₀ hy0 (congrArg Subtype.val he : x.val*y = z.val*y))
+    exact (min_le_left _ _).trans (LinearMap.finrank_le_finrank_of_injective hi)
+  · have he : V = ⊥ := le_antisymm
+      (fun x hx => show x = 0 from Classical.byContradiction fun h => hv ⟨x,hx,h⟩) bot_le
+    simp [he]
 
 /-- A bounded minimum on opposite rays forces at least one limiting
 quadratic coefficient to vanish. -/
@@ -113,13 +134,13 @@ theorem min_opposite_tate_eq_zero {G : Type*} [AddCommGroup G] (K : G → ℕ) (
     exact div_le_div_of_nonneg_right (by exact_mod_cast hC m) (sq_nonneg _)
   · exact le_min (ge_of_tendsto' hq fun _ => by positivity) (ge_of_tendsto' hr fun _ => by positivity)
 
-/-- No multiplicatively graded family of rational section dimensions with
-constant global functions realizes the signed spline Tate form. -/
-theorem no_graded_section_dimension_tate (k : Type u) (F : Type v) [Field k] [Field F] [Algebra k F] :
-    ¬ ∃ E : ∀ N : ℕ, RationalSectionSpaces k F (Fin N → ℤ), ∀ N (a : Fin N → ℤ),
-      Tendsto (fun m : ℕ => (Module.finrank k ((E N).space (m • a)) : ℝ) / (m : ℝ)^2)
-        atTop (𝓝 (integerProbe N a)) := by
-  rintro ⟨E,h⟩
+/-- No family of counts with bounded opposite minimum at each horizon
+has the full signed spline form as its quadratic coefficient. -/
+theorem no_bounded_opposite_minimum_tate (K : ∀ N : ℕ, (Fin N → ℤ) → ℕ)
+    (hC : ∀ N, ∃ C : ℕ, ∀ a, min (K N a) (K N (-a)) ≤ C) :
+    ¬ ∀ N (a : Fin N → ℤ), Tendsto (fun m : ℕ => (K N (m • a) : ℝ) / (m : ℝ)^2)
+      atTop (𝓝 (integerProbe N a)) := by
+  intro h
   apply not_integerProbe_integerValued
   intro N a
   have hq0 : integerProbe N 0 = 0 := by simpa using integerProbe_smul N 0 (0 : Fin N → ℤ)
@@ -127,11 +148,34 @@ theorem no_graded_section_dimension_tate (k : Type u) (F : Type v) [Field k] [Fi
     have he := integerProbe_parallelogram N 0 a
     simp only [zero_add, zero_sub, hq0, mul_zero, zero_add] at he
     linarith
-  have hz := min_opposite_tate_eq_zero (fun b => Module.finrank k ((E N).space b)) a 1
-    (fun m => (E N).min_dimension_le_one (m • a)) (h N a) (h N (-a))
+  obtain ⟨C,hC'⟩ := hC N
+  have hz := min_opposite_tate_eq_zero (K N) a C (fun m => hC' (m • a)) (h N a) (h N (-a))
   exact ⟨0, by simpa only [hneg, min_self, Int.cast_zero] using hz⟩
+
+/-- No multiplicatively graded family of rational section dimensions with
+constant global functions realizes the signed spline Tate form. -/
+theorem no_graded_section_dimension_tate (k : Type u) (F : Type v) [Field k] [Field F] [Algebra k F] :
+    ¬ ∃ E : ∀ N : ℕ, RationalSectionSpaces k F (Fin N → ℤ), ∀ N (a : Fin N → ℤ),
+      Tendsto (fun m : ℕ => (Module.finrank k ((E N).space (m • a)) : ℝ) / (m : ℝ)^2)
+        atTop (𝓝 (integerProbe N a)) := by
+  rintro ⟨E,h⟩
+  exact no_bounded_opposite_minimum_tate _ (fun N => ⟨1,(E N).min_dimension_le_one⟩) h
+
+/-- Even after fixed twists, the spaces of products of sections of opposite
+degrees must escape every fixed finite-dimensional target at some horizon. -/
+theorem no_fixed_product_target_tate (k : Type u) (F : Type v) [Field k] [Field F] [Algebra k F]
+    (E : ∀ N : ℕ, (Fin N → ℤ) → Submodule k F) (W : ℕ → Submodule k F)
+    (hW : ∀ N, Module.Finite k (W N))
+    (hprod : ∀ N a, ∀ x ∈ E N a, ∀ y ∈ E N (-a), x*y ∈ W N) :
+    ¬ ∀ N (a : Fin N → ℤ), Tendsto (fun m : ℕ => (Module.finrank k (E N (m • a)) : ℝ) / (m : ℝ)^2)
+      atTop (𝓝 (integerProbe N a)) := by
+  apply no_bounded_opposite_minimum_tate (fun N a => Module.finrank k (E N a))
+  intro N
+  letI := hW N
+  exact ⟨Module.finrank k (W N), fun a => min_finrank_le_product_target _ _ _ (hprod N a)⟩
 
 #print axioms RationalSectionSpaces.inverse_mem_and_span
 #print axioms no_graded_section_dimension_tate
+#print axioms no_fixed_product_target_tate
 
 end GaloisForLFunctions.CountingHolography.Sections

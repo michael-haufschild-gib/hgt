@@ -5,6 +5,8 @@ import GaloisForLFunctions.PrimeExponentialSums.MajorArcs
 import GaloisForLFunctions.PrimeExponentialSums.PolynomialMajorArcs
 import GaloisForLFunctions.PrimeExponentialSums.DyadicPrimeSums
 import GaloisForLFunctions.PrimeExponentialSums.PrimesOffMajorArcs
+import GaloisForLFunctions.PrimeExponentialSums.ReciprocalPhasesNearTheSquareRoot
+import GaloisForLFunctions.PrimeExponentialSums.FractionalPartsOfReciprocalPrimes
 
 /-!
 # Exponential sums over primes

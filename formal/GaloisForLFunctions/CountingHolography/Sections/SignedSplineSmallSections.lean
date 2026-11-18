@@ -28,7 +28,7 @@ def windowEnd (N : ℕ) : ℕ := ⌈Real.exp (shift + Real.log (N+1 : ℝ) + 5)�
 /-- All atoms use one shift, independent of the coefficients. -/
 def packet {N : ℕ} (a : Fin N → ℤ) (u : ℝ) := splineSource a (u - shift)
 
-private theorem packet_window {N : ℕ} (a : Fin N → ℤ) :
+theorem packet_window {N : ℕ} (a : Fin N → ℤ) :
     1 ≤ windowEnd N ∧ ∀ u, u ≤ Real.log 3 ∨ Real.log (windowEnd N) ≤ u → packet a u = 0 := by
   have hK : 0 < windowEnd N := Nat.ceil_pos.mpr (Real.exp_pos _)
   have hlog : shift + Real.log (N+1 : ℝ) + 5 ≤ Real.log (windowEnd N) :=
@@ -73,11 +73,15 @@ theorem integerProbe_eq_source {N : ℕ} (a : Fin N → ℤ) :
     (fun i => translate_hasCompactSupport (cx_hasCompactSupport hasCompactSupport_cubicSpline) _)
     (fun i => (a i : ℂ))).trans (by rw [he])
 
+theorem packet_contDiff {N : ℕ} (a : Fin N → ℤ) : ContDiff ℝ 2 (packet a) :=
+  (source_smooth a).comp (contDiff_id.sub contDiff_const)
+
+theorem packet_hasCompactSupport {N : ℕ} (a : Fin N → ℤ) : HasCompactSupport (packet a) :=
+  (source_compact a).comp_homeomorph (Homeomorph.subRight shift)
+
 theorem tendsto_packetMeshDegree {N : ℕ} (a : Fin N → ℤ) :
     Tendsto (meshDegree (packet a) (3*windowEnd N)) atTop (𝓝 (integerProbe N a)) := by
-  have hf : ContDiff ℝ 2 (packet a) := (source_smooth a).comp (contDiff_id.sub contDiff_const)
-  have hc : HasCompactSupport (packet a) := (source_compact a).comp_homeomorph (Homeomorph.subRight shift)
-  have h := tendsto_meshDegree hf hc (packet_window a).1 (packet_window a).2
+  have h := tendsto_meshDegree (packet_contDiff a) (packet_hasCompactSupport a) (packet_window a).1 (packet_window a).2
   rw [integerProbe_eq_source]
   have he : EF.weilTest (cx (packet a)) (cx (packet a)) =
       EF.weilTest (cx (splineSource a)) (cx (splineSource a)) :=
@@ -85,7 +89,7 @@ theorem tendsto_packetMeshDegree {N : ℕ} (a : Fin N → ℤ) :
   change Tendsto _ _ (𝓝 ((_root_.RHTower.weilFullFunctional _ (EF.weilTest (cx (packet a)) (cx (packet a)))).re)) at h
   rwa [he] at h
 
-private theorem packet_smul {N : ℕ} (a : Fin N → ℤ) (m : ℕ) :
+theorem packet_smul {N : ℕ} (a : Fin N → ℤ) (m : ℕ) :
     packet (m • a) = fun u => (m : ℝ) * packet a u := by
   funext u
   simp only [packet, splineSource, mul_sum, Pi.smul_apply, nsmul_eq_mul, Int.cast_mul, Int.cast_natCast,
@@ -94,13 +98,30 @@ private theorem packet_smul {N : ℕ} (a : Fin N → ℤ) (m : ℕ) :
 /-- Coefficient mass sets the sample resolution. On every nonzero ray it tends to infinity. -/
 def resolution {N : ℕ} (a : Fin N → ℤ) : ℕ := ∑ i, (a i).natAbs
 
-private theorem resolution_smul {N : ℕ} (a : Fin N → ℤ) (m : ℕ) :
+theorem resolution_smul {N : ℕ} (a : Fin N → ℤ) (m : ℕ) :
     resolution (m • a) = m * resolution a := by
   simp [resolution, Pi.smul_apply, Int.natAbs_mul, Finset.mul_sum]
 
-private theorem resolution_pos {N : ℕ} {a : Fin N → ℤ} (ha : a ≠ 0) : 0 < resolution a := by
+theorem resolution_pos {N : ℕ} {a : Fin N → ℤ} (ha : a ≠ 0) : 0 < resolution a := by
   obtain ⟨i, hi⟩ : ∃ i, a i ≠ 0 := by simpa [funext_iff] using ha
   exact (Int.natAbs_pos.mpr hi).trans_le (single_le_sum (fun j _ => Nat.zero_le (a j).natAbs) (mem_univ i))
+
+theorem tendsto_resolution_ray {N : ℕ} {a : Fin N → ℤ} (ha : a ≠ 0) :
+    Tendsto (fun m : ℕ => resolution (m • a)) atTop atTop := by
+  refine tendsto_atTop_mono (f := id) (fun m => ?_) tendsto_id
+  rw [resolution_smul]
+  exact Nat.le_mul_of_pos_right _ (resolution_pos ha)
+
+/-- Rescaling the profile multiplies each unrounded contact by the square. -/
+theorem contactMultiplicity_scale (c : ℝ) (f : ℝ → ℝ) (L n k : ℕ) :
+    contactMultiplicity (fun u => c*f u) L n k = c^2 * contactMultiplicity f L n k := by
+  have hrow (j : ℕ) : degreeSample (fun u => c*f u) n j *
+      degreeSample (fun u => c*f u) n (j*k)/j =
+      c^2*(degreeSample f n j*degreeSample f n (j*k)/j) := by
+    unfold degreeSample
+    ring
+  simp only [contactMultiplicity,hrow,← mul_sum]
+  ring
 
 /-- The positive generator of the finite-place fractional ideal of the divisor. -/
 def generator {N : ℕ} (a : Fin N → ℤ) : ℚ := contactGenerator (packet a) (3*windowEnd N) (resolution a)
@@ -126,12 +147,7 @@ theorem tendsto_splineDegree {N : ℕ} (a : Fin N → ℤ) :
       have hq : integerProbe N 0 = 0 := by simpa using integerProbe_smul N 0 (0 : Fin N → ℤ)
       simp [D, packet, splineSource, meshDegree, logRadius, sampledDegree, degreeForm,
         degreeContact, degreePairing, degreeSample, hq]
-    · have hr := resolution_pos ha
-      have hm : Tendsto (fun m : ℕ => resolution (m • a)) atTop atTop := by
-        refine tendsto_atTop_mono (f := id) (fun m => ?_) tendsto_id
-        rw [resolution_smul]
-        exact Nat.le_mul_of_pos_right _ hr
-      refine ((tendsto_packetMeshDegree a).comp hm).congr' ?_
+    · refine ((tendsto_packetMeshDegree a).comp (tendsto_resolution_ray ha)).congr' ?_
       filter_upwards [eventually_ge_atTop 1] with m hm
       simp only [D, Function.comp_apply, packet_smul, meshDegree_mul]
       exact (mul_div_cancel_left₀ _ (by positivity : (m : ℝ)^2 ≠ 0)).symm

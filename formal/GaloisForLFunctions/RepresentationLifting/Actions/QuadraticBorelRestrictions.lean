@@ -30,7 +30,10 @@ def quadraticRestrictedOrbit (q : K) : Set (K × K) :=
 private theorem matrix_intertwiner {A B C : Mat} (hd : B.det ≠ 0) (h : B * A = C * B) :
     IsConj A C := by
   obtain ⟨g, hg⟩ := (Matrix.isUnit_iff_isUnit_det B).mpr (isUnit_iff_ne_zero.mpr hd)
-  exact ⟨g, hg ▸ h⟩
+  refine ⟨g, ?_⟩
+  change (g : Mat) * A = C * g
+  rw [hg]
+  exact h
 
 private theorem companion_sq (q : K) : (quadraticCompanion q)^2 = q • (1 : Mat) := by
   rw [pow_two, quadraticCompanion, Matrix.mul_fin_two]
@@ -68,7 +71,8 @@ theorem quadraticRestrictedOrbit_mem (q a c : K) :
       · simp [Matrix.det_fin_two_of]
       · rw [← ha, quadraticCompanion, Matrix.mul_fin_two, Matrix.mul_fin_two]
         ext i j
-        fin_cases i <;> fin_cases j <;> simp <;> ring
+        fin_cases i <;> fin_cases j <;> simp
+        ring
     · refine ⟨!![a,(q-a^2)/c;c,-a], ?_, rfl⟩
       apply matrix_intertwiner (B := !![1,a;0,c])
       · simpa [Matrix.det_fin_two_of] using hc
@@ -86,9 +90,11 @@ private def upperMatrix (s : Kˣ) (u : K) : Mat := !![(s : K),u;0,1]
 theorem borelProjection_conjugate (s : Kˣ) (u : K) (Y : Mat) :
     borelProjection (upperMatrix s u * Y * upperMatrix s⁻¹ (-u / s)) =
       borelTransport s u (borelProjection Y) := by
-  apply Prod.ext <;>
-    simp [borelProjection, borelTransport, upperMatrix, Matrix.mul_apply, Fin.sum_univ_two,
-      div_eq_mul_inv, add_mul, mul_assoc, s.ne_zero] <;> ring
+  apply Prod.ext <;> simp only [borelProjection, borelTransport, Matrix.mul_apply, Fin.sum_univ_two]
+  · simp [upperMatrix, div_eq_mul_inv, mul_comm]
+    rw [mul_add,inv_mul_cancel_left₀ s.ne_zero]
+    ring
+  · simp [upperMatrix, div_eq_mul_inv]
 
 /-- Conjugation by the Borel preserves the full restricted image. -/
 theorem quadraticRestrictedOrbit_transport (q : K) (s : Kˣ) (u : K) (x : K × K) :

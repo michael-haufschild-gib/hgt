@@ -50,7 +50,7 @@ theorem sampledGraph_jetOrders_le (C m i : ℕ) (hm : 0 < m) (hi : m.sqrt ≤ i)
   have hcell : Real.sqrt i * BiarithmeticGaugeGeometry.logCellWidth i ≤ 1 / Real.sqrt i := calc
     _ ≤ Real.sqrt i * (1/(i:ℝ)) := mul_le_mul_of_nonneg_left
       (BiarithmeticGaugeGeometry.logCellWidth_le_inv hi0) hr.le
-    _ = _ := by field_simp [hr.ne', (Nat.cast_pos.mpr hi0 : (0:ℝ)<i).ne']; nlinarith only [Real.sq_sqrt (Nat.cast_nonneg i)]
+    _ = _ := by field_simp; exact Real.sq_sqrt (Nat.cast_nonneg i)
   have hweight : (C:ℝ) / Real.sqrt i ≤ (C:ℝ) / Real.sqrt m.sqrt :=
     div_le_div_of_nonneg_left (Nat.cast_nonneg C) hn hnr
   have hf (z : ℝ) (hz : |z| ≤ (C:ℝ) / Real.sqrt m.sqrt) :
@@ -88,8 +88,10 @@ private theorem log_sqrt_decay (A : ℝ) :
   have hl' : Tendsto (fun m : ℕ => Real.log (m.sqrt:ℝ) / Real.sqrt m.sqrt) atTop (𝓝 0) := by
     simpa only [Function.comp_def, Real.sqrt_eq_rpow] using hl.comp ht
   have hc := tendsto_const_nhds (x := A) (f := (atTop : Filter ℕ))
-  have hA := hc.mul ((Real.tendsto_sqrt_atTop.comp ht).inv_tendsto_atTop)
-  simpa only [add_div, mul_div_assoc, div_eq_mul_inv, mul_zero, add_zero] using hA.add (hl'.const_mul 2)
+  have hA : Tendsto (fun m : ℕ => A / Real.sqrt m.sqrt) atTop (𝓝 0) := by
+    simpa only [Function.comp_def, Pi.inv_apply, div_eq_mul_inv, mul_zero] using
+      hc.mul ((Real.tendsto_sqrt_atTop.comp ht).inv_tendsto_atTop)
+  simpa only [add_div, mul_div_assoc, mul_zero, add_zero] using hA.add (hl'.const_mul 2)
 
 private theorem jet_cost_bound (B C m : ℕ) (hm : 0 < m) :
     meshJetLogBound B C m / (m:ℝ)^2 ≤
@@ -98,7 +100,7 @@ private theorem jet_cost_bound (B C m : ℕ) (hm : 0 < m) :
   let n : ℝ := m.sqrt
   let b : ℝ := (B:ℝ)+1
   let s : ℝ := b*n
-  have hn : 1 ≤ n := by exact_mod_cast Nat.sqrt_pos.mpr hm
+  have hn : 1 ≤ n := by dsimp [n]; exact_mod_cast (show 1 ≤ m.sqrt from Nat.sqrt_pos.mpr hm)
   have hn0 : 0 < n := by linarith
   have hm' : 1 ≤ (m:ℝ) := by exact_mod_cast hm
   have hn2 : n^2 ≤ (m:ℝ) := by dsimp [n]; rw [sq]; exact_mod_cast Nat.sqrt_le m
@@ -128,16 +130,18 @@ private theorem jet_cost_bound (B C m : ℕ) (hm : 0 < m) :
     rw [div_le_div_iff₀ (by positivity) hr]
     nlinarith only [hmain, hrr]
   have hlog : Real.log (2*(1+s^2)) ≤ Real.log (4*b^2)+2*Real.log n := by
-    rw [← Real.log_pow, ← Real.log_mul (by positivity) (by positivity)]
+    have hlog2 : 2 * Real.log n = Real.log (n^2) := by simp [Real.log_pow]
+    rw [hlog2, ← Real.log_mul (by positivity) (by positivity)]
     apply Real.log_le_log (by positivity)
     dsimp only [s] at *
     nlinarith only [sq_nonneg (b*n-1), hs]
   have hlog0 : 0 ≤ Real.log (2*(1+s^2)) := Real.log_nonneg (by nlinarith only [sq_nonneg s])
   have hh' := mul_le_mul hexp hlog hlog0 (by positivity)
-  unfold meshJetLogBound
+  dsimp only [meshJetLogBound]
   push_cast
   dsimp only [s,b,n] at hh'
-  convert hh' using 1 <;> ring
+  ring_nf at hh' ⊢
+  exact hh'
 
 /-- Uniform bidisk log cost of clearing and lifting every jet on a fixed
 ratio window is subquadratic along all integer dilations. -/
@@ -148,8 +152,9 @@ theorem meshJetLogBound_subquadratic (B C : ℕ) :
   · simpa only [mul_zero] using
       (log_sqrt_decay (Real.log (4*((B:ℝ)+1)^2))).const_mul (2*((C:ℝ)+2)*(B+1)*(B+2)+1)
   · unfold meshJetLogBound
-    exact div_nonneg (mul_nonneg (Nat.cast_nonneg _) (Real.log_nonneg (by nlinarith only
-      [sq_nonneg ((((B+1)*m.sqrt:ℕ):ℝ))]))) (sq_nonneg _)
+    apply div_nonneg _ (sq_nonneg _)
+    apply mul_nonneg (Nat.cast_nonneg _) (Real.log_nonneg _)
+    nlinarith only [sq_nonneg (((B+1)*m.sqrt:ℕ):ℝ)]
 
 /-- All branch data of bidisk norm at most one lift with the same multiplier
 and log budget. The congruences hold in the integral polynomial ring. -/

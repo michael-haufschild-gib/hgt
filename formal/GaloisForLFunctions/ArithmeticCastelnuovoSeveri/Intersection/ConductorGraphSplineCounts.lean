@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.Intersection.ConductorGraphPrimeLimit
+import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.Intersection.ConductorJetMahlerHeight
 import GaloisForLFunctions.BiScaleUncertainty.CubicSplineUniversalProbe
 import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.UnrestrictedAtomicGardingFailsAndCollarGardingHolds
 
@@ -8,7 +9,9 @@ import GaloisForLFunctions.CriticalArithmeticCorrelationTheory.UnrestrictedAtomi
 Both graph families and their mesh are determined by the integer coefficient
 vector. Thickness is its total absolute multiplicity. Along a ray the
 normalized spline is fixed while the mesh tends to zero. The two oriented
-orders give the signed prime contribution through their logarithms.
+orders give the signed prime contribution through their logarithms. Arbitrary
+zero/one jets on these same graph thickenings have a nonzero rational
+interpolant of subquadratic boundary and cyclotomic height.
 -/
 
 noncomputable section
@@ -137,6 +140,69 @@ theorem conductorSplineHeight_tate (n : ℕ) (a : Fin n → ℤ) :
   rw [conductorSplineHeight, thickness_smul, if_neg hmh, normalizedSpline_smul a hm, Nat.cast_mul]
   exact rescale_degree _ _ _ (Nat.cast_ne_zero.mpr hh.ne')
 
+/-- All base and upper conductors in the spline restriction orders. -/
+def splineJetWindow {n : ℕ} (a : Fin n → ℤ) : Finset ℕ :=
+  Icc (max 1 (conductorThickness a).sqrt) ((splineHorizon n)^2 * (conductorThickness a).sqrt)
+
+/-- The greater of the two actual rounded thicknesses at a conductor. -/
+def splineJetOrder {n : ℕ} (a : Fin n → ℤ) (i : ℕ) : ℕ :=
+  let t := conductorThickness a
+  let w := logSamples (normalizedSpline a) 5 t.sqrt i
+  max ⌊(t:ℝ)*(Real.sqrt i * BiarithmeticGaugeGeometry.logCellWidth i * w)⌋.natAbs
+    ⌊(t:ℝ)*(w / Real.sqrt i)⌋.natAbs
+
+open Polynomial in
+/-- On every signed spline ray, an arbitrary zero/one prescription on the
+actual graph thickenings admits a nonzero rational interpolant. Its joint
+finite and unit-circle height fits every positive quadratic allowance,
+as does its normalized height on all sufficiently large torsion orbits. -/
+theorem conductorSpline_smallJetSections (n : ℕ) (a : Fin n → ℤ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ m : ℕ in atTop, ∀ A : Finset ℕ,
+      ∃ (D : ℤ[X]) (F : Polynomial ℤ[X]), D ≠ 0 ∧ F ≠ 0 ∧
+        (∀ j ∈ splineJetWindow (m • a), (X - C (conductorGraph j))^(splineJetOrder (m • a) j) ∣
+          F - (if j ∈ A then C D else 0)) ∧
+        ∀ y : ℂ[X], (∀ z : ℂ, ‖z‖ = 1 → ‖y.eval z‖ ≤ 1) →
+          conductorJetBoundaryHeight D F y < ε*(m:ℝ)^2 ∧
+            ∀ᶠ q : ℕ in atTop, conductorJetTorsionHeight D F y q < ε*(m:ℝ)^2 := by
+  by_cases ha : a = 0
+  · subst a
+    filter_upwards [conductorMesh_markedSections 0 1 hε] with m hm
+    intro A
+    obtain ⟨D,F,hD,hF,_,hb⟩ := hm A
+    exact ⟨D,F,hD,hF,by simp [splineJetWindow,conductorThickness],hb⟩
+  let k := conductorThickness a
+  have hk : 0 < k := thickness_pos ha
+  have hk' : 0 < (k:ℝ) := Nat.cast_pos.mpr hk
+  obtain ⟨M,hM⟩ := (spline_regular a).2.exists_bound_of_continuous (spline_regular a).1.continuous
+  let H := ⌈M / (k:ℝ)⌉₊
+  have hb (x : ℝ) : |normalizedSpline a x| ≤ H := by
+    rw [normalizedSpline, abs_div, abs_of_nonneg hk'.le]
+    have hx : |conductorSpline a x| ≤ M := by simpa only [Real.norm_eq_abs] using hM x
+    exact (div_le_div_of_nonneg_right hx hk'.le).trans (Nat.le_ceil _)
+  have ht : Tendsto (fun m : ℕ => m*k) atTop atTop :=
+    tendsto_atTop_mono (f := id) (fun m => Nat.le_mul_of_pos_right m hk) tendsto_id
+  have hε' : 0 < ε/(k:ℝ)^2 := div_pos hε (sq_pos_of_pos hk')
+  filter_upwards [ht.eventually (conductorMesh_markedSections ((splineHorizon n)^2) H hε'),
+    eventually_ge_atTop 1] with m hm hm1
+  intro A
+  obtain ⟨D,F,hD,hF,hjet,hbound⟩ := hm A
+  refine ⟨D,F,hD,hF,fun j hj => ?_,fun y hy => ?_⟩
+  · rw [splineJetWindow, thickness_smul] at hj
+    have hi := (Nat.le_max_right 1 (m*k).sqrt).trans (mem_Icc.mp hj).1
+    have ht0 : 0 < m*k := Nat.mul_pos hm1 hk
+    let w := logSamples (normalizedSpline a) 5 (m*k).sqrt j
+    have hw : |w| ≤ H := hb _
+    have horders := sampledGraph_jetOrders_le H (m*k) j ht0 hi w w hw hw
+    have hle : splineJetOrder (m • a) j ≤ meshJetOrder H (m*k) := by
+      simpa only [splineJetOrder, thickness_smul, normalizedSpline_smul a hm1, k,w] using
+        max_le horders.1 horders.2
+    exact (pow_dvd_pow _ hle).trans (hjet _ hj)
+  · have he : ε/(k:ℝ)^2 * ((m*k:ℕ):ℝ)^2 = ε*(m:ℝ)^2 := by
+      push_cast
+      field_simp [hk'.ne']
+    simpa only [he] using hbound y hy
+
+#print axioms conductorSpline_smallJetSections
 #print axioms conductorSplineHeight_tate
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

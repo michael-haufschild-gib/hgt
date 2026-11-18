@@ -73,7 +73,7 @@ theorem ae_zero_of_probeShiftReading_sparse {F : ℝ → ℝ} (hF : CriticalHalf
     rw [Nat.cofinite_eq_atTop] at ht'
     exact tendsto_atTop_mono (fun i => by dsimp [rate]; linarith)
       (tendsto_natCast_atTop_atTop.comp ht')
-  have hr (i : ι) : 1 ≤ rate i := by dsimp [rate]; positivity
+  have hr (i : ι) : 1 ≤ rate i := by dsimp [rate]; linarith [Nat.cast_nonneg (α := ℝ) (a i)]
   have hdv : ¬ Summable fun i => rate i / (1 + rate i ^ 2) := by
     intro hs
     apply ha
@@ -89,7 +89,7 @@ theorem ae_zero_of_probeShiftReading_sparse {F : ℝ → ℝ} (hF : CriticalHalf
   have h := hzero (((n : ℝ) + 1 : ℝ) : ℂ) (by simp; positivity)
   change probeShiftTransform P F _ = 0 at h
   rw [sample_shiftTransform, ofReal_eq_zero] at h
-  simpa only [Nat.zero_add] using h
+  simpa only [probeShiftReading, Nat.zero_add] using h
 
 /-- The full set of hyperplane hit times of a nonzero profile has summable reciprocal weights. -/
 theorem probeShiftReading_hit_summable {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
@@ -99,7 +99,8 @@ theorem probeShiftReading_hit_summable {F : ℝ → ℝ} (hF : CriticalHalfLineE
   exact hn (ae_zero_of_probeShiftReading_sparse hF hP (Function.Embedding.subtype _) h
     fun i => i.property)
 
-private theorem prime_shift_diverges :
+/-- Sampling all primes exceeds the half-plane uniqueness threshold. -/
+theorem primeProbe_reciprocal_diverges :
     ¬ Summable fun i : Nat.Primes => (1 : ℝ) / ((i.val : ℝ) + 1) := by
   intro h
   apply Nat.Primes.not_summable_one_div
@@ -115,8 +116,49 @@ theorem prime_probeShiftReading_detects {F : ℝ → ℝ} (hF : CriticalHalfLine
     ∃ q : Nat.Primes, probeShiftReading P F q ≠ 0 := by
   by_contra! h
   exact hn (ae_zero_of_probeShiftReading_sparse hF hP (Function.Embedding.subtype _)
-    prime_shift_diverges h)
+    primeProbe_reciprocal_diverges h)
 
+/-- On every divergent sampling schedule, the times detecting the filter still have divergent mass. -/
+theorem probeShiftReading_detecting_mass {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
+    (hn : ¬ F =ᵐ[volume] 0) {P : ℝ[X]} (hP : P ≠ 0) {ι : Type*} (a : ι ↪ ℕ)
+    (ha : ¬ Summable fun i => (1 : ℝ) / ((a i : ℝ)+1)) :
+    ¬ Summable fun i : {i : ι // probeShiftReading P F (a i) ≠ 0} =>
+      (1 : ℝ) / ((a i.val : ℝ)+1) := by
+  let S : Set ι := {i | probeShiftReading P F (a i) = 0}
+  let b (i : S) : {n : ℕ // probeShiftReading P F n = 0} := ⟨a i.val,i.property⟩
+  have hb : Injective b := fun i j h => Subtype.ext (a.injective (congrArg Subtype.val h))
+  have hs := (probeShiftReading_hit_summable hF hn hP).comp_injective hb
+  intro h
+  exact ha ((summable_subtype_and_compl (s := S)).1 ⟨hs,h⟩)
+
+/-- In particular the detecting primes for each nonzero filter have divergent reciprocal mass. -/
+theorem prime_probeShiftReading_detecting_mass {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
+    (hn : ¬ F =ᵐ[volume] 0) {P : ℝ[X]} (hP : P ≠ 0) :
+    ¬ Summable fun q : {q : Nat.Primes // probeShiftReading P F q.val ≠ 0} =>
+      (1 : ℝ) / ((q.val.val : ℝ) + 1) :=
+  probeShiftReading_detecting_mass hF hn hP (Function.Embedding.subtype _) primeProbe_reciprocal_diverges
+
+/-- All integer translates are linearly independent after restriction to any divergent schedule. -/
+theorem sampledProbeTranslates_linearIndependent {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
+    (hn : ¬ F =ᵐ[volume] 0) {ι : Type*} (a : ι ↪ ℕ)
+    (ha : ¬ Summable fun i => (1 : ℝ)/((a i : ℝ)+1)) :
+    LinearIndependent ℝ (fun j : ℕ => fun i : ι => criticalProbeSample F (a i + j)) := by
+  rw [linearIndependent_iff]
+  intro l hl
+  let P : ℝ[X] := ⟨⟨l⟩⟩
+  by_contra hc
+  have hP : P ≠ 0 := fun he => hc (congrArg (fun f : ℝ[X] => f.toFinsupp.coeff) he)
+  apply hn (ae_zero_of_probeShiftReading_sparse hF hP a ha ?_)
+  intro i
+  have he := congrFun hl i
+  simp only [Finsupp.linearCombination_apply, Finsupp.sum, Finset.sum_apply, Pi.smul_apply,
+    smul_eq_mul, Pi.zero_apply] at he
+  exact he
+
+#print axioms primeProbe_reciprocal_diverges
+#print axioms probeShiftReading_detecting_mass
+#print axioms prime_probeShiftReading_detecting_mass
+#print axioms sampledProbeTranslates_linearIndependent
 #print axioms ae_zero_of_probeShiftReading_sparse
 #print axioms probeShiftReading_hit_summable
 #print axioms prime_probeShiftReading_detects

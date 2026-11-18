@@ -1,0 +1,5 @@
+# Finite section inertia at every index
+
+**Conjecture.** For every natural $r$, at most $r$ distinct right zeros exist exactly when every conductor horizon has cofinally many finite section matrices with at most $r$ negative squares. In that case each horizon eventually satisfies the bound.
+
+Lower semicontinuity already detects every strict negative plane in the limiting spline Gram. For the reverse bound, when the right set has $d$ elements, the signed Gram is its strictly positive critical Gram plus $d$ reflected pairs. On the common kernel of one evaluation per pair the form is strictly positive; this kernel has codimension at most $d$. Its positive index persists at finite multiplicity, bounding even negative eigenvalues emerging from the limiting nullspace. [Critical independence](../../../../formal/GaloisForLFunctions/RenormalizedIntersectionTheory/DistinctScalingClassesAreIndependent.lean) · [Finite section matrices](../3-formalized/negative-squares-from-rational-section-counts.md)

@@ -17,6 +17,9 @@ local notation "Q" => p ^ (s + 1)
 local notation "k₀" => SquareConstantField p s
 local notation "G" => HermitianAffinePoint p s k₀
 
+instance hermitianAffinePoint_finite_of_finite {E : Type*} [Field E] [Finite E] :
+    Finite (HermitianAffinePoint p s E) := by unfold HermitianAffinePoint; infer_instance
+
 private theorem prescribed_shear (a d : k₀) (ha : a ≠ 0) (hd : d ^ Q = -d) :
     ∃ c : k₀, c ^ Q * a - a ^ Q * c = d := by
   let t := squareTraceOne p s
@@ -72,7 +75,7 @@ theorem hermitian_conjugatesOf (P : G) :
   by_cases h : P.val.1 = 0
   · simp only [h, if_pos, true_implies, Set.mem_singleton_iff]
     exact ⟨fun hh => hh.2.symm, fun hh => ⟨by rw [hh, h], hh.symm⟩⟩
-  · simp only [if_neg h, h, false_implies, and_true, Set.mem_setOf_eq]
+  · simp only [h, false_implies, and_true]
     exact eq_comm
 
 open scoped Classical in
@@ -96,6 +99,7 @@ private theorem classParameter_eq_iff (P U : G) :
   rw [hermitianTranslation_isConj_iff]
   by_cases hP : P.val.1 = 0 <;> by_cases hU : U.val.1 = 0 <;>
     simp [hermitianClassParameter, hP, hU, Subtype.ext_iff]
+  exact fun h _ => hU h.symm
 
 /-- The conjugacy quotient is explicitly parametrized over the original constant field. -/
 def hermitianConjClassesEquiv : ConjClasses G ≃ HermitianClassParameters p s :=
@@ -109,9 +113,11 @@ def hermitianConjClassesEquiv : ConjClasses G ≃ HermitianClassParameters p s :
     by
       rintro (P | a)
       · exact ⟨ConjClasses.mk P.val, by change hermitianClassParameter p s P.val = _; simp [hermitianClassParameter, P.property]⟩
-      · refine ⟨ConjClasses.mk (hermitianAffinePointWithFirst p s a.val), ?_⟩
-        change (if h : a.val = 0 then Sum.inl _ else Sum.inr _) = _
-        rw [dif_neg a.property]⟩
+      · let U := hermitianAffinePointWithFirst p s a.val
+        have hU : U.val.1 ≠ 0 := a.property
+        refine ⟨ConjClasses.mk U, ?_⟩
+        change hermitianClassParameter p s U = _
+        exact dif_neg hU⟩
 
 /-- Number of conjugacy classes, hence number of independent orbital kernels. -/
 theorem hermitian_translation_class_number :

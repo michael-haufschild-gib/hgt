@@ -21,7 +21,8 @@ def conjugationPhase : ℂˣ →* Circle where
   toFun z := Circle.ofConjDivSelf z z.ne_zero
   map_one' := Subtype.ext (by simp [Circle.ofConjDivSelf])
   map_mul' z w := Subtype.ext (by
-    change conj ((z : ℂ) * w) / ((z : ℂ) * w) = (conj z / z) * (conj w / w)
+    change conj ((z : ℂ) * (w : ℂ)) / ((z : ℂ) * (w : ℂ)) =
+      (conj (z : ℂ) / (z : ℂ)) * (conj (w : ℂ) / (w : ℂ))
     rw [map_mul, div_mul_div_comm])
 
 /-- Every phase has an explicit lift: 1+conj(u) away from -1 and i at -1. -/
@@ -35,7 +36,8 @@ theorem conjugationPhase_surjective : Function.Surjective conjugationPhase := by
       intro hz
       apply h
       have he := congrArg (starRingEnd ℂ) hz
-      simpa only [map_add, map_one, Complex.conj_conj, map_zero, add_eq_zero_iff_neg_eq] using he
+      simp only [map_add, map_one, Complex.conj_conj, map_zero] at he
+      linear_combination he
     refine ⟨Units.mk0 _ hne, Subtype.ext ?_⟩
     change conj (1 + conj (u : ℂ)) / (1 + conj (u : ℂ)) = u
     rw [div_eq_iff hne, map_add, map_one, Complex.conj_conj, mul_add, mul_one,
@@ -69,7 +71,9 @@ theorem conjugationPhase_eq_iff (z w : ℂˣ) :
   rw [← div_eq_one, ← map_div]
   change z / w ∈ conjugationPhase.ker ↔ _
   rw [conjugationPhase_kernel]
-  exact exists_congr fun r => (eq_div_iff_mul_eq)
+  apply exists_congr
+  intro r
+  exact ⟨fun h => by rw [h,div_mul_cancel],fun h => by rw [← h,mul_div_cancel_right]⟩
 
 /-- Homogeneous real determinant of the two representatives. -/
 def phaseDeterminant (z w : ℂˣ) : ℝ :=
@@ -87,7 +91,7 @@ theorem conjugationPhase_chord (z w : ℂˣ) :
     ‖(conjugationPhase z : ℂ) - (conjugationPhase w : ℂ)‖ =
       2 * |phaseDeterminant z w| / (‖(z : ℂ)‖ * ‖(w : ℂ)‖) := by
   change ‖conj (z : ℂ) / z - conj (w : ℂ) / w‖ = _
-  rw [div_sub_div _ _ z.ne_zero w.ne_zero, conjugate_cross, norm_div, norm_mul,
+  rw [div_sub_div _ _ z.ne_zero w.ne_zero, mul_comm (z:ℂ) (conj (w:ℂ)), conjugate_cross, norm_div, norm_mul,
     norm_mul, norm_mul, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
   norm_num
 
@@ -117,8 +121,9 @@ theorem torusProbe_projective_loss (z w : ℂˣ) (x : ZeroSpace) :
 theorem zeroBasis_torus_indistinguishable_iff (ρ : zetaZeroConfig.carrier) (z w : ℂˣ) :
     1 - ‖inner ℂ (torusProbeAction z (zeroBasis ρ)) (torusProbeAction w (zeroBasis ρ))‖^2 = 0 ↔
       (ρ : ℂ).re = 1/2 ∨ ∃ r : ℝˣ, Units.map Complex.ofRealHom.toMonoidHom r * w = z :=
-  (zeroBasis_projective_loss_zero_iff _ _ _).trans (or_congr_right' (conjugationPhase_eq_iff z w))
+  (zeroBasis_projective_loss_zero_iff _ _ _).trans (or_congr Iff.rfl (conjugationPhase_eq_iff z w))
 
+#print axioms realTorusPhaseEquiv
 #print axioms conjugationPhase_surjective
 #print axioms conjugationPhase_kernel
 #print axioms conjugationPhase_eq_iff

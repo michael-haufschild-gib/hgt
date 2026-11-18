@@ -138,7 +138,35 @@ theorem abs_completedCofactor_sub_prime_sub_mean_le_sqrt (V N : ℕ) :
   exact (abs_completedCofactor_sub_prime_sub_mean_le V N).trans
     ((mul_le_mul_of_nonneg_left hsum (by norm_num : (0 : ℝ) ≤ 25)).trans_eq (by ring))
 
+/-- Restoring the omitted cofactors changes the cut count by a signed sum
+of ordinary prime errors at the complementary divided horizons. -/
+theorem cofactorCount_add_tail (V W N : ℕ) :
+    cofactorCountError V W N + (∑ d ∈ Ioc W N, typeIIShort V d *
+      (Chebyshev.psi (N / d : ℕ) - (N / d : ℕ))) = cofactorCountError V N N := by
+  let f (d : ℕ) := typeIIShort V d * (Chebyshev.psi (N / d : ℕ) - (N / d : ℕ))
+  have hsmall : (Icc 1 N).filter (· ≤ W) = Icc 1 (min N W) := by
+    ext d
+    simp only [mem_filter, mem_Icc, le_min_iff]
+    tauto
+  have hlarge : (Icc 1 N).filter (fun d => ¬ d ≤ W) = Ioc W N := by
+    ext d
+    simp only [mem_filter, mem_Icc, mem_Ioc]
+    omega
+  simpa only [cofactorCountError_eq, min_self, hsmall, hlarge, f] using
+    (sum_filter_add_sum_filter_not (Icc 1 N) (· ≤ W) f)
+
+/-- An explicit square-root estimate for the fixed-cutoff count together
+with its complementary divisor sum, uniform even in a moving Möbius cutoff. -/
+theorem abs_cofactorCount_add_tail_sub_prime_sub_mean_le (V W N : ℕ) :
+    |cofactorCountError V W N + (∑ d ∈ Ioc W N, typeIIShort V d *
+      (Chebyshev.psi (N / d : ℕ) - (N / d : ℕ))) - (Chebyshev.psi N - N) -
+      2 * Real.eulerMascheroniConstant * ∑ d ∈ Icc 1 N,
+        truncAF (moebius : ArithmeticFunction ℝ) V d * (N / d : ℕ)| ≤
+      50 * Real.sqrt N * Real.sqrt V := by
+  rw [cofactorCount_add_tail]
+  exact abs_completedCofactor_sub_prime_sub_mean_le_sqrt V N
+
 #print axioms abs_completeDivisorError_add_le
-#print axioms abs_completedCofactor_sub_prime_sub_mean_le_sqrt
+#print axioms abs_cofactorCount_add_tail_sub_prime_sub_mean_le
 
 end GaloisForLFunctions.ExceptionalLayerTheory

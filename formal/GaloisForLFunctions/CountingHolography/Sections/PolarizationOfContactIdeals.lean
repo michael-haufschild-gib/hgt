@@ -1,4 +1,4 @@
-import GaloisForLFunctions.CountingHolography.Sections.DegreePointSectionLattice
+import GaloisForLFunctions.CountingHolography.Sections.SignedSplineSmallSections
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheFrobeniusGraphsMeetInThePrimes
 
 /-!
@@ -51,6 +51,27 @@ theorem contactMultiplicity_add (f g : ℝ → ℝ) (L n k : ℕ) :
   intro j _
   simp only [degreeSample, Pi.add_apply]
   ring
+
+/-- Reversing every coefficient fixes the local incidence multiplicities
+at the original finite resolution. -/
+theorem contactGenerator_neg (f : ℝ → ℝ) (L n : ℕ) :
+    contactGenerator (-f) L n = contactGenerator f L n := by
+  simp only [contactGenerator, contactMultiplicity, degreeSample, Pi.neg_apply, neg_mul_neg]
+
+theorem logRadius_neg (f : ℝ → ℝ) (L n : ℕ) : logRadius (-f) L n = logRadius f L n := by
+  have h (t : ℝ) : sampledDegree (-f) L n t = - sampledDegree f L n t := by
+    simp only [sampledDegree, degreeSample, Pi.neg_apply, neg_mul, neg_div, sum_neg_distrib]
+  simp only [logRadius, h, neg_mul_neg, degreeForm, degreePairing, degreeSample, Pi.neg_apply, neg_sq]
+
+/-- The ordinary section set is exactly the same for both signs of the
+whole signed divisor, at each finite multiplicity. -/
+theorem smallSections_neg {N : ℕ} (a : Fin N → ℤ) :
+    smallSections (generator (-a) : ℝ) (radius (-a)) = smallSections (generator a : ℝ) (radius a) := by
+  have h : packet (-a) = - packet a := by
+    funext u
+    simp only [packet, splineSource, Pi.neg_apply, Int.cast_neg, neg_mul, sum_neg_distrib]
+  have hr : resolution (-a) = resolution a := by simp [resolution]
+  simp only [generator, radius, h, hr, contactGenerator_neg, logRadius_neg]
 
 /-- The mixed ideal uses the same residue primes as both original ideals. -/
 def mixedGenerator (f g : ℝ → ℝ) (L n : ℕ) : ℚ :=

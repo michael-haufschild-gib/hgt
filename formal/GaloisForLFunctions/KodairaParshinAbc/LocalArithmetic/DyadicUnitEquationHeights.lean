@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RHTower.FieldOneFiniteStageClassSpace
+import GaloisForLFunctions.RHTower.FieldOneFiniteStageSUnitCoordinates
 import Mathlib.NumberTheory.Height.NumberField
 
 /-!
@@ -39,6 +39,47 @@ def rationalUnitSolutionsRescale (S : Finset (HeightOneSpectrum ℤ)) (a b c : �
 /-- The singleton finite place over 2, with the real place understood. -/
 def dyadicUnitPlaces : Finset (HeightOneSpectrum ℤ) :=
   {Rat.HeightOneSpectrum.primesEquiv.symm ⟨2, Nat.prime_two⟩}
+
+/-- Absolute values of literal rational dyadic units are precisely the integral powers of two. -/
+theorem dyadicUnit_abs_range :
+    Set.range (fun u : fieldOneSUnitSubgroup dyadicUnitPlaces => |(u.val : ℚ)|) =
+      Set.range (fun e : ℤ => (2 : ℚ)^e) := by
+  let v : HeightOneSpectrum ℤ := Rat.HeightOneSpectrum.primesEquiv.symm ⟨2, Nat.prime_two⟩
+  let w : ↥dyadicUnitPlaces := ⟨v, Finset.mem_singleton_self v⟩
+  have uniq (j : ↥dyadicUnitPlaces) : j = w :=
+    Subtype.ext (Finset.mem_singleton.mp j.property)
+  have hprod (n : ↥dyadicUnitPlaces → ℤ) :
+      (fieldOneSUnitProduct dyadicUnitPlaces n : ℚ) = 2 ^ n w := by
+    classical
+    have hg : (fieldOneRationalPrimeUnit w.val : ℚ) = 2 := by
+      simp [w, v, fieldOneRationalPrimeUnit]
+    simp only [fieldOneSUnitProduct]
+    rw [Finset.prod_eq_single w, Units.val_zpow_eq_zpow_val, hg]
+    · exact fun j _ h => (h (uniq j)).elim
+    · exact fun h => (h (Finset.mem_univ w)).elim
+  ext x
+  constructor
+  · rintro ⟨u, rfl⟩
+    exact ⟨fieldOneSUnitExponent _ u w, (hprod _).symm.trans
+      (fieldOneSUnitProduct_exponent_eq_abs_value _ u)⟩
+  · rintro ⟨e,rfl⟩
+    let n := fun _ : ↥dyadicUnitPlaces => e
+    refine ⟨⟨fieldOneSUnitProduct _ n, fieldOneSUnitProduct_mem _ n⟩, ?_⟩
+    change |(fieldOneSUnitProduct _ n : ℚ)| = _
+    rw [abs_of_pos (fieldOneSUnitProduct_pos _ _), hprod]
+
+/-- The exact absolute value of a dyadic unit is recovered from its ordinary 2-adic valuation. -/
+theorem dyadicUnit_abs_val (u : fieldOneSUnitSubgroup dyadicUnitPlaces) :
+    |(u.val : ℚ)| = (2:ℚ) ^ padicValRat 2 (u.val:ℚ) := by
+  have hm : |(u.val:ℚ)| ∈ Set.range (fun e : ℤ => (2:ℚ)^e) := dyadicUnit_abs_range ▸ ⟨u,rfl⟩
+  obtain ⟨e,he⟩ := hm
+  have hv : padicValRat 2 |(u.val:ℚ)| = padicValRat 2 (u.val:ℚ) := by
+    rcases le_or_gt 0 (u.val:ℚ) with h | h
+    · rw [abs_of_nonneg h]
+    · rw [abs_of_neg h, padicValRat.neg]
+  have h2 : padicValRat 2 (2 : ℚ) = 1 := padicValRat.self (p := 2) (by norm_num)
+  rw [← he, padicValRat.zpow, h2, mul_one] at hv
+  exact hv ▸ he.symm
 
 private def dyadicGenerator : fieldOneSUnitSubgroup dyadicUnitPlaces :=
   let v := Rat.HeightOneSpectrum.primesEquiv.symm ⟨2, Nat.prime_two⟩
@@ -107,6 +148,8 @@ theorem dyadic_unbounded_two_solution_height (B : ℝ) :
     rw [he]
     exact dyadic_two_solutions n
 
+#print axioms dyadicUnit_abs_range
+#print axioms dyadicUnit_abs_val
 #print axioms rationalUnitSolutionsRescale
 #print axioms dyadic_two_solutions
 #print axioms dyadic_odd_solvable_targets

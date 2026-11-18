@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.LogVonMangoldtGaussianSums
+import GaloisForLFunctions.RHTower.EulerDeletionQuasiShuffleConvergence
 
 /-!
 # Coincident products of ordinary prime weights
@@ -54,9 +55,9 @@ private theorem mangoldt_weights_on_prime_powers {p a b n : ℕ} (hp : p.Prime)
     vonMangoldt_apply_pow (by omega : j+k ≠ 0), vonMangoldt_apply_pow hk.ne',
     vonMangoldt_apply_prime hp]
 
+open Classical in
 /-- Closed form for the off-diagonal prime-weight correlation with a common
 integer factor. The term at one is excluded and equals `Λ(a)Λ(b)` separately. -/
-open Classical in
 theorem sum_dilated_mangoldt_product {a : ℕ} (ha : 2 ≤ a) (b : ℕ) {X : ℕ} (hX : 1 ≤ X) :
     ∑ n ∈ Icc 2 X, vonMangoldt (a*n) * vonMangoldt (b*n) =
       if (∃ i : ℕ, a = a.minFac ^ i) ∧ (∃ j : ℕ, b = a.minFac ^ j) then
@@ -119,12 +120,86 @@ theorem sum_dilated_mangoldt_product_le {a : ℕ} (ha : 2 ≤ a) (b : ℕ) {X : 
   · have hp : a.minFac.Prime := Nat.minFac_prime (by omega)
     apply mul_le_mul
     · exact Real.log_le_log (by exact_mod_cast hp.pos) (by exact_mod_cast Nat.minFac_le (by omega : 0 < a))
-    · exact Real.log_le_log (by positivity) (by exact_mod_cast Nat.pow_log_le_self a.minFac (by omega : X ≠ 0))
+    · have hpos : 0 < a.minFac ^ Nat.log a.minFac X := pow_pos hp.pos _
+      exact Real.log_le_log (by exact_mod_cast hpos)
+        (by exact_mod_cast Nat.pow_log_le_self a.minFac (by omega : X ≠ 0))
     · exact Real.log_natCast_nonneg _
     · exact Real.log_natCast_nonneg _
   · exact mul_nonneg (Real.log_natCast_nonneg _) (Real.log_natCast_nonneg _)
 
+/-- The logarithmic bound survives an arbitrary restriction on both prime
+heads and an arbitrary complex weight bounded by one on the retained rows. -/
+theorem norm_sum_weighted_dilated_mangoldt_le {a X : ℕ} (ha : 2 ≤ a) (b : ℕ) (hX : 1 ≤ X)
+    (S : Finset ℕ) (hS : S ⊆ Icc 2 X) (w : ℕ → ℂ) (hw : ∀ n ∈ S, ‖w n‖ ≤ 1) :
+    ‖∑ n ∈ S, w n * ((vonMangoldt (a*n) * vonMangoldt (b*n) : ℝ) : ℂ)‖ ≤
+      Real.log a * Real.log X := by
+  have hpos (n : ℕ) : 0 ≤ vonMangoldt (a*n) * vonMangoldt (b*n) :=
+    mul_nonneg vonMangoldt_nonneg vonMangoldt_nonneg
+  calc
+    _ ≤ ∑ n ∈ S, ‖w n * ((vonMangoldt (a*n) * vonMangoldt (b*n) : ℝ) : ℂ)‖ := norm_sum_le _ _
+    _ ≤ ∑ n ∈ S, vonMangoldt (a*n) * vonMangoldt (b*n) := by
+      refine sum_le_sum fun n hn => ?_
+      rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (hpos n)]
+      exact mul_le_of_le_one_left (hpos n) (hw n hn)
+    _ ≤ ∑ n ∈ Icc 2 X, vonMangoldt (a*n) * vonMangoldt (b*n) :=
+      sum_le_sum_of_subset_of_nonneg hS fun n _ _ => hpos n
+    _ ≤ _ := sum_dilated_mangoldt_product_le ha b hX
+
+/-- Two distinct cofactor divisibility conditions have a logarithmic total
+prime-weight overlap beyond the single product at their least common multiple.
+The weights here are evaluated at the actual complementary factors. -/
+theorem sum_coincident_prime_weights_le {d e N : ℕ} (hd : 0 < d) (he : 0 < e) (hne : d ≠ e)
+    (hN : Nat.lcm d e ≤ N) :
+    let L := Nat.lcm d e
+    (∑ n ∈ (Icc 1 N).filter (fun n => d ∣ n ∧ e ∣ n), vonMangoldt (n/d) * vonMangoldt (n/e)) ≤
+      vonMangoldt (L/d) * vonMangoldt (L/e) + Real.log L * Real.log (N/L : ℕ) := by
+  intro L
+  let a := L / d
+  let b := L / e
+  let J := N / L
+  have hL : 0 < L := Nat.lcm_pos hd he
+  have hdL : d ∣ L := Nat.dvd_lcm_left d e
+  have heL : e ∣ L := Nat.dvd_lcm_right d e
+  have hJ : 1 ≤ J := (Nat.one_le_div_iff hL).mpr hN
+  have hsplit {z : ℕ} (hz : z ∣ L) (k : ℕ) : L*k/z = (L/z)*k := by
+    rw [Nat.mul_comm L k, Nat.mul_div_assoc k hz, Nat.mul_comm]
+  have hmask : (Icc 1 N).filter (fun n => d ∣ n ∧ e ∣ n) = (Icc 1 N).filter (L ∣ ·) := by
+    ext n
+    simp only [mem_filter, L, Nat.lcm_dvd_iff]
+  rw [hmask, RHTower.sum_Icc_filter_dvd_reindex L N hL]
+  simp_rw [hsplit hdL, hsplit heL]
+  change (∑ k ∈ Icc 1 J, vonMangoldt (a*k) * vonMangoldt (b*k)) ≤ _
+  have htail : (Icc 1 J).erase 1 = Icc 2 J := by
+    ext k
+    simp only [mem_erase, mem_Icc]
+    omega
+  rw [← sum_erase_add _ _ (mem_Icc.mpr ⟨le_rfl, hJ⟩), htail, mul_one, mul_one, add_comm]
+  refine add_le_add le_rfl ?_
+  have hbound {u v : ℕ} (hu : 2 ≤ u) (huL : u ≤ L) :
+      ∑ k ∈ Icc 2 J, vonMangoldt (u*k) * vonMangoldt (v*k) ≤ Real.log L * Real.log J :=
+    (sum_dilated_mangoldt_product_le hu v hJ).trans (mul_le_mul_of_nonneg_right
+      (Real.log_le_log (by exact_mod_cast (by omega : 0 < u)) (by exact_mod_cast huL))
+      (Real.log_natCast_nonneg J))
+  by_cases ha : 2 ≤ a
+  · exact hbound ha (Nat.div_le_self L d)
+  have hb : 2 ≤ b := by
+    by_contra! hb
+    have ha1 : a = 1 := le_antisymm (by omega)
+      ((Nat.one_le_div_iff hd).mpr (Nat.le_of_dvd hL hdL))
+    have hb1 : b = 1 := le_antisymm (by omega)
+      ((Nat.one_le_div_iff he).mpr (Nat.le_of_dvd hL heL))
+    have h₁ : a * d = L := Nat.div_mul_cancel hdL
+    have h₂ : b * e = L := Nat.div_mul_cancel heL
+    rw [ha1, one_mul] at h₁
+    rw [hb1, one_mul] at h₂
+    exact hne (h₁.trans h₂.symm)
+  calc
+    _ = ∑ k ∈ Icc 2 J, vonMangoldt (b*k) * vonMangoldt (a*k) :=
+      sum_congr rfl fun k _ => mul_comm _ _
+    _ ≤ _ := hbound hb (Nat.div_le_self L e)
+
 #print axioms sum_dilated_mangoldt_product
-#print axioms sum_dilated_mangoldt_product_le
+#print axioms norm_sum_weighted_dilated_mangoldt_le
+#print axioms sum_coincident_prime_weights_le
 
 end GaloisForLFunctions.ExceptionalLayerTheory

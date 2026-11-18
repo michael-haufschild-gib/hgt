@@ -1,0 +1,13 @@
+# A single binomial cover has linear excess
+
+For fixed dyadic $q=2^j\ge4$, the shortest reciprocal-slope binomial covering all selected prime powers exceeds the log gcd by $\gg_q N$ on an arithmetic progression. Its positive result is an exact upper bound for the selected mass, even when the modulus grows.
+
+Write $H=\lfloor N/(q-1)\rfloor$. The first multiple $N+r=km>N$ of a selected $m$ satisfies $qr\le m\le N+r$. Hence $1\le r\le H$. Conversely $m\mid N+r$ and $qr\le m$ force $N+r$ to be the first multiple. Thus the selected mass is exactly
+$$S_q(qN)=\sum_{r=1}^H\sum_{m\mid N+r,\ m\ge qr}\Lambda(m).$$
+Every selected prime-power level contributes a carry to $\binom{N+D}{D}$ for each $1\le d<q$, where $D=\lfloor N/d\rfloor$. Write $N=dD+t$ with $0\le t<d$. If $D\bmod m<r$, the positive multiple $d(D\bmod m)+t+r$ of $m$ is at most $(d+1)r-1<m$, a contradiction. Thus $D\bmod m\ge r$, exactly the carry condition. In particular $S_q(qN)\le\log\binom{N+H}H$, with no loss from small prime powers. The resulting bound has order $(N/q)(1+\log q)$ when $H\ge1$. For $H=1$ the mass equals $\Lambda(N+1)$ since every proper divisor of $N+1$ is smaller than $q$. For $q>N+1$ the mass is zero. Taking $N=p-1$ at primes $p$ with the largest dyadic $q\le p$ gives $S_q(qN)\ge\log p$ while $N/q<2$, ruling out a uniform $O(N/q)$ bound.
+
+The shortest binomial cover alone has a linear excess at every fixed $q\ge4$. Put $D=2(2q-1)L$, $N=(q-1)D$, $P=2q(q-1)L$ and $Q=q(2q-1)L$. For $P<m\le Q$, one has $m\le N<2m$, $D<m$ and $2m\le N+D$. Thus $m$ contributes a carry to $\binom{N+D}D$. It contributes zero to $S_q(qN)$ because $qN=(2q-1)P<(2q-1)m$. All other levels contribute nonnegative excess. The difference is at least $\psi(Q)-\psi(P)\sim qL$. The denominator boundary $d<q$ for universal coverage by $\binom{N+\lfloor N/d\rfloor}{N}$ is exact. Take $N=q-1$, $m=q$ for $d\ge q$. A sharper comparison would have to account for the complementary interval of prime powers.
+
+The same carry argument works for every rational added part $\lfloor aN/d\rfloor$ with $a,d\ge1$ and $a+d\le q$. If a carry failed, $d(\lfloor aN/d\rfloor\bmod m)+(aN\bmod d)+ar$ would be a positive multiple of $m$ smaller than $m$. [Shifted divisors and exact denominator boundary](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/ShiftedDivisorsInADyadicBinomialGcd.lean) · [Prime interval and linear excess](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheSmallestBinomialCoverHasLinearExcess.lean)
+
+The Lean declarations are `dyadicCommonPrimeMass_eq_shifted_divisors`, `dyadicQuotientCarry_le_rational_binomial_carry`, `all_dyadic_carries_bound_iff`, `dyadicCommonPrimeMass_le_log_short_binomial` and `short_binomial_exceeds_dyadic_gcd_linearly`.

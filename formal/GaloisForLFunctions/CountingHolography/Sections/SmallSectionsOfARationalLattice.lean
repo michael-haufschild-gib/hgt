@@ -45,6 +45,25 @@ theorem exists_nonzero_smallSection {d A : ℝ} (hd : 0 < d) :
   · intro h
     exact ⟨1, (mem_smallSections hd 1).mpr (by simpa [abs_of_pos hd] using h), one_ne_zero⟩
 
+/-- Below the first minimum the zero section is the entire section set. -/
+theorem smallSections_eq_singleton_zero {d A : ℝ} (hd : 0 < d) :
+    smallSections d A = {0} ↔ A < Real.log d := by
+  constructor
+  · intro h
+    apply lt_of_not_ge
+    intro hle
+    obtain ⟨z,hz,hn⟩ := (exists_nonzero_smallSection hd).mpr hle
+    exact hn (mem_singleton.mp (h ▸ hz))
+  · intro h
+    ext z
+    rw [mem_singleton]
+    constructor
+    · intro hz
+      by_contra hne
+      exact (not_le_of_gt h) ((exists_nonzero_smallSection hd).mp ⟨z,hz,hne⟩)
+    · rintro rfl
+      exact (mem_smallSections hd 0).mpr (by simpa using (Real.exp_pos A).le)
+
 /-- The natural-valued height is the integer part of the logarithm of the section count. -/
 def sectionHeight (d A : ℝ) : ℕ := ⌊Real.log (smallSections d A).card⌋₊
 
@@ -87,5 +106,6 @@ theorem sectionHeight_bounds {d A : ℝ} (hd : 0 < d) :
 
 #print axioms sectionHeight_bounds
 #print axioms exists_nonzero_smallSection
+#print axioms smallSections_eq_singleton_zero
 
 end GaloisForLFunctions.CountingHolography.Sections

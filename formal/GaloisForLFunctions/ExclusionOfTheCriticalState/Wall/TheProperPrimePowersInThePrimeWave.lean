@@ -71,6 +71,29 @@ theorem differentiableOn_properPowerHead {F : ℝ → ℝ} (hF : CriticalHalfLin
   · intro j z hz
     simpa only [eulerAtom, mul_assoc] using norm_primeHead_term_le hF hσ4 (le_of_lt hz) (properPrimePowerIndex j)
 
+/-- Split any summable family supported on prime powers into ordinary primes
+and the powers with exponent at least two. -/
+theorem tsum_eq_ordinary_primes_add_proper_powers {f : ℕ → ℂ} (hf : Summable f)
+    (hsupp : Function.support f ⊆ {n : ℕ | IsPrimePow n}) :
+    (∑' n, f n) = (∑' q : Nat.Primes, f (q : ℕ)) + ∑' j, f (properPrimePowerIndex j) := by
+  have hall := hf.comp_injective eulerPrimePowerNat_injective
+  have hq : Summable fun q : Nat.Primes => f (q : ℕ) := hf.comp_injective Subtype.coe_injective
+  have htail : Summable fun j : Nat.Primes × ℕ => f (properPrimePowerIndex j) :=
+    hall.comp_injective (i := fun j : Nat.Primes × ℕ => (j.1, j.2 + 1))
+      (by
+        rintro ⟨q, k⟩ ⟨r, l⟩ h
+        have hq : q = r := congrArg Prod.fst h
+        have hk : k + 1 = l + 1 := congrArg Prod.snd h
+        exact Prod.ext hq (Nat.succ.inj hk))
+  have hinner (q : Nat.Primes) :
+      (∑' k : ℕ, f ((q : ℕ) ^ (k + 1))) = f q + ∑' k : ℕ, f ((q : ℕ) ^ (k + 2)) := by
+    have hqk : Summable fun k : ℕ => f ((q : ℕ) ^ (k + 1)) :=
+      hall.comp_injective (i := fun k : ℕ => (q, k)) (fun _ _ h => congrArg Prod.snd h)
+    simpa only [zero_add, pow_one, add_assoc] using hqk.tsum_eq_zero_add
+  rw [tsum_eq_tsum_primes_of_support_subset_prime_powers hf hsupp]
+  simp_rw [hinner]
+  rw [hq.tsum_add htail.prod, htail.tsum_prod]
+
 /-- On its original half-plane the full head is the sum of the ordinary-prime and
 proper-power heads. -/
 theorem primeHead_eq_prime_add_properPowerHead {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F)
@@ -92,24 +115,7 @@ theorem primeHead_eq_prime_add_properPowerHead {F : ℝ → ℝ} (hF : CriticalH
     intro h
     apply hn
     simp only [f, eulerAtom, vonMangoldtAtom_mul_cexp_eq_term, h, zero_mul]
-  have hall := hf.comp_injective eulerPrimePowerNat_injective
-  have hq : Summable fun q : Nat.Primes => f (q : ℕ) := hf.comp_injective Subtype.coe_injective
-  have htail : Summable fun j : Nat.Primes × ℕ => f (properPrimePowerIndex j) :=
-    hall.comp_injective (i := fun j : Nat.Primes × ℕ => (j.1, j.2 + 1))
-      (by
-        rintro ⟨q, k⟩ ⟨r, l⟩ h
-        have hq : q = r := congrArg Prod.fst h
-        have hk : k + 1 = l + 1 := congrArg Prod.snd h
-        exact Prod.ext hq (Nat.succ.inj hk))
-  have hinner (q : Nat.Primes) :
-      (∑' k : ℕ, f ((q : ℕ) ^ (k + 1))) = f q + ∑' k : ℕ, f ((q : ℕ) ^ (k + 2)) := by
-    have hqk : Summable fun k : ℕ => f ((q : ℕ) ^ (k + 1)) :=
-      hall.comp_injective (i := fun k : ℕ => (q, k)) (fun _ _ h => congrArg Prod.snd h)
-    simpa only [zero_add, pow_one, add_assoc] using hqk.tsum_eq_zero_add
-  have hfull : (∑' n, f n) = (∑' q : Nat.Primes, f q) + ∑' j, f (properPrimePowerIndex j) := by
-    rw [tsum_eq_tsum_primes_of_support_subset_prime_powers hf hsupp]
-    simp_rw [hinner]
-    rw [hq.tsum_add htail.prod, htail.tsum_prod]
+  have hfull := tsum_eq_ordinary_primes_add_proper_powers hf hsupp
   simpa only [primeHead, properPowerHead, f, eulerAtom, mul_assoc] using hfull
 
 private def properTailTerm (F : ℝ → ℝ) (j : Nat.Primes × ℕ) (p : ℂ) : ℂ :=
@@ -269,6 +275,51 @@ theorem criticalState_properPowerWave_subexponential {W₀ : ℝ} (hW : 0 < W₀
   apply mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right
     (min_le_left ε 2) hx))
   exact mul_nonneg (tsum_nonneg fun j => mul_nonneg (atom_nonneg _) (Real.exp_pos _).le) hC
+
+/-- Every positive damping exponent makes the signed proper-power wave of the
+state square-integrable. Translation of its continuous representative preserves
+the pointwise series simultaneously for all integer shifts almost everywhere. -/
+theorem criticalState_memLp_damped_properPowerWave {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) {s : ℝ} (hs : 0 < s) :
+    MemLp (fun t : ℝ => expRay (s:ℂ) t * ∑' j : Nat.Primes × ℕ,
+      (primeAtom (properPrimePowerIndex j):ℂ)*(F (t - Real.log (properPrimePowerIndex j)):ℂ))
+      2 halfLineLaplaceMeasure := by
+  obtain ⟨Φ,hΦ,heq,hbound⟩ := criticalState_properPowerWave_subexponential hW ht hF
+  let d := s/2
+  have hd : 0 < d := half_pos hs
+  obtain ⟨B,hB⟩ := hbound d hd
+  let f := fun (j : Nat.Primes × ℕ) (t : ℝ) =>
+    (primeAtom (properPrimePowerIndex j):ℂ)*(Φ (t-Real.log (properPrimePowerIndex j)):ℂ)
+  have hn (j t) : ‖f j t‖ = vonMangoldtAtom (properPrimePowerIndex j) *
+      |Φ (t-Real.log (properPrimePowerIndex j))| := by
+    change ‖(vonMangoldtAtom _:ℂ)*(Φ _:ℂ)‖ = _
+    rw [norm_mul,Complex.norm_real,Complex.norm_real,Real.norm_of_nonneg (atom_nonneg _),Real.norm_eq_abs]
+  have hm : Measurable fun t => ∑' j, f j t := Measurable.tsum fun j => by
+    dsimp [f]; fun_prop
+  have hbase := (memLp_two_expRay_restrict (w := (d:ℂ)) (by simpa using hd) 0).const_mul (B:ℂ)
+  have hp : MemLp (fun t : ℝ => expRay (s:ℂ) t * ∑' j, f j t) 2 halfLineLaplaceMeasure := by
+    apply hbase.mono ((continuous_expRay _).measurable.mul hm).aestronglyMeasurable
+    filter_upwards [ae_restrict_mem (μ := (volume : Measure ℝ)) measurableSet_Ioi] with t ht
+    have hsum : Summable fun j => ‖f j t‖ := by simpa only [hn] using (hB t (le_of_lt ht)).1
+    have hmaj : ‖∑' j, f j t‖ ≤ B*Real.exp (d*t) := (norm_tsum_le_tsum_norm hsum).trans
+      (by simpa only [hn] using (hB t (le_of_lt ht)).2)
+    change ‖expRay (s:ℂ) t * ∑' j, f j t‖ ≤ ‖(B:ℂ)*expRay (d:ℂ) t‖
+    rw [norm_mul,norm_mul,norm_expRay,norm_expRay,Complex.ofReal_re,Complex.ofReal_re,Complex.norm_real,
+      Real.norm_eq_abs]
+    have hmul : Real.exp (-(s*t))*Real.exp (d*t) = Real.exp (-(d*t)) := by
+      rw [← Real.exp_add]; congr 1; dsimp [d]; ring
+    calc _ ≤ Real.exp (-(s*t)) * (B*Real.exp (d*t)) :=
+          mul_le_mul_of_nonneg_left hmaj (Real.exp_pos _).le
+      _ = B*Real.exp (-(d*t)) := by rw [← hmul]; ring
+      _ ≤ _ := mul_le_mul_of_nonneg_right (le_abs_self B) (Real.exp_pos _).le
+  have hshift : ∀ᵐ t ∂volume, ∀ n : ℕ, F (t-Real.log n) = Φ (t-Real.log n) :=
+    ae_all_iff.mpr fun n => (measurePreserving_sub_right volume (Real.log n)).quasiMeasurePreserving.ae heq
+  refine MemLp.ae_eq ?_ hp
+  filter_upwards [ae_restrict_of_ae (s := Ioi (0:ℝ)) hshift] with t ht
+  simp only [f,ht]
+
+#print axioms criticalState_memLp_damped_properPowerWave
 
 /-- If the critical state occurs, its proper-power head has a genuine simple pole at zero.
 The continuation and the residue are obtained from the actual Euler coefficients. -/

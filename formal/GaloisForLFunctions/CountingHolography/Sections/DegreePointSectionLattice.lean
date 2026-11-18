@@ -78,7 +78,7 @@ def logRadius (f : ℝ → ℝ) (L n : ℕ) : ℝ :=
 def meshDegree (f : ℝ → ℝ) (L n : ℕ) : ℝ :=
   logRadius f L n - 2 * degreeContact f L n
 
-private theorem tendsto_sampledDegree {f : ℝ → ℝ} (hf : Continuous f) {K : ℕ} (hK : 1 ≤ K)
+theorem tendsto_sampledDegree {f : ℝ → ℝ} (hf : Continuous f) {K : ℕ} (hK : 1 ≤ K)
     (hs : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u = 0) (t : ℝ) :
     Tendsto (sampledDegree f (3*K) · t) atTop (𝓝 (∫ u, f u * Real.exp (t*u))) := by
   have hL : 1 ≤ 3*K := by omega
@@ -116,14 +116,15 @@ theorem tendsto_meshDegree {f : ℝ → ℝ} (hf : ContDiff ℝ 2 f) (hc : HasCo
     degreeForm f (3*K) n - 2 * degreeContact f (3*K) n) atTop _
   simpa only [packetTest, sub_add_eq_sub_sub, sub_sub_cancel] using hp.sub hj
 
-/-- All three parts of the unrounded mesh use divisor multiplicities quadratically. -/
-theorem meshDegree_mul (c : ℝ) (f : ℝ → ℝ) (L n : ℕ) :
-    meshDegree (fun u => c * f u) L n = c ^ 2 * meshDegree f L n := by
+theorem sampledDegree_mul (c : ℝ) (f : ℝ → ℝ) (L n : ℕ) (t : ℝ) :
+    sampledDegree (fun u => c*f u) L n t = c*sampledDegree f L n t := by
+  unfold sampledDegree
+  rw [mul_sum]
+  exact sum_congr rfl fun _ _ => by unfold degreeSample; ring
+
+theorem degreeForm_mul (c : ℝ) (f : ℝ → ℝ) (L n : ℕ) :
+    degreeForm (fun u => c*f u) L n = c^2*degreeForm f L n := by
   have hs (j : ℕ) : degreeSample (fun u => c * f u) n j = c * degreeSample f n j := rfl
-  have hp (t : ℝ) : sampledDegree (fun u => c * f u) L n t = c * sampledDegree f L n t := by
-    unfold sampledDegree
-    rw [mul_sum]
-    exact sum_congr rfl fun j _ => by rw [hs]; ring
   have hj : degreePairing (fun u => c * f u) L n = c^2 * degreePairing f L n := by
     unfold degreePairing
     rw [mul_sum]
@@ -131,11 +132,15 @@ theorem meshDegree_mul (c : ℝ) (f : ℝ → ℝ) (L n : ℕ) :
     intro j _
     rw [mul_sum]
     exact sum_congr rfl fun k _ => by simp only [hs]; ring
-  have hd : degreeForm (fun u => c * f u) L n = c^2 * degreeForm f L n := by
-    unfold degreeForm
-    rw [hj, mul_sub, mul_sum]
-    congr 1
-    exact sum_congr rfl fun j _ => by rw [hs]; ring
+  unfold degreeForm
+  rw [hj, mul_sub, mul_sum]
+  congr 1
+  exact sum_congr rfl fun j _ => by rw [hs]; ring
+
+/-- All three parts of the unrounded mesh use divisor multiplicities quadratically. -/
+theorem meshDegree_mul (c : ℝ) (f : ℝ → ℝ) (L n : ℕ) :
+    meshDegree (fun u => c * f u) L n = c ^ 2 * meshDegree f L n := by
+  have hs (j : ℕ) : degreeSample (fun u => c * f u) n j = c * degreeSample f n j := rfl
   have hc : degreeContact (fun u => c * f u) L n = c^2 * degreeContact f L n := by
     unfold degreeContact
     rw [mul_sum]
@@ -145,7 +150,7 @@ theorem meshDegree_mul (c : ℝ) (f : ℝ → ℝ) (L n : ℕ) :
     congr 1
     rw [mul_sum]
     exact sum_congr rfl fun j _ => by simp only [hs]; ring
-  simp only [meshDegree, logRadius, hp, hd, hc]
+  simp only [meshDegree, logRadius, sampledDegree_mul, degreeForm_mul, hc]
   ring
 
 #print axioms tendsto_meshDegree

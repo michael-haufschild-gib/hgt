@@ -161,4 +161,8 @@ theorem riemannHypothesis_iff_cofinal_restrictedPrimeResidues (U : ℕ → ℕ) 
     · exact h (hzero _ (by simp))
     · exact h (hzero _ (by simp))
 
+#print axioms restrictedPrimeSeries_residue_at_zero
+#print axioms eventually_dyadic_shortCofactor_detects_zero
+#print axioms riemannHypothesis_iff_cofinal_restrictedPrimeResidues
+
 end GaloisForLFunctions.ExceptionalLayerTheory
