@@ -881,18 +881,4 @@ theorem exists_coshSurplus_violation_of_riemannHypothesis (hRH : RiemannHypothes
   have hB_abs : 4 * (probeSymbol p / p) ≤ |4 * (probeSymbol p / p)| := le_abs_self _
   linarith
 
-#print axioms rankTwoCompletedWeil_eq_onLineMixed_add_cosh
-#print axioms bareMixedEnergy_add_sinhFunctional_sq_eq
-#print axioms coshFunctional_sq_le_bareMixedEnergy_add_sinhFunctional_sq
-#print axioms bareMixedEnergy_sinhOrthogonal_eq_and_ge
-#print axioms bareMixedEnergy_coshOrthogonal_eq
-#print axioms rankTwoCompletedWeil_cauchy_schwarz
-#print axioms bareMixedEnergy_eq_onLineMixed_of_riemannHypothesis
-#print axioms rankTwoCompletedWeil_nonneg_of_riemannHypothesis
-#print axioms abs_bareMixedEnergy_probe_shiftProfile_le_of_riemannHypothesis
-#print axioms probe_shiftProfile_unbounded_above_and_below_of_singleQuartet
-#print axioms not_hasSingleOffLineQuartet_of_probeShift_bddAbove
-#print axioms not_hasSingleOffLineQuartet_of_probeShift_bddBelow
-#print axioms exists_coshSurplus_violation_of_riemannHypothesis
-
 end GaloisForLFunctions.ExclusionOfTheCriticalState

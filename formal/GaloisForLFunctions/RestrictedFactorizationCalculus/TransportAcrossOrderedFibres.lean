@@ -104,19 +104,19 @@ private theorem entry_inj {S : Finset ℕ} {i j : ℕ} (hi : i < S.card) (hj : j
 def rowCount (K : ℝ) (L U c : ℕ) : ℕ :=
   min (primeRow L U c).card (productRow K L U c).card
 
-private def addresses (K : ℝ) (L U : ℕ) : Finset (ℕ × ℕ) := by
+private def addresses (K : ℕ → ℝ) (L U : ℕ) : Finset (ℕ × ℕ) := by
   classical exact ((Icc 1 U).filter (fun c => μ c = -1)).biUnion fun c =>
-    (range (rowCount K L U c)).image (fun i => (c,i))
+    (range (rowCount (K c) L U c)).image (fun i => (c,i))
 
-private theorem mem_addresses {K : ℝ} {L U c i : ℕ} :
-    (c,i) ∈ addresses K L U ↔ c ∈ Icc 1 U ∧ μ c = -1 ∧ i < rowCount K L U c := by
+private theorem mem_addresses {K : ℕ → ℝ} {L U c i : ℕ} :
+    (c,i) ∈ addresses K L U ↔ c ∈ Icc 1 U ∧ μ c = -1 ∧ i < rowCount (K c) L U c := by
   classical simp [addresses, and_assoc]
 
 private def primeEnd (L U : ℕ) (a : ℕ × ℕ) := a.1 * entry (primeRow L U a.1) a.2
-private def productEnd (K : ℝ) (L U : ℕ) (a : ℕ × ℕ) :=
-  a.1 * entry (productRow K L U a.1) a.2
+private def productEnd (K : ℕ → ℝ) (L U : ℕ) (a : ℕ × ℕ) :=
+  a.1 * entry (productRow (K a.1) L U a.1) a.2
 
-private theorem address_endpoints {K : ℝ} {L U c i : ℕ} (ha : (c,i) ∈ addresses K L U) :
+private theorem address_endpoints {K : ℕ → ℝ} {L U c i : ℕ} (ha : (c,i) ∈ addresses K L U) :
     let m := primeEnd L U (c,i)
     let n := productEnd K L U (c,i)
     m ∈ posParity (Ioc L U) ∧ n ∈ negParity (Ioc L U) ∧
@@ -125,7 +125,7 @@ private theorem address_endpoints {K : ℝ} {L U c i : ℕ} (ha : (c,i) ∈ addr
   have hc := (mem_Icc.mp hcI).1
   have hcn : c ≠ 0 := by omega
   have hp := entry_mem (S := primeRow L U c) (hi.trans_le (min_le_left ..))
-  have hw := entry_mem (S := productRow K L U c) (hi.trans_le (min_le_right ..))
+  have hw := entry_mem (S := productRow (K c) L U c) (hi.trans_le (min_le_right ..))
   obtain ⟨hwp, q, r, hq, hr, hqr, heq, _, ht⟩ := mem_filter.mp hw
   obtain ⟨hpm, hpt⟩ := mem_filter.mp hp
   obtain ⟨hpr, hpl, hpu⟩ := (mem_windowPrimes (by positivity) (by positivity)).1 hpm
@@ -134,7 +134,7 @@ private theorem address_endpoints {K : ℝ} {L U c i : ℕ} (ha : (c,i) ∈ addr
   have hop := mu_append hcn hpr hpt
   have hcq := Nat.mul_ne_zero hcn hq.ne_zero
   have htr := below_pair hcn hq hqr ht
-  have hprod : μ (c * entry (productRow K L U c) i) = -1 := by
+  have hprod : μ (c * entry (productRow (K c) L U c) i) = -1 := by
     rw [heq, ← mul_assoc, mu_append hcq hr htr, mu_append hcn hq ht, hcμ]; norm_num
   have hprime : μ (c * entry (primeRow L U c) i) = 1 := by rw [hop, hcμ]; norm_num
   refine ⟨mem_filter.mpr ⟨hpI, hprime⟩, mem_filter.mpr ⟨hwI, hprod⟩,
@@ -142,10 +142,10 @@ private theorem address_endpoints {K : ℝ} {L U c i : ℕ} (ha : (c,i) ∈ addr
      squarefree_iff_moebius_ne_zero.mpr (by change μ (c * entry _ i) ≠ 0; rw [hprod]; decide),
      by change μ (c * entry _ i) = -μ (c * entry _ i); rw [hprime,hprod]; decide,
      c, _, q, r, hpr, hq, hr, hqr, Or.inl ⟨rfl, congrArg (c*·) heq⟩⟩, stem_mul_of_largest hcn hpr hpt, ?_⟩
-  change stem (stem (c * entry (productRow K L U c) i)) = c
+  change stem (stem (c * entry (productRow (K c) L U c) i)) = c
   rw [heq, ← mul_assoc, stem_mul_of_largest hcq hr htr, stem_mul_of_largest hcn hq ht]
 
-private theorem endpoint_inj {K : ℝ} {L U : ℕ} (prime : Bool) :
+private theorem endpoint_inj {K : ℕ → ℝ} {L U : ℕ} (prime : Bool) :
     Set.InjOn (if prime then primeEnd L U else productEnd K L U) (addresses K L U) := by
   rintro ⟨c,i⟩ ha ⟨d,j⟩ hb he
   obtain ⟨hc, _, hi⟩ := mem_addresses.mp ha
@@ -168,12 +168,12 @@ private theorem endpoint_inj {K : ℝ} {L U : ℕ} (prime : Bool) :
 /-- A single matching across every cofactor and every factor count. At each
 negative cofactor exactly the first `min(#primes,#products)` entries of both
 rows are used. This describes the boundary even in cells containing no prime. -/
-theorem exists_ranked_transport (K : ℝ) (L U : ℕ) :
+theorem exists_ranked_transport (K : ℕ → ℝ) (L U : ℕ) :
     ∃ M : OppositeParityMatching GlobalDyadicOneTwoRel (Ioc L U),
       ∀ c ∈ Icc 1 U, μ c = -1 →
-        ((M.sources.filter (fun m => stem m = c)).card = rowCount K L U c ∧
-         (M.targets.filter (fun n => stem (stem n) = c)).card = rowCount K L U c ∧
-         ∀ w ∈ productRow K L U c, (productRow K L U c).card ≤ (primeRow L U c).card →
+        ((M.sources.filter (fun m => stem m = c)).card = rowCount (K c) L U c ∧
+         (M.targets.filter (fun n => stem (stem n) = c)).card = rowCount (K c) L U c ∧
+         ∀ w ∈ productRow (K c) L U c, (productRow (K c) L U c).card ≤ (primeRow L U c).card →
            c*w ∈ M.targets) := by
   classical
   let S := addresses K L U
@@ -219,9 +219,9 @@ theorem exists_ranked_transport (K : ℝ) (L U : ℕ) :
   refine ⟨M, fun c hc hμ => ?_⟩
   have rowcard (e : ℕ × ℕ → ℕ) (decode : ℕ → ℕ) (he : Set.InjOn e S)
       (hd : ∀ a ∈ S, decode (e a) = a.1) :
-      (((S.image e).filter (fun n => decode n = c)).card) = rowCount K L U c := by
+      (((S.image e).filter (fun n => decode n = c)).card) = rowCount (K c) L U c := by
     have heq : (S.image e).filter (fun n => decode n = c) =
-        (range (rowCount K L U c)).image (fun i => e (c,i)) := by
+        (range (rowCount (K c) L U c)).image (fun i => e (c,i)) := by
       ext n
       constructor
       · intro hn
@@ -240,17 +240,17 @@ theorem exists_ranked_transport (K : ℝ) (L U : ℕ) :
     exact congrArg Prod.snd (he (mem_addresses.mpr ⟨hc,hμ,mem_range.mp hi⟩)
       (mem_addresses.mpr ⟨hc,hμ,mem_range.mp hj⟩) hij)
   refine ⟨rowcard f stem hf (fun _ h => (address_endpoints h).2.2.2.1),
-    tset ▸ rowcard g (fun n => stem (stem n)) hg (fun _ h => (address_endpoints h).2.2.2.2), ?_⟩
+    by rw [tset]; exact rowcard g (fun n => stem (stem n)) hg (fun _ h => (address_endpoints h).2.2.2.2), ?_⟩
   intro w hw hle
-  let i := ((productRow K L U c).orderIsoOfFin rfl).symm ⟨w,hw⟩
-  have hi : i.val < rowCount K L U c := by simpa [rowCount,min_eq_right hle] using i.isLt
+  let i := ((productRow (K c) L U c).orderIsoOfFin rfl).symm ⟨w,hw⟩
+  have hi : i.val < rowCount (K c) L U c := by simpa [rowCount,min_eq_right hle] using i.isLt
   have ha : (c,i.val) ∈ S := mem_addresses.mpr ⟨hc,hμ,hi⟩
   rw [tset]
   refine mem_image.mpr ⟨(c,i.val),ha,?_⟩
-  change c * entry (productRow K L U c) i.val = c * w
+  change c * entry (productRow (K c) L U c) i.val = c * w
   simp only [entry, dif_pos i.isLt]
-  exact congrArg (fun x : productRow K L U c => c * (x:ℕ))
-    ((productRow K L U c).orderIsoOfFin rfl |>.apply_symm_apply ⟨w,hw⟩)
+  exact congrArg (fun x : productRow (K c) L U c => c * (x:ℕ))
+    ((productRow (K c) L U c).orderIsoOfFin rfl |>.apply_symm_apply ⟨w,hw⟩)
 
 private theorem ordered_cofactor_of_negative {n : ℕ} (hμ : μ n = -1) :
     evenPrefixCofactor n = stem n := by
@@ -283,7 +283,7 @@ theorem exists_transport_covering_empty_fibres (k B : ℕ) :
   have hK : 0 < K := by dsimp [K]; positivity
   obtain ⟨T,hT⟩ := Filter.eventually_atTop.mp (eventually_balancedProducts_capacity K B 1)
   refine ⟨max T (2*K^3), fun L U => ?_⟩
-  obtain ⟨M,hM⟩ := exists_ranked_transport K L U
+  obtain ⟨M,hM⟩ := exists_ranked_transport (fun _ => K) L U
   refine ⟨M, fun c hc hμ w hw => ?_⟩
   let s := Real.sqrt ((L:ℝ)/c)
   intro hs hU hgap

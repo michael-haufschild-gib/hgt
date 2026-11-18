@@ -458,13 +458,4 @@ theorem eisensteinDualModes_scattering_and_spectral_split {ρ₀ : ℂ}
     by linarith [hq.re_lt_one], hxi_m0, hxi_m_nz, hm_zeta, hxi_p0, hxi_p_nz, hp_zeta,
     him_m, him_m_nz, him_p, him_p_nz, hdiff, hdiff_nz⟩
 
-#print axioms meromorphicOrderAt_riemannZeta_eq_of_mem_zeroQuartetSet
-#print axioms riemannZeta_one_sub_div_nat_ne_zero_of_singleQuartet
-#print axioms riemannZeta_shift_div_nat_ne_zero_of_singleQuartet
-#print axioms riemannZeta_two_sub_and_sub_one_ne_zero_of_singleQuartet
-#print axioms dilatedPowerQuotient_rightHalf_poles_eq_of_singleQuartet
-#print axioms dilatedPowerQuotient_leftHalf_poles_of_singleQuartet
-#print axioms squarefreeDilationQuotient_quarter_pole_isolation
-#print axioms eisensteinDualModes_scattering_and_spectral_split
-
 end GaloisForLFunctions.ZeroForcingCalculus

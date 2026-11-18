@@ -869,18 +869,4 @@ theorem not_hasSingleOffLineQuartet_of_poleNeutralTriple_primeMixed_bddBelow
   rw [neg_neg] at hlt
   exact not_lt.mpr (hM R hR) hlt
 
-#print axioms primePairTerm_probe_shiftProfile
-#print axioms primeMixedForm_probe_shiftProfile_horizon_split
-#print axioms polePart_probe_shiftProfile
-#print axioms abs_gammaMixedForm_shiftProfile_le
-#print axioms bareMixedEnergy_probe_shiftProfile_le_exp_half
-#print axioms nonneg_twoProbe_bareMixedEnergy_unbounded_of_singleQuartet
-#print axioms negativeHalfLineLaplace_poleNeutralTriple
-#print axioms poleNeutralTriple_changes_sign
-#print axioms halfMoments_shiftProfile_poleNeutralTriple_eq_zero
-#print axioms poleNeutralTriple_primeMixed_bounded_of_riemannHypothesis
-#print axioms poleNeutralTriple_primeMixed_unbounded_of_singleQuartet
-#print axioms not_hasSingleOffLineQuartet_of_poleNeutralTriple_primeMixed_bddAbove
-#print axioms not_hasSingleOffLineQuartet_of_poleNeutralTriple_primeMixed_bddBelow
-
 end GaloisForLFunctions.ExclusionOfTheCriticalState

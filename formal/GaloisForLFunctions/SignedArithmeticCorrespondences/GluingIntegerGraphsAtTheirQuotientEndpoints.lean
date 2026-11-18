@@ -84,6 +84,44 @@ theorem mixed_height_finite_part (X N : ℕ) (u b : ℕ → ℤ) :
   unfold psiRemainder
   ring
 
+private theorem single_endpoint {m : ℕ} (hm : 1 ≤ m) (k : ℕ) :
+    quotientCoefficient 1 m (fun _ => 1) (fun j => if j=m then 1 else 0) k =
+      if m=k then 1 else 0 := by
+  simp only [quotientCoefficient, Icc_self, sum_singleton, Nat.div_one, Int.cast_one, one_mul]
+  have h (j : ℕ) :
+      (if j=k then ((if j=m then 1 else 0 : ℤ) : ℝ) else 0) =
+        if j=m then (if m=k then 1 else 0) else 0 := by
+    by_cases hj : j=m
+    · subst j
+      simp
+    · simp [hj]
+  simp only [h]
+  simp [hm]
+
+/-- The optimal loss for *all* mixed integer divisors is exactly the scalar
+Chebyshev loss. A single effective upper endpoint realizes every nonzero
+quotient atom, with the same constant and no loss at a support boundary. -/
+theorem mixed_height_budget_iff (W : ℕ → ℝ≥0) (C : ℝ≥0) :
+    (∀ (X N : ℕ) (u b : ℕ → ℤ),
+      |signedDivisorHeight 1 X N u (upperDivisor N b) - poleProduct X N u b +
+        fractionalBoundary X N u b| ≤
+        C * ∑ k ∈ range (N+1), |quotientCoefficient X N u b k| * (W k : ℝ)) ↔
+      ∀ k : ℕ, 1 ≤ k → |psiRemainder k| ≤ C * (W k : ℝ) := by
+  simp only [mixed_height_finite_part]
+  constructor
+  · intro h m hm
+    have he := h 1 m (fun _ => 1) (fun j => if j=m then 1 else 0)
+    simp only [single_endpoint hm] at he
+    simpa [apply_ite, ite_mul] using he
+  · intro h X N u b
+    rw [mul_sum]
+    refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun k _ => ?_)
+    rw [abs_mul, mul_left_comm]
+    apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
+    cases k with
+    | zero => simp [psiRemainder, chebyshevPsi, mul_nonneg C.coe_nonneg (W 0).coe_nonneg]
+    | succ k => exact h _ (Nat.succ_pos _)
+
 /-- One constant works for every support and both integer divisors. The variation
 is measured after cancellation between all pairs sharing a quotient. -/
 theorem mixed_height_bound (ε : ℝ) (hε : 0 < ε) :
@@ -92,15 +130,11 @@ theorem mixed_height_bound (ε : ℝ) (hε : 0 < ε) :
         fractionalBoundary X N u b| ≤
       C * ∑ k ∈ range (N+1), |quotientCoefficient X N u b k| * (k : ℝ)^(zetaZeroAbscissa+ε) := by
   obtain ⟨C,hC,hbound⟩ := exists_psiRemainder_le_rpow_zetaZeroAbscissa ε hε
-  refine ⟨C,hC,fun X N u b => ?_⟩
-  rw [mixed_height_finite_part, mul_sum]
-  refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun k _ => ?_)
-  rw [abs_mul, mul_left_comm]
-  apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
-  cases k with
-  | zero => simp [psiRemainder, chebyshevPsi, hC, Real.rpow_nonneg]
-  | succ k => exact hbound _ (Nat.succ_pos _)
+  exact ⟨C,hC,(mixed_height_budget_iff
+    (fun k => ⟨_, Real.rpow_nonneg (Nat.cast_nonneg k) _⟩) ⟨C,hC⟩).2 hbound⟩
 
+#print axioms height_eq_quotient
+#print axioms mixed_height_budget_iff
 #print axioms mixed_height_finite_part
 #print axioms mixed_height_bound
 

@@ -851,17 +851,4 @@ theorem sum_vonMangoldt_mul_fract_upper_sqrt_concentration {X : ℝ} (hX : 1 ≤
   rw [abs_le]
   constructor <;> linarith
 
-#print axioms not_zetaZeroDiscWeaklyRecurrent_of_singleQuartet
-#print axioms zetaReturnSet_confined_of_singleQuartet
-#print axioms hasSum_smoothAltEulerProduct
-#print axioms smoothAltEulerProduct_eq_head_add_tail
-#print axioms smoothAltEulerProduct_analytic_and_ne_zero_on_strip
-#print axioms smoothAltTail_lower_bound_near_zero
-#print axioms sin_mul_log_two_ne_zero_or_three_ne_zero
-#print axioms cpow_eq_dilationAlpha_add_dilationBeta
-#print axioms singleQuartet_universal_twoPrime_chebyshev_span
-#print axioms riemannZeta_eq_zero_iff_fract_mellin_strip
-#print axioms sum_vonMangoldt_mul_fract_eq_harmonic_sub_log
-#print axioms sum_vonMangoldt_mul_fract_upper_sqrt_concentration
-
 end GaloisForLFunctions.ExceptionalLayerTheory

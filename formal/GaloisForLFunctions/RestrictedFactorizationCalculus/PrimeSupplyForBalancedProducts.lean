@@ -112,8 +112,11 @@ theorem eventually_balancedProducts_capacity (K : ℝ) (B D : ℕ) :
     have hcnt : ((balancedProducts K s u v).card : ℝ) ≤
         (windowPrimes (s/K) (K*s)).card * (4*K*(v-u)/(s*Real.log s)) := by
       calc _ ≤ ∑ q ∈ windowPrimes (s/K) (K*s), ((windowPrimes (u/q) (v/q)).card : ℝ) := by
-                  exact_mod_cast (card_biUnion_le.trans (sum_le_sum
-                    (fun q _ => card_image_le (s := windowPrimes (u/q) (v/q)) (f := (q*·)))))
+                  have hn : (balancedProducts K s u v).card ≤
+                      ∑ q ∈ windowPrimes (s/K) (K*s), (windowPrimes (u/q) (v/q)).card :=
+                    card_biUnion_le.trans (sum_le_sum (fun (q : ℕ) _ =>
+                      card_image_le (s := windowPrimes (u/q) (v/q)) (f := (q*·))))
+                  exact_mod_cast hn
            _ ≤ _ := (sum_le_sum hrow).trans_eq (by simp)
     have hlogbig : Real.log (2*s^2) = Real.log 2 + 2 * Real.log s := by
       rw [Real.log_mul (by norm_num) ht.ne', Real.log_pow]; norm_num
@@ -139,7 +142,7 @@ theorem eventually_balancedProducts_capacity (K : ℝ) (B D : ℕ) :
     have hex := mul_le_mul_of_nonneg_left hcnt (Nat.cast_nonneg D)
     have hfinal : (D:ℝ) * (balancedProducts K s u v).card ≤ (v-u)/(6 * Real.log s) := by
       refine hex.trans ?_
-      rw [← mul_div_assoc, div_le_div_iff₀ (by positivity) (by positivity)]
+      rw [← mul_div_assoc, ← mul_div_assoc, div_le_div_iff₀ (by positivity) (by positivity)]
       nlinarith only [mul_le_mul_of_nonneg_right hcoef (mul_nonneg hlen hlog.le)]
     exact_mod_cast hfinal.trans (le_trans (by
       rw [div_le_div_iff₀ (by positivity) (by positivity)]

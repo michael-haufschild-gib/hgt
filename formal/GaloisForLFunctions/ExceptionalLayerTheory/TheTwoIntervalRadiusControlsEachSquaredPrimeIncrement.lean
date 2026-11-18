@@ -173,7 +173,6 @@ theorem normalized_increment_sub_trace (hΘ : 1/2 < zetaZeroAbscissa) (h : ℝ) 
     intro t
     simp only [Function.comp_def, Pi.sub_apply, Real.rpow_def_of_pos (Real.exp_pos _),
       Real.log_exp, E, F, thetaLogError]
-    change _ = (Chebyshev.theta (Real.exp t)-Real.exp t)/Real.exp (β*t)-primeErrorBoundaryTrace β t
     dsimp only [β]
     rw [mul_comm t zetaZeroAbscissa]
     ring
@@ -185,7 +184,7 @@ theorem normalized_increment_sub_trace (hΘ : 1/2 < zetaZeroAbscissa) (h : ℝ) 
   simp only [Function.comp_apply, E, F, boundaryStep, normalizedPrimeIncrement, logStepIncrement,
     β, mul_add, Real.exp_add]
   field_simp
-  <;> ring
+  ring
 
 /-- Bounded radial discrepancy controls the individual squared increment to the
 same normalized square-root accuracy, uniformly at all sufficiently late times. -/
@@ -205,9 +204,8 @@ theorem squared_normalizedPrimeIncrement_sub_boundary {γ : ℝ} {m : ℕ}
   have hR (t : ℝ) : U t^2+U (t+h)^2 = R t^2 := by
     dsimp only [U,R,normalizedPrimeIncrement]
     rw [twoIntervalRadius_eq_complex_norm (Real.exp_pos _)]
-    simp only [div_pow, Complex.sq_norm, Complex.normSq_mk, A, mul_add, Real.exp_add]
+    simp only [div_pow, Complex.sq_norm, Complex.normSq_mk, mul_add, Real.exp_add]
     field_simp
-    <;> ring
   have hbounded := hb
   rw [isLogSqrtSqUnbounded_iff_not_eventually_le, not_not] at hbounded
   obtain ⟨K,T,hK⟩ := hbounded

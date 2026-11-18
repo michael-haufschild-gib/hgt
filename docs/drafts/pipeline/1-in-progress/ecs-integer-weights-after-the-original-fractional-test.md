@@ -2,6 +2,12 @@
 
 Put $X=e^T$, $m=\int\Phi$, $A=\int e^{-v/2}\Phi(v)\,dv$, $N(s)=\sum_{k\ge1}k^{-1/2}\Phi(s-\log k)$ and $D(s)=N(s)-e^{s/2}A$. The whole tested weight $W_T(x)$ satisfies $W'_T(x)=m x^{-3/2}D(T-\log x)$. At the moving far edge the normalized derivative of the actual complementary weight tends to $-mA$. The sign of this coefficient is open. [Moving-edge theorem](../3-formalized/ecs-tested-state-weight-at-the-moving-far-edge.md).
 
+**Positive weight below the test abscissa.** For $x=e^p$, $y=e^{T-p}$, the exact weight satisfies
+\[
+ e^{T/2}W_T(e^p)=m\int e^{v/2}\Phi(v)\{y e^{-v}\}\,dv.
+\]
+Under $s=e^{-v}$ the density is $h(s)=s^{-3/2}\Phi(-\log s)$ on $s>0$, extended by zero to $s\le0$. It belongs to $L^1$ and has mass $\int e^{v/2}\Phi(v)\,dv$. Averaging $\{ys+a\}$ over $0\le a\le1$ gives $1/2$. Translating $h$ by $a/y$ in the same integral bounds the error by $\sup_{0\le b\le1/y}\|h(\cdot+b)-h\|_1\to0$. At the actual far edge $p=\log(e^r+\sqrt{e^r r})$, the omitted time strip costs at most $|m|\int_{r-p}^0e^{v/2}|\Phi(v)|\,dv$ after the same scaling. Thus $e^{T/2}V_T(r)\to (m/2)\int e^{v/2}\Phi(v)\,dv>0$ whenever $r\to\infty$ and $T-p\to\infty$. Positivity uses the ground-state charge at $+1/2$. This identifies the sign of each low-abscissa complementary weight. The signs of its successive differences and their arithmetic sum still require control. Lean verification pending.
+
 **Time-truncation error.** Put $a_n=\Lambda(n)-1$ and $E(Y)=\sup_{L\ge k\ge\lfloor Y\rfloor}|\sum_{k<n\le L}a_n/n|$. The [centered Mertens limit](../../../../formal/GaloisForLFunctions/RHTower/MertensSecondTheorem.lean) gives $E(Y)\to0$. For $R>\max(T,1)$ the signed integral over $t>R$ of every finite row through $L$ has absolute value at most
 \[
  |m|e^{T/2} E(e^R)\int_{-\infty}^0 e^{-v/2}|\Phi(v)|\,dv .

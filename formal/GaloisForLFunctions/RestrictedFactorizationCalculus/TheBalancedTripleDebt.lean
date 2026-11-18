@@ -121,13 +121,16 @@ theorem eventually_transported_empty_fibre_mass :
     have hsy : s ≤ y := by
       have hh : (X:ℝ)/p ≤ y^2 := (div_le_iff₀ hpR).2 (by
         rw [← hy3]; nlinarith only [mul_le_mul_of_nonneg_left hp0.le (sq_nonneg y)])
-      nlinarith only [hs2,hh,hs0,hy0,sq_nonneg (s-y)]
+      by_contra! hlt
+      have hg := mul_lt_mul_of_pos_right hlt (add_pos_of_pos_of_nonneg hy0 hs0)
+      nlinarith only [hs2,hh,hg]
     have hys : y ≤ 2*s := by
       have hh : y^2/4 ≤ (X:ℝ)/p := (le_div_iff₀ hpR).2 (by
         rw [← hy3]; nlinarith only [mul_le_mul_of_nonneg_left hp1 (sq_nonneg y),pow_nonneg hy0.le 3])
       by_contra! hlt
       nlinarith only [hs2,hh,mul_lt_mul_of_pos_right hlt (show 0<y+2*s by linarith only [hy0,hs0])]
-    have hl : (X:ℝ)/p/q < r := (div_lt_iff₀ hqR).2 ((div_lt_iff₀ hpR).2 (by linarith only [hnl]) |>.trans_eq (by ring))
+    have hl : (X:ℝ)/p/q < r := by
+      rw [div_lt_iff₀ hqR, div_lt_iff₀ hpR]; linarith only [hnl]
     have hu : (r:ℝ) ≤ (2*X:ℕ)/ (p:ℝ)/q := by
       rw [le_div_iff₀ hqR, le_div_iff₀ hpR]; push_cast; linarith only [hnu]
     have hw : q*r ∈ productRow (↑(3:ℕ)+1) X (2*X) p := by
@@ -143,7 +146,7 @@ theorem eventually_transported_empty_fibre_mass :
       exact hle.trans (by exact_mod_cast hnu)
     exact mem_filter.mpr (hM p (mem_Icc.mpr ⟨hp.pos,hpU⟩) (moebius_apply_prime hp) (q*r) hw
       (by change T ≤ s; linarith only [hys,((le_max_right _ _).trans hx : 2*T ≤ y)])
-      le_rfl (by simp; push_cast; ring_nf; linarith))
+      le_rfl (by simp only [pow_zero, div_one, Nat.cast_mul, Nat.cast_ofNat]; ring_nf))
   have h1 := hcount 1 le_rfl (by norm_num)
   have h2 := hcount (9/8) (by norm_num) (by norm_num)
   have h3 := hcount (5/4) (by norm_num) le_rfl

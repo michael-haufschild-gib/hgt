@@ -5,7 +5,7 @@
 
 At Θ>½ a trial radial discrepancy of order O(√x log²x) forces exactly one conjugate pair on Re s=Θ. All multi-pair and unattained extrema are excluded. [Formalized theorem](../3-formalized/qic-the-extremal-trace-of-the-ordinary-prime-radius.md)
 
-**Descent below the extremal pair.** Write h for the trial step, D for the limiting signed increment, U(t)=exp(−Θt) Δₕ(θ(exp t)−exp t), and w(t)=exp((½−Θ)t)(1+t)². The squared-radius error gives g(t)+g(t+h)=O(w(t)) for g=U²−D². Subtract the next translate. Since g tends to zero, summation along t+2nh gives g=O(w).
+**Descent below the extremal pair.** Write h for the trial step, D for the limiting signed increment, U(t)=exp(−Θt) Δₕ(θ(exp t)−exp t), and w(t)=exp((½−Θ)t)(1+t)². The bound |U²−D²|=O(w) holds uniformly at all sufficiently large t, including the nodes of D. [Lean proof](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheTwoIntervalRadiusControlsEachSquaredPrimeIncrement.lean).
 
 The single extremal pair makes D a sinusoid. Averaging θ over [x,x+1] changes it by at most log(x+1) and gives a continuous increment. On each lobe the smoothed increment has the sign of D at its crest. A sign change between a point and its nearest crest therefore requires D²=O(w) at the point. This gives (U−D)²=O(w) and, by polarization, |D(U−D)|=O(w).
 
