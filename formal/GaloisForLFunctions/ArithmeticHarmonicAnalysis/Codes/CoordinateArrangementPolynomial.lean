@@ -27,7 +27,7 @@ theorem coeff_arrangementPolynomial (K : Finset (Finset ι)) (k : ℕ) :
     (arrangementPolynomial K).coeff k =
       ∑ s ∈ K, (-1 : ℤ) ^ (Fintype.card ι - s.card - k) *
         ((Fintype.card ι - s.card).choose k : ℤ) := by
-  simp only [arrangementPolynomial, finset_sum_coeff]
+  simp only [arrangementPolynomial, finsetSum_coeff]
   refine sum_congr rfl fun s _ => ?_
   simpa only [map_neg, C_1, sub_eq_add_neg] using
     (coeff_X_add_C_pow (-1 : ℤ) (Fintype.card ι - s.card) k)
@@ -39,7 +39,7 @@ theorem eval_arrangementPolynomial {F : Type*} [Field F] [Fintype F]
       ((arrangementWords (fun _ : ι => ({0} : Finset F)) K).card : ℤ) := by
   rw [card_pointArrangement]
   have hF : 1 ≤ Fintype.card F := Fintype.card_pos
-  simp [arrangementPolynomial, Polynomial.eval_finset_sum, Nat.cast_sub hF]
+  simp [arrangementPolynomial, Polynomial.eval_finsetSum, Nat.cast_sub hF]
 
 /-- Translation to the torus-size variable recovers a polynomial with nonnegative coefficients. -/
 theorem arrangementPolynomial_translate (K : Finset (Finset ι)) :
@@ -49,8 +49,8 @@ theorem arrangementPolynomial_translate (K : Finset (Finset ι)) :
 /-- Each translated coefficient recovers a whole codimension layer, including empty layers. -/
 theorem coeff_arrangementPolynomial_translate (K : Finset (Finset ι)) (d : ℕ) :
     ((arrangementPolynomial K).comp (X + 1)).coeff d =
-      ((K.filter fun s => Fintype.card ι - s.card = d).card : ℤ) := by
-  rw [arrangementPolynomial_translate, finset_sum_coeff]
+      ((K.filter fun s : Finset ι => Fintype.card ι - s.card = d).card : ℤ) := by
+  rw [arrangementPolynomial_translate, finsetSum_coeff]
   simp [coeff_X_pow, sum_boole, eq_comm]
 
 /-- Two face families give the same counting polynomial precisely when they have
@@ -58,12 +58,12 @@ the same number of faces in every codimension. -/
 theorem arrangementPolynomial_eq_iff {κ : Type*} [Fintype κ]
     (K : Finset (Finset ι)) (L : Finset (Finset κ)) :
     arrangementPolynomial K = arrangementPolynomial L ↔ ∀ d,
-      (K.filter fun s => Fintype.card ι - s.card = d).card =
-      (L.filter fun s => Fintype.card κ - s.card = d).card := by
+      (K.filter fun s : Finset ι => Fintype.card ι - s.card = d).card =
+      (L.filter fun s : Finset κ => Fintype.card κ - s.card = d).card := by
   constructor
   · intro h d
     exact_mod_cast (calc
-      (((K.filter fun s => Fintype.card ι - s.card = d).card : ℕ) : ℤ) =
+      (((K.filter fun s : Finset ι => Fintype.card ι - s.card = d).card : ℕ) : ℤ) =
           ((arrangementPolynomial K).comp (X+1)).coeff d :=
         (coeff_arrangementPolynomial_translate K d).symm
       _ = _ := by rw [h, coeff_arrangementPolynomial_translate])
@@ -78,15 +78,20 @@ theorem arrangementPolynomial_eq_iff {κ : Type*} [Fintype κ]
 theorem arrangementPolynomial_union_add_inter (K L : Finset (Finset ι)) :
     arrangementPolynomial (K ∪ L) + arrangementPolynomial (K ∩ L) =
       arrangementPolynomial K + arrangementPolynomial L := by
-  exact sum_union_inter K L _
+  exact sum_union_inter
 
 /-- Deleting a face removes exactly the torus stratum of its codimension. -/
 theorem arrangementPolynomial_insert (s : Finset ι) (K : Finset (Finset ι)) :
     arrangementPolynomial (insert s K) = (X-1)^(Fintype.card ι - s.card) +
       arrangementPolynomial (K.erase s) := by
   unfold arrangementPolynomial
-  rw [← insert_erase (mem_insert_self s K), sum_insert (notMem_erase _ _)]
-  simp
+  calc
+    _ = ∑ t ∈ insert s (K.erase s), (X-1 : ℤ[X]) ^ (Fintype.card ι-t.card) := by
+      have he : insert s K = insert s (K.erase s) := by
+        ext t
+        by_cases h : t = s <;> simp [h]
+      rw [he]
+    _ = _ := sum_insert (notMem_erase _ _)
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.Codes

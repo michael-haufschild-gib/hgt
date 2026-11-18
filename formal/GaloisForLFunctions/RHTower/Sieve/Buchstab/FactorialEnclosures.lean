@@ -72,7 +72,7 @@ theorem profile_mem_enclosure (n : ℕ) : ∀ x ∈ Icc (0:ℝ) 1,
     · calc
         _ ≤ e + ((enclosure n).1-e)*(x/(c+x)) := by
           have h := mul_le_mul_of_nonpos_left hratio (sub_nonpos.mpr he.1)
-          linarith only [h, div_eq_mul_inv ((enclosure n).1-e) (c+1), one_div (c+1)]
+          simpa only [div_eq_mul_inv, one_mul] using add_le_add_right h e
         _ = _ := (splitMean _).symm
         _ ≤ _ := div_le_div_of_nonneg_right (add_le_add_right hl _) hd.le
     · calc
@@ -81,7 +81,7 @@ theorem profile_mem_enclosure (n : ℕ) : ∀ x ∈ Icc (0:ℝ) 1,
         _ = _ := splitMean _
         _ ≤ _ := by
           have h := mul_le_mul_of_nonneg_left hratio (sub_nonneg.mpr he.2)
-          linarith only [h, div_eq_mul_inv ((enclosure n).2-e) (c+1), one_div (c+1)]
+          simpa only [div_eq_mul_inv, one_mul] using add_le_add_right h e
 
 /-- The width is exactly reciprocal factorial, independently of the intervening endpoints. -/
 theorem enclosure_width (n : ℕ) :
@@ -105,7 +105,7 @@ theorem enclosure_nested (n : ℕ) :
     Icc (enclosure (n+1)).1 (enclosure (n+1)).2 ⊆
       Icc (enclosure n).1 (enclosure n).2 := by
   have he := profile_mem_enclosure n 1 ⟨zero_le_one, le_rfl⟩
-  have hd : (1:ℝ) ≤ (n:ℝ)+3 := by positivity
+  have hd : (1:ℝ) ≤ (n:ℝ)+3 := by linarith [Nat.cast_nonneg (α := ℝ) n]
   have hp : (0:ℝ) < (n:ℝ)+3 := by positivity
   apply Icc_subset_Icc
   · change _ ≤ profile n 1 + ((enclosure n).1-profile n 1)/((n:ℝ)+3)
@@ -125,8 +125,10 @@ theorem profile_tail_difference (n a b : ℕ) (x y : Icc (0:ℝ) 1) :
     | succ k ih => exact (enclosure_nested (n+k)).trans ih
   have hx := nest a (profile_mem_enclosure _ x x.property)
   have hy := nest b (profile_mem_enclosure _ y y.property)
-  rw [← enclosure_width, abs_le]
+  rw [← enclosure_width n, abs_le]
   constructor <;> linarith only [hx.1, hx.2, hy.1, hy.2]
+
+#print axioms profile_tail_difference
 
 end
 end RHTower.Sieve.Buchstab

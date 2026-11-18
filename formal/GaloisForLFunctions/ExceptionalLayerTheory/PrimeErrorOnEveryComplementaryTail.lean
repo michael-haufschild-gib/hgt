@@ -217,6 +217,67 @@ theorem prime_error_on_shorter_horizons {X : ℕ} (hx : 1≤X) (D : ℕ) :
   have ht := (primeErrorTail_reciprocal_bound D X hm).trans (mul_le_mul_of_nonneg_left hu (by positivity))
   exact (abs_add_le _ _).trans ((add_le_add (complete_primeErrorTail_bound D hx) ht).trans_eq (by ring))
 
+/-- Power cutoff for the signed smaller-horizon prime errors. -/
+def shorterPrimeErrors (δ : ℝ) (X : ℕ) : ℝ :=
+  let D := ⌊(X : ℝ)^δ⌋₊
+  ∑ v ∈ Ioc D ⌊Real.sqrt X⌋₊, innerJump D v*(Chebyshev.psi (X/v : ℕ)-(X/v : ℕ))
+
+/-- Every retained error is evaluated below the complementary power
+of the divided horizon. -/
+theorem shorterPrimeErrors_horizon {X v : ℕ} {δ : ℝ} (hx : 1≤X)
+    (hv : v ∈ Ioc ⌊(X : ℝ)^δ⌋₊ ⌊Real.sqrt X⌋₊) :
+    ((X/v : ℕ) : ℝ)<(X : ℝ)^(1-δ) := by
+  have hx₀ : (0 : ℝ)<X := by exact_mod_cast hx
+  have hh : (X : ℝ)^δ < v := (Nat.lt_floor_add_one _).trans_le
+    (by exact_mod_cast (show ⌊(X : ℝ)^δ⌋₊+1≤v from (mem_Ioc.mp hv).1))
+  have hv₀ := (Real.rpow_pos_of_pos hx₀ δ).trans hh
+  apply Nat.cast_div_le.trans_lt
+  apply (div_lt_iff₀ hv₀).mpr
+  have eq : (X : ℝ)^(1-δ)*(X : ℝ)^δ=X := by rw [←Real.rpow_add hx₀,sub_add_cancel,Real.rpow_one]
+  exact eq.symm.le.trans_lt (mul_lt_mul_of_pos_left hh (Real.rpow_pos_of_pos hx₀ _))
+
+/-- Both original Vaughan widths admit the same signed expansion in
+smaller Chebyshev errors. A power cutoff costs exactly that power on
+top of the square root, with one uniform constant for all cutoffs. -/
+theorem shorter_prime_error_cofactors :
+    ∃ K : ℝ, 0≤K ∧ ∀ {δ : ℝ}, 0≤δ → ∀ V W N : ℕ,
+      |cofactorCountError V W N-∑ d ∈ Icc 1 (min N W), Sieve.typeIIShort V d*shorterPrimeErrors δ (N/d)|≤
+        (∑ d ∈ Icc 1 W, |Sieve.typeIIShort V d|)*(K*(N : ℝ)^(1/2+δ)) := by
+  obtain ⟨M,hM,hmass⟩ := mass_uniform
+  let C := 41+2*|Real.eulerMascheroniConstant|
+  have hC : 0≤C := by dsimp [C]; positivity
+  let K := 2*M*C
+  have hK : 0≤K := by dsimp [K]; positivity
+  refine ⟨K,hK,?_⟩
+  intro δ hδ V W N
+  let f (x : ℕ) := (Chebyshev.psi x-x)-shorterPrimeErrors δ x
+  let g (x : ℕ) := K*(x : ℝ)^(1/2+δ)
+  have he : 0≤(1/2 : ℝ)+δ := by linarith only [hδ]
+  have bound (x : ℕ) (hx : 1≤x) : |f x|≤g x := by
+    let D := ⌊(x : ℝ)^δ⌋₊
+    have hx₁ : (1 : ℝ)≤x := by exact_mod_cast hx
+    have hx₀ := zero_lt_one.trans_le hx₁
+    have hp := Real.one_le_rpow hx₁ hδ
+    have hroot := Real.one_le_sqrt.mpr hx₁
+    have hd : ((D+1 : ℕ) : ℝ)≤2*(x : ℝ)^δ := by
+      push_cast; linarith only [Nat.floor_le (zero_le_one.trans hp),hp]
+    have hm := (hmass (D+1) (Nat.succ_pos D)).trans (mul_le_mul_of_nonneg_left hd hM)
+    have hc : 41*Real.sqrt x+2*|Real.eulerMascheroniConstant|≤C*Real.sqrt x := by
+      have hg := mul_le_mul_of_nonneg_left hroot (show 0≤2*|Real.eulerMascheroniConstant| by positivity)
+      dsimp [C]; linarith only [hg]
+    apply (prime_error_on_shorter_horizons hx D).trans
+    apply (mul_le_mul hm hc (by positivity) (by positivity)).trans_eq
+    dsimp only [g,K]
+    rw [Real.rpow_add hx₀,←Real.sqrt_eq_rpow]
+    ring
+  have hh := cofactor_sum_majorant f g (fun n => mul_nonneg hK (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+    (fun x n _ hn => mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg _) (by exact_mod_cast hn) he) hK)
+    bound V W N
+  rw [cofactorCountError_eq,←sum_sub_distrib]
+  simpa only [f,g,mul_sub] using hh
+
+#print axioms shorterPrimeErrors_horizon
+#print axioms shorter_prime_error_cofactors
 #print axioms prime_error_on_shorter_horizons
 #print axioms complete_primeErrorTail_identity
 #print axioms complete_primeErrorTail_bound

@@ -110,5 +110,10 @@ theorem hasDerivAt_profile_succ (n : ℕ) (x : Set.Ioi (0:ℝ)) :
   field_simp [d, hd]
   <;> ring
 
+#print axioms intervalMass_increment
+#print axioms profile_glue
+#print axioms profile_one_formula
+#print axioms hasDerivAt_profile_succ
+
 end
 end RHTower.Sieve.Buchstab

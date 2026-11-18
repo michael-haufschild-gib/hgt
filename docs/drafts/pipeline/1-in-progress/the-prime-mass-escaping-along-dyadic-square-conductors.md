@@ -16,3 +16,7 @@ $$
 \sum_p l_n(p)\log p-\sum_{j\ge0}8^{-j}\log q_{2^jn}=4n^3M .
 $$
 In particular the normalized dyadic log product differs from $4n[\sum_p F_n(p)\log p-n^2M]$ by at most $2Cn^2$. Bounding the centered positive prime mass at square-root scale remains open. [Absolute prime exponent estimate](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/ThePrimeExponentsOnTheSquareDiagonal.lean) · [Ordinary prime test and positive mass](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/TheLogarithmicMomentOfTheSquarePrimeProfile.lean)
+
+The weight $1/8$ is the transition between absolute convergence and divergence in prime order. For $0\le r<1/8$ the full absolute double series converges by the cubic height bound. Write $B_n=4nF_n$. If $1/8<r<2^{-2-2w}$, the series of signed conductor logs converges absolutely by the width bound. At each prime its coordinate sum equals
+$$B_n+(r-1/8)\sum_{j\ge1}r^{j-1}B_{2^j n}+\sum_{j\ge0}r^j r_{2^j n}.$$
+The last sum has finite absolute logarithmic mass since $4r<1$. The middle sum is nonnegative, and its logarithmic mass diverges since the endpoint masses grow as $4Mn^3 8^j$. Summing the prime coordinates in increasing prime order therefore tends to $+\infty$ throughout this interval.

@@ -111,5 +111,9 @@ theorem card_words_weight (k : ℕ) :
       simp [(mem_powersetCard.mp hs).2]
     _ = _ := by simp [card_powersetCard]
 
+#print axioms card_pointArrangement
+#print axioms card_exact_matches
+#print axioms card_words_weight
+
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.Codes

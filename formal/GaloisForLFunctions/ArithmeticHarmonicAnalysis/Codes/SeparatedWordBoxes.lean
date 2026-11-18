@@ -151,5 +151,11 @@ theorem ternary_chart_collision (S T : Finset (Fin 3 → Fin 3)) :
   have hlow := Nat.mul_le_mul hS (hT.trans (card_le_card hsub))
   omega
 
+#print axioms oppositeBox_triple
+#print axioms double_oppositeBox
+#print axioms oppositeBox_eq_full_distance
+#print axioms exists_sharp_opposite_pair
+#print axioms ternary_chart_collision
+
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.Codes

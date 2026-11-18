@@ -19,6 +19,10 @@ noncomputable section
 /-- The positive-axis transform expression in terms of the exponential integral. -/
 def transform (s : ℝ) : ℝ := Real.exp (expIntegralOne s) - 1
 
+private theorem one_add_transform (s : ℝ) : 1 + transform s = Real.exp (expIntegralOne s) := by
+  unfold transform
+  ring
+
 /-- Regularization of `s * (1 + transform s)` through the origin. -/
 def regular (s : ℝ) : ℝ := Real.exp (einCompare s - Real.eulerMascheroniConstant)
 
@@ -34,7 +38,7 @@ theorem expIntegralOne_eq_regular_log {s : ℝ} (hs : 0 < s) :
 /-- Exact desingularization for every positive real argument. -/
 theorem regular_eq_mul (s : Set.Ioi (0 : ℝ)) :
     regular s = s.val * (1 + transform s) := by
-  simp only [transform, add_sub_cancel]
+  rw [one_add_transform]
   rw [expIntegralOne_eq_regular_log s.property, Real.exp_sub, Real.exp_log s.property]
   change regular s.val = s.val * (regular s.val / s.val)
   field_simp [s.property.ne']
@@ -80,8 +84,7 @@ theorem tendsto_transform_finitePart :
 /-- The retention quantile is the reciprocal of the shifted transform. -/
 theorem retention_mul_transform (s : ℝ) :
     retentionQuantile s * (1 + transform s) = 1 := by
-  simp only [retentionQuantile, transform, add_sub_cancel]
-  rw [← Real.exp_add, neg_add_cancel, Real.exp_zero]
+  rw [one_add_transform, retentionQuantile, ← Real.exp_add, neg_add_cancel, Real.exp_zero]
 
 /-- Analytic normalization gives the right-hand slope of the retention quantile. -/
 theorem tendsto_retention_div_argument :
@@ -93,12 +96,13 @@ theorem tendsto_retention_div_argument :
   rw [← Real.exp_neg, neg_neg] at hi
   refine hi.congr' ?_
   filter_upwards [self_mem_nhdsWithin] with s hs
-  have hr := retention_mul_transform s
-  have hpos : 0 < 1 + transform s := by simpa [transform] using Real.exp_pos (expIntegralOne s)
-  rw [regular_eq_mul ⟨s, hs⟩, mul_inv_rev]
-  have he : (1 + transform s)⁻¹ = retentionQuantile s :=
-    (eq_inv_of_mul_eq_one_left hr).symm
-  rw [he, div_eq_mul_inv]
+  rw [regular_eq_mul ⟨s, hs⟩, one_add_transform, mul_inv_rev, retentionQuantile,
+    Real.exp_neg, div_eq_mul_inv]
+
+#print axioms tendsto_mul_transform_zero
+#print axioms tendsto_transform_finitePart
+#print axioms retention_mul_transform
+#print axioms tendsto_retention_div_argument
 
 end
 end RHTower.Sieve.Buchstab

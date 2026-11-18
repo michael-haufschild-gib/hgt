@@ -27,3 +27,10 @@ Indeed the sum of the floors is $L(x)$, and the integral is $x[\log(Y/x)+1-\gamm
  =O_\Phi((1+T)e^{-T/2})\quad(T\ge0).
 \]
 Stirling's estimate gives the last bound. The ordinary-prime response consequently tends to $-\tfrac12\mathcal LF(0)\int K$. This window is nonnegative and its signed response is determined at every center. An upper bound for either sign mass inside the window remains open.
+
+Stirling’s constant predicts the first nonzero signed term:
+\[
+ e^{T/2}(K*E_\Lambda)(T)\longrightarrow
+ -\tfrac12\log(2\pi)\,\mathcal LF(1/2).
+\]
+Indeed $x(\log x-1)-L(x)=(\{x\}-1/2)\log x-\tfrac12\log(2\pi)+O(1/x)$. Box-average $\Phi$ over log shifts of length $h=e^{-2T/3}$. The [first absolute increment estimate](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheFirstAbsoluteMomentOfStateIncrements.lean) bounds the $L^1$ approximation error by $O(\sqrt h)$; the derivative of the average has $L^1$ norm at most $2\|\Phi\|_1/h$. On $u\le1$, a primitive from $-\infty$ of $e^{u/2}(T-u)(\{e^{T-u}\}-1/2)$ is $O((1+T)e^{-T})$, by the bounded periodic primitive of $\{x\}-1/2$ and integration by parts. Thus the sawtooth costs $O((1+T)e^{-T/3})$. The precise asymptotic and its transfer to the physical wave await Lean verification.

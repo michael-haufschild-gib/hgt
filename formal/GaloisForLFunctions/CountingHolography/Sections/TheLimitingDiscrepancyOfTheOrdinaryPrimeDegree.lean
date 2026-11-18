@@ -171,7 +171,7 @@ square conductors. Their short rows converge term by term and the two
 long rows see the same square-root density. -/
 theorem successorSquare_proper_power_contact_limit :
     ∃ c : ℝ, Tendsto (fun n => fullPrimeContact (D n)-ordinaryPrimeContact (D n)) atTop (𝓝 c) := by
-  obtain ⟨c,hc⟩ := longProperPowerContact_limit
+  have hc := longProperPowerContact_limit
   have hX : Tendsto X atTop atTop := (tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop
   have hY : Tendsto Y atTop atTop := tendsto_atTop_mono (fun n => pow_le_pow_left₀ (Nat.cast_nonneg n)
     (by exact_mod_cast (by omega : n ≤ 2*n+1)) 2) hX
@@ -193,6 +193,69 @@ theorem successorSquare_ordinary_contact_discrepancy_limit :
   change (_+(integerProbe _ (D n)+fullPrimeContact (D n))-_)-(fullPrimeContact (D n)-ordinaryPrimeContact (D n))=_
   ring
 
+/-- Linear mesh error divided by m² costs at most C/n simultaneously for
+every m at or above the conductor index. -/
+private theorem normalized_mesh_error {C P g : ℝ} {n m : ℕ} (hC : 0 ≤ C) (hn : 0 < n) (hm : n ≤ m)
+    (h : |g-(m:ℝ)^2*P| ≤ C*n) : |g/(m:ℝ)^2-P| ≤ C/n := by
+  have hn₀ : (0:ℝ) < n := Nat.cast_pos.mpr hn
+  have hm₀ : (0:ℝ) < m := Nat.cast_pos.mpr (hn.trans_le hm)
+  have hsq := pow_le_pow_left₀ hn₀.le (Nat.cast_le.mpr hm) 2
+  rw [show g/(m:ℝ)^2-P=(g-(m:ℝ)^2*P)/(m:ℝ)^2 by field_simp,abs_div,abs_of_nonneg (sq_nonneg _)]
+  calc _ ≤ C*n/(m:ℝ)^2 := div_le_div_of_nonneg_right h (sq_nonneg _)
+    _ ≤ C/n := (div_le_div_iff₀ (sq_pos_of_pos hm₀) hn₀).mpr (by
+      linarith only [mul_le_mul_of_nonneg_left hsq hC])
+
+/-- At every multiplicity above the diagonal, both the actual excess of
+the full log ideal over its ordinary part and the compensated ordinary
+log ideal have common limits, uniformly in the multiplicity. -/
+theorem square_prime_generator_discrepancies_above_diagonal :
+    ∃ c b : ℝ, ∀ ε : ℝ, 0 < ε → ∀ᶠ n : ℕ in atTop, ∀ m : ℕ, n ≤ m →
+      let a := m • successorSquareTriple n
+      |(Real.log (generator a:ℝ)-Real.log (ordinaryPrimeGenerator a:ℝ))/(m:ℝ)^2-c| ≤ ε ∧
+      |(Real.log (ordinaryPrimeGenerator a:ℝ)+ordinaryFloorLoss a)/(m:ℝ)^2+
+        integerProbe _ (successorSquareTriple n)-b| ≤ ε := by
+  obtain ⟨c,hc⟩ := successorSquare_proper_power_contact_limit
+  obtain ⟨b,hb⟩ := successorSquare_ordinary_contact_discrepancy_limit
+  obtain ⟨F,hF,hfull⟩ := successorSquare_full_generator_error
+  obtain ⟨O,hO,hord⟩ := successorSquare_floor_corrected_mesh_error
+  let C := F+O
+  have hC : 0 ≤ C := add_nonneg hF hO
+  have ht : Tendsto (fun n : ℕ => C/(n:ℝ)) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
+  refine ⟨c,b,fun ε hε => ?_⟩
+  have hc' := (hc.sub_const c).abs
+  have hb' := (hb.sub_const b).abs
+  simp only [sub_self,abs_zero] at hc' hb'
+  filter_upwards [eventually_ge_atTop 1,ht.eventually_le_const (half_pos hε),
+    hc'.eventually_le_const (half_pos hε),hb'.eventually_le_const (half_pos hε)] with n hn hsmall hpc hqb m hm
+  let a := m • D n
+  let f := Real.log (generator a:ℝ)
+  let o := Real.log (ordinaryPrimeGenerator a:ℝ)
+  let V := ordinaryFloorLoss a
+  let Pf := fullPrimeContact (D n)
+  let Po := ordinaryPrimeContact (D n)
+  let Q := integerProbe _ (D n)
+  let t := (m:ℝ)^2
+  have hf : |f+V-t*Pf| ≤ F*n := hfull hn m
+  have ho : |o+V-t*Po| ≤ O*n := hord hn m
+  have hd : |(f-o)-t*(Pf-Po)| ≤ C*n := by
+    rw [show (f-o)-t*(Pf-Po)=(f+V-t*Pf)-(o+V-t*Po) by ring]
+    have h := abs_sub_le (f+V-t*Pf) 0 (o+V-t*Po)
+    simp only [sub_zero,zero_sub,abs_neg] at h
+    dsimp only [C]; linarith only [h,hf,ho]
+  have h₁ := normalized_mesh_error hC hn hm hd
+  have h₂ := normalized_mesh_error hO hn hm ho
+  have hscale : O/(n:ℝ) ≤ C/n := div_le_div_of_nonneg_right (by dsimp only [C]; linarith only [hF]) (Nat.cast_nonneg _)
+  change |Pf-Po-c| ≤ ε/2 at hpc
+  change |Po+Q-b| ≤ ε/2 at hqb
+  change |(f-o)/t-c| ≤ ε ∧ |(o+V)/t+Q-b| ≤ ε
+  constructor
+  · rw [show (f-o)/t-c=((f-o)/t-(Pf-Po))+(Pf-Po-c) by ring]
+    exact (abs_add_le _ _).trans (by linarith only [h₁,hsmall,hpc])
+  · rw [show (o+V)/t+Q-b=((o+V)/t-Po)+(Po+Q-b) by ring]
+    exact (abs_add_le _ _).trans (by linarith only [h₂,hscale,hsmall,hqb])
+
+#print axioms square_prime_generator_discrepancies_above_diagonal
 #print axioms successorSquare_proper_power_contact_limit
 #print axioms successorSquare_ordinary_contact_discrepancy_limit
 

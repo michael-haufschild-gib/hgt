@@ -151,23 +151,77 @@ def longProperPowerContact (X : ℝ) : ℝ :=
   ∑ k ∈ Ioc ⌊Real.exp (-9)*X⌋₊ ⌊Real.exp 8*X⌋₊,
     (2/Real.sqrt k)*splineAutoCorr (Real.log X-Real.log k)*powerWeight k
 
-/-- Both long lags see the same proper-power limit, independently of
-their centers. Its relative-degree profile has the square-root density. -/
-theorem longProperPowerContact_limit : ∃ c : ℝ, Tendsto longProperPowerContact atTop (𝓝 c) := by
+private theorem rootProfile_smooth : ContDiffOn ℝ 1 rootProfile (Set.Ioi 0) := by
   have hH : ContDiff ℝ 1 splineAutoCorr := by
     rw [show splineAutoCorr = upow 1 7 from funext splineAutoCorr_eq_eight_boxes]
     exact (contDiff_upow one_pos 6).of_le (by norm_num)
-  have hc : ContDiffOn ℝ 1 rootProfile (Set.Ioi 0) := by
+  intro v hv
+  have hv' : 0 < v := hv
+  apply ContDiffAt.contDiffWithinAt
+  unfold rootProfile
+  exact ((contDiffAt_const.div (Real.contDiffAt_sqrt hv'.ne') (Real.sqrt_pos.mpr hv').ne').mul
+    (hH.contDiffAt.comp v (Real.contDiffAt_log hv'.ne').neg))
+
+/-- Integration by parts against the square-root density leaves precisely
+the unit integral of the spline autocorrelation in log coordinates. -/
+private theorem root_profile_mass :
+    rootProfile high*Real.sqrt high-rootProfile low*Real.sqrt low-
+      (∫ v in Set.Ioc low high, deriv rootProfile v*Real.sqrt v)=1 := by
+  let G := fun u : ℝ => ∫ z in (-9:ℝ)..u, splineAutoCorr z
+  have hH : Continuous splineAutoCorr := continuous_splineAutoCorr
+  have hG (u : ℝ) : HasDerivAt G (splineAutoCorr u) u :=
+    intervalIntegral.integral_hasDerivAt_right (hH.intervalIntegrable _ _)
+      hH.aestronglyMeasurable.stronglyMeasurableAtFilter hH.continuousAt
+  have hab : low ≤ high := Real.exp_le_exp.mpr (by norm_num : (-9:ℝ) ≤ 8)
+  have hFTC : ∀ v ∈ Set.uIcc low high, HasDerivAt (fun y => rootProfile y*Real.sqrt y-G (Real.log y))
+      (deriv rootProfile v*Real.sqrt v) v := by
     intro v hv
-    have hv' : 0 < v := hv
-    apply ContDiffAt.contDiffWithinAt
-    unfold rootProfile
-    exact ((contDiffAt_const.div (Real.contDiffAt_sqrt hv'.ne') (Real.sqrt_pos.mpr hv').ne').mul
-      (hH.contDiffAt.comp v (Real.contDiffAt_log hv'.ne').neg))
+    rw [Set.uIcc_of_le hab] at hv
+    have hv₀ := (Real.exp_pos (-9)).trans_le hv.1
+    have hs := Real.sqrt_pos.mpr hv₀
+    have hd := ((rootProfile_smooth.contDiffAt (Ioi_mem_nhds hv₀)).differentiableAt (by norm_num)).hasDerivAt
+    apply ((hd.mul (Real.hasDerivAt_sqrt hv₀.ne')).sub ((hG _).comp v (Real.hasDerivAt_log hv₀.ne'))).congr_deriv
+    have he : splineAutoCorr (-Real.log v)=splineAutoCorr (Real.log v) := by
+      simp only [splineAutoCorr_eq_eight_boxes,upow_neg]
+    have hcancel : rootProfile v*(1/(2*Real.sqrt v))=splineAutoCorr (Real.log v)*v⁻¹ := by
+      unfold rootProfile
+      rw [he,show v⁻¹=((Real.sqrt v)^2)⁻¹ by rw [Real.sq_sqrt hv₀.le]]
+      field_simp [hs.ne']
+      <;> ring
+    change deriv rootProfile v*Real.sqrt v+rootProfile v*(1/(2*Real.sqrt v))-
+      splineAutoCorr (Real.log v)*v⁻¹=_
+    rw [hcancel]; ring
+  have hint : IntervalIntegrable (fun v => deriv rootProfile v*Real.sqrt v) volume low high := by
+    rw [intervalIntegrable_iff_integrableOn_Icc_of_le hab]
+    exact (((rootProfile_smooth.continuousOn_deriv_of_isOpen isOpen_Ioi le_rfl).mono
+      (fun _ ht => (Real.exp_pos (-9)).trans_le ht.1)).mul Real.continuous_sqrt.continuousOn).integrableOn_Icc
+  have h := intervalIntegral.integral_eq_sub_of_hasDerivAt hFTC hint
+  rw [intervalIntegral.integral_of_le hab] at h
+  have htot : G 8=1 := by
+    dsimp only [G]
+    rw [intervalIntegral.integral_of_le (by norm_num : (-9:ℝ) ≤ 8),setIntegral_eq_integral_of_forall_compl_eq_zero]
+    · simpa only [splineAutoCorr_eq_eight_boxes] using integral_upow one_pos 7
+    · intro u hu
+      apply splineAutoCorr_zero_outside
+      rw [Set.mem_compl_iff,Set.mem_Ioc,not_and_or] at hu
+      rcases hu with h₁ | h₂
+      · exact lt_abs.mpr (Or.inr (by linarith only [not_lt.mp h₁]))
+      · exact lt_abs.mpr (Or.inl (lt_of_not_ge h₂))
+  have hlo : G (-9)=0 := intervalIntegral.integral_same
+  change (∫ v in Set.Ioc low high, deriv rootProfile v*Real.sqrt v)=
+    (rootProfile high*Real.sqrt high-G (Real.log high))-(rootProfile low*Real.sqrt low-G (Real.log low)) at h
+  simp only [low,high,Real.log_exp,htot,hlo,sub_zero] at h ⊢
+  linarith only [h]
+
+/-- At every moving long lag the proper prime powers contribute one unit.
+The cube and higher powers disappear at this scale. -/
+theorem longProperPowerContact_limit : Tendsto longProperPowerContact atTop (𝓝 1) := by
+  have hc := rootProfile_smooth
   obtain h := moving_power_sum (Real.exp_pos (-9)) (Real.exp_le_exp.mpr (by norm_num : (-9:ℝ) ≤ 8))
     (fun v hv => ((hc.contDiffAt (Ioi_mem_nhds hv)).differentiableAt (by norm_num)))
     (hc.continuousOn_deriv_of_isOpen isOpen_Ioi le_rfl)
-  refine ⟨_,h.congr' ?_⟩
+  rw [root_profile_mass] at h
+  apply h.congr'
   filter_upwards [eventually_gt_atTop (0:ℝ)] with X hX
   rw [longProperPowerContact,Finset.sum_div]
   refine sum_congr rfl fun k hk => ?_

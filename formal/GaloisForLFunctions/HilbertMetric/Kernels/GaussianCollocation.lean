@@ -153,5 +153,12 @@ theorem gaussianTranslate_zero_bound (t : ℝ) (y : Fin (n+1) ↪o ℝ)
   change S.card ≤ n
   omega
 
+#print axioms gaussianDistanceMatrix_crossMinor_pos
+#print axioms discreteGaussian_minor_pos
+#print axioms gaussianCollocation_interpolates
+#print axioms gaussianCollocation_inverse_checkerboard
+#print axioms gaussianCollocation_progression_det
+#print axioms gaussianTranslate_zero_bound
+
 end
 end GaloisForLFunctions.HilbertMetric
