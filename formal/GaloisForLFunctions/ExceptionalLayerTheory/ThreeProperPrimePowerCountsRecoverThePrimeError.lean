@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.ChebyshevErrorExponentLaw
+import GaloisForLFunctions.RHTower.LittlewoodOmega
 import GaloisForLFunctions.RHTower.ZetaWeakRecurrenceLadderCollapse
 import GaloisForLFunctions.RHTower.ReflectionCocycleClass
 import GaloisForLFunctions.RHTower.XiLogDerivZeroFreePositive
@@ -205,6 +206,60 @@ theorem zeroReSup_le_twice_of_properPowerDiscrepancy_one_sided {b K : ℝ}
   · obtain ⟨x,⟨hm,hl⟩,hx⟩ := ((hminus.and_eventually h).and_eventually hpow).exists
     linarith only [hm,hl,hx]
 
+/-- Neither sign admits an endpoint bound by a constant times the quarter
+power. Such a bound would force the abscissa to one half. At a square
+cutoff Littlewood's prime oscillation then exceeds the tracking error. -/
+theorem properPowerDiscrepancy_quarter_unbounded (K : ℝ) :
+    (∃ᶠ x : ℝ in atTop, K*x^(1/4:ℝ) < properPowerDiscrepancy x) ∧
+      ∃ᶠ x : ℝ in atTop, properPowerDiscrepancy x < -(K*x^(1/4:ℝ)) := by
+  obtain ⟨C,hC,htrack⟩ := properPowerDiscrepancy_square_tracks_prime_error
+  have hconst : 0 < littlewoodConst/14 := div_pos littlewoodConst_pos (by norm_num)
+  have ht := Real.tendsto_log_atTop.comp (Real.tendsto_log_atTop.comp Real.tendsto_log_atTop)
+  have hsize : ∀ᶠ y : ℝ in atTop, (K+C)*y^(1/2:ℝ) <
+      littlewoodConst/14*Real.sqrt y*Real.log (Real.log (Real.log y)) := by
+    filter_upwards [eventually_gt_atTop (0:ℝ),ht.eventually_gt_atTop ((K+C)/(littlewoodConst/14))]
+      with y hy hlog
+    change (K+C)/(littlewoodConst/14) < Real.log (Real.log (Real.log y)) at hlog
+    have hh := mul_lt_mul_of_pos_right ((div_lt_iff₀ hconst).mp hlog)
+      (Real.rpow_pos_of_pos hy (1/2:ℝ))
+    rw [Real.sqrt_eq_rpow]
+    linarith only [hh]
+  have hscale {y : ℝ} (hy : 1 ≤ y) (hΘ : zeroReSup ≤ 1/2) :
+      |properPowerDiscrepancy (y^(2:ℝ))-E y| ≤ C*y^(1/2:ℝ) :=
+    (htrack y hy).trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hy
+      (by linarith only [hΘ] : 5*zeroReSup/6 ≤ 1/2)) hC)
+  have harg : Tendsto (fun y : ℝ => y^(2:ℝ)) atTop atTop := tendsto_rpow_atTop (by norm_num)
+  obtain ⟨hneg,hpos⟩ := chebyshevPsi_sub_omega_pm_littlewood
+  constructor
+  · by_contra hn
+    rw [Filter.not_frequently] at hn
+    have hu := hn.mono (fun _ he => le_of_not_gt he)
+    have hΘ : zeroReSup ≤ 1/2 := by
+      simpa only [show (2:ℝ)*(1/4)=1/2 by norm_num] using
+        zeroReSup_le_twice_of_properPowerDiscrepancy_one_sided (Or.inl hu)
+    obtain ⟨y,⟨⟨hbig,hy⟩,hs⟩,hc⟩ := (((hpos.and_eventually (eventually_ge_atTop (1:ℝ))).and_eventually
+      hsize).and_eventually (harg.eventually hu)).exists
+    have hdiff := (abs_le.mp (hscale hy hΘ)).1
+    change properPowerDiscrepancy (y^(2:ℝ)) ≤ K*(y^(2:ℝ))^(1/4:ℝ) at hc
+    rw [← Real.rpow_mul (zero_le_one.trans hy),show (2:ℝ)*(1/4)=1/2 by norm_num] at hc
+    change _ < E y at hbig
+    linarith only [hbig,hs,hdiff,hc]
+  · by_contra hn
+    rw [Filter.not_frequently] at hn
+    have hu := hn.mono (fun _ he => le_of_not_gt he)
+    have hl : ∀ᶠ x : ℝ in atTop, -K*x^(1/4:ℝ) ≤ properPowerDiscrepancy x := by
+      simpa only [neg_mul] using hu
+    have hΘ : zeroReSup ≤ 1/2 := by
+      simpa only [show (2:ℝ)*(1/4)=1/2 by norm_num] using
+        zeroReSup_le_twice_of_properPowerDiscrepancy_one_sided (Or.inr hl)
+    obtain ⟨y,⟨⟨hbig,hy⟩,hs⟩,hc⟩ := (((hneg.and_eventually (eventually_ge_atTop (1:ℝ))).and_eventually
+      hsize).and_eventually (harg.eventually hu)).exists
+    have hdiff := (abs_le.mp (hscale hy hΘ)).2
+    change -(K*(y^(2:ℝ))^(1/4:ℝ)) ≤ properPowerDiscrepancy (y^(2:ℝ)) at hc
+    rw [← Real.rpow_mul (zero_le_one.trans hy),show (2:ℝ)*(1/4)=1/2 by norm_num] at hc
+    change E y < _ at hbig
+    linarith only [hbig,hs,hdiff,hc]
+
 /-- Above half the zero abscissa the same exponent bounds the full
 corrected count uniformly on the real half-line. -/
 theorem properPowerDiscrepancy_bound_above_abscissa {b : ℝ} (hb : zeroReSup/2 < b) :
@@ -246,6 +301,7 @@ theorem riemannHypothesis_iff_properPowerDiscrepancy_quarter :
     dsimp only [e] at ht
     linarith only [ht,hz]
 
+#print axioms properPowerDiscrepancy_quarter_unbounded
 #print axioms zeroReSup_le_twice_of_properPowerDiscrepancy_one_sided
 #print axioms properPowerDiscrepancy_bound_above_abscissa
 #print axioms properPowerDiscrepancy_both_signs_below_abscissa

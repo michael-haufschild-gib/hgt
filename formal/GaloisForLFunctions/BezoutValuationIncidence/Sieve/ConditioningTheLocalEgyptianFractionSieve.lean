@@ -36,17 +36,15 @@ def hitEquiv (K : Fˣ) : Hit F (K : F) ≃ Fˣ × Fˣ where
     have ha : s.val.1.val.1 ≠ 0 := by intro hz; simp [product,hz] at h
     have hc : s.val.1.val.2 ≠ 0 := by intro hz; simp [product,hz] at h
     exact (Units.mk0 _ ha,Units.mk0 _ hc)
-  invFun u := ⟨(⟨((u.1 : F),(u.2 : F)),unit_pair _ _⟩,(((K*u.1*u.2)⁻¹ : Fˣ) : F)),by
-    change ((K*u.1*u.2 : Fˣ) : F)*(((K*u.1*u.2)⁻¹ : Fˣ) : F)=1
-    simp only [← Units.val_mul,mul_inv_cancel,Units.val_one]⟩
+  invFun u := ⟨(⟨((u.1 : F),(u.2 : F)),unit_pair _ _⟩,((K : F)*u.1*u.2)⁻¹),by
+    exact mul_inv_cancel₀ (mul_ne_zero (mul_ne_zero K.ne_zero u.1.ne_zero) u.2.ne_zero)⟩
   left_inv s := by
     apply Subtype.ext
     apply Prod.ext
     · rfl
     · have h := s.property
       change (K : F)*s.val.1.val.1*s.val.1.val.2*s.val.2=1 at h
-      apply Units.inv_eq_of_mul_eq_one_right
-      exact h
+      exact inv_eq_of_mul_eq_one_right h
   right_inv u := by ext <;> rfl
 
 /-- The numerator congruence a+rc=0 cuts the forbidden set to one

@@ -66,7 +66,6 @@ private theorem fractional_prime_prefix (q h : ℝ) :
       Real.exp_sub,Real.exp_log hp0,hs,
       show -(h+q-Real.log n)/2 = -(h+q)/2+Real.log n/2 by ring,Real.exp_add]
     field_simp [(Real.exp_pos (Real.log n/2)).ne']
-    <;> ring
   · have hfar : ⌊Real.exp q⌋₊ < n := lt_of_not_ge fun hle =>
       hn (Finset.mem_Icc.mpr ⟨Nat.zero_le _,hle⟩)
     have hp : 0 < n := (Nat.zero_le _).trans_lt hfar
@@ -106,9 +105,13 @@ theorem integral_mangoldt_fractional_cut {Φ : ℝ → ℝ} (hm : Measurable Φ)
   have hi : IntegrableOn (fun t => (W t:ℂ)*(fractionalPrimeTest (T-t):ℂ)) (Set.Iic M) :=
     (integrable_indicator_iff measurableSet_Iic).mp (hleft.symm ▸ hpre.1)
   refine ⟨?_,?_⟩
-  · simpa only [← Complex.ofReal_mul,Complex.ofReal_re] using hi.re
+  · have hreal := hi.re
+    change Integrable (fun t => ((W t:ℂ)*(fractionalPrimeTest (T-t):ℂ)).re)
+      (volume.restrict (Set.Iic M)) at hreal
+    simpa only [← Complex.ofReal_mul,Complex.ofReal_re] using hreal
   · rw [← integral_indicator measurableSet_Iic,hleft]
     exact hpre.2.2.trans (integral_congr_ae (Eventually.of_forall fun u => by
+      dsimp only
       rw [show (∑' n : ℕ, ((vonMangoldt n/Real.sqrt n:ℝ):ℂ)*K (M-u-Real.log n)) = _ from
         fractional_prime_prefix (M-u) (T-M),show T-M+(M-u)=T-u by ring,show -(T-u)/2=(u-T)/2 by ring]))
 
@@ -159,7 +162,8 @@ theorem integral_polar_fractional_cut {M T : ℝ} (h : T ≤ M) :
       rw [Set.indicator_of_mem (show t ∈ Set.Iic M from ht),Set.indicator_of_mem hv]
       dsimp only [fractionalPrimeTest,f]
       rw [← mul_assoc,← mul_assoc,← Real.exp_add,← Real.exp_add]
-      congr 2 <;> ring
+      congr 2
+      ring
     · have hv : T-t ∉ Set.Ici a := not_le.mpr (sub_lt_sub_left (lt_of_not_ge ht) T)
       dsimp only [w]
       rw [Set.indicator_of_notMem (show t ∉ Set.Iic M from ht),Set.indicator_of_notMem hv,mul_zero]
@@ -198,7 +202,8 @@ private theorem stirling_term_bound {Φ : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
              show C*(1+T)*Real.exp (-T/2)*Real.exp (3*u/2) =
                C*(1+T)*(Real.exp (-T/2)*Real.exp (3*u/2)) by ring,
              ← Real.exp_add, ← Real.exp_add, ← Real.exp_add]
-           congr 2 <;> ring
+           congr 2
+           ring
     _ ≤ D*Real.exp u := mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith only [hu0])) hD
 
 private theorem measurable_stirling_term {Φ : ℝ → ℝ} (hΦ : Measurable Φ) (T : ℝ) :
@@ -302,7 +307,7 @@ theorem tendsto_mangoldt_fractional_response {Φ : ℝ → ℝ} (hm : Measurable
     apply ((integrableOn_exp_Iic 0).const_mul C).mono' ((hm.mul (by fun_prop)).aestronglyMeasurable.restrict)
     rw [ae_restrict_iff' measurableSet_Iic]
     refine Eventually.of_forall fun u hu => ?_
-    dsimp only [f]
+    change ‖Φ u*Real.exp (-u/2)‖ ≤ C*Real.exp u
     rw [Real.norm_eq_abs,abs_mul, abs_of_pos (Real.exp_pos _)]
     calc _ ≤ C*Real.exp (2*u)*Real.exp (-u/2) := mul_le_mul_of_nonneg_right (hb u) (Real.exp_pos _).le
       _ ≤ C*Real.exp u := by
@@ -328,7 +333,7 @@ theorem tendsto_mangoldt_fractional_response {Φ : ℝ → ℝ} (hm : Measurable
     refine Eventually.of_forall fun u hu => ?_
     have hh := hY (Real.exp (M-u)) (hMY.trans (Real.exp_le_exp.mpr (by change u ≤ 0 at hu; linarith only [hu])))
     rw [Real.dist_eq,sub_zero] at hh
-    dsimp only [r]
+    change ‖f u*reciprocalRemainder (Real.exp (M-u))‖ ≤ ‖f u‖
     rw [norm_mul,Real.norm_eq_abs (reciprocalRemainder _)]
     exact mul_le_of_le_one_right (norm_nonneg _) hh.le
   let g := fun u : ℝ => Φ u*(Real.exp ((u-T)/2)*(∑ n ∈ Finset.Icc 0 ⌊Real.exp (M-u)⌋₊,
@@ -341,9 +346,12 @@ theorem tendsto_mangoldt_fractional_response {Φ : ℝ → ℝ} (hm : Measurable
     simpa only [P,g,Complex.ofReal_mul] using (integral_mangoldt_fractional_cut hm hC hb M T).2
   have heq : (∫ u in Set.Iic (0:ℝ), g u) =
       stirlingTestResponse Φ T+Real.exp (T/2)*(∫ u in Set.Iic (0:ℝ), r u)+c*A := by
-    rw [show g=(fun u => stirlingTestTerm Φ T u+Real.exp (T/2)*r u+c*f u) from funext (cut_arithmetic_term Φ hM),
-      integral_add (hS.add (hir.const_mul _)) (hf.const_mul _),integral_add hS (hir.const_mul _),
-      integral_const_mul, integral_const_mul] <;> rfl
+    have hi' : IntegrableOn (fun u => stirlingTestTerm Φ T u+Real.exp (T/2)*r u) (Set.Iic 0) :=
+      hS.add (hir.const_mul (Real.exp (T/2)))
+    rw [show g=(fun u => stirlingTestTerm Φ T u+Real.exp (T/2)*r u+c*f u) from funext (cut_arithmetic_term Φ hM)]
+    change (∫ u in Set.Iic (0:ℝ), (stirlingTestTerm Φ T u+Real.exp (T/2)*r u)+c*f u) = _
+    rw [integral_add hi' (hf.const_mul c),integral_add hS (hir.const_mul (Real.exp (T/2))),
+      integral_const_mul,integral_const_mul]
   change stirlingTestResponse Φ T+Real.exp (T/2)*(∫ u in Set.Iic (0:ℝ), r u)=
     (∫ t in Set.Iic M, P t*fractionalPrimeTest (T-t)) - A*(∫ t in Set.Iic M, Real.exp (t/2)*fractionalPrimeTest (T-t))
   rw [hphys,heq,integral_polar_fractional_cut hM]

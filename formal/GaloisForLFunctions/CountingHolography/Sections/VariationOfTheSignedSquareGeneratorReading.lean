@@ -25,7 +25,8 @@ private theorem log_two_shift {x : ℝ} (hx : 0 < x) : 2*Real.log x+Real.log 4=2
   push_cast
   ring
 
-private theorem real_trace_growth : ∃ C : ℝ, 0 ≤ C ∧ ∀ {x : ℝ}, 1 ≤ x →
+/-- The strip estimate bounds the long trace by a three-quarter power of the root. -/
+theorem squareLongTrace_root_growth : ∃ C : ℝ, 0 ≤ C ∧ ∀ {x : ℝ}, 1 ≤ x →
     |squareLongTrace (2*Real.log x)| ≤ C*x^(3/4:ℝ) := by
   have hw : zetaZeroWidth ≤ 3/8 := ZeroForcingCalculus.zetaZeroWidth_le_sub_three_eighths.trans (by norm_num)
   obtain ⟨B,hB⟩ := (zeta_splineOrbit_rate_iff_zetaZeroWidth_le (by norm_num : (0:ℝ) ≤ 3/8)).mpr hw
@@ -81,7 +82,7 @@ through every initial set of square conductors. -/
 theorem squareLongReading_variation : ∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ,
     |squareLongReading (M+2)|+∑ i ∈ range M, |squareLongReading (i+3)-squareLongReading (i+2)| ≤
       C*((M:ℝ)+2)^(11/4:ℝ) := by
-  obtain ⟨A,hA,hg⟩ := real_trace_growth
+  obtain ⟨A,hA,hg⟩ := squareLongTrace_root_growth
   obtain ⟨B,hB,hi⟩ := squareLongTrace_unit_root_step
   let C := 3*A+4*B
   have hC : 0 ≤ C := by dsimp only [C]; positivity

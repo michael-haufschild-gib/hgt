@@ -40,6 +40,18 @@ variable {n : ℕ}
 def menuRow (n : ℕ) (t : ℕ) : Fin (n+1) → ℤ :=
   scaled (fun i => (t : ℤ)^(i : ℕ)) (Pi.single 0 1)
 
+/-- Entries of the first row after clearing the reflection denominator. -/
+theorem menuRow_apply (t : ℕ) (i : Fin (n+1)) :
+    menuRow n t i = (∑ j : Fin (n+1), (t : ℤ)^(2*(j : ℕ))) *
+      (if i=0 then 1 else 0) - 2*(t : ℤ)^(i : ℕ) := by
+  let u (j : Fin (n+1)) := (t : ℤ)^(j : ℕ)
+  have h : u ⬝ᵥ Pi.single 0 1=1 := by simp [dotProduct_single,u]
+  have d : u ⬝ᵥ u = ∑ j : Fin (n+1), (t : ℤ)^(2*(j : ℕ)) := by
+    exact sum_congr rfl fun j _ => by simp only [u,two_mul,pow_add]
+  change (u ⬝ᵥ u)*Pi.single 0 (1 : ℤ) i - (2*(u ⬝ᵥ Pi.single 0 1))*u i = _
+  rw [h,d,mul_one]
+  by_cases hi : i=0 <;> simp [hi,u]
+
 /-- The chart row paired against a real normal. -/
 def test (v : Fin (n+1) → ℝ) : ℝ[X] :=
   C (v 0)*(∑ i : Fin (n+1), X^(2*(i : ℕ))) -
@@ -124,6 +136,7 @@ end GaloisForLFunctions.CollectiveDiophantineGeometry.FrameChart
 
 #print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.FrameChart.scaled_gram
 #print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.FrameChart.scaled_square
+#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.FrameChart.menuRow_apply
 #print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.FrameChart.test_ne_zero
 #print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.FrameChart.test_degree
 #print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.FrameChart.row_evaluation

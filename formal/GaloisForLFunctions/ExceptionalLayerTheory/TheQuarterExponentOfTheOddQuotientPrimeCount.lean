@@ -70,7 +70,9 @@ private theorem euler {s : ℂ} (hs : 3 < s.re) :
   rw [LSeries.term_of_ne_zero (Nat.succ_ne_zero n),Complex.cpow_neg,div_eq_mul_inv]
   simp [f]
 
-private theorem zero_residue_of_total_bound {b K : ℝ} (hb : 1/4 < b) (hb' : b < 1/2) (hK : 0 ≤ K)
+/-- A bound on the finite mean forces the distinct-prime moment to have
+zero residue at every nonreal point above its exponent and below one half. -/
+theorem firstPrimeDivisorMoment_zero_residue_of_oddQuotientPowerTotal_bound {b K : ℝ} (hb : 1/4 < b) (hb' : b < 1/2) (hK : 0 ≤ K)
     (h : ∀ N : ℕ, 1≤N → |oddQuotientPowerTotal N| ≤ K*(N:ℝ)^(b+1))
     {z : ℂ} (hz : b < z.re) (h1 : z.re < 1/2) (hi : z.im ≠ 0) :
     Tendsto (fun w => (w-z)*firstPrimeDivisorMoment w) (𝓝[≠] z) (𝓝 0) := by
@@ -116,7 +118,7 @@ theorem zero_free_strip_of_oddQuotientPowerTotal {b K : ℝ} (hb : 1/4 < b) (hb'
     (hK : 0 ≤ K) (h : ∀ N : ℕ, 1 ≤ N → |oddQuotientPowerTotal N| ≤ K*(N:ℝ)^(b+1))
     {s : ℂ} (hs : 2*b < s.re) : riemannZeta s ≠ 0 :=
   firstPrimeDivisorMoment_zero_free_of_vanishing_residues hb.le hb'
-    (fun _ hz h1 hi => zero_residue_of_total_bound hb (by linarith only [hb']) hK h hz h1 hi) hs
+    (fun _ hz h1 hi => firstPrimeDivisorMoment_zero_residue_of_oddQuotientPowerTotal_bound hb (by linarith only [hb']) hK h hz h1 hi) hs
 
 /-- All real main terms have been removed by counting ordinary squares
 and cubes and taking an odd-quotient difference. -/
@@ -130,7 +132,7 @@ theorem riemannHypothesis_iff_oddQuotientPowerTotal_quarter :
     intro z hz hz' hi
     obtain ⟨b,hb,hbz⟩ := exists_between hz
     obtain ⟨K,hK,hN⟩ := h b hb (hbz.trans hz')
-    exact zero_residue_of_total_bound hb (hbz.trans hz') hK hN hbz hz' hi
+    exact firstPrimeDivisorMoment_zero_residue_of_oddQuotientPowerTotal_bound hb (hbz.trans hz') hK hN hbz hz' hi
 
 #print axioms zero_free_strip_of_oddQuotientPowerTotal
 #print axioms riemannHypothesis_iff_oddQuotientPowerTotal_quarter

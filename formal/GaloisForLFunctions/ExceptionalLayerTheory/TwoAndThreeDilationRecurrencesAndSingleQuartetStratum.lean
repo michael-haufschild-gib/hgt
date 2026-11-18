@@ -63,13 +63,17 @@ corollaries:
 noncomputable section
 set_option autoImplicit false
 
-open Complex Filter Topology Set
+open Complex Filter Topology Set Zeta23
 open scoped ComplexConjugate
 open RHTower
 open GaloisForLFunctions.ZeroConfigurationGeometry
 open GaloisForLFunctions.ExclusionOfTheCriticalState
 open GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri
+open GaloisForLFunctions.CriticalArithmeticCorrelationTheory
+open GaloisForLFunctions.SpacingScaleHarmonicAnalysis
+open GaloisForLFunctions.HTGeometry
+open GaloisForLFunctions.ArithmeticPositiveDuality
 
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
@@ -127,7 +131,8 @@ private theorem xiZeroCopy_mem_carrier' (q : XiZeroCopy) :
 private theorem mem_carrier_of_xi_eq_zero {z : ℂ} (hxi : xi z = 0) :
     z ∈ zetaZeroConfig.carrier := by
   obtain ⟨q, hq⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi
-  exact hq ▸ xiZeroCopy_mem_carrier' q
+  rw [← hq]
+  exact xiZeroCopy_mem_carrier' q
 
 private theorem xi_eq_zero_of_mem_carrier {z : ℂ} (hz : z ∈ zetaZeroConfig.carrier) :
     xi z = 0 := by
@@ -786,12 +791,12 @@ private theorem hasSingleOffLineQuartet_abs_im {ρ₀ : ℂ} (hq : HasSingleOffL
     0 < |ρ₀.im| ∧ HasSingleOffLineQuartet ((ρ₀.re : ℂ) + I * |ρ₀.im|) := by
   have him_pos : 0 < |ρ₀.im| := abs_pos.mpr hq.im_ne_zero
   refine ⟨him_pos, ?_⟩
-  set ρ₊ : ℂ := (ρ₀.re : ℂ) + I * |ρ₀.im|
-  have hρ₊_eq : ρ₊ = ρ₀ ∨ ρ₊ = conj ρ₀ := by
+  set ρ_pos : ℂ := (ρ₀.re : ℂ) + I * |ρ₀.im|
+  have hρ_pos_eq : ρ_pos = ρ₀ ∨ ρ_pos = conj ρ₀ := by
     rcases abs_choice ρ₀.im with hp | hn
-    · left; apply Complex.ext <;> simp [ρ₊, hp]
-    · right; apply Complex.ext <;> simp [ρ₊, hn]
-  rcases hρ₊_eq with h1 | h2
+    · left; apply Complex.ext <;> simp [ρ_pos, hp]
+    · right; apply Complex.ext <;> simp [ρ_pos, hn]
+  rcases hρ_pos_eq with h1 | h2
   · rwa [h1]
   · rw [h2]
     have hmem_c : conj ρ₀ ∈ zetaZeroConfig.carrier :=
@@ -905,7 +910,7 @@ theorem twoClockPrimeRecurrenceLaw_or_lindelof_finite_stratum :
   by_cases hlaw : TwoClockPrimeRecurrenceLaw
   · exact Or.inl hlaw
   · right
-    have hnot := (twoClockPrimeRecurrenceLaw_iff.not_left).mp hlaw
+    have hnot := twoClockPrimeRecurrenceLaw_iff.not.mp hlaw
     push Not at hnot
     by_cases hex1 : ∃ ρ₀ : ℂ, HasSingleOffLineQuartet ρ₀
     · obtain ⟨ρ₀, hq⟩ := hex1
@@ -1015,7 +1020,7 @@ theorem model_firewall_for_two_and_three_clocks {a b β : ℝ}
         (∀ x : ℝ, 0 < x → dilationRecurrenceOp 2 β γ f x = 0) ∧
         (∀ x : ℝ, 0 < x → dilationRecurrenceOp 3 β γ f x = 0) ∧
         IsSqrtLogSqUnbounded (dilationRecurrenceOp 5 β γ f)) ∧
-    (∀ γ : ℝ, (riemannZeta (WorldsOfTheZeroConfiguration.TwoSidedEdits.zeroPt β γ) = 0 ∧
+    (∀ γ : ℝ, (riemannZeta (zeroPt β γ) = 0 ∧
         ¬ RiemannHypothesis) ∨
       ∃ (α : ℝ) (k₀ : ℕ) (c σ₁ : ℝ),
         c < 1 / 2 ∧ σ₁ < 1 / 2 ∧

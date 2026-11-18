@@ -44,7 +44,7 @@ theorem delayed_local_mass (m : ℕ+) (u : ℕ → ℝ) (C q : ℝ)
   apply add_le_add_right
   have hh := ((summable_nat_add_iff _).2 hs).tsum_le_tsum htail (geom.mul_left _)
   rw [tsum_mul_left,tsum_geometric_of_lt_one hq₀ hq] at hh
-  exact hh
+  simpa only [div_eq_mul_inv] using hh
 
 /-- Absolute Dirichlet mass as a real multiplicative arithmetic function. -/
 def weightedNorm (f : ArithmeticFunction ℂ) (σ : ℝ) : ArithmeticFunction ℝ where
@@ -146,6 +146,11 @@ theorem correction_summable (q : ℕ) (A : ℕ → ℕ → ℂ)
 def powerSelector (m : ℕ+) : ArithmeticFunction ℂ :=
   _root_.RHTower.Sieve.localEuler (fun _ k => if (m : ℕ) ∣ k then 1 else 0)
 
+private theorem selector_local (m : ℕ+) (p : Nat.Primes) (k : ℕ) (hk : 0<k) :
+    powerSelector m ((p : ℕ)^k) = if (m : ℕ) ∣ k then 1 else 0 := by
+  unfold powerSelector
+  rw [RHTower.Sieve.localEuler_prime_pow,if_neg hk.ne']
+
 theorem selector_on_powers (m n : ℕ+) : powerSelector m ((n : ℕ)^(m : ℕ))=1 := by
   change (if (n : ℕ)^(m : ℕ)=0 then (0 : ℂ) else ∏ p ∈ ((n : ℕ)^(m : ℕ)).primeFactors,
     if (m : ℕ) ∣ ((n : ℕ)^(m : ℕ)).factorization p then 1 else 0)=1
@@ -173,11 +178,10 @@ theorem selector_abscissa (m : ℕ+) (σ : ℝ) :
   · intro hs
     refine delayed_absolute_convergence m 1 (powerSelector m) (RHTower.Sieve.localEuler_isMultiplicative _) ?_ ?_ σ hs
     · intro p j hj hlt
-      rw [powerSelector,RHTower.Sieve.localEuler_prime_pow,if_neg hj.ne',
-        if_neg (fun h => hlt.not_ge (Nat.le_of_dvd hj h))]
+      rw [selector_local m p j hj,if_neg (fun h => hlt.not_ge (Nat.le_of_dvd hj h))]
     · intro p j hj
       have hj' : 0 < j := m.pos.trans_le hj
-      rw [powerSelector,RHTower.Sieve.localEuler_prime_pow,if_neg hj'.ne']
+      rw [selector_local m p j hj']
       split <;> simp
 
 end GaloisForLFunctions.PrimeExponentialSums.RamifiedEuler

@@ -164,6 +164,33 @@ theorem dvd_twice_radical_mul_carmichael {u : ℕ} (hu : 0<u) :
     rw [pow_succ']
     exact Nat.mul_dvd_mul hrad hpow
 
+private theorem carmichael_dvd_mul_of_residue_orders_dvd {u L : ℕ} (hu : 0<u)
+    (hL : ∀ p ∈ u.primeFactors, p-1 ∣ L) : ArithmeticFunction.carmichael u ∣ u*L := by
+  letI : NeZero u := ⟨hu.ne'⟩
+  rw [ArithmeticFunction.carmichael_factorization u,Finset.lcm_dvd_iff]
+  intro p h
+  have hp := Nat.prime_of_mem_primeFactors h
+  have he := hp.factorization_pos_of_dvd hu.ne' (Nat.dvd_of_mem_primeFactors h)
+  have hpow : p^(u.factorization p-1) ∣ u :=
+    (pow_dvd_pow p (Nat.sub_le _ 1)).trans (Nat.ordProj_dvd u p)
+  refine (ArithmeticFunction.carmichael_dvd_totient _).trans ?_
+  rw [Nat.totient_prime_pow hp he]
+  exact Nat.mul_dvd_mul hpow (hL p h)
+
+/-- Every common cyclic quotient order divides a single least common
+multiple of residue-field orders. Prime powers in the moduli supply no
+further common exponent. -/
+theorem gcd_carmichael_dvd_residue_lcm {u v : ℕ} (hu : 0<u) (hv : 0<v) (hc : u.Coprime v) :
+    (ArithmeticFunction.carmichael u).gcd (ArithmeticFunction.carmichael v) ∣
+      (u.primeFactors ∪ v.primeFactors).lcm (fun p => p-1) := by
+  let L := (u.primeFactors ∪ v.primeFactors).lcm (fun p => p-1)
+  let d := (ArithmeticFunction.carmichael u).gcd (ArithmeticFunction.carmichael v)
+  have h₁ : d ∣ u*L := (Nat.gcd_dvd_left _ _).trans
+    (carmichael_dvd_mul_of_residue_orders_dvd hu (fun _ h => dvd_lcm (mem_union_left _ h)))
+  have h₂ : d ∣ v*L := (Nat.gcd_dvd_right _ _).trans
+    (carmichael_dvd_mul_of_residue_orders_dvd hv (fun _ h => dvd_lcm (mem_union_right _ h)))
+  simpa only [Nat.gcd_mul_right,hc.gcd_eq_one,one_mul,mul_one] using Nat.dvd_gcd h₁ h₂
+
 /-- A single cyclic subgroup of the residue unit group contains at least
 the modulus divided by twice the product of its distinct primes. -/
 theorem exists_unit_large_order {u : ℕ} (hu : 0<u) :
@@ -176,11 +203,68 @@ theorem exists_unit_large_order {u : ℕ} (hu : 0<u) :
   exact Nat.le_of_dvd (Nat.mul_pos hrad (Nat.mul_pos (by decide) hord))
     (by rw [ha,← ArithmeticFunction.carmichael_eq_exponent hu.ne']; exact dvd_twice_radical_mul_carmichael hu)
 
+/-- A power of a cyclic generator belongs to the kernel as soon as its
+image is annihilated. This bounds the whole image even for infinite targets. -/
+theorem order_mul_range_dvd_gcd_mul_card {G H : Type*} [Group G] [Group H]
+    (f : G →* H) (a : G) {M : ℕ} (hM : f a ^ M = 1) :
+    orderOf a * Nat.card f.range ∣ (orderOf a).gcd M * Nat.card G := by
+  let d := (orderOf a).gcd M
+  have hker : a^d ∈ f.ker := by
+    change f (a^d) = 1
+    rw [map_pow]
+    exact orderOf_dvd_iff_pow_eq_one.mp
+      (Nat.dvd_gcd (orderOf_map_dvd f a) (orderOf_dvd_iff_pow_eq_one.mpr hM))
+  have hpow : (a^d)^(Nat.card f.ker) = 1 :=
+    orderOf_dvd_iff_pow_eq_one.mp (f.ker.orderOf_dvd_natCard hker)
+  rw [← pow_mul] at hpow
+  have hdiv := Nat.mul_dvd_mul_right (Nat.card f.range) (orderOf_dvd_iff_pow_eq_one.mpr hpow)
+  have hcard := f.ker.card_mul_index
+  rw [Subgroup.index_ker] at hcard
+  simpa only [mul_assoc,hcard,d] using hdiv
+
+/-- Uniform divisibility for all images of bounded exponent. The residual
+factor depends only on the distinct primes in the source modulus. -/
+theorem unitHom_range_dvd_of_pow_eq_one {u M : ℕ} (hu : 0<u)
+    {H : Type*} [Group H] (f : (ZMod u)ˣ →* H) (hM : ∀ x, (f x)^M=1) :
+    Nat.card f.range ∣ (ArithmeticFunction.carmichael u).gcd M * (2*residueUnitOrder u) := by
+  letI : NeZero u := ⟨hu.ne'⟩
+  let λu := ArithmeticFunction.carmichael u
+  obtain ⟨a,ha⟩ := Monoid.exists_orderOf_eq_exponent (Monoid.ExponentExists.of_finite (G := (ZMod u)ˣ))
+  have hord : orderOf a=λu := ha.trans (ArithmeticFunction.carmichael_eq_exponent hu.ne').symm
+  have hλ : 0<λu := hord ▸ orderOf_pos a
+  have h := order_mul_range_dvd_gcd_mul_card f a (hM a)
+  have hcard : Nat.card (ZMod u)ˣ=u.totient := by rw [Nat.card_eq_fintype_card,ZMod.card_units_eq_totient]
+  rw [hord,hcard,totient_split] at h
+  let A := ∏ p ∈ u.primeFactors, p
+  have hA : 0<A := prod_pos fun p hp => (Nat.prime_of_mem_primeFactors hp).pos
+  have hprod : A*primePowerPart u=u := by
+    rw [mul_comm]; exact Nat.div_mul_cancel (Nat.prod_primeFactors_dvd u)
+  have hpart : primePowerPart u ∣ 2*λu := Nat.dvd_of_mul_dvd_mul_left hA
+    (by rw [hprod]; exact dvd_twice_radical_mul_carmichael hu)
+  apply Nat.dvd_of_mul_dvd_mul_left hλ
+  exact h.trans ((Nat.mul_dvd_mul_left (λu.gcd M) (Nat.mul_dvd_mul_right (residueUnitOrder u) hpart)).trans
+    (dvd_of_eq (by ring)))
+
+/-- For any number of copies of the opposite unit group, every joint image
+order divides the same integer, including when the index type is infinite. -/
+theorem unitHom_product_range_dvd {u v : ℕ} (hu : 0<u) (hv : 0<v) (hc : u.Coprime v)
+    {ι : Type*} (f : (ZMod u)ˣ →* (ι → (ZMod v)ˣ)) :
+    Nat.card f.range ∣ (u.primeFactors ∪ v.primeFactors).lcm (fun p => p-1) * (2*residueUnitOrder u) := by
+  have hM (a : (ZMod u)ˣ) : (f a)^(ArithmeticFunction.carmichael v)=1 := by
+    funext i
+    exact ArithmeticFunction.pow_carmichael (f a i)
+  exact (unitHom_range_dvd_of_pow_eq_one hu f hM).trans
+    (Nat.mul_dvd_mul_right _ (gcd_carmichael_dvd_residue_lcm hu hv hc))
+
+#print axioms order_mul_range_dvd_gcd_mul_card
+#print axioms unitHom_range_dvd_of_pow_eq_one
+#print axioms unitHom_product_range_dvd
 #print axioms gcd_totient_dvd_residueUnitOrders
 #print axioms saturated_gcd_unit_orders
 #print axioms unitHom_range_dvd_residueUnitOrders
 #print axioms le_cutoff_mul_totient
 #print axioms dvd_twice_radical_mul_carmichael
+#print axioms gcd_carmichael_dvd_residue_lcm
 #print axioms exists_unit_large_order
 
 end GaloisForLFunctions.CountingHolography.Sections

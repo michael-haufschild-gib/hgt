@@ -35,12 +35,14 @@ theorem fixed_gap_cofactor_descent :
   rcases Nat.eq_zero_or_pos x with rfl | hx
   · simp only [Nat.zero_div,Nat.cast_zero,show Chebyshev.psi 0=0 by simp [Chebyshev.psi],
       sub_self,mul_zero,sum_const_zero,abs_zero]; positivity
-  have hn : (1 : ℝ)≤N := by exact_mod_cast hx.trans hxn
+  have hn : (1 : ℝ)≤N := by exact_mod_cast (show 1≤x from hx).trans hxn
   have hn₀ := zero_lt_one.trans_le hn
   let P (t : ℝ) := (N : ℝ)^t
   have pos (t : ℝ) : 0<P t := Real.rpow_pos_of_pos hn₀ _
   have one {t : ℝ} (ht : 0≤t) : 1≤P t := Real.one_le_rpow hn ht
   have mul (t u : ℝ) : P t*P u=P (t+u) := (Real.rpow_add hn₀ _ _).symm
+  have hsmall := (pos (1/200)).le
+  have hlarge := (pos (99/200)).le
   have hM : 1≤M := (Nat.one_le_floor_iff _).mpr (one (by norm_num))
   have hD : ((D+1 : ℕ) : ℝ)≤2*P (1/200) := by
     have hl : (D : ℝ)≤P (1/200) := Nat.floor_le (pos _).le
@@ -72,9 +74,8 @@ theorem fixed_gap_cofactor_descent :
 descent and does not depend on a target error exponent. -/
 theorem fixed_gap_divided_horizon {N v : ℕ} (hN : 1≤N)
     (hv : ⌊(N : ℝ)^(1/200 : ℝ)⌋₊<v) : ((N/v : ℕ) : ℝ)<(N : ℝ)^(199/200 : ℝ) := by
-  have h := divided_horizon_lt_power_of_lt_floor (δ := 1/200) hN hv
-  norm_num at h ⊢
-  exact h
+  simpa only [show 1-(1/200 : ℝ)=199/200 by norm_num] using
+    divided_horizon_lt_power_of_lt_floor (δ := 1/200) hN hv
 
 #print axioms fixed_gap_cofactor_descent
 #print axioms fixed_gap_divided_horizon

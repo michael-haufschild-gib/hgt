@@ -356,7 +356,7 @@ theorem eventually_loglog_clearing_of_subquadratic_fibre {N : ℕ} {b : Fin N �
     rw [he, Real.log_mul (by norm_num) hxpos.ne']
     linarith only [Real.log_le_sub_one_of_pos hxpos, Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 16), hx']
   have hq_log := Real.log_le_log (Nat.cast_pos.mpr hq) (Nat.cast_le.mpr hqx)
-  push_cast at h₂ hq_log
+  push_cast at h₂ hq_log hlog_p
   have hD_lo : (n m : ℝ) / 20 ≤ Real.log D := by
     linarith only [hnx', h₁, h₂, hlog2X, hlog_p, hq_log, hx']
   have hn_real : 0 < (n m : ℝ) := Nat.cast_pos.mpr hn_pos

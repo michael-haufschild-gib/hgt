@@ -131,45 +131,53 @@ theorem square_gcd_unit_orders (n : ℕ) :
   change Real.log ((U n).totient.gcd (V n).totient)≤14*(L n:ℝ)
   linarith only [h₁,h₂,hlog]
 
-private theorem card_range_le_gcd {u v : ℕ} (hu : 0<u) (hv : 0<v) (f : (ZMod u)ˣ →* (ZMod v)ˣ) :
-    Nat.card f.range ≤ u.totient.gcd v.totient := by
+private theorem log_range_le {u v K : ℕ} (hu : 0<u) (hv : 0<v)
+    (hS : u.primeFactors⊆ordinaryPrimeLags K) {H : Type*} [Group H]
+    (f : (ZMod u)ˣ →* H) (hM : ∀ a, (f a)^(carmichael v)=1) :
+    Real.log (Nat.card f.range)≤Real.log (u.totient.gcd v.totient)+Real.log 2+7*K := by
   letI : NeZero u := ⟨hu.ne'⟩
-  letI : NeZero v := ⟨hv.ne'⟩
-  have h₁ := Subgroup.card_range_dvd f
-  have h₂ := f.range.card_subgroup_dvd_card
-  simp only [Nat.card_eq_fintype_card,ZMod.card_units_eq_totient] at h₁ h₂
-  exact Nat.le_of_dvd (Nat.gcd_pos_of_pos_left _ (Nat.totient_pos.mpr hu)) (Nat.dvd_gcd h₁ h₂)
+  letI : Finite f.range := (f.finite_iff_finite_ker_range.mp inferInstance).2
+  have hg := Nat.gcd_pos_of_pos_left v.totient (Nat.totient_pos.mpr hu)
+  have hres : 0<residueUnitOrder u := prod_pos fun p h => by
+    have := (Nat.prime_of_mem_primeFactors h).two_le
+    omega
+  have hdiv := (unitHom_range_dvd_of_pow_eq_one hu f hM).trans (Nat.mul_dvd_mul_right _
+    (Nat.gcd_dvd_gcd (carmichael_dvd_totient u) (carmichael_dvd_totient v)))
+  have hcard := Nat.le_of_dvd (Nat.mul_pos hg (Nat.mul_pos (by decide : 0<2) hres)) hdiv
+  have hh := Real.log_le_log (Nat.cast_pos.mpr (Nat.card_pos : 0<Nat.card f.range))
+    (by exact_mod_cast hcard : (Nat.card f.range:ℝ)≤(u.totient.gcd v.totient:ℕ)*(2*(residueUnitOrder u:ℝ)))
+  rw [Real.log_mul (Nat.cast_pos.mpr hg).ne' (by positivity),
+    Real.log_mul two_ne_zero (Nat.cast_pos.mpr hres).ne'] at hh
+  linarith only [hh,residue_log hS]
 
-/-- Both directions have at most a quadratic logarithmic image on the
-square diagonal, uniformly over all homomorphisms. -/
-theorem square_unit_group_image_bound : ∃ C : ℝ, 0≤C ∧ ∀ n : ℕ, 0<n →
+/-- Every joint image annihilated by the opposite Carmichael exponent
+has at most quadratic logarithmic size, with no target-rank restriction. -/
+theorem square_bounded_exponent_image_bound : ∃ C : ℝ, 0≤C ∧ ∀ n : ℕ, 0<n → ∀ {H : Type*} [Group H],
     let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
-    (∀ f : (ZMod q.num.natAbs)ˣ →* (ZMod q.den)ˣ, Real.log (Nat.card f.range)≤C*(n:ℝ)^2) ∧
-    (∀ f : (ZMod q.den)ˣ →* (ZMod q.num.natAbs)ˣ, Real.log (Nat.card f.range)≤C*(n:ℝ)^2) := by
+    (∀ f : (ZMod q.num.natAbs)ˣ →* H, (∀ a, (f a)^(carmichael q.den)=1) →
+      Real.log (Nat.card f.range)≤C*(n:ℝ)^2) ∧
+    (∀ f : (ZMod q.den)ˣ →* H, (∀ a, (f a)^(carmichael q.num.natAbs)=1) →
+      Real.log (Nat.card f.range)≤C*(n:ℝ)^2) := by
   obtain ⟨A,_,hA⟩ := successorSquare_window_bound
-  refine ⟨14*A^2,by positivity,fun n hn => ?_⟩
-  letI : NeZero (U n) := ⟨(U_pos n).ne'⟩
-  letI : NeZero (V n) := ⟨(V_pos n).ne'⟩
+  refine ⟨Real.log 2+21*A^2,add_nonneg (Real.log_nonneg (by norm_num)) (by positivity),fun n hn {H} _ => ?_⟩
   have hs := square_gcd_unit_orders n
   change Real.log ((U n).totient.gcd (V n).totient)≤14*(L n:ℝ) at hs
-  have hsize := mul_le_mul_of_nonneg_left (hA hn) (by norm_num : (0:ℝ)≤14)
-  have hg : Real.log ((U n).totient.gcd (V n).totient)≤(14*A^2)*(n:ℝ)^2 :=
-    hs.trans (hsize.trans_eq (by ring))
+  have hL : (L n:ℝ)≤A^2*(n:ℝ)^2 := (hA hn).trans_eq (mul_pow _ _ _)
+  have h₂ := le_mul_of_one_le_right (Real.log_nonneg (by norm_num : (1:ℝ)≤2))
+    (one_le_pow₀ (by exact_mod_cast hn : (1:ℝ)≤n) (n := 2))
   constructor
-  · intro f
-    change (ZMod (U n))ˣ →* (ZMod (V n))ˣ at f
-    exact (Real.log_le_log (Nat.cast_pos.mpr Nat.card_pos) (by exact_mod_cast
-      card_range_le_gcd (U_pos n) (V_pos n) f)).trans hg
-  · intro f
-    change (ZMod (V n))ˣ →* (ZMod (U n))ˣ at f
-    rw [Nat.gcd_comm] at hg
-    exact (Real.log_le_log (Nat.cast_pos.mpr Nat.card_pos) (by exact_mod_cast
-      card_range_le_gcd (V_pos n) (U_pos n) f)).trans hg
+  · intro f hf
+    have hh := log_range_le (U_pos n) (V_pos n) (subset_union_left.trans (supports n)) f hf
+    linarith only [hh,hs,hL,h₂]
+  · intro f hf
+    have hh := log_range_le (V_pos n) (U_pos n) (subset_union_right.trans (supports n)) f hf
+    rw [Nat.gcd_comm] at hs
+    linarith only [hh,hs,hL,h₂]
 
-private theorem kernel_log {u v : ℕ} (hu : 0<u) (hv : 0<v) (f : (ZMod u)ˣ →* (ZMod v)ˣ) :
+private theorem kernel_log {u : ℕ} (hu : 0<u) {H : Type*} [Group H] (f : (ZMod u)ˣ →* H) :
     Real.log (Nat.card f.ker)=Real.log u.totient-Real.log (Nat.card f.range) := by
   letI : NeZero u := ⟨hu.ne'⟩
-  letI : NeZero v := ⟨hv.ne'⟩
+  letI : Finite f.range := (f.finite_iff_finite_ker_range.mp inferInstance).2
   have h := f.ker.card_mul_index
   rw [Subgroup.index_ker] at h
   have he : Nat.card f.ker*Nat.card f.range=u.totient :=
@@ -183,14 +191,14 @@ private theorem cutoff_log_bound : ∃ K : ℝ, 0≤K ∧ ∀ {n : ℕ}, 0<n →
   exact ⟨A^2,sq_nonneg _,fun {n} hn => (Real.log_le_self (by positivity : 0≤(L n:ℝ))).trans
     ((hA hn).trans_eq (mul_pow _ _ _))⟩
 
-/-- Every multiplicative map between the two residue rings' unit groups
-loses a positive cubic logarithmic order in its kernel, in either direction. -/
-theorem square_unit_group_kernel_lower : ∃ c : ℝ, 0<c ∧ ∀ᶠ n : ℕ in atTop,
+/-- Every joint measurement annihilated by the opposite unit exponent
+has a kernel of positive cubic logarithmic order. -/
+theorem square_bounded_exponent_kernel_lower : ∃ c : ℝ, 0<c ∧ ∀ᶠ n : ℕ in atTop, ∀ {H : Type*} [Group H],
     let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
-    (∀ f : (ZMod q.num.natAbs)ˣ →* (ZMod q.den)ˣ, c*(n:ℝ)^3≤Real.log (Nat.card f.ker)) ∧
-    (∀ f : (ZMod q.den)ˣ →* (ZMod q.num.natAbs)ˣ, c*(n:ℝ)^3≤Real.log (Nat.card f.ker)) := by
+    (∀ f : (ZMod q.num.natAbs)ˣ →* H, (∀ a, (f a)^(carmichael q.den)=1) → c*(n:ℝ)^3≤Real.log (Nat.card f.ker)) ∧
+    (∀ f : (ZMod q.den)ˣ →* H, (∀ a, (f a)^(carmichael q.num.natAbs)=1) → c*(n:ℝ)^3≤Real.log (Nat.card f.ker)) := by
   obtain ⟨c,H,hc,_,hbig⟩ := successorSquare_both_products_lower
-  obtain ⟨C,_,himage⟩ := square_unit_group_image_bound
+  obtain ⟨C,_,himage⟩ := square_bounded_exponent_image_bound
   obtain ⟨K,_,hK⟩ := cutoff_log_bound
   refine ⟨c/2,half_pos hc,?_⟩
   filter_upwards [hbig,eventually_ge_atTop 1,tendsto_natCast_atTop_atTop.eventually_ge_atTop
@@ -203,15 +211,36 @@ theorem square_unit_group_kernel_lower : ∃ c : ℝ, 0<c ∧ ∀ᶠ n : ℕ in 
   have hvr := (totient_loss (V_pos n) (L_pos n) (subset_union_right.trans (supports n))).2.trans (hK hn)
   change c*n*(n:ℝ)^2≤Real.log (U n) at hu
   change c*n*(n:ℝ)^2≤Real.log (V n) at hv
+  intro Htarget _
   constructor
-  · intro f
-    change (ZMod (U n))ˣ →* (ZMod (V n))ˣ at f
-    rw [kernel_log (U_pos n) (V_pos n)]
-    linarith only [hu,hur,hs,(himage n hn).1 f]
-  · intro f
-    change (ZMod (V n))ˣ →* (ZMod (U n))ˣ at f
-    rw [kernel_log (V_pos n) (U_pos n)]
-    linarith only [hv,hvr,hs,(himage n hn).2 f]
+  · intro f hf
+    change (ZMod (U n))ˣ →* Htarget at f
+    rw [kernel_log (U_pos n)]
+    linarith only [hu,hur,hs,(himage n hn (H := Htarget)).1 f hf]
+  · intro f hf
+    change (ZMod (V n))ˣ →* Htarget at f
+    rw [kernel_log (V_pos n)]
+    linarith only [hv,hvr,hs,(himage n hn (H := Htarget)).2 f hf]
+
+/-- Both directions between the two unit groups have quadratic log image. -/
+theorem square_unit_group_image_bound : ∃ C : ℝ, 0≤C ∧ ∀ n : ℕ, 0<n →
+    let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
+    (∀ f : (ZMod q.num.natAbs)ˣ →* (ZMod q.den)ˣ, Real.log (Nat.card f.range)≤C*(n:ℝ)^2) ∧
+    (∀ f : (ZMod q.den)ˣ →* (ZMod q.num.natAbs)ˣ, Real.log (Nat.card f.range)≤C*(n:ℝ)^2) := by
+  obtain ⟨C,hC,h⟩ := square_bounded_exponent_image_bound
+  exact ⟨C,hC,fun n hn => ⟨fun f => (h n hn (H := (ZMod (V n))ˣ)).1 f (fun a => pow_carmichael (f a)),
+    fun f => (h n hn (H := (ZMod (U n))ˣ)).2 f (fun a => pow_carmichael (f a))⟩⟩
+
+/-- Every map in either direction loses a positive cubic log order in its kernel. -/
+theorem square_unit_group_kernel_lower : ∃ c : ℝ, 0<c ∧ ∀ᶠ n : ℕ in atTop,
+    let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
+    (∀ f : (ZMod q.num.natAbs)ˣ →* (ZMod q.den)ˣ, c*(n:ℝ)^3≤Real.log (Nat.card f.ker)) ∧
+    (∀ f : (ZMod q.den)ˣ →* (ZMod q.num.natAbs)ˣ, c*(n:ℝ)^3≤Real.log (Nat.card f.ker)) := by
+  obtain ⟨c,hc,h⟩ := square_bounded_exponent_kernel_lower
+  refine ⟨c,hc,?_⟩
+  filter_upwards [h] with n hn
+  exact ⟨fun f => (hn (H := (ZMod (V n))ˣ)).1 f (fun a => pow_carmichael (f a)),
+    fun f => (hn (H := (ZMod (U n))ˣ)).2 f (fun a => pow_carmichael (f a))⟩
 
 private theorem price_bound_iff (g : ℕ → ℝ) {K : ℝ}
     (hK : ∀ {n : ℕ}, 0<n → |g n-Real.log (q n:ℝ)|≤K*(n:ℝ)^2) :
@@ -274,8 +303,8 @@ theorem riemannHypothesis_iff_square_carmichael_bound :
 #print axioms riemannHypothesis_iff_square_carmichael_bound
 #print axioms square_unit_order_log_error
 #print axioms square_gcd_unit_orders
-#print axioms square_unit_group_image_bound
-#print axioms square_unit_group_kernel_lower
+#print axioms square_bounded_exponent_image_bound
+#print axioms square_bounded_exponent_kernel_lower
 #print axioms riemannHypothesis_iff_square_unit_order_bound
 
 end GaloisForLFunctions.CountingHolography.Sections

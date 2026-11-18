@@ -39,10 +39,11 @@ theorem expIntegralOne_eq_regular_log {s : ℝ} (hs : 0 < s) :
 /-- Exact desingularization for every positive real argument. -/
 theorem regular_eq_mul (s : Set.Ioi (0 : ℝ)) :
     regular s = s.val * (1 + transform s) := by
+  have hs : 0 < s.val := s.property
   rw [one_add_transform]
   rw [expIntegralOne_eq_regular_log s.property, Real.exp_sub, Real.exp_log s.property]
   change regular s.val = s.val * (regular s.val / s.val)
-  field_simp [s.property.ne']
+  field_simp [hs.ne']
 
 theorem regular_zero : regular 0 = Real.exp (-Real.eulerMascheroniConstant) := by
   simp [regular, einCompare]
@@ -60,7 +61,8 @@ theorem hasDerivAt_regular_zero :
 theorem tendsto_mul_transform_zero :
     Tendsto (fun s => s * transform s) (𝓝[>] 0) (𝓝 (Real.exp (-Real.eulerMascheroniConstant))) := by
   have h := (hasDerivAt_regular_zero.sub (hasDerivAt_id (0 : ℝ))).continuousAt.tendsto
-  rw [id_eq, sub_zero, regular_zero] at h
+  change Tendsto (fun s : ℝ => regular s-s) (𝓝 0) (𝓝 (regular 0-0)) at h
+  rw [sub_zero, regular_zero] at h
   refine (h.mono_left nhdsWithin_le_nhds).congr' ?_
   filter_upwards [self_mem_nhdsWithin] with s hs
   change regular s - s = s * transform s
@@ -80,7 +82,7 @@ theorem tendsto_transform_finitePart :
     transform s - Real.exp (-Real.eulerMascheroniConstant) / s
   rw [zero_add, regular_zero, smul_eq_mul, he]
   field_simp [hs0.ne']
-  <;> ring
+  ring
 
 /-- The retention quantile is the reciprocal of the shifted transform. -/
 theorem retention_mul_transform (s : ℝ) :
@@ -119,7 +121,7 @@ private theorem kernel_identity (s : ℝ) : 1-s*einKernel s = Real.exp (-s) := b
   · rw [einKernel,logIntegralKernel_of_ne hs]
     have he : Real.exp (-s)*Real.exp s = 1 := by rw [← Real.exp_add,neg_add_cancel,Real.exp_zero]
     calc
-      _ = 1 - Real.exp (-s)*(Real.exp s-1) := by field_simp [hs] <;> ring
+      _ = 1 - Real.exp (-s)*(Real.exp s-1) := by field_simp [hs]
       _ = _ := by linear_combination -he
 
 /-- The reciprocal pole factor gives a globally positive derivative. -/
@@ -130,7 +132,6 @@ theorem hasDerivAt_apertureExtension (s : ℝ) : HasDerivAt apertureExtension (a
   convert hh using 1
   rw [apertureDensity, ← kernel_identity]
   field_simp [(regular_pos s).ne']
-  <;> ring
 
 /-- The logarithmic decay rate of the aperture density is exactly `1 + Ein'(s)`. -/
 theorem hasDerivAt_apertureDensity (s : ℝ) :
@@ -142,7 +143,7 @@ theorem hasDerivAt_apertureDensity (s : ℝ) :
   convert hh using 1
   rw [apertureDensity]
   field_simp [(regular_pos s).ne']
-  <;> ring
+  ring
 
 theorem apertureDensity_strictAnti : StrictAnti apertureDensity := by
   apply strictAnti_of_deriv_neg
@@ -184,7 +185,7 @@ theorem apertureDensity_slope_zero : HasDerivAt apertureDensity (-2*Real.exp Rea
   convert hasDerivAt_apertureDensity 0 using 1
   rw [he]
   simp [einKernel,logIntegralKernel_zero]
-  <;> ring
+  ring
 
 #print axioms tendsto_mul_transform_zero
 #print axioms tendsto_transform_finitePart

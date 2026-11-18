@@ -106,6 +106,20 @@ private theorem prime_test_eq_layer {Φ : ℝ → ℝ} (hs : ∀ u, 0 ≤ u → 
     field_simp [hk.ne']; ring
   rw [he]; ring
 
+/-- A fixed prime-power layer samples the Laplace integral of any continuous confined profile. -/
+theorem tendsto_primePowerLayer_of_confinement {Φ : ℝ → ℝ} (hΦ : Continuous Φ)
+    (hs : ∀ u, 0 ≤ u → Φ u=0) {C : ℝ} (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
+    {k : ℝ} (hk : 1 ≤ k) :
+    Tendsto (fun t : ℝ => Real.exp ((1/2-k⁻¹)*t)*primePowerLayer Φ k t)
+      atTop (𝓝 (k⁻¹*(negativeHalfLineLaplace (cx Φ) ((1/2-k⁻¹:ℝ):ℂ)).re)) := by
+  have hk0 := zero_lt_one.trans_le hk
+  have hP := tendsto_dilated_ordinary_prime_sum (continuous_primeDilationTest hΦ k)
+    (mul_nonneg (by norm_num) hC) (fun u _ => primeDilationTest_bound hs hC hb hk u)
+  rw [integral_primeDilationTest hs hk0] at hP
+  have hscale : Tendsto (fun t : ℝ => Real.exp (t/k)) atTop atTop :=
+    Real.tendsto_exp_atTop.comp (tendsto_id.atTop_div_const hk0)
+  exact (hP.comp hscale).congr fun t => prime_test_eq_layer hs hk0 t
+
 /-- For each fixed exponent at least one, the prime number theorem gives the
 leading signed layer in terms of a single real Laplace value of the state. -/
 theorem criticalState_primePowerLayer_asymptotic {W₀ : ℝ} (hW : 0 < W₀)
@@ -116,19 +130,13 @@ theorem criticalState_primePowerLayer_asymptotic {W₀ : ℝ} (hW : 0 < W₀)
         atTop (𝓝 (k⁻¹*(negativeHalfLineLaplace (cx F) ((1/2-k⁻¹:ℝ):ℂ)).re)) := by
   obtain ⟨_,_,Φ,hΦ,heq,hs,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
   refine ⟨Φ,hΦ,heq,fun k hk => ?_⟩
-  have hk0 := zero_lt_one.trans_le hk
-  have hP := tendsto_dilated_ordinary_prime_sum (continuous_primeDilationTest hΦ k)
-    (mul_nonneg (by norm_num) hC) (fun u _ => primeDilationTest_bound hs hC hb hk u)
-  rw [integral_primeDilationTest hs hk0] at hP
   have he : negativeHalfLineLaplace (cx Φ) ((1/2-k⁻¹:ℝ):ℂ) =
       negativeHalfLineLaplace (cx F) ((1/2-k⁻¹:ℝ):ℂ) := by
     apply integral_congr_ae
     filter_upwards [heq] with u hu
     simp only [cx,hu]
-  rw [he] at hP
-  have hscale : Tendsto (fun t : ℝ => Real.exp (t/k)) atTop atTop :=
-    Real.tendsto_exp_atTop.comp (tendsto_id.atTop_div_const hk0)
-  exact (hP.comp hscale).congr fun t => prime_test_eq_layer hs hk0 t
+  rw [← he]
+  exact tendsto_primePowerLayer_of_confinement hΦ hs hC hb hk
 
 /-- In the first two layers the polar term comes from ordinary primes and
 the constant term from prime squares. Both limits use the same representative. -/
@@ -189,35 +197,26 @@ private theorem square_term_eq (Φ : ℝ → ℝ) (t : ℝ) (p : Nat.Primes) :
   norm_num only [Nat.cast_ofNat,div_self (by norm_num : (2:ℝ) ≠ 0),neg_one_mul,
     Real.exp_neg,Real.exp_log hp,div_eq_mul_inv]
 
-/-- After summing over all proper prime powers, the same half-charge remains.
-The limit is for the unheated signed wave of the continuous representative. -/
-theorem criticalState_tendsto_properPowerWave {W₀ : ℝ} (hW : 0 < W₀)
-    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
-    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
-    ∃ Φ : ℝ → ℝ, Continuous Φ ∧ F =ᵐ[volume] Φ ∧
-      Tendsto (fun t : ℝ => ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*
-        Φ (t-Real.log (properPrimePowerIndex j))) atTop (𝓝 ((negativeHalfLineLaplace (cx F) 0).re/2)) := by
-  obtain ⟨_,_,Φ,hΦ,heq,hs,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
-  obtain ⟨Ψ,hΨ,heqΨ,_,h2⟩ := criticalState_ordinary_and_square_prime_limits hW ht hF
-  have hΨΦ : Ψ = Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heqΨ.symm.trans heq)
-  subst Ψ
-  obtain ⟨Ψ,hΨ,heqΨ,hbound⟩ := criticalState_properPowerWave_subexponential hW ht hF
-  have hΨΦ : Ψ = Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heqΨ.symm.trans heq)
-  subst Ψ
-  obtain ⟨_,hA⟩ := hbound 1 zero_lt_one
+private theorem tendsto_properPowerWave_of_square {Φ : ℝ → ℝ} {C L : ℝ}
+    (hs : ∀ u, 0 ≤ u → Φ u=0) (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
+    (habs : ∀ t : ℝ, 0 ≤ t → Summable fun j : Nat.Primes × ℕ =>
+      vonMangoldtAtom (properPrimePowerIndex j)*|Φ (t-Real.log (properPrimePowerIndex j))|)
+    (h2 : Tendsto (primePowerLayer Φ 2) atTop (𝓝 L)) :
+    Tendsto (fun t : ℝ => ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*
+      Φ (t-Real.log (properPrimePowerIndex j))) atTop (𝓝 L) := by
   have hb' (u : ℝ) : |Φ u| ≤ C := by
     rcases le_or_gt 0 u with hu | hu
     · simpa only [hs u hu,abs_zero] using hC
     · exact (hb u).trans (mul_le_of_le_one_right hC (Real.exp_le_one_iff.mpr (by linarith)))
   have hboth := h2.add (tendsto_cubeOrHigherWave hs hb')
   rw [add_zero] at hboth
-  refine ⟨Φ,hΦ,heq,hboth.congr' ?_⟩
+  apply hboth.congr'
   filter_upwards [eventually_ge_atTop (0:ℝ)] with t ht0
   let f := fun j : Nat.Primes × ℕ => vonMangoldtAtom (properPrimePowerIndex j)*
     Φ (t-Real.log (properPrimePowerIndex j))
   have hf : Summable f := by
     apply Summable.of_norm
-    refine (hA t ht0).1.congr fun j => ?_
+    refine (habs t ht0).congr fun j => ?_
     have hn : 0 ≤ vonMangoldtAtom (properPrimePowerIndex j) := by
       unfold vonMangoldtAtom
       split_ifs <;> first | exact le_rfl | exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
@@ -237,6 +236,66 @@ theorem criticalState_tendsto_properPowerWave {W₀ : ℝ} (hW : 0 < W₀)
   simp_rw [hsplit]
   rw [hhead.tsum_add hshift.prod]
 
+/-- After summing over all proper prime powers, the same half-charge remains.
+The limit is for the unheated signed wave of the continuous representative. -/
+theorem criticalState_tendsto_properPowerWave {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
+    ∃ Φ : ℝ → ℝ, Continuous Φ ∧ F =ᵐ[volume] Φ ∧
+      Tendsto (fun t : ℝ => ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*
+        Φ (t-Real.log (properPrimePowerIndex j))) atTop (𝓝 ((negativeHalfLineLaplace (cx F) 0).re/2)) := by
+  obtain ⟨_,_,Φ,hΦ,heq,hs,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  obtain ⟨Ψ,hΨ,heqΨ,_,h2⟩ := criticalState_ordinary_and_square_prime_limits hW ht hF
+  have hΨΦ : Ψ = Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heqΨ.symm.trans heq)
+  subst Ψ
+  obtain ⟨Ψ,hΨ,heqΨ,hbound⟩ := criticalState_properPowerWave_subexponential hW ht hF
+  have hΨΦ : Ψ = Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heqΨ.symm.trans heq)
+  subst Ψ
+  obtain ⟨_,hA⟩ := hbound 1 zero_lt_one
+  exact ⟨Φ,hΦ,heq,tendsto_properPowerWave_of_square hs hC hb (fun t ht0 => (hA t ht0).1) h2⟩
+
+/-- All proper powers sample half the integral of every continuous test dominated
+by the absolute state profile. The terms of exponent at least three vanish together. -/
+theorem criticalState_tendsto_dominated_properPowerWave {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
+    ∃ Φ : ℝ → ℝ, Continuous Φ ∧ F =ᵐ[volume] Φ ∧
+      ∀ g : ℝ → ℝ, Continuous g → (∀ u, |g u| ≤ |Φ u|) →
+        Tendsto (fun t : ℝ => ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*
+          g (t-Real.log (properPrimePowerIndex j))) atTop (𝓝 ((∫ u, g u)/2)) := by
+  obtain ⟨_,_,Φ,hΦ,heq,hs,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  obtain ⟨Ψ,hΨ,heqΨ,hbound⟩ := criticalState_properPowerWave_subexponential hW ht hF
+  have hΨΦ : Ψ = Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heqΨ.symm.trans heq)
+  subst Ψ
+  obtain ⟨_,hA⟩ := hbound 1 zero_lt_one
+  refine ⟨Φ,hΦ,heq,fun g hg hdom => ?_⟩
+  have hsg (u : ℝ) (hu : 0 ≤ u) : g u=0 := by
+    have h := hdom u
+    rwa [hs u hu,abs_zero,abs_nonpos_iff] at h
+  have hbg (u : ℝ) : |g u| ≤ C*Real.exp (2*u) := (hdom u).trans (hb u)
+  have h2 := tendsto_primePowerLayer_of_confinement hg hsg hC hbg (k := 2) (by norm_num)
+  rw [show 1/2-(2:ℝ)⁻¹ = 0 by norm_num] at h2
+  simp only [zero_mul,Real.exp_zero,one_mul,real_laplace_eq_integral] at h2
+  refine tendsto_properPowerWave_of_square hsg hC hbg ?_ (by simpa only [div_eq_inv_mul] using h2)
+  intro t ht0
+  have hn (n : ℕ) : 0 ≤ vonMangoldtAtom n := by
+    unfold vonMangoldtAtom
+    split_ifs <;> first | exact le_rfl | exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
+  exact Summable.of_nonneg_of_le (fun j => mul_nonneg (hn _) (abs_nonneg _))
+    (fun j => mul_le_mul_of_nonneg_left (hdom _) (hn _)) (hA t ht0).1
+
+/-- The total variation of the proper-power wave tends to half the absolute mass of the state. -/
+theorem criticalState_tendsto_absolute_properPowerWave {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
+    ∃ Φ : ℝ → ℝ, Continuous Φ ∧ F =ᵐ[volume] Φ ∧
+      Tendsto (fun t : ℝ => ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*
+        |Φ (t-Real.log (properPrimePowerIndex j))|) atTop (𝓝 ((∫ u, |Φ u|)/2)) := by
+  obtain ⟨Φ,hΦ,he,h⟩ := criticalState_tendsto_dominated_properPowerWave hW ht hF
+  exact ⟨Φ,hΦ,he,h (fun u => |Φ u|) hΦ.abs (fun u => (abs_abs (Φ u)).le)⟩
+
+#print axioms criticalState_tendsto_dominated_properPowerWave
+#print axioms criticalState_tendsto_absolute_properPowerWave
 #print axioms criticalState_tendsto_properPowerWave
 
 #print axioms criticalState_ordinary_and_square_prime_limits
