@@ -38,7 +38,8 @@ theorem sum_mobiusFactorialSample (W : ℝ → ℝ) (B : ℝ) (hW : ∀ u, B < u
   have row (m : ℕ) (hm : m ∈ Icc 1 N) :
       (∑ d ∈ m.divisors, F d (m/d)) = if m=1 then W y else 0 := by
     have h : ∀ d ∈ m.divisors, F d (m/d)=moebiusReal d*W (m*y) := fun d hd => by
-      rw [F,Nat.mul_div_cancel' (Nat.mem_divisors.mp hd).1]
+      dsimp only [F]
+      rw [Nat.mul_div_cancel' (Nat.mem_divisors.mp hd).1]
     rw [sum_congr rfl h,← sum_mul,sum_divisors_moebiusReal_eq_ite_one (mem_Icc.mp hm).1]
     split_ifs with h <;> simp [h]
   rw [sum_congr rfl row]
@@ -47,7 +48,7 @@ theorem sum_mobiusFactorialSample (W : ℝ → ℝ) (B : ℝ) (hW : ∀ u, B < u
   · have hlt : B < y := (div_lt_one hy).mp (by
       by_contra! hb
       exact h (Nat.le_floor (by simpa only [Nat.cast_one] using hb)))
-    simp [h,hW y hlt]
+    simp [hW y hlt]
 
 private theorem sample_enlarge {W : ℝ → ℝ} {B u : ℝ} (hu : 0 < u)
     (hW : ∀ x, B < x → W x=0) {N : ℕ} (hN : ⌊B/u⌋₊ ≤ N) :
@@ -150,7 +151,7 @@ private theorem reciprocal_square_sum (N : ℕ) : (∑ k ∈ Icc 1 N, 1/(k:ℝ)^
     | zero => norm_num
     | succ n ih =>
       rw [sum_Icc_succ_top (by omega),Nat.cast_succ]
-      have ht := add_le_add_right ih (1/((n:ℝ)+1)^2)
+      have ht := add_le_add ih (le_refl (1/((n:ℝ)+1)^2))
       refine ht.trans ?_
       field_simp <;> nlinarith only [Nat.cast_nonneg (α := ℝ) n,sq_nonneg (n:ℝ)]
   exact (h N).trans (sub_le_self _ (by positivity))
@@ -166,7 +167,7 @@ theorem roundedFactorialReading_error {W : ℝ → ℝ} {B L : ℝ} (hB : 0 ≤ 
       |mobiusFactorialSample W B ⌈k*y⌉₊-mobiusFactorialSample W B (k*y)| ≤ L*(B/y)^2*(1/(k:ℝ)^2) := by
     have hk' : 0 < (k:ℝ) := Nat.cast_pos.mpr (mem_Icc.mp hk).1
     have hky := mul_pos hk' hy
-    exact (mobiusFactorialSample_rounding hB hL hW hLip hky (Nat.le_ceil _) (Nat.ceil_lt_add_one hky.le).le).trans_eq (by field_simp; ring)
+    exact (mobiusFactorialSample_rounding hB hL hW hLip hky (Nat.le_ceil _) (Nat.ceil_lt_add_one hky.le).le).trans_eq (by field_simp)
   refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum hrow).trans ?_)
   rw [← mul_sum]
   exact (mul_le_mul_of_nonneg_left (reciprocal_square_sum _) (mul_nonneg hL (sq_nonneg _))).trans_eq (by ring)
@@ -210,7 +211,7 @@ theorem mobiusFactorialSample_mertens_bound {W : ℝ → ℝ} {B L C σ : ℝ}
   refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum row).trans ?_)
   simp only [sum_const,nsmul_eq_mul,Nat.card_Ioc,Nat.sub_zero]
   refine (mul_le_mul_of_nonneg_right hN (by positivity)).trans_eq ?_
-  field_simp [hu.ne']; ring
+  field_simp [hu.ne']
 
 private theorem weighted_derivative_zero {W W' : ℝ → ℝ} {B : ℝ} (hB : 0 ≤ B)
     (hW : ∀ x, B < x → W x=0) (hD : ∀ x, 0 < x → HasDerivAt W (W' x) x) :
@@ -237,13 +238,16 @@ theorem hasDerivAt_mobiusFactorialSample {W W' : ℝ → ℝ} {B u : ℝ} (hB : 
   have hd (d : ℕ) (hd : d ∈ S) :
       HasDerivAt (fun x : ℝ => moebiusReal d * W (d*x)) (moebiusReal d*(W' (d*u)*d)) u :=
     ((hD _ (mul_pos (Nat.cast_pos.mpr (mem_Icc.mp hd).1) hu)).comp u
-      (by simpa only [mul_one] using (hasDerivAt_id u).const_mul (d:ℝ))).const_mul _
+      (by simpa only [id_eq,mul_one] using (hasDerivAt_id u).const_mul (d:ℝ))).const_mul _
   have hf := (HasDerivAt.fun_sum hd).congr_of_eventuallyEq
     (eventually_of_mem (Ioi_mem_nhds (half_lt_self hu)) fun x hx => expand _ hx)
-  convert hf using 1
-  rw [sample_enlarge hu hzero (Nat.floor_mono (div_le_div_of_nonneg_left hB hhalf (half_le_self hu.le))),
-    sum_div]
-  exact sum_congr rfl fun d _ => by field_simp [hu.ne']; ring
+  have hvalue : mobiusFactorialSample (fun v => v*W' v) B u/u =
+      ∑ d ∈ S, moebiusReal d*(W' (d*u)*d) := by
+    rw [sample_enlarge hu hzero (Nat.floor_mono (div_le_div_of_nonneg_left hB hhalf (half_le_self hu.le))),
+      sum_div]
+    exact sum_congr rfl fun d _ => by field_simp [hu.ne'] <;> ring
+  rw [hvalue]
+  exact hf
 
 /-- Partial summation applied to v W'(v) bounds the change across a
 unit interval by the Mertens power divided by its left endpoint. -/
@@ -275,7 +279,7 @@ def factorialInterpolationPSeries (σ : ℝ) := ∑' k : ℕ, ((k:ℝ)^(1+σ))�
 private theorem sum_unit_rounding {b : ℝ → ℝ} {D B σ y : ℝ} (hD : 0 ≤ D)
     (hB : 0 ≤ B) (hσ : 0 < σ) (hy : 0 < y)
     (h : ∀ u v, 0 < u → u ≤ v → v ≤ u+1 → |b v-b u| ≤ D*(B/u)^σ/u)
-    (v : ℕ → ℝ) (hv : ∀ k, (k:ℝ)*y ≤ v k ∧ v k ≤ k*y+1) (N : ℕ) :
+    (v : ℕ → ℝ) (hv : ∀ k : ℕ, (k:ℝ)*y ≤ v k ∧ v k ≤ k*y+1) (N : ℕ) :
     (∑ k ∈ Icc 1 N, |b (v k)-b (k*y)|) ≤ factorialInterpolationPSeries σ*(D*(B/y)^σ/y) := by
   let E := D*(B/y)^σ/y
   have hE : 0 ≤ E := by dsimp only [E]; positivity
@@ -312,8 +316,8 @@ theorem roundedFactorialReading_balanced_bound (W : ℝ → ℝ) {B y : ℝ} (hB
   let c := fun j : ℕ => mobiusFactorialSample W B j-mobiusFactorialSample W B (j+1:ℕ)
   let I := Icc 1 ⌊B⌋₊
   have hbal : (∑ j ∈ I, c j*(j:ℝ)) = 0 := by
-    have h := roundedFactorialReading_eq_floor_sum W hB zero_lt_one
-    rw [show (1:ℝ) = (↑(1:ℕ):ℝ) from rfl,roundedFactorialReading_nat W B hW Nat.one_pos] at h
+    have h := roundedFactorialReading_eq_floor_sum W hB (Nat.cast_pos.mpr Nat.one_pos : (0:ℝ) < (1:ℕ))
+    rw [roundedFactorialReading_nat W B hW Nat.one_pos] at h
     simpa only [Nat.cast_one,h₁,div_one,Nat.floor_natCast] using h.symm
   have hzero : (∑ j ∈ I, c j*((j:ℝ)/y)) = 0 := by
     simp_rw [← mul_div_assoc]
@@ -322,7 +326,8 @@ theorem roundedFactorialReading_balanced_bound (W : ℝ → ℝ) {B y : ℝ} (hB
   change |∑ j ∈ I, c j*(⌊(j:ℝ)/y⌋₊:ℝ)| ≤ _
   rw [← sub_zero (∑ j ∈ I, c j*(⌊(j:ℝ)/y⌋₊:ℝ)),← hzero,← sum_sub_distrib]
   refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun j _ => ?_)
-  rw [← mul_sub,abs_mul,abs_sub_comm,abs_of_nonneg (sub_nonneg.mpr (Nat.floor_le (div_nonneg (Nat.cast_nonneg j) hy.le)))]
+  rw [← mul_sub,abs_mul,abs_sub_comm (↑⌊(j:ℝ)/y⌋₊) ((j:ℝ)/y),
+    abs_of_nonneg (sub_nonneg.mpr (Nat.floor_le (div_nonneg (Nat.cast_nonneg j) hy.le)))]
   exact mul_le_of_le_one_right (abs_nonneg _) (by linarith only [Nat.lt_floor_add_one ((j:ℝ)/y)])
 
 /-- Uniform bound at all small degrees for a balanced compact test

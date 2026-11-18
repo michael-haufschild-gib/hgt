@@ -60,7 +60,8 @@ theorem centeredPrimeWeight_second_horizon :
     rw [div_div,←Nat.cast_mul,Int.fract_div_natCast_eq_div_natCast_mod]
     have hd₀ : 0<d := (mem_Icc.mp hd).1
     push_cast; field_simp; ring
-  simp only [hr,mul_sub,sum_sub_distrib,←sum_mul,hz,zero_mul,sub_zero,mul_comm (z _)]
+  simp only [hr,mul_sub,sum_sub_distrib,←sum_mul,hz,zero_mul,sub_zero]
+  simp_rw [mul_comm (z _)]
   have hb := centeredModularRamp_second_abel m N z
   simp only [h₀,hN,hN₁,mul_zero,add_zero,sub_zero,sub_self] at hb
   rw [hb]

@@ -232,7 +232,7 @@ theorem fiveUnitDivisor_degree_bound :
   have hR (i : Fin 5) : 0 < R i := div_pos (hr i) hy
   have hsort {i j : Fin 5} (hij : e i ≤ e j) : r i ≤ r j := by
     apply Real.sqrt_le_sqrt
-    exact add_le_add_right (by exact_mod_cast (show (e i).val ≤ (e j).val from hij) : (e i:ℝ) ≤ e j) _
+    exact add_le_add (by exact_mod_cast (show (e i).val ≤ (e j).val from hij) : (e i:ℝ) ≤ e j) (le_refl 1)
   have hmid : R 3 = 1 := div_self hy.ne'
   have hp' : (∑ i, r i*(unitCoefficients i:ℝ)) = 0 := by
     simpa only [positivePoleDegree,fiveUnitDivisor,sum_integralGraphSum,r] using hp
@@ -243,7 +243,7 @@ theorem fiveUnitDivisor_degree_bound :
   have hinv : (r 0)⁻¹+(r 1)⁻¹=(r 2)⁻¹+(r 3)⁻¹+(r 4)⁻¹ := by linarith only [hm']
   have hpR : R 0+R 1=R 2+1+R 4 := by
     simpa only [R,add_div,div_self hy.ne'] using congrArg (fun q : ℝ => q/y) hsum
-  have hrec (i : Fin 5) : 1/R i=y*(r i)⁻¹ := by rw [one_div,R,inv_div,div_eq_mul_inv]
+  have hrec (i : Fin 5) : 1/R i=y*(r i)⁻¹ := by simp only [R,one_div,inv_div,div_eq_mul_inv]
   have hone : y*(r 3)⁻¹=1 := mul_inv_cancel₀ hy.ne'
   have hmR : 1/R 0+1/R 1=1/R 2+1+1/R 4 := by
     simp only [hrec]
@@ -255,7 +255,8 @@ theorem fiveUnitDivisor_degree_bound :
   have ht (i : Fin 5) : t i = 2*Real.log (R i) := by
     fin_cases i <;> simp [t,fiveLags,hmid]
   have hlog (i : Fin 5) : Real.log ((e i:ℝ)+1) = t i+2*Real.log y := by
-    rw [ht,R,Real.log_div (hr i).ne' hy.ne',r,Real.log_sqrt (by positivity : 0 ≤ (e i:ℝ)+1)]
+    rw [ht]
+    simp only [R,Real.log_div (hr i).ne' hy.ne',r,Real.log_sqrt (by positivity : 0 ≤ (e i:ℝ)+1)]
     ring
   have hd (i j : Fin 5) : Real.log ((e i:ℝ)+1)-Real.log ((e j:ℝ)+1) = t i-t j := by
     rw [hlog,hlog]; ring

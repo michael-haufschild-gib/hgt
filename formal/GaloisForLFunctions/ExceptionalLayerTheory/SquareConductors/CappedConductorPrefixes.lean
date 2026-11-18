@@ -32,17 +32,16 @@ theorem conductorLog_mono {n N : ℕ} (hn : 0<n) (hnN : n≤N) : conductorLog n�
   add_le_add (le_refl 1) (Real.log_le_log (by positivity)
     (mul_le_mul_of_nonneg_left (Nat.cast_le.mpr hnN) (by norm_num)))
 
-/-- The two cutoffs are simultaneously within the six-logarithm budget. -/
-theorem dyadicPrimeContact_cappedConductor : ∃ C : ℝ, 0≤C ∧ ∀ {n : ℕ}, 0<n →
-    |dyadicPrimeContact n-cappedConductor n| ≤ C*(conductorLog n)^6 := by
-  obtain ⟨A,B,C,hA,hB,hC,h⟩ := dyadicPrimeContact_capped_upper_product_tail
+/-- The logarithm of the common prime horizon grows at most linearly in
+the conductor logarithm. -/
+theorem splineHorizon_conductorLog : ∃ J : ℝ, 0≤J ∧ ∀ {n : ℕ}, 0<n →
+    1+Real.log (splineHorizon n)≤J*conductorLog n := by
   obtain ⟨K,hK,hwin⟩ := successorSquare_window_bound
   let J := 3+2*Real.log K
   have hklog := Real.log_nonneg hK
   have hj : 0≤J := by dsimp [J]; positivity
-  refine ⟨A*J^6+2*B+C*J,by positivity,fun {n} hn => ?_⟩
+  refine ⟨J,hj,fun {n} hn => ?_⟩
   let L := splineHorizon n
-  let U := n*n.sqrt
   let H := conductorLog n
   have hn' : (0:ℝ)<n := Nat.cast_pos.mpr hn
   have hK' : 0<K := zero_lt_one.trans_le hK
@@ -54,12 +53,27 @@ theorem dyadicPrimeContact_cappedConductor : ∃ C : ℝ, 0≤C ∧ ∀ {n : ℕ
     dsimp [L,splineHorizon]; push_cast; positivity
   have hlogn : Real.log n≤Real.log (2*(n:ℝ)) :=
     Real.log_le_log hn' (by linarith)
-  have hL : 1+Real.log L≤J*H := by
-    have hb := Real.log_le_log hL₀ (hwin hn)
-    rw [Real.log_pow,Real.log_mul hK'.ne' hn'.ne'] at hb
-    have hh := le_mul_of_one_le_right hklog hH
-    dsimp only [H,conductorLog,J] at hh ⊢
-    linarith only [hb,hh,hlogn,Real.log_nonneg (by linarith [show (1:ℝ)≤n by exact_mod_cast hn] : (1:ℝ)≤2*n)]
+  have hb := Real.log_le_log hL₀ (hwin hn)
+  rw [Real.log_pow,Real.log_mul hK'.ne' hn'.ne'] at hb
+  have hh := le_mul_of_one_le_right hklog hH
+  dsimp only [H,conductorLog,J] at hh ⊢
+  linarith only [hb,hh,hlogn,Real.log_nonneg (by linarith [show (1:ℝ)≤n by exact_mod_cast hn] : (1:ℝ)≤2*n)]
+
+/-- The two cutoffs are simultaneously within the six-logarithm budget. -/
+theorem dyadicPrimeContact_cappedConductor : ∃ C : ℝ, 0≤C ∧ ∀ {n : ℕ}, 0<n →
+    |dyadicPrimeContact n-cappedConductor n| ≤ C*(conductorLog n)^6 := by
+  obtain ⟨A,B,C,hA,hB,hC,h⟩ := dyadicPrimeContact_capped_upper_product_tail
+  obtain ⟨J,hj,hwin⟩ := splineHorizon_conductorLog
+  refine ⟨A*J^6+2*B+C*J,by positivity,fun {n} hn => ?_⟩
+  let L := splineHorizon n
+  let U := n*n.sqrt
+  let H := conductorLog n
+  have hn' : (0:ℝ)<n := Nat.cast_pos.mpr hn
+  have hH : 1≤H := conductorLog_one_le _
+  have hH₀ := zero_le_one.trans hH
+  have hL : 1+Real.log L≤J*H := hwin hn
+  have hlogn : Real.log n≤Real.log (2*(n:ℝ)) :=
+    Real.log_le_log hn' (by linarith)
   have hU : 0<U := Nat.mul_pos hn (Nat.sqrt_pos.mpr hn)
   have hU' : (U:ℝ)≤(n:ℝ)^2 := by
     exact_mod_cast (Nat.mul_le_mul_left n (Nat.sqrt_le_self n)).trans_eq (sq n).symm
@@ -124,7 +138,7 @@ theorem squareGeneratorPrefix_capped_products :
         (n:ℝ)^2*(P-D)+(n:ℝ)^2*(D-cappedConductor n) := by ring
     rw [he]
     apply (abs_add_le _ _).trans ((add_le_add (abs_add_le _ _) le_rfl).trans _)
-    rw [abs_mul,abs_mul,abs_of_nonneg (sq_nonneg (n:ℝ))]
+    simp only [abs_mul,abs_of_nonneg (sq_nonneg (n:ℝ))]
     have hv := one_le_pow₀ (n := 6) (conductorLog_one_le n)
     have hs := mul_le_mul_of_nonneg_left (hb hn₁) (sq_nonneg (n:ℝ))
     have ht := mul_le_mul_of_nonneg_left (hc hn₁) (sq_nonneg (n:ℝ))
@@ -138,6 +152,28 @@ theorem squareGeneratorPrefix_capped_products :
       (by positivity) (by positivity)
   apply (sum_le_sum hnrow).trans_eq
   rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
+  ring
+
+/-- The six-logarithm error is negligible at every positive exponent. -/
+theorem conductorLog_subpower {b : ℝ} (hb : 0<b) :
+    ∃ K : ℝ, 0≤K ∧ ∀ {n : ℕ}, 0<n → (conductorLog n)^6≤K*(n:ℝ)^b := by
+  let a := b/6
+  have ha : 0<a := div_pos hb (by norm_num)
+  refine ⟨(1+1/a)^6*(2:ℝ)^b,by positivity,fun {n} hn => ?_⟩
+  let t := 2*(n:ℝ)
+  have hn' : (1:ℝ)≤n := by exact_mod_cast hn
+  have ht : 1≤t := by dsimp [t]; linarith only [hn']
+  have ht₀ := zero_lt_one.trans_le ht
+  have hbase : conductorLog n≤(1+1/a)*t^a := by
+    have h₁ := Real.one_le_rpow ht ha.le
+    have h₂ := Real.log_le_rpow_div ht₀.le ha
+    change 1+Real.log t≤_
+    linarith only [h₁,h₂]
+  have he : (t^a)^6=t^b := by
+    rw [←Real.rpow_natCast _ 6,←Real.rpow_mul ht₀.le]
+    congr 1; dsimp [a]; ring
+  apply (pow_le_pow_left₀ (zero_le_one.trans (conductorLog_one_le n)) hbase 6).trans_eq
+  rw [mul_pow,he,show t^b=(2:ℝ)^b*(n:ℝ)^b from Real.mul_rpow (by norm_num) (Nat.cast_nonneg n)]
   ring
 
 #print axioms dyadicPrimeContact_cappedConductor

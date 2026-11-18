@@ -80,10 +80,12 @@ private theorem cubicLog_bound {z : ℝ} (hz : 0<z) (hz' : z≤3/4) :
     have hh := (((hasDerivAt_id v).const_mul 2).add
       (((hasDerivAt_const v (1:ℝ)).sub (hasDerivAt_id v)).log hminus.ne')).sub
       (((hasDerivAt_const v (1:ℝ)).add (hasDerivAt_id v)).log hplus.ne')
-    convert hh using 1
-    dsimp only [f']
-    have hf : 1-v^2=(1-v)*(1+v) := by ring
-    rw [hf]; field_simp [hplus.ne',hminus.ne'] <;> ring
+    have hder : f' v = 2*1 + (0-1)/(1-v) - (0+1)/(1+v) := by
+      dsimp only [f']
+      rw [show 1-v^2=(1-v)*(1+v) by ring]
+      field_simp [hplus.ne',hminus.ne'] <;> ring
+    rw [hder]
+    exact hh
   obtain ⟨c,hc,he⟩ := exists_hasDerivAt_eq_slope cubicLog f' hz
     (fun v hv => (hd hv.1 hv.2).continuousAt.continuousWithinAt)
     (fun v hv => hd hv.1.le hv.2.le)
@@ -204,7 +206,8 @@ theorem reciprocalFactorialEulerCorrection_no_right_germ (F : ℂ → ℂ) (hF :
   · simp [h] at ho
   · obtain ⟨k,hk⟩ := WithTop.ne_top_iff_exists.mp h
     rw [← hk] at ho
-    norm_cast at ho
+    change (((2*k+(-1):ℤ):WithTop ℤ))=((0:ℤ):WithTop ℤ) at ho
+    have hparity : 2*k+(-1)=0 := WithTop.coe_inj.mp ho
     omega
 
 end GaloisForLFunctions.ExceptionalLayerTheory

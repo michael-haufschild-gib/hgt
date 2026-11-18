@@ -955,6 +955,7 @@ import GaloisForLFunctions.HTGeometry.BorsukUlam.FlagComplex
 import GaloisForLFunctions.HTGeometry.BorsukUlam.Tucker
 import GaloisForLFunctions.HTGeometry.BorsukUlam.Subdivision
 import GaloisForLFunctions.HTGeometry.BorsukUlam.CrossPolytope
+import GaloisForLFunctions.HTGeometry.BorsukUlam.CrossPolytopePointCounts
 import GaloisForLFunctions.HTGeometry.BorsukUlam.Realization
 import GaloisForLFunctions.HTGeometry.BorsukUlam.Theorem
 import GaloisForLFunctions.HTGeometry.BoundedLineStabiliserFinite

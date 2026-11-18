@@ -134,7 +134,9 @@ private theorem latticeCone_mem (A : Matrix ι ι ℤ) (x : ι → ℝ) :
     refine ⟨fun i => ⟨a i,ha i⟩,?_⟩
     funext j
     have hj : (∑ i, (A j i:ℝ)*a i) = x j := congrFun hx j
-    simpa only [Finset.sum_apply,NNReal.smul_def,Pi.smul_apply,smul_eq_mul,mul_comm] using hj
+    simp only [Finset.sum_apply,NNReal.smul_def,Pi.smul_apply,smul_eq_mul]
+    change (∑ i, a i*(A j i:ℝ)) = x j
+    simpa only [mul_comm] using hj
 
 private theorem cast_mulVec (A : Matrix ι ι ℤ) (v : ι → ℤ) :
     ((Int.castRingHom ℝ).mapMatrix A) *ᵥ (fun j => (v j:ℝ)) = fun j => ((A *ᵥ v) j:ℝ) :=

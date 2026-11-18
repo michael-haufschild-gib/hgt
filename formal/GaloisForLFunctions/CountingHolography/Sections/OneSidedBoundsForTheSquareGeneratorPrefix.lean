@@ -180,7 +180,8 @@ private theorem extension_of_prefix_bound {a e C : ℝ} (ha : 0 ≤ a) (ha' : a 
     have he₂ : (e:ℂ)*(e:ℂ)=1 := by
       have h : e*e=1 := by nlinarith only [sq_abs e,congrArg (fun x : ℝ => x^2) he]
       exact_mod_cast h
-    rw [H,hFright _ h]
+    dsimp only [H]
+    rw [hFright _ h]
     dsimp only [Λ]
     rw [hright _ h,show 3+2*(z-1/2)=J z by ring,show z-1/2+3/2=z+1 by ring]
     field_simp [hz']; linear_combination (squareConductorContinuation (J z)*(z+1))*he₂

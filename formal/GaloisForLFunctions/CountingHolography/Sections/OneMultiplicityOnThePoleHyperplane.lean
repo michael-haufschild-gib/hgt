@@ -58,8 +58,8 @@ theorem poleBalanced_single_multiplicity_error {M : ℝ} (hM : 0 ≤ M) :
   refine ⟨2*D+E,by positivity,fun {N} a hbal ha {m} hm hL => ?_⟩
   let P := ordinaryPrimeContact a
   let Q := integerProbe N a
-  have he : C*(∑ i, |(a i:ℝ)|)^2+4 ≤ E := add_le_add_right
-    (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (sum_nonneg fun _ _ => abs_nonneg _) ha 2) hC) _
+  have he : C*(∑ i, |(a i:ℝ)|)^2+4 ≤ E := add_le_add
+    (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (sum_nonneg fun _ _ => abs_nonneg _) ha 2) hC) (le_refl 4)
   have hdeg : |P+Q| ≤ D+E := by
     let L := 3*windowEnd N
     obtain ⟨j,hj,hj'⟩ := ((hc N a hbal).and (eventually_ge_atTop (L+1))).exists

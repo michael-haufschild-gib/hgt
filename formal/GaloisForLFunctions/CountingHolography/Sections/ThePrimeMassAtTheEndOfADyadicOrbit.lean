@@ -594,7 +594,7 @@ private theorem adjusted_fourthPower_sum :
   generalize (∑ j ∈ Ioc 0 n, fourthErrorMass j)=e at *
   generalize (if n%2=0 then (0:ℝ) else fourthMass n)=v at *
   rw [show p+r-(q+v+e)=(p-q)+(r-e)+(-v) by ring]
-  refine (abs_add_le _ _).trans ((add_le_add_right (abs_add_le _ _) _).trans ?_)
+  refine (abs_add_le _ _).trans ((add_le_add (abs_add_le _ _) (le_refl |-v|)).trans ?_)
   rw [abs_neg]
   exact (add_le_add (add_le_add hpt het) hb').trans_eq (by ring)
 

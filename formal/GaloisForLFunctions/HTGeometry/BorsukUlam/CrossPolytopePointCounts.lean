@@ -39,17 +39,28 @@ theorem mem_augmented_faces (S : Finset (Vtx n)) :
       · exact (h i ⟨hc,hb⟩).elim
       · rfl
 
+private theorem word_mem {ι : Type*} [Fintype ι] {B : ι → Type*} [∀ j, Fintype (B j)]
+    {D : ∀ j, Finset (B j)} {K : Finset (Finset ι)} {x : ∀ j, B j} :
+    x ∈ arrangementWords D K ↔ matchSet D x ∈ K := by
+  simp only [arrangementWords,mem_filter,mem_univ,true_and]
+
+private theorem site_mem {ι : Type*} [Fintype ι] {B : ι → Type*} [∀ j, Fintype (B j)]
+    {D : ∀ j, Finset (B j)} {x : ∀ j, B j} {j : ι} :
+    j ∈ matchSet D x ↔ x j ∈ D j := by
+  simp only [matchSet,mem_filter,mem_univ,true_and]
+
 /-- At each coordinate the allowable signed pairs are the complement
 of a rectangle. Choices at different indices are independent. -/
 def crossPolytopeRows (D : Vtx n → Finset A) :
     ↥(arrangementWords D (insert ∅ faces)) ≃
       ∀ i : Fin (n+1), ↥(((D (i,false)) ×ˢ (D (i,true)))ᶜ) where
   toFun x i := ⟨(x.val (i,false), x.val (i,true)), by
-    have h := (mem_augmented_faces _).mp (mem_filter.mp x.property).2 i
-    simpa [matchSet] using h⟩
+    have h := (mem_augmented_faces _).mp (word_mem.mp x.property) i
+    exact mem_compl.mpr fun hpair => h ⟨site_mem.mpr (mem_product.mp hpair).1,
+      site_mem.mpr (mem_product.mp hpair).2⟩⟩
   invFun p := ⟨fun v => if v.2 then (p v.1).val.2 else (p v.1).val.1, by
-    refine mem_filter.mpr ⟨mem_univ _, (mem_augmented_faces _).mpr fun i => ?_⟩
-    simpa [matchSet] using (p i).property⟩
+    refine word_mem.mpr ((mem_augmented_faces _).mpr fun i h => ?_)
+    exact (mem_compl.mp (p i).property) (mem_product.mpr ⟨site_mem.mp h.1,site_mem.mp h.2⟩)⟩
   left_inv x := by
     apply Subtype.ext
     funext v
@@ -65,7 +76,7 @@ theorem card_crossPolytopeArrangement (D : Vtx n → Finset A) :
     (arrangementWords D (insert ∅ faces)).card =
       ∏ i : Fin (n+1), (Fintype.card A ^ 2 - (D (i,false)).card * (D (i,true)).card) := by
   have h := Fintype.card_congr (crossPolytopeRows D)
-  simpa [card_compl, Fintype.card_prod, pow_two] using h
+  simpa only [Fintype.card_pi,Fintype.card_coe,card_compl,Fintype.card_prod,card_product,pow_two] using h
 
 /-- Over a finite field the complement is a product of punctured affine planes.
 The same formula holds for an arbitrary finite alphabet with a chosen point. -/

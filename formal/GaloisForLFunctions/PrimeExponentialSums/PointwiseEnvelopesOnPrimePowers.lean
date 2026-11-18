@@ -51,7 +51,6 @@ theorem rpow_log_window (a : ℝ) (ha : 0<a) (j : ℕ) :
     simp only [scale,NNReal.coe_inv,Real.coe_toNNReal _ (Real.rpow_nonneg hy.le _)]
     field_simp [(Real.rpow_pos_of_pos (by norm_num : (0:ℝ)<2) a).ne',
       (Real.rpow_pos_of_pos hy a).ne']
-    <;> ring
   apply ((transfer_limit _ j scale _).2 ht).congr'
   filter_upwards [eventually_gt_atTop (0:ℝ)] with Y hy
   simp only [scale,NNReal.coe_inv,Real.coe_toNNReal _ (Real.rpow_nonneg hy.le _)]
@@ -69,6 +68,7 @@ private theorem envelope_eq (θ : ℝ) (k : ℕ) (Y : ℝ) (hY : 1 ≤ Y) :
   obtain ⟨_,hy,_⟩ := mem_shell_of_mem_filter (zero_le_one.trans hY) hp
   have hp₀ := one_pos.trans_le (hY.trans hy.le)
   have hl := Real.log_nonneg (hY.trans hy.le)
+  dsimp only
   rw [abs_of_nonneg (mul_nonneg (Real.rpow_nonneg hp₀.le _) hl),pow_one,mul_pow,
     ← Real.rpow_mul_natCast hp₀.le]
   rw [show (k:ℝ)*θ*(2:ℕ)=(1+2*k*θ)-1 by push_cast; ring]
@@ -106,7 +106,6 @@ theorem excess (θ : ℝ) (k : ℕ) (hk : 0<k) (ha : (k:ℝ)<1+2*k*θ) :
   rw [Real.log_mul two_ne_zero hy.ne'] at hl₂
   rw [add_comm (Real.log Y) (Real.log 2)]
   field_simp [(Real.rpow_pos_of_pos hy a).ne',hlY,hl₂,hk'.ne',hy.ne']
-  <;> ring
 
 /-- Squares and cubes both exceed X log X at the exponent 5/14. -/
 theorem square_and_cube_excess :
