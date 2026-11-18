@@ -172,12 +172,13 @@ private theorem tendsto_log_octave_mass {w : ℝ → ℝ} (hm : Measurable w)
     (by rw [Real.volume_Ioc]; exact ENNReal.ofReal_ne_top)
   have hInd0 (u : ℝ) : 0 ≤ E.indicator (fun _ : ℝ => M) u :=
     indicator_nonneg (fun _ _ => hM) _
-  have hIndbound := setIntegral_le_integral (s := I) hInd (Eventually.of_forall hInd0)
-  rw [integral_indicator hE,setIntegral_const,smul_eq_mul] at hIndbound
+  have hIndbound : (∫ u in I, E.indicator (fun _ : ℝ => M) u) ≤ volume.real E*M := calc
+    _ ≤ ∫ u, E.indicator (fun _ : ℝ => M) u := setIntegral_le_integral hInd (Eventually.of_forall hInd0)
+    _ = _ := by rw [integral_indicator hE,setIntegral_const,smul_eq_mul]
   dsimp only [a]
   rw [integral_div,integral_add hconst hInd.integrableOn,setIntegral_const,smul_eq_mul,
     Real.volume_real_Ioc_of_le (show X ≤ 2*X by linarith only [hx])]
-  apply (div_le_div_of_nonneg_right (add_le_add_left hIndbound _) hx.le).trans_lt
+  apply (div_le_div_of_nonneg_right (add_le_add (le_refl ((2*X-X)*(ε/2))) hIndbound) hx.le).trans_lt
   change M*(volume.real E/X) < ε/2 at hcost
   calc ((2*X-X)*(ε/2)+volume.real E*M)/X = ε/2+M*(volume.real E/X) := by field_simp; ring
        _ < ε := by linarith only [hcost]
@@ -188,7 +189,7 @@ private theorem tendsto_adjacent_log_blocks {w : ℝ → ℝ} (hm : Measurable w
     (ho : Tendsto (fun T : ℝ => ∫ t in Ioc T (T+ℓ), w t) atTop (𝓝 0)) (n : ℕ) :
     Tendsto (fun T : ℝ => ∫ t in Ioc T (T+n*ℓ), w t) atTop (𝓝 0) := by
   induction n with
-  | zero => simpa using (tendsto_const_nhds (x := (0:ℝ)) (f := atTop))
+  | zero => simp
   | succ n ih =>
     have h := ho.comp (tendsto_atTop_add_const_right atTop ((n:ℝ)*ℓ) tendsto_id)
     have hlim := ih.add h
@@ -231,9 +232,10 @@ private theorem fractional_test_of_vanishing_octaves {w : ℝ → ℝ} (hm : Mea
   have hkn (n : ℕ) (v : ℝ) : 0 ≤ k n v := indicator_nonneg (fun v _ => hk v) v
   have hkb (n : ℕ) (v : ℝ) : ‖k n v‖ ≤ K v := by
     rw [Real.norm_of_nonneg (hkn n v)]
+    change (A n)ᶜ.indicator K v ≤ K v
     by_cases hv : v ∈ (A n)ᶜ
-    · rw [k,indicator_of_mem hv]
-    · rw [k,indicator_of_notMem hv]; exact hk _
+    · rw [indicator_of_mem hv]
+    · rw [indicator_of_notMem hv]; exact hk _
   have hw : Tendsto (fun n : ℕ => (n:ℝ)*ℓ) atTop atTop :=
     tendsto_natCast_atTop_atTop.atTop_mul_const hℓ
   have hpt (v : ℝ) : Tendsto (fun n => k n v) atTop (𝓝 0) := by
@@ -266,7 +268,7 @@ private theorem fractional_test_of_vanishing_octaves {w : ℝ → ℝ} (hm : Mea
         apply htj
         change -H ≤ T-t ∧ T-t ≤ H at h
         exact ⟨by linarith only [h.2],by linarith only [h.1]⟩
-      rw [indicator_of_notMem htj,zero_add,k,indicator_of_mem hv]
+      rw [indicator_of_notMem htj,zero_add,show k n (T-t) = K (T-t) from indicator_of_mem hv K]
       exact mul_le_mul_of_nonneg_right (hb _) (hk _)
   have hjnear : (∫ t in J, w t) < ε/2 := by
     rw [integral_Icc_eq_integral_Ioc]
@@ -276,6 +278,7 @@ private theorem fractional_test_of_vanishing_octaves {w : ℝ → ℝ} (hm : Mea
     exact hblocks
   rw [Real.dist_eq,sub_zero,abs_of_nonneg (integral_nonneg fun t => mul_nonneg (hn _) (hk _))]
   apply (integral_mono (hi T) (hji.add (((hki n).comp_sub_left T).const_mul M)) hdom).trans_lt
+  change (∫ t, J.indicator w t + M*k n (T-t)) < ε
   rw [integral_add hji (((hki n).comp_sub_left T).const_mul M),integral_indicator hJ,
     integral_const_mul,integral_sub_left_eq_self (k n) volume T]
   linarith only [hjnear,hsmall]

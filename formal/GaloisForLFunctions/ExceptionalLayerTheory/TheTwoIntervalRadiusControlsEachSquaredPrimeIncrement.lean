@@ -163,7 +163,7 @@ private theorem normalized_increment_sub_trace (hΘ : 1/2 < zetaZeroAbscissa) (h
   let E := fun t => thetaLogError t / Real.exp (β*t)
   let F := primeErrorBoundaryTrace β
   have hsmall : Asymptotics.IsLittleO atTop Real.sqrt (fun x : ℝ => x^β) := by
-    simpa only [Real.sqrt_eq_rpow] using rpow_isLittleO_rpow_atTop_of_lt hΘ
+    simpa only [← Real.sqrt_eq_rpow] using rpow_isLittleO_rpow_atTop_of_lt hΘ
   have hθ := (tendsto_normalized_primeError_sub_boundary hΘ).sub
     ((Chebyshev.isBigO_psi_sub_theta_sqrt.trans_isLittleO hsmall).tendsto_div_nhds_zero)
   rw [sub_zero] at hθ
@@ -173,7 +173,8 @@ private theorem normalized_increment_sub_trace (hΘ : 1/2 < zetaZeroAbscissa) (h
     simp only [Function.comp_def, Pi.sub_apply, Real.rpow_def_of_pos (Real.exp_pos _),
       Real.log_exp, E, F, thetaLogError]
     change _ = (Chebyshev.theta (Real.exp t)-Real.exp t)/Real.exp (β*t)-primeErrorBoundaryTrace β t
-    rw [mul_comm t β]
+    dsimp only [β]
+    rw [mul_comm t zetaZeroAbscissa]
     ring
   have hshift : Tendsto (fun t : ℝ => t+h) atTop atTop := tendsto_atTop_add_const_right _ _ tendsto_id
   have ht := ((hEF.comp hshift).const_mul (Real.exp (β*h))).sub hEF
