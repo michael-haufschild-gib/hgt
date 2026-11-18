@@ -124,13 +124,14 @@ private theorem zero_of_vanishing_on_translated_interval {ι : Type*}
   let f := fun i => a i * expChar (ω i) t
   have hf : Summable f := Summable.of_norm (hsum t)
   have hsub (z : ℂ) : (∑' i : {i // w i = z}, f i.val) = 0 := by
-    rw [tsum_subtype {i : ι | w i = z} f]
+    refine (tsum_subtype {i : ι | w i = z} f).trans ?_
     simpa only [Set.indicator, Set.mem_setOf_eq, f] using hpiece z t
-  have hs := ((Equiv.sigmaFiberEquiv w).summable_iff (f := f)).mpr hf
-  change ∑' i, f i = 0
-  rw [← (Equiv.sigmaFiberEquiv w).tsum_eq f, hs.tsum_sigma]
-  change (∑' z : ℂ, ∑' i : {i // w i = z}, f i.val) = 0
-  simp only [hsub, tsum_zero]
+  have hs : Summable (fun r : Σ z : ℂ, {i : ι // w i = z} => f r.2.val) :=
+    ((Equiv.sigmaFiberEquiv w).summable_iff (f := f)).mpr hf
+  calc expSeriesCarrier a ω t = ∑' r : Σ z : ℂ, {i : ι // w i = z}, f r.2.val :=
+         ((Equiv.sigmaFiberEquiv w).tsum_eq f).symm
+    _ = ∑' z : ℂ, ∑' i : {i : ι // w i = z}, f i.val := hs.tsum_sigma
+    _ = 0 := by simp only [hsub, tsum_zero]
 
 /-- Finite phase fibres prevent independent sign choices on successive periods of |D|. -/
 private theorem periodic_multiple_of_finite_phase_fibers {ι : Type*} {D : ℝ → ℝ}
@@ -143,15 +144,17 @@ private theorem periodic_multiple_of_finite_phase_fibers {ι : Type*} {D : ℝ �
   classical
   by_cases h0 : ∀ t, D t = 0
   · exact ⟨1, Nat.one_pos, fun t => (h0 _).trans (h0 t).symm⟩
-  push_neg at h0
+  push Not at h0
   obtain ⟨t₀, h0⟩ := h0
   obtain ⟨n,hn,hclose⟩ := hreturn (|D t₀|/2) (half_pos (abs_pos.mpr h0))
   let b := fun i => a i * (expChar (ω i) (n*p)-1)
   have hb : Summable fun i => ‖b i‖ := by
     refine Summable.of_nonneg_of_le (fun i => norm_nonneg _) (fun i => ?_) (ha.mul_right 2)
     rw [show ‖b i‖ = ‖a i‖ * ‖expChar (ω i) (n*p)-1‖ from norm_mul _ _]
-    exact mul_le_mul_of_nonneg_left (by simpa only [norm_expChar, norm_one, one_add_one_eq_two]
-      using norm_sub_le (expChar (ω i) (n*p)) 1) (norm_nonneg _)
+    have hm : ‖expChar (ω i) (n*p) - 1‖ ≤ 2 := by
+      simpa only [norm_expChar, norm_one, one_add_one_eq_two] using
+        (norm_sub_le (expChar (ω i) (n*p)) (1 : ℂ))
+    exact mul_le_mul_of_nonneg_left hm (norm_nonneg _)
   have hdiff (t : ℝ) : ((D (t+n*p)-D t : ℝ) : ℂ) = expSeriesCarrier b ω t := by
     rw [Complex.ofReal_sub, hrep, hrep]
     simp only [expSeriesCarrier]
@@ -176,8 +179,9 @@ private theorem periodic_multiple_of_finite_phase_fibers {ι : Type*} {D : ℝ �
     rcases abs_eq_abs.mp he with he | he
     · exact he
     · have h := hclose (t+k*p)
+      have hk : |D (t+k*p)| = |D t| := hper.nat_mul k t
       rw [he, show -D (t+k*p) - D (t+k*p) = -(2*D (t+k*p)) by ring,
-        abs_neg, abs_mul, abs_of_pos zero_lt_two, hper.nat_mul k t] at h
+        abs_neg, abs_mul, abs_of_pos zero_lt_two, hk] at h
       linarith only [ht,h, abs_nonneg (D t)]
   refine ⟨n,hn,fun t => sub_eq_zero.mp (Complex.ofReal_eq_zero.mp ?_)⟩
   rw [hdiff]
@@ -259,7 +263,7 @@ private theorem eigenvalue_of_analytic_periodic_abs {D : ℝ → ℝ} (p : ℝ)
     hc.comp (analyticOnNhd_id.add analyticOnNhd_const) (fun _ _ => Set.mem_univ _)
   by_cases he : ∀ t, D (t+p) = D t
   · exact ⟨1,fun t => (congrArg Complex.ofReal (he t)).trans (one_mul _).symm⟩
-  push_neg at he
+  push Not at he
   obtain ⟨t₀,h₀⟩ := he
   have hne : ∀ᶠ t in 𝓝 t₀, F (t+p) ≠ F t :=
     ((hshift t₀ (Set.mem_univ _)).continuousAt.ne_iff_eventually_ne
