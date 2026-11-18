@@ -10,3 +10,5 @@ For fixed \(0<d<1/2\), the expected ratio of the semiprime demand with smaller f
   \int_d^{1/2}\frac{dt}{t(1-t)}=\log((1-d)/d).
 \]
 At the cube-root boundary the proposed ratio is \(\log 2<1\). A uniform upper bound strictly below one already pays the entire geometric debt. The proof needs sharp prime counts in quotient windows and control of the transition at \(q=\sqrt T\). Having enough primes in a row pays its negative sources only. Its remaining positive primes must be retained with their signs when adjacent rows are joined.
+
+A shorter upper-bound route uses the first Mertens prime sum. In the exponent interval \([1/3,1/2]\), \(t(1-t)\ge 2/9\). Bounding each large-partner window with the prime number theorem and summing \((\log q)/q\) gives an upper ratio \((9/2)(1/2-1/3)=3/4\), with room for endpoint perturbations. This suffices for coverage without evaluating the integral.

@@ -32,7 +32,8 @@ def poleProduct (X N : ℕ) (u b : ℕ → ℤ) : ℝ :=
 def fractionalBoundary (X N : ℕ) (u b : ℕ → ℤ) : ℝ :=
   ∑ i ∈ Icc 1 X, ∑ j ∈ Icc 1 N, (u i : ℝ)*b j*((j : ℝ)/i - (j/i : ℕ))
 
-private theorem height_eq_quotient (X N : ℕ) (u b : ℕ → ℤ) :
+/-- Each signed upper endpoint cuts the prime-power ratio sum at its integer quotient. -/
+theorem height_eq_quotient (X N : ℕ) (u b : ℕ → ℤ) :
     signedDivisorHeight 1 X N u (upperDivisor N b) =
       ∑ i ∈ Icc 1 X, ∑ j ∈ Icc 1 N, (u i : ℝ)*b j*chebyshevPsi (j/i) := by
   rw [signedDivisorHeight_eq Nat.zero_lt_one]

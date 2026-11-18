@@ -21,7 +21,8 @@ namespace GaloisForLFunctions.RestrictedFactorizationCalculus
 /-- The cofactor after removing the largest prime, with value zero at zero and one. -/
 def stem (n : ℕ) : ℕ := n / n.primeFactors.sup id
 
-private theorem stem_mul {c p : ℕ} (hc : c ≠ 0) (hp : p.Prime)
+/-- Removing a prime larger than every factor recovers the cofactor exactly. -/
+theorem stem_mul_of_largest {c p : ℕ} (hc : c ≠ 0) (hp : p.Prime)
     (htop : ∀ d ∈ c.primeFactors, d < p) : stem (c*p) = c := by
   have hn := Nat.mul_ne_zero hc hp.ne_zero
   have hm : p ∈ (c*p).primeFactors := Nat.mem_primeFactors.mpr ⟨hp, dvd_mul_left p c, hn⟩
@@ -41,6 +42,16 @@ private theorem below_pair {c q r : ℕ} (hc : c ≠ 0) (hq : q.Prime) (hqr : q 
   rcases hdp.dvd_mul.mp hdvd with h | h
   · exact (htop _ (Nat.mem_primeFactors.mpr ⟨hdp, h, hc⟩)).trans hqr
   · exact (Nat.le_of_dvd hq.pos h).trans_lt hqr
+
+/-- For ordered primes the last two deletions recover both intermediate cofactors. -/
+theorem stem_ordered_triple {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r.Prime)
+    (hpq : p < q) (hqr : q < r) :
+    stem (p*(q*r)) = p*q ∧ stem (stem (p*(q*r))) = p := by
+  have ht : ∀ d ∈ p.primeFactors, d < q :=
+    fun _ hd => (Nat.le_of_dvd hp.pos (Nat.dvd_of_mem_primeFactors hd)).trans_lt hpq
+  rw [← mul_assoc, stem_mul_of_largest (Nat.mul_ne_zero hp.ne_zero hq.ne_zero) hr
+    (below_pair hp.ne_zero hq hqr ht), stem_mul_of_largest hp.ne_zero hq ht]
+  exact ⟨rfl,rfl⟩
 
 private theorem mu_append {c p : ℕ} (hc : c ≠ 0) (hp : p.Prime)
     (htop : ∀ d ∈ c.primeFactors, d < p) : μ (c*p) = -μ c := by
@@ -130,9 +141,9 @@ private theorem address_endpoints {K : ℝ} {L U c i : ℕ} (ha : (c,i) ∈ addr
     ⟨squarefree_iff_moebius_ne_zero.mpr (by change μ (c * entry _ i) ≠ 0; rw [hprime]; decide),
      squarefree_iff_moebius_ne_zero.mpr (by change μ (c * entry _ i) ≠ 0; rw [hprod]; decide),
      by change μ (c * entry _ i) = -μ (c * entry _ i); rw [hprime,hprod]; decide,
-     c, _, q, r, hpr, hq, hr, hqr, Or.inl ⟨rfl, congrArg (c*·) heq⟩⟩, stem_mul hcn hpr hpt, ?_⟩
+     c, _, q, r, hpr, hq, hr, hqr, Or.inl ⟨rfl, congrArg (c*·) heq⟩⟩, stem_mul_of_largest hcn hpr hpt, ?_⟩
   change stem (stem (c * entry (productRow K L U c) i)) = c
-  rw [heq, ← mul_assoc, stem_mul hcq hr htr, stem_mul hcn hq ht]
+  rw [heq, ← mul_assoc, stem_mul_of_largest hcq hr htr, stem_mul_of_largest hcn hq ht]
 
 private theorem endpoint_inj {K : ℝ} {L U : ℕ} (prime : Bool) :
     Set.InjOn (if prime then primeEnd L U else productEnd K L U) (addresses K L U) := by
@@ -303,7 +314,7 @@ theorem exists_transport_covering_empty_fibres (k B : ℕ) :
   refine ⟨hcov, ?_⟩
   have hnμ := (mem_filter.mp (M.targets_subset hcov)).2
   rw [ordered_cofactor_of_negative hnμ, hwqr, ← mul_assoc,
-    stem_mul (Nat.mul_ne_zero hcn hq.ne_zero) hr (below_pair hcn hq hqr htop)]
+    stem_mul_of_largest (Nat.mul_ne_zero hcn hq.ne_zero) hr (below_pair hcn hq hqr htop)]
   apply fibrePos_eq_empty_of_primeFactor_sq_ge (by omega : 1 ≤ L)
     (Nat.mem_primeFactors.mpr ⟨hq, dvd_mul_left q c, Nat.mul_ne_zero hcn hq.ne_zero⟩)
   have hlarge : 2*K^3 ≤ s := (le_max_right _ _).trans hs

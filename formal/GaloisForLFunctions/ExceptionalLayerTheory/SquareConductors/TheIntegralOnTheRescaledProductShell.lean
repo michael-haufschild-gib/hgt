@@ -79,7 +79,7 @@ private theorem mesh_variation_bound {g : ℝ → ℝ} (hg : ContDiff ℝ 1 g) (
   have hcell (j : ℕ) : |g (u j) - g (u (j+1))| ≤ ∫ x in u j..u (j+1), ‖deriv g x‖ := by
     rw [abs_sub_comm, ←intervalIntegral.integral_deriv_eq_sub
       (fun x _ => (hg.differentiable one_ne_zero).differentiableAt (x := x)) (hcont.intervalIntegrable _ _)]
-    exact intervalIntegral.norm_integral_le_integral_norm (hmono (Nat.le_succ j))
+    exact intervalIntegral.norm_integral_le_integral_norm (f := deriv g) (μ := volume) (hmono (Nat.le_succ j))
   apply (abs_sum_le_sum_abs _ _).trans
   calc _ ≤ ∑ j ∈ range b, (∫ x in u j..u (j+1), ‖deriv g x‖)*F := by
            apply sum_le_sum
@@ -168,7 +168,8 @@ theorem quotientMeshProfile_product_variation :
   have hder (x : ℝ) (hx : x ∈ Set.Ioi (0:ℝ)) : ‖deriv F x‖ ≤ C := by
     obtain ⟨_,hx',hD⟩ := (h b hs hx).2
     rwa [show deriv F x = _ from hD.deriv,Real.norm_eq_abs]
-  have hlip := (convex_Ioi (0:ℝ)).norm_image_sub_le_of_norm_deriv_le hdiff hder ht' zero_lt_one
+  have hlip := (convex_Ioi (0:ℝ)).norm_image_sub_le_of_norm_deriv_le hdiff hder
+    (show t ∈ Set.Ioi (0:ℝ) from ht') (show (1:ℝ) ∈ Set.Ioi 0 from zero_lt_one)
   simp only [F,one_pow,div_one,one_mul,hratio,Real.norm_eq_abs,abs_sub_comm 1 t,
     abs_of_nonneg (sub_nonneg.mpr ht)] at hlip
   let v := quotientMeshProfile b (q*d)
@@ -201,7 +202,7 @@ theorem quotientMeshProfile_prime_interval {β : ℝ} (hβ : _root_.RHTower.zero
     exact hψ k (by exact_mod_cast hk)
   refine ⟨10*A*D,by positivity,fun b L H d hd hLH => ?_⟩
   let V (k : ℕ) := quotientMeshProfile b (k*d)
-  have prefix (K : ℕ) : |∑ k ∈ Icc 1 K, a k*V k| ≤ 5*A*D*(K:ℝ)^β := by
+  have prefixBound (K : ℕ) : |∑ k ∈ Icc 1 K, a k*V k| ≤ 5*A*D*(K:ℝ)^β := by
     rcases Nat.eq_zero_or_pos K with rfl | hK
     · simp [Real.zero_rpow hpos.ne']
     have hK' : (0:ℝ) < K := Nat.cast_pos.mpr hK
@@ -240,9 +241,9 @@ theorem quotientMeshProfile_prime_interval {β : ℝ} (hβ : _root_.RHTower.zero
   change |∑ q ∈ Ioc L H, a q*V q| ≤ _
   rw [show (∑ q ∈ Ioc L H, a q*V q) = (∑ q ∈ Icc 1 H, a q*V q)-(∑ q ∈ Icc 1 L, a q*V q)
     by linarith only [hs]]
-  have hL := (prefix L).trans (mul_le_mul_of_nonneg_left
+  have hL := (prefixBound L).trans (mul_le_mul_of_nonneg_left
     (Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.cast_le.mpr hLH) hpos.le) (by positivity))
-  exact (abs_sub _ _).trans ((add_le_add (prefix H) hL).trans_eq (by ring))
+  exact (abs_sub _ _).trans ((add_le_add (prefixBound H) hL).trans_eq (by ring))
 
 /-- Replacing integer conductors by their integral costs one constant per
 unit interval, uniformly in both the product and the quotient cutoff. -/
@@ -347,8 +348,13 @@ theorem rescaled_shell_integral_exchange (b Q H : ℕ) (L U c α β : ℝ)
         ((measurableSet_le hx (measurable_const (a := U))).inter
           ((measurableSet_lt hlo (measurable_const (a := (q:ℝ)))).inter
             (measurableSet_le (measurable_const (a := (q:ℝ))) hhi)))
-    simpa only [Set.indicator,Set.mem_setOf_eq,F] using
-      ((intervalIntegrable_iff_integrableOn_Ioc_of_le hTZ).mp hbase).indicator hm
+    have heq : F q = {t | keep q t}.indicator (fun t => B t*((vonMangoldt q-1)*q)) := by
+      funext t
+      by_cases ht : keep q t
+      · exact (if_pos ht).trans (Set.indicator_of_mem (show t ∈ {y | keep q y} from ht) _).symm
+      · exact (if_neg ht).trans (Set.indicator_of_notMem (show t ∉ {y | keep q y} from ht) _).symm
+    rw [heq]
+    exact ((intervalIntegrable_iff_integrableOn_Ioc_of_le hTZ).mp hbase).indicator hm
   calc _ = ∑ q ∈ S, ∫ t in T..Z, F q t := by
             apply sum_congr rfl
             intro q hq
@@ -422,7 +428,7 @@ theorem rescaled_shell_integral_bound :
              exact fun x _ => (zpow_negSucc x 12).symm
          _ = _ := by
              rw [integral_zpow (Or.inr ⟨by norm_num,hzero⟩)]
-             norm_num [zpow_negSucc]
+             norm_num [zpow_negSucc] <;> ring
   rw [hi] at h
   have hdrop := mul_nonneg hB (inv_nonneg.mpr (pow_nonneg (hT.trans_le hTZ).le 12))
   dsimp only [B] at h hdrop
