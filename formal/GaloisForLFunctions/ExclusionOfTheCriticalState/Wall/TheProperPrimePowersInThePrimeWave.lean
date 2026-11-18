@@ -234,6 +234,28 @@ theorem properPowerHeadContinuation_residue {F : ℝ → ℝ} (hF : CriticalHalf
   field_simp [show 1 - 2 * p - 1 ≠ 0 by intro h; exact hp0 (by linear_combination -h / 2)]
   ring
 
+/-- Exponential confinement of a profile bounds the absolute sum of its
+proper-power translates at every real time, with the same exponent. -/
+theorem properPowerWave_absolute_envelope {Φ : ℝ → ℝ} {a C : ℝ}
+    (ha : 0 < a) (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (a*u)) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ x : ℝ,
+      (Summable fun j => vonMangoldtAtom (properPrimePowerIndex j)*|Φ (x-Real.log (properPrimePowerIndex j))|) ∧
+      (∑' j, vonMangoldtAtom (properPrimePowerIndex j)*|Φ (x-Real.log (properPrimePowerIndex j))|) ≤
+        B*Real.exp (a*x) := by
+  let w := fun j => vonMangoldtAtom (properPrimePowerIndex j)*Real.exp (-a*Real.log (properPrimePowerIndex j))
+  have hw : Summable w := summable_properWeights (neg_lt_zero.mpr ha)
+  refine ⟨(∑' j, w j)*C,mul_nonneg
+    (tsum_nonneg fun j => mul_nonneg (atom_nonneg _) (Real.exp_pos _).le) hC,fun x => ?_⟩
+  have hbound (j : Nat.Primes × ℕ) :
+      vonMangoldtAtom (properPrimePowerIndex j)*|Φ (x-Real.log (properPrimePowerIndex j))| ≤ w j*(C*Real.exp (a*x)) := by
+    let l := Real.log (properPrimePowerIndex j)
+    apply (mul_le_mul_of_nonneg_left (hb (x-l)) (atom_nonneg _)).trans_eq
+    change vonMangoldtAtom _*(C*Real.exp (a*(x-l)))=(vonMangoldtAtom _*Real.exp (-a*l))*(C*Real.exp (a*x))
+    rw [show a*(x-l)= -a*l+a*x by ring,Real.exp_add]
+    ring
+  have hs := Summable.of_nonneg_of_le (fun j => mul_nonneg (atom_nonneg _) (abs_nonneg _)) hbound (hw.mul_right _)
+  exact ⟨hs,(hs.tsum_le_tsum hbound (hw.mul_right _)).trans_eq (by rw [tsum_mul_right,mul_assoc])⟩
+
 /-- For the continuous representative of a critical state, the proper-power wave is
 absolutely subexponential on the entire positive ray. -/
 theorem criticalState_properPowerWave_subexponential {W₀ : ℝ} (hW : 0 < W₀)
@@ -250,31 +272,15 @@ theorem criticalState_properPowerWave_subexponential {W₀ : ℝ} (hW : 0 < W₀
   refine ⟨Φ, hcont, heq, fun ε hε => ?_⟩
   let a := min ε 2
   have ha : 0 < a := lt_min hε (by norm_num)
-  let w := fun j => vonMangoldtAtom (properPrimePowerIndex j) * Real.exp (-a * Real.log (properPrimePowerIndex j))
-  have hw : Summable w := summable_properWeights (neg_lt_zero.mpr ha)
-  refine ⟨(∑' j, w j) * C, fun x hx => ?_⟩
-  have hbound (j : Nat.Primes × ℕ) :
-      vonMangoldtAtom (properPrimePowerIndex j) * |Φ (x - Real.log (properPrimePowerIndex j))| ≤
-        w j * (C * Real.exp (a * x)) := by
-    set L := Real.log (properPrimePowerIndex j)
-    have hφ : |Φ (x - L)| ≤ C * Real.exp (a * (x - L)) := by
-      rcases le_or_gt 0 (x - L) with hu | hu
-      · rw [hsupp _ hu, abs_zero]
-        positivity
-      · exact (hΦ _).trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr
-          (mul_le_mul_of_nonpos_right (min_le_right ε 2) hu.le)) hC)
-    refine (mul_le_mul_of_nonneg_left hφ (atom_nonneg _)).trans_eq ?_
-    dsimp only [w]
-    change _ = (vonMangoldtAtom _ * Real.exp (-a * L)) * _
-    rw [show a * (x - L) = -a * L + a * x by ring, Real.exp_add]
-    ring
-  have hf := Summable.of_nonneg_of_le (fun j => mul_nonneg (atom_nonneg _) (abs_nonneg _))
-    hbound (hw.mul_right _)
-  refine ⟨hf, (hf.tsum_le_tsum hbound (hw.mul_right _)).trans ?_⟩
-  rw [tsum_mul_right, ← mul_assoc]
-  apply mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right
-    (min_le_left ε 2) hx))
-  exact mul_nonneg (tsum_nonneg fun j => mul_nonneg (atom_nonneg _) (Real.exp_pos _).le) hC
+  have hφ (u : ℝ) : |Φ u| ≤ C*Real.exp (a*u) := by
+    rcases le_or_gt 0 u with hu | hu
+    · rw [hsupp _ hu,abs_zero]; positivity
+    · exact (hΦ u).trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr
+        (mul_le_mul_of_nonpos_right (min_le_right ε 2) hu.le)) hC)
+  obtain ⟨B,hB,h⟩ := properPowerWave_absolute_envelope ha hC hφ
+  refine ⟨B,fun x hx => ⟨(h x).1,(h x).2.trans ?_⟩⟩
+  exact mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr
+    (mul_le_mul_of_nonneg_right (min_le_left ε 2) hx)) hB
 
 /-- Every positive damping exponent makes the signed proper-power wave of the
 state square-integrable. Translation of its continuous representative preserves

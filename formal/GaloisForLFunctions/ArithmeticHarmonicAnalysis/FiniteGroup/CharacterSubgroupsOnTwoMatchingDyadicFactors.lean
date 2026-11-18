@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.SignsAndPrincipalUnitsAtTwo
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.CyclicSubgroupsFromPowerFibres
 import Mathlib.NumberTheory.MulChar.Duality
+import Mathlib.NumberTheory.ArithmeticFunction.Carmichael
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 
@@ -33,15 +34,16 @@ private def primeEquiv (r : ℕ) (hp : (Q r+1).Prime) :
   rw [Nat.card_eq_fintype_card,ZMod.card_units_eq_totient,Nat.totient_prime hp,Nat.card_zmod]
   omega
 
+private theorem odd_factor (r : ℕ) : Nat.Coprime 2 (Q r+1) := by
+  apply Nat.prime_two.coprime_iff_not_dvd.mpr
+  unfold Q
+  rw [pow_succ]
+  omega
+
 /-- CRT and finite duality give three cyclic factors of orders 2,q,q. -/
 def characterFactors (r : ℕ) (hp : (Q r+1).Prime) :
     Characters r ≃* (Cycle 2 × Cycle (Q r)) × Cycle (Q r) := by
-  have h : Nat.Coprime 2 (Q r+1) := by
-    apply Nat.prime_two.coprime_iff_not_dvd.mpr
-    unfold Q
-    rw [pow_succ]
-    omega
-  let e := Units.mapEquiv (ZMod.chineseRemainder (h.pow_left (r+1+2))).toMulEquiv
+  let e := Units.mapEquiv (ZMod.chineseRemainder ((odd_factor r).pow_left (r+1+2))).toMulEquiv
   exact (MulChar.mulEquiv_units (ZMod (Modulus r)) ℂ).some.trans
     (e.trans (MulEquiv.prodUnits.trans (MulEquiv.prodCongr (decomposition (r+1)) (primeEquiv r hp))))
 
@@ -116,6 +118,62 @@ theorem total (r : ℕ) (hp : (Q r+1).Prime) :
       omega
   exact partialSum r le_rfl
 
+/-- The actual totient and Carmichael function in the pointwise estimate. -/
+theorem modulus_invariants (r : ℕ) (hp : (Q r+1).Prime) :
+    (Modulus r).totient=2^(2*r+3) ∧ ArithmeticFunction.carmichael (Modulus r)=Q r := by
+  have hc := (odd_factor r).pow_left (r+1+2)
+  have hQ : 1<Q r := one_lt_pow₀ (by norm_num) (Nat.succ_ne_zero r)
+  have hodd := ArithmeticFunction.carmichael_pow_of_prime_ne_two 1 hp (by omega)
+  simp only [pow_one,Nat.totient_prime hp,Nat.add_sub_cancel] at hodd
+  constructor
+  · rw [Modulus,Nat.totient_mul hc,Nat.totient_prime_pow_succ Nat.prime_two,Nat.totient_prime hp]
+    simp only [Nat.add_sub_cancel,Nat.reduceSub,mul_one,Q,← pow_add]
+    congr 1
+    omega
+  · rw [Modulus,ArithmeticFunction.carmichael_mul hc,hodd,
+      ArithmeticFunction.carmichael_two_pow_of_ne_two (by omega : r+1+2≠2),
+      Nat.add_sub_cancel,Nat.lcm_self]
+
+/-- Rank substituted in the averaging argument at depth k+1. The odd
+prime contributes up to depth r+1, the printed dyadic term only at depth one. -/
+def printedRank (r k : ℕ) := (if k=0 then 2 else 0)+(if k≤r then 1 else 0)
+
+/-- Exponentiation of the base-two estimate obtained with the printed
+ranks. There is one prime dividing the totient and 2r+3 possible depths. -/
+def printedEstimate (r : ℕ) :=
+  (ArithmeticFunction.carmichael (Modulus r)).divisors.card * 2 *
+    ∏ k ∈ range (2*r+3), 2^(printedRank r k-1)
+
+theorem printed_estimate_eq (r : ℕ) (hp : (Q r+1).Prime) : printedEstimate r=8*(r+2) := by
+  have hprod : (∏ k ∈ range (2*r+3), 2^(printedRank r k-1))=4 := by
+    rw [prod_eq_single 0]
+    · simp [printedRank]
+    · intro k _ hk
+      by_cases h : k≤r <;> simp [printedRank,h,hk]
+    · simp
+  rw [printedEstimate,hprod,(modulus_invariants r hp).2,Nat.divisors_prime_pow Nat.prime_two,
+    card_map,card_range]
+  ring
+
+private theorem top_growth (s : ℕ) : 8*((3+s)+2)<3*2^(3+s+1) := by
+  induction s with
+  | zero => norm_num
+  | succ s ih =>
+    rw [show 3+(s+1)+1=(3+s+1)+1 by omega,pow_succ]
+    omega
+
+/-- Throughout this family with r≥3, already the top stratum exceeds the
+printed bound for the total number of cyclic subgroups. -/
+theorem top_exceeds_estimate (r : ℕ) (hp : (Q r+1).Prime) (hr : 3≤r) :
+    printedEstimate r < (ofOrder (Characters r) (Q r)).card := by
+  obtain ⟨s,hs⟩ := Nat.exists_eq_add_of_le hr
+  subst r
+  have ht := higher_order (3+s) (s+2) hp (by omega)
+  have he : s+2+2=3+s+1 := by omega
+  rw [he] at ht
+  rw [printed_estimate_eq _ hp,ht]
+  exact top_growth s
+
 /-- For (u,a)=(16,17) the printed layer ranks give the bound forty.
 Already the top-order stratum has forty-eight cyclic character subgroups. -/
 theorem modulus_1088 :
@@ -135,3 +193,9 @@ end GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicExample
 #print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicExample.total
 #print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicExample.modulus_1088
 #print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicExample.characterFactors
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicExample.modulus_invariants
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicExample.printed_estimate_eq
+
+#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicExample.top_exceeds_estimate

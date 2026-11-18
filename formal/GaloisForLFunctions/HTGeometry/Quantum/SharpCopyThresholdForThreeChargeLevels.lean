@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.ResonancesOfTensorChargeObservations
-import Mathlib.Data.Matrix.Notation
+import Mathlib.LinearAlgebra.Matrix.Notation
 
 /-!
 # An arbitrarily late phase threshold on three charge levels
@@ -32,7 +32,7 @@ theorem density (z : Circle) : (state z).PosSemidef ∧ (state z).trace=1 := by
   have he : base=Bᴴ*B := by
     ext i j
     fin_cases i <;> fin_cases j <;>
-      norm_num [base,B,mul_apply,Fin.sum_univ_succ,conjTranspose_apply]
+      norm_num [base,B,mul_apply,Fin.sum_univ_succ,conjTranspose_apply,map_ofNat]
   have hbase : base.PosSemidef := he.symm ▸ posSemidef_conjTranspose_mul_self B
   refine ⟨twist_posSemidef _ _ _ hbase,?_⟩
   rw [state,twist_trace]
@@ -49,7 +49,16 @@ theorem state_charpoly (z : Circle) :
   have h₃ : Polynomial.C (3/4 : ℂ) =
       Polynomial.C (1/4 : ℂ) + Polynomial.C (1/4 : ℂ) + Polynomial.C (1/4 : ℂ) := by
     rw [← map_add,← map_add]; norm_num
-  simp [charmatrix_apply,base,diagonal_apply,h₂,h₃] <;> ring
+  have hoff {i j : Fin 3} (h : i≠j) := charmatrix_apply_ne base i j h
+  simp only [charmatrix_apply_eq,hoff (by decide : (0 : Fin 3)≠1),
+    hoff (by decide : (0 : Fin 3)≠2),hoff (by decide : (1 : Fin 3)≠0),
+    hoff (by decide : (1 : Fin 3)≠2),hoff (by decide : (2 : Fin 3)≠0),
+    hoff (by decide : (2 : Fin 3)≠1),
+    show base 0 0=1/2 from rfl,show base 0 1=1/4 from rfl,show base 0 2=1/4 from rfl,
+    show base 1 0=1/4 from rfl,show base 1 1=1/4 from rfl,show base 1 2=0 from rfl,
+    show base 2 0=1/4 from rfl,show base 2 1=0 from rfl,show base 2 2=1/4 from rfl,
+    map_zero,h₂,h₃]
+  ring
 
 theorem edge_cost (i j : Fin 3) (h : base i j ≠ 0) :
     |smallLabel i-smallLabel j| + |phaseLabel i-phaseLabel j| ≤ 1 := by
@@ -66,7 +75,8 @@ theorem frequency_cost (m n : ℕ) (d : ℤ) (hd : d ∈ frequencies (charge m) 
     have hq : displacement smallLabel u v = -(m : ℤ)*displacement phaseLabel u v := by
       simp only [displacement,charge,show ∀ a b c e : ℤ, a+m*b-(c+m*e)=(a-c)+m*(b-e)
         from fun _ _ _ _ => by ring,sum_add_distrib,← mul_sum] at h
-      change _ = -(m : ℤ)*(∑ k, (phaseLabel (u k)-phaseLabel (v k)))
+      change (∑ k, (smallLabel (u k)-smallLabel (v k))) =
+        -(m : ℤ)*(∑ k, (phaseLabel (u k)-phaseLabel (v k)))
       change (∑ k, (smallLabel (u k)-smallLabel (v k))) + _ = 0 at h
       linear_combination h
     have hc : |displacement smallLabel u v| + |displacement phaseLabel u v| ≤ (n : ℤ) := by
@@ -103,7 +113,13 @@ theorem first_frequency (m : ℕ) : 1 ∈ frequencies (charge m) phaseLabel base
     have he : displacement (charge m) u v=0 := by
       simp [displacement,u,v,Fin.sum_univ_succ,charge,phaseLabel,smallLabel]
     rw [if_pos he,Fin.prod_univ_succ]
-    norm_num [u,v,base]
+    apply mul_ne_zero
+    · change (1/4 : ℂ)≠0
+      norm_num
+    · apply prod_ne_zero_iff.mpr
+      intro k _
+      change (1/4 : ℂ)≠0
+      norm_num
   · simp [displacement,u,v,Fin.sum_univ_succ,phaseLabel]
 
 /-- The entire visible spectrum is a consecutive interval. Each extra

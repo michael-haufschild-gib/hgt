@@ -237,10 +237,6 @@ theorem riemannHypothesis_or_integrated_properPower_error : RiemannHypothesis �
   obtain ⟨_,_,Ψ,hΨ,heΨ,hs,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
   have heq : Ψ=Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heΨ.symm.trans he)
   subst Ψ
-  obtain ⟨Ψ,hΨ,heΨ,hfull⟩ := criticalState_properPowerWave_subexponential hW ht hF
-  have heq : Ψ=Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heΨ.symm.trans he)
-  subst Ψ
-  obtain ⟨_,habs⟩ := hfull 1 zero_lt_one
   refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hΦ,he,fun L hL h0 => ?_⟩
   let g := L ∘ Φ
   have hc : Continuous g := hL.continuous.comp hΦ
@@ -264,22 +260,19 @@ theorem riemannHypothesis_or_integrated_properPower_error : RiemannHypothesis �
     simp only [← Real.norm_eq_abs] at ha
     exact (norm_tsum_le_tsum_norm ha).trans (by
       simpa only [Real.norm_eq_abs,neg_div] using (hhi t).2)
-  have hsplit (t : ℝ) (ht0 : 0 ≤ t) : E t=S t+H t := by
-    have hn (n : ℕ) : 0 ≤ vonMangoldtAtom n := by
-      unfold vonMangoldtAtom
-      split_ifs <;> first | exact le_rfl | exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
-    have hsum := Summable.of_nonneg_of_le (fun j => mul_nonneg (hn _) (abs_nonneg _))
-      (fun j => mul_le_mul_of_nonneg_left (hg (t-Real.log (properPrimePowerIndex j))) (hn _)) (habs t ht0).1
+  obtain ⟨_,_,habs⟩ := properPowerWave_absolute_envelope (by norm_num : (0:ℝ)<2) hC
+    (fun u => (hg u).trans (hb u))
+  have hsplit (t : ℝ) : E t=S t+H t := by
     dsimp only [E,S,H]
-    rw [← square_add_higher_eq_properPower hsum]
+    rw [← square_add_higher_eq_properPower (habs t).1]
     ring
   refine ⟨A+40*M,by positivity,?_⟩
-  filter_upwards [hsq,eventually_ge_atTop (0:ℝ)] with V hv hV
+  filter_upwards [hsq] with V hv
   change IntegrableOn S (Ioi (V+1)) ∧ (∫ t in Ioi (V+1), |S t|) ≤ _ at hv
   have hexp := (integrableOn_exp_mul_Ioi (by norm_num : (-1/40:ℝ)<0) (V+1)).const_mul M
   have hInt : IntegrableOn H (Ioi (V+1)) := hexp.mono' hmH.aestronglyMeasurable (Eventually.of_forall hH)
   have hEq : E =ᵐ[volume.restrict (Ioi (V+1))] fun t => S t+H t :=
-    (ae_restrict_mem measurableSet_Ioi).mono fun t ht => hsplit t (by linarith only [hV,show V+1<t from ht])
+    Eventually.of_forall hsplit
   have heI := (hv.1.add hInt).congr hEq.symm
   refine ⟨heI,?_⟩
   have hcost : (∫ t in Ioi (V+1), |H t|) ≤ (40*M)*Real.exp ((-1/40)*V) := by

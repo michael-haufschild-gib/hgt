@@ -24,8 +24,10 @@ private theorem five_order (s : ℕ) : orderOf (five s) = 2^s := by
   rw [← orderOf_units]
   exact ZMod.orderOf_five s
 
-private def reduction (s : ℕ) : U s →* (ZMod 4)ˣ :=
-  ZMod.unitsMap (show 2^2 ∣ 2^(s+2) from pow_dvd_pow 2 (by omega))
+private theorem four_dvd (s : ℕ) : 4 ∣ 2^(s+2) :=
+  show 2^2 ∣ 2^(s+2) from pow_dvd_pow 2 (by omega)
+
+private def reduction (s : ℕ) : U s →* (ZMod 4)ˣ := ZMod.unitsMap (four_dvd s)
 
 private def sign (s : ℕ) : ℤˣ →* U s := Units.map (Int.castRingHom _).toMonoidHom
 
@@ -34,15 +36,16 @@ private theorem principal_reduces (s : ℕ) (x : Subgroup.zpowers (five s)) :
   obtain ⟨k,hk⟩ := x.property
   have h₅ : reduction s (five s) = 1 := by
     apply Units.ext
-    change ZMod.castHom _ (ZMod 4) (5 : ZMod (2^(s+2))) = 1
-    rw [map_ofNat]
-    calc (5 : ZMod 4) = 1 + (4 : ℕ) := by norm_num
-         _ = 1 := by rw [ZMod.natCast_self,add_zero]
+    change ZMod.castHom (four_dvd s) (ZMod 4) (5 : ZMod (2^(s+2))) = 1
+    calc
+      _ = (5 : ZMod 4) := by rw [map_ofNat]
+      _ = 1 + (4 : ℕ) := by norm_num
+      _ = 1 := by rw [ZMod.natCast_self,add_zero]
   rw [← hk,map_zpow,h₅,one_zpow]
 
 private theorem reduce_sign (s : ℕ) (e : ℤˣ) :
     ((reduction s (sign s e) : (ZMod 4)ˣ) : ZMod 4) = ((e : ℤ) : ZMod 4) := by
-  change ZMod.castHom _ (ZMod 4) ((e : ℤ) : ZMod (2^(s+2))) = _
+  change ZMod.castHom (four_dvd s) (ZMod 4) ((e : ℤ) : ZMod (2^(s+2))) = _
   exact map_intCast _ _
 
 private def combine (s : ℕ) : ℤˣ × Subgroup.zpowers (five s) →* U s where
@@ -92,8 +95,11 @@ def decomposition (s : ℕ) : U s ≃* Cycle 2 × Cycle (2^s) :=
 def torsionCount (G : Type*) [CommGroup G] (n : ℕ) := Nat.card {x : G // x^n=1}
 
 theorem torsionCount_congr {G H : Type*} [CommGroup G] [CommGroup H] (e : G ≃* H) (n : ℕ) :
-    torsionCount G n=torsionCount H n :=
-  Nat.card_congr (e.toEquiv.subtypeEquiv (fun x => by simp only [← map_pow,e.map_eq_one_iff]))
+    torsionCount G n=torsionCount H n := by
+  let f : {x : G // x^n=1} ≃ {y : H // y^n=1} := e.toEquiv.subtypeEquiv fun x => by
+    change x^n=1 ↔ (e x)^n=1
+    rw [← map_pow,e.map_eq_one_iff]
+  exact Nat.card_congr f
 
 theorem torsionCount_prod (G H : Type*) [CommGroup G] [CommGroup H] [Finite G] [Finite H] (n : ℕ) :
     torsionCount (G × H) n = torsionCount G n * torsionCount H n := by
@@ -129,7 +135,7 @@ theorem dyadic_torsion_layer (s k : ℕ) :
   | succ k =>
     by_cases h : k+1<s
     · have h₁ : k+1≤s := h.le
-      simp [h,min_eq_right h₁,min_eq_right h,pow_succ,mul_assoc]
+      simp [h,min_eq_right h₁,pow_succ,mul_assoc]
     · have h₁ : s≤k+1 := by omega
       have h₂ : s≤k+1+1 := by omega
       simp [h,min_eq_left h₁,min_eq_left h₂]

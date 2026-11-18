@@ -404,6 +404,71 @@ private theorem realMean_cell {x : ℝ} (hx : 0<x) :
   rw [distinctPrimeFirstMeanAt,add_sub_cancel_right,mul_sum,← weighted_jumps]
   exact sum_congr rfl fun j _ => by rw [sharpDeficit_jump]; field_simp; ring
 
+/-- Averaging a fractional part up to y gives this positive kernel. -/
+def averagedFractionalPart (y : ℝ) : ℝ :=
+  ((⌊y⌋₊:ℝ)+(y-⌊y⌋₊)^2)/(2*y)
+
+private theorem floor_row_sum (d N : ℕ) :
+    (∑ j ∈ range N, ((j/d:ℕ):ℝ)) = (N:ℝ)*(N/d:ℕ)-(d:ℝ)*(N/d:ℕ)*((N/d:ℕ)+1:ℝ)/2 := by
+  induction N with
+  | zero => simp
+  | succ n ih =>
+    rw [sum_range_succ,ih]
+    by_cases hd : d∣n+1
+    · have he := Nat.div_mul_cancel hd
+      rw [Nat.succ_div_of_dvd hd] at he ⊢
+      have he' : (((n/d:ℕ):ℝ)+1)*d=(n:ℝ)+1 := by exact_mod_cast he
+      push_cast
+      linear_combination he'
+    · rw [Nat.succ_div_of_not_dvd hd]; push_cast; ring
+
+/-- The centered real first mean is the sum of its proper-prime-power
+weights against the averaged fractional-part kernel at x/d. -/
+theorem distinctPrimeFirstMeanAt_fractional_kernel {x : ℝ} (hx : 0<x) :
+    HasSum (fun d : ℕ => primePowerPart d*averagedFractionalPart (x/d)) (distinctPrimeFirstMeanAt x) := by
+  let n := ⌊x⌋₊
+  let q (d : ℕ) : ℝ := (n/d:ℕ)
+  let T (d : ℕ) := x*q d-(d:ℝ)*q d*(q d+1)/2
+  have hrow (d : ℕ) : (∑ j ∈ range n, ((j/d:ℕ):ℝ))+(x-n)*q d=T d := by
+    rw [floor_row_sum]; dsimp only [q,T]; ring
+  have he : (∑ j ∈ range n, sharpDeficit j) =
+      -(∑ d ∈ Icc 1 n, primePowerPart d * ∑ j ∈ range n, ((j/d:ℕ):ℝ)) := by
+    rw [sum_congr rfl (fun j hj => sharp_moment_deficit j n (mem_range.mp hj).le),
+      sum_neg_distrib,sum_comm]
+    simp only [mul_sum]
+  have hboth : (∑ j ∈ range n, sharpDeficit j)+(x-n)*sharpDeficit n =
+      -(∑ d ∈ Icc 1 n, primePowerPart d*T d) := by
+    rw [he,sharp_moment_deficit n n le_rfl,mul_neg,← neg_add,Finset.mul_sum,← sum_add_distrib]
+    congr 1
+    exact sum_congr rfl fun d _ => by rw [← hrow]; dsimp only [q]; ring
+  have hw : Summable (fun d : ℕ => primePowerPart d/(d:ℝ)) :=
+    RenormalizedIntersectionArithmeticCounts.summable_nonprime_mangoldt_reciprocal.congr
+      fun d => by by_cases h : d.Prime <;> simp [primePowerPart,h]
+  have hT : HasSum (fun d => primePowerPart d*T d) (∑ d ∈ Icc 1 n, primePowerPart d*T d) := by
+    apply hasSum_sum_of_ne_finset_zero
+    intro d hd
+    rcases Nat.eq_zero_or_pos d with rfl | hp
+    · simp [T,q]
+    · have hlt := lt_of_not_ge (fun h => hd (mem_Icc.mpr ⟨hp,h⟩))
+      simp [T,q,Nat.div_eq_of_lt hlt]
+  have hscaled := ((hw.hasSum.mul_left (x^2/2)).sub hT).div_const x
+  have hcell := realMean_cell hx
+  change x*(distinctPrimeFirstMeanAt x-repeatedPrimeLogDensity*x/2)=_ at hcell
+  have hsumEq : (∑ d ∈ Icc 1 n, primePowerPart d*T d) =
+      -((∑ j ∈ range n,sharpDeficit j)+(x-n)*sharpDeficit n) := eq_neg_comm.mp hboth
+  rw [hsumEq,sub_neg_eq_add] at hscaled
+  convert hscaled using 1
+  · funext d
+    rcases Nat.eq_zero_or_pos d with rfl | hd
+    · simp [T,q,averagedFractionalPart]
+    have hd' : (0:ℝ)<d := by exact_mod_cast hd
+    simp only [Pi.sub_apply,averagedFractionalPart,Nat.floor_div_natCast,T,q,n]
+    field_simp [hx.ne',hd'.ne'] <;> ring
+  · change distinctPrimeFirstMeanAt x=(x^2/2*repeatedPrimeLogDensity+
+        ((∑ j ∈ range n,sharpDeficit j)+(x-n)*sharpDeficit n))/x
+    apply (eq_div_iff hx.ne').mpr
+    linear_combination hcell
+
 theorem distinctPrimeFirstMeanAt_nat {N : ℕ} (hN : 1≤N) :
     distinctPrimeFirstMeanAt N = triangularDistinctPrimeLogMoment N := by
   have hn : (0:ℝ)<N := by exact_mod_cast hN

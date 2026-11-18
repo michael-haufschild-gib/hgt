@@ -85,7 +85,7 @@ private theorem boxDifference_separates {b : ℝ} (hb : 0 ≤ b) (j : ℕ) : ∃
       by_cases hm : x ∈ Icc (-1:ℝ) 1
       · unfold unif
         rw [indicator_of_mem hm]
-        by_cases he : x-b ∈ Icc (-1:ℝ) 1 <;> (simp [he]; norm_num)
+        by_cases he : x-b ∈ Icc (-1:ℝ) 1 <;> norm_num [he]
       have hn : x < -1 := lt_of_not_ge fun h => hm ⟨h,hx⟩
       have he : x-b ∉ Icc (-1:ℝ) 1 := fun h => by linarith only [hn,hb,h.1]
       simp [unif,hm,he]
@@ -248,9 +248,10 @@ private theorem cut_integral {c : ℝ} (hc : separatedAt squareLogProfile c) :
     exact hasCompactSupport_upow 1 7
   have hD : Integrable D := (continuous_splineAutoCorr.mul (by fun_prop)).integrable_of_hasCompactSupport kH.mul_right
   have hb : Real.exp (b/2)=2 := by
-    dsimp only [b]
-    rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]
-    convert Real.exp_log (by norm_num : (0:ℝ) < 2) using 2 <;> ring
+    have hlog : b/2=Real.log 2 := by
+      dsimp only [b]
+      rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]; ring
+    rw [hlog,Real.exp_log (by norm_num)]
   have hin : (fun u : ℝ => positiveProfile u*Real.exp (u/2))=
       fun u => 2*((Iic c).indicator D u-(Iic (c-b)).indicator D (u-b)) := by
     funext u

@@ -115,7 +115,6 @@ private theorem shift_limit : Tendsto shift atTop (𝓝 (Real.log 4)) := by
   change Real.log ((2+(n:ℝ)⁻¹)^2)=Real.log (Y n)-Real.log (X n)
   rw [← Real.log_div (sq_pos_of_pos (by positivity)).ne' (sq_pos_of_pos hn₀).ne']
   apply congrArg Real.log
-  change (2+(n:ℝ)⁻¹)^2=(((2*n+1:ℕ):ℝ)^2)/(n:ℝ)^2
   push_cast
   field_simp [hn₀.ne']
 

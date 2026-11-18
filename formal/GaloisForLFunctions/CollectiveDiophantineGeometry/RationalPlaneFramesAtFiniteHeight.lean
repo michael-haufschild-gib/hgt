@@ -1,7 +1,7 @@
 import GaloisForLFunctions.Bottcher.ChordalMetric
 import GaloisForLFunctions.RHTower.Sieve.DistancePointwise
 import Mathlib.Data.PNat.Basic
-import Mathlib.Data.Matrix.Notation
+import Mathlib.LinearAlgebra.Matrix.Notation
 import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Tactic

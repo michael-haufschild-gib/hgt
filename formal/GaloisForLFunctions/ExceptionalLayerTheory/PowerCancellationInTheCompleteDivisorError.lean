@@ -54,13 +54,14 @@ theorem complete_divisor_error_power :
   have hP : 1≤P := Real.one_le_rpow hn₁ (by norm_num)
   have hJ' := le_mul_of_one_le_right (zero_le_one.trans hJ) hP
   have hH : |H|≤J := by
-    have hs := Nat.le_sqrt.mpr (by simpa using hn : 1*1≤n)
+    have hs : 1 ≤ s := Nat.le_sqrt.mpr (by omega : 1*1 ≤ n)
     have hh : 0≤H := by
       dsimp only [H]; rw [←sum_inv_Icc_eq_ratCast_harmonic]
       exact sum_nonneg fun d _ => inv_nonneg.mpr (Nat.cast_nonneg d)
     rw [abs_of_nonneg hh]
-    exact (harmonic_le_one_add_log s).trans (add_le_add_left (Real.log_le_log
-      (by exact_mod_cast hs : (0 : ℝ) < s) (by exact_mod_cast Nat.sqrt_le_self n)) 1)
+    have hspos : (0 : ℝ) < s := by exact_mod_cast (show 0 < s from hs)
+    have hsn : (s : ℝ) ≤ n := by exact_mod_cast (show s ≤ n from Nat.sqrt_le_self n)
+    exact (harmonic_le_one_add_log s).trans (add_le_add le_rfl (Real.log_le_log hspos hsn))
   have hS : |divisorHyperbolaSmoothRemainder n|≤8*J := by
     apply (abs_divisorHyperbolaSmoothRemainder_le hn).trans
     have hl := Real.log_le_log (by positivity : (0 : ℝ)<(n : ℝ)+1)

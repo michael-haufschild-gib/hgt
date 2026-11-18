@@ -289,8 +289,6 @@ theorem square_add_higher_eq_properPower {Φ : ℝ → ℝ} {t : ℝ}
 
 private theorem tendsto_properPowerWave_of_square {Φ : ℝ → ℝ} {C L : ℝ}
     (hs : ∀ u, 0 ≤ u → Φ u=0) (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
-    (habs : ∀ t : ℝ, 0 ≤ t → Summable fun j : Nat.Primes × ℕ =>
-      vonMangoldtAtom (properPrimePowerIndex j)*|Φ (t-Real.log (properPrimePowerIndex j))|)
     (h2 : Tendsto (primePowerLayer Φ 2) atTop (𝓝 L)) :
     Tendsto (fun t : ℝ => ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*
       Φ (t-Real.log (properPrimePowerIndex j))) atTop (𝓝 L) := by
@@ -300,7 +298,8 @@ private theorem tendsto_properPowerWave_of_square {Φ : ℝ → ℝ} {C L : ℝ}
     · exact (hb u).trans (mul_le_of_le_one_right hC (Real.exp_le_one_iff.mpr (by linarith only [hu])))
   have hboth := h2.add (tendsto_cubeOrHigherWave hs hb')
   rw [add_zero] at hboth
-  exact hboth.congr' ((eventually_ge_atTop (0:ℝ)).mono fun t ht => square_add_higher_eq_properPower (habs t ht))
+  obtain ⟨_,_,habs⟩ := properPowerWave_absolute_envelope (by norm_num : (0:ℝ)<2) hC hb
+  exact hboth.congr fun t => square_add_higher_eq_properPower (habs t).1
 
 /-- After summing over all proper prime powers, the same half-charge remains.
 The limit is for the unheated signed wave of the continuous representative. -/
@@ -314,11 +313,7 @@ theorem criticalState_tendsto_properPowerWave {W₀ : ℝ} (hW : 0 < W₀)
   obtain ⟨Ψ,hΨ,heqΨ,_,h2⟩ := criticalState_ordinary_and_square_prime_limits hW ht hF
   have hΨΦ : Ψ = Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heqΨ.symm.trans heq)
   subst Ψ
-  obtain ⟨Ψ,hΨ,heqΨ,hbound⟩ := criticalState_properPowerWave_subexponential hW ht hF
-  have hΨΦ : Ψ = Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heqΨ.symm.trans heq)
-  subst Ψ
-  obtain ⟨_,hA⟩ := hbound 1 zero_lt_one
-  exact ⟨Φ,hΦ,heq,tendsto_properPowerWave_of_square hs hC hb (fun t ht0 => (hA t ht0).1) h2⟩
+  exact ⟨Φ,hΦ,heq,tendsto_properPowerWave_of_square hs hC hb h2⟩
 
 /-- All proper powers sample half the integral of every continuous test dominated
 by the absolute state profile. The terms of exponent at least three vanish together. -/
@@ -330,10 +325,6 @@ theorem criticalState_tendsto_dominated_properPowerWave {W₀ : ℝ} (hW : 0 < W
         Tendsto (fun t : ℝ => ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*
           g (t-Real.log (properPrimePowerIndex j))) atTop (𝓝 ((∫ u, g u)/2)) := by
   obtain ⟨_,_,Φ,hΦ,heq,hs,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
-  obtain ⟨Ψ,hΨ,heqΨ,hbound⟩ := criticalState_properPowerWave_subexponential hW ht hF
-  have hΨΦ : Ψ = Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heqΨ.symm.trans heq)
-  subst Ψ
-  obtain ⟨_,hA⟩ := hbound 1 zero_lt_one
   refine ⟨Φ,hΦ,heq,fun g hg hdom => ?_⟩
   have hsg (u : ℝ) (hu : 0 ≤ u) : g u=0 := by
     have h := hdom u
@@ -342,13 +333,7 @@ theorem criticalState_tendsto_dominated_properPowerWave {W₀ : ℝ} (hW : 0 < W
   have h2 := tendsto_primePowerLayer_of_confinement hg hsg hC hbg (k := 2) (by norm_num)
   rw [show 1/2-(2:ℝ)⁻¹ = 0 by norm_num] at h2
   simp only [zero_mul,Real.exp_zero,one_mul,real_laplace_eq_integral] at h2
-  refine tendsto_properPowerWave_of_square hsg hC hbg ?_ (by simpa only [div_eq_inv_mul] using h2)
-  intro t ht0
-  have hn (n : ℕ) : 0 ≤ vonMangoldtAtom n := by
-    unfold vonMangoldtAtom
-    split_ifs <;> first | exact le_rfl | exact div_nonneg ArithmeticFunction.vonMangoldt_nonneg (Real.sqrt_nonneg _)
-  exact Summable.of_nonneg_of_le (fun j => mul_nonneg (hn _) (abs_nonneg _))
-    (fun j => mul_le_mul_of_nonneg_left (hdom _) (hn _)) (hA t ht0).1
+  exact tendsto_properPowerWave_of_square hsg hC hbg (by simpa only [div_eq_inv_mul] using h2)
 
 /-- The total variation of the proper-power wave tends to half the absolute mass of the state. -/
 theorem criticalState_tendsto_absolute_properPowerWave {W₀ : ℝ} (hW : 0 < W₀)

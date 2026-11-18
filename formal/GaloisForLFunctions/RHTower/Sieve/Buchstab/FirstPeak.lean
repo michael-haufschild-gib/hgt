@@ -193,6 +193,54 @@ theorem buchstab_eq_peak_iff (u : Ici (2:ℝ)) :
     push_cast
     ring
 
+private theorem log_branch_gt_half {x : ℝ} (hx : x ∈ Ioc (0:ℝ) 1) : 1/2 < profile 1 x := by
+  have ha : 0 < 1+x := by linarith [hx.1]
+  have ha₁ : (1+x)⁻¹ ≠ 1 := by
+    rw [ne_eq,inv_eq_one]
+    linarith [hx.1]
+  have hlog := Real.log_lt_sub_one_of_pos (inv_pos.mpr ha) ha₁
+  rw [Real.log_inv] at hlog
+  have hi : (1+x)⁻¹ ≤ 1-x/2 := by
+    rw [← one_div,div_le_iff₀ ha]
+    nlinarith only [mul_nonneg hx.1.le (sub_nonneg.mpr hx.2)]
+  rw [profile_one_formula ⟨x,hx.1.le⟩,lt_div_iff₀ (show 0 < 2+x by linarith)]
+  linarith
+
+private theorem later_gt_half (n : ℕ) (x : Icc (0:ℝ) 1) : 1/2 < profile (n+2) x := by
+  have hnest (k : ℕ) : Icc (enclosure (k+2)).1 (enclosure (k+2)).2 ⊆
+      Icc (enclosure 2).1 (enclosure 2).2 := by
+    induction k with
+    | zero => exact Subset.rfl
+    | succ k ih => exact (enclosure_nested (k+2)).trans ih
+  have hl := (hnest n (profile_mem_enclosure _ x x.property)).1
+  have h₁ := log_branch_gt_half (x := 1) ⟨zero_lt_one,le_rfl⟩
+  have hbase : (enclosure 1).1 = 1/2 := by
+    change profile 0 1 + ((1/2:ℝ)-profile 0 1)/3 = 1/2
+    norm_num [profile,intervalMass]
+  change profile 1 1 + ((enclosure 1).1-profile 1 1)/((1:ℕ)+3:ℝ) ≤ profile (n+2) x at hl
+  rw [hbase] at hl
+  norm_num at hl
+  linarith
+
+/-- The tail minimum is attained only at the corner at two. -/
+theorem buchstab_eq_half_iff (u : Ici (2:ℝ)) : buchstab u = 1/2 ↔ u.val = 2 := by
+  obtain ⟨n,x,hx,he,hv⟩ := tail_cell u.property
+  constructor
+  · intro h
+    rw [hv] at h
+    cases n with
+    | zero =>
+      rcases eq_or_lt_of_le hx.1 with h₀ | hp
+      · rw [← h₀] at he
+        simpa using he
+      · exact False.elim ((log_branch_gt_half ⟨hp,hx.2⟩).ne' h)
+    | succ n => exact False.elim ((later_gt_half n ⟨x,hx⟩).ne' h)
+  · intro h
+    rw [h]
+    have hh := buchstab_cell 0 1 ⟨zero_le_one,le_rfl⟩
+    norm_num [profile,intervalMass] at hh
+    exact hh
+
 private theorem initial_value {u : ℝ} (hu : u ∈ Icc (1:ℝ) 2) : buchstab u = 1/u := by
   apply (eq_div_iff (zero_lt_one.trans_le hu.1).ne').mpr
   rw [mul_comm,buchstab_weighted ⟨u,hu.1⟩,integral_buchstab_initial
@@ -262,6 +310,7 @@ theorem buchstab_differentiableAt_iff (u : ℝ) :
 #print axioms profile_tail_range
 #print axioms buchstab_tail_range
 #print axioms buchstab_eq_peak_iff
+#print axioms buchstab_eq_half_iff
 #print axioms buchstab_slopes_two
 #print axioms buchstab_differentiableAt_iff
 

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.AffineDynamics.MaximumDisturbanceOnABoundedRoad
+import Mathlib.Analysis.Convex.Function
 
 /-!
 # Shape and limiting deficit of the disturbance tolerance

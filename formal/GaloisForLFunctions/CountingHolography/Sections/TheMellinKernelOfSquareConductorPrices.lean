@@ -2,6 +2,7 @@ import GaloisForLFunctions.CountingHolography.Sections.ThePrimeExponentsOnTheSqu
 import GaloisForLFunctions.CountingHolography.Sections.CriticalZerosSeparateThePrimeProfileFromFactorialKernels
 import Mathlib.NumberTheory.LSeries.Deriv
 import GaloisForLFunctions.RHTower.BVPrimeWindowReciprocalReflection
+import GaloisForLFunctions.CountingHolography.Sections.TheLogarithmicMomentOfTheSquarePrimeProfile
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 
 /-! # Mellin scaling and the holomorphic error of the square prices
@@ -276,8 +277,8 @@ series on Re s > 3. Their log mass below x is bounded by a constant times √x. 
 def conductorPrimePowerError (W : CompactBVPrimeWindow) (n : ℕ) : ℂ :=
   ∑ k ∈ (meshIndices W n).filter (fun k => ¬k.Prime), rootMeshRow W n k
 
-theorem analytic_conductorPrimePowerError (W : CompactBVPrimeWindow) :
-    AnalyticOnNhd ℂ (LSeries (conductorPrimePowerError W)) {s : ℂ | 3 < s.re} := by
+private theorem primePower_abscissa (W : CompactBVPrimeWindow) :
+    LSeries.abscissaOfAbsConv (conductorPrimePowerError W) ≤ (3:EReal) := by
   obtain ⟨C,hC⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
   let V := (eVariationOn W.toFun Set.univ).toReal
   have hV : 0 ≤ V := ENNReal.toReal_nonneg
@@ -291,9 +292,146 @@ theorem analytic_conductorPrimePowerError (W : CompactBVPrimeWindow) :
     exact (mul_le_mul_of_nonneg_left h (mul_nonneg hY hV)).trans_eq (by dsimp only [Y,V]; ring)
   have hab := LSeries.abscissaOfAbsConv_le_of_le_const_mul_rpow (f := conductorPrimePowerError W)
     (x := 2) ⟨V*C/W.lower^2,fun n _ => by simpa only [Real.rpow_two] using hrow n⟩
-  have h₃ : LSeries.abscissaOfAbsConv (conductorPrimePowerError W) ≤ (3:EReal) := by
-    convert hab using 1 <;> norm_num
-  exact fun s hs => LSeries_analyticOnNhd _ s (h₃.trans_lt (by exact_mod_cast hs : (3:EReal)<(s.re:EReal)))
+  convert hab using 1 <;> norm_num
+
+theorem analytic_conductorPrimePowerError (W : CompactBVPrimeWindow) :
+    AnalyticOnNhd ℂ (LSeries (conductorPrimePowerError W)) {s : ℂ | 3 < s.re} :=
+  fun s hs => LSeries_analyticOnNhd _ s ((primePower_abscissa W).trans_lt (by exact_mod_cast hs : (3:EReal) < (s.re:EReal)))
+
+/-- Moving square-root mesh with all von Mangoldt weights. -/
+def squareMeshReading (W : CompactBVPrimeWindow) (n : ℕ) : ℂ :=
+  ∑ k ∈ meshIndices W n, rootMeshRow W n k
+
+private theorem squareMesh_norm_mass (W : CompactBVPrimeWindow) (n : ℕ) :
+    (∑' k, ‖rootMeshRow W n k‖) ≤
+      (7*(eVariationOn W.toFun Set.univ).toReal/W.lower^3)*(n:ℝ)^3 := by
+  let Y := (n:ℝ)/W.lower
+  have hY : 0 ≤ Y := div_nonneg (Nat.cast_nonneg _) W.lower_pos.le
+  let V := (eVariationOn W.toFun Set.univ).toReal
+  have hV : 0 ≤ V := ENNReal.toReal_nonneg
+  rw [tsum_eq_sum (s := meshIndices W n) (fun k hk => norm_eq_zero.mpr
+    (not_ne_iff.mp (fun h => hk (mesh_support W n k h))))]
+  have hmass : (∑ k ∈ meshIndices W n, vonMangoldt k) ≤ 7*Y^2 := by
+    have h := _root_.RHTower.sum_vonMangoldt_Icc_le_seven ⌊Y^2⌋₊
+    have he : meshIndices W n=Icc 1 ⌊Y^2⌋₊ := by ext k; simp [meshIndices,Y,Nat.lt_iff_add_one_le]
+    rw [he]
+    exact h.trans (mul_le_mul_of_nonneg_left (Nat.floor_le (sq_nonneg Y)) (by norm_num))
+  refine (sum_le_sum fun k hk => rootMeshRow_bound W _ hk).trans ?_
+  rw [← mul_sum]
+  exact (mul_le_mul_of_nonneg_left hmass (mul_nonneg hY hV)).trans_eq (by dsimp only [Y,V]; ring)
+
+private def meshTerm (W : CompactBVPrimeWindow) (s : ℂ) (i : ℕ × ℕ) :=
+  LSeries.term (fun n => rootMeshRow W n i.2) s i.1
+
+private theorem summable_meshTerm (W : CompactBVPrimeWindow) {s : ℂ} (hs : 4 < s.re) :
+    Summable (meshTerm W s) := by
+  apply Summable.of_norm
+  rw [summable_prod_of_nonneg (fun _ => norm_nonneg _)]
+  constructor
+  · intro n
+    apply summable_of_ne_finset_zero (s := meshIndices W n)
+    intro k hk
+    have hz : rootMeshRow W n k = 0 := not_ne_iff.mp fun h => hk (mesh_support W _ _ h)
+    by_cases hn : n = 0
+    · simp [meshTerm,hn]
+    · simp [meshTerm,LSeries.term_of_ne_zero hn,hz]
+  · let C := 7*(eVariationOn W.toFun Set.univ).toReal/W.lower^3
+    have hC : 0 ≤ C := div_nonneg (mul_nonneg (by norm_num) ENNReal.toReal_nonneg) (pow_nonneg W.lower_pos.le _)
+    have hsum := (Real.summable_nat_rpow.mpr (by linarith only [hs] : 3-s.re < -1)).mul_left C
+    apply Summable.of_nonneg_of_le (fun n => tsum_nonneg fun k => norm_nonneg _) _ hsum
+    intro n
+    rcases n.eq_zero_or_pos with rfl | hn
+    · simpa [meshTerm] using mul_nonneg hC (Real.rpow_nonneg (by norm_num : (0:ℝ)≤0) (3-s.re))
+    have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
+    simp only [meshTerm,LSeries.term_of_ne_zero hn.ne',norm_div,Complex.norm_natCast_cpow_of_pos hn,div_eq_mul_inv,
+      tsum_mul_right]
+    refine (mul_le_mul_of_nonneg_right (squareMesh_norm_mass W n) (inv_nonneg.mpr (Real.rpow_nonneg hn'.le _))).trans_eq ?_
+    rw [Real.rpow_sub hn',show (3:ℝ)=(3:ℕ) from rfl,Real.rpow_natCast]
+    ring
+
+private theorem sqrt_grid_factor {p n : ℕ} (hp : 0 < p) (hn : 0 < n) (s : ℂ) :
+    let t := Real.sqrt p
+    (p:ℂ)^(1-s/2)*((1/t:ℝ):ℂ)*(((n:ℝ)/t:ℝ):ℂ)^(-s) =
+      (t:ℂ)/(n:ℂ)^s := by
+  let t := Real.sqrt p
+  have hp' : 0 < (p:ℝ) := Nat.cast_pos.mpr hp
+  have ht : 0 < t := Real.sqrt_pos.mpr hp'
+  have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
+  have htC : (t:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr ht.ne'
+  have hnC : (n:ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hn.ne'
+  have hmul := Complex.mul_cpow_ofReal_nonneg (div_nonneg hn'.le ht.le) ht.le (-s)
+  rw [show (((n:ℝ)/t:ℝ):ℂ)*(t:ℂ)=(n:ℂ) by push_cast; field_simp] at hmul
+  have hpScale : (p:ℂ)^(1-s/2)=(t:ℂ)^2*(t:ℂ)^(-s) := by
+    have hlog : Complex.log (p:ℂ)=2*Complex.log (t:ℂ) := by
+      rw [← Complex.ofReal_natCast,← Complex.ofReal_log hp'.le,← Complex.ofReal_log ht.le]
+      dsimp only [t]; rw [Real.log_sqrt hp'.le]; push_cast; ring
+    rw [← Complex.cpow_ofNat (t:ℂ) 2,← Complex.cpow_add _ _ htC,
+      Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr hp.ne'),Complex.cpow_def_of_ne_zero htC,hlog]
+    congr 1; ring
+  change (p:ℂ)^(1-s/2)*((1/t:ℝ):ℂ)*(((n:ℝ)/t:ℝ):ℂ)^(-s)=(t:ℂ)/(n:ℂ)^s
+  rw [hpScale,Complex.ofReal_div,Complex.ofReal_one,div_eq_mul_inv,← Complex.cpow_neg,hmul]
+  field_simp
+
+private theorem mesh_column (W : CompactBVPrimeWindow) (s : ℂ) (k : ℕ) :
+    (∑' n, meshTerm W s (n,k)) =
+      W.mellinTransform s*LSeries.term (fun j => (vonMangoldt j:ℂ)) (s/2-1) k +
+        sqrtMeshErrorTerm W k s := by
+  rcases k.eq_zero_or_pos with rfl | hk
+  · have hz (n : ℕ) : meshTerm W s (n,0)=0 := by
+      rcases n.eq_zero_or_pos with rfl | hn <;> simp [meshTerm,LSeries.term,rootMeshRow]
+    simp [hz,sqrtMeshErrorTerm]
+  let t := Real.sqrt k
+  let N := ⌈W.upper*t⌉₊
+  have ht : 0 < t := Real.sqrt_pos.mpr (Nat.cast_pos.mpr hk)
+  have hkC : (k:ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hk.ne'
+  have hfin : (∑' n, meshTerm W s (n,k))=∑ i ∈ range N, meshTerm W s (i+1,k) := by
+    rw [tsum_eq_sum (s := range (N+1)) (fun n hn => ?_),sum_range_succ']
+    · simp [meshTerm]
+    have hgt : N < n := by have h := mt mem_range.mpr hn; omega
+    have hcast : W.upper*t < (n:ℝ) := (Nat.le_ceil _).trans_lt (Nat.cast_lt.mpr hgt)
+    have hoff : (n:ℝ)/t ∉ Set.Icc W.lower W.upper :=
+      fun h => (lt_div_iff₀ ht |>.mpr hcast).not_ge h.2
+    rw [meshTerm,LSeries.term_of_ne_zero (by omega),rootMeshRow,W.eq_zero_off_support _ hoff,mul_zero,zero_div]
+  let A := (vonMangoldt k:ℂ)*(k:ℂ)^(1-s/2)
+  have hi (i : ℕ) : meshTerm W s (i+1,k)=A*((1/t:ℝ):ℂ)*W.mellinIntegrand s (((i+1:ℕ):ℝ)/t) := by
+    have he := sqrt_grid_factor hk (Nat.succ_pos i) s
+    rw [meshTerm,LSeries.term_of_ne_zero (Nat.succ_ne_zero _),rootMeshRow,W.mellinIntegrand_eq_raw]
+    dsimp only [A]
+    calc _ = (vonMangoldt k:ℂ)*W (((i+1:ℕ):ℝ)/t)*((t:ℂ)/((i+1:ℕ):ℂ)^s) := by ring
+      _ = _ := by rw [← he]; ring
+  rw [hfin]
+  simp_rw [hi]
+  rw [← mul_sum,sqrtMeshErrorTerm,if_neg hk.ne',LSeries.term_of_ne_zero hk.ne',
+    realMeshMellinError,Complex.real_smul,div_eq_mul_inv,← Complex.cpow_neg,
+    show -(s/2-1)=1-s/2 by ring]
+  dsimp only [A,N,t]
+  ring
+
+/-- In the half-plane of absolute convergence, reversing the real meshes
+identifies the Dirichlet series with the Mellin-weighted logarithmic derivative
+plus an error analytic throughout Re s > 3. -/
+theorem LSeries_squareMeshReading (W : CompactBVPrimeWindow) {s : ℂ} (hs : 4 < s.re) :
+    LSeries (squareMeshReading W) s =
+      W.mellinTransform s*(-deriv riemannZeta (s/2-1)/riemannZeta (s/2-1)) +
+        ∑' k, sqrtMeshErrorTerm W k s := by
+  have hd := summable_meshTerm W hs
+  have hz : 1 < (s/2-1).re := by simp; linarith only [hs]
+  have hmain := (LSeriesSummable_vonMangoldt hz).mul_left (W.mellinTransform s)
+  have herr := (locallySummable_sqrtMeshErrorTerm W).summable
+    (show s ∈ {z : ℂ | 3 < z.re} by exact lt_trans (by norm_num) hs)
+  calc LSeries (squareMeshReading W) s = ∑' n : ℕ, ∑' k : ℕ, meshTerm W s (n,k) := by
+         apply tsum_congr; intro n
+         rcases n.eq_zero_or_pos with rfl | hn
+         · simp [meshTerm]
+         simp only [meshTerm,LSeries.term_of_ne_zero hn.ne',div_eq_mul_inv,tsum_mul_right]
+         rw [tsum_eq_sum (s := meshIndices W n) (fun k hk => not_ne_iff.mp fun h => hk (mesh_support W _ _ h))]
+         rfl
+    _ = ∑' k : ℕ, ∑' n : ℕ, meshTerm W s (n,k) := hd.tsum_comm
+    _ = _ := by
+      simp_rw [mesh_column]
+      rw [hmain.tsum_add herr,tsum_mul_left]
+      change W.mellinTransform s*LSeries (fun k => (vonMangoldt k:ℂ)) (s/2-1)+_=_
+      rw [LSeries_vonMangoldt_eq_deriv_riemannZeta_div hz]
 
 private abbrev S (n : ℕ) := ordinaryPrimeLags (3*windowEnd ((2*n+1)^2+1))
 private abbrev q (n : ℕ) := ordinaryPrimeGenerator (n • successorSquareTriple n)
@@ -321,8 +459,130 @@ theorem analytic_squareValuationReadingError {g : ℝ → ℝ} {K : ℝ ≥ 0} (
     exact mul_le_mul_of_nonneg_left (h (Nat.pos_of_ne_zero hn)) K.coe_nonneg
   have hab := LSeries.abscissaOfAbsConv_le_of_le_const_mul_rpow (f := squareValuationReadingError g)
     (x := 2) ⟨K*C,fun n hn => by simpa only [Real.rpow_two] using hbound n hn⟩
-  have h₃ : LSeries.abscissaOfAbsConv (squareValuationReadingError g) ≤ (3:EReal) := by
-    convert hab using 1 <;> norm_num
-  exact fun s hs => LSeries_analyticOnNhd _ s (h₃.trans_lt (by exact_mod_cast hs : (3:EReal) < (s.re:EReal)))
+  convert hab using 1 <;> norm_num
+
+theorem analytic_squareValuationReadingError {g : ℝ → ℝ} {K : ℝ≥0} (hg : LipschitzWith K g) :
+    AnalyticOnNhd ℂ (LSeries (squareValuationReadingError g)) {s : ℂ | 3 < s.re} :=
+  fun s hs => LSeries_analyticOnNhd _ s ((reading_abscissa hg).trans_lt (by exact_mod_cast hs : (3:EReal) < (s.re:EReal)))
+
+private theorem squareMeshRow_profile {n k : ℕ} (hn : 0 < n) (hk : 0 < k) :
+    rootMeshRow squareConductorBVWindow n k =
+      ((diagonalPrimeProfile n k*vonMangoldt k:ℝ):ℂ) := by
+  let t := (n:ℝ)/Real.sqrt k
+  have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
+  have hk' : 0 < (k:ℝ) := Nat.cast_pos.mpr hk
+  have ht : 0 < t := div_pos hn' (Real.sqrt_pos.mpr hk')
+  have he : 1/t^2=(k:ℝ)/(n:ℝ)^2 := by
+    rw [show t=(n:ℝ)/Real.sqrt k from rfl,div_pow,Real.sq_sqrt hk'.le]
+    field_simp
+  let y := (k:ℝ)/(n:ℝ)^2
+  have hy : 0 < y := div_pos hk' (sq_pos_of_pos hn')
+  have hexp : Real.exp (-Real.log y/2)=(Real.sqrt y)⁻¹ := by
+    rw [neg_div,Real.exp_neg,Real.sqrt_eq_rpow,Real.rpow_def_of_pos hy]
+    congr 2; ring
+  change (vonMangoldt k:ℂ)*(Real.sqrt k:ℂ)*squareConductorBVWindow t=_
+  rw [squareConductorBVWindow_apply ht,he,diagonalPrimeProfile_eq_dilate hn hk]
+  change _*((2:ℂ)*t*(Real.exp (-Real.log y/2)*squareLogProfile (Real.log y):ℝ))=
+    ((2*(n:ℝ)*(squareLogProfile (Real.log y)/Real.sqrt y)*vonMangoldt k:ℝ):ℂ)
+  rw [hexp]
+  dsimp only [t]
+  push_cast
+  field_simp [Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr hk').ne'] <;> ring
+
+private theorem prime_mesh_profile_sum {n : ℕ} (hn : 0 < n) :
+    squareMeshReading squareConductorBVWindow n - conductorPrimePowerError squareConductorBVWindow n =
+      ∑ k ∈ S n, ((diagonalPrimeProfile n k*vonMangoldt k:ℝ):ℂ) := by
+  classical
+  let W := squareConductorBVWindow
+  let f := rootMeshRow W n
+  let I := meshIndices W n
+  have hpart := sum_filter_add_sum_filter_not (s := I) (f := f) Nat.Prime
+  have split : squareMeshReading W n - conductorPrimePowerError W n = ∑ k ∈ I.filter Nat.Prime, f k := by
+    change (∑ k ∈ I, f k)-(∑ k ∈ I.filter (fun k => ¬k.Prime), f k)=_
+    rw [← hpart,add_sub_cancel_right]
+  have hsum : (∑' p : Nat.Primes, f p.val) = ∑ k ∈ I.filter Nat.Prime, f k := by
+    let g := fun k => if k.Prime then f k else 0
+    have h := tsum_subtype_eq_of_support_subset (f := g) (s := {k : ℕ | k.Prime})
+      (fun k hk hp => hk (by simp [g,hp]))
+    calc _ = ∑' p : Nat.Primes, g p.val := tsum_congr fun p => (if_pos p.property).symm
+      _ = ∑' k, g k := h
+      _ = _ := tsum_eq_sum fun k hk => by
+        by_cases hp : k.Prime
+        · have ho : k ∉ I := fun h => hk (mem_filter.mpr ⟨h,hp⟩)
+          simp only [g,if_pos hp]
+          exact not_ne_iff.mp fun h => ho (mesh_support W n k h)
+        · simp [g,hp]
+  let b := fun k : ℕ => Real.log k*
+    (squareLogProfile (Real.log ((k:ℝ)/(n:ℝ)^2))/Real.sqrt ((k:ℝ)/(n:ℝ)^2))
+  have hwindow : (∑' p : Nat.Primes, b p.val)=∑ k ∈ S n, b k := by
+    simpa only [b,one_mul] using diagonal_prime_test_window hn (fun _ => 1)
+  have hv (p : ℕ) (hp : p.Prime) : diagonalPrimeProfile n p*vonMangoldt p = (2*n)*b p := by
+    rw [diagonalPrimeProfile_eq_dilate hn hp.pos,vonMangoldt_apply_prime hp]; dsimp only [b]; ring
+  rw [split,← hsum]
+  calc (∑' p : Nat.Primes, f p.val) = ∑' p : Nat.Primes, (2*(n:ℂ))*(b p.val:ℂ) := by
+         apply tsum_congr; intro p; rw [show f p.val=_ from squareMeshRow_profile hn p.property.pos,hv p p.property]; push_cast; rfl
+    _ = (2*(n:ℂ))*((∑ k ∈ S n, b k:ℝ):ℂ) := by rw [tsum_mul_left,← Complex.ofReal_tsum,hwindow]
+    _ = _ := by
+      rw [Complex.ofReal_sum,mul_sum]; refine sum_congr rfl fun k hk => ?_
+      rw [hv k (mem_filter.mp hk).2]; push_cast; rfl
+
+/-- Actual logarithm of the square-conductor price, as a complex Dirichlet coefficient. -/
+def squareConductorPrice (n : ℕ) : ℂ := Real.log (q n:ℝ)
+
+private def priceRounding (n : ℕ) := squareValuationReadingError id n
+
+private theorem price_decomposition {n : ℕ} (hn : 0 < n) :
+    squareConductorPrice n = squareMeshReading squareConductorBVWindow n -
+      conductorPrimePowerError squareConductorBVWindow n + priceRounding n := by
+  rw [prime_mesh_profile_sum hn]
+  have hp : Real.log (q n:ℝ) = ∑ k ∈ S n, (deningerRatExp (q n) k:ℝ)*vonMangoldt k := by
+    rw [log_ordinaryPrimeGenerator]; refine sum_congr rfl fun p h => ?_
+    have he := ordinaryPrimeGenerator_exponent (n • successorSquareTriple n) p
+    change deningerRatExp (q n) p = if p ∈ S n then _ else 0 at he
+    rw [if_pos h] at he; rw [he]
+  simp only [squareConductorPrice,hp,priceRounding,squareValuationReadingError,id_eq,Complex.ofReal_sum,
+    ← sum_add_distrib]
+  refine sum_congr rfl fun k _ => ?_
+  push_cast; ring
+
+/-- Holomorphic remainder in the Dirichlet continuation of the actual prices. -/
+def squareConductorAnalyticRemainder (s : ℂ) :=
+  (∑' k, sqrtMeshErrorTerm squareConductorBVWindow k s) -
+    LSeries (conductorPrimePowerError squareConductorBVWindow) s + LSeries priceRounding s
+
+theorem analytic_squareConductorAnalyticRemainder :
+    AnalyticOnNhd ℂ squareConductorAnalyticRemainder {s : ℂ | 3 < s.re} := by
+  have hg : LipschitzWith 1 (id : ℝ → ℝ) := LipschitzWith.id
+  exact ((analytic_sqrtMeshErrorSeries _).sub (analytic_conductorPrimePowerError _)).add
+    (analytic_squareValuationReadingError hg)
+
+/-- Meromorphic continuation from the absolutely convergent half-plane.
+The only possible poles to the right of three arise from the shifted
+logarithmic derivative of zeta. -/
+theorem LSeries_squareConductorPrice {s : ℂ} (hs : 4 < s.re) :
+    LSeries squareConductorPrice s =
+      mellin squarePrimeWeight (s/2-1)*(-deriv riemannZeta (s/2-1)/riemannZeta (s/2-1)) +
+        squareConductorAnalyticRemainder s := by
+  let W := squareConductorBVWindow
+  have ha := summable_meshTerm W hs
+  have hW : LSeriesSummable (squareMeshReading W) s := ha.prod.congr fun n => by
+    rcases n.eq_zero_or_pos with rfl | hn
+    · simp [meshTerm]
+    simp only [meshTerm,LSeries.term_of_ne_zero hn.ne',div_eq_mul_inv,tsum_mul_right]
+    rw [tsum_eq_sum (s := meshIndices W n) (fun k hk => not_ne_iff.mp fun h => hk (mesh_support W _ _ h))]
+    rfl
+  have hp := primePower_abscissa W
+  have hr := reading_abscissa (LipschitzWith.id : LipschitzWith 1 (id : ℝ → ℝ))
+  have hs₃ : (3:EReal) < (s.re:EReal) := by exact_mod_cast lt_trans (by norm_num : (3:ℝ)<4) hs
+  have hP := LSeriesSummable_of_abscissaOfAbsConv_lt_re (hp.trans_lt hs₃)
+  have hR := LSeriesSummable_of_abscissaOfAbsConv_lt_re (hr.trans_lt hs₃)
+  have he : LSeries squareConductorPrice s = LSeries (squareMeshReading W - conductorPrimePowerError W + priceRounding) s := by
+    apply tsum_congr; intro n
+    rcases n.eq_zero_or_pos with rfl | hn
+    · simp
+    · simp only [LSeries.term_of_ne_zero hn.ne',Pi.add_apply,Pi.sub_apply]; rw [price_decomposition hn]
+  rw [he,LSeries_add (hW.sub hP) hR,LSeries_sub hW hP,LSeries_squareMeshReading W hs,
+    squareConductorBVWindow_transform,squareConductorAnalyticRemainder]
+  ring
 
 end GaloisForLFunctions.CountingHolography.Sections

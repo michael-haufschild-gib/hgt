@@ -80,7 +80,7 @@ private theorem eventually_minor_pos (A : Matrix (Fin n) (Fin m) ℤ) (d : ℕ)
         (t:ℝ)⁻¹ * (A (r i) (c j) : ℝ))
     push_cast
     field_simp [htp.ne']
-    <;> ring
+    ring
   have hd := congrArg Matrix.det he
   rw [← RingHom.map_det, det_smul] at hd
   have hp : 0 < (Int.castRingHom ℝ) ((residueRay A d t).submatrix r c).det := by

@@ -92,7 +92,8 @@ private theorem squareFract_continuous_ae :
   have hu0 : 0 < u := hu
   have hi : ContinuousAt (fun v : ℝ => v⁻¹^2) u :=
     (continuousAt_id.inv₀ hu0.ne').pow 2
-  apply (continuousAt_fract (x := u⁻¹^2) ?_).comp hi
+  change ContinuousAt (Int.fract ∘ (fun v : ℝ => v⁻¹^2)) u
+  apply ContinuousAt.comp (f := fun v : ℝ => v⁻¹^2) (x := u) (continuousAt_fract ?_) hi
   intro h
   apply hskip ⌊u⁻¹^2⌋
   rw [← h,Real.sqrt_sq (inv_nonneg.mpr hu0.le),inv_inv]
@@ -126,7 +127,7 @@ private theorem integral_squareFract : (∫ u in Set.Ici (0:ℝ), squareFract u)
     ring
   simp_rw [hpt,integral_neg,Measure.integral_comp_mul_left,hf,smul_eq_mul]
   norm_num
-  <;> ring
+  ring
 
 private theorem square_prime_fractional_limit :
     Tendsto (fun y : ℝ => (∑' p : Nat.Primes, Real.log (p:ℕ)*Int.fract ((y/(p:ℕ))^2))/y)
@@ -178,21 +179,33 @@ private theorem extract_first_exponent {f : Nat.Primes × ℕ → ℝ} (hf : Sum
     _ = (∑' p, f (p,0))+(∑' p, ∑' k, f (p,k+1)) := hh.tsum_add hg.prod
     _ = _ := congrArg ((∑' p, f (p,0))+·) hg.tsum_prod.symm
 
+private theorem omitted_square (y : ℝ) (p : Nat.Primes) :
+    omittedPower (y^2) (properPrimePowerIndex (p,0)) =
+      Real.log (p:ℕ)*Int.fract ((y/(p:ℕ))^2) := by
+  change omittedPower (y^2) ((p:ℕ)^2) = _
+  have hp : ¬ ((p:ℕ)^2).Prime := Nat.Prime.not_prime_pow (by decide : 2 ≤ 2)
+  rw [omittedPower,if_neg hp,vonMangoldt_apply_pow (by decide : 2 ≠ 0),
+    vonMangoldt_apply_prime p.property,Nat.cast_pow,div_pow]
+
+private theorem summable_omitted_proper (y : ℝ) :
+    Summable (fun j : Nat.Primes × ℕ => omittedPower (y^2) (properPrimePowerIndex j)) := by
+  have hall : Summable (fun j : Nat.Primes × ℕ => omittedPower (y^2) (eulerPrimePowerNat j)) :=
+    (omittedPower_summable (sq_nonneg y)).comp_injective (i := eulerPrimePowerNat) eulerPrimePowerNat_injective
+  exact hall.comp_injective (i := fun j : Nat.Primes × ℕ => (j.1,j.2+1)) exponent_shift_injective
+
 private theorem power_partition (y : ℝ) :
     (∑' n, omittedPower (y^2) n) =
       (∑' p : Nat.Primes, Real.log (p:ℕ)*Int.fract ((y/(p:ℕ))^2))+
       ∑' j : Nat.Primes × ℕ, vonMangoldt (highIndex j)*Int.fract (y^2/(highIndex j:ℕ)) := by
   let f := fun j : Nat.Primes × ℕ => omittedPower (y^2) (properPrimePowerIndex j)
-  have hbase := (omittedPower_summable (sq_nonneg y)).comp_injective eulerPrimePowerNat_injective
-  have hf : Summable f := hbase.comp_injective exponent_shift_injective
-  have hsq (p : Nat.Primes) : f (p,0)=Real.log (p:ℕ)*Int.fract ((y/(p:ℕ))^2) := by
-    rw [show f (p,0)=_ from omitted_at_power y (p,0)]
-    change vonMangoldt ((p:ℕ)^2)*Int.fract (y^2/(((p:ℕ)^2:ℕ):ℝ))=_
-    rw [vonMangoldt_apply_pow (by decide),vonMangoldt_apply_prime p.property,Nat.cast_pow,div_pow]
+  have hsq : (∑' p : Nat.Primes, f (p,0)) =
+      ∑' p : Nat.Primes, Real.log (p:ℕ)*Int.fract ((y/(p:ℕ))^2) := tsum_congr (omitted_square y)
   have hl (j : Nat.Primes × ℕ) : f (j.1,j.2+1)=
       vonMangoldt (highIndex j)*Int.fract (y^2/(highIndex j:ℕ)) := omitted_at_power y (j.1,j.2+1)
-  exact (omitted_power_reindex y).trans ((extract_first_exponent hf).trans
-    (congrArg₂ (· + ·) (tsum_congr hsq) (tsum_congr hl)))
+  calc (∑' n, omittedPower (y^2) n) = ∑' j, f j := omitted_power_reindex y
+    _ = (∑' p : Nat.Primes, f (p,0))+∑' j : Nat.Primes × ℕ, f (j.1,j.2+1) :=
+      extract_first_exponent (f := f) (summable_omitted_proper y)
+    _ = _ := congrArg₂ (fun a b : ℝ => a+b) hsq (tsum_congr hl)
 
 private theorem higher_powers_vanish :
     Tendsto (fun y : ℝ =>

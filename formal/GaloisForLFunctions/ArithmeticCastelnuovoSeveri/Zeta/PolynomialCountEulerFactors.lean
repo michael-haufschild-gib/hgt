@@ -26,7 +26,7 @@ private theorem signedTateFactor_hasGhost (a : ℂ) (m : ℤ) :
   cases m with
   | ofNat n => exact_mod_cast hasGhost_pow (hasGhost_geom a) n
   | negSucc n =>
-    simpa [signedTateFactor, negSucc_zsmul, nsmul_neg] using
+    simpa only [signedTateFactor, negSucc_zsmul, nsmul_eq_mul, mul_neg] using
       hasGhost_pow (hasGhost_one_sub a) (n+1)
 
 /-- Finite Euler factor attached to an integral counting polynomial. -/
@@ -54,7 +54,7 @@ theorem polynomialCountZeta_hasGhost (P : Polynomial ℤ) (q : ℂ) :
     simp only [polynomialCountSeries, coeff_mk, map_sum, map_zsmul, geomTail]
     by_cases hn : n = 0
     · simp [hn]
-    · simp only [coeff_mk, if_neg hn, zsmul_eq_mul, Polynomial.eval₂_eq_sum, Polynomial.sum_def]
+    · simp only [if_neg hn, zsmul_eq_mul, Polynomial.eval₂_eq_sum, Polynomial.sum_def]
       refine sum_congr rfl fun j _ => ?_
       rw [← pow_mul, ← pow_mul, Nat.mul_comm j n]
       rfl

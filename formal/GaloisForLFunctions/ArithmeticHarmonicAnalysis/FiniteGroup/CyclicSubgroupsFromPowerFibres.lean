@@ -19,7 +19,8 @@ namespace GaloisForLFunctions.ArithmeticHarmonicAnalysis.CyclicCensus
 variable (G : Type*) [Group G] [Fintype G]
 
 /-- Actual cyclic subgroups at one order. -/
-def ofOrder (d : ℕ) := (cyclicSubgroups G).filter fun C => Nat.card C=d
+def ofOrder (d : ℕ) : Finset (Subgroup G) :=
+  (cyclicSubgroups G).filter fun C : Subgroup G => Nat.card C=d
 
 private theorem generator_fiber (d : ℕ) (C : Subgroup G) (hc : C∈ofOrder G d) :
     ((univ.filter fun x : G => orderOf x=d).filter fun x => Subgroup.zpowers x=C).card =

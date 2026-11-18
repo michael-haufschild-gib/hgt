@@ -69,7 +69,7 @@ private theorem hyperbola {b K : ℝ} (hb : 0 < b) (hb' : b < 1/2) (hK : 0 ≤ K
     apply (abs_sum_le_sum_abs _ _).trans
     apply (sum_le_sum ?_).trans (properPowerLatticeWeight_sum_abs hb.le hb'.le hK h hY)
     intro d _
-    rw [abs_mul,abs_of_nonneg (Nat.cast_nonneg _)]
+    rw [abs_mul,abs_of_nonneg (Nat.cast_nonneg (α := ℝ) (N/d%2))]
     exact mul_le_of_le_one_right (abs_nonneg _) (by exact_mod_cast (show N/d%2 ≤ 1 by omega))
   have hrestrict : mass (alt*tail) N = ∑ j ∈ Icc 1 J, alt j*mass tail (N/j) := by
     rw [mass,sum_Icc_mul_apply]
@@ -91,8 +91,8 @@ private theorem hyperbola {b K : ℝ} (hb : 0 < b) (hb' : b < 1/2) (hK : 0 ≤ K
     have hyj : Y+1 ≤ N/j := (Nat.le_div_iff_mul_le hjp).mpr (by simpa [mul_comm] using hprod)
     have hp := properPowerLatticeWeight_abs_sum hb.le h (n := N/j) (by omega)
     have hy := properPowerLatticeWeight_abs_sum hb.le h hY
-    have hpow := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg Y)
-      (by exact_mod_cast (show Y ≤ N/j by omega)) hb.le) (by linarith only [hK] : 0 ≤ K+2)
+    have hyord : (Y:ℝ) ≤ ((N/j:ℕ):ℝ) := by exact_mod_cast (show Y≤N/j by omega)
+    have hpow := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg Y) hyord hb.le) (by linarith only [hK] : 0 ≤ K+2)
     have hq : ((N/j:ℕ):ℝ)^b ≤ ((N:ℝ)/j)^b :=
       Real.rpow_le_rpow (Nat.cast_nonneg _) Nat.cast_div_le hb.le
     rw [abs_mul,htail,min_eq_right (by omega : Y ≤ N/j)]
@@ -103,7 +103,9 @@ private theorem hyperbola {b K : ℝ} (hb : 0 < b) (hb' : b < 1/2) (hK : 0 ≤ K
     have h₂ := mul_le_mul_of_nonneg_left hq (by linarith only [hK] : 0 ≤ 2*(K+2))
     rw [Real.div_rpow (Nat.cast_nonneg _) (Nat.cast_nonneg _),div_eq_mul_inv] at h₂
     rw [Real.rpow_neg (Nat.cast_nonneg j)]
-    linarith only [hp,hy,hpow,h₂]
+    have hboth := add_le_add hp (hy.trans hpow)
+    apply hboth.trans
+    convert h₂ using 1 <;> ring
   have hs : (∑ j ∈ Icc 1 J, (j:ℝ)^(-b)) ≤ (J:ℝ)^(1-b)/(1-b) := by
     rw [← Ico_add_one_right_eq_Icc,Finset.sum_Ico_eq_sum_range]
     simpa only [Nat.add_sub_cancel,Nat.cast_add,Nat.cast_one,add_comm (1:ℝ)] using
@@ -132,7 +134,9 @@ theorem oddQuotientPowerCount_hyperbola_bound {b K : ℝ} (hb : 0 < b) (hb' : b 
   have hY : 1 ≤ Y := (Nat.one_le_floor_iff _).mpr (Real.one_le_rpow hN ha)
   have hy := Nat.floor_le (Real.rpow_nonneg hN0.le a)
   have hyN : Y ≤ N := by
-    exact_mod_cast (hy.trans (by simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le hN ha'))
+    have hyreal : (Y:ℝ)≤(N:ℝ) := hy.trans (by
+      simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le hN ha')
+    exact_mod_cast hyreal
   have hJ : ((N/(Y+1):ℕ):ℝ) ≤ (N:ℝ)^(1-a) := by
     have hcut : (N:ℝ)^a ≤ (Y:ℝ)+1 := (Nat.lt_floor_add_one _).le
     rw [Real.rpow_sub hN0,Real.rpow_one]
@@ -146,16 +150,16 @@ theorem oddQuotientPowerCount_hyperbola_bound {b K : ℝ} (hb : 0 < b) (hb' : b 
   have hex : (N:ℝ)^b*(N:ℝ)^((1-a)*(1-b)) = (N:ℝ)^(1/(3-2*b)) := by
     rw [← Real.rpow_add hN0]
     congr 1
-    dsimp only [a]
-    field_simp [hd.ne']
-    ring
+    apply (eq_div_iff hd.ne').mpr
+    have had : a*(3-2*b)=2 := div_mul_cancel₀ _ hd.ne'
+    linear_combination (b-1)*had
   apply (hyperbola hb hb' hK h hY hyN).trans
   have hs' := mul_le_mul_of_nonneg_left hs (by linarith only [hK] : 0 ≤ K+6)
   have ht' := mul_le_mul_of_nonneg_left ht (Real.rpow_nonneg hN0.le b)
   rw [hex] at ht'
   have hc := mul_le_mul_of_nonneg_left ht' (show 0 ≤ 2*(K+2)/(1-b) by
     apply div_nonneg (by positivity); linarith only [hb'])
-  linarith only [hs',hc]
+  convert add_le_add hs' hc using 1 <;> ring
 
 /-- An unconditional exponent strictly below one half for the sharp
 ordinary-prime, factorial, square and cube count. -/

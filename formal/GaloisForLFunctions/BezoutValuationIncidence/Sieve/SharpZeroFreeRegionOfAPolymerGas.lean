@@ -15,6 +15,7 @@ bad subgraph already produces a real zero.
 
 noncomputable section
 open Finset
+open scoped Classical
 namespace GaloisForLFunctions.BezoutValuationIncidence.Sieve.PolymerGas
 
 variable {ι R : Type*} [DecidableEq ι] [CommRing R] (G : SimpleGraph ι) [DecidableRel G.Adj]

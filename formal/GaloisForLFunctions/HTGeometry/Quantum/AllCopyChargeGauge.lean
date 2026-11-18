@@ -57,7 +57,7 @@ theorem all_copies_iff_step (q b : ι → ℤ) {A : Matrix ι ι ℂ} (hA : A.Is
     obtain ⟨k,rfl⟩ := (some_copy_iff_divisible q b hA d).1 ⟨n,hd⟩
     rw [zpow_mul,zpow_mul,h]
 
-private theorem circle_root (g : ℤ) (hg : g≠0) (x : Circle) : ∃ t : Circle, t^g=x := by
+theorem circle_root (g : ℤ) (hg : g≠0) (x : Circle) : ∃ t : Circle, t^g=x := by
   obtain ⟨a,rfl⟩ := Circle.exp_surjective x
   refine ⟨Circle.exp (a/g),?_⟩
   rw [← Circle.exp_intCast_mul]
@@ -129,3 +129,5 @@ end GaloisForLFunctions.HTGeometry.Quantum.TensorObservation
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.all_copies_iff_gauge
 
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.product_character
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.circle_root

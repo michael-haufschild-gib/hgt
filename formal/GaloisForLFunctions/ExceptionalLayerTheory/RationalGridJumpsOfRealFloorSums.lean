@@ -308,13 +308,4 @@ theorem floorClassDifference_prime_mass {ι : Type*} (s : Finset ι) (w a : ι �
       rw [sum_mul]
       exact sum_congr rfl fun p hp => by rw [hh p hp])
 
-#print axioms floorClassDifference_interval
-#print axioms floorClassDifference_prime_mass
-
-#print axioms periodic_divisor_sum_iff_gcd
-#print axioms finite_floor_sum_jumps_depend_on_gcd
-#print axioms integerGridProfile_eq_divisor_floors
-#print axioms last_quotient_class_not_finite_real_floors
-#print axioms last_quotient_class_two_floor_identity
-
 end GaloisForLFunctions.ExceptionalLayerTheory
