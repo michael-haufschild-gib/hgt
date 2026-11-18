@@ -1,12 +1,14 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheFractionalPartTestOfThePrimeWave
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.ExponentiallyIntegrableChangeOfPrimeVariance
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheIntegerWaveHasVanishingMeanAbsoluteError
+import GaloisForLFunctions.ZeroForcingCalculus.EulerDilationAndRootCoincidenceExclusion
 
 /-!
-# The early mass of the integer and ordinary-prime rows
+# The exterior time ranges of the original fractional test
 
-The fractional test on a fixed left ray costs exp(−T/2). Absolute confinement
-controls both actual integer rows on that ray, including the two references.
+Confinement controls the early integer and ordinary-prime rows. On the
+far-right ray the damped ordinary-prime estimate controls every measurable
+portion of the actual test in absolute value.
 -/
 
 noncomputable section
@@ -170,6 +172,86 @@ theorem riemannHypothesis_or_sixth_cutoff_fractional_mass : RiemannHypothesis �
   refine Or.inr ⟨W₀,F,Φ,B,hW,ht,hF,hc,he,hB,fun T hT => ?_⟩
   simpa only [show (5*(T/6)-T)/2 = -T/12 by ring] using h (T/6) (by positivity) T
 
+/-- The far-right tail of the original ordinary-prime test on any measurable
+set. The zero abscissa supplies an integrable absolute error at tilt −2/5. -/
+theorem criticalState_late_absolute_ordinary_test {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (W₀ : EReal))
+    {F Φ : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) (hc : Continuous Φ)
+    (he : F =ᵐ[volume] Φ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (T : ℝ) (A : Set ℝ), 0 ≤ T → MeasurableSet A →
+      let f := fun t : ℝ => |(∫ u, Φ u)*ordinaryPrimePolarError Φ t|*fractionalPrimeTest (T-t)
+      IntegrableOn f (A ∩ Ioi (6*T)) ∧ (∫ t in A ∩ Ioi (6*T), f t) ≤ C*Real.exp (-T/10) := by
+  let d := (31/80:ℝ)
+  let c := (1/80:ℝ)
+  let m := ∫ u, Φ u
+  let g := fun t : ℝ => Real.exp (-(2/5)*t)*|ordinaryPrimePolarError Φ t|
+  have hd : zetaZeroAbscissa-1/2 < d := by
+    dsimp only [d]; linarith only [ZeroForcingCalculus.zetaZeroAbscissa_le_sub_seven_eighths]
+  have hz := memLp_damped_ordinaryPrimePolarError hW ht hF he hd
+  have hq : 0 < (c:ℂ).re := by norm_num [c]
+  have hh := ((memLp_two_expRay_restrict hq 0).norm.integrable_mul hz).norm
+  have hi : IntegrableOn g (Ioi 0) := by
+    apply hh.congr
+    apply Eventually.of_forall fun t => ?_
+    change |‖expRay (c:ℂ) t‖*(Real.exp (-(d*t))*ordinaryPrimePolarError Φ t)|=_
+    rw [norm_expRay,Complex.ofReal_re,abs_mul,abs_of_pos (Real.exp_pos _),abs_mul,
+      abs_of_pos (Real.exp_pos _),← mul_assoc,← Real.exp_add]
+    dsimp only [g,c,d]; congr 2; ring
+  have hg (t : ℝ) : 0 ≤ g t := mul_nonneg (Real.exp_pos _).le (abs_nonneg _)
+  refine ⟨|m|*(∫ t in Ioi 0, g t),mul_nonneg (abs_nonneg m) (integral_nonneg hg),fun T A hT hA => ?_⟩
+  let J := A ∩ Ioi (6*T)
+  let f := fun t => |m*ordinaryPrimePolarError Φ t|*fractionalPrimeTest (T-t)
+  let b := |m|*Real.exp (-T/10)
+  have hb : 0 ≤ b := mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
+  have hJ : MeasurableSet J := hA.inter measurableSet_Ioi
+  have hJ0 : J ⊆ Ioi 0 := fun _ h => lt_of_le_of_lt (by positivity) h.2
+  have hmW : Measurable (ordinaryPrimeWave Φ) := Measurable.tsum fun q : Nat.Primes =>
+    measurable_const.mul (Complex.continuous_ofReal.measurable.comp (hc.measurable.comp (by fun_prop)))
+  have hmP : Measurable (ordinaryPrimePolarError Φ) :=
+    (Complex.continuous_re.measurable.comp hmW).sub (by fun_prop)
+  have hfm : Measurable f := (measurable_const.mul hmP).abs.mul
+    (measurable_fractionalPrimeTest.comp (measurable_const.sub measurable_id))
+  have hpos (t : ℝ) : 0 ≤ fractionalPrimeTest (T-t) := mul_nonneg (Real.exp_pos _).le (Int.fract_nonneg _)
+  have hle (t : ℝ) (htj : t ∈ J) : f t ≤ b*g t := by
+    have hk := (le_abs_self (fractionalPrimeTest (T-t))).trans (fractionalPrimeTest_bounds (T-t)).2
+    have hex : Real.exp ((T-t)/2) ≤ Real.exp (-T/10)*Real.exp (-(2/5)*t) := by
+      rw [← Real.exp_add]; exact Real.exp_le_exp.mpr (by linarith only [htj.2])
+    calc f t ≤ |m*ordinaryPrimePolarError Φ t|*(Real.exp (-T/10)*Real.exp (-(2/5)*t)) :=
+          mul_le_mul_of_nonneg_left (hk.trans hex) (abs_nonneg _)
+      _ = _ := by dsimp only [b,g]; rw [abs_mul]; ring
+  have hbg : IntegrableOn (fun t => b*g t) J := (hi.const_mul b).mono_set hJ0
+  have hfi : IntegrableOn f J := hbg.mono' hfm.aestronglyMeasurable (by
+    filter_upwards [ae_restrict_mem (μ := volume) hJ] with t htj
+    rw [Real.norm_of_nonneg (show 0 ≤ f t from mul_nonneg (abs_nonneg _) (hpos t))]
+    exact hle t htj)
+  refine ⟨hfi,?_⟩
+  change (∫ t in J, f t) ≤ _
+  calc _ ≤ ∫ t in J, b*g t := setIntegral_mono_on hfi hbg hJ hle
+    _ ≤ ∫ t in Ioi 0, b*g t := setIntegral_mono_set (hi.const_mul b)
+      (Eventually.of_forall fun t => mul_nonneg hb (hg t)) (Eventually.of_forall fun _ h => hJ0 h)
+    _ = _ := by rw [integral_const_mul]; dsimp only [b]; ring
+
+/-- On one forced state the original test has exponentially small absolute
+cost on both exterior time ranges, including any late selection of centers. -/
+theorem riemannHypothesis_or_exterior_fractional_mass : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ) (B C : ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (W₀ : EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧ 0 ≤ B ∧ 0 ≤ C ∧
+      ∀ T : ℝ, 0 ≤ T →
+        let m := ∫ u, Φ u
+        let S := fun t : ℝ => (∑' n : ℕ, (vonMangoldt n-1)*continuousIntegerAtom Φ n t)-m/2
+        let f := fun t => (|S t|+|ordinaryPrimePolarError Φ t|)*fractionalPrimeTest (T-t)
+        let g := fun t => |m*ordinaryPrimePolarError Φ t|*fractionalPrimeTest (T-t)
+        IntegrableOn f (Iic (T/6)) ∧ (∫ t in Iic (T/6), f t) ≤ B*Real.exp (-T/12) ∧
+          ∀ A : Set ℝ, MeasurableSet A → IntegrableOn g (A ∩ Ioi (6*T)) ∧
+            (∫ t in A ∩ Ioi (6*T), g t) ≤ C*Real.exp (-T/10) := by
+  rcases riemannHypothesis_or_sixth_cutoff_fractional_mass with hr | ⟨W₀,F,Φ,B,hW,ht,hF,hc,he,hB,h⟩
+  · exact Or.inl hr
+  obtain ⟨C,hC,hl⟩ := criticalState_late_absolute_ordinary_test hW ht hF hc he
+  exact Or.inr ⟨W₀,F,Φ,B,C,hW,ht,hF,hc,he,hB,hC,fun T hT => ⟨(h T hT).1,(h T hT).2,
+    fun A hA => hl T A hT hA⟩⟩
+
+#print axioms riemannHypothesis_or_exterior_fractional_mass
 #print axioms riemannHypothesis_or_sixth_cutoff_fractional_mass
 #print axioms riemannHypothesis_or_early_fractional_mass
 end GaloisForLFunctions.ExclusionOfTheCriticalState

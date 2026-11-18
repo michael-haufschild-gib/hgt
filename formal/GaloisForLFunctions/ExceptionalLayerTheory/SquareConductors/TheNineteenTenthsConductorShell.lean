@@ -458,6 +458,58 @@ theorem nineteen_tenths_shell_partial_octave :
   have hoct := octave_conductor_log hN hMN
   linarith only [mul_le_mul_of_nonneg_left hoct hB,mul_le_mul_of_nonneg_left hoct hC]
 
+/-- The change of the actual signed prefix from the seventeen-ninths to the
+nineteen-tenths product cut costs at most a cubic times one logarithm through
+every terminal conductor. -/
+theorem seventeenNinths_to_nineteenTenths_prefix :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ,
+      |∑ n ∈ Ioc 0 M, (n:ℝ)^2*(cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n n -
+        cappedUpperProductReading ⌊(n:ℝ)^(19/10:ℝ)⌋₊ n n)| ≤ C*(M:ℝ)^3*conductorLog M := by
+  obtain ⟨B,hB,hoct⟩ := capped_shell_to_nineteen_tenths (α := 17/9) (c := 1)
+    (by norm_num) (by norm_num) le_rfl (by norm_num)
+  simp only [one_mul] at hoct
+  let f (n : ℕ) := (n:ℝ)^2*(cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n n -
+    cappedUpperProductReading ⌊(n:ℝ)^(19/10:ℝ)⌋₊ n n)
+  let C := B+|f 1|
+  have hC : 0 ≤ C := add_nonneg hB (abs_nonneg _)
+  have hBC : B ≤ C := le_add_of_nonneg_right (abs_nonneg _)
+  refine ⟨C,hC,fun M => ?_⟩
+  change |∑ n ∈ Ioc 0 M, f n| ≤ _
+  induction M using Nat.strong_induction_on with
+  | h M ih =>
+    rcases M with _ | _ | m
+    · simp
+    · have hs : Ioc 0 1 = ({1} : Finset ℕ) := by ext n; simp only [mem_Ioc,mem_singleton]; omega
+      rw [hs,sum_singleton,Nat.cast_one,one_pow,mul_one]
+      exact (le_add_of_nonneg_left hB).trans (le_mul_of_one_le_right hC (conductorLog_one_le 1))
+    · let M := m+2
+      let J := (M+1)/2
+      have hJ : 0 < J := by dsimp only [J,M]; omega
+      have hJM : J < M := by dsimp only [J,M]; omega
+      have hMJ : M ≤ 2*J := by dsimp only [J,M]; omega
+      have hrat : (J:ℝ) ≤ (2/3:ℝ)*M := by
+        have hn : 3*J ≤ 2*M := by dsimp only [J,M]; omega
+        have hr : (3:ℝ)*J ≤ 2*M := by exact_mod_cast hn
+        linarith only [hr]
+      have hpow : 2*(J:ℝ)^3 ≤ (M:ℝ)^3 := by
+        have hh := pow_le_pow_left₀ (Nat.cast_nonneg J) hrat 3
+        linarith only [hh,pow_nonneg (Nat.cast_nonneg (α := ℝ) M) 3]
+      have hlog := conductorLog_mono hJ hJM.le
+      have hJlog := zero_le_one.trans (conductorLog_one_le J)
+      have hprior := ih J hJM
+      have hlast := hoct hJM.le hMJ
+      change |∑ n ∈ Ioc J M, f n| ≤ _ at hlast
+      change |∑ n ∈ Ioc 0 M, f n| ≤ _
+      rw [←sum_Ioc_consecutive f (Nat.zero_le J) hJM.le]
+      apply (abs_add_le _ _).trans ((add_le_add hprior hlast).trans _)
+      calc _ ≤ C*(J:ℝ)^3*conductorLog J+C*(J:ℝ)^3*conductorLog J := by
+               exact add_le_add le_rfl (mul_le_mul_of_nonneg_right
+                 (mul_le_mul_of_nonneg_right hBC (pow_nonneg (Nat.cast_nonneg J) 3)) hJlog)
+           _ = C*(2*(J:ℝ)^3)*conductorLog J := by ring
+           _ ≤ _ := mul_le_mul (mul_le_mul_of_nonneg_left hpow hC) hlog hJlog
+             (mul_nonneg hC (pow_nonneg (Nat.cast_nonneg M) 3))
+
+#print axioms seventeenNinths_to_nineteenTenths_prefix
 #print axioms nineteen_tenths_shell_partial_octave
 #print axioms capped_shell_to_nineteen_tenths
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

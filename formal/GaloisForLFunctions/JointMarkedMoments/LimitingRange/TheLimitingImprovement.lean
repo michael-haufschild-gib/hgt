@@ -92,7 +92,6 @@ theorem limitCore_eq_mul {R r : ℝ} (hR : 2 / 3 < R) (hr : 2 / 3 ≤ r) :
     (mul_nonneg (by positivity) (div_nonneg (by linarith) hR2.le))]
   congr 1
   field_simp
-  ring
 
 /-- `H` is concave: it lies below each tangent line `H(R) + (r − R) H′(R)`. -/
 theorem limitCore_le_tangent {R r : ℝ} (hR : 2 / 3 < R) (hr : 2 / 3 ≤ r) :
@@ -105,8 +104,10 @@ theorem limitCore_le_tangent {R r : ℝ} (hR : 2 / 3 < R) (hr : 2 / 3 ≤ r) :
       limitCore R * ((4 * (r / R) + (3 * r - 2) / (3 * R - 2)) / 5) := by
     unfold coreLogSlope
     have : R ≠ 0 := hR0.ne'
-    have : 3 * R - 2 ≠ 0 := hR2.ne'
+    generalize hT : 3 * R - 2 = T at hR2 ⊢
+    have : T ≠ 0 := hR2.ne'
     field_simp
+    rw [← hT]
     ring
   rw [limitCore_eq_mul hR hr, key]
   exact mul_le_mul_of_nonneg_left hmean (limitCore_pos hR).le
@@ -125,8 +126,11 @@ theorem hasDerivAt_limitCore {R : ℝ} (hR : 2 / 3 < R) :
   rw [Real.rpow_sub_one hb]
   unfold limitCore coreLogSlope
   generalize (7 * R ^ 4 * (R - 2 / 3)) ^ (1 / 5 : ℝ) = Hc
+  generalize hT : 3 * R - 2 = T at hR2 ⊢
+  generalize hS : R - 2 / 3 = S at hR1 hb ⊢
   push_cast
   field_simp
+  rw [← hT, ← hS]
   ring
 
 theorem hasDerivAt_limitImprovement {R : ℝ} (hR : 2 / 3 < R) :
@@ -145,7 +149,10 @@ theorem limitSlope_eq_recursionSlope {R : ℝ} (hR : 2 / 3 < R) :
   have hR3 : 45 * R - 30 ≠ 0 := by linarith
   unfold limitSlope recursionSlope limitImprovement coreLogSlope
   generalize limitCore R = Hc
+  generalize hT : 3 * R - 2 = T at hR2 ⊢
+  generalize hU : 45 * R - 30 = U at hR3 ⊢
   field_simp
+  rw [← hT, ← hU]
   ring
 
 theorem limitSlope_seven_ninths : limitSlope (7 / 9) = 0 := by
@@ -161,7 +168,9 @@ theorem hasDerivAt_coreLogSlope {R : ℝ} (hR : 2 / 3 < R) :
     (hasDerivAt_sub_const_iff (2 : ℝ)).mpr (HasDerivAt.const_mul 3 (hasDerivAt_id' (x := R)))
   have h3 := HasDerivAt.div (hasDerivAt_const R (3 : ℝ)) hlin hR2
   refine (HasDerivAt.div_const (HasDerivAt.add h4 h3) 5).congr_deriv ?_
+  generalize hT : 3 * R - 2 = T at hR2 ⊢
   field_simp
+  rw [← hT]
   ring
 
 theorem hasDerivAt_limitSlope {R : ℝ} (hR : 2 / 3 < R) :
@@ -173,7 +182,9 @@ theorem hasDerivAt_limitSlope {R : ℝ} (hR : 2 / 3 < R) :
   refine h.congr_deriv ?_
   unfold limitCurvature coreLogSlope
   generalize limitCore R = Hc
+  generalize hT : 3 * R - 2 = T at hR2 ⊢
   field_simp
+  rw [← hT]
   ring
 
 /-- Strict convexity in the form of Lemma 6.1: `G″(R) > 0` for `R > 2/3`. -/
@@ -181,13 +192,19 @@ theorem limitCurvature_pos {R : ℝ} (hR : 2 / 3 < R) : 0 < limitCurvature R := 
   have hR0 : 0 < R := by linarith
   have hR2 : 0 < 3 * R - 2 := by linarith
   have hgap : 1 / R - 3 / (3 * R - 2) = -2 / (R * (3 * R - 2)) := by
-    field_simp; ring
+    have : R ≠ 0 := hR0.ne'
+    generalize hT : 3 * R - 2 = T at hR2 ⊢
+    have : T ≠ 0 := hR2.ne'
+    field_simp
+    rw [← hT]
+    ring
   have hneg : 1 / R - 3 / (3 * R - 2) < 0 := by
     rw [hgap]; exact div_neg_of_neg_of_pos (by norm_num) (by positivity)
   unfold limitCurvature
-  have := limitCore_pos hR
-  have : 0 < (1 / R - 3 / (3 * R - 2)) ^ 2 := by positivity
-  positivity
+  have h1 := limitCore_pos hR
+  have h2 : 0 < (1 / R - 3 / (3 * R - 2)) ^ 2 := by
+    rw [sq]; exact mul_pos_of_neg_of_neg hneg hneg
+  exact div_pos (mul_pos h1 h2) (by norm_num)
 
 /-- `G` lies above its tangent lines: `G(R) + (r − R) G′(R) ≤ G(r)`. -/
 theorem limitImprovement_tangent_le {R r : ℝ} (hR : 2 / 3 < R) (hr : 2 / 3 ≤ r) :

@@ -174,7 +174,7 @@ theorem reciprocal_past_critical_edge {d : ℝ} (hd : 0 < d) (hd' : d < 3001/240
   obtain ⟨B,hB,hbound⟩ := centered_reciprocal_prime_intervals hd hd'
   refine ⟨B,hB,fun R v L hR hv => ?_⟩
   have he1 := Real.one_le_exp (zero_le_one.trans hR)
-  apply reciprocal_on_terminal_set hd hB hbound (Nat.one_le_floor_iff.mpr he1)
+  apply reciprocal_on_terminal_set hd hB hbound ((Nat.one_le_floor_iff _).mpr he1)
   · intro n hn h
     have hlog : R < Real.log n := by linarith only [h.1,hv]
     exact (Nat.floor_lt (Real.exp_pos R).le).mpr ((Real.exp_lt_exp.mpr hlog).trans_eq
@@ -227,7 +227,7 @@ private theorem lateComplement_time_translation {Φ : ℝ → ℝ}
       rw [Finset.sum_mul]
       refine Finset.sum_congr rfl fun n hn => ?_
       have hn0 : (0:ℝ)<n := by exact_mod_cast (Finset.mem_Ioc.mp hn).1
-      have hshift : t-Real.log n+Real.log n=t := sub_add_cancel .. 
+      have hshift : t-Real.log n+Real.log n=t := sub_add_cancel ..
       have hmem : t-Real.log n ∈ S n ↔ pastCriticalEdge n t := by
         dsimp only [S,mem_setOf_eq]; rw [hshift]; exact and_iff_right ht
       by_cases hedge : pastCriticalEdge n t
@@ -296,7 +296,128 @@ theorem criticalComplement_late_bound {Φ : ℝ → ℝ}
   apply (mul_le_mul_of_nonneg_left hab (Real.exp_pos _).le).trans_eq
   dsimp only [H]; ring
 
+/-- Complete prime-excess row beyond the far edge at time t. -/
+def criticalComplementRow (Φ : ℝ → ℝ) (t : ℝ) : ℝ :=
+  ∑' n : ℕ, if pastCriticalEdge n t then (vonMangoldt n-1)*continuousIntegerAtom Φ n t else 0
+
+private theorem finiteCriticalComplementRow_on_bounded_cut {Φ : ℝ → ℝ} (hc : Continuous Φ)
+    {C : ℝ} (hC : 0 ≤ C) (hb : ∀ v, |Φ v| ≤ C*Real.exp (2*v)) (R M T : ℝ) :
+    Tendsto (fun L : ℕ => ∫ t in Ioc R M, finiteCriticalComplementRow Φ L t*fractionalPrimeTest (T-t))
+      atTop (𝓝 (∫ t in Ioc R M, criticalComplementRow Φ t*fractionalPrimeTest (T-t))) := by
+  let w := fun (n : ℕ) (t : ℝ) => if pastCriticalEdge n t then
+    (vonMangoldt n-1)*continuousIntegerAtom Φ n t else 0
+  let a := fun n : ℕ => (Real.log n/(n:ℝ)^2 + 1/(n:ℝ)^2)
+  let D := C*Real.exp (2*M)
+  have hD : 0 ≤ D := mul_nonneg hC (Real.exp_pos _).le
+  have ha : Summable a := GaloisForLFunctions.summable_log_nat_div_sq.add
+    (Real.summable_one_div_nat_pow.mpr (by norm_num : 1 < 2))
+  have hapos (n : ℕ) : 0 ≤ a n :=
+    add_nonneg (div_nonneg (Real.log_natCast_nonneg _) (sq_nonneg _)) (by positivity)
+  have hwm (n : ℕ) : Measurable (w n) := by
+    dsimp only [w,pastCriticalEdge,continuousIntegerAtom]
+    exact Measurable.ite (measurableSet_lt (by fun_prop) measurable_const) (by fun_prop) measurable_const
+  have hw (n : ℕ) (t : ℝ) (ht : t ≤ M) : |w n t| ≤ D*a n := by
+    dsimp only [w]
+    split_ifs
+    · rcases Nat.eq_zero_or_pos n with rfl | hn
+      · simp [continuousIntegerAtom,a]
+      have hλ : |vonMangoldt n-1| ≤ Real.log n+1 := by
+        apply (abs_sub _ _).trans
+        rw [abs_of_nonneg vonMangoldt_nonneg,abs_one]
+        exact add_le_add vonMangoldt_le_log le_rfl
+      have hex : C*Real.exp (2*t) ≤ D := mul_le_mul_of_nonneg_left
+        (Real.exp_le_exp.mpr (by linarith only [ht])) hC
+      rw [abs_mul]
+      calc _ ≤ (Real.log n+1)*(D*(1/(n:ℝ)^2)) := mul_le_mul hλ
+            ((continuousIntegerAtom_bound hb (by exact_mod_cast hn : (1:ℝ) ≤ n) t).trans
+              (mul_le_mul_of_nonneg_right hex (by positivity))) (abs_nonneg _)
+                (add_nonneg (Real.log_natCast_nonneg n) zero_le_one)
+        _ = _ := by dsimp only [a]; ring
+    · rw [abs_zero]; exact mul_nonneg hD (hapos n)
+  have hi (L : ℕ) : Measurable (finiteCriticalComplementRow Φ L) := by
+    exact Finset.measurable_sum _ (fun n _ => hwm n)
+  have hfin : volume (Ioc R M) ≠ ⊤ := by rw [Real.volume_Ioc]; exact ENNReal.ofReal_ne_top
+  apply tendsto_integral_of_dominated_convergence (fun _ : ℝ => D*(∑' n, a n))
+    (fun L => ((hi L).mul (measurable_fractionalPrimeTest.comp
+      (measurable_const.sub measurable_id))).aestronglyMeasurable)
+    (integrableOn_const hfin)
+  · intro L
+    filter_upwards [ae_restrict_mem (μ := volume) (measurableSet_Ioc (a := R) (b := M))] with t ht
+    rw [Real.norm_eq_abs,abs_mul]
+    apply (mul_le_of_le_one_right (abs_nonneg _) (fractionalPrimeTest_bounds _).1).trans
+    change |∑ n ∈ Finset.Ioc 0 L, w n t| ≤ _
+    apply (Finset.abs_sum_le_sum_abs _ _).trans
+    rw [← tsum_mul_left]
+    apply (Finset.sum_le_sum (fun n _ => hw n t ht.2)).trans
+    exact (ha.mul_left D).sum_le_tsum _ (fun n _ => mul_nonneg hD (hapos n))
+  · filter_upwards [ae_restrict_mem (μ := volume) (measurableSet_Ioc (a := R) (b := M))] with t ht
+    have hs : Summable (fun n => w n t) := Summable.of_norm_bounded (ha.mul_left D)
+      (fun n => hw n t ht.2)
+    have hl := hs.hasSum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
+    apply (hl.congr (fun L => ?_)).mul_const (fractionalPrimeTest (T-t))
+    change ∑ n ∈ Finset.range (L+1), w n t = ∑ n ∈ Finset.Ioc 0 L, w n t
+    have hI : Finset.range (L+1)=insert 0 (Finset.Ioc 0 L) := by
+      ext n; simp only [Finset.mem_range,Finset.mem_insert,Finset.mem_Ioc]; omega
+    rw [hI,Finset.sum_insert (by simp)]
+    have hz : w 0 t=0 := by simp [w,continuousIntegerAtom]
+    rw [hz,zero_add]
+
+/-- The whole infinite complementary row on every late portion of the original
+test. The time endpoint M is arbitrary, and the integer series has already
+been summed before integration. -/
+theorem riemannHypothesis_or_late_critical_complement : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), ArithmeticHodgeTheoryOfDegenerations.windowThreshold a) = (W₀ : EReal) ∧
+      ArithmeticHodgeTheoryOfDegenerations.IsCriticalHalfLineGroundState W₀ F ∧
+      Continuous Φ ∧ F =ᵐ[volume] Φ ∧ ∃ B : ℝ, 0 ≤ B ∧ ∀ (T M : ℝ), 1 ≤ T → 6*T ≤ M →
+        |(∫ v, Φ v)*(∫ t in Ioc (6*T) M, criticalComplementRow Φ t*fractionalPrimeTest (T-t))| ≤
+          B*Real.exp (-T/10) := by
+  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hr | ⟨W₀,F,hW,ht,hF⟩
+  · exact Or.inl hr
+  obtain ⟨_,_,Φ,hc,he,hs,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  have hdr := ArithmeticHodgeTheoryOfDegenerations.criticalHalfLineEnergyDomain_of_groundState hF
+  have hp : Integrable fun v : ℝ => Real.exp (-v/2)*Φ v := by
+    apply (integrable_mul_exp_of_domain hdr (by norm_num : (-4:ℝ)< -1/2)).congr
+    filter_upwards [he] with v hv
+    rw [hv,show (-1/2:ℝ)*v = -v/2 by ring,mul_comm]
+  obtain ⟨B,hB,h⟩ := criticalComplement_late_bound hs hp (by norm_num : (0:ℝ)<1/10) (by norm_num)
+  let m := ∫ v, Φ v
+  refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hc,he,2*|m|*B*(2:ℝ)^(1/10:ℝ),by positivity,fun T M hT hM => ?_⟩
+  let R := 6*T
+  have hR : 1 ≤ R := by dsimp only [R]; linarith only [hT]
+  have hTR : T ≤ R := by dsimp only [R]; linarith only [hT]
+  have hflo (x : ℝ) (hx : R ≤ x) : Real.exp (T/2)*(⌊Real.exp x⌋₊:ℝ)^(-(1/10:ℝ)) ≤
+      (2:ℝ)^(1/10:ℝ)*Real.exp (-T/10) := by
+    have hX : 2 ≤ Real.exp x := by linarith only [Real.add_one_le_exp x,hR,hx]
+    have hfl : Real.exp R/2 ≤ (⌊Real.exp x⌋₊:ℝ) := by
+      linarith only [Nat.lt_floor_add_one (Real.exp x),Real.exp_le_exp.mpr hx,hX]
+    have hpow := Real.rpow_le_rpow_of_nonpos (half_pos (Real.exp_pos R)) hfl (by norm_num : -(1/10:ℝ) ≤ 0)
+    apply (mul_le_mul_of_nonneg_left hpow (Real.exp_pos _).le).trans_eq
+    rw [Real.div_rpow (Real.exp_pos R).le (by norm_num : (0:ℝ)≤2),← Real.exp_mul,
+      Real.rpow_neg (by norm_num : (0:ℝ) ≤ 2),div_inv_eq_mul]
+    rw [show Real.exp (T/2)*(Real.exp (R*(-(1/10:ℝ)))*2^(1/10:ℝ))=
+      2^(1/10:ℝ)*(Real.exp (T/2)*Real.exp (R*(-(1/10:ℝ)))) by ring,← Real.exp_add]
+    congr 2; dsimp only [R]; ring
+  have hL (L : ℕ) : |m*(∫ t in Ioc R M, finiteCriticalComplementRow Φ L t*fractionalPrimeTest (T-t))| ≤
+      2*|m|*B*(2:ℝ)^(1/10:ℝ)*Real.exp (-T/10) := by
+    let f := fun t => finiteCriticalComplementRow Φ L t*fractionalPrimeTest (T-t)
+    have hi := (lateComplement_time_translation hp hTR L).1
+    have hsplit : (∫ t in Ioc R M, f t)+(∫ t in Ioi M, f t)=∫ t in Ioi R, f t := by
+      rw [← setIntegral_union Ioc_disjoint_Ioi_same measurableSet_Ioi
+        (hi.mono_set (fun _ hx => hx.1)) (hi.mono_set (Ioi_subset_Ioi hM)),Ioc_union_Ioi_eq_Ioi hM]
+    have htail (x : ℝ) (hx : R ≤ x) : |∫ t in Ioi x, f t| ≤ B*((2:ℝ)^(1/10:ℝ)*Real.exp (-T/10)) :=
+      (h T x L (hR.trans hx) (hTR.trans hx)).trans (by rw [mul_assoc]; exact mul_le_mul_of_nonneg_left (hflo x hx) hB)
+    change |m*(∫ t in Ioc R M, f t)| ≤ _
+    rw [eq_sub_of_add_eq hsplit,abs_mul]
+    apply (mul_le_mul_of_nonneg_left (abs_sub _ _) (abs_nonneg m)).trans
+    have both := add_le_add (htail R le_rfl) (htail M hM)
+    apply (mul_le_mul_of_nonneg_left both (abs_nonneg m)).trans_eq
+    ring
+  have hl := (finiteCriticalComplementRow_on_bounded_cut hc hC hb R M T).const_mul m
+  exact le_of_tendsto hl.abs (Eventually.of_forall hL)
+
 #print axioms centered_reciprocal_prime_intervals
 #print axioms reciprocal_past_critical_edge
 #print axioms criticalComplement_late_bound
+#print axioms riemannHypothesis_or_late_critical_complement
 end GaloisForLFunctions.ExclusionOfTheCriticalState

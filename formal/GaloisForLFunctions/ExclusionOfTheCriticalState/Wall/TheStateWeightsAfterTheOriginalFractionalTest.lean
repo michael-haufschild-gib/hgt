@@ -291,6 +291,30 @@ theorem riemannHypothesis_or_far_edge_tested_weight_slope : RiemannHypothesis �
   dsimp only [Function.comp_apply]
   simpa only [m,A,g,q,s,mul_assoc] using hdif.symm
 
+/-- The moving time cut is exactly the set of times when the abscissa lies
+beyond the arithmetic window. Its boundary is a single null point. -/
+theorem testedCriticalComplementWeight_eq_original_window (Φ : ℝ → ℝ) (T r : ℝ) :
+    testedCriticalComplementWeight Φ T r =
+      ∫ t in {t : ℝ | Real.exp t+Real.sqrt (Real.exp t*Real.log (Real.exp t)) <
+          Real.exp (criticalEdgeLog r)}, (∫ v, Φ v)*
+          continuousIntegerAtom Φ (Real.exp (criticalEdgeLog r)) t*fractionalPrimeTest (T-t) := by
+  let g := fun t : ℝ => Real.exp t+Real.sqrt (Real.exp t*Real.log (Real.exp t))
+  have hmono : StrictMono g := by
+    intro x y hxy
+    dsimp only [g]
+    rw [Real.log_exp,Real.log_exp,Real.sqrt_mul (Real.exp_pos x).le,
+      Real.sqrt_mul (Real.exp_pos y).le]
+    exact add_lt_add_of_lt_of_le (Real.exp_lt_exp.mpr hxy)
+      (mul_le_mul (Real.sqrt_le_sqrt (Real.exp_le_exp.mpr hxy.le)) (Real.sqrt_le_sqrt hxy.le)
+        (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))
+  have heq : {t : ℝ | g t < Real.exp (criticalEdgeLog r)} = Iio r := by
+    ext t
+    change g t < Real.exp (criticalEdgeLog r) ↔ t < r
+    rw [exp_criticalEdgeLog]
+    exact hmono.lt_iff_lt
+  rw [testedCriticalComplementWeight,heq,integral_Iic_eq_integral_Iio]
+
+#print axioms testedCriticalComplementWeight_eq_original_window
 #print axioms testedIntegerWeight_cut_at_wall
 #print axioms riemannHypothesis_or_far_edge_tested_weight_slope
 end GaloisForLFunctions.ExclusionOfTheCriticalState

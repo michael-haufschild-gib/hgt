@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheFirstEndpointAboveTheMovingProductCut
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ThePrimeMassAtAQuadraticProductDivider
 import GaloisForLFunctions.CountingHolography.Sections.TheMellinKernelOfSquareConductorPrices
 
 /-!
@@ -108,7 +108,54 @@ theorem firstEndpoint_regular_eq {s : ℂ} (hs : s/2-1 ≠ 1) (hu : zetaResidueU
     squarePriceRegularContinuation s-LSeries endpointError s = firstEndpointContinuation s := by
   rw [squarePriceRegularContinuation_eq hs hu,firstEndpointContinuation]
 
+/-- Leading coefficient of the lower endpoint prices divided at the exact square. -/
+def squareDividerMass : ℝ := ∫ t in (0:ℝ)..1, dyadicSpline t
+
+/-- The cumulative density at the square is strictly positive. Its logarithmic
+integral includes the positive autocorrelation at displacement zero. -/
+theorem squareDividerMass_pos : 0 < squareDividerMass := by
+  have he : squareDividerMass = 2*squarePrimeCumulativeWeight 1 := by
+    rw [squareDividerMass,squarePrimeCumulativeWeight,←intervalIntegral.integral_const_mul]
+    apply intervalIntegral.integral_congr_uIoo
+    intro x hx
+    have hx0 := (show x ∈ Set.Ioo (0:ℝ) 1 by simpa only [Set.uIoo_of_le zero_le_one] using hx).1
+    exact if_pos hx0
+  rw [he,squarePrimeCumulativeWeight_eq zero_lt_one,Real.log_one,zero_sub]
+  apply mul_pos two_pos
+  apply mul_pos two_pos
+  have hlog := Real.log_pos (by norm_num : (1:ℝ)<4)
+  apply intervalIntegral.integral_pos (neg_lt_zero.mpr hlog)
+  · exact (GaloisForLFunctions.ArithmeticWeightTheory.continuous_splineAutoCorr.mul (by fun_prop)).continuousOn
+  · exact fun x _ => mul_nonneg (GaloisForLFunctions.ArithmeticWeightTheory.splineAutoCorr_nonneg x) (Real.exp_pos _).le
+  · exact ⟨0,⟨(neg_lt_zero.mpr hlog).le,le_rfl⟩,
+      mul_pos GaloisForLFunctions.ArithmeticWeightTheory.splineAutoCorr_zero_pos (Real.exp_pos _)⟩
+
+/-- At the exact square the two ordinary-prime readings have opposite nonzero
+cubic coefficients per conductor, uniformly beyond the initial conductor. -/
+theorem squareDivider_opposite_prices :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 2 ≤ n →
+      |lowerPrimeEndpointPrice n (n^2)-(n:ℝ)^3*squareDividerMass| +
+      |(n:ℝ)^2*retainedPrimeEndpoint (n^2) n+(n:ℝ)^3*squareDividerMass| ≤ C*(n:ℝ)^(25/9:ℝ) := by
+  obtain ⟨A,hA,ha⟩ := lowerPrimeEndpointPrice_density
+  obtain ⟨B,hB,hb⟩ := upperPrimeEndpointPrice_density
+  refine ⟨A+B,add_nonneg hA hB,fun {n} hn => ?_⟩
+  have hn0 : 0 < n := by omega
+  have hn' : (0:ℝ) < n := Nat.cast_pos.mpr hn0
+  have hK : 2 ≤ n^2 := hn.trans (Nat.le_self_pow (by decide) _)
+  have hscale := successorSquareWindowScale_bounds n
+  have hL : n^2 ≤ splineHorizon n := by
+    have hr : (n:ℝ)^2 ≤ (splineHorizon n:ℝ) := by
+      dsimp only [splineHorizon]; push_cast
+      linarith only [hscale.1,hscale.2.2,Nat.cast_nonneg (α := ℝ) (windowEnd ((2*n+1)^2+1))]
+    exact_mod_cast hr
+  have h := add_le_add (ha hn0 hL) (hb hn0 hK hL)
+  rw [add_mul]
+  simpa only [Nat.cast_pow,div_self (sq_pos_of_pos hn').ne',squareDividerMass,
+    show (1+16/9:ℝ)=25/9 by norm_num] using h
+
 #print axioms LSeries_firstEndpointPrice
 #print axioms firstEndpointContinuation_zero_residue
 #print axioms firstEndpoint_regular_real
+#print axioms squareDividerMass_pos
+#print axioms squareDivider_opposite_prices
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

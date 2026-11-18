@@ -91,7 +91,7 @@ theorem two_prime_product_recurrences_iff_singleQuartet {β γ : ℝ}
     have hcos := (re_eq_and_cos_im_eq_of_not_isSqrtLogSqUnbounded (by norm_num : (1:ℝ)<6)
       h₆ (by simpa using hβ) hne hz).2
     have he := abs_eq_of_two_prime_and_product_cos Nat.prime_two Nat.prime_three (by decide)
-      hr.2.2.1 hr.2.2.2 (by simpa using hcos)
+      hr.2.2.1 hr.2.2.2 (by rw [show ((2:ℕ):ℝ)*((3:ℕ):ℝ)=6 by norm_num]; simpa using hcos)
     exact hr.2.1 (by simpa only [abs_of_pos hr.1,abs_of_pos hγ] using he)
   · intro h
     obtain ⟨_,_,_,hl,ha⟩ := singleQuartet_obeys_all_dilation_recurrences hγ h
@@ -107,7 +107,7 @@ private theorem positive_power_limsup_of_right_zero {ρ : ℂ} (hh : 1/2<ρ.re)
   have hm : (M:ℝ)≤Real.sqrt N := by
     have ht := Real.sqrt_le_sqrt (show ((M^2:ℕ):ℝ)≤N by exact_mod_cast hN)
     simpa only [Nat.cast_pow,Real.sqrt_sq (Nat.cast_nonneg M)] using ht
-  have hp : c*(n:ℝ)^ρ.re≤primeError n := by simpa only [one_mul] using he.le
+  have hp : c*(n:ℝ)^ρ.re≤primeError n := by simpa only [one_mul,primeError] using he.le
   exact ⟨n,hM.trans (hm.trans hn.le),hp.trans (le_abs_self _)⟩
 
 private theorem bounded_residual_of_rh (h : RiemannHypothesis) {a β γ : ℝ} (ha : 1≤a) :
@@ -218,9 +218,9 @@ private theorem normalized_reading {a x : ℝ} (ha : 0<a) (hx : 0<x) (ρ c : ℂ
     (Real.sin (ρ.im*Real.log a):ℂ)*I)*(x:ℂ)^ρ)=
     ((a^ρ.re:ℝ):ℂ)*(((Real.cos (ρ.im*Real.log a):ℂ)+(Real.sin (ρ.im*Real.log a):ℂ)*I)*
     (c*(x:ℂ)^ρ)) by ring]
-  simp only [Complex.re_ofReal_mul,Complex.mul_re,Complex.add_re,Complex.add_im,
-    Complex.ofReal_re,Complex.ofReal_im,Complex.re_ofReal_mul,Complex.im_ofReal_mul,
-    Complex.I_re,Complex.I_im,mul_zero,mul_one,add_zero,zero_add]
+  simp only [Complex.mul_re,Complex.add_re,Complex.add_im,Complex.ofReal_re,Complex.ofReal_im,
+    Complex.im_ofReal_mul,Complex.I_re,Complex.I_im,mul_zero,mul_one,zero_mul,sub_self,sub_zero,
+    add_zero,zero_add]
   exact mul_div_cancel_left₀ _ (Real.rpow_pos_of_pos ha _).ne'
 
 /-- A coherent complex power is annihilated at each positive cutoff. -/
@@ -278,7 +278,7 @@ theorem primeOrientationResidual_singleQuartet {ρ : ℂ} (hq : HasSingleOffLine
         -(((2*(quartetCopyMult ρ:ℝ):ℝ):ℂ)*((x:ℂ)^ρ/ρ)) by push_cast; ring,
         Complex.neg_re,Complex.re_ofReal_mul]
     have hb := hK x hx
-    rw [mul_assoc] at hb
+    rw [mul_assoc K] at hb
     simpa only [η,primeError,he,sub_neg_eq_add] using hb.trans
       (mul_le_mul_of_nonneg_right (le_abs_self K) (mul_nonneg (Real.sqrt_nonneg _) (sq_nonneg _)))
   refine ⟨|P| * (|K| * (4*Real.sqrt 3))+|Q| * (|K| * (4*Real.sqrt 2))+|R| * |K|,fun x hx => ?_⟩

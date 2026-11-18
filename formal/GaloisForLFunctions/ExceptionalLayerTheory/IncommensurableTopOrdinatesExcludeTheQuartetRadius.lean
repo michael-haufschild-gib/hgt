@@ -41,7 +41,7 @@ private theorem lattice_almost_period {f : ℝ → ℝ} (hf : HasTotallyBoundedO
   have hab := abs_sub_le (f (x+j*p)) (f (x+a j)) (f (x+i*p))
   rw [abs_sub_comm (f (x+a j))] at hab
   rw [Nat.cast_sub hlt.le, show t+((j:ℝ)-i)*p = x+j*p by dsimp [x]; ring,
-    show t = x+i*p by dsimp [x]; ring] 
+    show t = x+i*p by dsimp [x]; ring]
   change |f (x+j*p) - f (x+i*p)| ≤ ε
   exact hab.trans ((add_le_add hj hi).trans_eq (add_halves ε))
 
@@ -59,12 +59,12 @@ private theorem periodic_approximant {f : ℝ → ℝ} (hc : Continuous f)
     fun_prop
   · intro t
     have he : |f (t+n*p)| = |f t| := hp.nat_mul n t
+    change trim δ (f (t+n*p)) = trim δ (f t)
     rcases abs_eq_abs.mp he with he | he
     · rw [he]
     · have hd := hshift t
       rw [he] at hd
       have hle := abs_le.mp hd
-      change trim δ (f (t+n*p)) = trim δ (f t)
       rw [he]
       simp only [trim, neg_neg, max_eq_right (show f t-δ ≤ 0 by linarith only [hle.1, hδ]),
         max_eq_right (show -f t-δ ≤ 0 by linarith only [hle.2, hδ])]
@@ -86,13 +86,14 @@ private theorem frequency_of_periodic_abs {f : ℝ → ℝ} (hc : Continuous f)
   obtain ⟨n,g,hn,hg,hgper,hclose⟩ := periodic_approximant hc ha hper (half_pos hc0)
   have hperC : Function.Periodic (fun t => (g t : ℂ)) (n*p) :=
     fun t => congrArg Complex.ofReal (hgper t)
-  have hgC := Complex.continuous_ofReal.comp hg
+  have hgC : Continuous (fun t => (g t : ℂ)) := Complex.continuous_ofReal.comp hg
   have hga := isBohrAlmostPeriodic_of_periodic (mul_pos (Nat.cast_pos.mpr hn) hp) hperC
   have hfa : IsBohrAlmostPeriodic (fun t => (f t : ℂ)) := by
     simpa only [IsBohrAlmostPeriodic, ← Complex.ofReal_sub, Complex.norm_real] using ha
   have hb := norm_bohrCoefficient_sub_le (Complex.continuous_ofReal.comp hc) hfa hgC hga
-    (fun t => by simpa only [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs]
-                 using hclose t) ω
+    (C := ‖c‖ / 2) (fun t => by
+      change ‖(f t : ℂ) - (g t : ℂ)‖ ≤ ‖c‖ / 2
+      simpa only [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs] using hclose t) ω
   let b := bohrCoefficient (fun t => (g t : ℂ)) ω
   have hb0 : b ≠ 0 := by
     change ‖c-b‖ ≤ ‖c‖/2 at hb
@@ -101,6 +102,7 @@ private theorem frequency_of_periodic_abs {f : ℝ → ℝ} (hc : Continuous f)
     linarith only [hb,hc0]
   have he := bohrCoefficient_comp_add_const hgC hga ((n:ℝ)*p) ω
   have htrans : (fun t => (g (t+n*p) : ℂ)) = fun t => (g t : ℂ) := funext hperC
+  change bohrCoefficient (fun t => (g (t+n*p) : ℂ)) ω = expChar ω (n*p) * b at he
   rw [htrans] at he
   refine ⟨n,hn, mul_right_cancel₀ hb0 ?_⟩
   exact he.symm.trans (one_mul b).symm
@@ -149,7 +151,8 @@ private theorem boundaryStep_coefficient {β h : ℝ} (hβ : 1/2 < β) (hh : 0 <
   have heq := congrArg (fun z : ℂ => ‖z‖) hz
   simp only [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _),
     norm_expChar, mul_one, norm_one, A] at heq
-  exact (Real.one_lt_exp_iff.mpr (mul_pos (by linarith only [hβ]) hh)).ne' heq
+  have hpos : 0 < β := by linarith only [hβ]
+  exact (Real.one_lt_exp_iff.mpr (mul_pos hpos hh)).ne' heq
 
 /-- If the actual radius has square-root discrepancy, each attained extremal
 ordinate is a rational multiple of the trial frequency. No separation of the
@@ -174,13 +177,13 @@ theorem top_ordinates_commensurable_of_bounded_thetaRadial {γ : ℝ} {m : ℕ}
     rw [show t+2*h = t+h+h by ring, ← sq_eq_sq₀ (abs_nonneg _) (abs_nonneg _), sq_abs, sq_abs]
     linarith only [h1,h2]
   intro q hq
-  obtain ⟨n, hn, he⟩ := frequency_of_periodic_abs hc ha (by linarith only [hh]) hp (hfreq q hq)
+  obtain ⟨n, hn, he⟩ := frequency_of_periodic_abs hc ha (mul_pos zero_lt_two hh) hp (hfreq q hq)
   obtain ⟨k,hk⟩ := Complex.exp_eq_one_iff.mp he
   have him : xiCopyOrdinate q * ((n:ℝ)*(2*h)) = (k:ℝ)*(2*Real.pi) := by
     simpa [Complex.mul_im, Complex.mul_re, mul_assoc] using congrArg Complex.im hk
   have hscale : (2*h)*|γ| = Real.pi := by
     dsimp only [h, quarterPeriodStep]
-    field_simp [abs_ne_zero.mpr hγ] <;> ring
+    field_simp [abs_ne_zero.mpr hγ]
   have hprod : xiCopyOrdinate q * (n:ℝ) = (2*(k:ℝ))*|γ| := by
     apply mul_right_cancel₀ Real.pi_ne_zero
     calc (xiCopyOrdinate q*n)*Real.pi = (xiCopyOrdinate q*((n:ℝ)*(2*h)))*|γ| := by

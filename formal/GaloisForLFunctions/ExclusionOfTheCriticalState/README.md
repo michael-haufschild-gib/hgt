@@ -274,6 +274,8 @@ For $X=e^t$, the adverse mass of the coefficients $m(\Lambda(n)-1)n^{-1/2}\Phi(t
 
 Outside a set of measure $o(X)$ in $[X,2X]$, the same centers control all future signed prefixes from both $z=u$ and $z=u+\sqrt{u\log u}$. For every fixed $\varepsilon>0$ and $1/6<\alpha<1$, their absolute values through $y\ge z$ are at most $\varepsilon(y-z)+4(2X)^\alpha+1$. Intersecting with any prescribed measurable set of centers loses $o(X)$ length. [Two-sided prefixes on prescribed centers](Wall/TwoSidedPrimePrefixesAtAlmostEveryCenter.lean).
 
+For the forced state the signed first-window reading converges to zero in measure on each late octave. Given any positive tolerance, the same exceptional set covers excessive first-window readings and failures of either all-future prefix bound at $\alpha=1/5$. [Signed first-window theorem](Wall/PrimeSupportAcrossLateCriticalWidthWindows.lean).
+
 The equal-prime term of the covariance, divided by the observation time, tends to the
 state autocorrelation at every fixed lag. At zero lag the coefficient is one. The squared
 increment recovers $8a\int F^2e^{-8u}$ after taking the prime limit and then the short-lag limit.

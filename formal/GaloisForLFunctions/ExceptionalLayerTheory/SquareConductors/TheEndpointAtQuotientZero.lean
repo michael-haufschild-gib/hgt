@@ -25,7 +25,7 @@ private theorem sum_mesh_diff (w : ℕ → ℝ) (b : ℕ) :
     ∑ k ∈ range b, (w k - w (k+1)) = w 0 - w b := by
   induction b with
   | zero => simp
-  | succ b ih => rw [sum_range_succ, ih]; ring
+  | succ b ih => rw [Finset.sum_range_succ, ih]; ring
 
 /-- The actual first quotient returns the spline value at the product, with
 positive sign. This identity holds throughout the terminal support as well. -/
@@ -39,7 +39,8 @@ theorem first_quotient_endpoint {n q : ℕ} (hq : q ≤ splineHorizon n + 1) :
         -sampledSpline n q := by
     rw [sum_congr rfl (fun k hk => by rw [Nat.div_eq_of_lt (mem_range.mp hk),
       centeredPrimeWeight_at_zero,mul_one]),sum_mesh_diff,sampledSpline_at_zero,zero_sub]
-  rw [hbase,sub_neg_eq_add] <;> rfl
+  rw [hbase,sub_neg_eq_add]
+  rfl
 
 /-- Difference between restricting to positive quotients and extending over
 quotient zero, with precisely the ordinary prime logarithms. -/
@@ -204,7 +205,7 @@ theorem complete_mangoldt_mesh_bound :
               have hl := Real.log_le_log (by exact_mod_cast hk1 : (0:ℝ) < k) (Nat.cast_le.mpr hkL)
               rw [abs_mul]
               exact mul_le_mul ((hr hk1).trans (mul_le_mul_of_nonneg_left
-                ((add_le_add_left hl 1).trans (hj hn)) hK)) ((hd hn k).1) (abs_nonneg _) (by positivity)
+                ((add_le_add (le_refl (1:ℝ)) hl).trans (hj hn)) hK)) ((hd hn k).1) (abs_nonneg _) (by positivity)
          _ ≤ (A*n)^2*((K*(J*conductorLog n))*(D/(n:ℝ)^3)) := by
               rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
               exact mul_le_mul_of_nonneg_right (ha hn) (by positivity)

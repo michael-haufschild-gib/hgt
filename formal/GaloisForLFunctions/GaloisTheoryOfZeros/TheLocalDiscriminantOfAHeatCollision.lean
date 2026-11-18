@@ -15,6 +15,7 @@ integer on the boundary of every sufficiently small enclosing rectangle.
 -/
 
 open Complex Set Filter Topology Metric
+open scoped ENNReal
 open RHTower RHTower.DeBruijn GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow
 
@@ -76,8 +77,8 @@ private theorem disc_factor (s : ℂ) :
     collisionSheetDiscriminant τ z m s = (s ^ 2) ^ (m.choose 2) *
       rootDifferences m (fun r => collisionBranch τ z m r s) := by
   classical
-  have hcard := Finset.two_mul_card_image_offDiag (profileRoots m)
-  rw [Finset.card_image_offDiag, card_profileRoots] at hcard
+  have hcard := Sym2.two_mul_card_image_offDiag (profileRoots m)
+  rw [Sym2.card_image_offDiag, card_profileRoots] at hcard
   unfold collisionSheetDiscriminant rootDifferences
   simp_rw [collisionZero, add_sub_add_left_eq_sub, ← mul_sub]
   rw [Finset.prod_mul_distrib, Finset.prod_const, ← pow_mul, hcard]
@@ -98,7 +99,8 @@ private theorem disc_unit (hc : IsCollision τ z m) :
     apply Finset.prod_ne_zero_iff.mpr
     intro ⟨a,b⟩ hp
     obtain ⟨ha, hb, hab⟩ := Finset.mem_offDiag.mp hp
-    rw [(collisionBranch_spec hc (heatModelFwd_profileRoot ha)).2.1,
+    change collisionBranch τ z m (a : ℂ) 0 - collisionBranch τ z m (b : ℂ) 0 ≠ 0
+    rw [(collisionBranch_spec hc (heatModelFwd_profileRoot (r := a) ha)).2.1,
       (collisionBranch_spec hc (heatModelFwd_profileRoot hb)).2.1]
     exact sub_ne_zero.mpr (fun h => hab (Complex.ofReal_injective h))
   have hev : ∀ᶠ s in 𝓝 0, U (-s) = U s := by
@@ -236,6 +238,243 @@ theorem forall_heatIntersectionMass_eq_zero_iff_rh {ι : Type*} (B : ι → Set 
     obtain ⟨t, ht, he⟩ := hmem
     exact h t ht ⟨p, hc, he⟩
 
+
+
+/-- Positive real times between `1/n` and `n`, with places of norm at most
+`n`. The reciprocal condition also defines the empty zeroth window. -/
+def realHeatWindow (n : ℕ) : Set (ℂ × ℂ) :=
+  {p | ∃ t : ℝ, 0 < t ∧ p.1 = (t : ℂ) ∧ 1/t ≤ n ∧ t ≤ n ∧ ‖p.2‖ ≤ n}
+
+/-- The fixed time and height exhaustion has zero intersection mass in
+every window exactly when RH holds. -/
+theorem realHeatWindow_vanishing_iff_rh :
+    (∀ n, heatIntersectionMass (realHeatWindow n) = 0) ↔ RiemannHypothesis := by
+  apply forall_heatIntersectionMass_eq_zero_iff_rh
+  ext p
+  rw [Set.mem_iUnion]
+  constructor
+  · rintro ⟨n,t,ht,he,_⟩
+    exact ⟨t,ht,he⟩
+  · rintro ⟨t,ht,he⟩
+    obtain ⟨n,hn⟩ := exists_nat_ge (max (1/t) (max t ‖p.2‖))
+    exact ⟨n,t,ht,he,(le_max_left _ _).trans hn,
+      (le_max_left t _).trans ((le_max_right _ _).trans hn),
+      (le_max_right t _).trans ((le_max_right _ _).trans hn)⟩
+
+/-! ## Simultaneous clusters and changes of the height window -/
+
+private def heatPlaceOrder (τ z : ℂ) := analyticOrderNatAt (complexHeat τ) z
+
+private theorem isCollision_placeOrder (τ z : ℂ) : IsCollision τ z (heatPlaceOrder τ z) :=
+  isCollision_iff_analyticOrderAt.mpr
+    (Nat.cast_analyticOrderNatAt (analyticOrderAt_complexHeat_ne_top τ z)).symm
+
+private theorem profile_prod_neg (m : ℕ) (f : ℝ → ℂ) :
+    (∏ r ∈ profileRoots m, f (-r)) = ∏ r ∈ profileRoots m, f r := by
+  refine Finset.prod_bij (fun r _ => -r) (fun _ => mem_profileRoots_neg)
+    (fun _ _ _ _ h => neg_injective h) ?_ (fun _ _ => rfl)
+  exact fun r hr => ⟨-r, mem_profileRoots_neg hr, neg_neg _⟩
+
+/-- Resultant between two different clusters. Each ordered pair of centres
+occurs once in the signed discriminant of the full window. -/
+private def clusterResultant (τ a b s : ℂ) : ℂ :=
+  ∏ r ∈ profileRoots (heatPlaceOrder τ a), ∏ q ∈ profileRoots (heatPlaceOrder τ b),
+    (collisionZero τ a (heatPlaceOrder τ a) r s - collisionZero τ b (heatPlaceOrder τ b) q s)
+
+private theorem analyticAt_sheet {r : ℝ} (hc : IsCollision τ z m) (hr : r ∈ profileRoots m) :
+    AnalyticAt ℂ (collisionZero τ z m r) 0 :=
+  analyticAt_const.add (analyticAt_id.mul (collisionBranch_spec hc (heatModelFwd_profileRoot hr)).1)
+
+private theorem sheet_turn (τ a : ℂ) :
+    ∀ᶠ s in 𝓝 0, ∀ r ∈ profileRoots (heatPlaceOrder τ a),
+      collisionZero τ a (heatPlaceOrder τ a) r (-s) =
+      collisionZero τ a (heatPlaceOrder τ a) ((-r : ℝ) : ℂ) s := by
+  rw [Filter.eventually_all_finset]
+  intro r hr
+  simpa only [Complex.ofReal_neg] using
+    collisionZero_neg (isCollision_placeOrder τ a) (heatModelFwd_profileRoot hr)
+
+private theorem clusterResultant_unit (τ a b : ℂ) (hab : a ≠ b) :
+    ∃ V : ℂ → ℂ, AnalyticAt ℂ V 0 ∧ V 0 ≠ 0 ∧
+      ∀ᶠ s in 𝓝 0, V (s ^ 2) = clusterResultant τ a b s := by
+  classical
+  have hc : AnalyticAt ℂ (clusterResultant τ a b) 0 := by
+    apply Finset.analyticAt_fun_prod
+    intro r hr
+    apply Finset.analyticAt_fun_prod
+    intro q hq
+    exact (analyticAt_sheet (isCollision_placeOrder τ a) hr).sub
+      (analyticAt_sheet (isCollision_placeOrder τ b) hq)
+  have h0 : clusterResultant τ a b 0 ≠ 0 := by
+    apply Finset.prod_ne_zero_iff.mpr
+    intro r _
+    apply Finset.prod_ne_zero_iff.mpr
+    intro q _
+    simpa [collisionZero] using sub_ne_zero.mpr hab
+  have hev : ∀ᶠ s in 𝓝 0, clusterResultant τ a b (-s) = clusterResultant τ a b s := by
+    filter_upwards [sheet_turn τ a, sheet_turn τ b] with s ha hb
+    unfold clusterResultant
+    calc
+      _ = ∏ r ∈ profileRoots (heatPlaceOrder τ a), ∏ q ∈ profileRoots (heatPlaceOrder τ b),
+            (collisionZero τ a (heatPlaceOrder τ a) ((-r : ℝ) : ℂ) s -
+             collisionZero τ b (heatPlaceOrder τ b) ((-q : ℝ) : ℂ) s) := by
+              exact Finset.prod_congr rfl fun r hr => Finset.prod_congr rfl fun q hq =>
+                congrArg₂ (· - ·) (ha r hr) (hb q hq)
+      _ = _ := by
+        rw [profile_prod_neg (heatPlaceOrder τ a) (fun r =>
+          ∏ q ∈ profileRoots (heatPlaceOrder τ b),
+          (collisionZero τ a (heatPlaceOrder τ a) r s -
+           collisionZero τ b (heatPlaceOrder τ b) ((-q : ℝ) : ℂ) s))]
+        exact Finset.prod_congr rfl (fun r _ => profile_prod_neg _ (fun q =>
+          collisionZero τ a (heatPlaceOrder τ a) r s - collisionZero τ b (heatPlaceOrder τ b) q s))
+  obtain ⟨R, hR, hr⟩ := Metric.mem_nhds_iff.mp (hc.eventually_analyticAt.and hev)
+  obtain ⟨V, hV, he⟩ := Bottcher.exists_analytic_factor_of_even hR
+    (fun s hs => (hr hs).1.differentiableAt.differentiableWithinAt) (fun s hs => (hr hs).2)
+  have he0 : V 0 = clusterResultant τ a b 0 := by simpa using he 0 (mem_ball_self hR)
+  exact ⟨V, hV.analyticAt (isOpen_ball.mem_nhds (mem_ball_self (sq_pos_of_pos hR))),
+    he0.symm ▸ h0, (ball_mem_nhds (0 : ℂ) hR).mono fun _ hs => he _ hs⟩
+
+/-- Signed discriminant of all sheets through a finite set of marked places.
+The second product retains differences between sheets in distinct clusters. -/
+def heatWindowDiscriminant (τ : ℂ) (S : Finset ℂ) (s : ℂ) : ℂ :=
+  (∏ a ∈ S, collisionSheetDiscriminant τ a (heatPlaceOrder τ a) s) *
+    ∏ p ∈ S.offDiag, clusterResultant τ p.1 p.2 s
+
+private theorem product_time_units {ι : Type*} (S : Finset ι) (F : ι → ℂ → ℂ)
+    (n : ι → ℕ) (units : ∀ i ∈ S, ∃ V : ℂ → ℂ, AnalyticAt ℂ V 0 ∧ V 0 ≠ 0 ∧
+      ∀ᶠ s in 𝓝 0, F i s = (s ^ 2) ^ n i * V (s ^ 2)) :
+    ∃ W : ℂ → ℂ, AnalyticAt ℂ W 0 ∧ W 0 ≠ 0 ∧
+      ∀ᶠ s in 𝓝 0, (∏ i ∈ S, F i s) = (s ^ 2) ^ (∑ i ∈ S, n i) * W (s ^ 2) := by
+  classical
+  induction S using Finset.induction_on with
+  | empty => exact ⟨fun _ => 1, analyticAt_const, one_ne_zero, by simp⟩
+  | insert i S hi ih =>
+    obtain ⟨V,hV,hv,he⟩ := units i (Finset.mem_insert_self _ _)
+    obtain ⟨W,hW,hw,hf⟩ := ih (fun j hj => units j (Finset.mem_insert_of_mem hj))
+    refine ⟨fun w => V w * W w, hV.mul hW, mul_ne_zero hv hw, ?_⟩
+    filter_upwards [he,hf] with s hs ht
+    rw [Finset.prod_insert hi, Finset.sum_insert hi, hs, ht, pow_add]
+    ring
+
+private theorem heatWindow_factor (τ : ℂ) (S : Finset ℂ) :
+    ∃ U : ℂ → ℂ, AnalyticAt ℂ U 0 ∧ U 0 ≠ 0 ∧ ∀ᶠ s in 𝓝 0,
+      heatWindowDiscriminant τ S s =
+        (s ^ 2) ^ (∑ z ∈ S, heatIntersectionMultiplicity (τ,z)) * U (s ^ 2) := by
+  classical
+  obtain ⟨V,hV,hv,he⟩ := product_time_units S
+    (fun z => collisionSheetDiscriminant τ z (heatPlaceOrder τ z))
+    (fun z => heatIntersectionMultiplicity (τ,z)) (fun z _ => disc_unit (isCollision_placeOrder τ z))
+  obtain ⟨W,hW,hw,hf⟩ := product_time_units S.offDiag
+    (fun p => clusterResultant τ p.1 p.2) (fun _ => 0) (by
+      intro p hp
+      obtain ⟨W,hW,hw,he⟩ := clusterResultant_unit τ p.1 p.2 (Finset.mem_offDiag.mp hp).2.2
+      exact ⟨W,hW,hw, he.mono fun s hs => by simpa using hs.symm⟩)
+  let U (w : ℂ) := V w * W w
+  have hU : AnalyticAt ℂ U 0 := hV.mul hW
+  have hu : U 0 ≠ 0 := mul_ne_zero hv hw
+  refine ⟨U,hU,hu,?_⟩
+  filter_upwards [he,hf] with s hs ht
+  simp only [heatWindowDiscriminant, hs, ht, Finset.sum_const_zero, pow_zero, one_mul, U,
+    mul_assoc]
+
+/-- A rectangle around a time slice reads the sum of the actual local
+multiplicities of its marked places. All inter-cluster resultants are analytic
+units. Adding or removing a simple sheet therefore contributes zero winding. -/
+theorem heatWindowDiscriminant_winding (τ : ℂ) (S : Finset ℂ) :
+    ∃ D : ℂ → ℂ, AnalyticAt ℂ D 0 ∧
+      (∀ᶠ s in 𝓝 0, D (s ^ 2) = heatWindowDiscriminant τ S s) ∧
+      ∃ R > 0, ∀ a b : ℂ, a.re < 0 → 0 < b.re → a.im < 0 → 0 < b.im →
+        (uIcc a.re b.re ×ℂ uIcc a.im b.im) ⊆ ball 0 R →
+        rectIntegral (logDeriv D) a b =
+          2 * Real.pi * I * ((∑ z ∈ S, heatIntersectionMultiplicity (τ,z) : ℕ) : ℂ) := by
+  obtain ⟨U,hU,hu,he⟩ := heatWindow_factor τ S
+  let n := ∑ z ∈ S, heatIntersectionMultiplicity (τ,z)
+  refine ⟨fun w => w ^ n * U w, (analyticAt_id.pow _).mul hU, he.mono (fun _ h => h.symm), ?_⟩
+  obtain ⟨R,hR,hr⟩ := Metric.mem_nhds_iff.mp
+      (hU.eventually_analyticAt.and (hU.continuousAt.eventually_ne hu))
+  refine ⟨R,hR, fun a b ha hb hc hd hsub => ?_⟩
+  simpa only [zero_re, zero_im, sub_zero] using rectIntegral_logDeriv_single_zero
+      (h := U) (m := n) (ρ := 0) ha hb hc hd hsub (fun w hw => (hr hw).1)
+        (fun w hw => (hr hw).2)
+
+
+/-- A global equation in the time plane for the projection of a finite
+marked collision divisor. Equal times at different places retain both factors. -/
+def projectedHeatDiscriminant (C : Finset (ℂ × ℂ)) (t : ℂ) : ℂ :=
+  ∏ p ∈ C, (t-p.1) ^ heatIntersectionMultiplicity p
+
+/-- Cutting time or place multiplies the two equations, with the shared
+boundary divisor counted once. -/
+theorem projectedHeatDiscriminant_cut (A B : Finset (ℂ × ℂ)) (t : ℂ) :
+    projectedHeatDiscriminant (A ∪ B) t * projectedHeatDiscriminant (A ∩ B) t =
+      projectedHeatDiscriminant A t * projectedHeatDiscriminant B t :=
+  Finset.prod_union_inter
+
+/-- Equality up to a holomorphic unit with the discriminant of the actual
+sheets above each marked time. This identifies the projected divisor even
+when several clusters collide at that time. -/
+theorem projectedHeatDiscriminant_local (C : Finset (ℂ × ℂ)) (τ : ℂ) :
+    let S := (C.filter (fun p => p.1 = τ)).image Prod.snd
+    ∃ U : ℂ → ℂ, AnalyticAt ℂ U 0 ∧ U 0 ≠ 0 ∧
+      ∀ᶠ s in 𝓝 0, projectedHeatDiscriminant C (τ + s ^ 2) =
+        U (s ^ 2) * heatWindowDiscriminant τ S s := by
+  classical
+  let A := C.filter (fun p => p.1 = τ)
+  let S := A.image Prod.snd
+  let B := C.filter (fun p => ¬ p.1 = τ)
+  let n := ∑ z ∈ S, heatIntersectionMultiplicity (τ,z)
+  let L (w : ℂ) := projectedHeatDiscriminant B (τ+w)
+  have hL : AnalyticAt ℂ L 0 := by
+    apply Finset.analyticAt_fun_prod
+    intro p _
+    exact (((analyticAt_const.add analyticAt_id).sub analyticAt_const).pow _)
+  have hl : L 0 ≠ 0 := by
+    apply Finset.prod_ne_zero_iff.mpr
+    intro p hp
+    exact pow_ne_zero _ (by simpa using (sub_ne_zero.mpr (Finset.mem_filter.mp hp).2.symm))
+  have hn : n = ∑ p ∈ A, heatIntersectionMultiplicity p := by
+    unfold n S
+    rw [Finset.sum_image]
+    · apply Finset.sum_congr rfl
+      intro p hp
+      obtain ⟨x,y⟩ := p
+      exact congrArg heatIntersectionMultiplicity
+        (Prod.ext (Finset.mem_filter.mp hp).2.symm rfl)
+    · intro p hp q hq he
+      exact Prod.ext ((Finset.mem_filter.mp hp).2.trans (Finset.mem_filter.mp hq).2.symm) he
+  have hfact (w : ℂ) : projectedHeatDiscriminant C (τ+w) = w ^ n * L w := by
+    rw [projectedHeatDiscriminant, ← Finset.prod_filter_mul_prod_filter_not C (fun p => p.1 = τ),
+      hn, ← Finset.prod_pow_eq_pow_sum]
+    apply congrArg (· * L w)
+    apply Finset.prod_congr rfl
+    intro p hp
+    rw [(Finset.mem_filter.mp hp).2, add_sub_cancel_left]
+  obtain ⟨V,hV,hv,he⟩ := heatWindow_factor τ S
+  refine ⟨fun w => L w / V w, hL.div hV hv, div_ne_zero hl hv, ?_⟩
+  have hv' : ∀ᶠ (s : ℂ) in 𝓝 0, V (s ^ 2) ≠ 0 :=
+    (show ContinuousAt (fun s : ℂ => s ^ 2) 0 by fun_prop).tendsto.eventually
+      (by simpa using hV.continuousAt.eventually_ne hv)
+  filter_upwards [he,hv'] with s hs hvs
+  rw [hfact, hs]
+  field_simp <;> ring
+
+/-- Boundary winding of the compact marked divisor. Any holomorphic
+nonvanishing change of its equation gives the same winding. -/
+theorem compact_heatDiscriminant_winding (K : Set (ℂ × ℂ)) (hK : IsCompact K)
+    {a b : ℂ} (inside : ∀ p ∈ K, p ∈ multipleZeros →
+      a.re < p.1.re ∧ p.1.re < b.re ∧ a.im < p.1.im ∧ p.1.im < b.im) :
+    ∃ C : Finset (ℂ × ℂ), (∀ p, p ∈ C ↔ p ∈ K ∧ p ∈ multipleZeros) ∧
+      heatIntersectionMass K = ∑ p ∈ C, (heatIntersectionMultiplicity p : ℝ≥0∞) ∧
+      rectIntegral (logDeriv (projectedHeatDiscriminant C)) a b =
+        2 * Real.pi * I * ((∑ p ∈ C, heatIntersectionMultiplicity p : ℕ) : ℂ) := by
+  obtain ⟨C,hC,hm⟩ := compact_heatIntersectionMass K hK
+  refine ⟨C,hC,hm,?_⟩
+  have h := rectIntegral_logDeriv_multi_zero C Prod.fst heatIntersectionMultiplicity
+    (h := fun _ => (1 : ℂ)) (fun p hp => inside p ((hC p).mp hp).1 ((hC p).mp hp).2)
+    (Set.subset_univ _) (fun _ _ => analyticAt_const) (fun _ _ => one_ne_zero)
+  unfold projectedHeatDiscriminant
+  simpa using h
+
 /-! ## Two folds on the same two sheets -/
 
 /-- The discriminant of the model `y² = (t−a)(t−b)`. -/
@@ -252,11 +491,10 @@ theorem twoFold_local_chart (a b : ℂ) (hab : a ≠ b) :
   have h := ((hasDerivAt_id a).sub_const a).div ((hasDerivAt_id a).sub_const b)
     (sub_ne_zero.mpr hab)
   refine ⟨?_, ?_⟩
-  · convert h using 1
-    simp [sq, sub_ne_zero.mpr hab, div_eq_mul_inv, mul_assoc]
+  · convert h using 1 <;> simp [sq, sub_ne_zero.mpr hab, div_eq_mul_inv, mul_assoc]
   · intro t y ht
     field_simp [sub_ne_zero.mpr ht]
-    constructor <;> intro he <;> linear_combination he
+
 
 /-- Both turns on a regular fibre negate `y`. They cancel under composition
 and interchange its two distinct points. -/
@@ -282,7 +520,8 @@ theorem twoFold_winding_one {a b l u : ℂ}
     (ρ := a) (m := 1) hl hu hl' hu' (Set.Subset.refl _)
     (fun _ _ => (analyticAt_id.sub analyticAt_const).mul analyticAt_const)
     (fun t ht => mul_ne_zero (sub_ne_zero.mpr (fun he => hout (he ▸ ht))) (by norm_num))
-  simpa [twoFoldDiscriminant, mul_assoc] using hr
+  change rectIntegral (logDeriv (fun z => (z-a)*(z-b)*4)) l u = _
+  simpa [mul_assoc] using hr
 
 /-- The discriminant winding around both folds is two. -/
 theorem twoFold_winding_two {a b l u : ℂ} (hab : a ≠ b)
@@ -293,7 +532,8 @@ theorem twoFold_winding_two {a b l u : ℂ} (hab : a ≠ b)
   have hr := rectIntegral_logDeriv_multi_zero ({a,b} : Finset ℂ) id (fun _ => 1)
     (h := fun _ => 4) hin (Set.subset_univ _) (fun _ _ => analyticAt_const)
     (fun _ _ => by norm_num)
-  simpa [twoFoldDiscriminant, hab] using hr
+  change rectIntegral (logDeriv (fun z => (z-a)*(z-b)*4)) l u = _
+  simpa [hab] using hr
 
 end
 

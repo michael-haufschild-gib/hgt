@@ -69,7 +69,7 @@ private theorem normalizedRadius_eq (β h t : ℝ) :
   have hs (s : ℝ) : boundaryStep β h (normalizedTheta β) s =
       logStepIncrement thetaLogError s h / Real.exp (β * s) := by
     simp only [boundaryStep, normalizedTheta, logStepIncrement, mul_add, Real.exp_add]
-    field_simp <;> ring
+    field_simp
   have hz : stepPair β h (normalizedTheta β) t =
       ((⟨logStepIncrement thetaLogError t h,
         logStepIncrement thetaLogError (t+h) h / Real.exp (β*h)⟩ : ℂ) /

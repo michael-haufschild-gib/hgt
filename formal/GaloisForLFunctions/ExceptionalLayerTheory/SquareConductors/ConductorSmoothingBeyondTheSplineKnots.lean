@@ -102,7 +102,8 @@ private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Set
       rwa [show deriv (deriv g) = iteratedDeriv 2 g by
         rw [show (2 : ℕ) = 1 + 1 from rfl, iteratedDeriv_succ, iteratedDeriv_one]] at hc
     refine ContinuousOn.neg (((continuousOn_id.mul (continuousOn_id.sub continuousOn_const)).div_const 2).mul ?_)
-    exact hcd2.comp (continuousOn_const.add continuousOn_id) fun s hs => by linarith [hs.1, hn']
+    exact hcd2.comp (continuousOn_const.add continuousOn_id)
+      fun s hs => Set.mem_Ioi.mpr (by linarith [hs.1, hn'])
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hdK hint_rhs
   rw [intervalIntegral.integral_neg] at hftc
   have hint_eq : (∫ u in (0 : ℝ)..1, f_pos u) = ∫ t in (n : ℝ)..((n + 1 : ℕ) : ℝ), g t := by
@@ -111,14 +112,14 @@ private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Set
       rw [Set.uIcc_of_le zero_le_one] at hu
       exact hf_eq u (by linarith [hu.1])
     rw [hcongr, intervalIntegral.integral_comp_add_left g (n : ℝ), add_zero]
-    push_cast
+    push_cast; rfl
   have hK1 : K 1 = (1 / 2 : ℝ) * g (n + 1 : ℕ) - ∫ t in (n : ℝ)..((n + 1 : ℕ) : ℝ), g t := by
     dsimp only [K]
     rw [hint_eq]
     push_cast
     ring
   have hK0 : K 0 = -(1 / 2 : ℝ) * g n := by
-    dsimp only [K]; simp; ring
+    dsimp only [K]; simp
   rw [hK1, hK0] at hftc
   linarith
 
@@ -146,54 +147,45 @@ theorem trapezoidal_euler_maclaurin_Ico {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2
     rw [← intervalIntegral.integral_add_adjacent_intervals hint1 hint2]
     linarith
 
-private theorem bdiff_iter_sub (r : ℕ) (f g : ℕ → ℝ) :
-    bdiff^[r] (fun j => f j - g j) = fun j => bdiff^[r] f j - bdiff^[r] g j := by
-  induction r with
+private theorem bdiff_iter_sub (r : ℕ) (f g : ℕ → ℝ) (j : ℕ) :
+    bdiff^[r] (fun i => f i - g i) j = bdiff^[r] f j - bdiff^[r] g j := by
+  induction r generalizing j with
   | zero => rfl
   | succ r ih =>
-    funext j
-    simp only [Function.iterate_succ_apply', ih, bdiff]
+    simp only [Function.iterate_succ_apply', bdiff]
+    rw [ih j, ih (j + 1)]
     ring
 
-private theorem bdiff_iter_const_mul (r : ℕ) (c : ℝ) (f : ℕ → ℝ) :
-    bdiff^[r] (fun j => c * f j) = fun j => c * bdiff^[r] f j := by
-  induction r with
+private theorem bdiff_iter_const_mul (r : ℕ) (c : ℝ) (f : ℕ → ℝ) (j : ℕ) :
+    bdiff^[r] (fun i => c * f i) j = c * bdiff^[r] f j := by
+  induction r generalizing j with
   | zero => rfl
   | succ r ih =>
-    funext j
-    simp only [Function.iterate_succ_apply', ih, bdiff]
+    simp only [Function.iterate_succ_apply', bdiff]
+    rw [ih j, ih (j + 1)]
     ring
 
 private theorem bdiff_iter_intervalIntegral (r : ℕ) (H : ℕ → ℝ → ℝ)
     (hcont : ∀ j, ContinuousOn (H j) (Set.Icc 0 1)) (j : ℕ) :
     bdiff^[r] (fun i => ∫ s in (0 : ℝ)..1, H i s) j =
       ∫ s in (0 : ℝ)..1, bdiff^[r] (fun i => H i s) j := by
+  have hci : ∀ m k, ContinuousOn (fun s => bdiff^[m] (fun i => H i s) k) (Set.Icc 0 1) := by
+    intro m
+    induction m with
+    | zero => intro k; exact hcont k
+    | succ m ihm =>
+      intro k
+      have heq : (fun s => bdiff^[m + 1] (fun i => H i s) k) =
+          fun s => bdiff^[m] (fun i => H i s) k - bdiff^[m] (fun i => H i s) (k + 1) := by
+        funext s; rw [Function.iterate_succ_apply']; rfl
+      rw [heq]; exact (ihm k).sub (ihm (k + 1))
   induction r generalizing j with
   | zero => rfl
   | succ r ih =>
     simp only [Function.iterate_succ_apply', bdiff]
-    rw [ih j, ih (j + 1)]
-    have hi1 : ContinuousOn (fun s => bdiff^[r] (fun i => H i s) j) (Set.Icc 0 1) := by
-      clear ih
-      induction r generalizing j with
-      | zero => exact hcont j
-      | succ r ihr =>
-        have heq : (fun s => bdiff^[r + 1] (fun i => H i s) j) =
-            fun s => bdiff^[r] (fun i => H i s) j - bdiff^[r] (fun i => H i s) (j + 1) := by
-          funext s; rw [Function.iterate_succ_apply']; rfl
-        rw [heq]; exact (ihr j).sub (ihr (j + 1))
-    have hi2 : ContinuousOn (fun s => bdiff^[r] (fun i => H i s) (j + 1)) (Set.Icc 0 1) := by
-      clear ih hi1
-      induction r generalizing j with
-      | zero => exact hcont (j + 1)
-      | succ r ihr =>
-        have heq : (fun s => bdiff^[r + 1] (fun i => H i s) (j + 1)) =
-            fun s => bdiff^[r] (fun i => H i s) (j + 1) - bdiff^[r] (fun i => H i s) (j + 2) := by
-          funext s; rw [Function.iterate_succ_apply']; rfl
-        rw [heq]; exact (ihr (j + 1)).sub (ihr (j + 2))
-    rw [← intervalIntegral.integral_sub
-      (hi1.mono (by rw [Set.uIcc_of_le zero_le_one])).intervalIntegrable
-      (hi2.mono (by rw [Set.uIcc_of_le zero_le_one])).intervalIntegrable]
+    rw [ih j, ih (j + 1), ← intervalIntegral.integral_sub
+      ((hci r j).mono (by rw [Set.uIcc_of_le zero_le_one])).intervalIntegrable
+      ((hci r (j + 1)).mono (by rw [Set.uIcc_of_le zero_le_one])).intervalIntegrable]
 
 /-- Summing `n² · unitHorizonPair n q` across a conductor interval `Ico a d ⊆ (N, 2N]`
 gains an extra derivative in the leading integral term, bounding the aggregate by
@@ -594,7 +586,7 @@ theorem conductor_interval_horizonPair_bound :
       have heq_s : (fun i : ℕ => H_curv i n s) = fun i : ℕ =>
           ((s * (s - 1) / 2) / ((n : ℝ) + s)) *
             conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2)) := by
-        funext i; dsimp only [H_curv]; ring
+        funext i; dsimp only [H_curv]; rw [mul_div_assoc (i : ℝ) (q : ℝ)]; ring
       rw [heq_s, bdiff_iter_const_mul, bdiff_iter_sample_eq, abs_mul, abs_mul,
         abs_pow, abs_neg, abs_one, one_pow, one_mul]
       refine mul_le_mul_of_nonneg_right ?_ (abs_nonneg _)
