@@ -660,8 +660,9 @@ theorem dense_exists_isCrossResonantPair {a b : ℝ} (ha : 0 ≤ a) (hab : a < b
     exact Nat.lt_floor_add_one _
   have hkR_le : (k : ℝ) ≤ (a + gap / 3) / δ + 1 := by
     dsimp [k]; push_cast
-    exact add_le_add_right
-      (Nat.floor_le (div_nonneg (add_nonneg ha (div_nonneg hgap.le (by norm_num))) hδ_pos.le)) 1
+    have hnum0 : 0 ≤ a + gap / 3 := add_nonneg ha (div_nonneg hgap.le (by norm_num : (0 : ℝ) ≤ 3))
+    have hfl := Nat.floor_le (div_nonneg hnum0 hδ_pos.le)
+    linarith
   set γ : ℝ := (k : ℝ) * δ
   have hγ_gt_a : a < γ := by
     have h := mul_lt_mul_of_pos_right hkR_gt hδ_pos
@@ -827,9 +828,11 @@ theorem plantedAliasedDoubleWave_separates_two_and_three_clocks
         obtain ⟨m, hm⟩ := h1
         have him : Real.log 5 * (sgn * γ - ω) = (m : ℝ) * (2 * Real.pi) := by
           have h := congrArg Complex.im hm
-          simpa only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.sub_re,
-            Complex.sub_im, Complex.add_re, Complex.add_im, Complex.I_re, Complex.I_im,
-            mul_one, mul_zero, zero_mul, add_zero, zero_add] using h
+          simp only [Complex.mul_im, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+            Complex.intCast_re, Complex.intCast_im, Complex.re_ofNat, Complex.im_ofNat,
+            Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
+            Complex.I_re, Complex.I_im] at h
+          linear_combination h
         apply hcos5_ne
         rw [cos_eq_cos_iff_exists_int]
         refine ⟨-m, ?_⟩
@@ -970,7 +973,11 @@ theorem plantedAliasedDoubleWave_separates_two_and_three_clocks
     have htri : |dilationRecurrenceOp 5 β γ f x| ≤
         |f (5 ^ 2 * x)| + 2 * 5 ^ β * |f (5 * x)| + 5 ^ (2 * β) * |f x| := by
       unfold dilationRecurrenceOp
-      have h1 := (abs_add_le _ _).trans (add_le_add (abs_sub _ _) le_rfl)
+      have h1 : |f (5 ^ 2 * x) - 2 * 5 ^ β * Real.cos (γ * Real.log 5) * f (5 * x) +
+            5 ^ (2 * β) * f x| ≤
+          |f (5 ^ 2 * x)| + |2 * 5 ^ β * Real.cos (γ * Real.log 5) * f (5 * x)| +
+            |5 ^ (2 * β) * f x| :=
+        (abs_add_le _ _).trans (add_le_add (abs_sub _ _) le_rfl)
       have h2 : |2 * 5 ^ β * Real.cos (γ * Real.log 5) * f (5 * x)| ≤ 2 * 5 ^ β * |f (5 * x)| := by
         rw [abs_mul, abs_mul, abs_mul, abs_of_pos two_pos,
           abs_of_pos (Real.rpow_pos_of_pos (by norm_num) β)]

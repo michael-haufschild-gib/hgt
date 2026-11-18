@@ -25,8 +25,9 @@ theorem slack_restart (a b t s : ℝ) : slack (slack a b t) b s = slack a b (t+s
 
 theorem slack_derivative (a b t : ℝ) : HasDerivAt (slack a b) (b - slack a b t) t := by
   have h := ((((Real.hasDerivAt_exp (-t)).comp t (hasDerivAt_neg t)).mul_const (a-b)).const_add b)
-  unfold slack
-  convert h using 1 <;> ring
+  apply h.congr_deriv
+  change Real.exp (-t) * (-1) * (a-b) = b - (b + Real.exp (-t)*(a-b))
+  ring
 
 private theorem slack_limit (a b : ℝ) : Tendsto (slack a b) atTop (𝓝 b) := by
   unfold slack
@@ -91,7 +92,9 @@ theorem last_safe_time (a : NNReal) (d t : ℝ) (hd : 0 < d) :
   have hd' : 0 < 1 + (a : ℝ)/d := by positivity
   rw [← mul_nonneg_iff_of_pos_left (Real.exp_pos t), scaled_slack,
     ← Real.exp_le_exp (x := t) (y := Real.log (1+(a : ℝ)/d)), Real.exp_log hd']
-  rw [← sub_le_iff_le_add', le_div_iff₀ hd]
+  have hs : Real.exp t ≤ 1 + (a : ℝ)/d ↔ Real.exp t-1 ≤ (a : ℝ)/d := by
+    constructor <;> intro h <;> linarith only [h]
+  rw [hs, le_div_iff₀ hd]
   constructor <;> intro h <;> linarith only [h]
 
 /-- Exact feasible target half-line for a prescribed positive horizon. -/
@@ -130,6 +133,98 @@ theorem mean_polyhedron (C : LegendreChart Θ) (m : Θ →L[ℝ] ℝ) (x : Θ)
     fun i => ((h i).mp (fun t ht => H t ht i)).2⟩,
     fun ⟨L,R⟩ t ht i => (h i).mpr ⟨L i,R i⟩ t ht⟩
 
+/-- A segment records its duration and attracting target. -/
+abbrev Segment := NNReal × ℝ
+
+/-- Final slack after a finite schedule of target switches. -/
+def endpoint (a : ℝ) (L : List Segment) : ℝ :=
+  L.foldl (fun x p => slack x p.2 p.1) a
+
+/-- The full duration determines how much of any initial offset survives. -/
+theorem endpoint_difference (a b : ℝ) (L : List Segment) :
+    endpoint a L - endpoint b L = Real.exp (-((L.map fun p => (p.1 : ℝ)).sum))*(a-b) := by
+  induction L generalizing a b with
+  | nil => simp [endpoint]
+  | cons p L ih =>
+    change endpoint (slack a p.2 p.1) L - endpoint (slack b p.2 p.1) L = _
+    rw [ih]
+    simp only [List.map_cons,List.sum_cons,neg_add,Real.exp_add,slack]
+    ring
+
+/-- Interchanging adjacent targets has a signed effect independent of the starting slack. -/
+theorem interchange (a b c s t : ℝ) :
+    slack (slack a b t) c s - slack (slack a c s) b t =
+      (1-Real.exp (-t))*(1-Real.exp (-s))*(c-b) := by unfold slack; ring
+
+/-- With both durations positive, sorting adjacent targets increasingly improves
+the final slack of a schedule precisely when those targets were out of order. -/
+theorem interchange_order (a b c : ℝ) (s t : ℝ) (hs : 0 < s) (ht : 0 < t)
+    (L : List Segment) :
+    endpoint (slack (slack a c s) b t) L ≤ endpoint (slack (slack a b t) c s) L ↔ b ≤ c := by
+  rw [← sub_nonneg,endpoint_difference,interchange,mul_nonneg_iff_of_pos_left (Real.exp_pos _)]
+  have ht' := sub_pos.mpr (Real.exp_lt_one_iff.mpr (neg_neg_of_pos ht))
+  have hs' := sub_pos.mpr (Real.exp_lt_one_iff.mpr (neg_neg_of_pos hs))
+  rw [mul_nonneg_iff_of_pos_left (mul_pos ht' hs'),sub_nonneg]
+
+/-- Safety along all continuous pieces of a switched schedule. -/
+def safeAlong (a : ℝ) : List Segment → Prop
+  | [] => 0 ≤ a
+  | (t,b) :: L => (∀ s ∈ Icc 0 (t : ℝ), 0 ≤ slack a b s) ∧ safeAlong (slack a b t) L
+
+/-- Checking only segment endpoints suffices even when individual targets are exterior. -/
+theorem switched_safe_iff (a : ℝ) (L : List Segment) :
+    safeAlong a L ↔ ∀ P Q : List Segment, L = P ++ Q → 0 ≤ endpoint a P := by
+  induction L generalizing a with
+  | nil =>
+    constructor
+    · rintro ha P Q h
+      obtain ⟨rfl,rfl⟩ := List.append_eq_nil_iff.mp h.symm
+      exact ha
+    · intro h
+      exact h [] [] rfl
+  | cons p L ih =>
+    rcases p with ⟨t,b⟩
+    rw [safeAlong,window_safe_iff a b 0 t t.property,slack_zero,ih]
+    constructor
+    · rintro ⟨⟨ha,_⟩,hs⟩ P Q he
+      cases P with
+      | nil => exact ha
+      | cons p P =>
+        obtain ⟨rfl,h⟩ := List.cons.inj he
+        exact hs P Q h
+    · intro H
+      have hs (P Q : List Segment) (h : L = P ++ Q) :
+          0 ≤ endpoint (slack a b t) P :=
+        H ((t,b)::P) Q (congrArg (List.cons (t,b)) h)
+      exact ⟨⟨H [] _ rfl,hs [] L rfl⟩,hs⟩
+
+/-- The unique periodic initial slack for a positive-duration cycle. -/
+def periodicSlack (L : List Segment) : ℝ :=
+  endpoint 0 L / (1-Real.exp (-((L.map fun p => (p.1 : ℝ)).sum)))
+
+theorem periodic_iff (a : ℝ) (L : List Segment) (hL : 0 < (L.map fun p => (p.1 : ℝ)).sum) :
+    endpoint a L = a ↔ a = periodicSlack L := by
+  have hd := sub_pos.mpr (Real.exp_lt_one_iff.mpr (neg_neg_of_pos hL))
+  have h := endpoint_difference a 0 L
+  rw [periodicSlack,eq_div_iff hd.ne']
+  constructor <;> intro he <;> linarith only [h,he]
+
+/-- At homologous phases of successive cycles, offsets from the periodic orbit
+are attenuated by the exponential of the total elapsed time. -/
+theorem after_cycles (a : ℝ) (L : List Segment) (n : ℕ)
+    (hL : 0 < (L.map fun p => (p.1 : ℝ)).sum) :
+    (fun x => endpoint x L)^[n] a - periodicSlack L =
+      Real.exp (-((L.map fun p => (p.1 : ℝ)).sum))^n*(a-periodicSlack L) := by
+  have hf := (periodic_iff (periodicSlack L) L hL).2 rfl
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [Function.iterate_succ_apply']
+    have h := endpoint_difference ((fun x => endpoint x L)^[n] a) (periodicSlack L) L
+    rw [hf,ih] at h
+    rw [h,pow_succ]
+    ring
+
 end GaloisForLFunctions.HTGeometry.AffineDynamics
 
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.slack_restart
@@ -143,3 +238,9 @@ end GaloisForLFunctions.HTGeometry.AffineDynamics
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.finite_target_threshold
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.mean_face
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.mean_polyhedron
+#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.endpoint_difference
+#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.interchange
+#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.interchange_order
+#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.switched_safe_iff
+#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.periodic_iff
+#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.after_cycles

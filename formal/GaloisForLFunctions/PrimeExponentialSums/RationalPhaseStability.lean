@@ -99,7 +99,7 @@ theorem coherent_loss (s : Finset ι) (w : ι → NNReal) (f : ι → ℝ) (c x 
   intro i _
   have h := mul_le_mul_of_nonneg_left
     (Real.one_sub_sq_div_two_le_cos (x := 2*Real.pi*((f i-c)*x))) (w i).property
-  nlinarith only [h]
+  exact (sub_le_sub_left h (w i : ℝ)).trans_eq (by ring)
 
 end GaloisForLFunctions.PrimeExponentialSums.PhaseStability
 

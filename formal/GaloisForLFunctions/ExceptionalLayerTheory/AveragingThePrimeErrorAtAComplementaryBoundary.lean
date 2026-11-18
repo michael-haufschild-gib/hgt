@@ -25,7 +25,7 @@ theorem factorialBoundary_ramps {R : ℕ} (hR : 1 ≤ R) (a : ℕ) :
     factorialBoundary R a=stencil R (fun d => centeredModularRamp d a) := by
   let g (d : ℕ) := ((a : ℝ)+1/2)/d-((a/d : ℕ) : ℝ)-1/2
   have hc (d : ℕ) (hd : d ∈ Icc 1 (2*R)) : centeredModularRamp d a=g d := by
-    have hd₀ : (d : ℝ) ≠ 0 := by exact_mod_cast ((mem_Icc.mp hd).1 : 0<d).ne'
+    have hd₀ : (d : ℝ) ≠ 0 := by exact_mod_cast (Nat.ne_of_gt (show 0 < d from (mem_Icc.mp hd).1))
     have hid : (d : ℝ)*((a/d : ℕ) : ℝ)+((a%d : ℕ) : ℝ)=a := by exact_mod_cast Nat.div_add_mod a d
     dsimp [g,centeredModularRamp]
     field_simp
@@ -59,16 +59,14 @@ theorem factorialBoundary_interval {R : ℕ} (hR : 1 ≤ R) (L U : ℕ) :
   have ht : (d : ℝ) ≤ 2*R := by exact_mod_cast (mem_Icc.mp hd).2
   constructor <;> linarith only [h₁.1,h₁.2,h₂.1,h₂.2,ht]
 
-/-- The moving Chebyshev error at a smoothed complementary-factor cutoff
-costs only the reciprocal horizon times the second stencil mass. -/
-theorem factorialBoundary_prime_error {R : ℕ} (hR : 1 ≤ R) (X A B : ℕ) :
-    |∑ a ∈ Ico A B, factorialBoundary R a*
-      (Chebyshev.psi (X/(a+1) : ℕ)-(X/(a+1) : ℕ))| ≤
-      2*mass R*R*(X/(A+1) : ℕ) := by
+/-- A moving partial sum may have arbitrary signed increments. Each
+increment sees one interval of the centered factorial boundary. -/
+theorem factorialBoundary_quotient_prefix {R : ℕ} (hR : 1 ≤ R) (X A B : ℕ) (e : ℕ → ℝ) :
+    |∑ a ∈ Ico A B, factorialBoundary R a*∑ n ∈ Icc 1 (X/(a+1)), e n| ≤
+      (mass R*((R : ℝ)/4))*∑ n ∈ Icc 1 (X/(A+1)), |e n| := by
   let U := X/(A+1)
-  let e (n : ℕ) := vonMangoldt n-1
   let b := factorialBoundary R
-  have err (a : ℕ) (ha : A ≤ a) : Chebyshev.psi (X/(a+1) : ℕ)-(X/(a+1) : ℕ) =
+  have err (a : ℕ) (ha : A ≤ a) : (∑ n ∈ Icc 1 (X/(a+1)), e n) =
       ∑ n ∈ Icc 1 U, if a<X/n then e n else 0 := by
     let T := X/(a+1)
     have htu : T ≤ U := (Nat.le_div_iff_mul_le (Nat.succ_pos A)).mpr
@@ -87,11 +85,7 @@ theorem factorialBoundary_prime_error {R : ℕ} (hR : 1 ≤ R) (X A B : ℕ) :
         exact mem_filter.mpr ⟨mem_Icc.mpr ⟨hl,hu.trans htu⟩,(Nat.le_div_iff_mul_le hl).mpr
           (by simpa only [Nat.mul_comm n] using hh)⟩
     rw [←sum_filter,eq]
-    have hp : (∑ n ∈ Icc 1 T, vonMangoldt n)=Chebyshev.psi T := by
-      unfold Chebyshev.psi; rw [Nat.floor_natCast]; rfl
-    simp only [e,sum_sub_distrib,hp,sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul,mul_one]
-    rfl
-  have transpose : (∑ a ∈ Ico A B, b a*(Chebyshev.psi (X/(a+1) : ℕ)-(X/(a+1) : ℕ))) =
+  have transpose : (∑ a ∈ Ico A B, b a*(∑ n ∈ Icc 1 (X/(a+1)), e n)) =
       ∑ n ∈ Icc 1 U, e n*∑ a ∈ Ico A (min B (X/n)), b a := by
     calc _ = ∑ a ∈ Ico A B, ∑ n ∈ Icc 1 U, if a<X/n then e n*b a else 0 := by
               apply sum_congr rfl
@@ -105,23 +99,36 @@ theorem factorialBoundary_prime_error {R : ℕ} (hR : 1 ≤ R) (X A B : ℕ) :
               have eq : (Ico A B).filter (fun a => a<X/n)=Ico A (min B (X/n)) := by
                 ext a; simp only [mem_filter,mem_Ico,lt_min_iff]; tauto
               rw [←sum_filter,eq,mul_sum]
-  have hm := (abs_nonneg _).trans (abs_prefix_le_mass hR 0)
-  let H := mass R*((R : ℝ)/4)
-  have hH : 0 ≤ H := by dsimp [H]; positivity
-  rw [transpose]
+  rw [transpose,mul_sum]
   apply (abs_sum_le_sum_abs _ _).trans
-  calc _ ≤ ∑ n ∈ Icc 1 U, H*(vonMangoldt n+1) := by
-            apply sum_le_sum
-            intro n _
-            have hn : |e n| ≤ vonMangoldt n+1 := by
+  apply sum_le_sum
+  intro n _
+  rw [abs_mul,mul_comm (mass R*((R : ℝ)/4))]
+  exact mul_le_mul_of_nonneg_left (factorialBoundary_interval hR _ _) (abs_nonneg _)
+
+/-- The moving Chebyshev error at a smoothed complementary-factor cutoff
+costs only the reciprocal horizon times the second stencil mass. -/
+theorem factorialBoundary_prime_error {R : ℕ} (hR : 1 ≤ R) (X A B : ℕ) :
+    |∑ a ∈ Ico A B, factorialBoundary R a*
+      (Chebyshev.psi (X/(a+1) : ℕ)-(X/(a+1) : ℕ))| ≤
+      2*mass R*R*(X/(A+1) : ℕ) := by
+  let U := X/(A+1)
+  let H := mass R*((R : ℝ)/4)
+  have hm := (abs_nonneg _).trans (abs_prefix_le_mass hR 0)
+  have hH : 0 ≤ H := by dsimp [H]; positivity
+  have err (T : ℕ) : Chebyshev.psi T-(T : ℝ) = ∑ n ∈ Icc 1 T, (vonMangoldt n-1) := by
+    have hp : (∑ n ∈ Icc 1 T, vonMangoldt n)=Chebyshev.psi T := by
+      unfold Chebyshev.psi; rw [Nat.floor_natCast]; rfl
+    rw [sum_sub_distrib,hp,sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul,mul_one]
+  simp_rw [err]
+  apply (factorialBoundary_quotient_prefix hR X A B (fun n => vonMangoldt n-1)).trans
+  have hsum : (∑ n ∈ Icc 1 U, |vonMangoldt n-1|) ≤ 8*U := by
+    calc _ ≤ ∑ n ∈ Icc 1 U, (vonMangoldt n+1) := sum_le_sum fun n _ => by
               simpa only [abs_of_nonneg vonMangoldt_nonneg,abs_one] using abs_sub (vonMangoldt n) (1 : ℝ)
-            rw [abs_mul,mul_comm H]
-            exact mul_le_mul hn (factorialBoundary_interval hR _ _) (abs_nonneg _) (by positivity)
-       _ ≤ _ := by
-            rw [←mul_sum,sum_add_distrib,sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul,mul_one]
-            calc H*((∑ n ∈ Icc 1 U, vonMangoldt n)+(U : ℝ)) ≤ H*(7*U+U) :=
-                    mul_le_mul_of_nonneg_left (add_le_add (chebyshevPsi_le_seven U) (le_refl (U : ℝ))) hH
-                 _ = _ := by dsimp [H,U]; ring
+         _ ≤ _ := by
+              rw [sum_add_distrib,sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul,mul_one]
+              linarith only [chebyshevPsi_le_seven U]
+  exact (mul_le_mul_of_nonneg_left hsum hH).trans_eq (by dsimp [H,U]; ring)
 
 /-- Averaging over just more than the square root divided by the initial
 cutoff gives square-root error at every horizon and cutoff. -/
@@ -150,5 +157,6 @@ theorem factorialBoundary_smoothed_prime_error {R : ℕ} (hR : 1 ≤ R) (X A : �
 
 #print axioms factorialBoundary_smoothed_prime_error
 #print axioms factorialBoundary_interval
+#print axioms factorialBoundary_quotient_prefix
 #print axioms factorialBoundary_prime_error
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

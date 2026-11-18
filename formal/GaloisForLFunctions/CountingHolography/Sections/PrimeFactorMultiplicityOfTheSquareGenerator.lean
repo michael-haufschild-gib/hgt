@@ -23,8 +23,9 @@ private def secondMoment (n : ℕ) := ∑ k ∈ lags n, (Real.log k-T n)^2*diago
 private theorem first_limit :
     Tendsto (fun n : ℕ => firstMoment n/(n:ℝ)^3) atTop (𝓝 (-4*Real.log 4*squareAutocorrelationMass)) := by
   have hh := tendsto_diagonal_finite_prime_log_moment.const_mul 2
-  convert hh.congr' ?_ using 1
-  · ring
+  rw [show -4*Real.log 4*squareAutocorrelationMass =
+    2*(-2*Real.log 4*squareAutocorrelationMass) by ring]
+  refine hh.congr' ?_
   filter_upwards [eventually_gt_atTop 0] with n hn
   have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
   let V := fun k : ℕ => Real.log ((k:ℝ)/(n:ℝ)^2)
@@ -39,7 +40,7 @@ private theorem first_limit :
     ring
   change 2*((∑ k ∈ lags n, f k)/(n:ℝ)^2)=_
   rw [hsum]
-  field_simp
+  field_simp <;> ring
 
 private theorem lags_card_negligible :
     Tendsto (fun n : ℕ => ((lags n).card:ℝ)/(n:ℝ)^2) atTop (𝓝 0) := by
@@ -93,7 +94,7 @@ private theorem second_limit : Tendsto (fun n : ℕ => secondMoment n/(n:ℝ)^3)
   have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
   have he {k : ℕ} (hp : k.Prime) :
       (Real.log k-T n)^2*diagonalPrimeProfile n k=2*(n:ℝ)*F (Real.log ((k:ℝ)/(n:ℝ)^2)) := by
-    have hk' := Nat.cast_pos.mpr hp.pos (α := ℝ)
+    have hk' : 0<(k:ℝ) := Nat.cast_pos.mpr hp.pos
     have hX := div_pos hk' (sq_pos_of_pos hn')
     have hl : Real.log k-T n=Real.log ((k:ℝ)/(n:ℝ)^2) :=
       (Real.log_div hk'.ne' (sq_pos_of_pos hn').ne').symm
@@ -109,7 +110,7 @@ private theorem second_limit : Tendsto (fun n : ℕ => secondMoment n/(n:ℝ)^3)
               exact mul_le_mul_of_nonneg_left (hB _) (by positivity)
       _ = _ := by simp
   rw [Real.norm_eq_abs,abs_div,abs_of_pos (pow_pos hn' 3)]
-  exact (div_le_div_of_nonneg_right hsum (pow_nonneg hn'.le _)).trans_eq (by field_simp;ring)
+  exact (div_le_div_of_nonneg_right hsum (pow_nonneg hn'.le _)).trans_eq (by field_simp <;> ring)
 
 private theorem log_over_power {r : ℝ} (hr : 0<r) :
     Tendsto (fun n : ℕ => T n/(n:ℝ)^r) atTop (𝓝 0) := by
@@ -145,8 +146,7 @@ theorem diagonal_log_negligible_at_every_logarithmic_order (k : ℕ) :
   rw [Real.norm_eq_abs,abs_div,abs_mul,abs_of_nonneg (pow_nonneg hT k),abs_of_pos (pow_pos hn₀ 3)]
   refine (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hb (pow_nonneg hT k)) (pow_pos hn₀ 3).le).trans_eq ?_
   rw [Real.rpow_sub hn₀,Real.rpow_one]
-  field_simp
-  ring
+  field_simp <;> ring
 
 private theorem comparison_error_limit (C : ℝ) :
     Tendsto (fun n : ℕ => (T n^2/Real.log 2+T n)*(C*(n:ℝ)^2)/(n:ℝ)^3) atTop (𝓝 0) := by
@@ -156,10 +156,10 @@ private theorem comparison_error_limit (C : ℝ) :
   simp only [zero_pow two_ne_zero,zero_div,zero_add,mul_zero] at h
   apply h.congr'
   filter_upwards [eventually_gt_atTop 0] with n hn
-  have hn' := Nat.cast_pos.mpr hn (α := ℝ)
+  have hn' : 0<(n:ℝ) := Nat.cast_pos.mpr hn
   change C*((T n/(n:ℝ)^(1/2:ℝ))^2/Real.log 2+T n/(n:ℝ)^(1:ℝ))=_
   rw [div_pow,← Real.sqrt_eq_rpow,Real.sq_sqrt hn'.le,Real.rpow_one]
-  field_simp
+  field_simp <;> ring
 
 /-- The excess of numerator prime factors counted with multiplicity is
 asymptotic to a strictly positive constant times n cubed divided by log(n²) squared. -/
@@ -178,8 +178,9 @@ theorem tendsto_square_generator_prime_multiplicity :
   have hs : Tendsto (fun n : ℕ => B n/(n:ℝ)^3) atTop (𝓝 0) := by
     simpa only [B,T,pow_one] using diagonal_log_negligible_at_every_logarithmic_order 1
   have h := ((hdiff.add hs).sub first_limit).add second_limit
-  convert h.congr' ?_ using 1
-  · ring
+  have hc : (0:ℝ)+0-(-4*Real.log 4*squareAutocorrelationMass)+0=4*Real.log 4*squareAutocorrelationMass := by ring
+  rw [hc] at h
+  refine h.congr' ?_
   filter_upwards [] with n
   dsimp only [A,B]
   have hm := congrArg (fun x : ℤ => (x:ℝ)) (diagonalPrimeMultiplicity_eq_cardFactors n)
@@ -198,7 +199,7 @@ theorem eventually_square_generator_more_numerator_factors :
   filter_upwards [tendsto_square_generator_prime_multiplicity.eventually (lt_mem_nhds hc)] with n h
   dsimp only at h ⊢
   by_contra! hn
-  have hb := sub_nonpos.mpr (Nat.cast_le.mpr hn (α := ℝ))
+  have hb : (cardFactors _:ℝ)-cardFactors _ ≤ 0 := sub_nonpos.mpr (Nat.cast_le.mpr hn)
   exact (not_lt_of_ge (div_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonneg_of_nonpos (sq_nonneg _) hb)
     (pow_nonneg (Nat.cast_nonneg n) 3))) h
 

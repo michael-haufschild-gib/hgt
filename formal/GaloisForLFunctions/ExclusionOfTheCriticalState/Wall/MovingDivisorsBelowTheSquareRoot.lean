@@ -14,6 +14,7 @@ moment. The cutoff may therefore grow exponentially in time.
 
 noncomputable section
 open MeasureTheory Set Filter Topology
+open scoped ENNReal
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri CriticalArithmeticCorrelationTheory
 
@@ -40,7 +41,7 @@ private theorem memLp_tsum_of_summable_costs {u : ℕ → ℝ → ℝ} (hm : ∀
   have hS (N : ℕ) : eLpNorm (S N) 2 volume ≤ K :=
     (eLpNorm_sum_le (fun d _ => (hm d).aestronglyMeasurable) (by norm_num)).trans
       ((ENNReal.sum_le_tsum (Finset.range N)).trans hsum)
-  refine ⟨(Measurable.tsum hm).aestronglyMeasurable,(Lp.eLpNorm_le_of_ae_tendsto
+  refine ⟨(Measurable.tsum hm).aestronglyMeasurable,(Lp.eLpNorm_le_of_ae_tendsto (u := atTop) (f := S)
     (Eventually.of_forall hS) (fun N => Finset.aestronglyMeasurable_sum _ fun d _ =>
       (hm d).aestronglyMeasurable) ?_).trans_lt hK⟩
   filter_upwards [hconv] with t ht
@@ -80,21 +81,23 @@ theorem criticalState_smallDivisorEnvelope {W₀ : ℝ} (hW : 0 < W₀)
     apply tsum_congr fun d => ?_
     by_cases h : L d ≤ α*t
     · change Real.exp (b*t)*(if L d ≤ α*t then _ else 0) = u d t
-      simp only [u,if_pos h,mul_assoc]
+      simp only [u,if_pos h,mul_assoc,L]
     · change Real.exp (b*t)*(if L d ≤ α*t then _ else 0) = u d t
       simp only [u,if_neg h,mul_zero]
+  change MemLp (fun t => Real.exp (b*t)*smallDivisorEnvelope Φ A α k t) 2
   rw [heq]
   refine memLp_tsum_of_summable_costs humeas hcn hcost hf.2.ne (fun d => ?_)
   let g := fun t : ℝ => f (t-L d)
   have hp := measurePreserving_sub_right volume (L d)
-  have heLp : eLpNorm g 2 volume=eLpNorm f 2 volume := eLpNorm_comp_measurePreserving hf.1 hp
+  have heLp : eLpNorm g 2 volume=eLpNorm f 2 volume := eLpNorm_comp_measurePreserving (p := 2) (g := f) hf.1 hp
   have hcmp (t : ℝ) : ‖u d t‖ ≤ ‖(c d • g) t‖ := by
     rw [Pi.smul_apply,smul_eq_mul,Real.norm_eq_abs,Real.norm_eq_abs,abs_mul,abs_of_nonneg (hcn d)]
     by_cases hs : L d ≤ α*t
     · rw [show u d t=Real.exp (b*t)*(L d)^k*|centredMultipleRow Φ A d t| from if_pos hs,
         abs_of_nonneg (mul_nonneg (mul_nonneg (Real.exp_pos _).le (pow_nonneg (hlog d) _)) (abs_nonneg _))]
       rcases Nat.eq_zero_or_pos d with rfl | hd
-      · simp [centredMultipleRow,c,L]
+      · simp only [centredMultipleRow, Nat.cast_zero, Real.sqrt_zero, inv_zero, zero_mul, abs_zero, mul_zero]
+        exact mul_nonneg (hcn 0) (abs_nonneg _)
       have hd' : (0:ℝ) < d := by exact_mod_cast hd
       have ht0 : 0 ≤ t := nonneg_of_mul_nonneg_right ((hlog d).trans hs) hα
       have hlt : L d ≤ (β-b)*t := hs.trans (mul_le_mul_of_nonneg_right (by linarith only [hβ]) ht0)

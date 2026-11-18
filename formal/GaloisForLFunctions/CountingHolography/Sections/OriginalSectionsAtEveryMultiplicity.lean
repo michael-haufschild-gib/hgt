@@ -26,7 +26,7 @@ private theorem separation_at_four (hRH : RiemannHypothesis) :
   have he : integerProbe 4 a=2*(realSplineTrace 0-realSplineTrace (Real.log 4)) := by
     rw [show a=threeGraphDivisor (0 : Fin 4) 0 3 1 0 1 from rfl,integerProbe_threeGraphDivisor]
     norm_num [atomGram_eq_splineSeries,realSplineTrace]
-    <;> ring
+    ring
   linarith only [he,h]
 
 /-- Positivity on the integer tilt kD+e₁ compares the norm of the upper

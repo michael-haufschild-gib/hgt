@@ -29,7 +29,7 @@ private theorem twist_weight : factorialParityWeight.pmul L=reciprocalFactorial 
   refine (IsMultiplicative.eq_iff_eq_on_prime_powers _ (hw.pmul isMultiplicative_liouville.intCast) _ hv).mpr
     fun p k hp => ?_
   rw [pmul_apply,factorialParityWeight_pow hp,reciprocalFactorial_pow hp]
-  simp only [L,intCoe_apply,liouville_apply (pow_ne_zero _ hp.ne_zero),cardFactors_apply_prime_pow hp,
+  simp only [intCoe_apply,liouville_apply (pow_ne_zero _ hp.ne_zero),cardFactors_apply_prime_pow hp,
     Int.cast_pow,Int.cast_neg,Int.cast_one]
   rw [div_mul_eq_mul_div,← mul_pow]
   norm_num
@@ -40,7 +40,7 @@ theorem abs_factorialParityWeight (n : ℕ) : |factorialParityWeight n|=reciproc
   · simp
   have h := congrArg (fun a : ArithmeticFunction ℝ => |a n|) twist_weight
   have hv : 0≤reciprocalFactorial n := by
-    change 0≤if n=0 then (0:ℝ) else ∏ p ∈ n.primeFactors, 1/((n.factorization p).factorial:ℝ)
+    change 0 ≤ (if n=0 then (0:ℝ) else ∏ p ∈ n.primeFactors, 1/((n.factorization p).factorial:ℝ))
     rw [if_neg hn.ne']
     exact prod_nonneg fun _ _ => by positivity
   simpa only [pmul_apply,abs_mul,L,intCoe_apply,liouville_apply hn.ne',Int.cast_pow,Int.cast_neg,
@@ -126,8 +126,9 @@ private theorem floor_error_at_power (N d : ℕ) {b : ℝ} (hb : 0≤b) (hb1 : b
 
 private theorem correction_at_one_summable :
     Summable (fun d : ℕ => |(reciprocalFactorial*(μ:ArithmeticFunction ℝ)) d / (d:ℝ)|) := by
-  simpa only [abs_div,abs_of_nonneg (Nat.cast_nonneg _),div_eq_mul_inv,Real.rpow_neg_one] using
-    reciprocalFactorial_correction_summable (b := 1) (by norm_num)
+  apply (reciprocalFactorial_correction_summable (b := 1) (by norm_num)).congr
+  intro n
+  rw [abs_div,abs_of_nonneg (Nat.cast_nonneg (α := ℝ) n),Real.rpow_neg_one,div_eq_mul_inv]
 
 private theorem reciprocal_pole_factor {p : ℕ} (hp : p.Prime) :
     poleLocalFactor reciprocalFactorial p = Real.exp (p:ℝ)⁻¹ := by
@@ -164,8 +165,13 @@ theorem reciprocalFactorialDensity_pos : 0<reciprocalFactorialDensity := by
       (fun p h => by rw [reciprocal_pole_factor h]; exact (Real.exp_pos _).ne')
   refine lt_of_le_of_ne ?_ hn.symm
   rw [reciprocalFactorialDensity_product]
-  exact tprod_nonneg fun p => mul_nonneg
-    (sub_nonneg.mpr (inv_lt_one_of_one_lt₀ (by exact_mod_cast p.prop.one_lt)).le) (Real.exp_pos _).le
+  let f := fun p : Nat.Primes => (1-((p:ℕ):ℝ)⁻¹)*Real.exp ((p:ℕ):ℝ)⁻¹
+  change 0≤∏' p, f p
+  by_cases hf : Multipliable f
+  · refine ge_of_tendsto' hf.hasProd (fun s => prod_nonneg (fun p _ => ?_))
+    exact mul_nonneg (sub_nonneg.mpr (inv_lt_one_of_one_lt₀
+      (by exact_mod_cast p.prop.one_lt : 1<((p:ℕ):ℝ))).le) (Real.exp_pos _).le
+  · rw [tprod_eq_one_of_not_multipliable hf]; exact zero_le_one
 
 /-- The entire discrepancy is the absolutely convergent sum of the signed
 floor errors, including the divisors above the cutoff. -/
@@ -198,7 +204,6 @@ theorem hasSum_reciprocalFactorial_rounding (N : ℕ) :
   have hd : HasSum (fun d : ℕ => h d/d) reciprocalFactorialDensity := hdensity.hasSum
   apply (hf.hasSum.sub (hd.mul_left (N:ℝ))).congr_fun
   intro d
-  dsimp only [Pi.sub_apply]
   ring
 
 /-- Summing fractional-part errors after removing zeta gives an explicit

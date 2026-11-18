@@ -54,7 +54,9 @@ theorem diagonal_prime_exponent_profile_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n 
     have hx : |X k-integratedContact a k| ≤ B :=
       (hb N a hp.pos).trans (div_le_self hB hr)
     have he : deningerRatExp q k=⌊X k⌋ := by
-      rw [ordinaryPrimeGenerator_exponent,if_pos hk]
+      have h := ordinaryPrimeGenerator_exponent a k
+      change deningerRatExp q k = if k ∈ S then ⌊X k⌋ else 0 at h
+      exact h.trans (if_pos hk)
     have hf : |(⌊X k⌋:ℝ)-X k| ≤ 1 := by
       rw [abs_le]
       constructor <;> linarith only [Int.floor_le (X k),Int.sub_one_lt_floor (X k)]
@@ -100,7 +102,9 @@ theorem diagonalPrimeMultiplicity_eq_cardFactors (n : ℕ) :
   change (∑ p ∈ S, deningerRatExp q p)=(cardFactors q.num.natAbs:ℤ)-cardFactors q.den
   rw [hread hnum,hread hden,← sum_sub_distrib]
   calc _ = ∑ p ∈ U, deningerRatExp q p := sum_subset hS fun p _ hp => by
-            rw [ordinaryPrimeGenerator_exponent,if_neg hp]
+            have hh := ordinaryPrimeGenerator_exponent a p
+            change deningerRatExp q p = if p ∈ S then _ else 0 at hh
+            exact hh.trans (if_neg hp)
     _ = _ := sum_congr rfl fun _ _ => rfl
 
 /-- Exact second-order expansion of the centered logarithmic weight, with
@@ -129,7 +133,11 @@ theorem diagonal_prime_multiplicity_comparison : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n
     rw [log_ordinaryPrimeGenerator]
     exact sum_congr rfl fun k hk => by
       have hp := (mem_filter.mp hk).2
-      simp only [e,q,ordinaryPrimeGenerator_exponent,if_pos hk,vonMangoldt_apply_prime hp]
+      have he := ordinaryPrimeGenerator_exponent a k
+      change deningerRatExp q k = if k ∈ S then _ else 0 at he
+      rw [if_pos hk] at he
+      change _ = Real.log k*(deningerRatExp q k:ℝ)
+      rw [he,vonMangoldt_apply_prime hp]
       exact mul_comm _ _
   have hsum : (diagonalPrimeMultiplicity n:ℝ)=∑ k ∈ S, e k := by
     simp only [diagonalPrimeMultiplicity,Int.cast_sum]; rfl

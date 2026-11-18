@@ -1,6 +1,7 @@
 import GaloisForLFunctions.BezoutValuationIncidence.Divisors.UnitFractionWitnessFibers
 import Mathlib.Data.Int.ModEq
 import Mathlib.Algebra.GCDMonoid.Finset
+import Mathlib.RingTheory.Coprime.Basic
 
 /-!
 # Congruence intersections of unit-fraction witnesses
@@ -112,6 +113,71 @@ theorem family_periods {ι : Type*} (s : Finset ι) (e : ι → Event) (b : ℤ)
     apply (family_class s e t (t+b) ht).2
     simpa only [add_sub_cancel_left] using hb
 
+/-- Exchanging the intercept and slope inverts the residue class. -/
+def dual (e : Event) : Event := ⟨e.K,e.c,e.a,e.d⟩
+
+private theorem dual_modulus (e : Event) : e.dual.modulus=e.modulus := by
+  unfold dual modulus
+  ring
+
+/-- The two offsets multiply to one modulo the common modulus, even for
+composite or zero modulus. -/
+theorem inverse_residues (e : Event) : e.residue*e.dual.residue ≡ 1 [ZMOD e.modulus] := by
+  apply Int.modEq_iff_dvd.mpr
+  refine ⟨-(e.modulus+2),?_⟩
+  unfold residue dual modulus
+  ring
+
+/-- Every successful numerator is coprime to its witness modulus. -/
+theorem witness_coprime (e : Event) (n : ℤ) (hn : e.holds n) : IsCoprime n e.modulus := by
+  have h := (((holds_iff _ _).1 hn).symm.mul_right e.dual.residue).trans (inverse_residues e)
+  obtain ⟨t,ht⟩ := Int.modEq_iff_dvd.mp h
+  exact ⟨e.dual.residue,t,by linear_combination -ht⟩
+
+/-- For any witness, all of its modular inverses are exactly the witnesses to
+the event obtained by swapping slope and intercept. -/
+theorem dual_witness_iff (e : Event) (n m : ℤ) (hn : e.holds n) :
+    e.dual.holds m ↔ n*m ≡ 1 [ZMOD e.modulus] := by
+  rw [holds_iff,dual_modulus]
+  have h := (holds_iff _ _).1 hn
+  have hi := inverse_residues e
+  constructor
+  · intro hm
+    exact (h.mul hm).symm.trans hi
+  · intro hm
+    have hn' := (h.symm.mul_right e.dual.residue).trans hi
+    have h₁ := (hn'.mul_left m).symm
+    have h₂ := hm.mul_right e.dual.residue
+    rw [mul_one] at h₁
+    rw [one_mul] at h₂
+    rw [show m*(n*e.dual.residue)=n*m*e.dual.residue by ring] at h₁
+    exact (h₁.trans h₂).symm
+
+/-- The reciprocal event is identical precisely when the difference of the
+squares of its two shape parameters vanishes modulo the modulus. -/
+theorem self_dual_iff (e : Event) :
+    (∀ n, e.holds n ↔ e.dual.holds n) ↔ e.modulus ∣ (e.a : ℤ)^2-(e.c : ℤ)^2 := by
+  have hr : e.holds e.residue := (holds_iff _ _).2 Int.ModEq.rfl
+  have test : e.dual.holds e.residue ↔ e.modulus ∣ (e.a : ℤ)^2-(e.c : ℤ)^2 := by
+    change e.dual.modulus ∣ e.residue*(e.a : ℤ)+e.c ↔ _
+    rw [dual_modulus]
+    constructor
+    · rintro ⟨t,ht⟩
+      refine ⟨-(e.c : ℤ)*t-(e.a : ℤ)^2,?_⟩
+      unfold residue modulus at *
+      linear_combination -(e.c : ℤ)*ht
+    · rintro ⟨t,ht⟩
+      refine ⟨-(e.K : ℤ)*e.a*e.d*t-e.c,?_⟩
+      unfold residue modulus at *
+      linear_combination -(e.K : ℤ)*e.a*e.d*ht
+  constructor
+  · exact fun H => test.1 ((H _).1 hr)
+  · intro H n
+    have he := (holds_iff e.dual e.residue).1 (test.2 H)
+    rw [dual_modulus] at he
+    rw [holds_iff,holds_iff,dual_modulus]
+    exact ⟨fun h => he.trans h,fun h => he.symm.trans h⟩
+
 end Event
 end GaloisForLFunctions.BezoutValuationIncidence.UnitFractions
 
@@ -122,3 +188,7 @@ end GaloisForLFunctions.BezoutValuationIncidence.UnitFractions
 #print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.intersection_class
 #print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.family_class
 #print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.family_periods
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.inverse_residues
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.witness_coprime
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.dual_witness_iff
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.self_dual_iff

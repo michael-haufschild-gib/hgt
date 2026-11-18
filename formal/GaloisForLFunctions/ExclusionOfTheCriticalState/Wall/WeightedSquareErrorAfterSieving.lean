@@ -144,5 +144,22 @@ theorem criticalState_sieved_integer_quadrature {W₀ : ℝ} (hW : 0 < W₀)
          Finset.prod_le_prod (fun _ _ => tiltSieveFactor_nonneg ..) (fun _ _ => tiltSieveFactor_le_four hβ'.le _)
     _ = _ := by simp
 
+/-- A single critical representative satisfies all finite sieve-product
+bounds on the whole subcritical range. -/
+theorem riemannHypothesis_or_sieved_integer_quadrature : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧
+      ∀ β : ℝ, 0 ≤ β → β < 1/2 → ∀ P : Finset Nat.Primes,
+        let g := fun t : ℝ => Real.exp (β*t)*sievedReferenceError P Φ (∫ u, Real.exp (-u/2)*Φ u) t
+        MemLp g 2 ∧ lpNorm g 2 volume ≤ (∏ p ∈ P, tiltSieveFactor β p)*lpNorm (tiltedIntegerError Φ β) 2 volume := by
+  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hr | ⟨W₀,F,hW,ht,hF⟩
+  · exact Or.inl hr
+  obtain ⟨_,_,Φ,hc,he,_,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hc,he,fun β hβ hβ' P => ?_⟩
+  have h := criticalState_sieved_integer_quadrature hW ht hF hc he hC hb hβ hβ' P
+  exact ⟨h.1,h.2.1⟩
+
+#print axioms riemannHypothesis_or_sieved_integer_quadrature
 #print axioms criticalState_sieved_integer_quadrature
 end GaloisForLFunctions.ExclusionOfTheCriticalState

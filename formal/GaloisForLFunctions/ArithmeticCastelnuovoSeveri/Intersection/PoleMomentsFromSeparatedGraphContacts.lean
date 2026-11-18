@@ -157,9 +157,8 @@ theorem tendsto_ordinary_prime_log_test {h : ℝ → ℝ} (hc : Continuous h) (h
   rw [← hi]
   refine (compact_prime_limits hH hK).1.congr' ?_
   filter_upwards [eventually_gt_atTop (0:ℝ)] with x hx
-  congr 1
-  exact tsum_congr fun p => congrArg (Real.log (p:ℕ)*·)
-    (hp _ (div_pos (Nat.cast_pos.mpr p.property.pos) hx))
+  exact congrArg (·/x) (tsum_congr fun p : Nat.Primes => congrArg (Real.log (p:ℕ)*·)
+    (hp _ (div_pos (Nat.cast_pos.mpr p.property.pos) hx)))
 
 /-- Ordinary-prime part of the directed graph pairing. -/
 def ordinaryGraphPair (f g : ℝ → ℝ) : ℝ :=

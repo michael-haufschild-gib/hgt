@@ -101,3 +101,9 @@ theorem polymer_tail_product [DecidableEq ι] (P : Finset ι) (allowed : Finset 
     prod_nonneg fun i _ => mul_nonneg R.property (abs_nonneg _)
 
 end GaloisForLFunctions.BezoutValuationIncidence.Sieve.PositiveTruncation
+
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.PositiveTruncation.tail_bound
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.PositiveTruncation.uniform_factor_iff
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.PositiveTruncation.rectangular_tail
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.PositiveTruncation.polymer_tail
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.Sieve.PositiveTruncation.polymer_tail_product

@@ -259,6 +259,8 @@ For the integer reference error $D=N-Ae^{t/2}$, exponential integration gives a 
 
 Sieving the integer reference by a finite set $P$ of primes multiplies its weighted $L^2$ error bound by at most $\prod_{p\in P}(1+p^{\lambda-1/2})/(1-p^{-1})$. [Sieved square error](Wall/WeightedSquareErrorAfterSieving.lean).
 
+For $B_d(t)=d^{-1/2}D(t-\log d)$ the naturally ordered Möbius sum is $\Phi(t)$, hence zero on $t\ge0$. Weighting the same sum by $-\log d$ gives the von Mangoldt wave minus $Ae^{t/2}$. [Ordered Möbius inversion](Wall/MoebiusInversionOfTheIntegerQuadrature.lean).
+
 
 The equal-prime term of the covariance, divided by the observation time, tends to the
 state autocorrelation at every fixed lag. At zero lag the coefficient is one. The squared

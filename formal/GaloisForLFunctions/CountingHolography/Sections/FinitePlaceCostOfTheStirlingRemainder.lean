@@ -26,6 +26,7 @@ theorem ordinary_absolute_prime_mass {N : ℕ} (a : Fin N → ℤ) :
   rw [log_ordinaryPrimeGenerator_den,ordinaryPrimeGenerator_num,log_ordinaryPrimeModulus,log_ordinaryPrimeGenerator,
     ← sum_sub_distrib,← sum_add_distrib]
   refine sum_congr rfl fun k hk => ?_
+  change k ∈ (Icc 2 (3*windowEnd N)).filter Nat.Prime at hk
   rw [ordinaryPrimeGenerator_exponent,if_pos hk,← sub_mul,← add_mul]
   congr 1
   rw [← Int.floor_toNat]
@@ -43,8 +44,8 @@ private theorem profile_small_relative_to_prime :
   let C := 6*B/Real.sqrt d
   filter_upwards [eventually_ge_atTop 1,tendsto_natCast_atTop_atTop.eventually_ge_atTop (C/d)] with n hn hlarge
   intro p hp
-  have hn' := Nat.cast_pos.mpr hn (α := ℝ)
-  have hp' := Nat.cast_pos.mpr hp.pos (α := ℝ)
+  have hn' : 0<(n:ℝ) := Nat.cast_pos.mpr hn
+  have hp' : 0<(p:ℝ) := Nat.cast_pos.mpr hp.pos
   let y := (p:ℝ)/(n:ℝ)^2
   have hy : 0<y := div_pos hp' (sq_pos_of_pos hn')
   rw [diagonalPrimeProfile_eq_dilate hn hp.pos]

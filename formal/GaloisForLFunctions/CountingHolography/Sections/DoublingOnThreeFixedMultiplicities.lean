@@ -170,6 +170,14 @@ private theorem doubling_remainder :
   norm_num at h
   linarith only [h,ht]
 
+/-- Removing the stationary and short interactions leaves the two long
+traces with a bounded error independent of the conductor. -/
+theorem successorSquare_degree_long_lags :
+    ∃ D : ℝ, 0 ≤ D ∧ ∀ n : ℕ, 0 < n →
+      |integerProbe _ (successorSquareTriple n) -
+        (4*realSplineTrace (2*Real.log n) -
+         2*realSplineTrace (2*Real.log ((2*n+1:ℕ):ℝ)))| ≤ D := doubling_remainder
+
 /-- The absolute signed degree on the three square conductors grows at
 most with the actual zero width on each of its two long lags. -/
 theorem successorSquare_degree_at_width : ∃ A : ℝ, 0 ≤ A ∧ ∀ n : ℕ, 0 < n →

@@ -202,9 +202,8 @@ theorem representative_degree_bounds (R : ℕ+) (u v : LocalUnit F) (w : Fˣ)
   let j := exponent R (degree x.1-degree x.2)
   have h := (normalized_iff R u v w c x j).2 ⟨rfl,rfl⟩
   have ht := norm_degree_invariant R u v w c x j
-  dsimp only at h ht ⊢
-  unfold representative
-  change _ ≤ 2*degree (translate _ x c j).1 ∧ _
+  dsimp only [c,j] at h ht
+  dsimp only [representative]
   omega
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity

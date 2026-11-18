@@ -30,6 +30,8 @@ Under one quartet, what is the size of the surviving wave when the cofactor symb
 
 The largest prime factor $P(n)$ alone recovers the ordinary prime-error exponent. For $1/2\le b<1$, the bound $\sum_{n\le N}P(n)\log P(n)=\pi^2N^2/12+O(N^{1+b})$ is equivalent to $\psi(N)=N+O(N^b)$. [Proof](../3-formalized/the-largest-prime-factor-recovers-the-prime-error-exponent.md)
 
+For uncentered signed counts $\sum_{p\le X}F(\lfloor X/p\rfloor)$, a nonzero profile of strictly sublinear power growth cannot give any sublinear power saving. At linear growth an explicit factorial-weighted parity profile gives every exponent $b>7/8$. Its prime count has exactly the Mertens power bounds for $b>1/2$. [Sharp growth boundary](../3-formalized/the-linear-growth-boundary-for-ordinary-prime-quotient-profiles.md)
+
 ## Adjacent cutoffs
 
 The primitive residue products $P_a(n)=\prod_{k<n}(qk+a)$ give a second arithmetic target. The logarithm of their largest coordinate after common gcd division has a complementary first-mean error at every dyadic width. [Height criterion](../3-formalized/cyclic-coefficient-heights-and-ordinary-prime-counts.md)

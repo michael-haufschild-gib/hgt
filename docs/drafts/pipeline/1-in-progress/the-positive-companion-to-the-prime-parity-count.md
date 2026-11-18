@@ -2,7 +2,7 @@
 
 Set $v(n)=\prod_p1/v_p(n)!$, $d_+(n)=v(n)/(1+\Omega(n))$ and $F_+(N)=\sum_{n\le N}d_+(n)$. Every $n>1$ contributes $\sum_{p\mid n}d_+(n/p)=v(n)$, so
 $$\sum_{p\le N}F_+(\lfloor N/p\rfloor)=\sum_{n\le N}v(n)-1.$$
-The signed companion uses the same coefficients multiplied by $(-1)^{\Omega(n)}$. [Signed count](the-linear-growth-boundary-for-ordinary-prime-quotient-profiles.md)
+The signed companion uses the same coefficients multiplied by $(-1)^{\Omega(n)}$. [Signed count](../3-formalized/the-linear-growth-boundary-for-ordinary-prime-quotient-profiles.md)
 
 With $h=v*\mu$, the local generating function is $(1-z)e^z$. Thus $h(p)=0$ and $h(p^k)=-(k-1)/k!$ for $k\ge2$. For $1/2<b\le1$ put $K_b=\sum_{d\ge1}|h(d)|d^{-b}<\infty$ and $c=\sum_{d\ge1}h(d)/d$. Then
 $$\left|\sum_{n\le N}v(n)-cN\right|\le K_bN^b.$$
@@ -15,3 +15,5 @@ $$\min(1,u^2/a^2)\le 4u^2\left((u+a-1)^{-1}-(u+a)^{-1}\right).$$
 Summing in $a$ with $u=\sqrt{N/b^3}$ bounds the total floor error by $4\zeta(3/2)\sqrt N$. This endpoint bound uses only the support and size of the correction.
 
 For sharpness below one half, the Euler factor of $\zeta(2s)(\sum h(n)n^{-s})^2$ is $e^{2z}(1-z)/(1+z)$ at $z=p^{-s}$. It is nonzero and starts with $1+O(z^3)$. Its product is holomorphic and nonzero near $s=1/2$. The square of the correction therefore has a simple zero there. A power saving below one half would continue the correction meromorphically across that point by partial summation and division by zeta, contradicting the integer order of a meromorphic square.
+
+An uncentered ordinary-prime count attains the endpoint as well. Let $G(N)=F_+(N)-2F_+(\lfloor N/2\rfloor)$. Since integer division commutes in the two denominators, its prime sum equals the same dyadic difference of the positive prime sum. For $N\ge2$ its main term is $1+c(N\bmod 2)$. The full sum is $O(\sqrt N)$. But $G(1)=1$, $|G(N)|\le2N$, and the rigidity theorem excludes $G(N)=O(N^a)$ for every $a<1$. This gives a nonzero linear-growth profile with an unconditional square-root prime count. The factorial parity profile on the same growth boundary has the Mertens error exponent.

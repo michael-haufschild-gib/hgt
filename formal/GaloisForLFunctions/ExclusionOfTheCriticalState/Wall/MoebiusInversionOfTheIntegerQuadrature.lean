@@ -82,8 +82,9 @@ private theorem scaled_polar_row (d : ℕ) (t : ℝ) :
   calc _ = ((Real.sqrt d)^2)⁻¹*Real.exp (t/2) := by rw [← inv_pow,div_eq_mul_inv]; ring
     _ = _ := by rw [Real.sq_sqrt hd'.le]
 
-/-- The density term uses the ordered harmonic mean of the coefficients. -/
-private theorem tendsto_centered_multiple_rows {Φ : ℝ → ℝ} {C : ℝ} (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
+/-- The ordered sum of centered rows has divisor-sum coefficients. Its polar
+term is the density multiplied by the ordered harmonic mean of the weights. -/
+theorem tendsto_centredMultipleRow_of_harmonic_limit {Φ : ℝ → ℝ} {C : ℝ} (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
     {w : ℕ → ℝ} (hw : Summable fun d : ℕ => |w d|/(d:ℝ)^2) {M : ℝ}
     (hM : Tendsto (fun N : ℕ => ∑ d ∈ range (N+1), w d/(d:ℝ)) atTop (𝓝 M))
     (A t : ℝ) : Tendsto (fun N : ℕ => ∑ d ∈ range (N+1), w d*centredMultipleRow Φ A d t) atTop
@@ -113,7 +114,7 @@ theorem tendsto_moebius_centredMultipleRow {Φ : ℝ → ℝ} {C : ℝ} (hb : �
       ((Real.summable_one_div_nat_pow (p := 2)).2 (by norm_num))
   have hM := deningerHarmonicPartial_tendsto
   rw [deningerHarmonicLimit_eq_zero] at hM
-  have h := tendsto_centered_multiple_rows hb hw hM A t
+  have h := tendsto_centredMultipleRow_of_harmonic_limit hb hw hM A t
   have hv : (∑' n : ℕ, (if n=1 then (1:ℝ) else 0)*continuousIntegerAtom Φ n t)=Φ t := by
     rw [tsum_eq_single 1 (fun n hn => by rw [if_neg hn,zero_mul])]
     simp [continuousIntegerAtom]
@@ -139,7 +140,7 @@ theorem tendsto_moebius_log_centredMultipleRow {Φ : ℝ → ℝ} {C : ℝ} (hb 
       w,realMoebius,div_eq_mul_inv] using h
   have hcoef (n : ℕ) : (∑ d ∈ n.divisors, w d)=vonMangoldt n := by
     simp only [w,realMoebius,neg_mul,sum_neg_distrib,deningerMobiusLogDivisorSum,neg_neg]
-  have h := tendsto_centered_multiple_rows hb hw hM A t
+  have h := tendsto_centredMultipleRow_of_harmonic_limit hb hw hM A t
   simp_rw [hcoef,one_mul] at h
   simpa only [w,realMoebius] using h
 

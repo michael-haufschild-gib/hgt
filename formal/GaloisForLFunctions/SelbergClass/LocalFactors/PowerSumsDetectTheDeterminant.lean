@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.MultisetNewtonSolve
 import GaloisForLFunctions.RHTower.ExteriorSatake
 import GaloisForLFunctions.RHTower.AdamsOperations
+import Mathlib.RingTheory.RootsOfUnity.Complex
 
 /-!
 # Detecting a local determinant in its logarithmic coefficients
@@ -31,7 +32,7 @@ private theorem interior_card (k : ℕ) : (interiorPairs k).card ≤ k-1 := by
     exact Prod.ext h (by dsimp at h₁ h₂; omega)
   have h := Finset.card_le_card_of_injOn Prod.fst
     (t := Finset.Ioo 0 k) (fun a ha => Finset.mem_Ioo.mpr (mem_filter.mp ha).2) hi
-  simpa using h
+  simpa [interiorPairs] using h
 
 private theorem newton_majorant (s : Multiset ℂ) (k : ℕ) (hk : 0 < k) :
     (k : ℝ)*‖s.esymm k‖ ≤ ‖tracePow s k‖ +
@@ -42,7 +43,7 @@ private theorem newton_majorant (s : Multiset ℂ) (k : ℕ) (hk : 0 < k) :
     ∑ a ∈ interiorPairs k, (-1 : ℂ)^a.1 * s.esymm a.1 * tracePow s a.2‖ ≤ _)
   change tracePow s k + ∑ a ∈ interiorPairs k, _ = _ at h
   rw [h] at hh
-  refine le_trans (by simpa [norm_mul] using hh) (add_le_add_left ?_ _)
+  refine le_trans (by simpa [norm_mul] using hh) (add_le_add_right ?_ _)
   simpa only [norm_mul,norm_pow,norm_neg,norm_one,one_pow,one_mul] using
     norm_sum_le (interiorPairs k) (fun a => (-1 : ℂ)^a.1 * s.esymm a.1 * tracePow s a.2)
 
@@ -84,13 +85,13 @@ theorem exterior_bound (s : Multiset ℂ) (B : NNReal) (k : ℕ) :
 
 /-- The last moment pays for any deficit in the first k−1 moments. -/
 theorem last_trace_lower (s : Multiset ℂ) (B : NNReal) (k : ℕ+) :
-    (∀ j, 0 < j → j < k → ‖tracePow s j‖ ≤ (B : ℝ)^j) →
+    (∀ j : ℕ, 0 < j → j < (k : ℕ) → ‖tracePow s j‖ ≤ (B : ℝ)^j) →
       (k : ℝ)*‖s.esymm k‖ - ((k : ℝ)-1)*(B : ℝ)^(k : ℕ) ≤ ‖tracePow s k‖ := by
   intro hP
-  have he j (hj : j < k) := exterior_bound s B j
+  have he (j : ℕ) (hj : j < (k : ℕ)) := exterior_bound s B j
     (fun t ht htj => hP t ht (htj.trans_lt hj))
   have h := (newton_majorant s k k.pos).trans
-    (add_le_add_left (remainder_majorant s k B he hP) _)
+    (add_le_add_right (remainder_majorant s k B he hP) _)
   rw [Nat.cast_sub (by exact k.pos), Nat.cast_one] at h
   linarith only [h]
 
@@ -113,8 +114,61 @@ theorem determinant_detection (z : ℂ) (rest : Multiset ℂ) (B : NNReal) :
   change ‖tracePow s s.card‖ < (B : ℝ)^s.card at he
   linarith only [hl,hm,he]
 
+/-- The inverse Euler factor inherits the same coefficient envelope as the
+logarithmic prime powers, without any bound on individual Satake parameters. -/
+theorem euler_coefficient_bound (s : Multiset ℂ) (B : NNReal) (k : ℕ) :
+    (∀ j, 0 < j → j ≤ k → ‖tracePow s j‖ ≤ (B : ℝ)^j) →
+      ‖((s.map (fun z => 1-Polynomial.C z*Polynomial.X)).prod).coeff k‖ ≤ (B : ℝ)^k := by
+  intro h
+  simpa [localFactor_coeff_esymm,norm_mul] using exterior_bound s B k h
+
+/-- An indexed Satake tuple of positive rank has a detecting Adams operation. -/
+theorem adams_detection {ι : Type*} [Fintype ι] [Nonempty ι] (α : ι → ℂ) (B : NNReal) :
+    (B : ℝ)^(Fintype.card ι) ≤ ‖∏ i, α i‖ →
+      ∃ j, 0 < j ∧ j ≤ Fintype.card ι ∧ (B : ℝ)^j ≤ ‖adamsPowerSum α j‖ := by
+  let s := (univ : Finset ι).val.map α
+  have hcard : s.card = Fintype.card ι := Multiset.card_map _ _
+  have hs : ∀ t : Multiset ℂ, 0 < t.card → (B : ℝ)^t.card ≤ ‖t.prod‖ →
+        ∃ j, 0 < j ∧ j ≤ t.card ∧ (B : ℝ)^j ≤ ‖tracePow t j‖ := by
+    intro t
+    induction t using Multiset.induction with
+    | empty => simp
+    | cons a t _ => exact fun _ => determinant_detection a t B
+  intro hd
+  obtain ⟨j,hj,hk,hp⟩ := hs s (hcard ▸ Fintype.card_pos) (by simpa only [hcard] using hd)
+  exact ⟨j,hj,hcard ▸ hk,by simpa only [s,tracePow,Multiset.map_map,Function.comp_def,adamsPowerSum,
+    Finset.sum] using hp⟩
+
+/-- Deleting the identity root from a regular polygon gives equality in every
+one of the first r trace bounds, simultaneously, at any complex scale. -/
+theorem sharp_spectrum (r : ℕ+) (a : ℂ) :
+    ∃ α : Fin (r : ℕ) → ℂ, ‖∏ i, α i‖ = ‖a‖^(r : ℕ) ∧
+      ∀ j : ℕ, 0 < j → j ≤ (r : ℕ) → adamsPowerSum α j = -a^j := by
+  let N := (r : ℕ)+1
+  have hN : N ≠ 0 := Nat.succ_ne_zero _
+  let ζ := Complex.exp (2*Real.pi*Complex.I / N)
+  have hz : IsPrimitiveRoot ζ N := Complex.isPrimitiveRoot_exp N hN
+  refine ⟨fun i => a*ζ^(i.val+1),?_,?_⟩
+  · simp [norm_prod,norm_mul,norm_pow,hz.norm'_eq_one hN]
+  · intro j hj hk
+    have hn : ¬ N ∣ j := fun h => (Nat.le_of_dvd hj h).not_gt (by dsimp [N]; omega)
+    have hne : ζ^j ≠ 1 := fun h => hn ((hz.pow_eq_one_iff_dvd j).mp h)
+    have hzero : (∑ i ∈ range N, (ζ^j)^i) = 0 := by
+      rw [geom_sum_eq hne,← pow_mul,mul_comm,pow_mul,hz.pow_eq_one,one_pow,sub_self,zero_div]
+    rw [show N=(r : ℕ)+1 from rfl,sum_range_succ',pow_zero] at hzero
+    have hsum : (∑ i : Fin (r : ℕ), (ζ^j)^(i.val+1)) = -1 := by
+      rw [Fin.sum_univ_eq_sum_range]
+      linear_combination hzero
+    calc
+      _ = ∑ i : Fin (r : ℕ), a^j*(ζ^j)^(i.val+1) :=
+        sum_congr rfl fun i _ => by rw [mul_pow,pow_right_comm ζ (i.val+1) j]
+      _ = _ := by rw [← mul_sum,hsum,mul_neg,mul_one]
+
 end GaloisForLFunctions.SelbergClass.LocalPowerSums
 
 #print axioms GaloisForLFunctions.SelbergClass.LocalPowerSums.exterior_bound
 #print axioms GaloisForLFunctions.SelbergClass.LocalPowerSums.last_trace_lower
 #print axioms GaloisForLFunctions.SelbergClass.LocalPowerSums.determinant_detection
+#print axioms GaloisForLFunctions.SelbergClass.LocalPowerSums.euler_coefficient_bound
+#print axioms GaloisForLFunctions.SelbergClass.LocalPowerSums.adams_detection
+#print axioms GaloisForLFunctions.SelbergClass.LocalPowerSums.sharp_spectrum

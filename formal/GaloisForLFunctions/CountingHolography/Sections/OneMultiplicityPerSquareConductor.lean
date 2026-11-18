@@ -273,7 +273,9 @@ theorem successorSquare_log_negligible {ε : ℝ} (hε : 0 < ε) :
   dsimp only [t] at *
   linarith only [hab,herr,mul_le_mul_of_nonneg_right h₁ hn0,h₂',mul_le_mul_of_nonneg_left hp' ht]
 
-private theorem square_degree_window_error : ∃ E : ℝ, 0 ≤ E ∧ ∀ {n m : ℕ}, 0 < n → 0 < m →
+/-- On the conductor window the logarithmic generator plus the scaled
+degree has a uniform quadratic error. -/
+theorem successorSquare_degree_window_error : ∃ E : ℝ, 0 ≤ E ∧ ∀ {n m : ℕ}, 0 < n → 0 < m →
     (m:ℝ) ≤ 2*((n:ℝ)+1) →
     |Real.log (ordinaryPrimeGenerator (m • successorSquareTriple n) : ℝ) +
       (m:ℝ)^2*integerProbe _ (successorSquareTriple n)| ≤ E*((n:ℝ)+1)^2 := by
@@ -386,7 +388,7 @@ The exponent of the integer base stays fixed while the multiplicity changes. -/
 theorem zetaZeroWidth_le_iff_stripMultiplicity_power {s : ℝ} (hs : 0 ≤ s) (hs' : s < 1/2) :
     zetaZeroWidth ≤ s ↔ ∃ B : ℕ, 0 < B ∧ ∀ n : ℕ, 0 < n →
       ordinaryPrimeGenerator (stripMultiplicity s n • successorSquareTriple n) ≤ (B:ℚ)^((n+1)^2) := by
-  obtain ⟨E,hE,he⟩ := square_degree_window_error
+  obtain ⟨E,hE,he⟩ := successorSquare_degree_window_error
   rw [zetaZeroWidth_le_iff_successorSquareTriple hs hs']
   constructor
   · rintro ⟨A,hA⟩

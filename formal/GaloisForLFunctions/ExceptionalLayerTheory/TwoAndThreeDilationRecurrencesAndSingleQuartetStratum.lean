@@ -68,6 +68,8 @@ open scoped ComplexConjugate
 open RHTower
 open GaloisForLFunctions.ZeroConfigurationGeometry
 open GaloisForLFunctions.ExclusionOfTheCriticalState
+open GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations
+open GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
@@ -99,11 +101,6 @@ def ThreeClockPrimeRecurrenceLaw : Prop :=
         IsSqrtLogSqUnbounded (primeDilationResidual 5 β γ)
 
 /-! ### 2. Master finite-layer annihilation and positive `x^β` limsup lemmas -/
-
-private theorem dilationRecurrenceOp_neg (a β γ : ℝ) (f : ℝ → ℝ) (x : ℝ) :
-    dilationRecurrenceOp a β γ (fun y => -f y) x = -dilationRecurrenceOp a β γ f x := by
-  simp only [dilationRecurrenceOp]
-  ring
 
 private theorem dilationRecurrenceOp_finset_sum {ι : Type*} (s : Finset ι) (a β γ : ℝ)
     (f : ι → ℝ → ℝ) (x : ℝ) :

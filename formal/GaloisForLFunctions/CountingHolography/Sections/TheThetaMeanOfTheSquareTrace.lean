@@ -57,6 +57,43 @@ theorem thetaMean_realSplineTrace (t : ℝ) :
   simp_rw [mul_left_comm (thetaCuspFullSource _) 2,integral_const_mul] at hc
   linarith only [hc]
 
+/-- The two long-range terms of the three-square Weil degree. -/
+def squareLongTrace (u : ℝ) := 4*realSplineTrace u-2*realSplineTrace (u+Real.log 4)
+
+theorem continuous_squareLongTrace : Continuous squareLongTrace := by
+  have hc : Continuous realSplineTrace := Complex.continuous_re.comp continuous_splineSeries
+  exact (continuous_const.mul hc).sub (continuous_const.mul (hc.comp (continuous_id.add continuous_const)))
+
+/-- Both long lags obey the same strip exponent after a fixed translation. -/
+theorem squareLongTrace_bound : ∃ A : ℝ, 0 ≤ A ∧ ∀ u : ℝ, |squareLongTrace u| ≤ A*Real.exp (1/2*|u|) := by
+  obtain ⟨B,hB,h⟩ := realSplineTrace_strip_bound
+  let k := Real.exp (1/2*|Real.log 4|)
+  refine ⟨4*B+2*B*k,by dsimp only [k]; positivity,fun u => ?_⟩
+  have h₁ := h u
+  have h₂ := (h (u+Real.log 4)).trans (mul_le_mul_of_nonneg_left
+    (SurfaceOfSpecZ.ScaleLocality.exp_abs_add_le (by norm_num : (0:ℝ) ≤ 1/2) u (Real.log 4)) hB)
+  have hh := abs_sub_le (4*realSplineTrace u) 0 (2*realSplineTrace (u+Real.log 4))
+  simp only [sub_zero,zero_sub,abs_neg,abs_mul] at hh
+  norm_num at hh
+  dsimp only [squareLongTrace,k]
+  linarith only [hh,h₁,h₂]
+
+/-- The complete long-range term has zero theta mean at every center. -/
+theorem thetaMean_squareLongTrace (T : ℝ) :
+    Integrable (fun x => thetaCuspFullSource x*squareLongTrace (T+x)) ∧ (∫ x, thetaCuspFullSource x*squareLongTrace (T+x))=0 := by
+  obtain ⟨h₁,e₁⟩ := thetaMean_realSplineTrace T
+  obtain ⟨h₂,e₂⟩ := thetaMean_realSplineTrace (T+Real.log 4)
+  have he (x : ℝ) : thetaCuspFullSource x*squareLongTrace (T+x)=
+      4*(thetaCuspFullSource x*realSplineTrace (T+x))-2*(thetaCuspFullSource x*realSplineTrace ((T+Real.log 4)+x)) := by
+    unfold squareLongTrace
+    rw [show T+x+Real.log 4=T+Real.log 4+x by ring]
+    ring
+  simp_rw [he]
+  refine ⟨(h₁.const_mul 4).sub (h₂.const_mul 2),?_⟩
+  rw [integral_sub (h₁.const_mul 4) (h₂.const_mul 2),integral_const_mul,integral_const_mul,e₁,e₂]
+  ring
+
 #print axioms thetaMean_realSplineTrace
+#print axioms thetaMean_squareLongTrace
 
 end GaloisForLFunctions.CountingHolography.Sections
