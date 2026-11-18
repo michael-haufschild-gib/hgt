@@ -55,7 +55,6 @@ private theorem pull_moment {d : ℝ} (hd : 0 < d) (a b : ℝ) (f : ℝ → ℝ)
     simp only [ccmRealExponentialTilt, pullProfile, mul_assoc, ← Real.exp_add]
     congr 2
     field_simp
-    ring
   simpa only [ccmRealExponentialMoment, h] using
     integral_scale hd (ccmRealExponentialTilt ((a+b)/d) f)
 
@@ -104,10 +103,14 @@ theorem power_contact_descent (d : ℕ+) (f g : ℝ → ℝ) (s : ℝ) :
     congr 1
     dsimp only [a]
     ring
-  simp only [div_eq_mul_inv] at he ⊢
-  rw [← he]
-  field_simp [hr.ne']
-  <;> ring
+  let J := ∫ u : ℝ, f u * g (u+r*(Real.log k-s))
+  change 2*Λ k / Real.exp (r*Real.log k/2) * J =
+    r*Real.exp (-a*s) * (2*Λ k/Real.exp (Real.log k/2) *
+      (Real.exp (-a*(Real.log k-s)) * r⁻¹ * J))
+  calc _ = (r*r⁻¹) * (Real.exp (r*Real.log k/2))⁻¹ * (2*Λ k*J) := by
+             rw [mul_inv_cancel₀ hr.ne',one_mul]
+             ring
+       _ = _ := by rw [← he]; ring
 
 private theorem pull_compact {d : ℝ} (hd : 0 < d) (a : ℝ) {f : ℝ → ℝ}
     (hf : HasCompactSupport f) : HasCompactSupport (pullProfile d a f) :=
@@ -161,7 +164,6 @@ theorem tendsto_power_contact (d : ℕ+) {f g : ℝ → ℝ}
     ring
   · congr 1
     field_simp
-    ring
 
 #print axioms power_contact_descent
 #print axioms tendsto_power_contact

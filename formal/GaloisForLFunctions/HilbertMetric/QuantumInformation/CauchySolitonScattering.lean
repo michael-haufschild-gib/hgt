@@ -65,6 +65,7 @@ theorem coherence_det_cons {n : ℕ} (r : Fin (n + 1) → ℝ) :
     rw [show B 0 0 = 1 by simp [B, A, c, coherence_self], one_mul, hsub,
       Matrix.det_mul_column, Matrix.det_mul_row, ← mul_assoc, ← Finset.prod_mul_distrib]
     simp only [pow_two]
+    rfl
   · intro i _ hi
     simp [B, A, c, hi, coherence_self]
   · simp
@@ -79,7 +80,7 @@ theorem coherence_det_eq_scattering {n : ℕ} (r : Fin n → ℝ) :
   | succ n ih =>
     rw [coherence_det_cons, ih, Fin.prod_univ_succ, Fin.prod_Ioi_zero]
     congr 1
-    exact Finset.prod_congr rfl fun i _ => (Fin.prod_Ioi_succ _ _).symm
+    exact Finset.prod_congr rfl fun i _ => (Fin.prod_Ioi_succ (fun j => contrast (r j) (r i.succ) ^ 2) i).symm
 
 /-- Colliding momenta are exactly the singular configurations. -/
 theorem coherence_det_ne_zero_iff {n : ℕ} (r : Fin n → ℝ) :
@@ -87,7 +88,9 @@ theorem coherence_det_ne_zero_iff {n : ℕ} (r : Fin n → ℝ) :
   constructor
   · intro hd i j hij
     by_contra h
-    exact hd (Matrix.det_zero_of_row_eq h (by simp [hij]))
+    apply hd
+    apply Matrix.det_zero_of_row_eq h
+    exact congrArg (fun t => fun k => coherence t (r k)) hij
   · intro hr
     rw [coherence_det_eq_scattering]
     exact Finset.prod_ne_zero_iff.mpr fun i _ => Finset.prod_ne_zero_iff.mpr fun j hj =>

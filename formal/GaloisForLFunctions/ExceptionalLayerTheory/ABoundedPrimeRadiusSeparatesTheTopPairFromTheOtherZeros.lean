@@ -82,10 +82,11 @@ theorem exp_lower_of_step {E : ℝ → ℝ} {h a K : ℝ} (hh : 0 < h) (ha : 0 <
   dsimp only [G] at h
   linarith only [h,hmul]
 
-private def subtractedTheta (β t : ℝ) :=
+/-- The ordinary-prime error with the extremal wave removed. -/
+def subtractedTheta (β t : ℝ) :=
   thetaLogError t-Real.exp (β*t)*primeErrorBoundaryTrace β t
 
-private theorem subtractedTheta_step (β h t : ℝ) :
+theorem subtractedTheta_step (β h t : ℝ) :
     subtractedTheta β (t+h)-subtractedTheta β t = Real.exp (β*t)*
       (normalizedPrimeIncrement β h t - boundaryStep β h (primeErrorBoundaryTrace β) t) := by
   simp only [subtractedTheta,normalizedPrimeIncrement,logStepIncrement,boundaryStep,mul_add,Real.exp_add]
@@ -105,6 +106,17 @@ private theorem subtractedTheta_locally_bddBelow {β : ℝ} (hβ : 1/2 < β) (b 
       (mul_le_mul_of_nonneg_left ht (by linarith only [hβ]))) hB)
   dsimp only [subtractedTheta,thetaLogError]
   linarith only [hf,Real.exp_le_exp.mpr ht,Chebyshev.theta_nonneg (Real.exp t)]
+
+theorem lagPole_notMem_linePoles_of_ne_re {β : ℝ}
+    (hf : {p : XiZeroCopy | (p.1 : ℂ).re = β}.Finite) (q : XiZeroCopy) (hq : (q.1 : ℂ).re ≠ β) :
+    lagPole q ∉ offLinePoles hf.toFinset := by
+  rintro (⟨p,hp,he⟩ | ⟨p,hp,he⟩)
+  all_goals
+    have hpβ := hf.mem_toFinset.mp hp
+    have hz := congrArg Complex.re he
+    simp only [lagPole,Complex.conj_re,Complex.sub_re] at hz
+    apply hq
+    linarith only [hz,hpβ]
 
 /-- Every nonextremal zero lies at or left of the midpoint between the
 critical line and the extremal line of a bounded trial radius. -/
@@ -158,14 +170,7 @@ theorem re_le_midpoint_of_bounded_radius_of_not_top {γ : ℝ} {m : ℕ}
     rw [mul_exp_boundaryTrace_eq_neg_top_wave hf, Real.exp_log hpos,sub_neg_eq_add] at he
     rw [show (1/2:ℝ)+(a-1/2)=a by ring,Real.rpow_def_of_pos hpos,mul_comm (Real.log x) a]
     exact he.trans (add_le_add (sub_le_sub_right (Chebyshev.theta_le_psi _) _) le_rfl)
-  have hnot : lagPole q ∉ offLinePoles S := by
-    rintro (⟨p,hp,he⟩ | ⟨p,hp,he⟩)
-    all_goals
-      have hpβ := hf.mem_toFinset.mp hp
-      have hz := congrArg Complex.re he
-      simp only [lagPole,Complex.conj_re,Complex.sub_re,Complex.ofReal_re] at hz
-      apply hq
-      linarith only [hz,hpβ]
+  have hnot : lagPole q ∉ offLinePoles S := lagPole_notMem_linePoles_of_ne_re hf q hq
   have H := re_le_half_add_of_chebyshevPsi_sub_add_offLineWave_ge S hC (sub_pos.mpr hhalf)
     (by linarith only [ha1]) (by norm_num : (1:ℝ)<2) hp q hnot
   linarith only [har,H]

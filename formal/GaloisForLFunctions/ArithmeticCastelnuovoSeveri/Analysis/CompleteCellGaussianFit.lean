@@ -15,7 +15,7 @@ coordinates. For zero detail the score is unbounded below.
 noncomputable section
 open Set MeasureTheory
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells
-open IntervalVariance
+open BiarithmeticGaugeGeometry IntervalVariance
 
 /-- Twice the expected Gaussian negative log likelihood, with the universal
 constant log(2π) removed. The second parameter is the logarithm of the variance. -/

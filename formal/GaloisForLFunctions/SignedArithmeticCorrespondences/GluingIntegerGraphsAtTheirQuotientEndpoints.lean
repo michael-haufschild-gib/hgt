@@ -157,6 +157,47 @@ theorem completed_endpoint_budget (ε : ℝ) (hε : 0 < ε) :
   rw [← Real.norm_eq_abs, ← tsum_mul_left]
   exact (norm_tsum_le_tsum_norm hsum.norm).trans (hsum.norm.tsum_le_tsum hterm hmajor)
 
+/-- The exact support of the mixed quotient coefficients lies below the largest
+upper endpoint, independently of the number of lower graphs. -/
+private theorem quotientCoefficient_eq_zero {N k : ℕ} (hk : N < k) (X : ℕ) (u b : ℕ → ℤ) :
+    quotientCoefficient X N u b k = 0 := by
+  refine sum_eq_zero fun i _ => sum_eq_zero fun j hj => ?_
+  exact if_neg (ne_of_lt (((Nat.div_le_self j i).trans (mem_Icc.mp hj).2).trans_lt hk))
+
+/-- Distance from a finite integral intersection to a prescribed infinite
+endpoint profile. The right side prices only the variation left after gluing.
+This gives convergence along every exhaustion approaching the same profile
+in weighted variation, with one constant for both supports. -/
+theorem distance_to_completed_intersection (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ (X N : ℕ) (u b : ℕ → ℤ) (a : ℕ → ℝ),
+      Summable (fun k => |a k|*(k : ℝ)^(zetaZeroAbscissa+ε)) →
+      let c := quotientCoefficient X N u b
+      |signedDivisorHeight 1 X N u (upperDivisor N b) - poleProduct X N u b +
+        fractionalBoundary X N u b - ∑' k, a k*psiRemainder k| ≤
+        C * ∑' k, |c k-a k|*(k : ℝ)^(zetaZeroAbscissa+ε) := by
+  obtain ⟨C,hC,hpair⟩ := completed_endpoint_budget ε hε
+  refine ⟨C,hC,fun X N u b a ha => ?_⟩
+  let c := quotientCoefficient X N u b
+  have hc {k : ℕ} (hk : k ∉ range (N+1)) : c k = 0 :=
+    quotientCoefficient_eq_zero (by simpa only [mem_range,not_lt,Nat.succ_le_iff] using hk) X u b
+  have hcw : Summable (fun k => |c k|*(k : ℝ)^(zetaZeroAbscissa+ε)) :=
+    summable_of_ne_finset_zero (s := range (N+1)) fun k hk => by simp [hc hk]
+  have hce := (hpair c hcw).1
+  have hae := (hpair a ha).1
+  have hdiff : Summable (fun k => |c k-a k|*(k : ℝ)^(zetaZeroAbscissa+ε)) := by
+    apply Summable.of_nonneg_of_le (fun k => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)) _ (hcw.add ha)
+    intro k
+    simpa only [Pi.add_apply, ← add_mul] using
+      mul_le_mul_of_nonneg_right (abs_sub (c k) (a k)) (Real.rpow_nonneg (Nat.cast_nonneg k) (zetaZeroAbscissa+ε))
+  have h := (hpair (fun k => c k-a k) hdiff).2
+  have he : (∑' k, c k*psiRemainder k) = ∑ k ∈ range (N+1), c k*psiRemainder k :=
+    tsum_eq_sum fun k hk => by simp only [hc hk,zero_mul]
+  rw [mixed_height_finite_part]
+  change |(∑ k ∈ range (N+1), c k*psiRemainder k) - _| ≤ _
+  rw [← he,← hce.tsum_sub hae]
+  simpa only [sub_mul] using h
+
+#print axioms distance_to_completed_intersection
 #print axioms completed_endpoint_budget
 #print axioms height_eq_quotient
 #print axioms mixed_height_budget_iff

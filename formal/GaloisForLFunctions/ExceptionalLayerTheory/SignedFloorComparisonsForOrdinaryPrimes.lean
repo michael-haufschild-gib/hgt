@@ -27,7 +27,7 @@ theorem ordinaryPrimeRead_eq_finite {f : ℝ → ℂ} {δ x : ℝ} (hδ : 0<δ) 
   classical
   let S := (Nat.primesLE N).attach.map
     ⟨fun k => (⟨k.1,Nat.prime_of_mem_primesLE k.2⟩ : Nat.Primes),
-      fun i j e => Subtype.ext (congrArg Subtype.val e)⟩
+      fun i j e => Subtype.ext (congrArg (fun p : Nat.Primes => (p : ℕ)) e)⟩
   have hmem (p : Nat.Primes) : p ∈ S ↔ p.1≤N := by
     constructor
     · intro hp
@@ -57,7 +57,8 @@ private theorem local_of_bounded {f : ℝ → ℂ} (hm : Measurable f)
 private theorem read_local {f : ℝ → ℂ} (hm : Measurable f) {δ A : ℝ}
     (hδ : 0<δ) (hA : 0≤A) (hz : ∀ t, 0<t → t<δ → f t=0)
     (hb : ∀ t, 0<t → ‖f t‖≤A*t) : LocallyIntegrableOn (ordinaryPrimeRead f) (Ioi 0) := by
-  apply local_of_bounded (Measurable.tsum (fun p : Nat.Primes => hm.comp (measurable_id.div_const _)))
+  apply local_of_bounded (f := ordinaryPrimeRead f)
+    (Measurable.tsum (fun p : Nat.Primes => hm.comp (measurable_id.div_const _)))
   intro T hT
   obtain ⟨N,hN⟩ := exists_nat_ge (T/δ)
   refine ⟨(Nat.primesLE N).card*(A*T),fun x hx hxt => ?_⟩
@@ -84,7 +85,7 @@ private theorem mellin_diff_of_power {f : ℝ → ℂ} {b δ : ℝ} (hl : Locall
   have ht := mellin_differentiableAt_of_isBigO_rpow (s := -z) (a := -b)
     (b := -z.re-1) hl (by simpa only [neg_neg] using h) (by simpa using hzb)
     (near_zero_bound hδ hz ( -(-z.re-1))) (by simp only [neg_re]; linarith)
-  exact (ht.comp z differentiableAt_neg).differentiableWithinAt
+  exact (ht.comp z differentiableAt_id.neg).differentiableWithinAt
 
 /-- The multiplicative change of variable at each prime also scales its
 absolute Mellin integral, giving absolute convergence before interchange. -/
@@ -173,7 +174,8 @@ private theorem mellin_linearCut (c : ℂ) {s : ℂ} (hs : 1<s.re) :
         sub_add_cancel]
     rw [mul_left_comm,hpow]
   rw [setIntegral_congr_fun measurableSet_Ioi he,integral_const_mul,
-    integral_Ioi_cpow_of_lt (by simpa using hs) one_pos,Complex.ofReal_one,Complex.one_cpow]
+    integral_Ioi_cpow_of_lt (by simpa using hs) one_pos,Complex.ofReal_one,Complex.one_cpow,
+    show -s+1 = -(s-1) by ring,div_neg,neg_div,neg_neg]
   ring
 
 private theorem log_line_nonzero {f : ℝ → ℂ} (hf : Measurable f) {δ A : ℝ}
@@ -187,7 +189,8 @@ private theorem log_line_nonzero {f : ℝ → ℂ} (hf : Measurable f) {δ A : �
     (integrableOn_exp_mul_Iic hk U).integrable_indicator measurableSet_Iic
   have hG : AEStronglyMeasurable G volume := by
     unfold G _root_.RHTower.logMellinLineSource
-    exact (Measurable.smul (by fun_prop) (hf.comp (Real.measurable_exp.comp measurable_neg))).aestronglyMeasurable
+    exact (Measurable.smul (f := fun u : ℝ => Real.exp (-(-3:ℝ) * u)) (by fun_prop)
+      (hf.comp (Real.measurable_exp.comp measurable_neg))).aestronglyMeasurable
   have hdom (x : ℝ) : ‖G x‖ ≤ A*H 2 x := by
     by_cases hx : x≤U
     · simp only [G,_root_.RHTower.logMellinLineSource,norm_smul,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _),
@@ -250,7 +253,7 @@ private theorem no_small_prime_read {f : ℝ → ℂ} (hm : Measurable f) {δ A 
   have hfl := local_of_linear hm hA hb
   have hcut := local_of_linear (cut_measurable c) (norm_nonneg c) (fun _ => cut_bound c)
   have hgl : LocallyIntegrableOn g (Ioi 0) := hfl.sub hcut
-  have hgz (t : ℝ) (ht : 0<t) (h : t<min δ 1) : g t=0 := by
+  have hgz (t : ℝ) (ht : 0<t) (h : t < min δ 1) : g t=0 := by
     simp [g,hz t ht (h.trans_le (min_le_left ..)),linearCut,(h.trans_le (min_le_right ..)).not_gt]
   have hδ' := lt_min hδ zero_lt_one
   have hgd := mellin_diff_of_power hgl hδ' hgz hc
@@ -359,7 +362,7 @@ theorem floorClassDifference_no_signed_prime_power {ι : Type*} (S : Finset ι)
     rw [he,Complex.norm_real,Real.rpow_zero,norm_one,mul_one,Real.norm_eq_abs]
     apply (abs_add_le _ _).trans (add_le_add (hclass _) _)
     exact (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun i _ => by
-      rw [abs_mul,abs_of_nonneg (Int.fract_nonneg _)]
+      rw [abs_mul,abs_of_nonneg (Int.fract_nonneg (a i * x))]
       exact mul_le_of_le_one_right (abs_nonneg _) (Int.fract_lt_one _).le)
   obtain ⟨l,r,e,hl,hlr,he,hv⟩ := floorClassDifference_interval S w a ha hq
   exact no_small_prime_read hmm (one_div_pos.mpr hDp) hB hnear hg (c:ℂ) hregular hl hlr

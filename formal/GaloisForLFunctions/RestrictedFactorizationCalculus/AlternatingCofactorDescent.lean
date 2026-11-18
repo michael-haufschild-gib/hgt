@@ -13,6 +13,7 @@ classes, each two-edge step removes exactly two prime factors.
 noncomputable section
 
 open Finset
+open scoped ArithmeticFunction.Moebius
 open GaloisForLFunctions.QuantitativeFactorizationMatching
 
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus
@@ -122,5 +123,64 @@ private theorem combine {S : Finset ℕ} (A B : Matching S) :
   · intro x hx
     exact (mem.mp hx).elim (fun h => Or.inl ⟨h.1,if_pos h.2⟩)
       (fun h => Or.inr ⟨h.1,if_neg h.2⟩)
+
+/-- The ordered-fibre graph inside the global one-to-two graph. -/
+abbrev OrderedExchange (m n : ℕ) :=
+  GlobalDyadicOneTwoRel m n ∧ evenPrefixCofactor m = evenPrefixCofactor n
+
+/-- Read an ordered-fibre matching as a global matching with the same edges. -/
+def globalMatching {S : Finset ℕ} (A : OppositeParityMatching OrderedExchange S) :
+    OppositeParityMatching GlobalDyadicOneTwoRel S where
+  sources := A.sources
+  partner := A.partner
+  sources_subset := A.sources_subset
+  injOn := A.injOn
+  partner_mem := A.partner_mem
+  adj := fun x h => (A.adj x h).1
+
+private theorem ordered_drop {X x : ℕ} (A : OppositeParityMatching OrderedExchange (Ioc X (2*X)))
+    (hx : x ∈ A.sources) : (A.partner x).primeFactors.card + 1 = x.primeFactors.card := by
+  have hpos := A.sources_subset hx
+  have hneg := A.partner_mem x hx
+  have hX : 1 ≤ X := by
+    obtain ⟨hl,hu⟩ := mem_Ioc.mp (mem_filter.mp hpos).1
+    omega
+  let a := evenPrefixCofactor x
+  have hA : x ∈ fibrePos X a := mem_filter.mpr ⟨hpos,rfl⟩
+  have hB : A.partner x ∈ fibreNeg X a := mem_filter.mpr ⟨hneg,(A.adj x hx).2.symm⟩
+  obtain ⟨hc,_,q,r,hq,hr,hqr,he,ht⟩ := mem_fibrePos_structure hX hA
+  obtain ⟨_,_,p,hp,he',ht'⟩ := mem_fibreNeg_structure hX hB
+  rw [he',card_append_largest hc.ne_zero hp ht',he,card_append_ordered_pair hc.ne_zero hq hr hqr ht]
+
+/-- A ranked cross-fibre matching can be superimposed on any ordered-fibre
+matching. Every formerly paired positive and every transported negative is
+covered simultaneously. The switching paths are unbranched and a path of
+length `k` removes exactly `2k` prime factors. -/
+theorem exists_combined_cofactor_descent (X : ℕ) (K : ℕ → ℝ)
+    (A : OppositeParityMatching OrderedExchange (Ioc X (2*X))) :
+    ∃ B M : OppositeParityMatching GlobalDyadicOneTwoRel (Ioc X (2*X)),
+      A.sources ⊆ M.sources ∧ B.targets ⊆ M.targets ∧
+      (∀ c ∈ Icc 1 (2*X), μ c = -1 → ∀ w ∈ productRow (K c) X (2*X) c,
+        (productRow (K c) X (2*X) c).card ≤ (primeRow X (2*X) c).card → c*w ∈ B.targets) ∧
+      (∀ {x y z}, cofactorStep (globalMatching A) B x y →
+        cofactorStep (globalMatching A) B x z → y = z) ∧
+      (∀ {a k x}, CofactorWalk (globalMatching A) B a k x →
+        x.primeFactors.card + 2*k = a.primeFactors.card) ∧
+      (∀ x ∈ M.sources, (x ∈ A.sources ∧ M.partner x = A.partner x) ∨
+        (x ∈ B.sources ∧ M.partner x = B.partner x)) := by
+  obtain ⟨B,hB,hrows⟩ := exists_ranked_transport K X (2*X)
+  obtain ⟨M,ha,hb,he⟩ := combine (globalMatching A) B
+  refine ⟨B,M,ha,hb,fun c hc hμ => (hrows c hc hμ).2.2,
+    fun _ _ _ h h' => steps_unique h h',?_,he⟩
+  intro a k x h
+  induction h with
+  | nil => simp
+  | snoc hw hstep ih =>
+    obtain ⟨ha',hb',heq⟩ := hstep
+    have hold := ordered_drop A ha'
+    have hnew := hB _ hb'
+    change A.partner _ = B.partner _ at heq
+    rw [heq] at hold
+    omega
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

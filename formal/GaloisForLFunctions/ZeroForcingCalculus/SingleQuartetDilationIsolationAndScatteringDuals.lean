@@ -101,8 +101,8 @@ theorem meromorphicOrderAt_riemannZeta_eq_quartetCopyMult {ρ : ℂ}
   have hn_pos : 0 < n := by exact_mod_cast hpos
   have hdiv : (MeromorphicOn.divisor RHTower.xi Set.univ) ρ = n := by
     rw [MeromorphicOn.divisor_apply (RHTower.xi_analyticOnNhd_univ.meromorphicOn) (Set.mem_univ ρ),
-      ← hn, WithTop.untopD_coe]
-  rw [← hxi_ord, ← hn]
+      ← hn, WithTop.untop₀_coe]
+  rw [← hxi_ord]
   unfold quartetCopyMult
   rw [hdiv, Int.toNat_of_nonneg hn_pos.le]
 
@@ -187,12 +187,11 @@ theorem riemannZeta_two_sub_and_sub_one_ne_zero_of_strip {ρ : ℂ}
   have h2_re : 1 < (2 - ρ).re := by simp; linarith
   have h2_nz : riemannZeta (2 - ρ) ≠ 0 := riemannZeta_ne_zero_of_one_le_re h2_re.le
   refine ⟨h2_nz, fun hsub_zero => ?_⟩
-  have hsub_im : (ρ - 1).im ≠ 0 := by simpa using him
   have hnot_triv : ¬ ∃ n : ℕ, ρ - 1 = -2 * ((n : ℂ) + 1) := by
     rintro ⟨n, hn⟩
     have := congrArg Complex.im hn
     simp at this
-    exact hsub_im this
+    exact him this
   have hsub_ne1 : ρ - 1 ≠ 1 := fun h => by
     have := congrArg Complex.im h
     simp at this
@@ -285,8 +284,8 @@ theorem dilatedPowerQuotient_rightHalf_poles_eq_of_singleQuartet {ρ₀ : ℂ}
         rcases hks_mem with h1 | h2 | h3 | h4
         · exact hnot.1 ((eq_div_iff hkc_ne).mpr ((mul_comm _ _).trans h1))
         · exact hnot.2 ((eq_div_iff hkc_ne).mpr ((mul_comm _ _).trans h2))
-        · have := congrArg Complex.re h3; simp at this; linarith [hq.1]
-        · have := congrArg Complex.re h4; simp at this; linarith [hq.1]
+        · rw [h3] at hks_re; simp at hks_re; linarith [hq.1]
+        · rw [h4] at hks_re; simp at hks_re; linarith [hq.1]
     have han : AnalyticAt ℂ
         (fun w : ℂ => RHTower.zetaResidueUnit w ^ m * ((k : ℂ) * w - 1) /
           RHTower.zetaResidueUnit ((k : ℂ) * w)) s := by
@@ -358,11 +357,10 @@ theorem squarefreeDilationQuotient_quarter_pole_isolation {ρ₀ : ℂ}
       0 < ((1 - ρ₀) / 2).re ∧ ((1 - ρ₀) / 2).re < 1 / 4 := by
   obtain ⟨-, hset, -, -⟩ :=
     dilatedPowerQuotient_rightHalf_poles_eq_of_singleQuartet hq (by norm_num : 2 ≤ 2) 1
-  obtain ⟨-, hl0, hlt, -, -, -, -⟩ :=
-    dilatedPowerQuotient_leftHalf_poles_of_singleQuartet hq (by norm_num : 2 ≤ 2) 1
-  norm_num at hset hl0 hlt
+  norm_num at hset
   have hre : (ρ₀ / 2).re = ρ₀.re / 2 := by simp
-  refine ⟨hset, ?_, ?_, hl0, hlt⟩ <;> linarith [hq.1, hq.re_lt_one]
+  have hre_l : ((1 - ρ₀) / 2).re = (1 - ρ₀.re) / 2 := by simp
+  refine ⟨hset, ?_, ?_, ?_, ?_⟩ <;> linarith [hq.1, hq.re_lt_one]
 
 /-! ## 4. Eisenstein zero-scattering dual modes across the `3/4` threshold -/
 
@@ -418,15 +416,15 @@ theorem eisensteinDualModes_scattering_and_spectral_split {ρ₀ : ℂ}
     have hre_gt1 : 1 < (2 - ρ₀).re := by simp; linarith [hq.re_lt_one]
     have hne1 : (2 : ℂ) - ρ₀ ≠ 1 := fun h => by
       have := congrArg Complex.re h; simp at this; linarith [hq.re_lt_one]
-    rw [RHTower.xi_eq_zero_iff (by linarith) hne1]
-    exact riemannZeta_ne_zero_of_one_le_re hre_gt1.le
+    intro h0
+    exact riemannZeta_ne_zero_of_one_le_re hre_gt1.le ((RHTower.xi_eq_zero_iff (by linarith) hne1).mp h0)
   have hxi_p_nz : RHTower.xi (2 * wPlus) ≠ 0 := by
     rw [h2p_eq]
     have hre_gt1 : 1 < (1 + ρ₀).re := by simp; linarith [hq.1]
     have hne1 : (1 : ℂ) + ρ₀ ≠ 1 := fun h => by
       have := congrArg Complex.re h; simp at this; linarith [hq.1]
-    rw [RHTower.xi_eq_zero_iff (by linarith) hne1]
-    exact riemannZeta_ne_zero_of_one_le_re hre_gt1.le
+    intro h0
+    exact riemannZeta_ne_zero_of_one_le_re hre_gt1.le ((RHTower.xi_eq_zero_iff (by linarith) hne1).mp h0)
   have heig_m : wMinus * (1 - wMinus) = (2 * ρ₀ - ρ₀ ^ 2) / 4 := by
     dsimp [wMinus, eisensteinDualMinus]; ring
   have heig_p : wPlus * (1 - wPlus) = (1 - ρ₀ ^ 2) / 4 := by

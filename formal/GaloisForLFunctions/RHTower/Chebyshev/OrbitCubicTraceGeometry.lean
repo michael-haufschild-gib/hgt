@@ -68,7 +68,7 @@ theorem shortest_binary_unit (q : ℝ) (x y : ℤ) :
     rcases (hexagonal_minima x y).mp h.le with
       ⟨rfl, rfl | rfl | rfl⟩ | ⟨rfl, rfl | rfl⟩ | ⟨rfl, rfl | rfl⟩ <;>
       norm_num [binary, chebyshevRealOrbitCubic] at * <;>
-      first | rw [show _ = (1 : ℝ) by ring, abs_one] | rw [show _ = (-1 : ℝ) by ring, abs_neg, abs_one]
+      ring_nf <;> norm_num
   · rintro ⟨h,hu⟩
     rcases (hexagonal_minima x y).mp h with
       ⟨rfl, rfl | rfl | rfl⟩ | ⟨rfl, rfl | rfl⟩ | ⟨rfl, rfl | rfl⟩ <;>
