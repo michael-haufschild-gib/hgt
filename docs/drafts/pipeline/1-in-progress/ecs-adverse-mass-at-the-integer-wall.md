@@ -8,11 +8,11 @@ The state’s terminal sign agrees with its total charge. Its inverse-square-roo
 
 **Remaining arithmetic.** Let $L(t)$ be the natural-order logarithmic Möbius sum over $d>e^{t/4}$ and $D(t)$ the integer quadrature error. The [large-divisor estimate](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheLargeDivisorMomentsOfThePrimeWave.lean) with tilt $1/8$ bounds the omitted centered multiples in weighted $L^2$. Subtract $D(t)$ to recover the literal $-1$ reference. Cauchy–Schwarz then gives $\int_{t>U}|S(t)-(L(t)-m/2)|\,dt\ll_\Phi e^{-U/16}$. The sign of $m(L-m/2)$ on late windows is open. The wall interval indexes integers $n$ and the cutoff indexes divisors $d$. Removing both requires accounting for their intersection.
 
-**Critical width conjecture.** More generally let $A_-(t,H)$ be the adverse coefficient mass on $(X,X+H]$. For $X^{1/4}\le H\le X^{3/4}$ the state law predicts
+**Critical width.** Let $A_-(t,H)$ be the adverse coefficient mass on $(X,X+H]$. The paper bound, uniform for $24\le H\le X^{3/4}$, is
 \[
  A_-(t,H)\asymp_\Phi H/\sqrt{X\log X}.
 \]
-For the lower bound, retain the multiples of six in $(X+H/2,X+H]$. Their Mangoldt coefficient vanishes and $H/(4X)\le\log(n/X)\le H/X$. There are at least $H/12-1$ of them. At width $H=\sqrt{X\log X}$ their adverse contribution has positive order even before averaging. The positive prime contribution on the same interval still enters the signed row.
+For the lower bound, retain the multiples of six in $(X+H/2,X+H]$. Their Mangoldt coefficient vanishes and $H/(4X)\le\log(n/X)\le H/X$. There are at least $H/12-1$ of them. For the upper bound $\log(n/X)\le X^{-1/4}$ throughout the window, so each adverse coefficient costs at most $C_\Phi/\sqrt{X\log X}$. At width $H=\sqrt{X\log X}$ the adverse contribution has positive order before averaging. The positive prime contribution on the same interval still enters the signed row.
 
 **Signed contribution at the critical width.** Set $h=\sqrt{X\log X}$ and $\ell=\lim_{k\downarrow0}\Phi(-k)\sqrt{\log(1/k)}$. The next target is
 \[

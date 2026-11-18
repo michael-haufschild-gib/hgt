@@ -51,8 +51,8 @@ theorem partition_insert (i : ι) (S : Finset ι) (hi : i ∉ S) (w : ι → R) 
       S.powerset.filter (fun U => ∀ j ∈ U, ¬ G.Adj i j) := by
     ext U
     simp only [mem_powerset,mem_filter,compatible,subset_iff]
-    exact ⟨fun h => ⟨fun j hj => (h j hj).1,fun j hj => (h j hj).2⟩,
-      fun ⟨h₁,h₂⟩ j hj => ⟨h₁ j hj,h₂ j hj⟩⟩
+    exact ⟨fun h => ⟨fun j hj => (h hj).1,fun j hj => (h hj).2⟩,
+      fun ⟨h₁,h₂⟩ j hj => ⟨h₁ hj,h₂ j hj⟩⟩
   rw [partition,sum_powerset_insert hi]
   congr 1
   rw [partition,hp,sum_filter,mul_sum]
@@ -62,10 +62,14 @@ theorem partition_insert (i : ι) (S : Finset ι) (hi : i ∉ S) (w : ι → R) 
   have hI : G.IsIndepSet (↑(insert i U) : Set ι) ↔
       G.IsIndepSet (U : Set ι) ∧ ∀ j ∈ U, ¬G.Adj i j := by
     simp only [coe_insert,SimpleGraph.isIndepSet_iff]
-    letI : Std.Symm (fun a b => ¬ G.Adj a b) := ⟨fun _ _ hn h => hn (G.symm h)⟩
+    letI : Std.Symm (fun a b => ¬ G.Adj a b) := ⟨fun _ _ hn h => hn h.symm⟩
     exact Set.pairwise_insert_of_symm_of_notMem hiU
-  by_cases h₁ : G.IsIndepSet (U : Set ι) <;> by_cases h₂ : ∀ j ∈ U, ¬G.Adj i j <;>
-    simp only [hI,h₁,h₂,and_self,true_and,false_and,ite_true,ite_false,prod_insert hiU,mul_zero]
+  by_cases h₂ : ∀ j ∈ U, ¬G.Adj i j
+  · rw [if_pos h₂]
+    by_cases h₁ : G.IsIndepSet (U : Set ι)
+    · rw [if_pos (hI.2 ⟨h₁,h₂⟩),if_pos h₁,prod_insert hiU]
+    · rw [if_neg (fun h => h₁ (hI.1 h).1),if_neg h₁,mul_zero]
+  · rw [if_neg h₂,if_neg (fun h => h₂ (hI.1 h).2),mul_zero]
 
 /-- Real partition at all negative activity bounds. -/
 def negative (p : ι → NNReal) (S : Finset ι) := partition G S (fun i => -(p i : ℝ))
@@ -108,17 +112,18 @@ theorem normalized_mono (p : ι → NNReal) (P : Finset ι)
       linarith only [htri,hbound]
     rw [div_le_div_iff₀ hpQ (hp S hS),en]
     have hh := mul_le_mul_of_nonneg_right hdiff hpQ.le
-    linarith only [hcost,hh]
+    nlinarith only [hcost,hh]
 
 /-- The negative corner is an attained absolute lower bound throughout the polydisc. -/
 theorem corner_minimum (p : ι → NNReal) (P : Finset ι)
     (hp : ∀ S ⊆ P, 0 < negative G p S) (w : ι → ℂ) (hw : ∀ i ∈ P, ‖w i‖ ≤ (p i : ℝ)) :
     negative G p P ≤ ‖partition G P w‖ := by
   have h := normalized_mono G p P hp w hw P ∅ Subset.rfl (empty_subset _)
-  simpa [negative,le_div_iff₀ (hp P Subset.rfl)] using h
+  simp only [show negative G p ∅ = 1 by simp [negative],partition_empty,norm_one,div_one] at h
+  simpa only [one_mul] using (le_div_iff₀ (hp P Subset.rfl)).1 h
 
 private theorem cast_partition (S : Finset ι) (w : ι → ℝ) :
-    partition G S (fun i => (w i : ℂ)) = (partition G S w : ℂ) := by
+    partition G S (fun i => (w i : ℂ)) = ((partition G S w : ℝ) : ℂ) := by
   simp only [partition,Complex.ofReal_sum,Complex.ofReal_prod,apply_ite Complex.ofReal,Complex.ofReal_zero]
 
 /-- A minimal bad set has an exact real zero obtained by changing only one
@@ -143,7 +148,7 @@ theorem one_coordinate_zero (p : ι → NNReal) (S : Finset ι) (hS : negative G
   refine ⟨r,(div_pos qpos cpos).le,(div_le_iff₀ cpos).2 (by linarith only [en,hS]),?_⟩
   have unchanged (U : Finset ι) (hu : i ∉ U) :
       partition G U (Function.update w i (-r))=negative G p U :=
-    partition_congr G U _ w fun j hj => Function.update_of_ne (fun h => hu (h ▸ hj)) _ _
+    partition_congr G U _ w fun j hj => Function.update_of_ne (fun (h : j=i) => hu (h ▸ hj)) _ _
   have h := partition_insert G i Q hiQ (Function.update w i (-r))
   rw [show insert i Q=S from insert_erase hi,unchanged Q hiQ,unchanged C hiC,Function.update_self] at h
   exact h.trans (by dsimp only [r]; field_simp; ring)
@@ -157,7 +162,7 @@ theorem zero_free_iff (p : ι → NNReal) (P : Finset ι) :
     | _ S ih =>
       intro hSP
       by_contra! h
-      have hn : S.Nonempty := nonempty_iff_ne_empty.mpr fun he => by simp [he,negative] at h
+      have hn : S.Nonempty := nonempty_iff_ne_empty.mpr fun he => by norm_num [he,negative] at h
       obtain ⟨i,hi⟩ := hn
       obtain ⟨r,hr,hb,hzero⟩ := one_coordinate_zero G p S h (fun T ht => ih T ht (ht.subset.trans hSP)) i hi
       let w := Function.update (fun j => -(p j : ℝ)) i (-r)
