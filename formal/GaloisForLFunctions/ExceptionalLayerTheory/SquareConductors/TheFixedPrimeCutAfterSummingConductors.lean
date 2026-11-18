@@ -1,4 +1,6 @@
 import GaloisForLFunctions.CountingHolography.Sections.TheMellinKernelOfSquareConductorPrices
+import GaloisForLFunctions.CountingHolography.Sections.TheSignedProductOverSquareConductors
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ThePrimeMassAtAQuadraticProductDivider
 
 /-!
 # A fixed prime cutoff after summing square conductors
@@ -10,7 +12,7 @@ a positive multiple of the first prime moment to the lower side.
 -/
 
 noncomputable section
-open Finset MeasureTheory Zeta23 GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
+open Finset Filter MeasureTheory Zeta23 GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
 open GaloisForLFunctions.CountingHolography.Sections
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
@@ -125,8 +127,125 @@ theorem fixed_prime_cut_price_comparison :
   rw [hpr,←hsplit,mul_add] at hp
   simpa only [f,fixed_inner_prime_price hN hK] using hp
 
+/-- Integrated primes above a fixed terminal cutoff, after restoring the
+quadratic main term of the missing first prime moment. -/
+def centeredFixedPrimeTail (N K : ℕ) : ℂ :=
+  let H := ⌊((N:ℝ)/squareConductorBVWindow.lower)^2⌋₊
+  (N:ℂ)^2*(∑ p ∈ (ordinaryPrimeLags H).filter (K < ·),
+    (Real.log p:ℂ)*squarePrefixPrimeWeight ((p:ℝ)/(N:ℝ)^2)) +
+    ((innerPrimeSlope*((K:ℝ)*(K+1)/2):ℝ):ℂ)
+
+/-- The error from replacing the returned first moment by its quadratic
+main term is smaller than the eleven-thirds target at the terminal
+seventeen-ninths cutoff. The cubic rounding cost is uniform in the cut. -/
+theorem fixed_prime_cut_centered_comparison :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {N K : ℕ}, 0 < N → 0 < K → (K:ℝ) ≤ Real.exp (-8)*(N:ℝ)^2 →
+      ‖(Real.log (squareGeneratorPrefix N:ℝ):ℂ)-centeredFixedPrimeTail N K‖ ≤
+        C*((N:ℝ)^3+(K:ℝ)^(17/9:ℝ)) := by
+  obtain ⟨A,hA,ha⟩ := fixed_prime_cut_price_comparison
+  obtain ⟨B,hB,hb⟩ := first_prime_moment_at_cut
+  let E := innerPrimeSlope*B
+  have hE : 0 ≤ E := mul_nonneg innerPrimeSlope_pos.le hB
+  refine ⟨A+E,add_nonneg hA hE,fun {N K} hN hK hcut => ?_⟩
+  let H := ⌊((N:ℝ)/squareConductorBVWindow.lower)^2⌋₊
+  let X := (N:ℂ)^2*∑ p ∈ (ordinaryPrimeLags H).filter (K < ·),
+      (Real.log p:ℂ)*squarePrefixPrimeWeight ((p:ℝ)/(N:ℝ)^2)
+  let P := (Real.log (squareGeneratorPrefix N:ℝ):ℂ)
+  let M := ∑ p ∈ ordinaryPrimeLags K, (p:ℝ)*Real.log p
+  let T := (K:ℝ)*(K+1)/2
+  let V := (K:ℝ)^(17/9:ℝ)
+  have hv : 0 ≤ V := Real.rpow_nonneg (Nat.cast_nonneg _) _
+  have hsub : ‖P-((innerPrimeSlope:ℂ)*(M:ℂ)+X)‖ ≤ A*(N:ℝ)^3 := by
+    simpa only [P,M,X,H,Complex.ofReal_sum,Complex.ofReal_mul,Complex.ofReal_natCast] using ha hN hcut
+  have hprime : ‖((innerPrimeSlope*(M-T):ℝ):ℂ)‖ ≤ E*V := by
+    rw [Complex.norm_real,Real.norm_eq_abs,abs_mul,abs_of_pos innerPrimeSlope_pos]
+    exact (mul_le_mul_of_nonneg_left (hb K hK) innerPrimeSlope_pos.le).trans_eq (mul_assoc ..).symm
+  have he : P-(X+((innerPrimeSlope*T:ℝ):ℂ)) =
+      (P-((innerPrimeSlope:ℂ)*(M:ℂ)+X))+((innerPrimeSlope*(M-T):ℝ):ℂ) := by
+    push_cast; ring
+  change ‖P-(X+((innerPrimeSlope*T:ℝ):ℂ))‖ ≤ _
+  rw [he]
+  apply (norm_add_le _ _).trans
+  apply (add_le_add hsub hprime).trans
+  change _ ≤ (A+E)*((N:ℝ)^3+V)
+  linarith only [mul_nonneg hE (pow_nonneg (Nat.cast_nonneg (α := ℝ) N) 3),mul_nonneg hA hv]
+
+/-- At the fixed terminal seventeen-ninths cut, replacing the small primes
+by their explicit quadratic term costs exponent 289/81 at every endpoint. -/
+theorem seventeenNinths_fixed_prime_cut_comparison :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 0 < N →
+      ‖(Real.log (squareGeneratorPrefix N:ℝ):ℂ) -
+        centeredFixedPrimeTail N ⌊(N:ℝ)^(17/9:ℝ)⌋₊‖ ≤ C*(N:ℝ)^(289/81:ℝ) := by
+  have hg : ∀ᶠ n : ℕ in atTop, Real.exp 8 ≤ (n:ℝ)^(1/9:ℝ) :=
+    ((tendsto_rpow_atTop (by norm_num : (0:ℝ)<1/9)).comp tendsto_natCast_atTop_atTop).eventually_ge_atTop _
+  obtain ⟨n₀,h₀⟩ := Filter.eventually_atTop.mp hg
+  obtain ⟨A,hA,ha⟩ := fixed_prime_cut_centered_comparison
+  let price (n : ℕ) := ‖(Real.log (squareGeneratorPrefix n:ℝ):ℂ) -
+    centeredFixedPrimeTail n ⌊(n:ℝ)^(17/9:ℝ)⌋₊‖
+  let D := ∑ n ∈ range n₀, price n
+  have hD : 0 ≤ D := sum_nonneg fun _ _ => norm_nonneg _
+  refine ⟨2*A+D,by positivity,fun N hN => ?_⟩
+  have hn : (0:ℝ) < N := Nat.cast_pos.mpr hN
+  have h₁ : (1:ℝ) ≤ N := by exact_mod_cast hN
+  let Y := (N:ℝ)^(289/81:ℝ)
+  have hY : 1 ≤ Y := Real.one_le_rpow h₁ (by norm_num)
+  change price N ≤ (2*A+D)*Y
+  by_cases hlate : n₀ ≤ N
+  · let K := ⌊(N:ℝ)^(17/9:ℝ)⌋₊
+    have hK : 0 < K := Nat.le_floor (show ((1:ℕ):ℝ) ≤ (N:ℝ)^(17/9:ℝ) by
+      push_cast; exact Real.one_le_rpow h₁ (by norm_num))
+    have hf : (K:ℝ) ≤ (N:ℝ)^(17/9:ℝ) := Nat.floor_le (Real.rpow_nonneg hn.le _)
+    have hcut : (K:ℝ) ≤ Real.exp (-8)*(N:ℝ)^2 := by
+      apply hf.trans
+      rw [Real.exp_neg,inv_mul_eq_div,le_div_iff₀ (Real.exp_pos 8)]
+      have hh := mul_le_mul_of_nonneg_left (h₀ N hlate) (Real.rpow_nonneg hn.le (17/9:ℝ))
+      rwa [←Real.rpow_add hn,show (17/9:ℝ)+1/9=2 by norm_num,Real.rpow_two] at hh
+    have hq : (K:ℝ)^(17/9:ℝ) ≤ Y := by
+      apply (Real.rpow_le_rpow (Nat.cast_nonneg _) hf (by norm_num : (0:ℝ) ≤ 17/9)).trans_eq
+      rw [←Real.rpow_mul hn.le,show (17/9:ℝ)*(17/9)=289/81 by norm_num]
+    have hcube : (N:ℝ)^3 ≤ Y := (Real.rpow_natCast (N:ℝ) 3).symm.le.trans
+      (Real.rpow_le_rpow_of_exponent_le h₁ (by norm_num))
+    apply (ha hN hK hcut).trans
+    apply (mul_le_mul_of_nonneg_left (add_le_add hcube hq) hA).trans
+    linarith only [mul_nonneg hD (zero_le_one.trans hY)]
+  · have he : price N ≤ D := single_le_sum (fun n _ => norm_nonneg _) (mem_range.mpr (lt_of_not_ge hlate))
+    apply he.trans ((le_mul_of_one_le_right hD hY).trans ?_)
+    exact mul_le_mul_of_nonneg_right (le_add_of_nonneg_left (by positivity)) (zero_le_one.trans hY)
+
+/-- The large-prime reading has the opposite first-moment term. Its
+remainder is bounded by the full signed price and the fixed-cut errors. -/
+theorem fixed_prime_cut_upper_price :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {N K : ℕ}, 0 < N → 0 < K → (K:ℝ) ≤ Real.exp (-8)*(N:ℝ)^2 →
+      ‖centeredFixedPrimeTail N K‖ ≤ C*((N:ℝ)^(15/4:ℝ)+(K:ℝ)^(17/9:ℝ)) := by
+  have hw : GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth ≤ 3/8 := by
+    apply (GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth_le_iff_re_le (by norm_num)).mpr
+    intro z hz
+    by_contra! h
+    exact GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein.riemannZeta_ne_zero_of_sub_seven_eighths_lt_re
+      (by linarith only [h]) hz.1
+  obtain ⟨D,hD,hd⟩ := (zetaZeroWidth_le_iff_square_generator_prefix (by norm_num) (by norm_num)).mp hw
+  obtain ⟨A,hA,ha⟩ := fixed_prime_cut_centered_comparison
+  refine ⟨D+A,add_nonneg hD hA,fun {N K} hN hK hcut => ?_⟩
+  let P := (Real.log (squareGeneratorPrefix N:ℝ):ℂ)
+  let U := (N:ℝ)^(15/4:ℝ)
+  let V := (K:ℝ)^(17/9:ℝ)
+  have hv : 0 ≤ V := Real.rpow_nonneg (Nat.cast_nonneg _) _
+  have hp : ‖P‖ ≤ D*U := by
+    simpa only [P,U,Complex.norm_real,Real.norm_eq_abs,show (3:ℝ)+2*(3/8)=15/4 by norm_num] using hd N
+  have hn : (N:ℝ)^3 ≤ U := (Real.rpow_natCast (N:ℝ) 3).symm.le.trans
+    (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hN : (1:ℝ) ≤ N) (by norm_num))
+  have hsub : ‖P-centeredFixedPrimeTail N K‖ ≤ A*(U+V) := (ha hN hK hcut).trans
+    (mul_le_mul_of_nonneg_left (add_le_add hn (le_refl V)) hA)
+  calc ‖centeredFixedPrimeTail N K‖ = ‖P-(P-centeredFixedPrimeTail N K)‖ := by rw [sub_sub_cancel]
+       _ ≤ _ := (norm_sub_le _ _).trans ((add_le_add hp hsub).trans (by
+         change _ ≤ (D+A)*(U+V)
+         linarith only [mul_nonneg hD hv]))
+
 #print axioms mellin_squarePrimeWeight_neg_one
 #print axioms squarePrefixPrimeWeight_before_first_knot
 #print axioms fixed_inner_prime_price
 #print axioms fixed_prime_cut_price_comparison
+#print axioms fixed_prime_cut_centered_comparison
+#print axioms seventeenNinths_fixed_prime_cut_comparison
+#print axioms fixed_prime_cut_upper_price
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

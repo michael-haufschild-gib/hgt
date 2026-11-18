@@ -279,7 +279,7 @@ theorem realTimeHeatBox_mono {r s : ℝ} (hr : 0 < r) (hrs : r ≤ s) :
 RH. Each radius lies between `n+1` and `n+2`. Every collision in a box lies
 strictly inside every time and place bound. -/
 theorem exists_regular_heatBox_exhaustion :
-    ∃ R : ℕ → ℝ, StrictMono R ∧ (∀ n, (n : ℝ) + 1 < R n ∧ R n < n + 2) ∧
+    ∃ R : ℕ → ℝ, StrictMono R ∧ (∀ n : ℕ, (n : ℝ) + 1 < R n ∧ R n < (n : ℝ) + 2) ∧
       Monotone (fun n => realTimeHeatBox (R n)) ∧ (∀ n, IsCompact (realTimeHeatBox (R n))) ∧
       (∀ n p, p ∈ realTimeHeatBox (R n) → p ∈ multipleZeros →
         1/R n < p.1.re ∧ p.1.re < R n ∧ |p.2.re| < R n ∧ |p.2.im| < R n) ∧

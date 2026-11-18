@@ -25,7 +25,7 @@ private theorem phase_mass_zero {ι : Type*} {c w : ι → ℂ}
     (∑' i, if w i = z then c i else 0) = 0 := by
   classical
   let u := fun i => w i / z
-  have hz0 : z ≠ 0 := norm_pos_iff.mp (hz.symm ▸ zero_lt_one)
+  have hz0 : z ≠ 0 := norm_pos_iff.mp (by rw [hz]; exact zero_lt_one)
   have hu (i : ι) : ‖u i‖ = 1 := by simp only [u, norm_div, hw, hz, div_self one_ne_zero]
   have hu1 (i : ι) : u i = 1 ↔ w i = z := div_eq_one_iff_eq hz0
   have hs (k : ℕ) : Summable (fun i => c i * u i ^ k) := by
@@ -73,6 +73,15 @@ private theorem char_time_nat (ω p : ℝ) (n : ℕ) :
   | zero => simp [expChar]
   | succ n ih => rw [Nat.cast_succ, add_mul, one_mul, char_time_add, ih, pow_succ]
 
+private theorem analytic_finite_sum {ι : Type*} (S : Finset ι) (a : ι → ℂ) (ω : ι → ℝ) :
+    AnalyticOnNhd ℝ (fun t => ∑ i ∈ S, a i * expChar (ω i) t) Set.univ := by
+  intro x _
+  apply Finset.analyticAt_fun_sum
+  intro i _
+  have hlin : AnalyticAt ℝ (fun t : ℝ => ω i * t) x := analyticAt_const.mul analyticAt_id
+  exact analyticAt_const.mul (analyticAt_cexp.restrictScalars.comp
+    (((Complex.ofRealCLM.analyticAt _).comp hlin).mul analyticAt_const))
+
 /-- With finite occupied fibres for the sampled phases, vanishing on all lattice
 translates of one open interval determines the entire exponential series. -/
 private theorem zero_of_vanishing_on_translated_interval {ι : Type*}
@@ -105,15 +114,9 @@ private theorem zero_of_vanishing_on_translated_interval {ι : Type*}
       · apply phase_mass_zero (hsum t) (fun i => norm_expChar (ω i) p) _ z hz
         intro n
         simpa only [expSeriesCarrier, char_time_add, char_time_nat, w, mul_assoc] using ht n
-      · apply tsum_eq_zero
-        intro i
-        exact if_neg fun h => hz (h ▸ norm_expChar (ω i) p)
-    have hpoly : AnalyticOnNhd ℝ (fun t => ∑ i ∈ S, a i * expChar (ω i) t) Set.univ := by
-      intro x _
-      apply Finset.analyticAt_fun_sum
-      intro i _
-      unfold expChar
-      fun_prop
+      · have he (i : ι) : w i ≠ z := fun h => hz (h ▸ norm_expChar (ω i) p)
+        simp only [if_neg (he _), tsum_zero]
+    have hpoly := analytic_finite_sum S a ω
     have hglobal := hpoly.eq_of_eventuallyEq analyticOnNhd_const hloc
     intro t
     exact (hform t).trans (congrFun hglobal t)
@@ -185,7 +188,7 @@ private theorem top_phase_of_step_eigenvalue {β h p : ℝ} (hβ : 1/2 < β) (hh
       c * (boundaryStep β h (primeErrorBoundaryTrace β) t : ℂ))
     (q : XiZeroCopy) (hq : (q.1 : ℂ).re = β) : expChar (xiCopyOrdinate q) p = c := by
   let D := boundaryStep β h (primeErrorBoundaryTrace β)
-  have ⟨hc,ha,hf⟩ := boundaryStep_coefficient hβ hh
+  obtain ⟨hc,ha,hf⟩ := boundaryStep_coefficient hβ hh
   have hcC : Continuous (fun t => (D t : ℂ)) := Complex.continuous_ofReal.comp hc
   have haC : IsBohrAlmostPeriodic (fun t => (D t : ℂ)) := by
     simpa only [IsBohrAlmostPeriodic, ← Complex.ofReal_sub, Complex.norm_real] using ha
@@ -229,6 +232,97 @@ theorem finite_top_of_bounded_thetaRadial {γ : ℝ} {m : ℕ} (hΘ : 1/2 < zeta
   intro q hq
   exact Set.mem_iUnion.mpr ⟨_, Set.mem_iUnion.mpr ⟨hchar q hq, hq,rfl⟩⟩
 
+private theorem analytic_boundaryStep {β h : ℝ} (hβ : 1/2 < β)
+    (hf : {q : XiZeroCopy | (q.1 : ℂ).re = β}.Finite) :
+    AnalyticOnNhd ℝ (fun t => (boundaryStep β h (primeErrorBoundaryTrace β) t : ℂ)) Set.univ := by
+  classical
+  have he : (fun t => (boundaryStep β h (primeErrorBoundaryTrace β) t : ℂ)) =
+      fun t => ∑ q ∈ hf.toFinset, stepAmplitude β h q * expChar (xiCopyOrdinate q) t := by
+    funext t
+    rw [stepAmplitude_carrier hβ, expSeriesCarrier]
+    apply tsum_eq_sum
+    intro q hq
+    have he : (q.1 : ℂ).re ≠ β := fun h => hq (hf.mem_toFinset.mpr h)
+    simp only [stepAmplitude, primeErrorBoundaryAmplitude, if_neg he, mul_zero, zero_mul]
+  rw [he]
+  exact analytic_finite_sum _ _ _
+
+/-- For an analytic real function periodic in modulus, the sign under a period
+is global. If the positive sign fails somewhere, the negative sign holds on a
+neighborhood and hence on the entire real line. -/
+private theorem eigenvalue_of_analytic_periodic_abs {D : ℝ → ℝ} (p : ℝ)
+    (hc : AnalyticOnNhd ℝ (fun t => (D t : ℂ)) Set.univ)
+    (hp : Function.Periodic (fun t => |D t|) p) :
+    ∃ c : ℂ, ∀ t, (D (t+p) : ℂ) = c * (D t : ℂ) := by
+  let F := fun t => (D t : ℂ)
+  have hshift : AnalyticOnNhd ℝ (fun t => F (t+p)) Set.univ :=
+    hc.comp (analyticOnNhd_id.add analyticOnNhd_const) (fun _ _ => Set.mem_univ _)
+  by_cases he : ∀ t, D (t+p) = D t
+  · exact ⟨1,fun t => (congrArg Complex.ofReal (he t)).trans (one_mul _).symm⟩
+  push_neg at he
+  obtain ⟨t₀,h₀⟩ := he
+  have hne : ∀ᶠ t in 𝓝 t₀, F (t+p) ≠ F t :=
+    ((hshift t₀ (Set.mem_univ _)).continuousAt.ne_iff_eventually_ne
+      (hc t₀ (Set.mem_univ _)).continuousAt).mp (fun h => h₀ (Complex.ofReal_injective h))
+  have he : (fun t => F (t+p)) =ᶠ[𝓝 t₀] (fun t => -F t) := by
+    filter_upwards [hne] with t ht
+    rcases abs_eq_abs.mp (hp t) with he | he
+    · exact (ht (congrArg Complex.ofReal he)).elim
+    · exact (congrArg Complex.ofReal he).trans (Complex.ofReal_neg _)
+  have hglobal := hshift.eq_of_eventuallyEq hc.neg he
+  exact ⟨-1,fun t => (congrFun hglobal t).trans (neg_one_mul _).symm⟩
+
+/-- Two different positive ordinates on the extremal line exclude every trial
+radius, including with infinitely many zeros below or on the extremal line. -/
+theorem thetaRadial_unbounded_of_distinct_abs_top_ordinates (hΘ : 1/2 < zetaZeroAbscissa)
+    (q r : XiZeroCopy) (hq : (q.1 : ℂ).re = zetaZeroAbscissa)
+    (hr : (r.1 : ℂ).re = zetaZeroAbscissa) (hne : |xiCopyOrdinate q| ≠ |xiCopyOrdinate r|)
+    {γ : ℝ} (hγ : γ ≠ 0) (m : ℕ) :
+    IsLogSqrtSqUnbounded (thetaRadialDiscrepancy zetaZeroAbscissa γ m) := by
+  by_contra hb
+  let h := quarterPeriodStep γ
+  have hh : 0 < h := quarterPeriodStep_pos hγ
+  obtain ⟨c, hc⟩ := eigenvalue_of_analytic_periodic_abs (2*h)
+    (analytic_boundaryStep hΘ (finite_top_of_bounded_thetaRadial hΘ hγ hb))
+    (boundaryStep_abs_periodic hΘ hb)
+  let w := fun p : XiZeroCopy => expChar (xiCopyOrdinate p) h
+  have hs (p : XiZeroCopy) (hp : (p.1 : ℂ).re = zetaZeroAbscissa) : w p ^ 2 = c := by
+    rw [show w p ^ 2 = expChar (xiCopyOrdinate p) (2*h) by rw [two_mul, char_time_add, sq]]
+    exact top_phase_of_step_eigenvalue hΘ hh c hc p hp
+  let r' := xiZeroCopyConjEquiv r
+  have hr' : (r'.1 : ℂ).re = zetaZeroAbscissa := (Complex.conj_re _).trans hr
+  have him : xiCopyOrdinate r' = -xiCopyOrdinate r := Complex.conj_im _
+  have hneg : w r' = -w r := by
+    rcases sq_eq_sq_iff_eq_or_eq_neg.mp ((hs r' hr').trans (hs r hr).symm) with he | he
+    · have h := top_step_phase_separates_ordinates hΘ hγ hb r' r hr' hr he
+      rw [him] at h
+      have hz : xiCopyOrdinate r = 0 := by linarith only [h]
+      have hpos := four_lt_abs_xiCopyOrdinate r
+      rw [hz, abs_zero] at hpos
+      linarith only [hpos]
+    · exact he
+  apply hne
+  rcases sq_eq_sq_iff_eq_or_eq_neg.mp ((hs q hq).trans (hs r hr).symm) with he | he
+  · exact congrArg abs (top_step_phase_separates_ordinates hΘ hγ hb q r hq hr he)
+  · have he' := top_step_phase_separates_ordinates hΘ hγ hb q r' hq hr' (he.trans hneg.symm)
+    rw [he',him,abs_neg]
+
+/-- At every supercritical extremal abscissa, either the trial radius fails or
+the extremal line has precisely one absolute ordinate. -/
+theorem extremal_radial_exclusion_or_one_top_pair (hΘ : 1/2 < zetaZeroAbscissa)
+    {γ : ℝ} (hγ : γ ≠ 0) {m : ℕ} (hm : 1 ≤ m) :
+    IsLogSqrtSqUnbounded (thetaRadialDiscrepancy zetaZeroAbscissa γ m) ∨
+      ∃ q : XiZeroCopy, (q.1 : ℂ).re = zetaZeroAbscissa ∧
+        ∀ r : XiZeroCopy, (r.1 : ℂ).re = zetaZeroAbscissa → |xiCopyOrdinate r| = |xiCopyOrdinate q| := by
+  by_cases hb : IsLogSqrtSqUnbounded (thetaRadialDiscrepancy zetaZeroAbscissa γ m)
+  · exact Or.inl hb
+  obtain ⟨⟨q,hq⟩,_⟩ := (extremal_radial_exclusion_or_commensurable_top hΘ hγ hm).resolve_left hb
+  refine Or.inr ⟨q,hq,fun r hr => ?_⟩
+  by_contra he
+  exact hb (thetaRadial_unbounded_of_distinct_abs_top_ordinates hΘ r q hr hq he hγ m)
+
 #print axioms finite_top_of_bounded_thetaRadial
+#print axioms thetaRadial_unbounded_of_distinct_abs_top_ordinates
+#print axioms extremal_radial_exclusion_or_one_top_pair
 
 end GaloisForLFunctions.ExceptionalLayerTheory

@@ -203,7 +203,7 @@ theorem criticalState_late_absolute_ordinary_test {W₀ : ℝ} (hW : 0 < W₀)
   let b := |m| *Real.exp (-T/10)
   have hb : 0 ≤ b := mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
   have hJ : MeasurableSet J := hA.inter measurableSet_Ioi
-  have hJ0 : J ⊆ Ioi 0 := fun _ h => lt_of_le_of_lt (by positivity) h.2
+  have hJ0 : J ⊆ Ioi (0:ℝ) := fun _ h => lt_of_le_of_lt (mul_nonneg (by norm_num : (0:ℝ) ≤ 6) hT) h.2
   have hmW : Measurable (ordinaryPrimeWave Φ) := Measurable.tsum fun q : Nat.Primes =>
     measurable_const.mul (Complex.continuous_ofReal.measurable.comp (hc.measurable.comp (by fun_prop)))
   have hmP : Measurable (ordinaryPrimePolarError Φ) :=
