@@ -127,9 +127,10 @@ theorem riemannHypothesis_or_ordinary_fractional_response : RiemannHypothesis �
       (s := Iic (0:ℝ)) (fun u hu => by rw [hs u (lt_of_not_ge hu).le,zero_mul])]
     exact integral_congr_ae (Eventually.of_forall fun u => mul_comm _ _)
   have hsplit (t : ℝ) : W t=(ordinaryPrimeWave Φ t).re+properRow Φ t := by
-    rw [← mangoldt_atom_sum_split hb t]
-    apply tsum_congr fun n => ?_
-    simp only [continuousIntegerAtom,div_eq_mul_inv,mul_assoc]
+    calc W t = ∑' n : ℕ, vonMangoldt n*continuousIntegerAtom Φ n t := by
+                 apply tsum_congr fun n => ?_
+                 simp only [continuousIntegerAtom,div_eq_mul_inv,mul_assoc]
+      _ = _ := mangoldt_atom_sum_split hb t
   have hpair (T : ℝ) (hT : 0 ≤ T) : Integrable (f T) ∧
       (∫ t, f T t)=stirlingTestResponse Φ T-∫ t, properRow Φ t*K (T-t) := by
     have hfull := criticalState_fractional_mangoldt_response hW ht hF hΦ he hs hC hb hT

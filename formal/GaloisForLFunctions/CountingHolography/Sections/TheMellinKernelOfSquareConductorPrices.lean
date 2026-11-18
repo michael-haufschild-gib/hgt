@@ -1,6 +1,7 @@
 import GaloisForLFunctions.CountingHolography.Sections.ThePrimeExponentsOnTheSquareDiagonal
 import GaloisForLFunctions.CountingHolography.Sections.CriticalZerosSeparateThePrimeProfileFromFactorialKernels
 import Mathlib.NumberTheory.LSeries.Deriv
+import GaloisForLFunctions.RHTower.PrimeShiftResidueClosability
 import GaloisForLFunctions.RHTower.BVPrimeWindowReciprocalReflection
 import GaloisForLFunctions.CountingHolography.Sections.TheLogarithmicMomentOfTheSquarePrimeProfile
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
@@ -584,5 +585,51 @@ theorem LSeries_squareConductorPrice {s : ℂ} (hs : 4 < s.re) :
   rw [he,LSeries_add (hW.sub hP) hR,LSeries_sub hW hP,LSeries_squareMeshReading W hs,
     squareConductorBVWindow_transform,squareConductorAnalyticRemainder]
   ring
+
+/-- Value of the continued Dirichlet series away from the real polar point. -/
+def squareConductorContinuation (s : ℂ) :=
+  mellin squarePrimeWeight (s/2-1)*(-deriv riemannZeta (s/2-1)/riemannZeta (s/2-1)) +
+    squareConductorAnalyticRemainder s
+
+/-- Each zero to the right of the critical line gives a simple pole with
+residue minus twice its multiplicity times the nonvanishing Mellin weight. -/
+theorem squareConductorContinuation_zero_residue {ρ : ℂ} (hζ : riemannZeta ρ=0)
+    (hhalf : 1/2 < ρ.re) (h₁ : ρ.re < 1) :
+    let c := 2+2*ρ
+    let A := -2*(zetaMultiplicity ρ:ℂ)*mellin squarePrimeWeight ρ
+    A ≠ 0 ∧ Tendsto (fun s : ℂ => (s-c)*squareConductorContinuation s) (𝓝[≠] c) (𝓝 A) := by
+  let c := 2+2*ρ
+  let z := fun s : ℂ => s/2-1
+  have hρ : ρ ≠ 1 := fun e => by rw [e,Complex.one_re] at h₁; exact lt_irrefl _ h₁
+  have hz : z c=ρ := by dsimp only [z,c]; ring
+  have hc : 3 < c.re := by dsimp only [c]; simp [Complex.add_re,Complex.mul_re]; linarith only [hhalf]
+  have hzt : Tendsto z (𝓝[≠] c) (𝓝 ρ) := by
+    rw [← hz]
+    exact (show Continuous z by dsimp only [z]; fun_prop).continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  have hzp : Tendsto z (𝓝[≠] c) (𝓝[≠] ρ) := by
+    apply tendsto_nhdsWithin_iff.mpr
+    refine ⟨hzt,?_⟩
+    filter_upwards [self_mem_nhdsWithin (a := c) (s := {(c:ℂ)}ᶜ)] with x hx
+    change z x ≠ ρ
+    intro he
+    apply hx
+    change x=c
+    dsimp only [z,c] at he ⊢
+    linear_combination 2*he
+  have hana := analyticAt_riemannZeta_primeShiftResidueClosability hρ
+  obtain ⟨g,hg,hg₀,hfac⟩ := hana.analyticOrderAt_ne_top.mp (analyticOrderAt_riemannZeta_ne_top hρ)
+  have hres := (logDeriv_residue_of_factorization (n := zetaMultiplicity ρ) hg hg₀ hfac).neg.comp hzp
+  have hM := (differentiable_mellin_squarePrimeWeight ρ).continuousAt.tendsto.comp hzt
+  have he := (analytic_squareConductorAnalyticRemainder c hc).continuousAt.tendsto.mono_left
+    (nhdsWithin_le_nhds : 𝓝[≠] c ≤ 𝓝 c)
+  have hh := ((hM.const_mul (2:ℂ)).mul hres).add ((tendsto_sub_self_punctured_zero c).mul he)
+  have hm : zetaMultiplicity ρ ≠ 0 := fun hm => (zetaMultiplicity_eq_zero_iff hρ).mp hm hζ
+  refine ⟨mul_ne_zero (mul_ne_zero (by norm_num) (Nat.cast_ne_zero.mpr hm))
+    (mellin_squarePrimeWeight_off_line h₁ hhalf.ne'),?_⟩
+  have heq : 2*mellin squarePrimeWeight ρ*(-(zetaMultiplicity ρ:ℂ))+0*squareConductorAnalyticRemainder c =
+      -2*(zetaMultiplicity ρ:ℂ)*mellin squarePrimeWeight ρ := by ring
+  rw [heq] at hh
+  refine hh.congr fun s => ?_
+  dsimp only [Function.comp_apply,z,c,squareConductorContinuation,logDeriv_apply]; ring
 
 end GaloisForLFunctions.CountingHolography.Sections

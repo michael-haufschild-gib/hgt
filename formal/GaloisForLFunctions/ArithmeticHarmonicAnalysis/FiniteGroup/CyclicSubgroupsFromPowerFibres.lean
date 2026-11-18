@@ -50,7 +50,7 @@ theorem generators (d : ℕ) :
   rw [card_eq_sum_card_fiberwise (f := fun x : G => Subgroup.zpowers x) (t := ofOrder G d)
     (fun x hx => mem_filter.mpr ⟨zpowers_mem_cyclicSubgroups x,
       (Nat.card_zpowers x).trans (mem_filter.mp hx).2⟩)]
-  simp only [sum_congr rfl (fun C hc => generator_fiber G d C hc),sum_const,nsmul_eq_mul]
+  simp only [sum_congr rfl (fun C hc => generator_fiber G d C hc),sum_const,nsmul_eq_mul,Nat.cast_id]
 
 /-- Dirichlet divisor transform connecting torsion counts and cyclic subgroups. -/
 theorem power_fiber (n : ℕ) (hn : 0<n) :
@@ -85,6 +85,7 @@ theorem total_over_exponent (n : ℕ) (hn : 0<n) (ha : ∀ x : G, x^n=1) :
   apply card_eq_sum_card_fiberwise (f := fun C : Subgroup G => Nat.card C)
   intro C hc
   obtain ⟨g,_,rfl⟩ := mem_image.mp hc
+  change Nat.card (Subgroup.zpowers g)∈n.divisors
   rw [Nat.card_zpowers]
   exact Nat.mem_divisors.mpr ⟨orderOf_dvd_iff_pow_eq_one.mpr (ha g),hn.ne'⟩
 
@@ -108,7 +109,7 @@ theorem power_fibers_determine_orders (H : Type*) [Group H] [Fintype H] :
         have hdiv := (Nat.mem_divisors.mp hd).1
         rw [ih d (lt_of_le_of_ne (Nat.le_of_dvd hn hdiv) hne) (Nat.pos_of_dvd_of_pos hdiv hn)]
       rw [← sum_erase_add _ _ hmem,← sum_erase_add _ _ hmem,hrest] at he
-      exact Nat.eq_of_mul_eq_mul_right (Nat.totient_pos hn) (Nat.add_left_cancel he)
+      exact Nat.eq_of_mul_eq_mul_right (Nat.totient_pos.mpr hn) (Nat.add_left_cancel he)
   · intro he n hn
     rw [power_fiber G n hn,power_fiber H n hn]
     exact sum_congr rfl fun d hd => by rw [he d (Nat.pos_of_dvd_of_pos (Nat.mem_divisors.mp hd).1 hn)]
