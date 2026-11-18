@@ -371,8 +371,7 @@ theorem riemannHypothesis_or_original_test_on_middle_complement : RiemannHypothe
   have hsumBound := (integral_mono hfi hsum hle).trans_eq (integral_add hcD.1 hwD.1)
   have hfinal := hsumBound.trans_lt (add_lt_add (hcD.2.trans_lt hsmall) hwD.2)
   rw [add_halves] at hfinal
-  dsimp only
-  simpa only [f,P,I,K,hid,m] using And.intro hfi hfinal
+  simpa only [f,P,I,K,funext hid,m] using And.intro hfi hfinal
 
 #print axioms riemannHypothesis_or_original_test_on_middle_complement
 end GaloisForLFunctions.ExclusionOfTheCriticalState

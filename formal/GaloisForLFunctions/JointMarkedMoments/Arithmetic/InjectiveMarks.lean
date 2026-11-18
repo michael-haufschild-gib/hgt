@@ -11,7 +11,7 @@ ideals of a Dedekind domain) give an injective map `U ↦ ∏_{i ∈ U} p_i` on 
 
 namespace GaloisForLFunctions.JointMarkedMoments
 
-variable {α ι : Type*} [CancelCommMonoidWithZero α] [Unique αˣ]
+variable {α ι : Type*} [CommMonoidWithZero α] [IsCancelMulZero α] [Unique αˣ]
 
 /-- A prime divides a product of distinct primes exactly at its own position. -/
 theorem prime_dvd_prod_iff {p : ι → α} (hp : ∀ i, Prime (p i)) (hinj : Function.Injective p)
@@ -28,9 +28,8 @@ theorem prime_dvd_prod_iff {p : ι → α} (hp : ∀ i, Prime (p i)) (hinj : Fun
 theorem prod_primes_injective {p : ι → α} (hp : ∀ i, Prime (p i)) (hinj : Function.Injective p) :
     Function.Injective (fun U : Finset ι => ∏ i ∈ U, p i) := by
   intro U V h
+  have h' : ∏ i ∈ U, p i = ∏ i ∈ V, p i := h
   ext i
-  rw [← prime_dvd_prod_iff hp hinj U i, ← prime_dvd_prod_iff hp hinj V i]
-  simp only at h
-  rw [h]
+  rw [← prime_dvd_prod_iff hp hinj U i, ← prime_dvd_prod_iff hp hinj V i, h']
 
 end GaloisForLFunctions.JointMarkedMoments

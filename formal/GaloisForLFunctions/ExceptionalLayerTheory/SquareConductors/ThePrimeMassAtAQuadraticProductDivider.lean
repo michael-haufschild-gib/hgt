@@ -208,7 +208,7 @@ private theorem divider_density : ∃ B : ℝ, 0 ≤ B ∧ ∀ {n K : ℕ}, 0 < 
   change |F/n-n*I| ≤ _
   have hsplit : F/n-n*I = n*(h*F-I) := by dsimp only [h]; field_simp
   rw [hsplit,abs_mul,abs_of_pos hn']
-  exact (mul_le_mul_of_nonneg_left hquant hn'.le).trans_eq (by dsimp only [h]; field_simp <;> ring)
+  exact (mul_le_mul_of_nonneg_left hquant hn'.le).trans_eq (by dsimp only [h]; field_simp)
 
 /-- The quartic density on a partial product range, with a uniform power
 saving for every sharp divider in the original finite horizon. -/

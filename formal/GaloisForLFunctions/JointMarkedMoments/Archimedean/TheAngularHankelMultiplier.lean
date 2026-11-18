@@ -36,7 +36,7 @@ def hankelMultiplier (m : ℤ) (τ : ℝ) (t : ℂ) : ℂ := hankelRatio m (t + 
 
 /-- The complex Tate factor `G_m(s) = i^{|m|}(2π)^{1−2s}Γ(s + |m|/2)/Γ(1 − s + |m|/2)`. -/
 def tateFactor (m : ℤ) (s : ℂ) : ℂ :=
-  I ^ m.natAbs * (2 * π : ℂ) ^ (1 - 2 * s) * Gamma (s + halfMode m) / Gamma (1 - s + halfMode m)
+  I ^ m.natAbs * (2 * (Real.pi : ℂ)) ^ (1 - 2 * s) * Gamma (s + halfMode m) / Gamma (1 - s + halfMode m)
 
 theorem halfMode_neg (m : ℤ) : halfMode (-m) = halfMode m := by
   unfold halfMode; rw [abs_neg]
@@ -45,13 +45,13 @@ theorem halfMode_neg (m : ℤ) : halfMode (-m) = halfMode m := by
 `G_m(1/2 + s − 1/6) G_m(1/2 + s + 1/6) = (−1)^{|m|}(2π)^{−4s} K`, `s = t + iτ`. -/
 theorem tateFactor_mul (m : ℤ) (τ : ℝ) (t : ℂ) :
     tateFactor m (1 / 2 + (t + τ * I) - 1 / 6) * tateFactor m (1 / 2 + (t + τ * I) + 1 / 6) =
-      (-1) ^ m.natAbs * (2 * π : ℂ) ^ (-4 * (t + τ * I)) * hankelMultiplier m τ t := by
-  set s := t + τ * I
-  have h2π : (2 * π : ℂ) ≠ 0 := by
-    have : (π : ℂ) ≠ 0 := ofReal_ne_zero.2 Real.pi_ne_zero
-    exact mul_ne_zero two_ne_zero this
-  have hcpow : (2 * π : ℂ) ^ (1 - 2 * (1 / 2 + s - 1 / 6)) * (2 * π : ℂ) ^ (1 - 2 * (1 / 2 + s + 1 / 6)) =
-      (2 * π : ℂ) ^ (-4 * s) := by
+      (-1) ^ m.natAbs * (2 * (Real.pi : ℂ)) ^ (-4 * (t + τ * I)) * hankelMultiplier m τ t := by
+  unfold tateFactor hankelMultiplier hankelRatio
+  generalize t + (τ : ℂ) * I = s
+  have h2π : (2 * (Real.pi : ℂ)) ≠ 0 :=
+    mul_ne_zero two_ne_zero (ofReal_ne_zero.2 Real.pi_ne_zero)
+  have hcpow : (2 * (Real.pi : ℂ)) ^ (1 - 2 * (1 / 2 + s - 1 / 6)) * (2 * (Real.pi : ℂ)) ^ (1 - 2 * (1 / 2 + s + 1 / 6)) =
+      (2 * (Real.pi : ℂ)) ^ (-4 * s) := by
     rw [← cpow_add _ _ h2π]; congr 1; ring
   have hI : I ^ m.natAbs * I ^ m.natAbs = (-1) ^ m.natAbs := by
     rw [← mul_pow, I_mul_I]
@@ -63,7 +63,6 @@ theorem tateFactor_mul (m : ℤ) (τ : ℝ) (t : ℂ) :
     congr 1; ring
   have g4 : Gamma (1 - (1 / 2 + s + 1 / 6) + halfMode m) = Gamma (1 / 3 + halfMode m - s) := by
     congr 1; ring
-  unfold tateFactor hankelMultiplier hankelRatio
   rw [g1, g2, g3, g4, ← hcpow, ← hI]
   ring
 

@@ -107,9 +107,9 @@ private theorem power_shell_geometry {α : ℝ} (hα1 : 1 < α) (hα2 : α < 2) 
       productLower 1 (splineHorizon n) ≤ powerProductCut α n := by
   obtain ⟨A, hA, hwin⟩ := successorSquare_window_bound
   have ht1 : Tendsto (fun n : ℕ => (n : ℝ) ^ (2 - α)) atTop atTop :=
-    (Real.tendsto_rpow_atTop (by linarith : 0 < 2 - α)).comp tendsto_natCast_atTop_atTop
+    (tendsto_rpow_atTop (by linarith : 0 < 2 - α)).comp tendsto_natCast_atTop_atTop
   have ht2 : Tendsto (fun n : ℕ => (n : ℝ) ^ (α - 1)) atTop atTop :=
-    (Real.tendsto_rpow_atTop (by linarith : 0 < α - 1)).comp tendsto_natCast_atTop_atTop
+    (tendsto_rpow_atTop (by linarith : 0 < α - 1)).comp tendsto_natCast_atTop_atTop
   filter_upwards [eventually_ge_atTop (1 : ℕ),
     ht1.eventually_ge_atTop (17 * Real.exp 8),
     ht2.eventually_ge_atTop (2 * A + 1)] with n hn hhi hlo
@@ -129,7 +129,9 @@ private theorem power_shell_geometry {α : ℝ} (hα1 : 1 < α) (hα2 : α < 2) 
     nlinarith [hV_le]
   · apply Nat.le_floor
     have hmul : (n : ℝ) ^ (α - 1) * n = X := by
-      dsimp only [X]; rw [← Real.rpow_one (n : ℝ), ← Real.rpow_add hn0]; congr 1; ring
+      dsimp only [X]
+      calc (n : ℝ) ^ (α - 1) * n = (n : ℝ) ^ (α - 1) * (n : ℝ) ^ (1 : ℝ) := by rw [Real.rpow_one]
+        _ = (n : ℝ) ^ α := by rw [← Real.rpow_add hn0]; congr 1; ring
     have hroot : Real.sqrt (splineHorizon n) ≤ A * n := by
       have hs := Real.sqrt_le_sqrt (hwin hn)
       rwa [Real.sqrt_sq (mul_nonneg (zero_le_one.trans hA) hn0.le)] at hs
@@ -165,28 +167,24 @@ theorem powerProductShell_pointwise_bound {α : ℝ} (hα1 : 1 < α) (hα2 : α 
       |powerProductShell α n| ≤ C * (n : ℝ) ^ (8 * α - 15) * (1 + Real.log (2 * (n : ℝ))) := by
   obtain ⟨C8, hC8, hshell⟩ := capped_interior_shell_eighth_bound
   obtain ⟨N0, hN0⟩ := eventually_atTop.mp (power_shell_geometry hα1 hα2)
-  let F := ∑ k ∈ Icc 1 N0, |powerProductShell α k| / ((k : ℝ) ^ (8 * α - 15) * logFactor k)
-  have hF0 : 0 ≤ F := sum_nonneg fun k _ => div_nonneg (abs_nonneg _)
-    (mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg k) _) (zero_le_one.trans (logFactor_one_le k)))
-  let K := F + 2 ^ 8 * C8 * (1 + α)
-  have hK0 : 0 ≤ K := by
-    dsimp only [K]
-    linarith [mul_nonneg (by positivity : (0 : ℝ) ≤ 2 ^ 8 * C8) (by linarith : 0 ≤ 1 + α)]
-  refine ⟨K, hK0, fun {n} hn => ?_⟩
+  obtain ⟨F, hF0, hF_le⟩ : ∃ F : ℝ, 0 ≤ F ∧ ∀ {n : ℕ}, 1 ≤ n → n ≤ N0 →
+      |powerProductShell α n| / ((n : ℝ) ^ (8 * α - 15) * logFactor n) ≤ F := by
+    let g := fun k : ℕ => |powerProductShell α k| / ((k : ℝ) ^ (8 * α - 15) * logFactor k)
+    have hg : ∀ k, 0 ≤ g k := fun k => div_nonneg (abs_nonneg _)
+      (mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg k) _) (zero_le_one.trans (logFactor_one_le k)))
+    exact ⟨∑ k ∈ Icc 1 N0, g k, sum_nonneg fun k _ => hg k,
+      fun h1 h2 => single_le_sum (f := g) (fun k _ => hg k) (mem_Icc.mpr ⟨h1, h2⟩)⟩
+  have hC_main0 : 0 ≤ 2 ^ 8 * C8 * (1 + α) :=
+    mul_nonneg (by positivity) (by linarith)
+  refine ⟨F + 2 ^ 8 * C8 * (1 + α), add_nonneg hF0 hC_main0, fun {n} hn => ?_⟩
   have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hn0 : (0 : ℝ) < n := zero_lt_one.trans_le hn1
   have hrpos : 0 < (n : ℝ) ^ (8 * α - 15) * logFactor n :=
     mul_pos (Real.rpow_pos_of_pos hn0 _) (zero_lt_one.trans_le (logFactor_one_le n))
   by_cases hbig : N0 ≤ n
   swap
-  · have hle_F : |powerProductShell α n| / ((n : ℝ) ^ (8 * α - 15) * logFactor n) ≤ F :=
-      single_le_sum (fun k _ => div_nonneg (abs_nonneg _)
-        (mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg k) _) (zero_le_one.trans (logFactor_one_le k))))
-        (mem_Icc.mpr ⟨hn, by omega⟩)
-    have h1 := (div_le_iff₀ hrpos).mp hle_F
-    have hFK : F ≤ K := by
-      dsimp only [K]
-      linarith [mul_nonneg (by positivity : (0 : ℝ) ≤ 2 ^ 8 * C8) (by linarith : 0 ≤ 1 + α)]
+  · have h1 := (div_le_iff₀ hrpos).mp (hF_le hn (by omega))
+    have hFK : F ≤ F + 2 ^ 8 * C8 * (1 + α) := le_add_of_nonneg_right hC_main0
     exact h1.trans ((mul_le_mul_of_nonneg_right hFK hrpos.le).trans_eq (by ring))
   obtain ⟨hv1, hbirth16, hY⟩ := hN0 n hbig
   let V := powerProductCut α n
@@ -206,16 +204,17 @@ theorem powerProductShell_pointwise_bound {α : ℝ} (hα1 : 1 < α) (hα2 : α 
   have hlog := log_two_mul_cut_le (by linarith) hn hv1
   have hdiv_eq : (n : ℝ) ^ (8 * α) / (n : ℝ) ^ 15 = (n : ℝ) ^ (8 * α - 15) := by
     rw [← Real.rpow_natCast (n : ℝ) 15, ← Real.rpow_sub hn0]; norm_num
+  have hCK : 2 ^ 8 * C8 * (1 + α) ≤ F + 2 ^ 8 * C8 * (1 + α) := le_add_of_nonneg_left hF0
   calc C8 * ((2 * V : ℕ) : ℝ) ^ 8 * (1 + Real.log (2 * V : ℕ)) / (n : ℝ) ^ 15
       ≤ C8 * (2 ^ 8 * (n : ℝ) ^ (8 * α)) * ((1 + α) * logFactor n) / (n : ℝ) ^ 15 := by
         refine div_le_div_of_nonneg_right ?_ (by positivity)
         exact mul_le_mul (mul_le_mul_of_nonneg_left hW8 hC8) hlog
           (add_nonneg zero_le_one (Real.log_natCast_nonneg _)) (by positivity)
     _ = (2 ^ 8 * C8 * (1 + α)) * ((n : ℝ) ^ (8 * α) / (n : ℝ) ^ 15) * logFactor n := by ring
-    _ = (2 ^ 8 * C8 * (1 + α)) * (n : ℝ) ^ (8 * α - 15) * logFactor n := by rw [hdiv_eq]
-    _ ≤ K * (n : ℝ) ^ (8 * α - 15) * logFactor n := by
-        dsimp only [K]
-        nlinarith [mul_nonneg hF0 hrpos.le]
+    _ = (2 ^ 8 * C8 * (1 + α)) * ((n : ℝ) ^ (8 * α - 15) * logFactor n) := by rw [hdiv_eq]; ring
+    _ ≤ (F + 2 ^ 8 * C8 * (1 + α)) * ((n : ℝ) ^ (8 * α - 15) * logFactor n) :=
+        mul_le_mul_of_nonneg_right hCK hrpos.le
+    _ = (F + 2 ^ 8 * C8 * (1 + α)) * (n : ℝ) ^ (8 * α - 15) * logFactor n := by ring
 
 /-- Pointwise decay `|B_n| ≤ C · (1 + log(2n)) / n` on every conductor for the `7/4` shell. -/
 theorem sevenFourthsShell_reciprocal_bound :
@@ -283,9 +282,9 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
       ∀ n ∈ Ioc N (2 * N), productLower 1 (splineHorizon n) ≤ powerProductCut α n := by
     obtain ⟨A, hA, hwin⟩ := successorSquare_window_bound
     have ht1 : Tendsto (fun N : ℕ => (N : ℝ) ^ (2 - α)) atTop atTop :=
-      (Real.tendsto_rpow_atTop (by linarith : 0 < 2 - α)).comp tendsto_natCast_atTop_atTop
+      (tendsto_rpow_atTop (by linarith : 0 < 2 - α)).comp tendsto_natCast_atTop_atTop
     have ht2 : Tendsto (fun N : ℕ => (N : ℝ) ^ (α - 1)) atTop atTop :=
-      (Real.tendsto_rpow_atTop (by linarith : 0 < α - 1)).comp tendsto_natCast_atTop_atTop
+      (tendsto_rpow_atTop (by linarith : 0 < α - 1)).comp tendsto_natCast_atTop_atTop
     filter_upwards [eventually_ge_atTop (1 : ℕ),
       ht1.eventually_ge_atTop (17 * (2 : ℝ) ^ α * Real.exp 8),
       ht2.eventually_ge_atTop (2 * A + 1)] with N hN hhi hlo
@@ -309,14 +308,15 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
       rw [h2N] at hfl
       nlinarith [hfl]
     · obtain ⟨hnN, _⟩ := mem_Ioc.mp hn
-      have hn0_nat : 0 < n := hN.trans hnN
+      have hn0_nat : 0 < n := by omega
       have hn1_r : (1 : ℝ) ≤ n := by exact_mod_cast hn0_nat
       have hn0_r : (0 : ℝ) < n := zero_lt_one.trans_le hn1_r
       apply Nat.le_floor
       have hlo_n : 2 * A + 1 ≤ (n : ℝ) ^ (α - 1) :=
         hlo.trans (Real.rpow_le_rpow hN0.le (by exact_mod_cast hnN.le) (by linarith))
       have hmul : (n : ℝ) ^ (α - 1) * n = (n : ℝ) ^ α := by
-        rw [← Real.rpow_one (n : ℝ), ← Real.rpow_add hn0_r]; congr 1; ring
+        calc (n : ℝ) ^ (α - 1) * n = (n : ℝ) ^ (α - 1) * (n : ℝ) ^ (1 : ℝ) := by rw [Real.rpow_one]
+          _ = (n : ℝ) ^ α := by rw [← Real.rpow_add hn0_r]; congr 1; ring
       have hroot : Real.sqrt (splineHorizon n) ≤ A * n := by
         have hs := Real.sqrt_le_sqrt (hwin hn0_nat)
         rwa [Real.sqrt_sq (mul_nonneg (zero_le_one.trans hA) hn0_r.le)] at hs
@@ -329,42 +329,53 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
         _ ≤ (n : ℝ) ^ (α - 1) * n := by nlinarith [hlo_n, hn0_r.le]
         _ = (n : ℝ) ^ α := hmul
   obtain ⟨N0, hN0⟩ := eventually_atTop.mp hgeom_octave
-  let F := ∑ k ∈ Icc 1 (2 * N0), (k : ℝ) ^ 2 * |powerProductShell α k|
-  have hF0 : 0 ≤ F := sum_nonneg fun _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _)
+  obtain ⟨F, hF0, hF_le⟩ : ∃ F : ℝ, 0 ≤ F ∧ ∀ {N M : ℕ}, 1 ≤ N → N ≤ N0 → M ≤ 2 * N →
+      |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * powerProductShell α n| ≤
+        F * (N : ℝ) ^ (9 * α - 14) * logFactor N := by
+    let F_num := ∑ k ∈ Icc 1 (2 * N0), (k : ℝ) ^ 2 * |powerProductShell α k|
+    have hFn0 : 0 ≤ F_num := sum_nonneg fun _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _)
+    let g := fun m : ℕ => F_num / ((m : ℝ) ^ (9 * α - 14) * logFactor m)
+    have hg : ∀ m, 0 ≤ g m := fun m => div_nonneg hFn0
+      (mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg m) _) (zero_le_one.trans (logFactor_one_le m)))
+    refine ⟨∑ m ∈ Icc 1 N0, g m, sum_nonneg fun m _ => hg m, fun {N M} h1 h2 hM2N => ?_⟩
+    have hsub : Ioc N M ⊆ Icc 1 (2 * N0) := fun n hn => by
+      obtain ⟨ha, hb⟩ := mem_Ioc.mp hn
+      exact mem_Icc.mpr ⟨by omega, by omega⟩
+    have hnum : |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * powerProductShell α n| ≤ F_num := by
+      refine (abs_sum_le_sum_abs _ _).trans ?_
+      have heq_abs : ∀ n : ℕ, |(n : ℝ) ^ 2 * powerProductShell α n| =
+          (n : ℝ) ^ 2 * |powerProductShell α n| :=
+        fun n => by rw [abs_mul, abs_of_nonneg (sq_nonneg _)]
+      rw [sum_congr rfl fun n _ => heq_abs n]
+      exact sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _)
+    have hrpos : 0 < (N : ℝ) ^ (9 * α - 14) * logFactor N :=
+      mul_pos (Real.rpow_pos_of_pos (Nat.cast_pos.mpr h1) _) (zero_lt_one.trans_le (logFactor_one_le N))
+    have hle_sum : g N ≤ ∑ m ∈ Icc 1 N0, g m :=
+      single_le_sum (f := g) (fun m _ => hg m) (mem_Icc.mpr ⟨h1, h2⟩)
+    exact hnum.trans (((div_le_iff₀ hrpos).mp hle_sum).trans_eq (by ring))
   let A_const := Cs * (2 * (1 + α)) * (3 * (2 : ℝ) ^ (9 * (1 + α)))
   have hA_nonneg : 0 ≤ A_const := by
     dsimp only [A_const]
     have : 0 ≤ 1 + α := by linarith
     positivity
-  let K := F + A_const
-  refine ⟨K, add_nonneg hF0 hA_nonneg, fun N M hNM hM2N => ?_⟩
+  refine ⟨F + A_const, add_nonneg hF0 hA_nonneg, fun N M hNM hM2N => ?_⟩
   rcases Nat.eq_zero_or_pos N with rfl | hN
   · have hM0 : M = 0 := by omega
     rw [hM0, Ioc_self, sum_empty, abs_zero]
-    exact mul_nonneg (mul_nonneg (add_nonneg hF0 hA_nonneg) (Real.rpow_nonneg zero_le_zero _))
+    exact mul_nonneg (mul_nonneg (add_nonneg hF0 hA_nonneg) (Real.rpow_nonneg (le_refl (0 : ℝ)) _))
       (zero_le_one.trans (logFactor_one_le 0))
   have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
   have hN0_r : (0 : ℝ) < N := zero_lt_one.trans_le hN1
-  have hrge1 : 1 ≤ (N : ℝ) ^ (9 * α - 14) * logFactor N := by
-    refine one_le_mul_of_one_le_of_one_le ?_ (logFactor_one_le N)
-    exact Real.one_le_rpow hN1 (by linarith)
+  have hrpos_N : 0 ≤ (N : ℝ) ^ (9 * α - 14) * logFactor N :=
+    mul_nonneg (Real.rpow_nonneg hN0_r.le _) (zero_le_one.trans (logFactor_one_le N))
   by_cases hbig : N0 ≤ N
   swap
-  · have hsub : Ioc N M ⊆ Icc 1 (2 * N0) := fun n hn => by
-      obtain ⟨h1, h2⟩ := mem_Ioc.mp hn
-      exact mem_Icc.mpr ⟨by omega, by omega⟩
-    have hfin : |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * powerProductShell α n| ≤ F := by
-      refine (abs_sum_le_sum_abs _ _).trans ?_
-      have heq_abs : ∀ n, |(n : ℝ) ^ 2 * powerProductShell α n| =
-          (n : ℝ) ^ 2 * |powerProductShell α n| :=
-        fun n => by rw [abs_mul, abs_of_nonneg (sq_nonneg _)]
-      simp_rw [heq_abs]
-      exact sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _)
-    calc |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * powerProductShell α n|
-        ≤ F := hfin
-      _ ≤ K * ((N : ℝ) ^ (9 * α - 14) * logFactor N) := by
-          dsimp only [K]; nlinarith [hrge1]
-      _ = K * (N : ℝ) ^ (9 * α - 14) * logFactor N := by ring
+  · refine (hF_le hN (by omega) hM2N).trans ?_
+    calc F * (N : ℝ) ^ (9 * α - 14) * logFactor N
+        = F * ((N : ℝ) ^ (9 * α - 14) * logFactor N) := by ring
+      _ ≤ (F + A_const) * ((N : ℝ) ^ (9 * α - 14) * logFactor N) :=
+          mul_le_mul_of_nonneg_right (le_add_of_nonneg_right hA_nonneg) hrpos_N
+      _ = (F + A_const) * (N : ℝ) ^ (9 * α - 14) * logFactor N := by ring
   obtain ⟨hw1_N, hbirth16, hY_all⟩ := hN0 N hbig
   let u := powerProductCut α
   let w := fun n : ℕ => 2 * powerProductCut α n
@@ -402,8 +413,7 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
     have hcond_2N : logFactor (2 * N) ≤ 2 * logFactor N := by
       dsimp only [logFactor]
       push_cast
-      rw [Real.log_mul two_ne_zero (by positivity), Real.log_mul two_ne_zero hN0_r.ne',
-        Real.log_mul two_ne_zero hN0_r.ne']
+      rw [Real.log_mul two_ne_zero (by positivity), Real.log_mul two_ne_zero hN0_r.ne']
       linarith [Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 2), Real.log_nonneg hN1]
     have : 0 ≤ 1 + α := by linarith
     nlinarith
@@ -436,14 +446,12 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
           (w M : ℝ) ^ 5 / (N : ℝ) ^ 8)
       ≤ Cs * (2 * (1 + α) * logFactor N) *
           (3 * (2 : ℝ) ^ (9 * (1 + α)) * (N : ℝ) ^ (9 * α - 14)) := by
-        refine mul_le_mul (mul_le_mul_of_nonneg_left hlogW hCs) hsum3 (by positivity) ?_
-        have := logFactor_one_le N; have : 0 ≤ 1 + α := by linarith; positivity
-    _ = A_const * (N : ℝ) ^ (9 * α - 14) * logFactor N := by dsimp only [A_const]; ring
-    _ ≤ K * (N : ℝ) ^ (9 * α - 14) * logFactor N := by
-        dsimp only [K]
-        have hrp_nn : 0 ≤ (N : ℝ) ^ (9 * α - 14) := Real.rpow_nonneg hN0_r.le (9 * α - 14)
-        have hlf_nn : 0 ≤ logFactor N := zero_le_one.trans (logFactor_one_le N)
-        nlinarith [mul_nonneg hF0 (mul_nonneg hrp_nn hlf_nn)]
+        refine mul_le_mul (mul_le_mul_of_nonneg_left hlogW hCs) hsum3 (by positivity)
+          (mul_nonneg hCs (mul_nonneg (by linarith) (zero_le_one.trans (logFactor_one_le N))))
+    _ = A_const * ((N : ℝ) ^ (9 * α - 14) * logFactor N) := by dsimp only [A_const]; ring
+    _ ≤ (F + A_const) * ((N : ℝ) ^ (9 * α - 14) * logFactor N) :=
+        mul_le_mul_of_nonneg_right (le_add_of_nonneg_left hF0) hrpos_N
+    _ = (F + A_const) * (N : ℝ) ^ (9 * α - 14) * logFactor N := by ring
 
 /-- Complete conductor-smoothed bound `O(N^(7/4) (1 + log(2N)))` on the `7/4` shell across
 every partial or complete conductor octave `N ≤ M ≤ 2N`. -/

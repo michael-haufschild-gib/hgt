@@ -13,7 +13,8 @@ degree.
 
 namespace GaloisForLFunctions.JointMarkedMoments
 
-open MeasureTheory Real
+open MeasureTheory
+open scoped FourierTransform RealInnerProductSpace
 
 noncomputable section
 
@@ -26,7 +27,7 @@ theorem fourier_comp_inv_smul (f : V → E) {c : ℝ} (hc : 0 < c) (ξ : V) :
     𝓕 (fun v => f (c⁻¹ • v)) ξ = c ^ Module.finrank ℝ V • 𝓕 f (c • ξ) := by
   rw [Real.fourier_eq, Real.fourier_eq]
   have h := Measure.integral_comp_inv_smul_of_nonneg (volume : Measure V)
-    (fun w : V => 𝐞 (-⟪c • w, ξ⟫_ℝ) • f w) hc.le
+    (fun w : V => Real.fourierChar (-⟪c • w, ξ⟫) • f w) hc.le
   have hcc : ∀ v : V, c • c⁻¹ • v = v := fun v => by rw [smul_smul, mul_inv_cancel₀ hc.ne', one_smul]
   simp only [hcc] at h
   rw [h]
