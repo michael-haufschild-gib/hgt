@@ -83,7 +83,7 @@ theorem nonprincipal_imprimitive_energy (p : Nat.Primes) (e : ℕ)
   have hQ : 2≤p.val^k := by
     have := one_lt_pow₀ p.property.one_lt hk
     omega
-  have hz₀ : (‖z‖^k)^2≤1 := pow_le_one₀ (pow_nonneg (norm_nonneg _) _) (pow_le_one₀ (norm_nonneg _) hz _) _
+  have hz₀ : (‖z‖^k)^2≤1 := pow_le_one₀ (pow_nonneg (norm_nonneg _) _) (pow_le_one₀ (norm_nonneg _) hz)
   rw [hval,← he,pow_add]
   have hP : 0≤(p.val : ℝ)^(j+1) := by positivity
   have h2 : (2 : ℝ)≤(p.val : ℝ)^k := by exact_mod_cast hQ

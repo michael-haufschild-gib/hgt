@@ -107,7 +107,7 @@ theorem square_prime_reciprocal_den_order : ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ n : 
   obtain ⟨A,_,hA⟩ := successorSquare_window_bound
   obtain ⟨c,hc,he⟩ := successorSquare_outer_exponents_proper
   refine ⟨7*A^2,by positivity,?_⟩
-  filter_upwards [he,successorSquare_denominator_window_mass,eventually_ge_atTop 1,
+  filter_upwards [he,squareOuterPrimeWindow_log_mass,eventually_ge_atTop 1,
     tendsto_natCast_atTop_atTop.eventually_ge_atTop (1/c)] with n hn hm hp hlarge
   let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
   let z := primeReciprocalReading (valFinsupp q)

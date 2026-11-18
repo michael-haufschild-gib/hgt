@@ -57,17 +57,17 @@ theorem riemannHypothesis_or_properPower_sign_extrema : RiemannHypothesis ∨
       IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧
       ∀ s : ℝ, s=1 ∨ s= -1 →
         let V := fun t : ℝ => ∑' j, max (s*properPowerContribution Φ t j) 0
-        (∀ t : ℝ, 0 ≤ t → IsGreatest
+        (∀ t : ℝ, IsGreatest
           {r : ℝ | ∃ c : (Nat.Primes × ℕ) → ℝ, (∀ j, c j ∈ Set.Icc 0 1) ∧
             r=∑' j, c j*(s*properPowerContribution Φ t j)} (V t)) ∧
         Tendsto V atTop (𝓝 ((∫ u, max (s*Φ u) 0)/2)) := by
   rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with h | ⟨W₀,F,hW,ht,hF⟩
   · exact Or.inl h
   obtain ⟨Φ,hΦ,he,htest⟩ := criticalState_tendsto_dominated_properPowerWave hW ht hF
-  obtain ⟨Ψ,hΨ,heΨ,habs⟩ := criticalState_properPowerWave_subexponential hW ht hF
+  obtain ⟨_,_,Ψ,hΨ,heΨ,_,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
   have heq : Ψ=Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heΨ.symm.trans he)
   subst Ψ
-  obtain ⟨_,habs⟩ := habs 1 zero_lt_one
+  obtain ⟨_,_,habs⟩ := properPowerWave_absolute_envelope (by norm_num : (0:ℝ)<2) hC hb
   refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hΦ,he,fun s hs => ?_⟩
   have hs1 : |s|=1 := by rcases hs with rfl | rfl <;> norm_num
   let g := fun u => max (s*Φ u) 0
@@ -77,10 +77,10 @@ theorem riemannHypothesis_or_properPower_sign_extrema : RiemannHypothesis ∨
     rw [abs_of_nonneg (le_max_right (s*Φ u) 0)]
     exact max_le ((le_abs_self _).trans_eq (by rw [abs_mul,hs1,one_mul])) (abs_nonneg _)
   constructor
-  · intro t ht0
+  · intro t
     apply greatest_thinned_positive_mass
     simpa only [properPowerContribution,abs_mul,hs1,one_mul,abs_of_nonneg (atomWeight_nonneg _)]
-      using (habs t ht0).1
+      using (habs t).1
   · refine (htest g hg hb).congr (fun t => tsum_congr fun j => ?_)
     dsimp only [g,properPowerContribution]
     rw [mul_max_of_nonneg _ _ (atomWeight_nonneg j),mul_zero,mul_left_comm]

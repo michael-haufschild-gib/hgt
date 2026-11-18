@@ -146,8 +146,4 @@ theorem square_diagonal_finite_place_cubic_lower :
   change Real.log q.num.natAbs+Real.log q.den-C*(n:ℝ)^2 ≤ _ at h₃
   linarith only [h₁,h₂,h₃,Real.log_natCast_nonneg q.num.natAbs,mul_nonneg ha.le (sq_nonneg (n:ℝ))]
 
-#print axioms ordinary_absolute_prime_mass
-#print axioms square_diagonal_finite_place_cost
-#print axioms square_diagonal_finite_place_cubic_lower
-
 end GaloisForLFunctions.CountingHolography.Sections

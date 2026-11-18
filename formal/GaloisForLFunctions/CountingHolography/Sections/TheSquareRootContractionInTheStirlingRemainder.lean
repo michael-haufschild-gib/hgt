@@ -42,7 +42,7 @@ theorem hasSum_factorialStirlingStep {j : ℕ} (hj : 0 < j) :
       push_cast
       field_simp <;> ring
     have h₀ : Filter.Tendsto b Filter.atTop (nhds 0) := tendsto_const_nhds.div_atTop
-      (tendsto_natCast_atTop_atTop.atTop_add_const_right 1)
+      (tendsto_natCast_atTop_atTop.atTop_add (tendsto_const_nhds (x := (1:ℝ))))
     apply (hasSum_iff_tendsto_nat_of_nonneg (fun k => by positivity) _).mpr
     simp_rw [hf,sum_range_sub']
     simpa [b] using (tendsto_const_nhds (x := (1:ℝ))).sub h₀
@@ -63,7 +63,7 @@ theorem hasSum_factorialStirlingStep {j : ℕ} (hj : 0 < j) :
     push_cast
     rw [pow_succ x (k+1)]
     field_simp [hx.ne'] <;> ring
-  have h := (hA.sub (ht.div_const x)).congr_fun he
+  have h := (hA.sub (ht.div_const x)).congr_fun (fun k => (he k).symm)
   have hfrac : 1-x = ((n:ℝ)+1)/((n:ℝ)+2) := by
     dsimp only [x,j]; push_cast; field_simp <;> ring
   have hL : L = Real.log (((n:ℝ)+2)/((n:ℝ)+1)) := by

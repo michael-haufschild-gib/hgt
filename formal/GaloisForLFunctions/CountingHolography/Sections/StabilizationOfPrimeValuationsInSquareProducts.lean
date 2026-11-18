@@ -46,7 +46,7 @@ theorem square_generator_valuation_support : ∃ D : ℝ, 1 ≤ D ∧
     push_cast
     linarith only [h]
   have labels {k : Fin N} (hk : a k ≠ 0) : (k:ℝ)+1=1 ∨ (x ≤ (k:ℝ)+1 ∧ (k:ℝ)+1 ≤ y) := by
-    have h : successorSquareTriple n k ≠ 0 := fun h => hk (by simp [a,Pi.smul_apply,h])
+    have h : successorSquareTriple n k ≠ 0 := fun h => hk (by simp [a,h])
     rcases successorSquareTriple_support hn h with h' | h' | h'
     · exact Or.inl h'
     · right; rw [h']; exact ⟨le_rfl,hxy⟩

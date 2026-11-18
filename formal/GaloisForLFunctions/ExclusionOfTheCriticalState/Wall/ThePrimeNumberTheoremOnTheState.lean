@@ -129,15 +129,14 @@ theorem primeSquareLayer_eq_bin_integral {Φ : ℝ → ℝ} (hc : Continuous Φ)
   have hP := prime_test_eq_layer hsΨ (by norm_num : (0:ℝ) < 2) 0
   simp only [zero_div,Real.exp_zero,div_one,mul_zero,one_mul] at hP
   have hp : primePowerLayer Φ 2 t = primePowerLayer Ψ 2 0 := by
-    simp only [primePowerLayer,Ψ,zero_sub,sub_eq_add_neg]
+    simp only [primePowerLayer, Ψ, sub_eq_add_neg, zero_add]
   rw [hp,← hP,← hI]
   apply integral_congr_ae (Eventually.of_forall fun r => ?_)
   let p := primeBinReading 1 (Real.exp r)
-  have hp0 := primeBinReading_one_pos (Real.exp r)
+  have hp0 : 0 < p := primeBinReading_one_pos (Real.exp r)
   change Real.exp r*primeDilationTest Ψ 2 p = Real.exp r/p*Φ (t-2*Real.log p)
-  rw [primeDilationTest_of_pos hsΨ (by norm_num : (0:ℝ) ≤ 2) hp0]
-  norm_num only [div_self (by norm_num : (2:ℝ) ≠ 0),neg_one_mul,Real.exp_neg,
-    Real.exp_log (show 0 < p from hp0)]
+  rw [primeDilationTest_of_pos (u := p) hsΨ (by norm_num : (0:ℝ) ≤ 2) hp0,
+    show (2/2:ℝ) = 1 by norm_num, neg_one_mul, Real.exp_neg, Real.exp_log hp0]
   simp only [Ψ,neg_mul,sub_eq_add_neg,div_eq_mul_inv,mul_assoc]
 
 /-- A fixed prime-power layer samples the Laplace integral of any continuous confined profile. -/
@@ -238,10 +237,13 @@ private theorem tendsto_cubeOrHigherWave {Φ : ℝ → ℝ} (hs : ∀ u, 0 ≤ u
     Tendsto (fun t : ℝ => ∑' j, vonMangoldtAtom (cubeOrHigherIndex j)*
       Φ (t-Real.log (cubeOrHigherIndex j))) atTop (𝓝 0) := by
   obtain ⟨M,_,h⟩ := cubeOrHigherWave_absolute_exp_bound hs hΦ (b := 1/12) (by norm_num) (by norm_num)
-  have h0 := Real.tendsto_exp_atBot.comp (tendsto_id.const_mul_atTop_of_neg
-    (by norm_num : -(1/12:ℝ)<0))
+  have h0 : Tendsto (fun t : ℝ => Real.exp (-(1/12:ℝ)*t)) atTop (𝓝 0) :=
+    Real.tendsto_exp_atBot.comp (tendsto_id.const_mul_atTop_of_neg
+      (by norm_num : -(1/12:ℝ)<0))
+  have hM : Tendsto (fun t : ℝ => M*Real.exp (-(1/12:ℝ)*t)) atTop (𝓝 0) := by
+    simpa only [mul_zero] using h0.const_mul M
   apply tendsto_zero_iff_norm_tendsto_zero.mpr
-  apply squeeze_zero (fun _ => norm_nonneg _) _ (by simpa only [mul_zero] using h0.const_mul M)
+  apply squeeze_zero (fun _ => norm_nonneg _) _ hM
   intro t
   have ha := (h t).1
   simp only [← Real.norm_eq_abs] at ha

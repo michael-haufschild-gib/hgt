@@ -3,6 +3,7 @@ import GaloisForLFunctions.CountingHolography.Sections.MobiusInterpolationByInte
 import GaloisForLFunctions.CountingHolography.Sections.EntropyAndValueOfBalancedFactorials
 import GaloisForLFunctions.ArithmeticOfSquareRootPrecision.WherePrecisionIsLost
 import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusDivisorDilationChannels
+import GaloisForLFunctions.RHTower.Sieve.DivisorSwap
 import GaloisForLFunctions.RHTower.FareyCountMertensIdentity
 import GaloisForLFunctions.RHTower.MobiusMertensLittlewood
 import GaloisForLFunctions.WindowTowerOfSpecZ.TheTangentPrincipleOfTheTateFamily
@@ -147,6 +148,33 @@ private theorem sample_difference {m : ℕ} (hm : 1 < m) :
   simp only [factorialSampleEntropy,Nat.add_sub_cancel,map_sub]
   linarith only [h]
 
+/-- The signed Stirling remainder for arbitrary finite sample weights is
+the positive Stirling average of their Möbius sums at dilated arguments,
+apart from the unit sample. -/
+theorem weighted_factorial_sample_remainder (w : ℕ → ℝ) {N : ℕ} (hN : 0 < N) :
+    w 1 + ∑ m ∈ Icc 1 N, w m*(vonMangoldt m-factorialSampleEntropy m) =
+      ∑ j ∈ Icc 1 N, factorialStirlingStep j *
+        ∑ d ∈ Icc 1 (N/j), ((moebius d:ℤ):ℝ)*w (j*d) := by
+  have row (m : ℕ) (hm : m ∈ Icc 1 N) :
+      (if m=1 then w 1 else 0) + w m*(vonMangoldt m-factorialSampleEntropy m) =
+        ∑ j ∈ m.divisors, factorialStirlingStep j * (μR (m/j)*w (j*(m/j))) := by
+    have step : (if m=1 then 1 else 0) + (vonMangoldt m-factorialSampleEntropy m) =
+        dirichletConv factorialStirlingStep μR m := by
+      by_cases h : m=1
+      · subst m
+        simp [factorialSampleEntropy,prefixFactorialCoeffs,factorialEntropy,dirichletConv,μR]
+      · rw [if_neg h,zero_add,← neg_sub, sample_difference (by have := (mem_Icc.mp hm).1; omega),neg_neg]
+    have eq := congrArg (fun x : ℝ => w m * x) step
+    simp only [dirichletConv,mul_add,mul_sum] at eq
+    calc _ = w m*(if m=1 then 1 else 0) + w m*(vonMangoldt m-factorialSampleEntropy m) := by
+               by_cases h : m=1 <;> simp [h]
+      _ = _ := eq.trans (sum_congr rfl fun j hj => by
+               rw [Nat.mul_div_cancel' (Nat.mem_divisors.mp hj).1]; ring)
+  have hunit : (∑ m ∈ Icc 1 N, if m=1 then w 1 else 0) = w 1 := by simp [hN]
+  rw [← hunit,← sum_add_distrib,sum_congr rfl row]
+  simpa only [mul_sum,μR] using
+    Sieve.sum_divisors_swap N (fun j d => factorialStirlingStep j * (μR d*w (j*d)))
+
 private def localWeight (m k p : ℕ) : ℝ :=
   ((p:ℝ) ^ ((m.factorization p-1)*(k+1):ℕ))⁻¹ * (1-((p:ℝ)⁻¹)^(k+1))
 
@@ -203,7 +231,7 @@ theorem factorialSampleEntropy_vonMangoldt_series {m : ℕ} (hm : 1 < m) :
       (-1:ℝ)^(m.primeFactors.card+1)*(factorialSampleEntropy m-vonMangoldt m) := by
     rw [pow_succ,sample_difference hm]; dsimp only [s]; ring
   rw [← hv]
-  exact (h.mul_left s).congr_fun hstep
+  exact (h.mul_left s).congr_fun fun k => (hstep k).symm
 
 /-- The sample error has strict sign (−1)^(ω(m)+1), including prime powers. -/
 theorem factorialSampleEntropy_vonMangoldt_sign {m : ℕ} (hm : 1 < m) :

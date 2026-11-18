@@ -315,7 +315,8 @@ theorem factorial_budget_at_cluster_of_critical_zeros {C R : ℝ} (hR : 0 < R) (
   let u₀ := max T 0
   let X := fun u : ℝ => Real.exp (u₀+max u 0)
   have hlarge (u : ℝ) : T ≤ X u := (le_max_left T 0).trans
-    ((le_add_of_nonneg_right (le_max_right u 0)).trans (Real.le_exp _))
+    ((le_add_of_nonneg_right (le_max_right u 0)).trans
+      ((le_add_of_nonneg_right (zero_le_one : (0:ℝ) ≤ 1)).trans (Real.add_one_le_exp _)))
   choose m c a ha hE hcap hmass using fun u => hT (X u) (hlarge u)
   let w := fun z : ℂ => ρ+(R:ℂ)*z
   let z := fun y : ℝ => (y:ℂ)*I/(R:ℂ)

@@ -38,7 +38,7 @@ private theorem involutions_mod_prime {p : ℕ} (hp : p.Prime) :
   split_ifs with h
   · norm_num [h]
   · obtain ⟨k,hk⟩ := hp.odd_of_ne_two h
-    apply Nat.gcd_eq_right.mpr
+    apply Nat.gcd_eq_right
     exact ⟨k,by omega⟩
 
 /-- A split residue group has exactly two to the odd factor count involutions,
@@ -60,7 +60,7 @@ theorem card_splitResidueUnits_two_torsion (m : ℕ) :
     rw [show Nat.card (B p)=_ from involutions_mod_prime (Nat.prime_of_mem_primeFactors p.property)]
     split_ifs <;> simp
   simp_rw [h]
-  rw [← pow_sum,oddFactorCount]
+  rw [prod_pow_eq_pow_sum,oddFactorCount]
   congr 1
   exact sum_attach _ _
 
@@ -82,7 +82,9 @@ theorem square_exponent_at_two : ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ n : ℕ in atTo
     (by linarith only [ht,neg_abs_le (Real.log 2-T n)])
   have h₂ := splineAutoCorr_zero_outside (x := Real.log 2-T n-Real.log 4)
     (by linarith only [ht,hl₄,neg_abs_le (Real.log 2-T n-Real.log 4)])
-  have hz : diagonalPrimeProfile n 2 = 0 := by simp [diagonalPrimeProfile,squareLogProfile,T] at h₁ h₂ ⊢; simp [h₁,h₂]
+  have hz : diagonalPrimeProfile n 2 = 0 := by
+    change (n:ℝ)^2 * ((2/Real.sqrt 2) * (2*splineAutoCorr (Real.log 2-T n)-splineAutoCorr (Real.log 2-T n-Real.log 4))) = 0
+    rw [h₁,h₂]; ring
   by_cases hmem : 2 ∈ S
   · have he := (single_le_sum (f := fun p => |(deningerRatExp (q n) p:ℝ)-diagonalPrimeProfile n p|*vonMangoldt p)
         (fun p _ => mul_nonneg (abs_nonneg _) vonMangoldt_nonneg) hmem).trans (hrow hn)

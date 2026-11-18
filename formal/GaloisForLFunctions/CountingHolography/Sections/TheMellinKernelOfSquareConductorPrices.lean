@@ -110,8 +110,8 @@ private theorem differentiable_sqrtMeshErrorTerm (W : CompactBVPrimeWindow) (k :
   · simpa only [sqrtMeshErrorTerm,if_pos rfl] using (differentiable_const (c := (0:ℂ)) : Differentiable ℂ (fun _ : ℂ => (0:ℂ)))
   have h : Differentiable ℂ (fun z : ℂ => (k:ℂ)^(1-z/2)) :=
     ((differentiable_id.div_const (2:ℂ)).const_sub 1).const_cpow (Or.inl (Nat.cast_ne_zero.mpr hk))
-  exact ((h.const_mul (vonMangoldt k:ℂ)).mul (differentiable_realMeshMellinError W _)).congr
-    (fun s => by simp only [sqrtMeshErrorTerm,if_neg hk])
+  simpa only [sqrtMeshErrorTerm,if_neg hk] using
+    ((h.const_mul (vonMangoldt k:ℂ)).mul (differentiable_realMeshMellinError W _))
 
 /-- Normal convergence of the real-mesh error in Re s > 3. The majorant is
 the absolutely convergent von Mangoldt series at (σ−1)/2 for σ > 3. -/
@@ -163,8 +163,8 @@ theorem analytic_sqrtMeshErrorSeries (W : CompactBVPrimeWindow) :
     AnalyticOnNhd ℂ (fun s => ∑' k, sqrtMeshErrorTerm W k s) {s : ℂ | 3 < s.re} := by
   let U := {s : ℂ | 3 < s.re}
   have hopen : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
-  exact ((locallySummable_sqrtMeshErrorTerm W).differentiableOn hopen
-    (fun k => (differentiable_sqrtMeshErrorTerm W k).differentiableOn)).analyticOnNhd hopen
+  exact (SummableLocallyUniformlyOn.differentiableOn hopen (locallySummable_sqrtMeshErrorTerm W)
+    (fun k z _ => differentiable_sqrtMeshErrorTerm W k z)).analyticOnNhd hopen
 
 private abbrev lo := Real.exp (-8)
 private abbrev hi := Real.exp 8

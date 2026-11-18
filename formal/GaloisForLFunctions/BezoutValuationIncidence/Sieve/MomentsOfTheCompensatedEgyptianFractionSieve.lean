@@ -43,9 +43,11 @@ private def recoveredEquiv (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ) :
   right_inv _ := rfl
 
 private theorem card_high : Fintype.card (High p) = ((p^2-1)*p)*p^3 := by
-  simp only [High,Fintype.card_sigma,TripleLift,Fintype.card_prod,count_lift,pow_one,
-    sum_const,card_univ,count_sample,ZMod.card,nsmul_eq_mul,Nat.cast_id]
-  ring
+  have each (t : Sample (ZMod p)) : Fintype.card (TripleLift p 1 t)=p^3 := by
+    simp only [TripleLift,Fintype.card_prod,count_lift,pow_one]
+    ring
+  rw [High,Fintype.card_sigma]
+  simp only [each,sum_const,card_univ,nsmul_eq_mul,Nat.cast_id,count_sample,ZMod.card]
 
 /-- Uniform average on a finite residue space. -/
 def mean {X : Type*} [Fintype X] (f : X → ℝ) := (∑ x, f x)/Fintype.card X
@@ -88,6 +90,11 @@ private theorem high_pos : (0 : ℝ)<Fintype.card (High p) := by
   have hpos : 0<p^2-1 := Nat.sub_pos_of_lt (one_lt_pow₀ hp.out.one_lt (by norm_num))
   exact_mod_cast Nat.mul_pos (Nat.mul_pos hpos hp.out.pos) (pow_pos hp.out.pos 3)
 
+private theorem law_ratio (N T v b z e : ℝ) (hN : N≠0) :
+    (N*b+(z-b)*(v*T)+(e-z)*T)/N = b+((v-1)*z-v*b+e)*(T/N) := by
+  field_simp [hN]
+  ring
+
 /-- Complete three-point law. It applies to every real observable of the
 weight, including indicators and arbitrary moments. -/
 theorem local_law (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ) (F : ℝ → ℝ) :
@@ -102,8 +109,7 @@ theorem local_law (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ) (F : ℝ → ℝ) :
   rw [mean] at he
   simp only [mean,law,sum_add_distrib,← mul_sum,← balance p K r,
     sum_const,card_univ,nsmul_eq_mul,← he]
-  field_simp [(high_pos p).ne']
-  ring
+  exact law_ratio _ _ _ _ _ _ (high_pos p).ne'
 
 /-- All positive integer moments are affine functions of the recovered mass. -/
 theorem moment (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ) (k : ℕ) :
@@ -112,7 +118,7 @@ theorem moment (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ) (k : ℕ) :
     local_law p K r (fun x => x^(k+1))
 
 theorem mean_one (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ) : mean (weight p K r)=1 := by
-  simpa only [pow_one,sub_self,zero_mul,add_zero] using moment p K r 0
+  simpa only [Nat.zero_add,pow_one,sub_self,zero_mul,add_zero] using moment p K r 0
 
 /-- After compensation the surviving support loses a fraction (p−1) times
 the recovered-ray mass. -/
@@ -120,8 +126,11 @@ theorem support_mass (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ) :
     mean (mark (fun t => weight p K r t ≠ 0)) = 1-(p-1)*rayMass p := by
   have hp' : (p : ℝ)≠0 := Nat.cast_ne_zero.mpr hp.out.ne_zero
   have h := local_law p K r (fun x : ℝ => if x≠0 then 1 else 0)
-  change mean (fun t => if weight p K r t≠0 then 1 else 0) = _
-  rw [h]
+  have hi : mark (fun t => weight p K r t≠0) =
+      fun t => if weight p K r t≠0 then (1:ℝ) else 0 := by
+    funext t
+    by_cases ht : weight p K r t≠0 <;> simp only [mark,ht,ite_true,ite_false]
+  rw [hi,h]
   simp only [one_ne_zero,ite_true,ne_self,ite_false,hp',mul_zero,mul_one,zero_sub]
   ring
 
@@ -133,6 +142,11 @@ theorem variance (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ) :
   field_simp
   ring
 
+private theorem centered_squares {X : Type*} [Fintype X] (f : X → ℝ) (a : ℝ) :
+    (∑ x, (f x-a)^2) = (∑ x, (f x)^2) - (2*a)*(∑ x, f x) + Fintype.card X*a^2 := by
+  have he (x : X) : (f x-a)^2 = (f x)^2-(2*a)*f x+a^2 := by ring
+  simp only [he,sum_add_distrib,sum_sub_distrib,← mul_sum,sum_const,card_univ,nsmul_eq_mul]
+
 /-- Redistributing a fixed total among recovered triples adds precisely
 the sum of squared deviations from the constant correction. -/
 theorem redistribution (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ)
@@ -142,8 +156,7 @@ theorem redistribution (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ)
       ∑ x, (f x-p)^2 := by
   have hc : (p : ℝ)*Fintype.card (Recovered p 1 (K : RingAt p 1) r)=
       Fintype.card (Removed p 1 (K : RingAt p 1)) := by exact_mod_cast square_compensation p K r
-  simp_rw [sub_sq,sum_add_distrib,sum_sub_distrib,← mul_sum,← sum_mul,h,← hc,
-    sum_const,card_univ,nsmul_eq_mul]
+  rw [centered_squares,h,← hc]
   ring
 
 /-- Equality in the least second-moment bound determines the correction
@@ -154,7 +167,7 @@ theorem least_square_iff (K : (RingAt p 1)ˣ) (r : (ZMod p)ˣ)
     (∑ x, (f x)^2) = (Fintype.card (Recovered p 1 (K : RingAt p 1) r) : ℝ)*p^2 ↔
       ∀ x, f x=p := by
   rw [redistribution p K r f h,add_eq_left,Finset.sum_eq_zero_iff_of_nonneg (fun x _ => sq_nonneg _)]
-  simp [sub_eq_zero]
+  simp only [mem_univ,forall_true_left,sq_eq_zero_iff,sub_eq_zero]
 
 end GaloisForLFunctions.BezoutValuationIncidence.LocalConditioning.Moments
 

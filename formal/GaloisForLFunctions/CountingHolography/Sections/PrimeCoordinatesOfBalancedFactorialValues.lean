@@ -153,7 +153,4 @@ theorem factorial_half_price_attainable_iff {L : ℕ} (hL : 10 ≤ L) (a : Nat.P
   have hz (h : L ≤ p) : a p=0 ∧ b p=0 := ⟨(ha p).1 h,by rw [hb,(ha p).1 h]; decide⟩
   exact ⟨fun h => hz h.le,(hpair p).2,fun h => by rw [(hz h.ge).1,(hz h.ge).2,mul_zero]⟩
 
-#print axioms factorial_half_price_attainable_iff
-#print axioms factorialJointImage_iff_prime_coordinates
-
 end GaloisForLFunctions.CountingHolography.Sections

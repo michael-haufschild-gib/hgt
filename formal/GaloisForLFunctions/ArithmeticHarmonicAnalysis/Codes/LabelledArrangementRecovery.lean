@@ -77,9 +77,8 @@ theorem labelledWordSpace_optimal (n : ℕ) :
   have h : (∏ i : Fin n, Nat.fermatNumber i.val) = Nat.fermatNumber n - 2 := by
     rw [Fin.prod_univ_eq_prod_range Nat.fermatNumber n,Nat.prod_fermatNumber]
   have hp : 0 < 2^(2^n) := by positivity
-  change (Fintype.card (∀ i : Fin n, Fin (2^(2^i.val)+1)))+1 = _
   rw [Fintype.card_pi]
-  simp only [Fintype.card_fin]
+  simp only [labelledLetter,Fintype.card_fin]
   change (∏ i : Fin n, Nat.fermatNumber i.val)+1 = _
   rw [h]
   unfold Nat.fermatNumber

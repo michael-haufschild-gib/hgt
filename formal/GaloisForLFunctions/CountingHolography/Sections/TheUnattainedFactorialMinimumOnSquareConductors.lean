@@ -15,6 +15,22 @@ namespace GaloisForLFunctions.CountingHolography.Sections
 
 open Finset Filter Topology AbsoluteGeometryOfSpecZ _root_.RHTower ArithmeticPositiveDuality
 
+/-- Proportional prime windows retain their lower mass bound along the
+successor-square scales. -/
+theorem squareWindow_proportional_log_mass {u v : ℝ} (hu : 0 < u) (huv : u < v) :
+    ∀ᶠ n : ℕ in atTop, (v-u)/2*successorSquareWindowScale n ≤
+      ∑ k ∈ (Ioc ⌊u*successorSquareWindowScale n⌋₊ ⌊v*successorSquareWindowScale n⌋₊).filter Nat.Prime,
+        Real.log k := by
+  have hn := (tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop
+  have hW : Tendsto successorSquareWindowScale atTop atTop :=
+    tendsto_atTop_mono (fun n => (successorSquareWindowScale_bounds n).1) hn
+  exact hW.eventually (proportional_prime_mass hu huv)
+
+theorem squareOuterPrimeWindow_log_mass :
+    ∀ᶠ n : ℕ in atTop, successorSquareWindowScale n/12 ≤ ∑ k ∈ successorSquareWindowPrimes n, Real.log k := by
+  simpa only [successorSquareWindowPrimes,one_div_mul_eq_div,show ((1:ℝ)/2-1/3)/2 = 1/12 by norm_num] using
+    squareWindow_proportional_log_mass (u := 1/3) (v := 1/2) (by norm_num) (by norm_num)
+
 /-- The logarithm is the linear prime-log reading of the rational valuations. -/
 theorem primeLogValue_valFinsupp {q : ℚ} (hq : 0 < q) : primeLogValue (valFinsupp q)=Real.log (q:ℝ) := by
   let u : posUnits := ⟨Units.mk0 q hq.ne',hq⟩
@@ -120,7 +136,7 @@ theorem successorSquare_half_price_unattained :
         (Real.log (q:ℝ),Real.log (q:ℝ)/2) ∉ factorialJointImage L := by
   obtain ⟨c,hc,he⟩ := successorSquare_outer_exponents_proper
   refine ⟨c,hc,?_⟩
-  filter_upwards [he,successorSquare_denominator_window_mass] with n h hmass
+  filter_upwards [he,squareOuterPrimeWindow_log_mass] with n h hmass
   intro m hm hmn L
   have hnon : (successorSquareWindowPrimes n).Nonempty := by
     by_contra! hempty

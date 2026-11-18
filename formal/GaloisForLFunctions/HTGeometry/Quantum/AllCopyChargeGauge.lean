@@ -94,7 +94,7 @@ theorem gauge_extension {E : Type*} [Fintype E] [DecidableEq E] (q b : E → ℤ
         ring
       · simp only [sub_dotProduct,single_dotProduct,one_mul,smul_dotProduct,smul_eq_mul]
     have he := h _ hd
-    rw [zpow_sub,div_eq_one] at he
+    rw [zpow_sub,← div_eq_mul_inv,div_eq_one] at he
     rw [he,mul_comm (v i),zpow_mul,← ht,← zpow_mul,congrFun hv i]
   · rintro ⟨t,ht⟩ d ⟨c,hc,rfl⟩
     change x^(∑ e, c e*b e)=1

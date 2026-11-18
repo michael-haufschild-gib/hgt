@@ -374,6 +374,33 @@ private theorem finite_dyadic_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 
     _ ≤ _ := (hgeo.summable.sum_le_tsum _ (fun j _ => mul_nonneg (pow_nonneg (by norm_num) _) hd)).trans_eq
       (by rw [hgeo.tsum_eq]; dsimp only [D]; ring)
 
+/-- The limiting log price on a dyadic orbit differs from its centered
+positive prime mass by a uniform quadratic allowance. -/
+theorem dyadic_square_log_centered_endpoint : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
+    ∃ L : ℝ, Tendsto (fun K => ∑ j ∈ range K, (1/8:ℝ)^j*Real.log (q (2^j*n):ℝ)) atTop (𝓝 L) ∧
+      |L-((∑' k, squarePrimeEndpoint n k)-4*(n:ℝ)^3*squareAutocorrelationMass)| ≤ 2*C*(n:ℝ)^2 := by
+  obtain ⟨C,hC,h⟩ := finite_dyadic_error
+  refine ⟨C,hC,fun {n} hn => ?_⟩
+  let R := fun k : ℕ => ∑' j, remainder n (j,k)
+  let A := ∑' k, squarePrimeEndpoint n k
+  let D := 4*(n:ℝ)^3*squareAutocorrelationMass
+  have hR := (summable_remainder hn).prod_symm
+  have hbound (P : Finset ℕ) : |∑ k ∈ P, R k| ≤ 2*C*(n:ℝ)^2 := by
+    have ht := tendsto_finset_sum P (fun k _ => (hR.prod_factor k).hasSum.tendsto_sum_nat)
+    exact le_of_tendsto' ht.abs (fun K => (abs_sum_le_sum_abs _ _).trans (h hn P K))
+  have hb : |∑' k, R k| ≤ 2*C*(n:ℝ)^2 := le_of_tendsto' hR.prod.hasSum.abs hbound
+  have hcols : (∑' k, ∑' j, row n j k) = A + ∑' k, R k := by
+    simp_rw [orbit_column_sum hn]
+    exact (endpoint_summable hn).tsum_add hR.prod
+  have ht := dyadic_square_prime_mass_escape hn
+  change Tendsto (fun K => (∑' k, ∑' j, row n j k) -
+    ∑ j ∈ range K, (1/8:ℝ)^j*Real.log (q (2^j*n):ℝ)) atTop (𝓝 D) at ht
+  rw [hcols] at ht
+  refine ⟨(A+∑' k, R k)-D,?_,?_⟩
+  · exact ((tendsto_const_nhds (x := A+∑' k, R k)).sub ht).congr (fun _ => by ring)
+  · change |(A+∑' k, R k)-D-(A-D)| ≤ _
+    rwa [show (A+∑' k, R k)-D-(A-D) = ∑' k, R k by ring]
+
 /-- The two endpoint profiles recover the normalized integer product up
 to a uniform quadratic error in total absolute logarithmic weight. -/
 theorem dyadic_square_product_endpoints : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
@@ -475,8 +502,10 @@ theorem dyadic_square_supercritical_prime_order {n : ℕ} (hn : 0 < n) {r : ℝ}
     have htail : Tendsto (fun j : ℕ => ∑' k, tail n (j+1) k) atTop (𝓝 0) := by
       refine squeeze_zero (fun j => tsum_nonneg fun k => mul_nonneg (pow_nonneg (by norm_num : (0:ℝ) ≤ 1/8) _) (endpoint_nonneg _ _)) (fun j => ?_) hrows
       simp only [tail,factor,Q,B,tsum_mul_left]
-      have he : (1/8:ℝ)^(j+1) ≤ r^j := (pow_le_pow_right_of_le_one (by norm_num) (by norm_num)
-        (Nat.le_succ j)).trans (pow_le_pow_left₀ (by norm_num) hr.le _)
+      have he : (1/8:ℝ)^(j+1) ≤ r^j  := calc
+        (1/8:ℝ)^(j+1) = (1/8:ℝ)^j*(1/8) := pow_succ _ _
+        _ ≤ (1/8:ℝ)^j := mul_le_of_le_one_right (by positivity) (by norm_num)
+        _ ≤ r^j := pow_le_pow_left₀ (by norm_num) hr.le _
       exact mul_le_mul_of_nonneg_right he (tsum_nonneg fun k => endpoint_nonneg _ k)
     have hlim := (tail_mass_limit hn).comp (tendsto_add_atTop_nat 1)
     have hpos : 0 < 4*(n:ℝ)^3*squareAutocorrelationMass := by

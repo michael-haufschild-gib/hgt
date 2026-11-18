@@ -164,7 +164,7 @@ theorem hasSingleOffLineQuartet_iff_two_properPower_waves {ρ : ℂ} (hh : 1/2 <
       (Real.exp_one_lt_three.le.trans (by linarith only [hy]))
     have hs := (sq_le_sq₀ (by linarith only [hlog] : 0 ≤ 1+Real.log y)
       (by linarith only [hlog] : 0 ≤ 2*Real.log y)).mpr (by linarith only [hlog] : 1+Real.log y ≤ 2*Real.log y)
-    have ht := mul_le_mul_of_nonneg_left hs (mul_nonneg hK (Real.sqrt_nonneg _))
+    have ht := mul_le_mul_of_nonneg_left hs (mul_nonneg hK (Real.sqrt_nonneg y))
     have he := h y h1
     dsimp only [B,E,quartetPrimeWaveTerm] at he
     rw [sub_neg_eq_add] at he

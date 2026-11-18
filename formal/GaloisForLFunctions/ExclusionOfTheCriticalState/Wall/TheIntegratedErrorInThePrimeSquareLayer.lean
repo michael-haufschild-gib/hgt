@@ -36,7 +36,8 @@ private theorem state_translationCost {W₀ : ℝ} (hW : 0 < W₀)
       with u hu hv
     change F (u+d) = Φ (u+d) at hv
     rw [hu,hv]
-  obtain ⟨ε,hε,h⟩ := mem_nhdsGT_iff_exists_Ioo_subset.mp
+  obtain ⟨ε,hε,h⟩ := (mem_nhdsGT_iff_exists_Ioo_subset
+    (s := {d : ℝ | translationCost F d / Real.sqrt d < 1})).mp
     ((criticalState_tendsto_L1_increment_div_sqrt hW ht hF).eventually_lt_const zero_lt_one)
   refine ⟨ε,hε,fun d hd => ?_⟩
   by_cases hz : d=0
@@ -96,10 +97,11 @@ private theorem late_bin_cost {g : ℝ → ℝ} (hg : Integrable g)
   let M := ∫ u, |g u|
   have hM : 0 ≤ M := integral_nonneg fun _ => abs_nonneg _
   have he : Tendsto (fun v : ℝ => B*Real.exp (-v/20)) atTop (𝓝 0) := by
-    have h0 := Real.tendsto_exp_atBot.comp (tendsto_id.const_mul_atTop_of_neg
-      (by norm_num : (-1/20:ℝ)<0))
+    have h0 : Tendsto (fun v : ℝ => Real.exp ((-1/20)*v)) atTop (𝓝 0) :=
+      Real.tendsto_exp_atBot.comp (tendsto_id.const_mul_atTop_of_neg
+        (by norm_num : (-1/20:ℝ)<0))
     have eq (v : ℝ) : (-1/20)*v= -v/20 := by ring
-    simpa only [eq,mul_zero,Function.comp_apply] using h0.const_mul B
+    simpa only [eq,mul_zero] using h0.const_mul B
   refine ⟨B*M+Real.sqrt B,by positivity,?_⟩
   filter_upwards [h,he.eventually_lt_const hε,he.eventually_lt_const zero_lt_one,
     eventually_ge_atTop (0:ℝ)] with v hv hsmall hone hv0
@@ -178,7 +180,7 @@ private theorem integrated_square_error {g : ℝ → ℝ} (hc : Continuous g) (h
     change (∫ v, binDifference g v t+g (t-v)) =
       (∫ v, binDifference g v t)+(∫ v, g (t-v)) at hsum
     simp only [binDifference,sub_add_cancel] at hsum
-    rw [integral_sub_left_eq_self] at hsum
+    rw [integral_sub_left_eq_self g volume t] at hsum
     rw [squareLayer_mass_coordinates hc hs hC hb (by linarith only [hV0,htv]),hread]
     change _ = (∫ v, squareBinWeight v*g (t-squareBinLocation v)-g (t-v))/2
     linarith only [hsum]
