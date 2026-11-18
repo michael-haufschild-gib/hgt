@@ -378,14 +378,14 @@ theorem conductor_interval_horizonPair_bound :
     have hsum_a : (a : ℝ) ^ 2 * (K9 * ((q : ℝ) / (a : ℝ) ^ 2) ^ 8) ≤
         K9 * (q : ℝ) ^ 8 / (N : ℝ) ^ 14 := by
       have heq : (a : ℝ) ^ 2 * (K9 * ((q : ℝ) / (a : ℝ) ^ 2) ^ 8) =
-          K9 * (q : ℝ) ^ 8 / (a : ℝ) ^ 14 := by field_simp [ha'.ne']; ring
+          K9 * (q : ℝ) ^ 8 / (a : ℝ) ^ 14 := by field_simp [ha'.ne']
       rw [heq]
       exact div_le_div_of_nonneg_left (by positivity) (pow_pos hN' 14)
         (pow_le_pow_left₀ hN'.le hNa_le 14)
     have hsum_d : (d : ℝ) ^ 2 * (K9 * ((q : ℝ) / (d : ℝ) ^ 2) ^ 8) ≤
         K9 * (q : ℝ) ^ 8 / (N : ℝ) ^ 14 := by
       have heq : (d : ℝ) ^ 2 * (K9 * ((q : ℝ) / (d : ℝ) ^ 2) ^ 8) =
-          K9 * (q : ℝ) ^ 8 / (d : ℝ) ^ 14 := by field_simp [hd'.ne']; ring
+          K9 * (q : ℝ) ^ 8 / (d : ℝ) ^ 14 := by field_simp [hd'.ne']
       rw [heq]
       exact div_le_div_of_nonneg_left (by positivity) (pow_pos hN' 14)
         (pow_le_pow_left₀ hN'.le (hNa_le.trans had_le) 14)
@@ -459,14 +459,14 @@ theorem conductor_interval_horizonPair_bound :
     have hsum_d : ((d : ℝ) / 2) * (K8 * ((q : ℝ) / (d : ℝ) ^ 2) ^ 7) ≤
         (K8 / 2) * (q : ℝ) ^ 7 / (N : ℝ) ^ 13 := by
       have heq : ((d : ℝ) / 2) * (K8 * ((q : ℝ) / (d : ℝ) ^ 2) ^ 7) =
-          (K8 / 2) * (q : ℝ) ^ 7 / (d : ℝ) ^ 13 := by field_simp [hd'.ne']; ring
+          (K8 / 2) * (q : ℝ) ^ 7 / (d : ℝ) ^ 13 := by field_simp [hd'.ne']
       rw [heq]
       exact div_le_div_of_nonneg_left (by positivity) (pow_pos hN' 13)
         (pow_le_pow_left₀ hN'.le (hNa_le.trans had_le) 13)
     have hsum_a : ((a : ℝ) / 2) * (K8 * ((q : ℝ) / (a : ℝ) ^ 2) ^ 7) ≤
         (K8 / 2) * (q : ℝ) ^ 7 / (N : ℝ) ^ 13 := by
       have heq : ((a : ℝ) / 2) * (K8 * ((q : ℝ) / (a : ℝ) ^ 2) ^ 7) =
-          (K8 / 2) * (q : ℝ) ^ 7 / (a : ℝ) ^ 13 := by field_simp [ha'.ne']; ring
+          (K8 / 2) * (q : ℝ) ^ 7 / (a : ℝ) ^ 13 := by field_simp [ha'.ne']
       rw [heq]
       exact div_le_div_of_nonneg_left (by positivity) (pow_pos hN' 13)
         (pow_le_pow_left₀ hN'.le hNa_le 13)
@@ -698,7 +698,7 @@ theorem conductor_interval_horizonPair_bound :
             exact mul_le_mul_of_nonneg_right hlen (by positivity)
         _ ≤ K5 * (q : ℝ) ^ 4 / (N : ℝ) ^ 8 := by
             have heq : (N : ℝ) * ((1 / (8 * (N : ℝ))) * (K5 * ((q : ℝ) / (N : ℝ) ^ 2) ^ 4)) =
-                (1 / 8) * (K5 * (q : ℝ) ^ 4 / (N : ℝ) ^ 8) := by field_simp [hN'.ne']; ring
+                (1 / 8) * (K5 * (q : ℝ) ^ 4 / (N : ℝ) ^ 8) := by field_simp [hN'.ne']
             rw [heq]
             have hpos : 0 ≤ K5 * (q : ℝ) ^ 4 / (N : ℝ) ^ 8 := by positivity
             linarith
@@ -860,7 +860,10 @@ theorem conductor_smoothed_shell_bound :
   refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum heach).trans ?_)
   rw [sum_const, nsmul_eq_mul, le_div_iff₀ hp']
   have he := mul_le_mul_of_nonneg_right hc (by positivity : 0 ≤ G * (K * S_scale))
-  linarith only [he]
+  calc (Vf.card : ℝ) * (G * (K * S_scale)) * p
+      = ((Vf.card : ℝ) * p) * (G * (K * S_scale)) := by ring
+    _ ≤ (W : ℝ) * (G * (K * S_scale)) := he
+    _ = G * K * (W : ℝ) * S_scale := by ring
 
 #print axioms monotone_shell_conductors
 #print axioms trapezoidal_euler_maclaurin_Ico

@@ -3,6 +3,7 @@ import GaloisForLFunctions.RHTower.WeilLagLocalWorkHuxley
 import GaloisForLFunctions.RHTower.FreeLagSymbolBoundaryLayer
 import GaloisForLFunctions.RHTower.Sieve.CharacterWindowMass
 import Mathlib.MeasureTheory.Function.JacobianOneDim
+import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog
 
 /-!
 # Two-sided bounds for every future prime increment
@@ -16,6 +17,7 @@ set back to the same centers preserves the vanishing relative cost.
 
 noncomputable section
 open MeasureTheory Set Filter Topology
+open scoped ENNReal
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open _root_.RHTower
 
@@ -58,7 +60,7 @@ private theorem uniform_prime_window_exception {α η : ℝ} (hα : 1/6 < α) (h
       exact mul_nonneg (by linarith only [Real.log_nonneg hX]) (hE X)
     · filter_upwards [eventually_ge_atTop (1:ℝ)] with X hX
       have hlog : Real.log X+2 ≤ Real.log (X^2)+2 := by
-        rw [Real.log_pow]; linarith only [Real.log_nonneg hX]
+        rw [Real.log_pow, Nat.cast_ofNat]; linarith only [Real.log_nonneg hX]
       calc (Real.log X+2)*E X ≤ (Real.log (X^2)+2)*E X := mul_le_mul_of_nonneg_right hlog (hE _)
            _ = D*((Real.log (X^2)+2)^3*Z X α) := by dsimp only [E]; ring
   · filter_upwards [eventually_ge_atTop (4:ℝ),hbig] with X hX hlarge
@@ -139,7 +141,7 @@ private theorem tendsto_prefixGridBad {α η ρ : ℝ} (hα : 1/6 < α) (hα' : 
       simp only [S,Finset.card_range,prefixGridSize,Nat.cast_add,Nat.cast_ofNat]
       have hh := (Nat.ceil_lt_add_one (div_nonneg hx.le hd.le)).le
       dsimp only [D]
-      rw [div_eq_mul_inv] at hh
+      rw [div_eq_mul_inv] at hh ⊢
       nlinarith only [hh,hx.le,inv_nonneg.mpr hd.le]
     change volume.real (⋃ k ∈ S, A k) / X ≤ _
     rw [div_le_iff₀ hX0]
@@ -231,7 +233,8 @@ theorem two_sided_all_future_prime_prefixes {α ε : ℝ} (hα : 1/6 < α) (hα'
       intro hf
       apply hgood
       exact Set.mem_iUnion.2 ⟨k,Set.mem_iUnion.2 ⟨Finset.mem_range.2 hk,by simpa only [if_pos hkr] using hf⟩⟩
-    have hle := le_of_not_gt fun h => hn ⟨hu,h⟩
+    have hle : |Chebyshev.psi (u+prefixGridRadius X α ρ k*u)-Chebyshev.psi u-
+        prefixGridRadius X α ρ k*u| ≤ η*(prefixGridRadius X α ρ k*u) := le_of_not_gt fun h => hn ⟨hu,h⟩
     obtain ⟨h1,h2⟩ := abs_le.mp hle
     constructor <;> linarith only [h1,h2]
   by_cases hsmall : r ≤ d
@@ -260,8 +263,9 @@ theorem two_sided_all_future_prime_prefixes {α ε : ℝ} (hα : 1/6 < α) (hα'
     have hright : y ≤ u+(s*ρ)*u := by linarith only [mul_le_mul_of_nonneg_right hhi hu0.le,hru]
     have hl := hg1.trans (sub_le_sub_right (Chebyshev.psi_mono hleft) _)
     have hh := (sub_le_sub_right (Chebyshev.psi_mono hright) _).trans hg2
-    have hupper : (1+η)*ρ ≤ 1+ε := by dsimp only [ρ]; nlinarith only [hηε,hη.le,
-      mul_le_mul_of_nonneg_right hη' hη.le]
+    have hupper : (1+η)*ρ ≤ 1+ε := by
+      dsimp only [ρ]
+      nlinarith only [hηε,hη.le,mul_le_mul_of_nonneg_right hη' hη.le]
     have hcoef : ρ-(1-η) ≤ ε := by dsimp only [ρ]; linarith only [hηε,hη]
     have hsu := mul_nonneg hs0.le hu0.le
     have heu : ε*(s*u) ≤ ε*(y-u) := by rw [← hru]; gcongr
@@ -297,10 +301,9 @@ private theorem volume_preimage_criticalPrimeWindowEnd {X : ℝ} (hX : 1 < X)
   have hd (u : ℝ) (hu : u ∈ A) : HasDerivWithinAt criticalPrimeWindowEnd (d u) A u := by
     have hu1 := hX.trans_le hu.1.1
     have hu0 := zero_lt_one.trans hu1
-    have hp := (hasDerivAt_id u).mul (Real.hasDerivAt_log hu0.ne')
-    have hprod : HasDerivAt (fun v : ℝ => v*Real.log v) (Real.log u+1) u := by
-      simpa only [id_eq,one_mul,mul_inv_cancel₀ hu0.ne'] using hp
-    exact ((hasDerivAt_id u).add (hprod.sqrt (mul_pos hu0 (Real.log_pos hu1)).ne')).hasDerivWithinAt
+    have hp := (Real.hasDerivAt_mul_log hu0.ne').sqrt (mul_pos hu0 (Real.log_pos hu1)).ne'
+    simpa only [criticalPrimeWindowEnd,d,Pi.add_apply,id_eq] using!
+      ((hasDerivAt_id' u).add hp).hasDerivWithinAt (s := A)
   have hexpand (u : ℝ) (hu : u ∈ A) : 1 ≤ d u := by
     have hlog := Real.log_nonneg (hX.trans_le hu.1.1).le
     dsimp only [d]; exact le_add_of_nonneg_right (div_nonneg (by linarith only [hlog]) (by positivity))
@@ -364,7 +367,7 @@ theorem two_sided_prefixes_from_both_critical_endpoints {α ε : ℝ}
       have hbound : volume.real (A X) ≤ volume.real (B X)+volume.real (B (2*X)) :=
         (ENNReal.toReal_mono hf.ne hpre).trans (measureReal_union_le ..)
       calc volume.real (bad X)/X ≤ (volume.real (B X)+(volume.real (B X)+volume.real (B (2*X))))/X :=
-             div_le_div_of_nonneg_right ((measureReal_union_le ..).trans (add_le_add_left hbound _)) hX0.le
+             div_le_div_of_nonneg_right ((measureReal_union_le ..).trans (add_le_add le_rfl hbound)) hX0.le
            _ = 2*(volume.real (B X)/X)+2*(volume.real (B (2*X))/(2*X)) := by field_simp; ring
   · filter_upwards [hall,hdbl.eventually hall,eventually_gt_atTop (1:ℝ)] with X hx h2x hX
     intro u hu hgood z hz y hy
@@ -380,8 +383,9 @@ theorem two_sided_prefixes_from_both_critical_endpoints {α ε : ℝ}
       have hroot : Real.sqrt (u*Real.log u) ≤ u := (Real.sqrt_le_iff).2
         ⟨hu0.le, by nlinarith only [mul_le_mul_of_nonneg_left hlog hu0.le,hu0.le]⟩
       unfold criticalPrimeWindowEnd; linarith only [hroot,hu.2]
-    rcases Set.mem_insert_iff.mp hz with rfl | hz
-    · exact (centered_integer_prefix_le hu0.le hy (hx u hu huB y hy)).trans (by linarith only [hpow])
+    rcases Set.mem_insert_iff.mp hz with hzu | hz
+    · subst z
+      exact (centered_integer_prefix_le hu0.le hy (hx u hu huB y hy)).trans (by linarith only [hpow])
     · rw [Set.mem_singleton_iff] at hz
       subst z
       apply centered_integer_prefix_le (hu0.le.trans hsize) hy

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ZeroConfigurationGeometry.TwoIntervalAmplitudeAliasingAndCoprimeRealization
+import GaloisForLFunctions.ExceptionalLayerTheory.TheBoundaryTraceOfTheTwoIntervalPrimeRadius
 import GaloisForLFunctions.ExceptionalLayerTheory.QuadratureOfTwoConsecutivePrimeIntervals
 import GaloisForLFunctions.ExceptionalLayerTheory.RemovingPrimeLogarithmsPreservesBothIntervalOscillations
 import GaloisForLFunctions.ExceptionalLayerTheory.MixingTwoPrimeDilationsRemovesQuartetAliasing
@@ -90,17 +90,9 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory
 
 /-! ### 1. Ordinary-prime two-interval radial observable and `ψ` / `θ` transfer -/
 
-/-- Centered ordinary-prime logarithmic count `E(t) = θ(e^t) − e^t` on the log scale. -/
-def thetaLogError (t : ℝ) : ℝ :=
-  Chebyshev.theta (Real.exp t) - Real.exp t
-
 /-- Centered Chebyshev prime-power count `E_ψ(t) = ψ(e^t) − e^t` on the log scale. -/
 def psiLogError (t : ℝ) : ℝ :=
   Chebyshev.psi (Real.exp t) - Real.exp t
-
-/-- Quarter-period two-interval radial discrepancy of `E(t) = θ(e^t) − e^t` against `(β, γ, m)`. -/
-def thetaRadialDiscrepancy (β γ : ℝ) (m : ℕ) (t : ℝ) : ℝ :=
-  radialDiscrepancyOf thetaLogError β γ m t
 
 /-- Global two-interval ordinary-prime radial exclusion law across all admissible `(β, γ, m)`. -/
 def TwoIntervalRadialExclusionLaw : Prop :=

@@ -254,7 +254,7 @@ theorem sevenFourthsShell_absolute_octave_bound :
     calc (n : ℝ) ^ 2 * |powerProductShell (7 / 4) n|
         ≤ (n : ℝ) ^ 2 * (C * logFactor n / (n : ℝ)) :=
           mul_le_mul_of_nonneg_left (h hn_pos) (sq_nonneg _)
-      _ = C * (n : ℝ) * logFactor n := by field_simp [hn_r.ne']; ring
+      _ = C * (n : ℝ) * logFactor n := by field_simp [hn_r.ne']
       _ ≤ C * (2 * (N : ℝ)) * (2 * logFactor N) := by
           refine mul_le_mul (mul_le_mul_of_nonneg_left hn2N hC) hlog
             (zero_le_one.trans (logFactor_one_le n)) (by positivity)
@@ -735,7 +735,7 @@ private theorem bridge_octave_bound :
           have hNp : ((N : ℝ) ^ (17 / 9 : ℝ)) ^ 9 = (N : ℝ) ^ 17 := by
             rw [← Real.rpow_natCast _ 9, ← Real.rpow_mul hN0_r.le, ← Real.rpow_natCast (N : ℝ) 17]
             congr 1; norm_num
-          rw [h2, hNp]; field_simp [hN0_r.ne']; ring
+          rw [h2, hNp]; field_simp [hN0_r.ne']
   have ht8 : (seventeenNinthsCut M : ℝ) ^ 8 / (N : ℝ) ^ 13 ≤ (2 : ℝ) ^ 17 * (N : ℝ) ^ 3 := by
     have h2 : ((2 : ℝ) ^ (17 / 9 : ℝ)) ^ 8 ≤ (2 : ℝ) ^ 17 := by
       rw [← Real.rpow_natCast _ 8, ← Real.rpow_mul two_pos.le, ← Real.rpow_natCast 2 17]

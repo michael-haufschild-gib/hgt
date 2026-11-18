@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.MonotoneTranslationModulus
 import GaloisForLFunctions.RHTower.Sieve.CharacterWindowMass
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheFractionalPartTestOfThePrimeWave
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheSignedPrimeExcessAtTheCriticalWidth
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TwoSidedPrimePrefixesAtAlmostEveryCenter
 
 /-!
 # Favorable signed readings on a set of positive relative measure
@@ -282,7 +283,7 @@ theorem fractionalPrimeTest_mass_of_log_window_subset {A : Set ℝ} (hA : Measur
     (inv_le_inv₀ (mul_pos hR hx) (hx.trans (hAI hu).1)).2 (hAI hu).2) hi
   have hlog : κ/R ≤ ∫ u in A, u⁻¹ := by
     apply le_trans _ hh
-    calc _ = (R*x)⁻¹*(κ*x) := by field_simp [hx.ne',hR.ne'] <;> ring
+    calc _ = (R*x)⁻¹*(κ*x) := by field_simp [hx.ne',hR.ne']
          _ ≤ _ := mul_le_mul_of_nonneg_left hmass (inv_nonneg.mpr (mul_pos hR hx).le)
   have htest : IntegrableOn (fun u => fractionalPrimeTest (Real.log x-Real.log u)*u⁻¹) A := by
     apply hi.norm.mono' ((measurable_fractionalPrimeTest.comp
@@ -304,7 +305,7 @@ theorem fractionalPrimeTest_mass_of_log_window_subset {A : Set ℝ} (hA : Measur
     mul_le_mul_of_nonneg_right (hkernel u hu) (inv_nonneg.mpr (hx.trans (hAI hu).1).le))
   rw [integral_const_mul] at hcmp
   refine ⟨hlog,?_⟩
-  calc κ/R^2 = R⁻¹*(κ/R) := by field_simp [hR.ne'] <;> ring
+  calc κ/R^2 = R⁻¹*(κ/R) := by field_simp [hR.ne']
        _ ≤ _ := (mul_le_mul_of_nonneg_left hlog (inv_nonneg.mpr hR.le)).trans hcmp
 
 /-- Restoring the complete integer complement leaves exactly the signed first
@@ -321,7 +322,9 @@ theorem centered_mangoldt_eq_criticalWidthReading_add_complement {Φ : ℝ → �
     (summable_continuousIntegerAtom hb t)).congr fun n => by simp only [v,sub_mul,one_mul]
   change m*((∑' n : ℕ, v n)-m/2) = criticalWidthSignedReading Φ t +
     m*((∑' n : {j : ℕ // j ∉ J}, v n)-m/2)
-  rw [← hs.sum_add_tsum_compl (s := J)]
+  have hsplit : (∑ n ∈ J, v n) + (∑' n : {j : ℕ // j ∉ J}, v n) = ∑' n : ℕ, v n :=
+    hs.sum_add_tsum_compl (s := J)
+  rw [← hsplit]
   have hr : criticalWidthSignedReading Φ t = m*∑ n ∈ J, v n := (Finset.mul_sum ..).symm
   rw [hr]; ring
 
@@ -360,5 +363,94 @@ theorem riemannHypothesis_or_positive_measure_of_signed_criticalWidth_centers : 
   rw [centered_mangoldt_eq_criticalWidthReading_add_complement hb (Real.log u)]
   linarith only [hread u hu]
 
+private theorem abs_chebyshev_increment_le_centered_sum {u y : ℝ} (hu : 0 ≤ u) (hy : u ≤ y) :
+    |Chebyshev.psi y-Chebyshev.psi u-(y-u)| ≤
+      |∑ n ∈ Finset.Ioc ⌊u⌋₊ ⌊y⌋₊, (ArithmeticFunction.vonMangoldt n-1)|+1 := by
+  rw [Finset.sum_sub_distrib,Finset.sum_const,nsmul_eq_mul,mul_one,Nat.card_Ioc,
+    Nat.cast_sub (Nat.floor_mono hy),← _root_.RHTower.Sieve.psi_sub_eq_sum_Ioc hy]
+  have h := abs_le.mp (le_refl |Chebyshev.psi y-Chebyshev.psi u-((⌊y⌋₊:ℝ)-⌊u⌋₊)|)
+  apply abs_le.2
+  constructor <;> linarith only [h.1,h.2,Nat.floor_le hu,Nat.floor_le (hu.trans hy),
+    Nat.lt_floor_add_one y,Nat.lt_floor_add_one u]
+
+/-- On all but a vanishing relative measure in each late octave, the absolute
+signed reading at the critical width is arbitrarily small. On these same
+centers both the initial and the far-edge prefix have upper and lower bounds
+simultaneously at all future endpoints. -/
+theorem riemannHypothesis_or_signed_window_vanishes_in_measure : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (W₀ : EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧
+      ∀ ε : ℝ, 0 < ε → ∃ bad : ℝ → Set ℝ,
+        (∀ X, MeasurableSet (bad X) ∧ bad X ⊆ Icc X (2*X)) ∧
+        Tendsto (fun X : ℝ => volume.real (bad X)/X) atTop (𝓝 0) ∧
+        ∀ᶠ X : ℝ in atTop, ∀ u ∈ Icc X (2*X), u ∉ bad X →
+          |criticalWidthSignedReading Φ (Real.log u)| < ε ∧
+          ∀ z ∈ ({u,criticalPrimeWindowEnd u} : Set ℝ), ∀ y ≥ z,
+            |∑ n ∈ Finset.Ioc ⌊z⌋₊ ⌊y⌋₊, (ArithmeticFunction.vonMangoldt n-1)| ≤
+              ε*(y-z)+4*(2*X)^(1/5:ℝ)+1 := by
+  rcases riemannHypothesis_or_signed_critical_width_chebyshev_excess with hr |
+    ⟨W₀,F,Φ,γ,hW,ht,hF,hc,he,hγ,_,hread,_⟩
+  · exact Or.inl hr
+  refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hc,he,fun ε hε => ?_⟩
+  let δ := min ε (ε/(4*γ))
+  have hδ : 0 < δ := lt_min hε (div_pos hε (by positivity))
+  have hδε : δ ≤ ε := min_le_left ..
+  have hγδ : γ*δ ≤ ε/4 := by
+    have h := (le_div_iff₀ (by positivity : 0 < 4*γ)).1 (min_le_right ε (ε/(4*γ)))
+    dsimp only [δ]; linarith only [h]
+  obtain ⟨bad,hm,hsmall,hboth⟩ := two_sided_prefixes_from_both_critical_endpoints
+    (by norm_num : (1/6:ℝ) < 1/5) (by norm_num) hδ
+  refine ⟨bad,hm,hsmall,?_⟩
+  have hlim := (hread.comp Real.tendsto_log_atTop).eventually (Metric.ball_mem_nhds 0 (half_pos hε))
+  obtain ⟨V,hV⟩ := eventually_atTop.mp hlim
+  have hp := (tendsto_rpow_neg_atTop (by norm_num : (0:ℝ)<3/10)).eventually_lt_const
+    (show 0 < δ/10 by positivity)
+  filter_upwards [hboth,hp,eventually_ge_atTop (Real.exp 1),eventually_ge_atTop V] with X hb hp hXe hXV
+  intro u hu huBad
+  have hX0 := (Real.exp_pos 1).trans_le hXe
+  have hu0 := hX0.trans_le hu.1
+  have hlog := (Real.le_log_iff_exp_le hu0).2 (hXe.trans hu.1)
+  let H := arithmeticWallWidth u
+  have hH : 0 < H := by
+    rw [H,arithmeticWallWidth_eq hu0]; exact Real.sqrt_pos.mpr (mul_pos hu0 (zero_lt_one.trans_le hlog))
+  have hroot : Real.sqrt X ≤ H := by
+    rw [H,arithmeticWallWidth_eq hu0]
+    exact Real.sqrt_le_sqrt (hu.1.trans (le_mul_of_one_le_right hu0.le hlog))
+  have hratio : 10*X^(1/5:ℝ) ≤ δ*H := by
+    have heq : X^(1/5:ℝ)/Real.sqrt X = X^(-(3/10:ℝ)) := by
+      rw [Real.sqrt_eq_rpow,← Real.rpow_sub hX0]; congr 1; norm_num
+    rw [← heq,div_lt_iff₀ (Real.sqrt_pos.mpr hX0)] at hp
+    linarith only [hp,mul_le_mul_of_nonneg_left hroot hδ.le]
+  have huH : u ≤ u+H := le_add_of_nonneg_right hH.le
+  have hprefix := hb u hu huBad u (Set.mem_insert ..) (u+H) huH
+  have har := (abs_chebyshev_increment_le_centered_sum hu0.le huH).trans
+    (add_le_add hprefix (le_refl 1))
+  rw [add_sub_cancel_left] at har
+  have hXp : 1 ≤ X^(1/5:ℝ) := Real.one_le_rpow
+    ((Real.one_le_exp_iff.mpr (by norm_num : (0:ℝ) ≤ 1)).trans hXe) (by norm_num)
+  have htwo : (2:ℝ)^(1/5:ℝ) ≤ 2 := by
+    simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le
+      (by norm_num : (1:ℝ) ≤ 2) (by norm_num : (1/5:ℝ) ≤ 1)
+  rw [Real.mul_rpow (by norm_num : (0:ℝ) ≤ 2) hX0.le] at har
+  have hfixed := mul_le_mul_of_nonneg_right htwo (zero_le_one.trans hXp)
+  have hrel : |(Chebyshev.psi (u+H)-Chebyshev.psi u)/H-1| ≤ 2*δ := by
+    rw [show (Chebyshev.psi (u+H)-Chebyshev.psi u)/H-1 =
+      (Chebyshev.psi (u+H)-Chebyshev.psi u-H)/H by field_simp [hH.ne'],abs_div,abs_of_pos hH,
+      div_le_iff₀ hH]
+    linarith only [har,hratio,hfixed,hXp]
+  have hv := hV u (hXV.trans hu.1)
+  change dist (criticalWidthSignedReading Φ (Real.log u)-γ*
+    ((Chebyshev.psi (Real.exp (Real.log u)+H)-Chebyshev.psi (Real.exp (Real.log u)))/H-1)) 0 < ε/2 at hv
+  rw [Real.exp_log hu0,Real.dist_eq,sub_zero] at hv
+  refine ⟨?_,fun z hz y hy => (hb u hu huBad z hz y hy).trans ?_⟩
+  · let a := (Chebyshev.psi (u+H)-Chebyshev.psi u)/H-1
+    have htri := abs_add_le (criticalWidthSignedReading Φ (Real.log u)-γ*a) (γ*a)
+    rw [sub_add_cancel,abs_mul,abs_of_pos hγ] at htri
+    dsimp only [a] at htri
+    linarith only [htri,hv,mul_le_mul_of_nonneg_left hrel hγ.le,hγδ]
+  · exact add_le_add (add_le_add (mul_le_mul_of_nonneg_right hδε (sub_nonneg.mpr hy)) le_rfl) le_rfl
+
+#print axioms riemannHypothesis_or_signed_window_vanishes_in_measure
 #print axioms riemannHypothesis_or_positive_measure_of_signed_criticalWidth_centers
 end GaloisForLFunctions.ExclusionOfTheCriticalState

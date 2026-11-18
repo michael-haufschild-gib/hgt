@@ -237,7 +237,7 @@ theorem capped_centered_reading_error :
        _ ≤ (T*n)^2 * ((A*(J*H)*((T+T^2)*n))*(D/(n:ℝ)^3)) := by
            rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
            exact mul_le_mul_of_nonneg_right hL (by positivity)
-       _ = _ := by change _ = _*H; field_simp; ring
+       _ = _ := by change _ = _*H; field_simp
 
 /-- Uniform cubic-logarithmic transfer through every terminal, also for a
 partial block and for product cutoffs chosen independently at each conductor. -/

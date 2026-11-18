@@ -132,7 +132,7 @@ theorem riemannHypothesis_or_ordinary_prime_complement_on_every_late_octave : Ri
     have h := hAI htu
     have hhi : 2*x=Real.exp (T+Real.log 2) := by rw [Real.exp_add,Real.exp_log (by norm_num : (0:ℝ)<2)]; ring
     exact ⟨Real.exp_lt_exp.mp h.1,Real.exp_le_exp.mp (h.2.trans_eq hhi)⟩
-  have hUfin : volume U ≠ ⊤ := ((measure_mono hUI).trans_lt (by finiteness)).ne
+  have hUfin : volume U ≠ ⊤ := measure_ne_top_of_subset hUI (by rw [Real.volume_Ioc]; exact ENNReal.ofReal_ne_top)
   have hUvol : κ/2 ≤ volume.real U := by
     have h := (fractionalPrimeTest_mass_of_log_window_subset hmA hx (by norm_num : (0:ℝ)<2) hAI hvol).1
     rwa [log_mass_eq_preimage_volume hmA (fun u hu => hx.trans (hAI hu).1)] at h

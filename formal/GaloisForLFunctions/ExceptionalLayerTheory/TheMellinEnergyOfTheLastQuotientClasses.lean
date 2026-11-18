@@ -62,10 +62,10 @@ theorem lastQuotientClassSymbol_eq_tsum_cells {q : ℕ} (hq : 2≤q) {s : ℂ} (
   have hd : q ∣ f k+1 := ⟨k+1,hf k⟩
   have hscale : (f k:ℝ)=(q:ℝ)*((k:ℝ)+1-u) := by
     have hcast : (f k:ℝ)+1=(q:ℝ)*((k:ℝ)+1) := by exact_mod_cast hf k
-    rw [mul_sub,← hcast,show (q:ℝ)*u=1 by simp [u,hp.ne']]
+    rw [mul_sub,← hcast,show (q:ℝ)*u=1 by simp [u,hp.ne'] ]
     ring
   have hnext : (f k:ℝ)+1=(q:ℝ)*((k:ℝ)+1) := by exact_mod_cast hf k
-  have hl : 0≤(k:ℝ)+1-u := by linarith only [hhalf,Nat.cast_nonneg k]
+  have hl : 0≤(k:ℝ)+1-u := by linarith only [hhalf,(Nat.cast_nonneg k : (0:ℝ)≤k)]
   simp only [F,lastCellIndicator,if_pos hd,ofReal_one,one_mul,cmellinCell,
     _root_.RHTower.shiftDiffTerm,← sub_eq_add_neg]
   rw [hnext,hscale,ofReal_mul,ofReal_mul,Complex.mul_cpow_ofReal_nonneg hp.le hl,
@@ -223,7 +223,7 @@ theorem lastQuotientClassSymbol_crossEnergy {q r : ℕ} (hq : 2 ≤ q) (hr : 2 �
     (lastQuotientClassSymbol q ((σ:ℂ)+t*I)/((σ:ℂ)+t*I))
   change (∫ t : ℝ, f (-t)) = _ at h
   rw [MeasureTheory.integral_neg_eq_self] at h
-  exact h.trans (by push_cast; field_simp [Complex.ofReal_ne_zero.mpr hσ.ne'] <;> ring)
+  exact h.trans (by push_cast; field_simp [Complex.ofReal_ne_zero.mpr hσ.ne'])
 
 /-- Exact energy on a vertical line. Its dependence on the width is given by
 the real symbol at twice the real part. -/
@@ -303,7 +303,7 @@ theorem lastQuotientClassSymbol_tail_energy (q M : ℕ) (hM : 1 ≤ M) {σ : ℝ
     congr 2
     ring
   exact (mul_le_mul_of_nonneg_left hb (by positivity : 0 ≤ 2*Real.pi)).trans_eq
-    (by rw [he]; field_simp; ring)
+    (by rw [he]; field_simp)
 
 /-- The weighted square sum over widths converges precisely below the real
 part of the frequency. Equality gives harmonic divergence. -/

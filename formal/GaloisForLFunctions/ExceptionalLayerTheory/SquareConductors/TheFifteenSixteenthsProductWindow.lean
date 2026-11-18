@@ -190,7 +190,7 @@ theorem unitHorizonPair_eighth_bound :
       ≤ C6 * ((K8 * h ^ 7) / (n : ℝ)) :=
         mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right (hsum8 hh hh1 b) hn'.le) hC6
     _ = C6 * K8 * (q : ℝ) ^ 7 / (n : ℝ) ^ 15 := by
-        dsimp only [h]; rw [div_pow, mul_div_right_comm K8, div_div]; ring
+        dsimp only [h]; field_simp [hn'.ne']
 
 /-- Uniform eighth-order bound for any detached shell `V < pv ≤ W`, uniformly in the
 complementary-factor cap `M`. -/
@@ -240,7 +240,10 @@ theorem capped_interior_shell_eighth_bound :
   refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum hh).trans ?_)
   rw [sum_const, nsmul_eq_mul, le_div_iff₀ hp']
   have he := mul_le_mul_of_nonneg_right hc (by positivity : 0 ≤ G * (K * (W : ℝ) ^ 7 / (n : ℝ) ^ 15))
-  linarith only [he]
+  calc ((shellFactors M V W p).card : ℝ) * (G * (K * (W : ℝ) ^ 7 / (n : ℝ) ^ 15)) * p
+      = (((shellFactors M V W p).card : ℝ) * p) * (G * (K * (W : ℝ) ^ 7 / (n : ℝ) ^ 15)) := by ring
+    _ ≤ (W : ℝ) * (G * (K * (W : ℝ) ^ 7 / (n : ℝ) ^ 15)) := he
+    _ = G * K * (W : ℝ) ^ 8 / (n : ℝ) ^ 15 := by ring
 
 /-- Upgraded full-range upper-product tail bound with eighth-order smoothing `(1 + log U) U⁸ / n¹⁵`. -/
 theorem dyadicPrimeContact_upper_eighth_product_tail :
@@ -270,15 +273,15 @@ theorem dyadicPrimeContact_upper_eighth_product_tail :
   have hU0_pos : 1 ≤ U0 := le_max_left _ _
   have hU0_le_L : U0 ≤ L := by
     have hL1 : 1 ≤ L := by
-      obtain ⟨h1, _, h2⟩ := successorSquareWindowScale_bounds n
+      obtain ⟨_, h9, h2⟩ := successorSquareWindowScale_bounds n
       have hw : 1 ≤ windowEnd ((2 * n + 1) ^ 2 + 1) := by
         have : (1 : ℝ) ≤ windowEnd ((2 * n + 1) ^ 2 + 1) :=
-          (by norm_num : (1 : ℝ) ≤ (n : ℝ) ^ 2 + 0 |> fun _ => by positivity) |> fun _ =>
-            (show (1 : ℝ) ≤ (n : ℝ) ^ 2 by nlinarith).trans (h1.trans h2)
+          (by norm_num : (1 : ℝ) ≤ 9).trans (h9.trans h2)
         exact_mod_cast this
       exact hw.trans (Nat.le_mul_of_pos_left _ (by decide : 0 < 3))
     exact max_le hL1 (min_le_left L _)
   have hU0_bound : (U0 : ℝ) ≤ 2 * T * n := by
+    dsimp only [U0]
     rcases max_choice 1 (productLower 1 L) with h1 | h2
     · rw [h1]; push_cast; nlinarith [hT, hn1]
     · rw [h2]
@@ -314,7 +317,7 @@ theorem dyadicPrimeContact_upper_eighth_product_tail :
     have hpos : 0 ≤ B * (1 + Real.log U) * (U : ℝ) ^ 8 / (n : ℝ) ^ 15 := by
       have := Real.log_natCast_nonneg U; positivity
     linarith
-  · push_neg at hle
+  · rw [not_le] at hle
     by_cases hbirth : 7 * (U : ℝ) < Real.exp (-8) * (n : ℝ) ^ 2
     · have h1 := hbase_le hU0_pos le_rfl
       have h2 : |upperProductReading U0 n - upperProductReading U n| ≤
@@ -333,10 +336,12 @@ theorem dyadicPrimeContact_upper_eighth_product_tail :
             (upperProductReading U0 n - upperProductReading U n) := by ring
       rw [hid]
       exact (abs_add_le _ _).trans (add_le_add h1 h2)
-    · push_neg at hbirth
+    · rw [not_lt] at hbirth
       refine (hlow hn hU).trans ?_
       have hA_le : A0 * H ^ 6 ≤ A * H ^ 6 :=
-        mul_le_mul_of_nonneg_right (by dsimp [A]; positivity) (pow_nonneg hH0 6)
+        mul_le_mul_of_nonneg_right
+          (by dsimp only [A]; linarith [mul_nonneg (mul_nonneg (by norm_num : (0 : ℝ) ≤ 4) hB0) (sq_nonneg T)])
+          (pow_nonneg hH0 6)
       have hratio : (n : ℝ) ^ 2 ≤ 7 * Real.exp 8 * U := by
         have := mul_le_mul_of_nonneg_left hbirth (Real.exp_pos 8).le
         rw [← mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, one_mul] at this
@@ -393,8 +398,8 @@ theorem dyadicPrimeContact_capped_eighth_product_tail :
       (by exact_mod_cast hkL : (k : ℝ) ≤ L)
     refine h.trans ?_
     have hprod := mul_le_mul (mul_le_mul_of_nonneg_left hdiv (by positivity : 0 ≤ 2 * K))
-      (add_le_add le_rfl hlog) (by have := Real.log_natCast_nonneg k; positivity) (by positivity)
-    calc _ = (2 * K) * ((k / (M + 1) : ℕ) : ℝ) * (1 + Real.log k) := by norm_num; ring
+      (add_le_add (le_refl (1 : ℝ)) hlog) (by have := Real.log_natCast_nonneg k; positivity) (by positivity)
+    calc _ = (2 * K) * ((k / (M + 1) : ℕ) : ℝ) * (1 + Real.log k) := by push_cast; ring
       _ ≤ _ := hprod
   have hdiff' : |upperProductReading U n - cappedUpperProductReading U M n| ≤
       (2 * K * J * T ^ 4) * n * H / (M + 1 : ℕ) := by
@@ -410,7 +415,7 @@ theorem dyadicPrimeContact_capped_eighth_product_tail :
       _ ≤ (T * n) ^ 2 * (((2 * K) * ((T * n) ^ 2 / (M + 1 : ℕ)) * H) * (J / (n : ℝ) ^ 3)) := by
             rw [sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel]
             exact mul_le_mul_of_nonneg_right hbound (by positivity)
-      _ = _ := by field_simp; ring
+      _ = _ := by field_simp
   have he : dyadicPrimeContact n - cappedUpperProductReading U M n =
       (dyadicPrimeContact n - upperProductReading U n) +
         (upperProductReading U n - cappedUpperProductReading U M n) := by ring

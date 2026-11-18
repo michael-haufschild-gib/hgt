@@ -78,7 +78,7 @@ private theorem mesh_variation_bound {g : ℝ → ℝ} (hg : ContDiff ℝ 1 g) (
   have hmono : Monotone u := fun i j hij => mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hij) hh.le
   have hcell (j : ℕ) : |g (u j) - g (u (j+1))| ≤ ∫ x in u j..u (j+1), ‖deriv g x‖ := by
     rw [abs_sub_comm, ←intervalIntegral.integral_deriv_eq_sub
-      (fun x _ => (hg.differentiable le_rfl).differentiableAt (x := x)) hcont.intervalIntegrable]
+      (fun x _ => (hg.differentiable le_rfl).differentiableAt (x := x)) (hcont.intervalIntegrable _ _)]
     exact intervalIntegral.norm_integral_le_integral_norm (hmono (Nat.le_succ j))
   apply (abs_sum_le_sum_abs _ _).trans
   calc _ ≤ ∑ j ∈ range b, (∫ x in u j..u (j+1), ‖deriv g x‖)*F := by
@@ -89,7 +89,7 @@ private theorem mesh_variation_bound {g : ℝ → ℝ} (hg : ContDiff ℝ 1 g) (
              (hmono (Nat.le_succ _)) fun _ _ => norm_nonneg _)
        _ ≤ _ := by
            rw [←sum_mul, intervalIntegral.sum_integral_adjacent_intervals
-             (fun j _ => hcont.norm.intervalIntegrable),intervalIntegral.integral_of_le (hmono (Nat.zero_le b))]
+             (fun j _ => hcont.norm.intervalIntegrable (u j) (u (j+1))),intervalIntegral.integral_of_le (hmono (Nat.zero_le b))]
            exact mul_le_mul_of_nonneg_right (setIntegral_le_integral hint (Filter.Eventually.of_forall
              (fun _ => norm_nonneg _))) hF
 
@@ -127,10 +127,10 @@ theorem real_conductor_mesh_sampling :
         (conductorDerivativeProfile (z/x^2)) x := by
       have hq' : HasDerivAt (fun y : ℝ => z/y^2) (-(2*z)/x^3) x := by
         refine ((hasDerivAt_const x z).div ((hasDerivAt_id x).pow 2) (sq_pos_of_pos hx).ne').congr_deriv ?_
-        dsimp only [id,Pi.pow_apply]; field_simp
+        dsimp only [id,Pi.pow_apply]; field_simp <;> ring
       have hΦ := (contDiff_six_dyadicSpline.differentiable (by simp)).differentiableAt (x := z/x^2)
       refine ((hasDerivAt_id x).mul (hΦ.hasDerivAt.comp x hq')).congr_deriv ?_
-      dsimp [conductorDerivativeProfile]; field_simp; ring
+      dsimp [conductorDerivativeProfile]; field_simp <;> ring
     have hd' (j : ℕ) := ((hd ((j:ℝ)*q)).sub (hd (((j+1:ℕ):ℝ)*q))).mul_const (centeredPrimeWeight 1 j)
     have hsum := HasDerivAt.fun_sum (u := range b) fun j _ => hd' j
     simpa only [weightedMesh,quotientMeshProfile,mul_sum,mul_sub,←mul_div_assoc,←mul_assoc] using hsum
@@ -228,7 +228,7 @@ theorem rescaled_shell_integral_exchange (b Q H : ℕ) (L U c α β : ℝ)
   have hint (q : ℕ) (_ : q ∈ S) : IntervalIntegrable (F q) volume T Z := by
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hTZ]
     have hbase : IntervalIntegrable (fun t => B t*((vonMangoldt q-1)*q)) volume T Z :=
-      ((hb.mul continuousOn_const).mono (by rw [Set.uIcc_of_le hTZ])).intervalIntegrable
+      (hb.mul continuousOn_const).intervalIntegrable_of_Icc hTZ
     have hm : MeasurableSet {t | keep q t} := by
       dsimp [keep]
       exact (measurableSet_lt measurable_const (by fun_prop)).inter

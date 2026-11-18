@@ -6,7 +6,7 @@
 \[
  w_L(A_L-A_b)+\sum_{b<j<L}(A_j-A_b)(w_j-w_{j+1}).
 \]
-The positive variations $w_{j+1}>w_j$ require an upper prefix. A [two-sided paper bound](../2-fully-proven/ecs-two-sided-prime-prefixes-at-the-wall.md) controls every future prefix from both $u$ and $u+h(u)$ after removing $o(X)$ centers from the original octave. The [variation estimates](ecs-signed-variation-of-the-weighted-complement.md) treat the adjacent band by the actual wall law and the remote tail by confinement. The remaining middle interval, the complement of the selected time set and the full square charge must all fit the same strict-margin budget.
+The positive variations $w_{j+1}>w_j$ require an upper prefix. A [two-sided bound](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TwoSidedPrimePrefixesAtAlmostEveryCenter.lean) controls every future prefix from both $u$ and $u+h(u)$ after removing $o(X)$ centers from the original octave. The [variation estimates](ecs-signed-variation-of-the-weighted-complement.md) treat the adjacent band by the actual wall law and the remote tail by confinement. The remaining middle interval, the complement of the selected time set and the full square charge must all fit the same strict-margin budget.
 
 **Verified integer window.** The adverse coefficient mass at width $H$ has order $H/h(X)$. At $H=h(X)$ the signed sum is $\gamma((\psi(X+H)-\psi(X))/H-1)+o(1)$ with $\gamma>0$, and exceeds every prescribed negative level arbitrarily late. [Adverse mass](../3-formalized/ecs-critical-width-of-adverse-integer-mass.md) · [Signed sum](../3-formalized/ecs-signed-chebyshev-excess-at-the-critical-width.md).
 
