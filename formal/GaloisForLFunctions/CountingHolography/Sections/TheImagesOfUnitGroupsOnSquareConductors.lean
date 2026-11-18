@@ -214,14 +214,16 @@ theorem square_bounded_exponent_kernel_lower : ∃ c : ℝ, 0 < c ∧ ∀ᶠ n :
   have hvr := (totient_loss (V_pos n) (L_pos n) (subset_union_right.trans (supports n))).2.trans (hK hn)
   change c*n*(n:ℝ)^2 ≤ Real.log (U n) at hu
   change c*n*(n:ℝ)^2 ≤ Real.log (V n) at hv
+  have lower {M T I : ℝ} (hsize : c*n*(n:ℝ)^2 ≤ M)
+      (hloss : M-T ≤ K*(n:ℝ)^2) (himage' : I ≤ C*(n:ℝ)^2) :
+      c/2*(n:ℝ)^3 ≤ T-I := by
+    linarith only [hsize,hloss,himage',hs]
   intro Htarget _
   constructor
   · intro f hf
-    refine le_trans ?_ (kernel_log (U_pos n) f).symm.le
-    linarith only [hu,hur,hs,(himage n hn (H := Htarget)).1 f hf]
+    exact (lower hu hur ((himage n hn (H := Htarget)).1 f hf)).trans_eq (kernel_log (U_pos n) f).symm
   · intro f hf
-    refine le_trans ?_ (kernel_log (V_pos n) f).symm.le
-    linarith only [hv,hvr,hs,(himage n hn (H := Htarget)).2 f hf]
+    exact (lower hv hvr ((himage n hn (H := Htarget)).2 f hf)).trans_eq (kernel_log (V_pos n) f).symm
 
 /-- Both directions between the two unit groups have quadratic log image. -/
 theorem square_unit_group_image_bound : ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 0 < n →

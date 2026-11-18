@@ -771,10 +771,10 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
   obtain ⟨i₁, hi₁⟩ : ∃ i : Fin N, 0 < u i := by
     by_contra! hnonpos
     rcases lt_or_gt_of_ne hi₀ with hneg | hpos
-    · have hsplit := (Finset.add_sum_erase Finset.univ u (Finset.mem_univ i₀)).symm
+    · have hsplit := Finset.add_sum_erase Finset.univ u (Finset.mem_univ i₀)
       have hrest : ∑ i ∈ Finset.univ.erase i₀, u i ≤ 0 :=
         Finset.sum_nonpos fun i _ => hnonpos i
-      omega
+      linarith only [hsplit, hsum_u, hrest, hneg]
     · exact (hnonpos i₀).not_gt hpos
   let hle : N ≤ p * N := Nat.le_mul_of_pos_left N hp0
   let ePad : Fin N → Fin (p * N) := fun i => ⟨i.val, i.isLt.trans_le hle⟩

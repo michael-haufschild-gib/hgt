@@ -68,6 +68,16 @@ def squareBinLocation (v : ℝ) : ℝ := 2*Real.log (primeBinReading 1 (Real.exp
 /-- Relative reciprocal weight of the same prime. -/
 def squareBinWeight (v : ℝ) : ℝ := Real.exp (v/2)/primeBinReading 1 (Real.exp (v/2))
 
+theorem monotone_squareBinLocation : Monotone squareBinLocation := by
+  intro a b hab
+  apply mul_le_mul_of_nonneg_left _ (by norm_num : (0:ℝ) ≤ 2)
+  apply Real.log_le_log (primeBinReading_one_pos _)
+  exact monotone_primeBinReading_one (Real.exp_le_exp.mpr (div_le_div_of_nonneg_right hab (by norm_num)))
+
+theorem measurable_squareBinWeight : Measurable squareBinWeight := by
+  have he : Measurable (fun v : ℝ => Real.exp (v/2)) := by fun_prop
+  exact he.div ((measurable_primeBinReading 1).comp he)
+
 private theorem abs_log_le_twice_sub {u : ℝ} (hu : 1/2 ≤ u) : |Real.log u| ≤ 2*|u-1| := by
   have hp : 0 < u := by linarith only [hu]
   have h := Real.log_le_sub_one_of_pos hp

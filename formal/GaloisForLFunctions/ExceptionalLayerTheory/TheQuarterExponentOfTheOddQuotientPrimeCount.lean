@@ -110,7 +110,7 @@ theorem firstPrimeDivisorMoment_zero_residue_of_oddQuotientPowerTotal_bound {b K
   have hl : Tendsto (fun w : ℂ => w-z) (𝓝[≠] z) (𝓝 0) :=
     ((continuous_id.sub continuous_const).tendsto' z 0 (sub_self z)).mono_left nhdsWithin_le_nhds
   apply (tendsto_congr' (hlocal.mono fun w hw => congrArg ((w-z)*·) hw)).mpr
-  simpa only [zero_mul] using hl.mul (hcont.tendsto.mono_left nhdsWithin_le_nhds)
+  simpa only [zero_mul,Pi.sub_apply,Pi.div_apply] using hl.mul (hcont.tendsto.mono_left nhdsWithin_le_nhds)
 
 /-- Any zero above twice the finite-mean exponent lies in the closed
 interval from 2−4b to 3b, by the square and cube residue conditions. -/

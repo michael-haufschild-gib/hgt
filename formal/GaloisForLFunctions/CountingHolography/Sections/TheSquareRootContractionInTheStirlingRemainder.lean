@@ -28,6 +28,52 @@ private theorem step_formula {n : ℕ} (hn : 0<n) :
     Real.log_div (by positivity : (n:ℝ)+1≠0) hn'.ne']
   ring
 
+/-- The Stirling step is a positive mixture of reciprocal integer powers.
+At one the same expansion is the telescoping sum of consecutive inverses. -/
+theorem hasSum_factorialStirlingStep {j : ℕ} (hj : 0 < j) :
+    HasSum (fun k : ℕ => ((j:ℝ)⁻¹)^(k+1)/(((k:ℝ)+1)*((k:ℝ)+2))) (factorialStirlingStep j) := by
+  rcases j with _ | n
+  · omega
+  rcases n with _ | n
+  · simp only [Nat.zero_add,Nat.cast_one,inv_one,one_pow,factorialStirlingStep_one]
+    let b := fun k : ℕ => 1/((k:ℝ)+1)
+    have hf (k : ℕ) : 1/(((k:ℝ)+1)*((k:ℝ)+2)) = b k - b (k+1) := by
+      dsimp only [b]
+      push_cast
+      field_simp <;> ring
+    have h₀ : Filter.Tendsto b Filter.atTop (nhds 0) := tendsto_const_nhds.div_atTop
+      (tendsto_natCast_atTop_atTop.atTop_add_const_right 1)
+    apply (hasSum_iff_tendsto_nat_of_nonneg (fun k => by positivity) _).mpr
+    simp_rw [hf,sum_range_sub']
+    simpa [b] using (tendsto_const_nhds (x := (1:ℝ))).sub h₀
+  let j : ℕ := n+2
+  let x : ℝ := (j:ℝ)⁻¹
+  have hj₁ : (1:ℝ) < j := by exact_mod_cast (by omega : 1 < n+2)
+  have hj₀ := zero_lt_one.trans hj₁
+  have hx : 0 < x := inv_pos.mpr hj₀
+  have hx' : x < 1 := inv_lt_one_of_one_lt₀ hj₁
+  let A := fun k : ℕ => x^(k+1)/((k:ℝ)+1)
+  let L := -Real.log (1-x)
+  have hA : HasSum A L := Real.hasSum_pow_div_log_of_abs_lt_one (by rw [abs_of_pos hx]; exact hx')
+  have ht : HasSum (fun k => A (k+1)) (L-x) := by
+    have h := (hasSum_nat_add_iff' 1).mpr hA
+    simpa only [A,range_one,sum_singleton,Nat.cast_zero,zero_add,pow_one,div_one] using h
+  have he (k : ℕ) : A k - A (k+1)/x = x^(k+1)/(((k:ℝ)+1)*((k:ℝ)+2)) := by
+    dsimp only [A]
+    push_cast
+    rw [pow_succ x (k+1)]
+    field_simp [hx.ne'] <;> ring
+  have h := (hA.sub (ht.div_const x)).congr_fun he
+  have hfrac : 1-x = ((n:ℝ)+1)/((n:ℝ)+2) := by
+    dsimp only [x,j]; push_cast; field_simp <;> ring
+  have hL : L = Real.log (((n:ℝ)+2)/((n:ℝ)+1)) := by
+    rw [show L = -Real.log (1-x) from rfl,hfrac,← Real.log_inv,inv_div]
+  convert h using 1
+  rw [step_formula (by omega : 0 < n+1)]
+  simp only [Nat.cast_add,Nat.cast_one]
+  rw [show (n:ℝ)+1+1=n+2 by ring,hL]
+  dsimp only [x,j]; push_cast; field_simp <;> ring
+
 private theorem step_bounds {n : ℕ} (hn : 0<n) :
     0≤factorialStirlingStep (n+1) ∧ factorialStirlingStep (n+1)≤1/(2*(n:ℝ)+1) := by
   have hx : 0<(n:ℝ) := Nat.cast_pos.mpr hn

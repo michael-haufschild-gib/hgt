@@ -162,10 +162,111 @@ theorem buchstab_euler_error (u : Ici (1:ℝ)) :
   rw [← enclosureLimit_eq_exp_neg_euler]
   exact buchstab_factorial_error u
 
+private theorem factorial_exp_bound (a : ℝ) (n : ℕ) :
+    1 / (n.factorial : ℝ) ≤ Real.exp (Real.exp a) * Real.exp (-a*n) := by
+  have hs := NormedSpace.expSeries_div_hasSum_exp (Real.exp a)
+  have h := hs.summable.le_tsum n (fun j _ => div_nonneg
+    (pow_nonneg (Real.exp_pos a).le j) (Nat.cast_nonneg _))
+  rw [hs.tsum_eq,← Real.exp_eq_exp_ℝ,← Real.exp_nat_mul] at h
+  have hh := mul_le_mul_of_nonneg_right h (Real.exp_pos (-a*n)).le
+  have he : Real.exp ((n:ℝ)*a) * Real.exp (-a*n) = 1 := by
+    rw [← Real.exp_add,show (n:ℝ)*a+-a*n = 0 by ring,Real.exp_zero]
+  simpa only [div_mul_eq_mul_div,he] using hh
+
+/-- The error in the real profile decays faster than each prescribed
+exponential, with a uniform constant valid down to the cutoff. -/
+theorem buchstab_exp_error (a : Ici (0:ℝ)) (u : Ici (1:ℝ)) :
+    |buchstab u.val-enclosureLimit| ≤ Real.exp (Real.exp a.val)*Real.exp (-a.val*u.val) := by
+  let n := ⌊u.val-1⌋₊+2
+  have hu : u.val ≤ (n:ℝ) := by
+    have h := Nat.lt_floor_add_one (u.val-1)
+    dsimp [n]
+    push_cast
+    linarith
+  exact (buchstab_factorial_error u).trans ((factorial_exp_bound a n).trans
+    (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (mul_le_mul_of_nonpos_left hu (neg_nonpos.mpr a.property)))
+      (Real.exp_pos _).le))
+
+/-- Subtracting the limiting density leaves finite Laplace mass even with
+an exponentially growing weight. -/
+theorem integrable_buchstab_correction (z : ℝ) :
+    IntegrableOn (fun t => (buchstab t-enclosureLimit)*Real.exp (z*t)) (Ioi (0:ℝ)) := by
+  let a := |z|+1
+  let M := Real.exp (Real.exp a)
+  have ha : 0 ≤ a := by dsimp [a]; positivity
+  have h₀ : IntegrableOn (fun t : ℝ => Real.exp (-t)) (Ioi 0) := by
+    simpa using integrableOn_exp_mul_Ioi (by norm_num : (-1:ℝ)<0) 0
+  refine (h₀.const_mul M).mono' (((measurable_buchstab.sub measurable_const).mul
+    (by fun_prop)).aestronglyMeasurable) ?_
+  filter_upwards [ae_restrict_mem (measurableSet_Ioi (a := (0:ℝ)))] with t ht
+  have hc : |buchstab t-enclosureLimit| ≤ M*Real.exp (-a*t) := by
+    by_cases hu : 1 ≤ t
+    · exact buchstab_exp_error ⟨a,ha⟩ ⟨t,hu⟩
+    · have hC := enclosureLimit_mem 0
+      change 1/2 ≤ enclosureLimit ∧ enclosureLimit ≤ 1 at hC
+      have hpos : 0 ≤ Real.exp a - a*t := by
+        have h := mul_le_mul_of_nonneg_left (le_of_lt (lt_of_not_ge hu)) ha
+        linarith [Real.add_one_le_exp a]
+      rw [buchstab,if_neg hu,zero_sub,abs_neg,abs_of_nonneg (by linarith : 0 ≤ enclosureLimit)]
+      apply hC.2.trans
+      change 1 ≤ Real.exp (Real.exp a) * Real.exp (-a*t)
+      rw [← Real.exp_add,Real.one_le_exp_iff]
+      linarith
+  have he : -a*t + z*t ≤ -t := by
+    have hz : z ≤ |z| := le_abs_self _
+    dsimp [a]
+    nlinarith only [mul_le_mul_of_nonneg_right hz (le_of_lt ht)]
+  rw [Real.norm_eq_abs,abs_mul,abs_of_pos (Real.exp_pos _)]
+  calc
+    _ ≤ M*Real.exp (-a*t)*Real.exp (z*t) := mul_le_mul_of_nonneg_right hc (Real.exp_pos _).le
+    _ = M*Real.exp (-a*t+z*t) := by rw [Real.exp_add,mul_assoc]
+    _ ≤ _ := mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr he) (Real.exp_pos _).le
+
+/-- The finite part of the transform is the ordinary signed area left
+after subtracting the limiting density on the full positive ray. -/
+theorem integral_buchstab_correction :
+    (∫ t in Ioi (0:ℝ), buchstab t-enclosureLimit) = enclosureLimit - 1 := by
+  have hc : IntegrableOn (fun t => buchstab t-enclosureLimit) (Ioi (0:ℝ)) := by
+    simpa using integrable_buchstab_correction 0
+  let f := fun (s t : ℝ) => (buchstab t-enclosureLimit)*Real.exp (-s*t)
+  have h := tendsto_integral_filter_of_dominated_convergence (μ := volume.restrict (Ioi (0:ℝ)))
+    (l := 𝓝[>] (0:ℝ)) (F := f) (f := fun t => buchstab t-enclosureLimit)
+    (fun t => |buchstab t-enclosureLimit|)
+    (Eventually.of_forall fun s => ((measurable_buchstab.sub measurable_const).mul
+      (by fun_prop)).aestronglyMeasurable)
+    (by
+      filter_upwards [self_mem_nhdsWithin] with s hs
+      filter_upwards [ae_restrict_mem (measurableSet_Ioi (a := (0:ℝ)))] with t ht
+      change |(buchstab t-enclosureLimit)*Real.exp (-s*t)| ≤ _
+      rw [abs_mul,abs_of_pos (Real.exp_pos _)]
+      exact mul_le_of_le_one_right (abs_nonneg _) (Real.exp_le_one_iff.mpr
+        (mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr (le_of_lt hs)) (le_of_lt ht))))
+    hc.abs
+    (Eventually.of_forall fun t => by
+      have ht : Continuous (fun s : ℝ => (buchstab t-enclosureLimit)*Real.exp (-s*t)) := by fun_prop
+      simpa [f] using (ht.tendsto 0).mono_left (nhdsWithin_le_nhds (s := Ioi (0:ℝ))))
+  apply tendsto_nhds_unique h
+  rw [enclosureLimit_eq_exp_neg_euler]
+  refine tendsto_transform_finitePart.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with s hs
+  have hp : 0 < s := hs
+  have he : (∫ t in Ioi (0:ℝ), Real.exp (-s*t)) = s⁻¹ := by
+    rw [integral_exp_mul_Ioi (neg_lt_zero.mpr hp) 0]
+    simp
+  dsimp only [f]
+  simp_rw [sub_mul]
+  rw [integral_sub (laplace_integrable hp) ((integrableOn_exp_mul_Ioi
+      (neg_lt_zero.mpr hp) 0).const_mul enclosureLimit),integral_const_mul,he]
+  change _ = laplaceMass s - enclosureLimit * s⁻¹
+  rw [laplaceMass_eq_transform ⟨s,hp⟩,enclosureLimit_eq_exp_neg_euler,div_eq_mul_inv]
+
 #print axioms laplace_first_moment
 #print axioms laplaceMass_eq_transform
 #print axioms enclosureLimit_eq_exp_neg_euler
 #print axioms buchstab_euler_error
+#print axioms buchstab_exp_error
+#print axioms integrable_buchstab_correction
+#print axioms integral_buchstab_correction
 
 end
 end RHTower.Sieve.Buchstab

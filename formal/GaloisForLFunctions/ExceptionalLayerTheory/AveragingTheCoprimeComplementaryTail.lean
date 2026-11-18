@@ -17,13 +17,13 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 def ordinaryComplementTail (D R X F a : ℕ) : ℝ :=
   ordinaryFactorTail F X (fun p => factorSlice D R X (a*p) p)
 
-private def edge (D R X F a : ℕ) :=
+private def complementaryLowerBoundary (D R X F a : ℕ) :=
   ordinaryFactorTail F X (fun p => factorialBoundary (D+1) a*
     ∑ j ∈ Icc 1 (X/p/(a+1)), outerJump R j)
 
 private theorem transpose (D R X F : ℕ) {a : ℕ} (ha : 1≤a) :
-    ordinaryComplementTail D R X F a=dualBoundaryHead X (D+1) F (X/(a+1)) (outerJump R)-edge D R X F a := by
-  unfold ordinaryComplementTail dualBoundaryHead edge ordinaryFactorTail
+    ordinaryComplementTail D R X F a=dualBoundaryHead X (D+1) F (X/(a+1)) (outerJump R)-complementaryLowerBoundary D R X F a := by
+  unfold ordinaryComplementTail dualBoundaryHead complementaryLowerBoundary ordinaryFactorTail
   rw [←sum_sub_distrib]
   apply sum_congr rfl
   intro p hp
@@ -105,7 +105,7 @@ theorem averaged_coprime_tail :
   let cap := cappedComplementaryRow D R X F Y
   let raw := ordinaryComplementTail D R X F
   let top (a : ℕ) := dualBoundaryHead X (D+1) F (X/(a+1)) (outerJump R)
-  let bot := edge D R X F
+  let bot := complementaryLowerBoundary D R X F
   let gap (a : ℕ) := base-cap a-raw a
   have hs : 0<S := Nat.succ_pos _
   have hs' : (S : ℝ)≠0 := by exact_mod_cast Nat.ne_of_gt hs
@@ -139,7 +139,9 @@ theorem averaged_coprime_tail :
     have hh := sum_congr rfl heq
     simp only [sum_sub_distrib,sum_add_distrib,sum_const,Nat.card_Ico,Nat.add_sub_cancel_left,nsmul_eq_mul] at hh
     unfold complementAverage
-    field_simp [hs']; linarith only [hh]
+    calc _ = ((S : ℝ)*base-(∑ a ∈ Ico A (A+S), cap a))/S := by
+             rw [sub_div,mul_div_cancel_left₀ base hs']
+         _ = _ := by rw [hh,sub_div,add_div]
   rw [eq]
   apply (abs_sub _ _).trans ((add_le_add_right (abs_add_le _ _) _).trans ((add_le_add (add_le_add hΔ htop) hbot).trans _))
   have h1 := mul_le_mul_of_nonneg_right (mul_le_mul hd₂ hj₃ hj (sq_nonneg d))
