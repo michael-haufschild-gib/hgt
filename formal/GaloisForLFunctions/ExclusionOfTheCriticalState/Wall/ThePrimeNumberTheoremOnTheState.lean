@@ -202,7 +202,7 @@ theorem cubeOrHigherWave_absolute_exp_bound {g : ℝ → ℝ} (hs : ∀ u, 0 ≤
     ∃ M : ℝ, 0 ≤ M ∧ ∀ t : ℝ,
       let a := fun j => vonMangoldtAtom (cubeOrHigherIndex j)*g (t-Real.log (cubeOrHigherIndex j))
       (Summable fun j => |a j|) ∧ (∑' j, |a j|) ≤ M*Real.exp (-b*t) := by
-  let w := fun j : Nat.Primes × ℕ => |vonMangoldtAtom (cubeOrHigherIndex j)|*
+  let w := fun j : Nat.Primes × ℕ => |vonMangoldtAtom (cubeOrHigherIndex j)| *
     Real.exp (b*Real.log (cubeOrHigherIndex j))
   have hw : Summable w := by
     have hre : (1:ℝ)/3 < ((1:ℂ)/2-(b:ℂ)).re := by
@@ -222,7 +222,7 @@ theorem cubeOrHigherWave_absolute_exp_bound {g : ℝ → ℝ} (hs : ∀ u, 0 ≤
       · rw [hs _ (sub_nonneg.mpr ht),abs_zero]; positivity
       · exact (hb _).trans (le_mul_of_one_le_right hC (Real.one_le_exp (mul_nonneg hb0 (sub_nonneg.mpr (le_of_not_ge ht)))))
     change |vonMangoldtAtom (cubeOrHigherIndex j)*g (t-l)| ≤
-      (|vonMangoldtAtom (cubeOrHigherIndex j)|*Real.exp (b*l))*C*Real.exp (-b*t)
+      (|vonMangoldtAtom (cubeOrHigherIndex j)| * Real.exp (b*l))*C*Real.exp (-b*t)
     rw [abs_mul]
     apply (mul_le_mul_of_nonneg_left hg (abs_nonneg _)).trans_eq
     rw [mul_sub,Real.exp_sub,neg_mul,Real.exp_neg]
@@ -345,6 +345,8 @@ theorem criticalState_tendsto_absolute_properPowerWave {W₀ : ℝ} (hW : 0 < W�
   obtain ⟨Φ,hΦ,he,h⟩ := criticalState_tendsto_dominated_properPowerWave hW ht hF
   exact ⟨Φ,hΦ,he,h (fun u => |Φ u|) hΦ.abs (fun u => (abs_abs (Φ u)).le)⟩
 
+#print axioms primeSquareLayer_eq_bin_integral
+#print axioms cubeOrHigherWave_absolute_exp_bound
 #print axioms criticalState_tendsto_dominated_properPowerWave
 #print axioms criticalState_tendsto_absolute_properPowerWave
 #print axioms criticalState_tendsto_properPowerWave

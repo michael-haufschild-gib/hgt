@@ -73,7 +73,7 @@ private theorem odd_sum_le {p M : ℕ} (hvan : ∀ j : ℕ, M < j → B p j=0) :
   let S := Ioc 0 M
   have hinj : Set.InjOn f (↑S) := fun i _ j _ h => by dsimp only [f] at h; omega
   change (∑ j ∈ S, B p (f j)) ≤ ∑ j ∈ S, B p j
-  rw [← Finset.sum_image hinj]
+  rw [← Finset.sum_image (f := B p) hinj]
   let U := Ioc 0 (2*M+1)
   have hsub : S.image f ⊆ U := by
     intro k hk

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.CountingHolography.Sections.TheSignedProductOverSquareConductors
+import GaloisForLFunctions.CountingHolography.Sections.SquareGeneratorPrefix
 import GaloisForLFunctions.CountingHolography.Sections.ReducedOrdinaryPrimeProducts
 
 /-!

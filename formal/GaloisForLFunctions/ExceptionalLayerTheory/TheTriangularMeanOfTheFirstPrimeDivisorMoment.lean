@@ -10,7 +10,8 @@ import GaloisForLFunctions.RHTower.CarlsonHalfPlaneProducerFloor
 The linear centering disappears on taking a dyadic difference. A sublinear
 term is determined by that difference at all larger dyadic cutoffs. This
 recovers the raw mean from the finite parity count and the two unrestricted
-power rows.
+power rows. On each unit interval the uncentered count times its cutoff
+is affine, so the same zeta coefficients govern real cutoffs.
 -/
 
 noncomputable section
@@ -250,8 +251,9 @@ theorem primeMomentRealRemainder_quarter_of_rh (hRH : RiemannHypothesis) {b : �
     rw [abs_le]
     constructor <;> linarith only [ll,lu,ml,mu]
   have hbl : b<1 := by linarith only [hb']
-  have htwo : (2:ℝ)^b < 2 := by simpa only [Real.rpow_one] using
-    Real.rpow_lt_rpow_of_exponent_lt (by norm_num : (1:ℝ)<2) hbl
+  have htwo : (2:ℝ)^b < 2 := by
+    simpa only [Real.rpow_one] using
+      Real.rpow_lt_rpow_of_exponent_lt (by norm_num : (1:ℝ)<2) hbl
   exact ⟨_,div_nonneg (mul_nonneg (add_nonneg hC hD) (by positivity)) (sub_pos.mpr htwo).le,
     fun _ hn => sublinear_dyadic_inverse _ hbl (add_nonneg hC hD) hs hrec hn⟩
 
@@ -370,8 +372,9 @@ theorem triangularDistinctPrimeLogMoment_singleQuartet {ρ : ℂ} (hq : Exclusio
     apply (abs_sub _ _).trans
     push_cast at hmode hbase ⊢
     exact (add_le_add hbase hmode).trans_eq (by dsimp only [B]; ring)
-  have htwo : (2:ℝ)^b < 2 := by simpa only [Real.rpow_one] using
-    Real.rpow_lt_rpow_of_exponent_lt (by norm_num : (1:ℝ)<2) hb'
+  have htwo : (2:ℝ)^b < 2 := by
+    simpa only [Real.rpow_one] using
+      Real.rpow_lt_rpow_of_exponent_lt (by norm_num : (1:ℝ)<2) hb'
   exact ⟨_,div_nonneg (mul_nonneg hB (by positivity)) (sub_pos.mpr htwo).le,
     fun _ hn => sublinear_dyadic_inverse f hb' hB hs hrec hn⟩
 

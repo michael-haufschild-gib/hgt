@@ -167,7 +167,7 @@ private theorem square_cost_variation (M : ℕ) :
     |c M|+∑ i ∈ range M, |c (i+1)-c i| ≤ 2*((M:ℝ)+2)^(11/4:ℝ) := by
   let c := fun i : ℕ => ((i:ℝ)+2)^2
   have hc (i : ℕ) : c i ≤ c (i+1) := by
-    apply pow_le_pow_left₀ (by positivity); exact add_le_add_right (Nat.cast_le.mpr (Nat.le_succ i)) _
+    apply pow_le_pow_left₀ (by positivity); exact add_le_add (Nat.cast_le.mpr (Nat.le_succ i)) le_rfl
   change |c M|+(∑ i ∈ range M, |c (i+1)-c i|) ≤ _
   simp_rw [abs_of_nonneg (sub_nonneg.mpr (hc _))]
   rw [abs_of_nonneg (sq_nonneg _),sum_range_sub]

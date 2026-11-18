@@ -27,7 +27,7 @@ theorem complementTaper_endpoint {X : ℕ} (hx : 1≤X) :
   let u : ℝ := 499999999/1000000000
   let v : ℝ := 1/1000000000
   have hx₁ : (1 : ℝ)≤X := by exact_mod_cast hx
-  have ha : (A : ℝ)≤P u := Nat.floor_le (by dsimp [P]; positivity)
+  have ha : (A : ℝ)≤P u := Nat.floor_le (Real.rpow_nonneg (Nat.cast_nonneg X) u)
   have ha' : P u≤((A+1 : ℕ) : ℝ) := by push_cast; exact (Nat.lt_floor_add_one _).le
   have hprod : P v*P u=Real.sqrt X := by
     dsimp only [P]
@@ -36,7 +36,8 @@ theorem complementTaper_endpoint {X : ℕ} (hx : 1≤X) :
     (div_le_iff₀ (by positivity : (0 : ℝ)<(A+1 : ℕ))).mpr
       (hprod.symm.le.trans (mul_le_mul_of_nonneg_left ha' (by dsimp [P]; positivity)))
   have hs : (S : ℝ)≤P v+1 := by
-    dsimp only [S]; push_cast; exact add_le_add_right ((Nat.floor_le (by positivity)).trans hq) 1
+    dsimp only [S]; rw [Nat.cast_add,Nat.cast_one]
+    exact add_le_add ((Nat.floor_le (by positivity)).trans hq) le_rfl
   have hpow : P v≤P u := Real.rpow_le_rpow_of_exponent_le hx₁ (by norm_num [u,v])
   have hone : 1≤P u := Real.one_le_rpow hx₁ (by norm_num [u])
   push_cast; change (A : ℝ)+(S : ℝ)≤3*P u
@@ -88,15 +89,18 @@ private theorem row_bound :
   have hlog : ((2*(D+1) : ℕ) : ℝ)≤P (1/25000000) := by
     push_cast; push_cast at hd'; linarith only [hz,hd',hj]
   have hD' : ((D+1 : ℕ) : ℝ)≤P (1/25000000) := by
-    push_cast at hlog ⊢; linarith only [hlog,Nat.cast_nonneg D]
+    have hh : D+1 ≤ 2*(D+1) := by omega
+    exact (by exact_mod_cast hh : ((D+1 : ℕ) : ℝ) ≤ ((2*(D+1) : ℕ) : ℝ)).trans hlog
   have mono {s t : ℝ} (hst : s≤t) : P s≤P t := Real.rpow_le_rpow_of_exponent_le hx₁ hst
   have mul (s t : ℝ) : P s*P t=P (s+t) := (Real.rpow_add hx₀ s t).symm
   have hF : ⌊P (1/1000000)⌋₊≤F := (Nat.floor_mono (mono (by norm_num : (1/1000000 : ℝ)≤1/200))).trans (le_max_right ..)
   have ha : 1≤A := (Nat.one_le_floor_iff _).mpr (Real.one_le_rpow hx₁ (by norm_num))
   have ha' : P (499999999/1000000000)<((A+1 : ℕ) : ℝ) := by push_cast; exact Nat.lt_floor_add_one _
   have hp' : P (1/200)<((F+1 : ℕ) : ℝ) := by
-    push_cast
-    exact (Nat.lt_floor_add_one _).trans_le (add_le_add_right (by exact_mod_cast le_max_right (2*(D+1)) ⌊P (1/200)⌋₊) 1)
+    have hf : ⌊P (1/200)⌋₊ ≤ F := le_max_right ..
+    have hr : (⌊P (1/200)⌋₊ : ℝ) ≤ (F : ℝ) := by exact_mod_cast hf
+    rw [Nat.cast_add,Nat.cast_one]
+    exact (Nat.lt_floor_add_one _).trans_le (add_le_add hr le_rfl)
   have ht : P (499999999/1000000000+1/200)<((A+1 : ℕ) : ℝ)*(F+1 : ℕ) := by
     rw [←mul]
     exact (mul_le_mul_of_nonneg_right ha'.le (by dsimp [P]; positivity)).trans_lt
@@ -125,8 +129,8 @@ private theorem row_bound :
   have he := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hb hC)
     (pow_nonneg hj 3)) (Real.sqrt_nonneg (X : ℝ))
   have hs := mul_le_mul_of_nonneg_right (show 4*C≤4*C+E by linarith only [hE])
-    (mul_nonneg (pow_nonneg hj 6) (Real.sqrt_nonneg _))
-  change _≤(4*C+E)*J^6*Real.sqrt X
+    (mul_nonneg (pow_nonneg hj 6) (Real.sqrt_nonneg (X : ℝ)))
+  change C*((D+1 : ℕ) : ℝ)^2*D*J^3*Real.sqrt X ≤ (4*C+E)*J^6*Real.sqrt X
   linarith only [he,hs]
 
 /-- At both Vaughan widths, and in fact at every width, the complementary

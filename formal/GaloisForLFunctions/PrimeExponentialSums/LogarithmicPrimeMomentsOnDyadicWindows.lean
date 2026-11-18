@@ -51,7 +51,7 @@ private theorem divided_bounds (w : ℝ → ℝ) (k : ℕ) {X : ℝ} (hX : 1<X) 
 
 /-- Log reweighting preserves every finite normalized limit, including zero,
 for any nonnegative scale and arbitrary absolute prime coefficients. -/
-theorem transfer_limit (w : ℝ → ℝ) (k : ℕ) (scale : ℝ → ℝ≥0) (c : ℝ) :
+theorem transfer_limit (w : ℝ → ℝ) (k : ℕ) (scale : ℝ → NNReal) (c : ℝ) :
     Tendsto (fun X => (scale X : ℝ) * (moment w k X / Real.log X ^ k)) atTop (𝓝 c) ↔
     Tendsto (fun X => (scale X : ℝ) * moment w 0 X) atTop (𝓝 c) := by
   have hr := log_ratio.pow k
@@ -92,7 +92,7 @@ private theorem log_mass {X : ℝ} (hX : 1<X) :
 asymptotic to X and its k-th log moment is asymptotic to X(log X)^k. -/
 theorem log_moment_asymptotic (k : ℕ) :
     Tendsto (fun X => moment Real.log k X / (X*Real.log X^k)) atTop (𝓝 1) := by
-  let scale (X : ℝ) : ℝ≥0 := (Real.toNNReal X)⁻¹
+  let scale (X : ℝ) : NNReal := (Real.toNNReal X)⁻¹
   have h₀ := (tendsto_chebyshevTheta_div (c := 2) two_pos).sub
     (tendsto_chebyshevTheta_div (c := 1) one_pos)
   norm_num only [one_mul,show (2:ℝ)-1=1 by norm_num] at h₀

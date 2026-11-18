@@ -69,8 +69,9 @@ theorem reciprocalFactorial_sum_has_no_smaller_power {b : ℝ} (hb : 0≤b) (hb'
   let H := LSeries (complexCoeff corr)
   let D := fun s : ℂ => (c:ℂ)+A s/riemannZeta s
   have h0 : f 0=0 := by simp [f,Z,complexCoeff]
-  have hC0 : 0≤C := by simpa only [Nat.cast_one,Real.one_rpow,mul_one] using
-    (abs_nonneg _).trans (hC 1 le_rfl)
+  have hC0 : 0≤C := by
+    simpa only [Nat.cast_one,Real.one_rpow,mul_one] using
+      (abs_nonneg _).trans (hC 1 le_rfl)
   have hpre (x : ℝ) (hx : 1≤x) : ‖∑ n ∈ Icc 1 ⌊x⌋₊, f n‖≤C*x^b := by
     let N := ⌊x⌋₊
     have he (n : ℕ) (hn : n∈Icc 1 N) : f n=((reciprocalFactorial n-c:ℝ):ℂ) := by

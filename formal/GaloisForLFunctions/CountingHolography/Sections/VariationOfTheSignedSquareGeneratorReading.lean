@@ -124,7 +124,7 @@ theorem squareLongReading_variation : ∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ,
     calc _ ≤ ∑ _i ∈ range M, C*y^(7/4:ℝ) := by
               refine sum_le_sum fun i hi' => (step i).trans (mul_le_mul_of_nonneg_left
                 (Real.rpow_le_rpow (by positivity) ?_ (by norm_num : (0:ℝ) ≤ 7/4)) hC)
-              exact add_le_add_right (Nat.cast_le.mpr (mem_range.mp hi').le) _
+              exact add_le_add (Nat.cast_le.mpr (mem_range.mp hi').le) le_rfl
          _ = _ := by simp
   have htop : |squareLongReading (M+2)| ≤ A*y^(11/4:ℝ) := by
     unfold squareLongReading
@@ -136,21 +136,26 @@ theorem squareLongReading_variation : ∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ,
   linarith only [htop,hsum,mul_le_mul_of_nonneg_right hm (show 0 ≤ C*y^(7/4:ℝ) by positivity),
     congrArg (fun u : ℝ => C*u) (hpow y hy₀).2.2.2]
 
+/-- On the integer roots the degree differs from its smooth long reading
+by the limiting stationary and short lags. -/
+theorem squareLongTrace_integer_degree_limit :
+    Tendsto (fun n : ℕ => integerProbe _ (successorSquareTriple n)-squareLongTrace (2*Real.log n)) atTop
+      (𝓝 (6*realSplineTrace 0-4*realSplineTrace (Real.log 4))) := by
+  have hT := (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).const_mul_atTop two_pos
+  have hlim := upperSquareIndex_signed_degree.comp hT
+  apply hlim.congr'
+  filter_upwards [eventually_ge_atTop 1] with n hn
+  have he : upperSquareIndex (2*Real.log n)=n := by
+    rw [upperSquareIndex,show 2*Real.log n/2=Real.log n by ring,Real.exp_log (Nat.cast_pos.mpr hn),Nat.ceil_natCast]
+  change integerProbe _ (successorSquareTriple (upperSquareIndex (2*Real.log n)))-squareLongTrace (2*Real.log n)=_
+  rw [he]
+
 /-- The difference between minus the smooth reading and the actual log
 generator is bounded by one common quadratic allowance. -/
 theorem diagonalOrdinaryLog_smooth_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
     |diagonalOrdinaryLog n+squareLongReading n| ≤ C*(n:ℝ)^2 := by
   let Q := fun n : ℕ => integerProbe _ (successorSquareTriple n)
-  have hT := (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).const_mul_atTop two_pos
-  have hlim := upperSquareIndex_signed_degree.comp hT
-  have hs : Tendsto (fun n : ℕ => Q n-squareLongTrace (2*Real.log n)) atTop
-      (𝓝 (6*realSplineTrace 0-4*realSplineTrace (Real.log 4))) := by
-    apply hlim.congr'
-    filter_upwards [eventually_ge_atTop 1] with n hn
-    have he : upperSquareIndex (2*Real.log n)=n := by
-      rw [upperSquareIndex,show 2*Real.log n/2=Real.log n by ring,Real.exp_log (Nat.cast_pos.mpr hn),Nat.ceil_natCast]
-    change Q (upperSquareIndex (2*Real.log n))-squareLongTrace (2*Real.log n)=_
-    rw [he]
+  have hs := squareLongTrace_integer_degree_limit
   obtain ⟨K,hK⟩ := hs.abs.bddAbove_range
   obtain ⟨A,hA,ha⟩ := successorSquare_contact_error
   obtain ⟨B,hB,hb⟩ := successorSquare_contact_degree

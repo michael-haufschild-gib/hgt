@@ -263,6 +263,8 @@ For $B_d(t)=d^{-1/2}D(t-\log d)$ the naturally ordered Möbius sum is $\Phi(t)$,
 
 For $x\ge1$, the naturally truncated sum $\sum_{n\le Y}\Lambda(n)\{x/n\}-x(\log(Y/x)+1-\gamma)$ tends to $x(\log x-1)-\log(\lfloor x\rfloor!)$, of absolute value at most $1+\log x$. [Fractional-part average of the Mangoldt measure](Analysis/TheFractionalPartAverageOfTheMangoldtMeasure.lean).
 
+For ordinary primes the same subtraction leaves a limit $R(x)$ with $R(x)/\sqrt x\to\zeta(1/2)<0$. Prime squares supply the whole secondary term. At integers, $\sum_{m\le N}\log\mathrm{rad}(m)=N(\log N+R(1))-R(N)$, so its secondary coefficient is $-\zeta(1/2)$. [Ordinary-prime fractional parts](Wall/OrdinaryPrimeFractionalPartsAtSquareRootScale.lean).
+
 With $K(v)=e^{-v/2}\{e^v\}$ and $|\Phi(u)|\le Ce^{2u}$ supported on $u\le0$, the signed integral of the polar-subtracted Mangoldt wave against $K(T-t)$ over $t\le M$ has a limit as $M\to\infty$. For the critical state the integral converges absolutely on the whole time axis, and its signed value has magnitude at most $C(1+T)e^{-T/2}$ for every $T\ge0$. [Common physical cutoff](Wall/TheFractionalPartTestOfThePrimeWave.lean) · [Absolute convergence on the state](Wall/TheSignedFractionalPartAverageOnTheCriticalState.lean).
 
 The equal-prime term of the covariance, divided by the observation time, tends to the

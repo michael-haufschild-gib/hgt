@@ -20,7 +20,8 @@ vanishing near zero only finitely many terms contribute at any positive cutoff. 
 def ordinaryPrimeRead (f : ℝ → ℂ) (x : ℝ) : ℂ :=
   ∑' p : Nat.Primes, f (x/(p.1:ℝ))
 
-private theorem prime_read_finite {f : ℝ → ℂ} {δ x : ℝ} (hδ : 0<δ) (hx : 0<x)
+/-- A positive lower endpoint for the support gives an explicit finite prime cutoff. -/
+theorem ordinaryPrimeRead_eq_finite {f : ℝ → ℂ} {δ x : ℝ} (hδ : 0<δ) (hx : 0<x)
     (hz : ∀ t, 0<t → t<δ → f t=0) {N : ℕ} (hN : x/δ≤N) :
     ordinaryPrimeRead f x=∑ p ∈ Nat.primesLE N, f (x/(p:ℝ)) := by
   classical
@@ -60,7 +61,7 @@ private theorem read_local {f : ℝ → ℂ} (hm : Measurable f) {δ A : ℝ}
   intro T hT
   obtain ⟨N,hN⟩ := exists_nat_ge (T/δ)
   refine ⟨(Nat.primesLE N).card*(A*T),fun x hx hxt => ?_⟩
-  rw [prime_read_finite hδ hx hz ((div_le_div_of_nonneg_right hxt.le hδ.le).trans hN)]
+  rw [ordinaryPrimeRead_eq_finite hδ hx hz ((div_le_div_of_nonneg_right hxt.le hδ.le).trans hN)]
   apply (norm_sum_le _ _).trans
   calc
     _ ≤ ∑ _ ∈ Nat.primesLE N, A*T := by
@@ -176,7 +177,7 @@ private theorem mellin_linearCut (c : ℂ) {s : ℂ} (hs : 1<s.re) :
   ring
 
 private theorem log_line_nonzero {f : ℝ → ℂ} (hf : Measurable f) {δ A : ℝ}
-    (hδ : 0<δ) (hA : 0≤A) (hz : ∀ x, 0<x → x<δ → f x=0)
+    (hδ : 0<δ) (hz : ∀ x, 0<x → x<δ → f x=0)
     (hb : ∀ x, 0<x → ‖f x‖≤A*x) {l r : ℝ} (hl : 0<l) (hlr : l<r)
     (h : ∀ x, l<x → x<r → f x≠0) : ∃ s : ℂ, 1<s.re ∧ mellin f (-s)≠0 := by
   let G := _root_.RHTower.logMellinLineSource f (-3)
@@ -279,7 +280,7 @@ private theorem no_small_prime_read {f : ℝ → ℂ} (hm : Measurable f) {δ A 
     have he := prime_read_mellin_real ht (hfs (s := (t:ℂ)) ht)
     change H t=_ at he
     rw [he,← heuler (s := (t:ℂ)) ht,mul_div_cancel_right₀ _ hd]
-  obtain ⟨s,hs,hn⟩ := log_line_nonzero hm hδ hA hz hb hl hlr hnz
+  obtain ⟨s,hs,hn⟩ := log_line_nonzero hm hδ hz hb hl hlr hnz
   have hs0 : s∈V 0 := zero_lt_one.trans hs
   have hp : meromorphicOrderAt D s=⊤ := by
     by_contra hne

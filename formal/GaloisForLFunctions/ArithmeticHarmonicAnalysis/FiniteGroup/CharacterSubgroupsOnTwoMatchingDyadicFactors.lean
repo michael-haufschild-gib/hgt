@@ -2,6 +2,7 @@ import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.SignsAndPrinci
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.FiniteGroup.CyclicSubgroupsFromPowerFibres
 import Mathlib.NumberTheory.MulChar.Duality
 import Mathlib.NumberTheory.ArithmeticFunction.Carmichael
+import Mathlib.Tactic.NormNum.Prime
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 
@@ -61,7 +62,10 @@ private theorem within_depth (r j : ℕ) (hp : (Q r+1).Prime) (hj : j≤r) :
 private theorem order_one (r : ℕ) :
     (ofOrder (Characters r) 1).card=1 := by
   have h := generators (Characters r) 1
-  simpa [orderOf_eq_one_iff] using h.symm
+  have he : (univ.filter fun x : Characters r => orderOf x=1) = {1} := by
+    ext x
+    simp [orderOf_eq_one_iff]
+  simpa only [he,card_singleton,Nat.totient_one,mul_one] using h.symm
 
 /-- Three independent signs give exactly seven cyclic subgroups of order two. -/
 theorem order_two (r : ℕ) (hp : (Q r+1).Prime) : (ofOrder (Characters r) 2).card=7 := by
@@ -87,7 +91,7 @@ theorem higher_order (r j : ℕ) (hp : (Q r+1).Prime) (hj : j+1≤r) :
 
 private theorem kills_cycle (m : ℕ) [NeZero m] (x : Cycle m) : x^m=1 := by
   have h : Nat.card (Cycle m)=m := Nat.card_zmod _
-  rw [← h,pow_card_eq_one']
+  exact (congrArg (fun n : ℕ => x^n) h.symm).trans pow_card_eq_one'
 
 private theorem exponent_kills (r : ℕ) (hp : (Q r+1).Prime) (x : Characters r) : x^(Q r)=1 := by
   let e := characterFactors r hp
@@ -110,7 +114,6 @@ theorem total (r : ℕ) (hp : (Q r+1).Prime) :
     induction k with
     | zero =>
       simp only [sum_range_succ,sum_range_zero,zero_add,pow_zero,pow_one,order_one,order_two r hp]
-      norm_num
     | succ k ih =>
       rw [sum_range_succ,higher_order r k hp hk]
       have he := ih (by omega)
@@ -178,11 +181,12 @@ theorem top_exceeds_estimate (r : ℕ) (hp : (Q r+1).Prime) (hr : 3≤r) :
 Already the top-order stratum has forty-eight cyclic character subgroups. -/
 theorem modulus_1088 :
     (ofOrder (Characters 3) 16).card=48 ∧ (cyclicSubgroups (Characters 3)).card=92 ∧
-      40 < (ofOrder (Characters 3) 16).card := by
+      printedEstimate 3=40 ∧ 40 < (ofOrder (Characters 3) 16).card := by
   have hp : (Q 3+1).Prime := by change Nat.Prime 17; norm_num
   have h := higher_order 3 2 hp (by norm_num)
   have hh := total 3 hp
-  norm_num [Q] at h hh
+  have he := printed_estimate_eq 3 hp
+  norm_num [Q] at h hh he
   omega
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicExample

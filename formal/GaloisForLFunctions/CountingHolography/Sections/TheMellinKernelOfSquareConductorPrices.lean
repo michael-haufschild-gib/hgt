@@ -2,6 +2,7 @@ import GaloisForLFunctions.CountingHolography.Sections.ThePrimeExponentsOnTheSqu
 import GaloisForLFunctions.CountingHolography.Sections.CriticalZerosSeparateThePrimeProfileFromFactorialKernels
 import Mathlib.NumberTheory.LSeries.Deriv
 import GaloisForLFunctions.RHTower.PrimeShiftResidueClosability
+import GaloisForLFunctions.RHTower.PrimeCountingLiLandau
 import GaloisForLFunctions.RHTower.BVPrimeWindowReciprocalReflection
 import GaloisForLFunctions.CountingHolography.Sections.TheLogarithmicMomentOfTheSquarePrimeProfile
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
@@ -442,11 +443,8 @@ its prime profile through the same real function. -/
 def squareValuationReadingError (g : ℝ → ℝ) (n : ℕ) : ℂ :=
   ((∑ p ∈ S n, (g (deningerRatExp (q n) p:ℝ)-g (diagonalPrimeProfile n p))*vonMangoldt p : ℝ):ℂ)
 
-/-- Every Lipschitz reading has holomorphic Dirichlet error throughout
-the half-plane to the right of three. This applies separately to the
-logarithms of the reduced numerator, denominator and their ratio. -/
-theorem analytic_squareValuationReadingError {g : ℝ → ℝ} {K : ℝ ≥ 0} (hg : LipschitzWith K g) :
-    AnalyticOnNhd ℂ (LSeries (squareValuationReadingError g)) {s : ℂ | 3 < s.re} := by
+private theorem reading_abscissa {g : ℝ → ℝ} {K : ℝ≥0} (hg : LipschitzWith K g) :
+    LSeries.abscissaOfAbsConv (squareValuationReadingError g) ≤ (3:EReal) := by
   obtain ⟨C,hC,h⟩ := diagonal_prime_exponent_profile_error
   have hbound (n : ℕ) (hn : n≠0) : ‖squareValuationReadingError g n‖ ≤ ((K:ℝ)*C)*(n:ℝ)^2 := by
     rw [squareValuationReadingError,Complex.norm_real,Real.norm_eq_abs]
@@ -462,6 +460,9 @@ theorem analytic_squareValuationReadingError {g : ℝ → ℝ} {K : ℝ ≥ 0} (
     (x := 2) ⟨K*C,fun n hn => by simpa only [Real.rpow_two] using hbound n hn⟩
   convert hab using 1 <;> norm_num
 
+/-- Every Lipschitz reading has holomorphic Dirichlet error throughout
+the half-plane to the right of three. This applies separately to the
+logarithms of the reduced numerator, denominator and their ratio. -/
 theorem analytic_squareValuationReadingError {g : ℝ → ℝ} {K : ℝ≥0} (hg : LipschitzWith K g) :
     AnalyticOnNhd ℂ (LSeries (squareValuationReadingError g)) {s : ℂ | 3 < s.re} :=
   fun s hs => LSeries_analyticOnNhd _ s ((reading_abscissa hg).trans_lt (by exact_mod_cast hs : (3:EReal) < (s.re:EReal)))
@@ -507,12 +508,13 @@ private theorem prime_mesh_profile_sum {n : ℕ} (hn : 0 < n) :
       (fun k hk hp => hk (by simp [g,hp]))
     calc _ = ∑' p : Nat.Primes, g p.val := tsum_congr fun p => (if_pos p.property).symm
       _ = ∑' k, g k := h
-      _ = _ := tsum_eq_sum fun k hk => by
+      _ = ∑ k ∈ I.filter Nat.Prime, g k := tsum_eq_sum fun k hk => by
         by_cases hp : k.Prime
         · have ho : k ∉ I := fun h => hk (mem_filter.mpr ⟨h,hp⟩)
           simp only [g,if_pos hp]
           exact not_ne_iff.mp fun h => ho (mesh_support W n k h)
         · simp [g,hp]
+      _ = _ := sum_congr rfl fun k hk => if_pos (mem_filter.mp hk).2
   let b := fun k : ℕ => Real.log k*
     (squareLogProfile (Real.log ((k:ℝ)/(n:ℝ)^2))/Real.sqrt ((k:ℝ)/(n:ℝ)^2))
   have hwindow : (∑' p : Nat.Primes, b p.val)=∑ k ∈ S n, b k := by
@@ -631,5 +633,54 @@ theorem squareConductorContinuation_zero_residue {ρ : ℂ} (hζ : riemannZeta �
   rw [heq] at hh
   refine hh.congr fun s => ?_
   dsimp only [Function.comp_apply,z,c,squareConductorContinuation,logDeriv_apply]; ring
+
+private theorem squareMellin_one : mellin squarePrimeWeight 1 = 0 := by
+  rw [mellin_squarePrimeWeight_formula]
+  have hl : (Real.log 4:ℝ) = 2*Real.log 2 := by rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]; norm_num
+  have he : ((1:ℂ)-1/2)*(Real.log 4:ℝ) = (Real.log 2:ℝ) := by rw [hl]; push_cast; ring
+  rw [he,← Complex.ofReal_exp,Real.exp_log (by norm_num : (0:ℝ)<2)]
+  norm_num
+
+/-- Analytic representative at the real polar point. The divided difference
+of the Mellin weight cancels the simple pole of the logarithmic derivative. -/
+def squarePriceRegularContinuation (s : ℂ) :=
+  let z := s/2-1
+  dslope (mellin squarePrimeWeight) 1 z -
+    mellin squarePrimeWeight z * logDeriv zetaResidueUnit z + squareConductorAnalyticRemainder s
+
+theorem squarePriceRegularContinuation_eq {s : ℂ} (h : s/2-1 ≠ 1)
+    (hu : zetaResidueUnit (s/2-1) ≠ 0) :
+    squarePriceRegularContinuation s = squareConductorContinuation s := by
+  let z := s/2-1
+  have hlog := logDeriv_zeta_eq h hu
+  unfold squarePriceRegularContinuation squareConductorContinuation
+  rw [dslope_of_ne _ h,slope_def_field,squareMellin_one,sub_zero]
+  rw [show -deriv riemannZeta (s/2-1)/riemannZeta (s/2-1) = -logDeriv riemannZeta (s/2-1) by
+    simp only [logDeriv_apply,neg_div]]
+  rw [hlog]; ring
+
+theorem analyticAt_squarePriceRegularContinuation {s : ℂ} (hs : 3 < s.re)
+    (hunit : zetaResidueUnit (s/2-1) ≠ 0) : AnalyticAt ℂ squarePriceRegularContinuation s := by
+  let z := fun s : ℂ => s/2-1
+  have hz : AnalyticAt ℂ z s := by dsimp only [z]; fun_prop
+  have hM : AnalyticAt ℂ (mellin squarePrimeWeight) (z s) :=
+    (differentiable_mellin_squarePrimeWeight.differentiableOn.analyticOnNhd Set.isOpen_univ) _ (Set.mem_univ _)
+  have hd : Differentiable ℂ (dslope (mellin squarePrimeWeight) 1) :=
+    differentiableOn_univ.mp ((Complex.differentiableOn_dslope (Filter.univ_mem : Set.univ ∈ 𝓝 (1:ℂ))).mpr
+      differentiable_mellin_squarePrimeWeight.differentiableOn)
+  have hd' := (hd.differentiableOn.analyticOnNhd Set.isOpen_univ) (z s) (Set.mem_univ _)
+  have hu := analyticAt_zetaResidueUnit (z s)
+  have hder : AnalyticAt ℂ (logDeriv zetaResidueUnit) (z s) := hu.deriv.div hu hunit
+  exact ((hd'.comp hz).sub ((hM.comp hz).mul (hder.comp hz))).add (analytic_squareConductorAnalyticRemainder s hs)
+
+/-- The representative is analytic at every real point greater than three,
+including the cancelled pole at four. -/
+theorem analyticAt_squarePriceRegularContinuation_real {t : ℝ} (ht : 3 < t) :
+    AnalyticAt ℂ squarePriceRegularContinuation (t:ℂ) := by
+  obtain ⟨r,hr,he⟩ := exists_zetaResidueUnit_ofReal_eq_pos (show 0 < t/2-1 by linarith only [ht])
+  apply analyticAt_squarePriceRegularContinuation (by simpa only [Complex.ofReal_re] using ht)
+  have hz : (t:ℂ)/2-1 = ((t/2-1:ℝ):ℂ) := by push_cast; rfl
+  rw [hz,he]
+  exact Complex.ofReal_ne_zero.mpr hr.ne'
 
 end GaloisForLFunctions.CountingHolography.Sections

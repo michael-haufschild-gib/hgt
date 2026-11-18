@@ -1,6 +1,6 @@
 import GaloisForLFunctions.CountingHolography.Sections.TheThetaMeanOfTheUnweightedSquarePrefix
 import GaloisForLFunctions.CountingHolography.Sections.VariationOfTheSignedSquareGeneratorReading
-import GaloisForLFunctions.CountingHolography.Sections.TheSignedProductOverSquareConductors
+import GaloisForLFunctions.CountingHolography.Sections.SquareGeneratorPrefix
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PrimeLogarithmicWindows
 
 /-!

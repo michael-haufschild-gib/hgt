@@ -53,16 +53,16 @@ private theorem state_translationCost {W₀ : ℝ} (hW : 0 < W₀)
 
 private theorem bin_slice_bound {g : ℝ → ℝ} (hg : Integrable g) (v l w : ℝ) :
     (∫ t : ℝ, |w*g (t-l)-g (t-v)|) ≤
-      |w-1|*(∫ u, |g u|)+translationCost g (l-v) := by
+      |w-1| * (∫ u, |g u|)+translationCost g (l-v) := by
   have h1 : Integrable (fun t : ℝ => g (t-l)) := hg.comp_sub_right l
   have h2 : Integrable (fun t : ℝ => g (t-v)) := hg.comp_sub_right v
   have h := integral_mono ((h1.const_mul w).sub h2).abs
     ((h1.abs.const_mul |w-1|).add (h1.sub h2).abs) (fun t => by
-      change |w*g (t-l)-g (t-v)| ≤ |w-1|*|g (t-l)|+|g (t-l)-g (t-v)|
+      change |w*g (t-l)-g (t-v)| ≤ |w-1| * |g (t-l)| + |g (t-l)-g (t-v)|
       rw [← abs_mul,show w*g (t-l)-g (t-v)=(w-1)*g (t-l)+(g (t-l)-g (t-v)) by ring]
       exact abs_add_le ..)
   refine h.trans_eq ?_
-  change (∫ t : ℝ, |w-1|*|g (t-l)|+|g (t-l)-g (t-v)|) = _
+  change (∫ t : ℝ, |w-1| * |g (t-l)| + |g (t-l)-g (t-v)|) = _
   rw [integral_add (h1.abs.const_mul _) (h1.sub h2).abs,integral_const_mul]
   have tr (f : ℝ → ℝ) : (∫ t : ℝ, f (t-l)) = ∫ t, f t := by
     simpa only [sub_eq_add_neg] using integral_add_right_eq_self f (-l)
@@ -183,9 +183,9 @@ private theorem integrated_square_error {g : ℝ → ℝ} (hc : Continuous g) (h
     change _ = (∫ v, squareBinWeight v*g (t-squareBinLocation v)-g (t-v))/2
     linarith only [hsum]
   refine ⟨(hiG.div_const 2).integrableOn.congr heq.symm,?_⟩
-  calc _ = ∫ t in Ioi (V+1), |G t|/2 := integral_congr_ae (heq.mono fun t ht => by
+  calc _ = ∫ t in Ioi (V+1), |G t| / 2 := integral_congr_ae (heq.mono fun t ht => by
                rw [ht,abs_div,abs_of_pos (by norm_num : (0:ℝ)<2)])
-    _ ≤ ∫ t, |G t|/2 := setIntegral_le_integral (hiG.abs.div_const 2)
+    _ ≤ ∫ t, |G t| / 2 := setIntegral_le_integral (hiG.abs.div_const 2)
              (Eventually.of_forall fun t => div_nonneg (abs_nonneg _) (by norm_num))
     _ = (∫ t, |G t|)/2 := by rw [integral_div]
     _ ≤ _ := (div_le_div_of_nonneg_right hglobal (by norm_num : (0:ℝ) ≤ 2)).trans_eq (by ring)
@@ -280,7 +280,7 @@ theorem riemannHypothesis_or_integrated_properPower_error : RiemannHypothesis �
     rw [integral_const_mul,integral_exp_mul_Ioi (by norm_num : (-1/40:ℝ)<0)]
     have hmono : Real.exp ((-1/40)*(V+1)) ≤ Real.exp ((-1/40)*V) := Real.exp_le_exp.mpr (by linarith only)
     linarith only [mul_le_mul_of_nonneg_left hmono hM]
-  calc (∫ t in Ioi (V+1), |E t|) ≤ ∫ t in Ioi (V+1), |S t|+|H t| :=
+  calc (∫ t in Ioi (V+1), |E t|) ≤ ∫ t in Ioi (V+1), |S t| + |H t| :=
          integral_mono_ae heI.abs (hv.1.abs.add hInt.abs) (hEq.mono fun t he => by
            rw [he]; exact abs_add_le ..)
     _ ≤ _ := by
@@ -290,13 +290,13 @@ theorem riemannHypothesis_or_integrated_properPower_error : RiemannHypothesis �
 #print axioms riemannHypothesis_or_integrated_properPower_error
 
 private theorem two_sign_distances (x y : ℝ) :
-    |max x 0-max y 0|+|max (-x) 0-max (-y) 0|=|x-y| := by
+    |max x 0-max y 0| + |max (-x) 0-max (-y) 0|=|x-y| := by
   have parts_sub (z : ℝ) : max z 0-max (-z) 0=z := by
     rcases le_or_gt 0 z with hz | hz
     · rw [max_eq_left hz,max_eq_right (neg_nonpos.mpr hz),sub_zero]
     · rw [max_eq_right hz.le,max_eq_left (neg_nonneg.mpr hz.le),zero_sub,neg_neg]
   have ordered (a b : ℝ) (h : a ≤ b) :
-      |max a 0-max b 0|+|max (-a) 0-max (-b) 0|=|a-b| := by
+      |max a 0-max b 0| + |max (-a) 0-max (-b) 0|=|a-b| := by
     rw [abs_of_nonpos (sub_nonpos.mpr (max_le_max_right h 0)),
       abs_of_nonneg (sub_nonneg.mpr (max_le_max_right (neg_le_neg h) 0)),
       abs_of_nonpos (sub_nonpos.mpr h)]
@@ -318,7 +318,7 @@ theorem riemannHypothesis_or_ordinary_sign_transfer : RiemannHypothesis ∨
         let P := ordinaryPrimePolarError Φ
         let M := fun t : ℝ => (∑' n : ℕ, ArithmeticFunction.vonMangoldt n*continuousIntegerAtom Φ n t)-
           Real.exp (t/2)*A-(∫ u, Φ u)/2
-        let D := fun t : ℝ => |max (P t) 0-max (M t) 0|+|max (-P t) 0-max (-M t) 0|
+        let D := fun t : ℝ => |max (P t) 0-max (M t) 0| + |max (-P t) 0-max (-M t) 0|
         IntegrableOn D (Ioi (V+1)) ∧ (∫ t in Ioi (V+1), D t) ≤ B*Real.exp ((-1/40)*V) := by
   rcases riemannHypothesis_or_integrated_properPower_error with hr | ⟨W₀,F,Φ,hW,ht,hF,hΦ,he,h⟩
   · exact Or.inl hr
@@ -333,7 +333,7 @@ theorem riemannHypothesis_or_ordinary_sign_transfer : RiemannHypothesis ∨
   let P := ordinaryPrimePolarError Φ
   let M := fun t : ℝ => (∑' n : ℕ, ArithmeticFunction.vonMangoldt n*continuousIntegerAtom Φ n t)-
     Real.exp (t/2)*A-(∫ u, Φ u)/2
-  have hd (t : ℝ) : |max (P t) 0-max (M t) 0|+|max (-P t) 0-max (-M t) 0|=
+  have hd (t : ℝ) : |max (P t) 0-max (M t) 0| + |max (-P t) 0-max (-M t) 0|=
       |Q t-(∫ u, Φ u)/2| := by
     rw [two_sign_distances]
     have hs : P t-M t= -(Q t-(∫ u, Φ u)/2) := by
@@ -341,7 +341,7 @@ theorem riemannHypothesis_or_ordinary_sign_transfer : RiemannHypothesis ∨
       rw [mangoldt_atom_sum_split hb t]
       ring
     rw [hs,abs_neg]
-  change IntegrableOn (fun t => |max (P t) 0-max (M t) 0|+|max (-P t) 0-max (-M t) 0|) _ ∧ _
+  change IntegrableOn (fun t => |max (P t) 0-max (M t) 0| + |max (-P t) 0-max (-M t) 0|) _ ∧ _
   simp_rw [hd]
   exact ⟨hv.1.abs,hv.2⟩
 

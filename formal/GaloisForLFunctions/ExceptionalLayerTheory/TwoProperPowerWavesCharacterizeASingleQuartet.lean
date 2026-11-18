@@ -32,9 +32,10 @@ private theorem B_mono {x y : ℝ} (hx : 1 ≤ x) (hxy : x ≤ y) : B x ≤ B y 
     (by linarith only [Real.log_nonneg (hx.trans hxy)])).mpr (add_le_add (le_refl 1) hl))
     (sq_nonneg _) (Real.sqrt_nonneg _)
 
-private theorem T_in_interval {y : ℝ} (hy : 1 ≤ y) : 1 ≤ T y ∧ T y ≤ y :=
-  ⟨Real.one_le_rpow hy (by norm_num),by simpa only [Real.rpow_one] using
-    Real.rpow_le_rpow_of_exponent_le hy (by norm_num : (2/3:ℝ) ≤ 1)⟩
+private theorem T_in_interval {y : ℝ} (hy : 1 ≤ y) : 1 ≤ T y ∧ T y ≤ y := by
+  constructor
+  · exact Real.one_le_rpow hy (by norm_num)
+  · simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le hy (by norm_num : (2/3:ℝ) ≤ 1)
 
 private theorem two_power_rows {x : ℝ} (hx : 0≤x) :
     0≤properPowerDiscrepancy x-(E (x^(1/2:ℝ))+E (x^(1/3:ℝ))) ∧
@@ -145,7 +146,7 @@ theorem hasSingleOffLineQuartet_iff_two_properPower_waves {ρ : ℂ} (hh : 1/2 <
         simpa only [E,quartetPrimeWaveTerm,sub_neg_eq_add,mul_assoc] using h y h16
       have hb : (Real.log y)^2 ≤ (1+Real.log y)^2 :=
         (sq_le_sq₀ (Real.log_nonneg hy) (by linarith only [Real.log_nonneg hy])).mpr (by linarith)
-      have hs := mul_le_mul_of_nonneg_left hb (Real.sqrt_nonneg _)
+      have hs := mul_le_mul_of_nonneg_left hb (Real.sqrt_nonneg y)
       have hcoeff : K ≤ C := by dsimp only [C]; linarith only [le_abs_self K,hA]
       apply he.trans
       apply (mul_le_mul_of_nonneg_right hcoeff (mul_nonneg (Real.sqrt_nonneg _) (sq_nonneg _))).trans
@@ -188,10 +189,11 @@ theorem singleQuartet_properPower_modes {ρ : ℂ} (hq : HasSingleOffLineQuartet
   simp only [quartetPrimeWaveTerm,← Complex.cpow_mul_ofReal_nonneg hx0] at he
   push_cast at he
   rw [show (1/2:ℂ)*ρ=ρ/2 by ring,show (1/3:ℂ)*ρ=ρ/3 by ring] at he
-  rw [Complex.add_re,mul_add,← sub_neg_eq_add]
-  convert he.trans (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left
+  simp only [← neg_add,sub_neg_eq_add,← mul_add] at he
+  rw [Complex.add_re]
+  exact he.trans (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left
     ((sq_le_sq₀ (by linarith only [hlog]) (by linarith only [hlog])).mpr
       (by linarith only [hlog] : 1+(1/2:ℝ)*Real.log x ≤ 1+Real.log x))
-    (Real.rpow_nonneg hx0 (1/4))) hK) using 2 <;> ring
+    (Real.rpow_nonneg hx0 (1/4))) hK)
 
 end GaloisForLFunctions.ExceptionalLayerTheory

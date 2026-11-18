@@ -1,3 +1,4 @@
+import GaloisForLFunctions.CountingHolography.Sections.SquareGeneratorPrefix
 import GaloisForLFunctions.CountingHolography.Sections.SparseSquareConductorsDetectTheZeroWidth
 import GaloisForLFunctions.CountingHolography.Sections.TheDyadicPrimeWeightOfSquareConductors
 import Mathlib.NumberTheory.LSeries.Convergence
@@ -71,18 +72,6 @@ private theorem power_gaps_of_signed_prefix (f : ℕ → ℝ) {θ r C : ℝ}
   linarith only [hax,hjlow]
 
 private def price (n : ℕ) := Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n):ℝ)
-
-/-- Multiplication is taken in the rationals, so prime factors cancel
-across distinct conductors before the comparison is made. -/
-def squareGeneratorPrefix (N : ℕ) : ℚ :=
-  ∏ n ∈ Ioc 0 N, ordinaryPrimeGenerator (n • successorSquareTriple n)
-
-theorem squareGeneratorPrefix_pos (N : ℕ) : 0 < squareGeneratorPrefix N := by
-  apply prod_pos
-  intro n _
-  apply prod_pos
-  intro k _
-  exact zpow_pos (Nat.cast_pos.mpr (contactBase_pos k)) _
 
 private theorem log_prefix (N : ℕ) : Real.log (squareGeneratorPrefix N:ℝ)=prefix price N := by
   unfold squareGeneratorPrefix prefix price

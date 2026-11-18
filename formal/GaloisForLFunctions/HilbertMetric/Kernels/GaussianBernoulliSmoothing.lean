@@ -11,7 +11,7 @@ The unchanged grid supplies an explicit lower bound on every minor.
 
 namespace GaloisForLFunctions.HilbertMetric
 open Finset Matrix Filter Topology
-open scoped Classical
+open scoped Classical NNReal
 noncomputable section
 
 /-- A two-sided Toeplitz sampling matrix, including independently translated grids. -/
@@ -40,10 +40,10 @@ theorem bernoulliStep_minor_ge {a : ℤ → ℝ} (ha : StrictLatticeMinors a) (w
   let A := latticeSample a x y
   let B : Matrix (Fin n) (Fin n) ℝ := of fun i j => (w:ℝ)*a (x i-y j-1)
   have hm : latticeSample (bernoulliStep w a) x y = A+B := rfl
-  have hex : (A+B).det = ∑ S : Finset (Fin n), (S.piecewise A B : Matrix _ _ ℝ).det :=
+  have hex : (A+B).det = ∑ S : Finset (Fin n), Matrix.det (S.piecewise A B) :=
     detRowAlternating.map_add_univ A B
   rw [hm,hex]
-  have ht (S : Finset (Fin n)) : 0 ≤ (S.piecewise A B : Matrix _ _ ℝ).det := by
+  have ht (S : Finset (Fin n)) : 0 ≤ Matrix.det (S.piecewise A B) := by
     let z i := if i ∈ S then x i else x i-1
     have hz : Monotone z := by
       intro i j hij
@@ -94,7 +94,7 @@ theorem gaussianBernoulli_limit (ws : List ℝ≥0) (k : ℤ) :
   | nil =>
     have h : (0:ℝ)^(k.natAbs^2) = (if k = 0 then 1 else 0) := by
       by_cases hk : k = 0 <;> simp [hk]
-    rw [← h]
+    simp only [bernoulliProduct, ← h]
     exact (continuous_id.pow _).tendsto _
   | cons w ws ih =>
     exact (ih k).add (tendsto_const_nhds.mul (ih (k-1)))
@@ -114,15 +114,20 @@ private theorem product_error (ws : List ℝ≥0) {f g : ℤ → ℝ} {M : ℝ}
     obtain ⟨hc,hd⟩ := ih (k-1)
     change 0 ≤ _ ∧ _ ≤ M*((1+(w:ℝ))*bernoulliMass ws)
     dsimp only [bernoulliProduct,bernoulliStep]
-    constructor
-    · nlinarith only [ha,mul_nonneg w.property hc]
-    · nlinarith only [hb,mul_le_mul_of_nonneg_left hd w.property]
+    rw [show bernoulliProduct ws f k + (w:ℝ)*bernoulliProduct ws f (k-1) -
+        (bernoulliProduct ws g k + (w:ℝ)*bernoulliProduct ws g (k-1)) =
+        (bernoulliProduct ws f k - bernoulliProduct ws g k) +
+        (w:ℝ)*(bernoulliProduct ws f (k-1)-bernoulliProduct ws g (k-1)) by ring]
+    refine ⟨add_nonneg ha (mul_nonneg w.property hc),?_⟩
+    apply (add_le_add hb (mul_le_mul_of_nonneg_left hd (show 0 ≤ (w:ℝ) from w.property))).trans_eq
+    change M*bernoulliMass ws+(w:ℝ)*(M*bernoulliMass ws) = M*((1+(w:ℝ))*bernoulliMass ws)
+    ring
 
 private theorem product_mask (S : Finset ℤ) (a : ℤ → ℝ) (ws : List ℝ≥0) (k : ℤ) :
     bernoulliProduct ws (fun j => if j ∈ S then a j else 0) k =
       ∑ j ∈ S, a j * bernoulliProduct ws (fun t => if t = 0 then 1 else 0) (k-j) := by
   induction ws generalizing k with
-  | nil => simp [bernoulliProduct,mul_ite,sub_eq_zero,eq_comm]
+  | nil => simp [bernoulliProduct,mul_ite,sub_eq_zero]
   | cons w ws ih =>
     change bernoulliProduct ws _ k + (w:ℝ)*bernoulliProduct ws _ (k-1) = _
     rw [ih k,ih (k-1),mul_sum,← sum_add_distrib]
@@ -147,7 +152,8 @@ theorem gaussianBernoulli_shell_error (q : Set.Icc (0:ℝ) 1) (r : ℕ) (ws : Li
   · rw [if_neg hj,sub_zero]
     have hdist : r+1 ≤ j.natAbs := by
       rw [mem_Icc] at hj
-      cases j <;> simp_all <;> omega
+      cases j <;> simp_all
+      omega
     exact ⟨pow_nonneg q.property.1 _,pow_le_pow_of_le_one q.property.1 q.property.2
       (Nat.pow_le_pow_left hdist 2)⟩
 
@@ -161,7 +167,7 @@ theorem gaussian_shell_error_attained (q : Set.Icc (0:ℝ) 1) (r : ℕ) :
   dsimp only
   rw [← product_mask]
   have ho : ((r+1:ℕ):ℤ) ∉ Icc (-(r:ℤ)) r := by simp
-  simp [bernoulliProduct,ho]
+  simp only [bernoulliProduct,if_neg ho,sub_zero,Int.natAbs_natCast]
 
 #print axioms gaussianBernoulli_strict
 #print axioms gaussianBernoulli_limit

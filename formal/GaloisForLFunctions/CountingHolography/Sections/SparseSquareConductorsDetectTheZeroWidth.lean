@@ -1,5 +1,5 @@
 import GaloisForLFunctions.CountingHolography.Sections.OneMultiplicityPerSquareConductor
-import GaloisForLFunctions.CountingHolography.Sections.UnitMultiplicityOnThePoleHyperplane
+import GaloisForLFunctions.CountingHolography.Sections.VariationOfTheSignedSquareGeneratorReading
 
 /-! # Sparse square conductors detect every zero strip
 
@@ -15,59 +15,42 @@ open Filter Finset Topology SurfaceOfSpecZ SquareRootThreshold Zeta23 Arithmetic
 
 private def degree (n : ℕ) := integerProbe _ (successorSquareTriple n)
 private def X (n : ℕ) := (n:ℝ)+1
-private def high (z : ℝ) := 2*z+1
-
+/-- Both long lags have the same logarithmic displacement. The short
+remainder has a finite limit, hence its difference is uniformly bounded. -/
 private theorem degree_increment : ∃ C D : ℝ, 0 ≤ C ∧ 0 ≤ D ∧ ∀ {d n : ℕ}, 0 < d → d ≤ n →
     |degree n-degree d| ≤ D+C*(Real.log n-Real.log d)*Real.exp ((2*zetaZeroWidth)*Real.log n) := by
   obtain ⟨L,hL,hinc⟩ := realSplineTrace_increment
-  obtain ⟨B,hB,hrem⟩ := successorSquare_degree_long_lags
+  obtain ⟨B,hB⟩ := squareLongTrace_integer_degree_limit.abs.bddAbove_range
   let w := zetaZeroWidth
-  let K := Real.exp ((2*w)*Real.log 3)
-  refine ⟨(8+4*K)*L,2*B,by dsimp only [K]; positivity,by positivity,fun {d n} hd hdn => ?_⟩
-  have hd₁ : 1 ≤ (d:ℝ) := by exact_mod_cast hd
-  have hdn' : (d:ℝ) ≤ n := by exact_mod_cast hdn
-  have hn₁ := hd₁.trans hdn'
-  have hd₀ := zero_lt_one.trans_le hd₁
-  have hn₀ := hd₀.trans_le hdn'
-  have hl := Real.log_le_log hd₀ hdn'
-  have hdiff := sub_nonneg.mpr hl
-  have ha := hinc (2*Real.log d) (2*Real.log n) (mul_nonneg two_pos.le (Real.log_nonneg hd₁))
-    (mul_le_mul_of_nonneg_left hl two_pos.le)
-  have hhd : 1 ≤ high d := by dsimp only [high]; linarith
-  have hh : high d ≤ high n := by dsimp only [high]; linarith only [hdn']
-  have hd' := zero_lt_one.trans_le hhd
-  have hn' := hd'.trans_le hh
-  have hlh := Real.log_le_log hd' hh
-  have hb := hinc (2*Real.log (high d)) (2*Real.log (high n)) (mul_nonneg two_pos.le (Real.log_nonneg hhd))
-    (mul_le_mul_of_nonneg_left hlh two_pos.le)
-  have hlog : Real.log (high n)-Real.log (high d) ≤ Real.log n-Real.log d := by
-    rw [← Real.log_div hn'.ne' hd'.ne',← Real.log_div hn₀.ne' hd₀.ne']
-    apply Real.log_le_log (div_pos hn' hd') ((div_le_div_iff₀ hd' hd₀).mpr ?_)
-    dsimp only [high]
-    linarith only [hdn']
-  have hup : Real.log (high n) ≤ Real.log 3+Real.log n := by
-    rw [← Real.log_mul (by norm_num : (3:ℝ)≠0) hn₀.ne']
-    exact Real.log_le_log hn' (by dsimp only [high]; linarith only [hn₁])
-  have he : Real.exp (w*(2*Real.log (high n))) ≤ K*Real.exp ((2*w)*Real.log n) := by
-    dsimp only [K]
-    rw [← Real.exp_add]
-    apply Real.exp_le_exp.mpr
-    linarith only [mul_le_mul_of_nonneg_left hup (mul_nonneg two_pos.le zetaZeroWidth_nonneg)]
-  have he₁ := mul_le_mul (mul_le_mul_of_nonneg_left
-    (show 2*Real.log (high n)-2*Real.log (high d) ≤ 2*(Real.log n-Real.log d) by linarith only [hlog]) hL)
-    he (Real.exp_pos _).le (by positivity : 0 ≤ L*(2*(Real.log n-Real.log d)))
-  have hdrem := abs_le.mp (hrem d hd)
-  have hnrem := abs_le.mp (hrem n (hd.trans_le hdn))
-  change -B ≤ degree d-(4*realSplineTrace (2*Real.log d)-2*realSplineTrace (2*Real.log ((2*d+1:ℕ):ℝ))) ∧ _ at hdrem
-  change -B ≤ degree n-(4*realSplineTrace (2*Real.log n)-2*realSplineTrace (2*Real.log ((2*n+1:ℕ):ℝ))) ∧ _ at hnrem
-  push_cast at hdrem hnrem
-  change |realSplineTrace (2*Real.log (high n))-realSplineTrace (2*Real.log (high d))| ≤ _ at hb
-  have ha' := abs_le.mp ha
-  have hb' := abs_le.mp (hb.trans he₁)
-  dsimp only [high] at hb'
-  rw [show w*(2*Real.log n)=(2*w)*Real.log n by ring] at ha'
-  rw [abs_le]
-  constructor <;> linarith only [hdrem.1,hdrem.2,hnrem.1,hnrem.2,ha'.1,ha'.2,hb'.1,hb'.2]
+  let a := Real.log 4
+  let K := Real.exp (w*a)
+  refine ⟨(8+4*K)*L,2*|B|,by dsimp only [K]; positivity,by positivity,fun {d n} hd hdn => ?_⟩
+  let u := 2*Real.log d
+  let v := 2*Real.log n
+  have hu : 0 ≤ u := mul_nonneg two_pos.le (Real.log_natCast_nonneg d)
+  have huv : u ≤ v := mul_le_mul_of_nonneg_left
+    (Real.log_le_log (Nat.cast_pos.mpr hd) (Nat.cast_le.mpr hdn)) two_pos.le
+  have h₁ := abs_le.mp (hinc u v hu huv)
+  have h₂ := abs_le.mp (hinc (u+a) (v+a) (add_nonneg hu (Real.log_nonneg (by norm_num : (1:ℝ) ≤ 4)))
+    (add_le_add huv le_rfl))
+  have he : Real.exp (zetaZeroWidth*(v+a))=Real.exp (w*v)*K := by rw [mul_add,Real.exp_add]
+  rw [he,add_sub_add_right_eq_sub] at h₂
+  have hr (k : ℕ) : |degree k-squareLongTrace (2*Real.log k)| ≤ |B| :=
+    (hB ⟨k,rfl⟩).trans (le_abs_self B)
+  have hn := abs_le.mp (hr n)
+  have hd' := abs_le.mp (hr d)
+  have he' : Real.exp ((2*zetaZeroWidth)*Real.log n)=Real.exp (w*v) := by
+    congr 1; dsimp only [w,v]; ring
+  rw [he',abs_le]
+  have huv' : v-u=2*(Real.log n-Real.log d) := by dsimp only [u,v]; ring
+  rw [huv'] at h₁ h₂
+  change -|B| ≤ degree n-(4*realSplineTrace v-2*realSplineTrace (v+a)) ∧
+    degree n-(4*realSplineTrace v-2*realSplineTrace (v+a)) ≤ |B| at hn
+  change -|B| ≤ degree d-(4*realSplineTrace u-2*realSplineTrace (u+a)) ∧
+    degree d-(4*realSplineTrace u-2*realSplineTrace (u+a)) ≤ |B| at hd'
+  change -(L*(2*(Real.log n-Real.log d))*Real.exp (w*v)) ≤ realSplineTrace v-realSplineTrace u ∧
+    realSplineTrace v-realSplineTrace u ≤ L*(2*(Real.log n-Real.log d))*Real.exp (w*v) at h₁
+  constructor <;> linarith only [hn.1,hn.2,hd'.1,hd'.2,h₁.1,h₁.2,h₂.1,h₂.2]
 
 private theorem extend_lower {r A : ℝ} (hr : 0 ≤ r)
     (h : ∀ᶠ n : ℕ in atTop, -(A*(X n)^r) ≤ degree n) :
@@ -131,7 +114,7 @@ theorem zetaZeroWidth_le_iff_sparse_square_degrees {θ s : ℝ} {E : Set ℕ}
         _ ≤ _ := Real.rpow_le_rpow hn₀.le hX (mul_nonneg two_pos.le ht)
     have hdX : 0 < X d := by dsimp only [X]; positivity
     have hA₁ := mul_le_mul (le_abs_self A)
-      ((Real.rpow_le_rpow hdX.le (add_le_add_right hdn 1) (mul_nonneg two_pos.le hs)).trans
+      ((Real.rpow_le_rpow hdX.le (add_le_add hdn (le_refl (1:ℝ))) (mul_nonneg two_pos.le hs)).trans
         (Real.rpow_le_rpow_of_exponent_le hX₁ (mul_le_mul_of_nonneg_left hst two_pos.le)))
       (Real.rpow_nonneg hdX.le _) (abs_nonneg A)
     have hdlo : -(A*(X d)^(2*s)) ≤ degree d := hA d hd
@@ -145,24 +128,26 @@ theorem zetaZeroWidth_le_of_sparse_square_logs {θ s A : ℝ} {E : Set ℕ}
     (hθ : θ < 1) (hE : PowGaps θ E) (hs : 0 ≤ s) (hs' : s < 1/2) (hA : 0 ≤ A)
     (hfit : ∀ n ∈ E, Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n):ℝ) ≤
       A*(n:ℝ)^(2+2*s)) : zetaZeroWidth ≤ s := by
-  obtain ⟨D,hD,herr⟩ := successorSquare_degree_window_error
+  obtain ⟨C,hC,he⟩ := successorSquare_contact_error
+  obtain ⟨D,hD,hd⟩ := successorSquare_contact_degree
   apply (zetaZeroWidth_le_iff_sparse_square_degrees hθ hE hs hs').mpr
-  refine ⟨A+4*D,fun n hn => ?_⟩
+  refine ⟨A+C+D,fun n hn => ?_⟩
   have hn' := hE.1 n hn
   have hn₁ : (1:ℝ) ≤ n := by exact_mod_cast hn'
   have hn₀ := zero_lt_one.trans_le hn₁
-  have hs₀ := mul_nonneg two_pos.le hs
   have hlog := hfit n hn
   rw [Real.rpow_add hn₀,Real.rpow_two] at hlog
-  have hd := (abs_le.mp (herr hn' hn' (by linarith only [hn₁]))).1
-  have hsq := pow_le_pow_left₀ (by positivity : 0 ≤ (n:ℝ)+1)
-    (by linarith only [hn₁] : (n:ℝ)+1 ≤ 2*n) 2
-  have hp := Real.rpow_le_rpow hn₀.le (by linarith : (n:ℝ) ≤ n+1) hs₀
-  have hterm := mul_le_mul_of_nonneg_left hp (mul_nonneg hA (sq_nonneg (n:ℝ)))
-  have hlarge := (Real.one_le_rpow (by linarith only [hn₁] : 1 ≤ (n:ℝ)+1) hs₀)
+  have hprice := (abs_le.mp (he hn' (le_refl n))).1
+  have hdeg := mul_le_mul_of_nonneg_left (abs_le.mp (hd hn')).1 (sq_nonneg (n:ℝ))
+  let g := ((n:ℝ)+1)^(2*s)
+  have hg : 1 ≤ g := Real.one_le_rpow (by linarith only [hn₁]) (mul_nonneg two_pos.le hs)
+  have hp : (n:ℝ)^(2*s) ≤ g := Real.rpow_le_rpow hn₀.le (le_add_of_nonneg_right zero_le_one)
+    (mul_nonneg two_pos.le hs)
+  have ht := mul_le_mul_of_nonneg_left hp (mul_nonneg hA (sq_nonneg (n:ℝ)))
+  have hallow := le_mul_of_one_le_right (mul_nonneg (add_nonneg hC hD) (sq_nonneg (n:ℝ))) hg
+  change -((A+C+D)*g) ≤ integerProbe _ (successorSquareTriple n)
   apply (mul_le_mul_iff_right₀ (sq_pos_of_pos hn₀)).mp
-  linarith only [hd,hlog,hterm,mul_le_mul_of_nonneg_left hsq hD,
-    le_mul_of_one_le_right (mul_nonneg hD (sq_nonneg (n:ℝ))) hlarge]
+  linarith only [hprice,hdeg,hlog,ht,hallow]
 
 /-- The actual comparison of two positive rationals detects RH on any
 conductor set with a power saving in its gaps. -/

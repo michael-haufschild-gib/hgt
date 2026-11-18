@@ -26,12 +26,12 @@ private theorem theta_power_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 1 ≤ 
     (show zeroReSup < (9/10:ℝ) by linarith only [hz])
   obtain ⟨B,hB⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
   refine ⟨C+|B|,add_nonneg hC (abs_nonneg _),fun x hx => ?_⟩
-  have hd : |Chebyshev.theta x-Chebyshev.psi x| ≤ |B|*x^(9/10:ℝ) := by
+  have hd : |Chebyshev.theta x-Chebyshev.psi x| ≤ |B| * x^(9/10:ℝ) := by
     rw [abs_sub_comm,abs_of_nonneg (sub_nonneg.mpr (Chebyshev.theta_le_psi _))]
     exact (hB x).trans (mul_le_mul (le_abs_self _) (by
       rw [Real.sqrt_eq_rpow]
       exact Real.rpow_le_rpow_of_exponent_le hx (by norm_num)) (Real.sqrt_nonneg _) (abs_nonneg _))
-  calc _ ≤ |Chebyshev.theta x-Chebyshev.psi x|+|Chebyshev.psi x-x| := abs_sub_le ..
+  calc _ ≤ |Chebyshev.theta x-Chebyshev.psi x| + |Chebyshev.psi x-x| := abs_sub_le ..
     _ ≤ _ := (add_le_add hd (hψ x hx)).trans_eq (by ring)
 
 private theorem bin_power_error : ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ y : ℝ in atTop,

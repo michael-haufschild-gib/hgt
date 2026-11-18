@@ -10,3 +10,5 @@ $$
 The absolute profile error pays for every misplaced factor. The analogous approximation for $\log V_n$ has exactly the same error. In particular the two products can be separated by prime size at the precision of the RH comparison.
 
 The common cubic leading constant of $\log U_n$ and $\log V_n$ is $4\int_{\tau-b}^{\tau}H(t)e^{t/2}\,dt$. The prime number theorem applies to the continuous compact positive and negative parts of the profile. Each gives twice the positive half moment of $F$; integrating up to $\tau$ and translating by $b$ gives the formula. Controlling the difference between the two prime counts through their common cubic term remains open.
+
+Lean proves the cutoff, exact log errors, quadratic misplaced mass, and both cubic limits in [APrimeCutSeparatesTheSquareProducts](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/APrimeCutSeparatesTheSquareProducts.lean).

@@ -40,8 +40,8 @@ theorem cumulativeWeightMultiplicity_interval {w : ℕ → ℝ} (hw : ∀ i, 0 �
     (hl : (k:ℝ) ≤ w i) (hu : w i ≤ (K:ℝ)) : k ≤ cumulativeWeightMultiplicity w i ∧
       cumulativeWeightMultiplicity w i ≤ K := by
   have hs : prefixWeight w (i+1)=prefixWeight w i+w i := sum_range_succ _ _
-  have ha := Nat.floor_mono (add_le_add_left hl (prefixWeight w i))
-  have hb := Nat.floor_mono (add_le_add_left hu (prefixWeight w i))
+  have ha := Nat.floor_mono (add_le_add (le_refl (prefixWeight w i)) hl)
+  have hb := Nat.floor_mono (add_le_add (le_refl (prefixWeight w i)) hu)
   rw [Nat.floor_add_natCast (prefix_nonneg hw i) k,← hs] at ha
   rw [Nat.floor_add_natCast (prefix_nonneg hw i) K,← hs] at hb
   unfold cumulativeWeightMultiplicity
