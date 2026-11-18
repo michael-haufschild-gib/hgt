@@ -92,6 +92,100 @@ theorem tendsto_degreeForm_moving_integer_dilate {f : ℝ → ℝ} (hf : ContDif
   exact (degreeForm_log_dilate (fun u hu => hs u (hu.imp (fun h₀ => h₀.trans (Real.log_nonneg (by norm_num))) id))
     hK hn.1 hn.2.1 hn.2.2).symm
 
+/-- For two degree indices separated by a factor of at least H², the
+absolute jet kernel is at most 2/H times their product harmonic weight. -/
+private theorem far_jet {m n : ℕ} (hm : 0 < m) {H : ℝ} (hH : 2 ≤ H)
+    (hsep : H^2*m ≤ n) : |levyKernel m n| ≤ (2/H)/((m:ℝ)*n) := by
+  have hm' : 0 < (m:ℝ) := Nat.cast_pos.mpr hm
+  have hH' : 0 < H := lt_of_lt_of_le (by norm_num) hH
+  have h₂ : 2*(m:ℝ) ≤ n := by
+    have hsq := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 2) hH 2
+    linarith only [hsep,mul_le_mul_of_nonneg_right hsq hm'.le,hm']
+  have hn : 0 < (n:ℝ) := by linarith only [h₂,hm']
+  have hdiff : 0 < (n:ℝ)-m := by linarith only [h₂,hm']
+  have hj : jetKernel m n ≤ 2/n := by
+    unfold jetKernel
+    rw [abs_of_nonpos (by linarith only [hdiff] : (m:ℝ)-n ≤ 0),neg_sub]
+    have h₁ : 1/((n:ℝ)-m) ≤ 2/n := (div_le_div_iff₀ hdiff hn).mpr (by linarith only [h₂])
+    have h₂' : 1/((m:ℝ)+n) ≤ 2/n := (div_le_div_iff₀ (add_pos hm' hn) hn).mpr (by linarith only [hm',hn])
+    linarith only [h₁,h₂']
+  have hs : H*(m:ℝ) ≤ Real.sqrt ((m:ℝ)*n) := by
+    apply (Real.le_sqrt (mul_nonneg hH'.le hm'.le) (mul_nonneg hm'.le hn.le)).mpr
+    linarith only [mul_le_mul_of_nonneg_left hsep hm'.le]
+  have hk : 0 ≤ levyKernel m n := by unfold levyKernel jetKernel; positivity
+  rw [abs_of_nonneg hk,levyKernel]
+  calc jetKernel m n/Real.sqrt ((m:ℝ)*n) ≤ (2/(n:ℝ))/(H*m) :=
+          div_le_div₀ (by positivity) hj (mul_pos hH' hm') hs
+    _ = _ := by ring
+
+/-- For two packets with separated sampled supports, their mixed regularized
+jet is bounded by their harmonic sample masses times the inverse square
+root of the separation factor. This estimate is independent of resolution. -/
+theorem degreeForm_separated_mixed_bound (f g : ℝ → ℝ) {L r : ℕ} (hr : 0 < r)
+    {H : ℝ} (hH : 2 ≤ H)
+    (hsep : ∀ i ∈ Ioc r (r+L*r), ∀ j ∈ Ioc r (r+L*r),
+      degreeSample f r i ≠ 0 → degreeSample g r j ≠ 0 → H^2*i ≤ j) :
+    |degreeForm (fun u => f u+g u) L r-degreeForm f L r-degreeForm g L r| ≤
+      (4/H)*(∑ i ∈ Ioc r (r+L*r), |degreeSample f r i| / i)*
+        (∑ j ∈ Ioc r (r+L*r), |degreeSample g r j| / j) := by
+  let S := Ioc r (r+L*r)
+  let v := degreeSample f r
+  let w := degreeSample g r
+  let a := fun i : ℕ => |v i| / i
+  let b := fun i : ℕ => |w i| / i
+  have hH' : 0 < H := lt_of_lt_of_le (by norm_num) hH
+  have hpos {i : ℕ} (hi : i ∈ S) : 0 < i := hr.trans (mem_Ioc.mp hi).1
+  have overlap {i : ℕ} (hi : i ∈ S) : v i*w i=0 := by
+    by_contra h
+    obtain ⟨hv,hw⟩ := mul_ne_zero_iff.mp h
+    have hs := hsep i hi i hi hv hw
+    have hm : 0 < (i:ℝ) := Nat.cast_pos.mpr (hpos hi)
+    have hh := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 2) hH 2
+    linarith only [hs,mul_le_mul_of_nonneg_right hh hm.le,hm]
+  have entry {i j : ℕ} (hi : i ∈ S) (hj : j ∈ S) :
+      |v i*w j*levyKernel i j| ≤ (2/H)*(a i*b j) := by
+    by_cases hv : v i=0
+    · simp [a,hv]
+    by_cases hw : w j=0
+    · simp [b,hw]
+    rw [abs_mul,abs_mul]
+    exact (mul_le_mul_of_nonneg_left (far_jet (hpos hi) hH (hsep i hi j hj hv hw))
+      (mul_nonneg (abs_nonneg _) (abs_nonneg _))).trans_eq (by dsimp only [a,b]; ring)
+  let A := fun (s t : ℕ → ℝ) => ∑ n ∈ S, ∑ m ∈ S.erase n, s m*t n*levyKernel m n
+  let C := fun (s : ℕ → ℝ) => ∑ n ∈ S, s n^2/n*Real.log ((n:ℝ)/(2*Real.pi))
+  have hcounter : C (fun i => v i+w i)=C v+C w := by
+    dsimp only [C]
+    rw [← sum_add_distrib]
+    refine sum_congr rfl fun i hi => ?_
+    rw [add_sq,show 2*v i*w i=0 by rw [mul_assoc,overlap hi,mul_zero],add_zero,add_div,add_mul]
+  have hexp : A (fun i => v i+w i) (fun i => v i+w i)=A v v+A v w+(A w v+A w w) := by
+    simp only [A,add_mul,mul_add,sum_add_distrib] <;> abel
+  have hdiff : degreeForm (fun u => f u+g u) L r-degreeForm f L r-degreeForm g L r=A v w+A w v := by
+    change (A (fun i => v i+w i) (fun i => v i+w i)-C (fun i => v i+w i))-(A v v-C v)-(A w w-C w)=_
+    rw [hexp,hcounter]
+    ring
+  have mass (s t a' b' : ℕ → ℝ)
+      (hb : ∀ i ∈ S, ∀ j ∈ S, |s i*t j*levyKernel i j| ≤ (2/H)*(a' i*b' j))
+      (ha : ∀ i, 0 ≤ a' i) (hb' : ∀ i, 0 ≤ b' i) :
+      |A s t| ≤ (2/H)*(∑ i ∈ S, a' i)*(∑ j ∈ S, b' j) := by
+    refine (abs_sum_le_sum_abs _ _).trans ?_
+    calc _ ≤ ∑ j ∈ S, ∑ i ∈ S, (2/H)*(a' i*b' j) := by
+              refine sum_le_sum fun j hj => (abs_sum_le_sum_abs _ _).trans ?_
+              exact (sum_le_sum fun i hi => hb i (mem_of_mem_erase hi) j hj).trans
+                (sum_le_sum_of_subset_of_nonneg (erase_subset _ _) (fun i _ _ => mul_nonneg
+                  (div_nonneg (by norm_num) hH'.le) (mul_nonneg (ha i) (hb' j))))
+      _ = _ := by simp only [← mul_assoc,← sum_mul,← mul_sum]
+  have ha (i) : 0 ≤ a i := div_nonneg (abs_nonneg _) (Nat.cast_nonneg _)
+  have hb (i) : 0 ≤ b i := div_nonneg (abs_nonneg _) (Nat.cast_nonneg _)
+  have hvw := mass v w a b (fun _ hi _ hj => entry hi hj) ha hb
+  have hwv := mass w v b a (fun i hi j hj => by
+    rw [mul_comm (w i),levyKernel_comm i j,mul_comm (b i)]
+    exact entry hj hi) hb ha
+  rw [hdiff]
+  change |A v w+A w v| ≤ (4/H)*(∑ i ∈ S, a i)*(∑ i ∈ S, b i)
+  exact (abs_add_le _ _).trans ((add_le_add hvw hwv).trans_eq (by ring))
+
+#print axioms degreeForm_separated_mixed_bound
 #print axioms degreeForm_log_dilate
 #print axioms tendsto_degreeForm_moving_integer_dilate
 

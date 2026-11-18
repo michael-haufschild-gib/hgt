@@ -117,6 +117,7 @@ theorem weighted_variance_change_bound {E G : ℝ → ℝ}
   refine ⟨hi,(integral_mono_ae hi hmajor hpoint).trans_eq ?_⟩
   change (∫ t, f t^2+2*g t^2 ∂halfLineLaplaceMeasure) = _
   rw [integral_add hf2 (hg2.const_mul 2),integral_const_mul]
+  rfl
 
 /-- The actual ordinary-prime and integer-centered squared waves differ by
 an exponentially integrable function at every rate below 1 − Θ. -/

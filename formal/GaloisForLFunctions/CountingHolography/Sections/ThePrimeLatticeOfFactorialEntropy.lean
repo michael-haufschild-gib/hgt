@@ -104,7 +104,8 @@ private theorem mixed_logs {L : ℕ} {H : AddSubgroup (ℝ×ℝ)}
     · simpa only [Prod.mk_add_mk,add_zero] using H.add_mem ha' hb'
     · have hm := H.add_mem (H.nsmul_mem ha'' b) (H.nsmul_mem hb'' a)
       convert hm using 1
-      ext <;> simp [nsmul_eq_mul] <;> ring
+      ext <;> simp [nsmul_eq_mul]
+      ring
 
 /-- Exact integral joint image of balance-zero factorials at every horizon
 from ten onward. The closure here is algebraic subgroup generation. -/

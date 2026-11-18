@@ -265,7 +265,7 @@ increment recovers $8a\int F^2e^{-8u}$ after taking the prime limit and then the
 At every sufficiently late time, **all distinct ordinary-prime pairs of positive additive gap at most**
 $K$ contribute $O(K)$ in absolute value, uniformly in $K$. Hence gaps up to $o(t)$ contribute $o(t)$.
 [Short additive gaps](Wall/ShortAdditiveGapsInTheOrdinaryPrimeWave.lean).
-Subtracting one unit of density at every integer replaces the continuous pole with vanishing absolute Cesàro error. The cell estimate uses $\|F-F(\cdot+h)\|_1=o(\sqrt h)$ from the interior increment law. [Integer centering](Wall/TheIntegerWaveHasVanishingMeanAbsoluteError.lean).
+One unit of density at every integer gives a stronger variance comparison. If $E$ is the polar-centered ordinary-prime error and $S$ its integer-centered version, then $\int_0^\infty e^{rt}|E(t)^2-S(t)^2|dt<\infty$ for all $0\le r<1-\Theta$. The damped prime error and the tilted integer discrepancy have opposite square-integrable weights. [Integer centering](Wall/TheIntegerWaveHasVanishingMeanAbsoluteError.lean) · [Exponential variance transfer](Wall/ExponentiallyIntegrableChangeOfPrimeVariance.lean).
 Removing every prime factor up to $T^2$ from the integer reference, with density normalization, costs $e^{o(T)}$ in cumulative absolute error on $[0,T]$. Fixed sieves retain vanishing absolute Cesàro error. On each late interval $[\eta T,T]$, removing two eliminates every odd-gap cross term. [Growing sieve](Wall/RemovingSmallPrimesFromTheDensityReference.lean).
 
 The unheated wall profile has a zero expansion in $L^2(0,\infty)$ on the unit damping line.

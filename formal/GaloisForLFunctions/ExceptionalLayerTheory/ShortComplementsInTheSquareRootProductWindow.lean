@@ -61,7 +61,7 @@ theorem short_complement_window_bound :
     have hscale : 2*(P (99999/100000)*(v : ℝ)) ≤ X := by
       have hh := mul_le_mul hlarge (mul_le_mul_of_nonneg_left hvX
         (by dsimp [P]; positivity : 0 ≤ P (99999/100000))) (by dsimp [P]; positivity)
-        (by dsimp [P]; positivity)
+        (by positivity)
       apply hh.trans
       change P (1/1000000)*(P (99999/100000)*P (1/1000000)) ≤ X
       rw [mul,mul,←one]; exact mono (by norm_num)
@@ -84,7 +84,7 @@ theorem short_complement_window_bound :
       have hu : ((U/v : ℕ) : ℝ) ≤ U := by exact_mod_cast Nat.div_le_self U v
       push_cast; linarith only [hu,hright,Real.one_le_rpow ht (by norm_num : (0 : ℝ) ≤ 50001/100000)]
     have ht' := hprime R T (max (F+1) (L/v+1)) (U/v+1) hR hT
-      ((Nat.succ_pos _).trans (le_max_left ..)) (hr.trans (divided (by norm_num) (by norm_num)))
+      ((show 1 ≤ F+1 from Nat.succ_pos F).trans (le_max_left ..)) (hr.trans (divided (by norm_num) (by norm_num)))
       (hA.trans (by exact_mod_cast (le_max_right (F+1) (L/v+1)))) hup
     rw [abs_mul]
     exact mul_le_mul (hj v) (ht'.trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow

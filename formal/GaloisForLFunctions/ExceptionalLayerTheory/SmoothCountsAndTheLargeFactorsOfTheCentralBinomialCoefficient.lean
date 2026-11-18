@@ -152,6 +152,7 @@ theorem centralBinom_smooth_first_total_error (X : ℕ) :
         exact Nat.mem_primesLE.mpr ⟨hy,Nat.prime_of_mem_primeFactors hf⟩
       have hh := card_le_card hsub
       rw [Nat.primesLE_card_eq_primeCounting] at hh
+      dsimp only [d]
       exact_mod_cast hh
     _ = _ := by simp
 

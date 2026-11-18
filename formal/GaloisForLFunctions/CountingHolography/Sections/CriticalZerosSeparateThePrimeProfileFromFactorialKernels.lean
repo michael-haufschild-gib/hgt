@@ -3,6 +3,7 @@ import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import GaloisForLFunctions.RHTower.NymanMellinGaugeCollapse
 import GaloisForLFunctions.RHTower.MobiusLaplaceMellinPlancherelBridge
 import GaloisForLFunctions.RHTower.EvenSectorWeightGrowth
+import GaloisForLFunctions.ArithmeticCouplingTheory.ConeMoments.SplineWeilCoefficient
 import GaloisForLFunctions.CountingHolography.TheIntegerProbesAreNotIntegerValued
 
 /-!
@@ -157,7 +158,9 @@ theorem mellinConvergent_squarePrimeWeight (s : ℂ) : MellinConvergent squarePr
   intro v hv
   by_cases h : v ∈ K
   · exact Set.indicator_of_mem h f
-  · rw [Set.indicator_of_notMem h,f,squarePrimeWeight_zero_outside hv h,smul_zero]
+  · rw [Set.indicator_of_notMem h]
+    change 0 = (v:ℂ)^(s-1) • squarePrimeWeight v
+    rw [squarePrimeWeight_zero_outside hv h,smul_zero]
 
 /-- The two Fourier factors are entire functions of the Mellin parameter.
 The single exponential factor accounts for the vanished polar mean. -/
@@ -188,7 +191,8 @@ theorem differentiable_mellin_squarePrimeWeight : Differentiable ℂ (mellin squ
 
 /-- The polar mean has precisely a simple zero. The logarithmic moment
 therefore survives the balance of the two conductor scales. -/
-theorem deriv_mellin_squarePrimeWeight_one_ne_zero : deriv (mellin squarePrimeWeight) 1 ≠ 0 := by
+theorem deriv_mellin_squarePrimeWeight_one : deriv (mellin squarePrimeWeight) 1 =
+    ((-2*Real.log 4*(Real.sinh (1/2)/(1/2))^8:ℝ):ℂ) := by
   let F := paperFT (cx cubicSpline)
   let z := fun s : ℂ => (s-1/2)/Complex.I
   let g := fun s : ℂ => F (z s)*F (-z s)
@@ -207,14 +211,29 @@ theorem deriv_mellin_squarePrimeWeight_one_ne_zero : deriv (mellin squarePrimeWe
   have hd := (hasDerivAt_const (1:ℂ) (2:ℂ)).sub
     ((((hasDerivAt_id (1:ℂ)).sub_const (1/2)).mul_const ((Real.log 4:ℝ):ℂ)).cexp)
   change HasDerivAt d _ 1 at hd
-  simp only [he,one_mul,zero_sub] at hd
-  have hw : mellin squarePrimeWeight = fun s => d s*g s := funext mellin_squarePrimeWeight_formula
+  simp only [id_eq,he,one_mul,zero_sub] at hd
+  have hw : mellin squarePrimeWeight = d*g := funext mellin_squarePrimeWeight_formula
   rw [hw,(hd.mul (hg 1).hasDerivAt).deriv,hd₁,zero_mul,add_zero]
-  have hz₁ : (z 1).im ≠ 0 := by dsimp only [z]; norm_num [Complex.div_im]
-  have hz₂ : (-(z 1)).im ≠ 0 := by simpa only [Complex.neg_im,neg_ne_zero] using hz₁
-  exact mul_ne_zero (neg_ne_zero.mpr (mul_ne_zero two_ne_zero (Complex.ofReal_ne_zero.mpr
-    (Real.log_pos (by norm_num : (1:ℝ)<4)).ne'))) (mul_ne_zero
-      (paperFT_cubicSpline_ne_zero hz₁) (paperFT_cubicSpline_ne_zero hz₂))
+  have h₊ : z 1 = (1/2)/Complex.I := by dsimp only [z]; congr 1; ring
+  have hp := ArithmeticCouplingTheory.ConeMoments.paperFT_cubicSpline_div_I (z := 1/2) (by norm_num)
+  have hm := ArithmeticCouplingTheory.ConeMoments.paperFT_cubicSpline_div_I (z := -(1/2)) (by norm_num)
+  dsimp only [g,F]
+  rw [h₊,← neg_div]
+  change -((2:ℂ)*Real.log 4)*(paperFT (fun x => (cubicSpline x:ℂ)) _ * paperFT (fun x => (cubicSpline x:ℂ)) _) = _
+  rw [hp,hm,Complex.sinh_neg,neg_div_neg_eq]
+  push_cast
+  ring
+
+theorem deriv_mellin_squarePrimeWeight_one_re_neg : (deriv (mellin squarePrimeWeight) 1).re < 0 := by
+  rw [deriv_mellin_squarePrimeWeight_one,Complex.ofReal_re]
+  exact mul_neg_of_neg_of_pos (mul_neg_of_neg_of_pos (by norm_num) (Real.log_pos (by norm_num)))
+    (pow_pos (div_pos (Real.sinh_pos_iff.mpr (by norm_num)) (by norm_num)) _)
+
+theorem deriv_mellin_squarePrimeWeight_one_ne_zero : deriv (mellin squarePrimeWeight) 1 ≠ 0 := by
+  intro h
+  have hn := deriv_mellin_squarePrimeWeight_one_re_neg
+  rw [h,Complex.zero_re] at hn
+  exact lt_irrefl _ hn
 
 /-- No finite sum of fractional-part kernels agrees with the square
 prime test on the positive half-line, even almost everywhere. -/

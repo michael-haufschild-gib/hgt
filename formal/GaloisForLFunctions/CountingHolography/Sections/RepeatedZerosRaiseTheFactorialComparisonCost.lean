@@ -12,7 +12,7 @@ noncomputable section
 namespace GaloisForLFunctions.CountingHolography.Sections
 
 open Complex MeasureTheory Filter Finset Set Topology Zeta23
-open ArithmeticOrientationGeometry
+open ArithmeticOrientationGeometry RenormalizedIntersectionTheory
 
 private def residual {m : ℕ} (c : Fin m → ℂ) (a : Fin m → ℝ) (X : ℝ) (s : ℂ) :=
   Complex.exp ((Real.log X:ℝ)*s) *
@@ -103,6 +103,35 @@ theorem factorial_frequency_at_critical_zero {ρ : ℂ} (hζ : riemannZeta ρ=0)
   have h := residual_deriv_bound c a ha hX hE hcap hmass hρ
   rwa [he,norm_mul,norm_scale hX,hρ] at h
 
+/-- Every seen critical zero at which the zeta derivative vanishes raises
+the eventual cost by a factor of log X. The constant is independent of the
+number, coefficients and scales of the factorial kernels. -/
+theorem repeated_zero_factorial_cost {ρ : ℂ} (hρ : ρ ∈ criticalSeen) (hd : deriv riemannZeta ρ=0) :
+    ∃ k : ℝ, 0 < k ∧ ∀ᶠ X : ℝ in atTop,
+      ∀ {m : ℕ} (c : Fin m → ℂ) (a : Fin m → ℝ), (∀ j, 0 < a j) →
+        ∀ B : ℝ, IntegrableOn (fun v => ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖) (Ioi 0) →
+        (∀ v > 0, ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖ ≤ B) →
+        (∫ v in Ioi 0, ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖) ≤ B/X →
+        k*X^(1/2:ℝ)*Real.log X ≤ B := by
+  let W := mellin squarePrimeWeight ρ
+  let d := deriv (mellin squarePrimeWeight) ρ
+  have hw : 0 < ‖W‖ := norm_pos_iff.mpr (mellin_squarePrimeWeight_ne_zero hρ)
+  refine ⟨‖W‖/32,div_pos hw (by norm_num),?_⟩
+  filter_upwards [eventually_ge_atTop (1:ℝ),Real.tendsto_log_atTop.eventually
+    (eventually_ge_atTop (2*‖d‖/‖W‖))] with X hX hlog
+  intro m c a ha B hE hcap hmass
+  have hX' := zero_lt_one.trans_le hX
+  have h := factorial_frequency_at_critical_zero hρ.1.1 hρ.2.1 c a ha hX' hE hcap hmass
+  rw [hd,mul_zero,zero_div,add_zero] at h
+  have htriangle := norm_sub_norm_le ((Real.log X:ℂ)*W) (-d)
+  rw [norm_neg,sub_neg_eq_add,norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (Real.log_nonneg hX)] at htriangle
+  have ht : ‖W‖*Real.log X/2 ≤ ‖(Real.log X:ℂ)*W+d‖ := by
+    linarith only [htriangle,(div_le_iff₀ hw).mp hlog]
+  have hr := mul_le_mul_of_nonneg_left ht (Real.rpow_nonneg hX'.le (1/2:ℝ))
+  change X^(1/2:ℝ)*‖(Real.log X:ℂ)*W+d‖ ≤ 16*B at h
+  linarith only [hr,h]
+
+#print axioms repeated_zero_factorial_cost
 #print axioms factorial_frequency_at_critical_zero
 
 end GaloisForLFunctions.CountingHolography.Sections
