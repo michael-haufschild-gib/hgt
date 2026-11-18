@@ -13,7 +13,8 @@ noncomputable section
 open Finset ArithmeticFunction RHTower
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-private def rawTail (D R X F a : ℕ) :=
+/-- Complete ordinary-prime slices above a complementary lower cutoff. -/
+def ordinaryComplementTail (D R X F a : ℕ) : ℝ :=
   ordinaryFactorTail F X (fun p => factorSlice D R X (a*p) p)
 
 private def edge (D R X F a : ℕ) :=
@@ -21,8 +22,8 @@ private def edge (D R X F a : ℕ) :=
     ∑ j ∈ Icc 1 (X/p/(a+1)), outerJump R j)
 
 private theorem transpose (D R X F : ℕ) {a : ℕ} (ha : 1≤a) :
-    rawTail D R X F a=dualBoundaryHead X (D+1) F (X/(a+1)) (outerJump R)-edge D R X F a := by
-  unfold rawTail dualBoundaryHead edge ordinaryFactorTail
+    ordinaryComplementTail D R X F a=dualBoundaryHead X (D+1) F (X/(a+1)) (outerJump R)-edge D R X F a := by
+  unfold ordinaryComplementTail dualBoundaryHead edge ordinaryFactorTail
   rw [←sum_sub_distrib]
   apply sum_congr rfl
   intro p hp
@@ -36,9 +37,9 @@ def cappedComplementaryRow (D R X F Y a : ℕ) :=
 
 /-- At cutoffs beyond the lower product edge the coprime tail differs
 from the unrestricted tail by a uniform square-root error. -/
-private theorem cap_comparison :
+theorem complement_tail_coprime_comparison :
     ∃ K : ℝ, 0≤K ∧ ∀ {D R X F Y a : ℕ}, 1≤D → 1≤R → 1≤X → 2*(D+1)≤F → Y/(F+1)≤a →
-      |ordinaryFactorTail F X (coprimeSlice D R X Y)-cappedComplementaryRow D R X F Y a-rawTail D R X F a|≤
+      |ordinaryFactorTail F X (coprimeSlice D R X Y)-cappedComplementaryRow D R X F Y a-ordinaryComplementTail D R X F a|≤
         K*((D+1 : ℕ) : ℝ)*R*Real.sqrt X*(1+Real.log X) := by
   obtain ⟨K,hK,h⟩ := factor_slice_bounds
   let E := Real.log 4+4
@@ -46,9 +47,9 @@ private theorem cap_comparison :
   refine ⟨K*E,by positivity,?_⟩
   intro D R X F Y a hD hR hx hF hY
   let f (p : ℕ) := coprimeSlice D R X (a*p) p-factorSlice D R X (a*p) p
-  have heq : ordinaryFactorTail F X (coprimeSlice D R X Y)-cappedComplementaryRow D R X F Y a-rawTail D R X F a =
+  have heq : ordinaryFactorTail F X (coprimeSlice D R X Y)-cappedComplementaryRow D R X F Y a-ordinaryComplementTail D R X F a =
       ordinaryFactorTail F X f := by
-    unfold cappedComplementaryRow rawTail ordinaryFactorTail
+    unfold cappedComplementaryRow ordinaryComplementTail ordinaryFactorTail
     rw [←sum_sub_distrib,←sum_sub_distrib]
     apply sum_congr rfl; intro p hp
     obtain ⟨hi,hp'⟩ := mem_filter.mp hp
@@ -90,7 +91,7 @@ theorem averaged_coprime_tail :
       let S := ⌊Real.sqrt X/(A+1 : ℕ)⌋₊+1
       |ordinaryFactorTail F X (coprimeSlice D R X Y)-complementAverage A S (cappedComplementaryRow D R X F Y)|≤
         K*((D+1 : ℕ) : ℝ)^2*R*(1+Real.log X)^3*Real.sqrt X := by
-  obtain ⟨C,hC,hcap⟩ := cap_comparison
+  obtain ⟨C,hC,hcap⟩ := complement_tail_coprime_comparison
   obtain ⟨B,hB,hβ⟩ := outerJump_uniform
   obtain ⟨M,hM,hmass⟩ := mass_uniform
   obtain ⟨K,hK,hhead⟩ := dualBoundaryHead_bound
@@ -102,7 +103,7 @@ theorem averaged_coprime_tail :
   let d : ℝ := (D+1 : ℕ)
   let base := ordinaryFactorTail F X (coprimeSlice D R X Y)
   let cap := cappedComplementaryRow D R X F Y
-  let raw := rawTail D R X F
+  let raw := ordinaryComplementTail D R X F
   let top (a : ℕ) := dualBoundaryHead X (D+1) F (X/(a+1)) (outerJump R)
   let bot := edge D R X F
   let gap (a : ℕ) := base-cap a-raw a

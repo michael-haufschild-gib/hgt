@@ -108,6 +108,7 @@ theorem integral_mangoldt_fractional_cut {Φ : ℝ → ℝ} (hm : Measurable Φ)
   · have hreal := hi.re
     change Integrable (fun t => ((W t:ℂ)*(fractionalPrimeTest (T-t):ℂ)).re)
       (volume.restrict (Set.Iic M)) at hreal
+    change Integrable (fun t => W t*fractionalPrimeTest (T-t)) (volume.restrict (Set.Iic M))
     simpa only [← Complex.ofReal_mul,Complex.ofReal_re] using hreal
   · rw [← integral_indicator measurableSet_Iic,hleft]
     exact hpre.2.2.trans (integral_congr_ae (Eventually.of_forall fun u => by
@@ -352,6 +353,7 @@ theorem tendsto_mangoldt_fractional_response {Φ : ℝ → ℝ} (hm : Measurable
     change (∫ u in Set.Iic (0:ℝ), (stirlingTestTerm Φ T u+Real.exp (T/2)*r u)+c*f u) = _
     rw [integral_add hi' (hf.const_mul c),integral_add hS (hir.const_mul (Real.exp (T/2))),
       integral_const_mul,integral_const_mul]
+    rfl
   change stirlingTestResponse Φ T+Real.exp (T/2)*(∫ u in Set.Iic (0:ℝ), r u)=
     (∫ t in Set.Iic M, P t*fractionalPrimeTest (T-t)) - A*(∫ t in Set.Iic M, Real.exp (t/2)*fractionalPrimeTest (T-t))
   rw [hphys,heq,integral_polar_fractional_cut hM]

@@ -38,8 +38,12 @@ theorem count_lift (v : ZMod p) : Fintype.card (Lift p h v)=p^h := by
     Equiv.subtypeEquivRight fun z => by
       rw [ArithmeticHodgeTheoryOfDegenerations.isUnit_iff_castHom_ne_zero hp.out (Nat.succ_pos h),not_not]
       rfl
-  rw [Fintype.card_congr (e.trans f),← Nat.card_eq_fintype_card,
-    ArithmeticHodgeTheoryOfDegenerations.natCard_nonunits hp.out (Nat.succ_pos h),Nat.add_sub_cancel]
+  calc
+    _ = Nat.card {z : RingAt p h // ¬IsUnit z} := by
+      rw [Fintype.card_congr (e.trans f),Nat.card_eq_fintype_card]
+    _ = p ^ (h.succ-1) :=
+      ArithmeticHodgeTheoryOfDegenerations.natCard_nonunits hp.out (Nat.succ_pos h)
+    _ = p^h := rfl
 
 abbrev TripleLift (s : Sample (ZMod p)) :=
   Lift p h s.1.val.1 × Lift p h s.1.val.2 × Lift p h s.2
@@ -56,6 +60,9 @@ def rawEquiv : (Σ s : Sample (ZMod p), TripleLift p h s) ≃
     ⟨_,rfl⟩,⟨_,rfl⟩,⟨_,rfl⟩⟩
   left_inv := by
     rintro ⟨⟨⟨⟨a,c⟩,hac⟩,d⟩,⟨A,hA⟩,⟨C,hC⟩,⟨D,hD⟩⟩
+    change reduce p h A = a at hA
+    change reduce p h C = c at hC
+    change reduce p h D = d at hD
     subst a
     subst c
     subst d
@@ -106,14 +113,14 @@ theorem count_removed (K : (RingAt p h)ˣ) :
   let k := Units.map (reduce p h : RingAt p h →* ZMod p) K
   change Fintype.card (Σ s : Hit (ZMod p) (k : ZMod p), TripleLift p h s.val)=_
   simp only [Fintype.card_sigma,TripleLift,Fintype.card_prod,count_lift,sum_const,card_univ,
-    nsmul_eq_mul,count_hit,ZMod.card]
+    nsmul_eq_mul,count_hit,ZMod.card,Nat.cast_id]
   ring
 
 theorem count_recovered (K : (RingAt p h)ˣ) (r : (ZMod p)ˣ) :
     Fintype.card (Recovered p h (K : RingAt p h) r)=(p-1)*(p^h)^2*(p^h-1) := by
   let k := Units.map (reduce p h : RingAt p h →* ZMod p) K
   unfold Recovered
-  simp only [Fintype.card_sigma,surviving_lifts,sum_const,card_univ,nsmul_eq_mul,count_lift]
+  simp only [Fintype.card_sigma,surviving_lifts,sum_const,card_univ,nsmul_eq_mul,count_lift,Nat.cast_id]
   rw [show Fintype.card (RayHit (ZMod p) (reduce p h (K : RingAt p h)) (r : ZMod p))=p-1
     from (count_ray k r).trans (by rw [ZMod.card])]
   ring
@@ -132,7 +139,7 @@ theorem compensation_iff (K : (RingAt p h)ˣ) (r : (ZMod p)ˣ) (hh : 0<h) (w : �
       w=(p^h : ℕ)*(p-1 : ℕ)/((p^h-1 : ℕ) : ℚ) := by
   have hT : 1 < p^h := one_lt_pow₀ hp.out.one_lt hh.ne'
   have P : (0 : ℚ)<(p-1 : ℕ) := by exact_mod_cast Nat.sub_pos_of_lt hp.out.one_lt
-  have T : (0 : ℚ)<(p^h : ℕ) := by exact_mod_cast (zero_lt_one.trans hT)
+  have T : (0 : ℚ)<(p : ℚ)^h := pow_pos (Nat.cast_pos.mpr hp.out.pos) _
   have E : (0 : ℚ)<(p^h-1 : ℕ) := by exact_mod_cast Nat.sub_pos_of_lt hT
   rw [count_removed,count_recovered,eq_div_iff E.ne']
   push_cast only [Nat.cast_mul,Nat.cast_pow]
@@ -141,7 +148,7 @@ theorem compensation_iff (K : (RingAt p h)ˣ) (r : (ZMod p)ˣ) (hh : 0<h) (w : �
     apply mul_right_cancel₀ (mul_ne_zero P.ne' (pow_ne_zero 2 T.ne'))
     linear_combination he
   · intro he
-    linear_combination ((p-1 : ℕ) : ℚ)*((p^h : ℕ) : ℚ)^2*he
+    linear_combination ((p-1 : ℕ) : ℚ)*((p : ℚ)^h)^2*he
 
 end GaloisForLFunctions.BezoutValuationIncidence.LocalConditioning
 

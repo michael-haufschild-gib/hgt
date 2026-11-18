@@ -66,7 +66,8 @@ theorem intervalIntegrable_buchstab (a b : ℝ) : IntervalIntegrable buchstab vo
   exact Eventually.of_forall fun x => by
     simpa only [Real.norm_eq_abs,abs_of_nonneg (buchstab_mem_unit x).1] using (buchstab_mem_unit x).2
 
-private theorem primitive_before {u : ℝ} (hu : u ∈ Icc (0:ℝ) 1) :
+/-- No mass accumulates before the left endpoint of the support. -/
+theorem integral_buchstab_initial {u : ℝ} (hu : u ∈ Icc (0:ℝ) 1) :
     (∫ t in (0:ℝ)..u, buchstab t) = 0 := by
   have he : (∫ t in (0:ℝ)..u, buchstab t) = ∫ _ in (0:ℝ)..u, (0:ℝ) := by
     apply intervalIntegral.integral_congr_uIoo
@@ -78,7 +79,7 @@ private theorem primitive_before {u : ℝ} (hu : u ∈ Icc (0:ℝ) 1) :
 private theorem mass_primitive (n : ℕ) (x : ℝ) (hx : x ∈ Icc (0:ℝ) 1) :
     intervalMass n x = 1 + ∫ t in (0:ℝ)..((n:ℝ)+x), buchstab t := by
   induction n generalizing x with
-  | zero => simp [intervalMass,primitive_before hx]
+  | zero => simp [intervalMass,integral_buchstab_initial hx]
   | succ n ih =>
     have he : (∫ t in (0:ℝ)..x, profile n t) =
         ∫ t in ((n:ℝ)+1)..((n:ℝ)+1+x), buchstab t := by

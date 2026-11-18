@@ -76,4 +76,7 @@ theorem cumulativeWeightMultiplicity_reading_error {w : ℕ → ℝ} (hw : ∀ i
   refine (abs_add_le _ _).trans (add_le_add (by simpa only [abs_neg] using hprod M (f M)) ?_)
   exact (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun i _ => hprod (i+1) _)
 
+#print axioms cumulativeWeightMultiplicity_interval
+#print axioms cumulativeWeightMultiplicity_reading_error
+
 end GaloisForLFunctions.CountingHolography.Sections

@@ -141,8 +141,9 @@ private theorem log_range_le {u v K : ℕ} (hu : 0<u) (hv : 0<v)
   have hres : 0<residueUnitOrder u := prod_pos fun p h => by
     have := (Nat.prime_of_mem_primeFactors h).two_le
     omega
-  have hdiv := (unitHom_range_dvd_of_pow_eq_one hu f hM).trans (Nat.mul_dvd_mul_right _
-    (Nat.gcd_dvd_gcd (carmichael_dvd_totient u) (carmichael_dvd_totient v)))
+  have hdiv := (unitHom_range_dvd_of_pow_eq_one hu f hM).trans (Nat.mul_dvd_mul_right
+    (Nat.dvd_gcd ((Nat.gcd_dvd_left _ _).trans (carmichael_dvd_totient u))
+      ((Nat.gcd_dvd_right _ _).trans (carmichael_dvd_totient v))) _)
   have hcard := Nat.le_of_dvd (Nat.mul_pos hg (Nat.mul_pos (by decide : 0<2) hres)) hdiv
   have hh := Real.log_le_log (Nat.cast_pos.mpr (Nat.card_pos : 0<Nat.card f.range))
     (by exact_mod_cast hcard : (Nat.card f.range:ℝ)≤(u.totient.gcd v.totient:ℕ)*(2*(residueUnitOrder u:ℝ)))

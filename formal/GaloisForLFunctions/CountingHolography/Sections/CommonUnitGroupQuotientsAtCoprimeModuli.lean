@@ -60,7 +60,7 @@ private theorem power_totient_exponent {u : ℕ} (hu : 0<u) (k p : ℕ) :
 prime exponent stabilizes. At a prime of either modulus only the opposite
 residue group can supply its exponent. Elsewhere the smaller exponent survives. -/
 theorem saturated_gcd_unit_orders {u v i j p : ℕ} (hu : 0<u) (hv : 0<v) (hc : u.Coprime v)
-    (hp : p.Prime) (hi : v.totient≤i) (hj : u.totient≤j) :
+    (hp : p.Prime) (hi : v.totient ≤ i) (hj : u.totient ≤ j) :
     (((u^(i+1)).totient.gcd (v^(j+1)).totient).factorization p)=
       if p∣u then v.totient.factorization p else if p∣v then u.totient.factorization p
       else min (u.totient.factorization p) (v.totient.factorization p) := by
@@ -141,10 +141,10 @@ private theorem primePower_dvd_twice_carmichael {p : ℕ} (hp : p.Prime) (k : �
     · rw [ArithmeticFunction.carmichael_two_pow_of_le_two hsmall,Nat.add_sub_cancel]
       exact dvd_mul_left _ _
     · rw [ArithmeticFunction.two_mul_carmichael_two_pow_of_three_le_eq_totient (by omega),
-        Nat.totient_prime_pow Nat.prime_two (Nat.succ_pos k),Nat.add_sub_cancel]
+        Nat.totient_prime_pow Nat.prime_two (Nat.succ_pos k)]
       simp
   · rw [ArithmeticFunction.carmichael_pow_of_prime_ne_two _ hp h,
-      Nat.totient_prime_pow hp (Nat.succ_pos k),Nat.add_sub_cancel]
+      Nat.totient_prime_pow hp (Nat.succ_pos k)]
     exact (dvd_mul_right (p^k) _).trans (dvd_mul_left _ _)
 
 /-- The modulus divides twice the product of its distinct primes times
@@ -217,7 +217,7 @@ theorem order_mul_range_dvd_gcd_mul_card {G H : Type*} [Group G] [Group H]
   have hpow : (a^d)^(Nat.card f.ker) = 1 :=
     orderOf_dvd_iff_pow_eq_one.mp (f.ker.orderOf_dvd_natCard hker)
   rw [← pow_mul] at hpow
-  have hdiv := Nat.mul_dvd_mul_right (Nat.card f.range) (orderOf_dvd_iff_pow_eq_one.mpr hpow)
+  have hdiv := Nat.mul_dvd_mul_right (orderOf_dvd_iff_pow_eq_one.mpr hpow) (Nat.card f.range)
   have hcard := f.ker.card_mul_index
   rw [Subgroup.index_ker] at hcard
   simpa only [mul_assoc,hcard,d] using hdiv
@@ -228,10 +228,10 @@ theorem unitHom_range_dvd_of_pow_eq_one {u M : ℕ} (hu : 0<u)
     {H : Type*} [Group H] (f : (ZMod u)ˣ →* H) (hM : ∀ x, (f x)^M=1) :
     Nat.card f.range ∣ (ArithmeticFunction.carmichael u).gcd M * (2*residueUnitOrder u) := by
   letI : NeZero u := ⟨hu.ne'⟩
-  let λu := ArithmeticFunction.carmichael u
+  let unitExponent := ArithmeticFunction.carmichael u
   obtain ⟨a,ha⟩ := Monoid.exists_orderOf_eq_exponent (Monoid.ExponentExists.of_finite (G := (ZMod u)ˣ))
-  have hord : orderOf a=λu := ha.trans (ArithmeticFunction.carmichael_eq_exponent hu.ne').symm
-  have hλ : 0<λu := hord ▸ orderOf_pos a
+  have hord : orderOf a=unitExponent := ha.trans (ArithmeticFunction.carmichael_eq_exponent hu.ne').symm
+  have hλ : 0<unitExponent := hord ▸ orderOf_pos a
   have h := order_mul_range_dvd_gcd_mul_card f a (hM a)
   have hcard : Nat.card (ZMod u)ˣ=u.totient := by rw [Nat.card_eq_fintype_card,ZMod.card_units_eq_totient]
   rw [hord,hcard,totient_split] at h
@@ -239,10 +239,10 @@ theorem unitHom_range_dvd_of_pow_eq_one {u M : ℕ} (hu : 0<u)
   have hA : 0<A := prod_pos fun p hp => (Nat.prime_of_mem_primeFactors hp).pos
   have hprod : A*primePowerPart u=u := by
     rw [mul_comm]; exact Nat.div_mul_cancel (Nat.prod_primeFactors_dvd u)
-  have hpart : primePowerPart u ∣ 2*λu := Nat.dvd_of_mul_dvd_mul_left hA
+  have hpart : primePowerPart u ∣ 2*unitExponent := Nat.dvd_of_mul_dvd_mul_left hA
     (by rw [hprod]; exact dvd_twice_radical_mul_carmichael hu)
   apply Nat.dvd_of_mul_dvd_mul_left hλ
-  exact h.trans ((Nat.mul_dvd_mul_left (λu.gcd M) (Nat.mul_dvd_mul_right (residueUnitOrder u) hpart)).trans
+  exact h.trans ((Nat.mul_dvd_mul_left (unitExponent.gcd M) (Nat.mul_dvd_mul_right hpart (residueUnitOrder u))).trans
     (dvd_of_eq (by ring)))
 
 /-- For any number of copies of the opposite unit group, every joint image
@@ -254,7 +254,7 @@ theorem unitHom_product_range_dvd {u v : ℕ} (hu : 0<u) (hv : 0<v) (hc : u.Copr
     funext i
     exact ArithmeticFunction.pow_carmichael (f a i)
   exact (unitHom_range_dvd_of_pow_eq_one hu f hM).trans
-    (Nat.mul_dvd_mul_right _ (gcd_carmichael_dvd_residue_lcm hu hv hc))
+    (Nat.mul_dvd_mul_right (gcd_carmichael_dvd_residue_lcm hu hv hc) _)
 
 #print axioms order_mul_range_dvd_gcd_mul_card
 #print axioms unitHom_range_dvd_of_pow_eq_one

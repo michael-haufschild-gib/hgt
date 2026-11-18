@@ -396,6 +396,7 @@ theorem lindelof_all_forms_of_twoThreeAliasedQuartets {β γ ω : ℝ}
       RHTower.LindelofSparse.LindelofCriticalLine ∧
       RHTower.LindelofSparse.LindelofHalfPlane ∧
       RHTower.BacklundConverse.LindelofOpen := by
+  have hfin := h.finiteOffLine
   obtain ⟨hβ, _, _, hmem_γ, _, _⟩ := h
   have hnrh : ¬ RiemannHypothesis := by
     intro hrh
@@ -407,7 +408,7 @@ theorem lindelof_all_forms_of_twoThreeAliasedQuartets {β γ ω : ℝ}
       linarith [Nat.cast_nonneg (α := ℝ) n]
     simp at hhalf
     linarith
-  have hzal := RHTower.BacklundConverse.zerosApproachLine_of_finiteOffLine h.finiteOffLine
+  have hzal := RHTower.BacklundConverse.zerosApproachLine_of_finiteOffLine hfin
   have hcl := RHTower.BacklundConverse.lindelofCriticalLine_of_zerosApproachLine hzal
   exact ⟨hnrh, hzal, hcl, RHTower.LindelofSparse.lindelofHalfPlane_of_criticalLine hcl,
     RHTower.BacklundConverse.lindelofCriticalLine_iff_lindelofOpen.mp hcl⟩
@@ -493,7 +494,7 @@ theorem twoThreeAliasedQuartets_obey_two_and_three_not_five {β γ ω : ℝ}
     have hρ₂_ne1 : ρ₂ ≠ 1 := fun heq => by
       have := congrArg Complex.re heq; simp [ρ₂] at this; linarith
     have hp5 := re_eq_and_cos_im_eq_of_not_isSqrtLogSqUnbounded (by norm_num : (1 : ℝ) < 5)
-      hb5 (by simp [ρ₂]; exact hβ) hρ₂_ne1 hmem_ω.1
+      hb5 (by simp [ρ₂]; linarith) hρ₂_ne1 hmem_ω.1
     have hc5 : Real.cos (ω * Real.log 5) = Real.cos (γ * Real.log 5) := by
       simpa [ρ₂] using hp5.2
     have habs := (abs_eq_of_threePrime_cos_eq Nat.prime_two Nat.prime_three Nat.prime_five
@@ -526,10 +527,10 @@ theorem twoThreeAliasedQuartets_obey_two_and_three_not_five {β γ ω : ℝ}
       have hc₂ : conj ρ₂ ∈ zetaZeroConfig.carrier :=
         mem_carrier_of_xi_eq_zero (by rw [xi_conj, hxi₂, map_zero])
       rintro (rfl | rfl | rfl | rfl)
-      · exact ⟨hmem_γ, by simp [ρ₁]; exact hβ⟩
-      · exact ⟨hc₁, by simp [ρ₁]; exact hβ⟩
-      · exact ⟨hmem_ω, by simp [ρ₂]; exact hβ⟩
-      · exact ⟨hc₂, by simp [ρ₂]; exact hβ⟩
+      · exact ⟨hmem_γ, by simp [ρ₁]; linarith⟩
+      · exact ⟨hc₁, by simp [ρ₁]; linarith⟩
+      · exact ⟨hmem_ω, by simp [ρ₂]; linarith⟩
+      · exact ⟨hc₂, by simp [ρ₂]; linarith⟩
   have hencard : (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard = 4 := by
     have hn12 : ρ₁ ≠ conj ρ₁ := fun heq => by
       have := congrArg Complex.im heq; simp [ρ₁] at this; linarith
@@ -602,7 +603,8 @@ theorem twoClock_bounded_and_limsup_iff {β γ : ℝ} (hβ : 1 / 2 < β) (_hβ1 
         z.re = β ∧ 67 < |z.im| ∧ (|z.im| = γ ∨ IsCrossResonantPair 2 3 γ |z.im|) := by
       intro z hz hgt
       have hne1 : z ≠ 1 := fun heq => by
-        rw [heq, Complex.one_re] at hz; exact lt_irrefl 1 hz.2.2
+        have h1 := hz.2.2
+        rw [heq, Complex.one_re] at h1; exact lt_irrefl 1 h1
       have hp2 := re_eq_and_cos_im_eq_of_not_isSqrtLogSqUnbounded (by norm_num : (1 : ℝ) < 2)
         hb2 hgt hne1 hz.1
       have hp3 := re_eq_and_cos_im_eq_of_not_isSqrtLogSqUnbounded (by norm_num : (1 : ℝ) < 3)
@@ -676,7 +678,7 @@ theorem twoClock_bounded_and_limsup_iff {β γ : ℝ} (hβ : 1 / 2 < β) (_hβ1 
           · exact Or.inl (mem_zeroQuartetSet_of_re_and_abs_im hre_r h1)
           · exact Or.inr (mem_zeroQuartetSet_of_re_and_abs_im hre_r h2)
       · left
-        refine ⟨by simp; exact hβ, hmem_ω, Set.Subset.antisymm ?_ (hquartet_sub ω hmem_ω)⟩
+        refine ⟨by simp; linarith, hmem_ω, Set.Subset.antisymm ?_ (hquartet_sub ω hmem_ω)⟩
         rintro ρ ⟨hρ_mem, hρ_ne⟩
         rcases lt_or_gt_of_ne hρ_ne with hlt | hgt
         · have hrefl : 1 - ρ ∈ zetaZeroConfig.carrier :=
@@ -704,7 +706,7 @@ theorem twoClock_bounded_and_limsup_iff {β γ : ℝ} (hβ : 1 / 2 < β) (_hβ1 
       have him₀ : |z₀.im| = γ := hex_other z₀ hz₀ hgt₀
       have hmem_γ : ((β : ℂ) + I * γ) ∈ zetaZeroConfig.carrier :=
         mem_carrier_pos_of_mem_carrier_abs_im hz₀ hre₀ him₀
-      refine ⟨by simp; exact hβ, hmem_γ, Set.Subset.antisymm ?_ (hquartet_sub γ hmem_γ)⟩
+      refine ⟨by simp; linarith, hmem_γ, Set.Subset.antisymm ?_ (hquartet_sub γ hmem_γ)⟩
       rintro ρ ⟨hρ_mem, hρ_ne⟩
       rcases lt_or_gt_of_ne hρ_ne with hlt | hgt
       · have hrefl : 1 - ρ ∈ zetaZeroConfig.carrier :=
@@ -801,7 +803,7 @@ private theorem hasSingleOffLineQuartet_abs_im {ρ₀ : ℂ} (hq : HasSingleOffL
   · rw [h2]
     have hmem_c : conj ρ₀ ∈ zetaZeroConfig.carrier :=
       mem_carrier_of_xi_eq_zero (by rw [xi_conj, hq.xi_eq_zero, map_zero])
-    refine ⟨by simp; exact hq.1, hmem_c, ?_⟩
+    refine ⟨by simp; linarith [hq.1], hmem_c, ?_⟩
     rw [hq.2.2]
     ext z
     simp only [zeroQuartetSet, Set.mem_insert_iff, Set.mem_singleton_iff, Complex.conj_conj]
@@ -916,9 +918,9 @@ theorem twoClockPrimeRecurrenceLaw_or_lindelof_finite_stratum :
     · obtain ⟨ρ₀, hq⟩ := hex1
       obtain ⟨hcl, hhp, hopen⟩ := lindelof_all_forms_of_singleQuartet hq
       have henc2 : (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard = 2 :=
-        (exists_singleOffLineQuartet_ecs_tfae.out 0 1).mp ⟨ρ₀, hq⟩
+        (exists_singleOffLineQuartet_ecs_tfae.out 0 1).mp (Exists.intro ρ₀ hq)
       have hidx2 : realPacketNegIndex = 2 :=
-        (exists_singleOffLineQuartet_ecs_tfae.out 0 3).mp ⟨ρ₀, hq⟩
+        (exists_singleOffLineQuartet_ecs_tfae.out 0 3).mp (Exists.intro ρ₀ hq)
       exact ⟨hq.not_riemannHypothesis, hq.finiteOffLine, zerosApproachLine_of_singleQuartet hq,
         hcl, hhp, hopen, Or.inl henc2, Or.inl hidx2⟩
     · have hex2 := hnot (not_exists.mp hex1)
@@ -971,7 +973,7 @@ theorem corollaries_of_threeClockPrimeRecurrenceLaw (h : ThreeClockPrimeRecurren
       intro R hR S H hH
       have hlt := hnot3 R hR S H hH
       omega
-    obtain ⟨ρ₀, hq⟩ := (exists_singleOffLineQuartet_ecs_tfae.out 4 0).mp ⟨hnrh, hle2⟩
+    obtain ⟨ρ₀, hq⟩ := (exists_singleOffLineQuartet_ecs_tfae.out 4 0).mp (And.intro hnrh hle2)
     exact hno_one ρ₀ hq
   have hadj : ∀ B : ℕ, ∃ t > B, (2 * t + 1).Prime ∧ ∀ ρ : ℂ, 1 / 2 < ρ.re → ρ.re < 1 →
       riemannZeta ρ = 0 → ¬ ∃ K : ℝ, ∀ x : ℝ, 16 ≤ x →
@@ -1020,7 +1022,7 @@ theorem model_firewall_for_two_and_three_clocks {a b β : ℝ}
         (∀ x : ℝ, 0 < x → dilationRecurrenceOp 2 β γ f x = 0) ∧
         (∀ x : ℝ, 0 < x → dilationRecurrenceOp 3 β γ f x = 0) ∧
         IsSqrtLogSqUnbounded (dilationRecurrenceOp 5 β γ f)) ∧
-    (∀ γ : ℝ, (riemannZeta (zeroPt β γ) = 0 ∧
+    (∀ γ : ℝ, (riemannZeta (WorldsOfTheZeroConfiguration.SignedEdit.zeroPt β γ) = 0 ∧
         ¬ RiemannHypothesis) ∨
       ∃ (α : ℝ) (k₀ : ℕ) (c σ₁ : ℝ),
         c < 1 / 2 ∧ σ₁ < 1 / 2 ∧

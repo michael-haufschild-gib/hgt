@@ -1,5 +1,0 @@
-# Unweighted square-generator prefixes in every logarithmic window
-
-Let $P_N=\prod_{n=1}^N d_{\rm ord}(nD_n)$. The target is a fixed integer $B>0$ such that every sufficiently late logarithmic window contains a block of endpoints $N\le d\le N+N^{1/4}$ with $B^{-d^3}\le P_d\le B^{d^3}$. Every factor has multiplicity one. [Sharp prefix criterion](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/TheSignedProductOverSquareConductors.lean)
-
-For the long trace $L$, set $F(t)=\int_0^1r^2L(t+2\log r)\,dr$. Theta annihilates every translate of $L$, hence also $F$. Its positive mass and tail bound force $F$ to meet $[-1,1]$ in each late logarithmic window. At $t=2\log X$, the unnormalized integral is $X^3F(t)=\int_0^Xv^2L(2\log v)\,dv$. Compare it to the original prefix using the unit-root displacement estimate and the quadratic allowance for each actual generator. The bound $|\log d_{\rm ord}(nD_n)|\ll n^{11/4}$ pays a further $N^{1/4}$ consecutive terms. Control through the gaps between these blocks remains open.

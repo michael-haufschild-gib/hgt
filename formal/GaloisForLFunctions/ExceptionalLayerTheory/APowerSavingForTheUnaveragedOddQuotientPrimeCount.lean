@@ -165,6 +165,51 @@ theorem oddQuotientPowerCount_eight_seventeenths :
   simpa only [show 1/(3-2*(7/16:ℝ))=8/17 by norm_num] using
     oddQuotientPowerCount_hyperbola_bound (by norm_num) (by norm_num) hK h hn
 
+private theorem unaveraged_exponents {a c : ℝ} (ha : 0 ≤ a) (ha' : a < 1/2)
+    (h : ∀ b : ℝ, a < b → b < 1/2 → ∃ K : ℝ, 0 ≤ K ∧
+      ∀ x : ℝ, 1 ≤ x → |properPowerDiscrepancy x| ≤ K*x^b)
+    (hc : 1/(3-2*a) < c) : ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 1 ≤ N →
+      |oddQuotientPowerCount N| ≤ C*(N:ℝ)^c := by
+  have hd : 0 < 3-2*a := by linarith only [ha']
+  have hc0 := (one_div_pos.mpr hd).trans hc
+  have hprod := (div_lt_iff₀ hd).mp hc
+  have hinv : 1/c < 3-2*a := (div_lt_iff₀ hc0).mpr (by linarith only [hprod])
+  obtain ⟨b,hab,hb⟩ := exists_between (lt_min ha' (by linarith only [hinv] : a < (3-1/c)/2))
+  have hhalf := (lt_min_iff.mp hb).1
+  have hgap := (lt_min_iff.mp hb).2
+  obtain ⟨K,hK,hp⟩ := h b hab hhalf
+  let C := K+6+2*(K+2)/(1-b)
+  have hC : 0 ≤ C := by
+    dsimp only [C]
+    have : 0 < 1-b := by linarith only [hhalf]
+    positivity
+  refine ⟨C,hC,fun N hn => ?_⟩
+  apply (oddQuotientPowerCount_hyperbola_bound (ha.trans_lt hab) hhalf hK hp hn).trans
+  apply mul_le_mul_of_nonneg_left _ hC
+  apply Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hn)
+  apply (div_le_iff₀ (by linarith only [hhalf] : 0 < 3-2*b)).mpr
+  have hx : 1/c ≤ 3-2*b := by linarith only [hgap]
+  linarith only [(div_le_iff₀ hc0).mp hx]
+
+/-- All exponents above the hyperbola threshold supplied by the
+unconditional zero-free strip hold at every integer cutoff. -/
+theorem oddQuotientPowerCount_sub_half {c : ℝ} (hc : 24000/51001 < c) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 1 ≤ N → |oddQuotientPowerCount N| ≤ C*(N:ℝ)^c := by
+  apply unaveraged_exponents (a := 20999/48000) (by norm_num) (by norm_num)
+    (fun _ hb _ => properPowerDiscrepancy_from_zero_free_strip hb)
+  norm_num at hc ⊢
+  exact hc
+
+/-- On RH the sharp count satisfies every exponent above two fifths. -/
+theorem oddQuotientPowerCount_two_fifths_of_rh (hRH : RiemannHypothesis) {c : ℝ} (hc : 2/5 < c) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 1 ≤ N → |oddQuotientPowerCount N| ≤ C*(N:ℝ)^c := by
+  apply unaveraged_exponents (a := 1/4) (by norm_num) (by norm_num)
+    (riemannHypothesis_iff_properPowerDiscrepancy_quarter.mp hRH)
+  norm_num at hc ⊢
+  exact hc
+
+#print axioms oddQuotientPowerCount_sub_half
+#print axioms oddQuotientPowerCount_two_fifths_of_rh
 #print axioms oddQuotientPowerCount_hyperbola_bound
 #print axioms oddQuotientPowerCount_eight_seventeenths
 end GaloisForLFunctions.ExceptionalLayerTheory

@@ -41,6 +41,12 @@ theorem tendsto_laplaceMass_atTop : Tendsto laplaceMass atTop (𝓝 0) := by
   · filter_upwards [eventually_gt_atTop (0:ℝ)] with s hs
     exact (laplaceMass_bounds ⟨s,hs⟩).2
 
+theorem linearWeight_integrable {s : ℝ} (hs : 0 < s) :
+    IntegrableOn (fun t : ℝ => t*Real.exp (-s*t)) (Ioi (0:ℝ)) := by
+  have h := integrableOn_rpow_mul_exp_neg_mul_rpow (s := 1) (p := 1) (b := s)
+    (by norm_num) le_rfl hs
+  simpa [Real.rpow_one] using h
+
 /-- Parameter differentiation inserts the first moment of the profile. -/
 theorem hasDerivAt_laplaceMass (s : Ioi (0:ℝ)) :
     HasDerivAt laplaceMass (∫ t in Ioi (0:ℝ), -(t*buchstab t*Real.exp (-s.val*t))) s.val := by
@@ -49,10 +55,7 @@ theorem hasDerivAt_laplaceMass (s : Ioi (0:ℝ)) :
   let f := fun (z t : ℝ) => buchstab t * Real.exp (-z*t)
   let df := fun (z t : ℝ) => -(t * buchstab t * Real.exp (-z*t))
   let b := fun t : ℝ => t*Real.exp (-(s.val/2)*t)
-  have hi : IntegrableOn b (Ioi (0:ℝ)) := by
-    have h := integrableOn_rpow_mul_exp_neg_mul_rpow (s := 1) (p := 1) (b := s.val/2)
-      (by norm_num) le_rfl hh
-    simpa [b,Real.rpow_one] using h
+  have hi : IntegrableOn b (Ioi (0:ℝ)) := linearWeight_integrable hh
   apply (hasDerivAt_integral_of_dominated_loc_of_deriv_le (F := f) (F' := df)
     (μ := volume.restrict (Ioi (0:ℝ))) (bound := b) (Ioi_mem_nhds (half_lt_self hs))
     (Eventually.of_forall fun z => (measurable_buchstab.mul (by fun_prop)).aestronglyMeasurable)
