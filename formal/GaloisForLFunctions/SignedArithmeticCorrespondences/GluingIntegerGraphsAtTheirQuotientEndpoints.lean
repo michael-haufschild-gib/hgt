@@ -14,7 +14,7 @@ noncomputable section
 
 namespace GaloisForLFunctions.SignedArithmeticCorrespondences
 open ArithmeticCastelnuovoSeveri Finset _root_.RHTower
-open scoped ArithmeticFunction.vonMangoldt
+open scoped ArithmeticFunction.vonMangoldt NNReal
 
 /-- Multiplicity at m of an upper divisor given by its jumps at j. -/
 def upperDivisor (N : ℕ) (b : ℕ → ℤ) (m : ℕ) : ℤ :=
@@ -83,7 +83,6 @@ theorem height_eq_quotient (X N : ℕ) (u b : ℕ → ℤ) :
     have hle := (Nat.div_le_self j i).trans (mem_Icc.mp hj).2
     omega
   rw [hset]
-  rfl
 
 private theorem glue_quotients (X N : ℕ) (u b : ℕ → ℤ) (F : ℕ → ℝ) :
     ∑ k ∈ range (N+1), quotientCoefficient X N u b k * F k =
@@ -102,8 +101,12 @@ theorem mixed_height_finite_part (X N : ℕ) (u b : ℕ → ℤ) :
     signedDivisorHeight 1 X N u (upperDivisor N b) - poleProduct X N u b +
       fractionalBoundary X N u b =
       ∑ k ∈ range (N+1), quotientCoefficient X N u b k * psiRemainder k := by
-  rw [height_eq_quotient, glue_quotients]
-  simp only [poleProduct, fractionalBoundary, sum_mul, mul_sum, ← sum_sub_distrib, ← sum_add_distrib]
+  have hp : poleProduct X N u b =
+      ∑ i ∈ Icc 1 X, ∑ j ∈ Icc 1 N, ((u i : ℝ)/i)*((b j : ℝ)*j) := by
+    rw [poleProduct,sum_mul]
+    simp only [mul_sum]
+  rw [height_eq_quotient, glue_quotients, hp]
+  simp only [fractionalBoundary, ← sum_sub_distrib, ← sum_add_distrib]
   refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
   unfold psiRemainder
   ring
@@ -209,7 +212,7 @@ theorem distance_to_completed_intersection (ε : ℝ) (hε : 0 < ε) :
   have hce := (hpair c hcw).1
   have hae := (hpair a ha).1
   have hdiff : Summable (fun k => |c k-a k|*(k : ℝ)^(zetaZeroAbscissa+ε)) := by
-    apply Summable.of_nonneg_of_le (fun k => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)) _ (hcw.add ha)
+    refine Summable.of_nonneg_of_le (fun k => mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)) ?_ (hcw.add ha)
     intro k
     simpa only [Pi.add_apply, ← add_mul] using
       mul_le_mul_of_nonneg_right (abs_sub (c k) (a k)) (Real.rpow_nonneg (Nat.cast_nonneg k) (zetaZeroAbscissa+ε))

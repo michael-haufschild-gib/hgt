@@ -265,7 +265,7 @@ private theorem small_first_prime_price :
       have hlog := Real.log_le_log (Nat.cast_pos.mpr hm) (Nat.cast_le.mpr (min_le_right _ _) : (m:ℝ) ≤ n)
       have hlo := Real.log_le_log hn' (by linarith only [hn'] : (n:ℝ) ≤ 2*n)
       exact (h hp hp4 c l m hm (div_pos (Nat.cast_pos.mpr hp.pos) (sq_pos_of_pos hn'))).trans
-        (mul_le_mul_of_nonneg_left (add_le_add_left (hlog.trans hlo) 1) hA)
+        (mul_le_mul_of_nonneg_left (add_le_add (le_refl (1:ℝ)) (hlog.trans hlo)) hA)
     exact (abs_sub _ _).trans ((add_le_add (hx b) (hx 1)).trans_eq (by ring))
   have hs : S ⊆ Icc 1 n := fun p hp => mem_Icc.mpr
     ⟨(mem_filter.mp hp).2.pos,(mem_Ioc.mp (mem_filter.mp hp).1).2⟩
@@ -354,7 +354,8 @@ theorem prefix_upper_iff_first_primes_beyond_conductor {η : ℝ} (hη : 0 < η)
     apply (h 0 M).trans
     have hl := (le_self_pow₀ (conductorLog_one_le M) (by decide : 6≠0)).trans (hd hM)
     apply (mul_le_mul_of_nonneg_left hl (mul_nonneg hA (pow_nonneg (Nat.cast_nonneg M) 3))).trans_eq
-    rw [Real.rpow_add (Nat.cast_pos.mpr hM),Real.rpow_natCast _ 3]
+    rw [Real.rpow_add (Nat.cast_pos.mpr hM),
+      show (M:ℝ)^(3:ℝ)=(M:ℝ)^3 from Real.rpow_natCast _ 3]
     ring
   change (∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ, 0 < M → V M ≤ C*(M:ℝ)^(3+η)) ↔
     ∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ, 0 < M → W M ≤ C*(M:ℝ)^(3+η)

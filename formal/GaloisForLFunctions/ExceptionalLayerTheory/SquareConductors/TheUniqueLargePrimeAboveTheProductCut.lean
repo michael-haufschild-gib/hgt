@@ -55,7 +55,7 @@ private theorem centered_power_cap_error {d : ℝ} (hd : d ≤ 1) :
     have hs : Real.sqrt k+((k/(b+1):ℕ):ℝ) ≤ (T+T^2)*n*E := (add_le_add hw hq).trans_eq (by ring)
     have hl := Real.log_le_log (Nat.cast_pos.mpr hk₁) (Nat.cast_le.mpr hkL : (k:ℝ) ≤ L)
     exact (ha hk₁ (Y k) b).trans (mul_le_mul
-      (mul_le_mul_of_nonneg_left ((add_le_add_left hl 1).trans (hlog hn)) hA) hs
+      (mul_le_mul_of_nonneg_left ((add_le_add (le_refl (1:ℝ)) hl).trans (hlog hn)) hA) hs
       (by positivity) (by positivity))
   unfold centeredProductReading cappedUpperProductReading splineCountReading
   rw [←sum_sub_distrib]
@@ -112,7 +112,8 @@ theorem power_cofactor_cap_fragment {d : ℝ} (hd : d ≤ 1) :
          rw [sum_const,Nat.card_Ioc,nsmul_eq_mul]
          exact mul_le_mul_of_nonneg_right (Nat.cast_le.mpr (Nat.sub_le M J)) (by positivity)
        _ = _ := by
-         rw [show 4-d=3+(1-d) by ring,Real.rpow_add hM',Real.rpow_natCast _ 3]
+         rw [show 4-d=3+(1-d) by ring,Real.rpow_add hM',
+           show (M:ℝ)^(3:ℝ)=(M:ℝ)^3 from Real.rpow_natCast _ 3]
          dsimp only [E,H]; ring
 
 /-- The square-root cofactor cutoff costs only exponent 7/2 with one log,

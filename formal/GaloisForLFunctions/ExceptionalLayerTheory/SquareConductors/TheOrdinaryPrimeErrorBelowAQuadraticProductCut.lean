@@ -201,7 +201,7 @@ theorem subquadratic_capped_band_at_zero_abscissa {α β : ℝ} (hα : 1 < α)
   let γ := Θ+(2-β)/8
   have hγ : Θ < γ := lt_add_of_pos_right _ (div_pos (sub_pos.mpr hβ) (by norm_num))
   obtain ⟨C,hC,h⟩ := subquadratic_capped_band hα hab hβ hγ
-  refine ⟨C,hC,fun J M hM => (h J M hM).trans (mul_le_mul_of_nonneg_left (add_le_add_left ?_ _) hC)⟩
+  refine ⟨C,hC,fun J M hM => (h J M hM).trans (mul_le_mul_of_nonneg_left (add_le_add le_rfl ?_) hC)⟩
   apply Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hM : (1:ℝ) ≤ M)
   have hhalf : 1/2 ≤ Θ := _root_.RHTower.half_le_zeroReSup
   have hcoef : 0 ≤ Θ-β/8-1/4 := by linarith only [hhalf,hβ]
