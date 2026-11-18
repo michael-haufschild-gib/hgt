@@ -58,7 +58,7 @@ theorem realSplineTrace_square_power_gap {β : ℝ} (hβ : β ≤ 1) :
     have h₂ : y/x-1 ≤ 7*x^β/x := by
       rw [sub_le_iff_le_add,← div_self hx'.ne',← add_div,div_le_div_iff_of_pos_right hx']
       linarith only [hy]
-    linarith only [h₁,h₂]
+    exact (mul_le_mul_of_nonneg_left (h₁.trans h₂) two_pos.le).trans_eq (by ring)
   have hb : y ≤ 8*x := by
     have hp := Real.rpow_le_rpow_of_exponent_le hx hβ
     rw [Real.rpow_one] at hp

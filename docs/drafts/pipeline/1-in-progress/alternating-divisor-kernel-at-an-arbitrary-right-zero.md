@@ -34,3 +34,5 @@ Partial summation gives $\sum_{n<N}w_n E(n)=G_b(N)$. Since $0\le vg'(v)\le1$, th
 For the converse criterion, a right zero gives a contradiction at any exponent $1/2<b<\beta$, even when the sign varies along the chosen cutoffs. Under RH, $|E(n)|\ll_b n^b$, and $\sum_{n\le N}n^{b-1}\le N^{b-1/2}\sum_{n\le N}n^{-1/2}\le 2N^b$ gives the required mass bound at every cutoff.
 
 The main Lean declarations are `both_prime_sign_masses_at_every_large_cutoff` and `riemannHypothesis_iff_cofinal_one_signed_prime_means`. They use `alternatingSymbols_first_surviving_derivative`, `exists_alternating_prime_kernel_at_zero` and `abs_primeMeanWeight_sum_le`.
+
+Both signs also reach the exact power pointwise on every sufficiently large $(\sqrt N,N]$. If $\sigma E(n)\le d n^\beta$ throughout that interval, its sign mass is at most $2dN^\beta$. Taking $d$ less than half the mass constant gives the required peak, even when $\Re\rho$ lies below the zero abscissa.

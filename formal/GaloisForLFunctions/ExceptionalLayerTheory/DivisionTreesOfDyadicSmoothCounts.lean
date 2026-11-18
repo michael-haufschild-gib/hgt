@@ -59,7 +59,7 @@ and odd `y`-smooth integers (`Ψ_odd(M, y)`). -/
 theorem smoothIntegerCount_eq_half_add_odd (M : ℕ) {y : ℕ} (hy : 2 ≤ y) :
     smoothIntegerCount M y = smoothIntegerCount (M / 2) y + oddSmoothIntegerCount M y := by
   rw [smoothIntegerCount, oddSmoothIntegerCount, ← even_smooth_bijection M hy]
-  exact (card_filter_add_card_filter_not _ _).symm
+  exact (card_filter_add_card_filter_not (fun n => 2 ∣ n)).symm
 
 /-- For all `n` and `y ≥ 2` (without requiring `2n < (y + 1)²`), `2 Ψ(n, y) - Ψ(2n, y)`
 equals `Ψ(n, y) - Ψ_odd(2n, y)` and equals `alternatingSmoothSum (2n) y`. -/
@@ -132,7 +132,7 @@ theorem alternatingSmoothSum_eq_sum_odd_roots (M : ℕ) {y : ℕ} (hy : 2 ≤ y)
       obtain ⟨⟨hu1, huM⟩, hufac⟩ := mem_smoothUpTo_iff.mp huS
       have hdiv_pos : 0 < M / u := (Nat.one_le_div_iff hu1).mpr huM
       have hpow : 2 ^ a ≤ M / u :=
-        (Nat.pow_le_iff_le_log (by decide : 1 < 2) hdiv_pos.ne').mpr (mem_Icc.mp ha).2
+        Nat.pow_le_of_le_log hdiv_pos.ne' (mem_Icc.mp ha).2
       have hle : 2 ^ a * u ≤ M :=
         (Nat.mul_le_mul_right u hpow).trans (Nat.div_mul_le_self M u)
       have hpos : 1 ≤ 2 ^ a * u := Nat.mul_pos (Nat.pow_pos two_pos) hu1
@@ -144,16 +144,13 @@ theorem alternatingSmoothSum_eq_sum_odd_roots (M : ℕ) {y : ℕ} (hy : 2 ≤ y)
         omega
       · exact hufac p (Nat.mem_primeFactors.mpr ⟨hpp, hpu, by omega⟩)
     · rintro ⟨u₁, a₁⟩ hx₁ ⟨u₂, a₂⟩ hx₂ heq
+      dsimp only at heq
       obtain ⟨hu₁, _⟩ := mem_sigma.mp hx₁
       obtain ⟨hu₂, _⟩ := mem_sigma.mp hx₂
       have hnd₁ := (mem_filter.mp hu₁).2
       have hnd₂ := (mem_filter.mp hu₂).2
-      have hu₁0 : u₁ ≠ 0 := by
-        have := (mem_smoothUpTo_iff.mp (mem_filter.mp hu₁).1).1.1; omega
-      have hu₂0 : u₂ ≠ 0 := by
-        have := (mem_smoothUpTo_iff.mp (mem_filter.mp hu₂).1).1.1; omega
-      have hc₁ : Nat.Coprime 2 u₁ := Nat.prime_two.coprime_iff_not_dvd.mpr hnd₁
-      have hc₂ : Nat.Coprime 2 u₂ := Nat.prime_two.coprime_iff_not_dvd.mpr hnd₂
+      have hu₁0 : u₁ ≠ 0 := Nat.ne_of_gt (mem_smoothUpTo_iff.mp (mem_filter.mp hu₁).1).1.1
+      have hu₂0 : u₂ ≠ 0 := Nat.ne_of_gt (mem_smoothUpTo_iff.mp (mem_filter.mp hu₂).1).1.1
       have hf := congrArg (fun n : ℕ => n.factorization 2) heq
       rw [Nat.factorization_mul (pow_ne_zero _ two_pos.ne') hu₁0,
         Nat.factorization_mul (pow_ne_zero _ two_pos.ne') hu₂0] at hf
@@ -172,9 +169,7 @@ theorem alternatingSmoothSum_eq_sum_odd_roots (M : ℕ) {y : ℕ} (hy : 2 ≤ y)
       have hmul : 2 ^ a * u = j := Nat.ordProj_mul_ordCompl_eq_self j 2
       have hcop : Nat.Coprime 2 u := Nat.coprime_ordCompl Nat.prime_two (by omega)
       have hnd : ¬ 2 ∣ u := Nat.prime_two.coprime_iff_not_dvd.mp hcop
-      have hu1 : 1 ≤ u := by
-        by_contra h0
-        have hu0 : u = 0 := by omega
+      have hu1 : 1 ≤ u := Nat.pos_of_ne_zero fun hu0 => by
         rw [hu0, mul_zero] at hmul
         omega
       have huM : u ≤ M := (Nat.le_mul_of_pos_left u (Nat.pow_pos two_pos)).trans (hmul.le.trans hjM)
@@ -187,7 +182,7 @@ theorem alternatingSmoothSum_eq_sum_odd_roots (M : ℕ) {y : ℕ} (hy : 2 ≤ y)
       have hpow_le : 2 ^ a ≤ M / u :=
         (Nat.le_div_iff_mul_le hu1).mpr (hmul.le.trans hjM)
       have ha_le : a ≤ Nat.log 2 (M / u) :=
-        (Nat.pow_le_iff_le_log (by decide : 1 < 2) ((Nat.one_le_div_iff hu1).mpr huM).ne').mp hpow_le
+        Nat.le_log_of_pow_le (by decide : 1 < 2) hpow_le
       exact ⟨⟨u, a⟩, mem_sigma.mpr ⟨mem_filter.mpr ⟨huS, hnd⟩, mem_Icc.mpr ⟨Nat.zero_le a, ha_le⟩⟩, hmul⟩
   rw [hbij, sum_sigma]
   refine sum_congr rfl fun u hu => ?_
@@ -332,7 +327,8 @@ theorem alternatingSmoothSum_buchstab (M : ℕ) {z y : ℕ} (hz : 2 ≤ z) (hzy 
           · omega
         · rintro ⟨hqle, hqp⟩
           exact ⟨by omega, hqp⟩
-      rw [hprimes, ih]
+      simp only [alternatingSmoothSum, hprimes] at ih ⊢
+      exact ih
 
 /-- Exact first-total reduction of the dyadic smooth difference over `k < 2N`. -/
 theorem sum_range_two_mul_smooth_dyadic_eq (N : ℕ) {y : ℕ} (hy : 2 ≤ y) :
@@ -344,11 +340,12 @@ theorem sum_range_two_mul_smooth_dyadic_eq (N : ℕ) {y : ℕ} (hy : 2 ≤ y) :
   | zero =>
     have hempty : Sieve.smoothUpTo (Nat.primesLE y) 0 = ∅ := by
       ext j
-      simp [mem_smoothUpTo_iff]
+      simp only [mem_smoothUpTo_iff, notMem_empty, iff_false]
+      omega
     simp [oddSmoothIntegerCount, hempty]
   | succ N ih =>
     have hrange : 2 * (N + 1) = 2 * N + 1 + 1 := by omega
-    rw [hrange, sum_range_succ, sum_range_succ]
+    rw [hrange, Finset.sum_range_succ, Finset.sum_range_succ]
     have hd₁ : (2 * N) / 2 = N := Nat.mul_div_right N two_pos
     have hd₂ : (2 * N + 1) / 2 = N := by omega
     rw [hd₁, hd₂, ih, (two_mul_smoothIntegerCount_sub_eq_alternating N hy).2]
@@ -484,9 +481,13 @@ theorem smooth_complement_uniquely_selects_primes {y B : ℕ} (hB : B < (y + 1) 
       have h1 := hg x hxIoc
       have h2 := htrue x hxIoc
       have hdiff : ∑ j ∈ Ioc y B, (g j - indP j) * ((x / j : ℕ) : ℝ) = 0 := by
-        have hsub : (∑ j ∈ Ioc y B, g j * ((x / j : ℕ) : ℝ)) -
-            (∑ j ∈ Ioc y B, indP j * ((x / j : ℕ) : ℝ)) = 0 := by linarith only [h1, h2]
-        rwa [← sum_sub_distrib, ← sum_congr rfl (fun j _ => sub_mul (g j) (indP j) _)]
+        calc
+          ∑ j ∈ Ioc y B, (g j - indP j) * ((x / j : ℕ) : ℝ) =
+              ∑ j ∈ Ioc y B, (g j * ((x / j : ℕ) : ℝ) - indP j * ((x / j : ℕ) : ℝ)) :=
+            sum_congr rfl fun j _ => sub_mul (g j) (indP j) _
+          _ = (∑ j ∈ Ioc y B, g j * ((x / j : ℕ) : ℝ)) -
+                ∑ j ∈ Ioc y B, indP j * ((x / j : ℕ) : ℝ) := sum_sub_distrib _ _
+          _ = 0 := by linarith only [h1, h2]
       have hsingle : (∑ j ∈ Ioc y B, (g j - indP j) * ((x / j : ℕ) : ℝ)) = g x - indP x := by
         rw [sum_eq_single_of_mem x hxIoc]
         · rw [Nat.div_self (by omega : 0 < x), Nat.cast_one, mul_one]
@@ -505,10 +506,11 @@ theorem smooth_complement_uniquely_selects_primes {y B : ℕ} (hB : B < (y + 1) 
     congr 1
     exact sum_congr rfl fun m hm => by rw [h m hm]
 
-/-- Top-octave parity aliasing: for every `r ∈ (⌊N/2⌋, N]` and every `n ≤ N`, the odd integer
-`2r - 1` and the adjacent even integer `2r` have identical central-binomial carry `1_{r ≤ n}`. -/
+/-- Top-octave parity aliasing: whenever `2r - 1 ∈ (N, 2N]` (`N < 2r - 1` and `r ≤ N`), for
+every `n ≤ N` the odd integer `2r - 1` and the adjacent even integer `2r` have identical
+central-binomial carry `1_{r ≤ n}`. -/
 theorem centralBinom_carry_top_octave_aliasing {N r n : ℕ}
-    (hr : N / 2 < r) (hrN : r ≤ N) (hn : n ≤ N) :
+    (hr : N < 2 * r - 1) (hrN : r ≤ N) (hn : n ≤ N) :
     ((2 * n) / (2 * r - 1)) % 2 = ((2 * n) / (2 * r)) % 2 ∧
       ((2 * n) / (2 * r)) % 2 = if r ≤ n then 1 else 0 := by
   have hrpos : 0 < r := by omega

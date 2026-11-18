@@ -270,6 +270,7 @@ theorem separated_graph_orders_recover_pole {f g : ℝ → ℝ} (hf : ContDiff �
   simpa only [zero_add,sub_add_cancel,Function.comp_apply,A,L,upper] using hz.add h
 
 #print axioms tendsto_separated_graph_pair
+#print axioms tendsto_ordinary_prime_log_test
 #print axioms separated_graph_orders_recover_pole
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

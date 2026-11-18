@@ -1,5 +1,7 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.TwoAndThreeDilationRecurrencesAndSingleQuartetStratum
 import GaloisForLFunctions.RHTower.PrimeLogIncommensuratePhaseClock
+import GaloisForLFunctions.ExceptionalLayerTheory.EveryRightZeroForcesBothSignsOfThePrimeError
+import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheFloorGraphNormAndTopOctaveBlindnessOfWindowGluing
 
 /-!
 # Identifying the quartet by mixed prime dilations
@@ -11,7 +13,7 @@ The two prime logarithms then identify the frequency up to sign.
 
 noncomputable section
 
-open Complex
+open Complex Filter Topology
 open GaloisForLFunctions.ZeroConfigurationGeometry GaloisForLFunctions.ExclusionOfTheCriticalState
 
 namespace GaloisForLFunctions.ExceptionalLayerTheory
@@ -88,12 +90,111 @@ theorem two_prime_product_recurrences_iff_singleQuartet {β γ : ℝ}
     have hcos := (re_eq_and_cos_im_eq_of_not_isSqrtLogSqUnbounded (by norm_num : (1:ℝ)<6)
       h₆ (by simpa using hβ) hne hz).2
     have he := abs_eq_of_two_prime_and_product_cos Nat.prime_two Nat.prime_three (by decide)
-      hr.2.2.1 hr.2.2.2 (by norm_num at hcos ⊢; exact hcos)
+      hr.2.2.1 hr.2.2.2 (by simpa using hcos)
     exact hr.2.1 (by simpa only [abs_of_pos hr.1,abs_of_pos hγ] using he)
   · intro h
     obtain ⟨_,_,_,hl,ha⟩ := singleQuartet_obeys_all_dilation_recurrences hγ h
     exact ⟨hl,ha 2 (by norm_num),ha 3 (by norm_num),ha 6 (by norm_num)⟩
 
+private theorem positive_power_limsup_of_right_zero {ρ : ℂ} (hh : 1/2<ρ.re)
+    (h1 : ρ.re<1) (hz : riemannZeta ρ=0) : HasPositivePowerLimsup primeError ρ.re := by
+  obtain ⟨c,hc,h⟩ := both_prime_error_peaks_at_every_large_cutoff hh h1 hz
+  refine ⟨c,hc,fun X => ?_⟩
+  obtain ⟨M,hM⟩ := exists_nat_ge X
+  obtain ⟨N,hs,hN⟩ := (h.and (eventually_ge_atTop (M^2))).exists
+  obtain ⟨n,_,hn,he⟩ := hs 1 abs_one
+  have hm : (M:ℝ)≤Real.sqrt N := by
+    have ht := Real.sqrt_le_sqrt (show ((M^2:ℕ):ℝ)≤N by exact_mod_cast hN)
+    simpa only [Nat.cast_pow,Real.sqrt_sq (Nat.cast_nonneg M)] using ht
+  have hp : c*(n:ℝ)^ρ.re≤primeError n := by simpa only [one_mul] using he.le
+  exact ⟨n,hM.trans (hm.trans hn.le),hp.trans (le_abs_self _)⟩
+
+private theorem bounded_residual_of_rh (h : RiemannHypothesis) {a β γ : ℝ} (ha : 1≤a) :
+    ¬IsSqrtLogSqUnbounded (primeDilationResidual a β γ) := by
+  let K := 200*(_root_.RHTower.xiLineTwoLogDerivConstant+2)
+  have hb (x : ℝ) (hx : 16≤x) : |primeError x|≤|K|*Real.sqrt x*Real.log x^2 :=
+    (_root_.RHTower.abs_chebyshevPsi_sub_le_of_riemannHypothesis h hx).trans
+      (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_abs_self _) (Real.sqrt_nonneg _)) (sq_nonneg _))
+  obtain ⟨C,X,_,hC⟩ := abs_dilationRecurrenceOp_le_of_sqrt_log_sq (β := β) (γ := γ) ha (abs_nonneg K) hb
+  exact fun hu => (isSqrtLogSqUnbounded_iff_not_eventually_le _).mp hu ⟨C,X,hC⟩
+
+/-- Without a lower amplitude assumption, the three bounded recurrences
+allow precisely RH or the prescribed quartet. -/
+theorem two_prime_product_recurrences_iff_rh_or_singleQuartet {β γ : ℝ}
+    (hβ : 1/2<β) (hβ' : β<1) (hγ : 0<γ) :
+    (¬IsSqrtLogSqUnbounded (primeDilationResidual 2 β γ) ∧
+      ¬IsSqrtLogSqUnbounded (primeDilationResidual 3 β γ) ∧
+      ¬IsSqrtLogSqUnbounded (primeDilationResidual 6 β γ)) ↔
+      RiemannHypothesis ∨ HasSingleOffLineQuartet ((β:ℂ)+I*γ) := by
+  constructor
+  · intro hr
+    by_cases h : RiemannHypothesis
+    · exact Or.inl h
+    rw [_root_.RHTower.riemannHypothesis_iff_riemannZeta_ne_zero_of_mem_upper_strip] at h
+    push Not at h
+    obtain ⟨ρ,hh,h1,hz⟩ := h
+    have hn : ρ≠1 := fun e => h1.ne (by rw [e,Complex.one_re])
+    have he := (re_eq_and_cos_im_eq_of_not_isSqrtLogSqUnbounded (by norm_num : (1:ℝ)<2)
+      hr.1 hh hn hz).1
+    exact Or.inr ((two_prime_product_recurrences_iff_singleQuartet hβ hβ' hγ).mp
+      ⟨he ▸ positive_power_limsup_of_right_zero hh h1 hz,hr⟩)
+  · rintro (h | h)
+    · exact ⟨bounded_residual_of_rh h (by norm_num),bounded_residual_of_rh h (by norm_num),
+        bounded_residual_of_rh h (by norm_num)⟩
+    · exact ((two_prime_product_recurrences_iff_singleQuartet hβ hβ' hγ).mpr h).2
+
+/-- The forward dilation residual for the logarithmic count of ordinary
+primes, with every prime counted once. -/
+def ordinaryThetaDilationResidual (a β γ : ℝ) :=
+  dilationRecurrenceOp a β γ (fun x => Chebyshev.theta x-x)
+
+private theorem bounded_congr_of_bounded_difference {f g : ℝ → ℝ}
+    (hd : ∃ B X : ℝ, ∀ x, X≤x → |f x-g x|≤B*Real.sqrt x*Real.log x^2) :
+    (¬IsSqrtLogSqUnbounded f) ↔ ¬IsSqrtLogSqUnbounded g := by
+  obtain ⟨B,X,hB⟩ := hd
+  simp only [isSqrtLogSqUnbounded_iff_not_eventually_le,not_not]
+  constructor <;> rintro ⟨C,Y,hC⟩ <;> refine ⟨C+B,max X Y,fun x hx => ?_⟩
+  · have he := abs_sub (f x) (f x-g x)
+    rw [sub_sub_cancel] at he
+    linarith only [he,hB x ((le_max_left _ _).trans hx),hC x ((le_max_right _ _).trans hx)]
+  · have he := abs_add_le (g x) (f x-g x)
+    rw [show g x+(f x-g x)=f x by ring] at he
+    linarith only [he,hB x ((le_max_left _ _).trans hx),hC x ((le_max_right _ _).trans hx)]
+
+private theorem theta_residual_iff {a β γ : ℝ} (ha : 1≤a) :
+    (¬IsSqrtLogSqUnbounded (primeDilationResidual a β γ)) ↔
+      ¬IsSqrtLogSqUnbounded (ordinaryThetaDilationResidual a β γ) := by
+  let δ (x : ℝ) := Chebyshev.psi x-Chebyshev.theta x
+  let K := 3*(Real.log 4+4)
+  have hK : 0≤K := by dsimp only [K]; positivity
+  have hd (x : ℝ) (hx : Real.exp 1≤x) : |δ x|≤K*Real.sqrt x*Real.log x^2 := by
+    have hxpos := (Real.exp_pos 1).trans_le hx
+    have hl : 1≤Real.log x := (Real.le_log_iff_exp_le hxpos).mpr hx
+    have hδ := GreenCalculusOfThePrimeFreeWindow.psi_sub_theta_le_three_mul_sqrt x
+    change |Chebyshev.psi x-Chebyshev.theta x|≤_
+    rw [abs_of_nonneg (sub_nonneg.mpr (Chebyshev.theta_le_psi _))]
+    exact hδ.trans (le_mul_of_one_le_right (mul_nonneg hK (Real.sqrt_nonneg _))
+      (by nlinarith only [hl,sq_nonneg (Real.log x-1)]))
+  obtain ⟨B,X,_,hb⟩ := abs_dilationRecurrenceOp_le_of_sqrt_log_sq (β := β) (γ := γ) ha hK hd
+  refine bounded_congr_of_bounded_difference ⟨B,X,fun x hx => ?_⟩
+  have he : δ=fun t => primeError t-(Chebyshev.theta t-t) := by
+    funext t; dsimp [δ,primeError]; ring
+  have h := hb x hx
+  rwa [he,dilationRecurrenceOp_sub] at h
+
+/-- Three recurrences on actual ordinary prime counts allow precisely RH
+or a single quartet at the specified point, without any amplitude input. -/
+theorem ordinary_prime_recurrences_iff_rh_or_singleQuartet {β γ : ℝ}
+    (hβ : 1/2<β) (hβ' : β<1) (hγ : 0<γ) :
+    (¬IsSqrtLogSqUnbounded (ordinaryThetaDilationResidual 2 β γ) ∧
+      ¬IsSqrtLogSqUnbounded (ordinaryThetaDilationResidual 3 β γ) ∧
+      ¬IsSqrtLogSqUnbounded (ordinaryThetaDilationResidual 6 β γ)) ↔
+      RiemannHypothesis ∨ HasSingleOffLineQuartet ((β:ℂ)+I*γ) := by
+  simpa only [← theta_residual_iff (by norm_num : (1:ℝ)≤2),
+    ← theta_residual_iff (by norm_num : (1:ℝ)≤3),← theta_residual_iff (by norm_num : (1:ℝ)≤6)]
+    using two_prime_product_recurrences_iff_rh_or_singleQuartet hβ hβ' hγ
+
+#print axioms ordinary_prime_recurrences_iff_rh_or_singleQuartet
 #print axioms abs_eq_of_two_prime_and_product_cos
 #print axioms two_prime_product_recurrences_iff_singleQuartet
 

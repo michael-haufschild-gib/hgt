@@ -85,6 +85,11 @@ theorem sum_movingOddQuotientBand_eq_ordinaryLastClassTotal (X : ℕ) :
       · rw [if_neg hd, mul_zero]
         exact sum_eq_zero fun Q _ => if_neg (by omega)
 
+private theorem Ioc_zero_eq_Icc_one (n : ℕ) : Ioc 0 n = Icc 1 n := by
+  ext k
+  simp only [mem_Ioc, mem_Icc]
+  omega
+
 private theorem slice_multiplicity_identity (f : ℕ → ℝ) {d : ℕ} (hd : 1 ≤ d) (X : ℕ) :
     (∑ k ∈ range X, ∑ m ∈ (Icc 1 k).filter (fun m => k / m = d), f m) =
       (∑ m ∈ Icc 1 (X / (d + 1)), (m : ℝ) * f m) +
@@ -137,7 +142,8 @@ private theorem slice_multiplicity_identity (f : ℕ → ℝ) {d : ℕ} (hd : 1 
       have : min X ((d + 1) * m) ≤ X := min_le_left _ _
       omega
     simp [hempty]
-  rw [htrim, ← Ioc_eq_Icc, ← sum_Ioc_consecutive _ (Nat.zero_le (X / (d + 1))) hM₁₂, Ioc_eq_Icc]
+  rw [htrim, ← Ioc_zero_eq_Icc_one, ← sum_Ioc_consecutive _ (Nat.zero_le (X / (d + 1))) hM₁₂,
+    Ioc_zero_eq_Icc_one]
   congr 1
   · refine sum_congr rfl fun m hm => ?_
     have hm_le := (mem_Icc.mp hm).2
@@ -270,7 +276,8 @@ theorem abs_movingQuotientSlice_le_of_prefix {d : ℕ} (hd : 1 ≤ d) (X : ℕ) 
         have hsplit₂ : (∑ m ∈ Ioc M₁ M₂, ((X : ℝ) - (d : ℝ) * m) * ordinaryPrimeCountWeight m) =
             (∑ m ∈ Icc 1 M₂, ordinaryPrimeCountWeight m * w₂ m) -
               c₀ * ∑ m ∈ Icc 1 M₁, ordinaryPrimeCountWeight m := by
-          rw [← Ioc_eq_Icc, ← sum_Ioc_consecutive _ (Nat.zero_le M₁) hM₁₂, Ioc_eq_Icc]
+          rw [← Ioc_zero_eq_Icc_one M₂, ← sum_Ioc_consecutive _ (Nat.zero_le M₁) hM₁₂,
+            Ioc_zero_eq_Icc_one M₁]
           have hhead : (∑ m ∈ Icc 1 M₁, ordinaryPrimeCountWeight m * w₂ m) =
               c₀ * ∑ m ∈ Icc 1 M₁, ordinaryPrimeCountWeight m := by
             rw [mul_sum]
@@ -469,7 +476,7 @@ theorem movingQuotientSliceTrivial_lower_bound {d X : ℕ} (hd : 1 ≤ d)
     rw [hw_eq]
     exact mul_le_mul hm_ge hinv_ge (inv_nonneg.mpr hlogX_pos.le) (by positivity)
   have hcard_ge : (M₁ : ℝ) / 8 ≤ (J.card : ℝ) := by
-    have hc : J.card = M₁ / 2 - M₁ / 4 := Nat.card_Ioc _ _
+    have hc : J.card = M₁ / 2 - M₁ / 4 := Nat.card_Ioc
     have hnat : M₁ ≤ 8 * (M₁ / 2 - M₁ / 4) := by omega
     have hR : (M₁ : ℝ) ≤ 8 * (J.card : ℝ) := by rw [hc]; exact_mod_cast hnat
     linarith only [hR]
@@ -705,7 +712,8 @@ theorem exists_outerQuotientPairBand_sub_seven_eighths {β : ℝ}
     let c : ℕ → ℝ := fun m => if A < m then ordinaryPrimeCountWeight m else 0
     let f : ℕ → ℝ := fun m => discreteQuotientMean binaryCarryProfile m X
     have hband_eq : outerQuotientPairBand Q X = ∑ m ∈ Icc 1 B, c m * f m := by
-      rw [outerQuotientPairBand, ← Ioc_eq_Icc, ← sum_Ioc_consecutive _ (Nat.zero_le A) hAB]
+      rw [outerQuotientPairBand, ← Ioc_zero_eq_Icc_one B,
+        ← sum_Ioc_consecutive _ (Nat.zero_le A) hAB]
       have hhead : (∑ m ∈ Ioc 0 A, c m * f m) = 0 :=
         sum_eq_zero fun m hm => by simp [c, not_lt.mpr (mem_Ioc.mp hm).2]
       have htail : (∑ m ∈ Ioc A B, c m * f m) =
@@ -722,7 +730,7 @@ theorem exists_outerQuotientPairBand_sub_seven_eighths {β : ℝ}
       · have hsplit : (∑ k ∈ Icc 1 n, c k) =
             (∑ k ∈ Icc 1 n, ordinaryPrimeCountWeight k) -
               ∑ k ∈ Icc 1 A, ordinaryPrimeCountWeight k := by
-          rw [← Ioc_eq_Icc, ← sum_Ioc_consecutive _ (Nat.zero_le A) hAn.le]
+          rw [← Ioc_zero_eq_Icc_one n, ← sum_Ioc_consecutive _ (Nat.zero_le A) hAn.le]
           have h0 : (∑ k ∈ Ioc 0 A, c k) = 0 :=
             sum_eq_zero fun k hk => by simp [c, not_lt.mpr (mem_Ioc.mp hk).2]
           have h1 : (∑ k ∈ Ioc A n, c k) = ∑ k ∈ Ioc A n, ordinaryPrimeCountWeight k :=
@@ -730,7 +738,8 @@ theorem exists_outerQuotientPairBand_sub_seven_eighths {β : ℝ}
           have h2 : (∑ k ∈ Icc 1 n, ordinaryPrimeCountWeight k) =
               (∑ k ∈ Icc 1 A, ordinaryPrimeCountWeight k) +
                 ∑ k ∈ Ioc A n, ordinaryPrimeCountWeight k := by
-            rw [← Ioc_eq_Icc, ← Ioc_eq_Icc, sum_Ioc_consecutive _ (Nat.zero_le A) hAn.le]
+            rw [← Ioc_zero_eq_Icc_one n, ← Ioc_zero_eq_Icc_one A,
+              sum_Ioc_consecutive _ (Nat.zero_le A) hAn.le]
           rw [h0, zero_add, h1]
           linarith only [h2]
         have hn1 : 1 ≤ n := by omega
@@ -762,7 +771,7 @@ theorem exists_outerQuotientPairBand_sub_seven_eighths {β : ℝ}
         |∑ n ∈ Icc 1 B, (∑ k ∈ Icc 1 n, c k) * (f n - f (n + 1))| ≤
           4 * K * (X : ℝ) * (B : ℝ) ^ β := by
       -- Only `n ∈ Ioc A B` contribute since `c` vanishes up to `A`
-      rw [← Ioc_eq_Icc (b := B), ← sum_Ioc_consecutive _ (Nat.zero_le A) hAB]
+      rw [← Ioc_zero_eq_Icc_one B, ← sum_Ioc_consecutive _ (Nat.zero_le A) hAB]
       have hz : (∑ n ∈ Ioc 0 A, (∑ k ∈ Icc 1 n, c k) * (f n - f (n + 1))) = 0 :=
         sum_eq_zero fun n hn => by rw [hc_pref_zero n (mem_Ioc.mp hn).2, zero_mul]
       rw [hz, zero_add]

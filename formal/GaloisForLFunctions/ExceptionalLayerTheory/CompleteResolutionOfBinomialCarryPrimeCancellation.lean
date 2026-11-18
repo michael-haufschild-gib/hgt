@@ -89,7 +89,7 @@ theorem complete_smooth_division_tree_resolution :
       (∀ x ∈ Ioc y B, (smoothIntegerCount x y : ℝ) +
         ∑ m ∈ Ioc y B, g m * ((x / m : ℕ) : ℝ) = x) ↔
         ∀ m ∈ Ioc y B, g m = if m.Prime then 1 else 0) ∧
-    (∀ {N r n : ℕ}, N / 2 < r → r ≤ N → n ≤ N →
+    (∀ {N r n : ℕ}, N < 2 * r - 1 → r ≤ N → n ≤ N →
       ((2 * n) / (2 * r - 1)) % 2 = ((2 * n) / (2 * r)) % 2 ∧
         ((2 * n) / (2 * r)) % 2 = if r ≤ n then 1 else 0) :=
   ⟨fun n _ hy => ⟨(two_mul_smoothIntegerCount_sub_eq_alternating n hy).2,

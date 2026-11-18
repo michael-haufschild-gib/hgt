@@ -68,7 +68,7 @@ private theorem square_row_bound {u : ℝ} (hu : 0<u) (J : ℕ) :
   have h (L : ℕ) : (∑ j ∈ range L, min 1 (u^2/((j:ℝ)+1)^2)) ≤
       4*u-4*u^2/(u+(L:ℝ)) := by
     induction L with
-    | zero => simp only [range_zero,sum_empty,Nat.cast_zero,add_zero]; field_simp [hu.ne'] <;> nlinarith only
+    | zero => simp only [range_zero,sum_empty,Nat.cast_zero,add_zero]; field_simp [hu.ne']; nlinarith only
     | succ L ih =>
       rw [Finset.sum_range_succ,Nat.cast_succ]
       have hs := square_row_step hu (a := (L:ℝ)+1) (by linarith only [Nat.cast_nonneg (α := ℝ) L])
@@ -96,7 +96,7 @@ private theorem cubeScale_sq (N a b : ℕ) :
 private def squareCubeMajorant (N : ℕ) (z : ℕ×ℕ) : ℝ :=
   min 1 ((cubeScale N z.1)^2/((z.2:ℝ)+1)^2)
 
-private theorem squareCubeMajorant_nonneg (N : ℕ) (z : ℕ×ℕ) : 0≤squareCubeMajorant N z :=
+private theorem squareCubeMajorant_nonneg (N : ℕ) (z : ℕ×ℕ) : 0 ≤ squareCubeMajorant N z :=
   le_min zero_le_one (by positivity)
 
 private theorem squareCubeMajorant_sum {N : ℕ} (hN : 0<N) (J : ℕ) :
@@ -138,7 +138,7 @@ theorem powerful_divisor_rounding_le {f : ArithmeticFunction ℝ} (hf : f.IsMult
     intro m hm n hn e
     exact (spec m (mem_filter.mp hm).2).trans ((congrArg
       (fun x : ℕ×ℕ => (x.2+1)^2*(x.1+1)^3) e).trans (spec n (mem_filter.mp hn).2).symm)
-  have hg (d : ℕ) (hd : d∈S) : F d≤squareCubeMajorant N (φ d) := by
+  have hg (d : ℕ) (hd : d∈S) : F d ≤ squareCubeMajorant N (φ d) := by
     have hs' := spec d (mem_filter.mp hd).2
     have hd0 : 0<d := by rw [hs']; positivity
     dsimp only [F,squareCubeMajorant]
@@ -146,10 +146,10 @@ theorem powerful_divisor_rounding_le {f : ArithmeticFunction ℝ} (hf : f.IsMult
     apply (mul_le_of_le_one_left (abs_nonneg _) (h1 d)).trans
     have ht := floor_error_min N d hd0
     apply ht.trans_eq
-    congr 1
-    nth_rw 1 [hs']
-    push_cast
-    exact cubeScale_sq N _ _
+    apply congrArg (min (1:ℝ))
+    have hcast := congrArg (fun k : ℕ => (k:ℝ)) hs'
+    push_cast at hcast
+    exact (congrArg (fun v : ℝ => (N:ℝ)/v) hcast).trans (cubeScale_sq N _ _)
   change (∑ d ∈ range M, F d)≤_
   calc
     _ = ∑ d ∈ S, F d := by
@@ -262,7 +262,7 @@ theorem dyadicPositiveFactorialProfile_prime_sqrt_bound {N : ℕ} (hN : 1≤N) :
   rcases eq_or_lt_of_le hN with h | hn
   · subst N
     have hz : Nat.primesLE 1=∅ := eq_empty_iff_forall_notMem.mpr fun p hp =>
-      (Nat.mem_primesLE.mp hp).2.not_le_one (Nat.mem_primesLE.mp hp).1
+      (Nat.prime_of_mem_primesLE hp).one_lt.not_ge (Nat.mem_primesLE.mp hp).1
     rw [hz,sum_empty,abs_zero,Nat.cast_one,Real.sqrt_one,mul_one]
     linarith only [hc]
   have hd : 1≤N/2 := by omega

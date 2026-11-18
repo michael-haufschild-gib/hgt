@@ -140,6 +140,30 @@ theorem zetaZeroWidth_le_iff_sparse_square_degrees {θ s : ℝ} {E : Set ℕ}
   obtain ⟨B,hB⟩ := extend_lower (mul_nonneg two_pos.le ht) htail
   exact htw.not_ge ((zetaZeroWidth_le_iff_successorSquareTriple ht ht').mpr ⟨B,hB⟩)
 
+/-- Sparse diagonal logarithmic allowances give a strip of the same width. -/
+theorem zetaZeroWidth_le_of_sparse_square_logs {θ s A : ℝ} {E : Set ℕ}
+    (hθ : θ<1) (hE : PowGaps θ E) (hs : 0≤s) (hs' : s<1/2) (hA : 0≤A)
+    (hfit : ∀ n ∈ E, Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n):ℝ) ≤
+      A*(n:ℝ)^(2+2*s)) : zetaZeroWidth≤s := by
+  obtain ⟨D,hD,herr⟩ := successorSquare_degree_window_error
+  apply (zetaZeroWidth_le_iff_sparse_square_degrees hθ hE hs hs').mpr
+  refine ⟨A+4*D,fun n hn => ?_⟩
+  have hn' := hE.1 n hn
+  have hn₁ : (1:ℝ)≤n := by exact_mod_cast hn'
+  have hn₀ := zero_lt_one.trans_le hn₁
+  have hs₀ := mul_nonneg two_pos.le hs
+  have hlog := hfit n hn
+  rw [Real.rpow_add hn₀,Real.rpow_two] at hlog
+  have hd := (abs_le.mp (herr hn' hn' (by linarith only [hn₁]))).1
+  have hsq := pow_le_pow_left₀ (by positivity : 0≤(n:ℝ)+1)
+    (by linarith only [hn₁] : (n:ℝ)+1≤2*n) 2
+  have hp := Real.rpow_le_rpow hn₀.le (by linarith : (n:ℝ)≤n+1) hs₀
+  have hterm := mul_le_mul_of_nonneg_left hp (mul_nonneg hA (sq_nonneg (n:ℝ)))
+  have hlarge := (Real.one_le_rpow (by linarith only [hn₁] : 1≤(n:ℝ)+1) hs₀)
+  apply (mul_le_mul_iff_right₀ (sq_pos_of_pos hn₀)).mp
+  linarith only [hd,hlog,hterm,mul_le_mul_of_nonneg_left hsq hD,
+    le_mul_of_one_le_right (mul_nonneg hD (sq_nonneg (n:ℝ))) hlarge]
+
 /-- The actual comparison of two positive rationals detects RH on any
 conductor set with a power saving in its gaps. -/
 theorem riemannHypothesis_iff_sparse_square_power {θ : ℝ} {E : Set ℕ}
@@ -151,25 +175,14 @@ theorem riemannHypothesis_iff_sparse_square_power {θ : ℝ} {E : Set ℕ}
     obtain ⟨B,hB,h⟩ := riemannHypothesis_iff_diagonal_successorSquare_power.mp hRH
     exact ⟨B,hB,fun n hn => h n (hE.1 n hn)⟩
   rintro ⟨B,hB,hfit⟩
-  obtain ⟨D,hD,herr⟩ := successorSquare_degree_window_error
   apply riemannHypothesis_iff_zetaZeroWidth_eq_zero.mpr
   apply le_antisymm _ zetaZeroWidth_nonneg
-  apply (zetaZeroWidth_le_iff_sparse_square_degrees hθ hE (s := 0) le_rfl (by norm_num)).mpr
-  refine ⟨Real.log B+4*D,fun n hn => ?_⟩
-  have hn' := hE.1 n hn
-  have hn₁ : (1:ℝ)≤n := by exact_mod_cast hn'
-  have hn₀ := zero_lt_one.trans_le hn₁
+  have hlogB : 0≤Real.log (B:ℝ) := Real.log_natCast_nonneg B
+  apply zetaZeroWidth_le_of_sparse_square_logs hθ hE (s := 0) le_rfl (by norm_num) hlogB
+  intro n hn
   have hlog := (generator_le_power_iff (n • successorSquareTriple n) hB 1 n).mp
     (by simpa only [one_mul] using hfit n hn)
-  simp only [Nat.cast_one,one_pow,mul_one] at hlog
-  have hd := (abs_le.mp (herr hn' hn' (by linarith only [hn₁]))).1
-  have hbd : ((n:ℝ)+1)^2≤4*(n:ℝ)^2 := by
-    have hh := pow_le_pow_left₀ (by positivity : 0≤(n:ℝ)+1)
-      (by linarith only [hn₁] : (n:ℝ)+1≤2*n) 2
-    linarith only [hh]
-  simp only [mul_zero,Real.rpow_zero,mul_one]
-  apply (mul_le_mul_iff_right₀ (sq_pos_of_pos hn₀)).mp
-  linarith only [hd,hlog,mul_le_mul_of_nonneg_left hbd hD]
+  simpa only [Nat.cast_one,one_pow,mul_one,mul_zero,add_zero,Real.rpow_two] using hlog
 
 /-- One common exponential allowance at the k-th-power conductors suffices,
 even for arbitrarily large fixed k. -/

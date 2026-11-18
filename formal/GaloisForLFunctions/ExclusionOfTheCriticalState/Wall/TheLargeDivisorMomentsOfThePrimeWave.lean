@@ -29,7 +29,7 @@ private theorem summable_before_cutoff (v : ℕ → ℝ) (T : ℝ) :
   apply if_neg
   intro h
   apply hd
-  rw [mem_range,Nat.lt_succ_iff]
+  rw [Finset.mem_range,Nat.lt_succ_iff]
   rcases Nat.eq_zero_or_pos d with rfl | h0
   · exact Nat.zero_le _
   apply Nat.le_floor
@@ -102,8 +102,13 @@ theorem criticalState_large_divisor_moments {W₀ : ℝ} (hW : 0 < W₀)
     simp only [w,abs_mul,abs_neg,abs_of_nonneg (Real.log_natCast_nonneg n),pow_one]
     exact (mul_le_mul_of_nonneg_right (hm n) (Real.log_natCast_nonneg n)).trans_eq (one_mul _)) (henv 1)
   refine ⟨fun t => -z t,fun t => E t-l t,?_,?_,fun t ht0 => ?_⟩
-  · simpa only [mul_neg,Pi.neg_apply] using hz.neg
-  · simpa only [sub_sub_cancel] using hl
+  · have hh : (fun t : ℝ => Real.exp (b*t)*(-z t)) = -(fun t : ℝ => Real.exp (b*t)*z t) := by
+      funext t
+      exact mul_neg _ _
+    rw [hh]
+    exact hz.neg
+  · change MemLp (fun t => Real.exp (b*t)*(E t-(E t-l t))) 2
+    simpa only [sub_sub_cancel] using hl
   · have h0 := tendsto_lateDivisorPartial (α := α) (tendsto_moebius_centredMultipleRow hb A t)
     rw [hs t ht0,zero_sub] at h0
     exact ⟨h0,tendsto_lateDivisorPartial (tendsto_moebius_log_centredMultipleRow hb A t)⟩

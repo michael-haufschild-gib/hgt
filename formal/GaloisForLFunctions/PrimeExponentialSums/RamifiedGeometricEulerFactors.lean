@@ -28,7 +28,7 @@ private theorem telescope (u : ℕ → R) (z : R) (k : ℕ) :
   induction k with
   | zero => simp [delta]
   | succ k ih =>
-    rw [sum_range_succ,Nat.sub_self,pow_zero,mul_one]
+    rw [Finset.sum_range_succ (fun j => delta u z j * z^(k+1-j)) (k+1),Nat.sub_self,pow_zero,mul_one]
     have he : (∑ j ∈ range (k+1), delta u z j*z^(k+1-j)) =
         (∑ j ∈ range (k+1), delta u z j*z^(k-j))*z := by
       rw [sum_mul]
@@ -67,25 +67,33 @@ private theorem convolution_local (f g : ArithmeticFunction R) (p : Nat.Primes) 
 /-- Exact Dirichlet factorization with all ramified local data preserved. -/
 theorem factorization (q : ℕ) (A : ℕ → ℕ → R) :
     correction q A * geometric q A = localEuler A := by
-  apply (((localEuler_isMultiplicative _).mul (localEuler_isMultiplicative _)).eq_iff_eq_on_prime_powers
-    _ _ (localEuler_isMultiplicative A)).2
+  apply (ArithmeticFunction.IsMultiplicative.eq_iff_eq_on_prime_powers
+    (correction q A * geometric q A)
+    ((localEuler_isMultiplicative _).mul (localEuler_isMultiplicative _))
+    (localEuler A) (localEuler_isMultiplicative A)).2
   intro p k hp
   let P : Nat.Primes := ⟨p,hp⟩
-  rw [convolution_local _ _ P,localEuler_prime_pow A P]
-  by_cases hr : p ∣ q
+  rw [convolution_local (correction q A) (geometric q A) P k,localEuler_prime_pow A P]
+  change (∑ j ∈ range (k+1), correction q A ((P : ℕ)^j) *
+    geometric q A ((P : ℕ)^(k-j))) = normalizedPrimePowerValue A P k
+  by_cases hr : (P : ℕ) ∣ q
   · rw [sum_eq_single 0]
-    · simp [correction,geometric_local,hr,P,normalizedPrimePowerValue]
+    · rw [pow_zero,Nat.sub_zero,geometric_local q A P k,if_pos hr]
+      simp [correction]
     · intro j _ hj
       obtain ⟨t,rfl⟩ := Nat.exists_eq_succ_of_ne_zero hj
-      rw [correction_local,if_pos hr,zero_mul]
+      rw [correction_local q A P t,if_pos hr,zero_mul]
     · simp
   · have hc (j : ℕ) : correction q A ((P : ℕ)^j) =
-        delta (normalizedPrimePowerValue A p) (A p 1) j := by
+        delta (normalizedPrimePowerValue A P) (A P 1) j := by
       cases j with
       | zero => simp [correction,delta,normalizedPrimePowerValue]
-      | succ j => simp [correction_local,hr,P,delta,normalizedPrimePowerValue]
-    simp only [hc,geometric_local,if_neg (show ¬ (P : ℕ) ∣ q from hr)]
-    exact telescope _ _ k
+      | succ j =>
+        rw [correction_local q A P j,if_neg hr]
+        rfl
+    simpa only [hc,geometric_local q A P,if_neg hr] using
+      (show (∑ j ∈ range (k+1), delta (normalizedPrimePowerValue A P) (A P 1) j *
+        (A P 1)^(k-j)) = normalizedPrimePowerValue A P k from telescope _ _ k)
 
 /-- A surviving integer cannot contain a ramified prime or a prime to the first power. -/
 theorem support (q : ℕ) (A : ℕ → ℕ → R) (n : ℕ) (hn : correction q A n ≠ 0) :

@@ -129,8 +129,8 @@ theorem squareLongTrace_peaks_in_every_logarithmic_window {a : ℝ} (ha : 0 ≤ 
   let M := ∫ x : ℝ, Real.exp (a*x)*k x
   have ham : a ≤ 1/2 := haw.le.trans zetaZeroWidth_le_half
   have hF (u : ℝ) : |F u| ≤ (|H|+A)*Real.exp (1/2*|u|) := by
-    have he := Real.exp_le_exp.mpr (calc a*u ≤ a*|u| := mul_le_mul_of_nonneg_left (le_abs_self _) ha
-                                        _ ≤ 1/2*|u| := mul_le_mul_of_nonneg_right ham (abs_nonneg _))
+    have he := Real.exp_le_exp.mpr ((mul_le_mul_of_nonneg_left (le_abs_self u) ha).trans
+      (mul_le_mul_of_nonneg_right ham (abs_nonneg u)))
     have hh := abs_sub_le (H*Real.exp (a*u)) 0 (squareLongTrace u)
     simp only [sub_zero,zero_sub,abs_neg,abs_mul,abs_of_pos (Real.exp_pos _)] at hh
     dsimp only [F]

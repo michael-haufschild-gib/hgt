@@ -188,25 +188,21 @@ theorem both_prime_sign_masses_at_every_large_cutoff {ρ : ℂ} (hhalf : 1/2 < �
     _ = ((D/2)*(N:ℝ)^ρ.re)/K := by ring
     _ ≤ _ := (div_le_iff₀ hK).mpr (by linarith only [h,hi])
 
-private theorem mass_bound_above_zero_abscissa {b : ℝ} (hb : _root_.RHTower.zeroReSup < b) :
-    ∃ K : ℝ, ∀ N : ℕ, 1 ≤ N → ∀ σ : ℝ, |σ|=1 → localPrimeSignMass σ N ≤ K*(N:ℝ)^b := by
-  obtain ⟨C,hC,hψ⟩ := _root_.RHTower.exists_abs_chebyshevPsi_sub_le_rpow hb
-  have hpos := sub_nonneg.mpr (_root_.RHTower.half_le_zeroReSup.trans hb.le)
-  refine ⟨2*C,fun N hN σ hσ => ?_⟩
+private theorem local_mass_le_of_pointwise {b C σ : ℝ} (hb : 1/2≤b) (hC : 0≤C)
+    {N : ℕ} (hN : 1≤N) (h : ∀ n ∈ Icc 1 N, Real.sqrt N<n → σ*E n≤C*(n:ℝ)^b) :
+    localPrimeSignMass σ N≤(2*C)*(N:ℝ)^b := by
+  have hpos := sub_nonneg.mpr hb
   let S := Icc 1 N
   let T := S.filter (fun n : ℕ => Real.sqrt N < n)
   have hsub : T ⊆ S := filter_subset _ _
   have hN0 : 0 < (N:ℝ) := by exact_mod_cast hN
   let A := C*(N:ℝ)^(b-1/2)
   have hA : 0 ≤ A := mul_nonneg hC (Real.rpow_nonneg hN0.le _)
-  have hw (n : ℕ) (hn : n ∈ S) : max (σ*E n) 0 / n ≤ A*(n:ℝ)^(-(1/2:ℝ)) := by
+  have hw (n : ℕ) (ht : n ∈ T) : max (σ*E n) 0 / n ≤ A*(n:ℝ)^(-(1/2:ℝ)) := by
+    have hn := hsub ht
     have hn1 : (1:ℝ) ≤ n := by exact_mod_cast (mem_Icc.mp hn).1
     have hn0 := zero_lt_one.trans_le hn1
-    have hu := hψ n hn1
-    have hac : max (σ*E n) 0 ≤ C*(n:ℝ)^b := by
-      apply max_le _ (mul_nonneg hC (Real.rpow_nonneg hn0.le _))
-      apply (le_abs_self _).trans
-      rwa [abs_mul,hσ,one_mul]
+    have hac := max_le (h n hn (mem_filter.mp ht).2) (mul_nonneg hC (Real.rpow_nonneg hn0.le b))
     apply (div_le_div_of_nonneg_right hac hn0.le).trans
     calc
       _ = (C*(n:ℝ)^(b-1/2))*(n:ℝ)^(-(1/2:ℝ)) := by
@@ -215,7 +211,7 @@ private theorem mass_bound_above_zero_abscissa {b : ℝ} (hb : _root_.RHTower.ze
       _ ≤ _ := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow hn0.le
         (by exact_mod_cast (mem_Icc.mp hn).2) hpos) hC) (Real.rpow_nonneg hn0.le _)
   calc
-    _ ≤ ∑ n ∈ T, A*(n:ℝ)^(-(1/2:ℝ)) := sum_le_sum fun n hn => hw n (hsub hn)
+    _ ≤ ∑ n ∈ T, A*(n:ℝ)^(-(1/2:ℝ)) := sum_le_sum fun n hn => hw n hn
     _ ≤ ∑ n ∈ S, A*(n:ℝ)^(-(1/2:ℝ)) :=
       sum_le_sum_of_subset_of_nonneg hsub (fun n _ _ => mul_nonneg hA (Real.rpow_nonneg (Nat.cast_nonneg _) _))
     _ ≤ A*(2*Real.sqrt N) := by
@@ -226,6 +222,32 @@ private theorem mass_bound_above_zero_abscissa {b : ℝ} (hb : _root_.RHTower.ze
       calc
         _ = (2*C)*((N:ℝ)^(b-1/2)*(N:ℝ)^(1/2:ℝ)) := by dsimp only [A]; ring
         _ = _ := by rw [← Real.rpow_add hN0,show b-1/2+1/2=b by ring]
+
+private theorem mass_bound_above_zero_abscissa {b : ℝ} (hb : _root_.RHTower.zeroReSup < b) :
+    ∃ K : ℝ, ∀ N : ℕ, 1 ≤ N → ∀ σ : ℝ, |σ|=1 → localPrimeSignMass σ N ≤ K*(N:ℝ)^b := by
+  obtain ⟨C,hC,hψ⟩ := _root_.RHTower.exists_abs_chebyshevPsi_sub_le_rpow hb
+  refine ⟨2*C,fun N hN σ hσ => local_mass_le_of_pointwise
+    (_root_.RHTower.half_le_zeroReSup.trans hb.le) hC hN (fun n hn _ => ?_)⟩
+  apply (le_abs_self _).trans
+  rw [abs_mul,hσ,one_mul]
+  exact hψ n (by exact_mod_cast (mem_Icc.mp hn).1)
+
+/-- Every right zero forces a point of each sign at its exact power on
+each sufficiently large interval between the square root and the cutoff. -/
+theorem both_prime_error_peaks_at_every_large_cutoff {ρ : ℂ} (hhalf : 1/2<ρ.re)
+    (hone : ρ.re<1) (hz : riemannZeta ρ=0) : ∃ c : ℝ, 0<c ∧
+      ∀ᶠ N : ℕ in atTop, ∀ σ : ℝ, |σ|=1 → ∃ n ∈ Icc 1 N, Real.sqrt N<n ∧
+        c*(n:ℝ)^ρ.re<σ*(Chebyshev.psi n-n) := by
+  obtain ⟨c,hc,h⟩ := both_prime_sign_masses_at_every_large_cutoff hhalf hone hz
+  refine ⟨c/4,by positivity,?_⟩
+  filter_upwards [h,eventually_ge_atTop 1] with N hN hn
+  intro σ hσ
+  by_contra! hu
+  have hl := (hN σ hσ).trans (local_mass_le_of_pointwise hhalf.le (by positivity : 0≤c/4) hn hu)
+  have hp : 0<c*(N:ℝ)^ρ.re := mul_pos hc (Real.rpow_pos_of_pos (by exact_mod_cast hn) _)
+  linarith only [hl,hp]
+
+#print axioms both_prime_error_peaks_at_every_large_cutoff
 
 /-- RH is equivalent to finding one sign of small harmonic mass on arbitrarily distant
 square-root intervals for each exponent above one half. -/
