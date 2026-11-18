@@ -88,7 +88,7 @@ theorem centered_reciprocal_prime_intervals {d : ℝ} (hd : 0 < d) (hd' : d < 30
   rw [hparts]
   rw [div_eq_mul_inv C d] at hsum
   have hD := Real.rpow_le_rpow_of_nonpos (by exact_mod_cast (show 0 < k by omega) : (0:ℝ) < k)
-    (show (k:ℝ) ≤ L by exact_mod_cast hkL) hd.le.neg
+    (show (k:ℝ) ≤ L by exact_mod_cast hkL) (neg_nonpos.mpr hd.le)
   have hA := abs_add_le ((L:ℝ)⁻¹*P L-(k:ℝ)⁻¹*P k)
     (∑ j ∈ Finset.Ico k L, P j*((j:ℝ)⁻¹-((j+1:ℕ):ℝ)⁻¹))
   have hB := abs_sub ((L:ℝ)⁻¹*P L) ((k:ℝ)⁻¹*P k)

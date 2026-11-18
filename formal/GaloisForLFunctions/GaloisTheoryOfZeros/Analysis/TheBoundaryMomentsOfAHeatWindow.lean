@@ -468,7 +468,8 @@ theorem thin_heatBox_collisions (r : ℝ) :
     intro p _
     by_cases h : p.1.im = 0
     · simp [h]
-    · exact (gt_mem_nhds (abs_pos.mpr h)).mono (fun _ hs _ => hs)
+    · filter_upwards [gt_mem_nhds (abs_pos.mpr h)] with e he
+      exact fun _ => he
   obtain ⟨d,hd,hball⟩ := Metric.mem_nhds_iff.mp (hev.and (gt_mem_nhds zero_lt_one))
   refine ⟨d/2,by positivity,fun e he he' => ?_⟩
   have he₀ : e ∈ ball (0 : ℝ) d := by
@@ -519,8 +520,8 @@ theorem exists_real_heat_boundary_windings :
       have h := RHTower.rectIntegral_logDeriv_multi_zero (C n) Prod.fst heatIntersectionMultiplicity
         (z₁ := ⟨1/R n,-e⟩) (z₂ := ⟨R n,e⟩) (h := fun _ => (1 : ℂ))
         (fun p hp => ⟨(hin p hp).1,(hin p hp).2.1,
-          by simpa only [him p hp] using neg_lt_zero.mpr he,
-          by simpa only [him p hp] using he⟩) (Set.subset_univ _)
+          by rw [him p hp]; exact neg_lt_zero.mpr he,
+          by rw [him p hp]; exact he⟩) (Set.subset_univ _)
         (fun _ _ => analyticAt_const) (fun _ _ => one_ne_zero)
       unfold projectedHeatDiscriminant
       simpa using h

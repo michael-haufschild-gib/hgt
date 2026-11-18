@@ -551,7 +551,9 @@ theorem exists_coprimeZeroOneSet_realizing_log_and_unweighted_quadrature {β γ 
         nlinarith [hexp_ge_t, hh_pos, Real.exp_pos (β * t)]
       linarith
     rcases eq_or_lt_of_le hlu with heq | hlt
-    · have hΔ0 : Δπ_w s = 0 := by dsimp [Δπ_w]; rw [← heq, Finset.Ioc_self, Finset.sum_empty]
+    · have hΔ0 : Δπ_w s = 0 := by
+        show ∑ n ∈ Ioc l u, centeredCoprimeCountWeight w n = 0
+        rw [← heq, Finset.Ioc_self, Finset.sum_empty]
       have hS0 : ∑ n ∈ Ioc l u, Real.log n * centeredCoprimeCountWeight w n = 0 := by
         rw [heq, Finset.Ioc_self, Finset.sum_empty]
       rw [hS0, zero_sub, abs_neg] at hround
@@ -671,11 +673,14 @@ theorem exists_coprimeZeroOneSet_realizing_log_and_unweighted_quadrature {β γ 
     refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
     have hre : |(v_unw - v_log).re| ≤ K_step * Real.exp (β * t) / t := hr0
     have him : |(v_unw - v_log).im| ≤ K_step * Real.exp (β * t) / t := by
-      change |(Real.log (⌊Real.exp (t + h)⌋₊ : ℝ) * Δπ_w (t + h) -
-        logStepIncrement E_w (t + h) h) / A| ≤ _
-      rw [abs_div, abs_of_pos hA0]
+      rw [Complex.sub_im]
+      change |Real.log (⌊Real.exp (t + h)⌋₊ : ℝ) * Δπ_w (t + h) / A -
+        logStepIncrement E_w (t + h) h / A| ≤ _
+      rw [← sub_div, abs_div, abs_of_pos hA0]
       exact (div_le_self (abs_nonneg _) hA1).trans hr1
-    linarith
+    rw [show 2 * K_step * Real.exp (β * t) / t =
+      K_step * Real.exp (β * t) / t + K_step * Real.exp (β * t) / t by ring]
+    exact add_le_add hre him
   have hrad_t : |‖v_log‖ - quartetRadialCoeff β γ m * Real.exp (β * t)| ≤
       C' * (4 / β ^ 2) * Real.exp (β * t) / t := by
     have hb := hrad_b t ht_pos.le
@@ -705,7 +710,7 @@ theorem editedTheta_eq_sum_primes {e : ℕ → ℤ} (he : IsEdit e) {x : ℝ} (_
     (∀ p : ℕ, 1 + e p = 0 ∨ 1 + e p = 1 ∨ 1 + e p = 2) := by
   refine ⟨?_, fun p => ?_⟩
   · unfold editedTheta
-    rw [← Chebyshev.theta_eq_theta_coe_floor x, Chebyshev.theta_eq_sum_primesLE_log]
+    rw [Chebyshev.theta_eq_sum_primesLE]
     have hset : Nat.primesLE ⌊x⌋₊ = (Finset.Iic ⌊x⌋₊).filter Nat.Prime := by
       ext p
       rw [Nat.primesLE_eq_filter_Icc_one, mem_filter, mem_filter, mem_Icc, mem_Iic]
@@ -807,7 +812,8 @@ theorem sEdit_primeLog_wave_approx {α β : ℝ} (hβ0 : 0 < β) (hβα : β < �
     have hgeom : ∑ k ∈ Finset.range (K + 1), r ^ k ≤ r / (r - 1) * y ^ (α / 2) := by
       rw [geom_sum_eq hr1.ne', div_le_iff₀ (by linarith)]
       have hrK' : r ^ (K + 1) = r * r ^ K := by rw [pow_succ]; ring
-      have he : r / (r - 1) * y ^ (α / 2) * (r - 1) = r * y ^ (α / 2) := by field_simp
+      have he : r / (r - 1) * y ^ (α / 2) * (r - 1) = r * y ^ (α / 2) := by
+        field_simp; exact div_self (sub_pos.mpr hr1).ne'
       rw [he, hrK']
       nlinarith [pow_pos (show (0 : ℝ) < r by linarith) K]
     -- Bound each block `k`
@@ -836,7 +842,7 @@ theorem sEdit_primeLog_wave_approx {α β : ℝ} (hβ0 : 0 < β) (hβα : β < �
                 have h2_le : |2 * (p : ℝ) ^ (β - 1) * Real.cos (γ * Real.log p)| ≤ 2 := by
                   rw [abs_mul, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2),
                     abs_of_nonneg (Real.rpow_nonneg (by positivity) _)]
-                  nlinarith [mul_nonneg hp_pow (abs_nonneg (Real.cos (γ * Real.log p)))]
+                  nlinarith [mul_le_mul hp_pow hcos_le (abs_nonneg _) zero_le_one]
                 exact (abs_add_le _ _).trans (by linarith)
               · simp
           _ = ((RHTower.BeurlingDeletion.blockPrimes k).card : ℝ) * 3 := by
@@ -857,6 +863,9 @@ theorem sEdit_primeLog_wave_approx {α β : ℝ} (hβ0 : 0 < β) (hβα : β < �
           by_cases hpy : p ≤ ⌊y⌋₊
           · rw [if_pos ⟨hp_pos, by exact_mod_cast hpy⟩, if_pos hpy]
             simp
+            left
+            rw [← Complex.ofReal_natCast, ← Complex.ofReal_log (Nat.cast_nonneg p), ← Complex.ofReal_mul,
+              Complex.cos_ofReal_re]
           · rw [if_neg (fun h => hpy (by exact_mod_cast h.2)), if_neg hpy]
             simp
         have habs_le := (Complex.abs_re_le_norm _).trans hdev
@@ -962,7 +971,9 @@ theorem sEdit_primeLog_wave_approx {α β : ℝ} (hβ0 : 0 < β) (hβα : β < �
   have hpref : ∀ m : ℕ, m ≤ N → |∑ i ∈ Finset.Iic m, a i| ≤ M_x := by
     intro m hm
     rcases Nat.eq_zero_or_pos m with rfl | hm_pos
-    · simp [a, Nat.not_prime_zero, hM_x]
+    · have h0 : Finset.Iic (0 : ℕ) = {0} := by ext i; simp
+      rw [h0, Finset.sum_singleton]
+      simp [a, Nat.not_prime_zero, hM_x]
     · have hm1 : (1 : ℝ) ≤ m := by exact_mod_cast hm_pos
       have hmx : (m : ℝ) ≤ x :=
         (by exact_mod_cast hm : (m : ℝ) ≤ N).trans (Nat.floor_le hx0.le)
@@ -974,8 +985,8 @@ theorem sEdit_primeLog_wave_approx {α β : ℝ} (hβ0 : 0 < β) (hβα : β < �
       dsimp [M_x]
       have hrp : (m : ℝ) ^ (α / 2) ≤ x ^ (α / 2) :=
         Real.rpow_le_rpow (by positivity) hmx (by linarith)
-      have hlg_m : 1 + Real.log m ≤ 1 + Real.log x :=
-        add_le_add_left (Real.log_le_log (by positivity) hmx) 1
+      have hlg_m : 1 + Real.log m ≤ 1 + Real.log x := by
+        linarith [Real.log_le_log (by linarith) hmx]
       exact mul_le_mul (mul_le_mul_of_nonneg_left hrp hC_unw) hlg_m
         (by linarith [Real.log_nonneg hm1]) (mul_nonneg hC_unw (Real.rpow_nonneg hx0.le _))
   have hsuff : ∀ j : ℕ, 0 ≤ j → j ≤ N → |∑ i ∈ Ioc j N, a i| ≤ 2 * M_x := by
@@ -1012,8 +1023,8 @@ theorem sEdit_primeLog_wave_approx {α β : ℝ} (hβ0 : 0 < β) (hβα : β < �
     _ = 2 * C_unw * x ^ (α / 2) * (1 + Real.log x) ^ 2 := by dsimp [M_x]; ring
 
 /-- Mean-value bound `‖(y : ℂ)^{ρ - 1} − (x : ℂ)^{ρ - 1}‖ ≤ ‖ρ - 1‖ (y − x) x^{β - 2}` for
-`0 < x ≤ y` and `ρ = β + iγ` with `β < 2`. -/
-private theorem norm_cpow_sub_one_diff_le {β γ x y : ℝ} (hβ2 : β < 2) (hx : 0 < x)
+`0 < x ≤ y` and `ρ = β + iγ` with `β < 1`. -/
+private theorem norm_cpow_sub_one_diff_le {β γ x y : ℝ} (hβ1 : β < 1) (hx : 0 < x)
     (hxy : x ≤ y) :
     let ρ : ℂ := (β : ℂ) + I * (γ : ℂ)
     ‖(y : ℂ) ^ (ρ - 1) - (x : ℂ) ^ (ρ - 1)‖ ≤ ‖ρ - 1‖ * (y - x) * x ^ (β - 2) := by
@@ -1174,10 +1185,8 @@ private theorem rh_prime_wave_sum_approx (hRH : RiemannHypothesis) {β : ℝ} (h
         ext k; simp only [mem_Icc, mem_insert]; omega
       have h2 : Icc 1 M = insert M (Icc 1 (M - 1)) := by
         ext k; simp only [mem_Icc, mem_insert]; omega
-      rw [h1, Finset.sum_insert (by rw [mem_Icc]; omega), ih, Nat.add_sub_cancel]
-      nth_rw 2 [h2]
-      rw [Finset.sum_insert (by rw [mem_Icc]; omega)]
-      simp only [Nat.add_sub_cancel]
+      rw [h1, Finset.sum_insert (by rw [mem_Icc]; omega), ih, Nat.add_sub_cancel, h2,
+        Finset.sum_insert (by rw [mem_Icc]; omega)]
       ring
   have habel_bound : |∑ n ∈ Icc 1 N, (δ n - δ (n - 1)) * g n| ≤
       (K_rh + 2 * K_rh * ‖ρ - 1‖) * Real.sqrt x * (1 + Real.log x) ^ 2 := by
@@ -1190,7 +1199,7 @@ private theorem rh_prime_wave_sum_approx (hRH : RiemannHypothesis) {β : ℝ} (h
       refine (hθ_rh n hnR1).trans ?_
       have hlg : (1 + Real.log n) ^ 2 ≤ (1 + Real.log x) ^ 2 :=
         pow_le_pow_left₀ (by linarith [Real.log_nonneg hnR1])
-          (add_le_add_left (Real.log_le_log (by positivity) hnx) 1) 2
+          (by linarith [Real.log_le_log (by linarith) hnx]) 2
       exact mul_le_mul_of_nonneg_left hlg (mul_nonneg hK_rh (Real.sqrt_nonneg _))
     have hbdry : |δ N * g N| ≤ K_rh * Real.sqrt x * (1 + Real.log x) ^ 2 := by
       rw [abs_mul]
@@ -1200,7 +1209,7 @@ private theorem rh_prime_wave_sum_approx (hRH : RiemannHypothesis) {β : ℝ} (h
         have hp1 : (N : ℝ) ^ (β - 1) ≤ 1 :=
           Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hN1) (by linarith)
         have hc1 := Real.abs_cos_le_one (γ * Real.log N)
-        nlinarith [mul_nonneg hp1 (abs_nonneg (Real.cos (γ * Real.log N)))]
+        nlinarith [mul_le_mul hp1 hc1 (abs_nonneg _) zero_le_one]
       calc |δ N| * |g N| ≤ (K_rh * Real.sqrt N * (1 + Real.log x) ^ 2) * 1 :=
             mul_le_mul (hδ_le N hN1 le_rfl) hgN (abs_nonneg _) (by positivity)
         _ ≤ K_rh * Real.sqrt x * (1 + Real.log x) ^ 2 := by
@@ -1222,7 +1231,7 @@ private theorem rh_prime_wave_sum_approx (hRH : RiemannHypothesis) {β : ℝ} (h
           dsimp [g]
           rw [← Complex.sub_re]
           refine (Complex.abs_re_le_norm _).trans ?_
-          have hmvt := norm_cpow_sub_one_diff_le (γ := γ) (by linarith : β < 2) hn0
+          have hmvt := norm_cpow_sub_one_diff_le (γ := γ) hβ1 hn0
             (by exact_mod_cast Nat.le_succ n : (n : ℝ) ≤ (n + 1 : ℕ))
           simpa [show ((n + 1 : ℕ) : ℝ) - (n : ℝ) = 1 by push_cast; ring] using hmvt
         have hrpow_comb : Real.sqrt n * (n : ℝ) ^ (β - 2) ≤ (n : ℝ) ^ (-(1 / 2 : ℝ)) := by
@@ -1278,19 +1287,20 @@ private theorem rh_prime_wave_sum_approx (hRH : RiemannHypothesis) {β : ℝ} (h
             (n : ℝ) ((n + 1 : ℕ) : ℝ) := intervalIntegrable_const
         have hi2 : IntervalIntegrable (fun u : ℝ => (u : ℂ) ^ (ρ - 1)) volume
             (n : ℝ) ((n + 1 : ℕ) : ℝ) :=
-          intervalIntegral.intervalIntegrable_cpow (Or.inl (by simp [ρ]; linarith))
+          intervalIntegral.intervalIntegrable_cpow (Or.inr (by push_cast; exact h0_mem))
         rw [intervalIntegral.integral_sub hi1 hi2, hint_const, hint_n, sub_div]
         push_cast; rfl
-      dsimp [g]
-      rw [← Complex.sub_re]
-      refine (Complex.abs_re_le_norm _).trans ?_
+      have hre_le := Complex.abs_re_le_norm ((n : ℂ) ^ (ρ - 1) -
+        (((n + 1 : ℕ) : ℂ) ^ ρ / ρ - (n : ℂ) ^ ρ / ρ))
+      rw [Complex.sub_re] at hre_le
+      refine hre_le.trans ?_
       rw [hdiff_int]
       have hpt_u : ∀ u ∈ Set.uIoc (n : ℝ) ((n + 1 : ℕ) : ℝ),
           ‖(n : ℂ) ^ (ρ - 1) - (u : ℂ) ^ (ρ - 1)‖ ≤ ‖ρ - 1‖ * (n : ℝ) ^ (β - 2) := by
         intro u hu
         rw [Set.uIoc_of_le (by exact_mod_cast Nat.le_succ n)] at hu
         rw [norm_sub_rev]
-        have hmvt := norm_cpow_sub_one_diff_le (γ := γ) (by linarith : β < 2) hn0 hu.1.le
+        have hmvt := norm_cpow_sub_one_diff_le (γ := γ) hβ1 hn0 hu.1.le
         have hudiff : u - (n : ℝ) ≤ 1 := by
           have : u ≤ (n : ℝ) + 1 := by simpa using hu.2
           linarith
@@ -1306,10 +1316,14 @@ private theorem rh_prime_wave_sum_approx (hRH : RiemannHypothesis) {β : ℝ} (h
         ((((N + 1 : ℕ) : ℂ) ^ ρ / ρ).re) - (((1 : ℂ) ^ ρ / ρ).re) := by
       have hIoc : Icc 1 N = Ioc 0 N := by ext k; simp only [mem_Icc, mem_Ioc]; omega
       rw [hIoc]
-      induction N, hN1 using Nat.le_induction with
-      | base => simp
-      | succ M hM ih =>
-        rw [Finset.sum_Ioc_succ_top (Nat.zero_le M), ih]; ring
+      have key : ∀ M : ℕ, ∑ n ∈ Ioc 0 M, ((((n + 1 : ℕ) : ℂ) ^ ρ / ρ - (n : ℂ) ^ ρ / ρ).re) =
+          ((((M + 1 : ℕ) : ℂ) ^ ρ / ρ).re) - (((1 : ℂ) ^ ρ / ρ).re) := by
+        intro M
+        induction M with
+        | zero => simp
+        | succ M ih =>
+          rw [Finset.sum_Ioc_succ_top (Nat.zero_le M), ih, Complex.sub_re]; ring
+      exact key N
     have hsum_err : |(∑ n ∈ Icc 1 N, g n) -
         (((((N + 1 : ℕ) : ℂ) ^ ρ / ρ).re) - (((1 : ℂ) ^ ρ / ρ).re))| ≤
         2 * ‖ρ - 1‖ * Real.sqrt x := by
@@ -1326,8 +1340,7 @@ private theorem rh_prime_wave_sum_approx (hRH : RiemannHypothesis) {β : ℝ} (h
         _ = 2 * ‖ρ - 1‖ * Real.sqrt x := by ring
     have hend1 : |(((1 : ℂ) ^ ρ / ρ).re)| ≤ 1 / ‖ρ‖ := by
       refine (Complex.abs_re_le_norm _).trans ?_
-      rw [Complex.one_cpow]
-      exact le_rfl
+      simp only [Complex.one_cpow, norm_div, norm_one, le_refl]
     have hendN : |((((N + 1 : ℕ) : ℂ) ^ ρ / ρ).re) - (((x : ℂ) ^ ρ / ρ).re)| ≤ 1 := by
       rw [← Complex.sub_re]
       refine (Complex.abs_re_le_norm _).trans ?_
@@ -1482,7 +1495,8 @@ private theorem rh_sEdit_radial_bounded_of_params (hRH : RiemannHypothesis) {α 
       pow_le_pow_left₀ (by linarith) (by linarith) 2
     exact mul_le_mul (mul_le_mul_of_nonneg_left hexp_le hC_all) hsq_le (sq_nonneg _)
       (by positivity)
-  have hrad := abs_radialDiscrepancyOf_le_of_mode_error hβ0.le hγ 1
+  have hrad := abs_radialDiscrepancyOf_le_of_mode_error
+    (f := fun s => editedTheta (sEdit α β γ k₀) (Real.exp s) - Real.exp s) (t := t) hβ0.le hγ 1
     (hm_step t le_rfl (by linarith))
     (hm_step (t + h) (by linarith) (by linarith))
     (hm_step (t + 2 * h) (by linarith) le_rfl)
@@ -1603,7 +1617,8 @@ theorem radial_bounded_forces_abscissa_and_limsup {β γ : ℝ} {m : ℕ}
   have hβ0 : 0 < β := by linarith
   have hpsi_bdd : ¬ IsLogSqrtSqUnbounded (radialDiscrepancyOf psiLogError β γ m) :=
     (psi_radial_bounded_iff_theta_radial_bounded hβ0.le hγ m).mpr hbdd
-  rw [thetaRadialDiscrepancy, isLogSqrtSqUnbounded_iff_not_eventually_le, not_not] at hbdd
+  rw [show thetaRadialDiscrepancy β γ m = radialDiscrepancyOf thetaLogError β γ m from rfl,
+    isLogSqrtSqUnbounded_iff_not_eventually_le, not_not] at hbdd
   rw [isLogSqrtSqUnbounded_iff_not_eventually_le, not_not] at hpsi_bdd
   obtain ⟨K, T₀, hK⟩ := hbdd
   obtain ⟨K_p, T_p, hK_p⟩ := hpsi_bdd
@@ -2096,16 +2111,16 @@ private theorem layer_twoIntervalVec_eq (U : Finset XiZeroCopy) {σ β : ℝ} (h
       Finset.card_pos.mpr ⟨q, Finset.mem_filter.mpr ⟨hqU, rfl⟩⟩
     have hm_ne : -((((U.filter (fun q' => |(q'.1 : ℂ).im| = |(q.1 : ℂ).im|)).card : ℝ) : ℂ)) ≠ 0 :=
       neg_ne_zero.mpr (Complex.ofReal_ne_zero.mpr (by exact_mod_cast hcard_pos.ne'))
-    have hexp_ne : Complex.exp ((((σ : ℂ) + I * (|(q.1 : ℂ).im| : ℂ)) * (h : ℂ))) - 1 ≠ 0 := by
+    have hexp_ne : Complex.exp ((((σ : ℂ) + I * ((|(q.1 : ℂ).im| : ℝ) : ℂ)) * (h : ℂ))) - 1 ≠ 0 := by
       intro he
-      have hn1 : ‖Complex.exp ((((σ : ℂ) + I * (|(q.1 : ℂ).im| : ℂ)) * (h : ℂ)))‖ = 1 := by
+      have hn1 : ‖Complex.exp ((((σ : ℂ) + I * ((|(q.1 : ℂ).im| : ℝ) : ℂ)) * (h : ℂ)))‖ = 1 := by
         rw [sub_eq_zero.mp he, norm_one]
-      have hn2 : ‖Complex.exp ((((σ : ℂ) + I * (|(q.1 : ℂ).im| : ℂ)) * (h : ℂ)))‖ =
+      have hn2 : ‖Complex.exp ((((σ : ℂ) + I * ((|(q.1 : ℂ).im| : ℝ) : ℂ)) * (h : ℂ)))‖ =
           Real.exp (σ * h) := by
         rw [Complex.norm_exp]; congr 1; simp [Complex.mul_re]
       have hgt1 : 1 < Real.exp (σ * h) := Real.one_lt_exp_iff.mpr (by nlinarith)
       linarith
-    have hden_ne : ((σ : ℂ) + I * (|(q.1 : ℂ).im| : ℂ)) ≠ 0 := fun he => by
+    have hden_ne : ((σ : ℂ) + I * ((|(q.1 : ℂ).im| : ℝ) : ℂ)) ≠ 0 := fun he => by
       have := congrArg Complex.re he; simp at this; linarith
     exact div_ne_zero (mul_ne_zero hm_ne hexp_ne) hden_ne
   -- Group `W_U s` by `ω = |(q.1 : ℂ).im|`
@@ -2168,6 +2183,8 @@ private theorem layer_twoIntervalVec_eq (U : Finset XiZeroCopy) {σ β : ℝ} (h
   refine ⟨hω_pos, hc_ne, fun t => ?_⟩
   apply Complex.ext
   · simp [twoIntervalVec, hinc t]
+    rw [← Complex.ofReal_mul, Complex.exp_ofReal_re, Complex.exp_ofReal_im]
+    ring
   · simp only [twoIntervalVec, hinc (t + h), Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
       Complex.add_im, Complex.I_re, Complex.I_im, mul_zero, one_mul, zero_add]
     dsimp [A, r]
@@ -2178,7 +2195,8 @@ private theorem layer_twoIntervalVec_eq (U : Finset XiZeroCopy) {σ β : ℝ} (h
           Real.exp (σ * (t + h)) := by
         rw [← Real.exp_add, ← Real.exp_add]; congr 1; ring
       linear_combination f (t + h) * this.symm
-    exact hexp_eq
+    rw [hexp_eq]
+    ring
 
 private theorem bound_layer_twoIntervalVec (V : Finset XiZeroCopy) {h A σ₀ : ℝ}
     (hh : 0 ≤ h) (hA1 : 1 ≤ A) (hσ₀ : 0 ≤ σ₀) (hV_le : ∀ q ∈ V, (q.1 : ℂ).re ≤ σ₀) :
@@ -2206,7 +2224,7 @@ private theorem bound_layer_twoIntervalVec (V : Finset XiZeroCopy) {h A σ₀ : 
           rw [← Real.exp_add]
           exact Real.exp_le_exp.mpr (by nlinarith [hV_le q hq, hs1, hs2])
       _ = K_V * Real.exp (2 * σ₀ * h) * Real.exp (σ₀ * t) := by
-          dsimp [K_V]; rw [Finset.sum_mul]; ring
+          simp only [K_V, Finset.sum_mul, mul_assoc]
   have hb0 := hpt_V t ht (by linarith)
   have hb1 := hpt_V (t + h) (by linarith) (by linarith)
   have hb2 := hpt_V (t + 2 * h) (by linarith) le_rfl
@@ -2251,7 +2269,7 @@ private theorem finite_right_layer_collapse (S_right : Finset XiZeroCopy)
     dsimp [W_all, W_top, W_sub, S_top, S_sub]
     rw [← Finset.sum_filter_add_sum_filter_not S_right (fun q => (q.1 : ℂ).re = β)]
     ring
-  have htop_info := layer_twoIntervalVec_eq S_top hβ
+  have htop_info := layer_twoIntervalVec_eq S_top (β := β) hβ
     (fun q hq => (Finset.mem_filter.mp hq).2) hh_pos
   set Ω_top : Finset ℝ := S_top.image (fun q => |(q.1 : ℂ).im|)
   let c_top : ℝ → ℂ := fun ω =>
@@ -2933,7 +2951,7 @@ theorem finiteOffLine_not_radialUnbounded_iff
           rw [hemp] at hmem_top; exact Finset.notMem_empty q_m hmem_top
         obtain ⟨z, hz0, hz_gt⟩ := RHTower.exists_zetaZero_mem_openStrip_lt_re
           (hΘ_eq.symm ▸ (max_lt hβ hbmax_lt))
-        have hmax_lo := lt_max_iff.mp hz_gt.2
+        have hmax_lo := max_lt_iff.mp hz_gt.2
         have hne1 : z ≠ 1 := fun he => by rw [he, Complex.one_re] at hz_gt; exact lt_irrefl 1 hz_gt.1
         have hxi := (RHTower.xi_eq_zero_iff_riemannZeta_of_re_pos (by linarith) hne1).mpr hz0
         obtain ⟨q_z, hqz_eq⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi
@@ -2951,7 +2969,8 @@ theorem finiteOffLine_not_radialUnbounded_iff
     have hall_right_pin : ∀ z ∈ zetaZeroConfig.carrier, 1 / 2 < z.re →
         z.re = β ∧ |z.im| = ω₀ := by
       intro z hz hgt
-      have hne1 : z ≠ 1 := fun he => by rw [he, Complex.one_re] at hz; exact lt_irrefl 1 hz.2.2
+      have hne1 : z ≠ 1 := fun he => by
+        have h2 := hz.2.2; rw [he, Complex.one_re] at h2; exact lt_irrefl 1 h2
       have hxi := (RHTower.xi_eq_zero_iff_riemannZeta_of_re_pos hz.2.1 hne1).mpr hz.1
       obtain ⟨q, hq_eq⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi
       have hq_Sr : q ∈ S_right := Finset.mem_filter.mpr
@@ -2989,7 +3008,8 @@ theorem finiteOffLine_not_radialUnbounded_iff
           · left; apply Complex.ext <;> simp [ρ₀, hw_re, hp]
           · right; left; apply Complex.ext <;> simp [ρ₀, hw_re, hn]
         rcases lt_or_gt_of_ne hz_ne with hlt | hgt
-        · have hne1 : z ≠ 1 := fun he => by rw [he, Complex.one_re] at hz_mem; exact lt_irrefl 1 hz_mem.2.2
+        · have hne1 : z ≠ 1 := fun he => by
+            have h2 := hz_mem.2.2; rw [he, Complex.one_re] at h2; exact lt_irrefl 1 h2
           have hxi_z := (RHTower.xi_eq_zero_iff_riemannZeta_of_re_pos hz_mem.2.1 hne1).mpr hz_mem.1
           have hrefl_mem : 1 - z ∈ zetaZeroConfig.carrier :=
             hmem_carrier_of_xi (by rw [xi_one_sub]; exact hxi_z)
@@ -3027,11 +3047,10 @@ theorem finiteOffLine_not_radialUnbounded_iff
       have hR : (k' : ℝ) = (k : ℝ) := by nlinarith [hω_k', hγ]
       exact Nat.cast_injective hR
     subst hk_eq
-    refine ⟨k, ?_, ?_⟩
-    · simpa [ρ₀, ω₀] using hq_single
-    · rw [abs_of_pos hγ] at hpyth' ⊢
-      refine ⟨rfl, ?_⟩
-      simpa [ρ₀, ω₀] using hpyth'
+    refine ⟨k', hq_single, ?_⟩
+    unfold IsOddHarmonicPythagoreanAlias
+    rw [abs_of_pos hγ]
+    exact ⟨rfl, hpyth'⟩
   · rintro ⟨k, hq, halias⟩
     set ω₀ : ℝ := (2 * (k : ℝ) + 1) * γ
     have hω₀_pos : 0 < ω₀ := by dsimp [ω₀]; positivity

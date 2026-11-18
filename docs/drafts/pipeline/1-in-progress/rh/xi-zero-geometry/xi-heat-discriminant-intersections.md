@@ -6,4 +6,8 @@
 
 **Finite windows.** `projectedHeatDiscriminant_local` identifies the finite divisor equation with the product of actual sheet differences up to a nonvanishing analytic factor. A shared seam contributes its divisor once. In the double cover y² = (t−a)(t−b), either fold has winding one and a contour enclosing both has winding two. Each local turn exchanges the two sheets. [Lean](../../../../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/TheLocalDiscriminantOfAHeatCollision.lean)
 
-**Arithmetic question.** Every multiple zero has positive local multiplicity. Vanishing of the resulting count on an exhaustion would exclude every positive real branch time, hence prove RH by `riemannHypothesis_iff_forall_pos_not_mem_branchTimes`. The θ-kernel step is open.
+**Boundary calculation.** For a spatial rectangle with zero-free edges, the moments μₖ = (2πi)⁻¹ ∮ zᵏ H′/H dz give the power sums of the enclosed zeros. The Hankel determinant det(μᵢ₊ⱼ) of size μ₀ is their squared Vandermonde. Around one cluster its winding gives the local multiplicity. Adjoining a sheet q multiplies the determinant by ∏ᵢ(zᵢ−q)². On a regular shared edge the correction is the integral of d log(Dₗ/Dᵣ), oriented by the left rectangle. [Lean](../../../../../../formal/GaloisForLFunctions/GaloisTheoryOfZeros/Analysis/TheBoundaryMomentsOfAHeatWindow.lean)
+
+**Exhaustion.** Compact boxes exhaust all positive real times and all places with collision-free faces. Each time interval admits a complex thickening with exactly the same collisions. The winding of the projected divisor on its time boundary is the sum of their local multiplicities.
+
+**Arithmetic question.** Every multiple zero contributes positively. Vanishing in every box is equivalent to RH by `exists_real_heat_boundary_windings`. Whether the actual θ coefficients force this vanishing remains open.

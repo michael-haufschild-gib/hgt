@@ -124,7 +124,7 @@ private theorem zero_of_vanishing_on_translated_interval {ι : Type*}
   let f := fun i => a i * expChar (ω i) t
   have hf : Summable f := Summable.of_norm (hsum t)
   have hsub (z : ℂ) : (∑' i : {i // w i = z}, f i.val) = 0 := by
-    rw [tsum_subtype]
+    rw [tsum_subtype {i : ι | w i = z} f]
     simpa only [Set.indicator, Set.mem_setOf_eq, f] using hpiece z t
   have hs := ((Equiv.sigmaFiberEquiv w).summable_iff (f := f)).mpr hf
   change ∑' i, f i = 0
@@ -299,7 +299,7 @@ theorem thetaRadial_unbounded_of_distinct_abs_top_ordinates (hΘ : 1/2 < zetaZer
       have hz : xiCopyOrdinate r = 0 := by linarith only [h]
       have hpos := four_lt_abs_xiCopyOrdinate r
       rw [hz, abs_zero] at hpos
-      linarith only [hpos]
+      exact ((by norm_num : ¬ (4 : ℝ) < 0) hpos).elim
     · exact he
   apply hne
   rcases sq_eq_sq_iff_eq_or_eq_neg.mp ((hs q hq).trans (hs r hr).symm) with he | he

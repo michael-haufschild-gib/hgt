@@ -213,12 +213,14 @@ theorem criticalState_late_absolute_ordinary_test {W₀ : ℝ} (hW : 0 < W₀)
   have hpos (t : ℝ) : 0 ≤ fractionalPrimeTest (T-t) := mul_nonneg (Real.exp_pos _).le (Int.fract_nonneg _)
   have hle (t : ℝ) (htj : t ∈ J) : f t ≤ b*g t := by
     have hk := (le_abs_self (fractionalPrimeTest (T-t))).trans (fractionalPrimeTest_bounds (T-t)).2
+    have ht6 : 6*T < t := htj.2
     have hex : Real.exp ((T-t)/2) ≤ Real.exp (-T/10)*Real.exp (-(2/5)*t) := by
-      rw [← Real.exp_add]; exact Real.exp_le_exp.mpr (by linarith only [htj.2])
+      rw [← Real.exp_add]; exact Real.exp_le_exp.mpr (by linarith only [ht6])
     calc f t ≤ |m*ordinaryPrimePolarError Φ t| *(Real.exp (-T/10)*Real.exp (-(2/5)*t)) :=
           mul_le_mul_of_nonneg_left (hk.trans hex) (abs_nonneg _)
       _ = _ := by dsimp only [b,g]; rw [abs_mul]; ring
-  have hbg : IntegrableOn (fun t => b*g t) J := (hi.const_mul b).mono_set hJ0
+  have hbg0 : IntegrableOn (fun t => b*g t) (Ioi 0) := hi.const_mul b
+  have hbg : IntegrableOn (fun t => b*g t) J := hbg0.mono_set hJ0
   have hfi : IntegrableOn f J := hbg.mono' hfm.aestronglyMeasurable (by
     filter_upwards [ae_restrict_mem (μ := volume) hJ] with t htj
     rw [Real.norm_of_nonneg (show 0 ≤ f t from mul_nonneg (abs_nonneg _) (hpos t))]
@@ -226,8 +228,8 @@ theorem criticalState_late_absolute_ordinary_test {W₀ : ℝ} (hW : 0 < W₀)
   refine ⟨hfi,?_⟩
   change (∫ t in J, f t) ≤ _
   calc _ ≤ ∫ t in J, b*g t := setIntegral_mono_on hfi hbg hJ hle
-    _ ≤ ∫ t in Ioi 0, b*g t := setIntegral_mono_set (hi.const_mul b)
-      (Eventually.of_forall fun t => mul_nonneg hb (hg t)) (Eventually.of_forall fun _ h => hJ0 h)
+    _ ≤ ∫ t in Ioi 0, b*g t := setIntegral_mono_set hbg0
+      (Eventually.of_forall fun t => mul_nonneg hb (hg t)) (ae_of_all _ fun _ h => hJ0 h)
     _ = _ := by rw [integral_const_mul]; dsimp only [b]; ring
 
 /-- On one forced state the original test has exponentially small absolute

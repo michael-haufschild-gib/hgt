@@ -35,7 +35,8 @@ private theorem measurable_signed_first_window {Φ : ℝ → ℝ} (hc : Continuo
   have hfun (t : ℝ) : (∑' n : ℕ, (E n).indicator (a n) t) = criticalWidthSignedReading Φ t := by
     rw [tsum_eq_sum (s := J t) (fun n hn => indicator_of_notMem (fun h => hn ((heq t n).mpr h)) _)]
     exact Finset.sum_congr rfl fun n hn => indicator_of_mem ((heq t n).mp hn) _
-  exact (Measurable.tsum fun n => (ha n).indicator (hE n)).congr hfun
+  rw [← funext hfun]
+  exact Measurable.tsum fun n => (ha n).indicator (hE n)
 
 /-- Uniformity in the center follows from the linear prime sieve at the
 actual wall width. Below a fixed center only finitely many atoms can enter. -/
@@ -103,10 +104,12 @@ private theorem bounded_signed_first_window {W₀ : ℝ} (hW : 0 < W₀)
        _ ≤ ∑ n ∈ J, a n := by
          apply Finset.sum_le_sum
          intro n _
-         have hφ := (hb (t-Real.log n)).trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr
+         have hφ : |Φ (t-Real.log n)| ≤ C*Real.exp (2*U) :=
+           (hb (t-Real.log n)).trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr
            (by linarith only [htU,Real.log_natCast_nonneg n])) hC)
          simp only [a,continuousIntegerAtom,abs_mul,abs_of_nonneg (inv_nonneg.mpr (Real.sqrt_nonneg _))]
-         gcongr
+         exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left
+           (mul_le_mul_of_nonneg_left hφ (inv_nonneg.mpr (Real.sqrt_nonneg _))) (abs_nonneg _)) (abs_nonneg _)
        _ ≤ B := Finset.sum_le_sum_of_subset_of_nonneg hJ fun n _ _ => ha n
 
 private theorem integrableOn_Ioc_of_abs_bound {w : ℝ → ℝ} (hm : Measurable w)
@@ -126,7 +129,7 @@ private theorem tendsto_log_octave_mass {w : ℝ → ℝ} (hm : Measurable w)
   apply Metric.tendsto_nhds.mpr
   intro ε hε
   obtain ⟨bad,hmBad,hvol,hgood⟩ := hex (ε/2) (half_pos hε)
-  have hsmall := ((hvol.const_mul M).congr (fun _ => rfl)).eventually_lt_const
+  have hsmall := (hvol.const_mul M).eventually_lt_const
     (by simpa only [mul_zero] using half_pos hε : M*0 < ε/2)
   filter_upwards [Real.tendsto_exp_atTop.eventually hsmall,Real.tendsto_exp_atTop.eventually hgood] with T hcost hwin
   let X := Real.exp T
@@ -237,7 +240,7 @@ private theorem fractional_test_of_vanishing_octaves {w : ℝ → ℝ} (hm : Mea
     apply tendsto_const_nhds.congr'
     filter_upwards [hw.eventually_ge_atTop |v|] with n h
     have hmem : v ∈ A n := ⟨(neg_le_neg h).trans (neg_abs_le _),(le_abs_self _).trans h⟩
-    exact (indicator_of_notMem (notMem_compl_iff.mpr hmem) _).symm
+    exact (indicator_of_notMem (show v ∉ (A n)ᶜ from fun h => h hmem) K).symm
   have ht := tendsto_integral_filter_of_dominated_convergence (f := fun _ : ℝ => (0:ℝ)) K
     (Eventually.of_forall fun n => (hkm n).aestronglyMeasurable)
     (Eventually.of_forall fun n => Eventually.of_forall (hkb n)) hiK (Eventually.of_forall hpt)
@@ -267,8 +270,10 @@ private theorem fractional_test_of_vanishing_octaves {w : ℝ → ℝ} (hm : Mea
       exact mul_le_mul_of_nonneg_right (hb _) (hk _)
   have hjnear : (∫ t in J, w t) < ε/2 := by
     rw [integral_Icc_eq_integral_Ioc]
-    change (∫ t in Ioc (T+-H) ((T+-H)+(↑(2*n):ℝ)*ℓ), w t) < ε/2 at hblocks
-    convert hblocks using 3 <;> push_cast <;> dsimp only [H] <;> ring
+    change (∫ t in Ioc (T+ -H) ((T+ -H)+(↑(2*n):ℝ)*ℓ), w t) < ε/2 at hblocks
+    rw [show T+ -H=T-H by ring,
+      show T-H+(↑(2*n):ℝ)*ℓ=T+H by push_cast; dsimp only [H]; ring] at hblocks
+    exact hblocks
   rw [Real.dist_eq,sub_zero,abs_of_nonneg (integral_nonneg fun t => mul_nonneg (hn _) (hk _))]
   apply (integral_mono (hi T) (hji.add (((hki n).comp_sub_left T).const_mul M)) hdom).trans_lt
   rw [integral_add hji (((hki n).comp_sub_left T).const_mul M),integral_indicator hJ,

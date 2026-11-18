@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheFirstEndpointAboveTheMovingProductCut
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.PiecewiseSmoothnessOfTheDyadicSpline
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.PrimeIntervalsOnTheRescaledConductor
+import GaloisForLFunctions.SquareRootThreshold.TheWallsMeasureOneZeroWidth
 
 /-!
 # Prime mass at a quadratic product divider
@@ -80,25 +81,34 @@ theorem lowerPrimeEndpointPrice_abel (n K : ℕ) :
   rw [←h]
   exact congrArg (fun t : ℝ => (n:ℝ)^2*t) (sum_congr rfl fun k _ => by ring)
 
-private theorem theta_error_uniform :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ k : ℕ, |Chebyshev.theta k-k| ≤ C*(k:ℝ)^(8/9:ℝ) := by
+private theorem theta_error_above_abscissa {b : ℝ} (hbnd : zeroReSup < b) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ k : ℕ, |Chebyshev.theta k-k| ≤ C*(k:ℝ)^b := by
+  obtain ⟨A,hA,ha⟩ := exists_abs_chebyshevPsi_sub_le_rpow hbnd
+  have hhalf := half_le_zeroReSup.trans_lt hbnd
+  have hbpos : 0 < b := lt_trans (by norm_num : (0:ℝ)<1/2) hhalf
+  obtain ⟨B,hb⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  refine ⟨A+|B|,by positivity,fun k => ?_⟩
+  rcases Nat.eq_zero_or_pos k with rfl | hk
+  · simp [Chebyshev.theta, Real.zero_rpow hbpos.ne']
+  have h1 : (1:ℝ) ≤ k := by exact_mod_cast hk
+  have hs : Real.sqrt k ≤ (k:ℝ)^b := by
+    rw [Real.sqrt_eq_rpow]; exact Real.rpow_le_rpow_of_exponent_le h1 hhalf.le
+  have hp := (hb k).trans (mul_le_mul (le_abs_self B) hs (Real.sqrt_nonneg _) (abs_nonneg _))
+  have he := ha k h1
+  rw [abs_le] at he ⊢
+  have hpos := mul_nonneg (abs_nonneg B) (Real.rpow_nonneg (Nat.cast_nonneg k) b)
+  constructor <;> linarith only [he.1,he.2,hp,Chebyshev.theta_le_psi (k:ℝ),hpos]
+
+private theorem current_prime_abscissa : zeroReSup < 8/9 := by
   have hΘ : zeroReSup ≤ 20999/24000 := zeroReSup_le_of_forall_re_le fun q => by
     by_contra! hq
     exact GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein.riemannZeta_ne_zero_of_sub_seven_eighths_lt_re hq
       (riemannZeta_eq_zero_of_xiZeroCopy q)
-  obtain ⟨A,hA,ha⟩ := exists_abs_chebyshevPsi_sub_le_rpow (show zeroReSup < 8/9 by linarith only [hΘ])
-  obtain ⟨B,hb⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
-  refine ⟨A+|B|,by positivity,fun k => ?_⟩
-  rcases Nat.eq_zero_or_pos k with rfl | hk
-  · simp [Chebyshev.theta, Real.zero_rpow (by norm_num : (8/9:ℝ)≠0)]
-  have h1 : (1:ℝ) ≤ k := by exact_mod_cast hk
-  have hs : Real.sqrt k ≤ (k:ℝ)^(8/9:ℝ) := by
-    rw [Real.sqrt_eq_rpow]; exact Real.rpow_le_rpow_of_exponent_le h1 (by norm_num)
-  have hp := (hb k).trans (mul_le_mul (le_abs_self B) hs (Real.sqrt_nonneg _) (abs_nonneg _))
-  have he := ha k h1
-  rw [abs_le] at he ⊢
-  have hpos := mul_nonneg (abs_nonneg B) (Real.rpow_nonneg (Nat.cast_nonneg k) (8/9:ℝ))
-  constructor <;> linarith only [he.1,he.2,hp,Chebyshev.theta_le_psi (k:ℝ),hpos]
+  linarith only [hΘ]
+
+private theorem theta_error_uniform :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ k : ℕ, |Chebyshev.theta k-k| ≤ C*(k:ℝ)^(8/9:ℝ) :=
+  theta_error_above_abscissa current_prime_abscissa
 
 private theorem divider_spline_regular : HasCompactSupport dyadicSpline ∧ ContDiff ℝ 1 dyadicSpline :=
   ⟨HasCompactSupport.intro isCompact_Icc (fun _ hx => dyadicSpline_eq_zero_outside hx),
@@ -106,18 +116,19 @@ private theorem divider_spline_regular : HasCompactSupport dyadicSpline ∧ Cont
 
 /-- The first prime moment through the fixed terminal cut. Partial summation
 keeps the prime-count error at K as well as its interior sum. -/
-theorem first_prime_moment_at_cut :
+private theorem prime_moment_above_abscissa {b : ℝ} (hbnd : zeroReSup < b) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ K : ℕ, 0 < K →
       |(∑ p ∈ ordinaryPrimeLags K, (p:ℝ)*Real.log p) - (K:ℝ)*((K:ℝ)+1)/2| ≤
-        C*(K:ℝ)^(17/9:ℝ) := by
-  obtain ⟨C,hC,hθ⟩ := theta_error_uniform
+        C*(K:ℝ)^(1+b) := by
+  obtain ⟨C,hC,hθ⟩ := theta_error_above_abscissa hbnd
+  have hb : 0 ≤ b := (by norm_num : (0:ℝ)≤1/2).trans (half_le_zeroReSup.trans hbnd.le)
   refine ⟨3*C,by positivity,fun K hK => ?_⟩
   have hn : 1 ≤ (K:ℝ) := by exact_mod_cast hK
-  let B := C*(K:ℝ)^(8/9:ℝ)
+  let B := C*(K:ℝ)^b
   have hB : 0 ≤ B := mul_nonneg hC (Real.rpow_nonneg (Nat.cast_nonneg _) _)
   have herr (j : ℕ) (hj : j ≤ K) : |Chebyshev.theta j-j| ≤ B :=
     (hθ j).trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.cast_le.mpr hj)
-      (by norm_num)) hC)
+      hb) hC)
   have hd (m : ℕ) : (∑ p ∈ Icc 1 m, (p:ℝ)) = (m:ℝ)*(m+1)/2 := by
     induction m with
     | zero => simp
@@ -128,12 +139,13 @@ theorem first_prime_moment_at_cut :
     exact ⟨fun h => ⟨⟨h.2.two_le,h.1.2⟩,h.2⟩,fun h => ⟨⟨h.2.pos,h.1.2⟩,h.2⟩⟩
   have ha : (∑ p ∈ Icc 1 K, primeAtom p*(p:ℝ)) =
       ∑ p ∈ ordinaryPrimeLags K, (p:ℝ)*Real.log p := by
-    simp only [primeAtom,ite_mul,zero_mul,←sum_filter,hpr,mul_comm]
+    simp only [primeAtom,ite_mul,zero_mul,←sum_filter,hpr]
+    exact sum_congr rfl fun _ _ => mul_comm ..
   rw [←ha,←hd K,←sum_sub_distrib]
   rw [sum_congr rfl (fun p _ => show primeAtom p*(p:ℝ)-p=(primeAtom p-1)*p by ring),
     _root_.HTGeometry.sum_mul_eq_partial_mul_diff_ring (fun p => primeAtom p-1) (fun p : ℕ => (p:ℝ)),
     primeAtom_error]
-  simp only [primeAtom_error,Nat.cast_add,Nat.cast_one,sub_add_cancel_left,
+  simp only [primeAtom_error,Nat.cast_add,Nat.cast_one,
     show ∀ x : ℝ, x-(x+1) = -1 by intro x; ring,mul_neg_one]
   apply (abs_add_le _ _).trans
   have hsum : |∑ p ∈ Icc 1 K, -(Chebyshev.theta p-p)| ≤ (K:ℝ)*B := by
@@ -142,10 +154,30 @@ theorem first_prime_moment_at_cut :
          _ = _ := by rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
   rw [abs_mul,abs_of_nonneg (show 0 ≤ (K:ℝ)+1 by positivity)]
   apply (add_le_add hsum (mul_le_mul_of_nonneg_right (herr K le_rfl) (by positivity))).trans
-  rw [show (17/9:ℝ) = 1+8/9 by norm_num,Real.rpow_add (zero_lt_one.trans_le hn),Real.rpow_one]
-  have hb := le_mul_of_one_le_left hB hn
-  dsimp only [B] at hb ⊢
-  linarith only [hb]
+  rw [Real.rpow_add (zero_lt_one.trans_le hn),Real.rpow_one]
+  have hscale := le_mul_of_one_le_left hB hn
+  dsimp only [B] at hscale ⊢
+  linarith only [hscale]
+
+/-- A numerical first-moment error from the ordinary prime strip. -/
+theorem first_prime_moment_at_cut :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ K : ℕ, 0 < K →
+      |(∑ p ∈ ordinaryPrimeLags K, (p:ℝ)*Real.log p) - (K:ℝ)*((K:ℝ)+1)/2| ≤
+        C*(K:ℝ)^(17/9:ℝ) := by
+  simpa only [show (1:ℝ)+8/9=17/9 by norm_num] using prime_moment_above_abscissa current_prime_abscissa
+
+/-- The first prime moment has a width-dependent error at the actual zero
+abscissa. After a subquadratic change of scale this error has a strict gap
+below the price exponent. -/
+theorem first_prime_moment_at_width :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ K : ℕ, 0 < K →
+      |(∑ p ∈ ordinaryPrimeLags K, (p:ℝ)*Real.log p) - (K:ℝ)*((K:ℝ)+1)/2| ≤
+        C*(K:ℝ)^(1+(1/2+GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth+1/36)) := by
+  apply prime_moment_above_abscissa
+  have h := zeroReSup_le_of_forall_re_le fun q =>
+    re_le_zetaZeroAbscissa (riemannZeta_eq_zero_of_xiZeroCopy q)
+  rw [GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth_eq_zetaZeroAbscissa_sub_half]
+  linarith only [h]
 
 /-- Density quadrature uniform in the dividing product, including the final mesh cell. -/
 private theorem divider_density : ∃ B : ℝ, 0 ≤ B ∧ ∀ {n K : ℕ}, 0 < n → K ≤ splineHorizon n →
@@ -174,7 +206,7 @@ private theorem divider_density : ∃ B : ℝ, 0 ≤ B ∧ ∀ {n K : ℕ}, 0 < 
       div_eq_mul_inv,h,add_comm (1:ℝ),sum_mul]
   rw [he,div_eq_mul_inv (K:ℝ)]
   change |F/n-n*I| ≤ _
-  have hsplit : F/n-n*I = n*(h*F-I) := by dsimp only [h]; field_simp; ring
+  have hsplit : F/n-n*I = n*(h*F-I) := by dsimp only [h]; field_simp
   rw [hsplit,abs_mul,abs_of_pos hn']
   exact (mul_le_mul_of_nonneg_left hquant hn'.le).trans_eq (by dsimp only [h]; field_simp <;> ring)
 
@@ -236,7 +268,7 @@ theorem lowerPrimeEndpointPrice_density :
   have hmul := mul_le_mul_of_nonneg_left (le_mul_of_one_le_right hJ hX) hn'.le
   rw [Real.rpow_add hn',Real.rpow_one]
   change _ ≤ (T*(A^2*D+S)+J)*(n*X)
-  calc _ = T*(A^2*D+S)*(n*X)+n*J := by field_simp <;> ring
+  calc _ = T*(A^2*D+S)*(n*X)+n*J := by field_simp
        _ ≤ _ := by linarith only [hmul]
 
 /-- At the whole horizon the density vanishes at the quadrature scale. Both
@@ -265,7 +297,7 @@ theorem upperPrimeEndpointPrice_density :
   have hmain : |(n:ℝ)^3*I L| ≤ (A+B)*X := by
     rw [show (n:ℝ)^3*I L=(n:ℝ)^2*(n*I L) by ring,abs_mul,abs_of_nonneg (sq_nonneg (n:ℝ))]
     apply (mul_le_mul_of_nonneg_left hI (sq_nonneg (n:ℝ))).trans
-    calc _ = (A+B)*n := by field_simp <;> ring
+    calc _ = (A+B)*n := by field_simp
          _ ≤ _ := mul_le_mul_of_nonneg_left hpow (add_nonneg hA hB)
   have hfull : |lowerPrimeEndpointPrice n L| ≤ C*X+(A+B)*X := by
     have he : lowerPrimeEndpointPrice n L =
@@ -283,6 +315,7 @@ theorem upperPrimeEndpointPrice_density :
 
 #print axioms lowerPrimeEndpointPrice_abel
 #print axioms first_prime_moment_at_cut
+#print axioms first_prime_moment_at_width
 #print axioms lowerPrimeEndpointPrice_density
 #print axioms upperPrimeEndpointPrice_density
 #print axioms primeEndpoint_quadratic_divider

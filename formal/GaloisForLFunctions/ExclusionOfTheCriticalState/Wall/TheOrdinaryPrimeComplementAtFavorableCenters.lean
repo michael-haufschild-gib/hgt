@@ -230,7 +230,8 @@ theorem riemannHypothesis_or_middle_time_signed_test : RiemannHypothesis ∨
     rw [indicator_of_notMem hnot,sub_zero,abs_mul,← mul_assoc]
     exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left
       (le_add_of_nonneg_left (abs_nonneg _)) (abs_nonneg m)) (hK0 t))
-  have hinter := restrict_le measurableSet_Ioc ((hx.1.const_mul |m|).mono_set
+  have hEweighted : IntegrableOn (fun t => |m| *E t) (Ioi U) := hx.1.const_mul |m|
+  have hinter := restrict_le measurableSet_Ioc (hEweighted.mono_set
     (show I ⊆ Ioi U from fun _ h => h.1)) (fun t htj => by
     change |m*P t-I.indicator (fun z => m*S z) t| *K t ≤ |m| *E t
     rw [indicator_of_mem htj,← mul_sub,abs_mul]
