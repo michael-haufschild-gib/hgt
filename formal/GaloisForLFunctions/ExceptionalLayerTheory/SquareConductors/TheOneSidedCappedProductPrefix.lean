@@ -35,6 +35,16 @@ theorem width_iff_cappedConductorPrefix {a : ℝ} (ha : 0<a) (ha' : a<1/2) :
   · linarith only [hc N,(abs_le.mp (hh N)).1]
   · linarith only [hc N,(abs_le.mp (hh N)).2]
 
+/-- An upper bound of order eleven thirds through every conductor is
+exactly the five-sixths zero strip. -/
+theorem five_sixths_iff_cappedConductorPrefix :
+    _root_.RHTower.zetaZeroAbscissa≤5/6 ↔ ∃ C : ℝ, 0≤C ∧ ∀ N : ℕ,
+      cappedConductorPrefix N≤C*(N:ℝ)^(11/3:ℝ) := by
+  have h := (zetaZeroWidth_le_iff_zetaZeroAbscissa_le (by norm_num : (0:ℝ)≤1/3)).symm.trans
+    (width_iff_cappedConductorPrefix (by norm_num : (0:ℝ)<1/3) (by norm_num))
+  simpa only [show 1/2+(1/3:ℝ)=5/6 by norm_num,
+    show 3+2*(1/3:ℝ)=11/3 by norm_num] using h
+
 /-- The full positive-sign subpower prefix criterion for RH. -/
 theorem riemannHypothesis_iff_cappedConductorPrefix :
     RiemannHypothesis ↔ ∀ η : ℝ, 0<η → ∃ C : ℝ, 0≤C ∧ ∀ N : ℕ,
@@ -61,5 +71,6 @@ theorem riemannHypothesis_iff_cappedConductorPrefix :
     linarith only [hs,hw]
 
 #print axioms width_iff_cappedConductorPrefix
+#print axioms five_sixths_iff_cappedConductorPrefix
 #print axioms riemannHypothesis_iff_cappedConductorPrefix
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -16,11 +16,11 @@ namespace GaloisForLFunctions.CountingHolography.Sections
 
 open Finset Filter Topology SquareRootThreshold SurfaceOfSpecZ
 
-private def prefix (f : ℕ → ℝ) (N : ℕ) := ∑ n ∈ Ioc 0 N, f n
+private def prefixSum (f : ℕ → ℝ) (N : ℕ) := ∑ n ∈ Ioc 0 N, f n
 
 private theorem power_gaps_of_signed_prefix (f : ℕ → ℝ) {θ r C : ℝ}
     (hθ : 0 < θ) (hθ' : θ < 1) (hr : θ ≤ r) (hC : 0 ≤ C)
-    (hprefix : ∀ N : ℕ, |prefix f N| ≤ C*(N:ℝ)^r) :
+    (hprefix : ∀ N : ℕ, |prefixSum f N| ≤ C*(N:ℝ)^r) :
     ∃ A : ℝ, 0 ≤ A ∧ PowGaps θ {n : ℕ | 0 < n ∧ f n ≤ A*(n:ℝ)^(r-θ)} := by
   let A := 4*C*(2:ℝ)^(r-θ)
   have hA : 0 ≤ A := by dsimp only [A]; positivity
@@ -49,7 +49,7 @@ private theorem power_gaps_of_signed_prefix (f : ℕ → ℝ) {θ r C : ℝ}
   have ha' := (neg_le_neg (mul_le_mul_of_nonneg_left (hpow (ha.trans (sub_le_self _ hxθ.le))) hC)).trans
     (abs_le.mp (hprefix a)).1
   have hsum := sum_Ioc_consecutive f (Nat.zero_le a) hab.le
-  change prefix f a+(∑ j ∈ Ioc a b, f j)=prefix f b at hsum
+  change prefixSum f a+(∑ j ∈ Ioc a b, f j)=prefixSum f b at hsum
   have he : x^θ*x^(r-θ)=x^r := by rw [← Real.rpow_add hx₀]; congr 1; ring
   have hlocal : ∃ j ∈ Ioc a b, f j ≤ 4*C*x^(r-θ) := by
     by_contra! hn
@@ -73,8 +73,8 @@ private theorem power_gaps_of_signed_prefix (f : ℕ → ℝ) {θ r C : ℝ}
 
 private def price (n : ℕ) := Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n):ℝ)
 
-private theorem log_prefix (N : ℕ) : Real.log (squareGeneratorPrefix N:ℝ)=prefix price N := by
-  unfold squareGeneratorPrefix prefix price
+private theorem log_prefix (N : ℕ) : Real.log (squareGeneratorPrefix N:ℝ)=prefixSum price N := by
+  unfold squareGeneratorPrefix prefixSum price
   push_cast
   apply Real.log_prod
   intro n _
@@ -101,7 +101,7 @@ private theorem price_bound_at_strip {s : ℝ} (hw : zetaZeroWidth ≤ s) :
 
 private theorem width_of_dominating_prefix (f : ℕ → ℝ) (hdom : ∀ n, price n ≤ f n)
     {s C : ℝ} (hs : 0 ≤ s) (hC : 0 ≤ C)
-    (h : ∀ N : ℕ, |prefix f N| ≤ C*(N:ℝ)^(3+2*s)) : zetaZeroWidth ≤ s := by
+    (h : ∀ N : ℕ, |prefixSum f N| ≤ C*(N:ℝ)^(3+2*s)) : zetaZeroWidth ≤ s := by
   by_contra! hw
   let gap := min (zetaZeroWidth-s) (1/2)
   have hg : 0 < gap := lt_min (sub_pos.mpr hw) (by norm_num)
@@ -133,7 +133,7 @@ theorem zetaZeroWidth_le_iff_square_generator_prefix {s : ℝ} (hs : 0 ≤ s) (h
     refine ⟨C,hC,fun N => ?_⟩
     rw [log_prefix]
     by_cases hN : N=0
-    · simp [hN,prefix,show (3:ℝ)+2*s≠0 by linarith]
+    · simp [hN,prefixSum,show (3:ℝ)+2*s≠0 by linarith]
     have hN₀ : 0 < (N:ℝ) := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hN)
     have hrow (n : ℕ) (hn : n ∈ Ioc 0 N) : |price n| ≤ C*(N:ℝ)^(2+2*s) :=
       (hp n (mem_Ioc.mp hn).1).trans (mul_le_mul_of_nonneg_left
@@ -163,15 +163,15 @@ def squarePositiveLogPrice (n : ℕ) : ℂ :=
 
 private theorem positive_price_norm (n : ℕ) :
     ‖squarePositiveLogPrice n‖=max (price n) 0 := by
-  rw [squarePositiveLogPrice,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (le_max_right _ _)]
+  rw [squarePositiveLogPrice,price,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (le_max_right _ _)]
 
 private theorem positive_price_prefix {r : ℝ} (hr : 0 ≤ r)
     (h : LSeriesSummable squarePositiveLogPrice (r:ℂ)) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ N, |prefix (fun n => max (price n) 0) N| ≤ C*(N:ℝ)^r := by
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N, |prefixSum (fun n => max (price n) 0) N| ≤ C*(N:ℝ)^r := by
   let g (n : ℕ) := ‖LSeries.term squarePositiveLogPrice (r:ℂ) n‖
   have hg : Summable g := h.norm
   refine ⟨∑' n, g n,tsum_nonneg (fun _ => norm_nonneg _),fun N => ?_⟩
-  rw [prefix,abs_of_nonneg (sum_nonneg fun _ _ => le_max_right _ _)]
+  rw [prefixSum,abs_of_nonneg (sum_nonneg fun _ _ => le_max_right _ _)]
   have hrow (n : ℕ) (hn : n ∈ Ioc 0 N) : max (price n) 0 ≤ g n*(N:ℝ)^r := by
     obtain ⟨hpos,hle⟩ := mem_Ioc.mp hn
     have hp := Real.rpow_pos_of_pos (Nat.cast_pos.mpr hpos : 0 < (n:ℝ)) r

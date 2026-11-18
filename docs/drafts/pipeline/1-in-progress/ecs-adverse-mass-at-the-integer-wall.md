@@ -20,3 +20,5 @@ For the lower bound, retain the multiples of six in $(X+H/2,X+H]$. Their Mangold
  =\sqrt2\,m\ell\left(\frac{\psi(X+h)-\psi(X)}h-1\right)+o_\Phi(1).
 \]
 For fixed $0<\eta<1$, the rescaled state weight tends uniformly to $\sqrt2\,m\ell$ on $\eta h<n-X\le h$. The [interval sieve](../../../../formal/GaloisForLFunctions/PNTPlus/BrunTitchmarsh.lean) and [local proper-power bound](../../../../formal/GaloisForLFunctions/RHTower/Sieve/MaynardLocalPrimePowerLeakage.lean) bound the discarded Mangoldt mass by $O(\eta h)$ with an absolute constant once $X$ is large enough for that $\eta$. This leaves the actual prime excess on this interval and the separately retained complementary row.
+
+The prime number theorem forces the normalized excess to be at least $-\varepsilon$ arbitrarily late for each $\varepsilon>0$. Otherwise telescope along $x_{j+1}=x_j+h(x_j)$ to obtain $\psi(x_j)\le(1-\varepsilon)x_j+O(1)$. The corresponding upper reading follows by applying the same argument to $2x-\psi(x)$. Synchronizing a favorable window with the signed complementary row remains open.

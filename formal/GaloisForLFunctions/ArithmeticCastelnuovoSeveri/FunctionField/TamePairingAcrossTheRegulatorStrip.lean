@@ -32,13 +32,14 @@ private theorem valuation_uniformizer : (laurentTameData F).v (laurentXUnit F) =
 /-- The Milnor valuation on a Laurent unit is the negative of its infinite degree. -/
 theorem tame_valuation (x : LocalUnit F) : (laurentTameData F).v x = -degree x := by
   have h := congrArg (laurentTameData F).v (laurentUnit_monomial_factor F x)
-  have hv := ((laurentTameData F).mem_ker_iff _).1 (powerSeriesLaurentUnit_mem_kernel F (laurentUnitPowerSeriesPart F x))
+  have hv := (laurentTameData F).mem_ker_iff.mp (powerSeriesLaurentUnit_mem_kernel F (laurentUnitPowerSeriesPart F x))
   rw [(laurentTameData F).v_mul,(laurentTameData F).v_zpow,valuation_uniformizer,hv,mul_one,add_zero] at h
   simpa only [degree,neg_neg] using h
 
 private theorem sign_neg_unit : sign (-1 : LocalUnit F) = -1 := by
   apply Units.ext
-  simp [sign]
+  change (-1 : LaurentSeries F).leadingCoeff = -1
+  rw [HahnSeries.leadingCoeff_neg,HahnSeries.leadingCoeff_one]
 
 /-- Tame symbols are determined by degrees and leading coefficients, including
 the parity factor when both orders are odd. -/
@@ -46,7 +47,8 @@ theorem tame_signed_degrees (x y : LocalUnit F) :
     laurentTameSymbol F x y =
       (-1 : Fˣ)^(degree x*degree y) * sign x^(-degree y) * sign y^(degree x) := by
   let z := (laurentTameData F).symbolUnit x y
-  have hv := ((laurentTameData F).mem_ker_iff z).1 ((laurentTameData F).symbolUnit_mem x y)
+  have hv := (laurentTameData F).mem_ker_iff.mp ((laurentTameData F).symbolUnit_mem x y)
+  change (laurentTameData F).v z = 0 at hv
   rw [tame_valuation] at hv
   have ho : (z : LaurentSeries F).order = 0 := by simpa only [degree,neg_neg] using hv
   have ht : laurentTameSymbol F x y=sign z := by
@@ -82,7 +84,9 @@ theorem translate_symbol (e x y : LocalUnit F × LocalUnit F) (c : Fˣ) (j : ℤ
   have hc (q : LocalUnit F) : laurentTameSymbol F (monomial c 0) q=c^(-degree q) := by
     simp [tame_signed_degrees,degree_monomial,sign_monomial]
   simp only [pairSymbol,translate,laurentTameSymbol_mul_left,hc,hp,mul_zpow,neg_add,zpow_add]
-  ac_rfl
+  apply Units.ext
+  simp only [Units.val_mul]
+  ring
 
 /-- The fundamental-unit obstruction uses only the relative degrees, ratio
 of leading coefficients and second-place leading sign of the generator. -/
@@ -91,9 +95,11 @@ theorem generator_symbol (R : ℕ+) (u v : LocalUnit F) (w : Fˣ) (y : LocalUnit
       (-1 : Fˣ)^((R : ℤ)*(degree y.1-degree y.2)) *
       w^(-degree y.2) * (sign y.1 / sign y.2)^(R : ℤ) := by
   have h := generator_invariants R u v w
-  simp only [pairSymbol,tame_signed_degrees,h.1,h.2.1,h.2.2.1,h.2.2.2,one_zpow,mul_one,
-    mul_sub,zpow_sub,div_zpow,neg_mul,zpow_neg,div_eq_mul_inv]
-  ac_rfl
+  simp only [pairSymbol,tame_signed_degrees,h.1,h.2.1,h.2.2.1,h.2.2.2,one_zpow,
+    mul_sub,zpow_sub,neg_mul,zpow_neg,div_eq_mul_inv,mul_zpow,inv_zpow]
+  apply Units.ext
+  simp only [Units.val_mul]
+  ring
 
 /-- The pair character descends to every translate exactly when both
 generators of the regulator action pair trivially. -/
@@ -106,11 +112,12 @@ theorem descends_iff (e y : LocalUnit F × LocalUnit F) :
     constructor
     · intro c
       have h := H e c 0
-      simpa [zpow_neg] using h
+      rw [zpow_neg] at h
+      simpa using h
     · have h := H e 1 1
       simpa using h
   · rintro ⟨hc,he⟩ x c j
-    simp [zpow_neg,hc,he]
+    simp only [zpow_neg,hc,inv_one,he,one_zpow,one_mul]
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity
 

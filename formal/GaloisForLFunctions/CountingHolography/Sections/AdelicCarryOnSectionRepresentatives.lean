@@ -25,9 +25,10 @@ and bounded at infinity by `exp (radius v)`.
    `adelicSectionEncode` and `adelicSectionDecode` establish an exact bijection
    between `(d(v₀) ℤ)²` and `d(v₁) ℤ × d(v₂) ℤ` for all triples `(v₀, v₁, v₂)`.
    The `3^τ` ambiguous narrow-slice candidates are uniquely paid by the `3`-adic
-   residue of the wide coordinate modulo `3^τ`; once paid, every coprime modulus
-   `u` (`gcd(u, 3) = 1`) recovers `(z₁ mod u, z₂ mod u)` with zero precision loss,
-   and `3`-adic recovery uses `(r + τ) + (r - τ) = 2r` total ternary digits.
+   valuation of the wide rational section difference (`ratPrimeVal 3`); once paid,
+   every coprime modulus `u` (`gcd(u, 3) = 1`) recovers `(z₁ mod u, z₂ mod u)` with
+   zero precision loss, and asymmetric `3`-adic recovery uses `(r + τ) + (r - τ) = 2r`
+   total ternary digits.
 3. **Asymptotic validity and single-rule RH equivalence:** Whenever `v₁ = v₂ = v₀`
    or `0 < Q(v₀), Q(v₁), Q(v₂)` with `2 Q(v₀) < Q(v₁) + Q(v₂)`, `adelicSectionEncode`
    maps `rationalSections (m • v₀)²` injectively (`maxFibre = 1`) into
@@ -39,7 +40,7 @@ and bounded at infinity by `exp (radius v)`.
 noncomputable section
 namespace GaloisForLFunctions.CountingHolography.Sections
 
-open Filter Topology Finset ArithmeticScatteringHolography
+open Filter Topology Finset AbsoluteGeometryOfSpecZ ArithmeticScatteringHolography
 
 /-! ### 1. Rational section representatives and signed prime valuations -/
 
@@ -166,6 +167,34 @@ theorem inSectionLattice_iff_primeValuations {N : ℕ} (v : Fin N → ℤ) {s : 
     rw [hf_num] at hv
     omega
 
+/-- For any prime `p`, positive rational generator `d > 0`, integer `z`, and order `r`,
+`p^r ∣ z` in `ℤ` iff either `d * z = 0` or `ratPrimeVal p d + r ≤ ratPrimeVal p (d * z)`. -/
+theorem pow_dvd_int_iff_ratPrimeVal {p r : ℕ} (hp : p.Prime) {d : ℚ} (hd : 0 < d) (z : ℤ) :
+    ((p : ℤ) ^ r ∣ z) ↔
+      (d * (z : ℚ) = 0 ∨ ratPrimeVal p d + (r : ℤ) ≤ ratPrimeVal p (d * (z : ℚ))) := by
+  by_cases hz : z = 0
+  · subst z; simp
+  · have hzc : (z : ℚ) ≠ 0 := Int.cast_ne_zero.mpr hz
+    have hdz : d * (z : ℚ) ≠ 0 := mul_ne_zero hd.ne' hzc
+    have hval_z : ratPrimeVal p (z : ℚ) = (z.natAbs.factorization p : ℤ) := by
+      unfold ratPrimeVal
+      rw [Rat.num_intCast, Rat.den_intCast, Nat.factorization_one,
+        Finsupp.coe_zero, Pi.zero_apply, Nat.cast_zero, sub_zero]
+    have hdvd_abs : ((p : ℤ) ^ r ∣ z) ↔ p ^ r ∣ z.natAbs := by
+      constructor
+      · rintro ⟨k, hk⟩
+        rw [← Nat.cast_pow p r] at hk
+        refine ⟨k.natAbs, ?_⟩
+        have habs := congrArg Int.natAbs hk
+        simpa only [Int.natAbs_mul, Int.natAbs_natCast] using habs
+      · rintro ⟨k, hk⟩
+        rcases Int.natAbs_eq z with h | h
+        · rw [h, hk]; push_cast; exact dvd_mul_right _ _
+        · rw [h, hk]; push_cast; exact (dvd_mul_right _ _).neg_right
+    rw [hdvd_abs, hp.pow_dvd_iff_le_factorization (Int.natAbs_ne_zero.mpr hz),
+      or_iff_right hdz, ratPrimeVal_mul hd.ne' hzc p, hval_z]
+    omega
+
 /-- Finite set of actual rational small-section representatives of `v`. -/
 def rationalSections {N : ℕ} (v : Fin N → ℤ) : Finset ℚ :=
   (divisorSections v).map ⟨sectionRep v, sectionRep_injective v⟩
@@ -222,6 +251,22 @@ def restrictRationalSectionMap {N : ℕ} (Φ : ℚ × ℚ → ℚ × ℚ) {v₀ 
       (↥(rationalSections v₁) × ↥(rationalSections v₂)) :=
   fun p => (⟨(Φ (p.1.val, p.2.val)).1, (h p.1.val p.1.property p.2.val p.2.property).1⟩,
             ⟨(Φ (p.1.val, p.2.val)).2, (h p.1.val p.1.property p.2.val p.2.property).2⟩)
+
+/-- Induced map on integer small-section coordinates via `rationalSectionEquiv`. -/
+def inducedDivisorSectionMap {N : ℕ} {Φ : ℚ × ℚ → ℚ × ℚ} {v₀ v₁ v₂ : Fin N → ℤ}
+    (h : mapsRationalSections Φ v₀ v₁ v₂) :
+    (↥(divisorSections v₀) × ↥(divisorSections v₀)) →
+      (↥(divisorSections v₁) × ↥(divisorSections v₂)) :=
+  fun p => ((rationalSectionEquiv v₁).symm.prodCongr (rationalSectionEquiv v₂).symm)
+    (restrictRationalSectionMap Φ h
+      (((rationalSectionEquiv v₀).prodCongr (rationalSectionEquiv v₀)) p))
+
+theorem maxFibre_inducedDivisorSectionMap {N : ℕ} {Φ : ℚ × ℚ → ℚ × ℚ} {v₀ v₁ v₂ : Fin N → ℤ}
+    (h : mapsRationalSections Φ v₀ v₁ v₂) :
+    maxFibre (inducedDivisorSectionMap h) = maxFibre (restrictRationalSectionMap Φ h) :=
+  maxFibre_comp_equiv ((rationalSectionEquiv v₀).prodCongr (rationalSectionEquiv v₀))
+    ((rationalSectionEquiv v₁).symm.prodCongr (rationalSectionEquiv v₂).symm)
+    (restrictRationalSectionMap Φ h)
 
 theorem maxFibre_restrictRationalSectionMap_eq {N : ℕ} (Φ : ℚ × ℚ → ℚ × ℚ)
     {v₀ v₁ v₂ w₁ w₂ : Fin N → ℤ}
@@ -394,6 +439,49 @@ theorem not_exists_midpointOnly_subquadratic_rationalSectionMap {N : ℕ} {b a :
     unfold logCard at hrate'; push_cast at hlog
     linarith only [hsmall, hlog, hrate', hm2]
 
+private theorem exists_archRadiusLimit {N : ℕ} {v : Fin N → ℤ} (hv : v ≠ 0) :
+    ∃ R∞ : ℝ,
+      Tendsto (logRadius (packet v) (3 * windowEnd N)) atTop (𝓝 R∞) ∧
+      ∀ k : ℕ, 1 ≤ k →
+        Tendsto (fun m : ℕ => radius (m • (k • v)) / (m : ℝ)^2) atTop (𝓝 ((k : ℝ)^2 * R∞)) ∧
+        Tendsto (fun m : ℕ => Real.log (generator (m • (k • v)) : ℝ) / (m : ℝ)^2) atTop
+          (𝓝 ((k : ℝ)^2 * (R∞ - integerProbe N v))) := by
+  have hs₋ := tendsto_sampledDegree (packet_contDiff v).continuous
+    (packet_window v).1 (packet_window v).2 (-(1 / 2))
+  have hs₊ := tendsto_sampledDegree (packet_contDiff v).continuous
+    (packet_window v).1 (packet_window v).2 (1 / 2)
+  have hdf := tendsto_degreeForm (packet_contDiff v) (packet_hasCompactSupport v)
+    (packet_window v).1 (packet_window v).2
+  have hrad_lim := ((hs₋.mul hs₊).const_mul 2).sub hdf
+  refine ⟨_, hrad_lim, fun k hk => ?_⟩
+  have hkv : k • v ≠ 0 := by
+    intro hz
+    apply hv
+    funext i
+    have hi := congrFun hz i
+    simp only [Pi.smul_apply, Pi.zero_apply, nsmul_eq_mul, mul_eq_zero, Int.natCast_eq_zero] at hi
+    exact hi.resolve_left (by omega)
+  have hres := tendsto_resolution_ray hkv
+  have hrad_k : Tendsto (fun m : ℕ => radius (m • (k • v)) / (m : ℝ)^2)
+      atTop (𝓝 ((k : ℝ)^2 * _)) := by
+    refine ((hrad_lim.comp hres).const_mul ((k : ℝ)^2)).congr' ?_
+    filter_upwards [eventually_ge_atTop 1] with m hm
+    have hm2 : (m : ℝ)^2 ≠ 0 := by positivity
+    have hsm : m • (k • v) = (m * k) • v := smul_smul m k v
+    dsimp only [Function.comp_apply, radius]
+    rw [hsm, packet_smul v (m * k)]
+    unfold logRadius
+    rw [sampledDegree_mul, sampledDegree_mul, degreeForm_mul]
+    symm
+    rw [div_eq_iff hm2]
+    push_cast
+    ring
+  have hdeg_k := tendsto_splineDegree (k • v)
+  rw [integerProbe_smul] at hdeg_k
+  refine ⟨hrad_k, ?_⟩
+  rw [show (k : ℝ)^2 * (_ - integerProbe N v) = (k : ℝ)^2 * _ - (k : ℝ)^2 * integerProbe N v by ring]
+  exact (hrad_k.sub hdeg_k).congr fun m => by ring
+
 /-- On `primePair p`, both the archimedean radius rate and the finite-place
 log-generator rate grow at least linearly in `√p`, whereas their difference
 `Q(primePair p)` is `o(√p)`. Consequently, along `(2mb, 3mb, 4mb)`, the finite-place
@@ -418,19 +506,21 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
   have hsub := tendsto_primePair_degree_div_sqrt.abs
   rw [abs_zero] at hsub
   have hev_deg := hsub.eventually_lt_const (show (0 : ℝ) < c₀ / 14 by positivity)
-  obtain ⟨P₁, hP₁⟩ := exists_nat_gt (((4 * J + 1) / (I₋ * I₊)) ^ 2)
+  obtain ⟨P₁, hP₁⟩ := exists_nat_gt ((8 * J / c₀) ^ 2 + 1)
   filter_upwards [hev_deg, eventually_ge_atTop (max P₁ 2)] with p hp_deg hp_ge
-  have hp1 : 1 ≤ p := by omega
   have hp_pos : 0 < p := by omega
   have hsp : 0 < Real.sqrt p := Real.sqrt_pos_of_pos (Nat.cast_pos.mpr hp_pos)
   rw [abs_div, abs_of_pos hsp, div_lt_iff₀ hsp] at hp_deg
-  refine ⟨by linarith only [hp_deg], ?_⟩
+  refine ⟨by linarith only [hp_deg, mul_pos hc₀ hsp], ?_⟩
   let bp := primePair p
   have hbp_ne : bp ≠ 0 := by
     intro hz
     have h0 := congrFun hz 0
     simp only [bp, primePair, Pi.add_apply, Pi.single_apply, Pi.zero_apply, if_true] at h0
     split_ifs at h0 <;> omega
+  have hbp_nonneg (i : Fin (p + 1)) : 0 ≤ bp i := by
+    simp only [bp, primePair, Pi.add_apply, Pi.single_apply]
+    split_ifs <;> decide
   have hmom_val (t : ℝ) : conductorExpMoment t bp = Real.exp (t * Real.log p) + 1 := by
     have hd : ((p - 1 : ℕ) : ℝ) + 1 = p := by rw [Nat.cast_sub hp_pos]; push_cast; ring
     unfold conductorExpMoment bp primePair
@@ -438,31 +528,921 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
       Int.cast_zero, add_mul, ite_mul, one_mul, zero_mul, sum_add_distrib, sum_ite_eq',
       mem_univ, if_true, Fin.val_zero, Nat.cast_zero, zero_add, hd, Real.log_one, mul_zero,
       Real.exp_zero]
+  have hvar_bp : (∑ i : Fin (p + 1), |(bp i : ℝ)|) = 2 := by
+    have hn (i : Fin (p + 1)) : 0 ≤ (bp i : ℝ) := by exact_mod_cast hbp_nonneg i
+    have h0 := hmom_val 0
+    simp only [conductorExpMoment, zero_mul, Real.exp_zero, mul_one, one_add_one_eq_two] at h0
+    simpa only [abs_of_nonneg (hn _)] using h0
   have hexp_half : Real.exp ((1 / 2 : ℝ) * Real.log p) = Real.sqrt p := by
     rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos (Nat.cast_pos.mpr hp_pos), mul_comm]
+  obtain ⟨R∞, hrad_lim, hk_lim⟩ := exists_archRadiusLimit hbp_ne
   let L := 3 * windowEnd (p + 1)
-  have hL1 : 1 ≤ windowEnd (p + 1) := (packet_window bp).1
-  have hs_lim (t : ℝ) :
-      Tendsto (fun m : ℕ => sampledDegree (packet (m • bp)) L (resolution (m • bp)) t / (m : ℝ))
-        atTop (𝓝 (I₋ * 0 + unitAtomMoment t * conductorExpMoment t bp)) := by
-    rw [zero_mul, zero_add]
-    have hzero : Tendsto (fun m : ℕ => (if t = 1 / 2 then C₊ else C₋) / (m : ℝ)) atTop (𝓝 0) :=
-      tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
-    have hbnd (t' : ℝ) (ht' : t' ≤ 1) :
-        ∃ C : ℝ, 0 ≤ C ∧ ∀ m : ℕ, 1 ≤ m →
-          |sampledDegree (packet (m • bp)) L (resolution (m • bp)) t' / (m : ℝ) -
-            unitAtomMoment t' * conductorExpMoment t' bp| ≤ C / (m : ℝ) := by
-      obtain ⟨C, hC, he⟩ := bounded_actual_pole_reading_error ht'
-      refine ⟨C, hC, fun m hm => ?_⟩
-      have hm_pos : (0 : ℝ) < m := Nat.cast_pos.mpr hm
-      have hcm : conductorExpMoment t' (m • bp) = (m : ℝ) * conductorExpMoment t' bp := by
-        unfold conductorExpMoment
-        simp only [Pi.smul_apply, nsmul_eq_mul, Int.cast_mul, Int.cast_natCast, mul_assoc, ← mul_sum]
-      have h1 := he (p + 1) (m • bp)
-      rw [hcm] at h1
-      rw [← abs_of_pos hm_pos, ← abs_div, sub_div, mul_left_comm (unitAtomMoment t') (m : ℝ),
-        mul_div_cancel_left₀ _ hm_pos.ne']
-      exact div_le_div_of_nonneg_right h1 hm_pos.le
-    -- Unused general `t`; we only need `t = -(1/2)` and `t = 1/2` below.
-    sorry
-  sorry
+  let low (m : ℕ) : ℝ := 2 * ((I₋ - C₋ / (m : ℝ)) * (I₊ * Real.sqrt p - C₊ / (m : ℝ))) - 4 * J
+  have hzero (C : ℝ) : Tendsto (fun m : ℕ => C / (m : ℝ)) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
+  have hlow_lim : Tendsto low atTop (𝓝 (c₀ * Real.sqrt p - 4 * J)) := by
+    have h₁ : Tendsto (fun m : ℕ => I₋ - C₋ / (m : ℝ)) atTop (𝓝 I₋) := by
+      simpa only [sub_zero] using tendsto_const_nhds.sub (hzero C₋)
+    have h₂ : Tendsto (fun m : ℕ => I₊ * Real.sqrt p - C₊ / (m : ℝ)) atTop (𝓝 (I₊ * Real.sqrt p)) := by
+      simpa only [sub_zero] using tendsto_const_nhds.sub (hzero C₊)
+    have hprod := ((h₁.mul h₂).const_mul 2).sub tendsto_const_nhds
+    simpa only [low, c₀, mul_assoc] using hprod
+  have hev_bound : ∀ᶠ m : ℕ in atTop,
+      low m ≤ logRadius (packet bp) L (resolution (m • bp)) := by
+    filter_upwards [(hzero C₋).eventually_lt_const hI₋,
+      (hzero C₊).eventually_lt_const (mul_pos hI₊ hsp),
+      eventually_ge_atTop 1] with m hm₋ hm₊ hm1
+    have hm_pos : (0 : ℝ) < m := Nat.cast_pos.mpr hm1
+    have hmbp_ne : m • bp ≠ 0 := by
+      intro hz; apply hbp_ne; funext i
+      have hi := congrFun hz i
+      simp only [Pi.smul_apply, Pi.zero_apply, nsmul_eq_mul, mul_eq_zero, Int.natCast_eq_zero] at hi
+      exact hi.resolve_left (by omega)
+    have hcm (t : ℝ) : conductorExpMoment t (m • bp) = (m : ℝ) * (Real.exp (t * Real.log p) + 1) := by
+      rw [← hmom_val t]
+      unfold conductorExpMoment
+      simp only [Pi.smul_apply, nsmul_eq_mul, Int.cast_mul, Int.cast_natCast, mul_assoc, ← mul_sum]
+    have he₋ := (abs_le.mp (herr₋ (p + 1) (m • bp))).1
+    rw [packet_smul bp m, sampledDegree_mul, hcm] at he₋
+    have hs₋_ge : I₋ - C₋ / (m : ℝ) ≤ sampledDegree (packet bp) L (resolution (m • bp)) (-(1 / 2)) := by
+      have hexp_pos : 0 < Real.exp (-(1 / 2 : ℝ) * Real.log p) := Real.exp_pos _
+      have hmul_ge : (m : ℝ) * I₋ - C₋ ≤ (m : ℝ) * sampledDegree (packet bp) L (resolution (m • bp)) (-(1 / 2)) := by
+        nlinarith only [he₋, hm_pos, hI₋, hexp_pos]
+      rw [sub_eq_add_neg, ← div_mul_cancel₀ ((m : ℝ) * I₋) hm_pos.ne']
+      have hdiv := div_le_div_of_nonneg_right hmul_ge hm_pos.le
+      rw [sub_div, mul_div_cancel_left₀ _ hm_pos.ne', mul_div_cancel_left₀ _ hm_pos.ne'] at hdiv
+      linarith only [hdiv]
+    have he₊ := (abs_le.mp (herr₊ (p + 1) (m • bp))).1
+    rw [packet_smul bp m, sampledDegree_mul, hcm, hexp_half] at he₊
+    have hs₊_ge : I₊ * Real.sqrt p - C₊ / (m : ℝ) ≤
+        sampledDegree (packet bp) L (resolution (m • bp)) (1 / 2) := by
+      have hmul_ge : (m : ℝ) * (I₊ * Real.sqrt p) - C₊ ≤
+          (m : ℝ) * sampledDegree (packet bp) L (resolution (m • bp)) (1 / 2) := by
+        nlinarith only [he₊, hm_pos, hI₊]
+      have hdiv := div_le_div_of_nonneg_right hmul_ge hm_pos.le
+      rw [sub_div, mul_div_cancel_left₀ _ hm_pos.ne', mul_div_cancel_left₀ _ hm_pos.ne'] at hdiv
+      exact hdiv
+    have hprod := mul_le_mul hs₋_ge hs₊_ge (by linarith only [hm₊])
+      ((by linarith only [hm₋] : 0 ≤ I₋ - C₋ / (m : ℝ)).trans hs₋_ge)
+    have hj := hjet (p + 1) bp L (resolution (m • bp)) (resolution_pos hmbp_ne)
+    rw [hvar_bp] at hj
+    dsimp only [low, logRadius]
+    linarith only [hprod, hj]
+  have hR∞_ge : c₀ * Real.sqrt p - 4 * J ≤ R∞ := by
+    by_contra! hlt
+    let mid := (R∞ + (c₀ * Real.sqrt p - 4 * J)) / 2
+    obtain ⟨m, hm_lo, hm_hi, hm_le⟩ :=
+      ((hlow_lim.eventually_const_lt (show mid < c₀ * Real.sqrt p - 4 * J by dsimp [mid]; linarith)).and
+        (((hrad_lim.comp (tendsto_resolution_ray hbp_ne)).eventually_lt_const
+          (show R∞ < mid by dsimp [mid]; linarith)).and hev_bound)).exists
+    dsimp only [Function.comp_apply] at hm_hi
+    linarith only [hm_lo, hm_hi, hm_le]
+  have h4J_lt : 4 * J < c₀ / 2 * Real.sqrt p := by
+    have hP₁_le : (P₁ : ℝ) ≤ p := by exact_mod_cast (le_max_left P₁ 2).trans hp_ge
+    have hsq_lt : (8 * J / c₀) ^ 2 < (p : ℝ) := by linarith only [hP₁, hP₁_le]
+    have h8 : 8 * J / c₀ < Real.sqrt p := by
+      rcases le_or_gt 0 (8 * J / c₀) with hnn | hneg
+      · rw [← Real.sqrt_sq hnn]
+        exact Real.sqrt_lt_sqrt (sq_nonneg _) hsq_lt
+      · exact hneg.trans hsp
+    have hmul := (div_lt_iff₀ hc₀).mp h8
+    linarith only [hmul]
+  have hskew_lim := (((hk_lim 4 (by decide)).2.sub (hk_lim 2 (by decide)).2).div_const 2)
+  have hlim_gt : c₀ * Real.sqrt p <
+      ((4 : ℕ) ^ 2 * (R∞ - integerProbe (p + 1) bp) -
+        (2 : ℕ) ^ 2 * (R∞ - integerProbe (p + 1) bp)) / 2 := by
+    push_cast
+    linarith only [hR∞_ge, h4J_lt, hp_deg, le_abs_self (integerProbe (p + 1) bp), mul_pos hc₀ hsp]
+  filter_upwards [hskew_lim.eventually_const_lt hlim_gt, eventually_ge_atTop 1] with m hm hm1
+  have hm2 : 0 < (m : ℝ)^2 := by positivity
+  have hd : c₀ * Real.sqrt p <
+      ((Real.log (generator (m • (4 • bp)) : ℝ) -
+        Real.log (generator (m • (2 • bp)) : ℝ)) / 2) / (m : ℝ)^2 := by
+    convert hm using 1
+    ring
+  exact (lt_div_iff₀ hm2).mp hd
+
+/-- Any centered carry schedule `K_m` whose logarithmic scale exceeds `7 Q(b)`
+eventually overflows `divisorSections (m • (4 • b))` along `(2mb, 3mb, 4mb)`. -/
+theorem eventually_not_centeredCarry_of_skew_gt_seven {N : ℕ} {b : Fin N → ℤ}
+    (hb : 0 < integerProbe N b) {K : ℕ → ℕ} {μ : ℝ}
+    (hK : Tendsto (fun m : ℕ => Real.log (2 * K m + 1 : ℕ) / (m : ℝ)^2) atTop (𝓝 μ))
+    (hμ : 7 * integerProbe N b < μ) :
+    ∀ᶠ m : ℕ in atTop,
+      ¬ mapsDivisorSections (centeredCarry (K m))
+          (m • (3 • b)) (m • (4 • b)) (m • (2 • b)) := by
+  have hb3 : 0 < integerProbe N (3 • b) := by rw [integerProbe_smul]; positivity
+  have hb4 : 0 < integerProbe N (4 • b) := by rw [integerProbe_smul]; positivity
+  have hr₃ := tendsto_log_sectionRadius hb3
+  have hr₄ := tendsto_log_sectionRadius hb4
+  rw [integerProbe_smul] at hr₃ hr₄
+  have hdiff := (hK.add hr₃).sub hr₄
+  have hev := hdiff.eventually_const_lt
+    (show (0 : ℝ) < μ + (3 : ℕ)^2 * integerProbe N b - (4 : ℕ)^2 * integerProbe N b by
+      push_cast; linarith)
+  have hr3_pos : ∀ᶠ m : ℕ in atTop, 1 ≤ sectionRadius (m • (3 • b)) := by
+    filter_upwards [(tendsto_log_sectionRadius hb3).eventually_const_lt (half_lt_self hb3),
+      eventually_ge_atTop 1] with m hm _
+    by_contra! h0
+    have hz : sectionRadius (m • (3 • b)) = 0 := by omega
+    rw [hz, Nat.cast_zero, Real.log_zero, zero_div] at hm
+    linarith [half_pos hb3]
+  filter_upwards [hev, hr3_pos, eventually_ge_atTop 1] with m hm hr3 hm1 hmaps
+  have hbounds := (bounds_of_centeredCarry_maps_Icc fun z₁ hz₁ z₂ hz₂ =>
+    hmaps z₁ hz₁ z₂ hz₂).2
+  have hmul_le : (2 * K m + 1) * sectionRadius (m • (3 • b)) ≤ sectionRadius (m • (4 • b)) := by
+    omega
+  have hm2 : 0 < (m : ℝ)^2 := by positivity
+  have hM_pos : 0 < 2 * K m + 1 := by omega
+  have hr4_pos : 0 < sectionRadius (m • (4 • b)) :=
+    (Nat.mul_pos hM_pos hr3).trans_le hmul_le
+  have hlog := Real.log_le_log (Nat.cast_pos.mpr (Nat.mul_pos hM_pos hr3))
+    (Nat.cast_le.mpr hmul_le)
+  rw [Nat.cast_mul, Real.log_mul (Nat.cast_pos.mpr hM_pos).ne' (Nat.cast_pos.mpr hr3).ne'] at hlog
+  have hd : 0 < (Real.log (2 * K m + 1 : ℕ) + Real.log (sectionRadius (m • (3 • b))) -
+      Real.log (sectionRadius (m • (4 • b)))) / (m : ℝ)^2 := by
+    simpa only [add_div, sub_div] using hm
+  have hm' := (lt_div_iff₀ hm2).mp hd
+  linarith only [hlog, hm']
+
+/-! ### 3. Explicit adelic ternary carry rule on rational section representatives -/
+
+/-- Pre-cardinality Arakelov degree `radius v - log d(v)` combining the archimedean
+logarithmic radius and the finite-place contact generator. -/
+def arakelovDegree {N : ℕ} (v : Fin N → ℤ) : ℝ :=
+  radius v - Real.log (generator v : ℝ)
+
+/-- Half-difference of the outer Arakelov degrees; depends neither on the midpoint `v₀`
+nor on any section cardinality. -/
+def outerAdelicSkew {N : ℕ} (v₁ v₂ : Fin N → ℤ) : ℝ :=
+  (arakelovDegree v₁ - arakelovDegree v₂) / 2
+
+/-- Orientation of the outer Arakelov skew (`true` when `0 ≤ outerAdelicSkew v₁ v₂`). -/
+def adelicSkewNonneg {N : ℕ} (v₁ v₂ : Fin N → ℤ) : Bool := by
+  classical
+  exact if 0 ≤ outerAdelicSkew v₁ v₂ then true else false
+
+theorem adelicSkewNonneg_eq_true {N : ℕ} {v₁ v₂ : Fin N → ℤ}
+    (h : 0 ≤ outerAdelicSkew v₁ v₂) : adelicSkewNonneg v₁ v₂ = true := by
+  unfold adelicSkewNonneg
+  exact if_pos h
+
+theorem adelicSkewNonneg_eq_false {N : ℕ} {v₁ v₂ : Fin N → ℤ}
+    (h : outerAdelicSkew v₁ v₂ < 0) : adelicSkewNonneg v₁ v₂ = false := by
+  unfold adelicSkewNonneg
+  exact if_neg (not_le.mpr h)
+
+/-- Ternary carry order `τ = ⌊|outerAdelicSkew v₁ v₂| / log 3⌋₊`. -/
+def ternaryCarryOrder {N : ℕ} (v₁ v₂ : Fin N → ℤ) : ℕ :=
+  ⌊|outerAdelicSkew v₁ v₂| / Real.log 3⌋₊
+
+/-- Half-modulus `K_τ = (3^τ - 1) / 2` satisfying `2 K_τ + 1 = 3^τ`. -/
+def ternaryHalfMod (τ : ℕ) : ℕ :=
+  (3 ^ τ - 1) / 2
+
+theorem two_mul_ternaryHalfMod_add_one (τ : ℕ) :
+    2 * ternaryHalfMod τ + 1 = 3 ^ τ := by
+  unfold ternaryHalfMod
+  have hmod : 3 ^ τ % 2 = 1 := by
+    induction τ with
+    | zero => rfl
+    | succ n ih => rw [pow_succ, Nat.mul_mod, ih]; rfl
+  have hpos : 1 ≤ 3 ^ τ := Nat.one_le_pow τ 3 (by decide)
+  omega
+
+theorem two_mul_ternaryHalfMod_add_one_int (τ : ℕ) :
+    2 * (ternaryHalfMod τ : ℤ) + 1 = (3 : ℤ) ^ τ := by
+  exact_mod_cast two_mul_ternaryHalfMod_add_one τ
+
+/-- Oriented base-`3^τ` Euclidean carry encoder on integer lattice coordinates. -/
+def orientedTernaryEncode (posSkew : Bool) (τ : ℕ) (z : ℤ × ℤ) : ℤ × ℤ :=
+  if posSkew then centeredCarry (ternaryHalfMod τ) z
+  else Prod.swap (centeredCarry (ternaryHalfMod τ) z)
+
+/-- Oriented base-`3^τ` Euclidean carry decoder on integer lattice coordinates. -/
+def orientedTernaryDecode (posSkew : Bool) (τ : ℕ) (w : ℤ × ℤ) : ℤ × ℤ :=
+  if posSkew then centeredCarry (ternaryHalfMod τ) w
+  else centeredCarry (ternaryHalfMod τ) (Prod.swap w)
+
+theorem orientedTernaryDecode_encode (posSkew : Bool) (τ : ℕ) (z : ℤ × ℤ) :
+    orientedTernaryDecode posSkew τ (orientedTernaryEncode posSkew τ z) = z := by
+  cases posSkew <;> simp only [orientedTernaryDecode, orientedTernaryEncode,
+    Bool.false_eq_true, ↓reduceIte, Prod.swap_swap, centeredCarry_involutive]
+
+theorem orientedTernaryEncode_decode (posSkew : Bool) (τ : ℕ) (w : ℤ × ℤ) :
+    orientedTernaryEncode posSkew τ (orientedTernaryDecode posSkew τ w) = w := by
+  cases posSkew <;> simp only [orientedTernaryDecode, orientedTernaryEncode,
+    Bool.false_eq_true, ↓reduceIte, centeredCarry_involutive, Prod.swap_swap]
+
+theorem orientedTernaryEncode_bijective (posSkew : Bool) (τ : ℕ) :
+    Function.Bijective (orientedTernaryEncode posSkew τ) :=
+  ⟨fun _ _ h => by
+    rw [← orientedTernaryDecode_encode posSkew τ, h, orientedTernaryDecode_encode],
+   fun w => ⟨orientedTernaryDecode posSkew τ w, orientedTernaryEncode_decode posSkew τ w⟩⟩
+
+/-- Explicit single arithmetic encoder on rational section representatives
+`(s₁, s₂) ∈ d(v₀) ℤ × d(v₀) ℤ → d(v₁) ℤ × d(v₂) ℤ`. -/
+def adelicSectionEncode {N : ℕ} (v₀ v₁ v₂ : Fin N → ℤ) (s : ℚ × ℚ) : ℚ × ℚ :=
+  let w := orientedTernaryEncode (adelicSkewNonneg v₁ v₂) (ternaryCarryOrder v₁ v₂)
+    (sectionCoord v₀ s.1, sectionCoord v₀ s.2)
+  (sectionRep v₁ w.1, sectionRep v₂ w.2)
+
+/-- Explicit arithmetic decoder on rational section representatives
+`(t₁, t₂) ∈ d(v₁) ℤ × d(v₂) ℤ → d(v₀) ℤ × d(v₀) ℤ`. -/
+def adelicSectionDecode {N : ℕ} (v₀ v₁ v₂ : Fin N → ℤ) (t : ℚ × ℚ) : ℚ × ℚ :=
+  let z := orientedTernaryDecode (adelicSkewNonneg v₁ v₂) (ternaryCarryOrder v₁ v₂)
+    (sectionCoord v₁ t.1, sectionCoord v₂ t.2)
+  (sectionRep v₀ z.1, sectionRep v₀ z.2)
+
+theorem adelicSectionEncode_inSectionLattice {N : ℕ} (v₀ v₁ v₂ : Fin N → ℤ) (s : ℚ × ℚ) :
+    inSectionLattice v₁ (adelicSectionEncode v₀ v₁ v₂ s).1 ∧
+      inSectionLattice v₂ (adelicSectionEncode v₀ v₁ v₂ s).2 :=
+  ⟨inSectionLattice_sectionRep v₁ _, inSectionLattice_sectionRep v₂ _⟩
+
+theorem adelicSectionDecode_inSectionLattice {N : ℕ} (v₀ v₁ v₂ : Fin N → ℤ) (t : ℚ × ℚ) :
+    inSectionLattice v₀ (adelicSectionDecode v₀ v₁ v₂ t).1 ∧
+      inSectionLattice v₀ (adelicSectionDecode v₀ v₁ v₂ t).2 :=
+  ⟨inSectionLattice_sectionRep v₀ _, inSectionLattice_sectionRep v₀ _⟩
+
+/-- Exact left-inverse law on the rational section lattice `d(v₀) ℤ × d(v₀) ℤ`. -/
+theorem adelicSectionDecode_encode {N : ℕ} (v₀ v₁ v₂ : Fin N → ℤ) {s : ℚ × ℚ}
+    (hs₁ : inSectionLattice v₀ s.1) (hs₂ : inSectionLattice v₀ s.2) :
+    adelicSectionDecode v₀ v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s) = s := by
+  unfold adelicSectionDecode adelicSectionEncode
+  simp only [sectionCoord_sectionRep, orientedTernaryDecode_encode]
+  exact Prod.ext (sectionRep_sectionCoord hs₁) (sectionRep_sectionCoord hs₂)
+
+/-- Exact right-inverse law on `d(v₁) ℤ × d(v₂) ℤ`. -/
+theorem adelicSectionEncode_decode {N : ℕ} (v₀ v₁ v₂ : Fin N → ℤ) {t : ℚ × ℚ}
+    (ht₁ : inSectionLattice v₁ t.1) (ht₂ : inSectionLattice v₂ t.2) :
+    adelicSectionEncode v₀ v₁ v₂ (adelicSectionDecode v₀ v₁ v₂ t) = t := by
+  unfold adelicSectionEncode adelicSectionDecode
+  simp only [sectionCoord_sectionRep, orientedTernaryEncode_decode]
+  exact Prod.ext (sectionRep_sectionCoord ht₁) (sectionRep_sectionCoord ht₂)
+
+/-! ### 4. Valuation payment for every ambiguous digit and two-output precision comparison -/
+
+/-- Wide coordinate of an oriented pair (`w.1` when `posSkew = true`, `w.2` when `false`). -/
+def wideCoord (posSkew : Bool) (w : ℤ × ℤ) : ℤ :=
+  if posSkew then w.1 else w.2
+
+/-- Narrow coordinate of an oriented pair (`w.2` when `posSkew = true`, `w.1` when `false`). -/
+def narrowCoord (posSkew : Bool) (w : ℤ × ℤ) : ℤ :=
+  if posSkew then w.2 else w.1
+
+theorem wideCoord_encode (posSkew : Bool) (τ : ℕ) (z : ℤ × ℤ) :
+    wideCoord posSkew (orientedTernaryEncode posSkew τ z) =
+      balRem (ternaryHalfMod τ) z.1 + (3 : ℤ) ^ τ * z.2 := by
+  cases posSkew <;> simp only [wideCoord, orientedTernaryEncode, Bool.false_eq_true,
+    ↓reduceIte, Prod.swap_snd, centeredCarry, two_mul_ternaryHalfMod_add_one_int]
+
+theorem narrowCoord_encode (posSkew : Bool) (τ : ℕ) (z : ℤ × ℤ) :
+    narrowCoord posSkew (orientedTernaryEncode posSkew τ z) =
+      balQuot (ternaryHalfMod τ) z.1 := by
+  cases posSkew <;> simp only [narrowCoord, orientedTernaryEncode, Bool.false_eq_true,
+    ↓reduceIte, Prod.swap_fst, centeredCarry]
+
+/-- Exact base-`3^τ` linear conservation law across the wide and narrow outputs. -/
+theorem orientedTernary_linear_conservation (posSkew : Bool) (τ : ℕ) (z : ℤ × ℤ) :
+    wideCoord posSkew (orientedTernaryEncode posSkew τ z) +
+      (3 : ℤ) ^ τ * narrowCoord posSkew (orientedTernaryEncode posSkew τ z) =
+      z.1 + (3 : ℤ) ^ τ * z.2 := by
+  rw [wideCoord_encode, narrowCoord_encode, ← two_mul_ternaryHalfMod_add_one_int]
+  linarith only [balRem_add_mul_balQuot (ternaryHalfMod τ) z.1]
+
+/-- Exact finite slice of `3^τ` first-coordinate candidates sharing narrow quotient `q`. -/
+def narrowSlice (τ : ℕ) (q : ℤ) : Finset ℤ :=
+  Finset.Icc ((3 : ℤ) ^ τ * q - ternaryHalfMod τ) ((3 : ℤ) ^ τ * q + ternaryHalfMod τ)
+
+/-- For fixed `z₂` and narrow output `q`, the ambiguous first-coordinate candidates form
+`narrowSlice τ q` of exact cardinality `3^τ`. -/
+theorem narrowSlice_card_and_mem (τ : ℕ) (q : ℤ) :
+    (narrowSlice τ q).card = 3 ^ τ ∧
+      ∀ (posSkew : Bool) (z₁ z₂ : ℤ),
+        narrowCoord posSkew (orientedTernaryEncode posSkew τ (z₁, z₂)) = q ↔
+          z₁ ∈ narrowSlice τ q := by
+  have h2K := two_mul_ternaryHalfMod_add_one_int τ
+  refine ⟨?_, fun posSkew z₁ z₂ => ?_⟩
+  · unfold narrowSlice
+    rw [Int.card_Icc]
+    have h2K_nat := two_mul_ternaryHalfMod_add_one τ
+    omega
+  · rw [narrowCoord_encode, narrowSlice, Finset.mem_Icc]
+    constructor
+    · intro hq
+      have hdecomp := balRem_add_mul_balQuot (ternaryHalfMod τ) z₁
+      obtain ⟨hr_lo, hr_hi⟩ := balRem_bounds (ternaryHalfMod τ) z₁
+      rw [hq, h2K] at hdecomp
+      exact ⟨by linarith only [hdecomp, hr_lo], by linarith only [hdecomp, hr_hi]⟩
+    · rintro ⟨hlo, hhi⟩
+      unfold balQuot
+      rw [h2K]
+      let M : ℤ := (3 : ℤ) ^ τ
+      have hM : 0 < M := by dsimp [M]; positivity
+      have hdiv := Int.mul_ediv_add_emod (z₁ + ternaryHalfMod τ) M
+      have hm0 := Int.emod_nonneg (z₁ + ternaryHalfMod τ) hM.ne'
+      have hmM := Int.emod_lt_of_pos (z₁ + ternaryHalfMod τ) hM
+      change (z₁ + ternaryHalfMod τ) / M = q
+      by_contra hne
+      rcases lt_or_gt_of_ne hne with hlt | hgt
+      · have hle : (z₁ + ternaryHalfMod τ) / M - q ≤ -1 := by omega
+        nlinarith only [hM, hlo, hmM, hdiv, hle]
+      · have hge : 1 ≤ (z₁ + ternaryHalfMod τ) / M - q := by omega
+        nlinarith only [hM, hhi, hm0, hdiv, hge, h2K]
+
+/-- Two inputs share the same ambiguous carry digit `balRem K_τ z.1` iff their wide
+encoded coordinates are congruent modulo `3^τ`. -/
+theorem carryDigit_eq_iff_wideCoord_modEq (posSkew : Bool) (τ : ℕ) (z z' : ℤ × ℤ) :
+    balRem (ternaryHalfMod τ) z.1 = balRem (ternaryHalfMod τ) z'.1 ↔
+      wideCoord posSkew (orientedTernaryEncode posSkew τ z) ≡
+        wideCoord posSkew (orientedTernaryEncode posSkew τ z') [ZMOD ((3 : ℤ) ^ τ)] := by
+  rw [wideCoord_encode, wideCoord_encode, Int.modEq_iff_dvd]
+  let K := ternaryHalfMod τ
+  let M : ℤ := (3 : ℤ) ^ τ
+  have h2K : 2 * (K : ℤ) + 1 = M := two_mul_ternaryHalfMod_add_one_int τ
+  constructor
+  · intro heq
+    refine ⟨z'.2 - z.2, ?_⟩
+    change (balRem K z'.1 + M * z'.2) - (balRem K z.1 + M * z.2) = M * (z'.2 - z.2)
+    rw [heq]; ring
+  · rintro ⟨c, hc⟩
+    obtain ⟨h1_lo, h1_hi⟩ := balRem_bounds K z.1
+    obtain ⟨h2_lo, h2_hi⟩ := balRem_bounds K z'.1
+    have hrem_dvd : M * (c - (z'.2 - z.2)) = balRem K z'.1 - balRem K z.1 := by
+      dsimp only [M, K] at hc ⊢
+      linarith only [hc]
+    have hM_pos : 0 < M := by dsimp [M]; positivity
+    have hcz : c - (z'.2 - z.2) = 0 := by
+      by_contra hne
+      rcases lt_or_gt_of_ne hne with hlt | hgt
+      · have hle : c - (z'.2 - z.2) ≤ -1 := by omega
+        nlinarith only [hM_pos, h1_hi, h2_lo, h2K, hrem_dvd, hle]
+      · have hge : 1 ≤ c - (z'.2 - z.2) := by omega
+        nlinarith only [hM_pos, h1_lo, h2_hi, h2K, hrem_dvd, hge]
+    rw [hcz, mul_zero] at hrem_dvd
+    linarith only [hrem_dvd]
+
+/-- Wide rational section representative of an encoded rational pair. -/
+def wideSection {N : ℕ} (v₁ v₂ : Fin N → ℤ) (t : ℚ × ℚ) : ℚ :=
+  if adelicSkewNonneg v₁ v₂ then t.1 else t.2
+
+/-- Generator of the wide outer lattice. -/
+def wideGenerator {N : ℕ} (v₁ v₂ : Fin N → ℤ) : ℚ :=
+  if adelicSkewNonneg v₁ v₂ then generator v₁ else generator v₂
+
+theorem wideGenerator_pos {N : ℕ} (v₁ v₂ : Fin N → ℤ) : 0 < wideGenerator v₁ v₂ := by
+  unfold wideGenerator
+  cases adelicSkewNonneg v₁ v₂ <;> exact generator_pos_rat _
+
+/-- Rational-section valuation payment law: two encoded rational section pairs share
+the same ambiguous carry digit iff the `3`-adic valuation `ratPrimeVal 3` of their wide
+section difference exceeds `ratPrimeVal 3 (wideGenerator v₁ v₂)` by at least `τ`. -/
+theorem adelicCarryDigit_paid_iff_threeAdic_valuation {N : ℕ} (v₀ v₁ v₂ : Fin N → ℤ)
+    (s s' : ℚ × ℚ) :
+    balRem (ternaryHalfMod (ternaryCarryOrder v₁ v₂)) (sectionCoord v₀ s.1) =
+      balRem (ternaryHalfMod (ternaryCarryOrder v₁ v₂)) (sectionCoord v₀ s'.1) ↔
+      (wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s) =
+          wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s') ∨
+        ratPrimeVal 3 (wideGenerator v₁ v₂) + (ternaryCarryOrder v₁ v₂ : ℤ) ≤
+          ratPrimeVal 3
+            (wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s') -
+              wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s))) := by
+  let b := adelicSkewNonneg v₁ v₂
+  let τ := ternaryCarryOrder v₁ v₂
+  let z := (sectionCoord v₀ s.1, sectionCoord v₀ s.2)
+  let z' := (sectionCoord v₀ s'.1, sectionCoord v₀ s'.2)
+  have hwide_diff : wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s') -
+      wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s) =
+      wideGenerator v₁ v₂ *
+        ((wideCoord b (orientedTernaryEncode b τ z') -
+          wideCoord b (orientedTernaryEncode b τ z) : ℤ) : ℚ) := by
+    unfold wideSection wideGenerator adelicSectionEncode sectionRep
+    cases h : adelicSkewNonneg v₁ v₂ <;>
+      simp only [b, h, Bool.false_eq_true, ↓reduceIte, wideCoord, Int.cast_sub, mul_sub]
+  have heq_iff : (wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s) =
+      wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s')) ↔
+      wideGenerator v₁ v₂ *
+        ((wideCoord b (orientedTernaryEncode b τ z') -
+          wideCoord b (orientedTernaryEncode b τ z) : ℤ) : ℚ) = 0 := by
+    rw [← hwide_diff, sub_eq_zero, eq_comm]
+  rw [carryDigit_eq_iff_wideCoord_modEq b τ z z', Int.modEq_iff_dvd,
+    pow_dvd_int_iff_ratPrimeVal Nat.prime_three (wideGenerator_pos v₁ v₂),
+    ← hwide_diff, ← heq_iff]
+
+/-- Simultaneous zero-loss congruence preservation and recovery at **every** modulus `u`
+coprime to `3` (`gcd(u, 3) = 1`), once the `3^τ` carry digit is paid. -/
+theorem orientedTernary_coprime_zeroLoss_recovery (posSkew : Bool) (τ : ℕ) {u : ℕ}
+    (hu : u.Coprime 3) {z z' : ℤ × ℤ}
+    (hrem : balRem (ternaryHalfMod τ) z.1 = balRem (ternaryHalfMod τ) z'.1) :
+    ((orientedTernaryEncode posSkew τ z).1 ≡ (orientedTernaryEncode posSkew τ z').1 [ZMOD (u : ℤ)] ∧
+      (orientedTernaryEncode posSkew τ z).2 ≡ (orientedTernaryEncode posSkew τ z').2 [ZMOD (u : ℤ)]) ↔
+      (z.1 ≡ z'.1 [ZMOD (u : ℤ)] ∧ z.2 ≡ z'.2 [ZMOD (u : ℤ)]) := by
+  have hpair (w w' : ℤ × ℤ) :
+      (w.1 ≡ w'.1 [ZMOD (u : ℤ)] ∧ w.2 ≡ w'.2 [ZMOD (u : ℤ)]) ↔
+        (wideCoord posSkew w ≡ wideCoord posSkew w' [ZMOD (u : ℤ)] ∧
+          narrowCoord posSkew w ≡ narrowCoord posSkew w' [ZMOD (u : ℤ)]) := by
+    cases posSkew <;> simp only [wideCoord, narrowCoord, Bool.false_eq_true, ↓reduceIte, and_comm]
+  rw [hpair]
+  simp only [Int.modEq_iff_dvd, wideCoord_encode, narrowCoord_encode]
+  let K := ternaryHalfMod τ
+  have h2K := two_mul_ternaryHalfMod_add_one_int τ
+  have hcop_pow : u.Coprime (3 ^ τ) := hu.pow_right τ
+  have hbez := Nat.gcd_eq_gcd_ab u (3 ^ τ)
+  rw [hcop_pow.gcd_eq_one, Nat.cast_one] at hbez
+  have cancel_threePow {x : ℤ} (h : (u : ℤ) ∣ (3 : ℤ) ^ τ * x) : (u : ℤ) ∣ x := by
+    obtain ⟨c, hc⟩ := h
+    refine ⟨Nat.gcdA u (3 ^ τ) * x + Nat.gcdB u (3 ^ τ) * c, ?_⟩
+    have hmul := congrArg (· * x) hbez
+    rw [one_mul] at hmul
+    push_cast at hmul
+    linarith only [hmul, congrArg (Nat.gcdB u (3 ^ τ) * ·) hc]
+  have hd1 := balRem_add_mul_balQuot K z.1
+  have hd2 := balRem_add_mul_balQuot K z'.1
+  rw [h2K] at hd1 hd2
+  constructor
+  · rintro ⟨hw, hn⟩
+    have hw' : (u : ℤ) ∣ (3 : ℤ) ^ τ * (z'.2 - z.2) := by
+      convert hw using 1; dsimp [K] at hrem ⊢; rw [hrem]; ring
+    have hz1 : z'.1 - z.1 = (3 : ℤ) ^ τ * (balQuot K z'.1 - balQuot K z.1) := by
+      dsimp [K] at hd1 hd2 hrem ⊢; linarith only [hd1, hd2, hrem]
+    exact ⟨hz1 ▸ hn.mul_left _, cancel_threePow hw'⟩
+  · rintro ⟨hz1, hz2⟩
+    have hw' : (balRem K z'.1 + (3 : ℤ) ^ τ * z'.2) - (balRem K z.1 + (3 : ℤ) ^ τ * z.2) =
+        (3 : ℤ) ^ τ * (z'.2 - z.2) := by dsimp [K] at hrem ⊢; rw [hrem]; ring
+    have hq_mul : (3 : ℤ) ^ τ * (balQuot K z'.1 - balQuot K z.1) = z'.1 - z.1 := by
+      dsimp [K] at hd1 hd2 hrem ⊢; linarith only [hd1, hd2, hrem]
+    exact ⟨hw' ▸ hz2.mul_left _, cancel_threePow (hq_mul ▸ hz1)⟩
+
+/-- Asymmetric `3`-adic zero-waste recovery: knowing the wide coordinate modulo `3^(r + τ)`
+and the narrow coordinate modulo `3^(r - min r τ)` uniquely recovers both input coordinates
+modulo `3^r` (using `(r + τ) + (r - τ) = 2r` total ternary digits whenever `τ ≤ r`). -/
+theorem orientedTernary_threeAdic_asymmetric_recovery (posSkew : Bool) (τ r : ℕ) (z z' : ℤ × ℤ)
+    (hw : wideCoord posSkew (orientedTernaryEncode posSkew τ z) ≡
+      wideCoord posSkew (orientedTernaryEncode posSkew τ z') [ZMOD ((3 : ℤ) ^ (r + τ))])
+    (hn : narrowCoord posSkew (orientedTernaryEncode posSkew τ z) ≡
+      narrowCoord posSkew (orientedTernaryEncode posSkew τ z') [ZMOD ((3 : ℤ) ^ (r - min r τ))]) :
+    z.1 ≡ z'.1 [ZMOD ((3 : ℤ) ^ r)] ∧ z.2 ≡ z'.2 [ZMOD ((3 : ℤ) ^ r)] ∧
+      (τ ≤ r → (r + τ) + (r - min r τ) = 2 * r) := by
+  have hw_τ : wideCoord posSkew (orientedTernaryEncode posSkew τ z) ≡
+      wideCoord posSkew (orientedTernaryEncode posSkew τ z') [ZMOD ((3 : ℤ) ^ τ)] :=
+    hw.of_dvd (pow_dvd_pow (3 : ℤ) (Nat.le_add_left τ r))
+  have hrem := (carryDigit_eq_iff_wideCoord_modEq posSkew τ z z').mpr hw_τ
+  rw [wideCoord_encode, wideCoord_encode, Int.modEq_iff_dvd] at hw
+  rw [narrowCoord_encode, narrowCoord_encode, Int.modEq_iff_dvd] at hn
+  simp only [Int.modEq_iff_dvd]
+  let K := ternaryHalfMod τ
+  have h2K := two_mul_ternaryHalfMod_add_one_int τ
+  have hd1 := balRem_add_mul_balQuot K z.1
+  have hd2 := balRem_add_mul_balQuot K z'.1
+  rw [h2K] at hd1 hd2
+  have hz2_mul : (3 : ℤ) ^ τ * (3 : ℤ) ^ r ∣ (3 : ℤ) ^ τ * (z'.2 - z.2) := by
+    rw [← pow_add, add_comm τ r]
+    convert hw using 1
+    dsimp [K] at hrem ⊢; rw [hrem]; ring
+  have hz2 : (3 : ℤ) ^ r ∣ z'.2 - z.2 :=
+    (mul_dvd_mul_iff_left (by positivity : (3 : ℤ) ^ τ ≠ 0)).mp hz2_mul
+  have hz1_eq : z'.1 - z.1 = (3 : ℤ) ^ τ * (balQuot K z'.1 - balQuot K z.1) := by
+    dsimp [K] at hd1 hd2 hrem ⊢; linarith only [hd1, hd2, hrem]
+  have hz1_high : (3 : ℤ) ^ (τ + (r - min r τ)) ∣ z'.1 - z.1 := by
+    rw [hz1_eq, pow_add]
+    exact mul_dvd_mul_left _ hn
+  have hz1 : (3 : ℤ) ^ r ∣ z'.1 - z.1 :=
+    (pow_dvd_pow (3 : ℤ) (by omega : r ≤ τ + (r - min r τ))).trans hz1_high
+  exact ⟨hz1, hz2, fun hle => by omega⟩
+
+/-! ### 5. Asymptotic validity, comparison on `(2b, 3b, 4b)`, and single-rule RH equivalence -/
+
+theorem mapsRationalSections_adelicSectionEncode_iff {N : ℕ} (v₀ v₁ v₂ : Fin N → ℤ) :
+    mapsRationalSections (adelicSectionEncode v₀ v₁ v₂) v₀ v₁ v₂ ↔
+      mapsDivisorSections
+        (orientedTernaryEncode (adelicSkewNonneg v₁ v₂) (ternaryCarryOrder v₁ v₂)) v₀ v₁ v₂ := by
+  have hd₀ : 0 < (generator v₀ : ℝ) := by exact_mod_cast generator_pos_rat v₀
+  have hd₁ : 0 < (generator v₁ : ℝ) := by exact_mod_cast generator_pos_rat v₁
+  have hd₂ : 0 < (generator v₂ : ℝ) := by exact_mod_cast generator_pos_rat v₂
+  constructor
+  · intro h z₁ hz₁ z₂ hz₂
+    have hs₁ : sectionRep v₀ z₁ ∈ rationalSections v₀ := Finset.mem_map.mpr ⟨z₁, hz₁, rfl⟩
+    have hs₂ : sectionRep v₀ z₂ ∈ rationalSections v₀ := Finset.mem_map.mpr ⟨z₂, hz₂, rfl⟩
+    obtain ⟨hm₁, hm₂⟩ := h _ hs₁ _ hs₂
+    rw [mem_rationalSections_iff] at hm₁ hm₂
+    unfold adelicSectionEncode at hm₁ hm₂
+    simp only [sectionCoord_sectionRep] at hm₁ hm₂
+    refine ⟨(mem_smallSections hd₁ _).mpr ?_, (mem_smallSections hd₂ _).mpr ?_⟩
+    · simpa only [sectionRep, Rat.cast_mul, Rat.cast_intCast] using hm₁.2
+    · simpa only [sectionRep, Rat.cast_mul, Rat.cast_intCast] using hm₂.2
+  · intro h s₁ hs₁ s₂ hs₂
+    obtain ⟨z₁, hz₁, rfl⟩ := Finset.mem_map.mp hs₁
+    obtain ⟨z₂, hz₂, rfl⟩ := Finset.mem_map.mp hs₂
+    obtain ⟨hw₁, hw₂⟩ := h z₁ hz₁ z₂ hz₂
+    unfold adelicSectionEncode
+    simp only [sectionCoord_sectionRep]
+    exact ⟨Finset.mem_map.mpr ⟨_, hw₁, rfl⟩, Finset.mem_map.mpr ⟨_, hw₂, rfl⟩⟩
+
+theorem maxFibre_adelicSectionEncode_eq_one {N : ℕ} {v₀ v₁ v₂ : Fin N → ℤ}
+    (h : mapsRationalSections (adelicSectionEncode v₀ v₁ v₂) v₀ v₁ v₂) :
+    maxFibre (restrictRationalSectionMap (adelicSectionEncode v₀ v₁ v₂) h) = 1 := by
+  have hinj : Function.Injective (restrictRationalSectionMap (adelicSectionEncode v₀ v₁ v₂) h) := by
+    intro p q hpq
+    simp only [restrictRationalSectionMap, Prod.ext_iff, Subtype.ext_iff] at hpq
+    have hp₁ := (mem_rationalSections_iff v₀ p.1.val).mp p.1.property
+    have hp₂ := (mem_rationalSections_iff v₀ p.2.val).mp p.2.property
+    have hq₁ := (mem_rationalSections_iff v₀ q.1.val).mp q.1.property
+    have hq₂ := (mem_rationalSections_iff v₀ q.2.val).mp q.2.property
+    have hdec := congrArg (adelicSectionDecode v₀ v₁ v₂) (Prod.ext hpq.1 hpq.2)
+    rw [adelicSectionDecode_encode v₀ v₁ v₂ hp₁.1 hp₂.1,
+      adelicSectionDecode_encode v₀ v₁ v₂ hq₁.1 hq₂.1] at hdec
+    exact Prod.ext (Subtype.ext (Prod.ext_iff.mp hdec).1) (Subtype.ext (Prod.ext_iff.mp hdec).2)
+  haveI : Nonempty ↥(rationalSections v₀) := by
+    have hc : 0 < (rationalSections v₀).card := by
+      rw [card_rationalSections, divisorSections, card_smallSections]; omega
+    exact Finset.Nonempty.to_subtype (Finset.card_pos.mp hc)
+  exact le_antisymm ((maxFibre_le_one_iff_injective _).mpr hinj) (maxFibre_pos _)
+
+/-- At `v₁ = v₂ = v₀`, `adelicSectionEncode v₀ v₀ v₀` is the identity on `rationalSections v₀²`
+for every divisor `v₀` (including `Q(v₀) ≤ 0`). -/
+theorem adelicSectionEncode_self_mapsRationalSections {N : ℕ} (v₀ : Fin N → ℤ) :
+    mapsRationalSections (adelicSectionEncode v₀ v₀ v₀) v₀ v₀ v₀ := by
+  rw [mapsRationalSections_adelicSectionEncode_iff]
+  have hskew : outerAdelicSkew v₀ v₀ = 0 := by unfold outerAdelicSkew; ring
+  have hb : adelicSkewNonneg v₀ v₀ = true := adelicSkewNonneg_eq_true (by rw [hskew])
+  have hτ : ternaryCarryOrder v₀ v₀ = 0 := by unfold ternaryCarryOrder; rw [hskew]; simp
+  have hK : ternaryHalfMod 0 = 0 := rfl
+  intro z₁ hz₁ z₂ hz₂
+  rw [hb, hτ]
+  unfold orientedTernaryEncode centeredCarry balRem balQuot
+  rw [hK]
+  simp only [CharP.cast_eq_zero, mul_zero, zero_add, add_zero, sub_zero, one_mul,
+    Int.emod_one, Int.ediv_one, ↓reduceIte]
+  exact ⟨hz₂, hz₁⟩
+
+theorem tendsto_outerAdelicSkew {N : ℕ} (v₁ v₂ : Fin N → ℤ) :
+    Tendsto (fun m : ℕ => outerAdelicSkew (m • v₁) (m • v₂) / (m : ℝ)^2) atTop
+      (𝓝 ((integerProbe N v₁ - integerProbe N v₂) / 2)) := by
+  have h₁ := tendsto_splineDegree v₁
+  have h₂ := tendsto_splineDegree v₂
+  refine ((h₁.sub h₂).div_const 2).congr fun m => ?_
+  unfold outerAdelicSkew arakelovDegree
+  ring
+
+theorem tendsto_ternaryCarryScale {N : ℕ} (v₁ v₂ : Fin N → ℤ) :
+    Tendsto (fun m : ℕ =>
+      Real.log (2 * ternaryHalfMod (ternaryCarryOrder (m • v₁) (m • v₂)) + 1 : ℕ) / (m : ℝ)^2)
+      atTop (𝓝 (|integerProbe N v₁ - integerProbe N v₂| / 2)) := by
+  have hskew_abs : Tendsto (fun m : ℕ => |outerAdelicSkew (m • v₁) (m • v₂)| / (m : ℝ)^2) atTop
+      (𝓝 (|integerProbe N v₁ - integerProbe N v₂| / 2)) := by
+    refine (tendsto_outerAdelicSkew v₁ v₂).abs.congr' ?_
+    filter_upwards [eventually_ge_atTop 1] with m hm
+    rw [abs_div, abs_of_pos (by positivity : 0 < (m : ℝ)^2)]
+    · rw [abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
+  have hzero : Tendsto (fun m : ℕ => Real.log 3 / (m : ℝ)^2) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop
+      ((tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop)
+  have hlog3 : 0 < Real.log 3 := Real.log_pos (by norm_num)
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+    (by simpa only [sub_zero] using hskew_abs.sub hzero) hskew_abs ?_ ?_
+  · filter_upwards with m
+    rw [← sub_div]
+    refine div_le_div_of_nonneg_right ?_ (sq_nonneg _)
+    rw [two_mul_ternaryHalfMod_add_one, Nat.cast_pow, Real.log_pow, Nat.cast_ofNat]
+    have hlt := Nat.lt_floor_add_one (|outerAdelicSkew (m • v₁) (m • v₂)| / Real.log 3)
+    have hmul := (div_lt_iff₀ hlog3).mp hlt
+    dsimp only [ternaryCarryOrder]
+    linarith only [hmul]
+  · filter_upwards with m
+    refine div_le_div_of_nonneg_right ?_ (sq_nonneg _)
+    rw [two_mul_ternaryHalfMod_add_one, Nat.cast_pow, Real.log_pow, Nat.cast_ofNat]
+    have hle := Nat.floor_le (div_nonneg (abs_nonneg (outerAdelicSkew (m • v₁) (m • v₂))) hlog3.le)
+    exact (le_div_iff₀ hlog3).mp hle
+
+/-- Whenever `0 < Q(v₀), Q(v₁), Q(v₂)` and `2 Q(v₀) < Q(v₁) + Q(v₂)`, the single
+rule `adelicSectionEncode` eventually maps `rationalSections (m • v₀)²` into
+`rationalSections (m • v₁) × rationalSections (m • v₂)` across all skew signs
+(`Q(v₁) > Q(v₂)`, `Q(v₁) < Q(v₂)`, and `Q(v₁) = Q(v₂)`). -/
+theorem eventually_adelicSectionEncode_mapsRationalSections {N : ℕ} {v₀ v₁ v₂ : Fin N → ℤ}
+    (hv₀ : 0 < integerProbe N v₀) (hv₁ : 0 < integerProbe N v₁) (hv₂ : 0 < integerProbe N v₂)
+    (hsum : 2 * integerProbe N v₀ < integerProbe N v₁ + integerProbe N v₂) :
+    ∀ᶠ m : ℕ in atTop,
+      mapsRationalSections
+        (adelicSectionEncode (m • v₀) (m • v₁) (m • v₂)) (m • v₀) (m • v₁) (m • v₂) := by
+  let K (m : ℕ) := ternaryHalfMod (ternaryCarryOrder (m • v₁) (m • v₂))
+  have hK := tendsto_ternaryCarryScale v₁ v₂
+  rcases lt_trichotomy (integerProbe N v₂) (integerProbe N v₁) with hgt | heq | hlt
+  · have hμ : |integerProbe N v₁ - integerProbe N v₂| / 2 =
+        (integerProbe N v₁ - integerProbe N v₂) / 2 := by
+      rw [abs_of_pos (sub_pos.mpr hgt)]
+    rw [hμ] at hK
+    have hev_carry := eventually_centeredCarry_sections_of_window hv₀ hv₁ hv₂ hK
+      (by linarith) (by linarith)
+    have hev_sign := (tendsto_outerAdelicSkew v₁ v₂).eventually_const_lt
+      (show (0 : ℝ) < (integerProbe N v₁ - integerProbe N v₂) / 2 by linarith)
+    filter_upwards [hev_carry, hev_sign, eventually_ge_atTop 1] with m hm_c hm_s hm1
+    rw [mapsRationalSections_adelicSectionEncode_iff]
+    have hpos : 0 < outerAdelicSkew (m • v₁) (m • v₂) :=
+      (div_pos_iff_of_pos_right (by positivity : 0 < (m : ℝ)^2)).mp hm_s
+    rw [adelicSkewNonneg_eq_true hpos.le]
+    exact hm_c
+  · have hμ : |integerProbe N v₁ - integerProbe N v₂| / 2 = 0 := by rw [heq, sub_self, abs_zero, zero_div]
+    rw [hμ] at hK
+    have hev₁ := eventually_centeredCarry_sections_of_window hv₀ hv₁ hv₂ hK
+      (by linarith) (by linarith)
+    have hev₂ := eventually_centeredCarry_sections_of_window hv₀ hv₂ hv₁ hK
+      (by linarith) (by linarith)
+    filter_upwards [hev₁, hev₂] with m hm₁ hm₂
+    rw [mapsRationalSections_adelicSectionEncode_iff]
+    intro z₁ hz₁ z₂ hz₂
+    cases adelicSkewNonneg (m • v₁) (m • v₂)
+    · simp only [orientedTernaryEncode, Bool.false_eq_true, ↓reduceIte, Prod.swap_fst, Prod.swap_snd]
+      exact ⟨(hm₂ z₁ hz₁ z₂ hz₂).2, (hm₂ z₁ hz₁ z₂ hz₂).1⟩
+    · simp only [orientedTernaryEncode, ↓reduceIte]
+      exact hm₁ z₁ hz₁ z₂ hz₂
+  · have hμ : |integerProbe N v₁ - integerProbe N v₂| / 2 =
+        (integerProbe N v₂ - integerProbe N v₁) / 2 := by
+      rw [abs_sub_comm, abs_of_pos (sub_pos.mpr hlt)]
+    rw [hμ] at hK
+    have hev_carry := eventually_centeredCarry_sections_of_window hv₀ hv₂ hv₁ hK
+      (by linarith) (by linarith)
+    have hev_sign := (tendsto_outerAdelicSkew v₁ v₂).eventually_lt_const
+      (show (integerProbe N v₁ - integerProbe N v₂) / 2 < 0 by linarith)
+    filter_upwards [hev_carry, hev_sign, eventually_ge_atTop 1] with m hm_c hm_s hm1
+    rw [mapsRationalSections_adelicSectionEncode_iff]
+    have hneg : outerAdelicSkew (m • v₁) (m • v₂) < 0 := by
+      have hm2 : 0 < (m : ℝ)^2 := by positivity
+      exact (div_lt_iff₀ hm2).mp (by simpa only [zero_mul] using hm_s)
+    rw [adelicSkewNonneg_eq_false hneg]
+    intro z₁ hz₁ z₂ hz₂
+    simp only [orientedTernaryEncode, Bool.false_eq_true, ↓reduceIte, Prod.swap_fst, Prod.swap_snd]
+    exact ⟨(hm_c z₁ hz₁ z₂ hz₂).2, (hm_c z₁ hz₁ z₂ hz₂).1⟩
+
+private theorem natModEq_iff_intModEq (M a b : ℕ) :
+    a ≡ b [MOD M] ↔ (a : ℤ) ≡ (b : ℤ) [ZMOD (M : ℤ)] := by
+  change a % M = b % M ↔ (a : ℤ) % (M : ℤ) = (b : ℤ) % (M : ℤ)
+  omega
+
+theorem sectionOrdinal_modEq_iff {d A : ℝ} (x y : ↥(smallSections d A)) (M : ℕ) :
+    (sectionOrdinal d A x).val ≡ (sectionOrdinal d A y).val [MOD M] ↔
+      x.val ≡ y.val [ZMOD (M : ℤ)] := by
+  rw [natModEq_iff_intModEq, Int.modEq_iff_dvd, Int.modEq_iff_dvd]
+  have hsub := sectionOrdinal_sub y x
+  rw [hsub]
+
+/-- Direct comparison of `adelicSectionEncode` along `(2mb, 3mb, 4mb)` against the
+two-output carry obstructions: `adelicSectionEncode` restricts eventually to an
+injective `rayProductMap b m` (`maxFibre = 1`) with ternary carry order `τ_m`
+(`τ_m log 3 / m² → 6 Q(b)`), satisfying symmetric `jointInversePrecisionLoss` at base `3`
+with loss `τ_m`, asymmetric `3`-adic recovery with `(r + τ_m) + (r - τ_m) = 2r` total
+digits, and zero-loss recovery at **every** modulus `u` coprime to `3` once the wide
+output modulo `3^τ_m` pays the carry digit. -/
+theorem adelicRayMap_precision_comparison {N : ℕ} {b : Fin N → ℤ}
+    (hb : 0 < integerProbe N b) :
+    Tendsto (fun m : ℕ =>
+      (ternaryCarryOrder (m • (4 • b)) (m • (2 • b)) : ℝ) * Real.log 3 / (m : ℝ)^2)
+      atTop (𝓝 (6 * integerProbe N b)) ∧
+    ∀ᶠ m : ℕ in atTop,
+      ∃ h : mapsRationalSections
+          (adelicSectionEncode (m • (3 • b)) (m • (4 • b)) (m • (2 • b)))
+          (m • (3 • b)) (m • (4 • b)) (m • (2 • b)),
+        let f : rayProductMap b m := inducedDivisorSectionMap h
+        let τ := ternaryCarryOrder (m • (4 • b)) (m • (2 • b))
+        maxFibre f = 1 ∧
+        jointInversePrecisionLoss (ordinalMap b m f) 3 τ ∧
+        ∀ (u : ℕ), u.Coprime 3 → ∀ x y : Fin (rayCard b 3 m) × Fin (rayCard b 3 m),
+          (ordinalMap b m f x).1.val ≡ (ordinalMap b m f y).1.val [MOD 3 ^ τ] →
+          (((ordinalMap b m f x).1.val ≡ (ordinalMap b m f y).1.val [MOD u] ∧
+            (ordinalMap b m f x).2.val ≡ (ordinalMap b m f y).2.val [MOD u]) ↔
+            (x.1.val ≡ y.1.val [MOD u] ∧ x.2.val ≡ y.2.val [MOD u])) := by
+  have hb3 : 0 < integerProbe N (3 • b) := by rw [integerProbe_smul]; positivity
+  have hb4 : 0 < integerProbe N (4 • b) := by rw [integerProbe_smul]; positivity
+  have hb2 : 0 < integerProbe N (2 • b) := by rw [integerProbe_smul]; positivity
+  have hsum : 2 * integerProbe N (3 • b) < integerProbe N (4 • b) + integerProbe N (2 • b) := by
+    rw [integerProbe_smul, integerProbe_smul, integerProbe_smul]; push_cast; linarith
+  have hscale : Tendsto (fun m : ℕ =>
+      (ternaryCarryOrder (m • (4 • b)) (m • (2 • b)) : ℝ) * Real.log 3 / (m : ℝ)^2)
+      atTop (𝓝 (6 * integerProbe N b)) := by
+    have hK := tendsto_ternaryCarryScale (4 • b) (2 • b)
+    rw [integerProbe_smul, integerProbe_smul] at hK
+    have hlim_eq : |((4 : ℕ) : ℝ)^2 * integerProbe N b - ((2 : ℕ) : ℝ)^2 * integerProbe N b| / 2 =
+        6 * integerProbe N b := by
+      push_cast
+      rw [show 16 * integerProbe N b - 4 * integerProbe N b = 12 * integerProbe N b by ring,
+        abs_of_pos (by positivity)]
+      ring
+    rw [hlim_eq] at hK
+    refine hK.congr fun m => ?_
+    rw [two_mul_ternaryHalfMod_add_one, Nat.cast_pow, Real.log_pow, Nat.cast_ofNat]
+  refine ⟨hscale, ?_⟩
+  have hev_sign := (tendsto_outerAdelicSkew (4 • b) (2 • b)).eventually_const_lt
+    (show (0 : ℝ) < (integerProbe N (4 • b) - integerProbe N (2 • b)) / 2 by
+      rw [integerProbe_smul, integerProbe_smul]; push_cast; linarith)
+  filter_upwards [eventually_adelicSectionEncode_mapsRationalSections hb3 hb4 hb2 hsum,
+    hev_sign, eventually_ge_atTop 1] with m hm hm_s hm1
+  have hpos : 0 < outerAdelicSkew (m • (4 • b)) (m • (2 • b)) :=
+    (div_pos_iff_of_pos_right (by positivity : 0 < (m : ℝ)^2)).mp hm_s
+  have hb_true : adelicSkewNonneg (m • (4 • b)) (m • (2 • b)) = true :=
+    adelicSkewNonneg_eq_true hpos.le
+  refine ⟨hm, ?_⟩
+  let f : rayProductMap b m := inducedDivisorSectionMap hm
+  let τ := ternaryCarryOrder (m • (4 • b)) (m • (2 • b))
+  have hf_fib : maxFibre f = 1 :=
+    (maxFibre_inducedDivisorSectionMap hm).trans (maxFibre_adelicSectionEncode_eq_one hm)
+  have hf_val (p : ↥(divisorSections (m • (3 • b))) × ↥(divisorSections (m • (3 • b)))) :
+      ((f p).1.val, (f p).2.val) = orientedTernaryEncode true τ (p.1.val, p.2.val) := by
+    dsimp only [f, inducedDivisorSectionMap, restrictRationalSectionMap, rationalSectionEquiv,
+      Equiv.prodCongr_apply, Prod.map_apply, Equiv.coe_fn_mk, Equiv.coe_fn_symm_mk,
+      adelicSectionEncode]
+    simp only [sectionCoord_sectionRep, hb_true, τ]
+    exact Prod.ext rfl rfl
+  have hord_mod (M : ℕ) (x y : Fin (rayCard b 3 m) × Fin (rayCard b 3 m)) :
+      let px := ((rayOrdinal b 3 m).prodCongr (rayOrdinal b 3 m)).symm x
+      let py := ((rayOrdinal b 3 m).prodCongr (rayOrdinal b 3 m)).symm y
+      ((ordinalMap b m f x).1.val ≡ (ordinalMap b m f y).1.val [MOD M] ↔
+        (orientedTernaryEncode true τ (px.1.val, px.2.val)).1 ≡
+          (orientedTernaryEncode true τ (py.1.val, py.2.val)).1 [ZMOD (M : ℤ)]) ∧
+      ((ordinalMap b m f x).2.val ≡ (ordinalMap b m f y).2.val [MOD M] ↔
+        (orientedTernaryEncode true τ (px.1.val, px.2.val)).2 ≡
+          (orientedTernaryEncode true τ (py.1.val, py.2.val)).2 [ZMOD (M : ℤ)]) ∧
+      (x.1.val ≡ y.1.val [MOD M] ↔ px.1.val ≡ py.1.val [ZMOD (M : ℤ)]) ∧
+      (x.2.val ≡ y.2.val [MOD M] ↔ px.2.val ≡ py.2.val [ZMOD (M : ℤ)]) := by
+    intro px py
+    have h1 := sectionOrdinal_modEq_iff (f px).1 (f py).1 M
+    have h2 := sectionOrdinal_modEq_iff (f px).2 (f py).2 M
+    have h3 := sectionOrdinal_modEq_iff px.1 py.1 M
+    have h4 := sectionOrdinal_modEq_iff px.2 py.2 M
+    have hfx := hf_val px
+    have hfy := hf_val py
+    rw [(Prod.ext_iff.mp hfx).1, (Prod.ext_iff.mp hfy).1] at h1
+    rw [(Prod.ext_iff.mp hfx).2, (Prod.ext_iff.mp hfy).2] at h2
+    have hx1 : sectionOrdinal _ _ px.1 = x.1 := (rayOrdinal b 3 m).apply_symm_apply x.1
+    have hy1 : sectionOrdinal _ _ py.1 = y.1 := (rayOrdinal b 3 m).apply_symm_apply y.1
+    have hx2 : sectionOrdinal _ _ px.2 = x.2 := (rayOrdinal b 3 m).apply_symm_apply x.2
+    have hy2 : sectionOrdinal _ _ py.2 = y.2 := (rayOrdinal b 3 m).apply_symm_apply y.2
+    rw [hx1, hy1] at h3
+    rw [hx2, hy2] at h4
+    exact ⟨h1, h2, h3, h4⟩
+  refine ⟨hf_fib, ?_, ?_⟩
+  · intro r x y hw_mod hn_mod
+    obtain ⟨h1, _, h3, h4⟩ := hord_mod (3 ^ (r + τ)) x y
+    obtain ⟨_, h2, _, _⟩ := hord_mod (3 ^ (r - min r τ)) x y
+    obtain ⟨_, _, h3r, h4r⟩ := hord_mod (3 ^ r) x y
+    let px := ((rayOrdinal b 3 m).prodCongr (rayOrdinal b 3 m)).symm x
+    let py := ((rayOrdinal b 3 m).prodCongr (rayOrdinal b 3 m)).symm y
+    have hw_z : wideCoord true (orientedTernaryEncode true τ (px.1.val, px.2.val)) ≡
+        wideCoord true (orientedTernaryEncode true τ (py.1.val, py.2.val)) [ZMOD ((3 : ℤ) ^ (r + τ))] := by
+      simpa only [wideCoord, ↓reduceIte, Nat.cast_pow, Nat.cast_ofNat] using h1.mp hw_mod
+    have hn_le : 3 ^ (r - min r τ) ∣ 3 ^ (r + τ) :=
+      Nat.pow_dvd_pow 3 (by omega)
+    have hn_z : narrowCoord true (orientedTernaryEncode true τ (px.1.val, px.2.val)) ≡
+        narrowCoord true (orientedTernaryEncode true τ (py.1.val, py.2.val))
+          [ZMOD ((3 : ℤ) ^ (r - min r τ))] := by
+      simpa only [narrowCoord, ↓reduceIte, Nat.cast_pow, Nat.cast_ofNat] using
+        h2.mp (hn_mod.of_dvd hn_le)
+    obtain ⟨hz1, hz2, _⟩ := orientedTernary_threeAdic_asymmetric_recovery true τ r
+      (px.1.val, px.2.val) (py.1.val, py.2.val) hw_z hn_z
+    exact ⟨h3r.mpr (by simpa only [Nat.cast_pow, Nat.cast_ofNat] using hz1),
+           h4r.mpr (by simpa only [Nat.cast_pow, Nat.cast_ofNat] using hz2)⟩
+  · intro u hu x y hpay
+    obtain ⟨hpay1, _, _, _⟩ := hord_mod (3 ^ τ) x y
+    obtain ⟨hu1, hu2, hu3, hu4⟩ := hord_mod u x y
+    let px := ((rayOrdinal b 3 m).prodCongr (rayOrdinal b 3 m)).symm x
+    let py := ((rayOrdinal b 3 m).prodCongr (rayOrdinal b 3 m)).symm y
+    have hrem : balRem (ternaryHalfMod τ) px.1.val = balRem (ternaryHalfMod τ) py.1.val := by
+      apply (carryDigit_eq_iff_wideCoord_modEq true τ (px.1.val, px.2.val) (py.1.val, py.2.val)).mpr
+      simpa only [wideCoord, ↓reduceIte, Nat.cast_pow, Nat.cast_ofNat] using hpay1.mp hpay
+    rw [hu1, hu2, hu3, hu4]
+    exact orientedTernary_coprime_zeroLoss_recovery true τ hu hrem
+
+/-- Along `(m(kb), m(kb + a), m(kb - a))` over `0 < Q(b)`, whenever `a = 0` or `0 < Q(a)`,
+for all sufficiently large `k` and all sufficiently large `m`, `adelicSectionEncode`
+maps `rationalSections (m • (k • b))²` injectively (`maxFibre = 1`) into
+`rationalSections (m • (k • b + a)) × rationalSections (m • (k • b - a))` and produces
+`0 ≤ midpointExcess (k • b) a m`. -/
+theorem eventually_adelicSectionEncode_midpoint_ray {N : ℕ} {b a : Fin N → ℤ}
+    (hb : 0 < integerProbe N b) (ha : a = 0 ∨ 0 < integerProbe N a) :
+    ∀ᶠ k : ℕ in atTop, ∀ᶠ m : ℕ in atTop,
+      ∃ h : mapsRationalSections
+          (adelicSectionEncode (m • (k • b)) (m • (k • b + a)) (m • (k • b - a)))
+          (m • (k • b)) (m • (k • b + a)) (m • (k • b - a)),
+        maxFibre (restrictRationalSectionMap
+          (adelicSectionEncode (m • (k • b)) (m • (k • b + a)) (m • (k • b - a))) h) = 1 ∧
+        0 ≤ midpointExcess (k • b) a m := by
+  rcases ha with rfl | ha_pos
+  · filter_upwards [eventually_ge_atTop 1] with k _
+    filter_upwards [eventually_ge_atTop 1] with m hm1
+    simp only [add_zero, sub_zero]
+    have h := adelicSectionEncode_self_mapsRationalSections (m • (k • b))
+    have hfib := maxFibre_adelicSectionEncode_eq_one h
+    have hex : 0 ≤ midpointExcess (k • b) 0 m := by
+      have hm_ex := neg_log_maxFibre_le_midpointExcess hm1
+        (show midpointSectionMap (k • b) 0 m by
+          simpa only [add_zero, sub_zero] using inducedDivisorSectionMap h)
+      have hf1 : maxFibre (show midpointSectionMap (k • b) 0 m by
+          simpa only [add_zero, sub_zero] using inducedDivisorSectionMap h) = 1 := by
+        simpa only [add_zero, sub_zero, maxFibre_inducedDivisorSectionMap] using hfib
+      simpa only [hf1, Nat.cast_one, Real.log_one, zero_div, neg_zero] using hm_ex
+    exact ⟨h, hfib, by simpa only [add_zero, sub_zero] using hex⟩
+  · filter_upwards [eventually_ge_atTop 1, eventually_positive_shift b a hb,
+      eventually_positive_shift b (-a) hb] with k hk1 hp_pos hn_pos
+    rw [← sub_eq_add_neg] at hn_pos
+    have hkb : 0 < integerProbe N (k • b) := by
+      rw [integerProbe_smul]; exact mul_pos (by positivity) hb
+    have hsum : 2 * integerProbe N (k • b) <
+        integerProbe N (k • b + a) + integerProbe N (k • b - a) := by
+      have hpar := integerProbe_parallelogram N (k • b) a
+      linarith only [hpar, ha_pos]
+    filter_upwards [eventually_adelicSectionEncode_mapsRationalSections hkb hp_pos hn_pos hsum,
+      eventually_ge_atTop 1] with m hm hm1
+    have hfib := maxFibre_adelicSectionEncode_eq_one hm
+    have hex := neg_log_maxFibre_le_midpointExcess hm1 (inducedDivisorSectionMap hm)
+    rw [maxFibre_inducedDivisorSectionMap, hfib, Nat.cast_one, Real.log_one, zero_div, neg_zero] at hex
+    exact ⟨hm, hfib, hex⟩
+
+/-- Cofinal validity of `adelicSectionEncode` across cofinal translations forces `0 ≤ Q(a)`. -/
+theorem integerProbe_nonneg_of_cofinal_adelicSectionEncode {N : ℕ} {b a : Fin N → ℤ}
+    (hb : 0 < integerProbe N b)
+    (h : ∃ᶠ k : ℕ in atTop, ∃ᶠ m : ℕ in atTop,
+      mapsRationalSections
+        (adelicSectionEncode (m • (k • b)) (m • (k • b + a)) (m • (k • b - a)))
+        (m • (k • b)) (m • (k • b + a)) (m • (k • b - a))) :
+    0 ≤ integerProbe N a := by
+  refine integerProbe_nonneg_of_subquadraticMidpointFibres b a hb (h.mono fun k hk => ?_)
+  intro ε hε
+  refine hk.mono fun m hm => ⟨inducedDivisorSectionMap hm, ?_⟩
+  rw [maxFibre_inducedDivisorSectionMap, maxFibre_adelicSectionEncode_eq_one hm,
+    Nat.cast_one, Real.log_one]
+  exact mul_nonneg hε.le (sq_nonneg _)
+
+/-- Single-rule unrestricted midpoint test using `adelicSectionEncode` on rational
+section representatives. -/
+def adelicMidpointTest {P : ℕ} (b : Fin P → ℤ) : Prop :=
+  ∀ (N : ℕ) (a : Fin N → ℤ), ∀ᶠ k : ℕ in atTop,
+    let B := k • padDivisor (le_max_left P N) b
+    let A := padDivisor (le_max_right P N) a
+    ∀ᶠ m : ℕ in atTop,
+      mapsRationalSections (adelicSectionEncode (m • B) (m • (B + A)) (m • (B - A)))
+        (m • B) (m • (B + A)) (m • (B - A))
+
+/-- Over any positive background `b`, the Riemann hypothesis is equivalent to the
+single explicit rule `adelicSectionEncode` succeeding on every displacement (either
+eventually in `m` with `maxFibre = 1`, or merely cofinally in `m`). -/
+theorem riemannHypothesis_iff_singleRule_adelicSectionEncode {P : ℕ} (b : Fin P → ℤ)
+    (hb : 0 < integerProbe P b) :
+    (RiemannHypothesis ↔ adelicMidpointTest b) ∧
+    (RiemannHypothesis ↔ ∀ (N : ℕ) (a : Fin N → ℤ), ∀ᶠ k : ℕ in atTop,
+      let B := k • padDivisor (le_max_left P N) b
+      let A := padDivisor (le_max_right P N) a
+      ∃ᶠ m : ℕ in atTop,
+        mapsRationalSections (adelicSectionEncode (m • B) (m • (B + A)) (m • (B - A)))
+          (m • B) (m • (B + A)) (m • (B - A))) := by
+  have forward (hRH : RiemannHypothesis) (N : ℕ) (a : Fin N → ℤ) :
+      ∀ᶠ k : ℕ in atTop,
+        let B := k • padDivisor (le_max_left P N) b
+        let A := padDivisor (le_max_right P N) a
+        ∀ᶠ m : ℕ in atTop,
+          mapsRationalSections (adelicSectionEncode (m • B) (m • (B + A)) (m • (B - A)))
+            (m • B) (m • (B + A)) (m • (B - A)) := by
+    let B₀ := padDivisor (le_max_left P N) b
+    let A := padDivisor (le_max_right P N) a
+    have hb₀ : 0 < integerProbe (max P N) B₀ := by simpa only [B₀, integerProbe_pad] using hb
+    have hA : A = 0 ∨ 0 < integerProbe (max P N) A := by
+      by_cases h0 : A = 0
+      · exact Or.inl h0
+      · exact Or.inr (integerProbe_pos_of_rh hRH h0)
+    filter_upwards [eventually_adelicSectionEncode_midpoint_ray hb₀ hA] with k hk
+    exact hk.mono fun m ⟨hm, _, _⟩ => hm
+  have backward (h : ∀ (N : ℕ) (a : Fin N → ℤ), ∀ᶠ k : ℕ in atTop,
+      let B := k • padDivisor (le_max_left P N) b
+      let A := padDivisor (le_max_right P N) a
+      ∃ᶠ m : ℕ in atTop,
+        mapsRationalSections (adelicSectionEncode (m • B) (m • (B + A)) (m • (B - A)))
+          (m • B) (m • (B + A)) (m • (B - A))) : RiemannHypothesis := by
+    apply riemannHypothesis_iff_integerProbes.mpr
+    intro N a
+    let B₀ := padDivisor (le_max_left P N) b
+    let A := padDivisor (le_max_right P N) a
+    have hb₀ : 0 < integerProbe (max P N) B₀ := by simpa only [B₀, integerProbe_pad] using hb
+    have hA := integerProbe_nonneg_of_cofinal_adelicSectionEncode hb₀ (h N a).frequently
+    simpa only [A, integerProbe_pad] using hA
+  exact ⟨⟨forward, fun h => backward fun N a => (h N a).mono fun _ hk => hk.frequently⟩,
+         ⟨fun hRH N a => (forward hRH N a).mono fun _ hk => hk.frequently, backward⟩⟩
+
+/-- Unconditional two-atom prime background on which the single explicit rule
+`adelicSectionEncode` characterizes RH. -/
+theorem exists_prime_background_singleRule_adelicSectionEncode :
+    ∃ (p : ℕ) (b : Fin (p + 1) → ℤ), p.Prime ∧ (b = primePair p ∨ b = primeDifference p) ∧
+      0 < integerProbe (p + 1) b ∧ (RiemannHypothesis ↔ adelicMidpointTest b) := by
+  obtain ⟨p, b, hp, hb_eq, hb_pos, _⟩ := exists_prime_background_subquadraticMidpointTest
+  exact ⟨p, b, hp, hb_eq, hb_pos, (riemannHypothesis_iff_singleRule_adelicSectionEncode b hb_pos).1⟩
+
+#print axioms inSectionLattice_iff_primeValuations
+#print axioms not_exists_midpointOnly_subquadratic_rationalSectionMap
+#print axioms eventually_primePair_finitePlace_skew_overshoots
+#print axioms eventually_not_centeredCarry_of_skew_gt_seven
+#print axioms adelicSectionDecode_encode
+#print axioms adelicCarryDigit_paid_iff_threeAdic_valuation
+#print axioms orientedTernary_coprime_zeroLoss_recovery
+#print axioms orientedTernary_threeAdic_asymmetric_recovery
+#print axioms adelicRayMap_precision_comparison
+#print axioms eventually_adelicSectionEncode_mapsRationalSections
+#print axioms riemannHypothesis_iff_singleRule_adelicSectionEncode
+#print axioms exists_prime_background_singleRule_adelicSectionEncode
+
+end GaloisForLFunctions.CountingHolography.Sections

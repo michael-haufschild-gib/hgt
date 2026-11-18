@@ -153,7 +153,6 @@ private theorem window_log_gap {t H : ℝ} (ht : 0 ≤ t) (hH : 4 ≤ H)
     0 < k ∧ k ≤ Real.exp (-t/4) ∧ (X+H/2 < n → Real.exp (-t) ≤ k) := by
   let X := Real.exp t
   have hX : 0 < X := Real.exp_pos _
-  have hX1 : 1 ≤ X := Real.one_le_exp ht
   have hHX : H ≤ X := hH'.trans (Real.exp_le_exp.2 (by linarith only [ht]))
   obtain ⟨ha,hb⟩ := floor_window_endpoints hX.le
     (by dsimp only [X]; linarith only [hH] : X ≤ X+H) hn
@@ -170,13 +169,9 @@ private theorem window_log_gap {t H : ℝ} (ht : 0 ≤ t) (hH : 4 ≤ H)
   rw [Real.log_div hX.ne' hn0.ne',show Real.log X=t from Real.log_exp t] at hk
   have hnX : (n:ℝ) ≤ 2*X := by linarith only [hb,hHX]
   have hd : 2 ≤ (n:ℝ)-X := by linarith only [hm,hH]
-  have hfrac : (n:ℝ)/X ≤ (n:ℝ)-X := ((div_le_iff₀ hX).2 (by linarith only
-    [hnX,mul_le_mul_of_nonneg_right hd hX.le]))
   have hlow : 1/X ≤ 1-X/(n:ℝ) := by
-    rw [one_sub_div hn0.ne']
-    apply (div_le_div_iff₀ hX hn0).2
-    have := (div_le_iff₀ hX).1 hfrac
-    linarith only [this]
+    rw [one_sub_div hn0.ne',div_le_div_iff₀ hX hn0,one_mul]
+    exact hnX.trans (mul_le_mul_of_nonneg_right hd hX.le)
   change Real.exp (-t) ≤ Real.log n-t
   rw [Real.exp_neg,← one_div]
   exact hlow.trans (by linarith only [hk])
@@ -290,7 +285,9 @@ theorem criticalState_adverse_mass_by_width {W₀ : ℝ} (hW : 0 < W₀)
       intro n hn; obtain ⟨j,hj,rfl⟩ := Finset.mem_image.mp hn; exact (hd j hj).1
     let b := c/(2*R*Real.sqrt t)
     have hb : 0 ≤ b := by dsimp only [b]; positivity
-    have hinj : Function.Injective (fun j : ℕ => 6*j) := fun i j h => by omega
+    have hinj : Function.Injective (fun j : ℕ => 6*j) := fun i j h => by
+      change 6*i = 6*j at h
+      omega
     change (c/48)*H/(R*Real.sqrt t) ≤ ∑ n ∈ wallIntegerWindow t H, a n
     calc _ = (H/24)*b := by dsimp only [b]; field_simp [hR.ne',hs.ne'] <;> ring
       _ ≤ (D.card : ℝ)*b := mul_le_mul_of_nonneg_right hcard hb

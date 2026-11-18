@@ -112,7 +112,14 @@ theorem normalized_mono (p : ι → NNReal) (P : Finset ι)
       linarith only [htri,hbound]
     rw [div_le_div_iff₀ hpQ (hp S hS),en]
     have hh := mul_le_mul_of_nonneg_right hdiff hpQ.le
-    nlinarith only [hcost,hh]
+    apply le_trans _ hh
+    rw [mul_sub,sub_mul]
+    apply sub_le_sub_left
+    calc
+      ((p i : ℝ)*‖partition G C w‖)*negative G p Q =
+          (p i : ℝ)*(‖partition G C w‖*negative G p Q) := mul_assoc _ _ _
+      _ ≤ _ := hcost
+      _ = ‖partition G Q w‖*((p i : ℝ)*negative G p C) := by ring
 
 /-- The negative corner is an attained absolute lower bound throughout the polydisc. -/
 theorem corner_minimum (p : ι → NNReal) (P : Finset ι)

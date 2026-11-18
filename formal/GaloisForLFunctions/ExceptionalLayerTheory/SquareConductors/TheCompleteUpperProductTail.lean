@@ -219,7 +219,7 @@ theorem dyadicPrimeContact_capped_upper_product_tail :
          _ ≤ (T*n)^2*(((2*K)*((T*n)^2/(M+1:ℕ))*H)*(J/(n:ℝ)^3)) := by
             rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
             exact mul_le_mul_of_nonneg_right hbound (by positivity)
-         _ = _ := by field_simp <;> ring
+         _ = _ := by field_simp
   have he : dyadicPrimeContact n-cappedUpperProductReading U M n =
       (dyadicPrimeContact n-upperProductReading U n)+(upperProductReading U n-cappedUpperProductReading U M n) := by ring
   rw [he]

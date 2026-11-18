@@ -66,21 +66,16 @@ private theorem early_fractional_mass {f : ℝ → ℝ} {U M : ℝ} (hM : 0 ≤ 
   dsimp only [H]; rw [integral_const_mul,integral_exp_mul_Iic (by norm_num : (0:ℝ)<1/2) U]
   rw [show (U-T)/2 = -T/2+(1/2)*U by ring,Real.exp_add]; ring
 
-/-- The literal centered and polar-subtracted prime rows have uniformly
-exponentially small early readings, with the early cutoff chosen independently
-of the test time. -/
-theorem riemannHypothesis_or_early_fractional_mass : RiemannHypothesis ∨
-    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ) (B : ℝ), 0 < W₀ ∧
-      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (W₀ : EReal) ∧
-      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧ 0 ≤ B ∧
+/-- Uniform early mass at any cutoff U ≥ 0 for a confined continuous profile.
+Both references are included and the integral converges absolutely. -/
+theorem early_signed_fractional_mass_of_confinement {Φ : ℝ → ℝ} (hc : Continuous Φ)
+    {C : ℝ} (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) :
+    ∃ B : ℝ, 0 ≤ B ∧
       ∀ U : ℝ, 0 ≤ U → ∀ T : ℝ,
         let m := ∫ u, Φ u
         let S := fun t : ℝ => (∑' n : ℕ, (vonMangoldt n-1)*continuousIntegerAtom Φ n t)-m/2
         let f := fun t => (|S t|+|ordinaryPrimePolarError Φ t|)*fractionalPrimeTest (T-t)
         IntegrableOn f (Iic U) ∧ (∫ t in Iic U, f t) ≤ B*Real.exp ((5*U-T)/2) := by
-  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hr | ⟨W₀,F,hW,ht,hF⟩
-  · exact Or.inl hr
-  obtain ⟨_,_,Φ,hc,he,_,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
   obtain ⟨D,hD,hbound⟩ := coefficient_row_bound hC hb
   let m := ∫ u, Φ u
   let A := ∫ u, Real.exp (-u/2)*Φ u
@@ -105,7 +100,7 @@ theorem riemannHypothesis_or_early_fractional_mass : RiemannHypothesis ∨
     exact add_le_add vonMangoldt_le_log le_rfl
   let M := 3*D+|m/2|+|A|
   have hM : 0 ≤ M := by dsimp only [M]; positivity
-  refine Or.inr ⟨W₀,F,Φ,2*M,hW,ht,hF,hc,he,by positivity,fun U hU T => ?_⟩
+  refine ⟨2*M,by positivity,fun U hU T => ?_⟩
   let H := Real.exp (2*U)
   have hH : 1 ≤ H := Real.one_le_exp (mul_nonneg (by norm_num) hU)
   have hearly (t : ℝ) (htU : t ≤ U) : abs (|S t| + |ordinaryPrimePolarError Φ t|) ≤ M*H := by
@@ -138,6 +133,24 @@ theorem riemannHypothesis_or_early_fractional_mass : RiemannHypothesis ∨
   refine ⟨h.1,h.2.trans_eq ?_⟩
   dsimp only [H]
   rw [show (5*U-T)/2 = 2*U+(U-T)/2 by ring,Real.exp_add]; ring
+
+/-- The literal centered and polar-subtracted prime rows have uniformly
+exponentially small early readings, with the early cutoff chosen independently
+of the test time. -/
+theorem riemannHypothesis_or_early_fractional_mass : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ) (B : ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (W₀ : EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧ 0 ≤ B ∧
+      ∀ U : ℝ, 0 ≤ U → ∀ T : ℝ,
+        let m := ∫ u, Φ u
+        let S := fun t : ℝ => (∑' n : ℕ, (vonMangoldt n-1)*continuousIntegerAtom Φ n t)-m/2
+        let f := fun t => (|S t|+|ordinaryPrimePolarError Φ t|)*fractionalPrimeTest (T-t)
+        IntegrableOn f (Iic U) ∧ (∫ t in Iic U, f t) ≤ B*Real.exp ((5*U-T)/2) := by
+  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hr | ⟨W₀,F,hW,ht,hF⟩
+  · exact Or.inl hr
+  obtain ⟨_,_,Φ,hc,he,_,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  obtain ⟨B,hB,h⟩ := early_signed_fractional_mass_of_confinement hc hC hb
+  exact Or.inr ⟨W₀,F,Φ,B,hW,ht,hF,hc,he,hB,h⟩
 
 #print axioms riemannHypothesis_or_early_fractional_mass
 end GaloisForLFunctions.ExclusionOfTheCriticalState

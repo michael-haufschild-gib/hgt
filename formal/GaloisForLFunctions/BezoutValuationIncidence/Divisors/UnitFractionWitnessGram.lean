@@ -54,7 +54,7 @@ theorem indicator_inner (P : ℤ) (e f : Event) (hP : 0 < P) (he : e.modulus ∣
       if n ≡ e.residue [ZMOD e.modulus] ∧ n ≡ f.residue [ZMOD f.modulus] then 1 else 0 := by
     by_cases h₁ : e.holds n <;> by_cases h₂ : f.holds n <;>
       simp only [indicator,class_iff,h₁,h₂,if_true,if_false,
-        and_self,and_false,false_and,mul_one,mul_zero,zero_mul]
+        and_self,and_false,false_and,mul_one,mul_zero]
   rw [sum_congr rfl fun n _ => h n,← natCast_card_filter]
   change _ = ((if _ then _ else _ : ℤ) : ℝ)
   exact_mod_cast hc

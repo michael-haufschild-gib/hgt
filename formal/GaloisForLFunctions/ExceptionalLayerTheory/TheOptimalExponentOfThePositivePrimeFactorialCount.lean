@@ -3,6 +3,7 @@ import GaloisForLFunctions.ExceptionalLayerTheory.ASquareRootBoundFromThePowerfu
 import GaloisForLFunctions.HeckeLFunctions.HeckeLFunctionsContinuePastTheLineReOne
 import GaloisForLFunctions.RHTower.Sieve.InghamRightEdgeMeanSquare
 import GaloisForLFunctions.RHTower.FractionalPartZeta
+import GaloisForLFunctions.HTGeometry.RiemannZetaMeromorphic
 
 /-!
 # Optimality of the square-root exponent
@@ -47,9 +48,9 @@ private theorem corr_real (x : ℝ) :
 private theorem reciprocalFactorial_series {s : ℂ} (hs : 1<s.re) :
     LSeriesSummable (complexCoeff reciprocalFactorial) s ∧
     LSeries (complexCoeff reciprocalFactorial) s=LSeries (complexCoeff corr) s*riemannZeta s := by
-  have hf : corr*(ζ:ArithmeticFunction ℝ)=reciprocalFactorial := by
+  have hf : corr*(ArithmeticFunction.zeta : ArithmeticFunction ℝ)=reciprocalFactorial := by
     rw [show corr=reciprocalFactorial*(μ:ArithmeticFunction ℝ) from rfl,mul_assoc,coe_moebius_mul_coe_zeta,mul_one]
-  have he : complexCoeff reciprocalFactorial=complexCoeff corr ⍟ complexCoeff (ζ:ArithmeticFunction ℝ) := by
+  have he : complexCoeff reciprocalFactorial=complexCoeff corr ⍟ complexCoeff (ArithmeticFunction.zeta : ArithmeticFunction ℝ) := by
     exact (congrArg complexCoeff hf).symm.trans (complexCoeff_mul _ _)
   have h := corr_summable (s := s) (by linarith only [hs])
   have hz := LSeriesSummable_complexCoeff_zeta hs
@@ -60,11 +61,11 @@ private theorem reciprocalFactorial_series {s : ℂ} (hs : 1<s.re) :
 factorial count, including at arbitrarily large integer cutoffs. -/
 theorem reciprocalFactorial_sum_has_no_smaller_power {b : ℝ} (hb : 0≤b) (hb' : b<1/2) :
     ¬∃ C : ℝ, ∀ N : ℕ, 1≤N →
-      |(∑ n ∈ Icc 1 N, reciprocalFactorial n)-(N:ℝ)*reciprocalFactorialDensity|≤C*(N:ℝ)^b := by
+      |(∑ n ∈ Finset.Icc 1 N, reciprocalFactorial n)-(N:ℝ)*reciprocalFactorialDensity|≤C*(N:ℝ)^b := by
   rintro ⟨C,hC⟩
   let c := reciprocalFactorialDensity
-  let Z := complexCoeff (ζ:ArithmeticFunction ℝ)
-  let f := complexCoeff reciprocalFactorial-(c:ℂ) • Z
+  let Z : ℕ → ℂ := complexCoeff (ArithmeticFunction.zeta : ArithmeticFunction ℝ)
+  let f : ℕ → ℂ := complexCoeff reciprocalFactorial-(c:ℂ) • Z
   let A := HeckeLFunctions.growthCont f b
   let H := LSeries (complexCoeff corr)
   let D := fun s : ℂ => (c:ℂ)+A s/riemannZeta s
@@ -72,10 +73,10 @@ theorem reciprocalFactorial_sum_has_no_smaller_power {b : ℝ} (hb : 0≤b) (hb'
   have hC0 : 0≤C := by
     simpa only [Nat.cast_one,Real.one_rpow,mul_one] using
       (abs_nonneg _).trans (hC 1 le_rfl)
-  have hpre (x : ℝ) (hx : 1≤x) : ‖∑ n ∈ Icc 1 ⌊x⌋₊, f n‖≤C*x^b := by
+  have hpre (x : ℝ) (hx : 1≤x) : ‖∑ n ∈ Finset.Icc 1 ⌊x⌋₊, f n‖≤C*x^b := by
     let N := ⌊x⌋₊
-    have he (n : ℕ) (hn : n∈Icc 1 N) : f n=((reciprocalFactorial n-c:ℝ):ℂ) := by
-      have hp : n≠0 := Nat.ne_of_gt (mem_Icc.mp hn).1
+    have he (n : ℕ) (hn : n∈Finset.Icc 1 N) : f n=((reciprocalFactorial n-c:ℝ):ℂ) := by
+      have hp : n≠0 := Nat.ne_of_gt (Finset.mem_Icc.mp hn).1
       simp [f,Z,complexCoeff,natCoe_apply,zeta_apply_ne hp]
     rw [sum_congr rfl he,← Complex.ofReal_sum,Complex.norm_real,Real.norm_eq_abs,sum_sub_distrib,
       sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul]
@@ -91,11 +92,11 @@ theorem reciprocalFactorial_sum_has_no_smaller_power {b : ℝ} (hb : 0≤b) (hb'
     have ht := (corr_summable (s := (u:ℂ)) hu).abscissaOfAbsConv_le
     exact (LSeries_hasDerivAt (ht.trans_lt (by exact_mod_cast hu'))).differentiableAt.differentiableWithinAt
   have hD : MeromorphicOn D {s : ℂ | b<s.re} := fun z hz =>
-    (MeromorphicAt.const _ _).add ((hA z hz).meromorphicAt.div (_root_.RHTower.meromorphicAt_riemannZeta_everywhere z))
+    (MeromorphicAt.const _ _).add ((hA z hz).meromorphicAt.div (HTGeometry.meromorphicOn_riemannZeta z (Set.mem_univ z)))
   have hEq {s : ℂ} (hs : 1<s.re) : D s=H s := by
     have hv := reciprocalFactorial_series hs
     have hz : LSeriesSummable Z s := LSeriesSummable_complexCoeff_zeta hs
-    have hf := hv.1.sub (hz.smul (c:ℂ))
+    have hf : LSeriesSummable f s := hv.1.sub (hz.smul (c:ℂ))
     have he := HeckeLFunctions.growthCont_eq_LSeries h0 hb hpre (s := s) (by linarith only [hs,hb']) hf
     change (c:ℂ)+A s/riemannZeta s=_
     rw [show A s=LSeries f s from he,f,LSeries_sub hv.1 (hz.smul (c:ℂ)),LSeries_smul,
@@ -136,7 +137,7 @@ theorem reciprocalFactorial_sum_has_no_smaller_power {b : ℝ} (hb : 0≤b) (hb'
 
 /-- A square-root bounded sequence cannot retain a positive excess above a
 smaller power if that excess doubles whenever the argument doubles. -/
-private theorem no_positive_doubling {g : ℕ → ℝ} {B : ℝ} (hB : 0≤B)
+private theorem no_positive_doubling {g : ℕ → ℝ} {B : ℝ}
     (hu : ∀ n : ℕ, 1≤n → g n≤B*Real.sqrt n)
     (hd : ∀ n : ℕ, 1≤n → 2*g n≤g (2*n)) {n : ℕ} (hn : 1≤n) : g n≤0 := by
   by_contra! hp
@@ -173,7 +174,7 @@ theorem dyadicPositiveFactorialProfile_prime_has_no_smaller_power {b : ℝ} (hb 
       |∑ p ∈ Nat.primesLE (2*n), dyadicPositiveFactorialProfile (2*n/p)| ≤ C*(n:ℝ)^b := by
   rintro ⟨C,hC,h⟩
   let c := reciprocalFactorialDensity
-  let A (n : ℕ) := (∑ k ∈ Icc 1 n, reciprocalFactorial k)-1-(n:ℝ)*c
+  let A (n : ℕ) := (∑ k ∈ Finset.Icc 1 n, reciprocalFactorial k)-1-(n:ℝ)*c
   let t := (2:ℝ)^b
   have ht : t<2 := by
     simpa only [Real.rpow_one] using Real.rpow_lt_rpow_of_exponent_lt (by norm_num : (1:ℝ)<2)
@@ -186,7 +187,7 @@ theorem dyadicPositiveFactorialProfile_prime_has_no_smaller_power {b : ℝ} (hb 
     simpa only [Real.sqrt_one] using Real.sqrt_le_sqrt (by exact_mod_cast hn : (1:ℝ)≤n)
   have hu (n : ℕ) (hn : 1≤n) : g n≤13*Real.sqrt n := by
     have hbnd := reciprocalFactorial_sum_sqrt_error n
-    have he : A n=((∑ k ∈ Icc 1 n, reciprocalFactorial k)-(n:ℝ)*c)-1 := by dsimp only [A]; ring
+    have he : A n=((∑ k ∈ Finset.Icc 1 n, reciprocalFactorial k)-(n:ℝ)*c)-1 := by dsimp only [A]; ring
     apply (sub_le_self _ (mul_nonneg hK (Real.rpow_nonneg (Nat.cast_nonneg n) _))).trans
     rw [he]; apply (abs_sub _ _).trans
     rw [abs_one]
@@ -194,9 +195,9 @@ theorem dyadicPositiveFactorialProfile_prime_has_no_smaller_power {b : ℝ} (hb 
   have hd (n : ℕ) (hn : 1≤n) : 2*g n≤g (2*n) := by
     have hinc := h n hn
     rw [dyadicPositiveFactorialProfile_prime_sum_even hn] at hinc
-    have he : 2*A n=A (2*n)-(((∑ k ∈ Icc 1 (2*n), reciprocalFactorial k)-1)-
-        2*((∑ k ∈ Icc 1 n, reciprocalFactorial k)-1)) := by dsimp only [A]; push_cast; ring
-    have htri := (abs_sub (A (2*n)) _).trans (add_le_add_left hinc _)
+    have he : 2*A n=A (2*n)-(((∑ k ∈ Finset.Icc 1 (2*n), reciprocalFactorial k)-1)-
+        2*((∑ k ∈ Finset.Icc 1 n, reciprocalFactorial k)-1)) := by dsimp only [A]; push_cast; ring
+    have htri := (abs_sub (A (2*n)) _).trans (add_le_add (le_refl |A (2*n)|) hinc)
     rw [← he,abs_mul,abs_of_nonneg (by norm_num : (0:ℝ)≤2)] at htri
     dsimp only [g]
     rw [Nat.cast_mul,Nat.cast_ofNat,Real.mul_rpow (by norm_num) (Nat.cast_nonneg n)]
@@ -204,9 +205,9 @@ theorem dyadicPositiveFactorialProfile_prime_has_no_smaller_power {b : ℝ} (hb 
     linarith only [htri,show K*(2-t)*(n:ℝ)^b=C*(n:ℝ)^b by rw [hK']]
   apply reciprocalFactorial_sum_has_no_smaller_power hb hb'
   refine ⟨K+1,fun n hn => ?_⟩
-  have ha := no_positive_doubling (by norm_num : (0:ℝ)≤13) hu hd hn
+  have ha := no_positive_doubling hu hd hn
   change |A n|-K*(n:ℝ)^b≤0 at ha
-  have he : (∑ k ∈ Icc 1 n, reciprocalFactorial k)-(n:ℝ)*c=A n+1 := by dsimp only [A]; ring
+  have he : (∑ k ∈ Finset.Icc 1 n, reciprocalFactorial k)-(n:ℝ)*c=A n+1 := by dsimp only [A]; ring
   rw [he]
   apply (abs_add_le _ _).trans
   have hnp : 1≤(n:ℝ)^b := Real.one_le_rpow (by exact_mod_cast hn) hb
