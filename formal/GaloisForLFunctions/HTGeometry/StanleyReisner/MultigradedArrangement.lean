@@ -52,7 +52,6 @@ theorem multigradedArrangement_injective : Function.Injective (multigradedArrang
   ext t
   have hc := congrArg (fun P : MvPolynomial ι ℤ =>
     coeff (∑ i ∈ tᶜ, Finsupp.single i (1:ℕ)) (aeval (fun i : ι => (X i+1 : MvPolynomial ι ℤ)) P)) h
-  dsimp only at hc
   rw [multigradedArrangement_face,multigradedArrangement_face] at hc
   by_cases hk : t ∈ K <;> by_cases hl : t ∈ L <;> simp_all
 

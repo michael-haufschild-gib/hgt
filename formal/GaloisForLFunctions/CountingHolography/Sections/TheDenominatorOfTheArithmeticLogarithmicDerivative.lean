@@ -81,9 +81,9 @@ theorem primeReciprocalReading_den_exponent (a : Nat.Primes →₀ ℤ) (p : Nat
 /-- The product over primes at which the congruence fails is already the
 reduced denominator. No cancellation between distinct primes can remove it. -/
 theorem primeReciprocalReading_den (a : Nat.Primes →₀ ℤ) :
-    (primeReciprocalReading a).den = ∏ p ∈ a.support.filter (fun p => ¬ (p:ℤ) ∣ a p), (p:ℕ) := by
+    (primeReciprocalReading a).den = ∏ p ∈ a.support.filter (fun p : Nat.Primes => ¬ (p:ℤ) ∣ a p), (p:ℕ) := by
   classical
-  let S := a.support.filter (fun p => ¬ (p:ℤ) ∣ a p)
+  let S := a.support.filter (fun p : Nat.Primes => ¬ (p:ℤ) ∣ a p)
   have hpos : 0 < ∏ p ∈ S, (p:ℕ) := prod_pos fun p _ => p.property.pos
   apply Nat.factorization_inj (primeReciprocalReading a).den_nz hpos.ne'
   ext k
@@ -111,7 +111,7 @@ theorem primeReciprocalReading_den_one_iff (a : Nat.Primes →₀ ℤ) :
     by_contra hp
     have he := primeReciprocalReading_den_exponent a p
     rw [h,if_neg hp] at he
-    simpa using he
+    simp at he
   · intro h
     rw [primeReciprocalReading_den]
     simp [h]
@@ -183,7 +183,7 @@ theorem primeReciprocalReading_den_add (a b : Nat.Primes →₀ ℤ) (hb : ∀ p
   by_cases hp : k.Prime
   · let p : Nat.Primes := ⟨k,hp⟩
     change (primeReciprocalReading (a+b)).den.factorization (p:ℕ)=(primeReciprocalReading a).den.factorization (p:ℕ)
-    rw [primeReciprocalReading_den_exponent,primeReciprocalReading_den_exponent,Finsupp.add_apply,
+    simp only [primeReciprocalReading_den_exponent,Finsupp.add_apply,
       dvd_add_left (hb p)]
   · simp only [Nat.factorization_eq_zero_of_not_prime _ hp]
 

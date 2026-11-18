@@ -45,7 +45,7 @@ theorem riemannHypothesis_iff_cappedConductorPrefix :
     let a := min (η/2) (1/4)
     have ha : 0<a := lt_min (by positivity) (by norm_num)
     have ha' : a<1/2 := (min_le_right ..).trans_lt (by norm_num)
-    obtain ⟨C,hC,h⟩ := (width_iff_cappedConductorPrefix ha ha').mp (hw ▸ ha.le)
+    obtain ⟨C,hC,h⟩ := (width_iff_cappedConductorPrefix ha ha').mp (by rw [hw]; exact ha.le)
     refine ⟨C,hC,fun N => (h N).trans (mul_le_mul_of_nonneg_left ?_ hC)⟩
     rcases Nat.eq_zero_or_pos N with rfl|hn
     · simp [Real.zero_rpow (by linarith only [ha] : 3+2*a≠0),

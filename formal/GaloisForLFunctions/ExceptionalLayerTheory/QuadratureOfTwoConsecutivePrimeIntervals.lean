@@ -182,7 +182,7 @@ private theorem quarter_coordinate {Q : ℂ} (hQ : Q=I ∨ Q=-I) (z : ℂ) :
     have h₂ := hn 2 (by decide)
     have h₃ := hn 3 (by decide)
     rcases hQ with rfl | rfl <;>
-      simp [pow_succ,Complex.I_mul_re,Complex.I_mul_im] at h₀ h₁ h₂ h₃ <;>
+      simp [pow_succ] at h₀ h₁ h₂ h₃ <;>
       constructor <;> apply abs_lt.mpr <;> constructor <;>
       dsimp only [B] <;> linarith only [h₀,h₁,h₂,h₃]
   have hh := mul_lt_mul_of_pos_left (max_lt hr.1 hr.2) (Real.sqrt_pos.mpr (by norm_num : (0:ℝ)<2))
@@ -241,10 +241,14 @@ theorem singleQuartet_four_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuar
     rw [← Complex.ofReal_pow,mul_assoc,Complex.re_ofReal_mul] at e
     simp only [neg_mul,Complex.neg_re,Complex.re_ofReal_mul,Complex.sub_re] at e
     rw [← e,thetaIntervalIncrement]
-    convert hdiff using 2 <;> ring
+    calc
+      _ = |(Chebyshev.theta (Real.exp (u+h))-Real.exp (u+h)+m*(powerMode ρ (u+h)).re)-
+          (Chebyshev.theta (Real.exp u)-Real.exp u+m*(powerMode ρ u).re)| := by congr 1; ring
+      _ ≤ B+B := hdiff
+      _ = 2*B := (two_mul B).symm
   have signed : |ε*thetaIntervalIncrement u h/A^j-ε*(Q^j*w).re| ≤ 2*B := by
     rw [show ε*thetaIntervalIncrement u h/A^j-ε*(Q^j*w).re =
-      ε*(thetaIntervalIncrement u h-A^j*(Q^j*w).re)/A^j by field_simp; ring,
+      ε*(thetaIntervalIncrement u h-A^j*(Q^j*w).re)/A^j by field_simp,
       abs_div,abs_mul,hε,one_mul,abs_of_pos (zero_lt_one.trans_le ha)]
     exact (div_le_self (abs_nonneg _) ha).trans H
   have hn : ‖(ε:ℂ)*w‖=C*Real.exp (ρ.re*t) := by
@@ -263,17 +267,18 @@ private theorem shifted_error_small {β K c : ℝ} (hβ : 1/2<β) (hK : 0≤K) (
     ∀ᶠ t : ℝ in atTop, K*Real.exp ((t+d)/2)*(1+(t+d)^2) ≤ c*Real.exp (β*t) := by
   let k := 2*(K+1)*Real.exp (β*d)
   have hk : 0<k := by dsimp only [k]; positivity
-  obtain ⟨L,hL⟩ := eventually_atTop.mp ((Real.isLittleO_exp_mul_rpow_of_lt 2 hβ).def (div_pos hc hk))
+  obtain ⟨L,hL⟩ := eventually_atTop.mp ((_root_.isLittleO_exp_mul_rpow_of_lt 2 hβ).def (div_pos hc hk))
   filter_upwards [eventually_ge_atTop (max L 1-d)] with t ht
   have htL : L ≤ t+d := by linarith only [ht,le_max_left L 1]
   have ht1 : 1 ≤ t+d := by linarith only [ht,le_max_right L 1]
   have he := hL (t+d) htL
+  change ‖Real.exp ((1/2)*(t+d))*(t+d)^(2:ℝ)‖ ≤ c/k*‖Real.exp (β*(t+d))‖ at he
   simp only [Real.norm_eq_abs,Real.rpow_two,show 1/2*(t+d)=(t+d)/2 by ring,abs_mul,
-    abs_of_pos (Real.exp_pos _),abs_of_nonneg (sq_nonneg _)] at he
+    abs_of_pos (Real.exp_pos _),abs_of_nonneg (sq_nonneg (t+d))] at he
   have hpol : 1+(t+d)^2 ≤ 2*(t+d)^2 := by nlinarith only [ht1,sq_nonneg (t+d-1)]
   calc
     _ ≤ (2*(K+1))*(Real.exp ((t+d)/2)*(t+d)^2) := by
-      have h := mul_le_mul_of_nonneg_left hpol (mul_nonneg hK (Real.exp_pos _).le)
+      have h := mul_le_mul_of_nonneg_left hpol (mul_nonneg hK (Real.exp_pos ((t+d)/2)).le)
       nlinarith only [h,mul_nonneg (Real.exp_pos ((t+d)/2)).le (sq_nonneg (t+d))]
     _ ≤ _ := (mul_le_mul_of_nonneg_left he (by positivity)).trans_eq (by
       rw [mul_add,Real.exp_add]; dsimp only [k]; field_simp; ring)
@@ -288,7 +293,7 @@ theorem singleQuartet_signed_theta_octave {ρ : ℂ} (hq : HasSingleOffLineQuart
   let A := Real.exp (ρ.re*h)
   let C := 2*(quartetCopyMult ρ:ℝ)*‖(Complex.exp (ρ*(h:ℂ))-1)/ρ‖
   have ⟨hh,hfit,hC,_⟩ := singleQuartet_two_theta_intervals hq
-  obtain ⟨K,hK,h⟩ := singleQuartet_four_theta_intervals hq
+  obtain ⟨K,hK,hreadings⟩ := singleQuartet_four_theta_intervals hq
   let c := C/(2*Real.sqrt 2)
   have hc : 0<c := div_pos hC (by positivity)
   have hscale := (quarter_scale hq).2.2.1
@@ -302,7 +307,7 @@ theorem singleQuartet_signed_theta_octave {ρ : ℂ} (hq : HasSingleOffLineQuart
   have ht : 0≤t := Real.log_nonneg (by linarith only [h16])
   have hTt : T≤t := (Real.le_log_iff_exp_le hpos).mpr ((le_max_right _ _).trans hY)
   intro ε hε
-  obtain ⟨j,hj,hread⟩ := h t ht (by rwa [hy]) ε hε
+  obtain ⟨j,hj,hread⟩ := hreadings t ht (by rwa [hy]) ε hε
   have hj' : (j:ℝ)≤3 := by exact_mod_cast (show j≤3 by omega)
   let v := t+(j:ℝ)*h
   have hl : t≤v := le_add_of_nonneg_right (mul_nonneg (Nat.cast_nonneg j) hh.le)

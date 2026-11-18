@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RepresentationLifting.Lattices.SimplexFacetSumCokernel
+import Mathlib.LinearAlgebra.LinearIndependent.Defs
 import Mathlib.Data.ZMod.Basic
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
 
@@ -43,7 +44,7 @@ theorem frameDiagonal_intersection (w : ι → R) (i : ι) :
     rcases Set.mem_singleton_iff.mp hv with rfl
     refine ⟨show frameDiagonal w i i = 0 by simp [frameDiagonal], mem_span_pair.mpr ⟨1,-w i,?_⟩⟩
     funext j
-    by_cases hji : j = i <;> simp [frameDiagonal,Pi.single_apply,hji]
+    by_cases hji : j = i <;> simp [frameDiagonal,hji]
 
 variable {n : ℕ}
 
@@ -53,10 +54,12 @@ theorem sum_frameDiagonals (w a : Fin (n+1) → R) (j : Fin (n+1)) :
     (∑ i, a i • frameDiagonal w i) j = facetSums R n a j * w j := by
   have h : ∑ i, a i * frameDiagonal w i j =
       (∑ i ∈ univ.erase j, a i) * w j := by
-    rw [← sum_mul, ← sum_erase_add univ (fun i => a i * frameDiagonal w i j) (mem_univ j)]
-    simp only [frameDiagonal,if_pos rfl,mul_zero,add_zero]
-    exact sum_congr rfl fun i hi => by rw [if_neg (ne_of_mem_erase hi).symm]
-  rw [Finset.sum_apply, h]
+    rw [sum_mul, ← sum_erase_add univ (fun i => a i * frameDiagonal w i j) (mem_univ j)]
+    rw [show frameDiagonal w j j = 0 from if_pos rfl,mul_zero,add_zero]
+    exact sum_congr rfl fun i hi => by rw [frameDiagonal,if_neg (ne_of_mem_erase hi).symm]
+  rw [Finset.sum_apply]
+  change (∑ i, a i * frameDiagonal w i j) = _
+  rw [h]
   congr 1
   exact eq_sub_of_add_eq (sum_erase_add univ a (mem_univ j))
 
@@ -135,7 +138,8 @@ theorem frameDiagonal_relation_missing_vertex (w : Fin (n+1) → Rˣ) (a : Fin (
     obtain ⟨b,_,he⟩ := (frameDiagonal_relations w a).mp h
     rw [he] at hj ⊢
     change b = 0 at hj
-    simp [hj]
+    subst b
+    rfl
   · rintro rfl
     simp
 

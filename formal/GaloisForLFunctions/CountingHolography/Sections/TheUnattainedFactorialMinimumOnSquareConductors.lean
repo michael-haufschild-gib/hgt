@@ -34,7 +34,8 @@ theorem squareOuterPrimeWindow_log_mass :
 /-- The logarithm is the linear prime-log reading of the rational valuations. -/
 theorem primeLogValue_valFinsupp {q : ℚ} (hq : 0 < q) : primeLogValue (valFinsupp q)=Real.log (q:ℝ) := by
   let u : posUnits := ⟨Units.mk0 q hq.ne',hq⟩
-  simpa only [primeLogValue,Finsupp.linearCombination_apply,Finsupp.sum,zsmul_eq_mul] using
+  have hu : ((u : ℚˣ) : ℚ) = q := rfl
+  simpa only [hu,primeLogValue,Finsupp.linearCombination_apply,Finsupp.sum,zsmul_eq_mul] using
     (log_eq_sum_valFinsupp u).symm
 
 /-- At a finite horizon the conditions on the ordinary rational price and
@@ -72,7 +73,7 @@ be divisible by the corresponding prime, uniformly up to m squared ≤ c n cubed
 theorem successorSquare_outer_exponents_proper :
     ∃ c : ℝ, 0 < c ∧ ∀ᶠ n : ℕ in atTop, ∀ {m p : ℕ}, 0 < m → (m:ℝ)^2 ≤ c*(n:ℝ)^3 →
       p ∈ successorSquareWindowPrimes n →
-      let v := deningerRatExp (ordinaryPrimeGenerator (m • successorSquareTriple n)) p
+      let v := deningerRatExp (ordinaryPrimeGenerator (m • successorSquareTriple n)) p;
       -(p:ℤ) < v ∧ v < 0 := by
   obtain ⟨C,hC,h⟩ := contactMultiplicity_size
   have hC' : 0 < C := zero_lt_one.trans_le hC
@@ -149,14 +150,19 @@ theorem successorSquare_half_price_unattained :
 
 /-- Distance in integer valuation units to the lattice of possible doubled
 entropy coordinates at p. -/
-def factorialCoordinateDistance (p : Nat.Primes) (z : ℤ) : ℕ :=
-  Nat.find (show ∃ d : ℕ, ∃ j : ℤ, (z-2*(p:ℤ)*j).natAbs=d from ⟨_,0,rfl⟩)
+def factorialCoordinateDistance (p : Nat.Primes) (z : ℤ) : ℕ := by
+  classical
+  exact Nat.find (show ∃ d : ℕ, ∃ j : ℤ, (z-2*(p:ℤ)*j).natAbs=d from ⟨_,0,rfl⟩)
 
 private theorem coord_attained (p : Nat.Primes) (z : ℤ) :
-    ∃ j : ℤ, (z-2*(p:ℤ)*j).natAbs=factorialCoordinateDistance p z := Nat.find_spec _
+    ∃ j : ℤ, (z-2*(p:ℤ)*j).natAbs=factorialCoordinateDistance p z := by
+  unfold factorialCoordinateDistance
+  exact Nat.find_spec _
 
 private theorem coord_lower (p : Nat.Primes) (z j : ℤ) :
-    factorialCoordinateDistance p z ≤ (z-2*(p:ℤ)*j).natAbs := Nat.find_min' _ ⟨j,rfl⟩
+    factorialCoordinateDistance p z ≤ (z-2*(p:ℤ)*j).natAbs := by
+  unfold factorialCoordinateDistance
+  exact Nat.find_min' _ ⟨j,rfl⟩
 
 /-- Finite height of the difference between the price and twice the entropy. -/
 def factorialResidualHeight (a b : Nat.Primes →₀ ℤ) : ℝ :=

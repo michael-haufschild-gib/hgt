@@ -118,7 +118,7 @@ theorem zetaZeroWidth_le_iff_sparse_square_degrees {θ s : ℝ} {E : Set ℕ}
         (Real.rpow_le_rpow_of_exponent_le hX₁ (mul_le_mul_of_nonneg_left hst two_pos.le)))
       (Real.rpow_nonneg hdX.le _) (abs_nonneg A)
     have hdlo : -(A*(X d)^(2*s)) ≤ degree d := hA d hd
-    change A*(X d)^(2*s) ≤ |A|*(X n)^(2*t) at hA₁
+    change A*(X d)^(2*s) ≤ |A| * (X n)^(2*t) at hA₁
     have hdown : -(D+C*(Real.log n-Real.log d)*Real.exp ((2*w)*Real.log n)) ≤
         degree n-degree d := he.1
     linarith only [hdown,hE₁,mul_le_mul_of_nonneg_left hgrowth (by positivity : 0 ≤ 2*C*M),
