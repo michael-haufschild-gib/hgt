@@ -2,6 +2,7 @@ import GaloisForLFunctions.ExceptionalLayerTheory.IncommensurableTopOrdinatesExc
 import GaloisForLFunctions.ExceptionalLayerTheory.DistinctExtremalOrdinatesHaveDistinctQuarterStepPhases
 import GaloisForLFunctions.RHTower.GaussHodgeVerticalExtraction
 import GaloisForLFunctions.HTGeometry.ExponentialSeriesFiberwise
+import GaloisForLFunctions.HTGeometry.BohrPowerBoundary
 
 /-!
 # A bounded quartet radius and the extremal layer
@@ -13,6 +14,8 @@ all lattice translates of an open interval determines all its components.
 
 noncomputable section
 open Complex Filter Topology RHTower
+open GaloisForLFunctions.ZeroConfigurationGeometry
+open _root_.HTGeometry
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
 /-- A summable discrete pencil with all moments zero has zero mass at each phase. -/
@@ -176,5 +179,56 @@ private theorem periodic_multiple_of_finite_phase_fibers {ι : Type*} {D : ℝ �
   refine ⟨n,hn,fun t => sub_eq_zero.mp (Complex.ofReal_eq_zero.mp ?_)⟩
   rw [hdiff]
   exact zero_of_vanishing_on_translated_interval b ω hb p t₀ hbf hzero t
+
+private theorem top_phase_of_step_eigenvalue {β h p : ℝ} (hβ : 1/2 < β) (hh : 0 < h)
+    (c : ℂ) (he : ∀ t, (boundaryStep β h (primeErrorBoundaryTrace β) (t+p) : ℂ) =
+      c * (boundaryStep β h (primeErrorBoundaryTrace β) t : ℂ))
+    (q : XiZeroCopy) (hq : (q.1 : ℂ).re = β) : expChar (xiCopyOrdinate q) p = c := by
+  let D := boundaryStep β h (primeErrorBoundaryTrace β)
+  have ⟨hc,ha,hf⟩ := boundaryStep_coefficient hβ hh
+  have hcC : Continuous (fun t => (D t : ℂ)) := Complex.continuous_ofReal.comp hc
+  have haC : IsBohrAlmostPeriodic (fun t => (D t : ℂ)) := by
+    simpa only [IsBohrAlmostPeriodic, ← Complex.ofReal_sub, Complex.norm_real] using ha
+  have htr := bohrCoefficient_comp_add_const hcC haC p (xiCopyOrdinate q)
+  change bohrCoefficient (fun t => (D (t+p) : ℂ)) _ = _ at htr
+  rw [show (fun t => (D (t+p) : ℂ)) = (fun t => c*(D t : ℂ)) from funext he,
+    bohrCoefficient_const_mul c hcC haC] at htr
+  exact mul_right_cancel₀ (hf q hq) htr.symm
+
+private theorem stepAmplitude_ne_zero_only_on_line {β h : ℝ} {q : XiZeroCopy}
+    (hq : stepAmplitude β h q ≠ 0) : (q.1 : ℂ).re = β := by
+  by_contra he
+  exact hq (by simp only [stepAmplitude, primeErrorBoundaryAmplitude, if_neg he, mul_zero])
+
+/-- A bounded ordinary-prime radius forces finitely many extremal zeros, with
+multiplicity. No bound on the other right zeros is assumed. -/
+theorem finite_top_of_bounded_thetaRadial {γ : ℝ} {m : ℕ} (hΘ : 1/2 < zetaZeroAbscissa)
+    (hγ : γ ≠ 0) (hb : ¬ IsLogSqrtSqUnbounded (thetaRadialDiscrepancy zetaZeroAbscissa γ m)) :
+    {q : XiZeroCopy | (q.1 : ℂ).re = zetaZeroAbscissa}.Finite := by
+  let β := zetaZeroAbscissa
+  let h := quarterPeriodStep γ
+  let p := 2*h
+  let D := boundaryStep β h (primeErrorBoundaryTrace β)
+  let a := stepAmplitude β h
+  have hh : 0 < h := quarterPeriodStep_pos hγ
+  obtain ⟨hc,ha,_⟩ := boundaryStep_coefficient hΘ hh
+  have hfinite (z : ℂ) : {q | a q ≠ 0 ∧ expChar (xiCopyOrdinate q) p = z}.Finite :=
+    (finite_top_double_step_fiber hΘ hγ hb z).subset fun q hq =>
+      ⟨stepAmplitude_ne_zero_only_on_line hq.1,hq.2⟩
+  obtain ⟨n,hn,hper⟩ := periodic_multiple_of_finite_phase_fibers hc a xiCopyOrdinate
+    (stepAmplitude_summable hΘ h) (stepAmplitude_carrier hΘ h) p
+    (boundaryStep_abs_periodic hΘ hb)
+    (fun ε hε => lattice_almost_period (hasTotallyBoundedOrbit_of_isBohrAlmostPeriodic hc ha) p hε)
+    hfinite
+  have hchar (q : XiZeroCopy) (hq : (q.1 : ℂ).re = β) :
+      expChar (xiCopyOrdinate q) p ^ n = 1 := by
+    rw [← char_time_nat]
+    exact top_phase_of_step_eigenvalue hΘ hh 1
+      (fun t => (congrArg Complex.ofReal (hper t)).trans (one_mul _).symm) q hq
+  refine ((finite_setOf_pow_eq_one hn.ne').biUnion fun z _ => finite_top_double_step_fiber hΘ hγ hb z).subset ?_
+  intro q hq
+  exact Set.mem_iUnion.mpr ⟨_, Set.mem_iUnion.mpr ⟨hchar q hq, hq,rfl⟩⟩
+
+#print axioms finite_top_of_bounded_thetaRadial
 
 end GaloisForLFunctions.ExceptionalLayerTheory

@@ -104,6 +104,49 @@ private theorem divider_spline_regular : HasCompactSupport dyadicSpline ∧ Cont
   ⟨HasCompactSupport.intro isCompact_Icc (fun _ hx => dyadicSpline_eq_zero_outside hx),
     contDiff_six_dyadicSpline.of_le (by norm_num)⟩
 
+/-- The first prime moment through the fixed terminal cut. Partial summation
+keeps the prime-count error at K as well as its interior sum. -/
+theorem first_prime_moment_at_cut :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ K : ℕ, 0 < K →
+      |(∑ p ∈ ordinaryPrimeLags K, (p:ℝ)*Real.log p) - (K:ℝ)*((K:ℝ)+1)/2| ≤
+        C*(K:ℝ)^(17/9:ℝ) := by
+  obtain ⟨C,hC,hθ⟩ := theta_error_uniform
+  refine ⟨3*C,by positivity,fun K hK => ?_⟩
+  have hn : 1 ≤ (K:ℝ) := by exact_mod_cast hK
+  let B := C*(K:ℝ)^(8/9:ℝ)
+  have hB : 0 ≤ B := mul_nonneg hC (Real.rpow_nonneg (Nat.cast_nonneg _) _)
+  have herr (j : ℕ) (hj : j ≤ K) : |Chebyshev.theta j-j| ≤ B :=
+    (hθ j).trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.cast_le.mpr hj)
+      (by norm_num)) hC)
+  have hd (m : ℕ) : (∑ p ∈ Icc 1 m, (p:ℝ)) = (m:ℝ)*(m+1)/2 := by
+    induction m with
+    | zero => simp
+    | succ m ih => rw [sum_Icc_succ_top (by omega : 1 ≤ m+1),ih]; push_cast; ring
+  have hpr : (Icc 1 K).filter Nat.Prime = ordinaryPrimeLags K := by
+    ext p
+    simp only [ordinaryPrimeLags,mem_filter,mem_Icc]
+    exact ⟨fun h => ⟨⟨h.2.two_le,h.1.2⟩,h.2⟩,fun h => ⟨⟨h.2.pos,h.1.2⟩,h.2⟩⟩
+  have ha : (∑ p ∈ Icc 1 K, primeAtom p*(p:ℝ)) =
+      ∑ p ∈ ordinaryPrimeLags K, (p:ℝ)*Real.log p := by
+    simp only [primeAtom,ite_mul,zero_mul,←sum_filter,hpr,mul_comm]
+  rw [←ha,←hd K,←sum_sub_distrib]
+  rw [sum_congr rfl (fun p _ => show primeAtom p*(p:ℝ)-p=(primeAtom p-1)*p by ring),
+    _root_.HTGeometry.sum_mul_eq_partial_mul_diff_ring (fun p => primeAtom p-1) (fun p : ℕ => (p:ℝ)),
+    primeAtom_error]
+  simp only [primeAtom_error,Nat.cast_add,Nat.cast_one,sub_add_cancel_left,
+    show ∀ x : ℝ, x-(x+1) = -1 by intro x; ring,mul_neg_one]
+  apply (abs_add_le _ _).trans
+  have hsum : |∑ p ∈ Icc 1 K, -(Chebyshev.theta p-p)| ≤ (K:ℝ)*B := by
+    apply (abs_sum_le_sum_abs _ _).trans
+    calc _ ≤ ∑ _p ∈ Icc 1 K, B := sum_le_sum fun p hp => (abs_neg _).trans_le (herr p (mem_Icc.mp hp).2)
+         _ = _ := by rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
+  rw [abs_mul,abs_of_nonneg (show 0 ≤ (K:ℝ)+1 by positivity)]
+  apply (add_le_add hsum (mul_le_mul_of_nonneg_right (herr K le_rfl) (by positivity))).trans
+  rw [show (17/9:ℝ) = 1+8/9 by norm_num,Real.rpow_add (zero_lt_one.trans_le hn),Real.rpow_one]
+  have hb := le_mul_of_one_le_left hB hn
+  dsimp only [B] at hb ⊢
+  linarith only [hb]
+
 /-- Density quadrature uniform in the dividing product, including the final mesh cell. -/
 private theorem divider_density : ∃ B : ℝ, 0 ≤ B ∧ ∀ {n K : ℕ}, 0 < n → K ≤ splineHorizon n →
     |(∑ k ∈ Icc 1 K, sampledSpline n k) - n*(∫ t in (0:ℝ)..(K:ℝ)/(n:ℝ)^2, dyadicSpline t)| ≤ B/n := by
@@ -239,6 +282,7 @@ theorem upperPrimeEndpointPrice_density :
   exact (abs_sub _ _).trans ((add_le_add hfull (hcut hn hL)).trans_eq (by dsimp only [X]; ring))
 
 #print axioms lowerPrimeEndpointPrice_abel
+#print axioms first_prime_moment_at_cut
 #print axioms lowerPrimeEndpointPrice_density
 #print axioms upperPrimeEndpointPrice_density
 #print axioms primeEndpoint_quadratic_divider

@@ -154,6 +154,25 @@ theorem boundaryStep_coefficient {β h : ℝ} (hβ : 1/2 < β) (hh : 0 < h) :
   have hpos : 0 < β := by linarith only [hβ]
   exact (Real.one_lt_exp_iff.mpr (mul_pos hpos hh)).ne' heq
 
+/-- Subtracting the circle identity at adjacent starting points makes the
+absolute value of the boundary increment periodic with doubled step. -/
+theorem boundaryStep_abs_periodic {γ : ℝ} {m : ℕ}
+    (hΘ : 1/2 < zetaZeroAbscissa)
+    (hb : ¬ IsLogSqrtSqUnbounded (thetaRadialDiscrepancy zetaZeroAbscissa γ m)) :
+    let h := quarterPeriodStep γ
+    let D := boundaryStep zetaZeroAbscissa h (primeErrorBoundaryTrace zetaZeroAbscissa)
+    Function.Periodic (fun t => |D t|) (2*h) := by
+  intro h D
+  have hcircle := boundaryStep_circle_of_bounded_thetaRadial hΘ hb
+  intro t
+  have h1 := hcircle t
+  have h2 := hcircle (t+h)
+  change D t ^ 2 + D (t+h)^2 = _ at h1
+  change D (t+h)^2 + D (t+h+h)^2 = _ at h2
+  change |D (t+2*h)| = |D t|
+  rw [show t+2*h = t+h+h by ring, ← sq_eq_sq₀ (abs_nonneg _) (abs_nonneg _), sq_abs, sq_abs]
+  linarith only [h1,h2]
+
 /-- If the actual radius has square-root discrepancy, each attained extremal
 ordinate is a rational multiple of the trial frequency. No separation of the
 extremal line or finiteness of its zeros is needed. -/
@@ -166,16 +185,7 @@ theorem top_ordinates_commensurable_of_bounded_thetaRadial {γ : ℝ} {m : ℕ}
   let D := boundaryStep zetaZeroAbscissa h (primeErrorBoundaryTrace zetaZeroAbscissa)
   have hh : 0 < h := quarterPeriodStep_pos hγ
   obtain ⟨hc,ha,hfreq⟩ := boundaryStep_coefficient hΘ hh
-  have hcircle := boundaryStep_circle_of_bounded_thetaRadial hΘ hb
-  have hp : Function.Periodic (fun t => |D t|) (2*h) := by
-    intro t
-    have h1 := hcircle t
-    have h2 := hcircle (t+h)
-    change D t ^ 2 + D (t+h)^2 = _ at h1
-    change D (t+h)^2 + D (t+h+h)^2 = _ at h2
-    change |D (t+2*h)| = |D t|
-    rw [show t+2*h = t+h+h by ring, ← sq_eq_sq₀ (abs_nonneg _) (abs_nonneg _), sq_abs, sq_abs]
-    linarith only [h1,h2]
+  have hp := boundaryStep_abs_periodic hΘ hb
   intro q hq
   obtain ⟨n, hn, he⟩ := frequency_of_periodic_abs hc ha (mul_pos zero_lt_two hh) hp (hfreq q hq)
   obtain ⟨k,hk⟩ := Complex.exp_eq_one_iff.mp he
