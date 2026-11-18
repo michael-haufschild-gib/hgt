@@ -188,6 +188,115 @@ theorem reciprocal_past_critical_edge {d : ℝ} (hd : 0 < d) (hd' : d < 3001/240
     apply lt_of_le_of_lt _ ((pastCriticalEdge_at_shift hn v).mp h.2)
     exact add_le_add le_rfl (criticalRelativeWidth_antitone (hR.trans h.1.le) ht)
 
+/-- Finite ordered complementary row, with the original signed coefficients. -/
+def finiteCriticalComplementRow (Φ : ℝ → ℝ) (L : ℕ) (t : ℝ) : ℝ :=
+  ∑ n ∈ Finset.Ioc 0 L, if pastCriticalEdge n t then
+    (vonMangoldt n-1)*continuousIntegerAtom Φ n t else 0
+
+private theorem lateComplement_time_translation {Φ : ℝ → ℝ}
+    (hp : Integrable fun v : ℝ => Real.exp (-v/2)*Φ v)
+    {T R : ℝ} (hTR : T ≤ R) (L : ℕ) :
+    let g := fun v : ℝ => Real.exp (-v/2)*Φ v
+    let A := fun v : ℝ => (Finset.Ioc 0 L).filter (fun n => R < v+Real.log n ∧
+      pastCriticalEdge n (v+Real.log n))
+    IntegrableOn (fun t => finiteCriticalComplementRow Φ L t*fractionalPrimeTest (T-t)) (Ioi R) ∧
+    (∫ t in Ioi R, finiteCriticalComplementRow Φ L t*fractionalPrimeTest (T-t)) =
+      Real.exp (T/2)*(∫ v, g v*(∑ n ∈ A v, (vonMangoldt n-1)/(n:ℝ))) := by
+  classical
+  let I := Finset.Ioc 0 L
+  let g := fun v : ℝ => Real.exp (-v/2)*Φ v
+  let a := fun n : ℕ => (vonMangoldt n-1)/(n:ℝ)
+  let S := fun n : ℕ => {v : ℝ | R < v+Real.log n ∧ pastCriticalEdge n (v+Real.log n)}
+  let A := fun v : ℝ => I.filter (fun n => v ∈ S n)
+  let G := fun n : ℕ => (S n).indicator (fun v : ℝ => g v*a n)
+  have hS (n : ℕ) : MeasurableSet (S n) :=
+    (measurableSet_lt measurable_const (measurable_id.add_const _)).inter
+      (measurableSet_lt (by dsimp only [pastCriticalEdge]; fun_prop) measurable_const)
+  have hgi (n : ℕ) : Integrable (G n) := (hp.mul_const (a n)).indicator (hS n)
+  have hsum (v : ℝ) : (∑ n ∈ I, G n v) = g v*∑ n ∈ A v, a n := by
+    rw [Finset.mul_sum,Finset.sum_filter]
+    exact Finset.sum_congr rfl fun n _ => by
+      by_cases h : v ∈ S n <;> simp [G,Set.indicator,h]
+  let f := fun t => finiteCriticalComplementRow Φ L t*fractionalPrimeTest (T-t)
+  have hpoint : (Ioi R).indicator f = fun t => Real.exp (T/2)*
+      ∑ n ∈ I, G n (t-Real.log n) := by
+    funext t
+    by_cases ht : R < t
+    · rw [indicator_of_mem ht,Finset.mul_sum]
+      dsimp only [f,finiteCriticalComplementRow]
+      rw [Finset.sum_mul]
+      refine Finset.sum_congr rfl fun n hn => ?_
+      have hn0 : (0:ℝ)<n := by exact_mod_cast (Finset.mem_Ioc.mp hn).1
+      have hshift : t-Real.log n+Real.log n=t := sub_add_cancel .. 
+      have hmem : t-Real.log n ∈ S n ↔ pastCriticalEdge n t := by
+        dsimp only [S,mem_setOf_eq]; rw [hshift]; exact and_iff_right ht
+      by_cases hedge : pastCriticalEdge n t
+      · rw [if_pos hedge,show G n (t-Real.log n)=g (t-Real.log n)*a n from indicator_of_mem (hmem.mpr hedge) _]
+        have hneg := sub_neg.mpr (hTR.trans_lt ht)
+        have hk : fractionalPrimeTest (T-t) = Real.exp ((T-t)/2) := by
+          rw [fractionalPrimeTest,Int.fract_eq_self.mpr ⟨(Real.exp_pos _).le,Real.exp_lt_one_iff.mpr hneg⟩,
+            ← Real.exp_add]; congr 1; ring
+        have hsqrt : (Real.sqrt n)⁻¹ = Real.exp (-(Real.log n)/2) := by
+          rw [neg_div,Real.exp_neg,Real.exp_half,Real.exp_log hn0]
+        have hex : Real.exp (-(Real.log n)/2)*Real.exp ((T-t)/2)*(n:ℝ) =
+            Real.exp (T/2)*Real.exp (-(t-Real.log n)/2) := by
+          conv_lhs => rhs; rw [← Real.exp_log hn0]
+          rw [← Real.exp_add,← Real.exp_add,← Real.exp_add]; congr 1; ring
+        rw [hk,continuousIntegerAtom,hsqrt]
+        dsimp only [g,a]; field_simp [hn0.ne']
+        linear_combination (vonMangoldt n-1)*Φ (t-Real.log n)*hex
+      · rw [if_neg hedge,zero_mul,show G n (t-Real.log n)=0 from indicator_of_notMem
+          (fun h => hedge (hmem.mp h)) _,mul_zero]
+    · rw [indicator_of_notMem ht]
+      symm
+      apply mul_eq_zero_of_right
+      apply Finset.sum_eq_zero fun n _ => ?_
+      apply indicator_of_notMem
+      intro h
+      apply ht
+      have hlt := h.1
+      simpa only [sub_add_cancel] using hlt
+  have hshiftInt (n : ℕ) : Integrable (fun t : ℝ => G n (t-Real.log n)) :=
+    (hgi n).comp_sub_right _
+  have hi : Integrable ((Ioi R).indicator f) := by
+    rw [hpoint]; exact (integrable_finsetSum _ fun n _ => hshiftInt n).const_mul _
+  refine ⟨(integrable_indicator_iff measurableSet_Ioi).mp hi,?_⟩
+  change (∫ t in Ioi R, f t)=Real.exp (T/2)*(∫ v, g v*∑ n ∈ A v, a n)
+  rw [← integral_indicator measurableSet_Ioi,hpoint,integral_const_mul,
+    integral_finsetSum _ (fun n _ => hshiftInt n)]
+  simp_rw [integral_sub_right_eq_self,← hsum]
+  rw [integral_finsetSum _ (fun n _ => hgi n)]
+
+/-- Exponentially small late signed cost, uniformly in the ordered upper
+integer endpoint. The cutoff follows the actual moving far edge at every time. -/
+theorem criticalComplement_late_bound {Φ : ℝ → ℝ}
+    (hs : ∀ v, 0 ≤ v → Φ v=0)
+    (hp : Integrable fun v : ℝ => Real.exp (-v/2)*Φ v) {d : ℝ} (hd : 0 < d)
+    (hd' : d < 3001/24000) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ (T R : ℝ) (L : ℕ), 1 ≤ R → T ≤ R →
+      |∫ t in Ioi R, finiteCriticalComplementRow Φ L t*fractionalPrimeTest (T-t)| ≤
+        B*Real.exp (T/2)*(⌊Real.exp R⌋₊:ℝ)^(-d) := by
+  classical
+  let g := fun v : ℝ => Real.exp (-v/2)*Φ v
+  obtain ⟨B,hB,h⟩ := reciprocal_past_critical_edge hd hd'
+  refine ⟨B*(∫ v, |g v|),mul_nonneg hB (integral_nonneg fun _ => abs_nonneg _),fun T R L hR hTR => ?_⟩
+  let A := fun v : ℝ => (Finset.Ioc 0 L).filter (fun n => R < v+Real.log n ∧
+    pastCriticalEdge n (v+Real.log n))
+  let H := B*(⌊Real.exp R⌋₊:ℝ)^(-d)
+  have hab : |∫ v, g v*∑ n ∈ A v, (vonMangoldt n-1)/(n:ℝ)| ≤ H*(∫ v, |g v|) := by
+    rw [← integral_const_mul]
+    apply norm_integral_le_of_norm_le (hp.abs.const_mul H)
+    apply Eventually.of_forall fun v => ?_
+    change |g v*_ | ≤ H*|g v|
+    rw [abs_mul,mul_comm H]
+    rcases le_or_gt v 0 with hv | hv
+    · exact mul_le_mul_of_nonneg_left (h R v L hR hv) (abs_nonneg _)
+    · simp only [g,hs v hv.le,mul_zero,abs_zero,zero_mul]
+  rw [(lateComplement_time_translation hp hTR L).2,abs_mul,abs_of_pos (Real.exp_pos _)]
+  apply (mul_le_mul_of_nonneg_left hab (Real.exp_pos _).le).trans_eq
+  dsimp only [H]; ring
+
 #print axioms centered_reciprocal_prime_intervals
 #print axioms reciprocal_past_critical_edge
+#print axioms criticalComplement_late_bound
 end GaloisForLFunctions.ExclusionOfTheCriticalState

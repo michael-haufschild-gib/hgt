@@ -154,7 +154,7 @@ theorem heatIntersectionMultiplicity_ne_zero_iff (p : ℂ × ℂ) :
   obtain ⟨τ,z⟩ := p
   obtain ⟨m, hm⟩ := ENat.ne_top_iff_exists.mp (analyticOrderAt_complexHeat_ne_top τ z)
   have hc := isCollision_iff_analyticOrderAt.mpr hm.symm
-  rw [hc.heatIntersectionMultiplicity_eq, Nat.choose_ne_zero_iff_le]
+  rw [hc.heatIntersectionMultiplicity_eq, Nat.choose_ne_zero_iff]
   constructor
   · intro h
     exact ⟨by simpa using hc.vanish 0 (by omega),
@@ -173,7 +173,7 @@ def heatIntersectionMass (B : Set (ℂ × ℂ)) : ℝ≥0∞ :=
 theorem heatIntersectionMass_union {A B : Set (ℂ × ℂ)} (h : Disjoint A B) :
     heatIntersectionMass (A ∪ B) = heatIntersectionMass A + heatIntersectionMass B := by
   classical
-  simp only [heatIntersectionMass, Set.indicator_union_of_disjoint h, ENNReal.tsum_add]
+  simp only [heatIntersectionMass, Set.indicator_union_of_disjoint h, Pi.add_apply, ENNReal.tsum_add]
 
 /-- Points on a cut shared by two closed windows are counted exactly once. -/
 theorem heatIntersectionMass_cut (A B : Set (ℂ × ℂ)) :
@@ -193,7 +193,7 @@ theorem heatIntersectionMass_eq_zero_iff (B : Set (ℂ × ℂ)) :
   · intro h p hp hcoll
     have hz := h p
     rw [Set.indicator_of_mem hp, Nat.cast_eq_zero] at hz
-    exact heatIntersectionMultiplicity_ne_zero_iff p |>.mpr hcoll <| hz
+    exact ((heatIntersectionMultiplicity_ne_zero_iff p).mpr hcoll) hz
   · intro h p
     by_cases hp : p ∈ B
     · rw [Set.indicator_of_mem hp, Nat.cast_eq_zero]
@@ -235,6 +235,65 @@ theorem forall_heatIntersectionMass_eq_zero_iff_rh {ι : Type*} (B : ι → Set 
     rw [cover] at hmem
     obtain ⟨t, ht, he⟩ := hmem
     exact h t ht ⟨p, hc, he⟩
+
+/-! ## Two folds on the same two sheets -/
+
+/-- The discriminant of the model `y² = (t−a)(t−b)`. -/
+def twoFoldDiscriminant (a b t : ℂ) : ℂ := (t - a) * (t - b) * 4
+
+/-- In the coordinate `u = y/(t−b)` the two-sheeted equation becomes
+`u² = (t−a)/(t−b)`. The latter base coordinate has nonzero derivative
+at `a`, so the local turn negates `u`. Interchanging `a,b` gives the
+same negation at the other fold. -/
+theorem twoFold_local_chart (a b : ℂ) (hab : a ≠ b) :
+    HasDerivAt (fun t : ℂ => (t-a)/(t-b)) (a-b)⁻¹ a ∧
+    ∀ t y : ℂ, t ≠ b →
+      (y ^ 2 = (t-a)*(t-b) ↔ (y/(t-b)) ^ 2 = (t-a)/(t-b)) := by
+  have h := ((hasDerivAt_id a).sub_const a).div ((hasDerivAt_id a).sub_const b)
+    (sub_ne_zero.mpr hab)
+  refine ⟨?_, ?_⟩
+  · convert h using 1
+    simp [sq, sub_ne_zero.mpr hab, div_eq_mul_inv, mul_assoc]
+  · intro t y ht
+    field_simp [sub_ne_zero.mpr ht]
+    constructor <;> intro he <;> linear_combination he
+
+/-- Both turns on a regular fibre negate `y`. They cancel under composition
+and interchange its two distinct points. -/
+theorem twoFold_turns_on_fiber {a b t y : ℂ} (ht : t ≠ a) (ht' : t ≠ b)
+    (hy : y ^ 2 = (t-a)*(t-b)) :
+    ((-y) ^ 2 = (t-a)*(t-b)) ∧ -y ≠ y ∧ -(-y) = y ∧
+    ∀ w : ℂ, w ^ 2 = (t-a)*(t-b) ↔ w = y ∨ w = -y := by
+  have hne : y ≠ 0 := fun h => (mul_ne_zero (sub_ne_zero.mpr ht) (sub_ne_zero.mpr ht'))
+    (by simpa [h] using hy.symm)
+  refine ⟨by simpa only [neg_sq] using hy, ?_, neg_neg _, fun w => ?_⟩
+  · intro h
+    apply hne
+    linear_combination -h / 2
+  · rw [← hy, sq_eq_sq_iff_eq_or_eq_neg]
+
+/-- A box isolating the first fold has winding one. Symmetry gives one
+at the second fold as well. -/
+theorem twoFold_winding_one {a b l u : ℂ}
+    (hl : l.re < a.re) (hu : a.re < u.re) (hl' : l.im < a.im) (hu' : a.im < u.im)
+    (hout : b ∉ (uIcc l.re u.re ×ℂ uIcc l.im u.im)) :
+    rectIntegral (logDeriv (twoFoldDiscriminant a b)) l u = 2 * Real.pi * I := by
+  have hr := rectIntegral_logDeriv_single_zero (h := fun t : ℂ => (t-b)*4)
+    (ρ := a) (m := 1) hl hu hl' hu' (Set.Subset.refl _)
+    (fun _ _ => (analyticAt_id.sub analyticAt_const).mul analyticAt_const)
+    (fun t ht => mul_ne_zero (sub_ne_zero.mpr (fun he => hout (he ▸ ht))) (by norm_num))
+  simpa [twoFoldDiscriminant, mul_assoc] using hr
+
+/-- The discriminant winding around both folds is two. -/
+theorem twoFold_winding_two {a b l u : ℂ} (hab : a ≠ b)
+    (hin : ∀ x ∈ ({a,b} : Finset ℂ), l.re < x.re ∧ x.re < u.re ∧
+      l.im < x.im ∧ x.im < u.im) :
+    rectIntegral (logDeriv (twoFoldDiscriminant a b)) l u = 2 * Real.pi * I * 2 := by
+  classical
+  have hr := rectIntegral_logDeriv_multi_zero ({a,b} : Finset ℂ) id (fun _ => 1)
+    (h := fun _ => 4) hin (Set.subset_univ _) (fun _ _ => analyticAt_const)
+    (fun _ _ => by norm_num)
+  simpa [twoFoldDiscriminant, hab] using hr
 
 end
 

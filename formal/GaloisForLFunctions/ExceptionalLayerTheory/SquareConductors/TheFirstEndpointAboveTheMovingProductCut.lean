@@ -96,6 +96,51 @@ theorem seventeenNinths_retainedPrimeEndpoint_fragments :
   exact ⟨n₀,fun L M hL => sum_congr rfl fun n hn =>
     congrArg (fun x : ℝ => (n:ℝ)^2*x) (h n (hL.trans (mem_Ioc.mp hn).1.le))⟩
 
+/-- Restoring the finitely many initial endpoint samples has a fixed total
+cost, uniform in both ends of the conductor interval. -/
+theorem retainedPrimeEndpoint_initial_cost {α : ℝ} (hα : 0 < α) (h₂ : α < 2) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ L M : ℕ,
+      |∑ n ∈ Ioc L M, (n:ℝ)^2 *
+        (retainedPrimeEndpoint ⌊(n:ℝ)^α⌋₊ n - firstQuotientPrimeEndpoint n)| ≤ C := by
+  obtain ⟨b,hb⟩ := eventually_atTop.mp (eventually_retainedPrimeEndpoint hα h₂)
+  let f (n : ℕ) := (n:ℝ)^2*(retainedPrimeEndpoint ⌊(n:ℝ)^α⌋₊ n-firstQuotientPrimeEndpoint n)
+  refine ⟨∑ n ∈ range b, |f n|,sum_nonneg (fun _ _ => abs_nonneg _),fun L M => ?_⟩
+  change |∑ n ∈ Ioc L M, f n| ≤ _
+  have he : (∑ n ∈ (Ioc L M).filter (· < b), f n) = ∑ n ∈ Ioc L M, f n := by
+    apply sum_subset (filter_subset _ _)
+    intro n hn hnot
+    have hnb : b ≤ n := le_of_not_gt fun h => hnot (mem_filter.mpr ⟨hn,h⟩)
+    have hn0 := (Nat.zero_le L).trans_lt (mem_Ioc.mp hn).1
+    simp only [f,hb n hnb,firstQuotientPrimeEndpoint_eq hn0,sub_self,mul_zero]
+  rw [←he]
+  exact (abs_sum_le_sum_abs _ _).trans (sum_le_sum_of_subset_of_nonneg
+    (fun n hn => mem_range.mpr (mem_filter.mp hn).2) (fun _ _ _ => abs_nonneg _))
+
+/-- The literal endpoint with both moving cuts accounts for the rational
+conductor price on every terminal fragment, up to a cubic error. -/
+theorem retainedPrimeEndpoint_fragment_prices {α : ℝ} (hα : 0 < α) (h₂ : α < 2) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ L M : ℕ,
+      |Real.log ((∏ n ∈ Ioc L M, ordinaryPrimeGenerator (n • successorSquareTriple n) : ℚ):ℝ) -
+        ∑ n ∈ Ioc L M, (n:ℝ)^2 * retainedPrimeEndpoint ⌊(n:ℝ)^α⌋₊ n| ≤ C*(M:ℝ)^3 := by
+  obtain ⟨A,hA,ha⟩ := firstQuotientPrimeEndpoint_partial_prefix
+  obtain ⟨B,hB,hb⟩ := retainedPrimeEndpoint_initial_cost hα h₂
+  refine ⟨A+B,add_nonneg hA hB,fun L M => ?_⟩
+  rcases Nat.eq_zero_or_pos M with rfl | hM
+  · simp
+  let X := Real.log ((∏ n ∈ Ioc L M, ordinaryPrimeGenerator (n • successorSquareTriple n):ℚ):ℝ)
+  let F (n : ℕ) := (n:ℝ)^2 * firstQuotientPrimeEndpoint n
+  let G (n : ℕ) := (n:ℝ)^2 * retainedPrimeEndpoint ⌊(n:ℝ)^α⌋₊ n
+  have h := hb L M
+  simp only [mul_sub,sum_sub_distrib] at h
+  change |(∑ n ∈ Ioc L M, G n) - ∑ n ∈ Ioc L M, F n| ≤ B at h
+  have hp : |X - ∑ n ∈ Ioc L M, F n| ≤ A*(M:ℝ)^3 := ha L M
+  have hB' := le_mul_of_one_le_right hB (one_le_pow₀ (by exact_mod_cast hM : 1 ≤ (M:ℝ)) : 1 ≤ (M:ℝ)^3)
+  change |X-∑ n ∈ Ioc L M, G n| ≤ _
+  rw [show X-(∑ n ∈ Ioc L M, G n) = (X-∑ n ∈ Ioc L M, F n) -
+    ((∑ n ∈ Ioc L M, G n)-∑ n ∈ Ioc L M, F n) by ring,add_mul]
+  exact (abs_sub _ _).trans (add_le_add hp (h.trans hB'))
+
 #print axioms retainedPrimeEndpoint_eq
 #print axioms seventeenNinths_retainedPrimeEndpoint_fragments
+#print axioms retainedPrimeEndpoint_fragment_prices
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
