@@ -66,7 +66,7 @@ theorem profile_mem_enclosure (n : ℕ) : ∀ x ∈ Icc (0:ℝ) 1,
     rw [show (n:ℝ)+3 = c+1 by dsimp [c]; ring]
     have splitMean (v : ℝ) : (c*e+x*v)/(c+x) = e+(v-e)*(x/(c+x)) := by
       field_simp [hd.ne']
-      <;> ring
+      ring
     constructor
     · calc
         _ ≤ e + ((enclosure n).1-e)*(x/(c+x)) := by

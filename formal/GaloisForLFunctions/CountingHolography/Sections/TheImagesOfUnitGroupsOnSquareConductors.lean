@@ -81,14 +81,36 @@ theorem square_unit_order_log_error (n : ℕ) :
   rw [price_log,abs_le]
   constructor <;> linarith only [h₁.1,h₁.2,h₂.1,h₂.2]
 
-private theorem residue_log {m K : ℕ} (hS : m.primeFactors⊆ordinaryPrimeLags K) :
-    Real.log (residueUnitOrder m)≤7*K := by
-  have hp {p : ℕ} (h : p ∈ m.primeFactors) : 0<p-1 := by have := (Nat.prime_of_mem_primeFactors h).two_le; omega
-  rw [residueUnitOrder,Nat.cast_prod,Real.log_prod (fun _ h => (Nat.cast_pos.mpr (hp h)).ne')]
+private theorem prime_product_log {m K : ℕ} (hS : m.primeFactors⊆ordinaryPrimeLags K)
+    (f : ℕ → ℕ) (hf : ∀ p ∈ m.primeFactors, 0<f p ∧ f p≤p) :
+    Real.log (∏ p ∈ m.primeFactors, f p)≤7*K := by
+  rw [Nat.cast_prod,Real.log_prod (fun _ h => (Nat.cast_pos.mpr (hf _ h).1).ne')]
   calc _ ≤ ∑ p ∈ m.primeFactors, vonMangoldt p := sum_le_sum fun p h => by
           rw [vonMangoldt_apply_prime (Nat.prime_of_mem_primeFactors h)]
-          exact Real.log_le_log (Nat.cast_pos.mpr (hp h)) (by exact_mod_cast Nat.sub_le p 1)
+          exact Real.log_le_log (Nat.cast_pos.mpr (hf p h).1) (by exact_mod_cast (hf p h).2)
     _ ≤ _ := (sum_le_sum_of_subset_of_nonneg hS (fun _ _ _ => vonMangoldt_nonneg)).trans (ordinaryPrimeLagSums K).1
+
+private theorem residue_log {m K : ℕ} (hS : m.primeFactors⊆ordinaryPrimeLags K) :
+    Real.log (residueUnitOrder m)≤7*K :=
+  prime_product_log hS (fun p => p-1) fun p h => by
+    have := (Nat.prime_of_mem_primeFactors h).two_le
+    omega
+
+private theorem order_loss {m K : ℕ} (hm : 0<m) (hS : m.primeFactors⊆ordinaryPrimeLags K) :
+    0≤Real.log m-Real.log (carmichael m) ∧ Real.log m-Real.log (carmichael m)≤Real.log 2+7*K := by
+  let A := ∏ p ∈ m.primeFactors, p
+  have hA : 0<A := prod_pos fun p h => (Nat.prime_of_mem_primeFactors h).pos
+  have hφ := Nat.totient_pos.mpr hm
+  have hλ : 0<carmichael m := Nat.pos_of_dvd_of_pos (carmichael_dvd_totient m) hφ
+  have h₁ := Real.log_le_log (Nat.cast_pos.mpr hλ) (by exact_mod_cast
+    (Nat.le_of_dvd hφ (carmichael_dvd_totient m)).trans (Nat.totient_le m) : (carmichael m:ℝ)≤m)
+  have h₂ := Nat.le_of_dvd (Nat.mul_pos hA (Nat.mul_pos (by decide : 0<2) hλ))
+    (dvd_twice_radical_mul_carmichael hm)
+  have h₃ := Real.log_le_log (Nat.cast_pos.mpr hm) (by exact_mod_cast h₂ :
+    (m:ℝ)≤(A:ℝ)*(2*(carmichael m:ℝ)))
+  rw [Real.log_mul (Nat.cast_pos.mpr hA).ne' (by positivity),Real.log_mul two_ne_zero (Nat.cast_pos.mpr hλ).ne'] at h₃
+  have h₄ : Real.log A≤7*K := prime_product_log hS id fun p h => ⟨(Nat.prime_of_mem_primeFactors h).pos,le_rfl⟩
+  exact ⟨sub_nonneg.mpr h₁,by linarith only [h₃,h₄]⟩
 
 /-- The actual totient orders have no common divisor of cubic logarithmic
 size, even though each separate order has that size. -/
@@ -191,13 +213,9 @@ theorem square_unit_group_kernel_lower : ∃ c : ℝ, 0<c ∧ ∀ᶠ n : ℕ in 
     rw [kernel_log (V_pos n) (U_pos n)]
     linarith only [hv,hvr,hs,(himage n hn).2 f]
 
-/-- The one-sided comparison of the two unit counts at quadratic log
-precision is equivalent to RH. -/
-theorem riemannHypothesis_iff_square_unit_order_bound :
-    RiemannHypothesis ↔ ∃ C : ℝ, ∀ n : ℕ, 0<n →
-      let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
-      Real.log q.num.natAbs.totient-Real.log q.den.totient≤C*(n:ℝ)^2 := by
-  obtain ⟨K,_,hK⟩ := cutoff_log_bound
+private theorem price_bound_iff (g : ℕ → ℝ) {K : ℝ}
+    (hK : ∀ {n : ℕ}, 0<n → |g n-Real.log (q n:ℝ)|≤K*(n:ℝ)^2) :
+    RiemannHypothesis ↔ ∃ C : ℝ, ∀ n : ℕ, 0<n → g n≤C*(n:ℝ)^2 := by
   have hpow {B : ℕ} (hB : 0<B) (n : ℕ) : q n≤(B:ℚ)^(n^2) ↔
       Real.log (q n:ℝ)≤Real.log B*(n:ℝ)^2 := by
     simpa only [one_mul,Nat.cast_one,one_pow,mul_one] using
@@ -206,22 +224,54 @@ theorem riemannHypothesis_iff_square_unit_order_bound :
   constructor
   · rintro ⟨B,hB,h⟩
     refine ⟨Real.log B+K,fun n hn => ?_⟩
-    have he := (abs_le.mp (square_unit_order_log_error n)).2
+    have he := (abs_le.mp (hK hn)).2
     have hh := (hpow hB n).mp (h n hn)
-    change (Real.log (U n).totient-Real.log (V n).totient)-Real.log (q n:ℝ)≤Real.log (L n) at he
-    change Real.log (U n).totient-Real.log (V n).totient≤_
-    linarith only [he,hh,hK hn]
+    linarith only [he,hh]
   rintro ⟨C,h⟩
   let B := ⌈Real.exp (C+K)⌉₊
   have hB : 0<B := Nat.ceil_pos.mpr (Real.exp_pos _)
   have hb := (Real.le_log_iff_exp_le (Nat.cast_pos.mpr hB)).mpr (Nat.le_ceil (Real.exp (C+K)))
   refine ⟨B,hB,fun n hn => (hpow hB n).mpr ?_⟩
-  have he := (abs_le.mp (square_unit_order_log_error n)).1
-  change -(Real.log (L n))≤(Real.log (U n).totient-Real.log (V n).totient)-Real.log (q n:ℝ) at he
-  have hh := h n hn
-  change Real.log (U n).totient-Real.log (V n).totient≤C*(n:ℝ)^2 at hh
-  linarith only [he,hh,hK hn,mul_le_mul_of_nonneg_right hb (sq_nonneg (n:ℝ))]
+  have he := (abs_le.mp (hK hn)).1
+  linarith only [he,h n hn,mul_le_mul_of_nonneg_right hb (sq_nonneg (n:ℝ))]
 
+/-- The one-sided comparison of the two unit counts at quadratic log
+precision is equivalent to RH. -/
+theorem riemannHypothesis_iff_square_unit_order_bound :
+    RiemannHypothesis ↔ ∃ C : ℝ, ∀ n : ℕ, 0<n →
+      let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
+      Real.log q.num.natAbs.totient-Real.log q.den.totient≤C*(n:ℝ)^2 := by
+  obtain ⟨K,_,hK⟩ := cutoff_log_bound
+  exact price_bound_iff (fun n => Real.log (U n).totient-Real.log (V n).totient)
+    (K := K) fun {n} hn => (square_unit_order_log_error n).trans (hK hn)
+
+/-- Replacing the two moduli by the respective maximal orders of a
+single unit changes the signed logarithm by at most quadratic size. -/
+theorem square_carmichael_log_error : ∃ C : ℝ, 0≤C ∧ ∀ {n : ℕ}, 0<n →
+    let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
+    |(Real.log (carmichael q.num.natAbs)-Real.log (carmichael q.den))-Real.log (q:ℝ)|≤C*(n:ℝ)^2 := by
+  obtain ⟨A,_,hA⟩ := successorSquare_window_bound
+  refine ⟨Real.log 2+7*A^2,add_nonneg (Real.log_nonneg (by norm_num)) (by positivity),fun {n} hn => ?_⟩
+  have hU := order_loss (U_pos n) (subset_union_left.trans (supports n))
+  have hV := order_loss (V_pos n) (subset_union_right.trans (supports n))
+  have hL : (L n:ℝ)≤A^2*(n:ℝ)^2 := (hA hn).trans_eq (mul_pow _ _ _)
+  have h₁ := le_mul_of_one_le_right (Real.log_nonneg (by norm_num : (1:ℝ)≤2))
+    (one_le_pow₀ (by exact_mod_cast hn : (1:ℝ)≤n) (n := 2))
+  change |(Real.log (carmichael (U n))-Real.log (carmichael (V n)))-Real.log (q n:ℝ)|≤_
+  rw [price_log,abs_le]
+  constructor <;> linarith only [hU.1,hU.2,hV.1,hV.2,h₁,hL]
+
+/-- Comparison of the two maximal cyclic orders at the quadratic
+logarithmic scale detects the full Riemann hypothesis. -/
+theorem riemannHypothesis_iff_square_carmichael_bound :
+    RiemannHypothesis ↔ ∃ C : ℝ, ∀ n : ℕ, 0<n →
+      let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
+      Real.log (carmichael q.num.natAbs)-Real.log (carmichael q.den)≤C*(n:ℝ)^2 := by
+  obtain ⟨K,_,hK⟩ := square_carmichael_log_error
+  exact price_bound_iff (K := K) (fun n => Real.log (carmichael (U n))-Real.log (carmichael (V n))) hK
+
+#print axioms square_carmichael_log_error
+#print axioms riemannHypothesis_iff_square_carmichael_bound
 #print axioms square_unit_order_log_error
 #print axioms square_gcd_unit_orders
 #print axioms square_unit_group_image_bound

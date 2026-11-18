@@ -1,5 +1,6 @@
 import Mathlib.Data.Nat.Totient
 import Mathlib.GroupTheory.Index
+import Mathlib.NumberTheory.ArithmeticFunction.Carmichael
 import Mathlib.Tactic
 
 /-! # Common unit group quotients at coprime moduli
@@ -130,9 +131,56 @@ theorem le_cutoff_mul_totient {u L : ℕ} (hL : 1≤L)
   rw [totient_split]
   exact h.trans_eq (by unfold residueUnitOrder; ring)
 
+/-- The principal part of a prime-power modulus divides twice the
+Carmichael exponent. The extra factor two occurs only at the prime two. -/
+private theorem primePower_dvd_twice_carmichael {p : ℕ} (hp : p.Prime) (k : ℕ) :
+    p^k ∣ 2*ArithmeticFunction.carmichael (p^(k+1)) := by
+  by_cases h : p=2
+  · subst p
+    by_cases hsmall : k+1≤2
+    · rw [ArithmeticFunction.carmichael_two_pow_of_le_two hsmall,Nat.add_sub_cancel]
+      exact dvd_mul_left _ _
+    · rw [ArithmeticFunction.two_mul_carmichael_two_pow_of_three_le_eq_totient (by omega),
+        Nat.totient_prime_pow Nat.prime_two (Nat.succ_pos k),Nat.add_sub_cancel]
+      simp
+  · rw [ArithmeticFunction.carmichael_pow_of_prime_ne_two _ hp h,
+      Nat.totient_prime_pow hp (Nat.succ_pos k),Nat.add_sub_cancel]
+    exact (dvd_mul_right (p^k) _).trans (dvd_mul_left _ _)
+
+/-- The modulus divides twice the product of its distinct primes times
+the largest order of a unit. No estimate for the distribution of primes
+in arithmetic progressions enters this bound. -/
+theorem dvd_twice_radical_mul_carmichael {u : ℕ} (hu : 0<u) :
+    u ∣ (∏ p ∈ u.primeFactors, p)*(2*ArithmeticFunction.carmichael u) := by
+  apply (Nat.dvd_iff_prime_pow_dvd_dvd _ u).mpr
+  intro p k hp hk
+  cases k with
+  | zero => simp
+  | succ k =>
+    have hpu : p ∣ u := (show p ∣ p^(k+1) by rw [pow_succ]; exact dvd_mul_left _ _).trans hk
+    have hrad := dvd_prod_of_mem id (Nat.mem_primeFactors.mpr ⟨hp,hpu,hu.ne'⟩)
+    have hpow := (primePower_dvd_twice_carmichael hp k).trans
+      (Nat.mul_dvd_mul_left 2 (ArithmeticFunction.carmichael_dvd hk))
+    rw [pow_succ']
+    exact Nat.mul_dvd_mul hrad hpow
+
+/-- A single cyclic subgroup of the residue unit group contains at least
+the modulus divided by twice the product of its distinct primes. -/
+theorem exists_unit_large_order {u : ℕ} (hu : 0<u) :
+    ∃ a : (ZMod u)ˣ, u ≤ (∏ p ∈ u.primeFactors, p)*(2*orderOf a) := by
+  letI : NeZero u := ⟨hu.ne'⟩
+  obtain ⟨a,ha⟩ := Monoid.exists_orderOf_eq_exponent (Monoid.ExponentExists.of_finite (G := (ZMod u)ˣ))
+  refine ⟨a,?_⟩
+  have hrad : 0<∏ p ∈ u.primeFactors, p := prod_pos fun p h => (Nat.prime_of_mem_primeFactors h).pos
+  have hord : 0<orderOf a := orderOf_pos a
+  exact Nat.le_of_dvd (Nat.mul_pos hrad (Nat.mul_pos (by decide) hord))
+    (by rw [ha,← ArithmeticFunction.carmichael_eq_exponent hu.ne']; exact dvd_twice_radical_mul_carmichael hu)
+
 #print axioms gcd_totient_dvd_residueUnitOrders
 #print axioms saturated_gcd_unit_orders
 #print axioms unitHom_range_dvd_residueUnitOrders
 #print axioms le_cutoff_mul_totient
+#print axioms dvd_twice_radical_mul_carmichael
+#print axioms exists_unit_large_order
 
 end GaloisForLFunctions.CountingHolography.Sections

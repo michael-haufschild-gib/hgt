@@ -45,8 +45,8 @@ def hitEquiv (K : Fˣ) : Hit F (K : F) ≃ Fˣ × Fˣ where
     · rfl
     · have h := s.property
       change (K : F)*s.val.1.val.1*s.val.1.val.2*s.val.2=1 at h
-      change ((K : F)*s.val.1.val.1*s.val.1.val.2)⁻¹=s.val.2
-      exact (inv_eq_of_mul_eq_one_right h)
+      apply Units.inv_eq_of_mul_eq_one_right
+      exact h
   right_inv u := by ext <;> rfl
 
 /-- The numerator congruence a+rc=0 cuts the forbidden set to one

@@ -5,6 +5,7 @@ import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheProperPrimePowers
 import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.LogarithmicMangoldtTail
 import GaloisForLFunctions.HTGeometry.ReflectionIntegral
 import GaloisForLFunctions.RHTower.ZetaGateProductAFEMainTermInputs
+import GaloisForLFunctions.RHTower.Sieve.DivisorSwap
 
 /-!
 # Fractional parts over ordinary primes at square-root scale
@@ -240,6 +241,84 @@ theorem eventually_ordinaryFractionalPrimeLimit_neg :
   have h := (div_lt_iff₀ (Real.sqrt_pos.mpr hx0)).mp hx
   simpa only [zero_mul] using h
 
+/-- Sum of the logarithms of the distinct prime factors, counted once for each integer up to N. -/
+def summatoryLogRadical (N : ℕ) : ℝ :=
+  ∑ m ∈ Finset.Icc 1 N, ∑ p ∈ m.primeFactors, Real.log p
+
+private theorem log_radical_floor_sum (N M : ℕ) (hNM : N ≤ M) :
+    (∑ p ∈ Finset.Icc 0 M, if p.Prime then Real.log p*((N/p:ℕ):ℝ) else 0) =
+      summatoryLogRadical N := by
+  let w := fun p : ℕ => if p.Prime then Real.log p else 0
+  have hd (m : ℕ) : (∑ p ∈ m.primeFactors, Real.log p) = ∑ p ∈ m.divisors, w p := by
+    rw [Nat.primeFactors_eq_to_filter_divisors_prime,Finset.sum_filter]
+  have hI : Finset.Icc 1 N ⊆ Finset.Icc 0 M :=
+    fun _ hp => Finset.mem_Icc.mpr ⟨Nat.zero_le _,(Finset.mem_Icc.mp hp).2.trans hNM⟩
+  calc _ = ∑ p ∈ Finset.Icc 0 M, w p*((N/p:ℕ):ℝ) := by
+             refine Finset.sum_congr rfl fun p _ => ?_
+             by_cases hp : p.Prime <;> simp [w,hp]
+    _ = ∑ p ∈ Finset.Icc 1 N, w p*((N/p:ℕ):ℝ) := by
+             symm
+             apply Finset.sum_subset hI
+             intro p _ hp
+             rcases Nat.eq_zero_or_pos p with rfl | hpos
+             · simp
+             have hlt : N < p := lt_of_not_ge fun h => hp (Finset.mem_Icc.mpr ⟨hpos,h⟩)
+             rw [Nat.div_eq_of_lt hlt,Nat.cast_zero,mul_zero]
+    _ = summatoryLogRadical N := by
+             unfold summatoryLogRadical
+             simp_rw [hd]
+             rw [_root_.RHTower.Sieve.sum_divisors_swap N (fun p _ => w p)]
+             apply Finset.sum_congr rfl fun p _ => ?_
+             simp [Nat.card_Icc,mul_comm]
+
+/-- Subtraction at one eliminates the reciprocal-prime term at every common cutoff. -/
+theorem ordinaryFractionalPrimeLimit_nat {N : ℕ} (hN : 1 ≤ N) :
+    ordinaryFractionalPrimeLimit N =
+      (N:ℝ)*(Real.log N+ordinaryFractionalPrimeLimit 1)-summatoryLogRadical N := by
+  have hlim := ((tendsto_ordinaryFractionalPrimeError (by exact_mod_cast hN : (1:ℝ) ≤ N)).sub
+    ((tendsto_ordinaryFractionalPrimeError (x := 1) le_rfl).const_mul (N:ℝ))).comp
+      tendsto_natCast_atTop_atTop
+  have hpoint (M : ℕ) (hM : N ≤ M) :
+      ordinaryFractionalPrimeError N M-(N:ℝ)*ordinaryFractionalPrimeError 1 M =
+        (N:ℝ)*Real.log N-summatoryLogRadical N := by
+    have hp (p : ℕ) :
+        (if p.Prime then Real.log p*Int.fract ((N:ℝ)/p) else 0)-
+          (N:ℝ)*(if p.Prime then Real.log p*Int.fract (1/(p:ℝ)) else 0) =
+        -(if p.Prime then Real.log p*((N/p:ℕ):ℝ) else 0) := by
+      by_cases h : p.Prime
+      · have hp1 : (1:ℝ) < p := by exact_mod_cast h.one_lt
+        rw [if_pos h,if_pos h,if_pos h,Int.fract_eq_self.mpr
+          ⟨by positivity, (div_lt_one (zero_lt_one.trans hp1)).mpr hp1⟩,
+          Int.fract,← natCast_floor_eq_intCast_floor (div_nonneg (Nat.cast_nonneg N) (Nat.cast_nonneg p)),
+          Nat.floor_div_natCast,Nat.floor_natCast]
+        ring
+      · simp [h]
+    have hsum : (∑ p ∈ Finset.Icc 0 M, if p.Prime then Real.log p*Int.fract ((N:ℝ)/p) else 0)-
+        (N:ℝ)*(∑ p ∈ Finset.Icc 0 M, if p.Prime then Real.log p*Int.fract (1/(p:ℝ)) else 0) =
+        -summatoryLogRadical N := by
+      rw [Finset.mul_sum,← Finset.sum_sub_distrib]
+      simp_rw [hp]
+      rw [Finset.sum_neg_distrib,log_radical_floor_sum N M hM]
+    simp only [ordinaryFractionalPrimeError,Nat.floor_natCast,Real.log_one,sub_zero,one_mul]
+    linear_combination hsum
+  have he := tendsto_nhds_unique hlim ((tendsto_const_nhds : Tendsto
+    (fun _ : ℕ => (N:ℝ)*Real.log N-summatoryLogRadical N) atTop _).congr'
+      ((eventually_ge_atTop N).mono fun M hM => (hpoint M hM).symm))
+  change ordinaryFractionalPrimeLimit N-(N:ℝ)*ordinaryFractionalPrimeLimit 1 = _ at he
+  linarith only [he]
+
+/-- The sharp summatory logarithm of the radical has a positive square-root secondary term. -/
+theorem tendsto_summatoryLogRadical_secondary :
+    Tendsto (fun N : ℕ =>
+      (summatoryLogRadical N-(N:ℝ)*(Real.log N+ordinaryFractionalPrimeLimit 1))/Real.sqrt N)
+      atTop (𝓝 (-(riemannZeta (1/2)).re)) := by
+  refine (tendsto_ordinaryFractionalPrimeLimit_div_sqrt.neg.comp tendsto_natCast_atTop_atTop).congr' ?_
+  filter_upwards [eventually_ge_atTop (1:ℕ)] with N hN
+  change -(ordinaryFractionalPrimeLimit N/Real.sqrt N) = _
+  rw [ordinaryFractionalPrimeLimit_nat hN]
+  ring
+
+#print axioms tendsto_summatoryLogRadical_secondary
 #print axioms eventually_ordinaryFractionalPrimeLimit_neg
 #print axioms tendsto_ordinaryFractionalPrimeLimit_div_sqrt
 #print axioms tendsto_ordinaryFractionalPrimeError

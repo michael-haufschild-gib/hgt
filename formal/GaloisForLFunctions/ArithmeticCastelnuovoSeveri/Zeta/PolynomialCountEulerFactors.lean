@@ -83,6 +83,45 @@ theorem polynomialCountZeta_add (P Q : Polynomial ℤ) (q : ℂ) :
   rw [he]
   exact hasGhost_mul (polynomialCountZeta_hasGhost _ _) (polynomialCountZeta_hasGhost _ _)
 
+/-- A single local Euler factor recovers the entire integral count polynomial.
+Its ghost sequence evaluates the polynomial on an infinite geometric progression. -/
+theorem polynomialCountZeta_injective (q : ℕ) :
+    Function.Injective (fun P => polynomialCountZeta P ((Int.castRingHom ℂ) ((q:ℤ)+2))) := by
+  let b : ℤ := (q:ℤ)+2
+  let f := Int.castRingHom ℂ
+  intro P Q h
+  change polynomialCountZeta P (f b) = polynomialCountZeta Q (f b) at h
+  have hne : polynomialCountZeta Q (f b) ≠ 0 := by
+    intro hz
+    have h0 := polynomialCountZeta_constant Q (f b)
+    rw [hz, map_zero] at h0
+    exact zero_ne_one h0
+  have hP := polynomialCountZeta_hasGhost P (f b)
+  rw [h] at hP
+  have hQ := polynomialCountZeta_hasGhost Q (f b)
+  have hg : polynomialCountSeries P (f b) = polynomialCountSeries Q (f b) :=
+    mul_left_cancel₀ hne (hP.symm.trans hQ)
+  have hb : 1 < b := by dsimp [b]; omega
+  have hinj : Function.Injective (fun n : ℕ => b^(n+1)) :=
+    (pow_right_strictMono₀ hb).injective.comp Nat.succ_injective
+  apply Polynomial.eq_of_infinite_eval_eq
+  apply (Set.infinite_range_of_injective hinj).mono
+  rintro _ ⟨n,rfl⟩
+  have hn := congrArg (coeff (n+1)) hg
+  simp only [polynomialCountSeries,coeff_mk,Nat.succ_ne_zero,if_false] at hn
+  rw [← map_pow, Polynomial.eval₂_at_apply, Polynomial.eval₂_at_apply] at hn
+  exact Int.cast_injective hn
+
+/-- At every fixed field order, arrangements have identical local zeta factors
+exactly when every codimension layer has the same size. -/
+theorem arrangementZeta_eq_iff {ι κ : Type*} [Fintype ι] [Fintype κ] (q : ℕ)
+    (K : Finset (Finset ι)) (L : Finset (Finset κ)) :
+    polynomialCountZeta (arrangementPolynomial K) ((Int.castRingHom ℂ) ((q:ℤ)+2)) =
+      polynomialCountZeta (arrangementPolynomial L) ((Int.castRingHom ℂ) ((q:ℤ)+2)) ↔
+      ∀ d, (K.filter fun s : Finset ι => Fintype.card ι - s.card = d).card =
+        (L.filter fun s : Finset κ => Fintype.card κ - s.card = d).card :=
+  (polynomialCountZeta_injective q).eq_iff.trans (arrangementPolynomial_eq_iff K L)
+
 /-- Over a finite extension, the ghost coefficient is the actual coordinate-arrangement count. -/
 theorem arrangementCountSeries_extension {ι F E : Type*} [Fintype ι] [Field F] [Fintype F]
     [Field E] [Fintype E] [Algebra F E] (K : Finset (Finset ι)) :
@@ -106,6 +145,8 @@ theorem hyperplaneCountSeries_extension (m : ℕ) (F E : Type*) [Field F] [Finty
 
 #print axioms polynomialCountZeta_eq_iff
 #print axioms polynomialCountZeta_add
+#print axioms polynomialCountZeta_injective
+#print axioms arrangementZeta_eq_iff
 #print axioms arrangementCountSeries_extension
 #print axioms hyperplaneCountSeries_extension
 

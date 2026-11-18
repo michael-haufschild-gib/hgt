@@ -43,7 +43,7 @@ private theorem contact_rows {n k : ℕ} (hn : 0 < n) (hk : 0 < k) (hs : 8 < Rea
     simp_rw [mul_assoc]
     rw [← mul_sum,hsum (fun v => H (-l-Real.log ((i:ℝ)+1)+Real.log v))]
     simp only [Real.log_one,add_zero,s,t]
-  have hxy : X n ≤ Y n := pow_le_pow_left₀ (Nat.cast_nonneg _) (by exact_mod_cast (by omega : n ≤ 2*n+1))
+  have hxy : X n ≤ Y n := pow_le_pow_left₀ (Nat.cast_nonneg _) (by exact_mod_cast (by omega : n ≤ 2*n+1)) 2
   have ht : s ≤ t := Real.log_le_log (sq_pos_of_pos (Nat.cast_pos.mpr hn)) hxy
   have hl : 0 ≤ l := Real.log_nonneg (by exact_mod_cast hk)
   have hz (u : ℝ) (hu : 8 < u) : H (-l-u)=0 :=
@@ -147,7 +147,7 @@ private theorem proper_split : ∀ᶠ n : ℕ in atTop,
     shift_limit.eventually_const_le h₄,shift_limit.eventually_le_const h₉] with n hn hs hcut hδ₀ hδ
   let N := L n
   let win := windowEnd ((2*n+1)^2+1)
-  have hxy : X n ≤ Y n := pow_le_pow_left₀ (Nat.cast_nonneg _) (by exact_mod_cast (by omega : n ≤ 2*n+1))
+  have hxy : X n ≤ Y n := pow_le_pow_left₀ (Nat.cast_nonneg _) (by exact_mod_cast (by omega : n ≤ 2*n+1)) 2
   have hw : Real.exp 8*Y n ≤ (win:ℝ) := (successorSquareWindowScale_bounds n).2.2
   have hwin : win ≤ N := by dsimp only [N,L,win]; omega
   have hcap := hw.trans (Nat.cast_le.mpr hwin)
