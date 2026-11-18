@@ -135,7 +135,6 @@ theorem early_signed_fractional_mass_of_confinement {Φ : ℝ → ℝ} (hc : Con
       |S t|+|ordinaryPrimePolarError Φ t| := abs_of_nonneg (add_nonneg (abs_nonneg _) (abs_nonneg _))
   simp only [hn] at h
   refine ⟨h.1,h.2.trans_eq ?_⟩
-  dsimp only [H]
   rw [show (5*U-T)/2 = 2*U+(U-T)/2 by ring,Real.exp_add]; ring
 
 /-- The literal centered and polar-subtracted prime rows have uniformly
@@ -179,7 +178,7 @@ theorem criticalState_late_absolute_ordinary_test {W₀ : ℝ} (hW : 0 < W₀)
     {F Φ : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) (hc : Continuous Φ)
     (he : F =ᵐ[volume] Φ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (T : ℝ) (A : Set ℝ), 0 ≤ T → MeasurableSet A →
-      let f := fun t : ℝ => |(∫ u, Φ u)*ordinaryPrimePolarError Φ t|*fractionalPrimeTest (T-t)
+      let f := fun t : ℝ => |(∫ u, Φ u)*ordinaryPrimePolarError Φ t| *fractionalPrimeTest (T-t)
       IntegrableOn f (A ∩ Ioi (6*T)) ∧ (∫ t in A ∩ Ioi (6*T), f t) ≤ C*Real.exp (-T/10) := by
   let d := (31/80:ℝ)
   let c := (1/80:ℝ)
@@ -198,10 +197,10 @@ theorem criticalState_late_absolute_ordinary_test {W₀ : ℝ} (hW : 0 < W₀)
       abs_of_pos (Real.exp_pos _),← mul_assoc,← Real.exp_add]
     dsimp only [g,c,d]; congr 2; ring
   have hg (t : ℝ) : 0 ≤ g t := mul_nonneg (Real.exp_pos _).le (abs_nonneg _)
-  refine ⟨|m|*(∫ t in Ioi 0, g t),mul_nonneg (abs_nonneg m) (integral_nonneg hg),fun T A hT hA => ?_⟩
+  refine ⟨|m| *(∫ t in Ioi 0, g t),mul_nonneg (abs_nonneg m) (integral_nonneg hg),fun T A hT hA => ?_⟩
   let J := A ∩ Ioi (6*T)
-  let f := fun t => |m*ordinaryPrimePolarError Φ t|*fractionalPrimeTest (T-t)
-  let b := |m|*Real.exp (-T/10)
+  let f := fun t => |m*ordinaryPrimePolarError Φ t| *fractionalPrimeTest (T-t)
+  let b := |m| *Real.exp (-T/10)
   have hb : 0 ≤ b := mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
   have hJ : MeasurableSet J := hA.inter measurableSet_Ioi
   have hJ0 : J ⊆ Ioi 0 := fun _ h => lt_of_le_of_lt (by positivity) h.2
@@ -216,7 +215,7 @@ theorem criticalState_late_absolute_ordinary_test {W₀ : ℝ} (hW : 0 < W₀)
     have hk := (le_abs_self (fractionalPrimeTest (T-t))).trans (fractionalPrimeTest_bounds (T-t)).2
     have hex : Real.exp ((T-t)/2) ≤ Real.exp (-T/10)*Real.exp (-(2/5)*t) := by
       rw [← Real.exp_add]; exact Real.exp_le_exp.mpr (by linarith only [htj.2])
-    calc f t ≤ |m*ordinaryPrimePolarError Φ t|*(Real.exp (-T/10)*Real.exp (-(2/5)*t)) :=
+    calc f t ≤ |m*ordinaryPrimePolarError Φ t| *(Real.exp (-T/10)*Real.exp (-(2/5)*t)) :=
           mul_le_mul_of_nonneg_left (hk.trans hex) (abs_nonneg _)
       _ = _ := by dsimp only [b,g]; rw [abs_mul]; ring
   have hbg : IntegrableOn (fun t => b*g t) J := (hi.const_mul b).mono_set hJ0
@@ -241,7 +240,7 @@ theorem riemannHypothesis_or_exterior_fractional_mass : RiemannHypothesis ∨
         let m := ∫ u, Φ u
         let S := fun t : ℝ => (∑' n : ℕ, (vonMangoldt n-1)*continuousIntegerAtom Φ n t)-m/2
         let f := fun t => (|S t|+|ordinaryPrimePolarError Φ t|)*fractionalPrimeTest (T-t)
-        let g := fun t => |m*ordinaryPrimePolarError Φ t|*fractionalPrimeTest (T-t)
+        let g := fun t => |m*ordinaryPrimePolarError Φ t| *fractionalPrimeTest (T-t)
         IntegrableOn f (Iic (T/6)) ∧ (∫ t in Iic (T/6), f t) ≤ B*Real.exp (-T/12) ∧
           ∀ A : Set ℝ, MeasurableSet A → IntegrableOn g (A ∩ Ioi (6*T)) ∧
             (∫ t in A ∩ Ioi (6*T), g t) ≤ C*Real.exp (-T/10) := by

@@ -112,7 +112,7 @@ theorem riemannHypothesis_or_ordinary_prime_complement_on_every_late_octave : Ri
   let η := (ε/2)/(|m|+1)
   have hm1 : 0 < |m|+1 := by positivity
   have hη : 0 < η := div_pos heps hm1
-  have hηm : |m|*η ≤ ε/2 := by
+  have hηm : |m| *η ≤ ε/2 := by
     calc _ ≤ (|m|+1)*η := mul_le_mul_of_nonneg_right (le_add_of_nonneg_right zero_le_one) hη.le
          _ = _ := by dsimp only [η]; field_simp [hm1.ne']
   have hdec : Tendsto (fun v : ℝ => D₀*Real.exp ((-1/40)*v)) atTop (𝓝 0) := by
@@ -177,7 +177,7 @@ theorem riemannHypothesis_or_middle_time_signed_test : RiemannHypothesis ∨
         let m := ∫ u, Φ u
         let S := fun t : ℝ => (∑' n : ℕ, (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t)-m/2
         let f := fun t : ℝ => |m*ordinaryPrimePolarError Φ t-
-          (Ioc (T/6) (6*T)).indicator (fun t => m*S t) t|*fractionalPrimeTest (T-t)
+          (Ioc (T/6) (6*T)).indicator (fun t => m*S t) t| *fractionalPrimeTest (T-t)
         IntegrableOn f D ∧ (∫ t in D, f t) ≤ B*Real.exp (-T/240) := by
   rcases riemannHypothesis_or_integer_mangoldt_sign_transfer with hr | ⟨W₀,F,Φ,D₀,hW,ht,hF,hΦ,he,hD₀,htail⟩
   · exact Or.inl hr
@@ -201,7 +201,7 @@ theorem riemannHypothesis_or_middle_time_signed_test : RiemannHypothesis ∨
     simpa only [m,S,P,E,sign_part_distances_eq_abs_sub] using hV
   have hcut : Tendsto (fun T : ℝ => T/6-1) atTop atTop := tendsto_atTop.2 fun a =>
     eventually_atTop.2 ⟨6*(a+1),fun _ h => by linarith only [h]⟩
-  let B := |m|*B₀ + |m|*D₀*Real.exp (1/40) + B₁
+  let B := |m| *B₀ + |m| *D₀*Real.exp (1/40) + B₁
   refine Or.inr ⟨W₀,F,Φ,B,hW,ht,hF,hΦ,he,by dsimp only [B]; positivity,?_⟩
   filter_upwards [hcut.eventually htransfer,eventually_ge_atTop (0:ℝ)] with T hx hT
   rw [sub_add_cancel] at hx
@@ -209,7 +209,7 @@ theorem riemannHypothesis_or_middle_time_signed_test : RiemannHypothesis ∨
   let V := 6*T
   let I := Ioc U V
   let K := fun t => fractionalPrimeTest (T-t)
-  let f := fun t => |m*P t-I.indicator (fun z => m*S z) t|*K t
+  let f := fun t => |m*P t-I.indicator (fun z => m*S z) t| *K t
   have hUV : U ≤ V := by dsimp only [U,V]; linarith only [hT]
   have hK : Measurable K := measurable_fractionalPrimeTest.comp (measurable_const.sub measurable_id)
   have hf : Measurable f := ((measurable_const.mul hP).sub
@@ -226,13 +226,13 @@ theorem riemannHypothesis_or_middle_time_signed_test : RiemannHypothesis ∨
   have hE0 := hearly U (by dsimp only [U]; positivity) T
   have hfront := restrict_le measurableSet_Iic (hE0.1.const_mul |m|) (fun t htj => by
     have hnot : t ∉ I := fun h => (not_lt_of_ge htj) h.1
-    change |m*P t-I.indicator (fun z => m*S z) t|*K t ≤ |m|*((|S t|+|P t|)*K t)
+    change |m*P t-I.indicator (fun z => m*S z) t| *K t ≤ |m| *((|S t|+|P t|)*K t)
     rw [indicator_of_notMem hnot,sub_zero,abs_mul,← mul_assoc]
     exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left
       (le_add_of_nonneg_left (abs_nonneg _)) (abs_nonneg m)) (hK0 t))
   have hinter := restrict_le measurableSet_Ioc ((hx.1.const_mul |m|).mono_set
     (show I ⊆ Ioi U from fun _ h => h.1)) (fun t htj => by
-    change |m*P t-I.indicator (fun z => m*S z) t|*K t ≤ |m|*E t
+    change |m*P t-I.indicator (fun z => m*S z) t| *K t ≤ |m| *E t
     rw [indicator_of_mem htj,← mul_sub,abs_mul]
     exact mul_le_of_le_one_right (mul_nonneg (abs_nonneg m) (abs_nonneg _))
       ((le_abs_self (K t)).trans (fractionalPrimeTest_bounds _).1))
@@ -240,16 +240,16 @@ theorem riemannHypothesis_or_middle_time_signed_test : RiemannHypothesis ∨
   simp only [univ_inter] at hend
   have hrowEnd := restrict_le measurableSet_Ioi hend.1 (fun t htj => by
     have hnot : t ∉ I := fun h => (not_le_of_gt htj) h.2
-    change |m*P t-I.indicator (fun z => m*S z) t|*K t ≤ |m*P t|*K t
+    change |m*P t-I.indicator (fun z => m*S z) t| *K t ≤ |m*P t| *K t
     rw [indicator_of_notMem hnot,sub_zero])
-  have hfrontCost : (∫ t in Iic U, f t) ≤ |m|*B₀*Real.exp (-T/12) := by
+  have hfrontCost : (∫ t in Iic U, f t) ≤ |m| *B₀*Real.exp (-T/12) := by
     apply hfront.2.trans
     rw [integral_const_mul,mul_assoc]
     apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
     simpa only [U,show (5*(T/6)-T)/2 = -T/12 by ring] using hE0.2
   have hmidE : (∫ t in I, E t) ≤ ∫ t in Ioi U, E t := setIntegral_mono_set hx.1
     (Eventually.of_forall fun _ => abs_nonneg _) (Eventually.of_forall fun _ h => h.1)
-  have hmidCost : (∫ t in I, f t) ≤ (|m|*D₀*Real.exp (1/40))*Real.exp (-T/240) := by
+  have hmidCost : (∫ t in I, f t) ≤ (|m| *D₀*Real.exp (1/40))*Real.exp (-T/240) := by
     apply hinter.2.trans
     rw [integral_const_mul,show (-T/240:ℝ) = -(T/240) by ring]
     apply (mul_le_mul_of_nonneg_left (hmidE.trans hx.2) (abs_nonneg _)).trans_eq

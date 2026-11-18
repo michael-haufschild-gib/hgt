@@ -14,11 +14,11 @@ noncomputable section
 open MeasureTheory Filter Set Topology ArithmeticFunction
 open scoped Classical
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
-open _root_.RHTower
+open ArithmeticHodgeTheoryOfDegenerations _root_.RHTower
 
 private theorem centeredAbelPrefix_zero_base (j : ℕ) :
     centeredAbelPrefix 0 j = Chebyshev.psi j-j := by
-  have h := Sieve.psi_sub_eq_sum_Ioc (Nat.cast_nonneg (α := ℝ) j)
+  have h := _root_.RHTower.Sieve.psi_sub_eq_sum_Ioc (Nat.cast_nonneg (α := ℝ) j)
   simp only [Chebyshev.psi_zero,sub_zero,Nat.floor_zero,Nat.floor_natCast] at h
   rw [centeredAbelPrefix,Finset.sum_sub_distrib,← h,Finset.sum_const,Nat.card_Ioc,
     Nat.sub_zero,nsmul_eq_mul,mul_one]
@@ -84,8 +84,9 @@ theorem centered_reciprocal_prime_intervals {d : ℝ} (hd : 0 < d) (hd' : d < 30
       rw [Finset.sum_Ico_succ_top hL]
       linarith only [add_le_add ih (hcost L (hk.trans hL))]
   have hparts := centeredAbelPrefix_by_parts (fun j : ℕ => (j:ℝ)⁻¹) (Nat.zero_le k) hkL
-  simp only [div_eq_mul_inv] at *
+  simp only [div_eq_mul_inv]
   rw [hparts]
+  rw [div_eq_mul_inv C d] at hsum
   have hD := Real.rpow_le_rpow_of_nonpos (by exact_mod_cast (show 0 < k by omega) : (0:ℝ) < k)
     (show (k:ℝ) ≤ L by exact_mod_cast hkL) hd.le.neg
   have hA := abs_add_le ((L:ℝ)⁻¹*P L-(k:ℝ)⁻¹*P k)
@@ -114,6 +115,10 @@ private theorem criticalRelativeWidth_antitone {s t : ℝ} (hs : 1 ≤ s) (hst :
 /-- The integer lies beyond the complete critical window at time t. -/
 def pastCriticalEdge (n : ℕ) (t : ℝ) : Prop :=
   Real.exp t + Real.exp (t/2)*Real.sqrt t < n
+
+private theorem measurableSet_pastCriticalEdge (n : ℕ) : MeasurableSet {t | pastCriticalEdge n t} :=
+  measurableSet_lt (by fun_prop : Measurable fun t : ℝ => Real.exp t+Real.exp (t/2)*Real.sqrt t)
+    measurable_const
 
 private theorem pastCriticalEdge_at_shift {n : ℕ} (hn : 0 < n) (v : ℝ) :
     pastCriticalEdge n (v+Real.log n) ↔
@@ -211,7 +216,7 @@ private theorem lateComplement_time_translation {Φ : ℝ → ℝ}
   let G := fun n : ℕ => (S n).indicator (fun v : ℝ => g v*a n)
   have hS (n : ℕ) : MeasurableSet (S n) :=
     (measurableSet_lt measurable_const (measurable_id.add_const _)).inter
-      (measurableSet_lt (by dsimp only [pastCriticalEdge]; fun_prop) measurable_const)
+      ((measurableSet_pastCriticalEdge n).preimage (measurable_id.add_const _))
   have hgi (n : ℕ) : Integrable (G n) := (hp.mul_const (a n)).indicator (hS n)
   have hsum (v : ℝ) : (∑ n ∈ I, G n v) = g v*∑ n ∈ A v, a n := by
     rw [Finset.mul_sum,Finset.sum_filter]
@@ -382,7 +387,7 @@ theorem riemannHypothesis_or_late_critical_complement : RiemannHypothesis ∨
     rw [hv,show (-1/2:ℝ)*v = -v/2 by ring,mul_comm]
   obtain ⟨B,hB,h⟩ := criticalComplement_late_bound hs hp (by norm_num : (0:ℝ)<1/10) (by norm_num)
   let m := ∫ v, Φ v
-  refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hc,he,2*|m|*B*(2:ℝ)^(1/10:ℝ),by positivity,fun T M hT hM => ?_⟩
+  refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hc,he,2*|m| *B*(2:ℝ)^(1/10:ℝ),by positivity,fun T M hT hM => ?_⟩
   let R := 6*T
   have hR : 1 ≤ R := by dsimp only [R]; linarith only [hT]
   have hTR : T ≤ R := by dsimp only [R]; linarith only [hT]
@@ -399,7 +404,7 @@ theorem riemannHypothesis_or_late_critical_complement : RiemannHypothesis ∨
       2^(1/10:ℝ)*(Real.exp (T/2)*Real.exp (R*(-(1/10:ℝ)))) by ring,← Real.exp_add]
     congr 2; dsimp only [R]; ring
   have hL (L : ℕ) : |m*(∫ t in Ioc R M, finiteCriticalComplementRow Φ L t*fractionalPrimeTest (T-t))| ≤
-      2*|m|*B*(2:ℝ)^(1/10:ℝ)*Real.exp (-T/10) := by
+      2*|m| *B*(2:ℝ)^(1/10:ℝ)*Real.exp (-T/10) := by
     let f := fun t => finiteCriticalComplementRow Φ L t*fractionalPrimeTest (T-t)
     have hi := (lateComplement_time_translation hp hTR L).1
     have hsplit : (∫ t in Ioc R M, f t)+(∫ t in Ioi M, f t)=∫ t in Ioi R, f t := by

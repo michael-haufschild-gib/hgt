@@ -33,7 +33,6 @@ theorem unitHorizonPair_real_profile {n q b : ℕ} (hn : 0 < n) (hq : 0 < q)
   have e2 : (q:ℝ)*(j+1)/(n:ℝ)^2 = (j+1)*((q:ℝ)/(n:ℝ)^2) := by ring
   rw [e1,e2]
   field_simp
-  <;> ring
 
 /-- The seventh power of the step is uniform for real conductor rescaling. -/
 theorem quotientMeshProfile_seventh :
@@ -78,7 +77,7 @@ private theorem mesh_variation_bound {g : ℝ → ℝ} (hg : ContDiff ℝ 1 g) (
   have hmono : Monotone u := fun i j hij => mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hij) hh.le
   have hcell (j : ℕ) : |g (u j) - g (u (j+1))| ≤ ∫ x in u j..u (j+1), ‖deriv g x‖ := by
     rw [abs_sub_comm, ←intervalIntegral.integral_deriv_eq_sub
-      (fun x _ => (hg.differentiable le_rfl).differentiableAt (x := x)) (hcont.intervalIntegrable _ _)]
+      (fun x _ => (hg.differentiable one_ne_zero).differentiableAt (x := x)) (hcont.intervalIntegrable _ _)]
     exact intervalIntegral.norm_integral_le_integral_norm (hmono (Nat.le_succ j))
   apply (abs_sum_le_sum_abs _ _).trans
   calc _ ≤ ∑ j ∈ range b, (∫ x in u j..u (j+1), ‖deriv g x‖)*F := by
@@ -133,7 +132,7 @@ theorem real_conductor_mesh_sampling :
       dsimp [conductorDerivativeProfile]; field_simp <;> ring
     have hd' (j : ℕ) := ((hd ((j:ℝ)*q)).sub (hd (((j+1:ℕ):ℝ)*q))).mul_const (centeredPrimeWeight 1 j)
     have hsum := HasDerivAt.fun_sum (u := range b) fun j _ => hd' j
-    simpa only [weightedMesh,quotientMeshProfile,mul_sum,mul_sub,←mul_div_assoc,←mul_assoc] using hsum
+    simpa only [weightedMesh,quotientMeshProfile,Pi.sub_apply,mul_sum,mul_sub,←mul_div_assoc,←mul_assoc] using hsum
 
 /-- Replacing integer conductors by their integral costs one constant per
 unit interval, uniformly in both the product and the quotient cutoff. -/
@@ -175,7 +174,8 @@ theorem conductor_mesh_integral_error :
       intervalIntegral.integral_const,smul_eq_mul,Real.norm_eq_abs] at hh
     simpa only [Nat.cast_add,Nat.cast_one,add_sub_cancel_left,one_mul,abs_one,mul_one] using hh
   change |(∑ n ∈ Ico a d, F n) - ∫ x in (a:ℝ)..d, F x| ≤ _
-  rw [← intervalIntegral.sum_integral_adjacent_intervals_Ico had hint,←sum_sub_distrib]
+  rw [← intervalIntegral.sum_integral_adjacent_intervals_Ico (a := fun k : ℕ => (k:ℝ))
+    had (fun k hk => hint k (mem_Ico.mpr hk)),←sum_sub_distrib]
   apply (abs_sum_le_sum_abs _ _).trans
   calc _ ≤ ∑ _n ∈ Ico a d, C := sum_le_sum hcell
        _ = _ := by rw [sum_const,Nat.card_Ico,nsmul_eq_mul,mul_comm]
@@ -230,12 +230,15 @@ theorem rescaled_shell_integral_exchange (b Q H : ℕ) (L U c α β : ℝ)
     have hbase : IntervalIntegrable (fun t => B t*((vonMangoldt q-1)*q)) volume T Z :=
       (hb.mul continuousOn_const).intervalIntegrable_of_Icc hTZ
     have hm : MeasurableSet {t | keep q t} := by
-      dsimp [keep]
-      exact (measurableSet_lt measurable_const (by fun_prop)).inter
-        ((measurableSet_le (by fun_prop) measurable_const).inter
-          ((measurableSet_lt (by fun_prop) measurable_const).inter
-            (measurableSet_le measurable_const (by fun_prop))))
-    exact ((intervalIntegrable_iff_integrableOn_Ioc_of_le hTZ).mp hbase).indicator hm
+      have hx : Measurable (fun t : ℝ => t*Real.sqrt q) := measurable_id.mul_const _
+      have hlo : Measurable (fun t : ℝ => (t*Real.sqrt q)^α) := by fun_prop
+      have hhi : Measurable (fun t : ℝ => c*(t*Real.sqrt q)^β) := by fun_prop
+      exact (measurableSet_lt (g := fun t : ℝ => t*Real.sqrt q) (f := fun _ => L) measurable_const hx).inter
+        ((measurableSet_le hx (measurable_const (a := U))).inter
+          ((measurableSet_lt hlo (measurable_const (a := (q:ℝ)))).inter
+            (measurableSet_le (measurable_const (a := (q:ℝ))) hhi)))
+    simpa only [Set.indicator,Set.mem_setOf_eq,F] using
+      ((intervalIntegrable_iff_integrableOn_Ioc_of_le hTZ).mp hbase).indicator hm
   calc _ = ∑ q ∈ S, ∫ t in T..Z, F q t := by
             apply sum_congr rfl
             intro q hq
@@ -248,13 +251,12 @@ theorem rescaled_shell_integral_exchange (b Q H : ℕ) (L U c α β : ℝ)
             intro t ht
             rw [Set.uIcc_of_le hTZ] at ht
             have hq0 : (0:ℝ) < q := Nat.cast_pos.mpr ((Nat.zero_le Q).trans_lt (mem_Ioc.mp hq).1)
+            change Real.sqrt q*(if keep q t then _ else 0) = if keep q t then _ else 0
             by_cases hk : keep q t
-            · simp only [G,F,if_pos hk,show L < t*Real.sqrt q ∧ t*Real.sqrt q ≤ U ∧
-                (t*Real.sqrt q)^α < q ∧ (q:ℝ) ≤ c*(t*Real.sqrt q)^β from hk,if_true]
+            · rw [if_pos hk,if_pos hk]
               dsimp only [B]
               linear_combination (vonMangoldt q-1)*rescaled_mesh_density b hq0 (hT.trans_le ht.1)
-            · change Real.sqrt q*(if keep q t then _ else 0) = if keep q t then _ else 0
-              rw [if_neg hk,if_neg hk,mul_zero]
+            · rw [if_neg hk,if_neg hk,mul_zero]
        _ = ∫ t in T..Z, ∑ q ∈ S, F q t := (intervalIntegral.integral_finsetSum hint).symm
        _ = _ := by
             apply intervalIntegral.integral_congr
@@ -304,11 +306,17 @@ theorem rescaled_shell_integral_bound :
     exact fun t ht => pow_ne_zero _ (fun h => hzero (h ▸ ht))
   have h := intervalIntegral.norm_integral_le_of_norm_le hTZ (Filter.Eventually.of_forall hpnt) hint
   rw [Real.norm_eq_abs,intervalIntegral.integral_const_mul] at h
-  have hi := integral_zpow (a := T) (b := Z) (n := (-13:ℤ)) (Or.inr ⟨by norm_num,hzero⟩)
-  norm_num only [Int.reduceNeg,Int.reduceAdd,Int.cast_neg,Int.cast_ofNat,zpow_neg,zpow_natCast] at hi
+  have hi : (∫ x : ℝ in T..Z, (x^13)⁻¹) = ((Z^12)⁻¹-(T^12)⁻¹)/(-12) := by
+    calc _ = ∫ x : ℝ in T..Z, x^(-13:ℤ) := by
+             apply intervalIntegral.integral_congr
+             exact fun x _ => (zpow_negSucc x 12).symm
+         _ = _ := by
+             rw [integral_zpow (Or.inr ⟨by norm_num,hzero⟩)]
+             norm_num [zpow_negSucc]
   rw [hi] at h
   have hdrop := mul_nonneg hB (inv_nonneg.mpr (pow_nonneg (hT.trans_le hTZ).le 12))
   dsimp only [B] at h hdrop
+  simp only [div_eq_mul_inv] at h ⊢
   linarith only [h,hdrop]
 
 #print axioms conductor_mesh_integral_error

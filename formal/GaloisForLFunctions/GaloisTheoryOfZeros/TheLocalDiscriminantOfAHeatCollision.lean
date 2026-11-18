@@ -175,7 +175,7 @@ def heatIntersectionMass (B : Set (ℂ × ℂ)) : ℝ≥0∞ :=
 theorem heatIntersectionMass_union {A B : Set (ℂ × ℂ)} (h : Disjoint A B) :
     heatIntersectionMass (A ∪ B) = heatIntersectionMass A + heatIntersectionMass B := by
   classical
-  simp only [heatIntersectionMass, Set.indicator_union_of_disjoint h, Pi.add_apply, ENNReal.tsum_add]
+  simp only [heatIntersectionMass, Set.indicator_union_of_disjoint h, ENNReal.tsum_add]
 
 /-- Points on a cut shared by two closed windows are counted exactly once. -/
 theorem heatIntersectionMass_cut (A B : Set (ℂ × ℂ)) :
@@ -185,7 +185,7 @@ theorem heatIntersectionMass_cut (A B : Set (ℂ × ℂ)) :
   simp only [heatIntersectionMass, ← ENNReal.tsum_add]
   apply tsum_congr
   intro p
-  by_cases ha : p ∈ A <;> by_cases hb : p ∈ B <;> simp [ha, hb, two_mul]
+  by_cases ha : p ∈ A <;> by_cases hb : p ∈ B <;> simp [ha, hb]
 
 theorem heatIntersectionMass_eq_zero_iff (B : Set (ℂ × ℂ)) :
     heatIntersectionMass B = 0 ↔ Disjoint B multipleZeros := by
@@ -237,7 +237,6 @@ theorem forall_heatIntersectionMass_eq_zero_iff_rh {ι : Type*} (B : ι → Set 
     rw [cover] at hmem
     obtain ⟨t, ht, he⟩ := hmem
     exact h t ht ⟨p, hc, he⟩
-
 
 
 /-- Positive real times between `1/n` and `n`, with places of norm at most
@@ -332,7 +331,7 @@ private theorem clusterResultant_unit (τ a b : ℂ) (hab : a ≠ b) :
     (fun s hs => (hr hs).1.differentiableAt.differentiableWithinAt) (fun s hs => (hr hs).2)
   have he0 : V 0 = clusterResultant τ a b 0 := by simpa using he 0 (mem_ball_self hR)
   exact ⟨V, hV.analyticAt (isOpen_ball.mem_nhds (mem_ball_self (sq_pos_of_pos hR))),
-    he0.symm ▸ h0, (ball_mem_nhds (0 : ℂ) hR).mono fun _ hs => he _ hs⟩
+    he0.symm ▸ h0, Filter.mem_of_superset (ball_mem_nhds (0 : ℂ) hR) (fun _ hs => he _ hs)⟩
 
 /-- Signed discriminant of all sheets through a finite set of marked places.
 The second product retains differences between sheets in distinct clusters. -/
@@ -397,7 +396,6 @@ theorem heatWindowDiscriminant_winding (τ : ℂ) (S : Finset ℂ) :
       (h := U) (m := n) (ρ := 0) ha hb hc hd hsub (fun w hw => (hr hw).1)
         (fun w hw => (hr hw).2)
 
-
 /-- A global equation in the time plane for the projection of a finite
 marked collision divisor. Equal times at different places retain both factors. -/
 def projectedHeatDiscriminant (C : Finset (ℂ × ℂ)) (t : ℂ) : ℂ :=
@@ -431,7 +429,7 @@ theorem projectedHeatDiscriminant_local (C : Finset (ℂ × ℂ)) (τ : ℂ) :
   have hl : L 0 ≠ 0 := by
     apply Finset.prod_ne_zero_iff.mpr
     intro p hp
-    exact pow_ne_zero _ (by simpa using (sub_ne_zero.mpr (Finset.mem_filter.mp hp).2.symm))
+    exact pow_ne_zero _ (by simpa using (sub_ne_zero.mpr (Ne.symm (Finset.mem_filter.mp hp).2)))
   have hn : n = ∑ p ∈ A, heatIntersectionMultiplicity p := by
     unfold n S
     rw [Finset.sum_image]
@@ -456,7 +454,8 @@ theorem projectedHeatDiscriminant_local (C : Finset (ℂ × ℂ)) (τ : ℂ) :
       (by simpa using hV.continuousAt.eventually_ne hv)
   filter_upwards [he,hv'] with s hs hvs
   rw [hfact, hs]
-  field_simp <;> ring
+  field_simp
+  ring
 
 /-- Boundary winding of the compact marked divisor. Any holomorphic
 nonvanishing change of its equation gives the same winding. -/
@@ -491,10 +490,14 @@ theorem twoFold_local_chart (a b : ℂ) (hab : a ≠ b) :
   have h := ((hasDerivAt_id a).sub_const a).div ((hasDerivAt_id a).sub_const b)
     (sub_ne_zero.mpr hab)
   refine ⟨?_, ?_⟩
-  · convert h using 1 <;> simp [sq, sub_ne_zero.mpr hab, div_eq_mul_inv, mul_assoc]
+  · change HasDerivAt (fun t : ℂ => (t-a)/(t-b))
+        ((1 * (a-b) - (a-a) * 1) / (a-b)^2) a at h
+    have he : (1 * (a-b) - (a-a) * 1) / (a-b)^2 = (a-b)⁻¹ := by
+      field_simp [sub_ne_zero.mpr hab]
+      ring
+    rwa [he] at h
   · intro t y ht
     field_simp [sub_ne_zero.mpr ht]
-
 
 /-- Both turns on a regular fibre negate `y`. They cancel under composition
 and interchange its two distinct points. -/
@@ -534,6 +537,18 @@ theorem twoFold_winding_two {a b l u : ℂ} (hab : a ≠ b)
     (fun _ _ => by norm_num)
   change rectIntegral (logDeriv (fun z => (z-a)*(z-b)*4)) l u = _
   simpa [hab] using hr
+
+#print axioms IsCollision.exists_discriminant_winding
+#print axioms heatIntersectionMass_cut
+#print axioms realHeatWindow_vanishing_iff_rh
+#print axioms heatWindowDiscriminant_winding
+#print axioms projectedHeatDiscriminant_cut
+#print axioms projectedHeatDiscriminant_local
+#print axioms compact_heatDiscriminant_winding
+#print axioms twoFold_local_chart
+#print axioms twoFold_turns_on_fiber
+#print axioms twoFold_winding_one
+#print axioms twoFold_winding_two
 
 end
 

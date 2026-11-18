@@ -107,7 +107,7 @@ private theorem divider_spline_regular : HasCompactSupport dyadicSpline ∧ Cont
 /-- Density quadrature uniform in the dividing product, including the final mesh cell. -/
 private theorem divider_density : ∃ B : ℝ, 0 ≤ B ∧ ∀ {n K : ℕ}, 0 < n → K ≤ splineHorizon n →
     |(∑ k ∈ Icc 1 K, sampledSpline n k) - n*(∫ t in (0:ℝ)..(K:ℝ)/(n:ℝ)^2, dyadicSpline t)| ≤ B/n := by
-  obtain ⟨D,hD⟩ := ContDiff.lipschitzWith_of_hasCompactSupport divider_spline_regular.1 divider_spline_regular.2 le_rfl
+  obtain ⟨D,hD⟩ := ContDiff.lipschitzWith_of_hasCompactSupport divider_spline_regular.1 divider_spline_regular.2 one_ne_zero
   obtain ⟨A,_,hwin⟩ := successorSquare_window_bound
   refine ⟨(D:ℝ)*A^2,by positivity,fun {n K} hn hK => ?_⟩
   let h := ((n:ℝ)^2)⁻¹
@@ -127,7 +127,8 @@ private theorem divider_density : ∃ B : ℝ, 0 ≤ B ∧ ∀ {n K : ℕ}, 0 < 
     _ ≤ _ := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hmesh D.coe_nonneg) hh.le
   have he : (∑ k ∈ Icc 1 K, sampledSpline n k) = F/n := by
     rw [show Icc 1 K = Ico 1 (K+1) by ext k; simp, sum_Ico_eq_sum_range]
-    simp [F,sampledSpline,div_eq_mul_inv,h,add_comm (1:ℝ),sum_mul]
+    simp only [F,Nat.add_sub_cancel,sampledSpline,Nat.cast_add,Nat.cast_one,
+      div_eq_mul_inv,h,add_comm (1:ℝ),sum_mul]
   rw [he,div_eq_mul_inv (K:ℝ)]
   change |F/n-n*I| ≤ _
   have hsplit : F/n-n*I = n*(h*F-I) := by dsimp only [h]; field_simp; ring

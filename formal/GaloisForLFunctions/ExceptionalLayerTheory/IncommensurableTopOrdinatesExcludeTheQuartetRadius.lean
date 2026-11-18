@@ -231,7 +231,7 @@ theorem thetaRadial_unbounded_of_incommensurable_top_pair
   have hb0 : (b:ℝ) ≠ 0 := fun hz => hq0 (by rw [hb,hz,zero_mul])
   apply hind (a/b)
   rw [Rat.cast_div, ha, hb]
-  field_simp <;> ring
+  field_simp
 
 #print axioms thetaRadial_unbounded_of_incommensurable_top_pair
 #print axioms extremal_radial_exclusion_or_commensurable_top

@@ -187,6 +187,35 @@ private theorem bdiff_iter_intervalIntegral (r : ℕ) (H : ℕ → ℝ → ℝ)
       ((hci r j).mono (by rw [Set.uIcc_of_le zero_le_one])).intervalIntegrable
       ((hci r (j + 1)).mono (by rw [Set.uIcc_of_le zero_le_one])).intervalIntegrable]
 
+private theorem continuousOn_fwdDiff_curvature {n q : ℕ} (hn : 0 < (n : ℝ)) (r j : ℕ) :
+    ContinuousOn (fun s : ℝ =>
+      (fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[r] conductorCurvatureProfile
+        ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) (Set.Icc 0 1) := by
+  have heq_r : (fun s : ℝ => (fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[r]
+      conductorCurvatureProfile ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) =
+      fun s : ℝ => (-1 : ℝ) ^ r * bdiff^[r] (fun i : ℕ =>
+        conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) j := by
+    funext s
+    rw [bdiff_iter_sample_eq, ← mul_assoc, ← mul_pow, neg_one_mul, neg_neg, one_pow, one_mul]
+  rw [heq_r]
+  refine continuousOn_const.mul ?_
+  clear heq_r
+  induction r generalizing j with
+  | zero =>
+    exact contDiff_four_conductorCurvatureProfile.continuous.comp_continuousOn
+      (continuousOn_const.mul (continuousOn_const.div
+        ((continuousOn_const.add continuousOn_id).pow 2)
+        fun s hs => (sq_pos_of_pos (by linarith [hs.1])).ne'))
+  | succ r ihr =>
+    have heq' : (fun s : ℝ => bdiff^[r + 1] (fun i : ℕ =>
+        conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) j) =
+        fun s => bdiff^[r] (fun i =>
+          conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) j -
+        bdiff^[r] (fun i =>
+          conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) (j + 1) := by
+      funext s; rw [Function.iterate_succ_apply']; rfl
+    rw [heq']; exact (ihr j).sub (ihr (j + 1))
+
 /-- Summing `n² · unitHorizonPair n q` across a conductor interval `Ico a d ⊆ (N, 2N]`
 gains an extra derivative in the leading integral term, bounding the aggregate by
 `O(q⁸ / N¹⁴ + q⁷ / N¹³ + q⁴ / N⁸)`. -/
@@ -351,8 +380,8 @@ theorem conductor_interval_horizonPair_bound :
         bdiff_iter_sub, bdiff_iter_const_mul, bdiff_iter_const_mul,
         bdiff_iter_sample_eq, bdiff_iter_sample_eq]
       refine (abs_sub _ _).trans (add_le_add ?_ ?_) <;>
-      · rw [abs_mul, abs_mul, abs_pow, abs_neg, abs_one, one_pow, one_mul,
-          abs_of_nonneg (sq_nonneg _)]
+      · rw [abs_mul, abs_of_nonneg (sq_nonneg _), abs_mul, abs_pow, abs_neg, abs_one, one_pow,
+          one_mul]
     have ha_h : 0 < (q : ℝ) / (a : ℝ) ^ 2 ∧ (q : ℝ) / (a : ℝ) ^ 2 ≤ 1 := by
       refine ⟨div_pos hq' (sq_pos_of_pos ha'), ?_⟩
       have hlt8 := hlo_ratio (j := 1) (by decide) hNa_le
@@ -422,7 +451,7 @@ theorem conductor_interval_horizonPair_bound :
     have hB_form : B_seq = fun j : ℕ =>
         ((d : ℝ) / 2) * dyadicSpline ((j : ℝ) * ((q : ℝ) / (d : ℝ) ^ 2)) -
           ((a : ℝ) / 2) * dyadicSpline ((j : ℝ) * ((q : ℝ) / (a : ℝ) ^ 2)) := by
-      funext j; dsimp only [B_seq]; ring_nf
+      funext j; dsimp only [B_seq]; rw [mul_div_assoc, mul_div_assoc]; ring
     have hbdiff8 : ∀ j, |bdiff^[7] (fun i => B_seq i - B_seq (i + 1)) j| ≤
         ((d : ℝ) / 2) * |(fwdDiff ((q : ℝ) / (d : ℝ) ^ 2))^[8] dyadicSpline
             ((j : ℝ) * ((q : ℝ) / (d : ℝ) ^ 2))| +
@@ -535,35 +564,7 @@ theorem conductor_interval_horizonPair_bound :
           |(fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[5] conductorCurvatureProfile
             ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))|) (Set.Icc 0 1) := by
         have hn_pos : (0 : ℝ) < n := Nat.cast_pos.mpr (ha_pos.trans_le (mem_Ico.mp hn).1)
-        have hstep_c : ∀ r : ℕ, ContinuousOn (fun s : ℝ =>
-            (fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[r] conductorCurvatureProfile
-              ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) (Set.Icc 0 1) := by
-          intro r
-          have heq_r : (fun s : ℝ => (fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[r]
-              conductorCurvatureProfile ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) =
-              fun s : ℝ => (-1 : ℝ) ^ r * bdiff^[r] (fun i : ℕ =>
-                conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) j := by
-            funext s
-            rw [bdiff_iter_sample_eq, ← mul_assoc, ← mul_pow, neg_one_mul, neg_neg, one_pow, one_mul]
-          rw [heq_r]
-          refine continuousOn_const.mul ?_
-          clear heq_r
-          induction r generalizing j with
-          | zero =>
-            exact contDiff_four_conductorCurvatureProfile.continuous.comp_continuousOn
-              (continuousOn_const.mul (continuousOn_const.div
-                ((continuousOn_const.add continuousOn_id).pow 2)
-                fun s hs => (sq_pos_of_pos (by linarith [hs.1])).ne'))
-          | succ r ihr =>
-            have heq' : (fun s : ℝ => bdiff^[r + 1] (fun i : ℕ =>
-                conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) j) =
-                fun s => bdiff^[r] (fun i =>
-                  conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) j -
-                bdiff^[r] (fun i =>
-                  conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) (j + 1) := by
-              funext s; rw [Function.iterate_succ_apply']; rfl
-            rw [heq']; exact (ihr j).sub (ihr (j + 1))
-        exact continuousOn_const.mul (hstep_c 5).abs
+        exact continuousOn_const.mul (continuousOn_fwdDiff_curvature hn_pos 5 j).abs
       have hcont_lhs : ContinuousOn (fun s => bdiff^[5] (fun i => H_curv i n s) j) (Set.Icc 0 1) := by
         suffices ∀ r k, ContinuousOn (fun s => bdiff^[r] (fun i => H_curv i n s) k) (Set.Icc 0 1) from
           this 5 j
@@ -622,36 +623,7 @@ theorem conductor_interval_horizonPair_bound :
               intro j _
               refine ContinuousOn.intervalIntegrable ?_
               rw [Set.uIcc_of_le zero_le_one]
-              have heq_5 : (fun s : ℝ => (fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[5]
-                  conductorCurvatureProfile ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) =
-                  fun s : ℝ => (-1 : ℝ) ^ 5 * bdiff^[5] (fun i : ℕ =>
-                    conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) j := by
-                funext s
-                rw [bdiff_iter_sample_eq, ← mul_assoc, ← mul_pow, neg_one_mul, neg_neg, one_pow, one_mul]
-              refine continuousOn_const.mul (ContinuousOn.abs ?_)
-              rw [heq_5]
-              refine continuousOn_const.mul ?_
-              suffices ∀ r k, ContinuousOn (fun s : ℝ => bdiff^[r] (fun i : ℕ =>
-                  conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) k) (Set.Icc 0 1) from
-                this 5 j
-              intro r
-              induction r with
-              | zero =>
-                intro k
-                exact contDiff_four_conductorCurvatureProfile.continuous.comp_continuousOn
-                  (continuousOn_const.mul (continuousOn_const.div
-                    ((continuousOn_const.add continuousOn_id).pow 2)
-                    fun s hs => (sq_pos_of_pos (by linarith [hs.1])).ne'))
-              | succ r ihr =>
-                intro k
-                have heq' : (fun s : ℝ => bdiff^[r + 1] (fun i : ℕ =>
-                    conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) k) =
-                    fun s => bdiff^[r] (fun i =>
-                      conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) k -
-                    bdiff^[r] (fun i =>
-                      conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) (k + 1) := by
-                  funext s; rw [Function.iterate_succ_apply']; rfl
-                rw [heq']; exact (ihr k).sub (ihr (k + 1))
+              exact continuousOn_const.mul (continuousOn_fwdDiff_curvature hn_pos 5 j).abs
             exact (intervalIntegral.integral_finsetSum hint_j).symm
         _ ≤ ∑ _n ∈ Ico a d, (1 / (8 * (N : ℝ))) * (K5 * ((q : ℝ) / (N : ℝ) ^ 2) ^ 4) := by
             refine sum_le_sum fun n hn => ?_
@@ -712,7 +684,8 @@ theorem conductor_interval_horizonPair_bound :
     rw [mul_div_assoc]; exact mul_le_mul_of_nonneg_right hK2 (by positivity)
   have ht3 : C3 * K5 * (q : ℝ) ^ 4 / (N : ℝ) ^ 8 ≤ K * ((q : ℝ) ^ 4 / (N : ℝ) ^ 8) := by
     rw [mul_div_assoc]; exact mul_le_mul_of_nonneg_right hK3 (by positivity)
-  linarith [hI_bound, hB_bound, hR_bound, ht1, ht2, ht3]
+  exact (add_le_add (add_le_add (hI_bound.trans ht1) (hB_bound.trans ht2))
+    (hR_bound.trans ht3)).trans_eq (by ring)
 
 /-- General two-variable conductor-smoothed shell bound across `N < n ≤ M ≤ 2N` for any
 monotone product cutoffs `u(n) ≤ w(n)` in the detached subquadratic range. -/

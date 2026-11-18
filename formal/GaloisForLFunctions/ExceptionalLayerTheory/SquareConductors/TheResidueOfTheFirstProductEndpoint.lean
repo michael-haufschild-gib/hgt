@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ThePrimeMassAtAQuadraticProductDivider
 import GaloisForLFunctions.CountingHolography.Sections.TheMellinKernelOfSquareConductorPrices
 import GaloisForLFunctions.RHTower.PrimePolarDirichletBackbone
+import GaloisForLFunctions.BiScaleUncertainty.InteriorOfBoxSplines
 
 /-!
 # The shifted zero residue on the first product endpoint
@@ -75,8 +76,7 @@ theorem LSeries_firstEndpointPrice {s : ℂ} (hs : 4 < s.re) :
   have he : firstEndpointPrice = squareConductorPrice - endpointError := by
     ext n
     simp only [endpointError,Pi.sub_apply,sub_sub_cancel]
-  rw [he,LSeries_sub hP hE,LSeries_squareConductorPrice hs]
-  rfl
+  rw [he,LSeries_sub hP hE,LSeries_squareConductorPrice hs,firstEndpointContinuation,squareConductorContinuation]
 
 private theorem analytic_endpoint_error {s : ℂ} (hs : 3 < s.re) : AnalyticAt ℂ (LSeries endpointError) s :=
   LSeries_analyticOnNhd _ s (endpoint_error_abscissa.trans_lt (EReal.coe_lt_coe_iff.mpr hs))
@@ -112,24 +112,64 @@ theorem firstEndpoint_regular_eq {s : ℂ} (hs : s/2-1 ≠ 1) (hu : zetaResidueU
 /-- Leading coefficient of the lower endpoint prices divided at the exact square. -/
 def squareDividerMass : ℝ := ∫ t in (0:ℝ)..1, dyadicSpline t
 
-/-- The cumulative density at the square is strictly positive. Its logarithmic
-integral includes the positive autocorrelation at displacement zero. -/
-theorem squareDividerMass_pos : 0 < squareDividerMass := by
-  have he : squareDividerMass = 2*squarePrimeCumulativeWeight 1 := by
-    rw [squareDividerMass,squarePrimeCumulativeWeight,←intervalIntegral.integral_const_mul]
+/-- Exactly the dividers in the interior of the quadratic spline support
+produce a nonzero signed density. The deciding interval is the overlap of
+the logarithmic divider window with the open support of the autocorrelation. -/
+theorem quadraticDividerMass_pos_iff {v : ℝ} (hv : 0 < v) :
+    0 < (∫ t in (0:ℝ)..v, dyadicSpline t) ↔ Real.exp (-8) < v ∧ v < 4*Real.exp 8 := by
+  let u := Real.log v
+  let d := Real.log 4
+  let g (x : ℝ) := GaloisForLFunctions.ArithmeticWeightTheory.splineAutoCorr x * Real.exp (x/2)
+  have hd : 0 < d := Real.log_pos (by norm_num)
+  have he : (∫ t in (0:ℝ)..v, dyadicSpline t) = 2*squarePrimeCumulativeWeight v := by
+    rw [squarePrimeCumulativeWeight,←intervalIntegral.integral_const_mul]
     apply intervalIntegral.integral_congr_uIoo
     intro x hx
-    have hx0 := (show x ∈ Set.Ioo (0:ℝ) 1 by simpa only [Set.uIoo_of_le zero_le_one] using hx).1
-    exact if_pos hx0
-  rw [he,squarePrimeCumulativeWeight_eq zero_lt_one,Real.log_one,zero_sub]
-  apply mul_pos two_pos
-  apply mul_pos two_pos
-  have hlog := Real.log_pos (by norm_num : (1:ℝ)<4)
-  apply intervalIntegral.integral_pos (neg_lt_zero.mpr hlog)
-  · exact (GaloisForLFunctions.ArithmeticWeightTheory.continuous_splineAutoCorr.mul (by fun_prop)).continuousOn
-  · exact fun x _ => mul_nonneg (GaloisForLFunctions.ArithmeticWeightTheory.splineAutoCorr_nonneg x) (Real.exp_pos _).le
-  · exact ⟨0,⟨(neg_lt_zero.mpr hlog).le,le_rfl⟩,
-      mul_pos GaloisForLFunctions.ArithmeticWeightTheory.splineAutoCorr_zero_pos (Real.exp_pos _)⟩
+    exact if_pos (show x ∈ Set.Ioo (0:ℝ) v by simpa only [Set.uIoo_of_le hv.le] using hx).1
+  have hu : v < 4*Real.exp 8 ↔ u-d < 8 := by
+    have h4 : 4*Real.exp 8 = Real.exp (8+d) := by rw [Real.exp_add,Real.exp_log (by norm_num : (0:ℝ)<4)]; ring
+    rw [h4,←Real.log_lt_iff_lt_exp hv]
+    dsimp only [u]; constructor <;> intro h <;> linarith only [h]
+  rw [he,squarePrimeCumulativeWeight_eq hv,←Real.lt_log_iff_exp_lt hv,hu]
+  change 0 < 2*(2*(∫ x in u-d..u, g x)) ↔ -8 < u ∧ u-d < 8
+  have hinterval := sub_lt_self u hd
+  constructor
+  · intro hp
+    by_contra hnot
+    have heq : (∫ x in u-d..u, g x)=0 := calc
+      _ = ∫ _x in u-d..u, (0:ℝ) := by
+        apply intervalIntegral.integral_congr_uIoo
+        intro x hx
+        rw [Set.uIoo_of_le hinterval.le] at hx
+        have hfar : 8 < |x| := by
+          by_cases hxlo : -8 < u
+          · have hleft : 8 ≤ u-d := le_of_not_gt fun h => hnot ⟨hxlo,h⟩
+            exact ((hleft.trans_lt hx.1).trans_le (le_abs_self _))
+          · linarith only [le_of_not_gt hxlo,hx.2,neg_abs_le x]
+        simp only [g,splineAutoCorr_zero_outside hfar,zero_mul]
+      _ = _ := by simp
+    rw [heq,mul_zero,mul_zero] at hp
+    exact lt_irrefl _ hp
+  · rintro ⟨hlo,hhi⟩
+    apply mul_pos two_pos
+    apply mul_pos two_pos
+    have hab : max (u-d) (-8) < min u 8 := max_lt (lt_min hinterval hhi) (lt_min hlo (by norm_num))
+    obtain ⟨x,hax,hxb⟩ := exists_between hab
+    have hxmin := lt_min_iff.mp hxb
+    have hxmax := max_lt_iff.mp hax
+    apply intervalIntegral.integral_pos hinterval
+    · exact (GaloisForLFunctions.ArithmeticWeightTheory.continuous_splineAutoCorr.mul (by fun_prop)).continuousOn
+    · exact fun x _ => mul_nonneg (GaloisForLFunctions.ArithmeticWeightTheory.splineAutoCorr_nonneg x) (Real.exp_pos _).le
+    · refine ⟨x,⟨hxmax.1.le,hxmin.1.le⟩,mul_pos ?_ (Real.exp_pos _)⟩
+      rw [splineAutoCorr_eq_eight_boxes]
+      exact GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge.upow_unit_pos 7 (by
+        norm_num; exact abs_lt.mpr ⟨hxmax.2,hxmin.2⟩)
+
+theorem squareDividerMass_pos : 0 < squareDividerMass := by
+  apply (quadraticDividerMass_pos_iff zero_lt_one).mpr
+  refine ⟨Real.exp_lt_one_iff.mpr (by norm_num),?_⟩
+  have he := Real.one_le_exp (show (0:ℝ) ≤ 8 by norm_num)
+  linarith only [he]
 
 /-- At the exact square the two ordinary-prime readings have opposite nonzero
 cubic coefficients per conductor, uniformly beyond the initial conductor. -/
@@ -153,6 +193,41 @@ theorem squareDivider_opposite_prices :
   rw [add_mul]
   simpa only [Nat.cast_pow,div_self (sq_pos_of_pos hn').ne',squareDividerMass,
     show (1+16/9:ℝ)=25/9 by norm_num] using h
+
+/-- On every sufficiently late terminal fragment, the price below the square
+is positive and the price above is negative, each of order the sum of cubes. -/
+theorem squareDivider_opposite_fragment_prices :
+    ∃ c : ℝ, 0 < c ∧ ∃ n₀ : ℕ, ∀ L M : ℕ, n₀ ≤ L →
+      c*(∑ n ∈ Finset.Ioc L M, (n:ℝ)^3) ≤
+        (∑ n ∈ Finset.Ioc L M, lowerPrimeEndpointPrice n (n^2)) ∧
+      (∑ n ∈ Finset.Ioc L M, (n:ℝ)^2*retainedPrimeEndpoint (n^2) n) ≤
+        -c*(∑ n ∈ Finset.Ioc L M, (n:ℝ)^3) := by
+  obtain ⟨C,hC,h⟩ := squareDivider_opposite_prices
+  let c := squareDividerMass/2
+  have hc : 0 < c := half_pos squareDividerMass_pos
+  have hg : Tendsto (fun n : ℕ => (n:ℝ)^(2/9:ℝ)) atTop atTop :=
+    (tendsto_rpow_atTop (by norm_num : (0:ℝ)<2/9)).comp tendsto_natCast_atTop_atTop
+  have hlate := (hg.eventually_ge_atTop (C/c)).and (eventually_ge_atTop (2:ℕ))
+  obtain ⟨n₀,h₀⟩ := eventually_atTop.mp hlate
+  refine ⟨c,hc,n₀,fun L M hL => ?_⟩
+  have rows (n : ℕ) (hn : n ∈ Finset.Ioc L M) :
+      c*(n:ℝ)^3 ≤ lowerPrimeEndpointPrice n (n^2) ∧
+      (n:ℝ)^2*retainedPrimeEndpoint (n^2) n ≤ -c*(n:ℝ)^3 := by
+    obtain ⟨hg',hn₂⟩ := h₀ n (hL.trans (Finset.mem_Ioc.mp hn).1.le)
+    have hn' : (0:ℝ) < n := Nat.cast_pos.mpr (by omega)
+    have he := mul_le_mul_of_nonneg_left ((div_le_iff₀ hc).mp hg')
+      (Real.rpow_nonneg hn'.le (25/9:ℝ))
+    have hr : (n:ℝ)^(25/9:ℝ)*(n:ℝ)^(2/9:ℝ)=(n:ℝ)^3 := by
+      rw [←Real.rpow_add hn',show (25/9:ℝ)+2/9=3 by norm_num,Real.rpow_natCast _ 3]
+    change (n:ℝ)^(25/9:ℝ)*C ≤ (n:ℝ)^(25/9:ℝ)*((n:ℝ)^(2/9:ℝ)*c) at he
+    rw [←mul_assoc,hr] at he
+    have hlow := (abs_le.mp ((le_add_of_nonneg_right (abs_nonneg _)).trans (h hn₂))).1
+    have hup := (abs_le.mp ((le_add_of_nonneg_left (abs_nonneg _)).trans (h hn₂))).2
+    dsimp only [c] at he ⊢
+    constructor <;> linarith only [he,hlow,hup]
+  rw [Finset.mul_sum,Finset.mul_sum]
+  exact ⟨Finset.sum_le_sum fun n hn => (rows n hn).1,
+    Finset.sum_le_sum fun n hn => (rows n hn).2⟩
 
 /-- The positive lower density and the negative upper density occur in the
 two separate price series. Subtracting their cubic coefficients leaves
@@ -181,7 +256,9 @@ theorem squareDivider_opposite_real_poles :
       rw [←EReal.coe_add]; norm_num)
     refine ⟨LSeries e,fun z hz => LSeries_analyticOnNhd _ z (he.trans_lt (EReal.coe_lt_coe_iff.mpr hz)),?_⟩
     intro s hs
-    have hz : 1 < (s-(3:ℂ)).re := by rw [Complex.sub_re]; norm_num; linarith only [hs]
+    have hz : 1 < (s-(3:ℂ)).re := by
+      change 1 < s.re-3
+      linarith only [hs]
     have hsE := LSeriesSummable_of_abscissaOfAbsConv_lt_re (he.trans_lt (EReal.coe_lt_coe_iff.mpr
       (lt_trans (by norm_num : (34/9:ℝ)<4) hs)))
     let P (n : ℕ) := (n:ℂ)^(3:ℂ)
@@ -204,7 +281,9 @@ theorem squareDivider_opposite_real_poles :
 #print axioms LSeries_firstEndpointPrice
 #print axioms firstEndpointContinuation_zero_residue
 #print axioms firstEndpoint_regular_real
+#print axioms quadraticDividerMass_pos_iff
 #print axioms squareDividerMass_pos
 #print axioms squareDivider_opposite_prices
+#print axioms squareDivider_opposite_fragment_prices
 #print axioms squareDivider_opposite_real_poles
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

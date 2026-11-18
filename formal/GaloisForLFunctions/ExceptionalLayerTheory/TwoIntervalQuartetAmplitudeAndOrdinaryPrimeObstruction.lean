@@ -219,7 +219,7 @@ theorem not_isLogSqrtSqUnbounded_of_singleQuartet {ρ : ℂ} (hq : HasSingleOffL
     have h3 : (16 : ℝ) ≤ Real.exp 3 := by
       have := Real.exp_one_gt_d9
       calc (16 : ℝ) ≤ 2.7182818283 ^ 3 := by norm_num
-        _ ≤ Real.exp 1 ^ 3 := by gcongr; linarith
+        _ ≤ Real.exp 1 ^ 3 := by gcongr
         _ = Real.exp 3 := by rw [← Real.exp_nat_mul]; norm_num
     exact h3.trans (Real.exp_le_exp.mpr ht)
   have hb := hbound t ht0 ht16
@@ -314,12 +314,11 @@ theorem cofinal_adjacentCount_commonMiddle_radius_collapse (B : ℕ) :
     dsimp [D_u]
     unfold adjacentCountAt psiLogError
     set N : ℕ := ⌊Real.exp s⌋₊
-    have hoct : ∀ v M : ℕ, RHTower.Sieve.cofactorCountError v (2 * v) M =
+    have hoct : ∀ v M : ℕ, cofactorCountError v (2 * v) M =
         ∑ d ∈ Icc 1 M, firstOctaveCofactor v d * (Chebyshev.psi (M / d : ℕ) - (M / d : ℕ)) := by
       intro v M
-      rw [RHTower.Sieve.cofactorCountError, RHTower.Sieve.cofactorCountCoeff, mul_comm,
-        RHTower.sum_Icc_mul_apply]
-      simp only [RHTower.Sieve.sum_vonMangoldt_sub_zeta, firstOctaveCofactor]
+      rw [cofactorCountError, cofactorCountCoeff, mul_comm, RHTower.sum_Icc_mul_apply]
+      simp only [sum_vonMangoldt_sub_zeta, firstOctaveCofactor]
     rw [hoct (u + 1), hoct u]
     have hconv := adjacent_octave_convolution_eq_neg_apply hp' h4
       (fun k : ℕ => Chebyshev.psi (k : ℝ) - (k : ℝ)) (by simp [Chebyshev.psi]) N
@@ -443,7 +442,7 @@ theorem exists_coprimeZeroOneSet_realizing_log_and_unweighted_quadrature {β γ 
       have hlt := hT_lg (Real.log x) ht
       have hmul := mul_lt_mul_of_pos_right hlt (Real.exp_pos (β * Real.log x))
       rw [mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, mul_one, one_mul,
-        ← Real.rpow_def_of_pos hx0, mul_comm β (Real.log x), Real.rpow_def_of_pos hx0] at hmul
+        mul_comm β (Real.log x)] at hmul
       have hpow_pos : 0 < x ^ β := Real.rpow_pos_of_pos hx0 β
       have h1 : 1 + Real.log x ≤ 1 * x ^ β := by
         rw [Real.rpow_def_of_pos hx0]; linarith
@@ -513,7 +512,7 @@ theorem exists_coprimeZeroOneSet_realizing_log_and_unweighted_quadrature {β γ 
       have h2 : (7 : ℝ) ≤ Real.exp 2 := by
         have := Real.exp_one_gt_d9
         calc (7 : ℝ) ≤ 2.7182818283 ^ 2 := by norm_num
-          _ ≤ Real.exp 1 ^ 2 := by gcongr; linarith
+          _ ≤ Real.exp 1 ^ 2 := by gcongr
           _ = Real.exp 2 := by rw [← Real.exp_nat_mul]; norm_num
       exact h2.trans (Real.exp_le_exp.mpr hs2)
     set l : ℕ := ⌊Real.exp s⌋₊
@@ -538,9 +537,14 @@ theorem exists_coprimeZeroOneSet_realizing_log_and_unweighted_quadrature {β γ 
       exact ⟨by linarith, by linarith⟩
     have ht_pos : 0 < t := by linarith
     have hexp_ge_t : t ≤ Real.exp (β * t) := by
-      have h1 : 1 ≤ β * t := by nlinarith [hβ]
-      have h2 := Real.add_one_le_exp (β * t)
-      nlinarith [hβ]
+      -- `exp (βt) ≥ (1 + βt/2)² ≥ (1 + t/4)² ≥ t`
+      have hbt : t / 4 ≤ β * t / 2 := by nlinarith [hβ]
+      have hE : 1 + t / 4 ≤ Real.exp (β * t / 2) := by
+        linarith [Real.add_one_le_exp (β * t / 2)]
+      have hsq : Real.exp (β * t) = Real.exp (β * t / 2) ^ 2 := by
+        rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
+      rw [hsq]
+      nlinarith [mul_le_mul hE hE (by linarith) (Real.exp_pos (β * t / 2)).le, sq_nonneg (1 - t / 4)]
     have h2_le : (2 : ℝ) ≤ 2 * (1 + h) * Real.exp (β * t) / t := by
       rw [le_div_iff₀ ht_pos]
       have : 2 * t ≤ 2 * (1 + h) * Real.exp (β * t) := by
@@ -1339,7 +1343,7 @@ private theorem rh_prime_wave_sum_approx (hRH : RiemannHypothesis) {β : ℝ} (h
           ≤ ‖ρ‖ * (((N + 1 : ℕ) : ℝ) - x) * x ^ (ρ.re - 1) := hmvt
         _ ≤ ‖ρ‖ * 1 * 1 := by
             refine mul_le_mul (mul_le_mul_of_nonneg_left hdiff_le1 hρ_pos.le) hrpow_le1
-              (Real.rpow_nonneg hx0.le _) hρ_pos.le
+              (Real.rpow_nonneg hx0.le _) (by positivity)
         _ = 1 * ‖ρ‖ := by ring
     have hcomb : |(∑ n ∈ Icc 1 N, g n) - (((x : ℂ) ^ ρ / ρ).re)| ≤
         2 * ‖ρ - 1‖ * Real.sqrt x + 1 / ‖ρ‖ + 1 := by
@@ -1349,8 +1353,8 @@ private theorem rh_prime_wave_sum_approx (hRH : RiemannHypothesis) {β : ℝ} (h
             ((((N + 1 : ℕ) : ℂ) ^ ρ / ρ).re - (((x : ℂ) ^ ρ / ρ).re)) -
             (((1 : ℂ) ^ ρ / ρ).re) := by ring
       rw [hsplit]
-      exact (abs_sub _ _).trans
-        (add_le_add ((abs_add_le _ _).trans (add_le_add hsum_err hendN)) hend1)
+      exact ((abs_sub _ _).trans
+        (add_le_add ((abs_add_le _ _).trans (add_le_add hsum_err hendN)) hend1)).trans_eq (by ring)
     have hprod1 : 1 ≤ Real.sqrt x * (1 + Real.log x) ^ 2 :=
       one_le_mul_of_one_le_of_one_le hsqrt1 h1_sq
     calc |(∑ n ∈ Icc 1 N, g n) - (((x : ℂ) ^ ρ / ρ).re)|
@@ -1420,7 +1424,7 @@ private theorem rh_sEdit_radial_bounded_of_params (hRH : RiemannHypothesis) {α 
       have h3 : (16 : ℝ) ≤ Real.exp 3 := by
         have := Real.exp_one_gt_d9
         calc (16 : ℝ) ≤ 2.7182818283 ^ 3 := by norm_num
-          _ ≤ Real.exp 1 ^ 3 := by gcongr; linarith
+          _ ≤ Real.exp 1 ^ 3 := by gcongr
           _ = Real.exp 3 := by rw [← Real.exp_nat_mul]; norm_num
       exact h3.trans (Real.exp_le_exp.mpr hs)
     set x := Real.exp s
@@ -1913,7 +1917,7 @@ private theorem singleQuartet_psi_radial_transfer {β ω γ : ℝ} {m : ℕ}
         have h3 : (16 : ℝ) ≤ Real.exp 3 := by
           have := Real.exp_one_gt_d9
           calc (16 : ℝ) ≤ 2.7182818283 ^ 3 := by norm_num
-            _ ≤ Real.exp 1 ^ 3 := by gcongr; linarith
+            _ ≤ Real.exp 1 ^ 3 := by gcongr
             _ = Real.exp 3 := by rw [← Real.exp_nat_mul]; norm_num
         exact h3.trans (Real.exp_le_exp.mpr (ht.trans hs1))
       have hb := hK_w (Real.exp s) hx16
@@ -2775,7 +2779,7 @@ theorem finiteOffLine_not_radialUnbounded_iff
         have h3 : (16 : ℝ) ≤ Real.exp 3 := by
           have := Real.exp_one_gt_d9
           calc (16 : ℝ) ≤ 2.7182818283 ^ 3 := by norm_num
-            _ ≤ Real.exp 1 ^ 3 := by gcongr; linarith
+            _ ≤ Real.exp 1 ^ 3 := by gcongr
             _ = Real.exp 3 := by rw [← Real.exp_nat_mul]; norm_num
         exact h3.trans (Real.exp_le_exp.mpr hs)
       have hx1 : 1 ≤ Real.exp s := by linarith
