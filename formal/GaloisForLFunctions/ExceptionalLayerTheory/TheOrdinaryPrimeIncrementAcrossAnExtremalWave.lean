@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.TheTwoIntervalRadiusControlsEachSquaredPrimeIncrement
+import GaloisForLFunctions.ExceptionalLayerTheory.ABoundedQuartetRadiusHasAFiniteExtremalLayer
 import GaloisForLFunctions.RHTower.Sieve.PrimeWindowRayleighFloor
 
 /-!
@@ -11,6 +12,7 @@ a wave where its squared amplitude stays above the squared-error bound.
 
 noncomputable section
 open Filter Topology MeasureTheory Set
+open RHTower ComplexConjugate _root_.HTGeometry
 open GaloisForLFunctions.ZeroConfigurationGeometry
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
@@ -103,5 +105,116 @@ theorem sq_sub_le_on_wave_lobe {u D : ℝ → ℝ} {t s B : ℝ}
     _ ≤ |u t-D t| * |u t+D t| := mul_le_mul_of_nonneg_left hle (abs_nonneg _)
     _ = |u t^2-D t^2| := by rw [← abs_mul]; congr 1; ring
     _ ≤ 6*B := ht.trans (by linarith only [hB])
+
+/-- At a bounded trial the signed boundary increment is one nonzero sinusoid.
+Its frequency is the absolute ordinate of an actual extremal zero. -/
+theorem exists_cosine_boundaryStep_of_bounded_thetaRadial {γ : ℝ} {m : ℕ}
+    (hΘ : 1/2 < zetaZeroAbscissa) (hγ : γ ≠ 0) (hm : 1 ≤ m)
+    (hb : ¬ IsLogSqrtSqUnbounded (thetaRadialDiscrepancy zetaZeroAbscissa γ m)) :
+    let β := zetaZeroAbscissa
+    let D := boundaryStep β (quarterPeriodStep γ) (primeErrorBoundaryTrace β)
+    ∃ (q : XiZeroCopy) (K φ : ℝ), (q.1 : ℂ).re = β ∧ 0 < K ∧
+      ∀ t, D t = K * Real.cos (|xiCopyOrdinate q|*t+φ) := by
+  classical
+  intro β D
+  obtain ⟨q,hq,hall⟩ := (extremal_radial_exclusion_or_one_top_pair hΘ hγ hm).resolve_left hb
+  let ω := |xiCopyOrdinate q|
+  let h := quarterPeriodStep γ
+  let a := stepAmplitude β h
+  let hf := finite_top_of_bounded_thetaRadial hΘ hγ hb
+  let S := hf.toFinset
+  let b := fun r : XiZeroCopy => if xiCopyOrdinate r = ω then a r else conj (a r)
+  let B := ∑ r ∈ S, b r
+  have hneg (t : ℝ) : expChar (-ω) t = conj (expChar ω t) := by
+    rw [expChar,expChar,← Complex.exp_conj]
+    congr 1
+    simp only [map_mul,Complex.conj_ofReal,Complex.conj_I]
+    push_cast
+    ring
+  have hsum (t : ℝ) : D t = (B * expChar ω t).re := by
+    have hfin : (D t : ℂ) = ∑ r ∈ S, a r * expChar (xiCopyOrdinate r) t := by
+      rw [stepAmplitude_carrier hΘ, expSeriesCarrier]
+      apply tsum_eq_sum
+      intro r hr
+      have hne : (r.1 : ℂ).re ≠ β := fun he => hr (hf.mem_toFinset.mpr he)
+      simp only [a, stepAmplitude, primeErrorBoundaryAmplitude, if_neg hne, mul_zero, zero_mul]
+    have he := congrArg Complex.re hfin
+    rw [Complex.ofReal_re, Complex.re_sum] at he
+    rw [he, show B * expChar ω t = ∑ r ∈ S, b r * expChar ω t from Finset.sum_mul S b _, Complex.re_sum]
+    apply Finset.sum_congr rfl
+    intro r hr
+    by_cases hpos : xiCopyOrdinate r = ω
+    · simp only [b, if_pos hpos, hpos]
+    · have habs := hall r (hf.mem_toFinset.mp hr)
+      have hω : xiCopyOrdinate r = -ω := by
+        rcases abs_choice (xiCopyOrdinate r) with hp | hn
+        · exact (hpos (hp.symm.trans habs)).elim
+        · dsimp only [ω]
+          linarith only [hn,habs]
+      simp only [b,if_neg hpos,hω,hneg]
+      rw [Complex.mul_re, Complex.mul_re, Complex.conj_re, Complex.conj_im,
+        Complex.conj_re, Complex.conj_im]
+      ring
+  have hform (t : ℝ) : D t = ‖B‖ * Real.cos (ω*t+B.arg) := by
+    rw [hsum]
+    calc (B * expChar ω t).re =
+        ((‖B‖ : ℂ) * Complex.exp (((ω*t+B.arg : ℝ) : ℂ)*Complex.I)).re := by
+          conv_lhs => rw [← Complex.norm_mul_exp_arg_mul_I B]
+          rw [expChar, mul_assoc, ← Complex.exp_add]
+          push_cast
+          ring_nf
+      _ = _ := by simp [Complex.exp_re, Complex.mul_im, Complex.mul_re]
+  have hB : B ≠ 0 := by
+    intro hzero
+    have hcircle := boundaryStep_circle_of_bounded_thetaRadial hΘ hb 0
+    change D 0^2 + D (0+h)^2 = _ at hcircle
+    simp only [hform, hzero, norm_zero, zero_mul, zero_pow two_ne_zero, add_zero] at hcircle
+    exact (sq_pos_of_pos (quartetRadialCoeff_pos hγ hm)).ne' hcircle.symm
+  exact ⟨q,‖B‖,B.arg,hq,norm_pos_iff.mpr hB,hform⟩
+
+private theorem abs_sub_le_of_between {r t s : ℝ} (hr : r ∈ uIcc t s) :
+    |r-s| ≤ |t-s| := by
+  rcases mem_uIcc.mp hr with ⟨ht,hs⟩ | ⟨hs,ht⟩
+  · rw [abs_of_nonpos (sub_nonpos.mpr hs),abs_of_nonpos (sub_nonpos.mpr (ht.trans hs))]
+    linarith only [ht]
+  · rw [abs_of_nonneg (sub_nonneg.mpr hs),abs_of_nonneg (sub_nonneg.mpr (hs.trans ht))]
+    exact sub_le_sub_right ht _
+
+/-- The nearest crest of the absolute cosine is within half a lobe, and its
+absolute value can only increase on the segment leading to that crest. -/
+private theorem exists_cosine_crest {ω : ℝ} (hω : 0 < ω) (φ t : ℝ) :
+    ∃ s : ℝ, |t-s| ≤ Real.pi/(2*ω) ∧ |Real.cos (ω*s+φ)| = 1 ∧
+      ∀ r ∈ uIcc t s, |Real.cos (ω*t+φ)| ≤ |Real.cos (ω*r+φ)| := by
+  let k := round ((ω*t+φ)/Real.pi)
+  let s := ((k:ℝ)*Real.pi-φ)/ω
+  have hcenter : ω*s+φ = k*Real.pi := by
+    dsimp only [s]
+    field_simp [hω.ne'] <;> ring
+  have ht : |ω*(t-s)| ≤ Real.pi/2 := by
+    have he : ω*(t-s) = ((ω*t+φ)/Real.pi-k)*Real.pi := by
+      rw [sub_mul, div_mul_cancel₀ _ Real.pi_ne_zero]
+      linarith only [hcenter]
+    rw [he,abs_mul,abs_of_pos Real.pi_pos]
+    exact (mul_le_mul_of_nonneg_right (abs_sub_round _) Real.pi_pos.le).trans_eq (by ring)
+  refine ⟨s,?_,by rw [hcenter, Real.abs_cos_int_mul_pi],?_⟩
+  · rw [abs_mul,abs_of_pos hω] at ht
+    apply (le_div_iff₀ (mul_pos zero_lt_two hω)).mpr
+    linarith only [ht]
+  intro r hr
+  have hb : |ω*(r-s)| ≤ |ω*(t-s)| := by
+    rw [abs_mul,abs_mul]
+    exact mul_le_mul_of_nonneg_left (abs_sub_le_of_between hr) (abs_nonneg ω)
+  have hangle (x : ℝ) (hx : |ω*(x-s)| ≤ Real.pi/2) :
+      |Real.cos (ω*x+φ)| = Real.cos |ω*(x-s)| := by
+    rw [show ω*x+φ = ω*(x-s)+k*Real.pi by linarith only [hcenter],
+      Real.cos_add_int_mul_pi,abs_mul,abs_zpow,abs_neg,abs_one,one_zpow,one_mul,
+      ← Real.cos_abs (ω*(x-s))]
+    apply abs_of_nonneg
+    exact Real.cos_nonneg_of_mem_Icc ⟨(neg_nonpos.mpr (half_pos Real.pi_pos).le).trans (abs_nonneg _),hx⟩
+  rw [hangle t ht,hangle r (hb.trans ht)]
+  exact Real.cos_le_cos_of_nonneg_of_le_pi (abs_nonneg _) (ht.trans (half_le_self Real.pi_pos.le)) hb
+
+#print axioms exists_continuous_normalizedPrimeIncrement_approx
+#print axioms exists_cosine_boundaryStep_of_bounded_thetaRadial
 
 end GaloisForLFunctions.ExceptionalLayerTheory

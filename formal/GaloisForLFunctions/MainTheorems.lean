@@ -129,4 +129,5 @@ import GaloisForLFunctions.RingdownOfTheCubicCover
 import GaloisForLFunctions.ZeroForcingCalculus
 import GaloisForLFunctions.TensorPowerProgramme
 import GaloisForLFunctions.ExclusionOfTheCriticalState
+import GaloisForLFunctions.JointMarkedMoments
 import GaloisForLFunctions.QuantitativeFactorizationMatching

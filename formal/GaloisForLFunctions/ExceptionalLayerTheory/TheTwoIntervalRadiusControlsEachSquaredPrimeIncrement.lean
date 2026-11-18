@@ -155,7 +155,8 @@ private theorem squared_trace_rate {U D R : ℝ → ℝ} {h d C K : ℝ}
 def normalizedPrimeIncrement (β h t : ℝ) : ℝ :=
   logStepIncrement thetaLogError t h / Real.exp (β*t)
 
-private theorem normalized_increment_sub_trace (hΘ : 1/2 < zetaZeroAbscissa) (h : ℝ) :
+/-- A signed normalized increment converges to its moving extremal trace. -/
+theorem normalized_increment_sub_trace (hΘ : 1/2 < zetaZeroAbscissa) (h : ℝ) :
     Tendsto (fun t => normalizedPrimeIncrement zetaZeroAbscissa h t -
       boundaryStep zetaZeroAbscissa h (primeErrorBoundaryTrace zetaZeroAbscissa) t)
       atTop (𝓝 0) := by

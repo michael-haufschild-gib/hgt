@@ -531,6 +531,7 @@ theorem dyadicPrimeContact_fifteenSixteenthsConductor :
   have hL : 1 + Real.log L ≤ J * H := by
     have hb := Real.log_le_log hL0 (hwin hn)
     rw [Real.log_pow, Real.log_mul hK'.ne' hn'.ne'] at hb
+    push_cast at hb
     have hh := le_mul_of_one_le_right hklog hH1
     dsimp only [H, logFactor, J] at hh ⊢
     linarith [hb, hh, hlogn, Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * n)]
@@ -541,7 +542,7 @@ theorem dyadicPrimeContact_fifteenSixteenthsConductor :
       (Real.rpow_two _))
   have huLog : 1 + Real.log U ≤ 3 * H := by
     have hu := Real.log_le_log (by exact_mod_cast hU1 : (0 : ℝ) < U) hU_sq
-    rw [Real.log_pow] at hu; dsimp only [H, logFactor]
+    rw [Real.log_pow] at hu; push_cast at hu; dsimp only [H, logFactor]
     linarith [hu, hlogn, Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * n)]
   have hu8 : (U : ℝ) ^ 8 ≤ (n : ℝ) ^ 15 := by
     calc (U : ℝ) ^ 8 ≤ ((n : ℝ) ^ (15 / 8 : ℝ)) ^ 8 :=
@@ -634,9 +635,9 @@ private theorem bridge_octave_bound :
           fifteenSixteenthsCut n ≤ seventeenNinthsCut n := by
     obtain ⟨A, hA, hwin⟩ := successorSquare_window_bound
     have ht1 : Tendsto (fun N : ℕ => (N : ℝ) ^ (1 / 9 : ℝ)) atTop atTop :=
-      (Real.tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 9)).comp tendsto_natCast_atTop_atTop
+      (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 9)).comp tendsto_natCast_atTop_atTop
     have ht2 : Tendsto (fun N : ℕ => (N : ℝ) ^ (7 / 8 : ℝ)) atTop atTop :=
-      (Real.tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 7 / 8)).comp tendsto_natCast_atTop_atTop
+      (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 7 / 8)).comp tendsto_natCast_atTop_atTop
     filter_upwards [eventually_ge_atTop (1 : ℕ),
       ht1.eventually_ge_atTop (9 * (2 : ℝ) ^ (17 / 9 : ℝ) * Real.exp 8),
       ht2.eventually_ge_atTop (2 * A + 1)] with N hN hhi hlo
@@ -659,7 +660,7 @@ private theorem bridge_octave_bound :
       rw [h2N] at hfl
       nlinarith [hfl]
     · obtain ⟨hnN, _⟩ := mem_Ioc.mp hn
-      have hn0_nat : 0 < n := hN.trans hnN
+      have hn0_nat : 0 < n := by omega
       have hn1_r : (1 : ℝ) ≤ n := by exact_mod_cast hn0_nat
       have hn0_r : (0 : ℝ) < n := zero_lt_one.trans_le hn1_r
       refine ⟨?_, Nat.floor_mono (Real.rpow_le_rpow_of_exponent_le hn1_r (by norm_num))⟩
@@ -667,7 +668,8 @@ private theorem bridge_octave_bound :
       have hlo_n : 2 * A + 1 ≤ (n : ℝ) ^ (7 / 8 : ℝ) :=
         hlo.trans (Real.rpow_le_rpow hN0.le (by exact_mod_cast hnN.le) (by norm_num))
       have hmul : (n : ℝ) ^ (7 / 8 : ℝ) * n = (n : ℝ) ^ (15 / 8 : ℝ) := by
-        rw [← Real.rpow_one (n : ℝ), ← Real.rpow_add hn0_r]; congr 1; norm_num
+        calc (n : ℝ) ^ (7 / 8 : ℝ) * n = (n : ℝ) ^ (7 / 8 : ℝ) * (n : ℝ) ^ (1 : ℝ) := by rw [Real.rpow_one]
+          _ = (n : ℝ) ^ (15 / 8 : ℝ) := by rw [← Real.rpow_add hn0_r]; congr 1; norm_num
       have hroot : Real.sqrt (splineHorizon n) ≤ A * n := by
         have hs := Real.sqrt_le_sqrt (hwin hn0_nat)
         rwa [Real.sqrt_sq (mul_nonneg (zero_le_one.trans hA) hn0_r.le)] at hs
@@ -680,9 +682,19 @@ private theorem bridge_octave_bound :
         _ ≤ (n : ℝ) ^ (7 / 8 : ℝ) * n := by nlinarith [hlo_n, hn0_r.le]
         _ = (n : ℝ) ^ (15 / 8 : ℝ) := hmul
   obtain ⟨N0, hN0⟩ := eventually_atTop.mp hgeom
-  let diff1 := fun k : ℕ => fifteenSixteenthsConductor k - seventeenNinthsConductor k
-  let F := ∑ k ∈ Icc 1 (2 * N0), (k : ℝ) ^ 2 * |diff1 k|
-  have hF0 : 0 ≤ F := sum_nonneg fun _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _)
+  obtain ⟨F, hF0, hF_le⟩ : ∃ F : ℝ, 0 ≤ F ∧ ∀ {N M : ℕ}, 1 ≤ N → N ≤ N0 → M ≤ 2 * N →
+      |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 *
+          (fifteenSixteenthsConductor n - seventeenNinthsConductor n)| ≤ F := by
+    let diff1 := fun k : ℕ => fifteenSixteenthsConductor k - seventeenNinthsConductor k
+    refine ⟨∑ k ∈ Icc 1 (2 * N0), (k : ℝ) ^ 2 * |diff1 k|,
+      sum_nonneg fun _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _), fun {N M} h1 h2 hM2N => ?_⟩
+    have hsub : Ioc N M ⊆ Icc 1 (2 * N0) := fun n hn => by
+      obtain ⟨ha, hb⟩ := mem_Ioc.mp hn; exact mem_Icc.mpr ⟨by omega, by omega⟩
+    refine (abs_sum_le_sum_abs _ _).trans ?_
+    have heq_abs : ∀ n : ℕ, |(n : ℝ) ^ 2 * diff1 n| = (n : ℝ) ^ 2 * |diff1 n| :=
+      fun n => by rw [abs_mul, abs_of_nonneg (sq_nonneg _)]
+    rw [sum_congr rfl fun n _ => heq_abs n]
+    exact sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _)
   let A_const := Cs * 8 * (3 * (2 : ℝ) ^ 17)
   have hA0 : 0 ≤ A_const := by dsimp only [A_const]; positivity
   refine ⟨F + A_const, add_nonneg hF0 hA0, fun N M hNM hM2N => ?_⟩
@@ -693,17 +705,9 @@ private theorem bridge_octave_bound :
   have hN0_r : (0 : ℝ) < N := zero_lt_one.trans_le hN1
   by_cases hbig : N0 ≤ N
   swap
-  · have hsub : Ioc N M ⊆ Icc 1 (2 * N0) := fun n hn => by
-      obtain ⟨h1, h2⟩ := mem_Ioc.mp hn; exact mem_Icc.mpr ⟨by omega, by omega⟩
-    have hfin : |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * diff1 n| ≤ F := by
-      refine (abs_sum_le_sum_abs _ _).trans ?_
-      have heq_abs : ∀ n, |(n : ℝ) ^ 2 * diff1 n| = (n : ℝ) ^ 2 * |diff1 n| :=
-        fun n => by rw [abs_mul, abs_of_nonneg (sq_nonneg _)]
-      simp_rw [heq_abs]
-      exact sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _)
-    have hr1 : 1 ≤ (N : ℝ) ^ 3 * logFactor N :=
+  · have hr1 : 1 ≤ (N : ℝ) ^ 3 * logFactor N :=
       one_le_mul_of_one_le_of_one_le (one_le_pow₀ hN1) (logFactor_one_le N)
-    exact hfin.trans (by nlinarith [hr1, hA0])
+    exact (hF_le hN (by omega) hM2N).trans (by nlinarith [hr1, hA0, hF0])
   obtain ⟨hw1_N, hbirth8_2N, hgeom_n⟩ := hN0 N hbig
   have hu_mono : Monotone fifteenSixteenthsCut := monotone_powerProductCut (by norm_num)
   have hw_mono : Monotone seventeenNinthsCut := monotone_powerProductCut (by norm_num)
@@ -728,6 +732,7 @@ private theorem bridge_octave_bound :
       push_cast; exact Real.rpow_two _
     have hlog := Real.log_le_log (by exact_mod_cast hwM1) hw_sq
     rw [Real.log_pow] at hlog
+    push_cast at hlog
     dsimp only [logFactor]
     linarith [Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * N)]
   have ht9 : (seventeenNinthsCut M : ℝ) ^ 9 / (N : ℝ) ^ 14 ≤ (2 : ℝ) ^ 17 * (N : ℝ) ^ 3 := by
@@ -781,8 +786,8 @@ private theorem bridge_octave_bound :
           (seventeenNinthsCut M : ℝ) ^ 8 / (N : ℝ) ^ 13 +
           (seventeenNinthsCut M : ℝ) ^ 5 / (N : ℝ) ^ 8)
       ≤ Cs * (8 * logFactor N) * (3 * (2 : ℝ) ^ 17 * (N : ℝ) ^ 3) := by
-        refine mul_le_mul (mul_le_mul_of_nonneg_left hlogW hCs) hsum3 (by positivity) ?_
-        have := logFactor_one_le N; positivity
+        refine mul_le_mul (mul_le_mul_of_nonneg_left hlogW hCs) hsum3 (by positivity)
+          (mul_nonneg hCs (mul_nonneg (by norm_num) (zero_le_one.trans (logFactor_one_le N))))
     _ = A_const * (N : ℝ) ^ 3 * logFactor N := by dsimp only [A_const]; ring
     _ ≤ (F + A_const) * (N : ℝ) ^ 3 * logFactor N := by
         have hlf_nn : 0 ≤ logFactor N := zero_le_one.trans (logFactor_one_le N)
@@ -812,9 +817,10 @@ theorem fifteenSixteenths_to_seventeenNinths_prefix :
     rcases N with _ | _ | m
     · simp
     · simp only [Nat.zero_add, Icc_self, sum_singleton, Nat.cast_one, one_pow, one_mul]
-      have h1 : 1 ≤ logFactor 1 := logFactor_one_le 1
+      have h1 : 1 ≤ 1 + Real.log (2 * 1) :=
+        le_add_of_nonneg_right (Real.log_nonneg (by norm_num))
       dsimp only [K]
-      nlinarith [abs_nonneg (S 1), hC0]
+      nlinarith [abs_nonneg (S 1), hC0, h1]
     · set N' := m + 2
       let M0 := (N' + 1) / 2
       have hM0_pos : 1 ≤ M0 := by dsimp only [M0, N']; omega
@@ -889,7 +895,7 @@ theorem width_iff_seventeenNinthsConductorPrefix {a : ℝ} (ha : 0 < a) (ha' : a
     rcases Nat.eq_zero_or_pos N with rfl | hn
     · simp [Real.zero_rpow (by linarith : 3 + 2 * a ≠ 0)]
     · have hn' : (0 : ℝ) < N := Nat.cast_pos.mpr hn
-      rw [Real.rpow_add hn', Real.rpow_natCast _ 3]
+      rw [Real.rpow_add hn', show (3 : ℝ) = ((3 : ℕ) : ℝ) by norm_num, Real.rpow_natCast]
       exact (mul_le_mul_of_nonneg_left (hb hn) (by positivity : 0 ≤ K * (N : ℝ) ^ 3)).trans_eq (by ring)
   rw [zetaZeroWidth_le_iff_square_generator_prefix ha.le ha']
   constructor <;> rintro ⟨C, hC, hc⟩ <;> refine ⟨C + K * B, by positivity, fun N => ?_⟩
@@ -946,6 +952,8 @@ theorem seventeenNinths_surviving_ranges {n k p v : ℕ} (hp : 0 < p)
       k / p / v ≤ k / (seventeenNinthsCut n + 1) :=
   capped_upper_ranges hp hv
 
+#print axioms powerProductShell_sevenFourths_eq
+#print axioms powerProductShell_pointwise_bound
 #print axioms sevenFourthsShell_reciprocal_bound
 #print axioms sevenFourthsShell_absolute_octave_bound
 #print axioms powerProductShell_conductor_smoothed_bound
@@ -954,6 +962,8 @@ theorem seventeenNinths_surviving_ranges {n k p v : ℕ} (hp : 0 < p)
 #print axioms sevenFourthsShell_saving_below_seven_fourths
 #print axioms sevenFourthsShell_thirteen_eighths_saving
 #print axioms dyadicPrimeContact_fifteenSixteenthsConductor
+#print axioms squareGeneratorPrefix_fifteenSixteenths_products
+#print axioms fifteenSixteenths_to_seventeenNinths_prefix
 #print axioms squareGeneratorPrefix_seventeenNinths_products
 #print axioms width_iff_seventeenNinthsConductorPrefix
 #print axioms five_sixths_iff_seventeenNinthsConductorPrefix
