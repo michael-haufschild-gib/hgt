@@ -50,7 +50,11 @@ theorem cyclicCoefficientContent_odd_valuation {j N p : ℕ} (hp : p.Prime) (hod
   let V := N.factorial.factorization p+dyadicCommonCarryLevels j N p
   have hq : 2≤q := by dsimp only [q]; have := Nat.lt_two_pow_self (n := j+1); omega
   have hq0 : 0 < q := by omega
-  have hN : 0 < N := by by_contra! h; have : N=0 := by omega; simp [this] at hX; omega
+  have hN : 0 < N := by
+    apply Nat.pos_of_ne_zero
+    rintro rfl
+    simp only [mul_zero] at hX
+    exact (not_le_of_gt hp.pos) hX
   have hL : 1≤L := Nat.le_log_of_pow_le hp.one_lt (by simpa only [pow_one,X,q] using hX)
   have hB : X < p^(L+1) := Nat.lt_pow_succ_log_self hp.one_lt _
   have hNX : N≤X := by simpa only [one_mul] using Nat.mul_le_mul_right N (show 1≤q by omega)
@@ -70,7 +74,7 @@ theorem cyclicCoefficientContent_odd_valuation {j N p : ℕ} (hp : p.Prime) (hod
   have hg := (cyclicCoefficientContent_pos hq N).ne'
   constructor
   · apply (hp.pow_dvd_iff_le_factorization hg).mp
-    apply dvd_gcd
+    apply Finset.dvd_gcd
     intro a ha
     exact (hp.pow_dvd_iff_le_factorization (cyclicCoefficientRow_pos ..).ne').mpr
       (hmin a (mem_Icc.mp (mem_filter.mp ha).1).1 (by have := (mem_Icc.mp (mem_filter.mp ha).1).2; omega))
@@ -91,10 +95,11 @@ theorem cyclicCoefficientContent_odd_valuation {j N p : ℕ} (hp : p.Prime) (hod
           N/p^e+dyadicQuotientCarry j N (p^e)+1 := by
       by_cases he : e=1
       · subst e
-        simp only [pow_one,if_pos rfl,a,cyclicCoefficientLevel_last hq hp.pos hc,dyadicQuotientCarry,q]
+        simp only [pow_one,if_true,a,cyclicCoefficientLevel_last hq hp.pos hc,dyadicQuotientCarry,q,le_refl]
       · simp only [if_neg he,add_zero]
-        have hh := (cyclicCoefficientLevel_bounds (pow_pos hp.pos e) ha haq (hc.pow_left _) N).2
-        omega
+        have hh : cyclicCoefficientLevel q N a (p^e) ≤ N/p^e+1 :=
+          (cyclicCoefficientLevel_bounds (pow_pos hp.pos e) ha haq (hc.pow_left _) N).2
+        exact hh.trans (Nat.add_le_add_right (Nat.le_add_right ..) 1)
     have htot := sum_le_sum (s := Icc 1 L) (fun e _ => hupper e)
     simp only [sum_add_distrib,sum_ite_eq',mem_Icc,le_refl,hL,and_self,if_true,sum_const,
       Nat.card_Icc,Nat.add_sub_cancel,smul_eq_mul,mul_one] at htot
@@ -173,7 +178,7 @@ theorem cyclicCoefficientContent_log_error (j N : ℕ) (hN : 0 < N) :
   let X := q*N
   have hq : 2≤q := by dsimp only [q]; have := Nat.lt_two_pow_self (n := j+1); omega
   have hNX : N≤X := by simpa only [one_mul] using Nat.mul_le_mul_right N (show 1≤q by omega)
-  have h2X : 2≤X := hq.trans (by simpa only [mul_one] using Nat.mul_le_mul_left q hN)
+  have h2X : 2≤X := hq.trans (by simpa only [mul_one] using Nat.mul_le_mul_left q (show 1≤N from hN))
   have hF : N.factorial.primeFactors ⊆ Nat.primesLE X := by
     intro p hp
     obtain ⟨hpr,hd,_⟩ := Nat.mem_primeFactors.mp hp
@@ -205,7 +210,11 @@ theorem cyclicCoefficientContent_log_error (j N : ℕ) (hN : 0 < N) :
         (0:ℝ)-(N.factorial.factorization 2:ℝ)-((dyadicBinomialGcd j N).factorization 2:ℝ)+N=0
         by linarith only [hhR],abs_zero]
       exact sub_nonneg.mpr (by exact_mod_cast hL)
-    · have hc := cyclicCoefficientContent_odd_valuation hpr he hpX
+    · obtain ⟨hc₁,hc₂⟩ := cyclicCoefficientContent_odd_valuation hpr he hpX
+      change N.factorial.factorization p+dyadicCommonCarryLevels j N p ≤
+        (cyclicCoefficientContent q N).factorization p at hc₁
+      change (cyclicCoefficientContent q N).factorization p+1 ≤
+        N.factorial.factorization p+dyadicCommonCarryLevels j N p+L at hc₂
       obtain ⟨hg₁,hg₂⟩ := dyadicBinomialGcd_carry_bounds j N hpr (by omega : 2≤L+1) (Nat.lt_succ_self L)
       rw [Ico_add_one_right_eq_Icc] at hg₁
       have hf : dyadicQuotientCarry j N p ≤ dyadicCommonCarryLevels j N p := by
@@ -216,14 +225,12 @@ theorem cyclicCoefficientContent_log_error (j N : ℕ) (hN : 0 < N) :
       constructor
       · have hh : N.factorial.factorization p+(dyadicBinomialGcd j N).factorization p+1 ≤
             (cyclicCoefficientContent q N).factorization p+L := by
-          have := hc.1
           omega
         have hr : (N.factorial.factorization p:ℝ)+((dyadicBinomialGcd j N).factorization p:ℝ)+1 ≤
             ((cyclicCoefficientContent q N).factorization p:ℝ)+L := by exact_mod_cast hh
         linarith only [hr]
       · have hh : (cyclicCoefficientContent q N).factorization p+1 ≤
             N.factorial.factorization p+(dyadicBinomialGcd j N).factorization p+L := by
-          have := hc.2
           omega
         have hr : ((cyclicCoefficientContent q N).factorization p:ℝ)+1 ≤
             (N.factorial.factorization p:ℝ)+((dyadicBinomialGcd j N).factorization p:ℝ)+L := by exact_mod_cast hh

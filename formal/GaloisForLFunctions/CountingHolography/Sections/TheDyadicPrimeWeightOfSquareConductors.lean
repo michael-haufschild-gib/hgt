@@ -46,7 +46,7 @@ private theorem integrated_row_bound {H : ℝ} (hH : ∀ x, |splineAutoCorr x| �
     |integratedContact a k| ≤ (2/Real.sqrt k)*(∑ i, |(a i:ℝ)|)^2*H := by
   let M := ∑ i, |(a i:ℝ)|
   let F := fun i j : Fin N => splineAutoCorr (-Real.log k-Real.log ((i:ℝ)+1)+Real.log ((j:ℝ)+1))
-  have hrow (i : Fin N) : |∑ j, (a i:ℝ)*(a j:ℝ)*F i j| ≤ |(a i:ℝ)|*(M*H) := by
+  have hrow (i : Fin N) : |∑ j, (a i:ℝ)*(a j:ℝ)*F i j| ≤ |(a i:ℝ)| * (M*H) := by
     refine (abs_sum_le_sum_abs _ _).trans ?_
     unfold M
     rw [sum_mul,mul_sum]

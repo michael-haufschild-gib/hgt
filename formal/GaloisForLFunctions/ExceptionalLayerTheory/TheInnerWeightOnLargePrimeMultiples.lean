@@ -39,8 +39,9 @@ private theorem innerJump_eq_neg_increment {t : ℕ} (ht : 2 ≤ t) (D : ℕ) :
 divisibility indicators, since a floor increments at its multiples. -/
 theorem innerJump_divisor_stencil {t : ℕ} (ht : 2 ≤ t) (D : ℕ) :
     innerJump D t = -(stencil (D+1) fun e => if e ∣ t then 1 else 0) := by
-  rw [innerJump_eq_neg_increment ht]
-  simp only [floorJump_eq (by omega : 1 ≤ t)]
+  have he : floorJump t = fun e => if e ∣ t then 1 else 0 :=
+    funext fun e => floorJump_eq (by omega) e
+  rw [innerJump_eq_neg_increment ht,he]
 
 /-- Multiplying by a prime beyond the divisor support preserves the inner
 coefficient except at the unit argument, where the difference is minus one. -/

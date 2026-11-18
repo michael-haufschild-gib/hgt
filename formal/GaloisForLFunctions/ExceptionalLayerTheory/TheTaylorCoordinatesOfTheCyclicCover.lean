@@ -37,7 +37,8 @@ private theorem scaled_descPochhammer {q a : ℕ} (ha : 0 < a) (haq : a < q) (n 
     simp only [pow_one,Nat.cast_mul,Nat.cast_add]
     rw [mul_mul_mul_comm,ih]
     congr 1
-    field_simp <;> ring
+    field_simp
+    ring
 
 /-- All coordinates in degree n have the same projective scale q^n n!.
 The identity holds at arbitrary integral widths and interior labels. -/
@@ -53,7 +54,7 @@ theorem cyclicCoefficientRow_taylor {q a : ℕ} (ha : 0 < a) (haq : a < q) (n : 
   rw [Ring.descPochhammer_eq_factorial_smul_choose,nsmul_eq_mul,
     show -(q:ℂ)=(-1:ℂ)*q by ring,mul_pow] at he
   rw [hd,← he]
-  field_simp <;> ring
+  field_simp
 
 /-- The coordinate with label a is the a-th power of one branch. -/
 theorem cyclicCoverBranch_pow (q a : ℕ) {z : ℂ} (hz : z≠1) :

@@ -21,7 +21,7 @@ private theorem square_radius_comparison : ∃ E : ℝ, 1 ≤ E ∧ ∀ {n m : �
     let g := ((n:ℝ)+1)^zetaZeroWidth
     Real.log (generator a : ℝ)-radius a+ordinaryFloorLoss a ≤ E*((m*g)^2+n*m) := by
   obtain ⟨E,hE,h⟩ := square_cost_before_ordinary_floors
-  exact ⟨E,hE,fun hn hm => (add_le_add_right (le_max_right _ _) _).trans (h hn hm)⟩
+  exact ⟨E,hE,fun hn hm => (add_le_add (le_max_right _ _) le_rfl).trans (h hn hm)⟩
 
 /-- Every multiplicity scale up to a fixed multiple of (n+1)^(1-w), where
 w is the actual zero width, contains a multiplicity with exponentially many

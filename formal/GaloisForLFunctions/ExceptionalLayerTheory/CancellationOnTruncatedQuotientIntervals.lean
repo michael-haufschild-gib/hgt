@@ -35,7 +35,7 @@ private theorem interval_of_prefix {N : ℕ} (a : ℕ → ℝ) {A : ℝ} (hA : 0
 /-- Above a sharp lower cutoff the cost is proportional to the number of
 possible quotients. Every quotient fibre is a single truncated interval. -/
 theorem abs_quotient_tail_le {N : ℕ} (M : ℕ) (a w : ℕ → ℝ) {A B : ℝ}
-    (hA : 0 ≤ A) (hB : 0 ≤ B)
+    (hA : 0 ≤ A)
     (ha : ∀ t ≤ N, |∑ v ∈ Ioc 0 t, a v| ≤ A) (hw : ∀ j, |w j| ≤ B) :
     |∑ t ∈ Ioc M N, a t*w (N/t)| ≤ (2*A*B)*((N/(M+1) : ℕ) : ℝ) := by
   classical
@@ -96,7 +96,7 @@ theorem abs_truncated_quotient_pair {N : ℕ} (L : ℕ) (a w : ℕ → ℝ) {A B
     by_contra! h
     have hsq := Nat.mul_le_mul (show s+1 ≤ N/(M+1) by omega) (show s+1 ≤ M+1 by omega)
     exact (Nat.not_le_of_lt (Nat.lt_succ_sqrt N)) (hsq.trans (Nat.div_mul_le_self N (M+1)))
-  have big := (abs_quotient_tail_le M a w hA hB ha hw).trans
+  have big := (abs_quotient_tail_le M a w hA ha hw).trans
     (mul_le_mul_of_nonneg_left (by exact_mod_cast hcount : ((N/(M+1) : ℕ) : ℝ) ≤ s) (by positivity))
   rw [←sum_Ioc_consecutive (fun t => a t*w (N/t)) hL hM]
   apply (abs_add_le _ _).trans

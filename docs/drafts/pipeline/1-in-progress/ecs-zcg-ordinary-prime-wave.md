@@ -30,6 +30,8 @@ The largest prime factor $P(n)$ alone recovers the ordinary prime-error exponent
 
 ## Adjacent cutoffs
 
+The primitive residue products $P_a(n)=\prod_{k<n}(qk+a)$ give a second arithmetic target. The logarithm of their largest coordinate after common gcd division has a complementary first-mean error at every dyadic width. [Height criterion](../3-formalized/cyclic-coefficient-heights-and-ordinary-prime-counts.md)
+
 Can $E(N)$ and $E(pN)$ both be $O(N^{1/2+\varepsilon})$ along an unbounded sequence for each of $p=2,3$, allowing different sequences? A single quartet rotates by $\gamma\log p$ under dilation. The two rotations cannot both be multiples of $\pi$.
 
 For a finite top, take a prime $p$ for which its nonzero frequencies give distinct phases $p^{i\gamma}\ne1$. Consecutive powers of $p$ have bounded first sums and linear second sums for the normalized top wave, uniformly in the initial phase. This suggests a one-sided test for AAL: can every fixed block $N,pN,\ldots,p^kN$ have all its errors below $N^{1/2+\varepsilon}$ at arbitrarily large $N$?

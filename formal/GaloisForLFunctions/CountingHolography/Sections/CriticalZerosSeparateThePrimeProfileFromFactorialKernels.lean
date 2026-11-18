@@ -22,7 +22,8 @@ open RenormalizedIntersectionTheory
 
 private theorem lift_autocorr : cx splineAutoCorr = EF.weilTest (cx cubicSpline) (cx cubicSpline) := by
   funext t
-  simp only [cx,splineAutoCorr,weilTest_ofReal,Complex.ofReal_re]
+  change (((EF.weilTest (cx cubicSpline) (cx cubicSpline) t).re : ℝ) : ℂ) = _
+  rw [weilTest_ofReal,Complex.ofReal_re]
 
 private theorem transform_profile (t : ℂ) :
     paperFT (cx squareLogProfile) t =

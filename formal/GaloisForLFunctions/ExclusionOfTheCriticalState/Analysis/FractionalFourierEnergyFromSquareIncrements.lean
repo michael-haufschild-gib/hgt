@@ -40,7 +40,7 @@ private theorem annulus_symbol_ge_one {Y ξ : ℝ} (hY : 0 < Y)
 /-- An O(h) squared translation modulus makes every squared Fourier weight
 |ξ|ˢ integrable for 0 ≤ s < 1. -/
 theorem integrable_fractional_fourier_energy_of_square_increments {f : ℝ → ℂ}
-    (hi : Integrable f) (h2 : MemLp f 2) {C : ℝ} (hC : 0 ≤ C)
+    (hi : Integrable f) (h2 : MemLp f 2) {C : ℝ}
     (hinc : ∀ h : ℝ, 0 < h → h ≤ 1 → (∫ x, ‖f x-f (x+h)‖^2) ≤ C*h)
     {s : ℝ} (hs : 0 ≤ s) (hs1 : s < 1) :
     Integrable fun ξ : ℝ => |ξ|^s*‖𝓕 f ξ‖^2 := by
@@ -105,7 +105,7 @@ theorem integrable_fractional_fourier_energy_of_square_increments {f : ℝ → �
   by_cases hξ : |ξ| ≤ 1
   · exact Or.inl hξ
   obtain ⟨n,hl,hr⟩ := exists_nat_pow_near (le_of_not_ge hξ) (by norm_num : (1:ℝ)<2)
-  exact Or.inr (mem_iUnion.2 ⟨n,hl,by simpa only [pow_succ,mul_comm _ 2] using hr.le⟩)
+  exact Or.inr (mem_iUnion.2 ⟨n,hl,hr.le.trans_eq (pow_succ' (2:ℝ) n)⟩)
 
 #print axioms integrable_fractional_fourier_energy_of_square_increments
 end GaloisForLFunctions.ExclusionOfTheCriticalState

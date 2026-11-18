@@ -8,6 +8,10 @@ Let Φ be the continuous representative, $N(t)=\sum_{n\ge1}n^{-1/2}\Phi(t-\log n
 
 **Lean.** `criticalState_tendsto_L1_increment_div_sqrt` gives the translation estimate. `criticalState_integerCellDefect` bounds each cell. `riemannHypothesis_or_integer_centred_prime_error` gives the signed ordinary-prime representation under failure of RH. [Translation modulus](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheFirstAbsoluteMomentOfStateIncrements.lean) · [Unit cells](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/IntegerQuadratureOnOneLogarithmicCell.lean) · [Absolute mean](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheIntegerWaveHasVanishingMeanAbsoluteError.lean)
 
-**Mean-square question.** The wall portion of a cell increment lies in $[\log n,\log(n+1)]$, disjoint from the wall portions of the other cells. Its square mass is summable. The interior portions have cell $L^2$ norm $o(1/(n\sqrt{\log n}))$. Can this disjointness give vanishing mean square for the entire integer reference error?
-
 The exponential primitive is bounded at every real cutoff $T$. Writing $D=N-Ae^{t/2}$, counting the integers after exchanging translates gives $\int_{-\infty}^T e^{t/2}D(t)dt=-\int e^{u/2}\Phi(u)\{e^{T-u}\}du$. Its absolute value is at most $\int e^{u/2}|\Phi(u)|du$. [Exact floor primitive](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheFloorPrimitiveOfTheIntegerReference.lean).
+
+For $0\le\lambda<1/2$ put $\sigma=1/2-\lambda$, $\Psi(u)=e^{\lambda u}\Phi(u)$ and $B(T)=e^{-\sigma T}\int_{-\infty}^Te^{t/2}D(t)dt$. Then $B\in L^1\cap L^2$, $B'+\sigma B=e^{\lambda T}D(T)$, and
+\[
+ \widehat B(\xi)=\widehat\Psi(\xi)\,\frac{\zeta(\sigma+2\pi i\xi)}{\sigma+2\pi i\xi}.
+\]
+The primitive turns integer sampling into convolution with $-e^{-\sigma v}\{e^v\}$, whose Fourier multiplier is the fractional-part Mellin integral. The [subcritical square-integrability proof](../2-fully-proven/ecs-subcritical-exponential-mean-square-integer-quadrature.md) also needs a bound for the differentiated multiplier. [Fourier factorization and classical derivative](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/IntegerQuadratureAsAFractionalPartConvolution.lean).

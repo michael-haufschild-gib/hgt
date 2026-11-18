@@ -14,12 +14,14 @@ open MeasureTheory Set Filter Topology
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri CriticalArithmeticCorrelationTheory HTGeometry
 
-private theorem empty_reference {Φ : ℝ → ℝ} {C : ℝ} (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
+/-- The empty sieve gives the density-one integer reference. -/
+theorem sievedIntegerReference_empty {Φ : ℝ → ℝ} {C : ℝ} (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
     sievedIntegerReference ∅ Φ t = integerReferenceWave Φ t := by
   rw [sievedIntegerReference,sieveDensity_empty,div_one,sievedSum,← tsum_continuousIntegerAtom hb]
   exact tsum_congr fun n => indicator_of_mem (by simp : n ∈ {m : ℕ | m.Coprime (sievePrimorial ∅)}) _
 
-private theorem integerReference_integrableOn_left {Φ : ℝ → ℝ} (hm : Continuous Φ) {C : ℝ}
+/-- Exponential confinement makes the integer reference absolutely integrable on the negative ray. -/
+theorem integerReference_integrableOn_left {Φ : ℝ → ℝ} (hm : Continuous Φ) {C : ℝ}
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) : IntegrableOn (integerReferenceWave Φ) (Iic 0) := by
   let m := fun n : ℕ => 1/(n:ℝ)^2
   have hs : Summable m := Real.summable_one_div_nat_pow.mpr (by norm_num)
@@ -48,7 +50,7 @@ private theorem empty_mass_eventually {Φ : ℝ → ℝ} (hm : Continuous Φ) {C
     (∀ᶠ T : ℝ in atTop, IntegrableOn (sievedReferenceError ∅ Φ A) (Iic T)) ∧
       Tendsto (fun T : ℝ => (∫ t in Iic T, |sievedReferenceError ∅ Φ A t|)/T) atTop (𝓝 0) := by
   let g := fun t : ℝ => integerReferenceWave Φ t - Real.exp (t/2)*A
-  have he : sievedReferenceError ∅ Φ A = g := funext fun t => by rw [sievedReferenceError,empty_reference hb]
+  have he : sievedReferenceError ∅ Φ A = g := funext fun t => by rw [sievedReferenceError,sievedIntegerReference_empty hb]
   have hp : IntegrableOn (fun t : ℝ => Real.exp (t/2)*A) (Iic 0) := by
     have hi' : IntegrableOn (fun t : ℝ => Real.exp ((1/2)*t)*A) (Iic (0:ℝ)) :=
       (integrableOn_exp_mul_Iic (by norm_num : (0:ℝ)<1/2) 0).mul_const A

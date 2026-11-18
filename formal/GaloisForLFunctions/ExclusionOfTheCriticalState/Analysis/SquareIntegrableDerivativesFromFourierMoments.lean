@@ -18,7 +18,7 @@ open HTGeometry
 
 /-- The squared translation symbol is bounded by the squared angular frequency
 times the squared lag. -/
-private theorem square_differenceSymbol_le (h ξ : ℝ) :
+theorem square_differenceSymbol_le (h ξ : ℝ) :
     ‖differenceSymbol h ξ‖^2 ≤ h^2*(2*Real.pi*ξ)^2 := by
   rw [normSq_differenceSymbol]
   calc 4*Real.sin (Real.pi*(h*ξ))^2 ≤ 4*(Real.pi*(h*ξ))^2 :=

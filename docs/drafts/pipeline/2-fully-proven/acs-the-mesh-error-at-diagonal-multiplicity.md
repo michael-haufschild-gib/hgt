@@ -1,0 +1,7 @@
+# Prime quadrature on the original mesh
+
+For every signed integer divisor $a$ on a horizon of length $L=3\,\mathrm{windowEnd}(N)$, adding back the exact ordinary floor loss leaves a discrepancy of at most $C\sqrt L$ between the log ordinary generator and the integrated prime contact. The constant is absolute and independent of all coefficients. On the square conductors this is $O(n)$ uniformly in multiplicity, including $m=n$. At diagonal multiplicity the error divided by $n^2$ therefore tends to zero.
+
+Write $r=\sum_i |a_i|$ for the original resolution. The spline and its first two derivatives have fixed uniform bounds by continuity and compact support. Consequently $G(u)=f_a(u)f_a(u+\log k)$ and its first two derivatives are bounded by $C r^2$, uniformly in the lag. For $x\ge1$ the second derivative of $F(x)=G(\log x)/x$ is $(G''-3G'+2G)(\log x)/x^3$. Its absolute integral on $[1,1+L]$ is at most $C r^2$.
+
+Both endpoints have zero weight, so the original harmonic sum equals the trapezoid rule with spacing $1/r$. Its error is at most $(5/4)r^{-2}\int |F''|=O(1)$. Multiplying by $2/\sqrt k$ gives a coefficient-independent error at every lag. The zero divisor gives zero directly. Summing against ordinary prime log weights uses $\sum_{k\le L}\Lambda(k)/\sqrt{k}\le34\sqrt L$. On square conductors $\sqrt L=O(n)$. This leaves the signed integrated prime sum and the exact floors at the diagonal comparison scale.

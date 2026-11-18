@@ -32,6 +32,7 @@ private theorem critical_increments_le_linear {W₀ : ℝ} (hW : 0 < W₀)
       hl.eventually_ge_atTop 1] with h hu hv
     exact (le_mul_of_one_le_left (integral_nonneg fun _ => sq_nonneg _) hv).trans hu
   obtain ⟨r,hr,hloc⟩ := mem_nhdsGT_iff_exists_Ioo_subset.1 he
+  change 0 < r at hr
   refine ⟨L+4/r,by positivity,fun h hh => ?_⟩
   by_cases hhr : h < r
   · exact (hloc (show h ∈ Ioo 0 r from ⟨hh,hhr⟩)).trans
@@ -41,7 +42,9 @@ private theorem critical_increments_le_linear {W₀ : ℝ} (hW : 0 < W₀)
   have hbound : (∫ u, (F u-F (u+h))^2) ≤ 4 := by
     calc _ ≤ ∫ u, (2*(F u)^2+2*(F (u+h))^2) := by
              apply integral_mono_of_nonneg (Eventually.of_forall fun _ => sq_nonneg _) hsum
-             exact Eventually.of_forall fun u => by nlinarith only [sq_nonneg (F u+F (u+h))]
+             exact Eventually.of_forall fun u => by
+               change (F u-F (u+h))^2 ≤ 2*(F u)^2+2*(F (u+h))^2
+               nlinarith only [sq_nonneg (F u+F (u+h))]
       _ = _ := by rw [integral_add (hhi.const_mul 2) ((hhi.comp_add_right h).const_mul 2),
                     integral_const_mul,integral_const_mul,integral_add_right_eq_self (fun u => F u^2),
                     hF.2.2.2.1]; norm_num
@@ -67,7 +70,7 @@ private theorem square_increment_of_tilt {F : ℝ → ℝ} (hd : CriticalHalfLin
     rw [Real.exp_zero,one_mul,← mul_sub,abs_mul,abs_of_nonneg hβ] at hx
     apply hx.trans (mul_le_mul_of_nonneg_left _ hβ)
     have hm := abs_min_sub_min_le_max u 0 (u+h) 0
-    simpa only [sub_self,abs_zero,max_eq_left (abs_nonneg _),show u-(u+h)=-h by ring,abs_neg,abs_of_pos hh] using hm
+    simpa only [sub_self,abs_zero,show u-(u+h)=-h by ring,abs_neg,abs_of_pos hh,max_eq_left hh.le] using hm
   have hpoint (u : ℝ) :
       (Real.exp (β*u)*F u-Real.exp (β*(u+h))*F (u+h))^2 ≤
       2*(F u-F (u+h))^2+2*(β*h)^2*(F (u+h))^2 := by
@@ -109,15 +112,16 @@ theorem criticalState_tilted_fractional_fourier_energy {W₀ : ℝ} (hW : 0 < W�
   have hi : Integrable (fun u => (f u:ℂ)) := hfd.integrable.ofReal
   have h2 : MemLp (fun u => (f u:ℂ)) 2 := (memLp_two_iff_integrable_sq_norm hi.aestronglyMeasurable).2
     (by simpa only [Complex.norm_real,Real.norm_eq_abs,sq_abs] using hfd.sq)
-  obtain ⟨K,hK,hbound⟩ := critical_increments_le_linear hW ht hF
+  obtain ⟨K,_,hbound⟩ := critical_increments_le_linear hW ht hF
   have hinc (h : ℝ) (hh : 0<h) (hh1 : h≤1) :
       (∫ u, ‖(f u:ℂ)-(f (u+h):ℂ)‖^2) ≤ (2*K+2*β^2)*h := by
     simpa only [← Complex.ofReal_sub,Complex.norm_real,Real.norm_eq_abs,sq_abs,f] using
       square_increment_of_tilt hd hF.2.2.2.1 hbound hβ hh hh1
-  have h := integrable_fractional_fourier_energy_of_square_increments hi h2 (by positivity) hinc hs hs1
+  have h := integrable_fractional_fourier_energy_of_square_increments hi h2 hinc hs hs1
   have hrep : (fun u : ℝ => (f u:ℂ)) =ᵐ[volume] (fun u : ℝ => ((Real.exp (β*u)*Φ u:ℝ):ℂ)) :=
     he.mono fun u hu => by simp [f,hu]
-  exact h.congr (Eventually.of_forall fun ξ => by rw [Real.fourier_congr_ae hrep ξ])
+  exact h.congr (Eventually.of_forall fun ξ =>
+    congrArg (fun z : ℂ => |ξ|^s*‖z‖^2) (Real.fourier_congr_ae hrep ξ))
 
 #print axioms criticalState_tilted_fractional_fourier_energy
 end GaloisForLFunctions.ExclusionOfTheCriticalState

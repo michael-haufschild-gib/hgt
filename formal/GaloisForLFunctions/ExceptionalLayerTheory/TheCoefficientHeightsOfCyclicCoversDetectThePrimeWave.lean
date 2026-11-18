@@ -33,7 +33,7 @@ theorem cyclicCoefficientHeight_complementary_sqrt :
   · have hzero : dyadicBinomialGcd j 0=1 := by
       induction j with
       | zero => simp [dyadicBinomialGcd,Nat.centralBinom]
-      | succ j ih => simp [dyadicBinomialGcd,ih,Nat.centralBinom]
+      | succ j _ => simp [dyadicBinomialGcd,Nat.centralBinom]
     change |cyclicCoefficientHeight q 0+Real.log (dyadicBinomialGcd j 0)-_| ≤ _
     simp [cyclicCoefficientHeight_zero hq,hzero]
   · have hx : n+1 ≤ q*n := by
@@ -102,7 +102,9 @@ theorem riemannHypothesis_iff_cyclicCoefficientHeight_first_means :
     let q := 2^(j+1)
     let A := (Real.log (2*q:ℕ)-B)/(q:ℝ)
     have hq : (q:ℝ)≠0 := by dsimp only [q]; positivity
-    have hAB : A*(q:ℝ)+B=Real.log (2*q:ℕ) := by rw [A,div_mul_cancel₀ _ hq,sub_add_cancel]
+    have hAB : A*(q:ℝ)+B=Real.log (2*q:ℕ) := by
+      dsimp only [A]
+      rw [div_mul_cancel₀ _ hq,sub_add_cancel]
     obtain ⟨K,hK,h⟩ := complementary_first_totals hb.le j hAB
     exact ⟨A,K+C,add_nonneg hK hC,height_bound_of_complement
       (fun N => by rw [add_comm]; exact h N) hh⟩

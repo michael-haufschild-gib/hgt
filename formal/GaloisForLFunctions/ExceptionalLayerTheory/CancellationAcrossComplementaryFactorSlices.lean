@@ -35,42 +35,42 @@ private theorem middle_divisor_block :
   have mono {a b : ℝ} (hz : a ≤ b) : P a ≤ P b := Real.rpow_le_rpow_of_exponent_le hx hz
   have one : P 1 = T := Real.rpow_one _
   let Z := (T : ℝ)/((d : ℝ)*e)
-  let λ₀ := 2*Z/(2*(A : ℝ))^3
+  let curvature := 2*Z/(2*(A : ℝ))^3
   let δ := P (-(4/100))
   have hZ : 0 < Z := div_pos hx₀ hde₀
-  have hλ : 0 < λ₀ := by dsimp [λ₀]; positivity
+  have curvature_pos : 0 < curvature := by dsimp [curvature]; positivity
   have hδ : 0 < δ := pos _
-  have hλid : λ₀*(4*((d : ℝ)*e)*(A : ℝ)^3)=T := by dsimp [λ₀,Z]; field_simp <;> ring
-  have sqrt_sq := Real.sq_sqrt hλ.le
-  have first : (A : ℝ)*Real.sqrt λ₀ ≤ P (255/1000) := by
+  have curvature_identity : curvature*(4*((d : ℝ)*e)*(A : ℝ)^3)=T := by dsimp [curvature,Z]; field_simp <;> ring
+  have sqrt_sq := Real.sq_sqrt curvature_pos.le
+  have first : (A : ℝ)*Real.sqrt curvature ≤ P (255/1000) := by
     have hlower : (T : ℝ) ≤ (P (255/1000))^2*(4*((d : ℝ)*e)*A) := by
       calc (T : ℝ) = (P (255/1000))^2*P (49/100) := by
               rw [←Real.rpow_natCast _ 2,powr,mul]; norm_num [P]
            _ ≤ _ := mul_le_mul_of_nonneg_left
               (hlo.trans (by nlinarith only [mul_le_mul_of_nonneg_right hd₁ (mul_nonneg (Nat.cast_nonneg e) hA₀.le),
                 mul_nonneg (Nat.cast_nonneg e) hA₀.le])) (sq_nonneg _)
-    have hs : ((A : ℝ)*Real.sqrt λ₀)^2*(4*((d : ℝ)*e)*A)=T := by
-      rw [mul_pow,sqrt_sq,←hλid]; ring
+    have hs : ((A : ℝ)*Real.sqrt curvature)^2*(4*((d : ℝ)*e)*A)=T := by
+      rw [mul_pow,sqrt_sq,←curvature_identity]; ring
     have hh := le_of_mul_le_mul_right (hs.trans_le hlower) (by positivity : 0 < 4*((d : ℝ)*e)*A)
-    nlinarith only [hh,(pos (255/1000)).le,mul_nonneg hA₀.le (Real.sqrt_nonneg λ₀)]
-  have second : 1/Real.sqrt λ₀ ≤ 2*((d : ℝ)*e)*P (265/1000) := by
+    nlinarith only [hh,(pos (255/1000)).le,mul_nonneg hA₀.le (Real.sqrt_nonneg curvature)]
+  have second : 1/Real.sqrt curvature ≤ 2*((d : ℝ)*e)*P (265/1000) := by
     have hcube := pow_le_pow_left₀ hA₀.le hhi 3
     change (A : ℝ)^3 ≤ (P (51/100))^3 at hcube
     have ht : (P (265/1000))^2*T = (P (51/100))^3 := by
       rw [←Real.rpow_natCast _ 2,←Real.rpow_natCast _ 3,powr,powr,←one,mul]; norm_num
-    have hs : (2*((d : ℝ)*e)*P (265/1000)*Real.sqrt λ₀)^2*(A : ℝ)^3 =
+    have hs : (2*((d : ℝ)*e)*P (265/1000)*Real.sqrt curvature)^2*(A : ℝ)^3 =
         ((d : ℝ)*e)*((P (265/1000))^2*T) := by
-      rw [mul_pow,sqrt_sq,←hλid]; ring
+      rw [mul_pow,sqrt_sq,←curvature_identity]; ring
     have hl := hcube.trans (le_mul_of_one_le_left (by positivity) hde)
     rw [←ht,←hs] at hl
     have hh := le_of_mul_le_mul_right (by simpa only [one_mul] using hl :
-      1*(A : ℝ)^3 ≤ (2*((d : ℝ)*e)*P (265/1000)*Real.sqrt λ₀)^2*(A : ℝ)^3) (pow_pos hA₀ 3)
-    apply (div_le_iff₀ (Real.sqrt_pos.mpr hλ)).mpr
-    nlinarith only [hh,show 0 ≤ 2*((d : ℝ)*e)*P (265/1000)*Real.sqrt λ₀ by positivity]
+      1*(A : ℝ)^3 ≤ (2*((d : ℝ)*e)*P (265/1000)*Real.sqrt curvature)^2*(A : ℝ)^3) (pow_pos hA₀ 3)
+    apply (div_le_iff₀ (Real.sqrt_pos.mpr curvature_pos)).mpr
+    nlinarith only [hh,show 0 ≤ 2*((d : ℝ)*e)*P (265/1000)*Real.sqrt curvature by positivity]
   have small : δ*(A : ℝ) ≤ P (47/100) := by
     apply (mul_le_mul_of_nonneg_left hhi hδ.le).trans_eq
     dsimp only [δ]; rw [mul]; norm_num
-  have large : ((A : ℝ)*Real.sqrt λ₀+1/Real.sqrt λ₀)/δ ≤ 3*((d : ℝ)*e)*P (47/100) := by
+  have large : ((A : ℝ)*Real.sqrt curvature+1/Real.sqrt curvature)/δ ≤ 3*((d : ℝ)*e)*P (47/100) := by
     apply (div_le_iff₀ hδ).mpr
     have hb : P (265/1000) ≤ P (47/100)*δ := by
       dsimp only [δ]; rw [mul]; apply mono; norm_num
@@ -248,7 +248,8 @@ theorem complementary_slice_power_bound :
     calc _ ≤ ∑ _v ∈ Ioc L lo, K*H := by
               apply sum_le_sum
               intro v _
-              rw [show g v = _ from rfl,abs_mul]
+              change |innerJump D v*centeredPrimeWeight R (T/v)| ≤ K*H
+              rw [abs_mul]
               exact (mul_le_mul (innerJump_pointwise_bound D v) (hw hR _) (abs_nonneg _)
                 (mul_nonneg (by norm_num) hmass₀)).trans hcoef
          _ ≤ _ := by
@@ -271,8 +272,7 @@ theorem complementary_slice_power_bound :
     have hpre (t : ℕ) (_ : t ≤ T) : |∑ v ∈ Ioc 0 t, innerJump D v| ≤ 1+mass (D+1) := by
       rw [show Ioc 0 t = Icc 1 t by ext v; simp only [mem_Ioc,mem_Icc]; omega]
       exact innerJump_prefix_bound D t
-    have hh := abs_quotient_tail_le mid (innerJump D) (centeredPrimeWeight R) hmass₀ (mul_nonneg hF (Nat.cast_nonneg R))
-      hpre (hw hR)
+    have hh := abs_quotient_tail_le mid (innerJump D) (centeredPrimeWeight R) hmass₀ hpre (hw hR)
     have hn : P (51/100) ≤ ((mid+1 : ℕ) : ℝ) := by
       have hh := Nat.succ_le_succ (le_max_right L ⌊P (51/100)⌋₊)
       push_cast

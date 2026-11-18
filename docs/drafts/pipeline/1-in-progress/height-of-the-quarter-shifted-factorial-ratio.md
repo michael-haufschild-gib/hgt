@@ -17,3 +17,5 @@ At an odd prime power $m$, multiples in row $a$ correspond to $1\le v\le qN/m$ w
 The largest row satisfies $(N+1)^{-1}\le P_{q-1}(N)/(q^N N!)\le1$, by $1-1/(qk)\ge k/(k+1)$ for $k\ge1$. The two-adic compensation gives the following estimate, with absolute error bounded by $\psi(qN)-\vartheta(qN)+\log(N+1)$:
 $$h_q(N)+\log C_j(N)=N\log(2q)+O(\sqrt{qN}),\qquad N\ge1.$$
 Can projective heights of the coefficient vectors on this cyclic cover be controlled independently of their prime-by-prime formula?
+
+The complementary-height estimate and the resulting cofinal first-mean criterion are [formalized](../3-formalized/cyclic-coefficient-heights-and-ordinary-prime-counts.md).

@@ -54,7 +54,7 @@ theorem short_first_row_bound :
     have h₁ := Real.log_le_log (by exact_mod_cast ht : (0 : ℝ) < (X/p : ℕ)) hTx
     have h₂ := Real.rpow_le_rpow (Nat.cast_nonneg (X/p)) hTx (by norm_num : (0 : ℝ) ≤ 49/100)
     have hb : |factorSlice D R X Y p| ≤ A := hh.trans (mul_le_mul
-      (mul_le_mul_of_nonneg_left (add_le_add_left h₁ 1) (by positivity)) h₂ (by positivity) (by positivity))
+      (mul_le_mul_of_nonneg_left (add_le_add (le_refl (1 : ℝ)) h₁) (by positivity)) h₂ (by positivity) (by positivity))
     have hc := (hs hD hR X Y).2 p prime hl
     have id : coprimeSlice D R X Y p =
         factorSlice D R X Y p-(factorSlice D R X Y p-coprimeSlice D R X Y p) := by ring
@@ -159,3 +159,86 @@ theorem short_first_partition {X : ℕ} (hx : 1 ≤ X) (D R : ℕ) :
   congr 1
   exact sum_congr rfl fun p hp => congrArg (vonMangoldt p*·) (clear p hp)
 
+private theorem logarithmic_short_first_bound :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ X : ℕ, 1 ≤ X →
+      let D := ⌊1+Real.log X⌋₊
+      |shortFirstRow D D X (productLower D X)| ≤ C*(1+Real.log X)^6*Real.sqrt X := by
+  obtain ⟨K,hK,h⟩ := short_first_row_bound
+  refine ⟨6*K,by positivity,fun X hx => ?_⟩
+  intro D
+  let H := 1+Real.log X
+  have hH : 1 ≤ H := le_add_of_nonneg_right (Real.log_natCast_nonneg X)
+  have hD : 1 ≤ D := (Nat.one_le_floor_iff _).mpr hH
+  have hd₀ : (D : ℝ) ≤ H := Nat.floor_le (zero_le_one.trans hH)
+  have hd₁ : ((D+1 : ℕ) : ℝ) ≤ 2*H := by push_cast; linarith only [hd₀,hH]
+  have hpow : (X : ℝ)^(99/200 : ℝ) ≤ Real.sqrt X := by
+    rw [Real.sqrt_eq_rpow]
+    exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hx) (by norm_num)
+  have ha := mul_le_mul (pow_le_pow_left₀ (Nat.cast_nonneg (D+1)) hd₁ 2)
+    (pow_le_pow_left₀ (Nat.cast_nonneg D) hd₀ 3) (by positivity) (by positivity)
+  have hb := mul_le_mul hd₁ hd₀ (Nat.cast_nonneg D) (by positivity)
+  have h₂ := pow_le_pow_right₀ hH (by norm_num : 2 ≤ 5)
+  have hbig : ((D+1 : ℕ) : ℝ)^2*(D : ℝ)^3 ≤ 4*H^5 := ha.trans_eq (by ring)
+  have hsm : ((D+1 : ℕ) : ℝ)*D ≤ 2*H^5 := hb.trans (by linarith only [h₂])
+  have hsum := add_le_add (mul_le_mul hbig hpow (by positivity) (by positivity))
+    (mul_le_mul_of_nonneg_right hsm (Real.sqrt_nonneg _))
+  apply (h hD hD hx (productLower D X)).trans
+  exact (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hsum hK) (zero_le_one.trans hH)).trans_eq
+    (by change K*(_+_)*H=6*K*H^6*Real.sqrt X; ring)
+
+/-- At arbitrary Vaughan widths the count is supported on first primes
+above a fixed positive power of the divided horizon, with the distinct
+reciprocal band also deleted. -/
+theorem long_first_prime_cofactors :
+    let row := fun X : ℕ =>
+      let D := ⌊1+Real.log X⌋₊
+      remainingPrimeProducts D D X
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ V W N : ℕ,
+      |cofactorCountError V W N-∑ d ∈ Icc 1 (min N W), Sieve.typeIIShort V d*row (N/d)| ≤
+        (∑ d ∈ Icc 1 W, |Sieve.typeIIShort V d|)*(K*(1+Real.log N)^6*Real.sqrt N) := by
+  intro row
+  let short := fun X : ℕ =>
+    let D := ⌊1+Real.log X⌋₊
+    shortFirstRow D D X (productLower D X)
+  let outside := fun X : ℕ =>
+    let D := ⌊1+Real.log X⌋₊
+    outsideReciprocalBand D D X (productLower D X)
+  obtain ⟨C,hC,h⟩ := outside_reciprocal_band_cofactors
+  obtain ⟨B,hB,hshort⟩ := logarithmic_short_first_bound
+  refine ⟨C+B,add_nonneg hC hB,fun V W N => ?_⟩
+  let S := Icc 1 (min N W)
+  let w := Sieve.typeIIShort V
+  let A := ∑ d ∈ Icc 1 W, |w d|
+  have hA : 0 ≤ A := sum_nonneg fun _ _ => abs_nonneg _
+  let H := 1+Real.log N
+  have hH : 1 ≤ H := le_add_of_nonneg_right (Real.log_natCast_nonneg N)
+  have hb := cofactor_sum_majorant short (fun x => B*(1+Real.log x)^6*Real.sqrt x)
+    (fun x => by have := Real.log_natCast_nonneg x; positivity) (fun x n hx hxn => by
+      have hlog := Real.log_le_log (by exact_mod_cast hx : (0 : ℝ)<x) (by exact_mod_cast hxn : (x : ℝ) ≤ n)
+      have hz := Real.log_natCast_nonneg x
+      exact mul_le_mul (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by positivity)
+        (add_le_add (le_refl (1 : ℝ)) hlog) 6) hB)
+        (Real.sqrt_le_sqrt (by exact_mod_cast hxn)) (Real.sqrt_nonneg _) (by have := Real.log_natCast_nonneg n; positivity)) hshort V W N
+  have hs : (∑ d ∈ S, w d*outside (N/d)) =
+      (∑ d ∈ S, w d*short (N/d))+(∑ d ∈ S, w d*row (N/d)) := by
+    rw [←sum_add_distrib]
+    apply sum_congr rfl
+    intro d hd
+    obtain ⟨hd₁,hd₂⟩ := mem_Icc.mp hd
+    have hx := (Nat.one_le_div_iff hd₁).mpr (hd₂.trans (min_le_left ..))
+    rw [←mul_add]
+    exact congrArg (w d*·) (short_first_partition hx _ _)
+  have he : cofactorCountError V W N-(∑ d ∈ S, w d*row (N/d)) =
+      (cofactorCountError V W N-(∑ d ∈ S, w d*outside (N/d)))+(∑ d ∈ S, w d*short (N/d)) := by rw [hs]; ring
+  change |cofactorCountError V W N-(∑ d ∈ S, w d*row (N/d))| ≤ A*((C+B)*H^6*Real.sqrt N)
+  rw [he]
+  apply (abs_add_le _ _).trans ((add_le_add (h V W N) hb).trans _)
+  have hh := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hH (by norm_num : 5 ≤ 6)) hC) (Real.sqrt_nonneg (N : ℝ))) hA
+  change A*(C*H^5*Real.sqrt N)+A*(B*H^6*Real.sqrt N) ≤ _
+  linarith only [hh]
+
+#print axioms short_first_row_bound
+#print axioms short_first_partition
+#print axioms long_first_prime_cofactors
+end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

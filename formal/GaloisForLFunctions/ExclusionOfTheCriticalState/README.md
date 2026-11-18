@@ -255,6 +255,9 @@ converge geometrically to $-\mathcal LF(0)/2$. The kernels are $t^n e^{-t}/n!$ o
 Uniform frequency control gives the same signed limit at every late centre on positive windows
 with uniformly bounded centred second moment. [Bounded-width windows](Wall/PositiveLocalAveragesOfTheOrdinaryPrimeError.lean).
 
+For the integer reference error $D=N-Ae^{t/2}$, exponential integration gives a bounded floor-discrepancy integral. On each line $\sigma=1/2-\lambda$, $0\le\lambda<1/2$, its normalized primitive $B=e^{-\sigma t}\int_{-\infty}^t e^{v/2}D(v)dv$ belongs to $L^1\cap L^2$ and has Fourier transform $\widehat{e^{\lambda u}\Phi}(\xi)\,\zeta(s)/s$, $s=\sigma+2\pi i\xi$. Differentiation recovers $e^{\lambda t}D=B'+\sigma B$. [Integer primitive and multiplier](Wall/IntegerQuadratureAsAFractionalPartConvolution.lean).
+
+
 The equal-prime term of the covariance, divided by the observation time, tends to the
 state autocorrelation at every fixed lag. At zero lag the coefficient is one. The squared
 increment recovers $8a\int F^2e^{-8u}$ after taking the prime limit and then the short-lag limit.
