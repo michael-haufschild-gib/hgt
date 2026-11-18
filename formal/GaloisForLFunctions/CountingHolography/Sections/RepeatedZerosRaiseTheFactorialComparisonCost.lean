@@ -306,7 +306,7 @@ private theorem average_disk_zeros (S : Finset ℝ) (z : ℝ → ℂ) (M : ℂ) 
 product of the normalized distances to every finite cluster of critical zeros. -/
 theorem factorial_budget_at_cluster_of_critical_zeros {C R : ℝ} (hR : 0 < R) (hR' : R < 1/2)
     {ρ : ℂ} (hρ : ρ.re = 1/2) (hzero : riemannZeta ρ = 0) (S : Finset ℝ)
-    (hS : ∀ y ∈ S, y ≠ 0 ∧ |y| < R ∧ riemannZeta (ρ+(y:ℂ)*I) = 0)
+    (hS : ∀ y ∈ S, y ≠ 0 ∧ |y| < R ∧ riemannZeta (ρ+(y:ℂ)*Complex.I) = 0)
     (hbudget : ∀ᶠ X : ℝ in atTop, ∃ (m : ℕ) (c : Fin m → ℂ) (a : Fin m → ℝ),
       (∀ j, 0 < a j) ∧ IntegrableOn (fun v => ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖) (Ioi 0) ∧
       (∀ v > 0, ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖ ≤ C*X^(1/2:ℝ)) ∧
@@ -321,15 +321,15 @@ theorem factorial_budget_at_cluster_of_critical_zeros {C R : ℝ} (hR : 0 < R) (
       ((le_add_of_nonneg_right (zero_le_one : (0:ℝ) ≤ 1)).trans (Real.add_one_le_exp _)))
   choose m c a ha hE hcap hmass using fun u => hT (X u) (hlarge u)
   let w := fun z : ℂ => ρ+(R:ℂ)*z
-  let z := fun y : ℝ => (y:ℂ)*I/(R:ℂ)
+  let z := fun y : ℝ => (y:ℂ)*Complex.I/(R:ℂ)
   let F := fun (u : ℝ) (v : ℂ) => Complex.exp (-(Real.log (X u):ℂ)*ρ) *
     residual (c u) (a u) (X u) (w v)
   have hstrip {v : ℂ} (hv : v ∈ Metric.ball 0 1) : 1/2-R < (w v).re ∧ (w v).re < 1/2+R := by
-    have h := mul_lt_mul_of_pos_left ((abs_re_le_norm v).trans_lt
+    have h := mul_lt_mul_of_pos_left ((Complex.abs_re_le_norm v).trans_lt
       (by simpa only [Metric.mem_ball,dist_zero_right] using hv : ‖v‖ < 1)) hR
-    rw [← abs_of_pos hR,← abs_mul,mul_one,abs_of_pos hR] at h
+    have hab : |R*v.re| < R := by simpa only [abs_mul,abs_of_pos hR,mul_one] using h
     simp only [w,Complex.add_re,hρ,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,zero_mul,sub_zero]
-    obtain ⟨l,r⟩ := abs_lt.mp h
+    obtain ⟨l,r⟩ := abs_lt.mp hab
     constructor <;> linarith only [l,r]
   have hden : 0 < 1/2-R := sub_pos.mpr hR'
   have hD (u : ℝ) : DifferentiableOn ℂ (F u) (Metric.ball 0 1) := by
@@ -345,7 +345,8 @@ theorem factorial_budget_at_cluster_of_critical_zeros {C R : ℝ} (hR : 0 < R) (
     exact (hd.const_mul _).differentiableWithinAt
   have hnorm (u : ℝ) (v : ℂ) : ‖F u v‖ =
       ‖residual (c u) (a u) (X u) (w v)‖/(X u)^(1/2:ℝ) := by
-    rw [F,norm_mul,neg_mul,Complex.exp_neg,norm_inv,norm_scale (Real.exp_pos _),hρ]
+    change ‖Complex.exp (-(Real.log (X u):ℂ)*ρ)*residual (c u) (a u) (X u) (w v)‖ = _
+    rw [norm_mul,neg_mul,Complex.exp_neg,norm_inv,norm_scale (Real.exp_pos _),hρ]
     ring
   have hB (u : ℝ) (v : ℂ) (hv : v ∈ Metric.ball 0 1) : ‖F u v‖ ≤ C/(1/2-R) := by
     obtain ⟨hl,hr⟩ := hstrip hv
@@ -354,7 +355,7 @@ theorem factorial_budget_at_cluster_of_critical_zeros {C R : ℝ} (hR : 0 < R) (
     have h' := (mul_le_mul_of_nonneg_right hl.le (norm_nonneg _)).trans h
     rw [hnorm,div_le_div_iff₀ (Real.rpow_pos_of_pos (Real.exp_pos _) _) hden]
     simpa only [mul_comm] using h'
-  have hwz (y : ℝ) : w (z y) = ρ+(y:ℂ)*I := by
+  have hwz (y : ℝ) : w (z y) = ρ+(y:ℂ)*Complex.I := by
     dsimp only [w,z]; field_simp [Complex.ofReal_ne_zero.mpr hR.ne']
   have heval (u : ℝ) {s : ℂ} (hs : riemannZeta (w s) = 0) : F u s =
       Complex.exp ((Real.log (X u):ℂ)*(w s-ρ))*mellin squarePrimeWeight (w s) := by

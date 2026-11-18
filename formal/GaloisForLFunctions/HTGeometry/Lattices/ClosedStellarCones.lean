@@ -18,6 +18,7 @@ Coordinates outside that face may vanish. -/
 def stellarFaceGenerator (b : Basis ι ℝ E) (a : ι → ℝ) (i j : ι) : E :=
   if j=i then b.equivFun.symm a else b j
 
+/-- Closed cone with one generator replaced by the new ray. -/
 def stellarFaceChild (b : Basis ι ℝ E) (a : ι → ℝ) (i : ι) :=
   PointedCone.hull ℝ (Set.range (stellarFaceGenerator b a i))
 
@@ -26,11 +27,16 @@ private theorem child_coordinates (b : Basis ι ℝ E) (a c : ι → ℝ) (i j :
       c i*a j + if j=i then 0 else c j := by
   have h (k : ι) : b.equivFun (stellarFaceGenerator b a i k) j =
       if k=i then a j else if k=j then 1 else 0 := by
-    by_cases hk : k=i <;> simp [stellarFaceGenerator,hk,Basis.equivFun_self]
+    by_cases hk : k=i
+    · rw [stellarFaceGenerator,if_pos hk,LinearEquiv.apply_symm_apply,if_pos hk]
+    · simp [stellarFaceGenerator,hk,Basis.equivFun_self]
   simp only [map_sum,map_smul,Finset.sum_apply,Pi.smul_apply,smul_eq_mul,h]
   by_cases hj : j = i
   · subst j
-    simp [mul_ite]
+    have hs (k : ι) : c k*(if k=i then a i else if k=i then (1:ℝ) else 0) =
+        if k=i then c i*a i else 0 := by by_cases hk : k=i <;> simp [hk]
+    simp only [hs]
+    simp
   · have hh (k : ι) : c k*(if k=i then a j else if k=j then 1 else 0) =
         (if k=i then c i*a j else 0)+(if k=j then c j else 0) := by
       by_cases hk : k=i <;> by_cases hk' : k=j <;> simp_all
@@ -56,9 +62,12 @@ theorem stellarFaceChild_iff (b : Basis ι ℝ E) (a : ι → ℝ) (i : ι) (hi 
   rw [child_mem_exists]
   constructor
   · rintro ⟨c,hc,rfl⟩
-    simp only [child_coordinates,if_pos rfl,add_zero,mul_div_cancel_right₀ _ hi.ne']
+    have hii : b.equivFun (∑ k, c k • stellarFaceGenerator b a i k) i = c i*a i := by
+      rw [child_coordinates,if_pos rfl,add_zero]
+    rw [hii,mul_div_cancel_right₀ _ hi.ne']
     refine ⟨mul_nonneg (hc i) hi.le,fun j => ?_⟩
-    split_ifs <;> simp_all
+    rw [child_coordinates]
+    exact le_add_of_nonneg_right (by split_ifs <;> first | exact le_rfl | exact hc j)
   · rintro ⟨hyi,hmin⟩
     let r := b.equivFun y i/a i
     let c (j : ι) := if j=i then r else b.equivFun y j-r*a j
@@ -72,7 +81,6 @@ theorem stellarFaceChild_iff (b : Basis ι ℝ E) (a : ι → ℝ) (i : ι) (hi 
       · subst j
         simp [c,r,hi.ne']
       · simp [c,hj]
-        ring
 
 /-- The closed children cover the entire parent cone, including every
 coordinate wall. The support may be a proper face of the parent. -/
@@ -80,7 +88,8 @@ theorem stellarFaceChild_cover (b : Basis ι ℝ E) (a : ι → ℝ) (hn : ∀ i
     (hp : ∃ i, 0 < a i) :
     (lotzBasisCone b : Set E) = ⋃ i : {j // 0 < a j}, (stellarFaceChild b a i.val : Set E) := by
   ext y
-  rw [Set.mem_iUnion,lotzBasisCone_mem]
+  rw [Set.mem_iUnion]
+  change (∀ j, 0 ≤ b.equivFun y j) ↔ ∃ i : {j // 0 < a j}, y ∈ stellarFaceChild b a i.val
   constructor
   · intro hy
     let S := univ.filter fun i => 0 < a i

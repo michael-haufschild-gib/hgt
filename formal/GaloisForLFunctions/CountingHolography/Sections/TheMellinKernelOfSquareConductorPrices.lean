@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.Sieve.LinearRangeVariable
 import GaloisForLFunctions.RHTower.Suzuki.SuzukiMellinConvolution
 import GaloisForLFunctions.CountingHolography.Sections.SquareGeneratorPrefix
 import GaloisForLFunctions.CountingHolography.Sections.ThePrimeExponentsOnTheSquareDiagonal
@@ -636,12 +637,8 @@ theorem squareConductorContinuation_zero_residue {ρ : ℂ} (hζ : riemannZeta �
   refine hh.congr fun s => ?_
   dsimp only [Function.comp_apply,z,c,squareConductorContinuation,logDeriv_apply]; ring
 
-private theorem squareMellin_one : mellin squarePrimeWeight 1 = 0 := by
-  rw [mellin_squarePrimeWeight_formula]
-  have hl : (Real.log 4:ℝ) = 2*Real.log 2 := by rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]; norm_num
-  have he : ((1:ℂ)-1/2)*(Real.log 4:ℝ) = (Real.log 2:ℝ) := by rw [hl]; push_cast; ring
-  rw [he,← Complex.ofReal_exp,Real.exp_log (by norm_num : (0:ℝ)<2)]
-  norm_num
+private theorem squareMellin_one : mellin squarePrimeWeight 1=0 := by
+  simpa only [mellin,sub_self,Complex.cpow_zero,one_smul] using squarePrimeWeight_mean_zero
 
 /-- Analytic representative at the real polar point. The divided difference
 of the Mellin weight cancels the simple pole of the logarithmic derivative. -/
@@ -685,6 +682,135 @@ theorem analyticAt_squarePriceRegularContinuation_real {t : ℝ} (ht : 3 < t) :
   rw [hz,he]
   exact Complex.ofReal_ne_zero.mpr hr.ne'
 
+/-- The primitive of the signed weight, in the positive prime coordinate. -/
+def squarePrimeCumulativeWeight (v : ℝ) := ∫ x in (0:ℝ)..v, (squarePrimeWeight x).re
+
+private theorem squareWeight_measurable : Measurable squarePrimeWeight := by
+  have hh := continuous_splineAutoCorr.measurable
+  unfold squarePrimeWeight squareLogProfile
+  fun_prop
+
+private theorem squareWeight_integrable : IntegrableOn squarePrimeWeight (Set.Ioi 0) := by
+  simpa only [MellinConvergent,sub_self,Complex.cpow_zero,one_smul] using mellinConvergent_squarePrimeWeight 1
+
+/-- The discrepancy in summation order is the negative derivative of the signed
+Mellin weight at one. Translation by log four determines its exact value. -/
+theorem squarePrimeWeight_deriv_boundary_mass :
+    deriv (mellin squarePrimeWeight) 1=(-(4*squareAutocorrelationMass*Real.log 2):ℝ) := by
+  let a := Real.exp (-8)
+  let b := Real.exp (8+Real.log 4)
+  have hl : LocallyIntegrableOn squarePrimeWeight (Set.Ioi 0) :=
+    (continuousOn_of_forall_continuousAt (fun x hx => continuousAt_squarePrimeWeight hx)).locallyIntegrableOn measurableSet_Ioi
+  have htop : Asymptotics.IsBigO atTop squarePrimeWeight (fun t : ℝ => t^(-(2:ℝ))) := by
+    apply Asymptotics.IsBigO.of_bound 0
+    filter_upwards [eventually_gt_atTop b] with t ht
+    rw [squarePrimeWeight_zero_outside ((Real.exp_pos _).trans ht) (fun hh => ht.not_ge hh.2),norm_zero,zero_mul]
+  have hbot : Asymptotics.IsBigO (nhdsWithin 0 (Set.Ioi 0)) squarePrimeWeight (fun t : ℝ => t^(-(0:ℝ))) := by
+    apply Asymptotics.IsBigO.of_bound 0
+    filter_upwards [self_mem_nhdsWithin,mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds (Real.exp_pos (-8)))] with t ht ht'
+    rw [squarePrimeWeight_zero_outside ht (fun hh => ht'.not_ge hh.1),norm_zero,zero_mul]
+  have hd := (mellin_hasDerivAt_of_isBigO_rpow hl htop (by norm_num : (1:ℂ).re < 2) hbot
+    (by norm_num : (0:ℝ) < (1:ℂ).re)).2
+  rw [hd.deriv,_root_.RHTower.mellin_eq_integral_exp_neg_mul_log]
+  let F := fun u : ℝ => ((u*squareLogProfile u)*Real.exp (u/2):ℝ)
+  have he (u : ℝ) : Complex.exp (-(1:ℂ)*u)*(Real.log (Real.exp (-u)) • squarePrimeWeight (Real.exp (-u))) =
+      (F (-u):ℂ) := by
+    simp only [squarePrimeWeight,Real.log_exp,neg_neg,neg_one_mul,Complex.real_smul,F]
+    rw [← Complex.ofReal_neg,← Complex.ofReal_exp]
+    push_cast
+    have h := Real.exp_add (-u) (u/2)
+    rw [show -u+u/2= -u/2 by ring] at h
+    exact_mod_cast (show Real.exp (-u)*(-u*(Real.exp (u/2)*squareLogProfile (-u))) =
+      -u*squareLogProfile (-u)*Real.exp (-u/2) by rw [h]; ring)
+  simp_rw [he]
+  rw [integral_complex_ofReal,integral_neg_eq_self F volume]
+  change ((∫ u : ℝ, (u*squareLogProfile u)*Real.exp (u/2)):ℂ)=_
+  rw [squareLogProfile_first_half_moment,show Real.log 4=2*Real.log 2 by
+    rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]; norm_num]
+  push_cast; ring
+
+/-- The primitive is a moving integral of the nonnegative autocorrelation. -/
+theorem squarePrimeCumulativeWeight_eq {v : ℝ} (hv : 0 < v) :
+    squarePrimeCumulativeWeight v =
+      2*∫ t in Real.log v-Real.log 4..Real.log v, splineAutoCorr t*Real.exp (t/2) := by
+  let U := Real.log v
+  let d := Real.log 4
+  let a := min (U-1) (-9)
+  let F := fun u : ℝ => splineAutoCorr u*Real.exp (u/2)
+  let w := fun x : ℝ => (squarePrimeWeight x).re
+  have hF : Continuous F := continuous_splineAutoCorr.mul (by fun_prop)
+  have hwi {x y : ℝ} (hx : 0 ≤ x) (hxy : x ≤ y) : IntervalIntegrable w volume x y :=
+    (intervalIntegrable_iff_integrableOn_Ioc_of_le hxy).mpr
+      (squareWeight_integrable.re.mono_set fun t ht => hx.trans_lt ht.1)
+  have hlow : a ≤ -9 := min_le_right _ _
+  have hau : a ≤ U := (min_le_left _ _).trans (by linarith)
+  have hbase : Real.exp a ≤ v := (Real.exp_le_exp.mpr hau).trans_eq (Real.exp_log hv)
+  have ht : (∫ x in (0:ℝ)..Real.exp a, w x)=0 := by
+    rw [intervalIntegral.integral_of_le (Real.exp_pos a).le]
+    apply setIntegral_eq_zero_of_forall_eq_zero
+    intro x hx
+    have : x < Real.exp (-8) := hx.2.trans_lt (Real.exp_lt_exp.mpr (by linarith only [hlow]))
+    simp only [w,squarePrimeWeight_zero_outside hx.1 (fun hh => this.not_ge hh.1),Complex.zero_re]
+  have hd : 0 ≤ d := Real.log_nonneg (by norm_num)
+  have hdexp : Real.exp (d/2)=2 := by
+    dsimp only [d]; rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]
+    rw [show (2:ℝ)*Real.log 2/2=Real.log 2 by ring,Real.exp_log (by norm_num)]
+  have he (t : ℝ) : Real.exp t*w (Real.exp t)=2*F t-2*F (t-d) := by
+    have hh : Real.exp ((t-d)/2)*2=Real.exp (t/2) := by
+      rw [← hdexp,← Real.exp_add]; congr 1; ring
+    simp only [w,squarePrimeWeight,squareLogProfile,Real.log_exp,Complex.ofReal_re,F]
+    rw [show Real.exp t*(Real.exp (-t/2)*(2*splineAutoCorr t-splineAutoCorr (t-Real.log 4)))=
+        (2*splineAutoCorr t-splineAutoCorr (t-d))*Real.exp (t/2) by
+          rw [← show t+(-t/2)=t/2 by ring,Real.exp_add]; ring]
+    linear_combination -splineAutoCorr (t-d)*hh
+  have hbottom : (∫ t in a-d..a, F t)=0 := by
+    rw [intervalIntegral.integral_of_le (sub_le_self a hd)]
+    apply setIntegral_eq_zero_of_forall_eq_zero
+    intro t ht
+    have h : 8 < |t| := by linarith only [ht.2,hlow,neg_abs_le t]
+    simp only [F,splineAutoCorr_zero_outside h,zero_mul]
+  have h₁ := intervalIntegral.integral_add_adjacent_intervals (hF.intervalIntegrable (a-d) a) (hF.intervalIntegrable a U)
+  have h₂ := intervalIntegral.integral_add_adjacent_intervals (hF.intervalIntegrable (a-d) (U-d)) (hF.intervalIntegrable (U-d) U)
+  rw [hbottom,zero_add] at h₁
+  change (∫ x in (0:ℝ)..v, w x)=_
+  rw [← intervalIntegral.integral_add_adjacent_intervals (hwi le_rfl (Real.exp_pos _).le) (hwi (Real.exp_pos _).le hbase),ht,zero_add,
+    intervalIntegral.integral_of_le hbase,← Real.exp_log hv,Sieve.integral_Ioc_eq_integral_log w a U,
+    ← intervalIntegral.integral_of_le hau,show (fun t => Real.exp t*w (Real.exp t))=(fun t => 2*F t-2*F (t-d)) from funext he,
+    intervalIntegral.integral_sub ((hF.const_mul 2).intervalIntegrable _ _) (((hF.comp (continuous_id.sub continuous_const)).const_mul 2).intervalIntegrable _ _),
+    intervalIntegral.integral_const_mul,intervalIntegral.integral_const_mul,intervalIntegral.integral_comp_sub_right]
+  change 2*(∫ t in a..U, F t)-2*(∫ t in a-d..U-d, F t)=2*∫ t in U-d..U, F t
+  linarith only [h₁,h₂]
+
+theorem squarePrimeCumulativeWeight_nonneg {v : ℝ} (hv : 0 < v) : 0 ≤ squarePrimeCumulativeWeight v := by
+  rw [squarePrimeCumulativeWeight_eq hv]
+  exact mul_nonneg two_pos.le (intervalIntegral.integral_nonneg (sub_le_self _ (Real.log_nonneg (by norm_num)))
+    (fun t _ => mul_nonneg (splineAutoCorr_nonneg t) (Real.exp_pos _).le))
+
+/-- Integrating a fourth-power prime row is a difference of positive endpoints. -/
+theorem squarePrime_fourthPower_integral {p N M : ℝ} (hp : 0 < p) (hN : 0 < N) (hNM : N ≤ M) :
+    (∫ t in N..M, 2/t^3*(squarePrimeWeight (p/t^2)).re) =
+      (squarePrimeCumulativeWeight (p/N^2)-squarePrimeCumulativeWeight (p/M^2))/p := by
+  let A := squarePrimeCumulativeWeight
+  have hd (y : ℝ) (hy : 0 < y) : HasDerivAt A (squarePrimeWeight y).re y := by
+    have hi := (intervalIntegrable_iff_integrableOn_Ioc_of_le hy.le).mpr
+      (squareWeight_integrable.re.mono_set (Set.Ioc_subset_Ioi_self (b := y)))
+    apply intervalIntegral.integral_hasDerivAt_right hi _ (continuousAt_squarePrimeWeight hy).re
+    exact (Complex.continuous_re.measurable.comp squareWeight_measurable).aestronglyMeasurable.stronglyMeasurableAtFilter
+  let f := fun t : ℝ => -A (p/t^2)/p
+  let u := fun t : ℝ => 2/t^3*(squarePrimeWeight (p/t^2)).re
+  have he (t : ℝ) (ht : 0 < t) : HasDerivAt f (u t) t := by
+    have hinner := (hasDerivAt_const t p).div ((hasDerivAt_id t).pow 2) (sq_pos_of_pos ht).ne'
+    convert (((hd _ (div_pos hp (sq_pos_of_pos ht))).comp t hinner).neg.div_const p) using 1
+    dsimp only [u]; field_simp [hp.ne',ht.ne'] <;> ring
+  have hu : ContinuousOn u (Set.uIcc N M) := by
+    intro t ht
+    have ht' : 0 < t := hN.trans_le ((Set.uIcc_of_le hNM ▸ ht).1)
+    exact ((continuousAt_const.div (continuousAt_id.pow 3) (pow_ne_zero _ ht'.ne')).mul
+      ((continuousAt_squarePrimeWeight (div_pos hp (sq_pos_of_pos ht'))).re.comp
+        (continuousAt_const.div (continuousAt_id.pow 2) (sq_pos_of_pos ht').ne'))).continuousWithinAt
+  have h := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t ht => he t (hN.trans_le ((Set.uIcc_of_le hNM ▸ ht).1))) hu.intervalIntegrable
+  exact h.trans (by dsimp only [f,A]; ring)
+
 private def linearCutoff := (Set.Ioc (0:ℝ) 1).indicator fun x : ℝ => (x:ℂ)
 
 /-- The signed prime weight of the unweighted prefix is the convolution of
@@ -714,7 +840,7 @@ private theorem hasMellin_linearCutoff {s : ℂ} (hs : -1 < s.re) :
 /-- The Mellin multiplier of passing to the complete conductor prefix. -/
 theorem mellin_squarePrefixPrimeWeight {s : ℂ} (hs : -1 < s.re) :
     mellin squarePrefixPrimeWeight s=mellin squarePrimeWeight s/(s+1) := by
-  have hm : Measurable squarePrimeWeight := by unfold squarePrimeWeight squareLogProfile; fun_prop (disch := exact continuous_splineAutoCorr.measurable)
+  have hm := squareWeight_measurable
   have h := hasMellin_linearCutoff hs
   simpa only [squarePrefixPrimeWeight,h.2,mul_one_div] using
     (mellin_positiveMellinConvolution hm (Complex.continuous_ofReal.measurable.indicator measurableSet_Ioc)
@@ -792,5 +918,124 @@ theorem squarePrefixPrimeWeight_radial {v : ℝ} (hv : 0 < v) :
   have hscale : v*T*T=1 := by rw [mul_assoc,← sq,hsq,mul_inv_cancel₀ hv.ne']
   have hscale' : (v:ℂ)*(T:ℂ)*(T:ℂ)=1 := by exact_mod_cast hscale
   linear_combination ((2:ℂ)*r*squarePrimeWeight (v/r^2))*hscale'
+
+private theorem prefix_mesh_indices {m n : ℕ} (h : m ≤ n) :
+    meshIndices squareConductorBVWindow m ⊆ meshIndices squareConductorBVWindow n := by
+  intro k hk
+  exact mem_Ioc.mpr ⟨(mem_Ioc.mp hk).1,((mem_Ioc.mp hk).2).trans (Nat.floor_mono
+    (pow_le_pow_left₀ (div_nonneg (Nat.cast_nonneg _) squareConductorBVWindow.lower_pos.le)
+      (div_le_div_of_nonneg_right (Nat.cast_le.mpr h) squareConductorBVWindow.lower_pos.le) 2))⟩
+
+private theorem prefix_mesh_row {n N : ℕ} (hn : 0 < n) (hN : n ≤ N) :
+    squareConductorPrice n = (∑ k ∈ (meshIndices squareConductorBVWindow N).filter Nat.Prime,
+      rootMeshRow squareConductorBVWindow n k)+priceRounding n := by
+  let W := squareConductorBVWindow
+  have h := sum_filter_add_sum_filter_not (s := meshIndices W n) (f := rootMeshRow W n) Nat.Prime
+  have h₀ : squareMeshReading W n-conductorPrimePowerError W n =
+      ∑ k ∈ (meshIndices W n).filter Nat.Prime, rootMeshRow W n k := by
+    change (∑ k ∈ meshIndices W n, _)-_=_
+    rw [← h,add_sub_cancel_right]
+  rw [price_decomposition hn,h₀]
+  congr 1
+  refine sum_subset (filter_subset_filter Nat.Prime (prefix_mesh_indices hN)) ?_
+  intro k hk hn'
+  by_contra hne
+  exact hn' (mem_filter.mpr ⟨mesh_support W n k hne,(mem_filter.mp hk).2⟩)
+
+private theorem prefix_mesh_column (N k : ℕ) (hn : 0 < N) (hk : k.Prime) :
+    ‖(∑ n ∈ Ioc 0 N, rootMeshRow squareConductorBVWindow n k) -
+      ((N:ℂ)^2*Real.log k)*squarePrefixPrimeWeight ((k:ℝ)/(N:ℝ)^2)‖ ≤
+      (Real.log k*Real.sqrt k)*(eVariationOn squareConductorBVWindow.toFun Set.univ).toReal := by
+  let W := squareConductorBVWindow
+  let r := Real.sqrt k
+  let D := (N:ℝ)/r
+  have hN : 0 < (N:ℝ) := Nat.cast_pos.mpr hn
+  have hk' : 0 < (k:ℝ) := Nat.cast_pos.mpr hk.pos
+  have hr : 0 < r := Real.sqrt_pos.mpr hk'
+  have hsq : r^2=(k:ℝ) := Real.sq_sqrt hk'.le
+  let V := (eVariationOn W.toFun Set.univ).toReal
+  let S := ∑ i ∈ range N, W (((i:ℝ)+1)/r)
+  let I := ∫ t in (0:ℝ)..D, W t
+  have hquad := HTGeometry.norm_rightEndpoint_riemannSum_sub_integral_le_eVariationOn (g := W.toFun)
+    (k := r) hr (n := N) W.integrable.intervalIntegrable (W.boundedVariation.mono (Set.subset_univ _))
+  have hsmall : ‖(1/r) • S-I‖ ≤ (1/r)*V := hquad.trans
+    (mul_le_mul_of_nonneg_left (ENNReal.toReal_mono W.boundedVariation (eVariationOn.mono _ (Set.subset_univ _)))
+      (one_div_nonneg.mpr hr.le))
+  have hsum : (∑ n ∈ Ioc 0 N, rootMeshRow W n k)=(Real.log k:ℂ)*r*S := by
+    have hI (m : ℕ) : (∑ n ∈ Ioc 0 m, W ((n:ℝ)/r))=∑ i ∈ range m, W (((i:ℝ)+1)/r) := by
+      induction m with
+      | zero => simp
+      | succ m ih => rw [sum_Ioc_succ_top (Nat.zero_le _),Finset.sum_range_succ,ih,Nat.cast_succ]
+    simp only [rootMeshRow,vonMangoldt_apply_prime hk,← mul_sum,hI,S,r]
+  have harg : 1/Real.sqrt ((k:ℝ)/(N:ℝ)^2)=D := by
+    rw [Real.sqrt_div hk'.le,Real.sqrt_sq hN.le]; dsimp only [D,r]; field_simp [hN.ne',(Real.sqrt_pos.mpr hk').ne']
+  have hV : squarePrefixPrimeWeight ((k:ℝ)/(N:ℝ)^2)=(((k:ℝ)/(N:ℝ)^2:ℝ):ℂ)*I := by
+    rw [squarePrefixPrimeWeight_primitive (div_pos hk' (sq_pos_of_pos hN)),harg]
+  have hc : (r:ℂ)^2=(k:ℂ) := by exact_mod_cast hsq
+  rw [hsum,hV]
+  have he : (Real.log k:ℂ)*r*S-(N:ℂ)^2*Real.log k*((((k:ℝ)/(N:ℝ)^2:ℝ):ℂ)*I) =
+      ((Real.log k:ℂ)*(k:ℂ))*((1/r) • S-I) := by
+    rw [Complex.real_smul]
+    push_cast
+    rw [← hc]
+    field_simp [Complex.ofReal_ne_zero.mpr hr.ne',Nat.cast_ne_zero.mpr hn.ne' : (N:ℂ)≠0] <;> ring
+  rw [he,norm_mul,norm_mul,Complex.norm_real,Real.norm_of_nonneg (Real.log_natCast_nonneg _),
+    Complex.norm_natCast]
+  refine (mul_le_mul_of_nonneg_left hsmall (mul_nonneg (Real.log_natCast_nonneg _) hk'.le)).trans_eq ?_
+  change Real.log k*k*((1/r)*V)=Real.log k*r*V
+  rw [← hsq]; field_simp [hr.ne'] <;> ring
+
+/-- The actual logarithm of the reduced rational prefix has the integrated
+prime profile with a uniform cubic error, including prime valuation rounding. -/
+theorem squareGeneratorPrefix_prime_profile : ∃ C : ℝ, 0 ≤ C ∧ ∀ {N : ℕ}, 0 < N →
+    ‖(Real.log (squareGeneratorPrefix N:ℝ):ℂ) -
+      (N:ℂ)^2*∑ k ∈ (meshIndices squareConductorBVWindow N).filter Nat.Prime,
+        (Real.log k:ℂ)*squarePrefixPrimeWeight ((k:ℝ)/(N:ℝ)^2)‖ ≤ C*(N:ℝ)^3 := by
+  obtain ⟨C,hC,h⟩ := diagonal_prime_exponent_profile_error
+  let W := squareConductorBVWindow
+  let V := (eVariationOn W.toFun Set.univ).toReal
+  have hV : 0 ≤ V := ENNReal.toReal_nonneg
+  have hw := W.lower_pos
+  refine ⟨C+7*V/W.lower^3,by positivity,fun {N} hn => ?_⟩
+  let primes := (meshIndices W N).filter Nat.Prime
+  let Y := (N:ℝ)/W.lower
+  have hY : 0 ≤ Y := div_nonneg (Nat.cast_nonneg _) hw.le
+  have hmass : (∑ k ∈ primes, vonMangoldt k) ≤ 7*Y^2 := by
+    have hsub : primes ⊆ Icc 1 ⌊Y^2⌋₊ := fun k hk =>
+      mem_Icc.mpr ⟨(mem_Ioc.mp (mem_filter.mp hk).1).1,(mem_Ioc.mp (mem_filter.mp hk).1).2⟩
+    exact (sum_le_sum_of_subset_of_nonneg hsub (fun _ _ _ => vonMangoldt_nonneg)).trans
+      ((_root_.RHTower.sum_vonMangoldt_Icc_le_seven _).trans (mul_le_mul_of_nonneg_left
+        (Nat.floor_le (sq_nonneg Y)) (by norm_num)))
+  have herr (n : ℕ) (hn' : n ∈ Ioc 0 N) : ‖priceRounding n‖ ≤ C*(N:ℝ)^2 := by
+    rw [priceRounding,squareValuationReadingError,Complex.norm_real,Real.norm_eq_abs]
+    refine (abs_sum_le_sum_abs _ _).trans ?_
+    simp only [id_eq,abs_mul,abs_of_nonneg vonMangoldt_nonneg]
+    exact (h (mem_Ioc.mp hn').1).trans (mul_le_mul_of_nonneg_left
+      (pow_le_pow_left₀ (Nat.cast_nonneg n) (Nat.cast_le.mpr (mem_Ioc.mp hn').2) 2) hC)
+  have hE : ‖∑ n ∈ Ioc 0 N, priceRounding n‖ ≤ C*(N:ℝ)^3 := by
+    refine (norm_sum_le _ _).trans ((sum_le_sum herr).trans_eq ?_)
+    simp only [sum_const,Nat.card_Ioc,Nat.sub_zero,nsmul_eq_mul]; ring
+  let f := fun k : ℕ => ((N:ℂ)^2*Real.log k)*squarePrefixPrimeWeight ((k:ℝ)/(N:ℝ)^2)
+  have hQ : ‖∑ k ∈ primes, ((∑ n ∈ Ioc 0 N, rootMeshRow W n k)-f k)‖ ≤
+      (7*V/W.lower^3)*(N:ℝ)^3 := by
+    refine (norm_sum_le _ _).trans ((sum_le_sum (fun k hk => (prefix_mesh_column N k hn (mem_filter.mp hk).2).trans ?_)).trans ?_)
+    · have hkY := (Nat.cast_le.mpr (mem_Ioc.mp (mem_filter.mp hk).1).2).trans (Nat.floor_le (sq_nonneg Y))
+      have hroot := (Real.sqrt_le_sqrt hkY).trans_eq (Real.sqrt_sq hY)
+      rw [← vonMangoldt_apply_prime (mem_filter.mp hk).2]
+      exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hroot vonMangoldt_nonneg) hV
+    · rw [← sum_mul,← sum_mul]
+      exact (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hmass hY) hV).trans_eq (by dsimp only [Y]; ring)
+  have hP : (Real.log (squareGeneratorPrefix N:ℝ):ℂ)=∑ n ∈ Ioc 0 N, squareConductorPrice n := by
+    unfold squareGeneratorPrefix squareConductorPrice
+    push_cast
+    rw [Real.log_prod (fun n _ => (show 0 < (q n:ℝ) by exact_mod_cast
+      (show 0 < q n from prod_pos fun k _ => zpow_pos (Nat.cast_pos.mpr (contactBase_pos k)) _)).ne'),Complex.ofReal_sum]
+  rw [hP,sum_congr rfl (fun n h => prefix_mesh_row (mem_Ioc.mp h).1 (mem_Ioc.mp h).2),
+    sum_add_distrib,sum_comm,mul_sum]
+  have hfun (k : ℕ) : (N:ℂ)^2*((Real.log k:ℂ)*squarePrefixPrimeWeight ((k:ℝ)/(N:ℝ)^2))=f k := (mul_assoc _ _ _).symm
+  simp_rw [hfun]
+  change ‖_ + _-∑ k ∈ primes, f k‖ ≤ _
+  rw [add_sub_right_comm,← sum_sub_distrib]
+  exact (norm_add_le _ _).trans ((add_le_add hQ hE).trans_eq (by ring))
 
 end GaloisForLFunctions.CountingHolography.Sections

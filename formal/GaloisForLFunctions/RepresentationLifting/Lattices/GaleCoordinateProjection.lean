@@ -93,12 +93,12 @@ theorem galeComplementaryMinor (A : Matrix ι ι K) (B : Matrix ι κ K) :
     Function.Bijective (galeProjection A.mulVecLin B.mulVecLin) ↔ A.det ≠ 0 := by
   rw [galeProjection_bijective]
   have hu : Function.Injective A.mulVecLin ↔ A.det ≠ 0 :=
-    Matrix.mulVec_injective_iff_isUnit.trans (Matrix.isUnit_iff_isUnit_det.trans isUnit_iff_ne_zero)
+    Matrix.mulVec_injective_iff_isUnit.trans ((Matrix.isUnit_iff_isUnit_det A).trans isUnit_iff_ne_zero)
   constructor
   · exact fun h => hu.mp h.1
   · intro hd
     have hs : Function.Surjective A.mulVecLin :=
-      Matrix.mulVec_surjective_iff_isUnit.mpr (Matrix.isUnit_iff_isUnit_det.mpr hd.isUnit)
+      Matrix.mulVec_surjective_iff_isUnit.mpr ((Matrix.isUnit_iff_isUnit_det A).mpr hd.isUnit)
     exact ⟨hu.mpr hd, by rw [LinearMap.range_eq_top.mpr hs]; exact le_top⟩
 
 #print axioms galeProjection_range

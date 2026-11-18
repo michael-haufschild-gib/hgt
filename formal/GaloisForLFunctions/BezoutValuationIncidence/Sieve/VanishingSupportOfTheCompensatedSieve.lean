@@ -166,7 +166,9 @@ private theorem third_decomposition (N : ℕ) :
   push_cast
   rw [← prod_mul_distrib,← prod_div_distrib,← prod_mul_distrib]
   exact prod_congr rfl fun p hp => by
-    exact_mod_cast cyclotomic_factor (Nat.mem_primesBelow.mp hp).2
+    have h := congrArg Complex.ofReal (cyclotomic_factor (Nat.mem_primesBelow.mp hp).2)
+    push_cast at h
+    exact h
 
 /-- The third moment has the exact zeta constant e^(−γ) ζ(2)ζ(3)/ζ(6)
 after primorial and logarithmic normalization. -/

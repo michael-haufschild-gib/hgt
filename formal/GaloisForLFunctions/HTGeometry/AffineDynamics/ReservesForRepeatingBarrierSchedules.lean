@@ -19,9 +19,10 @@ def preimageSlack (b t c : ℝ) : ℝ := Real.exp t*c-(Real.exp t-1)*b
 
 theorem preimageSlack_le (a b t c : ℝ) :
     preimageSlack b t c ≤ a ↔ c ≤ slack a b t := by
-  rw [← mul_le_mul_iff_right₀ (Real.exp_pos t) (b := slack a b t),scaled_slack]
-  dsimp only [preimageSlack]
-  constructor <;> intro h <;> linarith only [h]
+  calc
+    preimageSlack b t c ≤ a ↔ Real.exp t*c ≤ a + (Real.exp t-1)*b := sub_le_iff_le_add
+    _ ↔ Real.exp t*c ≤ Real.exp t*slack a b t := by rw [scaled_slack]
+    _ ↔ c ≤ slack a b t := mul_le_mul_iff_right₀ (Real.exp_pos t)
 
 /-- Reserve guaranteeing safety at all intermediate times and a prescribed
 terminal slack. At the empty schedule both constraints apply at time zero. -/
@@ -41,7 +42,9 @@ theorem reserve_iff (L : List Segment) (a c : ℝ) :
   | nil => exact max_le_iff
   | cons p L ih =>
     rcases p with ⟨t,b⟩
-    rw [reserve,max_le_iff,preimageSlack_le,ih,safeAlong,window_safe_iff _ _ 0 _ t.property]
+    rw [reserve,max_le_iff,preimageSlack_le,ih]
+    change _ ↔ (((∀ s ∈ Icc 0 (t : ℝ), 0 ≤ slack a b s) ∧ safeAlong (slack a b t) L) ∧ _)
+    rw [window_safe_iff a b 0 t t.property]
     have hend (s : ℝ) (h : safeAlong s L) : 0 ≤ s :=
       (switched_safe_iff s L).1 h [] L rfl
     have h₀ : slack a b 0=a := by simp [slack]
@@ -111,7 +114,7 @@ theorem last_safe_cycle (a : ℝ) (L : List Segment) (hL : 0 < scheduleDuration 
     ring
   change _ - periodicSlack L = Real.exp (-(scheduleDuration L))^k*(a-periodicSlack L) at h
   rw [hpow,inv_mul_eq_div,eq_div_iff (Real.exp_pos _).ne'] at h
-  rw [safe_reserve,← Real.exp_le_exp,Real.exp_log (div_pos hn hd),le_div_iff₀ hd,← h]
+  rw [safe_reserve,← Real.exp_le_exp (x := (k : ℝ)*scheduleDuration L) (y := Real.log _),Real.exp_log (div_pos hn hd),le_div_iff₀ hd,← h]
   have he := Real.exp_pos ((k : ℝ)*scheduleDuration L)
   rw [mul_comm (Real.exp _) _,mul_le_mul_iff_left₀ he]
   constructor <;> intro H <;> linarith only [H]

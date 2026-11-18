@@ -1,0 +1,15 @@
+# A power saving on the seven-fourths product shell
+
+**Paper proof.** Write \(V_n=\lfloor n^{7/4}\rfloor\) and \(B_n=T_n(V_n,n)-T_n(2V_n,n)\) for the capped ordinary-prime spline of §2.4. For all integers \(N\le M\le 2N\), with an absolute constant,
+$$
+\left|\sum_{N<n\le M}n^2 B_n\right|\ll N^{13/4}(1+\log(2N)).
+$$
+In particular the proposed estimate holds with \(\delta=1/8\). This bound concerns only the indicated shell.
+
+For each ordinary prime \(p>4\) retain exactly the coprime \(v\ge1\) with \(q=pv\) and conductor conditions \(N<n\le M,\ v\le n,\ V_n<q\le2V_n\). Reversing these finite sums preserves both terminal fragments. At such an \(n\), the horizon \(k\) for that pair starts at \(q\) and ends before \(\lceil q/2\rceil^2\). The spline \(w_n(k)=n^{-1} f(k/n^2)\) is supported in \([e^{-8}n^2,4e^8 n^2]\). As \(n^{7/4}<q\le2n^{7/4}\), both horizon endpoints are outside this support and its one-step translates for all large \(n\). The finitely many smaller conductors are absorbed in the constant.
+
+For a fixed pair let \(z(k)=w_n(k)-w_n(k+1)\). The unit factorial weight \(W(\lfloor k/q\rfloor)\) is a fixed finite linear combination of centered modular ramps of moduli \(dq\), plus a constant. The constant pairs to zero by telescoping. The second Abel formula for each ramp has endpoint terms in \(z(0),z(L),z(L+1)\), all zero if \(L\) lies beyond the support. Its second primitive has size at most \((dq)^2/12\). The compact spline is \(C^3\); its third mesh difference is bounded by \(\lVert f'''\rVert_\infty/n^7\). There are \(O(n^2)\) horizon points and the divisors \(d\) are bounded absolutely. The signed reading of each pair is therefore \(O(q^2/n^5)\).
+
+The remaining absolute factors are the bounded unit inner jump and \(\log p\). For \(U=2V_n\), the pair count with these logarithmic weights is at most \(U\sum_{p\le U}(\log p)/p\ll U(1+\log U)\). Hence \(|B_n|\ll U^3(1+\log U)/n^5\ll n^{1/4}(1+\log(2n))\). Multiplication by \(n^2\) and summation through \(M\) give the claim.
+
+**Lean status.** The first horizon primitive and the signed mesh through order two are kernel-checked. The third difference, second Abel transfer, exact shell identification and final bound require kernel verification.

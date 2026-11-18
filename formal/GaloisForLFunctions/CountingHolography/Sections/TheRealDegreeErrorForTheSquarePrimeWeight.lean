@@ -317,11 +317,7 @@ theorem mellin_squareFactorialMobiusWindow {s : ℂ} (hs : 1 < s.re) :
   exact (eq_div_iff (riemannZeta_ne_zero_of_one_lt_re hs)).mpr ((mul_comm _ _).trans (window_times_zeta hs hg))
 
 private theorem squareFactorialMellin_one : mellin squarePrimeWeight 1=0 := by
-    rw [mellin_squarePrimeWeight_formula]
-    have hl : Real.log 4 = 2*Real.log 2 := by rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]; norm_num
-    have hex : ((1:ℂ)-1/2)*(Real.log 4:ℝ) = (Real.log 2:ℝ) := by rw [hl]; push_cast; ring
-    rw [hex,← Complex.ofReal_exp,Real.exp_log (by norm_num : (0:ℝ)<2)]
-    norm_num
+  simpa only [mellin,sub_self,Complex.cpow_zero,one_smul] using squarePrimeWeight_mean_zero
 
 /-- A sublinear Mertens bound makes both the zeroth and first logarithmic
 moments of the Möbius sample window vanish. -/

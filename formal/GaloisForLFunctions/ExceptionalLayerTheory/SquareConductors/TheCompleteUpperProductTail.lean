@@ -71,7 +71,8 @@ private theorem cell_zero {U k p : ℕ} (hp : U<p ∨ k<p) : smallCell U k p=0 :
       fun h => hp.not_ge ((Nat.le_mul_of_pos_right p hv₁).trans h.1)
     rw [if_neg h,mul_zero]
 
-private theorem prime_padding {a b : ℕ} (hab : a≤b) (f : ℕ → ℝ)
+/-- Extending the first-prime window by terms known to vanish preserves the reading. -/
+theorem unit_prime_padding {a b : ℕ} (hab : a≤b) (f : ℕ → ℝ)
     (hz : ∀ p : ℕ, a<p → f p=0) : ordinaryFactorTail 4 a f=ordinaryFactorTail 4 b f := by
   unfold ordinaryFactorTail
   apply sum_subset
@@ -91,8 +92,8 @@ theorem unit_stencil_product_partition (U k : ℕ) :
         coprimePrimeRow 1 1 k (max (productLower 1 k) U) := by
   have h : ordinaryFactorTail 4 U (smallCell U k) = ordinaryFactorTail 4 k (smallCell U k) := by
     rcases le_total U k with h|h
-    · exact prime_padding h _ fun _ hp => cell_zero (Or.inl hp)
-    · exact (prime_padding h _ fun _ hp => cell_zero (Or.inr hp)).symm
+    · exact unit_prime_padding h _ fun _ hp => cell_zero (Or.inl hp)
+    · exact (unit_prime_padding h _ fun _ hp => cell_zero (Or.inr hp)).symm
   change _ = ordinaryFactorTail 4 U (smallCell U k)+_
   rw [h]
   unfold ordinaryFactorTail coprimePrimeRow
@@ -149,6 +150,25 @@ theorem capped_upper_ranges {k p v U M : ℕ} (hp : 0<p)
     (hprod.trans_le (Nat.mul_le_mul_left p hM)),?_⟩
   rw [Nat.div_div_eq_div_mul]
   exact Nat.div_le_div_left hprod (Nat.succ_pos U)
+
+/-- Beyond M² each surviving product has exactly one prime divisor above
+M. Its cofactor is automatically coprime to that prime. -/
+theorem capped_upper_unique_large_prime {U M p v : ℕ} (hp : p.Prime)
+    (hU : M^2≤U) (hprod : U<p*v) (hv : v≤M) :
+    p.Coprime v ∧ ∃! r : ℕ, r.Prime ∧ r ∣ p*v ∧ M<r := by
+  have hv₀ : 0<v := by
+    by_contra! h
+    rw [Nat.eq_zero_of_le_zero h,mul_zero] at hprod
+    omega
+  have hbig : M<p := by
+    by_contra! h
+    exact hprod.not_ge ((Nat.mul_le_mul h hv).trans (by simpa only [sq] using hU))
+  refine ⟨hp.coprime_iff_not_dvd.mpr (Nat.not_dvd_of_pos_of_lt hv₀ (hv.trans_lt hbig)),
+    p,⟨hp,dvd_mul_right p v,hbig⟩,?_⟩
+  rintro r ⟨hr,hd,hrM⟩
+  rcases hr.dvd_mul.mp hd with h|h
+  · exact (Nat.prime_dvd_prime_iff_eq hr hp).mp h
+  · exact (hrM.not_ge ((Nat.le_of_dvd hv₀ h).trans hv)).elim
 
 /-- Both cutoffs have explicit costs. For x=n² the additional price for
 v≤M is O(√x (1+log L)/(M+1)), uniformly in the product cutoff. -/
@@ -208,5 +228,6 @@ theorem dyadicPrimeContact_capped_upper_product_tail :
 #print axioms unit_stencil_product_partition
 #print axioms dyadicPrimeContact_upper_product_tail
 #print axioms capped_upper_ranges
+#print axioms capped_upper_unique_large_prime
 #print axioms dyadicPrimeContact_capped_upper_product_tail
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

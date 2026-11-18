@@ -43,11 +43,11 @@ theorem radial_bounds (A : ℂ) :
   constructor
   · calc
       _ ≤ ‖A^2‖ + ‖2 * conj A‖ := norm_sub_le _ _
-      _ = _ := by rw [norm_pow,norm_mul,Complex.norm_conj]; norm_num <;> ring
+      _ = _ := by rw [norm_pow,norm_mul,Complex.norm_conj]; norm_num; ring
   · rw [cubeTrace,add_sub_cancel_right]
     calc
       _ ≤ ‖A^3‖ + ‖3*A*conj A‖ := norm_sub_le _ _
-      _ = _ := by simp only [norm_pow,norm_mul,Complex.norm_conj]; norm_num <;> ring
+      _ = _ := by simp only [norm_pow,norm_mul,Complex.norm_conj]; norm_num; ring
 
 /-- On the negative real ray both radial inequalities are equalities. -/
 theorem negative_ray (r : NNReal) :
@@ -149,7 +149,6 @@ theorem prime_mean_bounds (N : ℕ) (A : ℕ → ℂ) :
   let M := ∑ p ∈ S, ‖A p‖^2
   let D := M/(Y:ℝ)
   have hM : 0 ≤ M := sum_nonneg fun _ _ => sq_nonneg _
-  have hD : 0 ≤ D := div_nonneg hM hy₀.le
   have hC : (C:ℝ)*t = height S A := div_mul_cancel₀ _ ht.ne'
   have hmass : D*(Y:ℝ)=M := div_mul_cancel₀ _ hy₀.ne'
   have hpow (a : ℝ) : (Y:ℝ)^a * Y = (Y:ℝ)^(a+1) := by rw [Real.rpow_add hy₀,Real.rpow_one]
@@ -170,6 +169,7 @@ theorem prime_mean_bounds (N : ℕ) (A : ℕ → ℂ) :
       _ ≤ _ := u
       _ ≤ _ := mul_le_mul_of_nonneg_right b₂ hM
       _ = _ := by
+        change ((C:ℝ)+2)^2*(Y:ℝ)^(5/7:ℝ)*M = _
         rw [← hmass,show (12/7:ℝ)=5/7+1 by norm_num,← hpow]; ring
   · calc
       _ ≤ _ := v

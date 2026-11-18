@@ -1,3 +1,5 @@
+import GaloisForLFunctions.RHTower.SquarefreeCountingAsymptotic
+import GaloisForLFunctions.CountingHolography.Sections.SquareGeneratorPrefix
 import GaloisForLFunctions.HTGeometry.AlternatingHarmonicPair
 import GaloisForLFunctions.CountingHolography.Sections.FinitePlaceCostOfTheStirlingRemainder
 import GaloisForLFunctions.CountingHolography.Sections.TheLogarithmicMomentOfTheSquarePrimeProfile
@@ -296,7 +298,7 @@ private theorem range_eq_zero_add_interval (f : ℕ → ℝ) (N : ℕ) :
     (∑ j ∈ range (N+1), f j)=f 0+∑ j ∈ Ioc 0 N, f j := by
   induction N with
   | zero => simp
-  | succ N ih => rw [sum_range_succ,ih,sum_Ioc_succ_top (Nat.zero_le N),add_assoc]
+  | succ N ih => rw [Finset.sum_range_succ,ih,sum_Ioc_succ_top (Nat.zero_le N),add_assoc]
 
 private theorem alternating_block (f : ℕ → ℝ) (N : ℕ) :
     ∑ j ∈ Ioc 0 N, (f j-2*f (2*j)) =
@@ -306,7 +308,7 @@ private theorem alternating_block (f : ℕ → ℝ) (N : ℕ) :
     induction n with
     | zero => simp
     | succ n ih =>
-      rw [sum_range_succ,← ih,show 2*(n+1)=2*n+1+1 by omega]
+      rw [Finset.sum_range_succ,← ih,show 2*(n+1)=2*n+1+1 by omega]
       simp only [sum_Ioc_succ_top (Nat.zero_le _)]
       ring
   rw [sum_sub_distrib,← mul_sum,← hpair]
@@ -380,7 +382,7 @@ theorem fourthPower_square_prime_mass_escape :
     have bn : B N k=0 := hJ _ (by omega)
     have bd : B (2*N) k=0 := hJ _ (by omega)
     have hh := range_eq_zero_add_interval (fun j => B j k-2*B (2*j) k) N
-    rw [sum_range_succ] at hh
+    rw [Finset.sum_range_succ] at hh
     simpa only [Function.comp_apply,pairedEndpoint,B,htail,sub_zero] using
       (show (∑ i ∈ range N, (B (2*i+1) k-B (2*i+2) k)) =
           ∑ i ∈ range N, (B i k-2*B (2*i) k) by
@@ -416,6 +418,278 @@ theorem fourthPower_square_prime_mass_escape :
   simp_rw [hpair]
   simp only [mass,B,fourthPowerPrimeEndpoint,tsum_div_const]
   ring
+
+private def fourthMass (n : ℕ) := ∑' k : ℕ, fourthPowerPrimeEndpoint n k
+private def fourthErrorMass (n : ℕ) := ∑' k : ℕ, fourthPowerError (n,k)
+private def pairMass (j : ℕ) := ∑' k : ℕ, pairedEndpoint (j,k)
+
+private theorem pairMass_eq (j : ℕ) : pairMass j=fourthMass (2*j+1)-fourthMass (2*j+2) := by
+  have hb (m : ℕ) (hm : 0 < m) : Summable (fourthPowerPrimeEndpoint m) := (endpoint_summable hm).div_const _
+  exact (hb _ (by omega)).tsum_sub (hb _ (by omega))
+
+private theorem fourthMass_limit :
+    Tendsto (fun n : ℕ => (n:ℝ)*fourthMass n) atTop (𝓝 (4*squareAutocorrelationMass)) := by
+  refine tendsto_squarePrimeEndpoint_mass.congr' ?_
+  filter_upwards [eventually_gt_atTop 0] with n hn
+  simp only [fourthMass,fourthPowerPrimeEndpoint,tsum_div_const]
+  field_simp [Nat.cast_ne_zero.mpr hn.ne' : (n:ℝ)≠0]
+
+private theorem fourthErrorMass_bound : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
+    |fourthErrorMass n| ≤ C/(n:ℝ)^2 := by
+  obtain ⟨C,hC,h⟩ := error_budget
+  refine ⟨C,hC,fun {n} hn => ?_⟩
+  change |∑' k, err n k/(n:ℝ)^4| ≤ _
+  rw [tsum_div_const,abs_div,abs_of_nonneg (pow_nonneg (Nat.cast_nonneg _) 4)]
+  have he := (norm_tsum_le_tsum_norm ((error_summable hn).congr (fun k => (Real.norm_eq_abs _).symm)))
+  simp only [Real.norm_eq_abs] at he
+  exact (div_le_div_of_nonneg_right (he.trans (h hn)) (pow_nonneg (Nat.cast_nonneg _) 4)).trans_eq
+    (by field_simp [Nat.cast_ne_zero.mpr hn.ne' : (n:ℝ)≠0] <;> ring)
+
+private theorem pairMass_bound : ∃ C : ℝ, 0 ≤ C ∧ ∀ j : ℕ, |pairMass j| ≤ C/((j:ℝ)+1)^2 := by
+  obtain ⟨C,hC,h⟩ := fourthPowerPrimeEndpoint_variation
+  refine ⟨C,hC,fun j => ?_⟩
+  have ht := summable_pairedEndpoint.abs.prod_factor j
+  have he := norm_tsum_le_tsum_norm (ht.congr fun k => (Real.norm_eq_abs _).symm)
+  simp only [Real.norm_eq_abs] at he
+  refine (he.trans (h (Nat.succ_pos (2*j)))).trans (div_le_div_of_nonneg_left hC (by positivity) ?_)
+  apply pow_le_pow_left₀ (by positivity)
+  push_cast
+  linarith only [Nat.cast_nonneg (α := ℝ) j]
+
+private theorem fourthPower_sum_row {n : ℕ} (hn : 0 < n) : Real.log (q n:ℝ)/(n:ℝ)^4 =
+    fourthMass n-2*fourthMass (2*n)+fourthErrorMass n := by
+  have hb (m : ℕ) (hm : 0 < m) : Summable (fourthPowerPrimeEndpoint m) := (endpoint_summable hm).div_const _
+  have hE : Summable fourthPowerError := Summable.of_abs summable_fourthPower_prime_error
+  rw [← price_sum n hn,← tsum_div_const]
+  simp_rw [fourthPower_row hn]
+  rw [((hb n hn).sub ((hb _ (by omega)).mul_left _)).tsum_add (hE.prod_factor n),
+    (hb n hn).tsum_sub ((hb _ (by omega)).mul_left _),tsum_mul_left]
+  rfl
+
+private theorem interval_tail_estimate {f : ℕ → ℝ} {C : ℝ}
+    (hc : 0 ≤ C) (hb : ∀ n : ℕ, 0 < n → |f n| ≤ C/(n:ℝ)^2)
+    {N M : ℕ} (hn : 0 < N) : |∑ j ∈ Ioc N M, f j| ≤ C/N := by
+  refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum (fun j hj => hb j (hn.trans (mem_Ioc.mp hj).1))).trans ?_)
+  simp_rw [show ∀ j : ℕ, C/(j:ℝ)^2=C*(1/(j:ℝ)^2) from fun j => by ring]
+  rw [← mul_sum,show Ioc N M=Icc (N+1) M by ext j; simp only [mem_Ioc,mem_Icc]; omega]
+  exact (mul_le_mul_of_nonneg_left (sum_inv_sq_tail_le hn M) hc).trans_eq (by ring)
+
+private theorem pair_tail {N M : ℕ} (hn : 0 < N) {C : ℝ} (hc : 0 ≤ C)
+    (h : ∀ j : ℕ, |pairMass j| ≤ C/((j:ℝ)+1)^2) :
+    |∑ i ∈ Ico N M, pairMass i| ≤ C/N := by
+  have he : (∑ i ∈ Ico N M, pairMass i)=∑ j ∈ Ioc N M, pairMass (j-1) := by
+    apply sum_nbij' (fun i => i+1) (fun j => j-1)
+    · intro i hi; exact mem_Ioc.mpr ⟨by have := (mem_Ico.mp hi).1; omega,by have := (mem_Ico.mp hi).2; omega⟩
+    · intro j hj; exact mem_Ico.mpr ⟨by have := (mem_Ioc.mp hj).1; omega,by have := (mem_Ioc.mp hj).2; omega⟩
+    · intro i _; omega
+    · intro j hj; have := (mem_Ioc.mp hj).1; omega
+    · intro i _; simp
+  rw [he]
+  apply interval_tail_estimate hc _ hn
+  intro j hj
+  simpa only [Nat.cast_sub (show 1 ≤ j from hj),Nat.cast_one,sub_add_cancel] using h (j-1)
+
+/-- Twice the mass of the even endpoints in the moving interval. -/
+def squareEvenBoundary (N : ℕ) := 2*∑ j ∈ Ioc (N/2) N, fourthMass (2*j)
+
+private def fourthPartial (N : ℕ) := ∑ n ∈ Ioc 0 N, Real.log (q n:ℝ)/(n:ℝ)^4
+
+private theorem fourth_even_sum (N : ℕ) :
+    fourthPartial N+squareEvenBoundary N =
+      (∑ j ∈ range (N/2), pairMass j) + (if N%2=0 then 0 else fourthMass N) +
+      ∑ n ∈ Ioc 0 N, fourthErrorMass n := by
+  have hp (j : ℕ) :
+      (∑ m ∈ Ioc 0 (2*j), fourthMass m)-2*∑ m ∈ Ioc 0 j, fourthMass (2*m) = ∑ i ∈ range j, pairMass i := by
+    induction j with
+    | zero => simp
+    | succ j ih =>
+      rw [Finset.sum_range_succ,← ih,pairMass_eq,show 2*(j+1)=2*j+1+1 by omega]
+      simp only [sum_Ioc_succ_top (Nat.zero_le _)]
+      ring
+  have he := sum_Ioc_consecutive (fun j => fourthMass (2*j)) (Nat.zero_le (N/2)) (Nat.div_le_self N 2)
+  rw [fourthPartial,squareEvenBoundary,sum_congr rfl (fun n h => fourthPower_sum_row (mem_Ioc.mp h).1),
+    sum_add_distrib,sum_sub_distrib,← mul_sum,← hp]
+  by_cases h : N%2=0
+  · rw [if_pos h,show 2*(N/2)=N by omega]; linarith only [he]
+  · have hs := sum_Ioc_succ_top (a := 0) (b := 2*(N/2)) (by omega) fourthMass
+    rw [show 2*(N/2)+1=N by omega] at hs
+    rw [if_neg h]; linarith only [he,hs]
+
+private theorem squareEvenBoundary_limit : Tendsto squareEvenBoundary atTop (𝓝 (4*squareAutocorrelationMass*Real.log 2)) := by
+  let f := fun j : ℕ => 2*fourthMass (2*j)
+  have hd : Tendsto (fun j : ℕ => 2*j) atTop atTop := tendsto_atTop_mono (f := id) (fun j => by dsimp; omega) tendsto_id
+  have hl : Tendsto (fun j : ℕ => (j:ℝ)*f j) atTop (𝓝 (4*squareAutocorrelationMass)) := by
+    refine (fourthMass_limit.comp hd).congr fun j => ?_
+    change ((2*j:ℕ):ℝ)*fourthMass (2*j)=(j:ℝ)*(2*fourthMass (2*j))
+    push_cast; ring
+  have hhalf : Tendsto (fun n : ℕ => n/2) atTop atTop := tendsto_atTop.mpr (fun m => ⟨2*m,fun n hn => by omega⟩)
+  have hf₀ : Tendsto f atTop (𝓝 0) := by
+    refine (hl.div_atTop (tendsto_natCast_atTop_atTop (R := ℝ))).congr' ?_
+    filter_upwards [eventually_gt_atTop 0] with n hn
+    exact mul_div_cancel_left₀ _ (Nat.cast_ne_zero.mpr hn.ne' : (n:ℝ)≠0)
+  have hterm : Tendsto (fun n : ℕ => if n%2=0 then 0 else f n) atTop (𝓝 0) := by
+    apply tendsto_zero_iff_norm_tendsto_zero.mpr
+    exact squeeze_zero (fun n => norm_nonneg _) (fun n => by split_ifs <;> simp) (tendsto_zero_iff_norm_tendsto_zero.mp hf₀)
+  have h := ((moving_harmonic_block hl).comp hhalf).add hterm
+  rw [add_zero] at h
+  refine h.congr fun n => ?_
+  change (∑ j ∈ Ioc (n/2) (2*(n/2)), f j)+(if n%2=0 then 0 else f n)=_
+  rw [squareEvenBoundary,mul_sum]
+  by_cases he : n%2=0
+  · rw [if_pos he,show 2*(n/2)=n by omega,add_zero]
+  · rw [if_neg he]
+    have h := sum_Ioc_succ_top (a := n/2) (b := 2*(n/2)) (by omega) f
+    rw [show 2*(n/2)+1=n by omega] at h
+    exact h.symm
+
+/-- The limit in conductor order with its moving positive boundary restored. -/
+def fourthPowerAdjustedLimit := (∑' j, pairMass j) + ∑' n, fourthErrorMass n
+
+private theorem adjusted_fourthPower_sum :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ N : ℕ in atTop,
+      |fourthPowerAdjustedLimit-(fourthPartial N+squareEvenBoundary N)| ≤ C/N := by
+  obtain ⟨P,hP,hp⟩ := pairMass_bound
+  obtain ⟨E,hE,he⟩ := fourthErrorMass_bound
+  have hq := (summable_pairedEndpoint.prod : Summable pairMass)
+  have hr := ((Summable.of_abs summable_fourthPower_prime_error : Summable fourthPowerError).prod : Summable fourthErrorMass)
+  have hM := (Metric.tendsto_atTop.mp fourthMass_limit 1 one_pos)
+  obtain ⟨J,hJ⟩ := hM
+  let K := 1+|4*squareAutocorrelationMass|
+  have hK : 0 ≤ K := by unfold K; positivity
+  refine ⟨3*P+E+K,by positivity,?_⟩
+  filter_upwards [eventually_ge_atTop (max J 2)] with n hn
+  have hn₂ : 2 ≤ n := (le_max_right _ _).trans hn
+  have hn' : 0 < (n:ℝ) := by exact_mod_cast (by omega : 0 < n)
+  have hk' : 0 < (↑(n/2):ℝ) := by exact_mod_cast (by omega : 0 < n/2)
+  have hb : |fourthMass n| ≤ K/n := by
+    apply (le_div_iff₀ hn').mpr
+    rw [mul_comm,← abs_of_pos hn',← abs_mul]
+    have h := hJ n ((le_max_left _ _).trans hn)
+    rw [Real.dist_eq] at h
+    have hu := abs_sub_abs_le_abs_sub ((n:ℝ)*fourthMass n) (4*squareAutocorrelationMass)
+    dsimp only [K]
+    linarith only [hu,h]
+  have hb' : |if n%2=0 then 0 else fourthMass n| ≤ K/n := by split_ifs <;> simp [hb,div_nonneg hK hn'.le]
+  have hpt : |(∑' j, pairMass j)-∑ j ∈ range (n/2), pairMass j| ≤ 3*P/n := by
+    have ht := hq.hasSum.tendsto_sum_nat.sub_const (∑ j ∈ range (n/2), pairMass j)
+    refine le_of_tendsto ht.abs ?_
+    filter_upwards [eventually_ge_atTop (n/2)] with m hm
+    rw [← sum_Ico_eq_sub _ hm]
+    refine (pair_tail (by omega) hP hp).trans ?_
+    apply (div_le_div_iff₀ hk' hn').mpr
+    have hn₃ : (n:ℝ) ≤ 3*(↑(n/2):ℝ) := by exact_mod_cast (by omega : n ≤ 3*(n/2))
+    linarith only [mul_le_mul_of_nonneg_left hn₃ hP]
+  have het : |(∑' j, fourthErrorMass j)-∑ j ∈ Ioc 0 n, fourthErrorMass j| ≤ E/n := by
+    have ht := (hr.hasSum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)).sub_const (∑ j ∈ Ioc 0 n, fourthErrorMass j)
+    refine le_of_tendsto ht.abs ?_
+    filter_upwards [eventually_ge_atTop n] with m hm
+    change |(∑ j ∈ range (m+1), fourthErrorMass j)-_| ≤ _
+    rw [range_eq_zero_add_interval,show fourthErrorMass 0=0 by simp [fourthErrorMass,fourthPowerError],zero_add,
+      ← sum_Ioc_consecutive fourthErrorMass (Nat.zero_le n) hm,add_sub_cancel_left]
+    exact interval_tail_estimate hE he (by omega)
+  rw [fourth_even_sum,fourthPowerAdjustedLimit]
+  generalize (∑' j, pairMass j)=p at *
+  generalize (∑ j ∈ range (n/2), pairMass j)=q at *
+  generalize (∑' j, fourthErrorMass j)=r at *
+  generalize (∑ j ∈ Ioc 0 n, fourthErrorMass j)=e at *
+  generalize (if n%2=0 then (0:ℝ) else fourthMass n)=v at *
+  rw [show p+r-(q+v+e)=(p-q)+(r-e)+(-v) by ring]
+  refine (abs_add_le _ _).trans ((add_le_add_right (abs_add_le _ _) _).trans ?_)
+  rw [abs_neg]
+  exact (add_le_add (add_le_add hpt het) hb').trans_eq (by ring)
+
+/-- The signed tail equals the moving even endpoint minus its limiting
+mass with an O(1/N) error. -/
+theorem fourthPower_square_price_tail :
+    let L := fourthPowerAdjustedLimit-4*squareAutocorrelationMass*Real.log 2
+    Tendsto fourthPartial atTop (𝓝 L) ∧ ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ N : ℕ in atTop,
+      |(L-fourthPartial N)-(squareEvenBoundary N-4*squareAutocorrelationMass*Real.log 2)| ≤ C/N := by
+  obtain ⟨C,hC,h⟩ := adjusted_fourthPower_sum
+  have hc := (tendsto_const_nhds (x := C)).div_atTop (tendsto_natCast_atTop_atTop (R := ℝ))
+  have h₀ : Tendsto (fun N => fourthPowerAdjustedLimit-(fourthPartial N+squareEvenBoundary N)) atTop (𝓝 0) :=
+    tendsto_zero_iff_norm_tendsto_zero.mpr (squeeze_zero' (Eventually.of_forall fun _ => abs_nonneg _) h hc)
+  have ht := ((tendsto_const_nhds (x := fourthPowerAdjustedLimit)).sub h₀).sub squareEvenBoundary_limit
+  rw [sub_zero] at ht
+  refine ⟨ht.congr (fun _ => by ring),C,hC,?_⟩
+  exact h.mono fun n hn => by simpa only [show ∀ x y z a : ℝ, (x-a-y)-(z-a)=x-(y+z) by intros; ring] using hn
+
+/-- Partial summation turns a reciprocal-size fluctuation of the positive
+even boundary into the cubic estimate for the actual rational prefix. -/
+theorem squareGeneratorPrefix_cubic_of_even_boundary
+    (hb : ∃ E : ℝ, 0 ≤ E ∧ ∀ᶠ n : ℕ in atTop,
+      |squareEvenBoundary n-4*squareAutocorrelationMass*Real.log 2| ≤ E/n) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {N : ℕ}, 0 < N →
+      |Real.log (squareGeneratorPrefix N:ℝ)| ≤ C*(N:ℝ)^3 := by
+  let L := fourthPowerAdjustedLimit-4*squareAutocorrelationMass*Real.log 2
+  let T := fun n => L-fourthPartial n
+  obtain ⟨D,hD,hd⟩ := fourthPower_square_price_tail.2
+  obtain ⟨E,hE,he⟩ := hb
+  have ht : ∀ᶠ n in atTop, |T n| ≤ (D+E)/(n:ℝ) := by
+    filter_upwards [hd,he] with n ha hb
+    let B := squareEvenBoundary n-4*squareAutocorrelationMass*Real.log 2
+    change |T n-B| ≤ _ at ha
+    rw [← sub_add_cancel (T n) B]
+    exact (abs_add_le _ _).trans ((add_le_add ha hb).trans_eq (add_div _ _ _).symm)
+  obtain ⟨J,hJ⟩ := eventually_atTop.mp ht
+  let H := ∑ j ∈ range J, (j:ℝ)*|T j|
+  let K := D+E+H
+  have hH : 0 ≤ H := sum_nonneg fun j _ => mul_nonneg (Nat.cast_nonneg _) (abs_nonneg _)
+  have hK : 0 ≤ K := add_nonneg (add_nonneg hD hE) hH
+  have hT {j : ℕ} (hj : 0 < j) : |T j| ≤ K/(j:ℝ) := by
+    by_cases h : J ≤ j
+    · exact (hJ j h).trans (div_le_div_of_nonneg_right (le_add_of_nonneg_right hH) (Nat.cast_nonneg _))
+    · apply (le_div_iff₀ (Nat.cast_pos.mpr hj)).mpr
+      rw [mul_comm]
+      exact (single_le_sum (fun k _ => mul_nonneg (Nat.cast_nonneg k) (abs_nonneg (T k)))
+        (mem_range.mpr (lt_of_not_ge h))).trans (le_add_of_nonneg_left (add_nonneg hD hE))
+  have hstep (n : ℕ) : Real.log (q (n+1):ℝ) = (((n+1:ℕ):ℝ))^4*(T n-T (n+1)) := by
+    dsimp only [T,fourthPartial]
+    rw [sum_Ioc_succ_top (Nat.zero_le n)]
+    field_simp [Nat.cast_ne_zero.mpr (Nat.succ_ne_zero n) : ((n+1:ℕ):ℝ)≠0] <;> ring
+  let delta := fun j : ℕ => (((j+1:ℕ):ℝ))^4-(j:ℝ)^4
+  have hsum (N : ℕ) : (∑ n ∈ Ioc 0 N, Real.log (q n:ℝ))+(N:ℝ)^4*T N =
+      ∑ j ∈ range N, delta j*T j := by
+    induction N with
+    | zero => simp
+    | succ n ih =>
+      rw [sum_Ioc_succ_top (Nat.zero_le _),hstep,Finset.sum_range_succ,← ih]
+      dsimp only [delta]; ring
+  have hdj {j : ℕ} (hj : 0 < j) : |delta j*T j| ≤ 15*K*(j:ℝ)^2 := by
+    have hj' : 0 < (j:ℝ) := Nat.cast_pos.mpr hj
+    have hj₁ : (1:ℝ) ≤ j := by exact_mod_cast hj
+    have h₁ := mul_le_mul_of_nonneg_right hj₁ (Nat.cast_nonneg (α := ℝ) j)
+    have h₂ := mul_le_mul_of_nonneg_right hj₁ (sq_nonneg (j:ℝ))
+    have hδ : 0 ≤ delta j := sub_nonneg.mpr (pow_le_pow_left₀ hj'.le (Nat.cast_le.mpr (Nat.le_succ _)) 4)
+    have hup : delta j ≤ 15*(j:ℝ)^3 := by
+      dsimp only [delta]; push_cast; linarith only [hj₁,h₁,h₂]
+    rw [abs_mul,abs_of_nonneg hδ]
+    exact (mul_le_mul hup (hT hj) (abs_nonneg _) (by positivity)).trans_eq (by field_simp [hj'.ne'] <;> ring)
+  refine ⟨|T 0|+16*K,by positivity,fun {N} hn => ?_⟩
+  have hN : (1:ℝ) ≤ N := by exact_mod_cast hn
+  have hz (j : ℕ) (hj : j ∈ range N) : |delta j*T j| ≤ (if j=0 then |T 0| else 0)+15*K*(N:ℝ)^2 := by
+    rcases Nat.eq_zero_or_pos j with rfl | h
+    · simp only [delta,Nat.zero_add,Nat.cast_one,one_pow,Nat.cast_zero,zero_pow (by decide : 4≠0),sub_zero,one_mul,if_true]
+      exact le_add_of_nonneg_right (by positivity)
+    · rw [if_neg h.ne',zero_add]
+      exact (hdj h).trans (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (Nat.cast_nonneg j)
+        (Nat.cast_le.mpr (mem_range.mp hj).le) 2) (by positivity))
+  have hbound := (abs_sum_le_sum_abs (fun j => delta j*T j) (range N)).trans (sum_le_sum hz)
+  rw [sum_add_distrib] at hbound
+  simp only [sum_const,card_range,nsmul_eq_mul,Finset.sum_ite_eq',mem_range,if_pos hn] at hbound
+  have hend := mul_le_mul_of_nonneg_left (hT hn) (pow_nonneg (Nat.cast_nonneg N) 4)
+  have hN' : 0 < (N:ℝ) := Nat.cast_pos.mpr hn
+  rw [show (N:ℝ)^4*(K/N)=K*(N:ℝ)^3 by field_simp [hN'.ne'] <;> ring] at hend
+  have hlog : Real.log (squareGeneratorPrefix N:ℝ)=∑ n ∈ Ioc 0 N, Real.log (q n:ℝ) := by
+    unfold squareGeneratorPrefix
+    push_cast
+    exact Real.log_prod (fun n _ => (show 0 < (q n:ℝ) by exact_mod_cast
+      (show 0 < q n from prod_pos fun k _ => zpow_pos (Nat.cast_pos.mpr (contactBase_pos k)) _)).ne')
+  rw [hlog,show (∑ n ∈ Ioc 0 N, Real.log (q n:ℝ))=(∑ j ∈ range N, delta j*T j)-(N:ℝ)^4*T N
+    from eq_sub_of_add_eq (hsum N)]
+  refine (abs_sub _ _).trans ?_
+  rw [abs_mul,abs_of_nonneg (pow_nonneg (Nat.cast_nonneg N) 4)]
+  have hx := mul_le_mul_of_nonneg_left (one_le_pow₀ hN (n := 3)) (abs_nonneg (T 0))
+  linarith only [hend,hbound,hx]
 
 private def orbit (n j : ℕ) := 2^j*n
 private def factor (j : ℕ) : ℝ := (1/8)^j
@@ -644,7 +918,7 @@ private theorem dyadic_product_row (n K k : ℕ) :
   induction K with
   | zero => simp [dyadicSquareProduct]
   | succ K ih =>
-    rw [sum_range_succ,← ih,dyadicSquareProduct,deningerRatExp_mul
+    rw [Finset.sum_range_succ,← ih,dyadicSquareProduct,deningerRatExp_mul
       (pow_ne_zero 8 (dyadic_product_pos _ _).ne') (orbit_price_pos _).ne',deningerRatExp_pow (dyadic_product_pos _ _).ne']
     simp only [Finsupp.add_apply,Finsupp.smul_apply,nsmul_eq_mul,Int.cast_add,Int.cast_mul,Int.cast_ofNat]
     dsimp only [factor,row,price,orbit]

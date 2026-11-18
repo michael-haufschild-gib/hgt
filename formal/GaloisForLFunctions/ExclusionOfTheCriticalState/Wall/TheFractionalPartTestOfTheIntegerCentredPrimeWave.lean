@@ -17,15 +17,18 @@ open HTGeometry ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
 
 private def tiltedFloorTest (r v : ℝ) := Real.exp (r*v)*fractionalPrimeTest v
 
+/-- Exponential tilting moves the fractional-part Mellin parameter. -/
+theorem fractionalPrimeTest_tilt_eq (r v : ℝ) :
+    Real.exp (r*v)*fractionalPrimeTest v= -weightedFloorDiscrepancy (1/2-r) v := by
+  rw [fractionalPrimeTest,weightedFloorDiscrepancy,← mul_assoc,← Real.exp_add,neg_mul,neg_neg,
+    show r*v+ -v/2= -(1/2-r)*v by ring]
+
 private theorem integrable_tiltedFloorTest_square {r : ℝ} (hr : 0 ≤ r) (hr' : r < 1/2) :
     Integrable (fun v => (tiltedFloorTest r v)^2) := by
   let σ := 1/2-r
   have hs : 0 < σ := sub_pos.mpr hr'
   have hs' : σ < 1 := by dsimp only [σ]; linarith only [hr]
-  have he (v : ℝ) : tiltedFloorTest r v = -weightedFloorDiscrepancy σ v := by
-    dsimp only [tiltedFloorTest,fractionalPrimeTest,weightedFloorDiscrepancy,σ]
-    rw [← mul_assoc,← Real.exp_add,neg_mul,neg_neg,
-      show r*v+ -v/2= -(1/2-r)*v by ring]
+  have he (v : ℝ) : tiltedFloorTest r v = -weightedFloorDiscrepancy σ v := fractionalPrimeTest_tilt_eq r v
   have hm := measurable_weightedFloorDiscrepancy σ
   apply (integrable_weightedFloorDiscrepancy hs hs').abs.mono'
   · simpa only [he,neg_sq] using (hm.pow_const 2).aestronglyMeasurable
@@ -128,6 +131,63 @@ theorem criticalState_integerCentred_fractional_response {W₀ : ℝ} (hW : 0 < 
   rw [add_mul]
   exact add_le_add (h.2.2.trans (hfirst.trans_eq he')) (abs_integral_le_integral_abs.trans (hbound T).2)
 
+/-- A signed observation decaying faster than the damping of an unaveraged
+wave controls their mixed product in absolute integral on the full ray. -/
+theorem integrable_mixed_response {E Y : ℝ → ℝ} {d r ε B : ℝ}
+    (hE : MemLp (fun t : ℝ => Real.exp (-(d*t))*E t) 2 halfLineLaplaceMeasure)
+    (hm : Measurable Y) (hB : 0 ≤ B) (hY : ∀ t, 0 ≤ t → |Y t| ≤ B*Real.exp (-r*t))
+    (hgap : ε+d < r) :
+    IntegrableOn (fun t : ℝ => Real.exp (ε*t)*|E t*Y t|) (Ioi 0) := by
+  let q := r-(ε+d)
+  have hq : 0 < ((q:ℝ):ℂ).re := sub_pos.mpr hgap
+  let g := fun t : ℝ => Real.exp ((ε+d)*t)*Y t
+  have hg : MemLp g 2 halfLineLaplaceMeasure := by
+    apply ((memLp_two_expRay_restrict hq 0).norm.const_mul B).mono
+      ((by fun_prop : Measurable fun t : ℝ => Real.exp ((ε+d)*t)).mul hm).aestronglyMeasurable
+    filter_upwards [ae_restrict_mem (μ := volume) (measurableSet_Ioi (a := (0:ℝ)))] with t ht
+    change ‖Real.exp ((ε+d)*t)*Y t‖ ≤ ‖B*‖expRay ((q:ℝ):ℂ) t‖‖
+    rw [Real.norm_eq_abs,abs_mul,abs_of_pos (Real.exp_pos _),
+      Real.norm_of_nonneg (mul_nonneg hB (norm_nonneg _)),norm_expRay,Complex.ofReal_re]
+    calc _ ≤ Real.exp ((ε+d)*t)*(B*Real.exp (-r*t)) :=
+           mul_le_mul_of_nonneg_left (hY t ht.le) (Real.exp_pos _).le
+      _ = B*Real.exp (-(q*t)) := by
+           rw [mul_left_comm,← Real.exp_add]
+           congr 2; dsimp only [q]; ring
+  have h := (memLp_one_iff_integrable.mp (hE.mul' (r := 1) hg)).norm
+  refine h.congr (Eventually.of_forall fun t => ?_)
+  change ‖(Real.exp ((ε+d)*t)*Y t)*(Real.exp (-(d*t))*E t)‖=_
+  rw [show (Real.exp ((ε+d)*t)*Y t)*(Real.exp (-(d*t))*E t)=
+    (Real.exp (-(d*t))*Real.exp ((ε+d)*t))*(E t*Y t) by ring,
+    ← Real.exp_add,show -(d*t)+(ε+d)*t=ε*t by ring,Real.norm_eq_abs,abs_mul,abs_of_pos (Real.exp_pos _)]
+
+/-- Only the integer-centered endpoint is averaged. The ordinary-prime
+polar error in the other factor is evaluated at the original time. -/
+theorem riemannHypothesis_or_mixed_integerCentred_prime_covariance : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧
+      ∀ ε : ℝ, 0 ≤ ε → ε < 1-zetaZeroAbscissa →
+        let V := fun t : ℝ => ∑' n : ℕ, (vonMangoldt n-1)*continuousIntegerAtom Φ n t
+        let Y := fun T : ℝ => ∫ t, V t*fractionalPrimeTest (T-t)
+        IntegrableOn (fun T : ℝ => Real.exp (ε*T)*|ordinaryPrimePolarError Φ T*Y T|) (Ioi 0) := by
+  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hr | ⟨W₀,F,hW,ht,hF⟩
+  · exact Or.inl hr
+  obtain ⟨_,_,Φ,hc,he,hs,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hc,he,fun ε hε hε' => ?_⟩
+  obtain ⟨d,hd,hd'⟩ := exists_between (by linarith only [hε'] : zetaZeroAbscissa-1/2 < 1/2-ε)
+  obtain ⟨r,hr,hr'⟩ := exists_between (by linarith only [hd'] : ε+d < 1/2)
+  have hd0 := (sub_nonneg.mpr half_le_zetaZeroAbscissa).trans_lt hd
+  have hr0 := (add_nonneg hε hd0.le).trans hr.le
+  obtain ⟨B,hB,h⟩ := criticalState_integerCentred_fractional_response hW ht hF hc he hs hC hb hr0 hr'
+  let V := fun t : ℝ => ∑' n : ℕ, (vonMangoldt n-1)*continuousIntegerAtom Φ n t
+  have hmV : Measurable V := Measurable.tsum fun n : ℕ =>
+    measurable_const.mul (measurable_const.mul (hc.measurable.comp (measurable_id.sub measurable_const)))
+  let f := fun z : ℝ × ℝ => V z.2*fractionalPrimeTest (z.1-z.2)
+  have hmf : Measurable f := (hmV.comp measurable_snd).mul
+    (measurable_fractionalPrimeTest.comp (measurable_fst.sub measurable_snd))
+  apply integrable_mixed_response (memLp_damped_ordinaryPrimePolarError hW ht hF he hd)
+    hmf.stronglyMeasurable.integral_prod_right'.measurable hB (fun t ht => (h t ht).2) hr
+
 /-- Failure of RH forces this decay for one actual state simultaneously at
 every subcritical rate. -/
 theorem riemannHypothesis_or_integerCentred_fractional_response : RiemannHypothesis ∨
@@ -145,4 +205,5 @@ theorem riemannHypothesis_or_integerCentred_fractional_response : RiemannHypothe
     criticalState_integerCentred_fractional_response hW ht hF hc he hs hC hb hr hr'⟩
 
 #print axioms riemannHypothesis_or_integerCentred_fractional_response
+#print axioms riemannHypothesis_or_mixed_integerCentred_prime_covariance
 end GaloisForLFunctions.ExclusionOfTheCriticalState

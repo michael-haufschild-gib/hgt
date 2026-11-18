@@ -13,7 +13,8 @@ open Finset
 open GaloisForLFunctions.CountingHolography.Sections
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-private theorem spline_after_window {n k : ℕ} (hn : 0<n) (hk : splineHorizon n<k) :
+/-- Above the common finite horizon the compact prime spline vanishes. -/
+theorem sampledSpline_after_window {n k : ℕ} (hn : 0<n) (hk : splineHorizon n<k) :
     sampledSpline n k=0 := by
   have hn' : (0:ℝ)<n := Nat.cast_pos.mpr hn
   have hscale : 4*(n:ℝ)^2 ≤ ((2*n+1:ℕ):ℝ)^2 := by
@@ -34,6 +35,17 @@ private theorem spline_after_window {n k : ℕ} (hn : 0<n) (hk : splineHorizon n
     rw [h,Complex.zero_re,mul_zero,zero_div]
   · exact zero_div _
 
+/-- Values below the lower edge of the prime spline vanish exactly. -/
+theorem sampledSpline_before_support {n k : ℕ} (hn : 0<n)
+    (hk : (k:ℝ)<Real.exp (-8)*(n:ℝ)^2) : sampledSpline n k=0 := by
+  have hn' : (0:ℝ)<n := Nat.cast_pos.mpr hn
+  unfold sampledSpline dyadicSpline
+  split
+  · rename_i hy
+    rw [squarePrimeWeight_zero_outside hy (fun hs => hk.not_ge ((le_div_iff₀ (sq_pos_of_pos hn')).mp hs.1)),
+      Complex.zero_re,mul_zero,zero_div]
+  · exact zero_div _
+
 private theorem reading_padded {n T : ℕ} (hn : 0<n) (hT : splineHorizon n<T)
     (f : ℕ → ℝ) (hz : f 0=0) :
     splineCountReading n f = ∑ k ∈ range T, f k*(sampledSpline n k-sampledSpline n (k+1)) := by
@@ -45,7 +57,7 @@ private theorem reading_padded {n T : ℕ} (hn : 0<n) (hT : splineHorizon n<T)
     rcases Nat.eq_zero_or_pos k with rfl | hp
     · rw [hz,zero_mul]
     · have h : splineHorizon n<k := lt_of_not_ge (fun he => hk (mem_Icc.mpr ⟨hp,he⟩))
-      rw [spline_after_window hn h,spline_after_window hn (h.trans (Nat.lt_succ_self k)),sub_self,mul_zero]
+      rw [sampledSpline_after_window hn h,sampledSpline_after_window hn (h.trans (Nat.lt_succ_self k)),sub_self,mul_zero]
 
 private theorem quotient_blocks {d : ℕ} (hd : 0<d) (f w : ℕ → ℝ) (M : ℕ) :
     (∑ k ∈ range (d*M), f (k/d)*(w k-w (k+1))) =

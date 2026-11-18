@@ -74,7 +74,7 @@ private theorem fractional_convolution_limit {Q : ℝ → ℝ} (hm : Measurable 
   · intro T
     simpa only [sub_sub_cancel,K] using (hi T).comp_sub_left T
   · have hpt (v : ℝ) : Tendsto (fun T : ℝ => Q (T-v)*K v) atTop (𝓝 (L*K v)) := by
-      simpa only [Function.comp_apply,sub_eq_add_neg] using
+      simpa only [Function.comp_apply,id_eq,sub_eq_add_neg] using
         (hL.comp (tendsto_atTop_add_const_right _ (-v) tendsto_id)).mul_const (K v)
     have h := tendsto_integral_filter_of_dominated_convergence (fun v : ℝ => B*|K v|)
       (Eventually.of_forall fun T => (hmQ T).aestronglyMeasurable)
@@ -88,14 +88,20 @@ private theorem fractional_convolution_limit {Q : ℝ → ℝ} (hm : Measurable 
 
 private theorem tendsto_stirling_response {Φ : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) : Tendsto (stirlingTestResponse Φ) atTop (𝓝 0) := by
-  have h (s : ℝ) := Real.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero s (1/2) (by norm_num)
-  have he (T : ℝ) : -(1/2)*T = -T/2 := by ring
-  have h0 := ((h 0).add (h 1)).const_mul C
-  simp only [Real.rpow_zero,Real.rpow_one,one_mul,he,add_zero,mul_zero] at h0
+  have h : Tendsto (fun T : ℝ => Real.exp ((-1/4)*T)) atTop (𝓝 0) :=
+    Real.tendsto_exp_atBot.comp (tendsto_id.const_mul_atTop_of_neg (by norm_num : (-1/4:ℝ)<0))
+  have h0 := h.const_mul (5*C)
+  rw [mul_zero] at h0
   apply tendsto_zero_iff_norm_tendsto_zero.mpr
   refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ h0
   filter_upwards [eventually_ge_atTop (0:ℝ)] with T hT
-  exact (abs_stirlingTestResponse_le hC hb hT).trans_eq (by ring)
+  have hbase : 1+T ≤ 5*Real.exp (T/4) := by
+    linarith only [Real.add_one_le_exp (T/4),Real.one_le_exp (div_nonneg hT (by norm_num : (0:ℝ) ≤ 4))]
+  apply (abs_stirlingTestResponse_le hC hb hT).trans
+  calc C*(1+T)*Real.exp (-T/2) ≤ C*(5*Real.exp (T/4))*Real.exp (-T/2) :=
+         mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hbase hC) (Real.exp_pos _).le
+    _ = (5*C)*(Real.exp (T/4)*Real.exp (-T/2)) := by ring
+    _ = _ := by rw [← Real.exp_add,show T/4 + -T/2 = (-1/4)*T by ring]
 
 /-- On the state forced by failure of RH the positive fractional-part test of
 the ordinary-prime polar error tends to zeta at one half times the integral

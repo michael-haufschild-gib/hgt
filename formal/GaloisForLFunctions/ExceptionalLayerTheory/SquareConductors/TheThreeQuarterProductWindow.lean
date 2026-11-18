@@ -41,7 +41,6 @@ private theorem reading_prefix_bound :
   rw [HTGeometry.sum_mul_eq_partial_mul_diff_ring]
   apply (abs_add_le _ _).trans ((add_le_add hs ht).trans_eq _)
   field_simp
-  ring
 
 /-- Before choosing the product scale, the spline pays U²/n³ times
 the reciprocal-prime logarithm and the two stencil costs. -/

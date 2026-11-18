@@ -129,6 +129,7 @@ theorem long_prime_band_spline_bound :
   let L := splineHorizon n
   let H := 1+Real.log L
   have hH : 1≤H := le_add_of_nonneg_right (Real.log_natCast_nonneg L)
+  have hH₀ : 0≤H := zero_le_one.trans hH
   have hU := Real.log_natCast_nonneg U
   have hK : (splineStencilCutoff L:ℝ) ≤ H := Nat.floor_le (zero_le_one.trans hH)
   have one (d : ℕ) (hd : d ∈ Icc 1 (splineStencilCutoff L)) :
@@ -214,10 +215,10 @@ private theorem logarithmic_allowance {s : ℝ} (hs : 0<s) :
          _ = _ := by ring
   have hpow : ((L:ℝ)^a)^6=(L:ℝ)^s := by
     rw [←Real.rpow_natCast _ 6,←Real.rpow_mul (zero_le_one.trans hL)]
-    congr 1; dsimp [a]; norm_num; ring
+    congr 1; dsimp [a]; norm_num <;> ring
   have hscale : ((A*n)^2)^s=A^(2*s)*(n:ℝ)^(2*s) := by
     rw [←Real.rpow_two,←Real.rpow_mul (mul_nonneg hA₀ (Nat.cast_nonneg n)),Real.mul_rpow hA₀ (Nat.cast_nonneg n)]
-  apply (pow_le_pow_left₀ (le_add_of_nonneg_right (Real.log_natCast_nonneg L) |>.trans' zero_le_one) hbase 6).trans
+  apply (pow_le_pow_left₀ (add_nonneg zero_le_one (Real.log_natCast_nonneg L)) hbase 6).trans
   rw [mul_pow,hpow]
   apply (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg L) (ha hn) hs.le) hB).trans
   rw [hscale,←mul_assoc]

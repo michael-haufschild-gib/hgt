@@ -107,8 +107,7 @@ private theorem deficit_upper {a W : ℝ} (ha : 0<a) (hW : 0<W) :
 theorem tolerance_tendsto {a : ℝ} (ha : 0<a) :
     Tendsto (tolerance a) atTop (𝓝 a) := by
   have hU : Tendsto (fun W : ℝ => (17*a^2/8)/W) atTop (𝓝 0) := by
-    simpa only [div_eq_mul_inv,mul_zero] using
-      (tendsto_const_nhds (x:=17*a^2/8)).mul (tendsto_inv_atTop_zero : Tendsto (fun W : ℝ => W⁻¹) atTop (𝓝 0))
+    exact (tendsto_id : Tendsto (fun W : ℝ => W) atTop atTop).const_div_atTop (17*a^2/8)
   have hd : Tendsto (fun W => a-tolerance a W) atTop (𝓝 0) := by
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hU
     · filter_upwards [eventually_ge_atTop (0 : ℝ)] with W hW

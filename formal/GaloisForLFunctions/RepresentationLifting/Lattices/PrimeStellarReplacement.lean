@@ -15,6 +15,7 @@ open scoped Classical
 noncomputable section
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
+omit [DecidableEq ι] in
 /-- Dividing a nonzero vector by common factors of a base at least two
 terminates, independently of the lattice dimension or choice of a pivot. -/
 private theorem primitive_at_base (p : ℕ) (hp : 1 < p) (v : ι → ℤ) (hv : v ≠ 0) :
@@ -41,7 +42,7 @@ private theorem primitive_at_base (p : ℕ) (hp : 1 < p) (v : ι → ℤ) (hv : 
       rw [hu j,hw,pow_succ']
       change (p:ℤ)*((p:ℤ)^k*w j) = _
       ring
-    · push_neg at h
+    · push Not at h
       exact ⟨0,v,by simp,h⟩
 
 private theorem replacement_determinant (A : Matrix ι ι ℤ) (c : ι → ℤ) (i : ι) :
@@ -79,7 +80,8 @@ theorem prime_stellar_replacement (p : ℕ) [hp : Fact p.Prime]
     rw [← hcast]
     change ((a i : ℤ) : ZMod p) = 0
     simp [a,hh]
-  have hane : a ≠ 0 := fun hh => hai (by exact_mod_cast (congrFun hh i : a i = 0))
+  have hane : a ≠ 0 := fun hh => hai (Int.ofNat_inj.mp
+    (show ((c i).val : ℤ) = ((0:ℕ):ℤ) from congrFun hh i))
   have hx : A *ᵥ a ≠ 0 := fun h => ha (Matrix.exists_mulVec_eq_zero_iff.mp ⟨a,hane,h⟩)
   have hdiv (j : ι) : (p:ℤ) ∣ (A *ᵥ a) j := by
     apply (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp
@@ -110,6 +112,7 @@ theorem prime_stellar_replacement (p : ℕ) [hp : Fact p.Prime]
   rw [← habs] at hlt
   exact ⟨hpos,Nat.lt_of_mul_lt_mul_left hlt⟩
 
+omit [DecidableEq ι] in
 /-- A facet energy that decreases for any choice of a bad facet. Up to
 the dimension many children may replace it. Each strict determinant drop
 pays for every child, so no largest-determinant selection is necessary. -/

@@ -75,15 +75,15 @@ private theorem cubicLog_bound {z : ℝ} (hz : 0<z) (hz' : z≤3/4) :
     -(5*z^3)≤cubicLog z ∧ cubicLog z≤0 := by
   let f' (v : ℝ) := -2*v^2/(1-v^2)
   have hd {v : ℝ} (hv : 0≤v) (hv' : v≤z) : HasDerivAt cubicLog (f' v) v := by
-    have h₋ : 0<1-v := by linarith only [hv',hz']
-    have h₊ : 0<1+v := by linarith only [hv]
+    have hminus : 0<1-v := by linarith only [hv',hz']
+    have hplus : 0<1+v := by linarith only [hv]
     have hh := (((hasDerivAt_id v).const_mul 2).add
-      (((hasDerivAt_const v (1:ℝ)).sub (hasDerivAt_id v)).log h₋.ne')).sub
-      (((hasDerivAt_const v (1:ℝ)).add (hasDerivAt_id v)).log h₊.ne')
+      (((hasDerivAt_const v (1:ℝ)).sub (hasDerivAt_id v)).log hminus.ne')).sub
+      (((hasDerivAt_const v (1:ℝ)).add (hasDerivAt_id v)).log hplus.ne')
     convert hh using 1
     dsimp only [f']
     have hf : 1-v^2=(1-v)*(1+v) := by ring
-    rw [hf]; field_simp [h₊.ne',h₋.ne'] <;> ring
+    rw [hf]; field_simp [hplus.ne',hminus.ne'] <;> ring
   obtain ⟨c,hc,he⟩ := exists_hasDerivAt_eq_slope cubicLog f' hz
     (fun v hv => (hd hv.1 hv.2).continuousAt.continuousWithinAt)
     (fun v hv => hd hv.1.le hv.2.le)
@@ -108,7 +108,7 @@ private theorem exp_cubicLog {z : ℝ} (hz : 0≤z) (hu : z<1) :
   have hr : 0<1+z := by linarith only [hz]
   rw [cubicLog,Real.exp_sub,Real.exp_add,Real.exp_log hl,Real.exp_log hr,two_mul,Real.exp_add,
     show 1-z^2=(1-z)*(1+z) by ring]
-  field_simp [hl.ne',hr.ne'] <;> ring
+  field_simp [hl.ne',hr.ne']
 
 /-- From the right of one half, the square of the correction times zeta at
 twice the argument stays between two strictly positive constants. -/
@@ -151,7 +151,7 @@ theorem reciprocalFactorialEulerCorrection_square_bounds :
     intro p
     rw [exp_cubicLog (hz₀ p).le (lt_of_le_of_lt (hz₁ p) (by norm_num)),pow_two]
     have hs' : (z p)^2=((p:ℕ):ℝ)^(-(2*s)) := (hex p 2).trans (by congr 1; push_cast; ring)
-    rw [hs']; rfl
+    rw [hs']
   constructor
   · refine ge_of_tendsto' hprod (fun S => ?_)
     rw [← Real.exp_sum]
@@ -198,7 +198,7 @@ theorem reciprocalFactorialEulerCorrection_no_right_germ (F : ℂ → ℂ) (hF :
       have hc' : c≤‖(0:ℂ)‖ := ge_of_tendsto ht (hbound.mono fun _ h => h.1)
       exact (hc.not_ge (by simpa only [norm_zero] using hc')).elim
   rw [show G=F^2*riemannZeta from rfl,meromorphicOrderAt_mul (hF.pow _)
-    (_root_.RHTower.meromorphicAt_riemannZeta_everywhere 1),meromorphicOrderAt_pow hF,
+    GaloisForLFunctions.meromorphicAt_riemannZeta_one,meromorphicOrderAt_pow hF,
     GaloisForLFunctions.meromorphicOrderAt_riemannZeta_one] at ho
   rcases eq_or_ne (meromorphicOrderAt F 1) ⊤ with h | h
   · simp [h] at ho
