@@ -1,3 +1,4 @@
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheEarlyMassOfTheSignedFractionalTest
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.AllFuturePrimeIncrementsAtTheSameCenters
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheIntegratedErrorInThePrimeSquareLayer
 
@@ -165,4 +166,113 @@ theorem riemannHypothesis_or_ordinary_prime_complement_on_every_late_octave : Ri
 
 #print axioms riemannHypothesis_or_ordinary_prime_complement_on_every_late_octave
 
+/-- The original ordinary-prime test can be replaced, on every measurable
+mask, by the literal centered row on (T/6,6T]. The absolute error retains
+the constant square charge and is uniform in the mask. -/
+theorem riemannHypothesis_or_middle_time_signed_test : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ) (B : ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧ 0 ≤ B ∧
+      ∀ᶠ T : ℝ in atTop, ∀ D : Set ℝ, MeasurableSet D →
+        let m := ∫ u, Φ u
+        let S := fun t : ℝ => (∑' n : ℕ, (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t)-m/2
+        let f := fun t : ℝ => |m*ordinaryPrimePolarError Φ t-
+          (Ioc (T/6) (6*T)).indicator (fun t => m*S t) t|*fractionalPrimeTest (T-t)
+        IntegrableOn f D ∧ (∫ t in D, f t) ≤ B*Real.exp (-T/240) := by
+  rcases riemannHypothesis_or_integer_mangoldt_sign_transfer with hr | ⟨W₀,F,Φ,D₀,hW,ht,hF,hΦ,he,hD₀,htail⟩
+  · exact Or.inl hr
+  obtain ⟨_,_,Ψ,hΨ,heΨ,_,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  have heq : Ψ=Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heΨ.symm.trans he)
+  subst Ψ
+  obtain ⟨B₀,hB₀,hearly⟩ := early_signed_fractional_mass_of_confinement hΦ hC hb
+  obtain ⟨B₁,hB₁,hlate⟩ := criticalState_late_absolute_ordinary_test hW ht hF hΦ he
+  let m := ∫ u, Φ u
+  let S := fun t : ℝ => (∑' n : ℕ, (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t)-m/2
+  let P := ordinaryPrimePolarError Φ
+  let E := fun t => |P t-S t|
+  have hS : Measurable S := (Measurable.tsum (fun n : ℕ => measurable_const.mul
+    (measurable_const.mul (hΦ.measurable.comp (by fun_prop))))).sub measurable_const
+  have hWm : Measurable (ordinaryPrimeWave Φ) := Measurable.tsum fun q : Nat.Primes =>
+    measurable_const.mul (Complex.continuous_ofReal.measurable.comp (hΦ.measurable.comp (by fun_prop)))
+  have hP : Measurable P := (Complex.continuous_re.measurable.comp hWm).sub (by fun_prop)
+  have htransfer : ∀ᶠ V : ℝ in atTop, IntegrableOn E (Ioi (V+1)) ∧
+      (∫ t in Ioi (V+1), E t) ≤ D₀*Real.exp ((-1/40)*V) := by
+    filter_upwards [htail] with V hV
+    simpa only [m,S,P,E,sign_part_distances_eq_abs_sub] using hV
+  have hcut : Tendsto (fun T : ℝ => T/6-1) atTop atTop :=
+    (tendsto_id.atTop_div_const (by norm_num : (0:ℝ)<6)).atTop_sub_const 1
+  let B := |m|*B₀ + |m|*D₀*Real.exp (1/40) + B₁
+  refine Or.inr ⟨W₀,F,Φ,B,hW,ht,hF,hΦ,he,by dsimp only [B]; positivity,?_⟩
+  filter_upwards [hcut.eventually htransfer,eventually_ge_atTop (0:ℝ)] with T hx hT
+  rw [sub_add_cancel] at hx
+  let U := T/6
+  let V := 6*T
+  let I := Ioc U V
+  let K := fun t => fractionalPrimeTest (T-t)
+  let f := fun t => |m*P t-I.indicator (fun z => m*S z) t|*K t
+  have hUV : U ≤ V := by dsimp only [U,V]; linarith only [hT]
+  have hK : Measurable K := measurable_fractionalPrimeTest.comp (measurable_const.sub measurable_id)
+  have hf : Measurable f := ((measurable_const.mul hP).sub
+    ((measurable_const.mul hS).indicator measurableSet_Ioc)).abs.mul hK
+  have hK0 (t : ℝ) : 0 ≤ K t := mul_nonneg (Real.exp_pos _).le (Int.fract_nonneg _)
+  have hf0 (t : ℝ) : 0 ≤ f t := mul_nonneg (abs_nonneg _) (hK0 t)
+  have restrict_le {J : Set ℝ} (hJ : MeasurableSet J) {g : ℝ → ℝ}
+      (hg : IntegrableOn g J) (hle : ∀ t ∈ J, f t ≤ g t) :
+      IntegrableOn f J ∧ (∫ t in J, f t) ≤ ∫ t in J, g t := by
+    have hi : IntegrableOn f J := hg.mono' hf.aestronglyMeasurable (by
+      filter_upwards [ae_restrict_mem (μ := volume) hJ] with t htj
+      simpa only [Real.norm_of_nonneg (hf0 t)] using hle t htj)
+    exact ⟨hi,setIntegral_mono_on hi hg hJ hle⟩
+  let e := fun t => (|S t|+|P t|)*K t
+  have hE0 := hearly U (by dsimp only [U]; positivity) T
+  have hfront := restrict_le measurableSet_Iic (hE0.1.const_mul |m|) (fun t htj => by
+    have hnot : t ∉ I := fun h => (not_lt_of_ge htj) h.1
+    change |m*P t-I.indicator (fun z => m*S z) t|*K t ≤ |m|*((|S t|+|P t|)*K t)
+    rw [indicator_of_notMem hnot,sub_zero,abs_mul,← mul_assoc]
+    exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left
+      (le_add_of_nonneg_left (abs_nonneg _)) (abs_nonneg m)) (hK0 t))
+  have hinter := restrict_le measurableSet_Ioc ((hx.1.const_mul |m|).mono_set
+    (show I ⊆ Ioi U from fun _ h => h.1)) (fun t htj => by
+    change |m*P t-I.indicator (fun z => m*S z) t|*K t ≤ |m|*E t
+    rw [indicator_of_mem htj,← mul_sub,abs_mul]
+    exact mul_le_of_le_one_right (mul_nonneg (abs_nonneg m) (abs_nonneg _))
+      ((le_abs_self (K t)).trans (fractionalPrimeTest_bounds _).1))
+  have hend := hlate T univ hT MeasurableSet.univ
+  simp only [univ_inter] at hend
+  have hrowEnd := restrict_le measurableSet_Ioi hend.1 (fun t htj => by
+    have hnot : t ∉ I := fun h => (not_le_of_gt htj) h.2
+    change |m*P t-I.indicator (fun z => m*S z) t|*K t ≤ |m*P t|*K t
+    rw [indicator_of_notMem hnot,sub_zero])
+  have hfrontCost : (∫ t in Iic U, f t) ≤ |m|*B₀*Real.exp (-T/12) := by
+    apply hfront.2.trans
+    rw [integral_const_mul,mul_assoc]
+    apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
+    simpa only [U,show (5*(T/6)-T)/2 = -T/12 by ring] using hE0.2
+  have hmidE : (∫ t in I, E t) ≤ ∫ t in Ioi U, E t := setIntegral_mono_set hx.1
+    (Eventually.of_forall fun _ => abs_nonneg _) (Eventually.of_forall fun _ h => h.1)
+  have hmidCost : (∫ t in I, f t) ≤ (|m|*D₀*Real.exp (1/40))*Real.exp (-T/240) := by
+    apply hinter.2.trans
+    rw [integral_const_mul,show (-T/240:ℝ) = -(T/240) by ring]
+    apply (mul_le_mul_of_nonneg_left (hmidE.trans hx.2) (abs_nonneg _)).trans_eq
+    rw [show (-1/40:ℝ)*(T/6-1) = 1/40 + -(T/240) by ring,Real.exp_add]; ring
+  have hleft : IntegrableOn f (Iic V) := by
+    rw [← Iic_union_Ioc_eq_Iic hUV]; exact hfront.1.union hinter.1
+  have hall : Integrable f := by
+    rw [← integrableOn_univ,← union_compl_self (Iic V),compl_Iic]
+    exact hleft.union hrowEnd.1
+  have htotal : (∫ t, f t) ≤ B*Real.exp (-T/240) := by
+    rw [← integral_add_compl (measurableSet_Iic (a := V)) hall,compl_Iic,
+      ← Iic_union_Ioc_eq_Iic hUV,setIntegral_union (Iic_disjoint_Ioc le_rfl)
+        measurableSet_Ioc hfront.1 hinter.1]
+    have hlo := Real.exp_le_exp.mpr (by linarith only [hT] : -T/12 ≤ -T/240)
+    have hhi := Real.exp_le_exp.mpr (by linarith only [hT] : -T/10 ≤ -T/240)
+    have low := hfrontCost.trans (mul_le_mul_of_nonneg_left hlo (mul_nonneg (abs_nonneg _) hB₀))
+    have high := (hrowEnd.2.trans hend.2).trans (mul_le_mul_of_nonneg_left hhi hB₁)
+    change (∫ t in Iic U, f t)+(∫ t in I, f t)+(∫ t in Ioi V, f t) ≤ _
+    dsimp only [B]
+    linarith only [low,hmidCost,high]
+  intro D _
+  exact ⟨hall.integrableOn,(setIntegral_le_integral hall (Eventually.of_forall hf0)).trans htotal⟩
+
+#print axioms riemannHypothesis_or_middle_time_signed_test
 end GaloisForLFunctions.ExclusionOfTheCriticalState

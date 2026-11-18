@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ThePrimeMassAtAQuadraticProductDivider
 import GaloisForLFunctions.CountingHolography.Sections.TheMellinKernelOfSquareConductorPrices
+import GaloisForLFunctions.RHTower.PrimePolarDirichletBackbone
 
 /-!
 # The shifted zero residue on the first product endpoint
@@ -153,9 +154,57 @@ theorem squareDivider_opposite_prices :
   simpa only [Nat.cast_pow,div_self (sq_pos_of_pos hn').ne',squareDividerMass,
     show (1+16/9:ℝ)=25/9 by norm_num] using h
 
+/-- The positive lower density and the negative upper density occur in the
+two separate price series. Subtracting their cubic coefficients leaves
+absolutely convergent errors in the half-plane to the right of 34/9. -/
+theorem squareDivider_opposite_real_poles :
+    ∃ H G : ℂ → ℂ,
+      AnalyticOnNhd ℂ H {s : ℂ | 34/9 < s.re} ∧ AnalyticOnNhd ℂ G {s : ℂ | 34/9 < s.re} ∧
+      ∀ {s : ℂ}, 4 < s.re →
+        LSeries (fun n => (lowerPrimeEndpointPrice n (n^2):ℂ)) s =
+          (squareDividerMass:ℂ)*riemannZeta (s-3)+H s ∧
+        LSeries (fun n => (((n:ℝ)^2*retainedPrimeEndpoint (n^2) n:ℝ):ℂ)) s =
+          -(squareDividerMass:ℂ)*riemannZeta (s-3)+G s := by
+  obtain ⟨C,hC,h⟩ := squareDivider_opposite_prices
+  have continuation (f : ℕ → ℝ) (c : ℝ)
+      (hf : ∀ n : ℕ, 2 ≤ n → |f n-(n:ℝ)^3*c| ≤ C*(n:ℝ)^(25/9:ℝ)) :
+      ∃ H : ℂ → ℂ, AnalyticOnNhd ℂ H {s : ℂ | 34/9 < s.re} ∧ ∀ {s : ℂ}, 4 < s.re →
+        LSeries (fun n => (f n:ℂ)) s = (c:ℂ)*riemannZeta (s-3)+H s := by
+    let e (n : ℕ) : ℂ := ((f n-(n:ℝ)^3*c:ℝ):ℂ)
+    have he₀ := LSeries.abscissaOfAbsConv_le_of_isBigO_rpow (f := e) (x := 25/9) (by
+      apply Asymptotics.isBigO_iff.mpr
+      refine ⟨C,?_⟩
+      filter_upwards [eventually_ge_atTop (2:ℕ)] with n hn
+      simpa only [e,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg n) _)] using hf n hn)
+    have he : LSeries.abscissaOfAbsConv e ≤ ((34/9:ℝ):EReal) := he₀.trans_eq (by
+      change ((25/9:ℝ):EReal)+((1:ℝ):EReal)=((34/9:ℝ):EReal)
+      rw [←EReal.coe_add]; norm_num)
+    refine ⟨LSeries e,fun z hz => LSeries_analyticOnNhd _ z (he.trans_lt (EReal.coe_lt_coe_iff.mpr hz)),?_⟩
+    intro s hs
+    have hz : 1 < (s-(3:ℂ)).re := by rw [Complex.sub_re]; norm_num; linarith only [hs]
+    have hsE := LSeriesSummable_of_abscissaOfAbsConv_lt_re (he.trans_lt (EReal.coe_lt_coe_iff.mpr
+      (lt_trans (by norm_num : (34/9:ℝ)<4) hs)))
+    let P (n : ℕ) := (n:ℂ)^(3:ℂ)
+    have hsP : LSeriesSummable P s := (lseriesSummable_cpow _ _).mpr (LSeriesSummable_one_iff.mpr hz)
+    have hf' : (fun n => (f n:ℂ)) = (c:ℂ) • P + e := by
+      funext n
+      simp only [Pi.add_apply,Pi.smul_apply,smul_eq_mul,P,e,Complex.cpow_natCast,Complex.ofReal_sub,
+        Complex.ofReal_mul,Complex.ofReal_pow,Complex.ofReal_natCast]
+      norm_num only [Complex.cpow_ofNat]
+      ring
+    rw [hf',LSeries_add (hsP.smul _) hsE,LSeries_smul,lseries_cpow,LSeries_one_eq_riemannZeta hz]
+  obtain ⟨H,hH,hl⟩ := continuation (fun n => lowerPrimeEndpointPrice n (n^2)) squareDividerMass
+    (fun n hn => (le_add_of_nonneg_right (abs_nonneg _)).trans (h hn))
+  obtain ⟨G,hG,hu⟩ := continuation (fun n => (n:ℝ)^2*retainedPrimeEndpoint (n^2) n) (-squareDividerMass)
+    (fun n hn => by
+      rw [mul_neg,sub_neg_eq_add]
+      exact (le_add_of_nonneg_left (abs_nonneg _)).trans (h hn))
+  exact ⟨H,G,hH,hG,fun {s} hs => ⟨hl hs,by simpa only [Complex.ofReal_neg] using hu hs⟩⟩
+
 #print axioms LSeries_firstEndpointPrice
 #print axioms firstEndpointContinuation_zero_residue
 #print axioms firstEndpoint_regular_real
 #print axioms squareDividerMass_pos
 #print axioms squareDivider_opposite_prices
+#print axioms squareDivider_opposite_real_poles
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
