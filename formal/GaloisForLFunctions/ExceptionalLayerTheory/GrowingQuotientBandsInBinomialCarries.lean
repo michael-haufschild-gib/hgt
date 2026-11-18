@@ -62,7 +62,8 @@ theorem sum_movingOddQuotientBand_eq_ordinaryLastClassTotal (X : ℕ) :
     (∑ Q ∈ range X, movingOddQuotientBand Q X) = ordinaryLastClassTotal 2 X := by
   unfold movingOddQuotientBand movingQuotientSlice ordinaryLastClassTotal quotientClassMassOf
   rw [sum_comm]
-  refine sum_congr rfl fun k _ => ?_
+  refine sum_congr rfl fun k hk => ?_
+  have hkX : k < X := mem_range.mp hk
   simp_rw [sum_filter (p := fun m => k / m = _)]
   calc
     (∑ Q ∈ range X, ∑ m ∈ Icc 1 k, if k / m = 2 * Q + 1 then ordinaryPrimeCountWeight m else 0) =
@@ -194,7 +195,8 @@ theorem abs_movingQuotientSlice_le_of_prefix {d : ℕ} (hd : 1 ≤ d) (X : ℕ) 
       refine sum_eq_zero fun m hm => ?_
       obtain ⟨hm0, hmle⟩ := mem_Ioc.mp (hM₁0 ▸ hm)
       have hdX : d ≤ X := by
-        have := (Nat.le_div_iff_mul_le (by omega : 0 < d)).mp (hm0.trans hmle)
+        have hpos_M₂ : 0 < M₂ := lt_of_lt_of_le hm0 hmle
+        have := (Nat.le_div_iff_mul_le (by omega : 0 < d)).mp hpos_M₂
         omega
       have hXd : X = d := by omega
       have hm1 : m = 1 := by
@@ -204,7 +206,7 @@ theorem abs_movingQuotientSlice_le_of_prefix {d : ℕ} (hd : 1 ≤ d) (X : ℕ) 
     change |(∑ m ∈ Icc 1 M₁, _) + ∑ m ∈ Ioc M₁ M₂, _| ≤ 4 * B * (M₁ : ℝ)
     rw [hint, hbdry, hM₁0]
     simp
-  · have hM₂_pos : 1 ≤ M₂ := hM₁_pos.trans hM₁₂
+  · have hM₂_pos : 1 ≤ M₂ := lt_of_lt_of_le hM₁_pos hM₁₂
     have hint_le : |∑ m ∈ Icc 1 M₁, (m : ℝ) * ordinaryPrimeCountWeight m| ≤ 2 * B * (M₁ : ℝ) := by
       let w₁ : ℕ → ℝ := fun m => (M₁ : ℝ) - m
       have hsplit : (∑ m ∈ Icc 1 M₁, (m : ℝ) * ordinaryPrimeCountWeight m) =
@@ -477,7 +479,7 @@ theorem movingQuotientSliceTrivial_lower_bound {d X : ℕ} (hd : 1 ≤ d)
     rw [hw_eq]
     exact mul_le_mul hm_ge hinv_ge (inv_nonneg.mpr hlogX_pos.le) (by positivity)
   have hcard_ge : (M₁ : ℝ) / 8 ≤ (J.card : ℝ) := by
-    have hc : J.card = M₁ / 2 - M₁ / 4 := card_Ioc
+    have hc : J.card = M₁ / 2 - M₁ / 4 := Nat.card_Ioc (M₁ / 4) (M₁ / 2)
     have hnat : M₁ ≤ 8 * (M₁ / 2 - M₁ / 4) := by omega
     have hR : (M₁ : ℝ) ≤ 8 * (J.card : ℝ) := by rw [hc]; exact_mod_cast hnat
     linarith only [hR]
@@ -709,7 +711,7 @@ theorem exists_outerQuotientPairBand_sub_seven_eighths {β : ℝ}
     change |∑ m ∈ Ioc A B, _| ≤ _
     rw [hEq, Ioc_self, sum_empty, abs_zero]
     positivity
-  · have hB_pos : 1 ≤ B := by omega
+  · have hB_pos : 1 ≤ B := lt_of_le_of_lt (Nat.zero_le A) hLt
     let c : ℕ → ℝ := fun m => if A < m then ordinaryPrimeCountWeight m else 0
     let f : ℕ → ℝ := fun m => discreteQuotientMean binaryCarryProfile m X
     have hband_eq : outerQuotientPairBand Q X = ∑ m ∈ Icc 1 B, c m * f m := by
@@ -731,19 +733,20 @@ theorem exists_outerQuotientPairBand_sub_seven_eighths {β : ℝ}
       · have hsplit : (∑ k ∈ Icc 1 n, c k) =
             (∑ k ∈ Icc 1 n, ordinaryPrimeCountWeight k) -
               ∑ k ∈ Icc 1 A, ordinaryPrimeCountWeight k := by
-          rw [← Ioc_zero_eq_Icc_one n, ← sum_Ioc_consecutive _ (Nat.zero_le A) hAn.le]
-          have h0 : (∑ k ∈ Ioc 0 A, c k) = 0 :=
-            sum_eq_zero fun k hk => by simp [c, not_lt.mpr (mem_Ioc.mp hk).2]
-          have h1 : (∑ k ∈ Ioc A n, c k) = ∑ k ∈ Ioc A n, ordinaryPrimeCountWeight k :=
-            sum_congr rfl fun k hk => by simp [c, (mem_Ioc.mp hk).1]
+          have hLHS_c : (∑ k ∈ Icc 1 n, c k) = ∑ k ∈ Ioc A n, ordinaryPrimeCountWeight k := by
+            rw [← Ioc_zero_eq_Icc_one n, ← sum_Ioc_consecutive _ (Nat.zero_le A) hAn.le]
+            have h0 : (∑ k ∈ Ioc 0 A, c k) = 0 :=
+              sum_eq_zero fun k hk => by simp [c, not_lt.mpr (mem_Ioc.mp hk).2]
+            have h1 : (∑ k ∈ Ioc A n, c k) = ∑ k ∈ Ioc A n, ordinaryPrimeCountWeight k :=
+              sum_congr rfl fun k hk => by simp [c, (mem_Ioc.mp hk).1]
+            rw [h0, zero_add, h1]
           have h2 : (∑ k ∈ Icc 1 n, ordinaryPrimeCountWeight k) =
               (∑ k ∈ Icc 1 A, ordinaryPrimeCountWeight k) +
                 ∑ k ∈ Ioc A n, ordinaryPrimeCountWeight k := by
             rw [← Ioc_zero_eq_Icc_one n, ← Ioc_zero_eq_Icc_one A,
               sum_Ioc_consecutive _ (Nat.zero_le A) hAn.le]
-          rw [h0, zero_add, h1]
-          linarith only [h2]
-        have hn1 : 1 ≤ n := by omega
+          linarith only [hLHS_c, h2]
+        have hn1 : 1 ≤ n := lt_of_le_of_lt (Nat.zero_le A) hAn
         have hpn : |∑ k ∈ Icc 1 n, ordinaryPrimeCountWeight k| ≤ K * (B : ℝ) ^ β :=
           (hpref n hn1).trans (mul_le_mul_of_nonneg_left
             (Real.rpow_le_rpow (Nat.cast_nonneg n) (by exact_mod_cast hn) hβ0.le) hK0)
@@ -787,16 +790,16 @@ theorem exists_outerQuotientPairBand_sub_seven_eighths {β : ℝ}
           |(∑ k ∈ Icc 1 n, c k) * (f n - f (n + 1))| ≤
             (2 * K * (B : ℝ) ^ β) * (4 * (Q : ℝ)) := by
         obtain ⟨hnA, hnB⟩ := mem_Ioc.mp hn
-        have hn_pos : 0 < n := by omega
+        have hn_pos : 0 < n := lt_of_le_of_lt (Nat.zero_le A) hnA
         have hlip : |f n - f (n + 1)| ≤ (X : ℝ) / ((n : ℝ) + 1) :=
           discreteQuotientMean_lipschitz binaryCarryProfile binaryCarryProfile_bounds hn_pos X
-        have hAn : (A : ℝ) + 1 ≤ (n : ℝ) + 1 := by exact_mod_cast (show A + 1 ≤ n + 1 by omega)
+        have hAn : (A : ℝ) + 1 ≤ (n : ℝ) + 1 := by exact_mod_cast Nat.add_le_add_right hnA 1
         have hdiv_le : (X : ℝ) / ((n : ℝ) + 1) ≤ 4 * (Q : ℝ) :=
           (div_le_div_of_nonneg_left (Nat.cast_nonneg X) (by positivity) hAn).trans hA_step
         rw [abs_mul]
         exact mul_le_mul (hc_pref_le n hnB) (hlip.trans hdiv_le) (abs_nonneg _) (by positivity)
       have hcard_le : ((Ioc A B).card : ℝ) ≤ B := by
-        rw [card_Ioc]
+        rw [Nat.card_Ioc A B]
         exact_mod_cast Nat.sub_le B A
       have hQB_le : 4 * (Q : ℝ) * B ≤ 2 * (X : ℝ) := by
         have hmul : 2 * Q * B ≤ X := Nat.mul_div_le X (2 * Q)
@@ -927,7 +930,7 @@ theorem eventually_exists_sqrt_band_near_trivial {ε : ℝ} (hε : 0 < ε) :
   have hSA : S ≤ A := hS_le_div.trans (Nat.div_le_div_left h2Q2_lt.le (by omega))
   have hm_gt_S : ∀ m ∈ J, S < m := fun m hm => hSA.trans_lt (mem_Ioc.mp hm).1
   have hcard13 : J.card ≤ 13 := by
-    rw [card_Ioc]
+    rw [show J.card = B - A from Nat.card_Ioc A B]
     have h5Q : S + 1 ≤ 5 * Q := by omega
     have hX_lt_sq : X < (S + 1) * (S + 1) := Nat.lt_succ_sqrt X
     have hX_lt_Q : X < 2 * Q * (Q + 1) * 13 := by nlinarith only [h5Q, hX_lt_sq, hQ1]
@@ -989,8 +992,7 @@ theorem eventually_exists_sqrt_band_near_trivial {ε : ℝ} (hε : 0 < ε) :
         (by positivity : (0 : ℝ) ≤ (X : ℝ) / 3).trans hB.1
       by_cases hw0 : 0 ≤ ordinaryPrimeCountWeight m
       · exact (neg_nonpos.mpr (by positivity)).trans (mul_nonneg hw0 hB0)
-      · push_neg at hw0
-        have habs_w : -ordinaryPrimeCountWeight m ≤ 1 / 84 := by linarith only [hw_lo]
+      · have habs_w : -ordinaryPrimeCountWeight m ≤ 1 / 84 := by linarith only [hw_lo]
         have hm1 : (-ordinaryPrimeCountWeight m) * discreteQuotientMean binaryCarryProfile m X ≤
             (1 / 84 : ℝ) * ((X : ℝ) / 2) :=
           mul_le_mul habs_w hB.2 hB0 (by norm_num)
@@ -1060,7 +1062,9 @@ theorem eventually_exists_sqrt_band_near_trivial {ε : ℝ} (hε : 0 < ε) :
     have habs_le_triv : |outerQuotientPairBand Q X| ≤ outerQuotientPairBandTrivial Q X := by
       rw [outerQuotientPairBand, outerQuotientPairBandTrivial]
       refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun m _ => ?_)
-      rw [abs_mul, abs_of_nonneg (sum_nonneg fun k _ => (binaryCarryProfile_bounds _).1)]
+      have hBm0 : 0 ≤ discreteQuotientMean binaryCarryProfile m X :=
+        sum_nonneg fun k _ => (binaryCarryProfile_bounds _).1
+      rw [abs_mul, abs_of_nonneg hBm0]
     exact hband_lb.trans (hle_abs.trans habs_le_triv)
   have h13_eps : 13 * ((X : ℝ) / Real.log S) ≤ ε * outerQuotientPairBandTrivial Q X := by
     have hinv_eps : (Real.log S)⁻¹ ≤ ε / 84 := by

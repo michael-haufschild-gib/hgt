@@ -68,7 +68,8 @@ theorem tendsto_harmonic_moebius_product_zero (a : ArithmeticFunction ℝ)
       (eventually_ge_atTop (k*d)).mono fun _ h => (Nat.le_div_iff_mul_le hd).2 h
     simpa only [f,mul_zero] using (hm.comp hdiv).const_mul (a d/(d:ℝ))
   have hdom : ∀ N d : ℕ, ‖f N d‖ ≤ |a d/(d:ℝ)| * B := fun N d => by
-    rw [Real.norm_eq_abs,f,abs_mul]
+    dsimp only [f]
+    rw [Real.norm_eq_abs,abs_mul]
     exact mul_le_mul_of_nonneg_left (hB (N/d)) (abs_nonneg _)
   have h := tendsto_tsum_of_dominated_convergence (f := f) (g := fun _ => (0:ℝ))
     (ha.abs.mul_right B) hlim (Eventually.of_forall hdom)

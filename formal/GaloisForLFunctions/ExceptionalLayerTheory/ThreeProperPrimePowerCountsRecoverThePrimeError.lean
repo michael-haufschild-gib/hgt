@@ -118,6 +118,73 @@ theorem psi_power_bound_iff_properPowerDiscrepancy {a : ℝ} (ha : 2/5≤a) :
     rw [abs_le]
     constructor <;> linarith only [h₂.1,h₂.2,h₄.1,h₄.2,h₈.1,h₈.2,hlo,hhi]
 
+/-- At the square cutoff the centered proper powers differ from the prime
+error by a power strictly below the zero abscissa. -/
+theorem properPowerDiscrepancy_square_tracks_prime_error :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ y : ℝ, 1 ≤ y →
+      |properPowerDiscrepancy (y^(2:ℝ))-(Chebyshev.psi y-y)| ≤ K*y^(5*zeroReSup/6) := by
+  have hhalf := half_le_zeroReSup
+  obtain ⟨C,hC,hψ⟩ := exists_abs_chebyshevPsi_sub_le_rpow
+    (show zeroReSup < 5*zeroReSup/4 by linarith only [hhalf])
+  refine ⟨C+L,add_nonneg hC zero_le_L,?_⟩
+  intro y hy
+  have hc := hψ (y^(2/3:ℝ)) (Real.one_le_rpow hy (by norm_num))
+  rw [← Real.rpow_mul (zero_le_one.trans hy),show (2/3:ℝ)*(5*zeroReSup/4)=5*zeroReSup/6 by ring] at hc
+  have ht := rescaled_rows hy (r := 2) le_rfl
+  rw [show (2:ℝ)/2=1 by norm_num,Real.rpow_one] at ht
+  have hscale := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hy
+    (show (2:ℝ)/5≤5*zeroReSup/6 by linarith only [hhalf])) zero_le_L
+  rw [abs_le] at ht hc ⊢
+  dsimp only [E] at ht
+  constructor <;> linarith only [ht.1,ht.2,hc.1,hc.2,hscale]
+
+/-- Each sign of the corrected prime-power count reaches every power below
+half the zero abscissa at arbitrarily large cutoffs, whether or not that
+abscissa is attained by a zero. -/
+theorem properPowerDiscrepancy_both_signs_below_abscissa {b : ℝ} (hb : b < zeroReSup/2) :
+    (∃ᶠ x : ℝ in atTop, x^b < properPowerDiscrepancy x) ∧
+      ∃ᶠ x : ℝ in atTop, properPowerDiscrepancy x < -x^b := by
+  let v := max (2*b) (5*zeroReSup/6)
+  have hv : v < zeroReSup := max_lt (by linarith only [hb]) (by linarith only [half_le_zeroReSup])
+  obtain ⟨a,hva,ha⟩ := exists_between hv
+  obtain ⟨K,hK,htrack⟩ := properPowerDiscrepancy_square_tracks_prime_error
+  have hbig := (tendsto_rpow_atTop (sub_pos.mpr hva)).eventually_gt_atTop (K+1)
+  have htest : ∀ᶠ y : ℝ in atTop, y^(2*b)+|properPowerDiscrepancy (y^(2:ℝ))-E y| < y^a := by
+    filter_upwards [eventually_ge_atTop (1:ℝ),hbig] with y hy hlarge
+    have hp := zero_lt_one.trans_le hy
+    have h₁ := Real.rpow_le_rpow_of_exponent_le hy (le_max_left (2*b) (5*zeroReSup/6))
+    have h₂ := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hy
+      (le_max_right (2*b) (5*zeroReSup/6))) hK
+    have h₃ := mul_lt_mul_of_pos_left hlarge (Real.rpow_pos_of_pos hp v)
+    rw [← Real.rpow_add hp,show v+(a-v)=a by ring] at h₃
+    change y^(2*b)≤y^v at h₁
+    change K*y^(5*zeroReSup/6)≤K*y^v at h₂
+    linarith only [h₁,h₂,h₃,htrack y hy]
+  obtain ⟨hplus,hminus⟩ := chebyshevPsi_sub_exponent_law.1 a ha
+  constructor
+  · apply frequently_atTop.mpr
+    intro X
+    obtain ⟨y,⟨hy,ht⟩,hX⟩ := ((hplus.and_eventually htest).and_eventually
+      (eventually_ge_atTop (max 1 X))).exists
+    have h1 : 1≤y := (le_max_left _ _).trans hX
+    have hh := neg_abs_le (properPowerDiscrepancy (y^(2:ℝ))-E y)
+    refine ⟨y^(2:ℝ),(le_max_right _ _).trans (hX.trans ?_),?_⟩
+    · simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le h1 (by norm_num : (1:ℝ)≤2)
+    · rw [← Real.rpow_mul (zero_le_one.trans h1)]
+      change y^a < E y at hy
+      linarith only [hy,ht,hh]
+  · apply frequently_atTop.mpr
+    intro X
+    obtain ⟨y,⟨hy,ht⟩,hX⟩ := ((hminus.and_eventually htest).and_eventually
+      (eventually_ge_atTop (max 1 X))).exists
+    have h1 : 1≤y := (le_max_left _ _).trans hX
+    have hh := le_abs_self (properPowerDiscrepancy (y^(2:ℝ))-E y)
+    refine ⟨y^(2:ℝ),(le_max_right _ _).trans (hX.trans ?_),?_⟩
+    · simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le h1 (by norm_num : (1:ℝ)≤2)
+    · rw [← Real.rpow_mul (zero_le_one.trans h1)]
+      change E y < -y^a at hy
+      linarith only [hy,ht,hh]
+
 /-- Unconditional exponents for the proper-power count from the sub-seven-eighths strip. -/
 theorem properPowerDiscrepancy_from_zero_free_strip {b : ℝ} (hb : 20999/48000 < b) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ x : ℝ, 1 ≤ x → |properPowerDiscrepancy x| ≤ K*x^b := by
@@ -154,6 +221,8 @@ theorem riemannHypothesis_iff_properPowerDiscrepancy_quarter :
     dsimp only [e] at ht
     linarith only [ht,hz]
 
+#print axioms properPowerDiscrepancy_both_signs_below_abscissa
+#print axioms properPowerDiscrepancy_square_tracks_prime_error
 #print axioms properPowerDiscrepancy_from_zero_free_strip
 #print axioms riemannHypothesis_iff_properPowerDiscrepancy_quarter
 #print axioms three_properPowerDiscrepancies_recover_psi

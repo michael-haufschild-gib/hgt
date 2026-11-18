@@ -38,7 +38,8 @@ private theorem finite_filter_square_trace {k : ℝ → ℝ} (hkc : Continuous k
     simp only [id_eq] at hkernel
     change (∫ x, k x*(∑' z : ℂ, (baseCoeff z*Complex.exp (z*(v+x:ℝ))).re))=_
     rw [hkernel]
-    simp only [← sourceTransform_I_mul_eq_laplace,← filteredCoeff]
+    simp only [← sourceTransform_I_mul_eq_laplace]
+    change (∑' z : ℂ, (filteredCoeff k z*Complex.exp (z*v)).re)=_
     exact tsum_eq_sum (fun z hz => by rw [hout z hz,zero_mul,Complex.zero_re])
   obtain ⟨A,hA,hF⟩ := realSplineTrace_strip_bound
   have hi (v : ℝ) : Integrable (fun x => k x*(2*realSplineTrace (v+x))) := by

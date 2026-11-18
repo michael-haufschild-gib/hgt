@@ -85,7 +85,8 @@ theorem fractional_density_integral :
   have hm : Measurable f := (by fun_prop : Measurable fun v : ℝ => Real.exp (-v)).mul
     (measurable_fract.comp Real.measurable_exp)
   have hbound (v : ℝ) : ‖f v‖ ≤ Real.exp (-v) := by
-    rw [Real.norm_eq_abs, f, abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (Int.fract_nonneg _))]
+    dsimp only [f]
+    rw [Real.norm_eq_abs,abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (Int.fract_nonneg _))]
     exact mul_le_of_le_one_right (Real.exp_pos _).le (Int.fract_lt_one _).le
   have hi : IntegrableOn f (Ioi 0) := by
     have h := integrableOn_exp_mul_Ioi (by norm_num : (-1:ℝ) < 0) 0
@@ -112,12 +113,15 @@ theorem fractional_density_integral :
       rw [Int.fract,hf,Int.cast_natCast,mul_sub,← Real.exp_add,neg_add_cancel,Real.exp_zero,mul_comm]
     rw [heq]
     have hd (v : ℝ) : HasDerivAt (fun w : ℝ => w+(n:ℝ)*Real.exp (-w)) (1-n*Real.exp (-v)) v := by
-      convert (hasDerivAt_id' v).add (((hasDerivAt_id' v).neg.exp).const_mul (n:ℝ)) using 1 <;> ring
+      have hd' : HasDerivAt (fun w : ℝ => w+(n:ℝ)*Real.exp (-w))
+          (1+(n:ℝ)*(Real.exp (-v)*(-1))) v :=
+        (hasDerivAt_id' v).add (((hasDerivAt_neg' v).exp).const_mul (n:ℝ))
+      exact hd'.congr_deriv (by ring)
     rw [integral_eq_sub_of_hasDerivAt (fun v _ => hd v) ((by fun_prop :
       Continuous (fun v : ℝ => 1-(n:ℝ)*Real.exp (-v))).intervalIntegrable _ _)]
     rw [Real.exp_neg,Real.exp_neg,Real.exp_log hn0,Real.exp_log hn1]
     field_simp [hn0.ne',hn1.ne']
-    <;> ring
+    ring
   have hpartial (N : ℕ) (hN : 1 ≤ N) :
       ∫ v in (0:ℝ)..Real.log N, f v = 1-((harmonic N:ℝ)-Real.log N) := by
     induction N, hN using Nat.le_induction with

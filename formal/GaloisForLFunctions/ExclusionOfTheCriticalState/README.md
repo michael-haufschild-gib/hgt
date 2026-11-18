@@ -261,6 +261,8 @@ Sieving the integer reference by a finite set $P$ of primes multiplies its weigh
 
 For $B_d(t)=d^{-1/2}D(t-\log d)$ the naturally ordered Möbius sum is $\Phi(t)$, hence zero on $t\ge0$. Weighting the same sum by $-\log d$ gives the von Mangoldt wave minus $Ae^{t/2}$. [Ordered Möbius inversion](Wall/MoebiusInversionOfTheIntegerQuadrature.lean). The entire absolute sum over $1\le d\le e^{\alpha t}$, weighted by $e^{bt}(\log d)^k$, belongs to $L^2(\mathbb R)$ for $b\ge0$, $\alpha>0$ and $b+\alpha<1/2$. [Moving small divisors](Wall/MovingDivisorsBelowTheSquareRoot.lean). Above that cutoff the ordered zeroth moment has the same weighted square bound. The first logarithmic moment recovers the polar-subtracted von Mangoldt wave up to an error with that bound. [Large-divisor moments](Wall/TheLargeDivisorMomentsOfThePrimeWave.lean).
 
+For $x\ge1$, the naturally truncated sum $\sum_{n\le Y}\Lambda(n)\{x/n\}-x(\log(Y/x)+1-\gamma)$ tends to $x(\log x-1)-\log(\lfloor x\rfloor!)$, of absolute value at most $1+\log x$. [Fractional-part average of the Mangoldt measure](Analysis/TheFractionalPartAverageOfTheMangoldtMeasure.lean).
+
 The equal-prime term of the covariance, divided by the observation time, tends to the
 state autocorrelation at every fixed lag. At zero lag the coefficient is one. The squared
 increment recovers $8a\int F^2e^{-8u}$ after taking the prime limit and then the short-lag limit.

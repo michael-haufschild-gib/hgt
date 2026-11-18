@@ -75,6 +75,23 @@ private instance modulus_neZero (R : ℕ+) : NeZero (2*(R : ℕ)) :=
 def indexedPhase (R : ℕ+) (n : ℤ) : Circle :=
   ZMod.toCircle (n : ZMod (2*(R : ℕ)))
 
+/-- Every descending relative phase has exactly one frequency modulo 2R. -/
+theorem unique_frequency_iff (R : ℕ+) (u v : LocalUnit F) (w : Fˣ) (z : Circle) :
+    (∀ (x : LocalUnit F × LocalUnit F) (c : Fˣ) (j : ℤ),
+      relativePhase z (translate (generator R u v w) x c j)=relativePhase z x) ↔
+      ∃! k : ZMod (2*(R : ℕ)), ZMod.toCircle k = z := by
+  let N := 2*(R : ℕ)
+  have hc : 2*(R : ℤ) = (N : ℤ) := by simp [N]
+  rw [relative_descends_iff,hc,zpow_natCast]
+  constructor
+  · intro h
+    let ζ : rootsOfUnity N Circle := ⟨toUnits z,(mem_rootsOfUnity' _ _).2 h⟩
+    obtain ⟨k,hk⟩ := (bijective_rootsOfUnityAddChar N).surjective ζ
+    have he : ZMod.toCircle k = z := congrArg (fun t : rootsOfUnity N Circle => (t.val : Circle)) hk
+    exact ⟨k,he,fun j hj => ZMod.injective_toCircle (hj.trans he.symm)⟩
+  · rintro ⟨k,rfl,_⟩
+    exact (mem_rootsOfUnity' _ _).1 (ZMod.rootsOfUnityAddChar N k).property
+
 theorem indexed_equal_iff (R : ℕ+) (n m : ℤ) :
     (∀ x : LocalUnit F × LocalUnit F, relativePhase (indexedPhase R n) x =
       relativePhase (indexedPhase R m) x) ↔ (2*(R : ℤ)) ∣ m-n := by
@@ -117,5 +134,6 @@ end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.phase_on_translate
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.relative_descends_iff
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.norm_twist_iff
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.unique_frequency_iff
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.indexed_equal_iff
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.indexed_mod_norm

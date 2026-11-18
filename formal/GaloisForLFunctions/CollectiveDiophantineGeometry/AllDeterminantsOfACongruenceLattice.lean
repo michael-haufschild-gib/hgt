@@ -1,5 +1,6 @@
 import GaloisForLFunctions.CollectiveDiophantineGeometry.RationalSimplexDeterminants
 import GaloisForLFunctions.HTGeometry.BorisovGabberVasiuDeterminant
+import Mathlib.RingTheory.PrincipalIdealDomain
 
 /-!
 # All determinants on an integral congruence hyperplane
@@ -16,24 +17,6 @@ namespace GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
-private theorem finset_bezout (s : Finset ι) (v : ι → ℤ) :
-    ∃ u : ι → ℤ, ∑ i ∈ s, u i*v i = s.gcd v := by
-  induction s using Finset.induction_on with
-  | empty => exact ⟨0,by simp⟩
-  | @insert i s hi ih =>
-    obtain ⟨u,hu⟩ := ih
-    let a := Int.gcdA (v i) (s.gcd v)
-    let b := Int.gcdB (v i) (s.gcd v)
-    refine ⟨fun j => if j=i then a else b*u j,?_⟩
-    rw [sum_insert hi,if_pos rfl,Finset.gcd_insert]
-    have he : (∑ j ∈ s, (if j=i then a else b*u j)*v j) = b*(s.gcd v) := by
-      rw [← hu,mul_sum]
-      refine sum_congr rfl fun j hj => ?_
-      rw [if_neg (fun he => hi (he ▸ hj)),mul_assoc]
-    rw [he]
-    exact (by linear_combination -(Int.gcd_eq_gcd_ab (v i) (s.gcd v)) :
-      a*v i+b*s.gcd v=((v i).gcd (s.gcd v) : ℤ))
-
 /-- Integer linear probes of a vector produce exactly the multiples of its content. -/
 theorem dot_range (v : ι → ℤ) (t : ℤ) :
     (∃ u, u ⬝ᵥ v = t) ↔ content v ∣ t := by
@@ -41,12 +24,13 @@ theorem dot_range (v : ι → ℤ) (t : ℤ) :
   · rintro ⟨u,rfl⟩
     exact dvd_sum fun i _ => dvd_mul_of_dvd_right (gcd_dvd (mem_univ i)) _
   · rintro ⟨a,rfl⟩
-    obtain ⟨u,hu⟩ := finset_bezout univ v
+    obtain ⟨u,hu₀⟩ := univ.gcd_eq_sum_mul v
+    have hu : (∑ i, u i*v i) = content v := by
+      simpa only [content,mul_comm] using hu₀.symm
     refine ⟨a • u,?_⟩
     rw [smul_dotProduct]
     change a*(∑ i, u i*v i)=content v*a
     rw [hu,mul_comm]
-    rfl
 
 /-- Dividing a nonzero normal by its content yields a primitive vector with an integral dual. -/
 theorem primitive_direction (v : ι → ℤ) (hv : v ≠ 0) :

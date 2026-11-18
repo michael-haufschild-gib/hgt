@@ -66,13 +66,12 @@ theorem intervalMass_increment (n : ℕ) (x y : ℝ) :
 theorem profile_succ_mean (n : ℕ) {x : ℝ} (hx : 0 ≤ x) :
     profile (n+1) x = (((n:ℝ)+2) * profile n 1 + ∫ y in (0:ℝ)..x, profile n y) /
       ((n:ℝ)+2+x) := by
-  change (intervalMass n 1 + _) / _ = _
+  change (intervalMass n 1 + ∫ y in (0:ℝ)..x, profile n y) / (((n+1:ℕ):ℝ)+1+max x 0) = _
   have he : ((n:ℝ) + 2) * profile n 1 = intervalMass n 1 := by
     rw [profile, max_eq_left zero_le_one]
     field_simp
-    <;> ring
-  rw [he, max_eq_left hx, Nat.cast_succ]
-  ring
+    ring
+  rw [he, max_eq_left hx, Nat.cast_succ, show (n:ℝ)+1+1 = (n:ℝ)+2 by ring]
 
 /-- The second unit cell is the logarithmic branch of the Buchstab function. -/
 theorem profile_one_formula (x : Set.Ici (0:ℝ)) :
@@ -86,29 +85,30 @@ theorem profile_one_formula (x : Set.Ici (0:ℝ)) :
         ((hasDerivAt_id y).const_add 1).log hpos.ne'
     simpa using intervalIntegral.integral_eq_sub_of_hasDerivAt hh
       ((profile_continuous 0).intervalIntegrable 0 x.val)
-  rw [show (1:ℕ) = 0+1 by rfl, profile_succ_mean 0 x.property, hint]
+  rw [profile_succ_mean 0 x.property, hint]
   norm_num [profile, intervalMass]
 
 /-- The derivative of the unweighted profile is the delayed difference divided by the argument. -/
 theorem hasDerivAt_profile_succ (n : ℕ) (x : Set.Ioi (0:ℝ)) :
     HasDerivAt (profile (n+1)) ((profile n x - profile (n+1) x) / ((n:ℝ)+2+x)) x.val := by
+  have hx : 0 < x.val := x.property
   let d := (n:ℝ)+2+x.val
-  have hd : d ≠ 0 := by dsimp [d]; linarith [Nat.cast_nonneg (α := ℝ) n, x.property]
+  have hd : d ≠ 0 := by dsimp [d]; positivity
+  have hn : ((n+1 : ℕ) : ℝ) + 1 = (n:ℝ)+2 := by push_cast; ring
   have he : profile (n+1) x = intervalMass (n+1) x / d := by
-    simp [profile, d, max_eq_left x.property.le, Nat.cast_succ, add_assoc]
-    <;> ring_nf
+    simp only [profile, d, max_eq_left hx.le, hn]
   have hf : profile (n+1) =ᶠ[𝓝 x.val] fun z => intervalMass (n+1) z / ((n:ℝ)+2+z) := by
-    filter_upwards [lt_mem_nhds x.property] with z hz
-    simp [profile, max_eq_left hz.le, Nat.cast_succ, add_assoc]
-    <;> ring_nf
-  apply HasDerivAt.congr_of_eventuallyEq _ hf
-  have hh := (hasDerivAt_intervalMass_succ n x).div
-    ((hasDerivAt_id x.val).const_add ((n:ℝ)+2)) hd
-  convert hh using 1
-  rw [he]
-  change (profile n x - intervalMass (n+1) x / d) / d = _
-  field_simp [d, hd]
-  <;> ring
+    filter_upwards [lt_mem_nhds hx] with z hz
+    simp only [profile, max_eq_left hz.le, hn]
+  have hh : HasDerivAt (fun z : ℝ => intervalMass (n+1) z / ((n:ℝ)+2+z))
+      ((profile n x * d - intervalMass (n+1) x * 1) / d^2) x.val :=
+    (hasDerivAt_intervalMass_succ n x).div ((hasDerivAt_id x.val).const_add ((n:ℝ)+2)) hd
+  have hval : (profile n x * d - intervalMass (n+1) x * 1) / d^2 =
+      (profile n x - profile (n+1) x) / d := by
+    rw [he]
+    field_simp [hd]
+  rw [hval] at hh
+  exact hh.congr_of_eventuallyEq hf
 
 #print axioms intervalMass_increment
 #print axioms profile_glue

@@ -26,7 +26,7 @@ Indeed the sum of the floors is $L(x)$, and the integral is $x[\log(Y/x)+1-\gamm
  (K*E_\Lambda)(T)=\int_{-\infty}^0 \Phi(u)e^{(u-T)/2}\,[x(\log x-1)-L(x)]\,du
  =O_\Phi((1+T)e^{-T/2})\quad(T\ge0).
 \]
-Stirling's estimate gives the last bound. The ordinary-prime response consequently tends to $-\tfrac12\mathcal LF(0)\int K$. This window is nonnegative and its signed response is determined at every center. An upper bound for either sign mass inside the window remains open.
+Stirling's estimate gives the last bound. The [arithmetic cutoff identity and density normalization](../3-formalized/ecs-fractional-part-average-of-the-mangoldt-measure.md) are formalized. The ordinary-prime response consequently tends to $-\tfrac12\mathcal LF(0)\int K$. This window is nonnegative and its signed response is determined at every center. An upper bound for either sign mass inside the window remains open.
 
 Stirling’s constant predicts the first nonzero signed term:
 \[

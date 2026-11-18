@@ -25,7 +25,7 @@ def primeErrorTail (D X a : ℕ) : ℝ :=
 /-- The complete Mangoldt row may be replaced by one signed dilation of
 the genuine prime error, uniformly over the entire range of cutoffs. -/
 theorem completeComplementTail_sub_primeErrorTail {R : ℕ} (hR : 1≤R) (D X a : ℕ) :
-    |completeComplementTail D R X a-primeErrorTail D X a|≤
+    |completeComplementTail D R X a-primeErrorTail D X a| ≤
       4*(1+mass (D+1))*(420*(1+mass R)*(3+Real.log (128*(128*R^2+1) : ℕ)+2*Real.log X))*Real.sqrt X := by
   let w (t : ℕ) := (∑ u ∈ Icc 1 t, vonMangoldt u*centeredPrimeWeight R (t/u))-(Chebyshev.psi t-t)
   let H := 3+Real.log (128*(128*R^2+1) : ℕ)+2*Real.log X
@@ -36,7 +36,7 @@ theorem completeComplementTail_sub_primeErrorTail {R : ℕ} (hR : 1≤R) (D X a 
     dsimp [H]
     have := Real.log_natCast_nonneg (128*(128*R^2+1)); have := Real.log_natCast_nonneg X; positivity
   have hB : 0≤B := by dsimp [B]; positivity
-  have hw (t : ℕ) (ht : t≤X) : |w t|≤B := by
+  have hw (t : ℕ) (ht : t≤X) : |w t| ≤ B := by
     rcases Nat.eq_zero_or_pos t with rfl | hpos
     · simpa [w,Chebyshev.psi] using hB
     dsimp only [w]; rw [abs_sub_comm]
@@ -45,11 +45,11 @@ theorem completeComplementTail_sub_primeErrorTail {R : ℕ} (hR : 1≤R) (D X a 
     have hl := Real.log_le_log (by exact_mod_cast hpos : (0 : ℝ)<t) (by exact_mod_cast ht : (t : ℝ)≤X)
     dsimp [H]; linarith only [hl]
   let W (t : ℕ) := if t≤X then w t else 0
-  have bound (t : ℕ) : |W t|≤B := by
+  have bound (t : ℕ) : |W t| ≤ B := by
     by_cases h : t≤X
     · simpa only [W,if_pos h] using hw t h
     · simpa only [W,if_neg h,abs_zero] using hB
-  have prefix (t : ℕ) (_ht : t≤X) : |∑ v ∈ Ioc 0 t, innerJump D v|≤1+mass (D+1) := by
+  have hprefix (t : ℕ) (_ht : t≤X) : |∑ v ∈ Ioc 0 t, innerJump D v| ≤ 1+mass (D+1) := by
     rw [show Ioc 0 t=Icc 1 t by ext n; simp only [mem_Ioc,mem_Icc]; omega]
     exact innerJump_prefix_bound D t
   have eq : completeComplementTail D R X a-primeErrorTail D X a=
@@ -62,7 +62,7 @@ theorem completeComplementTail_sub_primeErrorTail {R : ℕ} (hR : 1≤R) (D X a 
       simpa only [sq,Nat.cast_mul] using (by exact_mod_cast Nat.sqrt_le X :
         ((Nat.sqrt X : ℕ) : ℝ)*Nat.sqrt X≤X))
   rw [eq]
-  exact (abs_truncated_quotient_pair a _ W (by positivity) hB prefix bound).trans
+  exact (abs_truncated_quotient_pair a (innerJump D) W (by positivity : 0≤1+mass (D+1)) hB hprefix bound).trans
     (mul_le_mul_of_nonneg_left hs (by positivity))
 
 private theorem jump_unit_and_divisors (D : ℕ) {v : ℕ} (hv : 1≤v) :
@@ -79,7 +79,7 @@ private theorem jump_unit_and_divisors (D : ℕ) {v : ℕ} (hv : 1≤v) :
     · rw [if_neg h] at he ⊢; exact_mod_cast he
   change (if (1 : ℕ)=0 then 0 else 1-factorialPrefix (D+1) 1)-
     (if (1 : ℕ)-1=0 then 0 else 1-factorialPrefix (D+1) (1-1))=_
-  simp only [if_neg Nat.one_ne_zero,Nat.sub_self,if_pos rfl,sub_zero,factorialPrefix,div1]
+  simp [factorialPrefix,div1]
 
 /-- Completing the inner error dilation leaves exactly the factorial
 stencil of the unweighted complete divisor errors. -/
@@ -98,7 +98,7 @@ theorem complete_primeErrorTail_identity (D : ℕ) {X : ℕ} (hx : 1≤X) :
     rcases Nat.eq_zero_or_pos e with rfl | he
     · have hz (v : ℕ) (hv : v ∈ I) : z v*ind v 0=0 := by
         simp [ind,Nat.ne_of_gt (mem_Ioc.mp hv).1]
-      simpa only [sum_congr rfl hz,sum_const_zero,Nat.div_zero,completeDivisorError,Icc_eq_empty (by decide : ¬1≤(0 : ℕ)),sum_empty]
+      simp only [sum_congr rfl hz,sum_const_zero,Nat.div_zero,completeDivisorError,Icc_eq_empty (by decide : ¬1≤(0 : ℕ)),sum_empty]
     have eq : (∑ v ∈ I, z v*ind v e)=(∑ v ∈ I with e∣v, z v) := by
       rw [sum_filter]; exact sum_congr rfl fun v _ => by by_cases h : e∣v <;> simp [h,ind]
     rw [eq,show I=Ioc 0 X from rfl,sum_divisible_Ioc he,Nat.zero_div]
@@ -109,22 +109,22 @@ theorem complete_primeErrorTail_identity (D : ℕ) {X : ℕ} (hx : 1≤X) :
          rw [jump_unit_and_divisors D (mem_Ioc.mp hv).1]; dsimp only [ind,z,E]; ring
        _ = _ := by
          rw [sum_sub_distrib,one,stencil_weighted_sum]
-         simp_rw [fibre]
+         simp only [fibre,E]
 
 /-- The complete dilation reproduces the actual prime error with a
 square-root remainder. The zero reciprocal moment cancels the entire
 linear divisor mean. -/
 theorem complete_primeErrorTail_bound (D : ℕ) {X : ℕ} (hx : 1≤X) :
-    |(Chebyshev.psi X-X)-primeErrorTail D X 0|≤mass (D+1)*(25*Real.sqrt X+2*|Real.eulerMascheroniConstant|) := by
+    |(Chebyshev.psi X-X)-primeErrorTail D X 0| ≤ mass (D+1)*(25*Real.sqrt X+2* |Real.eulerMascheroniConstant|) := by
   let γ := Real.eulerMascheroniConstant
   let f (e : ℕ) := completeDivisorError (X/e)
   let main (e : ℕ) := ((-2*γ)*(X : ℝ))/e
   have hz : stencil (D+1) main=0 := stencil_linear_quotient (Nat.succ_pos D) _
   have hh := abs_stencil_le (Nat.succ_pos D) (fun e => f e-main e)
-    (M := 25*Real.sqrt X+2*|γ|) (fun e he => by
+    (M := 25*Real.sqrt X+2* |γ|) (fun e he => by
       let n := X/e
       have hl : Real.sqrt (n : ℝ)≤Real.sqrt X := Real.sqrt_le_sqrt (by exact_mod_cast Nat.div_le_self X e)
-      have ha : |((n : ℕ) : ℝ)-(X : ℝ)/e|≤1 := Sieve.abs_natDiv_sub_div_le (mem_Icc.mp he).1
+      have ha : |((n : ℕ) : ℝ)-(X : ℝ)/e| ≤ 1 := Sieve.abs_natDiv_sub_div_le (mem_Icc.mp he).1
       have eq : f e-main e=(completeDivisorError n+2*γ*n)-(2*γ)*((n : ℝ)-(X : ℝ)/e) := by dsimp [f,main,n]; ring
       rw [eq]
       apply (abs_sub _ _).trans
@@ -133,14 +133,14 @@ theorem complete_primeErrorTail_bound (D : ℕ) {X : ℕ} (hx : 1≤X) :
         ((mul_le_mul_of_nonneg_left ha (by positivity)).trans_eq (mul_one _)))
   rw [stencil_sub,hz,sub_zero] at hh
   rw [complete_primeErrorTail_identity D hx]
-  change |(Chebyshev.psi X-X)-((Chebyshev.psi X-X)-stencil (D+1) f)|≤_
+  change |(Chebyshev.psi X-X)-((Chebyshev.psi X-X)-stencil (D+1) f)| ≤ _
   rw [show (Chebyshev.psi X-X)-((Chebyshev.psi X-X)-stencil (D+1) f)=stencil (D+1) f by ring]
   exact hh
 
 /-- Transposition bounds the entire tail by the absolute Mangoldt mass
 at the reciprocal cutoff. Both primitive endpoints are bounded. -/
 theorem primeErrorTail_reciprocal_bound (D X : ℕ) {a : ℕ} (ha : 1≤a) :
-    |primeErrorTail D X a|≤16*mass (D+1)*(X/(a+1) : ℕ) := by
+    |primeErrorTail D X a| ≤ 16*mass (D+1)*(X/(a+1) : ℕ) := by
   let e (n : ℕ) := vonMangoldt n-1
   let U := X/(a+1)
   have herr (t : ℕ) : Chebyshev.psi t-t=∑ n ∈ Icc 1 t, e n := by
@@ -163,11 +163,10 @@ theorem primeErrorTail_reciprocal_bound (D X : ℕ) {a : ℕ} (ha : 1≤a) :
                 exact sum_congr rfl fun v _ => sum_congr rfl fun n _ => mul_comm ..
          _ = _ := by
                 rw [sum_hyperbola_tail_swap_real X (a+1) _ (Nat.succ_pos a)]
-                simp only [U,mul_sum]
   rw [heq]
   have hm := (abs_nonneg _).trans (abs_prefix_le_mass (Nat.succ_pos D) 0)
   apply (abs_sum_le_sum_abs _ _).trans
-  calc _ ≤ ∑ n ∈ Icc 1 U, |e n|*(2*mass (D+1)) := by
+  calc _ ≤ ∑ n ∈ Icc 1 U, |e n| * (2*mass (D+1)) := by
             apply sum_le_sum; intro n hn
             obtain ⟨hn₁,hn₂⟩ := mem_Icc.mp hn
             have hna := (Nat.le_div_iff_mul_le (Nat.succ_pos a)).mp hn₂
@@ -182,49 +181,61 @@ theorem primeErrorTail_reciprocal_bound (D X : ℕ) {a : ℕ} (ha : 1≤a) :
             rw [←sum_mul]
             exact (mul_le_mul_of_nonneg_right habs (by positivity)).trans_eq (by dsimp [U]; ring)
 
-/-- The prime error is reproduced, to square-root precision times the
-stencil mass, by genuinely smaller divided horizons. All indices through
-the freely chosen inner cutoff vanish identically. -/
-theorem prime_error_on_shorter_horizons {X : ℕ} (hx : 1≤X) (D : ℕ) :
-    |(Chebyshev.psi X-X)-∑ v ∈ Ioc D ⌊Real.sqrt X⌋₊, innerJump D v*
-        (Chebyshev.psi (X/v : ℕ)-(X/v : ℕ))|≤
-      mass (D+1)*(41*Real.sqrt X+2*|Real.eulerMascheroniConstant|) := by
-  let M := ⌊Real.sqrt X⌋₊
-  let f (v : ℕ) := innerJump D v*(Chebyshev.psi (X/v : ℕ)-(X/v : ℕ))
-  have hx₁ : (1 : ℝ)≤X := by exact_mod_cast hx
-  have hroot := Real.one_le_sqrt.mpr hx₁
-  have hm : 1≤M := (Nat.one_le_floor_iff _).mpr hroot
-  have hmX : M≤X := Nat.floor_le_of_le ((le_mul_of_one_le_right (Real.sqrt_nonneg _) hroot).trans_eq
-    (Real.mul_self_sqrt (Nat.cast_nonneg X)))
-  have hu : ((X/(M+1) : ℕ) : ℝ)≤Real.sqrt X := by
+/-- A common upper limit at the square root of a larger horizon works
+simultaneously for all its integer quotients. -/
+theorem prime_error_at_common_cap {x N : ℕ} (hx : 1≤x) (hxn : x≤N) (D : ℕ) :
+    |(Chebyshev.psi x-x)-∑ v ∈ Ioc D ⌊Real.sqrt N⌋₊, innerJump D v*
+        (Chebyshev.psi (x/v : ℕ)-(x/v : ℕ))| ≤
+      mass (D+1)*(41*Real.sqrt N+2* |Real.eulerMascheroniConstant|) := by
+  let M := ⌊Real.sqrt N⌋₊
+  let f (v : ℕ) := innerJump D v*(Chebyshev.psi (x/v : ℕ)-(x/v : ℕ))
+  have hn₁ : (1 : ℝ)≤N := by exact_mod_cast hx.trans hxn
+  have hm : 1≤M := (Nat.one_le_floor_iff _).mpr (Real.one_le_sqrt.mpr hn₁)
+  have hu : ((x/(M+1) : ℕ) : ℝ)≤Real.sqrt N := by
     apply Nat.cast_div_le.trans
     apply (div_le_iff₀ (by positivity : (0 : ℝ)<(M+1 : ℕ))).mpr
-    have half : Real.sqrt X≤((M+1 : ℕ) : ℝ) := by push_cast; exact (Nat.lt_floor_add_one _).le
-    exact (Real.mul_self_sqrt (Nat.cast_nonneg X)).symm.le.trans (mul_le_mul_of_nonneg_left half (Real.sqrt_nonneg _))
+    have half : Real.sqrt N≤((M+1 : ℕ) : ℝ) := by push_cast; exact (Nat.lt_floor_add_one _).le
+    exact (by exact_mod_cast hxn : (x : ℝ)≤N).trans ((Real.mul_self_sqrt (Nat.cast_nonneg N)).symm.le.trans
+      (mul_le_mul_of_nonneg_left half (Real.sqrt_nonneg _)))
   have del : (∑ v ∈ Ioc D M, f v)=∑ v ∈ Ioc 0 M, f v := by
     apply sum_subset (fun v (hv : v ∈ Ioc D M) => mem_Ioc.mpr
       ⟨(Nat.zero_le D).trans_lt (mem_Ioc.mp hv).1,(mem_Ioc.mp hv).2⟩)
     intro v hv hn
     have hvD : v≤D := by by_contra! h; exact hn (mem_Ioc.mpr ⟨h,(mem_Ioc.mp hv).2⟩)
     simp only [f,innerJump_small hvD,zero_mul]
-  have eq : (Chebyshev.psi X-X)-(∑ v ∈ Ioc D M, f v) =
-      ((Chebyshev.psi X-X)-primeErrorTail D X 0)+primeErrorTail D X M := by
+  have split : (∑ v ∈ Ioc 0 M, f v)+(∑ v ∈ Ioc M x, f v)=∑ v ∈ Ioc 0 x, f v := by
+    by_cases hmx : M≤x
+    · exact sum_Ioc_consecutive f (Nat.zero_le M) hmx
+    · rw [Ioc_eq_empty_of_le (le_of_not_ge hmx),sum_empty,add_zero]
+      symm
+      apply sum_subset (Ioc_subset_Ioc_right (le_of_not_ge hmx))
+      intro v hv hn
+      have h : x<v := by by_contra! h; exact hn (mem_Ioc.mpr ⟨(mem_Ioc.mp hv).1,h⟩)
+      simp [f,Nat.div_eq_of_lt h,Chebyshev.psi]
+  have eq : (Chebyshev.psi x-x)-(∑ v ∈ Ioc D M, f v) =
+      ((Chebyshev.psi x-x)-primeErrorTail D x 0)+primeErrorTail D x M := by
     rw [del]
-    change _=(_-(∑ v ∈ Ioc 0 X, f v))+(∑ v ∈ Ioc M X, f v)
-    rw [←sum_Ioc_consecutive f (Nat.zero_le M) hmX]; ring
+    change _=(_-(∑ v ∈ Ioc 0 x, f v))+(∑ v ∈ Ioc M x, f v)
+    rw [←split]; ring
   rw [eq]
   have hmass := (abs_nonneg _).trans (abs_prefix_le_mass (Nat.succ_pos D) 0)
-  have ht := (primeErrorTail_reciprocal_bound D X hm).trans (mul_le_mul_of_nonneg_left hu (by positivity))
-  exact (abs_add_le _ _).trans ((add_le_add (complete_primeErrorTail_bound D hx) ht).trans_eq (by ring))
+  have ht := (primeErrorTail_reciprocal_bound D x hm).trans (mul_le_mul_of_nonneg_left hu (by positivity))
+  have hrt := mul_le_mul_of_nonneg_right (Real.sqrt_le_sqrt (by exact_mod_cast hxn : (x : ℝ)≤N))
+    (show 0≤25*mass (D+1) by positivity)
+  apply (abs_add_le _ _).trans ((add_le_add (complete_primeErrorTail_bound D hx) ht).trans _)
+  linarith only [hrt]
 
-/-- Power cutoff for the signed smaller-horizon prime errors. -/
-def shorterPrimeErrors (δ : ℝ) (X : ℕ) : ℝ :=
-  let D := ⌊(X : ℝ)^δ⌋₊
-  ∑ v ∈ Ioc D ⌊Real.sqrt X⌋₊, innerJump D v*(Chebyshev.psi (X/v : ℕ)-(X/v : ℕ))
+/-- The complete scalar count is reproduced using indices between the
+inner cutoff and the square root. -/
+theorem prime_error_on_shorter_horizons {X : ℕ} (hx : 1≤X) (D : ℕ) :
+    |(Chebyshev.psi X-X)-∑ v ∈ Ioc D ⌊Real.sqrt X⌋₊, innerJump D v*
+        (Chebyshev.psi (X/v : ℕ)-(X/v : ℕ))| ≤
+      mass (D+1)*(41*Real.sqrt X+2* |Real.eulerMascheroniConstant|) :=
+  prime_error_at_common_cap hx le_rfl D
 
 /-- Every retained error is evaluated below the complementary power
 of the divided horizon. -/
-theorem shorterPrimeErrors_horizon {X v : ℕ} {δ : ℝ} (hx : 1≤X)
+theorem divided_horizon_lt_complementary_power {X v : ℕ} {δ : ℝ} (hx : 1≤X)
     (hv : v ∈ Ioc ⌊(X : ℝ)^δ⌋₊ ⌊Real.sqrt X⌋₊) :
     ((X/v : ℕ) : ℝ)<(X : ℝ)^(1-δ) := by
   have hx₀ : (0 : ℝ)<X := by exact_mod_cast hx
@@ -236,48 +247,78 @@ theorem shorterPrimeErrors_horizon {X v : ℕ} {δ : ℝ} (hx : 1≤X)
   have eq : (X : ℝ)^(1-δ)*(X : ℝ)^δ=X := by rw [←Real.rpow_add hx₀,sub_add_cancel,Real.rpow_one]
   exact eq.symm.le.trans_lt (mul_lt_mul_of_pos_left hh (Real.rpow_pos_of_pos hx₀ _))
 
-/-- Both original Vaughan widths admit the same signed expansion in
-smaller Chebyshev errors. A power cutoff costs exactly that power on
-top of the square root, with one uniform constant for all cutoffs. -/
-theorem shorter_prime_error_cofactors :
+private def errorAt (n : ℕ) : ℝ := Chebyshev.psi n-(n : ℝ)
+
+private theorem cofactor_all_divisors (V W N : ℕ) :
+    cofactorCountError V W N=∑ d ∈ Icc 1 W, Sieve.typeIIShort V d*errorAt (N/d) := by
+  rw [cofactorCountError_eq]
+  apply sum_subset (Icc_subset_Icc_right (min_le_right N W))
+  intro d hd hn
+  have h : N<d := by
+    by_contra! hh
+    exact hn (mem_Icc.mpr ⟨(mem_Icc.mp hd).1,le_min hh (mem_Icc.mp hd).2⟩)
+  simp [errorAt,Nat.div_eq_of_lt h,Chebyshev.psi]
+
+/-- The original cofactor count reproduces itself at smaller horizons
+with both finite widths held fixed. The constant is uniform in the
+power cutoff, the widths and the horizon. -/
+theorem fixed_width_cofactor_power_descent :
     ∃ K : ℝ, 0≤K ∧ ∀ {δ : ℝ}, 0≤δ → ∀ V W N : ℕ,
-      |cofactorCountError V W N-∑ d ∈ Icc 1 (min N W), Sieve.typeIIShort V d*shorterPrimeErrors δ (N/d)|≤
+      let D := ⌊(N : ℝ)^δ⌋₊
+      |cofactorCountError V W N-∑ v ∈ Ioc D ⌊Real.sqrt N⌋₊, innerJump D v*cofactorCountError V W (N/v)| ≤
         (∑ d ∈ Icc 1 W, |Sieve.typeIIShort V d|)*(K*(N : ℝ)^(1/2+δ)) := by
   obtain ⟨M,hM,hmass⟩ := mass_uniform
-  let C := 41+2*|Real.eulerMascheroniConstant|
+  let C := 41+2* |Real.eulerMascheroniConstant|
   have hC : 0≤C := by dsimp [C]; positivity
   let K := 2*M*C
   have hK : 0≤K := by dsimp [K]; positivity
   refine ⟨K,hK,?_⟩
-  intro δ hδ V W N
-  let f (x : ℕ) := (Chebyshev.psi x-x)-shorterPrimeErrors δ x
-  let g (x : ℕ) := K*(x : ℝ)^(1/2+δ)
-  have he : 0≤(1/2 : ℝ)+δ := by linarith only [hδ]
-  have bound (x : ℕ) (hx : 1≤x) : |f x|≤g x := by
-    let D := ⌊(x : ℝ)^δ⌋₊
-    have hx₁ : (1 : ℝ)≤x := by exact_mod_cast hx
-    have hx₀ := zero_lt_one.trans_le hx₁
-    have hp := Real.one_le_rpow hx₁ hδ
-    have hroot := Real.one_le_sqrt.mpr hx₁
-    have hd : ((D+1 : ℕ) : ℝ)≤2*(x : ℝ)^δ := by
-      push_cast; linarith only [Nat.floor_le (zero_le_one.trans hp),hp]
+  intro δ hδ V W N D
+  let S := Ioc D ⌊Real.sqrt N⌋₊
+  let I := Icc 1 W
+  let w := Sieve.typeIIShort V
+  let f (x : ℕ) := errorAt x-∑ v ∈ S, innerJump D v*errorAt (x/v)
+  have transposed : (∑ v ∈ S, innerJump D v*cofactorCountError V W (N/v))=
+      ∑ d ∈ I, w d*∑ v ∈ S, innerJump D v*errorAt (N/d/v) := by
+    simp_rw [cofactor_all_divisors,mul_sum]
+    rw [sum_comm]
+    apply sum_congr rfl; intro d _
+    apply sum_congr rfl; intro v _
+    simp only [w,Nat.div_div_eq_div_mul,Nat.mul_comm v d]; ring
+  have eq : cofactorCountError V W N-(∑ v ∈ S, innerJump D v*cofactorCountError V W (N/v))=
+      ∑ d ∈ I, w d*f (N/d) := by
+    rw [transposed,cofactor_all_divisors,←sum_sub_distrib]
+    exact sum_congr rfl fun d _ => (mul_sub ..).symm
+  rw [eq]
+  have bound (x : ℕ) (hxN : x≤N) : |f x| ≤ K*(N : ℝ)^(1/2+δ) := by
+    rcases Nat.eq_zero_or_pos x with rfl | hx
+    · simp only [f,errorAt,Nat.zero_div,Nat.cast_zero,show Chebyshev.psi 0=0 by simp [Chebyshev.psi],
+        sub_self,mul_zero,sum_const_zero,abs_zero]
+      positivity
+    have hn₁ : (1 : ℝ)≤N := by exact_mod_cast hx.trans hxN
+    have hn₀ := zero_lt_one.trans_le hn₁
+    have hp := Real.one_le_rpow hn₁ hδ
+    have hroot := Real.one_le_sqrt.mpr hn₁
+    have hd : ((D+1 : ℕ) : ℝ)≤2*(N : ℝ)^δ := by
+      have hh : (D : ℝ)≤(N : ℝ)^δ := Nat.floor_le (zero_le_one.trans hp)
+      push_cast; linarith only [hh,hp]
     have hm := (hmass (D+1) (Nat.succ_pos D)).trans (mul_le_mul_of_nonneg_left hd hM)
-    have hc : 41*Real.sqrt x+2*|Real.eulerMascheroniConstant|≤C*Real.sqrt x := by
-      have hg := mul_le_mul_of_nonneg_left hroot (show 0≤2*|Real.eulerMascheroniConstant| by positivity)
+    have hc : 41*Real.sqrt N+2* |Real.eulerMascheroniConstant| ≤ C*Real.sqrt N := by
+      have hg := mul_le_mul_of_nonneg_left hroot (show 0≤2* |Real.eulerMascheroniConstant| by positivity)
       dsimp [C]; linarith only [hg]
-    apply (prime_error_on_shorter_horizons hx D).trans
+    apply (prime_error_at_common_cap hx hxN D).trans
     apply (mul_le_mul hm hc (by positivity) (by positivity)).trans_eq
-    dsimp only [g,K]
-    rw [Real.rpow_add hx₀,←Real.sqrt_eq_rpow]
-    ring
-  have hh := cofactor_sum_majorant f g (fun n => mul_nonneg hK (Real.rpow_nonneg (Nat.cast_nonneg _) _))
-    (fun x n _ hn => mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg _) (by exact_mod_cast hn) he) hK)
-    bound V W N
-  rw [cofactorCountError_eq,←sum_sub_distrib]
-  simpa only [f,g,mul_sub] using hh
+    dsimp only [K]
+    rw [Real.rpow_add hn₀,←Real.sqrt_eq_rpow]; ring
+  apply (abs_sum_le_sum_abs _ _).trans
+  calc _ ≤ ∑ d ∈ I, |w d| * (K*(N : ℝ)^(1/2+δ)) := by
+            apply sum_le_sum; intro d _
+            rw [abs_mul]
+            exact mul_le_mul_of_nonneg_left (bound _ (Nat.div_le_self N d)) (abs_nonneg _)
+       _ = _ := (sum_mul ..).symm
 
-#print axioms shorterPrimeErrors_horizon
-#print axioms shorter_prime_error_cofactors
+#print axioms divided_horizon_lt_complementary_power
+#print axioms fixed_width_cofactor_power_descent
 #print axioms prime_error_on_shorter_horizons
 #print axioms complete_primeErrorTail_identity
 #print axioms complete_primeErrorTail_bound

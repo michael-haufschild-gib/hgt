@@ -25,30 +25,19 @@ private abbrev densityCharge (Φ : ℝ → ℝ) :=
 private theorem measurable_mangoldtRow {Φ : ℝ → ℝ} (hm : Measurable Φ) :
     Measurable (mangoldtRow Φ) := Measurable.tsum fun _ => measurable_const.mul (hm.comp (by fun_prop))
 
-private theorem measurable_fractional_test : Measurable fractionalPrimeTest :=
-  (by fun_prop : Measurable fun v : ℝ => Real.exp (-v/2)).mul (measurable_fract.comp Real.measurable_exp)
-
-private theorem fractional_test_bounds (v : ℝ) :
-    |fractionalPrimeTest v| ≤ 1 ∧ |fractionalPrimeTest v| ≤ Real.exp (v/2) := by
-  have heq : fractionalPrimeTest v = -weightedFloorDiscrepancy (1/2) v := by
-    rw [fractionalPrimeTest,weightedFloorDiscrepancy,neg_mul,neg_neg,show -(1/2:ℝ)*v = -v/2 by ring]
-  rw [heq,abs_neg]
-  exact ⟨abs_weightedFloorDiscrepancy_le_one (by norm_num) (by norm_num) v,
-    (abs_weightedFloorDiscrepancy_le (1/2) v).2.trans_eq (by congr 1; ring)⟩
-
 private theorem integrable_polar_test (M T : ℝ) :
     IntegrableOn (fun t => Real.exp (t/2)*fractionalPrimeTest (T-t)) (Iic M) := by
   have h := integrableOn_exp_mul_Iic (by norm_num : (0:ℝ) < 1/2) M
   apply h.mono' (((by fun_prop : Measurable fun t : ℝ => Real.exp (t/2)).mul
-    (measurable_fractional_test.comp (by fun_prop))).aestronglyMeasurable.restrict)
+    (measurable_fractionalPrimeTest.comp (by fun_prop))).aestronglyMeasurable.restrict)
   refine Eventually.of_forall fun t => ?_
   rw [Real.norm_eq_abs,abs_mul,abs_of_pos (Real.exp_pos _),show (1/2:ℝ)*t=t/2 by ring]
-  exact mul_le_of_le_one_right (Real.exp_pos _).le (fractional_test_bounds _).1
+  exact mul_le_of_le_one_right (Real.exp_pos _).le (fractionalPrimeTest_bounds _).1
 
 private theorem weighted_mangoldt_error_integrable {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal))
     {F Φ : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F)
-    (hm : Measurable Φ) (he : F =ᵐ[volume] Φ) (hs : ∀ u, 0 ≤ u → Φ u=0) :
+    (he : F =ᵐ[volume] Φ) (hs : ∀ u, 0 ≤ u → Φ u=0) :
     IntegrableOn (fun t => Real.exp (-t/2)*|mangoldtRow Φ t-Real.exp (t/2)*densityCharge Φ|)
       (Ioi 0) := by
   let d := (7/16:ℝ)
@@ -110,15 +99,16 @@ theorem criticalState_fractional_mangoldt_response {W₀ : ℝ} (hW : 0 < W₀)
   have hip (M : ℝ) : IntegrableOn p (Iic M) := (integral_mangoldt_fractional_cut hΦ.measurable hC hb M T).1
   have hiq (M : ℝ) : IntegrableOn q (Iic M) := integrable_polar_test M T
   have hneg : IntegrableOn g (Iic 0) := by rw [hg]; exact (hip 0).sub ((hiq 0).const_mul A)
-  have hi := weighted_mangoldt_error_integrable hW ht hF hΦ.measurable he hs
+  have hi := weighted_mangoldt_error_integrable hW ht hF he hs
   have hmW := measurable_mangoldtRow hΦ.measurable
   have hpos : IntegrableOn g (Ioi 0) := by
     apply (hi.const_mul (Real.exp (T/2))).mono' (((hmW.sub ((by fun_prop : Measurable fun t : ℝ => Real.exp (t/2)).mul measurable_const)).mul
-      (measurable_fractional_test.comp (by fun_prop))).aestronglyMeasurable.restrict)
+      (measurable_fractionalPrimeTest.comp (by fun_prop))).aestronglyMeasurable.restrict)
     refine Eventually.of_forall fun t => ?_
-    rw [g,Real.norm_eq_abs,abs_mul]
+    dsimp only [g]
+    rw [Real.norm_eq_abs,abs_mul]
     calc _ ≤ |W t-Real.exp (t/2)*A|*Real.exp ((T-t)/2) :=
-           mul_le_mul_of_nonneg_left (fractional_test_bounds _).2 (abs_nonneg _)
+           mul_le_mul_of_nonneg_left (fractionalPrimeTest_bounds _).2 (abs_nonneg _)
       _ = _ := by rw [show (T-t)/2=T/2+(-t/2) by ring,Real.exp_add]; ring
   have hint : Integrable g := by simpa only [Iic_union_Ioi,integrableOn_univ] using hneg.union hpos
   have hlim := (aecover_Iic (μ := volume) (tendsto_id (α := ℝ) (x := atTop))).integral_tendsto_of_countably_generated hint

@@ -160,7 +160,8 @@ private theorem mangoldt_atom_sum_split {Φ : ℝ → ℝ} {C : ℝ}
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp [v]
     have h := continuousIntegerAtom_bound hb (by exact_mod_cast hn : (1:ℝ) ≤ n) t
-    rw [Real.norm_eq_abs, v, abs_mul, abs_of_nonneg vonMangoldt_nonneg]
+    dsimp only [v]
+    rw [Real.norm_eq_abs,abs_mul, abs_of_nonneg vonMangoldt_nonneg]
     calc _ ≤ Real.log n*((C*Real.exp (2*t))*(1/(n:ℝ)^2)) :=
               mul_le_mul vonMangoldt_le_log h (abs_nonneg _) (Real.log_natCast_nonneg n)
       _ = _ := by ring
@@ -168,7 +169,9 @@ private theorem mangoldt_atom_sum_split {Φ : ℝ → ℝ} {C : ℝ}
   have hsplit := tsum_eq_ordinary_primes_add_proper_powers hf (fun n hn => by
     by_contra hp
     apply hn
-    rw [← he, v, vonMangoldt_eq_zero_iff.2 hp, zero_mul, Complex.ofReal_zero])
+    rw [← he]
+    dsimp only [v]
+    rw [vonMangoldt_eq_zero_iff.2 hp,zero_mul,Complex.ofReal_zero])
   have ht : (∑' n, f n) = ((∑' n, v n : ℝ):ℂ) := by
     rw [Complex.ofReal_tsum]; exact tsum_congr fun n => (he n).symm
   have hj : (∑' j, f (properPrimePowerIndex j)) =

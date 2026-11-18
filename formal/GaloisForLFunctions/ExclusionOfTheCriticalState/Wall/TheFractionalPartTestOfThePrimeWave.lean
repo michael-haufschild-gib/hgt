@@ -18,14 +18,18 @@ namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 /-- Positive fractional-part test on the logarithmic axis. -/
 def fractionalPrimeTest (v : ℝ) : ℝ := Real.exp (-v/2)*Int.fract (Real.exp v)
 
-private theorem measurable_fractionalPrimeTest : Measurable fractionalPrimeTest :=
+theorem measurable_fractionalPrimeTest : Measurable fractionalPrimeTest :=
   (by fun_prop : Measurable fun v : ℝ => Real.exp (-v/2)).mul
     (measurable_fract.comp Real.measurable_exp)
 
-private theorem abs_fractionalPrimeTest_le_one (v : ℝ) : |fractionalPrimeTest v| ≤ 1 := by
-  have h := abs_weightedFloorDiscrepancy_le_one (σ := 1/2) (by norm_num) (by norm_num) v
-  simpa only [fractionalPrimeTest,weightedFloorDiscrepancy,
-    show -(1/2:ℝ)*v = -v/2 by ring, neg_mul, abs_neg] using h
+/-- The test is bounded everywhere and decays exponentially on its left. -/
+theorem fractionalPrimeTest_bounds (v : ℝ) :
+    |fractionalPrimeTest v| ≤ 1 ∧ |fractionalPrimeTest v| ≤ Real.exp (v/2) := by
+  have heq : fractionalPrimeTest v = -weightedFloorDiscrepancy (1/2) v := by
+    rw [fractionalPrimeTest,weightedFloorDiscrepancy,neg_mul,neg_neg,show -(1/2:ℝ)*v = -v/2 by ring]
+  rw [heq,abs_neg]
+  exact ⟨abs_weightedFloorDiscrepancy_le_one (by norm_num) (by norm_num) v,
+    (abs_weightedFloorDiscrepancy_le (1/2) v).2.trans_eq (by congr 1; ring)⟩
 
 private def truncatedTest (h v : ℝ) : ℂ := if 0 ≤ v then (fractionalPrimeTest (h+v):ℂ) else 0
 
@@ -87,16 +91,18 @@ theorem integral_mangoldt_fractional_cut {Φ : ℝ → ℝ} (hm : Measurable Φ)
     (by simp) mangoldt_summable_at_cut hm hC hc hmK (fun v hv => if_neg (not_le_of_gt hv))
     (B := 1) (fun v => by
       by_cases hv : 0 ≤ v
-      · simpa only [K,truncatedTest,if_pos hv,Complex.norm_real,Real.norm_eq_abs] using abs_fractionalPrimeTest_le_one (T-M+v)
+      · simpa only [K,truncatedTest,if_pos hv,Complex.norm_real,Real.norm_eq_abs] using (fractionalPrimeTest_bounds (T-M+v)).1
       · simp [K,truncatedTest,hv]) M
   let W := logShiftWave (fun n : ℕ => vonMangoldt n/Real.sqrt n) Φ
   have hleft : (Set.Iic M).indicator (fun t => (W t:ℂ)*(fractionalPrimeTest (T-t):ℂ)) =
       (fun t => (W t:ℂ)*K (M-t)) := by
     funext t
     by_cases ht : t ≤ M
-    · rw [Set.indicator_of_mem ht,K,truncatedTest,if_pos (sub_nonneg.mpr ht)]
+    · dsimp only [K]
+      rw [Set.indicator_of_mem (show t ∈ Set.Iic M from ht),truncatedTest,if_pos (sub_nonneg.mpr ht)]
       rw [show T-M+(M-t)=T-t by ring]
-    · rw [Set.indicator_of_notMem ht,K,truncatedTest,if_neg (not_le.mpr (sub_neg.mpr (lt_of_not_ge ht))),mul_zero]
+    · dsimp only [K]
+      rw [Set.indicator_of_notMem (show t ∉ Set.Iic M from ht),truncatedTest,if_neg (not_le.mpr (sub_neg.mpr (lt_of_not_ge ht))),mul_zero]
   have hi : IntegrableOn (fun t => (W t:ℂ)*(fractionalPrimeTest (T-t):ℂ)) (Set.Iic M) :=
     (integrable_indicator_iff measurableSet_Iic).mp (hleft.symm ▸ hpre.1)
   refine ⟨?_,?_⟩
@@ -124,7 +130,8 @@ private theorem density_tail_at_nonpos {a : ℝ} (ha : a ≤ 0) :
     have h := integrableOn_exp_mul_Ioi (by norm_num : (-1:ℝ) < 0) 0
     simp only [neg_one_mul] at h
     apply h.mono' hm.aestronglyMeasurable.restrict (Eventually.of_forall fun v => ?_)
-    rw [Real.norm_eq_abs,f,abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (Int.fract_nonneg _))]
+    dsimp only [f]
+    rw [Real.norm_eq_abs,abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (Int.fract_nonneg _))]
     exact mul_le_of_le_one_right (Real.exp_pos _).le (Int.fract_lt_one _).le
   have hd : Disjoint (Set.Ico a 0) (Set.Ici 0) := Set.disjoint_left.2 fun _ h h' => (not_lt_of_ge h') h.2
   change (∫ v in Set.Ici a, f v) = _
@@ -148,12 +155,14 @@ theorem integral_polar_fractional_cut {M T : ℝ} (h : T ≤ M) :
     apply integral_congr_ae (Eventually.of_forall fun t => ?_)
     by_cases ht : t ≤ M
     · have hv : T-t ∈ Set.Ici a := sub_le_sub_left ht T
-      rw [Set.indicator_of_mem ht,w,Set.indicator_of_mem hv]
+      dsimp only [w]
+      rw [Set.indicator_of_mem (show t ∈ Set.Iic M from ht),Set.indicator_of_mem hv]
       dsimp only [fractionalPrimeTest,f]
       rw [← mul_assoc,← mul_assoc,← Real.exp_add,← Real.exp_add]
       congr 2 <;> ring
     · have hv : T-t ∉ Set.Ici a := not_le.mpr (sub_lt_sub_left (lt_of_not_ge ht) T)
-      rw [Set.indicator_of_notMem ht,w,Set.indicator_of_notMem hv,mul_zero]
+      dsimp only [w]
+      rw [Set.indicator_of_notMem (show t ∉ Set.Iic M from ht),Set.indicator_of_notMem hv,mul_zero]
   rw [he,show (∫ v in Set.Ici a, f v) = _ from density_tail_at_nonpos (sub_nonpos.mpr h)]
   dsimp only [a]; ring
 
@@ -233,7 +242,7 @@ private theorem reciprocal_cut_tends_to_zero {f : ℝ → ℝ} (hi : IntegrableO
       ‖f u*reciprocalRemainder (Real.exp (M-u))‖ ≤ δ*|f u| := by
     rw [ae_restrict_iff' measurableSet_Iic]
     refine Eventually.of_forall fun u hu => ?_
-    have hy : Y ≤ Real.exp (M-u) := hM.trans (Real.exp_le_exp.2 (le_sub_self _ hu))
+    have hy : Y ≤ Real.exp (M-u) := hM.trans (Real.exp_le_exp.2 (by change u ≤ 0 at hu; linarith only [hu]))
     have hh := hY _ hy
     rw [Real.dist_eq,sub_zero] at hh
     rw [Real.norm_eq_abs,abs_mul,mul_comm]
@@ -293,7 +302,8 @@ theorem tendsto_mangoldt_fractional_response {Φ : ℝ → ℝ} (hm : Measurable
     apply ((integrableOn_exp_Iic 0).const_mul C).mono' ((hm.mul (by fun_prop)).aestronglyMeasurable.restrict)
     rw [ae_restrict_iff' measurableSet_Iic]
     refine Eventually.of_forall fun u hu => ?_
-    rw [Real.norm_eq_abs, f, abs_mul, abs_of_pos (Real.exp_pos _)]
+    dsimp only [f]
+    rw [Real.norm_eq_abs,abs_mul, abs_of_pos (Real.exp_pos _)]
     calc _ ≤ C*Real.exp (2*u)*Real.exp (-u/2) := mul_le_mul_of_nonneg_right (hb u) (Real.exp_pos _).le
       _ ≤ C*Real.exp u := by
         rw [mul_assoc,← Real.exp_add]
@@ -316,9 +326,10 @@ theorem tendsto_mangoldt_fractional_response {Φ : ℝ → ℝ} (hm : Measurable
       (by fun_prop : Measurable fun u : ℝ => Real.exp (M-u)))).aestronglyMeasurable.restrict)
     rw [ae_restrict_iff' measurableSet_Iic]
     refine Eventually.of_forall fun u hu => ?_
-    have hh := hY (Real.exp (M-u)) (hMY.trans (Real.exp_le_exp.mpr (le_sub_self M hu)))
+    have hh := hY (Real.exp (M-u)) (hMY.trans (Real.exp_le_exp.mpr (by change u ≤ 0 at hu; linarith only [hu])))
     rw [Real.dist_eq,sub_zero] at hh
-    rw [r,norm_mul,Real.norm_eq_abs (reciprocalRemainder _)]
+    dsimp only [r]
+    rw [norm_mul,Real.norm_eq_abs (reciprocalRemainder _)]
     exact mul_le_of_le_one_right (norm_nonneg _) hh.le
   let g := fun u : ℝ => Φ u*(Real.exp ((u-T)/2)*(∑ n ∈ Finset.Icc 0 ⌊Real.exp (M-u)⌋₊,
     vonMangoldt n*Int.fract (Real.exp (T-u)/n)))

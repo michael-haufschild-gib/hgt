@@ -78,7 +78,7 @@ private theorem reflected (a l r x v : ℝ) : Viable a l r x v → Viable a (-r)
   refine ⟨fun k => -w k,congrArg Neg.neg h₀,fun k => ?_,fun k => ?_⟩
   · simpa only [neg_sub_neg,abs_sub_comm] using h₁ k
   · have he : position (-x) (fun k => -w k) k = -position x w k := by
-      simp [position,Finset.sum_neg_distrib]
+      simp [position,Finset.sum_neg_distrib,add_comm]
     rw [he]
     exact ⟨neg_le_neg (h₂ k).2,neg_le_neg (h₂ k).1⟩
 

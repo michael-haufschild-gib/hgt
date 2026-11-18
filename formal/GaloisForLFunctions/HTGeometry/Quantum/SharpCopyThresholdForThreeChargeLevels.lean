@@ -32,7 +32,8 @@ theorem density (z : Circle) : (state z).PosSemidef ∧ (state z).trace=1 := by
     ext i j
     fin_cases i <;> fin_cases j <;>
       norm_num [base,B,mul_apply,Fin.sum_univ_succ,conjTranspose_apply]
-  refine ⟨twist_posSemidef _ _ _ (he ▸ posSemidef_conjTranspose_mul_self B),?_⟩
+  have hbase : base.PosSemidef := he.symm ▸ posSemidef_conjTranspose_mul_self B
+  refine ⟨twist_posSemidef _ _ _ hbase,?_⟩
   rw [state,twist_trace]
   norm_num [base,trace,diag_apply,Fin.sum_univ_succ]
 

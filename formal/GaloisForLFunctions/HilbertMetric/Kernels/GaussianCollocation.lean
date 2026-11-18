@@ -98,7 +98,8 @@ theorem gaussianCollocation_inverse_checkerboard (t : ℝ) (x y : Fin (n+1) ↪o
     gaussianCollocation_det_pos t
       ((Fin.succAboveOrderEmb j).trans x) ((Fin.succAboveOrderEmb i).trans y)
   change 0 < (-1 : ℝ) ^ (j.val + i.val) * M⁻¹ i j
-  rw [inv_def, smul_apply, smul_eq_mul, adjugate_fin_succ_eq_det_submatrix]
+  rw [Matrix.inv_def, Matrix.smul_apply, smul_eq_mul, adjugate_fin_succ_eq_det_submatrix,
+    Ring.inverse_eq_inv]
   have hs : (-1 : ℝ) ^ (j.val + i.val) * (-1 : ℝ) ^ (j.val + i.val) = 1 := by
     rw [← mul_pow]
     simp
@@ -106,8 +107,8 @@ theorem gaussianCollocation_inverse_checkerboard (t : ℝ) (x y : Fin (n+1) ↪o
     0 < M.det⁻¹ * (M.submatrix j.succAbove i.succAbove).det :=
       mul_pos (inv_pos.mpr hdet) hminor
     _ = _ := by
-      rw [Ring.inverse_eq_inv]
-      linear_combination -(M.det⁻¹ * (M.submatrix j.succAbove i.succAbove).det) * hs
+      conv_lhs => rw [← one_mul (M.det⁻¹ * _), ← hs]
+      ring
 
 /-- On an arithmetic progression of centers the residual determinant is Vandermonde.
 The identity also covers collisions and a negative mesh. -/

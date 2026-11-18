@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.XiPrimeLogHigherValuationCriticalBoundary
 import GaloisForLFunctions.RHTower.SquarefreeDiscrepancyZeroCascade
+import GaloisForLFunctions.RHTower.BurnolIntegrand
 import GaloisForLFunctions.RHTower.ZetaLogDerivResidue
 import GaloisForLFunctions.HTGeometry.RiemannZetaMeromorphic
 import GaloisForLFunctions.RHTower.ReflectionCocycleClass
@@ -107,6 +108,21 @@ private theorem primeMomentTail_diff {s : ℂ} (hs : 1/4<s.re) : DifferentiableA
 def firstPrimeDivisorMoment (s : ℂ) : ℂ :=
   -deriv riemannZeta s + riemannZeta s*(primeMomentTail s-infinitePrimeFlux (2*s)-infinitePrimeFlux (3*s))
 
+/-- The continued moment is meromorphic on the full quarter half-plane,
+including the real poles. -/
+theorem firstPrimeDivisorMoment_meromorphicOn :
+    MeromorphicOn firstPrimeDivisorMoment {z : ℂ | 1/4 < z.re} := by
+  have hop : IsOpen {z : ℂ | 1/4 < z.re} := isOpen_lt continuous_const Complex.continuous_re
+  have hd : DifferentiableOn ℂ primeMomentTail {z : ℂ | 1/4 < z.re} :=
+    fun _ hz => (primeMomentTail_diff hz).differentiableWithinAt
+  intro z hz
+  have hζ := meromorphicAt_riemannZeta_everywhere z
+  have hf (a : ℂ) : MeromorphicAt (fun w : ℂ => infinitePrimeFlux (a*w)) z := by
+    have h := meromorphicAt_riemannZeta_everywhere (a*z)
+    have hF : MeromorphicAt infinitePrimeFlux (a*z) := (h.deriv.div h).neg
+    exact hF.comp_analyticAt (analyticAt_const.mul analyticAt_id)
+  exact hζ.deriv.neg.add (hζ.mul ((((hd.analyticOnNhd hop z hz).meromorphicAt.sub (hf 2)).sub (hf 3))))
+
 /-- On the Euler half-plane each distinct prime contributes its logarithm,
 and the extra zeta factor sums over its ordinary integer multiples. -/
 theorem firstPrimeDivisorMoment_euler {s : ℂ} (hs : 1<s.re) :
@@ -128,23 +144,28 @@ private theorem flux_diff {z : ℂ} (h1 : z≠1) (hz : riemannZeta z≠0) :
   have h := HTGeometry.analyticAt_riemannZeta h1
   exact ((h.deriv.differentiableAt.div h.differentiableAt hz).neg)
 
+private theorem residue_of_continuous {f : ℂ → ℂ} {z : ℂ} (hf : ContinuousAt f z) :
+    Tendsto (fun w => (w-z)*f w) (𝓝[≠] z) (𝓝 0) := by
+  have hl : Tendsto (fun w : ℂ => w-z) (𝓝[≠] z) (𝓝 0) :=
+    ((continuous_id.sub continuous_const).tendsto' z 0 (sub_self z)).mono_left nhdsWithin_le_nhds
+  have ht : Tendsto f (𝓝[≠] z) (𝓝 (f z)) := hf.tendsto.mono_left nhdsWithin_le_nhds
+  simpa only [zero_mul] using hl.mul ht
+
 private theorem flux_residue {z : ℂ} (h1 : z≠1) :
-    ∃ m : ℕ, (riemannZeta z= 0 → 0 < m) ∧
+    ∃ m : ℕ, (riemannZeta z = 0 → 0 < m) ∧
       Tendsto (fun w => (w-z)*infinitePrimeFlux w) (𝓝[≠] z) (𝓝 (-(m:ℂ))) := by
   by_cases hz : riemannZeta z=0
   · obtain ⟨m,hm,h⟩ := neg_logDeriv_zeta_zero_residue hz
     exact ⟨m,fun _ => hm,by simpa only [infinitePrimeFlux,logDeriv_apply,neg_div] using h⟩
   · refine ⟨0,fun he => (hz he).elim,?_⟩
-    have h := ((continuous_id.sub continuous_const).continuousAt.mul (flux_diff h1 hz).continuousAt :
-      ContinuousAt (fun w : ℂ => (w-z)*infinitePrimeFlux w) z)
-    simpa only [sub_self,zero_mul,Nat.cast_zero,neg_zero] using h.continuousWithinAt.tendsto
+    simpa only [Nat.cast_zero,neg_zero] using residue_of_continuous (flux_diff h1 hz).continuousAt
 
 private theorem scaled_ne_one {z : ℂ} (hi : z.im≠0) {a : ℝ} (ha : a≠0) : (a:ℂ)*z≠1 := by
   intro he
   exact (mul_ne_zero ha hi) (by simpa using congrArg Complex.im he)
 
 private theorem scaled_flux_residue (a : ℝ) (ha : a≠0) {z : ℂ} (hi : z.im≠0) :
-    ∃ m : ℕ, (riemannZeta ((a:ℂ)*z)= 0 → 0 < m) ∧
+    ∃ m : ℕ, (riemannZeta ((a:ℂ)*z) = 0 → 0 < m) ∧
       Tendsto (fun w => (w-z)*infinitePrimeFlux ((a:ℂ)*w)) (𝓝[≠] z) (𝓝 (-(m:ℂ)/(a:ℂ))) := by
   obtain ⟨m,hm,ht⟩ := flux_residue (scaled_ne_one hi ha)
   have hc : (a:ℂ)≠0 := Complex.ofReal_ne_zero.mpr ha
@@ -157,12 +178,12 @@ private theorem scaled_flux_residue (a : ℝ) (ha : a≠0) {z : ℂ} (hi : z.im�
   apply ((ht.comp hmap).div_const (a:ℂ)).congr
   intro w
   dsimp only [Function.comp_apply]
-  field_simp [hc]; ring
+  field_simp [hc]
 
 /-- A zero at twice the argument and a zero at three times the argument
 contribute nonnegative multiplicities to the same residue factor. -/
 theorem firstPrimeDivisorMoment_residue {z : ℂ} (hs : 1/4<z.re) (hi : z.im≠0) :
-    ∃ m n : ℕ, (riemannZeta (2*z)= 0 → 0 < m) ∧ (riemannZeta (3*z)= 0 → 0 < n) ∧
+    ∃ m n : ℕ, (riemannZeta (2*z) = 0 → 0 < m) ∧ (riemannZeta (3*z) = 0 → 0 < n) ∧
       Tendsto (fun w => (w-z)*firstPrimeDivisorMoment w) (𝓝[≠] z)
         (𝓝 (riemannZeta z*((m:ℂ)/2+(n:ℂ)/3))) := by
   obtain ⟨m,hm,h₂⟩ := scaled_flux_residue 2 (by norm_num) hi
@@ -172,16 +193,46 @@ theorem firstPrimeDivisorMoment_residue {z : ℂ} (hs : 1/4<z.re) (hi : z.im≠0
   have hζ := HTGeometry.analyticAt_riemannZeta hzne
   let g (w : ℂ) := -deriv riemannZeta w+riemannZeta w*primeMomentTail w
   have hg : ContinuousAt g z := hζ.deriv.continuousAt.neg.add (hζ.continuousAt.mul (primeMomentTail_diff hs).continuousAt)
-  have h₀ : Tendsto (fun w => (w-z)*g w) (𝓝[≠] z) (𝓝 0) := by
-    simpa only [sub_self,zero_mul] using
-      (((continuous_id.sub continuous_const).continuousAt.mul hg :
-        ContinuousAt (fun w : ℂ => (w-z)*g w) z).continuousWithinAt.tendsto)
-  have h := (h₀.sub (hζ.continuousAt.continuousWithinAt.tendsto.mul h₂)).sub
-    (hζ.continuousAt.continuousWithinAt.tendsto.mul h₃)
-  refine ⟨m,n,hm,hn,?_⟩
-  convert h using 1
-  · funext w; dsimp only [firstPrimeDivisorMoment,g]; ring
-  · ring
+  have hζt : Tendsto riemannZeta (𝓝[≠] z) (𝓝 (riemannZeta z)) :=
+    hζ.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  have ht := ((residue_of_continuous hg).sub (hζt.mul h₂)).sub (hζt.mul h₃)
+  rw [show (0:ℂ)-riemannZeta z*(-(m:ℂ)/2)-riemannZeta z*(-(n:ℂ)/3)=
+    riemannZeta z*((m:ℂ)/2+(n:ℂ)/3) by ring] at ht
+  refine ⟨m,n,hm,hn,ht.congr fun w => ?_⟩
+  change (w-z)*g w-riemannZeta w*((w-z)*infinitePrimeFlux (2*w))-
+    riemannZeta w*((w-z)*infinitePrimeFlux (3*w))=(w-z)*firstPrimeDivisorMoment w
+  dsimp only [g,firstPrimeDivisorMoment]; ring
+
+/-- Vanishing punctured residues between one quarter and one half
+forces every right zero to propagate to half its ordinate. -/
+theorem riemannHypothesis_of_firstPrimeDivisorMoment_zero_residues
+    (h : ∀ z : ℂ, 1/4 < z.re → z.re < 1/2 → z.im ≠ 0 →
+      Tendsto (fun w => (w-z)*firstPrimeDivisorMoment w) (𝓝[≠] z) (𝓝 0)) :
+    RiemannHypothesis := by
+  apply riemannHypothesis_iff_riemannZeta_ne_zero_of_mem_upper_strip.mpr
+  intro ρ hρ h1
+  refine SquarefreeDiscrepancy.riemannZeta_ne_zero_of_halving (α := 1/4) (by norm_num) ?_ (by linarith only [hρ]) (by linarith only [h1])
+  intro v hv hh h1'
+  have him : v.im≠0 := by
+    intro e
+    have he : v=(v.re:ℂ) := Complex.ext rfl (by simpa using e)
+    apply riemannZeta_real_strip_ne_zero (by linarith only [hh]) h1'
+    rwa [← he]
+  let z := v/2
+  have he : 2*z=v := by dsimp only [z]; ring
+  have hr : z.re=v.re/2 := by simp [z,Complex.div_ofNat_re]
+  have hi : z.im≠0 := by simpa [z,Complex.div_ofNat_im] using him
+  have hs : 1/4<z.re := by rw [hr]; linarith only [hh]
+  obtain ⟨m,n,hm,_,ht⟩ := firstPrimeDivisorMoment_residue hs hi
+  have hp := hm (by rwa [he])
+  have h₀ := h z hs (by rw [hr]; linarith only [h1']) hi
+  have hn : (m:ℂ)/2+(n:ℂ)/3≠0 := by
+    intro e
+    have hpR : 0 < (m:ℝ) := by exact_mod_cast hp
+    have he' := congrArg Complex.re e
+    norm_num [Complex.div_re] at he'
+    linarith only [he',hpR,Nat.cast_nonneg (α := ℝ) n]
+  exact (mul_eq_zero.mp (tendsto_nhds_unique ht h₀)).resolve_right hn
 
 /-- The first ordinary-prime-divisor moment is holomorphic at every
 nonreal point right of one quarter exactly under RH. -/
@@ -201,33 +252,11 @@ theorem riemannHypothesis_iff_firstPrimeDivisorMoment_quarter :
     have ha := HTGeometry.analyticAt_riemannZeta (show z≠1 from fun e => hi (by rw [e,Complex.one_im]))
     exact ha.deriv.differentiableAt.neg.add (ha.differentiableAt.mul (((primeMomentTail_diff hz).sub h2).sub h3))
   · intro h
-    apply riemannHypothesis_iff_riemannZeta_ne_zero_of_mem_upper_strip.mpr
-    intro ρ hρ h1
-    refine SquarefreeDiscrepancy.riemannZeta_ne_zero_of_halving (α := 1/4) (by norm_num) ?_ (by linarith only [hρ]) (by linarith only [h1])
-    intro v hv hh h1'
-    have him : v.im≠0 := by
-      intro e
-      have he : v=(v.re:ℂ) := Complex.ext rfl (by simpa using e)
-      apply riemannZeta_real_strip_ne_zero (by linarith only [hh]) h1'
-      rwa [← he]
-    let z := v/2
-    have he : 2*z=v := by dsimp only [z]; ring
-    have hr : z.re=v.re/2 := by simp [z,Complex.div_ofNat_re]
-    have hi : z.im≠0 := by simpa [z,Complex.div_ofNat_im] using him
-    have hs : 1/4<z.re := by rw [hr]; linarith only [hh]
-    obtain ⟨m,n,hm,_,ht⟩ := firstPrimeDivisorMoment_residue hs hi
-    have hp := hm (by rwa [he])
-    have h₀ : Tendsto (fun w => (w-z)*firstPrimeDivisorMoment w) (𝓝[≠] z) (𝓝 0) := by
-      simpa only [sub_self,zero_mul] using
-        (((continuous_id.sub continuous_const).continuousAt.mul (h z hs hi).continuousAt :
-          ContinuousAt (fun w : ℂ => (w-z)*firstPrimeDivisorMoment w) z).continuousWithinAt.tendsto)
-    have hn : (m:ℂ)/2+(n:ℂ)/3≠0 := by
-      intro e
-      have he' := congrArg Complex.re e
-      simp at he'
-      linarith only [he',Nat.cast_pos.mpr hp,Nat.cast_nonneg (α := ℝ) n]
-    exact (mul_eq_zero.mp (tendsto_nhds_unique ht h₀)).resolve_right hn
+    exact riemannHypothesis_of_firstPrimeDivisorMoment_zero_residues
+      fun z hz _ hi => residue_of_continuous (h z hz hi).continuousAt
 
+#print axioms firstPrimeDivisorMoment_meromorphicOn
+#print axioms riemannHypothesis_of_firstPrimeDivisorMoment_zero_residues
 #print axioms firstPrimeDivisorMoment_euler
 #print axioms firstPrimeDivisorMoment_residue
 #print axioms riemannHypothesis_iff_firstPrimeDivisorMoment_quarter

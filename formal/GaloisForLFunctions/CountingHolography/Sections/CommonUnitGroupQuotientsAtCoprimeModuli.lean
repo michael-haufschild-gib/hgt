@@ -27,21 +27,58 @@ private theorem primePowerPart_dvd (u : ℕ) : primePowerPart u ∣ u :=
 private theorem totient_split (u : ℕ) : u.totient=primePowerPart u*residueUnitOrder u :=
   Nat.totient_eq_div_primeFactors_mul u
 
+/-- Coprime principal orders cannot increase a common divisor beyond
+the product of the two residue orders. -/
+theorem gcd_dvd_residue_product {a b : ℕ} (hc : a.Coprime b) (u v : ℕ) :
+    (a*u).gcd (b*v) ∣ u*v := by
+  let d := (a*u).gcd (b*v)
+  have h₁ : d ∣ a*(u*v) := by
+    simpa only [mul_assoc] using (Nat.gcd_dvd_left (a*u) (b*v)).trans (dvd_mul_right (a*u) v)
+  have h₂ : d ∣ b*(u*v) := by
+    simpa only [mul_assoc,mul_comm v u] using (Nat.gcd_dvd_right (a*u) (b*v)).trans (dvd_mul_right (b*v) u)
+  have h := Nat.dvd_gcd h₁ h₂
+  simpa only [Nat.gcd_mul_right,hc.gcd_eq_one,one_mul,mul_one] using h
+
 /-- Every common divisor of the two totients is already paid for by
 the distinct residue primes, with no dependence on their multiplicities. -/
 theorem gcd_totient_dvd_residueUnitOrders {u v : ℕ} (hc : u.Coprime v) :
     u.totient.gcd v.totient ∣ residueUnitOrder u*residueUnitOrder v := by
-  let d := u.totient.gcd v.totient
-  let t := residueUnitOrder u*residueUnitOrder v
-  have h₁ : d ∣ primePowerPart u*t := by
-    have hd := (Nat.gcd_dvd_left u.totient v.totient).trans (dvd_mul_right u.totient (residueUnitOrder v))
-    simpa only [d,t,totient_split u,mul_assoc] using hd
-  have h₂ : d ∣ primePowerPart v*t := by
-    have hd := (Nat.gcd_dvd_right u.totient v.totient).trans (dvd_mul_right v.totient (residueUnitOrder u))
-    simpa only [d,t,totient_split v,mul_assoc,mul_comm (residueUnitOrder v) (residueUnitOrder u)] using hd
-  have h := Nat.dvd_gcd h₁ h₂
-  have hcop := hc.of_dvd (primePowerPart_dvd u) (primePowerPart_dvd v)
-  simpa only [Nat.gcd_mul_right,hcop.gcd_eq_one,one_mul,mul_one] using h
+  rw [totient_split u,totient_split v]
+  exact gcd_dvd_residue_product (hc.of_dvd (primePowerPart_dvd u) (primePowerPart_dvd v)) _ _
+
+private theorem totient_power_succ (u k : ℕ) : (u^(k+1)).totient=u^k*u.totient := by
+  rw [Nat.totient_eq_div_primeFactors_mul (u^(k+1)),Nat.primeFactors_pow u (Nat.succ_ne_zero k),
+    pow_succ,Nat.mul_div_assoc _ (Nat.prod_primeFactors_dvd u),Nat.totient_eq_div_primeFactors_mul u,mul_assoc]
+
+private theorem power_totient_exponent {u : ℕ} (hu : 0<u) (k p : ℕ) :
+    (u^(k+1)).totient.factorization p=k*u.factorization p+u.totient.factorization p := by
+  rw [totient_power_succ,Nat.factorization_mul (pow_ne_zero _ hu.ne') (Nat.totient_pos.mpr hu).ne',
+    Nat.factorization_pow,Finsupp.add_apply,Finsupp.smul_apply,smul_eq_mul]
+
+/-- Once the powers exceed the opposite totient orders, every common
+prime exponent stabilizes. At a prime of either modulus only the opposite
+residue group can supply its exponent. Elsewhere the smaller exponent survives. -/
+theorem saturated_gcd_unit_orders {u v i j p : ℕ} (hu : 0<u) (hv : 0<v) (hc : u.Coprime v)
+    (hp : p.Prime) (hi : v.totient≤i) (hj : u.totient≤j) :
+    (((u^(i+1)).totient.gcd (v^(j+1)).totient).factorization p)=
+      if p∣u then v.totient.factorization p else if p∣v then u.totient.factorization p
+      else min (u.totient.factorization p) (v.totient.factorization p) := by
+  rw [Nat.factorization_gcd (Nat.totient_pos.mpr (pow_pos hu _)).ne' (Nat.totient_pos.mpr (pow_pos hv _)).ne']
+  change min ((u^(i+1)).totient.factorization p) ((v^(j+1)).totient.factorization p)=_
+  rw [power_totient_exponent hu,power_totient_exponent hv]
+  have hval (m : ℕ) : m.factorization p≤m :=
+    Nat.factorization_le_of_le_pow (Nat.lt_pow_self hp.one_lt).le
+  by_cases hpu : p∣u
+  · have hpv : ¬p∣v := fun h => hp.not_dvd_one (hc.gcd_eq_one ▸ Nat.dvd_gcd hpu h)
+    rw [if_pos hpu,Nat.factorization_eq_zero_of_not_dvd hpv,mul_zero,zero_add,min_eq_right]
+    exact ((hval _).trans hi).trans ((Nat.le_mul_of_pos_right i
+      (hp.factorization_pos_of_dvd hu.ne' hpu)).trans (Nat.le_add_right _ _))
+  rw [if_neg hpu,Nat.factorization_eq_zero_of_not_dvd hpu,mul_zero,zero_add]
+  by_cases hpv : p∣v
+  · rw [if_pos hpv,min_eq_left]
+    exact ((hval _).trans hj).trans ((Nat.le_mul_of_pos_right j
+      (hp.factorization_pos_of_dvd hv.ne' hpv)).trans (Nat.le_add_right _ _))
+  rw [if_neg hpv,Nat.factorization_eq_zero_of_not_dvd hpv,mul_zero,zero_add]
 
 /-- The order of the image of any homomorphism of the actual unit groups
 divides the product of the residue field unit orders. -/
@@ -94,6 +131,7 @@ theorem le_cutoff_mul_totient {u L : ℕ} (hL : 1≤L)
   exact h.trans_eq (by unfold residueUnitOrder; ring)
 
 #print axioms gcd_totient_dvd_residueUnitOrders
+#print axioms saturated_gcd_unit_orders
 #print axioms unitHom_range_dvd_residueUnitOrders
 #print axioms le_cutoff_mul_totient
 

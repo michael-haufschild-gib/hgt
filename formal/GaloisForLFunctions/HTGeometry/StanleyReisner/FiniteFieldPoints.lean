@@ -95,7 +95,31 @@ theorem card_stanleyReisner_characters [Fintype F] (facets : Finset (Finset ι))
   refine sum_congr rfl fun s _ => ?_
   simp [D, card_compl, hF, Fintype.prod_ite_mem]
 
+/-- The Alexander dual admits exactly the complements of nonfaces. -/
+def dualFaceFamily (facets : Finset (Finset ι)) : Finset (Finset ι) :=
+  univ.filter fun s => sᶜ ∉ facetFaces facets
+
+/-- Alexander duality partitions affine space into Stanley–Reisner points
+and the arrangement complement for the dual complex. -/
+theorem stanleyReisner_add_dualArrangement [Fintype F] (facets : Finset (Finset ι)) :
+    Nat.card (stanleyReisnerRing F facets →ₐ[F] F) +
+      (arrangementWords (fun _ : ι => ({0} : Finset F)) (dualFaceFamily facets)).card =
+      Fintype.card F ^ Fintype.card ι := by
+  let S := univ.filter fun x : ι → F => univ.filter (fun i => x i ≠ 0) ∈ facetFaces facets
+  have e : (stanleyReisnerRing F facets →ₐ[F] F) ≃ ↥S :=
+    (stanleyReisnerPointEquiv facets).trans (Equiv.subtypeEquivRight fun _ => by simp [S])
+  have he (x : ι → F) :
+      (matchSet (fun _ : ι => ({0} : Finset F)) x)ᶜ = univ.filter (fun i => x i ≠ 0) := by
+    ext i
+    simp [matchSet]
+  have hc : arrangementWords (fun _ : ι => ({0} : Finset F)) (dualFaceFamily facets) = Sᶜ := by
+    ext x
+    simp [arrangementWords, dualFaceFamily, he, S]
+  rw [Nat.card_congr e, Nat.card_eq_fintype_card, Fintype.card_coe, hc, card_compl]
+  simpa using Nat.add_sub_of_le S.card_le_univ
+
 #print axioms card_stanleyReisner_characters
+#print axioms stanleyReisner_add_dualArrangement
 
 end
 end GaloisForLFunctions.HTGeometry

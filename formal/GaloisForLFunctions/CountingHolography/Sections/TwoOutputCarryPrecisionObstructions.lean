@@ -67,9 +67,9 @@ theorem maxFibre_comp_equiv {α α' β β' : Type*} [Fintype α] [Fintype α'] [
     maxFibre (fun x => e₂ (f (e₁ x))) = maxFibre f := by
   refine le_antisymm (maxFibre_comp_equiv_le e₁ e₂ f) ?_
   have hf : f = fun x => e₂.symm ((fun x' => e₂ (f (e₁ x'))) (e₁.symm x)) := by
-    funext x; simp only [Equiv.symm_apply_apply]
+    funext x; simp only [Equiv.symm_apply_apply, Equiv.apply_symm_apply]
   nth_rw 1 [hf]
-  exact maxFibre_comp_equiv_le e₁.symm e₂.symm _
+  exact maxFibre_comp_equiv_le e₁.symm e₂.symm (fun x' => e₂ (f (e₁ x')))
 
 theorem maxFibre_ordinalMap {N : ℕ} (b : Fin N → ℤ) (m : ℕ) (f : rayProductMap b m) :
     maxFibre (ordinalMap b m f) = maxFibre f :=
@@ -336,8 +336,9 @@ theorem eventually_loglog_clearing_of_subquadratic_fibre {N : ℕ} {b : Fin N �
   have hnx' : (n m : ℝ) ≤ 4 * (X : ℝ) + 3 := by
     have : n m ≤ 4 * X + 3 := by dsimp only [X]; omega
     exact_mod_cast this
-  obtain ⟨q, hq, hqx, hdiv⟩ := primorial_dvd_cleared_of_fibre (ordinalMap b m f) hcard_lt hclear hD
-    (by omega) (by dsimp only [X]; omega) (by dsimp only [X]; omega)
+  obtain ⟨q, hq, hqx, hdiv⟩ := primorial_dvd_cleared_of_fibre (X := X) (ordinalMap b m f)
+    hcard_lt hclear hD (by omega) (by dsimp only [X, n] at hs ⊢; omega)
+    (by dsimp only [X, n]; omega)
   have hp := primorial_pos X
   have hle := Nat.le_of_dvd (Nat.mul_pos (Nat.mul_pos hp hD) hq) hdiv
   have hlog_p := Real.log_le_log (Nat.cast_pos.mpr (primorial_pos (2 * X))) (Nat.cast_le.mpr hle)
