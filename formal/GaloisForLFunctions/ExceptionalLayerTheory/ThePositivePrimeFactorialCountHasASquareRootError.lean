@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.TheFactorialParitySumHasTheMertensErrorExponent
 import GaloisForLFunctions.ArithmeticElectrostatics.QuantizationTurnsWindowsIntoPoints
 import Mathlib.NumberTheory.ArithmeticFunction.Liouville
+import GaloisForLFunctions.RHTower.RieszFunctionMellinCriterion
 
 /-!
 # The absolute factorial weight in an ordinary prime count
@@ -17,6 +18,8 @@ open scoped ArithmeticFunction.Moebius ArithmeticFunction.zeta ArithmeticFunctio
 open _root_.RHTower.Sieve
 
 namespace GaloisForLFunctions.ExceptionalLayerTheory
+
+open GaloisForLFunctions.TransHorizonIncidenceMechanics
 
 private abbrev L : ArithmeticFunction ℝ := (liouville:ArithmeticFunction ℝ)
 
@@ -121,11 +124,55 @@ private theorem floor_error_at_power (N d : ℕ) {b : ℝ} (hb : 0≤b) (hb1 : b
       · simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_ge hpos (le_of_not_ge hx1) hb1
     exact (show -(((N/d:ℕ):ℝ)-x)≤x by linarith only [Nat.cast_nonneg (α := ℝ) (N/d)]).trans hp
 
-/-- Summing the fractional-part errors after removing zeta gives a strict
-half-power bound without any zero-free hypothesis. -/
-theorem reciprocalFactorial_sum_error {b : ℝ} (hb : 1/2<b) (hb1 : b≤1) (N : ℕ) :
-    |(∑ n ∈ Icc 1 N, reciprocalFactorial n) - N*reciprocalFactorialDensity| ≤
-      (N:ℝ)^b*(∑' d : ℕ, |(reciprocalFactorial*(μ:ArithmeticFunction ℝ)) d| * (d:ℝ)^(-b)) := by
+private theorem correction_at_one_summable :
+    Summable (fun d : ℕ => |(reciprocalFactorial*(μ:ArithmeticFunction ℝ)) d / (d:ℝ)|) := by
+  simpa only [abs_div,abs_of_nonneg (Nat.cast_nonneg _),div_eq_mul_inv,Real.rpow_neg_one] using
+    reciprocalFactorial_correction_summable (b := 1) (by norm_num)
+
+private theorem reciprocal_pole_factor {p : ℕ} (hp : p.Prime) :
+    poleLocalFactor reciprocalFactorial p = Real.exp (p:ℝ)⁻¹ := by
+  rw [poleLocalFactor,← _root_.RHTower.tsum_pow_div_factorial_eq_exp]
+  exact tsum_congr fun k => by rw [reciprocalFactorial_pow hp]; ring
+
+/-- The density is the positive product of the local factorial densities. -/
+theorem reciprocalFactorialDensity_product :
+    reciprocalFactorialDensity = ∏' p : Nat.Primes,
+      (1-((p:ℕ):ℝ)⁻¹)*Real.exp ((p:ℕ):ℝ)⁻¹ := by
+  let h := reciprocalFactorial*(μ:ArithmeticFunction ℝ)
+  have hv : reciprocalFactorial.IsMultiplicative := localEuler_isMultiplicative _
+  have hg : h.IsMultiplicative := hv.mul isMultiplicative_moebius.intCast
+  have hB (n : ℕ) : |reciprocalFactorial n|≤1 := by
+    rw [← abs_factorialParityWeight,abs_abs]; exact abs_factorialParityWeight_le_one n
+  have hs : Summable fun n : ℕ => ‖h n/n‖ := by
+    simpa only [Real.norm_eq_abs] using correction_at_one_summable
+  have he := EulerProduct.eulerProduct_tprod (f := fun n : ℕ => h n/n)
+    (by simp [hg.map_one]) (fun {m n} hmn => by
+      rw [hg.map_mul_of_coprime hmn,Nat.cast_mul,mul_div_mul_comm]) hs (by simp)
+  rw [reciprocalFactorialDensity,← he]
+  refine tprod_congr fun p => ?_
+  rw [← reciprocal_pole_factor p.prop,← tsum_mul_moebius_localFactor hv hB p.prop]
+  exact tsum_congr fun k => by simp only [h,Nat.cast_pow,div_eq_mul_inv,inv_pow]
+
+theorem reciprocalFactorialDensity_pos : 0<reciprocalFactorialDensity := by
+  have hv : reciprocalFactorial.IsMultiplicative := localEuler_isMultiplicative _
+  have hp (p : ℕ) (h : p.Prime) : reciprocalFactorial p=1 := by
+    simpa using reciprocalFactorial_pow h 1
+  have hB (n : ℕ) : |reciprocalFactorial n|≤1 := by
+    rw [← abs_factorialParityWeight,abs_abs]; exact abs_factorialParityWeight_le_one n
+  have hn : reciprocalFactorialDensity≠0 :=
+    tsum_mul_moebius_div_ne_zero hv hp hB (ε := 1/2) (by norm_num) le_rfl
+      (fun p h => by rw [reciprocal_pole_factor h]; exact (Real.exp_pos _).ne')
+  refine lt_of_le_of_ne ?_ hn.symm
+  rw [reciprocalFactorialDensity_product]
+  exact tprod_nonneg fun p => mul_nonneg
+    (sub_nonneg.mpr (inv_lt_one_of_one_lt₀ (by exact_mod_cast p.prop.one_lt)).le) (Real.exp_pos _).le
+
+/-- The entire discrepancy is the absolutely convergent sum of the signed
+floor errors, including the divisors above the cutoff. -/
+theorem hasSum_reciprocalFactorial_rounding (N : ℕ) :
+    HasSum (fun d : ℕ => (reciprocalFactorial*(μ:ArithmeticFunction ℝ)) d*
+      (((N/d:ℕ):ℝ)-(N:ℝ)/d))
+    ((∑ n ∈ Icc 1 N, reciprocalFactorial n)-(N:ℝ)*reciprocalFactorialDensity) := by
   let h := reciprocalFactorial*(μ:ArithmeticFunction ℝ)
   have hh : h*(ζ:ArithmeticFunction ℝ)=reciprocalFactorial := by
     dsimp only [h]
@@ -140,28 +187,34 @@ theorem reciprocalFactorial_sum_error {b : ℝ} (hb : 1/2<b) (hb1 : b≤1) (N : 
       rcases Nat.eq_zero_or_pos d with rfl | hdr
       · simp
       · rw [Nat.div_eq_of_lt (by have := mt mem_Icc.mpr hd; omega),Nat.cast_zero,mul_zero]
-  have hs : Summable (fun d : ℕ => |h d| * (d:ℝ)^(-b)) := reciprocalFactorial_correction_summable hb
-  have hdensity : Summable (fun d : ℕ => h d/d) := by
-    apply Summable.of_abs
-    simpa only [h,abs_div,abs_of_nonneg (Nat.cast_nonneg _),div_eq_mul_inv,Real.rpow_neg_one] using
-      reciprocalFactorial_correction_summable (b := 1) (by norm_num)
+  have hdensity : Summable (fun d : ℕ => h d/d) := correction_at_one_summable.of_abs
   have hf : Summable (fun d : ℕ => h d*((N/d:ℕ):ℝ)) := by
     apply summable_of_ne_finset_zero (s := Icc 1 N)
     intro d hd
     rcases Nat.eq_zero_or_pos d with rfl | hdr
     · simp
     · rw [Nat.div_eq_of_lt (by have := mt mem_Icc.mpr hd; omega),Nat.cast_zero,mul_zero]
-  have he := hf.sub (hdensity.mul_left (N:ℝ))
-  have hmajor (d : ℕ) : |h d*((N/d:ℕ):ℝ)-(N:ℝ)*(h d/d)| ≤
-      (N:ℝ)^b*(|h d| * (d:ℝ)^(-b)) := by
-    rw [show h d*((N/d:ℕ):ℝ)-(N:ℝ)*(h d/d)=h d*(((N/d:ℕ):ℝ)-(N:ℝ)/d) by ring,abs_mul]
-    exact (mul_le_mul_of_nonneg_left (floor_error_at_power N d (by linarith only [hb]) hb1) (abs_nonneg _)).trans_eq (by ring)
-  rw [hprefix,reciprocalFactorialDensity,← tsum_mul_left,← hf.tsum_sub (hdensity.mul_left (N:ℝ))]
-  have hn := norm_tsum_le_tsum_norm he.norm
-  rw [Real.norm_eq_abs] at hn
-  apply hn.trans
-  rw [← tsum_mul_left]
-  exact he.norm.tsum_le_tsum (fun d => by simpa only [Real.norm_eq_abs] using hmajor d) (hs.mul_left _)
+  rw [hprefix]
+  have hd : HasSum (fun d : ℕ => h d/d) reciprocalFactorialDensity := hdensity.hasSum
+  apply (hf.hasSum.sub (hd.mul_left (N:ℝ))).congr_fun
+  intro d
+  dsimp only [Pi.sub_apply]
+  ring
+
+/-- Summing fractional-part errors after removing zeta gives an explicit
+constant at each exponent above one half. -/
+theorem reciprocalFactorial_sum_error {b : ℝ} (hb : 1/2<b) (hb1 : b≤1) (N : ℕ) :
+    |(∑ n ∈ Icc 1 N, reciprocalFactorial n) - N*reciprocalFactorialDensity| ≤
+      (N:ℝ)^b*(∑' d : ℕ, |(reciprocalFactorial*(μ:ArithmeticFunction ℝ)) d| * (d:ℝ)^(-b)) := by
+  let h := reciprocalFactorial*(μ:ArithmeticFunction ℝ)
+  have he := hasSum_reciprocalFactorial_rounding N
+  have hs : Summable (fun d : ℕ => |h d| * (d:ℝ)^(-b)) := reciprocalFactorial_correction_summable hb
+  rw [← he.tsum_eq,← Real.norm_eq_abs,← tsum_mul_left]
+  apply (norm_tsum_le_tsum_norm he.summable.norm).trans
+  refine he.summable.norm.tsum_le_tsum (fun d => ?_) (hs.mul_left _)
+  rw [Real.norm_eq_abs,abs_mul]
+  exact (mul_le_mul_of_nonneg_left (floor_error_at_power N d (by linarith only [hb]) hb1)
+    (abs_nonneg (h d))).trans_eq (by ring)
 
 /-- Ordinary primes counting the absolute divided coefficients have a linear main
 term with an explicit error at each strict half-power exponent up to one. -/
@@ -173,7 +226,8 @@ theorem prime_sum_absolute_divided_weight_error {b : ℝ} (hb : 1/2<b) (hb1 : b�
   rw [prime_sum_absolute_divided_weight hN,sub_sub_sub_cancel_right]
   exact reciprocalFactorial_sum_error hb hb1 N
 
-#print axioms prime_sum_absolute_divided_weight
+#print axioms reciprocalFactorialDensity_pos
+#print axioms prime_sum_absolute_divided_weight_error
 #print axioms reciprocalFactorial_sum_error
 
 end GaloisForLFunctions.ExceptionalLayerTheory

@@ -87,11 +87,11 @@ theorem rational_transfer (N q : ℕ+) (a : ℤ) (x : ℝ) (w : ℕ → ℂ)
     _ = _ := by field_simp
 
 /-- At zero phase the loss of coherent mass is bounded by the centered second moment. -/
-theorem coherent_loss (s : Finset ι) (w : ι → ℝ≥0) (f : ι → ℝ) (c x : ℝ) :
-    (∑ i ∈ s, (w i : ℝ)) - ‖sumAt s (fun i => (w i : ℂ)) f x‖ ≤
+theorem coherent_loss (s : Finset ι) (w : ι → NNReal) (f : ι → ℝ) (c x : ℝ) :
+    (∑ i ∈ s, (w i : ℝ)) - ‖sumAt s (fun i => ((w i : ℝ) : ℂ)) f x‖ ≤
       2*Real.pi^2*x^2 * ∑ i ∈ s, (w i : ℝ) * (f i-c)^2 := by
   rw [recenter _ _ f c x, norm_mul, norm_ex, one_mul]
-  have hr := Complex.re_le_norm (sumAt s (fun i => (w i : ℂ)) (fun i => f i-c) x)
+  have hr := Complex.re_le_norm (sumAt s (fun i => ((w i : ℝ) : ℂ)) (fun i => f i-c) x)
   refine (sub_le_sub_left hr _).trans ?_
   simp only [sumAt, re_sum, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, zero_mul, sub_zero, ex_re]
   rw [← sum_sub_distrib, mul_sum]

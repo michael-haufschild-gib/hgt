@@ -121,7 +121,9 @@ theorem criticalState_adaptive_prime_variance_envelope {W₀ : ℝ} (hW : 0 < W�
     ∃ A : ℝ → ℝ, IntegrableOn A (Ioi 0) ∧ ∀ᵐ t ∂halfLineLaplaceMeasure, ∀ P : Finset Nat.Primes,
       sieveLogSize P ≤ γ*t →
         Real.exp (b*t)*|(commonSievedPrimeError P Φ t)^2-(ordinaryPrimePolarError Φ t)^2| ≤ A t := by
-  exact adaptive_sieve_envelope (fun _ _ => abs_nonneg _)
+  exact adaptive_sieve_envelope
+    (V := fun P t => |(commonSievedPrimeError P Φ t)^2-(ordinaryPrimePolarError Φ t)^2|)
+    (fun _ _ => abs_nonneg _)
     (fun hr hr' => criticalState_commonSieve_variance_bound hW ht hF hc he hC hb hr hr') hb0 hγ hroom
 
 /-- For the wave amplitude, every modulus below exp(γt) with γ < 1
@@ -134,7 +136,8 @@ theorem criticalState_adaptive_prime_wave_envelope {W₀ : ℝ} (hW : 0 < W₀)
     (hb0 : 0 ≤ b) (hγ : 0 ≤ γ) (hroom : b+γ < 1) :
     ∃ A : ℝ → ℝ, IntegrableOn A (Ioi 0) ∧ ∀ᵐ t ∂halfLineLaplaceMeasure, ∀ P : Finset Nat.Primes,
       sieveLogSize P ≤ γ*t → Real.exp (b*t)*(ordinaryPrimePolarError Φ t-commonSievedPrimeError P Φ t)^2 ≤ A t := by
-  apply adaptive_sieve_envelope (fun _ _ => sq_nonneg _) _ hb0 hγ hroom
+  apply adaptive_sieve_envelope (V := fun P t => (ordinaryPrimePolarError Φ t-commonSievedPrimeError P Φ t)^2)
+    (fun _ _ => sq_nonneg _) _ hb0 hγ hroom
   intro r hr hr'
   let β := r/2
   have hβ : 0 ≤ β := half_nonneg hr
@@ -149,12 +152,10 @@ theorem criticalState_adaptive_prime_wave_envelope {W₀ : ℝ} (hW : 0 < W₀)
   obtain ⟨hg,hnorm⟩ := hP P
   have hi : Integrable (fun t => g t^2) := by
     simpa only [Real.norm_eq_abs,sq_abs] using (memLp_two_iff_integrable_sq_norm hg.1).1 hg
-  change IntegrableOn (fun t : ℝ => Real.exp (r*t)*f t^2) (Ioi 0) ∧ _
-  rw [heq]
-  refine ⟨hi.integrableOn,?_⟩
+  refine ⟨heq.symm ▸ hi.integrableOn,?_⟩
   change (∫ t in Ioi (0:ℝ), Real.exp (r*t)*f t^2) ≤ _
-  rw [heq]
-  calc _ ≤ ∫ t, g t^2 := setIntegral_le_integral hi (Eventually.of_forall fun _ => sq_nonneg _)
+  calc _ = ∫ t in Ioi (0:ℝ), g t^2 := setIntegral_congr_fun measurableSet_Ioi fun t _ => congrFun heq t
+    _ ≤ ∫ t, g t^2 := setIntegral_le_integral hi (Eventually.of_forall fun _ => sq_nonneg _)
     _ = _ := integral_sq_eq_lpNorm_sq hg
     _ ≤ ((4:ℝ)^P.card*B)^2 := pow_le_pow_left₀ lpNorm_nonneg hnorm 2
     _ = B^2*(16:ℝ)^P.card := by rw [mul_pow,← pow_mul,Nat.mul_comm,pow_mul]; norm_num; ring

@@ -200,7 +200,6 @@ theorem dilationSetOp_singleton_apply {a : ℝ} (ha : 0 < a) (β γ : ℝ) (f : 
     simp [dilationPairPoly, Polynomial.coeff_one]
   have hc1 : (dilationPairPoly a β γ).coeff 1 = -2 * a ^ β * Real.cos (γ * Real.log a) := by
     simp [dilationPairPoly, Polynomial.coeff_one]
-    ring
   have hc2 : (dilationPairPoly a β γ).coeff 2 = a ^ (2 * β) := by
     simp [dilationPairPoly, Polynomial.coeff_one]
   rw [hc0, hc1, hc2]
@@ -661,7 +660,8 @@ theorem dense_exists_isCrossResonantPair {a b : ℝ} (ha : 0 ≤ a) (hab : a < b
     exact Nat.lt_floor_add_one _
   have hkR_le : (k : ℝ) ≤ (a + gap / 3) / δ + 1 := by
     dsimp [k]; push_cast
-    linarith [Nat.floor_le (div_nonneg (by positivity) hδ_pos.le)]
+    exact add_le_add_right
+      (Nat.floor_le (div_nonneg (add_nonneg ha (div_nonneg hgap.le (by norm_num))) hδ_pos.le)) 1
   set γ : ℝ := (k : ℝ) * δ
   have hγ_gt_a : a < γ := by
     have h := mul_lt_mul_of_pos_right hkR_gt hδ_pos
@@ -817,28 +817,29 @@ theorem plantedAliasedDoubleWave_separates_two_and_three_clocks
       have hset : dilationPairPoly 5 β γ = dilationSetPoly 5 β {γ} := by simp [dilationSetPoly]
       rw [hset, dilationSymbol_dilationSetPoly_eq (by norm_num : (0 : ℝ) < 5),
         Finset.prod_singleton] at hsym
-      have hextract : ∀ sgn : ℝ,
+      have hextract : ∀ sgn : ℝ, (sgn = 1 ∨ sgn = -1) →
           (5 : ℂ) ^ (((β : ℂ) + I * (sgn * γ : ℝ)) - ((β : ℂ) + I * ω)) = 1 → False := by
-        intro sgn h1
+        intro sgn hsgn h1
         have hlog5_eq : Complex.log 5 = (Real.log 5 : ℂ) := by
           rw [show (5 : ℂ) = ((5 : ℝ) : ℂ) by norm_num,
             ← Complex.ofReal_log (by norm_num : (0 : ℝ) ≤ 5)]
         rw [Complex.cpow_def_of_ne_zero (by norm_num), hlog5_eq, Complex.exp_eq_one_iff] at h1
         obtain ⟨m, hm⟩ := h1
-        have him := congrArg Complex.im hm
-        simp at him
-        have hlog5 : 0 < Real.log 5 := Real.log_pos (by norm_num)
-        have hrel : (sgn * γ - ω) * Real.log 5 = (m : ℝ) * (2 * Real.pi) := by linarith
+        have him : Real.log 5 * (sgn * γ - ω) = (m : ℝ) * (2 * Real.pi) := by
+          have h := congrArg Complex.im hm
+          simpa only [Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im, Complex.sub_re,
+            Complex.sub_im, Complex.add_re, Complex.add_im, Complex.I_re, Complex.I_im,
+            mul_one, mul_zero, zero_mul, add_zero, zero_add] using h
         apply hcos5_ne
         rw [cos_eq_cos_iff_exists_int]
         refine ⟨-m, ?_⟩
-        by_cases hs : sgn = 1
-        · subst hs; left; push_cast; linarith
+        rcases hsgn with rfl | rfl
+        · left; push_cast; linarith
         · right; push_cast; linarith
       rcases mul_eq_zero.mp hsym with hpos | hneg
-      · refine hextract 1 ?_
+      · refine hextract 1 (Or.inl rfl) ?_
         simpa using (sub_eq_zero.mp hpos).symm
-      · refine hextract (-1) ?_
+      · refine hextract (-1) (Or.inr rfl) ?_
         have hrew : (β : ℂ) + I * ((-1 * γ : ℝ) : ℂ) - ((β : ℂ) + I * ω) =
             (β : ℂ) - I * γ - ((β : ℂ) + I * ω) := by push_cast; ring
         rw [hrew]

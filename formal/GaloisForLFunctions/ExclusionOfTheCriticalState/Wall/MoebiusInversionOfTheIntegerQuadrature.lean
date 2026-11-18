@@ -133,11 +133,15 @@ theorem tendsto_moebius_log_centredMultipleRow {Φ : ℝ → ℝ} {C : ℝ} (hb 
     exact div_le_div_of_nonneg_right ((mul_le_mul_of_nonneg_right (abs_realMoebius_le d)
       (Real.log_natCast_nonneg d)).trans_eq (one_mul _)) (sq_nonneg _)
   have hM : Tendsto (fun N : ℕ => ∑ d ∈ range (N+1), w d/(d:ℝ)) atTop (𝓝 1) := by
-    simpa only [Sieve.moebiusLogHarmonicPartial,Sieve.moebiusLogHarmonicTerm,Real.rpow_neg_one,
-      w,realMoebius,div_eq_mul_inv] using Sieve.tendsto_moebiusLogHarmonicPartial_one
+    have h := Sieve.tendsto_moebiusLogHarmonicPartial_one
+    change Tendsto (fun N : ℕ => ∑ d ∈ range (N+1), Sieve.moebiusLogHarmonicTerm d) atTop (𝓝 1) at h
+    simpa only [Sieve.moebiusLogHarmonicTerm,Real.rpow_neg_one,
+      w,realMoebius,div_eq_mul_inv] using h
   have hcoef (n : ℕ) : (∑ d ∈ n.divisors, w d)=vonMangoldt n := by
     simp only [w,realMoebius,neg_mul,sum_neg_distrib,deningerMobiusLogDivisorSum,neg_neg]
-  simpa only [hcoef,one_mul] using tendsto_centered_multiple_rows hb hw hM A t
+  have h := tendsto_centered_multiple_rows hb hw hM A t
+  simp_rw [hcoef,one_mul] at h
+  simpa only [w,realMoebius] using h
 
 #print axioms tendsto_moebius_centredMultipleRow
 #print axioms tendsto_moebius_log_centredMultipleRow

@@ -54,7 +54,7 @@ theorem positive_fiber (e : Event) (n : ℕ+) :
   simp_rw [structured_iff]
   rw [← event_iff_existsUnique]
   unfold holds modulus
-  have hp : 1 ≤ (e.K : ℕ)*e.a*e.c*e.d := by positivity
+  have hp : 0 < (e.K : ℕ)*e.a*e.c*e.d := by positivity
   rw [← Int.natCast_dvd_natCast]
   push_cast [Nat.cast_sub hp]
   rfl
@@ -114,3 +114,11 @@ theorem family_periods {ι : Type*} (s : Finset ι) (e : ι → Event) (b : ℤ)
 
 end Event
 end GaloisForLFunctions.BezoutValuationIncidence.UnitFractions
+
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.holds_iff
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.progression
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.positive_fiber
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.intersection_nonempty
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.intersection_class
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.family_class
+#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.family_periods

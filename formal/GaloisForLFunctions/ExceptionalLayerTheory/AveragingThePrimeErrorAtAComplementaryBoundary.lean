@@ -1,4 +1,5 @@
-import GaloisForLFunctions.ExceptionalLayerTheory.CancellationAcrossComplementaryFactorSlices
+import GaloisForLFunctions.ExceptionalLayerTheory.LogFactorialWeightsForTheMiddlePrimeInterval
+import GaloisForLFunctions.RHTower.VonMangoldtLogSummatory
 import GaloisForLFunctions.HTGeometry.CenteredModularAbel
 
 /-!
@@ -89,6 +90,7 @@ theorem factorialBoundary_prime_error {R : ℕ} (hR : 1 ≤ R) (X A B : ℕ) :
     have hp : (∑ n ∈ Icc 1 T, vonMangoldt n)=Chebyshev.psi T := by
       unfold Chebyshev.psi; rw [Nat.floor_natCast]; rfl
     simp only [e,sum_sub_distrib,hp,sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul,mul_one]
+    rfl
   have transpose : (∑ a ∈ Ico A B, b a*(Chebyshev.psi (X/(a+1) : ℕ)-(X/(a+1) : ℕ))) =
       ∑ n ∈ Icc 1 U, e n*∑ a ∈ Ico A (min B (X/n)), b a := by
     calc _ = ∑ a ∈ Ico A B, ∑ n ∈ Icc 1 U, if a<X/n then e n*b a else 0 := by
@@ -121,6 +123,32 @@ theorem factorialBoundary_prime_error {R : ℕ} (hR : 1 ≤ R) (X A B : ℕ) :
                     mul_le_mul_of_nonneg_left (add_le_add (chebyshevPsi_le_seven U) (le_refl (U : ℝ))) hH
                  _ = _ := by dsimp [H,U]; ring
 
+/-- Averaging over just more than the square root divided by the initial
+cutoff gives square-root error at every horizon and cutoff. -/
+theorem factorialBoundary_smoothed_prime_error {R : ℕ} (hR : 1 ≤ R) (X A : ℕ) :
+    let S := ⌊Real.sqrt X/(A+1 : ℕ)⌋₊+1
+    |(∑ a ∈ Ico A (A+S), factorialBoundary R a*
+      (Chebyshev.psi (X/(a+1) : ℕ)-(X/(a+1) : ℕ)))/(S : ℝ)| ≤
+      2*mass R*R*Real.sqrt X := by
+  intro S
+  have hS : (0 : ℝ) < S := by exact_mod_cast (Nat.succ_pos _ : 0<S)
+  have ha : (0 : ℝ) < (A+1 : ℕ) := by positivity
+  have hl : Real.sqrt X/(A+1 : ℕ) ≤ (S : ℝ) := by
+    dsimp only [S]; push_cast
+    exact (Nat.lt_floor_add_one _).le
+  have hs := (div_le_iff₀ ha).mp hl
+  have hu : ((X/(A+1) : ℕ) : ℝ) ≤ Real.sqrt X*S := by
+    apply Nat.cast_div_le.trans
+    apply (div_le_iff₀ ha).mpr
+    exact (Real.mul_self_sqrt (Nat.cast_nonneg X)).symm.le.trans
+      ((mul_le_mul_of_nonneg_left hs (Real.sqrt_nonneg _)).trans_eq (by ring))
+  have hm := (abs_nonneg _).trans (abs_prefix_le_mass hR 0)
+  rw [abs_div,abs_of_nonneg hS.le]
+  apply (div_le_iff₀ hS).mpr
+  exact (factorialBoundary_prime_error hR X A (A+S)).trans
+    ((mul_le_mul_of_nonneg_left hu (by positivity : 0 ≤ 2*mass R*R)).trans_eq (by ring))
+
+#print axioms factorialBoundary_smoothed_prime_error
 #print axioms factorialBoundary_interval
 #print axioms factorialBoundary_prime_error
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

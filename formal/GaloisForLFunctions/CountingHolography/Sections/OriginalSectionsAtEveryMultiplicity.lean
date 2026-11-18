@@ -63,7 +63,9 @@ private theorem tilt_squares (hRH : RiemannHypothesis) {n : ℕ} (hn : 0 < n) (k
   dsimp only [realSplineTrace]
   linarith only [h]
 
-private theorem relative_trace_limit :
+/-- The relative trace of the two upper square atoms tends to the trace
+of the fixed dilation by four. -/
+theorem successorSquare_relative_trace_limit :
     Tendsto (fun n : ℕ => realSplineTrace (Real.log ((((2*n+1):ℕ):ℝ)^2)-Real.log ((n:ℝ)^2)))
       atTop (𝓝 (realSplineTrace (Real.log 4))) := by
   have h₀ : Tendsto (fun n : ℕ => (n:ℝ)⁻¹) atTop (𝓝 0) := tendsto_natCast_atTop_atTop.inv_tendsto_atTop
@@ -96,7 +98,7 @@ theorem successorSquare_degree_gap_of_rh (hRH : RiemannHypothesis) :
     linarith only [hk,abs_nonneg F,mul_nonpos_of_nonpos_of_nonneg h hg.le]
   have hden : 0 < (k:ℝ)*(k+1) := mul_pos hk' (by linarith only [hk'])
   refine ⟨1/((k:ℝ)*(k+1)),one_div_pos.mpr hden,?_⟩
-  have hnear := relative_trace_limit.eventually_lt_const (show realSplineTrace (Real.log 4) < F-g/2 by
+  have hnear := successorSquare_relative_trace_limit.eventually_lt_const (show realSplineTrace (Real.log 4) < F-g/2 by
     dsimp only [g] at hg ⊢; linarith only [hg])
   filter_upwards [hnear,eventually_ge_atTop 1] with n hn hn₁
   have ht := tilt_squares hRH hn₁ k
