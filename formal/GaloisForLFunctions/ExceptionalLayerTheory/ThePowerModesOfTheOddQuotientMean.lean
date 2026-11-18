@@ -93,7 +93,7 @@ private theorem tent_increment {N : ℕ} (hN : 0 < N) {t d : ℝ} (ht : 0 < t) (
       t*(ramp N y-ramp N x)-(d-t)*ramp N x := by
     rw [mul_sub,tent_eq_ramp hN ht,tent_eq_ramp hN hdp]
     dsimp only [x,y]; ring
-  have hstep : t*(y-x) = (d-t)*x := by dsimp only [x,y]; field_simp <;> ring
+  have hstep : t*(y-x) = (d-t)*x := by dsimp only [x,y]; field_simp
   have hu := mul_le_mul_of_nonneg_left hR.2 ht.le
   rw [hstep] at hu
   have hl := mul_nonneg ht.le hR.1
@@ -172,7 +172,8 @@ private theorem cell_error_eq {s : ℂ} (hs : 0 < s.re) (N k : ℕ) :
     (f := fun t => density s t * (tentSum N (k+1:ℕ) : ℂ))
     (g := fun t => density s t * (tentSum N t : ℂ)) (hi.mul_const _)
     (hi.mul_continuousOn (Complex.continuous_ofReal.comp (cont_tent N)).continuousOn),
-    intervalIntegral.integral_mul_const,int_density hs] <;> simp only [ofReal_natCast]
+    intervalIntegral.integral_mul_const,int_density hs]
+  simp only [ofReal_natCast]
 
 private theorem point_bound {s : ℂ} {N : ℕ} (hN : 0 < N) {d t : ℝ}
     (ht : 0 < t) (hdt : t ≤ d) :
@@ -187,7 +188,8 @@ private theorem first_cell {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 0 < N) :
   have hh : -1 < s.re-1 := by linarith only [hs]
   apply (intervalIntegral.norm_integral_le_of_norm_le zero_le_one
     (g := fun t => ‖s‖*t^(s.re-1)) (Eventually.of_forall fun t ht =>
-      (point_bound hN ht.1 ht.2).trans (mul_le_of_le_one_right (by positivity)
+      (point_bound hN ht.1 ht.2).trans (mul_le_of_le_one_right
+        (mul_nonneg (norm_nonneg s) (Real.rpow_nonneg ht.1.le _))
         (by simpa using ht.1.le : (1-t)/1 ≤ 1))) ((intervalIntegral.intervalIntegrable_rpow' hh).const_mul _)).trans_eq
   rw [intervalIntegral.integral_const_mul,integral_rpow (Or.inl hh),sub_add_cancel,Real.one_rpow,
     Real.zero_rpow hs.ne',sub_zero,mul_one_div]
@@ -298,7 +300,7 @@ private theorem int_tent {s : ℂ} (hs : 0 < s.re) {j N : ℕ} (hj : 1 ≤ j) (h
   rw [hnC]
   have hjC : (j:ℂ)^s ≠ 0 := Complex.cpow_ne_zero_iff.mpr (Or.inl (Nat.cast_ne_zero.mpr (by omega)))
   field_simp
-  <;> ring
+  ring
 
 private theorem integral_as_polynomial {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 0 < N) :
     (∫ t in (0:ℝ)..N, density s t*(tentSum N t:ℂ)) =
@@ -315,7 +317,7 @@ private theorem integral_as_polynomial {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN :
   have hpre : shortDirichletPrefix (alternatingRowCoeffs alt) N s =
       ∑ j ∈ Finset.Icc 1 N, ((alt j:ℂ)/(j:ℂ)^s) := by
     rw [shortDirichletPrefix,← Nat.Ico_zero_eq_range,← sum_Ico_consecutive _ (by decide : 0 ≤ 1)
-      (Nat.succ_pos N),Nat.Ico_zero_eq_range,range_one,sum_singleton,Ico_add_one_right_eq_Icc]
+      (Nat.succ_pos N),Nat.Ico_zero_eq_range,range_one,sum_singleton,Nat.succ_eq_add_one,Ico_add_one_right_eq_Icc]
     simp only [LSeries.term_zero,zero_add]
     exact sum_congr rfl fun j hj => if_neg (Nat.ne_of_gt (mem_Icc.mp hj).1)
   rw [hpre,mul_sum,sum_div]

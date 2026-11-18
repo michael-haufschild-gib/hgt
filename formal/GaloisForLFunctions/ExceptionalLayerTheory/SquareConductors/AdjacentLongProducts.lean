@@ -47,7 +47,7 @@ private theorem unit_cofactor : typeIIShort 0 = 1 := by
     ext n
     rcases Nat.eq_zero_or_pos n with rfl | hn
     · simp
-    · simp only [truncAF_apply,if_neg (not_le.mpr hn),zero_apply]
+    · simp only [truncAF_apply,if_neg (not_le.mpr hn),ArithmeticFunction.zero_apply]
   simp only [typeIIShort,h,mul_zero,sub_zero]
 
 /-- At every positive integer the long product approximates the ordinary

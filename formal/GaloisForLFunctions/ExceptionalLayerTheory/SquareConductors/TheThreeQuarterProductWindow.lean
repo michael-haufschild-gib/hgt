@@ -43,19 +43,19 @@ private theorem reading_prefix_bound :
   field_simp
   ring
 
-/-- Uniform bound for the original signed spline, all first-prime
-thresholds, and arbitrary pair-dependent sharp horizon intervals.
-The divisor stencils retain their explicit parameter costs. -/
-theorem spline_three_quarter_product_bound :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n R U : ℕ}, 0<n → 1≤R → 1≤U → U≤n*n.sqrt →
+/-- Before choosing the product scale, the spline pays U²/n³ times
+the reciprocal-prime logarithm and the two stencil costs. -/
+theorem spline_clipped_product_bound :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n R U : ℕ}, 0<n → 1≤R → 1≤U →
       ∀ (D F : ℕ) (lo hi : ℕ → ℕ → ℕ),
       |splineCountReading n (clippedPrimeProducts D R F U lo hi)| ≤
-        C*(2*(1+mass (D+1)))*(125*(1+mass R)*(128*(128*(R:ℝ)^2+1)))*(1+Real.log U) := by
+        C*(2*(1+mass (D+1)))*(125*(1+mass R)*(128*(128*(R:ℝ)^2+1)))*
+          (1+Real.log U)*(U:ℝ)^2/(n:ℝ)^3 := by
   obtain ⟨C,hC,h⟩ := reading_prefix_bound
   let E := Real.log 4+4
   have hE : 0≤E := by
     dsimp [E]; linarith only [Real.log_nonneg (by norm_num : (1:ℝ)≤4)]
-  refine ⟨C*E,mul_nonneg hC hE,fun {n R U} hn hR hU hcut D F lo hi => ?_⟩
+  refine ⟨C*E,mul_nonneg hC hE,fun {n R U} hn hR hU D F lo hi => ?_⟩
   let A := 2*(1+mass (D+1))
   let B := 125*(1+mass R)*(128*(128*(R:ℝ)^2+1))
   have hA : 0≤A := (abs_nonneg _).trans (innerJump_pointwise_bound D 0)
@@ -67,6 +67,21 @@ theorem spline_three_quarter_product_bound :
   have hb := h hn (clippedPrimeProducts D R F U lo hi) hM fun j _ => by
     rw [show Icc 1 j=Ico 1 (j+1) by ext k; simp]
     exact clippedPrimeProducts_interval hR hU D F lo hi 1 (j+1)
+  apply hb.trans_eq
+  change C*(A*B*(U:ℝ)^2*(E*(1+Real.log U)))/(n:ℝ)^3 =
+    C*E*A*B*(1+Real.log U)*(U:ℝ)^2/(n:ℝ)^3
+  ring
+
+/-- Uniform bound for the original signed spline, all first-prime
+thresholds, and arbitrary pair-dependent sharp horizon intervals.
+The divisor stencils retain their explicit parameter costs. -/
+theorem spline_three_quarter_product_bound :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n R U : ℕ}, 0<n → 1≤R → 1≤U → U≤n*n.sqrt →
+      ∀ (D F : ℕ) (lo hi : ℕ → ℕ → ℕ),
+      |splineCountReading n (clippedPrimeProducts D R F U lo hi)| ≤
+        C*(2*(1+mass (D+1)))*(125*(1+mass R)*(128*(128*(R:ℝ)^2+1)))*(1+Real.log U) := by
+  obtain ⟨C,hC,h⟩ := spline_clipped_product_bound
+  refine ⟨C,hC,fun {n R U} hn hR hU hcut D F lo hi => ?_⟩
   have hn' : (0:ℝ)<n := Nat.cast_pos.mpr hn
   have hs : (U:ℝ)^2 ≤ (n:ℝ)^3 := by
     have hu : (U:ℝ)≤(n:ℝ)*n.sqrt := by exact_mod_cast hcut
@@ -74,12 +89,12 @@ theorem spline_three_quarter_product_bound :
     apply (pow_le_pow_left₀ (Nat.cast_nonneg U) hu 2).trans
     rw [mul_pow,pow_succ (n:ℝ) 2]
     exact mul_le_mul_of_nonneg_left hsq (sq_nonneg _)
-  apply hb.trans
-  apply (div_le_iff₀ (pow_pos hn' 3)).mpr
-  have hh := mul_le_mul_of_nonneg_left hs
-    (show 0≤C*E*A*B*(1+Real.log U) by positivity)
-  change C*(A*B*(U:ℝ)^2*(E*(1+Real.log U))) ≤ C*E*A*B*(1+Real.log U)*(n:ℝ)^3
-  linarith only [hh]
+  have hA := (abs_nonneg _).trans (innerJump_pointwise_bound D 0)
+  have hm := (abs_nonneg _).trans (abs_prefix_le_mass hR 0)
+  have hlog := Real.log_natCast_nonneg U
+  apply (h hn hR hU D F lo hi).trans
+  exact (div_le_iff₀ (pow_pos hn' 3)).mpr (mul_le_mul_of_nonneg_left hs (by positivity))
 
+#print axioms spline_clipped_product_bound
 #print axioms spline_three_quarter_product_bound
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
