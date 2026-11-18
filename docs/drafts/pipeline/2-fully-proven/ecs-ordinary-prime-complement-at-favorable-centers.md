@@ -14,4 +14,4 @@ On the same $B$ the [large-divisor lower bound](ecs-all-future-prime-increments-
 
 **Transfer.** The sum of the two sign-part distances between $P$ and $S$ equals $|P-S|$ pointwise. Its [absolute tail integral](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheIntegratedErrorInThePrimeSquareLayer.lean) over $t>T$ is $O_\Phi(e^{-(T-1)/40})$. Remove from $B_0$ the points with $|P-S|\ge\varepsilon/(2(|m|+1))$. The removed length tends to zero, leaving at least $\kappa/4$. On the remaining points $|m(P-S)|\le\varepsilon/2$. For $T<t\le T+\log 2$, $K(T-t)=e^{(T-t)/2}\ge1/2$, so $k=\kappa/8$ suffices. The sign of $C$ and the rest of the original fractional test remain open.
 
-The [middle-time comparison](ecs-the-middle-complement-of-the-original-prime-test.md) estimates the absolute test error on every measurable set.
+The [middle-time comparison](../3-formalized/ecs-the-middle-complement-of-the-original-prime-test.md) estimates the absolute test error on every measurable set.

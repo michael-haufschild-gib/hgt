@@ -131,3 +131,4 @@ import GaloisForLFunctions.TensorPowerProgramme
 import GaloisForLFunctions.ExclusionOfTheCriticalState
 import GaloisForLFunctions.JointMarkedMoments
 import GaloisForLFunctions.QuantitativeFactorizationMatching
+import GaloisForLFunctions.RestrictedFactorizationCalculus

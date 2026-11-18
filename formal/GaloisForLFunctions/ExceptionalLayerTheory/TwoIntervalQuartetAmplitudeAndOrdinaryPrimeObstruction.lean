@@ -1746,7 +1746,8 @@ theorem radial_bounded_forces_abscissa_and_limsup {β γ : ℝ} {m : ℕ}
     have hstep_le : |thetaLogError (s + h) - thetaLogError s| ≤
         twoIntervalRadius thetaLogError h A s := by
       rw [twoIntervalRadius_eq_complex_norm hA0]
-      exact Complex.abs_re_le_norm _
+      exact Complex.abs_re_le_norm (⟨logStepIncrement thetaLogError s h,
+        logStepIncrement thetaLogError (s + h) h / A⟩ : ℂ)
     exact hstep_le.trans hrad_le
   set M₀ : ℝ := Chebyshev.theta (Real.exp (B₀ + h)) + Real.exp (B₀ + h)
   have hM₀_nn : 0 ≤ M₀ := add_nonneg (Chebyshev.theta_nonneg _) (Real.exp_pos _).le
@@ -1842,12 +1843,12 @@ theorem radial_bounded_forces_abscissa_and_limsup {β γ : ℝ} {m : ℕ}
     obtain ⟨c_pk, hc_pk, hpeaks⟩ := both_prime_error_peaks_at_every_large_cutoff hhalf_lt hre1 hz
     have hgap : 0 < ρ_z.re - β := sub_pos.mpr hβ_lt
     have htend : Tendsto (fun N : ℕ => (Real.sqrt N) ^ (ρ_z.re - β)) atTop atTop := by
-      have h1 := (Real.tendsto_rpow_atTop hgap).comp
-        ((Real.tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 2)).comp tendsto_natCast_atTop_atTop)
+      have h1 := (_root_.tendsto_rpow_atTop hgap).comp
+        ((_root_.tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 2)).comp tendsto_natCast_atTop_atTop)
       refine h1.congr fun N => ?_
       simp [Real.sqrt_eq_rpow]
     obtain ⟨N, hpk_N, hsqrt_ge, hrpow_gt⟩ :=
-      (hpeaks.and (((Real.tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 2)).comp
+      (hpeaks.and (((_root_.tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 2)).comp
         tendsto_natCast_atTop_atTop |>.congr fun k => by simp [Real.sqrt_eq_rpow]).eventually_ge_atTop
           (Real.exp B₀) |>.and (htend.eventually_gt_atTop ((L' + 1) / c_pk)))).exists
     obtain ⟨n, _, hsqrt_lt_n, hpeak_n⟩ := hpk_N 1 abs_one
@@ -2283,7 +2284,8 @@ private theorem finite_right_layer_collapse (S_right : Finset XiZeroCopy)
         (Real.exp (β * s) : ℂ) * ((f_top s : ℂ) + I * (f_top (s + h) : ℂ)) := by
     intro s
     have he := hv_top_eq s
-    simpa [A, quarterPeriodScale, sub_self, zero_mul, Real.exp_zero, one_mul] using he
+    rw [show Real.exp ((β - β) * h) = 1 by rw [sub_self, zero_mul, Real.exp_zero], one_mul] at he
+    exact he
   have hsub_exp : ∃ σ_sub : ℝ, 1 / 2 ≤ σ_sub ∧ σ_sub < β ∧
       ∀ q ∈ S_sub, (q.1 : ℂ).re ≤ σ_sub := by
     rcases S_sub.eq_empty_or_nonempty with hemp | hne
@@ -2291,10 +2293,11 @@ private theorem finite_right_layer_collapse (S_right : Finset XiZeroCopy)
     · set β₂ := (S_sub.image (fun q => (q.1 : ℂ).re)).max' (hne.image _)
       obtain ⟨q₂, hq₂, hq₂_re⟩ := Finset.mem_image.mp (Finset.max'_mem _ (hne.image _))
       obtain ⟨hq₂_Sr, hq₂_ne⟩ := Finset.mem_filter.mp hq₂
-      have hgt_half : 1 / 2 < β₂ := hq₂_re ▸ hSr_half q₂ hq₂_Sr
-      have hlt_β : β₂ < β := lt_of_le_of_ne (hq₂_re ▸ hre_le_β q₂ hq₂_Sr) (hq₂_re ▸ hq₂_ne)
+      have hgt_half : 1 / 2 < β₂ := (hSr_half q₂ hq₂_Sr).trans_eq hq₂_re
+      have hlt_β : β₂ < β := lt_of_le_of_ne (hq₂_re.symm.trans_le (hre_le_β q₂ hq₂_Sr))
+        (fun e => hq₂_ne (hq₂_re.trans e))
       exact ⟨β₂, hgt_half.le, hlt_β,
-        fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq)⟩
+        fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem (fun q : XiZeroCopy => (q.1 : ℂ).re) hq)⟩
   obtain ⟨σ_sub, hσ_sub_lo, hσ_sub_lt, hS_sub_le⟩ := hsub_exp
   obtain ⟨M_sub, _, hv_sub_le⟩ := bound_layer_twoIntervalVec S_sub hh_pos.le hA1
     (by linarith) hS_sub_le
@@ -2341,7 +2344,7 @@ private theorem finite_right_layer_collapse (S_right : Finset XiZeroCopy)
         abs_mul, abs_of_pos (Real.exp_pos _)] at htri1
       have hmul := mul_le_mul_of_nonneg_right htri1 (Real.exp_pos (-(β * t))).le
       rw [mul_right_comm, ← Real.exp_add, add_neg_cancel, Real.exp_zero, one_mul, add_mul] at hmul
-      refine hmul.trans (add_le_add_comm ?_ ?_)
+      refine hmul.trans ((add_comm _ _).le.trans (add_le_add ?_ ?_))
       · have hb_v := hv_rad t ht
         have h1t : (1 + t) ^ 2 ≤ 4 * t ^ 2 := by nlinarith
         calc |‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)| * Real.exp (-(β * t))
@@ -2475,8 +2478,9 @@ private theorem finite_right_layer_collapse (S_right : Finset XiZeroCopy)
     set β₂ : ℝ := (S_sub.image (fun q => (q.1 : ℂ).re)).max' (hS_sub_ne.image _)
     obtain ⟨q₂, hq₂, hq₂_re⟩ := Finset.mem_image.mp (Finset.max'_mem _ (hS_sub_ne.image _))
     obtain ⟨hq₂_Sr, hq₂_ne⟩ := Finset.mem_filter.mp hq₂
-    have hβ₂_gt : 1 / 2 < β₂ := hq₂_re ▸ hSr_half q₂ hq₂_Sr
-    have hβ₂_lt : β₂ < β := lt_of_le_of_ne (hq₂_re ▸ hre_le_β q₂ hq₂_Sr) (hq₂_re ▸ hq₂_ne)
+    have hβ₂_gt : 1 / 2 < β₂ := (hSr_half q₂ hq₂_Sr).trans_eq hq₂_re
+    have hβ₂_lt : β₂ < β := lt_of_le_of_ne (hq₂_re.symm.trans_le (hre_le_β q₂ hq₂_Sr))
+      (fun e => hq₂_ne (hq₂_re.trans e))
     set S_2 : Finset XiZeroCopy := S_sub.filter (fun q => (q.1 : ℂ).re = β₂)
     set S_3 : Finset XiZeroCopy := S_sub.filter (fun q => (q.1 : ℂ).re ≠ β₂)
     have hS2_ne : S_2.Nonempty := ⟨q₂, Finset.mem_filter.mpr ⟨hq₂, hq₂_re⟩⟩
@@ -2488,14 +2492,14 @@ private theorem finite_right_layer_collapse (S_right : Finset XiZeroCopy)
       · set b3 := (S_3.image (fun q => (q.1 : ℂ).re)).max' (hne3.image _)
         obtain ⟨q₃, hq₃, hq₃_re⟩ := Finset.mem_image.mp (Finset.max'_mem _ (hne3.image _))
         obtain ⟨hq₃_sub, hq₃_ne⟩ := Finset.mem_filter.mp hq₃
-        have hgt3 : 1 / 2 < b3 := hq₃_re ▸ hSr_half q₃ (Finset.mem_filter.mp hq₃_sub).1
-        have hle_β₂ : b3 ≤ β₂ :=
-          hq₃_re ▸ Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq₃_sub)
-        exact ⟨b3, hgt3.le, lt_of_le_of_ne hle_β₂ (hq₃_re ▸ hq₃_ne),
-          fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq)⟩
+        have hgt3 : 1 / 2 < b3 := (hSr_half q₃ (Finset.mem_filter.mp hq₃_sub).1).trans_eq hq₃_re
+        have hle_β₂ : b3 ≤ β₂ := hq₃_re.symm.trans_le
+          (Finset.le_max' _ _ (Finset.mem_image_of_mem (fun q : XiZeroCopy => (q.1 : ℂ).re) hq₃_sub))
+        exact ⟨b3, hgt3.le, lt_of_le_of_ne hle_β₂ (fun e => hq₃_ne (hq₃_re.trans e)),
+          fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem (fun q : XiZeroCopy => (q.1 : ℂ).re) hq)⟩
     obtain ⟨M_3, _, hv3_le⟩ := bound_layer_twoIntervalVec S_3 hh_pos.le hA1 (by linarith) hS3_le
     have hS_sub_β₂ : ∀ q ∈ S_sub, (q.1 : ℂ).re ≤ β₂ :=
-      fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq)
+      fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem (fun q : XiZeroCopy => (q.1 : ℂ).re) hq)
     obtain ⟨M_sub2, _, hv_sub2_le⟩ := bound_layer_twoIntervalVec S_sub hh_pos.le hA1
       (by linarith) hS_sub_β₂
     have h2_info := layer_twoIntervalVec_eq S_2 hβ₂_gt
@@ -2960,7 +2964,7 @@ theorem finiteOffLine_not_radialUnbounded_iff
             by rw [hqz_eq]; exact hmax_lo.1⟩
         have hle_bmax : z.re ≤ bmax := by
           rw [← hqz_eq]
-          exact Finset.le_max' _ _ (Finset.mem_image_of_mem _ hqz_S)
+          exact Finset.le_max' _ _ (Finset.mem_image_of_mem (fun q : XiZeroCopy => (q.1 : ℂ).re) hqz_S)
         linarith [hmax_lo.2]
     obtain ⟨k, hk_pin⟩ := finite_right_layer_collapse S_right hβ hγ hC_pos hK_v
       (fun q hq => (Finset.mem_filter.mp hq).2) hre_le_β (by convert hStop_ne) hv_rad

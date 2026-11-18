@@ -1,6 +1,6 @@
 # The signed complement beyond the integer wall window
 
-[Section 2.16](../../../reports/review-1811/obstacles-summary.md#216-programme-to-close-ecs) requires a strict improvement over $\operatorname{Re}\zeta(1/2)m^2$ for the full oriented fractional test, with $m=\int\Phi$. Put $X=e^t$ and $h(X)=\sqrt{X\log X}$. The open contribution contains every $n>X+h(X)$ and the entire charge $-m^2/2$. Its sign on favorable centers and its cost on the rest of the test are unknown.
+[Section 2.16](../../../reports/review-1811/obstacles-summary.md#216-programme-to-close-ecs) requires a strict improvement over $\operatorname{Re}\zeta(1/2)m^2$ for the original oriented prime test, with $m=\int\Phi$. Put $x=e^t$ and $h=\sqrt{x\log x}$. Up to $o_\Phi(1)$ in weighted absolute integral on every measurable time set, its integrand is the signed row over $n>x+h$, including $-m^2/2$, restricted to $T/6<t\le6T$. Its signed contribution on the favorable set and on its complement remains open. [Middle complement](../3-formalized/ecs-the-middle-complement-of-the-original-prime-test.md).
 
 **State-weighted tail.** At a favorable center $u$ put $b=\lfloor u+h(u)\rfloor$, $a_j=\Lambda(j)-1$, $A_j=\sum_{u<n\le j}a_n$ and $w_j=m\,\mathrm{atom}(\Phi,j,\log u)$. The partial sum on $(b,L]$ is
 \[
