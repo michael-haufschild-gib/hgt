@@ -135,9 +135,3 @@ theorem vertical_trivial_iff (q b : ι → ℤ) (hq₀ : q≠0) :
     exact AddSubgroup.mem_bot.mpr (hd'.resolve_left hg)
 
 end GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex
-
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.minors_divide_vertical
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.normalized_minor_mem
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.vertical_iff
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.normalized_minors_generate
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.vertical_trivial_iff

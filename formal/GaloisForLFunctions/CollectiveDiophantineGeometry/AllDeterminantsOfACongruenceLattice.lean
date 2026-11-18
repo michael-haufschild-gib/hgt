@@ -120,11 +120,3 @@ theorem rational_realizability (v : ι → ℤ) (q : ι → ℕ+) (m d : ℤ) (h
   exact determinant_realizability v m d hv
 
 end GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex
-
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.dot_range
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.primitive_direction
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.dilation_apply
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.dilation_det
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.determinant_realizability
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.all_determinants
-#print axioms GaloisForLFunctions.CollectiveDiophantineGeometry.Simplex.rational_realizability

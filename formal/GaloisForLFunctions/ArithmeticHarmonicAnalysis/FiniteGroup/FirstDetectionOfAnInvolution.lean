@@ -139,8 +139,3 @@ theorem exact_layer (j : ℕ) (g : Mˣ) (hg : g^2=1) :
   omega
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.InvolutionDepth
-
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.InvolutionDepth.parity_balance
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.InvolutionDepth.doubled_count
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.InvolutionDepth.detection_iff
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.InvolutionDepth.exact_layer

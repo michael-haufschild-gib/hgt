@@ -165,11 +165,3 @@ theorem transfer_edge_iff {p r : ℝ} (hp : 1<p) (hr : 0<r) (hr₁ : r≤1) (k :
       abs_of_pos hr,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (by positivity)]
 
 end GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan
-
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.hasSum_transfer
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.deficit_identity
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.fraction_bound
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.fraction_at_edge
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.fraction_eq_iff
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.transfer_bound
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.transfer_edge_iff

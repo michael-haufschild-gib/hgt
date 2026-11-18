@@ -143,9 +143,3 @@ theorem norm_monomial (χ : DirichletCharacter ℂ (M : ℕ)) (hχ : χ.IsPrimit
   rw [norm_mul,norm_pow,hτ]
 
 end GaloisForLFunctions.PrimeExponentialSums.GaussShell
-
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussShell.aligned
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussShell.unaligned
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussShell.one_shell
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussShell.hasSum_monomial
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussShell.norm_monomial

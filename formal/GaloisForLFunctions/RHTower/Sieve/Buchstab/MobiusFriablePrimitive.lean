@@ -120,12 +120,5 @@ theorem friablePrimitive_crosses_asymptote (u : Ici (0:ℝ)) :
   refine ⟨x-1,⟨by linarith,by linarith⟩,?_⟩
   rw [friablePrimitive_shift ⟨x-1,show 0 ≤ x-1 by linarith [show 0 ≤ u.val from u.property]⟩,
     sub_add_cancel,he,enclosureLimit_eq_exp_neg_euler]
-
-#print axioms friablePrimitive_shift
-#print axioms friablePrimitive_delay
-#print axioms friablePrimitive_seam
-#print axioms friablePrimitive_unique
-#print axioms friablePrimitive_affine_remainder
-#print axioms friablePrimitive_crosses_asymptote
 end
 end RHTower.Sieve.Buchstab

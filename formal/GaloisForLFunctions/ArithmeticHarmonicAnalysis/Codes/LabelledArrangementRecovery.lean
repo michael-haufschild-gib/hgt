@@ -95,11 +95,6 @@ def labelledCountEquiv (n : ℕ) :
   have hi : Function.Injective f := fun K L hh => labelledCount_injective _ (congrArg Fin.val hh)
   exact Equiv.ofBijective f ((Fintype.bijective_iff_injective_and_card f).mpr ⟨hi, by simp⟩)
 
-#print axioms labelledCount_decode
-#print axioms labelledCount_injective
-#print axioms word_space_lower_bound
-#print axioms labelledWordSpace_optimal
-#print axioms labelledCountEquiv
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.Codes

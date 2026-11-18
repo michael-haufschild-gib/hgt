@@ -108,9 +108,3 @@ theorem coverage_bound (P : ℤ) (S : Finset ι) (e : ι → Event) (w : ι → 
   exact sq_sum_le_card_mul_sum_sq
 
 end GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event
-
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.indicator_sum
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.indicator_inner
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.weight_sum
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.weight_square_sum
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.UnitFractions.Event.coverage_bound

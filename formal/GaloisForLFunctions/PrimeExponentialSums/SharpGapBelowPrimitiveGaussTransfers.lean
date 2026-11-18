@@ -182,12 +182,3 @@ theorem dyadic_equality :
   norm_num [ht]
 
 end GaloisForLFunctions.PrimeExponentialSums.GaussGap
-
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussGap.principal_value
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussGap.nonprincipal_shape
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussGap.primitive_energy
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussGap.nonprincipal_imprimitive_energy
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussGap.imprimitive_gap
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussGap.primitive_iff_above_gap
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussGap.product_above_gap
-#print axioms GaloisForLFunctions.PrimeExponentialSums.GaussGap.dyadic_equality

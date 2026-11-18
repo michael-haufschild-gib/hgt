@@ -103,6 +103,3 @@ theorem finite_pair_iff (q : E → ℤ) (φ : E → Circle) (Q : ℕ)
     rw [ht,ht,← _root_.zpow_mul,← _root_.zpow_mul,← _root_.zpow_add,mul_comm (q i),mul_comm (q j),he,_root_.zpow_zero]
 
 end GaloisForLFunctions.HTGeometry.Quantum.TensorObservation
-
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.primitive_reference
-#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.finite_pair_iff

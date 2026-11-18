@@ -37,16 +37,16 @@ theorem delayJet_hasDerivAt (n : ℕ) (x : Ioi ((n:ℝ)+2)) :
     let c := (n:ℝ)+1
     have hnum : HasDerivAt (fun t => delayJet n (t-1)-c*delayJet n t)
         (delayJet (n+1) (x.val-1)-c*delayJet (n+1) x.val) x.val := by
-      simpa only [mul_one] using h₁.sub (hd.const_mul c)
+      simpa only [Function.comp_def,id_eq,mul_one] using h₁.fun_sub (hd.const_mul c)
     apply (hnum.fun_div (hasDerivAt_id x.val) hn).congr_deriv
     change ((delayJet (n+1) (x.val-1)-c*delayJet (n+1) x.val)*x.val -
         (delayJet n (x.val-1)-c*delayJet n x.val)*1)/x.val^2 =
       (delayJet (n+1) (x.val-1)-(((n+1:ℕ):ℝ)+1)*delayJet (n+1) x.val)/x.val
     have hv : delayJet n (x.val-1)-c*delayJet n x.val = delayJet (n+1) x.val*x.val :=
       (div_mul_cancel₀ _ hn).symm
-    rw [hv,Nat.cast_succ]
+    rw [hv]
+    simp only [Nat.cast_succ,c]
     field_simp [hn]
-    dsimp only [c]
     ring
 
 private theorem jet_continuousAt (n : ℕ) {x : ℝ} (hx : (n:ℝ)+1<x) :
@@ -59,7 +59,7 @@ private theorem jet_continuousAt (n : ℕ) {x : ℝ} (hx : (n:ℝ)+1<x) :
     rw [Nat.cast_succ] at hx
     have hs : ContinuousAt (fun t : ℝ => t-1) x := continuousAt_id.sub continuousAt_const
     have hprev : ContinuousAt (fun t => delayJet n (t-1)) x :=
-      (ih (x := x-1) (by linarith)).comp hs
+      ContinuousAt.comp (f := fun t : ℝ => t-1) (x := x) (ih (x := x-1) (by linarith)) hs
     have hnow := ih (x := x) (by linarith)
     exact (hprev.sub (continuousAt_const.mul hnow)).div continuousAt_id
       (show x ≠ 0 by linarith [Nat.cast_nonneg (α:=ℝ) n])
@@ -179,10 +179,5 @@ theorem iteratedDeriv_oscillates_each_unit (n : ℕ) (a : Ioi ((n:ℝ)+1)) :
       simpa only [neg_one_mul,neg_nonneg,← he t ht] using hn t ht)
     obtain ⟨t,ht,hpos⟩ := (jet_cofinal n a.val).2
     simpa only [neg_one_mul,neg_nonneg,not_le.mpr hpos] using hs t ht.le
-
-#print axioms delayJet_hasDerivAt
-#print axioms delayJet_eq_iteratedDeriv
-#print axioms delayJet_weighted_deriv
-#print axioms iteratedDeriv_oscillates_each_unit
 end
 end RHTower.Sieve.Buchstab

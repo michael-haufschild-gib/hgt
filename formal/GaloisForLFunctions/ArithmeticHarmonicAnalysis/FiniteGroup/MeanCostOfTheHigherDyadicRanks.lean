@@ -149,10 +149,3 @@ theorem mean_correction (J : ℕ) (height : ℕ × ℕ → ℕ) :
   (Nat.mul_le_mul_left 51 (box_cost J height)).trans (primitive_density J)
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicRanks
-
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicRanks.missed_eq
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicRanks.total_missed
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicRanks.sum_cost
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicRanks.box_cost
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicRanks.primitive_density
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicRanks.mean_correction

@@ -64,7 +64,7 @@ theorem countGlobalZeta_order (P : Polynomial ℤ) (s : ℂ) :
     meromorphicOrderAt (countGlobalZeta P) s =
       ∑ j ∈ P.support, (P.coeff j : WithTop ℤ) * meromorphicOrderAt riemannZeta (s-j) := by
   unfold countGlobalZeta
-  rw [meromorphicOrderAt_fun_prod (f := fun j (z : ℂ) => riemannZeta (z-j)^P.coeff j)
+  rw [meromorphicOrderAt_fun_prod (f := fun (j : ℕ) (z : ℂ) => riemannZeta (z-j)^P.coeff j)
     (fun j (_ : j ∈ P.support) => ((zetaShift_order j s).1).fun_zpow (P.coeff j))]
   refine sum_congr rfl fun j _ => ?_
   change meromorphicOrderAt ((fun z : ℂ => riemannZeta (z-j))^P.coeff j) s = _
@@ -105,10 +105,6 @@ theorem countGlobalZeta_eq_one_iff (P : Polynomial ℤ) : countGlobalZeta P = 1 
   · rintro rfl
     funext z
     simp [countGlobalZeta]
-#print axioms countGlobalZeta_hasProd
-#print axioms countGlobalZeta_order
-#print axioms countGlobalZeta_leading_order
-#print axioms countGlobalZeta_eq_one_iff
 
 end
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri

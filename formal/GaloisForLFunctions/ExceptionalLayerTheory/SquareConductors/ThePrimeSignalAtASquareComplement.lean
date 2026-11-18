@@ -116,7 +116,7 @@ theorem squareComplementRow_prime_error {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ : 4
     have hT : (T:ℝ)≤((ℓ:ℝ)^2+6)*Real.sqrt k := by
       dsimp [T]; push_cast
       linarith only [hnat,hs,le_mul_of_one_le_right (sq_nonneg (ℓ:ℝ)) hs]
-    have hp := (hP X).trans (mul_le_mul (le_abs_self P) (Real.sqrt_le_sqrt (by exact_mod_cast hXk))
+    have hp := (hP X).trans (mul_le_mul (le_abs_self P) (Real.sqrt_le_sqrt (by exact_mod_cast hXk : (X : ℝ) ≤ k))
       (Real.sqrt_nonneg _) (abs_nonneg _))
     apply (mul_le_mul_of_nonneg_left (add_le_add (mul_le_mul_of_nonneg_left hT (by norm_num : (0:ℝ)≤7)) hp) hF).trans_eq
     dsimp [B]; ring
@@ -149,7 +149,7 @@ theorem squareComplementRow_prime_error {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ : 4
 the negative of the full ordinary-prime signal at the divided conductor,
 up to six logarithms. -/
 theorem squareComplementRow_dyadicPrimeContact {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ : 4<ℓ) :
-    ∃ C : ℝ, 0≤C ∧ ∀ {m : ℕ}, 0<m →
+    ∃ C : ℝ, 0≤C ∧ ∀ {m : ℕ}, 0 < m →
       |(ℓ:ℝ)*splineCountReading (ℓ*m) (squareComplementRow ℓ)+dyadicPrimeContact m| ≤
         C*((1+Real.log (splineHorizon (ℓ*m)))^6+(1+Real.log (splineHorizon m))^6) := by
   let E (j : ℕ) := Chebyshev.psi j-j

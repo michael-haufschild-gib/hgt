@@ -295,7 +295,8 @@ theorem riemannHypothesis_or_integrated_properPower_error : RiemannHypothesis �
 
 #print axioms riemannHypothesis_or_integrated_properPower_error
 
-private theorem two_sign_distances (x y : ℝ) :
+/-- The two sign-part distances of real numbers add to their ordinary distance. -/
+theorem sign_part_distances_eq_abs_sub (x y : ℝ) :
     |max x 0-max y 0| + |max (-x) 0-max (-y) 0|=|x-y| := by
   have parts_sub (z : ℝ) : max z 0-max (-z) 0=z := by
     rcases le_or_gt 0 z with hz | hz
@@ -341,7 +342,7 @@ theorem riemannHypothesis_or_ordinary_sign_transfer : RiemannHypothesis ∨
     Real.exp (t/2)*A-(∫ u, Φ u)/2
   have hd (t : ℝ) : |max (P t) 0-max (M t) 0| + |max (-P t) 0-max (-M t) 0|=
       |Q t-(∫ u, Φ u)/2| := by
-    rw [two_sign_distances]
+    rw [sign_part_distances_eq_abs_sub]
     have hs : P t-M t= -(Q t-(∫ u, Φ u)/2) := by
       dsimp only [P,M,Q,ordinaryPrimePolarError,A]
       rw [mangoldt_atom_sum_split hb t]
@@ -426,7 +427,7 @@ theorem riemannHypothesis_or_integer_mangoldt_sign_transfer : RiemannHypothesis 
   let S := fun t : ℝ => (∑' n : ℕ, (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t)-(∫ u, Φ u)/2
   let P := ordinaryPrimePolarError Φ
   have hpoint (t : ℝ) : |max (P t) 0-max (S t) 0| + |max (-P t) 0-max (-S t) 0|=|D t-Q t| := by
-    rw [two_sign_distances]
+    rw [sign_part_distances_eq_abs_sub]
     congr 1
     dsimp only [S,P,ordinaryPrimePolarError,D,Q]
     rw [centred_mangoldt_atom_sum_split hb t]

@@ -586,7 +586,10 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
       have hmul_ge : (m : ℝ) * unitAtomMoment (-(1 / 2)) - C_neg ≤
           (m : ℝ) * sampledDegree (packet bp) (3 * windowEnd (p + 1)) (resolution (m • bp)) (-(1 / 2)) := by
         have hIn : 0 < unitAtomMoment (-(1 / 2)) := hI_neg
-        nlinarith only [he_neg, hm_pos, hIn, hexp_pos]
+        -- the extra archimedean term `I · m · p^{-1/2}` is nonnegative
+        have hextra : 0 ≤ unitAtomMoment (-(1 / 2)) * ((m : ℝ) * Real.exp (-(1 / 2) * Real.log p)) :=
+          mul_nonneg hIn.le (mul_nonneg hm_pos.le hexp_pos.le)
+        nlinarith only [he_neg, hextra]
       have hdiv := div_le_div_of_nonneg_right hmul_ge hm_pos.le
       rw [sub_div, mul_div_cancel_left₀ _ hm_pos.ne', mul_div_cancel_left₀ _ hm_pos.ne'] at hdiv
       exact hdiv
@@ -638,12 +641,11 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
   have hd : c₀ * Real.sqrt p <
       ((Real.log (generator (m • (4 • bp)) : ℝ) -
         Real.log (generator (m • (2 • bp)) : ℝ)) / 2) / (m : ℝ)^2 := by
-    dsimp only at hm
     have heq : (Real.log (generator (m • (4 • bp)) : ℝ) / (m : ℝ) ^ 2 -
         Real.log (generator (m • (2 • bp)) : ℝ) / (m : ℝ) ^ 2) / 2 =
         ((Real.log (generator (m • (4 • bp)) : ℝ) -
           Real.log (generator (m • (2 • bp)) : ℝ)) / 2) / (m : ℝ) ^ 2 := by ring
-    rwa [heq] at hm
+    exact hm.trans_eq heq
   exact (lt_div_iff₀ hm2).mp hd
 
 /-- Any centered carry schedule `K_m` whose logarithmic scale exceeds `7 Q(b)`
@@ -1474,18 +1476,5 @@ theorem exists_prime_background_singleRule_adelicSectionEncode :
       0 < integerProbe (p + 1) b ∧ (RiemannHypothesis ↔ adelicMidpointTest b) := by
   obtain ⟨p, b, hp, hb_eq, hb_pos, _⟩ := exists_prime_background_subquadraticMidpointTest
   exact ⟨p, b, hp, hb_eq, hb_pos, (riemannHypothesis_iff_singleRule_adelicSectionEncode b hb_pos).1⟩
-
-#print axioms inSectionLattice_iff_primeValuations
-#print axioms not_exists_midpointOnly_subquadratic_rationalSectionMap
-#print axioms eventually_primePair_finitePlace_skew_overshoots
-#print axioms eventually_not_centeredCarry_of_skew_gt_seven
-#print axioms adelicSectionDecode_encode
-#print axioms adelicCarryDigit_paid_iff_threeAdic_valuation
-#print axioms orientedTernary_coprime_zeroLoss_recovery
-#print axioms orientedTernary_threeAdic_asymmetric_recovery
-#print axioms adelicRayMap_precision_comparison
-#print axioms eventually_adelicSectionEncode_mapsRationalSections
-#print axioms riemannHypothesis_iff_singleRule_adelicSectionEncode
-#print axioms exists_prime_background_singleRule_adelicSectionEncode
 
 end GaloisForLFunctions.CountingHolography.Sections

@@ -213,10 +213,3 @@ theorem plateau_iff (a l r : ℝ) (ha : 0 < a) (n : ℕ) (hn : 0 < n) :
     rw [horizon_eq_kernel _ _ _ ha _ (Nat.succ_pos _) h,horizon_eq_kernel _ _ _ ha n hn hW]
 
 end GaloisForLFunctions.HTGeometry.AffineDynamics.Braking
-
-#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.predecessor_band
-#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.horizon_eq
-#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.prefix_affine
-#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.horizon_eq_kernel
-#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.strict_witness
-#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.plateau_iff

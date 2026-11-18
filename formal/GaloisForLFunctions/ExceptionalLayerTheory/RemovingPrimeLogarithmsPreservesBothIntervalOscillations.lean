@@ -117,7 +117,7 @@ theorem forward_prime_logarithm_bounds (Y : ℕ) (hY : 2≤Y) (sign : ℝ) :
   have hl (n : ℕ) (hn : Y≤n) : 0<Real.log n :=
     Real.log_pos (by exact_mod_cast (show 1<n by omega))
   have hmono {i j : ℕ} (hi : Y ≤ i) (hij : i≤j) : Real.log i≤Real.log j :=
-    Real.log_le_log (by exact_mod_cast (show 0<i by omega)) (by exact_mod_cast hij)
+    Real.log_le_log (by exact_mod_cast (show 0 < i by omega)) (by exact_mod_cast hij)
   have hmid {h k : ℕ} (hh : h∈Icc Y (2*Y)) (hk : k∈Icc Y (2*Y)) {j : ℕ} (hj : h≤j) (hjk : j≤k) :
       j∈Icc Y (2*Y) := mem_Icc.mpr ⟨(mem_Icc.mp hh).1.trans hj,hjk.trans (mem_Icc.mp hk).2⟩
   constructor
@@ -125,6 +125,8 @@ theorem forward_prime_logarithm_bounds (Y : ℕ) (hY : 2≤Y) (sign : ℝ) :
     rw [mul_comm,← le_div_iff₀ hstart]
     apply Finset.sup'_le
     rintro ⟨h,k⟩ hp
+    change (h,k) ∈ Icc Y (2*Y) ×ˢ Icc Y (2*Y) at hp
+    change (∑ n ∈ Ioc h k, b n) ≤ largestForwardSum a Y / Real.log (Y+1:ℕ)
     obtain ⟨hh,hk⟩ := mem_product.mp hp
     by_cases hlk : h<k
     · have hinv (n : ℕ) (hn : n∈Ioc h k) : (Real.log n)⁻¹*a n=b n :=
@@ -134,20 +136,25 @@ theorem forward_prime_logarithm_bounds (Y : ℕ) (hY : 2≤Y) (sign : ℝ) :
         (fun j hj hju => le_forward a hh (hmid hh hk hj hju)) (inv_nonneg.mpr (hl k (mem_Icc.mp hk).1).le)
         (fun i hi => inv_anti₀ (hl i ((mem_Icc.mp hh).1.trans (mem_Ioc.mp hi).1.le))
           (hmono ((mem_Icc.mp hh).1.trans (mem_Ioc.mp hi).1.le) (Nat.le_succ i)))
-      exact hw.trans (by rw [div_eq_mul_inv,mul_comm (largestForwardSum a Y)]; exact mul_le_mul_of_nonneg_right
-        (inv_anti₀ hstart (hmono (by omega) (Nat.succ_le_succ (mem_Icc.mp hh).1))) (forward_nonneg a Y))
-    · rw [Ioc_eq_empty (le_of_not_gt hlk),sum_empty]
+      have hden := hmono (Nat.le_succ Y) (Nat.succ_le_succ (mem_Icc.mp hh).1)
+      apply hw.trans
+      rw [div_eq_mul_inv,mul_comm (largestForwardSum a Y)]
+      exact mul_le_mul_of_nonneg_right (inv_anti₀ hstart hden) (forward_nonneg a Y)
+    · rw [Finset.Ioc_eq_empty_iff.mpr hlk,sum_empty]
       exact div_nonneg (forward_nonneg a Y) hstart.le
   · apply Finset.sup'_le
     rintro ⟨h,k⟩ hp
+    change (h,k) ∈ Icc Y (2*Y) ×ˢ Icc Y (2*Y) at hp
+    change (∑ n ∈ Ioc h k, a n) ≤ Real.log (2*Y:ℕ)*largestForwardSum b Y
     obtain ⟨hh,hk⟩ := mem_product.mp hp
     by_cases hlk : h<k
     · have hpre := sum_weighted_le_of_suffix_bounds hlk b (fun n => Real.log n)
-        (fun j hj hju => le_forward b (hmid hh hk hj hju) hk) (hl _ (by have := (mem_Icc.mp hh).1; omega)).le
+        (fun j hj hju => le_forward b (hmid hh hk hj hju) hk)
+        (hl (h+1) ((mem_Icc.mp hh).1.trans (Nat.le_succ h))).le
         (fun i hi => hmono ((mem_Icc.mp hh).1.trans (mem_Ioc.mp hi).1.le) (Nat.le_succ i))
       exact hpre.trans (mul_le_mul_of_nonneg_right (hmono (mem_Icc.mp hk).1 (mem_Icc.mp hk).2) (forward_nonneg b Y))
-    · rw [Ioc_eq_empty (le_of_not_gt hlk),sum_empty]
-      exact mul_nonneg (hl _ (by omega)).le (forward_nonneg b Y)
+    · rw [Finset.Ioc_eq_empty_iff.mpr hlk,sum_empty]
+      exact mul_nonneg (hl (2*Y) (by omega)).le (forward_nonneg b Y)
 
 /-- Freezing the logarithm at the initial cutoff costs at most its relative
 variation times the largest absolute suffix sum, for either sign. -/

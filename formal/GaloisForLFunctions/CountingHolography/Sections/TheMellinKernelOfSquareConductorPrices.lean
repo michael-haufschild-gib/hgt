@@ -414,7 +414,7 @@ private theorem mesh_column (W : CompactBVPrimeWindow) (s : ℂ) (k : ℕ) :
   rw [hfin]
   simp_rw [hi]
   rw [← mul_sum,sqrtMeshErrorTerm,if_neg hk.ne',LSeries.term_of_ne_zero hk.ne',
-    realMeshMellinError,Complex.real_smul,div_eq_mul_inv,← Complex.cpow_neg,
+    realMeshMellinError,Complex.real_smul,div_eq_mul_inv (vonMangoldt k:ℂ),← Complex.cpow_neg,
     show -(s/2-1)=1-s/2 by ring]
   dsimp only [A,N,t]
   ring
@@ -428,7 +428,8 @@ theorem LSeries_squareMeshReading (W : CompactBVPrimeWindow) {s : ℂ} (hs : 4 <
         ∑' k, sqrtMeshErrorTerm W k s := by
   have hd := summable_meshTerm W hs
   have hz : 1 < (s/2-1).re := by simp; linarith only [hs]
-  have hmain := (LSeriesSummable_vonMangoldt hz).mul_left (W.mellinTransform s)
+  have hmain : Summable (fun k => W.mellinTransform s*LSeries.term (fun j => (vonMangoldt j:ℂ)) (s/2-1) k) :=
+    (LSeriesSummable_vonMangoldt hz).mul_left (W.mellinTransform s)
   have herr := (locallySummable_sqrtMeshErrorTerm W).summable
     (show s ∈ {z : ℂ | 3 < z.re} by exact lt_trans (by norm_num) hs)
   calc LSeries (squareMeshReading W) s = ∑' n : ℕ, ∑' k : ℕ, meshTerm W s (n,k) := by
@@ -438,7 +439,8 @@ theorem LSeries_squareMeshReading (W : CompactBVPrimeWindow) {s : ℂ} (hs : 4 <
          simp only [meshTerm,LSeries.term_of_ne_zero hn.ne',div_eq_mul_inv,tsum_mul_right]
          rw [tsum_eq_sum (s := meshIndices W n) (fun k hk => not_ne_iff.mp fun h => hk (mesh_support W _ _ h))]
          rfl
-    _ = ∑' k : ℕ, ∑' n : ℕ, meshTerm W s (n,k) := hd.tsum_comm
+    _ = ∑' k : ℕ, ∑' n : ℕ, meshTerm W s (n,k) :=
+         (Summable.tsum_comm (f := fun n k => meshTerm W s (n,k)) hd).symm
     _ = _ := by
       simp_rw [mesh_column]
       rw [hmain.tsum_add herr,tsum_mul_left]
@@ -461,8 +463,9 @@ private theorem reading_abscissa {g : ℝ → ℝ} {K : ℝ≥0} (hg : Lipschitz
     have hrow (p : ℕ) : |(g (deningerRatExp (q n) p:ℝ)-g (diagonalPrimeProfile n p))*vonMangoldt p| ≤
         K*(|(deningerRatExp (q n) p:ℝ)-diagonalPrimeProfile n p| * vonMangoldt p) := by
       rw [abs_mul,abs_of_nonneg vonMangoldt_nonneg,← mul_assoc]
-      exact mul_le_mul_of_nonneg_right (by simpa only [Real.dist_eq] using
-        hg.dist_le_mul (deningerRatExp (q n) p:ℝ) (diagonalPrimeProfile n p)) vonMangoldt_nonneg
+      have hp := hg.dist_le_mul (deningerRatExp (q n) p:ℝ) (diagonalPrimeProfile n p)
+      simp only [Real.dist_eq] at hp
+      exact mul_le_mul_of_nonneg_right hp vonMangoldt_nonneg
     refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum (fun p _ => hrow p)).trans ?_)
     rw [← mul_sum,mul_assoc]
     exact mul_le_mul_of_nonneg_left (h (Nat.pos_of_ne_zero hn)) K.coe_nonneg
@@ -519,7 +522,7 @@ private theorem prime_mesh_profile_sum {n : ℕ} (hn : 0 < n) :
   have hsum : (∑' p : Nat.Primes, f p.val) = ∑ k ∈ I.filter Nat.Prime, f k := by
     let g := fun k => if k.Prime then f k else 0
     have h := tsum_subtype_eq_of_support_subset (f := g) (s := {k : ℕ | k.Prime})
-      (fun k hk hp => hk (by simp [g,hp]))
+      (by intro k hk; by_contra hp; exact hk (if_neg hp))
     calc _ = ∑' p : Nat.Primes, g p.val := tsum_congr fun p => (if_pos p.property).symm
       _ = ∑' k, g k := h
       _ = ∑ k ∈ I.filter Nat.Prime, g k := tsum_eq_sum fun k hk => by
@@ -590,7 +593,7 @@ theorem LSeries_squareConductorPrice {s : ℂ} (hs : 4 < s.re) :
     rfl
   have hp := primePower_abscissa W
   have hr := reading_abscissa (LipschitzWith.id : LipschitzWith 1 (id : ℝ → ℝ))
-  have hs₃ : ((3:ℝ):EReal) < (s.re:EReal) := by exact_mod_cast lt_trans (by norm_num : (3:ℝ)<4) hs
+  have hs₃ : ((3:ℝ):EReal) < (s.re:EReal) := EReal.coe_lt_coe_iff.mpr (lt_trans (by norm_num : (3:ℝ)<4) hs)
   have hP := LSeriesSummable_of_abscissaOfAbsConv_lt_re (hp.trans_lt hs₃)
   have hR := LSeriesSummable_of_abscissaOfAbsConv_lt_re (hr.trans_lt hs₃)
   have he : LSeries squareConductorPrice s = LSeries (squareMeshReading W - conductorPrimePowerError W + priceRounding) s := by
@@ -598,6 +601,7 @@ theorem LSeries_squareConductorPrice {s : ℂ} (hs : 4 < s.re) :
     rcases n.eq_zero_or_pos with rfl | hn
     · simp
     · simp only [LSeries.term_of_ne_zero hn.ne',Pi.add_apply,Pi.sub_apply]; rw [price_decomposition hn]
+  change LSeriesSummable priceRounding s at hR
   rw [he,LSeries_add (hW.sub hP) hR,LSeries_sub hW hP,LSeries_squareMeshReading W hs,
     squareConductorBVWindow_transform,squareConductorAnalyticRemainder]
   ring
@@ -663,7 +667,7 @@ theorem squarePriceRegularContinuation_eq {s : ℂ} (h : s/2-1 ≠ 1)
     squarePriceRegularContinuation s = squareConductorContinuation s := by
   let z := s/2-1
   have hlog := logDeriv_zeta_eq h hu
-  unfold squarePriceRegularContinuation squareConductorContinuation
+  dsimp only [squarePriceRegularContinuation,squareConductorContinuation]
   rw [dslope_of_ne _ h,slope_def_field,squareMellin_one,sub_zero]
   rw [show -deriv riemannZeta (s/2-1)/riemannZeta (s/2-1) = -logDeriv riemannZeta (s/2-1) by
     simp only [logDeriv_apply,neg_div]]
@@ -674,11 +678,11 @@ theorem analyticAt_squarePriceRegularContinuation {s : ℂ} (hs : 3 < s.re)
   let z := fun s : ℂ => s/2-1
   have hz : AnalyticAt ℂ z s := by dsimp only [z]; fun_prop
   have hM : AnalyticAt ℂ (mellin squarePrimeWeight) (z s) :=
-    (differentiable_mellin_squarePrimeWeight.differentiableOn.analyticOnNhd Set.isOpen_univ) _ (Set.mem_univ _)
+    (differentiable_mellin_squarePrimeWeight.differentiableOn.analyticOnNhd isOpen_univ) _ (Set.mem_univ _)
   have hd : Differentiable ℂ (dslope (mellin squarePrimeWeight) 1) :=
     differentiableOn_univ.mp ((Complex.differentiableOn_dslope (Filter.univ_mem : Set.univ ∈ 𝓝 (1:ℂ))).mpr
       differentiable_mellin_squarePrimeWeight.differentiableOn)
-  have hd' := (hd.differentiableOn.analyticOnNhd Set.isOpen_univ) (z s) (Set.mem_univ _)
+  have hd' := (hd.differentiableOn.analyticOnNhd isOpen_univ) (z s) (Set.mem_univ _)
   have hu := analyticAt_zetaResidueUnit (z s)
   have hder : AnalyticAt ℂ (logDeriv zetaResidueUnit) (z s) := hu.deriv.div hu hunit
   exact ((hd'.comp hz).sub ((hM.comp hz).mul (hder.comp hz))).add (analytic_squareConductorAnalyticRemainder s hs)
@@ -728,14 +732,13 @@ theorem squarePrimeWeight_deriv_boundary_mass :
       (F (-u):ℂ) := by
     simp only [squarePrimeWeight,Real.log_exp,neg_neg,neg_one_mul,Complex.real_smul,F]
     rw [← Complex.ofReal_neg,← Complex.ofReal_exp]
-    push_cast
     have h := Real.exp_add (-u) (u/2)
     rw [show -u+u/2= -u/2 by ring] at h
     exact_mod_cast (show Real.exp (-u)*(-u*(Real.exp (u/2)*squareLogProfile (-u))) =
       -u*squareLogProfile (-u)*Real.exp (-u/2) by rw [h]; ring)
   simp_rw [he]
   rw [integral_complex_ofReal,integral_neg_eq_self F volume]
-  change ((∫ u : ℝ, (u*squareLogProfile u)*Real.exp (u/2)):ℂ)=_
+  dsimp only [F]
   rw [squareLogProfile_first_half_moment,show Real.log 4=2*Real.log 2 by
     rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]; norm_num]
   push_cast; ring
@@ -750,9 +753,10 @@ theorem squarePrimeCumulativeWeight_eq {v : ℝ} (hv : 0 < v) :
   let F := fun u : ℝ => splineAutoCorr u*Real.exp (u/2)
   let w := fun x : ℝ => (squarePrimeWeight x).re
   have hF : Continuous F := continuous_splineAutoCorr.mul (by fun_prop)
+  have hwr : IntegrableOn w (Set.Ioi 0) := squareWeight_integrable.re
   have hwi {x y : ℝ} (hx : 0 ≤ x) (hxy : x ≤ y) : IntervalIntegrable w volume x y :=
     (intervalIntegrable_iff_integrableOn_Ioc_of_le hxy).mpr
-      (squareWeight_integrable.re.mono_set fun t ht => hx.trans_lt ht.1)
+      (hwr.mono_set fun t ht => hx.trans_lt ht.1)
   have hlow : a ≤ -9 := min_le_right _ _
   have hau : a ≤ U := (min_le_left _ _).trans (by linarith)
   have hbase : Real.exp a ≤ v := (Real.exp_le_exp.mpr hau).trans_eq (Real.exp_log hv)
@@ -764,16 +768,17 @@ theorem squarePrimeCumulativeWeight_eq {v : ℝ} (hv : 0 < v) :
     simp only [w,squarePrimeWeight_zero_outside hx.1 (fun hh => this.not_ge hh.1),Complex.zero_re]
   have hd : 0 ≤ d := Real.log_nonneg (by norm_num)
   have hdexp : Real.exp (d/2)=2 := by
-    dsimp only [d]; rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]
+    dsimp only [d]; rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow,Nat.cast_ofNat]
     rw [show (2:ℝ)*Real.log 2/2=Real.log 2 by ring,Real.exp_log (by norm_num)]
   have he (t : ℝ) : Real.exp t*w (Real.exp t)=2*F t-2*F (t-d) := by
     have hh : Real.exp ((t-d)/2)*2=Real.exp (t/2) := by
-      rw [← hdexp,← Real.exp_add]; congr 1; ring
+      calc _ = Real.exp ((t-d)/2)*Real.exp (d/2) := congrArg _ hdexp.symm
+           _ = _ := by rw [← Real.exp_add]; congr 1; ring
     simp only [w,squarePrimeWeight,squareLogProfile,Real.log_exp,Complex.ofReal_re,F]
     rw [show Real.exp t*(Real.exp (-t/2)*(2*splineAutoCorr t-splineAutoCorr (t-Real.log 4)))=
         (2*splineAutoCorr t-splineAutoCorr (t-d))*Real.exp (t/2) by
           rw [← show t+(-t/2)=t/2 by ring,Real.exp_add]; ring]
-    linear_combination -splineAutoCorr (t-d)*hh
+    linear_combination splineAutoCorr (t-d)*hh
   have hbottom : (∫ t in a-d..a, F t)=0 := by
     rw [intervalIntegral.integral_of_le (sub_le_self a hd)]
     apply setIntegral_eq_zero_of_forall_eq_zero
@@ -803,21 +808,22 @@ theorem squarePrime_fourthPower_integral {p N M : ℝ} (hp : 0 < p) (hN : 0 < N)
       (squarePrimeCumulativeWeight (p/N^2)-squarePrimeCumulativeWeight (p/M^2))/p := by
   let A := squarePrimeCumulativeWeight
   have hd (y : ℝ) (hy : 0 < y) : HasDerivAt A (squarePrimeWeight y).re y := by
+    have hr : IntegrableOn (fun t => (squarePrimeWeight t).re) (Set.Ioi 0) := squareWeight_integrable.re
     have hi := (intervalIntegrable_iff_integrableOn_Ioc_of_le hy.le).mpr
-      (squareWeight_integrable.re.mono_set (Set.Ioc_subset_Ioi_self (b := y)))
-    apply intervalIntegral.integral_hasDerivAt_right hi _ (continuousAt_squarePrimeWeight hy).re
+      (hr.mono_set (Set.Ioc_subset_Ioi_self (b := y)))
+    apply intervalIntegral.integral_hasDerivAt_right hi _ (Complex.continuous_re.continuousAt.comp (continuousAt_squarePrimeWeight hy))
     exact (Complex.continuous_re.measurable.comp squareWeight_measurable).aestronglyMeasurable.stronglyMeasurableAtFilter
   let f := fun t : ℝ => -A (p/t^2)/p
   let u := fun t : ℝ => 2/t^3*(squarePrimeWeight (p/t^2)).re
   have he (t : ℝ) (ht : 0 < t) : HasDerivAt f (u t) t := by
     have hinner := (hasDerivAt_const t p).div ((hasDerivAt_id t).pow 2) (sq_pos_of_pos ht).ne'
-    convert (((hd _ (div_pos hp (sq_pos_of_pos ht))).comp t hinner).neg.div_const p) using 1
-    dsimp only [u]; field_simp [hp.ne',ht.ne'] <;> ring
+    have hh := (((hd _ (div_pos hp (sq_pos_of_pos ht))).comp t hinner).neg.div_const p)
+    convert hh using 1 <;> simp only [f,u,Function.comp_def,id_eq] <;> field_simp [hp.ne',ht.ne'] <;> ring
   have hu : ContinuousOn u (Set.uIcc N M) := by
     intro t ht
     have ht' : 0 < t := hN.trans_le ((Set.uIcc_of_le hNM ▸ ht).1)
     exact ((continuousAt_const.div (continuousAt_id.pow 3) (pow_ne_zero _ ht'.ne')).mul
-      ((continuousAt_squarePrimeWeight (div_pos hp (sq_pos_of_pos ht'))).re.comp
+      ((Complex.continuous_re.continuousAt.comp (continuousAt_squarePrimeWeight (div_pos hp (sq_pos_of_pos ht')))).comp
         (continuousAt_const.div (continuousAt_id.pow 2) (sq_pos_of_pos ht').ne'))).continuousWithinAt
   have h := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t ht => he t (hN.trans_le ((Set.uIcc_of_le hNM ▸ ht).1))) hu.intervalIntegrable
   exact h.trans (by dsimp only [f,A]; ring)
@@ -834,10 +840,11 @@ private theorem hasMellin_linearCutoff {s : ℂ} (hs : -1 < s.re) :
   let I := Set.Ioc (0:ℝ) 1
   have he (x : ℝ) (hx : 0 < x) : (x:ℂ)^(s-1) • linearCutoff x=I.indicator f x := by
     by_cases h : x ∈ I
-    · rw [linearCutoff,Set.indicator_of_mem h,Set.indicator_of_mem h,smul_eq_mul,← Complex.cpow_one (x:ℂ),
-        ← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hx.ne'),sub_add_cancel]
+    · rw [linearCutoff,Set.indicator_of_mem h,Set.indicator_of_mem h,smul_eq_mul]
+      calc _ = (x:ℂ)^(s-1)*(x:ℂ)^(1:ℂ) := by rw [Complex.cpow_one]
+           _ = _ := by rw [← Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hx.ne'),sub_add_cancel]
     · simp [linearCutoff,I,Set.indicator_of_notMem h]
-  have hi : IntegrableOn f I := (intervalIntegral.intervalIntegrable_cpow' hs).integrableOn_Ioc
+  have hi : IntegrableOn f I := (intervalIntegral.intervalIntegrable_cpow' (a := 0) (b := 1) hs).1
   refine ⟨(hi.integrable_indicator measurableSet_Ioc).integrableOn.congr_fun (fun x hx => (he x hx).symm) measurableSet_Ioi,?_⟩
   rw [mellin,setIntegral_congr_fun measurableSet_Ioi he,integral_indicator measurableSet_Ioc,
     Measure.restrict_restrict_of_subset Set.Ioc_subset_Ioi_self,← intervalIntegral.integral_of_le zero_le_one]
@@ -853,9 +860,8 @@ theorem mellin_squarePrefixPrimeWeight {s : ℂ} (hs : -1 < s.re) :
     mellin squarePrefixPrimeWeight s=mellin squarePrimeWeight s/(s+1) := by
   have hm := squareWeight_measurable
   have h := hasMellin_linearCutoff hs
-  simpa only [squarePrefixPrimeWeight,h.2,mul_one_div] using
-    (mellin_positiveMellinConvolution hm (Complex.continuous_ofReal.measurable.indicator measurableSet_Ioc)
-      (mellinConvergent_squarePrimeWeight s) h.1)
+  have hmeas : Measurable linearCutoff := Complex.continuous_ofReal.measurable.indicator measurableSet_Ioc
+  rw [squarePrefixPrimeWeight,mellin_positiveMellinConvolution hm hmeas (mellinConvergent_squarePrimeWeight s) h.1,h.2,mul_one_div]
 
 /-- The integrated prime profile at v is v times the weighted tail above v. -/
 theorem squarePrefixPrimeWeight_tail {v : ℝ} (hv : 0 < v) :
@@ -865,6 +871,7 @@ theorem squarePrefixPrimeWeight_tail {v : ℝ} (hv : 0 < v) :
   rw [← Measure.restrict_restrict_of_subset hsub (μ := volume),← integral_indicator measurableSet_Ici]
   apply setIntegral_congr_fun measurableSet_Ioi
   intro t ht
+  dsimp only
   by_cases h : v ≤ t
   · have hx : v/t ∈ Set.Ioc (0:ℝ) 1 := ⟨div_pos hv ht,(div_le_one ht).mpr h⟩
     rw [linearCutoff,Set.indicator_of_mem hx,Set.indicator_of_mem h,Complex.ofReal_div]
@@ -895,6 +902,7 @@ private theorem squarePrefixPrimeWeight_primitive {v : ℝ} (hv : 0 < v) :
     have hh : (t*Real.sqrt v)^2 = v*t^2 := by rw [mul_pow,Real.sq_sqrt hv.le,mul_comm]
     rw [← hh]
     simpa only [one_pow] using sq_le_sq₀ (mul_nonneg ht.le hr.le) zero_le_one
+  dsimp only
   rw [he,h₃]
   by_cases hh : t ≤ T
   · rw [Set.indicator_of_mem (show t ∈ Set.Ioc 0 T from ⟨ht,hh⟩),
@@ -922,6 +930,7 @@ theorem squarePrefixPrimeWeight_radial {v : ℝ} (hv : 0 < v) :
   apply intervalIntegral.integral_congr_uIoo
   intro r hr₁
   have hr₀ : 0 < r := (show r ∈ Set.Ioo (0:ℝ) 1 by simpa only [Set.uIoo_of_le zero_le_one] using hr₁).1
+  dsimp only
   rw [squareConductorBVWindow_apply (mul_pos hr₀ hT)]
   have hsq : T^2=v⁻¹ := by dsimp only [T]; rw [inv_pow,Real.sq_sqrt hv.le]
   have arg : 1/(r*T)^2=v/r^2 := by rw [mul_pow,hsq]; ring
@@ -944,7 +953,7 @@ private theorem prefix_mesh_row {n N : ℕ} (hn : 0 < n) (hN : n ≤ N) :
   have h := sum_filter_add_sum_filter_not (s := meshIndices W n) (f := rootMeshRow W n) Nat.Prime
   have h₀ : squareMeshReading W n-conductorPrimePowerError W n =
       ∑ k ∈ (meshIndices W n).filter Nat.Prime, rootMeshRow W n k := by
-    change (∑ k ∈ meshIndices W n, _)-_=_
+    unfold squareMeshReading conductorPrimePowerError
     rw [← h,add_sub_cancel_right]
   rw [price_decomposition hn,h₀]
   congr 1
@@ -989,7 +998,7 @@ private theorem prefix_mesh_column (N k : ℕ) (hn : 0 < N) (hk : k.Prime) :
     rw [Complex.real_smul]
     push_cast
     rw [← hc]
-    field_simp [Complex.ofReal_ne_zero.mpr hr.ne',Nat.cast_ne_zero.mpr hn.ne' : (N:ℂ)≠0] <;> ring
+    field_simp [Complex.ofReal_ne_zero.mpr hr.ne',(Nat.cast_ne_zero.mpr hn.ne' : (N:ℂ)≠0)] <;> ring
   rw [he,norm_mul,norm_mul,Complex.norm_real,Real.norm_of_nonneg (Real.log_natCast_nonneg _),
     Complex.norm_natCast]
   refine (mul_le_mul_of_nonneg_left hsmall (mul_nonneg (Real.log_natCast_nonneg _) hk'.le)).trans_eq ?_
@@ -1029,7 +1038,7 @@ theorem squareGeneratorPrefix_prime_profile : ∃ C : ℝ, 0 ≤ C ∧ ∀ {N : 
   let f := fun k : ℕ => ((N:ℂ)^2*Real.log k)*squarePrefixPrimeWeight ((k:ℝ)/(N:ℝ)^2)
   have hQ : ‖∑ k ∈ primes, ((∑ n ∈ Ioc 0 N, rootMeshRow W n k)-f k)‖ ≤
       (7*V/W.lower^3)*(N:ℝ)^3 := by
-    refine (norm_sum_le _ _).trans ((sum_le_sum (fun k hk => (prefix_mesh_column N k hn (mem_filter.mp hk).2).trans ?_)).trans ?_)
+    refine (norm_sum_le _ _).trans ((sum_le_sum (g := fun k => vonMangoldt k*Y*V) (fun k hk => (prefix_mesh_column N k hn (mem_filter.mp hk).2).trans ?_)).trans ?_)
     · have hkY := (Nat.cast_le.mpr (mem_Ioc.mp (mem_filter.mp hk).1).2).trans (Nat.floor_le (sq_nonneg Y))
       have hroot := (Real.sqrt_le_sqrt hkY).trans_eq (Real.sqrt_sq hY)
       rw [← vonMangoldt_apply_prime (mem_filter.mp hk).2]

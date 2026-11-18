@@ -161,10 +161,6 @@ theorem card_hollowSimplex_complement [Fintype F] :
   rw [hs,card_erase_of_mem (mem_univ _)]
   simp
 
-#print axioms card_stanleyReisner_characters
-#print axioms stanleyReisner_add_dualArrangement
-#print axioms card_hollowSimplex_characters
-#print axioms card_hollowSimplex_complement
 
 end
 end GaloisForLFunctions.HTGeometry

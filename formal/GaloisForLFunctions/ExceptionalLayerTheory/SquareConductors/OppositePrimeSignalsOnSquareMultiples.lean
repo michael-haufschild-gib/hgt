@@ -153,7 +153,7 @@ private theorem divided_cut_sq {ℓ m : ℕ} (hℓ : 0<ℓ) :
        _ ≤ (m:ℝ)^3 := div_le_self (by positivity) (by exact_mod_cast hℓ)
 
 private theorem capped_at_divided_scale (r : ℕ) : ∃ K : ℝ, 0≤K ∧
-    ∀ {m U M : ℕ}, 0<m → 0<U → (U:ℝ)^2≤(m:ℝ)^3 → m≤r*(M+1) →
+    ∀ {m U M : ℕ}, 0 < m → 0<U → (U:ℝ)^2≤(m:ℝ)^3 → m≤r*(M+1) →
       |dyadicPrimeContact m-cappedUpperProductReading U M m|≤K*(conductorLog m)^6 := by
   obtain ⟨A,B,C,hA,hB,hC,h⟩ := dyadicPrimeContact_capped_upper_product_tail
   obtain ⟨J,hJ,hlog⟩ := splineHorizon_conductorLog
@@ -192,7 +192,7 @@ private theorem capped_at_divided_scale (r : ℕ) : ∃ K : ℝ, 0≤K ∧
 /-- The proper square multiples carry the positive divided prime contact
 with six logarithms of error at every conductor multiple. -/
 theorem properSquareReading_prime_contact {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ : 4<ℓ) :
-    ∃ C : ℝ, 0≤C ∧ ∀ {m : ℕ}, 0<m →
+    ∃ C : ℝ, 0≤C ∧ ∀ {m : ℕ}, 0 < m →
       |(ℓ:ℝ)*properSquareReading ℓ (ℓ*m)-dyadicPrimeContact m|≤C*(conductorLog m)^6 := by
   obtain ⟨K,hK,h⟩ := capped_at_divided_scale ℓ
   obtain ⟨N,hN⟩ := eventually_atTop.mp (properSquareReading_eventually_exact hℓ h₄)
@@ -239,7 +239,7 @@ private theorem conductorLog_dilate {ℓ m : ℕ} (hℓ : 0<ℓ) (hm : 0<m) :
 /-- The singleton retains the negative contact after imposing both actual
 cutoffs, including the finitely many conductors below the cofactor cap. -/
 theorem singletonSquareReading_prime_contact {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ : 4<ℓ) :
-    ∃ C : ℝ, 0≤C ∧ ∀ {m : ℕ}, 0<m →
+    ∃ C : ℝ, 0≤C ∧ ∀ {m : ℕ}, 0 < m →
       |(ℓ:ℝ)*singletonSquareReading ℓ (ℓ*m)+dyadicPrimeContact m|≤C*(conductorLog m)^6 := by
   obtain ⟨A,hA,hclip⟩ := squareComplementRow_clip_cost
   obtain ⟨B,hB,hfull⟩ := squareComplementRow_dyadicPrimeContact hℓ h₄

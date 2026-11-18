@@ -51,7 +51,7 @@ private theorem shell_geometry : ∀ᶠ n : ℕ in atTop,
     productLower 1 (splineHorizon n)≤sevenFourthsCut n := by
   obtain ⟨A,hA,hwin⟩ := successorSquare_window_bound
   have ht : Tendsto (fun n : ℕ => (n:ℝ)^(1/4:ℝ)) atTop atTop :=
-    (Real.tendsto_rpow_atTop (by norm_num : (0:ℝ)<1/4)).comp tendsto_natCast_atTop_atTop
+    (tendsto_rpow_atTop (by norm_num : (0:ℝ)<1/4)).comp tendsto_natCast_atTop_atTop
   filter_upwards [eventually_ge_atTop (1:ℕ),ht.eventually_ge_atTop (max (4*Real.exp 8) (2*A))]
     with n hn hcut
   have hn' : (1:ℝ)≤n := by exact_mod_cast hn

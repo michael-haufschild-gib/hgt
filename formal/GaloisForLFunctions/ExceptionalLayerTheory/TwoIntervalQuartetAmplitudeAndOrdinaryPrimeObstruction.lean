@@ -3,7 +3,6 @@ import GaloisForLFunctions.ExceptionalLayerTheory.QuadratureOfTwoConsecutivePrim
 import GaloisForLFunctions.ExceptionalLayerTheory.RemovingPrimeLogarithmsPreservesBothIntervalOscillations
 import GaloisForLFunctions.ExceptionalLayerTheory.MixingTwoPrimeDilationsRemovesQuartetAliasing
 import GaloisForLFunctions.ExceptionalLayerTheory.TwoProperPowerWavesCharacterizeASingleQuartet
-import GaloisForLFunctions.ExceptionalLayerTheory.TheTwoQuartetRungsRecoverTheComplexPrimeWave
 
 /-!
 # Two-Interval Ordinary-Prime Quartet Amplitude: Arithmetic Obstructions, Stratum Classification, and Corollaries
@@ -2371,7 +2370,7 @@ private theorem finite_right_layer_collapse (S_right : Finset XiZeroCopy)
     rw [hf_top_single, show expChar ω₀ (t + h) =
       Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) * expChar ω₀ t by
         simp only [expChar, ← Complex.exp_add]; congr 1; push_cast; ring]
-    ring_nf
+    congr 1; ring
   have htop_alias : ∃ k : ℕ, ω₀ = (2 * (k : ℝ) + 1) * γ ∧ ‖c_top ω₀‖ = C := by
     set w₂ : ℂ := ((Real.cos (ω₀ * h) : ℂ) / 2) *
       Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) * (c_top ω₀) ^ 2
@@ -3155,14 +3154,5 @@ theorem corollaries_of_twoIntervalRadialExclusionLaw (hlaw : TwoIntervalRadialEx
     intro ρ hhalf hmem hbound
     exact hno_one ρ ((hasSingleOffLineQuartet_iff_two_properPower_waves hhalf hmem).mpr hbound)
   exact ⟨hno_one, hrh_or_4, hidx_ne2, hgram3, h3clock, hpdr, hppc, hadj⟩
-
-#print axioms cofinal_adjacentCount_commonMiddle_radius_collapse
-#print axioms exists_coprimeZeroOneSet_realizing_log_and_unweighted_quadrature
-#print axioms unconditional_twoIntervalRadius_prime_and_twin_firewall
-#print axioms radial_bounded_forces_abscissa_and_limsup
-#print axioms radial_and_ordinary_236_iff_singleQuartet_with_mult
-#print axioms finiteOffLine_not_radialUnbounded_iff
-#print axioms finiteOffLine_twoIntervalRadialExclusionLaw_iff
-#print axioms corollaries_of_twoIntervalRadialExclusionLaw
 
 end GaloisForLFunctions.ExceptionalLayerTheory

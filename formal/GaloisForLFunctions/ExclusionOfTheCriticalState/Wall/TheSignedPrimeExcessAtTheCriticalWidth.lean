@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheCriticalWidthOfAdverseIntegerMass
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheMangoldtMassInPowerWidthIntervals
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheRemoteVariationOfTheStateWeights
 import GaloisForLFunctions.RHTower.FreeLagSymbolBoundaryLayer
 
 /-!
@@ -31,7 +32,7 @@ private theorem sqrt_time_le_exp_quarter {t : ℝ} (ht : 0 ≤ t) :
 normalized state atom converges to the same constant. The fraction may vary
 with the sample, so the limit is uniform away from the left endpoint. -/
 private theorem scaled_wall_atom {ι : Type*} {f : Filter ι} {t d : ι → ℝ}
-    (ht : Tendsto t f atTop) {η : ℝ} (hη : 0 < η) (hd : ∀ᶠ i in f, d i ∈ Icc η 1)
+    (ht : Tendsto t f atTop) {η B : ℝ} (hη : 0 < η) (hB : 0 < B) (hd : ∀ᶠ i in f, d i ∈ Icc η B)
     {Φ : ℝ → ℝ} {m L : ℝ} (hw : Tendsto (fun k : ℝ => (m*Φ (-k))*Real.sqrt (Real.log (1/k)))
       (𝓝[>] 0) (𝓝 L)) :
     Tendsto (fun i => criticalWallWidth (t i) * (m*continuousIntegerAtom Φ
@@ -50,21 +51,23 @@ private theorem scaled_wall_atom {ι : Type*} {f : Filter ι} {t d : ι → ℝ}
     calc v i ≤ Real.exp (-(t i)/2)*Real.exp (t i/4) :=
           mul_le_mul_of_nonneg_left (sqrt_time_le_exp_quarter hi.le) (Real.exp_pos _).le
       _ = _ := by rw [← Real.exp_add]; congr 1; ring
+  have hBv : Tendsto (fun i => B*v i) f (𝓝 0) := by
+    simpa only [mul_zero] using hv0.const_mul B
   have hq0 : Tendsto q f (𝓝 1) := by
     have hz : Tendsto (fun i => d i*v i) f (𝓝 0) := by
-      refine squeeze_zero' ?_ ?_ hv0
+      refine squeeze_zero' ?_ ?_ hBv
       · filter_upwards [hd] with i hi
         exact mul_nonneg (hη.le.trans hi.1) (mul_nonneg (Real.exp_pos _).le (Real.sqrt_nonneg _))
       · filter_upwards [hd] with i hi
-        exact mul_le_of_le_one_left (mul_nonneg (Real.exp_pos _).le (Real.sqrt_nonneg _)) hi.2
+        exact mul_le_mul_of_nonneg_right hi.2 (mul_nonneg (Real.exp_pos _).le (Real.sqrt_nonneg _))
     simpa only [add_zero] using hz.const_add 1
-  have hgeo : ∀ᶠ i in f, 0 < v i ∧ 1 < q i ∧ 0 < k i ∧ η/2*v i ≤ k i ∧ k i ≤ v i := by
-    filter_upwards [ht0,hd,hv0.eventually_lt_const zero_lt_one] with i hi hdi hv
+  have hgeo : ∀ᶠ i in f, 0 < v i ∧ 1 < q i ∧ 0 < k i ∧ η/2*v i ≤ k i ∧ k i ≤ B*v i := by
+    filter_upwards [ht0,hd,hBv.eventually_lt_const zero_lt_one] with i hi hdi hv
     have hvpos : 0 < v i := mul_pos (Real.exp_pos _) (Real.sqrt_pos.mpr hi)
     have hprod := mul_pos (hη.trans_le hdi.1) hvpos
     have hq : 1 < q i := by dsimp only [q]; linarith only [hprod]
     have hq2 : q i ≤ 2 := by
-      dsimp only [q]; linarith only [mul_le_of_le_one_left hvpos.le hdi.2,hv]
+      dsimp only [q]; linarith only [mul_le_mul_of_nonneg_right hdi.2 hvpos.le,hv]
     have hqpos := zero_lt_one.trans hq
     have hlo := Real.log_le_sub_one_of_pos (inv_pos.mpr hqpos)
     rw [Real.log_inv] at hlo
@@ -77,9 +80,9 @@ private theorem scaled_wall_atom {ι : Type*} {f : Filter ι} {t d : ι → ℝ}
     refine ⟨hvpos,hq,Real.log_pos hq,hlow.trans (by dsimp only [k]; linarith only [hlo]),?_⟩
     exact (Real.log_le_sub_one_of_pos hqpos).trans (by
       dsimp only [q]
-      linarith only [mul_le_of_le_one_left hvpos.le hdi.2])
+      linarith only [mul_le_mul_of_nonneg_right hdi.2 hvpos.le])
   have hk0 : Tendsto k f (𝓝[>] 0) := tendsto_nhdsWithin_iff.mpr
-    ⟨squeeze_zero' (hgeo.mono fun _ h => h.2.2.1.le) (hgeo.mono fun _ h => h.2.2.2.2) hv0,
+    ⟨squeeze_zero' (hgeo.mono fun _ h => h.2.2.1.le) (hgeo.mono fun _ h => h.2.2.2.2) hBv,
       hgeo.mono fun _ h => h.2.2.1⟩
   have hlogv : Tendsto (fun i => -(Real.log (v i))/t i) f (𝓝 (1/2)) := by
     have hlog := (Real.isLittleO_log_id_atTop.tendsto_div_nhds_zero.comp ht).div_const 2
@@ -94,10 +97,15 @@ private theorem scaled_wall_atom {ι : Type*} {f : Filter ι} {t d : ι → ℝ}
     have hsmall := (tendsto_const_nhds (x := Real.log (η/2))).div_atTop ht
     have hup := hlogv.sub hsmall
     rw [sub_zero] at hup
-    apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hlogv hup
+    have hlo := hlogv.sub ((tendsto_const_nhds (x := Real.log B)).div_atTop ht)
+    rw [sub_zero] at hlo
+    apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hlo hup
     · filter_upwards [ht0,hgeo] with i hi hg
       dsimp only [l]; rw [one_div,Real.log_inv]
-      exact div_le_div_of_nonneg_right (neg_le_neg (Real.log_le_log hg.2.2.1 hg.2.2.2.2)) hi.le
+      have h := Real.log_le_log hg.2.2.1 hg.2.2.2.2
+      rw [Real.log_mul hB.ne' hg.1.ne'] at h
+      rw [← sub_div]
+      exact div_le_div_of_nonneg_right (by linarith only [h]) hi.le
     · filter_upwards [ht0,hgeo] with i hi hg
       have hη2 : 0 < η/2 := by positivity
       have hx := Real.log_le_log (mul_pos hη2 hg.1) hg.2.2.2.1
@@ -131,18 +139,18 @@ private theorem scaled_wall_atom {ι : Type*} {f : Filter ι} {t d : ι → ℝ}
     (Real.sqrt_pos.mpr hqpos).ne',(Real.exp_pos _).ne']
 
 /-- Uniform form of the wall sample on the outer part of the interval. -/
-private theorem eventually_outer_wall_atom {Φ : ℝ → ℝ} {m L : ℝ}
+theorem eventually_critical_band_wall_atom {Φ : ℝ → ℝ} {m L : ℝ}
     (hw : Tendsto (fun k : ℝ => (m*Φ (-k))*Real.sqrt (Real.log (1/k))) (𝓝[>] 0) (𝓝 L))
-    {η ε : ℝ} (hη : 0 < η) (hε : 0 < ε) :
+    {η B ε : ℝ} (hη : 0 < η) (hB : 0 < B) (hε : 0 < ε) :
     ∀ᶠ t : ℝ in atTop, ∀ n : ℕ, Real.exp t+η*criticalWallWidth t < n →
-      (n:ℝ) ≤ Real.exp t+criticalWallWidth t →
+      (n:ℝ) ≤ Real.exp t+B*criticalWallWidth t →
       |criticalWallWidth t*(m*continuousIntegerAtom Φ n t)-Real.sqrt 2*L| < ε := by
-  let s : Set (ℝ×ℝ) := {p | p.2 ∈ Icc η 1}
+  let s : Set (ℝ×ℝ) := {p | p.2 ∈ Icc η B}
   let f := comap Prod.fst (atTop : Filter ℝ) ⊓ 𝓟 s
   have ht : Tendsto (fun p : ℝ×ℝ => p.1) f atTop := tendsto_comap.mono_left inf_le_left
-  have hd : ∀ᶠ p : ℝ×ℝ in f, p.2 ∈ Icc η 1 :=
+  have hd : ∀ᶠ p : ℝ×ℝ in f, p.2 ∈ Icc η B :=
     eventually_inf_principal.mpr (Eventually.of_forall fun _ h => h)
-  have hlim := scaled_wall_atom ht hη hd hw
+  have hlim := scaled_wall_atom ht hη hB hd hw
   have h := hlim.eventually (Metric.ball_mem_nhds _ hε)
   have hue := eventually_comap.mp (eventually_inf_principal.mp h)
   filter_upwards [hue,eventually_gt_atTop (0:ℝ)] with t hut ht0
@@ -150,7 +158,7 @@ private theorem eventually_outer_wall_atom {Φ : ℝ → ℝ} {m L : ℝ}
   let H := criticalWallWidth t
   let d := ((n:ℝ)-Real.exp t)/H
   have hH : 0 < H := mul_pos (Real.exp_pos _) (Real.sqrt_pos.2 ht0)
-  have hdi : d ∈ Icc η 1 := ⟨(le_div_iff₀ hH).2 (by linarith only [hlow]),
+  have hdi : d ∈ Icc η B := ⟨(le_div_iff₀ hH).2 (by linarith only [hlow]),
     (div_le_iff₀ hH).2 (by linarith only [hupp])⟩
   have hr := hut (t,d) rfl hdi
   change dist (H*(m*continuousIntegerAtom Φ (Real.exp t+d*H) t)) (Real.sqrt 2*L) < ε at hr
@@ -347,6 +355,100 @@ theorem lipschitz_adverse_critical_width_tendsto_zero {Φ : ℝ → ℝ} {K : NN
       rw [show D*(4*Real.exp (t/4))*Real.exp (-t/2) = (4*D)*(Real.exp (t/4)*Real.exp (-t/2)) by ring,
         ← Real.exp_add,show t/4 + -t/2 = -t/4 by ring]
 
+/-- The endpoint error after freezing the wall price, plus the absolute
+value of the signed Abel variation from the far edge of the first window. -/
+def adjacentAbelDeviation (Φ : ℝ → ℝ) (γ t : ℝ) (L : ℕ) : ℝ :=
+  let H := criticalWallWidth t
+  let b := ⌊Real.exp t+H⌋₊
+  let w := fun j : ℕ => (∫ y, Φ y)*continuousIntegerAtom Φ j t
+  |(w L-γ/H)*centeredAbelPrefix b L|+
+    |∑ j ∈ Finset.Ico b L, centeredAbelPrefix b j*(w j-w (j+1))|
+
+/-- On every fixed band just beyond the first window, the signed Abel
+variation and the deviation of its endpoint from the flat wall price
+vanish uniformly in the upper endpoint. -/
+theorem criticalState_adjacent_abel_variation {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (W₀ : EReal))
+    {F Φ : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) (hc : Continuous Φ)
+    (he : F =ᵐ[volume] Φ) {B ε : ℝ} (hB : 1 ≤ B) (hε : 0 < ε) :
+    let m := ∫ y, Φ y
+    let γ := Real.sqrt 2*(|m| *Real.sqrt (8*criticalAliasCoefficient W₀*
+      ∫ y : ℝ, F y^2*Real.exp (-(8*y))))
+    ∀ᶠ t : ℝ in atTop,
+      let H := criticalWallWidth t
+      let b := ⌊Real.exp t+H⌋₊
+      ∀ L : ℕ, b < L → (L:ℝ) ≤ Real.exp t+B*H → adjacentAbelDeviation Φ γ t L < ε := by
+  let m := ∫ y, Φ y
+  let V := |m| *Real.sqrt (8*criticalAliasCoefficient W₀*∫ y : ℝ, F y^2*Real.exp (-(8*y)))
+  let γ := Real.sqrt 2*V
+  obtain ⟨_,hlaw⟩ := criticalState_oriented_wall_limit hW ht hF hc he
+  obtain ⟨C,hC,hM⟩ := mangoldt_mass_on_power_width
+  let D := (C+2)*B
+  have hB0 := zero_lt_one.trans_le hB
+  have hD : 0 < D := mul_pos (by linarith only [hC]) hB0
+  let δ := ε/(4*D)
+  have hδ : 0 < δ := by dsimp only [δ]; positivity
+  have hband := eventually_critical_band_wall_atom hlaw zero_lt_one hB0 hδ
+  simp only [one_mul] at hband
+  have hexp : Tendsto (fun t : ℝ => Real.exp (t/4)) atTop atTop :=
+    Real.tendsto_exp_atTop.comp (tendsto_id.atTop_div_const (by norm_num : (0:ℝ)<4))
+  filter_upwards [hband,criticalWallWidth_range (η := 1) zero_lt_one le_rfl,
+    eventually_ge_atTop (1:ℝ),hexp.eventually_ge_atTop B] with t hw hr ht1 hBexp
+  let H := criticalWallWidth t
+  let b := ⌊Real.exp t+H⌋₊
+  let w := fun j : ℕ => m*continuousIntegerAtom Φ j t
+  have hH : 0 < H := hr.1
+  have hHB := le_mul_of_one_le_left hH.le hB
+  have hlowH : Real.exp (t/4) ≤ H := by simpa only [one_mul] using hr.2.1
+  have hup : B*H ≤ Real.exp t := calc
+    _ ≤ Real.exp (t/4)*Real.exp (3*t/4) := mul_le_mul hBexp hr.2.2.2.1 hH.le (Real.exp_pos _).le
+    _ = _ := by rw [← Real.exp_add]; congr 1; ring
+  intro L hbL hL
+  let I := Finset.Ioc b L
+  let a := fun j : ℕ => ArithmeticFunction.vonMangoldt j-1
+  have hsub : I ⊆ wallIntegerWindow t (B*H) := by
+    intro j hj
+    obtain ⟨hj1,hj2⟩ := Finset.mem_Ioc.mp hj
+    exact Finset.mem_Ioc.mpr ⟨lt_of_le_of_lt (Nat.floor_mono (le_add_of_nonneg_right hH.le)) hj1,
+      Nat.le_floor (by exact (show (j:ℝ) ≤ L by exact_mod_cast hj2).trans hL)⟩
+  have hmass : ∑ j ∈ I, |a j| ≤ D*H := calc
+    _ ≤ ∑ j ∈ wallIntegerWindow t (B*H), |a j| :=
+      Finset.sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => abs_nonneg _
+    _ ≤ (C+2)*(B*H) := width_mangoldt_abs hM ht1 (hlowH.trans hHB) hup
+    _ = _ := by dsimp only [D]; ring
+  have hweight (j : ℕ) (hj : j ∈ I) : |w j-γ/H| ≤ δ/H := by
+    obtain ⟨hj1,hj2⟩ := Finset.mem_Ioc.mp hj
+    have hinc : (b:ℝ)+1 ≤ j := by exact_mod_cast hj1
+    have hlow := (Nat.lt_floor_add_one (Real.exp t+H)).trans_le hinc
+    have hhigh := (show (j:ℝ) ≤ L by exact_mod_cast hj2).trans hL
+    have h := (hw j hlow hhigh).le
+    apply (le_div_iff₀ hH).2
+    calc |w j-γ/H| *H = |(w j-γ/H)*H| := by rw [abs_mul,abs_of_pos hH]
+         _ = |H*w j-γ| := by congr 1; field_simp [hH.ne']; ring
+         _ ≤ δ := h
+  have hQ : |centeredAbelPrefix b L| ≤ D*H := (Finset.abs_sum_le_sum_abs a I).trans hmass
+  have hprice : δ/H*(D*H) = ε/4 := by dsimp only [δ]; field_simp [hH.ne',hD.ne']
+  have hend : |(w L-γ/H)*centeredAbelPrefix b L| ≤ ε/4 := by
+    rw [abs_mul]
+    exact (mul_le_mul (hweight L (Finset.mem_Ioc.mpr ⟨hbL,le_rfl⟩)) hQ (abs_nonneg _)
+      (div_nonneg hδ.le hH.le)).trans_eq hprice
+  have htotal : |∑ j ∈ I, a j*(w j-γ/H)| ≤ ε/4 := by
+    apply (Finset.abs_sum_le_sum_abs _ _).trans
+    calc _ ≤ ∑ j ∈ I, δ/H*|a j| := Finset.sum_le_sum fun j hj => by
+             rw [abs_mul,mul_comm (δ/H)]
+             exact mul_le_mul_of_nonneg_left (hweight j hj) (abs_nonneg _)
+         _ ≤ _ := by rw [← Finset.mul_sum]; exact (mul_le_mul_of_nonneg_left hmass
+           (div_nonneg hδ.le hH.le)).trans_eq hprice
+  have hid := centeredAbelPrefix_by_parts (fun j => w j-γ/H) (b := b) le_rfl hbL.le
+  simp only [centeredAbelPrefix,Finset.Ioc_self,Finset.sum_empty,mul_zero,sub_zero,
+    sub_sub_sub_cancel_right] at hid
+  have hab : |∑ j ∈ Finset.Ico b L, centeredAbelPrefix b j*(w j-w (j+1))| ≤ ε/4+ε/4 := by
+    have hv : (∑ j ∈ Finset.Ico b L, centeredAbelPrefix b j*(w j-w (j+1))) =
+        (∑ j ∈ I, a j*(w j-γ/H))-(w L-γ/H)*centeredAbelPrefix b L := eq_sub_of_add_eq' hid.symm
+    rw [hv]
+    exact (abs_sub ..).trans (add_le_add htotal hend)
+  exact (add_le_add hend hab).trans_lt (by linarith only [hε])
+
 /-- The oriented signed contribution at the critical width, in the original
 integer normalization. -/
 def criticalWidthSignedReading (Φ : ℝ → ℝ) (t : ℝ) : ℝ :=
@@ -381,8 +483,9 @@ theorem tendsto_criticalWidthSignedReading_sub_chebyshev {Φ : ℝ → ℝ} {m L
     have hη : 0 < η := lt_min zero_lt_one (div_pos hε (by positivity))
     have hη' : η ≤ 1 := min_le_left ..
     have he : 0 < e := div_pos hε (by positivity)
-    filter_upwards [hcap, criticalWallWidth_range hη hη',eventually_ge_atTop (1:ℝ),
-      eventually_outer_wall_atom hlaw hη he] with t htcap hrange ht hout
+    have hout := eventually_critical_band_wall_atom hlaw hη zero_lt_one he
+    simp only [one_mul] at hout
+    filter_upwards [hcap, criticalWallWidth_range hη hη',eventually_ge_atTop (1:ℝ),hout] with t htcap hrange ht hout
     let I := wallIntegerWindow t (η*H t)
     have hHpos : 0 < H t := hrange.1
     have hIH : η*H t ≤ H t := hrange.2.2.1
@@ -559,6 +662,27 @@ theorem riemannHypothesis_or_signed_critical_width_chebyshev_excess : RiemannHyp
   exact Or.inr ⟨W₀,F,Φ,_,hW,ht,hF,hc,he,hγ,rfl,hread,
     fun _ hε => frequently_signed_window_ge hγ hread hε⟩
 
+/-- One forced state has vanishing signed variation on every fixed adjacent
+critical band and an exponentially small remote rising cost on every late mask. -/
+theorem riemannHypothesis_or_adjacent_and_remote_abel : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ) (γ D : ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (W₀ : EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧ 0 < γ ∧ 0 ≤ D ∧
+      (∀ (B ε : ℝ), 1 ≤ B → 0 < ε → ∀ᶠ t : ℝ in atTop,
+        ∀ L : ℕ, ⌊Real.exp t+criticalWallWidth t⌋₊ < L →
+          (L:ℝ) ≤ Real.exp t+B*criticalWallWidth t → adjacentAbelDeviation Φ γ t L < ε) ∧
+      ∀ (T : ℝ) (A : Set ℝ), MeasurableSet A →
+        let f := fun t => remoteRisingAbelLoss Φ t*fractionalPrimeTest (T-t)
+        IntegrableOn f (A ∩ Ioi (T/6)) ∧ (∫ t in A ∩ Ioi (T/6), f t) ≤ D*Real.exp (-T/6) := by
+  rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hr | ⟨W₀,F,hW,ht,hF⟩
+  · exact Or.inl hr
+  obtain ⟨_,_,Φ,hc,he,_,_,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  obtain ⟨hL,_⟩ := criticalState_oriented_wall_limit hW ht hF hc he
+  obtain ⟨D,hD,hremote⟩ := criticalState_remote_rising_test hW ht hF hc he
+  exact Or.inr ⟨W₀,F,Φ,_,D,hW,ht,hF,hc,he,mul_pos (by positivity : 0 < Real.sqrt 2) hL,
+    hD,fun _ _ hB hε => criticalState_adjacent_abel_variation hW ht hF hc he hB hε,hremote⟩
+
+#print axioms riemannHypothesis_or_adjacent_and_remote_abel
 #print axioms lipschitz_adverse_critical_width_tendsto_zero
 #print axioms riemannHypothesis_or_signed_critical_width_chebyshev_excess
 end GaloisForLFunctions.ExclusionOfTheCriticalState

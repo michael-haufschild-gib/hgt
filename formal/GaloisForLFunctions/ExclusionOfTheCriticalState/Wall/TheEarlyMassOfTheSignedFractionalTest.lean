@@ -129,7 +129,9 @@ theorem early_signed_fractional_mass_of_confinement {Φ : ℝ → ℝ} (hc : Con
     (Complex.continuous_re.measurable.comp hmW).sub (by fun_prop)
   have h := early_fractional_mass (f := fun t => |S t|+|ordinaryPrimePolarError Φ t|)
     (mul_nonneg hM (Real.exp_pos _).le) (hmS.abs.add hmP.abs) hearly T
-  simp only [abs_of_nonneg (add_nonneg (abs_nonneg _) (abs_nonneg _))] at h
+  have hn (t : ℝ) : abs (|S t|+|ordinaryPrimePolarError Φ t|) =
+      |S t|+|ordinaryPrimePolarError Φ t| := abs_of_nonneg (add_nonneg (abs_nonneg _) (abs_nonneg _))
+  simp only [hn] at h
   refine ⟨h.1,h.2.trans_eq ?_⟩
   dsimp only [H]
   rw [show (5*U-T)/2 = 2*U+(U-T)/2 by ring,Real.exp_add]; ring
@@ -152,5 +154,22 @@ theorem riemannHypothesis_or_early_fractional_mass : RiemannHypothesis ∨
   obtain ⟨B,hB,h⟩ := early_signed_fractional_mass_of_confinement hc hC hb
   exact Or.inr ⟨W₀,F,Φ,B,hW,ht,hF,hc,he,hB,h⟩
 
+/-- The early part of the original fractional test at cutoff T/6, with the
+ordinary-prime and literal centered rows charged in absolute value. -/
+theorem riemannHypothesis_or_sixth_cutoff_fractional_mass : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ) (B : ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (W₀ : EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧ 0 ≤ B ∧
+      ∀ T : ℝ, 0 ≤ T →
+        let m := ∫ u, Φ u
+        let S := fun t : ℝ => (∑' n : ℕ, (vonMangoldt n-1)*continuousIntegerAtom Φ n t)-m/2
+        let f := fun t => (|S t|+|ordinaryPrimePolarError Φ t|)*fractionalPrimeTest (T-t)
+        IntegrableOn f (Iic (T/6)) ∧ (∫ t in Iic (T/6), f t) ≤ B*Real.exp (-T/12) := by
+  rcases riemannHypothesis_or_early_fractional_mass with hr | ⟨W₀,F,Φ,B,hW,ht,hF,hc,he,hB,h⟩
+  · exact Or.inl hr
+  refine Or.inr ⟨W₀,F,Φ,B,hW,ht,hF,hc,he,hB,fun T hT => ?_⟩
+  simpa only [show (5*(T/6)-T)/2 = -T/12 by ring] using h (T/6) (by positivity) T
+
+#print axioms riemannHypothesis_or_sixth_cutoff_fractional_mass
 #print axioms riemannHypothesis_or_early_fractional_mass
 end GaloisForLFunctions.ExclusionOfTheCriticalState

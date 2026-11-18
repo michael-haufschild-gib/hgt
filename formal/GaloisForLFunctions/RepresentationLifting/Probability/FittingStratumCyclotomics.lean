@@ -57,10 +57,11 @@ theorem fittingPolynomial_natDegree (d k : ℕ) : (fittingPolynomial d k).natDeg
       simpa using monic_X_pow_sub_C (1:ℤ) (Nat.succ_ne_zero (d+k))
     have he : ((X:ℤ[X])^(d+k+1)-1).natDegree = d+k+1 := by
       simpa using (natDegree_X_pow_sub_C (r := (1:ℤ)) (n := d+k+1))
-    rw [fittingPolynomial,natDegree_mul (mul_ne_zero (X_pow_ne_zero _) hu.ne_zero)
-      (fittingPolynomial_monic d k).ne_zero,natDegree_mul (X_pow_ne_zero _) hu.ne_zero,natDegree_X_pow,he]
-    rw [Nat.add_assoc (d+k+(d+k+1)),ih]
-    ring
+    rw [fittingPolynomial,natDegree_mul (mul_ne_zero (pow_ne_zero _ X_ne_zero) hu.ne_zero)
+      (fittingPolynomial_monic d k).ne_zero,natDegree_mul (pow_ne_zero _ X_ne_zero) hu.ne_zero,natDegree_X_pow,he]
+    calc
+      _ = (d+k+(d+k+1))+((fittingPolynomial d k).natDegree+d) := by omega
+      _ = _ := by rw [ih]; ring
 
 /-- Quotient after removing all (X-1) factors; its value at one is a
 strictly positive rising factorial. -/
@@ -103,14 +104,9 @@ stratum interval are divisible by its order. -/
 theorem fittingPolynomial_rootOfUnity {z : ℂ} {m : ℕ} (hm : 0 < m) (hz : IsPrimitiveRoot z m)
     (d k : ℕ) : (fittingPolynomial d k).eval₂ (Int.castRingHom ℂ) z = 0 ↔
       ∃ j ∈ range k, m ∣ d+j+1 := by
-  rw [fittingPolynomial_split,eval₂_mul,eval₂_pow,eval₂_X,eval₂_prod]
+  rw [fittingPolynomial_split,eval₂_mul,eval₂_pow,eval₂_X,eval₂_finsetProd]
   simp only [mul_eq_zero,pow_ne_zero _ (hz.ne_zero hm.ne'),false_or,Finset.prod_eq_zero_iff,
     eval₂_sub,eval₂_one,eval₂_pow,eval₂_X,sub_eq_zero,hz.pow_eq_one_iff_dvd]
-
-#print axioms fittingPolynomial_cyclotomic
-#print axioms fittingPolynomial_natDegree
-#print axioms fittingPolynomial_order_one
-#print axioms fittingPolynomial_rootOfUnity
 
 end
 end GaloisForLFunctions.RepresentationLifting.OperatorKernels

@@ -157,13 +157,3 @@ theorem joint_multiplicity (J : Subgroup G) (hHJ : H ≤ J) [Finite (G ⧸ J)]
   exact (Nat.card_congr e).trans (card_extensions J φ)
 
 end GaloisForLFunctions.HeckeLFunctions.CharacterExtensions
-
-#print axioms GaloisForLFunctions.HeckeLFunctions.CharacterExtensions.twist_value
-#print axioms GaloisForLFunctions.HeckeLFunctions.CharacterExtensions.count_values
-#print axioms GaloisForLFunctions.HeckeLFunctions.CharacterExtensions.evaluation_range
-#print axioms GaloisForLFunctions.HeckeLFunctions.CharacterExtensions.evaluation_multiplicity
-#print axioms GaloisForLFunctions.HeckeLFunctions.CharacterExtensions.power_value
-#print axioms GaloisForLFunctions.HeckeLFunctions.CharacterExtensions.value_occurs_iff
-#print axioms GaloisForLFunctions.HeckeLFunctions.CharacterExtensions.value_multiplicity
-#print axioms GaloisForLFunctions.HeckeLFunctions.CharacterExtensions.joint_multiplicity
-#print axioms GaloisForLFunctions.HeckeLFunctions.CharacterExtensions.twistEquiv

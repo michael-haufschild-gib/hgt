@@ -112,10 +112,5 @@ theorem fittingZeta_product (n : ℕ) (q : ℂ) :
     (∏ d ∈ range (n+1), polynomialCountZeta (fittingPolynomial d (n-d)) q) = geom (q^(n*n)) := by
   rw [← polynomialZeta_sum,sum_fittingPolynomial,zeta_X_pow]
 
-#print axioms fittingPolynomial_eval
-#print axioms fittingPointSeries_extension
-#print axioms sum_fittingPolynomial
-#print axioms nilpotentCone_zeta
-#print axioms fittingZeta_product
 end
 end GaloisForLFunctions.RepresentationLifting.OperatorKernels

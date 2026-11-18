@@ -13,7 +13,8 @@ at eighth order and the interior curvature at fifth order.
 -/
 
 noncomputable section
-open Finset ArithmeticFunction MeasureTheory Set
+open Finset ArithmeticFunction MeasureTheory
+open scoped ContDiff
 open GaloisForLFunctions.CountingHolography.Sections
 open GaloisForLFunctions.BezoutValuationIncidence
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
@@ -46,7 +47,7 @@ theorem monotone_shell_conductors {u w : ℕ → ℕ} (hu : Monotone u) (hw : Mo
     refine ⟨N + 1, N + 1, Nat.lt_succ_self N, le_rfl, Nat.succ_le_succ hNM, ?_⟩
     rw [hne, Ico_self]
 
-private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Ioi 0))
+private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Set.Ioi 0))
     {n : ℕ} (hn : 0 < n) :
     (g n + g (n + 1 : ℕ)) / 2 - (∫ t in (n : ℝ)..((n + 1 : ℕ) : ℝ), g t) =
       -∫ s in (0 : ℝ)..1, (s * (s - 1) / 2) * iteratedDeriv 2 g ((n : ℝ) + s) := by
@@ -56,29 +57,25 @@ private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Ioi
     refine hg.continuousOn.comp_continuous (continuous_const.max (continuous_const.add continuous_id))
       fun u => (by norm_num : (0 : ℝ) < 1 / 2).trans_le (le_max_left _ _)
   have hf_eq : ∀ u : ℝ, -1 / 2 < u → f_pos u = g ((n : ℝ) + u) := fun u hu => by
-    dsimp [f_pos]
+    dsimp only [f_pos]
     rw [max_eq_right (by linarith)]
   let K := fun s : ℝ =>
     (s - 1 / 2) * g ((n : ℝ) + s) - (s * (s - 1) / 2) * deriv g ((n : ℝ) + s) -
       ∫ u in (0 : ℝ)..s, f_pos u
-  have hd_g1 : ContDiffOn ℝ 1 (deriv g) (Ioi 0) := by
-    have heq : EqOn (derivWithin g (Ioi 0)) (deriv g) (Ioi 0) :=
-      fun z hz => ((hg.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ 2)).differentiableOn le_rfl z hz)
-        |>.differentiableAt (isOpen_Ioi.mem_nhds hz) |>.derivWithin (isOpen_Ioi.uniqueDiffWithinAt hz)
-    exact (hg.derivWithin isOpen_Ioi.uniqueDiffOn (m := 1) (by norm_num)).congr heq
-  have hdK : ∀ s ∈ uIcc (0 : ℝ) 1,
+  have hd_g1 : ContDiffOn ℝ 1 (deriv g) (Set.Ioi 0) :=
+    hg.deriv_of_isOpen isOpen_Ioi (by norm_num)
+  have hdK : ∀ s ∈ Set.uIcc (0 : ℝ) 1,
       HasDerivAt K (-((s * (s - 1) / 2) * iteratedDeriv 2 g ((n : ℝ) + s))) s := by
     intro s hs
-    rw [uIcc_of_le zero_le_one] at hs
+    rw [Set.uIcc_of_le zero_le_one] at hs
     have ht0 : (0 : ℝ) < (n : ℝ) + s := by linarith [hs.1]
     have hshift : HasDerivAt (fun r : ℝ => (n : ℝ) + r) 1 s :=
       (hasDerivAt_id s).const_add (n : ℝ)
     have hdg : HasDerivAt g (deriv g ((n : ℝ) + s)) ((n : ℝ) + s) :=
-      ((hg.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ 2)).differentiableOn le_rfl _ ht0)
-        |>.differentiableAt (isOpen_Ioi.mem_nhds ht0) |>.hasDerivAt
+      ((hg.differentiableOn (by simp) _ ht0).differentiableAt (isOpen_Ioi.mem_nhds ht0)).hasDerivAt
     have hddg : HasDerivAt (deriv g) (iteratedDeriv 2 g ((n : ℝ) + s)) ((n : ℝ) + s) := by
-      have hd := (hd_g1.differentiableOn le_rfl _ ht0).differentiableAt
-        (isOpen_Ioi.mem_nhds ht0) |>.hasDerivAt
+      have hd := ((hd_g1.differentiableOn (by simp) _ ht0).differentiableAt
+        (isOpen_Ioi.mem_nhds ht0)).hasDerivAt
       rwa [show deriv (deriv g) ((n : ℝ) + s) = iteratedDeriv 2 g ((n : ℝ) + s) by
         rw [show (2 : ℕ) = 1 + 1 from rfl, iteratedDeriv_succ, iteratedDeriv_one]] at hd
     have h1 : HasDerivAt (fun r => (r - 1 / 2) * g ((n : ℝ) + r))
@@ -86,7 +83,7 @@ private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Ioi
       ((hasDerivAt_id s).sub_const (1 / 2)).mul (hdg.comp s hshift)
     have hpoly : HasDerivAt (fun r : ℝ => r * (r - 1) / 2) (s - 1 / 2) s := by
       have h := ((hasDerivAt_id s).mul ((hasDerivAt_id s).sub_const 1)).div_const 2
-      exact h.congr_deriv (by ring)
+      exact h.congr_deriv (by dsimp only [id]; ring)
     have h2 : HasDerivAt (fun r => (r * (r - 1) / 2) * deriv g ((n : ℝ) + r))
         ((s - 1 / 2) * deriv g ((n : ℝ) + s) +
           (s * (s - 1) / 2) * (iteratedDeriv 2 g ((n : ℝ) + s) * 1)) s :=
@@ -94,19 +91,15 @@ private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Ioi
     have h3 : HasDerivAt (fun r => ∫ u in (0 : ℝ)..r, f_pos u) (g ((n : ℝ) + s)) s := by
       rw [← hf_eq s (by linarith [hs.1])]
       exact (hf_cont.integral_hasStrictDerivAt 0 s).hasDerivAt
-    exact ((h1.sub h2).sub h3).congr_deriv (by ring)
+    exact ((h1.sub h2).sub h3).congr_deriv (by dsimp only [id, Function.comp_apply]; ring)
   have hint_rhs : IntervalIntegrable
       (fun s : ℝ => -((s * (s - 1) / 2) * iteratedDeriv 2 g ((n : ℝ) + s))) volume 0 1 := by
     refine ContinuousOn.intervalIntegrable ?_
-    rw [uIcc_of_le zero_le_one]
-    have hcd2 : ContinuousOn (iteratedDeriv 2 g) (Ioi 0) := by
-      have heq1 : EqOn (derivWithin (deriv g) (Ioi 0)) (iteratedDeriv 2 g) (Ioi 0) := by
-        intro z hz
-        have hd := (hd_g1.differentiableOn le_rfl z hz).differentiableAt
-          (isOpen_Ioi.mem_nhds hz) |>.derivWithin (isOpen_Ioi.uniqueDiffWithinAt hz)
-        rwa [show deriv (deriv g) z = iteratedDeriv 2 g z by
-          rw [show (2 : ℕ) = 1 + 1 from rfl, iteratedDeriv_succ, iteratedDeriv_one]] at hd
-      exact (hd_g1.continuousOn_derivWithin isOpen_Ioi.uniqueDiffOn le_rfl).congr heq1
+    rw [Set.uIcc_of_le zero_le_one]
+    have hcd2 : ContinuousOn (iteratedDeriv 2 g) (Set.Ioi 0) := by
+      have hc := hd_g1.continuousOn_deriv_of_isOpen isOpen_Ioi le_rfl
+      rwa [show deriv (deriv g) = iteratedDeriv 2 g by
+        rw [show (2 : ℕ) = 1 + 1 from rfl, iteratedDeriv_succ, iteratedDeriv_one]] at hc
     refine ContinuousOn.neg (((continuousOn_id.mul (continuousOn_id.sub continuousOn_const)).div_const 2).mul ?_)
     exact hcd2.comp (continuousOn_const.add continuousOn_id) fun s hs => by linarith [hs.1]
   have hftc := intervalIntegral.integral_eq_sub_of_hasDerivAt hdK hint_rhs
@@ -114,22 +107,22 @@ private theorem trapezoidal_step {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Ioi
   have hint_eq : (∫ u in (0 : ℝ)..1, f_pos u) = ∫ t in (n : ℝ)..((n + 1 : ℕ) : ℝ), g t := by
     have hcongr : ∫ u in (0 : ℝ)..1, f_pos u = ∫ u in (0 : ℝ)..1, g ((n : ℝ) + u) := by
       refine intervalIntegral.integral_congr fun u hu => ?_
-      rw [uIcc_of_le zero_le_one] at hu
+      rw [Set.uIcc_of_le zero_le_one] at hu
       exact hf_eq u (by linarith [hu.1])
-    rw [hcongr, intervalIntegral.integral_comp_add_left]
-    push_cast; ring_nf
+    rw [hcongr, intervalIntegral.integral_comp_add_left g (n : ℝ), add_zero]
+    push_cast; rfl
   have hK1 : K 1 = (1 / 2 : ℝ) * g (n + 1 : ℕ) - ∫ t in (n : ℝ)..((n + 1 : ℕ) : ℝ), g t := by
-    dsimp [K]
+    dsimp only [K]
     rw [hint_eq]
     push_cast
     ring
   have hK0 : K 0 = -(1 / 2 : ℝ) * g n := by
-    dsimp [K]; simp; ring
+    dsimp only [K]; simp; ring
   rw [hK1, hK0] at hftc
   linarith
 
 /-- Trapezoidal Euler-Maclaurin formula on `Ico a d` (`0 < a ≤ d`). -/
-theorem trapezoidal_euler_maclaurin_Ico {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Ioi 0))
+theorem trapezoidal_euler_maclaurin_Ico {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2 g (Set.Ioi 0))
     {a d : ℕ} (ha : 0 < a) (had : a ≤ d) :
     (∑ n ∈ Ico a d, g n) =
       (∫ t in (a : ℝ)..d, g t) - (g d - g a) / 2 -
@@ -143,11 +136,11 @@ theorem trapezoidal_euler_maclaurin_Ico {g : ℝ → ℝ} (hg : ContDiffOn ℝ 2
     have hstep := trapezoidal_step hg hd_pos
     have hint1 : IntervalIntegrable g volume (a : ℝ) (d : ℝ) := by
       refine (hg.continuousOn.mono ?_).intervalIntegrable
-      rw [uIcc_of_le (by exact_mod_cast had : (a : ℝ) ≤ d)]
+      rw [Set.uIcc_of_le (by exact_mod_cast had : (a : ℝ) ≤ d)]
       intro t ht; exact (Nat.cast_pos.mpr ha).trans_le ht.1
     have hint2 : IntervalIntegrable g volume (d : ℝ) ((d + 1 : ℕ) : ℝ) := by
       refine (hg.continuousOn.mono ?_).intervalIntegrable
-      rw [uIcc_of_le (by push_cast; linarith : (d : ℝ) ≤ (d + 1 : ℕ))]
+      rw [Set.uIcc_of_le (by push_cast; linarith : (d : ℝ) ≤ (d + 1 : ℕ))]
       intro t ht; exact (Nat.cast_pos.mpr hd_pos).trans_le ht.1
     rw [← intervalIntegral.integral_add_adjacent_intervals hint1 hint2]
     linarith
@@ -159,7 +152,7 @@ private theorem bdiff_iter_sub (r : ℕ) (f g : ℕ → ℝ) :
   | succ r ih =>
     rw [Function.iterate_succ_apply, Function.iterate_succ_apply, Function.iterate_succ_apply]
     have h1 : bdiff (fun j => f j - g j) = fun j => bdiff f j - bdiff g j := by
-      funext j; dsimp [bdiff]; ring
+      funext j; dsimp only [bdiff]; ring
     rw [h1, ih]
 
 private theorem bdiff_iter_const_mul (r : ℕ) (c : ℝ) (f : ℕ → ℝ) :
@@ -169,11 +162,11 @@ private theorem bdiff_iter_const_mul (r : ℕ) (c : ℝ) (f : ℕ → ℝ) :
   | succ r ih =>
     rw [Function.iterate_succ_apply, Function.iterate_succ_apply]
     have h1 : bdiff (fun j => c * f j) = fun j => c * bdiff f j := by
-      funext j; dsimp [bdiff]; ring
+      funext j; dsimp only [bdiff]; ring
     rw [h1, ih]
 
 private theorem bdiff_iter_intervalIntegral (r : ℕ) (H : ℕ → ℝ → ℝ)
-    (hcont : ∀ j, ContinuousOn (H j) (Icc 0 1)) (j : ℕ) :
+    (hcont : ∀ j, ContinuousOn (H j) (Set.Icc 0 1)) (j : ℕ) :
     bdiff^[r] (fun i => ∫ s in (0 : ℝ)..1, H i s) j =
       ∫ s in (0 : ℝ)..1, bdiff^[r] (fun i => H i s) j := by
   induction r generalizing j with
@@ -182,7 +175,7 @@ private theorem bdiff_iter_intervalIntegral (r : ℕ) (H : ℕ → ℝ → ℝ)
     rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
     dsimp only [bdiff]
     rw [ih j, ih (j + 1)]
-    have hi1 : ContinuousOn (fun s => bdiff^[r] (fun i => H i s) j) (Icc 0 1) := by
+    have hi1 : ContinuousOn (fun s => bdiff^[r] (fun i => H i s) j) (Set.Icc 0 1) := by
       clear ih
       induction r generalizing j with
       | zero => exact hcont j
@@ -191,7 +184,7 @@ private theorem bdiff_iter_intervalIntegral (r : ℕ) (H : ℕ → ℝ → ℝ)
             fun s => bdiff^[r] (fun i => H i s) j - bdiff^[r] (fun i => H i s) (j + 1) := by
           funext s; rw [Function.iterate_succ_apply']; rfl
         rw [heq]; exact (ihr j).sub (ihr (j + 1))
-    have hi2 : ContinuousOn (fun s => bdiff^[r] (fun i => H i s) (j + 1)) (Icc 0 1) := by
+    have hi2 : ContinuousOn (fun s => bdiff^[r] (fun i => H i s) (j + 1)) (Set.Icc 0 1) := by
       clear ih hi1
       induction r generalizing j with
       | zero => exact hcont (j + 1)
@@ -201,8 +194,8 @@ private theorem bdiff_iter_intervalIntegral (r : ℕ) (H : ℕ → ℝ → ℝ)
           funext s; rw [Function.iterate_succ_apply']; rfl
         rw [heq]; exact (ihr (j + 1)).sub (ihr (j + 2))
     rw [← intervalIntegral.integral_sub
-      (hi1.mono (by rw [uIcc_of_le zero_le_one])).intervalIntegrable
-      (hi2.mono (by rw [uIcc_of_le zero_le_one])).intervalIntegrable]
+      (hi1.mono (by rw [Set.uIcc_of_le zero_le_one])).intervalIntegrable
+      (hi2.mono (by rw [Set.uIcc_of_le zero_le_one])).intervalIntegrable]
 
 /-- Summing `n² · unitHorizonPair n q` across a conductor interval `Ico a d ⊆ (N, 2N]`
 gains an extra derivative in the leading integral term, bounding the aggregate by
@@ -279,14 +272,14 @@ theorem conductor_interval_horizonPair_bound :
   have hG_em : ∀ j : ℕ, G j = I_seq j - B_seq j - R_seq j := by
     intro j
     let z := (j : ℝ) * q
-    have hcd : ContDiffOn ℝ 2 (fun t : ℝ => t * dyadicSpline (z / t ^ 2)) (Ioi 0) :=
+    have hcd : ContDiffOn ℝ 2 (fun t : ℝ => t * dyadicSpline (z / t ^ 2)) (Set.Ioi 0) :=
       (hasDerivAt_conductor_profile z zero_lt_one).1
     have hem := trapezoidal_euler_maclaurin_Ico hcd ha_pos had
-    dsimp [G, I_seq, B_seq, R_seq, H_curv, z] at hem ⊢
+    dsimp only [G, I_seq, B_seq, R_seq, H_curv, z] at hem ⊢
     rw [hem]
     congr 1
     refine sum_congr rfl fun n hn => intervalIntegral.integral_congr fun s hs => ?_
-    rw [uIcc_of_le zero_le_one] at hs
+    rw [Set.uIcc_of_le zero_le_one] at hs
     have ht0 : (0 : ℝ) < (n : ℝ) + s := by
       have : (1 : ℝ) ≤ n := by exact_mod_cast ha_pos.trans_le (mem_Ico.mp hn).1
       linarith [hs.1]
@@ -299,7 +292,6 @@ theorem conductor_interval_horizonPair_bound :
     rw [← sum_sub_distrib, ← sum_sub_distrib]
     exact sum_congr rfl fun j _ => by ring
   rw [hdecomp]
-  -- Support vanishing below j ≤ 8 and above j ≥ b for all t ∈ [a, d]
   have hlo_ratio : ∀ {j : ℕ} {t : ℝ}, j ≤ 8 → (N : ℝ) ≤ t →
       ((j : ℝ) * q) / t ^ 2 < Real.exp (-8) := by
     intro j t hj ht
@@ -324,21 +316,21 @@ theorem conductor_interval_horizonPair_bound :
       have : topScale * q < (b : ℝ) * q := mul_lt_mul_of_pos_right hb_fl hq'
       have hjb : (b : ℝ) * q ≤ (j : ℝ) * q :=
         mul_le_mul_of_nonneg_right (by exact_mod_cast hj) hq'.le
-      dsimp [topScale] at this
+      dsimp only [topScale] at this
       rw [div_mul_cancel₀ _ hq'.ne'] at this
       exact this.trans_le hjb
     exact (mul_lt_mul_of_pos_left htsq (by positivity)).trans hjq
   -- Bound 1: Integral piece I_seq (9th order, s = 7)
   have hI_zero_lo : ∀ j ≤ 8, I_seq j = 0 := by
     intro j hj
-    dsimp [I_seq]
+    dsimp only [I_seq]
     rw [intervalIntegral.integral_of_le had_le]
     apply setIntegral_eq_zero_of_forall_eq_zero; intro t ht
     rw [dyadicSpline_eq_zero_outside fun hs =>
       (hlo_ratio hj (hNa_le.trans ht.1.le)).not_ge hs.1, mul_zero]
   have hI_zero_hi : ∀ j, b ≤ j → I_seq j = 0 := by
     intro j hj
-    dsimp [I_seq]
+    dsimp only [I_seq]
     rw [intervalIntegral.integral_of_le had_le]
     apply setIntegral_eq_zero_of_forall_eq_zero; intro t ht
     have ht0 : 0 < t := ha'.trans ht.1
@@ -355,7 +347,7 @@ theorem conductor_interval_horizonPair_bound :
         (a : ℝ) ^ 2 * conductorSplineIntegral ((j : ℝ) * ((q : ℝ) / (a : ℝ) ^ 2)) -
           (d : ℝ) ^ 2 * conductorSplineIntegral ((j : ℝ) * ((q : ℝ) / (d : ℝ) ^ 2)) := by
       funext j
-      dsimp [I_seq]
+      dsimp only [I_seq]
       rw [integral_mul_dyadicSpline_inv_sq ha' had_le (by positivity)]
       congr 2 <;> ring_nf
     have hbdiff9 : ∀ j, |bdiff^[8] (fun i => I_seq i - I_seq (i + 1)) j| ≤
@@ -418,7 +410,7 @@ theorem conductor_interval_horizonPair_bound :
   -- Bound 2: Boundary piece B_seq (8th order, s = 6)
   have hB_zero_lo : ∀ j ≤ 7, B_seq j = 0 := by
     intro j hj
-    dsimp [B_seq]
+    dsimp only [B_seq]
     rw [dyadicSpline_eq_zero_outside fun hs =>
         (hlo_ratio (hj.trans (by decide)) (hNa_le.trans had_le)).not_ge hs.1,
       dyadicSpline_eq_zero_outside fun hs =>
@@ -426,7 +418,7 @@ theorem conductor_interval_horizonPair_bound :
     ring
   have hB_zero_hi : ∀ j, b ≤ j → B_seq j = 0 := by
     intro j hj
-    dsimp [B_seq]
+    dsimp only [B_seq]
     have hd2N' : (d : ℝ) ≤ ((2 * N + 1 : ℕ) : ℝ) := by exact_mod_cast hd2N
     rw [dyadicSpline_eq_zero_outside fun hs => (hhi_ratio hj hd' hd2N').not_ge hs.2,
       dyadicSpline_eq_zero_outside fun hs => (hhi_ratio hj ha' (had_le.trans hd2N')).not_ge hs.2]
@@ -440,7 +432,7 @@ theorem conductor_interval_horizonPair_bound :
     have hB_form : B_seq = fun j : ℕ =>
         ((d : ℝ) / 2) * dyadicSpline ((j : ℝ) * ((q : ℝ) / (d : ℝ) ^ 2)) -
           ((a : ℝ) / 2) * dyadicSpline ((j : ℝ) * ((q : ℝ) / (a : ℝ) ^ 2)) := by
-      funext j; dsimp [B_seq]; ring_nf
+      funext j; dsimp only [B_seq]; ring_nf
     have hbdiff8 : ∀ j, |bdiff^[7] (fun i => B_seq i - B_seq (i + 1)) j| ≤
         ((d : ℝ) / 2) * |(fwdDiff ((q : ℝ) / (d : ℝ) ^ 2))^[8] dyadicSpline
             ((j : ℝ) * ((q : ℝ) / (d : ℝ) ^ 2))| +
@@ -499,7 +491,7 @@ theorem conductor_interval_horizonPair_bound :
   -- Bound 3: Curvature remainder piece R_seq (5th order, s = 3)
   have hR_zero_lo : ∀ j ≤ 4, R_seq j = 0 := by
     intro j hj
-    dsimp [R_seq, H_curv]
+    dsimp only [R_seq, H_curv]
     apply sum_eq_zero; intro n hn
     rw [intervalIntegral.integral_of_le zero_le_one]
     apply setIntegral_eq_zero_of_forall_eq_zero; intro s hs
@@ -510,7 +502,7 @@ theorem conductor_interval_horizonPair_bound :
       (hlo_ratio (hj.trans (by decide)) hnN).not_ge hmem.1, zero_div, mul_zero]
   have hR_zero_hi : ∀ j, b ≤ j → R_seq j = 0 := by
     intro j hj
-    dsimp [R_seq, H_curv]
+    dsimp only [R_seq, H_curv]
     apply sum_eq_zero; intro n hn
     rw [intervalIntegral.integral_of_le zero_le_one]
     apply setIntegral_eq_zero_of_forall_eq_zero; intro s hs
@@ -529,10 +521,10 @@ theorem conductor_interval_horizonPair_bound :
       (fun j hj => by rw [hR_zero_lo j (by omega), hR_zero_lo (j + 1) (by omega), sub_self])
       (fun j hj => by rw [hR_zero_hi j hj, hR_zero_hi (j + 1) (by omega), sub_self])
     refine hp.trans ?_
-    have hHcont : ∀ n ∈ Ico a d, ∀ i : ℕ, ContinuousOn (H_curv i n) (Icc 0 1) := by
+    have hHcont : ∀ n ∈ Ico a d, ∀ i : ℕ, ContinuousOn (H_curv i n) (Set.Icc 0 1) := by
       intro n hn i
       have hn_pos : (0 : ℝ) < n := Nat.cast_pos.mpr (ha_pos.trans_le (mem_Ico.mp hn).1)
-      dsimp [H_curv]
+      dsimp only [H_curv]
       refine ((continuousOn_id.mul (continuousOn_id.sub continuousOn_const)).div_const 2).mul ?_
       refine ContinuousOn.div ?_ (continuousOn_const.add continuousOn_id) fun s hs => by linarith [hs.1]
       exact contDiff_four_conductorCurvatureProfile.continuous.comp_continuousOn
@@ -551,11 +543,11 @@ theorem conductor_interval_horizonPair_bound :
       rw [bdiff_iter_intervalIntegral 5 (H_curv · n) (hHcont n hn) j]
       have hcont_rhs : ContinuousOn (fun s : ℝ => (1 / (8 * (N : ℝ))) *
           |(fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[5] conductorCurvatureProfile
-            ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))|) (Icc 0 1) := by
+            ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))|) (Set.Icc 0 1) := by
         have hn_pos : (0 : ℝ) < n := Nat.cast_pos.mpr (ha_pos.trans_le (mem_Ico.mp hn).1)
         have hstep_c : ∀ r : ℕ, ContinuousOn (fun s : ℝ =>
             (fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[r] conductorCurvatureProfile
-              ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) (Icc 0 1) := by
+              ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) (Set.Icc 0 1) := by
           intro r
           have heq_r : (fun s : ℝ => (fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[r]
               conductorCurvatureProfile ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) =
@@ -582,8 +574,8 @@ theorem conductor_interval_horizonPair_bound :
               funext s; rw [Function.iterate_succ_apply']; rfl
             rw [heq']; exact (ihr j).sub (ihr (j + 1))
         exact continuousOn_const.mul (hstep_c 5).abs
-      have hcont_lhs : ContinuousOn (fun s => bdiff^[5] (fun i => H_curv i n s) j) (Icc 0 1) := by
-        suffices ∀ r k, ContinuousOn (fun s => bdiff^[r] (fun i => H_curv i n s) k) (Icc 0 1) from
+      have hcont_lhs : ContinuousOn (fun s => bdiff^[5] (fun i => H_curv i n s) j) (Set.Icc 0 1) := by
+        suffices ∀ r k, ContinuousOn (fun s => bdiff^[r] (fun i => H_curv i n s) k) (Set.Icc 0 1) from
           this 5 j
         intro r
         induction r with
@@ -596,15 +588,15 @@ theorem conductor_interval_horizonPair_bound :
             funext s; rw [Function.iterate_succ_apply']; rfl
           rw [heq']; exact (ihr k).sub (ihr (k + 1))
       rw [intervalIntegral.integral_of_le zero_le_one, intervalIntegral.integral_of_le zero_le_one]
-      refine (abs_integral_le_integral_abs).trans ?_
+      refine abs_integral_le_integral_abs.trans ?_
       refine setIntegral_mono_on
-        (hcont_lhs.abs.integrableOn_Icc.mono_set Ioc_subset_Icc_self)
-        (hcont_rhs.integrableOn_Icc.mono_set Ioc_subset_Icc_self)
+        (hcont_lhs.abs.integrableOn_Icc.mono_set Set.Ioc_subset_Icc_self)
+        (hcont_rhs.integrableOn_Icc.mono_set Set.Ioc_subset_Icc_self)
         measurableSet_Ioc fun s hs => ?_
       have heq_s : (fun i : ℕ => H_curv i n s) = fun i : ℕ =>
           ((s * (s - 1) / 2) / ((n : ℝ) + s)) *
             conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2)) := by
-        funext i; dsimp [H_curv]; ring
+        funext i; dsimp only [H_curv]; ring
       rw [heq_s, bdiff_iter_const_mul, bdiff_iter_sample_eq, abs_mul, abs_mul,
         abs_pow, abs_neg, abs_one, one_pow, one_mul]
       refine mul_le_mul_of_nonneg_right ?_ (abs_nonneg _)
@@ -639,7 +631,7 @@ theorem conductor_interval_horizonPair_bound :
                   conductorCurvatureProfile ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))|) volume 0 1 := by
               intro j _
               refine ContinuousOn.intervalIntegrable ?_
-              rw [uIcc_of_le zero_le_one]
+              rw [Set.uIcc_of_le zero_le_one]
               have heq_5 : (fun s : ℝ => (fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[5]
                   conductorCurvatureProfile ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) =
                   fun s : ℝ => (-1 : ℝ) ^ 5 * bdiff^[5] (fun i : ℕ =>
@@ -650,7 +642,7 @@ theorem conductor_interval_horizonPair_bound :
               rw [heq_5]
               refine (continuousOn_const.mul ?_).abs
               suffices ∀ r k, ContinuousOn (fun s : ℝ => bdiff^[r] (fun i : ℕ =>
-                  conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) k) (Icc 0 1) from
+                  conductorCurvatureProfile ((i : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))) k) (Set.Icc 0 1) from
                 this 5 j
               intro r
               induction r with
@@ -673,14 +665,14 @@ theorem conductor_interval_horizonPair_bound :
             exact (intervalIntegral.integral_finset_sum hint_j).symm
         _ ≤ ∑ _n ∈ Ico a d, (1 / (8 * (N : ℝ))) * (K5 * ((q : ℝ) / (N : ℝ) ^ 2) ^ 4) := by
             refine sum_le_sum fun n hn => ?_
-            rw [intervalIntegral.integral_of_le zero_le_one]
-            have hpoint : ∀ s ∈ Ioc (0 : ℝ) 1,
-                (∑ j ∈ range b, (1 / (8 * (N : ℝ))) *
+            have hpoint : ∀ s ∈ Set.uIoc (0 : ℝ) 1,
+                ‖∑ j ∈ range b, (1 / (8 * (N : ℝ))) *
                   |(fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[5]
-                    conductorCurvatureProfile ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))|) ≤
+                    conductorCurvatureProfile ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))|‖ ≤
                   (1 / (8 * (N : ℝ))) * (K5 * ((q : ℝ) / (N : ℝ) ^ 2) ^ 4) := by
               intro s hs
-              rw [← mul_sum]
+              rw [Set.uIoc_of_le zero_le_one] at hs
+              rw [Real.norm_of_nonneg (sum_nonneg fun _ _ => by positivity), ← mul_sum]
               refine mul_le_mul_of_nonneg_left ?_ (by positivity)
               have hnN : (N : ℝ) ≤ (n : ℝ) + s := by
                 have : (N : ℝ) ≤ n := hNa_le.trans (by exact_mod_cast (mem_Ico.mp hn).1)
@@ -695,29 +687,10 @@ theorem conductor_interval_horizonPair_bound :
               refine pow_le_pow_left₀ (by positivity) ?_ 4
               exact div_le_div_of_nonneg_left hq'.le (sq_pos_of_pos hN')
                 (pow_le_pow_left₀ hN'.le hnN 2)
-            calc (∫ s in Ioc (0 : ℝ) 1, ∑ j ∈ range b, _)
-                ≤ ∫ _s in Ioc (0 : ℝ) 1,
-                    (1 / (8 * (N : ℝ))) * (K5 * ((q : ℝ) / (N : ℝ) ^ 2) ^ 4) := by
-                  -- bound via norm_integral_le_of_norm_le_const on intervalIntegral!
-                  rw [← intervalIntegral.integral_of_le zero_le_one,
-                    ← intervalIntegral.integral_of_le zero_le_one]
-                  have hb_ivl := intervalIntegral.norm_integral_le_of_norm_le_const
-                    (a := (0 : ℝ)) (b := 1)
-                    (C := (1 / (8 * (N : ℝ))) * (K5 * ((q : ℝ) / (N : ℝ) ^ 2) ^ 4))
-                    (f := fun s => ∑ j ∈ range b, (1 / (8 * (N : ℝ))) *
-                      |(fwdDiff ((q : ℝ) / ((n : ℝ) + s) ^ 2))^[5]
-                        conductorCurvatureProfile ((j : ℝ) * ((q : ℝ) / ((n : ℝ) + s) ^ 2))|)
-                    fun s hs => by
-                      rw [uIoc_of_le zero_le_one] at hs
-                      rw [Real.norm_of_nonneg (sum_nonneg fun _ _ => by positivity)]
-                      exact hpoint s hs
-                  rw [Real.norm_of_nonneg (intervalIntegral.integral_nonneg zero_le_one
-                    fun s _ => sum_nonneg fun _ _ => by positivity),
-                    intervalIntegral.integral_const, sub_zero, one_smul] at hb_ivl ⊢
-                  exact hb_ivl.trans_eq (by ring)
-              _ = (1 / (8 * (N : ℝ))) * (K5 * ((q : ℝ) / (N : ℝ) ^ 2) ^ 4) := by
-                  rw [← intervalIntegral.integral_of_le zero_le_one,
-                    intervalIntegral.integral_const, sub_zero, one_smul]
+            have hb_ivl := intervalIntegral.norm_integral_le_of_norm_le_const hpoint
+            rw [Real.norm_of_nonneg (intervalIntegral.integral_nonneg zero_le_one
+              fun s _ => sum_nonneg fun _ _ => by positivity)] at hb_ivl
+            exact hb_ivl.trans_eq (by simp)
         _ ≤ (N : ℝ) * ((1 / (8 * (N : ℝ))) * (K5 * ((q : ℝ) / (N : ℝ) ^ 2) ^ 4)) := by
             rw [sum_const, nsmul_eq_mul]
             have hlen : ((d - a : ℕ) : ℝ) ≤ N := by exact_mod_cast (show d - a ≤ N by omega)
@@ -732,7 +705,6 @@ theorem conductor_interval_horizonPair_bound :
     calc C3 * (∑ j ∈ range b, |bdiff^[4] (fun i => R_seq i - R_seq (i + 1)) j|)
         ≤ C3 * (K5 * (q : ℝ) ^ 4 / (N : ℝ) ^ 8) := mul_le_mul_of_nonneg_left hsum_R hC3
       _ = C3 * K5 * (q : ℝ) ^ 4 / (N : ℝ) ^ 8 := by ring
-  -- Combine all three bounds
   have htri : |(∑ j ∈ range b, (I_seq j - I_seq (j + 1)) * centeredPrimeWeight 1 j) -
       (∑ j ∈ range b, (B_seq j - B_seq (j + 1)) * centeredPrimeWeight 1 j) -
       (∑ j ∈ range b, (R_seq j - R_seq (j + 1)) * centeredPrimeWeight 1 j)| ≤
@@ -771,7 +743,7 @@ theorem conductor_smoothed_shell_bound :
   let G := 2 * (1 + mass (1 + 1))
   have hG : 0 ≤ G := (abs_nonneg _).trans (innerJump_pointwise_bound 1 0)
   let E := Real.log 4 + 4
-  have hE : 0 ≤ E := by dsimp [E]; have := Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 4); positivity
+  have hE : 0 ≤ E := by dsimp only [E]; have := Real.log_nonneg (by norm_num : (1 : ℝ) ≤ 4); positivity
   refine ⟨G * K * E, by positivity, fun {u w} hu hw {N M} hN hNM hM2N hwM hbirth hgeom => ?_⟩
   let W := w M
   have hW1 : (1 : ℝ) ≤ W := by exact_mod_cast hwM
@@ -846,14 +818,14 @@ theorem conductor_smoothed_shell_bound :
   rw [hcomm_outer]
   let S_scale := (W : ℝ) ^ 8 / (N : ℝ) ^ 14 + (W : ℝ) ^ 7 / (N : ℝ) ^ 13 +
     (W : ℝ) ^ 4 / (N : ℝ) ^ 8
-  have hS_nonneg : 0 ≤ S_scale := by dsimp [S_scale]; positivity
+  have hS_nonneg : 0 ≤ S_scale := by dsimp only [S_scale]; positivity
   suffices hrow : ∀ p ∈ (Ioc 4 W).filter Nat.Prime,
       |∑ v ∈ (Icc 1 (min (W / p) M)).filter (p.Coprime ·),
           innerJump 1 v * ∑ n ∈ (Ioc N M).filter (fun n => v ≤ n ∧ u n < p * v ∧ p * v ≤ w n),
             (n : ℝ) ^ 2 * unitHorizonPair n (p * v)| ≤
         (G * K * (W : ℝ) * S_scale) / p by
     refine (ordinaryFactorTail_reciprocal hwM (by positivity : 0 ≤ G * K * (W : ℝ) * S_scale) hrow).trans_eq ?_
-    dsimp [S_scale, E]
+    dsimp only [S_scale, E]
     ring
   intro p hp
   have hp0 := (mem_filter.mp hp).2.pos
@@ -875,7 +847,7 @@ theorem conductor_smoothed_shell_bound :
     refine mul_le_mul (innerJump_pointwise_bound 1 v)
       ((hcond hN hNa had hd2N hq_pos hq_birth).trans ?_) (abs_nonneg _) hG
     refine mul_le_mul_of_nonneg_left ?_ hK
-    dsimp [S_scale]
+    dsimp only [S_scale]
     refine add_le_add (add_le_add ?_ ?_) ?_
     · exact div_le_div_of_nonneg_right (pow_le_pow_left₀ (Nat.cast_nonneg _) hprod' 8) (by positivity)
     · exact div_le_div_of_nonneg_right (pow_le_pow_left₀ (Nat.cast_nonneg _) hprod' 7) (by positivity)

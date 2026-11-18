@@ -13,7 +13,7 @@ is another value of the same symbol: the cell indicator is idempotent.
 
 noncomputable section
 
-open Complex MeasureTheory Filter Finset Set
+open Complex MeasureTheory Filter Set
 open scoped Interval
 open GaloisForLFunctions.TransHorizonIncidenceMechanics
 
@@ -35,9 +35,8 @@ theorem lastQuotientClassSymbol_eq_tsum_cells {q : ℕ} (hq : 2≤q) {s : ℂ} (
   have hu : 0<u := one_div_pos.mpr hp
   have hhalf : u≤1/2 := one_div_le_one_div_of_le (by norm_num) hqR
   let f := fun k : ℕ => q*(k+1)-1
-  have hf (k : ℕ) : f k+1=q*(k+1) := by
-    have hh := Nat.mul_pos (by omega : 0<q) (Nat.succ_pos k)
-    dsimp only [f]; omega
+  have hf (k : ℕ) : f k+1=q*(k+1) :=
+    Nat.sub_add_cancel (Nat.mul_pos (by omega : 0<q) (Nat.succ_pos k))
   have hinj : Function.Injective f := by
     intro i j e
     have hh := congrArg (·+1) e
@@ -63,7 +62,8 @@ theorem lastQuotientClassSymbol_eq_tsum_cells {q : ℕ} (hq : 2≤q) {s : ℂ} (
   have hd : q ∣ f k+1 := ⟨k+1,hf k⟩
   have hscale : (f k:ℝ)=(q:ℝ)*((k:ℝ)+1-u) := by
     have hcast : (f k:ℝ)+1=(q:ℝ)*((k:ℝ)+1) := by exact_mod_cast hf k
-    dsimp only [u]; field_simp; linear_combination (q:ℝ)*hcast
+    rw [mul_sub,← hcast,show (q:ℝ)*u=1 by simp [u,hp.ne']]
+    ring
   have hnext : (f k:ℝ)+1=(q:ℝ)*((k:ℝ)+1) := by exact_mod_cast hf k
   have hl : 0≤(k:ℝ)+1-u := by linarith only [hhalf,Nat.cast_nonneg k]
   simp only [F,lastCellIndicator,if_pos hd,ofReal_one,one_mul,cmellinCell,
@@ -96,11 +96,9 @@ private theorem bounded_step_mellin {A : ℕ → ℝ} (hA0 : A 0 = 0) (hA : ∀ 
       rw [intervalIntegral.integral_const, smul_eq_mul]; ring
     rw [← hconst]
     refine intervalIntegral.integral_mono_on (by linarith) ?_ (by simp) fun y hy => ?_
-    · exact (hk.mono (by
-        rw [← uIcc_of_le (show (n : ℝ) + 1 ≤ (n : ℝ) + 2 by linarith)]
-        intro z hz; rw [uIcc_of_le (by linarith)] at hz
-        exact le_trans (by linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]) hz.1)).norm.intervalIntegrable_of_Icc
-          (by linarith)
+    · have hsub : Set.Icc ((n:ℝ)+1) ((n:ℝ)+2) ⊆ Set.Ici 1 :=
+        fun _ hz => (le_add_of_nonneg_left (Nat.cast_nonneg n)).trans hz.1
+      exact (hk.mono hsub).norm.intervalIntegrable_of_Icc (by linarith)
     · have hy0 : (0 : ℝ) < y := by linarith [hy.1, (Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
       simp only [k]
       rw [Complex.norm_cpow_eq_rpow_re_of_pos hy0]
@@ -163,7 +161,7 @@ private theorem bounded_log_step {A : ℕ → ℝ} (hA : ∀ n, |A n| ≤ 1) {σ
     IntegrableOn.integrable_indicator (integrableOn_exp_mul_Iic ha 0) measurableSet_Iic
   have hnorm (u : ℝ) : ‖g u‖ ≤ H σ u := by
     by_cases hu : u ≤ 0
-    · rw [show H σ u=Real.exp (σ*u) from indicator_of_mem hu _]
+    · rw [show H σ u=Real.exp (σ*u) from Set.indicator_of_mem (Set.mem_Iic.mpr hu) _]
       simp only [g,logStepSource,norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _)]
       apply mul_le_of_le_one_right (Real.exp_pos _).le
       unfold stepSource
@@ -180,10 +178,8 @@ private theorem bounded_log_step {A : ℕ → ℝ} (hA : ∀ n, |A n| ≤ 1) {σ
   rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
   apply (pow_le_pow_left₀ (norm_nonneg _) (hnorm u) 2).trans_eq
   by_cases hu : u ≤ 0
-  · simp only [H,Set.indicator_of_mem (mem_Iic.mpr hu),← Real.exp_nat_mul]
-    congr 1
-    push_cast
-    ring
+  · simp only [H,Set.indicator_of_mem (Set.mem_Iic.mpr hu)]
+    rw [sq,← Real.exp_add,show σ*u+σ*u=2*σ*u by ring]
   · simp [H,hu]
 
 /-- Pairing two quotient classes intersects their divisibility conditions,
@@ -211,18 +207,23 @@ theorem lastQuotientClassSymbol_crossEnergy {q r : ℕ} (hq : 2 ≤ q) (hr : 2 �
   have hlcm : 2 ≤ q.lcm r := hq.trans (Nat.le_of_dvd
     (Nat.lcm_pos (by omega : 0 < q) (by omega : 0 < r)) (Nat.dvd_lcm_left q r))
   have hs : (2*( -σ):ℝ) = -(2*σ) := by ring
-  rw [hs,ofReal_neg,mellin_lastCellIndicator hlcm (by simp; linarith only [hσ])] at h
+  have hend : mellin (A (q.lcm r)) ((2*(-σ):ℝ):ℂ) =
+      lastQuotientClassSymbol (q.lcm r) (2*σ:ℝ)/((2*σ:ℝ):ℂ) := by
+    rw [hs,ofReal_neg]
+    exact mellin_lastCellIndicator hlcm (by simpa only [ofReal_re] using
+      (mul_pos (by norm_num : (0:ℝ)<2) hσ))
+  rw [hend] at h
   have ht (a : ℕ) (ha : 2 ≤ a) (t : ℝ) :
       mellin (A a) ((-σ:ℝ)+t*I) =
-      lastQuotientClassSymbol a ((σ:ℂ)+(-t)*I)/((σ:ℂ)+(-t)*I) := by
-    rw [show ((-σ:ℝ):ℂ)+t*I = -((σ:ℂ)+(-t)*I) by push_cast; ring]
+      lastQuotientClassSymbol a ((σ:ℂ)+((-t:ℝ):ℂ)*I)/((σ:ℂ)+((-t:ℝ):ℂ)*I) := by
+    rw [show ((-σ:ℝ):ℂ)+t*I = -((σ:ℂ)+((-t:ℝ):ℂ)*I) by push_cast; ring]
     exact mellin_lastCellIndicator ha (by simpa using hσ)
   simp_rw [ht r hr,ht q hq] at h
   let f (t : ℝ) := (starRingEnd ℂ) (lastQuotientClassSymbol r ((σ:ℂ)+t*I)/((σ:ℂ)+t*I)) *
     (lastQuotientClassSymbol q ((σ:ℂ)+t*I)/((σ:ℂ)+t*I))
   change (∫ t : ℝ, f (-t)) = _ at h
   rw [MeasureTheory.integral_neg_eq_self] at h
-  exact h.trans (by push_cast; field_simp)
+  exact h.trans (by push_cast; field_simp [Complex.ofReal_ne_zero.mpr hσ.ne'] <;> ring)
 
 /-- Exact energy on a vertical line. Its dependence on the width is given by
 the real symbol at twice the real part. -/
@@ -265,10 +266,11 @@ theorem lastQuotientClassSymbol_tail_energy (q M : ℕ) (hM : 1 ≤ M) {σ : ℝ
   have hline := _root_.RHTower.integral_norm_sq_mellin_line_eq_logMellinLineSource hI.1 hI.2
   have h0 : A 0=0 := by simp [A,lastCellTail]
   have ht (t : ℝ) : mellin (stepSource A) ((-σ:ℝ)+t*I) =
-      (∑' n, (A n:ℂ)*cmellinCell ((σ:ℂ)+(-t)*I) n)/((σ:ℂ)+(-t)*I) := by
-    rw [show ((-σ:ℝ):ℂ)+t*I = -((σ:ℂ)+(-t)*I) by push_cast; ring]
+      (∑' n, (A n:ℂ)*cmellinCell ((σ:ℂ)+((-t:ℝ):ℂ)*I) n)/((σ:ℂ)+((-t:ℝ):ℂ)*I) := by
+    rw [show ((-σ:ℝ):ℂ)+t*I = -((σ:ℂ)+((-t:ℝ):ℂ)*I) by push_cast; ring]
     exact bounded_step_mellin h0 (lastCellTail_abs q M) (by simpa using hσ)
   let F (t : ℝ) := ‖(∑' n, (A n:ℂ)*cmellinCell ((σ:ℂ)+t*I) n)/((σ:ℂ)+t*I)‖^2
+  change (∫ t : ℝ, ‖mellin (stepSource A) ((-σ:ℝ)+t*I)‖^2) = 2*Real.pi*∫ u, ‖G u‖^2 at hline
   simp_rw [ht] at hline
   change (∫ t, F (-t)) = 2*Real.pi*∫ u, ‖G u‖^2 at hline
   rw [MeasureTheory.integral_neg_eq_self] at hline

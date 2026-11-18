@@ -154,9 +154,3 @@ theorem upper_radius_extremum {p r : ℝ} (hp : 1<p) (hr : 0≤r) (hrp : r<p)
     ring
 
 end GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan
-
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.disk_identity
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.fraction_involution
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.image_disk
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.critical_disk
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujan.upper_radius_extremum

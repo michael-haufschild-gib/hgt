@@ -179,10 +179,5 @@ theorem wellEigenMode_endpoint (l x : ℝ) :
     ((Real.exp (Real.exp l*x)+Real.exp (-(Real.exp l*x)))/2) =
     ((Real.exp (Real.exp l*x)+Real.exp (-(Real.exp l*x)))*wellEigenMode (Real.exp l) (Real.exp l) x)/2 by ring]
 
-#print axioms primitive_collocation_nonsingular
-#print axioms wellEigenMode_minor_pos
-#print axioms wellEigenMode_pos_iff
-#print axioms wellEigenMode_endpoint
-
 end
 end GaloisForLFunctions.HTGeometry.Darboux

@@ -141,10 +141,3 @@ theorem dyadic_torsion_layer (s k : ℕ) :
       simp [h,min_eq_left h₁,min_eq_left h₂]
 
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicUnits
-
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicUnits.torsionCount_congr
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicUnits.torsionCount_prod
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicUnits.torsionCount_cycle
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicUnits.dyadic_torsion
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicUnits.dyadic_torsion_layer
-#print axioms GaloisForLFunctions.ArithmeticHarmonicAnalysis.DyadicUnits.decomposition

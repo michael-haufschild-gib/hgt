@@ -191,7 +191,7 @@ private theorem log_line_nonzero {f : ℝ → ℂ} (hf : Measurable f) {δ A : �
   have hdom (x : ℝ) : ‖G x‖ ≤ A*H 2 x := by
     by_cases hx : x≤U
     · simp only [G,_root_.RHTower.logMellinLineSource,norm_smul,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _),
-        neg_neg,H,indicator_of_mem (mem_Iic.mpr hx)]
+        neg_neg,H,Set.indicator_of_mem (Set.mem_Iic.mpr hx)]
       apply (mul_le_mul_of_nonneg_left (hb _ (Real.exp_pos _)) (Real.exp_pos _).le).trans_eq
       rw [mul_left_comm,← Real.exp_add,show 3*x+-x=2*x by ring]
     · have he : Real.exp (-x)<δ := (Real.exp_lt_exp.mpr (by
@@ -206,7 +206,7 @@ private theorem log_line_nonzero {f : ℝ → ℂ} (hf : Measurable f) {δ A : �
     apply (pow_le_pow_left₀ (norm_nonneg _) (hdom x) 2).trans_eq
     rw [mul_pow]
     by_cases hx : x≤U
-    · simp only [H,indicator_of_mem (mem_Iic.mpr hx),sq,← Real.exp_add,show 2*x+2*x=4*x by ring]
+    · simp only [H,Set.indicator_of_mem (Set.mem_Iic.mpr hx),sq,← Real.exp_add,show 2*x+2*x=4*x by ring]
     · simp [H,hx]
   have hLp : MemLp G 2 volume := (memLp_two_iff_integrable_sq_norm hG).mpr hsq
   have he := _root_.RHTower.integral_norm_sq_mellin_line_eq_logMellinLineSource hL hLp

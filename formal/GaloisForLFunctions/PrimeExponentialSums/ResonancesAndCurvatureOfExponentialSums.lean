@@ -39,7 +39,9 @@ theorem pair_dispersion (s : Finset ι) (w : ι → NNReal) (f : ι → ℝ) (x 
       ∑ i ∈ s, ∑ j ∈ s, (w i : ℝ)*(w j : ℝ)*(1-Real.cos (2*Real.pi*((f i-f j)*x))) := by
   let u (i : ι) := ((w i : ℝ) : ℂ)*ex (f i*x)
   have hu (i : ι) : ‖u i‖ = (w i : ℝ) := by
-    rw [u,norm_mul,norm_ex,mul_one,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (w i).property]
+    change ‖((w i : ℝ) : ℂ)*ex (f i*x)‖ = _
+    rw [norm_mul,norm_ex,mul_one,Complex.norm_real,Real.norm_eq_abs]
+    exact abs_of_nonneg (w i).property
   have h := RiemannGaussian.finiteComplexPhaseDispersion_eq_variation_sq_sub_norm_sum_sq s u
   simp only [hu] at h
   rw [show mass s w^2-amplitude s w f x^2 = RiemannGaussian.finiteComplexPhaseDispersion s u from h.symm]
@@ -82,8 +84,8 @@ theorem full_amplitude_iff (s : Finset ι) (w : ι → NNReal) (f : ι → ℝ) 
       · simp [D,h₁]
       by_cases h₂ : (w j : ℝ)=0
       · simp [D,h₂]
-      have hc := (integral_cos _).2 (h i hi (lt_of_le_of_ne (w i).property h₁.symm)
-        j hj (lt_of_le_of_ne (w j).property h₂.symm))
+      have hc := (integral_cos _).2 (h i hi (lt_of_le_of_ne (w i).property (Ne.symm h₁))
+        j hj (lt_of_le_of_ne (w j).property (Ne.symm h₂)))
       simp only [D,hc,sub_self,mul_zero]
     rw [hzero] at he
     exact (sq_eq_sq₀ (norm_nonneg _) hm).mp (sub_eq_zero.mp he).symm
@@ -135,7 +137,8 @@ private theorem cos_sinc (y x : ℝ) :
   have h := HTGeometry.sq_mul_sinc_sq_eq_normalized_cosDefect (m := 1) one_ne_zero hx (2*Real.pi*y)
   rw [show 2*Real.pi*y/2=Real.pi*y by ring,show 2*Real.pi*y*x=2*Real.pi*(y*x) by ring] at h
   field_simp [hx] at h
-  linarith only [h]
+  rw [← mul_assoc (2*Real.pi) y x,← h]
+  ring
 
 theorem squared_loss_exact (s : Finset ι) (w : ι → NNReal) (f : ι → ℝ) (x : ℝ) :
     mass s w^2-amplitude s w f x^2 = x^2*curvature s w f x := by
@@ -167,7 +170,7 @@ theorem curvature_at_zero (s : Finset ι) (w : ι → NNReal) (f : ι → ℝ) :
 
 /-- The normalized loss of amplitude tends to twice pi squared times the
 unnormalized weighted variance. -/
-theorem amplitude_loss_limit (s : Finset ι) (w : ι → NNReal) (f : ι → ℝ) (hm : 0<mass s w) :
+theorem amplitude_loss_limit (s : Finset ι) (w : ι → NNReal) (f : ι → ℝ) (hm : 0 < mass s w) :
     Tendsto (fun x => (mass s w-amplitude s w f x)/x^2) (𝓝[≠] (0 : ℝ))
       (𝓝 (2*Real.pi^2*((∑ i ∈ s,(w i : ℝ)*(f i)^2) -
         (∑ i ∈ s,(w i : ℝ)*f i)^2/mass s w))) := by
@@ -193,11 +196,3 @@ theorem amplitude_loss_limit (s : Finset ι) (w : ι → NNReal) (f : ι → ℝ
   linarith only [h]
 
 end GaloisForLFunctions.PrimeExponentialSums.PhaseStability
-
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PhaseStability.pair_dispersion
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PhaseStability.full_amplitude_iff
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PhaseStability.resonance_lattice
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PhaseStability.squared_loss_exact
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PhaseStability.curvature_continuous
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PhaseStability.curvature_at_zero
-#print axioms GaloisForLFunctions.PrimeExponentialSums.PhaseStability.amplitude_loss_limit

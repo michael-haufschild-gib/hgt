@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.Codes.SeparatedWordBoxes
-import Mathlib.Data.ZMod.Basic
+import Mathlib.Algebra.Field.ZMod
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Projective pencil obstruction over the ternary field
@@ -40,11 +41,11 @@ private theorem two_affine_classes {m : ℕ} (v : Fin 3 → Fin m → Point)
     exact hv.2 g h hne i j 0 (by simp [pencilMinor,hi,hj])
   by_cases h₀ : ∀ i, (v 0 i).1 ≠ 0
   · by_cases h₁ : ∀ i, (v 1 i).1 ≠ 0
-    · exact ⟨0,1,by norm_num,h₀,h₁⟩
-    · exact ⟨0,2,by norm_num,h₀,clean 1 2 (by norm_num) h₁⟩
-  · exact ⟨1,2,by norm_num,clean 0 1 (by norm_num) h₀,clean 0 2 (by norm_num) h₀⟩
+    · exact ⟨0,1,by decide,h₀,h₁⟩
+    · exact ⟨0,2,by decide,h₀,clean 1 2 (by decide) h₁⟩
+  · exact ⟨1,2,by decide,clean 0 1 (by decide) h₀,clean 0 2 (by decide) h₀⟩
 
-private def affineCoordinates (p : Point) (k : Fin 3) : Fin 3 := p.2 k/p.1
+private def affineCoordinates (p : Point) (k : Fin 3) : Fin 3 := (p.2 k/p.1 : K)
 
 /-- Choi–Jang's projective chart bound already holds with three representatives
 per class, even allowing any one class to meet infinity. -/
@@ -133,10 +134,10 @@ theorem separatedPencils_two : ∃ v : Fin 3 → Fin 2 → Point, separatedPenci
   · have forward (g h : Fin 3) (gh : g<h) (i j : Fin 2) (k : Fin 3) :
         pencilMinor (v g i) (v h j) k ≠ 0 := by
       fin_cases g <;> fin_cases h <;> first
-        | exact (lt_irrefl _ gh).elim
-        | exact (by omega : False).elim
+        | exfalso; revert gh; decide
         | exact finite_left_right i j k
-        | exact finite_infinity _ rfl j k
+        | exact finite_infinity (finiteLeft i) rfl j k
+        | exact finite_infinity (finiteRight i) rfl j k
     intro g h gh i j k
     rcases lt_or_gt_of_ne gh with hl|hl
     · exact forward _ _ hl _ _ _
@@ -147,6 +148,5 @@ theorem separatedPencils_capacity :
     IsGreatest {m : ℕ | ∃ v : Fin 3 → Fin m → Point, separatedPencils v} 2 :=
   ⟨separatedPencils_two,fun _ ⟨v,hv⟩ => separatedPencils_card_le_two v hv⟩
 
-#print axioms separatedPencils_capacity
 end
 end GaloisForLFunctions.RepresentationLifting

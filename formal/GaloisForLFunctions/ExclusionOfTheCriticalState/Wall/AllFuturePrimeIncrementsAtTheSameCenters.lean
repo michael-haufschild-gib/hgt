@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.PrimeSupportAcrossLateCriticalWidthWindows
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TwoSidedPrimePrefixesAtAlmostEveryCenter
 import GaloisForLFunctions.RHTower.FermiNymanLogMobiusHead
 
 /-!
@@ -393,6 +394,39 @@ theorem riemannHypothesis_or_all_future_prefixes_at_favorable_state_centers : Ri
   obtain ⟨_,_,Φ,hc,he,_,_,_⟩ := criticalState_exists_continuous_representative hW ht hF
   exact Or.inr ⟨W₀,F,Φ,hW,ht,hF,hc,he,criticalState_all_future_prefixes_at_favorable_state_centers hW ht hF hc he⟩
 
+/-- Each late octave has positive mass for the original fractional test on
+centers with a favorable signed state reading and two-sided arithmetic
+control from both ends of the first window. -/
+theorem riemannHypothesis_or_signed_centers_with_two_sided_prefixes : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (W₀ : EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧
+      ∀ ε : ℝ, 0 < ε → ∃ κ : ℝ, 0 < κ ∧ ∀ᶠ X : ℝ in atTop,
+        ∃ A : Set ℝ, MeasurableSet A ∧ A ⊆ Ioc X (2*X) ∧ κ*X ≤ volume.real A ∧
+          κ/4 ≤ (∫ u in A, fractionalPrimeTest (Real.log X-Real.log u)*u⁻¹) ∧
+          ∀ u ∈ A, -ε < criticalWidthSignedReading Φ (Real.log u) ∧
+            ∀ z ∈ ({u,criticalPrimeWindowEnd u} : Set ℝ), ∀ y ≥ z,
+              |∑ n ∈ Finset.Ioc ⌊z⌋₊ ⌊y⌋₊, (ArithmeticFunction.vonMangoldt n-1)| ≤
+                ε*(y-z)+4*(2*X)^(1/5:ℝ)+1 := by
+  rcases riemannHypothesis_or_all_future_prefixes_at_favorable_state_centers with h |
+    ⟨W₀,F,Φ,hW,ht,hF,hc,he,hall⟩
+  · exact Or.inl h
+  refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hc,he,fun ε hε => ?_⟩
+  obtain ⟨_,κ,_,_,hκ,hgood⟩ := hall 2 ε (by norm_num) hε
+  have hhalf := half_pos hκ
+  have hp := two_sided_prefixes_on_prescribed_centers
+    (by norm_num : (1/6:ℝ) < 1/5) (by norm_num) hε hhalf
+  refine ⟨κ/2,hhalf,?_⟩
+  filter_upwards [hgood,hp,eventually_gt_atTop (0:ℝ)] with X hset hprefix hX
+  obtain ⟨A,hA,hAI,hmass,_,ha⟩ := hset
+  obtain ⟨G,hG,hGA,hvol,hboth⟩ := hprefix A hA (hAI.trans Ioc_subset_Icc_self)
+  have hGI := hGA.trans hAI
+  have hmassG : κ/2*X ≤ volume.real G := by linarith only [hmass,hvol]
+  have hk := (fractionalPrimeTest_mass_of_log_window_subset hG hX (by norm_num : (0:ℝ)<2) hGI hmassG).2
+  exact ⟨G,hG,hGI,hmassG,by simpa only [show (2:ℝ)^2=4 by norm_num] using hk,
+    fun u hu => ⟨(ha u (hGA hu)).1,hboth u hu⟩⟩
+
+#print axioms riemannHypothesis_or_signed_centers_with_two_sided_prefixes
 #print axioms riemannHypothesis_or_all_future_prefixes_at_favorable_state_centers
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

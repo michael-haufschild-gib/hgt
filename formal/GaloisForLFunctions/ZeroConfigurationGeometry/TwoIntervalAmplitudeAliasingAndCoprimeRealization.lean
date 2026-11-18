@@ -1754,10 +1754,4 @@ theorem exists_coprimeZeroOneSet_realizing_twoIntervalRadius {β γ : ℝ} {m Q 
   have hcons := mode_log_bound_consequences (θ_w := θ_w) hβ0 hγ hm hC₀ hθ_bound
   exact ⟨⟨C₀, hC₀, hθ_bound⟩, hcons⟩
 
-#print axioms not_isLogSqrtSqUnbounded_singleWaveLog_iff_alias
-#print axioms exists_lowOrdinate_oddHarmonicAlias_above_sixtySeven
-#print axioms multiFrequency_trigPoly_not_const_twoInterval
-#print axioms sublayer_perturbation_not_tendsto_zero
-#print axioms exists_coprimeZeroOneSet_realizing_twoIntervalRadius
-
 end GaloisForLFunctions.ZeroConfigurationGeometry

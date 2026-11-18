@@ -177,14 +177,12 @@ theorem unitHorizonPair_eighth_bound :
     simp only [x, sampledSpline_eq_zero_after hn hgt1, sampledSpline_eq_zero_after hn hgt2, sub_self]
   have hp := hper x b hx0 hxb
   refine hp.trans ?_
-  have hterm : (∑ j ∈ range b, |g ((j : ℝ) * h) - g (((j + 1 : ℕ) : ℝ) * h)|) ≥ 0 :=
-    sum_nonneg fun _ _ => abs_nonneg _
   have hdiff_eq : (∑ j ∈ range b, |GaloisForLFunctions.BezoutValuationIncidence.bdiff^[7] x j|) =
       (∑ j ∈ range b, |(fwdDiff h)^[8] dyadicSpline ((j : ℝ) * h)|) / (n : ℝ) := by
     rw [sum_div]
     refine sum_congr rfl fun j _ => ?_
     rw [hx_eq, abs_bdiff_iter_step_eq 7 g h j]
-    dsimp [g]
+    dsimp only [g]
     rw [fwdDiff_iter_div_const 8 dyadicSpline (n : ℝ) h ((j : ℝ) * h), abs_div, abs_of_pos hn']
   change C6 * (∑ j ∈ range b, |GaloisForLFunctions.BezoutValuationIncidence.bdiff^[7] x j|) ≤ _
   rw [hdiff_eq]
@@ -192,7 +190,7 @@ theorem unitHorizonPair_eighth_bound :
       ≤ C6 * ((K8 * h ^ 7) / (n : ℝ)) :=
         mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right (hsum8 hh hh1 b) hn'.le) hC6
     _ = C6 * K8 * (q : ℝ) ^ 7 / (n : ℝ) ^ 15 := by
-        dsimp [h]; field_simp [hn'.ne']; ring
+        dsimp only [h]; rw [div_pow, mul_div_right_comm K8, div_div]; ring
 
 /-- Uniform eighth-order bound for any detached shell `V < pv ≤ W`, uniformly in the
 complementary-factor cap `M`. -/

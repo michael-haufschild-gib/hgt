@@ -1,6 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ConductorSmoothingBeyondTheSplineKnots
-import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheSevenFourthsConductorShell
-import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheOneSidedCappedProductPrefix
+import GaloisForLFunctions.CountingHolography.Sections.TheSignedProductOverSquareConductors
 
 /-!
 # Conductor-smoothed shell savings and the seventeen-eighteenths prefix criterion
@@ -9,17 +8,17 @@ Combining eighth-order single-conductor quotient cancellation with ninth-order
 two-variable conductor-mesh smoothing resolves the `7/4` shell question and its
 neighbouring subquadratic shells:
 
-1. Pointwise on each conductor, `|sevenFourthsShell n| ≤ C · conductorLog n / n`,
-   giving `∑_{N < n ≤ M} n² |sevenFourthsShell n| ≤ C · N² · conductorLog N`.
+1. Pointwise on each conductor, `|powerProductShell (7 / 4) n| ≤ C · (1 + log(2n)) / n`,
+   giving `∑_{N < n ≤ M} n² |powerProductShell (7 / 4) n| ≤ C · N² · (1 + log(2N))`.
 2. Summing with signs across conductors smooths the B-spline knots by one further
-   order, yielding `|∑_{N < n ≤ M} n² · sevenFourthsShell n| ≤ C · N^(7/4) · conductorLog N`
+   order, yielding `|∑_{N < n ≤ M} n² · powerProductShell (7 / 4) n| ≤ C · N^(7/4) · (1 + log(2N))`
    for all `N ≤ M ≤ 2N` (hence `O_δ(N^(7/2 - δ))` for every `δ < 7/4`), and more
-   generally `O_α(N^(9α - 14) · conductorLog N)` on every shell `⌊n^α⌋ < pv ≤ 2⌊n^α⌋`
+   generally `O_α(N^(9α - 14) · (1 + log(2N)))` on every shell `⌊n^α⌋ < pv ≤ 2⌊n^α⌋`
    with `3/2 ≤ α < 2`.
 3. On individual conductors all products through `⌊n^(15/8)⌋` are paid within six
    logarithms; summing across dyadic conductor octaves pays all products through
-   `⌊n^(17/9)⌋ = (n²)^(17/18)` in the signed ACS prefix criterion for zero width
-   and the Riemann Hypothesis.
+   `⌊n^(17/9)⌋ = (n²)^(17/18)` in the signed ACS prefix criterion for zero width,
+   the five-sixths zero-free strip, and the Riemann Hypothesis.
 -/
 
 noncomputable section
@@ -57,6 +56,47 @@ def powerProductShell (α : ℝ) (n : ℕ) : ℝ :=
   cappedUpperProductReading (powerProductCut α n) n n -
     cappedUpperProductReading (2 * powerProductCut α n) n n
 
+/-- Explicit unfolding of the `7/4` shell `B_n = T_n(⌊n^(7/4)⌋, n) - T_n(2⌊n^(7/4)⌋, n)`. -/
+theorem powerProductShell_sevenFourths_eq (n : ℕ) :
+    powerProductShell (7 / 4) n =
+      cappedUpperProductReading ⌊(n : ℝ) ^ (7 / 4 : ℝ)⌋₊ n n -
+        cappedUpperProductReading (2 * ⌊(n : ℝ) ^ (7 / 4 : ℝ)⌋₊) n n := rfl
+
+private abbrev logFactor (n : ℕ) : ℝ := 1 + Real.log (2 * (n : ℝ))
+
+private theorem logFactor_one_le (n : ℕ) : 1 ≤ logFactor n := by
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp [logFactor]
+  · have hn' : (1 : ℝ) ≤ n := by exact_mod_cast hn
+    exact le_add_of_nonneg_right (Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * n))
+
+private theorem logFactor_mono {n N : ℕ} (hn : 0 < n) (hnN : n ≤ N) :
+    logFactor n ≤ logFactor N :=
+  add_le_add le_rfl (Real.log_le_log (by positivity)
+    (mul_le_mul_of_nonneg_left (Nat.cast_le.mpr hnN) (by norm_num)))
+
+private theorem logFactor_pow_subpower {b : ℝ} (hb : 0 < b) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ {n : ℕ}, 0 < n → (logFactor n) ^ 6 ≤ K * (n : ℝ) ^ b := by
+  let a := b / 6
+  have ha : 0 < a := div_pos hb (by norm_num)
+  refine ⟨(1 + 1 / a) ^ 6 * (2 : ℝ) ^ b, by positivity, fun {n} hn => ?_⟩
+  let t := 2 * (n : ℝ)
+  have hn' : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have ht : 1 ≤ t := by dsimp only [t]; linarith only [hn']
+  have ht0 := zero_lt_one.trans_le ht
+  have hbase : logFactor n ≤ (1 + 1 / a) * t ^ a := by
+    have h1 := Real.one_le_rpow ht ha.le
+    have h2 := Real.log_le_rpow_div ht0.le ha
+    change 1 + Real.log t ≤ _
+    exact (add_le_add h1 h2).trans_eq (by ring)
+  have he : (t ^ a) ^ 6 = t ^ b := by
+    rw [← Real.rpow_natCast _ 6, ← Real.rpow_mul ht0.le]
+    congr 1; dsimp only [a]; ring
+  refine (pow_le_pow_left₀ (zero_le_one.trans (logFactor_one_le n)) hbase 6).trans_eq ?_
+  rw [mul_pow, he, show t ^ b = (2 : ℝ) ^ b * (n : ℝ) ^ b from
+    Real.mul_rpow (by norm_num) (Nat.cast_nonneg n)]
+  ring
+
 private theorem monotone_powerProductCut {α : ℝ} (hα : 0 ≤ α) : Monotone (powerProductCut α) :=
   fun _ _ hmn => Nat.floor_mono (Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.cast_le.mpr hmn) hα)
 
@@ -80,7 +120,7 @@ private theorem power_shell_geometry {α : ℝ} (hα1 : 1 < α) (hα2 : α < 2) 
   have hV_le : (powerProductCut α n : ℝ) ≤ X := Nat.floor_le (zero_le_one.trans hX1)
   refine ⟨(Nat.one_le_floor_iff _).mpr hX1, ?_, ?_⟩
   · have hmul : X * (n : ℝ) ^ (2 - α) = (n : ℝ) ^ 2 := by
-      dsimp [X]; rw [← Real.rpow_add hn0, add_sub_cancel, Real.rpow_two]
+      dsimp only [X]; rw [← Real.rpow_add hn0, add_sub_cancel, Real.rpow_two]
     have hgap : 16 < Real.exp (-8) * (n : ℝ) ^ (2 - α) := by
       rw [Real.exp_neg, inv_mul_eq_div, lt_div_iff₀ (Real.exp_pos 8)]
       exact (by nlinarith [Real.exp_pos 8] : 16 * Real.exp 8 < 17 * Real.exp 8).trans_le hhi
@@ -89,7 +129,7 @@ private theorem power_shell_geometry {α : ℝ} (hα1 : 1 < α) (hα2 : α < 2) 
     nlinarith [hV_le]
   · apply Nat.le_floor
     have hmul : (n : ℝ) ^ (α - 1) * n = X := by
-      dsimp [X]; rw [← Real.rpow_one (n : ℝ), ← Real.rpow_add hn0]; congr 1; ring
+      dsimp only [X]; rw [← Real.rpow_one (n : ℝ), ← Real.rpow_add hn0]; congr 1; ring
     have hroot : Real.sqrt (splineHorizon n) ≤ A * n := by
       have hs := Real.sqrt_le_sqrt (hwin hn)
       rwa [Real.sqrt_sq (mul_nonneg (zero_le_one.trans hA) hn0.le)] at hs
@@ -104,7 +144,7 @@ private theorem power_shell_geometry {α : ℝ} (hα1 : 1 < α) (hα2 : α < 2) 
 
 private theorem log_two_mul_cut_le {α : ℝ} (hα : 0 ≤ α) {n : ℕ} (hn : 0 < n)
     (hpos : 1 ≤ powerProductCut α n) :
-    1 + Real.log ((2 * powerProductCut α n : ℕ) : ℝ) ≤ (1 + α) * conductorLog n := by
+    1 + Real.log ((2 * powerProductCut α n : ℕ) : ℝ) ≤ (1 + α) * logFactor n := by
   have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hn0 : (0 : ℝ) < n := zero_lt_one.trans_le hn1
   have hv0 : (0 : ℝ) < powerProductCut α n := Nat.cast_pos.mpr hpos
@@ -112,39 +152,42 @@ private theorem log_two_mul_cut_le {α : ℝ} (hα : 0 ≤ α) {n : ℕ} (hn : 0
   have hlog := Real.log_le_log hv0 hfl
   rw [Real.log_rpow hn0] at hlog
   push_cast
-  rw [Real.log_mul two_ne_zero hv0.ne', conductorLog, Real.log_mul two_ne_zero hn0.ne']
+  rw [Real.log_mul two_ne_zero hv0.ne', logFactor, Real.log_mul two_ne_zero hn0.ne']
   have hl2 : 0 ≤ Real.log 2 := Real.log_nonneg (by norm_num)
   have hln : 0 ≤ Real.log n := Real.log_nonneg hn1
   nlinarith
 
-/-! ### Part 1: Single-conductor eighth-order shell bounds and `sevenFourthsShell` decay -/
+/-! ### Part 1: Single-conductor eighth-order shell bounds and `7/4` shell decay -/
 
-/-- Pointwise eighth-order bound `O_α(n^(8α - 15) log(2n))` for any subquadratic shell `1 < α < 2`. -/
+/-- Pointwise eighth-order bound `O_α(n^(8α - 15) (1 + log(2n)))` for any subquadratic shell `1 < α < 2`. -/
 theorem powerProductShell_pointwise_bound {α : ℝ} (hα1 : 1 < α) (hα2 : α < 2) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
-      |powerProductShell α n| ≤ C * (n : ℝ) ^ (8 * α - 15) * conductorLog n := by
+      |powerProductShell α n| ≤ C * (n : ℝ) ^ (8 * α - 15) * (1 + Real.log (2 * (n : ℝ))) := by
   obtain ⟨C8, hC8, hshell⟩ := capped_interior_shell_eighth_bound
   obtain ⟨N0, hN0⟩ := eventually_atTop.mp (power_shell_geometry hα1 hα2)
-  let F := ∑ k ∈ Icc 1 N0, |powerProductShell α k| / ((k : ℝ) ^ (8 * α - 15) * conductorLog k)
+  let F := ∑ k ∈ Icc 1 N0, |powerProductShell α k| / ((k : ℝ) ^ (8 * α - 15) * logFactor k)
   have hF0 : 0 ≤ F := sum_nonneg fun k _ => div_nonneg (abs_nonneg _)
-    (mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg k) _) (zero_le_one.trans (conductorLog_one_le k)))
+    (mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg k) _) (zero_le_one.trans (logFactor_one_le k)))
   let K := F + 2 ^ 8 * C8 * (1 + α)
-  have hK0 : 0 ≤ K := by dsimp [K]; linarith [mul_nonneg (by positivity : (0 : ℝ) ≤ 2 ^ 8 * C8) (by linarith : 0 ≤ 1 + α)]
+  have hK0 : 0 ≤ K := by
+    dsimp only [K]
+    linarith [mul_nonneg (by positivity : (0 : ℝ) ≤ 2 ^ 8 * C8) (by linarith : 0 ≤ 1 + α)]
   refine ⟨K, hK0, fun {n} hn => ?_⟩
   have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hn0 : (0 : ℝ) < n := zero_lt_one.trans_le hn1
-  have hrpos : 0 < (n : ℝ) ^ (8 * α - 15) * conductorLog n :=
-    mul_pos (Real.rpow_pos_of_pos hn0 _) (zero_lt_one.trans_le (conductorLog_one_le n))
+  have hrpos : 0 < (n : ℝ) ^ (8 * α - 15) * logFactor n :=
+    mul_pos (Real.rpow_pos_of_pos hn0 _) (zero_lt_one.trans_le (logFactor_one_le n))
   by_cases hbig : N0 ≤ n
   swap
-  · have hle_F : |powerProductShell α n| / ((n : ℝ) ^ (8 * α - 15) * conductorLog n) ≤ F :=
+  · have hle_F : |powerProductShell α n| / ((n : ℝ) ^ (8 * α - 15) * logFactor n) ≤ F :=
       single_le_sum (fun k _ => div_nonneg (abs_nonneg _)
-        (mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg k) _) (zero_le_one.trans (conductorLog_one_le k))))
+        (mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg k) _) (zero_le_one.trans (logFactor_one_le k))))
         (mem_Icc.mpr ⟨hn, by omega⟩)
     have h1 := (div_le_iff₀ hrpos).mp hle_F
     have hFK : F ≤ K := by
-      dsimp [K]; linarith [mul_nonneg (by positivity : (0 : ℝ) ≤ 2 ^ 8 * C8) (by linarith : 0 ≤ 1 + α)]
-    exact h1.trans (by rw [mul_assoc]; exact mul_le_mul_of_nonneg_right hFK hrpos.le |>.trans_eq (by ring))
+      dsimp only [K]
+      linarith [mul_nonneg (by positivity : (0 : ℝ) ≤ 2 ^ 8 * C8) (by linarith : 0 ≤ 1 + α)]
+    exact h1.trans ((mul_le_mul_of_nonneg_right hFK hrpos.le).trans_eq (by ring))
   obtain ⟨hv1, hbirth16, hY⟩ := hN0 n hbig
   let V := powerProductCut α n
   have hW1 : 1 ≤ 2 * V := by omega
@@ -164,35 +207,31 @@ theorem powerProductShell_pointwise_bound {α : ℝ} (hα1 : 1 < α) (hα2 : α 
   have hdiv_eq : (n : ℝ) ^ (8 * α) / (n : ℝ) ^ 15 = (n : ℝ) ^ (8 * α - 15) := by
     rw [← Real.rpow_natCast (n : ℝ) 15, ← Real.rpow_sub hn0]; norm_num
   calc C8 * ((2 * V : ℕ) : ℝ) ^ 8 * (1 + Real.log (2 * V : ℕ)) / (n : ℝ) ^ 15
-      ≤ C8 * (2 ^ 8 * (n : ℝ) ^ (8 * α)) * ((1 + α) * conductorLog n) / (n : ℝ) ^ 15 := by
+      ≤ C8 * (2 ^ 8 * (n : ℝ) ^ (8 * α)) * ((1 + α) * logFactor n) / (n : ℝ) ^ 15 := by
         refine div_le_div_of_nonneg_right ?_ (by positivity)
         exact mul_le_mul (mul_le_mul_of_nonneg_left hW8 hC8) hlog
           (add_nonneg zero_le_one (Real.log_natCast_nonneg _)) (by positivity)
-    _ = (2 ^ 8 * C8 * (1 + α)) * ((n : ℝ) ^ (8 * α) / (n : ℝ) ^ 15) * conductorLog n := by ring
-    _ = (2 ^ 8 * C8 * (1 + α)) * (n : ℝ) ^ (8 * α - 15) * conductorLog n := by rw [hdiv_eq]
-    _ ≤ K * (n : ℝ) ^ (8 * α - 15) * conductorLog n := by
-        dsimp [K]
+    _ = (2 ^ 8 * C8 * (1 + α)) * ((n : ℝ) ^ (8 * α) / (n : ℝ) ^ 15) * logFactor n := by ring
+    _ = (2 ^ 8 * C8 * (1 + α)) * (n : ℝ) ^ (8 * α - 15) * logFactor n := by rw [hdiv_eq]
+    _ ≤ K * (n : ℝ) ^ (8 * α - 15) * logFactor n := by
+        dsimp only [K]
         nlinarith [mul_nonneg hF0 hrpos.le]
 
-/-- Pointwise decay `|sevenFourthsShell n| ≤ C · conductorLog n / n` on every conductor. -/
+/-- Pointwise decay `|B_n| ≤ C · (1 + log(2n)) / n` on every conductor for the `7/4` shell. -/
 theorem sevenFourthsShell_reciprocal_bound :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
-      |sevenFourthsShell n| ≤ C * conductorLog n / (n : ℝ) := by
+      |powerProductShell (7 / 4) n| ≤ C * (1 + Real.log (2 * (n : ℝ))) / (n : ℝ) := by
   obtain ⟨C, hC, h⟩ := powerProductShell_pointwise_bound (α := 7 / 4) (by norm_num) (by norm_num)
-  refine ⟨C, hC, fun {n} hn => ?_⟩
-  have hn0 : (0 : ℝ) < n := Nat.cast_pos.mpr hn
-  have heq_shell : sevenFourthsShell n = powerProductShell (7 / 4) n := rfl
-  rw [heq_shell]
-  refine (h hn).trans_eq ?_
+  refine ⟨C, hC, fun {n} hn => (h hn).trans_eq ?_⟩
   have hrp : (n : ℝ) ^ (8 * (7 / 4 : ℝ) - 15) = (n : ℝ)⁻¹ := by
     rw [show (8 * (7 / 4 : ℝ) - 15) = -1 by norm_num, Real.rpow_neg_one]
   rw [hrp]; ring
 
-/-- Absolute conductor-octave sum `∑_{N < n ≤ M} n² |sevenFourthsShell n| ≤ C · N² · conductorLog N`. -/
+/-- Absolute conductor-octave sum `∑_{N < n ≤ M} n² |B_n| ≤ C · N² · (1 + log(2N))`. -/
 theorem sevenFourthsShell_absolute_octave_bound :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N M : ℕ, N ≤ M → M ≤ 2 * N →
-      (∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * |sevenFourthsShell n|) ≤
-        C * (N : ℝ) ^ 2 * conductorLog N := by
+      (∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * |powerProductShell (7 / 4) n|) ≤
+        C * (N : ℝ) ^ 2 * (1 + Real.log (2 * (N : ℝ))) := by
   obtain ⟨C, hC, h⟩ := sevenFourthsShell_reciprocal_bound
   refine ⟨4 * C, by positivity, fun N M hNM hM2N => ?_⟩
   rcases Nat.eq_zero_or_pos N with rfl | hN
@@ -200,34 +239,34 @@ theorem sevenFourthsShell_absolute_octave_bound :
     simp [hM0]
   have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
   have hN0 : (0 : ℝ) < N := zero_lt_one.trans_le hN1
-  have hrow : ∀ n ∈ Ioc N M, (n : ℝ) ^ 2 * |sevenFourthsShell n| ≤
-      4 * C * (N : ℝ) * conductorLog N := by
+  have hrow : ∀ n ∈ Ioc N M, (n : ℝ) ^ 2 * |powerProductShell (7 / 4) n| ≤
+      4 * C * (N : ℝ) * logFactor N := by
     intro n hn
     obtain ⟨hnN, hnM⟩ := mem_Ioc.mp hn
     have hn_pos : 0 < n := hN.trans hnN
     have hn_r : (0 : ℝ) < n := Nat.cast_pos.mpr hn_pos
     have hn2N : (n : ℝ) ≤ 2 * (N : ℝ) := by exact_mod_cast hnM.trans hM2N
-    have hlog : conductorLog n ≤ 2 * conductorLog N := by
+    have hlog : logFactor n ≤ 2 * logFactor N := by
       have hh := Real.log_le_log hn_r hn2N
       rw [Real.log_mul two_ne_zero hN0.ne'] at hh
-      simp only [conductorLog, Real.log_mul two_ne_zero hn_r.ne', Real.log_mul two_ne_zero hN0.ne']
+      simp only [logFactor, Real.log_mul two_ne_zero hn_r.ne', Real.log_mul two_ne_zero hN0.ne']
       linarith [Real.log_nonneg hN1]
-    calc (n : ℝ) ^ 2 * |sevenFourthsShell n|
-        ≤ (n : ℝ) ^ 2 * (C * conductorLog n / (n : ℝ)) :=
+    calc (n : ℝ) ^ 2 * |powerProductShell (7 / 4) n|
+        ≤ (n : ℝ) ^ 2 * (C * logFactor n / (n : ℝ)) :=
           mul_le_mul_of_nonneg_left (h hn_pos) (sq_nonneg _)
-      _ = C * (n : ℝ) * conductorLog n := by field_simp [hn_r.ne']; ring
-      _ ≤ C * (2 * (N : ℝ)) * (2 * conductorLog N) := by
+      _ = C * (n : ℝ) * logFactor n := by field_simp [hn_r.ne']; ring
+      _ ≤ C * (2 * (N : ℝ)) * (2 * logFactor N) := by
           refine mul_le_mul (mul_le_mul_of_nonneg_left hn2N hC) hlog
-            (zero_le_one.trans (conductorLog_one_le n)) (by positivity)
-      _ = 4 * C * (N : ℝ) * conductorLog N := by ring
-  calc (∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * |sevenFourthsShell n|)
-      ≤ ∑ _n ∈ Ioc N M, (4 * C * (N : ℝ) * conductorLog N) := sum_le_sum hrow
-    _ = ((M - N : ℕ) : ℝ) * (4 * C * (N : ℝ) * conductorLog N) := by
+            (zero_le_one.trans (logFactor_one_le n)) (by positivity)
+      _ = 4 * C * (N : ℝ) * logFactor N := by ring
+  calc (∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * |powerProductShell (7 / 4) n|)
+      ≤ ∑ _n ∈ Ioc N M, (4 * C * (N : ℝ) * logFactor N) := sum_le_sum hrow
+    _ = ((M - N : ℕ) : ℝ) * (4 * C * (N : ℝ) * logFactor N) := by
         rw [sum_const, nsmul_eq_mul, Nat.card_Ioc]
-    _ ≤ (N : ℝ) * (4 * C * (N : ℝ) * conductorLog N) := by
+    _ ≤ (N : ℝ) * (4 * C * (N : ℝ) * logFactor N) := by
         refine mul_le_mul_of_nonneg_right (by exact_mod_cast (show M - N ≤ N by omega)) ?_
-        have := conductorLog_one_le N; positivity
-    _ = 4 * C * (N : ℝ) ^ 2 * conductorLog N := by ring
+        have := logFactor_one_le N; positivity
+    _ = 4 * C * (N : ℝ) ^ 2 * logFactor N := by ring
 
 /-! ### Part 2: Conductor-smoothed shell savings (`N^(9α - 14)` and `N^(7/4)` on `7/4`) -/
 
@@ -236,7 +275,7 @@ over `N < n ≤ M ≤ 2N` saves an extra power `N^(2 - α)` beyond the single-co
 theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ α) (hα2 : α < 2) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N M : ℕ, N ≤ M → M ≤ 2 * N →
       |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * powerProductShell α n| ≤
-        C * (N : ℝ) ^ (9 * α - 14) * conductorLog N := by
+        C * (N : ℝ) ^ (9 * α - 14) * (1 + Real.log (2 * (N : ℝ))) := by
   obtain ⟨Cs, hCs, hsmooth⟩ := conductor_smoothed_shell_bound
   have hgeom_octave : ∀ᶠ N : ℕ in atTop,
       1 ≤ 2 * powerProductCut α N ∧
@@ -294,7 +333,7 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
   have hF0 : 0 ≤ F := sum_nonneg fun _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _)
   let A_const := Cs * (2 * (1 + α)) * (3 * (2 : ℝ) ^ (9 * (1 + α)))
   have hA_nonneg : 0 ≤ A_const := by
-    dsimp [A_const]
+    dsimp only [A_const]
     have : 0 ≤ 1 + α := by linarith
     positivity
   let K := F + A_const
@@ -303,11 +342,11 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
   · have hM0 : M = 0 := by omega
     rw [hM0, Ioc_self, sum_empty, abs_zero]
     exact mul_nonneg (mul_nonneg (add_nonneg hF0 hA_nonneg) (Real.rpow_nonneg zero_le_zero _))
-      (zero_le_one.trans (conductorLog_one_le 0))
+      (zero_le_one.trans (logFactor_one_le 0))
   have hN1 : (1 : ℝ) ≤ N := by exact_mod_cast hN
   have hN0_r : (0 : ℝ) < N := zero_lt_one.trans_le hN1
-  have hrge1 : 1 ≤ (N : ℝ) ^ (9 * α - 14) * conductorLog N := by
-    refine one_le_mul_of_one_le_of_one_le ?_ (conductorLog_one_le N)
+  have hrge1 : 1 ≤ (N : ℝ) ^ (9 * α - 14) * logFactor N := by
+    refine one_le_mul_of_one_le_of_one_le ?_ (logFactor_one_le N)
     exact Real.one_le_rpow hN1 (by linarith)
   by_cases hbig : N0 ≤ N
   swap
@@ -323,9 +362,9 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
       exact sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _)
     calc |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * powerProductShell α n|
         ≤ F := hfin
-      _ ≤ K * ((N : ℝ) ^ (9 * α - 14) * conductorLog N) := by
-          dsimp [K]; nlinarith [hrge1]
-      _ = K * (N : ℝ) ^ (9 * α - 14) * conductorLog N := by ring
+      _ ≤ K * ((N : ℝ) ^ (9 * α - 14) * logFactor N) := by
+          dsimp only [K]; nlinarith [hrge1]
+      _ = K * (N : ℝ) ^ (9 * α - 14) * logFactor N := by ring
   obtain ⟨hw1_N, hbirth16, hY_all⟩ := hN0 N hbig
   let u := powerProductCut α
   let w := fun n : ℕ => 2 * powerProductCut α n
@@ -335,24 +374,24 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
   have hwM_le : w M ≤ w (2 * N) := hw_mono hM2N
   have hbirth8 : 8 * (w M : ℝ) < Real.exp (-8) * (N : ℝ) ^ 2 := by
     have : (w M : ℝ) ≤ 2 * (powerProductCut α (2 * N) : ℝ) := by
-      dsimp [w] at hwM_le ⊢; exact_mod_cast hwM_le
+      dsimp only [w] at hwM_le ⊢; exact_mod_cast hwM_le
     linarith
   have hmain := hsmooth hu_mono hw_mono hN hNM hM2N hwM_pos hbirth8
-    fun n hn => ⟨hY_all n (Ioc_subset_Ioc_right hM2N hn), by dsimp [u, w]; omega⟩
+    fun n hn => ⟨hY_all n (Ioc_subset_Ioc_right hM2N hn), by dsimp only [u, w]; omega⟩
   refine hmain.trans ?_
   have hwM_bound : (w M : ℝ) ≤ (2 : ℝ) ^ (1 + α) * (N : ℝ) ^ α := by
     have h1 : (w M : ℝ) ≤ 2 * (((2 * N : ℕ) : ℝ) ^ α) := by
       have hfl : (powerProductCut α (2 * N) : ℝ) ≤ ((2 * N : ℕ) : ℝ) ^ α :=
         Nat.floor_le (by positivity)
       have hle' : (w M : ℝ) ≤ 2 * (powerProductCut α (2 * N) : ℝ) := by
-        dsimp [w] at hwM_le ⊢; exact_mod_cast hwM_le
+        dsimp only [w] at hwM_le ⊢; exact_mod_cast hwM_le
       linarith
     have h2 : 2 * (((2 * N : ℕ) : ℝ) ^ α) = (2 : ℝ) ^ (1 + α) * (N : ℝ) ^ α := by
       push_cast
       rw [Real.mul_rpow (by norm_num) hN0_r.le, Real.rpow_add two_pos, Real.rpow_one]
       ring
     linarith
-  have hlogW : 1 + Real.log (w M) ≤ 2 * (1 + α) * conductorLog N := by
+  have hlogW : 1 + Real.log (w M) ≤ 2 * (1 + α) * logFactor N := by
     have hle1 : 1 + Real.log (w M) ≤ 1 + Real.log (w (2 * N)) :=
       add_le_add le_rfl (Real.log_le_log (by exact_mod_cast hwM_pos) (by exact_mod_cast hwM_le))
     have h2N_pos : 0 < 2 * N := by omega
@@ -360,8 +399,8 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
       have : 1 ≤ powerProductCut α N := by omega
       exact this.trans (hu_mono (by omega : N ≤ 2 * N))
     have hle2 := log_two_mul_cut_le (by linarith) h2N_pos hcut_2N
-    have hcond_2N : conductorLog (2 * N) ≤ 2 * conductorLog N := by
-      unfold conductorLog
+    have hcond_2N : logFactor (2 * N) ≤ 2 * logFactor N := by
+      dsimp only [logFactor]
       push_cast
       rw [Real.log_mul two_ne_zero (by positivity), Real.log_mul two_ne_zero hN0_r.ne',
         Real.log_mul two_ne_zero hN0_r.ne']
@@ -395,52 +434,52 @@ theorem powerProductShell_conductor_smoothed_bound {α : ℝ} (hα1 : 3 / 2 ≤ 
   calc Cs * (1 + Real.log (w M)) *
         ((w M : ℝ) ^ 9 / (N : ℝ) ^ 14 + (w M : ℝ) ^ 8 / (N : ℝ) ^ 13 +
           (w M : ℝ) ^ 5 / (N : ℝ) ^ 8)
-      ≤ Cs * (2 * (1 + α) * conductorLog N) *
+      ≤ Cs * (2 * (1 + α) * logFactor N) *
           (3 * (2 : ℝ) ^ (9 * (1 + α)) * (N : ℝ) ^ (9 * α - 14)) := by
         refine mul_le_mul (mul_le_mul_of_nonneg_left hlogW hCs) hsum3 (by positivity) ?_
-        have := conductorLog_one_le N; have : 0 ≤ 1 + α := by linarith; positivity
-    _ = A_const * (N : ℝ) ^ (9 * α - 14) * conductorLog N := by dsimp [A_const]; ring
-    _ ≤ K * (N : ℝ) ^ (9 * α - 14) * conductorLog N := by
-        dsimp [K]
-        have := Real.rpow_nonneg hN0_r.le (9 * α - 14)
-        have := zero_le_one.trans (conductorLog_one_le N)
-        nlinarith [mul_nonneg hF0 (mul_nonneg ‹0 ≤ (N : ℝ) ^ _› ‹0 ≤ conductorLog N›)]
+        have := logFactor_one_le N; have : 0 ≤ 1 + α := by linarith; positivity
+    _ = A_const * (N : ℝ) ^ (9 * α - 14) * logFactor N := by dsimp only [A_const]; ring
+    _ ≤ K * (N : ℝ) ^ (9 * α - 14) * logFactor N := by
+        dsimp only [K]
+        have hrp_nn : 0 ≤ (N : ℝ) ^ (9 * α - 14) := Real.rpow_nonneg hN0_r.le (9 * α - 14)
+        have hlf_nn : 0 ≤ logFactor N := zero_le_one.trans (logFactor_one_le N)
+        nlinarith [mul_nonneg hF0 (mul_nonneg hrp_nn hlf_nn)]
 
-/-- Complete conductor-smoothed bound `O(N^(7/4) log(2N))` on `sevenFourthsShell` across
+/-- Complete conductor-smoothed bound `O(N^(7/4) (1 + log(2N)))` on the `7/4` shell across
 every partial or complete conductor octave `N ≤ M ≤ 2N`. -/
 theorem sevenFourthsShell_conductor_smoothed_bound :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N M : ℕ, N ≤ M → M ≤ 2 * N →
-      |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * sevenFourthsShell n| ≤
-        C * (N : ℝ) ^ (7 / 4 : ℝ) * conductorLog N := by
+      |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * powerProductShell (7 / 4) n| ≤
+        C * (N : ℝ) ^ (7 / 4 : ℝ) * (1 + Real.log (2 * (N : ℝ))) := by
   obtain ⟨C, hC, h⟩ := powerProductShell_conductor_smoothed_bound (α := 7 / 4)
     (by norm_num) (by norm_num)
   refine ⟨C, hC, fun N M hNM hM2N => ?_⟩
   have heq : (9 * (7 / 4 : ℝ) - 14) = 7 / 4 := by norm_num
   simpa only [heq] using h N M hNM hM2N
 
-/-- Direct resolution on the complete dyadic octave `N < n ≤ 2N` with `O(N^(7/4) log(2N))`. -/
+/-- Direct resolution on the complete dyadic octave `N < n ≤ 2N` with `O(N^(7/4) (1 + log(2N)))`. -/
 theorem sevenFourthsShell_dyadic_octave_bound :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
-      |∑ n ∈ Ioc N (2 * N), (n : ℝ) ^ 2 * sevenFourthsShell n| ≤
-        C * (N : ℝ) ^ (7 / 4 : ℝ) * conductorLog N := by
+      |∑ n ∈ Ioc N (2 * N), (n : ℝ) ^ 2 * powerProductShell (7 / 4) n| ≤
+        C * (N : ℝ) ^ (7 / 4 : ℝ) * (1 + Real.log (2 * (N : ℝ))) := by
   obtain ⟨C, hC, h⟩ := sevenFourthsShell_conductor_smoothed_bound
   exact ⟨C, hC, fun N => h N (2 * N) (Nat.le_mul_of_pos_left N two_pos) le_rfl⟩
 
 /-- Uniform power saving `O_δ(N^(7/2 - δ))` for every `δ < 7/4` across all `N ≤ M ≤ 2N`. -/
 theorem sevenFourthsShell_saving_below_seven_fourths {δ : ℝ} (hδ : δ < 7 / 4) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N M : ℕ, N ≤ M → M ≤ 2 * N →
-      |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * sevenFourthsShell n| ≤
+      |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * powerProductShell (7 / 4) n| ≤
         C * (N : ℝ) ^ (7 / 2 - δ) := by
   obtain ⟨C, hC, h⟩ := sevenFourthsShell_conductor_smoothed_bound
-  obtain ⟨B, hB, hlog⟩ := conductorLog_subpower (show 0 < (7 / 4 : ℝ) - δ by linarith)
+  obtain ⟨B, hB, hlog⟩ := logFactor_pow_subpower (show 0 < (7 / 4 : ℝ) - δ by linarith)
   refine ⟨C * B, mul_nonneg hC hB, fun N M hNM hM2N => (h N M hNM hM2N).trans ?_⟩
   rcases Nat.eq_zero_or_pos N with rfl | hN
   · simp [Real.zero_rpow (by linarith : (7 / 4 : ℝ) ≠ 0),
       Real.zero_rpow (by linarith : (7 / 2 - δ) ≠ 0)]
   have hN0 : (0 : ℝ) < N := Nat.cast_pos.mpr hN
-  have h1 : conductorLog N ≤ B * (N : ℝ) ^ ((7 / 4 : ℝ) - δ) :=
-    (le_self_pow₀ (conductorLog_one_le N) (by decide : 6 ≠ 0)).trans (hlog hN)
-  calc C * (N : ℝ) ^ (7 / 4 : ℝ) * conductorLog N
+  have h1 : logFactor N ≤ B * (N : ℝ) ^ ((7 / 4 : ℝ) - δ) :=
+    (le_self_pow₀ (logFactor_one_le N) (by decide : 6 ≠ 0)).trans (hlog hN)
+  calc C * (N : ℝ) ^ (7 / 4 : ℝ) * logFactor N
       ≤ C * (N : ℝ) ^ (7 / 4 : ℝ) * (B * (N : ℝ) ^ ((7 / 4 : ℝ) - δ)) :=
         mul_le_mul_of_nonneg_left h1 (by positivity)
     _ = C * B * ((N : ℝ) ^ (7 / 4 : ℝ) * (N : ℝ) ^ ((7 / 4 : ℝ) - δ)) := by ring
@@ -450,7 +489,7 @@ theorem sevenFourthsShell_saving_below_seven_fourths {δ : ℝ} (hδ : δ < 7 / 
 /-- Parameter-free specialization at explicit saving `δ = 13/8 > 0` (`N^(15/8)`). -/
 theorem sevenFourthsShell_thirteen_eighths_saving :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N M : ℕ, N ≤ M → M ≤ 2 * N →
-      |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * sevenFourthsShell n| ≤
+      |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 * powerProductShell (7 / 4) n| ≤
         C * (N : ℝ) ^ (7 / 2 - 13 / 8 : ℝ) :=
   sevenFourthsShell_saving_below_seven_fourths (by norm_num)
 
@@ -459,32 +498,33 @@ theorem sevenFourthsShell_thirteen_eighths_saving :
 /-- Every product up to `⌊n^(15/8)⌋` is paid within six logarithms on each conductor. -/
 theorem dyadicPrimeContact_fifteenSixteenthsConductor :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
-      |dyadicPrimeContact n - fifteenSixteenthsConductor n| ≤ C * (conductorLog n) ^ 6 := by
+      |dyadicPrimeContact n - fifteenSixteenthsConductor n| ≤
+        C * (1 + Real.log (2 * (n : ℝ))) ^ 6 := by
   obtain ⟨A, B, C, hA, hB, hC, h⟩ := dyadicPrimeContact_capped_eighth_product_tail
   obtain ⟨K, hK, hwin⟩ := successorSquare_window_bound
   let J := 3 + 2 * Real.log K
   have hklog := Real.log_nonneg hK
-  have hj : 0 ≤ J := by dsimp [J]; positivity
+  have hj : 0 ≤ J := by dsimp only [J]; positivity
   refine ⟨A * J ^ 6 + 3 * B + C * J, by positivity, fun {n} hn => ?_⟩
   let L := splineHorizon n
   let U := fifteenSixteenthsCut n
-  let H := conductorLog n
+  let H := logFactor n
   have hn' : (0 : ℝ) < n := Nat.cast_pos.mpr hn
   have hn1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
   have hK' : 0 < K := zero_lt_one.trans_le hK
-  have hH1 : 1 ≤ H := conductorLog_one_le n
+  have hH1 : 1 ≤ H := logFactor_one_le n
   have hH0 : 0 ≤ H := zero_le_one.trans hH1
   have hL0 : (0 : ℝ) < L := by
     obtain ⟨_, h1, h2⟩ := successorSquareWindowScale_bounds n
     have hp : (0 : ℝ) < windowEnd ((2 * n + 1) ^ 2 + 1) :=
       (by norm_num : (0 : ℝ) < 9).trans_le (h1.trans h2)
-    dsimp [L, splineHorizon]; push_cast; positivity
+    dsimp only [L, splineHorizon]; push_cast; positivity
   have hlogn : Real.log n ≤ Real.log (2 * (n : ℝ)) := Real.log_le_log hn' (by linarith)
   have hL : 1 + Real.log L ≤ J * H := by
     have hb := Real.log_le_log hL0 (hwin hn)
     rw [Real.log_pow, Real.log_mul hK'.ne' hn'.ne'] at hb
     have hh := le_mul_of_one_le_right hklog hH1
-    dsimp only [H, conductorLog, J] at hh ⊢
+    dsimp only [H, logFactor, J] at hh ⊢
     linarith [hb, hh, hlogn, Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * n)]
   have hU1 : 1 ≤ U := (Nat.one_le_floor_iff _).mpr (Real.one_le_rpow hn1 (by norm_num))
   have hU_fl : (U : ℝ) ≤ (n : ℝ) ^ (15 / 8 : ℝ) := Nat.floor_le (by positivity)
@@ -493,7 +533,7 @@ theorem dyadicPrimeContact_fifteenSixteenthsConductor :
       (Real.rpow_two _))
   have huLog : 1 + Real.log U ≤ 3 * H := by
     have hu := Real.log_le_log (by exact_mod_cast hU1 : (0 : ℝ) < U) hU_sq
-    rw [Real.log_pow] at hu; dsimp [H, conductorLog]
+    rw [Real.log_pow] at hu; dsimp only [H, logFactor]
     linarith [hu, hlogn, Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * n)]
   have hu8 : (U : ℝ) ^ 8 ≤ (n : ℝ) ^ 15 := by
     calc (U : ℝ) ^ 8 ≤ ((n : ℝ) ^ (15 / 8 : ℝ)) ^ 8 :=
@@ -524,53 +564,59 @@ theorem dyadicPrimeContact_fifteenSixteenthsConductor :
 theorem squareGeneratorPrefix_fifteenSixteenths_products :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
       |Real.log (squareGeneratorPrefix N : ℝ) - fifteenSixteenthsConductorPrefix N| ≤
-        C * (N : ℝ) ^ 3 * (conductorLog N) ^ 6 := by
-  obtain ⟨C1, hC1, h1⟩ := squareGeneratorPrefix_capped_products
-  obtain ⟨C2, hC2, h2⟩ := dyadicPrimeContact_cappedConductor
-  obtain ⟨C3, hC3, h3⟩ := dyadicPrimeContact_fifteenSixteenthsConductor
-  let K := C1 + C2 + C3
-  refine ⟨K, by dsimp [K]; positivity, fun N => ?_⟩
-  have hdiff : |cappedConductorPrefix N - fifteenSixteenthsConductorPrefix N| ≤
-      (C2 + C3) * (N : ℝ) ^ 3 * (conductorLog N) ^ 6 := by
-    unfold cappedConductorPrefix fifteenSixteenthsConductorPrefix
-    rw [← sum_sub_distrib]
-    refine (abs_sum_le_sum_abs _ _).trans ?_
-    have hrow : ∀ n ∈ Icc 1 N,
-        |(n : ℝ) ^ 2 * cappedConductor n - (n : ℝ) ^ 2 * fifteenSixteenthsConductor n| ≤
-          (C2 + C3) * (N : ℝ) ^ 2 * (conductorLog N) ^ 6 := by
-      intro n hn
-      obtain ⟨hn1, hnN⟩ := mem_Icc.mp hn
-      rw [← mul_sub, abs_mul, abs_of_nonneg (sq_nonneg _)]
-      have he : cappedConductor n - fifteenSixteenthsConductor n =
-          (dyadicPrimeContact n - fifteenSixteenthsConductor n) -
-            (dyadicPrimeContact n - cappedConductor n) := by ring
-      have hn_diff : |cappedConductor n - fifteenSixteenthsConductor n| ≤
-          (C2 + C3) * (conductorLog N) ^ 6 := by
-        rw [he]
-        refine (abs_sub _ _).trans ((add_le_add (h3 hn1) (h2 hn1)).trans ?_)
-        have hlm := pow_le_pow_left₀ (zero_le_one.trans (conductorLog_one_le n))
-          (conductorLog_mono hn1 hnN) 6
-        nlinarith [hC2, hC3, hlm]
-      calc (n : ℝ) ^ 2 * |cappedConductor n - fifteenSixteenthsConductor n|
-          ≤ (N : ℝ) ^ 2 * ((C2 + C3) * (conductorLog N) ^ 6) :=
-            mul_le_mul (pow_le_pow_left₀ (Nat.cast_nonneg n) (Nat.cast_le.mpr hnN) 2)
-              hn_diff (abs_nonneg _) (sq_nonneg _)
-        _ = (C2 + C3) * (N : ℝ) ^ 2 * (conductorLog N) ^ 6 := by ring
-    calc _ ≤ ∑ _n ∈ Icc 1 N, ((C2 + C3) * (N : ℝ) ^ 2 * (conductorLog N) ^ 6) :=
-          sum_le_sum hrow
-      _ = (C2 + C3) * (N : ℝ) ^ 3 * (conductorLog N) ^ 6 := by
-          rw [sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel]; ring
-  have hid : Real.log (squareGeneratorPrefix N : ℝ) - fifteenSixteenthsConductorPrefix N =
-      (Real.log (squareGeneratorPrefix N : ℝ) - cappedConductorPrefix N) +
-        (cappedConductorPrefix N - fifteenSixteenthsConductorPrefix N) := by ring
-  rw [hid]
-  exact (abs_add_le _ _).trans ((add_le_add (h1 N) hdiff).trans_eq (by dsimp [K]; ring))
+        C * (N : ℝ) ^ 3 * (1 + Real.log (2 * (N : ℝ))) ^ 6 := by
+  obtain ⟨A, hA, ha⟩ := successorSquare_contact_error
+  obtain ⟨B, hB, hb⟩ := dyadicPrimeContact_error
+  obtain ⟨C, hC, hc⟩ := dyadicPrimeContact_fifteenSixteenthsConductor
+  let K := A + B + C
+  have hK : 0 ≤ K := by dsimp only [K]; positivity
+  refine ⟨K, hK, fun N => ?_⟩
+  have hgen_log : Real.log (squareGeneratorPrefix N : ℝ) =
+      ∑ n ∈ Icc 1 N, Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n) : ℝ) := by
+    rw [show Icc 1 N = Ioc 0 N by ext k; simp only [mem_Icc, mem_Ioc]; omega, squareGeneratorPrefix]
+    push_cast
+    apply Real.log_prod
+    intro n _
+    exact ne_of_gt (by exact_mod_cast (show (0 : ℚ) <
+      ordinaryPrimeGenerator (n • successorSquareTriple n) from
+        prod_pos fun k _ => zpow_pos (Nat.cast_pos.mpr (contactBase_pos k)) _))
+  rw [hgen_log, fifteenSixteenthsConductorPrefix, ← sum_sub_distrib]
+  refine (abs_sum_le_sum_abs _ _).trans ?_
+  have hnrow (n : ℕ) (hn : n ∈ Icc 1 N) :
+      |Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n) : ℝ) -
+          (n : ℝ) ^ 2 * fifteenSixteenthsConductor n| ≤ K * (N : ℝ) ^ 2 * (logFactor N) ^ 6 := by
+    obtain ⟨hn1, hnN⟩ := mem_Icc.mp hn
+    let P := ordinaryPrimeContact (successorSquareTriple n)
+    let D := dyadicPrimeContact n
+    have he : Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n) : ℝ) -
+        (n : ℝ) ^ 2 * fifteenSixteenthsConductor n =
+        (Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n) : ℝ) - (n : ℝ) ^ 2 * P) +
+        (n : ℝ) ^ 2 * (P - D) + (n : ℝ) ^ 2 * (D - fifteenSixteenthsConductor n) := by ring
+    rw [he]
+    refine (abs_add_le _ _).trans ((add_le_add (abs_add_le _ _) le_rfl).trans ?_)
+    simp only [abs_mul, abs_of_nonneg (sq_nonneg (n : ℝ))]
+    have hv := one_le_pow₀ (n := 6) (logFactor_one_le n)
+    have hs := mul_le_mul_of_nonneg_left (hb hn1) (sq_nonneg (n : ℝ))
+    have ht := mul_le_mul_of_nonneg_left (hc hn1) (sq_nonneg (n : ℝ))
+    have hlocal : |Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n) : ℝ) -
+          (n : ℝ) ^ 2 * P| + (n : ℝ) ^ 2 * |P - D| +
+        (n : ℝ) ^ 2 * |D - fifteenSixteenthsConductor n| ≤ K * (n : ℝ) ^ 2 * (logFactor n) ^ 6 := by
+      dsimp only [P, D, K, logFactor] at *
+      linarith only [ha hn1 le_rfl, hs, ht,
+        le_mul_of_one_le_right (mul_nonneg (add_nonneg hA hB) (sq_nonneg (n : ℝ))) hv]
+    exact hlocal.trans (mul_le_mul
+      (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (Nat.cast_nonneg n) (Nat.cast_le.mpr hnN) 2) hK)
+      (pow_le_pow_left₀ (zero_le_one.trans (logFactor_one_le n)) (logFactor_mono hn1 hnN) 6)
+      (by positivity) (by positivity))
+  refine (sum_le_sum hnrow).trans_eq ?_
+  rw [sum_const, nsmul_eq_mul, Nat.card_Icc, Nat.add_sub_cancel]
+  ring
 
 private theorem bridge_octave_bound :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N M : ℕ, N ≤ M → M ≤ 2 * N →
       |∑ n ∈ Ioc N M, (n : ℝ) ^ 2 *
           (fifteenSixteenthsConductor n - seventeenNinthsConductor n)| ≤
-        C * (N : ℝ) ^ 3 * conductorLog N := by
+        C * (N : ℝ) ^ 3 * (1 + Real.log (2 * (N : ℝ))) := by
   obtain ⟨Cs, hCs, hsmooth⟩ := conductor_smoothed_shell_bound
   have hgeom : ∀ᶠ N : ℕ in atTop,
       1 ≤ seventeenNinthsCut N ∧
@@ -630,7 +676,7 @@ private theorem bridge_octave_bound :
   let F := ∑ k ∈ Icc 1 (2 * N0), (k : ℝ) ^ 2 * |diff1 k|
   have hF0 : 0 ≤ F := sum_nonneg fun _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _)
   let A_const := Cs * 8 * (3 * (2 : ℝ) ^ 17)
-  have hA0 : 0 ≤ A_const := by dsimp [A_const]; positivity
+  have hA0 : 0 ≤ A_const := by dsimp only [A_const]; positivity
   refine ⟨F + A_const, add_nonneg hF0 hA0, fun N M hNM hM2N => ?_⟩
   rcases Nat.eq_zero_or_pos N with rfl | hN
   · have hM0 : M = 0 := by omega
@@ -647,8 +693,8 @@ private theorem bridge_octave_bound :
         fun n => by rw [abs_mul, abs_of_nonneg (sq_nonneg _)]
       simp_rw [heq_abs]
       exact sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => mul_nonneg (sq_nonneg _) (abs_nonneg _)
-    have hr1 : 1 ≤ (N : ℝ) ^ 3 * conductorLog N :=
-      one_le_mul_of_one_le_of_one_le (one_le_pow₀ hN1) (conductorLog_one_le N)
+    have hr1 : 1 ≤ (N : ℝ) ^ 3 * logFactor N :=
+      one_le_mul_of_one_le_of_one_le (one_le_pow₀ hN1) (logFactor_one_le N)
     exact hfin.trans (by nlinarith [hr1, hA0])
   obtain ⟨hw1_N, hbirth8_2N, hgeom_n⟩ := hN0 N hbig
   have hu_mono : Monotone fifteenSixteenthsCut := monotone_powerProductCut (by norm_num)
@@ -665,7 +711,7 @@ private theorem bridge_octave_bound :
     have h1 : (seventeenNinthsCut M : ℝ) ≤ ((2 * N : ℕ) : ℝ) ^ (17 / 9 : ℝ) :=
       (Nat.cast_le.mpr hwM_le).trans (Nat.floor_le (by positivity))
     exact h1.trans_eq (by push_cast; exact Real.mul_rpow (by norm_num) hN0_r.le)
-  have hlogW : 1 + Real.log (seventeenNinthsCut M) ≤ 8 * conductorLog N := by
+  have hlogW : 1 + Real.log (seventeenNinthsCut M) ≤ 8 * logFactor N := by
     have hw_sq : (seventeenNinthsCut M : ℝ) ≤ (2 * (N : ℝ)) ^ 2 := by
       have hfl : (seventeenNinthsCut M : ℝ) ≤ ((2 * N : ℕ) : ℝ) ^ (17 / 9 : ℝ) :=
         (Nat.cast_le.mpr hwM_le).trans (Nat.floor_le (by positivity))
@@ -674,7 +720,7 @@ private theorem bridge_octave_bound :
       push_cast; exact Real.rpow_two _
     have hlog := Real.log_le_log (by exact_mod_cast hwM1) hw_sq
     rw [Real.log_pow] at hlog
-    unfold conductorLog
+    dsimp only [logFactor]
     linarith [Real.log_nonneg (by linarith : (1 : ℝ) ≤ 2 * N)]
   have ht9 : (seventeenNinthsCut M : ℝ) ^ 9 / (N : ℝ) ^ 14 ≤ (2 : ℝ) ^ 17 * (N : ℝ) ^ 3 := by
     calc (seventeenNinthsCut M : ℝ) ^ 9 / (N : ℝ) ^ 14
@@ -726,24 +772,24 @@ private theorem bridge_octave_bound :
         ((seventeenNinthsCut M : ℝ) ^ 9 / (N : ℝ) ^ 14 +
           (seventeenNinthsCut M : ℝ) ^ 8 / (N : ℝ) ^ 13 +
           (seventeenNinthsCut M : ℝ) ^ 5 / (N : ℝ) ^ 8)
-      ≤ Cs * (8 * conductorLog N) * (3 * (2 : ℝ) ^ 17 * (N : ℝ) ^ 3) := by
+      ≤ Cs * (8 * logFactor N) * (3 * (2 : ℝ) ^ 17 * (N : ℝ) ^ 3) := by
         refine mul_le_mul (mul_le_mul_of_nonneg_left hlogW hCs) hsum3 (by positivity) ?_
-        have := conductorLog_one_le N; positivity
-    _ = A_const * (N : ℝ) ^ 3 * conductorLog N := by dsimp [A_const]; ring
-    _ ≤ (F + A_const) * (N : ℝ) ^ 3 * conductorLog N := by
-        have := zero_le_one.trans (conductorLog_one_le N)
-        nlinarith [mul_nonneg hF0 (mul_nonneg (pow_nonneg hN0_r.le 3) ‹0 ≤ conductorLog N›)]
+        have := logFactor_one_le N; positivity
+    _ = A_const * (N : ℝ) ^ 3 * logFactor N := by dsimp only [A_const]; ring
+    _ ≤ (F + A_const) * (N : ℝ) ^ 3 * logFactor N := by
+        have hlf_nn : 0 ≤ logFactor N := zero_le_one.trans (logFactor_one_le N)
+        nlinarith [mul_nonneg hF0 (mul_nonneg (pow_nonneg hN0_r.le 3) hlf_nn)]
 
 /-- Across every terminal conductor `N`, conductor smoothing bridges the gap from
-`⌊n^(15/8)⌋` to `⌊n^(17/9)⌋` at cost `O(N³ log(2N))`. -/
+`⌊n^(15/8)⌋` to `⌊n^(17/9)⌋` at cost `O(N³ (1 + log(2N)))`. -/
 theorem fifteenSixteenths_to_seventeenNinths_prefix :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
       |fifteenSixteenthsConductorPrefix N - seventeenNinthsConductorPrefix N| ≤
-        C * (N : ℝ) ^ 3 * conductorLog N := by
+        C * (N : ℝ) ^ 3 * (1 + Real.log (2 * (N : ℝ))) := by
   obtain ⟨C0, hC0, hoct⟩ := bridge_octave_bound
   let S := fun n : ℕ => fifteenSixteenthsConductor n - seventeenNinthsConductor n
   let K := |S 1| + 2 * C0
-  have hK : 0 ≤ K := by dsimp [K]; positivity
+  have hK : 0 ≤ K := by dsimp only [K]; positivity
   refine ⟨K, hK, fun N => ?_⟩
   have hpref_eq : ∀ M : ℕ,
       fifteenSixteenthsConductorPrefix M - seventeenNinthsConductorPrefix M =
@@ -751,22 +797,22 @@ theorem fifteenSixteenths_to_seventeenNinths_prefix :
     intro M
     unfold fifteenSixteenthsConductorPrefix seventeenNinthsConductorPrefix
     rw [← sum_sub_distrib]
-    exact sum_congr rfl fun n _ => by dsimp [S]; ring
+    exact sum_congr rfl fun n _ => by dsimp only [S]; ring
   rw [hpref_eq N]
   induction N using Nat.strong_induction_on with
   | h N ih =>
     rcases N with _ | _ | m
     · simp
     · simp only [Nat.zero_add, Icc_self, sum_singleton, Nat.cast_one, one_pow, one_mul]
-      have h1 : 1 ≤ conductorLog 1 := conductorLog_one_le 1
-      dsimp [K]
+      have h1 : 1 ≤ logFactor 1 := logFactor_one_le 1
+      dsimp only [K]
       nlinarith [abs_nonneg (S 1), hC0]
     · set N' := m + 2
       let M0 := (N' + 1) / 2
-      have hM0_pos : 1 ≤ M0 := by dsimp [M0, N']; omega
-      have hM0_lt : M0 < N' := by dsimp [M0, N']; omega
-      have hN'_le_2M0 : N' ≤ 2 * M0 := by dsimp [M0, N']; omega
-      have h3M0 : 3 * M0 ≤ 2 * N' := by dsimp [M0, N']; omega
+      have hM0_pos : 1 ≤ M0 := by dsimp only [M0, N']; omega
+      have hM0_lt : M0 < N' := by dsimp only [M0, N']; omega
+      have hN'_le_2M0 : N' ≤ 2 * M0 := by dsimp only [M0, N']; omega
+      have h3M0 : 3 * M0 ≤ 2 * N' := by dsimp only [M0, N']; omega
       have hM0_real : (M0 : ℝ) ≤ (2 / 3 : ℝ) * N' := by
         have : 3 * (M0 : ℝ) ≤ 2 * (N' : ℝ) := by exact_mod_cast h3M0
         linarith
@@ -783,31 +829,31 @@ theorem fifteenSixteenths_to_seventeenNinths_prefix :
       rw [hsplit]
       have hleft := ih M0 hM0_lt
       have hright := hoct M0 N' hM0_lt.le hN'_le_2M0
-      have hlog_mono : conductorLog M0 ≤ conductorLog N' :=
-        conductorLog_mono hM0_pos hM0_lt.le
-      have hcl_pos : 0 ≤ conductorLog N' := zero_le_one.trans (conductorLog_one_le N')
+      have hlog_mono : logFactor M0 ≤ logFactor N' :=
+        logFactor_mono hM0_pos hM0_lt.le
+      have hcl_pos : 0 ≤ logFactor N' := zero_le_one.trans (logFactor_one_le N')
       have hN'_cube_pos : 0 ≤ (N' : ℝ) ^ 3 := pow_nonneg (Nat.cast_nonneg N') 3
       calc |(∑ n ∈ Icc 1 M0, (n : ℝ) ^ 2 * S n) + ∑ n ∈ Ioc M0 N', (n : ℝ) ^ 2 * S n|
-          ≤ K * (M0 : ℝ) ^ 3 * conductorLog M0 + C0 * (M0 : ℝ) ^ 3 * conductorLog M0 :=
+          ≤ K * (M0 : ℝ) ^ 3 * logFactor M0 + C0 * (M0 : ℝ) ^ 3 * logFactor M0 :=
             (abs_add_le _ _).trans (add_le_add hleft hright)
-        _ = (K + C0) * (M0 : ℝ) ^ 3 * conductorLog M0 := by ring
-        _ ≤ (K + C0) * ((8 / 27 : ℝ) * (N' : ℝ) ^ 3) * conductorLog N' := by
+        _ = (K + C0) * (M0 : ℝ) ^ 3 * logFactor M0 := by ring
+        _ ≤ (K + C0) * ((8 / 27 : ℝ) * (N' : ℝ) ^ 3) * logFactor N' := by
             refine mul_le_mul (mul_le_mul_of_nonneg_left hM0_cube (add_nonneg hK hC0))
-              hlog_mono (zero_le_one.trans (conductorLog_one_le M0)) (by positivity)
-        _ ≤ K * (N' : ℝ) ^ 3 * conductorLog N' := by
+              hlog_mono (zero_le_one.trans (logFactor_one_le M0)) (by positivity)
+        _ ≤ K * (N' : ℝ) ^ 3 * logFactor N' := by
             have hKC : (8 / 27 : ℝ) * (K + C0) ≤ K := by
-              dsimp [K]; linarith [abs_nonneg (S 1), hC0]
-            calc (K + C0) * ((8 / 27 : ℝ) * (N' : ℝ) ^ 3) * conductorLog N'
-                = ((8 / 27 : ℝ) * (K + C0)) * ((N' : ℝ) ^ 3 * conductorLog N') := by ring
-              _ ≤ K * ((N' : ℝ) ^ 3 * conductorLog N') :=
+              dsimp only [K]; linarith [abs_nonneg (S 1), hC0]
+            calc (K + C0) * ((8 / 27 : ℝ) * (N' : ℝ) ^ 3) * logFactor N'
+                = ((8 / 27 : ℝ) * (K + C0)) * ((N' : ℝ) ^ 3 * logFactor N') := by ring
+              _ ≤ K * ((N' : ℝ) ^ 3 * logFactor N') :=
                   mul_le_mul_of_nonneg_right hKC (mul_nonneg hN'_cube_pos hcl_pos)
-              _ = K * (N' : ℝ) ^ 3 * conductorLog N' := by ring
+              _ = K * (N' : ℝ) ^ 3 * logFactor N' := by ring
 
 /-- Complete prefix approximation at the seventeen-eighteenths cutoff `⌊n^(17/9)⌋`. -/
 theorem squareGeneratorPrefix_seventeenNinths_products :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
       |Real.log (squareGeneratorPrefix N : ℝ) - seventeenNinthsConductorPrefix N| ≤
-        C * (N : ℝ) ^ 3 * (conductorLog N) ^ 6 := by
+        C * (N : ℝ) ^ 3 * (1 + Real.log (2 * (N : ℝ))) ^ 6 := by
   obtain ⟨C1, hC1, h1⟩ := squareGeneratorPrefix_fifteenSixteenths_products
   obtain ⟨C2, hC2, h2⟩ := fifteenSixteenths_to_seventeenNinths_prefix
   refine ⟨C1 + C2, add_nonneg hC1 hC2, fun N => ?_⟩
@@ -815,20 +861,20 @@ theorem squareGeneratorPrefix_seventeenNinths_products :
       (Real.log (squareGeneratorPrefix N : ℝ) - fifteenSixteenthsConductorPrefix N) +
         (fifteenSixteenthsConductorPrefix N - seventeenNinthsConductorPrefix N) := by ring
   rw [hid]
-  have hlog6 : conductorLog N ≤ (conductorLog N) ^ 6 :=
-    le_self_pow₀ (conductorLog_one_le N) (by decide : 6 ≠ 0)
+  have hlog6 : logFactor N ≤ (logFactor N) ^ 6 :=
+    le_self_pow₀ (logFactor_one_le N) (by decide : 6 ≠ 0)
   have h2' : |fifteenSixteenthsConductorPrefix N - seventeenNinthsConductorPrefix N| ≤
-      C2 * (N : ℝ) ^ 3 * (conductorLog N) ^ 6 :=
+      C2 * (N : ℝ) ^ 3 * (logFactor N) ^ 6 :=
     (h2 N).trans (mul_le_mul_of_nonneg_left hlog6
       (mul_nonneg hC2 (pow_nonneg (Nat.cast_nonneg N) 3)))
   exact (abs_add_le _ _).trans ((add_le_add (h1 N) h2').trans_eq (by ring))
 
-/-- One-sided subcritical zero-width equivalence at the seventeen-eighteenths product cutoff. -/
+/-- Subcritical zero-width equivalence at the seventeen-eighteenths product cutoff. -/
 theorem width_iff_seventeenNinthsConductorPrefix {a : ℝ} (ha : 0 < a) (ha' : a < 1 / 2) :
     zetaZeroWidth ≤ a ↔ ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
-      seventeenNinthsConductorPrefix N ≤ C * (N : ℝ) ^ (3 + 2 * a) := by
+      |seventeenNinthsConductorPrefix N| ≤ C * (N : ℝ) ^ (3 + 2 * a) := by
   obtain ⟨K, hK, h⟩ := squareGeneratorPrefix_seventeenNinths_products
-  obtain ⟨B, hB, hb⟩ := conductorLog_subpower (mul_pos two_pos ha)
+  obtain ⟨B, hB, hb⟩ := logFactor_pow_subpower (mul_pos two_pos ha)
   have hh (N : ℕ) : |Real.log (squareGeneratorPrefix N : ℝ) - seventeenNinthsConductorPrefix N| ≤
       (K * B) * (N : ℝ) ^ (3 + 2 * a) := by
     refine (h N).trans ?_
@@ -837,16 +883,32 @@ theorem width_iff_seventeenNinthsConductorPrefix {a : ℝ} (ha : 0 < a) (ha' : a
     · have hn' : (0 : ℝ) < N := Nat.cast_pos.mpr hn
       rw [Real.rpow_add hn', Real.rpow_natCast _ 3]
       exact (mul_le_mul_of_nonneg_left (hb hn) (by positivity : 0 ≤ K * (N : ℝ) ^ 3)).trans_eq (by ring)
-  rw [zetaZeroWidth_le_iff_one_sided_square_prefix (e := 1) ha.le ha' (by norm_num)]
-  simp only [one_mul]
+  rw [zetaZeroWidth_le_iff_square_generator_prefix ha.le ha']
   constructor <;> rintro ⟨C, hC, hc⟩ <;> refine ⟨C + K * B, by positivity, fun N => ?_⟩
-  · linarith [hc N, (abs_le.mp (hh N)).1]
-  · linarith [hc N, (abs_le.mp (hh N)).2]
+  · have hid : seventeenNinthsConductorPrefix N =
+        Real.log (squareGeneratorPrefix N : ℝ) -
+          (Real.log (squareGeneratorPrefix N : ℝ) - seventeenNinthsConductorPrefix N) := by ring
+    rw [hid]
+    exact (abs_sub _ _).trans ((add_le_add (hc N) (hh N)).trans_eq (by ring))
+  · have hid : Real.log (squareGeneratorPrefix N : ℝ) =
+        seventeenNinthsConductorPrefix N +
+          (Real.log (squareGeneratorPrefix N : ℝ) - seventeenNinthsConductorPrefix N) := by ring
+    rw [hid]
+    exact (abs_add_le _ _).trans ((add_le_add (hc N) (hh N)).trans_eq (by ring))
+
+/-- Five-sixths zero-free strip equivalence at the seventeen-eighteenths product cutoff. -/
+theorem five_sixths_iff_seventeenNinthsConductorPrefix :
+    _root_.RHTower.zetaZeroAbscissa ≤ 5 / 6 ↔ ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
+      |seventeenNinthsConductorPrefix N| ≤ C * (N : ℝ) ^ (11 / 3 : ℝ) := by
+  have h := (zetaZeroWidth_le_iff_zetaZeroAbscissa_le (by norm_num : (0 : ℝ) ≤ 1 / 3)).symm.trans
+    (width_iff_seventeenNinthsConductorPrefix (by norm_num : (0 : ℝ) < 1 / 3) (by norm_num))
+  simpa only [show 1 / 2 + (1 / 3 : ℝ) = 5 / 6 by norm_num,
+    show 3 + 2 * (1 / 3 : ℝ) = 11 / 3 by norm_num] using h
 
 /-- Exact Riemann Hypothesis equivalence for the signed prefix above `⌊n^(17/9)⌋`. -/
 theorem riemannHypothesis_iff_seventeenNinthsConductorPrefix :
     RiemannHypothesis ↔ ∀ η : ℝ, 0 < η → ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
-      seventeenNinthsConductorPrefix N ≤ C * (N : ℝ) ^ (3 + η) := by
+      |seventeenNinthsConductorPrefix N| ≤ C * (N : ℝ) ^ (3 + η) := by
   rw [riemannHypothesis_iff_zetaZeroWidth_eq_zero]
   constructor
   · intro hw η hη
@@ -886,6 +948,7 @@ theorem seventeenNinths_surviving_ranges {n k p v : ℕ} (hp : 0 < p)
 #print axioms dyadicPrimeContact_fifteenSixteenthsConductor
 #print axioms squareGeneratorPrefix_seventeenNinths_products
 #print axioms width_iff_seventeenNinthsConductorPrefix
+#print axioms five_sixths_iff_seventeenNinthsConductorPrefix
 #print axioms riemannHypothesis_iff_seventeenNinthsConductorPrefix
 #print axioms seventeenNinths_surviving_ranges
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -1,0 +1,13 @@
+# Divisor inversion at the moving product boundary
+
+For a product \(q>0\) and cofactor cap \(b\), let \(E_b(q)\) contain the prime divisors \(p>4\) for which \(p\nmid q/p\) and \(q/p\le b\). Put \(g=\mathrm{innerJump}(1,\cdot)\). In the actual capped row the coefficient at \(q\), before its outer quotient weight, equals
+\[
+ (g(q)+\mathbf1_{q\text{ prime}})\sum_{p\in E_b(q)}\log p.
+\]
+Indeed \(g(pv)=g(v)-\mathbf1_{v=1}\), and \(pv\) is prime exactly when \(v=1\). Thus the two possible factorizations always have the same inner weight. Subtract from \(\log q=\sum_{d\mid q}\Lambda(d)\) the following disjoint terms: all nonprime divisors, primes at most four, larger primes dividing their cofactor, and larger coprime primes with cofactor above the cap. What remains is exactly the displayed logarithmic mass.
+
+On a nonempty partial conductor octave restrict to \(n\) with \(U_n<q\), and let \(b\) be its last conductor. The same argument applies if a monotone upper shell cutoff also restricts the octave. For these conductors \(E_n(q)=\{p\in E_b(q):q/p\le n\}\). When \(q>b\lfloor\sqrt b\rfloor\), every member exceeds \(\lfloor\sqrt b\rfloor\). If three distinct members existed, two would divide the third's cofactor, so their product would divide a positive integer at most \(b\), although their product exceeds \(b\). Two distinct members \(p,r\) give \(q=prt\); multiplying \(pt\le b\) and \(rt\le b\) gives \(qt\le b^2\). Hence \(t<b^{1/9}\) when \(q>\lfloor b^{17/9}\rfloor\), and \(t<b^{1/10}\) on the nineteen-tenths shell. In particular the changing cofactor cap creates at most two entries per product over the entire terminal fragment.
+
+For outer quotient \(j\), the product occurs at horizons \(k\in[jq,(j+1)q)\) intersected with \([q,\lceil q/2\rceil^2)\) and the actual spline horizon. On two nonempty neighboring cells \([a,c),[c,d)\), summing the first mesh difference gives \(W(j)w_n(a)+(W(j+1)-W(j))w_n(c)-W(j+1)w_n(d)\). All three samples have the same arithmetic coefficient. Bounding the sum of these terms across products remains open.
+
+**Lean status.** `capped_spline_divisor_inversion` proves the four exclusions in the actual spline reading. `productFirstPrimes_entries`, `productFirstPrimes_two_cofactor`, and `two_first_primes_above_power` prove the entry and cofactor bounds. `adjacent_product_cells` proves the signed three-sample identity. Each passed the kernel axiom audit. The assembly over all clipped quotient cells awaits verification. [Divisor inversion](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/DivisorInversionAtTheProductBoundary.lean) · [Clipped quotient cells](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/TheQuotientCellsOfTheCappedSpline.lean)

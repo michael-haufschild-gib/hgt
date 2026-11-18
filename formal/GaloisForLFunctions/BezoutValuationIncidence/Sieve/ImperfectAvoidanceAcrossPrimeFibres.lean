@@ -142,8 +142,3 @@ theorem large_sieve (N Q : ℕ) (hQ : 2≤Q) (A P : Finset ℕ) (hA : A ⊆ rang
     _ ≤ _ := largeSieve_set_properFarey_sharp N hQ A hA
 
 end GaloisForLFunctions.BezoutValuationIncidence.Imperfect
-
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.Imperfect.energy_eq
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.Imperfect.energy_decomposition
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.Imperfect.sharp_iff
-#print axioms GaloisForLFunctions.BezoutValuationIncidence.Imperfect.large_sieve

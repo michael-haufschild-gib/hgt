@@ -86,19 +86,29 @@ theorem disjoint_activeConductors_iff {N : ℕ} (a₁ a₂ : Fin N → ℤ) :
     subst hij
     exact (hall i).elim hi hj
 
+/-- The coordinate embedding `Fin M ↪ Fin N` underlying `padDivisor`. -/
+private theorem padEmb_injective {M N : ℕ} (hMN : M ≤ N) :
+    Function.Injective (fun i : Fin M => (⟨i.val, i.isLt.trans_le hMN⟩ : Fin N)) :=
+  fun _ _ hij => Fin.ext (Fin.mk.inj_iff.mp hij)
+
+/-- Zero-extension keeps every original coordinate. -/
+private theorem padDivisor_apply_emb {M N : ℕ} (hMN : M ≤ N) (u : Fin M → ℤ) (i : Fin M) :
+    padDivisor hMN u ⟨i.val, i.isLt.trans_le hMN⟩ = u i :=
+  (padEmb_injective hMN).extend_apply u 0 i
+
 theorem isSignedPrimeSupported_pad {M N : ℕ} (hMN : M ≤ N) {u : Fin M → ℤ}
     (hu : isSignedPrimeSupported u) :
     isSignedPrimeSupported (padDivisor hMN u) := by
   let e : Fin M → Fin N := fun i => ⟨i.val, i.isLt.trans_le hMN⟩
-  have he : Function.Injective e := fun i j hij => Fin.ext (congrArg Fin.val hij)
+  have he : Function.Injective e := padEmb_injective hMN
+  have hpad (i : Fin M) : padDivisor hMN u (e i) = u i := padDivisor_apply_emb hMN u i
   obtain ⟨hprime, hsum, ⟨i₁, hi₁⟩, ⟨i₂, hi₂⟩⟩ := hu
   refine ⟨?_, ?_, ⟨e i₁, ?_⟩, ⟨e i₂, ?_⟩⟩
   · intro ℓ hℓ
     by_cases hex : ∃ i : Fin M, e i = ℓ
     · obtain ⟨i, rfl⟩ := hex
-      have hui : u i ≠ 0 := by
-        simpa only [padDivisor, he.extend_apply] using hℓ
-      exact hprime i hui
+      rw [hpad] at hℓ
+      exact hprime i hℓ
     · exact (hℓ (Function.extend_apply' _ _ _ hex)).elim
   · have hoff : ∀ ℓ : Fin N, ℓ ∉ Finset.univ.image e → padDivisor hMN u ℓ = 0 := by
       intro ℓ hℓ
@@ -107,10 +117,10 @@ theorem isSignedPrimeSupported_pad {M N : ℕ} (hMN : M ≤ N) {u : Fin M → �
     rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image e)) fun ℓ _ hℓ => hoff ℓ hℓ,
       Finset.sum_image fun i _ j _ h => he h]
     have hcongr : (∑ i : Fin M, padDivisor hMN u (e i)) = ∑ i : Fin M, u i :=
-      Finset.sum_congr rfl fun i _ => he.extend_apply u 0 i
+      Finset.sum_congr rfl fun i _ => hpad i
     rw [hcongr, hsum]
-  · simpa only [padDivisor, he.extend_apply] using hi₁
-  · simpa only [padDivisor, he.extend_apply] using hi₂
+  · rw [hpad]; exact hi₁
+  · rw [hpad]; exact hi₂
 
 /-- Every dyadic shell `(M, 2M]` eventually contains at least `L` primes. -/
 theorem eventually_card_primes_Ioc_ge (L : ℕ) :
@@ -167,7 +177,7 @@ theorem exists_primeShell_momentKernel_vector (k₀ : ℕ) (hk₀ : 1 ≤ k₀) 
     { toFun := fun v j => ∑ q : ↥S, (q.val : ℚ) ^ j.val * v q
       map_add' := fun v w => funext fun j => by
         change ∑ q : ↥S, (q.val : ℚ) ^ j.val * (v q + w q) = _
-        simp only [mul_add, Finset.sum_add_distrib]
+        simp only [mul_add, Finset.sum_add_distrib, Pi.add_apply]
       map_smul' := fun c v => funext fun j => by
         change ∑ q : ↥S, (q.val : ℚ) ^ j.val * (c * v q) = c * _
         rw [Finset.mul_sum]
@@ -304,11 +314,12 @@ theorem exists_disjoint_primeSupported_signed_plane (R : ℕ) (hR : 2 ≤ R) (P�
   have hN_gt : P₀ < N := by dsimp [N]; nlinarith only [hR, hM_gt_P]
   have ha₁_sig : isSignedPrimeSupported a₁ := isSignedPrimeSupported_pad h2M_le_N hu₁_sig
   let ePad : Fin (2 * M) → Fin N := fun i => ⟨i.val, i.isLt.trans_le h2M_le_N⟩
-  have hePad : Function.Injective ePad := fun i j h => Fin.ext (congrArg Fin.val h)
+  have hePad : Function.Injective ePad := padEmb_injective h2M_le_N
   have ha₁_shell {ℓ : Fin N} (hℓ : a₁ ℓ ≠ 0) : M < ℓ.val + 1 ∧ ℓ.val + 1 ≤ 2 * M := by
     by_cases hex : ∃ i : Fin (2 * M), ePad i = ℓ
     · obtain ⟨i, rfl⟩ := hex
-      have hui : u₁ i ≠ 0 := by simpa only [a₁, padDivisor, hePad.extend_apply] using hℓ
+      have hui : u₁ i ≠ 0 := by
+        rwa [show a₁ (ePad i) = u₁ i from padDivisor_apply_emb h2M_le_N u₁ i] at hℓ
       exact hu₁_shell i hui
     · exact (hℓ (Function.extend_apply' _ _ _ hex)).elim
   have ha₁_mom (j : ℕ) (hj : j < k₀) :
@@ -319,7 +330,7 @@ theorem exists_disjoint_primeSupported_signed_plane (R : ℕ) (hR : 2 ≤ R) (P�
   have hsep (i j : Fin N) (hi : a₁ i ≠ 0) (hj : a₂ j ≠ 0) :
       R * (i.val + 1) < j.val + 1 := by
     have hi_hi := (ha₁_shell hi).2
-    have hj_lo := (ha₂_shell hj).1
+    have hj_lo := (ha₂_shell j hj).1
     calc R * (i.val + 1) ≤ R * (2 * M) := Nat.mul_le_mul_left R hi_hi
       _ = 2 * R * M := by ring
       _ < j.val + 1 := hj_lo
@@ -338,8 +349,8 @@ theorem exists_disjoint_primeSupported_signed_plane (R : ℕ) (hR : 2 ≤ R) (P�
       have hv₂ := congrFun h0 ℓ₂
       have ha₂_0 : a₂ ℓ₁ = 0 := (hdisj_pt ℓ₁).resolve_left hℓ₁.ne'
       have ha₁_0 : a₁ ℓ₂ = 0 := (hdisj_pt ℓ₂).resolve_right hℓ₂.ne'
-      simp only [Pi.add_apply, Pi.zero_apply, Pi.smul_apply, zsmul_eq_mul,
-        ha₂_0, ha₁_0, mul_zero, add_zero, zero_add] at hv₁ hv₂
+      simp only [Pi.add_apply, Pi.smul_apply, Pi.zero_apply] at hv₁ hv₂
+      simp only [zsmul_eq_mul, Int.cast_id, ha₂_0, ha₁_0, mul_zero, add_zero, zero_add] at hv₁ hv₂
       exact ⟨(mul_eq_zero.mp hv₁).resolve_right hℓ₁.ne',
              (mul_eq_zero.mp hv₂).resolve_right hℓ₂.ne'⟩
     · rintro ⟨rfl, rfl⟩; simp
@@ -359,7 +370,7 @@ theorem exists_disjoint_primeSupported_signed_plane (R : ℕ) (hR : 2 ≤ R) (P�
       have h10 : a₁ ℓ = 0 := by by_contra h1; have := (ha₁_shell h1).1; omega
       have h20 : a₂ ℓ = 0 := by
         by_contra h2
-        have := (ha₂_shell h2).1
+        have := (ha₂_shell ℓ h2).1
         have : 1 * M ≤ 2 * R * M := Nat.mul_le_mul_right M (by omega)
         omega
       simp [h10, h20]
@@ -376,7 +387,7 @@ theorem exists_disjoint_primeSupported_signed_plane (R : ℕ) (hR : 2 ≤ R) (P�
   refine ⟨N, a₁, a₂, hN_gt, ha₁_sig, ha₂_sig, ?_, ?_, hsep, hdisj, hlin, hpos_plane⟩
   · intro i hi; have := (ha₁_shell hi).1; omega
   · intro j hj
-    have := (ha₂_shell hj).1
+    have := (ha₂_shell j hj).1
     have : 1 * M ≤ 2 * R * M := Nat.mul_le_mul_right M (by omega)
     omega
 
@@ -409,7 +420,7 @@ theorem exists_disjoint_primeSupported_signed_subspace (r : ℕ) (hr : 1 ≤ r) 
         (∀ ℓ : Fin N, a_s ℓ ≠ 0 → 2 ^ s.val * M < ℓ.val + 1 ∧ ℓ.val + 1 ≤ 2 ^ (s.val + 1) * M) ∧
         (∀ j < k₀, ∑ ℓ : Fin N, ((ℓ : ℝ) + 1) ^ j * (a_s ℓ : ℝ) = 0) := by
     have hs_ge : M₀ ≤ 2 ^ s.val * M := by
-      have h1 : 1 * M ≤ 2 ^ s.val * M := Nat.mul_le_mul_right M (pow_pos (by decide) s.val)
+      have h1 : 1 * M ≤ 2 ^ s.val * M := Nat.mul_le_mul_right M Nat.one_le_two_pow
       have h2 : M₀ ≤ M := le_max_left _ _
       omega
     obtain ⟨u, hu_sig, hu_sh, hu_mom⟩ := hshell (2 ^ s.val * M) hs_ge
@@ -418,12 +429,13 @@ theorem exists_disjoint_primeSupported_signed_subspace (r : ℕ) (hr : 1 ≤ r) 
       exact Nat.mul_le_mul_right M (pow_le_pow_right₀ (by decide : 1 ≤ 2) (by have := s.isLt; omega))
     let a_s : Fin N → ℤ := padDivisor hle_N u
     let e : Fin (2 * (2 ^ s.val * M)) → Fin N := fun i => ⟨i.val, i.isLt.trans_le hle_N⟩
-    have he : Function.Injective e := fun i j h => Fin.ext (congrArg Fin.val h)
+    have he : Function.Injective e := padEmb_injective hle_N
     refine ⟨a_s, isSignedPrimeSupported_pad hle_N hu_sig, ?_, ?_⟩
     · intro ℓ hℓ
       by_cases hex : ∃ i, e i = ℓ
       · obtain ⟨i, rfl⟩ := hex
-        have hui : u i ≠ 0 := by simpa only [a_s, padDivisor, he.extend_apply] using hℓ
+        have hui : u i ≠ 0 := by
+          rwa [show a_s (e i) = u i from padDivisor_apply_emb hle_N u i] at hℓ
         obtain ⟨hlo, hhi⟩ := hu_sh i hui
         exact ⟨hlo, by simpa only [pow_succ', mul_assoc] using hhi⟩
       · exact (hℓ (Function.extend_apply' _ _ _ hex)).elim
@@ -450,7 +462,8 @@ theorem exists_disjoint_primeSupported_signed_subspace (r : ℕ) (hr : 1 ≤ r) 
       funext s₀
       obtain ⟨ℓ₀, hℓ₀⟩ := (ha_sig s₀).2.2.1
       have hv := congrFun h0 ℓ₀
-      simp only [Finset.sum_apply, Pi.zero_apply, Pi.smul_apply, zsmul_eq_mul] at hv
+      simp only [Finset.sum_apply, Pi.smul_apply, Pi.zero_apply] at hv
+      simp only [zsmul_eq_mul, Int.cast_id] at hv
       rw [Finset.sum_eq_single s₀] at hv
       · exact (mul_eq_zero.mp hv).resolve_right hℓ₀.ne'
       · intro s _ hs
@@ -465,19 +478,20 @@ theorem exists_disjoint_primeSupported_signed_subspace (r : ℕ) (hr : 1 ≤ r) 
     · intro ℓ hℓ
       have hdiv : N / B = M := Nat.mul_div_cancel_left M hB
       rw [hdiv] at hℓ
-      simp only [Finset.sum_apply, Pi.smul_apply, zsmul_eq_mul]
+      simp only [Finset.sum_apply, Pi.smul_apply]
+      simp only [zsmul_eq_mul, Int.cast_id]
       refine Finset.sum_eq_zero fun s _ => ?_
       have h0s : a s ℓ = 0 := by
         by_contra hs_ne
         have hlo := (ha_sh s ℓ hs_ne).1
-        have h1 : 1 * M ≤ 2 ^ s.val * M := Nat.mul_le_mul_right M (pow_pos (by decide) s.val)
+        have h1 : 1 * M ≤ 2 ^ s.val * M := Nat.mul_le_mul_right M Nat.one_le_two_pow
         omega
       rw [h0s, mul_zero]
     · intro j hj
       have hj' : j < k₀ := hj.trans_le (le_max_left k 1)
       have hexp : (∑ ℓ : Fin N, ((ℓ : ℝ) + 1) ^ j * (((∑ s, c s • a s) ℓ : ℤ) : ℝ)) =
           ∑ s : Fin r, (c s : ℝ) * (∑ ℓ : Fin N, ((ℓ : ℝ) + 1) ^ j * (a s ℓ : ℝ)) := by
-        simp_rw [Finset.sum_apply, Pi.smul_apply, zsmul_eq_mul, Int.cast_sum, Int.cast_mul,
+        simp_rw [Finset.sum_apply, Pi.smul_apply, zsmul_eq_mul, Int.cast_id, Int.cast_sum, Int.cast_mul,
           Finset.mul_sum]
         rw [Finset.sum_comm]
         exact Finset.sum_congr rfl fun s _ => Finset.sum_congr rfl fun ℓ _ => by ring
@@ -486,7 +500,7 @@ theorem exists_disjoint_primeSupported_signed_subspace (r : ℕ) (hr : 1 ≤ r) 
   refine ⟨N, a, hN_gt, ha_sig, ?_, ?_, hlin, hpos_sub⟩
   · intro s i hi
     have hlo := (ha_sh s i hi).1
-    have h1 : 1 * M ≤ 2 ^ s.val * M := Nat.mul_le_mul_right M (pow_pos (by decide) s.val)
+    have h1 : 1 * M ≤ 2 ^ s.val * M := Nat.mul_le_mul_right M Nat.one_le_two_pow
     omega
   · intro s₁ s₂ hne
     exact (disjoint_activeConductors_iff _ _).mpr (hdisj_pt hne)
@@ -664,8 +678,8 @@ theorem integerProbe_twoAtom_diff {N : ℕ} (i j : Fin N) :
     simpa using congr_arg Complex.re hH
   rw [integerProbe_eq_sum]
   simp only [Pi.sub_apply, Pi.single_apply, Int.cast_sub, Int.cast_ite, Int.cast_one, Int.cast_zero,
-    mul_sub, sub_mul, Finset.sum_sub_distrib, mul_ite, ite_mul, mul_one, mul_zero, zero_mul,
-    Finset.sum_ite_eq', Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    mul_sub, Finset.sum_sub_distrib, mul_ite, mul_one, mul_zero,
+    Finset.sum_ite_eq', Finset.mem_univ, if_true]
   rw [hij, atomGram_eq_splineSeries, atomGram_eq_splineSeries, atomGram_eq_splineSeries,
     sub_self, sub_self]
   ring
@@ -815,8 +829,9 @@ theorem exists_twoPrime_diff_neg_integerProbe_of_not_rh (hnotRH : ¬ RiemannHypo
       have ha₂_i₃ : a₂ i₃ = 1 := by simp [a₂, Pi.single_eq_of_ne hi₃₄_ne]
       have ha₂_i₁ : a₂ i₁ = 0 := (hdisj_pt i₁).resolve_left (by rw [ha₁_i₁]; decide)
       have ha₁_i₃ : a₁ i₃ = 0 := (hdisj_pt i₃).resolve_right (by rw [ha₂_i₃]; decide)
-      simp only [Pi.add_apply, Pi.zero_apply, Pi.smul_apply, zsmul_eq_mul,
-        ha₁_i₁, ha₂_i₃, ha₂_i₁, ha₁_i₃, mul_one, mul_zero, add_zero, zero_add] at hv₁ hv₂
+      simp only [Pi.add_apply, Pi.smul_apply, Pi.zero_apply] at hv₁ hv₂
+      simp only [zsmul_eq_mul, Int.cast_id, ha₁_i₁, ha₂_i₃, ha₂_i₁, ha₁_i₃, mul_one, mul_zero,
+        add_zero, zero_add] at hv₁ hv₂
       exact ⟨hv₁, hv₂⟩
     · rintro ⟨rfl, rfl⟩; simp
   have hQ_neg : integerProbe N a₁ < 0 := by
@@ -949,7 +964,7 @@ private theorem hermNegIndex_submatrix_le {M N : ℕ} (H : Matrix (Fin N) (Fin N
     congr 1
     simp only [dotProduct, Matrix.mulVec, Finset.mul_sum, Pi.star_apply]
     rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image ι)) fun ℓ _ hℓ => by
-      rw [hoff ℓ hℓ, star_zero, zero_mul, Finset.sum_const_zero]]
+      simp only [hoff ℓ hℓ, star_zero, zero_mul, Finset.sum_const_zero]]
     rw [Finset.sum_image fun i _ j _ h => hι h]
     refine Finset.sum_congr rfl fun i _ => ?_
     rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image ι)) fun ℓ _ hℓ => by
@@ -1004,8 +1019,9 @@ private theorem exists_primeTuple_log_approx (M P₀ : ℕ) :
         rw [zero_mul, Real.exp_zero, mul_one]
         have hc₁ : E.card ≤ (Finset.range (P₀ + 2)).card + (Finset.univ.image f).card :=
           Finset.card_union_le _ _
-        have hc₂ : (Finset.univ.image f).card ≤ k := by
-          simpa only [Finset.card_univ, Fintype.card_fin] using Finset.card_image_le (f := f)
+        have hc₂ : (Finset.univ.image f).card ≤ k :=
+          (Finset.card_image_le (s := Finset.univ) (f := f)).trans_eq
+            (by rw [Finset.card_univ, Fintype.card_fin])
         rw [Finset.card_range] at hc₁
         exact_mod_cast (by omega : E.card ≤ M + P₀ + 3)
       obtain ⟨q, hq_prime, hq_not, _, hq_le, hq_gap⟩ := hU u hu_ge E hE_card
@@ -1021,11 +1037,15 @@ private theorem exists_primeTuple_log_approx (M P₀ : ℕ) :
       refine ⟨f', ?_, ?_⟩
       · intro j₁ j₂ hj
         dsimp only [f'] at hj
-        split_ifs at hj with h₁ h₂
-        · exact Fin.ext (congrArg Fin.val (hf_inj hj))
-        · exact (hq_ne ⟨j₁.val, h₁⟩ hj.symm).elim
-        · exact (hq_ne ⟨j₂.val, h₂⟩ hj).elim
-        · exact Fin.ext (by omega)
+        by_cases h₁ : j₁.val < k <;> by_cases h₂ : j₂.val < k
+        · rw [dif_pos h₁, dif_pos h₂] at hj
+          exact Fin.ext (Fin.mk.inj_iff.mp (hf_inj hj))
+        · rw [dif_pos h₁, dif_neg h₂] at hj
+          exact (hq_ne ⟨j₁.val, h₁⟩ hj.symm).elim
+        · rw [dif_neg h₁, dif_pos h₂] at hj
+          exact (hq_ne ⟨j₂.val, h₂⟩ hj).elim
+        · have := j₁.isLt; have := j₂.isLt
+          exact Fin.ext (by omega)
       · intro j
         dsimp only [f']
         split_ifs with hj
@@ -1049,7 +1069,8 @@ private theorem exists_primeTuple_log_approx (M P₀ : ℕ) :
     have h := congrArg Fin.val hij
     have hi := hι_val i; have hj := hι_val j
     exact hf_inj (by omega)
-  · rw [hι_val i]
+  · have hc : ((ι i : ℕ) : ℝ) + 1 = (f i : ℝ) := by exact_mod_cast hι_val i
+    rw [hι_val i, hc]
     exact hf_props i
 
 /-- Subtype of `M`-element embeddings into `Fin N` supported solely on primes above `P₀`. -/
@@ -1079,7 +1100,9 @@ private theorem exists_primeSubmatrix_tendsto_atomGram (M P₀ : ℕ) :
     have hinv := inv_anti₀ (by positivity : 0 < (1 / 3 : ℝ) * (n : ℝ)) hlin
     have hrew : ((1 / 3 : ℝ) * (n : ℝ))⁻¹ = (3 : ℝ) / (n : ℝ) := by field_simp
     rw [hrew] at hinv
-    linarith only [hinv]
+    calc 2 * (Real.exp ((1 / 3 : ℝ) * (n : ℝ)))⁻¹ ≤ 2 * ((3 : ℝ) / (n : ℝ)) :=
+          mul_le_mul_of_nonneg_left hinv (by norm_num)
+      _ = 6 / (n : ℝ) := by ring
   have harg : Tendsto
       (fun n : ℕ => Real.log (((ιseq n i).val : ℝ) + 1) - Real.log (((ιseq n j).val : ℝ) + 1))
       atTop (𝓝 (Real.log ((i : ℝ) + 1) - Real.log ((j : ℝ) + 1))) := by
@@ -1094,9 +1117,6 @@ private theorem exists_primeSubmatrix_tendsto_atomGram (M P₀ : ℕ) :
       have hi := (hι_props n i).2.2
       have hj := (hι_props n j).2.2
       rw [hmax] at hi hj
-      have ci : (((ιseq n i).val + 1 : ℕ) : ℝ) = ((ιseq n i).val : ℝ) + 1 := by push_cast; rfl
-      have cj : (((ιseq n j).val + 1 : ℕ) : ℝ) = ((ιseq n j).val : ℝ) + 1 := by push_cast; rfl
-      rw [ci] at hi; rw [cj] at hj
       linarith only [hi.2, hj.1, hb]
     · filter_upwards [eventually_ge_atTop (max N₀ 1)] with n hn
       have hmax : max U (n : ℝ) = (n : ℝ) :=
@@ -1105,9 +1125,6 @@ private theorem exists_primeSubmatrix_tendsto_atomGram (M P₀ : ℕ) :
       have hi := (hι_props n i).2.2
       have hj := (hι_props n j).2.2
       rw [hmax] at hi hj
-      have ci : (((ιseq n i).val + 1 : ℕ) : ℝ) = ((ιseq n i).val : ℝ) + 1 := by push_cast; rfl
-      have cj : (((ιseq n j).val + 1 : ℕ) : ℝ) = ((ιseq n j).val : ℝ) + 1 := by push_cast; rfl
-      rw [ci] at hi; rw [cj] at hj
       linarith only [hi.1, hj.2, hb]
   refine (continuous_splineSeries.tendsto _).comp harg |> fun h => h.congr fun n => ?_
   dsimp only [Function.comp_apply]
@@ -1165,8 +1182,8 @@ theorem exists_signed_primeSupported_integerProbe_near {M : ℕ} {u : Fin M → 
   have hprobe_lim : Tendsto (fun n : ℕ => integerProbe (Nseq n) (a n))
       atTop (𝓝 (integerProbe M u)) := by
     rw [integerProbe_eq_sum M u]
-    refine (tendsto_finset_sum Finset.univ fun i _ =>
-      tendsto_finset_sum Finset.univ fun j _ =>
+    refine (tendsto_finsetSum Finset.univ fun i _ =>
+      tendsto_finsetSum Finset.univ fun j _ =>
         (((Complex.continuous_re.tendsto _).comp (hconv i j)).mul_const (u i : ℝ)).mul_const
           (u j : ℝ)).congr fun n => (hprobe_eq n).symm
   obtain ⟨n, hn⟩ := (Metric.tendsto_nhds.mp hprobe_lim ε hε).exists
@@ -1197,7 +1214,7 @@ theorem exists_signed_primeSupported_integerProbe_near {M : ℕ} {u : Fin M → 
 /-- Prime-supported Gram submatrices above any finite cutoff `P₀` carry the full
 off-line zero index `(rightZeros zetaZeroConfig).encard`. -/
 theorem rightZeros_encard_eq_iSup_primeSubmatrix (P₀ : ℕ) :
-    (rightZeros zetaZeroConfig).encard =
+    (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard =
       ⨆ (M : ℕ) (N : ℕ) (ι : PrimeConductorEmbedding M N P₀),
         (hermNegIndex ((atomGram N).submatrix ι.val ι.val) : ℕ∞) := by
   rw [rightZeros_encard_eq_sectionIndex]
@@ -1221,14 +1238,5 @@ theorem rightZeros_encard_eq_iSup_primeSubmatrix (P₀ : ℕ) :
         ≤ (hermNegIndex (atomGram N) : ℕ∞) := by
           exact_mod_cast hermNegIndex_submatrix_le (atomGram N) ι.property.1
       _ ≤ ⨆ K : ℕ, (hermNegIndex (atomGram K) : ℕ∞) := le_iSup _ N
-
-#print axioms exists_disjoint_primeSupported_signed_plane
-#print axioms exists_disjoint_primeSupported_signed_subspace
-#print axioms exists_prime_background_shared_adelicCarry_plane
-#print axioms exists_prime_background_shared_adelicCarry_subspace
-#print axioms exists_twoPrime_diff_neg_integerProbe_of_not_rh
-#print axioms riemannHypothesis_iff_all_disjoint_primeSupported_signed_planes
-#print axioms exists_signed_primeSupported_integerProbe_near
-#print axioms rightZeros_encard_eq_iSup_primeSubmatrix
 
 end GaloisForLFunctions.CountingHolography.Sections

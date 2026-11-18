@@ -57,16 +57,16 @@ theorem norm_twist_iff (z w t : Circle) :
     have h₂ := h (probes (F := F) 0 1)
     simp only [probes,relativePhase,normPhase,degree_monomial,sub_zero,add_zero,zero_add,
       zero_sub,zpow_one,zpow_neg_one] at h₁ h₂
-    have he := (eq_div_iff_mul_eq).2 h₁.symm
+    have he : t = z/w := by simp [h₁]
     refine ⟨he,?_⟩
     rw [h₁,mul_inv_rev] at h₂
     apply mul_left_cancel (a := w⁻¹)
     exact (by rw [mul_comm (w⁻¹) t]; exact h₂.symm)
   · rintro ⟨ht,hinv⟩ x
-    have he : z=t*w := (eq_div_iff_mul_eq.mp ht).symm
+    have he : z=t*w := by simp [ht]
     rw [he,relativePhase,relativePhase,normPhase,mul_zpow]
     congr 1
-    rw [zpow_sub,zpow_add,div_eq_mul_inv,← inv_zpow,← hinv]
+    rw [zpow_sub,zpow_add,← inv_zpow,← hinv]
 
 private instance modulus_neZero (R : ℕ+) : NeZero (2*(R : ℕ)) :=
   ⟨Nat.mul_ne_zero (by decide) R.pos.ne'⟩
@@ -111,7 +111,7 @@ private theorem indexed_div (R : ℕ+) (n m : ℤ) :
 
 private theorem indexed_inv (R : ℕ+) (n : ℤ) :
     (indexedPhase R n)⁻¹=indexedPhase R (-n) := by
-  simp [indexedPhase]
+  simpa only [show indexedPhase R 0 = 1 by simp [indexedPhase],one_div,zero_sub] using indexed_div R 0 n
 
 /-- Quotienting by all norm-degree twists divides the arithmetic period by
 exactly two. The two possible representatives differ by the norm parity. -/
@@ -120,7 +120,7 @@ theorem indexed_mod_norm (R : ℕ+) (n m : ℤ) :
       relativePhase (indexedPhase R n) x = normPhase t x * relativePhase (indexedPhase R m) x) ↔
       (R : ℤ) ∣ n-m := by
   simp_rw [norm_twist_iff (F := F),indexed_div]
-  rw [exists_eq_left',indexed_inv,indexedPhase,indexedPhase,ZMod.injective_toCircle.eq_iff,
+  rw [exists_eq_left,indexed_inv,indexedPhase,indexedPhase,ZMod.injective_toCircle.eq_iff,
     ZMod.intCast_eq_intCast_iff_dvd_sub]
   push_cast
   constructor
@@ -130,10 +130,3 @@ theorem indexed_mod_norm (R : ℕ+) (n m : ℤ) :
     exact ⟨-a,by linarith only [ha]⟩
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity
-
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.phase_on_translate
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.relative_descends_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.norm_twist_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.unique_frequency_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.indexed_equal_iff
-#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.indexed_mod_norm

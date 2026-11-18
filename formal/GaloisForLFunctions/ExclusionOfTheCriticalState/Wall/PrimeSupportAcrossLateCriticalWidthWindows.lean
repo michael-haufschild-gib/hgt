@@ -35,13 +35,13 @@ theorem tendsto_frozen_window_mean {f : ℝ → ℝ} (hm : Monotone f)
     have hquot := (tendsto_const_nhds (x := a)).add hs
     rw [add_zero] at hquot
     have hratio : Tendsto (fun x => (a*x+h x)/x) atTop (𝓝 a) := hquot.congr' <|
-      (eventually_gt_atTop (0:ℝ)).mono fun x hx => by field_simp [hx.ne'] <;> ring
+      (eventually_gt_atTop (0:ℝ)).mono fun x hx => by field_simp [hx.ne']
     have hprod := (hf.comp hvar).mul hratio
     rw [one_mul] at hprod
     apply hprod.congr'
     filter_upwards [hvar.eventually_gt_atTop 0,eventually_gt_atTop (0:ℝ)] with x hx hx0
     change f (a*x+h x)/(a*x+h x)*((a*x+h x)/x)=_
-    field_simp [hx.ne',hx0.ne'] <;> ring
+    field_simp [hx.ne',hx0.ne']
   have hzero : Tendsto (fun x : ℝ => (0:ℝ)/x) atTop (𝓝 0) := by
     simp only [zero_div]; exact tendsto_const_nhds
   have h0 (a : ℝ) (ha : 0 < a) : Tendsto (fun x => f (a*x)/x) atTop (𝓝 a) := by
@@ -76,12 +76,13 @@ theorem exists_positive_measure_of_lower_interval_mean {x y c d D : ℝ} (hxy : 
   have hI : MeasurableSet I := measurableSet_Ioc
   have hA : MeasurableSet A := hI.inter (measurableSet_lt measurable_const hm)
   have hAI : A ⊆ I := inter_subset_left
-  have hC : IntegrableOn (fun _ : ℝ => c) I := integrableOn_const (by dsimp only [I]; finiteness)
-  have hD : IntegrableOn (fun _ : ℝ => D) I := integrableOn_const (by dsimp only [I]; finiteness)
+  have hC : IntegrableOn (fun _ : ℝ => c) I := integrableOn_const (by dsimp only [I]; rw [Real.volume_Ioc]; exact ENNReal.ofReal_ne_top)
+  have hD : IntegrableOn (fun _ : ℝ => D) I := integrableOn_const (by dsimp only [I]; rw [Real.volume_Ioc]; exact ENNReal.ofReal_ne_top)
   have hInd : IntegrableOn (A.indicator fun _ : ℝ => D) I := hD.indicator hA
   have hbig : (∫ u in I, q u) ≤ ∫ u in I, c+A.indicator (fun _ : ℝ => D) u := by
     apply setIntegral_mono_on ((intervalIntegrable_iff_integrableOn_Ioc_of_le hxy).mp hi) (hC.add hInd) hI
     intro u hu
+    change q u ≤ c+A.indicator (fun _ : ℝ => D) u
     by_cases h : u ∈ A
     · rw [indicator_of_mem h]; exact (hq u hu).trans (le_add_of_nonneg_left hc)
     · rw [indicator_of_notMem h,add_zero]; exact le_of_not_gt fun hgt => h ⟨hu,hgt⟩
@@ -269,7 +270,7 @@ theorem fractionalPrimeTest_mass_of_log_window_subset {A : Set ℝ} (hA : Measur
     (hx : 0 < x) (hR : 0 < R) (hAI : A ⊆ Ioc x (R*x)) (hmass : κ*x ≤ volume.real A) :
     κ/R ≤ (∫ u in A, u⁻¹) ∧
     κ/R^2 ≤ ∫ u in A, fractionalPrimeTest (Real.log x-Real.log u)*u⁻¹ := by
-  have hfin : volume A ≠ ⊤ := ((measure_mono hAI).trans_lt (by finiteness)).ne
+  have hfin : volume A ≠ ⊤ := ((measure_mono hAI).trans_lt (by rw [Real.volume_Ioc]; exact ENNReal.ofReal_lt_top)).ne
   have hbound : IntegrableOn (fun _ : ℝ => x⁻¹) A := integrableOn_const hfin
   have hi : IntegrableOn (fun u : ℝ => u⁻¹) A := by
     apply hbound.mono' measurable_inv.aestronglyMeasurable
@@ -287,7 +288,8 @@ theorem fractionalPrimeTest_mass_of_log_window_subset {A : Set ℝ} (hA : Measur
     apply hi.norm.mono' ((measurable_fractionalPrimeTest.comp
       (measurable_const.sub Real.measurable_log)).mul measurable_inv).aestronglyMeasurable
     exact Eventually.of_forall fun u => by
-      rw [Real.norm_eq_abs,Real.norm_eq_abs,abs_mul]
+      change |fractionalPrimeTest (Real.log x-Real.log u)*u⁻¹| ≤ |u⁻¹|
+      rw [abs_mul]
       exact mul_le_of_le_one_left (abs_nonneg _) (fractionalPrimeTest_bounds _).1
   have hkernel (u : ℝ) (hu : u ∈ A) : R⁻¹ ≤ fractionalPrimeTest (Real.log x-Real.log u) := by
     have hxu := (hAI hu).1
@@ -307,7 +309,7 @@ theorem fractionalPrimeTest_mass_of_log_window_subset {A : Set ℝ} (hA : Measur
 
 /-- Restoring the complete integer complement leaves exactly the signed first
 window. Both rows retain the same square charge. -/
-private theorem signed_window_complement {Φ : ℝ → ℝ} {C : ℝ} (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
+theorem centered_mangoldt_eq_criticalWidthReading_add_complement {Φ : ℝ → ℝ} {C : ℝ} (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
     let m := ∫ u, Φ u
     let v := fun n : ℕ => (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t
     let J := wallIntegerWindow t (criticalWallWidth t)
@@ -317,7 +319,8 @@ private theorem signed_window_complement {Φ : ℝ → ℝ} {C : ℝ} (hb : ∀ 
   let m := ∫ u, Φ u
   have hs : Summable v := ((summable_mangoldt_integerAtom hb t).sub
     (summable_continuousIntegerAtom hb t)).congr fun n => by simp only [v,sub_mul,one_mul]
-  change m*((∑' n : ℕ, v n)-m/2) = _
+  change m*((∑' n : ℕ, v n)-m/2) = criticalWidthSignedReading Φ t +
+    m*((∑' n : {j : ℕ // j ∉ J}, v n)-m/2)
   rw [← hs.sum_add_tsum_compl (s := J)]
   have hr : criticalWidthSignedReading Φ t = m*∑ n ∈ J, v n := (Finset.mul_sum ..).symm
   rw [hr]; ring
@@ -337,8 +340,8 @@ theorem riemannHypothesis_or_positive_measure_of_signed_criticalWidth_centers : 
             let t := Real.log u
             let J := wallIntegerWindow t (criticalWallWidth t)
             let m := ∫ v, Φ v
-            let v := fun n : ℕ => (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t
-            -ε < criticalWidthSignedReading Φ t ∧
+            let v := fun n : ℕ => (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t;
+            (-ε < criticalWidthSignedReading Φ t) ∧
               m*((∑' n : {j : ℕ // j ∉ J}, v n)-m/2)-ε < m*((∑' n : ℕ, v n)-m/2) := by
   rcases riemannHypothesis_or_signed_critical_width_chebyshev_excess with hr |
     ⟨W₀,F,Φ,γ,hW,ht,hF,hc,he,hγ,_,hw,_⟩
@@ -354,7 +357,7 @@ theorem riemannHypothesis_or_positive_measure_of_signed_criticalWidth_centers : 
   obtain ⟨hl,hk⟩ := fractionalPrimeTest_mass_of_log_window_subset hA hx0 (zero_lt_one.trans hR) hAI hmass
   refine ⟨A,hA,hAI,hmass,hl,hk,fun u hu => ⟨hread u hu,?_⟩⟩
   dsimp only
-  rw [signed_window_complement hb (Real.log u)]
+  rw [centered_mangoldt_eq_criticalWidthReading_add_complement hb (Real.log u)]
   linarith only [hread u hu]
 
 #print axioms riemannHypothesis_or_positive_measure_of_signed_criticalWidth_centers
