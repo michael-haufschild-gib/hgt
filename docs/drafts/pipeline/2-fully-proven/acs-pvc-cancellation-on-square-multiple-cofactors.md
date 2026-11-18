@@ -15,4 +15,4 @@ For every surviving pair \(pdt>U_n\), \(dt\le n\) gives \(p>\lfloor\sqrt n\rfloo
 
 Here \((U')^2\le m^3\), since \(U_n^2\le n^3\) and \(n^3/d^2=m^3/\ell\). Also \(m/(M'+1)<\ell\). The joint cutoff theorem bounds \(|T_m(U',M')-D_m|\) by \(O_\ell(L_m^6)\). Absorb the finitely many smaller \(m\) in the constants and sum absolute errors. The complementary class \(d\nmid v\) and the other conductors still require signed control.
 
-**Lean status.** The joint cutoff theorem is kernel-checked. The singleton clipping, divided-slice identity and their assembly on the square mesh are undergoing formalization.
+**Lean status.** The joint cutoff theorem is kernel-checked. Lean verification is pending for the singleton clipping, divided-slice identity and combined prefix. [Singleton clipping](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/TheClippedSquareComplement.lean) · [Opposite signals and weighted prefix](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/OppositePrimeSignalsOnSquareMultiples.lean)

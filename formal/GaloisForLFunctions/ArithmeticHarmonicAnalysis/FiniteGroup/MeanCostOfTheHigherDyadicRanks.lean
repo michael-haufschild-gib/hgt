@@ -22,7 +22,7 @@ def layers {ι : Type*} (S : Finset ι) (e : ι → ℕ) (k : ℕ) :=
 /-- Missing excess rank at depth k+2. The printed depth-one rank already
 includes both local factors when s is positive. -/
 def missed {ι : Type*} (S : Finset ι) (e : ι → ℕ) (s k : ℕ) :=
-  (layers S e (k+2) + (if k+2≤s then 1 else 0) - 1) - (layers S e (k+2) - 1)
+  (layers S e (k+2) + (if k+2 ≤ s then 1 else 0) - 1) - (layers S e (k+2) - 1)
 
 theorem missed_eq {ι : Type*} (S : Finset ι) (e : ι → ℕ) (s k : ℕ) :
     missed S e s k = if k+2 ≤ min s (S.sup e) then 1 else 0 := by
@@ -30,7 +30,7 @@ theorem missed_eq {ι : Type*} (S : Finset ι) (e : ι → ℕ) (s k : ℕ) :
     rw [Finset.le_sup_iff (by change 0<k+2; omega)]
     simp only [layers,card_pos,Finset.Nonempty,mem_filter,exists_prop]
   unfold missed
-  by_cases hs : k+2≤s <;> by_cases he : k+2≤S.sup e <;>
+  by_cases hs : k+2 ≤ s <;> by_cases he : k+2≤S.sup e <;>
     simp only [le_min_iff,hs,he,ite_true,ite_false,and_true,and_false,true_and,false_and] <;> omega
 
 /-- With all depth cutoffs included, precisely min(s,max e)−1 bits are

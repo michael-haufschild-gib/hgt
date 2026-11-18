@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.SmoothedLongProducts
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.PeriodicQuotientCancellation
 
 /-!
 # Square dilation on the prime mesh
@@ -13,39 +13,6 @@ open Finset
 open GaloisForLFunctions.CountingHolography.Sections
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-/-- Above the common finite horizon the compact prime spline vanishes. -/
-theorem sampledSpline_after_window {n k : ℕ} (hn : 0<n) (hk : splineHorizon n<k) :
-    sampledSpline n k=0 := by
-  have hn' : (0:ℝ)<n := Nat.cast_pos.mpr hn
-  have hscale : 4*(n:ℝ)^2 ≤ ((2*n+1:ℕ):ℝ)^2 := by
-    push_cast; linarith only [Nat.cast_nonneg (α := ℝ) n]
-  have hcap := (mul_le_mul_of_nonneg_left hscale (Real.exp_pos 8).le).trans
-    (successorSquareWindowScale_bounds n).2.2
-  have htop : Real.exp (8+Real.log 4)*(n:ℝ)^2 < k := by
-    rw [Real.exp_add,Real.exp_log (by norm_num : (0:ℝ)<4)]
-    have h := (by exact_mod_cast hk : (splineHorizon n:ℝ)<k)
-    dsimp only [splineHorizon] at h
-    push_cast at h
-    linarith only [h,hcap,Nat.cast_nonneg (α := ℝ) (windowEnd ((2*n+1)^2+1))]
-  unfold sampledSpline dyadicSpline
-  split
-  · rename_i hy
-    have h := squarePrimeWeight_zero_outside hy (fun hs =>
-      htop.not_ge ((div_le_iff₀ (sq_pos_of_pos hn')).mp hs.2))
-    rw [h,Complex.zero_re,mul_zero,zero_div]
-  · exact zero_div _
-
-/-- Values below the lower edge of the prime spline vanish exactly. -/
-theorem sampledSpline_before_support {n k : ℕ} (hn : 0<n)
-    (hk : (k:ℝ)<Real.exp (-8)*(n:ℝ)^2) : sampledSpline n k=0 := by
-  have hn' : (0:ℝ)<n := Nat.cast_pos.mpr hn
-  unfold sampledSpline dyadicSpline
-  split
-  · rename_i hy
-    rw [squarePrimeWeight_zero_outside hy (fun hs => hk.not_ge ((le_div_iff₀ (sq_pos_of_pos hn')).mp hs.1)),
-      Complex.zero_re,mul_zero,zero_div]
-  · exact zero_div _
-
 private theorem reading_padded {n T : ℕ} (hn : 0<n) (hT : splineHorizon n<T)
     (f : ℕ → ℝ) (hz : f 0=0) :
     splineCountReading n f = ∑ k ∈ range T, f k*(sampledSpline n k-sampledSpline n (k+1)) := by
@@ -57,7 +24,7 @@ private theorem reading_padded {n T : ℕ} (hn : 0<n) (hT : splineHorizon n<T)
     rcases Nat.eq_zero_or_pos k with rfl | hp
     · rw [hz,zero_mul]
     · have h : splineHorizon n<k := lt_of_not_ge (fun he => hk (mem_Icc.mpr ⟨hp,he⟩))
-      rw [sampledSpline_after_window hn h,sampledSpline_after_window hn (h.trans (Nat.lt_succ_self k)),sub_self,mul_zero]
+      rw [sampledSpline_eq_zero_after hn h,sampledSpline_eq_zero_after hn (h.trans (Nat.lt_succ_self k)),sub_self,mul_zero]
 
 private theorem quotient_blocks {d : ℕ} (hd : 0<d) (f w : ℕ → ℝ) (M : ℕ) :
     (∑ k ∈ range (d*M), f (k/d)*(w k-w (k+1))) =
@@ -98,7 +65,7 @@ theorem splineCountReading_square_dilation {n r : ℕ} (hn : 0<n) (hr : 0<r)
   have hT : splineHorizon (r*n)<r^2*M :=
     (Nat.lt_succ_of_le (le_max_left ..)).trans_le (Nat.le_mul_of_pos_left M hd)
   have hM : splineHorizon n<M := Nat.lt_succ_of_le (le_max_right ..)
-  rw [reading_padded (Nat.mul_pos hr hn) hT _ (by simpa only [Nat.zero_div] using hf),
+  rw [reading_padded (Nat.mul_pos hr hn) hT (fun k => f (k/r^2)) (by simpa only [Nat.zero_div] using hf),
     quotient_blocks hd,reading_padded hn hM f hf,sum_div]
   apply sum_congr rfl
   intro j _

@@ -12,4 +12,4 @@ For a fixed pair let \(z(k)=w_n(k)-w_n(k+1)\). The unit factorial weight \(W(\lf
 
 The remaining absolute factors are the bounded unit inner jump and \(\log p\). For \(U=2V_n\), the pair count with these logarithmic weights is at most \(U\sum_{p\le U}(\log p)/p\ll U(1+\log U)\). Hence \(|B_n|\ll U^3(1+\log U)/n^5\ll n^{1/4}(1+\log(2n))\). Multiplication by \(n^2\) and summation through \(M\) give the claim.
 
-**Lean status.** The first horizon primitive and the signed mesh through order two are kernel-checked. The third difference, second Abel transfer, exact shell identification and final bound require kernel verification.
+**Lean status.** The first horizon primitive and the signed mesh through order two are kernel-checked. The third difference, second Abel transfer, exact shell identification and final bound require kernel verification. [Terminal shell estimate](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/TheSevenFourthsConductorShell.lean)

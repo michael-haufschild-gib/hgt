@@ -118,7 +118,7 @@ private theorem cast_eq_of_dvd_sub (q : ℕ) (z w : ℤ) (h : (q:ℤ) ∣ z-w) :
   exact sub_eq_zero.mp he
 
 /-- Two independently specified residue matrices at coprime positive moduli
-admit one integral lift with all ordered minors positive. This applies
+have a common integral lift with all ordered minors positive. This applies
 directly to the binary and ternary matrices of the chart obstruction. -/
 theorem exists_simultaneous_totallyPositive_lift (p q : ℕ+) (hpq : (p:ℕ).Coprime (q:ℕ))
     (U : Matrix (Fin n) (Fin m) (ZMod (p:ℕ))) (V : Matrix (Fin n) (Fin m) (ZMod (q:ℕ))) :

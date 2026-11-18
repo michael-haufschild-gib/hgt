@@ -6,7 +6,7 @@ At every sufficiently large \(n\) and every \(m>0\) with \(m^2\le c n^3\), every
 
 Thus \(|\log q|/2\) is the infimum at every sufficiently large factorial horizon, yet no finite presentation attains it. The obstruction holds on an interval of primes whose total logarithmic weight grows quadratically. [Prime coordinate criterion](../3-formalized/prime-coordinates-of-balanced-factorials.md) · [Negative outer window](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/ANegativePrimeWindowAtEveryMultiplicity.lean)
 
-The [finite-place cost theorem](../3-formalized/finite-place-cost-of-the-stirling-remainder.md) bounds the improvement over zero entropy by $O(n^2)$ uniformly. At a horizon $L\ge10$ strictly above all prime divisors of $q$, the exact minimum of $H(E^2/q)$ is $\sum_p\operatorname{dist}(v_p(q),2p\mathbb Z)\log p$; the prime-coordinate classification realizes nearest residues independently.
+The [finite-place cost theorem](../3-formalized/finite-place-cost-of-the-stirling-remainder.md) bounds the improvement over zero entropy by $O(n^2)$ uniformly. At a horizon $L\ge10$ strictly above all prime divisors of $q$, the exact minimum of $H(E^2/q)$ is $\sum_p\operatorname{dist}(v_p(q),2p\mathbb Z)\log p$; the prime-coordinate classification realizes nearest residues independently. Lean proves the outer-window obstruction and the exact minimum in `successorSquare_half_price_unattained` and `factorialResidualHeight_exact_minimum`. [Formalization](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/TheUnattainedFactorialMinimumOnSquareConductors.lean)
 
 The quadratic loss should have an explicit limit. For fixed $p$ the limiting normalized valuation is
 $$

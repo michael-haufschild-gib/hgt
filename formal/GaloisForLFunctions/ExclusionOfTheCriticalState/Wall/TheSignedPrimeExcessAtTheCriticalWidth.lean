@@ -76,8 +76,9 @@ private theorem scaled_wall_atom {ι : Type*} {f : Filter ι} {t d : ι → ℝ}
         _ ≤ d i*v i := mul_le_mul_of_nonneg_right hdi.1 hvpos.le
         _ = q i-1 := by dsimp only [q]; ring
     refine ⟨hvpos,hq,Real.log_pos hq,hlow.trans (by dsimp only [k]; linarith only [hlo]),?_⟩
-    exact (Real.log_le_sub_one_of_pos hqpos).trans (by dsimp only [q]; linarith only
-      [mul_le_of_le_one_left hvpos.le hdi.2])
+    exact (Real.log_le_sub_one_of_pos hqpos).trans (by
+      dsimp only [q]
+      linarith only [mul_le_of_le_one_left hvpos.le hdi.2])
   have hk0 : Tendsto k f (𝓝[>] 0) := tendsto_nhdsWithin_iff.mpr
     ⟨squeeze_zero' (hgeo.mono fun _ h => h.2.2.1.le) (hgeo.mono fun _ h => h.2.2.2.2) hv0,
       hgeo.mono fun _ h => h.2.2.1⟩
@@ -266,14 +267,15 @@ private theorem critical_width_atom_cap {Φ : ℝ → ℝ} {m L : ℝ}
     dsimp only [criticalWallWidth,continuousIntegerAtom,k]; rw [neg_sub]; ring
   rw [he,abs_mul,abs_mul,abs_of_nonneg (Real.sqrt_nonneg _),abs_of_nonneg (div_nonneg (Real.exp_pos _).le (Real.sqrt_nonneg _))]
   have hrel : Real.exp (t/2)/Real.sqrt n ≤ 1 := (div_le_one (Real.sqrt_pos.mpr (hx0.trans ha))).2 hR
-  calc _ ≤ |m*Φ (-k)| *(2*Real.sqrt (Real.log (1/k))) := mul_le_mul
-      (mul_le_of_le_one_left (abs_nonneg _) hrel) hs (Real.sqrt_nonneg _) (abs_nonneg _)
+  calc
+    _ ≤ |m*Φ (-k)| *(2*Real.sqrt (Real.log (1/k))) := by
+      exact mul_le_mul (mul_le_of_le_one_left (abs_nonneg _) hrel) hs (Real.sqrt_nonneg _) (abs_nonneg _)
     _ ≤ _ := by linarith only [hw]
 
 /-- At the same width a Lipschitz profile vanishing at the wall has vanishing
 adverse mass. Thus the positive lower bound for a critical state detects its
 logarithmic edge singularity. -/
-theorem lipschitz_adverse_critical_width_tendsto_zero {Φ : ℝ → ℝ} {K : ℝ≥0}
+theorem lipschitz_adverse_critical_width_tendsto_zero {Φ : ℝ → ℝ} {K : NNReal}
     (hΦ : LipschitzWith K Φ) (h0 : Φ 0=0) :
     Tendsto (fun t : ℝ => adverseIntegerMass Φ t (wallIntegerWindow t (criticalWallWidth t)))
       atTop (𝓝 0) := by
@@ -313,14 +315,15 @@ theorem lipschitz_adverse_critical_width_tendsto_zero {Φ : ℝ → ℝ} {K : �
       apply hlog.trans
       rw [div_sub_one hX.ne']; exact div_le_div_of_nonneg_right (by linarith only [hhi]) hX.le
     have hp := hΦ.dist_le_mul (t-Real.log n) 0
-    rw [h0,Real.dist_eq,sub_zero,Real.dist_eq,sub_zero,abs_of_nonpos (by linarith only [hk])] at hp
+    rw [h0,Real.dist_eq,sub_zero,Real.dist_eq,sub_zero,abs_of_nonpos (by linarith only [hk] : t-Real.log (n:ℝ) ≤ 0)] at hp
     have hφ : |Φ (t-Real.log n)| ≤ (K:ℝ)*(H/X) := hp.trans
       (mul_le_mul_of_nonneg_left (by linarith only [hrange]) K.coe_nonneg)
     have hroot : R ≤ Real.sqrt n := by dsimp only [R]; rw [Real.exp_half]; exact Real.sqrt_le_sqrt hlo.le
     have hval : |m*continuousIntegerAtom Φ n t| ≤ B := by
       rw [continuousIntegerAtom,abs_mul,abs_mul,abs_inv,abs_of_nonneg (Real.sqrt_nonneg _)]
-      calc _ ≤ |m| *(R⁻¹*((K:ℝ)*(H/X))) := mul_le_mul_of_nonneg_left
-          (mul_le_mul ((inv_le_inv₀ (Real.sqrt_pos.2 hn0) hR).2 hroot) hφ (abs_nonneg _) (inv_nonneg.mpr hR.le)) (abs_nonneg _)
+      calc
+        _ ≤ |m| *(R⁻¹*((K:ℝ)*(H/X))) := by
+          exact mul_le_mul_of_nonneg_left (mul_le_mul ((inv_le_inv₀ (Real.sqrt_pos.2 hn0) hR).2 hroot) hφ (abs_nonneg _) (inv_nonneg.mpr hR.le)) (abs_nonneg _)
         _ = B := by dsimp only [B]; field_simp [hX.ne',hR.ne'] <;> ring
     refine max_le ?_ (mul_nonneg hB (abs_nonneg _))
     apply (neg_le_abs _).trans
@@ -353,7 +356,7 @@ def criticalWidthSignedReading (Φ : ℝ → ℝ) (t : ℝ) : ℝ :=
 
 /-- The signed window retains the local Chebyshev excess. The inner fraction
 is paid by a uniform short-interval sieve before the fraction tends to zero. -/
-private theorem tendsto_signed_window_difference {Φ : ℝ → ℝ} {m L : ℝ}
+theorem tendsto_criticalWidthSignedReading_sub_chebyshev {Φ : ℝ → ℝ} {m L : ℝ}
     (hm : m = ∫ u, Φ u)
     (hlaw : Tendsto (fun k : ℝ => (m*Φ (-k))*Real.sqrt (Real.log (1/k))) (𝓝[>] 0) (𝓝 L)) :
     let γ := Real.sqrt 2*L
@@ -408,8 +411,8 @@ private theorem tendsto_signed_window_difference {Φ : ℝ → ℝ} {m L : ℝ}
     have hcη : (M*D)*η ≤ ε/4 := by
       have hηbound : η ≤ ε/(4*(M*D)) := min_le_right _ _
       apply (mul_le_mul_of_nonneg_left hηbound (mul_nonneg hMpos.le hD.le)).trans_eq
-      field_simp [hMpos.ne',hD.ne']; ring
-    have hce : e*D=ε/4 := by dsimp only [e]; field_simp [hD.ne']; ring
+      field_simp [hMpos.ne',hD.ne']
+    have hce : e*D=ε/4 := by dsimp only [e]; field_simp [hD.ne']
     rw [Real.dist_eq,sub_zero,abs_div,abs_of_pos hHpos,div_lt_iff₀ hHpos]
     apply hp.trans_lt
     calc _ ≤ M*(D*(η*H t))+e*(D*H t) := add_le_add (mul_le_mul_of_nonneg_left hsmall hMpos.le)
@@ -432,7 +435,7 @@ private theorem tendsto_signed_window_difference {Φ : ℝ → ℝ} {m L : ℝ}
     have h2 := Nat.floor_le (hx.le.trans hxy)
     have h3 := Nat.lt_floor_add_one (Real.exp t)
     have h4 := Nat.lt_floor_add_one (Real.exp t+H t)
-    dsimp only [J,wallIntegerWindow]
+    dsimp only [Function.comp_apply,J,wallIntegerWindow]
     rw [Nat.card_Ioc,Nat.cast_sub (Nat.floor_mono hxy)]
     rw [div_sub_one ht.ne',abs_div,abs_of_pos ht]
     apply div_le_div_of_nonneg_right _ ht.le
@@ -444,7 +447,7 @@ private theorem tendsto_signed_window_difference {Φ : ℝ → ℝ} {m L : ℝ}
   have hx := Real.exp_pos t
   have hs : Chebyshev.psi (Real.exp t+H t)-Chebyshev.psi (Real.exp t)=
       ∑ n ∈ J t, ArithmeticFunction.vonMangoldt n := by
-    unfold Chebyshev.psi
+    dsimp only [J,wallIntegerWindow,Chebyshev.psi]
     rw [← Finset.sum_Ioc_consecutive (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℝ))
       (Nat.zero_le ⌊Real.exp t⌋₊) (Nat.floor_mono (le_add_of_nonneg_right ht.le))]
     ring
@@ -457,6 +460,8 @@ private theorem tendsto_signed_window_difference {Φ : ℝ → ℝ} {m L : ℝ}
     rw [← hcount,hread,Finset.mul_sum,Finset.mul_sum,← Finset.sum_sub_distrib]
     apply Finset.sum_congr rfl fun n _ => ?_
     dsimp only [w]; ring
+  change _ = criticalWidthSignedReading Φ t -
+    γ*((Chebyshev.psi (Real.exp t+H t)-Chebyshev.psi (Real.exp t))/H t-1)
   rw [hs,hsplit]; field_simp [ht.ne']; ring
 
 /-- Telescoping along successive interval endpoints detects any slope below
@@ -467,7 +472,7 @@ private theorem frequently_increment_above_mean {f h : ℝ → ℝ}
   rw [frequently_atTop]
   intro Z
   by_contra hfail
-  push_neg at hfail
+  push Not at hfail
   obtain ⟨Y,hY⟩ := eventually_atTop.mp hh
   let U := max 1 (max Y Z)
   have hUY : Y ≤ U := (le_max_left Y Z).trans (le_max_right ..)
@@ -528,7 +533,7 @@ private theorem frequently_signed_window_ge {Φ : ℝ → ℝ} {γ : ℝ} (hγ :
   have hlo := hV (Real.log x) htV
   rw [Real.exp_log hx0] at hlo
   have hζ := mul_le_mul_of_nonneg_left (sub_le_sub_right hq' 1) hγ.le
-  have hεb : γ*b=ε/2 := by dsimp only [b]; field_simp [hγ.ne']; ring
+  have hεb : γ*b=ε/2 := by dsimp only [b]; field_simp [hγ.ne']
   change -ε/2 < criticalWidthSignedReading Φ (Real.log x) -
     γ*((Chebyshev.psi (x+H x)-Chebyshev.psi x)/H x-1) at hlo
   linarith only [hlo,hζ,hεb]
@@ -550,7 +555,7 @@ theorem riemannHypothesis_or_signed_critical_width_chebyshev_excess : RiemannHyp
   · exact Or.inl hr
   obtain ⟨_,_,Φ,hc,he,_,_,_⟩ := criticalState_exists_continuous_representative hW ht hF
   obtain ⟨hL,hlaw⟩ := criticalState_oriented_wall_limit hW ht hF hc he
-  have hread := tendsto_signed_window_difference rfl hlaw
+  have hread := tendsto_criticalWidthSignedReading_sub_chebyshev rfl hlaw
   have hγ := mul_pos (by positivity : 0 < Real.sqrt 2) hL
   exact Or.inr ⟨W₀,F,Φ,_,hW,ht,hF,hc,he,hγ,rfl,hread,
     fun _ hε => frequently_signed_window_ge hγ hread hε⟩

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.CountingHolography.Sections.TheDenominatorOfTheArithmeticLogarithmicDerivative
 import GaloisForLFunctions.CountingHolography.Sections.TheUnattainedFactorialMinimumOnSquareConductors
+import GaloisForLFunctions.CountingHolography.Sections.OneMultiplicityPerSquareConductor
 
 /-! # A single rational integrality test for factorial entropy
 
@@ -22,7 +23,7 @@ theorem factorial_entropy_iff_integral_prime_reciprocal (a : Nat.Primes →₀ �
   · rintro ⟨L,c,hc,hb,he⟩
     let M := max 10 L
     have hz : (primeLogValue 0,primeLogValue a) ∈ factorialJointImage M := by
-      rw [map_zero]
+      rw [_root_.map_zero]
       exact ⟨c,fun j hj => hc j ((le_max_right 10 L).trans_lt hj),hb,he⟩
     have h := (factorialJointImage_iff_prime_coordinates (le_max_left 10 L) 0 a).mp hz
     exact fun p => (h p).2.1
@@ -33,7 +34,7 @@ theorem factorial_entropy_iff_integral_prime_reciprocal (a : Nat.Primes →₀ �
       have hle := Finset.le_sup (f := Subtype.val) (Finsupp.mem_support_iff.mpr hn)
       exact (Nat.lt_succ_of_le hle).not_ge ((le_max_right 10 _).trans hp)
     refine ⟨L,?_⟩
-    rw [← map_zero primeLogValue]
+    rw [← _root_.map_zero primeLogValue]
     apply (factorialJointImage_iff_prime_coordinates (le_max_left 10 _) 0 a).mpr
     intro p
     exact ⟨fun hp => ⟨rfl,hz hp.le⟩,h p,fun hp => by rw [hz hp.ge,Finsupp.zero_apply,mul_zero]⟩

@@ -149,13 +149,13 @@ theorem one_lt_quarterPeriodScale {β γ : ℝ} (hβ : 0 < β) (hγ : γ ≠ 0) 
 
 private theorem exp_pi_div_two_I :
     Complex.exp (((Real.pi / 2 : ℝ) : ℂ) * I) = I := by
-  rw [Complex.exp_mul_I, Complex.ofReal_cos, Complex.ofReal_sin, Real.cos_pi_div_two,
+  rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin, Real.cos_pi_div_two,
     Real.sin_pi_div_two]
   simp
 
 private theorem exp_neg_pi_div_two_I :
     Complex.exp (((-(Real.pi / 2) : ℝ) : ℂ) * I) = -I := by
-  rw [Complex.exp_mul_I, Complex.ofReal_cos, Complex.ofReal_sin, Real.cos_neg, Real.sin_neg,
+  rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin, Real.cos_neg, Real.sin_neg,
     Real.cos_pi_div_two, Real.sin_pi_div_two]
   simp
 
@@ -320,7 +320,8 @@ def singleWaveLog (β ω : ℝ) (m : ℕ) (t : ℝ) : ℝ :=
 theorem re_sq_add_rot_re_sq (z : ℂ) (θ : ℝ) :
     z.re ^ 2 + (Complex.exp ((θ : ℂ) * I) * z).re ^ 2 =
       ‖z‖ ^ 2 + Real.cos θ * (Complex.exp ((θ : ℂ) * I) * z ^ 2).re := by
-  rw [Complex.exp_mul_I, Complex.sq_norm, Complex.normSq_apply]
+  rw [Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
+    Complex.sq_norm, Complex.normSq_apply]
   have hsc : Real.sin θ ^ 2 = 1 - Real.cos θ ^ 2 := by
     linear_combination Real.sin_sq_add_cos_sq θ
   simp only [sq, Complex.mul_re, Complex.mul_im, Complex.add_re, Complex.add_im,
@@ -357,7 +358,7 @@ private theorem expChar_time_add (μ t h : ℝ) :
   simp only [expChar, ← Complex.exp_add]
   congr 1; push_cast; ring
 
-private theorem twoIntervalRadius_singleWaveLog_sq {β γ ω : ℝ} (_hγ : γ ≠ 0) (m' : ℕ) (t : ℝ) :
+private theorem twoIntervalRadius_singleWaveLog_sq (β γ ω : ℝ) (m' : ℕ) (t : ℝ) :
     let h := quarterPeriodStep γ
     let A := quarterPeriodScale β γ
     let ρ' : ℂ := (β : ℂ) + I * (ω : ℂ)
@@ -387,7 +388,7 @@ private theorem twoIntervalRadius_singleWaveLog_sq {β γ ω : ℝ} (_hγ : γ �
           Complex.exp (ρ' * (t : ℂ)) * z₀ := by
         dsimp [z₀]; rw [h1]; ring
       have hre := congrArg Complex.re h2
-      simpa only [Complex.sub_re, Complex.neg_re, Complex.re_ofReal_mul] using hre
+      simpa only [Complex.sub_re, Complex.neg_mul, Complex.neg_re, Complex.re_ofReal_mul] using hre
     rw [heq, hsplit t, show (Real.exp (β * t) : ℂ) * expChar ω t * z₀ =
       (Real.exp (β * t) : ℂ) * z by dsimp [z]; ring, Complex.re_ofReal_mul]
   have hinc1 : A⁻¹ * logStepIncrement (singleWaveLog β ω m') (t + h) h =
@@ -404,7 +405,7 @@ private theorem twoIntervalRadius_singleWaveLog_sq {β γ ω : ℝ} (_hγ : γ �
           Complex.exp (ρ' * ((t + h : ℝ) : ℂ)) * z₀ := by
         dsimp [z₀]; rw [h1]; ring
       have hre := congrArg Complex.re h2
-      simpa only [Complex.sub_re, Complex.neg_re, Complex.re_ofReal_mul] using hre
+      simpa only [Complex.sub_re, Complex.neg_mul, Complex.neg_re, Complex.re_ofReal_mul] using hre
     have hexp_th : Real.exp (β * (t + h)) = A * Real.exp (β * t) := by
       dsimp [A, quarterPeriodScale]; rw [mul_add, Real.exp_add, mul_comm]
     have hchar_th : expChar ω (t + h) = Complex.exp (((ω * h : ℝ) : ℂ) * I) * expChar ω t :=
@@ -468,13 +469,12 @@ theorem radialDiscrepancyOf_singleWaveLog_eq_zero_of_alias {β γ ω : ℝ} {m m
       rw [norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
     dsimp [z₀]
     rw [norm_div, norm_mul, hm'_norm, hnum, hden',
-      quartetRadialCoeff_eq_sqrt hγ m, div_pow, div_pow, mul_pow, mul_pow,
+      quartetRadialCoeff_eq_sqrt hγ m, show quarterPeriodScale β γ = A from rfl,
+      div_pow, div_pow, mul_pow, mul_pow,
       Real.sq_sqrt (by positivity : 0 ≤ 1 + A ^ 2), Real.sq_sqrt hd_pos.le,
       Real.sq_sqrt hd'_pos.le, div_eq_div_iff hd'_pos.ne' hd_pos.ne']
-    change (2 ^ 2 * (m' : ℝ) ^ 2 * (1 + A ^ 2)) * (β ^ 2 + γ ^ 2) =
-      (2 ^ 2 * (m : ℝ) ^ 2 * (1 + A ^ 2)) * (β ^ 2 + ω ^ 2)
     linear_combination 4 * (1 + A ^ 2) * hpyth
-  have hrad_sq := twoIntervalRadius_singleWaveLog_sq (β := β) hγ m' t
+  have hrad_sq := twoIntervalRadius_singleWaveLog_sq β γ ω m' t
   dsimp only at hrad_sq
   rw [hcos0, zero_mul, add_zero, hz₀_norm_sq,
     show Real.exp (2 * β * t) = Real.exp (β * t) ^ 2 by
@@ -515,7 +515,10 @@ theorem not_isLogSqrtSqUnbounded_singleWaveLog_iff_alias {β γ ω : ℝ} {m m' 
         intro he
         have hnorm1 : ‖Complex.exp (ρ' * (h : ℂ))‖ = 1 := by rw [sub_eq_zero.mp he, norm_one]
         have hnormA : ‖Complex.exp (ρ' * (h : ℂ))‖ = A := by
-          rw [Complex.norm_exp]; dsimp [ρ', A, quarterPeriodScale]; simp [Complex.mul_re]
+          rw [Complex.norm_exp]
+          dsimp only [ρ', A, quarterPeriodScale, h]
+          congr 1
+          simp [Complex.mul_re]
         linarith
       have hρ'_ne : ρ' ≠ 0 := fun he => by
         have := congrArg Complex.im he; simp [ρ'] at this; linarith
@@ -563,7 +566,8 @@ theorem not_isLogSqrtSqUnbounded_singleWaveLog_iff_alias {β γ ω : ℝ} {m m' 
       have h1 := hlim_diff.add_const C
       rw [zero_add] at h1
       have h2 := (h1.pow 2).sub_const (C ^ 2)
-      rwa [sub_self] at h2
+      rw [sub_self] at h2
+      simpa only [sub_add_cancel] using h2
     set w₂ : ℂ := ((Real.cos (ω * h) : ℂ) / 2) *
       Complex.exp (((ω * h : ℝ) : ℂ) * I) * z₀ ^ 2
     let cf : Fin 3 → ℂ
@@ -578,7 +582,7 @@ theorem not_isLogSqrtSqUnbounded_singleWaveLog_iff_alias {β γ ω : ℝ} {m m' 
     have hP_eq : ∀ t : ℝ, P t =
         ((((twoIntervalRadius (singleWaveLog β ω m') h A t * Real.exp (-(β * t))) ^ 2 -
           C ^ 2 : ℝ)) : ℂ) := fun t => by
-      have hrad := twoIntervalRadius_singleWaveLog_sq (β := β) hγ m' t
+      have hrad := twoIntervalRadius_singleWaveLog_sq β γ ω m' t
       dsimp only at hrad
       have hmul : (twoIntervalRadius (singleWaveLog β ω m') h A t * Real.exp (-(β * t))) ^ 2 =
           ‖z₀‖ ^ 2 + Real.cos (ω * h) * (Complex.exp (((ω * h : ℝ) : ℂ) * I) *
@@ -597,16 +601,14 @@ theorem not_isLogSqrtSqUnbounded_singleWaveLog_iff_alias {β γ ω : ℝ} {m m' 
       have hchar_neg : expChar (-(2 * ω)) t = conj (expChar (2 * ω) t) := by
         simp only [expChar, ← Complex.exp_conj]
         congr 1; simp; ring
-      set U : ℂ := Complex.exp (((ω * h : ℝ) : ℂ) * I) * z₀ ^ 2 * expChar (2 * ω) t
-      have hre_U : ((Real.cos (ω * h) * U.re : ℝ) : ℂ) =
-          (Real.cos (ω * h) : ℂ) / 2 * (U + conj U) := by
-        apply Complex.ext <;> simp <;> ring
+      have hre_split : ∀ u : ℂ, (u.re : ℂ) = (u + conj u) / 2 := fun u => by
+        apply Complex.ext
+        · simp
+        · simp
       rw [hchar0, hchar_neg]
       push_cast
-      rw [show (‖z₀‖ : ℂ) ^ 2 + ((Real.cos (ω * h) * U.re : ℝ) : ℂ) - (C : ℂ) ^ 2 =
-        ((‖z₀‖ : ℂ) ^ 2 - (C : ℂ) ^ 2) + ((Real.cos (ω * h) * U.re : ℝ) : ℂ) by ring, hre_U]
-      dsimp [U]
-      simp only [map_mul, map_div₀, Complex.conj_ofReal, map_pow]
+      rw [hre_split]
+      simp only [map_mul, map_div₀, Complex.conj_ofReal, map_ofNat, map_pow]
       ring
     have hP_ap : HTGeometry.IsBohrAlmostPeriodic P := by
       dsimp [P]
@@ -692,10 +694,14 @@ theorem not_isLogSqrtSqUnbounded_singleWaveLog_iff_alias {β γ ω : ℝ} {m m' 
       rw [norm_neg, Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by positivity)]
     dsimp [z₀, C] at hnorm_eq
     rw [norm_div, norm_mul, hm'_norm, hnum, hden',
-      quartetRadialCoeff_eq_sqrt hγ m, div_pow, div_pow, mul_pow, mul_pow,
+      quartetRadialCoeff_eq_sqrt hγ m, show quarterPeriodScale β γ = A from rfl,
+      div_pow, div_pow, mul_pow, mul_pow,
       Real.sq_sqrt h1A_pos.le, Real.sq_sqrt hd_pos.le, Real.sq_sqrt hd'_pos.le,
       div_eq_div_iff hd'_pos.ne' hd_pos.ne'] at hnorm_eq
-    nlinarith [hnorm_eq, h1A_pos]
+    have hcanc : 4 * (1 + A ^ 2) * ((m' : ℝ) ^ 2 * (β ^ 2 + γ ^ 2)) =
+        4 * (1 + A ^ 2) * ((m : ℝ) ^ 2 * (β ^ 2 + ω ^ 2)) := by
+      linear_combination hnorm_eq
+    exact mul_left_cancel₀ (by positivity : 4 * (1 + A ^ 2) ≠ 0) hcanc
   · rintro ⟨k, halias⟩
     rw [isLogSqrtSqUnbounded_iff_not_eventually_le, not_not]
     refine ⟨0, 0, fun t _ => ?_⟩
@@ -749,7 +755,9 @@ theorem alias_forces_eq_of_irrational_or_same_mult {β γ ω : ℝ} {m m' k : �
       have hk1 : (1 : ℝ) < (2 * (k : ℝ) + 1) ^ 2 := by
         have hk_pos : (1 : ℝ) ≤ k := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hk_ne
         nlinarith
-      nlinarith [hpyth, hm_pos, hk1, hγ2]
+      have hbg : β ^ 2 + γ ^ 2 = β ^ 2 + (2 * (k : ℝ) + 1) ^ 2 * γ ^ 2 :=
+        mul_left_cancel₀ hm_pos.ne' hpyth
+      nlinarith [hbg, hk1, hγ2]
 
 /-- **Sub-67 trial ordinate aliased by a high-ordinate (`> 67`) odd harmonic.**
 For every `β ∈ (2/3, 1)`, there exist `0 < γ ≤ 67` and `ω = 3γ > 67` satisfying
@@ -783,7 +791,7 @@ theorem exists_lowOrdinate_oddHarmonicAlias_above_sixtySeven {β : ℝ}
   have halias : IsOddHarmonicPythagoreanAlias β γ 1000 ω 2999 1 := by
     refine ⟨by dsimp [ω]; rw [abs_of_pos hγ_pos]; ring, ?_⟩
     dsimp [ω, γ]
-    rw [mul_pow, mul_pow, hr_sq]
+    rw [mul_pow, mul_pow, mul_pow, hr_sq]
     ring
   exact ⟨γ, ω, hγ_pos, hγ_le, hω_gt, halias,
     radialDiscrepancyOf_singleWaveLog_eq_zero_of_alias hγ_pos.ne' halias⟩
@@ -927,7 +935,9 @@ theorem multiFrequency_trigPoly_not_const_twoInterval (S : Finset ℝ) (hS_pos :
         expChar_add, sub_eq_add_neg]
     have hnorm_re : ((f t : ℂ) + I * (f (t + h) : ℂ)) *
         conj ((f t : ℂ) + I * (f (t + h) : ℂ)) = (((f t ^ 2 + f (t + h) ^ 2 : ℝ) : ℂ)) := by
-      apply Complex.ext <;> simp [sq] <;> ring
+      apply Complex.ext
+      · simp [sq]; ring
+      · simp [sq]
     rw [hprod_eq, hnorm_re]
     push_cast; ring
   have hP_ap : HTGeometry.IsBohrAlmostPeriodic P :=

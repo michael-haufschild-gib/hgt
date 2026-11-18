@@ -163,9 +163,11 @@ theorem inSectionLattice_iff_primeValuations {N : ℕ} (v : Fin N → ℤ) {s : 
       hp.factorization_pos_of_dvd q.den_pos.ne' hp_dvd
     have hv := hall p hp
     rw [hsd, ratPrimeVal_mul hd hq p] at hv
+    dsimp only [d] at hv
     unfold ratPrimeVal at hv
     rw [hf_num] at hv
-    omega
+    have hf_pos : (0 : ℤ) < q.den.factorization p := by exact_mod_cast hf_den
+    linarith only [hv, hf_pos]
 
 /-- For any prime `p`, positive rational generator `d > 0`, integer `z`, and order `r`,
 `p^r ∣ z` in `ℤ` iff either `d * z = 0` or `ratPrimeVal p d + r ≤ ratPrimeVal p (d * z)`. -/
@@ -211,6 +213,7 @@ theorem mem_rationalSections_iff {N : ℕ} (v : Fin N → ℤ) (s : ℚ) :
   rw [rationalSections, Finset.mem_map]
   constructor
   · rintro ⟨z, hz, rfl⟩
+    dsimp only [Function.Embedding.coeFn_mk]
     refine ⟨inSectionLattice_sectionRep v z, ?_⟩
     have hm := (mem_smallSections hd z).mp hz
     simpa only [sectionRep, Rat.cast_mul, Rat.cast_intCast] using hm
@@ -228,12 +231,13 @@ def rationalSectionEquiv {N : ℕ} (v : Fin N → ℤ) :
   toFun z := ⟨sectionRep v z.val, Finset.mem_map.mpr ⟨z.val, z.property, rfl⟩⟩
   invFun s := ⟨sectionCoord v s.val, by
     obtain ⟨z, hz, hzs⟩ := Finset.mem_map.mp s.property
-    change sectionCoord v s.val ∈ divisorSections v
-    rw [← hzs]; change sectionCoord v (sectionRep v z) ∈ divisorSections v
-    rwa [sectionCoord_sectionRep]⟩
+    dsimp only [Function.Embedding.coeFn_mk] at hzs
+    rw [← hzs, sectionCoord_sectionRep]
+    exact hz⟩
   left_inv z := Subtype.ext (sectionCoord_sectionRep v z.val)
   right_inv s := Subtype.ext (by
     obtain ⟨z, _, hzs⟩ := Finset.mem_map.mp s.property
+    dsimp only [Function.Embedding.coeFn_mk] at hzs
     exact sectionRep_sectionCoord (hzs ▸ inSectionLattice_sectionRep v z))
 
 /-! ### 2. Midpoint-only section-representative rigidity and finite-place skew divergence -/
@@ -440,19 +444,19 @@ theorem not_exists_midpointOnly_subquadratic_rationalSectionMap {N : ℕ} {b a :
     linarith only [hsmall, hlog, hrate', hm2]
 
 private theorem exists_archRadiusLimit {N : ℕ} {v : Fin N → ℤ} (hv : v ≠ 0) :
-    ∃ R∞ : ℝ,
-      Tendsto (logRadius (packet v) (3 * windowEnd N)) atTop (𝓝 R∞) ∧
+    ∃ R_inf : ℝ,
+      Tendsto (logRadius (packet v) (3 * windowEnd N)) atTop (𝓝 R_inf) ∧
       ∀ k : ℕ, 1 ≤ k →
-        Tendsto (fun m : ℕ => radius (m • (k • v)) / (m : ℝ)^2) atTop (𝓝 ((k : ℝ)^2 * R∞)) ∧
+        Tendsto (fun m : ℕ => radius (m • (k • v)) / (m : ℝ)^2) atTop (𝓝 ((k : ℝ)^2 * R_inf)) ∧
         Tendsto (fun m : ℕ => Real.log (generator (m • (k • v)) : ℝ) / (m : ℝ)^2) atTop
-          (𝓝 ((k : ℝ)^2 * (R∞ - integerProbe N v))) := by
-  have hs₋ := tendsto_sampledDegree (packet_contDiff v).continuous
+          (𝓝 ((k : ℝ)^2 * (R_inf - integerProbe N v))) := by
+  have hs_neg := tendsto_sampledDegree (packet_contDiff v).continuous
     (packet_window v).1 (packet_window v).2 (-(1 / 2))
-  have hs₊ := tendsto_sampledDegree (packet_contDiff v).continuous
+  have hs_pos := tendsto_sampledDegree (packet_contDiff v).continuous
     (packet_window v).1 (packet_window v).2 (1 / 2)
   have hdf := tendsto_degreeForm (packet_contDiff v) (packet_hasCompactSupport v)
     (packet_window v).1 (packet_window v).2
-  have hrad_lim := ((hs₋.mul hs₊).const_mul 2).sub hdf
+  have hrad_lim := ((hs_neg.mul hs_pos).const_mul 2).sub hdf
   refine ⟨_, hrad_lim, fun k hk => ?_⟩
   have hkv : k • v ≠ 0 := by
     intro hz
@@ -494,14 +498,14 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
         c₀ * Real.sqrt p * (m : ℝ)^2 <
           (Real.log (generator (m • (4 • primePair p)) : ℝ) -
             Real.log (generator (m • (2 • primePair p)) : ℝ)) / 2 := by
-  let I₋ := unitAtomMoment (-(1 / 2))
-  let I₊ := unitAtomMoment (1 / 2)
-  have hI₋ : 0 < I₋ := unitAtomMoment_pos _
-  have hI₊ : 0 < I₊ := unitAtomMoment_pos _
-  obtain ⟨C₋, hC₋0, herr₋⟩ := bounded_actual_pole_reading_error (by norm_num : -(1 / 2 : ℝ) ≤ 1)
-  obtain ⟨C₊, hC₊0, herr₊⟩ := bounded_actual_pole_reading_error (by norm_num : (1 / 2 : ℝ) ≤ 1)
+  let I_neg := unitAtomMoment (-(1 / 2))
+  let I_pos := unitAtomMoment (1 / 2)
+  have hI_neg : 0 < I_neg := unitAtomMoment_pos _
+  have hI_pos : 0 < I_pos := unitAtomMoment_pos _
+  obtain ⟨C_neg, hC_neg0, herr_neg⟩ := bounded_actual_pole_reading_error (by norm_num : -(1 / 2 : ℝ) ≤ 1)
+  obtain ⟨C_pos, hC_pos0, herr_pos⟩ := bounded_actual_pole_reading_error (by norm_num : (1 / 2 : ℝ) ≤ 1)
   obtain ⟨J, hJ0, hjet⟩ := uniform_finite_jet_debit
-  let c₀ : ℝ := 2 * (I₋ * I₊)
+  let c₀ : ℝ := 2 * (I_neg * I_pos)
   have hc₀ : 0 < c₀ := by dsimp [c₀]; positivity
   have hsub := tendsto_primePair_degree_div_sqrt.abs
   rw [abs_zero] at hsub
@@ -535,23 +539,23 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
     simpa only [abs_of_nonneg (hn _)] using h0
   have hexp_half : Real.exp ((1 / 2 : ℝ) * Real.log p) = Real.sqrt p := by
     rw [Real.sqrt_eq_rpow, Real.rpow_def_of_pos (Nat.cast_pos.mpr hp_pos), mul_comm]
-  obtain ⟨R∞, hrad_lim, hk_lim⟩ := exists_archRadiusLimit hbp_ne
+  obtain ⟨R_inf, hrad_lim, hk_lim⟩ := exists_archRadiusLimit hbp_ne
   let L := 3 * windowEnd (p + 1)
-  let low (m : ℕ) : ℝ := 2 * ((I₋ - C₋ / (m : ℝ)) * (I₊ * Real.sqrt p - C₊ / (m : ℝ))) - 4 * J
+  let low (m : ℕ) : ℝ := 2 * ((I_neg - C_neg / (m : ℝ)) * (I_pos * Real.sqrt p - C_pos / (m : ℝ))) - 4 * J
   have hzero (C : ℝ) : Tendsto (fun m : ℕ => C / (m : ℝ)) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
   have hlow_lim : Tendsto low atTop (𝓝 (c₀ * Real.sqrt p - 4 * J)) := by
-    have h₁ : Tendsto (fun m : ℕ => I₋ - C₋ / (m : ℝ)) atTop (𝓝 I₋) := by
-      simpa only [sub_zero] using tendsto_const_nhds.sub (hzero C₋)
-    have h₂ : Tendsto (fun m : ℕ => I₊ * Real.sqrt p - C₊ / (m : ℝ)) atTop (𝓝 (I₊ * Real.sqrt p)) := by
-      simpa only [sub_zero] using tendsto_const_nhds.sub (hzero C₊)
+    have h₁ : Tendsto (fun m : ℕ => I_neg - C_neg / (m : ℝ)) atTop (𝓝 I_neg) := by
+      simpa only [sub_zero] using tendsto_const_nhds.sub (hzero C_neg)
+    have h₂ : Tendsto (fun m : ℕ => I_pos * Real.sqrt p - C_pos / (m : ℝ)) atTop (𝓝 (I_pos * Real.sqrt p)) := by
+      simpa only [sub_zero] using tendsto_const_nhds.sub (hzero C_pos)
     have hprod := ((h₁.mul h₂).const_mul 2).sub tendsto_const_nhds
     simpa only [low, c₀, mul_assoc] using hprod
   have hev_bound : ∀ᶠ m : ℕ in atTop,
       low m ≤ logRadius (packet bp) L (resolution (m • bp)) := by
-    filter_upwards [(hzero C₋).eventually_lt_const hI₋,
-      (hzero C₊).eventually_lt_const (mul_pos hI₊ hsp),
-      eventually_ge_atTop 1] with m hm₋ hm₊ hm1
+    filter_upwards [(hzero C_neg).eventually_lt_const hI_neg,
+      (hzero C_pos).eventually_lt_const (mul_pos hI_pos hsp),
+      eventually_ge_atTop 1] with m hm_neg hm_pos_c hm1
     have hm_pos : (0 : ℝ) < m := Nat.cast_pos.mpr hm1
     have hmbp_ne : m • bp ≠ 0 := by
       intro hz; apply hbp_ne; funext i
@@ -562,39 +566,38 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
       rw [← hmom_val t]
       unfold conductorExpMoment
       simp only [Pi.smul_apply, nsmul_eq_mul, Int.cast_mul, Int.cast_natCast, mul_assoc, ← mul_sum]
-    have he₋ := (abs_le.mp (herr₋ (p + 1) (m • bp))).1
-    rw [packet_smul bp m, sampledDegree_mul, hcm] at he₋
-    have hs₋_ge : I₋ - C₋ / (m : ℝ) ≤ sampledDegree (packet bp) L (resolution (m • bp)) (-(1 / 2)) := by
+    have he_neg := (abs_le.mp (herr_neg (p + 1) (m • bp))).1
+    rw [packet_smul bp m, sampledDegree_mul, hcm] at he_neg
+    have hs_neg_ge : I_neg - C_neg / (m : ℝ) ≤ sampledDegree (packet bp) L (resolution (m • bp)) (-(1 / 2)) := by
       have hexp_pos : 0 < Real.exp (-(1 / 2 : ℝ) * Real.log p) := Real.exp_pos _
-      have hmul_ge : (m : ℝ) * I₋ - C₋ ≤ (m : ℝ) * sampledDegree (packet bp) L (resolution (m • bp)) (-(1 / 2)) := by
-        nlinarith only [he₋, hm_pos, hI₋, hexp_pos]
-      rw [sub_eq_add_neg, ← div_mul_cancel₀ ((m : ℝ) * I₋) hm_pos.ne']
-      have hdiv := div_le_div_of_nonneg_right hmul_ge hm_pos.le
-      rw [sub_div, mul_div_cancel_left₀ _ hm_pos.ne', mul_div_cancel_left₀ _ hm_pos.ne'] at hdiv
-      linarith only [hdiv]
-    have he₊ := (abs_le.mp (herr₊ (p + 1) (m • bp))).1
-    rw [packet_smul bp m, sampledDegree_mul, hcm, hexp_half] at he₊
-    have hs₊_ge : I₊ * Real.sqrt p - C₊ / (m : ℝ) ≤
-        sampledDegree (packet bp) L (resolution (m • bp)) (1 / 2) := by
-      have hmul_ge : (m : ℝ) * (I₊ * Real.sqrt p) - C₊ ≤
-          (m : ℝ) * sampledDegree (packet bp) L (resolution (m • bp)) (1 / 2) := by
-        nlinarith only [he₊, hm_pos, hI₊]
+      have hmul_ge : (m : ℝ) * I_neg - C_neg ≤ (m : ℝ) * sampledDegree (packet bp) L (resolution (m • bp)) (-(1 / 2)) := by
+        nlinarith only [he_neg, hm_pos, hI_neg, hexp_pos]
       have hdiv := div_le_div_of_nonneg_right hmul_ge hm_pos.le
       rw [sub_div, mul_div_cancel_left₀ _ hm_pos.ne', mul_div_cancel_left₀ _ hm_pos.ne'] at hdiv
       exact hdiv
-    have hprod := mul_le_mul hs₋_ge hs₊_ge (by linarith only [hm₊])
-      ((by linarith only [hm₋] : 0 ≤ I₋ - C₋ / (m : ℝ)).trans hs₋_ge)
+    have he_pos := (abs_le.mp (herr_pos (p + 1) (m • bp))).1
+    rw [packet_smul bp m, sampledDegree_mul, hcm, hexp_half] at he_pos
+    have hs_pos_ge : I_pos * Real.sqrt p - C_pos / (m : ℝ) ≤
+        sampledDegree (packet bp) L (resolution (m • bp)) (1 / 2) := by
+      have hmul_ge : (m : ℝ) * (I_pos * Real.sqrt p) - C_pos ≤
+          (m : ℝ) * sampledDegree (packet bp) L (resolution (m • bp)) (1 / 2) := by
+        nlinarith only [he_pos, hm_pos, hI_pos]
+      have hdiv := div_le_div_of_nonneg_right hmul_ge hm_pos.le
+      rw [sub_div, mul_div_cancel_left₀ _ hm_pos.ne', mul_div_cancel_left₀ _ hm_pos.ne'] at hdiv
+      exact hdiv
+    have hprod := mul_le_mul hs_neg_ge hs_pos_ge (by linarith only [hm_pos_c])
+      ((by linarith only [hm_neg] : 0 ≤ I_neg - C_neg / (m : ℝ)).trans hs_neg_ge)
     have hj := hjet (p + 1) bp L (resolution (m • bp)) (resolution_pos hmbp_ne)
     rw [hvar_bp] at hj
     dsimp only [low, logRadius]
     linarith only [hprod, hj]
-  have hR∞_ge : c₀ * Real.sqrt p - 4 * J ≤ R∞ := by
+  have hR_inf_ge : c₀ * Real.sqrt p - 4 * J ≤ R_inf := by
     by_contra! hlt
-    let mid := (R∞ + (c₀ * Real.sqrt p - 4 * J)) / 2
+    let mid := (R_inf + (c₀ * Real.sqrt p - 4 * J)) / 2
     obtain ⟨m, hm_lo, hm_hi, hm_le⟩ :=
       ((hlow_lim.eventually_const_lt (show mid < c₀ * Real.sqrt p - 4 * J by dsimp [mid]; linarith)).and
         (((hrad_lim.comp (tendsto_resolution_ray hbp_ne)).eventually_lt_const
-          (show R∞ < mid by dsimp [mid]; linarith)).and hev_bound)).exists
+          (show R_inf < mid by dsimp [mid]; linarith)).and hev_bound)).exists
     dsimp only [Function.comp_apply] at hm_hi
     linarith only [hm_lo, hm_hi, hm_le]
   have h4J_lt : 4 * J < c₀ / 2 * Real.sqrt p := by
@@ -609,10 +612,10 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
     linarith only [hmul]
   have hskew_lim := (((hk_lim 4 (by decide)).2.sub (hk_lim 2 (by decide)).2).div_const 2)
   have hlim_gt : c₀ * Real.sqrt p <
-      ((4 : ℕ) ^ 2 * (R∞ - integerProbe (p + 1) bp) -
-        (2 : ℕ) ^ 2 * (R∞ - integerProbe (p + 1) bp)) / 2 := by
+      ((4 : ℕ) ^ 2 * (R_inf - integerProbe (p + 1) bp) -
+        (2 : ℕ) ^ 2 * (R_inf - integerProbe (p + 1) bp)) / 2 := by
     push_cast
-    linarith only [hR∞_ge, h4J_lt, hp_deg, le_abs_self (integerProbe (p + 1) bp), mul_pos hc₀ hsp]
+    linarith only [hR_inf_ge, h4J_lt, hp_deg, le_abs_self (integerProbe (p + 1) bp), mul_pos hc₀ hsp]
   filter_upwards [hskew_lim.eventually_const_lt hlim_gt, eventually_ge_atTop 1] with m hm hm1
   have hm2 : 0 < (m : ℝ)^2 := by positivity
   have hd : c₀ * Real.sqrt p <
@@ -650,8 +653,8 @@ theorem eventually_not_centeredCarry_of_skew_gt_seven {N : ℕ} {b : Fin N → �
   filter_upwards [hev, hr3_pos, eventually_ge_atTop 1] with m hm hr3 hm1 hmaps
   have hbounds := (bounds_of_centeredCarry_maps_Icc fun z₁ hz₁ z₂ hz₂ =>
     hmaps z₁ hz₁ z₂ hz₂).2
-  have hmul_le : (2 * K m + 1) * sectionRadius (m • (3 • b)) ≤ sectionRadius (m • (4 • b)) := by
-    omega
+  have hmul_le : (2 * K m + 1) * sectionRadius (m • (3 • b)) ≤ sectionRadius (m • (4 • b)) :=
+    Nat.le_trans (Nat.le_add_right _ _) hbounds
   have hm2 : 0 < (m : ℝ)^2 := by positivity
   have hM_pos : 0 < 2 * K m + 1 := by omega
   have hr4_pos : 0 < sectionRadius (m • (4 • b)) :=
@@ -706,7 +709,7 @@ theorem two_mul_ternaryHalfMod_add_one (τ : ℕ) :
   have hmod : 3 ^ τ % 2 = 1 := by
     induction τ with
     | zero => rfl
-    | succ n ih => rw [pow_succ, Nat.mul_mod, ih]; rfl
+    | succ n ih => rw [pow_succ, Nat.mul_mod, ih]
   have hpos : 1 ≤ 3 ^ τ := Nat.one_le_pow τ 3 (by decide)
   omega
 
@@ -727,17 +730,22 @@ def orientedTernaryDecode (posSkew : Bool) (τ : ℕ) (w : ℤ × ℤ) : ℤ × 
 theorem orientedTernaryDecode_encode (posSkew : Bool) (τ : ℕ) (z : ℤ × ℤ) :
     orientedTernaryDecode posSkew τ (orientedTernaryEncode posSkew τ z) = z := by
   cases posSkew <;> simp only [orientedTernaryDecode, orientedTernaryEncode,
-    Bool.false_eq_true, ↓reduceIte, Prod.swap_swap, centeredCarry_involutive]
+    Bool.false_eq_true, ↓reduceIte, Prod.swap_swap] <;>
+    exact centeredCarry_involutive _ _
 
 theorem orientedTernaryEncode_decode (posSkew : Bool) (τ : ℕ) (w : ℤ × ℤ) :
     orientedTernaryEncode posSkew τ (orientedTernaryDecode posSkew τ w) = w := by
-  cases posSkew <;> simp only [orientedTernaryDecode, orientedTernaryEncode,
-    Bool.false_eq_true, ↓reduceIte, centeredCarry_involutive, Prod.swap_swap]
+  cases posSkew
+  · simp only [orientedTernaryDecode, orientedTernaryEncode, Bool.false_eq_true, ↓reduceIte]
+    rw [centeredCarry_involutive, Prod.swap_swap]
+  · simp only [orientedTernaryDecode, orientedTernaryEncode, ↓reduceIte]
+    exact centeredCarry_involutive _ _
 
 theorem orientedTernaryEncode_bijective (posSkew : Bool) (τ : ℕ) :
     Function.Bijective (orientedTernaryEncode posSkew τ) :=
   ⟨fun _ _ h => by
-    rw [← orientedTernaryDecode_encode posSkew τ, h, orientedTernaryDecode_encode],
+    have hd := congrArg (orientedTernaryDecode posSkew τ) h
+    rwa [orientedTernaryDecode_encode, orientedTernaryDecode_encode] at hd,
    fun w => ⟨orientedTernaryDecode posSkew τ w, orientedTernaryEncode_decode posSkew τ w⟩⟩
 
 /-- Explicit single arithmetic encoder on rational section representatives
@@ -769,7 +777,7 @@ theorem adelicSectionDecode_encode {N : ℕ} (v₀ v₁ v₂ : Fin N → ℤ) {s
     (hs₁ : inSectionLattice v₀ s.1) (hs₂ : inSectionLattice v₀ s.2) :
     adelicSectionDecode v₀ v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s) = s := by
   unfold adelicSectionDecode adelicSectionEncode
-  simp only [sectionCoord_sectionRep, orientedTernaryDecode_encode]
+  simp only [sectionCoord_sectionRep, Prod.mk.eta, orientedTernaryDecode_encode]
   exact Prod.ext (sectionRep_sectionCoord hs₁) (sectionRep_sectionCoord hs₂)
 
 /-- Exact right-inverse law on `d(v₁) ℤ × d(v₂) ℤ`. -/
@@ -777,7 +785,7 @@ theorem adelicSectionEncode_decode {N : ℕ} (v₀ v₁ v₂ : Fin N → ℤ) {t
     (ht₁ : inSectionLattice v₁ t.1) (ht₂ : inSectionLattice v₂ t.2) :
     adelicSectionEncode v₀ v₁ v₂ (adelicSectionDecode v₀ v₁ v₂ t) = t := by
   unfold adelicSectionEncode adelicSectionDecode
-  simp only [sectionCoord_sectionRep, orientedTernaryEncode_decode]
+  simp only [sectionCoord_sectionRep, Prod.mk.eta, orientedTernaryEncode_decode]
   exact Prod.ext (sectionRep_sectionCoord ht₁) (sectionRep_sectionCoord ht₂)
 
 /-! ### 4. Valuation payment for every ambiguous digit and two-output precision comparison -/
@@ -793,14 +801,14 @@ def narrowCoord (posSkew : Bool) (w : ℤ × ℤ) : ℤ :=
 theorem wideCoord_encode (posSkew : Bool) (τ : ℕ) (z : ℤ × ℤ) :
     wideCoord posSkew (orientedTernaryEncode posSkew τ z) =
       balRem (ternaryHalfMod τ) z.1 + (3 : ℤ) ^ τ * z.2 := by
-  cases posSkew <;> simp only [wideCoord, orientedTernaryEncode, Bool.false_eq_true,
-    ↓reduceIte, Prod.swap_snd, centeredCarry, two_mul_ternaryHalfMod_add_one_int]
+  cases posSkew <;> dsimp only [wideCoord, orientedTernaryEncode, Prod.swap, centeredCarry] <;>
+    simp only [Bool.false_eq_true, ↓reduceIte, two_mul_ternaryHalfMod_add_one_int]
 
 theorem narrowCoord_encode (posSkew : Bool) (τ : ℕ) (z : ℤ × ℤ) :
     narrowCoord posSkew (orientedTernaryEncode posSkew τ z) =
       balQuot (ternaryHalfMod τ) z.1 := by
-  cases posSkew <;> simp only [narrowCoord, orientedTernaryEncode, Bool.false_eq_true,
-    ↓reduceIte, Prod.swap_fst, centeredCarry]
+  cases posSkew <;> dsimp only [narrowCoord, orientedTernaryEncode, Prod.swap, centeredCarry] <;>
+    simp only [Bool.false_eq_true, ↓reduceIte]
 
 /-- Exact base-`3^τ` linear conservation law across the wide and narrow outputs. -/
 theorem orientedTernary_linear_conservation (posSkew : Bool) (τ : ℕ) (z : ℤ × ℤ) :
@@ -916,18 +924,22 @@ theorem adelicCarryDigit_paid_iff_threeAdic_valuation {N : ℕ} (v₀ v₁ v₂ 
       wideGenerator v₁ v₂ *
         ((wideCoord b (orientedTernaryEncode b τ z') -
           wideCoord b (orientedTernaryEncode b τ z) : ℤ) : ℚ) := by
+    dsimp only [b, τ, z, z']
     unfold wideSection wideGenerator adelicSectionEncode sectionRep
     cases h : adelicSkewNonneg v₁ v₂ <;>
-      simp only [b, h, Bool.false_eq_true, ↓reduceIte, wideCoord, Int.cast_sub, mul_sub]
+      simp only [h, Bool.false_eq_true, ↓reduceIte, wideCoord, Int.cast_sub, mul_sub]
   have heq_iff : (wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s) =
       wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s')) ↔
       wideGenerator v₁ v₂ *
         ((wideCoord b (orientedTernaryEncode b τ z') -
           wideCoord b (orientedTernaryEncode b τ z) : ℤ) : ℚ) = 0 := by
     rw [← hwide_diff, sub_eq_zero, eq_comm]
-  rw [carryDigit_eq_iff_wideCoord_modEq b τ z z', Int.modEq_iff_dvd,
-    pow_dvd_int_iff_ratPrimeVal Nat.prime_three (wideGenerator_pos v₁ v₂),
-    ← hwide_diff, ← heq_iff]
+  rw [carryDigit_eq_iff_wideCoord_modEq b τ z z', Int.modEq_iff_dvd]
+  have hpv := pow_dvd_int_iff_ratPrimeVal (p := 3) (r := τ) Nat.prime_three
+    (wideGenerator_pos v₁ v₂)
+    (wideCoord b (orientedTernaryEncode b τ z') - wideCoord b (orientedTernaryEncode b τ z))
+  dsimp only [Nat.cast_ofNat] at hpv
+  rw [hpv, ← hwide_diff, ← heq_iff]
 
 /-- Simultaneous zero-loss congruence preservation and recovery at **every** modulus `u`
 coprime to `3` (`gcd(u, 3) = 1`), once the `3^τ` carry digit is paid. -/
@@ -962,15 +974,15 @@ theorem orientedTernary_coprime_zeroLoss_recovery (posSkew : Bool) (τ : ℕ) {u
   constructor
   · rintro ⟨hw, hn⟩
     have hw' : (u : ℤ) ∣ (3 : ℤ) ^ τ * (z'.2 - z.2) := by
-      convert hw using 1; dsimp [K] at hrem ⊢; rw [hrem]; ring
+      convert hw using 1; dsimp only [K]; rw [hrem]; ring
     have hz1 : z'.1 - z.1 = (3 : ℤ) ^ τ * (balQuot K z'.1 - balQuot K z.1) := by
-      dsimp [K] at hd1 hd2 hrem ⊢; linarith only [hd1, hd2, hrem]
+      dsimp only [K] at hd1 hd2 ⊢; linarith only [hd1, hd2, hrem]
     exact ⟨hz1 ▸ hn.mul_left _, cancel_threePow hw'⟩
   · rintro ⟨hz1, hz2⟩
     have hw' : (balRem K z'.1 + (3 : ℤ) ^ τ * z'.2) - (balRem K z.1 + (3 : ℤ) ^ τ * z.2) =
-        (3 : ℤ) ^ τ * (z'.2 - z.2) := by dsimp [K] at hrem ⊢; rw [hrem]; ring
+        (3 : ℤ) ^ τ * (z'.2 - z.2) := by dsimp only [K]; rw [hrem]; ring
     have hq_mul : (3 : ℤ) ^ τ * (balQuot K z'.1 - balQuot K z.1) = z'.1 - z.1 := by
-      dsimp [K] at hd1 hd2 hrem ⊢; linarith only [hd1, hd2, hrem]
+      dsimp only [K] at hd1 hd2 ⊢; linarith only [hd1, hd2, hrem]
     exact ⟨hw' ▸ hz2.mul_left _, cancel_threePow (hq_mul ▸ hz1)⟩
 
 /-- Asymmetric `3`-adic zero-waste recovery: knowing the wide coordinate modulo `3^(r + τ)`
@@ -998,11 +1010,11 @@ theorem orientedTernary_threeAdic_asymmetric_recovery (posSkew : Bool) (τ r : �
   have hz2_mul : (3 : ℤ) ^ τ * (3 : ℤ) ^ r ∣ (3 : ℤ) ^ τ * (z'.2 - z.2) := by
     rw [← pow_add, add_comm τ r]
     convert hw using 1
-    dsimp [K] at hrem ⊢; rw [hrem]; ring
+    rw [hrem]; ring
   have hz2 : (3 : ℤ) ^ r ∣ z'.2 - z.2 :=
     (mul_dvd_mul_iff_left (by positivity : (3 : ℤ) ^ τ ≠ 0)).mp hz2_mul
   have hz1_eq : z'.1 - z.1 = (3 : ℤ) ^ τ * (balQuot K z'.1 - balQuot K z.1) := by
-    dsimp [K] at hd1 hd2 hrem ⊢; linarith only [hd1, hd2, hrem]
+    dsimp only [K] at hd1 hd2 ⊢; linarith only [hd1, hd2, hrem]
   have hz1_high : (3 : ℤ) ^ (τ + (r - min r τ)) ∣ z'.1 - z.1 := by
     rw [hz1_eq, pow_add]
     exact mul_dvd_mul_left _ hn
@@ -1033,6 +1045,7 @@ theorem mapsRationalSections_adelicSectionEncode_iff {N : ℕ} (v₀ v₁ v₂ :
   · intro h s₁ hs₁ s₂ hs₂
     obtain ⟨z₁, hz₁, rfl⟩ := Finset.mem_map.mp hs₁
     obtain ⟨z₂, hz₂, rfl⟩ := Finset.mem_map.mp hs₂
+    dsimp only [Function.Embedding.coeFn_mk]
     obtain ⟨hw₁, hw₂⟩ := h z₁ hz₁ z₂ hz₂
     unfold adelicSectionEncode
     simp only [sectionCoord_sectionRep]
@@ -1090,10 +1103,11 @@ theorem tendsto_ternaryCarryScale {N : ℕ} (v₁ v₂ : Fin N → ℤ) :
       atTop (𝓝 (|integerProbe N v₁ - integerProbe N v₂| / 2)) := by
   have hskew_abs : Tendsto (fun m : ℕ => |outerAdelicSkew (m • v₁) (m • v₂)| / (m : ℝ)^2) atTop
       (𝓝 (|integerProbe N v₁ - integerProbe N v₂| / 2)) := by
-    refine (tendsto_outerAdelicSkew v₁ v₂).abs.congr' ?_
+    have habs := (tendsto_outerAdelicSkew v₁ v₂).abs
+    rw [abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 2)] at habs
+    refine habs.congr' ?_
     filter_upwards [eventually_ge_atTop 1] with m hm
     rw [abs_div, abs_of_pos (by positivity : 0 < (m : ℝ)^2)]
-    · rw [abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
   have hzero : Tendsto (fun m : ℕ => Real.log 3 / (m : ℝ)^2) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop
       ((tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop)
@@ -1151,7 +1165,8 @@ theorem eventually_adelicSectionEncode_mapsRationalSections {N : ℕ} {v₀ v₁
     rw [mapsRationalSections_adelicSectionEncode_iff]
     intro z₁ hz₁ z₂ hz₂
     cases adelicSkewNonneg (m • v₁) (m • v₂)
-    · simp only [orientedTernaryEncode, Bool.false_eq_true, ↓reduceIte, Prod.swap_fst, Prod.swap_snd]
+    · dsimp only [orientedTernaryEncode, Prod.swap]
+      simp only [Bool.false_eq_true, ↓reduceIte]
       exact ⟨(hm₂ z₁ hz₁ z₂ hz₂).2, (hm₂ z₁ hz₁ z₂ hz₂).1⟩
     · simp only [orientedTernaryEncode, ↓reduceIte]
       exact hm₁ z₁ hz₁ z₂ hz₂
@@ -1167,10 +1182,12 @@ theorem eventually_adelicSectionEncode_mapsRationalSections {N : ℕ} {v₀ v₁
     rw [mapsRationalSections_adelicSectionEncode_iff]
     have hneg : outerAdelicSkew (m • v₁) (m • v₂) < 0 := by
       have hm2 : 0 < (m : ℝ)^2 := by positivity
-      exact (div_lt_iff₀ hm2).mp (by simpa only [zero_mul] using hm_s)
+      have hm' := (div_lt_iff₀ hm2).mp hm_s
+      linarith only [hm']
     rw [adelicSkewNonneg_eq_false hneg]
     intro z₁ hz₁ z₂ hz₂
-    simp only [orientedTernaryEncode, Bool.false_eq_true, ↓reduceIte, Prod.swap_fst, Prod.swap_snd]
+    dsimp only [orientedTernaryEncode, Prod.swap]
+    simp only [Bool.false_eq_true, ↓reduceIte]
     exact ⟨(hm_c z₁ hz₁ z₂ hz₂).2, (hm_c z₁ hz₁ z₂ hz₂).1⟩
 
 private theorem natModEq_iff_intModEq (M a b : ℕ) :
@@ -1184,6 +1201,16 @@ theorem sectionOrdinal_modEq_iff {d A : ℝ} (x y : ↥(smallSections d A)) (M :
   rw [natModEq_iff_intModEq, Int.modEq_iff_dvd, Int.modEq_iff_dvd]
   have hsub := sectionOrdinal_sub y x
   rw [hsub]
+
+theorem inducedDivisorSectionMap_adelicSectionEncode {N : ℕ} {v₀ v₁ v₂ : Fin N → ℤ}
+    (h : mapsRationalSections (adelicSectionEncode v₀ v₁ v₂) v₀ v₁ v₂)
+    (p : ↥(divisorSections v₀) × ↥(divisorSections v₀)) :
+    ((inducedDivisorSectionMap h p).1.val, (inducedDivisorSectionMap h p).2.val) =
+      orientedTernaryEncode (adelicSkewNonneg v₁ v₂) (ternaryCarryOrder v₁ v₂)
+        (p.1.val, p.2.val) := by
+  dsimp [inducedDivisorSectionMap, restrictRationalSectionMap, rationalSectionEquiv,
+    adelicSectionEncode]
+  simp only [sectionCoord_sectionRep, Prod.mk.eta]
 
 /-- Direct comparison of `adelicSectionEncode` along `(2mb, 3mb, 4mb)` against the
 two-output carry obstructions: `adelicSectionEncode` restricts eventually to an
@@ -1223,8 +1250,8 @@ theorem adelicRayMap_precision_comparison {N : ℕ} {b : Fin N → ℤ}
     have hlim_eq : |((4 : ℕ) : ℝ)^2 * integerProbe N b - ((2 : ℕ) : ℝ)^2 * integerProbe N b| / 2 =
         6 * integerProbe N b := by
       push_cast
-      rw [show 16 * integerProbe N b - 4 * integerProbe N b = 12 * integerProbe N b by ring,
-        abs_of_pos (by positivity)]
+      rw [show (4 : ℝ)^2 * integerProbe N b - (2 : ℝ)^2 * integerProbe N b =
+          12 * integerProbe N b by ring, abs_of_pos (by positivity)]
       ring
     rw [hlim_eq] at hK
     refine hK.congr fun m => ?_
@@ -1246,11 +1273,8 @@ theorem adelicRayMap_precision_comparison {N : ℕ} {b : Fin N → ℤ}
     (maxFibre_inducedDivisorSectionMap hm).trans (maxFibre_adelicSectionEncode_eq_one hm)
   have hf_val (p : ↥(divisorSections (m • (3 • b))) × ↥(divisorSections (m • (3 • b)))) :
       ((f p).1.val, (f p).2.val) = orientedTernaryEncode true τ (p.1.val, p.2.val) := by
-    dsimp only [f, inducedDivisorSectionMap, restrictRationalSectionMap, rationalSectionEquiv,
-      Equiv.prodCongr_apply, Prod.map_apply, Equiv.coe_fn_mk, Equiv.coe_fn_symm_mk,
-      adelicSectionEncode]
-    simp only [sectionCoord_sectionRep, hb_true, τ]
-    exact Prod.ext rfl rfl
+    dsimp only [f, τ]
+    rw [inducedDivisorSectionMap_adelicSectionEncode hm p, hb_true]
   have hord_mod (M : ℕ) (x y : Fin (rayCard b 3 m) × Fin (rayCard b 3 m)) :
       let px := ((rayOrdinal b 3 m).prodCongr (rayOrdinal b 3 m)).symm x
       let py := ((rayOrdinal b 3 m).prodCongr (rayOrdinal b 3 m)).symm y
@@ -1267,10 +1291,16 @@ theorem adelicRayMap_precision_comparison {N : ℕ} {b : Fin N → ℤ}
     have h2 := sectionOrdinal_modEq_iff (f px).2 (f py).2 M
     have h3 := sectionOrdinal_modEq_iff px.1 py.1 M
     have h4 := sectionOrdinal_modEq_iff px.2 py.2 M
-    have hfx := hf_val px
-    have hfy := hf_val py
-    rw [(Prod.ext_iff.mp hfx).1, (Prod.ext_iff.mp hfy).1] at h1
-    rw [(Prod.ext_iff.mp hfx).2, (Prod.ext_iff.mp hfy).2] at h2
+    have hfx1 : (f px).1.val = (orientedTernaryEncode true τ (px.1.val, px.2.val)).1 :=
+      congrArg Prod.fst (hf_val px)
+    have hfy1 : (f py).1.val = (orientedTernaryEncode true τ (py.1.val, py.2.val)).1 :=
+      congrArg Prod.fst (hf_val py)
+    have hfx2 : (f px).2.val = (orientedTernaryEncode true τ (px.1.val, px.2.val)).2 :=
+      congrArg Prod.snd (hf_val px)
+    have hfy2 : (f py).2.val = (orientedTernaryEncode true τ (py.1.val, py.2.val)).2 :=
+      congrArg Prod.snd (hf_val py)
+    rw [hfx1, hfy1] at h1
+    rw [hfx2, hfy2] at h2
     have hx1 : sectionOrdinal _ _ px.1 = x.1 := (rayOrdinal b 3 m).apply_symm_apply x.1
     have hy1 : sectionOrdinal _ _ py.1 = y.1 := (rayOrdinal b 3 m).apply_symm_apply y.1
     have hx2 : sectionOrdinal _ _ px.2 = x.2 := (rayOrdinal b 3 m).apply_symm_apply x.2
@@ -1326,19 +1356,17 @@ theorem eventually_adelicSectionEncode_midpoint_ray {N : ℕ} {b a : Fin N → �
         0 ≤ midpointExcess (k • b) a m := by
   rcases ha with rfl | ha_pos
   · filter_upwards [eventually_ge_atTop 1] with k _
-    filter_upwards [eventually_ge_atTop 1] with m hm1
-    simp only [add_zero, sub_zero]
+    filter_upwards [eventually_ge_atTop 1] with m _
+    have hadd : k • b + (0 : Fin N → ℤ) = k • b := add_zero _
+    have hsub : k • b - (0 : Fin N → ℤ) = k • b := sub_zero _
+    rw [hadd, hsub]
     have h := adelicSectionEncode_self_mapsRationalSections (m • (k • b))
     have hfib := maxFibre_adelicSectionEncode_eq_one h
     have hex : 0 ≤ midpointExcess (k • b) 0 m := by
-      have hm_ex := neg_log_maxFibre_le_midpointExcess hm1
-        (show midpointSectionMap (k • b) 0 m by
-          simpa only [add_zero, sub_zero] using inducedDivisorSectionMap h)
-      have hf1 : maxFibre (show midpointSectionMap (k • b) 0 m by
-          simpa only [add_zero, sub_zero] using inducedDivisorSectionMap h) = 1 := by
-        simpa only [add_zero, sub_zero, maxFibre_inducedDivisorSectionMap] using hfib
-      simpa only [hf1, Nat.cast_one, Real.log_one, zero_div, neg_zero] using hm_ex
-    exact ⟨h, hfib, by simpa only [add_zero, sub_zero] using hex⟩
+      unfold midpointExcess
+      rw [hadd, hsub]
+      linarith
+    exact ⟨h, hfib, hex⟩
   · filter_upwards [eventually_ge_atTop 1, eventually_positive_shift b a hb,
       eventually_positive_shift b (-a) hb] with k hk1 hp_pos hn_pos
     rw [← sub_eq_add_neg] at hn_pos

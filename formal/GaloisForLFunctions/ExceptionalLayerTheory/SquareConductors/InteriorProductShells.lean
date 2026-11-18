@@ -61,8 +61,8 @@ theorem cappedInteriorShell_exchange {n V : ℕ} (hn : 0<n)
   have hz (k : ℕ) (hk : k≤2*V) : z k=0 := by
     have hh : (k:ℝ)≤2*(V:ℝ) := by exact_mod_cast hk
     have hn₁ : ((k+1:ℕ):ℝ)<Real.exp (-8)*(n:ℝ)^2 := by push_cast; linarith only [hbirth,hh]
-    simp only [z,horizonDifference,sampledSpline_before_support hn (by linarith only [hbirth,hh] : (k:ℝ)<_),
-      sampledSpline_before_support hn hn₁,sub_self]
+    simp only [z,horizonDifference,sampledSpline_eq_zero_before hn (by linarith only [hbirth,hh] : (k:ℝ)<_),
+      sampledSpline_eq_zero_before hn hn₁,sub_self]
   have ha : cappedUpperProductReading V n n-cappedUpperProductReading (2*V) n n =
       ∑ k ∈ Icc 1 L, z k*row k := by
     unfold cappedUpperProductReading splineCountReading
@@ -116,9 +116,9 @@ private theorem horizonPair_bound :
   let t := splineHorizon n+1
   let z := horizonDifference (sampledSpline n)
   have hn' : (0:ℝ)<n := Nat.cast_pos.mpr hn
-  have hz₀ : sampledSpline n 0=0 := sampledSpline_before_support hn (by simpa using (zero_lt_one.trans hstart))
-  have hz₁ : sampledSpline n 1=0 := sampledSpline_before_support hn (by simpa using hstart)
-  have hzt (k : ℕ) (hk : t≤k) : sampledSpline n k=0 := sampledSpline_after_window hn hk
+  have hz₀ : sampledSpline n 0=0 := sampledSpline_eq_zero_before hn (by simpa using (zero_lt_one.trans hstart))
+  have hz₁ : sampledSpline n 1=0 := sampledSpline_eq_zero_before hn (by simpa using hstart)
+  have hzt (k : ℕ) (hk : t≤k) : sampledSpline n k=0 := sampledSpline_eq_zero_after hn hk
   have hterminal (k : ℕ) (hk : t≤k) : z k=0 := by
     rw [show z k=sampledSpline n k-sampledSpline n (k+1) by rfl,hzt k hk,hzt _ (by omega),sub_self]
   have hsum : (∑ k ∈ range t, z k)=0 := by

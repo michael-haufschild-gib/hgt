@@ -22,21 +22,31 @@ def delayJet : ℕ → ℝ → ℝ
 
 theorem delayJet_hasDerivAt (n : ℕ) (x : Ioi ((n:ℝ)+2)) :
     HasDerivAt (delayJet n) (delayJet (n+1) x) x.val := by
-  induction n generalizing x with
+  induction n with
   | zero =>
     have hd := (hasDerivAt_buchstab ⟨x.val,by simpa using x.property⟩).sub_const enclosureLimit
     apply hd.congr_deriv
     dsimp [delayJet]
     ring
   | succ n ih =>
-    have hx : (n:ℝ)+1+2 < x.val := by simpa only [Nat.cast_succ] using x.property
+    have hx : (n:ℝ)+1+2 < x.val := by simpa only [mem_Ioi,Nat.cast_succ] using x.property
     have hn : x.val ≠ 0 := by linarith [Nat.cast_nonneg (α:=ℝ) n]
     have hd := ih ⟨x.val,show (n:ℝ)+2<x.val by linarith⟩
     have h₁ := (ih ⟨x.val-1,show (n:ℝ)+2<x.val-1 by linarith⟩).comp x.val
       ((hasDerivAt_id x.val).sub_const 1)
-    apply ((h₁.sub (hd.const_mul ((n:ℝ)+1))).fun_div (hasDerivAt_id _) hn).congr_deriv
-    simp only [Nat.cast_succ,delayJet,id_eq,mul_one]
+    let c := (n:ℝ)+1
+    have hnum : HasDerivAt (fun t => delayJet n (t-1)-c*delayJet n t)
+        (delayJet (n+1) (x.val-1)-c*delayJet (n+1) x.val) x.val := by
+      simpa only [mul_one] using h₁.sub (hd.const_mul c)
+    apply (hnum.fun_div (hasDerivAt_id x.val) hn).congr_deriv
+    change ((delayJet (n+1) (x.val-1)-c*delayJet (n+1) x.val)*x.val -
+        (delayJet n (x.val-1)-c*delayJet n x.val)*1)/x.val^2 =
+      (delayJet (n+1) (x.val-1)-(((n+1:ℕ):ℝ)+1)*delayJet (n+1) x.val)/x.val
+    have hv : delayJet n (x.val-1)-c*delayJet n x.val = delayJet (n+1) x.val*x.val :=
+      (div_mul_cancel₀ _ hn).symm
+    rw [hv,Nat.cast_succ]
     field_simp [hn]
+    dsimp only [c]
     ring
 
 private theorem jet_continuousAt (n : ℕ) {x : ℝ} (hx : (n:ℝ)+1<x) :
@@ -47,19 +57,21 @@ private theorem jet_continuousAt (n : ℕ) {x : ℝ} (hx : (n:ℝ)+1<x) :
     exact (continuousOn_buchstab.continuousAt (Ici_mem_nhds hx')).sub continuousAt_const
   | succ n ih =>
     rw [Nat.cast_succ] at hx
-    exact (((ih (show (n:ℝ)+1 < x-1 by linarith)).comp
-      (continuousAt_id.sub_const 1)).sub (continuousAt_const.mul
-      (ih (show (n:ℝ)+1<x by linarith)))).div continuousAt_id
-        (by linarith [Nat.cast_nonneg (α:=ℝ) n])
+    have hs : ContinuousAt (fun t : ℝ => t-1) x := continuousAt_id.sub continuousAt_const
+    have hprev : ContinuousAt (fun t => delayJet n (t-1)) x :=
+      (ih (x := x-1) (by linarith)).comp hs
+    have hnow := ih (x := x) (by linarith)
+    exact (hprev.sub (continuousAt_const.mul hnow)).div continuousAt_id
+      (show x ≠ 0 by linarith [Nat.cast_nonneg (α:=ℝ) n])
 
 /-- The recurrence gives the actual ordinary iterated derivatives, including
 all integer junctions to the right of the indicated endpoint. -/
 theorem delayJet_eq_iteratedDeriv (n : ℕ) (x : Ioi ((n:ℝ)+1)) :
     iteratedDeriv n (fun t => buchstab t-enclosureLimit) x.val = delayJet n x := by
-  induction n generalizing x with
+  induction n with
   | zero => simp [delayJet]
   | succ n ih =>
-    have hx : (n:ℝ)+1+1 < x.val := by simpa only [Nat.cast_succ] using x.property
+    have hx : (n:ℝ)+1+1 < x.val := by simpa only [mem_Ioi,Nat.cast_succ] using x.property
     have he : iteratedDeriv n (fun t => buchstab t-enclosureLimit) =ᶠ[𝓝 x.val] delayJet n := by
       filter_upwards [lt_mem_nhds (show (n:ℝ)+1<x.val by linarith)] with t ht
       exact ih ⟨t,ht⟩
@@ -102,7 +114,7 @@ theorem delayJet_weighted_deriv (n : ℕ) (x : Ioi ((n:ℝ)+2)) :
   have hn := Nat.cast_nonneg (α:=ℝ) n
   have hpos : x.val ≠ 0 := ne_of_gt (by linarith [show (n:ℝ)+2<x.val from x.property])
   apply (((hasDerivAt_id x.val).pow (n+1)).mul (delayJet_hasDerivAt n x)).congr_deriv
-  simp only [Nat.add_sub_cancel,Nat.cast_succ,id_eq,mul_one,delayJet]
+  simp only [Pi.pow_apply,Nat.add_sub_cancel,Nat.cast_succ,id_eq,mul_one,delayJet]
   rw [pow_succ]
   field_simp [hpos]
   ring

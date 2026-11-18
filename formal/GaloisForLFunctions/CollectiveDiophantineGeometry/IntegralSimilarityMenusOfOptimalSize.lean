@@ -27,7 +27,7 @@ private theorem restore_column (n p t : ℕ) (j : Fin (n+1)) :
   by_cases hj : j=0
   · subst j
     simp [reducedRow]
-  · rw [menuRow_apply,reducedRow,if_neg hj]
+  · simp only [menuRow_apply,reducedRow,if_neg hj,mul_zero,zero_sub]
     push_cast
     rw [mul_pow]
     ring
@@ -39,7 +39,8 @@ private theorem residue_column (n p t : ℕ) (j : Fin (n+1)) :
   · subst j
     rw [reducedRow,if_pos rfl,menuRow_apply,Fin.sum_univ_succ]
     push_cast
-    simp [Fin.val_succ, two_mul, pow_add, pow_succ, ZMod.natCast_self]
+    simp [Fin.val_succ,two_mul,pow_add,pow_succ]
+    ring
   · simp [reducedRow,hj,mul_comm]
 
 /-- Every n+1 distinct indices below p give independent integral rows,
@@ -63,12 +64,10 @@ theorem minor_ne_zero {n p s : ℕ} (hp : Nat.Prime p) (hp₂ : 2<p) (hs : s≤p
     exact residue_column n p (b i).val j
   have htwo : (2 : ZMod p) ≠ 0 := by
     change ((2 : ℕ) : ZMod p) ≠ 0
-    rw [ZMod.natCast_eq_zero_iff]
-    exact fun h => hp₂.not_ge (Nat.le_of_dvd (by decide) h)
+    exact fun h => hp₂.not_ge (Nat.le_of_dvd (by decide) ((ZMod.natCast_eq_zero_iff 2 p).1 h))
   have hD : A.det ≠ 0 := by
     intro h
-    have hm := congrArg (fun z : ℤ => (z : ZMod p)) h
-    change (Int.castRingHom (ZMod p)) A.det=0 at hm
+    have hm : (Int.castRingHom (ZMod p)) A.det = 0 := by rw [h,map_zero]
     rw [RingHom.map_det,hred,det_mul,det_diagonal] at hm
     exact (mul_ne_zero (det_vandermonde_ne_zero_iff.mpr hx)
       (prod_ne_zero_iff.mpr fun j _ => by by_cases h : j=0 <;> simp [c,h,htwo])) hm
@@ -80,7 +79,7 @@ theorem minor_ne_zero {n p s : ℕ} (hp : Nat.Prime p) (hp₂ : 2<p) (hs : s≤p
     rfl
   rw [he,det_mul,← RingHom.map_det,det_diagonal]
   have hp' : (p : ℝ) ≠ 0 := by exact_mod_cast hp.ne_zero
-  exact mul_ne_zero (by exact_mod_cast hD) (prod_ne_zero_iff.mpr fun j _ => pow_ne_zero _ hp')
+  exact mul_ne_zero (by change (A.det : ℝ) ≠ 0; exact_mod_cast hD) (prod_ne_zero_iff.mpr fun j _ => pow_ne_zero _ hp')
 
 /-- The optimal menu works simultaneously for every list of k real normals. -/
 theorem prime_grid_menu {k n s p : ℕ} (hp : Nat.Prime p) (hp₂ : 2<p) (hs : s≤p)
@@ -93,7 +92,7 @@ theorem prime_grid_menu {k n s p : ℕ} (hp : Nat.Prime p) (hp₂ : 2<p) (hs : s
     (by simpa only [Fintype.card_fin] using hcount)
   let T := univ.filter fun t : Fin s => bad t=a
   obtain ⟨f⟩ : Nonempty (Fin (n+1) ↪ T) :=
-    Function.Embedding.nonempty_of_card_le (by simpa [T] using Nat.succ_le_of_lt ha)
+    Function.Embedding.nonempty_of_card_le (by simpa only [Fintype.card_fin,Fintype.card_coe,T] using Nat.succ_le_of_lt ha)
   let b := f.trans (Function.Embedding.subtype fun t => t ∈ T)
   apply hv a
   apply Matrix.eq_zero_of_mulVec_eq_zero (minor_ne_zero hp hp₂ hs b)

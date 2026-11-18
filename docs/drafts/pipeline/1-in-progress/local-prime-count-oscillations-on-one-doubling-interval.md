@@ -9,3 +9,5 @@ Under a single quartet of real part $\beta$, both signs should attain $D_a^\pm(Y
 For $\rho=\beta+i\gamma$, put $h=\pi/(2|\gamma|)$, $\lambda=e^h$ and $m=\operatorname{ord}_\rho\zeta$. Four consecutive quarter-period intervals fit in one octave since $|\gamma|>67$. For $E(x)=\theta(x)-x$ put $A(t)=e^{-\beta t}[E(e^{t+h})-E(e^t)]$. The single-wave formula gives
 $$A(t)=-2m\Re(Ue^{i\gamma t})+o(1),\qquad U=(e^{h\rho}-1)/\rho.$$
 The next reading rotates by $i$ or $-i$, so $A(t)^2+A(t+h)^2\to4m^2|U|^2>0$. The four normalized increments at $t,t+h,t+2h,t+3h$ include both signs with magnitudes at least $\sqrt2\,m|U|+o(1)$. Multiplying each ordinary centered count increment by its initial logarithm incurs $O_\rho(e^{\beta t}/t)$ through partial summation. A cofinal small value of the sum of two squares, or a cofinal upper bound on either sign over the four intervals, would exclude this quartet.
+
+[Both signs of the centered prime-logarithm count](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/QuadratureOfTwoConsecutivePrimeIntervals.lean)

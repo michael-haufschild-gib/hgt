@@ -34,7 +34,8 @@ theorem chord (s t : ℝ) :
   have hz (x : ℝ) : (x^2-1)/(1+x^2) = -cx x := by
     unfold cx
     ring
-  simp only [zero_pow (by decide : 2 ≠ 0),add_zero,mul_zero,zero_div,sub_self,hz,← cy] at h
+  simp only [zero_pow (by decide : 2 ≠ 0),add_zero,mul_zero,zero_div,sub_self,hz] at h
+  unfold cy
   linear_combination h
 
 private theorem chord_bound (s t : ℝ) :
@@ -150,7 +151,7 @@ theorem identity_isolation (H : ℕ+) (z : ℂ) (hu : ‖z‖=1) (hh : abscissaH
     intro hz
     have hdist := chord_from_one z hu
     rw [hz,sub_self,mul_zero] at hdist
-    exact hne (sub_eq_zero.mp (norm_eq_zero.mp (pow_eq_zero hdist))))
+    exact hne (sub_eq_zero.mp (norm_eq_zero.mp (sq_eq_zero_iff.mp hdist))))
   rw [he] at hx
   have ha : a < ((c : ℕ) : ℤ) := by exact_mod_cast (div_lt_one hc).1 hx
   have hi : (1 : ℝ) ≤ (c : ℝ)-(a : ℝ) := by
@@ -161,7 +162,7 @@ theorem identity_isolation (H : ℕ+) (z : ℂ) (hu : ‖z‖=1) (hh : abscissaH
     _ ≤ 2*(((c : ℝ)-a)/(c : ℝ)) :=
       (div_le_div_of_nonneg_right (show (2 : ℝ) ≤ 2*((c : ℝ)-a) by linarith only [hi]) hc.le).trans_eq
         (by ring)
-    _ = _ := by field_simp; ring
+    _ = _ := by field_simp
 
 /-- At every height there is a unit direction whose nearest admissible
 point is the identity, at squared distance 1/(2H). Thus uniform error
@@ -192,7 +193,8 @@ theorem covering_obstruction (H : ℕ+) :
     apply (sq_le_sq₀ (mul_nonneg (by norm_num) (norm_nonneg _)) (norm_nonneg _)).mp
     rw [mul_pow,hch,show (2 : ℝ)^2*(1/(2*(H : ℝ)))=2/(H : ℝ) by ring]
     exact hsep
-  have htri := norm_sub_le v z (1 : ℂ)
+  have htri := norm_add_le (v-z) (z-1)
+  rw [sub_add_sub_cancel] at htri
   rw [norm_sub_rev v z] at htri
   rw [← hch]
   exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).2 (by linarith only [hfar,htri])

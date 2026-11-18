@@ -85,7 +85,7 @@ theorem newton_variance (s : Multiset ℂ) (B : NNReal) (k : ℕ) (hk : 0<k)
       _ ≤ ∑ _i ∈ range k, ((B : ℝ)^k)^2 := sum_le_sum fun i hi =>
         pow_le_pow_left₀ (norm_nonneg _) (term_bound s B k h (mem_range.mp hi)) _
       _ = _ := by simp
-  have hn : ‖signedExterior s k‖=‖s.esymm k‖ := by simp [signedExterior,norm_mul]
+  have hn : ‖signedExterior s k‖=‖s.esymm k‖ := by simp [signedExterior]
   rw [hn] at he
   change (∑ i ∈ range k, ‖z i+signedExterior s k‖^2) ≤ _
   linarith only [he,hh]
@@ -122,7 +122,7 @@ theorem saturation_descends (s : Multiset ℂ) (B : NNReal) (k : ℕ) (hk : 0<k)
   have hpow : (B : ℝ)^k=(B : ℝ)^i*(B : ℝ)^(k-i) := by rw [← pow_add,Nat.add_sub_of_le hi]
   rw [hc] at hb
   conv_lhs at hb => rw [hpow]
-  exact le_antisymm hU (le_of_mul_le_mul_right hb (pow_pos (lt_of_le_of_ne B.property hB.symm) _))
+  exact le_antisymm hU (le_of_mul_le_mul_right hb (pow_pos (lt_of_le_of_ne B.property (Ne.symm hB)) _))
 
 /-- For an extremal nonempty spectrum all first r moments form one signed geometric
 progression. Its single parameter is the negative of the first trace. -/
@@ -155,8 +155,8 @@ theorem extremal_moments (s : Multiset ℂ) (B : NNReal) (r : ℕ) (hr : 0<r)
 spectrum in each rank. The radii may be specified independently. -/
 theorem first_trace_identifies_extremizers (s t : Multiset ℂ) (B C : NNReal)
     (hr : 0<s.card) (hcard : s.card=t.card)
-    (hs : ∀ j, 0<j → j≤s.card → ‖tracePow s j‖ ≤ (B : ℝ)^j)
-    (ht : ∀ j, 0<j → j≤t.card → ‖tracePow t j‖ ≤ (C : ℝ)^j)
+    (hs : ∀ j, 0<j → j ≤ s.card → ‖tracePow s j‖ ≤ (B : ℝ)^j)
+    (ht : ∀ j, 0<j → j ≤ t.card → ‖tracePow t j‖ ≤ (C : ℝ)^j)
     (hds : ‖s.prod‖=(B : ℝ)^s.card) (hdt : ‖t.prod‖=(C : ℝ)^t.card) :
     s=t ↔ tracePow s 1=tracePow t 1 := by
   refine ⟨fun h => h ▸ rfl,fun h => ?_⟩
