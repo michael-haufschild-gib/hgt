@@ -8,6 +8,8 @@ Write \(F\) for the real spline trace, \(t=2\log s,\ h=2\log(b/a)\) and \(H=\log
 \]
 Here \(0<h-H=2\log(1+3/(4n))\le3/(2n)\). The trace derivative has size \(O(e^{w x})\) for \(x\ge0\) at the actual zero width \(w<1/2\). Replacing \(h\) by \(H\) in the long lags costs \(O(n^{2w-1})\). The short lag is bounded. With \(Tf(x)=f(x+H)\), the resulting long term is \((2-T)^2F(t-H)\), where \(t-H=2\log(n+1)\).
 
+The exact degree identity, both zero pole degrees and the variation bound six are formalized by `integerProbe_fourSquareDivisor`, `fourSquareDivisor_degrees` and `fourSquareDivisor_mass`. [Four square graphs](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/FourSquareGraphsWithBothPoleDegreesZero.lean)
+
 **Target.** A one-sided degree bound of order \((n+1)^{2\sigma}\), \(0\le\sigma<1/2\), detects width at most \(\sigma\). Apply the positive inverse of \(2-T\) twice on the integer dilations \(n+1\mapsto2(n+1)\). The boundary terms vanish by the actual sublinear trace bound. The ordinary-prime power comparison would then test RH on a single four-graph family of total variation six with both poles zero.
 
 **Why four graphs.** For any nonzero three-graph relation with both poles zero, write \(r<t\) for the two extreme square-root conductors, \(A,C>0\) for their multiplicities and \(-B\) for the middle one (up to overall sign). Multiplying the two moment equations gives \(B^2=A^2+C^2+AC(t/r+r/t)\). At fixed coefficient mass the log diameter is bounded. All self-pairings of such individual triples lie in a compact lag interval. Four graphs are the first possible support size for an unbounded degree at fixed mass.

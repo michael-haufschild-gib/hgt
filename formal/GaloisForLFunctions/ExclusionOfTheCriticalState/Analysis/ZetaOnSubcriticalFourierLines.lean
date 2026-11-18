@@ -39,7 +39,7 @@ theorem squared_zeta_on_positive_line {σ : ℝ} (hσ : 0 < σ) (hhalf : σ ≤ 
     rw [show (1+σ/2-σ)/2 = r/2 by dsimp only [r]; ring] at h
     have hp := pow_le_pow_left₀ (norm_nonneg _) h 2
     rw [mul_pow,← Real.rpow_mul_natCast (by linarith only [ht] : 0 ≤ t),
-      show r/2*((2:ℕ):ℝ) = r by norm_num; ring] at hp
+      show r/2*((2:ℕ):ℝ) = r by norm_num] at hp
     exact hp
   have hconj (t : ℝ) : ‖riemannZeta (z (-t))‖ = ‖riemannZeta (z t)‖ := by
     have he : z (-t) = conj (z t) := by simp [z]
@@ -64,7 +64,7 @@ theorem squared_zeta_on_positive_line {σ : ℝ} (hσ : 0 < σ) (hhalf : σ ≤ 
     exact mul_le_mul (le_add_of_nonneg_right (sq_nonneg _)) (le_add_of_nonneg_left zero_le_one)
       hξ (add_nonneg hD (sq_nonneg _))
   · have hm := abs_le.1 (le_of_lt (lt_of_not_ge hbig))
-    have h := pow_le_pow_left₀ (norm_nonneg _) ((hB t hm).trans (le_max_left _ _)) 2
+    have h := pow_le_pow_left₀ (norm_nonneg _) ((hB t hm).trans (le_max_left B 0)) 2
     apply h.trans
     calc (max B 0)^2 ≤ D+(max B 0)^2 := le_add_of_nonneg_left hD
       _ ≤ _ := le_mul_of_one_le_right (add_nonneg hD (sq_nonneg _)) (le_add_of_nonneg_right hξ)

@@ -55,7 +55,9 @@ theorem singleton_pole_dispersion {ι : Type*} [Fintype ι] (c : ι → ℕ) (x 
     (hm : ∑ i, (c i:ℝ)/x i = B) :
     ∑ i, (c i:ℝ)*(x i-1)^2/(2*x i) = B-∑ i, (c i:ℝ) := by
   have he (i : ι) : (c i:ℝ)*(x i-1)^2/(2*x i) =
-      ((c i:ℝ)*x i+(c i:ℝ)/x i)/2-(c i:ℝ) := by field_simp [(hx i).ne'] <;> ring
+      ((c i:ℝ)*x i+(c i:ℝ)/x i)/2-(c i:ℝ) := by
+    field_simp [(hx i).ne']
+    ring
   simp_rw [he]
   rw [sum_sub_distrib,← sum_div,sum_add_distrib,hp,hm]
   ring

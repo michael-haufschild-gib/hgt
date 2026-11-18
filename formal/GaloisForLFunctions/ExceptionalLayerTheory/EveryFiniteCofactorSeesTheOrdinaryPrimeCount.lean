@@ -55,7 +55,9 @@ theorem filteredOrdinaryPrimes_eq (W : ℕ) (f : ArithmeticFunction ℝ) (N : �
 
 private abbrev a (n : ℕ) : ℂ := (ordinaryPrimeCountWeight n : ℂ)
 
-private theorem base_summable {s : ℂ} (hs : 1 < s.re) : LSeriesSummable a s := by
+/-- The centered ordinary prime weights are bounded, so their series converges absolutely to the right of one. -/
+theorem ordinaryPrimeCountWeight_summable {s : ℂ} (hs : 1 < s.re) :
+    LSeriesSummable (fun n => (ordinaryPrimeCountWeight n : ℂ)) s := by
   apply LSeriesSummable_of_bounded_of_one_lt_re (m := 1+(Real.log 2)⁻¹) _ hs
   intro n hn
   rw [Complex.norm_real, Real.norm_eq_abs]
@@ -111,7 +113,7 @@ private theorem base_deriv {s : ℂ} (hs : 1 < s.re) :
   let x : ℝ := (1+s.re)/2
   have hx : 1 < x := by dsimp only [x]; linarith only [hs]
   have hxs : x < s.re := by dsimp only [x]; linarith only [hs]
-  have hab := (base_summable (s := (x:ℂ)) (by simpa using hx)).abscissaOfAbsConv_le
+  have hab := (ordinaryPrimeCountWeight_summable (s := (x:ℂ)) (by simpa using hx)).abscissaOfAbsConv_le
   have hlog {n : ℕ} (hn : n ≠ 0) :
       LSeries.logMul a n = (primeLogWeight - ((1 : ℕ → ℂ) - LSeries.delta)) n := by
     by_cases hn1 : n = 1
@@ -194,13 +196,37 @@ private theorem exists_euler_point {W : ℕ} {g : ArithmeticFunction ℝ} (hsupp
   obtain ⟨n,hn⟩ := hne
   exact hn (Complex.ofReal_eq_zero.mp (hall n (fun e => hn (e ▸ ArithmeticFunction.map_zero))))
 
+/-- Any meromorphic continuation of the centered series of ordinary primes excludes
+zeta zeros throughout its half-plane, even after division by a vanishing filter. -/
+theorem ordinaryPrimeCount_series_continuation_excludes_right_zero {b x : ℝ}
+    (hb : 1/2 ≤ b) (hbx : b<x) (hx : 1<x) {G : ℂ → ℂ}
+    (hG : MeromorphicOn G {s : ℂ | b<s.re})
+    (he : G =ᶠ[𝓝 (x:ℂ)] LSeries (fun n => (ordinaryPrimeCountWeight n : ℂ)))
+    {ρ : ℂ} (hρ : b<ρ.re) : riemannZeta ρ≠0 := by
+  intro hz
+  have hnear : {s : ℂ | 1<s.re} ∈ 𝓝 (x:ℂ) :=
+    (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hx
+  let F := deriv G - primeCountDerivative
+  have hmero : MeromorphicOn F {s : ℂ | b < s.re} := fun z hzu => (hG z hzu).deriv.sub (derivative_meromorphic (hb.trans_lt hzu))
+  have h0 : meromorphicOrderAt F (x:ℂ) = ⊤ := by
+    apply meromorphicOrderAt_eq_top_iff.mpr
+    filter_upwards [nhdsWithin_le_nhds he.deriv,nhdsWithin_le_nhds hnear] with s hs h1
+    exact sub_eq_zero.mpr (hs.trans (base_deriv h1))
+  have hp : meromorphicOrderAt F ρ = ⊤ := by
+    by_contra h
+    exact (hmero.meromorphicOrderAt_ne_top_of_isPreconnected (convex_halfSpace_re_gt b).isPreconnected
+      hρ (show (x:ℂ) ∈ {s : ℂ | b < s.re} from hbx) h) h0
+  have he : deriv G =ᶠ[𝓝[≠] ρ] primeCountDerivative := (meromorphicOrderAt_eq_top_iff.mp hp).mono
+    fun s hs => sub_eq_zero.mp hs
+  exact meromorphic_deriv_order_ne_neg_one (hG ρ hρ)
+    ((meromorphicOrderAt_congr he).trans (derivative_pole (hb.trans_lt hρ) hz))
+
 /-- A bound below any right zero is impossible for every nonzero finite cofactor,
 including a cofactor whose Dirichlet polynomial vanishes at that very zero. -/
 theorem ordinaryPrime_count_bound_excludes_right_zero (W : ℕ) (f : ArithmeticFunction ℝ)
     (hnz : ∃ d ∈ Icc 1 W, f d ≠ 0) {b K : ℝ} (hb : 1/2 ≤ b) (hb1 : b < 1)
     (hcount : ∀ N : ℕ, 1 ≤ N → |filteredOrdinaryPrimes W f N| ≤ K*(N:ℝ)^b)
     {ρ : ℂ} (hρ : b < ρ.re) : riemannZeta ρ ≠ 0 := by
-  intro hz
   let g := truncAF f W
   let c := fun n => (((g * ordinaryPrimeCountWeight) n : ℝ) : ℂ)
   let D := dirPoly W g
@@ -227,7 +253,7 @@ theorem ordinaryPrime_count_bound_excludes_right_zero (W : ℕ) (f : ArithmeticF
     exact coe_mul_apply _ _ _
   have hE (s : ℂ) (hs : 1 < s.re) (hDs : D s ≠ 0) : G s = LSeries a s := by
     have hg := LSeriesSummable_of_supportedIn hsup s
-    have ha := base_summable hs
+    have ha := ordinaryPrimeCountWeight_summable hs
     have hcs : LSeriesSummable c s := by rw [hconv]; exact hg.convolution ha
     change H s / D s = _
     rw [div_eq_iff hDs, show H s = LSeries c s from HeckeLFunctions.growthCont_eq_LSeries
@@ -237,25 +263,9 @@ theorem ordinaryPrime_count_bound_excludes_right_zero (W : ℕ) (f : ArithmeticF
   let V := {s : ℂ | 1 < s.re ∧ D s ≠ 0}
   have hop : IsOpen V := (isOpen_lt continuous_const Complex.continuous_re).inter
     (isClosed_eq hD.continuous (continuous_const : Continuous (fun _ : ℂ => (0:ℂ)))).isOpen_compl
-  have heq (s : ℂ) (hs : s ∈ V) : deriv G s = primeCountDerivative s := by
-    have hlocal : G =ᶠ[𝓝 s] LSeries a := by
-      filter_upwards [hop.mem_nhds hs] with z hz
-      exact hE z hz.1 hz.2
-    exact hlocal.deriv_eq.trans (base_deriv hs.1)
-  let F := deriv G - primeCountDerivative
-  have hmero : MeromorphicOn F U := fun z hzu => (hG z hzu).deriv.sub (derivative_meromorphic (hb.trans_lt hzu))
-  have h0 : meromorphicOrderAt F (x:ℂ) = ⊤ := by
-    apply meromorphicOrderAt_eq_top_iff.mpr
-    filter_upwards [nhdsWithin_le_nhds (hop.mem_nhds (show (x:ℂ) ∈ V from ⟨hx,hxD⟩))] with s hs
-    exact sub_eq_zero.mpr (heq s hs)
-  have hp : meromorphicOrderAt F ρ = ⊤ := by
-    by_contra h
-    exact (hmero.meromorphicOrderAt_ne_top_of_isPreconnected (convex_halfSpace_re_gt b).isPreconnected
-      hρ (show (x:ℂ) ∈ U from hb1.trans hx) h) h0
-  have he : deriv G =ᶠ[𝓝[≠] ρ] primeCountDerivative := (meromorphicOrderAt_eq_top_iff.mp hp).mono
-    fun s hs => sub_eq_zero.mp hs
-  exact meromorphic_deriv_order_ne_neg_one (hG ρ hρ)
-    ((meromorphicOrderAt_congr he).trans (derivative_pole (hb.trans_lt hρ) hz))
+  apply ordinaryPrimeCount_series_continuation_excludes_right_zero hb (hb1.trans hx) hx hG _ hρ
+  filter_upwards [hop.mem_nhds (show (x:ℂ) ∈ V from ⟨hx,hxD⟩)] with s hs
+  exact hE s hs.1 hs.2
 
 /-- Below a right zero every nonzero finite combination of ordinary prime counts
 exceeds each constant multiple of the proposed power at arbitrarily large integers. -/
@@ -290,7 +300,7 @@ private theorem logExcess_sum {N : ℕ} (hN : 1 ≤ N) :
 
 /-- Above the zero abscissa, Abel summation removes the prime logarithm
 without changing the power bound. -/
-private theorem ordinary_prefix_power {b : ℝ} (hb : RHTower.zeroReSup < b) :
+theorem ordinary_prefix_power {b : ℝ} (hb : RHTower.zeroReSup < b) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ N : ℕ, 1 ≤ N →
       |∑ n ∈ Icc 1 N, ordinaryPrimeCountWeight n| ≤ K*(N:ℝ)^b := by
   obtain ⟨A,hA,hψ⟩ := RHTower.exists_abs_chebyshevPsi_sub_le_rpow hb
@@ -379,6 +389,7 @@ theorem riemannHypothesis_iff_one_filtered_ordinary_prime_count (W : ℕ) (f : A
     obtain ⟨K,hK⟩ := h b hb (hbρ.trans hhi)
     exact ordinaryPrime_count_bound_excludes_right_zero W f hnz hb.le (hbρ.trans hhi) hK hbρ
 
+#print axioms ordinaryPrimeCount_series_continuation_excludes_right_zero
 #print axioms ordinaryPrime_count_bound_excludes_right_zero
 #print axioms filteredOrdinaryPrimes_frequently_large_at_right_zero
 #print axioms riemannHypothesis_iff_one_filtered_ordinary_prime_count

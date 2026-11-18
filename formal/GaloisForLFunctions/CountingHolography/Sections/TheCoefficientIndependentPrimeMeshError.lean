@@ -61,7 +61,7 @@ theorem original_contact_quadrature : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (a 
   by_cases ha : a = 0
   · subst a
     have hz (u : ℝ) : packet (0 : Fin N → ℤ) u = 0 := by simp [packet,splineSource]
-    simp only [contactMultiplicity,degreeSample,integratedContact,hz,zero_mul,zero_div,sum_const_zero,
+    simp only [contactMultiplicity,degreeSample,integratedContact,hz,zero_div,sum_const_zero,
       mul_zero,intervalIntegral.integral_zero,sub_self,abs_zero]
     positivity
   let r := resolution a
@@ -128,7 +128,7 @@ theorem original_contact_quadrature : ∃ C : ℝ, 0 ≤ C ∧ ∀ (N : ℕ) (a 
   refine (mul_le_mul_of_nonneg_left h (by positivity)).trans (le_of_eq ?_)
   dsimp only [H]
   field_simp [(Nat.cast_pos.mpr hr : 0 < (r:ℝ)).ne',(Real.sqrt_pos.mpr (Nat.cast_pos.mpr hk) : 0 < Real.sqrt k).ne']
-  <;> ring
+  ring
 
 /-- After adding the exact floor loss, the discrepancy of the ordinary
 prime product is independent of all coefficients on the given horizon. -/
@@ -188,7 +188,7 @@ theorem square_sampling_negligible_at_diagonal_scale (μ : ℕ → ℕ) :
   have hp : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
   dsimp only
   rw [Real.norm_eq_abs,abs_div,abs_of_nonneg (sq_nonneg (n:ℝ))]
-  exact (div_le_div_of_nonneg_right (h hn (μ n)) (sq_nonneg _)).trans_eq (by field_simp; ring)
+  exact (div_le_div_of_nonneg_right (h hn (μ n)) (sq_nonneg _)).trans_eq (by field_simp)
 
 #print axioms original_contact_quadrature
 #print axioms ordinaryPrimeGenerator_coefficient_independent_error

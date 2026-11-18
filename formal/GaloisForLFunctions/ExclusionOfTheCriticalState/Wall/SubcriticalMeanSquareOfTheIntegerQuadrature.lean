@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.IntegerQuadratureAsAFractionalPartConvolution
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheZetaZerosOfTheIntegerPrimitive
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.FractionalFourierEnergyOfTheTiltedState
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Analysis.ZetaOnSubcriticalFourierLines
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Analysis.SquareIntegrableDerivativesFromFourierMoments
@@ -33,17 +33,8 @@ theorem criticalState_subcritical_integer_error {W₀ : ℝ} (hW : 0 < W₀)
   let r := 1-σ/2
   have hσ : 0 < σ := sub_pos.2 hβ'
   have hhalf : σ ≤ 1/2 := sub_le_self _ hβ
-  have hd := criticalHalfLineEnergyDomain_of_groundState hF
-  have hw {p : ℝ} (hp : -4 < p) : Integrable fun u => Real.exp (p*u)*Φ u := by
-    apply (integrable_mul_rexp_of_domain hd hp).congr
-    filter_upwards [he] with u hu
-    rw [hu,mul_comm]
-  have hneg : Integrable fun u : ℝ => Real.exp (-u/2)*Φ u := by
-    simpa only [show ∀ u : ℝ, (-1/2)*u = -u/2 by intro u; ring] using hw (by norm_num : (-4:ℝ) < -1/2)
-  have hpos : Integrable fun u : ℝ => Real.exp (u/2)*Φ u := by
-    simpa only [show ∀ u : ℝ, (1/2)*u = u/2 by intro u; ring] using hw (by norm_num : (-4:ℝ) < 1/2)
-  have hψ := hw (show -4 < β by linarith only [hβ])
-  obtain ⟨hi,h2,hFourier⟩ := weightedIntegerPrimitive_fourier hΦ hK hb hneg hpos hβ hβ' hψ
+  obtain ⟨hi,h2,hFourier⟩ := state_representative_integerPrimitive_fourier
+    (criticalHalfLineEnergyDomain_of_groundState hF) hΦ he hK hb hβ hβ'
   have hf0 : Integrable (fun ξ : ℝ => ‖𝓕 ψ ξ‖^2) := by
     simpa only [Real.rpow_zero,one_mul,ψ] using
       criticalState_tilted_fractional_fourier_energy hW ht hF he hβ (show (0:ℝ)≤0 from le_rfl) zero_lt_one
@@ -52,7 +43,7 @@ theorem criticalState_subcritical_integer_error {W₀ : ℝ} (hW : 0 < W₀)
       (by dsimp only [r]; linarith only [hhalf]) (by dsimp only [r]; linarith only [hσ])
   obtain ⟨C,_,hC⟩ := squared_zeta_on_positive_line hσ hhalf
   have hmoment : Integrable fun ξ : ℝ => (2*Real.pi*ξ)^2*‖𝓕 f ξ‖^2 := by
-    have hcont := _root_.RHTower.continuous_fourier_of_integrable (show Integrable f from hi)
+    have hcont := RHTower.continuous_fourier_of_integrable (show Integrable f from hi)
     apply ((hf0.add hfr).const_mul C).mono' (by fun_prop)
     refine Eventually.of_forall fun ξ => ?_
     let z := (σ:ℂ)+((2*Real.pi*ξ:ℝ):ℂ)*Complex.I
@@ -66,11 +57,12 @@ theorem criticalState_subcritical_integer_error {W₀ : ℝ} (hW : 0 < W₀)
     have ham : (2*Real.pi*ξ)^2 ≤ ‖z‖^2 := by
       simpa only [sq_abs] using pow_le_pow_left₀ (abs_nonneg _) hz' 2
     have heq : 𝓕 f ξ = 𝓕 ψ ξ*(riemannZeta z/z) := hFourier ξ
+    change ‖(2*Real.pi*ξ)^2*‖𝓕 f ξ‖^2‖ ≤ _
     rw [Real.norm_eq_abs,abs_of_nonneg (mul_nonneg (sq_nonneg _) (sq_nonneg _)),heq,norm_mul,norm_div,mul_pow,div_pow]
     change _ ≤ C*(‖𝓕 ψ ξ‖^2+|ξ|^r*‖𝓕 ψ ξ‖^2)
     calc _ ≤ ‖z‖^2*(‖𝓕 ψ ξ‖^2*(‖riemannZeta z‖^2/‖z‖^2)) :=
            mul_le_mul_of_nonneg_right ham (by positivity)
-      _ = ‖riemannZeta z‖^2*‖𝓕 ψ ξ‖^2 := by field_simp [(norm_ne_zero_iff.mpr hz)]
+      _ = ‖riemannZeta z‖^2*‖𝓕 ψ ξ‖^2 := by field_simp [(norm_ne_zero_iff.mpr hz)] <;> ring
       _ ≤ (C*(1+|ξ|^r))*‖𝓕 ψ ξ‖^2 := mul_le_mul_of_nonneg_right (hC ξ) (sq_nonneg _)
       _ = _ := by ring
   let b := fun t : ℝ => -σ*B t+tiltedIntegerError Φ β t

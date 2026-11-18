@@ -1,5 +1,4 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.SubcriticalMeanSquareOfTheIntegerQuadrature
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheZetaZerosOfTheIntegerPrimitive
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.RemovingSmallPrimesFromTheDensityReference
 import Mathlib.Analysis.Fourier.FourierTransformDeriv
 
@@ -45,7 +44,8 @@ private theorem fourier_forcing_of_primitive {B g : ℝ → ℂ} {σ : ℝ}
     (hd : ∀ t : ℝ, HasDerivAt B (-(σ:ℂ)*B t+g t) t) (ξ : ℝ) :
     𝓕 g ξ=((σ:ℂ)+((2*Real.pi*ξ:ℝ):ℂ)*I)*𝓕 B ξ := by
   have hd' : deriv B=fun t : ℝ => -(σ:ℂ)*B t+g t := funext fun t => (hd t).deriv
-  have hi' : Integrable (deriv B) := hd' ▸ (hi.const_mul (-(σ:ℂ))).add hg
+  have hi' : Integrable (deriv B) := by
+    rw [hd']; exact (hi.const_mul (-(σ:ℂ))).add hg
   have he : g=deriv B+(σ:ℂ) • B := by funext t; simp only [hd',Pi.add_apply,Pi.smul_apply,smul_eq_mul]; ring
   have hadd : 𝓕 (deriv B+(σ:ℂ) • B) ξ = 𝓕 (deriv B) ξ + 𝓕 ((σ:ℂ) • B) ξ :=
     congrFun (VectorFourier.fourierIntegral_add (E := ℂ) (e := Real.fourierChar)
@@ -88,16 +88,8 @@ theorem criticalState_integer_quadrature_parseval {W₀ : ℝ} (hW : 0 < W₀)
   have h2 : MemLp g 2 := (memLp_two_iff_integrable_sq_norm hg.aestronglyMeasurable).2 (by
     simpa only [g,Complex.norm_real] using
       (memLp_two_iff_integrable_sq_norm (hsub hβ hβ').1).1 (hsub hβ hβ'))
-  have hd := criticalHalfLineEnergyDomain_of_groundState hF
-  have hw {p : ℝ} (hp : -4 < p) : Integrable fun u => Real.exp (p*u)*Φ u := by
-    apply (integrable_mul_rexp_of_domain hd hp).congr
-    filter_upwards [he] with u hu
-    rw [hu,mul_comm]
-  have hp : Integrable fun u : ℝ => Real.exp (-u/2)*Φ u := by
-    simpa only [show ∀ u : ℝ, (-1/2)*u=-u/2 by intro u; ring] using hw (by norm_num : (-4:ℝ)< -1/2)
-  have hm : Integrable fun u : ℝ => Real.exp (u/2)*Φ u := by
-    simpa only [show ∀ u : ℝ, (1/2)*u=u/2 by intro u; ring] using hw (by norm_num : (-4:ℝ)<1/2)
-  obtain ⟨hi,_,hFour⟩ := weightedIntegerPrimitive_fourier hc hK hb hp hm hβ hβ' (hw (by linarith only [hβ]))
+  obtain ⟨hi,_,hFour⟩ := state_representative_integerPrimitive_fourier
+    (criticalHalfLineEnergyDomain_of_groundState hF) hc he hK hb hβ hβ'
   have hderiv (t : ℝ) : HasDerivAt B (-(σ:ℂ)*B t+g t) t := by
     simpa only [B,g,σ,tiltedIntegerError,Complex.ofReal_add,Complex.ofReal_neg,Complex.ofReal_mul] using
       (hasDerivAt_weightedIntegerPrimitive hc hK hb β t).ofReal_comp
@@ -108,15 +100,15 @@ theorem criticalState_integer_quadrature_parseval {W₀ : ℝ} (hW : 0 < W₀)
     have hre : s.re=σ := by simp [s]
     have hs : s≠0 := fun e => by rw [e,zero_re] at hre; dsimp only [σ] at hre; linarith only [hre,hβ']
     have ha : (β:ℂ)-((2*Real.pi*ξ:ℝ):ℂ)*I=1/2-s := by dsimp only [s,σ]; push_cast; ring
-    have h := hFour ξ
+    have h : 𝓕 B ξ=𝓕 (fun u : ℝ => ((Real.exp (β*u)*Φ u:ℝ):ℂ)) ξ*(riemannZeta s/s) := hFour ξ
     rw [fourier_tilted_state_rep he,ha] at h
     change 𝓕 B ξ=negativeHalfLineLaplace (cx F) (1/2-s)*(riemannZeta s/s) at h
     have hg' := fourier_forcing_of_primitive (σ := σ) hi hg hderiv ξ
     change 𝓕 g ξ=s*𝓕 B ξ at hg'
     change 𝓕 g ξ=riemannZeta s*negativeHalfLineLaplace (cx F) (1/2-s)
-    rw [hg',h]; field_simp [hs]
+    rw [hg',h]; field_simp [hs] <;> ring
   refine ⟨hg,hresult,?_⟩
-  have hval := (_root_.RHTower.integral_norm_sq_fourier_eq hg h2).symm
+  have hval := (RHTower.integral_norm_sq_fourier_eq hg h2).symm
   simpa only [g,Complex.norm_real,Real.norm_eq_abs,sq_abs,hresult] using hval
 
 #print axioms criticalState_integer_quadrature_parseval

@@ -43,12 +43,13 @@ private theorem middle_divisor_block :
   have curvature_identity : curvature*(4*((d : ℝ)*e)*(A : ℝ)^3)=T := by dsimp [curvature,Z]; field_simp <;> ring
   have sqrt_sq := Real.sq_sqrt curvature_pos.le
   have first : (A : ℝ)*Real.sqrt curvature ≤ P (255/1000) := by
+    have four : (1 : ℝ) ≤ 4*(d : ℝ) := by linarith only [hd₁]
+    have scale := le_mul_of_one_le_left (mul_nonneg (Nat.cast_nonneg e) hA₀.le) four
+    have lower : P (49/100) ≤ 4*((d : ℝ)*e)*A := hlo.trans (scale.trans_eq (by ring))
     have hlower : (T : ℝ) ≤ (P (255/1000))^2*(4*((d : ℝ)*e)*A) := by
       calc (T : ℝ) = (P (255/1000))^2*P (49/100) := by
               rw [←Real.rpow_natCast _ 2,powr,mul]; norm_num [P]
-           _ ≤ _ := mul_le_mul_of_nonneg_left
-              (hlo.trans (by nlinarith only [mul_le_mul_of_nonneg_right hd₁ (mul_nonneg (Nat.cast_nonneg e) hA₀.le),
-                mul_nonneg (Nat.cast_nonneg e) hA₀.le])) (sq_nonneg _)
+           _ ≤ _ := mul_le_mul_of_nonneg_left lower (sq_nonneg _)
     have hs : ((A : ℝ)*Real.sqrt curvature)^2*(4*((d : ℝ)*e)*A)=T := by
       rw [mul_pow,sqrt_sq,←curvature_identity]; ring
     have hh := le_of_mul_le_mul_right (hs.trans_le hlower) (by positivity : 0 < 4*((d : ℝ)*e)*A)
@@ -119,7 +120,8 @@ private theorem middle_divisor_interval :
       · simpa only [Ico_self,sum_empty,abs_zero] using hM
       · have hmul := (Nat.div_lt_iff_lt_mul he).mp (show L/e < A by exact hl)
         have hAl : (L : ℝ)+1 ≤ e*(A : ℝ) := by
-          exact_mod_cast (by simpa only [Nat.mul_comm] using hmul : L+1 ≤ e*A)
+          have hlt : L < e*A := by simpa only [Nat.mul_comm] using hmul
+          exact_mod_cast (by omega : L+1 ≤ e*A)
         have hAu : A ≤ U := (show A ≤ U/e by dsimp [hi] at hu; omega).trans (Nat.div_le_self ..)
         exact h hT he hd hA hlt hB (hlo.le.trans hAl) ((by exact_mod_cast hAu : (A : ℝ) ≤ U).trans hhi))
   have hhi' : (hi : ℝ) ≤ 2*T := by

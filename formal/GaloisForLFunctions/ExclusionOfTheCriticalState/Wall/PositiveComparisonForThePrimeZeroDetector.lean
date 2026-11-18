@@ -94,13 +94,17 @@ private theorem detector_at_one (k : ℕ) (ρ : ℂ) :
 signed response after square-root normalization. -/
 theorem exists_dominated_prime_zero_detector {ρ : ℂ} (hhalf : 1/2 < ρ.re) (hone : ρ.re < 1)
     (hz : riemannZeta ρ = 0) :
-    ∃ (k : ℕ) (d : ℂ) (C : ℝ), d ≠ 0 ∧ 0 ≤ C ∧ ∀ x : ℝ, 1 ≤ x →
+    ∃ (k : ℕ) (d : ℂ) (C : ℝ), d ≠ 0 ∧ 0 ≤ C ∧
+      (∀ x y : ℝ, 1 ≤ x → x ≤ y →
+        ‖arithmeticKernel alternatingDivisorCoeff (centeredDirichletTest k ρ) y -
+          arithmeticKernel alternatingDivisorCoeff (centeredDirichletTest k ρ) x‖ ≤ C*(Real.log y-Real.log x)) ∧
+      ∀ x : ℝ, 1 ≤ x →
       ‖arithmeticKernel alternatingDivisorCoeff (centeredDirichletTest k ρ) x‖ ≤ 6*C*primeMeanKernel x ∧
       ‖arithmeticKernel alternatingPrimeExcess (centeredDirichletTest k ρ) x - (x:ℂ)^ρ*d‖ ≤ C*Real.sqrt x ∧
       |arithmeticKernel alternatingPrimeExcess primeMeanTest x| ≤
          2*(75+2*|Real.eulerMascheroniConstant|)*Real.sqrt x := by
   obtain ⟨k,d,C,hd,hC,ha,hb⟩ := exists_alternating_prime_kernel_at_zero hhalf hone hz
-  refine ⟨k,d,C,hd,hC,fun x hx => ⟨?_,hb x hx,abs_alternatingPrimeExcess_meanTest hx⟩⟩
+  refine ⟨k,d,C,hd,hC,ha,fun x hx => ⟨?_,hb x hx,abs_alternatingPrimeExcess_meanTest hx⟩⟩
   have h := ha 1 x le_rfl hx
   have hp := (primeMeanKernel_increment_bounds le_rfl hx).1
   rw [detector_at_one,sub_zero,Real.log_one,sub_zero] at h

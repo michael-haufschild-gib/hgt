@@ -64,12 +64,12 @@ theorem periodic_divisor_sum_iff_gcd {q : ℕ} (hq : 0 < q) {J : ℕ → ℝ}
     rw [← sum_filter]
     refine sum_congr ?_ fun _ _ => rfl
     ext d
-    simp only [Nat.mem_divisors,mem_filter,mem_Icc,Nat.dvd_gcd_iff,hg.ne',not_false_eq_true,and_true]
+    simp only [Nat.mem_divisors,mem_filter,mem_Icc,Nat.dvd_gcd_iff]
     constructor
-    · rintro ⟨hn,hq'⟩
+    · rintro ⟨⟨hn,hq'⟩,_⟩
       exact ⟨⟨⟨Nat.pos_of_dvd_of_pos hq' hq,Nat.le_of_dvd hq hq'⟩,hn⟩,hq'⟩
     · rintro ⟨⟨_,hn⟩,hq'⟩
-      exact ⟨hn,hq'⟩
+      exact ⟨⟨hn,hq'⟩,hg.ne'⟩
 
 /-- Piecewise constant profile with prescribed positive-integer jumps. -/
 def integerGridProfile (J : ℕ → ℝ) (t : ℝ) : ℝ :=
@@ -132,7 +132,8 @@ private theorem floor_sum_jump {ι : Type*} (s : Finset ι) (w a : ι → ℝ)
   refine sum_congr rfl fun i hi => ?_
   rw [← mul_sub,ht i hi]
   have he : u = (m.succ:ℝ) := (Nat.cast_succ m).symm
-  rw [he,integer_jump_order]
+  rw [he]
+  simp only [integer_jump_order]
   split <;> simp
 
 private theorem divisor_rows_of_orders {ι : Type*} (s : Finset ι)
@@ -150,7 +151,8 @@ private theorem divisor_rows_of_orders {ι : Type*} (s : Finset ι)
   rw [sum_ite_eq']
   have hN : d i ≤ N := single_le_sum (f := d) (fun _ _ => Nat.zero_le _) hi
   by_cases hd : d i ∣ n
-  · simp only [if_pos hd,mem_filter,mem_Icc,Nat.pos_of_dvd_of_pos hd hn,hN,hd,and_self,if_true]
+  · have hp : 1≤d i := Nat.pos_of_dvd_of_pos hd hn
+    simp [hp,hN,hd]
   · simp [hd]
 
 /-- On an integer grid every periodic sequence of jumps produced by real floor
@@ -175,9 +177,8 @@ theorem integerGridProfile_eq_divisor_floors {q : ℕ} (hq : 0 < q) {J : ℕ →
     rw [h n,← sum_divisors_integerSignalMobiusCoefficient J _ (Nat.gcd_pos_of_pos_right n hq),← sum_filter]
     refine sum_congr ?_ fun _ _ => rfl
     ext d
-    simp only [Nat.mem_divisors,mem_filter,Nat.dvd_gcd_iff,(Nat.gcd_pos_of_pos_right n hq).ne',
-      hq.ne',not_false_eq_true,and_true]
-    exact and_comm
+    simp only [Nat.mem_divisors,mem_filter,Nat.dvd_gcd_iff]
+    exact ⟨fun h => ⟨⟨h.1.2,hq.ne'⟩,h.1.1⟩,fun h => ⟨⟨h.2,h.1.1⟩,(Nat.gcd_pos_of_pos_right n hq).ne'⟩⟩
   rw [integerGridProfile]
   conv_lhs => arg 2; intro n; rw [hj n]
   rw [sum_comm]
@@ -190,7 +191,7 @@ private def lastJump (q n : ℕ) : ℝ :=
 
 private theorem lastJump_periodic (q : ℕ) : Function.Periodic (lastJump q) q := by
   intro n
-  simp only [lastJump,show n+q+1=n+1+q by omega,dvd_add_left (dvd_refl q)]
+  simp only [lastJump,show n+q+1=n+1+q by omega,← Nat.dvd_add_iff_left (dvd_refl q)]
 
 private theorem lastJump_prefix {q : ℕ} (hq : 2≤q) (n : ℕ) :
     (∑ k ∈ Icc 1 n, lastJump q k) = if q ∣ n+1 then 1 else 0 := by

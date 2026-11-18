@@ -163,6 +163,18 @@ private theorem positive_integer_mode {P A B : ℕ} (hP : 1 ≤ P) (hPA : P ≤ 
   rw [Real.sqrt_mul hr₀.le] at hbase
   linarith only [hbase,hinv]
 
+/-- Every nonzero harmonic of the reciprocal phase on a sharp subinterval
+is bounded by the square root of the harmonic times the curvature envelope. -/
+theorem integer_reciprocal_fourier_block {P A B : ℕ} (hP : 1 ≤ P) (hPA : P ≤ A)
+    (hAB : A < B) (hBP : B ≤ 2*P) {Z : ℝ} (hZ : 0 < Z) {h : ℤ} (hh : h ≠ 0) :
+    let curvature := 2*Z/(2*(P : ℝ))^3
+    ‖∑ t ∈ Ico A B, fourier h ((Z/t : ℝ) : UnitAddCircle)‖ ≤
+      (64*P*Real.sqrt curvature+12/Real.sqrt curvature)*Real.sqrt |(h : ℝ)| := by
+  rcases lt_or_gt_of_ne hh with hn | hp
+  · have ht := positive_integer_mode hP hPA hAB hBP hZ (neg_pos.mpr hn)
+    simpa only [fourier_neg,←map_sum,RCLike.norm_conj,Int.cast_neg,abs_neg] using ht
+  · exact positive_integer_mode hP hPA hAB hBP hZ hp
+
 /-- Uniform signed discrepancy of reciprocal fractional parts on every
 sharp subinterval of a dyadic integer block. -/
 theorem centered_fractional_reciprocal_integer_block :
@@ -184,12 +196,8 @@ theorem centered_fractional_reciprocal_integer_block :
     positivity
   let S := Ico A B
   let y (t : ℕ) := Z/t
-  have mode (h : ℤ) (hh : h ≠ 0) : ‖∑ t ∈ S, fourier h (y t : UnitAddCircle)‖ ≤ M*Real.sqrt |(h : ℝ)| := by
-    rcases lt_or_gt_of_ne hh with hn | hp
-    · have ht := positive_integer_mode hP hPA hlt hBP hZ (neg_pos.mpr hn)
-      simp only [fourier_neg,←map_sum,RCLike.norm_conj,Int.cast_neg,abs_neg] at ht
-      exact ht
-    · exact positive_integer_mode hP hPA hlt hBP hZ hp
+  have mode (h : ℤ) (hh : h ≠ 0) : ‖∑ t ∈ S, fourier h (y t : UnitAddCircle)‖ ≤ M*Real.sqrt |(h : ℝ)| :=
+    integer_reciprocal_fourier_block hP hPA hlt hBP hZ hh
   have ht := h S y (fun _ => (1 : ℂ)) (fun _ => (1 : ℝ)) hδ hM (fun _ => by simp) (fun h hh => by
     simpa only [Complex.ofReal_one,one_mul,and_self] using mode h hh)
   have hc : (S.card : ℝ) ≤ P := by exact_mod_cast (show S.card ≤ P by dsimp [S]; rw [Nat.card_Ico]; omega)
@@ -208,5 +216,6 @@ theorem centered_fractional_reciprocal_integer_block :
           exact le_mul_of_one_le_left (mul_nonneg hδ.le (Nat.cast_nonneg P)) (by norm_num)
        _ = _ := by ring
 
+#print axioms integer_reciprocal_fourier_block
 #print axioms centered_fractional_reciprocal_integer_block
 end GaloisForLFunctions.PrimeExponentialSums

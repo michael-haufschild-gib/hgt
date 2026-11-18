@@ -51,10 +51,10 @@ theorem integrable_square_derivative_of_fourier_moment {B b : ℝ → ℝ}
       ring
     simp_rw [he]
     refine ⟨hG.const_mul _,?_⟩
-    rw [integral_const_mul,← _root_.RHTower.integral_norm_sq_fourier_eq hiG h2G]
+    rw [integral_const_mul,← RHTower.integral_norm_sq_fourier_eq hiG h2G]
     have hle : (∫ ξ, ‖𝓕 g ξ‖^2) ≤ (d n)^2*(∫ ξ, M ξ) := by
       rw [← integral_const_mul]
-      apply integral_mono (_root_.RHTower.integrable_norm_sq_fourier hiG h2G) (hM.const_mul _)
+      apply integral_mono (RHTower.integrable_norm_sq_fourier hiG h2G) (hM.const_mul _)
       intro ξ
       have hg : 𝓕 g ξ = differenceSymbol (d n) ξ*𝓕 f ξ := fourier_sub_translate f hi _ ξ
       rw [hg,norm_mul,mul_pow]

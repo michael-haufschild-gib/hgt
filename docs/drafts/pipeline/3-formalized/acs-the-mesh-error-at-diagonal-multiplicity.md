@@ -5,3 +5,9 @@ For every signed integer divisor $a$ on a horizon of length $L=3\,\mathrm{window
 Write $r=\sum_i |a_i|$ for the original resolution. The spline and its first two derivatives have fixed uniform bounds by continuity and compact support. Consequently $G(u)=f_a(u)f_a(u+\log k)$ and its first two derivatives are bounded by $C r^2$, uniformly in the lag. For $x\ge1$ the second derivative of $F(x)=G(\log x)/x$ is $(G''-3G'+2G)(\log x)/x^3$. Its absolute integral on $[1,1+L]$ is at most $C r^2$.
 
 Both endpoints have zero weight, so the original harmonic sum equals the trapezoid rule with spacing $1/r$. Its error is at most $(5/4)r^{-2}\int |F''|=O(1)$. Multiplying by $2/\sqrt k$ gives a coefficient-independent error at every lag. The zero divisor gives zero directly. Summing against ordinary prime log weights uses $\sum_{k\le L}\Lambda(k)/\sqrt{k}\le34\sqrt L$. On square conductors $\sqrt L=O(n)$. This leaves the signed integrated prime sum and the exact floors at the diagonal comparison scale.
+
+## Lean
+
+The uniform harmonic quadrature estimate is `degreeSum_second_order`. [SecondOrderQuadratureOnTheDegreeMesh.lean](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/SecondOrderQuadratureOnTheDegreeMesh.lean)
+
+The individual and aggregated errors are `original_contact_quadrature` and `ordinaryPrimeGenerator_coefficient_independent_error`. The square-conductor estimate and its normalized limit are `successorSquare_floor_corrected_mesh_error` and `square_sampling_negligible_at_diagonal_scale`. [TheCoefficientIndependentPrimeMeshError.lean](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/TheCoefficientIndependentPrimeMeshError.lean)
