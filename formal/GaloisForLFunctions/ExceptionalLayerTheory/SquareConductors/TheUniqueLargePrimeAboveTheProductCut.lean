@@ -127,29 +127,77 @@ theorem seventeenNinths_square_root_cofactor_cap :
   simpa only [Real.sqrt_eq_rpow,show (4:ℝ)-1/2=7/2 by norm_num] using
     h (fun n => ⌊(n:ℝ)^(17/9:ℝ)⌋₊) J M hM
 
+/-- Signed seventeen-ninths prefix at a prescribed moving cofactor cap. -/
+def seventeenNinthsPrefixWithCap (cap : ℕ → ℕ) (M : ℕ) : ℝ :=
+  ∑ n ∈ Ioc 0 M, (n:ℝ)^2*cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ (cap n) n
+
+/-- For the eleven-thirds target at every terminal conductor it suffices,
+and is necessary, to bound the sum with square-root cofactors. -/
+theorem eleven_thirds_iff_square_root_cofactor :
+    (∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ, 0 < M →
+      seventeenNinthsPrefixWithCap id M ≤ C*(M:ℝ)^(11/3:ℝ)) ↔
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ, 0 < M →
+      seventeenNinthsPrefixWithCap (fun n => ⌊Real.sqrt n⌋₊) M ≤ C*(M:ℝ)^(11/3:ℝ) := by
+  obtain ⟨A,hA,ha⟩ := seventeenNinths_square_root_cofactor_cap
+  obtain ⟨D,hD,hd⟩ := conductorLog_subpower (by norm_num : (0:ℝ)<1/6)
+  have gap (M : ℕ) (hM : 0 < M) :
+      |seventeenNinthsPrefixWithCap id M-seventeenNinthsPrefixWithCap (fun n => ⌊Real.sqrt n⌋₊) M| ≤
+        A*D*(M:ℝ)^(11/3:ℝ) := by
+    have hm : (0:ℝ) < M := Nat.cast_pos.mpr hM
+    have hlog := (le_self_pow₀ (conductorLog_one_le M) (by decide : 6≠0)).trans (hd hM)
+    simp only [seventeenNinthsPrefixWithCap,id_eq,←sum_sub_distrib,←mul_sub]
+    apply (ha 0 M hM).trans
+    apply (mul_le_mul_of_nonneg_left hlog (mul_nonneg hA (Real.rpow_nonneg hm.le _))).trans_eq
+    rw [show (11/3:ℝ)=7/2+1/6 by norm_num,Real.rpow_add hm]
+    ring
+  constructor <;> rintro ⟨C,hC,h⟩ <;> refine ⟨C+A*D,by positivity,fun M hM => ?_⟩
+  · linarith only [(abs_le.mp (gap M hM)).1,h M hM]
+  · linarith only [(abs_le.mp (gap M hM)).2,h M hM]
+
+/-- Past the square of the cofactor cap there is one eligible large prime.
+The two sharp floor cuts retain the strict power lower bound on that prime. -/
+theorem largest_prime_of_power_cofactor {a d : ℝ} (had : 2*d ≤ a) {n k p v : ℕ}
+    (hn : 0<n) (hp : p.Prime)
+    (hv : v ∈ Ioc (max (productLower 1 k) ⌊(n:ℝ)^a⌋₊ /p) (min (k/p) ⌊(n:ℝ)^d⌋₊)) :
+    (n:ℝ)^(a-d) < p ∧ p.Coprime v ∧ ∃! r : ℕ, r.Prime ∧ r ∣ p*v ∧ ⌊(n:ℝ)^d⌋₊ < r := by
+  let b := ⌊(n:ℝ)^d⌋₊
+  let U := ⌊(n:ℝ)^a⌋₊
+  have hn' : (0:ℝ) < n := Nat.cast_pos.mpr hn
+  have hb : (b:ℝ) ≤ (n:ℝ)^d := Nat.floor_le (Real.rpow_nonneg hn'.le _)
+  have hs : b^2 ≤ U := by
+    apply Nat.le_floor
+    rw [Nat.cast_pow]
+    apply (pow_le_pow_left₀ (Nat.cast_nonneg b) hb 2).trans
+    rw [←Real.rpow_two,←Real.rpow_mul hn'.le]
+    exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hn) (by linarith only [had])
+  have hq := (capped_upper_ranges hp.pos hv).1
+  have hvb := (mem_Ioc.mp hv).2.trans (min_le_right _ _)
+  have hlt := (Nat.floor_lt (Real.rpow_nonneg (Nat.cast_nonneg n) a)).mp hq
+  rw [Nat.cast_mul] at hlt
+  refine ⟨?_,capped_upper_unique_large_prime hp hs hq hvb⟩
+  rw [Real.rpow_sub hn',div_lt_iff₀ (Real.rpow_pos_of_pos hn' d)]
+  exact hlt.trans_le (mul_le_mul_of_nonneg_left ((Nat.cast_le.mpr hvb).trans hb) (Nat.cast_nonneg p))
+
+/-- At the original seventeen-ninths cutoff the square-root cofactor cap
+leaves only first primes strictly above the twenty-five-eighteenths power. -/
+theorem seventeenNinths_unique_first_prime {n k p v : ℕ} (hn : 0<n) (hp : p.Prime)
+    (hv : v ∈ Ioc (max (productLower 1 k) ⌊(n:ℝ)^(17/9:ℝ)⌋₊ /p) (min (k/p) ⌊Real.sqrt n⌋₊)) :
+    (n:ℝ)^(25/18:ℝ) < p ∧ p.Coprime v ∧ ∃! r : ℕ, r.Prime ∧ r ∣ p*v ∧ ⌊Real.sqrt n⌋₊ < r := by
+  rw [Real.sqrt_eq_rpow] at hv ⊢
+  simpa only [show (17/9:ℝ)-1/2=25/18 by norm_num] using
+    largest_prime_of_power_cofactor (a := 17/9) (d := 1/2) (by norm_num) hn hp hv
+
 /-- With complementary exponents d and 1+d the first prime exceeds the
-conductor. In particular every eligible product has a unique large prime
-and the coprimality test is automatic. -/
+conductor itself. -/
 theorem unique_prime_beyond_conductor {d : ℝ} (hd : d ≤ 1) {n k p v : ℕ} (hn : 0<n) (hp : p.Prime)
     (hv : v ∈ Ioc (max (productLower 1 k) ⌊(n:ℝ)^(1+d)⌋₊ /p) (min (k/p) ⌊(n:ℝ)^d⌋₊)) :
     n < p ∧ p.Coprime v ∧ ∃! r : ℕ, r.Prime ∧ r ∣ p*v ∧ ⌊(n:ℝ)^d⌋₊ < r := by
-  let b := ⌊(n:ℝ)^d⌋₊
-  let U := ⌊(n:ℝ)^(1+d)⌋₊
-  have hn' := Nat.cast_pos.mpr (α := ℝ) hn
-  have hb : (b:ℝ) ≤ (n:ℝ)^d := Nat.floor_le (Real.rpow_nonneg hn'.le _)
-  have hbn : b ≤ n := Nat.cast_le.mp (hb.trans ((Real.rpow_le_rpow_of_exponent_le
-    (by exact_mod_cast hn) hd).trans_eq (Real.rpow_one _)))
-  have hnb : n*b ≤ U := by
-    apply Nat.le_floor
-    rw [Nat.cast_mul,Real.rpow_add hn',Real.rpow_one]
-    exact mul_le_mul_of_nonneg_left hb hn'.le
-  have hq := (capped_upper_ranges hp.pos hv).1
-  have hvb := (mem_Ioc.mp hv).2.trans (min_le_right _ _)
-  have hbig : n < p := lt_of_not_ge fun hh => hq.not_ge ((Nat.mul_le_mul hh hvb).trans hnb)
-  have hs : b^2 ≤ U := (show b^2 ≤ n*b by simpa only [sq] using Nat.mul_le_mul_right b hbn).trans hnb
-  exact ⟨hbig,capped_upper_unique_large_prime hp hs hq hvb⟩
+  simpa only [add_sub_cancel_right,Real.rpow_one,Nat.cast_lt] using
+    largest_prime_of_power_cofactor (a := 1+d) (d := d) (by linarith only [hd]) hn hp hv
 
 #print axioms power_cofactor_cap_fragment
 #print axioms seventeenNinths_square_root_cofactor_cap
+#print axioms eleven_thirds_iff_square_root_cofactor
+#print axioms seventeenNinths_unique_first_prime
 #print axioms unique_prime_beyond_conductor
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

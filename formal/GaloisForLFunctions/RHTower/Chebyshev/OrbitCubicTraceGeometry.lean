@@ -51,9 +51,9 @@ theorem hexagonal_minima (x y : ℤ) :
       by_contra! hn
       rcases lt_or_gt_of_ne hn.2.1 with h | h
       · have : a ≤ -2 := by omega
-        nlinarith only [ha, mul_nonneg_of_nonpos_of_nonpos this.le (show a+2 ≤ 0 by omega)]
+        nlinarith only [ha, this, mul_nonneg_of_nonpos_of_nonpos (show a ≤ 0 by omega) (show a+2 ≤ 0 by omega)]
       · have : 2 ≤ a := by omega
-        nlinarith only [ha, mul_nonneg (show 0 ≤ a-2 by omega) (show 0 ≤ a by omega)]
+        nlinarith only [ha, this, mul_nonneg (show 0 ≤ a-2 by omega) (show 0 ≤ a by omega)]
     rcases bound x hx with rfl | rfl | rfl <;>
       rcases bound y hy with rfl | rfl | rfl <;> norm_num at *
   · rintro (⟨rfl, rfl | rfl | rfl⟩ | ⟨rfl, rfl | rfl⟩ | ⟨rfl, rfl | rfl⟩) <;> norm_num

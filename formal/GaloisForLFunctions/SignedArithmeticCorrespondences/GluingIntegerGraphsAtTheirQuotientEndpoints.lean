@@ -133,6 +133,31 @@ theorem mixed_height_bound (ε : ℝ) (hε : 0 < ε) :
   exact ⟨C,hC,(mixed_height_budget_iff
     (fun k => ⟨_, Real.rpow_nonneg (Nat.cast_nonneg k) _⟩) ⟨C,hC⟩).2 hbound⟩
 
+/-- A completed endpoint profile can have infinitely many signed jumps.
+The same constant controls its pairing with the Chebyshev error at every
+cutoff. The resulting series is absolutely convergent in weighted variation. -/
+theorem completed_endpoint_budget (ε : ℝ) (hε : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ a : ℕ → ℝ,
+      Summable (fun k => |a k|*(k : ℝ)^(zetaZeroAbscissa+ε)) →
+      Summable (fun k => a k*psiRemainder k) ∧
+      |∑' k, a k*psiRemainder k| ≤ C * ∑' k, |a k|*(k : ℝ)^(zetaZeroAbscissa+ε) := by
+  obtain ⟨C,hC,hbound⟩ := exists_psiRemainder_le_rpow_zetaZeroAbscissa ε hε
+  refine ⟨C,hC,fun a ha => ?_⟩
+  have hterm (k : ℕ) : ‖a k*psiRemainder k‖ ≤ C * (|a k|*(k : ℝ)^(zetaZeroAbscissa+ε)) := by
+    rw [Real.norm_eq_abs, abs_mul, mul_left_comm]
+    apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
+    rcases Nat.eq_zero_or_pos k with rfl | hk
+    · rw [psiRemainder, chebyshevPsi]
+      simp only [Icc_eq_empty_of_lt (by decide : (0:ℕ)<1), sum_empty, Nat.cast_zero, sub_zero, abs_zero]
+      exact mul_nonneg hC (Real.rpow_nonneg (by norm_num) _)
+    · exact hbound _ hk
+  have hmajor := ha.mul_left C
+  have hsum : Summable (fun k => a k*psiRemainder k) := Summable.of_norm_bounded hmajor hterm
+  refine ⟨hsum, ?_⟩
+  rw [← Real.norm_eq_abs, ← tsum_mul_left]
+  exact (norm_tsum_le_tsum_norm hsum.norm).trans (hsum.norm.tsum_le_tsum hterm hmajor)
+
+#print axioms completed_endpoint_budget
 #print axioms height_eq_quotient
 #print axioms mixed_height_budget_iff
 #print axioms mixed_height_finite_part

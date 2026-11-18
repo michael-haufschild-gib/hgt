@@ -73,14 +73,13 @@ private theorem offset_reflect {d r j : ℕ} (hr : r < d) (hj : j < d) :
 
 /-- The centered change across two aligned residue blocks is a sum of log
 factors with equal positive and negative offsets. -/
-private theorem block_increment (d : ℕ+) (n : ℕ) :
-    blockHeight d (n+1) - blockHeight d n =
-      ∑ r ∈ range (d : ℕ), ∑ j ∈ range (d : ℕ),
+private theorem residue_increment (d : ℕ+) (n r : ℕ) (hr : r ∈ range (d : ℕ)) :
+    (prefixHeight ((d : ℕ)*(n+1)+r) - (d : ℝ)*prefixHeight (n+1)) -
+      (prefixHeight ((d : ℕ)*n+r) - (d : ℝ)*prefixHeight n) =
+      ∑ j ∈ range (d : ℕ),
         (Real.log (d : ℕ) + Real.log (1 + offset d r j / (n+1))) := by
   have hd : 0 < ((d : ℕ) : ℝ) := Nat.cast_pos.mpr d.pos
   have hn : (0 : ℝ) < n+1 := by positivity
-  rw [blockHeight, blockHeight, ← sum_sub_distrib]
-  refine sum_congr rfl fun r hr => ?_
   have he : (d : ℕ)*(n+1)+r = ((d : ℕ)*n+r)+d := by ring
   rw [he, prefix_succ]
   have hstep := prefix_shift ((d : ℕ)*n+r) d
@@ -100,6 +99,13 @@ private theorem block_increment (d : ℕ+) (n : ℕ) :
          unfold offset
          field_simp
          ring
+
+private theorem block_increment (d : ℕ+) (n : ℕ) :
+    blockHeight d (n+1) - blockHeight d n =
+      ∑ r ∈ range (d : ℕ), ∑ j ∈ range (d : ℕ),
+        (Real.log (d : ℕ) + Real.log (1 + offset d r j / (n+1))) := by
+  rw [blockHeight,blockHeight,← sum_sub_distrib]
+  exact sum_congr rfl fun r hr => residue_increment d n r hr
 
 private theorem sum_reflect_offset (d : ℕ+) (F : ℝ → ℝ) :
     ∑ r ∈ range (d : ℕ), ∑ j ∈ range (d : ℕ), F (-offset d r j) =

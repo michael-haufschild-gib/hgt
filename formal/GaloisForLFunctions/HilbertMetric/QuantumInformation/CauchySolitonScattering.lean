@@ -28,8 +28,8 @@ theorem coherence_schur_contrast (s t u : ℝ) :
   unfold coherence contrast
   have h (x y : ℝ) : Real.exp x + Real.exp y ≠ 0 := (add_pos (Real.exp_pos _) (Real.exp_pos _)).ne'
   field_simp [h]
-  linear_combination (norm := ring) -4 * Real.exp (s / 2) * Real.exp (t / 2) *
-    (Real.exp s + Real.exp t) * (half_square u)
+  rw [← half_square u]
+  ring
 
 /-- The two-soliton phase is exactly the squared coherence lost in a pair. -/
 theorem contrast_sq_eq_coherence_loss (s t : ℝ) :
@@ -39,7 +39,7 @@ theorem contrast_sq_eq_coherence_loss (s t : ℝ) :
 
 theorem contrast_eq_zero_iff (s t : ℝ) : contrast s t = 0 ↔ s = t := by
   simp [contrast, div_eq_zero_iff, (add_pos (Real.exp_pos s) (Real.exp_pos t)).ne',
-    sub_eq_zero]
+    sub_eq_zero, Real.exp_injective.eq_iff]
 
 /-- Adjoining a rate multiplies the determinant by all its pair phases,
 even when the previous determinant vanishes. -/

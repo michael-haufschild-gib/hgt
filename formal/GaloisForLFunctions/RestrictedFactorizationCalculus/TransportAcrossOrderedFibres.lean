@@ -12,7 +12,8 @@ every row is used at most once, even with unrestricted factor count.
 
 noncomputable section
 
-open Finset RHTower ArithmeticFunction
+open Finset RHTower
+open ArithmeticFunction hiding id
 open scoped ArithmeticFunction.Moebius
 open GaloisForLFunctions.QuantitativeFactorizationMatching
 
@@ -100,6 +101,14 @@ private theorem entry_inj {S : Finset ℕ} {i j : ℕ} (hi : i < S.card) (hj : j
   simp only [entry, dif_pos hi, dif_pos hj] at he
   exact congrArg Fin.val ((S.orderIsoOfFin rfl).injective (Subtype.ext he))
 
+private def rankIn (S : Finset ℕ) (n : ℕ) : ℕ :=
+  if hn : n ∈ S then ((S.orderIsoOfFin rfl).symm ⟨n,hn⟩).val else S.card
+
+private theorem rank_entry {S : Finset ℕ} {i : ℕ} (hi : i < S.card) :
+    rankIn S (entry S i) = i := by
+  simp only [rankIn, dif_pos (entry_mem hi), entry, dif_pos hi]
+  exact congrArg Fin.val ((S.orderIsoOfFin rfl).symm_apply_apply ⟨i,hi⟩)
+
 /-- Number of prime-to-semiprime exchanges in a cofactor row at these endpoints. -/
 def rowCount (K : ℝ) (L U c : ℕ) : ℕ :=
   min (primeRow L U c).card (productRow K L U c).card
@@ -179,12 +188,19 @@ theorem exists_ranked_transport (K : ℕ → ℝ) (L U : ℕ) :
   let S := addresses K L U
   let f := primeEnd L U
   let g := productEnd K L U
-  let unpair := Function.invFunOn f (S : Set (ℕ × ℕ))
+  let unpair := fun n => (stem n, rankIn (primeRow L U (stem n)) (n / stem n))
   have hf : Set.InjOn f S := endpoint_inj true
   have hg : Set.InjOn g S := endpoint_inj false
   have inv (a : ℕ × ℕ) (ha : a ∈ S) : unpair (f a) = a := by
-    obtain ⟨hs, he⟩ := Function.invFunOn_pos (f := f) (s := (S : Set _)) ⟨a,ha,rfl⟩
-    exact hf hs ha he
+    obtain ⟨c,i⟩ := a
+    obtain ⟨hc,_,hi⟩ := mem_addresses.mp ha
+    have hstem := (address_endpoints ha).2.2.2.1
+    have hdiv : primeEnd L U (c,i) / c = entry (primeRow L U c) i := by
+      change (c * entry _ i) / c = _
+      rw [mul_comm, Nat.mul_div_cancel _ (mem_Icc.mp hc).1]
+    change (stem (primeEnd L U (c,i)), _) = (c,i)
+    dsimp only [unpair, f]
+    rw [hstem,hdiv,rank_entry (hi.trans_le (min_le_left ..))]
   let M : OppositeParityMatching GlobalDyadicOneTwoRel (Ioc L U) := {
     sources := S.image f
     partner := g ∘ unpair
