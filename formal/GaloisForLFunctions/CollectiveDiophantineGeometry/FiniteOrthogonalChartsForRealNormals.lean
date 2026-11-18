@@ -48,7 +48,7 @@ theorem menuRow_apply (t : ℕ) (i : Fin (n+1)) :
   have h : u ⬝ᵥ Pi.single 0 1=1 := by simp [dotProduct_single,u]
   have d : u ⬝ᵥ u = ∑ j : Fin (n+1), (t : ℤ)^(2*(j : ℕ)) := by
     exact sum_congr rfl fun j _ => by simp only [u,two_mul,pow_add]
-  change (u ⬝ᵥ u)*Pi.single 0 (1 : ℤ) i - (2*(u ⬝ᵥ Pi.single 0 1))*u i = _
+  change (u ⬝ᵥ u)*(Pi.single 0 1 : Fin (n+1) → ℤ) i - (2*(u ⬝ᵥ Pi.single 0 1))*u i = _
   rw [h,d,mul_one]
   by_cases hi : i=0 <;> simp [hi,u]
 
@@ -68,10 +68,17 @@ private theorem coeff_packet (v : Fin (n+1) → ℝ) (i : Fin (n+1)) :
 /-- A vanishing chart polynomial forces every coordinate of its normal to vanish. -/
 theorem test_ne_zero (v : Fin (n+1) → ℝ) (hv : v ≠ 0) : test v ≠ 0 := by
   intro he
-  have hv₀ := congrArg (Polynomial.eval (0 : ℝ)) he
-  simp [test,Fin.sum_univ_succ,Polynomial.eval_finsetSum] at hv₀
+  have hsum : (∑ i : Fin (n+1), (0 : ℝ)^(2*(i : ℕ)))=1 := by
+    simp [Fin.sum_univ_succ,Nat.mul_succ,pow_add]
+  have hvec : (∑ i : Fin (n+1), v i*(0 : ℝ)^(i : ℕ))=v 0 := by
+    simp [Fin.sum_univ_succ]
+  have h₀ := congrArg (Polynomial.eval (0 : ℝ)) he
+  simp only [test,eval_sub,eval_mul,eval_C,eval_finsetSum,eval_pow,eval_X,eval_zero,hsum,hvec] at h₀
+  have hv₀ : v 0=0 := by linarith only [h₀]
   have hp : (∑ i : Fin (n+1), C (v i)*X^(i : ℕ))=0 := by
-    simpa [test,hv₀] using he
+    have hprod : C (2 : ℝ)*(∑ i : Fin (n+1), C (v i)*X^(i : ℕ))=0 := by
+      simpa only [test,hv₀,map_zero,zero_mul,zero_sub,neg_eq_zero] using he
+    exact (mul_eq_zero.mp hprod).resolve_left (by norm_num)
   apply hv
   funext i
   rw [← coeff_packet v i,hp,coeff_zero]
@@ -89,16 +96,11 @@ theorem test_degree (v : Fin (n+1) → ℝ) : (test v).natDegree ≤ 2*n := by
 /-- The real polynomial counts zeros of an actual integral chart row. -/
 theorem row_evaluation (v : Fin (n+1) → ℝ) (t : ℕ) :
     (fun i => (menuRow n t i : ℝ)) ⬝ᵥ v = (test v).eval (t : ℝ) := by
-  let u (i : Fin (n+1)) : ℤ := (t : ℤ)^(i : ℕ)
-  have hu : u ⬝ᵥ Pi.single 0 1=1 := by simp [dotProduct_single,u]
   have he : (fun i => (menuRow n t i : ℝ)) =
       (∑ i : Fin (n+1), (t : ℝ)^(2*(i : ℕ))) • Pi.single 0 (1 : ℝ) -
         (2 : ℝ) • (fun i : Fin (n+1) => (t : ℝ)^(i : ℕ)) := by
     funext i
-    change (((u ⬝ᵥ u)*Pi.single 0 (1 : ℤ) i - (2*(u ⬝ᵥ Pi.single 0 1))*u i : ℤ) : ℝ) = _
-    rw [hu]
-    simp only [dotProduct,u,Int.cast_sub,Int.cast_mul,Int.cast_sum,Int.cast_pow,Int.cast_natCast,
-      mul_one,Int.cast_ofNat,Pi.sub_apply,Pi.smul_apply,smul_eq_mul,two_mul,pow_add]
+    rw [menuRow_apply]
     by_cases hi : i=0 <;> simp [hi]
   rw [he,sub_dotProduct,smul_dotProduct,smul_dotProduct,single_dotProduct]
   simp only [test,eval_sub,eval_mul,eval_C,eval_finsetSum,eval_pow,eval_X,smul_eq_mul,

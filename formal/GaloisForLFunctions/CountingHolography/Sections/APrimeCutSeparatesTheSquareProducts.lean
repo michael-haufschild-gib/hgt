@@ -156,6 +156,37 @@ private theorem numerator_log_sum (n : ℕ) :
   · rw [max_eq_right (by exact_mod_cast h.le),Int.toNat_of_nonpos h.le]
     simp
 
+/-- Splitting the signed logarithmic prime sum at any cutoff undercounts
+both reduced logarithms by exactly the same misplaced mass. -/
+theorem square_prime_cut_log_errors (n : ℕ) (T : ℝ) :
+    let e := fun p => (deningerRatExp (price n) p:ℝ)
+    let E := ∑ p ∈ lags n, (if (p:ℝ) ≤ T then max (-e p) 0 else max (e p) 0)*vonMangoldt p
+    Real.log (price n).num.natAbs - (∑ p ∈ lags n, if (p:ℝ) ≤ T then e p*vonMangoldt p else 0) = E ∧
+    Real.log (price n).den + (∑ p ∈ lags n, if (p:ℝ) ≤ T then 0 else e p*vonMangoldt p) = E := by
+  dsimp only
+  have hprice : Real.log (price n:ℝ) =
+      ∑ p ∈ lags n, (deningerRatExp (price n) p:ℝ)*vonMangoldt p := by
+    rw [log_ordinaryPrimeGenerator]
+    refine Finset.sum_congr rfl fun p hp => ?_
+    rw [ordinaryPrimeGenerator_exponent,if_pos hp]
+    rfl
+  have hnum := numerator_log_sum n
+  have hden := log_ordinaryPrimeGenerator_den (n • successorSquareTriple n)
+  rw [← ordinaryPrimeGenerator_num] at hden
+  change Real.log (price n).den = Real.log (price n).num.natAbs-Real.log (price n:ℝ) at hden
+  rw [hprice,hnum] at hden
+  have hp (x : ℝ) : max x 0 - x = max (-x) 0 := by
+    rcases le_total 0 x with h | h
+    · simp [max_eq_left h,max_eq_right (neg_nonpos.mpr h)]
+    · simp [max_eq_right h,max_eq_left (neg_nonneg.mpr h)]
+  constructor
+  · rw [hnum,← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun p _ => ?_
+    split_ifs <;> simp only [← sub_mul,hp,sub_zero]
+  · rw [hden,← Finset.sum_sub_distrib,← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun p _ => ?_
+    split_ifs <;> simp only [add_zero,sub_add_cancel,← sub_mul,hp]
+
 private theorem positive_profile_limit :
     Tendsto (fun n : ℕ => (∑ p ∈ lags n, max (diagonalPrimeProfile n p) 0*vonMangoldt p)/(n:ℝ)^3)
       atTop (𝓝 (2*∫ u : ℝ, positiveProfile u*Real.exp (u/2))) := by

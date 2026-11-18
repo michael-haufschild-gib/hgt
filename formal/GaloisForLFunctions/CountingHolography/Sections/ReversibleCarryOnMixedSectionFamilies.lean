@@ -872,7 +872,8 @@ theorem exists_mixed_family_reversible_blockCarry (p : ℕ) (hp : 2 ≤ p) :
         rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl fun ℓ _ => ?_
         change ((ℓ : ℝ) + 1) ^ j * ((c₁ • U ℓ + c₂ • V ℓ : ℤ) : ℝ) = _
-        simp only [zsmul_eq_mul, Int.cast_add, Int.cast_mul]
+        simp only [zsmul_eq_mul]
+        push_cast
         ring
       rw [hexp, hU_mom j hj', hV_mom j hj', mul_zero, mul_zero, add_zero]
   have hb_pos : 0 < integerProbe (p * N) b := by

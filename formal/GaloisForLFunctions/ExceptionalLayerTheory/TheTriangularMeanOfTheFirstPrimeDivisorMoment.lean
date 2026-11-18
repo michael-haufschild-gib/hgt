@@ -375,4 +375,217 @@ theorem triangularDistinctPrimeLogMoment_singleQuartet {ρ : ℂ} (hq : Exclusio
   exact ⟨_,div_nonneg (mul_nonneg hB (by positivity)) (sub_pos.mpr htwo).le,
     fun _ hn => sublinear_dyadic_inverse f hb' hB hs hrec hn⟩
 
+private abbrev sharpDeficit (n : ℕ) := distinctPrimeLogMoment n-Real.log (n.factorial:ℕ)
+
+/-- The finite triangular prime-divisor count at a real cutoff. The weight
+at integer n is the sum of the logarithms of its distinct prime factors
+minus log n. -/
+def distinctPrimeFirstMeanAt (x : ℝ) : ℝ :=
+  ∑ j ∈ range ⌊x⌋₊, ((∑ p ∈ (j+1).primeFactors, Real.log p)-Real.log (j+1:ℕ))*
+    (1-((j:ℝ)+1)/x) + repeatedPrimeLogDensity*x/2
+
+private theorem sharpDeficit_jump (j : ℕ) :
+    sharpDeficit (j+1)-sharpDeficit j = (∑ p ∈ (j+1).primeFactors, Real.log p)-Real.log (j+1:ℕ) := by
+  simp only [sharpDeficit,distinctPrimeLogMoment_eq_sum_primeFactors,
+    sum_Icc_succ_top (show 1≤j+1 by omega),Nat.factorial_succ,Nat.cast_mul]
+  rw [Real.log_mul (by exact_mod_cast (Nat.succ_ne_zero j)) (by exact_mod_cast (Nat.factorial_ne_zero j))]
+  ring
+
+private theorem weighted_jumps (x : ℝ) (N : ℕ) :
+    (∑ j ∈ range N, (sharpDeficit (j+1)-sharpDeficit j)*(x-((j:ℝ)+1))) =
+      (∑ j ∈ range N, sharpDeficit j)+(x-N)*sharpDeficit N := by
+  induction N with
+  | zero => simp [sharpDeficit,distinctPrimeLogMoment]
+  | succ n ih => rw [sum_range_succ,ih,sum_range_succ,Nat.cast_succ]; ring
+
+private theorem realMean_cell {x : ℝ} (hx : 0<x) :
+    x*(distinctPrimeFirstMeanAt x-repeatedPrimeLogDensity*x/2) =
+      (∑ j ∈ range ⌊x⌋₊, sharpDeficit j)+(x-⌊x⌋₊)*sharpDeficit ⌊x⌋₊ := by
+  rw [distinctPrimeFirstMeanAt,add_sub_cancel_right,mul_sum,← weighted_jumps]
+  exact sum_congr rfl fun j _ => by rw [sharpDeficit_jump]; field_simp; ring
+
+theorem distinctPrimeFirstMeanAt_nat {N : ℕ} (hN : 1≤N) :
+    distinctPrimeFirstMeanAt N = triangularDistinctPrimeLogMoment N := by
+  have hn : (0:ℝ)<N := by exact_mod_cast hN
+  have he := realMean_cell hn
+  rw [Nat.floor_natCast,sub_self,zero_mul,add_zero] at he
+  unfold triangularDistinctPrimeLogMoment
+  rw [← he]
+  field_simp
+  ring
+
+/-- On a single unit cell, interpolation of X times the mean is exact
+after subtracting its quadratic centering. -/
+private theorem firstMean_interpolate {x : ℝ} (hx : 1≤x) :
+    let n := ⌊x⌋₊
+    let a := x-(n:ℝ)
+    let v := (n+1:ℕ)*a/x
+    distinctPrimeFirstMeanAt x = (1-v)*triangularDistinctPrimeLogMoment n +
+      v*triangularDistinctPrimeLogMoment (n+1) - repeatedPrimeLogDensity*a*(1-a)/(2*x) := by
+  intro n a v
+  have hn : 1≤n := (Nat.one_le_floor_iff x).mpr hx
+  have hn' : (0:ℝ)<n := by exact_mod_cast hn
+  have hh := realMean_cell (zero_lt_one.trans_le hx)
+  change x*(_-_)=(∑ j ∈ range n, sharpDeficit j)+(x-n)*sharpDeficit n at hh
+  have hrow : distinctPrimeFirstMeanAt x =
+      ((∑ j ∈ range n, sharpDeficit j)+(x-n)*sharpDeficit n)/x+repeatedPrimeLogDensity*x/2 := by
+    apply sub_eq_iff_eq_add.mp
+    apply (eq_div_iff (zero_lt_one.trans_le hx).ne').mpr
+    exact (mul_comm _ _).trans hh
+  rw [hrow]
+  unfold triangularDistinctPrimeLogMoment
+  rw [sum_range_succ]
+  change _ = (1-v)*((∑ j ∈ range n, sharpDeficit j)/(n:ℝ)+_) +
+    v*(((∑ j ∈ range n, sharpDeficit j)+sharpDeficit n)/(n+1:ℕ)+_) - _
+  dsimp only [v,a]
+  push_cast
+  field_simp [hn'.ne',(zero_lt_one.trans_le hx).ne',show (n:ℝ)+1≠0 by positivity]
+  ring
+
+private theorem real_mean_bound {f : ℝ → ℝ} {L b K : ℝ} (hL : 0≤L) (hb : 0≤b) (hK : 0≤K)
+    (hstep : ∀ x y : ℝ, 1≤x → x≤y → y≤x+1 → |f y-f x|≤L)
+    (h : ∀ n : ℕ, 1≤n → |triangularDistinctPrimeLogMoment n-f n|≤K*(n:ℝ)^b) :
+    ∀ x : ℝ, 1≤x → |distinctPrimeFirstMeanAt x-f x| ≤
+      (K*(2:ℝ)^b+L+|repeatedPrimeLogDensity|)*x^b := by
+  intro x hx
+  let n := ⌊x⌋₊
+  let a := x-(n:ℝ)
+  let v := ((n:ℝ)+1)*a/x
+  have hn : 1≤n := (Nat.one_le_floor_iff x).mpr hx
+  have hn' : (1:ℝ)≤n := by exact_mod_cast hn
+  have hnx : (n:ℝ)≤x := Nat.floor_le (zero_le_one.trans hx)
+  have hxn : x<(n:ℝ)+1 := Nat.lt_floor_add_one x
+  have hxp := zero_lt_one.trans_le hx
+  have ha : 0≤a := sub_nonneg.mpr hnx
+  have ha' : a≤1 := by dsimp only [a]; linarith only [hxn]
+  have hv : 0≤v := div_nonneg (mul_nonneg (by positivity) ha) hxp.le
+  have hv' : v≤1 := (div_le_one hxp).mpr (by
+    have he : x=(n:ℝ)+a := by dsimp only [a]; ring
+    nlinarith only [he,mul_nonneg (Nat.cast_nonneg n : (0:ℝ)≤n) (sub_nonneg.mpr ha')])
+  let B := K*(2:ℝ)^b*x^b+L
+  have hp {k : ℕ} (hk : 1≤k) (hk' : (k:ℝ)≤2*x) (hf : |f k-f x|≤L) :
+      |triangularDistinctPrimeLogMoment k-f x|≤B := by
+    apply (abs_sub_le _ (f k) _).trans
+    apply (add_le_add (h k hk) hf).trans
+    have ht := Real.rpow_le_rpow (Nat.cast_nonneg k) hk' hb
+    rw [Real.mul_rpow (by norm_num) hxp.le] at ht
+    exact add_le_add ((mul_le_mul_of_nonneg_left ht hK).trans_eq (by ring)) le_rfl
+  have h0 := hp hn (by linarith only [hnx,hx]) (by rw [abs_sub_comm]; exact hstep _ _ hn' hnx hxn.le)
+  have h1 := hp (k := n+1) (by omega) (by push_cast; linarith only [hnx,hx])
+    (by push_cast; exact hstep _ _ hx hxn.le (by linarith only [hnx]))
+  have hcorr : |repeatedPrimeLogDensity*a*(1-a)/(2*x)|≤|repeatedPrimeLogDensity| := by
+    rw [abs_div,abs_mul,abs_mul,abs_of_nonneg ha,abs_of_nonneg (sub_nonneg.mpr ha'),abs_of_pos (by positivity),
+      div_le_iff₀ (by positivity)]
+    have ht := mul_le_of_le_one_right (mul_nonneg (abs_nonneg _) ha) (sub_le_self 1 ha)
+    exact (ht.trans (mul_le_of_le_one_right (abs_nonneg _) ha')).trans
+      (le_mul_of_one_le_right (abs_nonneg _) (by linarith only [hx]))
+  have he := firstMean_interpolate hx
+  change distinctPrimeFirstMeanAt x=(1-((n+1:ℕ):ℝ)*a/x)*_+(((n+1:ℕ):ℝ)*a/x)*_-_ at he
+  push_cast at he
+  have hr : distinctPrimeFirstMeanAt x-f x =
+      ((1-v)*(triangularDistinctPrimeLogMoment n-f x)+v*(triangularDistinctPrimeLogMoment (n+1)-f x))-
+      repeatedPrimeLogDensity*a*(1-a)/(2*x) := by rw [he]; dsimp only [v]; ring
+  rw [hr]
+  apply (abs_sub _ _).trans ((add_le_add (abs_add_le _ _) le_rfl).trans _)
+  rw [abs_mul,abs_mul,abs_of_nonneg hv,abs_of_nonneg (sub_nonneg.mpr hv')]
+  have ht := add_le_add (add_le_add (mul_le_mul_of_nonneg_left h0 (sub_nonneg.mpr hv'))
+    (mul_le_mul_of_nonneg_left h1 hv)) hcorr
+  have hlow := le_mul_of_one_le_right (add_nonneg hL (abs_nonneg repeatedPrimeLogDensity))
+    (Real.one_le_rpow hx hb)
+  exact ht.trans (by dsimp only [B]; linarith only [hlow])
+
+/-- A raw triangular power mode weighted by its zeta value. -/
+def realZetaMode (ρ s : ℂ) (x : ℝ) : ℝ :=
+  (((x:ℂ)^s*riemannZeta s/(s+1))/ρ).re
+
+private theorem realZetaMode_nat (ρ s : ℂ) (n : ℕ) :
+    realZetaMode ρ s n=primeMomentZetaMode ρ s n := by
+  simp only [realZetaMode,primeMomentZetaMode,Complex.ofReal_natCast]
+
+private theorem zeta_mode_step (ρ s : ℂ) (hs : s.re≤1) :
+    ∃ L : ℝ, 0≤L ∧ ∀ x y : ℝ, 1≤x → x≤y → y≤x+1 →
+      |realZetaMode ρ s y-realZetaMode ρ s x|≤L := by
+  let A := riemannZeta s/(s+1)/ρ
+  refine ⟨‖A‖*‖s‖,mul_nonneg (norm_nonneg _) (norm_nonneg _),fun x y hx hxy hyx => ?_⟩
+  by_cases hz : s=0
+  · simp [realZetaMode,hz]
+  have H := norm_image_sub_le_of_norm_deriv_le_segment'
+    (a := x) (b := y) (f := fun t : ℝ => (t:ℂ)^s)
+    (fun t ht => (hasDerivAt_ofReal_cpow_const (zero_lt_one.trans_le (hx.trans ht.1)).ne' hz).hasDerivWithinAt)
+    (C := ‖s‖) (fun t ht => by
+      rw [norm_mul,Complex.norm_cpow_eq_rpow_re_of_pos (zero_lt_one.trans_le (hx.trans ht.1))]
+      exact mul_le_of_le_one_right (norm_nonneg _) (Real.rpow_le_one_of_one_le_of_nonpos
+        (hx.trans ht.1) (by simpa using hs))) y ⟨hxy,le_rfl⟩
+  have hr : realZetaMode ρ s y-realZetaMode ρ s x = (A*((y:ℂ)^s-(x:ℂ)^s)).re := by
+    simp only [realZetaMode,← Complex.sub_re]; congr 1; dsimp only [A]; ring
+  rw [hr]
+  apply (Complex.abs_re_le_norm _).trans
+  rw [norm_mul]
+  exact mul_le_mul_of_nonneg_left (H.trans (mul_le_of_le_one_right (norm_nonneg _) (by linarith only [hyx])))
+    (norm_nonneg _)
+
+private theorem pair_mode_step (ρ s t : ℂ) (hs : s.re≤1) (ht : t.re≤1) :
+    ∃ L : ℝ, 0≤L ∧ ∀ x y : ℝ, 1≤x → x≤y → y≤x+1 →
+      |(realZetaMode ρ s y+realZetaMode ρ t y)-(realZetaMode ρ s x+realZetaMode ρ t x)|≤L := by
+  obtain ⟨A,hA,h⟩ := zeta_mode_step ρ s hs
+  obtain ⟨B,hB,h'⟩ := zeta_mode_step ρ t ht
+  refine ⟨A+B,add_nonneg hA hB,fun x y hx hxy hyx => ?_⟩
+  rw [add_sub_add_comm]
+  exact (abs_add_le _ _).trans (add_le_add (h _ _ hx hxy hyx) (h' _ _ hx hxy hyx))
+
+/-- The raw finite count at every real cutoff has its explicit zeta square
+and cube terms to all exponents above one quarter precisely under RH. -/
+theorem riemannHypothesis_iff_distinctPrimeFirstMeanAt :
+    RiemannHypothesis ↔ ∀ b : ℝ, 1/4<b → b<1/2 → ∃ K : ℝ, 0≤K ∧ ∀ x : ℝ, 1≤x →
+      |distinctPrimeFirstMeanAt x+realZetaMode 1 (1/2) x+realZetaMode 1 (1/3) x| ≤ K*x^b := by
+  constructor
+  · intro h b hb hb'
+    obtain ⟨K,hK,h⟩ := primeMomentRealRemainder_quarter_of_rh h hb hb'
+    obtain ⟨L,hL,hl⟩ := pair_mode_step 1 (1/2) (1/3) (by norm_num) (by norm_num)
+    let f := fun x => -(realZetaMode 1 (1/2) x+realZetaMode 1 (1/3) x)
+    have hstep (x y : ℝ) (hx : 1≤x) (hxy : x≤y) (hyx : y≤x+1) : |f y-f x|≤L := by
+      simpa only [f,neg_sub_neg,abs_sub_comm] using hl _ _ hx hxy hyx
+    have hb0 : 0≤b := by linarith only [hb]
+    have hR := real_mean_bound hL hb0 hK hstep (fun n hn => by
+      simpa only [f,realZetaMode_nat,primeMomentRealRemainder,sub_neg_eq_add,add_assoc] using h n hn)
+    exact ⟨_,by positivity,fun x hx => by
+      simpa only [f,sub_neg_eq_add,add_assoc] using hR x hx⟩
+  · intro h
+    apply riemannHypothesis_iff_triangularDistinctPrimeLogMoment.mpr
+    intro b hb hb'
+    obtain ⟨K,hK,h⟩ := h b hb hb'
+    exact ⟨K,hK,fun n hn => by
+      simpa only [distinctPrimeFirstMeanAt_nat hn,realZetaMode_nat,primeMomentRealRemainder] using
+        h n (by exact_mod_cast hn)⟩
+
+/-- At arbitrary real cutoffs the quartet contributes its half- and
+third-ordinate modes with the actual zeta amplitudes and multiplicity. -/
+theorem distinctPrimeFirstMeanAt_singleQuartet {ρ : ℂ} (hq : ExclusionOfTheCriticalState.HasSingleOffLineQuartet ρ)
+    {b : ℝ} (hb : 1/4<b) (hb' : b<1) :
+    ∃ K : ℝ, 0≤K ∧ ∀ x : ℝ, 1≤x →
+      |distinctPrimeFirstMeanAt x+realZetaMode 1 (1/2) x+realZetaMode 1 (1/3) x-
+        2*(ExclusionOfTheCriticalState.quartetCopyMult ρ:ℝ)*(realZetaMode ρ (ρ/2) x+realZetaMode ρ (ρ/3) x)| ≤
+        K*x^b := by
+  let m := 2*(ExclusionOfTheCriticalState.quartetCopyMult ρ:ℝ)
+  let A := fun x => realZetaMode 1 (1/2) x+realZetaMode 1 (1/3) x
+  let B := fun x => realZetaMode ρ (ρ/2) x+realZetaMode ρ (ρ/3) x
+  let f := fun x => m*B x-A x
+  obtain ⟨C,hC,hA⟩ := pair_mode_step 1 (1/2) (1/3) (by norm_num) (by norm_num)
+  obtain ⟨D,hD,hB⟩ := pair_mode_step ρ (ρ/2) (ρ/3)
+    (by rw [Complex.div_ofNat_re]; linarith only [hq.re_lt_one])
+    (by rw [Complex.div_ofNat_re]; linarith only [hq.re_lt_one])
+  obtain ⟨K,hK,h⟩ := triangularDistinctPrimeLogMoment_singleQuartet hq hb hb'
+  have hm : 0≤m := by dsimp only [m]; positivity
+  have hf (x y : ℝ) (hx : 1≤x) (hxy : x≤y) (hyx : y≤x+1) :
+      |f y-f x|≤m*D+C := by
+    rw [show f y-f x=m*(B y-B x)-(A y-A x) by dsimp only [f]; ring]
+    apply (abs_sub _ _).trans
+    rw [abs_mul,abs_of_nonneg hm]
+    exact add_le_add (mul_le_mul_of_nonneg_left (hB _ _ hx hxy hyx) hm) (hA _ _ hx hxy hyx)
+  have hn (n : ℕ) (hn : 1≤n) : |triangularDistinctPrimeLogMoment n-f n|≤K*(n:ℝ)^b := by
+    simpa only [f,A,B,realZetaMode_nat,m,primeMomentRealRemainder,sub_sub_eq_add_sub,add_assoc] using h n hn
+  have hr := real_mean_bound (add_nonneg (mul_nonneg hm hD) hC) (by linarith only [hb] : 0≤b) hK hf hn
+  refine ⟨_,by positivity,fun x hx => ?_⟩
+  convert hr x hx using 2 <;> dsimp only [f,A,B,m] <;> ring
+
 end GaloisForLFunctions.ExceptionalLayerTheory

@@ -392,7 +392,7 @@ private theorem transfer_quarterError (c : ℕ → ℝ) {K : ℝ} (hK : 0 ≤ K)
     have hh : (1+Real.log n)^2 ≤ L := by
       apply (sq_le_sq₀ (by linarith only [Real.log_nonneg hp])
         (by have := Real.log_nonneg (show (1:ℝ) ≤ N by exact_mod_cast hN); linarith)).mpr
-      exact add_le_add_left (Real.log_le_log hnpos (by exact_mod_cast (mem_Icc.mp hn).2)) 1
+      exact add_le_add (le_refl 1) (Real.log_le_log hnpos (by exact_mod_cast (mem_Icc.mp hn).2))
     have he := mul_le_mul_of_nonneg_left hh (mul_nonneg hK (Real.rpow_nonneg hnpos.le (1/4)))
     have hb := h n (mem_Icc.mp hn).1
     apply (div_le_div_of_nonneg_left (abs_nonneg _) hnpos (le_add_of_nonneg_right zero_le_one)).trans

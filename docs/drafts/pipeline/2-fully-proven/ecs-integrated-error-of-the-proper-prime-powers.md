@@ -6,7 +6,11 @@ Let $\Phi$ be the continuous critical-state profile. For any real $1$-Lipschitz 
   \sum_{p,\ k\ge2}\frac{\log p}{p^{k/2}}g(t-k\log p)-\frac12\int_{\mathbb R}g
   \right|dt\ll_\Phi e^{-T/40}.
 \]
-Taking $L(x)=x$ transfers the polar-subtracted Mangoldt wave, after subtraction of this constant, to the ordinary-prime wave with exponentially small total absolute error on the entire late ray. Taking $L(x)=(\pm x)_+$ controls the two extremal proper-power sign masses separately.
+Let $P$ be the polar-subtracted ordinary-prime wave and $M$ the polar-subtracted Mangoldt wave minus $\frac12\int\Phi$. Taking $L(x)=x$ gives
+\[
+ \int_T^\infty\bigl(|P_+-M_+|+|P_--M_-|\bigr)\,dt\ll_\Phi e^{-T/40},
+\]
+since the integrand equals $|P-M|$ pointwise. Thus both sign masses transfer on arbitrary measurable subsets of the late ray with the same absolute error. Taking $L(x)=(\pm x)_+$ controls the two extremal proper-power sign masses separately.
 
 Give each prime $p$ a bin $[\theta(p-1),\theta(p))$ of length $\log p$, and let $p(y)$ denote the prime at mass $y$. Since $\theta(x)=x+O(x^{9/10})$, the two bin endpoints give $|p(y)-y|\ll y^{9/10}$. Thus $\ell(v)=2\log p(e^{v/2})$ and $w(v)=e^{v/2}/p(e^{v/2})$ satisfy $|\ell(v)-v|+|w(v)-1|\ll e^{-v/20}$. Changing variables $y=e^{v/2}$ writes twice the square wave as $\int w(v)g(t-\ell(v))\,dv$.
 

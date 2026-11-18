@@ -292,7 +292,7 @@ theorem lastQuotientClassSymbol_tail_energy (q M : ℕ) (hM : 1 ≤ M) {σ : ℝ
     · have hlt : -Real.log (M:ℝ)<u := lt_of_not_ge hu
       have he : Real.exp (-u)<M := (Real.exp_lt_exp.mpr (by linarith only [hlt] : -u<Real.log (M:ℝ))).trans_eq
         (Real.exp_log hMp)
-      have hn : ⌊Real.exp (-u)⌋₊ ≤ M := Nat.le_of_lt (Nat.floor_lt (Real.exp_pos _).le |>.mpr he)
+      have hn : ⌊Real.exp (-u)⌋₊ ≤ M := Nat.le_of_lt ((Nat.floor_lt (Real.exp_pos _).le).mpr he)
       simp [H,hu,stepSource,A,lastCellTail,hn.not_gt]
   have hb := integral_mono ((memLp_two_iff_integrable_sq_norm hI.2.1).mp hI.2) hH hdom
   have he : ∫ u, H u = (M:ℝ)^(-2*σ)/(2*σ) := by

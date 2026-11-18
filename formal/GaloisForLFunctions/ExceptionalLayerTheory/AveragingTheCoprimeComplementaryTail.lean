@@ -28,7 +28,9 @@ private theorem transpose (D R X F : ℕ) {a : ℕ} (ha : 1≤a) :
   apply sum_congr rfl
   intro p hp
   have hp₀ := (mem_filter.mp hp).2.pos
-  rw [←mul_sub,factorSlice,Nat.mul_div_cancel _ hp₀,complementary_tail_transpose D R _ ha]
+  change vonMangoldt p * factorSlice D R X (a*p) p = _
+  unfold factorSlice
+  rw [Nat.mul_div_cancel _ hp₀,complementary_tail_transpose D R _ ha,mul_sub]
   simp only [Nat.div_div_eq_div_mul,Nat.mul_comm (a+1) p]
 
 /-- Ordinary prime row with a fixed cap on its complementary factor. -/
@@ -111,7 +113,9 @@ theorem averaged_coprime_tail :
   have hs' : (S : ℝ)≠0 := by exact_mod_cast Nat.ne_of_gt hs
   have hJ : 1≤J := le_add_of_nonneg_right (Real.log_natCast_nonneg X)
   have hj := zero_le_one.trans hJ
-  have hd₁ : 1≤d := by exact_mod_cast Nat.succ_pos D
+  have hd₁ : 1≤d := by
+    change (1 : ℝ) ≤ ((D+1 : ℕ) : ℝ)
+    exact_mod_cast (show 1 ≤ D+1 by omega)
   have hd₀ := zero_le_one.trans hd₁
   have hj₃ : J≤J^3 := by simpa only [pow_one] using pow_le_pow_right₀ hJ (by norm_num : 1≤3)
   have hd₂ : d≤d^2 := by simpa only [pow_one] using pow_le_pow_right₀ hd₁ (by norm_num : 1≤2)
@@ -143,7 +147,7 @@ theorem averaged_coprime_tail :
              rw [sub_div,mul_div_cancel_left₀ base hs']
          _ = _ := by rw [hh,sub_div,add_div]
   rw [eq]
-  apply (abs_sub _ _).trans ((add_le_add_right (abs_add_le _ _) _).trans ((add_le_add (add_le_add hΔ htop) hbot).trans _))
+  apply (abs_sub _ _).trans ((add_le_add ((abs_add_le _ _).trans (add_le_add hΔ htop)) hbot).trans _)
   have h1 := mul_le_mul_of_nonneg_right (mul_le_mul hd₂ hj₃ hj (sq_nonneg d))
     (by positivity : 0≤C*R*Real.sqrt X)
   have h2 := mul_le_mul_of_nonneg_right hd₂ (by positivity : 0≤K*M*(B*R)*J^3*Real.sqrt X)

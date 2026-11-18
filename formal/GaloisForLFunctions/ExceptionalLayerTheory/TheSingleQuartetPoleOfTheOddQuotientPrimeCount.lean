@@ -32,8 +32,7 @@ private theorem scaled_nonzero {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) {a :
 
 private theorem half_ne_zero {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) : riemannZeta (ρ/2) ≠ 0 := by
   have h := scaled_nonzero hq (a := 1/2) (by norm_num) (by norm_num) (by linarith only [hq.re_lt_one])
-  simpa only [Complex.ofReal_div,Complex.ofReal_one,Complex.ofReal_ofNat,one_div,mul_comm (2:ℂ)⁻¹,
-    div_eq_mul_inv] using h
+  rwa [show (((1/2:ℝ):ℂ)*ρ)=ρ/2 by push_cast; ring] at h
 
 /-- At half the right zero the residue contains precisely its multiplicity.
 The cube contributes no zero there and the unscaled zeta factor is nonzero. -/
@@ -84,7 +83,7 @@ theorem oddQuotientPowerTotal_singleQuartet_exponent {ρ : ℂ} (hq : HasSingleO
     have h1 : (1:ℝ) ≤ N := by exact_mod_cast hn
     apply (oddQuotientPowerTotal_bound ha0 (by linarith only [(lt_min_iff.mp ham).2]) hC h hn).trans
     exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le h1
-      (add_le_add_right (lt_min_iff.mp ham).1.le 1)) hK
+      (by linarith only [(lt_min_iff.mp ham).1])) hK
   · rintro b ⟨K,hK,h⟩
     by_contra! hsmall
     obtain ⟨a,ha,haρ⟩ := exists_between (max_lt hsmall hpos)
@@ -92,7 +91,7 @@ theorem oddQuotientPowerTotal_singleQuartet_exponent {ρ : ℂ} (hq : HasSingleO
     have hlow := (max_lt_iff.mp ha).2
     have hN (N : ℕ) (hn : 1 ≤ N) : |oddQuotientPowerTotal N| ≤ K*(N:ℝ)^(a+1) :=
       (h N hn).trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le
-        (by exact_mod_cast hn : (1:ℝ) ≤ N) (add_le_add_right hb.le 1)) hK)
+        (by exact_mod_cast hn : (1:ℝ) ≤ N) (by linarith only [hb])) hK)
     have hr : (ρ/2).re = ρ.re/2 := by simp [Complex.div_ofNat_re]
     have hi : (ρ/2).im ≠ 0 := by simpa [Complex.div_ofNat_im] using hq.im_ne_zero
     have hz := firstPrimeDivisorMoment_zero_residue_of_oddQuotientPowerTotal_bound hlow

@@ -66,7 +66,7 @@ theorem square_generator_valuation_support : ∃ D : ℝ, 1 ≤ D ∧
     · rw [hi₁,h,mul_one,mul_one] at hij
       linarith only [hij,hp,hD]
     · exact h.1
-  exact ⟨hjx.trans hji,hbound.trans_eq (by ring)⟩
+  exact ⟨hjx.trans hji,hbound.trans_eq (by dsimp only [x]; ring)⟩
 
 /-- Prime valuation of the reduced prefix, with cancellation across conductors. -/
 theorem squareGeneratorPrefix_valuation (p N : ℕ) : deningerRatExp (squareGeneratorPrefix N) p =

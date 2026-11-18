@@ -64,7 +64,7 @@ private theorem circle_root (g : ℤ) (hg : g≠0) (x : Circle) : ∃ t : Circle
   congr 1
   field_simp [show (g : ℝ)≠0 by exact_mod_cast hg]
 
-private theorem product_character {E : Type*} (s : Finset E) (x : Circle) (c b : E → ℤ) :
+theorem product_character {E : Type*} (s : Finset E) (x : Circle) (c b : E → ℤ) :
     x^(∑ e ∈ s, c e*b e)=∏ e ∈ s, (x^(b e))^(c e) := by
   classical
   induction s using Finset.induction_on with
@@ -127,3 +127,5 @@ end GaloisForLFunctions.HTGeometry.Quantum.TensorObservation
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.all_copies_iff_step
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.gauge_extension
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.all_copies_iff_gauge
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.product_character

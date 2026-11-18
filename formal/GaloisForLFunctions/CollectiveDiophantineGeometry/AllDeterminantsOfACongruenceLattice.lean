@@ -107,7 +107,7 @@ theorem all_determinants (v : ι → ℤ) (m d : ℤ) :
       · subst v
         let i : ι := Classical.choice inhabited
         let w : ι → ℤ := Pi.single i 1
-        have hw : w ⬝ᵥ w=1 := by simp [w,single_dotProduct]
+        have hw : w ⬝ᵥ w=1 := by simp [w]
         exact ⟨dilation w w d,dilation_det _ _ _ hw,fun j => by simp⟩
       · exact (determinant_realizability v m d hz).2 hd
 

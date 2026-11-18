@@ -101,7 +101,7 @@ theorem torsionCount_prod (G H : Type*) [CommGroup G] [CommGroup H] [Finite G] [
     { toFun x := (⟨x.val.1,congrArg Prod.fst x.property⟩,⟨x.val.2,congrArg Prod.snd x.property⟩)
       invFun x := ⟨(x.1.val,x.2.val),Prod.ext x.1.property x.2.property⟩
       left_inv _ := rfl, right_inv _ := rfl }
-  exact (Nat.card_congr e).trans Nat.card_prod
+  exact (Nat.card_congr e).trans (Nat.card_prod _ _)
 
 theorem torsionCount_cycle (m n : ℕ) [NeZero m] : torsionCount (Cycle m) n=m.gcd n := by
   change Nat.card (powMonoidHom n : Cycle m →* Cycle m).ker=_

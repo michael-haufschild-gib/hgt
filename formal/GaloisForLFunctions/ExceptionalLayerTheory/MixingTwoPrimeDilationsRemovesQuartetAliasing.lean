@@ -295,7 +295,7 @@ theorem primeOrientationResidual_singleQuartet {ρ : ℂ} (hq : HasSingleOffLine
     linear_combination h0
   rw [he]
   apply (abs_add_le _ _).trans
-  apply (add_le_add_right (abs_sub _ _) _).trans
+  apply (add_le_add (abs_sub _ _) le_rfl).trans
   simp only [abs_mul]
   have h := add_le_add (add_le_add (mul_le_mul_of_nonneg_left
     (hd 3 (by norm_num) (by linarith only [hx])) (abs_nonneg P))

@@ -36,7 +36,8 @@ private theorem contact_rows {n k : ℕ} (hn : 0 < n) (hk : 0 < k) (hs : 8 < Rea
   let t := Real.log (Y n)
   let l := Real.log k
   have hsum (F : ℝ → ℝ) : (∑ i, ((D n i):ℝ)*F ((i:ℝ)+1)) = F 1+2*F (X n)-F (Y n) := by
-    simpa only [mul_comm] using sum_successorSquareTriple hn F
+    calc _ = ∑ i, F ((i:ℝ)+1)*((D n i):ℝ) := sum_congr rfl fun _ _ => mul_comm _ _
+         _ = _ := sum_successorSquareTriple hn F
   have hrow (i : Fin ((2*n+1)^2+1)) :
       (∑ j, ((D n i):ℝ)*((D n j):ℝ)*H (-l-Real.log ((i:ℝ)+1)+Real.log ((j:ℝ)+1))) =
       ((D n i):ℝ)*(H (-l-Real.log ((i:ℝ)+1))+2*H (-l-Real.log ((i:ℝ)+1)+s)-H (-l-Real.log ((i:ℝ)+1)+t)) := by
@@ -49,6 +50,8 @@ private theorem contact_rows {n k : ℕ} (hn : 0 < n) (hk : 0 < k) (hs : 8 < Rea
   have hz (u : ℝ) (hu : 8 < u) : H (-l-u)=0 :=
     splineAutoCorr_zero_outside (lt_abs.mpr (Or.inr (by linarith only [hu,hl])))
   rw [integratedContact_eq_autocorrelations]
+  change (2/Real.sqrt k)*(∑ i, ∑ j, ((D n i):ℝ)*((D n j):ℝ)*
+    H (-l-Real.log ((i:ℝ)+1)+Real.log ((j:ℝ)+1)))*P k=_
   simp_rw [hrow]
   rw [hsum (fun v => H (-l-Real.log v)+2*H (-l-Real.log v+s)-H (-l-Real.log v+t))]
   simp only [Real.log_one,sub_zero]
@@ -83,7 +86,7 @@ private theorem longRow_sum {B : ℝ} (hB : 0 < B) {N : ℕ} (hN : ⌊Real.exp 8
         have h := Real.log_le_log hk₀ hp
         rw [Real.log_mul (Real.exp_pos _).ne' hB.ne',Real.log_exp] at h
         exact lt_abs.mpr (Or.inl (by linarith only [h]))
-    change (2/Real.sqrt k)*H (Real.log B-Real.log k)*P k=0
+    change (2/Real.sqrt k)*splineAutoCorr (Real.log B-Real.log k)*P k=0
     rw [splineAutoCorr_zero_outside harg,mul_zero,zero_mul]
 
 private theorem shortRow_support {δ : ℝ} (hδ₀ : 0 ≤ δ) (hδ : δ ≤ Real.log 9) {k : ℕ}
@@ -110,8 +113,8 @@ private theorem shift_limit : Tendsto shift atTop (𝓝 (Real.log 4)) := by
   have hn₀ : (0:ℝ) < n := Nat.cast_pos.mpr hn
   change Real.log ((2+(n:ℝ)⁻¹)^2)=Real.log (Y n)-Real.log (X n)
   rw [← Real.log_div (sq_pos_of_pos (by positivity)).ne' (sq_pos_of_pos hn₀).ne']
-  congr 1
-  dsimp only [X,Y]
+  apply congrArg Real.log
+  change (2+(n:ℝ)⁻¹)^2=(((2*n+1:ℕ):ℝ)^2)/(n:ℝ)^2
   push_cast
   field_simp [hn₀.ne']
   ring
@@ -155,7 +158,7 @@ private theorem proper_split : ∀ᶠ n : ℕ in atTop,
   have hwin : win ≤ N := by dsimp only [N,L,win]; omega
   have hcap := hw.trans (Nat.cast_le.mpr hwin)
   have hfloor {B : ℝ} (hb₀ : 0 ≤ B) (hb : B ≤ Y n) : ⌊Real.exp 8*B⌋₊ ≤ N := by
-    apply Nat.cast_le.mp
+    apply (Nat.cast_le (α := ℝ)).mp
     exact (Nat.floor_le (mul_nonneg (Real.exp_pos _).le hb₀)).trans
       ((mul_le_mul_of_nonneg_left hb (Real.exp_pos _).le).trans hcap)
   have hN : cutoff ≤ N := Nat.cast_le.mp (hcut.trans ((successorSquareWindowScale_bounds n).1.trans hcap))
@@ -165,7 +168,10 @@ private theorem proper_split : ∀ᶠ n : ℕ in atTop,
     exact shortRow_support hδ₀ hδ (lt_of_not_ge fun hh => hbad (mem_Ioc.mpr ⟨(mem_Ioc.mp hk).1,hh⟩))
   rw [proper_sum]
   change (∑ k ∈ Ioc 0 N, integratedContact (D n) k*P k)=_
-  rw [sum_congr rfl (fun k hk => contact_rows hn (mem_Ioc.mp hk).1 hs),
+  have hrow {k : ℕ} (hk : k ∈ Ioc 0 N) :
+      integratedContact (D n) k*P k=shortRow (shift n) k+2*longRow (X n) k-longRow (Y n) k :=
+    contact_rows hn (mem_Ioc.mp hk).1 hs
+  rw [sum_congr rfl (fun k hk => hrow hk),
     sum_sub_distrib,sum_add_distrib,← mul_sum,hshort,
     longRow_sum (sq_pos_of_pos (Nat.cast_pos.mpr hn)) (hfloor (sq_nonneg _) hxy),
     longRow_sum (sq_pos_of_pos (by positivity : (0:ℝ)<((2*n+1:ℕ):ℝ))) (hfloor (sq_nonneg _) le_rfl)]
@@ -194,7 +200,8 @@ theorem successorSquare_proper_power_contact_limit :
   have hfin := tendsto_finsetSum (Ioc 0 cutoff) fun k _ => (hshort k).continuousAt.tendsto.comp shift_limit
   rw [show squareProperPowerConstant=(∑ k ∈ Ioc 0 cutoff, shortRow (Real.log 4) k)+2*1-1 by
     unfold squareProperPowerConstant; ring]
-  exact ((hfin.add ((hc.comp hX).const_mul 2)).sub (hc.comp hY)).congr' proper_split.symm
+  exact ((hfin.add ((hc.comp hX).const_mul 2)).sub (hc.comp hY)).congr'
+    (proper_split.mono fun _ h => h.symm)
 
 /-- The integrated ordinary prime contact differs from the negative signed
 Weil degree by a single limiting constant through every square conductor. -/
@@ -215,7 +222,8 @@ private theorem normalized_mesh_error {C P g : ℝ} {n m : ℕ} (hC : 0 ≤ C) (
   have hn₀ : (0:ℝ) < n := Nat.cast_pos.mpr hn
   have hm₀ : (0:ℝ) < m := Nat.cast_pos.mpr (hn.trans_le hm)
   have hsq := pow_le_pow_left₀ hn₀.le (Nat.cast_le.mpr hm) 2
-  rw [show g/(m:ℝ)^2-P=(g-(m:ℝ)^2*P)/(m:ℝ)^2 by field_simp,abs_div,abs_of_nonneg (sq_nonneg _)]
+  rw [show g/(m:ℝ)^2-P=(g-(m:ℝ)^2*P)/(m:ℝ)^2 by field_simp [hm₀.ne'],
+    abs_div,abs_of_nonneg (sq_nonneg (m:ℝ))]
   calc _ ≤ C*n/(m:ℝ)^2 := div_le_div_of_nonneg_right h (sq_nonneg _)
     _ ≤ C/n := (div_le_div_iff₀ (sq_pos_of_pos hm₀) hn₀).mpr (by
       linarith only [mul_le_mul_of_nonneg_left hsq hC])
@@ -239,7 +247,7 @@ theorem square_prime_generator_discrepancies_above_diagonal :
   have ht : Tendsto (fun n : ℕ => C/(n:ℝ)) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
   refine ⟨b,fun ε hε => ?_⟩
-  have hc' := (hc.sub_const c).abs
+  have hc' := (hc.sub_const squareProperPowerConstant).abs
   have hb' := (hb.sub_const b).abs
   simp only [sub_self,abs_zero] at hc' hb'
   filter_upwards [eventually_ge_atTop 1,ht.eventually_le_const (half_pos hε),

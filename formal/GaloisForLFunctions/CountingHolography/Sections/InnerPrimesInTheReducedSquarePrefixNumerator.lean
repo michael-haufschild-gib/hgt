@@ -99,7 +99,7 @@ private theorem central_bump_mass : ∃ c : ℝ, 0 < c ∧ ∀ {p M : ℕ}, 2 �
   let x := Real.sqrt p
   have hx : 0 < x := lt_of_lt_of_le two_pos hp
   have hpx : x^2=(p:ℝ) := Real.sq_sqrt (Nat.cast_nonneg _)
-  have hp' : (0:ℝ) < p := hpx ▸ sq_pos_of_pos hx
+  have hp' : (0:ℝ) < p := (sq_pos_of_pos hx).trans_eq hpx
   let S := Ioc ⌊x⌋₊ ⌊2*x⌋₊
   have hsub : S ⊆ Ioc 0 M := by
     intro j hj
@@ -122,7 +122,8 @@ private theorem central_bump_mass : ∃ c : ℝ, 0 < c ∧ ∀ {p M : ℕ}, 2 �
       rw [← Real.log_div (hp'.trans_le h₁).ne' hp'.ne']
       exact ⟨Real.log_nonneg ((one_le_div hp').mpr h₁),Real.log_le_log (div_pos (hp'.trans_le h₁) hp')
         ((div_le_iff₀ hp').mpr (by linarith only [h₂]))⟩
-    exact (mul_comm c (p:ℝ)) ▸ mul_le_mul h₁ (hmin hlog) hc.le (sq_nonneg _)
+    calc c*p = (p:ℝ)*c := mul_comm _ _
+         _ ≤ B p j := mul_le_mul h₁ (hmin hlog) hc.le (sq_nonneg _)
   have hsum : x/2*(c*p) ≤ ∑ j ∈ Ioc 0 M, B p j := calc
     _ ≤ S.card*(c*p) := mul_le_mul_of_nonneg_right hcard (mul_nonneg hc.le (Nat.cast_nonneg _))
     _ = ∑ _j ∈ S, c*p := by simp
@@ -164,7 +165,9 @@ theorem inner_primes_in_reduced_square_prefix : ∃ c A : ℝ, 0 < c ∧ 0 < A �
       ((mul_le_mul_of_nonneg_right (show Real.exp 4 ≤ A by dsimp only [A]; linarith only [Real.sqrt_nonneg D])
         hx.le).trans hM).trans_lt (Nat.cast_lt.mpr hj)
     have hsq := pow_lt_pow_left₀ hj' (mul_nonneg (Real.exp_pos _).le hx.le) (by decide : 2 ≠ 0)
-    rw [mul_pow,hpx,← Real.exp_nat_mul,show (2:ℝ)*4=8 by norm_num] at hsq
+    have he : Real.exp 4^2=Real.exp 8 := by
+      rw [sq,← Real.exp_add]; norm_num
+    rw [mul_pow,hpx,he] at hsq
     have h := Real.log_lt_log (mul_pos (Real.exp_pos _) (Nat.cast_pos.mpr hp.pos)) hsq
     rw [Real.log_mul (Real.exp_pos _).ne' (Nat.cast_pos.mpr hp.pos).ne',Real.log_exp] at h
     unfold B bump
@@ -183,6 +186,26 @@ theorem inner_primes_in_reduced_square_prefix : ∃ c A : ℝ, 0 < c ∧ 0 < A �
   have hcomp := mul_le_mul_of_nonneg_left hodd (show 0 ≤ 2/Real.sqrt p by positivity)
   linarith only [H,hcent,hcomp,hhalf]
 
+/-- The inner primes divide the numerator and are absent from the denominator
+of the actual reduced rational prefix. -/
+theorem inner_primes_divide_only_square_prefix_numerator : ∃ A : ℝ, 0 < A ∧
+    ∀ᶠ p : ℕ in atTop, p.Prime → ∀ N : ℕ, A*Real.sqrt p ≤ N →
+      p ∣ (squareGeneratorPrefix N).num.natAbs ∧ ¬p ∣ (squareGeneratorPrefix N).den := by
+  obtain ⟨c,A,hc,hA,h⟩ := inner_primes_in_reduced_square_prefix
+  refine ⟨A,hA,?_⟩
+  filter_upwards [h] with p hp
+  intro hprime N hN
+  let r := squareGeneratorPrefix N
+  have hpos : 0 < deningerRatExp r p := by
+    exact_mod_cast (mul_pos hc (Nat.cast_pos.mpr hprime.pos)).trans_le (hp hprime N hN)
+  rw [deningerRatExp_apply] at hpos
+  have hnum : p ∣ r.num.natAbs := Nat.dvd_of_factorization_pos (by omega)
+  refine ⟨hnum,fun hden => ?_⟩
+  have hg := Nat.dvd_gcd hnum hden
+  rw [r.reduced.gcd_eq_one] at hg
+  exact hprime.ne_one (Nat.dvd_one.mp hg)
+
 #print axioms inner_primes_in_reduced_square_prefix
+#print axioms inner_primes_divide_only_square_prefix_numerator
 
 end GaloisForLFunctions.CountingHolography.Sections

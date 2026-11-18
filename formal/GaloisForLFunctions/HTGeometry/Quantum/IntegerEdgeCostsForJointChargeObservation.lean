@@ -64,6 +64,14 @@ private theorem repeat_edge (q b : ι → ℤ) {A : Matrix ι ι ℂ} (ha : A.Is
       simp only [displacement,edgeGap,sum_const,card_univ,Fintype.card_fin,Int.natAbs_negSucc,
         nsmul_eq_mul,Int.negSucc_eq,Int.natCast_succ] <;> ring
 
+/-- A balanced pair of signed edges yields a frequency at the sum of its
+two absolute multiplicities. -/
+theorem pair_frequency (q b : ι → ℤ) {A : Matrix ι ι ℂ} (ha : A.IsHermitian)
+    (e f : Edge A) (u v : ℤ) (h : u*edgeGap q e+v*edgeGap q f=0) :
+    u*edgeGap b e+v*edgeGap b f∈frequencies q b A (u.natAbs+v.natAbs) := by
+  apply (balanced_word q b A _ _).1
+  simpa only [h] using append_word (repeat_edge q b ha e u) (repeat_edge q b ha f v)
+
 /-- Each signed edge multiplicity can be realized with exactly its absolute
 value in copies, simultaneously across both gradings. -/
 theorem word_of_coefficients (q b : ι → ℤ) {A : Matrix ι ι ℂ} (ha : A.IsHermitian)
@@ -130,3 +138,5 @@ end GaloisForLFunctions.HTGeometry.Quantum.TensorObservation
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.coefficients_of_word
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.copy_cost_iff
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.some_copy_iff
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.pair_frequency

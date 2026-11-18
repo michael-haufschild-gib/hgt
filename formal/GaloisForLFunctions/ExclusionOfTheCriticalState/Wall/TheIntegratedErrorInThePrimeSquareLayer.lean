@@ -1,7 +1,7 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheLogarithmicLocationsOfThePrimeMassBins
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.ThePrimeNumberTheoremOnTheState
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheFirstAbsoluteMomentOfStateIncrements
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheIntegerWaveHasVanishingMeanAbsoluteError
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.ExponentiallyIntegrableChangeOfPrimeVariance
 
 /-!
 # Integrated error of the prime-square layer
@@ -320,8 +320,8 @@ theorem riemannHypothesis_or_ordinary_sign_transfer : RiemannHypothesis ∨
       (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal) ∧
       IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧ 0 ≤ B ∧
       ∀ᶠ V : ℝ in atTop,
-        let A := ∫ u in Iic (0:ℝ), Φ u*Real.exp (-u/2)
-        let P := fun t : ℝ => (ordinaryPrimeWave Φ t).re-Real.exp (t/2)*A
+        let A := ∫ u : ℝ, Real.exp (-u/2)*Φ u
+        let P := ordinaryPrimePolarError Φ
         let M := fun t : ℝ => (∑' n : ℕ, ArithmeticFunction.vonMangoldt n*continuousIntegerAtom Φ n t)-
           Real.exp (t/2)*A-(∫ u, Φ u)/2
         let D := fun t : ℝ => |max (P t) 0-max (M t) 0|+|max (-P t) 0-max (-M t) 0|
@@ -334,16 +334,16 @@ theorem riemannHypothesis_or_ordinary_sign_transfer : RiemannHypothesis ∨
   obtain ⟨B,hB,hid⟩ := h id LipschitzWith.id rfl
   refine Or.inr ⟨W₀,F,Φ,B,hW,ht,hF,hΦ,he,hB,?_⟩
   filter_upwards [hid] with V hv
-  let A := ∫ u in Iic (0:ℝ), Φ u*Real.exp (-u/2)
+  let A := ∫ u : ℝ, Real.exp (-u/2)*Φ u
   let Q := fun t : ℝ => ∑' j, vonMangoldtAtom (properPrimePowerIndex j)*Φ (t-Real.log (properPrimePowerIndex j))
-  let P := fun t : ℝ => (ordinaryPrimeWave Φ t).re-Real.exp (t/2)*A
+  let P := ordinaryPrimePolarError Φ
   let M := fun t : ℝ => (∑' n : ℕ, ArithmeticFunction.vonMangoldt n*continuousIntegerAtom Φ n t)-
     Real.exp (t/2)*A-(∫ u, Φ u)/2
   have hd (t : ℝ) : |max (P t) 0-max (M t) 0|+|max (-P t) 0-max (-M t) 0|=
       |Q t-(∫ u, Φ u)/2| := by
     rw [two_sign_distances]
     have hs : P t-M t= -(Q t-(∫ u, Φ u)/2) := by
-      dsimp only [P,M,Q]
+      dsimp only [P,M,Q,ordinaryPrimePolarError,A]
       rw [mangoldt_atom_sum_split hb t]
       ring
     rw [hs,abs_neg]

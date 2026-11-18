@@ -16,7 +16,7 @@ open Finset Matrix
 open scoped ComplexOrder
 namespace GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels
 
-private def smallLabel : Fin 3 → ℤ := ![0,1,0]
+def smallLabel : Fin 3 → ℤ := ![0,1,0]
 def phaseLabel : Fin 3 → ℤ := ![0,0,1]
 
 def charge (m : ℕ) (i : Fin 3) : ℤ := smallLabel i + (m : ℤ)*phaseLabel i
@@ -51,7 +51,7 @@ theorem state_charpoly (z : Circle) :
     rw [← map_add,← map_add]; norm_num
   simp [charmatrix_apply,base,diagonal_apply,h₂,h₃] <;> ring
 
-private theorem edge_cost (i j : Fin 3) (h : base i j ≠ 0) :
+theorem edge_cost (i j : Fin 3) (h : base i j ≠ 0) :
     |smallLabel i-smallLabel j| + |phaseLabel i-phaseLabel j| ≤ 1 := by
   fin_cases i <;> fin_cases j <;> norm_num [smallLabel,phaseLabel,base] at *
 
@@ -149,3 +149,5 @@ end GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.identified_at
 
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.state_charpoly
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.edge_cost

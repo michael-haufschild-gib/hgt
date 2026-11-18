@@ -126,9 +126,12 @@ theorem primitive_density (J : ℕ) : 51*J^2 ≤ 100*(primitive J).card := by
       _ ≤ ∑ p ∈ P, ((J/p : ℕ) : ℝ)^2 := by exact_mod_cast hcard
       _ ≤ ∑ p ∈ P, (J : ℝ)^2 * (1/(p : ℝ)^2) := by
         apply sum_le_sum
-        intro p _
+        intro p hp
         rw [mul_one_div,← div_pow]
-        exact pow_le_pow_left₀ (Nat.cast_nonneg _) Nat.cast_div_le 2
+        apply pow_le_pow_left₀ (Nat.cast_nonneg _)
+        have hp' : 0<p := (Nat.mem_primesBelow.mp hp).2.pos
+        apply (le_div_iff₀ (by exact_mod_cast hp' : (0 : ℝ)<p)).2
+        exact_mod_cast Nat.div_mul_le_self J p
       _ ≤ _ := by
         rw [← mul_sum]
         exact mul_le_mul_of_nonneg_left (RHTower.sum_primesBelow_one_div_sq_le (J+1)) (sq_nonneg _)

@@ -60,8 +60,7 @@ theorem normalized_minor_mem {q w : ι → ℤ} (b : ι → ℤ) (g : ℤ) (hq :
   · rw [sub_dotProduct,single_dotProduct,single_dotProduct,hq]
     change w i*(g*w j)-w j*(g*w i)=0
     ring
-  · rw [sub_dotProduct,single_dotProduct,single_dotProduct]
-    rfl
+  · simp only [sub_dotProduct,single_dotProduct,minorColumn]
 
 private theorem normalized_coordinates {q w : ι → ℤ} (b : ι → ℤ) (g : ℤ)
     (hg : g≠0) (hq : q=g • w) (f : ι × ι → ℤ) {d : ℤ} (hf : f ⬝ᵥ minorColumn q b=g*d) :

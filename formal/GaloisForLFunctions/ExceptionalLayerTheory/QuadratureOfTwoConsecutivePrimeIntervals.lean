@@ -149,7 +149,7 @@ theorem singleQuartet_two_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuart
   have bound {s : ℝ} (hs : t≤s) (hs' : s≤t+2*h) : |E s+m*(powerMode ρ s).re|≤B := by
     apply (hE s (ht.trans hs) (ht16.trans (Real.exp_le_exp.mpr hs))).trans
     exact mul_le_mul (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith only [hs'])) hL)
-      (add_le_add_left ((sq_le_sq₀ (ht.trans hs) (by linarith only [ht,hh])).mpr hs') _)
+      (add_le_add (le_refl 1) ((sq_le_sq₀ (ht.trans hs) (by linarith only [ht,hh])).mpr hs'))
       (by positivity) (by positivity)
   have he₀ := bound (s := t) le_rfl (by linarith only [hh])
   have he₁ := bound (s := t+h) (by linarith only [hh]) (by linarith only [hh])
@@ -219,7 +219,7 @@ theorem singleQuartet_four_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuar
       |Chebyshev.theta (Real.exp v)-Real.exp v+m*(powerMode ρ v).re| ≤ B := by
     apply (hE _ (ht.trans hl) (ht16.trans (Real.exp_le_exp.mpr hl))).trans
     exact mul_le_mul (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith only [hv])) hL)
-      (add_le_add_left ((sq_le_sq₀ (ht.trans hl) ((ht.trans hl).trans hv)).mpr hv) 1)
+      (add_le_add (le_refl 1) ((sq_le_sq₀ (ht.trans hl) ((ht.trans hl).trans hv)).mpr hv))
       (by positivity) (by positivity)
   have hdiff := (abs_sub _ _).trans (add_le_add (hb (u+h) (hu.trans (le_add_of_nonneg_right hh.le)) huv)
     (hb u hu ((le_add_of_nonneg_right hh.le).trans huv)))

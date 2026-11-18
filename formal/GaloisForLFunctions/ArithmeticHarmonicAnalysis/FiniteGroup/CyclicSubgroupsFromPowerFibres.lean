@@ -107,7 +107,7 @@ theorem power_fibers_determine_orders (H : Type*) [Group H] [Fintype H] :
         have hdiv := (Nat.mem_divisors.mp hd).1
         rw [ih d (lt_of_le_of_ne (Nat.le_of_dvd hn hdiv) hne) (Nat.pos_of_dvd_of_pos hdiv hn)]
       rw [← sum_erase_add _ _ hmem,← sum_erase_add _ _ hmem,hrest] at he
-      exact Nat.eq_of_mul_eq_mul_right (Nat.totient_pos.mpr hn) (Nat.add_left_cancel he)
+      exact Nat.eq_of_mul_eq_mul_right (Nat.totient_pos hn) (Nat.add_left_cancel he)
   · intro he n hn
     rw [power_fiber G n hn,power_fiber H n hn]
     exact sum_congr rfl fun d hd => by rw [he d (Nat.pos_of_dvd_of_pos (Nat.mem_divisors.mp hd).1 hn)]

@@ -18,7 +18,7 @@ variable {ι : Type*} [Fintype ι] {A : ι → Type*} [∀ i, Fintype (A i)]
 
 /-- All pairs that differ in every coordinate. -/
 def fullDistancePairs : Finset ((∀ i, A i) × (∀ i, A i)) :=
-  univ.biUnion fun x => ({x} : Finset _).product (oppositeBox {x})
+  univ.biUnion fun x => ({x} : Finset _) ×ˢ oppositeBox {x}
 
 theorem mem_fullDistancePairs (x y : ∀ i, A i) :
     (x,y) ∈ fullDistancePairs ↔ ∀ i, x i ≠ y i := by
@@ -29,7 +29,7 @@ theorem card_fullDistancePairs :
     (fullDistancePairs (A := A)).card = ∏ i, Fintype.card (A i) * (Fintype.card (A i)-1) := by
   unfold fullDistancePairs
   rw [card_biUnion]
-  · simp [card_product, card_oppositeBox, Fintype.card_pi, prod_mul_distrib]
+  · simp [card_oppositeBox, Fintype.card_pi, prod_mul_distrib]
   · intro x _ y _ hne
     rw [Function.onFun, disjoint_left]
     intro v hx hy
@@ -38,11 +38,11 @@ theorem card_fullDistancePairs :
 
 /-- Union of the largest full-distance rectangles with the prescribed left sides. -/
 def rectangleCoverage (L : Finset (Finset (∀ i, A i))) : Finset ((∀ i, A i) × (∀ i, A i)) :=
-  L.biUnion fun S => S.product (oppositeBox S)
+  L.biUnion fun S => S ×ˢ oppositeBox S
 
 /-- Every rectangle inside the full-distance relation lies in its maximal completion. -/
 theorem product_subset_fullDistancePairs_iff (S T : Finset (∀ i, A i)) :
-    S.product T ⊆ fullDistancePairs ↔ T ⊆ oppositeBox S := by
+    S ×ˢ T ⊆ fullDistancePairs ↔ T ⊆ oppositeBox S := by
   constructor
   · exact fun h y hy => (mem_oppositeBox _ _).mpr fun x hx =>
       (mem_fullDistancePairs _ _).mp (h (mem_product.mpr ⟨hx,hy⟩))
@@ -61,17 +61,29 @@ theorem card_rectangleCoverage_le (L : Finset (Finset (∀ i, A i))) :
 /-- One rectangle per word always covers the full relation. -/
 theorem singleton_rectangleCoverage :
     rectangleCoverage (univ.image (fun x : ∀ i, A i => ({x} : Finset _))) = fullDistancePairs := by
-  ext p
+  ext ⟨x,y⟩
   simp [rectangleCoverage, fullDistancePairs]
+
+private theorem exists_singleton_cover :
+    ∃ L : Finset (Finset (∀ i, A i)), rectangleCoverage L = fullDistancePairs ∧
+      L.card = Fintype.card (∀ i, A i) := by
+  let f := fun x : ∀ i, A i => ({x} : Finset (∀ i, A i))
+  have hi : Function.Injective f := fun _ _ h => singleton_inj.mp h
+  exact ⟨univ.image f,singleton_rectangleCoverage,
+    (card_image_of_injective _ hi).trans card_univ⟩
+
+private theorem coverage_le_sum (L : Finset (Finset (∀ i, A i))) :
+    (rectangleCoverage L).card ≤ ∑ S ∈ L, S.card * (oppositeBox S).card := by
+  unfold rectangleCoverage
+  exact card_biUnion_le.trans_eq (sum_congr rfl (fun S _ => card_product S (oppositeBox S)))
 
 /-- The ternary chart has exact rectangle cover number `3^d` in dimension `d`. -/
 theorem ternary_rectangle_cover_number :
     IsLeast {k : ℕ | ∃ L : Finset (Finset (ι → Fin 3)),
       rectangleCoverage L = fullDistancePairs ∧ L.card = k} (3^Fintype.card ι) := by
   constructor
-  · refine ⟨univ.image (fun x : ι → Fin 3 => ({x} : Finset _)), singleton_rectangleCoverage, ?_⟩
-    rw [card_image_of_injective _ (by intro x y h; simpa using h)]
-    simp
+  · obtain ⟨L,hL,hcard⟩ := exists_singleton_cover (A := fun _ : ι => Fin 3)
+    exact ⟨L,hL,by simpa only [Fintype.card_fun,Fintype.card_fin] using hcard⟩
   · rintro k ⟨L,hL,rfl⟩
     have h := card_rectangleCoverage_le L
     rw [hL,card_fullDistancePairs] at h
@@ -92,11 +104,12 @@ theorem ternary_cover_saturation (L : Finset (Finset (ι → Fin 3))) :
     simpa using card_mul_card_oppositeBox_le S
   apply (sum_eq_sum_iff_of_le (fun S (_ : S ∈ L) => hbound S)).mp
   apply le_antisymm (sum_le_sum (fun S _ => hbound S))
-  have h : (rectangleCoverage L).card ≤ ∑ S ∈ L, S.card * (oppositeBox S).card := by
-    simpa only [rectangleCoverage, card_product] using
-      (card_biUnion_le (s := L) (t := fun S => S.product (oppositeBox S)))
+  have h := coverage_le_sum L
   rw [hcover, card_fullDistancePairs] at h
-  simpa [hsize, mul_pow] using h
+  simp only [Fintype.card_fin,prod_const,card_univ] at h
+  change (3*2)^Fintype.card ι ≤ _ at h
+  rw [mul_pow] at h
+  simpa only [sum_const,nsmul_eq_mul,Nat.cast_id,hsize] using h
 
 #print axioms card_fullDistancePairs
 #print axioms product_subset_fullDistancePairs_iff

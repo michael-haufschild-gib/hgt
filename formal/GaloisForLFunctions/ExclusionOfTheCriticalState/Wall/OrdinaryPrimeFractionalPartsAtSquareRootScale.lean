@@ -6,6 +6,7 @@ import GaloisForLFunctions.RenormalizedIntersectionArithmeticCounts.LogarithmicM
 import GaloisForLFunctions.HTGeometry.ReflectionIntegral
 import GaloisForLFunctions.RHTower.ZetaGateProductAFEMainTermInputs
 import GaloisForLFunctions.RHTower.Sieve.DivisorSwap
+import Mathlib.Topology.Algebra.Order.Floor
 
 /-!
 # Fractional parts over ordinary primes at square-root scale
@@ -89,7 +90,9 @@ private theorem squareFract_continuous_ae :
     ae_all_iff.mpr fun _ => by rw [ae_iff]; simp
   filter_upwards [ae_restrict_of_ae hskip,ae_restrict_mem (μ := volume) measurableSet_Ioi] with u hskip hu
   have hu0 : 0 < u := hu
-  apply (Int.continuousAt_fract (x := u⁻¹^2) ?_).comp (by fun_prop (disch := positivity))
+  have hi : ContinuousAt (fun v : ℝ => v⁻¹^2) u :=
+    (continuousAt_id.inv₀ hu0.ne').pow 2
+  apply (continuousAt_fract (x := u⁻¹^2) ?_).comp hi
   intro h
   apply hskip ⌊u⁻¹^2⌋
   rw [← h,Real.sqrt_sq (inv_nonneg.mpr hu0.le),inv_inv]
@@ -99,7 +102,8 @@ private theorem squareFract_bound (u : ℝ) (hu : 0 ≤ u) : |squareFract u| ≤
   rcases le_or_gt u 1 with h | h
   · apply (Int.fract_lt_one _).le.trans
     rw [le_div_iff₀ (by positivity),one_mul]
-    linarith only [pow_le_pow_left₀ hu h 2,one_pow 2]
+    have hh : u^2 ≤ (1:ℝ) := by simpa only [one_pow] using pow_le_pow_left₀ hu h 2
+    linarith only [hh]
   · apply (fract_le_arg (sq_nonneg _)).trans
     rw [inv_pow,inv_eq_one_div,div_le_div_iff₀ (by positivity) (by positivity)]
     nlinarith only [sq_nonneg (u-1),h]
@@ -118,7 +122,8 @@ private theorem integral_squareFract : (∫ u in Set.Ici (0:ℝ), squareFract u)
     rw [squareFract, show (Real.exp v)⁻¹^2 = Real.exp ((-2)*v) by
       rw [← Real.exp_neg,pow_two,← Real.exp_add]; congr 1; ring]
     dsimp only [f,weightedFloorDiscrepancy]
-    rw [neg_mul,neg_neg,show -(1/2:ℝ)*((-2)*v)=v by ring]
+    rw [show -(1/2:ℝ)*((-2)*v)=v by ring]
+    ring
   simp_rw [hpt,integral_neg,Measure.integral_comp_mul_left,hf,smul_eq_mul]
   norm_num
   <;> ring
@@ -129,7 +134,8 @@ private theorem square_prime_fractional_limit :
   have h := tendsto_dilated_ordinary_prime_sum_ae
     (g := squareFract) (measurable_fract.comp (by fun_prop)) squareFract_continuous_ae
     (by norm_num : (0:ℝ) ≤ 2) squareFract_bound
-  simpa only [integral_squareFract,squareFract,inv_div] using h
+  rw [integral_squareFract] at h
+  simpa only [squareFract,inv_div] using h
 
 private abbrev highIndex (j : Nat.Primes × ℕ) := (j.1:ℕ)^(j.2+3)
 
@@ -138,12 +144,10 @@ private theorem omitted_at_power (y : ℝ) (j : Nat.Primes × ℕ) :
       vonMangoldt (properPrimePowerIndex j)*Int.fract (y^2/(properPrimePowerIndex j:ℕ)) :=
   if_neg (Nat.Prime.not_prime_pow (by omega : 2 ≤ j.2+2))
 
-private theorem power_partition (y : ℝ) :
+private theorem omitted_power_reindex (y : ℝ) :
     (∑' n, omittedPower (y^2) n) =
-      (∑' p : Nat.Primes, Real.log (p:ℕ)*Int.fract ((y/(p:ℕ))^2))+
-      ∑' j : Nat.Primes × ℕ, vonMangoldt (highIndex j)*Int.fract (y^2/(highIndex j:ℕ)) := by
+      ∑' j, omittedPower (y^2) (properPrimePowerIndex j) := by
   let a := omittedPower (y^2)
-  let f := fun j : Nat.Primes × ℕ => a (properPrimePowerIndex j)
   have ha : Summable a := omittedPower_summable (sq_nonneg y)
   have hc : Summable (fun n => (a n:ℂ)) := Complex.ofRealCLM.hasSum ha.hasSum |>.summable
   have hs := tsum_eq_ordinary_primes_add_proper_powers hc (fun n hn => by
@@ -153,26 +157,42 @@ private theorem power_partition (y : ℝ) :
     rw [vonMangoldt_eq_zero_iff.mpr hz,zero_mul,ite_self,Complex.ofReal_zero])
   have hp (p : Nat.Primes) : a p=0 := if_pos p.property
   simp only [hp,Complex.ofReal_zero,tsum_zero,zero_add,← Complex.ofReal_tsum] at hs
-  have htotal : (∑' n, a n) = ∑' j, f j := Complex.ofReal_injective hs
-  have hshift : Function.Injective (fun j : Nat.Primes × ℕ => (j.1,j.2+1)) := by
-    rintro ⟨p,l⟩ ⟨q,k⟩ h
-    exact Prod.ext (congrArg Prod.fst h) (Nat.succ.inj (congrArg Prod.snd h))
-  have hf : Summable f := (ha.comp_injective eulerPrimePowerNat_injective).comp_injective hshift
-  have hg := hf.comp_injective hshift
-  have hhead := hf.comp_injective (i := fun p : Nat.Primes => (p,0)) (fun _ _ h => congrArg Prod.fst h)
+  exact Complex.ofReal_injective hs
+
+private theorem exponent_shift_injective : Function.Injective (fun j : Nat.Primes × ℕ => (j.1,j.2+1)) := by
+  rintro ⟨p,l⟩ ⟨q,k⟩ h
+  have hp : p=q := congrArg Prod.fst h
+  have hk : l+1=k+1 := congrArg Prod.snd h
+  exact Prod.ext hp (Nat.succ.inj hk)
+
+private theorem extract_first_exponent {f : Nat.Primes × ℕ → ℝ} (hf : Summable f) :
+    (∑' j, f j) = (∑' p : Nat.Primes, f (p,0))+∑' j : Nat.Primes × ℕ, f (j.1,j.2+1) := by
+  have hg : Summable (fun j : Nat.Primes × ℕ => f (j.1,j.2+1)) :=
+    hf.comp_injective exponent_shift_injective
+  have hh : Summable (fun p : Nat.Primes => f (p,0)) :=
+    hf.comp_injective (i := fun p : Nat.Primes => (p,0)) (fun _ _ h => congrArg Prod.fst h)
   have hsplit (p : Nat.Primes) : (∑' j, f (p,j))=f (p,0)+∑' j, f (p,j+1) :=
     (hf.comp_injective (i := fun j : ℕ => (p,j)) (fun _ _ h => congrArg Prod.snd h)).tsum_eq_zero_add
+  calc (∑' j, f j) = ∑' p, ∑' k, f (p,k) := hf.tsum_prod
+    _ = ∑' p, (f (p,0)+∑' k, f (p,k+1)) := tsum_congr hsplit
+    _ = (∑' p, f (p,0))+(∑' p, ∑' k, f (p,k+1)) := hh.tsum_add hg.prod
+    _ = _ := congrArg ((∑' p, f (p,0))+·) hg.tsum_prod.symm
+
+private theorem power_partition (y : ℝ) :
+    (∑' n, omittedPower (y^2) n) =
+      (∑' p : Nat.Primes, Real.log (p:ℕ)*Int.fract ((y/(p:ℕ))^2))+
+      ∑' j : Nat.Primes × ℕ, vonMangoldt (highIndex j)*Int.fract (y^2/(highIndex j:ℕ)) := by
+  let f := fun j : Nat.Primes × ℕ => omittedPower (y^2) (properPrimePowerIndex j)
+  have hbase := (omittedPower_summable (sq_nonneg y)).comp_injective eulerPrimePowerNat_injective
+  have hf : Summable f := hbase.comp_injective exponent_shift_injective
   have hsq (p : Nat.Primes) : f (p,0)=Real.log (p:ℕ)*Int.fract ((y/(p:ℕ))^2) := by
     rw [show f (p,0)=_ from omitted_at_power y (p,0)]
     change vonMangoldt ((p:ℕ)^2)*Int.fract (y^2/(((p:ℕ)^2:ℕ):ℝ))=_
     rw [vonMangoldt_apply_pow (by decide),vonMangoldt_apply_prime p.property,Nat.cast_pow,div_pow]
   have hl (j : Nat.Primes × ℕ) : f (j.1,j.2+1)=
       vonMangoldt (highIndex j)*Int.fract (y^2/(highIndex j:ℕ)) := omitted_at_power y (j.1,j.2+1)
-  change (∑' n, a n)=_
-  rw [htotal,hf.tsum_prod]
-  simp_rw [hsplit]
-  rw [hhead.tsum_add hg.prod,← hg.tsum_prod]
-  exact congrArg₂ HAdd.hAdd (tsum_congr hsq) (tsum_congr hl)
+  exact (omitted_power_reindex y).trans ((extract_first_exponent hf).trans
+    (congrArg₂ (· + ·) (tsum_congr hsq) (tsum_congr hl)))
 
 private theorem higher_powers_vanish :
     Tendsto (fun y : ℝ =>
@@ -244,7 +264,8 @@ theorem tendsto_ordinaryFractionalPrimeLimit_div_sqrt :
   rw [zero_sub,neg_neg] at h
   apply h.congr' ((eventually_ge_atTop (0:ℝ)).mono fun x hx => ?_)
   change (stirlingMain ((Real.sqrt x)^2)-_)/_ - _ /_ = _
-  rw [Real.sq_sqrt hx,ordinaryFractionalPrimeLimit,sub_div]
+  rw [Real.sq_sqrt hx,ordinaryFractionalPrimeLimit]
+  ring
 
 /-- Ordinary primes give a strictly negative renormalized sum at every sufficiently large point. -/
 theorem eventually_ordinaryFractionalPrimeLimit_neg :

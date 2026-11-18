@@ -246,7 +246,7 @@ theorem triangularDistinctPrimeLogMoment_abs {N : ℕ} (hN : 1 ≤ N) :
   rw [triangularDistinctPrimeLogMoment_average hN]
   apply (abs_add_le _ _).trans
   rw [abs_div,abs_of_pos (by norm_num : (0:ℝ)<2),abs_div,abs_of_pos hn]
-  apply add_le_add_left
+  apply add_le_add le_rfl
   apply (div_le_iff₀ hn).mpr
   apply (abs_sum_le_sum_abs _ _).trans
   calc

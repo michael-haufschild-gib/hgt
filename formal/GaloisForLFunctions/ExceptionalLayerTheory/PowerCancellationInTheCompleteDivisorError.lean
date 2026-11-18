@@ -73,8 +73,7 @@ theorem complete_divisor_error_power :
     exact mul_le_mul_of_nonneg_left (h hn) (by norm_num)
   have hmain : |completeDivisorError n+2*Real.eulerMascheroniConstant*n|≤(9+2*K)*(J*P) := by
     rw [divisor_defect_eq,hyperbola_ramps]
-    apply (abs_add_le _ _).trans ((add_le_add_left (abs_add_le _ _) _).trans
-      ((add_le_add hS (add_le_add hF hH)).trans _))
+    apply (abs_add_le _ _).trans ((add_le_add hS ((abs_add_le _ _).trans (add_le_add hF hH))).trans _)
     linarith only [hJ']
   let e : ℝ := 1/200
   have he : 0<e := by norm_num [e]

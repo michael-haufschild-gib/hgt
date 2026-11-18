@@ -48,11 +48,11 @@ theorem separatedSizes_iff (A : ι → Type*) [∀ i, Fintype (A i)] (s t : ℕ)
       (he ▸ Fintype.mem_piFinset.mp (hS hx) i)
 
 private theorem ternary_split (D : Finset ι) :
-    (∏ i, if i ∈ D then 2 else (1:ℕ)) = 2^D.card ∧
-    (∏ i, 3-(if i ∈ D then 2 else (1:ℕ))) = 2^(Fintype.card ι - D.card) := by
+    (∏ i : ι, if i ∈ D then 2 else (1:ℕ)) = 2^D.card ∧
+    (∏ i : ι, (3-(if i ∈ D then 2 else (1:ℕ)))) = 2^(Fintype.card ι - D.card) := by
   have hc : (univ.filter fun i => i ∉ D) = Dᶜ := by ext; simp
   constructor
-  · simp [prod_ite]
+  · simp
   · have he (i : ι) : 3-(if i ∈ D then 2 else (1:ℕ)) = if i ∈ D then 1 else 2 := by
       split_ifs <;> rfl
     simp_rw [he]
@@ -84,13 +84,18 @@ theorem ternary_size_tradeoff (s t : ℕ) :
         omega
     have hf : a = fun i => if i ∈ D then 2 else 1 := funext he
     rw [hf, (ternary_split D).1] at hs
-    rw [hf, (ternary_split D).2] at ht
+    simp only [hf] at ht
+    rw [(ternary_split D).2] at ht
     exact ⟨D.card,D.card_le_univ,hs,ht⟩
   · rintro ⟨k,hk,hs,ht⟩
     obtain ⟨D,_,hD⟩ := exists_subset_card_eq (s := (univ : Finset ι)) (n := k) (by simpa using hk)
-    refine ⟨fun i => if i ∈ D then 2 else 1, fun i => by split_ifs <;> omega, ?_, ?_⟩
-    · simpa only [(ternary_split D).1,hD] using hs
-    · simpa only [(ternary_split D).2,hD] using ht
+    refine ⟨fun i => if i ∈ D then 2 else 1, fun i => by dsimp only; split_ifs <;> omega, ?_, ?_⟩
+    · dsimp only
+      rw [(ternary_split D).1,hD]
+      exact hs
+    · dsimp only
+      rw [(ternary_split D).2,hD]
+      exact ht
 
 /-- The equal-size threshold in dimension `d` is exactly `2^(d/2)` with
 integer division, including odd dimensions where rounding the volume

@@ -29,7 +29,7 @@ private theorem B_mono {x y : ℝ} (hx : 1 ≤ x) (hxy : x ≤ y) : B x ≤ B y 
   have hx0 := zero_lt_one.trans_le hx
   have hl := Real.log_le_log hx0 hxy
   exact mul_le_mul (Real.sqrt_le_sqrt hxy) ((sq_le_sq₀ (by linarith only [Real.log_nonneg hx])
-    (by linarith only [Real.log_nonneg (hx.trans hxy)])).mpr (add_le_add_left hl 1))
+    (by linarith only [Real.log_nonneg (hx.trans hxy)])).mpr (add_le_add (le_refl 1) hl))
     (sq_nonneg _) (Real.sqrt_nonneg _)
 
 private theorem T_in_interval {y : ℝ} (hy : 1 ≤ y) : 1 ≤ T y ∧ T y ≤ y :=

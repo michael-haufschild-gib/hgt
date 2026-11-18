@@ -84,6 +84,85 @@ theorem realMeshMellinError_uniform (W : CompactBVPrimeWindow) {K : Set ℂ} (hK
   refine le_trans ?_ ((mul_le_mul_of_nonneg_left hv (show 0 ≤ 1/k by positivity)).trans_eq (by ring))
   simpa only [Nat.cast_add,Nat.cast_one] using hquad
 
+private theorem differentiable_realMeshMellinError (W : CompactBVPrimeWindow) (k : ℝ) :
+    Differentiable ℂ (realMeshMellinError W k) := by
+  intro s
+  apply DifferentiableAt.sub _ (W.differentiable_mellinTransform s)
+  apply DifferentiableAt.const_smul
+  apply DifferentiableAt.fun_sum
+  intro i _
+  let x := ((i+1:ℕ):ℝ)/k
+  have hx : (W.mellinBase x:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (W.mellinBase_pos x).ne'
+  exact (((differentiableAt_id.neg).const_cpow (Or.inl hx)).const_mul (W x) :
+    DifferentiableAt ℂ (fun z : ℂ => W x*(W.mellinBase x:ℂ)^(-z)) s)
+
+/-- Quadrature error of a von Mangoldt row at the mesh √k, after extracting
+the conductor Dirichlet scaling. -/
+def sqrtMeshErrorTerm (W : CompactBVPrimeWindow) (k : ℕ) (s : ℂ) :=
+  if k = 0 then 0 else (vonMangoldt k:ℂ)*(k:ℂ)^(1-s/2)*realMeshMellinError W (Real.sqrt k) s
+
+private theorem differentiable_sqrtMeshErrorTerm (W : CompactBVPrimeWindow) (k : ℕ) :
+    Differentiable ℂ (sqrtMeshErrorTerm W k) := by
+  rcases eq_or_ne k 0 with rfl | hk
+  · simpa only [sqrtMeshErrorTerm,if_pos rfl] using (differentiable_const (c := (0:ℂ)) : Differentiable ℂ (fun _ : ℂ => (0:ℂ)))
+  have h : Differentiable ℂ (fun z : ℂ => (k:ℂ)^(1-z/2)) :=
+    ((differentiable_id.div_const (2:ℂ)).const_sub 1).const_cpow (Or.inl (Nat.cast_ne_zero.mpr hk))
+  exact ((h.const_mul (vonMangoldt k:ℂ)).mul (differentiable_realMeshMellinError W _)).congr
+    (fun s => by simp only [sqrtMeshErrorTerm,if_neg hk])
+
+/-- Normal convergence of the real-mesh error in Re s > 3. The majorant is
+the absolutely convergent von Mangoldt series at (σ−1)/2 for σ > 3. -/
+theorem locallySummable_sqrtMeshErrorTerm (W : CompactBVPrimeWindow) :
+    SummableLocallyUniformlyOn (sqrtMeshErrorTerm W) {s : ℂ | 3 < s.re} := by
+  apply HasSumLocallyUniformlyOn.summableLocallyUniformlyOn
+  apply hasSumLocallyUniformlyOn_of_of_forall_exists_nhds
+  intro s hs
+  change 3 < s.re at hs
+  let r := (s.re-3)/2
+  let σ := s.re-r
+  have hr : 0 < r := half_pos (sub_pos.mpr hs)
+  have hσ : 3 < σ := by dsimp only [σ,r]; linarith only [hs]
+  obtain ⟨Q,hQ,herr⟩ := realMeshMellinError_uniform W (isCompact_closedBall s r)
+    ⟨s,Metric.mem_closedBall_self hr.le⟩
+  let b := (σ-1)/2
+  let z : ℂ := b
+  have hz : 1 < z.re := by change 1 < (σ-1)/2; linarith only [hσ]
+  have hvm := LSeriesSummable_vonMangoldt hz
+  refine ⟨Metric.ball s r,mem_nhdsWithin_of_mem_nhds (Metric.isOpen_ball.mem_nhds (Metric.mem_ball_self hr)),?_⟩
+  apply HasSumUniformlyOn.of_norm_le_summable (hvm.norm.mul_left Q)
+  intro k x hx
+  rcases eq_or_ne k 0 with rfl | hk
+  · simp [sqrtMeshErrorTerm]
+  have hk' : 0 < (k:ℝ) := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hk)
+  have hk₁ : (1:ℝ) ≤ k := by exact_mod_cast Nat.pos_of_ne_zero hk
+  have hroot : 1 ≤ Real.sqrt k := Real.one_le_sqrt.mpr hk₁
+  have he := herr x (Metric.ball_subset_closedBall hx) _ hroot
+  have hxσ : σ ≤ x.re := by
+    have h := (Complex.abs_re_le_norm (x-s)).trans_lt (by simpa only [← dist_eq_norm] using Metric.mem_ball.mp hx)
+    rw [Complex.sub_re,abs_lt] at h
+    dsimp only [σ]; linarith only [h.1]
+  rw [sqrtMeshErrorTerm,if_neg hk,norm_mul,norm_mul,Complex.norm_real,Real.norm_eq_abs,
+    abs_of_nonneg vonMangoldt_nonneg,Complex.norm_natCast_cpow_of_pos (Nat.pos_of_ne_zero hk),
+    LSeries.term_of_ne_zero hk,norm_div,Complex.norm_real,Real.norm_eq_abs,
+    abs_of_nonneg vonMangoldt_nonneg,Complex.norm_natCast_cpow_of_pos (Nat.pos_of_ne_zero hk)]
+  have hRe : (1-x/2).re=1-x.re/2 := by simp
+  rw [hRe]
+  refine (mul_le_mul_of_nonneg_left he (mul_nonneg vonMangoldt_nonneg (Real.rpow_nonneg hk'.le _))).trans ?_
+  calc _ = (Q*vonMangoldt k)*(k:ℝ)^((1-x.re)/2) := by
+             rw [Real.sqrt_eq_rpow,show (1-x.re)/2=(1-x.re/2)-(1/2) by ring,Real.rpow_sub hk']
+             ring
+    _ ≤ (Q*vonMangoldt k)*(k:ℝ)^(-b) := mul_le_mul_of_nonneg_left
+          (Real.rpow_le_rpow_of_exponent_le hk₁ (by dsimp only [b]; linarith only [hxσ]))
+          (mul_nonneg hQ vonMangoldt_nonneg)
+    _ = _ := by rw [Real.rpow_neg hk'.le]; change _ = Q*(vonMangoldt k/(k:ℝ)^b); ring
+
+theorem analytic_sqrtMeshErrorSeries (W : CompactBVPrimeWindow) :
+    AnalyticOnNhd ℂ (fun s => ∑' k, sqrtMeshErrorTerm W k s) {s : ℂ | 3 < s.re} := by
+  let U := {s : ℂ | 3 < s.re}
+  have hopen : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
+  exact ((locallySummable_sqrtMeshErrorTerm W).differentiableOn hopen
+    (fun k => (differentiable_sqrtMeshErrorTerm W k).differentiableOn)).analyticOnNhd hopen
+
 private abbrev lo := Real.exp (-8)
 private abbrev hi := Real.exp 8
 private def rootWindowRaw (t : ℝ) : ℂ := (2*t^2*squareLogProfile (-2*Real.log t):ℝ)

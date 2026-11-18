@@ -62,9 +62,10 @@ private theorem disk_test {p r : ℝ} (hp : 1<p) (hr : 0≤r) (hrp : r<p) (w : �
     rwa [h,sub_nonpos] at hh
   · intro he
     apply sub_nonpos.mp
-    apply (mul_nonpos_iff_of_pos_left hd).1
-    rw [h]
-    exact sub_nonpos.mpr he
+    by_contra! hpos
+    have hh := mul_pos hd hpos
+    rw [h] at hh
+    exact (not_lt_of_ge (sub_nonpos.mpr he)) hh
 
 private theorem pole_outside {p r : ℝ} (hp : 1<p) (hr : 0≤r) (hrp : r<p) {w : ℂ}
     (hw : ‖w-(center p r : ℂ)‖≤radius p r) : (p : ℂ)-w≠0 := by
