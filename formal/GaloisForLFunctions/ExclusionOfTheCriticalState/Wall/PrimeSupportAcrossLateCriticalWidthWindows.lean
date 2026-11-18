@@ -413,9 +413,12 @@ theorem riemannHypothesis_or_signed_window_vanishes_in_measure : RiemannHypothes
   have hlog := (Real.le_log_iff_exp_le hu0).2 (hXe.trans hu.1)
   let H := arithmeticWallWidth u
   have hH : 0 < H := by
-    rw [H,arithmeticWallWidth_eq hu0]; exact Real.sqrt_pos.mpr (mul_pos hu0 (zero_lt_one.trans_le hlog))
+    change 0 < arithmeticWallWidth u
+    rw [arithmeticWallWidth_eq hu0]
+    exact Real.sqrt_pos.mpr (mul_pos hu0 (zero_lt_one.trans_le hlog))
   have hroot : Real.sqrt X ≤ H := by
-    rw [H,arithmeticWallWidth_eq hu0]
+    change Real.sqrt X ≤ arithmeticWallWidth u
+    rw [arithmeticWallWidth_eq hu0]
     exact Real.sqrt_le_sqrt (hu.1.trans (le_mul_of_one_le_right hu0.le hlog))
   have hratio : 10*X^(1/5:ℝ) ≤ δ*H := by
     have heq : X^(1/5:ℝ)/Real.sqrt X = X^(-(3/10:ℝ)) := by

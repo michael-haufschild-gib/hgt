@@ -1,6 +1,9 @@
+import Mathlib.Analysis.Calculus.Deriv.Add
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Inv
-import Mathlib.Tactic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Positivity
 
 /-!
 # The exact two-branch minimax of zero detection
@@ -176,16 +179,17 @@ theorem hasDerivAt_minimaxValue_slope (δ x V A g₁ : ℝ)
       (-(4 * δ * x / 3)) g₁ := by
     have h := (hasDerivAt_const_add_iff V).mpr (HasDerivAt.const_mul (2 * δ / 3)
       (HasDerivAt.const_sub (1 - x) (HasDerivAt.const_mul (2 * x) (hasDerivAt_id' (x := g₁)))))
-    convert h using 1
-    · funext g; unfold crossingDenominator; ring
-    · ring
+    have e : (fun g => crossingDenominator δ (1 - x * (1 + 2 * g)) V) =
+        fun y => V + 2 * δ / 3 * (1 - x - 2 * x * y) := by
+      funext g; unfold crossingDenominator; ring
+    rw [e]
+    exact h.congr_deriv (by ring)
   have hq := (hasDerivAt_const_add_iff (1 / 6 : ℝ)).mpr
     (HasDerivAt.const_mul V (HasDerivAt.div (hasDerivAt_const g₁ (5 / 6 - δ * A)) hd hD))
-  convert hq using 1
-  · funext g; unfold minimaxValue crossingPoint; rfl
-  · unfold crossingPoint
-    field_simp
-    ring
+  refine hq.congr_deriv ?_
+  unfold crossingPoint
+  field_simp
+  ring
 
 end
 

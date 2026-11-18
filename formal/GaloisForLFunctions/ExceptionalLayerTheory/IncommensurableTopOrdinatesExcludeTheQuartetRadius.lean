@@ -205,6 +205,31 @@ theorem extremal_radial_exclusion_or_commensurable_top {γ : ℝ} {m : ℕ}
   by_contra! he
   exact hb (thetaRadial_unbounded_of_unattained hΘ he hγ hm)
 
+/-- Two rationally independent ordinates on the extremal line exclude every
+trial radius at the extremal abscissa, regardless of the zeros below it. -/
+theorem thetaRadial_unbounded_of_incommensurable_top_pair
+    (hΘ : 1/2 < zetaZeroAbscissa) (p q : XiZeroCopy)
+    (hp : (p.1 : ℂ).re = zetaZeroAbscissa) (hq : (q.1 : ℂ).re = zetaZeroAbscissa)
+    (hind : ∀ r : ℚ, xiCopyOrdinate p ≠ (r:ℝ)*xiCopyOrdinate q)
+    {γ : ℝ} (hγ : γ ≠ 0) (m : ℕ) :
+    IsLogSqrtSqUnbounded (thetaRadialDiscrepancy zetaZeroAbscissa γ m) := by
+  by_contra hb
+  have hf := top_ordinates_commensurable_of_bounded_thetaRadial hΘ hγ hb
+  obtain ⟨a,ha⟩ := hf p hp
+  obtain ⟨b,hb⟩ := hf q hq
+  change xiCopyOrdinate p = _ at ha
+  change xiCopyOrdinate q = _ at hb
+  have hq0 : xiCopyOrdinate q ≠ 0 := by
+    intro hz
+    have hgt := four_lt_abs_xiCopyOrdinate q
+    rw [hz, abs_zero] at hgt
+    linarith only [hgt]
+  have hb0 : (b:ℝ) ≠ 0 := fun hz => hq0 (by rw [hb,hz,zero_mul])
+  apply hind (a/b)
+  rw [Rat.cast_div, ha, hb]
+  field_simp
+
+#print axioms thetaRadial_unbounded_of_incommensurable_top_pair
 #print axioms extremal_radial_exclusion_or_commensurable_top
 
 end GaloisForLFunctions.ExceptionalLayerTheory
