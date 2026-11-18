@@ -142,7 +142,9 @@ theorem criticalState_integerReference_zero_mean_error {W₀ : ℝ} (hW : 0 < W�
 def integerCentredPrimeWave (Φ : ℝ → ℝ) (t : ℝ) : ℝ :=
   ∑' n : ℕ, ((if n.Prime then Real.log n else 0)-1)*continuousIntegerAtom Φ n t
 
-private theorem integerCentredPrimeWave_eq {Φ : ℝ → ℝ} {C : ℝ}
+/-- Subtracting one unit at every integer gives exactly the ordinary-prime
+wave minus its integer reference. -/
+theorem integerCentredPrimeWave_eq {Φ : ℝ → ℝ} {C : ℝ}
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
     integerCentredPrimeWave Φ t = (ordinaryPrimeWave Φ t).re - integerReferenceWave Φ t := by
   let a := fun n : ℕ => continuousIntegerAtom Φ n t

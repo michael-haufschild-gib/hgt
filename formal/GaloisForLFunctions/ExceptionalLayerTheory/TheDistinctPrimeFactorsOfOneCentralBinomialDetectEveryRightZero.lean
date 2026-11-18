@@ -2,6 +2,7 @@ import GaloisForLFunctions.ExceptionalLayerTheory.EveryLastQuotientClassPreserve
 import GaloisForLFunctions.ExceptionalLayerTheory.AdjacentDenominatorsInDiscreteQuotientMeans
 import GaloisForLFunctions.ExceptionalLayerTheory.DistinctPrimeFactorsInDyadicBinomialGcds
 import GaloisForLFunctions.HTGeometry.RpowPartialSumBound
+import GaloisForLFunctions.RHTower.ZetaLittlewoodDeficit
 
 /-!
 # Counting distinct prime factors of a central binomial coefficient
@@ -43,8 +44,8 @@ private theorem ordinaryLastClassTotal_above {b : ℝ} (hb : _root_.RHTower.zero
     apply sum_subset (Icc_subset_Icc_right (mem_range.mp hk).le)
     intro m hm hm'
     have hm0 := (mem_Icc.mp hm).1
-    have hkm : k<m := by by_contra! hg; exact hm' (mem_Icc.mpr ⟨hm0,hg⟩)
-    rw [Nat.div_eq_of_lt hkm,h0,mul_zero]
+    have hkm : k < m := by by_contra! hg; exact hm' (mem_Icc.mpr ⟨hm0,hg⟩)
+    simp [Nat.div_eq_of_lt hkm,hn]
   have ht : ordinaryLastClassTotal q X =
       ∑ m ∈ Icc 1 X, ordinaryPrimeCountWeight m*discreteQuotientMean A m X := by
     rw [ordinaryLastClassTotal,sum_congr rfl he,sum_comm]
@@ -75,8 +76,9 @@ private theorem jump_series {q : ℕ} [NeZero q] {s : ℂ} (hs : 1<s.re) :
   have hc {n : ℕ} (hn : n≠0) : (lastClassCoefficients q n : ℂ)=lastClassJumps (n : ZMod q) := by
     have h1 : ((n:ZMod q)=-1) ↔ q∣n+1 := by
       rw [← ZMod.natCast_eq_zero_iff,Nat.cast_add,Nat.cast_one,add_eq_zero_iff_eq_neg]
-    change ((if n=0 then (0:ℝ) else (if q∣n+1 then 1 else 0)-(if q∣n then 1 else 0)):ℂ)=_
-    simp only [if_neg hn,lastClassJumps,h1,ZMod.natCast_eq_zero_iff]
+    have hval : lastClassCoefficients q n = ((if q∣n+1 then 1 else 0)-(if q∣n then 1 else 0) : ℝ) := if_neg hn
+    rw [hval]
+    simp only [lastClassJumps,h1,ZMod.natCast_eq_zero_iff]
     split_ifs <;> simp
   have he : (fun n => ((ordinaryPrimeCountWeight*lastClassCoefficients q) n : ℂ)) =
       ((fun n => (ordinaryPrimeCountWeight n : ℂ)) ⍟ fun n => (lastClassCoefficients q n : ℂ)) := by
@@ -114,14 +116,10 @@ private theorem power_excludes_zero {q : ℕ} [NeZero q] (hq : 2≤q) {b C : ℝ
   have hf : LSeriesSummable f 2 := (jump_series (q := q) (s := 2) (by norm_num)).1
   let M := ∑' n, ‖LSeries.term f 2 n‖
   have hcoef (n : ℕ) : |c (n+1)| ≤ M*((n:ℝ)+1)^(2:ℝ) := by
-    have he : ‖LSeries.term f 2 (n+1)‖ ≤ M := hf.norm.le_tsum (n+1) (fun k => norm_nonneg _)
-    rw [LSeries.term_of_ne_zero (Nat.succ_ne_zero n),norm_div] at he
-    have hpow : (2:ℂ)=(2:ℕ) := by norm_num
-    rw [hpow,Complex.cpow_natCast,norm_pow] at he
-    simp only [f,Complex.norm_real,Real.norm_eq_abs,Complex.norm_natCast,Nat.cast_succ] at he
-    rw [Real.rpow_two]
-    apply (div_le_iff₀ (by positivity : 0<((n:ℝ)+1)^2)).mp
-    exact he
+    have he : ‖LSeries.term f 2 (n+1)‖ ≤ M := hf.norm.le_tsum (n+1) (fun _ _ => norm_nonneg _)
+    rw [LSeries.norm_term_eq,if_neg (Nat.succ_ne_zero n)] at he
+    simp only [f,Complex.norm_real,Real.norm_eq_abs,show (2:ℂ).re=(2:ℝ) by norm_num,Nat.cast_succ] at he
+    exact (div_le_iff₀ (by positivity : 0<((n:ℝ)+1)^(2:ℝ))).mp he
   have hs1 : 1<s.re := by linarith only [hs]
   rw [triangularDirichletContinuation_eq_series c hcoef (by linarith only [hs]) (by linarith only [hs]),
     ← (jump_series (q := q) hs1).2]
@@ -182,10 +180,14 @@ theorem binomialDistinctPrimeTotal_error (j : ℕ) {b : ℝ} (hb : 1/2≤b) :
       (div_nonneg (Real.log_nonneg (le_add_of_nonneg_left (Nat.cast_nonneg k))) hlog2.le) (Nat.cast_nonneg q)
     exact ((abs_sub_le _ ((lastClassPrimes q Y).card:ℝ) _).trans
       (add_le_add h₁ (h₂.trans ht))).trans_eq (by dsimp only [K]; ring)
-  change |(∑ k ∈ range X, _) - (∑ k ∈ range X, quotientClassMassOf ordinaryPrimeCountWeight q k)| ≤ _
-  simp_rw [prime_reference]
-  rw [← sum_sub_distrib]
-  simp only [sub_sub_sub_cancel_right]
+  have he : binomialDistinctPrimeTotal j X-ordinaryLastClassTotal q X =
+      ∑ k ∈ range X, (((dyadicBinomialGcd j (k/q)).primeFactors.card:ℝ)-(lastClassPrimes q k).card) := by
+    unfold binomialDistinctPrimeTotal ordinaryLastClassTotal
+    rw [← sum_sub_distrib]
+    refine sum_congr rfl fun k _ => ?_
+    rw [prime_reference]
+    exact sub_sub_sub_cancel_right _ _ _
+  rw [he]
   apply (abs_sum_le_sum_abs _ _).trans
   have hh := sum_le_sum hcell
   rw [sum_const,card_range,nsmul_eq_mul] at hh

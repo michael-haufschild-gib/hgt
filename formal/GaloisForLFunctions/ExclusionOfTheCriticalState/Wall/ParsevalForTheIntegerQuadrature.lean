@@ -14,7 +14,7 @@ noncomputable section
 open MeasureTheory Filter Set Topology Complex
 open scoped FourierTransform
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
-open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri CriticalArithmeticCorrelationTheory
+open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri CriticalArithmeticCorrelationTheory HTGeometry
 
 private theorem tilt_integrable_of_stronger_square_bound {D : ℝ → ℝ} (hm : Measurable D)
     (hi : IntegrableOn D (Iic 0)) {β μ : ℝ} (hβ : 0 ≤ β) (hlt : β < μ)
@@ -74,12 +74,14 @@ theorem criticalState_integer_quadrature_parseval {W₀ : ℝ} (hW : 0 < W₀)
   let g := fun t : ℝ => (tiltedIntegerError Φ β t:ℂ)
   let B := fun t : ℝ => (weightedIntegerPrimitive Φ β t:ℂ)
   let σ := 1/2-β
-  have hD : Continuous D := (continuous_integerReferenceWave hc hK hb).sub (by dsimp only; fun_prop)
+  have hN := continuous_integerReferenceWave hc hK hb
+  have hD : Continuous D := by dsimp only [D]; fun_prop
   have hDl : IntegrableOn D (Iic 0) := by
     have hexp := integrableOn_exp_mul_Iic (by norm_num : (0:ℝ)<1/2) 0
     apply (integerReference_integrableOn_left hc hb).sub
     simpa only [show ∀ t : ℝ, (1/2)*t=t/2 by intro t; ring] using hexp.mul_const A
-  have hsub := criticalState_subcritical_integer_error hW ht hF hc he hK hb
+  have hsub {a : ℝ} (ha : 0 ≤ a) (ha' : a < 1/2) : MemLp (tiltedIntegerError Φ a) 2 :=
+    criticalState_subcritical_integer_error hW ht hF hc he hK hb ha ha'
   let μ := (β+1/2)/2
   have hμ : β < μ := by dsimp only [μ]; linarith only [hβ']
   have hμ' : μ < 1/2 := by dsimp only [μ]; linarith only [hβ']

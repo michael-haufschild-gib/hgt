@@ -13,3 +13,10 @@ The argument works uniformly for $d\le t\le K^2R$ with fixed $d>0$. The fiber le
 At $m=n$ the global quadrature error is $O(n)$. Thus $n^{-2}\log d_{\rm ord}(nD_n)\le P(D_n)-\delta$ for some $\delta>0$ and all sufficiently large $n$, where $P$ is the signed integrated ordinary-prime contact.
 
 [Second-order quadrature](../3-formalized/acs-the-mesh-error-at-diagonal-multiplicity.md) · [Short-interval sieve bound](../../../../formal/GaloisForLFunctions/RHTower/Sieve/AdaptiveGallagherBrunTitchmarsh.lean)
+
+
+## Lean
+
+`prime_mass_outside_thin_floor_fibers` bounds the prime weight of the exceptional fibers. [Sieve proof](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/PrimeMassOutsideThinFloorFibers.lean)
+
+`all_multiplicities_through_diagonal_ordinary_floor_loss` proves the uniform loss up to any fixed multiple of the conductor index. `diagonal_log_generator_below_integrated_contact` gives the strict saving on the diagonal. `all_square_sections_at_the_zero_width` gives exponential ordinary-generator decay and exponentially many original sections at every prescribed positive multiplicity up to a constant times $(n+1)^{1-w}$, where $w$ is the zeta zero width. [Square-conductor proof](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/TheDiagonalOrdinaryFloorLoss.lean)

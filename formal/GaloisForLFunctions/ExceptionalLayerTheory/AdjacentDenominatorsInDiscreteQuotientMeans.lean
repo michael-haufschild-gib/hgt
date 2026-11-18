@@ -25,14 +25,16 @@ private theorem repeated_quotient_sum {r : ℕ} (hr : 0<r) (X : ℕ) (f : ℕ �
   induction X with
   | zero => simp
   | succ X ih =>
-    rw [Nat.mul_succ,sum_range_add,ih,sum_range_succ f X,mul_add]
-    congr 1
-    have h (k : ℕ) (hk : k∈range r) : (r*X+k)/r=X := by
-      rw [Nat.mul_add_div hr,Nat.div_eq_of_lt (mem_range.mp hk),add_zero]
-    simp only [sum_congr rfl (fun k hk => congrArg f (h k hk)),sum_const,card_range,nsmul_eq_mul]
+    rw [Nat.mul_succ,sum_range_add,ih,Finset.sum_range_succ f X,mul_add]
+    apply congrArg (fun x : ℝ => (r:ℝ)*(∑ n ∈ range X, f n)+x)
+    calc
+      _ = ∑ _k ∈ range r, f X := by
+        refine sum_congr rfl fun k hk => ?_
+        rw [Nat.mul_add_div hr,Nat.div_eq_of_lt (mem_range.mp hk),add_zero]
+      _ = _ := by simp
 
 /-- Refining both grids leaves exactly the X cells between the two terminal cutoffs. -/
-theorem discreteQuotientMean_consecutive {m : ℕ} (hm : 0<m) (A : ℕ → ℝ) (X : ℕ) :
+theorem discreteQuotientMean_consecutive {m : ℕ} (hm : 0 < m) (A : ℕ → ℝ) (X : ℕ) :
     ((m:ℝ)+1)*discreteQuotientMean A m X-(m:ℝ)*discreteQuotientMean A (m+1) X =
       ∑ k ∈ Ico (m*X) ((m+1)*X), A (k/(m*(m+1))) := by
   have hupper := repeated_quotient_sum (Nat.succ_pos m) X (fun k => A (k/m))
@@ -45,7 +47,7 @@ theorem discreteQuotientMean_consecutive {m : ℕ} (hm : 0<m) (A : ℕ → ℝ) 
 /-- The finite first mean of any profile in the unit interval changes by
 at most X/(m+1) when the denominator is incremented. -/
 theorem discreteQuotientMean_lipschitz (A : ℕ → ℝ) (ha : ∀ n, 0≤A n ∧ A n≤1)
-    {m : ℕ} (hm : 0<m) (X : ℕ) :
+    {m : ℕ} (hm : 0 < m) (X : ℕ) :
     |discreteQuotientMean A m X-discreteQuotientMean A (m+1) X| ≤ (X:ℝ)/(m+1) := by
   let S := Ico (m*X) ((m+1)*X)
   have hcard : S.card=X := by simp [S,Nat.card_Ico,Nat.succ_mul]

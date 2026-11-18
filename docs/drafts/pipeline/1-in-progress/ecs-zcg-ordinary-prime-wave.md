@@ -24,6 +24,8 @@ A zero with real part $\beta>1/2$ forces each sign of $E$ to have harmonic mass 
 
 Intersecting divisibility conditions from successive central binomial coefficients gives a gcd whose large prime divisors select a single residue class of the quotient. RH is equivalent to cumulative error $O(N^{1+b})$ about a linear slope at cofinally many depths for every $1/2<b<1$. An independent arithmetic estimate remains open. [First-mean criterion](../3-formalized/the-first-means-of-dyadic-binomial-gcds.md) · [Dyadic binomial common divisors](dyadic-binomial-common-prime-divisors.md)
 
+Counting each prime divisor once lets one fixed central binomial coefficient detect every right zero, even when its logarithmic weight cancels the zero. The unresolved bound is the first-mean discrepancy between $\omega(\binom{2n}{n})$ and the odd-quotient logarithmic reference. [Exact criterion](../3-formalized/distinct-primes-in-one-central-binomial-coefficient.md)
+
 Under one quartet, what is the size of the surviving wave when the cofactor symbol vanishes at $\rho$ to order $k$? In log coordinates the derivative of the filtered logarithmic-integral mode is $e^{\rho t}\sum_d f(d)d^{-\rho}/(t-\log d)$. Its first nonzero inverse-power coefficient is $(-1)^kD^{(k)}(\rho)$. This predicts oscillation of order $x^{\Re\rho}/\log^{k+1}x$ in the actual count.
 
 The largest prime factor $P(n)$ alone recovers the ordinary prime-error exponent. For $1/2\le b<1$, the bound $\sum_{n\le N}P(n)\log P(n)=\pi^2N^2/12+O(N^{1+b})$ is equivalent to $\psi(N)=N+O(N^b)$. [Proof](../3-formalized/the-largest-prime-factor-recovers-the-prime-error-exponent.md)

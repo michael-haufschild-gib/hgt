@@ -1,0 +1,7 @@
+# The jets of moving integer translates
+
+For a packet $f$ supported between $0$ and $\log K$, integer dilation $d\ge1$ and resolution $r\ge1$, the regularized jet of $f(u-\log d)$ on any original window with $1+L\ge dK$ is exactly the jet of $f$ at resolution $dr$ on the fixed window of length $3K$.
+
+At every positive degree $j$ both samples equal $f(\log(j/(dr)))$. They vanish outside $dr<j\le Kdr$. Both windows contain this interval. The off-diagonal kernel and the counterterm $\log(j/(2\pi))$ depend only on the integer degree indices. Restricting both sums to these common supported degrees proves equality.
+
+For a fixed compact $C^2$ packet vanishing below $\log 3$, the regularized jet therefore tends to its continuous archimedean value whenever $d_nr_n\to\infty$ and the windows contain the translates. The standard fixed-packet limit applies at resolution $d_nr_n$. Both dilation and horizon may vary with $n$. [Fixed-packet limit](../../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/ThePacketsOnTheDegreePointsCarryWeilsArchimedeanForm.lean)

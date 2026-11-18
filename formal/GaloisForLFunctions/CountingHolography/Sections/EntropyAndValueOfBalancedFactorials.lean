@@ -281,9 +281,11 @@ theorem zeroEntropy_factorial_ratio {A B : ℕ} (hA : 0 < A) (hB : 0 < B) :
   have hlog : Real.log (factorialValue c:ℝ)=Real.log ((A:ℝ)/B) := by
     rw [log_factorialValue,Real.log_div (Nat.cast_pos.mpr hA).ne' (Nat.cast_pos.mpr hB).ne']
     exact hv
-  have hh : (factorialValue c:ℝ)=(A:ℝ)/B := Real.log_injOn_pos
-    (Rat.cast_pos.mpr (factorialValue_pos c)) (div_pos (Nat.cast_pos.mpr hA) (Nat.cast_pos.mpr hB)) hlog
-  exact_mod_cast hh
+  have hcpos : (0:ℝ) < factorialValue c := Rat.cast_pos.mpr (factorialValue_pos c)
+  have hab : (0:ℝ) < (A:ℝ)/B := div_pos (Nat.cast_pos.mpr hA) (Nat.cast_pos.mpr hB)
+  have hh : (factorialValue c:ℝ)=(A:ℝ)/B := Real.log_injOn_pos hcpos hab hlog
+  apply Rat.cast_injective (α := ℝ)
+  simpa only [Rat.cast_div,Rat.cast_natCast] using hh
 
 #print axioms log_nat_mem_zeroEntropyPrices
 #print axioms zeroEntropy_factorial_ratio

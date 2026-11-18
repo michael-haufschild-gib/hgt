@@ -14,7 +14,7 @@ noncomputable section
 open MeasureTheory Filter Set Topology Complex
 open scoped FourierTransform
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
-open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri CriticalArithmeticCorrelationTheory
+open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri CriticalArithmeticCorrelationTheory HTGeometry
 
 /-- Fourier transformation of the tilted representative gives the ground-state
 Laplace value at the reflected imaginary frequency. -/

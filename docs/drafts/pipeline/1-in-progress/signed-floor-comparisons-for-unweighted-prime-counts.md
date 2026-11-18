@@ -1,0 +1,7 @@
+# Signed floor comparisons for unweighted primes
+
+For $q\ge3$ put $A(t)=\mathbf1_{q\mid\lfloor t\rfloor+1}$ and $F(t)=\sum_i w_i\lfloor a_i t\rfloor$ with finitely many positive real slopes and real coefficients. Can $\sum_p(A(X/p)-F(X/p))$ have a power saving when opposite signs cancel?
+
+On $\Re s>1$ its Mellin transform is $P(s)[D_q(s)-\zeta(s)\sum_i w_i a_i^s]/s$, where $P(s)=\sum_p p^{-s}$. At one the prime series has a logarithmic singularity. Any power saving would make the product holomorphic there. Division by the meromorphic symbol difference would make the logarithm meromorphic, unless that difference vanishes identically. Uniqueness of the Mellin transform and right continuity then force $A=F$, excluded by the gcd classification of the jumps.
+
+For balanced slopes $\sum_i w_i a_i=0$, the predicted first surviving term is $M_k X/(\log X)^{k+1}$, where $M_k=\int_0^\infty(A-F)(t)(\log t)^k\,dt/t^2$ and $k$ is its first nonzero index. Truncate at $t=(\log X)^{k+3}$. Boundedness controls the tail, the classical prime number theorem controls the $O(t)$ jumps before the cutoff, and expansion of $1/\log(X/t)$ recovers the moments. A calibrated signed comparison can cancel any moments it matches; the first unmatched moment controls its eventual sign. [Jump classification](rational-grid-jumps-of-factorial-comparisons.md)

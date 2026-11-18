@@ -85,11 +85,13 @@ private theorem log_shift {n : ℕ} (hn : 0 < n) :
   rw [he,abs_of_nonneg (mul_nonneg two_pos.le (Real.log_nonneg hr))]
   exact (mul_le_mul_of_nonneg_left (Real.log_le_sub_one_of_pos (zero_lt_one.trans_le hr)) two_pos.le).trans_eq hid
 
-/-- Replacing the two moving long-lag rows by a fixed dyadic weight costs
-one absolute constant, including the bounded prime degrees. -/
-theorem dyadicPrimeContact_error :
+/-- The total absolute change in the ordinary prime rows from replacing the
+moving conductor by four times the lower square is uniformly bounded. -/
+theorem dyadicPrimeContact_absolute_row_error :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
-      |ordinaryPrimeContact (successorSquareTriple n)-dyadicPrimeContact n| ≤ C := by
+      (∑ k ∈ ordinaryPrimeLags (3*windowEnd ((2*n+1)^2+1)),
+        |integratedContact (successorSquareTriple n) k -
+          (2/Real.sqrt k)*squareLogProfile (Real.log k-Real.log ((n:ℝ)^2))|*vonMangoldt k) ≤ C := by
   obtain ⟨K,H,hK,hH,hbound,hreg⟩ := corr_regular
   obtain ⟨A,hA,hwindow⟩ := successorSquare_window_bound
   let Q := ⌈Real.exp (8+Real.log 9)⌉₊
@@ -163,14 +165,22 @@ theorem dyadicPrimeContact_error :
       _ ≤ tail*(34*(A*n)) := mul_le_mul_of_nonneg_left ((ordinaryPrimeLagSums L).2.trans
           (mul_le_mul_of_nonneg_left hroot (by norm_num))) htail
       _ = _ := by dsimp only [tail]; field_simp; ring
-  change |(∑ k ∈ S, integratedContact d k*vonMangoldt k)-(∑ k ∈ S, F k*vonMangoldt k)| ≤ _
+  change (∑ k ∈ S, |integratedContact d k-F k|*vonMangoldt k) ≤ _
+  calc _ ≤ ∑ k ∈ S, ((if k ≤ Q then 38*H else 0)+tail/Real.sqrt k)*vonMangoldt k :=
+            sum_le_sum fun _ hk => mul_le_mul_of_nonneg_right (hrow hk) vonMangoldt_nonneg
+    _ ≤ _ := by simp only [add_mul,sum_add_distrib]; exact add_le_add hsmall hlarge
+
+/-- Replacing the two moving long-lag rows by a fixed dyadic weight costs
+one absolute constant, including the bounded prime degrees. -/
+theorem dyadicPrimeContact_error :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
+      |ordinaryPrimeContact (successorSquareTriple n)-dyadicPrimeContact n| ≤ C := by
+  obtain ⟨C,hC,hrow⟩ := dyadicPrimeContact_absolute_row_error
+  refine ⟨C,hC,fun {n} hn => ?_⟩
+  unfold ordinaryPrimeContact dyadicPrimeContact
   rw [← sum_sub_distrib]
   refine (abs_sum_le_sum_abs _ _).trans ?_
-  calc _ ≤ ∑ k ∈ S, ((if k ≤ Q then 38*H else 0)+tail/Real.sqrt k)*vonMangoldt k :=
-            sum_le_sum fun k hk => by
-              rw [← sub_mul,abs_mul,abs_of_nonneg vonMangoldt_nonneg]
-              exact mul_le_mul_of_nonneg_right (hrow hk) vonMangoldt_nonneg
-    _ ≤ _ := by simp only [add_mul,sum_add_distrib]; exact add_le_add hsmall hlarge
+  simpa only [← sub_mul,abs_mul,abs_of_nonneg vonMangoldt_nonneg] using hrow hn
 
 /-- A one-sided power bound on the single prime weight recovers each
 subcritical strip, including its endpoint exponent. -/
@@ -227,6 +237,7 @@ theorem riemannHypothesis_iff_dyadicPrimeContact_bounded :
 
 #print axioms successorSquare_diagonal_log_at_width
 #print axioms zetaZeroWidth_le_iff_dyadicPrimeContact
+#print axioms dyadicPrimeContact_absolute_row_error
 #print axioms dyadicPrimeContact_error
 #print axioms riemannHypothesis_iff_dyadicPrimeContact_bounded
 

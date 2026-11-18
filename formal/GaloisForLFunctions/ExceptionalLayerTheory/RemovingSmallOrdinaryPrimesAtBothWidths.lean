@@ -159,7 +159,9 @@ theorem short_first_partition {X : ℕ} (hx : 1 ≤ X) (D R : ℕ) :
   congr 1
   exact sum_congr rfl fun p hp => congrArg (vonMangoldt p*·) (clear p hp)
 
-private theorem logarithmic_short_first_bound :
+/-- At logarithmic stencil cutoff, all small first primes together cost
+square-root error times six logarithms. -/
+theorem logarithmic_short_first_bound :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ X : ℕ, 1 ≤ X →
       let D := ⌊1+Real.log X⌋₊
       |shortFirstRow D D X (productLower D X)| ≤ C*(1+Real.log X)^6*Real.sqrt X := by
@@ -181,7 +183,7 @@ private theorem logarithmic_short_first_bound :
   have hbig : ((D+1 : ℕ) : ℝ)^2*(D : ℝ)^3 ≤ 4*H^5 := ha.trans_eq (by ring)
   have hsm : ((D+1 : ℕ) : ℝ)*D ≤ 2*H^5 := hb.trans (by linarith only [h₂])
   have hsum := add_le_add (mul_le_mul hbig hpow (by positivity) (by positivity))
-    (mul_le_mul_of_nonneg_right hsm (Real.sqrt_nonneg _))
+    (mul_le_mul_of_nonneg_right hsm (Real.sqrt_nonneg (X : ℝ)))
   apply (h hD hD hx (productLower D X)).trans
   exact (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hsum hK) (zero_le_one.trans hH)).trans_eq
     (by change K*(_+_)*H=6*K*H^6*Real.sqrt X; ring)

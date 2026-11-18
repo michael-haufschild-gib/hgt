@@ -1,6 +1,6 @@
 # Centered fractional parts on integer blocks
 
-**PVC · Paper theorem.** Let $1\le P\le A\le B\le2P$, $Z>0$, and
+**PVC · Theorem (Lean).** Let $1\le P\le A\le B\le2P$, $Z>0$, and
 $\lambda=2Z/(2P)^3$. For every $\Delta>0$,
 $$
 \left|\sum_{A\le t<B}(\{Z/t\}-1/2)\right|
@@ -17,3 +17,5 @@ gives coefficients of size $O((1+(h\Delta)^2)^{-1}/|h|)$ and
 $O(\Delta(1+(h\Delta)^2)^{-1})$. For $h\ne0$ both are
 $O(\Delta^{-1}|h|^{-2})$. Their products with $\sqrt{|h|}$ are summable,
 and the zero harmonic costs $O(\Delta P)$.
+
+**Lean.** [Integer harmonic and fractional-part bounds](../../../../formal/GaloisForLFunctions/PrimeExponentialSums/FractionalPartsOnIntegerReciprocalBlocks.lean) · `integer_reciprocal_fourier_block`, `centered_fractional_reciprocal_integer_block`. Both depend only on `propext`, `Classical.choice`, and `Quot.sound`.

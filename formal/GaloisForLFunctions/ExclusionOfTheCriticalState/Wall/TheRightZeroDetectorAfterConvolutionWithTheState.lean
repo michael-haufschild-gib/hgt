@@ -13,7 +13,7 @@ noncomputable section
 open MeasureTheory Set Filter Topology Complex Finset
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ExceptionalLayerTheory ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
-  CriticalArithmeticCorrelationTheory
+  CriticalArithmeticCorrelationTheory HTGeometry
 
 /-- A cutoff kernel vanishing at one with logarithmically bounded increments
 has a continuous normalized logarithmic representative. -/

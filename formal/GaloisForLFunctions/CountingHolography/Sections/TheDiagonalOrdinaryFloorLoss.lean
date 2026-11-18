@@ -20,9 +20,9 @@ open ArithmeticWeightTheory ArithmeticCastelnuovoSeveri ArithmeticOrientationGeo
 open ArithmeticScatteringHolography SquareRootThreshold
 open BiScaleUncertainty.ChebyshevGauge _root_.RHTower.WeilDeletion
 
-private theorem outer_slope : ∃ u v λ : ℝ, outerSquareLeft ≤ u ∧ u < v ∧ v ≤ outerSquareRight ∧
-    0 < λ ∧ ∀ x ∈ Set.Icc u v, ∀ y ∈ Set.Icc u v, x ≤ y →
-      λ*(y-x) ≤ outerSquareProfile x-outerSquareProfile y := by
+private theorem outer_slope : ∃ u v σ : ℝ, outerSquareLeft ≤ u ∧ u < v ∧ v ≤ outerSquareRight ∧
+    0 < σ ∧ ∀ x ∈ Set.Icc u v, ∀ y ∈ Set.Icc u v, x ≤ y →
+      σ*(y-x) ≤ outerSquareProfile x-outerSquareProfile y := by
   obtain ⟨hu,huv,hc,hpos,hzero,_⟩ := outerSquareProfile_crosses
   have hlt : outerSquareLeft < outerSquareRight := lt_of_le_of_ne huv (fun h => by rw [h,hzero] at hpos; exact lt_irrefl _ hpos)
   have hc₁ : ContDiff ℝ 2 splineAutoCorr := Complex.reCLM.contDiff.comp
@@ -36,11 +36,11 @@ private theorem outer_slope : ∃ u v λ : ℝ, outerSquareLeft ≤ u ∧ u < v 
     ((hdiff x (zero_lt_one.trans_le (hu.trans hx.1.le))).differentiableAt (by decide)).differentiableWithinAt)
   have hz₀ := zero_lt_one.trans_le (hu.trans hz.1.le)
   have hneg : deriv outerSquareProfile z < 0 := by rw [he,hzero]; exact div_neg_of_neg_of_pos (by linarith only [hpos]) (sub_pos.mpr hlt)
-  let λ := -deriv outerSquareProfile z/2
-  have hλ : 0 < λ := by dsimp only [λ]; linarith only [hneg]
+  let σ := -deriv outerSquareProfile z/2
+  have hσ : 0 < σ := by dsimp only [σ]; linarith only [hneg]
   have hcder := ((hdiff z hz₀).derivWithin (m := 0) (by decide)).continuousAt
-  have hn : {x | x ∈ Set.Ioo outerSquareLeft outerSquareRight ∧ deriv outerSquareProfile x < -λ} ∈ 𝓝 z :=
-    (Ioo_mem_nhds hz.1 hz.2).inter (hcder.eventually_lt continuousAt_const (by dsimp only [λ]; linarith only [hneg]))
+  have hn : {x | x ∈ Set.Ioo outerSquareLeft outerSquareRight ∧ deriv outerSquareProfile x < -σ} ∈ 𝓝 z :=
+    inter_mem (Ioo_mem_nhds hz.1 hz.2) (hcder.eventually_lt continuousAt_const (by dsimp only [σ]; linarith only [hneg]))
   obtain ⟨a,b,hab,hw⟩ := mem_nhds_iff_exists_Ioo_subset.mp hn
   let u := (a+z)/2
   let v := (b+z)/2
@@ -48,13 +48,13 @@ private theorem outer_slope : ∃ u v λ : ℝ, outerSquareLeft ≤ u ∧ u < v 
   have hmid {x : ℝ} (hx : x ∈ Set.Icc u v) : x ∈ Set.Ioo a b := by
     dsimp only [u,v] at hx
     exact ⟨by linarith only [hx.1,hab.1],by linarith only [hx.2,hab.2]⟩
-  have hsub {x : ℝ} (hx : x ∈ Set.Icc u v) : x ∈ Set.Ioo outerSquareLeft outerSquareRight ∧ deriv outerSquareProfile x < -λ := hw (hmid hx)
+  have hsub {x : ℝ} (hx : x ∈ Set.Icc u v) : x ∈ Set.Ioo outerSquareLeft outerSquareRight ∧ deriv outerSquareProfile x < -σ := hw (hmid hx)
   have hu' := (hsub (Set.left_mem_Icc.mpr huv'.le)).1.1.le
   have hv' := (hsub (Set.right_mem_Icc.mpr huv'.le)).1.2.le
-  refine ⟨u,v,λ,hu',huv',hv',hλ,fun x hx y hy hxy => ?_⟩
+  refine ⟨u,v,σ,hu',huv',hv',hσ,fun x hx y hy hxy => ?_⟩
   rcases hxy.eq_or_lt with rfl | hxy
   · simp
-  have hh {q : ℝ} (hq : q ∈ Set.Icc x y) : q ∈ Set.Ioo outerSquareLeft outerSquareRight ∧ deriv outerSquareProfile q < -λ := hsub (show q ∈ Set.Icc u v from ⟨hx.1.trans hq.1,hq.2.trans hy.2⟩)
+  have hh {q : ℝ} (hq : q ∈ Set.Icc x y) : q ∈ Set.Ioo outerSquareLeft outerSquareRight ∧ deriv outerSquareProfile q < -σ := hsub (show q ∈ Set.Icc u v from ⟨hx.1.trans hq.1,hq.2.trans hy.2⟩)
   obtain ⟨q,hq,hs⟩ := exists_deriv_eq_slope outerSquareProfile hxy
     (hc.mono (fun _ hz' => ⟨(hh hz').1.1.le,(hh hz').1.2.le⟩)) (fun z hz' =>
       ((hdiff z (zero_lt_one.trans_le (hu.trans (hh ⟨hz'.1.le,hz'.2.le⟩).1.1.le))).differentiableAt (by decide)).differentiableWithinAt)
@@ -103,11 +103,15 @@ theorem successorSquare_outer_reading_uniform : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n 
         _ = |(successorSquareRawRow n j k+((j:ℝ)^2/R)*f)-(successorSquareRawRow n j k-(j:ℝ)^2*I)| := by
               congr 1; ring
         _ ≤ _ := (abs_sub _ _).trans (by linarith only [hjm,hrow j])
-    linarith only [hb,mul_lt_mul_of_pos_left hlarge hj₀,
-      mul_le_mul_of_nonneg_right hj₁.le (div_nonneg hC hR.le)]
+    have hweak : C/R+E*j/R ≤ (j:ℝ)*(C/R+E/R) := by
+      rw [mul_add,show E*(j:ℝ)/R=(j:ℝ)*(E/R) by ring]
+      exact add_le_add_left (le_mul_of_one_le_left (div_nonneg hC hR.le) hj₁.le) _
+    have hstrict := mul_lt_mul_of_pos_left hlarge hj₀
+    rw [← mul_assoc,← sq] at hstrict
+    exact (not_lt_of_ge (hb.trans hweak)) hstrict
   change |successorSquareRawRow n m k+((m:ℝ)^2/R)*f| ≤ C/R
   have ident : (m:ℝ)^2*I = -(((m:ℝ)^2/R)*f) := by
-    linarith only [congrArg (fun z => (m:ℝ)^2*z) heq]
+    rw [show I = -(f/R) by linarith only [heq]]; ring
   simpa only [ident,sub_neg_eq_add] using hrow m
 
 /-- At every prescribed frequency bounded below, the quadratic prime
@@ -116,7 +120,7 @@ theorem successorSquare_floor_loss_through_linear_scale {K d : ℝ} (hK : 1 ≤ 
     ∃ c : ℝ, 0 < c ∧ ∀ᶠ n : ℕ in atTop, ∀ {m : ℕ}, 0 < m →
       d ≤ (m:ℝ)^2/squareUpperRoot n → (m:ℝ) ≤ K*squareUpperRoot n →
       c*(n:ℝ)^2 ≤ ordinaryFloorLoss (m • successorSquareTriple n) := by
-  obtain ⟨u,v,λ,hu,huv,hv,hλ,hslope⟩ := outer_slope
+  obtain ⟨u,v,σ,hu,huv,hv,hσ,hslope⟩ := outer_slope
   obtain ⟨C,hC,hraw⟩ := successorSquare_outer_reading_uniform
   obtain ⟨_,_,hhorizon⟩ := successorSquare_outer_reading
   have hu₁ := outerSquareProfile_crosses.1.trans hu
@@ -124,9 +128,9 @@ theorem successorSquare_floor_loss_through_linear_scale {K d : ℝ} (hK : 1 ≤ 
   have hK₀ := zero_lt_one.trans_le hK
   have hpos (x : ℝ) : 0 ≤ outerSquareProfile x := div_nonneg
     (mul_nonneg two_pos.le (splineAutoCorr_nonneg _)) (Real.sqrt_nonneg _)
-  let A := 1/λ
+  let A := 1/σ
   let D := 1+outerSquareProfile u+2/d
-  have hA : 0 < A := one_div_pos.mpr hλ
+  have hA : 0 < A := one_div_pos.mpr hσ
   have hd₂ : 0 < 2/d := div_pos two_pos hd
   have hD : 1 ≤ D := by dsimp only [D]; linarith only [hd₂,hpos u]
   obtain ⟨e,c,he,hc,hfib⟩ := prime_mass_outside_thin_floor_fibers hA (half_pos (sub_pos.mpr huv))
@@ -164,7 +168,7 @@ theorem successorSquare_floor_loss_through_linear_scale {K d : ℝ} (hK : 1 ≤ 
     have hp' := (hmem hp).2
     have hfall := hslope u (Set.left_mem_Icc.mpr huv.le) _ hp' hp'.1
     have hF : outerSquareProfile ((p:ℝ)/B) ≤ outerSquareProfile u :=
-      by linarith only [hfall,mul_nonneg hλ.le (sub_nonneg.mpr hp'.1)]
+      by linarith only [hfall,mul_nonneg hσ.le (sub_nonneg.mpr hp'.1)]
     dsimp only [D]
     exact ⟨by linarith only [hlo,hC₁,ht₀,mul_le_mul_of_nonneg_left hF ht₀.le,
           mul_le_mul_of_nonneg_left hm₁ hd₂.le,div_mul_cancel₀ (2:ℝ) hd.ne'],
@@ -172,12 +176,12 @@ theorem successorSquare_floor_loss_through_linear_scale {K d : ℝ} (hK : 1 ≤ 
   have hsep (p) (hp : p ∈ P) (q) (hq : q ∈ P) (hpq : p ≤ q) :
       (q:ℝ)-p ≤ (A*(R^2/t))*((X q-1)-(X p-1)+e) := by
     have hxy : (p:ℝ)/B ≤ (q:ℝ)/B := div_le_div_of_nonneg_right (Nat.cast_le.mpr hpq) hB.le
-    let l := λ*((q:ℝ)/B-(p:ℝ)/B)
+    let l := σ*((q:ℝ)/B-(p:ℝ)/B)
     have hd := hslope _ (hmem hp).2 _ (hmem hq).2 hxy
     have hcomp : t*l ≤ (X q-1)-(X p-1)+e := by
       linarith only [mul_le_mul_of_nonneg_left hd ht₀.le,
         (abs_le.mp (hraw' hp)).2,(abs_le.mp (hraw' hq)).1,hCe]
-    calc (q:ℝ)-p = A*(R^2/t)*(t*l) := by dsimp only [A,l,B]; field_simp [hR.ne',ht₀.ne',hλ.ne'] <;> ring
+    calc (q:ℝ)-p = A*(R^2/t)*(t*l) := by dsimp only [A,l,B]; field_simp [hR.ne',ht₀.ne',hσ.ne']
       _ ≤ _ := mul_le_mul_of_nonneg_left hcomp (mul_nonneg hA.le (div_nonneg (sq_nonneg R) ht₀.le))
   have hsave := hn hm₁ ht₂ P (fun p => X p-1)
     (fun p hp => ⟨(hmem hp).1,(div_le_iff₀ hB).mp (hmem hp).2.2,hrow hp⟩) hmass hsep
@@ -247,7 +251,7 @@ private theorem low_frequency_floor_loss :
       refine (mul_le_mul_of_nonneg_left hh (sq_nonneg _)).trans ?_
       calc _ = (16*A)*((m:ℝ)^2/R) := by ring
         _ ≤ (16*A)*d := mul_le_mul_of_nonneg_left hfreq (by positivity)
-        _ = _ := by dsimp only [d]; field_simp [hA₀.ne'] <;> ring
+        _ = _ := by dsimp only [d]; field_simp [hA₀.ne']; ring
     have hneg : successorSquareRawRow n m p < 0 := hx ▸ mul_neg_of_pos_of_neg (sq_pos_of_pos (Nat.cast_pos.mpr hm)) hy
     have hfloor : ⌊successorSquareRawRow n m p⌋ = -1 := by
       rw [Int.floor_eq_iff]; push_cast; constructor <;> linarith only [(abs_le.mp hcap).1,hneg]

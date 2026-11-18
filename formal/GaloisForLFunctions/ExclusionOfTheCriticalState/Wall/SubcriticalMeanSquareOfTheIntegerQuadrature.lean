@@ -58,11 +58,12 @@ theorem criticalState_subcritical_integer_error {W₀ : ℝ} (hW : 0 < W₀)
       simpa only [sq_abs] using pow_le_pow_left₀ (abs_nonneg _) hz' 2
     have heq : 𝓕 f ξ = 𝓕 ψ ξ*(riemannZeta z/z) := hFourier ξ
     change ‖(2*Real.pi*ξ)^2*‖𝓕 f ξ‖^2‖ ≤ _
-    rw [Real.norm_eq_abs,abs_of_nonneg (mul_nonneg (sq_nonneg _) (sq_nonneg _)),heq,norm_mul,norm_div,mul_pow,div_pow]
+    rw [Real.norm_eq_abs,abs_of_nonneg (mul_nonneg (sq_nonneg _) (sq_nonneg _)),heq,
+      norm_mul,norm_div,mul_pow ‖𝓕 ψ ξ‖,div_pow]
     change _ ≤ C*(‖𝓕 ψ ξ‖^2+|ξ|^r*‖𝓕 ψ ξ‖^2)
     calc _ ≤ ‖z‖^2*(‖𝓕 ψ ξ‖^2*(‖riemannZeta z‖^2/‖z‖^2)) :=
            mul_le_mul_of_nonneg_right ham (by positivity)
-      _ = ‖riemannZeta z‖^2*‖𝓕 ψ ξ‖^2 := by field_simp [(norm_ne_zero_iff.mpr hz)] <;> ring
+      _ = ‖riemannZeta z‖^2*‖𝓕 ψ ξ‖^2 := by field_simp [(norm_ne_zero_iff.mpr hz)]
       _ ≤ (C*(1+|ξ|^r))*‖𝓕 ψ ξ‖^2 := mul_le_mul_of_nonneg_right (hC ξ) (sq_nonneg _)
       _ = _ := by ring
   let b := fun t : ℝ => -σ*B t+tiltedIntegerError Φ β t
@@ -75,8 +76,9 @@ theorem criticalState_subcritical_integer_error {W₀ : ℝ} (hW : 0 < W₀)
     (by simpa only [Real.norm_eq_abs,sq_abs] using hbm)
   have hBr : MemLp B 2 := (memLp_two_iff_integrable_sq_norm hB.aestronglyMeasurable).2
     (by simpa only [f,Complex.norm_real] using (memLp_two_iff_integrable_sq_norm hi.aestronglyMeasurable).1 h2)
-  exact (hb2.add (hBr.const_mul σ)).congr (Eventually.of_forall fun t => by
-    change -σ*B t+tiltedIntegerError Φ β t+σ*B t = _; ring)
+  apply MemLp.ae_eq _ (hb2.add (hBr.const_mul σ))
+  exact Eventually.of_forall fun t => by
+    change -σ*B t+tiltedIntegerError Φ β t+σ*B t = _; ring
 
 /-- Failure of RH supplies a single actual state with square integrable integer
 quadrature on every subcritical exponential line. -/

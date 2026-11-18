@@ -33,9 +33,10 @@ theorem ordinaryPrimeGenerator_zeroEntropy_factorials {N : ℕ} (a : Fin N → �
   have hp : 0 < ordinaryPrimeGenerator a :=
     prod_pos fun k _ => zpow_pos (Nat.cast_pos.mpr (contactBase_pos k)) _
   have hh : (factorialValue c:ℝ)=(ordinaryPrimeGenerator a:ℝ) :=
-    Real.log_injOn_pos (by exact_mod_cast factorialValue_pos c) (by exact_mod_cast hp)
+    Real.log_injOn_pos (Rat.cast_pos.mpr (factorialValue_pos c) : (0:ℝ)<factorialValue c)
+      (Rat.cast_pos.mpr hp : (0:ℝ)<ordinaryPrimeGenerator a)
       ((log_factorialValue c).trans hv)
-  exact_mod_cast hh
+  exact Rat.cast_injective (α := ℝ) hh
 
 #print axioms ordinaryPrimeGenerator_zeroEntropy_factorials
 

@@ -42,9 +42,9 @@ private theorem transform_profile (t : ℂ) :
   have hs := cx_hasCompactSupport hasCompactSupport_cubicSpline
   rw [he,_root_.RHTower.EvenSector.paperFT_sum_translate univ c x
     (EF.weilTest_contDiff (cx_contDiff contDiff_cubicSpline) hc hs).continuous (EF.weilTest_hasCompactSupport hs hs)]
-  rw [show H = EF.weilTest (cx cubicSpline) (cx cubicSpline) from rfl,EF.paperFT_weilTest hc hc hs hs]
+  rw [EF.paperFT_weilTest hc hc hs hs]
   simp only [c,x,Fin.sum_univ_two,Matrix.cons_val_zero,Matrix.cons_val_one,Complex.ofReal_zero,
-    mul_zero,Complex.exp_zero,mul_one,neg_one_mul,Complex.conj_ofReal,sub_eq_add_neg]
+    mul_zero,Complex.exp_zero,mul_one,neg_one_mul,sub_eq_add_neg]
 
 private theorem mellin_prime_weight (t : ℂ) :
     mellin squarePrimeWeight (1/2+t*Complex.I) = paperFT (cx squareLogProfile) t := by
@@ -85,12 +85,12 @@ theorem mellin_squarePrimeWeight_ne_zero {ρ : ℂ} (hρ : ρ ∈ criticalSeen) 
   have hu : ‖Complex.exp (Complex.I*(ρ.im:ℂ)*(Real.log 4:ℝ))‖ = 1 := by
     rw [Complex.norm_exp]
     simp only [Complex.mul_re,Complex.mul_im,Complex.I_re,Complex.I_im,Complex.ofReal_re,
-      Complex.ofReal_im,zero_mul,one_mul,mul_zero,sub_zero,sub_self,Real.exp_zero]
+      Complex.ofReal_im,zero_mul,one_mul,mul_zero,sub_self,Real.exp_zero]
   have hphase : (2:ℂ)-Complex.exp (Complex.I*(ρ.im:ℂ)*(Real.log 4:ℝ)) ≠ 0 := by
     intro hh
     rw [← sub_eq_zero.mp hh] at hu
     norm_num at hu
-  exact mul_ne_zero hphase (mul_ne_zero hseen (map_ne_zero (starRingEnd ℂ) hseen))
+  exact mul_ne_zero hphase (mul_ne_zero hseen ((map_ne_zero (starRingEnd ℂ)).mpr hseen))
 
 /-- Away from the critical line the four-box transform and its conjugate
 are nonzero. The phase can only have modulus two on the boundary Re s = 1. -/
@@ -98,7 +98,7 @@ theorem mellin_squarePrimeWeight_off_line {ρ : ℂ} (h₁ : ρ.re < 1) (hhalf :
     mellin squarePrimeWeight ρ ≠ 0 := by
   let z : ℂ := ⟨ρ.im,1/2-ρ.re⟩
   have he : 1/2+z*Complex.I = ρ := by
-    apply Complex.ext <;> simp [z,Complex.add_re,Complex.add_im,Complex.mul_re,Complex.mul_im] <;> ring
+    apply Complex.ext <;> simp [z,Complex.add_re,Complex.add_im,Complex.mul_re,Complex.mul_im]
   have hz : z.im ≠ 0 := sub_ne_zero.mpr (Ne.symm hhalf)
   have hzc : (starRingEnd ℂ z).im ≠ 0 := by simpa only [Complex.conj_im,neg_ne_zero] using hz
   have hl : Real.log 4 = 2*Real.log 2 := by
@@ -120,7 +120,101 @@ theorem mellin_squarePrimeWeight_off_line {ρ : ℂ} (h₁ : ρ.re < 1) (hhalf :
     norm_num at hu
   rw [← he,mellin_prime_weight,transform_profile]
   exact mul_ne_zero hp (mul_ne_zero (paperFT_cubicSpline_ne_zero hz)
-    (map_ne_zero (starRingEnd ℂ) (paperFT_cubicSpline_ne_zero hzc)))
+    ((map_ne_zero (starRingEnd ℂ)).mpr (paperFT_cubicSpline_ne_zero hzc)))
+
+/-- On the positive half-line the square weight is supported between the
+first spline overlap and four times its last overlap. -/
+theorem squarePrimeWeight_zero_outside {x : ℝ} (hx : 0 < x)
+    (hout : x ∉ Set.Icc (Real.exp (-8)) (Real.exp (8+Real.log 4))) : squarePrimeWeight x = 0 := by
+  have hl : 0 ≤ Real.log 4 := Real.log_nonneg (by norm_num)
+  have hz : 8 < |Real.log x| ∧ 8 < |Real.log x-Real.log 4| := by
+    by_cases h : Real.exp (-8) ≤ x
+    · have hb : Real.exp (8+Real.log 4) < x := lt_of_not_ge fun h' => hout ⟨h,h'⟩
+      have hh := (Real.lt_log_iff_exp_lt hx).mpr hb
+      constructor <;> linarith only [hh,hl,le_abs_self (Real.log x),le_abs_self (Real.log x-Real.log 4)]
+    · have hh := (Real.log_lt_iff_lt_exp hx).mpr (lt_of_not_ge h)
+      constructor <;> linarith only [hh,hl,neg_abs_le (Real.log x),neg_abs_le (Real.log x-Real.log 4)]
+  simp only [squarePrimeWeight,squareLogProfile,splineAutoCorr_zero_outside hz.1,
+    splineAutoCorr_zero_outside hz.2,mul_zero,sub_zero,Complex.ofReal_zero]
+
+theorem continuousAt_squarePrimeWeight {v : ℝ} (hv : 0 < v) : ContinuousAt squarePrimeWeight v := by
+  have hl := Real.continuousAt_log hv.ne'
+  have hc : Continuous squareLogProfile := (continuous_const.mul continuous_splineAutoCorr).sub
+    (continuous_splineAutoCorr.comp (continuous_id.sub continuous_const))
+  exact Complex.continuous_ofReal.continuousAt.comp
+    ((Real.continuous_exp.continuousAt.comp (hl.neg.div_const 2)).mul (hc.continuousAt.comp hl))
+
+/-- Compact support away from zero gives absolute Mellin convergence at
+every complex parameter. -/
+theorem mellinConvergent_squarePrimeWeight (s : ℂ) : MellinConvergent squarePrimeWeight s := by
+  let K := Set.Icc (Real.exp (-8)) (Real.exp (8+Real.log 4))
+  let f := fun v : ℝ => (v:ℂ)^(s-1) • squarePrimeWeight v
+  have hi : IntegrableOn f K := ContinuousOn.integrableOn_Icc (fun v hv => by
+    have hp := (Real.exp_pos (-8)).trans_le hv.1
+    exact ((Complex.continuousAt_ofReal_cpow_const v _ (Or.inr hp.ne')).smul
+      (continuousAt_squarePrimeWeight hp)).continuousWithinAt)
+  refine ((hi.integrable_indicator measurableSet_Icc).integrableOn (s := Set.Ioi 0)).congr_fun ?_ measurableSet_Ioi
+  intro v hv
+  by_cases h : v ∈ K
+  · exact Set.indicator_of_mem h f
+  · rw [Set.indicator_of_notMem h,f,squarePrimeWeight_zero_outside hv h,smul_zero]
+
+/-- The two Fourier factors are entire functions of the Mellin parameter.
+The single exponential factor accounts for the vanished polar mean. -/
+theorem mellin_squarePrimeWeight_formula (s : ℂ) :
+    let z := (s-1/2)/Complex.I
+    mellin squarePrimeWeight s = (2-Complex.exp ((s-1/2)*(Real.log 4:ℝ))) *
+      (paperFT (cx cubicSpline) z * paperFT (cx cubicSpline) (-z)) := by
+  let z := (s-1/2)/Complex.I
+  have he : z*Complex.I=s-1/2 := div_mul_cancel₀ _ Complex.I_ne_zero
+  have hs : 1/2+z*Complex.I=s := by rw [he]; ring
+  have h := mellin_prime_weight z
+  rw [hs,transform_profile,mul_comm Complex.I z,he] at h
+  change mellin squarePrimeWeight s = _*(paperFT (cx cubicSpline) z*paperFT (cx cubicSpline) (-z))
+  exact h.trans (congrArg (fun v : ℂ => _*(paperFT (cx cubicSpline) z*v))
+    (_root_.RHTower.EvenSector.paperFT_ofReal_neg_conj cubicSpline z).symm)
+
+/-- The compact square weight has an entire Mellin transform. -/
+theorem differentiable_mellin_squarePrimeWeight : Differentiable ℂ (mellin squarePrimeWeight) := by
+  let F := paperFT (cx cubicSpline)
+  have hF : Differentiable ℂ F := _root_.RHTower.EvenSector.differentiable_paperFT_of_compact
+    (cx_contDiff contDiff_cubicSpline).continuous (cx_hasCompactSupport hasCompactSupport_cubicSpline)
+  have hz : Differentiable ℂ (fun s : ℂ => (s-1/2)/Complex.I) := by fun_prop
+  have hG : Differentiable ℂ (fun s : ℂ => F ((s-1/2)/Complex.I) * F (-((s-1/2)/Complex.I))) :=
+    (hF.comp hz).mul (hF.comp hz.neg)
+  have hD : Differentiable ℂ (fun s : ℂ => 2-Complex.exp ((s-1/2)*(Real.log 4:ℝ))) := by fun_prop
+  rw [show mellin squarePrimeWeight = _ from funext mellin_squarePrimeWeight_formula]
+  exact hD.mul hG
+
+/-- The polar mean has precisely a simple zero. The logarithmic moment
+therefore survives the balance of the two conductor scales. -/
+theorem deriv_mellin_squarePrimeWeight_one_ne_zero : deriv (mellin squarePrimeWeight) 1 ≠ 0 := by
+  let F := paperFT (cx cubicSpline)
+  let z := fun s : ℂ => (s-1/2)/Complex.I
+  let g := fun s : ℂ => F (z s)*F (-z s)
+  let d := fun s : ℂ => 2-Complex.exp ((s-1/2)*(Real.log 4:ℝ))
+  have hF : Differentiable ℂ F := _root_.RHTower.EvenSector.differentiable_paperFT_of_compact
+    (cx_contDiff contDiff_cubicSpline).continuous (cx_hasCompactSupport hasCompactSupport_cubicSpline)
+  have hz : Differentiable ℂ z := by dsimp only [z]; fun_prop
+  have hg : Differentiable ℂ g := (hF.comp hz).mul (hF.comp hz.neg)
+  have hl : Real.log 4 = 2*Real.log 2 := by
+    rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]; norm_num
+  have he : Complex.exp (((1:ℂ)-1/2)*(Real.log 4:ℝ))=2 := by
+    rw [hl,Complex.ofReal_mul,Complex.ofReal_ofNat,
+      show ((1:ℂ)-1/2)*(2*(Real.log 2:ℝ))=(Real.log 2:ℝ) by ring,← Complex.ofReal_exp,
+      Real.exp_log (by norm_num : (0:ℝ)<2),Complex.ofReal_ofNat]
+  have hd₁ : d 1=0 := sub_eq_zero.mpr he.symm
+  have hd := (hasDerivAt_const (1:ℂ) (2:ℂ)).sub
+    ((((hasDerivAt_id (1:ℂ)).sub_const (1/2)).mul_const ((Real.log 4:ℝ):ℂ)).cexp)
+  change HasDerivAt d _ 1 at hd
+  simp only [he,one_mul,zero_sub] at hd
+  have hw : mellin squarePrimeWeight = fun s => d s*g s := funext mellin_squarePrimeWeight_formula
+  rw [hw,(hd.mul (hg 1).hasDerivAt).deriv,hd₁,zero_mul,add_zero]
+  have hz₁ : (z 1).im ≠ 0 := by dsimp only [z]; norm_num [Complex.div_im]
+  have hz₂ : (-(z 1)).im ≠ 0 := by simpa only [Complex.neg_im,neg_ne_zero] using hz₁
+  exact mul_ne_zero (neg_ne_zero.mpr (mul_ne_zero two_ne_zero (Complex.ofReal_ne_zero.mpr
+    (Real.log_pos (by norm_num : (1:ℝ)<4)).ne'))) (mul_ne_zero
+      (paperFT_cubicSpline_ne_zero hz₁) (paperFT_cubicSpline_ne_zero hz₂))
 
 /-- No finite sum of fractional-part kernels agrees with the square
 prime test on the positive half-line, even almost everywhere. -/
@@ -292,6 +386,8 @@ end Approximation
 #print axioms factorial_cost_above_power
 #print axioms factorial_cost_at_zero
 #print axioms critical_factorial_cost
+#print axioms deriv_mellin_squarePrimeWeight_one_ne_zero
+#print axioms differentiable_mellin_squarePrimeWeight
 #print axioms squarePrimeWeight_mean_zero
 #print axioms mellin_squarePrimeWeight_ne_zero
 #print axioms mellin_squarePrimeWeight_off_line
