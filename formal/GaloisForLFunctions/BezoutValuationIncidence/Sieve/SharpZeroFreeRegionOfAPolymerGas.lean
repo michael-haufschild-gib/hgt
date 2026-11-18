@@ -119,7 +119,7 @@ theorem normalized_mono (p : ι → NNReal) (P : Finset ι)
       ((p i : ℝ)*‖partition G C w‖)*negative G p Q =
           (p i : ℝ)*(‖partition G C w‖*negative G p Q) := mul_assoc _ _ _
       _ ≤ _ := hcost
-      _ = ‖partition G Q w‖*((p i : ℝ)*negative G p C) := by ring
+      _ = ‖partition G Q w‖*((p i : ℝ)*negative G p C) := mul_left_comm _ _ _
 
 /-- The negative corner is an attained absolute lower bound throughout the polydisc. -/
 theorem corner_minimum (p : ι → NNReal) (P : Finset ι)

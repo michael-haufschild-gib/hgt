@@ -99,7 +99,9 @@ theorem reciprocalFactorial_sum_has_no_smaller_power {b : ℝ} (hb : 0≤b) (hb'
     have hf : LSeriesSummable f s := hv.1.sub (hz.smul (c:ℂ))
     have he := HeckeLFunctions.growthCont_eq_LSeries h0 hb hpre (s := s) (by linarith only [hs,hb']) hf
     change (c:ℂ)+A s/riemannZeta s=_
-    rw [show A s=LSeries f s from he,f,LSeries_sub hv.1 (hz.smul (c:ℂ)),LSeries_smul,
+    rw [show A s=LSeries f s from he]
+    dsimp only [f]
+    rw [LSeries_sub hv.1 (hz.smul (c:ℂ)),LSeries_smul,
       show LSeries Z s=riemannZeta s from LSeries_complexCoeff_zeta_eq_riemannZeta hs,hv.2]
     dsimp only [H]
     field_simp [riemannZeta_ne_zero_of_one_le_re hs.le] <;> ring
@@ -120,12 +122,12 @@ theorem reciprocalFactorial_sum_has_no_smaller_power {b : ℝ} (hb : 0≤b) (hb'
     have hne : (x:ℂ)≠1 := by exact_mod_cast hx1.ne
     have hcont : ContinuousAt D (x:ℂ) :=
       continuousAt_const.add ((hA _ (hb'.trans hx)).continuousAt.div (differentiableAt_riemannZeta hne).continuousAt hz)
-    have hlim : Tendsto (D-H) (𝓝[≠] (x:ℂ)) (𝓝 0) :=
-      tendsto_const_nhds.congr' (meromorphicOrderAt_eq_top_iff.mp htop).symm
+    have hzero : (D-H) =ᶠ[𝓝[≠] (x:ℂ)] (fun _ => 0) := meromorphicOrderAt_eq_top_iff.mp htop
+    have hlim : Tendsto (D-H) (𝓝[≠] (x:ℂ)) (𝓝 0) := tendsto_const_nhds.congr' hzero.symm
     exact sub_eq_zero.mp (tendsto_nhds_unique
       ((hcont.sub (hH _ hx).continuousAt).continuousWithinAt.tendsto) hlim)
   let q (w : ℂ) := w/2
-  have hq : AnalyticAt ℂ q 1 := analyticAt_id.div_const _
+  have hq : AnalyticAt ℂ q 1 := analyticAt_id.div_const
   have hF : MeromorphicAt (D ∘ q) 1 := (hD (q 1) (by simpa [q] using hb')).comp_analyticAt hq
   apply reciprocalFactorialEulerCorrection_no_right_germ _ hF
   have hsmall : Set.Iio (2:ℝ)∈𝓝[>] 1 := nhdsWithin_le_nhds (Iio_mem_nhds (by norm_num))

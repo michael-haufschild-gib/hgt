@@ -118,7 +118,7 @@ theorem successorSquare_outer_exponents_proper :
       apply (div_le_iff₀ (Real.sqrt_pos.mpr (Nat.cast_pos.mpr hp.pos))).mpr
       have hmn' : (m:ℝ)^2*(256*C) ≤ (n:ℝ)^3 := by
         apply (le_div_iff₀ (by positivity : 0 < 256*C)).mp
-        simpa only [one_div,div_eq_mul_inv,mul_comm] using hmn
+        simpa only [one_div,div_eq_mul_inv,one_mul,mul_comm] using hmn
       linarith only [hmn',mul_le_mul_of_nonneg_left hroot (by positivity : 0 ≤ (n:ℝ)^2/8)]
     exact (mul_le_mul_of_nonneg_left (hbase.trans (div_le_div_of_nonneg_right
       (mul_le_mul_of_nonneg_left hmass hC'.le) (Real.sqrt_nonneg _))) (sq_nonneg _)).trans hpc
@@ -156,13 +156,13 @@ def factorialCoordinateDistance (p : Nat.Primes) (z : ℤ) : ℕ := by
 
 private theorem coord_attained (p : Nat.Primes) (z : ℤ) :
     ∃ j : ℤ, (z-2*(p:ℤ)*j).natAbs=factorialCoordinateDistance p z := by
-  unfold factorialCoordinateDistance
-  exact Nat.find_spec _
+  classical
+  exact Nat.find_spec (p := fun d : ℕ => ∃ k : ℤ, (z-2*(p:ℤ)*k).natAbs=d) ⟨_,0,rfl⟩
 
 private theorem coord_lower (p : Nat.Primes) (z j : ℤ) :
     factorialCoordinateDistance p z ≤ (z-2*(p:ℤ)*j).natAbs := by
-  unfold factorialCoordinateDistance
-  exact Nat.find_min' _ ⟨j,rfl⟩
+  classical
+  exact Nat.find_min' (p := fun d : ℕ => ∃ k : ℤ, (z-2*(p:ℤ)*k).natAbs=d) ⟨_,0,rfl⟩ ⟨j,rfl⟩
 
 /-- Finite height of the difference between the price and twice the entropy. -/
 def factorialResidualHeight (a b : Nat.Primes →₀ ℤ) : ℝ :=

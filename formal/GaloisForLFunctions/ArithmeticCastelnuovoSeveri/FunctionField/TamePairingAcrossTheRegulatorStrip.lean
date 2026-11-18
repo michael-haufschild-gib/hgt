@@ -96,7 +96,7 @@ theorem generator_symbol (R : ℕ+) (u v : LocalUnit F) (w : Fˣ) (y : LocalUnit
       w^(-degree y.2) * (sign y.1 / sign y.2)^(R : ℤ) := by
   have h := generator_invariants R u v w
   simp only [pairSymbol,tame_signed_degrees,h.1,h.2.1,h.2.2.1,h.2.2.2,one_zpow,
-    mul_sub,zpow_sub,neg_mul,zpow_neg,div_eq_mul_inv,mul_zpow,inv_zpow]
+    mul_sub,zpow_sub,neg_mul,zpow_neg,div_eq_mul_inv,mul_zpow,inv_zpow,inv_one,mul_one]
   apply Units.ext
   simp only [Units.val_mul]
   ring

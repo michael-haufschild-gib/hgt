@@ -21,17 +21,16 @@ private theorem realOrderTerm_cast (a v : ℝ) (n : ℕ) :
   rw [modifiedBesselIOrderCoreTerm,reciprocalGammaEntire,he,Complex.Gamma_ofReal,realOrderTerm]
   push_cast
   rw [pow_mul]
-  simp only [div_eq_mul_inv,one_mul]
+  simp only [div_eq_mul_inv]
 
 private theorem realOrderTerm_hasSum (a v : ℝ) :
     HasSum (realOrderTerm a v) (modifiedBesselIOrderCore a (v:ℂ)).re := by
   have hc := ((summableLocallyUniformlyOn_modifiedBesselIOrderCoreTerm a).summable
     (Set.mem_univ (v:ℂ))).hasSum
   have hr := Complex.reCLM.hasSum hc
-  convert hr using 1
-  funext n
-  change realOrderTerm a v n = (modifiedBesselIOrderCoreTerm a n (v:ℂ)).re
-  rw [← realOrderTerm_cast,Complex.ofReal_re]
+  change HasSum (fun n => (modifiedBesselIOrderCoreTerm a n (v:ℂ)).re)
+    (modifiedBesselIOrderCore a (v:ℂ)).re at hr
+  simpa only [← realOrderTerm_cast,Complex.ofReal_re] using hr
 
 private theorem realOrder_core_cast (a v : ℝ) :
     modifiedBesselIOrderCore a (v:ℂ) = ((∑' n, realOrderTerm a v n : ℝ):ℂ) := by
@@ -50,7 +49,7 @@ private theorem normalized_hasSum (a v : ℝ) :
     HasSum (normalizedTerm a v) (normalizedBesselCore a v) :=
   (realOrderTerm_hasSum a v).mul_left _
 
-private theorem order_base_pos (v : Ioi (-1:ℝ)) : 0 < v.val+1 := by linarith [v.property]
+private theorem order_base_pos (v : Ioi (-1:ℝ)) : 0 < v.val+1 := by linarith only [show (-1:ℝ) < v.val from v.property]
 
 private theorem shifted_order_pos (v : Ioi (-1:ℝ)) (n : ℕ) : 0 < v.val+(n:ℝ)+1 := by
   linarith [order_base_pos v, Nat.cast_nonneg (α := ℝ) n]
@@ -73,7 +72,6 @@ private theorem normalizedTerm_succ (a : ℝ) (v : Ioi (-1:ℝ)) (n : ℕ) :
   rw [show v.val+((n:ℝ)+1)+1 = (v.val+n+1)+1 by ring,
     Real.Gamma_add_one (shifted_order_pos v n).ne']
   field_simp [hn,hG.ne',(shifted_order_pos v n).ne',show (n:ℝ)+1 ≠ 0 by positivity]
-  <;> ring
 
 private theorem normalizedTerm_upper (a : ℝ) (v : Ioi (-1:ℝ)) (n : ℕ) :
     normalizedTerm a v n ≤ (a^2 / (v.val+1))^n / n.factorial := by
@@ -102,8 +100,8 @@ theorem normalizedBesselCore_bounds (a : ℝ) (v : Ioi (-1:ℝ)) :
   have hs := normalized_hasSum a v
   have he := NormedSpace.expSeries_div_hasSum_exp (a^2/(v.val+1))
   constructor
-  · rw [← hs.tsum_eq, ← normalizedTerm_zero a v]
-    exact hs.summable.le_tsum 0 fun n _ => normalizedTerm_nonneg a v n
+  · simpa only [normalizedTerm_zero,hs.tsum_eq] using
+      hs.summable.le_tsum 0 (fun n _ => normalizedTerm_nonneg a v n)
   · rw [Real.exp_eq_exp_ℝ,← hs.tsum_eq,← he.tsum_eq]
     exact hs.summable.tsum_le_tsum (normalizedTerm_upper a v) he.summable
 
@@ -145,16 +143,17 @@ theorem normalizedBesselCore_strictAnti (a : Ioi (0:ℝ)) :
   intro v w hvw
   have hv := normalized_hasSum a v
   have hw := normalized_hasSum a w
+  change normalizedBesselCore a w < normalizedBesselCore a v
   rw [← hv.tsum_eq,← hw.tsum_eq]
-  apply Summable.tsum_lt_tsum (i := 1) (normalizedTerm_anti a hvw.le) _ hw.summable hv.summable
-  rw [show 1 = 0+1 by rfl, normalizedTerm_succ, normalizedTerm_succ,
-    normalizedTerm_zero,normalizedTerm_zero]
+  refine Summable.tsum_lt_tsum (i := 1) (normalizedTerm_anti a hvw.le) ?_ hw.summable hv.summable
+  change normalizedTerm a w (0+1) < normalizedTerm a v (0+1)
+  rw [normalizedTerm_succ a w 0,normalizedTerm_succ a v 0,normalizedTerm_zero,normalizedTerm_zero]
   simp only [Nat.cast_zero,zero_add,one_mul,add_zero]
   exact div_lt_div_of_pos_left (sq_pos_of_pos a.property) (order_base_pos v)
-    (add_lt_add_right (show v.val < w.val from hvw) 1)
+    (add_lt_add_of_lt_of_le (show v.val < w.val from hvw) (le_refl 1))
 
 private def raiseOrder (v : Ioi (-1:ℝ)) : Ioi (-1:ℝ) :=
-  ⟨v.val+1, by linarith [v.property]⟩
+  ⟨v.val+1, show (-1:ℝ) < v.val+1 from lt_trans v.property (by linarith)⟩
 
 private def besselRealValue (a : Ioi (0:ℝ)) (v : Ioi (-1:ℝ)) :=
   (modifiedBesselIOrder (2*a.val) (v.val:ℂ)).re
@@ -182,26 +181,32 @@ theorem realBesselOrderRatio_lt (a : Ioi (0:ℝ)) (v : Ioi (-1:ℝ)) :
   have he := scaledValue a (raiseOrder v)
   change besselRealValue a (raiseOrder v) * Real.Gamma ((v.val+1)+1) =
     Real.exp ((v.val+1)*Real.log a.val) * normalizedBesselCore a (raiseOrder v) at he
-  rw [Real.Gamma_add_one (order_base_pos v).ne', add_mul,one_mul,Real.exp_add,Real.exp_log a.property] at he
+  change normalizedBesselCore a (raiseOrder v) < normalizedBesselCore a v at h
+  rw [Real.Gamma_add_one (order_base_pos v).ne',
+    show (v.val+1)*Real.log a.val = v.val*Real.log a.val+Real.log a.val by ring,
+    Real.exp_add,Real.exp_log a.property] at he
   have h₁ := mul_lt_mul_of_pos_left h (mul_pos (Real.exp_pos (v.val*Real.log a.val)) a.property)
   have h₂ := scaledValue a v
   apply (div_lt_div_iff₀ (modifiedBessel_real_order_pos a v) (order_base_pos v)).mpr
-  by_contra! hrev
-  have hmul := mul_le_mul_of_nonneg_right hrev (Real.Gamma_pos_of_pos (order_base_pos v)).le
-  nlinarith only [hmul,h₁,he,congrArg (fun z : ℝ => a.val*z) h₂]
+  change besselRealValue a (raiseOrder v) * (v.val+1) < a.val * besselRealValue a v
+  apply (mul_lt_mul_iff_of_pos_right (Real.Gamma_pos_of_pos (order_base_pos v))).mp
+  calc
+    _ = _ := (mul_assoc _ _ _).trans he
+    _ < _ := h₁
+    _ = a.val * (Real.exp (v.val*Real.log a.val) * normalizedBesselCore a v) := by ring
+    _ = _ := by rw [← h₂,mul_assoc]
 
 /-- The real-order recurrence gives the first step of the continued fraction. -/
 theorem realBesselOrderRatio_reciprocal (a : Ioi (0:ℝ)) (v : Ioi (-1:ℝ)) :
     realBesselOrderRatio a v = a.val / (v.val+1 + a.val*realBesselOrderRatio a (raiseOrder v)) := by
   have h := modifiedBesselIOrder_recurrence (mul_pos (by norm_num : 0 < (2:ℝ)) a.property)
     (((v.val+1:ℝ):ℂ))
-  rw [show ((v.val+1:ℝ):ℂ) + 1 = (((raiseOrder (raiseOrder v)).val:ℝ):ℂ) by push_cast; rfl,
+  rw [show ((v.val+1:ℝ):ℂ) + 1 = (((raiseOrder (raiseOrder v)).val:ℝ):ℂ) by simp only [raiseOrder,Complex.ofReal_add,Complex.ofReal_one],
     show ((v.val+1:ℝ):ℂ) - 1 = (v.val:ℂ) by push_cast; ring] at h
   have h₂ := congrArg Complex.re h
   have hcoef : (2:ℂ)*((v.val+1:ℝ):ℂ)/((2*a.val:ℝ):ℂ) = (((v.val+1)/a.val:ℝ):ℂ) := by
     push_cast
     field_simp [Complex.ofReal_ne_zero.mpr a.property.ne']
-    <;> ring
   rw [hcoef,Complex.sub_re,Complex.mul_re,Complex.ofReal_im,zero_mul,sub_zero,Complex.ofReal_re] at h₂
   change besselRealValue a (raiseOrder (raiseOrder v)) =
     besselRealValue a v - ((v.val+1)/a.val)*besselRealValue a (raiseOrder v) at h₂
@@ -213,8 +218,11 @@ theorem realBesselOrderRatio_reciprocal (a : Ioi (0:ℝ)) (v : Ioi (-1:ℝ)) :
   change besselRealValue a v ≠ 0 at hv
   change besselRealValue a (raiseOrder v) ≠ 0 at hw
   field_simp [ha] at h₂
-  field_simp [hv,hw]
-  nlinarith only [h₂]
+  calc
+    _ = ((v.val+1)*besselRealValue a (raiseOrder v) +
+        a.val*besselRealValue a (raiseOrder (raiseOrder v))) / besselRealValue a v := by
+      field_simp [hv,hw]
+    _ = a.val := (div_eq_iff hv).mpr (by nlinarith only [h₂])
 
 /-- The first two continued-fraction convergents enclose the ratio strictly at
 every positive argument and every real order greater than minus one. -/
@@ -227,7 +235,7 @@ theorem realBesselOrderRatio_bounds (a : Ioi (0:ℝ)) (v : Ioi (-1:ℝ)) :
   change realBesselOrderRatio a (raiseOrder v) < a.val/((v.val+1)+1) at h
   rw [show (v.val+1)+1 = v.val+2 by ring] at h
   exact div_lt_div_of_pos_left a.property (add_pos (order_base_pos v) (mul_pos a.property (ratio_pos _ _)))
-    (add_lt_add_left (mul_lt_mul_of_pos_left h a.property) _)
+    (add_lt_add_of_le_of_lt le_rfl (mul_lt_mul_of_pos_left h a.property))
 
 #print axioms modifiedBessel_real_order_pos
 #print axioms normalizedBesselCore_strictAnti

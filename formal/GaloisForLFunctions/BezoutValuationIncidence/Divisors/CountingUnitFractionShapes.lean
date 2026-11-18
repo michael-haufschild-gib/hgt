@@ -1,5 +1,6 @@
 import GaloisForLFunctions.BezoutValuationIncidence.Divisors.UnitFractionWitnessFibers
 import Mathlib.NumberTheory.Divisors
+import Mathlib.SetTheory.Cardinal.Finite
 
 /-!
 # Counting the symmetric unit-fraction parameters
@@ -58,7 +59,6 @@ theorem product_iff (K n a b c d : ℕ+) :
     linarith only [hh]
   have ht : (target (K*c*d) c n : ℤ) = (K : ℤ)*c^2*d*n+1 := by
     simp only [target,Nat.cast_add,Nat.cast_mul,Nat.cast_one,PNat.mul_coe]
-    push_cast
     ring
   rw [← he a,← he b,← ht,← Int.natCast_mul,Int.natCast_inj]
 
@@ -81,9 +81,9 @@ def divisorEquiv (K n c d : ℕ+) :
     exact ⟨_,mem_filter.mpr ⟨Nat.mem_divisors.mpr ⟨⟨_,h.symm⟩,Nat.succ_ne_zero _⟩,
       by rw [index_succ]; exact dvd_mul_right _ _⟩⟩
   invFun x := by
-    obtain ⟨h,ha,hb⟩ := pair_spec _ _ _ x.property
-    exact ⟨(decode _ _ ha,decode _ _ hb),(product_iff _ _ _ _ _ _).1
-      (by rw [index_decode,index_decode]; exact h)⟩
+    have h := pair_spec _ _ _ x.property
+    exact ⟨(decode _ _ h.2.1,decode _ _ h.2.2),(product_iff _ _ _ _ _ _).1
+      (by rw [index_decode,index_decode]; exact h.1)⟩
   left_inv ab := by
     apply Subtype.ext
     have h := (product_iff _ _ _ _ _ _).2 ab.property
@@ -91,11 +91,11 @@ def divisorEquiv (K n c d : ℕ+) :
     have he : target (K*c*d) c n / index (K*c*d) ab.val.1 = index (K*c*d) ab.val.2 := by
       rw [← h,Nat.mul_div_cancel_left _ hx]
     apply Prod.ext
-    · exact decode_index _ _ _
+    · exact decode_index _ _ (by rw [index_succ]; exact dvd_mul_right _ _)
     · apply PNat.eq
       change (target (K*c*d) c n / index (K*c*d) ab.val.1 + 1) / ((K*c*d : ℕ+) : ℕ) = _
       rw [he,index_succ,Nat.mul_div_cancel_left _ (K*c*d).pos]
-  right_inv x := Subtype.ext (index_decode _ _ _)
+  right_inv x := Subtype.ext (index_decode _ _ (pair_spec _ _ _ x.property).2.1)
 
 /-- The cardinality counts exactly the ordered shapes yielding the three
 displayed unit fractions; repeated denominator values are allowed. -/

@@ -25,6 +25,7 @@ def neighborCost (c : ι → NNReal) (P : Finset ι) (i : ι) :=
 def LocalTest (p c : ι → NNReal) (P : Finset ι) : Prop :=
   ∀ i ∈ P, (p i : ℝ)*Real.exp (neighborCost G c P i) ≤ 1-Real.exp (-(c i : ℝ))
 
+omit [DecidableEq ι] in
 private theorem exp_cost_pos (c : ι → NNReal) (S : Finset ι) : 0 < Real.exp (-cost c S) :=
   Real.exp_pos _
 
@@ -64,7 +65,7 @@ theorem negative_deletion (p c : ι → NNReal) (P : Finset ι) (hc : LocalTest 
         _ ≤ (1-Real.exp (-(c i : ℝ)))/Real.exp (neighborCost G c P i) :=
           (le_div_iff₀ (Real.exp_pos _)).2 (hc i (hS hi))
         _ = (1-Real.exp (-(c i : ℝ)))*Real.exp (-neighborCost G c P i) := by
-          rw [Real.exp_neg,div_eq_mul_inv]
+          rw [Real.exp_neg (neighborCost G c P i),div_eq_mul_inv]
         _ ≤ _ := mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (neg_le_neg hsum)) he₁
     have hdec := partition_insert G i Q (notMem_erase _ _) (fun j => -(p j : ℝ))
     rw [show insert i Q=S from insert_erase hi] at hdec

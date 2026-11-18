@@ -254,7 +254,7 @@ theorem criticalState_adverse_mass_by_width {W₀ : ℝ} (hW : 0 < W₀)
       have hwt : v ≤ 2*C/(R*Real.sqrt t) := by
         calc v ≤ R⁻¹*(2*C/Real.sqrt t) := mul_le_mul
                ((inv_le_inv₀ hrn hR).2 hroot) hprof hp.le (inv_nonneg.mpr hR.le)
-          _ = _ := by field_simp [hR.ne',hs.ne'] <;> ring
+          _ = _ := by field_simp [hR.ne',hs.ne']
       exact max_le (by linarith only [mul_nonneg (vonMangoldt_nonneg (n := n)) hv,hwt])
         (div_nonneg (by positivity) (mul_nonneg hR.le hs.le))
     · intro ho hzero
@@ -266,7 +266,7 @@ theorem criticalState_adverse_mass_by_width {W₀ : ℝ} (hW : 0 < W₀)
         apply Real.sqrt_le_sqrt; rw [one_div,Real.log_inv]; linarith only [hlg]
       have hw' := hwlow.trans (mul_le_mul_of_nonneg_left hsl hp.le)
       have hφ : c/Real.sqrt t ≤ m*Φ (-k) := (div_le_iff₀ hs).2 hw'
-      calc c/(2*R*Real.sqrt t) = (2*R)⁻¹*(c/Real.sqrt t) := by field_simp [hR.ne',hs.ne'] <;> ring
+      calc c/(2*R*Real.sqrt t) = (2*R)⁻¹*(c/Real.sqrt t) := by field_simp [hR.ne',hs.ne']
         _ ≤ v := mul_le_mul ((inv_le_inv₀ (by positivity : 0 < 2*R) hrn).2 hroot') hφ
                    (div_nonneg hc0.le hs.le) (inv_nonneg.mpr hrn.le)
   constructor
@@ -289,7 +289,7 @@ theorem criticalState_adverse_mass_by_width {W₀ : ℝ} (hW : 0 < W₀)
       change 6*i = 6*j at h
       omega
     change (c/48)*H/(R*Real.sqrt t) ≤ ∑ n ∈ wallIntegerWindow t H, a n
-    calc _ = (H/24)*b := by dsimp only [b]; field_simp [hR.ne',hs.ne'] <;> ring
+    calc _ = (H/24)*b := by dsimp only [b]; field_simp [hR.ne',hs.ne']; ring
       _ ≤ (D.card : ℝ)*b := mul_le_mul_of_nonneg_right hcard hb
       _ = ∑ _j ∈ D, b := by simp only [Finset.sum_const,nsmul_eq_mul]
       _ ≤ ∑ j ∈ D, a (6*j) := Finset.sum_le_sum fun j hj =>
@@ -308,7 +308,7 @@ theorem criticalState_adverse_mass_by_width {W₀ : ℝ} (hW : 0 < W₀)
     calc _ ≤ ∑ _n ∈ A, b := Finset.sum_le_sum fun n hn => (hloc n (hA hn)).1
       _ = (A.card:ℝ)*b := by simp only [Finset.sum_const,nsmul_eq_mul]
       _ ≤ (2*H)*b := mul_le_mul_of_nonneg_right hcard hb
-      _ = _ := by dsimp only [b]; field_simp [hR.ne',hs.ne'] <;> ring
+      _ = _ := by dsimp only [b]; field_simp [hR.ne',hs.ne']; ring
 
 /-- Critical-width adverse mass stays between two positive constants. For every
 selection in the full range, deleting the selected atoms retains the entire

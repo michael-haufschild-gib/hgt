@@ -97,7 +97,11 @@ theorem primeReciprocalReading_den (a : Nat.Primes →₀ ℤ) :
       Finsupp.finsetSum_apply]
     have hj (j : Nat.Primes) : (j:ℕ).factorization (p:ℕ) = if j=p then 1 else 0 := by
       rw [j.property.factorization,Finsupp.single_apply]
-      simp only [Subtype.coe_inj]
+      by_cases h : j=p
+      · subst j
+        simp
+      · have hval : (j:ℕ) ≠ (p:ℕ) := fun he => h (Subtype.ext he)
+        simp [h,hval]
     simp only [hj]
     by_cases h : (p:ℤ) ∣ a p <;> simp [h,hs]
   · simp only [Nat.factorization_eq_zero_of_not_prime _ hp]

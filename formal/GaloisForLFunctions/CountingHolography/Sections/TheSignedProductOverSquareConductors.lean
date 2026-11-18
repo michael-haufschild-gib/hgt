@@ -141,7 +141,7 @@ theorem zetaZeroWidth_le_iff_square_generator_prefix {s : ℝ} (hs : 0 ≤ s) (h
     change |∑ n ∈ Ioc 0 N, price n| ≤ _
     refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum hrow).trans_eq ?_)
     rw [sum_const,nsmul_eq_mul,Nat.card_Ioc,Nat.sub_zero,show (3:ℝ)+2*s=1+(2+2*s) by ring,
-      Real.rpow_add hN₀,Real.rpow_one]
+      Real.rpow_add hN₀ 1 (2+2*s),Real.rpow_one]
     ring
   rintro ⟨C,hC,h⟩
   exact width_of_dominating_prefix price (fun _ => le_rfl) hs hC fun N => (log_prefix N) ▸ h N
@@ -176,7 +176,8 @@ private theorem positive_price_prefix {r : ℝ} (hr : 0 ≤ r)
     obtain ⟨hpos,hle⟩ := mem_Ioc.mp hn
     have hp := Real.rpow_pos_of_pos (Nat.cast_pos.mpr hpos : 0 < (n:ℝ)) r
     have he : g n*(n:ℝ)^r=max (price n) 0 := by
-      rw [g,LSeries.norm_term_eq,if_neg hpos.ne',positive_price_norm,Complex.ofReal_re,div_mul_cancel₀ _ hp.ne']
+      dsimp only [g]
+      rw [LSeries.norm_term_eq,if_neg hpos.ne',positive_price_norm,Complex.ofReal_re,div_mul_cancel₀ _ hp.ne']
     exact he.ge.trans (mul_le_mul_of_nonneg_left
       (Real.rpow_le_rpow (Nat.cast_nonneg n) (by exact_mod_cast hle) hr) (norm_nonneg _))
   exact (sum_le_sum hrow).trans ((le_of_eq (sum_mul ..).symm).trans
@@ -194,7 +195,7 @@ theorem zetaZeroWidth_le_iff_positive_price_abscissa {s : ℝ} (hs : 0 ≤ s) :
         rw [positive_price_norm]
         exact max_le ((le_abs_self _).trans (h _ (Nat.pos_of_ne_zero hn)))
           (mul_nonneg hC (Real.rpow_nonneg (Nat.cast_nonneg n) _))⟩
-    convert he using 1 <;> norm_cast <;> ring
+    convert he using 1; norm_cast; ring
   intro h
   by_contra! hw
   let t := (s+zetaZeroWidth)/2

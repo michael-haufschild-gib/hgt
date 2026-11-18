@@ -15,6 +15,7 @@ noncomputable section
 namespace GaloisForLFunctions.CountingHolography.Sections
 open Finset Filter Topology MeasureTheory ArithmeticOfSquareRootPrecision
 open _root_.RHTower _root_.RHTower.WeilDeletion BiScaleUncertainty.ChebyshevGauge
+open ArithmeticWeightTheory ArithmeticCastelnuovoSeveri ArithmeticOrientationGeometry
 
 private abbrev a := Real.exp (-8)
 private abbrev b := Real.exp (8+Real.log 4)
@@ -29,8 +30,10 @@ private theorem test_zero {x : ℝ} (h : x ∉ Set.Icc a b) : squareFactorialTes
 
 private theorem test_compact : HasCompactSupport squareFactorialTest := by
   apply isCompact_Icc.of_isClosed_subset isClosed_closure
-  apply closure_minimal _ isClosed_Icc
-  exact fun x hx => by by_contra h; exact hx (test_zero h)
+  refine closure_minimal ?_ isClosed_Icc
+  intro x hx
+  by_contra h
+  exact hx (test_zero h)
 
 private theorem test_regular : ContDiff ℝ 2 squareFactorialTest := by
   have hH : ContDiff ℝ 2 splineAutoCorr := by
@@ -67,7 +70,7 @@ private theorem scaled_test_data : ∃ L : ℝ, 0 ≤ L ∧ ∀ {X : ℝ}, 0 < X
     exact test_zero (fun H => ((lt_div_iff₀ hX).mpr hx).not_ge H.2)
   · intro x _
     have hd := (test_regular.differentiable (by norm_num) (x/X)).hasDerivAt.comp x ((hasDerivAt_id x).div_const X)
-    simpa only [div_eq_mul_inv,one_mul] using hd
+    simpa only [Function.comp_def,id_eq,div_eq_mul_inv,one_mul] using hd
   · intro u v _ huv
     have hh := hL.dist_le_mul (v/X) (u/X)
     rw [Real.dist_eq,Real.dist_eq,← sub_div,abs_div,abs_of_pos hX,abs_of_nonneg (sub_nonneg.mpr huv)] at hh
@@ -99,7 +102,7 @@ theorem squareFactorialInterpolant_error : ∃ D : ℝ, 0 ≤ D ∧ ∀ {X y : �
   have h := roundedFactorialReading_error (mul_nonneg (Real.exp_pos _).le hX.le) (div_nonneg hL hX.le) hz hl hy
   change |squareFactorialInterpolant X y-squareFactorialTest (y/X)| ≤ _ at h
   rw [squareFactorialTest,if_pos (div_pos hy hX)] at h
-  exact h.trans_eq (by field_simp [hX.ne',hy.ne']; ring)
+  exact h.trans_eq (by field_simp [hX.ne',hy.ne'])
 
 /-- Under a Mertens power bound the interpolant controls both small
 degrees and the integrable tail at the same scale. -/
@@ -115,7 +118,7 @@ theorem squareFactorialInterpolant_mertens_error {σ C : ℝ} (hσ : 0 < σ) (hC
   refine ⟨D,by dsimp only [D]; positivity,?_⟩
   filter_upwards [eventually_gt_atTop (1/a)] with X hX₀
   have hX := (one_div_pos.mpr (Real.exp_pos _)).trans hX₀
-  have hB := mul_nonneg (Real.exp_pos _).le hX.le
+  have hB : 0 ≤ b*X := mul_nonneg (Real.exp_pos _).le hX.le
   obtain ⟨hz,hd,_,hl⟩ := hs hX
   intro y hy
   change |roundedFactorialReading _ _ y-(squarePrimeWeight (y/X)).re| ≤ _
@@ -147,7 +150,7 @@ private theorem errorAt_measurable {X : ℝ} (hX : 0 < X) :
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
   dsimp only [F,errorAt,squareFactorialInterpolant]
   rw [roundedFactorialReading_eq_floor_sum _ (mul_nonneg (Real.exp_pos _).le hX.le) hy,
-    squareFactorialTest (x := y/X),if_pos (div_pos hy hX)]
+    show squareFactorialTest (y/X)=_ from if_pos (div_pos hy hX)]
 
 /-- Beyond K the scaled integral of the unconditional rounding error is
 at most a constant divided by K. -/
@@ -158,7 +161,7 @@ theorem squareFactorialInterpolant_integral_tail : ∃ D : ℝ, 0 ≤ D ∧ ∀ 
   have hg := (integrableOn_Ioi_rpow_of_lt (by norm_num : (-2:ℝ) < -1) hK).const_mul (D*X)
   have he : ∀ᵐ y ∂volume.restrict (Set.Ioi K), errorAt X y ≤ D*X*y^(-2:ℝ) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
-    simpa only [Real.rpow_neg (hK.trans hy).le,Real.rpow_two,div_eq_mul_inv] using hd hX (hK.trans hy)
+    simpa only [errorAt,Real.rpow_neg (hK.trans hy).le,Real.rpow_two,div_eq_mul_inv] using hd hX (hK.trans hy)
   have h := integral_mono_of_nonneg (Filter.Eventually.of_forall fun y => abs_nonneg _) hg he
   change (∫ y in Set.Ioi K, errorAt X y)/X ≤ _
   rw [integral_const_mul,integral_Ioi_rpow_of_lt (by norm_num) hK] at h
@@ -179,11 +182,12 @@ theorem squareFactorialInterpolant_mertens_integral {σ C : ℝ} (hσ : 0 < σ) 
   have hE : 0 ≤ E := mul_nonneg hD (Real.rpow_nonneg hX.le _)
   have h₁ : ∀ᵐ y ∂volume.restrict (Set.Ioc 0 1), errorAt X y ≤ E := by
     filter_upwards [ae_restrict_mem measurableSet_Ioc] with y hy
-    simpa only [if_pos hy.2] using h hy.1
+    simpa only [errorAt,E,if_pos hy.2] using h hy.1
   have h₂ : ∀ᵐ y ∂volume.restrict (Set.Ioi 1), errorAt X y ≤ E*y^(-(1+σ)) := by
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy
-    have hy' := zero_lt_one.trans hy
-    simpa only [if_neg (not_le.mpr hy),Real.rpow_neg hy'.le,div_eq_mul_inv] using h hy'
+    change 1 < y at hy
+    have hy' : 0 < y := zero_lt_one.trans hy
+    simpa only [errorAt,E,if_neg (not_le.mpr hy),Real.rpow_neg hy'.le,div_eq_mul_inv] using h hy'
   have hc : IntegrableOn (fun _ : ℝ => E) (Set.Ioc 0 1) := integrableOn_const
     (by simp : volume (Set.Ioc (0:ℝ) 1) ≠ ⊤)
   have hs : -(1+σ) < -1 := by linarith only [hσ]
@@ -191,10 +195,10 @@ theorem squareFactorialInterpolant_mertens_integral {σ C : ℝ} (hσ : 0 < σ) 
   have hm := errorAt_measurable hX
   have hinner : IntegrableOn (errorAt X) (Set.Ioc 0 1) := hc.mono'
     (hm.mono_measure (Measure.restrict_mono_set _ Set.Ioc_subset_Ioi_self))
-    (h₁.mono fun y hy => by simpa only [Real.norm_of_nonneg (abs_nonneg _)] using hy)
+    (h₁.mono fun y hy => by simpa only [errorAt,Real.norm_eq_abs,abs_abs] using hy)
   have houter : IntegrableOn (errorAt X) (Set.Ioi 1) := hr.mono'
     (hm.mono_measure (Measure.restrict_mono_set _ (Set.Ioi_subset_Ioi zero_le_one)))
-    (h₂.mono fun y hy => by simpa only [Real.norm_of_nonneg (abs_nonneg _)] using hy)
+    (h₂.mono fun y hy => by simpa only [errorAt,Real.norm_eq_abs,abs_abs] using hy)
   have heq : Set.Ioc (0:ℝ) 1 ∪ Set.Ioi 1 = Set.Ioi 0 := by ext y; simp only [Set.mem_union,Set.mem_Ioc,Set.mem_Ioi]; constructor <;> intro hy <;> rcases le_or_gt y 1 with h|h <;> grind
   refine ⟨heq ▸ hinner.union houter,?_⟩
   rw [← heq,setIntegral_union (Set.disjoint_left.mpr fun y hy hy' => hy'.not_ge hy.2) measurableSet_Ioi hinner houter]
@@ -289,7 +293,7 @@ private theorem window_times_zeta {s : ℂ} (hs : 1 < s.re) (hg : MellinConverge
   rw [tsum_mul_right,← zeta_eq_tsum_one_div_nat_cpow hs] at hi
   refine hi.trans (setIntegral_congr_fun measurableSet_Ioi fun t ht => ?_)
   change (∑' n : ℕ, (t:ℂ)^(s-1) • g (n*t))=(t:ℂ)^(s-1) • squarePrimeWeight t
-  rw [← tsum_const_smul]
+  simp only [smul_eq_mul,tsum_mul_left]
   congr 1
   let N := ⌊b/t⌋₊
   have hz (n : ℕ) (hne : n ∉ Icc 1 N) : g (n*t)=0 := by
@@ -304,7 +308,7 @@ private theorem window_times_zeta {s : ℂ} (hs : 1 < s.re) (hg : MellinConverge
 
 private theorem sample_window_trivial {n : ℕ} (_ : 0 < n) : |mertens n| ≤ 1*(n:ℝ)^(1:ℝ) := by
   rw [Real.rpow_one,one_mul]
-  refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum (fun d _ => ?_)).trans_eq ?_)
+  refine (abs_sum_le_sum_abs _ _).trans ((sum_le_sum (g := fun _ => (1:ℝ)) (fun d _ => ?_)).trans_eq ?_)
   · exact_mod_cast (ArithmeticFunction.abs_moebius_le_one (n := d))
   · simp
 
@@ -334,7 +338,7 @@ theorem squareFactorialMobiusWindow_moments {σ C : ℝ} (hs : 0 ≤ σ) (hs' : 
     (lt_add_one _) (window_at_zero hs hc hm) hsU).2
   have hM : AnalyticOnNhd ℂ M U :=
     (show DifferentiableOn ℂ M U from fun s hsU => (hd s hsU).differentiableAt.differentiableWithinAt).analyticOnNhd hU
-  have hW := differentiable_mellin_squarePrimeWeight.differentiableOn.analyticOnNhd Set.isOpen_univ
+  have hW := differentiable_mellin_squarePrimeWeight.differentiableOn.analyticOnNhd isOpen_univ
   let L := fun s : ℂ => zetaResidueUnit s*M s
   let R := fun s : ℂ => (s-1)*W s
   have hL : AnalyticOnNhd ℂ L U := fun s h => (analyticAt_zetaResidueUnit s).mul (hM s h)
@@ -362,7 +366,8 @@ private def floorDefect := (Set.Ioc (0:ℝ) 1).indicator fun x => (⌊1/x⌋₊:
 private theorem floorDefect_integrable : Integrable floorDefect := by
   have hc : IntegrableOn (fun _ : ℝ => (1:ℝ)) (Set.Ioc 0 1) := integrableOn_const (by simp)
   apply IntegrableOn.integrable_indicator _ measurableSet_Ioc
-  apply hc.mono' (by fun_prop)
+  have hm : Measurable (fun x : ℝ => (⌊1/x⌋₊:ℝ)-1/x) := by fun_prop
+  apply hc.mono' hm.aestronglyMeasurable
   filter_upwards [ae_restrict_mem measurableSet_Ioc] with x hx
   rw [Real.norm_eq_abs,abs_of_nonpos (sub_nonpos.mpr (Nat.floor_le (one_div_nonneg.mpr hx.1.le)))]
   linarith only [Nat.lt_floor_add_one (1/x)]
@@ -388,6 +393,7 @@ private theorem balancedFloor_integral {j : ℕ} (hj : 0 < j) :
       Set.Ioc_subset_Icc_self)
   have hu : IntegrableOn u (Set.Ioi 0) := (hu₀.integrable_indicator measurableSet_Ioc).integrableOn
   have he (x : ℝ) (hx : x ∈ Set.Ioi (0:ℝ)) : balancedFloor j x=f x-g x+j*u x := by
+    change 0 < x at hx
     have hx' : 0 < (j:ℝ)⁻¹*x := mul_pos (inv_pos.mpr hj') hx
     have ha : 1/((j:ℝ)⁻¹*x)=(j:ℝ)/x := by field_simp [hj'.ne',hx.ne']
     have hiff : (j:ℝ)⁻¹*x ≤ 1 ↔ x ≤ j := by rw [← div_eq_inv_mul,div_le_iff₀ hj',one_mul]
@@ -412,7 +418,8 @@ private theorem balancedFloor_integral {j : ℕ} (hj : 0 < j) :
           Set.indicator_of_notMem (show x ∉ J from fun hh => h₂ hh.2),hz,hz',Nat.cast_zero,
           mul_zero,sub_zero,add_zero]
   refine ⟨((hf.sub hg).add (hu.const_mul _)).congr_fun (fun x hx => (he x hx).symm) measurableSet_Ioi,?_⟩
-  rw [setIntegral_congr_fun measurableSet_Ioi he,integral_add (hf.sub hg) (hu.const_mul _),
+  have hfgint : IntegrableOn (fun x => f x-g x) (Set.Ioi 0) := hf.sub hg
+  rw [setIntegral_congr_fun measurableSet_Ioi he,integral_add hfgint (hu.const_mul (j:ℝ)),
     integral_sub hf hg,integral_const_mul]
   have hfg : (∫ x in Set.Ioi (0:ℝ), f x)=(∫ x in Set.Ioi (0:ℝ), g x) := by
     simp only [f,g,integral_comp_mul_left_Ioi floorDefect _ (inv_pos.mpr hj'),mul_zero,
@@ -438,7 +445,7 @@ def squareFactorialStirlingError (X : ℝ) :=
 private theorem interpolant_balance {X : ℝ} (hX₀ : 1/a < X) :
     (∑ j ∈ Icc 1 ⌊b*X⌋₊, coefficients X j*(j:ℝ))=0 := by
   have hX := (one_div_pos.mpr (Real.exp_pos _)).trans hX₀
-  have h := roundedFactorialReading_eq_floor_sum (fun x => squareFactorialTest (x/X))
+  have h := roundedFactorialReading_eq_floor_sum (B := b*X) (fun x => squareFactorialTest (x/X))
     (mul_nonneg (Real.exp_pos _).le hX.le) zero_lt_one
   change squareFactorialInterpolant X 1=_ at h
   have hz : squareFactorialTest (1/X)=0 := test_zero (fun hh => ((div_lt_iff₀ hX).mpr (by linarith only [(div_lt_iff₀ (Real.exp_pos _)).mp hX₀])).not_ge hh.1)
@@ -460,7 +467,8 @@ private theorem interpolant_entropy_integral {X : ℝ} (hX₀ : 1/a < X) :
     rw [show (∑ j ∈ I, coefficients X j*(j:ℝ))=0 from hb,zero_mul,sub_zero]
     rfl
   have hf (j : ℕ) (hj : j ∈ I) := (balancedFloor_integral (mem_Icc.mp hj).1).1.const_mul (coefficients X j)
-  refine ⟨(integrable_finsetSum I hf).congr_fun (fun y hy => (he y hy).symm) measurableSet_Ioi,?_⟩
+  have hi : IntegrableOn (fun y => ∑ j ∈ I, coefficients X j*balancedFloor j y) (Set.Ioi 0) := integrable_finsetSum I hf
+  refine ⟨hi.congr_fun (fun y hy => (he y hy).symm) measurableSet_Ioi,?_⟩
   rw [setIntegral_congr_fun measurableSet_Ioi he,integral_finsetSum _ hf]
   exact sum_congr rfl fun j hj => by rw [integral_const_mul,(balancedFloor_integral (mem_Icc.mp hj).1).2]
 
@@ -476,15 +484,18 @@ theorem squareFactorialEntropy_mertens {σ C : ℝ} (hs : 0 < σ) (hc : 0 ≤ C)
   let w := fun y : ℝ => (squarePrimeWeight (y/X)).re
   have hw₀ : IntegrableOn squarePrimeWeight (Set.Ioi 0) := by
     simpa only [MellinConvergent,sub_self,Complex.cpow_zero,one_smul] using mellinConvergent_squarePrimeWeight 1
+  have hr : IntegrableOn (fun t => (squarePrimeWeight t).re) (Set.Ioi 0) := hw₀.re
   have hw : IntegrableOn w (Set.Ioi 0) := by
     simpa only [w,div_eq_inv_mul,mul_zero] using
       (integrableOn_Ioi_comp_mul_left_iff (fun t => (squarePrimeWeight t).re) 0 (inv_pos.mpr hX)).mpr
-        (by simpa only [mul_zero] using hw₀.re)
+        (by simpa only [mul_zero] using hr)
   have hzero : (∫ y in Set.Ioi (0:ℝ), w y)=0 := by
     have h := squareFactorialMellin_one
     simp only [mellin,sub_self,Complex.cpow_zero,one_smul] at h
-    simp only [w,div_eq_inv_mul,integral_comp_mul_left_Ioi _ _ (inv_pos.mpr hX),mul_zero,
-      integral_re hw₀,h,Complex.zero_re,smul_zero]
+    have hz : (∫ t in Set.Ioi (0:ℝ), (squarePrimeWeight t).re)=0 :=
+      (integral_re hw₀).trans (congrArg Complex.re h)
+    simpa only [w,div_eq_inv_mul,mul_zero,hz,smul_zero] using
+      integral_comp_mul_left_Ioi (fun t => (squarePrimeWeight t).re) 0 (inv_pos.mpr hX)
   obtain ⟨hi,hv⟩ := interpolant_entropy_integral hX₀
   have h := norm_integral_le_integral_norm (μ := volume.restrict (Set.Ioi 0))
     (fun y => squareFactorialInterpolant X y-w y)
@@ -536,7 +547,9 @@ theorem squareFactorialStirlingError_mertens {σ C : ℝ} (hs : 0 < σ) (hc : 0 
   have htop : u (N+1)=0 := by
     have hn : b*X < ((N+1:ℕ):ℝ) := by simpa only [Nat.cast_add,Nat.cast_one] using Nat.lt_floor_add_one (b*X)
     have he := Nat.floor_eq_zero.mpr ((div_lt_one (Nat.cast_pos.mpr (Nat.succ_pos _))).mpr hn)
-    simp [u,mobiusFactorialSample,he]
+    change (∑ j ∈ Icc 1 ⌊b*X/((N+1:ℕ):ℝ)⌋₊, _) = 0
+    rw [he]
+    simp
   have hbal := sum_first_differences u (fun j => (j:ℝ)) (by simp) N
   rw [show (∑ j ∈ Icc 1 N, (u j-u (j+1))*(j:ℝ))=0 from interpolant_balance hX₀,htop,zero_mul,sub_zero] at hbal
   have hj (j : ℕ) (hj : j ∈ Icc 1 N) : (j:ℝ)-((j-1:ℕ):ℝ)=1 := by

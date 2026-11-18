@@ -42,17 +42,17 @@ private theorem quarter_scale {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) :
   have hz : Complex.exp (ρ*(h:ℂ))=(A:ℂ)*Complex.exp (((ρ.im*h:ℝ):ℂ)*I) := by
     rw [show (A:ℂ)=Complex.exp ((ρ.re*h:ℝ):ℂ) from Complex.ofReal_exp _,← Complex.exp_add]
     congr 1
-    apply Complex.ext <;> simp <;> ring
+    apply Complex.ext <;> simp
   rw [hz]
   rcases lt_or_gt_of_ne hq.im_ne_zero with hn | hp
   · right
-    have he : ρ.im*h= -Real.pi/2 := by dsimp only [h]; rw [abs_of_neg hn]; field_simp [hn.ne] <;> ring
+    have he : ρ.im*h= -Real.pi/2 := by dsimp only [h]; rw [abs_of_neg hn]; field_simp [hn.ne]
     rw [he]; congr 1
-    convert _root_.RHTower.exp_neg_quarter_turn using 2 <;> push_cast <;> ring
+    convert _root_.RHTower.exp_neg_quarter_turn using 2; push_cast; ring
   · left
-    have he : ρ.im*h= Real.pi/2 := by dsimp only [h]; rw [abs_of_pos hp]; field_simp [hp.ne'] <;> ring
+    have he : ρ.im*h= Real.pi/2 := by dsimp only [h]; rw [abs_of_pos hp]; field_simp [hp.ne']
     rw [he]; congr 1
-    convert _root_.RHTower.exp_quarter_turn using 2 <;> push_cast <;> ring
+    convert _root_.RHTower.exp_quarter_turn using 2; push_cast; ring
 
 private theorem quarter_pair_norm {Q : ℂ} (hq : Q=I ∨ Q=-I) (z : ℂ) :
     ‖(⟨z.re,(Q*z).re⟩:ℂ)‖=‖z‖ := by
@@ -141,7 +141,8 @@ theorem singleQuartet_two_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuart
   let D := Complex.exp (ρ*(h:ℂ))
   let m := 2*(quartetCopyMult ρ:ℝ)
   have hm : 0 < m := mul_pos (by norm_num) (by exact_mod_cast hq.quartetCopyMult_pos)
-  have hd : ‖D‖=A := by simp [D,A,h,Complex.norm_exp]
+  have hd : ‖D‖=A := by
+    simp only [D,A,Complex.norm_exp,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,mul_zero,sub_zero]
   have hone : D-1≠0 := fun e => hA.ne' (hd.symm.trans (by rw [sub_eq_zero.mp e,norm_one]))
   have hρ : ρ≠0 := fun e => hq.im_ne_zero (by simp [e])
   refine ⟨hh,hfit,mul_pos hm (norm_pos_iff.mpr (div_ne_zero hone hρ)),?_⟩
@@ -156,7 +157,7 @@ theorem singleQuartet_two_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuart
       (by positivity) (by positivity)
   have he₀ := bound (s := t) le_rfl (by linarith only [hh])
   have he₁ := bound (s := t+h) (by linarith only [hh]) (by linarith only [hh])
-  have he₂ := bound (s := (t+h)+h) (by linarith only [hh]) (by ring_nf)
+  have he₂ := bound (s := (t+h)+h) (by linarith only [hh]) (by linarith only)
   simp only [powerMode_add ρ _ h] at he₁ he₂
   obtain ⟨Q,hQ,hD⟩ : ∃ Q : ℂ, (Q=I ∨ Q=-I) ∧ D=(A:ℂ)*Q :=
     hphase.elim (fun e => ⟨I,Or.inl rfl,e⟩) (fun e => ⟨-I,Or.inr rfl,e⟩)
@@ -281,7 +282,9 @@ private theorem shifted_error_small {β K c : ℝ} (hβ : 1/2<β) (hK : 0≤K) (
       have h := mul_le_mul_of_nonneg_left hpol (mul_nonneg hK (Real.exp_pos ((t+d)/2)).le)
       nlinarith only [h,mul_nonneg (Real.exp_pos ((t+d)/2)).le (sq_nonneg (t+d))]
     _ ≤ _ := (mul_le_mul_of_nonneg_left he (by positivity)).trans_eq (by
-      rw [mul_add,Real.exp_add]; dsimp only [k]; field_simp; ring)
+      rw [mul_add β t d,Real.exp_add]
+      dsimp only [k]
+      field_simp [show K+1≠0 by linarith only [hK]] <;> ring)
 
 /-- Every large octave contains both signs of the centered ordinary-prime
 logarithm count, each with the exact real exponent of the quartet. -/

@@ -22,3 +22,5 @@ Consequently the adverse cost vanishes for $H=\sqrt X$ and stays bounded above a
  m\left(\sum_{n\notin A}v_n-m/2\right)-C_\Phi H/\sqrt{X\log X}.
 \]
 The sign of the full complementary row is open.
+
+**Lean.** [`criticalState_oriented_wall_limit`, `criticalState_adverse_mass_by_width` and `riemannHypothesis_or_critical_width_adverse_mass`](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheCriticalWidthOfAdverseIntegerMass.lean). The unconditional capstone uses `propext`, `Classical.choice` and `Quot.sound`.

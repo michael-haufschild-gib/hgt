@@ -39,32 +39,31 @@ def splineKnots : Finset ℝ :=
   ((upowKnots 7).image Real.exp) ∪ ((upowKnots 7).image fun u => Real.exp (u + Real.log 4))
 
 theorem card_splineKnots_le : splineKnots.card ≤ 18 := by
-  have h7 : (upowKnots 7).card ≤ 9 := by
-    refine card_image_le.trans ?_
-    simp
+  have h7 : (upowKnots 7).card ≤ 9 := card_image_le.trans (by simp)
   calc splineKnots.card
       ≤ ((upowKnots 7).image Real.exp).card +
           ((upowKnots 7).image fun u => Real.exp (u + Real.log 4)).card := card_union_le _ _
     _ ≤ (upowKnots 7).card + (upowKnots 7).card := add_le_add card_image_le card_image_le
     _ ≤ 18 := by omega
 
+theorem splineKnots_pos {t : ℝ} (ht : t ∈ splineKnots) : 0 < t := by
+  rcases mem_union.mp ht with h1 | h2
+  · obtain ⟨u, _, rfl⟩ := mem_image.mp h1; exact Real.exp_pos u
+  · obtain ⟨u, _, rfl⟩ := mem_image.mp h2; exact Real.exp_pos _
+
 theorem exp_neg_eight_mem_splineKnots : Real.exp (-8) ∈ splineKnots := by
   refine mem_union_left _ (mem_image.mpr ⟨-8, ?_, rfl⟩)
-  refine mem_image.mpr ⟨0, mem_Icc.mpr ⟨le_rfl, by decide⟩, ?_⟩
-  norm_num
+  exact mem_image.mpr ⟨0, mem_Icc.mpr ⟨le_rfl, by decide⟩, by norm_num⟩
 
 theorem four_mul_exp_eight_mem_splineKnots : 4 * Real.exp 8 ∈ splineKnots := by
   refine mem_union_right _ (mem_image.mpr ⟨8, ?_, ?_⟩)
-  · refine mem_image.mpr ⟨8, mem_Icc.mpr ⟨by decide, le_rfl⟩, ?_⟩
-    norm_num
-  · rw [Real.exp_add, Real.exp_log (by norm_num : (0 : ℝ) < 4)]
-    ring
+  · exact mem_image.mpr ⟨8, mem_Icc.mpr ⟨by decide, le_rfl⟩, by norm_num⟩
+  · rw [Real.exp_add, Real.exp_log (by norm_num : (0 : ℝ) < 4)]; ring
 
 theorem dyadicSpline_eq_zero_outside {x : ℝ}
     (hx : x ∉ Icc (Real.exp (-8)) (4 * Real.exp 8)) : dyadicSpline x = 0 := by
   have hx' : x ∉ Icc (Real.exp (-8)) (Real.exp (8 + Real.log 4)) := by
-    intro h
-    apply hx
+    intro h; apply hx
     rwa [Real.exp_add, Real.exp_log (by norm_num : (0 : ℝ) < 4), mul_comm] at h
   by_cases hp : 0 < x
   · simp only [dyadicSpline, if_pos hp, squarePrimeWeight_zero_outside hp hx',
@@ -84,8 +83,8 @@ private theorem lipschitz_upow_one_one : LipschitzWith 1 (upow 1 1) := by
   intro x y
   have h1 := unif_convolution_eq one_pos (integrable_unif 1) x
   have h2 := unif_convolution_eq one_pos (integrable_unif 1) y
-  change |upow 1 1 x - upow 1 1 y| ≤ (1 : ℝ) * |x - y| at *
-  simp only [upow] at *
+  change |upow 1 1 x - upow 1 1 y| ≤ (1 : ℝ) * |x - y|
+  simp only [upow] at h1 h2 ⊢
   rw [h1, h2, Real.dist_eq, Real.dist_eq, NNReal.coe_one, one_mul]
   have hsub (c : ℝ) :
       |(∫ t in (0 : ℝ)..x + c, unif 1 t) - ∫ t in (0 : ℝ)..y + c, unif 1 t| ≤
@@ -176,13 +175,12 @@ private def CkLip (k : ℕ) (f : ℝ → ℝ) : Prop :=
 private theorem ckLip_deriv {k : ℕ} {f : ℝ → ℝ} (hf : CkLip (k + 1) f) : CkLip k (deriv f) := by
   obtain ⟨hc, hsupp, K, hL⟩ := hf
   refine ⟨(contDiff_succ_iff_deriv.mp hc).2.2, fun x hx => ?_, K, ?_⟩
-  · have hopen : IsOpen (Icc (Real.exp (-8)) (4 * Real.exp 8))ᶜ := isClosed_Icc.isOpen_compl
-    have hev : f =ᶠ[𝓝 x] 0 :=
-      Filter.eventuallyEq_of_mem (hopen.mem_nhds hx) fun z hz => hsupp z hz
+  · have hev : f =ᶠ[𝓝 x] 0 :=
+      Filter.eventuallyEq_of_mem (isClosed_Icc.isOpen_compl.mem_nhds hx) fun z hz => hsupp z hz
     simpa using hev.deriv_eq
   · rwa [iteratedDeriv_succ']
 
-private theorem lipschitz_of_collar {g : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
+private theorem lipschitz_of_collar {g : ℝ → ℝ} {B C : ℝ} (hC : 0 ≤ C)
     (hsupp : ∀ x ∉ Icc (Real.exp (-8)) (4 * Real.exp 8), g x = 0)
     (hbound : ∀ x ∈ Icc (Real.exp (-8)) (4 * Real.exp 8), |g x| ≤ B)
     (hB : 0 ≤ B)
@@ -190,10 +188,8 @@ private theorem lipschitz_of_collar {g : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
       ∀ y ∈ Icc (Real.exp (-9)) (5 * Real.exp 8), |g x - g y| ≤ C * |x - y|) :
     ∃ K : ℝ≥0, LipschitzWith K g := by
   let δ := min (Real.exp (-8) - Real.exp (-9)) (5 * Real.exp 8 - 4 * Real.exp 8)
-  have hδ : 0 < δ := by
-    refine lt_min ?_ ?_
-    · exact sub_pos.mpr (Real.exp_lt_exp.mpr (by norm_num))
-    · have := Real.exp_pos 8; linarith
+  have hδ : 0 < δ := lt_min (sub_pos.mpr (Real.exp_lt_exp.mpr (by norm_num)))
+    (by have := Real.exp_pos 8; linarith)
   let M := max C (B / δ)
   have hM : 0 ≤ M := le_trans hC (le_max_left _ _)
   refine ⟨⟨M, hM⟩, lipschitzWith_iff_dist_le_mul.mpr fun x y => ?_⟩
@@ -209,11 +205,10 @@ private theorem lipschitz_of_collar {g : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
         have hgap : δ ≤ |x - y| := by
           rcases not_and_or.mp hyJ with h1 | h2
           · rw [not_le] at h1
-            have : δ ≤ x - y := (min_le_left _ _).trans (by linarith [hxS.1])
-            exact this.trans (le_abs_self _)
+            exact ((min_le_left _ _).trans (by linarith [hxS.1])).trans (le_abs_self _)
           · rw [not_le] at h2
-            have : δ ≤ y - x := (min_le_right _ _).trans (by linarith [hxS.2])
-            exact this.trans (by rw [← abs_neg, neg_sub]; exact le_abs_self _)
+            exact ((min_le_right _ _).trans (by linarith [hxS.2])).trans
+              (by rw [← abs_neg, neg_sub]; exact le_abs_self _)
         rw [hsupp y hyS, sub_zero]
         calc |g x| ≤ B := hbound x hxS
           _ = (B / δ) * δ := by field_simp [hδ.ne']
@@ -230,11 +225,10 @@ private theorem lipschitz_of_collar {g : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
       have hgap : δ ≤ |x - y| := by
         rcases not_and_or.mp hxJ with h1 | h2
         · rw [not_le] at h1
-          have : δ ≤ y - x := (min_le_left _ _).trans (by linarith [hyS.1])
-          exact this.trans (by rw [← abs_neg, neg_sub]; exact le_abs_self _)
+          exact ((min_le_left _ _).trans (by linarith [hyS.1])).trans
+            (by rw [← abs_neg, neg_sub]; exact le_abs_self _)
         · rw [not_le] at h2
-          have : δ ≤ x - y := (min_le_right _ _).trans (by linarith [hyS.2])
-          exact this.trans (le_abs_self _)
+          exact ((min_le_right _ _).trans (by linarith [hyS.2])).trans (le_abs_self _)
       rw [hsupp x hxS, zero_sub, abs_neg]
       calc |g y| ≤ B := hbound y hyS
         _ = (B / δ) * δ := by field_simp [hδ.ne']
@@ -263,7 +257,7 @@ private theorem ckLip_mul_smooth :
     have hcont : Continuous fun x => φ x * f x := by
       rw [continuous_iff_continuousAt]; intro x
       by_cases hx : 0 < x
-      · exact ((hφ.continuousOn.continuousAt (isOpen_Ioi.mem_nhds hx)).mul hcf.continuous.continuousAt)
+      · exact (hφ.continuousOn.continuousAt (isOpen_Ioi.mem_nhds hx)).mul hcf.continuous.continuousAt
       · have hev : (fun z => φ z * f z) =ᶠ[𝓝 x] 0 := by
           filter_upwards [gt_mem_nhds ((le_of_not_gt hx).trans_lt (Real.exp_pos (-8)))] with z hz
           rw [hsf z fun h => hz.not_ge h.1, mul_zero]; rfl
@@ -275,24 +269,25 @@ private theorem ckLip_mul_smooth :
     have hφ1 : ContDiffOn ℝ 1 φ (Ioi 0) := hφ.of_le le_top
     have hdφ : ContinuousOn (deriv φ) J := by
       have heq : EqOn (derivWithin φ (Ioi 0)) (deriv φ) (Ioi 0) :=
-        fun z hz => (hφ1.differentiableOn le_rfl z hz).DifferentiableAt
-          (isOpen_Ioi.mem_nhds hz) |>.derivWithin (isOpen_Ioi.uniqueDiffWithinAt hz)
-      exact ((hφ1.continuousOn_derivWithin (isOpen_Ioi.uniqueDiffOn) le_rfl).congr heq).mono hJsub
+        fun z hz => ((hφ1.differentiableOn le_rfl z hz).differentiableAt
+          (isOpen_Ioi.mem_nhds hz)).derivWithin (isOpen_Ioi.uniqueDiffWithinAt hz)
+      exact ((hφ1.continuousOn_derivWithin isOpen_Ioi.uniqueDiffOn le_rfl).congr heq).mono hJsub
     obtain ⟨Mφ, hMφ⟩ := isCompact_Icc.exists_bound_of_continuousOn (hφ.continuousOn.mono hJsub)
     obtain ⟨Lφ, hLφ⟩ := isCompact_Icc.exists_bound_of_continuousOn hdφ
     obtain ⟨Mf, hMf⟩ := isCompact_Icc.exists_bound_of_continuousOn hcf.continuous.continuousOn
-    have hMφ0 : 0 ≤ Mφ := (norm_nonneg _).trans (hMφ (Real.exp (-9)) ⟨le_rfl, by
-      have := Real.exp_lt_exp.mpr (by norm_num : (-9 : ℝ) < 8); linarith [Real.exp_pos 8]⟩)
-    have hLφ0 : 0 ≤ Lφ := (norm_nonneg _).trans (hLφ (Real.exp (-9)) ⟨le_rfl, by
-      have := Real.exp_lt_exp.mpr (by norm_num : (-9 : ℝ) < 8); linarith [Real.exp_pos 8]⟩)
-    have hMf0 : 0 ≤ Mf := (norm_nonneg _).trans (hMf (Real.exp (-8)) ⟨le_rfl, by
-      linarith [Real.exp_pos 8]⟩)
+    have hJpt : Real.exp (-9) ∈ J := ⟨le_rfl, by
+      have := Real.exp_lt_exp.mpr (by norm_num : (-9 : ℝ) < 8); linarith [Real.exp_pos 8]⟩
+    have hMφ0 : 0 ≤ Mφ := (norm_nonneg _).trans (hMφ _ hJpt)
+    have hLφ0 : 0 ≤ Lφ := (norm_nonneg _).trans (hLφ _ hJpt)
+    have hMf0 : 0 ≤ Mf := (norm_nonneg _).trans
+      (hMf (Real.exp (-8)) ⟨le_rfl, by
+        have := Real.exp_lt_exp.mpr (by norm_num : (-8 : ℝ) < 8); linarith [Real.exp_pos 8]⟩)
     have hφlip : ∀ x ∈ J, ∀ y ∈ J, |φ x - φ y| ≤ Lφ * |x - y| := fun x hx y hy => by
       have hd : ∀ z ∈ J, DifferentiableAt ℝ φ z := fun z hz =>
         (hφ1.differentiableOn le_rfl z (hJsub hz)).differentiableAt (isOpen_Ioi.mem_nhds (hJsub hz))
-      have hmv := (convex_Icc _ _).norm_image_sub_le_of_norm_deriv_le
-        (fun z hz => hd z hz) (fun z hz => hLφ z hz) hy hx
-      simpa only [Real.norm_eq_abs] using hmv
+      simpa only [Real.norm_eq_abs] using
+        (convex_Icc _ _).norm_image_sub_le_of_norm_deriv_le
+          (fun z hz => hd z hz) (fun z hz => hLφ z hz) hy hx
     refine lipschitz_of_collar (B := Mφ * Mf) (C := Lφ * Mf + Mφ * Kf) (by positivity)
       (fun x hx => by rw [hsf x hx, mul_zero])
       (fun x hx => by
@@ -307,42 +302,35 @@ private theorem ckLip_mul_smooth :
     have h1 : |(φ x - φ y) * f x| ≤ Lφ * Mf * |x - y| := by
       rw [abs_mul]
       by_cases hxS : x ∈ Icc (Real.exp (-8)) (4 * Real.exp 8)
-      · have hfx : |f x| ≤ Mf := by simpa [Real.norm_eq_abs] using hMf x hxS
-        exact (mul_le_mul (hφlip x hx y hy) hfx (abs_nonneg _) (by positivity)).trans_eq (by ring)
+      · exact (mul_le_mul (hφlip x hx y hy) (by simpa [Real.norm_eq_abs] using hMf x hxS)
+          (abs_nonneg _) (by positivity)).trans_eq (by ring)
       · rw [hsf x hxS, abs_zero, mul_zero]; positivity
     have h2 : |φ y * (f x - f y)| ≤ Mφ * Kf * |x - y| := by
       rw [abs_mul]
-      have hfl : |f x - f y| ≤ Kf * |x - y| := by
-        simpa [Real.dist_eq] using hLf.dist_le_mul x y
-      exact (mul_le_mul (by simpa [Real.norm_eq_abs] using hMφ y hy) hfl
-        (abs_nonneg _) hMφ0).trans_eq (by ring)
+      exact (mul_le_mul (by simpa [Real.norm_eq_abs] using hMφ y hy)
+        (by simpa [Real.dist_eq] using hLf.dist_le_mul x y) (abs_nonneg _) hMφ0).trans_eq (by ring)
     exact (abs_add_le _ _).trans ((add_le_add h1 h2).trans_eq (by ring))
   | k + 1, f, φ, hf, hφ => by
     have hdφ : ContDiffOn ℝ ⊤ (deriv φ) (Ioi 0) := by
       have heq : EqOn (derivWithin φ (Ioi 0)) (deriv φ) (Ioi 0) :=
-        fun z hz => ((hφ.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ⊤)).differentiableOn le_rfl z hz)
+        fun z hz => ((hφ.of_le le_top : ContDiffOn ℝ 1 φ (Ioi 0)).differentiableOn le_rfl z hz)
           |>.differentiableAt (isOpen_Ioi.mem_nhds hz) |>.derivWithin (isOpen_Ioi.uniqueDiffWithinAt hz)
       exact (hφ.derivWithin isOpen_Ioi.uniqueDiffOn (m := ⊤) le_rfl).congr heq
     have hf_k : CkLip k f := by
       refine ⟨hf.1.of_le (by exact_mod_cast Nat.le_succ k), hf.2.1, ?_⟩
-      have hdk : ContDiff ℝ 1 (iteratedDeriv k f) := by
-        have := hf.1.iterate_deriv k 1
-        simpa using this
+      have hdk : ContDiff ℝ 1 (iteratedDeriv k f) := by simpa using hf.1.iterate_deriv k 1
       have hsupp_k : HasCompactSupport (iteratedDeriv k f) := by
         refine HasCompactSupport.intro isCompact_Icc fun x hx => ?_
-        have hopen : IsOpen (Icc (Real.exp (-8)) (4 * Real.exp 8))ᶜ := isClosed_Icc.isOpen_compl
         have hev : f =ᶠ[𝓝 x] 0 :=
-          Filter.eventuallyEq_of_mem (hopen.mem_nhds hx) fun z hz => hf.2.1 z hz
+          Filter.eventuallyEq_of_mem (isClosed_Icc.isOpen_compl.mem_nhds hx) fun z hz => hf.2.1 z hz
         simpa using hev.iteratedDeriv_eq k
       exact ContDiff.lipschitzWith_of_hasCompactSupport hsupp_k hdk le_rfl
-    have h1 := ckLip_mul_smooth hf_k hdφ
-    have h2 := ckLip_mul_smooth (ckLip_deriv hf) hφ
-    have hsum := ckLip_add h1 h2
+    have hsum := ckLip_add (ckLip_mul_smooth hf_k hdφ) (ckLip_mul_smooth (ckLip_deriv hf) hφ)
     have hdiff : ∀ x, HasDerivAt (fun z => φ z * f z) (deriv φ x * f x + φ x * deriv f x) x := by
       intro x
       by_cases hx : 0 < x
       · have hφd : DifferentiableAt ℝ φ x :=
-          ((hφ.of_le (by norm_num : (1 : WithTop ℕ∞) ≤ ⊤)).differentiableOn le_rfl x hx)
+          ((hφ.of_le le_top : ContDiffOn ℝ 1 φ (Ioi 0)).differentiableOn le_rfl x hx)
             |>.differentiableAt (isOpen_Ioi.mem_nhds hx)
         have hfd : DifferentiableAt ℝ f x :=
           (hf.1.differentiable (by positivity)).differentiableAt
@@ -352,8 +340,7 @@ private theorem ckLip_mul_smooth :
         have hev : (fun z => φ z * f z) =ᶠ[𝓝 x] 0 := by
           filter_upwards [gt_mem_nhds ((le_of_not_gt hx).trans_lt (Real.exp_pos (-8)))] with z hz
           rw [hf.2.1 z fun h => hz.not_ge h.1, mul_zero]; rfl
-        have hdf0 : deriv f x = 0 := (ckLip_deriv hf).2.1 x hxS
-        rw [hf.2.1 x hxS, hdf0, mul_zero, mul_zero, add_zero]
+        rw [hf.2.1 x hxS, (ckLip_deriv hf).2.1 x hxS, mul_zero, mul_zero, add_zero]
         exact (hasDerivAt_const x (0 : ℝ)).congr_of_eventuallyEq hev
     have hder_eq : deriv (fun z => φ z * f z) = fun x => deriv φ x * f x + φ x * deriv f x :=
       funext fun x => (hdiff x).deriv
@@ -370,8 +357,7 @@ private theorem ckLip_comp_log :
   | 0, H, hcH, hsuppH, ⟨KH, hLH⟩ => by
     let g := fun x : ℝ => if 0 < x then H (Real.log x) else 0
     have hsg : ∀ x ∉ Icc (Real.exp (-8)) (4 * Real.exp 8), g x = 0 := by
-      intro x hx
-      dsimp [g]
+      intro x hx; dsimp [g]
       by_cases hp : 0 < x
       · rw [if_pos hp]
         refine hsuppH (Real.log x) fun hu => hx ⟨?_, ?_⟩
@@ -393,7 +379,9 @@ private theorem ckLip_comp_log :
     refine ⟨contDiff_zero.mpr hcont, hsg, ?_⟩
     simp only [iteratedDeriv_zero] at hLH ⊢
     obtain ⟨B, hB⟩ := isCompact_Icc.exists_bound_of_continuousOn hcont.continuousOn
-    have hB0 : 0 ≤ B := (norm_nonneg _).trans (hB (Real.exp (-8)) ⟨le_rfl, by linarith [Real.exp_pos 8]⟩)
+    have hB0 : 0 ≤ B := (norm_nonneg _).trans
+      (hB (Real.exp (-8)) ⟨le_rfl, by
+        have := Real.exp_lt_exp.mpr (by norm_num : (-8 : ℝ) < 8); linarith [Real.exp_pos 8]⟩)
     refine lipschitz_of_collar (B := B) (C := KH * Real.exp 9) (by positivity) hsg
       (fun x hx => by simpa [Real.norm_eq_abs] using hB x hx) hB0 fun x hx y hy => ?_
     have hx0 : 0 < x := (Real.exp_pos (-9)).trans_le hx.1
@@ -403,12 +391,12 @@ private theorem ckLip_comp_log :
           HasDerivAt Real.log z⁻¹ z ∧ ‖z⁻¹‖ ≤ Real.exp 9 := fun z hz => by
         have hz0 : 0 < z := (Real.exp_pos (-9)).trans_le hz.1
         refine ⟨Real.hasDerivAt_log hz0.ne', ?_⟩
-        rw [Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hz0), Real.exp_neg] at hz ⊢
-        exact inv_anti₀ (Real.exp_pos (-9)) hz.1 |>.trans_eq (by rw [Real.exp_neg, inv_inv])
-      have hmv := (convex_Icc _ _).norm_image_sub_le_of_norm_deriv_le
-        (fun z hz => (hd z hz).1.differentiableAt)
-        (fun z hz => by rw [(hd z hz).1.deriv]; exact (hd z hz).2) hy hx
-      simpa only [Real.norm_eq_abs] using hmv
+        rw [Real.norm_eq_abs, abs_of_pos (inv_pos.mpr hz0)]
+        exact (inv_anti₀ (Real.exp_pos (-9)) hz.1).trans_eq (by rw [Real.exp_neg, inv_inv])
+      simpa only [Real.norm_eq_abs] using
+        (convex_Icc _ _).norm_image_sub_le_of_norm_deriv_le
+          (fun z hz => (hd z hz).1.differentiableAt)
+          (fun z hz => by rw [(hd z hz).1.deriv]; exact (hd z hz).2) hy hx
     dsimp [g]
     rw [if_pos hx0, if_pos hy0]
     have hHL : |H (Real.log x) - H (Real.log y)| ≤ KH * |Real.log x - Real.log y| := by
@@ -418,16 +406,14 @@ private theorem ckLip_comp_log :
     let g := fun x : ℝ => if 0 < x then H (Real.log x) else 0
     have hsuppH' : ∀ u ∉ Icc (-8 : ℝ) (8 + Real.log 4), deriv H u = 0 := by
       intro u hu
-      have hopen : IsOpen (Icc (-8 : ℝ) (8 + Real.log 4))ᶜ := isClosed_Icc.isOpen_compl
       have hev : H =ᶠ[𝓝 u] 0 :=
-        Filter.eventuallyEq_of_mem (hopen.mem_nhds hu) fun z hz => hsuppH z hz
+        Filter.eventuallyEq_of_mem (isClosed_Icc.isOpen_compl.mem_nhds hu) fun z hz => hsuppH z hz
       simpa using hev.deriv_eq
     have ih := ckLip_comp_log (contDiff_succ_iff_deriv.mp hcH).2.2 hsuppH'
       ⟨KH, by rwa [iteratedDeriv_succ']⟩
     have hmul := ckLip_mul_smooth ih (contDiffOn_inv ℝ)
     have hsg : ∀ x ∉ Icc (Real.exp (-8)) (4 * Real.exp 8), g x = 0 := by
-      intro x hx
-      dsimp [g]
+      intro x hx; dsimp [g]
       by_cases hp : 0 < x
       · rw [if_pos hp]
         refine hsuppH (Real.log x) fun hu => hx ⟨?_, ?_⟩
@@ -443,9 +429,8 @@ private theorem ckLip_comp_log :
           filter_upwards [lt_mem_nhds hp] with z hz; exact if_pos hz
         have hdH : HasDerivAt H (deriv H (Real.log x)) (Real.log x) :=
           (hcH.differentiable (by positivity)).differentiableAt.hasDerivAt
-        have hcomp := (hdH.comp x (Real.hasDerivAt_log hp.ne')).congr_of_eventuallyEq hev
         rw [if_pos hp, mul_comm]
-        exact hcomp
+        exact (hdH.comp x (Real.hasDerivAt_log hp.ne')).congr_of_eventuallyEq hev
       · have hev : g =ᶠ[𝓝 x] 0 := by
           filter_upwards [gt_mem_nhds ((le_of_not_gt hp).trans_lt (Real.exp_pos (-8)))] with z hz
           exact hsg z fun h => hz.not_ge h.1
@@ -458,55 +443,33 @@ private theorem ckLip_comp_log :
     rw [iteratedDeriv_succ', hder_eq]
     exact hmul.2.2
 
+private theorem squareLogProfile_eq_zero_outside {u : ℝ}
+    (hu : u ∉ Icc (-8 : ℝ) (8 + Real.log 4)) : squareLogProfile u = 0 := by
+  have hlog4 : 0 < Real.log 4 := Real.log_pos (by norm_num)
+  unfold squareLogProfile
+  have hz1 : splineAutoCorr u = 0 := by
+    refine splineAutoCorr_zero_outside ?_
+    by_contra! hle
+    have ha := abs_le.mp hle
+    exact hu ⟨ha.1, by linarith [ha.2]⟩
+  have hz2 : splineAutoCorr (u - Real.log 4) = 0 := by
+    refine splineAutoCorr_zero_outside ?_
+    by_contra! hle
+    have hb := abs_le.mp hle
+    exact hu ⟨by linarith [hb.1], by linarith [hb.2]⟩
+  rw [hz1, hz2]; ring
+
 private theorem ckLip_six_dyadicSpline : CkLip 6 dyadicSpline := by
   obtain ⟨hcA, KA, hLA⟩ := lipschitz_iteratedDeriv_upow 6
   have hAeq : splineAutoCorr = upow 1 7 := funext splineAutoCorr_eq_eight_boxes
   have hcF : ContDiff ℝ 6 squareLogProfile := by
-    unfold squareLogProfile
-    rw [hAeq]
+    unfold squareLogProfile; rw [hAeq]
     exact (contDiff_const.mul hcA).sub (hcA.comp (contDiff_id.sub contDiff_const))
-  have hsuppF : ∀ u ∉ Icc (-8 : ℝ) (8 + Real.log 4), squareLogProfile u = 0 := by
-    intro u hu
-    unfold squareLogProfile
-    have h1 : 8 < |u| ∨ 8 < |u - Real.log 4| := by
-      by_contra! hbad
-      apply hu
-      have ha := abs_le.mp hbad.1
-      have hb := abs_le.mp hbad.2
-      have hlog4 : 0 < Real.log 4 := Real.log_pos (by norm_num)
-      exact ⟨ha.1, by linarith⟩
-    have hz1 : splineAutoCorr u = 0 := by
-      by_cases h : 8 < |u|
-      · exact splineAutoCorr_zero_outside h
-      · exfalso
-        have ha := abs_le.mp (not_lt.mp h)
-        have hlog4 : 0 < Real.log 4 := Real.log_pos (by norm_num)
-        apply hu
-        refine ⟨ha.1, ?_⟩
-        rcases h1 with h' | h'
-        · exact absurd h' h
-        · by_contra! hhi
-          have : |u - Real.log 4| ≤ 8 := abs_le.mpr ⟨by linarith, by linarith⟩
-          linarith
-    have hz2 : splineAutoCorr (u - Real.log 4) = 0 := by
-      by_cases h : 8 < |u - Real.log 4|
-      · exact splineAutoCorr_zero_outside h
-      · exfalso
-        have hb := abs_le.mp (not_lt.mp h)
-        have hlog4 : 0 < Real.log 4 := Real.log_pos (by norm_num)
-        apply hu
-        refine ⟨?_, by linarith⟩
-        by_contra! hlo
-        have : 8 < |u - Real.log 4| := lt_abs.mpr (Or.inr (by linarith))
-        exact h this
-    rw [hz1, hz2]; ring
   have hLF : ∃ K : ℝ≥0, LipschitzWith K (iteratedDeriv 6 squareLogProfile) := by
     have heq : iteratedDeriv 6 squareLogProfile =
         fun u => 2 * iteratedDeriv 6 (upow 1 7) u -
           iteratedDeriv 6 (upow 1 7) (u - Real.log 4) := by
-      funext u
-      unfold squareLogProfile
-      rw [hAeq]
+      funext u; unfold squareLogProfile; rw [hAeq]
       have h1 : ContDiff ℝ 6 fun z => 2 * upow 1 7 z := contDiff_const.mul hcA
       have h2 : ContDiff ℝ 6 fun z => upow 1 7 (z - Real.log 4) :=
         hcA.comp (contDiff_id.sub contDiff_const)
@@ -516,23 +479,20 @@ private theorem ckLip_six_dyadicSpline : CkLip 6 dyadicSpline := by
     have hL1 : LipschitzWith (2 * KA) (fun u => (2 : ℝ) * iteratedDeriv 6 (upow 1 7) u) := by
       simpa using hLA.const_mul 2
     have hL2 : LipschitzWith KA (fun u => iteratedDeriv 6 (upow 1 7) (u - Real.log 4)) := by
-      simpa using hLA.comp ((LipschitzWith.id).sub (LipschitzWith.const (Real.log 4)))
-        |>.weaken (by simp)
-    refine ⟨2 * KA + KA, ?_⟩
-    exact hL1.sub hL2
-  have hlog := ckLip_comp_log hcF hsuppF hLF
-  have hφ : ContDiffOn ℝ ⊤ (fun x : ℝ => 2 * x ^ (-(1 / 2 : ℝ))) (Ioi 0) := by
-    refine contDiffOn_const.mul ?_
-    intro x hx
-    exact (Real.contDiffAt_rpow_const_of_ne hx.ne').contDiffWithinAt
+      rw [lipschitzWith_iff_dist_le_mul]; intro x y
+      simpa [Real.dist_eq, sub_sub_sub_cancel_right] using hLA.dist_le_mul (x - Real.log 4) (y - Real.log 4)
+    exact ⟨2 * KA + KA, hL1.sub hL2⟩
+  have hlog := ckLip_comp_log hcF (fun _ => squareLogProfile_eq_zero_outside) hLF
+  have hφ : ContDiffOn ℝ ⊤ (fun x : ℝ => 2 * x ^ (-(1 / 2 : ℝ))) (Ioi 0) :=
+    contDiffOn_const.mul fun x (hx : 0 < x) =>
+      (Real.contDiffAt_rpow_const_of_ne hx.ne').contDiffWithinAt
   have hmul := ckLip_mul_smooth hlog hφ
   have heq : (fun x : ℝ => (2 * x ^ (-(1 / 2 : ℝ))) *
       (if 0 < x then squareLogProfile (Real.log x) else 0)) = dyadicSpline := by
     funext x
     by_cases hx : 0 < x
     · simp only [if_pos hx, dyadicSpline, squarePrimeWeight, Complex.ofReal_re]
-      rw [Real.rpow_def_of_pos hx]
-      ring_nf
+      rw [Real.rpow_def_of_pos hx]; ring_nf
     · simp only [if_neg hx, dyadicSpline, mul_zero]
   rwa [heq] at hmul
 
@@ -545,7 +505,7 @@ theorem lipschitz_iteratedDeriv_six_dyadicSpline :
 
 private theorem contDiff_div_sq_dyadicSpline : ContDiff ℝ 6 (fun t : ℝ => dyadicSpline t / t ^ 2) := by
   have hmul := ckLip_mul_smooth ckLip_six_dyadicSpline
-    (contDiffOn_inv ℝ |>.comp (contDiffOn_pow 2) fun x (hx : 0 < x) => sq_pos_of_pos hx)
+    ((contDiffOn_pow 2).inv fun x (hx : 0 < x) => (sq_pos_of_pos hx).ne')
   simpa [div_eq_inv_mul] using hmul.1
 
 theorem contDiff_seven_conductorSplineIntegral : ContDiff ℝ 7 conductorSplineIntegral := by
@@ -562,10 +522,8 @@ theorem conductorSplineIntegral_eq_zero_before {u : ℝ} (hu : u ≤ Real.exp (-
   intro t ht
   have hlt : t < Real.exp (-8) ∨ t = Real.exp (-8) := by
     rcases le_total 0 u with h0 | h0
-    · rw [uIoc_of_le h0] at ht
-      exact lt_or_eq_of_le (ht.2.trans hu)
-    · rw [uIoc_of_ge h0] at ht
-      exact Or.inl (ht.2.trans_lt (Real.exp_pos (-8)))
+    · rw [uIoc_of_le h0] at ht; exact lt_or_eq_of_le (ht.2.trans hu)
+    · rw [uIoc_of_ge h0] at ht; exact Or.inl (ht.2.trans_lt (Real.exp_pos (-8)))
   rcases hlt with hlt | rfl
   · rw [dyadicSpline_eq_zero_outside fun h => hlt.not_ge h.1, zero_div]
   · have hcont : Continuous dyadicSpline := contDiff_six_dyadicSpline.continuous
@@ -582,7 +540,6 @@ theorem conductorSplineIntegral_linear_after {u : ℝ} (hu : 4 * Real.exp 8 ≤ 
       (u / 2) * ∫ t in (0 : ℝ)..(4 * Real.exp 8), dyadicSpline t / t ^ 2 := by
   unfold conductorSplineIntegral
   congr 1
-  have h0 : (0 : ℝ) ≤ 4 * Real.exp 8 := by positivity
   rw [← intervalIntegral.integral_add_adjacent_intervals
     contDiff_div_sq_dyadicSpline.continuous.intervalIntegrable
     contDiff_div_sq_dyadicSpline.continuous.intervalIntegrable (b := 4 * Real.exp 8)]
@@ -600,8 +557,7 @@ private theorem iteratedDeriv_two_conductorSplineIntegral :
   have hd1 : ∀ u, HasDerivAt conductorSplineIntegral
       ((1 / 2 : ℝ) * F u + dyadicSpline u / (2 * u)) u := by
     intro u
-    have h := ((hasDerivAt_id u).div_const 2).mul (hdF u)
-    refine h.congr_deriv ?_
+    refine (((hasDerivAt_id u).div_const 2).mul (hdF u)).congr_deriv ?_
     by_cases hu : u = 0
     · subst u; simp [dyadicSpline]
     · field_simp [hu]; ring
@@ -619,8 +575,7 @@ private theorem iteratedDeriv_two_conductorSplineIntegral :
         ((deriv dyadicSpline u * (2 * u) - dyadicSpline u * 2) / (2 * u) ^ 2) u := by
       simpa using hdd.hasDerivAt.div ((hasDerivAt_id u).const_mul 2) (by positivity)
     rw [(hd2a.add hd2b).deriv]
-    field_simp [hu.ne']
-    ring
+    field_simp [hu.ne']; ring
   · have huS : u ∉ Icc (Real.exp (-8)) (4 * Real.exp 8) :=
       fun h => hu ((Real.exp_pos (-8)).trans_le h.1)
     have hev : (fun z => (1 / 2 : ℝ) * F z + dyadicSpline z / (2 * z)) =ᶠ[𝓝 u] 0 := by
@@ -632,9 +587,8 @@ private theorem iteratedDeriv_two_conductorSplineIntegral :
         · have hz0 : z = 0 := by linarith
           subst z; simp [F]
         · exact hF0
-      rw [hzF, dyadicSpline_eq_zero_outside fun h => hz.not_ge h.1]
-      simp
-    rw [(hasDerivAt_const u (0 : ℝ)).congr_of_eventuallyEq hev |>.deriv,
+      rw [hzF, dyadicSpline_eq_zero_outside fun h => hz.not_ge h.1]; simp
+    rw [((hasDerivAt_const u (0 : ℝ)).congr_of_eventuallyEq hev).deriv,
       (ckLip_deriv ckLip_six_dyadicSpline).2.1 u huS, mul_zero]
 
 theorem lipschitz_iteratedDeriv_seven_conductorSplineIntegral :
@@ -664,28 +618,22 @@ theorem integral_mul_dyadicSpline_inv_sq {a d z : ℝ} (ha : 0 < a) (had : a ≤
       rw [uIcc_of_le had] at ht
       have ht0 : 0 < t := ha.trans_le ht.1
       have hquot : HasDerivAt (fun s : ℝ => z / s ^ 2) (-(2 * z) / t ^ 3) t := by
-        have h := (hasDerivAt_const t z).div ((hasDerivAt_id t).pow 2) (sq_pos_of_pos ht0).ne'
-        refine h.congr_deriv ?_
+        refine ((hasDerivAt_const t z).div ((hasDerivAt_id t).pow 2)
+          (sq_pos_of_pos ht0).ne').congr_deriv ?_
         field_simp [ht0.ne']; ring
-      have hcomp := ((hdF (z / t ^ 2)).comp t hquot).const_mul (-(z / 2))
-      refine hcomp.congr_deriv ?_
-      field_simp [ht0.ne', hzpos.ne']
-      ring
+      refine (((hdF (z / t ^ 2)).comp t hquot).const_mul (-(z / 2))).congr_deriv ?_
+      field_simp [ht0.ne', hzpos.ne']; ring
     have hint : IntervalIntegrable (fun t : ℝ => t * dyadicSpline (z / t ^ 2)) volume a d := by
       refine ContinuousOn.intervalIntegrable ?_
       rw [uIcc_of_le had]
       intro t ht
       have ht0 : 0 < t := ha.trans_le ht.1
-      exact continuousAt_id.mul (contDiff_six_dyadicSpline.continuous.continuousAt.comp
-        (continuousAt_const.div (continuousAt_id.pow 2) (sq_pos_of_pos ht0).ne'))
-          |>.continuousWithinAt
+      exact (continuousAt_id.mul (contDiff_six_dyadicSpline.continuous.continuousAt.comp
+        (continuousAt_const.div (continuousAt_id.pow 2) (sq_pos_of_pos ht0).ne'))).continuousWithinAt
     rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hdH hint]
     have hHeq (t : ℝ) (ht : 0 < t) : H t = -t ^ 2 * conductorSplineIntegral (z / t ^ 2) := by
-      dsimp [H, conductorSplineIntegral, F]
-      field_simp [ht.ne']
-      ring
-    rw [hHeq d (ha.trans_le had), hHeq a ha]
-    ring
+      dsimp [H, conductorSplineIntegral, F]; field_simp [ht.ne']; ring
+    rw [hHeq d (ha.trans_le had), hHeq a ha]; ring
 
 private theorem ckLip_four_conductorCurvatureProfile : CkLip 4 conductorCurvatureProfile := by
   have hd1 : CkLip 4 (deriv dyadicSpline) := by
@@ -694,9 +642,8 @@ private theorem ckLip_four_conductorCurvatureProfile : CkLip 4 conductorCurvatur
       simpa using h5.1.iterate_deriv 4 1
     have hsupp4 : HasCompactSupport (iteratedDeriv 4 (deriv dyadicSpline)) := by
       refine HasCompactSupport.intro isCompact_Icc fun x hx => ?_
-      have hopen : IsOpen (Icc (Real.exp (-8)) (4 * Real.exp 8))ᶜ := isClosed_Icc.isOpen_compl
       have hev : deriv dyadicSpline =ᶠ[𝓝 x] 0 :=
-        Filter.eventuallyEq_of_mem (hopen.mem_nhds hx) fun z hz => h5.2.1 z hz
+        Filter.eventuallyEq_of_mem (isClosed_Icc.isOpen_compl.mem_nhds hx) fun z hz => h5.2.1 z hz
       simpa using hev.iteratedDeriv_eq 4
     exact ⟨h5.1.of_le (by norm_num), h5.2.1,
       ContDiff.lipschitzWith_of_hasCompactSupport hsupp4 hdk le_rfl⟩
@@ -704,9 +651,8 @@ private theorem ckLip_four_conductorCurvatureProfile : CkLip 4 conductorCurvatur
     have h := ckLip_deriv (ckLip_deriv ckLip_six_dyadicSpline)
     rwa [show deriv (deriv dyadicSpline) = iteratedDeriv 2 dyadicSpline by
       rw [show (2 : ℕ) = 1 + 1 from rfl, iteratedDeriv_succ, iteratedDeriv_one]] at h
-  have ht1 := ckLip_mul_smooth hd1 (contDiffOn_const.mul contDiffOn_id)
-  have ht2 := ckLip_mul_smooth hd2 (contDiffOn_const.mul (contDiffOn_pow 2))
-  exact ckLip_add ht1 ht2
+  exact ckLip_add (ckLip_mul_smooth hd1 (contDiffOn_const.mul contDiffOn_id))
+    (ckLip_mul_smooth hd2 (contDiffOn_const.mul (contDiffOn_pow 2)))
 
 theorem contDiff_four_conductorCurvatureProfile : ContDiff ℝ 4 conductorCurvatureProfile :=
   ckLip_four_conductorCurvatureProfile.1
@@ -725,10 +671,9 @@ theorem hasDerivAt_conductor_profile (z : ℝ) {t : ℝ} (ht : 0 < t) :
       iteratedDeriv 2 (fun s : ℝ => s * dyadicSpline (z / s ^ 2)) t =
         conductorCurvatureProfile (z / t ^ 2) / t := by
   let g := fun s : ℝ => s * dyadicSpline (z / s ^ 2)
-  have hcd : ContDiffOn ℝ 2 g (Ioi 0) := by
-    refine contDiffOn_id.mul ?_
-    exact (contDiff_six_dyadicSpline.of_le (by norm_num)).comp_contDiffOn
-      (contDiffOn_const.div (contDiffOn_pow 2) fun s (hs : 0 < s) => (sq_pos_of_pos hs).ne')
+  have hcd : ContDiffOn ℝ 2 g (Ioi 0) :=
+    contDiffOn_id.mul ((contDiff_six_dyadicSpline.of_le (by norm_num)).comp_contDiffOn
+      (contDiffOn_const.div (contDiffOn_pow 2) fun s (hs : 0 < s) => (sq_pos_of_pos hs).ne'))
   refine ⟨hcd, ?_⟩
   have hd1 : ∀ s > (0 : ℝ), HasDerivAt g
       (dyadicSpline (z / s ^ 2) - 2 * z / s ^ 2 * deriv dyadicSpline (z / s ^ 2)) s := by
@@ -743,8 +688,7 @@ theorem hasDerivAt_conductor_profile (z : ℝ) {t : ℝ} (ht : 0 < t) :
     field_simp [hs.ne']; ring
   have hev1 : deriv g =ᶠ[𝓝 t]
       fun s => dyadicSpline (z / s ^ 2) - 2 * z / s ^ 2 * deriv dyadicSpline (z / s ^ 2) := by
-    filter_upwards [lt_mem_nhds ht] with s hs
-    exact (hd1 s hs).deriv
+    filter_upwards [lt_mem_nhds ht] with s hs; exact (hd1 s hs).deriv
   have hq : HasDerivAt (fun r : ℝ => z / r ^ 2) (-(2 * z) / t ^ 3) t := by
     refine ((hasDerivAt_const t z).div ((hasDerivAt_id t).pow 2)
       (sq_pos_of_pos ht).ne').congr_deriv ?_
@@ -763,8 +707,7 @@ theorem hasDerivAt_conductor_profile (z : ℝ) {t : ℝ} (ht : 0 < t) :
   have hd2 := ((hdΦ.comp t hq).sub (hfactor.mul (hdΦ'.comp t hq))).congr_of_eventuallyEq hev1
   rw [show (2 : ℕ) = 1 + 1 from rfl, iteratedDeriv_succ, iteratedDeriv_one, hd2.deriv]
   unfold conductorCurvatureProfile
-  field_simp [ht.ne']
-  ring
+  field_simp [ht.ne']; ring
 
 /-! ### Off-knot `C^∞` regularity and discrete difference-sum bounds -/
 
@@ -782,13 +725,34 @@ private theorem upowKnots_shift {m : ℕ} {x : ℝ} (hx : x ∉ upowKnots (m + 1
     refine mem_image.mpr ⟨i + 1, mem_Icc.mpr ⟨by omega, by have := (mem_Icc.mp hi).2; omega⟩, ?_⟩
     push_cast at heq ⊢; linarith
 
+private theorem abs_upow_one_le : ∀ m : ℕ, ∀ x : ℝ, |upow 1 m x| ≤ 1 / 2
+  | 0 => abs_unif_one_le
+  | m + 1 => fun x => by
+    change |(unif 1 ⋆ upow 1 m) x| ≤ 1 / 2
+    rw [convolution_def]
+    simp only [ContinuousLinearMap.lsmul_apply, smul_eq_mul]
+    have hb : ∀ t, |unif 1 t * upow 1 m (x - t)| ≤ unif 1 t * (1 / 2) := fun t => by
+      rw [abs_mul, abs_of_nonneg (unif_nonneg one_pos t)]
+      exact mul_le_mul_of_nonneg_left (abs_upow_one_le m (x - t)) (unif_nonneg one_pos t)
+    have hint : Integrable fun t => unif 1 t * upow 1 m (x - t) :=
+      Integrable.mono' ((integrable_unif 1).mul_const (1 / 2))
+        ((integrable_unif 1).aestronglyMeasurable.mul
+          ((integrable_upow 1 m).comp_sub_left x).aestronglyMeasurable)
+        (Eventually.of_forall fun t => by rw [Real.norm_eq_abs]; exact hb t)
+    calc |∫ t, unif 1 t * upow 1 m (x - t)|
+        ≤ ∫ t, |unif 1 t * upow 1 m (x - t)| := abs_integral_le_integral_abs
+      _ ≤ ∫ t, unif 1 t * (1 / 2) :=
+          integral_mono hint.abs ((integrable_unif 1).mul_const (1 / 2)) hb
+      _ = (∫ t, unif 1 t) * (1 / 2) := integral_mul_const _ _
+      _ = 1 / 2 := by rw [integral_unif one_pos, one_mul]
+
 private theorem smooth_bounded_upow :
     ∀ m : ℕ, ∀ x ∉ upowKnots m,
       ContDiffAt ℝ ⊤ (upow 1 m) x ∧ ∀ r : ℕ, |iteratedDeriv r (upow 1 m) x| ≤ 1 / 2
   | 0 => fun x hx => by
-    have hx1 : x ≠ -1 ∧ x ≠ 1 := by
-      refine ⟨fun h => hx (mem_image.mpr ⟨0, mem_Icc.mpr ⟨le_rfl, by decide⟩, by norm_num [h]⟩),
-        fun h => hx (mem_image.mpr ⟨1, mem_Icc.mpr ⟨by decide, le_rfl⟩, by norm_num [h]⟩)⟩
+    have hx1 : x ≠ -1 ∧ x ≠ 1 :=
+      ⟨fun h => hx (mem_image.mpr ⟨0, mem_Icc.mpr ⟨le_rfl, by decide⟩, by norm_num [h]⟩),
+       fun h => hx (mem_image.mpr ⟨1, mem_Icc.mpr ⟨by decide, le_rfl⟩, by norm_num [h]⟩)⟩
     by_cases hin : x ∈ Ioo (-1 : ℝ) 1
     · have hev : upow 1 0 =ᶠ[𝓝 x] fun _ => (1 / 2 : ℝ) := by
         filter_upwards [isOpen_Ioo.mem_nhds hin] with z hz
@@ -798,13 +762,8 @@ private theorem smooth_bounded_upow :
       rcases r with _ | r
       · norm_num
       · rw [iteratedDeriv_const]; norm_num
-    · have hout : x ∈ (Icc (-1 : ℝ) 1)ᶜ := by
-        intro hmem
-        rcases eq_or_lt_of_le hmem.1 with h | h1
-        · exact hx1.1 h.symm
-        · rcases eq_or_lt_of_le hmem.2 with h | h2
-          · exact hx1.2 h
-          · exact hin ⟨h1, h2⟩
+    · have hout : x ∈ (Icc (-1 : ℝ) 1)ᶜ := fun hm =>
+        hin ⟨lt_of_le_of_ne hm.1 hx1.1.symm, lt_of_le_of_ne hm.2 hx1.2⟩
       have hev : upow 1 0 =ᶠ[𝓝 x] 0 := by
         filter_upwards [isClosed_Icc.isOpen_compl.mem_nhds hout] with z hz
         simp [upow, unif, indicator_of_notMem hz]
@@ -815,27 +774,25 @@ private theorem smooth_bounded_upow :
     obtain ⟨hx1, hx2⟩ := upowKnots_shift hx
     obtain ⟨hc1, hb1⟩ := smooth_bounded_upow m (x + 1) hx1
     obtain ⟨hc2, hb2⟩ := smooth_bounded_upow m (x - 1) hx2
-    have hopen : IsOpen (upowKnots m : Set ℝ)ᶜ := (upowKnots m).finite_toSet.isClosed.isOpen_compl
     have hd_nhds : ∀ᶠ z in 𝓝 x,
         HasDerivAt (upow 1 (m + 1)) ((1 / 2 : ℝ) * (upow 1 m (z + 1) - upow 1 m (z - 1))) z := by
       rcases m with _ | m'
-      · have h1 : ∀ᶠ z in 𝓝 x, upow 1 0 (z + 1) = upow 1 0 (x + 1) ∧
-            upow 1 0 (z - 1) = upow 1 0 (x - 1) := by
-          have ha : ContinuousAt (fun z => z + 1) x := continuousAt_id.add continuousAt_const
-          have hb : ContinuousAt (fun z => z - 1) x := continuousAt_id.sub continuousAt_const
-          have hloc (y : ℝ) (hy : y ∉ upowKnots 0) : ∀ᶠ w in 𝓝 y, upow 1 0 w = upow 1 0 y := by
-            have hy1 : y ≠ -1 ∧ y ≠ 1 :=
-              ⟨fun h => hy (mem_image.mpr ⟨0, mem_Icc.mpr ⟨le_rfl, by decide⟩, by norm_num [h]⟩),
-               fun h => hy (mem_image.mpr ⟨1, mem_Icc.mpr ⟨by decide, le_rfl⟩, by norm_num [h]⟩)⟩
-            by_cases hin : y ∈ Ioo (-1 : ℝ) 1
-            · filter_upwards [isOpen_Ioo.mem_nhds hin] with w hw
-              simp [upow, unif, indicator_of_mem ⟨hw.1.le, hw.2.le⟩,
-                indicator_of_mem ⟨hin.1.le, hin.2.le⟩]
-            · have hout : y ∈ (Icc (-1 : ℝ) 1)ᶜ := fun hm =>
-                hin ⟨lt_of_le_of_ne hm.1 hy1.1.symm, lt_of_le_of_ne hm.2 hy1.2⟩
-              filter_upwards [isClosed_Icc.isOpen_compl.mem_nhds hout] with w hw
-              simp [upow, unif, indicator_of_notMem hw, indicator_of_notMem hout]
-          exact (ha.eventually (hloc _ hx1)).and (hb.eventually (hloc _ hx2))
+      · have hloc (y : ℝ) (hy : y ∉ upowKnots 0) : ∀ᶠ w in 𝓝 y, upow 1 0 w = upow 1 0 y := by
+          have hy1 : y ≠ -1 ∧ y ≠ 1 :=
+            ⟨fun h => hy (mem_image.mpr ⟨0, mem_Icc.mpr ⟨le_rfl, by decide⟩, by norm_num [h]⟩),
+             fun h => hy (mem_image.mpr ⟨1, mem_Icc.mpr ⟨by decide, le_rfl⟩, by norm_num [h]⟩)⟩
+          by_cases hin : y ∈ Ioo (-1 : ℝ) 1
+          · filter_upwards [isOpen_Ioo.mem_nhds hin] with w hw
+            simp [upow, unif, indicator_of_mem ⟨hw.1.le, hw.2.le⟩,
+              indicator_of_mem ⟨hin.1.le, hin.2.le⟩]
+          · have hout : y ∈ (Icc (-1 : ℝ) 1)ᶜ := fun hm =>
+              hin ⟨lt_of_le_of_ne hm.1 hy1.1.symm, lt_of_le_of_ne hm.2 hy1.2⟩
+            filter_upwards [isClosed_Icc.isOpen_compl.mem_nhds hout] with w hw
+            simp [upow, unif, indicator_of_notMem hw, indicator_of_notMem hout]
+        have h1 : ∀ᶠ z in 𝓝 x, upow 1 0 (z + 1) = upow 1 0 (x + 1) ∧
+            upow 1 0 (z - 1) = upow 1 0 (x - 1) :=
+          ((continuousAt_id.add continuousAt_const).eventually (hloc _ hx1)).and
+            ((continuousAt_id.sub continuousAt_const).eventually (hloc _ hx2))
         obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhds_iff.mp h1
         filter_upwards [Metric.ball_mem_nhds x hδ] with z hz
         have hconv := fun w => unif_convolution_eq one_pos (integrable_unif 1) w
@@ -852,13 +809,11 @@ private theorem smooth_bounded_upow :
             have htw : dist (t - 1) x < δ := by
               rw [Real.dist_eq] at hw ⊢
               rcases le_total (x + 1) (w + 1) with hle | hle
-              · rw [uIoc_of_le hle] at ht
-                rw [abs_lt] at hw ⊢; constructor <;> linarith [ht.1, ht.2]
-              · rw [uIoc_of_ge hle] at ht
-                rw [abs_lt] at hw ⊢; constructor <;> linarith [ht.1, ht.2]
+              · rw [uIoc_of_le hle] at ht; rw [abs_lt] at hw ⊢; constructor <;> linarith [ht.1, ht.2]
+              · rw [uIoc_of_ge hle] at ht; rw [abs_lt] at hw ⊢; constructor <;> linarith [ht.1, ht.2]
             simpa [upow] using (hball htw).1
-          rw [intervalIntegral.integral_congr_ae
-            (ae_of_all _ fun t ht => hconst ht), intervalIntegral.integral_const, smul_eq_mul]
+          rw [intervalIntegral.integral_congr_ae (ae_of_all _ fun t ht => hconst ht),
+            intervalIntegral.integral_const, smul_eq_mul]
         have hev_m : (fun w => ∫ t in (0 : ℝ)..w - 1, unif 1 t) =ᶠ[𝓝 z]
             fun w => (∫ t in (0 : ℝ)..x - 1, unif 1 t) +
               ((w - 1) - (x - 1)) * upow 1 0 (x - 1) := by
@@ -872,34 +827,26 @@ private theorem smooth_bounded_upow :
             have htw : dist (t + 1) x < δ := by
               rw [Real.dist_eq] at hw ⊢
               rcases le_total (x - 1) (w - 1) with hle | hle
-              · rw [uIoc_of_le hle] at ht
-                rw [abs_lt] at hw ⊢; constructor <;> linarith [ht.1, ht.2]
-              · rw [uIoc_of_ge hle] at ht
-                rw [abs_lt] at hw ⊢; constructor <;> linarith [ht.1, ht.2]
+              · rw [uIoc_of_le hle] at ht; rw [abs_lt] at hw ⊢; constructor <;> linarith [ht.1, ht.2]
+              · rw [uIoc_of_ge hle] at ht; rw [abs_lt] at hw ⊢; constructor <;> linarith [ht.1, ht.2]
             simpa [upow] using (hball htw).2
-          rw [intervalIntegral.integral_congr_ae
-            (ae_of_all _ fun t ht => hconst ht), intervalIntegral.integral_const, smul_eq_mul]
+          rw [intervalIntegral.integral_congr_ae (ae_of_all _ fun t ht => hconst ht),
+            intervalIntegral.integral_const, smul_eq_mul]
         have hev_u : upow 1 1 =ᶠ[𝓝 z] fun w => (1 / 2 : ℝ) *
             (((∫ t in (0 : ℝ)..x + 1, unif 1 t) + ((w + 1) - (x + 1)) * upow 1 0 (x + 1)) -
              ((∫ t in (0 : ℝ)..x - 1, unif 1 t) + ((w - 1) - (x - 1)) * upow 1 0 (x - 1))) := by
           filter_upwards [hev_p, hev_m] with w hp hm
-          change (unif 1 ⋆ unif 1) w = _
-          rw [hconv w, hp, hm]; ring
-        have hlin : HasDerivAt (fun w => (1 / 2 : ℝ) *
-            (((∫ t in (0 : ℝ)..x + 1, unif 1 t) + ((w + 1) - (x + 1)) * upow 1 0 (x + 1)) -
-             ((∫ t in (0 : ℝ)..x - 1, unif 1 t) + ((w - 1) - (x - 1)) * upow 1 0 (x - 1))))
-            ((1 / 2 : ℝ) * (upow 1 0 (x + 1) - upow 1 0 (x - 1))) z := by
-          have hd_p : HasDerivAt (fun w => (∫ t in (0 : ℝ)..x + 1, unif 1 t) +
-              ((w + 1) - (x + 1)) * upow 1 0 (x + 1)) (upow 1 0 (x + 1)) z := by
-            simpa using (((hasDerivAt_id z).add_const 1).sub_const (x + 1)).mul_const
-              (upow 1 0 (x + 1)) |>.const_add _
-          have hd_m : HasDerivAt (fun w => (∫ t in (0 : ℝ)..x - 1, unif 1 t) +
-              ((w - 1) - (x - 1)) * upow 1 0 (x - 1)) (upow 1 0 (x - 1)) z := by
-            simpa using (((hasDerivAt_id z).sub_const 1).sub_const (x - 1)).mul_const
-              (upow 1 0 (x - 1)) |>.const_add _
-          exact (hd_p.sub hd_m).const_mul (1 / 2)
+          change (unif 1 ⋆ unif 1) w = _; rw [hconv w, hp, hm]; ring
+        have hd_p : HasDerivAt (fun w => (∫ t in (0 : ℝ)..x + 1, unif 1 t) +
+            ((w + 1) - (x + 1)) * upow 1 0 (x + 1)) (upow 1 0 (x + 1)) z := by
+          simpa using (((hasDerivAt_id z).add_const 1).sub_const (x + 1)).mul_const
+            (upow 1 0 (x + 1)) |>.const_add _
+        have hd_m : HasDerivAt (fun w => (∫ t in (0 : ℝ)..x - 1, unif 1 t) +
+            ((w - 1) - (x - 1)) * upow 1 0 (x - 1)) (upow 1 0 (x - 1)) z := by
+          simpa using (((hasDerivAt_id z).sub_const 1).sub_const (x - 1)).mul_const
+            (upow 1 0 (x - 1)) |>.const_add _
         rw [(hball hz).1, (hball hz).2]
-        exact hlin.congr_of_eventuallyEq hev_u
+        exact ((hd_p.sub hd_m).const_mul (1 / 2)).congr_of_eventuallyEq hev_u
       · exact Eventually.of_forall fun z => hasDerivAt_upow_succ (Nat.succ_pos m') z
     have hder_ev : deriv (upow 1 (m + 1)) =ᶠ[𝓝 x]
         fun z => (1 / 2 : ℝ) * (upow 1 m (z + 1) - upow 1 m (z - 1)) :=
@@ -909,67 +856,47 @@ private theorem smooth_bounded_upow :
       contDiffAt_const.mul ((hc1.comp x (contDiffAt_id.add contDiffAt_const)).sub
         (hc2.comp x (contDiffAt_id.sub contDiffAt_const)))
     have hc_top : ContDiffAt ℝ ⊤ (upow 1 (m + 1)) x := by
-      rw [contDiffAt_top]
-      intro n
+      rw [contDiffAt_top]; intro n
       rcases n with _ | n
       · exact contDiffAt_zero.mpr ⟨_, hd_nhds.mono fun z hz => hz.continuousAt⟩
       · rw [Nat.cast_succ, contDiffAt_succ_iff_hasFDerivAt]
         refine ⟨fun z => ContinuousLinearMap.smulRight 1
-            ((1 / 2 : ℝ) * (upow 1 m (z + 1) - upow 1 m (z - 1))), ?_, ?_⟩
-        · exact hd_nhds.mono fun z hz => hz.hasFDerivAt
-        · have hclm : ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) =
-              (ContinuousLinearMap.ringLmapEquivSelf ℝ ℝ ℝ).symm.toContinuousLinearMap := rfl
-          exact ContinuousLinearMap.contDiffAt _ |>.comp x (hc_rhs.of_le le_top)
+            ((1 / 2 : ℝ) * (upow 1 m (z + 1) - upow 1 m (z - 1))),
+          hd_nhds.mono fun z hz => hz.hasFDerivAt, ?_⟩
+        exact (ContinuousLinearMap.contDiffAt _).comp x (hc_rhs.of_le le_top)
     refine ⟨hc_top, fun r => ?_⟩
     rcases r with _ | r
-    · simp only [iteratedDeriv_zero]
-      have hconv := unif_convolution_eq one_pos (integrable_upow 1 m) x
-      change |(unif 1 ⋆ upow 1 m) x| ≤ 1 / 2
-      rw [convolution_def]
-      simp only [ContinuousLinearMap.lsmul_apply, smul_eq_mul]
-      have hb_ae : ∀ᵐ t ∂volume, |unif 1 t * upow 1 m (x - t)| ≤ unif 1 t * (1 / 2) := by
-        have hfin : ((upowKnots m).image fun u => x - u).Finite := Finset.finite_toSet _
-        refine (hfin.measurableSet.measure_zero ?_).mono fun t ht => ?_
-        · exact Set.Finite.measure_zero hfin volume
-        · rw [abs_mul, abs_of_nonneg (unif_nonneg one_pos t)]
-          refine mul_le_mul_of_nonneg_left ?_ (unif_nonneg one_pos t)
-          have hxk : x - t ∉ upowKnots m := fun hmem =>
-            ht (mem_coe.mpr (mem_image.mpr ⟨x - t, hmem, by ring⟩))
-          exact (smooth_bounded_upow m (x - t) hxk).2 0
-      have hint1 : Integrable (fun t => unif 1 t * upow 1 m (x - t)) := by
-        refine Integrable.mono' ((integrable_unif 1).mul_const (1 / 2)) ?_ ?_
-        · exact (integrable_unif 1).aestronglyMeasurable.mul
-            ((integrable_upow 1 m).comp_sub_left x).aestronglyMeasurable
-        · exact hb_ae.mono fun t ht => by rwa [Real.norm_eq_abs]
-      calc |∫ t, unif 1 t * upow 1 m (x - t)|
-          ≤ ∫ t, |unif 1 t * upow 1 m (x - t)| := abs_integral_le_integral_abs
-        _ ≤ ∫ t, unif 1 t * (1 / 2) :=
-            integral_mono_ae hint1.abs ((integrable_unif 1).mul_const (1 / 2)) hb_ae
-        _ = (∫ t, unif 1 t) * (1 / 2) := integral_mul_const _ _
-        _ = 1 / 2 := by rw [integral_unif one_pos, one_mul]
+    · simpa only [iteratedDeriv_zero] using abs_upow_one_le (m + 1) x
     · rw [iteratedDeriv_succ', hder_ev.iteratedDeriv_eq r]
       have h1c : ContDiffAt ℝ r (fun z => upow 1 m (z + 1)) x :=
         (hc1.of_le le_top).comp x (contDiffAt_id.add contDiffAt_const)
       have h2c : ContDiffAt ℝ r (fun z => upow 1 m (z - 1)) x :=
         (hc2.of_le le_top).comp x (contDiffAt_id.sub contDiffAt_const)
-      have hsub : ContDiffAt ℝ r (fun z => upow 1 m (z + 1) - upow 1 m (z - 1)) x := h1c.sub h2c
-      rw [iteratedDeriv_const_mul x hsub, iteratedDeriv_sub h1c h2c,
+      rw [iteratedDeriv_const_mul x (h1c.sub h2c), iteratedDeriv_sub h1c h2c,
         iteratedDeriv_comp_add_const, iteratedDeriv_comp_sub_const,
         abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)]
       have htri := (abs_sub _ _).trans (add_le_add (hb1 r) (hb2 r))
       linarith
 
 private def OffKnotBounded (k : ℕ) (f : ℝ → ℝ) : Prop :=
-  (∀ x ∉ splineKnots, ContDiffAt ℝ k f x) ∧
+  (∀ x ∉ Icc (Real.exp (-8)) (4 * Real.exp 8), f x = 0) ∧
+    (∀ x ∉ splineKnots, ContDiffAt ℝ k f x) ∧
     ∃ M : ℝ, 0 ≤ M ∧ ∀ x ∈ Icc (Real.exp (-8)) (4 * Real.exp 8),
       x ∉ splineKnots → ∀ r ≤ k, |iteratedDeriv r f x| ≤ M
+
+private theorem offKnot_mono {k j : ℕ} (hjk : j ≤ k) {f : ℝ → ℝ} (hf : OffKnotBounded k f) :
+    OffKnotBounded j f := by
+  obtain ⟨hs, hc, M, hM0, hb⟩ := hf
+  exact ⟨hs, fun x hx => (hc x hx).of_le (by exact_mod_cast hjk),
+    M, hM0, fun x hxS hxk r hr => hb x hxS hxk r (hr.trans hjk)⟩
 
 private theorem offKnot_add {k : ℕ} {f g : ℝ → ℝ}
     (hf : OffKnotBounded k f) (hg : OffKnotBounded k g) :
     OffKnotBounded k (fun x => f x + g x) := by
-  obtain ⟨hcf, Mf, hMf0, hbf⟩ := hf
-  obtain ⟨hcg, Mg, hMg0, hbg⟩ := hg
-  refine ⟨fun x hx => (hcf x hx).add (hcg x hx), Mf + Mg, add_nonneg hMf0 hMg0,
+  obtain ⟨hsf, hcf, Mf, hMf0, hbf⟩ := hf
+  obtain ⟨hsg, hcg, Mg, hMg0, hbg⟩ := hg
+  refine ⟨fun x hx => by rw [hsf x hx, hsg x hx, add_zero],
+    fun x hx => (hcf x hx).add (hcg x hx), Mf + Mg, add_nonneg hMf0 hMg0,
     fun x hxS hxk r hr => ?_⟩
   rw [iteratedDeriv_add ((hcf x hxk).of_le (by exact_mod_cast hr))
     ((hcg x hxk).of_le (by exact_mod_cast hr))]
@@ -977,8 +904,11 @@ private theorem offKnot_add {k : ℕ} {f g : ℝ → ℝ}
 
 private theorem offKnot_deriv {k : ℕ} {f : ℝ → ℝ} (hf : OffKnotBounded (k + 1) f) :
     OffKnotBounded k (deriv f) := by
-  obtain ⟨hcf, M, hM0, hbf⟩ := hf
-  refine ⟨fun x hx => ?_, M, hM0, fun x hxS hxk r hr => ?_⟩
+  obtain ⟨hsf, hcf, M, hM0, hbf⟩ := hf
+  refine ⟨fun x hx => ?_, fun x hx => ?_, M, hM0, fun x hxS hxk r hr => ?_⟩
+  · have hev : f =ᶠ[𝓝 x] 0 :=
+      Filter.eventuallyEq_of_mem (isClosed_Icc.isOpen_compl.mem_nhds hx) fun z hz => hsf z hz
+    simpa using hev.deriv_eq
   · have h := hcf x hx
     rw [Nat.cast_succ, contDiffAt_succ_iff_hasFDerivAt] at h
     obtain ⟨f', hf', hcf'⟩ := h
@@ -990,14 +920,652 @@ private theorem offKnot_deriv {k : ℕ} {f : ℝ → ℝ} (hf : OffKnotBounded (
 private theorem offKnot_mul_smooth :
     ∀ {k : ℕ} {f φ : ℝ → ℝ}, OffKnotBounded k f → ContDiffOn ℝ ⊤ φ (Ioi 0) →
       OffKnotBounded k (fun x => φ x * f x)
-  | 0, f, φ, ⟨hcf, Mf, hMf0, hbf⟩, hφ => by
+  | 0, f, φ, ⟨hsf, hcf, Mf, hMf0, hbf⟩, hφ => by
     have hsub : Icc (Real.exp (-8)) (4 * Real.exp 8) ⊆ Ioi 0 :=
       fun z hz => (Real.exp_pos (-8)).trans_le hz.1
     obtain ⟨Mφ, hMφ⟩ := isCompact_Icc.exists_bound_of_continuousOn (hφ.continuousOn.mono hsub)
     have hMφ0 : 0 ≤ Mφ := (norm_nonneg _).trans
-      (hMφ (Real.exp (-8)) ⟨le_rfl, by linarith [Real.exp_pos 8]⟩)
-    refine ⟨fun x hx => ?_, Mφ * Mf, mul_nonneg hMφ0 hMf0, fun x hxS hxk r hr => ?_⟩
-    · simp only [Nat.cast_zero, contDiffAt_zero] at hcf ⊢
-      -- WAIT: at x ≤ 0, is φ continuous?!
-      sorry
-  | k + 1, f, φ, hf, hφ => sorry
+      (hMφ (Real.exp (-8)) ⟨le_rfl, by
+        have := Real.exp_lt_exp.mpr (by norm_num : (-8 : ℝ) < 8); linarith [Real.exp_pos 8]⟩)
+    refine ⟨fun x hx => by rw [hsf x hx, mul_zero], fun x hx => ?_,
+      Mφ * Mf, mul_nonneg hMφ0 hMf0, fun x hxS hxk r hr => ?_⟩
+    · by_cases hp : 0 < x
+      · exact ((hφ.contDiffAt (isOpen_Ioi.mem_nhds hp)).of_le le_top).mul (hcf x hx)
+      · have hev : (fun z => φ z * f z) =ᶠ[𝓝 x] 0 := by
+          filter_upwards [gt_mem_nhds ((le_of_not_gt hp).trans_lt (Real.exp_pos (-8)))] with z hz
+          rw [hsf z fun h => hz.not_ge h.1, mul_zero]; rfl
+        exact contDiffAt_const.congr_of_eventuallyEq hev
+    · obtain rfl := Nat.le_zero.mp hr
+      simp only [iteratedDeriv_zero, abs_mul]
+      exact mul_le_mul (by simpa [Real.norm_eq_abs] using hMφ x hxS)
+        (hbf x hxS hxk 0 le_rfl) (abs_nonneg _) hMφ0
+  | k + 1, f, φ, hf, hφ => by
+    have hdφ : ContDiffOn ℝ ⊤ (deriv φ) (Ioi 0) := by
+      have heq : EqOn (derivWithin φ (Ioi 0)) (deriv φ) (Ioi 0) :=
+        fun z hz => ((hφ.of_le le_top : ContDiffOn ℝ 1 φ (Ioi 0)).differentiableOn le_rfl z hz)
+          |>.differentiableAt (isOpen_Ioi.mem_nhds hz) |>.derivWithin (isOpen_Ioi.uniqueDiffWithinAt hz)
+      exact (hφ.derivWithin isOpen_Ioi.uniqueDiffOn (m := ⊤) le_rfl).congr heq
+    have hsum := offKnot_add (offKnot_mul_smooth (offKnot_mono (Nat.le_succ k) hf) hdφ)
+      (offKnot_mul_smooth (offKnot_deriv hf) hφ)
+    have h0 := offKnot_mul_smooth (offKnot_mono (Nat.zero_le _) hf) hφ
+    have hopenK : IsOpen (splineKnots : Set ℝ)ᶜ := splineKnots.finite_toSet.isClosed.isOpen_compl
+    have hd_off : ∀ z ∉ splineKnots,
+        HasDerivAt (fun w => φ w * f w) (deriv φ z * f z + φ z * deriv f z) z := by
+      intro z hz
+      by_cases hp : 0 < z
+      · have hφd : DifferentiableAt ℝ φ z :=
+          ((hφ.of_le le_top : ContDiffOn ℝ 1 φ (Ioi 0)).differentiableOn le_rfl z hp)
+            |>.differentiableAt (isOpen_Ioi.mem_nhds hp)
+        have hfd : DifferentiableAt ℝ f z :=
+          (hf.2.1 z hz).differentiableAt (by positivity)
+        exact hφd.hasDerivAt.mul hfd.hasDerivAt
+      · have hzS : z ∉ Icc (Real.exp (-8)) (4 * Real.exp 8) :=
+          fun h => hp ((Real.exp_pos (-8)).trans_le h.1)
+        have hev : (fun w => φ w * f w) =ᶠ[𝓝 z] 0 := by
+          filter_upwards [gt_mem_nhds ((le_of_not_gt hp).trans_lt (Real.exp_pos (-8)))] with w hw
+          rw [hf.1 w fun h => hw.not_ge h.1, mul_zero]; rfl
+        rw [hf.1 z hzS, (offKnot_deriv hf).1 z hzS, mul_zero, mul_zero, add_zero]
+        exact (hasDerivAt_const z (0 : ℝ)).congr_of_eventuallyEq hev
+    obtain ⟨M0, hM0, hb0⟩ := h0.2.2
+    obtain ⟨Ms, hMs, hbs⟩ := hsum.2.2
+    refine ⟨h0.1, fun x hx => ?_, max M0 Ms, le_trans hM0 (le_max_left _ _),
+      fun x hxS hxk r hr => ?_⟩
+    · rw [Nat.cast_succ, contDiffAt_succ_iff_hasFDerivAt]
+      refine ⟨fun z => ContinuousLinearMap.smulRight 1
+          (deriv φ z * f z + φ z * deriv f z),
+        Filter.eventually_of_mem (hopenK.mem_nhds hx) fun z hz => (hd_off z hz).hasFDerivAt, ?_⟩
+      exact (ContinuousLinearMap.contDiffAt _).comp x (hsum.2.1 x hx)
+    · rcases r with _ | r
+      · exact (hb0 x hxS hxk 0 le_rfl).trans (le_max_left _ _)
+      · have hev : deriv (fun w => φ w * f w) =ᶠ[𝓝 x]
+            fun z => deriv φ z * f z + φ z * deriv f z :=
+          Filter.eventuallyEq_of_mem (hopenK.mem_nhds hxk) fun z hz => (hd_off z hz).deriv
+        rw [iteratedDeriv_succ', hev.iteratedDeriv_eq r]
+        exact (hbs x hxS hxk r (Nat.le_of_succ_le_succ hr)).trans (le_max_right _ _)
+
+private theorem offKnot_comp_log :
+    ∀ {k : ℕ} {H : ℝ → ℝ},
+      (∀ u ∉ Icc (-8 : ℝ) (8 + Real.log 4), H u = 0) →
+      (∀ x ∉ splineKnots, 0 < x → ContDiffAt ℝ (k + 1 : ℕ) H (Real.log x)) →
+      (∃ M : ℝ, 0 ≤ M ∧ ∀ x ∈ Icc (Real.exp (-8)) (4 * Real.exp 8),
+        x ∉ splineKnots → ∀ r ≤ k + 1, |iteratedDeriv r H (Real.log x)| ≤ M) →
+      OffKnotBounded k fun x => if 0 < x then H (Real.log x) else 0
+  | 0, H, hsuppH, hcH, ⟨MH, hMH0, hbH⟩ => by
+    let g := fun x : ℝ => if 0 < x then H (Real.log x) else 0
+    have hsg : ∀ x ∉ Icc (Real.exp (-8)) (4 * Real.exp 8), g x = 0 := by
+      intro x hx; dsimp [g]
+      by_cases hp : 0 < x
+      · rw [if_pos hp]
+        refine hsuppH (Real.log x) fun hu => hx ⟨?_, ?_⟩
+        · rw [← Real.exp_log hp]; exact Real.exp_le_exp.mpr hu.1
+        · rw [← Real.exp_log hp]
+          exact (Real.exp_le_exp.mpr hu.2).trans_eq
+            (by rw [Real.exp_add, Real.exp_log (by norm_num : (0 : ℝ) < 4), mul_comm])
+      · exact if_neg hp
+    refine ⟨hsg, fun x hx => ?_, MH, hMH0, fun x hxS hxk r hr => ?_⟩
+    · by_cases hp : 0 < x
+      · have hev : g =ᶠ[𝓝 x] fun z => H (Real.log z) := by
+          filter_upwards [lt_mem_nhds hp] with z hz; exact if_pos hz
+        exact (((hcH x hx hp).of_le (by norm_num)).comp x
+          ((Real.contDiffAt_log (n := 0)).mpr hp.ne')).congr_of_eventuallyEq hev
+      · have hev : g =ᶠ[𝓝 x] 0 := by
+          filter_upwards [gt_mem_nhds ((le_of_not_gt hp).trans_lt (Real.exp_pos (-8)))] with z hz
+          exact hsg z fun h => hz.not_ge h.1
+        exact contDiffAt_const.congr_of_eventuallyEq hev
+    · obtain rfl := Nat.le_zero.mp hr
+      have hp : 0 < x := (Real.exp_pos (-8)).trans_le hxS.1
+      simp only [iteratedDeriv_zero, g, if_pos hp]
+      simpa using hbH x hxS hxk 0 (Nat.zero_le _)
+  | k + 1, H, hsuppH, hcH, ⟨MH, hMH0, hbH⟩ => by
+    let g := fun x : ℝ => if 0 < x then H (Real.log x) else 0
+    have hsuppH' : ∀ u ∉ Icc (-8 : ℝ) (8 + Real.log 4), deriv H u = 0 := by
+      intro u hu
+      have hev : H =ᶠ[𝓝 u] 0 :=
+        Filter.eventuallyEq_of_mem (isClosed_Icc.isOpen_compl.mem_nhds hu) fun z hz => hsuppH z hz
+      simpa using hev.deriv_eq
+    have hcH' : ∀ x ∉ splineKnots, 0 < x → ContDiffAt ℝ (k + 1 : ℕ) (deriv H) (Real.log x) := by
+      intro x hx hp
+      have h := hcH x hx hp
+      rw [show (k + 1 + 1 : ℕ) = (k + 1) + 1 from rfl, Nat.cast_succ,
+        contDiffAt_succ_iff_hasFDerivAt] at h
+      obtain ⟨f', hf', hcf'⟩ := h
+      have hev : deriv H =ᶠ[𝓝 (Real.log x)] fun z => f' z 1 :=
+        hf'.mono fun z hz => hz.hasDerivAt.deriv
+      exact ((ContinuousLinearMap.apply ℝ ℝ 1).contDiff.contDiffAt.comp _ hcf').congr_of_eventuallyEq hev
+    have hbH' : ∃ M : ℝ, 0 ≤ M ∧ ∀ x ∈ Icc (Real.exp (-8)) (4 * Real.exp 8),
+        x ∉ splineKnots → ∀ r ≤ k + 1, |iteratedDeriv r (deriv H) (Real.log x)| ≤ M :=
+      ⟨MH, hMH0, fun x hxS hxk r hr => by
+        rw [iteratedDeriv_succ']
+        exact hbH x hxS hxk (r + 1) (Nat.succ_le_succ hr)⟩
+    have ih := offKnot_comp_log hsuppH' hcH' hbH'
+    have hmul := offKnot_mul_smooth ih (contDiffOn_inv ℝ)
+    have h0 := offKnot_comp_log (k := 0) hsuppH
+      (fun x hx hp => (hcH x hx hp).of_le (by norm_num))
+      ⟨MH, hMH0, fun x hxS hxk r hr => hbH x hxS hxk r (hr.trans (by omega))⟩
+    have hopenK : IsOpen (splineKnots : Set ℝ)ᶜ := splineKnots.finite_toSet.isClosed.isOpen_compl
+    have hd_off : ∀ z ∉ splineKnots,
+        HasDerivAt g (z⁻¹ * (if 0 < z then deriv H (Real.log z) else 0)) z := by
+      intro z hz
+      by_cases hp : 0 < z
+      · have hev : g =ᶠ[𝓝 z] fun w => H (Real.log w) := by
+          filter_upwards [lt_mem_nhds hp] with w hw; exact if_pos hw
+        have hdH : HasDerivAt H (deriv H (Real.log z)) (Real.log z) :=
+          ((hcH z hz hp).differentiableAt (by positivity)).hasDerivAt
+        rw [if_pos hp, mul_comm]
+        exact (hdH.comp z (Real.hasDerivAt_log hp.ne')).congr_of_eventuallyEq hev
+      · have hev : g =ᶠ[𝓝 z] 0 := by
+          filter_upwards [gt_mem_nhds ((le_of_not_gt hp).trans_lt (Real.exp_pos (-8)))] with w hw
+          exact h0.1 w fun h => hw.not_ge h.1
+        rw [if_neg hp, mul_zero]
+        exact (hasDerivAt_const z (0 : ℝ)).congr_of_eventuallyEq hev
+    obtain ⟨M0, hM0, hb0⟩ := h0.2.2
+    obtain ⟨Mm, hMm, hbm⟩ := hmul.2.2
+    refine ⟨h0.1, fun x hx => ?_, max M0 Mm, le_trans hM0 (le_max_left _ _),
+      fun x hxS hxk r hr => ?_⟩
+    · rw [Nat.cast_succ, contDiffAt_succ_iff_hasFDerivAt]
+      refine ⟨fun z => ContinuousLinearMap.smulRight 1
+          (z⁻¹ * (if 0 < z then deriv H (Real.log z) else 0)),
+        Filter.eventually_of_mem (hopenK.mem_nhds hx) fun z hz => (hd_off z hz).hasFDerivAt, ?_⟩
+      exact (ContinuousLinearMap.contDiffAt _).comp x (hmul.2.1 x hx)
+    · rcases r with _ | r
+      · exact (hb0 x hxS hxk 0 le_rfl).trans (le_max_left _ _)
+      · have hev : deriv g =ᶠ[𝓝 x] fun z => z⁻¹ * (if 0 < z then deriv H (Real.log z) else 0) :=
+          Filter.eventuallyEq_of_mem (hopenK.mem_nhds hxk) fun z hz => (hd_off z hz).deriv
+        rw [iteratedDeriv_succ', hev.iteratedDeriv_eq r]
+        exact (hbm x hxS hxk r (Nat.le_of_succ_le_succ hr)).trans (le_max_right _ _)
+
+private theorem log_not_mem_upowKnots {x : ℝ} (hx : x ∉ splineKnots) (hp : 0 < x) :
+    Real.log x ∉ upowKnots 7 ∧ Real.log x - Real.log 4 ∉ upowKnots 7 := by
+  constructor
+  · intro h
+    exact hx (mem_union_left _ (mem_image.mpr ⟨Real.log x, h, Real.exp_log hp⟩))
+  · intro h
+    apply hx
+    refine mem_union_right _ (mem_image.mpr ⟨Real.log x - Real.log 4, h, ?_⟩)
+    rw [sub_add_cancel, Real.exp_log hp]
+
+private theorem offKnot_nine_dyadicSpline : OffKnotBounded 9 dyadicSpline := by
+  have hAeq : splineAutoCorr = upow 1 7 := funext splineAutoCorr_eq_eight_boxes
+  have hcF : ∀ x ∉ splineKnots, 0 < x → ContDiffAt ℝ (10 : ℕ) squareLogProfile (Real.log x) := by
+    intro x hx hp
+    obtain ⟨hk1, hk2⟩ := log_not_mem_upowKnots hx hp
+    obtain ⟨hc1, _⟩ := smooth_bounded_upow 7 (Real.log x) hk1
+    obtain ⟨hc2, _⟩ := smooth_bounded_upow 7 (Real.log x - Real.log 4) hk2
+    unfold squareLogProfile; rw [hAeq]
+    exact (contDiffAt_const.mul (hc1.of_le le_top)).sub
+      ((hc2.of_le le_top).comp (Real.log x) (contDiffAt_id.sub contDiffAt_const))
+  have hbF : ∃ M : ℝ, 0 ≤ M ∧ ∀ x ∈ Icc (Real.exp (-8)) (4 * Real.exp 8),
+      x ∉ splineKnots → ∀ r ≤ 10, |iteratedDeriv r squareLogProfile (Real.log x)| ≤ M := by
+    refine ⟨3 / 2, by norm_num, fun x _ hxk r _ => ?_⟩
+    have hp : 0 < x := (Real.exp_pos (-8)).trans_le ‹x ∈ _›.1
+    obtain ⟨hk1, hk2⟩ := log_not_mem_upowKnots hxk hp
+    obtain ⟨hc1, hb1⟩ := smooth_bounded_upow 7 (Real.log x) hk1
+    obtain ⟨hc2, hb2⟩ := smooth_bounded_upow 7 (Real.log x - Real.log 4) hk2
+    unfold squareLogProfile; rw [hAeq]
+    have h1 : ContDiffAt ℝ r (fun z => 2 * upow 1 7 z) (Real.log x) :=
+      contDiffAt_const.mul (hc1.of_le le_top)
+    have h2 : ContDiffAt ℝ r (fun z => upow 1 7 (z - Real.log 4)) (Real.log x) :=
+      (hc2.of_le le_top).comp (Real.log x) (contDiffAt_id.sub contDiffAt_const)
+    rw [iteratedDeriv_sub h1 h2, iteratedDeriv_const_mul _ (hc1.of_le le_top),
+      iteratedDeriv_comp_sub_const]
+    refine (abs_sub _ _).trans ?_
+    rw [abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)]
+    linarith [hb1 r, hb2 r]
+  have hlog := offKnot_comp_log (k := 9) (fun _ => squareLogProfile_eq_zero_outside) hcF hbF
+  have hφ : ContDiffOn ℝ ⊤ (fun x : ℝ => 2 * x ^ (-(1 / 2 : ℝ))) (Ioi 0) :=
+    contDiffOn_const.mul fun x (hx : 0 < x) =>
+      (Real.contDiffAt_rpow_const_of_ne hx.ne').contDiffWithinAt
+  have hmul := offKnot_mul_smooth hlog hφ
+  have heq : (fun x : ℝ => (2 * x ^ (-(1 / 2 : ℝ))) *
+      (if 0 < x then squareLogProfile (Real.log x) else 0)) = dyadicSpline := by
+    funext x
+    by_cases hx : 0 < x
+    · simp only [if_pos hx, dyadicSpline, squarePrimeWeight, Complex.ofReal_re]
+      rw [Real.rpow_def_of_pos hx]; ring_nf
+    · simp only [if_neg hx, dyadicSpline, mul_zero]
+  rwa [heq] at hmul
+
+/-! ### Local mean value theorem and discrete sum bounds -/
+
+private theorem contDiffAt_deriv_of_succ {m : ℕ} {g : ℝ → ℝ} {x : ℝ}
+    (hg : ContDiffAt ℝ (m + 1 : ℕ) g x) :
+    DifferentiableAt ℝ g x ∧ ContDiffAt ℝ m (deriv g) x := by
+  have hd : DifferentiableAt ℝ g x := hg.differentiableAt (by positivity)
+  rw [Nat.cast_succ, contDiffAt_succ_iff_hasFDerivAt] at hg
+  obtain ⟨f', hf', hcf'⟩ := hg
+  have hev : deriv g =ᶠ[𝓝 x] fun z => f' z 1 := hf'.mono fun z hz => hz.hasDerivAt.deriv
+  exact ⟨hd, ((ContinuousLinearMap.apply ℝ ℝ 1).contDiff.contDiffAt.comp x hcf').congr_of_eventuallyEq hev⟩
+
+private theorem differentiableAt_iteratedDeriv_of_contDiffAt :
+    ∀ k : ℕ, ∀ {g : ℝ → ℝ} {x : ℝ}, ContDiffAt ℝ (k + 1 : ℕ) g x →
+      DifferentiableAt ℝ (iteratedDeriv k g) x
+  | 0, g, x, hg => by simpa using (contDiffAt_deriv_of_succ hg).1
+  | k + 1, g, x, hg => by
+    rw [iteratedDeriv_succ']
+    exact differentiableAt_iteratedDeriv_of_contDiffAt k (contDiffAt_deriv_of_succ hg).2
+
+private theorem exists_fwdDiff_iter_eq_Ioo :
+    ∀ (k : ℕ) {a b : ℝ} {g : ℝ → ℝ}, (∀ x ∈ Ioo a b, ContDiffAt ℝ k g x) →
+      ∀ {h u : ℝ}, 0 < h → a < u → u + k * h < b →
+        ∃ ξ ∈ Icc u (u + k * h), (fwdDiff h)^[k] g u = h ^ k * iteratedDeriv k g ξ
+  | 0, a, b, g, _, h, u, _, _, _ => ⟨u, ⟨le_rfl, by simp⟩, by simp⟩
+  | k + 1, a, b, g, hg, h, u, hh, hau, hub => by
+    have hgk : ∀ x ∈ Ioo a (b - h), ContDiffAt ℝ k (fwdDiff h g) x := fun x hx => by
+      have hx1 : x ∈ Ioo a b := ⟨hx.1, by linarith [hx.2]⟩
+      have hx2 : x + h ∈ Ioo a b := ⟨by linarith [hx.1], by linarith [hx.2]⟩
+      change ContDiffAt ℝ k (fun z => g (z + h) - g z) x
+      exact (((hg (x + h) hx2).of_le (by exact_mod_cast Nat.le_succ k)).comp x
+        (contDiffAt_id.add contDiffAt_const)).sub
+        ((hg x hx1).of_le (by exact_mod_cast Nat.le_succ k))
+    have hub' : u + k * h < b - h := by push_cast at hub; linarith
+    obtain ⟨ξ', hξ', heq⟩ := exists_fwdDiff_iter_eq_Ioo k hgk hh hau hub'
+    have hsub_ab : Icc ξ' (ξ' + h) ⊆ Ioo a b := fun z hz =>
+      ⟨by linarith [hau, hξ'.1, hz.1], by linarith [hub', hξ'.2, hz.2]⟩
+    have hdiff : ∀ z ∈ Icc ξ' (ξ' + h), DifferentiableAt ℝ (iteratedDeriv k g) z :=
+      fun z hz => differentiableAt_iteratedDeriv_of_contDiffAt k (hg z (hsub_ab hz))
+    obtain ⟨ξ, hξ, hmv⟩ := exists_deriv_eq_slope (iteratedDeriv k g) (by linarith : ξ' < ξ' + h)
+      (fun z hz => (hdiff z hz).continuousAt.continuousWithinAt)
+      (fun z hz => (hdiff z ⟨hz.1.le, hz.2.le⟩).differentiableWithinAt)
+    have hiter_sub : iteratedDeriv k (fwdDiff h g) ξ' =
+        iteratedDeriv k g (ξ' + h) - iteratedDeriv k g ξ' := by
+      have hx1 : ξ' ∈ Ioo a b := hsub_ab ⟨le_rfl, by linarith⟩
+      have hx2 : ξ' + h ∈ Ioo a b := hsub_ab ⟨by linarith, le_rfl⟩
+      have hc1 : ContDiffAt ℝ k (fun z => g (z + h)) ξ' :=
+        ((hg (ξ' + h) hx2).of_le (by exact_mod_cast Nat.le_succ k)).comp ξ'
+          (contDiffAt_id.add contDiffAt_const)
+      have hc2 : ContDiffAt ℝ k g ξ' := (hg ξ' hx1).of_le (by exact_mod_cast Nat.le_succ k)
+      change iteratedDeriv k (fun z => g (z + h) - g z) ξ' = _
+      rw [iteratedDeriv_sub hc1 hc2, iteratedDeriv_comp_add_const]
+    rw [← iteratedDeriv_succ, add_sub_cancel_left] at hmv
+    refine ⟨ξ, ⟨by linarith [hξ'.1, hξ.1], ?_⟩, ?_⟩
+    · push_cast; linarith [hξ'.2, hξ.2]
+    · rw [Function.iterate_succ_apply, heq, hiter_sub, hmv]
+      field_simp [hh.ne']; ring
+
+private theorem fwdDiff_iter_lipschitz_bound (k : ℕ) {g : ℝ → ℝ} {K : ℝ≥0}
+    (hg : ContDiff ℝ k g) (hL : LipschitzWith K (iteratedDeriv k g))
+    {h : ℝ} (hh : 0 < h) (u : ℝ) :
+    |(fwdDiff h)^[k + 1] g u| ≤ ((k + 1 : ℕ) : ℝ) * K * h ^ (k + 1) := by
+  have he : (fwdDiff h)^[k + 1] g u = (fwdDiff h)^[k] g (u + h) - (fwdDiff h)^[k] g u := by
+    rw [Function.iterate_succ_apply']; rfl
+  obtain ⟨ξ1, hξ1, e1⟩ := exists_fwdDiff_iter_eq k hg hh (u + h)
+  obtain ⟨ξ2, hξ2, e2⟩ := exists_fwdDiff_iter_eq k hg hh u
+  rw [he, e1, e2, ← mul_sub, abs_mul, abs_of_pos (pow_pos hh k)]
+  have hdist : |ξ1 - ξ2| ≤ ((k + 1 : ℕ) : ℝ) * h := by
+    rw [abs_le]; push_cast
+    constructor <;> linarith [hξ1.1, hξ1.2, hξ2.1, hξ2.2]
+  have hlip : |iteratedDeriv k g ξ1 - iteratedDeriv k g ξ2| ≤ K * |ξ1 - ξ2| := by
+    simpa [Real.dist_eq] using hL.dist_le_mul ξ1 ξ2
+  calc h ^ k * |iteratedDeriv k g ξ1 - iteratedDeriv k g ξ2|
+      ≤ h ^ k * (K * (((k + 1 : ℕ) : ℝ) * h)) :=
+        mul_le_mul_of_nonneg_left (hlip.trans (mul_le_mul_of_nonneg_left hdist K.coe_nonneg))
+          (pow_nonneg hh.le k)
+    _ = ((k + 1 : ℕ) : ℝ) * K * h ^ (k + 1) := by rw [pow_succ]; ring
+
+private theorem card_knot_hits_le {h : ℝ} (hh : 0 < h) (m b : ℕ) :
+    ((range b).filter fun j : ℕ =>
+      ¬ Disjoint (Icc ((j : ℝ) * h) (((j + m : ℕ) : ℝ) * h)) (splineKnots : Set ℝ)).card ≤
+        18 * (m + 1) := by
+  let S := (range b).filter fun j : ℕ =>
+    ¬ Disjoint (Icc ((j : ℝ) * h) (((j + m : ℕ) : ℝ) * h)) (splineKnots : Set ℝ)
+  let B := fun t : ℝ => Icc (⌊t / h⌋₊ - m) ⌊t / h⌋₊
+  have hsub : S ⊆ splineKnots.biUnion B := by
+    intro j hj
+    obtain ⟨_, hnd⟩ := mem_filter.mp hj
+    rw [Set.not_disjoint_iff] at hnd
+    obtain ⟨t, ⟨ht1, ht2⟩, htk⟩ := hnd
+    have htk' : t ∈ splineKnots := htk
+    have ht0 : 0 ≤ t / h := div_nonneg (splineKnots_pos htk').le hh.le
+    have hj_hi : j ≤ ⌊t / h⌋₊ := Nat.le_floor ((le_div_iff₀ hh).mpr ht1)
+    have hj_lo : ⌊t / h⌋₊ ≤ j + m := by
+      have : (⌊t / h⌋₊ : ℝ) < ((j + m + 1 : ℕ) : ℝ) := by
+        calc (⌊t / h⌋₊ : ℝ) ≤ t / h := Nat.floor_le ht0
+          _ ≤ (j + m : ℕ) := (div_le_iff₀ hh).mpr ht2
+          _ < (j + m + 1 : ℕ) := by push_cast; linarith
+      exact Nat.lt_succ_iff.mp (Nat.cast_lt.mp this)
+    exact mem_biUnion.mpr ⟨t, htk', mem_Icc.mpr ⟨by omega, hj_hi⟩⟩
+  calc S.card ≤ (splineKnots.biUnion B).card := card_le_card hsub
+    _ ≤ ∑ t ∈ splineKnots, (B t).card := card_biUnion_le
+    _ ≤ ∑ _t ∈ splineKnots, (m + 1) := sum_le_sum fun t _ => by
+        dsimp [B]; rw [Nat.card_Icc]; omega
+    _ = splineKnots.card * (m + 1) := by rw [sum_const, smul_eq_mul]
+    _ ≤ 18 * (m + 1) := Nat.mul_le_mul_right _ card_splineKnots_le
+
+private theorem card_active_grid_le {h : ℝ} (hh : 0 < h) (hh1 : h ≤ 1) (b : ℕ) :
+    (((range b).filter fun j : ℕ => (j : ℝ) * h ≤ 4 * Real.exp 8).card : ℝ) ≤
+      (4 * Real.exp 8 + 1) / h := by
+  let A := (range b).filter fun j : ℕ => (j : ℝ) * h ≤ 4 * Real.exp 8
+  have hsub : A ⊆ Icc 0 ⌊4 * Real.exp 8 / h⌋₊ := by
+    intro j hj
+    exact mem_Icc.mpr ⟨Nat.zero_le j,
+      Nat.le_floor ((le_div_iff₀ hh).mpr (mem_filter.mp hj).2)⟩
+  have hcard : A.card ≤ ⌊4 * Real.exp 8 / h⌋₊ + 1 :=
+    (card_le_card hsub).trans (by simp)
+  have hfloor : (⌊4 * Real.exp 8 / h⌋₊ : ℝ) ≤ 4 * Real.exp 8 / h :=
+    Nat.floor_le (by positivity)
+  have h1 : (1 : ℝ) ≤ 1 / h := (one_le_div hh).mpr hh1
+  calc (A.card : ℝ) ≤ (⌊4 * Real.exp 8 / h⌋₊ : ℝ) + 1 := by exact_mod_cast hcard
+    _ ≤ 4 * Real.exp 8 / h + 1 / h := add_le_add hfloor h1
+    _ = (4 * Real.exp 8 + 1) / h := by ring
+
+private theorem fwdDiff_iter_zero_of_Icc {k : ℕ} {g : ℝ → ℝ} {h u : ℝ} (hh : 0 ≤ h)
+    (hz : ∀ x ∈ Icc u (u + k * h), g x = 0) : (fwdDiff h)^[k] g u = 0 := by
+  induction k generalizing u with
+  | zero => exact hz u ⟨le_rfl, by simp⟩
+  | succ k ih =>
+    rw [Function.iterate_succ_apply']
+    dsimp only [fwdDiff]
+    rw [ih (u := u + h), ih (u := u), sub_zero]
+    · intro x hx
+      exact hz x ⟨hx.1, hx.2.trans (by push_cast; linarith)⟩
+    · intro x hx
+      exact hz x ⟨by linarith [hx.1], by push_cast; linarith [hx.2]⟩
+
+private theorem disjoint_splineKnots_nhds {a b : ℝ} (hab : a ≤ b)
+    (hd : Disjoint (Icc a b) (splineKnots : Set ℝ)) :
+    ∃ δ > 0, Disjoint (Ioo (a - δ) (b + δ)) (splineKnots : Set ℝ) ∧
+      ((b < Real.exp (-8)) ∨ (4 * Real.exp 8 < a) ∨
+        (Real.exp (-8) < a - δ ∧ b + δ < 4 * Real.exp 8)) := by
+  have hnot_mem : ∀ t ∈ splineKnots, t < a ∨ b < t := fun t ht => by
+    by_contra! h
+    exact Set.disjoint_left.mp hd h ht
+  have hexp_lo : Real.exp (-8) < a ∨ b < Real.exp (-8) :=
+    (hnot_mem _ exp_neg_eight_mem_splineKnots).symm
+  have hexp_hi : 4 * Real.exp 8 < a ∨ b < 4 * Real.exp 8 :=
+    hnot_mem _ four_mul_exp_eight_mem_splineKnots
+  have hopen : IsOpen (splineKnots : Set ℝ)ᶜ := splineKnots.finite_toSet.isClosed.isOpen_compl
+  obtain ⟨ε, hε, hthick⟩ := isCompact_Icc.exists_thickening_subset_open hopen hd.subset_compl_right
+  rcases hexp_lo with hlo | hlo
+  · rcases hexp_hi with hhi | hhi
+    · refine ⟨min (ε / 2) ((a - 4 * Real.exp 8) / 2), lt_min (half_pos hε) (by linarith), ?_,
+        Or.inr (Or.inl hhi)⟩
+      refine Set.disjoint_left.mpr fun x hx hxk => hthick ?_ hxk
+      rw [Metric.mem_thickening_iff]
+      by_cases hxa : x < a
+      · refine ⟨a, ⟨le_rfl, hab⟩, ?_⟩
+        rw [Real.dist_eq, abs_of_neg (by linarith)]
+        linarith [hx.1, min_le_left (ε / 2) ((a - 4 * Real.exp 8) / 2)]
+      · by_cases hxb : b < x
+        · refine ⟨b, ⟨hab, le_rfl⟩, ?_⟩
+          rw [Real.dist_eq, abs_of_pos (by linarith)]
+          linarith [hx.2, min_le_left (ε / 2) ((a - 4 * Real.exp 8) / 2)]
+        · exact ⟨x, ⟨not_lt.mp hxa, not_lt.mp hxb⟩, by simpa using hε⟩
+    · let δ := min (ε / 2) (min ((a - Real.exp (-8)) / 2) ((4 * Real.exp 8 - b) / 2))
+      have hδ : 0 < δ := lt_min (half_pos hε) (lt_min (by linarith) (by linarith))
+      refine ⟨δ, hδ, ?_, Or.inr (Or.inr ⟨?_, ?_⟩)⟩
+      · refine Set.disjoint_left.mpr fun x hx hxk => hthick ?_ hxk
+        rw [Metric.mem_thickening_iff]
+        by_cases hxa : x < a
+        · refine ⟨a, ⟨le_rfl, hab⟩, ?_⟩
+          rw [Real.dist_eq, abs_of_neg (by linarith)]
+          linarith [hx.1, min_le_left (ε / 2) (min ((a - Real.exp (-8)) / 2) ((4 * Real.exp 8 - b) / 2))]
+        · by_cases hxb : b < x
+          · refine ⟨b, ⟨hab, le_rfl⟩, ?_⟩
+            rw [Real.dist_eq, abs_of_pos (by linarith)]
+            linarith [hx.2, min_le_left (ε / 2) (min ((a - Real.exp (-8)) / 2) ((4 * Real.exp 8 - b) / 2))]
+          · exact ⟨x, ⟨not_lt.mp hxa, not_lt.mp hxb⟩, by simpa using hε⟩
+      · have : δ ≤ (a - Real.exp (-8)) / 2 := (min_le_right _ _).trans (min_le_left _ _)
+        linarith
+      · have : δ ≤ (4 * Real.exp 8 - b) / 2 := (min_le_right _ _).trans (min_le_right _ _)
+        linarith
+  · refine ⟨ε / 2, half_pos hε, ?_, Or.inl hlo⟩
+    refine Set.disjoint_left.mpr fun x hx hxk => hthick ?_ hxk
+    rw [Metric.mem_thickening_iff]
+    by_cases hxa : x < a
+    · refine ⟨a, ⟨le_rfl, hab⟩, ?_⟩
+      rw [Real.dist_eq, abs_of_neg (by linarith)]; linarith [hx.1]
+    · by_cases hxb : b < x
+      · refine ⟨b, ⟨hab, le_rfl⟩, ?_⟩
+        rw [Real.dist_eq, abs_of_pos (by linarith)]; linarith [hx.2]
+      · exact ⟨x, ⟨not_lt.mp hxa, not_lt.mp hxb⟩, by simpa using hε⟩
+
+/-- Eighth-order grid-sum bound for `dyadicSpline`: smooth blocks pay `O(h⁻¹ · h⁸)`
+and the `≤ 162` knot-straddling stencils pay `O(h⁷)` via `C^{6,1}` regularity. -/
+theorem sum_fwdDiff_eight_dyadicSpline_le :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ {h : ℝ}, 0 < h → h ≤ 1 → ∀ b : ℕ,
+      (∑ j ∈ range b, |(fwdDiff h)^[8] dyadicSpline ((j : ℝ) * h)|) ≤ K * h ^ 7 := by
+  obtain ⟨KL, hKL⟩ := lipschitz_iteratedDeriv_six_dyadicSpline
+  obtain ⟨_, hc8, M8, hM80, hb8⟩ := offKnot_mono (by decide : 8 ≤ 9) offKnot_nine_dyadicSpline
+  let K := (4 * Real.exp 8 + 1) * M8 + (18 * 9 : ℝ) * (14 * (KL : ℝ))
+  refine ⟨K, by dsimp [K]; positivity, fun {h} hh hh1 b => ?_⟩
+  let P := fun j : ℕ => Disjoint (Icc ((j : ℝ) * h) (((j + 8 : ℕ) : ℝ) * h)) (splineKnots : Set ℝ)
+  classical
+  rw [← sum_filter_add_sum_filter_not (range b) P]
+  have hknot_each : ∀ j, |(fwdDiff h)^[8] dyadicSpline ((j : ℝ) * h)| ≤
+      14 * (KL : ℝ) * h ^ 7 := fun j => by
+    have he : (fwdDiff h)^[8] dyadicSpline ((j : ℝ) * h) =
+        (fwdDiff h)^[7] dyadicSpline ((j : ℝ) * h + h) -
+          (fwdDiff h)^[7] dyadicSpline ((j : ℝ) * h) := by
+      rw [show (8 : ℕ) = 7 + 1 from rfl, Function.iterate_succ_apply']; rfl
+    rw [he]
+    have h1 := fwdDiff_iter_lipschitz_bound 6 contDiff_six_dyadicSpline hKL hh ((j : ℝ) * h + h)
+    have h2 := fwdDiff_iter_lipschitz_bound 6 contDiff_six_dyadicSpline hKL hh ((j : ℝ) * h)
+    refine (abs_sub _ _).trans ?_
+    push_cast at h1 h2
+    linarith
+  have hknot_sum : (∑ j ∈ (range b).filter (fun j => ¬ P j),
+      |(fwdDiff h)^[8] dyadicSpline ((j : ℝ) * h)|) ≤
+        (18 * 9 : ℝ) * (14 * (KL : ℝ)) * h ^ 7 := by
+    calc _ ≤ ∑ _j ∈ (range b).filter (fun j => ¬ P j), (14 * (KL : ℝ) * h ^ 7) :=
+          sum_le_sum fun j _ => hknot_each j
+      _ = (((range b).filter (fun j => ¬ P j)).card : ℝ) * (14 * (KL : ℝ) * h ^ 7) := by
+          rw [sum_const, nsmul_eq_mul]
+      _ ≤ (18 * 9 : ℝ) * (14 * (KL : ℝ)) * h ^ 7 := by
+          have hc : (((range b).filter (fun j => ¬ P j)).card : ℝ) ≤ 18 * 9 := by
+            exact_mod_cast card_knot_hits_le hh 8 b
+          nlinarith [pow_pos hh 7, KL.coe_nonneg]
+  let Q := fun j : ℕ => (j : ℝ) * h ≤ 4 * Real.exp 8
+  rw [← sum_filter_add_sum_filter_not ((range b).filter P) Q]
+  have htail_zero : (∑ j ∈ ((range b).filter P).filter (fun j => ¬ Q j),
+      |(fwdDiff h)^[8] dyadicSpline ((j : ℝ) * h)|) = 0 := by
+    apply sum_eq_zero; intro j hj
+    have hgt : 4 * Real.exp 8 < (j : ℝ) * h := not_le.mp (mem_filter.mp hj).2
+    rw [fwdDiff_iter_zero_of_Icc hh.le fun x hx =>
+      dyadicSpline_eq_zero_outside fun hs => (hgt.trans_le hx.1).not_ge hs.2, abs_zero]
+  have hsmooth_each : ∀ j ∈ ((range b).filter P).filter Q,
+      |(fwdDiff h)^[8] dyadicSpline ((j : ℝ) * h)| ≤ M8 * h ^ 8 := by
+    intro j hj
+    have hPj : P j := (mem_filter.mp (mem_filter.mp hj).1).2
+    have hend : ((j + 8 : ℕ) : ℝ) * h = (j : ℝ) * h + (8 : ℕ) * h := by push_cast; ring
+    obtain ⟨δ, hδ, hdisj, hcases⟩ := disjoint_splineKnots_nhds
+      (by push_cast; linarith [hh.le]) hPj
+    rcases hcases with hlo | hhi | ⟨hin1, hin2⟩
+    · rw [fwdDiff_iter_zero_of_Icc hh.le fun x hx => by
+        rw [← hend] at hx
+        exact dyadicSpline_eq_zero_outside fun hs => (hx.2.trans_lt hlo).not_ge hs.1, abs_zero]
+      positivity
+    · rw [fwdDiff_iter_zero_of_Icc hh.le fun x hx =>
+        dyadicSpline_eq_zero_outside fun hs => (hhi.trans_le hx.1).not_ge hs.2, abs_zero]
+      positivity
+    · obtain ⟨ξ, hξ, heq⟩ := exists_fwdDiff_iter_eq_Ioo 8
+        (a := (j : ℝ) * h - δ) (b := ((j + 8 : ℕ) : ℝ) * h + δ)
+        (fun x hx => hc8 x fun hxk => Set.disjoint_left.mp hdisj hx hxk)
+        hh (by linarith) (by rw [← hend]; linarith)
+      rw [heq, abs_mul, abs_of_pos (pow_pos hh 8), mul_comm]
+      rw [← hend] at hξ
+      have hξ_in : ξ ∈ Icc (Real.exp (-8)) (4 * Real.exp 8) :=
+        ⟨by linarith [hin1, hξ.1], by linarith [hin2, hξ.2]⟩
+      have hξ_nk : ξ ∉ splineKnots := fun hxk =>
+        Set.disjoint_left.mp hdisj ⟨by linarith [hξ.1], by linarith [hξ.2]⟩ hxk
+      exact mul_le_mul_of_nonneg_right (hb8 ξ hξ_in hξ_nk 8 le_rfl) (pow_nonneg hh.le 8)
+  have hsmooth_sum : (∑ j ∈ ((range b).filter P).filter Q,
+      |(fwdDiff h)^[8] dyadicSpline ((j : ℝ) * h)|) ≤ (4 * Real.exp 8 + 1) * M8 * h ^ 7 := by
+    have hsub : ((range b).filter P).filter Q ⊆ (range b).filter Q := fun j hj =>
+      mem_filter.mpr ⟨(mem_filter.mp (mem_filter.mp hj).1).1, (mem_filter.mp hj).2⟩
+    calc _ ≤ ∑ _j ∈ ((range b).filter P).filter Q, (M8 * h ^ 8) := sum_le_sum hsmooth_each
+      _ = ((((range b).filter P).filter Q).card : ℝ) * (M8 * h ^ 8) := by
+          rw [sum_const, nsmul_eq_mul]
+      _ ≤ (((range b).filter Q).card : ℝ) * (M8 * h ^ 8) :=
+          mul_le_mul_of_nonneg_right (by exact_mod_cast card_le_card hsub) (by positivity)
+      _ ≤ ((4 * Real.exp 8 + 1) / h) * (M8 * h ^ 8) :=
+          mul_le_mul_of_nonneg_right (card_active_grid_le hh hh1 b) (by positivity)
+      _ = (4 * Real.exp 8 + 1) * M8 * h ^ 7 := by field_simp [hh.ne']; ring
+  rw [htail_zero, add_zero]
+  dsimp [K]
+  linarith [hsmooth_sum, hknot_sum]
+
+/-- Ninth-order grid-sum bound for `conductorSplineIntegral`: one integration across
+conductors raises global regularity to `C^{7,1}` and off-knot smoothness to ninth order. -/
+theorem sum_fwdDiff_nine_conductorSplineIntegral_le :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ {h : ℝ}, 0 < h → h ≤ 1 → ∀ b : ℕ,
+      (∑ j ∈ range b, |(fwdDiff h)^[9] conductorSplineIntegral ((j : ℝ) * h)|) ≤ K * h ^ 8 := by
+  obtain ⟨KL, hKL⟩ := lipschitz_iteratedDeriv_seven_conductorSplineIntegral
+  have hoff2 : OffKnotBounded 7 (iteratedDeriv 2 conductorSplineIntegral) := by
+    rw [iteratedDeriv_two_conductorSplineIntegral]
+    exact offKnot_mul_smooth
+      (offKnot_deriv (offKnot_mono (by decide : 8 ≤ 9) offKnot_nine_dyadicSpline))
+      ((contDiffOn_id.const_mul 2).inv fun x (hx : 0 < x) => by positivity)
+  obtain ⟨_, hc7, M9, hM90, hb9⟩ := hoff2
+  have hc9 : ∀ x ∉ splineKnots, ContDiffAt ℝ (9 : ℕ) conductorSplineIntegral x := by
+    intro x hx
+    have hopenK : IsOpen (splineKnots : Set ℝ)ᶜ := splineKnots.finite_toSet.isClosed.isOpen_compl
+    have hd2_eq : deriv (deriv conductorSplineIntegral) = iteratedDeriv 2 conductorSplineIntegral := by
+      rw [show (2 : ℕ) = 1 + 1 from rfl, iteratedDeriv_succ, iteratedDeriv_one]
+    have hc8_d1 : ∀ y ∉ splineKnots, ContDiffAt ℝ (8 : ℕ) (deriv conductorSplineIntegral) y := by
+      intro y hy
+      rw [show (8 : ℕ) = 7 + 1 from rfl, Nat.cast_succ, contDiffAt_succ_iff_hasFDerivAt]
+      have hd1_diff : Differentiable ℝ (deriv conductorSplineIntegral) :=
+        ((contDiff_succ_iff_deriv.mp contDiff_seven_conductorSplineIntegral).2.2).differentiable
+          (by decide)
+      refine ⟨fun z => ContinuousLinearMap.smulRight 1 (iteratedDeriv 2 conductorSplineIntegral z),
+        Eventually.of_forall fun z => ?_,
+        (ContinuousLinearMap.contDiffAt _).comp y (hc7 y hy)⟩
+      rw [← hd2_eq]; exact hd1_diff.differentiableAt.hasDerivAt.hasFDerivAt
+    rw [show (9 : ℕ) = 8 + 1 from rfl, Nat.cast_succ, contDiffAt_succ_iff_hasFDerivAt]
+    have hd0_diff : Differentiable ℝ conductorSplineIntegral :=
+      contDiff_seven_conductorSplineIntegral.differentiable (by decide)
+    exact ⟨fun z => ContinuousLinearMap.smulRight 1 (deriv conductorSplineIntegral z),
+      Eventually.of_forall fun z => hd0_diff.differentiableAt.hasDerivAt.hasFDerivAt,
+      (ContinuousLinearMap.contDiffAt _).comp x (hc8_d1 x hx)⟩
+  let K := (4 * Real.exp 8 + 1) * M9 + (18 * 10 : ℝ) * (16 * (KL : ℝ))
+  refine ⟨K, by dsimp [K]; positivity, fun {h} hh hh1 b => ?_⟩
+  let P := fun j : ℕ => Disjoint (Icc ((j : ℝ) * h) (((j + 9 : ℕ) : ℝ) * h)) (splineKnots : Set ℝ)
+  classical
+  rw [← sum_filter_add_sum_filter_not (range b) P]
+  have hknot_each : ∀ j, |(fwdDiff h)^[9] conductorSplineIntegral ((j : ℝ) * h)| ≤
+      16 * (KL : ℝ) * h ^ 8 := fun j => by
+    have he : (fwdDiff h)^[9] conductorSplineIntegral ((j : ℝ) * h) =
+        (fwdDiff h)^[8] conductorSplineIntegral ((j : ℝ) * h + h) -
+          (fwdDiff h)^[8] conductorSplineIntegral ((j : ℝ) * h) := by
+      rw [show (9 : ℕ) = 8 + 1 from rfl, Function.iterate_succ_apply']; rfl
+    rw [he]
+    have h1 := fwdDiff_iter_lipschitz_bound 7 contDiff_seven_conductorSplineIntegral hKL hh
+      ((j : ℝ) * h + h)
+    have h2 := fwdDiff_iter_lipschitz_bound 7 contDiff_seven_conductorSplineIntegral hKL hh
+      ((j : ℝ) * h)
+    refine (abs_sub _ _).trans ?_
+    push_cast at h1 h2
+    linarith
+  have hknot_sum : (∑ j ∈ (range b).filter (fun j => ¬ P j),
+      |(fwdDiff h)^[9] conductorSplineIntegral ((j : ℝ) * h)|) ≤
+        (18 * 10 : ℝ) * (16 * (KL : ℝ)) * h ^ 8 := by
+    calc _ ≤ ∑ _j ∈ (range b).filter (fun j => ¬ P j), (16 * (KL : ℝ) * h ^ 8) :=
+          sum_le_sum fun j _ => hknot_each j
+      _ = (((range b).filter (fun j => ¬ P j)).card : ℝ) * (16 * (KL : ℝ) * h ^ 8) := by
+          rw [sum_const, nsmul_eq_mul]
+      _ ≤ (18 * 10 : ℝ) * (16 * (KL : ℝ)) * h ^ 8 := by
+          have hc : (((range b).filter (fun j => ¬ P j)).card : ℝ) ≤ 18 * 10 := by
+            exact_mod_cast card_knot_hits_le hh 9 b
+          nlinarith [pow_pos hh 8, KL.coe_nonneg]
+  let Q := fun j : ℕ => (j : ℝ) * h ≤ 4 * Real.exp 8
+  rw [← sum_filter_add_sum_filter_not ((range b).filter P) Q]
+  have hlin_diff2 : ∀ u : ℝ, 4 * Real.exp 8 ≤ u →
+      (fwdDiff h)^[2] conductorSplineIntegral u = 0 := fun u hu => by
+    dsimp [fwdDiff]
+    rw [conductorSplineIntegral_linear_after (by linarith : 4 * Real.exp 8 ≤ u + h + h),
+      conductorSplineIntegral_linear_after (by linarith : 4 * Real.exp 8 ≤ u + h),
+      conductorSplineIntegral_linear_after hu]
+    ring
+  have htail_zero : (∑ j ∈ ((range b).filter P).filter (fun j => ¬ Q j),
+      |(fwdDiff h)^[9] conductorSplineIntegral ((j : ℝ) * h)|) = 0 := by
+    apply sum_eq_zero; intro j hj
+    have hgt : 4 * Real.exp 8 < (j : ℝ) * h := not_le.mp (mem_filter.mp hj).2
+    have hsplit : (fwdDiff h)^[9] conductorSplineIntegral ((j : ℝ) * h) =
+        (fwdDiff h)^[7] ((fwdDiff h)^[2] conductorSplineIntegral) ((j : ℝ) * h) := by
+      rw [show (9 : ℕ) = 7 + 2 from rfl, Function.iterate_add_apply]
+    rw [hsplit, fwdDiff_iter_zero_of_Icc hh.le fun x hx =>
+      hlin_diff2 x (hgt.le.trans hx.1), abs_zero]
+  have hsmooth_each : ∀ j ∈ ((range b).filter P).filter Q,
+      |(fwdDiff h)^[9] conductorSplineIntegral ((j : ℝ) * h)| ≤ M9 * h ^ 9 := by
+    intro j hj
+    have hPj : P j := (mem_filter.mp (mem_filter.mp hj).1).2
+    have hend : ((j + 9 : ℕ) : ℝ) * h = (j : ℝ) * h + (9 : ℕ) * h := by push_cast; ring
+    obtain ⟨δ, hδ, hdisj, hcases⟩ := disjoint_splineKnots_nhds
+      (by push_cast; linarith [hh.le]) hPj
+    rcases hcases with hlo | hhi | ⟨hin1, hin2⟩
+    · rw [fwdDiff_iter_zero_of_Icc hh.le fun x hx => by
+        rw [← hend] at hx
+        exact conductorSplineIntegral_eq_zero_before (hx.2.trans hlo.le), abs_zero]
+      positivity
+    · have hsplit : (fwdDiff h)^[9] conductorSplineIntegral ((j : ℝ) * h) =
+          (fwdDiff h)^[7] ((fwdDiff h)^[2] conductorSplineIntegral) ((j : ℝ) * h) := by
+        rw [show (9 : ℕ) = 7 + 2 from rfl, Function.iterate_add_apply]
+      rw [hsplit, fwdDiff_iter_zero_of_Icc hh.le fun x hx =>
+        hlin_diff2 x (hhi.le.trans hx.1), abs_zero]
+      positivity
+    · obtain ⟨ξ, hξ, heq⟩ := exists_fwdDiff_iter_eq_Ioo 9
+        (a := (j : ℝ) * h - δ) (b := ((j + 9 : ℕ) : ℝ) * h + δ)
+        (fun x hx => hc9 x fun hxk => Set.disjoint_left.mp hdisj hx hxk)
+        hh (by linarith) (by rw [← hend]; linarith)
+      rw [heq, abs_mul, abs_of_pos (pow_pos hh 9), mul_comm]
+      rw [← hend] at hξ
+      have hξ_in : ξ ∈ Icc (Real.exp (-8)) (4 * Real.exp 8) :=
+        ⟨by linarith [hin1, hξ.1], by linarith [hin2, hξ.2]⟩
+      have hξ_nk : ξ ∉ splineKnots := fun hxk =>
+        Set.disjoint_left.mp hdisj ⟨by linarith [hξ.1], by linarith [hξ.2]⟩ hxk
+      have h9eq : iteratedDeriv 9 conductorSplineIntegral ξ =
+          iteratedDeriv 7 (iteratedDeriv 2 conductorSplineIntegral) ξ := by
+        simpa using (iteratedDeriv_add 7 2 conductorSplineIntegral).symm |> congrFun <| ξ
+      rw [h9eq]
+      exact mul_le_mul_of_nonneg_right (hb9 ξ hξ_in hξ_nk 7 le_rfl) (pow_nonneg hh.le 9)
+  have hsmooth_sum : (∑ j ∈ ((range b).filter P).filter Q,
+      |(fwdDiff h)^[9] conductorSplineIntegral ((j : ℝ) * h)|) ≤
+        (4 * Real.exp 8 + 1) * M9 * h ^ 8 := by
+    have hsub : ((range b).filter P).filter Q ⊆ (range b).filter Q := fun j hj =>
+      mem_filter.mpr ⟨(mem_filter.mp (mem_filter.mp hj).1).1, (mem_filter.mp hj).2⟩
+    calc _ ≤ ∑ _j ∈ ((range b).filter P).filter Q, (M9 * h ^ 9) := sum_le_sum hsmooth_each
+      _ = ((((range b).filter P).filter Q).card : ℝ) * (M9 * h ^ 9) := by
+          rw [sum_const, nsmul_eq_mul]
+      _ ≤ (((range b).filter Q).card : ℝ) * (M9 * h ^ 9) :=
+          mul_le_mul_of_nonneg_right (by exact_mod_cast card_le_card hsub) (by positivity)
+      _ ≤ ((4 * Real.exp 8 + 1) / h) * (M9 * h ^ 9) :=
+          mul_le_mul_of_nonneg_right (card_active_grid_le hh hh1 b) (by positivity)
+      _ = (4 * Real.exp 8 + 1) * M9 * h ^ 8 := by field_simp [hh.ne']; ring
+  rw [htail_zero, add_zero]
+  dsimp [K]
+  linarith [hsmooth_sum, hknot_sum]
+
+/-- Fifth-order grid-sum bound for `conductorCurvatureProfile` from global `C^{4,1}` regularity. -/
+theorem sum_fwdDiff_five_conductorCurvatureProfile_le :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ {h : ℝ}, 0 < h → h ≤ 1 → ∀ b : ℕ,
+      (∑ j ∈ range b, |(fwdDiff h)^[5] conductorCurvatureProfile ((j : ℝ) * h)|) ≤ K * h ^ 4 := by
+  obtain ⟨KL, hKL⟩ := lipschitz_iteratedDeriv_four_conductorCurvatureProfile
+  let K := (4 * Real.exp 8 + 1) * (5 * (KL : ℝ))
+  refine ⟨K, by dsimp [K]; positivity, fun {h} hh hh1 b => ?_⟩
+  let Q := fun j : ℕ => (j : ℝ) * h ≤ 4 * Real.exp 8
+  classical
+  rw [← sum_filter_add_sum_filter_not (range b) Q]
+  have htail_zero : (∑ j ∈ (range b).filter (fun j => ¬ Q j),
+      |(fwdDiff h)^[5] conductorCurvatureProfile ((j : ℝ) * h)|) = 0 := by
+    apply sum_eq_zero; intro j hj
+    have hgt : 4 * Real.exp 8 < (j : ℝ) * h := not_le.mp (mem_filter.mp hj).2
+    rw [fwdDiff_iter_zero_of_Icc hh.le fun x hx =>
+      conductorCurvatureProfile_eq_zero_outside fun hs => (hgt.trans_le hx.1).not_ge hs.2, abs_zero]
+  rw [htail_zero, add_zero]
+  have heach : ∀ j ∈ (range b).filter Q,
+      |(fwdDiff h)^[5] conductorCurvatureProfile ((j : ℝ) * h)| ≤ 5 * (KL : ℝ) * h ^ 5 := fun j _ => by
+    simpa [mul_assoc] using
+      fwdDiff_iter_lipschitz_bound 4 contDiff_four_conductorCurvatureProfile hKL hh ((j : ℝ) * h)
+  calc _ ≤ ∑ _j ∈ (range b).filter Q, (5 * (KL : ℝ) * h ^ 5) := sum_le_sum heach
+    _ = (((range b).filter Q).card : ℝ) * (5 * (KL : ℝ) * h ^ 5) := by
+        rw [sum_const, nsmul_eq_mul]
+    _ ≤ ((4 * Real.exp 8 + 1) / h) * (5 * (KL : ℝ) * h ^ 5) :=
+        mul_le_mul_of_nonneg_right (card_active_grid_le hh hh1 b) (by positivity)
+    _ = K * h ^ 4 := by dsimp [K]; field_simp [hh.ne']; ring
+
+#print axioms sum_fwdDiff_eight_dyadicSpline_le
+#print axioms sum_fwdDiff_nine_conductorSplineIntegral_le
+#print axioms sum_fwdDiff_five_conductorCurvatureProfile_le
+#print axioms integral_mul_dyadicSpline_inv_sq
+#print axioms hasDerivAt_conductor_profile
+end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -64,7 +64,7 @@ private theorem sum_quotient_blocks {q : ℕ} (hq : 0 < q) (f w : ℕ → ℝ) (
   induction b with
   | zero => simp
   | succ b ih =>
-    rw [Nat.mul_succ, sum_range_add, ih, sum_range_succ]
+    rw [Nat.mul_succ, Finset.sum_range_add, ih, Finset.sum_range_succ]
     congr 1
     have hb (i : ℕ) (hi : i ∈ range q) : (q * b + i) / q = b := by
       rw [Nat.mul_add_div hq, Nat.div_eq_of_lt (mem_range.mp hi), Nat.add_zero]
@@ -101,7 +101,6 @@ private theorem unit_quotient_ramp {d : ℕ} (hd : 0 < d) (j : ℕ) :
   unfold centeredQuotient centeredModularRamp
   have h1 : ((j : ℝ) / d) / (1 : ℕ) = (j : ℝ) / (d : ℕ) := by simp
   rw [h1, Int.fract_div_natCast_eq_div_natCast_mod]
-  push_cast
   field_simp
   ring
 
@@ -202,10 +201,10 @@ theorem centeredPrimeWeight_periodic_iter (s : ℕ) :
   have hS : 0 ≤ S := sum_nonneg fun _ _ => abs_nonneg _
   let M := (2 * (J : ℝ)) ^ (s + 1) * S
   have hM : 0 ≤ M := by dsimp [M]; positivity
-  refine (unit_stencil_ramp_sum b x hM fun d hd => ?_).trans_eq (by dsimp [M]; ring)
+  refine (unit_stencil_ramp_sum b x hM fun d hd => ?_).trans_eq (by dsimp only [M, S]; ring)
   obtain ⟨hd1, hdJ⟩ := mem_Icc.mp hd
   have hper : ∀ j, centeredModularRamp d (j + d) = centeredModularRamp d j := fun j => by
-    simpa only [one_mul, add_comm] using centeredModularRamp_mul_add d 1 j
+    simpa only [mul_one, add_comm] using centeredModularRamp_mul_add d 1 j
   have hzero : ∑ j ∈ range d, centeredModularRamp d j = 0 := by
     rw [sum_centeredModularRamp, centeredModularPrimitive, Nat.mod_self]
     simp
