@@ -34,7 +34,8 @@ theorem hom_ext (D : Set κ) (f g : Presentation D →+ V)
     (h : ∀ d, f (gen D d)=g (gen D d)) : f=g := by
   let π := QuotientAddGroup.mk' (relations D)
   have he : f.comp π = g.comp π := FreeAbelianGroup.lift_ext _ _ h
-  ext x
+  apply DFunLike.ext
+  intro x
   obtain ⟨y,rfl⟩ := QuotientAddGroup.mk'_surjective (relations D) x
   exact DFunLike.congr_fun he y
 
@@ -49,7 +50,7 @@ theorem extends_iff (D : Set κ) (u : D → V) :
   · intro h
     let f := FreeAbelianGroup.lift u
     have hk : relations D ≤ f.ker := by
-      apply AddSubgroup.closure_le.mpr
+      apply (AddSubgroup.closure_le _).mpr
       rintro _ ⟨a,b,c,he,rfl⟩
       change f (of a+of b-of c)=0
       simp only [map_sub,map_add,f,lift_apply_of,h a b c he,sub_self]
@@ -85,8 +86,6 @@ def fullEquiv : Presentation (Set.univ : Set κ) ≃+ κ := by
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] [DecidableEq κ]
 
-private def gapSet (q : ι → κ) (A : Matrix ι ι ℂ) : Set κ := occupiedGap q A
-
 /-- The character relating two observed matrices is unique even with missing
 gaps. At zero entries the second matrix must vanish. -/
 theorem observation_fiber (q : ι → κ) (A B : Matrix ι ι ℂ) :
@@ -96,7 +95,7 @@ theorem observation_fiber (q : ι → κ) (A B : Matrix ι ι ℂ) :
         ∀ i j (ha : A i j ≠ 0), B i j =
           (((f (gen D ⟨q i-q j,i,j,rfl,ha⟩)).toMul : Circle) : ℂ)*A i j) := by
   classical
-  let D := gapSet q A
+  intro D
   constructor
   · rintro ⟨hp,ht⟩
     obtain ⟨u,hu,he⟩ := (pairedCharge_eq_iff_gap_phases q A B).1 hp
@@ -145,4 +144,5 @@ end GaloisForLFunctions.HTGeometry.Quantum.ChargeGaps
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.ChargeGaps.hom_ext
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.ChargeGaps.extends_iff
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.ChargeGaps.charge_gen
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.ChargeGaps.fullEquiv
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.ChargeGaps.observation_fiber

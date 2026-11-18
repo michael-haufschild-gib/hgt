@@ -26,7 +26,7 @@ theorem positivePrimeDetector_le_exp {κ : ℝ} (hκ : 0 < κ) (v : ℝ) :
 /-- Early signed mass is bounded in absolute value without cancellation. -/
 theorem early_positivePrimeDetector_mass_le {V : ℝ → ℝ} {A κ : ℝ} (hκ : 0 < κ) (hA : 0 ≤ A)
     (hb : ∀ t : ℝ, |V t| ≤ A*Real.exp ((1/2+κ)*t)) (η T : ℝ) :
-    (∫ t in Iic (η*T), |V t|*positivePrimeDetector (T-t)) ≤
+    (∫ t in Iic (η*T), |V t| * positivePrimeDetector (T-t)) ≤
       (A*κ⁻¹)*Real.exp ((η-1/2+κ)*T) := by
   let C := A*κ⁻¹*Real.exp (-((1/2-κ)*T))
   have he (t : ℝ) : (A*Real.exp ((1/2+κ)*t))*(κ⁻¹*Real.exp (-((1/2-κ)*(T-t)))) =
@@ -80,12 +80,12 @@ theorem positivePrimeDetector_sign_split {V : ℝ → ℝ} {a T s : ℝ} (hs : s
     (hJV : Integrable (fun t : ℝ => V t*positivePrimeDetector (T-t)))
     (hi : IntegrableOn (fun t : ℝ => max (s*V t) 0) (Ioc a T)) :
     (∫ t, max (s*V t) 0*positivePrimeDetector (T-t)) ≤
-      (∫ t in Iic a, |V t|*positivePrimeDetector (T-t))+2*(∫ t in Ioc a T, max (s*V t) 0) := by
+      (∫ t in Iic a, |V t| * positivePrimeDetector (T-t))+2*(∫ t in Ioc a T, max (s*V t) 0) := by
   let J := fun t : ℝ => positivePrimeDetector (T-t)
-  let f := fun t : ℝ => |V t|*J t
+  let f := fun t : ℝ => |V t| * J t
   let g := fun t : ℝ => max (s*V t) 0
   have hfj : Integrable f := hJV.abs.congr (Eventually.of_forall fun t => by
-    change |V t*J t|=|V t|*J t; rw [abs_mul,abs_of_nonneg (positivePrimeDetector_nonneg _)])
+    change |V t*J t|=|V t| * J t; rw [abs_mul,abs_of_nonneg (positivePrimeDetector_nonneg _)])
   have hf := hfj.indicator (measurableSet_Iic (a := a))
   have hg : Integrable ((Ioc a T).indicator g) := (integrable_indicator_iff measurableSet_Ioc).2 hi
   have hg0 (t : ℝ) : 0 ≤ g t := le_max_right _ _

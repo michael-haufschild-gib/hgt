@@ -53,7 +53,8 @@ theorem squareLogProfile_test_translation {g : ℝ → ℝ} (hg : Continuous g) 
       fun u => 2*G u-2*Q (u-b) := by
     funext u
     have hs : Real.exp (u/2)=Real.exp ((u-b)/2)*2 := by
-      rw [← he,← Real.exp_add]; congr 1; ring
+      calc _ = Real.exp ((u-b)/2+b/2) := congrArg Real.exp (by ring)
+        _ = _ := by rw [Real.exp_add,he]
     dsimp only [G,Q,F]
     rw [sub_add_cancel]
     change (g u*(2*splineAutoCorr u-splineAutoCorr (u-b)))*Real.exp (u/2)=_
@@ -94,9 +95,9 @@ theorem squareLogProfile_test_neg {g : ℝ → ℝ} (hg : Continuous g) (hm : St
 of the autocorrelation mass by log four. -/
 theorem squareLogProfile_first_half_moment :
     (∫ u : ℝ, (u*squareLogProfile u)*Real.exp (u/2)) = -2*Real.log 4*squareAutocorrelationMass := by
-  rw [squareLogProfile_test_translation (g := id) continuous_id]
+  rw [squareLogProfile_test_translation (g := fun u : ℝ => u) continuous_id]
   have h (u : ℝ) : u-(u+Real.log 4) = -Real.log 4 := by ring
-  simp only [id_eq,h,integral_const_mul,squareAutocorrelationMass]
+  simp only [h,integral_const_mul,squareAutocorrelationMass]
   ring
 
 /-- Every continuous test of the logarithmic prime displacement has a

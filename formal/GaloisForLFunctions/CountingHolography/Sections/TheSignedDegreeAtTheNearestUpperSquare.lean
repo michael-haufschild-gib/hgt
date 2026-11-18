@@ -42,45 +42,52 @@ theorem upperSquareIndex_log_near {u : ℝ} (hu₀ : 0 ≤ u) :
   have h₂ := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 2)
   constructor <;> linarith only [hl,hu',h₂]
 
-/-- Rounding either square root by at most three changes its long trace
-by a quantity tending to zero, since twice the zero width is less than one. -/
+/-- A root displacement of order x^β costs x^(2w+β-1) in the long trace. -/
+theorem realSplineTrace_square_power_gap {β : ℝ} (hβ : β ≤ 1) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {x y : ℝ}, 1 ≤ x → x ≤ y → y ≤ x+7*x^β →
+      |realSplineTrace (2*Real.log y)-realSplineTrace (2*Real.log x)| ≤ C*x^(2*zetaZeroWidth+β-1) := by
+  obtain ⟨L,hL,h⟩ := realSplineTrace_increment
+  let w := zetaZeroWidth
+  have hw : 0 ≤ w := zetaZeroWidth_nonneg
+  refine ⟨14*L*(8:ℝ)^(2*w),by positivity,fun {x y} hx hxy hy => ?_⟩
+  have hx' := zero_lt_one.trans_le hx
+  have hy' := hx'.trans_le hxy
+  have hstep : 2*Real.log y-2*Real.log x ≤ 14*x^β/x := by
+    rw [← mul_sub,← Real.log_div hy'.ne' hx'.ne']
+    have h₁ := Real.log_le_sub_one_of_pos (div_pos hy' hx')
+    have h₂ : y/x-1 ≤ 7*x^β/x := by
+      rw [sub_le_iff_le_add,← div_self hx'.ne',← add_div,div_le_div_iff_of_pos_right hx']
+      linarith only [hy]
+    linarith only [h₁,h₂]
+  have hb : y ≤ 8*x := by
+    have hp := Real.rpow_le_rpow_of_exponent_le hx hβ
+    rw [Real.rpow_one] at hp
+    linarith only [hy,hp]
+  have hpow : Real.exp (w*(2*Real.log y)) ≤ (8:ℝ)^(2*w)*x^(2*w) := by
+    rw [show w*(2*Real.log y)=Real.log y*(2*w) by ring,← Real.rpow_def_of_pos hy',
+      ← Real.mul_rpow (by norm_num : (0:ℝ) ≤ 8) hx'.le]
+    exact Real.rpow_le_rpow hy'.le hb (mul_nonneg two_pos.le hw)
+  calc _ ≤ L*(2*Real.log y-2*Real.log x)*Real.exp (w*(2*Real.log y)) :=
+          h _ _ (mul_nonneg two_pos.le (Real.log_nonneg hx)) (mul_le_mul_of_nonneg_left (Real.log_le_log hx' hxy) two_pos.le)
+       _ ≤ (L*(14*x^β/x))*((8:ℝ)^(2*w)*x^(2*w)) := mul_le_mul
+           (mul_le_mul_of_nonneg_left hstep hL) hpow (Real.exp_pos _).le (by positivity)
+       _ = _ := by rw [Real.rpow_sub hx',Real.rpow_add hx',Real.rpow_one]; ring
+
+/-- A fixed displacement of the root costs a vanishing error because twice
+the zero width is less than one. -/
 private theorem bounded_rounding_error (X Y : ℝ → ℝ) (hX : Tendsto X atTop atTop)
     (hY : ∀ᶠ u in atTop, X u ≤ Y u ∧ Y u ≤ X u+3) :
     Tendsto (fun u => realSplineTrace (2*Real.log (Y u))-realSplineTrace (2*Real.log (X u))) atTop (𝓝 0) := by
-  obtain ⟨L,hL,hinc⟩ := realSplineTrace_increment
-  let w := zetaZeroWidth
-  have hw : 0 ≤ w := zetaZeroWidth_nonneg
-  have hw' : 2*w-1 < 0 := by dsimp only [w]; linarith only [ZeroForcingCalculus.zetaZeroWidth_le_sub_three_eighths]
-  let C := 6*L*Real.exp (6*w)
-  have hdecay := (Real.tendsto_exp_atBot.comp
-    ((Real.tendsto_log_atTop.comp hX).const_mul_atTop_of_neg hw')).const_mul C
-  apply squeeze_zero_norm' (a := fun u => C*Real.exp ((2*w-1)*Real.log (X u))) _ (by simpa only [mul_zero] using hdecay)
+  obtain ⟨C,_,h⟩ := realSplineTrace_square_power_gap (β := 0) zero_le_one
+  have hw : 0 < 1-2*zetaZeroWidth := by linarith only [ZeroForcingCalculus.zetaZeroWidth_le_sub_three_eighths]
+  have ht := ((tendsto_rpow_neg_atTop hw).comp hX).const_mul C
+  have he : -(1-2*zetaZeroWidth)=2*zetaZeroWidth-1 := by ring
+  simp only [Function.comp_apply,he,mul_zero] at ht
+  apply squeeze_zero_norm' (a := fun u => C*X u^(2*zetaZeroWidth-1)) _ ht
   filter_upwards [hY,hX.eventually_ge_atTop 1] with u hy hx
-  let x := X u
-  let y := Y u
-  have hx' : 0 < x := zero_lt_one.trans_le hx
-  have hy' : 0 < y := hx'.trans_le hy.1
-  have hlog := Real.log_le_log hx' hy.1
-  have hstep : 2*Real.log y-2*Real.log x ≤ 6/x := by
-    rw [← mul_sub,← Real.log_div hy'.ne' hx'.ne']
-    have h := Real.log_le_sub_one_of_pos (div_pos hy' hx')
-    have hy₁ : y/x-1 ≤ 3/x := by
-      rw [sub_le_iff_le_add,← div_self hx'.ne',← add_div,div_le_div_iff_of_pos_right hx']
-      linarith only [hy.2]
-    linarith only [h,hy₁]
-  have hd : 6/x ≤ 6 := (div_le_iff₀ hx').mpr (by linarith only [hx])
-  have hex := Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left
-    (show 2*Real.log y ≤ 6+2*Real.log x by linarith only [hstep,hd]) hw)
-  rw [Real.norm_eq_abs]
-  calc _ ≤ L*(2*Real.log y-2*Real.log x)*Real.exp (w*(2*Real.log y)) :=
-          hinc _ _ (mul_nonneg two_pos.le (Real.log_nonneg hx)) (mul_le_mul_of_nonneg_left hlog two_pos.le)
-       _ ≤ (L*(6/x))*Real.exp (w*(6+2*Real.log x)) := mul_le_mul
-         (mul_le_mul_of_nonneg_left hstep hL) hex (Real.exp_pos _).le (by positivity)
-       _ = C*Real.exp ((2*w-1)*Real.log x) := by
-         rw [show w*(6+2*Real.log x) = 6*w+2*w*Real.log x by ring,Real.exp_add,
-           show (2*w-1)*Real.log x=2*w*Real.log x-Real.log x by ring,Real.exp_sub,Real.exp_log hx']
-         dsimp only [C]
-         ring
+  have hh := h hx hy.1 (show Y u ≤ X u+7*(X u)^(0:ℝ) by
+    rw [Real.rpow_zero,mul_one]; linarith only [hy.2])
+  simpa only [Real.norm_eq_abs,add_zero] using hh
 
 /-- The only surviving term after removing both continuous long lags
 from the integer square degree is the fixed short-lag limit. -/

@@ -29,8 +29,8 @@ private theorem mobius_floor_nat (m : ℕ) {k : ℕ} (hk : 0<k) :
   have h := _root_.RHTower.sum_moebius_floor_truncated m (x := (M:ℝ))
     (Nat.cast_nonneg M) (by simpa only [Nat.floor_natCast] using hM)
   have hle : (1:ℝ)≤M ↔ k≤m := by
-    rw [Nat.one_le_cast]
-    exact (Nat.le_div_iff_mul_le hk).trans (by rw [one_mul])
+    have hc : (1:ℝ)≤M ↔ 1≤M := by norm_cast
+    exact hc.trans ((Nat.le_div_iff_mul_le hk).trans (by rw [one_mul]))
   have hdiv (d : ℕ) : (⌊(M:ℝ)/d⌋:ℤ)=((m/d/k:ℕ):ℤ) := by
     rw [Int.floor_div_natCast,Int.floor_natCast,← Int.natCast_ediv]
     dsimp only [M]
@@ -55,13 +55,13 @@ theorem factorialFloorReading_sample {R : Type*} [CommRing R] (L : ℕ) (f : ℕ
     {k : ℕ} (hk : 0<k) :
     factorialFloorReading R k (sampleFactorialCoeffs L f)=if k≤L then f k else 0 := by
   simp only [sampleFactorialCoeffs,map_sum,map_smul,map_sub,factorialFloorReading_prefix R _ hk,smul_eq_mul]
-  have step {m : ℕ} (hm : m ∈ Icc 1 L) :
+  have step (m : ℕ) :
       f m*((if k≤m then 1 else 0)-(if k≤m-1 then 1 else 0))=if m=k then f m else 0 := by
     rcases lt_trichotomy m k with h|h|h
     · simp [show ¬ k≤m by omega,show ¬ k≤m-1 by omega,h.ne]
     · simp [h,show ¬ k≤k-1 by omega]
     · simp [h.le,show k≤m-1 by omega,h.ne']
-  rw [sum_congr rfl step]
+  rw [sum_congr rfl fun m _ => step m]
   simp [mem_Icc,hk]
 
 /-- The balance of the factorial presentation reads the sample at one. -/
@@ -92,8 +92,10 @@ theorem factorialFloorReading_injective {R : Type*} [CommRing R] {a b : ℕ →�
   let k := c.support.max' hnon
   have hk : k ∈ c.support := max'_mem _ _
   have hk0 : k≠0 := by
-    rintro rfl
-    exact Finsupp.mem_support_iff.mp hk (sub_eq_zero.mpr hz)
+    intro he
+    apply Finsupp.mem_support_iff.mp hk
+    rw [he]
+    exact sub_eq_zero.mpr hz
   have hv := reading_max_support c hk (Nat.pos_of_ne_zero hk0) (fun j hj => le_max' _ _ hj)
   rw [show c=a-b from rfl,map_sub,h k (Nat.pos_of_ne_zero hk0),sub_self] at hv
   exact Finsupp.mem_support_iff.mp hk hv.symm

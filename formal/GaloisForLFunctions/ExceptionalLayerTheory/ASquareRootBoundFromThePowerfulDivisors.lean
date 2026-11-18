@@ -61,7 +61,7 @@ private theorem square_row_step {u a : ℝ} (hu : 0<u) (ha : 1≤a) :
       apply div_le_div_of_nonneg_left (by positivity) (mul_pos hd ht)
       rw [pow_two]
       exact mul_le_mul_of_nonneg_right (by linarith only : u+a-1≤u+a) ht.le
-    _ = _ := by field_simp [hd.ne',ht.ne'] <;> ring
+    _ = _ := by field_simp [hd.ne',ht.ne']; ring
 
 private theorem square_row_bound {u : ℝ} (hu : 0<u) (J : ℕ) :
     ∑ j ∈ range J, min 1 (u^2/((j:ℝ)+1)^2) ≤ 4*u := by
@@ -70,14 +70,14 @@ private theorem square_row_bound {u : ℝ} (hu : 0<u) (J : ℕ) :
     induction L with
     | zero => simp only [range_zero,sum_empty,Nat.cast_zero,add_zero]; field_simp [hu.ne'] <;> nlinarith only
     | succ L ih =>
-      rw [sum_range_succ,Nat.cast_succ]
+      rw [Finset.sum_range_succ,Nat.cast_succ]
       have hs := square_row_step hu (a := (L:ℝ)+1) (by linarith only [Nat.cast_nonneg (α := ℝ) L])
       rw [show u+((L:ℝ)+1)-1=u+L by ring] at hs
       exact (add_le_add ih hs).trans_eq (by ring)
   exact (h J).trans (sub_le_self _ (by positivity))
 
 private theorem floor_error_min (N d : ℕ) (hd : 0<d) :
-    |((N/d:ℕ):ℝ)-(N:ℝ)/d|≤min 1 ((N:ℝ)/d) := by
+    |((N/d:ℕ):ℝ)-(N:ℝ)/d| ≤ min 1 ((N:ℝ)/d) := by
   have h := Nat.cast_div_le (α := ℝ) (m := N) (n := d)
   rw [abs_of_nonpos (sub_nonpos.mpr h)]
   have hdr : 0<(d:ℝ) := by exact_mod_cast hd
@@ -90,8 +90,28 @@ private def cubeScale (N j : ℕ) : ℝ :=
 
 private theorem cubeScale_sq (N a b : ℕ) :
     (N:ℝ)/(((a:ℝ)+1)^2*((b:ℝ)+1)^3) = (cubeScale N b)^2/((a:ℝ)+1)^2 := by
-  rw [cubeScale,div_pow,mul_pow,Real.sq_sqrt (Nat.cast_nonneg N),Real.sq_sqrt (by positivity)]
-  ring
+  rw [cubeScale,div_pow,mul_pow,Real.sq_sqrt (Nat.cast_nonneg N),Real.sq_sqrt (by positivity),div_div]
+  congr 1; ring
+
+private def squareCubeMajorant (N : ℕ) (z : ℕ×ℕ) : ℝ :=
+  min 1 ((cubeScale N z.1)^2/((z.2:ℝ)+1)^2)
+
+private theorem squareCubeMajorant_nonneg (N : ℕ) (z : ℕ×ℕ) : 0≤squareCubeMajorant N z :=
+  le_min zero_le_one (by positivity)
+
+private theorem squareCubeMajorant_sum {N : ℕ} (hN : 0<N) (J : ℕ) :
+    ∑ z ∈ range J ×ˢ range J, squareCubeMajorant N z ≤ 12*Real.sqrt N := by
+  rw [sum_product]
+  calc
+    _ ≤ ∑ b ∈ range J, 4*cubeScale N b := by
+      refine sum_le_sum fun b _ => ?_
+      have hu : 0<cubeScale N b := div_pos (Real.sqrt_pos.mpr (by exact_mod_cast hN)) (by positivity)
+      exact square_row_bound (u := cubeScale N b) hu J
+    _ = (4*Real.sqrt N)*(∑ b ∈ range J, (((b:ℝ)+1)*Real.sqrt ((b:ℝ)+1))⁻¹) := by
+      rw [mul_sum]
+      exact sum_congr rfl fun _ _ => by dsimp only [cubeScale]; ring
+    _ ≤ _ := (mul_le_mul_of_nonneg_left (_root_.RHTower.sum_range_inv_sqrt_cube_le J)
+      (by positivity : 0≤4*Real.sqrt N)).trans_eq (by ring)
 
 /-- The sum of the absolute floor errors for a bounded multiplicative weight
 vanishing on every prime is at most twelve square roots. -/
@@ -108,7 +128,6 @@ theorem powerful_divisor_rounding_le {f : ArithmeticFunction ℝ} (hf : f.IsMult
   have spec (d : ℕ) (hd : f d≠0) : d=((φ d).2+1)^2*((φ d).1+1)^3 := by
     simpa only [φ,dif_pos hd] using (hs d hd).choose_spec
   let F (d : ℕ) := |f d*(((N/d:ℕ):ℝ)-(N:ℝ)/d)|
-  let G (x : ℕ×ℕ) := min 1 ((cubeScale N x.1)^2/((x.2:ℝ)+1)^2)
   refine Real.tsum_le_of_sum_range_le (fun d => abs_nonneg _) (fun M => ?_)
   let S := (range M).filter (fun d => f d≠0)
   let J := 1+∑ d ∈ S, ((φ d).1+(φ d).2)
@@ -119,10 +138,10 @@ theorem powerful_divisor_rounding_le {f : ArithmeticFunction ℝ} (hf : f.IsMult
     intro m hm n hn e
     exact (spec m (mem_filter.mp hm).2).trans ((congrArg
       (fun x : ℕ×ℕ => (x.2+1)^2*(x.1+1)^3) e).trans (spec n (mem_filter.mp hn).2).symm)
-  have hg (d : ℕ) (hd : d∈S) : F d≤G (φ d) := by
+  have hg (d : ℕ) (hd : d∈S) : F d≤squareCubeMajorant N (φ d) := by
     have hs' := spec d (mem_filter.mp hd).2
     have hd0 : 0<d := by rw [hs']; positivity
-    dsimp only [F,G]
+    dsimp only [F,squareCubeMajorant]
     rw [abs_mul]
     apply (mul_le_of_le_one_left (abs_nonneg _) (h1 d)).trans
     have ht := floor_error_min N d hd0
@@ -136,18 +155,11 @@ theorem powerful_divisor_rounding_le {f : ArithmeticFunction ℝ} (hf : f.IsMult
     _ = ∑ d ∈ S, F d := by
       rw [show S=(range M).filter (fun d => f d≠0) from rfl,sum_filter]
       exact sum_congr rfl fun d _ => by by_cases hd : f d=0 <;> simp [hd,F]
-    _ ≤ ∑ z ∈ range J ×ˢ range J, G z :=
+    _ ≤ ∑ z ∈ range J ×ˢ range J, squareCubeMajorant N z :=
       _root_.RHTower.GuthMaynard.sum_le_sum_of_injOn hinj
         (fun d hd => by have := hJ d hd; exact mem_product.mpr ⟨mem_range.mpr (by omega),mem_range.mpr (by omega)⟩)
-        (fun z _ => le_min zero_le_one (by dsimp only [G]; positivity)) hg
-    _ ≤ ∑ b ∈ range J, 4*cubeScale N b := by
-      rw [sum_product]
-      exact sum_le_sum fun b _ => square_row_bound (by dsimp [cubeScale]; positivity) J
-    _ = (4*Real.sqrt N)*(∑ b ∈ range J, (((b:ℝ)+1)*Real.sqrt ((b:ℝ)+1))⁻¹) := by
-      rw [mul_sum]
-      exact sum_congr rfl fun _ _ => by dsimp only [cubeScale]; ring
-    _ ≤ _ := (mul_le_mul_of_nonneg_left (_root_.RHTower.sum_range_inv_sqrt_cube_le J)
-      (by positivity : 0≤4*Real.sqrt N)).trans_eq (by ring)
+        (fun z _ => squareCubeMajorant_nonneg N z) hg
+    _ ≤ _ := squareCubeMajorant_sum hN J
 
 private theorem correction_bounds :
     (∀ p : ℕ, p.Prime → (reciprocalFactorial*(μ:ArithmeticFunction ℝ)) p=0) ∧
@@ -230,6 +242,17 @@ private theorem prime_sum_halving (f : ℕ → ℝ) (h₀ : f 0=0) (N : ℕ) :
   have hlt : N/2<p := lt_of_not_ge (fun h => hs (Nat.mem_primesLE.mpr ⟨h,hpr⟩))
   rwa [Nat.div_eq_of_lt hlt]
 
+/-- At every positive even cutoff the dyadic profile subtracts two copies
+of the factorial sum at half the cutoff. -/
+theorem dyadicPositiveFactorialProfile_prime_sum_even {N : ℕ} (hn : 1≤N) :
+    (∑ p ∈ Nat.primesLE (2*N), dyadicPositiveFactorialProfile (2*N/p)) =
+      ((∑ n ∈ Icc 1 (2*N), reciprocalFactorial n)-1)-
+        2*((∑ n ∈ Icc 1 N, reciprocalFactorial n)-1) := by
+  simp only [dyadicPositiveFactorialProfile,sum_sub_distrib,← mul_sum]
+  rw [prime_sum_halving _ (by simp [positiveFactorialPrefix]),Nat.mul_div_cancel_left _ (by decide : 0<2)]
+  exact congrArg₂ (fun a b : ℝ => a-2*b)
+    (prime_sum_absolute_divided_weight (show 1≤2*N by omega)) (prime_sum_absolute_divided_weight hn)
+
 /-- A nonzero uncentered profile whose ordinary prime sum saves all the
 way to the square root, with no zero-free input. -/
 theorem dyadicPositiveFactorialProfile_prime_sqrt_bound {N : ℕ} (hN : 1≤N) :
@@ -238,7 +261,9 @@ theorem dyadicPositiveFactorialProfile_prime_sqrt_bound {N : ℕ} (hN : 1≤N) :
   have hc := reciprocalFactorialDensity_pos.le
   rcases eq_or_lt_of_le hN with h | hn
   · subst N
-    simp [Nat.primesLE_eq_filter_Icc_one,Nat.not_prime_one]
+    have hz : Nat.primesLE 1=∅ := eq_empty_iff_forall_notMem.mpr fun p hp =>
+      (Nat.mem_primesLE.mp hp).2.not_le_one (Nat.mem_primesLE.mp hp).1
+    rw [hz,sum_empty,abs_zero,Nat.cast_one,Real.sqrt_one,mul_one]
     linarith only [hc]
   have hd : 1≤N/2 := by omega
   let E (k : ℕ) := (∑ p ∈ Nat.primesLE k, positiveFactorialPrefix (k/p))-

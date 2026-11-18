@@ -60,7 +60,7 @@ private theorem long_trace_in_every_window : ∀ᶠ T : ℝ in atTop, ∃ u : �
 
 /-- The same base buys every positive multiplicity whenever the signed
 degree has a fixed lower bound. Small multiplicities spend the ordinary floors. -/
-theorem all_ordinary_prime_powers_of_degree_floor (D : ℝ) :
+theorem all_ordinary_generators_of_degree_floor (D : ℝ) :
     ∃ B : ℕ, 0 < B ∧ ∀ᶠ n : ℕ in atTop, -D ≤ integerProbe _ (successorSquareTriple n) →
       ∀ {m : ℕ}, 0 < m → ordinaryPrimeGenerator (m • successorSquareTriple n) ≤ (B:ℚ)^(m^2) := by
   obtain ⟨A,_,hA⟩ := successorSquare_contact_degree
@@ -103,7 +103,7 @@ theorem ordinary_square_generators_in_every_logarithmic_window :
       |2*Real.log n-T| ≤ 10*Real.log (T+2) ∧
       ∀ {m : ℕ}, 0 < m → ordinaryPrimeGenerator (m • successorSquareTriple n) ≤ (B:ℚ)^(m^2) := by
   let b := 6*realSplineTrace 0-4*realSplineTrace (Real.log 4)
-  obtain ⟨B,hB,hpaid⟩ := all_ordinary_prime_powers_of_degree_floor (2-b)
+  obtain ⟨B,hB,hpaid⟩ := all_ordinary_generators_of_degree_floor (2-b)
   obtain ⟨U,hU⟩ := eventually_atTop.mp ((tendsto_upperSquareIndex.eventually hpaid).and
     (upperSquareIndex_signed_degree.eventually_const_lt (show b-1 < b by linarith)))
   refine ⟨B,hB,?_⟩

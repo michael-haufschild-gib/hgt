@@ -13,25 +13,24 @@ noncomputable section
 namespace GaloisForLFunctions.CountingHolography.Sections
 
 open Filter Topology Finset ArithmeticFunction MeasureTheory SquareRootThreshold
-open ArithmeticWeightTheory ArithmeticCastelnuovoSeveri _root_.RHTower.WeilDeletion
+open ArithmeticWeightTheory ArithmeticCastelnuovoSeveri _root_.RHTower _root_.RHTower.WeilDeletion
 
 private def lags (n : ℕ) := ordinaryPrimeLags (3*windowEnd ((2*n+1)^2+1))
 private def T (n : ℕ) := Real.log ((n:ℝ)^2)
 private def firstMoment (n : ℕ) := ∑ k ∈ lags n, Real.log k*(Real.log k-T n)*diagonalPrimeProfile n k
 private def secondMoment (n : ℕ) := ∑ k ∈ lags n, (Real.log k-T n)^2*diagonalPrimeProfile n k
 
-private theorem first_limit :
-    Tendsto (fun n : ℕ => firstMoment n/(n:ℝ)^3) atTop (𝓝 (-4*Real.log 4*squareAutocorrelationMass)) := by
-  have hh := tendsto_diagonal_finite_prime_log_moment.const_mul 2
-  rw [show -4*Real.log 4*squareAutocorrelationMass =
-    2*(-2*Real.log 4*squareAutocorrelationMass) by ring]
-  refine hh.congr' ?_
+private theorem profile_test_limit {g : ℝ → ℝ} (hg : Continuous g) :
+    Tendsto (fun n : ℕ => (∑ k ∈ lags n, Real.log k*g (Real.log k-T n)*diagonalPrimeProfile n k)/(n:ℝ)^3)
+      atTop (𝓝 (2*∫ u : ℝ, (g u*squareLogProfile u)*Real.exp (u/2))) := by
+  refine ((tendsto_diagonal_finite_prime_test hg).const_mul 2).congr' ?_
   filter_upwards [eventually_gt_atTop 0] with n hn
-  have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
+  have hn' : 0<(n:ℝ) := Nat.cast_pos.mpr hn
   let V := fun k : ℕ => Real.log ((k:ℝ)/(n:ℝ)^2)
-  let f := fun k : ℕ => Real.log k*(V k*squareLogProfile (V k)/Real.sqrt ((k:ℝ)/(n:ℝ)^2))
-  have hsum : firstMoment n=(2*(n:ℝ))*(∑ k ∈ lags n, f k) := by
-    rw [firstMoment,mul_sum]
+  let f := fun k : ℕ => Real.log k*(g (V k)*squareLogProfile (V k)/Real.sqrt ((k:ℝ)/(n:ℝ)^2))
+  have hsum : (∑ k ∈ lags n, Real.log k*g (Real.log k-T n)*diagonalPrimeProfile n k) =
+      (2*(n:ℝ))*(∑ k ∈ lags n, f k) := by
+    rw [mul_sum]
     refine sum_congr rfl fun k hk => ?_
     have hp := (mem_filter.mp hk).2
     have hl : Real.log k-T n=V k := (Real.log_div (Nat.cast_pos.mpr hp.pos).ne' (sq_pos_of_pos hn').ne').symm
@@ -41,6 +40,52 @@ private theorem first_limit :
   change 2*((∑ k ∈ lags n, f k)/(n:ℝ)^2)=_
   rw [hsum]
   field_simp <;> ring
+
+private theorem first_limit :
+    Tendsto (fun n : ℕ => firstMoment n/(n:ℝ)^3) atTop (𝓝 (-4*Real.log 4*squareAutocorrelationMass)) := by
+  have h := profile_test_limit (g := fun u : ℝ => u) continuous_id
+  rw [squareLogProfile_first_half_moment] at h
+  convert h using 1 <;> ring
+
+/-- Every bounded continuous test of the actual logarithmically weighted
+valuations converges to the difference of two translated positive measures. -/
+theorem tendsto_square_generator_prime_test {g : ℝ → ℝ} (hg : Continuous g)
+    {B : ℝ} (hB : ∀ u, |g u|≤B) :
+    Tendsto (fun n : ℕ => let q := ordinaryPrimeGenerator (n • successorSquareTriple n)
+      (∑ k ∈ ordinaryPrimeLags (3*windowEnd ((2*n+1)^2+1)),
+        Real.log k*g (Real.log k-Real.log ((n:ℝ)^2))*(deningerRatExp q k:ℝ))/(n:ℝ)^3)
+      atTop (𝓝 (4*∫ u : ℝ, (g u-g (u+Real.log 4))*(splineAutoCorr u*Real.exp (u/2)))) := by
+  obtain ⟨C,hC,herr⟩ := diagonal_prime_exponent_profile_error
+  let e := fun n k : ℕ => (deningerRatExp (ordinaryPrimeGenerator (n • successorSquareTriple n)) k:ℝ)
+  let D := fun n : ℕ => ∑ k ∈ lags n,
+    Real.log k*g (Real.log k-T n)*(e n k-diagonalPrimeProfile n k)
+  have hB₀ := (abs_nonneg (g 0)).trans (hB 0)
+  have hlim : Tendsto (fun n : ℕ => D n/(n:ℝ)^3) atTop (𝓝 0) := by
+    have h : Tendsto (fun n : ℕ => (B*C)/(n:ℝ)) atTop (𝓝 0) :=
+      tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
+    apply squeeze_zero_norm' _ h
+    filter_upwards [eventually_gt_atTop 0] with n hn
+    have hn' : 0<(n:ℝ) := Nat.cast_pos.mpr hn
+    have hh : |D n|≤B*(C*(n:ℝ)^2) := by
+      refine (abs_sum_le_sum_abs _ _).trans ?_
+      calc _ ≤ ∑ k ∈ lags n, B*(|e n k-diagonalPrimeProfile n k| * ArithmeticFunction.vonMangoldt k) :=
+            sum_le_sum fun k hk => by
+              have hp := (mem_filter.mp hk).2
+              have hl := Real.log_natCast_nonneg k
+              rw [abs_mul,abs_mul,abs_of_nonneg hl,ArithmeticFunction.vonMangoldt_apply_prime hp]
+              exact (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (hB _) hl) (abs_nonneg _)).trans_eq (by ring)
+        _ ≤ _ := by rw [← mul_sum]; exact mul_le_mul_of_nonneg_left (herr hn) hB₀
+    rw [Real.norm_eq_abs,abs_div,abs_of_pos (pow_pos hn' _)]
+    exact (div_le_div_of_nonneg_right hh (pow_nonneg hn'.le _)).trans_eq (by field_simp <;> ring)
+  have h := (profile_test_limit hg).add hlim
+  rw [add_zero,squareLogProfile_test_translation hg] at h
+  have hh : ∀ z : ℝ, 2*(2*z)=4*z := fun _ => by ring
+  rw [hh] at h
+  apply h.congr'
+  filter_upwards [] with n
+  change _/(n:ℝ)^3+D n/(n:ℝ)^3=_
+  rw [← add_div,D,← sum_add_distrib]
+  exact congrArg (·/(n:ℝ)^3) (sum_congr rfl fun k _ => by dsimp only [e,T]; ring)
 
 private theorem lags_card_negligible :
     Tendsto (fun n : ℕ => ((lags n).card:ℝ)/(n:ℝ)^2) atTop (𝓝 0) := by
@@ -204,6 +249,7 @@ theorem eventually_square_generator_more_numerator_factors :
     (pow_nonneg (Nat.cast_nonneg n) 3))) h
 
 #print axioms diagonal_log_negligible_at_every_logarithmic_order
+#print axioms tendsto_square_generator_prime_test
 #print axioms tendsto_square_generator_prime_multiplicity
 #print axioms eventually_square_generator_more_numerator_factors
 

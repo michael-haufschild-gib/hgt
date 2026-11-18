@@ -15,3 +15,15 @@ For sign separation, the positive kernel $H(v)=1_{v\ge0}e^{-v/2}(\lfloor e^v\rfl
 **Shorter windows.** Can both signs be forced within $|t-T|\le(1/2+\varepsilon)\log T$? Set $y=e^{-2v}$, $g(r)=r^2e^{-r^2}$ and $J(v)=e^{-v/2}\sum_{n\ge1}(-1)^{n+1}g(ne^{-v})$. The sum is $y\vartheta_4'(y)/2$, where $\vartheta_4(y)=\sum_{n\in\mathbb Z}(-1)^ne^{-yn^2}$. For $y\ge1$ pair the decreasing terms $n^2e^{-yn^2}$. For $y\le1$, differentiating the Poisson formula $\vartheta_4(y)=\sqrt{\pi/y}\sum_j e^{-\pi^2(j+1/2)^2/y}$ gives positive summands. Both tails of $J$ decay as a power times $e^{-c e^{2|v|}}$.
 
 At a right zero of multiplicity $m$, the bilateral Laplace transform of $J$ has a zero of order $m$ at $z=\rho-1/2$, by the alternating symbol times $\Gamma((\rho+2)/2)/2$. The $m$-fold primitive with kernel $1_{v>0}e^{zv}v^{m-1}/(m-1)!$ can therefore be written as a tail integral at either end. The two Gaussian tail estimates should bound its modulus by a constant times $J$. For $b=a*(\Lambda-1)$ the smoothed row $e^{-v/2}\sum b(n)g(ne^{-v})$ is bounded by Abel summation and has transform vanishing to order exactly $m-1$ at $z$. The same primitive of this row has a nonzero $e^{zv}$ term and bounded remainder for $v\ge0$. The open analytic steps are the Mellin identities on the conditional half-plane, tail comparison for the divided kernel, and transfer of this identity to the signed ordinary-prime wave. [Orders of the alternating symbols](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheAlternatingPrimeSymbolsAtARightZero.lean).
+
+**A positive fractional-part window.** Put $K(v)=e^{-v/2}\{e^v\}$ and $L(x)=\log(\lfloor x\rfloor!)$. For $Y\ge x>0$ the divisor identity gives
+\[
+ \sum_{n\le Y}\Lambda(n)\{x/n\}-\int_0^Y\{x/y\}\,dy
+ =x(\log x-1)-L(x)+x\left(\sum_{n\le Y}\frac{\Lambda(n)}n-\log Y+\gamma\right).
+\]
+Indeed the sum of the floors is $L(x)$, and the integral is $x[\log(Y/x)+1-\gamma]$ by the substitution $r=x/y$. The [reciprocal Mangoldt remainder](../../../../formal/GaloisForLFunctions/RHTower/MertensVonMangoldtEulerConstant.lean) tends to zero. For the actual polar-subtracted Mangoldt wave $E_\Lambda$, truncate the convolution at $t\le M$ and put $x=e^{T-u}$, $Y=e^{M-u}$ in the translated state row. For $M\ge T$ the formula applies for every $u\le0$. The remainder is bounded by $e^{T/2}\int |\Phi(u)|e^{-u/2}du$ times the supremum of the reciprocal remainder on $[e^M,\infty)$. Hence
+\[
+ (K*E_\Lambda)(T)=\int_{-\infty}^0 \Phi(u)e^{(u-T)/2}\,[x(\log x-1)-L(x)]\,du
+ =O_\Phi((1+T)e^{-T/2})\quad(T\ge0).
+\]
+Stirling's estimate gives the last bound. The ordinary-prime response consequently tends to $-\tfrac12\mathcal LF(0)\int K$. This window is nonnegative and its signed response is determined at every center. An upper bound for either sign mass inside the window remains open.

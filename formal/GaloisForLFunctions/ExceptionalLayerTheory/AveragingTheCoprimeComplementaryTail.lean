@@ -30,14 +30,15 @@ private theorem transpose (D R X F : ℕ) {a : ℕ} (ha : 1≤a) :
   rw [←mul_sub,factorSlice,Nat.mul_div_cancel _ hp₀,complementary_tail_transpose D R _ ha]
   simp only [Nat.div_div_eq_div_mul,Nat.mul_comm (a+1) p]
 
-private def capRow (D R X F Y a : ℕ) :=
+/-- Ordinary prime row with a fixed cap on its complementary factor. -/
+def cappedComplementaryRow (D R X F Y a : ℕ) :=
   ordinaryFactorTail F X (cappedCoprimeSlice D R X Y a)
 
 /-- At cutoffs beyond the lower product edge the coprime tail differs
 from the unrestricted tail by a uniform square-root error. -/
 private theorem cap_comparison :
     ∃ K : ℝ, 0≤K ∧ ∀ {D R X F Y a : ℕ}, 1≤D → 1≤R → 1≤X → 2*(D+1)≤F → Y/(F+1)≤a →
-      |ordinaryFactorTail F X (coprimeSlice D R X Y)-capRow D R X F Y a-rawTail D R X F a|≤
+      |ordinaryFactorTail F X (coprimeSlice D R X Y)-cappedComplementaryRow D R X F Y a-rawTail D R X F a|≤
         K*((D+1 : ℕ) : ℝ)*R*Real.sqrt X*(1+Real.log X) := by
   obtain ⟨K,hK,h⟩ := factor_slice_bounds
   let E := Real.log 4+4
@@ -45,9 +46,9 @@ private theorem cap_comparison :
   refine ⟨K*E,by positivity,?_⟩
   intro D R X F Y a hD hR hx hF hY
   let f (p : ℕ) := coprimeSlice D R X (a*p) p-factorSlice D R X (a*p) p
-  have heq : ordinaryFactorTail F X (coprimeSlice D R X Y)-capRow D R X F Y a-rawTail D R X F a =
+  have heq : ordinaryFactorTail F X (coprimeSlice D R X Y)-cappedComplementaryRow D R X F Y a-rawTail D R X F a =
       ordinaryFactorTail F X f := by
-    unfold capRow rawTail ordinaryFactorTail
+    unfold cappedComplementaryRow rawTail ordinaryFactorTail
     rw [←sum_sub_distrib,←sum_sub_distrib]
     apply sum_congr rfl; intro p hp
     obtain ⟨hi,hp'⟩ := mem_filter.mp hp
@@ -87,7 +88,7 @@ theorem averaged_coprime_tail :
       ⌊(X : ℝ)^(1/1000000 : ℝ)⌋₊≤F → 1≤A → Y/(F+1)≤A →
       ((X/(A+1) : ℕ) : ℝ)≤(X : ℝ)^(500000001/1000000000 : ℝ) →
       let S := ⌊Real.sqrt X/(A+1 : ℕ)⌋₊+1
-      |ordinaryFactorTail F X (coprimeSlice D R X Y)-complementAverage A S (capRow D R X F Y)|≤
+      |ordinaryFactorTail F X (coprimeSlice D R X Y)-complementAverage A S (cappedComplementaryRow D R X F Y)|≤
         K*((D+1 : ℕ) : ℝ)^2*R*(1+Real.log X)^3*Real.sqrt X := by
   obtain ⟨C,hC,hcap⟩ := cap_comparison
   obtain ⟨B,hB,hβ⟩ := outerJump_uniform
@@ -100,7 +101,7 @@ theorem averaged_coprime_tail :
   let J := 1+Real.log X
   let d : ℝ := (D+1 : ℕ)
   let base := ordinaryFactorTail F X (coprimeSlice D R X Y)
-  let cap := capRow D R X F Y
+  let cap := cappedComplementaryRow D R X F Y
   let raw := rawTail D R X F
   let top (a : ℕ) := dualBoundaryHead X (D+1) F (X/(a+1)) (outerJump R)
   let bot := edge D R X F

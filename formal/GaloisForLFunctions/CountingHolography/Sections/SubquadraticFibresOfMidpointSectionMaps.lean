@@ -30,6 +30,17 @@ theorem card_le_maxFibre_of_forall_eq {α β : Type*} [Fintype α] [Fintype β]
   exact Finset.le_sup (f := fun z : β => (Finset.univ.filter fun x : α => f x = z).card)
     (Finset.mem_univ y)
 
+theorem maxFibre_le_iff {α β : Type*} [Fintype α] [Fintype β] {f : α → β} {B : ℕ} :
+    maxFibre f ≤ B ↔ ∀ (y : β) (S : Finset α), (∀ x ∈ S, f x = y) → S.card ≤ B := by
+  classical
+  unfold maxFibre
+  simp only [Finset.sup_le_iff, Finset.mem_univ, forall_true_left]
+  constructor
+  · intro h y S hS
+    exact (Finset.card_le_card fun x hx => Finset.mem_filter.mpr ⟨Finset.mem_univ x, hS x hx⟩).trans (h y)
+  · intro h y
+    exact h y _ fun x hx => (Finset.mem_filter.mp hx).2
+
 theorem card_le_maxFibre_mul_card {α β : Type*} [Fintype α] [Fintype β] (f : α → β) :
     Fintype.card α ≤ maxFibre f * Fintype.card β := by
   classical
@@ -209,30 +220,21 @@ theorem maxFibre_restrictSectionMap_eq {N : ℕ} (Ψ : ℤ × ℤ → ℤ × ℤ
     {v₀ v₁ v₂ w₁ w₂ : Fin N → ℤ}
     (h₁ : mapsDivisorSections Ψ v₀ v₁ v₂) (h₂ : mapsDivisorSections Ψ v₀ w₁ w₂) :
     maxFibre (restrictSectionMap Ψ h₁) = maxFibre (restrictSectionMap Ψ h₂) := by
-  classical
-  apply le_antisymm
-  · unfold maxFibre
-    refine Finset.sup_le fun y _ => ?_
-    rcases Finset.eq_empty_or_nonempty
-      (Finset.univ.filter fun x => restrictSectionMap Ψ h₁ x = y) with he | ⟨p, hp⟩
-    · rw [he, Finset.card_empty]; exact Nat.zero_le _
-    · refine card_le_maxFibre_of_forall_eq (restrictSectionMap Ψ h₂) (restrictSectionMap Ψ h₂ p)
+  have hle : ∀ {a₁ a₂ b₁ b₂ : Fin N → ℤ}
+      (u₁ : mapsDivisorSections Ψ v₀ a₁ a₂) (u₂ : mapsDivisorSections Ψ v₀ b₁ b₂),
+      maxFibre (restrictSectionMap Ψ u₁) ≤ maxFibre (restrictSectionMap Ψ u₂) := by
+    intro a₁ a₂ b₁ b₂ u₁ u₂
+    rw [maxFibre_le_iff]
+    intro y S hS
+    rcases S.eq_empty_or_nonempty with rfl | ⟨p, hp⟩
+    · simp
+    · refine card_le_maxFibre_of_forall_eq (restrictSectionMap Ψ u₂) (restrictSectionMap Ψ u₂ p)
         fun q hq => ?_
-      have heq : restrictSectionMap Ψ h₁ q = restrictSectionMap Ψ h₁ p :=
-        (Finset.mem_filter.mp hq).2.trans (Finset.mem_filter.mp hp).2.symm
+      have heq : restrictSectionMap Ψ u₁ q = restrictSectionMap Ψ u₁ p :=
+        (hS q hq).trans (hS p hp).symm
       simp only [restrictSectionMap, Prod.ext_iff, Subtype.ext_iff] at heq ⊢
       exact heq
-  · unfold maxFibre
-    refine Finset.sup_le fun y _ => ?_
-    rcases Finset.eq_empty_or_nonempty
-      (Finset.univ.filter fun x => restrictSectionMap Ψ h₂ x = y) with he | ⟨p, hp⟩
-    · rw [he, Finset.card_empty]; exact Nat.zero_le _
-    · refine card_le_maxFibre_of_forall_eq (restrictSectionMap Ψ h₁) (restrictSectionMap Ψ h₁ p)
-        fun q hq => ?_
-      have heq : restrictSectionMap Ψ h₂ q = restrictSectionMap Ψ h₂ p :=
-        (Finset.mem_filter.mp hq).2.trans (Finset.mem_filter.mp hp).2.symm
-      simp only [restrictSectionMap, Prod.ext_iff, Subtype.ext_iff] at heq ⊢
-      exact heq
+  exact le_antisymm (hle h₁ h₂) (hle h₂ h₁)
 
 private theorem card_sq_le_of_two_targets {N : ℕ} (Ψ : ℤ × ℤ → ℤ × ℤ)
     {v₀ v₁ v₂ w₁ w₂ : Fin N → ℤ}
@@ -264,9 +266,9 @@ theorem eventually_doubling_translation_fibre_cost {N : ℕ} {b : Fin N → ℤ}
     {δ : ℝ} (hδ : δ < ((4 * (k : ℝ) - 5) / 4) * integerProbe N b) :
     ∀ᶠ m : ℕ in atTop, ∀ (Ψ : ℤ × ℤ → ℤ × ℤ)
       (h₁ : mapsDivisorSections Ψ ((2 * m) • (k • b))
-        ((2 * m) • (k • b + b)) ((2 * m) • (k • b - b)))
-      (h₂ : mapsDivisorSections Ψ (m • ((2 * k) • b))
-        (m • ((2 * k) • b + b)) (m • ((2 * k) • b - b))),
+        ((2 * m) • (k • b + b)) ((2 * m) • (k • b - b))),
+      mapsDivisorSections Ψ (m • ((2 * k) • b))
+        (m • ((2 * k) • b + b)) (m • ((2 * k) • b - b)) →
       δ * ((2 * m : ℕ) : ℝ)^2 < Real.log (maxFibre (restrictSectionMap Ψ h₁)) := by
   let d := integerProbe N b
   have hmid : Tendsto (fun m : ℕ => logCard (m • ((2 * k) • b)) / (m : ℝ)^2) atTop
@@ -312,7 +314,10 @@ theorem eventually_doubling_translation_fibre_cost {N : ℕ} {b : Fin N → ℤ}
   have hc0_eq : (divisorSections ((2 * m) • (k • b))).card =
       (divisorSections (m • ((2 * k) • b))).card :=
     congrArg (fun v => (divisorSections v).card) he₀
-  rw [hc0_eq, he₂] at hcard
+  have hc2_eq : (divisorSections ((2 * m) • (k • b - b))).card =
+      (divisorSections (m • ((2 * (k - 1)) • b))).card :=
+    congrArg (fun v => (divisorSections v).card) he₂
+  rw [hc0_eq, hc2_eq] at hcard
   have hc₀ : 0 < ((divisorSections (m • ((2 * k) • b))).card : ℝ) := by
     have : 0 < (divisorSections (m • ((2 * k) • b))).card := by
       rw [divisorSections, card_smallSections]; omega
@@ -449,7 +454,7 @@ theorem not_exists_translation_uniform_subquadratic_midpointMap {N : ℕ} {b a :
         logCard (m • ((2 * k) • b + 2 • a)) - logCard (m • ((2 * k) • b - a)) := by
       have hd : 4 < (2 * logCard (m • ((2 * k) • b)) -
           logCard (m • ((2 * k) • b + 2 • a)) - logCard (m • ((2 * k) • b - a))) / (m : ℝ)^2 := by
-        convert h_rate using 1; ring
+        simpa only [sub_div, mul_div_assoc] using h_rate
       exact (lt_div_iff₀ hm2).mp hd
     unfold logCard at hrate'
     push_cast at hlog
@@ -507,7 +512,7 @@ theorem not_exists_translation_uniform_subquadratic_midpointMap {N : ℕ} {b a :
         logCard (m • ((2 * k) • b + a)) - logCard (m • ((2 * k) • b - 2 • a)) := by
       have hd : 4 < (2 * logCard (m • ((2 * k) • b)) -
           logCard (m • ((2 * k) • b + a)) - logCard (m • ((2 * k) • b - 2 • a))) / (m : ℝ)^2 := by
-        convert h_rate using 1; ring
+        simpa only [sub_div, mul_div_assoc] using h_rate
       exact (lt_div_iff₀ hm2).mp hd
     unfold logCard at hrate'
     push_cast at hlog
@@ -521,9 +526,9 @@ theorem exists_prime_ray_doubling_translation_obstruction :
       ∀ {k : ℕ}, 2 ≤ k → ∀ {δ : ℝ}, δ < ((4 * (k : ℝ) - 5) / 4) * integerProbe (p + 1) b →
         ∀ᶠ m : ℕ in atTop, ∀ (Ψ : ℤ × ℤ → ℤ × ℤ)
           (h₁ : mapsDivisorSections Ψ ((2 * m) • (k • b))
-            ((2 * m) • (k • b + b)) ((2 * m) • (k • b - b)))
-          (h₂ : mapsDivisorSections Ψ (m • ((2 * k) • b))
-            (m • ((2 * k) • b + b)) (m • ((2 * k) • b - b))),
+            ((2 * m) • (k • b + b)) ((2 * m) • (k • b - b))),
+          mapsDivisorSections Ψ (m • ((2 * k) • b))
+            (m • ((2 * k) • b + b)) (m • ((2 * k) • b - b)) →
           δ * ((2 * m : ℕ) : ℝ)^2 < Real.log (maxFibre (restrictSectionMap Ψ h₁)) := by
   obtain ⟨p, b, hp, hb_eq, hb_pos, _⟩ := exists_prime_background_midpointTest
   refine ⟨p, b, hp, hb_eq, hb_pos, ?_⟩

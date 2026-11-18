@@ -18,37 +18,6 @@ open SurfaceOfSpecZ.ScaleLocality
 
 private abbrev Q (n : ℕ) := integerProbe _ (successorSquareTriple n)
 
-/-- A root displacement of order x^β costs x^(2w+β-1) in the long trace. -/
-private theorem square_root_power_gap {β : ℝ} (hβ : β ≤ 1) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ {x y : ℝ}, 1 ≤ x → x ≤ y → y ≤ x+7*x^β →
-      |realSplineTrace (2*Real.log y)-realSplineTrace (2*Real.log x)| ≤ C*x^(2*zetaZeroWidth+β-1) := by
-  obtain ⟨L,hL,h⟩ := realSplineTrace_increment
-  let w := zetaZeroWidth
-  have hw : 0 ≤ w := zetaZeroWidth_nonneg
-  refine ⟨14*L*(8:ℝ)^(2*w),by positivity,fun {x y} hx hxy hy => ?_⟩
-  have hx' := zero_lt_one.trans_le hx
-  have hy' := hx'.trans_le hxy
-  have hstep : 2*Real.log y-2*Real.log x ≤ 14*x^β/x := by
-    rw [← mul_sub,← Real.log_div hy'.ne' hx'.ne']
-    have h₁ := Real.log_le_sub_one_of_pos (div_pos hy' hx')
-    have h₂ : y/x-1 ≤ 7*x^β/x := by
-      rw [sub_le_iff_le_add,← div_self hx'.ne',← add_div,div_le_div_iff_of_pos_right hx']
-      linarith only [hy]
-    linarith only [h₁,h₂]
-  have hb : y ≤ 8*x := by
-    have hp := Real.rpow_le_rpow_of_exponent_le hx hβ
-    rw [Real.rpow_one] at hp
-    linarith only [hy,hp]
-  have hpow : Real.exp (w*(2*Real.log y)) ≤ (8:ℝ)^(2*w)*x^(2*w) := by
-    rw [show w*(2*Real.log y)=Real.log y*(2*w) by ring,← Real.rpow_def_of_pos hy',
-      ← Real.mul_rpow (by norm_num : (0:ℝ) ≤ 8) hx'.le]
-    exact Real.rpow_le_rpow hy'.le hb (mul_nonneg two_pos.le hw)
-  calc _ ≤ L*(2*Real.log y-2*Real.log x)*Real.exp (w*(2*Real.log y)) :=
-          h _ _ (mul_nonneg two_pos.le (Real.log_nonneg hx)) (mul_le_mul_of_nonneg_left (Real.log_le_log hx' hxy) two_pos.le)
-       _ ≤ (L*(14*x^β/x))*((8:ℝ)^(2*w)*x^(2*w)) := mul_le_mul
-           (mul_le_mul_of_nonneg_left hstep hL) hpow (Real.exp_pos _).le (by positivity)
-       _ = _ := by rw [Real.rpow_sub hx',Real.rpow_add hx',Real.rpow_one]; ring
-
 /-- Across all roots in the block the difference from the single continuous
 peak is controlled by its lower growth exponent. -/
 private theorem square_block_loss {β a : ℝ} (hβ : 0 ≤ β) (hβ' : β ≤ 1) (ha : 0 ≤ a)
@@ -56,7 +25,7 @@ private theorem square_block_loss {β a : ℝ} (hβ : 0 ≤ β) (hβ' : β ≤ 1
     ∃ E : ℝ, ∀ {u : ℝ}, 0 ≤ u → ∀ {d : ℕ}, upperSquareIndex u ≤ d →
       (d:ℝ) ≤ (upperSquareIndex u:ℝ)+(upperSquareIndex u:ℝ)^β →
       squareLongTrace u-Q d ≤ E*Real.exp (a*u) := by
-  obtain ⟨C,hC,h⟩ := square_root_power_gap hβ'
+  obtain ⟨C,hC,h⟩ := realSplineTrace_square_power_gap hβ'
   obtain ⟨K,hK⟩ := successorSquare_relative_trace_limit.bddAbove_range
   let B := 6*|realSplineTrace 0|+4*|K|
   refine ⟨B+4*C+2*C*(2:ℝ)^(2*a),fun {u} hu {d} hd hd' => ?_⟩
@@ -85,12 +54,12 @@ private theorem square_block_loss {β a : ℝ} (hβ : 0 ≤ β) (hβ' : β ≤ 1
   have h₁ := h hX hdx (show (d:ℝ) ≤ X+7*X^β by linarith only [hupper,hb₀])
   have hX₂ : 1 ≤ 2*X := by linarith only [hX]
   have h₂ := h hX₂ (show 2*X ≤ ((2*d+1:ℕ):ℝ) by push_cast; linarith only [hdx]) htop
+  have hex : X^(2*a)=Real.exp (a*u) := by
+    rw [Real.rpow_def_of_pos hx]; dsimp only [X]; rw [Real.log_exp]; congr 1; ring
   have e₁ : C*X^r ≤ C*Real.exp (a*u) := by
-    have he : X^(2*a)=Real.exp (a*u) := by rw [Real.rpow_def_of_pos hx]; dsimp only [X]; rw [Real.log_exp]; congr 1; ring
-    rw [← he]; exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hX hr) hC
+    rw [← hex]; exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hX hr) hC
   have e₂ : C*(2*X)^r ≤ C*(2:ℝ)^(2*a)*Real.exp (a*u) := by
-    have he : X^(2*a)=Real.exp (a*u) := by rw [Real.rpow_def_of_pos hx]; dsimp only [X]; rw [Real.log_exp]; congr 1; ring
-    rw [← he,mul_assoc,← Real.mul_rpow (by norm_num : (0:ℝ) ≤ 2) hx.le]
+    rw [← hex,mul_assoc,← Real.mul_rpow (by norm_num : (0:ℝ) ≤ 2) hx.le]
     exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hX₂ hr) hC
   have hl : 2*Real.log X=u := by dsimp only [X]; rw [Real.log_exp]; ring
   have hl' : 2*Real.log (2*X)=u+Real.log 4 := by
@@ -162,7 +131,7 @@ theorem original_square_sections_in_long_blocks {β : ℝ} (hβ : 0 ≤ β) (hβ
         2*⌊Real.exp (γ*((d:ℝ)^2+(m:ℝ)^2))⌋₊+1 ≤ (smallSections (generator a:ℝ) (radius a)).card := by
   obtain ⟨δ,hδ,hblock⟩ := square_degree_blocks hβ hβ'
   obtain ⟨γ,hγ,hfull⟩ := all_original_surpluses_of_degree_reserve hδ
-  obtain ⟨B,hB,hord⟩ := all_ordinary_prime_powers_of_degree_floor (-δ)
+  obtain ⟨B,hB,hord⟩ := all_ordinary_generators_of_degree_floor (-δ)
   obtain ⟨N,hN⟩ := eventually_atTop.mp (hfull.and hord)
   refine ⟨B,γ,hB,hγ,(hblock N).mono ?_⟩
   rintro T ⟨n,hn,hn₁,hT,hgood⟩

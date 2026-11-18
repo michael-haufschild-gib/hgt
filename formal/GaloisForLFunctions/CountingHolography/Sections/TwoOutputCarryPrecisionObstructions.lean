@@ -55,19 +55,16 @@ theorem ordinalMap_embedding {N : ℕ} (b : Fin N → ℤ) (m : ℕ) (e : rayPro
 theorem maxFibre_comp_equiv {α α' β β' : Type*} [Fintype α] [Fintype α'] [Fintype β] [Fintype β']
     (e₁ : α' ≃ α) (e₂ : β ≃ β') (f : α → β) :
     maxFibre (fun x => e₂ (f (e₁ x))) = maxFibre f := by
-  classical
   have hle : ∀ {γ γ' δ δ' : Type*} [Fintype γ] [Fintype γ'] [Fintype δ] [Fintype δ']
       (u₁ : γ' ≃ γ) (u₂ : δ ≃ δ') (g : γ → δ),
       maxFibre (fun x => u₂ (g (u₁ x))) ≤ maxFibre g := by
     intro γ γ' δ δ' _ _ _ _ u₁ u₂ g
-    unfold maxFibre
-    refine Finset.sup_le fun y' _ => ?_
-    let S' := Finset.univ.filter fun x' : γ' => u₂ (g (u₁ x')) = y'
-    have hcard : S'.card = (S'.map u₁.toEmbedding).card := (Finset.card_map _).symm
-    rw [hcard]
+    rw [maxFibre_le_iff]
+    intro y' S' hS'
+    rw [← Finset.card_map u₁.toEmbedding]
     refine card_le_maxFibre_of_forall_eq g (u₂.symm y') fun x hx => ?_
     obtain ⟨x', hx', rfl⟩ := Finset.mem_map.mp hx
-    exact u₂.injective (by simpa only [Equiv.apply_symm_apply] using (Finset.mem_filter.mp hx').2)
+    exact u₂.injective (by simpa only [Equiv.apply_symm_apply] using hS' x' hx')
   refine le_antisymm (hle e₁ e₂ f) ?_
   have hf : f = fun x => e₂.symm ((fun x' => e₂ (f (e₁ x'))) (e₁.symm x)) := by
     funext x; simp only [Equiv.symm_apply_apply]
@@ -84,16 +81,14 @@ all `n²` inputs collide into a single slice of size `L`, so `n² ≤ maxFibre f
 theorem card_sq_le_maxFibre_mul_of_second_const {n L s : ℕ}
     (f : Fin n × Fin n → Fin L × Fin s) (hconst : ∀ x y, (f x).2 = (f y).2) :
     n * n ≤ maxFibre f * L := by
-  classical
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · exact Nat.zero_le _
   let x₀ : Fin n × Fin n := (⟨0, hn⟩, ⟨0, hn⟩)
   let g : Fin n × Fin n → Fin L := fun x => (f x).1
   have hg : maxFibre g ≤ maxFibre f := by
-    unfold maxFibre
-    refine Finset.sup_le fun y₁ _ => ?_
-    refine card_le_maxFibre_of_forall_eq f (y₁, (f x₀).2) fun x hx => ?_
-    exact Prod.ext (Finset.mem_filter.mp hx).2 (hconst x x₀)
+    rw [maxFibre_le_iff]
+    intro y₁ S hS
+    exact card_le_maxFibre_of_forall_eq f (y₁, (f x₀).2) fun x hx => Prod.ext (hS x hx) (hconst x x₀)
   have hc := card_le_maxFibre_mul_card g
   simp only [Fintype.card_prod, Fintype.card_fin] at hc
   exact hc.trans (Nat.mul_le_mul_right L hg)
@@ -191,13 +186,13 @@ theorem eventually_twoPlace_fibre_or_precision_cost {N : ℕ} {b : Fin N → ℤ
     have hlog := Real.log_le_log (Nat.cast_pos.mpr (Nat.mul_pos hn hn)) (Nat.cast_le.mpr hcard)
     rw [log_nat_mul hn hn, log_nat_mul hfpos hL] at hlog
     have hd : δ₁ < (2 * Real.log n - Real.log L) / (m : ℝ)^2 := by
-      convert hm₁ using 1; ring
+      simpa only [sub_div, mul_div_assoc] using hm₁
     have hm₁' := (lt_div_iff₀ hm2).mp hd
     linarith only [hm₁', hlog]
   · right
     have hpq : 0 < p + q := by omega
     have hd : δ₂ < (Real.log n - Real.log s - Real.log (p + q : ℕ)) / (m : ℝ)^2 := by
-      convert hm₂ using 1; ring
+      simpa only [sub_div] using hm₂
     have hm₂' := (lt_div_iff₀ hm2).mp hd
     rcases le_total (p ^ i) (q ^ j) with hij | hji
     · have hub : n < (p + q) * s * q ^ j := hlt.trans_le (by
@@ -326,7 +321,7 @@ theorem eventually_loglog_clearing_of_subquadratic_fibre {N : ℕ} {b : Fin N �
     haveI := Fin.pos_iff_nonempty.mp hn_pos
     have hfpos : 0 < maxFibre f := by rw [← maxFibre_ordinalMap]; exact maxFibre_pos _
     have hd : δ < (2 * Real.log (n m) - Real.log (rayCard b 4 m)) / (m : ℝ)^2 := by
-      convert hfib_m using 1; ring
+      simpa only [sub_div, mul_div_assoc] using hfib_m
     have hlt_log : Real.log ((maxFibre f * rayCard b 4 m : ℕ) : ℝ) <
         Real.log ((n m * n m : ℕ) : ℝ) := by
       rw [log_nat_mul hfpos hL_pos, log_nat_mul hn_pos hn_pos]
@@ -467,7 +462,7 @@ theorem eventually_polynomial_carry_quadratic_fibre {N : ℕ} {b : Fin N → ℤ
     have hlog := Real.log_le_log (Nat.cast_pos.mpr (Nat.mul_pos hn hn)) (Nat.cast_le.mpr hcard)
     rw [log_nat_mul hn hn, log_nat_mul hfpos hL] at hlog
     have hd : δ₁ < (2 * Real.log n - Real.log L) / (m : ℝ)^2 := by
-      convert hm₁ using 1; ring
+      simpa only [sub_div, mul_div_assoc] using hm₁
     linarith only [(lt_div_iff₀ hm2).mp hd, hlog]
   · right
     have hub : n < 3 * D * s := by
@@ -476,7 +471,7 @@ theorem eventually_polynomial_carry_quadratic_fibre {N : ℕ} {b : Fin N → ℤ
     have hlog := Real.log_lt_log (Nat.cast_pos.mpr hn) (Nat.cast_lt.mpr hub)
     rw [log_nat_mul (Nat.mul_pos (by decide) hD) hs, log_nat_mul (by decide) hD] at hlog
     have hd : δ₂ < (Real.log n - Real.log s - Real.log (3 : ℕ)) / (m : ℝ)^2 := by
-      convert hm₂ using 1; ring
+      simpa only [sub_div] using hm₂
     linarith only [(lt_div_iff₀ hm2).mp hd, hlog]
 
 /-! ### 3. Exported Euclidean carry infects the wide output at two coprime places -/
@@ -602,8 +597,8 @@ theorem eventually_carryMap_firstOutput_precision_cost {N : ℕ} {b : Fin N → 
     calc n * n ≤ 2 * (n * (n - 1)) := hn_sq
       _ < 2 * (L * (p * p ^ i + q * q ^ j)) := Nat.mul_lt_mul_of_pos_left hloss (by decide)
       _ = 2 * L * (p * p ^ i + q * q ^ j) := by ring
-  have hd : δ < (2 * Real.log n - Real.log L - Real.log (2 : ℕ) - Real.log (p + q : ℕ)) / (m : ℝ)^2 := by
-    convert hm using 1; ring
+  have hd : δ < (2 * Real.log n - Real.log L - (Real.log (2 : ℕ) + Real.log (p + q : ℕ))) / (m : ℝ)^2 := by
+    simpa only [add_div, sub_div, mul_div_assoc] using hm
   have hm' := (lt_div_iff₀ hm2).mp hd
   have hpq : 0 < p + q := by omega
   rcases le_total (p ^ i) (q ^ j) with hij | hji
@@ -720,7 +715,7 @@ theorem eventually_joint_inverse_precision_cost {N : ℕ} {b : Fin N → ℤ}
   rw [log_nat_mul (Nat.mul_pos (by omega) hs) (pow_pos (by omega) (2 * k)),
     log_nat_mul (by omega) hs, Nat.cast_pow, Real.log_pow, Nat.cast_mul, Nat.cast_ofNat] at hlog
   have hd : 2 * δ < (Real.log n - Real.log s - Real.log p) / (m : ℝ)^2 := by
-    convert hm using 1; ring
+    simpa only [sub_div] using hm
   linarith only [(lt_div_iff₀ hm2).mp hd, hlog]
 
 /-- Unconditional two-atom prime ray exhibiting both the two-place fibre/precision

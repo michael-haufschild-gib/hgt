@@ -1,0 +1,9 @@
+# Mixing two prime dilations pins the quartet
+
+Let $p,q$ be distinct primes. The three real readings $\cos(\omega\log a)$ for $a=p,q,pq$ determine $|\omega|$. Agreement with frequency $\gamma$ at a scale $a$ means that either $(\omega-\gamma)\log a$ or $(\omega+\gamma)\log a$ belongs to $2\pi\mathbb Z$. Two of the three scales have the same sign. If these include $pq$, subtraction gives agreement with that sign at the missing prime. A common period at $p$ and $q$ vanishes by irrationality of $\log p/\log q$.
+
+For $E(x)=\psi(x)-x$ set $R_a(x)=E(a^2x)-2a^\beta\cos(\gamma\log a)E(ax)+a^{2\beta}E(x)$. Two individual prime scales admit a second frequency by choosing opposite signs in their phase relations. A third scale using their product detects every such frequency at the same exponent. Specifically, for $1/2<\beta<1$ and $\gamma>0$, a positive upper limit for $|E(x)|/x^\beta$ and square-root-logarithmic bounds for $R_2,R_3,R_6$ are equivalent to exactly one quartet at $\beta+i\gamma$, with arbitrary multiplicity. A surviving right zero must match all three cosines. The two-scale classification supplies the quartet, and the product excludes every other right frequency. [Two-scale classification](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TwoAndThreeDilationRecurrencesAndSingleQuartetStratum.lean)
+
+Can the orientations already be distinguished from $E(x),E(2x),E(3x)$? For $s_a=\sin(\gamma\log a)$ and $c_a=\cos(\gamma\log a)$, every genuine wave obeys
+$$s_2\,3^{-\beta}E(3x)-s_3\,2^{-\beta}E(2x)+(s_3c_2-s_2c_3)E(x)=O(\sqrt x\log^2 x).$$
+A cross-resonant partner has nonzero multiplier of modulus $2|s_2s_3|$. At resonance of an individual prime clock, use the recurrence belonging to the other prime. An independent ordinary-prime estimate must still exclude the coherent wave itself.

@@ -101,7 +101,8 @@ private theorem transform_tail {F : ℕ → ℝ} {N : ℕ} {s A K : ℝ} (hs : 1
     have hj₀ := zero_lt_one.trans_le hj₁
     have hq := Nat.one_le_div_iff (by omega : 0<j)
     have hval := hF (N/j) (hq.mpr hjN) (Nat.div_lt_self (by omega) (by omega))
-    have hp := Real.rpow_le_rpow (Nat.cast_nonneg (N/j)) (Nat.cast_div_le (m := N) (n := j) (α := ℝ)) hs₀
+    have hcast : ((N/j:ℕ):ℝ)≤(N:ℝ)/j := Nat.cast_div_le
+    have hp := Real.rpow_le_rpow (Nat.cast_nonneg (N/j)) hcast hs₀
     rw [Real.div_rpow (Nat.cast_nonneg _) hj₀.le] at hp
     have ht := (Real.sqrt_eq_rpow j).trans_le (Real.rpow_le_rpow_of_exponent_le hj₁ hs)
     have hb := (hval.trans (mul_le_mul_of_nonneg_left hp hA)).trans
@@ -109,7 +110,7 @@ private theorem transform_tail {F : ℕ → ℝ} {N : ℕ} {s A K : ℝ} (hs : 1
         (Real.sqrt_pos.mpr hj₀) ht) hA)
     rw [abs_mul,abs_of_nonneg (step_nonneg hj₂)]
     exact (mul_le_mul_of_nonneg_left hb (step_nonneg hj₂)).trans_eq (by ring)
-  exact (abs_sum_le_sum_abs _ _).trans ((sum_le_sum fun _ => haux).trans
+  exact (abs_sum_le_sum_abs _ _).trans ((sum_le_sum fun _ hj => haux hj).trans
     (by rw [← mul_sum]; exact mul_le_mul_of_nonneg_left hK (mul_nonneg hA (Real.rpow_nonneg (Nat.cast_nonneg _) _))))
 
 private theorem transform_split (F : ℕ → ℝ) {n : ℕ} (hn : 0<n) :

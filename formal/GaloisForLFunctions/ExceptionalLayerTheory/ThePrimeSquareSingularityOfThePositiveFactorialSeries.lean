@@ -1,5 +1,7 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.ThePositivePrimeFactorialCountHasASquareRootError
 import GaloisForLFunctions.RHTower.PrimeZetaLogAsymptotic
+import GaloisForLFunctions.RHTower.ZetaRealSignature
+import GaloisForLFunctions.HTGeometry.ZetaJetFreeness
 
 /-!
 # The square contribution at the half line
@@ -53,8 +55,9 @@ private theorem correction_hasProd {s : ℝ} (hs : 1/2<s) :
     (show reciprocalFactorial.IsMultiplicative from localEuler_isMultiplicative _).mul
       isMultiplicative_moebius.intCast
   have hl : Summable (fun n : ℕ => ‖hfac n*(n:ℝ)^(-s)‖) := by
-    simpa only [Real.norm_eq_abs,abs_mul,abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg _) _)] using
-      reciprocalFactorial_correction_summable hs
+    apply (reciprocalFactorial_correction_summable hs).congr
+    intro n
+    rw [Real.norm_eq_abs,abs_mul,abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg n) _)]
   have he := EulerProduct.eulerProduct_hasProd (f := fun n : ℕ => hfac n*(n:ℝ)^(-s))
     (by simp [hm.map_one]) (fun {m n} hc => by
       rw [hm.map_mul_of_coprime hc,Nat.cast_mul,Real.mul_rpow (Nat.cast_nonneg _) (Nat.cast_nonneg _)]; ring)
@@ -123,7 +126,8 @@ theorem reciprocalFactorialEulerCorrection_square_bounds :
   have hp₁ (p : Nat.Primes) : 1≤((p:ℕ):ℝ) := by exact_mod_cast p.prop.one_le
   have hz₀ (p : Nat.Primes) : 0<z p := Real.rpow_pos_of_pos (hp₀ p) _
   have hex (p : Nat.Primes) (k : ℕ) : (z p)^k=((p:ℕ):ℝ)^((-s)*(k:ℝ)) := by
-    rw [← Real.rpow_natCast (z p) k,← Real.rpow_mul (hp₀ p).le]; rfl
+    change (((p:ℕ):ℝ)^(-s))^k=_
+    rw [← Real.rpow_natCast (((p:ℕ):ℝ)^(-s)) k,← Real.rpow_mul (hp₀ p).le]
   have hz₁ (p : Nat.Primes) : z p≤3/4 := by
     have h₂ : (z p)^2≤((p:ℕ):ℝ)⁻¹ := by
       rw [hex,← Real.rpow_neg_one]
@@ -146,7 +150,7 @@ theorem reciprocalFactorialEulerCorrection_square_bounds :
     apply ((he.mul he).mul hzeta).congr_fun
     intro p
     rw [exp_cubicLog (hz₀ p).le (lt_of_le_of_lt (hz₁ p) (by norm_num)),pow_two]
-    have hs' : (z p)^2=((p:ℕ):ℝ)^(-(2*s)) := (hex p 2).trans (by push_cast; ring_nf)
+    have hs' : (z p)^2=((p:ℕ):ℝ)^(-(2*s)) := (hex p 2).trans (by congr 1; push_cast; ring)
     rw [hs']; rfl
   constructor
   · refine ge_of_tendsto' hprod (fun S => ?_)
@@ -160,6 +164,50 @@ theorem reciprocalFactorialEulerCorrection_square_bounds :
     rw [← Real.exp_sum,Real.exp_le_one_iff]
     exact sum_nonpos fun p _ => (hlog p).2
 
+/-- No meromorphic germ at one agrees from the right with the correction
+at half the argument. Its square would cancel a simple pole. -/
+theorem reciprocalFactorialEulerCorrection_no_right_germ (F : ℂ → ℂ) (hF : MeromorphicAt F 1) :
+    ¬ (fun w : ℝ => F w) =ᶠ[𝓝[>] 1] fun w => (reciprocalFactorialEulerCorrection (w/2):ℂ) := by
+  intro he
+  obtain ⟨c,hc,hb⟩ := reciprocalFactorialEulerCorrection_square_bounds
+  let G := F^2*riemannZeta
+  have hlim : Tendsto (fun w : ℝ => (w:ℂ)) (𝓝[>] 1) (𝓝[≠] 1) := by
+    apply tendsto_nhdsWithin_iff.mpr
+    refine ⟨(show Tendsto (fun w : ℝ => (w:ℂ)) (𝓝 1) (𝓝 1) by
+      simpa using Complex.continuous_ofReal.tendsto (1:ℝ)).mono_left nhdsWithin_le_nhds,?_⟩
+    filter_upwards [self_mem_nhdsWithin] with w hw
+    intro e
+    exact (show (1:ℝ)<w from hw).ne' (by exact_mod_cast (show (w:ℂ)=1 from e))
+  have hbound : ∀ᶠ w : ℝ in 𝓝[>] 1, c≤‖G w‖ ∧ ‖G w‖≤1 := by
+    filter_upwards [self_mem_nhdsWithin,he] with w hw hfw
+    have hw' : 1<w := hw
+    have h := hb (w/2) (by linarith only [hw'])
+    rw [show 2*(w/2)=w by ring,← _root_.RHTower.ofReal_eulerPositiveTotal_eq_riemannZeta hw',
+      Complex.ofReal_re] at h
+    change c≤‖(F w)^2*riemannZeta w‖ ∧ ‖(F w)^2*riemannZeta w‖≤1
+    rwa [hfw,← _root_.RHTower.ofReal_eulerPositiveTotal_eq_riemannZeta hw',← Complex.ofReal_pow,
+      ← Complex.ofReal_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (hc.le.trans h.1)]
+  have ho : meromorphicOrderAt G 1=0 := by
+    rcases lt_trichotomy (meromorphicOrderAt G 1) 0 with h | h | h
+    · have ht := (tendsto_norm_atTop_iff_cobounded.mpr
+        (tendsto_cobounded_of_meromorphicOrderAt_neg h)).comp hlim
+      obtain ⟨w,hw,hl⟩ := (hbound.and (ht.eventually_gt_atTop 1)).exists
+      exact (hl.not_ge hw.2).elim
+    · exact h
+    · have ht := ((tendsto_zero_of_meromorphicOrderAt_pos h).comp hlim).norm
+      have hc' : c≤‖(0:ℂ)‖ := ge_of_tendsto ht (hbound.mono fun _ h => h.1)
+      exact (hc.not_ge (by simpa only [norm_zero] using hc')).elim
+  rw [show G=F^2*riemannZeta from rfl,meromorphicOrderAt_mul (hF.pow _)
+    (_root_.RHTower.meromorphicAt_riemannZeta_everywhere 1),meromorphicOrderAt_pow hF,
+    GaloisForLFunctions.meromorphicOrderAt_riemannZeta_one] at ho
+  rcases eq_or_ne (meromorphicOrderAt F 1) ⊤ with h | h
+  · simp [h] at ho
+  · obtain ⟨k,hk⟩ := WithTop.ne_top_iff_exists.mp h
+    rw [← hk] at ho
+    norm_cast at ho
+    omega
+
+#print axioms reciprocalFactorialEulerCorrection_no_right_germ
 #print axioms reciprocalFactorialEulerCorrection_square_bounds
 
 end GaloisForLFunctions.ExceptionalLayerTheory

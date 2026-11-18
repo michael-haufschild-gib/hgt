@@ -24,10 +24,10 @@ def degree (x : LocalUnit F) : ℤ := -(x : LaurentSeries F).order
 def sign (x : LocalUnit F) : Fˣ :=
   Units.mk0 (x : LaurentSeries F).leadingCoeff (HahnSeries.leadingCoeff_ne_zero.mpr x.ne_zero)
 
-private theorem degree_mul (x y : LocalUnit F) : degree (x*y) = degree x + degree y := by
+theorem degree_mul (x y : LocalUnit F) : degree (x*y) = degree x + degree y := by
   simp only [degree, Units.val_mul, HahnSeries.order_mul x.ne_zero y.ne_zero, neg_add]
 
-private theorem sign_mul (x y : LocalUnit F) : sign (x*y) = sign x * sign y := by
+theorem sign_mul (x y : LocalUnit F) : sign (x*y) = sign x * sign y := by
   apply Units.ext
   exact HahnSeries.leadingCoeff_mul _ _
 
@@ -42,10 +42,10 @@ private theorem monomial_val (c : Fˣ) (d : ℤ) :
   rw [HahnSeries.ofPowerSeries_C, HahnSeries.C_apply, HahnSeries.single_mul_single,
     zero_add, mul_one]
 
-private theorem degree_monomial (c : Fˣ) (d : ℤ) : degree (monomial c d) = d := by
+theorem degree_monomial (c : Fˣ) (d : ℤ) : degree (monomial c d) = d := by
   rw [degree, monomial_val, HahnSeries.order_single c.ne_zero, neg_neg]
 
-private theorem sign_monomial (c : Fˣ) (d : ℤ) : sign (monomial c d) = c := by
+theorem sign_monomial (c : Fˣ) (d : ℤ) : sign (monomial c d) = c := by
   apply Units.ext
   change (monomial c d : LaurentSeries F).leadingCoeff = _
   rw [monomial_val, HahnSeries.leadingCoeff_of_single]
@@ -53,14 +53,14 @@ private theorem sign_monomial (c : Fˣ) (d : ℤ) : sign (monomial c d) = c := b
 /-- A local character splits into its signed monomial and principal-unit arguments. -/
 def angular (x : LocalUnit F) : LocalUnit F := x * (monomial (sign x) (degree x))⁻¹
 
-private theorem degree_pow (x : LocalUnit F) (k : ℤ) : degree (x^k) = k * degree x := by
+theorem degree_pow (x : LocalUnit F) (k : ℤ) : degree (x^k) = k * degree x := by
   let D : LocalUnit F →* Multiplicative ℤ :=
     { toFun := fun u => Multiplicative.ofAdd (degree u)
       map_one' := by simp [degree]
       map_mul' := fun a b => congrArg Multiplicative.ofAdd (degree_mul a b) }
   exact congrArg Multiplicative.toAdd (D.map_zpow x k)
 
-private theorem sign_pow (x : LocalUnit F) (k : ℤ) : sign (x^k) = sign x ^ k := by
+theorem sign_pow (x : LocalUnit F) (k : ℤ) : sign (x^k) = sign x ^ k := by
   let S : LocalUnit F →* Fˣ :=
     { toFun := sign
       map_one' := by ext; simp [sign]
@@ -208,6 +208,12 @@ theorem representative_degree_bounds (R : ℕ+) (u v : LocalUnit F) (w : Fˣ)
 
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity
 
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.degree_mul
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.sign_mul
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.degree_monomial
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.sign_monomial
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.degree_pow
+#print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.sign_pow
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.angular_invariants
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.reconstruct
 #print axioms GaloisForLFunctions.ArithmeticCastelnuovoSeveri.SplitInfinity.generator_invariants
