@@ -3,6 +3,7 @@ import GaloisForLFunctions.GaloisTheoryOfZeros.NoZeroEscapesOverForwardTimes
 import GaloisForLFunctions.Bottcher.EvenHoloExtension
 import GaloisForLFunctions.HTGeometry.RectangleResidue
 import Mathlib.Data.Sym.Card
+import Mathlib.Topology.Algebra.Module.Cardinality
 
 /-!
 # The local discriminant of a heat collision
@@ -259,6 +260,81 @@ theorem realHeatWindow_vanishing_iff_rh :
     exact ⟨n,t,ht,he,(le_max_left _ _).trans hn,
       (le_max_left t _).trans ((le_max_right _ _).trans hn),
       (le_max_right t _).trans ((le_max_right _ _).trans hn)⟩
+
+
+/-- A closed interval of positive real times and a closed square of places
+at radius `r > 0`. -/
+def realTimeHeatBox (r : ℝ) : Set (ℂ × ℂ) :=
+  (Complex.ofReal '' Icc (1/r) r) ×ˢ (Icc (-r) r ×ℂ Icc (-r) r)
+
+theorem realTimeHeatBox_mono {r s : ℝ} (hr : 0 < r) (hrs : r ≤ s) :
+    realTimeHeatBox r ⊆ realTimeHeatBox s := by
+  rintro p ⟨⟨t,ht,he⟩,hw⟩
+  obtain ⟨hwr,hwi⟩ := Complex.mem_reProdIm.mp hw
+  exact ⟨⟨t,⟨(one_div_le_one_div_of_le hr hrs).trans ht.1,ht.2.trans hrs⟩,he⟩,
+    Complex.mem_reProdIm.mpr ⟨⟨(neg_le_neg hrs).trans hwr.1,hwr.2.trans hrs⟩,
+      ⟨(neg_le_neg hrs).trans hwi.1,hwi.2.trans hrs⟩⟩⟩
+
+/-- A nested exhaustion with collision-free faces exists independently of
+RH. Each radius lies between `n+1` and `n+2`. Every collision in a box lies
+strictly inside every time and place bound. -/
+theorem exists_regular_heatBox_exhaustion :
+    ∃ R : ℕ → ℝ, StrictMono R ∧ (∀ n, (n : ℝ) + 1 < R n ∧ R n < n + 2) ∧
+      Monotone (fun n => realTimeHeatBox (R n)) ∧ (∀ n, IsCompact (realTimeHeatBox (R n))) ∧
+      (∀ n p, p ∈ realTimeHeatBox (R n) → p ∈ multipleZeros →
+        1/R n < p.1.re ∧ p.1.re < R n ∧ |p.2.re| < R n ∧ |p.2.im| < R n) ∧
+      (⋃ n, realTimeHeatBox (R n)) = {p | ∃ t : ℝ, 0 < t ∧ p.1 = (t : ℂ)} ∧
+      ((∀ n, heatIntersectionMass (realTimeHeatBox (R n)) = 0) ↔ RiemannHypothesis) := by
+  let A := (fun p : ℂ × ℂ => 1/p.1.re) '' multipleZeros
+  let B := (fun p : ℂ × ℂ => p.1.re) '' multipleZeros
+  let C := (fun p : ℂ × ℂ => |p.2.re|) '' multipleZeros
+  let E := (fun p : ℂ × ℂ => |p.2.im|) '' multipleZeros
+  have hd : Dense (A ∪ B ∪ C ∪ E)ᶜ :=
+    (((countable_multipleZeros.image _).union (countable_multipleZeros.image _)).union
+      (countable_multipleZeros.image _) |>.union (countable_multipleZeros.image _)).dense_compl ℝ
+  have h (n : ℕ) := hd.exists_mem_open (U := Ioo ((n : ℝ)+1) (n+2)) isOpen_Ioo
+    (Set.nonempty_Ioo.mpr (by linarith))
+  choose R havoid hrange using h
+  have hpos (n : ℕ) : 0 < R n := lt_trans (by positivity) (hrange n).1
+  have hcover : (⋃ n, realTimeHeatBox (R n)) = {p | ∃ t : ℝ, 0 < t ∧ p.1 = (t : ℂ)} := by
+    ext p
+    rw [Set.mem_iUnion]
+    constructor
+    · rintro ⟨n,⟨t, ht, he⟩,_⟩
+      exact ⟨t, (one_div_pos.mpr (hpos n)).trans_le ht.1, he.symm⟩
+    · rintro ⟨t,ht,he⟩
+      obtain ⟨n,hn⟩ := exists_nat_ge (max (max (1/t) t) (max |p.2.re| |p.2.im|))
+      have hn' : (n : ℝ) ≤ R n := le_trans (le_add_of_nonneg_right zero_le_one) (hrange n).1.le
+      have h₁ := ((le_max_left _ _).trans hn).trans hn'
+      have h₂ := ((le_max_right _ _).trans hn).trans hn'
+      have htR : 1/t ≤ R n := (le_max_left _ _).trans h₁
+      have hRt : 1/R n ≤ t := (div_le_iff₀ (hpos n)).mpr
+        (by simpa [mul_comm] using (div_le_iff₀ ht).mp htR)
+      refine ⟨n,⟨t,⟨hRt,(le_max_right _ _).trans h₁⟩,he.symm⟩,?_⟩
+      exact Complex.mem_reProdIm.mpr
+        ⟨abs_le.mp ((le_max_left _ _).trans h₂),abs_le.mp ((le_max_right _ _).trans h₂)⟩
+  have hmono : StrictMono R := strictMono_nat_of_lt_succ fun n => by
+    have hh := (hrange (n+1)).1
+    push_cast at hh
+    linarith [(hrange n).2]
+  refine ⟨R,hmono,fun n => hrange n,fun i j hij => realTimeHeatBox_mono (hpos i) (hmono.monotone hij),
+    fun n => ?_,?_,hcover,forall_heatIntersectionMass_eq_zero_iff_rh _ hcover⟩
+  · exact (isCompact_Icc.image Complex.continuous_ofReal).prod (isCompact_Icc.reProdIm isCompact_Icc)
+  · rintro n p ⟨⟨t,ht,he⟩, hw⟩ hp
+    have he' : t = p.1.re := by simpa using congrArg Complex.re he
+    have ht' : 0 < t := (one_div_pos.mpr (hpos n)).trans_le ht.1
+    obtain ⟨hwr,hwi⟩ := Complex.mem_reProdIm.mp hw
+    have hout : R n ∉ A ∪ B ∪ C ∪ E := havoid n
+    refine ⟨lt_of_le_of_ne (he' ▸ ht.1) ?_,lt_of_le_of_ne (he' ▸ ht.2) ?_,
+      lt_of_le_of_ne (abs_le.mpr hwr) ?_,lt_of_le_of_ne (abs_le.mpr hwi) ?_⟩
+    · intro hrt
+      have hmul := (div_eq_iff (hpos n).ne').mp (hrt.trans he'.symm)
+      have hval : 1/p.1.re = R n := (div_eq_iff (he' ▸ ht').ne').mpr
+        (by simpa [← he',mul_comm] using hmul)
+      exact hout (Or.inl (Or.inl (Or.inl ⟨p,hp,hval⟩)))
+    · exact fun hval => hout (Or.inl (Or.inl (Or.inr ⟨p,hp,hval⟩)))
+    · exact fun hval => hout (Or.inl (Or.inr ⟨p,hp,hval⟩))
+    · exact fun hval => hout (Or.inr ⟨p,hp,hval⟩)
 
 /-! ## Simultaneous clusters and changes of the height window -/
 
@@ -541,6 +617,7 @@ theorem twoFold_winding_two {a b l u : ℂ} (hab : a ≠ b)
 #print axioms IsCollision.exists_discriminant_winding
 #print axioms heatIntersectionMass_cut
 #print axioms realHeatWindow_vanishing_iff_rh
+#print axioms exists_regular_heatBox_exhaustion
 #print axioms heatWindowDiscriminant_winding
 #print axioms projectedHeatDiscriminant_cut
 #print axioms projectedHeatDiscriminant_local
