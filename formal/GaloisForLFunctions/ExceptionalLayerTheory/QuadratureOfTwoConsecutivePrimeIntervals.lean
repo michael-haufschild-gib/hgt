@@ -31,9 +31,9 @@ private theorem quarter_scale {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) :
     0<h ∧ Real.exp (4*h)<2 ∧ 1<A ∧
       (Complex.exp (ρ*(h:ℂ))=(A:ℂ)*I ∨ Complex.exp (ρ*(h:ℂ))=(A:ℂ)*(-I)) := by
   intro h A
-  have hg : 67<|ρ.im| := lt_abs_im_of_rhVerifiedThrough rhVerifiedThrough_sixtySeven
+  have hg : 67 < |ρ.im| := lt_abs_im_of_rhVerifiedThrough rhVerifiedThrough_sixtySeven
     hq.xi_eq_zero hq.2.1.2.1 hq.re_lt_one hq.1.ne'
-  have hg0 : 0<|ρ.im| := abs_pos.mpr hq.im_ne_zero
+  have hg0 : 0 < |ρ.im| := abs_pos.mpr hq.im_ne_zero
   have hh : 0<h := div_pos Real.pi_pos (by positivity)
   have hsmall : h<1/8 := (div_lt_iff₀ (by positivity)).mpr (by linarith only [hg,Real.pi_lt_four])
   refine ⟨hh,?_,Real.one_lt_exp_iff.mpr (mul_pos (by linarith only [hq.1]) hh),?_⟩
@@ -57,7 +57,7 @@ private theorem quarter_scale {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) :
 private theorem quarter_pair_norm {Q : ℂ} (hq : Q=I ∨ Q=-I) (z : ℂ) :
     ‖(⟨z.re,(Q*z).re⟩:ℂ)‖=‖z‖ := by
   rcases hq with rfl | rfl <;> rw [Complex.norm_def,Complex.norm_def] <;>
-    congr 1 <;> simp [Complex.normSq_apply,Complex.I_mul_re]
+    congr 1 <;> simp [Complex.normSq_apply]
 
 private theorem two_increments {A m : ℝ} (hA : 1≤A) {Q : ℂ} (hQ : Q=I ∨ Q=-I)
     (z : ℂ) (e₀ e₁ e₂ B : ℝ)
@@ -109,7 +109,10 @@ private theorem theta_mode_bound {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) :
   let x := Real.exp t
   have hx : Real.sqrt x=Real.exp (t/2) := (Real.exp_half t).symm
   have he := hK x ht
-  have hz : ((x:ℂ)^ρ/ρ)=powerMode ρ t := by dsimp only [x,powerMode]; rw [_root_.RHTower.cpow_ofReal_exp]; congr 2 <;> ring
+  have hz : ((x:ℂ)^ρ/ρ)=powerMode ρ t := by
+    dsimp only [x,powerMode]
+    rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (Real.exp_pos t).ne'),
+      ← Complex.ofReal_log (Real.exp_pos t).le,Real.log_exp,mul_comm (t:ℂ) ρ]
   rw [hz,hx,show Real.log x=t from Real.log_exp t] at he
   have hθ := GreenCalculusOfThePrimeFreeWindow.psi_sub_theta_le_three_mul_sqrt x
   have hθ' : |Chebyshev.psi x-Chebyshev.theta x|≤L*Real.exp (t/2) := by
@@ -119,7 +122,7 @@ private theorem theta_mode_bound {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) :
   rw [show Chebyshev.theta x-x+a=(Chebyshev.psi x-x+a)-(Chebyshev.psi x-Chebyshev.theta x) by ring]
   apply (abs_sub _ _).trans
   apply (add_le_add he hθ').trans
-  have hek := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_abs_self K) (Real.exp_pos _).le) (sq_nonneg t)
+  have hek := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_abs_self K) (Real.exp_pos (t/2)).le) (sq_nonneg t)
   nlinarith only [hek,mul_nonneg (mul_nonneg hL (Real.exp_pos (t/2)).le) (sq_nonneg t),
     mul_nonneg (abs_nonneg K) (Real.exp_pos (t/2)).le]
 
@@ -137,7 +140,7 @@ theorem singleQuartet_two_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuart
   have ⟨hh,hfit,hA,hphase⟩ := quarter_scale hq
   let D := Complex.exp (ρ*(h:ℂ))
   let m := 2*(quartetCopyMult ρ:ℝ)
-  have hm : 0<m := mul_pos (by norm_num) (by exact_mod_cast hq.quartetCopyMult_pos)
+  have hm : 0 < m := mul_pos (by norm_num) (by exact_mod_cast hq.quartetCopyMult_pos)
   have hd : ‖D‖=A := by simp [D,A,h,Complex.norm_exp]
   have hone : D-1≠0 := fun e => hA.ne' (hd.symm.trans (by rw [sub_eq_zero.mp e,norm_one]))
   have hρ : ρ≠0 := fun e => hq.im_ne_zero (by simp [e])

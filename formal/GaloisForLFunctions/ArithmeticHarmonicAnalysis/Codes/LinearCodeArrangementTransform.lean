@@ -97,8 +97,14 @@ theorem full_weight_count_of_coordinate_ranks (C : Submodule F (ι → F)) :
         (-1 : ℤ) ^ T.card := by
   have he (x : C) : weight x.val = Fintype.card ι ↔ codeZeroSites x.val = ∅ := by
     change (univ.filter _).card = (univ : Finset ι).card ↔ _
-    simp [card_filter_eq_iff, codeZeroSites, Finset.filter_eq_empty_iff]
-  simpa [codeSlice,he] using code_avoid_hyperplanes C ∅ univ
+    rw [card_filter_eq_iff]
+    simp [codeZeroSites,Finset.filter_eq_empty_iff]
+  have h := code_avoid_hyperplanes C ∅ univ
+  have hnull (T : Finset ι) : Module.finrank F (punctureAt C (∅ ∪ T)).ker =
+      Module.finrank F (punctureAt C T).ker :=
+    congrArg (fun S : Finset ι => Module.finrank F (punctureAt C S).ker) (empty_union T)
+  simp only [hnull] at h
+  simpa [codeSlice,he] using h
 
 #print axioms card_codeSlice
 #print axioms code_arrangement_transform
