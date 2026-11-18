@@ -22,7 +22,7 @@ the second family of phase labels. -/
 theorem finite_determination (q b : ι → ℤ) {A : Matrix ι ι ℂ} (ha : A.IsHermitian)
     (z w : Circle) (Q : ℕ)
     (hQ : ∀ e : Edge A, (edgeGap q e / content (edgeGap q (A:=A))).natAbs≤Q) :
-    (∀ n≤max 2 (2*Q-1), observe q (twist b z A) n=observe q (twist b w A) n) ↔
+    (∀ n ≤ max 2 (2*Q-1), observe q (twist b z A) n=observe q (twist b w A) n) ↔
       ∀ n, observe q (twist b z A) n=observe q (twist b w A) n := by
   refine ⟨fun h => ?_,fun h n _ => h n⟩
   apply (all_copies_iff_gauge q b ha z w).2

@@ -6,7 +6,7 @@ At a right zero $\rho$ of multiplicity $m$, $P'(s)=m/(s-\rho)+H(s)$ with $H$ hol
 
 The first moment has an unconditional positive error of exact order $\sqrt X$. Put $w(d)=\Lambda(d)$ on proper prime powers and zero elsewhere, and $c=\sum_{d\ge1}w(d)/d$. For integer $N$,
 $$B_1(N)-\log(N!)+cN=\sum_{d\ge1}w(d)\big(N/d-\lfloor N/d\rfloor\big).$$
-The summands are nonnegative. The proper-power mass through $u$ is $O(\sqrt u)$. Summing first through $N$, then over $(2^jN,2^{j+1}N]$ with weight at most $2^{-j}$, costs $O(\sqrt N)$ in all. For $\sqrt N<p\le 2\sqrt N$, the square $p^2$ alone contributes at least $(\log p)/4$. The prime number theorem gives a lower bound $\gg\sqrt N$ at every sufficiently large cutoff. Thus a first-moment error on the square-root scale is compatible with every right-zero multiplicity.
+The summands are nonnegative. The proper-power mass through $u$ is $O(\sqrt u)$. Summing first through $N$, then over $(2^jN,2^{j+1}N]$ with weight at most $2^{-j}$, costs $O(\sqrt N)$ in all. For $\sqrt N<p\le 2\sqrt N$, the square $p^2$ alone contributes at least $(\log p)/4$. The prime number theorem gives a lower bound $\gg\sqrt N$ at every sufficiently large cutoff. Thus a first-moment error on the square-root scale is compatible with every right-zero multiplicity. [Square-root bounds](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/TheSquareRootErrorInTheFirstPrimeDivisorMoment.lean)
 
 For higher moments the pole at one prescribes a polynomial in $\log X$ multiplying $X$. Can a genuine arithmetic estimate below $X^{\Re\rho}$ be proved for the first detecting order under the quartet hypothesis?
 

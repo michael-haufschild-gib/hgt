@@ -65,7 +65,7 @@ theorem exists_abs_le_one_in_window_of_thetaMean_zero {G : ℝ → ℝ} {A : ℝ
     ∀ᶠ T : ℝ in atTop, ∃ u : ℝ, |u-T| ≤ 8*Real.log (T+2) ∧ |G u| ≤ 1 := by
   have neg (t : ℝ) : Integrable (fun x => phi x*(-G (t+x))) ∧
       (∫ x, phi x*(-G (t+x)))=0 := by
-    refine ⟨by simpa only [mul_neg] using (hmean t).1.neg,?_⟩
+    refine ⟨by simpa only [mul_neg,neg_one_mul] using (hmean t).1.const_mul (-1:ℝ),?_⟩
     simp only [mul_neg,integral_neg,(hmean t).2,neg_zero]
   have hneg := exists_ge_neg_one_in_window_of_thetaMean_zero (G := fun t => -G t) hA
     (fun t => (abs_neg _).trans_le (h t)) neg

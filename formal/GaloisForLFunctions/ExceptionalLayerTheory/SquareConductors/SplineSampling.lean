@@ -40,7 +40,7 @@ private theorem spline_smooth : ContDiff ℝ 2 dyadicSpline := by
   apply contDiff_iff_contDiffAt.mpr
   intro x
   by_cases hx : 0<x
-  · have hl := Real.contDiffAt_log (n := 2) hx.ne'
+  · have hl := (Real.contDiffAt_log (n := 2)).mpr hx.ne'
     have he : ContDiffAt ℝ 2 (fun v : ℝ =>
         2*(Real.exp (-Real.log v/2)*squareLogProfile (Real.log v))) x := by fun_prop
     apply he.congr_of_eventuallyEq
@@ -81,8 +81,7 @@ theorem sampledSpline_prime_contact {n k : ℕ} (hn : 0<n) (hk : 0<k) :
   change dyadicSpline y/n=_
   rw [dyadicSpline,if_pos hy,squarePrimeWeight,Complex.ofReal_re,he]
   simp only [y,Real.sqrt_div hk'.le,Real.sqrt_sq hn'.le,Real.log_div hk'.ne' (sq_pos_of_pos hn').ne']
-  field_simp
-  ring
+  field_simp <;> ring
 
 private theorem support_covered (n : ℕ) : Real.exp (8+Real.log 4)*(n:ℝ)^2 ≤ (splineHorizon n:ℝ) := by
   have hn : 4*(n:ℝ)^2 ≤ (((2*n+1:ℕ):ℝ))^2 := by
@@ -132,11 +131,11 @@ theorem sampledSpline_density : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0<n →
   have hmesh : (N:ℝ)*h ≤ A^2 := by
     rw [show (N:ℝ)*h=N/(n:ℝ)^2 from (div_eq_mul_inv ..).symm]
     apply (div_le_iff₀ (sq_pos_of_pos hn')).mpr
-    simpa only [mul_pow] using hbound hn
+    simpa only [N,splineHorizon,mul_pow] using hbound hn
   have H : |∑ i ∈ range N, dyadicSpline (((i:ℝ)+1)*h)| ≤ (K:ℝ)*A^2 := by
     apply le_of_mul_le_mul_left _ hh
-    exact hb.trans (by linarith only [mul_le_mul_of_nonneg_left hmesh
-      (mul_nonneg hh.le K.coe_nonneg)])
+    have hc := mul_le_mul_of_nonneg_left hmesh (mul_nonneg hh.le K.coe_nonneg)
+    exact hb.trans (by linarith only [hc])
   have hs : (∑ k ∈ Icc 1 N, sampledSpline n k) =
       (∑ i ∈ range N, dyadicSpline (((i:ℝ)+1)*h))/n := by
     rw [show Icc 1 N = Ico 1 (N+1) by ext k; simp, sum_Ico_eq_sum_range]

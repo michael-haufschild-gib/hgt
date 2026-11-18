@@ -27,13 +27,14 @@ private theorem momentWeight_measurable (k : ℕ) (z : ℂ) : Measurable (moment
 
 private theorem momentWeight_norm (k : ℕ) (z : ℂ) {t : ℝ} (ht : 0 ≤ t) :
     ‖momentWeight k z t‖ = t^k * |correction t| * Real.exp (-z.re*t) := by
-  simp [momentWeight,norm_mul,norm_pow,Complex.norm_real,Real.norm_eq_abs,
+  simp [momentWeight,norm_pow,Complex.norm_real,Real.norm_eq_abs,
     abs_of_nonneg ht,Complex.norm_exp,Complex.mul_re]
 
 private theorem moment_majorant (k : ℕ) (a : ℝ) :
     IntegrableOn (fun t => t^k * |correction t| * Real.exp (a*t)) (Ioi (0:ℝ)) := by
   have hi := (integrable_buchstab_correction (a+1)).abs.const_mul (k.factorial:ℝ)
-  have hm := (((measurable_id.pow_const k).mul correction_measurable.abs).mul
+  have hm : AEStronglyMeasurable (fun t : ℝ => t^k * |correction t| * Real.exp (a*t))
+      (volume.restrict (Ioi (0:ℝ))) := (((measurable_id.pow_const k).mul correction_measurable.abs).mul
     (by fun_prop : Measurable (fun t : ℝ => Real.exp (a*t)))).aestronglyMeasurable
   refine hi.mono' hm ?_
   filter_upwards [ae_restrict_mem (measurableSet_Ioi (a := (0:ℝ)))] with t ht
@@ -106,7 +107,8 @@ theorem correctionMoment_zero : correctionMoment 0 0 = (enclosureLimit:ℂ)-1 :=
 def continuedMass (z : ℂ) := (enclosureLimit:ℂ)/z + correctionMoment 0 z
 
 theorem continuedMass_differentiableAt (z : {w : ℂ // w ≠ 0}) : DifferentiableAt ℂ continuedMass z.val :=
-  ((differentiableAt_const.div differentiableAt_id z.property).add (correctionMoment_entire 0 _))
+  (((hasDerivAt_const z.val (enclosureLimit:ℂ)).fun_div (hasDerivAt_id z.val) z.property).add
+    (hasDerivAt_correctionMoment 0 z.val)).differentiableAt
 
 /-- Agreement with the original complex Laplace integral on its half-plane of convergence. -/
 theorem continuedMass_eq_integral (z : {w : ℂ // 0 < w.re}) :
@@ -124,9 +126,11 @@ theorem continuedMass_eq_integral (z : {w : ℂ // 0 < w.re}) :
 /-- Complex residue at zero in every direction. -/
 theorem tendsto_continuedMass_residue :
     Tendsto (fun z : ℂ => z*continuedMass z) (𝓝[≠] 0) (𝓝 (enclosureLimit:ℂ)) := by
-  have h := (continuousAt_id.mul (correctionMoment_entire 0 0).continuousAt).const_add (enclosureLimit:ℂ)
-  simp only [id_eq,zero_mul,add_zero] at h
-  refine (h.tendsto.mono_left nhdsWithin_le_nhds).congr' ?_
+  have h : Tendsto (fun z : ℂ => (enclosureLimit:ℂ)+z*correctionMoment 0 z) (𝓝 0)
+      (𝓝 ((enclosureLimit:ℂ)+0*correctionMoment 0 0)) :=
+    tendsto_const_nhds.add (tendsto_id.mul (correctionMoment_entire 0 0).continuousAt.tendsto)
+  rw [zero_mul,add_zero] at h
+  refine (h.mono_left nhdsWithin_le_nhds).congr' ?_
   filter_upwards [self_mem_nhdsWithin] with z hz
   have hz' : z ≠ 0 := hz
   dsimp [continuedMass]

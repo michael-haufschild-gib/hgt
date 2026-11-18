@@ -45,7 +45,7 @@ theorem ramp_peak (d v : ℝ) (hd : 0<d) (n : ℕ) (lo : d*((n : ℝ)-1)≤v)
       apply mul_nonpos_of_nonpos_of_nonneg (by linarith only [hm])
       linarith only [lo,mul_nonneg hd.le (show 0≤(n : ℝ)-m-1 by linarith only [hm])]
     · simp only [sub_self,zero_mul,le_refl]
-    · have hm : (n : ℝ)+1≤m := by exact_mod_cast Nat.succ_le_of_lt h
+    · have hm : (n : ℝ)+1 ≤ m := by exact_mod_cast Nat.succ_le_of_lt h
       apply mul_nonpos_of_nonneg_of_nonpos (by linarith only [hm])
       linarith only [hi,mul_nonneg hd.le (show 0≤(m : ℝ)-n-1 by linarith only [hm])]
   · exact (distance_le_iff _ _ _ hd).1 le_rfl n
@@ -71,7 +71,7 @@ theorem capacity_speeds {a W : ℝ} (ha : 0<a) (j : ℕ)
       2*capacity a W j≤(a-capacity a W j)*(j+1) := by
   let m : ℝ := j
   let B := capacity a W j
-  have hm : 0≤m := Nat.cast_nonneg _
+  have hm : 0 ≤ m := Nat.cast_nonneg _
   have hD : 0<(m+1)*(m+4) := by positivity
   obtain ⟨hl,hh⟩ := width_interval j lo hi
   change a*m*(m+1)≤W*(m+2) at hl
@@ -143,7 +143,7 @@ theorem exists_width_interval {a W : ℝ} (ha : 0<a) (hW : 0≤W) :
   cases he : m with
   | zero => simpa [knot] using hW
   | succ k =>
-    have hk : k<Nat.find hex := by change k<m; omega
+    have hk : k<Nat.find hex := by change k < m; omega
     exact le_of_not_ge (Nat.find_min hex hk)
 
 /-- Consecutive slopes are strictly decreasing. Each additional unit of

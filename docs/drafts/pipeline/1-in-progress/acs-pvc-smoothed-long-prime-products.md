@@ -13,4 +13,6 @@ Here L≪n² and the first mesh difference is O(n⁻³).
 
 **Complement.** The interval bound before specializing U is proportional to U²/x^(3/2). For a target xˢ this identifies the product scale x^(3/4+s/2), up to logarithms. In particular a 1/3 target points to products beyond x^(11/12). To remove the entire lower range, the coprime-row theorem also permits fixed D=R=1. Its original lower cutoff is O(√k); restoring those products costs O(√k(1+log k)) by the reciprocal-prime bound. On this full row each pair starts at k=pv. The unresolved estimate concerns the signed upper tail, including small complementary factors.
 
+**Next cancellation test.** On the fixed-stencil upper tail pv>U, expand the outer quotient weight into jumps at jpv and sum the spline differences in k first. This leaves j≤L/U and the sampled spline at jpv. For each p,j, partial summation in v against the bounded coprime prefix of the inner jumps suggests a cost O(1/n), uniform in p,j. The resulting first-prime range p≤P would cost O(nP/U). This would reach P=x^(1/4) at square-root precision and P=x^(3/4) at the 1/3 target, up to logarithms. The larger first primes still require an estimate.
+
 **Open estimate.** Bound the full complementary reading by O(xˢ) for one 0<s<8999/24000. Bounds for every s>0 would close the route.

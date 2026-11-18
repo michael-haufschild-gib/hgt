@@ -68,11 +68,13 @@ theorem hasSum_factorialStirlingStep {j : ℕ} (hj : 0 < j) :
     dsimp only [x,j]; push_cast; field_simp <;> ring
   have hL : L = Real.log (((n:ℝ)+2)/((n:ℝ)+1)) := by
     rw [show L = -Real.log (1-x) from rfl,hfrac,← Real.log_inv,inv_div]
-  convert h using 1
-  rw [step_formula (by omega : 0 < n+1)]
-  simp only [Nat.cast_add,Nat.cast_one]
-  rw [show (n:ℝ)+1+1=n+2 by ring,hL]
-  dsimp only [x,j]; push_cast; field_simp <;> ring
+  have hvalue : factorialStirlingStep (n+1+1) = L - (L-x)/x := by
+    rw [step_formula (by omega : 0 < n+1)]
+    simp only [Nat.cast_add,Nat.cast_one]
+    rw [show (n:ℝ)+1+1=n+2 by ring,hL]
+    dsimp only [x,j]; push_cast; field_simp <;> ring
+  rw [hvalue]
+  exact h
 
 private theorem step_bounds {n : ℕ} (hn : 0 < n) :
     0 ≤ factorialStirlingStep (n+1) ∧ factorialStirlingStep (n+1) ≤ 1/(2*(n:ℝ)+1) := by
@@ -105,7 +107,7 @@ theorem factorialStirlingStep_sqrt_gap {n : ℕ} (hn : 0 < n) :
   have hroot := (sq_lt_sq₀ (by positivity) (Real.sqrt_nonneg _)).mp hsq
   have hmul := mul_le_mul_of_nonneg_left (add_le_add_left hp 1) (Real.sqrt_nonneg n)
   rw [lt_sub_iff_add_lt,← add_div,div_lt_div_iff₀ (Real.sqrt_pos.mpr (by positivity)) (Real.sqrt_pos.mpr hx)]
-  linarith only [hmul.trans_lt hroot]
+  linarith only [hmul,hroot]
 
 /-- The same contraction constant works at every finite cutoff. -/
 theorem factorialStirlingStep_tail_mass : ∃ K : ℝ, 0 ≤ K ∧ K < 1 ∧ ∀ N : ℕ,
@@ -151,7 +153,9 @@ theorem factorialStirlingStep_dirichlet_lower :
       ∑ j ∈ Icc 2 (N+1), factorialStirlingStep j / Real.sqrt j := by
     induction N with
     | zero => simp
-    | succ N ih => rw [sum_range_succ,ih,sum_Icc_succ_top (by omega)]; rfl
+    | succ N ih =>
+      rw [sum_range_succ,ih]
+      conv_rhs => rw [sum_Icc_succ_top (show 2 ≤ N+1+1 by omega)]
   have hb (n : ℕ) : 0 ≤ b n := div_nonneg (step_nonneg (by omega)) (Real.sqrt_nonneg _)
   have hbound (N : ℕ) : ∑ n ∈ range N, b n ≤ K := (hsum N).trans_le (hcut _)
   have hnorm (n : ℕ) : ‖f n‖ ≤ b n := by
@@ -183,8 +187,7 @@ private theorem transform_tail {F : ℕ → ℝ} {N : ℕ} {s A K : ℝ} (hs : 1
     obtain ⟨hj₂,hjN⟩ := mem_Icc.mp hj
     have hj₁ : (1:ℝ) ≤ j := by exact_mod_cast (by omega : 1 ≤ j)
     have hj₀ := zero_lt_one.trans_le hj₁
-    have hq := Nat.one_le_div_iff (by omega : 0 < j)
-    have hval := hF (N/j) (hq.mpr hjN) (Nat.div_lt_self (by omega) (by omega))
+    have hval := hF (N/j) (Nat.div_pos hjN (by omega)) (Nat.div_lt_self (by omega) (by omega))
     have hcast : ((N/j:ℕ):ℝ) ≤ (N:ℝ)/j := Nat.cast_div_le
     have hp := Real.rpow_le_rpow (Nat.cast_nonneg (N/j)) hcast hs₀
     rw [Real.div_rpow (Nat.cast_nonneg _) hj₀.le] at hp
@@ -200,8 +203,11 @@ private theorem transform_tail {F : ℕ → ℝ} {N : ℕ} {s A K : ℝ} (hs : 1
 private theorem transform_split (F : ℕ → ℝ) {n : ℕ} (hn : 0 < n) :
     floorTransform factorialStirlingStep F n = F n+
       ∑ j ∈ Icc 2 n, factorialStirlingStep j*F (n/j) := by
-  rw [floorTransform,sum_Icc_succ_bot hn]
-  simp only [factorialStirlingStep_one,Nat.div_one,one_mul]
+  have hsplit : Icc 1 n = insert 1 (Icc 2 n) := by
+    ext j
+    simp only [mem_Icc,mem_insert]
+    omega
+  rw [floorTransform,hsplit,sum_insert (by simp),factorialStirlingStep_one,Nat.div_one,one_mul]
 
 /-- A power bound for the canonical floor transform is equivalent to the
 same power bound for its input, including the exact square-root endpoint. -/

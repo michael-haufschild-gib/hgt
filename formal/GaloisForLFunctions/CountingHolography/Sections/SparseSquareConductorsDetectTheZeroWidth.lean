@@ -197,4 +197,8 @@ theorem square_power_fails_on_long_intervals (hRH : ¬RiemannHypothesis)
     exact ⟨n,⟨hn,hfit⟩,hnx,hgap⟩
   exact hRH ((riemannHypothesis_iff_sparse_square_power hθ hg).mpr ⟨B,hB,fun _ hn => hn.2⟩)
 
+#print axioms zetaZeroWidth_le_iff_sparse_square_degrees
+#print axioms riemannHypothesis_iff_perfect_power_square_generators
+#print axioms square_power_fails_on_long_intervals
+
 end GaloisForLFunctions.CountingHolography.Sections

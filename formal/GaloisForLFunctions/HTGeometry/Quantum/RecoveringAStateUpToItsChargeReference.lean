@@ -104,7 +104,7 @@ charge-rotation orbit, for arbitrary Hermitian matrices on the same basis. -/
 theorem finite_state_fiber (q : ι → ℤ) {A B : Matrix ι ι ℂ} (hA : A.IsHermitian)
     (hB : B.IsHermitian) (Q : ℕ)
     (hQ : ∀ e : Edge A, (edgeGap q e / content (edgeGap q (A:=A))).natAbs≤Q) :
-    (∀ n≤max 2 (2*Q-1), observe q A n=observe q B n) ↔ ∃ t : Circle, B=twist q t A := by
+    (∀ n ≤ max 2 (2*Q-1), observe q A n=observe q B n) ↔ ∃ t : Circle, B=twist q t A := by
   constructor
   · intro h
     obtain ⟨u,hu,he⟩ := (pairedCharge_eq_iff_gap_phases q A B).1

@@ -167,6 +167,7 @@ they bound the zero width by the excess `θ − ½` of the prime-gap exponent, `
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ThetaLogMoment
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.QuartetLogMoments
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PositiveKernelLeakage
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.LogarithmicWindowsOfAZeroThetaMean
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PositiveKernelConvolution
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.ZetaQuartetFilter
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.KernelLogarithmicTrace

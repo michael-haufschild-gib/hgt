@@ -1,3 +1,4 @@
+import Mathlib.NumberTheory.Harmonic.EulerMascheroni
 import GaloisForLFunctions.CountingHolography.Sections.FinitePlaceCostOfTheStirlingRemainder
 import GaloisForLFunctions.CountingHolography.Sections.TheLogarithmicMomentOfTheSquarePrimeProfile
 
@@ -117,6 +118,62 @@ theorem tendsto_squarePrimeEndpoint_mass :
   rw [tsum_mul_left]
   change 4*((∑' p, L p)/(n:ℝ)^2)=_
   field_simp
+
+private theorem harmonic_block :
+    Tendsto (fun N : ℕ => ∑ j ∈ Ioc N (2*N), 1/(j:ℝ)) atTop (𝓝 (Real.log 2)) := by
+  have hsum (N : ℕ) : (∑ j ∈ Ioc 0 N, 1/(j:ℝ)) = (harmonic N:ℝ) := by
+    induction N with
+    | zero => simp
+    | succ N ih => rw [sum_Ioc_succ_top (Nat.zero_le _),ih,harmonic_succ]; push_cast; ring
+  have hd : Tendsto (fun N : ℕ => 2*N) atTop atTop :=
+    tendsto_atTop_mono (f := id) (fun n => by dsimp; omega) tendsto_id
+  have hh := ((Real.tendsto_harmonic_sub_log.comp hd).sub Real.tendsto_harmonic_sub_log).add_const (Real.log 2)
+  rw [sub_self,zero_add] at hh
+  refine hh.congr' ?_
+  filter_upwards [eventually_gt_atTop 0] with N hN
+  have hn : (N:ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hN.ne'
+  have hs := sum_Ioc_consecutive (fun j : ℕ => 1/(j:ℝ)) (Nat.zero_le N) (show N ≤ 2*N by omega)
+  rw [hsum,hsum] at hs
+  simp only [Function.comp_apply,Nat.cast_mul,Nat.cast_ofNat,Real.log_mul two_ne_zero hn]
+  linarith only [hs]
+
+private theorem moving_harmonic_block {f : ℕ → ℝ} {L : ℝ}
+    (h : Tendsto (fun n : ℕ => (n:ℝ)*f n) atTop (𝓝 L)) :
+    Tendsto (fun N : ℕ => ∑ j ∈ Ioc N (2*N), f j) atTop (𝓝 (L*Real.log 2)) := by
+  have herr : Tendsto (fun N : ℕ => ∑ j ∈ Ioc N (2*N), (f j-L/j)) atTop (𝓝 0) := by
+    apply Metric.tendsto_atTop.mpr
+    intro ε hε
+    obtain ⟨N,hN⟩ := Metric.tendsto_atTop.mp h (ε/2) (half_pos hε)
+    refine ⟨max 1 N,fun n hn => ?_⟩
+    have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr ((le_max_left 1 N).trans hn)
+    have row (j : ℕ) (hj : j ∈ Ioc n (2*n)) : |f j-L/j| ≤ (ε/2)/n := by
+      have hjn := (mem_Ioc.mp hj).1
+      have hj' : 0 < (j:ℝ) := hn'.trans (Nat.cast_lt.mpr hjn)
+      have he := hN j ((le_max_right 1 N).trans (hn.trans hjn.le))
+      rw [Real.dist_eq] at he
+      rw [show f j-L/j=((j:ℝ)*f j-L)/j by field_simp,abs_div,abs_of_pos hj']
+      exact (div_le_div_of_nonneg_right he.le hj'.le).trans
+        (div_le_div_of_nonneg_left (half_nonneg hε.le) hn' (Nat.cast_le.mpr hjn.le))
+    rw [Real.dist_eq,sub_zero]
+    refine ((abs_sum_le_sum_abs _ _).trans ((sum_le_sum row).trans_eq ?_)).trans_lt (half_lt_self hε)
+    rw [sum_const,nsmul_eq_mul,Nat.card_Ioc,show 2*n-n=n by omega]
+    field_simp [hn'.ne']
+  have ht := herr.add (harmonic_block.const_mul L)
+  rw [zero_add] at ht
+  refine ht.congr fun N => ?_
+  rw [sum_sub_distrib,mul_sum]
+  simp only [mul_one_div,sub_add_cancel]
+
+/-- At fourth-power conductor weights the moving endpoint on N < m ≤ 2N
+retains total logarithmic prime mass 4 M log 2. -/
+theorem squarePrimeEndpoint_mass_on_doubled_interval :
+    Tendsto (fun N : ℕ => ∑ m ∈ Ioc N (2*N),
+      (∑' k, squarePrimeEndpoint m k)/(m:ℝ)^4) atTop
+      (𝓝 (4*squareAutocorrelationMass*Real.log 2)) := by
+  apply moving_harmonic_block
+  refine tendsto_squarePrimeEndpoint_mass.congr' ?_
+  filter_upwards [eventually_gt_atTop 0] with n hn
+  field_simp [Nat.cast_ne_zero.mpr hn.ne' : (n:ℝ)≠0]
 
 private def orbit (n j : ℕ) := 2^j*n
 private def factor (j : ℕ) : ℝ := (1/8)^j

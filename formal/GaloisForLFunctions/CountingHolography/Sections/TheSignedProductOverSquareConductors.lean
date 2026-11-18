@@ -238,4 +238,8 @@ theorem riemannHypothesis_iff_signed_square_generator_product :
     exact le_antisymm (he.mpr ⟨Real.log B,Real.log_natCast_nonneg _,fun N =>
       (rational_power_window (squareGeneratorPrefix_pos N) hB N).mpr (h N)⟩) zetaZeroWidth_nonneg
 
+#print axioms zetaZeroWidth_le_iff_square_generator_prefix
+#print axioms riemannHypothesis_iff_positive_price_abscissa
+#print axioms riemannHypothesis_iff_signed_square_generator_product
+
 end GaloisForLFunctions.CountingHolography.Sections

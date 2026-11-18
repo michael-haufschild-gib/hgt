@@ -13,38 +13,41 @@ noncomputable section
 open Finset ArithmeticFunction
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-private def logCut (k : ℕ) := ⌊1+Real.log k⌋₊
-private def firstCut (L : ℕ) := max (2*(logCut L+1)) ⌊(L:ℝ)^(1/200:ℝ)⌋₊
-private def bandPair (L p v : ℕ) : Prop :=
-  productLower (logCut L) L < p*v ∧ ⌊(L:ℝ)^(1/10000:ℝ)⌋₊ < v
+/-- Logarithmic stencil cutoff at the prime-count horizon. -/
+def splineStencilCutoff (k : ℕ) := ⌊1+Real.log k⌋₊
+/-- Common upper endpoint for the small first primes on horizons through L. -/
+def splineFirstPrimeCutoff (L : ℕ) := max (2*(splineStencilCutoff L+1)) ⌊(L:ℝ)^(1/200:ℝ)⌋₊
+/-- Above the common lower product cutoff and above every short complement. -/
+def splineBandPair (L p v : ℕ) : Prop :=
+  productLower (splineStencilCutoff L) L < p*v ∧ ⌊(L:ℝ)^(1/10000:ℝ)⌋₊ < v
 
-private instance (L p v : ℕ) : Decidable (bandPair L p v) := inferInstanceAs (Decidable (_ ∧ _))
+private instance (L p v : ℕ) : Decidable (splineBandPair L p v) := inferInstanceAs (Decidable (_ ∧ _))
 
-private theorem logCut_mono {k L : ℕ} (hk : 0<k) (hkL : k≤L) : logCut k≤logCut L :=
+private theorem splineStencilCutoff_mono {k L : ℕ} (hk : 0<k) (hkL : k≤L) : splineStencilCutoff k≤splineStencilCutoff L :=
   Nat.floor_mono (add_le_add_left (Real.log_le_log (by exact_mod_cast hk) (by exact_mod_cast hkL)) 1)
 
-private theorem logCut_pos (k : ℕ) : 1≤logCut k :=
+private theorem splineStencilCutoff_pos (k : ℕ) : 1≤splineStencilCutoff k :=
   (Nat.one_le_floor_iff _).mpr (le_add_of_nonneg_right (Real.log_natCast_nonneg k))
 
-private theorem logCut_cell {k : ℕ} (hk : 0<k) (d : ℕ) : logCut k=d ↔
+private theorem splineStencilCutoff_cell {k : ℕ} (hk : 0<k) (d : ℕ) : splineStencilCutoff k=d ↔
     ⌈Real.exp ((d:ℝ)-1)⌉₊ ≤ k ∧ k < ⌈Real.exp (d:ℝ)⌉₊ := by
   have hk' : (0:ℝ)<k := Nat.cast_pos.mpr hk
-  rw [logCut,Nat.floor_eq_iff (by have := Real.log_natCast_nonneg k; positivity),Nat.ceil_le,Nat.lt_ceil,
+  rw [splineStencilCutoff,Nat.floor_eq_iff (by have := Real.log_natCast_nonneg k; positivity),Nat.ceil_le,Nat.lt_ceil,
     ←Real.le_log_iff_exp_le hk',←Real.log_lt_iff_lt_exp hk']
   constructor <;> rintro ⟨h₁,h₂⟩ <;> constructor <;> linarith
 
 /-- The coprime long-prime band below U, on the support through L. -/
 def splinePrimeBand (L U k : ℕ) : ℝ :=
-  clippedPrimeProducts (logCut k) (logCut k) (firstCut L) U
-    (fun p v => p*v) (fun p v => if bandPair L p v then L+1 else 0) k
+  clippedPrimeProducts (splineStencilCutoff k) (splineStencilCutoff k) (splineFirstPrimeCutoff L) U
+    (fun p v => p*v) (fun p v => if splineBandPair L p v then L+1 else 0) k
 
 /-- Every contributing pair belongs to the corresponding two filtered
 sums defining the surviving PVC product, with the same divided horizon. -/
 theorem splinePrimeBand_mem_remaining {L U k p v : ℕ} (hk : 0<k) (hkL : k≤L)
-    (hp : p ∈ (Ioc (firstCut L) U).filter Nat.Prime)
+    (hp : p ∈ (Ioc (splineFirstPrimeCutoff L) U).filter Nat.Prime)
     (hv : v ∈ (Icc 1 (U/p)).filter (p.Coprime ·))
-    (hactive : p*v ≤ k ∧ k < (if bandPair L p v then L+1 else 0)) :
-    let D := logCut k
+    (hactive : p*v ≤ k ∧ k < (if splineBandPair L p v then L+1 else 0)) :
+    let D := splineStencilCutoff k
     let Y := productLower D k
     p ∈ (Ioc (max (2*(D+1)) ⌊(k:ℝ)^(1/200:ℝ)⌋₊) k).filter Nat.Prime ∧
     v ∈ (((Ioc (Y/p) (k/p)).filter (p.Coprime ·)).filter
@@ -53,15 +56,15 @@ theorem splinePrimeBand_mem_remaining {L U k p v : ℕ} (hk : 0<k) (hkL : k≤L)
   obtain ⟨hpS,hprime⟩ := mem_filter.mp hp
   obtain ⟨hvS,hcop⟩ := mem_filter.mp hv
   have hv₀ := (mem_Icc.mp hvS).1
-  have hpair : bandPair L p v := by
+  have hpair : splineBandPair L p v := by
     by_contra hh
     simpa only [if_neg hh,Nat.not_lt_zero] using hactive.2
-  have hdk := logCut_mono hk hkL
+  have hdk := splineStencilCutoff_mono hk hkL
   have hr (s : ℝ) (hs : 0≤s) : ⌊(k:ℝ)^s⌋₊ ≤ ⌊(L:ℝ)^s⌋₊ :=
     Nat.floor_mono (Real.rpow_le_rpow (Nat.cast_nonneg _) (by exact_mod_cast hkL) hs)
-  have hcut : max (2*(D+1)) ⌊(k:ℝ)^(1/200:ℝ)⌋₊ ≤ firstCut L :=
+  have hcut : max (2*(D+1)) ⌊(k:ℝ)^(1/200:ℝ)⌋₊ ≤ splineFirstPrimeCutoff L :=
     max_le_max (Nat.mul_le_mul_left 2 (Nat.succ_le_succ hdk)) (hr _ (by norm_num))
-  have hY : Y ≤ productLower (logCut L) L :=
+  have hY : Y ≤ productLower (splineStencilCutoff L) L :=
     min_le_min hkL (Nat.mul_le_mul (Nat.succ_le_succ hdk)
       (Nat.floor_mono (Real.sqrt_le_sqrt (by exact_mod_cast hkL))))
   refine ⟨mem_filter.mpr ⟨mem_Ioc.mpr ⟨hcut.trans_lt (mem_Ioc.mp hpS).1,
@@ -73,21 +76,21 @@ theorem splinePrimeBand_mem_remaining {L U k p v : ℕ} (hk : 0<k) (hkL : k≤L)
     exact hpair.2.not_ge ((mem_Ioc.mp h.1).2.trans (hr _ (by norm_num)))
 
 private def cellRow (L U d : ℕ) :=
-  clippedPrimeProducts d d (firstCut L) U
+  clippedPrimeProducts d d (splineFirstPrimeCutoff L) U
     (fun p v => max (p*v) ⌈Real.exp ((d:ℝ)-1)⌉₊)
-    (fun p v => if bandPair L p v then ⌈Real.exp (d:ℝ)⌉₊ else 0)
+    (fun p v => if splineBandPair L p v then ⌈Real.exp (d:ℝ)⌉₊ else 0)
 
 private theorem cellRow_eq {k L : ℕ} (hk : 0<k) (hkL : k≤L) (U d : ℕ) :
-    cellRow L U d k = if logCut k=d then splinePrimeBand L U k else 0 := by
-  by_cases hd : logCut k=d
+    cellRow L U d k = if splineStencilCutoff k=d then splinePrimeBand L U k else 0 := by
+  by_cases hd : splineStencilCutoff k=d
   · rw [if_pos hd,cellRow,splinePrimeBand,hd]
     unfold clippedPrimeProducts ordinaryFactorTail
     apply sum_congr rfl; intro p _
     congr 1
     apply sum_congr rfl; intro v _
-    obtain ⟨hl,hu⟩ := (logCut_cell hk d).mp hd
+    obtain ⟨hl,hu⟩ := (splineStencilCutoff_cell hk d).mp hd
     have htop : k<L+1 := Nat.lt_succ_of_le hkL
-    by_cases hb : bandPair L p v <;> simp only [hb,if_true,if_false,max_le_iff,hl,hu,htop,
+    by_cases hb : splineBandPair L p v <;> simp only [hb,if_true,if_false,max_le_iff,hl,hu,htop,
       and_true,Nat.not_lt_zero,and_false]
   · rw [if_neg hd,cellRow,clippedPrimeProducts,ordinaryFactorTail]
     apply sum_eq_zero; intro p _
@@ -96,14 +99,14 @@ private theorem cellRow_eq {k L : ℕ} (hk : 0<k) (hkL : k≤L) (U d : ℕ) :
     apply mul_eq_zero_of_right
     apply if_neg
     rintro ⟨hl,hu⟩
-    by_cases hb : bandPair L p v
-    · exact hd ((logCut_cell hk d).mpr ⟨(le_max_right ..).trans hl,by simpa only [if_pos hb] using hu⟩)
+    by_cases hb : splineBandPair L p v
+    · exact hd ((splineStencilCutoff_cell hk d).mpr ⟨(le_max_right ..).trans hl,by simpa only [if_pos hb] using hu⟩)
     · simpa only [if_neg hb,Nat.not_lt_zero] using hu
 
 private theorem band_reading_eq (n U : ℕ) :
     let L := splineHorizon n
     splineCountReading n (splinePrimeBand L U) =
-      ∑ d ∈ Icc 1 (logCut L), splineCountReading n (cellRow L U d) := by
+      ∑ d ∈ Icc 1 (splineStencilCutoff L), splineCountReading n (cellRow L U d) := by
   intro L
   unfold splineCountReading
   rw [sum_comm]
@@ -111,7 +114,7 @@ private theorem band_reading_eq (n U : ℕ) :
   rw [←sum_mul]
   congr 1
   obtain ⟨hk₀,hkL⟩ := mem_Icc.mp hk
-  simp only [cellRow_eq hk₀ hkL, sum_ite_eq,if_pos (mem_Icc.mpr ⟨logCut_pos k,logCut_mono hk₀ hkL⟩)]
+  simp only [cellRow_eq hk₀ hkL, sum_ite_eq,if_pos (mem_Icc.mpr ⟨splineStencilCutoff_pos k,splineStencilCutoff_mono hk₀ hkL⟩)]
 
 /-- All the selected long primes together cost five stencil logarithms
 and one Mertens logarithm, uniformly through the three-quarter product scale. -/
@@ -127,11 +130,11 @@ theorem long_prime_band_spline_bound :
   let H := 1+Real.log L
   have hH : 1≤H := le_add_of_nonneg_right (Real.log_natCast_nonneg L)
   have hU := Real.log_natCast_nonneg U
-  have hK : (logCut L:ℝ) ≤ H := Nat.floor_le (zero_le_one.trans hH)
-  have one (d : ℕ) (hd : d ∈ Icc 1 (logCut L)) :
+  have hK : (splineStencilCutoff L:ℝ) ≤ H := Nat.floor_le (zero_le_one.trans hH)
+  have one (d : ℕ) (hd : d ∈ Icc 1 (splineStencilCutoff L)) :
       |splineCountReading n (cellRow L U d)| ≤ B*H^4*(1+Real.log U) := by
     obtain ⟨hd₁,hdK⟩ := mem_Icc.mp hd
-    have hdH := (show (d:ℝ)≤logCut L by exact_mod_cast hdK).trans hK
+    have hdH := (show (d:ℝ)≤splineStencilCutoff L by exact_mod_cast hdK).trans hK
     have hmass := hm d hd₁
     have hnext := hm (d+1) (Nat.succ_pos d)
     push_cast at hnext
@@ -142,7 +145,7 @@ theorem long_prime_band_spline_bound :
     have h₃ : 128*(128*(d:ℝ)^2+1) ≤ (128*129)*H^2 := by
       linarith only [pow_le_pow_left₀ (Nat.cast_nonneg d) hdH 2,one_le_pow₀ (n := 2) hH]
     have hpos := (abs_nonneg _).trans (abs_prefix_le_mass hd₁ 0)
-    apply (h hn hd₁ hu hcut d (firstCut L) _ _).trans
+    apply (h hn hd₁ hu hcut d (splineFirstPrimeCutoff L) _ _).trans
     have hprod := mul_le_mul (mul_le_mul_of_nonneg_left h₁ hC)
       (mul_le_mul (mul_le_mul_of_nonneg_left h₂ (by norm_num : (0:ℝ) ≤ 125)) h₃ (by positivity) (by positivity))
       (by positivity) (by positivity)

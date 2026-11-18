@@ -46,18 +46,18 @@ private theorem density_abel {n : ℕ} (hn : 0<n) :
   simpa only [splineCountReading,one_mul,sum_const,nsmul_eq_mul,mul_one,Nat.card_Icc,
     Nat.add_sub_cancel,sampledSpline_endpoint hn,mul_zero,add_zero] using h.symm
 
-/-- Every positive square conductor admits the same explicit signed
-long-product reading up to the logarithmic count allowance. -/
-theorem dyadicPrimeContact_long_products :
+private theorem theta_transfer (f : ℕ → ℝ)
+    (herr : ∃ C : ℝ, 0≤C ∧ ∀ k : ℕ, 1≤k →
+      |(Chebyshev.theta k-k)-f k| ≤ C*(1+Real.log k)^6*Real.sqrt k) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0<n →
-      |dyadicPrimeContact n-splineCountReading n longPrimeRow| ≤ C*(1+Real.log (splineHorizon n))^6 := by
-  obtain ⟨K,hK,hrow⟩ := theta_longPrimeRow_bound
+      |dyadicPrimeContact n-splineCountReading n f| ≤ C*(1+Real.log (splineHorizon n))^6 := by
+  obtain ⟨K,hK,hrow⟩ := herr
   obtain ⟨M,hM,hdensity⟩ := sampledSpline_density
   obtain ⟨B,_,hB,_,hdiff⟩ := sampledSpline_differences
   obtain ⟨A,hA,hbound⟩ := successorSquare_window_bound
   refine ⟨M+K*B*A^3,by positivity,fun {n} hn => ?_⟩
   let L := splineHorizon n
-  let E (k : ℕ) := (Chebyshev.theta k-k)-longPrimeRow k
+  let E (k : ℕ) := (Chebyshev.theta k-k)-f k
   let H := 1+Real.log L
   have hn' : (0:ℝ)<n := Nat.cast_pos.mpr hn
   have hH : 1≤H := le_add_of_nonneg_right (Real.log_natCast_nonneg L)
@@ -81,7 +81,7 @@ theorem dyadicPrimeContact_long_products :
             rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
             exact mul_le_mul_of_nonneg_right (hbound hn) (by positivity)
          _ = _ := by field_simp; ring
-  have he : dyadicPrimeContact n-splineCountReading n longPrimeRow =
+  have he : dyadicPrimeContact n-splineCountReading n f =
       splineCountReading n (fun k => (k:ℝ))+splineCountReading n E := by
     rw [contact_abel hn]
     unfold splineCountReading
@@ -94,5 +94,37 @@ theorem dyadicPrimeContact_long_products :
   change M/n+_ ≤ (M+K*B*A^3)*H^6
   linarith only [h₁,h₂]
 
+/-- At every positive square conductor the signed long-product reading
+with varying logarithmic cutoffs costs only the six-logarithm allowance. -/
+theorem dyadicPrimeContact_long_products :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0<n →
+      |dyadicPrimeContact n-splineCountReading n longPrimeRow| ≤ C*(1+Real.log (splineHorizon n))^6 :=
+  theta_transfer longPrimeRow theta_longPrimeRow_bound
+
+/-- The complete coprime row at fixed unit stencil cutoffs also has a
+uniform approximation. Its moving lower product endpoint is retained. -/
+theorem dyadicPrimeContact_unit_stencils :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0<n →
+      |dyadicPrimeContact n-splineCountReading n (fun k => coprimePrimeRow 1 1 k (productLower 1 k))| ≤
+        C*(1+Real.log (splineHorizon n))^6 := by
+  apply theta_transfer
+  obtain ⟨K,hK,h⟩ := coprime_prime_row_bound
+  obtain ⟨B,hB⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  refine ⟨K+|B|,by positivity,fun k hk => ?_⟩
+  let H := 1+Real.log k
+  have hH : 1≤H := le_add_of_nonneg_right (Real.log_natCast_nonneg k)
+  have h₁ := h (D := 1) (R := 1) hk le_rfl le_rfl hH
+    (by simpa only [Nat.cast_one] using hH) (by simpa only [Nat.cast_one] using hH)
+    (show Real.log (k:ℝ) ≤ H from le_add_of_nonneg_left zero_le_one)
+  have h₅ := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left
+    (pow_le_pow_right₀ hH (by decide : 5≤6)) hK) (Real.sqrt_nonneg (k:ℝ))
+  have h₆ := mul_le_mul_of_nonneg_right (le_mul_of_one_le_right (abs_nonneg B)
+    (one_le_pow₀ (n := 6) hH)) (Real.sqrt_nonneg (k:ℝ))
+  have hpow := (hB k).trans (mul_le_mul_of_nonneg_right (le_abs_self B) (Real.sqrt_nonneg _))
+  change |_| ≤ (K+|B|)*H^6*Real.sqrt k
+  rw [abs_le] at h₁ ⊢
+  constructor <;> linarith only [h₁.1,h₁.2,h₅,h₆,hpow,Chebyshev.theta_le_psi (k:ℝ)]
+
+#print axioms dyadicPrimeContact_unit_stencils
 #print axioms dyadicPrimeContact_long_products
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -1,7 +1,7 @@
 import GaloisForLFunctions.CountingHolography.Sections.TheThetaMeanOfTheSquareTrace
 import GaloisForLFunctions.CountingHolography.Sections.TheSignedDegreeAtTheNearestUpperSquare
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.PrimeLogarithmicWindows
-import GaloisForLFunctions.RHTower.ThetaPrimeDeletionSpectralEscape
+import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.LogarithmicWindowsOfAZeroThetaMean
 
 /-!
 # Ordinary square generators in every late logarithmic window
@@ -18,47 +18,11 @@ namespace GaloisForLFunctions.CountingHolography.Sections
 open Filter Topology MeasureTheory ArithmeticScatteringHolography
 open SurfaceOfSpecZ.ScaleLocality _root_.RHTower
 
-private abbrev phi := thetaCuspFullSource
-
 /-- Some point of each late logarithmic window has long trace at least minus one. -/
 private theorem long_trace_in_every_window : ∀ᶠ T : ℝ in atTop, ∃ u : ℝ,
     |u-T| ≤ 8*Real.log (T+2) ∧ -1 ≤ squareLongTrace u := by
   obtain ⟨A,hA,habs⟩ := squareLongTrace_bound
-  obtain ⟨C,hC,hθ⟩ := exists_theta_logarithmic_moment_bound
-  let F := fun u => -squareLongTrace u-1
-  have hF (u : ℝ) : |F u| ≤ (A+1)*Real.exp (1/2*|u|) := by
-    have hh := abs_sub_le (-squareLongTrace u) 0 1
-    simp only [sub_zero,zero_sub,abs_neg,abs_one] at hh
-    dsimp only [F]
-    linarith only [hh,habs u,Real.one_le_exp (show 0 ≤ 1/2*|u| by positivity)]
-  have hi : Integrable phi := by
-    simpa only [zero_mul,Real.exp_zero,one_mul] using HedenmalmThetaSource.integrable_exp_abs_mul_thetaCuspFullSource 0
-  have hlim := Real.tendsto_exp_neg_atTop_nhds_zero.const_mul ((A+1)*C)
-  rw [mul_zero] at hlim
-  filter_upwards [eventually_ge_atTop 6,eventually_ge_atTop (Real.exp 2),
-    hlim.eventually_lt_const integral_thetaCuspFullSource_pos] with T hT hlate hsmall
-  by_contra! hbad
-  have hlog : (2:ℝ) ≤ Real.log (T+2) := by
-    simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos 2) (hlate.trans (show T ≤ T+2 by linarith))
-  have he (x : ℝ) : phi x*F (T+x) = -(phi x*squareLongTrace (T+x))-phi x := by
-    dsimp only [F]; ring
-  have hneg : Integrable (fun x => -(phi x*squareLongTrace (T+x))) := by
-    simpa only [neg_one_mul] using (thetaMean_squareLongTrace T).1.const_mul (-1:ℝ)
-  have hFi : Integrable fun x => phi x*F (T+x) := by
-    simp_rw [he]
-    exact hneg.sub hi
-  have hlocal (x : ℝ) (hx : |x| ≤ 8*Real.log (T+2)) : -(0:ℝ) ≤ F (T+x) := by
-    have h := hbad (T+x) (by simpa only [add_sub_cancel_left] using hx)
-    dsimp only [F]; linarith only [h]
-  have ht := positive_kernel_logarithmic_floor (A := A+1) (C := C) (b := 1/2) (D := 1/2)
-    (K := 0) (B := 0) (t := T) (by positivity) hC.le (by norm_num) (by linarith only [hT])
-    (by norm_num) le_rfl hT (by linarith only [hlog]) (by rw [abs_of_nonneg (by linarith only [hT] : 0 ≤ T),add_zero])
-    (fun x => (thetaCuspFullSource_pos x).le) hi (HedenmalmThetaSource.integrable_exp_abs_mul_thetaCuspFullSource _)
-    hFi hF (hθ _ (by linarith only [hT])) hlocal
-  simp_rw [he] at ht
-  rw [integral_sub hneg hi,integral_neg,(thetaMean_squareLongTrace T).2] at ht
-  simp only [neg_zero,zero_mul,mul_zero,zero_sub] at ht
-  linarith only [ht,hsmall]
+  exact exists_ge_neg_one_in_window_of_thetaMean_zero hA habs thetaMean_squareLongTrace
 
 /-- The same base buys every positive multiplicity whenever the signed
 degree has a fixed lower bound. Small multiplicities spend the ordinary floors. -/

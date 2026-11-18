@@ -35,6 +35,7 @@ private theorem state_translationCost {W₀ : ℝ} (hW : 0 < W₀)
     filter_upwards [he,(measurePreserving_add_right volume d).quasiMeasurePreserving.ae_eq_comp he]
       with u hu hv
     change F (u+d) = Φ (u+d) at hv
+    change |F u-F (u+d)| = |Φ u-Φ (u+d)|
     rw [hu,hv]
   obtain ⟨ε,hε,h⟩ := (mem_nhdsGT_iff_exists_Ioo_subset
     (s := {d : ℝ | translationCost F d / Real.sqrt d < 1})).mp
@@ -71,7 +72,9 @@ private theorem bin_slice_bound {g : ℝ → ℝ} (hg : Integrable g) (v l w : �
   congr 1
   change _ = ∫ u : ℝ, |g u-g (u+(l-v))|
   rw [← tr (fun u => |g u-g (u+(l-v))|)]
-  exact integral_congr_ae (Eventually.of_forall fun t => by rw [show t-l+(l-v)=t-v by ring])
+  exact integral_congr_ae (Eventually.of_forall fun t => by
+    change |g (t-l)-g (t-v)| = |g (t-l)-g (t-l+(l-v))|
+    rw [show t-l+(l-v)=t-v by ring])
 
 private theorem squareLayer_mass_coordinates {g : ℝ → ℝ} (hg : Continuous g)
     (hs : ∀ u, 0 ≤ u → g u=0) {C : ℝ} (hC : 0 ≤ C) (hb : ∀ u, |g u| ≤ C*Real.exp (2*u))
@@ -138,14 +141,15 @@ private theorem integrated_square_error {g : ℝ → ℝ} (hc : Continuous g) (h
     exact ((measurable_squareBinWeight.comp measurable_fst).mul (hc.measurable.comp
       (measurable_snd.sub (monotone_squareBinLocation.measurable.comp measurable_fst)))).sub
       (hc.measurable.comp (measurable_snd.sub measurable_fst))
+  have hmProd : AEStronglyMeasurable H (μ.prod volume) := hm.aestronglyMeasurable
   have hExp := (integrableOn_exp_mul_Ioi (by norm_num : (-1/40:ℝ)<0) V).const_mul K
   have hpoint : ∀ᵐ v ∂μ, (∫ t, ‖H (v,t)‖) ≤ K*Real.exp ((-1/40)*v) := by
     filter_upwards [ae_restrict_mem (μ := volume) (measurableSet_Ioi (a := V))] with v hv
     simpa only [H,Real.norm_eq_abs] using (ha v (hV.trans (le_of_lt hv))).2
   have hi : Integrable H (μ.prod volume) := by
-    apply (integrable_prod_iff hm.aestronglyMeasurable).2
+    apply (integrable_prod_iff hmProd).2
     refine ⟨Eventually.of_forall fun v => ((hg.comp_sub_right _).const_mul _).sub
-      (hg.comp_sub_right _),hExp.mono' hm.aestronglyMeasurable.norm.integral_prod_right' ?_⟩
+      (hg.comp_sub_right _),hExp.mono' hmProd.norm.integral_prod_right' ?_⟩
     filter_upwards [hpoint] with v hv
     rwa [Real.norm_eq_abs,abs_of_nonneg (integral_nonneg fun _ => norm_nonneg _)]
   have hiG : Integrable G := hi.integral_prod_right
@@ -181,7 +185,7 @@ private theorem integrated_square_error {g : ℝ → ℝ} (hc : Continuous g) (h
       (∫ v, binDifference g v t)+(∫ v, g (t-v)) at hsum
     simp only [binDifference,sub_add_cancel] at hsum
     rw [integral_sub_left_eq_self g volume t] at hsum
-    rw [squareLayer_mass_coordinates hc hs hC hb (by linarith only [hV0,htv]),hread]
+    rw [squareLayer_mass_coordinates hc hs hC hb (t := t) (by linarith only [hV0,htv]),hread]
     change _ = (∫ v, squareBinWeight v*g (t-squareBinLocation v)-g (t-v))/2
     linarith only [hsum]
   refine ⟨(hiG.div_const 2).integrableOn.congr heq.symm,?_⟩

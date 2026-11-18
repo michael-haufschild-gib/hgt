@@ -41,6 +41,8 @@ theorem summable_mangoldt_integerAtom {Φ : ℝ → ℝ} {C : ℝ}
   rcases Nat.eq_zero_or_pos n with rfl | hn
   · simp
   have h := continuousIntegerAtom_bound hb (by exact_mod_cast hn : (1:ℝ) ≤ n) t
+  change ‖vonMangoldt n*continuousIntegerAtom Φ n t‖ ≤
+    (C*Real.exp (2*t))*(Real.log n/(n:ℝ)^2)
   rw [Real.norm_eq_abs,abs_mul, abs_of_nonneg vonMangoldt_nonneg]
   calc _ ≤ Real.log n*((C*Real.exp (2*t))*(1/(n:ℝ)^2)) :=
             mul_le_mul vonMangoldt_le_log h (abs_nonneg _) (Real.log_natCast_nonneg n)
@@ -103,7 +105,7 @@ theorem centred_mangoldt_atom_sum_split {Φ : ℝ → ℝ} {C : ℝ}
         integerReferenceWave Φ t := by
   rw [← mangoldt_atom_sum_split hb t, ← tsum_continuousIntegerAtom hb t,
     ← (summable_mangoldt_integerAtom hb t).tsum_sub (summable_continuousIntegerAtom hb t)]
-  exact tsum_congr fun n => by dsimp only; ring
+  exact tsum_congr fun n => by rw [sub_mul,one_mul]
 
 private theorem integerCell_bound {Φ : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) {n : ℕ} (hn : 1 ≤ n) (t : ℝ) :

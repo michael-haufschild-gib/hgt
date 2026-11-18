@@ -91,8 +91,8 @@ theorem squareLongReading_variation : ∃ C : ℝ, 0 ≤ C ∧ ∀ M : ℕ,
       x^2*x^(-(1/4):ℝ)=x^(7/4:ℝ) ∧ x*x^(7/4:ℝ)=x^(11/4:ℝ) := by
     have hp₁ (r : ℝ) : x*x^r=x^(1+r) := by rw [Real.rpow_add hx,Real.rpow_one]
     have hp₂ (r : ℝ) : x^2*x^r=x^((2:ℝ)+r) := by rw [Real.rpow_add hx]; norm_num
-    exact ⟨by convert hp₂ (3/4) using 1 <;> norm_num,by convert hp₁ (3/4) using 1 <;> norm_num,
-      by convert hp₂ (-(1/4)) using 1 <;> norm_num,by convert hp₁ (7/4) using 1 <;> norm_num⟩
+    exact ⟨by convert hp₂ (3/4) using 1; norm_num,by convert hp₁ (3/4) using 1; norm_num,
+      by convert hp₂ (-(1/4)) using 1; norm_num,by convert hp₁ (7/4) using 1; norm_num⟩
   have step (i : ℕ) : |squareLongReading (i+3)-squareLongReading (i+2)| ≤ C*((i:ℝ)+2)^(7/4:ℝ) := by
     let x := (i:ℝ)+2
     have hx : 1 ≤ x := by dsimp only [x]; linarith only [Nat.cast_nonneg (α := ℝ) i]

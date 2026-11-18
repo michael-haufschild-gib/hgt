@@ -54,18 +54,18 @@ private theorem tested_powers (v : E → ℤ) (φ : E → Circle) (Q : ℕ)
   · have he : |v i|=|v j| := by simpa using congrArg (fun n : ℕ => (n : ℤ)) h
     rcases abs_eq_abs.mp he with he | he
     · have hg := tests i j 1 (-1) (by rw [he]; ring)
-        (by simpa using le_max_left 2 (2*Q-1))
+        (by change 2 ≤ max 2 (2*Q-1); exact le_max_left ..)
       have hs : φ i=φ j := by
         simpa only [_root_.zpow_one,_root_.zpow_neg_one,← div_eq_mul_inv,div_eq_one] using hg
       rw [he,hs]
     · have hg := tests i j 1 1 (by rw [he]; ring)
-        (by simpa using le_max_left 2 (2*Q-1))
+        (by change 2 ≤ max 2 (2*Q-1); exact le_max_left ..)
       have hm : φ i*φ j=1 := by simpa only [_root_.zpow_one] using hg
       have hs : φ i=(φ j)⁻¹ := by
         calc φ i = φ i*(φ j*(φ j)⁻¹) := by simp
              _ = (φ j)⁻¹ := by rw [← mul_assoc,hm,one_mul]
       rw [he,hs,_root_.inv_zpow,_root_.zpow_neg]
-  · have bound : (v j).natAbs+(-(v i)).natAbs≤max 2 (2*Q-1) := by
+  · have bound : (v j).natAbs+(-(v i)).natAbs ≤ max 2 (2*Q-1) := by
       rw [Int.natAbs_neg]
       have := hQ i
       have := hQ j
@@ -83,7 +83,7 @@ theorem finite_pair_iff (q : E → ℤ) (φ : E → Circle) (Q : ℕ)
   · intro test
     by_cases hz : q=0
     · refine ⟨1,fun i => ?_⟩
-      have hg := test i i 1 0 (by simp [hz]) (by change 1≤max (2 : ℕ) (2*Q-1); omega)
+      have hg := test i i 1 0 (by simp [hz]) (by change 1 ≤ max (2 : ℕ) (2*Q-1); omega)
       simpa only [_root_.zpow_one,_root_.zpow_zero,mul_one,_root_.one_zpow] using hg
     obtain ⟨v,c,hv,hc⟩ := primitive_direction q hz
     have g₀ : content q≠0 := fun he => hz (by simpa only [he,zero_smul] using hv)
