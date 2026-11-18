@@ -21,4 +21,12 @@ Indeed $v=t-\log n\le0$ and $K(T-t)=e^{(T-t)/2}$. At fixed $v$ the residual indi
 
 For $0<d<3001/24000$, the [project strip](../../../../formal/GaloisForLFunctions/MetaplecticMobiusDescent/Detector/SubSevenEighthsZeroFreeHalfPlane.lean) and [prime error bound](../../../../formal/GaloisForLFunctions/RHTower/ChebyshevErrorExponentLaw.lean) give $|\psi(k)-k|\ll_d k^{1-d}$. Abel summation of $a_n/n$ bounds both endpoints by $O_d(k^{-d})$. The variation telescopes because $j^{1-d}(1/j-1/(j+1))\le (j^{-d}-(j+1)^{-d})/d$ by concavity of $x^d$. Consequently $E(Y)\ll_d Y^{-d}$. At $R=6T$ and $d=1/10$ the entire signed late contribution is $O_\Phi(e^{-T/10})$, uniformly through every finite row endpoint. Passing to infinite rows also requires convergence of their integrals on bounded time cuts. [Lean formalization in progress](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheLateTimeEndpointOfTheTestedIntegerRows.lean).
 
-**Remaining estimate.** Isolate the reciprocal polar row with its actual sign and control the variation of the remainder on the middle range. The near-wall scale gives $C(q)=O_\Phi(e^{-r/2})$ and $q'e^{-q/2}\Phi(q)=O_\Phi(e^{-r/2})$. These estimates leave the signed reciprocal prime excess and the full $-m^2/2$ charge in the test.
+**Lower part of the middle range.** For $N\le X$ and $\theta>\Theta$, let $Q(x)=\psi(x)-\lfloor x\rfloor$. The endpoint of the tested Abel sum costs $O_\Phi(X^{-1/2}N^\theta)$ because $K(T-t)\le e^{(t-T)/2}$. Integrating the derivative of $W_T$ in $p=\log x$, the interior costs at most
+\[
+ C_\Phi\int_0^{\log N}e^{(\theta-1/2)p}|D(T-p)|\,dp
+ \ll_{\Phi,\beta,\theta} X^{-\beta}N^{\theta-1/2+\beta}
+ \qquad(0<\beta<1/2).
+\]
+The last bound is Cauchy–Schwarz against the [tilted integer variance](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/SubcriticalMeanSquareOfTheIntegerQuadrature.lean). The critical-window strip omitted from each tested coefficient costs $O_\Phi(X^{-1/2}\sqrt{\log(2n)/n})$ since its time width is $O(\sqrt{\log(2n)/n})$. Summing this error absolutely through $N$ costs $O_\Phi(X^{-1/2}\sqrt N\log^{3/2}(2N))$. Thus the proposed signed estimate for the actual complementary row is $o(1)$ through $N=X^a$ for $a<1/(2\Theta)$, by taking $\theta$ just above $\Theta$ and $\beta$ just below $1/2$. This estimate concerns the full time integral before selecting centers. Its Abel and moving-window bounds remain to be checked in Lean.
+
+**Remaining estimate.** Control the signed middle range with the original orientation and the $-m^2/2$ charge. For the upper range, isolate the reciprocal polar row with its actual sign. The near-wall scale gives $C(q)=O_\Phi(e^{-r/2})$ and $q'e^{-q/2}\Phi(q)=O_\Phi(e^{-r/2})$.

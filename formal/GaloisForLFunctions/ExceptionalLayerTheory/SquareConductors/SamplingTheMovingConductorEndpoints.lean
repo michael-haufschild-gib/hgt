@@ -186,7 +186,7 @@ private theorem centered_product_total_variation (H : ℕ) :
               simpa only [abs_of_nonneg vonMangoldt_nonneg,abs_one] using abs_sub (vonMangoldt q) 1
        _ ≤ 7*(H:ℝ)+H := by
               rw [sum_add_distrib,sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul,mul_one]
-              exact add_le_add_right (_root_.RHTower.sum_vonMangoldt_Icc_le_seven H) _
+              exact add_le_add (_root_.RHTower.sum_vonMangoldt_Icc_le_seven H) (le_refl (H:ℝ))
        _ = _ := by ring
 
 /-- The discrete sum on a power shell differs from its common rescaled

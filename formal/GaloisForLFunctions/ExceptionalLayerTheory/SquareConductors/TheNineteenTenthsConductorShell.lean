@@ -359,7 +359,7 @@ private theorem one_product_row_error :
             have hqabs : |vonMangoldt q-1| ≤ 1+Real.log k := by
               apply (abs_sub _ _).trans
               rw [abs_of_nonneg vonMangoldt_nonneg,abs_one,add_comm]
-              exact add_le_add_left (vonMangoldt_le_log.trans hqlog) _
+              exact add_le_add (le_refl (1:ℝ)) (vonMangoldt_le_log.trans hqlog)
             change |(vonMangoldt q-1)*centeredPrimeWeight 1 (k/q)| ≤ _
             rw [abs_mul,mul_comm F]
             exact mul_le_mul hqabs (by simpa only [Nat.cast_one,mul_one] using hw (R := 1) le_rfl (k/q))
@@ -389,7 +389,7 @@ private theorem adjacent_cut_reading_error :
               have hl := Real.log_le_log (Nat.cast_pos.mpr hk1) (Nat.cast_le.mpr hkL)
               rw [abs_mul]
               exact mul_le_mul ((hr k _ U V hUV hVU).trans (mul_le_mul_of_nonneg_left
-                ((add_le_add_left hl 1).trans (hj hn)) hF)) ((hd hn k).1) (abs_nonneg _) (by positivity)
+                ((add_le_add (le_refl (1:ℝ)) hl).trans (hj hn)) hF)) ((hd hn k).1) (abs_nonneg _) (by positivity)
        _ ≤ (A*n)^2*((F*(J*conductorLog n))*(D/(n:ℝ)^3)) := by
               rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
               exact mul_le_mul_of_nonneg_right (ha hn) (by positivity)

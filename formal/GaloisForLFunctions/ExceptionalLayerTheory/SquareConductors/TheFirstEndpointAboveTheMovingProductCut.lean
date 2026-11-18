@@ -85,6 +85,26 @@ theorem eventually_retainedPrimeEndpoint {α : ℝ} (hα : 0 < α) (h₂ : α < 
   rw [Real.exp_neg,inv_mul_eq_div,lt_div_iff₀ (Real.exp_pos 8)]
   exact hmul
 
+/-- Beyond the quadratic exponent the whole finite product horizon is
+eventually below the cut, so the retained endpoint is identically zero. -/
+theorem eventually_retainedPrimeEndpoint_zero_of_two_lt {α : ℝ} (hα : 2 < α) :
+    ∀ᶠ n : ℕ in atTop, retainedPrimeEndpoint ⌊(n:ℝ)^α⌋₊ n = 0 := by
+  obtain ⟨A,_,hwin⟩ := successorSquare_window_bound
+  have hg := (tendsto_rpow_atTop (sub_pos.mpr hα)).comp tendsto_natCast_atTop_atTop
+  filter_upwards [eventually_ge_atTop (1:ℕ),hg.eventually_ge_atTop (A^2)] with n hn hgap
+  have hn' : (0:ℝ) < n := Nat.cast_pos.mpr hn
+  have hL : splineHorizon n ≤ ⌊(n:ℝ)^α⌋₊ := by
+    apply Nat.le_floor
+    calc (splineHorizon n:ℝ) ≤ (A*n)^2 := hwin hn
+         _ ≤ (n:ℝ)^(α-2)*(n:ℝ)^2 := by rw [mul_pow]; exact mul_le_mul_of_nonneg_right hgap (sq_nonneg _)
+         _ = _ := by rw [←Real.rpow_two,←Real.rpow_add hn',sub_add_cancel]
+  unfold retainedPrimeEndpoint
+  apply sum_eq_zero
+  intro q hq
+  obtain ⟨hp,hU⟩ := mem_filter.mp hq
+  have hqL := (mem_Icc.mp (mem_filter.mp hp).1).2
+  exact ((hqL.trans hL).not_gt hU).elim
+
 /-- Every sufficiently late terminal fragment at the seventeen-ninths cut
 contains the entire ordinary-prime endpoint, with no accumulated error. -/
 theorem seventeenNinths_retainedPrimeEndpoint_fragments :
@@ -141,6 +161,7 @@ theorem retainedPrimeEndpoint_fragment_prices {α : ℝ} (hα : 0 < α) (h₂ : 
   exact (abs_sub _ _).trans (add_le_add hp (h.trans hB'))
 
 #print axioms retainedPrimeEndpoint_eq
+#print axioms eventually_retainedPrimeEndpoint_zero_of_two_lt
 #print axioms seventeenNinths_retainedPrimeEndpoint_fragments
 #print axioms retainedPrimeEndpoint_fragment_prices
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
