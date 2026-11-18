@@ -1,7 +1,7 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheLogarithmicLocationsOfThePrimeMassBins
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.ThePrimeNumberTheoremOnTheState
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheFirstAbsoluteMomentOfStateIncrements
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.ExponentiallyIntegrableChangeOfPrimeVariance
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.PrimeVarianceAfterACommonSieve
 
 /-!
 # Integrated error of the prime-square layer
@@ -343,9 +343,99 @@ theorem riemannHypothesis_or_ordinary_sign_transfer : RiemannHypothesis ∨
       rw [mangoldt_atom_sum_split hb t]
       ring
     rw [hs,abs_neg]
-  change IntegrableOn (fun t => |max (P t) 0-max (M t) 0| + |max (-P t) 0-max (-M t) 0|) _ ∧ _
-  simp_rw [hd]
+  let E := fun t => |max (P t) 0-max (M t) 0| + |max (-P t) 0-max (-M t) 0|
+  change IntegrableOn E (Ioi (V+1)) ∧ (∫ t in Ioi (V+1), E t) ≤ _
+  rw [show E=(fun t => |Q t-(∫ u, Φ u)/2|) from funext hd]
   exact ⟨hv.1.abs,hv.2⟩
 
 #print axioms riemannHypothesis_or_ordinary_sign_transfer
+
+/-- A square-integrable double tilt pays for a single tilt in absolute integral.
+The second factor is the decaying exponential on the positive ray. -/
+private theorem weighted_integer_error_L1 {Φ : ℝ → ℝ} {r : ℝ} (hr : 0 < r)
+    (hc : Continuous (integerReferenceWave Φ)) (hi : MemLp (tiltedIntegerError Φ (2*r)) 2) :
+    let D := fun t => integerReferenceWave Φ t-Real.exp (t/2)*(∫ u, Real.exp (-u/2)*Φ u)
+    IntegrableOn (fun t => Real.exp (r*t)*|D t|) (Ioi 0) := by
+  let D := fun t => integerReferenceWave Φ t-Real.exp (t/2)*(∫ u, Real.exp (-u/2)*Φ u)
+  have hD : Continuous D := hc.sub (by fun_prop)
+  have hsq : Integrable (fun t => (tiltedIntegerError Φ (2*r) t)^2) := by
+    simpa only [Real.norm_eq_abs,sq_abs] using (memLp_two_iff_integrable_sq_norm hi.1).1 hi
+  have hdec := integrableOn_exp_mul_Ioi (by linarith only [hr] : -(2*r)<0) 0
+  change IntegrableOn (fun t => Real.exp (r*t)*|D t|) (Ioi 0)
+  refine (hsq.integrableOn.add hdec).mono' ((by fun_prop : Continuous
+    (fun t => Real.exp (r*t)*|D t|)).aestronglyMeasurable) (Eventually.of_forall fun t => ?_)
+  let a := |tiltedIntegerError Φ (2*r) t|
+  let b := Real.exp (-r*t)
+  have hprod : a*b=Real.exp (r*t)*|D t| := by
+    dsimp only [a,b,tiltedIntegerError,D]
+    rw [abs_mul,abs_of_pos (Real.exp_pos _),mul_right_comm,← Real.exp_add,
+      show (2*r)*t+-r*t=r*t by ring]
+  have hb2 : b^2=Real.exp (-(2*r)*t) := by
+    change (Real.exp (-r*t))^2=_
+    rw [sq,← Real.exp_add,show -r*t+ -r*t= -(2*r)*t by ring]
+  change ‖Real.exp (r*t)*|D t|‖ ≤ (tiltedIntegerError Φ (2*r) t)^2+Real.exp (-(2*r)*t)
+  rw [Real.norm_of_nonneg (mul_nonneg (Real.exp_pos _).le (abs_nonneg _)),← hprod,← hb2,
+    ← sq_abs (tiltedIntegerError Φ (2*r) t)]
+  change a*b ≤ a^2+b^2
+  nlinarith only [sq_nonneg (a-b),sq_nonneg a,sq_nonneg b]
+
+/-- Even after centering at each individual integer, both sign parts transfer
+from the literal row of Λ(n) − 1 with exponentially small total late error. -/
+theorem riemannHypothesis_or_integer_mangoldt_sign_transfer : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ) (B : ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧ 0 ≤ B ∧
+      ∀ᶠ V : ℝ in atTop,
+        let P := ordinaryPrimePolarError Φ
+        let S := fun t : ℝ => (∑' n : ℕ, (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t)-
+          (∫ u, Φ u)/2
+        let E := fun t : ℝ => |max (P t) 0-max (S t) 0| + |max (-P t) 0-max (-S t) 0|
+        IntegrableOn E (Ioi (V+1)) ∧ (∫ t in Ioi (V+1), E t) ≤ B*Real.exp ((-1/40)*V) := by
+  rcases riemannHypothesis_or_integrated_properPower_error with hr | ⟨W₀,F,Φ,hW,ht,hF,hΦ,he,h⟩
+  · exact Or.inl hr
+  obtain ⟨_,_,Ψ,hΨ,heΨ,_,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  have heq : Ψ=Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heΨ.symm.trans he)
+  subst Ψ
+  obtain ⟨A,hA,hQ⟩ := h id LipschitzWith.id rfl
+  let Q := fun t : ℝ => (∑' j, vonMangoldtAtom (properPrimePowerIndex j)*Φ (t-Real.log (properPrimePowerIndex j)))-(∫ u, Φ u)/2
+  let D := fun t : ℝ => integerReferenceWave Φ t-Real.exp (t/2)*(∫ u, Real.exp (-u/2)*Φ u)
+  have hc := continuous_integerReferenceWave hΦ hC hb
+  have hD : Continuous D := hc.sub (by fun_prop)
+  have hI : IntegrableOn (fun t => Real.exp ((1/40)*t)*|D t|) (Ioi 0) :=
+    weighted_integer_error_L1 (by norm_num : (0:ℝ)<1/40) hc
+    (criticalState_subcritical_integer_error hW ht hF hΦ he hC hb (by norm_num) (by norm_num))
+  let J := ∫ t in Ioi (0:ℝ), Real.exp ((1/40)*t)*|D t|
+  have hJ : 0 ≤ J := integral_nonneg fun _ => mul_nonneg (Real.exp_pos _).le (abs_nonneg _)
+  refine Or.inr ⟨W₀,F,Φ,J+A,hW,ht,hF,hΦ,he,add_nonneg hJ hA,?_⟩
+  filter_upwards [hQ,eventually_ge_atTop (0:ℝ)] with V hv hV
+  change IntegrableOn Q (Ioi (V+1)) ∧ (∫ t in Ioi (V+1), |Q t|) ≤ _ at hv
+  have hU : 0 ≤ V+1 := by linarith only [hV]
+  have hiD : IntegrableOn D (Ioi (V+1)) := by
+    apply (hI.mono_set (Ioi_subset_Ioi hU)).mono' hD.aestronglyMeasurable
+    filter_upwards [ae_restrict_mem (μ := volume) (measurableSet_Ioi (a := V+1))] with t ht'
+    exact le_mul_of_one_le_left (abs_nonneg _) (Real.one_le_exp (mul_nonneg
+      (by norm_num : (0:ℝ) ≤ 1/40) (hU.trans (le_of_lt ht'))))
+  have hcost : (∫ t in Ioi (V+1), |D t|) ≤ J*Real.exp ((-1/40)*V) := by
+    apply (abs_tail_le_exp_neg_mul (f := D) (by norm_num : (0:ℝ) ≤ 1/40) hU hI).trans
+    rw [mul_comm J]
+    exact mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (by linarith only)) hJ
+  let S := fun t : ℝ => (∑' n : ℕ, (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t)-(∫ u, Φ u)/2
+  let P := ordinaryPrimePolarError Φ
+  have hpoint (t : ℝ) : |max (P t) 0-max (S t) 0| + |max (-P t) 0-max (-S t) 0|=|D t-Q t| := by
+    rw [two_sign_distances]
+    congr 1
+    dsimp only [S,P,ordinaryPrimePolarError,D,Q]
+    rw [centred_mangoldt_atom_sum_split hb t]
+    ring
+  let E := fun t => |max (P t) 0-max (S t) 0| + |max (-P t) 0-max (-S t) 0|
+  change IntegrableOn E (Ioi (V+1)) ∧ (∫ t in Ioi (V+1), E t) ≤ _
+  rw [show E=(fun t => |D t-Q t|) from funext hpoint]
+  refine ⟨(hiD.sub hv.1).abs,?_⟩
+  calc (∫ t in Ioi (V+1), |D t-Q t|) ≤ ∫ t in Ioi (V+1), |D t| + |Q t| :=
+         integral_mono (hiD.sub hv.1).abs (hiD.abs.add hv.1.abs) (fun t => abs_sub _ _)
+    _ ≤ _ := by
+      rw [integral_add hiD.abs hv.1.abs,add_mul]
+      exact add_le_add hcost hv.2
+
+#print axioms riemannHypothesis_or_integer_mangoldt_sign_transfer
 end GaloisForLFunctions.ExclusionOfTheCriticalState

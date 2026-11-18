@@ -13,7 +13,7 @@ bounded amount throughout the open critical strip.
 -/
 
 noncomputable section
-open Finset Complex Filter MeasureTheory Set Topology
+open Finset Complex Filter MeasureTheory Topology
 open _root_.RHTower
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
@@ -26,14 +26,14 @@ private theorem parity_bounds (n : ℕ) : 0 ≤ parity n ∧ parity n ≤ 1 :=
 private theorem alternating_weight (N : ℕ) (w : ℕ → ℝ) (hw : ∀ j, 0 ≤ w j)
     (hdec : ∀ j, w (j+1) ≤ w j) :
     0 ≤ ∑ j ∈ Finset.Icc 1 N, alt j*w j ∧ (∑ j ∈ Finset.Icc 1 N, alt j*w j) ≤ w 1 := by
-  have hs := sum_smul_eq_prefix_differences alt w N
-  simp only [smul_eq_mul,prefix_alternatingDivisorCoeff] at hs
   have ht : (∑ j ∈ Finset.Icc 1 N, (w j-w (j+1))) = w 1-w (N+1) := by
     induction N with
     | zero => simp
     | succ n ih =>
       rw [sum_Icc_succ_top (by omega : 1 ≤ n+1),ih]
       ring
+  have hs := sum_smul_eq_prefix_differences alt w N
+  simp only [smul_eq_mul,prefix_alternatingDivisorCoeff] at hs
   have hlast := mul_nonneg (parity_bounds N).1 (hw (N+1))
   have hsum := sum_nonneg (s := Finset.Icc 1 N)
     (fun j _ => mul_nonneg (parity_bounds j).1 (sub_nonneg.mpr (hdec j)))
@@ -58,7 +58,7 @@ private theorem ramp_incr (N : ℕ) {x y : ℝ} (hxy : x ≤ y) :
       ring
     · rw [max_eq_right (sub_nonpos.mpr h),sub_zero,min_eq_right (max_le (by linarith only [h]) (sub_nonneg.mpr hxy))]
   have ht := alternating_weight N w (fun j => le_min (sub_nonneg.mpr hxy) (le_max_right _ _))
-    (fun j => min_le_min_left _ (max_le_max_right (by push_cast; linarith : y-(↑(j+1):ℝ) ≤ y-j) _))
+    (fun j => min_le_min_left _ (max_le_max_right 0 (by push_cast; linarith : y-(↑(j+1):ℝ) ≤ y-j)))
   simp only [ramp,← sum_sub_distrib,← mul_sub,he]
   exact ⟨ht.1,ht.2.trans (min_le_left _ _)⟩
 
@@ -93,7 +93,7 @@ private theorem tent_increment {N : ℕ} (hN : 0 < N) {t d : ℝ} (ht : 0 < t) (
       t*(ramp N y-ramp N x)-(d-t)*ramp N x := by
     rw [mul_sub,tent_eq_ramp hN ht,tent_eq_ramp hN hdp]
     dsimp only [x,y]; ring
-  have hstep : t*(y-x) = (d-t)*x := by dsimp only [x,y]; field_simp; ring
+  have hstep : t*(y-x) = (d-t)*x := by dsimp only [x,y]; field_simp <;> ring
   have hu := mul_le_mul_of_nonneg_left hR.2 ht.le
   rw [hstep] at hu
   have hl := mul_nonneg ht.le hR.1
@@ -114,7 +114,7 @@ private theorem tent_sum_sample {d N : ℕ} (hd : 0 < d) (hn : 0 < N) :
       ext k
       simp only [mem_filter,mem_range,mem_Ico,Nat.le_div_iff_mul_le hd]
       tauto
-    rw [← sum_filter,he,sum_const,nsmul_eq_mul,Finset.card_Ico_Nat,mul_one,
+    rw [← sum_filter,he,sum_const,nsmul_eq_mul,Nat.card_Ico,mul_one,
       mul_max_of_nonneg _ _ hn'.le,mul_zero]
     by_cases hj : j*d ≤ N
     · have hj' : (j:ℝ)*d ≤ N := by exact_mod_cast hj
@@ -129,7 +129,8 @@ private theorem tent_sum_sample {d N : ℕ} (hd : 0 < d) (hn : 0 < N) :
     have hc : k/d ≤ N := (Nat.div_le_self ..).trans (mem_range.mp hk).le
     have he : (Finset.Icc 1 N).filter (· ≤ k/d) = Finset.Icc 1 (k/d) := by
       ext j; simp only [mem_filter,mem_Icc]; omega
-    rw [← prefix_alternatingDivisorCoeff,← sum_filter,he]
+    rw [← sum_filter,he]
+    exact (prefix_alternatingDivisorCoeff (k/d)).symm
   rw [discreteQuotientMean,sum_congr rfl hrow,sum_comm,tentSum,mul_sum]
   apply sum_congr rfl
   intro j _
@@ -145,14 +146,14 @@ private def density (s : ℂ) (t : ℝ) : ℂ := s*(t:ℂ)^(s-1)
 private theorem int_density {s : ℂ} (hs : 0 < s.re) (a b : ℝ) :
     (∫ t in a..b, density s t) = (b:ℂ)^s-(a:ℂ)^s := by
   have h : -1 < (s-1).re := by simp only [Complex.sub_re,Complex.one_re]; linarith only [hs]
-  have hne : s ≠ 0 := fun h => by simpa [h] using hs
+  have hne : s ≠ 0 := fun h => by simp [h] at hs
   simp only [density]
   rw [intervalIntegral.integral_const_mul,integral_cpow (Or.inl h),sub_add_cancel]
   field_simp
 
 private theorem integrable_density {s : ℂ} (hs : 0 < s.re) (a b : ℝ) :
     IntervalIntegrable (density s) volume a b :=
-  (intervalIntegrable_cpow' (r := s-1) (by simp; linarith only [hs])).const_mul s
+  (intervalIntegral.intervalIntegrable_cpow' (r := s-1) (by simp; linarith only [hs])).const_mul s
 
 private theorem cont_tent (N : ℕ) : Continuous (tentSum N) := by
   unfold tentSum
@@ -167,11 +168,12 @@ private theorem cell_error_eq {s : ℂ} (hs : 0 < s.re) (N k : ℕ) :
   have hi := integrable_density hs (k:ℝ) (k+1:ℕ)
   unfold cellError
   simp only [mul_sub]
-  rw [intervalIntegral.integral_sub (hi.mul_const _) (hi.mul_continuousOn
-    (Complex.continuous_ofReal.comp (cont_tent N)).continuousOn),
+  rw [intervalIntegral.integral_sub
+    (f := fun t => density s t * (tentSum N (k+1:ℕ) : ℂ))
+    (g := fun t => density s t * (tentSum N t : ℂ)) (hi.mul_const _)
+    (hi.mul_continuousOn (Complex.continuous_ofReal.comp (cont_tent N)).continuousOn),
     intervalIntegral.integral_mul_const,int_density hs]
-  push_cast
-  rfl
+  simp only [ofReal_natCast]
 
 private theorem point_bound {s : ℂ} {N : ℕ} (hN : 0 < N) {d t : ℝ}
     (ht : 0 < t) (hdt : t ≤ d) :
@@ -182,12 +184,12 @@ private theorem point_bound {s : ℂ} {N : ℕ} (hN : 0 < N) {d t : ℝ}
 
 private theorem first_cell {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 0 < N) :
     ‖cellError s N 0‖ ≤ ‖s‖/s.re := by
-  change ‖∫ t in (0:ℝ)..1, density s t*((tentSum N 1:ℂ)-tentSum N t)‖ ≤ _
+  simp only [cellError,Nat.zero_add,Nat.cast_zero,Nat.cast_one]
   have hh : -1 < s.re-1 := by linarith only [hs]
   apply (intervalIntegral.norm_integral_le_of_norm_le zero_le_one
     (g := fun t => ‖s‖*t^(s.re-1)) (Eventually.of_forall fun t ht =>
       (point_bound hN ht.1 ht.2).trans (mul_le_of_le_one_right (by positivity)
-        (by simpa using ht.1.le : (1-t)/1 ≤ 1))) ((intervalIntegrable_rpow' hh).const_mul _)).trans_eq
+        (by simpa using ht.1.le : (1-t)/1 ≤ 1))) ((intervalIntegral.intervalIntegrable_rpow' hh).const_mul _)).trans_eq
   rw [intervalIntegral.integral_const_mul,integral_rpow (Or.inl hh),sub_add_cancel,Real.one_rpow,
     Real.zero_rpow hs.ne',sub_zero,mul_one_div]
 
@@ -197,7 +199,7 @@ private theorem later_cell {s : ℂ} (hs : s.re < 1) {N k : ℕ} (hN : 0 < N) (h
   have hk1 : (k:ℝ) ≤ (k+1:ℕ) := by exact_mod_cast Nat.le_succ k
   apply (intervalIntegral.norm_integral_le_of_norm_le_const (C := ‖s‖*(k:ℝ)^(s.re-2))
       (fun t ht => ?_)).trans_eq (by push_cast; simp)
-  rw [uIoc_of_le hk1] at ht
+  rw [Set.uIoc_of_le hk1] at ht
   have hr := Real.rpow_le_rpow_of_nonpos hk' ht.1.le (sub_nonpos.mpr hs.le)
   have hd : (((k+1:ℕ):ℝ)-t)/((k+1:ℕ):ℝ) ≤ 1/(k:ℝ) := by
     apply (div_le_div_of_nonneg_right _ (hk'.trans_le hk1).le).trans
@@ -207,7 +209,7 @@ private theorem later_cell {s : ℂ} (hs : s.re < 1) {N k : ℕ} (hN : 0 < N) (h
   apply (point_bound hN (hk'.trans ht.1) ht.2).trans
   apply (mul_le_mul (mul_le_mul_of_nonneg_left hr (norm_nonneg _)) hd
     (div_nonneg (sub_nonneg.mpr ht.2) (hk'.le.trans hk1)) (by positivity)).trans_eq
-  rw [show s.re-2=(s.re-1)-1 by ring,Real.rpow_sub_one hk'.ne']
+  rw [show s.re-2=(s.re-1)-1 by ring,Real.rpow_sub_one hk'.ne' (s.re-1)]
   ring
 
 /-- Replacing a continuous power density by its exact unit-cell masses
@@ -252,7 +254,7 @@ private theorem int_tent {s : ℂ} (hs : 0 < s.re) {j N : ℕ} (hj : 1 ≤ j) (h
   have hxN : x ≤ N := div_le_self hp.le hj'
   have hxe : x*j=N := div_mul_cancel₀ _ hj0.ne'
   have hxC : (x:ℂ) ≠ 0 := ofReal_ne_zero.mpr hxp.ne'
-  have hsC : s ≠ 0 := fun h => by simpa [h] using hs
+  have hsC : s ≠ 0 := fun h => by simp [h] at hs
   have hsp : s+1 ≠ 0 := by
     intro h
     have e := congrArg re h
@@ -264,7 +266,7 @@ private theorem int_tent {s : ℂ} (hs : 0 < s.re) {j N : ℕ} (hj : 1 ≤ j) (h
   have hzero : (∫ t in x..N, density s t*tent j N t) = 0 := by
     apply intervalIntegral.integral_zero_ae
     filter_upwards with t ht
-    rw [uIoc_of_le hxN] at ht
+    rw [Set.uIoc_of_le hxN] at ht
     have hh : (N:ℝ) ≤ j*t := by
       rw [← hxe,mul_comm (j:ℝ)]
       exact mul_le_mul_of_nonneg_right ht.1.le hj0.le
@@ -274,27 +276,25 @@ private theorem int_tent {s : ℂ} (hs : 0 < s.re) {j N : ℕ} (hj : 1 ≤ j) (h
       ∫ t in (0:ℝ)..x, density s t - (s/(x:ℂ))*(t:ℂ)^s := by
     apply intervalIntegral.integral_congr_ae
     filter_upwards with t ht
-    rw [uIoc_of_le hxp.le] at ht
+    rw [Set.uIoc_of_le hxp.le] at ht
     have hh : (j:ℝ)*t ≤ N := by
       rw [← hxe,mul_comm (j:ℝ)]
       exact mul_le_mul_of_nonneg_right ht.2 hj0.le
     have htC : (t:ℂ) ≠ 0 := ofReal_ne_zero.mpr ht.1.ne'
     have hpow : (t:ℂ)^s = (t:ℂ)^(s-1)*(t:ℂ) := by
-      rw [← Complex.cpow_add_one _ htC,sub_add_cancel]
-    have hex : ((j:ℝ)*t/N:ℂ)=(t:ℂ)/(x:ℂ) := by
-      change ((j:ℝ):ℂ)*(t:ℂ)/(N:ℂ)=(t:ℂ)/(x:ℂ)
-      dsimp only [x]; push_cast; field_simp
-    rw [density,tent,max_eq_left (sub_nonneg.mpr ((div_le_one hp).mpr hh)),ofReal_sub,
-      ofReal_one,ofReal_div,ofReal_mul,hex,hpow]
+      simpa only [sub_add_cancel,Complex.cpow_one] using Complex.cpow_add (s-1) 1 htC
+    have hex : (j:ℝ)*t/N=t/x := by dsimp only [x]; field_simp
+    rw [density,tent,max_eq_left (sub_nonneg.mpr ((div_le_one hp).mpr hh)),hex,ofReal_sub,
+      ofReal_one,ofReal_div,hpow]
     ring
   have hr : -1<s.re := by linarith only [hs]
   rw [he,intervalIntegral.integral_sub (integrable_density hs _ _)
-    ((intervalIntegrable_cpow' hr).const_mul _),int_density hs,
+    ((intervalIntegral.intervalIntegrable_cpow' hr).const_mul _),int_density hs,
     intervalIntegral.integral_const_mul,integral_cpow (Or.inl hr)]
   simp only [ofReal_zero,Complex.zero_cpow hsC,Complex.zero_cpow hsp,sub_zero]
-  rw [Complex.cpow_add_one _ hxC]
+  rw [Complex.cpow_add s 1 hxC,Complex.cpow_one]
   have hnC : (N:ℂ)^s=(x:ℂ)^s*(j:ℂ)^s := by
-    simpa only [hxe,ofReal_natCast] using Complex.mul_cpow_ofReal_nonneg hxp.le hj0.le s
+    simpa only [← ofReal_mul,hxe,ofReal_natCast] using Complex.mul_cpow_ofReal_nonneg hxp.le hj0.le s
   rw [hnC]
   have hjC : (j:ℂ)^s ≠ 0 := Complex.cpow_ne_zero_iff.mpr (Or.inl (Nat.cast_ne_zero.mpr (by omega)))
   field_simp
@@ -331,7 +331,7 @@ theorem paritySymbol_eq_dyadic_zeta {s : ℂ} (hs : 0 < s.re) (hs' : s.re < 1) :
   have hc : alternatingRowCoeffs alt 0=0 := by simp [alternatingRowCoeffs]
   have hA := HeckeLFunctions.differentiableOn_growthCont hc (le_refl 0) ha
   apply HTGeometry.eq_of_eq_on_one_lt_re (c := 0) (by norm_num) _ _ _ hs
-    (fun h => by simpa [h] using hs')
+    (fun h => by simp [h] at hs')
   · intro z hz _
     exact hA.differentiableAt ((isOpen_lt continuous_const continuous_re).mem_nhds hz)
   · intro z _ hz

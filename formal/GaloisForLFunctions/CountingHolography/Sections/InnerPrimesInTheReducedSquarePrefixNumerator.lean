@@ -93,10 +93,13 @@ private theorem central_bump_mass : ∃ c : ℝ, 0 < c ∧ ∀ {p M : ℕ}, 2 �
   obtain ⟨u,hu,hmin⟩ := isCompact_Icc.exists_isMinOn (Set.nonempty_Icc.mpr hl₄)
     continuous_splineAutoCorr.continuousOn
   let c := splineAutoCorr u
-  have hc : 0 < c := splineAutoCorr_interior (by rw [abs_of_nonneg hu.1]; linarith only [hu.2,
-    Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ)<4)])
+  have hl := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 4)
+  have hc : 0 < c := splineAutoCorr_interior (by
+    rw [abs_of_nonneg hu.1]
+    linarith only [hu.2,hl])
   refine ⟨c,hc,fun {p M} hp hM => ?_⟩
   let x := Real.sqrt p
+  change 2 ≤ x at hp
   have hx : 0 < x := lt_of_lt_of_le two_pos hp
   have hpx : x^2=(p:ℝ) := Real.sq_sqrt (Nat.cast_nonneg _)
   have hp' : (0:ℝ) < p := (sq_pos_of_pos hx).trans_eq hpx
@@ -129,7 +132,7 @@ private theorem central_bump_mass : ∃ c : ℝ, 0 < c ∧ ∀ {p M : ℕ}, 2 �
     _ = ∑ _j ∈ S, c*p := by simp
     _ ≤ ∑ j ∈ S, B p j := sum_le_sum hterm
     _ ≤ _ := sum_le_sum_of_subset_of_nonneg hsub fun j _ _ => B_nonneg _ _
-  exact (le_of_eq (show c*p=(2/x)*(x/2*(c*p)) by field_simp)).trans
+  exact (le_of_eq (show c*p=(2/x)*(x/2*(c*p)) by field_simp [hx.ne'])).trans
     (mul_le_mul_of_nonneg_left hsum (by positivity))
 
 /-- Every sufficiently large prime p occurs in the reduced numerator of
@@ -150,12 +153,15 @@ theorem inner_primes_in_reduced_square_prefix : ∃ c A : ℝ, 0 < c ∧ 0 < A �
   intro hp N hN
   let x := Real.sqrt p
   let M := ⌈A*x⌉₊
+  change 2 ≤ x at htwo
+  change 2*K*(A+1)/c ≤ x at hcost
   have hx : 0 < x := two_pos.trans_le htwo
   have hpx : x^2=(p:ℝ) := Real.sq_sqrt (Nat.cast_nonneg _)
   have hA₀ : 0 ≤ A := (by norm_num : (0:ℝ) ≤ 2).trans hA
   have hM : A*x ≤ (M:ℝ) := Nat.le_ceil _
   have hM' : (M:ℝ) ≤ (A+1)*x := by
-    linarith only [Nat.ceil_lt_add_one (mul_nonneg hA₀ hx.le),htwo]
+    have hceil : (M:ℝ) < A*x+1 := Nat.ceil_lt_add_one (mul_nonneg hA₀ hx.le)
+    linarith only [hceil,htwo]
   have hcut : Real.sqrt (D*p) ≤ M := by
     rw [Real.sqrt_mul (zero_le_one.trans hD)]
     exact (mul_le_mul_of_nonneg_right (show Real.sqrt D ≤ A by

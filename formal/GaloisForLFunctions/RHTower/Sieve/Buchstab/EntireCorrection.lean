@@ -59,6 +59,10 @@ private theorem momentWeight_integrable (k : ℕ) (z : ℂ) :
 /-- Signed Laplace moments with the sign appropriate to complex differentiation. -/
 def correctionMoment (k : ℕ) (z : ℂ) := ∫ t in Ioi (0:ℝ), momentWeight k z t
 
+theorem correctionMoment_eq_integral (k : ℕ) (z : ℂ) :
+    correctionMoment k z = ∫ t in Ioi (0:ℝ),
+      (-(t:ℂ))^k * ((buchstab t - enclosureLimit : ℝ) : ℂ) * Complex.exp (-z*t) := rfl
+
 /-- Every derivative is the next absolutely convergent moment, also in the left half-plane. -/
 theorem hasDerivAt_correctionMoment (k : ℕ) (z : ℂ) :
     HasDerivAt (correctionMoment k) (correctionMoment (k+1) z) z := by

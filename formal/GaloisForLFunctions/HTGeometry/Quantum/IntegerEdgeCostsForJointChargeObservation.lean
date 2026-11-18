@@ -38,6 +38,7 @@ theorem balanced_word (q b : ι → ℤ) (A : Matrix ι ι ℂ) (n : ℕ) (d : �
     · exact ⟨u,v,fun i => (prod_ne_zero_iff.mp h) i (mem_univ i),he,hb⟩
     · exact (h rfl).elim
 
+omit [Fintype ι] [DecidableEq ι] in
 private theorem append_word {q b : ι → ℤ} {A : Matrix ι ι ℂ} {n m : ℕ} {a d a' d' : ℤ}
     (h : Word q b A n a d) (h' : Word q b A m a' d') :
     Word q b A (n+m) (a+a') (d+d') := by
@@ -49,6 +50,14 @@ private theorem append_word {q b : ι → ℤ} {A : Matrix ι ι ℂ} {n m : ℕ
       (fun i => by simpa only [Fin.addCases_right] using hu' i) k
   all_goals simp only [displacement,Fin.sum_univ_add,Fin.addCases_left,Fin.addCases_right]
 
+omit [Fintype ι] [DecidableEq ι] in
+/-- Repeating a single oriented transition multiplies its charge gap by the word length. -/
+theorem constant_displacement (q : ι → ℤ) (n : ℕ) (i j : ι) :
+    displacement q (fun _ : Fin n => i) (fun _ => j) = n*(q i-q j) := by
+  change (∑ _ : Fin n, (q i-q j)) = _
+  rw [sum_const,card_univ,Fintype.card_fin,nsmul_eq_mul]
+
+omit [Fintype ι] [DecidableEq ι] in
 private theorem repeat_edge (q b : ι → ℤ) {A : Matrix ι ι ℂ} (ha : A.IsHermitian)
     (e : Edge A) (m : ℤ) :
     Word q b A m.natAbs (m*edgeGap q e) (m*edgeGap b e) := by
@@ -57,12 +66,12 @@ private theorem repeat_edge (q b : ι → ℤ) {A : Matrix ι ι ℂ} (ha : A.Is
     exact e.property (by rw [← ha.apply,he,star_zero])
   cases m with
   | ofNat j =>
-    refine ⟨fun _ => e.val.1,fun _ => e.val.2,fun _ => e.property,?_,?_⟩ <;>
-      simp [displacement,edgeGap,nsmul_eq_mul]
+    exact ⟨fun _ => e.val.1,fun _ => e.val.2,fun _ => e.property,
+      constant_displacement q j _ _,constant_displacement b j _ _⟩
   | negSucc j =>
+    change Word q b A (j+1) _ _
     refine ⟨fun _ => e.val.2,fun _ => e.val.1,fun _ => hrev,?_,?_⟩ <;>
-      simp only [displacement,edgeGap,sum_const,card_univ,Fintype.card_fin,Int.natAbs_negSucc,
-        nsmul_eq_mul,Int.negSucc_eq,Int.natCast_succ] <;> ring
+      rw [constant_displacement] <;> simp only [edgeGap,Int.negSucc_eq,Int.natCast_succ] <;> ring
 
 /-- A balanced pair of signed edges yields a frequency at the sum of its
 two absolute multiplicities. -/
@@ -82,7 +91,7 @@ theorem word_of_coefficients (q b : ι → ℤ) {A : Matrix ι ι ℂ} (ha : A.I
     induction s using Finset.induction_on with
     | empty =>
       simp only [sum_empty]
-      exact ⟨Fin.elim0,Fin.elim0,Fin.elim0,by simp [displacement],by simp [displacement]⟩
+      exact ⟨Fin.elim0,Fin.elim0,fun k => Fin.elim0 k,by simp [displacement],by simp [displacement]⟩
     | insert i s hi ih =>
       simp only [sum_insert hi]
       exact append_word (repeat_edge q b ha i (c i)) ih
@@ -98,7 +107,7 @@ theorem coefficients_of_word {q b : ι → ℤ} {A : Matrix ι ι ℂ} {n : ℕ}
   let E (k : Fin n) : Edge A := ⟨(u k,v k),ha k⟩
   let c (e : Edge A) := (univ.filter (fun k => E k=e)).card
   have count (f : ι → ℤ) : (∑ e, (c e : ℤ)*edgeGap f e)=displacement f u v := by
-    simpa [c,E,edgeGap,displacement,nsmul_eq_mul] using
+    simpa [c,E,edgeGap,displacement,nsmul_eq_mul,mul_sub,sum_sub_distrib] using
       sum_fiberwise_eq_sum_filter' univ univ E (edgeGap f)
   refine ⟨c,?_,count q,count b⟩
   simpa only [card_univ,Fintype.card_fin] using
@@ -140,3 +149,4 @@ end GaloisForLFunctions.HTGeometry.Quantum.TensorObservation
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.some_copy_iff
 
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.pair_frequency
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.constant_displacement

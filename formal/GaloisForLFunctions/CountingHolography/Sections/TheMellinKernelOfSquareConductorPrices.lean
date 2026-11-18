@@ -217,12 +217,12 @@ private theorem squareConductorBVWindow_apply {t : ℝ} (ht : 0 < t) :
   have hzero (x : ℝ) (hx : 8 < |x|) := splineAutoCorr_zero_outside hx
   rcases lt_or_ge t lo with htlo|htlo
   · have hx := (Real.log_lt_iff_lt_exp ht).mpr htlo
-    have h₁ : 8 < |-2*Real.log t| := by linarith only [hx,le_abs_self (-2*Real.log t)]
-    have h₂ : 8 < |-2*Real.log t-Real.log 4| := by linarith only [hx,hb,le_abs_self (-2*Real.log t-Real.log 4)]
+    have h₁ : 8 < | -2*Real.log t| := by linarith only [hx,le_abs_self (-2*Real.log t)]
+    have h₂ : 8 < | -2*Real.log t-Real.log 4| := by linarith only [hx,hb,le_abs_self (-2*Real.log t-Real.log 4)]
     simp [rootWindowRaw,squareLogProfile,hzero _ h₁,hzero _ h₂]
   · have hx := (Real.lt_log_iff_exp_lt ht).mpr (lt_of_not_ge fun hhi => h ⟨htlo,hhi⟩)
-    have h₁ : 8 < |-2*Real.log t| := by linarith only [hx,neg_abs_le (-2*Real.log t)]
-    have h₂ : 8 < |-2*Real.log t-Real.log 4| := by linarith only [hx,hb₀,neg_abs_le (-2*Real.log t-Real.log 4)]
+    have h₁ : 8 < | -2*Real.log t| := by linarith only [hx,neg_abs_le (-2*Real.log t)]
+    have h₂ : 8 < | -2*Real.log t-Real.log 4| := by linarith only [hx,hb₀,neg_abs_le (-2*Real.log t-Real.log 4)]
     simp [rootWindowRaw,squareLogProfile,hzero _ h₁,hzero _ h₂]
 
 /-- The real-mesh window carries precisely the dyadic Mellin multiplier. -/
@@ -392,7 +392,7 @@ private theorem mesh_column (W : CompactBVPrimeWindow) (s : ℂ) (k : ℕ) :
     have hgt : N < n := by have h := mt mem_range.mpr hn; omega
     have hcast : W.upper*t < (n:ℝ) := (Nat.le_ceil _).trans_lt (Nat.cast_lt.mpr hgt)
     have hoff : (n:ℝ)/t ∉ Set.Icc W.lower W.upper :=
-      fun h => (lt_div_iff₀ ht |>.mpr hcast).not_ge h.2
+      fun h => ((lt_div_iff₀ ht).mpr hcast).not_ge h.2
     rw [meshTerm,LSeries.term_of_ne_zero (by omega),rootMeshRow,W.eq_zero_off_support _ hoff,mul_zero,zero_div]
   let A := (vonMangoldt k:ℂ)*(k:ℂ)^(1-s/2)
   have hi (i : ℕ) : meshTerm W s (i+1,k)=A*((1/t:ℝ):ℂ)*W.mellinIntegrand s (((i+1:ℕ):ℝ)/t) := by
@@ -449,7 +449,7 @@ private theorem reading_abscissa {g : ℝ → ℝ} {K : ℝ≥0} (hg : Lipschitz
   have hbound (n : ℕ) (hn : n≠0) : ‖squareValuationReadingError g n‖ ≤ ((K:ℝ)*C)*(n:ℝ)^2 := by
     rw [squareValuationReadingError,Complex.norm_real,Real.norm_eq_abs]
     have hrow (p : ℕ) : |(g (deningerRatExp (q n) p:ℝ)-g (diagonalPrimeProfile n p))*vonMangoldt p| ≤
-        K*(|(deningerRatExp (q n) p:ℝ)-diagonalPrimeProfile n p|*vonMangoldt p) := by
+        K*(|(deningerRatExp (q n) p:ℝ)-diagonalPrimeProfile n p| * vonMangoldt p) := by
       rw [abs_mul,abs_of_nonneg vonMangoldt_nonneg,← mul_assoc]
       exact mul_le_mul_of_nonneg_right (by simpa only [Real.dist_eq] using
         hg.dist_le_mul (deningerRatExp (q n) p:ℝ) (diagonalPrimeProfile n p)) vonMangoldt_nonneg

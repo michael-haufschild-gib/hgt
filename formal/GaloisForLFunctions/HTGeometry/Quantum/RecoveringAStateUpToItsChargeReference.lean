@@ -52,7 +52,7 @@ private theorem constant_block (q : ι → ℤ) {A B : Matrix ι ι ℂ} (i j : 
     (ha : A i j≠0) (h : B i j=(u : ℂ)*A i j) (k : ℕ) :
     phaseBlock q A B k ((k : ℤ)*(q i-q j)) (u^k) := by
   refine ⟨fun _ => i,fun _ => j,?_,?_,?_⟩
-  · simp [displacement,nsmul_eq_mul]
+  · exact constant_displacement q k i j
   · simpa using pow_ne_zero k ha
   · simp [h,mul_pow]
 

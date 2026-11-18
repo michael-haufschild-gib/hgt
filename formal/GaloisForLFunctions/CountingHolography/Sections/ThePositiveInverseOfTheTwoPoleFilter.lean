@@ -36,7 +36,7 @@ private theorem lower_of_step {ι : Type*} {X f : ι → ℝ} {s : ι → ι} {r
     (hs : ∀ i, X (s i) ≤ r*X i) (hf : controlled X f)
     (h : ∀ i, A ≤ step s f i) : ∀ i, A ≤ f i := by
   obtain ⟨C,hC,hC'⟩ := hf
-  let B := |A|+C
+  let B := |A| + C
   have hB : 0 ≤ B := add_nonneg (abs_nonneg _) hC
   have hr0 : 0 ≤ r/2 := half_nonneg hr
   have hiter (k : ℕ) : ∀ i, A-f i ≤ B*(r/2)^k*X i := by
@@ -106,7 +106,7 @@ theorem twoPoleTrace_lower_on_orbit {t A : ℝ}
   have hX (j : ℤ) : 1 ≤ X j := Real.one_le_exp (mul_nonneg hw (abs_nonneg _))
   have hp (j : ℤ) : u (p j) = u j+d := by dsimp only [u,p]; push_cast; ring
   have hm (j : ℤ) : u (m j) = u j-d := by dsimp only [u,m]; push_cast; ring
-  have hg {x y : ℝ} (hxy : |y| ≤ |x|+d) : Real.exp (w*|y|) ≤ r*Real.exp (w*|x|) := by
+  have hg {x y : ℝ} (hxy : |y| ≤ |x| + d) : Real.exp (w*|y|) ≤ r*Real.exp (w*|x|) := by
     unfold r
     rw [← Real.exp_add]
     exact Real.exp_le_exp.mpr (by linarith only [mul_le_mul_of_nonneg_left hxy hw])

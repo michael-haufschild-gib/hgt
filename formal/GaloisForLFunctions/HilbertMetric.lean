@@ -209,6 +209,7 @@ import GaloisForLFunctions.HilbertMetric.Transport.HalfDensityDefect
 import GaloisForLFunctions.HilbertMetric.Kernels.CubicCauchyConvexity
 import GaloisForLFunctions.HilbertMetric.Kernels.GaussianCollocation
 import GaloisForLFunctions.HilbertMetric.Kernels.GaussianBernoulliSmoothing
+import GaloisForLFunctions.HilbertMetric.Kernels.GaussianInverseMinors
 
 import GaloisForLFunctions.HilbertMetric.QuantumWalk.Compression
 import GaloisForLFunctions.HilbertMetric.QuantumWalk.IdempotentCalculus

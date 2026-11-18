@@ -50,7 +50,7 @@ private theorem f_sublinear : Tendsto (fun n : ℕ => f n/X n) atTop (𝓝 0) :=
   refine Eventually.of_forall fun n => ?_
   have hx' := zero_lt_one.trans_le (X_one n)
   rw [Real.norm_eq_abs,abs_div,abs_of_pos hx']
-  change |f n|/X n ≤ C*(X n)^(-(1-2*zetaZeroWidth))
+  change |f n| / X n ≤ C*(X n)^(-(1-2*zetaZeroWidth))
   rw [show -(1-2*zetaZeroWidth)=2*zetaZeroWidth-1 by ring,Real.rpow_sub hx',Real.rpow_one,← mul_div_assoc]
   exact div_le_div_of_nonneg_right (h n) hx'.le
 
@@ -62,7 +62,7 @@ private theorem four_lag_error : ∃ D : ℝ, 0 ≤ D ∧ ∀ n : ℕ, 0 < n →
   let H := Real.log 4
   let K := |C| * Real.exp (w*(2*H))
   have hK : 0 ≤ K := mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
-  refine ⟨10*|realSplineTrace 0|+8*K+240*L,by positivity,fun n hn => ?_⟩
+  refine ⟨10*|realSplineTrace 0| + 8*K+240*L,by positivity,fun n hn => ?_⟩
   let s := 2*X n
   let r := (4*(n:ℝ)+3)/(2*n)
   let t := 2*Real.log s

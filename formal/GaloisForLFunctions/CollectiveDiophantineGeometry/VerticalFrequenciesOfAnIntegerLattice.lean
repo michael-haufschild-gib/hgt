@@ -30,11 +30,12 @@ def vertical (q b : ι → ℤ) : AddSubgroup ℤ where
     rintro d ⟨u,hu,rfl⟩
     exact ⟨-u,by rw [neg_dotProduct,hu,neg_zero],neg_dotProduct ..⟩
 
+omit [DecidableEq ι] in
 private theorem polarization (q b u c : ι → ℤ) :
     (u ⬝ᵥ q)*(c ⬝ᵥ b)-(c ⬝ᵥ q)*(u ⬝ᵥ b) =
       ∑ i, ∑ j, (u i*c j)*minorColumn q b (i,j) := by
   rw [mul_comm (c ⬝ᵥ q) (u ⬝ᵥ b)]
-  simp only [dotProduct,sum_mul,mul_sum,← sum_sub_distrib]
+  simp only [dotProduct,sum_mul_sum,← sum_sub_distrib]
   apply sum_congr rfl
   intro i _
   apply sum_congr rfl
@@ -62,6 +63,7 @@ theorem normalized_minor_mem {q w : ι → ℤ} (b : ι → ℤ) (g : ℤ) (hq :
     ring
   · simp only [sub_dotProduct,single_dotProduct,minorColumn]
 
+omit [DecidableEq ι] in
 private theorem normalized_coordinates {q w : ι → ℤ} (b : ι → ℤ) (g : ℤ)
     (hg : g≠0) (hq : q=g • w) (f : ι × ι → ℤ) {d : ℤ} (hf : f ⬝ᵥ minorColumn q b=g*d) :
     (∑ i, f i*minorColumn w b i)=d := by

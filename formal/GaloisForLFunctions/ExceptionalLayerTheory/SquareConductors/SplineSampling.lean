@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CountingHolography.Sections.CriticalZerosSeparateThePrimeProfileFromFactorialKernels
+import GaloisForLFunctions.CountingHolography.Sections.ANegativePrimeWindowAtEveryMultiplicity
 import GaloisForLFunctions.RHTower.ThetaIntegerCutoffMovingPacket
 
 /-!
@@ -12,6 +13,7 @@ count and for errors in a primitive of that count.
 
 noncomputable section
 open Finset Filter Topology MeasureTheory
+open scoped NNReal
 open GaloisForLFunctions.CountingHolography.Sections
 open GaloisForLFunctions.ArithmeticWeightTheory GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge RHTower.WeilDeletion
@@ -177,7 +179,7 @@ theorem sampledSpline_differences :
   have e₁ : ((k+1:ℕ):ℝ)/(n:ℝ)^2=x+h := by dsimp only [x,h]; push_cast; ring
   have e₂ : ((k+2:ℕ):ℝ)/(n:ℝ)^2=x+h+h := by dsimp only [x,h]; push_cast; ring
   have h₁ : |dyadicSpline x-dyadicSpline (x+h)| ≤ B*h := by
-    simpa only [Real.dist_eq,sub_add_cancel_left,abs_neg,abs_of_nonneg hh,
+    simpa only [Real.dist_eq,abs_neg,abs_of_nonneg hh,
       show x-(x+h) = -h by ring] using hB.dist_le_mul x (x+h)
   have h₂ := translated_increment hC x h
   rw [abs_of_nonneg hh] at h₂

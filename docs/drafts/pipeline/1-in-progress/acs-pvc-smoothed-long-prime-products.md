@@ -1,8 +1,14 @@
 # The long coprime product on square conductors
 
-**ACS × PVC · In progress.** For the spline autocorrelation A, put
-wₙ(k) = 2[2A(log(k/n²)) − A(log(k/(4n²)))]/√k. The target is a uniform one-sided subpower bound on its ordinary-prime sum, with the original common cutoff.
+**ACS × PVC · In progress.** Write x=n², L=3·windowEnd((2n+1)²+1), and
+w(k)=2[2A(log(k/x))−A(log(k/(4x)))]/√k. The target is a uniform one-sided subpower bound on the ordinary-prime sum with this common cutoff.
 
-At an adjacent first-octave pair isolating p = 2t+1, test both cofactor sums on the same function of the divided horizon. Their difference at pN isolates the negative of that function at N. Thus changing the cofactor cannot yield further cancellation between these two octaves after the common long-product approximation. Use finite partial summation on the signed spline to keep the cutoff term and estimate the cost of replacing the centered prime count by the long product.
+**Arithmetic reduction.** For each k use D=⌊1+log k⌋ and R(k)=remainingPrimeProducts(D,D,k), with the quotient, coprimality and both deletions in that definition. An adjacent-octave pair isolating p=2t+1 acts on every row f at pN as −f(N). In the all-width error estimate the unit cofactor (V,W)=(0,1) directly gives θ(k)−k=R(k)+O(√k(1+log k)⁶). Thus the cofactor norm costs one at this step. The spline vanishes at L+1. Its density sum is O(1/n) by right-endpoint quadrature of its zero-mean profile. Partial summation therefore gives
+[
+ D_n=sum_{k=1}^L (w(k)-w(k+1))R(k)+O((1+log L)^6).
+]
+Here L≪n² and the first mesh difference is O(n⁻³).
 
-For a fixed product q = pv, each centered fractional-part divisor test has period dq in the horizon. Its complete integer periods have bias −1/(2dq). The reciprocal moment of the full stencil should cancel this bias. Seek a uniform primitive bound polynomial in the logarithmic cutoffs and linear in q, including incomplete periods. Applied before summing products, such a bound could remove part of the range beyond the square-root product window. The larger products still require a signed prime estimate.
+**Product range.** At q=pv, the discrete mean of the divisor test {k/(dq)}−½ is −1/(2dq). The full stencil annihilates the reciprocal divisor weight, including both parity corrections. On any interval of k its primitive consequently has size O((1+mass(R))R²q). Lean verifies the interval bound in [HorizonCancellation](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/HorizonCancellation.lean). For products q≤U with independent horizon endpoints per pair, summing the primitive costs O((1+mass(D+1))(1+mass(R))R²U²(1+log U)). Partial summation against the first mesh difference costs O(n⁻³) because its successive difference is O(n⁻⁵). The resulting bound is logarithmic for fixed stencils through U=n⌊√n⌋. Here smoothing is in the prime-count horizon inside one conductor, with the original two dilations retained.
+
+**Open estimate.** Isolate a band in the actual logarithmic-stencil row with these endpoints and bound the complementary signed sum. A bound on the whole reading of order xˢ for one 0<s<8999/24000 would improve the strip. Bounds for every s>0 would close it.

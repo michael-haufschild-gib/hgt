@@ -246,10 +246,10 @@ private def phase (u y : ℝ) : ℂ := Complex.exp ((u*y:ℝ)*Complex.I)
 
 private theorem phase_half_period {y : ℝ} (hy : y ≠ 0) : phase (Real.pi/|y|) y = -1 := by
   rcases lt_or_gt_of_ne hy with h | h
-  · have he : Real.pi/|y|*y = -Real.pi := by rw [abs_of_neg h]; field_simp
+  · have he : Real.pi/|y| * y = -Real.pi := by rw [abs_of_neg h]; field_simp
     rw [phase,he,Complex.ofReal_neg,neg_mul,Complex.exp_neg,Complex.exp_pi_mul_I]
     norm_num
-  · have he : Real.pi/|y|*y = Real.pi := by rw [abs_of_pos h,div_mul_cancel₀ _ hy]
+  · have he : Real.pi/|y| * y = Real.pi := by rw [abs_of_pos h,div_mul_cancel₀ _ hy]
     rw [phase,he,Complex.exp_pi_mul_I]
 
 /-- Averaging over the half-periods of finitely many nonzero frequencies
@@ -309,7 +309,7 @@ theorem factorial_budget_at_cluster_of_critical_zeros {C R : ℝ} (hR : 0 < R) (
       (∀ j, 0 < a j) ∧ IntegrableOn (fun v => ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖) (Ioi 0) ∧
       (∀ v > 0, ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖ ≤ C*X^(1/2:ℝ)) ∧
       (∫ v in Ioi 0, ‖squarePrimeWeight v-NymanMellin.nymanCombination c a v‖) ≤ C*X^(1/2:ℝ)/X) :
-    (1/2-R)*‖mellin squarePrimeWeight ρ‖ ≤ C*(∏ y ∈ S, |y|/R) := by
+    (1/2-R)*‖mellin squarePrimeWeight ρ‖ ≤ C*(∏ y ∈ S, |y| / R) := by
   classical
   obtain ⟨T,hT⟩ := eventually_atTop.mp hbudget
   let u₀ := max T 0
@@ -369,7 +369,7 @@ theorem factorial_budget_at_cluster_of_critical_zeros {C R : ℝ} (hR : 0 < R) (
     congr 2; ring
   obtain ⟨φ,hbd,hφ,hzeros⟩ := average_disk_zeros S z _ _ (fun y hy => (hS y hy).1) F
     (fun u _ => hD u) (fun u _ => hB u) (fun u _ => hcenter u) hwave
-  have hzNorm (y : ℝ) : ‖z y‖ = |y|/R := by
+  have hzNorm (y : ℝ) : ‖z y‖ = |y| / R := by
     simp only [z,norm_div,norm_mul,Complex.norm_real,Real.norm_eq_abs,Complex.norm_I,mul_one,abs_of_pos hR]
   have hinj : Function.Injective z := by
     intro a b h

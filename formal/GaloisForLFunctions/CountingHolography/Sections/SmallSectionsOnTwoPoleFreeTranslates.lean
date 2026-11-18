@@ -82,7 +82,7 @@ theorem twoPolePair_mass (p q : ℕ) : ∑ i, |(twoPolePair p q i:ℝ)| ≤ 18 :
     (threeGraphDivisor_mass _ _ _ _ _ _).trans (by norm_num)
   let a := translatedTwoPole p (N := N) (by dsimp [N]; omega)
   let b := translatedTwoPole q (N := N) (by dsimp [N]; omega)
-  calc _ ≤ ∑ i, (|(a i:ℝ)|+|(b i:ℝ)|) := sum_le_sum fun i _ => by
+  calc _ ≤ ∑ i, (|(a i:ℝ)| + |(b i:ℝ)|) := sum_le_sum fun i _ => by
              change |((a i+b i:ℤ):ℝ)| ≤ _
              rw [Int.cast_add]
              exact abs_add_le _ _

@@ -39,7 +39,7 @@ theorem omegaConstant_mem : omegaConstant ∈ Ioo (1/2 : ℝ) 1 :=
 private theorem omega_pos : 0 < omegaConstant := lt_trans (by norm_num) omegaConstant_mem.1
 
 private theorem log_omega : Real.log omegaConstant = -omegaConstant := by
-  linarith only [(Classical.choose_spec exists_log_root).2]
+  exact eq_neg_of_add_eq_zero_left (Classical.choose_spec exists_log_root).2
 
 theorem omegaConstant_mul_exp : omegaConstant * Real.exp omegaConstant = 1 := by
   calc
@@ -63,29 +63,29 @@ private theorem peak_eq_iff (x : ℝ) : omegaConstant * (1+x) = 1 ↔ x = peakOf
     linarith only [show (x+1)*omegaConstant = omegaConstant*(1+x) by ring, h]
   · rintro rfl
     field_simp [omega_pos.ne']
-    <;> ring
+    ring
 
 /-- The deficit from the maximum is the logarithmic tangent deficit,
 evaluated at the scaled argument. -/
 theorem peak_deficit (x : Ici (0:ℝ)) :
     (2+x.val) * (omegaConstant - profile 1 x.val) =
       omegaConstant*(1+x.val) - 1 - Real.log (omegaConstant*(1+x.val)) := by
-  have hp : 0 < 1+x.val := by linarith [x.property]
-  have hd : 2+x.val ≠ 0 := by linarith [x.property]
+  have hp : 0 < 1+x.val := by linarith only [show 0 ≤ x.val from x.property]
+  have hd : 2+x.val ≠ 0 := by linarith only [show 0 ≤ x.val from x.property]
   rw [profile_one_formula x, Real.log_mul omega_pos.ne' hp.ne', log_omega]
   field_simp [hd]
-  <;> ring
+  ring
 
 theorem profile_one_le_peak (x : Ici (0:ℝ)) : profile 1 x.val ≤ omegaConstant := by
-  have hp : 0 < 1+x.val := by linarith [x.property]
-  have hd : 0 < 2+x.val := by linarith [x.property]
+  have hp : 0 < 1+x.val := by linarith only [show 0 ≤ x.val from x.property]
+  have hd : 0 < 2+x.val := by linarith only [show 0 ≤ x.val from x.property]
   have hz := Real.log_le_sub_one_of_pos (mul_pos omega_pos hp)
   have h : 0 ≤ (2+x.val) * (omegaConstant-profile 1 x.val) := by rw [peak_deficit x]; linarith
   exact sub_nonneg.mp ((mul_nonneg_iff_of_pos_left hd).mp h)
 
 theorem profile_one_eq_peak_iff (x : Ici (0:ℝ)) : profile 1 x.val = omegaConstant ↔ x.val = peakOffset := by
-  have hp : 0 < 1+x.val := by linarith [x.property]
-  have hd : 0 < 2+x.val := by linarith [x.property]
+  have hp : 0 < 1+x.val := by linarith only [show 0 ≤ x.val from x.property]
+  have hd : 0 < 2+x.val := by linarith only [show 0 ≤ x.val from x.property]
   constructor
   · intro h
     by_contra hn
@@ -112,9 +112,9 @@ theorem later_profile_lt_peak (n : ℕ) : ∀ x ∈ Icc (0:ℝ) 1, profile (n+2)
   induction n with
   | zero =>
     apply propagate_strict 1
-    · apply lt_of_le_of_ne (profile_one_le_peak ⟨1,zero_le_one⟩)
+    · apply lt_of_le_of_ne (profile_one_le_peak ⟨1,show (0:ℝ) ≤ 1 from zero_le_one⟩)
       intro h
-      exact peakOffset_mem.2.ne ((profile_one_eq_peak_iff ⟨1,zero_le_one⟩).mp h).symm
+      exact peakOffset_mem.2.ne ((profile_one_eq_peak_iff ⟨1,show (0:ℝ) ≤ 1 from zero_le_one⟩).mp h).symm
     · exact fun z hz => profile_one_le_peak ⟨z,hz.1⟩
   | succ n ih =>
     exact propagate_strict (n+2) (ih 1 ⟨zero_le_one,le_rfl⟩) (fun z hz => (ih z hz).le)
@@ -167,7 +167,7 @@ theorem buchstab_tail_range : buchstab '' Ici (2:ℝ) = Icc (1/2) omegaConstant 
   · intro hz
     obtain ⟨n,x,hx,rfl⟩ := mem_iUnion.mp hz
     refine ⟨((n+1:ℕ):ℝ)+1+x,?_,buchstab_cell (n+1) x hx⟩
-    change 2 ≤ _
+    rw [mem_Ici]
     push_cast
     linarith [Nat.cast_nonneg (α := ℝ) n,hx.1]
 
@@ -207,20 +207,26 @@ private theorem log_branch_gt_half {x : ℝ} (hx : x ∈ Ioc (0:ℝ) 1) : 1/2 < 
   linarith
 
 private theorem later_gt_half (n : ℕ) (x : Icc (0:ℝ) 1) : 1/2 < profile (n+2) x := by
-  have hnest (k : ℕ) : Icc (enclosure (k+2)).1 (enclosure (k+2)).2 ⊆
-      Icc (enclosure 2).1 (enclosure 2).2 := by
-    induction k with
-    | zero => exact Subset.rfl
-    | succ k ih => exact (enclosure_nested (k+2)).trans ih
-  have hl := (hnest n (profile_mem_enclosure _ x x.property)).1
-  have h₁ := log_branch_gt_half (x := 1) ⟨zero_lt_one,le_rfl⟩
-  have hbase : (enclosure 1).1 = 1/2 := by
-    change profile 0 1 + ((1/2:ℝ)-profile 0 1)/3 = 1/2
-    norm_num [profile,intervalMass]
-  change profile 1 1 + ((enclosure 1).1-profile 1 1)/((1:ℕ)+3:ℝ) ≤ profile (n+2) x at hl
-  rw [hbase] at hl
-  norm_num at hl
-  linarith
+  have step (k : ℕ) (he : 1/2 < profile k 1)
+      (hall : ∀ z ∈ Icc (0:ℝ) 1, 1/2 ≤ profile k z) (y : Icc (0:ℝ) 1) :
+      1/2 < profile (k+1) y := by
+    have hi := intervalIntegral.integral_mono_on y.property.1 (intervalIntegrable_const (c := (1/2:ℝ)))
+      ((profile_continuous k).intervalIntegrable (μ := volume) 0 y)
+      (fun z hz => hall z ⟨hz.1,hz.2.trans y.property.2⟩)
+    have hI : y.val*(1/2) ≤ ∫ z in (0:ℝ)..y.val, profile k z := by simpa using hi
+    rw [profile_succ_mean k y.property.1,lt_div_iff₀
+      (show 0 < (k:ℝ)+2+y.val by linarith [Nat.cast_nonneg (α := ℝ) k,y.property.1])]
+    nlinarith only [hI,mul_lt_mul_of_pos_left he (show 0 < (k:ℝ)+2 by positivity)]
+  induction n generalizing x with
+  | zero =>
+    apply step 1 (log_branch_gt_half ⟨zero_lt_one,le_rfl⟩)
+    intro z hz
+    rcases eq_or_lt_of_le hz.1 with h | h
+    · subst z
+      norm_num [profile_glue,profile,intervalMass]
+    · exact (log_branch_gt_half ⟨h,hz.2⟩).le
+  | succ n ih =>
+    exact step (n+2) (ih ⟨1,zero_le_one,le_rfl⟩) (fun z hz => (ih ⟨z,hz⟩).le) x
 
 /-- The tail minimum is attained only at the corner at two. -/
 theorem buchstab_eq_half_iff (u : Ici (2:ℝ)) : buchstab u = 1/2 ↔ u.val = 2 := by
@@ -250,7 +256,7 @@ private theorem log_value {u : ℝ} (hu : u ∈ Icc (2:ℝ) 3) :
     buchstab u = (1+Real.log (u-1))/u := by
   have hx : u-2 ∈ Icc (0:ℝ) 1 := ⟨by linarith [hu.1],by linarith [hu.2]⟩
   have h := buchstab_cell 1 (u-2) hx
-  rw [show ((1:ℕ):ℝ)+1+(u-2) = u by norm_num; ring,
+  rw [show ((1:ℕ):ℝ)+1+(u-2) = u by norm_num,
     profile_one_formula ⟨u-2,hx.1⟩] at h
   simpa only [show 1+(u-2) = u-1 by ring,show 2+(u-2) = u by ring] using h
 
@@ -258,11 +264,13 @@ private theorem log_value {u : ℝ} (hu : u ∈ Icc (2:ℝ) 3) :
 theorem buchstab_slopes_two :
     HasDerivWithinAt buchstab (-(1/4)) (Iic 2) 2 ∧ HasDerivWithinAt buchstab (1/4) (Ici 2) 2 := by
   have hl : HasDerivAt (fun u : ℝ => 1/u) (-(1/4)) 2 := by
-    convert (hasDerivAt_const (2:ℝ) (1:ℝ)).div (hasDerivAt_id 2) (by norm_num) using 1 <;> norm_num
+    apply ((hasDerivAt_const (2:ℝ) (1:ℝ)).fun_div (hasDerivAt_id (2:ℝ)) (by norm_num)).congr_deriv
+    norm_num
   have hshift : HasDerivAt (fun u : ℝ => u-1) 1 2 := (hasDerivAt_id (2:ℝ)).sub_const 1
   have hl' := hshift.log (by norm_num : (2:ℝ)-1 ≠ 0)
   have hr : HasDerivAt (fun u : ℝ => (1+Real.log (u-1))/u) (1/4) 2 := by
-    convert (hl'.const_add 1).div (hasDerivAt_id _) (by norm_num) using 1 <;> norm_num
+    apply ((hl'.const_add 1).fun_div (hasDerivAt_id (2:ℝ)) (by norm_num)).congr_deriv
+    norm_num
   constructor
   · apply hl.hasDerivWithinAt.congr_of_eventuallyEq _ (initial_value ⟨by norm_num,le_rfl⟩)
     filter_upwards [Ioc_mem_nhdsLE (show (1:ℝ)<2 by norm_num)] with t ht

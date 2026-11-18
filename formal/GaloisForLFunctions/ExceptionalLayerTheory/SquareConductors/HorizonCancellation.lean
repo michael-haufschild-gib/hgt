@@ -39,9 +39,9 @@ private theorem corrected_bound {R : ℕ} (hR : 1 ≤ R) (f : ℕ → ℝ) {M : 
     dsimp [a]; omega
   have h₁ := abs_stencil_le hR f fun d hd =>
     hf d (mem_Icc.mpr ⟨(mem_Icc.mp hd).1,by have := (mem_Icc.mp hd).2; change d ≤ 128*a; omega⟩)
-  have h₂ := parityFunctional_bound (a := R) (f := f) fun d hd =>
+  have h₂ := parityFunctional_bound (R := R) (f := f) fun d hd =>
     hf d (mem_Icc.mpr ⟨hR.trans (mem_Icc.mp hd).1,by have := (mem_Icc.mp hd).2; change d ≤ 128*a; omega⟩)
-  have h₃ := parityFunctional_bound (a := a) (f := f) fun d hd =>
+  have h₃ := parityFunctional_bound (R := a) (f := f) fun d hd =>
     hf d (mem_Icc.mpr ⟨(hR.trans hra).trans (mem_Icc.mp hd).1,(mem_Icc.mp hd).2⟩)
   have hm := (abs_nonneg _).trans (abs_prefix_le_mass hR 0)
   unfold correctedStencil

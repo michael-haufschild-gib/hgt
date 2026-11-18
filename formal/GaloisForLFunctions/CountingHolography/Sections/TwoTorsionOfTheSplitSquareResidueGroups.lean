@@ -61,8 +61,8 @@ theorem card_splitResidueUnits_two_torsion (m : ℕ) :
     split_ifs <;> simp
   simp_rw [h]
   rw [prod_pow_eq_pow_sum,oddFactorCount]
-  congr 1
-  exact sum_attach _ _
+  exact congrArg (fun j : ℕ => 2^j)
+    (sum_attach m.primeFactors (fun p : ℕ => if p = 2 then 0 else m.factorization p))
 
 private abbrev q (n : ℕ) := ordinaryPrimeGenerator (n • successorSquareTriple n)
 private abbrev T (n : ℕ) := Real.log ((n:ℝ)^2)
@@ -86,7 +86,7 @@ theorem square_exponent_at_two : ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ n : ℕ in atTo
     change (n:ℝ)^2 * ((2/Real.sqrt 2) * (2*splineAutoCorr (Real.log 2-T n)-splineAutoCorr (Real.log 2-T n-Real.log 4))) = 0
     rw [h₁,h₂]; ring
   by_cases hmem : 2 ∈ S
-  · have he := (single_le_sum (f := fun p => |(deningerRatExp (q n) p:ℝ)-diagonalPrimeProfile n p|*vonMangoldt p)
+  · have he := (single_le_sum (f := fun p => |(deningerRatExp (q n) p:ℝ)-diagonalPrimeProfile n p| * vonMangoldt p)
         (fun p _ => mul_nonneg (abs_nonneg _) vonMangoldt_nonneg) hmem).trans (hrow hn)
     rw [hz,sub_zero,vonMangoldt_apply_prime Nat.prime_two,Nat.cast_ofNat] at he
     exact ((le_div_iff₀ hlog).mpr he).trans_eq (by ring)
@@ -137,7 +137,10 @@ private theorem two_torsion_le_kernel_mul {G H : Type*} [CommGroup G] [CommGroup
     map_one' := Subtype.ext f.map_one
     map_mul' := fun a b => Subtype.ext (f.map_mul _ _) }
   let i : g.ker → f.ker := fun x => ⟨x.val.val,congrArg Subtype.val x.property⟩
-  have hi : Function.Injective i := fun _ _ h => Subtype.ext (Subtype.ext (congrArg Subtype.val h))
+  have hi : Function.Injective i := by
+    intro x y h
+    have he := congrArg (fun z : f.ker => z.val) h
+    exact Subtype.ext (Subtype.ext he)
   have hk := Nat.card_le_card_of_injective i hi
   have hr := Nat.card_le_card_of_injective (fun x : g.range => (x.val:B)) Subtype.val_injective
   have he := g.ker.card_mul_index
@@ -181,7 +184,7 @@ theorem square_split_units_kernel_exceeds_quadratic (C : ℝ) :
   rw [div_pow,Real.sq_sqrt hn'.le] at hcmp
   have hbig := (lt_div_iff₀ (pow_pos hn' 3)).mp hcmp
   have he : C/Real.log 2*(T n^2/(n:ℝ))*(n:ℝ)^3 =
-      (C*(n:ℝ)^2/Real.log 2)*T n^2 := by field_simp; ring
+      (C*(n:ℝ)^2/Real.log 2)*T n^2 := by field_simp <;> ring
   rw [he,mul_comm (T n^2)] at hbig
   have h := (div_lt_iff₀ hlog).mp ((mul_lt_mul_iff_left₀ (sq_pos_of_pos hl)).mp hbig)
   exact h.trans_le (splitResidueUnits_kernel_lower _ _ f)

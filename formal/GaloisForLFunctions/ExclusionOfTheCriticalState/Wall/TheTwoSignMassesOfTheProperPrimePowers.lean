@@ -33,8 +33,10 @@ private theorem greatest_thinned_positive_mass {ι : Type*} {a : ι → ℝ}
   have hp := Summable.of_nonneg_of_le (fun j => le_max_right (a j) 0) hmax ha
   constructor
   · refine ⟨fun j => if 0 ≤ a j then 1 else 0,fun j => ?_,tsum_congr fun j => ?_⟩
-    · split_ifs <;> exact ⟨by norm_num,by norm_num⟩
-    · by_cases h : 0 ≤ a j
+    · change (if 0 ≤ a j then (1:ℝ) else 0) ∈ Set.Icc 0 1
+      split_ifs <;> exact ⟨by norm_num,by norm_num⟩
+    · change max (a j) 0 = (if 0 ≤ a j then 1 else 0)*a j
+      by_cases h : 0 ≤ a j
       · rw [if_pos h,one_mul,max_eq_left h]
       · rw [if_neg h,zero_mul,max_eq_right (le_of_not_ge h)]
   · rintro r ⟨c,hc,rfl⟩

@@ -25,7 +25,8 @@ private theorem contact_abel {n : ℕ} (hn : 0<n) :
   let f (k : ℕ) : ℝ := if k.Prime then Real.log k else 0
   have theta (N : ℕ) : (∑ k ∈ Icc 1 N, f k) = Chebyshev.theta N := by
     unfold Chebyshev.theta
-    simp only [f,←sum_filter,Nat.floor_natCast,Nat.Ioc_eq_Icc_succ,zero_add]
+    rw [Nat.floor_natCast,show Ioc 0 N = Icc 1 N by ext j; simp only [mem_Ioc,mem_Icc]; omega]
+    simp only [f,←sum_filter]
   have hsum : (∑ k ∈ Icc 1 (splineHorizon n), f k*sampledSpline n k) = dyadicPrimeContact n := by
     simp only [f,ite_mul,zero_mul,←sum_filter]
     have hset : (Icc 1 (splineHorizon n)).filter Nat.Prime = ordinaryPrimeLags (splineHorizon n) := by

@@ -32,6 +32,21 @@ theorem continuousIntegerAtom_bound {Φ : ℝ → ℝ} {C : ℝ}
     _ = _ := by rw [mul_sub,Real.exp_sub,two_mul (Real.log x),Real.exp_add,Real.exp_log hx0]; ring
 
 open ArithmeticFunction in
+/-- Exponential confinement makes the Mangoldt series absolutely convergent at every time. -/
+theorem summable_mangoldt_integerAtom {Φ : ℝ → ℝ} {C : ℝ}
+    (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
+    Summable (fun n : ℕ => vonMangoldt n*continuousIntegerAtom Φ n t) := by
+  apply Summable.of_norm_bounded (GaloisForLFunctions.summable_log_nat_div_sq.mul_left (C*Real.exp (2*t)))
+  intro n
+  rcases Nat.eq_zero_or_pos n with rfl | hn
+  · simp
+  have h := continuousIntegerAtom_bound hb (by exact_mod_cast hn : (1:ℝ) ≤ n) t
+  rw [Real.norm_eq_abs,abs_mul, abs_of_nonneg vonMangoldt_nonneg]
+  calc _ ≤ Real.log n*((C*Real.exp (2*t))*(1/(n:ℝ)^2)) :=
+            mul_le_mul vonMangoldt_le_log h (abs_nonneg _) (Real.log_natCast_nonneg n)
+    _ = _ := by ring
+
+open ArithmeticFunction in
 /-- The full Mangoldt wave splits absolutely into ordinary primes and proper powers. -/
 theorem mangoldt_atom_sum_split {Φ : ℝ → ℝ} {C : ℝ}
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
@@ -44,17 +59,7 @@ theorem mangoldt_atom_sum_split {Φ : ℝ → ℝ} {C : ℝ}
     · simp only [v, f, continuousIntegerAtom, vonMangoldtAtom, if_pos hn, div_eq_mul_inv,
         Complex.ofReal_mul, mul_assoc]
     · rcases (show n=0 ∨ n=1 by omega) with rfl | rfl <;> simp [v,f,vonMangoldtAtom]
-  have hv : Summable v := by
-    apply Summable.of_norm_bounded (GaloisForLFunctions.summable_log_nat_div_sq.mul_left (C*Real.exp (2*t)))
-    intro n
-    rcases Nat.eq_zero_or_pos n with rfl | hn
-    · simp [v]
-    have h := continuousIntegerAtom_bound hb (by exact_mod_cast hn : (1:ℝ) ≤ n) t
-    dsimp only [v]
-    rw [Real.norm_eq_abs,abs_mul, abs_of_nonneg vonMangoldt_nonneg]
-    calc _ ≤ Real.log n*((C*Real.exp (2*t))*(1/(n:ℝ)^2)) :=
-              mul_le_mul vonMangoldt_le_log h (abs_nonneg _) (Real.log_natCast_nonneg n)
-      _ = _ := by ring
+  have hv : Summable v := summable_mangoldt_integerAtom hb t
   have hf : Summable f := (Complex.ofRealCLM.hasSum hv.hasSum).summable.congr he
   have hsplit := tsum_eq_ordinary_primes_add_proper_powers hf (fun n hn => by
     by_contra hp
@@ -87,6 +92,18 @@ theorem tsum_continuousIntegerAtom {Φ : ℝ → ℝ} {C : ℝ} (hb : ∀ u, |Φ
     (∑' n : ℕ, continuousIntegerAtom Φ n t) = integerReferenceWave Φ t := by
   have h := (summable_continuousIntegerAtom hb t).sum_add_tsum_nat_add 1
   simpa [Finset.sum_range_one,continuousIntegerAtom,Nat.cast_add_one,integerReferenceWave] using h.symm
+
+open ArithmeticFunction in
+/-- Centering the literal Mangoldt coefficients by one at each integer subtracts
+the integer reference after splitting the ordinary primes and proper powers. -/
+theorem centred_mangoldt_atom_sum_split {Φ : ℝ → ℝ} {C : ℝ}
+    (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) (t : ℝ) :
+    (∑' n : ℕ, (vonMangoldt n-1)*continuousIntegerAtom Φ n t) = (ordinaryPrimeWave Φ t).re +
+      (∑' j, vonMangoldtAtom (properPrimePowerIndex j)*Φ (t-Real.log (properPrimePowerIndex j))) -
+        integerReferenceWave Φ t := by
+  rw [← mangoldt_atom_sum_split hb t, ← tsum_continuousIntegerAtom hb t,
+    ← (summable_mangoldt_integerAtom hb t).tsum_sub (summable_continuousIntegerAtom hb t)]
+  exact tsum_congr fun n => by dsimp only; ring
 
 private theorem integerCell_bound {Φ : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
     (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u)) {n : ℕ} (hn : 1 ≤ n) (t : ℝ) :
@@ -241,6 +258,7 @@ theorem riemannHypothesis_or_integer_centred_prime_error : RiemannHypothesis ∨
   rw [integerCentredPrimeWave_eq hb,hL,Complex.ofReal_re]
   congr 1; ring
 
+#print axioms centred_mangoldt_atom_sum_split
 #print axioms criticalState_integerReference_zero_mean_error
 #print axioms riemannHypothesis_or_integer_centred_prime_error
 
