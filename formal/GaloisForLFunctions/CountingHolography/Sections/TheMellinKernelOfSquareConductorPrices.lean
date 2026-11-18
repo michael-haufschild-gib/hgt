@@ -241,6 +241,60 @@ theorem squareConductorBVWindow_transform (s : ℂ) :
     show 2-s-1=1+(-s) by ring,Complex.cpow_add _ _ ht',Complex.cpow_one,smul_eq_mul]
   ring
 
+private def meshIndices (W : CompactBVPrimeWindow) (n : ℕ) := Ioc 0 ⌊((n:ℝ)/W.lower)^2⌋₊
+
+private def rootMeshRow (W : CompactBVPrimeWindow) (n k : ℕ) : ℂ :=
+  (vonMangoldt k:ℂ)*(Real.sqrt k:ℂ)*W ((n:ℝ)/Real.sqrt k)
+
+private theorem mesh_support (W : CompactBVPrimeWindow) (n k : ℕ) (hne : rootMeshRow W n k ≠ 0) :
+    k ∈ meshIndices W n := by
+  have hk : k ≠ 0 := by rintro rfl; simp [rootMeshRow] at hne
+  have hk' := Real.sqrt_pos.mpr (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hk) : 0 < (k:ℝ))
+  have hband : (n:ℝ)/Real.sqrt k ∈ Set.Icc W.lower W.upper := by
+    by_contra hu
+    exact hne (by rw [rootMeshRow,W.eq_zero_off_support _ hu,mul_zero])
+  have hs : Real.sqrt k ≤ (n:ℝ)/W.lower := (le_div_iff₀ W.lower_pos).mpr
+    (by simpa only [mul_comm] using (le_div_iff₀ hk').mp hband.1)
+  have h := pow_le_pow_left₀ (Real.sqrt_nonneg _) hs 2
+  rw [Real.sq_sqrt (Nat.cast_nonneg k)] at h
+  exact mem_Ioc.mpr ⟨Nat.pos_of_ne_zero hk,Nat.le_floor h⟩
+
+private theorem rootMeshRow_bound (W : CompactBVPrimeWindow) (n : ℕ) {k : ℕ} (hk : k ∈ meshIndices W n) :
+    ‖rootMeshRow W n k‖ ≤ ((n:ℝ)/W.lower)*(eVariationOn W.toFun Set.univ).toReal*vonMangoldt k := by
+  let Y := (n:ℝ)/W.lower
+  have hY : 0 ≤ Y := div_nonneg (Nat.cast_nonneg _) W.lower_pos.le
+  have h₁ : (k:ℝ) ≤ Y^2 := (Nat.cast_le.mpr (mem_Ioc.mp hk).2).trans (Nat.floor_le (sq_nonneg Y))
+  have h₂ := (Real.sqrt_le_sqrt h₁).trans_eq (Real.sqrt_sq hY)
+  have h₃ := W.norm_le_totalVariation ((n:ℝ)/Real.sqrt k)
+  rw [rootMeshRow,norm_mul,norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg vonMangoldt_nonneg,
+    Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (Real.sqrt_nonneg _)]
+  exact (mul_le_mul (mul_le_mul_of_nonneg_left h₂ vonMangoldt_nonneg) h₃ (norm_nonneg _)
+    (mul_nonneg vonMangoldt_nonneg hY)).trans_eq (by ring)
+
+/-- The proper prime powers in a conductor row define an analytic Dirichlet
+series on Re s > 3. Their log mass below x is bounded by a constant times √x. -/
+def conductorPrimePowerError (W : CompactBVPrimeWindow) (n : ℕ) : ℂ :=
+  ∑ k ∈ (meshIndices W n).filter (fun k => ¬k.Prime), rootMeshRow W n k
+
+theorem analytic_conductorPrimePowerError (W : CompactBVPrimeWindow) :
+    AnalyticOnNhd ℂ (LSeries (conductorPrimePowerError W)) {s : ℂ | 3 < s.re} := by
+  obtain ⟨C,hC⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  let V := (eVariationOn W.toFun Set.univ).toReal
+  have hV : 0 ≤ V := ENNReal.toReal_nonneg
+  have hrow (n : ℕ) : ‖conductorPrimePowerError W n‖ ≤ (V*C/W.lower^2)*(n:ℝ)^2 := by
+    let Y := (n:ℝ)/W.lower
+    have hY : 0 ≤ Y := div_nonneg (Nat.cast_nonneg _) W.lower_pos.le
+    have h := hC (Y^2)
+    rw [Real.sqrt_sq hY,Chebyshev.psi_sub_theta_eq_sum_not_prime] at h
+    refine (norm_sum_le _ _).trans ((sum_le_sum fun k hk => rootMeshRow_bound W _ (mem_filter.mp hk).1).trans ?_)
+    rw [← mul_sum]
+    exact (mul_le_mul_of_nonneg_left h (mul_nonneg hY hV)).trans_eq (by dsimp only [Y,V]; ring)
+  have hab := LSeries.abscissaOfAbsConv_le_of_le_const_mul_rpow (f := conductorPrimePowerError W)
+    (x := 2) ⟨V*C/W.lower^2,fun n _ => by simpa only [Real.rpow_two] using hrow n⟩
+  have h₃ : LSeries.abscissaOfAbsConv (conductorPrimePowerError W) ≤ (3:EReal) := by
+    convert hab using 1 <;> norm_num
+  exact fun s hs => LSeries_analyticOnNhd _ s (h₃.trans_lt (by exact_mod_cast hs : (3:EReal)<(s.re:EReal)))
+
 private abbrev S (n : ℕ) := ordinaryPrimeLags (3*windowEnd ((2*n+1)^2+1))
 private abbrev q (n : ℕ) := ordinaryPrimeGenerator (n • successorSquareTriple n)
 

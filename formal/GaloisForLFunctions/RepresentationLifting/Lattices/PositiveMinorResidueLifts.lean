@@ -43,7 +43,7 @@ theorem dyadicKernel_minor_pos {k : ℕ} (r : Fin k ↪o Fin n) (c : Fin k ↪o 
     Matrix.ext fun i j => dyadic_exp _ _
   have h := det_expKernel_pos hr hc
   rw [← he, ← RingHom.map_det] at h
-  exact_mod_cast h
+  exact Int.cast_pos.mp h
 
 /-- Integral perturbations preserving the modulus `d+1`. -/
 def residueRay (A : Matrix (Fin n) (Fin m) ℤ) (d t : ℕ) : Matrix (Fin n) (Fin m) ℤ :=
@@ -63,7 +63,7 @@ private theorem eventually_minor_pos (A : Matrix (Fin n) (Fin m) ℤ) (d : ℕ)
   have hD : 0 < D.det := by
     change 0 < ((Int.castRingHom ℝ).mapMatrix ((dyadicKernel n m).submatrix r c)).det
     rw [← RingHom.map_det]
-    exact_mod_cast dyadicKernel_minor_pos r c
+    exact Int.cast_pos.mpr (dyadicKernel_minor_pos r c)
   have hzero : 0 < f 0 := by
     simpa [f, det_smul] using mul_pos (pow_pos (by positivity : 0 < ((d+1:ℕ):ℝ)) k) hD
   have hcont : Continuous f := by dsimp [f]; fun_prop
@@ -86,7 +86,7 @@ private theorem eventually_minor_pos (A : Matrix (Fin n) (Fin m) ℤ) (d : ℕ)
   have hp : 0 < (Int.castRingHom ℝ) ((residueRay A d t).submatrix r c).det := by
     rw [hd]
     exact mul_pos (pow_pos htp _) h
-  exact_mod_cast hp
+  exact Int.cast_pos.mp hp
 
 /-- Beyond one common threshold, every ordered square minor of every size
 is positive while all entry residues stay fixed. -/
@@ -123,8 +123,8 @@ directly to the binary and ternary matrices of the chart obstruction. -/
 theorem exists_simultaneous_totallyPositive_lift (p q : ℕ+) (hpq : (p:ℕ).Coprime (q:ℕ))
     (U : Matrix (Fin n) (Fin m) (ZMod (p:ℕ))) (V : Matrix (Fin n) (Fin m) (ZMod (q:ℕ))) :
     ∃ B : Matrix (Fin n) (Fin m) ℤ,
-      ((Int.castRingHom (ZMod (p:ℕ))).mapMatrix B = U ∧
-       (Int.castRingHom (ZMod (q:ℕ))).mapMatrix B = V) ∧
+      (B.map (Int.castRingHom (ZMod (p:ℕ))) = U ∧
+       B.map (Int.castRingHom (ZMod (q:ℕ))) = V) ∧
       ∀ (k : ℕ) (r : Fin k ↪o Fin n) (c : Fin k ↪o Fin m), 0 < (B.submatrix r c).det := by
   let a (i : Fin n) (j : Fin m) := Nat.chineseRemainder hpq (U i j).val (V i j).val
   let A : Matrix (Fin n) (Fin m) ℤ := of fun i j => ((a i j).val:ℤ)

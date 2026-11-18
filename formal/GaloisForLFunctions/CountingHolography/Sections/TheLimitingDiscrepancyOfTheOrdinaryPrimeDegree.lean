@@ -36,7 +36,8 @@ private theorem contact_rows {n k : ℕ} (hn : 0 < n) (hk : 0 < k) (hs : 8 < Rea
   let t := Real.log (Y n)
   let l := Real.log k
   have hsum (F : ℝ → ℝ) : (∑ i, ((D n i):ℝ)*F ((i:ℝ)+1)) = F 1+2*F (X n)-F (Y n) := by
-    calc _ = ∑ i, F ((i:ℝ)+1)*((D n i):ℝ) := sum_congr rfl fun _ _ => mul_comm _ _
+    calc _ = ∑ i : Fin ((2*n+1)^2+1), F ((i:ℝ)+1)*((D n i):ℝ) :=
+                sum_congr rfl fun _ _ => mul_comm _ _
          _ = _ := sum_successorSquareTriple hn F
   have hrow (i : Fin ((2*n+1)^2+1)) :
       (∑ j, ((D n i):ℝ)*((D n j):ℝ)*H (-l-Real.log ((i:ℝ)+1)+Real.log ((j:ℝ)+1))) =
@@ -117,7 +118,6 @@ private theorem shift_limit : Tendsto shift atTop (𝓝 (Real.log 4)) := by
   change (2+(n:ℝ)⁻¹)^2=(((2*n+1:ℕ):ℝ)^2)/(n:ℝ)^2
   push_cast
   field_simp [hn₀.ne']
-  ring
 
 private theorem proper_sum (n : ℕ) :
     fullPrimeContact (D n)-ordinaryPrimeContact (D n)=

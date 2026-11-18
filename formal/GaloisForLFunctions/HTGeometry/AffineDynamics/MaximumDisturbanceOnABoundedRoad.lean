@@ -41,11 +41,11 @@ theorem ramp_peak (d v : ℝ) (hd : 0<d) (n : ℕ) (lo : d*((n : ℝ)-1)≤v)
     apply sub_nonpos.mp
     rw [diff]
     rcases lt_trichotomy m n with h | rfl | h
-    · have hm : (m : ℝ)+1≤n := by exact_mod_cast h
+    · have hm : (m : ℝ)+1≤n := by exact_mod_cast Nat.succ_le_of_lt h
       apply mul_nonpos_of_nonpos_of_nonneg (by linarith only [hm])
       linarith only [lo,mul_nonneg hd.le (show 0≤(n : ℝ)-m-1 by linarith only [hm])]
-    · rw [sub_self,zero_mul]
-    · have hm : (n : ℝ)+1≤m := by exact_mod_cast h
+    · simp only [sub_self,zero_mul,le_refl]
+    · have hm : (n : ℝ)+1≤m := by exact_mod_cast Nat.succ_le_of_lt h
       apply mul_nonpos_of_nonneg_of_nonpos (by linarith only [hm])
       linarith only [hi,mul_nonneg hd.le (show 0≤(m : ℝ)-n-1 by linarith only [hm])]
   · exact (distance_le_iff _ _ _ hd).1 le_rfl n
@@ -63,7 +63,8 @@ private theorem capacity_times (a W : ℝ) (j : ℕ) :
     capacity a W j*((j+1)*(j+4))=2*W+a*(j+1)*j :=
   (div_mul_cancel₀ _ (by positivity : ((j : ℝ)+1)*(j+4)≠0))
 
-private theorem capacity_speeds {a W : ℝ} (ha : 0<a) (j : ℕ)
+/-- Endpoint disturbances place the critical stopping speed in exactly one step interval. -/
+theorem capacity_speeds {a W : ℝ} (ha : 0<a) (j : ℕ)
     (lo : knot a j≤W) (hi : W≤knot a (j+1)) :
     0≤capacity a W j ∧ capacity a W j<a ∧
       (a-capacity a W j)*j≤2*capacity a W j ∧
@@ -101,6 +102,16 @@ theorem capacity_fills_width {a W : ℝ} (ha : 0<a) (j : ℕ)
   rw [Nat.cast_succ]
   linarith only [capacity_times a W j]
 
+/-- Every positive horizon supplies a global affine upper bound on the
+disturbance, even away from the interval where that bound is attained. -/
+theorem horizon_cap {a b l r x v : ℝ} (hb : 0≤b) (h : Robust a b l r x v) (j : ℕ) :
+    b≤capacity a (r-l) j := by
+  have hw := necessary_width hb h (j+1)
+  simp only [ramp,Nat.cast_succ] at hw
+  unfold capacity
+  apply (le_div_iff₀ (by positivity)).2
+  linarith only [hw]
+
 /-- The admissible disturbances form a closed interval with the stated
 right endpoint, allowing arbitrarily large proposed disturbances. -/
 theorem fits_iff {a b l r : ℝ} (ha : 0<a) (hb : 0≤b) (j : ℕ)
@@ -108,11 +119,7 @@ theorem fits_iff {a b l r : ℝ} (ha : 0<a) (hb : 0≤b) (j : ℕ)
     (∃ x v, Robust a b l r x v) ↔ b≤capacity a (r-l) j := by
   constructor
   · rintro ⟨x,v,h⟩
-    have hw := necessary_width hb h (j+1)
-    simp only [ramp,Nat.cast_succ] at hw
-    unfold capacity
-    apply (le_div_iff₀ (by positivity)).2
-    linarith only [hw]
+    exact horizon_cap hb h j
   · intro h
     obtain ⟨h₀,h₁,_,_⟩ := capacity_speeds ha j lo hi
     obtain ⟨x,v,hV⟩ := (nonempty_iff h₀ h₁).2 (capacity_fills_width ha j lo hi).le
@@ -144,13 +151,15 @@ road length buys less disturbance tolerance on the next interval. -/
 theorem slope_drop (j : ℕ) :
     2/(((j : ℝ)+2)*(j+5)) < 2/((j+1)*(j+4)) := by
   apply (div_lt_div_iff₀ (by positivity) (by positivity)).2
-  linarith only [Nat.cast_nonneg (R:=ℝ) j]
+  linarith only [(Nat.cast_nonneg j : (0 : ℝ)≤j)]
 
 end GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance
 
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.robust_mono
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.ramp_peak
+#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.capacity_speeds
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.capacity_fills_width
+#print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.horizon_cap
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.fits_iff
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.exists_width_interval
 #print axioms GaloisForLFunctions.HTGeometry.AffineDynamics.Braking.Disturbance.slope_drop

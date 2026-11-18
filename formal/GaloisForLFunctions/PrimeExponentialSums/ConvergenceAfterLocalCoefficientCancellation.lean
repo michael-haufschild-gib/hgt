@@ -136,9 +136,13 @@ theorem correction_summable (q : ℕ) (A : ℕ → ℕ → ℂ)
     · simp
     · have hk : 0<k := by omega
       rw [RHTower.Sieve.normalizedPrimePowerValue,if_neg hk.ne']
-      have hh := (norm_sub_le _ _).trans (add_le_add (hA p _ (Nat.succ_pos _))
-        (by rw [norm_mul]; exact mul_le_one₀ (hA p 1 one_pos) (norm_nonneg _) (hA p k hk)))
-      simpa only [NNReal.coe_ofNat] using hh
+      have hprod : ‖A p 1*A p k‖≤1 := by
+        rw [norm_mul]
+        exact mul_le_one₀ (hA p 1 one_pos) (norm_nonneg _) (hA p k hk)
+      have hh := (norm_sub_le (A p (k+1)) (A p 1*A p k)).trans
+        (add_le_add (hA p (k+1) (Nat.succ_pos k)) hprod)
+      change ‖A p (k+1)-A p 1*A p k‖ ≤ (2 : ℝ)
+      linarith only [hh]
   · change 1 < (2 : ℝ)*σ
     linarith only [hs]
 

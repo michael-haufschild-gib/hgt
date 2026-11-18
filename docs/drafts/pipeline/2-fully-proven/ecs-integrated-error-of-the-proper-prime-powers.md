@@ -4,7 +4,7 @@ Let $\Phi$ be the continuous critical-state profile. For any real $1$-Lipschitz 
 \[
   \int_T^\infty\left|
   \sum_{p,\ k\ge2}\frac{\log p}{p^{k/2}}g(t-k\log p)-\frac12\int_{\mathbb R}g
-  \right|dt\ll_\Phi e^{-T/40}.
+  \right|dt\ll_{\Phi,L} e^{-T/40}.
 \]
 Let $P$ be the polar-subtracted ordinary-prime wave and $M$ the polar-subtracted Mangoldt wave minus $\frac12\int\Phi$. Taking $L(x)=x$ gives
 \[

@@ -85,7 +85,7 @@ private theorem boxDifference_separates {b : ℝ} (hb : 0 ≤ b) (j : ℕ) : ∃
       by_cases hm : x ∈ Icc (-1:ℝ) 1
       · unfold unif
         rw [indicator_of_mem hm]
-        by_cases he : x-b ∈ Icc (-1:ℝ) 1 <;> simp [he] <;> norm_num
+        by_cases he : x-b ∈ Icc (-1:ℝ) 1 <;> (simp [he]; norm_num)
       have hn : x < -1 := lt_of_not_ge fun h => hm ⟨h,hx⟩
       have he : x-b ∉ Icc (-1:ℝ) 1 := fun h => by linarith only [hn,hb,h.1]
       simp [unif,hm,he]
@@ -102,7 +102,8 @@ private theorem boxDifference_separates {b : ℝ} (hb : 0 ≤ b) (j : ℕ) : ∃
 theorem squareLogProfile_has_prime_cut : ∃ c : ℝ,
     (∀ t ≤ c, 0 ≤ squareLogProfile t) ∧ ∀ t, c < t → squareLogProfile t ≤ 0 := by
   obtain ⟨c,h⟩ := boxDifference_separates (Real.log_nonneg (by norm_num : (1:ℝ) ≤ 4)) 7
-  simpa only [separatedAt,boxDifference,squareLogProfile,splineAutoCorr_eq_eight_boxes] using Exists.intro c h
+  refine ⟨c,?_⟩
+  simpa only [separatedAt,boxDifference,squareLogProfile,splineAutoCorr_eq_eight_boxes] using h
 
 private abbrev lags (n : ℕ) := ordinaryPrimeLags (3*windowEnd ((2*n+1)^2+1))
 private abbrev price (n : ℕ) := ordinaryPrimeGenerator (n • successorSquareTriple n)
@@ -168,8 +169,10 @@ theorem square_prime_cut_log_errors (n : ℕ) (T : ℝ) :
       ∑ p ∈ lags n, (deningerRatExp (price n) p:ℝ)*vonMangoldt p := by
     rw [log_ordinaryPrimeGenerator]
     refine Finset.sum_congr rfl fun p hp => ?_
-    rw [ordinaryPrimeGenerator_exponent,if_pos hp]
-    rfl
+    have he := ordinaryPrimeGenerator_exponent (n • successorSquareTriple n) p
+    change deningerRatExp (price n) p = if p ∈ lags n then _ else 0 at he
+    rw [if_pos hp] at he
+    rw [he]
   have hnum := numerator_log_sum n
   have hden := log_ordinaryPrimeGenerator_den (n • successorSquareTriple n)
   rw [← ordinaryPrimeGenerator_num] at hden
@@ -185,7 +188,9 @@ theorem square_prime_cut_log_errors (n : ℕ) (T : ℝ) :
     split_ifs <;> simp only [← sub_mul,hp,sub_zero]
   · rw [hden,← Finset.sum_sub_distrib,← Finset.sum_add_distrib]
     refine Finset.sum_congr rfl fun p _ => ?_
-    split_ifs <;> simp only [add_zero,sub_add_cancel,← sub_mul,hp]
+    split_ifs
+    · rw [add_zero,← sub_mul,hp]
+    · exact sub_add_cancel _ _
 
 private theorem positive_profile_limit :
     Tendsto (fun n : ℕ => (∑ p ∈ lags n, max (diagonalPrimeProfile n p) 0*vonMangoldt p)/(n:ℝ)^3)
@@ -252,7 +257,8 @@ private theorem cut_integral {c : ℝ} (hc : separatedAt squareLogProfile c) :
     by_cases hu : u ≤ c
     · rw [indicator_of_mem (show u∈Iic c from hu),indicator_of_mem (show u-b∈Iic (c-b) from sub_le_sub_right hu b)]
       have hs : Real.exp (u/2)=Real.exp ((u-b)/2)*2 := by
-        rw [← hb,← Real.exp_add]; congr 1; ring
+        calc _ = Real.exp ((u-b)/2+b/2) := congrArg Real.exp (by ring)
+          _ = _ := by rw [Real.exp_add,hb]
       dsimp only [positiveProfile]
       rw [max_eq_left (hc.1 u hu)]
       change (2*splineAutoCorr u-splineAutoCorr (u-b))*Real.exp (u/2)=

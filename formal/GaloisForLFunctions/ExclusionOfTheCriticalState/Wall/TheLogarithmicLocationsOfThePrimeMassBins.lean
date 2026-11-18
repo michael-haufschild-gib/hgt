@@ -125,7 +125,8 @@ theorem exists_squareBin_displacement : ∃ B : ℝ, 0 ≤ B ∧ ∀ᶠ v : ℝ 
   constructor
   · linarith only [abs_log_le_twice_sub hr,hrel]
   · rw [div_le_iff₀ hr0]
-    nlinarith only [hrel,mul_le_mul_of_nonneg_left hr (mul_nonneg hC (Real.exp_pos (-v/20)).le)]
+    have hscale : 0 ≤ C*Real.exp (-v/20) := mul_nonneg hC (Real.exp_pos _).le
+    linarith only [hrel,hscale,mul_le_mul_of_nonneg_left hr hscale]
 
 #print axioms exists_squareBin_displacement
 end GaloisForLFunctions.ExclusionOfTheCriticalState

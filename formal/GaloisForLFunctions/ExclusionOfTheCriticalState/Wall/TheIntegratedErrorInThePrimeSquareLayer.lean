@@ -285,10 +285,11 @@ theorem riemannHypothesis_or_integrated_properPower_error : RiemannHypothesis �
   have hcost : (∫ t in Ioi (V+1), |H t|) ≤ (40*M)*Real.exp ((-1/40)*V) := by
     apply (integral_mono hInt.abs hexp hH).trans
     rw [integral_const_mul,integral_exp_mul_Ioi (by norm_num : (-1/40:ℝ)<0)]
-    have hmono : Real.exp ((-1/40)*(V+1)) ≤ Real.exp ((-1/40)*V) := Real.exp_le_exp.mpr (by linarith)
-    nlinarith only [mul_le_mul_of_nonneg_left hmono hM]
+    have hmono : Real.exp ((-1/40)*(V+1)) ≤ Real.exp ((-1/40)*V) := Real.exp_le_exp.mpr (by linarith only)
+    linarith only [mul_le_mul_of_nonneg_left hmono hM]
   calc (∫ t in Ioi (V+1), |E t|) ≤ ∫ t in Ioi (V+1), |S t|+|H t| :=
-         integral_mono_ae heI.abs (hv.1.abs.add hInt.abs) (hEq.mono fun t he => he ▸ abs_add_le ..)
+         integral_mono_ae heI.abs (hv.1.abs.add hInt.abs) (hEq.mono fun t he => by
+           rw [he]; exact abs_add_le ..)
     _ ≤ _ := by
       rw [integral_add hv.1.abs hInt.abs,add_mul]
       exact add_le_add hv.2 hcost
@@ -297,7 +298,7 @@ theorem riemannHypothesis_or_integrated_properPower_error : RiemannHypothesis �
 
 private theorem two_sign_distances (x y : ℝ) :
     |max x 0-max y 0|+|max (-x) 0-max (-y) 0|=|x-y| := by
-  have split (z : ℝ) : max z 0-max (-z) 0=z := by
+  have parts_sub (z : ℝ) : max z 0-max (-z) 0=z := by
     rcases le_or_gt 0 z with hz | hz
     · rw [max_eq_left hz,max_eq_right (neg_nonpos.mpr hz),sub_zero]
     · rw [max_eq_right hz.le,max_eq_left (neg_nonneg.mpr hz.le),zero_sub,neg_neg]
@@ -306,7 +307,7 @@ private theorem two_sign_distances (x y : ℝ) :
     rw [abs_of_nonpos (sub_nonpos.mpr (max_le_max_right h 0)),
       abs_of_nonneg (sub_nonneg.mpr (max_le_max_right (neg_le_neg h) 0)),
       abs_of_nonpos (sub_nonpos.mpr h)]
-    linarith only [split a,split b]
+    linarith only [parts_sub a,parts_sub b]
   rcases le_total x y with h | h
   · exact ordered x y h
   · rw [abs_sub_comm (max x 0),abs_sub_comm (max (-x) 0),abs_sub_comm x y]
