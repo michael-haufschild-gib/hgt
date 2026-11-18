@@ -1,4 +1,6 @@
 import GaloisForLFunctions.RepresentationLifting.Lattices.SimplexFacetSumCokernel
+import Mathlib.Data.ZMod.Basic
+import Mathlib.GroupTheory.SpecificGroups.Cyclic
 
 /-!
 # Diagonal points in a projective frame
@@ -11,6 +13,7 @@ the full relation module is detected by the simplex facet-sum operator.
 
 namespace GaloisForLFunctions.RepresentationLifting
 open Finset Submodule
+open scoped Classical
 noncomputable section
 
 variable {R : Type*} [CommRing R] {ι : Type*} [DecidableEq ι]
@@ -75,6 +78,53 @@ theorem frameDiagonal_relations (w : Fin (n+1) → Rˣ) (a : Fin (n+1) → R) :
     rw [sum_frameDiagonals,h]
     simp
 
+/-- Recovering coefficients of a specified point reduces to one scalar
+equation, even if the residue characteristic divides the dimension. -/
+def frameDiagonalFiberEquiv (w : Fin (n+1) → Rˣ) (y : Fin (n+1) → R) :
+    {a : Fin (n+1) → R // (∑ i, a i • frameDiagonal (fun j => (w j:R)) i) = y} ≃
+      {b : R // (n:R)*b = ∑ i, y i * (↑(w i)⁻¹:R)} := by
+  refine (Equiv.subtypeEquivRight (q := fun a => facetSums R n a =
+    fun i => y i * (↑(w i)⁻¹:R)) ?_).trans (facetFiberEquiv R n _)
+  intro a
+  constructor
+  · intro h
+    funext j
+    have he := congrFun h j
+    rw [sum_frameDiagonals] at he
+    simpa [mul_assoc] using congrArg (fun z : R => z * (↑(w j)⁻¹:R)) he
+  · intro h
+    funext j
+    rw [sum_frameDiagonals,congrFun h j]
+    simp [mul_assoc]
+
+private def translateScalarFiber (a b : R) : {z : R // a*z = a*b} ≃ {z : R // a*z = 0} where
+  toFun z := ⟨z.val-b, by rw [mul_sub,z.property,sub_self]⟩
+  invFun z := ⟨z.val+b, by rw [mul_add,z.property,zero_add]⟩
+  left_inv z := Subtype.ext (sub_add_cancel _ _)
+  right_inv z := Subtype.ext (add_sub_cancel_right _ _)
+
+/-- Over the composite residue ring `ℤ/qℤ`, every attainable target has
+exactly `gcd(q,n)` diagonal-coordinate representations. The weighted total
+decides which targets are attainable. -/
+theorem frameDiagonal_residue_fiber_card (q : ℕ+) (w : Fin (n+1) → (ZMod (q:ℕ))ˣ)
+    (y : Fin (n+1) → ZMod (q:ℕ)) :
+    Nat.card {a : Fin (n+1) → ZMod (q:ℕ) //
+      (∑ i, a i • frameDiagonal (fun j => (w j:ZMod (q:ℕ))) i) = y} =
+      if (n:ZMod (q:ℕ)) ∣ ∑ i, y i*(↑(w i)⁻¹:ZMod (q:ℕ)) then Nat.gcd (q:ℕ) n else 0 := by
+  classical
+  rw [Nat.card_congr (frameDiagonalFiberEquiv w y)]
+  split_ifs with h
+  · obtain ⟨b,hb⟩ := h
+    rw [hb,Nat.card_congr (translateScalarFiber (n:ZMod (q:ℕ)) b)]
+    let f := (nsmulAddMonoidHom n : ZMod (q:ℕ) →+ ZMod (q:ℕ))
+    have e : {z : ZMod (q:ℕ) // (n:ZMod (q:ℕ))*z = 0} ≃ f.ker :=
+      Equiv.subtypeEquivRight fun z => by simp [f,nsmul_eq_mul]
+    rw [Nat.card_congr e]
+    simpa [f,Nat.card_eq_fintype_card] using IsAddCyclic.card_nsmulAddMonoidHom_ker (ZMod (q:ℕ)) n
+  · letI : IsEmpty {b : ZMod (q:ℕ) // (n:ZMod (q:ℕ))*b = ∑ i, y i*(↑(w i)⁻¹:ZMod (q:ℕ))} :=
+      ⟨fun b => h ⟨b.val,b.property.symm⟩⟩
+    exact Nat.card_of_isEmpty
+
 /-- A relation supported on a proper subset must vanish, even in a
 residue characteristic where the full frame becomes dependent. -/
 theorem frameDiagonal_relation_missing_vertex (w : Fin (n+1) → Rˣ) (a : Fin (n+1) → R)
@@ -105,6 +155,7 @@ theorem frameDiagonals_independent_iff {K : Type*} [Field K] (w : Fin (n+1) → 
 
 #print axioms frameDiagonal_intersection
 #print axioms frameDiagonal_relations
+#print axioms frameDiagonal_residue_fiber_card
 #print axioms frameDiagonals_independent_iff
 
 end

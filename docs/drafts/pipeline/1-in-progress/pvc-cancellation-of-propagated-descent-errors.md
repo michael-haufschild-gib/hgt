@@ -1,6 +1,6 @@
 # Cancellation of propagated descent errors
 
-**PVC.** Write $E(x)=\psi(x)-x$ and $T_Df(x)=\sum_{1\le v\le x}g_D(v)f(\lfloor x/v\rfloor)$. The [fixed-width descent](../2-fully-proven/pvc-a-power-descent-for-the-actual-cofactor-count.md) controls one defect $(I-T_D)E$. Taking absolute values separately on the next level loses a power. Seek a square-root bound up to logarithms or $x^\epsilon$ for the *signed* second defect $(I-T_A)(I-T_D)E$, uniformly at logarithmic cutoffs.
+**PVC.** Write $E(x)=\psi(x)-x$ and $T_Df(x)=\sum_{1\le v\le x}g_D(v)f(\lfloor x/v\rfloor)$. The [fixed-width descent](../3-formalized/pvc-a-power-descent-for-the-actual-cofactor-count.md) controls one defect $(I-T_D)E$. Taking absolute values separately on the next level loses a power. Seek a square-root bound up to logarithms or $x^\epsilon$ for the *signed* second defect $(I-T_A)(I-T_D)E$, uniformly at logarithmic cutoffs.
 
 If $c_R$ denotes the finite divisor coefficients of $I-T_R$, the double defect pairs $c_A*c_D$ with
 $$

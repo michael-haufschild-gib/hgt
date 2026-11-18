@@ -161,7 +161,7 @@ private theorem rootProfile_smooth : ContDiffOn ℝ 1 rootProfile (Set.Ioi 0) :=
   apply ContDiffAt.contDiffWithinAt
   unfold rootProfile
   exact ((contDiffAt_const.div (Real.contDiffAt_sqrt hv'.ne') (Real.sqrt_pos.mpr hv').ne').mul
-    (hH.contDiffAt.comp v (Real.contDiffAt_log hv'.ne').neg))
+    (hH.contDiffAt.comp v (Real.contDiffAt_log.mpr hv'.ne').neg))
 
 /-- Integration by parts against the square-root density leaves precisely
 the unit integral of the spline autocorrelation in log coordinates. -/

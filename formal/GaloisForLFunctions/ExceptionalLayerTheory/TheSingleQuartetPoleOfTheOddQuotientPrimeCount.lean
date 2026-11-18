@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.TheQuarterExponentOfTheOddQuotientPrimeCount
-import GaloisForLFunctions.ZeroForcingCalculus.SingleQuartetRationalRaysAndDilationPoles
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Index.SingleQuartetSecularAndWallRigidity
 
 /-!
 # The half-height prime-divisor pole on the single-quartet stratum
@@ -13,24 +13,37 @@ noncomputable section
 open Complex Filter Topology Set
 open _root_.RHTower
 namespace GaloisForLFunctions.ExceptionalLayerTheory
-open ExclusionOfTheCriticalState ZeroForcingCalculus
+open ExclusionOfTheCriticalState
+
+private theorem scaled_nonzero {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) {a : ℝ}
+    (ha : 0 < a) (ha1 : a ≠ 1) (hoff : a*ρ.re ≠ 1/2) : riemannZeta ((a:ℂ)*ρ) ≠ 0 := by
+  intro hz
+  have hpos : 0 < ((a:ℂ)*ρ).re := by simpa using mul_pos ha hq.2.1.2.1
+  have hlt : ((a:ℂ)*ρ).re < 1 := lt_of_not_ge fun h => riemannZeta_ne_zero_of_one_le_re h hz
+  have hmem : (a:ℂ)*ρ ∈ zeroQuartetSet ρ := by
+    rw [← hq.2.2]
+    exact ⟨⟨hz,hpos,hlt⟩,by simpa using hoff⟩
+  have hag : |((a:ℂ)*ρ).im|=|ρ.im| := by
+    simp only [zeroQuartetSet,Set.mem_insert_iff,Set.mem_singleton_iff] at hmem
+    rcases hmem with e | e | e | e <;> rw [e] <;> simp
+  have him := abs_pos.mpr hq.im_ne_zero
+  rw [Complex.im_ofReal_mul,abs_mul,abs_of_pos ha] at hag
+  exact ha1 ((mul_right_cancel₀ him.ne') (hag.trans (one_mul _).symm))
 
 private theorem half_ne_zero {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) : riemannZeta (ρ/2) ≠ 0 := by
-  have h := riemannZeta_pos_real_mul_ne_zero_of_outside hq (r := 1/2) (by norm_num)
-    (Or.inl (by norm_num))
-  have he : (((1/2:ℝ):ℂ)*ρ) = ρ/2 := by push_cast; ring
-  rwa [he] at h
+  have h := scaled_nonzero hq (a := 1/2) (by norm_num) (by norm_num) (by linarith only [hq.re_lt_one])
+  simpa only [Complex.ofReal_div,Complex.ofReal_one,Complex.ofReal_ofNat,one_div,mul_comm (2:ℂ)⁻¹,
+    div_eq_mul_inv] using h
 
 /-- At half the right zero the residue contains precisely its multiplicity.
-Both the square denominator and the unscaled zeta factor are nonzero. -/
+The cube contributes no zero there and the unscaled zeta factor is nonzero. -/
 theorem firstPrimeDivisorMoment_singleQuartet_residue {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) :
     Tendsto (fun w => (w-ρ/2)*firstPrimeDivisorMoment w) (𝓝[≠] (ρ/2))
       (𝓝 (riemannZeta (ρ/2)*((analyticOrderNatAt riemannZeta ρ:ℂ)/2))) := by
   have h₁ : 1/4 < (ρ/2).re := by rw [Complex.div_ofNat_re]; linarith only [hq.1]
   have hi : (ρ/2).im ≠ 0 := by simpa [Complex.div_ofNat_im] using hq.im_ne_zero
   have h := firstPrimeDivisorMoment_exact_residue h₁ hi
-  have h₃ := riemannZeta_pos_real_mul_ne_zero_of_outside hq (r := 3/2) (by norm_num)
-    (Or.inr (by norm_num))
+  have h₃ := scaled_nonzero hq (a := 3/2) (by norm_num) (by norm_num) (by linarith only [hq.1])
   have he : (((3/2:ℝ):ℂ)*ρ) = 3*(ρ/2) := by push_cast; ring
   rw [he] at h₃
   have hn : analyticOrderNatAt riemannZeta (3*(ρ/2)) = 0 := by
@@ -46,7 +59,10 @@ private theorem abscissa_le_quartet {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ)
   have hmem : (q.1:ℂ) ∈ zeroQuartetSet ρ := by
     rw [← hq.2.2]
     exact ⟨⟨riemannZeta_eq_zero_of_xiZeroCopy q,xiZeroCopy_re_pos q,xiZeroCopy_re_lt_one q⟩,hh⟩
-  rcases (mem_zeroQuartetSet_invariants hq hmem).2.2.2.2 with he | he <;> rw [he] <;> linarith only [hq.1]
+  have he : (q.1:ℂ).re=ρ.re ∨ (q.1:ℂ).re=1-ρ.re := by
+    simp only [zeroQuartetSet,Set.mem_insert_iff,Set.mem_singleton_iff] at hmem
+    rcases hmem with e | e | e | e <;> simp [e]
+  rcases he with he | he <;> linarith only [he,hq.1]
 
 /-- Every power bound for the normalized finite count lies at or above
 half the right-zero abscissa, and each strictly larger exponent works. -/

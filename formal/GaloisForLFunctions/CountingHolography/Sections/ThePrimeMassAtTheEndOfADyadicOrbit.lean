@@ -1,4 +1,4 @@
-import GaloisForLFunctions.CountingHolography.Sections.ThePrimeExponentsOnTheSquareDiagonal
+import GaloisForLFunctions.CountingHolography.Sections.FinitePlaceCostOfTheStirlingRemainder
 import GaloisForLFunctions.CountingHolography.Sections.TheLogarithmicMomentOfTheSquarePrimeProfile
 
 /-! # The escaping prime mass on a dyadic orbit of square conductors
@@ -259,5 +259,57 @@ theorem not_summable_dyadic_square_log_valuations {n : ℕ} (hn : 0<n) :
   have hp : 0<4*(n:ℝ)^3*squareAutocorrelationMass :=
     mul_pos (mul_pos (by norm_num) (pow_pos (Nat.cast_pos.mpr hn) 3)) squareAutocorrelationMass_pos
   exact hp.ne' (tendsto_nhds_unique he hzero)
+
+private theorem abs_row_sum {n : ℕ} (hn : 0<n) :
+    (∑' k, |price n k|)=Real.log (q n).num.natAbs+Real.log (q n).den := by
+  rw [tsum_eq_sum (s := S n) (fun k hk => by rw [(endpoint_zero hn hk).1,abs_zero]),
+    ← ordinary_absolute_prime_mass (n • successorSquareTriple n)]
+  refine sum_congr rfl fun k hk => ?_
+  have hp := (mem_filter.mp hk).2
+  rw [price,abs_mul,weight,if_pos hp,abs_of_nonneg (Real.log_natCast_nonneg k),vonMangoldt_apply_prime hp]
+
+/-- One eighth is exactly the radius of absolute convergence of the
+prime-by-prime dyadic series, on every positive starting conductor. -/
+theorem summable_dyadic_square_log_valuations_iff {n : ℕ} (hn : 0<n) {r : ℝ} (hr : 0≤r) :
+    Summable (fun i : ℕ × ℕ => r^i.1*((deningerRatExp (q (orbit n i.1)) i.2:ℝ)*weight i.2)) ↔ r<1/8 := by
+  change Summable (fun i : ℕ × ℕ => r^i.1*price (orbit n i.1) i.2) ↔ _
+  constructor
+  · intro h
+    by_contra he
+    apply not_summable_dyadic_square_log_valuations hn
+    apply Summable.of_abs
+    refine Summable.of_nonneg_of_le (fun _ => abs_nonneg _) (fun i => ?_) h.abs
+    change |(1/8:ℝ)^i.1*price (orbit n i.1) i.2|≤|r^i.1*price (orbit n i.1) i.2|
+    rw [abs_mul,abs_mul,abs_of_nonneg (pow_nonneg (by norm_num : (0:ℝ)≤1/8) _),abs_of_nonneg (pow_nonneg hr _)]
+    exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (by norm_num) (le_of_not_gt he) _) (abs_nonneg _)
+  · intro hsmall
+    obtain ⟨B,hB,hsize⟩ := successorSquare_products_upper
+    have hgeo := (summable_geometric_of_lt_one (mul_nonneg hr (by norm_num : (0:ℝ)≤8))
+      (show r*8<1 by linarith only [hsmall])).mul_right (3*B*(n:ℝ)^3)
+    apply Summable.of_abs
+    simp only [abs_mul,abs_of_nonneg (pow_nonneg hr _)]
+    apply (summable_prod_of_nonneg (fun i => mul_nonneg (pow_nonneg hr i.1) (abs_nonneg _))).mpr
+    constructor
+    · intro j
+      exact (summable_of_ne_finset_zero (s := S (orbit n j)) (fun k hk => by
+        rw [(endpoint_zero (orbit_pos hn j) hk).1,abs_zero])).mul_left _
+    · refine Summable.of_nonneg_of_le (fun j => tsum_nonneg fun k => mul_nonneg (pow_nonneg hr j) (abs_nonneg _))
+        (fun j => ?_) hgeo
+      let m := orbit n j
+      have hm : 0<m := orbit_pos hn j
+      have hm' : (1:ℝ)≤m := by exact_mod_cast hm
+      obtain ⟨hu,hv⟩ := hsize (m := m) hm
+      have hsub := mul_le_mul_of_nonneg_right hm' (sq_nonneg (m:ℝ))
+      have htot : Real.log (q m).num.natAbs+Real.log (q m).den≤3*B*(m:ℝ)^3 := by
+        change Real.log (q m).num.natAbs≤B*m*(m:ℝ)^2 at hu
+        change Real.log (q m).den≤B*((m:ℝ)*(m:ℝ)^2+m^2) at hv
+        linarith only [hu,hv,mul_le_mul_of_nonneg_left hsub hB]
+      rw [tsum_mul_left,abs_row_sum (orbit_pos hn j)]
+      refine (mul_le_mul_of_nonneg_left htot (pow_nonneg hr j)).trans_eq ?_
+      dsimp only [m,orbit]
+      push_cast
+      rw [mul_pow (2:ℝ)^j,← pow_mul,Nat.mul_comm j 3,pow_mul]
+      change r^j*(3*B*(8^j*(n:ℝ)^3))=_
+      rw [mul_pow r 8 j]; ring
 
 end GaloisForLFunctions.CountingHolography.Sections

@@ -23,6 +23,37 @@ open _root_.RHTower.ExactNullDivisorTransfer
 /-- The atom at an ordinary prime carries a specified logarithmic power. -/
 def primeLogMomentAtom (k n : ℕ) : ℂ := if n.Prime then ((Real.log n:ℝ):ℂ)^k else 0
 
+/-- The finite coefficient sum with r unrestricted factors equals the
+ordinary-prime sum weighted by the divisor prefix through the quotient. -/
+theorem primeLogMomentAtom_divisor_prefix (r k N : ℕ) :
+    (∑ n ∈ Finset.Icc 1 N, (divisorPow r ⍟ primeLogMomentAtom k) n) =
+      ∑ p ∈ Nat.primesLE N, (Real.log p:ℂ)^k *
+        ∑ m ∈ Finset.Icc 1 (N/p), divisorPow r m := by
+  let D : ArithmeticFunction ℂ := ⟨divisorPow r, by simp [divisorPow]⟩
+  let A : ArithmeticFunction ℂ := ⟨primeLogMomentAtom k, by simp [primeLogMomentAtom]⟩
+  change (∑ n ∈ Finset.Icc 1 N, (⇑D ⍟ ⇑A) n)=_
+  rw [ArithmeticFunction.coe_mul,mul_comm D A,_root_.RHTower.sum_Icc_mul_apply,
+    Nat.primesLE_eq_filter_Icc_one,Finset.sum_filter]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  change (if p.Prime then (Real.log p:ℂ)^k else 0)*_ = _
+  split <;> simp_all only [if_true,if_false,zero_mul,D,ArithmeticFunction.coe_mk]
+
+/-- A single unrestricted factor counts the multiples of each prime. -/
+theorem primeLogMomentAtom_floor (k N : ℕ) :
+    (∑ n ∈ Finset.Icc 1 N, (divisorPow 1 ⍟ primeLogMomentAtom k) n) =
+      ∑ p ∈ Nat.primesLE N, (Real.log p:ℂ)^k*((N/p:ℕ):ℂ) := by
+  rw [primeLogMomentAtom_divisor_prefix]
+  apply Finset.sum_congr rfl
+  intro p _
+  congr 1
+  have he : (∑ m ∈ Finset.Icc 1 (N/p), divisorPow 1 m) =
+      ∑ _ ∈ Finset.Icc 1 (N/p), (1:ℂ) := by
+    apply Finset.sum_congr rfl
+    intro m hm
+    simp [divisorPow,ArithmeticFunction.natCoe_apply,ArithmeticFunction.zeta_apply,
+      Nat.ne_of_gt (Finset.mem_Icc.mp hm).1]
+  simpa using he
+
 private theorem log_iterate (k : ℕ) :
     (LSeries.logMul^[k] (_root_.RHTower.primeLogCoeff))=primeLogMomentAtom (k+1) := by
   induction k with

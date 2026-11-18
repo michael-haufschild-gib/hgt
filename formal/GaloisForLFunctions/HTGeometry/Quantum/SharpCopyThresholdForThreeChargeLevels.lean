@@ -37,6 +37,19 @@ theorem density (z : Circle) : (state z).PosSemidef ∧ (state z).trace=1 := by
   rw [state,twist_trace]
   norm_num [base,trace,diag_apply,Fin.sum_univ_succ]
 
+/-- The example has simple spectrum 0, 1/4, 3/4 for every phase and every
+copy threshold. Its purely spectral data therefore reveal no phase. -/
+theorem state_charpoly (z : Circle) :
+    (state z).charpoly = Polynomial.X * (Polynomial.X - Polynomial.C (1/4 : ℂ)) *
+      (Polynomial.X - Polynomial.C (3/4 : ℂ)) := by
+  rw [state,twist_charpoly,Matrix.charpoly,Matrix.det_fin_three]
+  have h₂ : Polynomial.C (1/2 : ℂ) = Polynomial.C (1/4 : ℂ) + Polynomial.C (1/4 : ℂ) := by
+    rw [← map_add]; norm_num
+  have h₃ : Polynomial.C (3/4 : ℂ) =
+      Polynomial.C (1/4 : ℂ) + Polynomial.C (1/4 : ℂ) + Polynomial.C (1/4 : ℂ) := by
+    rw [← map_add,← map_add]; norm_num
+  simp [charmatrix_apply,base,diagonal_apply,h₂,h₃] <;> ring
+
 private theorem edge_cost (i j : Fin 3) (h : base i j ≠ 0) :
     |smallLabel i-smallLabel j| + |phaseLabel i-phaseLabel j| ≤ 1 := by
   fin_cases i <;> fin_cases j <;> norm_num [smallLabel,phaseLabel,base] at *
@@ -133,3 +146,5 @@ end GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.first_frequency
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.all_frequencies
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.identified_at
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels.state_charpoly

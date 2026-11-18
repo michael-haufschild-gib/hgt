@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.ChargeSectorPinching
 import Mathlib.Analysis.Complex.Circle
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 
 /-!
 # Phase frequencies visible to a finite number of copies
@@ -21,21 +22,36 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 def twist (b : ι → ℤ) (z : Circle) (A : Matrix ι ι ℂ) : Matrix ι ι ℂ :=
   fun i j => (z : ℂ)^(b i-b j)*A i j
 
+private def phaseMatrix (b : ι → ℤ) (z : Circle) :=
+  diagonal fun i => ((z^(b i) : Circle) : ℂ)
+
+private theorem twist_eq_conjugate (b : ι → ℤ) (z : Circle) (A : Matrix ι ι ℂ) :
+    twist b z A = phaseMatrix b z*A*(phaseMatrix b z)ᴴ := by
+  ext i j
+  simp only [phaseMatrix,diagonal_conjTranspose,diagonal_mul,mul_diagonal,twist]
+  change (z : ℂ)^(b i-b j)*A i j = ((z^(b i) : Circle) : ℂ)*A i j*
+    (starRingEnd ℂ) ((z^(b j) : Circle) : ℂ)
+  rw [← Circle.coe_inv_eq_conj,Circle.coe_inv,Circle.coe_zpow,Circle.coe_zpow,
+    zpow_sub₀ z.coe_ne_zero,div_eq_mul_inv]
+  ac_rfl
+
 /-- A phase twist is conjugation by a diagonal unitary, hence preserves the
 positive cone. -/
 theorem twist_posSemidef (b : ι → ℤ) (z : Circle) (A : Matrix ι ι ℂ) (h : A.PosSemidef) :
     (twist b z A).PosSemidef := by
-  let U := diagonal fun i => ((z^(b i) : Circle) : ℂ)
-  have he : twist b z A = U*A*Uᴴ := by
-    ext i j
-    simp only [U,diagonal_conjTranspose,diagonal_mul,mul_diagonal,twist]
-    change (z : ℂ)^(b i-b j)*A i j = ((z^(b i) : Circle) : ℂ)*A i j*
-      (starRingEnd ℂ) ((z^(b j) : Circle) : ℂ)
-    rw [← Circle.coe_inv_eq_conj,Circle.coe_inv,Circle.coe_zpow,Circle.coe_zpow,
-      zpow_sub₀ z.coe_ne_zero,div_eq_mul_inv]
-    ac_rfl
-  rw [he]
-  exact h.mul_mul_conjTranspose_same U
+  rw [twist_eq_conjugate]
+  exact h.mul_mul_conjTranspose_same _
+
+/-- Every phase on the observation orbit has the same spectrum with multiplicity. -/
+theorem twist_charpoly (b : ι → ℤ) (z : Circle) (A : Matrix ι ι ℂ) :
+    (twist b z A).charpoly = A.charpoly := by
+  have hu : (phaseMatrix b z)ᴴ * phaseMatrix b z = 1 := by
+    rw [phaseMatrix,diagonal_conjTranspose,diagonal_mul_diagonal]
+    change diagonal (fun i => (starRingEnd ℂ) ((z^(b i) : Circle) : ℂ) *
+      ((z^(b i) : Circle) : ℂ)) = 1
+    simp only [← Circle.coe_inv_eq_conj,← Circle.coe_mul,inv_mul_cancel,Circle.coe_one]
+    rfl
+  rw [twist_eq_conjugate,charpoly_mul_comm _ (phaseMatrix b z)ᴴ,← Matrix.mul_assoc,hu,one_mul]
 
 theorem twist_trace (b : ι → ℤ) (z : Circle) (A : Matrix ι ι ℂ) :
     (twist b z A).trace=A.trace := by
@@ -184,3 +200,5 @@ end GaloisForLFunctions.HTGeometry.Quantum.TensorObservation
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.transpose_frequency
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.indistinguishable_iff
 #print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.frequencies_mono
+
+#print axioms GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.twist_charpoly

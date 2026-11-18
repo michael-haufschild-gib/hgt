@@ -14,7 +14,7 @@ open Complex Set Filter Topology Finset ArithmeticFunction
 open _root_.RHTower
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
-private abbrev coeff := properPowerLatticeWeight*alternatingDivisorCoeff
+private abbrev coeff : ArithmeticFunction ℝ := properPowerLatticeWeight*alternatingDivisorCoeff
 private abbrev transform (s : ℂ) :=
   alternatingDivisorFactor s*(properPowerLatticeMain s-firstPrimeDivisorMoment s)
 
@@ -111,6 +111,19 @@ theorem firstPrimeDivisorMoment_zero_residue_of_oddQuotientPowerTotal_bound {b K
     ((continuous_id.sub continuous_const).tendsto' z 0 (sub_self z)).mono_left nhdsWithin_le_nhds
   apply (tendsto_congr' (hlocal.mono fun w hw => congrArg ((w-z)*·) hw)).mpr
   simpa only [zero_mul] using hl.mul (hcont.tendsto.mono_left nhdsWithin_le_nhds)
+
+/-- Any zero above twice the finite-mean exponent lies in the closed
+interval from 2−4b to 3b, by the square and cube residue conditions. -/
+theorem zero_band_of_oddQuotientPowerTotal {b K : ℝ} (hb : 1/4 < b) (hb' : b ≤ 1/3)
+    (hK : 0 ≤ K) (h : ∀ N : ℕ, 1 ≤ N → |oddQuotientPowerTotal N| ≤ K*(N:ℝ)^(b+1))
+    {s : ℂ} (hs : 2*b < s.re) (hz : riemannZeta s = 0) :
+    2-4*b ≤ s.re ∧ s.re ≤ 3*b := by
+  have hf := firstPrimeDivisorMoment_zero_free_bands hb.le hb'
+    (fun _ h₀ h₁ hi => firstPrimeDivisorMoment_zero_residue_of_oddQuotientPowerTotal_bound
+      hb (by linarith only [hb']) hK h h₀ h₁ hi) hs
+  have he : ¬(2*b < 1-s.re/2 ∨ 3*b < s.re) := fun H => hf H hz
+  obtain ⟨hl,hr⟩ := not_or.mp he
+  exact ⟨by linarith only [not_lt.mp hl],not_lt.mp hr⟩
 
 /-- A single exponent below two sevenths for the finite count bounds the
 real parts of all zeta zeros by twice that exponent. -/

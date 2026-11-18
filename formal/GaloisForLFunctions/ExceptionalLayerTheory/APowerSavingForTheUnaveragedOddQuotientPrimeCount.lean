@@ -47,15 +47,16 @@ private theorem hyperbola {b K : ℝ} (hb : 0 < b) (hb' : b < 1/2) (hK : 0 ≤ K
     |oddQuotientPowerCount N| ≤ (K+6)*(Y:ℝ)^(1/2:ℝ)+
       2*(K+2)*(N:ℝ)^b*((N/(Y+1):ℕ):ℝ)^(1-b)/(1-b) := by
   let J := N/(Y+1)
-  let tail := u-truncAF u Y
+  let tail : ArithmeticFunction ℝ := u-truncAF u Y
   have htail (m : ℕ) : mass tail m = mass u m-mass u (min m Y) := by
     dsimp only [mass,tail]
-    simp only [ArithmeticFunction.sub_apply,sum_sub_distrib]
+    simp only [sub_eq_add_neg,ArithmeticFunction.add_apply,ArithmeticFunction.neg_apply,
+      sum_add_distrib,sum_neg_distrib]
     rw [show (∑ d ∈ Icc 1 m, truncAF u Y d)=∑ d ∈ Icc 1 (min m Y), u d by
       simpa only [mul_one] using trunc_weighted u m Y (fun _ => 1)]
   have htrans : oddQuotientPowerCount N =
       mass (truncAF u Y*alt) N + mass (alt*tail) N := by
-    have he : truncAF u Y*alt+alt*tail=u*alt := by dsimp only [tail]; ring
+    have he : (truncAF u Y*alt+alt*tail : ArithmeticFunction ℝ)=u*alt := by dsimp only [tail]; ring
     unfold oddQuotientPowerCount
     rw [← show mass (u*alt) N = ∑ d ∈ Icc 1 N, u d*((N/d%2:ℕ):ℝ) by
       rw [mass,sum_Icc_mul_apply]; simp_rw [prefix_alternatingDivisorCoeff]]

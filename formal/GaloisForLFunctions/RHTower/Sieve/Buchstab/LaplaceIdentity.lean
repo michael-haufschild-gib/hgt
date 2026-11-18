@@ -62,7 +62,7 @@ private theorem primitive_laplace (s : Ioi (0:ℝ)) :
   have hd (t : ℝ) (ht : t ∈ Ioi 1) : HasDerivAt g (f t-s.val*g t) t := by
     have hc := (continuousOn_buchstab.mono Ioi_subset_Ici_self).continuousAt (Ioi_mem_nhds ht)
     have hp := intervalIntegral.integral_hasDerivAt_right (intervalIntegrable_buchstab 0 t)
-      (measurable_buchstab.stronglyMeasurable.stronglyMeasurableAtFilter volume (𝓝 t)) hc
+      measurable_buchstab.stronglyMeasurable.stronglyMeasurableAtFilter hc
     have he := ((hasDerivAt_id t).const_mul (-s.val)).exp
     exact (hp.mul he).congr_deriv (by dsimp [f,g,primitive]; ring)
   have hgi : IntegrableOn (fun t => f t-s.val*g t) (Ioi 1) := hf.sub (hg.const_mul _)

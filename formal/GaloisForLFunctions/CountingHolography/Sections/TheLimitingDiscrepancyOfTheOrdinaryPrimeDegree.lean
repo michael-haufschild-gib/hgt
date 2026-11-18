@@ -167,11 +167,15 @@ private theorem proper_split : ∀ᶠ n : ℕ in atTop,
     longRow_sum (sq_pos_of_pos (Nat.cast_pos.mpr hn)) (hfloor (sq_nonneg _) hxy),
     longRow_sum (sq_pos_of_pos (by positivity : (0:ℝ)<((2*n+1:ℕ):ℝ))) (hfloor (sq_nonneg _) le_rfl)]
 
+/-- The two forward lags contribute one unit in total. The finite short
+contact is evaluated at the limiting separation log four. -/
+def squareProperPowerConstant : ℝ := (∑ k ∈ Ioc 0 cutoff, shortRow (Real.log 4) k)+1
+
 /-- The proper powers have a common finite limiting contribution on all
 square conductors. Their short rows converge term by term and the two
 long rows see the same square-root density. -/
 theorem successorSquare_proper_power_contact_limit :
-    ∃ c : ℝ, Tendsto (fun n => fullPrimeContact (D n)-ordinaryPrimeContact (D n)) atTop (𝓝 c) := by
+    Tendsto (fun n => fullPrimeContact (D n)-ordinaryPrimeContact (D n)) atTop (𝓝 squareProperPowerConstant) := by
   have hc := longProperPowerContact_limit
   have hX : Tendsto X atTop atTop := (tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop
   have hY : Tendsto Y atTop atTop := tendsto_atTop_mono (fun n => pow_le_pow_left₀ (Nat.cast_nonneg n)
@@ -179,14 +183,16 @@ theorem successorSquare_proper_power_contact_limit :
   have hshort (k : ℕ) : Continuous (fun δ => shortRow δ k) := by
     dsimp only [shortRow]
     fun_prop (disch := exact continuous_splineAutoCorr)
-  have hfin := tendsto_finset_sum (Ioc 0 cutoff) fun k _ => (hshort k).continuousAt.tendsto.comp shift_limit
-  exact ⟨_,((hfin.add ((hc.comp hX).const_mul 2)).sub (hc.comp hY)).congr' proper_split.symm⟩
+  have hfin := tendsto_finsetSum (Ioc 0 cutoff) fun k _ => (hshort k).continuousAt.tendsto.comp shift_limit
+  rw [show squareProperPowerConstant=(∑ k ∈ Ioc 0 cutoff, shortRow (Real.log 4) k)+2*1-1 by
+    unfold squareProperPowerConstant; ring]
+  exact ((hfin.add ((hc.comp hX).const_mul 2)).sub (hc.comp hY)).congr' proper_split.symm
 
 /-- The integrated ordinary prime contact differs from the negative signed
 Weil degree by a single limiting constant through every square conductor. -/
 theorem successorSquare_ordinary_contact_discrepancy_limit :
     ∃ b : ℝ, Tendsto (fun n => ordinaryPrimeContact (D n)+integerProbe _ (D n)) atTop (𝓝 b) := by
-  obtain ⟨c,hc⟩ := successorSquare_proper_power_contact_limit
+  have hc := successorSquare_proper_power_contact_limit
   obtain ⟨z,hz⟩ := successorSquare_archimedean_jet_limit
   have h := ((successorSquare_jet_discrepancy id id tendsto_id tendsto_id).sub
     (hz id id tendsto_id tendsto_id)).sub hc
@@ -210,12 +216,13 @@ private theorem normalized_mesh_error {C P g : ℝ} {n m : ℕ} (hC : 0 ≤ C) (
 the full log ideal over its ordinary part and the compensated ordinary
 log ideal have common limits, uniformly in the multiplicity. -/
 theorem square_prime_generator_discrepancies_above_diagonal :
-    ∃ c b : ℝ, ∀ ε : ℝ, 0 < ε → ∀ᶠ n : ℕ in atTop, ∀ m : ℕ, n ≤ m →
+    ∃ b : ℝ, ∀ ε : ℝ, 0 < ε → ∀ᶠ n : ℕ in atTop, ∀ m : ℕ, n ≤ m →
       let a := m • successorSquareTriple n
-      |(Real.log (generator a:ℝ)-Real.log (ordinaryPrimeGenerator a:ℝ))/(m:ℝ)^2-c| ≤ ε ∧
+      |(Real.log (generator a:ℝ)-Real.log (ordinaryPrimeGenerator a:ℝ))/(m:ℝ)^2-squareProperPowerConstant| ≤ ε ∧
       |(Real.log (ordinaryPrimeGenerator a:ℝ)+ordinaryFloorLoss a)/(m:ℝ)^2+
         integerProbe _ (successorSquareTriple n)-b| ≤ ε := by
-  obtain ⟨c,hc⟩ := successorSquare_proper_power_contact_limit
+  let c := squareProperPowerConstant
+  have hc := successorSquare_proper_power_contact_limit
   obtain ⟨b,hb⟩ := successorSquare_ordinary_contact_discrepancy_limit
   obtain ⟨F,hF,hfull⟩ := successorSquare_full_generator_error
   obtain ⟨O,hO,hord⟩ := successorSquare_floor_corrected_mesh_error
@@ -223,7 +230,7 @@ theorem square_prime_generator_discrepancies_above_diagonal :
   have hC : 0 ≤ C := add_nonneg hF hO
   have ht : Tendsto (fun n : ℕ => C/(n:ℝ)) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
-  refine ⟨c,b,fun ε hε => ?_⟩
+  refine ⟨b,fun ε hε => ?_⟩
   have hc' := (hc.sub_const c).abs
   have hb' := (hb.sub_const b).abs
   simp only [sub_self,abs_zero] at hc' hb'

@@ -144,4 +144,44 @@ theorem forward_prime_logarithm_bounds (Y : ℕ) (hY : 2≤Y) (sign : ℝ) :
     · rw [Ioc_eq_empty (le_of_not_gt hlk),sum_empty]
       exact mul_nonneg (hl _ (by omega)).le (forward_nonneg b Y)
 
+/-- Freezing the logarithm at the initial cutoff costs at most its relative
+variation times the largest absolute suffix sum, for either sign. -/
+theorem prime_interval_freeze_log {l u : ℕ} (hl : 2 ≤ l) (hlu : l < u) {B : ℝ} (hB : 0 ≤ B)
+    (h : ∀ j : ℕ, l ≤ j → j ≤ u →
+      |∑ n ∈ Ioc j u, Real.log n * ordinaryPrimeCountWeight n| ≤ B) :
+    |(∑ n ∈ Ioc l u, Real.log n * ordinaryPrimeCountWeight n) -
+      Real.log l * ∑ n ∈ Ioc l u, ordinaryPrimeCountWeight n| ≤
+      ((Real.log u-Real.log l)/Real.log l)*B := by
+  let a (n : ℕ) := Real.log n*ordinaryPrimeCountWeight n
+  let w (n : ℕ) := 1-Real.log l/Real.log n
+  have hlog {n : ℕ} (hn : l ≤ n) : 0 < Real.log n :=
+    Real.log_pos (by exact_mod_cast (show 1 < n by omega))
+  have hmono {i j : ℕ} (hi : l ≤ i) (hj : i ≤ j) :
+      Real.log i ≤ Real.log j :=
+    Real.log_le_log (by exact_mod_cast (show 0 < i by omega)) (by exact_mod_cast hj)
+  have hw {n : ℕ} (hn : l ≤ n) : 0 ≤ w n := sub_nonneg.mpr ((div_le_one (hlog hn)).mpr (hmono le_rfl hn))
+  have hinc (i : ℕ) (hi : i ∈ Ioc l (u-1)) : w i ≤ w (i+1) :=
+    sub_le_sub_left (div_le_div_of_nonneg_left (hlog le_rfl).le (hlog (mem_Ioc.mp hi).1.le)
+      (hmono (mem_Ioc.mp hi).1.le (Nat.le_succ i))) 1
+  have hsum : (∑ n ∈ Ioc l u, w n*a n) =
+      (∑ n ∈ Ioc l u, Real.log n*ordinaryPrimeCountWeight n)-
+        Real.log l*∑ n ∈ Ioc l u, ordinaryPrimeCountWeight n := by
+    rw [Finset.mul_sum,← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun n hn => ?_
+    dsimp only [w,a]
+    field_simp [(hlog (mem_Ioc.mp hn).1.le).ne']
+  rw [← hsum,abs_le]
+  have hpos := sum_weighted_le_of_suffix_bounds hlu a w
+    (fun j hj hju => (abs_le.mp (h j hj hju)).2) (hw (Nat.le_succ _)) hinc
+  have hneg := sum_weighted_le_of_suffix_bounds hlu (fun n => -a n) w
+    (fun j hj hju => by rw [Finset.sum_neg_distrib]; exact neg_le.mpr (abs_le.mp (h j hj hju)).1)
+    (hw (Nat.le_succ _)) hinc
+  simp only [mul_neg,Finset.sum_neg_distrib] at hneg
+  have hu : w u ≤ (Real.log u-Real.log l)/Real.log l := by
+    rw [show w u = (Real.log u-Real.log l)/Real.log u by
+      dsimp only [w]; rw [sub_div,div_self (hlog hlu.le).ne']]
+    exact div_le_div_of_nonneg_left (sub_nonneg.mpr (hmono le_rfl hlu.le)) (hlog le_rfl) (hmono le_rfl hlu.le)
+  exact ⟨neg_le.mp (hneg.trans (mul_le_mul_of_nonneg_right hu hB)),
+    hpos.trans (mul_le_mul_of_nonneg_right hu hB)⟩
+
 end GaloisForLFunctions.ExceptionalLayerTheory

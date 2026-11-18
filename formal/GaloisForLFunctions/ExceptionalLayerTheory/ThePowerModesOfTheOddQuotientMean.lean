@@ -1,4 +1,5 @@
-import GaloisForLFunctions.ExceptionalLayerTheory.AdjacentDenominatorsInDiscreteQuotientMeans
+import GaloisForLFunctions.ExceptionalLayerTheory.TheFiniteOddQuotientMeanOfProperPrimePowers
+import GaloisForLFunctions.ExceptionalLayerTheory.TwoProperPowerWavesCharacterizeASingleQuartet
 import GaloisForLFunctions.ExceptionalLayerTheory.TheAlternatingPrimeSymbolsAtARightZero
 import GaloisForLFunctions.ExceptionalLayerTheory.UniformTailsOfShortDirichletPolynomials
 
@@ -186,7 +187,7 @@ private theorem first_cell {s : ℂ} (hs : 0 < s.re) {N : ℕ} (hN : 0 < N) :
   apply (intervalIntegral.norm_integral_le_of_norm_le zero_le_one
     (g := fun t => ‖s‖*t^(s.re-1)) (Eventually.of_forall fun t ht =>
       (point_bound hN ht.1 ht.2).trans (mul_le_of_le_one_right (by positivity)
-        (by simpa using ht.1.le : (1-t)/1 ≤ 1)))) ((intervalIntegrable_rpow' hh).const_mul _)).trans_eq
+        (by simpa using ht.1.le : (1-t)/1 ≤ 1))) ((intervalIntegrable_rpow' hh).const_mul _)).trans_eq
   rw [intervalIntegral.integral_const_mul,integral_rpow (Or.inl hh),sub_add_cancel,Real.one_rpow,
     Real.zero_rpow hs.ne',sub_zero,mul_one_div]
 
@@ -369,5 +370,125 @@ theorem oddQuotientMean_power_mode {s : ℂ} (hs : 0 < s.re) (hs' : s.re < 1) :
     rw [norm_sub_rev,← sub_div,← mul_sub,norm_div]
     exact div_le_div_of_nonneg_right htail (norm_nonneg _)
   exact (norm_sub_le_norm_sub_add_norm_sub _ ((N:ℂ)^s*P/(s+1)) _).trans (add_le_add h he)
+
+private abbrev quarterError (x : ℝ) := x^(1/4:ℝ)*(1+Real.log x)^2
+
+private theorem one_le_quarterError {x : ℝ} (hx : 1 ≤ x) : 1 ≤ quarterError x :=
+  one_le_mul_of_one_le_of_one_le (Real.one_le_rpow hx (by norm_num))
+    (one_le_pow₀ (le_add_of_nonneg_right (Real.log_nonneg hx)))
+
+private theorem transfer_quarterError (c : ℕ → ℝ) {K : ℝ} (hK : 0 ≤ K)
+    (h : ∀ n : ℕ, 1 ≤ n → |∑ d ∈ Finset.Icc 1 n, c d| ≤ K*quarterError n)
+    {N : ℕ} (hN : 1 ≤ N) :
+    |(∑ d ∈ Finset.Icc 1 N, c d * discreteQuotientMean parity d N)/(N:ℝ)| ≤ 4*K*quarterError N := by
+  have hpos : (0:ℝ)<N := by exact_mod_cast hN
+  rw [abs_div,abs_of_pos hpos,div_le_iff₀ hpos]
+  apply (abs_discreteQuotientMean_weighted c parity (by norm_num [parity]) parity_bounds N).trans
+  let L := (1+Real.log N)^2
+  have hu (n : ℕ) (hn : n ∈ Finset.Icc 1 N) :
+      |∑ d ∈ Finset.Icc 1 n, c d|/((n:ℝ)+1) ≤ (K*L)*(n:ℝ)^(-(3/4:ℝ)) := by
+    have hp : (1:ℝ) ≤ n := by exact_mod_cast (mem_Icc.mp hn).1
+    have hnpos := zero_lt_one.trans_le hp
+    have hh : (1+Real.log n)^2 ≤ L := by
+      apply (sq_le_sq₀ (by linarith only [Real.log_nonneg hp])
+        (by have := Real.log_nonneg (show (1:ℝ) ≤ N by exact_mod_cast hN); linarith)).mpr
+      exact add_le_add_left (Real.log_le_log hnpos (by exact_mod_cast (mem_Icc.mp hn).2)) 1
+    have he := mul_le_mul_of_nonneg_left hh (mul_nonneg hK (Real.rpow_nonneg hnpos.le (1/4)))
+    have hb := h n (mem_Icc.mp hn).1
+    apply (div_le_div_of_nonneg_left (abs_nonneg _) hnpos (le_add_of_nonneg_right zero_le_one)).trans
+    rw [show -(3/4:ℝ)=(1/4:ℝ)-1 by norm_num,Real.rpow_sub_one hnpos.ne',← mul_div_assoc]
+    apply div_le_div_of_nonneg_right _ hnpos.le
+    dsimp only [quarterError] at hb
+    linarith only [he,hb]
+  have hsum := Finset.sum_le_sum hu
+  rw [← mul_sum] at hsum
+  have hr : (∑ n ∈ Finset.Icc 1 N, (n:ℝ)^(-(3/4:ℝ))) ≤ (N:ℝ)^(1/4:ℝ)/(1/4) := by
+    rw [← Ico_add_one_right_eq_Icc,Finset.sum_Ico_eq_sum_range]
+    have hh := _root_.RHTower.sum_range_rpow_neg_le (3/4) (by norm_num) (by norm_num) N
+    simpa only [Nat.add_sub_cancel,Nat.cast_add,Nat.cast_one,add_comm (1:ℝ),
+      show 1-(3/4:ℝ)=1/4 by norm_num] using hh
+  have hl : 0 ≤ L := sq_nonneg _
+  have hb := mul_le_mul_of_nonneg_left (hsum.trans (mul_le_mul_of_nonneg_left hr (mul_nonneg hK hl))) hpos.le
+  exact hb.trans_eq (by dsimp only [L,quarterError]; ring)
+
+private def modePrefix (ρ s : ℂ) (n : ℕ) := ((n:ℂ)^s/ρ).re
+private def modeJump (ρ s : ℂ) (n : ℕ) := modePrefix ρ s n - modePrefix ρ s (n-1)
+
+private theorem prefix_modeJump (ρ : ℂ) {s : ℂ} (hs : 0<s.re) (n : ℕ) :
+    (∑ k ∈ Finset.Icc 1 n, modeJump ρ s k)=modePrefix ρ s n := by
+  induction n with
+  | zero =>
+    have h : s ≠ 0 := fun e => by simpa [e] using hs
+    simp [modePrefix,Complex.zero_cpow h]
+  | succ n ih => rw [sum_Icc_succ_top (by omega : 1 ≤ n+1),ih,modeJump,Nat.add_sub_cancel]; ring
+
+/-- Real power wave divided by ρ after the alternating triangular mean. -/
+def oddQuotientEtaMode (ρ s : ℂ) (N : ℕ) : ℝ :=
+  (((N:ℂ)^s*(alternatingDivisorFactor s*riemannZeta s)/(s+1))/ρ).re
+
+private theorem modeJump_transfer (ρ : ℂ) {s : ℂ} (hs : 0 < s.re) (hs' : s.re < 1) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 1 ≤ N →
+      |(∑ k ∈ Finset.Icc 1 N, modeJump ρ s k*discreteQuotientMean parity k N)/(N:ℝ)-
+        oddQuotientEtaMode ρ s N| ≤ C := by
+  obtain ⟨C,h⟩ := oddQuotientMean_power_mode hs hs'
+  refine ⟨|C|/‖ρ‖,div_nonneg (abs_nonneg _) (norm_nonneg _),fun N hN => ?_⟩
+  let S := ∑ k ∈ range N, (((k+1:ℕ):ℂ)^s-(k:ℂ)^s)*(discreteQuotientMean parity (k+1) N:ℂ)/(N:ℂ)
+  let T := (N:ℂ)^s*(alternatingDivisorFactor s*riemannZeta s)/(s+1)
+  have he : (∑ k ∈ Finset.Icc 1 N, modeJump ρ s k*discreteQuotientMean parity k N)/(N:ℝ)=(S/ρ).re := by
+    rw [← Ico_add_one_right_eq_Icc,Finset.sum_Ico_eq_sum_range,Nat.add_sub_cancel,Finset.sum_div]
+    dsimp only [S]
+    rw [Finset.sum_div,Complex.re_sum]
+    refine sum_congr rfl fun k _ => ?_
+    rw [add_comm 1 k,modeJump,Nat.add_sub_cancel,modePrefix,modePrefix,← Complex.sub_re,
+      ← sub_div,← Complex.re_mul_ofReal,← Complex.div_ofReal_re]
+    congr 1
+    push_cast; ring
+  rw [he,oddQuotientEtaMode,← Complex.sub_re,← sub_div]
+  apply (Complex.abs_re_le_norm _).trans
+  rw [norm_div]
+  exact div_le_div_of_nonneg_right ((h N hN).trans (le_abs_self _)) (norm_nonneg _)
+
+/-- Both genuine power waves of a single quartet pass to the normalized
+finite prime count, with the alternating zeta multiplier at each frequency. -/
+theorem oddQuotientPowerTotal_singleQuartet_modes {ρ : ℂ} (hq : ExclusionOfTheCriticalState.HasSingleOffLineQuartet ρ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 1 ≤ N →
+      |oddQuotientPowerTotal N/(N:ℝ) + 2*(ExclusionOfTheCriticalState.quartetCopyMult ρ:ℝ)*
+        (oddQuotientEtaMode ρ (ρ/2) N+oddQuotientEtaMode ρ (ρ/3) N)| ≤ C*quarterError N := by
+  let s₂ := ρ/2
+  let s₃ := ρ/3
+  let m := 2*(ExclusionOfTheCriticalState.quartetCopyMult ρ:ℝ)
+  have hm : 0 ≤ m := by dsimp only [m]; positivity
+  have h₂ : 0<s₂.re ∧ s₂.re<1 := by dsimp only [s₂]; rw [Complex.div_ofNat_re]; constructor <;> linarith only [hq.1,hq.re_lt_one]
+  have h₃ : 0<s₃.re ∧ s₃.re<1 := by dsimp only [s₃]; rw [Complex.div_ofNat_re]; constructor <;> linarith only [hq.1,hq.re_lt_one]
+  let c (n : ℕ) := properPowerLatticeWeight n+m*(modeJump ρ s₂ n+modeJump ρ s₃ n)
+  obtain ⟨K,hK,h⟩ := singleQuartet_properPower_modes hq
+  have hp (n : ℕ) (hn : 1 ≤ n) : |∑ d ∈ Finset.Icc 1 n, c d| ≤ (K+2)*quarterError n := by
+    have h₁ : (1:ℝ) ≤ n := by exact_mod_cast hn
+    have he := h n h₁
+    have hf := properPowerLatticeWeight_prefix n
+    simp only [Complex.add_re,ofReal_natCast] at he
+    simp only [c,sum_add_distrib,← mul_sum,prefix_modeJump ρ h₂.1,prefix_modeJump ρ h₃.1]
+    obtain ⟨el,eu⟩ := abs_le.mp he
+    have hqE := one_le_quarterError h₁
+    dsimp only [modePrefix,s₂,s₃,m,quarterError] at *
+    rw [abs_le]
+    constructor <;> linarith only [el,eu,hf.1,hf.2,hqE]
+  obtain ⟨C₂,hC₂,hmode₂⟩ := modeJump_transfer ρ h₂.1 h₂.2
+  obtain ⟨C₃,hC₃,hmode₃⟩ := modeJump_transfer ρ h₃.1 h₃.2
+  let A := 4*(K+2)+m*(C₂+C₃)
+  refine ⟨A,by dsimp only [A]; positivity,fun N hN => ?_⟩
+  have e := transfer_quarterError c (K := K+2) (by positivity) hp hN
+  have hscale := mul_le_mul_of_nonneg_left (one_le_quarterError (show (1:ℝ) ≤ N by exact_mod_cast hN))
+    (mul_nonneg hm (add_nonneg hC₂ hC₃))
+  simp only [c,add_mul,mul_assoc,sum_add_distrib,← mul_sum,add_div,mul_div_assoc] at e
+  have h2 := abs_le.mp (hmode₂ N hN)
+  have h3 := abs_le.mp (hmode₃ N hN)
+  have eu := mul_le_mul_of_nonneg_left (add_le_add h2.2 h3.2) hm
+  have el := mul_le_mul_of_nonneg_left (add_le_add h2.1 h3.1) hm
+  have hE := abs_le.mp e
+  change |oddQuotientPowerTotal N/(N:ℝ)+m*(oddQuotientEtaMode ρ s₂ N+oddQuotientEtaMode ρ s₃ N)| ≤ A*quarterError N
+  rw [abs_le]
+  dsimp only [oddQuotientPowerTotal,parity,A] at *
+  constructor <;> linarith only [el,eu,hE.1,hE.2,hscale]
 
 end GaloisForLFunctions.ExceptionalLayerTheory

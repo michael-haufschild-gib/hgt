@@ -169,4 +169,91 @@ theorem singleQuartet_two_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuart
   rw [hn] at hr
   exact hr.trans_eq (by dsimp only [B]; ring)
 
+private theorem quarter_coordinate {Q : ℂ} (hQ : Q=I ∨ Q=-I) (z : ℂ) :
+    ∃ j : ℕ, j<4 ∧ ‖z‖/Real.sqrt 2 ≤ (Q^j*z).re := by
+  by_contra! hn
+  let B := ‖z‖/Real.sqrt 2
+  have hr : |z.re|<B ∧ |z.im|<B := by
+    have h₀ := hn 0 (by decide)
+    have h₁ := hn 1 (by decide)
+    have h₂ := hn 2 (by decide)
+    have h₃ := hn 3 (by decide)
+    rcases hQ with rfl | rfl <;>
+      simp [pow_succ,Complex.I_mul_re,Complex.I_mul_im] at h₀ h₁ h₂ h₃ <;>
+      constructor <;> apply abs_lt.mpr <;> constructor <;>
+      dsimp only [B] <;> linarith only [h₀,h₁,h₂,h₃]
+  have hh := mul_lt_mul_of_pos_left (max_lt hr.1 hr.2) (Real.sqrt_pos.mpr (by norm_num : (0:ℝ)<2))
+  have ht := (Complex.norm_le_sqrt_two_mul_max z).trans_lt hh
+  dsimp only [B] at ht
+  rw [mul_div_cancel₀ _ (Real.sqrt_pos.mpr (by norm_num : (0:ℝ)<2)).ne'] at ht
+  exact lt_irrefl _ ht
+
+/-- In four consecutive quarter-period intervals each prescribed sign attains
+at least 1/√2 of the normalized wave amplitude, up to square-root error. -/
+theorem singleQuartet_four_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuartet ρ) :
+    let h := Real.pi/(2*|ρ.im|)
+    let A := Real.exp (ρ.re*h)
+    let C := 2*(quartetCopyMult ρ:ℝ)*‖(Complex.exp (ρ*(h:ℂ))-1)/ρ‖
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ t : ℝ, 0 ≤ t → 16 ≤ Real.exp t →
+      ∀ ε : ℝ, |ε|=1 → ∃ j : ℕ, j<4 ∧
+        C*Real.exp (ρ.re*t)/Real.sqrt 2 - K*Real.exp ((t+4*h)/2)*(1+(t+4*h)^2) ≤
+          ε*thetaIntervalIncrement (t+j*h) h/A^j := by
+  intro h A C
+  obtain ⟨hh,_,hA,hphase⟩ := quarter_scale hq
+  obtain ⟨L,hL,hE⟩ := theta_mode_bound hq
+  refine ⟨2*L,by positivity,fun t ht ht16 ε hε => ?_⟩
+  let m := 2*(quartetCopyMult ρ:ℝ)
+  let D := Complex.exp (ρ*(h:ℂ))
+  obtain ⟨Q,hQ,hD⟩ : ∃ Q : ℂ, (Q=I ∨ Q=-I) ∧ D=(A:ℂ)*Q :=
+    hphase.elim (fun e => ⟨I,Or.inl rfl,e⟩) (fun e => ⟨-I,Or.inr rfl,e⟩)
+  let w := -(m:ℂ)*(D-1)*powerMode ρ t
+  obtain ⟨j,hj,hread⟩ := quarter_coordinate hQ ((ε:ℂ)*w)
+  refine ⟨j,hj,?_⟩
+  have ha : 1 ≤ A^j := one_le_pow₀ hA.le
+  let u := t+(j:ℝ)*h
+  let B := L*Real.exp ((t+4*h)/2)*(1+(t+4*h)^2)
+  have hj' : (j:ℝ) ≤ 3 := by exact_mod_cast (show j ≤ 3 by omega)
+  have hu : t ≤ u := le_add_of_nonneg_right (mul_nonneg (Nat.cast_nonneg _) hh.le)
+  have huv : u+h ≤ t+4*h := by dsimp only [u]; linarith only [mul_le_mul_of_nonneg_right hj' hh.le]
+  have hb (v : ℝ) (hl : t ≤ v) (hv : v ≤ t+4*h) :
+      |Chebyshev.theta (Real.exp v)-Real.exp v+m*(powerMode ρ v).re| ≤ B := by
+    apply (hE _ (ht.trans hl) (ht16.trans (Real.exp_le_exp.mpr hl))).trans
+    exact mul_le_mul (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith only [hv])) hL)
+      (add_le_add_left ((sq_le_sq₀ (ht.trans hl) ((ht.trans hl).trans hv)).mpr hv) 1)
+      (by positivity) (by positivity)
+  have hdiff := (abs_sub _ _).trans (add_le_add (hb (u+h) (hu.trans (le_add_of_nonneg_right hh.le)) huv)
+    (hb u hu ((le_add_of_nonneg_right hh.le).trans huv)))
+  have mode_j (k : ℕ) : powerMode ρ (t+k*h)=D^k*powerMode ρ t := by
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      rw [Nat.cast_succ,add_mul,one_mul,← add_assoc,powerMode_add,ih,pow_succ]; dsimp only [D]; ring
+  have hw : -(m:ℂ)*(powerMode ρ (u+h)-powerMode ρ u)=(A:ℂ)^j*Q^j*w := by
+    rw [powerMode_add,show powerMode ρ u=D^j*powerMode ρ t from mode_j _]
+    change -(m:ℂ)*(D*(D^j*powerMode ρ t)-D^j*powerMode ρ t)=_
+    dsimp only [w]
+    rw [hD,mul_pow]; ring
+  have H : |thetaIntervalIncrement u h - A^j*(Q^j*w).re| ≤ 2*B := by
+    have e := congrArg Complex.re hw
+    rw [← Complex.ofReal_pow,mul_assoc,Complex.re_ofReal_mul] at e
+    simp only [neg_mul,Complex.neg_re,Complex.re_ofReal_mul,Complex.sub_re] at e
+    rw [← e,thetaIntervalIncrement]
+    convert hdiff using 2 <;> ring
+  have signed : |ε*thetaIntervalIncrement u h/A^j-ε*(Q^j*w).re| ≤ 2*B := by
+    rw [show ε*thetaIntervalIncrement u h/A^j-ε*(Q^j*w).re =
+      ε*(thetaIntervalIncrement u h-A^j*(Q^j*w).re)/A^j by field_simp; ring,
+      abs_div,abs_mul,hε,one_mul,abs_of_pos (zero_lt_one.trans_le ha)]
+    exact (div_le_self (abs_nonneg _) ha).trans H
+  have hn : ‖(ε:ℂ)*w‖=C*Real.exp (ρ.re*t) := by
+    have hm : 0≤m := by dsimp only [m]; positivity
+    simp only [w,C,powerMode,norm_mul,norm_div,norm_neg,Complex.norm_real,Real.norm_eq_abs,
+      hε,one_mul,abs_of_nonneg hm,Complex.norm_exp,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,
+      mul_zero,sub_zero]
+    dsimp only [D,m]; ring
+  rw [hn,show Q^j*((ε:ℂ)*w)=(ε:ℂ)*(Q^j*w) by ring,Complex.re_ofReal_mul] at hread
+  have hl := (abs_le.mp signed).1
+  change _ ≤ ε*thetaIntervalIncrement u h/A^j
+  dsimp only [B] at hl
+  linarith only [hl,hread]
+
 end GaloisForLFunctions.ExceptionalLayerTheory

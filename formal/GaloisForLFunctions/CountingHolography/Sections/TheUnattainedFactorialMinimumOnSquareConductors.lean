@@ -15,7 +15,8 @@ namespace GaloisForLFunctions.CountingHolography.Sections
 
 open Finset Filter Topology AbsoluteGeometryOfSpecZ _root_.RHTower ArithmeticPositiveDuality
 
-private theorem log_value {q : ℚ} (hq : 0 < q) : primeLogValue (valFinsupp q)=Real.log (q:ℝ) := by
+/-- The logarithm is the linear prime-log reading of the rational valuations. -/
+theorem primeLogValue_valFinsupp {q : ℚ} (hq : 0 < q) : primeLogValue (valFinsupp q)=Real.log (q:ℝ) := by
   let u : posUnits := ⟨Units.mk0 q hq.ne',hq⟩
   simpa only [primeLogValue,Finsupp.linearCombination_apply,Finsupp.sum,zsmul_eq_mul] using
     (log_eq_sum_valFinsupp u).symm
@@ -27,7 +28,7 @@ theorem factorial_prices_iff_rational_valuations {L : ℕ} (hL : 10 ≤ L)
     (Real.log (q:ℝ),Real.log (E:ℝ)) ∈ factorialJointImage L ↔
       ∀ p : Nat.Primes, (L < p → padicValRat p q=0 ∧ padicValRat p E=0) ∧
         ((p:ℤ) ∣ padicValRat p E) ∧ ((p:ℕ)=L → padicValRat p E=(p:ℤ)*padicValRat p q) := by
-  rw [← log_value hq,← log_value hE]
+  rw [← primeLogValue_valFinsupp hq,← primeLogValue_valFinsupp hE]
   exact factorialJointImage_iff_prime_coordinates hL _ _
 
 private theorem no_half {q : ℚ} (hq : 0 < q) {p : ℕ} (hp : p.Prime)
@@ -37,7 +38,7 @@ private theorem no_half {q : ℚ} (hq : 0 < q) {p : ℕ} (hp : p.Prime)
   let M := max 10 L
   have hm : (Real.log (q:ℝ),Real.log (q:ℝ)/2) ∈ factorialJointImage M :=
     ⟨c,fun j hj => hc j ((le_max_right 10 L).trans_lt hj),hb,he⟩
-  rw [← log_value hq] at hm
+  rw [← primeLogValue_valFinsupp hq] at hm
   have hd := ((factorial_half_price_attainable_iff (le_max_left 10 L) (valFinsupp q)).mp hm ⟨p,hp⟩).2
   change 2*(p:ℤ) ∣ padicValRat p q at hd
   rw [← deningerRatExp_apply_of_prime hp] at hd

@@ -119,10 +119,10 @@ theorem facetSums_surjective_iff (K : Type*) [Field K] :
   · intro h hn
     have hm : (Pi.single 0 1 : Fin (n+1) → K) ∈ LinearMap.range (facetSums K n) := h _
     have hd := (mem_range_facetSums K n _).mp hm
-    simpa [hn] using hd
+    simp [hn] at hd
   · intro hn y
     apply (mem_range_facetSums K n y).mpr
-    exact (isUnit_iff_ne_zero.mpr hn).dvd _
+    exact (isUnit_iff_ne_zero.mpr hn).dvd
 
 /-- The same integral presentation is the neighborhood-sum operator on the complete graph. -/
 theorem completeGraph_adjMatrix_mulVec (x : Fin (n+1) → R) :

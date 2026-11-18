@@ -98,7 +98,9 @@ private theorem row_bound :
     push_cast
     exact (Nat.lt_floor_add_one _).trans_le (add_le_add_right (by exact_mod_cast le_max_right (2*(D+1)) ⌊P (1/200)⌋₊) 1)
   have ht : P (499999999/1000000000+1/200)<((A+1 : ℕ) : ℝ)*(F+1 : ℕ) := by
-    rw [←mul]; exact mul_lt_mul_of_le_of_lt_of_nonneg_of_pos ha'.le hp' (by dsimp [P]; positivity) (by positivity)
+    rw [←mul]
+    exact (mul_le_mul_of_nonneg_right ha'.le (by dsimp [P]; positivity)).trans_lt
+      (mul_lt_mul_of_pos_left hp' (by positivity))
   have hprod : Y/(F+1)≤A := by
     apply Nat.le_of_lt_succ
     apply (Nat.div_lt_iff_lt_mul (Nat.succ_pos F)).mpr

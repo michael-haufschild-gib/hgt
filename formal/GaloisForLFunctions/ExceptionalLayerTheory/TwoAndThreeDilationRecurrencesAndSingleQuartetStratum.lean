@@ -1032,7 +1032,7 @@ theorem model_firewall_for_two_and_three_clocks {a b β : ℝ}
         DifferentiableOn ℂ
           (WorldsOfTheZeroConfiguration.SignedEdit.editG α β γ k₀) {s : ℂ | σ₁ < s.re}) ∧
     (RHTower.BeurlingOverRegularIntegers.overRegularZeta (2 / 5) (1 / 10) 1 ((3 / 5 : ℝ) + I) = 0) := by
-  refine ⟨?_, fun γ => ?_, (singleQuartet_realized_in_models hlo).2.2.1⟩
+  refine ⟨?_, fun γ => ?_, (singleQuartet_realized_in_models hlo).2.2.1.1⟩
   · obtain ⟨γ, ω, hγa, hγb, hω67, hres⟩ := dense_exists_isCrossResonantPair ha hab 67
     have hγ_pos : 0 < γ := lt_of_le_of_lt ha hγa
     exact ⟨γ, ω, hγa, hγb, hω67, hres,

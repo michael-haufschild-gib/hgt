@@ -49,7 +49,7 @@ theorem buchstab_mem_unit (u : ℝ) : buchstab u ∈ Icc (0:ℝ) 1 := by
       induction k with
       | zero => exact Subset.rfl
       | succ k ih => exact (enclosure_nested k).trans ih
-    have hb := h _ (profile_mem_enclosure _ _ (offset_mem hu))
+    have hb := h ⌊u-1⌋₊ (profile_mem_enclosure ⌊u-1⌋₊ _ (offset_mem hu))
     exact ⟨le_trans (by norm_num [enclosure]) hb.1,hb.2⟩
   · exact ⟨le_rfl,zero_le_one⟩
 
@@ -58,11 +58,13 @@ theorem measurable_buchstab : Measurable buchstab := by
     measurable_from_prod_countable_right fun n => (profile_continuous n).measurable
   have hn : Measurable (fun u : ℝ => ⌊u-1⌋₊) := (measurable_id.sub measurable_const).nat_floor
   apply Measurable.ite (measurableSet_Ici (a := (1:ℝ))) _ measurable_const
-  exact hp.comp (hn.prodMk ((measurable_id.sub measurable_const).sub hn.natCast))
+  exact hp.comp (hn.prodMk ((measurable_id.sub measurable_const).sub
+    ((measurable_of_countable (fun n : ℕ => (n:ℝ))).comp hn)))
 
 theorem intervalIntegrable_buchstab (a b : ℝ) : IntervalIntegrable buchstab volume a b := by
   apply intervalIntegrable_iff.mpr
-  apply (integrableOn_const (C := (1:ℝ))).mono' measurable_buchstab.aestronglyMeasurable
+  have hc : IntervalIntegrable (fun _ : ℝ => (1:ℝ)) volume a b := intervalIntegrable_const
+  apply (intervalIntegrable_iff.mp hc).mono' measurable_buchstab.aestronglyMeasurable
   exact Eventually.of_forall fun x => by
     simpa only [Real.norm_eq_abs,abs_of_nonneg (buchstab_mem_unit x).1] using (buchstab_mem_unit x).2
 
@@ -106,7 +108,7 @@ theorem buchstab_weighted (u : Ici (1:ℝ)) :
   calc
     _ = intervalMass n x := by
       rw [hc, profile, max_eq_left hx.1, hu]
-      field_simp [show u.val ≠ 0 by linarith [u.property]]
+      field_simp [ne_of_gt (zero_lt_one.trans_le (show 1 ≤ u.val from u.property))]
     _ = _ := by rw [mass_primitive n x hx, show (n:ℝ)+x = u.val-1 by dsimp [x]; ring]
 
 /-- Away from the initial jump, Buchstab's function is continuous even at integer junctions. -/
@@ -121,16 +123,48 @@ theorem continuousOn_buchstab : ContinuousOn buchstab (Ici (1:ℝ)) := by
   apply (eq_div_iff (ne_of_gt (zero_lt_one.trans_le hu))).mpr
   simpa only [mul_comm] using buchstab_weighted ⟨u,hu⟩
 
+/-- The global delay differential equation holds at every argument above two,
+including the integer junctions of the construction. -/
+theorem hasDerivAt_buchstab (u : Ioi (2:ℝ)) :
+    HasDerivAt buchstab ((buchstab (u.val-1)-buchstab u.val)/u.val) u.val := by
+  have hu : 2 < u.val := u.property
+  have hu₀ : u.val ≠ 0 := by linarith
+  have hshift : 1 < u.val-1 := by linarith
+  let P := fun v : ℝ => ∫ t in (0:ℝ)..v, buchstab t
+  have hp : HasDerivAt P (buchstab (u.val-1)) (u.val-1) :=
+    intervalIntegral.integral_hasDerivAt_right (intervalIntegrable_buchstab 0 _)
+      measurable_buchstab.stronglyMeasurable.stronglyMeasurableAtFilter
+      (continuousOn_buchstab.continuousAt (Ici_mem_nhds hshift))
+  have hform : buchstab =ᶠ[𝓝 u.val] fun z => (1+P (z-1))/z := by
+    filter_upwards [lt_mem_nhds (show 1 < u.val by linarith)] with z hz
+    apply (eq_div_iff (zero_lt_one.trans hz).ne').mpr
+    simpa only [mul_comm] using buchstab_weighted ⟨z,hz.le⟩
+  have hd : HasDerivAt (fun z => (1+P (z-1))/z)
+      ((buchstab (u.val-1)*1*u.val - (1+P (u.val-1))*1)/u.val^2) u.val :=
+    ((HasDerivAt.comp (h := fun z : ℝ => z-1) u.val hp
+      ((hasDerivAt_id u.val).sub_const 1)).const_add 1).div (hasDerivAt_id _) hu₀
+  apply (hd.congr_of_eventuallyEq hform).congr_deriv
+  change _ = (buchstab (u.val-1)-buchstab u.val)/u.val
+  have he : 1+P (u.val-1) = u.val*buchstab u.val :=
+    (buchstab_weighted ⟨u.val,show 1 ≤ u.val by linarith⟩).symm
+  rw [he]
+  field_simp [hu₀]
+  <;> ring
+
 /-- The cell enclosures give a uniform error bound in the actual real argument. -/
 theorem buchstab_factorial_error (u : Ici (1:ℝ)) :
     |buchstab u.val - enclosureLimit| ≤ 1 / ((⌊u.val-1⌋₊+2).factorial : ℝ) := by
-  rw [buchstab,if_pos u.property]
+  rw [buchstab,if_pos (show 1 ≤ u.val from u.property)]
   exact profile_limit_error _ ⟨_,offset_mem u.property⟩
 
 /-- The real-variable limit exists along every approach to positive infinity. -/
 theorem tendsto_buchstab_atTop : Tendsto buchstab atTop (𝓝 enclosureLimit) := by
-  have hn : Tendsto (fun u : ℝ => ⌊u-1⌋₊) atTop atTop :=
-    tendsto_nat_floor_atTop.comp (tendsto_id.atTop_sub_const 1)
+  have hs : Tendsto (fun u : ℝ => u-1) atTop atTop := by
+    apply tendsto_atTop.mpr
+    intro b
+    filter_upwards [eventually_ge_atTop (b+1)] with u hu
+    linarith
+  have hn : Tendsto (fun u : ℝ => ⌊u-1⌋₊) atTop atTop := tendsto_nat_floor_atTop.comp hs
   have hf : Tendsto (fun u : ℝ => (((⌊u-1⌋₊+2).factorial : ℕ) : ℝ)) atTop atTop :=
     tendsto_natCast_atTop_atTop.comp (factorial_tendsto_atTop.comp ((tendsto_add_atTop_nat 2).comp hn))
   apply tendsto_iff_norm_sub_tendsto_zero.mpr
@@ -140,6 +174,7 @@ theorem tendsto_buchstab_atTop : Tendsto buchstab atTop (𝓝 enclosureLimit) :=
 
 #print axioms buchstab_weighted
 #print axioms continuousOn_buchstab
+#print axioms hasDerivAt_buchstab
 #print axioms buchstab_factorial_error
 #print axioms tendsto_buchstab_atTop
 

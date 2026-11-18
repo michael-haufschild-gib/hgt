@@ -112,7 +112,7 @@ private theorem positive_power_limsup_of_right_zero {ρ : ℂ} (hh : 1/2<ρ.re)
 private theorem bounded_residual_of_rh (h : RiemannHypothesis) {a β γ : ℝ} (ha : 1≤a) :
     ¬IsSqrtLogSqUnbounded (primeDilationResidual a β γ) := by
   let K := 200*(_root_.RHTower.xiLineTwoLogDerivConstant+2)
-  have hb (x : ℝ) (hx : 16≤x) : |primeError x|≤|K|*Real.sqrt x*Real.log x^2 :=
+  have hb (x : ℝ) (hx : 16≤x) : |primeError x|≤|K| * Real.sqrt x*Real.log x^2 :=
     (_root_.RHTower.abs_chebyshevPsi_sub_le_of_riemannHypothesis h hx).trans
       (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_abs_self _) (Real.sqrt_nonneg _)) (sq_nonneg _))
   obtain ⟨C,X,_,hC⟩ := abs_dilationRecurrenceOp_le_of_sqrt_log_sq (β := β) (γ := γ) ha (abs_nonneg K) hb

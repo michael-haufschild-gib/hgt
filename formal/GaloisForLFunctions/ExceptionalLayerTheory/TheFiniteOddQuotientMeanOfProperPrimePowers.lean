@@ -46,7 +46,7 @@ private theorem powerAtom_sum {r : ℕ} (hr : 0<r) (N : ℕ) (F : ℕ → ℝ) :
     · rintro hn
       obtain ⟨hn,⟨a,rfl⟩⟩ := mem_filter.mp hn
       obtain ⟨hn,hN⟩ := mem_Icc.mp hn
-      have ha : a≠0 := by rintro rfl; simpa [zero_pow hr.ne'] using hn
+      have ha : a≠0 := by rintro rfl; simp [zero_pow hr.ne'] at hn
       exact mem_image.mpr ⟨a,mem_Icc.mpr ⟨Nat.one_le_iff_ne_zero.mpr ha,(root_cut hr a N).mp hN⟩,rfl⟩
     · intro hn
       obtain ⟨a,ha,rfl⟩ := mem_image.mp hn
@@ -210,7 +210,7 @@ theorem oddQuotientPowerTotal_finite_formula (N : ℕ) :
 
 /-- The total is the integer triangular mean of a single Dirichlet convolution. -/
 theorem oddQuotientPowerTotal_eq_triangular (N : ℕ) :
-    oddQuotientPowerTotal N=N*triangularPrimeProfile (properPowerLatticeWeight*alternatingDivisorCoeff)
+    oddQuotientPowerTotal N=N*triangularPrimeProfile (properPowerLatticeWeight*alternatingDivisorCoeff : ArithmeticFunction ℝ)
       (N:ℝ)⁻¹ := by
   rw [triangularPrimeProfile_sample,oddQuotientPowerTotal]
   simp only [discreteQuotientMean,mul_sum]
