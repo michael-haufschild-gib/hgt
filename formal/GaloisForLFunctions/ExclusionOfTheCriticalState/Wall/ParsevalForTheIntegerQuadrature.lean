@@ -29,7 +29,8 @@ private theorem tilt_integrable_of_stronger_square_bound {D : ℝ → ℝ} (hm :
     apply (memLp_two_iff_integrable_sq_norm (by fun_prop)).2
     have he (t : ℝ) : ‖Real.exp ((β-μ)*t)‖^2 = Real.exp ((2*(β-μ))*t) := by
       rw [Real.norm_of_nonneg (Real.exp_pos _).le,pow_two,← Real.exp_add]; congr 1; ring
-    simpa only [he] using integrableOn_exp_mul_Ioi (show 2*(β-μ)<0 by linarith only [hlt]) 0
+    simpa only [IntegrableOn,he] using integrableOn_exp_mul_Ioi (mul_neg_of_pos_of_neg
+      (by norm_num : (0:ℝ)<2) (sub_neg.2 hlt)) 0
   have hpos : IntegrableOn (fun t : ℝ => Real.exp (β*t)*D t) (Ioi 0) := by
     apply (hExp.integrable_mul (h2.mono_measure Measure.restrict_le_self)).congr
     exact Eventually.of_forall fun t => by
@@ -79,7 +80,7 @@ theorem criticalState_integer_quadrature_parseval {W₀ : ℝ} (hW : 0 < W₀)
   have hDl : IntegrableOn D (Iic 0) := by
     have hexp := integrableOn_exp_mul_Iic (by norm_num : (0:ℝ)<1/2) 0
     apply (integerReference_integrableOn_left hc hb).sub
-    simpa only [show ∀ t : ℝ, (1/2)*t=t/2 by intro t; ring] using hexp.mul_const A
+    simpa only [IntegrableOn,show ∀ t : ℝ, (1/2)*t=t/2 by intro t; ring] using hexp.mul_const A
   have hsub {a : ℝ} (ha : 0 ≤ a) (ha' : a < 1/2) : MemLp (tiltedIntegerError Φ a) 2 :=
     criticalState_subcritical_integer_error hW ht hF hc he hK hb ha ha'
   let μ := (β+1/2)/2
@@ -108,7 +109,7 @@ theorem criticalState_integer_quadrature_parseval {W₀ : ℝ} (hW : 0 < W₀)
     have hg' := fourier_forcing_of_primitive (σ := σ) hi hg hderiv ξ
     change 𝓕 g ξ=s*𝓕 B ξ at hg'
     change 𝓕 g ξ=riemannZeta s*negativeHalfLineLaplace (cx F) (1/2-s)
-    rw [hg',h]; field_simp [hs] <;> ring
+    rw [hg',h]; field_simp [hs]
   refine ⟨hg,hresult,?_⟩
   have hval := (RHTower.integral_norm_sq_fourier_eq hg h2).symm
   simpa only [g,Complex.norm_real,Real.norm_eq_abs,sq_abs,hresult] using hval

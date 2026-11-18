@@ -9,3 +9,5 @@ $$B\ge \beta\,|M_W(\rho)|\,X^\beta.$$
 Indeed, among errors with those height and mass constraints, the initial interval of height $B$ and length $1/X$ maximizes the integral against the decreasing weight $v^{\beta-1}$. A fixed seen critical zero gives the unconditional lower bound $c\sqrt X$ with $c>0$. For $1/2\le\sigma<1/2+w$, every allowance $KX^\sigma$ eventually fails for every choice of the finite combination. [Mellin separation and cost](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/CriticalZerosSeparateThePrimeProfileFromFactorialKernels.lean)
 
 Lean declarations include `dyadicPrimeContact_error`, `zetaZeroWidth_le_iff_dyadicPrimeContact`, `successorSquare_diagonal_log_at_width`, `squarePrimeWeight_mean_zero`, `mellin_squarePrimeWeight_off_line`, `nymanCombination_ne_squarePrimeWeight`, `factorial_cost_at_zero`, `critical_factorial_cost` and `factorial_cost_above_power`.
+
+The Mellin transform is entire and its vanished mean at one is simple. Its real derivative there is $-2\log 4\,[2\sinh(1/2)]^8<0$. The exact formula is `deriv_mellin_squarePrimeWeight_one`.

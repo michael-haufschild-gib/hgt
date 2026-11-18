@@ -7,3 +7,7 @@ In the discrete Lévy decomposition the diagonal coefficient is the renormalized
 For two logarithmic sample points $u,v$ write $t=|u-v|$. The two increments differ by at most $2\varepsilon$ and their absolute values are at most $At$. The difference of their squares, multiplied by the Lévy density, has absolute value at most $4A\varepsilon t\omega(t)\le2A\varepsilon e^{t/2}$. The window bounds $t\le\log(1+3K)$, and its harmonic mass is at most $3K$. Summation gives the claim.
 
 In particular, for a uniformly Lipschitz family converging uniformly to a fixed compact packet on this window, the jet forms converge to the same continuous archimedean value along every sequence of resolutions tending to infinity.
+
+## Lean
+
+`degreeForm_stable_on_compact_window` gives the resolution-independent bound. `tendsto_degreeForm_varying_compact_packets` gives the continuous archimedean limit for moving packets and resolutions together. [StabilityOfArchimedeanJetsOnACompactWindow.lean](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/StabilityOfArchimedeanJetsOnACompactWindow.lean)

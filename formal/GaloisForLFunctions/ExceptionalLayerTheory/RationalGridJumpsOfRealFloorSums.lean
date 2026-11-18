@@ -261,7 +261,7 @@ theorem floorClassDifference_interval {ι : Type*} (s : Finset ι) (w a : ι →
     (ha : ∀ i ∈ s, 0<a i) {q : ℕ} (hq : 3≤q) :
     ∃ u v e : ℝ, 0<u ∧ u<v ∧ 0<e ∧ ∀ x : ℝ, u≤x → x<v → |floorClassDifference s w a q x|=e := by
   have hf := last_quotient_class_not_finite_real_floors s w a ha hq
-  push_neg at hf
+  push Not at hf
   obtain ⟨t,ht,hh⟩ := hf
   obtain ⟨v,hv,h⟩ := floors_constant_to_right s a ha t
   let z := min v ((⌊t⌋₊:ℝ)+1)

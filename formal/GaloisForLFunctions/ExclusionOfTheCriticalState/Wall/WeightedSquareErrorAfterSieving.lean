@@ -49,7 +49,49 @@ theorem tiltSieveFactor_zero (p : Nat.Primes) :
   change (1+a)/(1-((p:ℕ):ℝ)⁻¹)=(1-a)⁻¹
   have hden : 0 < 1-((p:ℕ):ℝ)⁻¹ := by linarith only [half_le_sieve_denominator p]
   field_simp [hden.ne',(sub_pos.2 h1).ne']
+  simp only [one_div] at *
   nlinarith only [ha]
+
+private def tiltedSievedReference (P : Finset Nat.Primes) (Φ : ℝ → ℝ) (A β t : ℝ) : ℝ :=
+  Real.exp (β*t)*sievedReferenceError P Φ A t
+
+private theorem tiltedSievedReference_insert {p : Nat.Primes} {Q : Finset Nat.Primes} (hp : p ∉ Q)
+    {Φ : ℝ → ℝ} (A β : ℝ) (hf : ∀ t : ℝ, Summable (fun n : ℕ => continuousIntegerAtom Φ n t)) :
+    let x : ℝ := (p:ℕ)
+    let L := Real.log x
+    let a := Real.exp (β*L)/Real.sqrt x
+    let g := tiltedSievedReference Q Φ A β
+    tiltedSievedReference (insert p Q) Φ A β =
+      (1-x⁻¹)⁻¹ • (g-a • (fun t => g (t-L))) := by
+  dsimp only
+  funext t
+  simp only [tiltedSievedReference,Pi.smul_apply,smul_eq_mul,Pi.sub_apply,sievedReferenceError_insert hp (hf t),
+    mul_sub β t,Real.exp_sub,div_eq_mul_inv]
+  field_simp [(Real.exp_pos (β*Real.log ((p:ℕ):ℝ))).ne']
+
+/-- The two translates in a local sieve factor act on L² with cost at most
+the sum of their absolute coefficients. -/
+private theorem norm_two_translates {g : ℝ → ℝ} (hg : MemLp g 2) (L a b : ℝ)
+    (ha : 0 ≤ a) (hb : 0 ≤ b) :
+    let f := b • (g-a • (fun t => g (t-L)))
+    MemLp f 2 ∧ lpNorm f 2 volume ≤ b*(1+a)*lpNorm g 2 volume := by
+  let G := fun t => g (t-L)
+  have hpres := measurePreserving_sub_right volume L
+  have hG : MemLp G 2 := hg.comp_measurePreserving hpres
+  have hnorm : lpNorm G 2 volume = lpNorm g 2 volume := by
+    rw [← toReal_eLpNorm hG.1,← toReal_eLpNorm hg.1]
+    exact congrArg ENNReal.toReal (eLpNorm_comp_measurePreserving hg.1 hpres)
+  change MemLp (b • (g-a • G)) 2 ∧ _
+  refine ⟨(hg.sub (hG.const_smul a)).const_smul b,?_⟩
+  change lpNorm (b • (g-a • G)) 2 volume ≤ _
+  have hsub := lpNorm_sub_le (g := a • G) hg (by norm_num)
+  rw [lpNorm_const_smul,hnorm] at hsub
+  change _ ≤ lpNorm g 2 volume + ‖a‖*lpNorm g 2 volume at hsub
+  rw [Real.norm_eq_abs,abs_of_nonneg ha] at hsub
+  rw [lpNorm_const_smul]
+  change ‖b‖*lpNorm (g-a • G) 2 volume ≤ _
+  rw [Real.norm_eq_abs,abs_of_nonneg hb]
+  exact (mul_le_mul_of_nonneg_left hsub hb).trans_eq (by ring)
 
 /-- Exact product upper bound on the weighted norm after a finite sieve. -/
 theorem tilted_sieve_error_norm_le (P : Finset Nat.Primes) {Φ : ℝ → ℝ} {A β : ℝ}
@@ -57,48 +99,28 @@ theorem tilted_sieve_error_norm_le (P : Finset Nat.Primes) {Φ : ℝ → ℝ} {A
     (hbase : MemLp (fun t => Real.exp (β*t)*sievedReferenceError ∅ Φ A t) 2) :
     let g := fun (Q : Finset Nat.Primes) (t : ℝ) => Real.exp (β*t)*sievedReferenceError Q Φ A t
     MemLp (g P) 2 ∧ lpNorm (g P) 2 volume ≤ (∏ p ∈ P, tiltSieveFactor β p)*lpNorm (g ∅) 2 volume := by
-  let g := fun (Q : Finset Nat.Primes) (t : ℝ) => Real.exp (β*t)*sievedReferenceError Q Φ A t
+  let g := fun Q => tiltedSievedReference Q Φ A β
   change MemLp (g P) 2 ∧ lpNorm (g P) 2 volume ≤ (∏ p ∈ P, tiltSieveFactor β p)*lpNorm (g ∅) 2 volume
   classical
   induction P using Finset.induction_on with
-  | empty => simpa only [Finset.prod_empty,one_mul] using And.intro hbase (le_refl (lpNorm (g ∅) 2 volume))
+  | empty =>
+    simp only [Finset.prod_empty,one_mul,g,le_refl,and_true]
+    exact hbase
   | @insert p Q hp ih =>
     let x : ℝ := (p:ℕ)
-    let L := Real.log x
-    let a := Real.exp (β*L)/Real.sqrt x
+    let a := Real.exp (β*Real.log x)/Real.sqrt x
     let b := (1-x⁻¹)⁻¹
-    let G := fun t : ℝ => g Q (t-L)
-    have hx0 : 0 < x := by exact_mod_cast p.2.pos
     have ha : 0 ≤ a := div_nonneg (Real.exp_pos _).le (Real.sqrt_nonneg _)
-    have hb : 0 ≤ b := inv_nonneg.2 (by linarith only [half_le_sieve_denominator p])
-    have he : g (insert p Q) = b • (g Q-a • G) := by
-      funext t
-      dsimp only [g,G,Pi.smul_apply,smul_eq_mul,Pi.sub_apply]
-      rw [sievedReferenceError_insert hp (hf t)]
-      have hx' : Real.exp (β*t)*(Real.sqrt x)⁻¹=a*Real.exp (β*(t-L)) := by
-        dsimp only [a]
-        rw [mul_sub,Real.exp_sub]
-        field_simp [(Real.exp_pos _).ne',(Real.sqrt_pos.2 hx0).ne'] <;> ring
-      change Real.exp (β*t)*((sievedReferenceError Q Φ A t-(Real.sqrt x)⁻¹*sievedReferenceError Q Φ A (t-L))/(1-x⁻¹)) = _
-      dsimp only [b]
-      linear_combination -(1-x⁻¹)⁻¹*sievedReferenceError Q Φ A (t-L)*hx'
-    have hpres := measurePreserving_sub_right volume L
-    have hG : MemLp G 2 := ih.1.comp_measurePreserving hpres
-    have hnorm : lpNorm G 2 volume = lpNorm (g Q) 2 volume := by
-      rw [← toReal_eLpNorm hG.1,← toReal_eLpNorm ih.1.1]
-      exact congrArg ENNReal.toReal (eLpNorm_comp_measurePreserving ih.1.1 hpres)
-    rw [he,Finset.prod_insert hp]
-    refine ⟨(ih.1.sub (hG.const_smul a)).const_smul b,?_⟩
-    rw [lpNorm_const_smul]
-    change ‖b‖*lpNorm (g Q-a • G) 2 volume ≤ _
-    rw [Real.norm_eq_abs,abs_of_nonneg hb]
-    have hsub := lpNorm_sub_le (g := a • G) ih.1 (by norm_num)
-    rw [lpNorm_const_smul,hnorm] at hsub
-    change _ ≤ lpNorm (g Q) 2 volume + ‖a‖*lpNorm (g Q) 2 volume at hsub
-    rw [Real.norm_eq_abs,abs_of_nonneg ha] at hsub
-    calc _ ≤ b*(lpNorm (g Q) 2 volume+a*lpNorm (g Q) 2 volume) := mul_le_mul_of_nonneg_left hsub hb
-      _ = tiltSieveFactor β p*lpNorm (g Q) 2 volume := by dsimp only [tiltSieveFactor,b,a,L,x]; ring
-      _ ≤ _ := (mul_le_mul_of_nonneg_left ih.2 (tiltSieveFactor_nonneg β p)).trans_eq (mul_assoc ..).symm
+    have hb : 0 ≤ b := inv_nonneg.2 (by change 0 ≤ 1-((p:ℕ):ℝ)⁻¹; linarith only [half_le_sieve_denominator p])
+    have hs := norm_two_translates (g := g Q) ih.1 (Real.log x) a b ha hb
+    have heq : g (insert p Q)=b • (g Q-a • (fun t => g Q (t-Real.log x))) :=
+      tiltedSievedReference_insert hp A β hf
+    have hfac : b*(1+a)=tiltSieveFactor β p := by dsimp only [b,a,x,tiltSieveFactor]; ring
+    dsimp only at hs
+    rw [heq,Finset.prod_insert hp]
+    refine ⟨hs.1,hs.2.trans ?_⟩
+    rw [hfac,mul_assoc]
+    exact mul_le_mul_of_nonneg_left ih.2 (tiltSieveFactor_nonneg β p)
 
 /-- For the actual state the base norm is finite on every subcritical line.
 The bound is uniform over the sizes of the removed primes. -/

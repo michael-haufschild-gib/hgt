@@ -20,7 +20,9 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory
 /-- Positive integers up to X supported on primes at most y, counted once. -/
 def smoothIntegerCount (X y : ℕ) : ℕ := (Sieve.smoothUpTo (Nat.primesLE y) X).card
 
-private theorem count_smooth_and_multiples {x B y : ℕ} (hx : x≤B) (hs : x<(y+1)^2) :
+/-- Below the first possible pair of large factors the nonsmooth integers
+are the disjoint rows of multiples of the individual large primes. -/
+theorem count_smooth_and_multiples {x B y : ℕ} (hx : x≤B) (hs : x<(y+1)^2) :
     smoothIntegerCount x y + ∑ p ∈ largePrimes B y, x/p = x := by
   classical
   let P := largePrimes B y

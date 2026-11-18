@@ -54,7 +54,7 @@ private theorem residual_deriv_bound {m : ℕ} (c : Fin m → ℂ) (a : Fin m �
     {ρ : ℂ} (hρ : ρ.re=1/2) : ‖deriv (residual c a X) ρ‖ ≤ 16*B := by
   let U := {s : ℂ | 0 < s.re ∧ s.re < 1}
   have hball {s : ℂ} (hs : s ∈ Metric.closedBall ρ (1/4:ℝ)) : 1/4 ≤ s.re ∧ s.re ≤ 3/4 := by
-    have hd := (Complex.abs_re_le_norm (s-ρ)).trans (by simpa only [← dist_eq_norm] using hs)
+    have hd := (Complex.abs_re_le_norm (s-ρ)).trans (by simpa only [← dist_eq_norm] using Metric.mem_closedBall.mp hs)
     rw [Complex.sub_re,hρ,abs_le] at hd
     constructor <;> linarith only [hd.1,hd.2]
   have hu : Metric.closedBall ρ (1/4:ℝ) ⊆ U := fun s hs => by
@@ -88,16 +88,16 @@ theorem factorial_frequency_at_critical_zero {ρ : ℂ} (hζ : riemannZeta ρ=0)
       NymanMellin.freqPoly c a ρ * deriv riemannZeta ρ / ρ‖ ≤ 16*B := by
   have h₀ : ρ ≠ 0 := by intro e; rw [e,Complex.zero_re] at hρ; norm_num at hρ
   have h₁ : ρ ≠ 1 := by intro e; rw [e,Complex.one_re] at hρ; norm_num at hρ
-  have hd := (((hasDerivAt_id ρ).const_mul ((Real.log X:ℝ):ℂ)).cexp).mul
-    ((differentiable_mellin_squarePrimeWeight ρ).hasDerivAt.add
-      ((((freq_differentiable c a ha ρ).hasDerivAt.mul (differentiableAt_riemannZeta h₁).hasDerivAt).div
-        (hasDerivAt_id ρ) h₀))
+  have hzeta := (freq_differentiable c a ha ρ).hasDerivAt.mul (differentiableAt_riemannZeta h₁).hasDerivAt
+  have hcore := (differentiable_mellin_squarePrimeWeight ρ).hasDerivAt.add (hzeta.div (hasDerivAt_id ρ) h₀)
+  have hscale := ((hasDerivAt_id ρ).const_mul ((Real.log X:ℝ):ℂ)).cexp
+  have hd := hscale.mul hcore
   change HasDerivAt (residual c a X) _ ρ at hd
   have he : deriv (residual c a X) ρ = Complex.exp ((Real.log X:ℝ)*ρ) *
       ((Real.log X:ℂ)*mellin squarePrimeWeight ρ+deriv (mellin squarePrimeWeight) ρ+
         NymanMellin.freqPoly c a ρ*deriv riemannZeta ρ/ρ) := by
     rw [hd.deriv]
-    simp only [id_eq,hζ,mul_zero,zero_div,add_zero,zero_add,sub_zero,zero_mul,mul_one]
+    simp only [Pi.add_apply,Pi.div_apply,Pi.mul_apply,id_eq,hζ,mul_zero,zero_div,add_zero,zero_add,sub_zero,zero_mul,mul_one]
     field_simp
     ring
   have h := residual_deriv_bound c a ha hX hE hcap hmass hρ

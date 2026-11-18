@@ -51,7 +51,7 @@ private theorem basis_allowed {L : ℕ} (p : Nat.Primes) {u v : ℤ} (hp : (p:�
   · subst q
     simpa only [Finsupp.single_eq_same] using
       And.intro (fun h => (hp.not_gt h).elim : L < p → u=0 ∧ v=0) (And.intro hd ht)
-  · simp [Finsupp.single_apply,he]
+  · simp [he]
 
 private theorem readings_have_coordinates (L : ℕ) :
     factorialPrimeReadings L ⊆ (allowed L).map readPair := by
@@ -88,7 +88,8 @@ theorem factorialJointImage_iff_prime_coordinates {L : ℕ} (hL : 10 ≤ L) (a b
     have hz := ((allowed L).map readPair).closure_le.mpr (readings_have_coordinates L) h
     obtain ⟨y,hy,he⟩ := hz
     have hpair : y=(a,b) := readPair_injective he
-    exact hpair ▸ hy
+    rw [hpair] at hy
+    exact hy
   intro hab
   let S := a.support ∪ b.support
   have hp (p : Nat.Primes) :
@@ -110,6 +111,49 @@ theorem factorialJointImage_iff_prime_coordinates {L : ℕ} (hL : 10 ≤ L) (a b
   exact Prod.ext (by rw [Prod.fst_sum]; exact (sum_log_value a subset_union_left).symm)
     (by rw [Prod.snd_sum]; exact (sum_log_value b subset_union_right).symm)
 
+/-- Exact equality of entropy and Stirling remainder is attainable precisely
+at prices with every interior prime valuation divisible by twice that prime,
+and with no prime at or above the horizon. -/
+theorem factorial_half_price_attainable_iff {L : ℕ} (hL : 10 ≤ L) (a : Nat.Primes →₀ ℤ) :
+    (primeLogValue a,primeLogValue a/2) ∈ factorialJointImage L ↔
+      ∀ p : Nat.Primes, (L ≤ p → a p=0) ∧ ((2*(p:ℤ)) ∣ a p) := by
+  have hi : Function.Injective primeLogValue := logPrime_linearIndependent_int
+  constructor
+  · intro h
+    have h' := h
+    rw [factorialJointImage_eq_prime_readings hL] at h'
+    obtain ⟨⟨u,b⟩,_,he⟩ := ((allowed L).map readPair).closure_le.mpr (readings_have_coordinates L) h'
+    have hb : primeLogValue b=primeLogValue a/2 := congrArg Prod.snd he
+    have heq : a=b+b := hi (by rw [map_add,hb]; ring)
+    have hcoord := (factorialJointImage_iff_prime_coordinates hL a b).mp (by simpa only [hb] using h)
+    intro p
+    obtain ⟨h₁,⟨k,hk⟩,ht⟩ := hcoord p
+    have hv : a p=b p+b p := congrArg (fun f : Exponents => f p) heq
+    refine ⟨fun hp => ?_,⟨k,by rw [hv,hk]; ring⟩⟩
+    rcases lt_or_eq_of_le hp with hlt | ht'
+    · exact (h₁ hlt).1
+    have htp := ht ht'.symm
+    have hp' : (2:ℤ) ≤ (p:ℤ) := by exact_mod_cast p.property.two_le
+    have hz : (2*(p:ℤ)-1)*a p=0 := by linarith only [htp,hv]
+    exact (mul_eq_zero.mp hz).resolve_left (by omega)
+  intro ha
+  let b : Exponents := a.mapRange (fun z => z/2) (by simp)
+  have hb (p : Nat.Primes) : b p=a p/2 := rfl
+  have hpair : ∀ p : Nat.Primes, a p=2*b p ∧ ((p:ℤ) ∣ b p) := by
+    intro p
+    obtain ⟨k,hk⟩ := (ha p).2
+    have h : a p=2*((p:ℤ)*k) := hk.trans (mul_assoc ..)
+    have he : b p=(p:ℤ)*k := by rw [hb,h,Int.mul_ediv_cancel_left _ (by decide : (2:ℤ)≠0)]
+    exact ⟨by rw [he]; exact h,⟨k,he⟩⟩
+  have hab : a=b+b := by ext p; rw [Finsupp.add_apply,(hpair p).1]; ring
+  have hval : primeLogValue b=primeLogValue a/2 := by rw [hab,map_add]; ring
+  rw [← hval]
+  apply (factorialJointImage_iff_prime_coordinates hL a b).mpr
+  intro p
+  have hz (h : L ≤ p) : a p=0 ∧ b p=0 := ⟨(ha p).1 h,by rw [hb,(ha p).1 h]; decide⟩
+  exact ⟨fun h => hz h.le,(hpair p).2,fun h => by rw [(hz h.ge).1,(hz h.ge).2,mul_zero]⟩
+
+#print axioms factorial_half_price_attainable_iff
 #print axioms factorialJointImage_iff_prime_coordinates
 
 end GaloisForLFunctions.CountingHolography.Sections

@@ -7,3 +7,7 @@ At every positive degree $j$ both samples equal $f(\log(j/(dr)))$. They vanish o
 For a fixed compact $C^2$ packet vanishing below $\log 3$, the regularized jet therefore tends to its continuous archimedean value whenever $d_nr_n\to\infty$ and the windows contain the translates. The standard fixed-packet limit applies at resolution $d_nr_n$. Both dilation and horizon may vary with $n$. [Fixed-packet limit](../../../../formal/GaloisForLFunctions/AbsoluteGeometryOfSpecZ/ThePacketsOnTheDegreePointsCarryWeilsArchimedeanForm.lean)
 
 For two sampled packets on the same window, suppose that $j\ge H^2i$ whenever the first is nonzero at $i$ and the second at $j$, with $H\ge2$. Their mixed jet in the quadratic form has absolute value at most $(4/H)(\sum_i |f_i|/i)(\sum_j |g_j|/j)$. The diagonal overlap vanishes. For $j\ge H^2i$, the kernel $\tfrac12(|i-j|^{-1}+(i+j)^{-1})/\sqrt{ij}$ is at most $2/(Hij)$. Summing the two orientations proves the bound.
+
+## Lean
+
+`degreeForm_log_dilate` and `tendsto_degreeForm_moving_integer_dilate` identify the finite jet and its limit. `degreeForm_separated_mixed_bound` controls the off-diagonal interaction of two separated sampled supports. [TheJetsOfMovingIntegerTranslates.lean](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/TheJetsOfMovingIntegerTranslates.lean)

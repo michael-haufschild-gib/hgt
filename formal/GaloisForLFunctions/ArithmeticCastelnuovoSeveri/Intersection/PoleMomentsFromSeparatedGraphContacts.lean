@@ -146,6 +146,21 @@ private theorem log_test {h : ℝ → ℝ} (hc : Continuous h) (hk : HasCompactS
     rw [hs,Real.sqrt_sq (Real.exp_pos _).le]
     field_simp
 
+/-- Dilates of a compact logarithmic test against ordinary primes converge to its
+positive half moment. The ordinary test is divided by the square root in
+multiplicative coordinates. -/
+theorem tendsto_ordinary_prime_log_test {h : ℝ → ℝ} (hc : Continuous h) (hk : HasCompactSupport h) :
+    Tendsto (fun x : ℝ => (∑' p : Nat.Primes,
+      Real.log (p:ℕ)*(h (Real.log ((p:ℕ)/x))/Real.sqrt ((p:ℕ)/x)))/x)
+      atTop (𝓝 (∫ t : ℝ, h t*Real.exp (t/2))) := by
+  obtain ⟨H,hH,hK,hp,hi⟩ := log_test hc hk
+  rw [← hi]
+  refine (compact_prime_limits hH hK).1.congr' ?_
+  filter_upwards [eventually_gt_atTop (0:ℝ)] with x hx
+  congr 1
+  exact tsum_congr fun p => congrArg (Real.log (p:ℕ)*·)
+    (hp _ (div_pos (Nat.cast_pos.mpr p.property.pos) hx))
+
 /-- Ordinary-prime part of the directed graph pairing. -/
 def ordinaryGraphPair (f g : ℝ → ℝ) : ℝ :=
   ∑' p : Nat.Primes, (2*Real.log (p : ℕ)/Real.sqrt (p : ℕ)) *

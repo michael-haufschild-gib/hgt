@@ -177,7 +177,9 @@ theorem proportional_prime_mass {u v : ℝ} (hu : 0 < u) (huv : u < v) :
     (Nat.floor_mono (mul_le_mul_of_nonneg_right huv.le hx))]
   linarith only [(abs_le.mp hl).2,(abs_le.mp ht).1,congrArg (fun y : ℝ => y*x) he]
 
-private theorem denominator_window_mass :
+/-- The logarithmic mass of the negative outer prime window is at least
+one twelfth of its conductor scale for all sufficiently large conductors. -/
+theorem successorSquare_denominator_window_mass :
     ∀ᶠ n : ℕ in atTop, successorSquareWindowScale n/12 ≤ ∑ k ∈ successorSquareWindowPrimes n, Real.log k := by
   have hn := (tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop
   have hW : Tendsto successorSquareWindowScale atTop atTop :=
@@ -233,7 +235,7 @@ theorem successorSquare_window_product_dvd {n m : ℕ} (hn : 0 < n) (hm : 0 < m)
 in the reduced denominator grows at least quadratically in the conductor parameter. -/
 theorem successorSquare_denominator_lower : ∀ᶠ n : ℕ in atTop, ∀ m : ℕ, 0 < m →
     (n:ℝ)^2/12 ≤ Real.log (ordinaryPrimeGenerator (m • successorSquareTriple n)).den := by
-  filter_upwards [denominator_window_mass,eventually_ge_atTop 1] with n hmass hn
+  filter_upwards [successorSquare_denominator_window_mass,eventually_ge_atTop 1] with n hmass hn
   intro m hm
   let q := ordinaryPrimeGenerator (m • successorSquareTriple n)
   have hk (k : ℕ) (hk : k ∈ successorSquareWindowPrimes n) : 0 < k := (mem_filter.mp hk).2.pos

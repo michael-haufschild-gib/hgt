@@ -2,7 +2,7 @@
 
 For the critical state, write $D(t)=N(t)-Ae^{t/2}$. Then $e^{\lambda t}D\in L^2(\mathbb R)$ for $0\le\lambda<1/2$, and $e^{\lambda t}D\notin L^2(0,\infty)$ for every $\lambda\ge1/2$. The endpoint obstruction is the wall of the state itself.
 
-**Endpoint transform.** Write $\Psi(u)=e^{u/2}\Phi(u)$ and $H(\tau)=\widehat\Psi(\tau)$ in angular frequency. Suppose the positive-ray endpoint integral is finite. The [subcritical Parseval formula](ecs-subcritical-exponential-mean-square-integer-quadrature.md), dominated convergence on the time side and Fatou on the frequency side give $\int|\zeta(i\tau)H(\tau)|^2d\tau<\infty$. Exponential confinement makes the negative ray integrable uniformly as $\lambda\uparrow1/2$. In the functional equation $\zeta(i\tau)=\chi(i\tau)\zeta(1-i\tau)$ the reflection formula gives
+**Endpoint transform.** Write $\Psi(u)=e^{u/2}\Phi(u)$ and $H(\tau)=\widehat\Psi(\tau)$ in angular frequency. Suppose the positive-ray endpoint integral is finite. The [subcritical Parseval formula](../3-formalized/ecs-subcritical-exponential-mean-square-integer-quadrature.md), dominated convergence on the time side and Fatou on the frequency side give $\int|\zeta(i\tau)H(\tau)|^2d\tau<\infty$. Exponential confinement makes the negative ray integrable uniformly as $\lambda\uparrow1/2$. In the functional equation $\zeta(i\tau)=\chi(i\tau)\zeta(1-i\tau)$ the reflection formula gives
 \[
  |\chi(i\tau)|^2=\frac{|\tau|}{2\pi}\tanh\frac{\pi|\tau|}{2}.
 \]

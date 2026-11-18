@@ -159,7 +159,8 @@ theorem degreeForm_separated_mixed_bound (f g : ℝ → ℝ) {L r : ℕ} (hr : 0
     refine sum_congr rfl fun i hi => ?_
     rw [add_sq,show 2*v i*w i=0 by rw [mul_assoc,overlap hi,mul_zero],add_zero,add_div,add_mul]
   have hexp : A (fun i => v i+w i) (fun i => v i+w i)=A v v+A v w+(A w v+A w w) := by
-    simp only [A,add_mul,mul_add,sum_add_distrib] <;> abel
+    simp only [A,add_mul,mul_add,sum_add_distrib]
+    abel
   have hdiff : degreeForm (fun u => f u+g u) L r-degreeForm f L r-degreeForm g L r=A v w+A w v := by
     change (A (fun i => v i+w i) (fun i => v i+w i)-C (fun i => v i+w i))-(A v v-C v)-(A w w-C w)=_
     rw [hexp,hcounter]

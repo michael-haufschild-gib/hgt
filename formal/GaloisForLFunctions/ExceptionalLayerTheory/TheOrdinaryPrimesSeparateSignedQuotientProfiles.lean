@@ -37,26 +37,29 @@ private theorem primeZeta_right_limits :
     · ring
 
 private theorem real_right_tendsto_complex_punctured : Tendsto (fun x : ℝ => (x:ℂ)) (𝓝[>] 1) (𝓝[≠] 1) := by
-    apply tendsto_nhdsWithin_iff.mpr
-    refine ⟨by simpa using (Complex.continuous_ofReal.tendsto (1:ℝ)).mono_left
-      (nhdsWithin_le_nhds (s := Ioi (1:ℝ))),?_⟩
-    filter_upwards [self_mem_nhdsWithin] with x hx
-    exact fun eq => (show (1:ℝ)<x from hx).ne' (by exact_mod_cast eq)
+  apply tendsto_nhdsWithin_iff.mpr
+  constructor
+  · exact (show Tendsto (fun x : ℝ => (x:ℂ)) (𝓝 1) (𝓝 1) by
+      simpa using Complex.continuous_ofReal.tendsto (1:ℝ)).mono_left nhdsWithin_le_nhds
+  · filter_upwards [self_mem_nhdsWithin] with x hx
+    intro eq
+    change (x:ℂ)=1 at eq
+    exact (show (1:ℝ)<x from hx).ne' (by exact_mod_cast eq)
 
 /-- No meromorphic germ at one agrees on the right real ray with the ordinary
 prime series. The obstruction already holds along that single ray. -/
 theorem primeZeta_no_meromorphic_right_germ (F : ℂ → ℂ) (hF : MeromorphicAt F 1) :
     ¬ (fun x : ℝ => F x) =ᶠ[𝓝[>] 1] fun x => (_root_.RHTower.primeZeta x:ℂ) := by
   intro he
-  obtain ⟨h∞,hzero⟩ := primeZeta_right_limits
+  obtain ⟨hdiverge,hzero⟩ := primeZeta_right_limits
   have hlarge : Tendsto (fun x : ℝ => ‖F x‖) (𝓝[>] 1) atTop := by
-    apply h∞.congr'
-    filter_upwards [he,h∞.eventually_ge_atTop 0] with x hx hp
+    apply hdiverge.congr'
+    filter_upwards [he,hdiverge.eventually_ge_atTop 0] with x hx hp
     rw [hx,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hp]
   let G := (fun z : ℂ => z-1)*F
   have hsmall : Tendsto (fun x : ℝ => G x) (𝓝[>] 1) (𝓝 0) := by
     apply (show Tendsto (fun x : ℝ => (((x-1)*_root_.RHTower.primeZeta x:ℝ):ℂ))
-        (𝓝[>] 1) (𝓝 0) by simpa using Complex.continuous_ofReal.continuousAt.tendsto.comp hzero).congr'
+        (𝓝[>] 1) (𝓝 0) by simpa only [Function.comp_def,Complex.ofReal_zero] using (Complex.continuous_ofReal.tendsto (0:ℝ)).comp hzero).congr'
     filter_upwards [he] with x hx
     simp only [G,Pi.mul_apply,hx,ofReal_mul,ofReal_sub,ofReal_one]
   have hneg : meromorphicOrderAt F 1<0 := by
@@ -68,8 +71,7 @@ theorem primeZeta_no_meromorphic_right_germ (F : ℂ → ℂ) (hF : MeromorphicA
   have hlin : MeromorphicAt (fun z : ℂ => z-1) 1 := (analyticAt_id.sub analyticAt_const).meromorphicAt
   have hG : MeromorphicAt G 1 := hlin.mul hF
   have ho : meromorphicOrderAt G 1=((1+k:ℤ):WithTop ℤ) := by
-    rw [G,meromorphicOrderAt_mul hlin hF,meromorphicOrderAt_id_sub_const,← hk]
-    norm_cast
+    simp only [G,meromorphicOrderAt_mul hlin hF,meromorphicOrderAt_id_sub_const,← hk,WithTop.coe_add,WithTop.coe_one]
   rcases lt_or_eq_of_le (by omega : 1+k≤0) with hl | hz
   · have hlt : meromorphicOrderAt G 1<0 := by rw [ho]; exact_mod_cast hl
     have ht := (tendsto_norm_atTop_iff_cobounded.mpr (tendsto_cobounded_of_meromorphicOrderAt_neg hlt)).comp real_right_tendsto_complex_punctured
@@ -92,7 +94,7 @@ private theorem quotientProfile_prefix (f : ℕ → ℝ) (N : ℕ) :
     change f N-f 0+(f (N+1)-f ((N+1)-1))=_
     simp only [Nat.add_sub_cancel]; ring
 
-private theorem ordinaryPrime_series_real {x : ℝ} (hx : 1<x) :
+private theorem ordinaryPrime_series_real (x : ℝ) :
     LSeries (fun n => (lastClassOrdinaryPrimeIndicator n : ℂ)) (x:ℂ)=(_root_.RHTower.primeZeta x:ℂ) := by
   rw [← _root_.RHTower.tsum_primeIndicatorRpow,Complex.ofReal_tsum]
   unfold LSeries
@@ -129,17 +131,17 @@ theorem sublinear_prime_quotient_count_iff_zero (f : ℕ → ℝ) {a b : ℝ}
     let D := HeckeLFunctions.growthCont (fun n => (d n:ℂ)) a
     let H := HeckeLFunctions.growthCont (fun n => ((v*d) n:ℂ)) b
     have hdpre (N : ℕ) : ∑ n ∈ Icc 1 N, d n=F N := by
-      rw [d,quotientProfile_prefix,show F 0=0 by simp [F],sub_zero]
+      simp only [d,quotientProfile_prefix,show F 0=0 by simp [F],sub_zero]
     have hp (N : ℕ) : ∑ n ∈ Icc 1 N, (v*d) n = ∑ p ∈ Nat.primesLE N, f (N/p) := by
       rw [_root_.RHTower.sum_Icc_mul_apply,Nat.primesLE_eq_filter_Icc_one,sum_filter]
       refine sum_congr rfl fun p hp => ?_
       have hdiv := (Nat.one_le_div_iff (mem_Icc.mp hp).1).mpr (mem_Icc.mp hp).2
-      rw [hdpre,F,if_neg (Nat.ne_of_gt hdiv)]
+      simp only [hdpre,F,if_neg (Nat.ne_of_gt hdiv)]
       change (if p.Prime then (1:ℝ) else 0)*_=_
       split <;> simp_all
     have hC0 : 0≤C := by simpa using (abs_nonneg _).trans (hC 1 le_rfl)
     have hDpre (x : ℝ) (hx : 1≤x) : ‖∑ n ∈ Icc 1 ⌊x⌋₊, (d n:ℂ)‖≤B*x^a :=
-      real_prefix_bound ha hB (fun N hn => by rw [hdpre,F,if_neg (Nat.ne_of_gt hn)]; exact hf N hn) hx
+      real_prefix_bound ha hB (fun N hn => by simpa only [hdpre,F,if_neg (Nat.ne_of_gt hn)] using hf N hn) hx
     have hHpre (x : ℝ) (hx : 1≤x) : ‖∑ n ∈ Icc 1 ⌊x⌋₊, ((v*d) n:ℂ)‖≤C*x^b :=
       real_prefix_bound hb hC0 (fun N hn => by rw [hp]; exact hC N hn) hx
     have hD : DifferentiableOn ℂ D {z : ℂ | a<z.re} :=
@@ -160,7 +162,7 @@ theorem sublinear_prime_quotient_count_iff_zero (f : ℕ → ℝ) {a b : ℝ}
     have hFlinear (n : ℕ) : |F n|≤B*n := by
       rcases Nat.eq_zero_or_pos n with rfl | hn
       · simp [F]
-      rw [F,if_neg hn.ne']
+      simp only [F,if_neg hn.ne']
       exact (hf n hn).trans (mul_le_mul_of_nonneg_left (by
         simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hn : 1≤(n:ℝ)) ha1.le) hB)
     have hd {s : ℂ} (hs : 2<s.re) : LSeriesSummable (fun n => (d n:ℂ)) s := by
@@ -183,11 +185,15 @@ theorem sublinear_prime_quotient_count_iff_zero (f : ℕ → ℝ) {a b : ℝ}
       rw [show H s=LSeries _ s from HeckeLFunctions.growthCont_eq_LSeries (by simp) hb hHpre
         (hb1.trans hs1) hcs,he,LSeries_convolution' (hv hs1) (hd hs),Pi.mul_apply,hDS hs]
     have hopen (u : ℝ) : IsOpen {z : ℂ | u<z.re} := isOpen_lt continuous_const Complex.continuous_re
+    have h3 : (3:ℂ) ∈ {z : ℂ | 1<z.re} := by change (1:ℝ)<(3:ℂ).re; norm_num
+    have hE3 : H =ᶠ[𝓝 (3:ℂ)] P*D := by
+      have hmem : {z : ℂ | 2<z.re} ∈ 𝓝 (3:ℂ) := (hopen 2).mem_nhds
+        (show (2:ℝ)<(3:ℂ).re by norm_num)
+      filter_upwards [hmem] with z hz using hfact hz
     have heuler : EqOn H (P*D) {z : ℂ | 1<z.re} :=
       ((hH.mono (fun _ hz => hb1.trans hz)).analyticOnNhd (hopen 1)).eqOn_of_preconnected_of_eventuallyEq
         ((hP.mul (hD.mono fun _ hz => ha1.trans hz)).analyticOnNhd (hopen 1))
-        (convex_halfSpace_re_gt 1).isPreconnected (z₀ := (3:ℂ)) (by norm_num)
-        (((hopen 2).mem_nhds (show (3:ℂ) ∈ {z : ℂ | 2<z.re} by norm_num)).mono fun _ hz => hfact hz)
+        (convex_halfSpace_re_gt 1).isPreconnected h3 hE3
     have hDmer : MeromorphicOn D {z : ℂ | a<z.re} := (hD.analyticOnNhd (hopen a)).meromorphicOn
     have h1 : (1:ℂ) ∈ {z : ℂ | a<z.re} := by simpa using ha1
     have ht : meromorphicOrderAt D 1=⊤ := by
@@ -198,14 +204,14 @@ theorem sublinear_prime_quotient_count_iff_zero (f : ℕ → ℝ) {a b : ℝ}
         ((meromorphicOrderAt_ne_top_iff_eventually_ne_zero (hDmer 1 h1)).mp hn),self_mem_nhdsWithin] with x hdx hx
       change H x / D x = _
       rw [heuler (show (x:ℂ) ∈ {z : ℂ | 1<z.re} from hx),Pi.mul_apply,mul_div_cancel_right₀ _ hdx,
-        show P x=(_root_.RHTower.primeZeta x:ℂ) from ordinaryPrime_series_real hx]
+        show P x=(_root_.RHTower.primeZeta x:ℂ) from ordinaryPrime_series_real x]
     have hall : (fun x : ℝ => LSeries (fun n => (d n:ℂ)) x) =ᶠ[atTop] 0 := by
       filter_upwards [eventually_gt_atTop (2:ℝ)] with x hx
       have hx' : (x:ℂ) ∈ {z : ℂ | a<z.re} := by change a<x; linarith only [ha1,hx]
       have ht' : meromorphicOrderAt D (x:ℂ)=⊤ := by
         by_contra hh
         exact (hDmer.meromorphicOrderAt_ne_top_of_isPreconnected (convex_halfSpace_re_gt a).isPreconnected hx' h1 hh) ht
-      have he := meromorphicOrderAt_eq_top_iff.mp ht'
+      have he : D =ᶠ[𝓝[≠] (x:ℂ)] 0 := meromorphicOrderAt_eq_top_iff.mp ht'
       have hl : Tendsto D (𝓝[≠] (x:ℂ)) (𝓝 0) := tendsto_const_nhds.congr' he.symm
       rw [← hDS (s := (x:ℂ)) hx]
       exact tendsto_nhds_unique ((hD.analyticOnNhd (hopen a) _ hx').continuousAt.continuousWithinAt.tendsto) hl
@@ -214,7 +220,7 @@ theorem sublinear_prime_quotient_count_iff_zero (f : ℕ → ℝ) {a b : ℝ}
     intro n hn
     have hsum : ∑ m ∈ Icc 1 n, d m=0 :=
       sum_eq_zero fun m hm => Complex.ofReal_eq_zero.mp (hz m (Nat.ne_of_gt (mem_Icc.mp hm).1))
-    rwa [hdpre,F,if_neg (Nat.ne_of_gt hn)] at hsum
+    simpa only [hdpre,F,if_neg (Nat.ne_of_gt hn)] using hsum
   · refine fun h => ⟨0,fun N _ => ?_⟩
     have he (p : ℕ) (hp : p∈Nat.primesLE N) := h (N/p)
       ((Nat.one_le_div_iff (Nat.prime_of_mem_primesLE hp).pos).mpr (Nat.mem_primesLE.mp hp).1)

@@ -53,7 +53,7 @@ private theorem bounded_interior_rows : ∃ B : ℝ, 0 ≤ B ∧ ∀ {M r j : �
   have hhigh' : (3:ℝ)*j ≤ M := by exact_mod_cast hhigh
   have hlog₁ := Real.log_le_log (by norm_num : (0:ℝ)<3) ((le_div_iff₀ hr').mpr hlow')
   have hlog₂ := Real.log_le_log (by norm_num : (0:ℝ)<3) ((le_div_iff₀ hj').mpr hhigh')
-  have hlog₃ := Real.log_le_log (by norm_num : (0:ℝ)<3) (by exact_mod_cast (show 3 ≤ j by omega))
+  have hlog₃ : Real.log 3 ≤ Real.log j := Real.log_le_log (by norm_num) (by exact_mod_cast (show 3 ≤ j by omega))
   have hL := (lowTail_bounds hr hlow).2
   have hR := highTail_le (n := j) (M := M) hj (by omega)
   change highTail M j ≤ Ω (Real.log (((M+0:ℕ):ℝ)/j)) at hR
@@ -99,7 +99,7 @@ private theorem box_perturbation {f g : ℝ → ℝ} {A e T : ℝ}
   have hs := mul_le_mul h₁ h₂ (abs_nonneg _) (mul_nonneg (by norm_num) he)
   have hh := mul_le_mul_of_nonneg_left hs hw
   have ht' : t*w ≤ Real.exp (T/2)/2 := (mul_archLevyDensity_le h).trans
-    (div_le_div_of_nonneg_right (Real.exp_le_exp.mpr (by dsimp only [t]; linarith only [ht])) (by norm_num))
+    (div_le_div_of_nonneg_right (Real.exp_le_exp.mpr (by linarith only [ht])) (by norm_num))
   change |w*(f u-f v)^2-w*(g u-g v)^2| ≤ _
   rw [← mul_sub,sq_sub_sq,abs_mul,abs_of_nonneg hw,abs_mul]
   linarith only [hh,mul_le_mul_of_nonneg_left ht' (show 0 ≤ 4*A*e by positivity)]
@@ -167,6 +167,31 @@ theorem degreeForm_stable_on_compact_window (K : ℕ) (hK : 0 < K) :
   rw [abs_le] at hX hY
   constructor <;> linarith only [hX.1,hX.2,hY.1,hY.2]
 
+/-- Uniform convergence on a bounded Lipschitz family preserves the continuous
+archimedean value even when the packet and the resolution vary together. -/
+theorem tendsto_degreeForm_varying_compact_packets {K : ℕ} (hK : 0 < K) {f : ℝ → ℝ}
+    (hf : ContDiff ℝ 2 f) (hfc : HasCompactSupport f)
+    (hs : ∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → f u=0)
+    (g : ℕ → ℝ → ℝ) (r : ℕ → ℕ) (hr : Tendsto r atTop atTop) {A : ℝ} (hA : 0 ≤ A)
+    {e : ℕ → ℝ} (he : Tendsto e atTop (𝓝 0))
+    (h : ∀ᶠ n : ℕ in atTop, 0 ≤ e n ∧
+      (∀ u, |g n u| ≤ A ∧ |f u| ≤ A ∧ |g n u-f u| ≤ e n) ∧
+      (∀ u v, |g n u-g n v| ≤ A*|u-v| ∧ |f u-f v| ≤ A*|u-v|) ∧
+      (∀ u, u ≤ Real.log 3 ∨ Real.log K ≤ u → g n u=f u)) :
+    Tendsto (fun n => degreeForm (g n) (3*K) (r n)) atTop
+      (𝓝 (-(_root_.RHTower.WeilOneSided.weilArchRe
+        (EF.weilTest (packetTest f hf hfc).1 (packetTest f hf hfc).1)-
+        (_root_.RHTower.weilPoleTerm (EF.weilTest (packetTest f hf hfc).1 (packetTest f hf hfc).1)).re))) := by
+  obtain ⟨C,_,hC⟩ := degreeForm_stable_on_compact_window K hK
+  have hd : Tendsto (fun n => degreeForm (g n) (3*K) (r n)-degreeForm f (3*K) (r n)) atTop (𝓝 0) := by
+    apply squeeze_zero_norm' (a := fun n => C*A*e n) _ (by simpa only [mul_zero] using he.const_mul (C*A))
+    filter_upwards [h,hr.eventually_ge_atTop 1] with n hn hn'
+    rw [Real.norm_eq_abs]
+    exact hC _ _ hA hn.1 hn.2.1 hn.2.2.1 hn.2.2.2 hn'
+  simpa only [sub_add_cancel,zero_add,Function.comp_apply] using
+    hd.add ((tendsto_degreeForm hf hfc hK hs).comp hr)
+
+#print axioms tendsto_degreeForm_varying_compact_packets
 #print axioms degreeForm_stable_on_compact_window
 
 end GaloisForLFunctions.CountingHolography.Sections

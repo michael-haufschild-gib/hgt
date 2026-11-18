@@ -23,52 +23,69 @@ def removedPrimeWave (P : Finset Nat.Primes) (Φ : ℝ → ℝ) (t : ℝ) : ℝ 
 def commonSievedPrimeError (P : Finset Nat.Primes) (Φ : ℝ → ℝ) (t : ℝ) : ℝ :=
   (ordinaryPrimeWave Φ t).re-removedPrimeWave P Φ t-sievedIntegerReference P Φ t
 
+private def removedPrimeCoefficient (β : ℝ) (p : Nat.Primes) : ℝ :=
+  Real.log (p:ℕ)*Real.exp (-((1/2-β)*Real.log (p:ℕ)))
+
+private theorem removedPrimeCoefficient_bounds {β : ℝ} (hβ : β < 1/2) (p : Nat.Primes) :
+    0 ≤ removedPrimeCoefficient β p ∧ removedPrimeCoefficient β p ≤ (1/2-β)⁻¹ := by
+  have hl := Real.log_natCast_nonneg (p:ℕ)
+  have hδ := sub_pos.2 hβ
+  refine ⟨mul_nonneg hl (Real.exp_pos _).le,?_⟩
+  rw [removedPrimeCoefficient,Real.exp_neg,← div_eq_mul_inv,div_le_iff₀ (Real.exp_pos _),
+    ← div_eq_inv_mul,le_div_iff₀ hδ]
+  linarith only [Real.add_one_le_exp ((1/2-β)*Real.log (p:ℕ))]
+
+private theorem norm_scaled_translate {ψ : ℝ → ℝ} (hψ : MemLp ψ 2) (L a : ℝ) (ha : 0 ≤ a) :
+    let g := a • (fun t => ψ (t-L))
+    MemLp g 2 ∧ lpNorm g 2 volume=a*lpNorm ψ 2 volume := by
+  let G := fun t => ψ (t-L)
+  have hm := measurePreserving_sub_right volume L
+  have hG : MemLp G 2 := hψ.comp_measurePreserving hm
+  have h : eLpNorm G 2 volume = eLpNorm ψ 2 volume := eLpNorm_comp_measurePreserving (p := 2) hψ.1 hm
+  have hn : lpNorm G 2 volume = lpNorm ψ 2 volume := by
+    rw [← toReal_eLpNorm hG.1,← toReal_eLpNorm hψ.1,h]
+  refine ⟨hG.const_smul a,?_⟩
+  change lpNorm (a • G) 2 volume = _
+  rw [lpNorm_const_smul,hn]
+  change ‖a‖*lpNorm ψ 2 volume=_
+  rw [Real.norm_eq_abs,abs_of_nonneg ha]
+
+private theorem removedPrimeWave_tilt_eq (Φ : ℝ → ℝ) (β : ℝ) (P : Finset Nat.Primes) :
+    (fun t : ℝ => Real.exp (β*t)*removedPrimeWave P Φ t) =
+      ∑ p ∈ P, removedPrimeCoefficient β p •
+        (fun t : ℝ => Real.exp (β*(t-Real.log (p:ℕ)))*Φ (t-Real.log (p:ℕ))) := by
+  funext t
+  simp only [removedPrimeWave,Finset.mul_sum,Finset.sum_apply,Pi.smul_apply,smul_eq_mul]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  let L := Real.log (p:ℕ)
+  have hx : 0 < ((p:ℕ):ℝ) := by exact_mod_cast p.2.pos
+  have hr : (Real.sqrt (p:ℕ))⁻¹=Real.exp (-(L/2)) := by rw [Real.exp_neg,Real.exp_half,Real.exp_log hx]
+  have he : -((1/2-β)*L)+β*(t-L)=β*t+ -(L/2) := by ring
+  have hphase := congrArg Real.exp he
+  rw [Real.exp_add,Real.exp_add] at hphase
+  rw [continuousIntegerAtom,hr]
+  change Real.exp (β*t)*(L*(Real.exp (-(L/2))*Φ (t-L)))=
+    (L*Real.exp (-((1/2-β)*L)))*(Real.exp (β*(t-L))*Φ (t-L))
+  linear_combination -L*Φ (t-L)*hphase
+
 /-- The L² cost of deleting actual primes is linear in their number. -/
 theorem removedPrimeWave_tilted_norm {Φ : ℝ → ℝ} {β : ℝ} (hβ : β < 1/2)
     (hψ : MemLp (fun t : ℝ => Real.exp (β*t)*Φ t) 2) (P : Finset Nat.Primes) :
     let f := fun t : ℝ => Real.exp (β*t)*removedPrimeWave P Φ t
     MemLp f 2 ∧ lpNorm f 2 volume ≤ P.card*((1/2-β)⁻¹*lpNorm (fun t : ℝ => Real.exp (β*t)*Φ t) 2 volume) := by
   let ψ := fun t : ℝ => Real.exp (β*t)*Φ t
-  let δ := 1/2-β
-  have hδ : 0 < δ := sub_pos.2 hβ
-  let L := fun p : Nat.Primes => Real.log (p:ℕ)
-  let a := fun p : Nat.Primes => L p*Real.exp (-(δ*L p))
-  let g := fun (p : Nat.Primes) (t : ℝ) => ψ (t-L p)
-  have hcoef (p : Nat.Primes) : 0 ≤ a p ∧ a p ≤ δ⁻¹ := by
-    have hl := Real.log_natCast_nonneg (p:ℕ)
-    refine ⟨mul_nonneg hl (Real.exp_pos _).le,?_⟩
-    dsimp only [a]; rw [Real.exp_neg,← div_eq_mul_inv,div_le_iff₀ (Real.exp_pos _),← div_eq_inv_mul,le_div_iff₀ hδ]
-    linarith only [Real.add_one_le_exp (δ*L p)]
-  have trans (p : Nat.Primes) : MemLp (g p) 2 ∧ lpNorm (g p) 2 volume=lpNorm ψ 2 volume := by
-    have hm := measurePreserving_sub_right volume (L p)
-    have h : MemLp (g p) 2 := hψ.comp_measurePreserving hm
-    refine ⟨h,?_⟩
-    rw [← toReal_eLpNorm h.1,← toReal_eLpNorm hψ.1]
-    exact congrArg ENNReal.toReal (eLpNorm_comp_measurePreserving hψ.1 hm)
-  have he : (fun t : ℝ => Real.exp (β*t)*removedPrimeWave P Φ t) = ∑ p ∈ P, a p • g p := by
-    funext t
-    simp only [removedPrimeWave,Finset.mul_sum,Finset.sum_apply,Pi.smul_apply,smul_eq_mul]
-    refine Finset.sum_congr rfl fun p _ => ?_
-    have hx : 0 < ((p:ℕ):ℝ) := by exact_mod_cast p.2.pos
-    have hr : (Real.sqrt (p:ℕ))⁻¹=Real.exp (-(L p/2)) := by
-      rw [Real.exp_neg,Real.exp_half,Real.exp_log hx]
-    dsimp only [g,ψ,a,continuousIntegerAtom]
-    rw [hr]
-    have hlog : -(δ*L p)+β*(t-L p)=β*t+ -(L p/2) := by dsimp only [δ]; ring
-    have hphase := congrArg Real.exp hlog
-    rw [Real.exp_add,Real.exp_add] at hphase
-    change Real.exp (β*t)*(L p*(Real.exp (-(L p/2))*_))=_
-    linear_combination -L p*Φ (t-L p)*hphase
-  have hm (p : Nat.Primes) (_ : p ∈ P) : MemLp (a p • g p) 2 := (trans p).1.const_smul _
-  dsimp only; rw [he]
+  let g := fun p : Nat.Primes => removedPrimeCoefficient β p • (fun t => ψ (t-Real.log (p:ℕ)))
+  have h (p : Nat.Primes) : MemLp (g p) 2 ∧ lpNorm (g p) 2 volume=
+      removedPrimeCoefficient β p*lpNorm ψ 2 volume :=
+    norm_scaled_translate (ψ := ψ) hψ (Real.log (p:ℕ)) _ (removedPrimeCoefficient_bounds hβ p).1
+  dsimp only
+  rw [removedPrimeWave_tilt_eq]
+  change MemLp (∑ p ∈ P, g p) 2 ∧ lpNorm (∑ p ∈ P, g p) 2 volume ≤ _
+  have hm (p) (_ : p ∈ P) : MemLp (g p) 2 := (h p).1
   refine ⟨memLp_finsetSum' P hm,(lpNorm_sum_le hm (by norm_num)).trans ?_⟩
-  calc _ ≤ ∑ _p ∈ P, δ⁻¹*lpNorm ψ 2 volume := by
-           refine Finset.sum_le_sum fun p _ => ?_
-           rw [lpNorm_const_smul,(trans p).2]
-           change ‖a p‖*lpNorm ψ 2 volume ≤ _
-           rw [Real.norm_eq_abs,abs_of_nonneg (hcoef p).1]
-           exact mul_le_mul_of_nonneg_right (hcoef p).2 lpNorm_nonneg
-    _ = _ := by simp
+  calc _ ≤ ∑ _p ∈ P, (1/2-β)⁻¹*lpNorm ψ 2 volume := Finset.sum_le_sum fun p _ =>
+             ((h p).2.le.trans (mul_le_mul_of_nonneg_right (removedPrimeCoefficient_bounds hβ p).2 lpNorm_nonneg))
+    _ = _ := by simp only [Finset.sum_const,nsmul_eq_mul,ψ]
 
 private theorem memLp_tilted_state {F Φ : ℝ → ℝ} (hd : CriticalHalfLineEnergyDomain F)
     (he : F =ᵐ[volume] Φ) {β : ℝ} (hβ : 0 ≤ β) : MemLp (fun u : ℝ => Real.exp (β*u)*Φ u) 2 := by
@@ -81,7 +98,8 @@ private theorem memLp_tilted_state {F Φ : ℝ → ℝ} (hd : CriticalHalfLineEn
   · rw [min_eq_left hl,hu]
   · rw [← hu,hd.support u hl,mul_zero,mul_zero]
 
-private theorem integral_sq_eq_lpNorm_sq {f : ℝ → ℝ} (hf : MemLp f 2) :
+/-- The square integral of a real L² representative is its squared norm. -/
+theorem integral_sq_eq_lpNorm_sq {f : ℝ → ℝ} (hf : MemLp f 2) :
     (∫ t, f t^2)=(lpNorm f 2 volume)^2 := by
   rw [lpNorm_eq_integral_norm_rpow_toReal (by norm_num) (by norm_num) hf.1]
   simp only [ENNReal.toReal_ofNat,Real.rpow_two,Real.norm_eq_abs,sq_abs]
@@ -93,6 +111,56 @@ private theorem natCast_le_four_pow (n : ℕ) : (n:ℝ) ≤ (4:ℝ)^n := by
   | succ n ih =>
     rw [Nat.cast_succ,pow_succ]
     linarith only [ih,one_le_pow₀ (by norm_num : (1:ℝ) ≤ 4) (n := n)]
+
+/-- The two contributions to the L² perturbation are the normalized
+sieve product and the finite sum over the deleted primes. -/
+theorem criticalState_commonSieve_tilted_norm {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal))
+    {F Φ : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) (hc : Continuous Φ) (he : F =ᵐ[volume] Φ)
+    {C : ℝ} (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
+    {β : ℝ} (hβ : 0 ≤ β) (hβ' : β < 1/2) (P : Finset Nat.Primes) :
+    let g := fun t : ℝ => Real.exp (β*t)*(ordinaryPrimePolarError Φ t-commonSievedPrimeError P Φ t)
+    MemLp g 2 ∧ lpNorm g 2 volume ≤ (∏ p ∈ P, tiltSieveFactor β p)*lpNorm (tiltedIntegerError Φ β) 2 volume+
+      P.card*((1/2-β)⁻¹*lpNorm (fun t => Real.exp (β*t)*Φ t) 2 volume) := by
+  let A := ∫ u, Real.exp (-u/2)*Φ u
+  let n := fun t : ℝ => Real.exp (β*t)*sievedReferenceError P Φ A t
+  let l := fun t : ℝ => Real.exp (β*t)*removedPrimeWave P Φ t
+  have hs := criticalState_sieved_integer_quadrature hW ht hF hc he hC hb hβ hβ' P
+  have hl := removedPrimeWave_tilted_norm hβ'
+    (memLp_tilted_state (criticalHalfLineEnergyDomain_of_groundState hF) he hβ) P
+  have hn : MemLp n 2 := hs.1
+  have hh : MemLp l 2 := hl.1
+  have heq : (fun t : ℝ => Real.exp (β*t)*(ordinaryPrimePolarError Φ t-commonSievedPrimeError P Φ t))=n+l := by
+    funext t
+    simp only [n,l,Pi.add_apply,ordinaryPrimePolarError,commonSievedPrimeError,sievedReferenceError,A]
+    ring
+  dsimp only
+  rw [heq]
+  exact ⟨hn.add hh,(lpNorm_add_le hn (by norm_num)).trans (add_le_add hs.2.1 hl.2)⟩
+
+/-- The change of the prime wave itself has finite weighted L² norm at all
+subcritical tilts. The same bound covers every common sieve. -/
+theorem criticalState_commonSieve_tilted_error {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal))
+    {F Φ : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) (hc : Continuous Φ) (he : F =ᵐ[volume] Φ)
+    {C : ℝ} (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
+    {β : ℝ} (hβ : 0 ≤ β) (hβ' : β < 1/2) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ P : Finset Nat.Primes,
+      let g := fun t : ℝ => Real.exp (β*t)*(ordinaryPrimePolarError Φ t-commonSievedPrimeError P Φ t)
+      MemLp g 2 ∧ lpNorm g 2 volume ≤ (4:ℝ)^P.card*B := by
+  let B := lpNorm (tiltedIntegerError Φ β) 2 volume
+  let D := (1/2-β)⁻¹*lpNorm (fun t => Real.exp (β*t)*Φ t) 2 volume
+  have hB : 0 ≤ B := lpNorm_nonneg
+  have hD : 0 ≤ D := mul_nonneg (inv_nonneg.2 (sub_nonneg.2 hβ'.le)) lpNorm_nonneg
+  refine ⟨B+D,add_nonneg hB hD,fun P => ?_⟩
+  obtain ⟨hg,hg'⟩ := criticalState_commonSieve_tilted_norm hW ht hF hc he hC hb hβ hβ' P
+  have hprod : (∏ p ∈ P, tiltSieveFactor β p) ≤ (4:ℝ)^P.card := by
+    calc _ ≤ ∏ _p ∈ P, (4:ℝ) := Finset.prod_le_prod (fun _ _ => tiltSieveFactor_nonneg ..)
+           (fun _ _ => tiltSieveFactor_le_four hβ'.le _)
+      _ = _ := by simp
+  refine ⟨hg,hg'.trans ?_⟩
+  rw [mul_add]
+  exact add_le_add (mul_le_mul_of_nonneg_right hprod hB) (mul_le_mul_of_nonneg_right (natCast_le_four_pow _) hD)
 
 /-- Uniform variance transfer for a common sieve. The constant depends on
 the state and the tilt, and is independent of every removed prime. -/
@@ -109,50 +177,29 @@ theorem criticalState_commonSieve_variance_bound {W₀ : ℝ} (hW : 0 < W₀)
   let β := r+d
   have hβ : 0 ≤ β := add_nonneg hr hd0.le
   have hβ' : β < 1/2 := by dsimp only [β]; linarith only [hd']
-  let A := ∫ u, Real.exp (-u/2)*Φ u
+  obtain ⟨B,hB,hbound⟩ := criticalState_commonSieve_tilted_error hW ht hF hc he hC hb hβ hβ'
   let E := ordinaryPrimePolarError Φ
-  let ψ := fun t : ℝ => Real.exp (β*t)*Φ t
   let J := ∫ t in Ioi (0:ℝ), (Real.exp (-(d*t))*E t)^2
-  let B := lpNorm (tiltedIntegerError Φ β) 2 volume
-  let B' := (1/2-β)⁻¹*lpNorm ψ 2 volume
   have hJ : 0 ≤ J := integral_nonneg fun _ => sq_nonneg _
-  have hB : 0 ≤ B := lpNorm_nonneg
-  have hB' : 0 ≤ B' := mul_nonneg (inv_nonneg.2 (sub_nonneg.2 hβ'.le)) lpNorm_nonneg
-  have hψ := memLp_tilted_state (criticalHalfLineEnergyDomain_of_groundState hF) he hβ
-  refine ⟨J+2*(B+B')^2,by positivity,fun P => ?_⟩
-  let N := sievedReferenceError P Φ A
-  let L := removedPrimeWave P Φ
-  let G := fun t : ℝ => N t+L t
+  refine ⟨J+2*B^2,by positivity,fun P => ?_⟩
+  let G := fun t : ℝ => E t-commonSievedPrimeError P Φ t
   let g := fun t : ℝ => Real.exp (β*t)*G t
-  let n := fun t : ℝ => Real.exp (β*t)*N t
-  let l := fun t : ℝ => Real.exp (β*t)*L t
-  have hsieve := criticalState_sieved_integer_quadrature hW ht hF hc he hC hb hβ hβ' P
-  have hremove := removedPrimeWave_tilted_norm hβ' hψ P
-  have hn : MemLp n 2 := hsieve.1
-  have hl : MemLp l 2 := hremove.1
-  have hsplit : g=n+l := by funext t; exact mul_add ..
-  have hg : MemLp g 2 := hsplit.symm ▸ hn.add hl
-  have hnorm : lpNorm g 2 volume ≤ (4:ℝ)^P.card*(B+B') := by
-    rw [hsplit,mul_add]
-    exact (lpNorm_add_le hn (by norm_num)).trans (add_le_add hsieve.2.2
-      (hremove.2.trans (mul_le_mul_of_nonneg_right (natCast_le_four_pow _) hB')))
+  obtain ⟨hg,hnorm⟩ := hbound P
   have hE := memLp_damped_ordinaryPrimePolarError hW ht hF he hd
   have hcmp := weighted_variance_change_bound (E := E) (G := G) (d := d) (β := β) (r := r)
     le_rfl (by dsimp only [β]; linarith only [hd0,hr]) hE (hg.mono_measure Measure.restrict_le_self)
-  have heq (t : ℝ) : E t-G t=commonSievedPrimeError P Φ t := by
-    dsimp only [E,G,N,L,ordinaryPrimePolarError,commonSievedPrimeError,sievedReferenceError,A]
-    ring
+  have heq (t : ℝ) : E t-G t=commonSievedPrimeError P Φ t := by dsimp only [G]; ring
   dsimp only at hcmp
   simp_rw [heq] at hcmp
   refine ⟨hcmp.1,hcmp.2.trans ?_⟩
   have hi : Integrable (fun t => g t^2) := by
     simpa only [Real.norm_eq_abs,sq_abs] using (memLp_two_iff_integrable_sq_norm hg.1).1 hg
-  have hsq : (∫ t in Ioi (0:ℝ), g t^2) ≤ (16:ℝ)^P.card*(B+B')^2 := by
+  have hsq : (∫ t in Ioi (0:ℝ), g t^2) ≤ (16:ℝ)^P.card*B^2 := by
     calc _ ≤ ∫ t, g t^2 := setIntegral_le_integral hi (Eventually.of_forall fun _ => sq_nonneg _)
       _ = _ := integral_sq_eq_lpNorm_sq hg
-      _ ≤ ((4:ℝ)^P.card*(B+B'))^2 := pow_le_pow_left₀ lpNorm_nonneg hnorm 2
+      _ ≤ ((4:ℝ)^P.card*B)^2 := pow_le_pow_left₀ lpNorm_nonneg hnorm 2
       _ = _ := by rw [mul_pow,← pow_mul, Nat.mul_comm, pow_mul]; norm_num
-  change J+2*(∫ t in Ioi (0:ℝ), g t^2) ≤ (J+2*(B+B')^2)*(16:ℝ)^P.card
+  change J+2*(∫ t in Ioi (0:ℝ), g t^2) ≤ (J+2*B^2)*(16:ℝ)^P.card
   have hdom := le_mul_of_one_le_right hJ (one_le_pow₀ (by norm_num : (1:ℝ) ≤ 16) (n := P.card))
   linarith only [hdom,hsq]
 
@@ -191,6 +238,22 @@ theorem criticalState_commonSieve_variance_tail {W₀ : ℝ} (hW : 0 < W₀)
   obtain ⟨M,hM,hm⟩ := criticalState_commonSieve_variance_bound hW ht hF hc he hC hb hr hr'
   exact ⟨M,hM,fun P U hU => (abs_tail_le_exp_neg_mul hr hU (hm P).1).trans
     (mul_le_mul_of_nonneg_left (hm P).2 (Real.exp_pos _).le)⟩
+
+/-- The total tail discrepancy of all subsets of a single prime pool.
+The bound therefore allows a different subset at each observation time. -/
+theorem criticalState_commonSieve_all_subsets {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal))
+    {F Φ : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) (hc : Continuous Φ) (he : F =ᵐ[volume] Φ)
+    {C : ℝ} (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
+    {r : ℝ} (hr : 0 ≤ r) (hr' : r < 1-zetaZeroAbscissa) :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ (Q : Finset Nat.Primes) (U : ℝ), 0 ≤ U →
+      (∑ P ∈ Q.powerset, ∫ t in Ioi U, |(commonSievedPrimeError P Φ t)^2-(ordinaryPrimePolarError Φ t)^2|) ≤
+        Real.exp (-(r*U))*M*(17:ℝ)^Q.card := by
+  obtain ⟨M,hM,h⟩ := criticalState_commonSieve_variance_tail hW ht hF hc he hC hb hr hr'
+  refine ⟨M,hM,fun Q U hU => (Finset.sum_le_sum (fun P (_ : P ∈ Q.powerset) => h P U hU)).trans_eq ?_⟩
+  have heq := Finset.prod_one_add (f := fun _ : Nat.Primes => (16:ℝ)) Q
+  simp only [Finset.prod_const,show (1:ℝ)+16=17 by norm_num] at heq
+  simp_rw [← mul_assoc]; rw [← Finset.mul_sum,← heq]
 
 /-- The same confined state satisfies the variance bound for all subcritical
 rates and all finite prime sets. -/

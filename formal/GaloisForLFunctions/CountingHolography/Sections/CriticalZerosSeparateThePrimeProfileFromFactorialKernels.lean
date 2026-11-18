@@ -214,11 +214,11 @@ theorem deriv_mellin_squarePrimeWeight_one : deriv (mellin squarePrimeWeight) 1 
   simp only [id_eq,he,one_mul,zero_sub] at hd
   have hw : mellin squarePrimeWeight = d*g := funext mellin_squarePrimeWeight_formula
   rw [hw,(hd.mul (hg 1).hasDerivAt).deriv,hd₁,zero_mul,add_zero]
-  have h₊ : z 1 = (1/2)/Complex.I := by dsimp only [z]; congr 1; ring
+  have hhalf : z 1 = (1/2)/Complex.I := by dsimp only [z]; congr 1; ring
   have hp := ArithmeticCouplingTheory.ConeMoments.paperFT_cubicSpline_div_I (z := 1/2) (by norm_num)
   have hm := ArithmeticCouplingTheory.ConeMoments.paperFT_cubicSpline_div_I (z := -(1/2)) (by norm_num)
   dsimp only [g,F]
-  rw [h₊,← neg_div]
+  rw [hhalf,← neg_div]
   change -((2:ℂ)*Real.log 4)*(paperFT (fun x => (cubicSpline x:ℂ)) _ * paperFT (fun x => (cubicSpline x:ℂ)) _) = _
   rw [hp,hm,Complex.sinh_neg,neg_div_neg_eq]
   push_cast
@@ -405,6 +405,8 @@ end Approximation
 #print axioms factorial_cost_above_power
 #print axioms factorial_cost_at_zero
 #print axioms critical_factorial_cost
+#print axioms mellinConvergent_squarePrimeWeight
+#print axioms deriv_mellin_squarePrimeWeight_one_re_neg
 #print axioms deriv_mellin_squarePrimeWeight_one_ne_zero
 #print axioms differentiable_mellin_squarePrimeWeight
 #print axioms squarePrimeWeight_mean_zero

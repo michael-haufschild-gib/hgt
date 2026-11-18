@@ -7,6 +7,6 @@ $$
 \ll ABU(1+\log b)(1+\log d)H^{-1/4}.
 $$
 
-**Proof.** Split both intervals into truncated dyadic blocks. On any occupied block with lower corner $(P,V)$, one admissible product gives $PV\le U$ and $L<4PV$. Hence $(PV)^2\le HZ$ and $Z\le H(PV)^2$. Extend each coefficient by zero from its truncated block to the full dyadic interval. The [rectangle estimate](pvc-centered-fractional-parts-on-balanced-product-rectangles.md) bounds this block by $O(ABU/H^{1/4})$. The two dyadic block counts cost at most $4(1+\log b)(1+\log d)$.
+**Proof.** Split both intervals into truncated dyadic blocks. On any occupied block with lower corner $(P,V)$, one admissible product gives $PV\le U$ and $L<4PV$. Hence $(PV)^2\le HZ$ and $Z\le H(PV)^2$. Extend each coefficient by zero from its truncated block to the full dyadic interval. The [rectangle estimate](../3-formalized/pvc-centered-fractional-parts-on-balanced-product-rectangles.md) bounds this block by $O(ABU/H^{1/4})$. The two dyadic block counts cost at most $4(1+\log b)(1+\log d)$.
 
 For the centered Vaughan weight $w_R(\lfloor X/(pv)\rfloor)$, it suffices that $128(128R^2+1)U^2\le HX$ and $16X\le HL^2$. Apply the window bound at $Z=X/t$ for each stencil divisor $1\le t\le128(128R^2+1)$. Grouping pairs of equal product gives the [factorial stencil transfer](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/CenteringTheFactorialPrimeWeight.lean), with multiplicative cost $1000(1+\mathrm{mass}(R))$.

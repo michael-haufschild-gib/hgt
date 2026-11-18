@@ -91,7 +91,7 @@ theorem dyadicPrimeContact_absolute_row_error :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
       (∑ k ∈ ordinaryPrimeLags (3*windowEnd ((2*n+1)^2+1)),
         |integratedContact (successorSquareTriple n) k -
-          (2/Real.sqrt k)*squareLogProfile (Real.log k-Real.log ((n:ℝ)^2))|*vonMangoldt k) ≤ C := by
+          (2/Real.sqrt k)*squareLogProfile (Real.log k-Real.log ((n:ℝ)^2))| * vonMangoldt k) ≤ C := by
   obtain ⟨K,H,hK,hH,hbound,hreg⟩ := corr_regular
   obtain ⟨A,hA,hwindow⟩ := successorSquare_window_bound
   let Q := ⌈Real.exp (8+Real.log 9)⌉₊
@@ -165,7 +165,7 @@ theorem dyadicPrimeContact_absolute_row_error :
       _ ≤ tail*(34*(A*n)) := mul_le_mul_of_nonneg_left ((ordinaryPrimeLagSums L).2.trans
           (mul_le_mul_of_nonneg_left hroot (by norm_num))) htail
       _ = _ := by dsimp only [tail]; field_simp; ring
-  change (∑ k ∈ S, |integratedContact d k-F k|*vonMangoldt k) ≤ _
+  change (∑ k ∈ S, |integratedContact d k-F k| * vonMangoldt k) ≤ _
   calc _ ≤ ∑ k ∈ S, ((if k ≤ Q then 38*H else 0)+tail/Real.sqrt k)*vonMangoldt k :=
             sum_le_sum fun _ hk => mul_le_mul_of_nonneg_right (hrow hk) vonMangoldt_nonneg
     _ ≤ _ := by simp only [add_mul,sum_add_distrib]; exact add_le_add hsmall hlarge

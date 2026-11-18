@@ -91,14 +91,15 @@ theorem large_complement_bound :
     rw [removed_slice]
     exact h.trans ((mul_le_mul_of_nonneg_left hquot (by positivity)).trans_eq (by dsimp [T]; ring))
   have hmert : ∑ p ∈ S, vonMangoldt p/p ≤ E*(1+Real.log X) := by
-    apply (sum_le_sum_of_subset_of_nonneg (s := S) (t := Icc 1 X) _
-      (fun _ _ _ => div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg _))).trans
-    · have hh := (abs_le.mp (Mertens.mertens_first X hx)).2
-      have hs := mul_le_mul_of_nonneg_right hE (Real.log_natCast_nonneg X)
-      dsimp [E] at hs ⊢; linarith only [hh,hs]
-    · intro p hp
+    have sub : S ⊆ Icc 1 X := by
+      intro p hp
       obtain ⟨hi,prime⟩ := mem_filter.mp hp
       exact mem_Icc.mpr ⟨prime.pos,(mem_Ioc.mp hi).2⟩
+    apply (sum_le_sum_of_subset_of_nonneg sub
+      (fun _ _ _ => div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg _))).trans
+    have hh := (abs_le.mp (Mertens.mertens_first X hx)).2
+    have hs := mul_le_mul_of_nonneg_right hE (Real.log_natCast_nonneg X)
+    dsimp [E] at hs ⊢; linarith only [hh,hs]
   have hd : (1 : ℝ) ≤ ((D+1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_pos D
   have hAb : A ≤ 2*(2+B)*((D+1 : ℕ) : ℝ) := by
     dsimp [A]; linarith only [hd,hm (D+1) (Nat.succ_pos D)]

@@ -42,20 +42,25 @@ theorem ordinary_window_by_complement {D R X F L U c d : ℕ} (hc : 1 ≤ c) (hu
     have hhi : p≤U/v ↔ p*v≤U := Nat.le_div_iff_mul_le hv₁
     have hpx : U/v ≤ X := (Nat.div_le_self U v).trans hu
     simp only [squareRootWindowPrimes,mem_filter,mem_Ico,max_le_iff,test]
-    omega
+    constructor
+    · rintro ⟨⟨⟨hF,hL⟩,hU⟩,prime⟩
+      have hpu := Nat.le_of_lt_succ hU
+      exact ⟨⟨hF,Nat.lt_succ_of_le (hpu.trans hpx)⟩,prime,hlo.mp hL,hhi.mp hpu⟩
+    · rintro ⟨⟨hF,_⟩,prime,hL,hU⟩
+      exact ⟨⟨⟨hF,hlo.mpr hL⟩,Nat.lt_succ_of_le (hhi.mpr hU)⟩,prime⟩
   rw [hidx,sum_filter,mul_sum]
   apply sum_congr rfl
   intro p _
   by_cases hp : p.Prime <;> by_cases hh : L<p*v ∧ p*v≤U <;>
-    simp [primeLog,test,hp,hh,Nat.div_div_eq_div_mul,Nat.mul_comm v p,mul_left_comm,mul_assoc]
+    simp [primeLog,hp,hh,Nat.div_div_eq_div_mul,Nat.mul_comm v p,mul_left_comm,mul_assoc]
 
 /-- Cutting the complementary factor is an exact partition at every fixed
 pair of product endpoints. -/
 theorem ordinary_window_split {D R X F L U q : ℕ} (hu : U ≤ X) (hq : q ≤ X) :
     ordinaryProductWindow D R X F L U 1 (X+1) =
       ordinaryProductWindow D R X F L U 1 (q+1)+ordinaryProductWindow D R X F L U (q+1) (X+1) := by
-  rw [ordinary_window_by_complement (by decide) hu,ordinary_window_by_complement (by decide) hu,
-    ordinary_window_by_complement (Nat.succ_pos _) hu]
+  rw [ordinary_window_by_complement (show 1 ≤ (1 : ℕ) by decide) hu,ordinary_window_by_complement (show 1 ≤ (1 : ℕ) by decide) hu,
+    ordinary_window_by_complement (show 1 ≤ q+1 from Nat.succ_pos q) hu]
   exact (sum_Ico_consecutive _ (Nat.succ_le_succ (Nat.zero_le q)) (Nat.succ_le_succ hq)).symm
 
 /-- At logarithmic factorial cutoff the prime product window costs at most
@@ -131,7 +136,7 @@ theorem ordinary_square_root_window_bound :
     ((show (2 : ℝ) ≤ 64 by norm_num).trans (hlarge.trans (hright (by norm_num))))
     (hd.trans (hbig.trans (hright (by norm_num)))) hL hU
   have hs : |ordinaryProductWindow D D X F L U 1 (q+1)| ≤ 2*C*J*Real.sqrt X := by
-    rw [ordinary_window_by_complement (by decide) hu,show Ico 1 (q+1)=Icc 1 q by ext n; simp; omega]
+    rw [ordinary_window_by_complement (show 1 ≤ (1 : ℕ) by decide) hu,show Ico 1 (q+1)=Icc 1 q by ext n; simp]
     apply hsmall.trans
     have hp : (X : ℝ)^(499701/1000000 : ℝ) ≤ Real.sqrt X := by
       rw [Real.sqrt_eq_rpow]; exact Real.rpow_le_rpow_of_exponent_le hx₁ (by norm_num)
@@ -152,7 +157,7 @@ theorem ordinary_square_root_window_bound :
       16*K*(1+B)^2*J^5*Real.sqrt X := by
     by_cases hfx : F ≤ X
     swap
-    · simp only [ordinaryProductWindow,Ico_eq_empty (show X+1 ≤ F+1 by omega),empty_product,filter_empty,sum_empty,abs_zero]
+    · simp only [ordinaryProductWindow,Ico_eq_empty (show ¬F+1<X+1 by omega),empty_product,filter_empty,sum_empty,abs_zero]
       positivity
     have a : (X : ℝ)^(1/1000000 : ℝ) ≤ (q+1 : ℕ) := by
       push_cast; exact (Nat.lt_floor_add_one _).le
@@ -162,11 +167,11 @@ theorem ordinary_square_root_window_bound :
         by_cases hpp : p.Prime
         · have hpx : p ≤ X := Nat.le_of_lt_succ (mem_Ico.mp hp).2
           simp only [primeLog,if_pos hpp,abs_of_nonneg (Real.log_natCast_nonneg _)]
-          exact (Real.log_le_log (by exact_mod_cast hpp.pos) (by exact_mod_cast hpx)).trans
+          exact (Real.log_le_log (by exact_mod_cast hpp.pos) (by exact_mod_cast hpx : (p : ℝ) ≤ X)).trans
             (by dsimp [J]; linarith)
         · simpa only [primeLog,if_neg hpp,abs_zero] using hJ₀) (fun m _ => inner m)
     apply hh.trans
-    have hl₀ := le_add_of_nonneg_right (Real.log_natCast_nonneg (X+1))
+    have hl₀ : 1 ≤ 1+Real.log (X+1 : ℕ) := le_add_of_nonneg_right (Real.log_natCast_nonneg (X+1))
     have hcost := mul_le_mul (mul_le_mul (mul_le_mul_of_nonneg_left weight hK) hlog
       (zero_le_one.trans hl₀) (by positivity)) hlog (zero_le_one.trans hl₀) (by positivity)
     exact (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hcost
@@ -197,7 +202,7 @@ theorem ordinary_window_tail_difference {D R X F L U : ℕ} (hU : U ≤ X) :
     by_cases h : L ≤ U
     · rw [max_eq_right h,←sum_Ioc_consecutive (f p) (Nat.div_le_div_right h) (Nat.div_le_div_right hU)]
       ring
-    · rw [max_eq_left (le_of_not_ge h),sub_self,Ioc_eq_empty (Nat.div_le_div_right (le_of_not_ge h)),sum_empty]
+    · rw [max_eq_left (le_of_not_ge h),sub_self,Ioc_eq_empty (not_lt_of_ge (Nat.div_le_div_right (le_of_not_ge h))),sum_empty]
   have tail : ordinaryFactorTail F X (factorSlice D R X L) -
       ordinaryFactorTail F X (factorSlice D R X (max L U)) = ordinaryFactorTail F X Δ := by
     unfold ordinaryFactorTail
@@ -215,8 +220,11 @@ theorem ordinary_window_tail_difference {D R X F L U : ℕ} (hU : U ≤ X) :
       have hlo : L/p<v ↔ L<p*v := by rw [Nat.div_lt_iff_lt_mul hp₁,Nat.mul_comm v p]
       have hhi : v≤U/p ↔ p*v≤U := by rw [Nat.le_div_iff_mul_le hp₁,Nat.mul_comm v p]
       have hx := (Nat.div_le_self U p).trans hU
-      simp only [mem_filter,mem_Ico,mem_Ioc]
-      omega
+      simp only [mem_filter,mem_Ico,mem_Ioc,←hlo,←hhi]
+      constructor
+      · exact fun h => h.2
+      · intro h
+        exact ⟨⟨(Nat.zero_le _).trans_lt h.1,Nat.lt_succ_of_le (h.2.trans hx)⟩,h⟩
     rw [if_pos prime,vonMangoldt_apply_prime prime,diff,←idx,sum_filter,mul_sum]
     apply sum_congr rfl
     intro v _
@@ -328,7 +336,7 @@ theorem above_square_root_product_cofactors :
         hx' (by norm_num : (1/2 : ℝ) ≤ 1)).trans_eq (Real.rpow_one _)))
         (Nat.le_mul_of_pos_left _ (Nat.succ_pos D))
     have hfloor : Real.sqrt X ≤ (Y : ℝ)+1 := (Nat.lt_floor_add_one _).le.trans
-      (add_le_add_right (by exact_mod_cast hY) 1)
+      (add_le_add (by exact_mod_cast hY : (⌊Real.sqrt X⌋₊ : ℕ) ≤ (Y : ℝ)) (le_refl (1 : ℝ)))
     have hU : U ≤ X := Nat.floor_le_of_le ((Real.rpow_le_rpow_of_exponent_le hx'
       (by norm_num : (500000001/1000000000 : ℝ) ≤ 1)).trans_eq (Real.rpow_one _))
     have hF : ⌊(X : ℝ)^(1/1000000 : ℝ)⌋₊ ≤ F := (Nat.floor_mono (Real.rpow_le_rpow_of_exponent_le
@@ -347,7 +355,7 @@ theorem above_square_root_product_cofactors :
     have hr (L : ℕ) : |r L-c L| ≤ (2*E)*G := by
       have hp := hrep hD hD hx (le_max_left (2*(D+1)) ⌊(X : ℝ)^(1/200 : ℝ)⌋₊) L
       have hh := mul_le_mul hd' hd (Nat.cast_nonneg D) (by positivity)
-      have hpoly := (by simpa only [pow_one] using pow_le_pow_right₀ hH (by norm_num : 3 ≤ 6) : H^3 ≤ H^6)
+      have hpoly : H^3 ≤ H^6 := pow_le_pow_right₀ hH (by norm_num)
       have hz := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hh hH₀) (Real.sqrt_nonneg (X : ℝ))
       have ht := mul_le_mul_of_nonneg_right hpoly (Real.sqrt_nonneg (X : ℝ))
       apply hp.trans
@@ -355,7 +363,7 @@ theorem above_square_root_product_cofactors :
       have s₂ := mul_le_mul_of_nonneg_left ht (by positivity : 0 ≤ 2*E)
       change E*((D+1 : ℕ) : ℝ)*D*Real.sqrt X*H ≤ (2*E)*G
       dsimp only [G]; linarith only [s₁,s₂]
-    have split : coprimePrimeRow D D X Y=shortFirstRow D D X Y+c Y := ordinary_first_prime_partition ..
+    have split : coprimePrimeRow D D X Y=shortFirstRow D D X Y+c Y := ordinary_first_prime_partition D D X Y
     have eq : (Chebyshev.psi X-X)-aboveSquareRootProductRow X =
         ((Chebyshev.psi X-X)-coprimePrimeRow D D X Y)+shortFirstRow D D X Y+
         (c Y-r Y)+(r Y-r Y')+(r Y'-c Y') := by

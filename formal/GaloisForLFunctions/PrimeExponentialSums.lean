@@ -1,4 +1,5 @@
 import GaloisForLFunctions.PrimeExponentialSums.VinogradovAtRationals
+import GaloisForLFunctions.PrimeExponentialSums.VaughanIdentityForEulerProducts
 import GaloisForLFunctions.PrimeExponentialSums.VinogradovMinorArc
 import GaloisForLFunctions.PrimeExponentialSums.PrimeSumsByParts
 import GaloisForLFunctions.PrimeExponentialSums.MajorArcs
