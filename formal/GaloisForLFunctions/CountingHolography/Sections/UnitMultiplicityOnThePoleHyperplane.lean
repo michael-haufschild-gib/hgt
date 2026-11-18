@@ -354,9 +354,4 @@ theorem paired_mass_three_prime_products : ∃ H : ℝ, 0 ≤ H ∧ ∀ (N : ℕ
   constructor <;> linarith only [hp,hp',hm,hm',mul_le_mul_of_nonneg_right hqlo ht,
     mul_le_mul_of_nonneg_right hqhi ht]
 
-#print axioms paired_mass_three_prime_products
-#print axioms tendsto_unitTripleDegree
-#print axioms mass_three_classification
-#print axioms ordinaryPrimeGenerator_mass_three_bound
-
 end GaloisForLFunctions.CountingHolography.Sections

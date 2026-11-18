@@ -162,7 +162,7 @@ private theorem moving_harmonic_block {f : ℕ → ℝ} {L : ℝ}
   rw [zero_add] at ht
   refine ht.congr fun N => ?_
   rw [sum_sub_distrib,mul_sum]
-  simp only [mul_one_div,sub_add_cancel]
+  simp only [div_eq_mul_inv,one_mul,sub_add_cancel]
 
 /-- At fourth-power conductor weights the moving endpoint on N < m ≤ 2N
 retains total logarithmic prime mass 4 M log 2. -/

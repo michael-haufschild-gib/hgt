@@ -45,6 +45,7 @@ theorem primitive_reference (v c : E → ℤ) (hc : c ⬝ᵥ v=1) (φ : E → Ci
 def pairTests (q : E → ℤ) (φ : E → Circle) (N : ℕ) : Prop :=
   ∀ i j a b, a*q i+b*q j=0 → a.natAbs+b.natAbs≤N → (φ i)^a*(φ j)^b=1
 
+omit [Fintype E] in
 /-- Unequal normalized magnitudes add to at most 2Q−1. Equal magnitudes
 give the primitive relation (1,1) or (1,−1). -/
 private theorem tested_powers (v : E → ℤ) (φ : E → Circle) (Q : ℕ)
