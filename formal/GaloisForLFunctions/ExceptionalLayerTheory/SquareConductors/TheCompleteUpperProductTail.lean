@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheThreeQuarterProductWindow
+import GaloisForLFunctions.ExceptionalLayerTheory.LargeComplementsInTheCoprimeProduct
 
 /-!
 # The complete upper product tail of the signed spline
@@ -181,13 +182,13 @@ theorem dyadicPrimeContact_capped_upper_product_tail :
     have hlog := Real.log_le_log (by exact_mod_cast hk₁ : (0:ℝ)<k) (by exact_mod_cast hkL : (k:ℝ)≤L)
     apply h.trans
     have hprod := mul_le_mul (mul_le_mul_of_nonneg_left hdiv (by positivity : 0≤2*K))
-      (add_le_add_left hlog 1) (by have := Real.log_natCast_nonneg k; positivity) (by positivity)
-    norm_num only [Nat.cast_one,Nat.cast_add,mul_one] at *
-    dsimp only [H]
-    linarith only [hprod]
+      (add_le_add (le_refl (1:ℝ)) hlog) (by have := Real.log_natCast_nonneg k; positivity) (by positivity)
+    calc _ = (2*K)*((k/(M+1):ℕ):ℝ)*(1+Real.log k) := by norm_num <;> ring
+         _ ≤ _ := hprod
   have hdiff' : |upperProductReading U n-cappedUpperProductReading U M n| ≤
       (2*K*J*T^4)*n*H/(M+1:ℕ) := by
-    change |(∑ k ∈ Icc 1 L, head k*_)-(∑ k ∈ Icc 1 L, cap k*_)| ≤ _
+    change |(∑ k ∈ Icc 1 L, head k*(sampledSpline n k-sampledSpline n (k+1)))-
+      (∑ k ∈ Icc 1 L, cap k*(sampledSpline n k-sampledSpline n (k+1)))| ≤ _
     rw [←sum_sub_distrib]
     simp_rw [←sub_mul]
     apply (abs_sum_le_sum_abs _ _).trans

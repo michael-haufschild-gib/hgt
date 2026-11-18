@@ -43,7 +43,7 @@ private theorem numerator_lower : ∃ b : ℝ, 0 < b ∧ ∀ᶠ N : ℕ in atTop
   have huv : u < v := half_lt_self hv
   have ht : Tendsto (fun N : ℕ => (N:ℝ)^2) atTop atTop :=
     (tendsto_pow_atTop (α := ℝ) two_ne_zero).comp tendsto_natCast_atTop_atTop
-  refine ⟨c*u*((v-u)/2),by positivity,?_⟩
+  refine ⟨c*u*((v-u)/2),mul_pos (mul_pos hc hu) (half_pos (sub_pos.mpr huv)),?_⟩
   filter_upwards [ht.eventually (proportional_prime_mass hu huv),
     (ht.const_mul_atTop hu).eventually_ge_atTop (p₀:ℝ)] with N hmass hlate
   let X := (N:ℝ)^2
@@ -58,7 +58,7 @@ private theorem numerator_lower : ∃ b : ℝ, 0 < b ∧ ∀ᶠ N : ℕ in atTop
       (by exact_mod_cast Nat.succ_le_of_lt hl)
     have hhi : (p:ℝ) ≤ v*X := (Nat.cast_le.mpr hh).trans (Nat.floor_le (mul_nonneg hv.le hX))
     have hA' : 0 < A+1 := by positivity
-    have he : v*X=((N:ℝ)/(A+1))^2 := by dsimp only [v,X]; ring
+    have he : v*X=((N:ℝ)/(A+1))^2 := by dsimp only [v,X]; rw [div_pow]; ring
     have hs := Real.sqrt_le_sqrt hhi
     rw [he,Real.sqrt_sq (div_nonneg (Nat.cast_nonneg _) hA'.le)] at hs
     have hfit : A*Real.sqrt p ≤ N := calc

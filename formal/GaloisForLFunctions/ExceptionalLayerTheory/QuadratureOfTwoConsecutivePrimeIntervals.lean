@@ -245,7 +245,7 @@ theorem singleQuartet_four_theta_intervals {ρ : ℂ} (hq : HasSingleOffLineQuar
       abs_div,abs_mul,hε,one_mul,abs_of_pos (zero_lt_one.trans_le ha)]
     exact (div_le_self (abs_nonneg _) ha).trans H
   have hn : ‖(ε:ℂ)*w‖=C*Real.exp (ρ.re*t) := by
-    have hm : 0≤m := by dsimp only [m]; positivity
+    have hm : 0 ≤ m := by dsimp only [m]; positivity
     simp only [w,C,powerMode,norm_mul,norm_div,norm_neg,Complex.norm_real,Real.norm_eq_abs,
       hε,one_mul,abs_of_nonneg hm,Complex.norm_exp,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,
       mul_zero,sub_zero]
@@ -326,7 +326,7 @@ theorem singleQuartet_theta_error_power {ρ : ℂ} (hq : HasSingleOffLineQuartet
   obtain ⟨K,hK,h⟩ := theta_mode_bound hq
   obtain ⟨T,hT⟩ := eventually_atTop.mp (shifted_error_small hq.1 hK (by norm_num : (0:ℝ)<1) 0)
   let m := 2*(quartetCopyMult ρ:ℝ)
-  have hm : 0≤m := by dsimp only [m]; positivity
+  have hm : 0 ≤ m := by dsimp only [m]; positivity
   refine ⟨1+m/‖ρ‖,by positivity,?_⟩
   filter_upwards [eventually_ge_atTop (max 16 (Real.exp T))] with y hy
   have h16 : 16≤y := (le_max_left _ _).trans hy

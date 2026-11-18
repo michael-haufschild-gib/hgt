@@ -81,7 +81,7 @@ theorem sampledSpline_prime_contact {n k : ℕ} (hn : 0<n) (hk : 0<k) :
   change dyadicSpline y/n=_
   rw [dyadicSpline,if_pos hy,squarePrimeWeight,Complex.ofReal_re,he]
   simp only [y,Real.sqrt_div hk'.le,Real.sqrt_sq hn'.le,Real.log_div hk'.ne' (sq_pos_of_pos hn').ne']
-  field_simp <;> ring
+  field_simp
 
 private theorem support_covered (n : ℕ) : Real.exp (8+Real.log 4)*(n:ℝ)^2 ≤ (splineHorizon n:ℝ) := by
   have hn : 4*(n:ℝ)^2 ≤ (((2*n+1:ℕ):ℝ))^2 := by
@@ -139,8 +139,8 @@ theorem sampledSpline_density : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0<n →
   have hs : (∑ k ∈ Icc 1 N, sampledSpline n k) =
       (∑ i ∈ range N, dyadicSpline (((i:ℝ)+1)*h))/n := by
     rw [show Icc 1 N = Ico 1 (N+1) by ext k; simp, sum_Ico_eq_sum_range]
-    simp only [Nat.add_sub_cancel, sampledSpline, ←sum_div, Nat.cast_add,Nat.cast_one,
-      div_eq_mul_inv,h,add_comm (1:ℝ)]
+    simp only [Nat.add_sub_cancel,sampledSpline,Nat.cast_add,Nat.cast_one,
+      div_eq_mul_inv,h,add_comm (1:ℝ),sum_mul]
   change |∑ k ∈ Icc 1 N, sampledSpline n k| ≤ _
   rw [hs,abs_div,abs_of_pos hn']
   exact div_le_div_of_nonneg_right H hn'.le

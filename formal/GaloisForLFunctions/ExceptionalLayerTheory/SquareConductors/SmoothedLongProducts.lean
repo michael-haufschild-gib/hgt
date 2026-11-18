@@ -20,7 +20,8 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 def splineCountReading (n : ℕ) (f : ℕ → ℝ) : ℝ :=
   ∑ k ∈ Icc 1 (splineHorizon n), f k*(sampledSpline n k-sampledSpline n (k+1))
 
-private theorem contact_abel {n : ℕ} (hn : 0<n) :
+/-- Exact Abel reading of the ordinary primes on the common window. -/
+theorem dyadicPrimeContact_abel {n : ℕ} (hn : 0<n) :
     dyadicPrimeContact n = splineCountReading n (fun k => Chebyshev.theta k) := by
   let f (k : ℕ) : ℝ := if k.Prime then Real.log k else 0
   have theta (N : ℕ) : (∑ k ∈ Icc 1 N, f k) = Chebyshev.theta N := by
@@ -46,52 +47,64 @@ private theorem density_abel {n : ℕ} (hn : 0<n) :
   simpa only [splineCountReading,one_mul,sum_const,nsmul_eq_mul,mul_one,Nat.card_Icc,
     Nat.add_sub_cancel,sampledSpline_endpoint hn,mul_zero,add_zero] using h.symm
 
-private theorem theta_transfer (f : ℕ → ℝ)
-    (herr : ∃ C : ℝ, 0≤C ∧ ∀ k : ℕ, 1≤k →
-      |(Chebyshev.theta k-k)-f k| ≤ C*(1+Real.log k)^6*Real.sqrt k) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0<n →
-      |dyadicPrimeContact n-splineCountReading n f| ≤ C*(1+Real.log (splineHorizon n))^6 := by
+/-- Square-root errors in a count cost six logarithms against the signed
+spline, uniformly over its whole finite window. -/
+theorem splineCountReading_sqrt_error (E : ℕ → ℝ)
+    (herr : ∃ K : ℝ, 0≤K ∧ ∀ k : ℕ, 1≤k → |E k| ≤ K*(1+Real.log k)^6*Real.sqrt k) :
+    ∃ C : ℝ, 0≤C ∧ ∀ {n : ℕ}, 0<n →
+      |splineCountReading n E| ≤ C*(1+Real.log (splineHorizon n))^6 := by
   obtain ⟨K,hK,hrow⟩ := herr
-  obtain ⟨M,hM,hdensity⟩ := sampledSpline_density
   obtain ⟨B,_,hB,_,hdiff⟩ := sampledSpline_differences
   obtain ⟨A,hA,hbound⟩ := successorSquare_window_bound
-  refine ⟨M+K*B*A^3,by positivity,fun {n} hn => ?_⟩
+  have hA₀ : 0≤A := zero_le_one.trans hA
+  refine ⟨K*B*A^3,by positivity,fun {n} hn => ?_⟩
   let L := splineHorizon n
-  let E (k : ℕ) := (Chebyshev.theta k-k)-f k
   let H := 1+Real.log L
   have hn' : (0:ℝ)<n := Nat.cast_pos.mpr hn
-  have hH : 1≤H := le_add_of_nonneg_right (Real.log_natCast_nonneg L)
   have hroot : Real.sqrt L ≤ A*n := by
     have hs := Real.sqrt_le_sqrt (hbound hn)
-    rwa [Real.sqrt_sq (mul_nonneg (zero_le_one.trans hA) hn'.le)] at hs
+    rwa [Real.sqrt_sq (mul_nonneg hA₀ hn'.le)] at hs
   have hE (k : ℕ) (hk : k ∈ Icc 1 L) : |E k| ≤ K*H^6*(A*n) := by
     obtain ⟨h₁,h₂⟩ := mem_Icc.mp hk
     have hlog := Real.log_le_log (by exact_mod_cast h₁ : (0:ℝ)<k) (by exact_mod_cast h₂ : (k:ℝ)≤L)
     exact (hrow k h₁).trans (mul_le_mul (mul_le_mul_of_nonneg_left (pow_le_pow_left₀
-      (by have := Real.log_natCast_nonneg k; positivity) (add_le_add_left hlog 1) 6) hK)
+      (by have := Real.log_natCast_nonneg k; positivity) (add_le_add (le_refl (1:ℝ)) hlog) 6) hK)
       ((Real.sqrt_le_sqrt (by exact_mod_cast h₂)).trans hroot) (Real.sqrt_nonneg _) (by positivity))
-  have hread : |splineCountReading n E| ≤ (K*B*A^3)*H^6 := by
-    apply (abs_sum_le_sum_abs _ _).trans
-    calc _ ≤ ∑ _k ∈ Icc 1 L, (K*H^6*(A*n))*(B/(n:ℝ)^3) := by
-            apply sum_le_sum
-            intro k hk
-            rw [abs_mul]
-            exact mul_le_mul (hE k hk) ((hdiff hn k).1) (abs_nonneg _) (by positivity)
-         _ ≤ (A*n)^2*((K*H^6*(A*n))*(B/(n:ℝ)^3)) := by
-            rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
-            exact mul_le_mul_of_nonneg_right (hbound hn) (by positivity)
-         _ = _ := by field_simp; ring
+  apply (abs_sum_le_sum_abs _ _).trans
+  calc _ ≤ ∑ _k ∈ Icc 1 L, (K*H^6*(A*n))*(B/(n:ℝ)^3) := by
+          apply sum_le_sum
+          intro k hk
+          rw [abs_mul]
+          exact mul_le_mul (hE k hk) ((hdiff hn k).1) (abs_nonneg _) (by positivity)
+       _ ≤ (A*n)^2*((K*H^6*(A*n))*(B/(n:ℝ)^3)) := by
+          rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
+          exact mul_le_mul_of_nonneg_right (hbound hn) (by positivity)
+       _ = _ := by field_simp; ring
+
+/-- A uniform approximation to the centered ordinary-prime count transfers
+to the same signed spline at every conductor. -/
+theorem dyadicPrimeContact_of_count_approximation (f : ℕ → ℝ)
+    (herr : ∃ C : ℝ, 0≤C ∧ ∀ k : ℕ, 1≤k →
+      |(Chebyshev.theta k-k)-f k| ≤ C*(1+Real.log k)^6*Real.sqrt k) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0<n →
+      |dyadicPrimeContact n-splineCountReading n f| ≤ C*(1+Real.log (splineHorizon n))^6 := by
+  let E (k : ℕ) := (Chebyshev.theta k-k)-f k
+  obtain ⟨K,hK,hread⟩ := splineCountReading_sqrt_error E herr
+  obtain ⟨M,hM,hdensity⟩ := sampledSpline_density
+  refine ⟨M+K,add_nonneg hM hK,fun {n} hn => ?_⟩
+  let H := 1+Real.log (splineHorizon n)
+  have hH : 1≤H := le_add_of_nonneg_right (Real.log_natCast_nonneg _)
   have he : dyadicPrimeContact n-splineCountReading n f =
       splineCountReading n (fun k => (k:ℝ))+splineCountReading n E := by
-    rw [contact_abel hn]
+    rw [dyadicPrimeContact_abel hn]
     unfold splineCountReading
     rw [←sum_sub_distrib,←sum_add_distrib]
     exact sum_congr rfl fun k _ => by dsimp [E]; ring
   rw [he,density_abel hn]
-  apply (abs_add_le _ _).trans ((add_le_add (hdensity hn) hread).trans _)
+  apply (abs_add_le _ _).trans ((add_le_add (hdensity hn) (hread hn)).trans _)
   have h₁ : M/n ≤ M := div_le_self hM (by exact_mod_cast hn)
   have h₂ := le_mul_of_one_le_right hM (one_le_pow₀ (n := 6) hH)
-  change M/n+_ ≤ (M+K*B*A^3)*H^6
+  change M/n+K*H^6 ≤ (M+K)*H^6
   linarith only [h₁,h₂]
 
 /-- At every positive square conductor the signed long-product reading
@@ -99,7 +112,7 @@ with varying logarithmic cutoffs costs only the six-logarithm allowance. -/
 theorem dyadicPrimeContact_long_products :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0<n →
       |dyadicPrimeContact n-splineCountReading n longPrimeRow| ≤ C*(1+Real.log (splineHorizon n))^6 :=
-  theta_transfer longPrimeRow theta_longPrimeRow_bound
+  dyadicPrimeContact_of_count_approximation longPrimeRow theta_longPrimeRow_bound
 
 /-- The complete coprime row at fixed unit stencil cutoffs also has a
 uniform approximation. Its moving lower product endpoint is retained. -/
@@ -107,7 +120,7 @@ theorem dyadicPrimeContact_unit_stencils :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0<n →
       |dyadicPrimeContact n-splineCountReading n (fun k => coprimePrimeRow 1 1 k (productLower 1 k))| ≤
         C*(1+Real.log (splineHorizon n))^6 := by
-  apply theta_transfer
+  apply dyadicPrimeContact_of_count_approximation
   obtain ⟨K,hK,h⟩ := coprime_prime_row_bound
   obtain ⟨B,hB⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
   refine ⟨K+|B|,by positivity,fun k hk => ?_⟩

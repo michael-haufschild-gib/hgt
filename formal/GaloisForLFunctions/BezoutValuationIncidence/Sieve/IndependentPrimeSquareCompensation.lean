@@ -87,7 +87,7 @@ theorem product_support :
       mark (fun y => globalWeight p h K r y ≠ 0) x = ∏ i, f i (primitiveCRT p h x i) := by
     by_cases ha : ∀ i, weight (p i).val (K i) (r i) (primitiveCRT p h x i)≠0
     · simp [mark,globalWeight,prod_ne_zero_iff,ha,f]
-    · push_neg at ha
+    · push Not at ha
       obtain ⟨i,hi⟩ := ha
       have hg : globalWeight p h K r x=0 := prod_eq_zero (mem_univ i) hi
       rw [prod_eq_zero (mem_univ i) (show f i (primitiveCRT p h x i)=0 by simp [f,mark,hi])]
@@ -103,7 +103,6 @@ private theorem second_factor (q : Nat.Primes) :
   have hq : 0<(q.val : ℝ) := Nat.cast_pos.mpr q.property.pos
   unfold rayMass
   field_simp
-  ring
 
 /-- A uniform exponential lower bound for the second moment. -/
 theorem product_second_floor :

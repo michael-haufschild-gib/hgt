@@ -15,7 +15,7 @@ noncomputable section
 open MeasureTheory Set Filter Topology
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
-  CriticalArithmeticCorrelationTheory HTGeometry
+  CriticalArithmeticCorrelationTheory HTGeometry _root_.RHTower
 
 private def translationCost (g : ℝ → ℝ) (d : ℝ) : ℝ := ∫ u : ℝ, |g u-g (u+d)|
 
@@ -35,7 +35,6 @@ private theorem state_translationCost {W₀ : ℝ} (hW : 0 < W₀)
     filter_upwards [he,(measurePreserving_add_right volume d).quasiMeasurePreserving.ae_eq_comp he]
       with u hu hv
     change F (u+d) = Φ (u+d) at hv
-    change |F u-F (u+d)| = |Φ u-Φ (u+d)|
     rw [hu,hv]
   obtain ⟨ε,hε,h⟩ := (mem_nhdsGT_iff_exists_Ioo_subset
     (s := {d : ℝ | translationCost F d / Real.sqrt d < 1})).mp
@@ -65,7 +64,8 @@ private theorem bin_slice_bound {g : ℝ → ℝ} (hg : Integrable g) (v l w : �
       exact abs_add_le ..)
   refine h.trans_eq ?_
   change (∫ t : ℝ, |w-1| * |g (t-l)| + |g (t-l)-g (t-v)|) = _
-  rw [integral_add (h1.abs.const_mul _) (h1.sub h2).abs,integral_const_mul]
+  rw [integral_add (f := fun t => |w-1| * |g (t-l)|) (g := fun t => |g (t-l)-g (t-v)|)
+    (h1.abs.const_mul _) (h1.sub h2).abs,integral_const_mul]
   have tr (f : ℝ → ℝ) : (∫ t : ℝ, f (t-l)) = ∫ t, f t := by
     simpa only [sub_eq_add_neg] using integral_add_right_eq_self f (-l)
   rw [tr (fun t => |g t|)]
@@ -148,15 +148,15 @@ private theorem integrated_square_error {g : ℝ → ℝ} (hc : Continuous g) (h
     simpa only [H,Real.norm_eq_abs] using (ha v (hV.trans (le_of_lt hv))).2
   have hi : Integrable H (μ.prod volume) := by
     apply (integrable_prod_iff hmProd).2
-    refine ⟨Eventually.of_forall fun v => ((hg.comp_sub_right _).const_mul _).sub
-      (hg.comp_sub_right _),hExp.mono' hmProd.norm.integral_prod_right' ?_⟩
+    refine ⟨Eventually.of_forall fun v => ((hg.comp_sub_right (squareBinLocation v)).const_mul
+      (squareBinWeight v)).sub (hg.comp_sub_right v),hExp.mono' hmProd.norm.integral_prod_right' ?_⟩
     filter_upwards [hpoint] with v hv
     rwa [Real.norm_eq_abs,abs_of_nonneg (integral_nonneg fun _ => norm_nonneg _)]
   have hiG : Integrable G := hi.integral_prod_right
   have hglobal : (∫ t, |G t|) ≤ (40*K)*Real.exp ((-1/40)*V) := by
     calc _ ≤ ∫ t, ∫ v, ‖H (v,t)‖ ∂μ := integral_mono hiG.abs hi.integral_norm_prod_right
                (fun t => norm_integral_le_integral_norm (fun v => H (v,t)))
-      _ = ∫ v, ∫ t, ‖H (v,t)‖ ∂μ := (integral_integral_swap (f := fun v t => ‖H (v,t)‖) hi.norm).symm
+      _ = ∫ v, (∫ t, ‖H (v,t)‖) ∂μ := (integral_integral_swap (f := fun v t => ‖H (v,t)‖) hi.norm).symm
       _ ≤ ∫ v, K*Real.exp ((-1/40)*v) ∂μ := integral_mono_ae hi.integral_norm_prod_left hExp hpoint
       _ = _ := by
         dsimp only [μ]
@@ -172,12 +172,12 @@ private theorem integrated_square_error {g : ℝ → ℝ} (hc : Continuous g) (h
       have hL := (monotone_squareBinLocation hv').trans (ha V hV).1
       rw [binDifference,hs _ (by linarith only [htv,hL]),hs _ (by linarith only [htv,hv']),mul_zero,sub_zero]
     have hfull : Integrable (fun v => binDifference g v t) := by
-      have hcut := (integrable_indicator_iff measurableSet_Ioi).2
-        (show IntegrableOn (fun v => binDifference g v t) (Ioi V) from hrow)
+      have hcut := (integrable_indicator_iff (μ := volume) measurableSet_Ioi).2
+        (show IntegrableOn (fun v => binDifference g v t) (Ioi V) volume from hrow)
       exact hcut.congr (Eventually.of_forall fun v => by
         by_cases hv : v ∈ Ioi V
         · exact indicator_of_mem hv _
-        · rw [indicator_of_notMem hv,hz v hv])
+        · exact (indicator_of_notMem hv _).trans (hz v hv).symm)
     have hread : G t=∫ v, binDifference g v t :=
       setIntegral_eq_integral_of_forall_compl_eq_zero hz
     have hsum := integral_add hfull (hg.comp_sub_left t)
@@ -188,9 +188,9 @@ private theorem integrated_square_error {g : ℝ → ℝ} (hc : Continuous g) (h
     rw [squareLayer_mass_coordinates hc hs hC hb (t := t) (by linarith only [hV0,htv]),hread]
     change _ = (∫ v, squareBinWeight v*g (t-squareBinLocation v)-g (t-v))/2
     linarith only [hsum]
-  refine ⟨(hiG.div_const 2).integrableOn.congr heq.symm,?_⟩
+  refine ⟨(hiG.div_const 2).integrableOn.congr (heq.mono fun t ht => ht.symm),?_⟩
   calc _ = ∫ t in Ioi (V+1), |G t| / 2 := integral_congr_ae (heq.mono fun t ht => by
-               rw [ht,abs_div,abs_of_pos (by norm_num : (0:ℝ)<2)])
+               exact (congrArg abs ht).trans (by rw [abs_div,abs_of_pos (by norm_num : (0:ℝ)<2)]))
     _ ≤ ∫ t, |G t| / 2 := setIntegral_le_integral (hiG.abs.div_const 2)
              (Eventually.of_forall fun t => div_nonneg (abs_nonneg _) (by norm_num))
     _ = (∫ t, |G t|)/2 := by rw [integral_div]
@@ -288,7 +288,7 @@ theorem riemannHypothesis_or_integrated_properPower_error : RiemannHypothesis �
     linarith only [mul_le_mul_of_nonneg_left hmono hM]
   calc (∫ t in Ioi (V+1), |E t|) ≤ ∫ t in Ioi (V+1), |S t| + |H t| :=
          integral_mono_ae heI.abs (hv.1.abs.add hInt.abs) (hEq.mono fun t he => by
-           rw [he]; exact abs_add_le ..)
+           exact (congrArg abs he).le.trans (abs_add_le ..))
     _ ≤ _ := by
       rw [integral_add hv.1.abs hInt.abs,add_mul]
       exact add_le_add hv.2 hcost
@@ -303,8 +303,8 @@ private theorem two_sign_distances (x y : ℝ) :
     · rw [max_eq_right hz.le,max_eq_left (neg_nonneg.mpr hz.le),zero_sub,neg_neg]
   have ordered (a b : ℝ) (h : a ≤ b) :
       |max a 0-max b 0| + |max (-a) 0-max (-b) 0|=|a-b| := by
-    rw [abs_of_nonpos (sub_nonpos.mpr (max_le_max_right h 0)),
-      abs_of_nonneg (sub_nonneg.mpr (max_le_max_right (neg_le_neg h) 0)),
+    rw [abs_of_nonpos (sub_nonpos.mpr (max_le_max_right 0 h)),
+      abs_of_nonneg (sub_nonneg.mpr (max_le_max_right 0 (neg_le_neg h))),
       abs_of_nonpos (sub_nonpos.mpr h)]
     linarith only [parts_sub a,parts_sub b]
   rcases le_total x y with h | h

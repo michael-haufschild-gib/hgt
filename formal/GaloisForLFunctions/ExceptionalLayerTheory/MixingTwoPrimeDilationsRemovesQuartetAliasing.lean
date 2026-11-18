@@ -271,7 +271,7 @@ theorem primeOrientationResidual_singleQuartet {ρ : ℂ} (hq : HasSingleOffLine
   let R := Real.sin (ρ.im*Real.log 3)*Real.cos (ρ.im*Real.log 2)-
     Real.sin (ρ.im*Real.log 2)*Real.cos (ρ.im*Real.log 3)
   obtain ⟨K,hK⟩ := (hasSingleOffLineQuartet_iff_chebyshevPsi_singleWave hq.1 hq.2.1).mp hq
-  have hη (x : ℝ) (hx : 16≤x) : |η x| ≤ |K|*(Real.sqrt x*Real.log x^2) := by
+  have hη (x : ℝ) (hx : 16≤x) : |η x| ≤ |K| * (Real.sqrt x*Real.log x^2) := by
     have he : W x = -(2*(quartetCopyMult ρ:ℝ)*((x:ℂ)^ρ/ρ).re) := by
       dsimp only [W,c]
       rw [show -(2*(quartetCopyMult ρ:ℂ))/ρ*(x:ℂ)^ρ =
@@ -281,9 +281,9 @@ theorem primeOrientationResidual_singleQuartet {ρ : ℂ} (hq : HasSingleOffLine
     rw [mul_assoc] at hb
     simpa only [η,primeError,he,sub_neg_eq_add] using hb.trans
       (mul_le_mul_of_nonneg_right (le_abs_self K) (mul_nonneg (Real.sqrt_nonneg _) (sq_nonneg _)))
-  refine ⟨|P|*(|K|*(4*Real.sqrt 3))+|Q|*(|K|*(4*Real.sqrt 2))+|R|*|K|,fun x hx => ?_⟩
+  refine ⟨|P| * (|K| * (4*Real.sqrt 3))+|Q| * (|K| * (4*Real.sqrt 2))+|R| * |K|,fun x hx => ?_⟩
   let B := Real.sqrt x*Real.log x^2
-  have hd (a : ℝ) (ha : 1≤a) (hax : a≤x) : |η (a*x)| ≤ (|K|*(4*Real.sqrt a))*B := by
+  have hd (a : ℝ) (ha : 1≤a) (hax : a≤x) : |η (a*x)| ≤ (|K| * (4*Real.sqrt a))*B := by
     have hxa := le_mul_of_one_le_left (show 0≤x by linarith only [hx]) ha
     exact (hη _ (hx.trans hxa)).trans ((mul_le_mul_of_nonneg_left
       (scaled_sqrt_log ha hax) (abs_nonneg K)).trans_eq (by dsimp only [B]; ring))

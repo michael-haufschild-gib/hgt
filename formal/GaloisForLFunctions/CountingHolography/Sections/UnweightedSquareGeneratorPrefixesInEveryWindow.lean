@@ -64,7 +64,7 @@ private theorem integral_rescale {X : ℝ} (hX : 0 < X) : I X=X^3*squarePrefixTr
     by_cases hr : r=0
     · simp [hr,H]
     rw [H,Real.log_mul hX.ne' hr,mul_add,mul_pow]; ring
-  rw [← he]
+  rw [I,← he]
   simp_rw [hs]
   rw [intervalIntegral.integral_const_mul,intervalIntegral.integral_of_le zero_le_one]
   dsimp only [squarePrefixTrace]
@@ -200,9 +200,10 @@ theorem squareGeneratorPrefix_blocks_in_every_window :
   have hb := (Real.le_log_iff_exp_le (Nat.cast_pos.mpr hB)).mpr (Nat.le_ceil (Real.exp C))
   refine ⟨B,hB,?_⟩
   filter_upwards [squarePrefixTrace_bounded_in_every_window,primeLogarithmicRadius_shape,eventually_ge_atTop (Real.exp 1)] with T ⟨u,hu,hf⟩ hT heT
-  have hlog : 1 ≤ Real.log (T+2) := by simpa only [Real.log_exp] using
-    Real.log_le_log (Real.exp_pos 1) (heT.trans (show T ≤ T+2 by linarith))
-  have hu₀ : 0 ≤ u := by linarith only [(abs_le.mp hu).1,hT.2,hlog]
+  have hlog : 1 ≤ Real.log (T+2) := by
+    simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos 1) (heT.trans (show T ≤ T+2 by linarith))
+  have hradius : 32*Real.log (T+2) ≤ T := hT.2
+  have hu₀ : 0 ≤ u := by linarith only [(abs_le.mp hu).1,hradius,hlog]
   let X := Real.exp (u/2)
   let n := upperSquareIndex u
   have hX : 1 ≤ X := Real.one_le_exp (by linarith only [hu₀])

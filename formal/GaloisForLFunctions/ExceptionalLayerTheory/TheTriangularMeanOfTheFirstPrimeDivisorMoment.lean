@@ -24,8 +24,8 @@ private theorem double_quotient_sum (f : ℕ → ℝ) (N : ℕ) :
   induction N with
   | zero => simp
   | succ n ih =>
-    rw [Nat.mul_succ,show 2*n+2=2*n+1+1 by omega,sum_range_succ,sum_range_succ,ih,
-      sum_range_succ f,show (2*n+1)/2=n by omega,show 2*n/2=n by omega]
+    rw [Nat.mul_succ,show 2*n+2=2*n+1+1 by omega,Finset.sum_range_succ,Finset.sum_range_succ,ih,
+      Finset.sum_range_succ f,show (2*n+1)/2=n by omega,show 2*n/2=n by omega]
     ring
 
 private theorem sharp_moment_deficit (j N : ℕ) (hj : j ≤ N) :
@@ -119,8 +119,8 @@ private theorem sublinear_dyadic_inverse (f : ℕ → ℝ) {b K : ℝ} (hb : b<1
     have h := ((hlim.comp ht).abs.mul_const (n:ℝ))
     simp only [abs_zero,zero_mul] at h
     apply h.congr (fun k => ?_)
-    change |f (2^k*n)/((2^k*n:ℕ):ℝ)|*n=_
-    rw [abs_div,abs_of_nonneg (Nat.cast_nonneg _)]
+    change |f (2^k*n)/((2^k*n:ℕ):ℝ)| * n=_
+    rw [abs_div,abs_of_nonneg (Nat.cast_nonneg (2^k*n) : (0:ℝ) ≤ ((2^k*n:ℕ):ℝ))]
     push_cast; field_simp
   have hend : |f n|-B*(n:ℝ)^b ≤ 0 := by
     apply le_of_tendsto_of_tendsto' tendsto_const_nhds hlim'
@@ -146,7 +146,6 @@ private theorem mode_difference (ρ s : ℂ) (N : ℕ) :
   rw [he,alternatingDivisorFactor,Complex.cpow_neg]
   push_cast
   field_simp
-  <;> ring
 
 private theorem mode_abs (ρ : ℂ) {s : ℂ} (hs : s.re ≤ 1/2) {N : ℕ} (hN : 1 ≤ N) :
     |primeMomentZetaMode ρ s N| ≤ ‖riemannZeta s/(s+1)/ρ‖*Real.sqrt N := by
@@ -227,9 +226,14 @@ private theorem dyadic_real_remainder {b : ℝ} (hb : 1/4<b) :
   have hz : C*(((2*N:ℕ):ℝ)^(1/4:ℝ)*((1+1/δ)^2*((2*N:ℕ):ℝ)^(2*δ))) =
       C*(1+1/δ)^2*((2*N:ℕ):ℝ)^b := by rw [← hp]; ring
   apply le_trans _ (hc.trans_eq hz)
-  rw [← abs_neg]
-  convert he using 2
-  dsimp only [W]; push_cast; ring
+  have hcast : ((2*N:ℕ):ℝ)=2*(N:ℝ) := by simp only [Nat.cast_mul,Nat.cast_ofNat]
+  calc
+    _ = |W-oddQuotientPowerTotal (2*N)/(2*(N:ℝ))-
+        oddQuotientEtaMode 1 (1/2) (2*N)-oddQuotientEtaMode 1 (1/3) (2*N)| := by
+      rw [← abs_neg (W-_-_-_)]
+      congr 1
+      ring
+    _ ≤ _ := by simpa only [W,hcast] using he
 
 /-- Under RH only the two real prime-power modes remain above the quarter exponent. -/
 theorem primeMomentRealRemainder_quarter_of_rh (hRH : RiemannHypothesis) {b : ℝ}
@@ -264,7 +268,7 @@ private theorem odd_total_succ (n : ℕ) :
   let c : ArithmeticFunction ℝ := properPowerLatticeWeight*alternatingDivisorCoeff
   have he (N : ℕ) : oddQuotientPowerTotal N=∑ k ∈ range N, ∑ j ∈ Icc 1 k, c j :=
     (oddQuotientPowerTotal_eq_triangular N).trans (triangularPrimeProfile_sample c N)
-  rw [he (n+1),he n,sum_range_succ]
+  rw [he (n+1),he n,Finset.sum_range_succ]
   congr 1
   rw [oddQuotientPowerCount,show (∑ j ∈ Icc 1 n, c j)=_ from
     _root_.RHTower.sum_Icc_mul_apply properPowerLatticeWeight alternatingDivisorCoeff n]
@@ -313,14 +317,14 @@ theorem riemannHypothesis_iff_triangularDistinctPrimeLogMoment :
     have hp : (0:ℝ)<(2*n:ℕ) := by exact_mod_cast h2n
     have he := hc n hn
     have hlow := (hk n hn).trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow
-      (Nat.cast_nonneg n) (by exact_mod_cast (show n ≤ 2*n by omega)) hb0.le) hK)
+      (Nat.cast_nonneg n) (show (n:ℝ) ≤ ((2*n:ℕ):ℝ) by exact_mod_cast (show n ≤ 2*n by omega)) hb0.le) hK)
     obtain ⟨hl,hu⟩ := abs_le.mp he
     obtain ⟨ll,lu⟩ := abs_le.mp hlow
     obtain ⟨rl,ru⟩ := abs_le.mp (hk (2*n) h2n)
     have hm : |oddQuotientPowerTotal (2*n)/(2*(n:ℝ))| ≤ (C+3*K)*((2*n:ℕ):ℝ)^b := by
       rw [abs_le]
       constructor <;> linarith only [hl,hu,ll,lu,rl,ru]
-    have hd : 2*(n:ℝ)=((2*n:ℕ):ℝ) := by push_cast; rfl
+    have hd : 2*(n:ℝ)=((2*n:ℕ):ℝ) := by simp only [Nat.cast_mul,Nat.cast_ofNat]
     rw [hd,abs_div,abs_of_pos hp,div_le_iff₀ hp] at hm
     rw [Real.rpow_add_one hp.ne']
     exact hm.trans_eq (by ring)
@@ -401,13 +405,13 @@ private theorem weighted_jumps (x : ℝ) (N : ℕ) :
       (∑ j ∈ range N, sharpDeficit j)+(x-N)*sharpDeficit N := by
   induction N with
   | zero => simp [sharpDeficit,distinctPrimeLogMoment]
-  | succ n ih => rw [sum_range_succ,ih,sum_range_succ,Nat.cast_succ]; ring
+  | succ n ih => rw [Finset.sum_range_succ,ih,Finset.sum_range_succ,Nat.cast_succ]; ring
 
 private theorem realMean_cell {x : ℝ} (hx : 0<x) :
     x*(distinctPrimeFirstMeanAt x-repeatedPrimeLogDensity*x/2) =
       (∑ j ∈ range ⌊x⌋₊, sharpDeficit j)+(x-⌊x⌋₊)*sharpDeficit ⌊x⌋₊ := by
   rw [distinctPrimeFirstMeanAt,add_sub_cancel_right,mul_sum,← weighted_jumps]
-  exact sum_congr rfl fun j _ => by rw [sharpDeficit_jump]; field_simp; ring
+  exact sum_congr rfl fun j _ => by rw [sharpDeficit_jump]; field_simp
 
 /-- Averaging a fractional part up to y gives this positive kernel. -/
 def averagedFractionalPart (y : ℝ) : ℝ :=
@@ -418,7 +422,7 @@ private theorem floor_row_sum (d N : ℕ) :
   induction N with
   | zero => simp
   | succ n ih =>
-    rw [sum_range_succ,ih]
+    rw [Finset.sum_range_succ,ih]
     by_cases hd : d∣n+1
     · have he := Nat.div_mul_cancel hd
       rw [Nat.succ_div_of_dvd hd] at he ⊢
@@ -443,7 +447,7 @@ theorem distinctPrimeFirstMeanAt_fractional_kernel {x : ℝ} (hx : 0<x) :
     simp only [mul_sum]
   have hboth : (∑ j ∈ range n, sharpDeficit j)+(x-n)*sharpDeficit n =
       -(∑ d ∈ Icc 1 n, primePowerPart d*T d) := by
-    rw [he,sharp_moment_deficit n n le_rfl,mul_neg,← neg_add,Finset.mul_sum,← sum_add_distrib]
+    rw [he,sharpDeficit,sharp_moment_deficit n n le_rfl,mul_neg,← neg_add,Finset.mul_sum,← sum_add_distrib]
     congr 1
     exact sum_congr rfl fun d _ => by rw [← hrow]; dsimp only [q]; ring
   have hw : Summable (fun d : ℕ => primePowerPart d/(d:ℝ)) :=
@@ -460,7 +464,7 @@ theorem distinctPrimeFirstMeanAt_fractional_kernel {x : ℝ} (hx : 0<x) :
   have hcell := realMean_cell hx
   change x*(distinctPrimeFirstMeanAt x-repeatedPrimeLogDensity*x/2)=_ at hcell
   have hsumEq : (∑ d ∈ Icc 1 n, primePowerPart d*T d) =
-      -((∑ j ∈ range n,sharpDeficit j)+(x-n)*sharpDeficit n) := eq_neg_comm.mp hboth
+      -((∑ j ∈ range n,sharpDeficit j)+(x-n)*sharpDeficit n) := by linarith only [hboth]
   rw [hsumEq,sub_neg_eq_add] at hscaled
   have hterms : (fun d : ℕ => primePowerPart d*averagedFractionalPart (x/d)) =
       (fun d => (x^2/2*(primePowerPart d/d)-primePowerPart d*T d)/x) := by
@@ -468,8 +472,9 @@ theorem distinctPrimeFirstMeanAt_fractional_kernel {x : ℝ} (hx : 0<x) :
     rcases Nat.eq_zero_or_pos d with rfl | hd
     · simp [T,q,averagedFractionalPart]
     have hd' : (0:ℝ)<d := by exact_mod_cast hd
-    simp only [Pi.sub_apply,averagedFractionalPart,Nat.floor_div_natCast,T,q,n]
-    field_simp [hx.ne',hd'.ne'] <;> ring
+    simp only [averagedFractionalPart,Nat.floor_div_natCast,T,q,n]
+    field_simp [hx.ne',hd'.ne']
+    ring
   have hvalue : distinctPrimeFirstMeanAt x=(x^2/2*repeatedPrimeLogDensity+
       ((∑ j ∈ range n,sharpDeficit j)+(x-n)*sharpDeficit n))/x := by
     apply (eq_div_iff hx.ne').mpr
@@ -507,7 +512,7 @@ private theorem firstMean_interpolate {x : ℝ} (hx : 1≤x) :
     exact (mul_comm _ _).trans hh
   rw [hrow]
   unfold triangularDistinctPrimeLogMoment
-  rw [sum_range_succ]
+  rw [Finset.sum_range_succ]
   change _ = (1-v)*((∑ j ∈ range n, sharpDeficit j)/(n:ℝ)+_) +
     v*(((∑ j ∈ range n, sharpDeficit j)+sharpDeficit n)/(n+1:ℕ)+_) - _
   dsimp only [v,a]
@@ -547,9 +552,9 @@ private theorem real_mean_bound {f : ℝ → ℝ} {L b K : ℝ} (hL : 0≤L) (hb
   have h1 := hp (k := n+1) (by omega) (by push_cast; linarith only [hnx,hx])
     (by push_cast; exact hstep _ _ hx hxn.le (by linarith only [hnx]))
   have hcorr : |repeatedPrimeLogDensity*a*(1-a)/(2*x)|≤|repeatedPrimeLogDensity| := by
-    rw [abs_div,abs_mul,abs_mul,abs_of_nonneg ha,abs_of_nonneg (sub_nonneg.mpr ha'),abs_of_pos (by positivity),
-      div_le_iff₀ (by positivity)]
-    have ht := mul_le_of_le_one_right (mul_nonneg (abs_nonneg _) ha) (sub_le_self 1 ha)
+    rw [abs_div,abs_mul,abs_mul,abs_of_nonneg ha,abs_of_nonneg (sub_nonneg.mpr ha'),abs_of_pos (mul_pos (by norm_num : (0:ℝ)<2) hxp),
+      div_le_iff₀ (mul_pos (by norm_num : (0:ℝ)<2) hxp)]
+    have ht := mul_le_of_le_one_right (mul_nonneg (abs_nonneg repeatedPrimeLogDensity) ha) (sub_le_self 1 ha)
     exact (ht.trans (mul_le_of_le_one_right (abs_nonneg _) ha')).trans
       (le_mul_of_one_le_right (abs_nonneg _) (by linarith only [hx]))
   have he := firstMean_interpolate hx
@@ -621,7 +626,7 @@ theorem riemannHypothesis_iff_distinctPrimeFirstMeanAt :
     have hb0 : 0≤b := by linarith only [hb]
     have hR := real_mean_bound hL hb0 hK hstep (fun n hn => by
       simpa only [f,realZetaMode_nat,primeMomentRealRemainder,sub_neg_eq_add,add_assoc] using h n hn)
-    exact ⟨_,by positivity,fun x hx => by
+    exact ⟨K*(2:ℝ)^b+L+|repeatedPrimeLogDensity|,by positivity,fun x hx => by
       simpa only [f,sub_neg_eq_add,add_assoc] using hR x hx⟩
   · intro h
     apply riemannHypothesis_iff_triangularDistinctPrimeLogMoment.mpr
@@ -648,9 +653,9 @@ theorem distinctPrimeFirstMeanAt_singleQuartet {ρ : ℂ} (hq : ExclusionOfTheCr
     (by rw [Complex.div_ofNat_re]; linarith only [hq.re_lt_one])
     (by rw [Complex.div_ofNat_re]; linarith only [hq.re_lt_one])
   obtain ⟨K,hK,h⟩ := triangularDistinctPrimeLogMoment_singleQuartet hq hb hb'
-  have hm : 0≤m := by dsimp only [m]; positivity
+  have hm : 0 ≤ m := by dsimp only [m]; positivity
   have hf (x y : ℝ) (hx : 1≤x) (hxy : x≤y) (hyx : y≤x+1) :
-      |f y-f x|≤m*D+C := by
+      |f y-f x| ≤ m*D+C := by
     rw [show f y-f x=m*(B y-B x)-(A y-A x) by dsimp only [f]; ring]
     apply (abs_sub _ _).trans
     rw [abs_mul,abs_of_nonneg hm]
@@ -658,7 +663,9 @@ theorem distinctPrimeFirstMeanAt_singleQuartet {ρ : ℂ} (hq : ExclusionOfTheCr
   have hn (n : ℕ) (hn : 1≤n) : |triangularDistinctPrimeLogMoment n-f n|≤K*(n:ℝ)^b := by
     simpa only [f,A,B,realZetaMode_nat,m,primeMomentRealRemainder,sub_sub_eq_add_sub,add_assoc] using h n hn
   have hr := real_mean_bound (add_nonneg (mul_nonneg hm hD) hC) (by linarith only [hb] : 0≤b) hK hf hn
-  refine ⟨_,by positivity,fun x hx => ?_⟩
-  convert hr x hx using 2 <;> dsimp only [f,A,B,m] <;> ring
+  refine ⟨K*(2:ℝ)^b+(m*D+C)+|repeatedPrimeLogDensity|,by positivity,fun x hx => ?_⟩
+  calc
+    _ = |distinctPrimeFirstMeanAt x-f x| := by congr 1; dsimp only [f,A,B,m]; ring
+    _ ≤ _ := hr x hx
 
 end GaloisForLFunctions.ExceptionalLayerTheory

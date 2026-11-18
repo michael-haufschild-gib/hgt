@@ -140,7 +140,7 @@ private theorem no_positive_doubling {g : ℕ → ℝ} {B : ℝ} (hB : 0≤B)
     (hu : ∀ n : ℕ, 1≤n → g n≤B*Real.sqrt n)
     (hd : ∀ n : ℕ, 1≤n → 2*g n≤g (2*n)) {n : ℕ} (hn : 1≤n) : g n≤0 := by
   by_contra! hp
-  have hfour (m : ℕ) (hm : 1≤m) : 4*g m≤g (4*m) := by
+  have hfour (m : ℕ) (hm : 1 ≤ m) : 4*g m≤g (4*m) := by
     have h₁ := hd m hm
     have h₂ := hd (2*m) (by omega)
     rw [show 2*(2*m)=4*m by ring] at h₂

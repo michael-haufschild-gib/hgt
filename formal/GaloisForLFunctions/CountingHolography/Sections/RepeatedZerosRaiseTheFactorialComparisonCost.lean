@@ -153,15 +153,15 @@ private theorem polynomial_ray_lower (k : ℕ) (v : ℕ → ℂ) (hv : v k≠0) 
     let T := ∑ i ∈ range (k+1), (L:ℂ)^i*v i
     have hT : ‖T‖ ≤ L^k*A := by
       refine (norm_sum_le _ _).trans ?_
-      rw [show L^k*A=∑ i ∈ range (k+1), L^k*‖v i‖ by rw [A,mul_sum]]
+      rw [show L^k*A=∑ i ∈ range (k+1), L^k*‖v i‖ from Finset.mul_sum _ _ _]
       refine sum_le_sum fun i hi => ?_
       rw [norm_mul,norm_pow,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hL']
       exact mul_le_mul_of_nonneg_right (pow_le_pow_right₀ hL (Nat.le_of_lt_succ (mem_range.mp hi))) (norm_nonneg _)
     have htri := norm_sub_norm_le ((L:ℂ)^(k+1)*v (k+1)) (-T)
     rw [norm_neg,sub_neg_eq_add,norm_mul,norm_pow,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hL'] at htri
-    rw [sum_range_succ,add_comm T]
+    rw [Finset.sum_range_succ,add_comm T]
     have h := mul_le_mul_of_nonneg_left ((div_le_iff₀ hpos).mp hbig) (pow_nonneg hL' k)
-    rw [pow_succ] at htri ⊢
+    rw [pow_succ L k] at htri ⊢
     linarith only [hT,htri,h]
 
 /-- A zero of order greater than k forces a k-th logarithmic loss in
@@ -198,7 +198,8 @@ theorem factorial_cost_at_critical_zero_of_order {ρ : ℂ} (hρ : ρ ∈ critic
   have he : residual c a X=fun z => E z*W z+G z*riemannZeta z := by
     funext z; dsimp only [residual,E,G,L,W]; ring
   have hjet : iteratedDeriv k (residual c a X) ρ=E ρ*(∑ i ∈ range (k+1), L^i*v i) := by
-    rw [he,iteratedDeriv_fun_add (hExp.mul hW).contDiffAt (hG.mul hZ).contDiffAt,
+    rw [he,iteratedDeriv_fun_add (f := fun z => E z*W z) (g := fun z => G z*riemannZeta z)
+        (n := k) (hExp.mul hW).contDiffAt (hG.mul hZ).contDiffAt,
       iteratedDeriv_fun_mul hG.contDiffAt hZ.contDiffAt]
     have hzero : (∑ i ∈ range (k+1), (k.choose i:ℂ)*iteratedDeriv i G ρ*iteratedDeriv (k-i) riemannZeta ρ)=0 :=
       sum_eq_zero fun i _ => by rw [hz (k-i) (Nat.lt_succ_of_le (Nat.sub_le k i)),mul_zero]
@@ -225,7 +226,7 @@ private theorem center_bound_of_zeros (S : Finset ℂ) (φ : DiskMultiplier)
     (hS : ∀ a ∈ S, ‖a‖ < 1 ∧ φ.fn a = 0) : ‖φ.fn 0‖ ≤ (∏ a ∈ S, ‖a‖)*φ.bd := by
   classical
   induction S using Finset.induction_on generalizing φ with
-  | empty => simpa only [prod_empty,one_mul] using φ.bd_le 0 (Metric.mem_ball_self one_pos)
+  | empty => simpa only [Finset.prod_empty,one_mul] using φ.bd_le 0 (Metric.mem_ball_self one_pos)
   | @insert a T ha ih =>
     obtain ⟨haD,haZ⟩ := hS a (mem_insert_self _ _)
     let ψ := φ.removeNormalizedBlaschkeZero a haD haZ
@@ -292,10 +293,11 @@ private theorem average_disk_zeros (S : Finset ℝ) (z : ℝ → ℂ) (M : ℂ) 
         ring
       · intro y hyT u hu
         dsimp only [J]
-        rcases mem_insert.mp hyT with rfl | hyT
-        · rw [hgw a haS u hu d hd₀,phase_half_period (hy a haS)]; ring
+        rcases mem_insert.mp hyT with he | hyT
+        · subst y
+          rw [hgw a haS u hu d hd₀,phase_half_period (hy a haS)]; ring
         · rw [hgz y hyT u hu,hgz y hyT _ (add_nonneg hu hd₀)]; ring
-  obtain ⟨G,hgd,hgb,hgc,_,hgz⟩ := aux S (Subset.rfl)
+  obtain ⟨G,hgd,hgb,hgc,_,hgz⟩ := aux S (fun _ h => h)
   let φ : DiskMultiplier := ⟨G 0,hgd 0 le_rfl,D,
     (norm_nonneg _).trans (hgb 0 le_rfl 0 (Metric.mem_ball_self one_pos)),hgb 0 le_rfl⟩
   exact ⟨φ,rfl,hgc 0 le_rfl,fun y hyS => hgz y hyS 0 le_rfl⟩

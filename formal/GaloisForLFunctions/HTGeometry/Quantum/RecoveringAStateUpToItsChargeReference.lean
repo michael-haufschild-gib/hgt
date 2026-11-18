@@ -48,6 +48,7 @@ private def phaseBlock (q : ι → ℤ) (A B : Matrix ι ι ℂ) (n : ℕ) (a : 
   ∃ I J : Fin n → ι, displacement q I J=a ∧ (∏ k, A (I k) (J k))≠0 ∧
     (∏ k, B (I k) (J k))=(z : ℂ)*∏ k, A (I k) (J k)
 
+omit [Fintype ι] [DecidableEq ι] in
 private theorem constant_block (q : ι → ℤ) {A B : Matrix ι ι ℂ} (i j : ι) (u : Circle)
     (ha : A i j≠0) (h : B i j=(u : ℂ)*A i j) (k : ℕ) :
     phaseBlock q A B k ((k : ℤ)*(q i-q j)) (u^k) := by
@@ -56,6 +57,7 @@ private theorem constant_block (q : ι → ℤ) {A B : Matrix ι ι ℂ} (i j : 
   · simpa using pow_ne_zero k ha
   · simp [h,mul_pow]
 
+omit [Fintype ι] [DecidableEq ι] in
 private theorem signed_block (q : ι → ℤ) {A B : Matrix ι ι ℂ} (hA : A.IsHermitian)
     (hB : B.IsHermitian) (e : Edge A) (φ : Circle)
     (h : B e.val.1 e.val.2=(φ : ℂ)*A e.val.1 e.val.2) (m : ℤ) :
@@ -75,7 +77,9 @@ private theorem signed_block (q : ι → ℤ) {A B : Matrix ι ι ℂ} (hA : A.I
       simp only [edgeGap,Int.negSucc_eq,Int.natCast_succ]
       ring
     rw [ht] at hc
-    simpa only [Int.natAbs_negSucc,Int.negSucc_eq,_root_.zpow_neg,_root_.zpow_natCast,inv_pow] using hc
+    change phaseBlock q A B (k+1) (Int.negSucc k*edgeGap q e) (φ^Int.negSucc k)
+    rw [_root_.zpow_negSucc]
+    simpa only [inv_pow] using hc
 
 /-- A balanced pair of signed edges forces the corresponding relation
 on their measured phase ratios at precisely its copy cost. -/

@@ -55,7 +55,7 @@ private theorem unit_value {n : ℕ} (hn : 0 < n) :
     (∑ d ∈ Icc 1 n, μR d*((n/d:ℕ):ℝ))=1 := by
   have h := factorialFloorReading_prefix ℝ n (k := 1) Nat.one_pos
   simpa only [factorialFloorReading,prefixFactorialCoeffs,map_sum,Finsupp.linearCombination_single,
-    smul_eq_mul,Nat.div_one,if_pos hn,μR] using h
+    smul_eq_mul,Nat.div_one,if_pos (show 1 ≤ n from hn),μR] using h
 
 /-- The exact Stirling remainder, including the linear balance, is a
 positive weighted floor sum of the ordinary Mertens function. -/
@@ -66,7 +66,7 @@ theorem mertens_floorTransform_eq_factorial_remainder {n : ℕ} (hn : 0 < n) :
     simp only [mertensIoc,icc_eq_ioc,Int.cast_sum,μR]
   have hswap := sum_hyperbola_swap_real n (fun d j => μR d*factorialStirlingStep j)
   calc _ = ∑ j ∈ Icc 1 n, ∑ d ∈ Icc 1 (n/j), μR d*factorialStirlingStep j := by
-              simp only [floorTransform,hM,sum_mul,mul_sum]
+              simp only [floorTransform,hM,mul_sum]
               exact sum_congr rfl fun j _ => sum_congr rfl fun d _ => mul_comm _ _
     _ = ∑ d ∈ Icc 1 n, μR d*(∑ j ∈ Icc 1 (n/d), factorialStirlingStep j) := by
               simpa only [mul_sum] using hswap.symm
@@ -131,10 +131,10 @@ private theorem stirling_prefix {m : ℕ} (hm : 0 < m) :
   have hM (n : ℕ) : floorTransform μR (fun _ => 1) n = (mertensIoc n:ℝ) := by
     simp only [floorTransform,mul_one,μR,icc_eq_ioc,mertensIoc,Int.cast_sum]
   have he := floorTransform_comp factorialStirlingStep μR (fun _ => 1) m
-  simp_rw [hM] at he
-  exact (by simpa only [floorTransform,mul_one] using he.symm :
-    (∑ d ∈ Icc 1 m, dirichletConv factorialStirlingStep μR d) = _).trans
-      (mertens_floorTransform_eq_factorial_remainder hm)
+  rw [funext hM] at he
+  calc _ = floorTransform (dirichletConv factorialStirlingStep μR) (fun _ => 1) m := by
+             simp only [floorTransform,mul_one]
+    _ = _ := he.symm.trans (mertens_floorTransform_eq_factorial_remainder hm)
 
 private theorem sample_difference {m : ℕ} (hm : 1 < m) :
     factorialSampleEntropy m - vonMangoldt m = -dirichletConv factorialStirlingStep μR m := by
@@ -145,7 +145,7 @@ private theorem sample_difference {m : ℕ} (hm : 1 < m) :
     rw [← partialSum_vonMangoldt,← partialSum_vonMangoldt]
     simp only [partialSum,Nat.floor_natCast,sum_Ioc_succ_top (Nat.zero_le n),vonMangoldtWeight]
   rw [hpsi] at h
-  simp only [factorialSampleEntropy,Nat.add_sub_cancel,map_sub]
+  simp only [factorialSampleEntropy,show n.succ-1=n by omega,map_sub,Nat.succ_eq_add_one]
   linarith only [h]
 
 /-- The signed Stirling remainder for arbitrary finite sample weights is
@@ -170,7 +170,7 @@ theorem weighted_factorial_sample_remainder (w : ℕ → ℝ) {N : ℕ} (hN : 0 
                by_cases h : m=1 <;> simp [h]
       _ = _ := eq.trans (sum_congr rfl fun j hj => by
                rw [Nat.mul_div_cancel' (Nat.mem_divisors.mp hj).1]; ring)
-  have hunit : (∑ m ∈ Icc 1 N, if m=1 then w 1 else 0) = w 1 := by simp [hN]
+  have hunit : (∑ m ∈ Icc 1 N, if m=1 then w 1 else 0) = w 1 := by simp [Nat.ne_of_gt hN]
   rw [← hunit,← sum_add_distrib,sum_congr rfl row]
   simpa only [mul_sum,μR] using
     Sieve.sum_divisors_swap N (fun j d => factorialStirlingStep j * (μR d*w (j*d)))

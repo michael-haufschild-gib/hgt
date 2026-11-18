@@ -24,7 +24,9 @@ private theorem fractional_test_mass : Integrable fractionalPrimeTest ∧
   let f := weightedFloorDiscrepancy (1/2)
   have he : fractionalPrimeTest=fun v => -f v := by
     funext v
-    rw [fractionalPrimeTest,f,weightedFloorDiscrepancy,neg_mul,neg_neg,show -(1/2:ℝ)*v= -v/2 by ring]
+    change Real.exp (-v/2)*Int.fract (Real.exp v) =
+      -(-Real.exp (-(1/2)*v)*Int.fract (Real.exp v))
+    rw [show -(1/2:ℝ)*v= -v/2 by ring,neg_mul,neg_neg]
   rw [he,integral_neg]
   refine ⟨(integrable_weightedFloorDiscrepancy (by norm_num : (0:ℝ)<1/2) (by norm_num)).neg,?_⟩
   have hF := fourier_weightedFloorDiscrepancy (σ := 1/2) (by norm_num) (by norm_num) 0

@@ -109,7 +109,7 @@ private theorem annihilating_normal {n : ℕ} (A : Matrix (Fin n) (Fin (n+1)) �
     simp only [Module.finrank_pi,Fintype.card_fin] at h
     omega
   unfold Function.Injective at hh
-  push_neg at hh
+  push Not at hh
   obtain ⟨x,y,hxy,hne⟩ := hh
   refine ⟨x-y,sub_ne_zero.mpr hne,?_⟩
   change A.mulVecLin (x-y)=0

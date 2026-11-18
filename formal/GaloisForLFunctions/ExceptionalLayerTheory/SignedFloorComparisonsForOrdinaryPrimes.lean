@@ -303,7 +303,7 @@ theorem floorClassDifference_no_signed_prime_power {ι : Type*} (S : Finset ι)
   let f (t : ℝ) : ℂ := floorClassDifference S w a q t
   let χ (n : ℕ) : ℝ := if q∣n+1 then 1 else 0
   let D := 1+∑ i ∈ S, a i
-  let B := 1+∑ i ∈ S, |w i|*a i
+  let B := 1+∑ i ∈ S, |w i| * a i
   let c := -(∑ i ∈ S, w i*a i)
   have hsum := sum_nonneg (s := S) (fun i hi => (ha i hi).le)
   have hD : 1≤D := le_add_of_nonneg_right hsum
@@ -338,7 +338,7 @@ theorem floorClassDifference_no_signed_prime_power {ι : Type*} (S : Finset ι)
       by_cases h : 1≤x
       · exact (hclass _).trans h
       · rw [Nat.floor_eq_zero.mpr (lt_of_not_ge h),hzero,abs_zero]; exact hx.le
-    have hrow (i : ι) (hi : i∈S) : |w i*(⌊a i*x⌋:ℝ)|≤(|w i|*a i)*x := by
+    have hrow (i : ι) (hi : i∈S) : |w i*(⌊a i*x⌋:ℝ)|≤(|w i| * a i)*x := by
       rw [abs_mul,abs_of_nonneg (by exact_mod_cast (Int.floor_nonneg.mpr (mul_nonneg (ha i hi).le hx.le)) :
         (0:ℝ)≤(⌊a i*x⌋:ℝ)),mul_assoc]
       exact mul_le_mul_of_nonneg_left (Int.floor_le _) (abs_nonneg _)

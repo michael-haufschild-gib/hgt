@@ -120,7 +120,9 @@ theorem necessary_width {a b l r x v : ℝ} (hb : 0≤b) (H : Robust a b l r x v
     dsimp only [ramp] at ht hlo ⊢
     linarith only [hlo,ht,(safe hy).2]
   have hz : 0 ≤ (r-l-ramp (a-b) (2*b) n)/n := by linarith only [hu]
-  exact sub_nonneg.mp ((div_nonneg_iff_of_pos_right hn').mp hz)
+  have hmul := (le_div_iff₀ hn').mp hz
+  rw [zero_mul] at hmul
+  exact sub_nonneg.mp hmul
 
 private theorem interpolate {d l r x y v w : ℝ}
     (hx : strip d l r x v) (hy : strip d l r y w) {t : ℝ} (ht : t ∈ Set.Icc 0 1) :

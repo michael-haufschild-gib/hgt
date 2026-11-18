@@ -59,8 +59,10 @@ private theorem integral_cell_constant (N i : ℕ) (c : ℝ) :
   rw [setIntegral_const,conductorThetaCell,Real.volume_real_Ioc,max_eq_left hl,smul_eq_mul]
 
 private theorem cell_const_integrable (N i : ℕ) (d : ℝ) :
-    IntegrableOn (fun _ : ℝ => d) (conductorThetaCell N i) :=
-  (continuousOn_const.integrableOn_Icc (a := lo N i) (b := hi N i)).mono_set Ioc_subset_Icc_self
+    IntegrableOn (fun _ : ℝ => d) (conductorThetaCell N i) := by
+  have h : IntegrableOn (fun _ : ℝ => d) (Icc (lo N i) (hi N i)) volume :=
+    continuousOn_const.integrableOn_Icc
+  exact h.mono_set Ioc_subset_Icc_self
 
 private theorem mass_le {D : ℝ} {N i : ℕ} (hd : ∀ x ∈ conductorThetaCell N i, thetaCuspFullSource x ≤ D) :
     conductorThetaMass N i ≤ (hi N i-lo N i)*D := by
@@ -125,8 +127,8 @@ theorem square_conductor_theta_weight_bounds : ∃ (A : ℝ) (K : ℕ), 0 < A �
     calc _ ≤ A*(N:ℝ)^3*((4*C)*y^2/(N:ℝ)^3)/y^2 := by gcongr
          _ = A*(4*C) := by field_simp
   · intro hlow hhigh
-    have h₁ : (N:ℝ) ≤ y := by exact_mod_cast hlow
-    have h₂ : y ≤ 2*(N:ℝ) := by exact_mod_cast hhigh
+    have h₁ : (N:ℝ) ≤ y := by dsimp only [y]; exact_mod_cast hlow
+    have h₂ : y ≤ 2*(N:ℝ) := by dsimp only [y]; exact_mod_cast hhigh
     have hr : (N:ℝ)/2 ≤ x := by linarith only [he,h₁,hn₂]
     have hlog := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ)<2)
     have hl := Real.log_le_log (div_pos hn₀ two_pos) hr
@@ -146,7 +148,8 @@ theorem square_conductor_theta_weight_bounds : ∃ (A : ℝ) (K : ℕ), 0 < A �
       rw [show A*(N:ℝ)^3*(2/y*c)=8*(N:ℝ)^3/y by dsimp only [A]; field_simp; ring]
       apply (le_div_iff₀ hy).mpr
       linarith only [hpow]
-    exact (by simpa only [one_mul] using h₃).trans (mul_le_mul_of_nonneg_left hlen (by positivity))
+    simpa only [one_mul] using h₃.trans
+      (mul_le_mul_of_nonneg_left hlen (by positivity : 0 ≤ A*(N:ℝ)^3))
 
 /-- Right endpoint after the first i adjacent theta cells. -/
 def conductorThetaEdge (N i : ℕ) := 2*Real.log ((i:ℝ)+1)-2*Real.log N

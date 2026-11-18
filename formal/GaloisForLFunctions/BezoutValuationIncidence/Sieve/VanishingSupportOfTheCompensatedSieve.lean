@@ -21,7 +21,7 @@ def indexPrime (N : ℕ) (i : PrimeIndex N) : Nat.Primes :=
   ⟨i.val,(Nat.mem_primesBelow.mp i.property).2⟩
 
 theorem index_injective (N : ℕ) : Function.Injective (indexPrime N) :=
-  fun _ _ he => Subtype.ext (congrArg Subtype.val he)
+  fun _ _ he => Subtype.ext (congrArg (fun q : Nat.Primes => q.val) he)
 
 private def survive (q : ℕ) : ℝ := 1-((q : ℝ)-1)*rayMass q
 
@@ -102,7 +102,7 @@ theorem support_asymptotic :
   apply (RHTower.tendsto_mertensPrimeProduct_mul_log.mul ((Real.continuous_exp.tendsto _).comp h)).congr
   intro n
   rw [support_decomposition]
-  change RHTower.mertensPrimeProduct n * Real.log n * _ = _
+  change RHTower.mertensPrimeProduct n * Real.log n * Real.exp (∑ k ∈ range (n+1), logCorrection k) = _
   ring
 
 /-- Exact unbiasedness is carried by a fraction tending to zero. -/
@@ -124,9 +124,12 @@ theorem third_moment_eq (N : ℕ)
     (K : ∀ i : PrimeIndex N, (RingAt i.val 1)ˣ) (r : ∀ i : PrimeIndex N, (ZMod i.val)ˣ) :
     mean (fun x => (globalWeight (indexPrime N) (index_injective N) K r x)^3) /
         (∏ q ∈ (N+1).primesBelow, (q : ℝ)) = normalizedThird N := by
-  rw [product_moment _ _ _ _ 2,← prod_attach (N+1).primesBelow (fun q : ℕ => (q : ℝ)),
-    ← prod_div_distrib,normalizedThird,← prod_attach]
-  exact prod_congr rfl fun i _ => third_factor (indexPrime N i)
+  let f (q : ℕ) := 1+((q:ℝ)^3-q)*rayMass q
+  rw [product_moment _ _ _ _ 2]
+  change (∏ i : PrimeIndex N, f i.val)/(∏ q ∈ (N+1).primesBelow, (q:ℝ)) = _
+  rw [show (∏ i : PrimeIndex N, f i.val) = ∏ q ∈ (N+1).primesBelow, f q from prod_attach _ f,
+    ← prod_div_distrib,normalizedThird]
+  exact prod_congr rfl fun q hq => third_factor ⟨q,(Nat.mem_primesBelow.mp hq).2⟩
 
 private def zetaProduct (k N : ℕ) : ℂ :=
   ∏ p ∈ (N+1).primesBelow, (1-((p : ℂ)^k)⁻¹)⁻¹
@@ -146,11 +149,14 @@ private theorem cyclotomic_factor {p : ℕ} (hp : p.Prime) :
     have hpk := (pow_pos h₀ k).ne'
     field_simp at he
     linarith only [hb,he]
-  have h₂ := hd 2 (by norm_num)
-  have h₃ := hd 3 (by norm_num)
-  have h₆ := hd 6 (by norm_num)
-  field_simp
-  ring
+  let x := (p:ℝ)⁻¹
+  have h₂ : 1-x^2≠0 := by simpa only [x,inv_pow] using hd 2 (by norm_num)
+  have h₃ : 1-x^3≠0 := by simpa only [x,inv_pow] using hd 3 (by norm_num)
+  simp only [← inv_pow]
+  change 1-x+x^2=(1-x)*((1-x^2)⁻¹*(1-x^3)⁻¹/(1-x^6)⁻¹)
+  calc
+    _ = (1-x)*(1-x^6)/((1-x^2)*(1-x^3)) := (eq_div_iff (mul_ne_zero h₂ h₃)).2 (by ring)
+    _ = _ := by simp only [div_eq_mul_inv,mul_inv_rev,inv_inv]; ring
 
 private theorem third_decomposition (N : ℕ) :
     (normalizedThird N : ℂ) = (RHTower.mertensPrimeProduct N : ℂ) *
@@ -158,7 +164,7 @@ private theorem third_decomposition (N : ℕ) :
   rw [← RHTower.primesBelow_prod_eq_mertensPrimeProduct,normalizedThird,zetaProduct,
     zetaProduct,zetaProduct]
   push_cast
-  rw [← prod_div_distrib,← prod_mul_distrib,← prod_mul_distrib]
+  rw [← prod_mul_distrib,← prod_div_distrib,← prod_mul_distrib]
   exact prod_congr rfl fun p hp => by
     exact_mod_cast cyclotomic_factor (Nat.mem_primesBelow.mp hp).2
 
@@ -176,8 +182,9 @@ theorem third_asymptotic :
   apply (hm.mul ((h₂.mul h₃).div h₆ hn)).congr
   intro n
   rw [third_decomposition]
-  change ((RHTower.mertensPrimeProduct n * Real.log n : ℝ) : ℂ)*_ = _
-  push_cast
+  change ((RHTower.mertensPrimeProduct n * Real.log n : ℝ) : ℂ)*
+    (zetaProduct 2 n*zetaProduct 3 n/zetaProduct 6 n) = _
+  rw [Complex.ofReal_mul]
   ring
 
 end GaloisForLFunctions.BezoutValuationIncidence.LocalConditioning.Moments

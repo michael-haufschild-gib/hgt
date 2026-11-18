@@ -24,7 +24,7 @@ def splineBandPair (L p v : ℕ) : Prop :=
 private instance (L p v : ℕ) : Decidable (splineBandPair L p v) := inferInstanceAs (Decidable (_ ∧ _))
 
 private theorem splineStencilCutoff_mono {k L : ℕ} (hk : 0<k) (hkL : k≤L) : splineStencilCutoff k≤splineStencilCutoff L :=
-  Nat.floor_mono (add_le_add_left (Real.log_le_log (by exact_mod_cast hk) (by exact_mod_cast hkL)) 1)
+  Nat.floor_mono (add_le_add (le_refl (1:ℝ)) (Real.log_le_log (by exact_mod_cast hk) (by exact_mod_cast hkL)))
 
 private theorem splineStencilCutoff_pos (k : ℕ) : 1≤splineStencilCutoff k :=
   (Nat.one_le_floor_iff _).mpr (le_add_of_nonneg_right (Real.log_natCast_nonneg k))
@@ -182,8 +182,8 @@ theorem dyadicPrimeContact_outside_band :
   have hU : 0<U := Nat.mul_pos hn (Nat.sqrt_pos.mpr hn)
   have hq : U ≤ L := (Nat.mul_le_mul_left n (Nat.sqrt_le_self n)).trans
     (by simpa only [sq] using square_le_horizon n)
-  have hlog : 1+Real.log U ≤ H := add_le_add_left
-    (Real.log_le_log (by exact_mod_cast hU) (by exact_mod_cast hq)) 1
+  have hlog : 1+Real.log U ≤ H := add_le_add (le_refl (1:ℝ))
+    (Real.log_le_log (by exact_mod_cast hU) (by exact_mod_cast hq))
   have hH : 0≤H := by dsimp [H]; have := Real.log_natCast_nonneg L; positivity
   have he : outsideSplinePrimeBand n = splineCountReading n longPrimeRow-
       splineCountReading n (splinePrimeBand L U) := by

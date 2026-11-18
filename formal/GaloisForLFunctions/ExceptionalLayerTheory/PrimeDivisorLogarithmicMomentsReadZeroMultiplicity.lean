@@ -30,13 +30,13 @@ theorem primeLogMomentAtom_divisor_prefix (r k N : ℕ) :
       ∑ p ∈ Nat.primesLE N, (Real.log p:ℂ)^k *
         ∑ m ∈ Finset.Icc 1 (N/p), divisorPow r m := by
   let D : ArithmeticFunction ℂ := ⟨divisorPow r, by simp [divisorPow]⟩
-  let A : ArithmeticFunction ℂ := ⟨primeLogMomentAtom k, by simp [primeLogMomentAtom]⟩
+  let A : ArithmeticFunction ℂ := ⟨primeLogMomentAtom k, by simp [primeLogMomentAtom,Nat.not_prime_zero]⟩
   change (∑ n ∈ Finset.Icc 1 N, (⇑D ⍟ ⇑A) n)=_
   rw [ArithmeticFunction.coe_mul,mul_comm D A,_root_.RHTower.sum_Icc_mul_apply,
     Nat.primesLE_eq_filter_Icc_one,Finset.sum_filter]
   refine Finset.sum_congr rfl fun p _ => ?_
   change (if p.Prime then (Real.log p:ℂ)^k else 0)*_ = _
-  split <;> simp_all only [if_true,if_false,zero_mul,D,ArithmeticFunction.coe_mk]
+  split <;> simp_all only [zero_mul,D,ArithmeticFunction.coe_mk]
 
 /-- A single unrestricted factor counts the multiples of each prime. -/
 theorem primeLogMomentAtom_floor (k N : ℕ) :
@@ -64,18 +64,16 @@ private theorem log_iterate (k : ℕ) :
     by_cases h : n.Prime <;> simp [primeLogMomentAtom,LSeries.logMul,h,← Complex.natCast_log,pow_succ,mul_comm]
 
 private theorem log_abscissa : LSeries.abscissaOfAbsConv _root_.RHTower.primeLogCoeff≤(1:ℝ) := by
-  let f := fun n : ℕ => (lastClassOrdinaryPrimeIndicator n:ℂ)
+  let f := fun n : ℕ => if n.Prime then (1:ℂ) else 0
   have hf : LSeries.logMul f=_root_.RHTower.primeLogCoeff := by
     funext n
-    change Complex.log (n:ℂ)*((if n.Prime then (1:ℝ) else 0):ℂ)=_
-    by_cases hp : n.Prime <;> simp [_root_.RHTower.primeLogCoeff,hp,Complex.natCast_log]
+    by_cases hp : n.Prime <;> simp [f,LSeries.logMul,_root_.RHTower.primeLogCoeff,hp,Complex.natCast_log]
   rw [← hf,LSeries.abscissaOfAbsConv_logMul]
   apply LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable
   intro x hx
   apply LSeriesSummable_of_bounded_of_one_lt_re (m := 1) _ (by simpa using hx)
   intro n _
-  change ‖((if n.Prime then (1:ℝ) else 0):ℂ)‖≤1
-  split <;> norm_num
+  by_cases hp : n.Prime <;> simp [f,hp]
 
 private theorem log_series {s : ℂ} (hs : 1<s.re) :
     _root_.RHTower.xiPrimeLogDirichletContinuation s=LSeries _root_.RHTower.primeLogCoeff s := by
@@ -120,7 +118,7 @@ private theorem log_pole {ρ : ℂ} (hb : 1/2<ρ.re) (hz : riemannZeta ρ=0) :
   have hp : MeromorphicAt _root_.RHTower.xiPrimeLogDirichletContinuation ρ :=
     (hζ.deriv.div hζ).neg.sub ht
   obtain ⟨m,hm,hres⟩ := _root_.RHTower.xiPrimeLogDirichletContinuation_zero_residue hb hz
-  exact ⟨hp,HTGeometry.meromorphicOrderAt_eq_neg_one_of_tendsto_mul_sub hp
+  exact ⟨hp,meromorphicOrderAt_eq_neg_one_of_tendsto_mul_sub (c := -(m:ℂ)) hp
     (neg_ne_zero.mpr (Nat.cast_ne_zero.mpr (by omega))) hres⟩
 
 /-- Exact order of each filtered logarithmic moment at each right strip zero. -/
@@ -140,11 +138,11 @@ theorem primeLogDivisorSymbol_order (r j : ℕ) {ρ : ℂ} (hb : 1/2<ρ.re) (h1 
       have hcast : (((-((k:ℤ)+1):ℤ):ℂ))≠0 := by
         exact_mod_cast (show -((k:ℤ)+1)≠0 by omega)
       rw [meromorphicOrderAt_deriv_eq_sub_one hcast ih.2]
-      norm_cast; ring
+      norm_cast
   have hz' := _root_.RHTower.meromorphicAt_riemannZeta_everywhere ρ
   rw [primeLogDivisorSymbol,meromorphicOrderAt_mul (hz'.pow _) (hd j).1,
     meromorphicOrderAt_pow hz',_root_.RHTower.meromorphicOrderAt_riemannZeta_eq_toNat_of_strip
       (by linarith only [hb]) h1,(hd j).2]
-  norm_cast; ring
+  norm_cast
 
 end GaloisForLFunctions.ExceptionalLayerTheory

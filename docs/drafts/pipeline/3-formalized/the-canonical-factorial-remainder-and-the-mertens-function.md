@@ -11,3 +11,7 @@ Dividing by $\sqrt j$ and telescoping shows $\sum_{j\ge2}\epsilon(j)/\sqrt j\le1
 For each integer sample $m>1$, the sign of its entropy minus $\Lambda(m)$ is exactly $(-1)^{\omega(m)+1}$. Expand $\epsilon(j)=\sum_{k\ge1}j^{-k}/[k(k+1)]$, valid at one by telescoping. The magnitude equals
 $$\sum_{k\ge1}\frac{(\mathrm{rad}(m)/m)^k}{k(k+1)}\prod_{p\mid m}(1-p^{-k}).$$
 For a scaled compact weight $W$, the signed factorial remainder is therefore an invertible average of $\sum_m\mu(m)W(m/X)$ at the dilated scales $X/j$, up to the explicit sample at one. This removes a possible cancellation at off-line zeros in the entropy remainder and identifies the arithmetic estimate needed for this specific presentation. The uniform bound for the square generator remains open.
+
+Lean proves the positive expansion, strict square-root contraction, Dirichlet lower bound and equivalence of power bounds in [TheSquareRootContractionInTheStirlingRemainder.lean](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/TheSquareRootContractionInTheStirlingRemainder.lean).
+
+The exact prefix identity, equivalence to Mertens power bounds, RH criterion, weighted sample identity and strict single-sample sign are proved in [TheMertensFunctionInTheCanonicalFactorialRemainder.lean](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/TheMertensFunctionInTheCanonicalFactorialRemainder.lean).

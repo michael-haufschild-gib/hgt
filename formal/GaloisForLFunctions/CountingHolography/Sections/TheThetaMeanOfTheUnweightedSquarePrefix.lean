@@ -27,9 +27,11 @@ private theorem kernel_measurable (t : ℝ) : Measurable (kernel t) :=
   (measurable_id.pow_const 2).mul (continuous_squareLongTrace.measurable.comp
     (measurable_const.add (measurable_const.mul Real.measurable_log)))
 
-private theorem const_integrable (b : ℝ) : Integrable (fun _ : ℝ => b) μ :=
-  (show IntegrableOn (fun _ : ℝ => b) (Set.Icc 0 1) from continuousOn_const.integrableOn_Icc).mono_set
-    Set.Ioc_subset_Icc_self
+private theorem const_integrable (b : ℝ) : Integrable (fun _ : ℝ => b) μ := by
+  change IntegrableOn (fun _ : ℝ => b) (Set.Ioc (0:ℝ) 1) volume
+  have hi : IntegrableOn (fun _ : ℝ => b) (Set.Icc (0:ℝ) 1) volume :=
+    continuousOn_const.integrableOn_Icc
+  exact hi.mono_set Set.Ioc_subset_Icc_self
 
 /-- The factor r² pays the exponential strip bound at the lower endpoint. -/
 private theorem kernel_bound : ∃ A : ℝ, 0 ≤ A ∧ ∀ t r : ℝ, r ∈ window →

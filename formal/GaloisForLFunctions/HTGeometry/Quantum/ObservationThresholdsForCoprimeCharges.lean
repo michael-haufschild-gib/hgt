@@ -56,7 +56,7 @@ private theorem base_hermitian : base.IsHermitian := by
 private theorem cost_attained (a b : ℕ) (t : ℤ) :
     (a : ℤ)*t∈frequencies (twoCharges a b) phaseLabel base ((a+b)*t.natAbs) := by
   let e : Edge base := ⟨(1,0),by norm_num [base]⟩
-  let f : Edge base := ⟨(2,0),by norm_num [base]⟩
+  let f : Edge base := ⟨(2,0),by change (1/4 : ℂ)≠0; norm_num⟩
   have qe : edgeGap (twoCharges a b) e=a := by simp [e,edgeGap,twoCharges,smallLabel,phaseLabel]
   have qf : edgeGap (twoCharges a b) f=b := by simp [f,edgeGap,twoCharges,smallLabel,phaseLabel]
   have be : edgeGap phaseLabel e=0 := by simp [e,edgeGap,phaseLabel]
@@ -104,7 +104,9 @@ theorem coprime_observations (a b n : ℕ) (hab : a.Coprime b) (z w : Circle) :
 theorem consecutive_threshold (r n : ℕ) (z w : Circle) :
     observe (twoCharges (r+1) (r+2)) (state z) n=observe (twoCharges (r+1) (r+2)) (state w) n ↔
       n<2*r+3 ∨ z^((r+1 : ℕ) : ℤ)=w^((r+1 : ℕ) : ℤ) := by
-  have h : (r+1).Coprime (r+2) := by simp
+  have h : (r+1).Coprime (r+2) := by
+    change (r+1).Coprime ((r+1)+1)
+    exact Nat.coprime_self_add_right.mpr (Nat.coprime_one_right _)
   simpa only [show r+1+(r+2)=2*r+3 by omega] using coprime_observations (r+1) (r+2) n h z w
 
 end GaloisForLFunctions.HTGeometry.Quantum.TensorObservation.ThreeLevels
