@@ -47,7 +47,7 @@ private theorem abs_unitAverageTheta_sub_theta {x : ℝ} (hx : 0 ≤ x) :
     Nat.Ioc_succ_singleton, Finset.sum_filter, Finset.sum_singleton]
   split_ifs
   · apply Real.log_le_log (by positivity)
-    exact_mod_cast (show (⌊x⌋₊ : ℝ)+1 ≤ x+1 from add_le_add_right (Nat.floor_le hx) 1)
+    exact_mod_cast (show (⌊x⌋₊ : ℝ)+1 ≤ x+1 from add_le_add (Nat.floor_le hx) le_rfl)
   · exact Real.log_nonneg (by linarith only [hx])
 
 /-- A continuous approximation to the signed normalized prime increment.
@@ -114,7 +114,7 @@ theorem exists_cosine_boundaryStep_of_bounded_thetaRadial {γ : ℝ} {m : ℕ}
     let β := zetaZeroAbscissa
     let D := boundaryStep β (quarterPeriodStep γ) (primeErrorBoundaryTrace β)
     ∃ (q : XiZeroCopy) (K φ : ℝ), (q.1 : ℂ).re = β ∧ 0 < K ∧
-      ∀ t, D t = K * Real.cos (|xiCopyOrdinate q|*t+φ) := by
+      ∀ t, D t = K * Real.cos (|xiCopyOrdinate q| * t+φ) := by
   classical
   intro β D
   obtain ⟨q,hq,hall⟩ := (extremal_radial_exclusion_or_one_top_pair hΘ hγ hm).resolve_left hb
@@ -257,13 +257,13 @@ private theorem eventually_poly_exp_le {a b : ℝ} (hab : a < b) (K : ℝ) :
     (sub_pos.mpr hab)).const_mul (4*|K|)
   rw [mul_zero] at hlim
   filter_upwards [hlim.eventually (gt_mem_nhds zero_lt_one),eventually_ge_atTop (1:ℝ)] with t ht ht1
-  change 4*|K|*(t^(2:ℝ)*Real.exp (-(b-a)*t)) < 1 at ht
+  change 4*|K| * (t^(2:ℝ)*Real.exp (-(b-a)*t)) < 1 at ht
   rw [Real.rpow_two] at ht
   have hs : (1+t)^2 ≤ 4*t^2 := by nlinarith only [ht1,sq_nonneg (t-1)]
-  calc _ ≤ |K|*(Real.exp (a*t)*(4*t^2)) :=
+  calc _ ≤ |K| * (Real.exp (a*t)*(4*t^2)) :=
             mul_le_mul (le_abs_self _) (mul_le_mul_of_nonneg_left hs (Real.exp_pos _).le)
               (mul_nonneg (Real.exp_pos _).le (sq_nonneg _)) (abs_nonneg K)
-    _ = (4*|K|*(t^2*Real.exp (-(b-a)*t)))*Real.exp (b*t) := by
+    _ = (4*|K| * (t^2*Real.exp (-(b-a)*t)))*Real.exp (b*t) := by
           rw [show a*t= -(b-a)*t+b*t by ring,Real.exp_add]
           ring
     _ ≤ _ := (mul_le_mul_of_nonneg_right ht.le (Real.exp_pos _).le).trans_eq (one_mul _)
@@ -351,7 +351,7 @@ theorem signed_prime_increment_on_extremal_wave {γ σ : ℝ} {m : ℕ}
       (U t^2-D t^2)-(U t-D t)^2 by ring]
     refine (abs_sub _ _).trans ?_
     rw [abs_of_nonneg (sq_nonneg _)]
-    exact add_le_add_right hsq _
+    exact add_le_add hsq le_rfl
   change _ ≤ (4*M+5)*w t
   have hMpos : 0 ≤ M*w t := (sq_nonneg _).trans hm'
   linarith only [hs,hpol,hMpos,hw0 t]

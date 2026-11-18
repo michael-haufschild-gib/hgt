@@ -14,15 +14,4 @@ On the same $B$ the [large-divisor lower bound](ecs-all-future-prime-increments-
 
 **Transfer.** The sum of the two sign-part distances between $P$ and $S$ equals $|P-S|$ pointwise. Its [absolute tail integral](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheIntegratedErrorInThePrimeSquareLayer.lean) over $t>T$ is $O_\Phi(e^{-(T-1)/40})$. Remove from $B_0$ the points with $|P-S|\ge\varepsilon/(2(|m|+1))$. The removed length tends to zero, leaving at least $\kappa/4$. On the remaining points $|m(P-S)|\le\varepsilon/2$. For $T<t\le T+\log 2$, $K(T-t)=e^{(T-t)/2}\ge1/2$, so $k=\kappa/8$ suffices. The sign of $C$ and the rest of the original fractional test remain open.
 
-**Whole-test error on the same centers.** For $I_T=(T/6,6T]$, every measurable $D$ satisfies
-\[
- \int_D |m P_\Phi(t)-\mathbf1_{I_T}(t)m S(t)|K(T-t)\,dt
- \ll_\Phi e^{-T/240}.
-\]
-The [exterior estimates](../3-formalized/ecs-exterior-mass-of-the-original-fractional-test.md) pay $O_\Phi(e^{-T/12})$ on the left and $O_\Phi(e^{-T/10})$ on the right. In the middle use $K\le1$ and the signed prime-square transfer at $V=T/6-1$, whose tail starts at $V+1$. The square charge in $mS$ is $-m^2/2$ throughout $I_T$. Taking $D$ to be the complement of the favorable time set uses the same error bound; its signed middle contribution is still required.
-
-**Complete middle complement.** Let $C(t)=m\sum_{n\notin J_t}(\Lambda(n)-1)a_n(t)-m^2/2$, where $J_t$ is the actual first window. The [absolute first-window estimate](../3-formalized/ecs-first-window-in-the-original-fractional-test.md) and $mS=W+C$ yield
-\[
- \sup_{D\ \mathrm{measurable}}\int_D |mP(t)-\mathbf1_{I_T}(t)C(t)|K(T-t)\,dt\longrightarrow0 .
-\]
-The normalized state is unique up to sign. Changing its sign reverses both $m$ and each atom, so the oriented first-window readings agree pointwise for the two representatives. The triangle inequality then applies on the same $D$, including the complement of the original favorable set. [Lean proof under verification](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheMiddleTimeComplementOfTheOriginalPrimeTest.lean).
+The [middle-time comparison](ecs-the-middle-complement-of-the-original-prime-test.md) estimates the absolute test error on every measurable set.

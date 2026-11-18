@@ -9,6 +9,8 @@ At Θ>½ a trial radial discrepancy of order O(√x log²x) forces exactly one c
 
 The single extremal pair makes D a sinusoid. Averaging θ over [x,x+1] changes it by at most log(x+1) and gives a continuous increment. On each lobe the smoothed increment has the sign of D at its crest. A sign change between a point and its nearest crest therefore requires D²=O(w) at the point. This gives (U−D)²=O(w) and, by polarization, |D(U−D)|=O(w).
 
+The squared signed bound alone gives a first gap. For σ>(Θ+½)/2, telescoping the raw increments from [0,h] gives an O(exp(σt)) remainder after removing the extremal wave. The finite-wave Landau converse then places every other zero at Re s≤(Θ+½)/2.
+
 For ½<a<1, interpolating the square-root and reciprocal bounds gives |U−D|≪wᵃ |D|⁻⁽²ᵃ⁻¹⁾ away from the nodes. The negative power of the sine is integrable on each period. Thus the raw signed increment error should be integrable against exp(−σt) for every σ>½. Telescoping by h preserves this integrability since exp(−σh)<1. For the top-copy set S, this bounds the Chebyshev tail x∫ₓ^∞ (ψ(y)−y+Re W_S(y))dy/y² by O(x^σ). The subtracted-lag identity and its proved converse would then put every other right zero to the left of every σ>½. [Negative-power integral](../../../../formal/GaloisForLFunctions/HTGeometry/NegPowerCircleAverage.lean) · [Subtracted lag identity and converse](../../../../formal/GaloisForLFunctions/RHTower/FiniteOffLineConverse.lean#L194)
 
 **Open.** Verify the signed estimate and weighted-integral descent. Even a complete descent leaves two arithmetic tasks: exclude a genuine single off-line quartet, and bound every confined index by two.

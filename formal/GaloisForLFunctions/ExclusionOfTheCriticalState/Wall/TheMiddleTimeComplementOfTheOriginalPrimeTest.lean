@@ -149,6 +149,41 @@ private theorem same_critical_state_window {W V : ℝ} {F G Φ Ψ : ℝ → ℝ}
   funext t
   simp only [criticalWidthSignedReading,continuousIntegerAtom,integral_neg,mul_neg,neg_mul,neg_neg]
 
+/-- The part outside the first window consists exactly of integers past its
+far edge. Every index below the near endpoint gives a zero state atom. -/
+private theorem outside_window_eq_far_integer_tail {Φ : ℝ → ℝ}
+    (hs : ∀ v, 0 ≤ v → Φ v = 0) (t : ℝ) :
+    let v := fun n : ℕ => (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t
+    (∑' n : {j : ℕ // j ∉ wallIntegerWindow t (criticalWallWidth t)}, v n) =
+      ∑' n : {j : ℕ // Real.exp t+criticalWallWidth t < j}, v n := by
+  classical
+  let x := Real.exp t
+  let H := criticalWallWidth t
+  let J := wallIntegerWindow t H
+  let A : Set ℕ := {n | n ∉ J}
+  let B : Set ℕ := {n | x+H < n}
+  let v := fun n : ℕ => (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t
+  have hx : 0 < x := Real.exp_pos _
+  have hxH : 0 ≤ x+H := add_nonneg hx.le (mul_nonneg (Real.exp_pos _).le (Real.sqrt_nonneg _))
+  change (∑' n : A, v n) = ∑' n : B, v n
+  rw [tsum_subtype A v,tsum_subtype B v]
+  apply tsum_congr
+  intro n
+  by_cases hB : n ∈ B
+  · have hA : n ∈ A := fun hn => (not_lt_of_ge
+        ((Nat.le_floor_iff hxH).mp (Finset.mem_Ioc.mp hn).2)) hB
+    rw [indicator_of_mem hA,indicator_of_mem hB]
+  rw [indicator_of_notMem hB]
+  by_cases hA : n ∈ A
+  · rw [indicator_of_mem hA]
+    have hnx : (n:ℝ) ≤ x := le_of_not_gt fun h => hA (Finset.mem_Ioc.mpr
+      ⟨(Nat.floor_lt hx.le).mpr h,(Nat.le_floor_iff hxH).mpr (le_of_not_gt hB)⟩)
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · simp [v,continuousIntegerAtom]
+    have hlog : Real.log n ≤ t := (Real.log_le_iff_le_exp (by exact_mod_cast hn : 0 < (n:ℝ))).mpr hnx
+    simp only [v,continuousIntegerAtom,hs _ (sub_nonneg.mpr hlog),mul_zero]
+  · rw [indicator_of_notMem hA]
+
 /-- On every measurable time set the original ordinary-prime test differs
 in absolute integral by o(1) from the signed integer complement confined to
 (T/6,6T]. The square charge belongs to that same complement. -/
@@ -158,7 +193,7 @@ theorem riemannHypothesis_or_original_test_on_middle_complement : RiemannHypothe
       IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧
       ∀ ε : ℝ, 0 < ε → ∀ᶠ T : ℝ in atTop, ∀ D : Set ℝ, MeasurableSet D →
         let m := ∫ u, Φ u
-        let C := fun t : ℝ => m*((∑' n : {j : ℕ // j ∉ wallIntegerWindow t (criticalWallWidth t)},
+        let C := fun t : ℝ => m*((∑' n : {j : ℕ // Real.exp t+criticalWallWidth t < j},
           (ArithmeticFunction.vonMangoldt n.val-1)*continuousIntegerAtom Φ n.val t)-m/2)
         let f := fun t => |m*ordinaryPrimePolarError Φ t-(Ioc (T/6) (6*T)).indicator C t| *
           fractionalPrimeTest (T-t)
@@ -169,7 +204,7 @@ theorem riemannHypothesis_or_original_test_on_middle_complement : RiemannHypothe
   · exact Or.inl hr
   have hsame := same_critical_state_window hW hTW hTV hF hG hΦ hΨ he he'
   rw [← hsame] at hwin
-  obtain ⟨_,_,Φ',hc',he'',_,⟨C₀,_,hb⟩,_⟩ := criticalState_exists_continuous_representative hW hTW hF
+  obtain ⟨_,_,Φ',hc',he'',hs,⟨C₀,_,hb⟩,_⟩ := criticalState_exists_continuous_representative hW hTW hF
   have hΦ' : Φ'=Φ := (Continuous.ae_eq_iff_eq volume hc' hΦ).mp (he''.symm.trans he)
   subst Φ'
   let m := ∫ u, Φ u
@@ -183,10 +218,12 @@ theorem riemannHypothesis_or_original_test_on_middle_complement : RiemannHypothe
     measurable_const.mul (Complex.continuous_ofReal.measurable.comp (hΦ.measurable.comp (by fun_prop)))
   have hP : Measurable P := measurable_const.mul ((Complex.continuous_re.measurable.comp hWm).sub (by fun_prop))
   have hC : Measurable C := hS.sub (measurable_criticalWidthSignedReading hΦ)
-  have hid (t : ℝ) : C t = m*((∑' n : {j : ℕ // j ∉ wallIntegerWindow t (criticalWallWidth t)},
+  have hid (t : ℝ) : C t = m*((∑' n : {j : ℕ // Real.exp t+criticalWallWidth t < j},
       (ArithmeticFunction.vonMangoldt n.val-1)*continuousIntegerAtom Φ n.val t)-m/2) := by
     have h := centered_mangoldt_eq_criticalWidthReading_add_complement hb t
-    change S t = W t + _ at h
+    change S t = W t + m*((∑' n : {j : ℕ // j ∉ wallIntegerWindow t (criticalWallWidth t)},
+      (ArithmeticFunction.vonMangoldt n.val-1)*continuousIntegerAtom Φ n.val t)-m/2) at h
+    rw [outside_window_eq_far_integer_tail hs t] at h
     exact sub_eq_iff_eq_add.mpr (h.trans (add_comm ..))
   have hrate : Tendsto (fun T : ℝ => B*Real.exp (-T/240)) atTop (𝓝 0) := by
     have hneg : Tendsto (fun T : ℝ => -T/240) atTop atBot :=

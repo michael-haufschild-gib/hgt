@@ -92,4 +92,123 @@ theorem subquadratic_cut_geometry {α β c : ℝ} (hα : 1 < α) (hαβ : α ≤
   rw [←he]
   linarith only [hpl,hr,mul_le_mul_of_nonneg_right hcap hn0.le]
 
+/-- The signed change between two subquadratic power cuts on one conductor.
+The final prime-error sample is taken at the actual upper product. -/
+theorem subquadratic_centered_band {α β γ : ℝ} (hα : 1 < α) (hab : α ≤ β)
+    (hβ : β < 2) (hγ : _root_.RHTower.zeroReSup < γ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 0 < n →
+      |(n:ℝ)^2*(centeredProductReading ⌊(n:ℝ)^α⌋₊ n-centeredProductReading ⌊(n:ℝ)^β⌋₊ n)| ≤
+        C*(n:ℝ)^(1+β*γ) := by
+  obtain ⟨C,hC,h⟩ := quotientMeshProfile_prime_interval hγ
+  have hγ' : 0 < γ := (by norm_num : (0:ℝ)<1/2).trans_le (_root_.RHTower.half_le_zeroReSup.trans hγ.le)
+  have hβ' := (zero_lt_one.trans hα).trans_le hab
+  have geo := subquadratic_cut_geometry (c := 1) hα hab hβ le_rfl (by norm_num)
+  simp only [one_mul] at geo
+  obtain ⟨k,hk⟩ := eventually_atTop.mp geo
+  let row (n : ℕ) := (n:ℝ)^2*(centeredProductReading ⌊(n:ℝ)^α⌋₊ n-centeredProductReading ⌊(n:ℝ)^β⌋₊ n)
+  let D := ∑ j ∈ range k, |row j|
+  have hD : 0 ≤ D := sum_nonneg fun _ _ => abs_nonneg _
+  refine ⟨C+D,add_nonneg hC hD,fun n hn => ?_⟩
+  have hn' : (0:ℝ) < n := Nat.cast_pos.mpr hn
+  by_cases hkn : k ≤ n
+  · let V := ⌊(n:ℝ)^α⌋₊
+    let U := ⌊(n:ℝ)^β⌋₊
+    let b := splineHorizon n+1
+    let a (q : ℕ) := vonMangoldt q-1
+    obtain ⟨hVU,hUL,hY,hbefore⟩ := hk n hkn
+    have hs := detached_signed_product_shell hn hVU hUL hY hbefore a
+    change centeredProductReading V n - centeredProductReading U n = _ at hs
+    have he : row n = n*∑ q ∈ Ioc V U, a q*quotientMeshProfile b (q*(1/(n:ℝ)^2)) := by
+      change (n:ℝ)^2*(centeredProductReading V n-centeredProductReading U n) = _
+      rw [hs,mul_sum,mul_sum]
+      apply sum_congr rfl
+      intro q hq
+      have hq' := (Nat.zero_le V).trans_lt (mem_Ioc.mp hq).1
+      have hb : splineHorizon n < q*b := (Nat.lt_succ_self _).trans_le (Nat.le_mul_of_pos_left b hq')
+      rw [←div_eq_mul_one_div,←mul_assoc,mul_comm (n:ℝ) (a q),mul_assoc,
+        ←unitHorizonPair_real_profile hn hq' hb]
+      ring
+    change |row n| ≤ _
+    rw [he,abs_mul,abs_of_pos hn']
+    have hc := mul_le_mul_of_nonneg_left (h b V U (one_div_pos.mpr (sq_pos_of_pos hn')) hVU) hn'.le
+    apply hc.trans
+    have hp := Real.rpow_le_rpow (Nat.cast_nonneg U) (Nat.floor_le (Real.rpow_nonneg hn'.le β)) hγ'.le
+    rw [←Real.rpow_mul hn'.le] at hp
+    have he' := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hp hC) hn'.le
+    apply he'.trans
+    rw [Real.rpow_add hn',Real.rpow_one]
+    exact (le_of_eq (by ring)).trans (mul_le_mul_of_nonneg_right (le_add_of_nonneg_right hD)
+      (mul_nonneg hn'.le (Real.rpow_nonneg hn'.le _)))
+  · have h₁ : (1:ℝ) ≤ n := by exact_mod_cast hn
+    have hp : 1 ≤ (n:ℝ)^(1+β*γ) := Real.one_le_rpow h₁ (by positivity)
+    have he : |row n| ≤ D := single_le_sum (fun j _ => abs_nonneg (row j)) (mem_range.mpr (lt_of_not_ge hkn))
+    exact he.trans ((le_add_of_nonneg_left hC).trans (le_mul_of_one_le_right (add_nonneg hC hD) hp))
+
+/-- The original capped, coprime band on every conductor fragment. The
+cubic log pays for arithmetic centering at both moving cuts. The remaining
+signed prime term has exponent 2+βγ for every γ above the zero abscissa. -/
+theorem subquadratic_capped_band {α β γ : ℝ} (hα : 1 < α) (hab : α ≤ β)
+    (hβ : β < 2) (hγ : _root_.RHTower.zeroReSup < γ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ J M : ℕ, 0 < M →
+      |∑ n ∈ Ioc J M, (n:ℝ)^2*(cappedUpperProductReading ⌊(n:ℝ)^α⌋₊ n n -
+        cappedUpperProductReading ⌊(n:ℝ)^β⌋₊ n n)| ≤
+        C*((M:ℝ)^3*conductorLog M+(M:ℝ)^(2+β*γ)) := by
+  obtain ⟨A,hA,ha⟩ := subquadratic_centered_band hα hab hβ hγ
+  obtain ⟨B,hB,hb⟩ := shell_centering_transfer
+  let V (n : ℕ) := ⌊(n:ℝ)^α⌋₊
+  let U (n : ℕ) := ⌊(n:ℝ)^β⌋₊
+  let S (n : ℕ) := (n:ℝ)^2*(cappedUpperProductReading (V n) n n-cappedUpperProductReading (U n) n n)
+  let E (n : ℕ) := (n:ℝ)^2*(centeredProductReading (V n) n-centeredProductReading (U n) n)
+  have hγ' : 0 < γ := (by norm_num : (0:ℝ)<1/2).trans_le (_root_.RHTower.half_le_zeroReSup.trans hγ.le)
+  have hβ' := (zero_lt_one.trans hα).trans_le hab
+  refine ⟨A+B,add_nonneg hA hB,fun J M hM => ?_⟩
+  have hM' : (0:ℝ) < M := Nat.cast_pos.mpr hM
+  let X := (M:ℝ)^(1+β*γ)
+  have hX : 0 ≤ X := Real.rpow_nonneg hM'.le _
+  have hsum : |∑ n ∈ Ioc J M, E n| ≤ A*(M:ℝ)^(2+β*γ) := by
+    apply (abs_sum_le_sum_abs _ _).trans
+    calc _ ≤ ∑ _n ∈ Ioc J M, A*X := by
+              apply sum_le_sum
+              intro n hn
+              exact (ha n ((Nat.zero_le J).trans_lt (mem_Ioc.mp hn).1)).trans (mul_le_mul_of_nonneg_left
+                (Real.rpow_le_rpow (Nat.cast_nonneg n) (Nat.cast_le.mpr (mem_Ioc.mp hn).2) (by positivity)) hA)
+         _ ≤ M*(A*X) := by
+              rw [sum_const,Nat.card_Ioc,nsmul_eq_mul]
+              exact mul_le_mul_of_nonneg_right (Nat.cast_le.mpr (Nat.sub_le M J)) (mul_nonneg hA hX)
+         _ = _ := by
+              rw [show 2+β*γ=1+(1+β*γ) by ring,Real.rpow_add hM',Real.rpow_one]
+              dsimp only [X]; ring
+  let logPrice := (M:ℝ)^3*conductorLog M
+  have hlog : 0 ≤ logPrice := mul_nonneg (pow_nonneg hM'.le 3) (zero_le_one.trans (conductorLog_one_le M))
+  have hdiff : |(∑ n ∈ Ioc J M, S n)-(∑ n ∈ Ioc J M, E n)| ≤ B*logPrice := by
+    simpa only [logPrice,mul_assoc] using hb V U J M
+  change |∑ n ∈ Ioc J M, S n| ≤ (A+B)*(logPrice+_)
+  have ht := abs_add_le ((∑ n ∈ Ioc J M, S n)-(∑ n ∈ Ioc J M, E n)) (∑ n ∈ Ioc J M, E n)
+  rw [sub_add_cancel] at ht
+  apply ht.trans ((add_le_add hdiff hsum).trans ?_)
+  linarith only [mul_nonneg hA hlog,mul_nonneg hB (Real.rpow_nonneg hM'.le (2+β*γ))]
+
+/-- The prime-error term on every fixed subquadratic band has a strict power
+gap below the critical price exponent 2+2Θ. Only cubic logarithmic rounding
+remains at Θ=1/2. -/
+theorem subquadratic_capped_band_at_zero_abscissa {α β : ℝ} (hα : 1 < α)
+    (hab : α ≤ β) (hβ : β < 2) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ J M : ℕ, 0 < M →
+      |∑ n ∈ Ioc J M, (n:ℝ)^2*(cappedUpperProductReading ⌊(n:ℝ)^α⌋₊ n n -
+        cappedUpperProductReading ⌊(n:ℝ)^β⌋₊ n n)| ≤
+        C*((M:ℝ)^3*conductorLog M+(M:ℝ)^(2+2*_root_.RHTower.zeroReSup-(2-β)/4)) := by
+  let Θ := _root_.RHTower.zeroReSup
+  let γ := Θ+(2-β)/8
+  have hγ : Θ < γ := lt_add_of_pos_right _ (div_pos (sub_pos.mpr hβ) (by norm_num))
+  obtain ⟨C,hC,h⟩ := subquadratic_capped_band hα hab hβ hγ
+  refine ⟨C,hC,fun J M hM => (h J M hM).trans (mul_le_mul_of_nonneg_left (add_le_add_left ?_ _) hC)⟩
+  apply Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hM : (1:ℝ) ≤ M)
+  have hhalf : 1/2 ≤ Θ := _root_.RHTower.half_le_zeroReSup
+  have hcoef : 0 ≤ Θ-β/8-1/4 := by linarith only [hhalf,hβ]
+  change 2+β*(Θ+(2-β)/8) ≤ 2+2*Θ-(2-β)/4
+  linarith only [mul_nonneg (sub_nonneg.mpr hβ.le) hcoef]
+
+#print axioms subquadratic_centered_band
+#print axioms subquadratic_capped_band
+#print axioms subquadratic_capped_band_at_zero_abscissa
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

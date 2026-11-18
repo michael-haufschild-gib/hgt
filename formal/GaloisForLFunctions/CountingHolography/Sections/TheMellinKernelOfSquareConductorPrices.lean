@@ -785,8 +785,10 @@ theorem squarePrimeCumulativeWeight_eq {v : ℝ} (hv : 0 < v) :
     intro t ht
     have h : 8 < |t| := by linarith only [ht.2,hlow,neg_abs_le t]
     simp only [F,splineAutoCorr_zero_outside h,zero_mul]
-  have h₁ := intervalIntegral.integral_add_adjacent_intervals (hF.intervalIntegrable (a-d) a) (hF.intervalIntegrable a U)
-  have h₂ := intervalIntegral.integral_add_adjacent_intervals (hF.intervalIntegrable (a-d) (U-d)) (hF.intervalIntegrable (U-d) U)
+  have h₁ := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
+    (hF.intervalIntegrable (a-d) a) (hF.intervalIntegrable a U)
+  have h₂ := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
+    (hF.intervalIntegrable (a-d) (U-d)) (hF.intervalIntegrable (U-d) U)
   rw [hbottom,zero_add] at h₁
   change (∫ x in (0:ℝ)..v, w x)=_
   rw [← intervalIntegral.integral_add_adjacent_intervals (hwi le_rfl (Real.exp_pos _).le) (hwi (Real.exp_pos _).le hbase),ht,zero_add,
@@ -809,22 +811,28 @@ theorem squarePrime_fourthPower_integral {p N M : ℝ} (hp : 0 < p) (hN : 0 < N)
   let A := squarePrimeCumulativeWeight
   have hd (y : ℝ) (hy : 0 < y) : HasDerivAt A (squarePrimeWeight y).re y := by
     have hr : IntegrableOn (fun t => (squarePrimeWeight t).re) (Set.Ioi 0) := squareWeight_integrable.re
-    have hi := (intervalIntegrable_iff_integrableOn_Ioc_of_le hy.le).mpr
-      (hr.mono_set (Set.Ioc_subset_Ioi_self (b := y)))
+    have hi : IntervalIntegrable (fun t => (squarePrimeWeight t).re) volume 0 y :=
+      (intervalIntegrable_iff_integrableOn_Ioc_of_le hy.le).mpr (hr.mono_set fun _ ht => ht.1)
     apply intervalIntegral.integral_hasDerivAt_right hi _ (Complex.continuous_re.continuousAt.comp (continuousAt_squarePrimeWeight hy))
     exact (Complex.continuous_re.measurable.comp squareWeight_measurable).aestronglyMeasurable.stronglyMeasurableAtFilter
   let f := fun t : ℝ => -A (p/t^2)/p
   let u := fun t : ℝ => 2/t^3*(squarePrimeWeight (p/t^2)).re
   have he (t : ℝ) (ht : 0 < t) : HasDerivAt f (u t) t := by
-    have hinner := (hasDerivAt_const t p).div ((hasDerivAt_id t).pow 2) (sq_pos_of_pos ht).ne'
-    have hh := (((hd _ (div_pos hp (sq_pos_of_pos ht))).comp t hinner).neg.div_const p)
-    convert hh using 1 <;> simp only [f,u,Function.comp_def,id_eq] <;> field_simp [hp.ne',ht.ne'] <;> ring
+    have hinner : HasDerivAt (fun x : ℝ => p/x^2) (-(2*p)/t^3) t := by
+      apply ((hasDerivAt_const t p).div ((hasDerivAt_id t).pow 2) (sq_pos_of_pos ht).ne').congr_deriv
+      dsimp only [id,Pi.pow_apply]
+      field_simp [ht.ne'] <;> ring
+    apply ((((hd _ (div_pos hp (sq_pos_of_pos ht))).comp t hinner).neg).div_const p).congr_deriv
+    dsimp only [u]
+    field_simp [hp.ne',ht.ne'] <;> ring
   have hu : ContinuousOn u (Set.uIcc N M) := by
     intro t ht
     have ht' : 0 < t := hN.trans_le ((Set.uIcc_of_le hNM ▸ ht).1)
+    have harg : ContinuousAt (fun x : ℝ => p/x^2) t :=
+      continuousAt_const.div (continuousAt_id.pow 2) (sq_pos_of_pos ht').ne'
     exact ((continuousAt_const.div (continuousAt_id.pow 3) (pow_ne_zero _ ht'.ne')).mul
       ((Complex.continuous_re.continuousAt.comp (continuousAt_squarePrimeWeight (div_pos hp (sq_pos_of_pos ht')))).comp
-        (continuousAt_const.div (continuousAt_id.pow 2) (sq_pos_of_pos ht').ne'))).continuousWithinAt
+        harg)).continuousWithinAt
   have h := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t ht => he t (hN.trans_le ((Set.uIcc_of_le hNM ▸ ht).1))) hu.intervalIntegrable
   exact h.trans (by dsimp only [f,A]; ring)
 
@@ -874,7 +882,7 @@ theorem squarePrefixPrimeWeight_tail {v : ℝ} (hv : 0 < v) :
   dsimp only
   by_cases h : v ≤ t
   · have hx : v/t ∈ Set.Ioc (0:ℝ) 1 := ⟨div_pos hv ht,(div_le_one ht).mpr h⟩
-    rw [linearCutoff,Set.indicator_of_mem hx,Set.indicator_of_mem h,Complex.ofReal_div]
+    rw [linearCutoff,Set.indicator_of_mem hx,Set.indicator_of_mem (show t ∈ Set.Ici v from h),Complex.ofReal_div]
     ring
   · have hx : v/t ∉ Set.Ioc (0:ℝ) 1 := fun hh => h ((div_le_one ht).mp hh.2)
     simp [linearCutoff,Set.indicator_of_notMem hx,Set.indicator_of_notMem (show t ∉ Set.Ici v from h)]
@@ -933,7 +941,7 @@ theorem squarePrefixPrimeWeight_radial {v : ℝ} (hv : 0 < v) :
   dsimp only
   rw [squareConductorBVWindow_apply (mul_pos hr₀ hT)]
   have hsq : T^2=v⁻¹ := by dsimp only [T]; rw [inv_pow,Real.sq_sqrt hv.le]
-  have arg : 1/(r*T)^2=v/r^2 := by rw [mul_pow,hsq]; ring
+  have arg : 1/(r*T)^2=v/r^2 := by rw [mul_pow,hsq,one_div,mul_inv_rev,inv_inv,div_eq_mul_inv]
   rw [arg,Complex.ofReal_mul]
   have hscale : v*T*T=1 := by rw [mul_assoc,← sq,hsq,mul_inv_cancel₀ hv.ne']
   have hscale' : (v:ℂ)*(T:ℂ)*(T:ℂ)=1 := by exact_mod_cast hscale

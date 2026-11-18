@@ -110,7 +110,7 @@ private theorem squared_trace_rate {U D R : ℝ → ℝ} {h d C K : ℝ}
     linarith only [hcircle t,sq_nonneg (D (t+h))]
   have hplus (x y : ℝ) : |x+y| ≤ |x-y|+2*|y| := by
     calc _ = |(x-y)+(y+y)| := by congr 1; ring
-      _ ≤ |x-y|+(|y|+|y|) := (abs_add_le _ _).trans (add_le_add_left (abs_add_le _ _) _)
+      _ ≤ |x-y|+(|y|+|y|) := (abs_add_le _ _).trans (add_le_add le_rfl (abs_add_le _ _))
       _ = _ := by ring
   have hg : Tendsto g atTop (𝓝 0) := by
     have hlim := hU.abs.mul_const (1+2*|C|)
@@ -127,7 +127,7 @@ private theorem squared_trace_rate {U D R : ℝ → ℝ} {h d C K : ℝ}
       linear_combination hR t - hcircle t
     rw [he, abs_mul]
     calc _ ≤ K*w t*(1+2*|C|) := mul_le_mul hr ((hplus _ _).trans
-              (add_le_add_right ht _)) (abs_nonneg _) (mul_nonneg hK (hw0 t))
+              (add_le_add ht le_rfl)) (abs_nonneg _) (mul_nonneg hK (hw0 t))
       _ = B*w t := by dsimp only [B]; ring
   obtain ⟨q,hq,hq1,hcontract⟩ := radialWeight_contracts hd hh
   obtain ⟨T, hT⟩ := eventually_atTop.1 (hsum.and hcontract)
@@ -146,10 +146,10 @@ private theorem squared_trace_rate {U D R : ℝ → ℝ} {h d C K : ℝ}
     rw [show t+2*h=t+h+h by ring, sq, mul_assoc]
     exact ((hT (t+h) (ht.trans (le_add_of_nonneg_right hh.le))).2).trans
       (mul_le_mul_of_nonneg_left ((hT t ht).2) hq.le)
-  refine ⟨_, eventually_atTop.mpr ⟨T,?_⟩⟩
-  exact abs_le_of_decaying_step (mul_pos zero_lt_two hh)
+  have hs := abs_le_of_decaying_step (g := g) (w := w) (mul_pos zero_lt_two hh)
     (by nlinarith only [mul_pos (sub_pos.mpr hq1) (add_pos hq zero_lt_one)] : q^2 < 1)
-    (mul_nonneg (by norm_num) hB) hg hw hdec hstep
+    (mul_nonneg (by norm_num : (0:ℝ) ≤ 2) hB) hg hw hdec hstep
+  exact ⟨(2*B)/(1-q^2), eventually_atTop.mpr ⟨T,hs⟩⟩
 
 /-- The ordinary-prime increment with its extremal exponential power divided out. -/
 def normalizedPrimeIncrement (β h t : ℝ) : ℝ :=
@@ -183,7 +183,7 @@ theorem normalized_increment_sub_trace (hΘ : 1/2 < zetaZeroAbscissa) (h : ℝ) 
   apply ht.congr
   intro t
   simp only [Function.comp_apply, E, F, boundaryStep, normalizedPrimeIncrement, logStepIncrement,
-    mul_add, Real.exp_add]
+    β, mul_add, Real.exp_add]
   field_simp
   <;> ring
 
@@ -204,10 +204,8 @@ theorem squared_normalizedPrimeIncrement_sub_boundary {γ : ℝ} {m : ℕ}
   let R := fun t => twoIntervalRadius thetaLogError h A t / Real.exp (β*t)
   have hR (t : ℝ) : U t^2+U (t+h)^2 = R t^2 := by
     dsimp only [U,R,normalizedPrimeIncrement]
-    rw [twoIntervalRadius_eq_complex_norm (Real.exp_pos _), div_pow, Complex.sq_norm,
-      Complex.normSq_mk]
-    dsimp only [A]
-    rw [mul_add,Real.exp_add]
+    rw [twoIntervalRadius_eq_complex_norm (Real.exp_pos _)]
+    simp only [div_pow, Complex.sq_norm, Complex.normSq_mk, A, mul_add, Real.exp_add]
     field_simp
     <;> ring
   have hbounded := hb
@@ -216,10 +214,10 @@ theorem squared_normalizedPrimeIncrement_sub_boundary {γ : ℝ} {m : ℕ}
   have hscale (t : ℝ) : R t-C = thetaRadialDiscrepancy β γ m t / Real.exp (β*t) := by
     dsimp only [R,C,thetaRadialDiscrepancy,radialDiscrepancyOf,quarterPeriodScale,A]
     rw [sub_div,mul_div_cancel_right₀ _ (Real.exp_pos _).ne']
-  have hbound : ∀ᶠ t : ℝ in atTop, |R t-C| ≤ |K|*radialWeight (β-1/2) t := by
+  have hbound : ∀ᶠ t : ℝ in atTop, |R t-C| ≤ |K| * radialWeight (β-1/2) t := by
     filter_upwards [eventually_ge_atTop T] with t ht
     rw [hscale,abs_div,abs_of_pos (Real.exp_pos _)]
-    calc _ ≤ (|K|*Real.exp (t/2)*(1+t)^2)/Real.exp (β*t) :=
+    calc _ ≤ (|K| * Real.exp (t/2)*(1+t)^2)/Real.exp (β*t) :=
                div_le_div_of_nonneg_right ((hK t ht).trans
                  (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_abs_self K)
                    (Real.exp_pos _).le) (sq_nonneg _))) (Real.exp_pos _).le
