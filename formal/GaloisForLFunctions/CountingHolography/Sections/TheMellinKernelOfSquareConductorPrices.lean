@@ -35,7 +35,7 @@ theorem mellin_square_conductor_row {p : ℝ} (hp : 0 < p) (s : ℂ) :
     have ht : t^(-2:ℝ)=(t^2)⁻¹ := by
       simpa only [Nat.cast_ofNat,zpow_neg,zpow_ofNat] using Real.rpow_neg_natCast t 2
     simp only [ht,div_eq_mul_inv,smul_eq_mul]
-  rw [he,mellin_const_smul,mellin_comp_rpow,mellin_comp_mul_left _ _ hp]
+  rw [he,mellin_const_smul,mellin_comp_rpow (fun x => squarePrimeWeight (p*x)) (2-s) (-2),mellin_comp_mul_left _ _ hp]
   norm_num only [abs_neg,abs_two,Complex.ofReal_neg,Complex.ofReal_ofNat]
   rw [show (2-s)/(-2:ℂ)=s/2-1 by ring,show -(s/2-1)=1-s/2 by ring]
   simp only [smul_eq_mul,Complex.real_smul,Complex.ofReal_inv,Complex.ofReal_ofNat]
@@ -75,7 +75,8 @@ theorem realMeshMellinError_uniform (W : CompactBVPrimeWindow) {K : Set ℂ} (hK
     · have hm : (eVariationOn W.toFun (Set.Icc 0 D)).toReal ≤ V :=
         ENNReal.toReal_mono W.boundedVariation (eVariationOn.mono _ (Set.subset_univ _))
       calc _ ≤ B*(eVariationOn W.toFun (Set.Icc 0 D)).toReal+V*C*D := by
-                simpa only [CompactBVPrimeWindow.mellinIntegrand,sub_zero] using h
+                change (eVariationOn (fun x => W.toFun x*W.mellinWeight s x) _).toReal ≤ _
+                simpa only [sub_zero] using h
         _ ≤ Q := add_le_add (mul_le_mul_of_nonneg_left hm hB) (mul_le_mul_of_nonneg_left hhi (mul_nonneg hV C.coe_nonneg))
     · positivity
   have hint : (∫ t in (0:ℝ)..D, W.mellinIntegrand s t)=W.mellinTransform s := by
@@ -94,7 +95,7 @@ private theorem differentiable_realMeshMellinError (W : CompactBVPrimeWindow) (k
     Differentiable ℂ (realMeshMellinError W k) := by
   intro s
   apply DifferentiableAt.sub _ (W.differentiable_mellinTransform s)
-  apply DifferentiableAt.const_smul
+  refine DifferentiableAt.const_smul (f := fun z => ∑ i ∈ range ⌈W.upper*k⌉₊, W.mellinIntegrand z (((i+1:ℕ):ℝ)/k)) ?_ (1/k)
   apply DifferentiableAt.fun_sum
   intro i _
   let x := ((i+1:ℕ):ℝ)/k
@@ -110,11 +111,13 @@ def sqrtMeshErrorTerm (W : CompactBVPrimeWindow) (k : ℕ) (s : ℂ) :=
 private theorem differentiable_sqrtMeshErrorTerm (W : CompactBVPrimeWindow) (k : ℕ) :
     Differentiable ℂ (sqrtMeshErrorTerm W k) := by
   rcases eq_or_ne k 0 with rfl | hk
-  · simpa only [sqrtMeshErrorTerm,if_pos rfl] using (differentiable_const (c := (0:ℂ)) : Differentiable ℂ (fun _ : ℂ => (0:ℂ)))
+  · unfold sqrtMeshErrorTerm
+    simpa only [if_pos rfl] using (differentiable_const (c := (0:ℂ)) : Differentiable ℂ (fun _ : ℂ => (0:ℂ)))
   have h : Differentiable ℂ (fun z : ℂ => (k:ℂ)^(1-z/2)) :=
     ((differentiable_id.div_const (2:ℂ)).const_sub 1).const_cpow (Or.inl (Nat.cast_ne_zero.mpr hk))
-  simpa only [sqrtMeshErrorTerm,if_neg hk] using
-    ((h.const_mul (vonMangoldt k:ℂ)).mul (differentiable_realMeshMellinError W _))
+  unfold sqrtMeshErrorTerm
+  simp only [if_neg hk]
+  exact (h.const_mul (vonMangoldt k:ℂ)).mul (differentiable_realMeshMellinError W (Real.sqrt k))
 
 /-- Normal convergence of the real-mesh error in Re s > 3. The majorant is
 the absolutely convergent von Mangoldt series at (σ−1)/2 for σ > 3. -/
@@ -155,7 +158,7 @@ theorem locallySummable_sqrtMeshErrorTerm (W : CompactBVPrimeWindow) :
   rw [hRe]
   refine (mul_le_mul_of_nonneg_left he (mul_nonneg vonMangoldt_nonneg (Real.rpow_nonneg hk'.le _))).trans ?_
   calc _ = (Q*vonMangoldt k)*(k:ℝ)^((1-x.re)/2) := by
-             rw [Real.sqrt_eq_rpow,show (1-x.re)/2=(1-x.re/2)-(1/2) by ring,Real.rpow_sub hk']
+             rw [Real.sqrt_eq_rpow,show (1-x.re)/2=(1-x.re/2)-(1/2) by ring,Real.rpow_sub hk' (1-x.re/2) (1/2)]
              ring
     _ ≤ (Q*vonMangoldt k)*(k:ℝ)^(-b) := mul_le_mul_of_nonneg_left
           (Real.rpow_le_rpow_of_exponent_le hk₁ (by dsimp only [b]; linarith only [hxσ]))
@@ -181,7 +184,7 @@ private theorem rootWindow_regular : ContDiffOn ℝ 1 rootWindowRaw (Set.Icc lo 
     (hH.comp (contDiff_id.sub contDiff_const))
   intro x hx
   have hx' : 0 < x := (Real.exp_pos _).trans_le hx.1
-  have hl := Real.contDiffAt_log (n := 1) hx'.ne'
+  have hl := (Real.contDiffAt_log (n := 1)).mpr hx'.ne'
   apply ContDiffAt.contDiffWithinAt
   dsimp only [rootWindowRaw]
   fun_prop
@@ -220,12 +223,12 @@ private theorem squareConductorBVWindow_apply {t : ℝ} (ht : 0 < t) :
   have hzero (x : ℝ) (hx : 8 < |x|) := splineAutoCorr_zero_outside hx
   rcases lt_or_ge t lo with htlo|htlo
   · have hx := (Real.log_lt_iff_lt_exp ht).mpr htlo
-    have h₁ : 8 < | -2*Real.log t| := by linarith only [hx,le_abs_self (-2*Real.log t)]
-    have h₂ : 8 < | -2*Real.log t-Real.log 4| := by linarith only [hx,hb,le_abs_self (-2*Real.log t-Real.log 4)]
+    have h₁ : 8 < |(-2:ℝ)*Real.log t| := by linarith only [hx,le_abs_self (-2*Real.log t)]
+    have h₂ : 8 < |(-2:ℝ)*Real.log t-Real.log 4| := by linarith only [hx,hb,le_abs_self (-2*Real.log t-Real.log 4)]
     simp [rootWindowRaw,squareLogProfile,hzero _ h₁,hzero _ h₂]
   · have hx := (Real.lt_log_iff_exp_lt ht).mpr (lt_of_not_ge fun hhi => h ⟨htlo,hhi⟩)
-    have h₁ : 8 < | -2*Real.log t| := by linarith only [hx,neg_abs_le (-2*Real.log t)]
-    have h₂ : 8 < | -2*Real.log t-Real.log 4| := by linarith only [hx,hb₀,neg_abs_le (-2*Real.log t-Real.log 4)]
+    have h₁ : 8 < |(-2:ℝ)*Real.log t| := by linarith only [hx,neg_abs_le (-2*Real.log t)]
+    have h₂ : 8 < |(-2:ℝ)*Real.log t-Real.log 4| := by linarith only [hx,hb₀,neg_abs_le (-2*Real.log t-Real.log 4)]
     simp [rootWindowRaw,squareLogProfile,hzero _ h₁,hzero _ h₂]
 
 /-- The real-mesh window carries precisely the dyadic Mellin multiplier. -/
@@ -243,6 +246,7 @@ theorem squareConductorBVWindow_transform (s : ℂ) :
   apply setIntegral_congr_fun measurableSet_Ioi
   intro t ht
   have ht' : (t:ℂ)≠0 := Complex.ofReal_ne_zero.mpr ht.ne'
+  change W.mellinIntegrand s t=(t:ℂ)^(2-s-1) • (2*squarePrimeWeight (1/t^2))
   rw [CompactBVPrimeWindow.mellinIntegrand_eq_raw,squareConductorBVWindow_apply ht,
     show 2-s-1=1+(-s) by ring,Complex.cpow_add _ _ ht',Complex.cpow_one,smul_eq_mul]
   ring
@@ -283,7 +287,7 @@ def conductorPrimePowerError (W : CompactBVPrimeWindow) (n : ℕ) : ℂ :=
   ∑ k ∈ (meshIndices W n).filter (fun k => ¬k.Prime), rootMeshRow W n k
 
 private theorem primePower_abscissa (W : CompactBVPrimeWindow) :
-    LSeries.abscissaOfAbsConv (conductorPrimePowerError W) ≤ (3:EReal) := by
+    LSeries.abscissaOfAbsConv (conductorPrimePowerError W) ≤ ((3:ℝ):EReal) := by
   obtain ⟨C,hC⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
   let V := (eVariationOn W.toFun Set.univ).toReal
   have hV : 0 ≤ V := ENNReal.toReal_nonneg
@@ -297,11 +301,15 @@ private theorem primePower_abscissa (W : CompactBVPrimeWindow) :
     exact (mul_le_mul_of_nonneg_left h (mul_nonneg hY hV)).trans_eq (by dsimp only [Y,V]; ring)
   have hab := LSeries.abscissaOfAbsConv_le_of_le_const_mul_rpow (f := conductorPrimePowerError W)
     (x := 2) ⟨V*C/W.lower^2,fun n _ => by simpa only [Real.rpow_two] using hrow n⟩
-  convert hab using 1 <;> norm_num
+  change _ ≤ ((3:ℝ):EReal)
+  refine hab.trans_eq ?_
+  change ((2:ℝ):EReal)+((1:ℝ):EReal)=((3:ℝ):EReal)
+  rw [← EReal.coe_add]
+  norm_num
 
 theorem analytic_conductorPrimePowerError (W : CompactBVPrimeWindow) :
     AnalyticOnNhd ℂ (LSeries (conductorPrimePowerError W)) {s : ℂ | 3 < s.re} :=
-  fun s hs => LSeries_analyticOnNhd _ s ((primePower_abscissa W).trans_lt (by exact_mod_cast hs : (3:EReal) < (s.re:EReal)))
+  fun s hs => LSeries_analyticOnNhd _ s ((primePower_abscissa W).trans_lt (EReal.coe_lt_coe_iff.mpr (show 3 < s.re from hs)))
 
 /-- Moving square-root mesh with all von Mangoldt weights. -/
 def squareMeshReading (W : CompactBVPrimeWindow) (n : ℕ) : ℂ :=
@@ -348,8 +356,7 @@ private theorem summable_meshTerm (W : CompactBVPrimeWindow) {s : ℂ} (hs : 4 <
     rcases n.eq_zero_or_pos with rfl | hn
     · simpa [meshTerm] using mul_nonneg hC (Real.rpow_nonneg (by norm_num : (0:ℝ)≤0) (3-s.re))
     have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
-    simp only [meshTerm,LSeries.term_of_ne_zero hn.ne',norm_div,Complex.norm_natCast_cpow_of_pos hn,div_eq_mul_inv,
-      tsum_mul_right]
+    simp only [meshTerm,LSeries.term_of_ne_zero hn.ne',div_eq_mul_inv,norm_mul,norm_inv,Complex.norm_natCast_cpow_of_pos hn,tsum_mul_right]
     refine (mul_le_mul_of_nonneg_right (squareMesh_norm_mass W n) (inv_nonneg.mpr (Real.rpow_nonneg hn'.le _))).trans_eq ?_
     rw [Real.rpow_sub hn',show (3:ℝ)=(3:ℕ) from rfl,Real.rpow_natCast]
     ring
@@ -374,8 +381,8 @@ private theorem sqrt_grid_factor {p n : ℕ} (hp : 0 < p) (hn : 0 < n) (s : ℂ)
       Complex.cpow_def_of_ne_zero (Nat.cast_ne_zero.mpr hp.ne'),Complex.cpow_def_of_ne_zero htC,hlog]
     congr 1; ring
   change (p:ℂ)^(1-s/2)*((1/t:ℝ):ℂ)*(((n:ℝ)/t:ℝ):ℂ)^(-s)=(t:ℂ)/(n:ℂ)^s
-  rw [hpScale,Complex.ofReal_div,Complex.ofReal_one,div_eq_mul_inv,← Complex.cpow_neg,hmul]
-  field_simp
+  rw [hpScale,Complex.ofReal_div,Complex.ofReal_one,div_eq_mul_inv (t:ℂ),← Complex.cpow_neg,hmul]
+  field_simp [htC] <;> ring
 
 private theorem mesh_column (W : CompactBVPrimeWindow) (s : ℂ) (k : ℕ) :
     (∑' n, meshTerm W s (n,k)) =
@@ -447,7 +454,7 @@ def squareValuationReadingError (g : ℝ → ℝ) (n : ℕ) : ℂ :=
   ((∑ p ∈ S n, (g (deningerRatExp (q n) p:ℝ)-g (diagonalPrimeProfile n p))*vonMangoldt p : ℝ):ℂ)
 
 private theorem reading_abscissa {g : ℝ → ℝ} {K : ℝ≥0} (hg : LipschitzWith K g) :
-    LSeries.abscissaOfAbsConv (squareValuationReadingError g) ≤ (3:EReal) := by
+    LSeries.abscissaOfAbsConv (squareValuationReadingError g) ≤ ((3:ℝ):EReal) := by
   obtain ⟨C,hC,h⟩ := diagonal_prime_exponent_profile_error
   have hbound (n : ℕ) (hn : n≠0) : ‖squareValuationReadingError g n‖ ≤ ((K:ℝ)*C)*(n:ℝ)^2 := by
     rw [squareValuationReadingError,Complex.norm_real,Real.norm_eq_abs]
@@ -461,14 +468,18 @@ private theorem reading_abscissa {g : ℝ → ℝ} {K : ℝ≥0} (hg : Lipschitz
     exact mul_le_mul_of_nonneg_left (h (Nat.pos_of_ne_zero hn)) K.coe_nonneg
   have hab := LSeries.abscissaOfAbsConv_le_of_le_const_mul_rpow (f := squareValuationReadingError g)
     (x := 2) ⟨K*C,fun n hn => by simpa only [Real.rpow_two] using hbound n hn⟩
-  convert hab using 1 <;> norm_num
+  change _ ≤ ((3:ℝ):EReal)
+  refine hab.trans_eq ?_
+  change ((2:ℝ):EReal)+((1:ℝ):EReal)=((3:ℝ):EReal)
+  rw [← EReal.coe_add]
+  norm_num
 
 /-- Every Lipschitz reading has holomorphic Dirichlet error throughout
 the half-plane to the right of three. This applies separately to the
 logarithms of the reduced numerator, denominator and their ratio. -/
 theorem analytic_squareValuationReadingError {g : ℝ → ℝ} {K : ℝ≥0} (hg : LipschitzWith K g) :
     AnalyticOnNhd ℂ (LSeries (squareValuationReadingError g)) {s : ℂ | 3 < s.re} :=
-  fun s hs => LSeries_analyticOnNhd _ s ((reading_abscissa hg).trans_lt (by exact_mod_cast hs : (3:EReal) < (s.re:EReal)))
+  fun s hs => LSeries_analyticOnNhd _ s ((reading_abscissa hg).trans_lt (EReal.coe_lt_coe_iff.mpr (show 3 < s.re from hs)))
 
 private theorem squareMeshRow_profile {n k : ℕ} (hn : 0 < n) (hk : 0 < k) :
     rootMeshRow squareConductorBVWindow n k =
@@ -579,7 +590,7 @@ theorem LSeries_squareConductorPrice {s : ℂ} (hs : 4 < s.re) :
     rfl
   have hp := primePower_abscissa W
   have hr := reading_abscissa (LipschitzWith.id : LipschitzWith 1 (id : ℝ → ℝ))
-  have hs₃ : (3:EReal) < (s.re:EReal) := by exact_mod_cast lt_trans (by norm_num : (3:ℝ)<4) hs
+  have hs₃ : ((3:ℝ):EReal) < (s.re:EReal) := by exact_mod_cast lt_trans (by norm_num : (3:ℝ)<4) hs
   have hP := LSeriesSummable_of_abscissaOfAbsConv_lt_re (hp.trans_lt hs₃)
   have hR := LSeriesSummable_of_abscissaOfAbsConv_lt_re (hr.trans_lt hs₃)
   have he : LSeries squareConductorPrice s = LSeries (squareMeshReading W - conductorPrimePowerError W + priceRounding) s := by

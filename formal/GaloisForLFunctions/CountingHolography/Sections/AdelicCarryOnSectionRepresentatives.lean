@@ -165,7 +165,7 @@ theorem inSectionLattice_iff_primeValuations {N : ℕ} (v : Fin N → ℤ) {s : 
     rw [hsd, ratPrimeVal_mul hd hq p] at hv
     dsimp only [d] at hv
     unfold ratPrimeVal at hv
-    rw [hf_num] at hv
+    rw [hf_num, Nat.cast_zero] at hv
     have hf_pos : (0 : ℤ) < q.den.factorization p := by exact_mod_cast hf_den
     linarith only [hv, hf_pos]
 
@@ -239,6 +239,14 @@ def rationalSectionEquiv {N : ℕ} (v : Fin N → ℤ) :
     obtain ⟨z, _, hzs⟩ := Finset.mem_map.mp s.property
     dsimp only [Function.Embedding.coeFn_mk] at hzs
     exact sectionRep_sectionCoord (hzs ▸ inSectionLattice_sectionRep v z))
+
+@[simp]
+theorem rationalSectionEquiv_val {N : ℕ} (v : Fin N → ℤ) (z : ↥(divisorSections v)) :
+    (rationalSectionEquiv v z).val = sectionRep v z.val := rfl
+
+@[simp]
+theorem rationalSectionEquiv_symm_val {N : ℕ} (v : Fin N → ℤ) (s : ↥(rationalSections v)) :
+    ((rationalSectionEquiv v).symm s).val = sectionCoord v s.val := rfl
 
 /-! ### 2. Midpoint-only section-representative rigidity and finite-place skew divergence -/
 
@@ -456,8 +464,10 @@ private theorem exists_archRadiusLimit {N : ℕ} {v : Fin N → ℤ} (hv : v ≠
     (packet_window v).1 (packet_window v).2 (1 / 2)
   have hdf := tendsto_degreeForm (packet_contDiff v) (packet_hasCompactSupport v)
     (packet_window v).1 (packet_window v).2
-  have hrad_lim := ((hs_neg.mul hs_pos).const_mul 2).sub hdf
-  refine ⟨_, hrad_lim, fun k hk => ?_⟩
+  obtain ⟨R_inf, hrad_lim⟩ : ∃ R_inf : ℝ,
+      Tendsto (logRadius (packet v) (3 * windowEnd N)) atTop (𝓝 R_inf) :=
+    ⟨_, ((hs_neg.mul hs_pos).const_mul 2).sub hdf⟩
+  refine ⟨R_inf, hrad_lim, fun k hk => ?_⟩
   have hkv : k • v ≠ 0 := by
     intro hz
     apply hv
@@ -467,7 +477,7 @@ private theorem exists_archRadiusLimit {N : ℕ} {v : Fin N → ℤ} (hv : v ≠
     exact hi.resolve_left (by omega)
   have hres := tendsto_resolution_ray hkv
   have hrad_k : Tendsto (fun m : ℕ => radius (m • (k • v)) / (m : ℝ)^2)
-      atTop (𝓝 ((k : ℝ)^2 * _)) := by
+      atTop (𝓝 ((k : ℝ)^2 * R_inf)) := by
     refine ((hrad_lim.comp hres).const_mul ((k : ℝ)^2)).congr' ?_
     filter_upwards [eventually_ge_atTop 1] with m hm
     have hm2 : (m : ℝ)^2 ≠ 0 := by positivity
@@ -483,7 +493,8 @@ private theorem exists_archRadiusLimit {N : ℕ} {v : Fin N → ℤ} (hv : v ≠
   have hdeg_k := tendsto_splineDegree (k • v)
   rw [integerProbe_smul] at hdeg_k
   refine ⟨hrad_k, ?_⟩
-  rw [show (k : ℝ)^2 * (_ - integerProbe N v) = (k : ℝ)^2 * _ - (k : ℝ)^2 * integerProbe N v by ring]
+  rw [show (k : ℝ)^2 * (R_inf - integerProbe N v) =
+      (k : ℝ)^2 * R_inf - (k : ℝ)^2 * integerProbe N v by ring]
   exact (hrad_k.sub hdeg_k).congr fun m => by ring
 
 /-- On `primePair p`, both the archimedean radius rate and the finite-place
@@ -511,6 +522,7 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
   rw [abs_zero] at hsub
   have hev_deg := hsub.eventually_lt_const (show (0 : ℝ) < c₀ / 14 by positivity)
   obtain ⟨P₁, hP₁⟩ := exists_nat_gt ((8 * J / c₀) ^ 2 + 1)
+  refine ⟨c₀, hc₀, ?_⟩
   filter_upwards [hev_deg, eventually_ge_atTop (max P₁ 2)] with p hp_deg hp_ge
   have hp_pos : 0 < p := by omega
   have hsp : 0 < Real.sqrt p := Real.sqrt_pos_of_pos (Nat.cast_pos.mpr hp_pos)
@@ -549,7 +561,7 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
       simpa only [sub_zero] using tendsto_const_nhds.sub (hzero C_neg)
     have h₂ : Tendsto (fun m : ℕ => I_pos * Real.sqrt p - C_pos / (m : ℝ)) atTop (𝓝 (I_pos * Real.sqrt p)) := by
       simpa only [sub_zero] using tendsto_const_nhds.sub (hzero C_pos)
-    have hprod := ((h₁.mul h₂).const_mul 2).sub tendsto_const_nhds
+    have hprod := ((h₁.mul h₂).const_mul 2).sub (tendsto_const_nhds (x := 4 * J))
     simpa only [low, c₀, mul_assoc] using hprod
   have hev_bound : ∀ᶠ m : ℕ in atTop,
       low m ≤ logRadius (packet bp) L (resolution (m • bp)) := by
@@ -570,8 +582,11 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
     rw [packet_smul bp m, sampledDegree_mul, hcm] at he_neg
     have hs_neg_ge : I_neg - C_neg / (m : ℝ) ≤ sampledDegree (packet bp) L (resolution (m • bp)) (-(1 / 2)) := by
       have hexp_pos : 0 < Real.exp (-(1 / 2 : ℝ) * Real.log p) := Real.exp_pos _
-      have hmul_ge : (m : ℝ) * I_neg - C_neg ≤ (m : ℝ) * sampledDegree (packet bp) L (resolution (m • bp)) (-(1 / 2)) := by
-        nlinarith only [he_neg, hm_pos, hI_neg, hexp_pos]
+      dsimp only [I_neg, L] at he_neg ⊢
+      have hmul_ge : (m : ℝ) * unitAtomMoment (-(1 / 2)) - C_neg ≤
+          (m : ℝ) * sampledDegree (packet bp) (3 * windowEnd (p + 1)) (resolution (m • bp)) (-(1 / 2)) := by
+        have hIn : 0 < unitAtomMoment (-(1 / 2)) := hI_neg
+        nlinarith only [he_neg, hm_pos, hIn, hexp_pos]
       have hdiv := div_le_div_of_nonneg_right hmul_ge hm_pos.le
       rw [sub_div, mul_div_cancel_left₀ _ hm_pos.ne', mul_div_cancel_left₀ _ hm_pos.ne'] at hdiv
       exact hdiv
@@ -579,16 +594,18 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
     rw [packet_smul bp m, sampledDegree_mul, hcm, hexp_half] at he_pos
     have hs_pos_ge : I_pos * Real.sqrt p - C_pos / (m : ℝ) ≤
         sampledDegree (packet bp) L (resolution (m • bp)) (1 / 2) := by
-      have hmul_ge : (m : ℝ) * (I_pos * Real.sqrt p) - C_pos ≤
-          (m : ℝ) * sampledDegree (packet bp) L (resolution (m • bp)) (1 / 2) := by
-        nlinarith only [he_pos, hm_pos, hI_pos]
+      dsimp only [I_pos, L] at he_pos ⊢
+      have hmul_ge : (m : ℝ) * (unitAtomMoment (1 / 2) * Real.sqrt p) - C_pos ≤
+          (m : ℝ) * sampledDegree (packet bp) (3 * windowEnd (p + 1)) (resolution (m • bp)) (1 / 2) := by
+        have hIp : 0 < unitAtomMoment (1 / 2) := hI_pos
+        nlinarith only [he_pos, hm_pos, hIp]
       have hdiv := div_le_div_of_nonneg_right hmul_ge hm_pos.le
       rw [sub_div, mul_div_cancel_left₀ _ hm_pos.ne', mul_div_cancel_left₀ _ hm_pos.ne'] at hdiv
       exact hdiv
     have hprod := mul_le_mul hs_neg_ge hs_pos_ge (by linarith only [hm_pos_c])
       ((by linarith only [hm_neg] : 0 ≤ I_neg - C_neg / (m : ℝ)).trans hs_neg_ge)
     have hj := hjet (p + 1) bp L (resolution (m • bp)) (resolution_pos hmbp_ne)
-    rw [hvar_bp] at hj
+    rw [hvar_bp, show (2 : ℝ) ^ 2 = 4 by norm_num] at hj
     dsimp only [low, logRadius]
     linarith only [hprod, hj]
   have hR_inf_ge : c₀ * Real.sqrt p - 4 * J ≤ R_inf := by
@@ -621,8 +638,12 @@ theorem eventually_primePair_finitePlace_skew_overshoots :
   have hd : c₀ * Real.sqrt p <
       ((Real.log (generator (m • (4 • bp)) : ℝ) -
         Real.log (generator (m • (2 • bp)) : ℝ)) / 2) / (m : ℝ)^2 := by
-    convert hm using 1
-    ring
+    dsimp only at hm
+    have heq : (Real.log (generator (m • (4 • bp)) : ℝ) / (m : ℝ) ^ 2 -
+        Real.log (generator (m • (2 • bp)) : ℝ) / (m : ℝ) ^ 2) / 2 =
+        ((Real.log (generator (m • (4 • bp)) : ℝ) -
+          Real.log (generator (m • (2 • bp)) : ℝ)) / 2) / (m : ℝ) ^ 2 := by ring
+    rwa [heq] at hm
   exact (lt_div_iff₀ hm2).mp hd
 
 /-- Any centered carry schedule `K_m` whose logarithmic scale exceeds `7 Q(b)`
@@ -926,20 +947,14 @@ theorem adelicCarryDigit_paid_iff_threeAdic_valuation {N : ℕ} (v₀ v₁ v₂ 
           wideCoord b (orientedTernaryEncode b τ z) : ℤ) : ℚ) := by
     dsimp only [b, τ, z, z']
     unfold wideSection wideGenerator adelicSectionEncode sectionRep
-    cases h : adelicSkewNonneg v₁ v₂ <;>
-      simp only [h, Bool.false_eq_true, ↓reduceIte, wideCoord, Int.cast_sub, mul_sub]
-  have heq_iff : (wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s) =
-      wideSection v₁ v₂ (adelicSectionEncode v₀ v₁ v₂ s')) ↔
-      wideGenerator v₁ v₂ *
-        ((wideCoord b (orientedTernaryEncode b τ z') -
-          wideCoord b (orientedTernaryEncode b τ z) : ℤ) : ℚ) = 0 := by
-    rw [← hwide_diff, sub_eq_zero, eq_comm]
+    cases adelicSkewNonneg v₁ v₂ <;>
+      simp only [Bool.false_eq_true, ↓reduceIte, wideCoord, Int.cast_sub, mul_sub]
   rw [carryDigit_eq_iff_wideCoord_modEq b τ z z', Int.modEq_iff_dvd]
   have hpv := pow_dvd_int_iff_ratPrimeVal (p := 3) (r := τ) Nat.prime_three
     (wideGenerator_pos v₁ v₂)
     (wideCoord b (orientedTernaryEncode b τ z') - wideCoord b (orientedTernaryEncode b τ z))
   dsimp only [Nat.cast_ofNat] at hpv
-  rw [hpv, ← hwide_diff, ← heq_iff]
+  rw [hpv, ← hwide_diff, sub_eq_zero, eq_comm]
 
 /-- Simultaneous zero-loss congruence preservation and recovery at **every** modulus `u`
 coprime to `3` (`gcd(u, 3) = 1`), once the `3^τ` carry digit is paid. -/
@@ -974,7 +989,7 @@ theorem orientedTernary_coprime_zeroLoss_recovery (posSkew : Bool) (τ : ℕ) {u
   constructor
   · rintro ⟨hw, hn⟩
     have hw' : (u : ℤ) ∣ (3 : ℤ) ^ τ * (z'.2 - z.2) := by
-      convert hw using 1; dsimp only [K]; rw [hrem]; ring
+      convert hw using 1; rw [hrem]; ring
     have hz1 : z'.1 - z.1 = (3 : ℤ) ^ τ * (balQuot K z'.1 - balQuot K z.1) := by
       dsimp only [K] at hd1 hd2 ⊢; linarith only [hd1, hd2, hrem]
     exact ⟨hz1 ▸ hn.mul_left _, cancel_threePow hw'⟩
@@ -1208,9 +1223,9 @@ theorem inducedDivisorSectionMap_adelicSectionEncode {N : ℕ} {v₀ v₁ v₂ :
     ((inducedDivisorSectionMap h p).1.val, (inducedDivisorSectionMap h p).2.val) =
       orientedTernaryEncode (adelicSkewNonneg v₁ v₂) (ternaryCarryOrder v₁ v₂)
         (p.1.val, p.2.val) := by
-  dsimp [inducedDivisorSectionMap, restrictRationalSectionMap, rationalSectionEquiv,
-    adelicSectionEncode]
-  simp only [sectionCoord_sectionRep, Prod.mk.eta]
+  simp only [inducedDivisorSectionMap, Equiv.prodCongr_apply, Prod.map_fst, Prod.map_snd,
+    rationalSectionEquiv_symm_val, restrictRationalSectionMap, rationalSectionEquiv_val,
+    adelicSectionEncode, sectionCoord_sectionRep, Prod.mk.eta]
 
 /-- Direct comparison of `adelicSectionEncode` along `(2mb, 3mb, 4mb)` against the
 two-output carry obstructions: `adelicSectionEncode` restricts eventually to an
@@ -1364,8 +1379,8 @@ theorem eventually_adelicSectionEncode_midpoint_ray {N : ℕ} {b a : Fin N → �
     have hfib := maxFibre_adelicSectionEncode_eq_one h
     have hex : 0 ≤ midpointExcess (k • b) 0 m := by
       unfold midpointExcess
-      rw [hadd, hsub]
-      linarith
+      rw [hadd, hsub, show logCard (m • (k • b)) + logCard (m • (k • b)) - 2 * logCard (m • (k • b)) = 0 by ring,
+        zero_div]
     exact ⟨h, hfib, hex⟩
   · filter_upwards [eventually_ge_atTop 1, eventually_positive_shift b a hb,
       eventually_positive_shift b (-a) hb] with k hk1 hp_pos hn_pos

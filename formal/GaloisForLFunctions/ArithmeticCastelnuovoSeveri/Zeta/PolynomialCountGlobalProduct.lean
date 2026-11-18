@@ -25,7 +25,7 @@ def countPrimeZeta (P : Polynomial ℤ) (s : ℂ) (p : Nat.Primes) : ℂ :=
 private theorem signedPrime_hasProd (s : ℂ) (hs : 1 < s.re) (m : ℤ) :
     HasProd (fun p : Nat.Primes => ((1-((p:ℕ):ℂ)^(-s))⁻¹)^m) ((riemannZeta s)^m) := by
   cases m with
-  | ofNat n => simpa only [zpow_natCast] using (riemannZeta_eulerProduct_hasProd hs).pow n
+  | ofNat n => simpa only [Int.ofNat_eq_natCast,zpow_natCast] using (riemannZeta_eulerProduct_hasProd hs).pow n
   | negSucc n =>
     simpa only [zpow_negSucc,inv_pow,inv_inv] using (_root_.RHTower.hasProd_one_sub_primeCpow_neg hs).pow (n+1)
 
@@ -38,7 +38,7 @@ theorem countGlobalZeta_hasProd (P : Polynomial ℤ) (s : {z : ℂ // (P.natDegr
   have hall (S : Finset ℕ) (hS : S ⊆ P.support) :
       HasProd (fun p => ∏ j ∈ S, f j p) (∏ j ∈ S, g j) := by
     induction S using Finset.induction_on with
-    | empty => simpa using (hasProd_one (ι := Nat.Primes) (α := ℂ))
+    | empty => simp
     | insert j S hj ih =>
       have hdeg : (j:ℝ) ≤ P.natDegree := by
         exact_mod_cast Polynomial.le_natDegree_of_mem_supp j (hS (mem_insert_self _ _))
@@ -53,7 +53,8 @@ private theorem zetaShift_order (j : ℕ) (s : ℂ) :
     MeromorphicAt (fun z : ℂ => riemannZeta (z-j)) s ∧
       meromorphicOrderAt (fun z : ℂ => riemannZeta (z-j)) s = meromorphicOrderAt riemannZeta (s-j) := by
   have ha : AnalyticAt ℂ (fun z : ℂ => z-j) s := analyticAt_id.sub analyticAt_const
-  have hd : deriv (fun z : ℂ => z-j) s ≠ 0 := by rw [((hasDerivAt_id s).sub_const (j:ℂ)).deriv]; exact one_ne_zero
+  have hshift : HasDerivAt (fun z : ℂ => z-j) 1 s := (hasDerivAt_id s).sub_const (j:ℂ)
+  have hd : deriv (fun z : ℂ => z-j) s ≠ 0 := hshift.deriv.trans_ne one_ne_zero
   exact ⟨(meromorphicAt_comp_iff_of_deriv_ne_zero ha hd).mpr (meromorphicAt_riemannZeta _),
     meromorphicOrderAt_comp_of_deriv_ne_zero (f := riemannZeta) ha hd⟩
 
@@ -63,7 +64,8 @@ theorem countGlobalZeta_order (P : Polynomial ℤ) (s : ℂ) :
     meromorphicOrderAt (countGlobalZeta P) s =
       ∑ j ∈ P.support, (P.coeff j : WithTop ℤ) * meromorphicOrderAt riemannZeta (s-j) := by
   unfold countGlobalZeta
-  rw [meromorphicOrderAt_fun_prod (fun j (_ : j ∈ P.support) => ((zetaShift_order j s).1).zpow (P.coeff j))]
+  rw [meromorphicOrderAt_fun_prod (f := fun j (z : ℂ) => riemannZeta (z-j)^P.coeff j)
+    (fun j (_ : j ∈ P.support) => ((zetaShift_order j s).1).fun_zpow (P.coeff j))]
   refine sum_congr rfl fun j _ => ?_
   change meromorphicOrderAt ((fun z : ℂ => riemannZeta (z-j))^P.coeff j) s = _
   rw [meromorphicOrderAt_zpow (zetaShift_order j s).1,(zetaShift_order j s).2]
@@ -75,14 +77,14 @@ theorem countGlobalZeta_leading_order (P : Polynomial ℤ) :
   rw [countGlobalZeta_order,sum_eq_single P.natDegree]
   · rw [show (P.natDegree:ℂ)+1-P.natDegree = 1 by ring,meromorphicOrderAt_riemannZeta_one,
       Polynomial.coeff_natDegree]
-    simp
+    exact_mod_cast mul_neg_one P.leadingCoeff
   · intro j hj hne
     have hj' : j < P.natDegree := lt_of_le_of_ne (Polynomial.le_natDegree_of_mem_supp j hj) hne
     have hh : 1 < ((P.natDegree:ℂ)+1-j).re := by
       simp only [Complex.sub_re,Complex.add_re,Complex.natCast_re,Complex.one_re]
       linarith only [show (j:ℝ) < P.natDegree by exact_mod_cast hj']
     have hn : (P.natDegree:ℂ)+1-j ≠ 1 := fun h => by rw [h,Complex.one_re] at hh; exact hh.false
-    rw [meromorphicOrderAt_eq_zero_of_analyticAt_ne_zero (analyticAt_riemannZeta hn)
+    rw [meromorphicOrderAt_eq_zero_of_analyticAt_ne_zero (ZeroForcingCalculus.analyticAt_riemannZeta hn)
       (riemannZeta_ne_zero_of_one_le_re hh.le),mul_zero]
   · intro h
     have hz := Polynomial.notMem_support_iff.mp h
@@ -95,7 +97,9 @@ theorem countGlobalZeta_eq_one_iff (P : Polynomial ℤ) : countGlobalZeta P = 1 
   constructor
   · intro h
     have he := countGlobalZeta_leading_order P
-    rw [h,meromorphicOrderAt_one] at he
+    have horder : meromorphicOrderAt (1 : ℂ → ℂ) ((P.natDegree:ℂ)+1) = 0 :=
+      meromorphicOrderAt_eq_zero_of_analyticAt_ne_zero (f := fun _ => (1:ℂ)) analyticAt_const one_ne_zero
+    rw [h,horder] at he
     have hz : -P.leadingCoeff = 0 := by exact_mod_cast he.symm
     exact Polynomial.leadingCoeff_eq_zero.mp (neg_eq_zero.mp hz)
   · rintro rfl

@@ -105,6 +105,27 @@ def squareMultipleSlice (ℓ k Y M p : ℕ) :=
   ∑ v ∈ Ioc (Y/p) (min (k/p) M) with ℓ^2 ∣ v,
     if p.Coprime v then innerJump 1 v*centeredPrimeWeight 1 (k/p/v) else 0
 
+/-- Every dilation coprime to the unit stencil's divisor moduli has the
+same solitary defect at t = 1, independently of its prime factors. -/
+theorem innerJump_rough_multiple {r t : ℕ} (hr : 1<r) (hc : r.Coprime 12) (ht : 0<t) :
+    innerJump 1 (r*t)=innerJump 1 t-(if t=1 then 1 else 0) := by
+  let f (v d : ℕ) : ℝ := if d ∣ v then 1 else 0
+  have test (d : ℕ) (hd : d∈Icc 1 (2*2)) : f (r*t) d=f (5*t) d := by
+    obtain ⟨hd₁,hd₄⟩ := mem_Icc.mp hd
+    have hdv : d ∣ 12 := by norm_num1 at hd₄; interval_cases d <;> decide
+    have h₁ := Nat.Coprime.of_dvd_left hdv hc.symm
+    have h₂ := Nat.Coprime.of_dvd_left hdv (show Nat.Coprime 12 5 by decide)
+    simp only [f,h₁.dvd_mul_left,h₂.dvd_mul_left]
+  have hs := abs_stencil_le (R := 2) (by decide) (fun d => f (r*t) d-f (5*t) d) (M := 0)
+    (fun d hd => by rw [test d hd,sub_self,abs_zero])
+  rw [mul_zero,abs_nonpos_iff,stencil_sub,sub_eq_zero] at hs
+  have hrt : 2≤r*t := hr.trans_le (Nat.le_mul_of_pos_right r ht)
+  have h5t : 2≤5*t := (by decide : 2≤5).trans (Nat.le_mul_of_pos_right 5 ht)
+  calc innerJump 1 (r*t) = innerJump 1 (5*t) := by
+         rw [innerJump_divisor_stencil hrt,innerJump_divisor_stencil h5t]
+         exact congrArg Neg.neg hs
+       _ = _ := innerJump_prime_multiple le_rfl (by decide : Nat.Prime 5) (by decide) ht
+
 /-- Dividing every complementary factor by ℓ² produces the same capped
 coprime slice and subtracts its unit quotient. Both terms have the
 same divided endpoints, including the last incomplete quotient. -/
@@ -149,6 +170,7 @@ theorem squareMultipleSlice_divided {ℓ p : ℕ} (hℓ : ℓ.Prime) (h₄ : 4<�
 
 #print axioms squareComplementRow_sub_capped
 #print axioms squareComplementRow_clip_cost
+#print axioms innerJump_rough_multiple
 #print axioms squareMultipleSlice_divided
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

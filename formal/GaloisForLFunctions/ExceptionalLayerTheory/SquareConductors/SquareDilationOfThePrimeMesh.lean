@@ -32,16 +32,17 @@ private theorem quotient_blocks {d : ℕ} (hd : 0<d) (f w : ℕ → ℝ) (M : �
   induction M with
   | zero => simp
   | succ M ih =>
-    rw [Nat.mul_succ,sum_range_add,ih,sum_range_succ]
+    rw [Nat.mul_succ,Finset.sum_range_add,ih,Finset.sum_range_succ]
     congr 1
     have hb (i : ℕ) (hi : i ∈ range d) : (d*M+i)/d=M := by
       rw [Nat.mul_add_div hd,Nat.div_eq_of_lt (mem_range.mp hi),Nat.add_zero]
-    calc _ = ∑ i ∈ range d, f M*(w (d*M+i)-w (d*M+i+1)) := by
+    calc (∑ i ∈ range d, f ((d*M+i)/d)*(w (d*M+i)-w (d*M+i+1))) =
+           ∑ i ∈ range d, f M*(w (d*M+i)-w (d*M+i+1)) := by
               exact sum_congr rfl fun i hi => by rw [hb i hi]
          _ = _ := by
               rw [←mul_sum]
               congr 1
-              have ht := sum_range_sub (fun i : ℕ => -w (d*M+i)) d
+              have ht := Finset.sum_range_sub (fun i : ℕ => -w (d*M+i)) d
               simpa only [neg_sub_neg,Nat.add_assoc,Nat.add_zero,Nat.mul_succ] using ht
 
 /-- On the submesh of multiples of r², the whole two-dilation spline
@@ -52,7 +53,7 @@ theorem sampledSpline_square_dilation {n r : ℕ} (hn : 0<n) (hr : 0<r) (j : ℕ
   have hn' : (0:ℝ)<n := Nat.cast_pos.mpr hn
   unfold sampledSpline
   push_cast
-  rw [show (r:ℝ)^2*j/((r:ℝ)*n)^2=(j:ℝ)/(n:ℝ)^2 by field_simp <;> ring]
+  rw [show (r:ℝ)^2*j/((r:ℝ)*n)^2=(j:ℝ)/(n:ℝ)^2 by field_simp]
   rw [div_div,mul_comm (n:ℝ) (r:ℝ)]
 
 /-- Exact square dilation for any count vanishing at the empty horizon.

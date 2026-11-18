@@ -38,9 +38,10 @@ theorem friablePrimitive_hasDerivAt (u : Ioi (1:ℝ)) :
 /-- For positive arguments past the initial interval, u F'(u) = F(u-1). -/
 theorem friablePrimitive_delay (u : Ioi (1:ℝ)) :
     HasDerivAt friablePrimitive (friablePrimitive (u.val-1)/u.val) u.val := by
-  have he := friablePrimitive_shift ⟨u.val-1,sub_nonneg.mpr u.property.le⟩
+  have hu : 1 < u.val := u.property
+  have he := friablePrimitive_shift ⟨u.val-1,sub_nonneg.mpr hu.le⟩
   simp only [sub_add_cancel] at he
-  rw [he,mul_div_cancel_left₀ _ (zero_lt_one.trans u.property).ne']
+  rw [he,mul_div_cancel_left₀ _ (zero_lt_one.trans hu).ne']
   exact friablePrimitive_hasDerivAt u
 
 /-- The same primitive extends both the logarithmic solution and the
@@ -91,7 +92,9 @@ theorem friablePrimitive_unique (g : ℝ → ℝ) :
       have hh (y : ℝ) (hy : y ∈ Ioo a x) : HasDerivAt f 0 y := by
         have hz : 1 < y := ha.trans_lt hy.1
         have he := sub_eq_zero.mp (ih (y-1) ⟨by dsimp [a] at hy; linarith [hy.1],by linarith [hy.2,hx.2]⟩)
-        simpa only [f,he,sub_self] using (hd ⟨y,hz⟩).sub (friablePrimitive_delay ⟨y,hz⟩)
+        have hdiff := (hd ⟨y,hz⟩).fun_sub (friablePrimitive_delay ⟨y,hz⟩)
+        change HasDerivAt f (g (y-1)/y-friablePrimitive (y-1)/y) y at hdiff
+        rwa [he,sub_self] at hdiff
       obtain ⟨y,hy,he⟩ := exists_hasDerivAt_eq_slope f (fun _ => (0:ℝ)) hax hf hh
       have hh' := (div_eq_zero_iff.mp he.symm).resolve_right (sub_ne_zero.mpr hax.ne')
       exact (sub_eq_zero.mp hh').trans ha₀

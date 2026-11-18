@@ -388,7 +388,7 @@ private theorem twoIntervalRadius_singleWaveLog_sq (β γ ω : ℝ) (m' : ℕ) (
           Complex.exp (ρ' * (t : ℂ)) * z₀ := by
         dsimp [z₀]; rw [h1]; ring
       have hre := congrArg Complex.re h2
-      simpa only [Complex.sub_re, Complex.neg_mul, Complex.neg_re, Complex.re_ofReal_mul] using hre
+      simpa only [Complex.sub_re, neg_mul, Complex.neg_re, Complex.re_ofReal_mul] using hre
     rw [heq, hsplit t, show (Real.exp (β * t) : ℂ) * expChar ω t * z₀ =
       (Real.exp (β * t) : ℂ) * z by dsimp [z]; ring, Complex.re_ofReal_mul]
   have hinc1 : A⁻¹ * logStepIncrement (singleWaveLog β ω m') (t + h) h =
@@ -405,7 +405,7 @@ private theorem twoIntervalRadius_singleWaveLog_sq (β γ ω : ℝ) (m' : ℕ) (
           Complex.exp (ρ' * ((t + h : ℝ) : ℂ)) * z₀ := by
         dsimp [z₀]; rw [h1]; ring
       have hre := congrArg Complex.re h2
-      simpa only [Complex.sub_re, Complex.neg_mul, Complex.neg_re, Complex.re_ofReal_mul] using hre
+      simpa only [Complex.sub_re, neg_mul, Complex.neg_re, Complex.re_ofReal_mul] using hre
     have hexp_th : Real.exp (β * (t + h)) = A * Real.exp (β * t) := by
       dsimp [A, quarterPeriodScale]; rw [mul_add, Real.exp_add, mul_comm]
     have hchar_th : expChar ω (t + h) = Complex.exp (((ω * h : ℝ) : ℂ) * I) * expChar ω t :=
@@ -470,7 +470,7 @@ theorem radialDiscrepancyOf_singleWaveLog_eq_zero_of_alias {β γ ω : ℝ} {m m
     dsimp [z₀]
     rw [norm_div, norm_mul, hm'_norm, hnum, hden',
       quartetRadialCoeff_eq_sqrt hγ m, show quarterPeriodScale β γ = A from rfl,
-      div_pow, div_pow, mul_pow, mul_pow,
+      div_pow, div_pow, mul_pow, mul_pow, mul_pow, mul_pow,
       Real.sq_sqrt (by positivity : 0 ≤ 1 + A ^ 2), Real.sq_sqrt hd_pos.le,
       Real.sq_sqrt hd'_pos.le, div_eq_div_iff hd'_pos.ne' hd_pos.ne']
     linear_combination 4 * (1 + A ^ 2) * hpyth
@@ -582,31 +582,32 @@ theorem not_isLogSqrtSqUnbounded_singleWaveLog_iff_alias {β γ ω : ℝ} {m m' 
     have hP_eq : ∀ t : ℝ, P t =
         ((((twoIntervalRadius (singleWaveLog β ω m') h A t * Real.exp (-(β * t))) ^ 2 -
           C ^ 2 : ℝ)) : ℂ) := fun t => by
-      have hrad := twoIntervalRadius_singleWaveLog_sq β γ ω m' t
-      dsimp only at hrad
+      have hrad : twoIntervalRadius (singleWaveLog β ω m') h A t ^ 2 =
+          Real.exp (2 * β * t) *
+            (‖z₀‖ ^ 2 + Real.cos (ω * h) * (Complex.exp (((ω * h : ℝ) : ℂ) * I) *
+              z₀ ^ 2 * expChar (2 * ω) t).re) :=
+        twoIntervalRadius_singleWaveLog_sq β γ ω m' t
       have hmul : (twoIntervalRadius (singleWaveLog β ω m') h A t * Real.exp (-(β * t))) ^ 2 =
           ‖z₀‖ ^ 2 + Real.cos (ω * h) * (Complex.exp (((ω * h : ℝ) : ℂ) * I) *
             z₀ ^ 2 * expChar (2 * ω) t).re := by
-        rw [mul_pow, hrad, ← Real.exp_nat_mul]
-        have hexp0 : Real.exp (2 * β * t) * Real.exp ((2 : ℕ) * -(β * t)) = 1 := by
-          rw [← Real.exp_add, show 2 * β * t + (2 : ℕ) * -(β * t) = 0 by push_cast; ring,
-            Real.exp_zero]
-        calc Real.exp (2 * β * t) * _ * Real.exp ((2 : ℕ) * -(β * t))
-            = (Real.exp (2 * β * t) * Real.exp ((2 : ℕ) * -(β * t))) * _ := by ring
-          _ = _ := by rw [hexp0, one_mul]
+        rw [mul_pow, hrad]
+        have hexp0 : Real.exp (2 * β * t) * Real.exp (-(β * t)) ^ 2 = 1 := by
+          rw [sq, ← Real.exp_add, ← Real.exp_add,
+            show 2 * β * t + (-(β * t) + -(β * t)) = 0 by ring, Real.exp_zero]
+        rw [mul_right_comm (Real.exp (2 * β * t)) _ (Real.exp (-(β * t)) ^ 2), hexp0, one_mul]
       rw [hmul]
       dsimp [P, cf, mu, w₂]
       rw [Fin.sum_univ_three]
       have hchar0 : expChar 0 t = 1 := by simp [expChar]
       have hchar_neg : expChar (-(2 * ω)) t = conj (expChar (2 * ω) t) := by
         simp only [expChar, ← Complex.exp_conj]
-        congr 1; simp; ring
+        congr 1; rw [map_mul, Complex.conj_ofReal, Complex.conj_I]; push_cast; ring
       have hre_split : ∀ u : ℂ, (u.re : ℂ) = (u + conj u) / 2 := fun u => by
         apply Complex.ext
         · simp
         · simp
       rw [hchar0, hchar_neg]
-      push_cast
+      simp only [Complex.ofReal_sub, Complex.ofReal_add, Complex.ofReal_mul, Complex.ofReal_pow]
       rw [hre_split]
       simp only [map_mul, map_div₀, Complex.conj_ofReal, map_ofNat, map_pow]
       ring
@@ -695,7 +696,7 @@ theorem not_isLogSqrtSqUnbounded_singleWaveLog_iff_alias {β γ ω : ℝ} {m m' 
     dsimp [z₀, C] at hnorm_eq
     rw [norm_div, norm_mul, hm'_norm, hnum, hden',
       quartetRadialCoeff_eq_sqrt hγ m, show quarterPeriodScale β γ = A from rfl,
-      div_pow, div_pow, mul_pow, mul_pow,
+      div_pow, div_pow, mul_pow, mul_pow, mul_pow, mul_pow,
       Real.sq_sqrt h1A_pos.le, Real.sq_sqrt hd_pos.le, Real.sq_sqrt hd'_pos.le,
       div_eq_div_iff hd'_pos.ne' hd_pos.ne'] at hnorm_eq
     have hcanc : 4 * (1 + A ^ 2) * ((m' : ℝ) ^ 2 * (β ^ 2 + γ ^ 2)) =
@@ -936,8 +937,8 @@ theorem multiFrequency_trigPoly_not_const_twoInterval (S : Finset ℝ) (hS_pos :
     have hnorm_re : ((f t : ℂ) + I * (f (t + h) : ℂ)) *
         conj ((f t : ℂ) + I * (f (t + h) : ℂ)) = (((f t ^ 2 + f (t + h) ^ 2 : ℝ) : ℂ)) := by
       apply Complex.ext
-      · simp [sq]; ring
       · simp [sq]
+      · simp [sq]; ring
     rw [hprod_eq, hnorm_re]
     push_cast; ring
   have hP_ap : HTGeometry.IsBohrAlmostPeriodic P :=
@@ -1242,37 +1243,214 @@ private theorem sum_coprimeWaveIndicator_block (β γ : ℝ) (m : ℕ) {Q : ℕ}
     rw [hblock, greedyCoprimeSum]
     split_ifs <;> ring
 
-/-- **Universal `{0, 1}`-occupancy coprime integer-set realization.**
-For every `1/2 < β < 1`, `γ ≠ 0`, `m ≥ 1`, and coprimality modulus `Q ≥ 1`, there exists an
-explicit `{0, 1}`-valued weight `w : ℕ → ℕ` supported on `{n ≥ 2 : gcd(n, Q) = 1}` such that
-`θ_w(x) = ∑_{1 ≤ n ≤ ⌊x⌋} w(n) log n` satisfies:
-1. `|θ_w(x) − x + 2 m Re(x^{β + iγ}/(β + iγ))| ≤ C (1 + log x)` for all `x ≥ 1`;
-2. `|radialDiscrepancyOf (fun t => θ_w(e^t) − e^t) β γ m t| ≤ C' (1 + t)` for all `t ≥ 0`, so
-   its ratio against `e^{t/2}(1 + t)²` tends to `0` at `+∞` (`¬ IsLogSqrtSqUnbounded`);
-3. `HasPositivePowerLimsup (fun x => θ_w x − x) β` holds, and every dilation residual
-   `dilationRecurrenceOp a β |γ| (fun x => θ_w x − x)` (`a ≥ 1`, in particular `2, 3, 6`) is
-   `O(1 + log x)` (`¬ IsSqrtLogSqUnbounded`). -/
-theorem exists_coprimeZeroOneSet_realizing_twoIntervalRadius {β γ : ℝ} {m Q : ℕ}
-    (hβ : 1 / 2 < β) (hβ1 : β < 1) (hγ : γ ≠ 0) (hm : 1 ≤ m) (hQ : 1 ≤ Q) :
+private theorem cpow_exp_eq (s : ℝ) (ρ : ℂ) :
+    (Real.exp s : ℂ) ^ ρ = Complex.exp (ρ * (s : ℂ)) := by
+  rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (Real.exp_pos s).ne'),
+    ← Complex.ofReal_log (Real.exp_pos s).le, Real.log_exp, mul_comm]
+
+private theorem mode_log_bound_consequences {θ_w : ℝ → ℝ} {β γ C₀ : ℝ} {m : ℕ}
+    (hβ0 : 0 < β) (hγ : γ ≠ 0) (hm : 1 ≤ m) (hC₀ : 0 ≤ C₀)
+    (hθ_bound : ∀ x : ℝ, 1 ≤ x →
+      |θ_w x - x + 2 * (m : ℝ) *
+        (((x : ℂ) ^ (((β : ℂ) + I * (γ : ℂ))) / (((β : ℂ) + I * (γ : ℂ)))).re)| ≤
+        C₀ * (1 + Real.log x)) :
+    let E_w : ℝ → ℝ := fun t => θ_w (Real.exp t) - Real.exp t
+    (∃ C' : ℝ, 0 ≤ C' ∧ ∀ t : ℝ, 0 ≤ t →
+      |radialDiscrepancyOf E_w β γ m t| ≤ C' * (1 + t)) ∧
+    Tendsto (fun t : ℝ =>
+      |radialDiscrepancyOf E_w β γ m t| / (Real.exp (t / 2) * (1 + t) ^ 2)) atTop (𝓝 0) ∧
+    ¬ IsLogSqrtSqUnbounded (radialDiscrepancyOf E_w β γ m) ∧
+    HasPositivePowerLimsup (fun x => θ_w x - x) β ∧
+    (∀ a : ℝ, 1 ≤ a → ¬ IsSqrtLogSqUnbounded (dilationRecurrenceOp a β |γ| (fun x => θ_w x - x))) := by
+  intro E_w
+  set ρ : ℂ := (β : ℂ) + I * (γ : ℂ)
+  set h := quarterPeriodStep γ
+  have hh_pos : 0 < h := quarterPeriodStep_pos hγ
+  set C' : ℝ := 4 * C₀ * (1 + 2 * h)
+  have hC'_nn : 0 ≤ C' := by dsimp [C']; positivity
+  have hrad_bound : ∀ t : ℝ, 0 ≤ t → |radialDiscrepancyOf E_w β γ m t| ≤ C' * (1 + t) := by
+    intro t ht
+    have hmode : ∀ s : ℝ, 0 ≤ s → s ≤ t + 2 * h →
+        |E_w s + 2 * (m : ℝ) * (Complex.exp (ρ * (s : ℂ)) / ρ).re| ≤
+          C₀ * (1 + 2 * h) * (1 + t) := by
+      intro s hs hst
+      have hb := hθ_bound (Real.exp s) (Real.one_le_exp hs)
+      rw [cpow_exp_eq s ρ, Real.log_exp] at hb
+      refine hb.trans ?_
+      have h1s : 1 + s ≤ (1 + 2 * h) * (1 + t) := by nlinarith [hh_pos, ht, hst]
+      calc C₀ * (1 + s) ≤ C₀ * ((1 + 2 * h) * (1 + t)) :=
+            mul_le_mul_of_nonneg_left h1s hC₀
+        _ = C₀ * (1 + 2 * h) * (1 + t) := by ring
+    have hr := abs_radialDiscrepancyOf_le_of_mode_error hβ0.le hγ m
+      (hmode t ht (by linarith))
+      (hmode (t + h) (by linarith) (by linarith))
+      (hmode (t + 2 * h) (by linarith) le_rfl)
+    exact hr.trans_eq (by dsimp [C']; ring)
+  have hrad_tendsto : Tendsto (fun t : ℝ =>
+      |radialDiscrepancyOf E_w β γ m t| / (Real.exp (t / 2) * (1 + t) ^ 2)) atTop (𝓝 0) := by
+    have hexp_inv : Tendsto (fun t : ℝ => C' * Real.exp (-(t / 2))) atTop (𝓝 0) := by
+      have h0 := _root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 0 (1 / 2) (by norm_num)
+      have h1 := h0.const_mul C'
+      rw [mul_zero] at h1
+      refine h1.congr fun t => ?_
+      rw [Real.rpow_zero, one_mul]
+      congr 2; ring
+    refine squeeze_zero_norm' ?_ hexp_inv
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with t ht
+    rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg (abs_nonneg _) (by positivity))]
+    have h1t_pos : 0 < 1 + t := by linarith
+    calc |radialDiscrepancyOf E_w β γ m t| / (Real.exp (t / 2) * (1 + t) ^ 2)
+        ≤ (C' * (1 + t)) / (Real.exp (t / 2) * (1 + t) ^ 2) :=
+          div_le_div_of_nonneg_right (hrad_bound t ht) (by positivity)
+      _ = C' / (Real.exp (t / 2) * (1 + t)) := by
+          rw [sq]; field_simp [h1t_pos.ne', (Real.exp_pos (t / 2)).ne']
+      _ ≤ C' / (Real.exp (t / 2) * 1) := by
+          refine div_le_div_of_nonneg_left hC'_nn (by positivity) ?_
+          exact mul_le_mul_of_nonneg_left (by linarith) (Real.exp_pos _).le
+      _ = C' * Real.exp (-(t / 2)) := by rw [mul_one, Real.exp_neg, div_eq_mul_inv]
+  have hnot_unb : ¬ IsLogSqrtSqUnbounded (radialDiscrepancyOf E_w β γ m) := by
+    rw [isLogSqrtSqUnbounded_iff_not_eventually_le, not_not]
+    obtain ⟨T₀, hT₀⟩ := eventually_atTop.mp (hrad_tendsto.eventually (gt_mem_nhds one_pos))
+    refine ⟨1, max T₀ 0, fun t ht => ?_⟩
+    have htT : T₀ ≤ t := (le_max_left _ _).trans ht
+    have h1t_pos : 0 < 1 + t := by linarith [(le_max_right T₀ 0).trans ht]
+    have hden : 0 < Real.exp (t / 2) * (1 + t) ^ 2 := by positivity
+    have hmul := (div_lt_iff₀ hden).mp (hT₀ t htT)
+    linarith
+  have hlimsup : HasPositivePowerLimsup (fun x => θ_w x - x) β := by
+    set C_rad := quartetRadialCoeff β γ m
+    have hC_rad_pos : 0 < C_rad := quartetRadialCoeff_pos hγ hm
+    set A := quarterPeriodScale β γ
+    have hA1 : 1 ≤ A := (one_lt_quarterPeriodScale hβ0 hγ).le
+    have hA0 : 0 < A := zero_lt_one.trans_le hA1
+    have hsmall : Tendsto (fun t : ℝ => C' * (1 + t) * Real.exp (-(β * t))) atTop (𝓝 0) := by
+      have h0 := _root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 1 β hβ0
+      have h1 := h0.const_mul (2 * C')
+      rw [mul_zero] at h1
+      refine squeeze_zero_norm' ?_ h1
+      filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
+      rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), Real.rpow_one]
+      have h1t : 1 + t ≤ 2 * t := by linarith
+      calc C' * (1 + t) * Real.exp (-(β * t))
+          ≤ C' * (2 * t) * Real.exp (-(β * t)) :=
+            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h1t hC'_nn) (Real.exp_pos _).le
+        _ = 2 * C' * (t * Real.exp (-β * t)) := by rw [neg_mul]; ring
+    obtain ⟨T₁, hT₁⟩ := eventually_atTop.mp
+      (hsmall.eventually (gt_mem_nhds (half_pos hC_rad_pos)))
+    set c₀ : ℝ := C_rad / (8 * Real.exp (2 * β * h))
+    have hc₀_pos : 0 < c₀ := div_pos hC_rad_pos (mul_pos (by norm_num) (Real.exp_pos _))
+    refine ⟨c₀, hc₀_pos, fun X₀ => ?_⟩
+    set t : ℝ := max (max T₁ 1) (Real.log (max X₀ 1))
+    have htT₁ : T₁ ≤ t := (le_max_left T₁ 1).trans (le_max_left _ _)
+    have ht1 : 1 ≤ t := (le_max_right T₁ 1).trans (le_max_left _ _)
+    have hmaxX : 0 < max X₀ 1 := lt_max_of_lt_right zero_lt_one
+    have htX : X₀ ≤ Real.exp t := by
+      calc X₀ ≤ max X₀ 1 := le_max_left _ _
+        _ = Real.exp (Real.log (max X₀ 1)) := (Real.exp_log hmaxX).symm
+        _ ≤ Real.exp t := Real.exp_le_exp.mpr (le_max_right _ _)
+    have hdisc := hrad_bound t (zero_le_one.trans ht1)
+    have hsmall_t := hT₁ t htT₁
+    have hrad_ge : C_rad / 2 * Real.exp (β * t) ≤ twoIntervalRadius E_w h A t := by
+      have hmul := mul_lt_mul_of_pos_right hsmall_t (Real.exp_pos (β * t))
+      rw [mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, mul_one] at hmul
+      have hl := (abs_le.mp hdisc).1
+      unfold radialDiscrepancyOf at hl
+      linarith
+    have hsum3 : twoIntervalRadius E_w h A t ≤
+        |E_w t| + 2 * |E_w (t + h)| + |E_w (t + 2 * h)| := by
+      rw [twoIntervalRadius_eq_complex_norm hA0]
+      refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
+      dsimp only [logStepIncrement]
+      have h1 : |E_w (t + h) - E_w t| ≤ |E_w (t + h)| + |E_w t| := abs_sub _ _
+      have h2 : |(E_w (t + h + h) - E_w (t + h)) / A| ≤ |E_w (t + 2 * h)| + |E_w (t + h)| := by
+        rw [abs_div, abs_of_pos hA0]
+        refine (div_le_self (abs_nonneg _) hA1).trans ?_
+        rw [show t + h + h = t + 2 * h by ring]
+        exact abs_sub _ _
+      linarith
+    have hmax3 : C_rad / 8 * Real.exp (β * t) ≤ |E_w t| ∨
+        C_rad / 8 * Real.exp (β * t) ≤ |E_w (t + h)| ∨
+        C_rad / 8 * Real.exp (β * t) ≤ |E_w (t + 2 * h)| := by
+      by_contra! hall
+      linarith [hrad_ge, hsum3, hall.1, hall.2.1, hall.2.2]
+    have hpick : ∀ s : ℝ, t ≤ s → s ≤ t + 2 * h → C_rad / 8 * Real.exp (β * t) ≤ |E_w s| →
+        ∃ x : ℝ, X₀ ≤ x ∧ c₀ * x ^ β ≤ |θ_w x - x| := by
+      intro s hs1 hs2 hEs
+      refine ⟨Real.exp s, htX.trans (Real.exp_le_exp.mpr hs1), ?_⟩
+      have hrpow : (Real.exp s) ^ β = Real.exp (β * s) := by
+        rw [Real.rpow_def_of_pos (Real.exp_pos s), Real.log_exp]; ring
+      have hexp_le : Real.exp (β * s) ≤ Real.exp (2 * β * h) * Real.exp (β * t) := by
+        rw [← Real.exp_add]
+        exact Real.exp_le_exp.mpr (by nlinarith [hβ0, hs2])
+      rw [hrpow]
+      calc c₀ * Real.exp (β * s)
+          ≤ c₀ * (Real.exp (2 * β * h) * Real.exp (β * t)) :=
+            mul_le_mul_of_nonneg_left hexp_le hc₀_pos.le
+        _ = C_rad / 8 * Real.exp (β * t) := by
+            dsimp [c₀]; field_simp [(Real.exp_pos (2 * β * h)).ne']
+        _ ≤ |θ_w (Real.exp s) - Real.exp s| := hEs
+    rcases hmax3 with h0 | h1 | h2
+    · exact hpick t le_rfl (by linarith) h0
+    · exact hpick (t + h) (by linarith) (by linarith) h1
+    · exact hpick (t + 2 * h) (by linarith) le_rfl h2
+  have hall_rec : ∀ a : ℝ, 1 ≤ a →
+      ¬ IsSqrtLogSqUnbounded (dilationRecurrenceOp a β |γ| (fun x => θ_w x - x)) := by
+    intro a ha
+    have ha0 : 0 < a := zero_lt_one.trans_le ha
+    let W : ℝ → ℝ := fun x => -(2 * (m : ℝ) * (((x : ℂ) ^ ρ / ρ).re))
+    let η : ℝ → ℝ := fun x => (θ_w x - x) - W x
+    have hη : ∀ x : ℝ, 16 ≤ x → |η x| ≤ (2 * C₀) * Real.sqrt x * Real.log x ^ 2 := by
+      intro x hx
+      have hx1 : 1 ≤ x := by linarith
+      have hlog2 : 2 ≤ Real.log x := RHTower.two_le_log_of_sixteen_le hx
+      have hsqrt1 : 1 ≤ Real.sqrt x := by
+        rw [← Real.sqrt_one]; exact Real.sqrt_le_sqrt hx1
+      have hb := hθ_bound x hx1
+      have heq_η : η x = θ_w x - x + 2 * (m : ℝ) * (((x : ℂ) ^ ρ / ρ).re) := by
+        dsimp [η, W]; ring
+      rw [heq_η]
+      refine hb.trans ?_
+      have hpoly : 1 + Real.log x ≤ 2 * (Real.sqrt x * Real.log x ^ 2) := by
+        have h1 : 1 + Real.log x ≤ 2 * Real.log x ^ 2 := by nlinarith
+        nlinarith [mul_le_mul_of_nonneg_right hsqrt1 (sq_nonneg (Real.log x))]
+      nlinarith [hC₀, hpoly]
+    obtain ⟨C₁, X₁, _, hC₁⟩ := abs_dilationRecurrenceOp_le_of_sqrt_log_sq (β := β) (γ := |γ|)
+      ha (mul_nonneg zero_le_two hC₀) hη
+    rw [isSqrtLogSqUnbounded_iff_not_eventually_le, not_not]
+    refine ⟨C₁, max X₁ 16, fun x hx => ?_⟩
+    have hxX₁ : X₁ ≤ x := (le_max_left _ _).trans hx
+    have hx_pos : 0 < x := by linarith [(le_max_right X₁ 16).trans hx]
+    have hW_eq : ∀ y : ℝ, W y =
+        ((-(((2 * (m : ℝ) : ℝ) : ℂ)) / ρ) * (y : ℂ) ^ ((β : ℂ) + I * (γ : ℂ))).re := by
+      intro y; dsimp [W, ρ]
+      rw [show -(((2 * (m : ℝ) : ℝ) : ℂ)) / ((β : ℂ) + I * (γ : ℂ)) *
+          (y : ℂ) ^ ((β : ℂ) + I * (γ : ℂ)) =
+        -(((2 * (m : ℝ) : ℝ) : ℂ) *
+          ((y : ℂ) ^ ((β : ℂ) + I * (γ : ℂ)) / ((β : ℂ) + I * (γ : ℂ)))) by ring,
+        Complex.neg_re, Complex.re_ofReal_mul]
+    have hW_zero : dilationRecurrenceOp a β |γ| W x = 0 := by
+      rw [funext hW_eq]
+      have hcos_eq : Real.cos (γ * Real.log a) = Real.cos (|γ| * Real.log a) := by
+        rcases abs_choice γ with hc | hc <;> rw [hc]
+        simp [neg_mul, Real.cos_neg]
+      exact dilationRecurrenceOp_re_cpow_eq_zero ha0 hx_pos hcos_eq
+        (-(((2 * (m : ℝ) : ℝ) : ℂ)) / ρ)
+    have hsplit : (fun y => θ_w y - y) = fun y => η y + W y := by
+      funext y; dsimp [η]; ring
+    rw [hsplit, dilationRecurrenceOp_add, hW_zero, add_zero]
+    exact hC₁ x hxX₁
+  exact ⟨⟨C', hC'_nn, hrad_bound⟩, hrad_tendsto, hnot_unb, hlimsup, hall_rec⟩
+
+private theorem exists_coprimeZeroOneSet_wave_approx {β γ : ℝ} {m Q : ℕ}
+    (hβ0 : 0 < β) (hβ1 : β < 1) (hQ : 1 ≤ Q) :
     ∃ w : ℕ → ℕ,
       (∀ n : ℕ, (w n = 0 ∨ w n = 1) ∧ (w n = 1 → 2 ≤ n ∧ Nat.Coprime n Q)) ∧
-      let θ_w : ℝ → ℝ := fun x => ∑ n ∈ Icc 1 ⌊x⌋₊, (w n : ℝ) * Real.log n
-      let E_w : ℝ → ℝ := fun t => θ_w (Real.exp t) - Real.exp t
-      (∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 1 ≤ x →
-        |θ_w x - x + 2 * (m : ℝ) *
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 1 ≤ x →
+        |(∑ n ∈ Icc 1 ⌊x⌋₊, (w n : ℝ) * Real.log n) - x + 2 * (m : ℝ) *
           (((x : ℂ) ^ (((β : ℂ) + I * (γ : ℂ))) / (((β : ℂ) + I * (γ : ℂ)))).re)| ≤
-          C * (1 + Real.log x)) ∧
-      (∃ C' : ℝ, 0 ≤ C' ∧ ∀ t : ℝ, 0 ≤ t →
-        |radialDiscrepancyOf E_w β γ m t| ≤ C' * (1 + t)) ∧
-      Tendsto (fun t : ℝ =>
-        |radialDiscrepancyOf E_w β γ m t| / (Real.exp (t / 2) * (1 + t) ^ 2)) atTop (𝓝 0) ∧
-      ¬ IsLogSqrtSqUnbounded (radialDiscrepancyOf E_w β γ m) ∧
-      HasPositivePowerLimsup (fun x => θ_w x - x) β ∧
-      (∀ a : ℝ, 1 ≤ a → ¬ IsSqrtLogSqUnbounded (dilationRecurrenceOp a β |γ| (fun x => θ_w x - x))) := by
-  have hβ0 : 0 < β := by linarith
+          C * (1 + Real.log x) := by
   have h1β : 0 < 1 - β := by linarith
   have hQ0 : (0 : ℝ) < Q := by exact_mod_cast hQ
-  -- Choose threshold `k₀ ≥ 1` where `2 m (k₀ Q)^{β - 1} ≤ 1/2` and `3 Q / 2 ≤ log(k₀ Q + 1)`
   have htend_pow : Tendsto (fun k : ℕ => 2 * (m : ℝ) * ((k * Q : ℕ) : ℝ) ^ (β - 1))
       atTop (𝓝 0) := by
     have h1 := (tendsto_rpow_neg_atTop h1β).comp
@@ -1281,9 +1459,10 @@ theorem exists_coprimeZeroOneSet_realizing_twoIntervalRadius {β γ : ℝ} {m Q 
     rw [mul_zero] at h2
     refine h2.congr fun k => ?_
     simp only [Function.comp_apply, Nat.cast_mul, show -(1 - β) = β - 1 by ring]
-  obtain ⟨K₁, hK₁⟩ := eventually_atTop.mp (htend_pow.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2)))
+  obtain ⟨K₁, hK₁⟩ := eventually_atTop.mp
+    (htend_pow.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2)))
   obtain ⟨K₂, hK₂⟩ := exists_nat_gt (Real.exp (3 * (Q : ℝ) / 2))
-  set k₀ : ℕ := max (max K₁ K₂) 1
+  let k₀ : ℕ := max (max K₁ K₂) 1
   have hk₀1 : 1 ≤ k₀ := le_max_right _ _
   have hstep_small : ∀ k : ℕ, k₀ ≤ k →
       0 ≤ waveTarget β γ m (((k + 1) * Q : ℕ) : ℝ) - waveTarget β γ m ((k * Q : ℕ) : ℝ) ∧
@@ -1311,8 +1490,7 @@ theorem exists_coprimeZeroOneSet_realizing_twoIntervalRadius {β γ : ℝ} {m Q 
         exact hK₂.trans hkQ1
       exact (Real.le_log_iff_exp_le (by positivity)).mpr hexp_lt.le
     exact ⟨by linarith, by linarith⟩
-  -- Inductive tracking bound at block multiples `K * Q` (`K ≥ k₀`)
-  set M₀ : ℝ := |waveTarget β γ m ((k₀ * Q : ℕ) : ℝ)|
+  let M₀ : ℝ := |waveTarget β γ m ((k₀ * Q : ℕ) : ℝ)|
   have hM₀ : 0 ≤ M₀ := abs_nonneg _
   have hzero_below : ∀ K : ℕ, K ≤ k₀ → greedyCoprimeSum β γ m Q k₀ K = 0 := by
     intro K hK
@@ -1347,11 +1525,11 @@ theorem exists_coprimeZeroOneSet_realizing_twoIntervalRadius {β γ : ℝ} {m Q 
       · rw [if_neg (fun h => hlt h.2)]
         push Not at hlt
         exact ⟨by linarith [hM₀], by linarith [ih.2, hlog_mono]⟩
-  set w : ℕ → ℕ := coprimeWaveIndicator β γ m Q k₀
-  refine ⟨w, ?_⟩
-  have hw_props : ∀ n : ℕ, (w n = 0 ∨ w n = 1) ∧ (w n = 1 → 2 ≤ n ∧ Nat.Coprime n Q) := by
+  have hw_props : ∀ n : ℕ, (coprimeWaveIndicator β γ m Q k₀ n = 0 ∨
+      coprimeWaveIndicator β γ m Q k₀ n = 1) ∧
+      (coprimeWaveIndicator β γ m Q k₀ n = 1 → 2 ≤ n ∧ Nat.Coprime n Q) := by
     intro n
-    dsimp [w, coprimeWaveIndicator]
+    unfold coprimeWaveIndicator
     split_ifs with h
     · refine ⟨Or.inr rfl, fun _ => ?_⟩
       obtain ⟨k, hk, _, rfl⟩ := h
@@ -1364,372 +1542,217 @@ theorem exists_coprimeZeroOneSet_realizing_twoIntervalRadius {β γ : ℝ} {m Q 
           hp.not_dvd_one ((Nat.dvd_add_right (dvd_mul_of_dvd_right hd2 k)).mp hd1)
       exact ⟨hge2, hcop⟩
     · exact ⟨Or.inl rfl, fun h01 => nomatch h01⟩
-  refine ⟨hw_props, ?_⟩
-  intro θ_w E_w
-  -- Global `O(1 + log x)` bound for `x ≥ 1`
+  refine ⟨coprimeWaveIndicator β γ m Q k₀, hw_props, ?_⟩
   set ρ : ℂ := (β : ℂ) + I * (γ : ℂ)
   have hρ_pos : 0 < ‖ρ‖ := norm_pos_iff.mpr fun he => by
     have := congrArg Complex.re he; simp [ρ] at this; linarith
-  set B_init : ℝ := ((k₀ + 1 : ℝ) * Q + 1) * (1 + 2 * (m : ℝ) / ‖ρ‖) +
+  have hln_k0 : 0 ≤ Real.log (((k₀ + 1 : ℕ) * Q + 2 : ℕ) : ℝ) :=
+    Real.log_nonneg (Nat.one_le_cast.mpr (by omega))
+  have hq_nn : 0 ≤ ((Q : ℝ) + 1) * (1 + 2 * (m : ℝ)) := by positivity
+  let B_init : ℝ := ((k₀ + 1 : ℝ) * Q + 1) * (1 + 2 * (m : ℝ) / ‖ρ‖) +
     M₀ + Real.log (((k₀ + 1 : ℕ) * Q + 2 : ℕ) : ℝ) +
     ((Q : ℝ) + 1) * (1 + 2 * (m : ℝ))
   have hB_init : 0 ≤ B_init := by
+    have h1 : 0 ≤ ((k₀ + 1 : ℝ) * Q + 1) * (1 + 2 * (m : ℝ) / ‖ρ‖) := by positivity
     dsimp [B_init]
-    have hlog_nn : 0 ≤ Real.log (((k₀ + 1 : ℕ) * Q + 2 : ℕ) : ℝ) :=
-      Real.log_nonneg (by exact_mod_cast (show 1 ≤ (k₀ + 1) * Q + 2 by omega))
-    positivity
-  have hθ_bound : ∀ x : ℝ, 1 ≤ x →
-      |θ_w x - x + 2 * (m : ℝ) * (((x : ℂ) ^ ρ / ρ).re)| ≤
-        (B_init + 2) * (1 + Real.log x) := by
-    intro x hx
-    have hx0 : 0 < x := zero_lt_one.trans_le hx
-    have hlogx_nn : 0 ≤ Real.log x := Real.log_nonneg hx
-    have hid_wt : θ_w x - x + 2 * (m : ℝ) * (((x : ℂ) ^ ρ / ρ).re) =
-        θ_w x - waveTarget β γ m x := by
-      dsimp [waveTarget, ρ]; ring
-    rw [hid_wt]
-    have hT_crude : ∀ y : ℝ, 1 ≤ y → |waveTarget β γ m y| ≤ y * (1 + 2 * (m : ℝ) / ‖ρ‖) := by
-      intro y hy
-      have hy0 : 0 < y := zero_lt_one.trans_le hy
-      have hc : |(((y : ℂ) ^ ρ / ρ).re)| ≤ y / ‖ρ‖ := by
-        refine (Complex.abs_re_le_norm _).trans ?_
-        rw [norm_div, Complex.norm_cpow_eq_rpow_re_of_pos hy0]
-        have hre : ρ.re = β := by simp [ρ]
-        rw [hre]
-        exact div_le_div_of_nonneg_right
-          ((Real.rpow_le_rpow_of_exponent_le hy hβ1.le).trans_eq (Real.rpow_one y)) hρ_pos.le
-      unfold waveTarget
-      calc |y - 2 * (m : ℝ) * (((y : ℂ) ^ ρ / ρ).re)|
-          ≤ |y| + |2 * (m : ℝ) * (((y : ℂ) ^ ρ / ρ).re)| := abs_sub _ _
-        _ = y + 2 * (m : ℝ) * |(((y : ℂ) ^ ρ / ρ).re)| := by
-            rw [abs_of_pos hy0, abs_mul, abs_of_nonneg (by positivity)]
-        _ ≤ y + 2 * (m : ℝ) * (y / ‖ρ‖) := by gcongr
-        _ = y * (1 + 2 * (m : ℝ) / ‖ρ‖) := by ring
-    set K : ℕ := ⌊x⌋₊ / Q
-    by_cases hKk₀ : K < k₀
-    · -- Small `x`: `⌊x⌋₊ < k₀ * Q`, so `w n = 0` on `1 ≤ n ≤ ⌊x⌋₊`
-      have hfl_lt : ⌊x⌋₊ < k₀ * Q := (Nat.div_lt_iff_lt_mul hQ).mp hKk₀
-      have hθ0 : θ_w x = 0 := by
-        dsimp [θ_w]
-        refine Finset.sum_eq_zero fun n hn => ?_
-        have hn_hi : n ≤ ⌊x⌋₊ := (mem_Icc.mp hn).2
-        have hw0 : w n = 0 := by
-          dsimp [w, coprimeWaveIndicator]
-          rw [if_neg]
-          rintro ⟨k, hk, _, rfl⟩
-          have : k₀ * Q ≤ k * Q := Nat.mul_le_mul_right Q hk
-          omega
-        rw [hw0]; simp
-      have hx_lt : x < (k₀ + 1 : ℝ) * Q + 1 := by
-        have h1 := Nat.lt_floor_add_one x
-        have h2 : (⌊x⌋₊ : ℝ) ≤ (k₀ * Q : ℕ) := by exact_mod_cast hfl_lt.le
-        push_cast at h2
-        linarith
-      have hln_k0 : 0 ≤ Real.log (((k₀ + 1 : ℕ) * Q + 2 : ℕ) : ℝ) :=
-        Real.log_nonneg (Nat.one_le_cast.mpr (by omega))
-      have hm_nn : (0 : ℝ) ≤ m := Nat.cast_nonneg m
-      rw [hθ0, zero_sub, abs_neg]
-      calc |waveTarget β γ m x| ≤ x * (1 + 2 * (m : ℝ) / ‖ρ‖) := hT_crude x hx
-        _ ≤ ((k₀ + 1 : ℝ) * Q + 1) * (1 + 2 * (m : ℝ) / ‖ρ‖) :=
-            mul_le_mul_of_nonneg_right hx_lt.le (by positivity)
-        _ ≤ B_init + 2 := by dsimp [B_init]; linarith [hM₀, hln_k0, hQ0, hm_nn]
-        _ ≤ (B_init + 2) * (1 + Real.log x) :=
-            le_mul_of_one_le_right (by positivity) (by linarith)
-    · push Not at hKk₀
-      have hKQ_le_fl : K * Q ≤ ⌊x⌋₊ := by
-        rw [mul_comm]; exact Nat.mul_div_le ⌊x⌋₊ Q
-      have hfl_lt_succ : ⌊x⌋₊ < (K + 1) * Q := by
-        calc ⌊x⌋₊ < K * Q + Q := Nat.lt_div_mul_add hQ
-          _ = (K + 1) * Q := (Nat.succ_mul K Q).symm
-      have hKQ_pos : 1 ≤ K * Q := Nat.mul_pos (hk₀1.trans hKk₀) hQ
-      have hKQ_le_x : ((K * Q : ℕ) : ℝ) ≤ x :=
-        (by exact_mod_cast hKQ_le_fl : ((K * Q : ℕ) : ℝ) ≤ ⌊x⌋₊).trans (Nat.floor_le hx0.le)
-      have hx_lt_succ : x ≤ ((K * Q : ℕ) : ℝ) + (Q : ℝ) + 1 := by
-        have h1 := Nat.lt_floor_add_one x
-        have h2 : (⌊x⌋₊ : ℝ) ≤ (((K + 1) * Q : ℕ) : ℝ) := by exact_mod_cast hfl_lt_succ.le
-        push_cast at h2 ⊢
-        linarith
-      -- Split `θ_w x` at `K * Q`
-      have hsplit : Icc 1 ⌊x⌋₊ = Icc 1 (K * Q) ∪ Ioc (K * Q) ⌊x⌋₊ := by
-        ext n; simp only [mem_Icc, mem_union, mem_Ioc]; omega
-      have hdisj : Disjoint (Icc 1 (K * Q)) (Ioc (K * Q) ⌊x⌋₊) :=
-        Finset.disjoint_left.mpr fun _ h1 h2 => (mem_Ioc.mp h2).1.not_ge (mem_Icc.mp h1).2
-      have htail_le : |∑ n ∈ Ioc (K * Q) ⌊x⌋₊, (w n : ℝ) * Real.log n| ≤
-          Real.log (((K * Q + 1 : ℕ) : ℝ)) := by
-        have hnn : 0 ≤ ∑ n ∈ Ioc (K * Q) ⌊x⌋₊, (w n : ℝ) * Real.log n := by
-          refine Finset.sum_nonneg fun n hn => mul_nonneg (Nat.cast_nonneg _) ?_
-          have hn1 : 1 ≤ n := by have := (mem_Ioc.mp hn).1; omega
-          exact Real.log_nonneg (Nat.one_le_cast.mpr hn1)
-        rw [abs_of_nonneg hnn]
-        by_cases hmem : K * Q + 1 ≤ ⌊x⌋₊
-        · have hother : ∀ n ∈ Ioc (K * Q) ⌊x⌋₊, n ≠ K * Q + 1 →
-              (w n : ℝ) * Real.log n = 0 := by
-            intro n hn hne
-            obtain ⟨hn_lo, hn_hi⟩ := mem_Ioc.mp hn
-            have hw0 : w n = 0 := by
-              dsimp [w, coprimeWaveIndicator]
-              rw [if_neg]
-              rintro ⟨k, _, _, rfl⟩
-              rcases lt_trichotomy k K with hlt | rfl | hgt
-              · have : (k + 1) * Q ≤ K * Q := Nat.mul_le_mul_right Q hlt
-                rw [Nat.succ_mul] at this; omega
-              · exact hne rfl
-              · have : (K + 1) * Q ≤ k * Q := Nat.mul_le_mul_right Q hgt
-                omega
-            rw [hw0]; simp
-          rw [Finset.sum_eq_single (K * Q + 1) (fun n hn hne => hother n hn hne)
-            (fun hnot => absurd (mem_Ioc.mpr ⟨by omega, hmem⟩) hnot)]
-          have hw1 : (w (K * Q + 1) : ℝ) ≤ 1 := by
-            rcases (hw_props (K * Q + 1)).1 with h0 | h1 <;> simp [h0, h1]
-          exact mul_le_of_le_one_left
-            (Real.log_nonneg (by exact_mod_cast (show 1 ≤ K * Q + 1 by omega))) hw1
-        · have hemp : Ioc (K * Q) ⌊x⌋₊ = ∅ := Finset.Ioc_eq_empty (by omega)
-          rw [hemp, Finset.sum_empty]
-          exact Real.log_nonneg (by exact_mod_cast (show 1 ≤ K * Q + 1 by omega))
-      have hθ_eq : θ_w x = greedyCoprimeSum β γ m Q k₀ K +
-          ∑ n ∈ Ioc (K * Q) ⌊x⌋₊, (w n : ℝ) * Real.log n := by
-        dsimp [θ_w]
-        rw [hsplit, Finset.sum_union hdisj, sum_coprimeWaveIndicator_block β γ m hQ k₀ K]
-      obtain ⟨hinv_lo, hinv_hi⟩ := hinv K hKk₀
-      have hinv_abs : |greedyCoprimeSum β γ m Q k₀ K - waveTarget β γ m ((K * Q : ℕ) : ℝ)| ≤
-          M₀ + Real.log (((K * Q + 1 : ℕ) : ℝ)) := by
-        rw [abs_le]
-        have hlog_nn : 0 ≤ Real.log (((K * Q + 1 : ℕ) : ℝ)) :=
-          Real.log_nonneg (by exact_mod_cast (show 1 ≤ K * Q + 1 by omega))
-        exact ⟨by linarith, hinv_hi⟩
-      have hT_step : |waveTarget β γ m x - waveTarget β γ m ((K * Q : ℕ) : ℝ)| ≤
-          ((Q : ℝ) + 1) * (1 + 2 * (m : ℝ)) := by
-        have hKQ1 : (1 : ℝ) ≤ ((K * Q : ℕ) : ℝ) := by exact_mod_cast hKQ_pos
-        have hmvt := waveTarget_diff_bounds (γ := γ) hβ0 hβ1 m (zero_lt_one.trans_le hKQ1) hKQ_le_x
-        have hrpow_le : ((K * Q : ℕ) : ℝ) ^ (β - 1) ≤ 1 :=
-          Real.rpow_le_one_of_one_le_of_nonpos hKQ1 (by linarith)
-        have hdx : x - ((K * Q : ℕ) : ℝ) ≤ (Q : ℝ) + 1 := by linarith
-        have hdx0 : 0 ≤ x - ((K * Q : ℕ) : ℝ) := by linarith
-        have h1 : |waveTarget β γ m x - waveTarget β γ m ((K * Q : ℕ) : ℝ)| ≤
-            (x - ((K * Q : ℕ) : ℝ)) +
-              2 * (m : ℝ) * (x - ((K * Q : ℕ) : ℝ)) * ((K * Q : ℕ) : ℝ) ^ (β - 1) := by
-          have := (abs_add_le (waveTarget β γ m x - waveTarget β γ m ((K * Q : ℕ) : ℝ) -
-            (x - ((K * Q : ℕ) : ℝ))) (x - ((K * Q : ℕ) : ℝ))).trans
-            (add_le_add hmvt (le_of_eq (abs_of_nonneg hdx0)))
-          rwa [sub_add_cancel] at this
-        have h2 : 2 * (m : ℝ) * (x - ((K * Q : ℕ) : ℝ)) * ((K * Q : ℕ) : ℝ) ^ (β - 1) ≤
-            2 * (m : ℝ) * (x - ((K * Q : ℕ) : ℝ)) :=
-          mul_le_of_le_one_right (by positivity) hrpow_le
-        nlinarith
-      have hlog_KQ : Real.log (((K * Q + 1 : ℕ) : ℝ)) ≤ Real.log x + 1 := by
-        have hle2x : (((K * Q + 1 : ℕ) : ℝ)) ≤ 2 * x := by
-          push_cast; linarith [hKQ_le_x, hx]
-        calc Real.log (((K * Q + 1 : ℕ) : ℝ)) ≤ Real.log (2 * x) :=
-              Real.log_le_log (by positivity) hle2x
-          _ = Real.log 2 + Real.log x := Real.log_mul two_ne_zero hx0.ne'
-          _ ≤ Real.log x + 1 := by linarith [Real.log_two_lt_d9]
-      calc |θ_w x - waveTarget β γ m x|
-          = |(greedyCoprimeSum β γ m Q k₀ K - waveTarget β γ m ((K * Q : ℕ) : ℝ)) +
-              (∑ n ∈ Ioc (K * Q) ⌊x⌋₊, (w n : ℝ) * Real.log n) -
-              (waveTarget β γ m x - waveTarget β γ m ((K * Q : ℕ) : ℝ))| := by
-            rw [hθ_eq]; congr 1; ring
-        _ ≤ |greedyCoprimeSum β γ m Q k₀ K - waveTarget β γ m ((K * Q : ℕ) : ℝ)| +
-              |∑ n ∈ Ioc (K * Q) ⌊x⌋₊, (w n : ℝ) * Real.log n| +
-              |waveTarget β γ m x - waveTarget β γ m ((K * Q : ℕ) : ℝ)| :=
-            (abs_sub _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
-        _ ≤ (M₀ + Real.log (((K * Q + 1 : ℕ) : ℝ))) + Real.log (((K * Q + 1 : ℕ) : ℝ)) +
-              ((Q : ℝ) + 1) * (1 + 2 * (m : ℝ)) :=
-            add_le_add (add_le_add hinv_abs htail_le) hT_step
-        _ ≤ (B_init + 2) * (1 + Real.log x) := by
-            have hpos_term : 0 ≤ ((k₀ + 1 : ℝ) * Q + 1) * (1 + 2 * (m : ℝ) / ‖ρ‖) +
-                Real.log (((k₀ + 1 : ℕ) * Q + 2 : ℕ) : ℝ) := by
-              have hln : 0 ≤ Real.log (((k₀ + 1 : ℕ) * Q + 2 : ℕ) : ℝ) :=
-                Real.log_nonneg (by exact_mod_cast (show 1 ≤ (k₀ + 1) * Q + 2 by omega))
-              positivity
-            dsimp [B_init]
-            nlinarith [hlog_KQ, hlogx_nn, hB_init, hpos_term]
-  -- Deduce `O(1 + t)` radial bound, `Tendsto ... 0`, `HasPositivePowerLimsup`, and all recurrences
-  set C₀ : ℝ := B_init + 2
-  have hC₀ : 0 ≤ C₀ := by dsimp [C₀]; positivity
-  set h := quarterPeriodStep γ
-  have hh_pos : 0 < h := quarterPeriodStep_pos hγ
-  set C' : ℝ := 4 * C₀ * (1 + 2 * h)
-  have hrad_bound : ∀ t : ℝ, 0 ≤ t → |radialDiscrepancyOf E_w β γ m t| ≤ C' * (1 + t) := by
-    intro t ht
-    have hmode : ∀ s : ℝ, 0 ≤ s → s ≤ t + 2 * h →
-        |E_w s + 2 * (m : ℝ) * (Complex.exp (ρ * (s : ℂ)) / ρ).re| ≤
-          C₀ * (1 + 2 * h) * (1 + t) := by
-      intro s hs hst
-      have hexp1 : 1 ≤ Real.exp s := Real.one_le_exp hs
-      have hcpow : (Real.exp s : ℂ) ^ ρ = Complex.exp (ρ * (s : ℂ)) := by
-        rw [RHTower.cpow_ofReal_exp]; congr 1; ring
-      have hb := hθ_bound (Real.exp s) hexp1
-      rw [hcpow, Real.log_exp] at hb
-      refine hb.trans ?_
-      have h1s : 1 + s ≤ (1 + 2 * h) * (1 + t) := by nlinarith [hh_pos, ht, hst]
-      calc C₀ * (1 + s) ≤ C₀ * ((1 + 2 * h) * (1 + t)) :=
-            mul_le_mul_of_nonneg_left h1s hC₀
-        _ = C₀ * (1 + 2 * h) * (1 + t) := by ring
-    have hr := abs_radialDiscrepancyOf_le_of_mode_error hβ0.le hγ m
-      (hmode t ht (by linarith))
-      (hmode (t + h) (by linarith) (by linarith))
-      (hmode (t + 2 * h) (by linarith) le_rfl)
-    exact hr.trans_eq (by dsimp [C']; ring)
-  have hrad_tendsto : Tendsto (fun t : ℝ =>
-      |radialDiscrepancyOf E_w β γ m t| / (Real.exp (t / 2) * (1 + t) ^ 2)) atTop (𝓝 0) := by
-    have hexp_inv : Tendsto (fun t : ℝ => C' * Real.exp (-(t / 2))) atTop (𝓝 0) := by
-      have h0 := _root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 0 (1 / 2) (by norm_num)
-      have h1 := h0.const_mul C'
-      rw [mul_zero] at h1
-      refine h1.congr fun t => ?_
-      rw [Real.rpow_zero, one_mul]
-      congr 2; ring
-    refine squeeze_zero_norm' ?_ hexp_inv
-    filter_upwards [eventually_ge_atTop (0 : ℝ)] with t ht
-    rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg (abs_nonneg _) (by positivity))]
-    have h1t_pos : 0 < 1 + t := by linarith
-    calc |radialDiscrepancyOf E_w β γ m t| / (Real.exp (t / 2) * (1 + t) ^ 2)
-        ≤ (C' * (1 + t)) / (Real.exp (t / 2) * (1 + t) ^ 2) :=
-          div_le_div_of_nonneg_right (hrad_bound t ht) (by positivity)
-      _ = C' / (Real.exp (t / 2) * (1 + t)) := by
-          rw [sq]; field_simp [h1t_pos.ne', (Real.exp_pos (t / 2)).ne']
-      _ ≤ C' / (Real.exp (t / 2) * 1) := by
-          refine div_le_div_of_nonneg_left (by dsimp [C']; positivity) (by positivity) ?_
-          exact mul_le_mul_of_nonneg_left (by linarith) (Real.exp_pos _).le
-      _ = C' * Real.exp (-(t / 2)) := by rw [mul_one, Real.exp_neg, div_eq_mul_inv]
-  have hnot_unb : ¬ IsLogSqrtSqUnbounded (radialDiscrepancyOf E_w β γ m) := by
-    rw [isLogSqrtSqUnbounded_iff_not_eventually_le, not_not]
-    obtain ⟨T₀, hT₀⟩ := eventually_atTop.mp (hrad_tendsto.eventually (gt_mem_nhds one_pos))
-    refine ⟨1, max T₀ 0, fun t ht => ?_⟩
-    have htT : T₀ ≤ t := (le_max_left _ _).trans ht
-    have ht0 : 0 ≤ t := (le_max_right _ _).trans ht
-    have hden : 0 < Real.exp (t / 2) * (1 + t) ^ 2 := by positivity
-    have hlt := hT₀ t htT
-    have hmul := (div_lt_iff₀ hden).mp hlt
-    linarith
-  -- `HasPositivePowerLimsup (fun x => θ_w x - x) β` from quarter-period radial lower bound
-  have hlimsup : HasPositivePowerLimsup (fun x => θ_w x - x) β := by
-    set C_rad := quartetRadialCoeff β γ m
-    have hC_rad_pos : 0 < C_rad := quartetRadialCoeff_pos hγ hm
-    set A := quarterPeriodScale β γ
-    have hA1 : 1 ≤ A := (one_lt_quarterPeriodScale hβ0 hγ).le
-    have hsmall : Tendsto (fun t : ℝ => C' * (1 + t) * Real.exp (-(β * t))) atTop (𝓝 0) := by
-      have h0 := _root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 1 β hβ0
-      have h1 := h0.const_mul (2 * C')
-      rw [mul_zero] at h1
-      refine squeeze_zero_norm' ?_ h1
-      filter_upwards [eventually_ge_atTop (1 : ℝ)] with t ht
-      rw [Real.norm_eq_abs, abs_of_nonneg (by dsimp [C']; positivity), Real.rpow_one]
-      have h1t : 1 + t ≤ 2 * t := by linarith
-      calc C' * (1 + t) * Real.exp (-(β * t))
-          ≤ C' * (2 * t) * Real.exp (-(β * t)) :=
-            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left h1t (by dsimp [C']; positivity))
-              (Real.exp_pos _).le
-        _ = 2 * C' * (t * Real.exp (-β * t)) := by rw [neg_mul]; ring
-    obtain ⟨T₁, hT₁⟩ := eventually_atTop.mp
-      (hsmall.eventually (gt_mem_nhds (half_pos hC_rad_pos)))
-    set c₀ : ℝ := C_rad / (8 * Real.exp (2 * β * h))
-    refine ⟨c₀, by dsimp [c₀]; positivity, fun X₀ => ?_⟩
-    set t : ℝ := max (max T₁ 1) (Real.log (max X₀ 1))
-    have htT₁ : T₁ ≤ t := (le_max_left T₁ 1).trans (le_max_left _ _)
-    have ht1 : 1 ≤ t := (le_max_right T₁ 1).trans (le_max_left _ _)
-    have htX : Real.exp t ≥ X₀ := by
-      calc X₀ ≤ max X₀ 1 := le_max_left _ _
-        _ = Real.exp (Real.log (max X₀ 1)) := (Real.exp_log (by positivity)).symm
-        _ ≤ Real.exp t := Real.exp_le_exp.mpr (le_max_right _ _)
-    have hdisc := hrad_bound t (by linarith)
-    have hsmall_t := hT₁ t htT₁
-    have hrad_ge : C_rad / 2 * Real.exp (β * t) ≤ twoIntervalRadius E_w h A t := by
-      have hmul := mul_lt_mul_of_pos_right hsmall_t (Real.exp_pos (β * t))
-      rw [mul_assoc, ← Real.exp_add, neg_add_cancel, Real.exp_zero, mul_one] at hmul
-      have hl := (abs_le.mp hdisc).1
-      unfold radialDiscrepancyOf at hl
+    linarith [h1, hM₀, hln_k0, hq_nn]
+  refine ⟨B_init + 2, by linarith, fun x hx => ?_⟩
+  have hx0 : 0 < x := zero_lt_one.trans_le hx
+  have hlogx_nn : 0 ≤ Real.log x := Real.log_nonneg hx
+  have hid_wt : (∑ n ∈ Icc 1 ⌊x⌋₊, (coprimeWaveIndicator β γ m Q k₀ n : ℝ) * Real.log n) -
+      x + 2 * (m : ℝ) * (((x : ℂ) ^ ρ / ρ).re) =
+      (∑ n ∈ Icc 1 ⌊x⌋₊, (coprimeWaveIndicator β γ m Q k₀ n : ℝ) * Real.log n) -
+        waveTarget β γ m x := by
+    dsimp [waveTarget, ρ]; ring
+  rw [hid_wt]
+  have hT_crude : ∀ y : ℝ, 1 ≤ y → |waveTarget β γ m y| ≤ y * (1 + 2 * (m : ℝ) / ‖ρ‖) := by
+    intro y hy
+    have hy0 : 0 < y := zero_lt_one.trans_le hy
+    have hc : |(((y : ℂ) ^ ρ / ρ).re)| ≤ y / ‖ρ‖ := by
+      refine (Complex.abs_re_le_norm _).trans ?_
+      rw [norm_div, Complex.norm_cpow_eq_rpow_re_of_pos hy0]
+      have hre : ρ.re = β := by simp [ρ]
+      rw [hre]
+      exact div_le_div_of_nonneg_right
+        ((Real.rpow_le_rpow_of_exponent_le hy hβ1.le).trans_eq (Real.rpow_one y)) hρ_pos.le
+    unfold waveTarget
+    calc |y - 2 * (m : ℝ) * (((y : ℂ) ^ ρ / ρ).re)|
+        ≤ |y| + |2 * (m : ℝ) * (((y : ℂ) ^ ρ / ρ).re)| := abs_sub _ _
+      _ = y + 2 * (m : ℝ) * |(((y : ℂ) ^ ρ / ρ).re)| := by
+          rw [abs_of_pos hy0, abs_mul, abs_of_nonneg (by positivity)]
+      _ ≤ y + 2 * (m : ℝ) * (y / ‖ρ‖) := by gcongr
+      _ = y * (1 + 2 * (m : ℝ) / ‖ρ‖) := by ring
+  let K : ℕ := ⌊x⌋₊ / Q
+  by_cases hKk₀ : K < k₀
+  · have hfl_lt : ⌊x⌋₊ < k₀ * Q := (Nat.div_lt_iff_lt_mul hQ).mp hKk₀
+    have hθ0 : (∑ n ∈ Icc 1 ⌊x⌋₊, (coprimeWaveIndicator β γ m Q k₀ n : ℝ) * Real.log n) = 0 := by
+      refine Finset.sum_eq_zero fun n hn => ?_
+      have hn_hi : n ≤ ⌊x⌋₊ := (mem_Icc.mp hn).2
+      have hw0 : coprimeWaveIndicator β γ m Q k₀ n = 0 := by
+        unfold coprimeWaveIndicator
+        rw [if_neg]
+        rintro ⟨k, hk, _, rfl⟩
+        have : k₀ * Q ≤ k * Q := Nat.mul_le_mul_right Q hk
+        omega
+      rw [hw0]; simp
+    have hx_lt : x < (k₀ + 1 : ℝ) * Q + 1 := by
+      have h1 := Nat.lt_floor_add_one x
+      have h2 : (⌊x⌋₊ : ℝ) ≤ (k₀ * Q : ℕ) := by exact_mod_cast hfl_lt.le
+      push_cast at h2
       linarith
-    -- Sum of absolute values of `E_w` at `t, t+h, t+2h` exceeds `C_rad / 2 * e^{β t}`
-    have hsum3 : twoIntervalRadius E_w h A t ≤
-        |E_w t| + 2 * |E_w (t + h)| + |E_w (t + 2 * h)| := by
-      rw [twoIntervalRadius_eq_complex_norm (zero_lt_one.trans_le hA1)]
-      refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
-      dsimp only [logStepIncrement]
-      have h1 : |E_w (t + h) - E_w t| ≤ |E_w (t + h)| + |E_w t| := abs_sub _ _
-      have h2 : |(E_w (t + h + h) - E_w (t + h)) / A| ≤ |E_w (t + 2 * h)| + |E_w (t + h)| := by
-        rw [abs_div, abs_of_pos (zero_lt_one.trans_le hA1)]
-        refine (div_le_self (abs_nonneg _) hA1).trans ?_
-        rw [show t + h + h = t + 2 * h by ring]
-        exact abs_sub _ _
+    rw [hθ0, zero_sub, abs_neg]
+    calc |waveTarget β γ m x| ≤ x * (1 + 2 * (m : ℝ) / ‖ρ‖) := hT_crude x hx
+      _ ≤ ((k₀ + 1 : ℝ) * Q + 1) * (1 + 2 * (m : ℝ) / ‖ρ‖) :=
+          mul_le_mul_of_nonneg_right hx_lt.le (by positivity)
+      _ ≤ B_init + 2 := by dsimp [B_init]; linarith [hM₀, hln_k0, hq_nn]
+      _ ≤ (B_init + 2) * (1 + Real.log x) :=
+          le_mul_of_one_le_right (by linarith [hB_init]) (by linarith)
+  · push Not at hKk₀
+    have hKQ_le_fl : K * Q ≤ ⌊x⌋₊ := by
+      rw [mul_comm]; exact Nat.mul_div_le ⌊x⌋₊ Q
+    have hfl_lt_succ : ⌊x⌋₊ < (K + 1) * Q := by
+      calc ⌊x⌋₊ < K * Q + Q := Nat.lt_div_mul_add hQ
+        _ = (K + 1) * Q := (Nat.succ_mul K Q).symm
+    have hKQ_pos : 1 ≤ K * Q := Nat.mul_pos (hk₀1.trans hKk₀) hQ
+    have hKQ_le_x : ((K * Q : ℕ) : ℝ) ≤ x :=
+      (by exact_mod_cast hKQ_le_fl : ((K * Q : ℕ) : ℝ) ≤ ⌊x⌋₊).trans (Nat.floor_le hx0.le)
+    have hx_lt_succ : x ≤ ((K * Q : ℕ) : ℝ) + (Q : ℝ) + 1 := by
+      have h1 := Nat.lt_floor_add_one x
+      have h2 : (⌊x⌋₊ : ℝ) ≤ (((K + 1) * Q : ℕ) : ℝ) := by exact_mod_cast hfl_lt_succ.le
+      push_cast at h2 ⊢
       linarith
-    have hmax3 : C_rad / 8 * Real.exp (β * t) ≤ |E_w t| ∨
-        C_rad / 8 * Real.exp (β * t) ≤ |E_w (t + h)| ∨
-        C_rad / 8 * Real.exp (β * t) ≤ |E_w (t + 2 * h)| := by
-      by_contra! hall
-      linarith [hrad_ge, hsum3, hall.1, hall.2.1, hall.2.2]
-    have hpick : ∀ s : ℝ, t ≤ s → s ≤ t + 2 * h → C_rad / 8 * Real.exp (β * t) ≤ |E_w s| →
-        ∃ x : ℝ, X₀ ≤ x ∧ c₀ * x ^ β ≤ |θ_w x - x| := by
-      intro s hs1 hs2 hEs
-      refine ⟨Real.exp s, htX.trans (Real.exp_le_exp.mpr hs1), ?_⟩
-      have hrpow : (Real.exp s) ^ β = Real.exp (β * s) := by
-        rw [Real.rpow_def_of_pos (Real.exp_pos s), Real.log_exp]; ring
-      have hexp_le : Real.exp (β * s) ≤ Real.exp (2 * β * h) * Real.exp (β * t) := by
-        rw [← Real.exp_add]
-        exact Real.exp_le_exp.mpr (by nlinarith [hβ0, hs2])
-      rw [hrpow]
-      calc c₀ * Real.exp (β * s)
-          ≤ c₀ * (Real.exp (2 * β * h) * Real.exp (β * t)) :=
-            mul_le_mul_of_nonneg_left hexp_le (by dsimp [c₀]; positivity)
-        _ = C_rad / 8 * Real.exp (β * t) := by
-            dsimp [c₀]; field_simp [(Real.exp_pos (2 * β * h)).ne']
-        _ ≤ |θ_w (Real.exp s) - Real.exp s| := hEs
-    rcases hmax3 with h0 | h1 | h2
-    · exact hpick t le_rfl (by linarith) h0
-    · exact hpick (t + h) (by linarith) (by linarith) h1
-    · exact hpick (t + 2 * h) (by linarith) le_rfl h2
-  -- Boundedness of all dilation recurrences `a ≥ 1`
-  have hall_rec : ∀ a : ℝ, 1 ≤ a →
-      ¬ IsSqrtLogSqUnbounded (dilationRecurrenceOp a β |γ| (fun x => θ_w x - x)) := by
-    intro a ha
-    have ha0 : 0 < a := zero_lt_one.trans_le ha
-    let W : ℝ → ℝ := fun x => -(2 * (m : ℝ) * (((x : ℂ) ^ ρ / ρ).re))
-    let η : ℝ → ℝ := fun x => (θ_w x - x) - W x
-    have hη : ∀ x : ℝ, 16 ≤ x → |η x| ≤ (2 * C₀) * Real.sqrt x * Real.log x ^ 2 := by
-      intro x hx
-      have hx1 : 1 ≤ x := by linarith
-      have hlog2 : 2 ≤ Real.log x := RHTower.two_le_log_of_sixteen_le hx
-      have hsqrt1 : 1 ≤ Real.sqrt x := by
-        rw [← Real.sqrt_one]; exact Real.sqrt_le_sqrt hx1
-      have hb := hθ_bound x hx1
-      have heq_η : η x = θ_w x - x + 2 * (m : ℝ) * (((x : ℂ) ^ ρ / ρ).re) := by
-        dsimp [η, W]; ring
-      rw [heq_η]
-      refine hb.trans ?_
-      have hpoly : 1 + Real.log x ≤ 2 * (Real.sqrt x * Real.log x ^ 2) := by
-        have h1 : 1 + Real.log x ≤ 2 * Real.log x ^ 2 := by nlinarith
-        nlinarith [mul_le_mul_of_nonneg_right hsqrt1 (sq_nonneg (Real.log x))]
-      nlinarith [hC₀, hpoly]
-    obtain ⟨C₁, X₁, _, hC₁⟩ := abs_dilationRecurrenceOp_le_of_sqrt_log_sq (β := β) (γ := |γ|)
-      ha (by positivity : 0 ≤ 2 * C₀) hη
-    rw [isSqrtLogSqUnbounded_iff_not_eventually_le, not_not]
-    refine ⟨C₁, max X₁ 16, fun x hx => ?_⟩
-    have hxX₁ : X₁ ≤ x := (le_max_left _ _).trans hx
-    have hx_pos : 0 < x := by linarith [(le_max_right X₁ 16).trans hx]
-    have hW_eq : ∀ y : ℝ, W y =
-        ((-(((2 * (m : ℝ) : ℝ) : ℂ)) / ρ) * (y : ℂ) ^ ((β : ℂ) + I * (γ : ℂ))).re := by
-      intro y; dsimp [W, ρ]
-      rw [show -(((2 * (m : ℝ) : ℝ) : ℂ)) / ((β : ℂ) + I * (γ : ℂ)) *
-          (y : ℂ) ^ ((β : ℂ) + I * (γ : ℂ)) =
-        -(((2 * (m : ℝ) : ℝ) : ℂ) *
-          ((y : ℂ) ^ ((β : ℂ) + I * (γ : ℂ)) / ((β : ℂ) + I * (γ : ℂ)))) by ring,
-        Complex.neg_re, Complex.re_ofReal_mul]
-    have hW_zero : dilationRecurrenceOp a β |γ| W x = 0 := by
-      have hfun : W = fun y =>
-          ((-(((2 * (m : ℝ) : ℝ) : ℂ)) / ρ) * (y : ℂ) ^ ((β : ℂ) + I * (γ : ℂ))).re :=
-        funext hW_eq
-      rw [hfun]
-      have hcos_eq : Real.cos (γ * Real.log a) = Real.cos (|γ| * Real.log a) := by
-        rcases abs_choice γ with hc | hc <;> rw [hc]
-        simp [neg_mul, Real.cos_neg]
-      exact dilationRecurrenceOp_re_cpow_eq_zero ha0 hx_pos hcos_eq
-        (-(((2 * (m : ℝ) : ℝ) : ℂ)) / ρ)
-    have hsplit : (fun y => θ_w y - y) = fun y => η y + W y := by
-      funext y; dsimp [η]; ring
-    rw [hsplit, dilationRecurrenceOp_add, hW_zero, add_zero]
-    exact hC₁ x hxX₁
-  exact ⟨⟨C₀, hC₀, hθ_bound⟩, ⟨C', by dsimp [C']; positivity, hrad_bound⟩,
-    hrad_tendsto, hnot_unb, hlimsup, hall_rec⟩
+    have hsplit : Icc 1 ⌊x⌋₊ = Icc 1 (K * Q) ∪ Ioc (K * Q) ⌊x⌋₊ := by
+      ext n; simp only [mem_Icc, mem_union, mem_Ioc]; omega
+    have hdisj : Disjoint (Icc 1 (K * Q)) (Ioc (K * Q) ⌊x⌋₊) :=
+      Finset.disjoint_left.mpr fun _ h1 h2 => (mem_Ioc.mp h2).1.not_ge (mem_Icc.mp h1).2
+    have htail_le : |∑ n ∈ Ioc (K * Q) ⌊x⌋₊,
+        (coprimeWaveIndicator β γ m Q k₀ n : ℝ) * Real.log n| ≤
+        Real.log (((K * Q + 1 : ℕ) : ℝ)) := by
+      have hnn : 0 ≤ ∑ n ∈ Ioc (K * Q) ⌊x⌋₊,
+          (coprimeWaveIndicator β γ m Q k₀ n : ℝ) * Real.log n := by
+        refine Finset.sum_nonneg fun n hn => mul_nonneg (Nat.cast_nonneg _) ?_
+        have hn1 : 1 ≤ n := by have := (mem_Ioc.mp hn).1; omega
+        exact Real.log_nonneg (Nat.one_le_cast.mpr hn1)
+      rw [abs_of_nonneg hnn]
+      by_cases hmem : K * Q + 1 ≤ ⌊x⌋₊
+      · have hother : ∀ n ∈ Ioc (K * Q) ⌊x⌋₊, n ≠ K * Q + 1 →
+            (coprimeWaveIndicator β γ m Q k₀ n : ℝ) * Real.log n = 0 := by
+          intro n hn hne
+          obtain ⟨hn_lo, hn_hi⟩ := mem_Ioc.mp hn
+          have hw0 : coprimeWaveIndicator β γ m Q k₀ n = 0 := by
+            unfold coprimeWaveIndicator
+            rw [if_neg]
+            rintro ⟨k, _, _, rfl⟩
+            rcases lt_trichotomy k K with hlt | rfl | hgt
+            · have : (k + 1) * Q ≤ K * Q := Nat.mul_le_mul_right Q hlt
+              rw [Nat.succ_mul] at this; omega
+            · exact hne rfl
+            · have : (K + 1) * Q ≤ k * Q := Nat.mul_le_mul_right Q hgt
+              omega
+          rw [hw0]; simp
+        rw [Finset.sum_eq_single (K * Q + 1) (fun n hn hne => hother n hn hne)
+          (fun hnot => absurd (mem_Ioc.mpr ⟨by omega, hmem⟩) hnot)]
+        have hw1 : (coprimeWaveIndicator β γ m Q k₀ (K * Q + 1) : ℝ) ≤ 1 := by
+          rcases (hw_props (K * Q + 1)).1 with h0 | h1
+          · rw [h0]; simp
+          · rw [h1]; simp
+        exact mul_le_of_le_one_left
+          (Real.log_nonneg (by exact_mod_cast (show 1 ≤ K * Q + 1 by omega))) hw1
+      · have hemp : Ioc (K * Q) ⌊x⌋₊ = ∅ := Finset.Ioc_eq_empty (by omega)
+        rw [hemp, Finset.sum_empty]
+        exact Real.log_nonneg (by exact_mod_cast (show 1 ≤ K * Q + 1 by omega))
+    have hθ_eq : (∑ n ∈ Icc 1 ⌊x⌋₊, (coprimeWaveIndicator β γ m Q k₀ n : ℝ) * Real.log n) =
+        greedyCoprimeSum β γ m Q k₀ K +
+          ∑ n ∈ Ioc (K * Q) ⌊x⌋₊, (coprimeWaveIndicator β γ m Q k₀ n : ℝ) * Real.log n := by
+      rw [hsplit, Finset.sum_union hdisj, sum_coprimeWaveIndicator_block β γ m hQ k₀ K]
+    obtain ⟨hinv_lo, hinv_hi⟩ := hinv K hKk₀
+    have hinv_abs : |greedyCoprimeSum β γ m Q k₀ K - waveTarget β γ m ((K * Q : ℕ) : ℝ)| ≤
+        M₀ + Real.log (((K * Q + 1 : ℕ) : ℝ)) := by
+      rw [abs_le]
+      have hlog_nn : 0 ≤ Real.log (((K * Q + 1 : ℕ) : ℝ)) :=
+        Real.log_nonneg (by exact_mod_cast (show 1 ≤ K * Q + 1 by omega))
+      exact ⟨by linarith, hinv_hi⟩
+    have hT_step : |waveTarget β γ m x - waveTarget β γ m ((K * Q : ℕ) : ℝ)| ≤
+        ((Q : ℝ) + 1) * (1 + 2 * (m : ℝ)) := by
+      have hKQ1 : (1 : ℝ) ≤ ((K * Q : ℕ) : ℝ) := by exact_mod_cast hKQ_pos
+      have hmvt := waveTarget_diff_bounds (γ := γ) hβ0 hβ1 m (zero_lt_one.trans_le hKQ1) hKQ_le_x
+      have hrpow_le : ((K * Q : ℕ) : ℝ) ^ (β - 1) ≤ 1 :=
+        Real.rpow_le_one_of_one_le_of_nonpos hKQ1 (by linarith)
+      have hdx : x - ((K * Q : ℕ) : ℝ) ≤ (Q : ℝ) + 1 := by linarith
+      have hdx0 : 0 ≤ x - ((K * Q : ℕ) : ℝ) := by linarith
+      have h1 : |waveTarget β γ m x - waveTarget β γ m ((K * Q : ℕ) : ℝ)| ≤
+          (x - ((K * Q : ℕ) : ℝ)) +
+            2 * (m : ℝ) * (x - ((K * Q : ℕ) : ℝ)) * ((K * Q : ℕ) : ℝ) ^ (β - 1) := by
+        have htri := (abs_add_le (waveTarget β γ m x - waveTarget β γ m ((K * Q : ℕ) : ℝ) -
+          (x - ((K * Q : ℕ) : ℝ))) (x - ((K * Q : ℕ) : ℝ))).trans
+          (add_le_add hmvt (le_of_eq (abs_of_nonneg hdx0)))
+        rw [sub_add_cancel] at htri
+        linarith [htri]
+      have h2 : 2 * (m : ℝ) * (x - ((K * Q : ℕ) : ℝ)) * ((K * Q : ℕ) : ℝ) ^ (β - 1) ≤
+          2 * (m : ℝ) * (x - ((K * Q : ℕ) : ℝ)) :=
+        mul_le_of_le_one_right (by positivity) hrpow_le
+      nlinarith
+    have hlog_KQ : Real.log (((K * Q + 1 : ℕ) : ℝ)) ≤ Real.log x + 1 := by
+      have hle2x : (((K * Q + 1 : ℕ) : ℝ)) ≤ 2 * x := by
+        have hKQ_r : (K : ℝ) * (Q : ℝ) ≤ x := by exact_mod_cast hKQ_le_x
+        push_cast
+        linarith [hKQ_r, hx]
+      calc Real.log (((K * Q + 1 : ℕ) : ℝ)) ≤ Real.log (2 * x) :=
+            Real.log_le_log (by positivity) hle2x
+        _ = Real.log 2 + Real.log x := Real.log_mul two_ne_zero hx0.ne'
+        _ ≤ Real.log x + 1 := by linarith [Real.log_two_lt_d9]
+    calc |(∑ n ∈ Icc 1 ⌊x⌋₊, (coprimeWaveIndicator β γ m Q k₀ n : ℝ) * Real.log n) -
+            waveTarget β γ m x|
+        = |(greedyCoprimeSum β γ m Q k₀ K - waveTarget β γ m ((K * Q : ℕ) : ℝ)) +
+            (∑ n ∈ Ioc (K * Q) ⌊x⌋₊, (coprimeWaveIndicator β γ m Q k₀ n : ℝ) * Real.log n) -
+            (waveTarget β γ m x - waveTarget β γ m ((K * Q : ℕ) : ℝ))| := by
+          rw [hθ_eq]; congr 1; ring
+      _ ≤ |greedyCoprimeSum β γ m Q k₀ K - waveTarget β γ m ((K * Q : ℕ) : ℝ)| +
+            |∑ n ∈ Ioc (K * Q) ⌊x⌋₊, (coprimeWaveIndicator β γ m Q k₀ n : ℝ) * Real.log n| +
+            |waveTarget β γ m x - waveTarget β γ m ((K * Q : ℕ) : ℝ)| :=
+          (abs_sub _ _).trans (add_le_add (abs_add_le _ _) le_rfl)
+      _ ≤ (M₀ + Real.log (((K * Q + 1 : ℕ) : ℝ))) + Real.log (((K * Q + 1 : ℕ) : ℝ)) +
+            ((Q : ℝ) + 1) * (1 + 2 * (m : ℝ)) :=
+          add_le_add (add_le_add hinv_abs htail_le) hT_step
+      _ ≤ (B_init + 2) * (1 + Real.log x) := by
+          have hpos_term : 0 ≤ ((k₀ + 1 : ℝ) * Q + 1) * (1 + 2 * (m : ℝ) / ‖ρ‖) := by positivity
+          dsimp [B_init]
+          nlinarith [hlog_KQ, hlogx_nn, hB_init, hpos_term, hln_k0]
+
+/-- **Universal `{0, 1}`-occupancy coprime integer-set realization.**
+For every `1/2 < β < 1`, `γ ≠ 0`, `m ≥ 1`, and coprimality modulus `Q ≥ 1`, there exists an
+explicit `{0, 1}`-valued weight `w : ℕ → ℕ` supported on `{n ≥ 2 : gcd(n, Q) = 1}` such that
+`θ_w(x) = ∑_{1 ≤ n ≤ ⌊x⌋} w(n) log n` satisfies:
+1. `|θ_w(x) − x + 2 m Re(x^{β + iγ}/(β + iγ))| ≤ C (1 + log x)` for all `x ≥ 1`;
+2. `|radialDiscrepancyOf (fun t => θ_w(e^t) − e^t) β γ m t| ≤ C' (1 + t)` for all `t ≥ 0`, so
+   its ratio against `e^{t/2}(1 + t)²` tends to `0` at `+∞` (`¬ IsLogSqrtSqUnbounded`);
+3. `HasPositivePowerLimsup (fun x => θ_w x − x) β` holds, and every dilation residual
+   `dilationRecurrenceOp a β |γ| (fun x => θ_w x − x)` (`a ≥ 1`, in particular `2, 3, 6`) is
+   `O(1 + log x)` (`¬ IsSqrtLogSqUnbounded`). -/
+theorem exists_coprimeZeroOneSet_realizing_twoIntervalRadius {β γ : ℝ} {m Q : ℕ}
+    (hβ : 1 / 2 < β) (hβ1 : β < 1) (hγ : γ ≠ 0) (hm : 1 ≤ m) (hQ : 1 ≤ Q) :
+    ∃ w : ℕ → ℕ,
+      (∀ n : ℕ, (w n = 0 ∨ w n = 1) ∧ (w n = 1 → 2 ≤ n ∧ Nat.Coprime n Q)) ∧
+      let θ_w : ℝ → ℝ := fun x => ∑ n ∈ Icc 1 ⌊x⌋₊, (w n : ℝ) * Real.log n
+      let E_w : ℝ → ℝ := fun t => θ_w (Real.exp t) - Real.exp t
+      (∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 1 ≤ x →
+        |θ_w x - x + 2 * (m : ℝ) *
+          (((x : ℂ) ^ (((β : ℂ) + I * (γ : ℂ))) / (((β : ℂ) + I * (γ : ℂ)))).re)| ≤
+          C * (1 + Real.log x)) ∧
+      (∃ C' : ℝ, 0 ≤ C' ∧ ∀ t : ℝ, 0 ≤ t →
+        |radialDiscrepancyOf E_w β γ m t| ≤ C' * (1 + t)) ∧
+      Tendsto (fun t : ℝ =>
+        |radialDiscrepancyOf E_w β γ m t| / (Real.exp (t / 2) * (1 + t) ^ 2)) atTop (𝓝 0) ∧
+      ¬ IsLogSqrtSqUnbounded (radialDiscrepancyOf E_w β γ m) ∧
+      HasPositivePowerLimsup (fun x => θ_w x - x) β ∧
+      (∀ a : ℝ, 1 ≤ a → ¬ IsSqrtLogSqUnbounded (dilationRecurrenceOp a β |γ| (fun x => θ_w x - x))) := by
+  have hβ0 : 0 < β := by linarith
+  obtain ⟨w, hw_props, C₀, hC₀, hθ_bound⟩ :=
+    exists_coprimeZeroOneSet_wave_approx (γ := γ) (m := m) hβ0 hβ1 hQ
+  refine ⟨w, hw_props, ?_⟩
+  intro θ_w E_w
+  have hcons := mode_log_bound_consequences (θ_w := θ_w) hβ0 hγ hm hC₀ hθ_bound
+  exact ⟨⟨C₀, hC₀, hθ_bound⟩, hcons⟩
 
 #print axioms not_isLogSqrtSqUnbounded_singleWaveLog_iff_alias
 #print axioms exists_lowOrdinate_oddHarmonicAlias_above_sixtySeven

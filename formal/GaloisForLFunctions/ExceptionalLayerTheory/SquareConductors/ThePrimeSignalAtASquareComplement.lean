@@ -26,7 +26,9 @@ private theorem square_jump {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ : 4<ℓ) : inne
   rw [sq,innerJump_prime_multiple le_rfl hℓ h₄ hℓ.pos,if_neg hℓ.ne_one,sub_zero,
     innerJump_at_prime le_rfl hℓ h₄]
 
-private theorem omitted_mangoldt {X T : ℕ} (keep : ℕ → Prop) [DecidablePred keep] (w : ℕ → ℝ)
+/-- Restoring all Mangoldt terms costs the small prime mass and the
+proper prime-power mass if every prime above T was retained. -/
+theorem ordinary_mangoldt_omission_bound {X T : ℕ} (keep : ℕ → Prop) [DecidablePred keep] (w : ℕ → ℝ)
     {F : ℝ} (hF : 0≤F) (hw : ∀ p, |w p|≤F) (hc : ∀ p, p.Prime → T<p → keep p) :
     |(∑ p ∈ Icc 1 X, (if keep p then vonMangoldt p*w p else 0))-
       ∑ p ∈ Icc 1 X, vonMangoldt p*w p| ≤ F*(7*T+(Chebyshev.psi X-Chebyshev.theta X)) := by
@@ -105,7 +107,7 @@ theorem squareComplementRow_prime_error {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ : 4
     change (if good p then innerJump 1 (ℓ^2)*(vonMangoldt p*w p) else 0) =
       -(if good p then vonMangoldt p*w p else 0)
     by_cases hp : good p <;> simp only [hp,if_true,if_false,square_jump hℓ h₄,neg_one_mul,neg_zero]
-  have hδ := omitted_mangoldt (X := X) good w hF (fun p => by simpa only [Nat.cast_one,mul_one] using hw (R := 1) le_rfl (X/p)) hgood
+  have hδ := ordinary_mangoldt_omission_bound (X := X) good w hF (fun p => by simpa only [Nat.cast_one,mul_one] using hw (R := 1) le_rfl (X/p)) hgood
   have he : |squareComplementRow ℓ k+S| ≤ B*Real.sqrt k := by
     rw [hsgn,neg_add_eq_sub,abs_sub_comm]
     apply hδ.trans

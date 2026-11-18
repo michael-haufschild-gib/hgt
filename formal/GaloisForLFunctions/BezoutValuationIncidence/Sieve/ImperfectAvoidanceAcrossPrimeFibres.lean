@@ -61,21 +61,24 @@ theorem energy_decomposition (q : ℕ+) (A Ω : Finset ℕ) (hΩ : Ω ⊆ range 
   let Y : ℝ := G.card
   let b := hits q A Ω
   let g := hits q A G
-  have hX : X ≠ 0 := by exact_mod_cast (card_pos.mpr hB).ne'
-  have hY : Y ≠ 0 := by exact_mod_cast (card_pos.mpr hG).ne'
+  have hX : X ≠ 0 := by dsimp only [X]; exact_mod_cast (card_pos.mpr hB).ne'
+  have hY : Y ≠ 0 := by dsimp only [Y,G]; exact_mod_cast (card_pos.mpr hG).ne'
   have hc : (q : ℝ)=X+Y := by
     have h := card_sdiff_add_card_eq_card hΩ
     rw [card_range] at h
     dsimp only [X,Y,G]
     exact_mod_cast (by omega : (q : ℕ)=Ω.card+(range (q : ℕ) \ Ω).card)
   have hm : (A.card : ℝ)=b+g := by
-    have h := sum_sdiff hΩ (f := residueMass q A)
-    rw [← Nat.cast_sum,sum_residueCount q.pos A] at h
-    exact (add_comm _ _).trans h |>.symm
+    calc
+      (A.card : ℝ) = ∑ j ∈ range (q : ℕ), residueMass q A j := by
+        simp only [residueMass,← Nat.cast_sum,sum_residueCount q.pos A]
+      _ = g+b := (sum_sdiff hΩ (f := residueMass q A)).symm
+      _ = b+g := add_comm _ _
   have hsq : (∑ j ∈ range (q : ℕ), (residueMass q A j)^2)=
       (scatter Ω (residueMass q A)+b^2/X)+(scatter G (residueMass q A)+g^2/Y) := by
     rw [← sum_sdiff hΩ (f := fun j => (residueMass q A j)^2),add_comm]
     rw [scatter_identity Ω _ hB,scatter_identity G _ hG]
+    rfl
   rw [energy_eq,hsq]
   change (q : ℝ)*_-(A.card : ℝ)^2 =
     ((q : ℝ)*b-X*A.card)^2/(X*((q : ℝ)-X))+(q : ℝ)*_
@@ -131,7 +134,9 @@ theorem large_sieve (N Q : ℕ) (hQ : 2≤Q) (A P : Finset ℕ) (hA : A ⊆ rang
     exact (mem_filter.mp hp).1
   calc
     _ ≤ ∑ p ∈ P.attach, ∑ x ∈ F p.val, v x := sum_le_sum fun p _ => localBound p
-    _ = ∑ x ∈ P.biUnion F, v x := by rw [sum_attach, sum_biUnion hd]
+    _ = ∑ x ∈ P.biUnion F, v x := by
+      rw [sum_biUnion hd]
+      exact sum_attach P (fun p => ∑ x ∈ F p, v x)
     _ ≤ ∑ x ∈ properFareySet Q, v x :=
       sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => sq_nonneg _
     _ ≤ _ := largeSieve_set_properFarey_sharp N hQ A hA

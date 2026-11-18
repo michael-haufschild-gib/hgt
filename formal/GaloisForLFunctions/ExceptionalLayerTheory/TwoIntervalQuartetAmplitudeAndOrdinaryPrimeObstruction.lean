@@ -112,6 +112,11 @@ theorem logStepIncrement_thetaLogError_eq (t h : ℝ) :
     logStepIncrement thetaLogError t h = thetaIntervalIncrement t h :=
   rfl
 
+private theorem cpow_exp_eq (s : ℝ) (ρ : ℂ) :
+    (Real.exp s : ℂ) ^ ρ = Complex.exp (ρ * (s : ℂ)) := by
+  rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (Real.exp_pos s).ne'),
+    ← Complex.ofReal_log (Real.exp_pos s).le, Real.log_exp, mul_comm]
+
 theorem thetaRadialDiscrepancy_neg (β γ : ℝ) (m : ℕ) (t : ℝ) :
     thetaRadialDiscrepancy β (-γ) m t = thetaRadialDiscrepancy β γ m t :=
   radialDiscrepancyOf_neg thetaLogError β γ m t
@@ -1128,9 +1133,9 @@ private theorem rh_prime_wave_sum_approx (hRH : RiemannHypothesis) {β : ℝ} (h
         ← Complex.ofReal_log hn0.le, Real.rpow_def_of_pos hn0, Complex.ofReal_exp,
         ← Complex.exp_add]
       congr 1; dsimp [ρ]; push_cast; ring
-    rw [hcp, Complex.exp_mul_I, Complex.re_ofReal_mul, Complex.add_re, Complex.ofReal_cos,
-      Complex.ofReal_re, Complex.mul_re, Complex.ofReal_sin, Complex.ofReal_im, Complex.I_re,
-      Complex.I_im]
+    rw [hcp, Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
+      Complex.re_ofReal_mul, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+      Complex.ofReal_im, Complex.I_re, Complex.I_im]
     ring
   have hjump : ∀ n : ℕ, 1 ≤ n →
       (if n.Prime then Real.log n else 0) = δ n - δ (n - 1) + 1 := by
@@ -1436,7 +1441,7 @@ private theorem rh_sEdit_radial_bounded_of_params (hRH : RiemannHypothesis) {α 
           (Real.sqrt_eq_rpow x).symm) hC₁) (sq_nonneg _))
     have hb_wv := hwave x hx1
     have hcp : (x : ℂ) ^ ρ = Complex.exp (ρ * (s : ℂ)) := by
-      dsimp [x]; rw [RHTower.cpow_ofReal_exp]; congr 1; ring
+      dsimp [x]; exact cpow_exp_eq s ρ
     rw [hcp] at hb_wv
     have hsum_id : editedTheta (sEdit α β γ k₀) x - x +
         2 * (1 : ℝ) * (Complex.exp (ρ * (s : ℂ)) / ρ).re =
@@ -1921,8 +1926,8 @@ private theorem singleQuartet_psi_radial_transfer {β ω γ : ℝ} {m : ℕ}
             _ = Real.exp 3 := by rw [← Real.exp_nat_mul]; norm_num
         exact h3.trans (Real.exp_le_exp.mpr (ht.trans hs1))
       have hb := hK_w (Real.exp s) hx16
-      have hcp : (Real.exp s : ℂ) ^ ρ' = Complex.exp (ρ' * (s : ℂ)) := by
-        rw [RHTower.cpow_ofReal_exp]; congr 1; ring
+      have hcp : (Real.exp s : ℂ) ^ ρ' = Complex.exp (ρ' * (s : ℂ)) :=
+        cpow_exp_eq s ρ'
       rw [hcp, ← Real.exp_half, Real.log_exp] at hb
       have hid : psiLogError s - singleWaveLog β ω m' s =
           Chebyshev.psi (Real.exp s) - Real.exp s +
@@ -2057,7 +2062,9 @@ private def twoIntervalVec (g : ℝ → ℝ) (h A t : ℝ) : ℂ :=
 private theorem twoIntervalVec_add (g₁ g₂ : ℝ → ℝ) (h A t : ℝ) :
     twoIntervalVec (fun s => g₁ s + g₂ s) h A t =
       twoIntervalVec g₁ h A t + twoIntervalVec g₂ h A t := by
-  apply Complex.ext <;> simp [twoIntervalVec, logStepIncrement] <;> ring
+  apply Complex.ext
+  · simp [twoIntervalVec, logStepIncrement]; ring
+  · simp [twoIntervalVec, logStepIncrement]; ring
 
 private theorem layer_twoIntervalVec_eq (U : Finset XiZeroCopy) {σ β : ℝ} (hσ : 1 / 2 < σ)
     (hU_re : ∀ q ∈ U, (q.1 : ℂ).re = σ) {h : ℝ} (hh : 0 < h) :
@@ -2178,6 +2185,560 @@ private theorem layer_twoIntervalVec_eq (U : Finset XiZeroCopy) {σ β : ℝ} (h
       linear_combination f (t + h) * this.symm
     exact hexp_eq
 
+private theorem bound_layer_twoIntervalVec (V : Finset XiZeroCopy) {h A σ₀ : ℝ}
+    (hh : 0 ≤ h) (hA1 : 1 ≤ A) (hσ₀ : 0 ≤ σ₀) (hV_le : ∀ q ∈ V, (q.1 : ℂ).re ≤ σ₀) :
+    ∃ M_V : ℝ, 0 ≤ M_V ∧ ∀ t : ℝ, 0 ≤ t →
+      ‖twoIntervalVec (fun s => -(∑ q ∈ V, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re))
+        h A t‖ ≤ M_V * Real.exp (σ₀ * t) := by
+  have hA0 : 0 < A := zero_lt_one.trans_le hA1
+  set K_V : ℝ := ∑ q ∈ V, ‖(q.1 : ℂ)‖⁻¹
+  have hK_V : 0 ≤ K_V := Finset.sum_nonneg fun _ _ => inv_nonneg.mpr (norm_nonneg _)
+  refine ⟨4 * K_V * Real.exp (2 * σ₀ * h),
+    mul_nonneg (mul_nonneg (by norm_num) hK_V) (Real.exp_pos _).le, fun t ht => ?_⟩
+  let W_V (s : ℝ) := -(∑ q ∈ V, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
+  have hpt_V : ∀ s : ℝ, 0 ≤ s → s ≤ t + 2 * h →
+      |W_V s| ≤ K_V * Real.exp (2 * σ₀ * h) * Real.exp (σ₀ * t) := by
+    intro s hs1 hs2
+    dsimp [W_V]; rw [abs_neg]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    calc ∑ q ∈ V, |(Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re|
+        ≤ ∑ q ∈ V, ‖(q.1 : ℂ)‖⁻¹ * (Real.exp (2 * σ₀ * h) * Real.exp (σ₀ * t)) := by
+          refine Finset.sum_le_sum fun q hq => ?_
+          refine ((Complex.abs_re_le_norm _).trans_eq (norm_div _ _)).trans ?_
+          rw [Complex.norm_exp, div_eq_inv_mul,
+            show ((q.1 : ℂ) * (s : ℂ)).re = (q.1 : ℂ).re * s by simp [Complex.mul_re]]
+          refine mul_le_mul_of_nonneg_left ?_ (inv_nonneg.mpr (norm_nonneg _))
+          rw [← Real.exp_add]
+          exact Real.exp_le_exp.mpr (by nlinarith [hV_le q hq, hs1, hs2])
+      _ = K_V * Real.exp (2 * σ₀ * h) * Real.exp (σ₀ * t) := by
+          dsimp [K_V]; rw [Finset.sum_mul]; ring
+  have hb0 := hpt_V t ht (by linarith)
+  have hb1 := hpt_V (t + h) (by linarith) (by linarith)
+  have hb2 := hpt_V (t + 2 * h) (by linarith) le_rfl
+  refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
+  have hre : |(twoIntervalVec W_V h A t).re| ≤
+      2 * (K_V * Real.exp (2 * σ₀ * h) * Real.exp (σ₀ * t)) := by
+    dsimp [twoIntervalVec, logStepIncrement]
+    exact (abs_sub _ _).trans ((add_le_add hb1 hb0).trans_eq (two_mul _).symm)
+  have him : |(twoIntervalVec W_V h A t).im| ≤
+      2 * (K_V * Real.exp (2 * σ₀ * h) * Real.exp (σ₀ * t)) := by
+    dsimp [twoIntervalVec, logStepIncrement]
+    rw [abs_div, abs_of_pos hA0, show t + h + h = t + 2 * h by ring]
+    exact (div_le_self (abs_nonneg _) hA1).trans
+      ((abs_sub _ _).trans ((add_le_add hb2 hb1).trans_eq (two_mul _).symm))
+  linarith
+
+private theorem finite_right_layer_collapse (S_right : Finset XiZeroCopy)
+    {β γ C K_v T_rad : ℝ} (hβ : 1 / 2 < β) (hγ : 0 < γ) (hC_pos : 0 < C) (hK_v : 0 ≤ K_v)
+    (hSr_half : ∀ q ∈ S_right, 1 / 2 < (q.1 : ℂ).re)
+    (hre_le_β : ∀ q ∈ S_right, (q.1 : ℂ).re ≤ β)
+    (hStop_ne : (letI := Classical.decPred (fun q : XiZeroCopy => (q.1 : ℂ).re = β);
+      (S_right.filter (fun q => (q.1 : ℂ).re = β)).Nonempty))
+    (hv_rad : ∀ t : ℝ, max T_rad 3 ≤ t →
+      |‖twoIntervalVec
+          (fun s => -(∑ q ∈ S_right, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re))
+          (quarterPeriodStep γ) (quarterPeriodScale β γ) t‖ -
+        C * Real.exp (β * t)| ≤ K_v * Real.exp (t / 2) * (1 + t) ^ 2) :
+    ∃ k : ℕ, ∀ q ∈ S_right, (q.1 : ℂ).re = β ∧ |(q.1 : ℂ).im| = (2 * (k : ℝ) + 1) * γ := by
+  classical
+  set h := quarterPeriodStep γ
+  set A := quarterPeriodScale β γ
+  have hh_pos : 0 < h := quarterPeriodStep_pos hγ.ne'
+  have hA1 : 1 ≤ A := (one_lt_quarterPeriodScale (by linarith) hγ.ne').le
+  let W_all : ℝ → ℝ := fun s => -(∑ q ∈ S_right, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
+  set S_top : Finset XiZeroCopy := S_right.filter (fun q => (q.1 : ℂ).re = β)
+  set S_sub : Finset XiZeroCopy := S_right.filter (fun q => (q.1 : ℂ).re ≠ β)
+  have hStop_ne' : S_top.Nonempty := by convert hStop_ne
+  let W_top (s : ℝ) := -(∑ q ∈ S_top, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
+  let W_sub (s : ℝ) := -(∑ q ∈ S_sub, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
+  have hW_split : W_all = fun s => W_top s + W_sub s := by
+    funext s
+    dsimp [W_all, W_top, W_sub, S_top, S_sub]
+    rw [← Finset.sum_filter_add_sum_filter_not S_right (fun q => (q.1 : ℂ).re = β)]
+    ring
+  have htop_info := layer_twoIntervalVec_eq S_top hβ
+    (fun q hq => (Finset.mem_filter.mp hq).2) hh_pos
+  set Ω_top : Finset ℝ := S_top.image (fun q => |(q.1 : ℂ).im|)
+  let c_top : ℝ → ℂ := fun ω =>
+    -(((S_top.filter (fun q => |(q.1 : ℂ).im| = ω)).card : ℝ) : ℂ) *
+      (Complex.exp ((((β : ℂ) + I * (ω : ℂ)) * (h : ℂ))) - 1) /
+      ((β : ℂ) + I * (ω : ℂ))
+  let f_top : ℝ → ℝ := fun s => ∑ ω ∈ Ω_top, (c_top ω * expChar ω s).re
+  obtain ⟨hΩ_top_pos, hc_top_ne, hv_top_eq⟩ := htop_info
+  have hr_top_eq : ∀ s : ℝ,
+      twoIntervalVec W_top h A s =
+        (Real.exp (β * s) : ℂ) * ((f_top s : ℂ) + I * (f_top (s + h) : ℂ)) := by
+    intro s
+    have he := hv_top_eq s
+    simpa [A, quarterPeriodScale, sub_self, zero_mul, Real.exp_zero, one_mul] using he
+  have hsub_exp : ∃ σ_sub : ℝ, 1 / 2 ≤ σ_sub ∧ σ_sub < β ∧
+      ∀ q ∈ S_sub, (q.1 : ℂ).re ≤ σ_sub := by
+    rcases S_sub.eq_empty_or_nonempty with hemp | hne
+    · exact ⟨1 / 2, le_rfl, hβ, fun q hq => by rw [hemp] at hq; exact (Finset.notMem_empty q hq).elim⟩
+    · set β₂ := (S_sub.image (fun q => (q.1 : ℂ).re)).max' (hne.image _)
+      obtain ⟨q₂, hq₂, hq₂_re⟩ := Finset.mem_image.mp (Finset.max'_mem _ (hne.image _))
+      obtain ⟨hq₂_Sr, hq₂_ne⟩ := Finset.mem_filter.mp hq₂
+      have hgt_half : 1 / 2 < β₂ := hq₂_re ▸ hSr_half q₂ hq₂_Sr
+      have hlt_β : β₂ < β := lt_of_le_of_ne (hq₂_re ▸ hre_le_β q₂ hq₂_Sr) (hq₂_re ▸ hq₂_ne)
+      exact ⟨β₂, hgt_half.le, hlt_β,
+        fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq)⟩
+  obtain ⟨σ_sub, hσ_sub_lo, hσ_sub_lt, hS_sub_le⟩ := hsub_exp
+  obtain ⟨M_sub, _, hv_sub_le⟩ := bound_layer_twoIntervalVec S_sub hh_pos.le hA1
+    (by linarith) hS_sub_le
+  have htop_norm_tendsto : Tendsto
+      (fun t : ℝ => f_top t ^ 2 + f_top (t + h) ^ 2 - C ^ 2) atTop (𝓝 0) := by
+    have hdiff_c : Tendsto
+        (fun t : ℝ => ‖(f_top t : ℂ) + I * (f_top (t + h) : ℂ)‖ - C) atTop (𝓝 0) := by
+      have ht1 : Tendsto (fun t : ℝ => 4 * K_v * (t ^ (2 : ℝ) * Real.exp (-(β - 1 / 2) * t)))
+          atTop (𝓝 0) := by
+        simpa using (_root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 2 (β - 1 / 2)
+          (by linarith)).const_mul (4 * K_v)
+      have ht2 : Tendsto (fun t : ℝ => M_sub * (t ^ (0 : ℝ) * Real.exp (-(β - σ_sub) * t)))
+          atTop (𝓝 0) := by
+        simpa using (_root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 0 (β - σ_sub)
+          (sub_pos.mpr hσ_sub_lt)).const_mul M_sub
+      have ht_sum := ht1.add ht2
+      rw [add_zero] at ht_sum
+      refine squeeze_zero_norm' ?_ ht_sum
+      filter_upwards [eventually_ge_atTop (max T_rad 3)] with t ht
+      have ht0 : 0 ≤ t := by linarith [le_max_right T_rad 3]
+      have ht1_le : 1 ≤ t := by linarith [le_max_right T_rad 3]
+      rw [Real.norm_eq_abs, Real.rpow_two, Real.rpow_zero, one_mul]
+      have hv_split : twoIntervalVec W_all h A t =
+          twoIntervalVec W_top h A t + twoIntervalVec W_sub h A t := by
+        rw [hW_split, twoIntervalVec_add]
+      have htop_n : ‖twoIntervalVec W_top h A t‖ =
+          Real.exp (β * t) * ‖(f_top t : ℂ) + I * (f_top (t + h) : ℂ)‖ := by
+        rw [hr_top_eq t, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+          abs_of_pos (Real.exp_pos _)]
+      have htri1 : |‖twoIntervalVec W_top h A t‖ - C * Real.exp (β * t)| ≤
+          ‖twoIntervalVec W_sub h A t‖ +
+            |‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)| := by
+        have hns : |‖twoIntervalVec W_top h A t‖ - ‖twoIntervalVec W_all h A t‖| ≤
+            ‖twoIntervalVec W_sub h A t‖ := by
+          rw [hv_split, abs_sub_comm]
+          exact (abs_norm_sub_norm_le _ _).trans_eq (by rw [add_sub_cancel_left])
+        have ht_add := abs_add_le (‖twoIntervalVec W_top h A t‖ - ‖twoIntervalVec W_all h A t‖)
+          (‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t))
+        rw [sub_add_sub_cancel] at ht_add
+        exact ht_add.trans (add_le_add hns le_rfl)
+      rw [htop_n, show Real.exp (β * t) * ‖(f_top t : ℂ) + I * (f_top (t + h) : ℂ)‖ -
+          C * Real.exp (β * t) =
+        Real.exp (β * t) * (‖(f_top t : ℂ) + I * (f_top (t + h) : ℂ)‖ - C) by ring,
+        abs_mul, abs_of_pos (Real.exp_pos _)] at htri1
+      have hmul := mul_le_mul_of_nonneg_right htri1 (Real.exp_pos (-(β * t))).le
+      rw [mul_right_comm, ← Real.exp_add, add_neg_cancel, Real.exp_zero, one_mul, add_mul] at hmul
+      refine hmul.trans (add_le_add_comm ?_ ?_)
+      · have hb_v := hv_rad t ht
+        have h1t : (1 + t) ^ 2 ≤ 4 * t ^ 2 := by nlinarith
+        calc |‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)| * Real.exp (-(β * t))
+            ≤ (K_v * Real.exp (t / 2) * (4 * t ^ 2)) * Real.exp (-(β * t)) :=
+              mul_le_mul_of_nonneg_right
+                ((hb_v).trans (mul_le_mul_of_nonneg_left h1t
+                  (mul_nonneg hK_v (Real.exp_pos _).le)))
+                (Real.exp_pos _).le
+          _ = 4 * K_v * (t ^ 2 * (Real.exp (t / 2) * Real.exp (-(β * t)))) := by ring
+          _ = 4 * K_v * (t ^ 2 * Real.exp (-(β - 1 / 2) * t)) := by
+              rw [← Real.exp_add]; congr 3; ring
+      · calc ‖twoIntervalVec W_sub h A t‖ * Real.exp (-(β * t))
+            ≤ (M_sub * Real.exp (σ_sub * t)) * Real.exp (-(β * t)) :=
+              mul_le_mul_of_nonneg_right (hv_sub_le t ht0) (Real.exp_pos _).le
+          _ = M_sub * Real.exp (-(β - σ_sub) * t) := by
+              rw [mul_assoc, ← Real.exp_add]; congr 2; ring
+    have hsq_lim := ((hdiff_c.add_const C).pow 2).sub_const (C ^ 2)
+    rw [zero_add, sub_self] at hsq_lim
+    refine hsq_lim.congr fun t => ?_
+    have hnorm_sq : ‖(f_top t : ℂ) + I * (f_top (t + h) : ℂ)‖ ^ 2 =
+        f_top t ^ 2 + f_top (t + h) ^ 2 := by
+      rw [Complex.sq_norm, Complex.normSq_apply]
+      simp [sq]
+    rw [sub_add_cancel, hnorm_sq]
+  have hΩ_ne : Ω_top.Nonempty := hStop_ne'.image _
+  have hΩ_card1 : Ω_top.card = 1 := by
+    by_contra hne1
+    have hpos_card : 0 < Ω_top.card := Finset.card_pos.mpr hΩ_ne
+    have hge2 : 2 ≤ Ω_top.card := by omega
+    exact multiFrequency_trigPoly_not_const_twoInterval Ω_top hΩ_top_pos hge2 c_top hc_top_ne
+      h (C ^ 2) htop_norm_tendsto
+  obtain ⟨ω₀, hΩ_eq⟩ := Finset.card_eq_one.mp hΩ_card1
+  have hω₀_mem : ω₀ ∈ Ω_top := hΩ_eq ▸ Finset.mem_singleton_self ω₀
+  have hω₀_pos : 0 < ω₀ := hΩ_top_pos ω₀ hω₀_mem
+  have hf_top_single : ∀ s : ℝ, f_top s = (c_top ω₀ * expChar ω₀ s).re := by
+    intro s; dsimp [f_top]; rw [hΩ_eq, Finset.sum_singleton]
+  have hshift_ω₀ : ∀ t : ℝ,
+      f_top (t + h) = (Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) * (c_top ω₀ * expChar ω₀ t)).re := by
+    intro t
+    rw [hf_top_single, show expChar ω₀ (t + h) =
+      Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) * expChar ω₀ t by
+        simp only [expChar, ← Complex.exp_add]; congr 1; push_cast; ring]
+    ring_nf
+  have htop_alias : ∃ k : ℕ, ω₀ = (2 * (k : ℝ) + 1) * γ ∧ ‖c_top ω₀‖ = C := by
+    set w₂ : ℂ := ((Real.cos (ω₀ * h) : ℂ) / 2) *
+      Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) * (c_top ω₀) ^ 2
+    let cf3 : Fin 3 → ℂ
+      | 0 => ((‖c_top ω₀‖ ^ 2 - C ^ 2 : ℝ) : ℂ)
+      | 1 => w₂
+      | 2 => conj w₂
+    let mu3 : Fin 3 → ℝ
+      | 0 => 0
+      | 1 => 2 * ω₀
+      | 2 => -(2 * ω₀)
+    set P3 : ℝ → ℂ := fun t => ∑ i : Fin 3, cf3 i * expChar (mu3 i) t
+    have hP3_eq : ∀ t : ℝ, P3 t = (((f_top t ^ 2 + f_top (t + h) ^ 2 - C ^ 2 : ℝ) : ℂ)) := by
+      intro t
+      have hrot := re_sq_add_rot_re_sq (c_top ω₀ * expChar ω₀ t) (ω₀ * h)
+      rw [← hf_top_single t, ← hshift_ω₀ t, norm_mul, norm_expChar, mul_one, mul_pow,
+        sq (expChar ω₀ t), expChar_add, ← two_mul] at hrot
+      rw [hrot]
+      dsimp [P3, cf3, mu3, w₂]
+      rw [Fin.sum_univ_three]
+      have hc0 : expChar 0 t = 1 := by simp [expChar]
+      have hcn : expChar (-(2 * ω₀)) t = conj (expChar (2 * ω₀) t) := by
+        simp only [expChar, ← Complex.exp_conj]
+        congr 1; rw [map_mul, Complex.conj_ofReal, Complex.conj_I]; push_cast; ring
+      have hre_split : ∀ u : ℂ, (u.re : ℂ) = (u + conj u) / 2 := fun u => by
+        apply Complex.ext
+        · simp
+        · simp
+      rw [hc0, hcn]
+      simp only [Complex.ofReal_sub, Complex.ofReal_add, Complex.ofReal_mul, Complex.ofReal_pow]
+      rw [hre_split]
+      simp only [map_mul, map_div₀, Complex.conj_ofReal, map_ofNat, map_pow]
+      ring
+    have hP3_ap : HTGeometry.IsBohrAlmostPeriodic P3 :=
+      isBohrAlmostPeriodic_sum Finset.univ
+        (fun i _ => continuous_const.mul (continuous_expChar (mu3 i)))
+        (fun i _ => isBohrAlmostPeriodic_const_mul _ (isBohrAlmostPeriodic_expChar (mu3 i)))
+    have hP3_lim : Tendsto P3 atTop (𝓝 0) := by
+      have hc := (Complex.continuous_ofReal.tendsto 0).comp htop_norm_tendsto
+      simpa only [Function.comp_def, Complex.ofReal_zero, ← hP3_eq] using hc
+    have hP3_zero : P3 = fun _ => 0 :=
+      funext (HTGeometry.eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero hP3_ap hP3_lim)
+    have hb1 : bohrCoefficient P3 (2 * ω₀) = w₂ := by
+      dsimp [P3]
+      rw [bohrCoefficient_sum_expChar, Fin.sum_univ_three]
+      rw [if_neg (by dsimp [mu3]; linarith), if_pos rfl, if_neg (by dsimp [mu3]; linarith)]
+      simp [cf3]
+    have hw₂0 : w₂ = 0 := by
+      rw [← hb1, hP3_zero]; unfold bohrCoefficient; simp [bohrMean_zero]
+    have hcos0 : Real.cos (ω₀ * h) = 0 := by
+      dsimp [w₂] at hw₂0
+      have hc_sq_ne : c_top ω₀ ^ 2 ≠ 0 := pow_ne_zero 2 (hc_top_ne ω₀ hω₀_mem)
+      rcases mul_eq_zero.mp hw₂0 with hleft | hsq0
+      · rcases mul_eq_zero.mp hleft with hdiv | hexp0
+        · exact Complex.ofReal_eq_zero.mp (by simpa using div_eq_zero_iff.mp hdiv)
+        · exact absurd hexp0 (Complex.exp_ne_zero _)
+      · exact absurd hsq0 hc_sq_ne
+    have hb0 : bohrCoefficient P3 0 = ((‖c_top ω₀‖ ^ 2 - C ^ 2 : ℝ) : ℂ) := by
+      dsimp [P3]
+      rw [bohrCoefficient_sum_expChar, Fin.sum_univ_three]
+      rw [if_pos rfl, if_neg (by dsimp [mu3]; linarith), if_neg (by dsimp [mu3]; linarith)]
+      simp [cf3]
+    have hnorm_sq_eq : ‖c_top ω₀‖ ^ 2 = C ^ 2 := by
+      have hb0_z : bohrCoefficient P3 0 = 0 := by
+        rw [hP3_zero]; unfold bohrCoefficient; simp [bohrMean_zero]
+      exact sub_eq_zero.mp (Complex.ofReal_eq_zero.mp (hb0.symm.trans hb0_z))
+    have hnorm_eq : ‖c_top ω₀‖ = C := by
+      nlinarith [hnorm_sq_eq, norm_nonneg (c_top ω₀), hC_pos]
+    obtain ⟨kZ, hkZ⟩ := Real.cos_eq_zero_iff.mp hcos0
+    have hω_Z : ω₀ = (2 * (kZ : ℝ) + 1) * γ := by
+      have hstep : ω₀ * (Real.pi / (2 * |γ|)) = (2 * (kZ : ℝ) + 1) * Real.pi / 2 := hkZ
+      rw [abs_of_pos hγ] at hstep
+      apply mul_right_cancel₀ Real.pi_ne_zero
+      have hmul := congrArg (fun x => x * (2 * γ)) hstep
+      field_simp [hγ.ne'] at hmul ⊢
+      linarith
+    have hkZ_nn : 0 ≤ kZ := by
+      have hpos : 0 < (2 * (kZ : ℝ) + 1) * γ := hω_Z ▸ hω₀_pos
+      have h2k1 : 0 < 2 * (kZ : ℝ) + 1 := (mul_pos_iff_of_pos_right hγ).mp hpos
+      have hkZ_int : (-1 : ℤ) < 2 * kZ := by exact_mod_cast (by linarith : (-1 : ℝ) < 2 * kZ)
+      omega
+    refine ⟨kZ.toNat, ?_, hnorm_eq⟩
+    rw [hω_Z, ← Int.toNat_of_nonneg hkZ_nn]; push_cast; rfl
+  obtain ⟨k, hω₀_eq, hc_norm_eq⟩ := htop_alias
+  have hS_sub_emp : S_sub = ∅ := by
+    by_contra hne_sub
+    have hS_sub_ne : S_sub.Nonempty := Finset.nonempty_iff_ne_empty.mpr hne_sub
+    set β₂ : ℝ := (S_sub.image (fun q => (q.1 : ℂ).re)).max' (hS_sub_ne.image _)
+    obtain ⟨q₂, hq₂, hq₂_re⟩ := Finset.mem_image.mp (Finset.max'_mem _ (hS_sub_ne.image _))
+    obtain ⟨hq₂_Sr, hq₂_ne⟩ := Finset.mem_filter.mp hq₂
+    have hβ₂_gt : 1 / 2 < β₂ := hq₂_re ▸ hSr_half q₂ hq₂_Sr
+    have hβ₂_lt : β₂ < β := lt_of_le_of_ne (hq₂_re ▸ hre_le_β q₂ hq₂_Sr) (hq₂_re ▸ hq₂_ne)
+    set S_2 : Finset XiZeroCopy := S_sub.filter (fun q => (q.1 : ℂ).re = β₂)
+    set S_3 : Finset XiZeroCopy := S_sub.filter (fun q => (q.1 : ℂ).re ≠ β₂)
+    have hS2_ne : S_2.Nonempty := ⟨q₂, Finset.mem_filter.mpr ⟨hq₂, hq₂_re⟩⟩
+    obtain ⟨σ₃, hσ₃_lo, hσ₃_lt, hS3_le⟩ : ∃ σ₃ : ℝ, 1 / 2 ≤ σ₃ ∧ σ₃ < β₂ ∧
+        ∀ q ∈ S_3, (q.1 : ℂ).re ≤ σ₃ := by
+      rcases S_3.eq_empty_or_nonempty with hemp3 | hne3
+      · exact ⟨1 / 2, le_rfl, hβ₂_gt,
+          fun q hq => by rw [hemp3] at hq; exact (Finset.notMem_empty q hq).elim⟩
+      · set b3 := (S_3.image (fun q => (q.1 : ℂ).re)).max' (hne3.image _)
+        obtain ⟨q₃, hq₃, hq₃_re⟩ := Finset.mem_image.mp (Finset.max'_mem _ (hne3.image _))
+        obtain ⟨hq₃_sub, hq₃_ne⟩ := Finset.mem_filter.mp hq₃
+        have hgt3 : 1 / 2 < b3 := hq₃_re ▸ hSr_half q₃ (Finset.mem_filter.mp hq₃_sub).1
+        have hle_β₂ : b3 ≤ β₂ :=
+          hq₃_re ▸ Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq₃_sub)
+        exact ⟨b3, hgt3.le, lt_of_le_of_ne hle_β₂ (hq₃_re ▸ hq₃_ne),
+          fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq)⟩
+    obtain ⟨M_3, _, hv3_le⟩ := bound_layer_twoIntervalVec S_3 hh_pos.le hA1 (by linarith) hS3_le
+    have hS_sub_β₂ : ∀ q ∈ S_sub, (q.1 : ℂ).re ≤ β₂ :=
+      fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq)
+    obtain ⟨M_sub2, _, hv_sub2_le⟩ := bound_layer_twoIntervalVec S_sub hh_pos.le hA1
+      (by linarith) hS_sub_β₂
+    have h2_info := layer_twoIntervalVec_eq S_2 hβ₂_gt
+      (fun q hq => (Finset.mem_filter.mp hq).2) hh_pos (β := β)
+    set r₂ : ℝ := Real.exp ((β₂ - β) * h)
+    have hr₂_pos : 0 < r₂ := Real.exp_pos _
+    have hr₂_lt1 : r₂ < 1 := Real.exp_lt_one_iff.mpr (by nlinarith [hβ₂_lt, hh_pos])
+    set Ω_2 : Finset ℝ := S_2.image (fun q => |(q.1 : ℂ).im|)
+    let c_2 : ℝ → ℂ := fun ν =>
+      -(((S_2.filter (fun q => |(q.1 : ℂ).im| = ν)).card : ℝ) : ℂ) *
+        (Complex.exp ((((β₂ : ℂ) + I * (ν : ℂ)) * (h : ℂ))) - 1) /
+        ((β₂ : ℂ) + I * (ν : ℂ))
+    let f_2 : ℝ → ℝ := fun s => ∑ ν ∈ Ω_2, (c_2 ν * expChar ν s).re
+    obtain ⟨hΩ2_pos, hc2_ne, hv2_eq⟩ := h2_info
+    have hω₀h : ω₀ * h = (2 * (k : ℝ) + 1) * (Real.pi / 2) := by
+      rw [hω₀_eq]; dsimp [h]; unfold quarterPeriodStep
+      rw [abs_of_pos hγ]; field_simp [hγ.ne']
+    have hexp_ω₀h : Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) = if Even k then I else -I := by
+      rw [hω₀h]
+      induction k with
+      | zero =>
+        rw [if_pos Even.zero]
+        simp only [Nat.cast_zero, mul_zero, zero_add, one_mul, Complex.exp_mul_I,
+          ← Complex.ofReal_cos, ← Complex.ofReal_sin, Real.cos_pi_div_two, Real.sin_pi_div_two]
+        simp
+      | succ m' ih =>
+        have hst : (((2 * ((m' + 1 : ℕ) : ℝ) + 1) * (Real.pi / 2) : ℝ) : ℂ) * I =
+            (((2 * (m' : ℝ) + 1) * (Real.pi / 2) : ℝ) : ℂ) * I + (Real.pi : ℂ) * I := by
+          push_cast; ring
+        rw [hst, Complex.exp_add, Complex.exp_pi_mul_I, ih]
+        by_cases hm' : Even m'
+        · have hm1 : ¬ Even (m' + 1) := by simpa [Nat.even_add_one] using hm'
+          rw [if_pos hm', if_neg hm1]; ring
+        · have hm1 : Even (m' + 1) := by simpa [Nat.even_add_one] using hm'
+          rw [if_neg hm', if_pos hm1]; ring
+    set μ₀ : ℝ := if Even k then -ω₀ else ω₀
+    set b₀ : ℂ := if Even k then conj (c_top ω₀) else c_top ω₀
+    have hμ₀_ne : μ₀ ≠ 0 := by dsimp [μ₀]; split_ifs <;> linarith
+    have hb₀_ne : b₀ ≠ 0 := by
+      dsimp [b₀]; split_ifs
+      · exact map_ne_zero_iff (starRingEnd ℂ) (RingHom.injective _) |>.mpr (hc_top_ne ω₀ hω₀_mem)
+      · exact hc_top_ne ω₀ hω₀_mem
+    have hb₀_norm : ‖b₀‖ = C := by
+      dsimp [b₀]; split_ifs
+      · rw [Complex.norm_conj]; exact hc_norm_eq
+      · exact hc_norm_eq
+    have hZ_top_pure : ∀ t : ℝ,
+        ((f_top t : ℂ) + I * (f_top (t + h) : ℂ)) = b₀ * expChar μ₀ t := by
+      intro t
+      rw [hf_top_single t, hshift_ω₀ t, hexp_ω₀h]
+      dsimp [b₀, μ₀]
+      have hconj_e : conj (expChar ω₀ t) = expChar (-ω₀) t := by
+        simp only [expChar, ← Complex.exp_conj]
+        congr 1; rw [map_mul, Complex.conj_ofReal, Complex.conj_I]; push_cast; ring
+      by_cases hk_ev : Even k
+      · rw [if_pos hk_ev, if_pos hk_ev, if_pos hk_ev, ← hconj_e, ← map_mul]
+        set z := c_top ω₀ * expChar ω₀ t
+        apply Complex.ext <;> simp
+      · rw [if_neg hk_ev, if_neg hk_ev, if_neg hk_ev]
+        set z := c_top ω₀ * expChar ω₀ t
+        apply Complex.ext <;> simp
+    let W_2 (s : ℝ) := -(∑ q ∈ S_2, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
+    let W_3 (s : ℝ) := -(∑ q ∈ S_3, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
+    have hsub_split : W_sub = fun s => W_2 s + W_3 s := by
+      funext s
+      dsimp [W_sub, W_2, W_3, S_2, S_3]
+      rw [← Finset.sum_filter_add_sum_filter_not S_sub (fun q => (q.1 : ℂ).re = β₂)]
+      ring
+    have hcross_tendsto : Tendsto (fun t : ℝ =>
+        (conj b₀ * expChar (-μ₀) t * ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))).re)
+        atTop (𝓝 0) := by
+      obtain ⟨M_all, hM_all, hv_all_le⟩ := bound_layer_twoIntervalVec S_right hh_pos.le hA1
+        (by linarith) hre_le_β
+      set K_rad_sq : ℝ := 4 * K_v * (M_all + C)
+      have ht_err1 : Tendsto
+          (fun t : ℝ => (K_rad_sq / 2) * (t ^ (2 : ℝ) * Real.exp (-(β₂ - 1 / 2) * t)))
+          atTop (𝓝 0) := by
+        simpa using (_root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 2 (β₂ - 1 / 2)
+          (by linarith)).const_mul (K_rad_sq / 2)
+      have ht_err2 : Tendsto
+          (fun t : ℝ => (M_sub2 ^ 2 / 2) * (t ^ (0 : ℝ) * Real.exp (-(β - β₂) * t)))
+          atTop (𝓝 0) := by
+        simpa using (_root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 0 (β - β₂)
+          (sub_pos.mpr hβ₂_lt)).const_mul (M_sub2 ^ 2 / 2)
+      have ht_err3 : Tendsto
+          (fun t : ℝ => (C * M_3) * (t ^ (0 : ℝ) * Real.exp (-(β₂ - σ₃) * t)))
+          atTop (𝓝 0) := by
+        simpa using (_root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 0 (β₂ - σ₃)
+          (sub_pos.mpr hσ₃_lt)).const_mul (C * M_3)
+      have ht_tot := (ht_err1.add ht_err2).add ht_err3
+      rw [add_zero, add_zero] at ht_tot
+      refine squeeze_zero_norm' ?_ ht_tot
+      filter_upwards [eventually_ge_atTop (max T_rad 3)] with t ht
+      have ht0 : 0 ≤ t := by linarith [le_max_right T_rad 3]
+      have ht1_le : 1 ≤ t := by linarith [le_max_right T_rad 3]
+      rw [Real.norm_eq_abs, Real.rpow_two, Real.rpow_zero, one_mul]
+      set v_top := twoIntervalVec W_top h A t
+      set v_sub := twoIntervalVec W_sub h A t
+      set v_2 := twoIntervalVec W_2 h A t
+      set v_3 := twoIntervalVec W_3 h A t
+      have hv_all_eq : twoIntervalVec W_all h A t = v_top + v_sub := by
+        rw [hW_split, twoIntervalVec_add]
+      have hv_sub_eq : v_sub = v_2 + v_3 := by
+        dsimp [v_sub, v_2, v_3]; rw [hsub_split, twoIntervalVec_add]
+      have hv_top_form : v_top = (Real.exp (β * t) : ℂ) * (b₀ * expChar μ₀ t) := by
+        dsimp [v_top]; rw [hr_top_eq t, hZ_top_pure t]
+      have hv_top_norm : ‖v_top‖ = C * Real.exp (β * t) := by
+        rw [hv_top_form, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
+          abs_of_pos (Real.exp_pos _), hb₀_norm, norm_expChar, mul_one, mul_comm]
+      have hv_top_norm_sq : ‖v_top‖ ^ 2 = C ^ 2 * Real.exp (2 * β * t) := by
+        rw [hv_top_norm, mul_pow, sq (Real.exp (β * t)), ← Real.exp_add]
+        congr 2; ring
+      have hnorm_expand : ∀ z w : ℂ, ‖z + w‖ ^ 2 = ‖z‖ ^ 2 + 2 * (conj z * w).re + ‖w‖ ^ 2 := by
+        intro z w
+        rw [Complex.sq_norm, Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
+          Complex.normSq_apply, Complex.normSq_apply]
+        simp [Complex.mul_re]; ring
+      have hexp_id : ‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t) =
+          2 * Real.exp ((β + β₂) * t) *
+            (conj b₀ * expChar (-μ₀) t *
+              ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))).re +
+            2 * (conj v_top * v_3).re + ‖v_sub‖ ^ 2 := by
+        rw [hv_all_eq, hnorm_expand v_top v_sub, hv_top_norm_sq, hv_sub_eq]
+        have hv2_form : v_2 =
+            (Real.exp (β₂ * t) : ℂ) * ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ)) :=
+          hv2_eq t
+        have hconj_vtop : conj v_top = (Real.exp (β * t) : ℂ) * (conj b₀ * expChar (-μ₀) t) := by
+          rw [hv_top_form, map_mul, map_mul, Complex.conj_ofReal]
+          congr 2
+          simp only [expChar, ← Complex.exp_conj]
+          congr 1; rw [map_mul, Complex.conj_ofReal, Complex.conj_I]; push_cast; ring
+        have hpair : (conj v_top * (v_2 + v_3)).re =
+            Real.exp ((β + β₂) * t) *
+              (conj b₀ * expChar (-μ₀) t *
+                ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))).re +
+              (conj v_top * v_3).re := by
+          rw [mul_add, Complex.add_re]
+          congr 1
+          rw [hconj_vtop, hv2_form,
+            show (Real.exp (β * t) : ℂ) * (conj b₀ * expChar (-μ₀) t) *
+              ((Real.exp (β₂ * t) : ℂ) * ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))) =
+              ((Real.exp (β * t) * Real.exp (β₂ * t) : ℝ) : ℂ) *
+                (conj b₀ * expChar (-μ₀) t *
+                  ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))) by push_cast; ring,
+            Complex.re_ofReal_mul, ← Real.exp_add, show β * t + β₂ * t = (β + β₂) * t by ring]
+        rw [hpair]; ring
+      set target_re := (conj b₀ * expChar (-μ₀) t *
+        ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))).re
+      have h2exp_pos : 0 < 2 * Real.exp ((β + β₂) * t) :=
+        mul_pos two_pos (Real.exp_pos _)
+      have hmul_bound : 2 * Real.exp ((β + β₂) * t) * |target_re| ≤
+          |‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t)| +
+            ‖v_sub‖ ^ 2 + 2 * |(conj v_top * v_3).re| := by
+        have h1 : 2 * Real.exp ((β + β₂) * t) * target_re =
+            (‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t)) -
+              ‖v_sub‖ ^ 2 - 2 * (conj v_top * v_3).re := by linarith [hexp_id]
+        have habs := congrArg abs h1
+        rw [abs_mul, abs_of_pos h2exp_pos] at habs
+        have ht_tri := (abs_sub _ _).trans (add_le_add (abs_sub _ _) le_rfl)
+        rw [abs_of_nonneg (sq_nonneg _), abs_mul, abs_of_pos two_pos] at ht_tri
+        linarith [habs, ht_tri]
+      have hp1 : |‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t)| ≤
+          K_rad_sq * t ^ 2 * Real.exp ((β + 1 / 2) * t) := by
+        have hsq_diff : ‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t) =
+            (‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)) *
+              (‖twoIntervalVec W_all h A t‖ + C * Real.exp (β * t)) := by
+          have : Real.exp (2 * β * t) = Real.exp (β * t) ^ 2 := by
+            rw [sq, ← Real.exp_add]; congr 1; ring
+          rw [this]; ring
+        rw [hsq_diff, abs_mul]
+        have hd1 := hv_rad t ht
+        have h1t : (1 + t) ^ 2 ≤ 4 * t ^ 2 := by nlinarith
+        have hd1' : |‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)| ≤
+            4 * K_v * t ^ 2 * Real.exp (t / 2) :=
+          hd1.trans ((mul_le_mul_of_nonneg_left h1t
+            (mul_nonneg hK_v (Real.exp_pos _).le)).trans_eq (by ring))
+        have hsum_le : |‖twoIntervalVec W_all h A t‖ + C * Real.exp (β * t)| ≤
+            (M_all + C) * Real.exp (β * t) := by
+          rw [abs_of_nonneg (add_nonneg (norm_nonneg _) (mul_nonneg hC_pos.le (Real.exp_pos _).le))]
+          linarith [hv_all_le t ht0]
+        calc |‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)| *
+              |‖twoIntervalVec W_all h A t‖ + C * Real.exp (β * t)|
+            ≤ (4 * K_v * t ^ 2 * Real.exp (t / 2)) * ((M_all + C) * Real.exp (β * t)) :=
+              mul_le_mul hd1' hsum_le (abs_nonneg _)
+                (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hK_v) (sq_nonneg _))
+                  (Real.exp_pos _).le)
+          _ = K_rad_sq * t ^ 2 * (Real.exp (t / 2) * Real.exp (β * t)) := by
+              dsimp [K_rad_sq]; ring
+          _ = K_rad_sq * t ^ 2 * Real.exp ((β + 1 / 2) * t) := by
+              rw [← Real.exp_add]; congr 2; ring
+      have hp2 : ‖v_sub‖ ^ 2 ≤ M_sub2 ^ 2 * Real.exp (2 * β₂ * t) := by
+        calc ‖v_sub‖ ^ 2 ≤ (M_sub2 * Real.exp (β₂ * t)) ^ 2 :=
+              pow_le_pow_left₀ (norm_nonneg _) (hv_sub2_le t ht0) 2
+          _ = M_sub2 ^ 2 * Real.exp (2 * β₂ * t) := by
+              rw [mul_pow, sq (Real.exp (β₂ * t)), ← Real.exp_add]
+              congr 2; ring
+      have hp3 : 2 * |(conj v_top * v_3).re| ≤ 2 * C * M_3 * Real.exp ((β + σ₃) * t) := by
+        have hc1 : |(conj v_top * v_3).re| ≤ ‖v_top‖ * ‖v_3‖ :=
+          (Complex.abs_re_le_norm _).trans_eq (by rw [norm_mul, Complex.norm_conj])
+        have hc2 : ‖v_top‖ * ‖v_3‖ ≤ (C * Real.exp (β * t)) * (M_3 * Real.exp (σ₃ * t)) := by
+          rw [hv_top_norm]
+          exact mul_le_mul_of_nonneg_left (hv3_le t ht0)
+            (mul_nonneg hC_pos.le (Real.exp_pos _).le)
+        calc 2 * |(conj v_top * v_3).re|
+            ≤ 2 * ((C * Real.exp (β * t)) * (M_3 * Real.exp (σ₃ * t))) :=
+              mul_le_mul_of_nonneg_left (hc1.trans hc2) zero_le_two
+          _ = 2 * C * M_3 * (Real.exp (β * t) * Real.exp (σ₃ * t)) := by ring
+          _ = 2 * C * M_3 * Real.exp ((β + σ₃) * t) := by
+              rw [← Real.exp_add]; congr 2; ring
+      set inv2e : ℝ := (1 / 2) * Real.exp (-((β + β₂) * t))
+      have hinv2e_nn : 0 ≤ inv2e := mul_nonneg (by norm_num) (Real.exp_pos _).le
+      have hsum_all := (hmul_bound.trans (add_le_add (add_le_add hp1 hp2) hp3))
+      have hscaled := mul_le_mul_of_nonneg_right hsum_all hinv2e_nn
+      have hlhs : 2 * Real.exp ((β + β₂) * t) * |target_re| * inv2e = |target_re| := by
+        dsimp [inv2e]
+        calc 2 * Real.exp ((β + β₂) * t) * |target_re| * (1 / 2 * Real.exp (-((β + β₂) * t)))
+            = |target_re| * (Real.exp ((β + β₂) * t) * Real.exp (-((β + β₂) * t))) := by ring
+          _ = |target_re| := by rw [← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
+      have hrhs : (K_rad_sq * t ^ 2 * Real.exp ((β + 1 / 2) * t) +
+          M_sub2 ^ 2 * Real.exp (2 * β₂ * t) +
+          2 * C * M_3 * Real.exp ((β + σ₃) * t)) * inv2e =
+          K_rad_sq / 2 * (t ^ 2 * Real.exp (-(β₂ - 1 / 2) * t)) +
+            M_sub2 ^ 2 / 2 * Real.exp (-(β - β₂) * t) +
+            C * M_3 * Real.exp (-(β₂ - σ₃) * t) := by
+        dsimp [inv2e]
+        have he1 : Real.exp ((β + 1 / 2) * t) * Real.exp (-((β + β₂) * t)) =
+            Real.exp (-(β₂ - 1 / 2) * t) := by rw [← Real.exp_add]; congr 1; ring
+        have he2 : Real.exp (2 * β₂ * t) * Real.exp (-((β + β₂) * t)) =
+            Real.exp (-(β - β₂) * t) := by rw [← Real.exp_add]; congr 1; ring
+        have he3 : Real.exp ((β + σ₃) * t) * Real.exp (-((β + β₂) * t)) =
+            Real.exp (-(β₂ - σ₃) * t) := by rw [← Real.exp_add]; congr 1; ring
+        calc (K_rad_sq * t ^ 2 * Real.exp ((β + 1 / 2) * t) +
+                M_sub2 ^ 2 * Real.exp (2 * β₂ * t) +
+                2 * C * M_3 * Real.exp ((β + σ₃) * t)) *
+              (1 / 2 * Real.exp (-((β + β₂) * t)))
+            = K_rad_sq / 2 * (t ^ 2 * (Real.exp ((β + 1 / 2) * t) * Real.exp (-((β + β₂) * t)))) +
+                M_sub2 ^ 2 / 2 * (Real.exp (2 * β₂ * t) * Real.exp (-((β + β₂) * t))) +
+                C * M_3 * (Real.exp ((β + σ₃) * t) * Real.exp (-((β + β₂) * t))) := by ring
+          _ = K_rad_sq / 2 * (t ^ 2 * Real.exp (-(β₂ - 1 / 2) * t)) +
+                M_sub2 ^ 2 / 2 * Real.exp (-(β - β₂) * t) +
+                C * M_3 * Real.exp (-(β₂ - σ₃) * t) := by rw [he1, he2, he3]
+      rwa [hlhs, hrhs] at hscaled
+    exact sublayer_perturbation_not_tendsto_zero hμ₀_ne hr₂_pos hr₂_lt1 hb₀_ne
+      Ω_2 (hS2_ne.image _) hΩ2_pos c_2 hc2_ne h hcross_tendsto
+  refine ⟨k, fun q hq_Sr => ?_⟩
+  have hq_top : q ∈ S_top := by
+    by_contra hnot_top
+    have hre_ne : (q.1 : ℂ).re ≠ β := fun he => hnot_top (Finset.mem_filter.mpr ⟨hq_Sr, he⟩)
+    have hq_sub : q ∈ S_sub := Finset.mem_filter.mpr ⟨hq_Sr, hre_ne⟩
+    rw [hS_sub_emp] at hq_sub
+    exact Finset.notMem_empty q hq_sub
+  have hre_q : (q.1 : ℂ).re = β := (Finset.mem_filter.mp hq_top).2
+  have him_mem : |(q.1 : ℂ).im| ∈ Ω_top := Finset.mem_image_of_mem _ hq_top
+  rw [hΩ_eq, Finset.mem_singleton] at him_mem
+  exact ⟨hre_q, hω₀_eq ▸ him_mem⟩
+
 /-- **Exact `FiniteOffLine` classification of the two-interval ordinary-prime radius.**
 Under `FiniteOffLine`, for any `1/2 < β < 1`, `0 < γ`, and `1 ≤ m`, `thetaRadialDiscrepancy β γ m`
 is bounded against `e^{t/2}(1 + t)²` if and only if there exists `k ∈ ℕ` such that `ζ` has a
@@ -2206,7 +2767,6 @@ theorem finiteOffLine_not_radialUnbounded_iff
     set S_right : Finset XiZeroCopy := S.filter (fun q => 1 / 2 < (q.1 : ℂ).re)
     set S_left : Finset XiZeroCopy := S.filter (fun q => ¬ 1 / 2 < (q.1 : ℂ).re)
     obtain ⟨K₀, hK₀, hvk⟩ := RHTower.exists_abs_chebyshevPsi_sub_add_offLineWave_le_of_finite hfin
-    -- `W_all(s) := -(∑_{q ∈ S_right} Re(e^{q s} / q))` differs from `psiLogError` by `O(e^{s/2}(1+s)²)`
     let W_all : ℝ → ℝ := fun s => -(∑ q ∈ S_right, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
     set h := quarterPeriodStep γ
     set A := quarterPeriodScale β γ
@@ -2236,7 +2796,7 @@ theorem finiteOffLine_not_radialUnbounded_iff
         rw [neg_neg]
         congr 1
         refine Finset.sum_congr rfl fun q _ => ?_
-        rw [RHTower.cpow_ofReal_exp, mul_comm (s : ℂ)]
+        rw [cpow_exp_eq s (q.1 : ℂ)]
       have hid : psiLogError s - W_all s =
           (Chebyshev.psi (Real.exp s) - Real.exp s + (RHTower.offLineWave S (Real.exp s)).re) -
             ∑ q ∈ S_left, ((Real.exp s : ℂ) ^ (q.1 : ℂ) / (q.1 : ℂ)).re := by
@@ -2263,17 +2823,20 @@ theorem finiteOffLine_not_radialUnbounded_iff
                 exact (Real.rpow_le_rpow_of_exponent_le hx1 hle_half).trans_eq
                   ((Real.sqrt_eq_rpow _).symm.trans (Real.exp_half s).symm)
               have h1s : 1 ≤ (1 + s) ^ 2 := by nlinarith
-              exact (hcp.trans (le_mul_of_one_le_right (by positivity) h1s)).trans_eq (by ring)
+              exact (hcp.trans (le_mul_of_one_le_right
+                (mul_nonneg (inv_nonneg.mpr (norm_nonneg _)) (Real.exp_pos _).le) h1s)).trans_eq
+                (by ring)
           _ = K_left * Real.exp (s / 2) * (1 + s) ^ 2 := by
               dsimp [K_left]; rw [Finset.sum_mul, Finset.sum_mul]
       exact (abs_sub _ _).trans ((add_le_add hb1' hb2).trans_eq (by ring))
-    -- Pointwise `O(e^{t/2}(1 + t)²)` bound on `|‖twoIntervalVec W_all h A t‖ - C e^{β t}|`
     have hpsi_bdd : ¬ IsLogSqrtSqUnbounded (radialDiscrepancyOf psiLogError β γ m) :=
       (psi_radial_bounded_iff_theta_radial_bounded (by linarith) hγ.ne' m).mpr hbdd
     rw [isLogSqrtSqUnbounded_iff_not_eventually_le, not_not] at hpsi_bdd
     obtain ⟨K_p, T_p, hK_p⟩ := hpsi_bdd
     set K_v : ℝ := |K_p| + 4 * (K₀ + K_left) * Real.exp h * (1 + 2 * h) ^ 2
-    have hK_v : 0 ≤ K_v := by dsimp [K_v]; positivity
+    have hK_v : 0 ≤ K_v := add_nonneg (abs_nonneg _)
+      (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) (add_nonneg hK₀ hK_left))
+        (Real.exp_pos _).le) (sq_nonneg _))
     have hv_rad : ∀ t : ℝ, max T_p 3 ≤ t →
         |‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)| ≤
           K_v * Real.exp (t / 2) * (1 + t) ^ 2 := by
@@ -2290,8 +2853,9 @@ theorem finiteOffLine_not_radialUnbounded_iff
         refine (hW_mode s (ht3.trans hs1)).trans ?_
         dsimp [B_t]
         exact mul_le_mul (mul_le_mul_of_nonneg_left
-          (Real.exp_le_exp.mpr (by linarith)) (by positivity))
-          (pow_le_pow_left₀ (by linarith) (by linarith) 2) (sq_nonneg _) (by positivity)
+          (Real.exp_le_exp.mpr (by linarith)) (add_nonneg hK₀ hK_left))
+          (pow_le_pow_left₀ (by linarith) (by linarith) 2) (sq_nonneg _)
+          (mul_nonneg (add_nonneg hK₀ hK_left) (Real.exp_pos _).le)
       have hb0 := hpt t le_rfl (by linarith)
       have hb1 := hpt (t + h) (by linarith) (by linarith)
       have hb2 := hpt (t + 2 * h) (by linarith) le_rfl
@@ -2327,9 +2891,13 @@ theorem finiteOffLine_not_radialUnbounded_iff
           have : 1 + (t + 2 * h) ≤ (1 + 2 * h) * (1 + t) := by nlinarith [ht3, hh_pos]
           exact (pow_le_pow_left₀ (by linarith) this 2).trans_eq (mul_pow _ _ 2)
         rw [hexp_sp]
+        have hfac_nn : 0 ≤ 4 * ((K₀ + K_left) * (Real.exp h * Real.exp (t / 2))) :=
+          mul_nonneg (by norm_num) (mul_nonneg (add_nonneg hK₀ hK_left)
+            (mul_nonneg (Real.exp_pos _).le (Real.exp_pos _).le))
         calc 4 * ((K₀ + K_left) * (Real.exp h * Real.exp (t / 2)) * (1 + (t + 2 * h)) ^ 2)
-            ≤ 4 * ((K₀ + K_left) * (Real.exp h * Real.exp (t / 2)) *
-                ((1 + 2 * h) ^ 2 * (1 + t) ^ 2)) := by gcongr
+            = 4 * ((K₀ + K_left) * (Real.exp h * Real.exp (t / 2))) * (1 + (t + 2 * h)) ^ 2 := by ring
+          _ ≤ 4 * ((K₀ + K_left) * (Real.exp h * Real.exp (t / 2))) *
+                ((1 + 2 * h) ^ 2 * (1 + t) ^ 2) := mul_le_mul_of_nonneg_left h1t hfac_nn
           _ = 4 * (K₀ + K_left) * Real.exp h * (1 + 2 * h) ^ 2 *
                 Real.exp (t / 2) * (1 + t) ^ 2 := by ring
       have htri := (abs_add_le (‖twoIntervalVec W_all h A t‖ - ‖twoIntervalVec psiLogError h A t‖)
@@ -2337,7 +2905,6 @@ theorem finiteOffLine_not_radialUnbounded_iff
         (add_le_add (h4B.trans h4B') hb_p)
       rw [sub_add_sub_cancel] at htri
       exact htri.trans_eq (by dsimp [K_v]; ring)
-    -- Every `q ∈ S_right` has `(q.1 : ℂ).re ≤ β`, and `S_top := {q ∈ S_right | re = β}` is nonempty
     have hre_le_β : ∀ q ∈ S_right, (q.1 : ℂ).re ≤ β := by
       intro q hq
       have h0 := xiZeroCopy_re_pos q
@@ -2347,7 +2914,6 @@ theorem finiteOffLine_not_radialUnbounded_iff
         (xi_eq_zero_of_mem_divisor_support q.1)
       exact hΘ_eq ▸ re_le_zetaZeroAbscissa hζ
     set S_top : Finset XiZeroCopy := S_right.filter (fun q => (q.1 : ℂ).re = β)
-    set S_sub : Finset XiZeroCopy := S_right.filter (fun q => (q.1 : ℂ).re ≠ β)
     have hStop_ne : S_top.Nonempty := by
       by_contra hemp
       rw [Finset.not_nonempty_iff_eq_empty] at hemp
@@ -2383,496 +2949,10 @@ theorem finiteOffLine_not_radialUnbounded_iff
           rw [← hqz_eq]
           exact Finset.le_max' _ _ (Finset.mem_image_of_mem _ hqz_S)
         linarith [hmax_lo.2]
-    -- Bound any subset `V ⊆ S_right` with `(q.1 : ℂ).re ≤ σ₀` (`σ₀ ≥ 0`)
-    have hbound_layer : ∀ (V : Finset XiZeroCopy) {σ₀ : ℝ}, 0 ≤ σ₀ →
-        (∀ q ∈ V, (q.1 : ℂ).re ≤ σ₀) →
-        ∃ M_V : ℝ, 0 ≤ M_V ∧ ∀ t : ℝ, 0 ≤ t →
-          ‖twoIntervalVec (fun s => -(∑ q ∈ V, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re))
-            h A t‖ ≤ M_V * Real.exp (σ₀ * t) := by
-      intro V σ₀ hσ₀ hV_le
-      set K_V : ℝ := ∑ q ∈ V, ‖(q.1 : ℂ)‖⁻¹
-      have hK_V : 0 ≤ K_V := Finset.sum_nonneg fun _ _ => inv_nonneg.mpr (norm_nonneg _)
-      refine ⟨4 * K_V * Real.exp (2 * σ₀ * h), by positivity, fun t ht => ?_⟩
-      let W_V (s : ℝ) := -(∑ q ∈ V, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
-      have hpt_V : ∀ s : ℝ, 0 ≤ s → s ≤ t + 2 * h →
-          |W_V s| ≤ K_V * Real.exp (2 * σ₀ * h) * Real.exp (σ₀ * t) := by
-        intro s hs1 hs2
-        dsimp [W_V]; rw [abs_neg]
-        refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
-        calc ∑ q ∈ V, |(Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re|
-            ≤ ∑ q ∈ V, ‖(q.1 : ℂ)‖⁻¹ * (Real.exp (2 * σ₀ * h) * Real.exp (σ₀ * t)) := by
-              refine Finset.sum_le_sum fun q hq => ?_
-              refine ((Complex.abs_re_le_norm _).trans_eq (norm_div _ _)).trans ?_
-              rw [Complex.norm_exp, div_eq_inv_mul,
-                show ((q.1 : ℂ) * (s : ℂ)).re = (q.1 : ℂ).re * s by simp [Complex.mul_re]]
-              refine mul_le_mul_of_nonneg_left ?_ (inv_nonneg.mpr (norm_nonneg _))
-              rw [← Real.exp_add]
-              exact Real.exp_le_exp.mpr (by nlinarith [hV_le q hq, hs1, hs2])
-          _ = K_V * Real.exp (2 * σ₀ * h) * Real.exp (σ₀ * t) := by
-              dsimp [K_V]; rw [Finset.sum_mul]; ring
-      have hb0 := hpt_V t ht (by linarith)
-      have hb1 := hpt_V (t + h) (by linarith) (by linarith)
-      have hb2 := hpt_V (t + 2 * h) (by linarith) le_rfl
-      refine (Complex.norm_le_abs_re_add_abs_im _).trans ?_
-      have hre : |(twoIntervalVec W_V h A t).re| ≤
-          2 * (K_V * Real.exp (2 * σ₀ * h) * Real.exp (σ₀ * t)) := by
-        dsimp [twoIntervalVec, logStepIncrement]
-        exact (abs_sub _ _).trans ((add_le_add hb1 hb0).trans_eq (two_mul _).symm)
-      have him : |(twoIntervalVec W_V h A t).im| ≤
-          2 * (K_V * Real.exp (2 * σ₀ * h) * Real.exp (σ₀ * t)) := by
-        dsimp [twoIntervalVec, logStepIncrement]
-        rw [abs_div, abs_of_pos hA0, show t + h + h = t + 2 * h by ring]
-        exact (div_le_self (abs_nonneg _) hA1).trans
-          ((abs_sub _ _).trans ((add_le_add hb2 hb1).trans_eq (two_mul _).symm))
-      linarith
-    -- Decompose `W_all = W_top + W_sub`
-    let W_top (s : ℝ) := -(∑ q ∈ S_top, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
-    let W_sub (s : ℝ) := -(∑ q ∈ S_sub, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
-    have hW_split : W_all = fun s => W_top s + W_sub s := by
-      funext s
-      dsimp [W_all, W_top, W_sub, S_top, S_sub]
-      rw [← Finset.sum_filter_add_sum_filter_not S_right (fun q => (q.1 : ℂ).re = β)]
-      ring
-    have htop_info := layer_twoIntervalVec_eq S_top hβ
-      (fun q hq => (Finset.mem_filter.mp hq).2) hh_pos
-    set Ω_top : Finset ℝ := S_top.image (fun q => |(q.1 : ℂ).im|)
-    let c_top : ℝ → ℂ := fun ω =>
-      -(((S_top.filter (fun q => |(q.1 : ℂ).im| = ω)).card : ℝ) : ℂ) *
-        (Complex.exp ((((β : ℂ) + I * (ω : ℂ)) * (h : ℂ))) - 1) /
-        ((β : ℂ) + I * (ω : ℂ))
-    let f_top : ℝ → ℝ := fun s => ∑ ω ∈ Ω_top, (c_top ω * expChar ω s).re
-    obtain ⟨hΩ_top_pos, hc_top_ne, hv_top_eq⟩ := htop_info
-    have hr_top_eq : ∀ s : ℝ,
-        twoIntervalVec W_top h A s =
-          (Real.exp (β * s) : ℂ) * ((f_top s : ℂ) + I * (f_top (s + h) : ℂ)) := by
-      intro s
-      have he := hv_top_eq s
-      simpa [A, quarterPeriodScale, sub_self, zero_mul, Real.exp_zero, one_mul] using he
-    -- Sublayer decay exponent `σ_sub < β` (`σ_sub ≥ 1/2`)
-    have hsub_exp : ∃ σ_sub : ℝ, 1 / 2 ≤ σ_sub ∧ σ_sub < β ∧
-        ∀ q ∈ S_sub, (q.1 : ℂ).re ≤ σ_sub := by
-      rcases S_sub.eq_empty_or_nonempty with hemp | hne
-      · exact ⟨1 / 2, le_rfl, hβ, fun q hq => by rw [hemp] at hq; exact (Finset.notMem_empty q hq).elim⟩
-      · set β₂ := (S_sub.image (fun q => (q.1 : ℂ).re)).max' (hne.image _)
-        obtain ⟨q₂, hq₂, hq₂_re⟩ := Finset.mem_image.mp (Finset.max'_mem _ (hne.image _))
-        obtain ⟨hq₂_Sr, hq₂_ne⟩ := Finset.mem_filter.mp hq₂
-        have hgt_half : 1 / 2 < β₂ := hq₂_re ▸ (Finset.mem_filter.mp hq₂_Sr).2
-        have hlt_β : β₂ < β := lt_of_le_of_ne (hq₂_re ▸ hre_le_β q₂ hq₂_Sr) (hq₂_re ▸ hq₂_ne)
-        exact ⟨β₂, hgt_half.le, hlt_β,
-          fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq)⟩
-    obtain ⟨σ_sub, hσ_sub_lo, hσ_sub_lt, hS_sub_le⟩ := hsub_exp
-    obtain ⟨M_sub, hM_sub, hv_sub_le⟩ := hbound_layer S_sub (by linarith) hS_sub_le
-    -- Top-layer norm converges: `f_top(t)² + f_top(t + h)² - C² → 0`
-    have htop_norm_tendsto : Tendsto
-        (fun t : ℝ => f_top t ^ 2 + f_top (t + h) ^ 2 - C ^ 2) atTop (𝓝 0) := by
-      have hdiff_c : Tendsto
-          (fun t : ℝ => ‖(f_top t : ℂ) + I * (f_top (t + h) : ℂ)‖ - C) atTop (𝓝 0) := by
-        have ht1 : Tendsto (fun t : ℝ => 4 * K_v * (t ^ (2 : ℝ) * Real.exp (-(β - 1 / 2) * t)))
-            atTop (𝓝 0) := by
-          simpa using (_root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 2 (β - 1 / 2)
-            (by linarith)).const_mul (4 * K_v)
-        have ht2 : Tendsto (fun t : ℝ => M_sub * (t ^ (0 : ℝ) * Real.exp (-(β - σ_sub) * t)))
-            atTop (𝓝 0) := by
-          simpa using (_root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 0 (β - σ_sub)
-            (sub_pos.mpr hσ_sub_lt)).const_mul M_sub
-        have ht_sum := ht1.add ht2
-        rw [add_zero] at ht_sum
-        refine squeeze_zero_norm' ?_ ht_sum
-        filter_upwards [eventually_ge_atTop (max T_p 3)] with t ht
-        have ht0 : 0 ≤ t := by linarith [le_max_right T_p 3]
-        have ht1_le : 1 ≤ t := by linarith [le_max_right T_p 3]
-        rw [Real.norm_eq_abs, Real.rpow_two, Real.rpow_zero, one_mul]
-        have hv_split : twoIntervalVec W_all h A t =
-            twoIntervalVec W_top h A t + twoIntervalVec W_sub h A t := by
-          rw [hW_split, twoIntervalVec_add]
-        have htop_n : ‖twoIntervalVec W_top h A t‖ =
-            Real.exp (β * t) * ‖(f_top t : ℂ) + I * (f_top (t + h) : ℂ)‖ := by
-          rw [hr_top_eq t, norm_mul, Complex.norm_real, Real.norm_eq_abs,
-            abs_of_pos (Real.exp_pos _)]
-        have htri1 : |‖twoIntervalVec W_top h A t‖ - C * Real.exp (β * t)| ≤
-            ‖twoIntervalVec W_sub h A t‖ +
-              |‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)| := by
-          have hns : |‖twoIntervalVec W_top h A t‖ - ‖twoIntervalVec W_all h A t‖| ≤
-              ‖twoIntervalVec W_sub h A t‖ := by
-            rw [hv_split, abs_sub_comm]
-            exact (abs_norm_sub_norm_le _ _).trans_eq (by rw [add_sub_cancel_left])
-          have ht_add := abs_add_le (‖twoIntervalVec W_top h A t‖ - ‖twoIntervalVec W_all h A t‖)
-            (‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t))
-          rw [sub_add_sub_cancel] at ht_add
-          exact ht_add.trans (add_le_add hns le_rfl)
-        rw [htop_n, show Real.exp (β * t) * ‖(f_top t : ℂ) + I * (f_top (t + h) : ℂ)‖ -
-            C * Real.exp (β * t) =
-          Real.exp (β * t) * (‖(f_top t : ℂ) + I * (f_top (t + h) : ℂ)‖ - C) by ring,
-          abs_mul, abs_of_pos (Real.exp_pos _)] at htri1
-        have hmul := mul_le_mul_of_nonneg_right htri1 (Real.exp_pos (-(β * t))).le
-        rw [mul_right_comm, ← Real.exp_add, add_neg_cancel, Real.exp_zero, one_mul, add_mul] at hmul
-        refine hmul.trans (add_le_add_comm ?_ ?_)
-        · have hb_v := hv_rad t ht
-          have h1t : (1 + t) ^ 2 ≤ 4 * t ^ 2 := by nlinarith
-          calc |‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)| * Real.exp (-(β * t))
-              ≤ (K_v * Real.exp (t / 2) * (4 * t ^ 2)) * Real.exp (-(β * t)) :=
-                mul_le_mul_of_nonneg_right
-                  ((hb_v).trans (mul_le_mul_of_nonneg_left h1t (by positivity)))
-                  (Real.exp_pos _).le
-            _ = 4 * K_v * (t ^ 2 * (Real.exp (t / 2) * Real.exp (-(β * t)))) := by ring
-            _ = 4 * K_v * (t ^ 2 * Real.exp (-(β - 1 / 2) * t)) := by
-                rw [← Real.exp_add]; congr 3; ring
-        · calc ‖twoIntervalVec W_sub h A t‖ * Real.exp (-(β * t))
-              ≤ (M_sub * Real.exp (σ_sub * t)) * Real.exp (-(β * t)) :=
-                mul_le_mul_of_nonneg_right (hv_sub_le t ht0) (Real.exp_pos _).le
-            _ = M_sub * Real.exp (-(β - σ_sub) * t) := by
-                rw [mul_assoc, ← Real.exp_add]; congr 2; ring
-      have hsq_lim := ((hdiff_c.add_const C).pow 2).sub_const (C ^ 2)
-      rw [zero_add, sub_self] at hsq_lim
-      refine hsq_lim.congr fun t => ?_
-      have hnorm_sq : ‖(f_top t : ℂ) + I * (f_top (t + h) : ℂ)‖ ^ 2 =
-          f_top t ^ 2 + f_top (t + h) ^ 2 := by
-        rw [Complex.sq_norm, Complex.normSq_apply]
-        simp [sq]
-      rw [hnorm_sq]
-    -- Step A: `Ω_top.card = 1` (by `multiFrequency_trigPoly_not_const_twoInterval`)
-    have hΩ_ne : Ω_top.Nonempty := hStop_ne.image _
-    have hΩ_card1 : Ω_top.card = 1 := by
-      by_contra hne1
-      have hpos_card : 0 < Ω_top.card := Finset.card_pos.mpr hΩ_ne
-      have hge2 : 2 ≤ Ω_top.card := by omega
-      exact multiFrequency_trigPoly_not_const_twoInterval Ω_top hΩ_top_pos hge2 c_top hc_top_ne
-        h (C ^ 2) htop_norm_tendsto
-    obtain ⟨ω₀, hΩ_eq⟩ := Finset.card_eq_one.mp hΩ_card1
-    have hω₀_mem : ω₀ ∈ Ω_top := hΩ_eq ▸ Finset.mem_singleton_self ω₀
-    have hω₀_pos : 0 < ω₀ := hΩ_top_pos ω₀ hω₀_mem
-    -- Single-mode identity on `f_top(t) = Re(c_top ω₀ * expChar ω₀ t)` forces `ω₀ = (2k + 1)γ` and `‖c_top ω₀‖ = C`
-    have hf_top_single : ∀ s : ℝ, f_top s = (c_top ω₀ * expChar ω₀ s).re := by
-      intro s; dsimp [f_top]; rw [hΩ_eq, Finset.sum_singleton]
-    have hshift_ω₀ : ∀ t : ℝ,
-        f_top (t + h) = (Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) * (c_top ω₀ * expChar ω₀ t)).re := by
-      intro t
-      rw [hf_top_single, show expChar ω₀ (t + h) =
-        Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) * expChar ω₀ t by
-          simp only [expChar, ← Complex.exp_add]; congr 1; push_cast; ring]
-      ring_nf
-    have htop_alias : ∃ k : ℕ, ω₀ = (2 * (k : ℝ) + 1) * γ ∧ ‖c_top ω₀‖ = C := by
-      set w₂ : ℂ := ((Real.cos (ω₀ * h) : ℂ) / 2) *
-        Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) * (c_top ω₀) ^ 2
-      let cf3 : Fin 3 → ℂ
-        | 0 => ((‖c_top ω₀‖ ^ 2 - C ^ 2 : ℝ) : ℂ)
-        | 1 => w₂
-        | 2 => conj w₂
-      let mu3 : Fin 3 → ℝ
-        | 0 => 0
-        | 1 => 2 * ω₀
-        | 2 => -(2 * ω₀)
-      set P3 : ℝ → ℂ := fun t => ∑ i : Fin 3, cf3 i * expChar (mu3 i) t
-      have hP3_eq : ∀ t : ℝ, P3 t = (((f_top t ^ 2 + f_top (t + h) ^ 2 - C ^ 2 : ℝ) : ℂ)) := by
-        intro t
-        have hrot := re_sq_add_rot_re_sq (c_top ω₀ * expChar ω₀ t) (ω₀ * h)
-        rw [← hf_top_single t, ← hshift_ω₀ t, norm_mul, norm_expChar, mul_one, mul_pow,
-          sq (expChar ω₀ t), expChar_add, ← two_mul] at hrot
-        rw [hrot]
-        dsimp [P3, cf3, mu3, w₂]
-        rw [Fin.sum_univ_three]
-        have hc0 : expChar 0 t = 1 := by simp [expChar]
-        have hcn : expChar (-(2 * ω₀)) t = conj (expChar (2 * ω₀) t) := by
-          simp only [expChar, ← Complex.exp_conj]
-          congr 1; rw [map_mul, Complex.conj_ofReal, Complex.conj_I]; push_cast; ring
-        set U3 : ℂ := Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) * c_top ω₀ ^ 2 * expChar (2 * ω₀) t
-        have hre_U3 : ((Real.cos (ω₀ * h) * U3.re : ℝ) : ℂ) =
-            (Real.cos (ω₀ * h) : ℂ) / 2 * (U3 + conj U3) := by
-          apply Complex.ext <;> simp <;> ring
-        rw [hc0, hcn]
-        push_cast
-        have hU3_eq : Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) * (c_top ω₀ ^ 2 * expChar (2 * ω₀) t) =
-            U3 := by dsimp [U3]; ring
-        rw [hU3_eq,
-          show (‖c_top ω₀‖ : ℂ) ^ 2 + ((Real.cos (ω₀ * h) * U3.re : ℝ) : ℂ) - (C : ℂ) ^ 2 =
-            ((‖c_top ω₀‖ : ℂ) ^ 2 - (C : ℂ) ^ 2) + ((Real.cos (ω₀ * h) * U3.re : ℝ) : ℂ) by ring,
-          hre_U3]
-        dsimp [U3]
-        simp only [map_mul, map_div₀, Complex.conj_ofReal, map_pow]
-        ring
-      have hP3_ap : HTGeometry.IsBohrAlmostPeriodic P3 :=
-        isBohrAlmostPeriodic_sum Finset.univ
-          (fun i _ => continuous_const.mul (continuous_expChar (mu3 i)))
-          (fun i _ => isBohrAlmostPeriodic_const_mul _ (isBohrAlmostPeriodic_expChar (mu3 i)))
-      have hP3_lim : Tendsto P3 atTop (𝓝 0) := by
-        have hc := (Complex.continuous_ofReal.tendsto 0).comp htop_norm_tendsto
-        simpa only [Function.comp_def, Complex.ofReal_zero, ← hP3_eq] using hc
-      have hP3_zero : P3 = fun _ => 0 :=
-        funext (HTGeometry.eq_zero_of_isBohrAlmostPeriodic_of_tendsto_zero hP3_ap hP3_lim)
-      have hb1 : bohrCoefficient P3 (2 * ω₀) = w₂ := by
-        dsimp [P3]
-        rw [bohrCoefficient_sum_expChar, Fin.sum_univ_three]
-        rw [if_neg (by dsimp [mu3]; linarith), if_pos rfl, if_neg (by dsimp [mu3]; linarith)]
-        simp [cf3]
-      have hw₂0 : w₂ = 0 := by
-        rw [← hb1, hP3_zero]; unfold bohrCoefficient; simp [bohrMean_zero]
-      have hcos0 : Real.cos (ω₀ * h) = 0 := by
-        dsimp [w₂] at hw₂0
-        have hc_sq_ne : c_top ω₀ ^ 2 ≠ 0 := pow_ne_zero 2 (hc_top_ne ω₀ hω₀_mem)
-        rcases mul_eq_zero.mp hw₂0 with hleft | hsq0
-        · rcases mul_eq_zero.mp hleft with hdiv | hexp0
-          · exact Complex.ofReal_eq_zero.mp (by simpa using div_eq_zero_iff.mp hdiv)
-          · exact absurd hexp0 (Complex.exp_ne_zero _)
-        · exact absurd hsq0 hc_sq_ne
-      have hb0 : bohrCoefficient P3 0 = ((‖c_top ω₀‖ ^ 2 - C ^ 2 : ℝ) : ℂ) := by
-        dsimp [P3]
-        rw [bohrCoefficient_sum_expChar, Fin.sum_univ_three]
-        rw [if_pos rfl, if_neg (by dsimp [mu3]; linarith), if_neg (by dsimp [mu3]; linarith)]
-        simp [cf3]
-      have hnorm_sq_eq : ‖c_top ω₀‖ ^ 2 = C ^ 2 := by
-        have hb0_z : bohrCoefficient P3 0 = 0 := by
-          rw [hP3_zero]; unfold bohrCoefficient; simp [bohrMean_zero]
-        exact sub_eq_zero.mp (Complex.ofReal_eq_zero.mp (hb0.symm.trans hb0_z))
-      have hnorm_eq : ‖c_top ω₀‖ = C := by
-        nlinarith [hnorm_sq_eq, norm_nonneg (c_top ω₀), hC_pos]
-      obtain ⟨kZ, hkZ⟩ := Real.cos_eq_zero_iff.mp hcos0
-      have hω_Z : ω₀ = (2 * (kZ : ℝ) + 1) * γ := by
-        have hstep : ω₀ * (Real.pi / (2 * |γ|)) = (2 * (kZ : ℝ) + 1) * Real.pi / 2 := hkZ
-        rw [abs_of_pos hγ] at hstep
-        apply mul_right_cancel₀ Real.pi_ne_zero
-        have hmul := congrArg (fun x => x * (2 * γ)) hstep
-        field_simp [hγ.ne'] at hmul ⊢
-        linarith
-      have hkZ_nn : 0 ≤ kZ := by
-        have hpos : 0 < (2 * (kZ : ℝ) + 1) * γ := hω_Z ▸ hω₀_pos
-        have h2k1 : 0 < 2 * (kZ : ℝ) + 1 := (mul_pos_iff_of_pos_right hγ).mp hpos
-        have hkZ_int : (-1 : ℤ) < 2 * kZ := by exact_mod_cast (by linarith : (-1 : ℝ) < 2 * kZ)
-        omega
-      refine ⟨kZ.toNat, ?_, hnorm_eq⟩
-      rw [hω_Z, ← Int.toNat_of_nonneg hkZ_nn]; push_cast; rfl
-    obtain ⟨k, hω₀_eq, hc_norm_eq⟩ := htop_alias
-    -- Step B: `S_sub = ∅` (by `sublayer_perturbation_not_tendsto_zero`)
-    have hS_sub_emp : S_sub = ∅ := by
-      by_contra hne_sub
-      have hS_sub_ne : S_sub.Nonempty := Finset.nonempty_iff_ne_empty.mpr hne_sub
-      set β₂ : ℝ := (S_sub.image (fun q => (q.1 : ℂ).re)).max' (hS_sub_ne.image _)
-      obtain ⟨q₂, hq₂, hq₂_re⟩ := Finset.mem_image.mp (Finset.max'_mem _ (hS_sub_ne.image _))
-      obtain ⟨hq₂_Sr, hq₂_ne⟩ := Finset.mem_filter.mp hq₂
-      have hβ₂_gt : 1 / 2 < β₂ := hq₂_re ▸ (Finset.mem_filter.mp hq₂_Sr).2
-      have hβ₂_lt : β₂ < β := lt_of_le_of_ne (hq₂_re ▸ hre_le_β q₂ hq₂_Sr) (hq₂_re ▸ hq₂_ne)
-      set S_2 : Finset XiZeroCopy := S_sub.filter (fun q => (q.1 : ℂ).re = β₂)
-      set S_3 : Finset XiZeroCopy := S_sub.filter (fun q => (q.1 : ℂ).re ≠ β₂)
-      have hS2_ne : S_2.Nonempty := ⟨q₂, Finset.mem_filter.mpr ⟨hq₂, hq₂_re⟩⟩
-      obtain ⟨σ₃, hσ₃_lo, hσ₃_lt, hS3_le⟩ : ∃ σ₃ : ℝ, 1 / 2 ≤ σ₃ ∧ σ₃ < β₂ ∧
-          ∀ q ∈ S_3, (q.1 : ℂ).re ≤ σ₃ := by
-        rcases S_3.eq_empty_or_nonempty with hemp3 | hne3
-        · exact ⟨1 / 2, le_rfl, hβ₂_gt,
-            fun q hq => by rw [hemp3] at hq; exact (Finset.notMem_empty q hq).elim⟩
-        · set b3 := (S_3.image (fun q => (q.1 : ℂ).re)).max' (hne3.image _)
-          obtain ⟨q₃, hq₃, hq₃_re⟩ := Finset.mem_image.mp (Finset.max'_mem _ (hne3.image _))
-          obtain ⟨hq₃_sub, hq₃_ne⟩ := Finset.mem_filter.mp hq₃
-          have hgt3 : 1 / 2 < b3 :=
-            hq₃_re ▸ (Finset.mem_filter.mp (Finset.mem_filter.mp hq₃_sub).1).2
-          have hle_β₂ : b3 ≤ β₂ :=
-            hq₃_re ▸ Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq₃_sub)
-          exact ⟨b3, hgt3.le, lt_of_le_of_ne hle_β₂ (hq₃_re ▸ hq₃_ne),
-            fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq)⟩
-      obtain ⟨M_3, hM_3, hv3_le⟩ := hbound_layer S_3 (by linarith) hS3_le
-      obtain ⟨M_2, hM_2, hv2_le⟩ := hbound_layer S_2 (by linarith)
-        (fun q hq => (Finset.mem_filter.mp hq).2.le)
-      have h2_info := layer_twoIntervalVec_eq S_2 hβ₂_gt
-        (fun q hq => (Finset.mem_filter.mp hq).2) hh_pos (β := β)
-      set r₂ : ℝ := Real.exp ((β₂ - β) * h)
-      have hr₂_pos : 0 < r₂ := Real.exp_pos _
-      have hr₂_lt1 : r₂ < 1 := Real.exp_lt_one_iff.mpr (by nlinarith [hβ₂_lt, hh_pos])
-      set Ω_2 : Finset ℝ := S_2.image (fun q => |(q.1 : ℂ).im|)
-      let c_2 : ℝ → ℂ := fun ν =>
-        -(((S_2.filter (fun q => |(q.1 : ℂ).im| = ν)).card : ℝ) : ℂ) *
-          (Complex.exp ((((β₂ : ℂ) + I * (ν : ℂ)) * (h : ℂ))) - 1) /
-          ((β₂ : ℂ) + I * (ν : ℂ))
-      let f_2 : ℝ → ℝ := fun s => ∑ ν ∈ Ω_2, (c_2 ν * expChar ν s).re
-      obtain ⟨hΩ2_pos, hc2_ne, hv2_eq⟩ := h2_info
-      -- Express `(f_top t : ℂ) + I * (f_top (t + h) : ℂ) = b₀ * expChar μ₀ t`
-      have hω₀h : ω₀ * h = (2 * (k : ℝ) + 1) * (Real.pi / 2) := by
-        rw [hω₀_eq]; dsimp [h]; unfold quarterPeriodStep
-        rw [abs_of_pos hγ]; field_simp [hγ.ne']
-      have hexp_ω₀h : Complex.exp (((ω₀ * h : ℝ) : ℂ) * I) = if Even k then I else -I := by
-        rw [hω₀h]
-        induction k with
-        | zero =>
-          rw [if_pos Even.zero]
-          simp only [Nat.cast_zero, mul_zero, zero_add, one_mul, Complex.exp_mul_I,
-            Complex.ofReal_cos, Complex.ofReal_sin, Real.cos_pi_div_two, Real.sin_pi_div_two]
-          simp
-        | succ m' ih =>
-          have hst : (((2 * ((m' + 1 : ℕ) : ℝ) + 1) * (Real.pi / 2) : ℝ) : ℂ) * I =
-              (((2 * (m' : ℝ) + 1) * (Real.pi / 2) : ℝ) : ℂ) * I + (Real.pi : ℂ) * I := by
-            push_cast; ring
-          rw [hst, Complex.exp_add, Complex.exp_pi_mul_I, ih]
-          by_cases hm' : Even m'
-          · have hm1 : ¬ Even (m' + 1) := by simpa [Nat.even_add_one] using hm'
-            rw [if_pos hm', if_neg hm1]; ring
-          · have hm1 : Even (m' + 1) := by simpa [Nat.even_add_one] using hm'
-            rw [if_neg hm', if_pos hm1]; ring
-      set μ₀ : ℝ := if Even k then -ω₀ else ω₀
-      set b₀ : ℂ := if Even k then conj (c_top ω₀) else c_top ω₀
-      have hμ₀_ne : μ₀ ≠ 0 := by dsimp [μ₀]; split_ifs <;> linarith
-      have hb₀_ne : b₀ ≠ 0 := by
-        dsimp [b₀]; split_ifs
-        · exact map_ne_zero_iff (starRingEnd ℂ) (RingHom.injective _) |>.mpr (hc_top_ne ω₀ hω₀_mem)
-        · exact hc_top_ne ω₀ hω₀_mem
-      have hb₀_norm : ‖b₀‖ = C := by
-        dsimp [b₀]; split_ifs
-        · rw [Complex.norm_conj]; exact hc_norm_eq
-        · exact hc_norm_eq
-      have hZ_top_pure : ∀ t : ℝ,
-          ((f_top t : ℂ) + I * (f_top (t + h) : ℂ)) = b₀ * expChar μ₀ t := by
-        intro t
-        rw [hf_top_single t, hshift_ω₀ t, hexp_ω₀h]
-        dsimp [b₀, μ₀]
-        have hconj_e : conj (expChar ω₀ t) = expChar (-ω₀) t := by
-          simp only [expChar, ← Complex.exp_conj]
-          congr 1; rw [map_mul, Complex.conj_ofReal, Complex.conj_I]; push_cast; ring
-        by_cases hk_ev : Even k
-        · rw [if_pos hk_ev, if_pos hk_ev, if_pos hk_ev, ← hconj_e, ← map_mul]
-          set z := c_top ω₀ * expChar ω₀ t
-          apply Complex.ext <;> simp
-        · rw [if_neg hk_ev, if_neg hk_ev, if_neg hk_ev]
-          set z := c_top ω₀ * expChar ω₀ t
-          apply Complex.ext <;> simp
-      -- Show `(conj b₀ * expChar (-μ₀) t * ((f_2 t : ℂ) + I * ((r₂ * f_2(t + h) : ℝ) : ℂ))).re → 0`
-      let W_2 (s : ℝ) := -(∑ q ∈ S_2, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
-      let W_3 (s : ℝ) := -(∑ q ∈ S_3, (Complex.exp ((q.1 : ℂ) * (s : ℂ)) / (q.1 : ℂ)).re)
-      have hsub_split : W_sub = fun s => W_2 s + W_3 s := by
-        funext s
-        dsimp [W_sub, W_2, W_3, S_2, S_3]
-        rw [← Finset.sum_filter_add_sum_filter_not S_sub (fun q => (q.1 : ℂ).re = β₂)]
-        ring
-      have hcross_tendsto : Tendsto (fun t : ℝ =>
-          (conj b₀ * expChar (-μ₀) t * ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))).re)
-          atTop (𝓝 0) := by
-        -- Upper bound on `‖twoIntervalVec W_all h A t‖ ≤ M_tot e^{β t}` for `t ≥ 0`
-        obtain ⟨M_all, hM_all, hv_all_le⟩ := hbound_layer S_right (by linarith) hre_le_β
-        set K_rad_sq : ℝ := 4 * K_v * (M_all + C)
-        have ht_err1 : Tendsto
-            (fun t : ℝ => (K_rad_sq / 2) * (t ^ (2 : ℝ) * Real.exp (-(β₂ - 1 / 2) * t)))
-            atTop (𝓝 0) := by
-          simpa using (_root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 2 (β₂ - 1 / 2)
-            (by linarith)).const_mul (K_rad_sq / 2)
-        have ht_err2 : Tendsto
-            (fun t : ℝ => (M_sub ^ 2 / 2) * (t ^ (0 : ℝ) * Real.exp (-(β - β₂) * t)))
-            atTop (𝓝 0) := by
-          simpa using (_root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 0 (β - β₂)
-            (sub_pos.mpr hβ₂_lt)).const_mul (M_sub ^ 2 / 2)
-        have ht_err3 : Tendsto
-            (fun t : ℝ => (C * M_3) * (t ^ (0 : ℝ) * Real.exp (-(β₂ - σ₃) * t)))
-            atTop (𝓝 0) := by
-          simpa using (_root_.tendsto_rpow_mul_exp_neg_mul_atTop_nhds_zero 0 (β₂ - σ₃)
-            (sub_pos.mpr hσ₃_lt)).const_mul (C * M_3)
-        have ht_tot := (ht_err1.add ht_err2).add ht_err3
-        rw [add_zero, add_zero] at ht_tot
-        refine squeeze_zero_norm' ?_ ht_tot
-        filter_upwards [eventually_ge_atTop (max T_p 3)] with t ht
-        have ht0 : 0 ≤ t := by linarith [le_max_right T_p 3]
-        have ht1_le : 1 ≤ t := by linarith [le_max_right T_p 3]
-        rw [Real.norm_eq_abs, Real.rpow_two, Real.rpow_zero, one_mul]
-        -- Expand `‖v_top + v_sub‖² - C² e^{2β t}`
-        set v_top := twoIntervalVec W_top h A t
-        set v_sub := twoIntervalVec W_sub h A t
-        set v_2 := twoIntervalVec W_2 h A t
-        set v_3 := twoIntervalVec W_3 h A t
-        have hv_all_eq : twoIntervalVec W_all h A t = v_top + v_sub := by
-          rw [hW_split, twoIntervalVec_add]
-        have hv_sub_eq : v_sub = v_2 + v_3 := by
-          dsimp [v_sub, v_2, v_3]; rw [hsub_split, twoIntervalVec_add]
-        have hv_top_form : v_top = (Real.exp (β * t) : ℂ) * (b₀ * expChar μ₀ t) := by
-          dsimp [v_top]; rw [hr_top_eq t, hZ_top_pure t]
-        have hv_top_norm_sq : ‖v_top‖ ^ 2 = C ^ 2 * Real.exp (2 * β * t) := by
-          rw [hv_top_form, norm_mul, norm_mul, Complex.norm_real, Real.norm_eq_abs,
-            abs_of_pos (Real.exp_pos _), hb₀_norm, norm_expChar, mul_one, mul_pow,
-            show Real.exp (β * t) ^ 2 = Real.exp (2 * β * t) by
-              rw [sq, ← Real.exp_add]; congr 1; ring]
-          ring
-        have hnorm_expand : ∀ z w : ℂ, ‖z + w‖ ^ 2 = ‖z‖ ^ 2 + 2 * (conj z * w).re + ‖w‖ ^ 2 := by
-          intro z w
-          rw [Complex.sq_norm, Complex.sq_norm, Complex.sq_norm, Complex.normSq_apply,
-            Complex.normSq_apply, Complex.normSq_apply]
-          simp [Complex.mul_re]; ring
-        have hexp_id : ‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t) =
-            2 * Real.exp ((β + β₂) * t) *
-              (conj b₀ * expChar (-μ₀) t *
-                ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))).re +
-              2 * (conj v_top * v_3).re + ‖v_sub‖ ^ 2 := by
-          rw [hv_all_eq, hnorm_expand v_top v_sub, hv_top_norm_sq, hv_sub_eq]
-          have hv2_form : v_2 =
-              (Real.exp (β₂ * t) : ℂ) * ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ)) :=
-            hv2_eq t
-          have hconj_vtop : conj v_top = (Real.exp (β * t) : ℂ) * (conj b₀ * expChar (-μ₀) t) := by
-            rw [hv_top_form, map_mul, map_mul, Complex.conj_ofReal]
-            congr 2
-            simp only [expChar, ← Complex.exp_conj]
-            congr 1; rw [map_mul, Complex.conj_ofReal, Complex.conj_I]; push_cast; ring
-          have hpair : (conj v_top * (v_2 + v_3)).re =
-              Real.exp ((β + β₂) * t) *
-                (conj b₀ * expChar (-μ₀) t *
-                  ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))).re +
-                (conj v_top * v_3).re := by
-            rw [mul_add, Complex.add_re]
-            congr 1
-            rw [hconj_vtop, hv2_form,
-              show (Real.exp (β * t) : ℂ) * (conj b₀ * expChar (-μ₀) t) *
-                ((Real.exp (β₂ * t) : ℂ) * ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))) =
-                ((Real.exp (β * t) * Real.exp (β₂ * t) : ℝ) : ℂ) *
-                  (conj b₀ * expChar (-μ₀) t *
-                    ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))) by push_cast; ring,
-              Complex.re_ofReal_mul, ← Real.exp_add, show β * t + β₂ * t = (β + β₂) * t by ring]
-          rw [hpair]; ring
-        -- Bound the three pieces after dividing by `2 e^{(β + β₂) t}`
-        set target_re := (conj b₀ * expChar (-μ₀) t *
-          ((f_2 t : ℂ) + I * ((r₂ * f_2 (t + h) : ℝ) : ℂ))).re
-        have hmul_bound : 2 * Real.exp ((β + β₂) * t) * |target_re| ≤
-            |‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t)| +
-              ‖v_sub‖ ^ 2 + 2 * |(conj v_top * v_3).re| := by
-          have h1 : 2 * Real.exp ((β + β₂) * t) * target_re =
-              (‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t)) -
-                ‖v_sub‖ ^ 2 - 2 * (conj v_top * v_3).re := by linarith [hexp_id]
-          have habs := congrArg abs h1
-          rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * Real.exp ((β + β₂) * t))] at habs
-          have ht_tri := (abs_sub _ _).trans (add_le_add (abs_sub _ _) le_rfl)
-          rw [abs_of_nonneg (sq_nonneg _), abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)] at ht_tri
-          linarith [habs, ht_tri]
-        -- Bound piece 1: `|‖v_all‖² - C² e^{2β t}| ≤ K_rad_sq * t² * e^{(β + 1/2) t}`
-        have hp1 : |‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t)| ≤
-            K_rad_sq * t ^ 2 * Real.exp ((β + 1 / 2) * t) := by
-          have hsq_diff : ‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t) =
-              (‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)) *
-                (‖twoIntervalVec W_all h A t‖ + C * Real.exp (β * t)) := by
-            have : Real.exp (2 * β * t) = Real.exp (β * t) ^ 2 := by
-              rw [sq, ← Real.exp_add]; congr 1; ring
-            rw [this]; ring
-          rw [hsq_diff, abs_mul]
-          have hd1 := hv_rad t ht
-          have h1t : (1 + t) ^ 2 ≤ 4 * t ^ 2 := by nlinarith
-          have hd1' : |‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)| ≤
-              4 * K_v * t ^ 2 * Real.exp (t / 2) :=
-            hd1.trans ((mul_le_mul_of_nonneg_left h1t (by positivity)).trans_eq (by ring))
-          have hsum_le : |‖twoIntervalVec W_all h A t‖ + C * Real.exp (β * t)| ≤
-              (M_all + C) * Real.exp (β * t) := by
-            rw [abs_of_nonneg (by positivity)]
-            linarith [hv_all_le t ht0]
-          calc |‖twoIntervalVec W_all h A t‖ - C * Real.exp (β * t)| *
-                |‖twoIntervalVec W_all h A t‖ + C * Real.exp (β * t)|
-              ≤ (4 * K_v * t ^ 2 * Real.exp (t / 2)) * ((M_all + C) * Real.exp (β * t)) :=
-                mul_le_mul hd1' hsum_le (abs_nonneg _) (by positivity)
-            _ = K_rad_sq * t ^ 2 * (Real.exp (t / 2) * Real.exp (β * t)) := by
-                dsimp [K_rad_sq]; ring
-            _ = K_rad_sq * t ^ 2 * Real.exp ((β + 1 / 2) * t) := by
-                rw [← Real.exp_add]; congr 2; ring
-        -- Bound piece 2: `‖v_sub‖² ≤ M_sub² * e^{2 β₂ t}`
-        have hS_sub_β₂ : ∀ q ∈ S_sub, (q.1 : ℂ).re ≤ β₂ :=
-          fun q hq => Finset.le_max' _ _ (Finset.mem_image_of_mem _ hq)
-        have hσ_sub_eq : σ_sub = β₂ := by
-          -- Re-bound `v_sub` directly by `M_2 + M_3`? Wait: `σ_sub` was ALREADY defined as `max' (S_sub.image re)` when `S_sub.Nonempty`!
-          -- Even simpler: prove `‖v_sub‖ ≤ (M_2 + M_3) * e^{β₂ t}` or note `σ_sub ≤ β₂`!
-          -- Let's check: every `q ∈ S_sub` has `re ≤ σ_sub`, and `q₂ ∈ S_sub` has `re = β₂`, so `β₂ ≤ σ_sub` AND wait: `σ_sub` was from `Classical.choose` of `hsub_exp`!
-          -- Wait: instead of touching `σ_sub` here, `hv_sub_eq : v_sub = v_2 + v_3` gives `‖v_sub‖ ≤ (M_2 + M_3) * e^{β₂ t}` directly!
-          rfl
-        -- Wait: `hσ_sub_eq` isn't `rfl` because `obtain` unpacked `∃ σ_sub`! Let's NOT use `σ_sub` for piece 2; let's use `v_sub = v_2 + v_3` directly!
-        -- Wait — let's adjust `ht_err2`? Even better: `S_sub` satisfies `hS_sub_le : ∀ q ∈ S_sub, re ≤ σ_sub` with `σ_sub < β`? Wait: if `σ_sub` were bigger than `β₂`, `2 * σ_sub` might exceed `β + β₂`, whereas `β₂` IS the maximum of `re` on `S_sub`, so `∀ q ∈ S_sub, (q.1 : ℂ).re ≤ β₂`! Let's check: why not obtain `M_sub2` from `hbound_layer S_sub hβ₂_gt.le hS_sub_β₂` BEFORE `ht_err2`?! Yes! Let's make sure we do that cleanly!
-        sorry
-      exact sublayer_perturbation_not_tendsto_zero hμ₀_ne hr₂_pos hr₂_lt1 hb₀_ne
-        Ω_2 (hS2_ne.image _) hΩ2_pos c_2 hc2_ne h hcross_tendsto
-    -- Step C: `S_sub = ∅` and `Ω_top = {ω₀}` with `ω₀ = (2k + 1)γ` gives `HasSingleOffLineQuartet (β + iω₀)`!
+    obtain ⟨k, hk_pin⟩ := finite_right_layer_collapse S_right hβ hγ hC_pos hK_v
+      (fun q hq => (Finset.mem_filter.mp hq).2) hre_le_β (by convert hStop_ne) hv_rad
+    set ω₀ : ℝ := (2 * (k : ℝ) + 1) * γ
+    have hω₀_pos : 0 < ω₀ := mul_pos (by positivity) hγ
     have hall_right_pin : ∀ z ∈ zetaZeroConfig.carrier, 1 / 2 < z.re →
         z.re = β ∧ |z.im| = ω₀ := by
       intro z hz hgt
@@ -2882,23 +2962,11 @@ theorem finiteOffLine_not_radialUnbounded_iff
       have hq_Sr : q ∈ S_right := Finset.mem_filter.mpr
         ⟨hfin.mem_toFinset.mpr (by rw [Set.mem_setOf_eq, hq_eq]; linarith),
           by rw [hq_eq]; exact hgt⟩
-      have hq_top : q ∈ S_top := by
-        by_contra hnot_top
-        have hre_ne : (q.1 : ℂ).re ≠ β := fun he => hnot_top (Finset.mem_filter.mpr ⟨hq_Sr, he⟩)
-        have hq_sub : q ∈ S_sub := Finset.mem_filter.mpr ⟨hq_Sr, hre_ne⟩
-        rw [hS_sub_emp] at hq_sub
-        exact Finset.notMem_empty q hq_sub
-      have hre_z : z.re = β := by rw [← hq_eq]; exact (Finset.mem_filter.mp hq_top).2
-      have him_mem : |z.im| ∈ Ω_top := by
-        rw [← hq_eq]; exact Finset.mem_image_of_mem _ hq_top
-      rw [hΩ_eq, Finset.mem_singleton] at him_mem
-      exact ⟨hre_z, him_mem⟩
-    -- Obtain `HasSingleOffLineQuartet ((β : ℂ) + I * (ω₀ : ℂ))`
+      obtain ⟨hre_q, him_q⟩ := hk_pin q hq_Sr
+      rw [hq_eq] at hre_q him_q
+      exact ⟨hre_q, him_q⟩
     obtain ⟨q₀, hq₀_top⟩ := hStop_ne
-    have hq₀_re : (q₀.1 : ℂ).re = β := (Finset.mem_filter.mp hq₀_top).2
-    have hq₀_im : |(q₀.1 : ℂ).im| = ω₀ := by
-      have hm : |(q₀.1 : ℂ).im| ∈ Ω_top := Finset.mem_image_of_mem _ hq₀_top
-      rwa [hΩ_eq, Finset.mem_singleton] at hm
+    obtain ⟨hq₀_re, hq₀_im⟩ := hk_pin q₀ (Finset.mem_filter.mp hq₀_top).1
     have hmem_carrier_of_xi : ∀ {w : ℂ}, xi w = 0 → w ∈ zetaZeroConfig.carrier := by
       intro w hw
       obtain ⟨qw, hqw⟩ := exists_xiZeroCopy_of_xi_eq_zero hw
@@ -2960,14 +3028,15 @@ theorem finiteOffLine_not_radialUnbounded_iff
         hq_single.quartetCopyMult_pos).mp hsw
     rw [abs_of_pos hγ] at hω_k'
     have hk_eq : k' = k := by
-      have hR : (k' : ℝ) = (k : ℝ) := by nlinarith [hω₀_eq, hω_k', hγ]
+      dsimp [ω₀] at hω_k'
+      have hR : (k' : ℝ) = (k : ℝ) := by nlinarith [hω_k', hγ]
       exact Nat.cast_injective hR
     subst hk_eq
     refine ⟨k, ?_, ?_⟩
-    · simpa [ρ₀, hω₀_eq] using hq_single
+    · simpa [ρ₀, ω₀] using hq_single
     · rw [abs_of_pos hγ] at hpyth' ⊢
       refine ⟨rfl, ?_⟩
-      simpa [ρ₀, hω₀_eq] using hpyth'
+      simpa [ρ₀, ω₀] using hpyth'
   · rintro ⟨k, hq, halias⟩
     set ω₀ : ℝ := (2 * (k : ℝ) + 1) * γ
     have hω₀_pos : 0 < ω₀ := by dsimp [ω₀]; positivity

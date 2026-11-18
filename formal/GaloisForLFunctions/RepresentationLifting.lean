@@ -228,3 +228,4 @@ import GaloisForLFunctions.RepresentationLifting.Differential.TruncatedVectorFie
 import GaloisForLFunctions.RepresentationLifting.Differential.MonogenicDerivations
 
 import GaloisForLFunctions.RepresentationLifting.Differential.TruncatedDerivations
+import GaloisForLFunctions.RepresentationLifting.Probability.FittingRankExtension

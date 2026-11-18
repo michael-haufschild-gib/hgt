@@ -1,4 +1,6 @@
 import GaloisForLFunctions.CountingHolography.Sections.AdelicCarryOnSectionRepresentatives
+import GaloisForLFunctions.CountingHolography.Sections.PrimeTraceWindows
+import GaloisForLFunctions.CountingHolography.Sections.SectionHeightsAndThePickIndex
 import GaloisForLFunctions.SurfaceOfSpecZ.ScaleLocality.FinitePrimeAvoidance
 
 /-!
@@ -41,7 +43,7 @@ namespace GaloisForLFunctions.CountingHolography.Sections
 
 open Filter Topology Finset Matrix
 open ArithmeticScatteringHolography CountingHolography HTGeometry
-open HeckeKreinToeplitz RenormalizedIntersectionTheory Zeta23
+open HeckeKreinToeplitz RenormalizedIntersectionTheory Zeta23 ExclusionOfTheCriticalState
 
 /-! ### 1. Signed prime-supported divisors and prime-shell moment kernels -/
 
@@ -182,9 +184,20 @@ theorem exists_primeShell_momentKernel_vector (k₀ : ℕ) (hk₀ : 1 ≤ k₀) 
     have hbot : LinearMap.ker Φ = ⊥ := (Submodule.eq_bot_iff _).mpr hall
     rw [hbot, finrank_bot] at hrank
     exact lt_irrefl 0 hrank
-  obtain ⟨D, z, hD, hd⟩ := ArithmeticScatteringHolography.exists_common_denominator v
+  let D : ℕ := ∏ q : ↥S, (v q).den
+  have hD : 0 < D := Finset.prod_pos fun q _ => (v q).den_pos
+  let z : ↥S → ℤ := fun q => (v q).num * ((D / (v q).den : ℕ) : ℤ)
   have hz_eq : (fun q : ↥S => (z q : ℚ)) = (D : ℚ) • v := by
-    funext q; change (z q : ℚ) = (D : ℚ) * v q; rw [mul_comm]; exact_mod_cast (hd q).symm
+    funext q
+    obtain ⟨c, hc⟩ : (v q).den ∣ D := Finset.dvd_prod_of_mem _ (Finset.mem_univ q)
+    change (((v q).num * ((D / (v q).den : ℕ) : ℤ) : ℤ) : ℚ) = (D : ℚ) * v q
+    rw [hc, Nat.mul_div_cancel_left _ (v q).den_pos]
+    have hvd : v q * ((v q).den : ℚ) = ((v q).num : ℚ) := by
+      nth_rw 1 [← Rat.num_div_den (v q)]
+      exact div_mul_cancel₀ _ (Nat.cast_ne_zero.mpr (v q).den_ne_zero)
+    push_cast
+    calc ((v q).num : ℚ) * (c : ℚ) = (v q * (v q).den) * (c : ℚ) := by rw [hvd]
+      _ = ((v q).den * (c : ℚ)) * v q := by ring
   have hz_ne : z ≠ 0 := by
     intro h0
     apply hv_ne
@@ -401,8 +414,8 @@ theorem exists_disjoint_primeSupported_signed_subspace (r : ℕ) (hr : 1 ≤ r) 
       omega
     obtain ⟨u, hu_sig, hu_sh, hu_mom⟩ := hshell (2 ^ s.val * M) hs_ge
     have hle_N : 2 * (2 ^ s.val * M) ≤ N := by
-      rw [show 2 * (2 ^ s.val * M) = 2 ^ (s.val + 1) * M by rw [pow_succ']]
-      exact Nat.mul_le_mul_right M (Nat.pow_le_pow_right (by decide) s.isLt)
+      rw [show 2 * (2 ^ s.val * M) = 2 ^ (s.val + 1) * M by rw [pow_succ', mul_assoc]]
+      exact Nat.mul_le_mul_right M (pow_le_pow_right₀ (by decide : 1 ≤ 2) (by have := s.isLt; omega))
     let a_s : Fin N → ℤ := padDivisor hle_N u
     let e : Fin (2 * (2 ^ s.val * M)) → Fin N := fun i => ⟨i.val, i.isLt.trans_le hle_N⟩
     have he : Function.Injective e := fun i j h => Fin.ext (congrArg Fin.val h)
@@ -426,10 +439,10 @@ theorem exists_disjoint_primeSupported_signed_subspace (r : ℕ) (hr : 1 ≤ r) 
     have b₂ := ha_sh s₂ ℓ hboth.2
     rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hne) with hlt | hgt
     · have hpow : 2 ^ (s₁.val + 1) * M ≤ 2 ^ s₂.val * M :=
-        Nat.mul_le_mul_right M (Nat.pow_le_pow_right (by decide) hlt)
+        Nat.mul_le_mul_right M (pow_le_pow_right₀ (by decide : 1 ≤ 2) (by omega))
       omega
     · have hpow : 2 ^ (s₂.val + 1) * M ≤ 2 ^ s₁.val * M :=
-        Nat.mul_le_mul_right M (Nat.pow_le_pow_right (by decide) hgt)
+        Nat.mul_le_mul_right M (pow_le_pow_right₀ (by decide : 1 ≤ 2) (by omega))
       omega
   have hlin (c : Fin r → ℤ) : (∑ s, c s • a s) = 0 ↔ c = 0 := by
     constructor
@@ -672,7 +685,7 @@ theorem exists_twoPrime_diff_neg_integerProbe_of_not_rh (hnotRH : ¬ RiemannHypo
       integerProbe N a₁ < 0 := by
   obtain ⟨q, hq2, hq_prime, R, _, hpeak, _⟩ :=
     primeTrace_dominates_window_oscillation hnotRH (β := 0) zero_lt_one
-      (2 * (splineSeries 0).re + 1) le_rfl 2
+      (2 * (splineSeries 0).re + 1) (K := 0) le_rfl 2
   rw [zero_mul, add_zero] at hpeak
   have hg_cont : Continuous (fun t : ℝ => 2 * (splineSeries t).re) :=
     continuous_const.mul (Complex.continuous_re.comp continuous_splineSeries)
@@ -780,7 +793,7 @@ theorem exists_twoPrime_diff_neg_integerProbe_of_not_rh (hnotRH : ¬ RiemannHypo
       rcases hw_supp hk with rfl | rfl
       · exact hx_p
       · exact hy_p
-    · simp [w]
+    · simp [w, Finset.sum_sub_distrib]
   obtain ⟨ha₁_sig, ha₁_act, ha₁_card⟩ :=
     two_atom_props hi₁₂_ne (hi₁_val ▸ hp₁_prime) (hi₂_val ▸ hp₂_prime)
   obtain ⟨ha₂_sig, ha₂_act, ha₂_card⟩ :=

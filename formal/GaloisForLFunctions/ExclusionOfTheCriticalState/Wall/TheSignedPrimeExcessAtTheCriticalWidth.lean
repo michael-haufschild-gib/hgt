@@ -1,5 +1,4 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheCriticalWidthOfAdverseIntegerMass
-
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheMangoldtMassInPowerWidthIntervals
 import GaloisForLFunctions.RHTower.FreeLagSymbolBoundaryLayer
 
@@ -129,7 +128,7 @@ private theorem scaled_wall_atom {ι : Type*} {f : Filter ι} {t d : ι → ℝ}
     ((m*Φ (-(k i)))*Real.sqrt (l i)) = (Real.exp (t i/2)*Real.sqrt (t i))*
       (m*((Real.exp (t i/2)*Real.sqrt (q i))⁻¹*Φ (-(k i))))
   field_simp [(Real.sqrt_pos.mpr hi).ne',(Real.sqrt_pos.mpr hlpos).ne',
-    (Real.sqrt_pos.mpr hqpos).ne',(Real.exp_pos _).ne'] <;> ring
+    (Real.sqrt_pos.mpr hqpos).ne',(Real.exp_pos _).ne']
 
 /-- Uniform form of the wall sample on the outer part of the interval. -/
 private theorem eventually_outer_wall_atom {Φ : ℝ → ℝ} {m L : ℝ}
@@ -252,8 +251,8 @@ private theorem critical_width_atom_cap {Φ : ℝ → ℝ} {m L : ℝ}
     calc _ ≤ Real.exp t*(Real.exp (-t/4)+1) := by rw [mul_add,heq,mul_one]; linarith only [hh,hr.2.2.2.1]
       _ ≤ _ := mul_le_mul_of_nonneg_left (Real.add_one_le_exp _) hx0.le
   have hk' : k ≤ Real.exp (-t/4) := sub_le_iff_le_add'.2 ((Real.log_le_iff_le_exp (hx0.trans ha)).2 hn')
-  have hw := (hb (show k ∈ Ioo 0 δ from ⟨hk,hk'.trans_lt hδt⟩)).le
-  change |(m*Φ (-k))*Real.sqrt (Real.log (1/k))| ≤ |L|+1 at hw
+  have hwlt : |(m*Φ (-k))*Real.sqrt (Real.log (1/k))| < |L|+1 := hb ⟨hk,hk'.trans_lt hδt⟩
+  have hw := hwlt.le
   rw [abs_mul,abs_of_nonneg (Real.sqrt_nonneg _)] at hw
   have hlog := Real.log_le_log hk hk'
   rw [Real.log_exp] at hlog
@@ -324,7 +323,7 @@ theorem lipschitz_adverse_critical_width_tendsto_zero {Φ : ℝ → ℝ} {K : NN
       calc
         _ ≤ |m| *(R⁻¹*((K:ℝ)*(H/X))) := by
           exact mul_le_mul_of_nonneg_left (mul_le_mul ((inv_le_inv₀ (Real.sqrt_pos.2 hn0) hR).2 hroot) hφ (abs_nonneg _) (inv_nonneg.mpr hR.le)) (abs_nonneg _)
-        _ = B := by dsimp only [B]; field_simp [hX.ne',hR.ne'] <;> ring
+        _ = B := by dsimp only [B]; field_simp [hX.ne',hR.ne']
     refine max_le ?_ (mul_nonneg hB (abs_nonneg _))
     apply (neg_le_abs _).trans
     rw [show m*((ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t) =
@@ -338,7 +337,7 @@ theorem lipschitz_adverse_critical_width_tendsto_zero {Φ : ℝ → ℝ} {K : NN
     _ = D*(Real.sqrt t)^2/R := by
       dsimp only [B,D,H,criticalWallWidth]
       rw [← hR2,show Real.exp (t/2) = R from rfl]
-      field_simp [hR.ne'] <;> ring
+      field_simp [hR.ne']
     _ = D*t*Real.exp (-t/2) := by
       rw [Real.sq_sqrt (by linarith only [ht]),show -t/2 = -(t/2) by ring,Real.exp_neg]
       rfl
@@ -560,5 +559,6 @@ theorem riemannHypothesis_or_signed_critical_width_chebyshev_excess : RiemannHyp
   exact Or.inr ⟨W₀,F,Φ,_,hW,ht,hF,hc,he,hγ,rfl,hread,
     fun _ hε => frequently_signed_window_ge hγ hread hε⟩
 
+#print axioms lipschitz_adverse_critical_width_tendsto_zero
 #print axioms riemannHypothesis_or_signed_critical_width_chebyshev_excess
 end GaloisForLFunctions.ExclusionOfTheCriticalState

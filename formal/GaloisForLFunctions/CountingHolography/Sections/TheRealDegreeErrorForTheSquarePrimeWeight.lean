@@ -29,7 +29,7 @@ private theorem test_zero {x : ℝ} (h : x ∉ Set.Icc a b) : squareFactorialTes
   · simp [squareFactorialTest,hx]
 
 private theorem test_compact : HasCompactSupport squareFactorialTest := by
-  apply isCompact_Icc.of_isClosed_subset isClosed_closure
+  apply (isCompact_Icc (a := a) (b := b)).of_isClosed_subset isClosed_closure
   refine closure_minimal ?_ isClosed_Icc
   intro x hx
   by_contra h
@@ -44,14 +44,14 @@ private theorem test_regular : ContDiff ℝ 2 squareFactorialTest := by
   apply contDiff_iff_contDiffAt.mpr
   intro x
   by_cases hx : 0 < x
-  · have hl := Real.contDiffAt_log (n := 2) hx.ne'
+  · have hl := (Real.contDiffAt_log (n := 2)).mpr hx.ne'
     have hr : ContDiffAt ℝ 2 (fun y => Real.exp (-Real.log y/2)*squareLogProfile (Real.log y)) x :=
       (Real.contDiff_exp.contDiffAt.comp x (hl.neg.div_const _)).mul (hF.contDiffAt.comp x hl)
     apply hr.congr_of_eventuallyEq
     filter_upwards [Ioi_mem_nhds hx] with y hy
     simp [squareFactorialTest,hy,squarePrimeWeight]
   · apply (contDiffAt_const (c := (0:ℝ))).congr_of_eventuallyEq
-    filter_upwards [Iio_mem_nhds ((le_of_not_gt hx).trans_lt (Real.exp_pos _))] with y hy
+    filter_upwards [Iio_mem_nhds ((le_of_not_gt hx).trans_lt (Real.exp_pos (-8)))] with y hy
     exact test_zero (fun h => hy.not_ge h.1)
 
 private theorem scaled_test_data : ∃ L : ℝ, 0 ≤ L ∧ ∀ {X : ℝ}, 0 < X →
@@ -292,6 +292,7 @@ private theorem window_times_zeta {s : ℂ} (hs : 1 < s.re) (hg : MellinConverge
   simp_rw [hterm] at hi
   rw [tsum_mul_right,← zeta_eq_tsum_one_div_nat_cpow hs] at hi
   refine hi.trans (setIntegral_congr_fun measurableSet_Ioi fun t ht => ?_)
+  change 0 < t at ht
   change (∑' n : ℕ, (t:ℂ)^(s-1) • g (n*t))=(t:ℂ)^(s-1) • squarePrimeWeight t
   simp only [smul_eq_mul,tsum_mul_left]
   congr 1
@@ -345,16 +346,18 @@ theorem squareFactorialMobiusWindow_moments {σ C : ℝ} (hs : 0 ≤ σ) (hs' : 
   have hR : AnalyticOnNhd ℂ R U := fun s _ => (analyticAt_id.sub analyticAt_const).mul (hW _ (Set.mem_univ _))
   have h2 : (2:ℂ) ∈ U := by change σ < (2:ℂ).re; norm_num; linarith only [hs']
   have h1 : (1:ℂ) ∈ U := hs'
+  have hright : ∀ᶠ z : ℂ in 𝓝 2, 1 < z.re :=
+    (isOpen_lt continuous_const Complex.continuous_re).mem_nhds (by norm_num : (1:ℝ) < (2:ℂ).re)
   have he := hL.eqOn_of_preconnected_of_eventuallyEq hR (convex_halfSpace_re_gt σ).isPreconnected h2 (by
-    filter_upwards [Complex.continuous_re.continuousAt.eventually_gt (by norm_num : (1:ℝ) < (2:ℂ).re)] with z hz
-    have hz' : z ≠ 1 := fun hh => hz.ne' (by rw [hh]; rfl)
+    filter_upwards [hright] with z hz
+    have hz' : z ≠ 1 := by rintro rfl; norm_num at hz
     dsimp only [L,R,M,W,g]
     rw [zetaResidueUnit,Function.update_of_ne hz',mellin_squareFactorialMobiusWindow hz]
     field_simp [riemannZeta_ne_zero_of_one_lt_re hz])
   have hzero : M 1=0 := by simpa only [L,R,zetaResidueUnit_one,one_mul,sub_self,zero_mul] using he h1
   have hW₀ : W 1=0 := squareFactorialMellin_one
-  have hder := (((analyticAt_zetaResidueUnit 1).differentiableAt.hasDerivAt).mul (hd 1 h1)).congr_of_eventuallyEq
-    ((eventually_of_mem (hU.mem_nhds h1) (fun z hz => he hz)).symm)
+  have hRL : R =ᶠ[𝓝 (1:ℂ)] L := eventually_of_mem (hU.mem_nhds h1) (fun z hz => (he hz).symm)
+  have hder := (((analyticAt_zetaResidueUnit 1).differentiableAt.hasDerivAt).mul (hd 1 h1)).congr_of_eventuallyEq hRL
   have h := hder.unique (((hasDerivAt_id (1:ℂ)).sub_const 1).mul (differentiable_mellin_squarePrimeWeight 1).hasDerivAt)
   change deriv zetaResidueUnit 1*M 1+zetaResidueUnit 1*mellin (fun x => Real.log x • g x) 1 =
     1*W 1+((1:ℂ)-1)*deriv W 1 at h
@@ -420,11 +423,11 @@ private theorem balancedFloor_integral {j : ℕ} (hj : 0 < j) :
   refine ⟨((hf.sub hg).add (hu.const_mul _)).congr_fun (fun x hx => (he x hx).symm) measurableSet_Ioi,?_⟩
   have hfgint : IntegrableOn (fun x => f x-g x) (Set.Ioi 0) := hf.sub hg
   rw [setIntegral_congr_fun measurableSet_Ioi he,integral_add hfgint (hu.const_mul (j:ℝ)),
-    integral_sub hf hg,integral_const_mul]
+    integral_sub hf hg]
   have hfg : (∫ x in Set.Ioi (0:ℝ), f x)=(∫ x in Set.Ioi (0:ℝ), g x) := by
     simp only [f,g,integral_comp_mul_left_Ioi floorDefect _ (inv_pos.mpr hj'),mul_zero,
       inv_inv,smul_eq_mul,integral_const_mul]
-  rw [hfg,sub_self,zero_add]
+  rw [hfg,sub_self,zero_add,integral_const_mul]
   congr 1
   rw [show (∫ x in Set.Ioi (0:ℝ), u x)=∫ x in J, x⁻¹ by
         rw [show u=J.indicator (fun x : ℝ => x⁻¹) from rfl,integral_indicator measurableSet_Ioc,

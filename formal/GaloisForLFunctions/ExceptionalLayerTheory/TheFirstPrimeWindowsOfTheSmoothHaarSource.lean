@@ -80,18 +80,19 @@ theorem smoothHaarSource_first_doubling (y : ℕ) {t : ℝ} (ht : 0<t)
   let k := ⌊1/t⌋₊
   have hs : ⌊1/t⌋₊ < (y+1)^2 := by nlinarith only [hu,Nat.zero_le (y*y)]
   have hset : (largePrimes k y).filter (fun p => 2∣k/p+1) = Nat.primesLE k \ Nat.primesLE y := by
-    ext p
+    apply Finset.ext
+    intro p
     have he (hp : p≤k) (hy : y<p) : k/p=1 := by
       have hp0 : 0<p := Nat.zero_lt_of_lt hy
       have hlow := (Nat.one_le_div_iff hp0).mpr hp
       have hupper := (Nat.div_lt_iff_lt_mul hp0).mpr (show k<2*p by dsimp only [k]; omega)
       omega
-    simp only [mem_filter,mem_largePrimes,mem_sdiff,Nat.mem_primesLE]
+    simp only [Finset.mem_filter,mem_largePrimes,Finset.mem_sdiff,Nat.mem_primesLE]
     constructor
     · exact fun h => ⟨h.1.1,fun hpy => h.1.2.not_ge hpy.1⟩
     · rintro ⟨hp,hpy⟩
       have hy : y<p := lt_of_not_ge (fun h => hpy ⟨h,hp.2⟩)
-      exact ⟨⟨hp,hy⟩,by rw [he hp.1 hy]; norm_num⟩
+      exact ⟨⟨hp,hy⟩,by rw [he hp.1 hy]⟩
   rw [smoothHaarSource_eq_large_prime_count y ht hs]
   change (k%2:ℕ)-(↑((largePrimes k y).filter (fun p => 2∣k/p+1)).card:ℂ)=_
   rw [hset,card_sdiff_of_subset (Nat.primesLE_mono hl),Nat.cast_sub (card_le_card (Nat.primesLE_mono hl))]
@@ -116,7 +117,7 @@ theorem smoothHaarSource_outer_window {N y : ℕ} (hy : y≤2*N) (hs : 4*N<(y+1)
       have hlo := (Nat.one_le_div_iff hpr.pos).mpr hpk
       have hhi := (Nat.div_lt_iff_lt_mul hpr.pos).mpr (show k<2*p by dsimp only [k]; omega)
       omega
-    exact mem_filter.mpr ⟨mem_largePrimes.mpr ⟨⟨hpk,hpr⟩,hy.trans_lt hp₂⟩,by rw [hdiv]; norm_num⟩
+    exact mem_filter.mpr ⟨mem_largePrimes.mpr ⟨⟨hpk,hpr⟩,hy.trans_lt hp₂⟩,by rw [hdiv]⟩
   have hupp : A ⊆ Nat.primesLE (4*N) := by
     intro p hp
     exact Nat.primesLE_mono hu (mem_filter.mp (mem_filter.mp hp).1).1
@@ -190,11 +191,13 @@ private theorem eventually_outer_prime_gap :
   have hslow : ∀ᶠ x : ℝ in atTop, 16*Real.log x ≤ x := by
     have ho := Real.isLittleO_log_id_atTop.bound (by norm_num : (0:ℝ)<1/16)
     filter_upwards [ho,eventually_ge_atTop (1:ℝ)] with x hx h1
+    change ‖Real.log x‖ ≤ 1/16*‖x‖ at hx
     rw [Real.norm_eq_abs,abs_of_nonneg (Real.log_nonneg h1),Real.norm_eq_abs,
       abs_of_nonneg (zero_le_one.trans h1)] at hx
     linarith only [hx]
   filter_upwards [ht.eventually_ge_atTop R,(Real.tendsto_log_atTop.comp ht).eventually_ge_atTop 2,
     ht.eventually hslow,eventually_ge_atTop 1] with N hNR hlog hslow hN
+  change 2 ≤ Real.log (4*(N:ℝ)) at hlog
   have hp : (0:ℝ)<N := by exact_mod_cast hN
   have hh := h (4*N) hNR 2 (by norm_num) (by norm_num) (4*N) (6*N) le_rfl
     (by linarith only [hp]) (by linarith only [hp]) (by
@@ -204,9 +207,11 @@ private theorem eventually_outer_prime_gap :
       Nat.primesLE (3*N) \ Nat.primesLE (2*N) := by
     rw [show 4*(N:ℝ)/2=((2*N:ℕ):ℝ) by push_cast; ring,
       show 6*(N:ℝ)/2=((3*N:ℕ):ℝ) by push_cast; ring]
-    ext p
-    simp only [_root_.RHTower.windowPrimes,Nat.floor_natCast,mem_filter,mem_Ioc,mem_sdiff,Nat.mem_primesLE]
-    omega
+    apply Finset.ext
+    intro p
+    simp only [_root_.RHTower.windowPrimes,Nat.floor_natCast,Finset.mem_filter,mem_Ioc,
+      Finset.mem_sdiff,Nat.mem_primesLE]
+    by_cases hpr : p.Prime <;> simp [hpr] <;> omega
   rw [he,card_sdiff_of_subset (Nat.primesLE_mono (by omega : 2*N ≤ 3*N)),
     Nat.cast_sub (Finset.card_le_card (Nat.primesLE_mono (by omega : 2*N ≤ 3*N)))] at hh
   simp only [Nat.primesLE_card_eq_primeCounting] at hh
@@ -225,8 +230,8 @@ private theorem reciprocal_square_integral {a b : ℝ} (ha : 0<a) (hab : a ≤ b
     ring
   rw [intervalIntegral.integral_congr he,intervalIntegral.integral_const_mul,
     integral_rpow (Or.inr ⟨by norm_num,hgap⟩)]
-  norm_num [Real.rpow_neg_one]
-  <;> ring
+  rw [show (-2:ℝ)+1 = -1 by norm_num, Real.rpow_neg_one, Real.rpow_neg_one]
+  ring
 
 /-- The squared smooth Haar source on the square-root window has size
 y²/log²(y). Its lower bound comes from one fixed interval of ordinary primes. -/
@@ -265,8 +270,9 @@ theorem smoothHaarSource_square_window_energy :
   have hab := had.trans (hde.trans heb)
   have hi : IntegrableOn f (Set.Ioc a b) := by
     have hm := memLp_pmSmoothHaarSource (y+1)
-    exact ((memLp_two_iff_integrable_sq_norm hm.aestronglyMeasurable).mp hm).mono_set
-      (fun _ ht => hap.trans ht.1)
+    have hi₀ : IntegrableOn f (Set.Ioi 0) :=
+      (memLp_two_iff_integrable_sq_norm hm.aestronglyMeasurable).mp hm
+    exact hi₀.mono_set (fun _ ht => hap.trans ht.1)
   constructor
   · let V := (N:ℝ)/(8*Real.log y)
     have hv : 0 ≤ V := by dsimp only [V]; positivity
@@ -275,6 +281,7 @@ theorem smoothHaarSource_square_window_energy :
       apply div_le_div_of_nonneg_left hNr.le (by positivity)
       have hl := Real.log_le_log (by positivity : 0 < 4*(N:ℝ)) h4
       rw [Real.log_pow] at hl
+      norm_num at hl
       push_cast
       linarith only [hl]
     have hsmall : Set.Ioc d e ⊆ Set.Ioc a b := Set.Ioc_subset_Ioc had heb
@@ -319,6 +326,6 @@ theorem smoothHaarSource_square_window_energy :
     dsimp only [a,b,C]
     simp only [one_div,inv_inv]
     rw [div_pow]
-    apply le_trans (mul_le_mul_of_nonneg_left (sub_le_self _ hypos.le) (by positivity)) (by ring_nf)
+    exact (mul_le_mul_of_nonneg_left (sub_le_self _ hypos.le) (by positivity)).trans_eq (by ring)
 
 end GaloisForLFunctions.ExceptionalLayerTheory

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.MonotoneTranslationModulus
+import GaloisForLFunctions.RHTower.Sieve.CharacterWindowMass
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheFractionalPartTestOfThePrimeWave
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheSignedPrimeExcessAtTheCriticalWidth
 
@@ -17,17 +18,17 @@ namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open HTGeometry ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
   CriticalArithmeticCorrelationTheory _root_.RHTower
 
-/-- A sublinear frozen width has mean Chebyshev slope one on every fixed-ratio
-interval. Translation moves the interval integral to its two short ends. -/
-theorem tendsto_frozen_chebyshev_window_mean {H : ℝ → ℝ} (hH : ∀ᶠ x in atTop, 0 < H x)
+/-- A monotone count of asymptotic slope one retains its mean slope in windows
+of sublinear frozen width. Translation leaves only the two endpoint intervals. -/
+theorem tendsto_frozen_window_mean {f : ℝ → ℝ} (hm : Monotone f)
+    (hf : Tendsto (fun x => f x/x) atTop (𝓝 1)) {H : ℝ → ℝ} (hH : ∀ᶠ x in atTop, 0 < H x)
     (hsub : Tendsto (fun x => H x/x) atTop (𝓝 0)) {b : ℝ} (hb : 1 < b) :
-    Tendsto (fun x => (∫ v in x..b*x, Chebyshev.psi (v+H x)-Chebyshev.psi v)/(H x*x))
+    Tendsto (fun x => (∫ v in x..b*x, f (v+H x)-f v)/(H x*x))
       atTop (𝓝 (b-1)) := by
-  have hψ := _root_.RHTower.FreeLagTrace.tendsto_psi_div
   have hpos := zero_lt_one.trans hb
   have hscale (a : ℝ) (ha : 0 < a) (h : ℝ → ℝ) (hh : ∀ᶠ x in atTop, 0 ≤ h x)
       (hs : Tendsto (fun x => h x/x) atTop (𝓝 0)) :
-      Tendsto (fun x => Chebyshev.psi (a*x+h x)/x) atTop (𝓝 a) := by
+      Tendsto (fun x => f (a*x+h x)/x) atTop (𝓝 a) := by
     have hvar : Tendsto (fun x => a*x+h x) atTop atTop := by
       apply tendsto_atTop_mono' _ _ (tendsto_id.const_mul_atTop ha)
       exact hh.mono fun x hx => le_add_of_nonneg_right hx
@@ -35,14 +36,15 @@ theorem tendsto_frozen_chebyshev_window_mean {H : ℝ → ℝ} (hH : ∀ᶠ x in
     rw [add_zero] at hquot
     have hratio : Tendsto (fun x => (a*x+h x)/x) atTop (𝓝 a) := hquot.congr' <|
       (eventually_gt_atTop (0:ℝ)).mono fun x hx => by field_simp [hx.ne'] <;> ring
-    have hprod := (hψ.comp hvar).mul hratio
+    have hprod := (hf.comp hvar).mul hratio
     rw [one_mul] at hprod
-    exact hprod.congr' <| (hvar.eventually_gt_atTop 0).mono fun x hx => by
-      change Chebyshev.psi (a*x+h x)/(a*x+h x)*((a*x+h x)/x)=_
-      field_simp [hx.ne'] <;> ring
+    apply hprod.congr'
+    filter_upwards [hvar.eventually_gt_atTop 0,eventually_gt_atTop (0:ℝ)] with x hx hx0
+    change f (a*x+h x)/(a*x+h x)*((a*x+h x)/x)=_
+    field_simp [hx.ne',hx0.ne'] <;> ring
   have hzero : Tendsto (fun x : ℝ => (0:ℝ)/x) atTop (𝓝 0) := by
     simp only [zero_div]; exact tendsto_const_nhds
-  have h0 (a : ℝ) (ha : 0 < a) : Tendsto (fun x => Chebyshev.psi (a*x)/x) atTop (𝓝 a) := by
+  have h0 (a : ℝ) (ha : 0 < a) : Tendsto (fun x => f (a*x)/x) atTop (𝓝 a) := by
     simpa only [add_zero] using hscale a ha (fun _ => 0) (Eventually.of_forall fun _ => le_rfl) hzero
   have hlo := (h0 b hpos).sub (hscale 1 zero_lt_one H (hH.mono fun _ h => h.le) hsub)
   have hup := (hscale b hpos H (hH.mono fun _ h => h.le) hsub).sub (h0 1 zero_lt_one)
@@ -50,21 +52,21 @@ theorem tendsto_frozen_chebyshev_window_mean {H : ℝ → ℝ} (hH : ∀ᶠ x in
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hlo hup
   · filter_upwards [eventually_gt_atTop (0:ℝ),hH] with x hx hh
     rw [← sub_div,div_le_div_iff₀ hx (mul_pos hh hx)]
-    have h := sub_le_sub (length_mul_left_le_integral Chebyshev.psi_mono (c := b*x) hh.le)
-      (integral_le_length_mul_right Chebyshev.psi_mono (c := x) hh.le)
-    rw [← mul_sub,← integral_translate_sub_eq_end_windows Chebyshev.psi_mono] at h
-    calc _ = (H x*(Chebyshev.psi (b*x)-Chebyshev.psi (x+H x)))*x := by ring
+    have h := sub_le_sub (length_mul_left_le_integral hm (c := b*x) hh.le)
+      (integral_le_length_mul_right hm (c := x) hh.le)
+    rw [← mul_sub,← integral_translate_sub_eq_end_windows hm] at h
+    calc _ = (H x*(f (b*x)-f (x+H x)))*x := by ring
          _ ≤ _ := mul_le_mul_of_nonneg_right h hx.le
   · filter_upwards [eventually_gt_atTop (0:ℝ),hH] with x hx hh
     rw [← sub_div,div_le_div_iff₀ (mul_pos hh hx) hx]
-    have h := integral_translate_sub_le Chebyshev.psi_mono (a := x) (b := b*x) hh.le
-    calc _ ≤ (H x*(Chebyshev.psi (b*x+H x)-Chebyshev.psi x))*x := mul_le_mul_of_nonneg_right h hx.le
+    have h := integral_translate_sub_le hm (a := x) (b := b*x) hh.le
+    calc _ ≤ (H x*(f (b*x+H x)-f x))*x := mul_le_mul_of_nonneg_right h hx.le
          _ = _ := by ring
 
 
 /-- A lower signed mean and a uniform upper bound force positive measure of
 centers above the lower level. The witness set is measurable. -/
-private theorem lower_mean_gives_good_centers {x y c d D : ℝ} (hxy : x ≤ y) (hc : 0 ≤ c)
+theorem exists_positive_measure_of_lower_interval_mean {x y c d D : ℝ} (hxy : x ≤ y) (hc : 0 ≤ c)
     {q : ℝ → ℝ} (hm : Measurable q) (hi : IntervalIntegrable q volume x y)
     (havg : d*(y-x) ≤ ∫ u in x..y, q u) (hq : ∀ u ∈ Ioc x y, q u ≤ D) :
     ∃ A : Set ℝ, MeasurableSet A ∧ A ⊆ Ioc x y ∧ (∀ u ∈ A, c < q u) ∧
@@ -78,7 +80,7 @@ private theorem lower_mean_gives_good_centers {x y c d D : ℝ} (hxy : x ≤ y) 
   have hD : IntegrableOn (fun _ : ℝ => D) I := integrableOn_const (by dsimp only [I]; finiteness)
   have hInd : IntegrableOn (A.indicator fun _ : ℝ => D) I := hD.indicator hA
   have hbig : (∫ u in I, q u) ≤ ∫ u in I, c+A.indicator (fun _ : ℝ => D) u := by
-    apply setIntegral_mono_on (hi.integrableOn_Ioc) (hC.add hInd) hI
+    apply setIntegral_mono_on ((intervalIntegrable_iff_integrableOn_Ioc_of_le hxy).mp hi) (hC.add hInd) hI
     intro u hu
     by_cases h : u ∈ A
     · rw [indicator_of_mem h]; exact (hq u hu).trans (le_add_of_nonneg_left hc)
@@ -160,12 +162,7 @@ private theorem arithmeticWallWidth_sieve : ∃ C : ℝ, 1 ≤ C ∧ ∀ᶠ x in
     linarith only [Real.log_le_sub_one_of_pos hx]
   have hc := hbound t ht H hlo (hup.trans hExp.ge)
   rw [hExp] at hc
-  have hψ : Chebyshev.psi (x+H)-Chebyshev.psi x =
-      ∑ n ∈ Finset.Ioc ⌊x⌋₊ ⌊x+H⌋₊, ArithmeticFunction.vonMangoldt n := by
-    unfold Chebyshev.psi
-    rw [← Finset.sum_Ioc_consecutive (fun n : ℕ => (ArithmeticFunction.vonMangoldt n : ℝ))
-      (Nat.zero_le ⌊x⌋₊) (Nat.floor_mono (le_add_of_nonneg_right hH.le))]
-    ring
+  have hψ := _root_.RHTower.Sieve.psi_sub_eq_sum_Ioc (le_add_of_nonneg_right (a := x) hH.le)
   change Chebyshev.psi (x+H)-Chebyshev.psi x ≤ (C+1)*H
   rw [hψ]; exact hc.trans (mul_le_mul_of_nonneg_right (le_add_of_nonneg_right zero_le_one) hH.le)
 
@@ -179,7 +176,8 @@ private theorem frozen_criticalWidth_good_centers {b c : ℝ} (hb : 1 < b) (hc0 
   have hH : ∀ᶠ x : ℝ in atTop, 0 < H x :=
     (eventually_ge_atTop (Real.exp 1)).mono fun x hx =>
       (arithmeticWallWidth_comparison (b := 1) hx le_rfl ⟨le_rfl,by rw [one_mul]⟩).1
-  have hf := tendsto_frozen_chebyshev_window_mean hH arithmeticWallWidth_sublinear hb
+  have hf := tendsto_frozen_window_mean Chebyshev.psi_mono _root_.RHTower.FreeLagTrace.tendsto_psi_div
+    hH arithmeticWallWidth_sublinear hb
   let d := (1+c)/2
   have hcd : c < d := by dsimp only [d]; linarith only [hc1]
   have hd1 : d < 1 := by dsimp only [d]; linarith only [hc1]
@@ -212,7 +210,7 @@ private theorem frozen_criticalWidth_good_centers {b c : ℝ} (hb : 1 < b) (hc0 
          _ ≤ C*H u := hU _ (hxU.trans hu.1.le)
          _ ≤ C*(b*H x) := mul_le_mul_of_nonneg_left hhi (zero_le_one.trans hC)
          _ = _ := by dsimp only [D]; ring
-  obtain ⟨A,hA,hAI,hgood,hmass⟩ := lower_mean_gives_good_centers hxy hc0 hm hi hav hq
+  obtain ⟨A,hA,hAI,hgood,hmass⟩ := exists_positive_measure_of_lower_interval_mean hxy hc0 hm hi hav hq
   refine ⟨A,hA,hAI,?_,fun u hu => (lt_div_iff₀ hh).mp (hgood u hu)⟩
   rw [div_mul_eq_mul_div,div_le_iff₀ hD]
   calc _ = (d-c)*(b*x-x) := by ring
@@ -265,7 +263,9 @@ private theorem signed_criticalWidth_good_centers {Φ : ℝ → ℝ} {γ : ℝ} 
   have hg := mul_lt_mul_of_pos_left (sub_lt_sub_right hq 1) hγ
   linarith only [h,hg,hδε,hε]
 
-private theorem fractional_mass_of_good_centers {A : Set ℝ} (hA : MeasurableSet A) {x R κ : ℝ}
+/-- A positive fraction of a right-hand window carries a fixed amount of the
+fractional test at its left endpoint. On this side the fractional part is exact. -/
+theorem fractionalPrimeTest_mass_of_log_window_subset {A : Set ℝ} (hA : MeasurableSet A) {x R κ : ℝ}
     (hx : 0 < x) (hR : 0 < R) (hAI : A ⊆ Ioc x (R*x)) (hmass : κ*x ≤ volume.real A) :
     κ/R ≤ (∫ u in A, u⁻¹) ∧
     κ/R^2 ≤ ∫ u in A, fractionalPrimeTest (Real.log x-Real.log u)*u⁻¹ := by
@@ -351,7 +351,7 @@ theorem riemannHypothesis_or_positive_measure_of_signed_criticalWidth_centers : 
   refine ⟨κ,hκ,?_⟩
   filter_upwards [hgood,eventually_gt_atTop (0:ℝ)] with x hx hx0
   obtain ⟨A,hA,hAI,hmass,hread⟩ := hx
-  obtain ⟨hl,hk⟩ := fractional_mass_of_good_centers hA hx0 (zero_lt_one.trans hR) hAI hmass
+  obtain ⟨hl,hk⟩ := fractionalPrimeTest_mass_of_log_window_subset hA hx0 (zero_lt_one.trans hR) hAI hmass
   refine ⟨A,hA,hAI,hmass,hl,hk,fun u hu => ⟨hread u hu,?_⟩⟩
   dsimp only
   rw [signed_window_complement hb (Real.log u)]

@@ -28,14 +28,14 @@ private theorem interior_sum (k : ℕ) (f : ℕ → ℕ → ℂ) :
   · intro i hi
     obtain ⟨h₀,hk⟩ := mem_erase.mp hi
     have h := mem_range.mp hk
-    exact mem_filter.mpr ⟨Finset.mem_antidiagonal.mpr (by dsimp; omega),Nat.pos_of_ne_zero h₀,h⟩
+    exact mem_filter.mpr ⟨Finset.HasAntidiagonal.mem_antidiagonal.mpr (show i+(k-i)=k from Nat.add_sub_of_le h.le),Nat.pos_of_ne_zero h₀,h⟩
   · rintro ⟨i,j⟩ h
-    have he := Finset.mem_antidiagonal.mp (mem_filter.mp h).1
-    exact Prod.ext rfl (by dsimp at he ⊢; omega)
+    have he : i+j=k := Finset.HasAntidiagonal.mem_antidiagonal.mp (mem_filter.mp h).1
+    exact Prod.ext rfl (by change k-i=j; omega)
   · exact fun _ _ => rfl
   · rintro ⟨i,j⟩ h
-    have he := Finset.mem_antidiagonal.mp (mem_filter.mp h).1
-    exact congrArg (f i) (by dsimp at he ⊢; omega)
+    have he : i+j=k := Finset.HasAntidiagonal.mem_antidiagonal.mp (mem_filter.mp h).1
+    exact congrArg (f i) (show j=k-i by omega)
 
 /-- Newton's identity identifies the signed mean of the k lower trace products. -/
 theorem newton_mean (s : Multiset ℂ) (k : ℕ) (hk : 0 < k) :

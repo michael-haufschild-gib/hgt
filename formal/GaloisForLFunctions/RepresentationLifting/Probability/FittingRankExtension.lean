@@ -21,6 +21,7 @@ variable (F : Type*) [Field F] [Fintype F]
 def rowSurvival (n k : ℕ) : ℚ :=
   ∏ i : Fin k, (1-1/(Nat.card F:ℚ)^(n+i.val+1))
 
+omit [Field F] [Fintype F] in
 private theorem rowSurvival_succ (n k : ℕ) : rowSurvival F n (k+1) =
     rowSurvival F n k*(1-1/(Nat.card F:ℚ)^(n+k+1)) := by
   unfold rowSurvival
@@ -68,8 +69,8 @@ theorem fittingDegree_zeroRow_model (n k : ℕ) :
   have hq : 0 < (Fintype.card F)^(n+i.val+1) := pow_pos Fintype.card_pos _
   rw [Nat.cast_sub hq,Nat.cast_one,Nat.cast_pow]
   field_simp [show (Fintype.card F:ℚ) ≠ 0 by exact_mod_cast Fintype.card_pos.ne']
-  ring
 
+omit [Fintype F] in
 private theorem density_nonneg (n d : ℕ) : 0 ≤ fittingDegreeDensity F n d := by
   unfold fittingDegreeDensity
   positivity
@@ -109,6 +110,7 @@ theorem fittingDegree_totalVariation (n k : ℕ) :
   rw [← sum_mul,sum_fittingDegreeDensity,one_mul,tail_eq]
   ring
 
+omit [Field F] [Fintype F] in
 /-- The first nontrivial rank extension already realizes a strictly positive
 distance. The identity works in every finite field, even in rank zero. -/
 theorem fittingDegree_one_step_distance (n : ℕ) :

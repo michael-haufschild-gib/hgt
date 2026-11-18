@@ -34,7 +34,10 @@ private theorem centered_parts (a w : ℕ → ℝ) {l u : ℕ} (hl : l<u) (c : �
       w u*(intervalPrefix a u-c)-w (l+1)*(intervalPrefix a l-c)-
       ∑ i ∈ Ioc l (u-1), (w (i+1)-w i)*(intervalPrefix a i-c) := by
   have he := Finset.sum_Ioc_by_parts w a hl
-  simp only [smul_eq_mul,← intervalPrefix] at he
+  simp only [smul_eq_mul] at he
+  change (∑ i ∈ Ioc l u, w i*a i) =
+    w u*intervalPrefix a u-w (l+1)*intervalPrefix a l-
+    ∑ i ∈ Ioc l (u-1), (w (i+1)-w i)*intervalPrefix a i at he
   have ht := _root_.RHTower.DiscretePacket.sum_Ioc_telescope w (show l≤u-1 by omega)
   rw [Nat.sub_add_cancel (by omega : 1≤u)] at ht
   simp only [mul_sub _ _ c,sum_sub_distrib,← sum_mul,ht]
@@ -95,8 +98,9 @@ def largestForwardSum (a : ℕ → ℝ) (Y : ℕ) : ℝ :=
   (windowPairs Y).sup' (windowPairs_nonempty Y) (fun z => ∑ n ∈ Ioc z.1 z.2, a n)
 
 private theorem le_forward (a : ℕ → ℝ) {Y h k : ℕ} (hh : h∈Icc Y (2*Y)) (hk : k∈Icc Y (2*Y)) :
-    (∑ i ∈ Ioc h k, a i)≤largestForwardSum a Y :=
-  Finset.le_sup' (f := fun z : ℕ × ℕ => ∑ i ∈ Ioc z.1 z.2, a i) (mem_product.mpr ⟨hh,hk⟩)
+    (∑ i ∈ Ioc h k, a i)≤largestForwardSum a Y := by
+  have hp : (h,k) ∈ windowPairs Y := mem_product.mpr ⟨hh,hk⟩
+  exact Finset.le_sup' (f := fun z : ℕ × ℕ => ∑ i ∈ Ioc z.1 z.2, a i) hp
 
 private theorem forward_nonneg (a : ℕ → ℝ) (Y : ℕ) : 0≤largestForwardSum a Y := by
   have hy : Y∈Icc Y (2*Y) := mem_Icc.mpr ⟨le_rfl,by omega⟩
@@ -112,7 +116,7 @@ theorem forward_prime_logarithm_bounds (Y : ℕ) (hY : 2≤Y) (sign : ℝ) :
   intro b a
   have hl (n : ℕ) (hn : Y≤n) : 0<Real.log n :=
     Real.log_pos (by exact_mod_cast (show 1<n by omega))
-  have hmono {i j : ℕ} (hi : Y≤i) (hij : i≤j) : Real.log i≤Real.log j :=
+  have hmono {i j : ℕ} (hi : Y ≤ i) (hij : i≤j) : Real.log i≤Real.log j :=
     Real.log_le_log (by exact_mod_cast (show 0<i by omega)) (by exact_mod_cast hij)
   have hmid {h k : ℕ} (hh : h∈Icc Y (2*Y)) (hk : k∈Icc Y (2*Y)) {j : ℕ} (hj : h≤j) (hjk : j≤k) :
       j∈Icc Y (2*Y) := mem_Icc.mpr ⟨(mem_Icc.mp hh).1.trans hj,hjk.trans (mem_Icc.mp hk).2⟩
@@ -230,7 +234,8 @@ theorem singleQuartet_signed_prime_octave {ρ : ℂ} (hq : ExclusionOfTheCritica
       c*(Y:ℝ)^ρ.re ≤ Real.log (2*Y:ℕ)*largestForwardSum (fun n => ε*ordinaryPrimeCountWeight n) Y := by
   obtain ⟨C,hC,h⟩ := singleQuartet_signed_theta_octave hq
   have hβ : 0<ρ.re := by linarith only [hq.1]
-  have hp := (Real.tendsto_rpow_atTop hβ).comp tendsto_natCast_atTop_atTop
+  have hp : Tendsto (fun Y : ℕ => (Y:ℝ)^ρ.re) atTop atTop :=
+    (tendsto_rpow_atTop hβ).comp tendsto_natCast_atTop_atTop
   refine ⟨C/2,half_pos hC,?_⟩
   filter_upwards [tendsto_natCast_atTop_atTop.eventually h,hp.eventually_ge_atTop (2/C),
     eventually_ge_atTop 2] with Y hY hpow h2
