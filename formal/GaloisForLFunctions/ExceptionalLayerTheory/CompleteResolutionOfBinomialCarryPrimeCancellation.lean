@@ -96,7 +96,7 @@ theorem complete_smooth_division_tree_resolution :
      two_mul_smoothIntegerCount_sub_eq_middle_octave_cancel n hy⟩,
    fun M _ _ hz hzy => alternatingSmoothSum_buchstab M hz hzy,
    fun hB g => smooth_complement_uniquely_selects_primes hB g,
-   fun hr hrN hn => centralBinom_carry_top_octave_aliasing hr hrN hn⟩
+   fun hr _ hn => centralBinom_carry_top_octave_aliasing hr hn⟩
 
 /-- Master theorem 3: Growing quotient-band summability, wide-band cancellation gain,
 single-slice equivalence with `RiemannHypothesis`, and Bertrand short-interval saturation near `√X`. -/

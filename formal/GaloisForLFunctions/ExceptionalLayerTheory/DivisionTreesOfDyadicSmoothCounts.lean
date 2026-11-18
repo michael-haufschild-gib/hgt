@@ -344,14 +344,20 @@ theorem sum_range_two_mul_smooth_dyadic_eq (N : ℕ) {y : ℕ} (hy : 2 ≤ y) :
       omega
     simp [oddSmoothIntegerCount, hempty]
   | succ N ih =>
-    have hrange : 2 * (N + 1) = 2 * N + 1 + 1 := by omega
-    rw [hrange, Finset.sum_range_succ, Finset.sum_range_succ]
-    have hd₁ : (2 * N) / 2 = N := Nat.mul_div_right N two_pos
-    have hd₂ : (2 * N + 1) / 2 = N := by omega
-    rw [hd₁, hd₂, ih, (two_mul_smoothIntegerCount_sub_eq_alternating N hy).2]
+    have hLHS : (∑ k ∈ range (2 * (N + 1)),
+        (2 * (smoothIntegerCount (k / 2) y : ℝ) - (smoothIntegerCount (2 * (k / 2)) y : ℝ))) =
+        ((∑ j ∈ Sieve.smoothUpTo (Nat.primesLE y) (2 * N), (-1 : ℝ) ^ j * (2 * (N : ℝ) - j)) +
+          (oddSmoothIntegerCount (2 * N - 1) y : ℝ)) +
+          alternatingSmoothSum (2 * N) y + alternatingSmoothSum (2 * N) y := by
+      have hrange : 2 * (N + 1) = 2 * N + 1 + 1 := by omega
+      have hd₁ : (2 * N) / 2 = N := Nat.mul_div_right N two_pos
+      have hd₂ : (2 * N + 1) / 2 = N := by omega
+      rw [hrange, Finset.sum_range_succ, Finset.sum_range_succ, hd₁, hd₂, ih,
+        (two_mul_smoothIntegerCount_sub_eq_alternating N hy).2]
+    rw [hLHS]
     let P := fun j : ℕ => ∀ p ∈ j.primeFactors, p ≤ y
     let S₀ := Sieve.smoothUpTo (Nat.primesLE y) (2 * N)
-    let S₁ := Sieve.smoothUpTo (Nat.primesLE y) (2 * N + 2)
+    let S₁ := Sieve.smoothUpTo (Nat.primesLE y) (2 * (N + 1))
     have hsub : S₀ ⊆ S₁ := by
       intro j hj
       obtain ⟨⟨h1, h2⟩, hf⟩ := mem_smoothUpTo_iff.mp hj
@@ -366,24 +372,27 @@ theorem sum_range_two_mul_smooth_dyadic_eq (N : ℕ) {y : ℕ} (hy : 2 ≤ y) :
           exact hnot ⟨⟨hj1, by omega⟩, hf⟩
         exact ⟨by omega, hf⟩
       · rintro ⟨(rfl | rfl), hf⟩ <;> refine ⟨⟨⟨by omega, by omega⟩, hf⟩, ?_⟩ <;> omega
-    have hsum_split : (∑ j ∈ S₁, (-1 : ℝ) ^ j * (((2 * (N + 1) : ℕ) : ℝ) - j)) =
-        (∑ j ∈ S₀, (-1 : ℝ) ^ j * ((2 * N : ℝ) - j)) + 2 * alternatingSmoothSum (2 * N) y +
-          ∑ j ∈ S₁ \ S₀, (-1 : ℝ) ^ j * (((2 * (N + 1) : ℕ) : ℝ) - j) := by
+    have hsum_split : (∑ j ∈ S₁, (-1 : ℝ) ^ j * (2 * ((N + 1 : ℕ) : ℝ) - j)) =
+        (∑ j ∈ S₀, (-1 : ℝ) ^ j * (2 * (N : ℝ) - j)) + 2 * alternatingSmoothSum (2 * N) y +
+          ∑ j ∈ S₁ \ S₀, (-1 : ℝ) ^ j * (2 * ((N + 1 : ℕ) : ℝ) - j) := by
       rw [← sum_sdiff hsub]
-      have hhead : (∑ j ∈ S₀, (-1 : ℝ) ^ j * (((2 * (N + 1) : ℕ) : ℝ) - j)) =
-          (∑ j ∈ S₀, (-1 : ℝ) ^ j * ((2 * N : ℝ) - j)) + 2 * alternatingSmoothSum (2 * N) y := by
+      have hhead : (∑ j ∈ S₀, (-1 : ℝ) ^ j * (2 * ((N + 1 : ℕ) : ℝ) - j)) =
+          (∑ j ∈ S₀, (-1 : ℝ) ^ j * (2 * (N : ℝ) - j)) + 2 * alternatingSmoothSum (2 * N) y := by
         rw [alternatingSmoothSum, mul_sum, ← sum_add_distrib]
         refine sum_congr rfl fun j _ => ?_
         push_cast
         ring
       linarith only [hhead]
-    have hsdiff_val : (∑ j ∈ S₁ \ S₀, (-1 : ℝ) ^ j * (((2 * (N + 1) : ℕ) : ℝ) - j)) =
+    have hsdiff_val : (∑ j ∈ S₁ \ S₀, (-1 : ℝ) ^ j * (2 * ((N + 1 : ℕ) : ℝ) - j)) =
         if P (2 * N + 1) then -1 else 0 := by
       classical
-      rw [hdiff, sum_filter, sum_insert (by omega : 2 * N + 1 ≠ 2 * N + 2), sum_singleton]
+      have hnot_ins : 2 * N + 1 ∉ ({2 * N + 2} : Finset ℕ) := by
+        simp only [mem_singleton]
+        omega
+      rw [hdiff, sum_filter, sum_insert hnot_ins, sum_singleton]
       have htop : (if P (2 * N + 2) then (-1 : ℝ) ^ (2 * N + 2) *
-          (((2 * (N + 1) : ℕ) : ℝ) - (2 * N + 2 : ℕ)) else 0) = 0 := by
-        have hz : (((2 * (N + 1) : ℕ) : ℝ) - (2 * N + 2 : ℕ)) = 0 := by push_cast; ring
+          (2 * ((N + 1 : ℕ) : ℝ) - (2 * N + 2 : ℕ)) else 0) = 0 := by
+        have hz : (2 * ((N + 1 : ℕ) : ℝ) - (2 * N + 2 : ℕ)) = 0 := by push_cast; ring
         rw [hz, mul_zero, ite_self]
       rw [htop, add_zero]
       split_ifs with hP
@@ -434,7 +443,7 @@ theorem sum_range_two_mul_smooth_dyadic_eq (N : ℕ) {y : ℕ} (hy : 2 ≤ y) :
             exact ⟨⟨⟨hj1, by omega⟩, hf⟩, hnd⟩
         change (Odd₁.card : ℝ) = (Odd₀.card : ℝ)
         rw [heq_set]
-    change _ + _ = (∑ j ∈ S₁, (-1 : ℝ) ^ j * (((2 * (N + 1) : ℕ) : ℝ) - j)) +
+    change _ = (∑ j ∈ S₁, (-1 : ℝ) ^ j * (2 * ((N + 1 : ℕ) : ℝ) - j)) +
       (oddSmoothIntegerCount (2 * (N + 1) - 1) y : ℝ)
     rw [hsum_split, hsdiff_val, hodd_step]
     split_ifs <;> ring
@@ -506,11 +515,11 @@ theorem smooth_complement_uniquely_selects_primes {y B : ℕ} (hB : B < (y + 1) 
     congr 1
     exact sum_congr rfl fun m hm => by rw [h m hm]
 
-/-- Top-octave parity aliasing: whenever `2r - 1 ∈ (N, 2N]` (`N < 2r - 1` and `r ≤ N`), for
-every `n ≤ N` the odd integer `2r - 1` and the adjacent even integer `2r` have identical
+/-- Top-octave parity aliasing: whenever `N < 2r - 1` (in particular for `2r - 1 ∈ (N, 2N]`),
+for every `n ≤ N` the odd integer `2r - 1` and the adjacent even integer `2r` have identical
 central-binomial carry `1_{r ≤ n}`. -/
 theorem centralBinom_carry_top_octave_aliasing {N r n : ℕ}
-    (hr : N < 2 * r - 1) (hrN : r ≤ N) (hn : n ≤ N) :
+    (hr : N < 2 * r - 1) (hn : n ≤ N) :
     ((2 * n) / (2 * r - 1)) % 2 = ((2 * n) / (2 * r)) % 2 ∧
       ((2 * n) / (2 * r)) % 2 = if r ≤ n then 1 else 0 := by
   have hrpos : 0 < r := by omega

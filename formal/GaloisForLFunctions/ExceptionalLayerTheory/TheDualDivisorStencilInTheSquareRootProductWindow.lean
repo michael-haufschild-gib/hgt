@@ -45,8 +45,11 @@ private theorem rectangle_eq {X e F L U c : ℕ} (hc : 1 ≤ c) (hu : U ≤ X) (
   intro p _
   have hq : centeredQuotient X (p*j) e=saw (((X : ℝ)/e)/j/p) := by
     dsimp only [centeredQuotient,saw]; rw [Nat.cast_mul,mul_comm (p : ℝ) j,div_mul_eq_div_div]
-  by_cases prime : p.Prime <;> by_cases window : L<p*j ∧ p*j≤U <;>
-    simp [prime,window,fractionalProductTerm,ordinaryLog,hq,mul_comm,mul_left_comm,mul_assoc]
+  by_cases window : L<p*j ∧ p*j≤U
+  · by_cases prime : p.Prime
+    · simp [prime,window,fractionalProductTerm,ordinaryLog,hq] <;> ring
+    · simp [prime,window,fractionalProductTerm,ordinaryLog]
+  · simp [window,fractionalProductTerm]
 
 /-- Uniform square-root saving at every short divisor over all
 complementary factors of the sharp prime product window. -/

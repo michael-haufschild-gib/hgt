@@ -160,7 +160,7 @@ theorem squareLongTrace_peaks_in_every_logarithmic_window {a : ℝ} (ha : 0 ≤ 
   filter_upwards [eventually_ge_atTop U,eventually_ge_atTop 6,eventually_ge_atTop (Real.exp (2+L)),
     hleak.eventually_le_const zero_lt_one,hg.eventually_gt_atTop (|H*M|+2)] with T hU hT hlate herr hgr
   have hlog : 2+L ≤ Real.log (T+2) := by
-    simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos _) (hlate.trans (by linarith))
+    simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos _) (hlate.trans (show T ≤ T+2 by linarith))
   obtain ⟨t,ht,hneg'⟩ := hneg T hU
   have ht₀ : 0 ≤ t := by linarith only [ht.1,hT]
   by_contra! hbad

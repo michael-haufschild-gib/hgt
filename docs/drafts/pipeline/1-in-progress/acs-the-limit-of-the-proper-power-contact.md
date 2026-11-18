@@ -1,0 +1,5 @@
+# Limit of the proper prime-power contact on square conductors
+
+For $D_n=e_1+2e_{n^2}-e_{(2n+1)^2}$, determine the limit of the integrated contribution of all proper prime powers. This would give the limit of $Q(D_n)+P_{\rm ord}(D_n)$ on every conductor, including those between known blocks of sections.
+
+At a moving long lag, squares contribute the translate of the measure $\sum_k\Lambda(k)\delta_{2\log k}/k$. Its compact smooth profile has a limiting integral by the residue Mertens theorem at modulus one. Nonsquare proper prime powers have exponent at least three and finite total weight $\sum_{p,j\ge3}(\log p)p^{-j/2}$. Fixed short lags have bounded support and converge termwise. The remaining step is to identify the exact limit for the original prime-power rows. [Spline contact formula](../../../../formal/GaloisForLFunctions/CountingHolography/Sections/ThePrimeProfileOfThreeSquareConductors.lean) · [Smooth Mertens theorem](../../../../formal/GaloisForLFunctions/CriticalArithmeticCorrelationTheory/TheWeightedAffinePrimeShellsHaveTheirSignedMean.lean)

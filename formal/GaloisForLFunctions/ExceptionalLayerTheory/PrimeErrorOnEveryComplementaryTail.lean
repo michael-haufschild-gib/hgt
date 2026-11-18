@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ExceptionalLayerTheory.CancellationOnRepeatedPrimeFactors
+import GaloisForLFunctions.ExceptionalLayerTheory.TransposingTheComplementaryFactorTail
 import GaloisForLFunctions.ExceptionalLayerTheory.TheCompletedCofactorRowRetainsThePrimeError
 
 /-!
@@ -24,7 +24,7 @@ def primeErrorTail (D X a : ℕ) : ℝ :=
 
 /-- The complete Mangoldt row may be replaced by one signed dilation of
 the genuine prime error, uniformly over the entire range of cutoffs. -/
-theorem completeComplementTail_sub_primeErrorTail {R X : ℕ} (hR : 1≤R) (hx : 1≤X) (D a : ℕ) :
+theorem completeComplementTail_sub_primeErrorTail {R : ℕ} (hR : 1≤R) (D X a : ℕ) :
     |completeComplementTail D R X a-primeErrorTail D X a|≤
       4*(1+mass (D+1))*(420*(1+mass R)*(3+Real.log (128*(128*R^2+1) : ℕ)+2*Real.log X))*Real.sqrt X := by
   let w (t : ℕ) := (∑ u ∈ Icc 1 t, vonMangoldt u*centeredPrimeWeight R (t/u))-(Chebyshev.psi t-t)
@@ -132,9 +132,92 @@ theorem complete_primeErrorTail_bound (D : ℕ) {X : ℕ} (hx : 1≤X) :
       exact add_le_add ((abs_completeDivisorError_add_le n).trans (mul_le_mul_of_nonneg_left hl (by norm_num)))
         ((mul_le_mul_of_nonneg_left ha (by positivity)).trans_eq (mul_one _)))
   rw [stencil_sub,hz,sub_zero] at hh
-  rw [complete_primeErrorTail_identity D hx,sub_sub_cancel]
+  rw [complete_primeErrorTail_identity D hx]
+  change |(Chebyshev.psi X-X)-((Chebyshev.psi X-X)-stencil (D+1) f)|≤_
+  rw [show (Chebyshev.psi X-X)-((Chebyshev.psi X-X)-stencil (D+1) f)=stencil (D+1) f by ring]
   exact hh
 
+/-- Transposition bounds the entire tail by the absolute Mangoldt mass
+at the reciprocal cutoff. Both primitive endpoints are bounded. -/
+theorem primeErrorTail_reciprocal_bound (D X : ℕ) {a : ℕ} (ha : 1≤a) :
+    |primeErrorTail D X a|≤16*mass (D+1)*(X/(a+1) : ℕ) := by
+  let e (n : ℕ) := vonMangoldt n-1
+  let U := X/(a+1)
+  have herr (t : ℕ) : Chebyshev.psi t-t=∑ n ∈ Icc 1 t, e n := by
+    have hψ : (∑ n ∈ Icc 1 t, vonMangoldt n)=Chebyshev.psi t := by
+      unfold Chebyshev.psi; rw [Nat.floor_natCast]; rfl
+    simp only [e,sum_sub_distrib,hψ,sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul,mul_one]
+  have habs : (∑ n ∈ Icc 1 U, |e n|)≤8*U := by
+    calc _ ≤ ∑ n ∈ Icc 1 U, (vonMangoldt n+1) := sum_le_sum fun n _ => by
+              simpa only [e,abs_of_nonneg vonMangoldt_nonneg,abs_one] using abs_sub (vonMangoldt n) (1 : ℝ)
+         _ ≤ _ := by
+              rw [sum_add_distrib,sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul,mul_one]
+              have h : (∑ n ∈ Icc 1 U, vonMangoldt n)≤7*U := chebyshevPsi_le_seven U
+              linarith only [h]
+  have heq : primeErrorTail D X a =
+      ∑ n ∈ Icc 1 U, e n*∑ v ∈ Icc (a+1) (X/n), innerJump D v := by
+    unfold primeErrorTail
+    rw [show Ioc a X=Icc (a+1) X by ext n; simp only [mem_Ioc,mem_Icc]; omega]
+    simp_rw [herr,mul_sum]
+    calc _ = ∑ v ∈ Icc (a+1) X, ∑ n ∈ Icc 1 (X/v), e n*innerJump D v := by
+                exact sum_congr rfl fun v _ => sum_congr rfl fun n _ => mul_comm ..
+         _ = _ := by
+                rw [sum_hyperbola_tail_swap_real X (a+1) _ (Nat.succ_pos a)]
+                simp only [U,mul_sum]
+  rw [heq]
+  have hm := (abs_nonneg _).trans (abs_prefix_le_mass (Nat.succ_pos D) 0)
+  apply (abs_sum_le_sum_abs _ _).trans
+  calc _ ≤ ∑ n ∈ Icc 1 U, |e n|*(2*mass (D+1)) := by
+            apply sum_le_sum; intro n hn
+            obtain ⟨hn₁,hn₂⟩ := mem_Icc.mp hn
+            have hna := (Nat.le_div_iff_mul_le (Nat.succ_pos a)).mp hn₂
+            have hq : a+1≤X/n := (Nat.le_div_iff_mul_le hn₁).mpr (by rwa [Nat.mul_comm] at hna)
+            rw [abs_mul,innerJump_sum_between D ha ((Nat.le_succ a).trans hq)]
+            apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
+            rw [show factorialBoundary (D+1) (X/n)-factorialBoundary (D+1) a=
+              factorialPrefix (D+1) a-factorialPrefix (D+1) (X/n) by unfold factorialBoundary; ring]
+            exact (abs_sub _ _).trans ((add_le_add (abs_prefix_le_mass (Nat.succ_pos D) _)
+              (abs_prefix_le_mass (Nat.succ_pos D) _)).trans_eq (by ring))
+       _ ≤ _ := by
+            rw [←sum_mul]
+            exact (mul_le_mul_of_nonneg_right habs (by positivity)).trans_eq (by dsimp [U]; ring)
+
+/-- The prime error is reproduced, to square-root precision times the
+stencil mass, by genuinely smaller divided horizons. All indices through
+the freely chosen inner cutoff vanish identically. -/
+theorem prime_error_on_shorter_horizons {X : ℕ} (hx : 1≤X) (D : ℕ) :
+    |(Chebyshev.psi X-X)-∑ v ∈ Ioc D ⌊Real.sqrt X⌋₊, innerJump D v*
+        (Chebyshev.psi (X/v : ℕ)-(X/v : ℕ))|≤
+      mass (D+1)*(41*Real.sqrt X+2*|Real.eulerMascheroniConstant|) := by
+  let M := ⌊Real.sqrt X⌋₊
+  let f (v : ℕ) := innerJump D v*(Chebyshev.psi (X/v : ℕ)-(X/v : ℕ))
+  have hx₁ : (1 : ℝ)≤X := by exact_mod_cast hx
+  have hroot := Real.one_le_sqrt.mpr hx₁
+  have hm : 1≤M := (Nat.one_le_floor_iff _).mpr hroot
+  have hmX : M≤X := Nat.floor_le_of_le ((le_mul_of_one_le_right (Real.sqrt_nonneg _) hroot).trans_eq
+    (Real.mul_self_sqrt (Nat.cast_nonneg X)))
+  have hu : ((X/(M+1) : ℕ) : ℝ)≤Real.sqrt X := by
+    apply Nat.cast_div_le.trans
+    apply (div_le_iff₀ (by positivity : (0 : ℝ)<(M+1 : ℕ))).mpr
+    have half : Real.sqrt X≤((M+1 : ℕ) : ℝ) := by push_cast; exact (Nat.lt_floor_add_one _).le
+    exact (Real.mul_self_sqrt (Nat.cast_nonneg X)).symm.le.trans (mul_le_mul_of_nonneg_left half (Real.sqrt_nonneg _))
+  have del : (∑ v ∈ Ioc D M, f v)=∑ v ∈ Ioc 0 M, f v := by
+    apply sum_subset (fun v (hv : v ∈ Ioc D M) => mem_Ioc.mpr
+      ⟨(Nat.zero_le D).trans_lt (mem_Ioc.mp hv).1,(mem_Ioc.mp hv).2⟩)
+    intro v hv hn
+    have hvD : v≤D := by by_contra! h; exact hn (mem_Ioc.mpr ⟨h,(mem_Ioc.mp hv).2⟩)
+    simp only [f,innerJump_small hvD,zero_mul]
+  have eq : (Chebyshev.psi X-X)-(∑ v ∈ Ioc D M, f v) =
+      ((Chebyshev.psi X-X)-primeErrorTail D X 0)+primeErrorTail D X M := by
+    rw [del]
+    change _=(_-(∑ v ∈ Ioc 0 X, f v))+(∑ v ∈ Ioc M X, f v)
+    rw [←sum_Ioc_consecutive f (Nat.zero_le M) hmX]; ring
+  rw [eq]
+  have hmass := (abs_nonneg _).trans (abs_prefix_le_mass (Nat.succ_pos D) 0)
+  have ht := (primeErrorTail_reciprocal_bound D X hm).trans (mul_le_mul_of_nonneg_left hu (by positivity))
+  exact (abs_add_le _ _).trans ((add_le_add (complete_primeErrorTail_bound D hx) ht).trans_eq (by ring))
+
+#print axioms prime_error_on_shorter_horizons
 #print axioms complete_primeErrorTail_identity
 #print axioms complete_primeErrorTail_bound
 #print axioms completeComplementTail_sub_primeErrorTail

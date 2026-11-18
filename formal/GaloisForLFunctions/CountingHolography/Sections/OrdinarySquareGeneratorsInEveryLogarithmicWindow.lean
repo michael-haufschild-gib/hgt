@@ -39,7 +39,7 @@ private theorem long_trace_in_every_window : ∀ᶠ T : ℝ in atTop, ∃ u : �
     hlim.eventually_lt_const integral_thetaCuspFullSource_pos] with T hT hlate hsmall
   by_contra! hbad
   have hlog : (2:ℝ) ≤ Real.log (T+2) := by
-    simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos 2) (hlate.trans (by linarith))
+    simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos 2) (hlate.trans (show T ≤ T+2 by linarith))
   have he (x : ℝ) : phi x*F (T+x) = -(phi x*squareLongTrace (T+x))-phi x := by
     dsimp only [F]; ring
   have hFi : Integrable fun x => phi x*F (T+x) := by
@@ -111,7 +111,7 @@ theorem ordinary_square_generators_in_every_logarithmic_window :
     eventually_ge_atTop (Real.exp 1)] with T ⟨u,hu,htrace⟩ hs hT heT
   have hr : 32*Real.log (T+2) ≤ T := hs.2
   have hlog : 1 ≤ Real.log (T+2) := by
-    simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos 1) (heT.trans (by linarith))
+    simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos 1) (heT.trans (show T ≤ T+2 by linarith))
   have hu₀ : 0 ≤ u := by linarith only [(abs_le.mp hu).1,hr,hlog]
   have huU : U ≤ u := by linarith only [(abs_le.mp hu).1,hr,hT,le_abs_self U,hlog]
   obtain ⟨hp,hq⟩ := hU u huU

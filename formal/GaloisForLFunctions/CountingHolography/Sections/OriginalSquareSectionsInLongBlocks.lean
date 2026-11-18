@@ -90,7 +90,7 @@ private theorem square_degree_blocks {β : ℝ} (hβ : 0 ≤ β) (hβ' : β < 1)
       with T hn hT
     have hT₀ := (Real.exp_pos 1).le.trans hT
     have hlog : 1 ≤ Real.log (T+2) := by
-      simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos 1) (hT.trans (by linarith))
+      simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos 1) (hT.trans (show T ≤ T+2 by linarith))
     obtain ⟨h₁,h₂⟩ := upperSquareIndex_log_near hT₀
     refine ⟨upperSquareIndex T,(le_max_left _ _).trans hn,upperSquareIndex_pos T,abs_le.mpr ⟨?_,?_⟩,
       fun {d} hd _ => hN d ((le_max_right _ _).trans (hn.trans hd))⟩ <;> linarith only [h₁,h₂,hlog]
@@ -110,7 +110,7 @@ private theorem square_degree_blocks {β : ℝ} (hβ : 0 ≤ β) (hβ' : β < 1)
     have hu₀ : 0 ≤ u := by linarith only [(abs_le.mp hnear).1,hrT,abs_nonneg U,hT]
     have huU : U ≤ u := by linarith only [(abs_le.mp hnear).1,hrT,hT,le_abs_self U]
     have hlog : 1 ≤ Real.log (T+2) := by
-      simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos 1) (heT.trans (by linarith))
+      simpa only [Real.log_exp] using Real.log_le_log (Real.exp_pos 1) (heT.trans (show T ≤ T+2 by linarith))
     obtain ⟨hl,hu⟩ := upperSquareIndex_log_near hu₀
     refine ⟨upperSquareIndex u,hU u huU,upperSquareIndex_pos u,abs_le.mpr ⟨?_,?_⟩,?_⟩
     · linarith only [(abs_le.mp hnear).1,hl,hlog]
