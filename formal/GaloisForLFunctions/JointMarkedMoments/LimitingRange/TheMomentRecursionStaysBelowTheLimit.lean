@@ -58,8 +58,7 @@ theorem propagatedImprovement_le_limitImprovement {R r z k w : ℝ} (hr : 2 / 3 
     nlinarith [mul_nonneg hA (sub_nonneg.2 hw)]
   have hD : 0 < R - 1 / 2 - z := by
     by_contra h
-    push_neg at h
-    nlinarith [mul_nonpos_of_nonneg_of_nonpos hk.le h]
+    nlinarith [mul_nonpos_of_nonneg_of_nonpos hk.le (le_of_not_gt h)]
   -- hence `k ≥ k∗`, and the propagation decreases in `k`
   have hinv : 1 / k ≤ 1 / thresholdCutoff R z := by
     unfold thresholdCutoff

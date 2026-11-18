@@ -209,7 +209,7 @@ theorem complete_mangoldt_mesh_bound :
          _ ≤ (A*n)^2*((K*(J*conductorLog n))*(D/(n:ℝ)^3)) := by
               rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
               exact mul_le_mul_of_nonneg_right (ha hn) (by positivity)
-         _ = _ := by field_simp <;> ring
+         _ = _ := by field_simp
   have hdens := _root_.HTGeometry.sum_mul_eq_partial_mul_diff_ring
     (fun _ => (1:ℝ)) (sampledSpline n) L
   have he : splineCountReading n (fun k => (k:ℝ)) = ∑ k ∈ Icc 1 L, sampledSpline n k := by

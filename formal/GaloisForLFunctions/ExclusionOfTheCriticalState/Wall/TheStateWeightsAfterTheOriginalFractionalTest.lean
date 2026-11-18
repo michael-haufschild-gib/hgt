@@ -60,7 +60,14 @@ theorem hasDerivAt_testedIntegerWeight {Φ : ℝ → ℝ} (hc : Continuous Φ) {
     ((hasDerivAt_id p).const_sub T)
   rw [show testedIntegerWeight Φ T = fun x => -(∫ v, Φ v)*Real.exp (-x/2)*
     weightedIntegerPrimitive Φ 0 (T-x) from funext (testedIntegerWeight_eq_primitive hc hC hb hp hm T)]
-  convert he.mul ha using 1 <;> simp only [Function.comp_def,id_eq,sub_zero,zero_mul,Real.exp_zero,one_mul] <;> ring
+  have h := he.mul ha
+  change HasDerivAt (fun x => -(∫ v, Φ v)*Real.exp (-x/2)*weightedIntegerPrimitive Φ 0 (T-x))
+    ((-(∫ v, Φ v)*(Real.exp (-p/2)*(-1/2)))*weightedIntegerPrimitive Φ 0 (T-p)+
+    (-(∫ v, Φ v)*Real.exp (-p/2))*((-(1/2-0)*weightedIntegerPrimitive Φ 0 (T-p)+
+      Real.exp (0*(T-p))*(integerReferenceWave Φ (T-p)-Real.exp ((T-p)/2)*
+        (∫ v, Real.exp (-v/2)*Φ v)))*(-1))) p at h
+  simp only [sub_zero,zero_mul,Real.exp_zero,one_mul] at h
+  convert h using 1 <;> ring
 
 private theorem tested_atom_integrable {Φ : ℝ → ℝ} (hc : Continuous Φ) (hi : Integrable Φ)
     (T p : ℝ) : Integrable (fun t => (∫ v, Φ v)*continuousIntegerAtom Φ (Real.exp p) t*
@@ -137,8 +144,15 @@ private def edgeSpeed (r : ℝ) : ℝ :=
 private theorem criticalEdgeLog_hasDerivAt {r : ℝ} (hr : 0 < r) :
     HasDerivAt criticalEdgeLog (edgeSpeed r) r := by
   have hd := (((hasDerivAt_id r).neg.div_const 2).exp).mul ((hasDerivAt_id r).sqrt hr.ne')
-  have h := (hasDerivAt_id r).add ((hd.const_add 1).log (by positivity))
-  convert h using 1 <;> dsimp only [id_eq,criticalEdgeLog,edgeSpeed] <;> ring
+  have h := (hasDerivAt_id r).add ((hd.const_add 1).log (by
+    change 1+Real.exp (-r/2)*Real.sqrt r ≠ 0
+    positivity))
+  change HasDerivAt criticalEdgeLog (1+
+    (Real.exp (-r/2)*(-1/2)*Real.sqrt r+Real.exp (-r/2)*(1/(2*Real.sqrt r)))/
+    (1+Real.exp (-r/2)*Real.sqrt r)) r at h
+  convert h using 1
+  unfold edgeSpeed
+  ring
 
 private theorem criticalEdgeLog_gt {r : ℝ} (hr : 0 < r) : r < criticalEdgeLog r :=
   lt_add_of_pos_right _ (Real.log_pos (lt_add_of_pos_right 1 (mul_pos
@@ -200,8 +214,11 @@ private theorem criticalEdgeLog_limits :
   have hone : Tendsto (fun r => 1+v r) atTop (𝓝 1) := by
     simpa only [add_zero] using (tendsto_const_nhds (x := (1:ℝ))).add hv
   have he : Tendsto (fun r : ℝ => Real.exp (-r/2)) atTop (𝓝 0) := by
-    simpa only [Function.comp_apply,id_eq,show ∀ r : ℝ, (-1/2)*r = -r/2 by intro r; ring] using
-      Real.tendsto_exp_atBot.comp (tendsto_id.const_mul_atTop_of_neg (by norm_num : (-1/2:ℝ)<0))
+    apply (Real.tendsto_exp_atBot.comp
+      (tendsto_id.const_mul_atTop_of_neg (by norm_num : (-1/2:ℝ)<0))).congr
+    intro r
+    change Real.exp ((-1/2)*r) = Real.exp (-r/2)
+    congr 1; ring
   have hinv := tendsto_inv_atTop_zero.comp (Real.tendsto_sqrt_atTop.const_mul_atTop (by norm_num : (0:ℝ)<2))
   have hv' : Tendsto (fun r : ℝ => Real.exp (-r/2)/(2*Real.sqrt r)-v r/2) atTop (𝓝 0) := by
     simpa only [Function.comp_apply,div_eq_mul_inv,zero_mul,sub_zero] using (he.mul hinv).sub (hv.div_const 2)
@@ -209,8 +226,9 @@ private theorem criticalEdgeLog_limits :
   · have h := ((Real.continuousAt_log one_ne_zero).tendsto.comp hone).neg
     simp only [Function.comp_apply,Real.log_one,neg_zero] at h
     exact h.congr fun r => by dsimp only [criticalEdgeLog,v]; ring
-  · simpa only [edgeSpeed,v,zero_div,add_zero] using
-      (tendsto_const_nhds (x := (1:ℝ))).add (hv'.div hone one_ne_zero)
+  · have h := (tendsto_const_nhds (x := (1:ℝ))).add (hv'.div hone one_ne_zero)
+    rw [zero_div,add_zero] at h
+    exact h.congr fun _ => rfl
 
 private theorem normalizedIntegerReference_atBot {Φ : ℝ → ℝ} {C : ℝ}
     (hb : ∀ v, |Φ v| ≤ C*Real.exp (2*v)) :
@@ -273,7 +291,8 @@ theorem riemannHypothesis_or_far_edge_tested_weight_slope : RiemannHypothesis �
   have hs' : Tendsto s atTop atBot := by
     apply tendsto_atBot_mono' _ _ (tendsto_neg_atTop_atBot.comp hT)
     filter_upwards [eventually_gt_atTop (0:ℝ)] with r hr
-    dsimp only [s]; linarith only [criticalEdgeLog_gt hr]
+    change T r-criticalEdgeLog r ≤ -(r-T r)
+    linarith only [criticalEdgeLog_gt hr]
   have hn := (normalizedIntegerReference_atBot hb).comp hs'
   have hg : Tendsto (fun r => g (q r)) atTop (𝓝 (g 0)) := hgc.continuousAt.tendsto.comp hq
   have hj : Tendsto (fun r => ∫ v in q r..0, g v) atTop (𝓝 0) := by

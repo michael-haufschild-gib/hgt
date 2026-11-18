@@ -199,8 +199,8 @@ theorem riemannHypothesis_or_middle_time_signed_test : RiemannHypothesis ∨
       (∫ t in Ioi (V+1), E t) ≤ D₀*Real.exp ((-1/40)*V) := by
     filter_upwards [htail] with V hV
     simpa only [m,S,P,E,sign_part_distances_eq_abs_sub] using hV
-  have hcut : Tendsto (fun T : ℝ => T/6-1) atTop atTop :=
-    (tendsto_id.atTop_div_const (by norm_num : (0:ℝ)<6)).atTop_sub_const 1
+  have hcut : Tendsto (fun T : ℝ => T/6-1) atTop atTop := tendsto_atTop.2 fun a =>
+    eventually_atTop.2 ⟨6*(a+1),fun _ h => by linarith only [h]⟩
   let B := |m|*B₀ + |m|*D₀*Real.exp (1/40) + B₁
   refine Or.inr ⟨W₀,F,Φ,B,hW,ht,hF,hΦ,he,by dsimp only [B]; positivity,?_⟩
   filter_upwards [hcut.eventually htransfer,eventually_ge_atTop (0:ℝ)] with T hx hT
@@ -223,7 +223,6 @@ theorem riemannHypothesis_or_middle_time_signed_test : RiemannHypothesis ∨
       filter_upwards [ae_restrict_mem (μ := volume) hJ] with t htj
       simpa only [Real.norm_of_nonneg (hf0 t)] using hle t htj)
     exact ⟨hi,setIntegral_mono_on hi hg hJ hle⟩
-  let e := fun t => (|S t|+|P t|)*K t
   have hE0 := hearly U (by dsimp only [U]; positivity) T
   have hfront := restrict_le measurableSet_Iic (hE0.1.const_mul |m|) (fun t htj => by
     have hnot : t ∉ I := fun h => (not_lt_of_ge htj) h.1

@@ -10,4 +10,4 @@ For the compensated one-factor reading, let \(L\) be the spline horizon, \(w_n(k
 \]
 This is the factorial pairing. Abel summation sends the linear term to the unweighted spline sum, of size \(O(1/n)\). The error is multiplied by first differences of size \(O(n^{-3})\) on \(O(n^2)\) horizons. Thus \(\sum_{q\le L}\Lambda(q)H(n,q)=O((1+\log(2n))/n)\). The ordinary-prime part of the returned endpoint still carries the signed price.
 
-**Lean status.** Kernel verification pending for `first_quotient_endpoint`, `firstQuotientPrimeEndpoint_partial_prefix` and `complete_mangoldt_mesh_bound`. [Lean source](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/TheEndpointAtQuotientZero.lean)
+**Lean.** `first_quotient_endpoint`, `firstQuotientPrimeEndpoint_price`, `firstQuotientPrimeEndpoint_partial_prefix` and `complete_mangoldt_mesh_bound` passed the kernel check. All four depend only on `propext`, `Classical.choice` and `Quot.sound`. [Lean source](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/TheEndpointAtQuotientZero.lean)
