@@ -31,6 +31,7 @@ private theorem integrable_polar_test (M T : ℝ) :
   apply h.mono' (((by fun_prop : Measurable fun t : ℝ => Real.exp (t/2)).mul
     (measurable_fractionalPrimeTest.comp (by fun_prop))).aestronglyMeasurable.restrict)
   refine Eventually.of_forall fun t => ?_
+  change ‖Real.exp (t/2)*fractionalPrimeTest (T-t)‖ ≤ Real.exp ((1/2)*t)
   rw [Real.norm_eq_abs,abs_mul,abs_of_pos (Real.exp_pos _),show (1/2:ℝ)*t=t/2 by ring]
   exact mul_le_of_le_one_right (Real.exp_pos _).le (fractionalPrimeTest_bounds _).1
 
@@ -75,7 +76,9 @@ private theorem weighted_mangoldt_error_integrable {W₀ : ℝ} (hW : 0 < W₀)
   rw [hrow,hA,← Complex.ofReal_mul,← Complex.ofReal_sub,norm_mul,norm_mul,
     norm_expRay,norm_expRay,Complex.ofReal_re,Complex.ofReal_re,Complex.norm_real,Real.norm_eq_abs]
   rw [mul_comm (densityCharge Φ),mul_right_comm,← Real.exp_add]
-  dsimp only [c,d]; congr 2 <;> ring
+  dsimp only [c,d]
+  congr 2
+  ring
 
 /-- The ordinary integral of the centered Mangoldt wave against the
 positive fractional-part kernel is the Stirling response at every late center. -/
@@ -105,9 +108,10 @@ theorem criticalState_fractional_mangoldt_response {W₀ : ℝ} (hW : 0 < W₀)
     apply (hi.const_mul (Real.exp (T/2))).mono' (((hmW.sub ((by fun_prop : Measurable fun t : ℝ => Real.exp (t/2)).mul measurable_const)).mul
       (measurable_fractionalPrimeTest.comp (by fun_prop))).aestronglyMeasurable.restrict)
     refine Eventually.of_forall fun t => ?_
-    dsimp only [g]
+    change ‖(W t-Real.exp (t/2)*A)*fractionalPrimeTest (T-t)‖ ≤
+      Real.exp (T/2)*(Real.exp (-t/2)*|W t-Real.exp (t/2)*A|)
     rw [Real.norm_eq_abs,abs_mul]
-    calc _ ≤ |W t-Real.exp (t/2)*A|*Real.exp ((T-t)/2) :=
+    calc _ ≤ |W t-Real.exp (t/2)*A| * Real.exp ((T-t)/2) :=
            mul_le_mul_of_nonneg_left (fractionalPrimeTest_bounds _).2 (abs_nonneg _)
       _ = _ := by rw [show (T-t)/2=T/2+(-t/2) by ring,Real.exp_add]; ring
   have hint : Integrable g := by simpa only [Iic_union_Ioi,integrableOn_univ] using hneg.union hpos
@@ -116,7 +120,9 @@ theorem criticalState_fractional_mangoldt_response {W₀ : ℝ} (hW : 0 < W₀)
   have hval : (∫ t, g t)=stirlingTestResponse Φ T := tendsto_nhds_unique hlim
     (hR.congr' (Eventually.of_forall fun M => by
       change (∫ t in Iic M, p t) - A*(∫ t in Iic M, q t) = ∫ t in Iic M, g t
-      rw [hg,integral_sub (hip M) ((hiq M).const_mul A),integral_const_mul]))
+      rw [hg]
+      change _ = ∫ t in Iic M, p t-A*q t
+      rw [integral_sub (hip M) ((hiq M).const_mul A),integral_const_mul]))
   refine ⟨hint,hval,?_⟩
   change |∫ t, g t| ≤ _
   rw [hval]; exact abs_stirlingTestResponse_le hC hb hT

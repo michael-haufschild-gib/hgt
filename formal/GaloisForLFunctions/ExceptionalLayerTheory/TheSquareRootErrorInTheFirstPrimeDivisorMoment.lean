@@ -93,6 +93,33 @@ private theorem defect_sum (N : ℕ) :
   · change _=(N:ℝ)*repeatedPrimeLogDensity-_
     linarith only [hmain]
 
+/-- At each integer cutoff the centered prime moment is exactly the positive
+sum of the fractional remainders of its proper-prime-power divisors. -/
+theorem distinctPrimeLogMoment_fractional_parts (N : ℕ) :
+    HasSum (fun d : ℕ => primePowerPart d*((N:ℝ)/d-((N/d:ℕ):ℝ)))
+      (distinctPrimeLogMoment N-Real.log (N.factorial:ℕ)+N*repeatedPrimeLogDensity) :=
+  defect_sum N
+
+/-- The finite first mean of the prime-multiple count after subtracting
+the factorial row and adding its linear centering. -/
+def triangularDistinctPrimeLogMoment (N : ℕ) : ℝ :=
+  (∑ j ∈ Finset.range N, (distinctPrimeLogMoment j - Real.log (j.factorial:ℕ)))/(N:ℝ)+
+    repeatedPrimeLogDensity*N/2
+
+/-- Averaging the sharp fractional-part identity preserves the term from
+the omitted right endpoint of the arithmetic progression. -/
+theorem triangularDistinctPrimeLogMoment_average {N : ℕ} (hN : 0 < N) :
+    triangularDistinctPrimeLogMoment N = repeatedPrimeLogDensity/2 +
+      (∑ j ∈ Finset.range N, (distinctPrimeLogMoment j-Real.log (j.factorial:ℕ)+
+        (j:ℝ)*repeatedPrimeLogDensity))/(N:ℝ) := by
+  have hn : (N:ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hN.ne'
+  have he : (∑ j ∈ Finset.range N, (j:ℝ))*2=(N:ℝ)*((N:ℝ)-1) := by
+    have h := congrArg (Nat.cast (R := ℝ)) (Finset.sum_range_id_mul_two N)
+    simpa only [Nat.cast_mul,Nat.cast_sum,Nat.cast_ofNat,Nat.cast_sub hN,Nat.cast_one] using h
+  rw [triangularDistinctPrimeLogMoment,Finset.sum_add_distrib,← Finset.sum_mul]
+  field_simp
+  linear_combination -repeatedPrimeLogDensity*he
+
 private abbrev shellConstant : ℝ := 3*(Real.log 4+4)
 
 private theorem prefix_le (M : ℕ) :
@@ -209,5 +236,27 @@ theorem distinctPrimeLogMoment_sqrt_lower :
   have h₂ := (abs_le.mp (hX _ (show X≤2*Real.sqrt N by linarith only [hN,hpos]))).1
   exact (show Real.sqrt N/8≤(Chebyshev.theta (2*Real.sqrt N)-Chebyshev.theta (Real.sqrt N))/4 by
     linarith only [h₁,h₂,hpos]).trans (distinctPrimeLogMoment_square_window hn)
+
+/-- The centered first mean is sublinear, with a square-root majorant at
+every positive integer cutoff. -/
+theorem triangularDistinctPrimeLogMoment_abs {N : ℕ} (hN : 1 ≤ N) :
+    |triangularDistinctPrimeLogMoment N| ≤
+      |repeatedPrimeLogDensity|/2 + 15*(Real.log 4+4)*Real.sqrt N := by
+  have hn : (0:ℝ)<N := by exact_mod_cast hN
+  rw [triangularDistinctPrimeLogMoment_average hN]
+  apply (abs_add_le _ _).trans
+  rw [abs_div,abs_of_pos (by norm_num : (0:ℝ)<2),abs_div,abs_of_pos hn]
+  apply add_le_add_left
+  apply (div_le_iff₀ hn).mpr
+  apply (abs_sum_le_sum_abs _ _).trans
+  calc
+    _ ≤ ∑ _ ∈ range N, 15*(Real.log 4+4)*Real.sqrt N := by
+      refine sum_le_sum fun j hj => ?_
+      rcases Nat.eq_zero_or_pos j with rfl | hpos
+      · simp [distinctPrimeLogMoment]; positivity
+      · rw [abs_of_nonneg ((tsum_nonneg (fun d => defect_nonneg j d)).trans_eq (defect_sum j).tsum_eq)]
+        exact (distinctPrimeLogMoment_sqrt_upper hpos).trans (mul_le_mul_of_nonneg_left
+          (Real.sqrt_le_sqrt (by exact_mod_cast (mem_range.mp hj).le)) (by positivity))
+    _ = _ := by simp [mul_comm]
 
 end GaloisForLFunctions.ExceptionalLayerTheory

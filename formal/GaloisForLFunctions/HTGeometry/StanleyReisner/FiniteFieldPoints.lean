@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.StanleyReisnerVertexRelation
+import GaloisForLFunctions.HTGeometry.HollowSimplexReducedCohomology
 import GaloisForLFunctions.ArithmeticHarmonicAnalysis.Codes.CoordinateArrangementCounts
 
 /-!
@@ -118,8 +119,51 @@ theorem stanleyReisner_add_dualArrangement [Fintype F] (facets : Finset (Finset 
   rw [Nat.card_congr e, Nat.card_eq_fintype_card, Fintype.card_coe, hc, card_compl]
   simpa using Nat.add_sub_of_le S.card_le_univ
 
+private theorem hollow_faces :
+    facetFaces (hollowFacets (univ : Finset ι)) = univ.erase univ := by
+  ext s
+  simp [mem_facetFaces,isFaceOf_hollowFacets_iff]
+
+/-- The full-support stratum is the only one excluded by the hollow simplex.
+Thus its affine Stanley–Reisner scheme has the point count of the union of
+the coordinate hyperplanes, including in ambient dimension zero. -/
+theorem card_hollowSimplex_characters [Fintype F] :
+    Nat.card (stanleyReisnerRing F (hollowFacets (univ : Finset ι)) →ₐ[F] F) =
+      Fintype.card F ^ Fintype.card ι - (Fintype.card F-1)^Fintype.card ι := by
+  have hd : dualFaceFamily (hollowFacets (univ : Finset ι)) = {∅} := by
+    ext s
+    simp [dualFaceFamily,hollow_faces]
+  have h := stanleyReisner_add_dualArrangement (F := F) (hollowFacets (univ : Finset ι))
+  rw [hd,card_pointArrangement] at h
+  simp only [sum_singleton,card_empty,Nat.sub_zero] at h
+  omega
+
+/-- For the same hollow simplex the arrangement complement excludes just
+the origin. Its rational point count is that of punctured affine space. -/
+theorem card_hollowSimplex_complement [Fintype F] :
+    (arrangementWords (fun _ : ι => ({0} : Finset F)) (facetFaces (hollowFacets univ))).card =
+      Fintype.card F ^ Fintype.card ι - 1 := by
+  let D := fun _ : ι => ({0} : Finset F)
+  have he (x : ι → F) : matchSet D x = univ ↔ x = 0 := by
+    constructor
+    · intro h
+      funext i
+      have hi : i ∈ matchSet D x := h ▸ mem_univ i
+      simpa [matchSet,D] using hi
+    · rintro rfl
+      simp [matchSet,D]
+  have hs : arrangementWords D (facetFaces (hollowFacets univ)) =
+      (univ : Finset (ι → F)).erase 0 := by
+    ext x
+    simp [arrangementWords,hollow_faces,he]
+  change (arrangementWords D _).card = _
+  rw [hs,card_erase_of_mem (mem_univ _)]
+  simp
+
 #print axioms card_stanleyReisner_characters
 #print axioms stanleyReisner_add_dualArrangement
+#print axioms card_hollowSimplex_characters
+#print axioms card_hollowSimplex_complement
 
 end
 end GaloisForLFunctions.HTGeometry

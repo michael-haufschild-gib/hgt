@@ -94,6 +94,91 @@ theorem singleAlphabet_eq_iff (K L : Finset (Finset ι)) (extra : ℕ) :
   rw [Fintype.card_finset] at h
   omega
 
+private theorem layer_card_le_choose (K : Finset (Finset ι)) (d : ℕ) :
+    (K.filter fun s => Fintype.card ι - s.card = d).card ≤
+      (Fintype.card ι).choose (Fintype.card ι - d) := by
+  have hs : (K.filter fun s => Fintype.card ι - s.card = d) ⊆
+      (univ : Finset ι).powersetCard (Fintype.card ι - d) := by
+    intro t ht
+    have h := (mem_filter.mp ht).2
+    have hcard := t.card_le_univ
+    exact mem_powersetCard.mpr ⟨subset_univ _, by omega⟩
+  simpa only [card_powersetCard,card_univ] using card_le_card hs
+
+/-- A carry at degree `n-k-1` exchanges a whole family of `(k+1)`-faces
+for one `k`-face. Equal point counts can then hide different face vectors. -/
+theorem singleAlphabet_collision (b : ℕ) (k : Fin (Fintype.card ι))
+    (small : b+1 ≤ (Fintype.card ι).choose (k.val+1)) :
+    ∃ K L : Finset (Finset ι), arrangementPolynomial K ≠ arrangementPolynomial L ∧
+      (arrangementWords (fun _ : ι => ({0} : Finset (Fin (b+2)))) K).card =
+        (arrangementWords (fun _ : ι => ({0} : Finset (Fin (b+2)))) L).card := by
+  obtain ⟨K,hK,hcount⟩ := exists_subset_card_eq (s := (univ : Finset ι).powersetCard (k.val+1))
+    (n := b+1) (by simpa only [card_powersetCard,card_univ] using small)
+  obtain ⟨t,_,ht⟩ := exists_subset_card_eq (s := (univ : Finset ι)) (n := k.val)
+    (by simpa only [card_univ] using k.isLt.le)
+  have hk (s : Finset ι) (hs : s ∈ K) : s.card = k.val+1 := (mem_powersetCard.mp (hK hs)).2
+  have he : Fintype.card ι - k.val = (Fintype.card ι - (k.val+1))+1 := by omega
+  refine ⟨K,{t},?_,?_⟩
+  · intro h
+    have hh := (arrangementPolynomial_eq_iff _ _).mp h (Fintype.card ι - (k.val+1))
+    have hfilter : (K.filter fun s => Fintype.card ι - s.card = Fintype.card ι - (k.val+1)) = K :=
+      filter_eq_self.mpr fun s hs => by rw [hk s hs]
+    rw [hfilter,hcount] at hh
+    have hnone : ({t} : Finset (Finset ι)).filter
+        (fun s => Fintype.card ι-s.card = Fintype.card ι-(k.val+1)) = ∅ := by
+      apply filter_eq_empty_iff.mpr
+      intro s hs
+      obtain rfl := mem_singleton.mp hs
+      rw [ht]
+      omega
+    rw [hnone,card_empty] at hh
+    omega
+  · rw [card_pointArrangement,card_pointArrangement]
+    simp only [Fintype.card_fin,show b+2-1 = b+1 by omega,sum_singleton,ht,he,pow_succ]
+    have hh : (∑ s ∈ K, (b+1)^(Fintype.card ι - s.card)) =
+        ∑ _s ∈ K, (b+1)^(Fintype.card ι - (k.val+1)) :=
+      sum_congr rfl fun s hs => by rw [hk s hs]
+    rw [hh,sum_const,nsmul_eq_mul,hcount,mul_comm,Nat.cast_id]
+/-- At every base at least two, one point count determines all face numbers
+for arbitrary face families exactly when every positive-size layer fits
+in a single digit. The top-degree coefficient is already at most one. -/
+theorem singleAlphabet_sharp_criterion (b : ℕ) :
+    (∀ K L : Finset (Finset ι),
+      (arrangementWords (fun _ : ι => ({0} : Finset (Fin (b+3)))) K).card =
+        (arrangementWords (fun _ : ι => ({0} : Finset (Fin (b+3)))) L).card ↔
+        arrangementPolynomial K = arrangementPolynomial L) ↔
+    ∀ k : Fin (Fintype.card ι), (Fintype.card ι).choose (k.val+1) < b+2 := by
+  constructor
+  · intro h k
+    by_contra! hbad
+    obtain ⟨K,L,hne,heq⟩ := singleAlphabet_collision (b+1) k hbad
+    exact hne ((h K L).mp heq)
+  · intro h K L
+    apply layer_digits_reconstruct K L (b+2) (Nat.succ_pos _)
+    intro S d
+    apply (layer_card_le_choose S d).trans_lt
+    by_cases hz : Fintype.card ι-d = 0
+    · rw [hz,Nat.choose_zero_right]
+      omega
+    · let k : Fin (Fintype.card ι) := ⟨Fintype.card ι-d-1,by omega⟩
+      have he : k.val+1 = Fintype.card ι-d := by dsimp [k]; omega
+      simpa only [he] using h k
+
+/-- The central binomial coefficient bounds all digits. -/
+theorem singleAlphabet_middle_eq_iff (K L : Finset (Finset ι)) (extra : ℕ) :
+    let b := (Fintype.card ι).choose (Fintype.card ι/2) + extra + 1
+    (arrangementWords (fun _ : ι => ({0} : Finset (Fin (b+1)))) K).card =
+      (arrangementWords (fun _ : ι => ({0} : Finset (Fin (b+1)))) L).card ↔
+      arrangementPolynomial K = arrangementPolynomial L := by
+  apply layer_digits_reconstruct K L _ (Nat.succ_pos _)
+  intro S d
+  have h := (layer_card_le_choose S d).trans (Nat.choose_le_middle _ _)
+  change (S.filter _).card < _
+  omega
+
+#print axioms singleAlphabet_sharp_criterion
+#print axioms singleAlphabet_middle_eq_iff
+
 #print axioms singleAlphabet_eq_iff
 
 end

@@ -137,11 +137,14 @@ private theorem row_split (n j k : ℕ) :
   rw [show (2:ℕ)^j*2*n=2*(2^j*n) by ring]
   ring
 
-private theorem summable_remainder {n : ℕ} (hn : 0<n) : Summable (remainder n) := by
+private def geometricError (n : ℕ) (r : ℝ) (i : ℕ × ℕ) := r^i.1*err (orbit n i.1) i.2
+
+private theorem summable_geometricError {n : ℕ} (hn : 0 < n) {r : ℝ} (hr : 0 ≤ r) (hr₄ : r*4 < 1) :
+    Summable (geometricError n r) := by
   obtain ⟨C,hC,hE⟩ := error_budget
-  have hf (j : ℕ) : 0≤factor j := pow_nonneg (by norm_num) _
-  have habs (j k : ℕ) : |remainder n (j,k)|=factor j*|err (orbit n j) k| := by
-    rw [remainder,abs_mul,abs_of_nonneg (hf j)]
+  have hf (j : ℕ) : 0 ≤ r^j := pow_nonneg hr _
+  have habs (j k : ℕ) : |geometricError n r (j,k)|=r^j*|err (orbit n j) k| := by
+    rw [geometricError,abs_mul,abs_of_nonneg (hf j)]
   apply Summable.of_norm
   simp only [Real.norm_eq_abs]
   apply (summable_prod_of_nonneg (fun _ => abs_nonneg _)).mpr
@@ -150,17 +153,20 @@ private theorem summable_remainder {n : ℕ} (hn : 0<n) : Summable (remainder n)
     simp_rw [habs]
     exact (error_summable (orbit_pos hn j)).mul_left _
   · let D := C*(n:ℝ)^2
-    have hgeo := (summable_geometric_of_lt_one (by norm_num : (0:ℝ)≤1/2) (by norm_num : (1:ℝ)/2<1)).mul_right D
+    have hgeo := (summable_geometric_of_lt_one (mul_nonneg hr (by norm_num : (0:ℝ)≤4)) hr₄).mul_right D
     apply Summable.of_nonneg_of_le (fun j => tsum_nonneg fun k => abs_nonneg _) _ hgeo
     intro j
     simp_rw [habs]
     rw [tsum_mul_left]
     refine (mul_le_mul_of_nonneg_left (hE (orbit_pos hn j)) (hf j)).trans_eq ?_
-    dsimp only [factor,orbit,D]
+    dsimp only [orbit,D]
     push_cast
     rw [mul_pow,← pow_mul,Nat.mul_comm j 2,pow_mul]
-    calc _ = ((1/8:ℝ)^j*((2:ℝ)^2)^j)*(C*(n:ℝ)^2) := by ring
+    calc _ = (r^j*((2:ℝ)^2)^j)*(C*(n:ℝ)^2) := by ring
       _ = _ := by rw [← mul_pow]; norm_num
+
+private theorem summable_remainder {n : ℕ} (hn : 0 < n) : Summable (remainder n) :=
+  summable_geometricError hn (by norm_num : (0:ℝ) ≤ 1/8) (by norm_num)
 
 private theorem tail_eventually_zero {n : ℕ} (hn : 0<n) (k : ℕ) :
     ∀ᶠ j : ℕ in atTop, tail n j k=0 := by

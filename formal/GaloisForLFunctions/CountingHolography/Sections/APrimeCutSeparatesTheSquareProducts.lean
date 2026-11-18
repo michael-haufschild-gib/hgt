@@ -128,13 +128,17 @@ theorem square_prime_cut_misplaced_mass : ∃ c C : ℝ, 0≤C ∧ ∀ {n : ℕ}
   by_cases h : (p:ℝ)≤Real.exp c*(n:ℝ)^2
   · rw [if_pos h]
     have hl := (Real.log_le_iff_le_exp hy).mpr ((div_le_iff₀ (sq_pos_of_pos hn')).mpr h)
-    have hf : 0≤f := he ▸ mul_nonneg (mul_nonneg two_pos.le hn'.le) (div_nonneg (hpos _ hl) hs.le)
+    have hf : 0 ≤ f := by
+      rw [he]
+      exact mul_nonneg (mul_nonneg two_pos.le hn'.le) (div_nonneg (hpos _ hl) hs.le)
     change max (-e) 0 ≤ |e-f|
     exact max_le (by linarith only [neg_abs_le (e-f),hf]) (abs_nonneg _)
   · rw [if_neg h]
     have hl := (Real.lt_log_iff_exp_lt hy).mpr ((lt_div_iff₀ (sq_pos_of_pos hn')).mpr (lt_of_not_ge h))
-    have hf : f≤0 := he ▸ mul_nonpos_of_nonneg_of_nonpos (mul_nonneg two_pos.le hn'.le)
-      (div_nonpos_of_nonpos_of_nonneg (hneg _ hl) hs.le)
+    have hf : f ≤ 0 := by
+      rw [he]
+      exact mul_nonpos_of_nonneg_of_nonpos (mul_nonneg two_pos.le hn'.le)
+        (div_nonpos_of_nonpos_of_nonneg (hneg _ hl) hs.le)
     change max e 0 ≤ |e-f|
     exact max_le (by linarith only [le_abs_self (e-f),hf]) (abs_nonneg _)
 
@@ -259,7 +263,8 @@ theorem square_products_at_prime_cut : ∃ c : ℝ,
   have hU' : Tendsto (fun n : ℕ => Real.log (price n).num.natAbs/(n:ℝ)^3) atTop
       (𝓝 (4*∫ t in c-Real.log 4..c, splineAutoCorr t*Real.exp (t/2))) := hU.congr fun n => by
     change P n/(n:ℝ)^3+(Real.log (price n).num.natAbs-P n)/(n:ℝ)^3=_
-    rw [← add_div,add_sub_cancel]
+    rw [← add_div]
+    ring
   have hz : Tendsto (fun n : ℕ => Real.log (price n:ℝ)/(n:ℝ)^3) atTop (𝓝 0) := by
     simpa only [pow_zero,one_mul] using diagonal_log_negligible_at_every_logarithmic_order 0
   refine ⟨c,hc,hU',?_⟩

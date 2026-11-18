@@ -33,6 +33,7 @@ theorem dot_range (v : ι → ℤ) (t : ℤ) :
     change a*(∑ i, u i*v i)=content v*a
     rw [hu,mul_comm]
 
+omit [DecidableEq ι] in
 /-- Dividing a nonzero normal by its content yields a primitive vector with an integral dual. -/
 theorem primitive_direction (v : ι → ℤ) (hv : v ≠ 0) :
     ∃ w u : ι → ℤ, v = content v • w ∧ u ⬝ᵥ w = 1 := by
@@ -100,10 +101,11 @@ theorem all_determinants (v : ι → ℤ) (m d : ℤ) :
     letI := hι
     rw [Subsingleton.elim A (1 : Matrix ι ι ℤ),det_one]
   · rintro ⟨hd,h₀⟩
-    rcases isEmpty_or_nonempty ι with hι | ⟨i⟩
+    rcases isEmpty_or_nonempty ι with hι | inhabited
     · exact ⟨1,(det_one).trans (h₀ hι).symm,fun i => (hι.false i).elim⟩
     · by_cases hz : v=0
       · subst v
+        let i : ι := Classical.choice inhabited
         let w : ι → ℤ := Pi.single i 1
         have hw : w ⬝ᵥ w=1 := by simp [w,single_dotProduct]
         exact ⟨dilation w w d,dilation_det _ _ _ hw,fun j => by simp⟩

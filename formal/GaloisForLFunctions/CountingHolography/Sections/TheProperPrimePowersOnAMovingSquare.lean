@@ -49,6 +49,7 @@ private theorem power_mass_limit : Tendsto (fun x : ℝ => powerMass x/Real.sqrt
     linarith only [h,h₅,h₃,congrArg (fun y : ℝ => 2*(Real.log 4+4)*y) hs']
 
 private theorem power_prefix (y : ℝ) : ∑ k ∈ Icc 0 ⌊y⌋₊, powerWeight k = powerMass y := by
+  unfold powerMass
   rw [Chebyshev.psi_sub_theta_eq_sum_not_prime,sum_filter]
   have hs : Icc 0 ⌊y⌋₊=insert 0 (Ioc 0 ⌊y⌋₊) := by
     ext k; simp only [mem_Icc,mem_insert,mem_Ioc]; omega
@@ -81,10 +82,10 @@ private theorem moving_power_sum {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) {W : �
     exact (((hc.mono (Set.Ioc_subset_Icc_self.trans hab')).aestronglyMeasurable measurableSet_Ioc).mul
       (((Chebyshev.psi_mono.measurable.sub Chebyshev.theta_mono.measurable).comp
         (measurable_const.mul measurable_id)).div_const _).aestronglyMeasurable)
-  have hi : Integrable (fun v : ℝ => |deriv W v|*(|D|*Real.sqrt b)) μ :=
+  have hi : Integrable (fun v : ℝ => |deriv W v| * (|D| * Real.sqrt b)) μ :=
     (((hc.mono hab').abs.mul continuousOn_const).integrableOn_Icc).mono_set Set.Ioc_subset_Icc_self
   have hbound : ∀ᶠ X : ℝ in atTop, ∀ᵐ v : ℝ ∂μ, ‖deriv W v*(powerMass (X*v)/Real.sqrt X)‖ ≤
-      |deriv W v|*(|D|*Real.sqrt b) := by
+      |deriv W v| * (|D| * Real.sqrt b) := by
     filter_upwards [eventually_gt_atTop (0:ℝ)] with X hX
     filter_upwards [ae_restrict_mem (μ := volume) measurableSet_Ioc] with v hv
     have hv₀ := ha.trans hv.1
@@ -92,9 +93,9 @@ private theorem moving_power_sum {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) {W : �
     rw [Real.norm_eq_abs,abs_mul,abs_of_nonneg (div_nonneg hm₀ (Real.sqrt_nonneg _))]
     apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
     apply (div_le_iff₀ (Real.sqrt_pos.mpr hX)).mpr
-    calc powerMass (X*v) ≤ |D|*Real.sqrt (X*v) := (hD _).trans
+    calc powerMass (X*v) ≤ |D| * Real.sqrt (X*v) := (hD _).trans
             (mul_le_mul_of_nonneg_right (le_abs_self _) (Real.sqrt_nonneg _))
-      _ ≤ (|D|*Real.sqrt b)*Real.sqrt X := by
+      _ ≤ (|D| * Real.sqrt b)*Real.sqrt X := by
         rw [Real.sqrt_mul hX.le,mul_assoc, mul_comm (Real.sqrt b)]
         exact mul_le_mul_of_nonneg_left
           (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt hv.2) (Real.sqrt_nonneg X)) (abs_nonneg D)
@@ -126,6 +127,7 @@ private theorem moving_power_sum {a b : ℝ} (ha : 0 < a) (hab : a ≤ b) {W : �
         apply intervalIntegral.integral_congr
         intro t ht
         rw [Set.uIcc_of_le (mul_le_mul_of_nonneg_right hab hX.le)] at ht
+        change deriv f t*powerMass t=X⁻¹*(deriv W (t/X)*powerMass (X*(t/X)))
         rw [(hder ht).deriv,show X*(t/X)=t by field_simp]
         ring
       _ = _ := by
@@ -204,7 +206,7 @@ private theorem root_profile_mass :
     · simpa only [splineAutoCorr_eq_eight_boxes] using integral_upow one_pos 7
     · intro u hu
       apply splineAutoCorr_zero_outside
-      rw [Set.mem_compl_iff,Set.mem_Ioc,not_and_or] at hu
+      rw [Set.mem_Ioc,not_and_or] at hu
       rcases hu with h₁ | h₂
       · exact lt_abs.mpr (Or.inr (by linarith only [not_lt.mp h₁]))
       · exact lt_abs.mpr (Or.inl (lt_of_not_ge h₂))
@@ -226,7 +228,8 @@ theorem longProperPowerContact_limit : Tendsto longProperPowerContact atTop (�
   filter_upwards [eventually_gt_atTop (0:ℝ)] with X hX
   rw [longProperPowerContact,Finset.sum_div]
   refine sum_congr rfl fun k hk => ?_
-  have hlow : low*X < (k:ℝ) := (Nat.lt_floor_add_one _).trans_le (by exact_mod_cast (mem_Ioc.mp hk).1)
+  have hkn : ⌊low*X⌋₊+1 ≤ k := Nat.succ_le_of_lt (mem_Ioc.mp hk).1
+  have hlow : low*X < (k:ℝ) := (Nat.lt_floor_add_one _).trans_le (by exact_mod_cast hkn)
   have hk₀ := (mul_pos (Real.exp_pos _) hX).trans hlow
   unfold rootProfile
   rw [Real.log_div hk₀.ne' hX.ne',Real.sqrt_div hk₀.le,neg_sub]

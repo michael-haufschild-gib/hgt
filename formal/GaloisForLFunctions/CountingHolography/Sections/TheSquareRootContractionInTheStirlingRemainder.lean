@@ -89,6 +89,44 @@ private theorem step_nonneg {j : ℕ} (hj : 2≤j) : 0≤factorialStirlingStep j
   | zero => omega
   | succ j => exact (step_bounds (by omega : 0<j)).1
 
+/-- The Dirichlet series of the Stirling steps stays uniformly away from zero
+on the closed half-plane of square-root precision. The tail starts at two. -/
+theorem factorialStirlingStep_dirichlet_lower :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ s : ℂ, 1/2 ≤ s.re →
+      let term := fun n : ℕ => (factorialStirlingStep (n+2) : ℂ) *
+        Complex.exp (-(Real.log (n+2:ℕ) : ℂ)*s)
+      Summable term ∧ δ ≤ ‖1 + ∑' n, term n‖ := by
+  obtain ⟨K,_,hK,hcut⟩ := factorialStirlingStep_tail_mass
+  refine ⟨1-K,sub_pos.mpr hK,fun s hs => ?_⟩
+  let b := fun n : ℕ => factorialStirlingStep (n+2) / Real.sqrt (n+2:ℕ)
+  let f := fun n : ℕ => (factorialStirlingStep (n+2) : ℂ) *
+    Complex.exp (-(Real.log (n+2:ℕ) : ℂ)*s)
+  have hsum (N : ℕ) : ∑ n ∈ range N, b n =
+      ∑ j ∈ Icc 2 (N+1), factorialStirlingStep j / Real.sqrt j := by
+    induction N with
+    | zero => simp
+    | succ N ih => rw [sum_range_succ,ih,sum_Icc_succ_top (by omega)]; rfl
+  have hb (n : ℕ) : 0 ≤ b n := div_nonneg (step_nonneg (by omega)) (Real.sqrt_nonneg _)
+  have hbound (N : ℕ) : ∑ n ∈ range N, b n ≤ K := (hsum N).trans_le (hcut _)
+  have hnorm (n : ℕ) : ‖f n‖ ≤ b n := by
+    let j := n+2
+    have hj : (1:ℝ) ≤ (j:ℝ) := by exact_mod_cast (by omega : 1 ≤ n+2)
+    have hj' := zero_lt_one.trans_le hj
+    change ‖(factorialStirlingStep j : ℂ)*Complex.exp (-(Real.log j : ℂ)*s)‖ ≤
+      factorialStirlingStep j / Real.sqrt j
+    rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (step_nonneg (by omega : 2 ≤ j)),
+      Complex.norm_exp,← Complex.ofReal_neg,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,
+      zero_mul,sub_zero,neg_mul,Real.exp_neg,← Real.rpow_def_of_pos hj',← div_eq_mul_inv]
+    exact div_le_div_of_nonneg_left (step_nonneg (by omega)) (Real.sqrt_pos.mpr hj')
+      ((Real.sqrt_eq_rpow _).trans_le (Real.rpow_le_rpow_of_exponent_le hj hs))
+  have hbSum := summable_of_sum_range_le hb hbound
+  have hf : Summable (fun n => ‖f n‖) := Summable.of_nonneg_of_le (fun n => norm_nonneg _) hnorm hbSum
+  have ht : ‖∑' n, f n‖ ≤ K := (norm_tsum_le_tsum_norm hf).trans
+    ((hf.tsum_le_tsum hnorm hbSum).trans (Real.tsum_le_of_sum_range_le hb hbound))
+  have hl := norm_sub_norm_le (1:ℂ) (-(∑' n, f n))
+  rw [norm_one,norm_neg,sub_neg_eq_add] at hl
+  exact ⟨hf.of_norm,by linarith only [ht,hl]⟩
+
 private theorem transform_tail {F : ℕ → ℝ} {N : ℕ} {s A K : ℝ} (hs : 1/2≤s)
     (hA : 0≤A) (hF : ∀ k, 0<k → k<N → |F k|≤A*(k:ℝ)^s)
     (hK : ∑ j ∈ Icc 2 N, factorialStirlingStep j/Real.sqrt j ≤ K) :

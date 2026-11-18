@@ -227,7 +227,7 @@ theorem lastQuotientClassSymbol_crossEnergy {q r : ℕ} (hq : 2 ≤ q) (hr : 2 �
   let f (t : ℝ) := (starRingEnd ℂ) (lastQuotientClassSymbol r ((σ:ℂ)+t*I)/((σ:ℂ)+t*I)) *
     (lastQuotientClassSymbol q ((σ:ℂ)+t*I)/((σ:ℂ)+t*I))
   change (∫ t : ℝ, f (-t)) = _ at h
-  rw [Measure.integral_neg_eq_self] at h
+  rw [MeasureTheory.integral_neg_eq_self] at h
   exact h.trans (by push_cast; field_simp)
 
 /-- Exact energy on a vertical line. Its dependence on the width is given by
@@ -248,5 +248,62 @@ theorem lastQuotientClassSymbol_lineEnergy {q : ℕ} (hq : 2≤q) {σ : ℝ} (h�
     split <;> simp [cmellinCell]
   simp_rw [hcast]
   rw [← ofReal_tsum,ofReal_re]
+
+/-- The weighted square sum over widths converges precisely below the real
+part of the frequency. Equality gives harmonic divergence. -/
+theorem lastQuotientClassSymbol_weighted_square_summable {s : ℂ} (hs : 0 < s.re) (σ : ℝ) :
+    Summable (fun q : ℕ => (q:ℝ)^(2*σ+1)*‖lastQuotientClassSymbol q s‖^2) ↔ σ<s.re := by
+  let A := ‖s*riemannZeta (s+1)‖
+  have hn : s ≠ 0 := fun e => by simpa [e] using hs
+  have hA : 0<A := norm_pos_iff.mpr (mul_ne_zero hn
+    (riemannZeta_ne_zero_of_one_lt_re (by simpa using hs)))
+  let F (q : ℕ) := (q:ℝ)^(2*σ+1)*‖lastQuotientClassSymbol q s‖^2
+  let e := 2*σ-2*s.re-1
+  let U (q : ℕ) := (q:ℂ)^(s+1)*lastQuotientClassSymbol q s
+  have hF (q : ℕ) : 0 ≤ F q := mul_nonneg (Real.rpow_nonneg (Nat.cast_nonneg _) _) (sq_nonneg _)
+  obtain ⟨C,h⟩ := lastQuotientClassSymbol_scaled_error hs
+  obtain ⟨B,hB⟩ := exists_nat_gt (C/(A/2))
+  have hcmp : ∀ᶠ q : ℕ in atTop, (A/2)^2*(q:ℝ)^e ≤ F q ∧ F q ≤ (2*A)^2*(q:ℝ)^e := by
+    filter_upwards [eventually_ge_atTop B,eventually_ge_atTop 2] with q hq h2
+    have hqp : (0:ℝ)<q := by exact_mod_cast (show 0<q by omega)
+    have he := h q h2
+    have hBq : (B:ℝ)≤q := by exact_mod_cast hq
+    have hc := (div_lt_iff₀ (half_pos hA)).mp (hB.trans_le hBq)
+    have hdiff := ((abs_norm_sub_norm_le (U q) (s*riemannZeta (s+1))).trans he).trans
+      ((div_le_iff₀ hqp).mpr (le_of_lt (by linarith only [hc] : C < A/2*q)))
+    change |‖U q‖-A| ≤ A/2 at hdiff
+    have hv := abs_le.mp hdiff
+    have hl := (sq_le_sq₀ (half_pos hA).le (norm_nonneg _)).mpr (by linarith only [hv.1] : A/2 ≤ ‖U q‖)
+    have hu := (sq_le_sq₀ (norm_nonneg _) (by positivity)).mpr (by linarith only [hv.2,hA] : ‖U q‖ ≤ 2*A)
+    have heq : F q=‖U q‖^2*(q:ℝ)^e := by
+      simp only [F,U,norm_mul,mul_pow]
+      have hz : ‖(q:ℂ)^(s+1)‖=(q:ℝ)^(s.re+1) := by
+        simpa only [Complex.ofReal_natCast,Complex.add_re,Complex.one_re] using
+          Complex.norm_cpow_eq_rpow_re_of_pos hqp (s+1)
+      rw [hz,← Real.rpow_natCast ((q:ℝ)^(s.re+1)),← Real.rpow_mul hqp.le]
+      rw [mul_right_comm,← Real.rpow_add hqp]
+      congr 2
+      dsimp only [e]; push_cast; ring
+    rw [heq]
+    exact ⟨mul_le_mul_of_nonneg_right hl (Real.rpow_nonneg hqp.le _),
+      mul_le_mul_of_nonneg_right hu (Real.rpow_nonneg hqp.le _)⟩
+  change Summable F ↔ _
+  have hpow : Summable (fun q : ℕ => (q:ℝ)^e) ↔ σ<s.re := by
+    rw [Real.summable_nat_rpow]
+    dsimp only [e]
+    constructor <;> intro h <;> linarith only [h]
+  constructor
+  · intro hf
+    apply hpow.mp
+    apply (hf.div_const ((A/2)^2)).of_norm_bounded_eventually_nat
+    filter_upwards [hcmp] with q hq
+    rw [Real.norm_eq_abs,abs_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg _) _),
+      le_div_iff₀ (sq_pos_of_pos (half_pos hA)),mul_comm]
+    exact hq.1
+  · intro hsig
+    apply ((hpow.mpr hsig).mul_left ((2*A)^2)).of_norm_bounded_eventually_nat
+    filter_upwards [hcmp] with q hq
+    rw [Real.norm_eq_abs,abs_of_nonneg (hF q)]
+    exact hq.2
 
 end GaloisForLFunctions.ExceptionalLayerTheory

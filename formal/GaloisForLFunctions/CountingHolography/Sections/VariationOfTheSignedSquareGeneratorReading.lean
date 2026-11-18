@@ -30,14 +30,14 @@ theorem squareLongTrace_root_growth : ∃ C : ℝ, 0 ≤ C ∧ ∀ {x : ℝ}, 1 
     |squareLongTrace (2*Real.log x)| ≤ C*x^(3/4:ℝ) := by
   have hw : zetaZeroWidth ≤ 3/8 := ZeroForcingCalculus.zetaZeroWidth_le_sub_three_eighths.trans (by norm_num)
   obtain ⟨B,hB⟩ := (zeta_splineOrbit_rate_iff_zetaZeroWidth_le (by norm_num : (0:ℝ) ≤ 3/8)).mpr hw
-  have h {y : ℝ} (hy : 1 ≤ y) : |realSplineTrace (2*Real.log y)| ≤ |B|*y^(3/4:ℝ) := by
+  have h {y : ℝ} (hy : 1 ≤ y) : |realSplineTrace (2*Real.log y)| ≤ |B| * y^(3/4:ℝ) := by
     have hh := hB (2*Real.log y) (mul_nonneg two_pos.le (Real.log_nonneg hy))
     rw [orbitCorr_splineCycle_eq] at hh
     have he : Real.exp ((3/8)*(2*Real.log y))=y^(3/4:ℝ) := by
       rw [Real.rpow_def_of_pos (zero_lt_one.trans_le hy)]; congr 1; ring
     rw [he] at hh
     exact hh.trans (mul_le_mul_of_nonneg_right (le_abs_self _) (Real.rpow_nonneg (zero_le_one.trans hy) _))
-  refine ⟨4*|B|+2*|B|*(2:ℝ)^(3/4:ℝ),by positivity,fun {x} hx => ?_⟩
+  refine ⟨4*|B|+2*|B| * (2:ℝ)^(3/4:ℝ),by positivity,fun {x} hx => ?_⟩
   have hx₀ := zero_lt_one.trans_le hx
   have h₁ := h hx
   have h₂ := h (show 1 ≤ 2*x by linarith only [hx])

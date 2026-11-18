@@ -133,7 +133,7 @@ theorem square_gcd_unit_orders (n : ℕ) :
   change Real.log ((U n).totient.gcd (V n).totient) ≤ 14*(L n:ℝ)
   linarith only [h₁,h₂,hlog]
 
-private theorem log_range_le {u v K : ℕ} (hu : 0 < u) (hv : 0 < v)
+private theorem log_range_le {u v K : ℕ} (hu : 0 < u) (_hv : 0 < v)
     (hS : u.primeFactors ⊆ ordinaryPrimeLags K) {H : Type*} [Group H]
     (f : (ZMod u)ˣ →* H) (hM : ∀ a, (f a)^(carmichael v)=1) :
     Real.log (Nat.card f.range) ≤ Real.log (u.totient.gcd v.totient)+Real.log 2+7*K := by
@@ -217,12 +217,10 @@ theorem square_bounded_exponent_kernel_lower : ∃ c : ℝ, 0 < c ∧ ∀ᶠ n :
   intro Htarget _
   constructor
   · intro f hf
-    change (ZMod (U n))ˣ →* Htarget at f
-    rw [kernel_log (U_pos n)]
+    refine le_trans ?_ (kernel_log (U_pos n) f).symm.le
     linarith only [hu,hur,hs,(himage n hn (H := Htarget)).1 f hf]
   · intro f hf
-    change (ZMod (V n))ˣ →* Htarget at f
-    rw [kernel_log (V_pos n)]
+    refine le_trans ?_ (kernel_log (V_pos n) f).symm.le
     linarith only [hv,hvr,hs,(himage n hn (H := Htarget)).2 f hf]
 
 /-- Both directions between the two unit groups have quadratic log image. -/

@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.ExponentialKernelTotalPositivity
 import Mathlib.Topology.Instances.Matrix
 import Mathlib.Analysis.SpecificLimits.Basic
+import Mathlib.Data.ZMod.Basic
+import Mathlib.Data.Nat.ChineseRemainder
 
 /-!
 # Strictly totally positive lifts of arbitrary residue matrices
@@ -109,9 +111,46 @@ theorem exists_totallyPositive_lift (A : Matrix (Fin n) (Fin m) ℤ) (d : ℕ) :
   obtain ⟨t,ht⟩ := (residueRay_eventually_totallyPositive A d).exists
   exact ⟨_, residueRay_entry A d t, ht⟩
 
+private theorem cast_eq_of_dvd_sub (q : ℕ) (z w : ℤ) (h : (q:ℤ) ∣ z-w) :
+    (z : ZMod q) = (w : ZMod q) := by
+  have he := (ZMod.intCast_zmod_eq_zero_iff_dvd (z-w) q).mpr h
+  rw [Int.cast_sub] at he
+  exact sub_eq_zero.mp he
+
+/-- Two independently specified residue matrices at coprime positive moduli
+admit one integral lift with all ordered minors positive. This applies
+directly to the binary and ternary matrices of the chart obstruction. -/
+theorem exists_simultaneous_totallyPositive_lift (p q : ℕ+) (hpq : (p:ℕ).Coprime (q:ℕ))
+    (U : Matrix (Fin n) (Fin m) (ZMod (p:ℕ))) (V : Matrix (Fin n) (Fin m) (ZMod (q:ℕ))) :
+    ∃ B : Matrix (Fin n) (Fin m) ℤ,
+      ((Int.castRingHom (ZMod (p:ℕ))).mapMatrix B = U ∧
+       (Int.castRingHom (ZMod (q:ℕ))).mapMatrix B = V) ∧
+      ∀ (k : ℕ) (r : Fin k ↪o Fin n) (c : Fin k ↪o Fin m), 0 < (B.submatrix r c).det := by
+  let a (i : Fin n) (j : Fin m) := Nat.chineseRemainder hpq (U i j).val (V i j).val
+  let A : Matrix (Fin n) (Fin m) ℤ := of fun i j => ((a i j).val:ℤ)
+  let d := (p:ℕ)*(q:ℕ)-1
+  have hd : d+1 = (p:ℕ)*(q:ℕ) := Nat.sub_add_cancel (Nat.mul_pos p.property q.property)
+  obtain ⟨B,hB,hpos⟩ := exists_totallyPositive_lift A d
+  have hres (i j) : ((p:ℤ)*(q:ℤ)) ∣ B i j-A i j := by
+    simpa only [hd,Nat.cast_mul] using hB i j
+  refine ⟨B,⟨?_,?_⟩,hpos⟩
+  · ext i j
+    change (B i j : ZMod (p:ℕ)) = U i j
+    rw [cast_eq_of_dvd_sub _ _ (A i j) ((dvd_mul_right (p:ℤ) (q:ℤ)).trans (hres i j))]
+    change (((((a i j).val:ℕ):ℤ):ZMod (p:ℕ))) = U i j
+    simpa only [Int.cast_natCast,ZMod.natCast_zmod_val] using
+      (ZMod.natCast_eq_natCast_iff _ _ _).mpr (a i j).property.1
+  · ext i j
+    change (B i j : ZMod (q:ℕ)) = V i j
+    rw [cast_eq_of_dvd_sub _ _ (A i j) ((dvd_mul_left (q:ℤ) (p:ℤ)).trans (hres i j))]
+    change (((((a i j).val:ℕ):ℤ):ZMod (q:ℕ))) = V i j
+    simpa only [Int.cast_natCast,ZMod.natCast_zmod_val] using
+      (ZMod.natCast_eq_natCast_iff _ _ _).mpr (a i j).property.2
+
 #print axioms dyadicKernel_minor_pos
 #print axioms residueRay_eventually_totallyPositive
 #print axioms exists_totallyPositive_lift
+#print axioms exists_simultaneous_totallyPositive_lift
 
 end
 end GaloisForLFunctions.RepresentationLifting

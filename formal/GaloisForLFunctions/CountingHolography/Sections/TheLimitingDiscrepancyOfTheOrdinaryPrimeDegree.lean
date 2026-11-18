@@ -74,7 +74,8 @@ private theorem longRow_sum {B : ℝ} (hB : 0 < B) {N : ℕ} (hN : ⌊Real.exp 8
     have harg : 8 < |Real.log B-Real.log k| := by
       by_cases hlo : ⌊Real.exp (-9)*B⌋₊ < k
       · have hhi : ⌊Real.exp 8*B⌋₊ < k := lt_of_not_ge fun hh => hbad (mem_Ioc.mpr ⟨hlo,hh⟩)
-        have hp : Real.exp 8*B < (k:ℝ) := (Nat.lt_floor_add_one _).trans_le (by exact_mod_cast hhi)
+        have hkn : ⌊Real.exp 8*B⌋₊+1 ≤ k := Nat.succ_le_of_lt hhi
+        have hp : Real.exp 8*B < (k:ℝ) := (Nat.lt_floor_add_one _).trans_le (by exact_mod_cast hkn)
         have h := Real.log_lt_log (mul_pos (Real.exp_pos _) hB) hp
         rw [Real.log_mul (Real.exp_pos _).ne' hB.ne',Real.log_exp] at h
         exact lt_abs.mpr (Or.inr (by linarith only [h]))
@@ -93,7 +94,9 @@ private theorem shortRow_support {δ : ℝ} (hδ₀ : 0 ≤ δ) (hδ : δ ≤ Re
   have hz {u : ℝ} (hu : u < -8) : H u=0 := splineAutoCorr_zero_outside (lt_abs.mpr (Or.inr (by linarith only [hu])))
   have h₀ := Real.log_nonneg (by norm_num : (1:ℝ) ≤ 9)
   unfold shortRow
-  rw [hz (by linarith only [h,h₀]),hz (by linarith only [h,hδ]),hz (by linarith only [h,h₀,hδ₀])]
+  rw [hz (u := -Real.log k) (by linarith only [h,h₀]),
+    hz (u := -Real.log k+δ) (by linarith only [h,hδ]),
+    hz (u := -Real.log k-δ) (by linarith only [h,h₀,hδ₀])]
   ring
 
 private abbrev shift (n : ℕ) := Real.log (Y n)-Real.log (X n)
@@ -181,8 +184,13 @@ theorem successorSquare_proper_power_contact_limit :
   have hY : Tendsto Y atTop atTop := tendsto_atTop_mono (fun n => pow_le_pow_left₀ (Nat.cast_nonneg n)
     (by exact_mod_cast (by omega : n ≤ 2*n+1)) 2) hX
   have hshort (k : ℕ) : Continuous (fun δ => shortRow δ k) := by
-    dsimp only [shortRow]
-    fun_prop (disch := exact continuous_splineAutoCorr)
+    have hp : Continuous (fun δ : ℝ => H (-Real.log k+δ)) :=
+      continuous_splineAutoCorr.comp (continuous_const.add continuous_id)
+    have hm : Continuous (fun δ : ℝ => H (-Real.log k-δ)) :=
+      continuous_splineAutoCorr.comp (continuous_const.sub continuous_id)
+    unfold shortRow
+    exact (continuous_const.mul ((continuous_const.sub (continuous_const.mul hp)).sub
+      (continuous_const.mul hm))).mul continuous_const
   have hfin := tendsto_finsetSum (Ioc 0 cutoff) fun k _ => (hshort k).continuousAt.tendsto.comp shift_limit
   rw [show squareProperPowerConstant=(∑ k ∈ Ioc 0 cutoff, shortRow (Real.log 4) k)+2*1-1 by
     unfold squareProperPowerConstant; ring]

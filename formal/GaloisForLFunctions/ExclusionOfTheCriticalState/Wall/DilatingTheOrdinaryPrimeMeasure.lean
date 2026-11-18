@@ -115,17 +115,34 @@ private theorem iUnion_scaledPrimeBin {x : ℝ} (hx : 0 < x) :
   · intro hy
     exact mem_iUnion.mpr ⟨_, mem_scaledPrimeBin hx hy⟩
 
-private def binReading (x : ℝ) (y : ℝ) : ℝ := ((primeMassBin (x*y):ℝ)+1)/x
+/-- Prime at logarithmic mass coordinate x*y, divided by x. -/
+def primeBinReading (x : ℝ) (y : ℝ) : ℝ := ((primeMassBin (x*y):ℝ)+1)/x
 
-private theorem measurable_binReading (x : ℝ) : Measurable (binReading x) := by
+theorem measurable_primeBinReading (x : ℝ) : Measurable (primeBinReading x) := by
   have hn : Measurable (fun y : ℝ => primeMassBin (x*y)) :=
     monotone_primeMassBin.measurable.comp (measurable_const.mul measurable_id)
   have hr : Measurable (fun y : ℝ => (primeMassBin (x*y):ℝ)) :=
     (measurable_of_countable (fun n : ℕ => (n:ℝ))).comp hn
   exact (hr.add_const 1).div_const x
 
+/-- The Chebyshev masses immediately before and after the unscaled prime bracket its mass coordinate. -/
+theorem primeBinReading_one_brackets {y : ℝ} (hy : 0 ≤ y) :
+    Chebyshev.theta (primeBinReading 1 y-1) ≤ y ∧ y < Chebyshev.theta (primeBinReading 1 y) := by
+  simpa only [primeBinReading,one_mul,div_one,add_sub_cancel_right] using
+    And.intro (theta_primeMassBin_le hy) (primeMassBin_spec y)
+
+/-- The prime in a mass bin is asymptotic to its coordinate. -/
+theorem tendsto_primeBinReading_one_div :
+    Tendsto (fun y : ℝ => primeBinReading 1 y / y) atTop (𝓝 1) := by
+  simpa only [primeBinReading,one_mul,div_one] using bin_scale_tendsto
+
+theorem monotone_primeBinReading_one : Monotone (primeBinReading 1) := by
+  intro y z hyz
+  simp only [primeBinReading,one_mul,div_one]
+  exact add_le_add (Nat.cast_le.mpr (monotone_primeMassBin hyz)) le_rfl
+
 private theorem tendsto_binReading {y : ℝ} (hy : 0 < y) :
-    Tendsto (fun x => binReading x y) atTop (𝓝 y) := by
+    Tendsto (fun x => primeBinReading x y) atTop (𝓝 y) := by
   have hh := (bin_scale_tendsto.comp (tendsto_id.atTop_mul_const hy)).mul_const y
   rw [one_mul] at hh
   refine hh.congr' ?_
@@ -134,23 +151,23 @@ private theorem tendsto_binReading {y : ℝ} (hy : 0 < y) :
   field_simp [hx.ne',hy.ne']
 
 private theorem binReading_on {x y : ℝ} {n : ℕ} (hx : 0 < x) (hy : y ∈ scaledPrimeBin x n) :
-    binReading x y = ((n:ℝ)+1)/x := by
+    primeBinReading x y = ((n:ℝ)+1)/x := by
   have hy0 : 0 ≤ y := (div_nonneg (Chebyshev.theta_nonneg _) hx.le).trans hy.1
   have he : primeMassBin (x*y) = n := by
     by_contra hn
     exact Set.disjoint_left.mp (scaledPrimeBin_disjoint hx hn) (mem_scaledPrimeBin hx hy0) hy
-  simp only [binReading,he]
+  simp only [primeBinReading,he]
 
 /-- The global Chebyshev upper bound supplies an integrable majorant uniform in the dilation. -/
 private theorem binReading_domination {g : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
     (hg : ∀ u : ℝ, 0 ≤ u → |g u| ≤ C/(1+u^2)) {x : ℝ} (hx : 0 < x) {y : ℝ} (hy : 0 ≤ y) :
-    |g (binReading x y)| ≤ (C*(1+(Real.log 4)^2))*(1+y^2)⁻¹ := by
-  let u := binReading x y
+    |g (primeBinReading x y)| ≤ (C*(1+(Real.log 4)^2))*(1+y^2)⁻¹ := by
+  let u := primeBinReading x y
   have hu : 0 ≤ u := div_nonneg (by positivity) hx.le
   have hxy := (primeMassBin_spec (x*y)).le.trans (Chebyshev.theta_le_log4_mul_x
     (show (0:ℝ) ≤ (primeMassBin (x*y):ℝ)+1 by positivity))
   have hle : y ≤ Real.log 4 * u := by
-    dsimp [u,binReading]
+    dsimp [u,primeBinReading]
     rw [← mul_div_assoc,le_div_iff₀ hx, mul_comm y]
     exact hxy
   have hsq := pow_le_pow_left₀ hy hle 2
@@ -163,52 +180,47 @@ private theorem binReading_domination {g : ℝ → ℝ} {C : ℝ} (hC : 0 ≤ C)
 
 private theorem integrable_binReading {g : ℝ → ℝ} (hg : Measurable g) {C : ℝ} (hC : 0 ≤ C)
     (hb : ∀ u : ℝ, 0 ≤ u → |g u| ≤ C/(1+u^2)) {x : ℝ} (hx : 0 < x) :
-    IntegrableOn (fun y => g (binReading x y)) (Ici 0) := by
+    IntegrableOn (fun y => g (primeBinReading x y)) (Ici 0) := by
   refine (integrable_inv_one_add_sq.const_mul (C*(1+(Real.log 4)^2))).integrableOn.mono'
-    (hg.comp (measurable_binReading x)).aestronglyMeasurable ?_
+    (hg.comp (measurable_primeBinReading x)).aestronglyMeasurable ?_
   filter_upwards [ae_restrict_mem (μ := (volume : Measure ℝ)) measurableSet_Ici] with y hy
   exact binReading_domination hC hb hx hy
 
 private theorem hasSum_prime_bins {g : ℝ → ℝ} (hg : Measurable g) {C : ℝ} (hC : 0 ≤ C)
     (hb : ∀ u : ℝ, 0 ≤ u → |g u| ≤ C/(1+u^2)) {x : ℝ} (hx : 0 < x) :
     HasSum (fun n : ℕ => ((Chebyshev.theta (n+1) - Chebyshev.theta n)/x)*g (((n:ℝ)+1)/x))
-      (∫ y in Ici (0:ℝ), g (binReading x y)) := by
+      (∫ y in Ici (0:ℝ), g (primeBinReading x y)) := by
   have hi := integrable_binReading hg hC hb hx
   rw [← iUnion_scaledPrimeBin hx] at hi ⊢
   apply (hasSum_integral_iUnion (fun _ => measurableSet_Ico) (scaledPrimeBin_disjoint hx) hi).congr_fun
   intro n
   symm
-  have he : (∫ y in scaledPrimeBin x n, g (binReading x y)) =
+  have he : (∫ y in scaledPrimeBin x n, g (primeBinReading x y)) =
       ∫ _y in scaledPrimeBin x n, g (((n:ℝ)+1)/x) := by
     apply setIntegral_congr_fun measurableSet_Ico
     exact fun y hy => congrArg g (binReading_on hx hy)
-  change (∫ y in scaledPrimeBin x n, g (binReading x y)) = _
+  change (∫ y in scaledPrimeBin x n, g (primeBinReading x y)) = _
   rw [he,setIntegral_const,scaledPrimeBin,Real.volume_real_Ico,smul_eq_mul,
     max_eq_left (sub_nonneg.mpr (div_le_div_of_nonneg_right
       (Chebyshev.theta_mono (by linarith : (n:ℝ) ≤ n+1)) hx.le)), sub_div]
 
 /-- Testing the dilated Chebyshev measure against an almost everywhere continuous function of quadratic decay
 gives its Lebesgue integral. The prime number theorem locates each rescaled mass bin. -/
-private theorem tendsto_prime_bin_sum {g : ℝ → ℝ} (hg : Measurable g)
+private theorem tendsto_prime_bin_integral {g : ℝ → ℝ} (hg : Measurable g)
     (hc : ∀ᵐ y ∂volume.restrict (Ioi (0:ℝ)), ContinuousAt g y) {C : ℝ} (hC : 0 ≤ C)
     (hb : ∀ u : ℝ, 0 ≤ u → |g u| ≤ C/(1+u^2)) :
-    Tendsto (fun x : ℝ => ∑' n : ℕ, ((Chebyshev.theta (n+1)-Chebyshev.theta n)/x)*g (((n:ℝ)+1)/x))
-      atTop (𝓝 (∫ y in Ici (0:ℝ), g y)) := by
-  have hd : Tendsto (fun x : ℝ => ∫ y in Ici (0:ℝ), g (binReading x y)) atTop
+    Tendsto (fun x : ℝ => ∫ y in Ici (0:ℝ), g (primeBinReading x y)) atTop
       (𝓝 (∫ y in Ici (0:ℝ), g y)) := by
-    apply tendsto_integral_filter_of_dominated_convergence
-      (fun y : ℝ => (C*(1+(Real.log 4)^2))*(1+y^2)⁻¹)
-    · exact Eventually.of_forall fun x => (hg.comp (measurable_binReading x)).aestronglyMeasurable
-    · filter_upwards [eventually_gt_atTop (0:ℝ)] with x hx
-      filter_upwards [ae_restrict_mem (μ := (volume : Measure ℝ)) measurableSet_Ici] with y hy
-      exact binReading_domination hC hb hx hy
-    · exact (integrable_inv_one_add_sq.const_mul _).integrableOn
-    · rw [Measure.restrict_congr_set Ioi_ae_eq_Ici.symm]
-      filter_upwards [ae_restrict_mem (μ := (volume : Measure ℝ)) measurableSet_Ioi,hc] with y hy hcy
-      exact hcy.tendsto.comp (tendsto_binReading hy)
-  refine hd.congr' ?_
-  filter_upwards [eventually_gt_atTop (0:ℝ)] with x hx
-  exact (hasSum_prime_bins hg hC hb hx).tsum_eq.symm
+  apply tendsto_integral_filter_of_dominated_convergence
+    (fun y : ℝ => (C*(1+(Real.log 4)^2))*(1+y^2)⁻¹)
+  · exact Eventually.of_forall fun x => (hg.comp (measurable_primeBinReading x)).aestronglyMeasurable
+  · filter_upwards [eventually_gt_atTop (0:ℝ)] with x hx
+    filter_upwards [ae_restrict_mem (μ := (volume : Measure ℝ)) measurableSet_Ici] with y hy
+    exact binReading_domination hC hb hx hy
+  · exact (integrable_inv_one_add_sq.const_mul _).integrableOn
+  · rw [Measure.restrict_congr_set Ioi_ae_eq_Ici.symm]
+    filter_upwards [ae_restrict_mem (μ := (volume : Measure ℝ)) measurableSet_Ioi,hc] with y hy hcy
+    exact hcy.tendsto.comp (tendsto_binReading hy)
 
 private theorem theta_nat_jump (n : ℕ) :
     Chebyshev.theta ((n:ℝ)+1) - Chebyshev.theta n =
@@ -220,16 +232,12 @@ private theorem theta_nat_jump (n : ℕ) :
     simp [hp,Finset.sum_insert hn,Nat.cast_succ]
   · simp [hp]
 
-/-- The dilates of the log-weighted ordinary-prime measure, divided by the
-dilation factor, converge on quadratically decaying tests continuous at almost every positive point.
-This includes bounded tests with jumps at reciprocal square roots. -/
-theorem tendsto_dilated_ordinary_prime_sum_ae {g : ℝ → ℝ} (hg : Measurable g)
-    (hc : ∀ᵐ y ∂volume.restrict (Ioi (0:ℝ)), ContinuousAt g y) {C : ℝ} (hC : 0 ≤ C)
-    (hb : ∀ u : ℝ, 0 ≤ u → |g u| ≤ C/(1+u^2)) :
-    Tendsto (fun x : ℝ => (∑' p : Nat.Primes, Real.log (p:ℕ)*g ((p:ℕ)/x))/x)
-      atTop (𝓝 (∫ y in Ici (0:ℝ), g y)) := by
-  refine (tendsto_prime_bin_sum hg hc hC hb).congr' ?_
-  filter_upwards [eventually_gt_atTop (0:ℝ)] with x hx
+/-- Exact integral in Chebyshev mass coordinates for any measurable test of quadratic decay. -/
+theorem integral_primeBinReading_eq {g : ℝ → ℝ} (hg : Measurable g) {C : ℝ} (hC : 0 ≤ C)
+    (hb : ∀ u : ℝ, 0 ≤ u → |g u| ≤ C/(1+u^2)) {x : ℝ} (hx : 0 < x) :
+    (∫ y in Ici (0:ℝ), g (primeBinReading x y)) =
+      (∑' p : Nat.Primes, Real.log (p:ℕ)*g ((p:ℕ)/x))/x := by
+  rw [← (hasSum_prime_bins hg hC hb hx).tsum_eq]
   let f := fun n : ℕ => if n.Prime then Real.log n*g ((n:ℝ)/x)/x else 0
   have he (n : ℕ) : ((Chebyshev.theta (n+1)-Chebyshev.theta n)/x)*g (((n:ℝ)+1)/x) = f (n+1) := by
     rw [theta_nat_jump]
@@ -248,6 +256,17 @@ theorem tendsto_dilated_ordinary_prime_sum_ae {g : ℝ → ℝ} (hg : Measurable
     exact hn (by simp [f,show ¬ n.Prime from hp])
   rw [tsum_congr he,hs,← hsub,← tsum_div_const]
   exact tsum_congr fun p => by simp [f,p.property]
+
+/-- The dilates of the log-weighted ordinary-prime measure, divided by the
+dilation factor, converge on quadratically decaying tests continuous at almost every positive point.
+This includes bounded tests with jumps at reciprocal square roots. -/
+theorem tendsto_dilated_ordinary_prime_sum_ae {g : ℝ → ℝ} (hg : Measurable g)
+    (hc : ∀ᵐ y ∂volume.restrict (Ioi (0:ℝ)), ContinuousAt g y) {C : ℝ} (hC : 0 ≤ C)
+    (hb : ∀ u : ℝ, 0 ≤ u → |g u| ≤ C/(1+u^2)) :
+    Tendsto (fun x : ℝ => (∑' p : Nat.Primes, Real.log (p:ℕ)*g ((p:ℕ)/x))/x)
+      atTop (𝓝 (∫ y in Ici (0:ℝ), g y)) := by
+  refine (tendsto_prime_bin_integral hg hc hC hb).congr' ?_
+  exact (eventually_gt_atTop (0:ℝ)).mono fun _ hx => integral_primeBinReading_eq hg hC hb hx
 
 /-- Continuous tests of quadratic decay satisfy the dilated ordinary-prime limit. -/
 theorem tendsto_dilated_ordinary_prime_sum {g : ℝ → ℝ} (hg : Continuous g) {C : ℝ} (hC : 0 ≤ C)

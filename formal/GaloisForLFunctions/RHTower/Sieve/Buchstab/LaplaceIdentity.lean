@@ -108,7 +108,9 @@ theorem laplace_first_moment (s : Ioi (0:ℝ)) :
   change (∫ t in Ioi (1:ℝ), t*buchstab t*E t) = _
   rw [setIntegral_congr_fun measurableSet_Ioi hform,integral_add he hshift]
   have he1 : (∫ t in Ioi (1:ℝ), E t) = Real.exp (-s.val)/s.val := by
-    simp [E,integral_exp_mul_Ioi (neg_lt_zero.mpr hs)]
+    change (∫ t in Ioi (1:ℝ), Real.exp (-s.val*t)) = _
+    rw [integral_exp_mul_Ioi (neg_lt_zero.mpr hs) 1]
+    simp
   have hf (t : ℝ) : primitive (t-1)*E t = Real.exp (-s.val)*(primitive (t-1)*E (t-1)) := by
     have hx : E t = Real.exp (-s.val)*E (t-1) := by
       dsimp [E]

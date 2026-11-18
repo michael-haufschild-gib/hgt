@@ -99,8 +99,74 @@ theorem gaussianBernoulli_limit (ws : List ℝ≥0) (k : ℤ) :
   | cons w ws ih =>
     exact (ih k).add (tendsto_const_nhds.mul (ih (k-1)))
 
+/-- Total mass of a finite unnormalized Bernoulli convolution. -/
+def bernoulliMass : List ℝ≥0 → ℝ
+  | [] => 1
+  | w :: ws => (1+(w:ℝ))*bernoulliMass ws
+
+private theorem product_error (ws : List ℝ≥0) {f g : ℤ → ℝ} {M : ℝ}
+    (h : ∀ k, f k-g k ∈ Set.Icc 0 M) (k : ℤ) :
+    bernoulliProduct ws f k - bernoulliProduct ws g k ∈ Set.Icc 0 (M*bernoulliMass ws) := by
+  induction ws generalizing k with
+  | nil => simpa [bernoulliProduct,bernoulliMass] using h k
+  | cons w ws ih =>
+    obtain ⟨ha,hb⟩ := ih k
+    obtain ⟨hc,hd⟩ := ih (k-1)
+    change 0 ≤ _ ∧ _ ≤ M*((1+(w:ℝ))*bernoulliMass ws)
+    dsimp only [bernoulliProduct,bernoulliStep]
+    constructor
+    · nlinarith only [ha,mul_nonneg w.property hc]
+    · nlinarith only [hb,mul_le_mul_of_nonneg_left hd w.property]
+
+private theorem product_mask (S : Finset ℤ) (a : ℤ → ℝ) (ws : List ℝ≥0) (k : ℤ) :
+    bernoulliProduct ws (fun j => if j ∈ S then a j else 0) k =
+      ∑ j ∈ S, a j * bernoulliProduct ws (fun t => if t = 0 then 1 else 0) (k-j) := by
+  induction ws generalizing k with
+  | nil => simp [bernoulliProduct,mul_ite,sub_eq_zero,eq_comm]
+  | cons w ws ih =>
+    change bernoulliProduct ws _ k + (w:ℝ)*bernoulliProduct ws _ (k-1) = _
+    rw [ih k,ih (k-1),mul_sum,← sum_add_distrib]
+    refine sum_congr rfl fun j _ => ?_
+    dsimp only [bernoulliProduct,bernoulliStep]
+    rw [show k-1-j = k-j-1 by ring]
+    ring
+
+/-- Truncating the spatial Gaussian at distance `r` gives a uniform
+error controlled by the next square exponent. This strengthens pointwise
+density to an all-orders approximation on the entire integer lattice. -/
+theorem gaussianBernoulli_shell_error (q : Set.Icc (0:ℝ) 1) (r : ℕ) (ws : List ℝ≥0) (k : ℤ) :
+    bernoulliProduct ws (fun j => q.val^(j.natAbs^2)) k -
+      (∑ j ∈ Icc (-(r:ℤ)) r, q.val^(j.natAbs^2) *
+        bernoulliProduct ws (fun t => if t = 0 then 1 else 0) (k-j)) ∈
+      Set.Icc 0 (q.val^((r+1)^2)*bernoulliMass ws) := by
+  rw [← product_mask]
+  apply product_error
+  intro j
+  by_cases hj : j ∈ Icc (-(r:ℤ)) r
+  · simp [hj,pow_nonneg q.property.1]
+  · rw [if_neg hj,sub_zero]
+    have hdist : r+1 ≤ j.natAbs := by
+      rw [mem_Icc] at hj
+      cases j <;> simp_all <;> omega
+    exact ⟨pow_nonneg q.property.1 _,pow_le_pow_of_le_one q.property.1 q.property.2
+      (Nat.pow_le_pow_left hdist 2)⟩
+
+/-- The first omitted shell attains the uniform rate for the unsmoothed
+point mass. Thus its square exponent is optimal even among finite products. -/
+theorem gaussian_shell_error_attained (q : Set.Icc (0:ℝ) 1) (r : ℕ) :
+    let k : ℤ := (r+1:ℕ)
+    bernoulliProduct [] (fun j => q.val^(j.natAbs^2)) k -
+      (∑ j ∈ Icc (-(r:ℤ)) r, q.val^(j.natAbs^2) *
+        bernoulliProduct [] (fun t => if t = 0 then 1 else 0) (k-j)) = q.val^((r+1)^2) := by
+  dsimp only
+  rw [← product_mask]
+  have ho : ((r+1:ℕ):ℤ) ∉ Icc (-(r:ℤ)) r := by simp
+  simp [bernoulliProduct,ho]
+
 #print axioms gaussianBernoulli_strict
 #print axioms gaussianBernoulli_limit
+#print axioms gaussianBernoulli_shell_error
+#print axioms gaussian_shell_error_attained
 
 end
 end GaloisForLFunctions.HilbertMetric

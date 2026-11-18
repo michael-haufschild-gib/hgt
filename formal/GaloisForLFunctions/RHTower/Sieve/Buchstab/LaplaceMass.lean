@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Sieve.Buchstab.GlobalDelay
 import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
+import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import Mathlib.Analysis.Calculus.ParametricIntegral
 
 /-!
@@ -28,11 +29,13 @@ theorem laplace_integrable {s : ℝ} (hs : 0 < s) :
 theorem laplaceMass_bounds (s : Ioi (0:ℝ)) : laplaceMass s ∈ Icc 0 s.val⁻¹ := by
   constructor
   · exact integral_nonneg fun t => mul_nonneg (buchstab_mem_unit t).1 (Real.exp_pos _).le
-  · have h := integral_mono (laplace_integrable s.property) (integrableOn_exp_mul_Ioi
-      (neg_lt_zero.mpr s.property) 0) (fun t => show buchstab t * Real.exp (-s.val*t) ≤
-        Real.exp (-s.val*t) by simpa using mul_le_mul_of_nonneg_right (buchstab_mem_unit t).2
-          (Real.exp_pos (-s.val*t)).le)
-    simpa [laplaceMass,integral_exp_mul_Ioi (neg_lt_zero.mpr s.property),one_div] using h
+  · have hbound (t : ℝ) : buchstab t * Real.exp (-s.val*t) ≤ Real.exp (-s.val*t) := by
+      simpa only [one_mul] using
+        mul_le_mul_of_nonneg_right (buchstab_mem_unit t).2 (Real.exp_pos (-s.val*t)).le
+    have h := integral_mono (laplace_integrable s.property)
+      (integrableOn_exp_mul_Ioi (neg_lt_zero.mpr s.property) 0) hbound
+    rw [integral_exp_mul_Ioi (neg_lt_zero.mpr s.property) 0] at h
+    simpa [laplaceMass,one_div] using h
 
 theorem tendsto_laplaceMass_atTop : Tendsto laplaceMass atTop (𝓝 0) := by
   apply squeeze_zero' _ _ tendsto_inv_atTop_zero
@@ -84,9 +87,10 @@ theorem tendsto_scaled_laplaceMass :
         (by fun_prop)).aestronglyMeasurable
     · exact Eventually.of_forall fun s => Eventually.of_forall fun t => by
         dsimp [F]
-        rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (buchstab_mem_unit _).1 (Real.exp_pos _).le)]
+        rw [abs_of_nonneg (mul_nonneg (buchstab_mem_unit _).1 (Real.exp_pos _).le)]
         simpa using mul_le_mul_of_nonneg_right (buchstab_mem_unit (s⁻¹*t)).2 (Real.exp_pos (-t)).le
-    · simpa using integrableOn_exp_mul_Ioi (by norm_num : (-1:ℝ)<0) 0
+    · change IntegrableOn (fun t : ℝ => Real.exp (-t)) (Ioi 0)
+      simpa using integrableOn_exp_mul_Ioi (by norm_num : (-1:ℝ)<0) 0
     · filter_upwards [ae_restrict_mem (measurableSet_Ioi (a := (0:ℝ)))] with t ht
       exact (tendsto_buchstab_atTop.comp (tendsto_inv_nhdsGT_zero.atTop_mul_const ht)).mul_const _
   have h1 : (∫ t in Ioi (0:ℝ), Real.exp (-t)) = 1 := by

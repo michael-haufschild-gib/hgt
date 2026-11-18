@@ -144,12 +144,10 @@ theorem hasDerivAt_buchstab (u : Ioi (2:ℝ)) :
     ((HasDerivAt.comp (h := fun z : ℝ => z-1) u.val hp
       ((hasDerivAt_id u.val).sub_const 1)).const_add 1).div (hasDerivAt_id _) hu₀
   apply (hd.congr_of_eventuallyEq hform).congr_deriv
-  change _ = (buchstab (u.val-1)-buchstab u.val)/u.val
   have he : 1+P (u.val-1) = u.val*buchstab u.val :=
     (buchstab_weighted ⟨u.val,show 1 ≤ u.val by linarith⟩).symm
   rw [he]
   field_simp [hu₀]
-  <;> ring
 
 /-- The cell enclosures give a uniform error bound in the actual real argument. -/
 theorem buchstab_factorial_error (u : Ici (1:ℝ)) :
