@@ -60,7 +60,7 @@ private theorem long_trace_in_every_window : ∀ᶠ T : ℝ in atTop, ∃ u : �
 
 /-- The same base buys every positive multiplicity whenever the signed
 degree has a fixed lower bound. Small multiplicities spend the ordinary floors. -/
-private theorem simultaneous_prime_bound (D : ℝ) :
+theorem all_ordinary_prime_powers_of_degree_floor (D : ℝ) :
     ∃ B : ℕ, 0 < B ∧ ∀ᶠ n : ℕ in atTop, -D ≤ integerProbe _ (successorSquareTriple n) →
       ∀ {m : ℕ}, 0 < m → ordinaryPrimeGenerator (m • successorSquareTriple n) ≤ (B:ℚ)^(m^2) := by
   obtain ⟨A,_,hA⟩ := successorSquare_contact_degree
@@ -103,7 +103,7 @@ theorem ordinary_square_generators_in_every_logarithmic_window :
       |2*Real.log n-T| ≤ 10*Real.log (T+2) ∧
       ∀ {m : ℕ}, 0 < m → ordinaryPrimeGenerator (m • successorSquareTriple n) ≤ (B:ℚ)^(m^2) := by
   let b := 6*realSplineTrace 0-4*realSplineTrace (Real.log 4)
-  obtain ⟨B,hB,hpaid⟩ := simultaneous_prime_bound (2-b)
+  obtain ⟨B,hB,hpaid⟩ := all_ordinary_prime_powers_of_degree_floor (2-b)
   obtain ⟨U,hU⟩ := eventually_atTop.mp ((tendsto_upperSquareIndex.eventually hpaid).and
     (upperSquareIndex_signed_degree.eventually_const_lt (show b-1 < b by linarith)))
   refine ⟨B,hB,?_⟩
@@ -120,20 +120,10 @@ theorem ordinary_square_generators_in_every_logarithmic_window :
     change b-1 < integerProbe _ (successorSquareTriple n)-squareLongTrace u at hq
     linarith only [hq,htrace]
   refine ⟨n,upperSquareIndex_pos u,?_,hp hQ⟩
-  let X := Real.exp (u/2)
-  have hX : 1 ≤ X := Real.one_le_exp (by linarith only [hu₀])
-  have hn : X ≤ (n:ℝ) := Nat.le_ceil _
-  have hn' : (n:ℝ) ≤ 2*X := (Nat.ceil_lt_add_one (Real.exp_pos _).le).le.trans (by linarith only [hX])
-  have hl := Real.log_le_log (Real.exp_pos _) hn
-  have hu' := Real.log_le_log ((Real.exp_pos _).trans_le hn) hn'
-  rw [Real.log_mul two_ne_zero (Real.exp_pos _).ne'] at hu'
-  change Real.log (Real.exp (u/2)) ≤ Real.log n at hl
-  change Real.log n ≤ Real.log 2+Real.log (Real.exp (u/2)) at hu'
-  rw [Real.log_exp] at hl hu'
-  have h₂ := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 2)
+  obtain ⟨hl,hu'⟩ := upperSquareIndex_log_near hu₀
   rw [abs_le]
   obtain ⟨h₁,h₂'⟩ := abs_le.mp hu
-  constructor <;> linarith only [hl,hu',h₂,h₁,h₂',hlog]
+  constructor <;> linarith only [hl,hu',h₁,h₂',hlog]
 
 #print axioms ordinary_square_generators_in_every_logarithmic_window
 

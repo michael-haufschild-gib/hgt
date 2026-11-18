@@ -25,6 +25,23 @@ theorem upperSquareIndex_monotone : Monotone upperSquareIndex :=
 theorem tendsto_upperSquareIndex : Tendsto upperSquareIndex atTop atTop :=
   tendsto_nat_ceil_atTop.comp (Real.tendsto_exp_atTop.comp (tendsto_id.atTop_div_const two_pos))
 
+/-- Rounding the positive square root upward moves its logarithmic degree by at most two. -/
+theorem upperSquareIndex_log_near {u : ℝ} (hu₀ : 0 ≤ u) :
+    u ≤ 2*Real.log (upperSquareIndex u) ∧ 2*Real.log (upperSquareIndex u) ≤ u+2 := by
+  let n := upperSquareIndex u
+  let X := Real.exp (u/2)
+  have hX : 1 ≤ X := Real.one_le_exp (by linarith only [hu₀])
+  have hn : X ≤ (n:ℝ) := Nat.le_ceil _
+  have hn' : (n:ℝ) ≤ 2*X := (Nat.ceil_lt_add_one (Real.exp_pos _).le).le.trans (by linarith only [hX])
+  have hl := Real.log_le_log (Real.exp_pos _) hn
+  have hu' := Real.log_le_log ((Real.exp_pos _).trans_le hn) hn'
+  rw [Real.log_mul two_ne_zero (Real.exp_pos _).ne'] at hu'
+  change Real.log (Real.exp (u/2)) ≤ Real.log n at hl
+  change Real.log n ≤ Real.log 2+Real.log (Real.exp (u/2)) at hu'
+  rw [Real.log_exp] at hl hu'
+  have h₂ := Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 2)
+  constructor <;> linarith only [hl,hu',h₂]
+
 /-- Rounding either square root by at most three changes its long trace
 by a quantity tending to zero, since twice the zero width is less than one. -/
 private theorem bounded_rounding_error (X Y : ℝ → ℝ) (hX : Tendsto X atTop atTop)

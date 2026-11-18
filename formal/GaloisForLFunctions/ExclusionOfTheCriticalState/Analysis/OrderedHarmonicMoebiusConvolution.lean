@@ -45,8 +45,7 @@ theorem harmonic_moebius_product_prefix (a : ArithmeticFunction ℝ) (N : ℕ) :
   rw [tsum_eq_sum (s := Icc 1 N) (fun d hd => ?_)]
   · refine sum_congr rfl fun d _ => ?_
     dsimp only [u]
-    rw [← mul_sum,deningerHarmonicPartial_eq_sum_Icc]
-    rfl
+    rw [← mul_sum,deningerHarmonicPartial_eq_sum_Icc] <;> rfl
   · rcases Nat.eq_zero_or_pos d with rfl | hp
     · simp
     have hlt := lt_of_not_ge fun hh => hd (mem_Icc.2 ⟨hp,hh⟩)

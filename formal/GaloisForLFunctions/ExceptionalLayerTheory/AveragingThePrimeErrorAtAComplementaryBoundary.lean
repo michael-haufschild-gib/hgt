@@ -127,7 +127,8 @@ theorem factorialBoundary_prime_error {R : ℕ} (hR : 1 ≤ R) (X A B : ℕ) :
               simpa only [abs_of_nonneg vonMangoldt_nonneg,abs_one] using abs_sub (vonMangoldt n) (1 : ℝ)
          _ ≤ _ := by
               rw [sum_add_distrib,sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul,mul_one]
-              linarith only [chebyshevPsi_le_seven U]
+              have hψ : (∑ n ∈ Icc 1 U, vonMangoldt n) ≤ 7*U := chebyshevPsi_le_seven U
+              linarith only [hψ]
   exact (mul_le_mul_of_nonneg_left hsum hH).trans_eq (by dsimp [H,U]; ring)
 
 /-- Averaging over just more than the square root divided by the initial

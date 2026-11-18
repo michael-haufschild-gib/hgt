@@ -1,6 +1,6 @@
 # A smoothed complementary-factor boundary below the square root
 
-**PVC · Conjecture.** For fixed $0<\eta<10^{-9}$ and logarithmic cutoffs, use the average of the complementary-factor cutoffs $v\le a$ at integers $a\in[A,A+S)$, where $A=\lfloor X^{1/2-\eta}\rfloor$, $S=\lceil X^{3\eta}\rceil$. Equivalently, retain $v\le A$ with weight one and taper to zero by $A+S$. The conjectured cost at either Vaughan width is square-root error up to logarithms.
+**PVC · Conjecture.** For fixed $0<\eta<10^{-9}$ and logarithmic cutoffs, use the average of the complementary-factor cutoffs $v\le a$ at integers $a\in[A,A+S)$, where $A=\lfloor X^{1/2-\eta}\rfloor$, $S=1+\lfloor\sqrt X/(A+1)\rfloor$. Equivalently, retain $v\le A$ with weight one and taper to zero by $A+S$. The conjectured cost at either Vaughan width is square-root error up to logarithms.
 
 Let $G_D(n)=\sum_{v\le n}g_D(v)$, $w_R(0)=0$ for the purpose of taking differences, and $b_R(j)=w_R(j)-w_R(j-1)$. At fixed $a$ and $T=\lfloor X/p\rfloor$ the tail is exactly
 $$
