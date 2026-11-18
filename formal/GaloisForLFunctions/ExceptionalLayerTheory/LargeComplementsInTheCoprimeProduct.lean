@@ -34,7 +34,8 @@ def cappedCoprimeSlice (D R X Y M p : ℕ) : ℝ :=
   ∑ v ∈ Ioc (Y/p) (min (X/p) M) with p.Coprime v,
     innerJump D v*centeredPrimeWeight R (X/p/v)
 
-private theorem removed_slice {D R X Y M p : ℕ} :
+/-- Removing a complementary cutoff keeps precisely the coprime quotient tail above both lower limits. -/
+theorem coprimeSlice_sub_capped {D R X Y M p : ℕ} :
     coprimeSlice D R X Y p-cappedCoprimeSlice D R X Y M p =
       ∑ v ∈ Ioc (max (Y/p) M) (X/p),
         (if p.Coprime v then innerJump D v else 0)*centeredPrimeWeight R (X/p/v) := by
@@ -88,7 +89,7 @@ theorem large_complement_bound :
         ((Nat.mul_le_mul_right p hs).trans hh)
     have hquot : (((X/p)/(L+1) : ℕ) : ℝ) ≤ (N : ℝ)/p :=
       (by exact_mod_cast hn : (((X/p)/(L+1) : ℕ) : ℝ) ≤ (N/p : ℕ)).trans Nat.cast_div_le
-    rw [removed_slice]
+    rw [coprimeSlice_sub_capped]
     exact h.trans ((mul_le_mul_of_nonneg_left hquot (by positivity)).trans_eq (by dsimp [T]; ring))
   have hmert : ∑ p ∈ S, vonMangoldt p/p ≤ E*(1+Real.log X) := by
     have sub : S ⊆ Icc 1 X := by

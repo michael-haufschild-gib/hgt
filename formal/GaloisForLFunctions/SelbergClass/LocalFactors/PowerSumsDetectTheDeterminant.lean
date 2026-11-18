@@ -135,9 +135,10 @@ theorem adams_detection {ι : Type*} [Fintype ι] [Nonempty ι] (α : ι → ℂ
     | empty => simp
     | cons a t _ => exact fun _ => determinant_detection a t B
   intro hd
-  obtain ⟨j,hj,hk,hp⟩ := hs s (hcard ▸ Fintype.card_pos) (by simpa only [hcard] using hd)
+  have hprod : s.prod = ∏ i, α i := Finset.prod_map_val _ _
+  obtain ⟨j,hj,hk,hp⟩ := hs s (hcard ▸ Fintype.card_pos) (by rwa [hcard,hprod])
   exact ⟨j,hj,hcard ▸ hk,by simpa only [s,tracePow,Multiset.map_map,Function.comp_def,adamsPowerSum,
-    Finset.sum] using hp⟩
+    Finset.sum_map_val] using hp⟩
 
 /-- Deleting the identity root from a regular polygon gives equality in every
 one of the first r trace bounds, simultaneously, at any complex scale. -/
@@ -149,7 +150,7 @@ theorem sharp_spectrum (r : ℕ+) (a : ℂ) :
   let ζ := Complex.exp (2*Real.pi*Complex.I / N)
   have hz : IsPrimitiveRoot ζ N := Complex.isPrimitiveRoot_exp N hN
   refine ⟨fun i => a*ζ^(i.val+1),?_,?_⟩
-  · simp [norm_prod,norm_mul,norm_pow,hz.norm'_eq_one hN]
+  · simp [norm_prod,norm_pow,hz.norm'_eq_one hN]
   · intro j hj hk
     have hn : ¬ N ∣ j := fun h => (Nat.le_of_dvd hj h).not_gt (by dsimp [N]; omega)
     have hne : ζ^j ≠ 1 := fun h => hn ((hz.pow_eq_one_iff_dvd j).mp h)
@@ -157,7 +158,7 @@ theorem sharp_spectrum (r : ℕ+) (a : ℂ) :
       rw [geom_sum_eq hne,← pow_mul,mul_comm,pow_mul,hz.pow_eq_one,one_pow,sub_self,zero_div]
     rw [show N=(r : ℕ)+1 from rfl,sum_range_succ',pow_zero] at hzero
     have hsum : (∑ i : Fin (r : ℕ), (ζ^j)^(i.val+1)) = -1 := by
-      rw [Fin.sum_univ_eq_sum_range]
+      rw [Fin.sum_univ_eq_sum_range (fun i : ℕ => (ζ^j)^(i+1)) (r : ℕ)]
       linear_combination hzero
     calc
       _ = ∑ i : Fin (r : ℕ), a^j*(ζ^j)^(i.val+1) :=

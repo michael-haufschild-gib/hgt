@@ -980,22 +980,46 @@ theorem plantedAliasedDoubleWave_separates_two_and_three_clocks
         (abs_add_le _ _).trans (add_le_add (abs_sub _ _) le_rfl)
       have h2 : |2 * 5 ^ β * Real.cos (γ * Real.log 5) * f (5 * x)| ≤ 2 * 5 ^ β * |f (5 * x)| := by
         rw [abs_mul, abs_mul, abs_mul, abs_of_pos two_pos,
-          abs_of_pos (Real.rpow_pos_of_pos (by norm_num) β)]
-        nlinarith [abs_nonneg (f (5 * x))]
+          abs_of_pos (Real.rpow_pos_of_pos (by norm_num : (0 : ℝ) < 5) β)]
+        calc 2 * 5 ^ β * |Real.cos (γ * Real.log 5)| * |f (5 * x)|
+            ≤ 2 * 5 ^ β * 1 * |f (5 * x)| :=
+              mul_le_mul_of_nonneg_right
+                (mul_le_mul_of_nonneg_left hcos_le (by positivity)) (abs_nonneg _)
+          _ = 2 * 5 ^ β * |f (5 * x)| := by ring
       have h3 : |5 ^ (2 * β) * f x| = 5 ^ (2 * β) * |f x| := by
-        rw [abs_mul, abs_of_pos (Real.rpow_pos_of_pos (by norm_num) (2 * β))]
+        rw [abs_mul, abs_of_pos (Real.rpow_pos_of_pos (by norm_num : (0 : ℝ) < 5) (2 * β))]
       linarith
     have hsum_lt : |dilationRecurrenceOp 5 β γ f x| < c₀ * M₅ * x ^ β := by
-      rw [h5x] at hx1'
-      rw [h25x] at hx2'
-      dsimp [M₅]
-      have h5β : 0 < (5 : ℝ) ^ β := Real.rpow_pos_of_pos (by norm_num) β
-      have h5_2β : 0 < (5 : ℝ) ^ (2 * β) := Real.rpow_pos_of_pos (by norm_num) (2 * β)
-      nlinarith
-    have hc₀M : c₀ * M₅ = c₅ / 3 := by dsimp [c₀]; field_simp [hM₅.ne']
+      have ht2 : |f (5 ^ 2 * x)| < c₀ * 25 ^ β * x ^ β := by
+        calc |f (5 ^ 2 * x)| < c₀ * (5 ^ 2 * x) ^ β := hx2'
+          _ = c₀ * 25 ^ β * x ^ β := by rw [h25x]; ring
+      have ht1 : 2 * 5 ^ β * |f (5 * x)| < c₀ * (2 * 5 ^ β * 5 ^ β) * x ^ β := by
+        have hpos : (0 : ℝ) < 2 * 5 ^ β :=
+          mul_pos two_pos (Real.rpow_pos_of_pos (by norm_num : (0 : ℝ) < 5) β)
+        calc 2 * 5 ^ β * |f (5 * x)| < 2 * 5 ^ β * (c₀ * (5 * x) ^ β) :=
+              mul_lt_mul_of_pos_left hx1' hpos
+          _ = c₀ * (2 * 5 ^ β * 5 ^ β) * x ^ β := by rw [h5x]; ring
+      have ht0 : 5 ^ (2 * β) * |f x| < c₀ * 5 ^ (2 * β) * x ^ β := by
+        have hpos : (0 : ℝ) < 5 ^ (2 * β) :=
+          Real.rpow_pos_of_pos (by norm_num : (0 : ℝ) < 5) (2 * β)
+        calc 5 ^ (2 * β) * |f x| < 5 ^ (2 * β) * (c₀ * x ^ β) :=
+              mul_lt_mul_of_pos_left hx0' hpos
+          _ = c₀ * 5 ^ (2 * β) * x ^ β := by ring
+      have hsum3 : |f (5 ^ 2 * x)| + 2 * 5 ^ β * |f (5 * x)| + 5 ^ (2 * β) * |f x| <
+          c₀ * M₅ * x ^ β := by
+        calc |f (5 ^ 2 * x)| + 2 * 5 ^ β * |f (5 * x)| + 5 ^ (2 * β) * |f x|
+            < c₀ * 25 ^ β * x ^ β + c₀ * (2 * 5 ^ β * 5 ^ β) * x ^ β +
+                c₀ * 5 ^ (2 * β) * x ^ β := add_lt_add (add_lt_add ht2 ht1) ht0
+          _ = c₀ * M₅ * x ^ β := by dsimp [M₅]; ring
+      exact htri.trans_lt hsum3
+    have hc₀M : c₀ * M₅ * x ^ β = (c₅ / 3) * x ^ β := by
+      have h1 : c₀ * M₅ = c₅ / 3 := by dsimp [c₀]; field_simp [hM₅.ne']
+      rw [h1]
     rw [hc₀M] at hsum_lt
     have hxβ_pos : 0 < x ^ β := Real.rpow_pos_of_pos hx_pos β
-    nlinarith
+    have hthird : (c₅ / 3) * x ^ β < c₅ * x ^ β :=
+      mul_lt_mul_of_pos_right (by linarith) hxβ_pos
+    linarith
   exact ⟨hf_limsup, h2_zero, h3_zero, h5_unb⟩
 
 /-! ### 5. Unconditional zones for `primeError` (`β > 20999/24000`, `β < Θ`, `γ ≤ 67`) -/

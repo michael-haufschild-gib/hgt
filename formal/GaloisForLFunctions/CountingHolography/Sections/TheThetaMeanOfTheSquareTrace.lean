@@ -17,11 +17,12 @@ open MeasureTheory Filter Topology
 
 private abbrev coeff := evenCoeff zetaZeroConfig (boxSpline 1 3)
 
-private theorem trace_series (t : ℝ) :
-    2*realSplineTrace t = ∑' z : ℂ, (coeff z*Complex.exp (z*t)).re := by
+/-- Spectral expansion of twice the real trace with the reflected coefficients. -/
+theorem two_mul_realSplineTrace_eq_tsum (t : ℝ) :
+    2*realSplineTrace t = ∑' z : ℂ, (evenCoeff zetaZeroConfig (boxSpline 1 3) z*Complex.exp (z*t)).re := by
   have h := configuration_shifted_trace_series temperedConfig_zetaZeroConfig 0 t
   rw [← orbitCorr_eq_re_lagStructure_spline,orbitCorr_splineCycle_eq] at h
-  simpa only [Complex.ofReal_zero,sub_zero,neg_zero,zero_mul,Real.exp_zero,one_mul] using h
+  simpa only [realSplineTrace,Complex.ofReal_zero,sub_zero,neg_zero,zero_mul,Real.exp_zero,one_mul] using h
 
 /-- The spline trace has an absolute exponential envelope on the full real line. -/
 theorem realSplineTrace_strip_bound : ∃ A : ℝ, 0 ≤ A ∧ ∀ t : ℝ,
@@ -30,7 +31,7 @@ theorem realSplineTrace_strip_bound : ∃ A : ℝ, 0 ≤ A ∧ ∀ t : ℝ,
   have h := abs_cexp_series_le coeff id (summable_norm_evenCoeff_spline temperedConfig_zetaZeroConfig)
     (fun _ hz => abs_re_le_of_evenCoeff_ne_zero hz) t
   change |∑' z : ℂ, (coeff z*Complex.exp (z*t)).re| ≤ _ at h
-  rw [← trace_series,abs_mul,abs_two] at h
+  rw [← two_mul_realSplineTrace_eq_tsum,abs_mul,abs_two] at h
   linarith only [h]
 
 /-- The actual theta source kills the real spline trace at every translation.
@@ -53,7 +54,9 @@ theorem thetaMean_realSplineTrace (t : ℝ) :
     rw [← sourceTransform_I_mul_eq_laplace]
     change coeff z*sourceTransform thetaSourceC (Complex.I*z)=0
     rw [sourceTransform_thetaSourceC,XiC_I_mul_of_evenCoeff_ne_zero hz,mul_zero]
-  simp only [id_eq,hzero,zero_mul,Complex.zero_re,tsum_zero,← trace_series] at hc
+  simp only [id_eq,hzero,zero_mul,Complex.zero_re,tsum_zero] at hc
+  simp_rw [show ∀ v : ℝ, (∑' z : ℂ, (coeff z*Complex.exp (z*v)).re)=2*realSplineTrace v from
+    fun v => (two_mul_realSplineTrace_eq_tsum v).symm] at hc
   simp_rw [mul_left_comm (thetaCuspFullSource _) 2,integral_const_mul] at hc
   linarith only [hc]
 

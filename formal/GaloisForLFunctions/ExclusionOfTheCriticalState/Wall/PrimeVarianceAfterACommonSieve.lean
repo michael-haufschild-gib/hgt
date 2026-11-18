@@ -270,5 +270,6 @@ theorem riemannHypothesis_or_commonSieve_variance_bound : RiemannHypothesis ∨
   exact Or.inr ⟨W₀,F,Φ,hW,ht,hF,hΦ,he,fun _ => criticalState_commonSieve_variance_bound hW ht hF hΦ he hC hb⟩
 
 #print axioms riemannHypothesis_or_commonSieve_variance_bound
+#print axioms criticalState_commonSieve_all_subsets
 #print axioms removedPrimeWave_tilted_norm
 end GaloisForLFunctions.ExclusionOfTheCriticalState

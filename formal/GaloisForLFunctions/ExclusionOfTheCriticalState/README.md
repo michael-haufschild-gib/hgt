@@ -257,10 +257,9 @@ with uniformly bounded centred second moment. [Bounded-width windows](Wall/Posit
 
 For the integer reference error $D=N-Ae^{t/2}$, exponential integration gives a bounded floor-discrepancy integral. On each line $\sigma=1/2-\lambda$, $0\le\lambda<1/2$, its normalized primitive $B=e^{-\sigma t}\int_{-\infty}^t e^{v/2}D(v)dv$ belongs to $L^1\cap L^2$ and has Fourier transform $\widehat{e^{\lambda u}\Phi}(\xi)\,\zeta(s)/s$, $s=\sigma+2\pi i\xi$. Differentiation recovers $e^{\lambda t}D=B'+\sigma B$. [Integer primitive and multiplier](Wall/IntegerQuadratureAsAFractionalPartConvolution.lean). The state transform has no zeros on $\Re w\ge0$, so on $0<\Re s\le1/2$ the integer primitive records exactly the zeros of $\zeta(s)$. The wall increment bound and zeta convexity give $e^{\lambda t}D\in L^2(\mathbb R)$ for every $0\le\lambda<1/2$. [Zero set](Wall/TheZetaZerosOfTheIntegerPrimitive.lean) · [Weighted square error](Wall/SubcriticalMeanSquareOfTheIntegerQuadrature.lean). The Fourier transform of $e^{\lambda t}D$ is $\zeta(s)\mathcal LF(1/2-s)$, with equal squared integrals in time and frequency. [Parseval formula](Wall/ParsevalForTheIntegerQuadrature.lean).
 
-Sieving the integer reference by a finite set $P$ of primes multiplies its weighted $L^2$ error bound by at most $\prod_{p\in P}(1+p^{\lambda-1/2})/(1-p^{-1})$. [Sieved square error](Wall/WeightedSquareErrorAfterSieving.lean).
+Sieving the integer reference by a finite set $P$ of primes multiplies its weighted $L^2$ error bound by at most $\prod_{p\in P}(1+p^{\lambda-1/2})/(1-p^{-1})$. [Sieved square error](Wall/WeightedSquareErrorAfterSieving.lean). If $E_P$ removes the same primes from both rows, then $\int_U^\infty |E_P^2-E^2|\le M_r 16^{|P|}e^{-rU}$ for $0\le r<1-\Theta$. Summing over all subsets of a prime pool $Q$ replaces $16^{|P|}$ by $17^{|Q|}$. [Common-sieve variance](Wall/PrimeVarianceAfterACommonSieve.lean).
 
 For $B_d(t)=d^{-1/2}D(t-\log d)$ the naturally ordered Möbius sum is $\Phi(t)$, hence zero on $t\ge0$. Weighting the same sum by $-\log d$ gives the von Mangoldt wave minus $Ae^{t/2}$. [Ordered Möbius inversion](Wall/MoebiusInversionOfTheIntegerQuadrature.lean).
-
 
 The equal-prime term of the covariance, divided by the observation time, tends to the
 state autocorrelation at every fixed lag. At zero lag the coefficient is one. The squared

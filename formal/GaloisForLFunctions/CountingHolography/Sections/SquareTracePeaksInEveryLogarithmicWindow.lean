@@ -24,12 +24,6 @@ private def filteredCoeff (k : ℝ → ℝ) (z : ℂ) :=
 private def squareCoeff (k : ℝ → ℝ) (z : ℂ) :=
   filteredCoeff k z*(Complex.exp (z*(Real.log 4:ℝ))-2)
 
-private theorem two_trace_series (u : ℝ) :
-    2*realSplineTrace u = ∑' z : ℂ, (baseCoeff z*Complex.exp (z*u)).re := by
-  have h := configuration_shifted_trace_series temperedConfig_zetaZeroConfig 0 u
-  rw [← orbitCorr_eq_re_lagStructure_spline,orbitCorr_splineCycle_eq] at h
-  simpa only [Complex.ofReal_zero,sub_zero,neg_zero,zero_mul,Real.exp_zero,one_mul] using h
-
 /-- Translation by log four multiplies each surviving mode by 4^z. -/
 private theorem finite_filter_square_trace {k : ℝ → ℝ} (hkc : Continuous k)
     (hm : ∀ s : ℝ, Integrable fun x => Real.exp (s*|x|)*|k x|)
@@ -37,7 +31,7 @@ private theorem finite_filter_square_trace {k : ℝ → ℝ} (hkc : Continuous k
     (∫ x, k x*(-squareLongTrace (t+x))) = (∑ z ∈ S, squareCoeff k z*Complex.exp (z*t)).re := by
   have hs (v : ℝ) : (∫ x, k x*(2*realSplineTrace (v+x))) =
       ∑ z ∈ S, (filteredCoeff k z*Complex.exp (z*v)).re := by
-    simp_rw [two_trace_series]
+    simp_rw [two_mul_realSplineTrace_eq_tsum]
     rw [integral_kernel_cexp_tsum baseCoeff id (by norm_num : (0:ℝ) ≤ 1/2)
       (summable_norm_evenCoeff_spline temperedConfig_zetaZeroConfig)
       (fun _ hz => abs_re_le_of_evenCoeff_ne_zero hz) hkc hm v]
