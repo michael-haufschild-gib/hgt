@@ -234,10 +234,13 @@ theorem eventually_combFormW_controlled_residue_ge (K : ℕ)
   have h2' : -(M_step + 1) * ((B : ℝ) * ∑ j ∈ range J, σ j ^ 2) ≤
       combForm W (fun n => σ (blockIndex N₀ B n)) := by
     have hm := mul_le_mul_of_nonneg_left hpf_low hB0R
-    have hbsq := sum_blockFunction_sq (R := R) hBpos σ
-    change _ ≤ combForm (Ioc (R * B) (R * B + B * J)) _
-    rw [hbsq] at h2
-    nlinarith
+    have hbsq := sum_blockFunction_sq (R := R) (J := J) hBpos σ
+    have h2_rew : (B : ℝ) * packetForm Q (stepPacket R J σ) ≤
+        combForm W (fun n => σ (blockIndex N₀ B n)) +
+          1 * ((B : ℝ) * ∑ j ∈ range J, σ j ^ 2) := by
+      rw [hbsq] at h2
+      exact h2
+    linarith
   -- Step 3: Bound every block mean `|σ j| ≤ (∑_{t ∈ T} |α t|) / B`
   have hσ_le : ∀ j ∈ range J, |σ j| ≤ (∑ t ∈ T, |α t|) / B := by
     intro j hj
@@ -953,6 +956,7 @@ theorem sum_moebius_div_Icc_ne_zero {Q : ℕ} (hQ : 2 ≤ Q) :
   rw [hterm_p, hterm_E] at hmul0
   have hInt_eq : ((L : ℤ) : ℝ) = (((p : ℤ) * ∑ t ∈ E, (μ t : ℤ) * ((L / t : ℕ) : ℤ)) : ℝ) := by
     linarith
+  rw [← Int.cast_mul] at hInt_eq
   have hInt := Int.cast_injective hInt_eq
   have hdvdZ : (p : ℤ) ∣ (L : ℤ) := ⟨∑ t ∈ E, (μ t : ℤ) * ((L / t : ℕ) : ℤ), hInt⟩
   exact hpL (Int.natCast_dvd_natCast.mp hdvdZ)

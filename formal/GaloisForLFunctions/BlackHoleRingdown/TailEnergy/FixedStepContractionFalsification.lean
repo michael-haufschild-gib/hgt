@@ -1059,7 +1059,8 @@ theorem exists_two_pulse_deep_tail_contraction_falsifier {S₀ L η : ℝ}
     have hsqrt_μ_le : Real.sqrt μ ≤ (1 / 4) * Real.sqrt Eg₀ := by
       have hsq' : (Real.sqrt μ) ^ 2 ≤ ((1 / 4) * Real.sqrt Eg₀) ^ 2 := by
         rw [Real.sq_sqrt hμ_pos.le, mul_pow, Real.sq_sqrt hEg₀_pos.le]
-        dsimp only [μ]; linarith
+        dsimp only [μ]
+        exact mul_le_mul_of_nonneg_right (by linarith : η / 16 ≤ (1 / 4) ^ 2) hEg₀_pos.le
       have habs := sq_le_sq.mp hsq'
       rwa [abs_of_nonneg (Real.sqrt_nonneg _), abs_of_nonneg (by positivity)] at habs
     have hsub : (3 / 4) * Real.sqrt Eg₀ ≤ Real.sqrt Eg₀ - Real.sqrt μ := by
@@ -1067,9 +1068,13 @@ theorem exists_two_pulse_deep_tail_contraction_falsifier {S₀ L η : ℝ}
     have hsq := pow_le_pow_left₀ (by positivity) hsub 2
     rw [mul_pow, Real.sq_sqrt hEg₀_pos.le] at hsq
     rw [show (Real.sqrt μ - Real.sqrt Eg₀) ^ 2 = (Real.sqrt Eg₀ - Real.sqrt μ) ^ 2 by ring] at hb_early
-    nlinarith
+    exact (mul_le_mul_of_nonneg_right (by norm_num : (1 / 2 : ℝ) ≤ (3 / 4) ^ 2)
+      hEg₀_pos.le).trans (hsq.trans hb_early)
   have hdeep : tailEnergy (g.phaseMix φ w) T ≤ η * ∫ S : ℝ, ‖(g.phaseMix φ w) S‖ ^ 2 := by
-    have h2 : 2 * μ ≤ η * ((1 / 2) * Eg₀) := by dsimp only [μ]; nlinarith
+    have h2 : 2 * μ ≤ η * ((1 / 2) * Eg₀) := by
+      dsimp only [μ]
+      have : 0 ≤ η * Eg₀ := by positivity
+      linarith
     exact hET_2μ.trans (h2.trans (mul_le_mul_of_nonneg_left hinit_lo hη0.le))
   exact ⟨hET_pos, hdeep, hstall⟩
 

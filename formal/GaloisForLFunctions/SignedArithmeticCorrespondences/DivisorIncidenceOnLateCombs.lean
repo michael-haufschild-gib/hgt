@@ -326,7 +326,9 @@ theorem combFormW_liouville_sub_combForm_coprime (N K d : ℕ)
         if ¬ IsSquare r then 2 * ((Λ r : ℝ) * ∑ m ∈ combSlice N K r, v m ^ 2) else 0 := by
     refine sum_congr rfl fun r _ => ?_
     unfold SelectiveArithmetic.liouvilleWeight
-    by_cases hs : IsSquare r <;> simp [hs] <;> ring
+    by_cases hs : IsSquare r
+    · simp [hs]
+    · simp [hs]; ring
   rw [hrew]
   have hpull : (∑ r ∈ Icc 2 (3 * K),
         if ¬ IsSquare r then 2 * ((Λ r : ℝ) * ∑ m ∈ combSlice N K r, v m ^ 2) else 0) =

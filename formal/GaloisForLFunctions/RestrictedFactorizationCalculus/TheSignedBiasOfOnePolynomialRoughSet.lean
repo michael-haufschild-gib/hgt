@@ -67,7 +67,7 @@ private theorem frozen_points_pass_their_own_cutoff {θ : ℝ} (hθ : 0<θ) {k X
   intro p hp
   have bound : powerCutoff θ n ≤ powerCutoff θ X := Nat.floor_le_floor
     (Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.cast_le.mpr ((mem_Icc.mp hi).2.trans hk)) hθ.le)
-  exact bound.trans_lt (lt_of_not_ge (free.2 p hp))
+  exact bound.trans_lt (lt_of_not_ge (show ¬p ≤ powerCutoff θ X from free.2 p hp))
 
 /-- Under a polynomial cutoff, both changing the logarithmic weight and
 rounding each rough cofactor floor cost at most X/log X. -/

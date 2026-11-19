@@ -52,7 +52,8 @@ private theorem split_reading (y t : ℕ) :
     have pos := (mem_Icc.mp hd).1
     have minp : d.minFac ∈ d.primeFactors := Nat.mem_primeFactors.mpr
       ⟨Nat.minFac_prime one,Nat.minFac_dvd _,good.1⟩
-    have high : y<d := (lt_of_not_ge (good.2 _ minp)).trans_le (Nat.le_of_dvd pos (Nat.minFac_dvd _))
+    have high : y<d := (lt_of_not_ge (show ¬d.minFac ≤ y from good.2 _ minp)).trans_le
+      (Nat.le_of_dvd pos (Nat.minFac_dvd _))
     simp [roughProperPowerWeight,hp,good,high,show 1<d by omega]
   · simp [roughProperPowerWeight,hp,good]
 

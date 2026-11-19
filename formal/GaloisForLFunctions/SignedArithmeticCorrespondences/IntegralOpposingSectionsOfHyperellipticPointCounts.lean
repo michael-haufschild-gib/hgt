@@ -26,7 +26,7 @@ def integralFrobeniusPolynomial (f : F[X]) : ℤ[X] :=
 private theorem integralPolynomial_map (f : F[X]) :
     (integralFrobeniusPolynomial f).map (Int.castRingHom ℂ) = lPoly f := by
   classical
-  simp [integralFrobeniusPolynomial,lPoly,degSum,degSumW,hypW,Polynomial.map_sum]
+  simp [integralFrobeniusPolynomial,lPoly,RHTower.Hyperelliptic.degSum,degSumW,hypW,Polynomial.map_sum]
 
 private abbrev ev (z : ℂ) : ℤ[X] →+* ℂ := eval₂RingHom (Int.castRingHom ℂ) z
 
@@ -47,7 +47,8 @@ theorem integralFrobeniusPolynomial_constant_ne_zero (hF : ringChar F ≠ 2) {f 
     apply (mem_roots (lPoly_monic f hodd.pos).ne_zero).mpr
     rw [IsRoot,← coeff_zero_eq_eval_zero,← integralPolynomial_map,coeff_map,he,map_zero]
   have hn := (riemannHypothesis_oddHyperelliptic.{_,0} hF hsq hodd).2.1 0 hz
-  exact (Real.sqrt_pos.mpr (Nat.cast_pos.mpr Fintype.card_pos)).ne' (by simpa using hn.symm)
+  have hpos : (0:ℝ)<Fintype.card F := Nat.cast_pos.mpr Fintype.card_pos
+  exact (Real.sqrt_pos.mpr hpos).ne' (by simpa using hn.symm)
 
 private theorem root_evaluates_zero {f : F[X]} (i : Fin (lRoots f).toList.length) :
     ev (rootEnum (lRoots f) i) (integralFrobeniusPolynomial f) = 0 := by
@@ -80,7 +81,7 @@ theorem opposingFrobeniusSection_eval {A P : ℤ[X]} {q : ℕ} {z : ℂ}
     rw [map_neg,mul_neg]
     linear_combination -he
   have hv : ev z (∑ j ∈ P.support, C (P.coeff j*(q:ℤ)^j)*X^(m-j)) = z^m*conj (ev z P) := by
-    simp only [map_sum,map_mul,ev_C,map_pow,ev_X,Int.cast_mul,Int.cast_pow,Int.cast_natCast,
+    simp only [map_sum,map_mul,ev_C,map_pow,ev_X,Int.cast_natCast,
       ev_expansion P z,map_intCast,mul_sum]
     refine sum_congr rfl fun j hj => ?_
     have hjm := le_natDegree_of_ne_zero (mem_support_iff.mp hj)
@@ -91,7 +92,10 @@ theorem opposingFrobeniusSection_eval {A P : ℤ[X]} {q : ℕ} {z : ℂ}
   rw [map_mul,map_mul,map_pow,map_pow,ev_C,hv]
   change z^L*ev z P*(c^(L+m)*s^(L+m)*(z^m*conj (ev z P))) = (c^(L+m))^2*_
   calc _ = c^(L+m)*(z*s)^(L+m)*(ev z P*conj (ev z P)) := by rw [mul_pow,pow_add z]; ring
-       _ = _ := by rw [hsc,Complex.mul_conj']; ring
+       _ = _ := by
+         rw [hsc,Complex.mul_conj']
+         simp only [ev,coe_eval₂RingHom]
+         ring
 
 /-- Pole-subtracted mixed trace in strictly positive extension degrees.
 Every entry of pointCount is the affine point cardinality plus infinity. -/
@@ -158,7 +162,7 @@ theorem hyperelliptic_opposing_square (hF : ringChar F ≠ 2) {f : F[X]} (hsq : 
   have hq : z*conj z=(Fintype.card F:ℂ) := by
     rw [Complex.mul_conj',← Complex.ofReal_pow,norm_rootEnum_eq hF hsq hodd i,
       Real.sq_sqrt (Nat.cast_nonneg _),Complex.ofReal_natCast]
-  simpa only [Complex.ofReal_pow,Complex.ofReal_intCast] using
+  simpa only [A,ev,coe_eval₂RingHom,Complex.ofReal_pow,Complex.ofReal_intCast] using
     opposingFrobeniusSection_eval (P := P) (root_evaluates_zero i) hq (L:ℕ)
 
 /-- At each extension degree the measured trace is obtained by counting

@@ -66,7 +66,7 @@ private theorem pow_four_mul_exp_neg_le {t : ℝ} (ht : 0 ≤ t) :
     t ^ 4 * Real.exp (-t) ≤ 4096 * Real.exp (-(t / 2)) := by
   have h1 : t / 8 ≤ Real.exp (t / 8) := by linarith only [Real.add_one_le_exp (t / 8)]
   have h4 : (t / 8) ^ 4 ≤ Real.exp (t / 8) ^ 4 := pow_le_pow_left₀ (by positivity) h1 4
-  rw [← Real.exp_nat_mul, show ((4 : ℕ) : ℝ) * (t / 8) = t / 2 by norm_num; ring] at h4
+  rw [← Real.exp_nat_mul, show ((4 : ℕ) : ℝ) * (t / 8) = t / 2 by push_cast; ring] at h4
   have ht4 : t ^ 4 ≤ 4096 * Real.exp (t / 2) := by
     have e : (t / 8) ^ 4 = t ^ 4 / 4096 := by ring
     rw [e, div_le_iff₀ (by norm_num)] at h4
@@ -787,7 +787,9 @@ theorem criticalState_boundary_fourier_tail_zero {W₀ : ℝ} (hW : 0 < W₀)
     have hm := mul_le_mul_of_nonneg_left htsum_le hT0.le
     calc T * ∑' k : ℕ, ∫ y in S k, P y
         ≤ T * (ε / 4 / T * (1 - 1 / 2)⁻¹) := hm
-      _ = ε / 2 := by norm_num; field_simp [hT0.ne']; ring
+      _ = ε / 2 := by
+          rw [show (1 - 1 / 2 : ℝ)⁻¹ = 2 by norm_num]
+          field_simp [hT0.ne']
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (mul_nonneg hT0.le
     (integral_nonneg fun _ => sq_nonneg _))]
   linarith
@@ -1082,17 +1084,18 @@ private theorem pi_sub_div_le_setIntegral_poissonKernel (γ : ℝ) {R : ℝ} (hR
       · rw [indicator_of_mem hu]
         rcases le_or_gt u (-R) with hle | hgt
         · rw [indicator_of_mem (mem_Iic.mpr hle)]
-          linarith [indicator_nonneg (fun x _ => hK_nn x) u]
+          linarith [indicator_nonneg (s := Ici R) (fun x _ => hK_nn x) u]
         · have hge : R ≤ u := not_lt.mp fun hlt => hu ⟨hgt, hlt⟩
           rw [indicator_of_mem (mem_Ici.mpr hge)]
-          linarith [indicator_nonneg (fun x _ => hK_nn x) u]
+          linarith [indicator_nonneg (s := Iic (-R)) (fun x _ => hK_nn x) u]
     have hm : (∫ u, ((Ioo (-R) R)ᶜ).indicator K u) ≤
         ∫ u, ((Iic (-R)).indicator K u + (Ici R).indicator K u) :=
       integral_mono (hKi.integrableOn.integrable_indicator measurableSet_Ioo.compl)
         (hi1.add hi2) hpt
     rw [integral_indicator measurableSet_Ioo.compl, integral_add hi1 hi2,
       integral_indicator measurableSet_Iic, integral_indicator measurableSet_Ici] at hm
-    linarith [hm, hray_L, hray_R]
+    have h48 : 4 / R + 4 / R = 8 / R := by ring
+    linarith [hm, hray_L, hray_R, h48]
   linarith
 
 private theorem tendsto_mul_setIntegral_Ioi_of_sq_tendsto {g : ℝ → ℝ}

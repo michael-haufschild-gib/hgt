@@ -282,7 +282,7 @@ private theorem uniform_rough_count_and_variation {δ : ℝ} (hδ : 0<δ) :
       intro n hn
       obtain ⟨hi,free⟩ := mem_filter.mp hn
       exact mem_filter.mpr ⟨hi,RHTower.coprime_primorial_of_primeFactors_gt (mem_Icc.mp hi).1
-        (fun p hp => zy.trans_lt (lt_of_not_ge (free.2 p hp)))⟩
+        (fun p hp => zy.trans_lt (lt_of_not_ge (show ¬p ≤ y from free.2 p hp)))⟩
     have total := ((Nat.cast_le (α := ℝ)).mpr (card_le_card sub)).trans (coprime_population_in_a_prefix Q qp N)
     have eq : (Q.totient:ℝ)*((N:ℝ)/Q+1)=((Q.totient:ℝ)/Q)*N+K := by dsimp only [K]; ring
     rw [eq] at total

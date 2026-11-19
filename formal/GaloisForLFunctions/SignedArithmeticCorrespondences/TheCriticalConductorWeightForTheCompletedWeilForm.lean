@@ -35,7 +35,7 @@ private theorem inv_weight_summable : Summable (fun k => (1/criticalConductorWei
   have hk : 1≤n+1 := Nat.succ_pos _
   simp only [criticalConductorWeight,max_eq_left hk,div_pow,one_pow,mul_pow,
     Real.sq_sqrt (Nat.cast_nonneg _)]
-  ring
+  rw [pow_succ _ 2]
 
 /-- The weighted quotient price has finite square mass at n^(3/2). -/
 theorem critical_quotient_price_summable {c : ℝ} (hc : 0<c) :
@@ -56,13 +56,13 @@ theorem critical_quotient_price_summable {c : ℝ} (hc : 0<c) :
   let e := Real.exp (-c*Real.sqrt (Real.log k))
   have he : e≤1 := Real.exp_le_one_iff.mpr (mul_nonpos_of_nonpos_of_nonneg hc.le.neg (Real.sqrt_nonneg _))
   have he₂ : e^2≤C/(Real.log k)^2 :=
-    (show e^2≤e by nlinarith only [mul_nonneg (Real.exp_pos _).le (sub_nonneg.mpr he)]).trans
+    (show e^2≤e by rw [sq]; exact mul_le_of_le_one_right (Real.exp_pos _).le he).trans
       (_root_.RHTower.PrimeCells.exp_neg_mul_sqrt_le hc hl 2)
   change (((k:ℝ)*e)/criticalConductorWeight k)^2 ≤ C*(1/((k:ℝ)*Real.log k^2))
   have hz : ((k:ℝ)*e)/criticalConductorWeight k=e/Real.sqrt (k:ℝ) := by
     rw [criticalConductorWeight,max_eq_left hk,mul_div_mul_left _ _ hkR.ne']
   rw [hz,div_pow,Real.sq_sqrt hkR.le]
-  exact (div_le_div_of_nonneg_right he₂ hkR.le).trans_eq (by ring)
+  exact (div_le_div_of_nonneg_right he₂ hkR.le).trans_eq (by simp only [div_eq_mul_inv,mul_inv_rev,one_mul]; ring)
 
 /-- Uniform independent conductor energies pay the two-sided Chebyshev
 variation and the actual integrated half-jet at every cutoff. -/

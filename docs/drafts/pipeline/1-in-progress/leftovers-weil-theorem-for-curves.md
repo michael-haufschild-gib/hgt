@@ -44,6 +44,8 @@ Modules in `CurvesOverFiniteFields/`, all checked, wired into `CurvesOverFiniteF
 | `ValuationSpaces` | spaces cut out by valuation bounds; raising a divisor by one at v adds exactly dim_F(R/v) (`finrank_valSpace_step`) |
 | `MayerVietoris` | dim N/M = dim (N⊓U)/(M⊓U) + dim (N⊔U)/(M⊔U) |
 | `EulerCharacteristic` | χ = dim(M⊓U) − dim V/(M⊔U) grows by dim N/M, finiteness both ways (`euler_step`, `euler_step_down`) |
+| `Divisors` | divisors on finite and infinite places, `Divisor.deg`, L(D) = I(D) ⊓ J(D), H¹(D) = K/(I(D) ⊔ J(D)), χ = ℓ − h¹; one-place steps (`chi_raiseFin`, `chi_raiseInf`); if L(0), H¹(0) are finite then every D has finite L, H¹ and χ(D) = deg D + χ(0) (`chi_eq_deg_add_chi_zero`) |
 
-Next: divisors on the curve, χ(D) = deg D + χ(0) by induction, base case ℓ(0) = 1 (exact constant
-field) and finite h¹(0) = g; then steps 3–9 above.
+Next: base case — ℓ(0) = 1 (the two charts meet in the constants, from the exact-constant-field
+hypothesis) and h¹(0) = dim K/(A + O∞) finite; this gives Riemann's theorem χ(D) = deg D + 1 − g.
+Then steps 3–9 above.
