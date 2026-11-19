@@ -1250,7 +1250,7 @@ private theorem reflectedComposite_theta_perturbation_violated {Δ : ℝ → ℝ
       rw [hF_op, hG_op, hF_mid, hG_mid]; ring
     rw [hid_eq]
     have hcent := large_prime_cofactor_centering hn1_lt hP_2n
-    rw [← squarefreeDivisorMass, hmass2] at hcent
+    rw [hmass2] at hcent
     have hcent_cost :
         7 * (P : ℝ) + (Chebyshev.psi (4 * n : ℕ) - Chebyshev.theta (4 * n : ℕ)) + 1 ≤
           (15 + 2 * |A_pt|) * Real.sqrt n := by

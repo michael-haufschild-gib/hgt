@@ -137,7 +137,7 @@ theorem interior_reads_the_logarithmic_tail {y : ℕ} (hy : 0<y) (X T : ℕ) :
   rw [centered_eq_rough_reading_sub_smooth hy,full_rough_reading hy] at split
   linarith only [split]
 
-/-- Both ordinary primes and prime powers admit the same unconditional
+/-- Both ordinary primes and prime powers satisfy the same unconditional
 transfer, including the final sharp prefix. -/
 theorem both_prime_readings_below_the_hyperbola (y X : ℕ) :
     ∀ a ∈ ({roughOrdinaryPrimeWeight y,roughMangoldtWeight y} : Finset (ArithmeticFunction ℝ)),

@@ -947,7 +947,7 @@ private theorem exists_scaled_trapping_pulse {S₀ μ δ : ℝ}
     exact mul_le_mul_of_nonneg_left (tailEnergy_le_initial p u) (sq_nonneg cw)
   · rw [hw_energy B, ← hcw_sq]
     have hp_ineq : (1 - δ / 2) ^ 2 * Ep₀ ≤ tailEnergy p B := by linarith
-    exact mul_le_mul_of_nonneg_left hp_ineq (sq_nonneg cw)
+    exact (le_of_eq (by ring)).trans (mul_le_mul_of_nonneg_left hp_ineq (sq_nonneg cw))
 
 private theorem dominant_stall_bound {g w : CompactPulse} {T L μ δ θ : ℝ}
     (hL : 0 < L) (hμ : 0 < μ) (hδ0 : 0 < δ) (hδ1 : δ ≤ 1 / 16)
@@ -970,7 +970,7 @@ private theorem dominant_stall_bound {g w : CompactPulse} {T L μ δ θ : ℝ}
   have hsqrt_wT : Real.sqrt (tailEnergy w T) ≤ Real.sqrt μ := Real.sqrt_le_sqrt hwT
   have hsqrt_wTL : (1 - δ / 2) * Real.sqrt μ ≤ Real.sqrt (tailEnergy w (T + L)) := by
     have := Real.sqrt_le_sqrt hwTL
-    rwa [Real.sqrt_mul (by linarith), Real.sqrt_sq (by linarith)] at this
+    rwa [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (by linarith)] at this
   have hETL_lo : (1 - δ) ^ 2 * μ ≤ tailEnergy (g.phaseMix φ w) (T + L) := by
     have hnn : 0 ≤ (1 - δ) * Real.sqrt μ := mul_nonneg (by linarith) hsqrt_μ_pos.le
     have hsub : (1 - δ) * Real.sqrt μ ≤
@@ -1054,17 +1054,19 @@ theorem exists_two_pulse_deep_tail_contraction_falsifier {S₀ L η : ℝ}
     have hb_early := (tailEnergy_phaseMix_bounds φ g w (-(S₀ + 1))).1
     rw [← meanZero_l2_eq_tailEnergy_early g hg_m hg_s,
       ← meanZero_l2_eq_tailEnergy_early w hw_m hw_s, hw_l2] at hb_early
+    change (Real.sqrt μ - Real.sqrt Eg₀) ^ 2 ≤
+      tailEnergy (g.phaseMix φ w) (-(S₀ + 1)) at hb_early
     have hsqrt_μ_le : Real.sqrt μ ≤ (1 / 4) * Real.sqrt Eg₀ := by
-      have h1 : μ ≤ (1 / 16) * Eg₀ := by dsimp only [μ]; nlinarith
-      have h2 := Real.sqrt_le_sqrt h1
-      rw [Real.sqrt_mul (by norm_num), show Real.sqrt (1 / 16 : ℝ) = 1 / 4 by
-        rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 1 / 4)]; congr 1; norm_num] at h2
-      exact h2
+      have hsq' : (Real.sqrt μ) ^ 2 ≤ ((1 / 4) * Real.sqrt Eg₀) ^ 2 := by
+        rw [Real.sq_sqrt hμ_pos.le, mul_pow, Real.sq_sqrt hEg₀_pos.le]
+        dsimp only [μ]; linarith
+      have habs := sq_le_sq.mp hsq'
+      rwa [abs_of_nonneg (Real.sqrt_nonneg _), abs_of_nonneg (by positivity)] at habs
     have hsub : (3 / 4) * Real.sqrt Eg₀ ≤ Real.sqrt Eg₀ - Real.sqrt μ := by
       linarith [Real.sqrt_nonneg Eg₀]
     have hsq := pow_le_pow_left₀ (by positivity) hsub 2
-    rw [mul_pow, Real.sq_sqrt hEg₀_pos.le,
-      show (Real.sqrt μ - Real.sqrt Eg₀) ^ 2 = (Real.sqrt Eg₀ - Real.sqrt μ) ^ 2 by ring] at hb_early hsq
+    rw [mul_pow, Real.sq_sqrt hEg₀_pos.le] at hsq
+    rw [show (Real.sqrt μ - Real.sqrt Eg₀) ^ 2 = (Real.sqrt Eg₀ - Real.sqrt μ) ^ 2 by ring] at hb_early
     nlinarith
   have hdeep : tailEnergy (g.phaseMix φ w) T ≤ η * ∫ S : ℝ, ‖(g.phaseMix φ w) S‖ ^ 2 := by
     have h2 : 2 * μ ≤ η * ((1 / 2) * Eg₀) := by dsimp only [μ]; nlinarith
@@ -1210,8 +1212,8 @@ private theorem staircase_step {K : ℕ} {S₀ L η θ : ℝ}
   -- Define `T' : Fin (K + 2) → ℝ` via `Fin.lastCases T_next T`
   set T' : Fin (K + 2) → ℝ := Fin.lastCases T_next T
   have hT'_zero : T' 0 = T 0 := by
-    show Fin.lastCases T_next T (0 : Fin (K + 1)).castSucc = T 0
-    exact Fin.lastCases_castSucc T_next T 0
+    dsimp only [T']
+    rw [show (0 : Fin (K + 2)) = (0 : Fin (K + 1)).castSucc by ext; rfl, Fin.lastCases_castSucc]
   have hdom_next := dominant_stall_bound hL (sq_pos_of_pos hr₀_pos) hδ0 hδ1 hθ_ratio
     hEh_next.le (hw_le T_next) hw_trap 0
   have hp0_eq : tailEnergy (h.phaseMix 0 w) = tailEnergy (h.add w) := by
@@ -1226,7 +1228,8 @@ private theorem staircase_step {K : ℕ} {S₀ L η θ : ℝ}
       rw [Fin.lastCases_castSucc, Fin.succ_last, Fin.lastCases_last]
       exact hT_next_gt
     · dsimp only [T']
-      rw [Fin.lastCases_castSucc, ← Fin.succ_castSucc, Fin.lastCases_castSucc]
+      rw [Fin.lastCases_castSucc,
+        show j₀.castSucc.succ = j₀.succ.castSucc by ext; rfl, Fin.lastCases_castSucc]
       exact hsep j₀
   · rw [hT'_zero]
     exact (hE_up (T 0)).trans_lt (lt_of_lt_of_le hr_init
@@ -1238,7 +1241,8 @@ private theorem staircase_step {K : ℕ} {S₀ L η θ : ℝ}
       exact hdom_next.2.1.trans_lt (lt_of_lt_of_le hr_last
         (mul_le_mul_of_nonneg_left (hE_lo (T (Fin.last K) + L)) hη0.le))
     · dsimp only [T']
-      rw [← Fin.succ_castSucc, Fin.lastCases_castSucc, Fin.lastCases_castSucc]
+      rw [show j₀.castSucc.succ = j₀.succ.castSucc by ext; rfl,
+        Fin.lastCases_castSucc, Fin.lastCases_castSucc]
       have hj := hr_inter j₀
       rw [abs_of_pos hr₀_pos] at hj
       exact (hE_up (T j₀.succ)).trans_lt (lt_of_lt_of_le hj

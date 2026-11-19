@@ -13,7 +13,9 @@ floor tends to infinity even on arbitrary subcombs.
 
 noncomputable section
 namespace GaloisForLFunctions.SignedArithmeticCorrespondences
-open Finset Filter Topology AbsoluteGeometryOfSpecZ HodgeTheoryOfAFixedPart
+open Finset Filter Topology HodgeTheoryOfAFixedPart
+open AbsoluteGeometryOfSpecZ (flatPairing flatPairing_self flatPacket jetKernel stepPacket
+  packetForm_flatPacket_eq tendsto_combForm_blockFunction_div tendsto_riemannSum_of_continuousOn_Ioc)
 open scoped ArithmeticFunction.vonMangoldt
 
 /-- Exact dilation law for the whole square. The part with no reciprocal
@@ -73,10 +75,10 @@ theorem flat_dyadic_comb_limit :
     (by decide) (by decide) (fun _ => 1)
   have hp : stepPacket 1 1 (fun _ => 1) = flatPacket 1 2 := by
     funext x
-    simp [stepPacket]
-  rw [hp,packetForm_flatPacket_eq (a := 1) (b := 2) (by decide) (by decide) 2] at h
-  norm_num at h
-  simpa only [one_mul,mul_one] using h
+    norm_num [stepPacket]
+  have he := packetForm_flatPacket_eq (a := 1) (b := 2) (by decide) (by decide) 2
+  norm_num at he
+  simpa only [one_mul,mul_one,hp,he] using h
 
 /-- For each window ratio at least two, spacing one is the unique positive
 integer spacing at which uniform coefficient-mass floors cannot diverge. -/
@@ -103,7 +105,9 @@ private theorem mean_dyadic_diagonal :
       (𝓝 (2*Real.log 2-1-Real.log (2*Real.pi))) := by
   let g := fun y : ℝ => Real.log (1+y)
   have hg : ContinuousOn g (Set.Ioc 0 1) :=
-    (continuous_const.add continuous_id).continuousOn.log (fun y hy => by linarith only [hy.1])
+    (continuous_const.add continuous_id).continuousOn.log (fun y hy => by
+      change 1+y≠0
+      linarith only [hy.1])
   have hbound (y : ℝ) (hy : y∈Set.Ioc 0 1) : |g y|≤Real.log 2 := by
     change |Real.log (1+y)|≤_
     rw [abs_of_nonneg (Real.log_nonneg (by linarith only [hy.1]))]
@@ -136,6 +140,7 @@ private theorem mean_dyadic_diagonal :
   rw [hs,sum_image (fun _ _ _ _ h => by dsimp only [f] at h; omega)]
   simp only [hentry,sum_sub_distrib,sum_add_distrib,sum_const,card_range,nsmul_eq_mul]
   field_simp
+  ring
 
 private theorem dyadic_contact_zero {N m n : ℕ} (hm : m∈Ioc N (N+N)) (hn : n∈Ioc N (N+N))
     (he : m≠n) : HodgeTheoryOfAFixedPart.contact m n=0 := by
@@ -169,7 +174,7 @@ theorem flat_dilated_comb_finite_part (d : ℕ+) :
   have hn : (N:ℝ)≠0 := (Nat.cast_pos.mpr hN).ne'
   have hd : (d:ℝ)≠0 := (Nat.cast_pos.mpr d.pos).ne'
   field_simp
-  <;> ring
+  ring
 
 #print axioms flat_dilated_comb_finite_part
 #print axioms flat_dyadic_comb_limit

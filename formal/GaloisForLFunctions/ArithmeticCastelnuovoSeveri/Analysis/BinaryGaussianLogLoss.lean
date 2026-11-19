@@ -42,7 +42,8 @@ private theorem logG_mean (p q : ℝ × ℝ) :
   have h : (∫ x, (x-q.1)^2 ∂law p) = Real.exp p.2+(p.1-q.1)^2 := by
     rw [show law p = gaussianReal p.1 σ from rfl,gauss_shifted_moment]
     norm_num [Finset.sum_range_succ,h2,HTGeometry.integral_pow_one_gaussianReal,
-      HTGeometry.integral_pow_zero_gaussianReal,σ,Real.coe_toNNReal _ (Real.exp_pos _).le] <;> ring
+      HTGeometry.integral_pow_zero_gaussianReal,σ,Real.coe_toNNReal _ (Real.exp_pos _).le]
+    ring
   simp_rw [logG_formula]
   have hi : Integrable (fun x : ℝ => (x-q.1)^2) (law p) :=
     gauss_offset_integrable p.1 q.1 σ 2
@@ -144,10 +145,12 @@ theorem component_label_loss (u v a b l t w : ℝ) :
   have hM := logM_int u v a b l (t,l)
   have hG := logG_int (t,l) (t,l)
   have hD : D = ∫ x, logG (t,l) x-logM u v a b l x ∂law (t,l) :=
-    (density_kl (positionGaussianDensity_cont (t,l)) (splitGaussianDensity_cont u v (a,l) (b,l))
+    (density_kl (Q := splitGaussian u v (a,l) (b,l))
+      (positionGaussianDensity_cont (t,l)) (splitGaussianDensity_cont u v (a,l) (b,l))
       (positionGaussianDensity_pos _) (splitGaussianDensity_pos _ _ _ _) (law_density _) rfl (hG.sub hM)).2
   have score : -w-D = ∫ x, logM u v a b l x-logG (t,l) x-w ∂law (t,l) := by
-    rw [hD,integral_sub hG hM,integral_sub (hM.sub hG) (integrable_const _),integral_sub hM hG]
+    have hMG : Integrable (fun x => logM u v a b l x-logG (t,l) x) (law (t,l)) := hM.sub hG
+    rw [hD,integral_sub hG hM,integral_sub hMG (integrable_const w),integral_sub hM hG]
     simp only [integral_const,probReal_univ,one_smul]
     ring
   change -p*w-p*D = _
@@ -157,8 +160,11 @@ theorem component_label_loss (u v a b l t w : ℝ) :
   apply integral_congr_ae
   apply ae_of_all
   intro x
-  rw [Real.log_mul (Real.exp_ne_zero _) (positionGaussianDensity_pos _ _).ne',show Real.log p=w from Real.log_exp _]
-  change p*(positionGaussianDensity (t,l) x*(_-_ - w)) = _
+  change p*(positionGaussianDensity (t,l) x*(logM u v a b l x-logG (t,l) x-w)) =
+    p*positionGaussianDensity (t,l) x*(Real.log (splitGaussianDensity u v (a,l) (b,l) x)-
+      Real.log (p*positionGaussianDensity (t,l) x))
+  rw [Real.log_mul (show p≠0 from Real.exp_ne_zero w) (positionGaussianDensity_pos (t,l) x).ne',
+    show Real.log p=w from Real.log_exp _]
   unfold logG logM
   ring
 
@@ -203,7 +209,8 @@ theorem mixture_decomposition (u v a b l m j : ℝ) :
   have ub (t w : ℝ) (hl : ∀ x, Real.log w+logG (t,l) x ≤ f x) :
       (klDiv (positionGaussian t l) M).toReal ≤ -Real.log w := by
     have he := integral_mono ((integrable_const _).add (logG_int (t,l) (t,l))) (logM_int _ _ _ _ _ (t,l)) hl
-    rw [integral_add (integrable_const _) (logG_int _ _),integral_const] at he
+    change (∫ x, Real.log w+logG (t,l) x ∂law (t,l)) ≤ ∫ x, f x ∂law (t,l) at he
+    rw [integral_add (integrable_const (Real.log w)) (logG_int (t,l) (t,l)),integral_const] at he
     simp only [probReal_univ,one_smul] at he
     rw [(split t).2]
     linarith only [he]
@@ -215,8 +222,11 @@ theorem mixture_decomposition (u v a b l m j : ℝ) :
       integral_add_measure ((h a).smul_measure ENNReal.ofReal_ne_top) ((h b).smul_measure ENNReal.ofReal_ne_top),
       integral_smul_measure,integral_smul_measure]
     simp only [ENNReal.toReal_ofReal (lengthRatio_pos _ _).le,smul_eq_mul,p,q,A,B]
-  rw [em,em',(split a).2,(split b).2,single a,single b,integral_sub (logM_int _ _ _ _ _ _) (logG_int _ _),
-    integral_sub (logM_int _ _ _ _ _ _) (logG_int _ _)]
+  have eval (t : ℝ) : (∫ x, f x-g x ∂positionGaussian t l) =
+      (∫ x, f x ∂positionGaussian t l)-(∫ x, g x ∂positionGaussian t l) :=
+    integral_sub (logM_int u v a b l (t,l)) (logG_int (t,l) (m,j))
+  dsimp only [A,B] at em'
+  rw [em,em',(split a).2,(split b).2,single a,single b,eval a,eval b]
   ring
 
 #print axioms gaussian_kl

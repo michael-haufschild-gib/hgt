@@ -1,6 +1,6 @@
 # Total variation of the removed quotient head
 
-- **Stage** 1-in-progress
+- **Stage** 3-formalized
 - **Question** Does recomputing the rough interpolation at every moving prime wall accumulate more than its square-root price?
 
 For any fixed increments \(|a|\le\Lambda\), sieve by the primorial at each wall \(y_i\). Write \(H_i=\min(X_i,T_i)\). The paid head is
@@ -17,6 +17,4 @@ Allow the arithmetic weight itself to change at every observation. If \(\sum_i|a
 
 For the original prime-power center also retain \(-y_i\Psi(\lfloor X_i/y_i\rfloor,y_i)\). On each constant-wall interval its magnitude is increasing. If the final observation is \(X\) and \(y_i=\lfloor\log(X_i+1)\rfloor^2\), its total variation is at most twice the number of distinct walls times \(\max_{y\le b(X)}y\Psi(\lfloor X/y\rfloor,y)\). The latter is \(\sqrt X\exp(O(\log X/\log\log X))\). Thus the same scale pays all changes to the actual centered reading after its terminal cofactors have been removed. The signed smaller-cofactor reading remains.
 
-The signed difference between the original floor-centered reading and the corrected interior equals \(-y\Psi(\lfloor X/y\rfloor,y)\) up to \(\sqrt X\log X\), uniformly in the selected Mangoldt weights. At the log-square wall the smooth lower bound therefore forces this particular difference to be negative at every large endpoint, with ratio tending to one against the negative center. Its magnitude also gives a lower bound for the full path variation from a fixed starting cut. The same identity keeps the negative smooth bias at a polynomial wall.
-
-**Sharpness question.** For the natural log-square wall and the hyperbola head, the proposed total variation for the Mangoldt weight is asymptotic to \(e^{-\gamma}\sqrt X\log X/(4\log\log X)\). The square at \(d^2\) contributes \(|\mu_{b(d^2)}(d)|\log d\). A jump from \((k-1)^2\) to \(k^2\) in the primorial changes only coefficients divisible by a prime in that interval. The total absolute change at that jump is \(O(e^{k/2})\), by counting multiples, hence \(O(\sqrt X)\) over all such jumps. The remaining input is the weighted squarefree rough population at its moving cutoff. For ordinary primes the extra singly squared prime must exceed the cutoff; determining its contribution gives a second test of the leading coefficient.
+**Lean.** `variation_with_changes_of_arithmetic_reading` retains every coefficient change at its arrival wall. `total_cost_of_changing_rough_prime_readings` and `independent_changes_of_every_prime_power` give the uniform varying-weight estimates. `total_variation_of_the_centered_hyperbola_transfer` includes the signed smooth center of the actual log-square prime-power sequence. [Total variation on every increasing subdivision](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/TotalVariationOfTheRemovedQuotientHead.lean)

@@ -16,6 +16,8 @@ It vanishes outside \([2n/P,4n/P]\), peaks at \(P/3\) at \(3n/P\), and has integ
 \]
 Indeed the cofactors above height \(y\) lie between those two moving endpoints before taking fractional parts. Counting the lattice points by the difference of floors and integrating gives the formula. Including an endpoint at its own height leaves its integral unchanged. Hence \(|E(m,P)|\le P/3\). More precisely \(|E(m,P)|\ll\min(m,P^2/m)\). The discrete clipped sum has at most \(4m/P\) terms of height at most \(P/3\), and its integral is \(cm\). For the second bound write \(s(u)=\{u\}-1/2\). The two means cancel, and substitution gives \(2m\int_{2m/P}^{3m/P}s(u)u^{-2}du-4m\int_{3m/P}^{4m/P}s(u)u^{-2}du\). Integration by parts uses the bounded primitive \((\{u\}^2-\{u\})/2\). At the report's cutoff, prime centers therefore have \(O(1)\) discrete clipping error. The divisor bound and its prime-center specialization are proved on paper. [Lean formalization in progress](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/TheClippedCofactorDensityAtThePrimeMidpoint.lean#L177)
 
+**Moving cofactor cutoff.** Completing each divisible row to its factorial ratio removes all \(2\le v\le V\) at the original center for \(O_\varepsilon(Vn^{1/2+\varepsilon})\). At \(V=\lceil\sqrt{4n/Q}\rceil\) the remaining cofactor is prime or \(V\)-smooth with radical above \(V\). The complete weighted prime and smooth sum still requires a one-sided estimate. [Paper reduction and Lean status](acs-pvc-factorial-completion-of-divisible-cofactor-rows.md)
+
 **One boundary term for an arbitrary chain of partial cofactor blocks.** For an integer \(V\ge1\) define
 \[
  T_V(p)=(4n/p-V)_+-2(3n/p-V)_++(2n/p-V)_+ .

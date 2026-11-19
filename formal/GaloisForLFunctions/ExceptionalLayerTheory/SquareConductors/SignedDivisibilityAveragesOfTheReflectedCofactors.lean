@@ -70,11 +70,9 @@ theorem first_projected_cofactor_octave {V v : ℕ} (hv : 1 < v) (hlo : V < v) (
       by_contra h
       obtain ⟨j,hj⟩ := Nat.dvd_of_mem_divisors he
       have hj2 : 2 ≤ j := by
-        rcases j with _ | j
-        · simp only [mul_zero] at hj; omega
-        · rcases j with _ | j
-          · simp only [mul_one] at hj; exact False.elim (h hj.symm)
-          · omega
+        have hj0 : j ≠ 0 := by rintro rfl; rw [mul_zero] at hj; omega
+        have hj1 : j ≠ 1 := by rintro rfl; exact h (by simpa only [mul_one] using hj.symm)
+        omega
       have h2 := Nat.mul_le_mul_left e hj2
       rw [←hj] at h2
       omega
@@ -120,7 +118,8 @@ theorem surviving_cofactor_with_large_prime {V v p : ℕ} (hv : 1 ≤ v) (hsq : 
     constructor
     · intro h; simpa only [h,one_mul] using hmul.symm
     · rintro rfl; exact Nat.div_self hp.pos
-  rw [←hmul,projected_weight_at_large_prime hp hVp hu huV,hmul,eq1]
+  rw [←hmul,projected_weight_at_large_prime hp hVp hu huV,hmul]
+  simp only [eq1]
 
 #print axioms surviving_cofactor_with_large_prime
 
@@ -183,14 +182,18 @@ theorem sampled_cofactor_frequency_error {v L : ℕ} (hv : 0 < v) (hL : 0 < L) (
     |sampledCofactorFrequency v d a L-(if v.Coprime d then (v.totient:ℝ)/v else 0)| ≤
       squarefreeDivisorMass v/L := by
   by_cases hc : v.Coprime d
-  · simp only [sampledCofactorFrequency,Nat.coprime_mul_iff_right,hc,true_and,if_true]
+  · have eqn (k : ℕ) : v.Coprime (d*k) ↔ v.Coprime k :=
+      Nat.coprime_mul_iff_right.trans (and_iff_right hc)
+    rw [if_pos hc]
+    simp only [sampledCofactorFrequency,eqn]
     have hL' := (Nat.cast_pos (α:=ℝ)).mpr hL
     rw [show (∑ k ∈ Ioc a (a+L),if v.Coprime k then (1:ℝ) else 0)/L-(v.totient:ℝ)/v =
       ((∑ k ∈ Ioc a (a+L),if v.Coprime k then (1:ℝ) else 0)-(v.totient:ℝ)/v*L)/L by
         rw [sub_div,mul_div_cancel_right₀ _ hL'.ne'],abs_div,abs_of_pos hL']
     exact div_le_div_of_nonneg_right (primitive_window_error hv a L) hL'.le
-  · simp only [sampledCofactorFrequency,Nat.coprime_mul_iff_right,hc,false_and,if_false,
-      sum_const_zero,zero_div,sub_self,abs_zero]
+  · have hnone (k : ℕ) : ¬v.Coprime (d*k) := fun h => hc (Nat.coprime_mul_iff_right.mp h).1
+    rw [if_neg hc]
+    simp only [sampledCofactorFrequency,if_neg (hnone _),sum_const_zero,zero_div,sub_self,abs_zero]
     exact div_nonneg (sum_nonneg fun _ _ => abs_nonneg _) (Nat.cast_nonneg _)
 
 /-- The signed multiple-frequency average gives the projected cofactor
@@ -220,7 +223,7 @@ to V pays at least log(V#) in total log modulus. -/
 theorem signed_sampling_primorial_cost (V : ℕ) (S : Finset ℕ) (w : ℕ → ℝ)
     (hpos : ∀ m ∈ S,0 < m) (hw : ∑ m ∈ S,w m=1)
     (hremove : ∀ p ∈ Nat.primesLE V,(∑ m ∈ S.filter (p.Coprime ·),w m)=0) :
-    Real.log (primorial V) ≤ ∑ m ∈ S,|w m|*Real.log m := by
+    Real.log (primorial V) ≤ ∑ m ∈ S,|w m| * Real.log m := by
   let P := Nat.primesLE V
   have hdiv (p : ℕ) (hp : p ∈ P) : (∑ m ∈ S.filter (fun m => p ∣ m),w m)=1 := by
     have h := sum_filter_add_sum_filter_not S (p.Coprime ·) w

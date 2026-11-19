@@ -693,7 +693,7 @@ theorem clippedCofactorSliceOp_linear {n P q : ℕ} (hn : 1 ≤ n) (hP1 : 1 ≤ 
         (μ d : ℝ) * (reflectedDensity * (n : ℝ) / ((q : ℝ) * (d : ℝ))) =
         (μ d : ℝ) * (((P : ℝ) + 1) * (Ek 4 - 2 * Ek 3 + Ek 2)) := by
       rw [← hmain_d]
-      dsimp [Ek]; push_cast; ring
+      dsimp [Ek]; ring
     rw [hdiff_d, abs_mul, abs_mul, abs_of_pos hP1R, mul_comm (20 * ((P : ℝ) + 1)) |(μ d : ℝ)|]
     refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
     have hb4 := harmonic_floor_all_pos (show 0 < (4 : ℝ) * u by positivity)
@@ -867,8 +867,9 @@ private theorem zeta_partial_sum_all_pos {z : ℂ} (hz0 : 0 < z.re) (hz1 : z.re 
       _ ≤ (1 + 1 / ‖1 - z‖ + ‖z‖ / z.re) + 1 / ‖1 - z‖ := add_le_add hzeta ht_term
       _ ≤ (3 + 2 / ‖1 - z‖ + 3 * ‖z‖ / z.re) * 1 := by
             have h0 : 0 ≤ ‖z‖ / z.re := by positivity
+            have h2 : 2 / ‖1 - z‖ = 1 / ‖1 - z‖ + 1 / ‖1 - z‖ := by ring
             have h3 : 3 * ‖z‖ / z.re = 3 * (‖z‖ / z.re) := mul_div_assoc 3 ‖z‖ z.re
-            linarith only [h0, h3]
+            linarith only [h0, h2, h3]
       _ ≤ (3 + 2 / ‖1 - z‖ + 3 * ‖z‖ / z.re) * t ^ (-z.re) :=
             mul_le_mul_of_nonneg_left h1_le_t (by positivity)
 
@@ -1092,7 +1093,7 @@ theorem clippedCofactorComplexSliceOp_cpow {n P q : ℕ} (hn : 1 ≤ n) (hP1 : 1
         rw [hden_pow, Complex.cpow_neg, Complex.cpow_neg, Complex.cpow_neg]
         field_simp [hzne0]
         simp only [Complex.ofReal_natCast]
-      · dsimp [gz]; push_cast; ring
+      · dsimp [gz]; ring
     have htarget_moeb :
         -(midpointMultiplier z / z) *
             (((q : ℝ) : ℂ) ^ (-z) * riemannZeta z * coprimeEulerFactor n z) *
@@ -1985,7 +1986,7 @@ theorem clippedCofactorSliceOp_theta_of_two_le {q : ℕ} (hq : 2 ≤ q) :
       have hsupp : ∑ p ∈ (Ioc P (4 * n)).filter Nat.Prime,
           (Real.log p * wq p - vonMangoldt p * wqr p) =
           ∑ p ∈ Fb, Real.log p * wq p := by
-        rw [← Finset.sum_subset (Finset.filter_subset _ _)]
+        rw [← Finset.sum_subset (Finset.filter_subset (· ∣ n) ((Ioc P (4 * n)).filter Nat.Prime))]
         · refine Finset.sum_congr rfl fun p hpFb => ?_
           obtain ⟨hpS, hdvd⟩ := mem_filter.mp hpFb
           obtain ⟨hpI, hpr⟩ := mem_filter.mp hpS
@@ -2381,7 +2382,6 @@ theorem singleQuartet_reflectedComposite_remainder_cancellation {ρ₀ : ℂ}
     rw [prime_midpoint_price_eq]
     unfold midpointSecondDiff; dsimp [E_rem]; push_cast; ring
   have hcent := large_prime_cofactor_centering hn1 hP2
-  rw [← squarefreeDivisorMass] at hcent
   have hcent_cost :
       7 * (P : ℝ) + (Chebyshev.psi (4 * n : ℕ) - Chebyshev.theta (4 * n : ℕ)) + 1 ≤
         (15 + 2 * |A_pt|) * Real.sqrt n := by
@@ -2398,7 +2398,7 @@ theorem singleQuartet_reflectedComposite_remainder_cancellation {ρ₀ : ℂ}
       primeMidpointPrice n| ≤
       (15 + 2 * |A_pt|) * Real.sqrt n * squarefreeDivisorMass n :=
     hcent.trans ((mul_le_mul_of_nonneg_right hcent_cost
-      (sum_nonneg fun _ _ => abs_nonneg _)).trans_eq (by ring))
+      (sum_nonneg fun _ _ => abs_nonneg _)).trans_eq (by unfold squarefreeDivisorMass; ring))
   have hw_b : |clippedCofactorOp n P (fun x => x + quartetWaveModel ρ₀ m x) -
       reflectedDensity * (n.totient : ℝ) -
       midpointSecondDiff n (fun x => x + quartetWaveModel ρ₀ m x)| ≤
@@ -2854,7 +2854,7 @@ theorem clippedCofactorOp_logTwistedWave_at_zero {ρ₀ : ℂ} (hhalf : 1 / 2 < 
             deriv riemannZeta ρ₀ *
               ((midpointMultiplier ρ₀ / ρ₀) * coprimeEulerFactor n ρ₀ * ((n : ℝ) : ℂ) ^ ρ₀)).re) := by
     let dg (x : ℝ) : ℂ := (x : ℂ) ^ ρ₀ * (Real.log x : ℂ) / ρ₀ - (x : ℂ) ^ ρ₀ / ρ₀ ^ 2
-    have h2 (z : ℂ) : (2 * z).re = 2 * z.re := by simp [Complex.re_ofReal_mul]
+    have h2 (z : ℂ) : (2 * z).re = 2 * z.re := by simp
     have hclip_re : clippedCofactorOp n ⌊2 * Real.sqrt n⌋₊ (logTwistedWaveModel ρ₀) =
         -2 * (clippedCofactorComplexSliceOp n ⌊2 * Real.sqrt n⌋₊ 1 dg).re := by
       unfold clippedCofactorOp clippedCofactorSliceOp clippedCofactorComplexSliceOp logTwistedWaveModel

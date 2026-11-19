@@ -173,7 +173,7 @@ private theorem remove_unit_and_small_cofactors {n Q V : ℕ} (hn : 0 < n) (hQ :
     · exact fun hx => False.elim (hx (mem_Ioc.mpr ⟨by decide,hV⟩))
   have hs := sum_Ioc_consecutive f (Nat.zero_le V) hcut
   rw [first] at hs
-  simp only [sum_filter,remainingPrimitivePrimePrice,sum_filter]
+  simp only [remainingPrimitivePrimePrice,sum_filter]
   change (∑ v ∈ Ioc 0 (4*n),f v)=(∑ v ∈ Ioc V (4*n),f v)-_
   linarith only [hs]
 
@@ -220,5 +220,83 @@ theorem remaining_primitive_prime_factorial_bound {n Q V : ℕ} (hn : 0 < n) (hQ
        _ = _ := by simp [Nat.card_Icc,B]
 
 #print axioms remaining_primitive_prime_factorial_bound
+
+/-- The sharply projected, factorial-centered prime price at exponent b. -/
+def projectedMidpointAtPower (b : ℝ) (n : ℕ) : ℝ :=
+  let V := ⌊(n:ℝ)^(b-1/2)⌋₊
+  remainingPrimitivePrimePrice n ⌊2*Real.sqrt n⌋₊ V-primitiveProjectedFactorial n V
+
+/-- Removing all cofactors through the power b−1/2 preserves every upper
+exponent strictly above b. This estimate holds at every positive integer. -/
+theorem projected_midpoint_power_error {b ε : ℝ} (hb : 1/2 ≤ b) (hb1 : b ≤ 1)
+    (he : 0 < ε) : ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 1 ≤ n →
+      |projectedMidpointAtPower b n-primeMidpointPrice n| ≤ C*(n:ℝ)^(b+ε) := by
+  obtain ⟨A,hA⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  let D := _root_.RHTower.Sieve.divisorBoundConst ε
+  have hD : 0 ≤ D := (_root_.RHTower.Sieve.divisorBoundConst_pos he).le
+  refine ⟨D*(16+2*|A|),by positivity,?_⟩
+  intro n hn
+  let Q := ⌊2*Real.sqrt n⌋₊
+  let V := ⌊(n:ℝ)^(b-1/2)⌋₊
+  have h1 := (Nat.one_le_cast (α:=ℝ)).mpr hn
+  have h0 := (Nat.cast_pos (α:=ℝ)).mpr hn
+  have hpow := Real.rpow_pos_of_pos h0 (b-1/2)
+  have hV : (V:ℝ) ≤ (n:ℝ)^(b-1/2) := Nat.floor_le hpow.le
+  have hV0 : 1 ≤ V := Nat.le_floor (by simpa only [Nat.cast_one] using Real.one_le_rpow h1 (sub_nonneg.mpr hb))
+  have hlo : (n:ℝ)^(b-1/2) ≤ n := (Real.rpow_le_rpow_of_exponent_le h1
+    (by linarith only [hb1] : b-1/2 ≤ 1)).trans_eq (Real.rpow_one _)
+  have hVn : V ≤ n := Nat.cast_le.mp (hV.trans hlo)
+  have hQ : (Q:ℝ) ≤ 2*Real.sqrt n := Nat.floor_le (by positivity)
+  have hsn : Real.sqrt n ≤ n := by
+    rw [Real.sqrt_eq_rpow]
+    exact (Real.rpow_le_rpow_of_exponent_le h1 (by norm_num : (1/2:ℝ) ≤ 1)).trans_eq (Real.rpow_one _)
+  have hQn : Q ≤ 2*n := by
+    have hh : (Q:ℝ) ≤ 2*(n:ℝ) := by linarith only [hQ,hsn]
+    exact_mod_cast hh
+  have hi : Ioc 0 Q=Icc 1 Q := by ext p; simp only [mem_Ioc,mem_Icc]; omega
+  have hpsi : Chebyshev.psi Q ≤ 7*Q := by
+    simpa only [Chebyshev.psi,Nat.floor_natCast,hi] using _root_.RHTower.sum_vonMangoldt_Icc_le_seven Q
+  have hp := (hA ((4*n:ℕ):ℝ)).trans
+    (mul_le_mul_of_nonneg_right (le_abs_self A) (Real.sqrt_nonneg _))
+  rw [Nat.cast_mul,Nat.cast_ofNat,Real.sqrt_mul (by norm_num : (0:ℝ)≤4),
+    show Real.sqrt 4=2 by norm_num] at hp
+  have hlog := Real.log_le_sub_one_of_pos (Real.sqrt_pos.mpr h0)
+  rw [Real.log_sqrt h0.le] at hlog
+  have hcost : Chebyshev.psi Q+(Chebyshev.psi (4*n:ℕ)-Chebyshev.theta (4*n:ℕ))+Real.log n ≤
+      (16+2*|A|)*Real.sqrt n := by
+    push_cast at hp ⊢
+    linarith only [hQ,hpsi,hp,hlog]
+  have hm : squarefreeDivisorMass n ≤ D*(n:ℝ)^ε := by
+    have h := sum_le_sum (s:=n.divisors) fun d _ =>
+      (show |(μ d:ℝ)| ≤ 1 by exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n:=d))
+    simp only [sum_const,nsmul_eq_mul,mul_one] at h
+    exact h.trans (_root_.RHTower.Sieve.card_divisors_le_rpow he hn.ne')
+  apply (remaining_primitive_prime_factorial_bound hn hQn hV0 (by omega : V ≤ 4*n)).trans
+  have hM : 0 ≤ squarefreeDivisorMass n := sum_nonneg fun _ _ => abs_nonneg _
+  have hnon := mul_nonneg (show 0 ≤ 16+2*|A| by positivity) (Real.sqrt_nonneg (n:ℝ))
+  calc _ ≤ (n:ℝ)^(b-1/2)*(D*(n:ℝ)^ε*((16+2*|A|)*Real.sqrt n)) := by
+             apply (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hcost hM) (Nat.cast_nonneg V)).trans
+             apply mul_le_mul hV (mul_le_mul_of_nonneg_right hm hnon) (mul_nonneg hM hnon) hpow.le
+       _ = _ := by
+             rw [Real.sqrt_eq_rpow,show b+ε=(b-1/2)+(ε+1/2) by ring,
+               Real.rpow_add h0,Real.rpow_add h0]
+             ring
+
+#print axioms projected_midpoint_power_error
+
+/-- Exact rightmost-zero threshold of the prime price with all proper
+cofactors through n^(b−1/2) removed and the divided factorials subtracted. -/
+theorem projected_prime_price_upper_spectrum {b : ℝ} (hb : 1/2 ≤ b) (hb1 : b ≤ 1) :
+    (∀ t : ℝ, b<t → t<1 → ∃ C : ℝ, ∀ n : ℕ, 1 ≤ n → projectedMidpointAtPower b n ≤ C*(n:ℝ)^t) ↔
+      _root_.RHTower.zetaZeroAbscissa ≤ b := by
+  rw [←prime_midpoint_upper_spectrum_iff hb]
+  constructor <;> intro h t ht ht1 <;> obtain ⟨C,hC⟩ := h t ht ht1 <;>
+    obtain ⟨A,_,hA⟩ := projected_midpoint_power_error hb hb1 (sub_pos.mpr ht) <;>
+    refine ⟨C+A,fun n hn => ?_⟩ <;> have he := abs_le.mp (hA n hn) <;>
+    rw [show b+(t-b)=t by ring] at he
+  · linarith only [he.1,hC n hn]
+  · linarith only [he.2,hC n hn]
+
+#print axioms projected_prime_price_upper_spectrum
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

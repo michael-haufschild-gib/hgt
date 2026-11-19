@@ -62,13 +62,17 @@ private theorem weighted_row {N : ℕ} (r w v : ℕ → ℝ) (hr : ∀ k, 0<r k)
            (Real.sqrt_nonneg _)
        _ = _ := by rw [hz]
 
-private def contactMajorant (N s : ℕ) (u v w : ℕ → ℝ) : ℝ :=
+/-- Absolute multiplicative incidences priced at the quotient, with an optional
+shift of the quotient before sampling the upper multiplicity. -/
+def directedMultipleVariation (N s : ℕ) (u v w : ℕ → ℝ) : ℝ :=
   ∑ k ∈ Icc 1 N, w k * ∑ i ∈ Icc 1 N, |u i| * |v ((k+s)*i)|
 
-private theorem contactMajorant_le (N s : ℕ) (r w u v : ℕ → ℝ) (hr : ∀ k, 0<r k)
+/-- Cauchy–Schwarz on each increasing sequence of multiples charges the two
+divisors to their independently weighted square masses. -/
+theorem directedMultipleVariation_le (N s : ℕ) (r w u v : ℕ → ℝ) (hr : ∀ k, 0<r k)
     (hm : Monotone r) (hw : ∀ k, 0≤w k)
     (hu : ∀ j, N<j → u j=0) (hv : ∀ j, N<j → v j=0) :
-    contactMajorant N s u v w ≤ conductorNorm N (fun k => 1/r k) *
+    directedMultipleVariation N s u v w ≤ conductorNorm N (fun k => 1/r k) *
       conductorNorm N (fun k => w k/r k) * conductorNorm N (fun i => r i*u i) *
       conductorNorm N (fun i => r i*v i) := by
   let S := Icc 1 N
@@ -82,8 +86,8 @@ private theorem contactMajorant_le (N s : ℕ) (r w u v : ℕ → ℝ) (hr : ∀
   have h₁ := weighted_row (N := N) r (fun _ => 1) u hr hm (fun _ => zero_le_one) hu
     id Function.injective_id (fun _ => le_rfl)
   simp only [id_eq,one_mul] at h₁
-  calc contactMajorant N s u v w = ∑ i ∈ S, |u i| * (∑ k ∈ S, w k* |v ((k+s)*i)|) := by
-         simp only [contactMajorant,S,mul_sum]
+  calc directedMultipleVariation N s u v w = ∑ i ∈ S, |u i| * (∑ k ∈ S, w k* |v ((k+s)*i)|) := by
+         simp only [directedMultipleVariation,S,mul_sum]
          rw [sum_comm]
          refine sum_congr rfl fun i _ => sum_congr rfl fun k _ => ?_
          ring
@@ -124,11 +128,11 @@ theorem twoSided_variation_separate (N : ℕ) (a b : ℕ → ℤ) (r w : ℕ →
   have hv : ∀ j, N<j → v j=0 := fun j hj => by simp [v,upper_out b hj]
   have hh := sum_le_sum (s := S) fun k hk => mul_le_mul_of_nonneg_left (hcell k hk) (hw k)
   simp only [mul_add,sum_add_distrib] at hh
-  have h₀ := contactMajorant_le N 0 r w u v hr hm hw hu hv
-  have h₁ := contactMajorant_le N 1 r w u v hr hm hw hu hv
-  have h₂ := contactMajorant_le N 0 r w v u hr hm hw hv hu
-  have h₃ := contactMajorant_le N 1 r w v u hr hm hw hv hu
-  simp only [contactMajorant,Nat.add_zero] at h₀ h₁ h₂ h₃
+  have h₀ := directedMultipleVariation_le N 0 r w u v hr hm hw hu hv
+  have h₁ := directedMultipleVariation_le N 1 r w u v hr hm hw hu hv
+  have h₂ := directedMultipleVariation_le N 0 r w v u hr hm hw hv hu
+  have h₃ := directedMultipleVariation_le N 1 r w v u hr hm hw hv hu
+  simp only [directedMultipleVariation,Nat.add_zero] at h₀ h₁ h₂ h₃
   dsimp only [S,A] at hh
   calc _ ≤ _ := hh
        _ ≤ _ := add_le_add (add_le_add h₀ h₂) (add_le_add h₁ h₃)
@@ -204,7 +208,7 @@ theorem interleaved_joint_separate (N : ℕ) (a b : ℕ → ℤ) (r w : ℕ → 
     change Continuous (fun x : ℝ => ∑ n ∈ Icc 1 N, ∑ m ∈ (Icc 1 N).erase n,
       (upperDivisor N a m:ℝ)*upperDivisor N b n*(x^(max m n-min m n-1)+x^(m+n-1)))
     fun_prop
-  have hi := intervalIntegral.integral_mono_on zero_le_one
+  have hi := intervalIntegral.integral_mono_on (μ := volume) zero_le_one
     (hJ.abs.intervalIntegrable 0 1) (continuous_const.intervalIntegrable 0 1)
     (fun x hx => mixedJetSection_separate a b r hr hm hx)
   rw [intervalIntegral.integral_const] at hi
@@ -240,6 +244,7 @@ theorem interleaved_joint_uniform (r w : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm : 
   exact add_le_add (mul_le_mul (mul_le_mul_of_nonneg_left hA (by norm_num)) hB hB₀
     (mul_nonneg (by norm_num) (Real.sqrt_nonneg _))) (pow_le_pow_left₀ hA₀ hA 2)
 
+#print axioms directedMultipleVariation_le
 #print axioms twoSided_variation_separate
 #print axioms mixedJetSection_le_total_variations
 #print axioms mixedJetSection_separate
