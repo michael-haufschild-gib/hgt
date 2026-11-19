@@ -272,8 +272,8 @@ private theorem measurable_fractionalRow (k L : ℕ) (T : ℝ) : Measurable (fra
     (measurable_fract.comp (by fun_prop : Measurable fun v : ℝ => Real.exp (T-v)/n))) measurable_const
 
 /-- All displacements in the exceptional set select an oriented numerator.
-The complement costs at most the pointwise threshold times the state mass
-in the original finite band, with its original outer multiplier. -/
+The signed response on the complement is bounded below by minus the threshold
+times the state mass, with the original outer multiplier. -/
 theorem exists_oriented_quotient_displacements {Φ : ℝ → ℝ} (hi : Integrable Φ) (hc : Continuous Φ)
     (hs : ∀ v, 0≤v → Φ v=0) {T B : ℝ} (hT : 6≤T) (hB : 1+Real.log 4 ≤ B)
     (k L : ℕ) (m : ℝ) :

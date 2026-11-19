@@ -35,7 +35,10 @@ proofs must be unconditional without hypotheses or otherwise unproven premises.
 /goal
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
-- docs/drafts/pipeline/2-fully-proven/leftovers
+- docs/drafts/pipeline/2-fully-proven/acs-pvc-cancellation-on-square-multiple-cofactors.md
+- docs/drafts/pipeline/2-fully-proven/acs-pvc-first-primes-beyond-the-conductor.md
+- docs/drafts/pipeline/2-fully-proven/acs-pvc-interior-shell-at-seven-fourths.md
+- docs/drafts/pipeline/2-fully-proven/acs-pvc-the-quadratic-product-divider.md
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -63,16 +66,14 @@ GOAL IS MET WHEN ALL CARDS ARE FULLY FORMALIZED AND CAN BE MOVED TO STEP 3 OF TH
 
 ## research a route
 
-Read and understand proof route ACS:
+Read and understand proof route QIC:
 - docs/reports/rh-current-frontier-map.md
 - docs/reports/rh-killed-routes.md
-- docs/reports/review-2810/route-obstacles.md
-- formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/README.md
-  
+
 On every turn:
 1. State in chat the proof route.
 2. State the hard open mathematical blockers to solve.
-3. Research, find and formalize either a theorem or discharge a premise that significantly brings us closer to solve one of the significant mathematical obstacles on that proof route. We are not looking for improving a number, finding more criteria, more nogos, redressing already known facts, but actual tangible progress in closing this proof route.
+3. Research, find and formalize either a theorem or discharge a premise that significantly brings us closer to solve one of the significant mathematical obstacles on that proof route. We are not looking for improving a number, finite proofs for something that is infinite, finding more criteria, more nogos, redressing already known facts, but actual tangible progress in closing this proof route.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -93,11 +94,12 @@ always look at the big picture, try to understand what all our research is tryin
 7. Optimize lean code. No raising heartbeat hacks.
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
-Do not use web search. Do not run novelty checks.
+Do not use web search for things you already know from your training data or can be found in our lean corpus. 
 
 Make good use of the search tool for our lean corpus to find existing work and get leads for new ideas and solutions for your work.
 
-The goal is met when route ACS is fully closed and formalized unconditionally in lean.
+The goal is met when route QIC is fully closed and formalized unconditionally in lean.
+
 ## list
 1x
 - https://arxiv.org/abs/2611.16156 many more odd zeta values are irrational
@@ -192,14 +194,16 @@ The goal is met when route ACS is fully closed and formalized unconditionally in
  
 
 ## apply external paper to corpus experiment
-do not use the hgtl7 skill
+
 task:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2006.12546
-
-careful: likely the paper has errors, otherwise it would have been big news.
+- https://arxiv.org/abs/2611.17965
+- https://arxiv.org/abs/2611.17260
+- https://arxiv.org/abs/2611.16022
+- https://arxiv.org/abs/2611.23133
+- https://arxiv.org/abs/2611.22194
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -220,7 +224,7 @@ use the search tool for the lean corpus to check what already was formalized so 
 
 put new code into the relevant subfolders to not bloat RHTower and HTGeometry folders even more
 
-goal is met when 250 significant contributions to our lean corpus and research have been made. focus on formal/GaloisForLFunctions/ExclusionOfTheCriticalState but not exclusively on it.
+goal is met when 250 significant contributions to our lean corpus and research have been made. focus on formal/GaloisForLFunctions/ExclusionOfTheCriticalState and formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri but not exclusively on them.
 
 
 ## computations
@@ -479,10 +483,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 a while ago we did create these documents:
-- docs/reports/review-1511/walls-ledger.md
-- docs/reports/review-1511/route-obstacles.md
-- docs/reports/review-1511/route-unification-ledger.md
-- docs/reports/review-1511/obstacles-summary.md
+- docs/reports/review-1811/walls-ledger.md
+- docs/reports/review-1811/route-obstacles.md
+- docs/reports/review-1811/route-unification-ledger.md
+- docs/reports/review-1811/obstacles-summary.md
   
 read also but do not edit:
 - docs/reports/rh-current-frontier-map.md
@@ -507,8 +511,9 @@ write new reports from scratch to reflect the current status quo and frontier of
    2.14. Design a research programme aiming at closing the RH proof route ACS, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
    2.15. Design a research programme aiming at closing the RH proof route ZCG, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
    2.16. Design a research programme aiming at closing the RH proof route ECS, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
-   2.17 What is the one big question the is less hard than proving RH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
-   2.18 Ideate based on everything you have understood about RH, the differente routes in our lean corpus, the advancements and nogos we have proven surpassing external SOTA research, and knowing that likely new mathematics are needed and there is no shortcut and no known mathematical mechanism will deliver the RH proof as otherwise somebody would have found it already, give it your best shot: what is the most likely RH proof route you see - regardless of whether it is already a route we follow or completely new or a "frankenstein"? describe it in form of a research programme with its proof mechanism, steps, possible failures and what these failures would teach us.  
+   2.17. Design a research programme aiming at closing the RH proof route ECS, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+   2.18 What is the one big question the is less hard than proving RH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
+   2.19 Ideate based on everything you have understood about RH, the differente routes in our lean corpus, the advancements and nogos we have proven surpassing external SOTA research, and knowing that likely new mathematics are needed and there is no shortcut and no known mathematical mechanism will deliver the RH proof as otherwise somebody would have found it already, give it your best shot: what is the most likely RH proof route you see - regardless of whether it is already a route we follow or completely new or a "frankenstein"? describe it in form of a research programme with its proof mechanism, steps, possible failures and what these failures would teach us.  
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 
@@ -519,7 +524,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-place the reports in folder docs/reports/review-1611/ without history language or "this changed since last review".
+place the reports in folder docs/reports/review-1911/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 make sure to validate every claim. we have seen in previous rounds you simply restating old reports without actually validating that the old report facts were still valid. 
@@ -590,11 +595,9 @@ keep your eyes on the rh proof, that´s the ultimate goal.
 
 ## Init new field programme
 
-Do not use the hgtl7 skill.
+read and understand docs/reports/review-1811/obstacles-summary.md
 
-read and understand docs/reports/review-1511/obstacles-summary.md
-
-under "## 2.18 The most likely route to a proof, as a research programme" it suggest a new research programme 
+under "## 2.9 What new mathematics might a full proof need?" it suggest a new research programme
 
 Your task: develop this field/research programme and do the actual research and formalization.
 We are not interested in busywork, trivial work and discoveries, work on finite solution when the problem is infinite, optimizing numbers that provide nothing for the - we are only interested in focused work on solving the actual problems and questions and topics and move the frontier with every new lean module.
@@ -626,11 +629,9 @@ Start with writing the first draft of README.md for the the programme
 
 
 
-Do not use the hgtl7 skill.
+read and understand docs/reports/review-1811/obstacles-summary.md
 
-read and understand docs/reports/review-1311/obstacles-summary.md
-
-under "## 2.19 A research programme for a general Galois theory of the zeros" it suggest a new research programme
+under "## 2.11 Mathematics for a proof by signed cancellation alone" it suggest a new research programme
 
 Your task: develop this research programme and do the actual research and formalization, until all open questions are answered, and a viable producer is found.
 
@@ -683,13 +684,16 @@ Goal is achieved when the opening/input is fully developed.
 ## research something
 Do not use the hgtl7 skill. 
 
-read and understand docs/reports/review-1011/fable.md
+read and understand docs/reports/review-1811/obstacles-summary.md
 
-under "## 13. The most likely route, written as a walk" it suggest a new fields/research programme for a RH proof route
+under "## 2.18 Best prospect for a full formal proof" it suggest a new fields/research programme for a RH proof route
 
-Research, derive and formalize step by step this proof route as described in the document.
+it combines elements of route ACS and route PVC. read more about these routes here:
+docs/reports/rh-current-frontier-map.md and docs/reports/rh-killed-routes.md
 
-We are not looking for more criteria, improving some trivial numbers, redressing of existing knowledge, we are looking for actual progress on solving the stated open problems and close the route to the RH proof.
+Your task: Research, derive and formalize step by step this proof route as described in the document.
+
+We are not looking for busywork, improving some trivial numbers, redressing of existing knowledge. We are looking for actual progress on solving open problems and closing the route to the RH proof.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -711,7 +715,6 @@ always look at the big picture, try to understand what all our research is tryin
 8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
 Put all lean code for the answer into relevant subfolders to not bloat RHTower and HTGeometry folders further.
-
 
 Goal is met when a proof route is fully closed and formalized in lean and RH is proven. Do not stop until an RH proof is fully formalized.
 
@@ -719,13 +722,11 @@ Goal is met when a proof route is fully closed and formalized in lean and RH is 
 
 do not use the hgtl7 skill.
 
-read: docs/reports/review-0811/obstacles-summary.md
+read: docs/reports/review-1711/obstacles-summary.md
 
-the document suggests under "## 2.3 Frankenstein routes" a bunch of "Frankenstein routes" - routes that are assembled from parts of different routes. None of them will deliver an RH proof, but their assembly will help to express problems in different languages and frameworks, giving us new ideas for how to solve the.
+the document suggests under "## 2.3 Where a combined route could work" -> "ECS + ZCG + actual prime counts" a new proof route for RH that combines parts of several routes.
 
-your task: work through these Frankenstein routes and assemble them, build the formal bridges and missing connections and missing proofs. where mathematical infrastructure is required but absent from our lean corpus and mathlib, build it even if effort is high.
-
-work route by route: F22, F21, F18, F15, F2, rest...
+your task: work through this route and assemble it, build the formal bridges and missing connections and missing proofs, solve the open mathematical obstacles. where mathematical infrastructure is required but absent from our lean corpus and mathlib, build it even if effort is high.
 
 **Tools to use:**
 1. Search: use the search tool for our lean corpus, not just rg or grep. make good use of the search tool to find existing work, building blocks, and new ideas. Try to apply existing lean research, try to identify problems and questions the field with your contribution could explain or solve.
@@ -748,15 +749,15 @@ always look at the big picture, try to understand what all our research is tryin
 
 Put all lean code for the answer into relevant subfolders to not bloat RHTower and HTGeometry folders further.
 
+Goal is met when the RH is proven or the route is provably refuted.
+
 ## just work
 
 Do not use the hgtl7 skill.
 
-read  docs/reports/review-1711/route-ecs.md
+read docs/reports/review-1711/obstacles-summary.md and understand what problem B13 is about.
 
-understand what the items under "## 8. Missed connections: corpus results that ECS does not use" are all about.
-
-your task: work through each item and unconditionally formalize it and its collaries. start with the easiest tasks and work towards the hardest.
+your task: work through the open problems unconditionally, formalize their solutions and collaries. start with the easiest tasks and work towards the hardest. do so until you have found and proven a solution for B13.
 
 where necessary lean infrastructure is absent from our lean corpus and mathlib -> build it no matter the effort.
 
@@ -783,6 +784,8 @@ always look at the big picture, try to understand what all our research is tryin
 
 Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry folders more.
 
+Goal is met when a solution for B13 is found and formalized.
+
 ## question paper
 
 read and understand fully: docs/reports/review-1311/obstacles-summary.md
@@ -805,13 +808,11 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 ## question
 
-Do not use the hgtl7 skill.
+read and understand fully: docs/reports/review-1911/obstacles-summary.md
 
-read and understand fully: docs/reports/review-1711/route-ecs.md
+under "## 2.17 The one smaller question with the largest shared payoff" it asks a question.
 
-under "## 6. Questions" it asks several questions.
-
-your task: answer the questions one by one - start with the easiest and work towards the hardest. find a complete solution for everything asked and unconditionally formalize the answers and their implications and collaries in lean.
+your task: answer the question. find a complete solution for everything asked and unconditionally formalize the answer and its implications and collaries in lean.
 
 We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed question.
 

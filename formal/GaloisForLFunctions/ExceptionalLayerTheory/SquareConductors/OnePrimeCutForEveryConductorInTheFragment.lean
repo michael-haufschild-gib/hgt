@@ -14,7 +14,7 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
 private theorem firstPrimeReadingAbove_clip (P U n : ℕ) :
     firstPrimeReadingAbove P U n = firstPrimeReadingAbove (min P (splineHorizon n)) U n := by
-  by_cases hP : P≤splineHorizon n
+  by_cases hP : P≤ splineHorizon n
   · rw [min_eq_left hP]
   rw [min_eq_right (le_of_not_ge hP)]
   unfold firstPrimeReadingAbove splineCountReading
@@ -70,7 +70,7 @@ theorem commonFirstPrimeCut_linear :
   obtain ⟨K,hK,h⟩ := capFreeFirstPrimeCut_linear
   refine ⟨K,hK,fun M => ?_⟩
   have he : commonFirstPrimeCut M≤⌊K*(M:ℝ)⌋₊ := by
-    apply sup_le
+    apply Finset.sup_le
     intro n hn
     exact Nat.le_floor ((h (mem_Icc.mp hn).1).trans
       (mul_le_mul_of_nonneg_left (Nat.cast_le.mpr (mem_Icc.mp hn).2) hK))
@@ -92,7 +92,7 @@ theorem common_first_prime_cut_fragments :
     have hn' := (Nat.zero_le J).trans_lt (mem_Ioc.mp hn).1
     have hnM := (mem_Ioc.mp hn).2
     have hcut : capFreeFirstPrimeCut n ≤ commonFirstPrimeCut M :=
-      le_sup (f := capFreeFirstPrimeCut) (mem_Icc.mpr ⟨hn',hnM⟩)
+      Finset.le_sup (f := capFreeFirstPrimeCut) (mem_Icc.mpr ⟨hn',hnM⟩)
     rw [←firstPrimeReadingAbove_eq_unrestricted (hcut.trans hP)]
     apply (h hn' P).trans
     dsimp only [X]

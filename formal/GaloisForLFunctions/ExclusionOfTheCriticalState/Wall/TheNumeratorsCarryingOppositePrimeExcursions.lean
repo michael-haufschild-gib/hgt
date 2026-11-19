@@ -6,7 +6,7 @@ import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheWeightedOccupatio
 /-!
 # How many numerators carry opposite prime excursions?
 
-Displacements whose signed integrand exceeds the adverse threshold carry a
+Displacements whose signed integrand falls below a negative threshold carry a
 fixed share of the original deficit. Each supplies a pair of opposite runs
 at its own binary numerator. The state's occupation bound forces a lower
 bound for the reciprocal mass of these distinct common numerators.
@@ -37,6 +37,34 @@ def CarriesOppositePrimeExcursions (Φ : ℝ → ℝ) (m T c g d : ℝ) (k L H :
       let B := Real.exp ((g/4)*T)
       HasSlidingThetaIncrements M H ⌈B⌉₊ (Finset.Icc a b) s B (Real.exp ((g/8)*T)) ∧
       HasSlidingThetaIncrements M H ⌈B⌉₊ (Finset.Ioc l u) (-s) B (Real.exp ((g/8)*T))
+
+/-- Taking the widest admissible block forces its entire width below the
+original aperture. A fixed positive denominator cannot keep its quotient
+constant across as many numerator steps as its own size. -/
+theorem CarriesOppositePrimeExcursions.power_lt_aperture {Φ : ℝ → ℝ} {m T c g d v : ℝ}
+    {k L H : ℕ} (h : CarriesOppositePrimeExcursions Φ m T c g d k L H v)
+    (hH : 1<(H:ℝ)) (hd : d≤1/4) : (H:ℝ)^(1/2+d)<L := by
+  obtain ⟨s,j,a,b,l,u,_,_,_,_,_,_,_,hb,_,_,_,hblocks⟩ := h
+  let D := ⌊(H:ℝ)^(1/2+d)⌋₊
+  have ht := Real.rpow_nonneg (Nat.cast_nonneg H) (1/2+d)
+  have hlt : (H:ℝ)^(1/2+d)<H :=
+    (Real.rpow_lt_rpow_of_exponent_lt hH (by linarith only [hd] : 1/2+d<1)).trans_eq (Real.rpow_one _)
+  have hD : D<H := (Nat.floor_lt ht).mpr hlt
+  have hwidth : (H:ℝ)-((H-D:ℕ):ℝ) ≤ (H:ℝ)^(1/2+d) := by
+    rw [Nat.cast_sub hD.le]
+    linarith only [show (D:ℝ)≤(H:ℝ)^(1/2+d) from Nat.floor_le ht]
+  obtain ⟨_,hin,_⟩ := hblocks (H-D) (by omega) (Nat.sub_le ..) hwidth
+  obtain ⟨x,y,q,_,hxy,hsub,_,hrect,_⟩ := hin
+  have hy : y∈Finset.Ioc x y := Finset.mem_Ioc.mpr ⟨hxy,le_rfl⟩
+  have hyL := (Finset.mem_Icc.mp (hsub hy)).2.trans hb
+  have hy₀ := Nat.zero_lt_of_lt hxy
+  have hbot := hrect (H-D) (Finset.mem_Icc.mpr ⟨le_rfl,Nat.sub_le ..⟩) y hy
+  have htop := hrect H (Finset.mem_Icc.mpr ⟨Nat.sub_le ..,le_rfl⟩) y hy
+  have h₁ := (Nat.le_div_iff_mul_le hy₀).mp hbot.ge
+  have h₂ := (Nat.div_lt_iff_lt_mul hy₀).mp (htop.trans_lt (Nat.lt_succ_self q))
+  change H<(q+1)*y at h₂
+  rw [Nat.add_mul,one_mul] at h₂
+  exact (Nat.floor_lt ht).mp (show D<L by omega)
 
 private theorem eventually_pair_at_each_displacement {a₀ g : ℝ} (ha₀ : 0<a₀) (hg : 0<g) :
     ∀ᶠ T : ℝ in atTop, ∀ (Φ : ℝ → ℝ) (m η v : ℝ) (k L : ℕ), η≤1 → L=⌈Real.exp ((1+η)*T)⌉₊ →
@@ -114,7 +142,7 @@ theorem riemannHypothesis_or_abundant_opposite_prime_excursions : RiemannHypothe
           finiteCriticalComplementBand Φ (k i) (L i) t*fractionalPrimeTest (T i-t))) ∧
         ∀ᶠ i in atTop, ∃ (E : Set ℝ) (N : Finset ℕ), MeasurableSet E ∧
           (∀ v ∈ E, ∃ H ∈ N, CarriesOppositePrimeExcursions Φ m (T i) a g d (k i) (L i) H v) ∧
-          (∀ H : ℕ, H∈N ↔ Real.exp (T i)≤H ∧ H<(L i)^2 ∧
+          (∀ H : ℕ, H∈N ↔ Real.exp (T i)≤H ∧ (H:ℝ)^(1/2+d)<L i ∧ H<(L i)^2 ∧
             ∃ v ∈ E, CarriesOppositePrimeExcursions Φ m (T i) a g d (k i) (L i) H v) ∧
           signedOrdinaryMiddleResponse m Φ (k i) (L i) (T i) -
             signedOrdinaryMiddleResponse m (Eᶜ.indicator Φ) (k i) (L i) (T i) < -c*Real.exp (g*T i) ∧
@@ -177,8 +205,11 @@ theorem riemannHypothesis_or_abundant_opposite_prime_excursions : RiemannHypothe
       mul_pos hA (Real.exp_pos (g*T i))]
   have hmass := reciprocal_and_count hc₀ hK hKscale (fun H hn => (hN H hn).1)
     (lt_of_lt_of_le (by linarith only [hneg,neg_le_abs changeInReading] : (A/4)*Y<|changeInReading|) hcost)
-  have hfamily (H : ℕ) : H∈N ↔ Real.exp (T i)≤H ∧ H<(L i)^2 ∧ ∃ v ∈ E, P H v :=
-    ⟨hN H,fun hw => Finset.mem_filter.mpr ⟨Finset.mem_range.mpr hw.2.1,hw.2.2⟩⟩
+  have hfamily (H : ℕ) : H∈N ↔ Real.exp (T i)≤H ∧ (H:ℝ)^(1/2+d)<L i ∧ H<(L i)^2 ∧ ∃ v ∈ E, P H v := by
+    refine ⟨fun hn => ?_,fun hw => Finset.mem_filter.mpr ⟨Finset.mem_range.mpr hw.2.2.1,hw.2.2.2⟩⟩
+    obtain ⟨hX,hL,v,hev,hw⟩ := hN H hn
+    have hH := (Real.one_lt_exp_iff.mpr (show 0<T i by linarith only [hlate])).trans_le hX
+    exact ⟨hX,CarriesOppositePrimeExcursions.power_lt_aperture hw hH (min_le_right ..),hL,v,hev,hw⟩
   exact ⟨E,N,hE,hhit,hfamily,hneg.trans_le (by linarith only [mul_le_mul_of_nonneg_right hcA (Real.exp_pos (g*T i)).le]),hmass⟩
 
 #print axioms riemannHypothesis_or_abundant_opposite_prime_excursions

@@ -136,6 +136,12 @@ $$W(u,v)-F_{u,v}-F_{v,u}-D=-\sum_k c_k(\psi(k)-k)-\tfrac12\int_0^1 J(x)\,dx.$$
 
 The two pole products in $W$ arise from the continuum degrees of the two directed integer heights. The completed finite part is independent of the exhaustion whenever $c_k$ converges in de la Vallée Poussin weighted variation and $J$ converges in $L^1[0,1]$. The distance is bounded by the weighted distance of the combined coefficients times a universal constant plus half the $L^1$ distance of the real sections. [Arbitrary supports and quantitative completion](TheFullWeilFormOnInterleavingDivisors.lean)
 
+The positive quotient cells have an exact integral range. Write $u_i,v_i$ for actual conductor multiplicities, zero past the cutoff $N$. For $k\ge1$,
+
+$$\sum_{q=k}^N c_q=\sum_{i=1}^N(u_i v_{ki}+v_i u_{ki}).$$
+
+Their total is $2\sum_i u_i v_i$. Every integral profile with even total occurs, already with $u=\delta_1$. If the desired cells are $w_q$, set $v_1=\tfrac12\sum_q w_q$ and $v_k=\sum_{q=k}^Nw_q$ for $k>1$. Taking consecutive differences on the right gives every prescribed cell simultaneously. For self-intersections the total is twice the square mass, and each prime has further constraints from sums of squares along its valuation chains. [Integral range](TheIntegralRangeOfTheMixedQuotientCells.lean) · [Prime chain squares](../HodgeTheoryOfAFixedPart/TheContactsOfAPrimeAreChainSquares.lean)
+
 ## Relation to the other programmes
 
 Arithmetic Castelnuovo–Severi supplies the integral vertical orders. Absolute Geometry supplies the real-place kernel and identifies its contact correction on reduced square degrees. Arithmetic Orientation Geometry identifies the growth measured by translated Weil tests. Here the question concerns the price of the mixed terms when the arithmetic divisors themselves grow. [Carrier and contact](../AbsoluteGeometryOfSpecZ/TheCarrierKernelIsWeilMinusTheContact.lean) · [Arithmetic Orientation Geometry](../ArithmeticOrientationGeometry/README.md)
@@ -163,7 +169,7 @@ If both undilated layers lie in $(N,N+M]$, put $A=2M/N+H_M+M/(4N)$. Then $|I_d+P
 
 ## Tests and open questions
 
-* Which relations between distinct quotient cells survive when the lower divisor ranges beyond the full families used in a residue block? A single quotient realizes the ordinary unsmoothed Chebyshev error.
+* Beyond full lower prefixes, the multiplicative tail formula holds on arbitrary mixed divisors. Even total is the sole constraint on their positive integral quotient cells. [Range theorem](TheIntegralRangeOfTheMixedQuotientCells.lean)
 * Can a coefficient-uniform full-square floor survive removal of the spacing restriction on every fixed-ratio window? At unit spacing, eventual nonnegativity for all signed coefficients is equivalent to RH. [Exact late-comb criterion](../HodgeTheoryOfAFixedPart/TheRiemannHypothesisIsExactEventualCombPositivity.lean)
 * Beyond aligned divisibility sieves, can the combined quotient variation and real jet norm of arbitrary interleaving divisors be bounded by energies computed separately on the two divisors? The all-support power criterion specifies the zero-free consequence of any proposed exponent.
 * Which opposing sections recover the effectivity supplied by curve point counts for Frobenius eigenvalues beyond the Kummer family? On the integers, a candidate must distinguish the ordinary prefix from its Liouville twist on the same divisors. [Curve model and Stepanov](../ExclusionOfTheCriticalState/Models/CurveCriticalStatesAndStepanovExclusion.lean) · [Ordinary and twisted prefixes](TheUnscaledIntersectionOfTheLiouvilleTwin.lean)

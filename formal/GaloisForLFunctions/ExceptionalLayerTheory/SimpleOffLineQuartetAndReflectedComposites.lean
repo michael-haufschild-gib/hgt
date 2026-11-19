@@ -439,12 +439,12 @@ private theorem unit_theta_wave_implies_radial_and_236 {β γ : ℝ} (hβ : 1 / 
           congr 1; dsimp [ρ]; push_cast; ring
         have ha2b : a ^ (2 * β) = (a ^ β) ^ 2 := by
           rw [sq, ← Real.rpow_add ha0, two_mul]
-        rw [hap, ha2b, Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
-        have hsc : (Real.cos (γ * Real.log a) : ℂ) ^ 2 +
-            (Real.sin (γ * Real.log a) : ℂ) ^ 2 = 1 := by
-          exact_mod_cast Real.cos_sq_add_sin_sq (γ * Real.log a)
-        push_cast
-        linear_combination ((a ^ β : ℂ) ^ 2) * (hsc - 1)
+        rw [hap, ha2b, Complex.exp_mul_I]
+        have hsc : Complex.cos (((γ * Real.log a : ℝ) : ℂ)) ^ 2 +
+            Complex.sin (((γ * Real.log a : ℝ) : ℂ)) ^ 2 = 1 :=
+          Complex.cos_sq_add_sin_sq _
+        rw [Complex.ofReal_mul, Complex.ofReal_mul, Complex.ofReal_ofNat, Complex.ofReal_cos]
+        linear_combination (((a ^ β : ℝ) : ℂ) ^ 2) * (hsc - 1)
       have hcomb : (((a ^ 2 * x : ℝ) : ℂ) ^ ρ / ρ) -
           (((2 * a ^ β * Real.cos (γ * Real.log a) : ℝ) : ℂ)) * (((a * x : ℝ) : ℂ) ^ ρ / ρ) +
           ((a ^ (2 * β) : ℝ) : ℂ) * ((x : ℂ) ^ ρ / ρ) = 0 := by
@@ -771,7 +771,8 @@ private theorem clippedCofactorOp_abs_le_of_rpow {h : ℝ → ℝ} {C σ : ℝ} 
   have hsq1 : 1 ≤ Real.sqrt n := Real.one_le_sqrt.mpr hnR
   have hlt_fl : 2 * Real.sqrt n < (P : ℝ) + 1 := Nat.lt_floor_add_one _
   have hlo : Real.sqrt n ≤ (P : ℝ) := by linarith only [hsq1, hlt_fl]
-  have hP1 : 1 ≤ P := Nat.le_floor (by linarith only [hsq1])
+  have hP1 : 1 ≤ P :=
+    Nat.le_floor (by exact_mod_cast (by linarith only [hsq1] : (1 : ℝ) ≤ 2 * Real.sqrt n))
   have hP_le_4n : (P : ℝ) ≤ 4 * (n : ℝ) := by
     have hhi : (P : ℝ) ≤ 2 * Real.sqrt n := Nat.floor_le (by positivity)
     have hsq_n : Real.sqrt n ≤ n := by
@@ -936,7 +937,7 @@ private theorem clippedCofactorOp_abs_le_of_rpow {h : ℝ → ℝ} {C σ : ℝ} 
 with `(1 + σ) / 2 < Re z` and `riemannZeta z ≠ 0` (`m ≠ 0`), then `F` violates the reflected-composite
 identity at scale `Ω(n^{Re z})` along infinitely many prime powers coprime to any modulus `Q`. -/
 private theorem reflectedComposite_violated_of_mode_approx {F : ℝ → ℝ} {z : ℂ} {m C σ : ℝ}
-    {r Q : ℕ} (hz0 : 1 / 2 < z.re) (hz1 : z.re < 1) (hzim : z.im ≠ 0) (hm : m ≠ 0)
+    {r Q : ℕ} (hQ : 1 ≤ Q) (hz0 : 1 / 2 < z.re) (hz1 : z.re < 1) (hzim : z.im ≠ 0) (hm : m ≠ 0)
     (hζ_ne : riemannZeta z ≠ 0) (hC : 0 ≤ C) (hσ0 : 0 ≤ σ) (hσ_lt : (1 + σ) / 2 < z.re)
     (hmode : ∀ x : ℝ, 1 ≤ x → |F x - x - quartetWaveModel z m x| ≤ C * x ^ σ * (1 + Real.log x) ^ r) :
     ∃ (p : ℕ) (c₀ : ℝ), p.Prime ∧ Q < p ∧ 0 < c₀ ∧
@@ -952,7 +953,7 @@ private theorem reflectedComposite_violated_of_mode_approx {F : ℝ → ℝ} {z 
   have hA_ne : (midpointMultiplier z / z) * riemannZeta z ≠ 0 :=
     mul_ne_zero (div_ne_zero (midpointMultiplier_ne_zero hz_pos hz1) hzne0) hζ_ne
   obtain ⟨p, c, hp, hQp, hc_pos, hpeaks⟩ :=
-    exists_prime_power_re_lower_bound Q hz_pos hzim hA_ne
+    exists_prime_power_re_lower_bound hQ hz_pos hzim hA_ne
   set c₀ : ℝ := |m| * c
   have hc₀_pos : 0 < c₀ := mul_pos (abs_pos.mpr hm) hc_pos
   refine ⟨p, c₀, hp, hQp, hc₀_pos, ?_⟩
@@ -978,7 +979,7 @@ private theorem reflectedComposite_violated_of_mode_approx {F : ℝ → ℝ} {z 
       have hlog4 : 1 + Real.log 4 ≤ 3 := by
         have hl2 : Real.log 2 ≤ 1 := by linarith [Real.log_two_lt_d9]
         have : Real.log 4 = 2 * Real.log 2 := by
-          rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; norm_num
+          rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]; push_cast; rfl
         linarith
       have hlog_mul : 1 + Real.log (4 * y) = 1 + Real.log 4 + (1 / δ) * (δ * Real.log y) := by
         rw [Real.log_mul (by norm_num) hy0.ne']; field_simp [hδ.ne']; ring
@@ -1100,13 +1101,16 @@ private theorem reflectedComposite_violated_of_mode_approx {F : ℝ → ℝ} {z 
     rw [hid_tot]
     have htri := (abs_sub _ (midpointSecondDiff n R)).trans
       (add_le_add (abs_add_le _ (clippedCofactorOp n P R)) le_rfl)
-    dsimp [K_err]
+    rw [show K_err =
+      2 * (68 + 6 * |m| * waveTransmissionRate z) + (64 * C / (1 - σ) + 16 * C) * B_lg from rfl]
     linarith only [htri, hbase', hclip_R, hmid_R]
   -- Asymptotically `2 c₀ n^{z.re} - K_err n^η ≥ c₀ n^{z.re}` since `η < z.re`
   have hgap : 0 < z.re - η := sub_pos.mpr hη_lt_re
+  have hpow_tend : Tendsto (fun k : ℕ => ((p ^ k : ℕ) : ℝ)) atTop atTop :=
+    tendsto_atTop_mono (fun k => by exact_mod_cast (Nat.lt_pow_self hp.one_lt).le)
+      tendsto_natCast_atTop_atTop
   have htend : Tendsto (fun k : ℕ => ((p ^ k : ℕ) : ℝ) ^ (z.re - η)) atTop atTop :=
-    (_root_.tendsto_rpow_atTop hgap).comp
-      (tendsto_natCast_atTop_atTop.comp (Nat.tendsto_pow_atTop_atTop_of_one_lt hp.one_lt))
+    (_root_.tendsto_rpow_atTop hgap).comp hpow_tend
   filter_upwards [eventually_ge_atTop 1, htend.eventually_ge_atTop (K_err / c₀)] with k hk1 hbig
   obtain ⟨n, hn_mem, hncop, hmass2, hpk⟩ := hpeaks k hk1
   refine ⟨n, hn_mem, hncop, hmass2, ?_⟩
@@ -1122,8 +1126,7 @@ private theorem reflectedComposite_violated_of_mode_approx {F : ℝ → ℝ} {z 
   have hosc_ge : 2 * c₀ * (n : ℝ) ^ z.re ≤
       |2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
         ((n : ℝ) : ℂ) ^ z).re| := by
-    dsimp [c₀]
-    rw [abs_mul, abs_mul, abs_of_pos two_pos, mul_assoc]
+    rw [show c₀ = |m| * c from rfl, abs_mul, abs_mul, abs_of_pos two_pos, mul_assoc]
     exact mul_le_mul_of_nonneg_left
       ((mul_le_mul_of_nonneg_left hpk (abs_nonneg m)).trans_eq (by ring)) zero_le_two
   have hrpow_n : K_err / c₀ ≤ (n : ℝ) ^ (z.re - η) :=
@@ -1176,7 +1179,7 @@ theorem coprimeZeroOneSet_imitator_rejected_by_reflectedComposites {β γ : ℝ}
     intro x hx
     rw [Real.rpow_zero, mul_one, pow_one, quartetWaveModel, sub_neg_eq_add]
     exact hmode x hx
-  obtain ⟨p, c₀, hp, hQp, hc₀, hviol⟩ := reflectedComposite_violated_of_mode_approx
+  obtain ⟨p, c₀, hp, hQp, hc₀, hviol⟩ := reflectedComposite_violated_of_mode_approx hQ
     (hz_re.symm ▸ hβ) (hz_re.symm ▸ hβ1) (hz_im.symm ▸ hγ) hm_ne hζ_ne hC le_rfl
     (by rw [hz_re]; linarith) hmode'
   rw [hz_re] at hviol
@@ -1188,7 +1191,7 @@ perturbation `Δ` with `|Δ(x) - quartetWaveModel z m x| ≤ C x^σ (1 + log x)^
 `ζ(z) ≠ 0`) forces `Chebyshev.theta + Δ` to violate reflected-composite balance at scale `Ω(n^{Re z})`
 without paying the `θ(x) - x` prime-error exponent. -/
 private theorem reflectedComposite_theta_perturbation_violated {Δ : ℝ → ℝ} {z : ℂ} {m C σ : ℝ}
-    {r Q : ℕ} (hz0 : 1 / 2 < z.re) (hz1 : z.re < 1) (hzim : z.im ≠ 0) (hm : m ≠ 0)
+    {r Q : ℕ} (hQ : 1 ≤ Q) (hz0 : 1 / 2 < z.re) (hz1 : z.re < 1) (hzim : z.im ≠ 0) (hm : m ≠ 0)
     (hζ_ne : riemannZeta z ≠ 0) (hC : 0 ≤ C) (hσ0 : 0 ≤ σ) (hσ_lt : (1 + σ) / 2 < z.re)
     (hΔ : ∀ x : ℝ, 1 ≤ x → |Δ x - quartetWaveModel z m x| ≤ C * x ^ σ * (1 + Real.log x) ^ r) :
     ∃ (p : ℕ) (c₀ : ℝ), p.Prime ∧ Q < p ∧ 0 < c₀ ∧
@@ -1205,7 +1208,7 @@ private theorem reflectedComposite_theta_perturbation_violated {Δ : ℝ → ℝ
       |G x - x - quartetWaveModel z m x| ≤ C * x ^ σ * (1 + Real.log x) ^ r := by
     intro x hx; dsimp [G]; rw [add_sub_cancel_left]; exact hΔ x hx
   obtain ⟨p, c₁, hp, hQp, hc₁_pos, hG_viol⟩ :=
-    reflectedComposite_violated_of_mode_approx hz0 hz1 hzim hm hζ_ne hC hσ0 hσ_lt hG_mode
+    reflectedComposite_violated_of_mode_approx hQ hz0 hz1 hzim hm hζ_ne hC hσ0 hσ_lt hG_mode
   obtain ⟨A_pt, hA_pt⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
   set K_θid : ℝ := 2 * (83 + 2 * |A_pt|)
   refine ⟨p, c₁ / 2, hp, hQp, half_pos hc₁_pos, ?_⟩
@@ -1221,7 +1224,8 @@ private theorem reflectedComposite_theta_perturbation_violated {Δ : ℝ → ℝ
     have hsq1 : 1 ≤ Real.sqrt n := Real.one_le_sqrt.mpr hnR1
     set P := ⌊2 * Real.sqrt n⌋₊
     have hhi : (P : ℝ) ≤ 2 * Real.sqrt n := Nat.floor_le (by positivity)
-    have h1_P : 1 ≤ P := Nat.le_floor (by linarith only [hsq1])
+    have h1_P : 1 ≤ P :=
+      Nat.le_floor (by exact_mod_cast (by linarith only [hsq1] : (1 : ℝ) ≤ 2 * Real.sqrt n))
     have hP_2n : P ≤ 2 * n := by
       have hsq_n : Real.sqrt n ≤ n := by
         nlinarith only [Real.sq_sqrt (by positivity : (0 : ℝ) ≤ n), hsq1]
@@ -1273,9 +1277,11 @@ private theorem reflectedComposite_theta_perturbation_violated {Δ : ℝ → ℝ
     dsimp [K_θid]
     linarith only [htri, hcent', hlin']
   have hgap : 0 < z.re - 1 / 2 := sub_pos.mpr hz0
+  have hpow_tend : Tendsto (fun k : ℕ => ((p ^ k : ℕ) : ℝ)) atTop atTop :=
+    tendsto_atTop_mono (fun k => by exact_mod_cast (Nat.lt_pow_self hp.one_lt).le)
+      tendsto_natCast_atTop_atTop
   have htend : Tendsto (fun k : ℕ => ((p ^ k : ℕ) : ℝ) ^ (z.re - 1 / 2)) atTop atTop :=
-    (_root_.tendsto_rpow_atTop hgap).comp
-      (tendsto_natCast_atTop_atTop.comp (Nat.tendsto_pow_atTop_atTop_of_one_lt hp.one_lt))
+    (_root_.tendsto_rpow_atTop hgap).comp hpow_tend
   filter_upwards [eventually_ge_atTop 1, hG_viol,
     htend.eventually_ge_atTop (K_θid / (c₁ / 2))] with k hk1 hGk hbig
   obtain ⟨n, hn_mem, hncop, hmass2, hGn⟩ := hGk
@@ -1410,8 +1416,8 @@ private theorem theta_power_prime_wave_approx {θ₀ β K_θ : ℝ} (hθ_lo : 1 
         ← Complex.ofReal_log hn0.le, Real.rpow_def_of_pos hn0, Complex.ofReal_exp,
         ← Complex.exp_add]
       congr 1; dsimp [ρ]; push_cast; ring
-    rw [hcp, Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin,
-      Complex.re_ofReal_mul, Complex.add_re, Complex.ofReal_re, Complex.mul_re,
+    rw [hcp, Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
+    simp only [Complex.re_ofReal_mul, Complex.add_re, Complex.mul_re, Complex.ofReal_re,
       Complex.ofReal_im, Complex.I_re, Complex.I_im]
     ring
   have hjump (n : ℕ) (hn : 1 ≤ n) :
@@ -1631,8 +1637,8 @@ Whenever `max (2 / 3) zetaZeroAbscissa < β < 1` and `γ ≠ 0`, `riemannZeta (�
 unconditionally and for every `α ∈ (β, min 1 (4β - 2))` (in particular `α = (β + min 1 (4β - 2)) / 2`),
 the `{0, 1, 2}`-rational-prime edit `e = sEdit α β γ k₀` violates the ordinary-integer
 reflected-composite identity at scale `Ω(n^β)` along infinitely many prime powers coprime to `Q`. -/
-theorem unconditional_sEdit_rejected_above_max_two_thirds_zetaZeroAbscissa {α β γ : ℝ} (Q k₀ : ℕ)
-    (hβ_lo : max (2 / 3) RHTower.zetaZeroAbscissa < β) (hβα : β < α)
+theorem unconditional_sEdit_rejected_above_max_two_thirds_zetaZeroAbscissa {α β γ : ℝ} {Q : ℕ}
+    (hQ : 1 ≤ Q) (k₀ : ℕ) (hβ_lo : max (2 / 3) RHTower.zetaZeroAbscissa < β) (hβα : β < α)
     (hα_hi : α < min 1 (4 * β - 2)) (hγ : γ ≠ 0) :
     let e := sEdit α β γ k₀
     riemannZeta ((β : ℂ) + I * (γ : ℂ)) ≠ 0 ∧
@@ -1736,7 +1742,7 @@ theorem unconditional_sEdit_rejected_above_max_two_thirds_zetaZeroAbscissa {α �
       rw [hlin]; ring
     rw [hsum_id]
     exact (abs_sub _ _).trans ((add_le_add hedit' hwave').trans_eq (by ring))
-  obtain ⟨p, c₀, hp, hQp, hc₀, hviol⟩ := reflectedComposite_theta_perturbation_violated
+  obtain ⟨p, c₀, hp, hQp, hc₀, hviol⟩ := reflectedComposite_theta_perturbation_violated hQ
     (hz_re.symm ▸ hβ_half) (hz_re.symm ▸ hβ1) (hz_im.symm ▸ hγ) one_ne_zero hζ_ne
     (add_nonneg hC₁ hC₂) hσ0 (hz_re.symm ▸ hσ_lt) hΔ_bound
   rw [hz_re] at hviol
@@ -1744,7 +1750,7 @@ theorem unconditional_sEdit_rejected_above_max_two_thirds_zetaZeroAbscissa {α �
 
 /-- **Concrete unconditional reflected-composite rejection of `sEdit` across `20999 / 24000 < β < 1`
 (including all `7 / 8 ≤ β < 1`).** -/
-theorem unconditional_sEdit_rejected_on_zeroFreeStrip {β γ : ℝ} (Q : ℕ)
+theorem unconditional_sEdit_rejected_on_zeroFreeStrip {β γ : ℝ} {Q : ℕ} (hQ : 1 ≤ Q)
     (hβ : 20999 / 24000 < β) (hβ1 : β < 1) (hγ : γ ≠ 0) :
     let α := (β + min 1 (4 * β - 2)) / 2
     let e := sEdit α β γ 0
@@ -1760,7 +1766,7 @@ theorem unconditional_sEdit_rejected_on_zeroFreeStrip {β γ : ℝ} (Q : ℕ)
                   midpointSecondDiff n (editedTheta e)| := by
   have hΘ := ZeroForcingCalculus.zetaZeroAbscissa_le_sub_seven_eighths
   have hmin : β < min 1 (4 * β - 2) := lt_min hβ1 (by linarith)
-  exact unconditional_sEdit_rejected_above_max_two_thirds_zetaZeroAbscissa Q 0
+  exact unconditional_sEdit_rejected_above_max_two_thirds_zetaZeroAbscissa hQ 0
     (max_lt (by linarith) (hΘ.trans_lt hβ)) (by linarith) (by linarith) hγ
 
 /-- **Sharp simultaneous prime-radius imitation and reflected-composite violation across `2/3 < β < 1`
@@ -1770,7 +1776,7 @@ edit `e = sEdit ((β + min 1 (4β - 2)) / 2) β γ 0` simultaneously imitates th
 two-interval prime radius (`¬ IsLogSqrtSqUnbounded`) and violates the ordinary-integer
 reflected-composite identity at scale `Ω(n^β)` along infinitely many prime powers coprime to `Q`. -/
 theorem rh_sEdit_imitates_radius_but_violates_reflectedComposites (hRH : RiemannHypothesis)
-    {β γ : ℝ} (Q : ℕ) (hβ : 2 / 3 < β) (hβ1 : β < 1) (hγ : γ ≠ 0) :
+    {β γ : ℝ} {Q : ℕ} (hQ : 1 ≤ Q) (hβ : 2 / 3 < β) (hβ1 : β < 1) (hγ : γ ≠ 0) :
     let α := (β + min 1 (4 * β - 2)) / 2
     let e := sEdit α β γ 0
     IsEdit e ∧
@@ -1793,7 +1799,7 @@ theorem rh_sEdit_imitates_radius_but_violates_reflectedComposites (hRH : Riemann
   have hΘ : RHTower.zetaZeroAbscissa = 1 / 2 :=
     RHTower.zetaZeroAbscissa_eq_half_iff_riemannHypothesis.mpr hRH
   obtain ⟨_, he, hviol⟩ := unconditional_sEdit_rejected_above_max_two_thirds_zetaZeroAbscissa
-    (α := α) Q 0 (by rw [hΘ]; exact max_lt hβ (by linarith)) hβα hα_hi hγ
+    (α := α) hQ 0 (by rw [hΘ]; exact max_lt hβ (by linarith)) hβα hα_hi hγ
   -- Prove `¬ IsLogSqrtSqUnbounded` for `editedTheta e` at `(β, γ, 1)` under `hRH`
   have hrad : ¬ IsLogSqrtSqUnbounded
       (radialDiscrepancyOf (fun t => editedTheta e (Real.exp t) - Real.exp t) β γ 1) := by

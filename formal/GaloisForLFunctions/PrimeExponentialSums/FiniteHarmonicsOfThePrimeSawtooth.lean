@@ -123,7 +123,7 @@ theorem sawtooth_from_finite_harmonics :
       have ha0 : ‖a 0‖=0 := le_antisymm (by simpa using ha 0) (norm_nonneg _)
       have hk0 : ‖k 0‖ ≤ A*δ := by simpa using hk 0
       simpa [ha0] using (mul_le_mul hk0 (heM 0) (norm_nonneg _) (mul_nonneg hA hδ.le))
-    · have hnat : (h.natAbs:ℝ)=|(h:ℝ)| := by exact_mod_cast Int.natCast_natAbs h
+    · have hnat : (h.natAbs:ℝ)=|(h:ℝ)| := by rw [Nat.cast_natAbs,Int.cast_abs]
       obtain ⟨hlow,hhigh⟩ := harmonic_coefficient_bounds hA hδ hh (ha h) (hk h)
       simp only [if_neg hh,if_pos hh,zero_add,←add_mul]
       by_cases hlowH : h.natAbs ≤ H

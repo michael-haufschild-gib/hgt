@@ -30,6 +30,164 @@ private theorem indicator_mono {P Q : Prop} (h : P → Q) : ind P ≤ ind Q := b
 private theorem indicator_nonneg (P : Prop) : 0 ≤ ind P := by by_cases h : P <;> simp [ind,h]
 private theorem indicator_le_one (P : Prop) : ind P ≤ 1 := by by_cases h : P <;> simp [ind,h]
 
+private abbrev alive (Y H : ℕ → ℕ) (d i : ℕ) : Prop :=
+  IsFree (RoughReading.banned (Y i)) d ∧ d ≤ H i
+
+private theorem two_changes_per_divisor (Y H : ℕ → ℕ) (walls : Monotone Y) (heights : Monotone H)
+    (d N : ℕ) : (∑ i ∈ range N,|ind (alive Y H d (i+1))-ind (alive Y H d i)|) ≤ 2 := by
+  let ok := fun i => IsFree (RoughReading.banned (Y i)) d
+  let u := fun i => ind (ok i)
+  let v := fun i => ind (ok i ∧ H i<d)
+  have falls (i : ℕ) (h : ok (i+1)) : ok i :=
+    ⟨h.1,fun p hp bad => h.2 p hp (show p ≤ Y (i+1) from
+      (show p ≤ Y i from bad).trans (walls (Nat.le_succ i)))⟩
+  have first (i : ℕ) : u (i+1) ≤ u i := indicator_mono (falls i)
+  have second (i : ℕ) : v (i+1) ≤ v i := indicator_mono
+    (fun h => ⟨falls i h.1,(heights (Nat.le_succ i)).trans_lt h.2⟩)
+  have eq (i : ℕ) : ind (alive Y H d i)=u i-v i := by
+    change ind (ok i ∧ d ≤ H i)=ind (ok i)-ind (ok i ∧ H i<d)
+    by_cases h : ok i <;> by_cases t : d ≤ H i <;> simp [ind,h,t,lt_iff_not_ge]
+  simp only [eq]
+  apply (RHTower.Sieve.variation_le_of_sub_antitone first second N).trans
+  linarith only [indicator_le_one (ok 0),indicator_nonneg (ok N),
+    indicator_le_one (ok 0 ∧ H 0<d),indicator_nonneg (ok N ∧ H N<d)]
+
+private theorem head_on_the_final_divisor_range (a : ArithmeticFunction ℝ) (Y H : ℕ → ℕ)
+    (heights : Monotone H) {i N : ℕ} (hi : i ≤ N) :
+    quotientReading (roughFloorCoefficient (Y i) (roughRestriction (Y i) a)) (H i)=
+      ∑ d ∈ Icc 1 (H N),quotientFloorCoefficients a d*ind (alive Y H d i) := by
+  rw [restricted_coefficients,quotientReading]
+  calc _ = ∑ d ∈ Icc 1 (H i),quotientFloorCoefficients a d*ind (alive Y H d i) := by
+             apply sum_congr rfl
+             intro d hd
+             rw [roughRestriction_apply]
+             by_cases h : IsFree (RoughReading.banned (Y i)) d <;>
+               simp [alive,ind,h,(mem_Icc.mp hd).2]
+       _ = _ := by
+             apply sum_subset (Icc_subset_Icc_right (heights hi))
+             intro d hd out
+             have late : ¬d ≤ H i := fun h => out (mem_Icc.mpr ⟨(mem_Icc.mp hd).1,h⟩)
+             simp [alive,ind,late]
+
+/-- Each change to the arithmetic reading pays its inverse coefficient
+at the arrival wall. Each divisor can independently enter or leave the
+moving range at most twice over the full history. -/
+theorem variation_with_changes_of_arithmetic_reading (a : ℕ → ArithmeticFunction ℝ)
+    (Y H : ℕ → ℕ) (walls : Monotone Y) (heights : Monotone H) (N : ℕ) (cap : ℕ → ℝ)
+    (bounded : ∀ i d,i ≤ N → d ∈ Icc 1 (H N) → |quotientFloorCoefficients (a i) d| ≤ cap d) :
+    let c := fun i => quotientFloorCoefficients (a i)
+    let P := fun i => quotientReading (roughFloorCoefficient (Y i) (roughRestriction (Y i) (a i))) (H i)
+    (∑ i ∈ range N,|P (i+1)-P i|) ≤ ∑ d ∈ Icc 1 (H N),
+      (2*cap d+∑ i ∈ range N,|c (i+1) d-c i d|*(if IsFree (RoughReading.banned (Y (i+1))) d ∧ d ≤ H (i+1) then 1 else 0)) := by
+  let c := fun i => quotientFloorCoefficients (a i)
+  let e := fun d i => ind (alive Y H d i)
+  let S := Icc 1 (H N)
+  let z := fun d i => c i d*e d i
+  have per (d : ℕ) (hd : d ∈ S) :
+      (∑ i ∈ range N,|z d (i+1)-z d i|) ≤ 2*cap d+∑ i ∈ range N,|c (i+1) d-c i d|*e d (i+1) := by
+    have step (i : ℕ) (hi : i ∈ range N) :
+        |z d (i+1)-z d i| ≤ cap d*|e d (i+1)-e d i|+|c (i+1) d-c i d|*e d (i+1) := by
+      rw [show z d (i+1)-z d i=c i d*(e d (i+1)-e d i)+(c (i+1) d-c i d)*e d (i+1) by
+        dsimp only [z]; ring]
+      apply (abs_add_le ..).trans
+      rw [abs_mul,abs_mul,abs_of_nonneg (indicator_nonneg (alive Y H d (i+1)))]
+      exact add_le_add_right (mul_le_mul_of_nonneg_right (bounded i d (mem_range.mp hi).le hd) (abs_nonneg _)) _
+    apply (sum_le_sum step).trans
+    rw [sum_add_distrib,←mul_sum]
+    exact add_le_add_right ((mul_le_mul_of_nonneg_left (two_changes_per_divisor Y H walls heights d N)
+      ((abs_nonneg _).trans (bounded 0 d (Nat.zero_le _) hd))).trans_eq (mul_comm ..)) _
+  dsimp only
+  calc _ ≤ ∑ i ∈ range N,∑ d ∈ S,|z d (i+1)-z d i| := by
+             apply sum_le_sum
+             intro i hi
+             rw [head_on_the_final_divisor_range _ Y H heights (mem_range.mp hi),
+               head_on_the_final_divisor_range _ Y H heights (mem_range.mp hi).le,←sum_sub_distrib]
+             exact abs_sum_le_sum_abs ..
+       _ = ∑ d ∈ S,∑ i ∈ range N,|z d (i+1)-z d i| := sum_comm
+       _ ≤ _ := sum_le_sum per
+
+
+private theorem variation_of_a_divisor_coefficient (a : ℕ → ArithmeticFunction ℝ) (N : ℕ)
+    {B : ℝ} (change : ∀ q,(∑ i ∈ range N,|a (i+1) q-a i q|) ≤ B*vonMangoldt q) (d : ℕ) :
+    (∑ i ∈ range N,|quotientFloorCoefficients (a (i+1)) d-quotientFloorCoefficients (a i) d|) ≤ B*Real.log d := by
+  let w := fun q => ((moebius (d/q):ℤ):ℝ)
+  have value (f : ArithmeticFunction ℝ) : quotientFloorCoefficients f d=∑ q ∈ d.divisors,f q*w q := by
+    rw [quotientFloorCoefficients,mul_apply,Nat.sum_divisorsAntidiagonal
+      (fun q k => f q*(moebius : ArithmeticFunction ℝ) k)]
+    rfl
+  have price (i : ℕ) (_ : i ∈ range N) :
+      |quotientFloorCoefficients (a (i+1)) d-quotientFloorCoefficients (a i) d| ≤
+        ∑ q ∈ d.divisors,|a (i+1) q-a i q| := by
+    rw [value,value,←sum_sub_distrib]
+    apply (abs_sum_le_sum_abs ..).trans
+    apply sum_le_sum
+    intro q _
+    rw [←sub_mul,abs_mul]
+    have mw : |w q| ≤ 1 := by exact_mod_cast abs_moebius_le_one (n := d/q)
+    exact (mul_le_mul_of_nonneg_left mw (abs_nonneg _)).trans_eq (mul_one _)
+  apply (sum_le_sum price).trans
+  rw [sum_comm,←vonMangoldt_sum (n := d),mul_sum]
+  exact sum_le_sum (fun q _ => change q)
+
+/-- The sharp heads for varying weights, sieve walls and quotient cuts.
+An atom with total arithmetic variation at most B times its Mangoldt
+weight contributes that budget once; the two other charges are its
+divisor's entry and exit. -/
+theorem total_cost_of_changing_rough_prime_readings (a : ℕ → ArithmeticFunction ℝ)
+    (dom : ∀ i q,|a i q| ≤ vonMangoldt q) (Y H : ℕ → ℕ) (walls : Monotone Y)
+    (heights : Monotone H) (N : ℕ) {B : ℝ} (bp : 0 ≤ B)
+    (change : ∀ q,(∑ i ∈ range N,|a (i+1) q-a i q|) ≤ B*vonMangoldt q) :
+    let P := fun i => quotientReading (roughFloorCoefficient (Y i) (roughRestriction (Y i) (a i))) (H i)
+    (∑ i ∈ range N,|P (i+1)-P i|) ≤ (2+B)*(H N:ℝ)*Real.log (H N) := by
+  have law := variation_with_changes_of_arithmetic_reading a Y H walls heights N (fun d => Real.log d)
+    (fun i d _ _ => interpolating_coefficients_le_log (dom i) d)
+  apply law.trans
+  calc _ ≤ ∑ _d ∈ Icc 1 (H N),(2+B)*Real.log (H N) := by
+             apply sum_le_sum
+             intro d hd
+             have erase (i : ℕ) (_ : i ∈ range N) :
+                 |quotientFloorCoefficients (a (i+1)) d-quotientFloorCoefficients (a i) d|*ind (alive Y H d (i+1)) ≤
+                    |quotientFloorCoefficients (a (i+1)) d-quotientFloorCoefficients (a i) d| :=
+               (mul_le_mul_of_nonneg_left (indicator_le_one _) (abs_nonneg _)).trans_eq (mul_one _)
+             have bound := (sum_le_sum erase).trans (variation_of_a_divisor_coefficient a N change d)
+             have order := Real.log_le_log (Nat.cast_pos.mpr (mem_Icc.mp hd).1) (Nat.cast_le.mpr (mem_Icc.mp hd).2)
+             have cap := mul_le_mul_of_nonneg_left order (by linarith : 0 ≤ 2+B)
+             linarith only [bound,cap]
+       _ = _ := by simp [mul_left_comm,mul_assoc]
+
+/-- Each prime power independently changes from its first weight to
+its second one at its prescribed observation. -/
+def changingPrimePowerWeight (a b : ArithmeticFunction ℝ) (switchTime : ℕ → ℕ) (i : ℕ) :
+    ArithmeticFunction ℝ := ⟨fun q => if switchTime q ≤ i then b q else a q,by simp⟩
+
+/-- Arbitrarily scheduled changes at all prime powers cost at most four
+visits per inverse divisor, over an arbitrary increasing path of sieve
+walls and head endpoints. -/
+theorem independent_changes_of_every_prime_power (a b : ArithmeticFunction ℝ)
+    (da : ∀ q,|a q| ≤ vonMangoldt q) (db : ∀ q,|b q| ≤ vonMangoldt q) (switchTime Y H : ℕ → ℕ)
+    (walls : Monotone Y) (heights : Monotone H) (N : ℕ) :
+    let P := fun i => quotientReading (roughFloorCoefficient (Y i)
+      (roughRestriction (Y i) (changingPrimePowerWeight a b switchTime i))) (H i)
+    (∑ i ∈ range N,|P (i+1)-P i|) ≤ 4*(H N:ℝ)*Real.log (H N) := by
+  let f := changingPrimePowerWeight a b switchTime
+  have dom (i q : ℕ) : |f i q| ≤ vonMangoldt q := by
+    change |if switchTime q ≤ i then b q else a q| ≤ _
+    split <;> first | exact db q | exact da q
+  have change (q : ℕ) : (∑ i ∈ range N,|f (i+1) q-f i q|) ≤ 2*vonMangoldt q := by
+    have each (i : ℕ) (_ : i ∈ range N) :
+        |f (i+1) q-f i q| ≤ if i=switchTime q-1 then 2*vonMangoldt q else 0 := by
+      by_cases hit : i=switchTime q-1
+      · rw [if_pos hit]
+        exact (abs_sub ..).trans ((add_le_add (dom (i+1) q) (dom i q)).trans_eq (two_mul _).symm)
+      · rw [if_neg hit]
+        have eq : switchTime q ≤ i+1 ↔ switchTime q ≤ i := by omega
+        change |(if switchTime q ≤ i+1 then b q else a q)-(if switchTime q ≤ i then b q else a q)| ≤ 0
+        simp only [eq,sub_self,abs_zero,le_refl]
+    apply (sum_le_sum each).trans
+    by_cases inside : switchTime q-1 ∈ range N <;> simp [inside,vonMangoldt_nonneg]
+  simpa only [show (2:ℝ)+2=4 by norm_num] using
+    total_cost_of_changing_rough_prime_readings f dom Y H walls heights N (by norm_num : (0:ℝ) ≤ 2) change
+
 /-- Recomputing a restricted inverse coefficient head on every member of
 an arbitrary increasing family of sieve and height cutoffs costs at most
 two visits per divisor, uniformly in the number of observations. -/
@@ -37,51 +195,9 @@ theorem variation_of_the_rough_coefficient_head (a : ArithmeticFunction ℝ)
     (Y H : ℕ → ℕ) (walls : Monotone Y) (heights : Monotone H) (N : ℕ) :
     let P := fun i => quotientReading (roughFloorCoefficient (Y i) (roughRestriction (Y i) a)) (H i)
     (∑ i ∈ range N,|P (i+1)-P i|) ≤ 2*∑ d ∈ Icc 1 (H N),|quotientFloorCoefficients a d| := by
-  let c := quotientFloorCoefficients a
-  let ok := fun d i => IsFree (RoughReading.banned (Y i)) d
-  let u := fun d i => ind (ok d i)
-  let v := fun d i => ind (ok d i ∧ H i<d)
-  let z := fun d i => c d*(u d i-v d i)
-  let P := fun i => quotientReading (roughFloorCoefficient (Y i) (roughRestriction (Y i) a)) (H i)
-  let S := Icc 1 (H N)
-  have falls (d i : ℕ) (h : ok d (i+1)) : ok d i :=
-    ⟨h.1,fun p hp bad => h.2 p hp (show p ≤ Y (i+1) from
-      (show p ≤ Y i from bad).trans (walls (Nat.le_succ i)))⟩
-  have per (d : ℕ) : (∑ i ∈ range N,|z d (i+1)-z d i|) ≤ 2*|c d| := by
-    have first (i : ℕ) : u d (i+1) ≤ u d i := indicator_mono (falls ..)
-    have second (i : ℕ) : v d (i+1) ≤ v d i := indicator_mono
-      (fun h => ⟨falls d i h.1,(heights (Nat.le_succ i)).trans_lt h.2⟩)
-    have var := RHTower.Sieve.variation_le_of_sub_antitone first second N
-    have cap : (u d 0-u d N)+(v d 0-v d N) ≤ 2 := by
-      linarith only [indicator_le_one (ok d 0),indicator_nonneg (ok d N),
-        indicator_le_one (ok d 0 ∧ H 0<d),indicator_nonneg (ok d N ∧ H N<d)]
-    simp only [z,←mul_sub,abs_mul,←mul_sum]
-    simpa only [mul_comm (2:ℝ)] using mul_le_mul_of_nonneg_left (var.trans cap) (abs_nonneg (c d))
-  have expr (i : ℕ) (hi : i ≤ N) : P i=∑ d ∈ S,z d i := by
-    dsimp only [P,quotientReading]
-    rw [restricted_coefficients]
-    calc _ = ∑ d ∈ Icc 1 (H i),z d i := by
-               apply sum_congr rfl
-               intro d hd
-               have within := (mem_Icc.mp hd).2
-               rw [roughRestriction_apply]
-               change (if ok d i then c d else 0)=z d i
-               by_cases free : ok d i <;> simp [z,u,v,ind,free,within.not_gt]
-         _ = ∑ d ∈ S,z d i := by
-               apply sum_subset (Icc_subset_Icc_right (heights hi))
-               intro d hd out
-               have late : H i<d := lt_of_not_ge (fun h => out (mem_Icc.mpr ⟨(mem_Icc.mp hd).1,h⟩))
-               simp [z,u,v,late]
-  change (∑ i ∈ range N,|P (i+1)-P i|) ≤ _
-  calc _ ≤ ∑ i ∈ range N,∑ d ∈ S,|z d (i+1)-z d i| := by
-             apply sum_le_sum
-             intro i hi
-             have lt := mem_range.mp hi
-             rw [expr (i+1) lt,expr i lt.le,←sum_sub_distrib]
-             exact abs_sum_le_sum_abs ..
-       _ = ∑ d ∈ S,∑ i ∈ range N,|z d (i+1)-z d i| := sum_comm
-       _ ≤ ∑ d ∈ S,2*|c d| := sum_le_sum (fun d _ => per d)
-       _ = _ := (mul_sum ..).symm
+  simpa only [sub_self,abs_zero,zero_mul,sum_const_zero,add_zero,←mul_sum] using
+    variation_with_changes_of_arithmetic_reading (fun _ => a) Y H walls heights N
+      (fun d => |quotientFloorCoefficients a d|) (fun _ _ _ _ => le_rfl)
 
 /-- For every Mangoldt-dominated weight the complete price of all changes
 to the omitted head at the hyperbola is square-root logarithmic, including
@@ -186,6 +302,8 @@ theorem total_variation_of_the_centered_hyperbola_transfer :
   linarith only [pvar,fvar,hcap,wallCap]
 
 #print axioms total_variation_of_the_centered_hyperbola_transfer
+#print axioms independent_changes_of_every_prime_power
+#print axioms total_cost_of_changing_rough_prime_readings
 #print axioms variation_of_the_rough_coefficient_head
 #print axioms total_cost_of_moving_rough_hyperbola_heads
 end GaloisForLFunctions.RestrictedFactorizationCalculus

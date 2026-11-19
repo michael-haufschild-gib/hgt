@@ -27,7 +27,6 @@ theorem position_moment (k : ℕ) (t w z : ℝ) :
     ← intervalIntegral.integral_of_le (le_add_of_nonneg_right (Real.exp_pos w).le),
     intervalIntegral.integral_comp_sub_right (fun x : ℝ => x^k) z,integral_pow]
   unfold meanPower
-  push_cast
   field_simp [Real.exp_ne_zero w,show (k:ℝ)+1≠0 by positivity]
 
 private theorem gauss_power_integrable (m : ℝ) (v : ℝ≥0) (k : ℕ) :

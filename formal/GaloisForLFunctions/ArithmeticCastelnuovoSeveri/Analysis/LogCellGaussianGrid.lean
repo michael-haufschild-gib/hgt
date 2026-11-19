@@ -48,11 +48,11 @@ def mixture (n : ℕ) : Measure ℝ :=
 
 instance (n : ℕ) : IsProbabilityMeasure (mixture n) where
   measure_univ := by
-    rw [mixture,Measure.smul_apply,Measure.finsetSum_apply _ _ MeasurableSet.univ]
+    rw [mixture,Measure.smul_apply,Measure.finsetSum_apply _ _ Set.univ]
     simp only [measure_univ,Finset.sum_const,Finset.card_range,nsmul_eq_mul,mul_one,
       smul_eq_mul]
     have h : 0 < (n:ℝ)+1 := by positivity
-    rw [show ((n+1:ℕ):ℝ≥0∞) = ENNReal.ofReal ((n:ℝ)+1) by norm_cast; simp,
+    rw [show ((n+1:ℕ):ℝ≥0∞) = ENNReal.ofReal ((n:ℝ)+1) by norm_cast,
       ← ENNReal.ofReal_mul (width_pos n).le]
     simp [width,h.ne']
 
@@ -95,7 +95,6 @@ theorem mixture_characteristic (n : ℕ) (t : ℝ) :
     dsimp only [E,phase]
     rw [← Complex.exp_add]
     congr 1
-    change _ - (((Real.toNNReal _ : ℝ≥0):ℝ):ℂ)*_/2 = _
     rw [hcast]
     unfold center width
     push_cast
@@ -119,12 +118,13 @@ theorem weak_convergence : Tendsto probability atTop (𝓝 unitIntervalProbabili
     apply tendsto_const_nhds.div_atTop
     simpa only [Nat.cast_add,Nat.cast_one,Function.comp_def] using
       (tendsto_natCast_atTop_atTop (R := ℝ)).comp (tendsto_add_atTop_nat 1)
-  have hwc := (Complex.continuous_ofReal.tendsto 0).comp hw
+  have hwc : Tendsto (fun n => (width n : ℂ)) atTop (𝓝 0) := by
+    simpa only [Function.comp_def,Complex.ofReal_zero] using (Complex.continuous_ofReal.tendsto 0).comp hw
   have hE : Tendsto (fun n => Complex.exp ((t:ℂ)*width n/2*Complex.I-
       (width n:ℂ)^2*t^2/24)) atTop (𝓝 1) := by
-    convert Complex.continuous_exp.continuousAt.tendsto.comp
-      ((((tendsto_const_nhds.mul hwc).div_const 2).mul_const Complex.I).sub
-        (((hwc.pow 2).mul_const ((t:ℂ)^2)).div_const 24)) using 1 <;> simp
+    have exponent := (((tendsto_const_nhds (x := (t:ℂ))).mul hwc).div_const 2).mul_const Complex.I
+    have decay := ((hwc.pow 2).mul_const ((t:ℂ)^2)).div_const 24
+    simpa [Function.comp_def] using (Complex.continuous_exp.tendsto _).comp (exponent.sub decay)
   have hP : charFun (unitIntervalProbabilityMeasure : Measure ℝ) t = ∫ x in (0:ℝ)..1, phase t x := by
     rw [charFun_apply_real,intervalIntegral.integral_of_le (by norm_num : (0:ℝ) ≤ 1)]
     rfl
@@ -155,13 +155,12 @@ theorem mesh_characteristic (n : ℕ) :
     ring
   have hU := charFun_centeredUniformClockProbabilityMeasure (1/2) (reciprocal n)
   rw [hs,hcenter,charFun_map_add_const] at hU
-  refine ⟨(mul_eq_zero.mp (by simpa using hU)).resolve_right (Complex.exp_ne_zero _),?_⟩
+  refine ⟨by simpa using hU,?_⟩
   have hphase (j : ℕ) : phase (reciprocal n) ((j:ℝ)/((n:ℝ)+1)) = 1 := by
     unfold phase reciprocal
     convert Complex.exp_nat_mul_two_pi_mul_I j using 1
     push_cast
     field_simp
-    ring
   have hsum : unitRiemannSum (phase (reciprocal n)) n = 1 := by
     simp only [unitRiemannSum,hphase,Finset.sum_const,Finset.card_range,nsmul_eq_mul,mul_one,
       Complex.real_smul]

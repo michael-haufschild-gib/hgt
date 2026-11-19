@@ -157,12 +157,12 @@ private theorem image_range_block_eq_Ioc (N₀ B j : ℕ) :
   · rintro ⟨h1, h2⟩
     exact ⟨n - (N₀ + 1 + B * j), by omega, by omega⟩
 
-/-- **Controlled-cost positivity producer.** For every comb width `K ≥ 1`, contact
+/-- **Controlled-cost positivity producer.** For every comb width `K`, contact
 weight `w`, and desired mass margin `κ > 0`, there is `C > 0` such that eventually
 in `N`, every finite linear combination `c(n) = ∑_{t ∈ T} α_t v_{d_t, r_t}(n)` of
 centered congruence indicators (`d_t ≥ 1`) satisfies
 `combFormW w S c ≥ κ ∑_{n ∈ S} c(n)^2 - (C / N) (∑_{t ∈ T} |α_t|)^2`. -/
-theorem eventually_combFormW_controlled_residue_ge {K : ℕ} (hK : 1 ≤ K)
+theorem eventually_combFormW_controlled_residue_ge (K : ℕ)
     (w : ℕ → ℝ) {κ : ℝ} (hκ : 0 < κ) :
     ∃ C : ℝ, 0 < C ∧ ∀ᶠ N : ℕ in atTop,
       ∀ {ι : Type*} (T : Finset ι) (d r : ι → ℕ) (α : ι → ℝ),
@@ -343,7 +343,7 @@ theorem eventually_combFormW_controlled_residue_ge {K : ℕ} (hK : 1 ≤ K)
 /-- Whenever a linear combination of centered congruence indicators satisfies the
 sub-macroscopic cost bound `(∑ |α_t|)^2 ≤ δ N ∑_{n ∈ S} c(n)^2` with `δ = 1 / C_{K, w, 1}`,
 its diagonal and real-place budget pays its `w`-weighted mixed prime debit on `S`. -/
-theorem eventually_mixedPrimeDebitW_le_diagRealBudget_of_cost {K : ℕ} (hK : 1 ≤ K)
+theorem eventually_mixedPrimeDebitW_le_diagRealBudget_of_cost (K : ℕ)
     (w : ℕ → ℝ) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ N : ℕ in atTop,
       ∀ {ι : Type*} (T : Finset ι) (d r : ι → ℕ) (α : ι → ℝ),
@@ -352,7 +352,7 @@ theorem eventually_mixedPrimeDebitW_le_diagRealBudget_of_cost {K : ℕ} (hK : 1 
         let c := fun n => ∑ t ∈ T, α t * centeredResidue (d t) (r t) n
         (∑ t ∈ T, |α t|) ^ 2 ≤ δ * (N : ℝ) * ∑ n ∈ S, c n ^ 2 →
         mixedPrimeDebitW w S c ≤ diagRealBudget S c := by
-  obtain ⟨C, hC, hev⟩ := eventually_combFormW_controlled_residue_ge hK w zero_lt_one
+  obtain ⟨C, hC, hev⟩ := eventually_combFormW_controlled_residue_ge K w zero_lt_one
   refine ⟨1 / C, by positivity, ?_⟩
   filter_upwards [hev, eventually_ge_atTop 1] with N hN hN1 ι T d r α hd hcost
   set S := Ioc N (N + 3 * K * N)
@@ -387,7 +387,7 @@ private theorem log_le_four_fourthRoot {N : ℕ} (hN : 1 ≤ N) :
   linarith
 
 private theorem sum_centeredMultiple_sq_lateComb_ge_of_le_sqrt
-    {K N d : ℕ} (hK : 1 ≤ K) {c₂ : ℝ} (hc₂ : 0 < c₂)
+    {K N d : ℕ} {c₂ : ℝ} (hc₂ : 0 < c₂)
     (hN : c₂ * Real.sqrt N ≤ (K : ℝ) * N)
     (hd2 : 2 ≤ d) (hdd : (d : ℝ) ≤ c₂ * Real.sqrt N) :
     ((K : ℝ) / c₂) * Real.sqrt N ≤
@@ -446,12 +446,13 @@ theorem eventually_pilot_pos_and_cauchy_schwarz {K : ℕ} (hK : 1 ≤ K)
         0 < combFormW w S vq ∧
         formBilinW w S vp vq ^ 2 ≤ combFormW w S vp * combFormW w S vq ∧
         ∀ α β : ℝ, 0 ≤ combFormW w S (fun n => α * vp n + β * vq n) := by
-  obtain ⟨C₁, hC₁, hev₁⟩ := eventually_combFormW_controlled_residue_ge hK w (κ := 2) (by norm_num)
+  obtain ⟨C₁, hC₁, hev₁⟩ := eventually_combFormW_controlled_residue_ge K w (κ := 2) (by norm_num)
   set C_B : ℝ := 16 + 4 * (K : ℝ) + 4 * Real.log (1 + 3 * (K : ℝ)) +
     4 * ∑ r ∈ Icc 2 (3 * K), |w r|
   have hCB_pos : 0 < C_B := by
     dsimp only [C_B]
-    have : 0 ≤ Real.log (1 + 3 * (K : ℝ)) := Real.log_nonneg (by positivity)
+    have : 0 ≤ Real.log (1 + 3 * (K : ℝ)) :=
+      Real.log_nonneg (by linarith [show (0 : ℝ) ≤ K from Nat.cast_nonneg K])
     have : 0 ≤ ∑ r ∈ Icc 2 (3 * K), |w r| := sum_nonneg fun _ _ => abs_nonneg _
     positivity
   set γ : ℝ := (K : ℝ) / c₂
@@ -479,7 +480,7 @@ theorem eventually_pilot_pos_and_cauchy_schwarz {K : ℕ} (hK : 1 ≤ K)
       γ * Real.sqrt N ≤ combFormW w S (centeredMultiple d) := by
     have hdR : (d : ℝ) ≤ c₂ * Real.sqrt N :=
       (Nat.cast_le.mpr hd_le).trans (Nat.floor_le (by positivity))
-    have hmass := sum_centeredMultiple_sq_lateComb_ge_of_le_sqrt hK hc₂ hc2_sqrt_le hd.two_le hdR
+    have hmass := sum_centeredMultiple_sq_lateComb_ge_of_le_sqrt hc₂ hc2_sqrt_le hd.two_le hdR
     have hsing := hN₁ ({0} : Finset ℕ) (fun _ => d) (fun _ => 0) (fun _ => 1)
       (fun _ _ => hd.pos)
     have hce : (fun n => ∑ _t ∈ ({0} : Finset ℕ), (1 : ℝ) * centeredResidue d 0 n) =
@@ -619,7 +620,7 @@ theorem card_primesLE_le {X : ℕ} (hX : 4 ≤ X) :
   have hpart : (Nat.primesLE X).card =
       ((Nat.primesLE X).filter (· ≤ s)).card +
         ((Nat.primesLE X).filter (fun p => ¬ p ≤ s)).card :=
-    (filter_card_add_filter_neg_card_eq_card (s := Nat.primesLE X) (p := (· ≤ s))).symm
+    (card_filter_add_card_filter_not (s := Nat.primesLE X) (p := (· ≤ s))).symm
   have hlow : (((Nat.primesLE X).filter (· ≤ s)).card : ℝ) ≤ Real.sqrt X := by
     have hsub : (Nat.primesLE X).filter (· ≤ s) ⊆ Icc 1 s := fun p hp => by
       obtain ⟨hpP, hps⟩ := mem_filter.mp hp
@@ -632,8 +633,7 @@ theorem card_primesLE_le {X : ℕ} (hX : 4 ≤ X) :
       (2 * Real.log 4) * (X : ℝ) / Real.log X := by
     set H := (Nat.primesLE X).filter (fun p => ¬ p ≤ s)
     have hlog_each : ∀ p ∈ H, (1 / 2 : ℝ) * Real.log X ≤ Real.log p := fun p hp => by
-      obtain ⟨hpP, hps⟩ := mem_filter.mp hp
-      have hp_pos : (0 : ℝ) < p := by exact_mod_cast (Nat.prime_of_mem_primesLE hpP).pos
+      obtain ⟨_, hps⟩ := mem_filter.mp hp
       have hgt : Real.sqrt X < p := Nat.lt_of_floor_lt (not_le.mp hps)
       have hsq : (X : ℝ) ≤ (p : ℝ) ^ 2 := by
         rw [← Real.sq_sqrt hX0.le]
@@ -646,7 +646,7 @@ theorem card_primesLE_le {X : ℕ} (hX : 4 ≤ X) :
           = ∑ _p ∈ H, (1 / 2 : ℝ) * Real.log X := by rw [sum_const, nsmul_eq_mul]
         _ ≤ ∑ p ∈ H, Real.log p := sum_le_sum hlog_each
         _ ≤ ∑ p ∈ Nat.primesLE X, Real.log p :=
-            sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun p hp _ =>
+            sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun p _ _ =>
               Real.log_natCast_nonneg p
         _ ≤ (X : ℝ) * Real.log 4 := _root_.RHTower.Sieve.sum_log_primesLE_le X
     rw [le_div_iff₀ hlogX]
@@ -665,7 +665,7 @@ theorem eventually_combFormW_primeSpan_sqrt_ge {K : ℕ} (hK : 1 ≤ K)
       let P := Nat.primesLE ⌊C₀ * Real.sqrt N⌋₊
       let c := fun n => ∑ p ∈ P, α p * centeredMultiple p n
       κ * ∑ n ∈ S, c n ^ 2 ≤ combFormW w S c := by
-  obtain ⟨C₁, hC₁, hev₁⟩ := eventually_combFormW_controlled_residue_ge hK w
+  obtain ⟨C₁, hC₁, hev₁⟩ := eventually_combFormW_controlled_residue_ge K w
     (show 0 < 2 * κ by positivity)
   set γ : ℝ := (K : ℝ) / C₀
   have hγ : 0 < γ := by dsimp only [γ]; positivity
@@ -798,7 +798,7 @@ theorem eventually_combFormW_primeSpan_sqrt_ge {K : ℕ} (hK : 1 ≤ K)
       have hpP := Nat.prime_of_mem_primesLE hp
       have hpX : (p : ℝ) ≤ C₀ * Real.sqrt N :=
         (Nat.cast_le.mpr (Nat.le_of_mem_primesLE hp)).trans (Nat.floor_le (by positivity))
-      have hmp := sum_centeredMultiple_sq_lateComb_ge_of_le_sqrt hK hC₀ hC0_sqrt_le hpP.two_le hpX
+      have hmp := sum_centeredMultiple_sq_lateComb_ge_of_le_sqrt hC₀ hC0_sqrt_le hpP.two_le hpX
       calc γ * Real.sqrt N * α p ^ 2
           = α p ^ 2 * ((K : ℝ) / C₀ * Real.sqrt N) := by dsimp only [γ]; ring
         _ ≤ α p ^ 2 * ∑ n ∈ S, centeredMultiple p n ^ 2 :=
@@ -1289,8 +1289,8 @@ private theorem combFormW_liouville_eq_pencilCombForm_of_lt_three
           by_cases hdvd : m ∣ n
           · obtain ⟨r, rfl⟩ := hdvd
             obtain ⟨hne, hnW⟩ := mem_erase.mp hnE
-            obtain ⟨_, hnB⟩ := mem_Ioc.mp hnW
-            have hr0 : r ≠ 0 := by rintro rfl; simp at hnW
+            obtain ⟨hnA, hnB⟩ := mem_Ioc.mp hnW
+            have hr0 : r ≠ 0 := by rintro rfl; simp at hnA
             have hr1 : r ≠ 1 := by rintro rfl; exact hne (mul_one m)
             have hr2 : r ≠ 2 := fun hr2 => hn2m (by rw [hr2]; ring)
             exfalso
@@ -1304,8 +1304,8 @@ private theorem combFormW_liouville_eq_pencilCombForm_of_lt_three
         by_cases hdvd : m ∣ n
         · obtain ⟨r, rfl⟩ := hdvd
           obtain ⟨hne, hnW⟩ := mem_erase.mp hnE
-          obtain ⟨_, hnB⟩ := mem_Ioc.mp hnW
-          have hr0 : r ≠ 0 := by rintro rfl; simp at hnW
+          obtain ⟨hnA, hnB⟩ := mem_Ioc.mp hnW
+          have hr0 : r ≠ 0 := by rintro rfl; simp at hnA
           have hr1 : r ≠ 1 := by rintro rfl; exact hne (mul_one m)
           have hr2 : r ≠ 2 := fun hr2 => h2m (by rw [← hr2, mul_comm]; exact hnW)
           exfalso
@@ -1420,7 +1420,10 @@ theorem eventually_exists_liouville_centeredMultiple_neg {K : ℕ} (hK : 1 ≤ K
         simp [combForm, combPairing, degOne, degTwo]
       have hd0 : GreenCalculusOfThePrimeFreeWindow.doubleContact Wb
           (fun n => σ (blockIndex (R * (2 * b)) (2 * b) n)) = 0 :=
-        sum_eq_zero fun m hm => by split_ifs <;> simp [hg0 m hm]
+        sum_eq_zero fun m hm => by
+          by_cases h2 : 2 * m ∈ Wb
+          · rw [if_pos h2, hg0 m hm, zero_mul]
+          · rw [if_neg h2]
       rw [GreenCalculusOfThePrimeFreeWindow.pencilCombForm, hc0, hd0]
       ring
     have hlim0 : GreenCalculusOfThePrimeFreeWindow.pencilStepForm (-1) 3 R J σ = 0 :=

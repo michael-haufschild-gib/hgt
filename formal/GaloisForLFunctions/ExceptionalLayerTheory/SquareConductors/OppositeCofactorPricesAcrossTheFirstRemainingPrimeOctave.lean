@@ -303,15 +303,15 @@ theorem opposite_factor_log_price {n a b p q : ℕ} (hn : 0 < n) (hs : a*p+b*q=6
       Real.log p-Real.log q-Real.log ((b:ℝ)/a) ≤ Real.log 2 := by
   have hx : 0 < a*p := by omega
   have hy : 0 < b*q := by omega
-  obtain ⟨ha,hp⟩ := Nat.mul_pos_iff.mp hx
-  obtain ⟨hb,hq⟩ := Nat.mul_pos_iff.mp hy
+  obtain ⟨ha,hp⟩ := mul_ne_zero_iff.mp hx.ne'
+  obtain ⟨hb,hq⟩ := mul_ne_zero_iff.mp hy.ne'
   have hy' := (Nat.cast_pos (α:=ℝ)).mpr hy
   have hratio : Real.log p-Real.log q-Real.log ((b:ℝ)/a) =
       Real.log (((a*p:ℕ):ℝ)/(b*q:ℕ)) := by
-    rw [Real.log_div (Nat.cast_ne_zero.mpr hb.ne') (Nat.cast_ne_zero.mpr ha.ne'),
+    rw [Real.log_div (Nat.cast_ne_zero.mpr hb) (Nat.cast_ne_zero.mpr ha),
       Real.log_div (Nat.cast_ne_zero.mpr hx.ne') (Nat.cast_ne_zero.mpr hy.ne')]
-    simp only [Nat.cast_mul,Real.log_mul (Nat.cast_ne_zero.mpr ha.ne') (Nat.cast_ne_zero.mpr hp.ne'),
-      Real.log_mul (Nat.cast_ne_zero.mpr hb.ne') (Nat.cast_ne_zero.mpr hq.ne')]
+    simp only [Nat.cast_mul,Real.log_mul (Nat.cast_ne_zero.mpr ha) (Nat.cast_ne_zero.mpr hp),
+      Real.log_mul (Nat.cast_ne_zero.mpr hb) (Nat.cast_ne_zero.mpr hq)]
     ring
   rw [hratio]
   constructor

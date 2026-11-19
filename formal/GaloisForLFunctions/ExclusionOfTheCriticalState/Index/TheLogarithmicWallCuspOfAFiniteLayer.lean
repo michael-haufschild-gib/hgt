@@ -26,7 +26,7 @@ exact high-frequency tail and logarithmic first moment of the critical-line zero
 
 noncomputable section
 open MeasureTheory Set Filter Complex Topology Zeta23
-open scoped ComplexConjugate ENNReal
+open scoped ComplexConjugate ENNReal NNReal
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
   CriticalArithmeticCorrelationTheory HTGeometry _root_.RHTower
@@ -35,13 +35,18 @@ open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
 
 private theorem integral_Ioi_exp_neg {a : ℝ} :
     (∫ t in Ioi a, Real.exp (-t)) = Real.exp (-a) := by
-  have hd : ∀ t ∈ Ioi a, HasDerivAt (fun x => -Real.exp (-x)) (Real.exp (-t)) t := fun t _ => by
-    simpa using ((Real.hasDerivAt_exp (-t)).comp t (hasDerivAt_id t).neg).neg
+  let g : ℝ → ℝ := fun x => -Real.exp (-x)
+  have hd : ∀ t ∈ Ioi a, HasDerivAt g (Real.exp (-t)) t := fun t _ => by
+    have h1 : HasDerivAt (fun x : ℝ => Real.exp (-x)) (-Real.exp (-t)) t :=
+      (Real.hasDerivAt_exp (-t)).comp t (hasDerivAt_id t).neg
+    exact h1.neg.congr_deriv (neg_neg _)
   have hi : IntegrableOn (fun t => Real.exp (-t)) (Ioi a) := by
     simpa only [neg_one_mul] using integrableOn_exp_mul_Ioi (a := -1) neg_one_lt_zero a
-  have hlim : Tendsto (fun x => -Real.exp (-x)) atTop (𝓝 0) := by
-    simpa using Real.tendsto_exp_neg_atTop_nhds_zero.neg
-  rw [integral_Ioi_of_hasDerivAt_of_tendsto continuousAt_id.neg.rexp.neg.continuousWithinAt hd hi hlim]
+  have hc : ContinuousWithinAt g (Ici a) a := by unfold g; fun_prop
+  have hlim : Tendsto g atTop (𝓝 0) := by
+    simpa [g] using Real.tendsto_exp_neg_atTop_nhds_zero.neg
+  rw [integral_Ioi_of_hasDerivAt_of_tendsto hc hd hi hlim]
+  dsimp only [g]
   ring
 
 private theorem mul_exp_neg_le_two_exp_neg_half {t : ℝ} (ht : 0 ≤ t) :
@@ -53,8 +58,9 @@ private theorem mul_exp_neg_le_two_exp_neg_half {t : ℝ} (ht : 0 ≤ t) :
     rw [mul_assoc, mul_assoc, ← Real.exp_add, show -(t / 2) + -(t / 2) = -t by ring]
     ring
   rw [hexp]
+  have _ := ht
   nlinarith only [hm, mul_le_mul_of_nonneg_right hm (Real.exp_pos (-(t / 2))).le,
-    Real.exp_pos (-(t / 2)), ht]
+    Real.exp_pos (-(t / 2))]
 
 private theorem pow_four_mul_exp_neg_le {t : ℝ} (ht : 0 ≤ t) :
     t ^ 4 * Real.exp (-t) ≤ 4096 * Real.exp (-(t / 2)) := by
@@ -76,9 +82,9 @@ private theorem integral_Ioi_mul_exp_neg :
   let f : ℝ → ℝ := fun t => -(t + 1) * Real.exp (-t)
   have hd : ∀ t ∈ Ioi (0 : ℝ), HasDerivAt f (t * Real.exp (-t)) t := fun t _ => by
     have h1 : HasDerivAt (fun x : ℝ => -(x + 1)) (-1) t :=
-      ((hasDerivAt_id t).add (hasDerivAt_const t 1)).neg
-    have h2 : HasDerivAt (fun x : ℝ => Real.exp (-x)) (-Real.exp (-t)) t := by
-      simpa using (Real.hasDerivAt_exp (-t)).comp t (hasDerivAt_id t).neg
+      (((hasDerivAt_id t).add_const (1 : ℝ)).neg : HasDerivAt (fun x : ℝ => -(x + 1)) (-1) t)
+    have h2 : HasDerivAt (fun x : ℝ => Real.exp (-x)) (-Real.exp (-t)) t :=
+      (Real.hasDerivAt_exp (-t)).comp t (hasDerivAt_id t).neg
     exact (h1.mul h2).congr_deriv (by ring)
   have hi : IntegrableOn (fun t : ℝ => t * Real.exp (-t)) (Ioi 0) := by
     refine (integrableOn_exp_neg_half.const_mul 2).mono'
@@ -87,9 +93,9 @@ private theorem integral_Ioi_mul_exp_neg :
     rw [Real.norm_of_nonneg (mul_nonneg ht.le (Real.exp_pos _).le)]
     exact mul_exp_neg_le_two_exp_neg_half ht.le
   have h0 : Tendsto (fun t : ℝ => 4 * Real.exp (-(t / 2))) atTop (𝓝 0) := by
-    have he : Tendsto (fun t : ℝ => Real.exp (-1 / 2 * t)) atTop (𝓝 0) :=
-      Real.tendsto_exp_atTop.comp (tendsto_id.const_mul_atTop_of_neg (by norm_num))
-    simpa only [mul_zero, show ∀ t : ℝ, -(t / 2) = -1 / 2 * t by intro t; ring] using he.const_mul 4
+    have he : Tendsto (fun t : ℝ => Real.exp (-(t / 2))) atTop (𝓝 0) :=
+      Real.tendsto_exp_neg_atTop_nhds_zero.comp (tendsto_id.atTop_div_const two_pos)
+    simpa only [mul_zero] using he.const_mul 4
   have hlim : Tendsto f atTop (𝓝 0) := by
     refine squeeze_zero_norm' ?_ h0
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with t ht
@@ -97,7 +103,8 @@ private theorem integral_Ioi_mul_exp_neg :
     rw [Real.norm_eq_abs, abs_mul, abs_neg, abs_of_nonneg (by linarith), abs_of_pos (Real.exp_pos _)]
     have hle := mul_exp_neg_le_two_exp_neg_half ht
     have he : Real.exp (-t) ≤ Real.exp (-(t / 2)) := Real.exp_le_exp.mpr (by linarith)
-    linarith only [hle, he]
+    have hsplit : (t + 1) * Real.exp (-t) = t * Real.exp (-t) + Real.exp (-t) := add_one_mul t _
+    linarith only [hle, he, hsplit, Real.exp_pos (-(t / 2))]
   have hc : ContinuousWithinAt f (Ici 0) 0 := by unfold f; fun_prop
   rw [integral_Ioi_of_hasDerivAt_of_tendsto hc hd hi hlim]
   simp [f]
@@ -139,18 +146,22 @@ private theorem dampedMass_eq_scaled_terminal {F : ℝ → ℝ} (hFm : Measurabl
   have hL : (∫ v, ∫ t, K v t) = ∫ v in Ioi (0 : ℝ), Real.exp (-(2 * x * v)) * f v := by
     rw [← integral_indicator measurableSet_Ioi]
     refine integral_congr_ae (Eventually.of_forall fun v => ?_)
+    dsimp only
     by_cases hv : 0 < v
     · rw [indicator_of_mem (mem_Ioi.mpr hv)]
       have heq : (fun t => K v t) = (Ioi (2 * x * v)).indicator (fun t => Real.exp (-t) * f v) := by
         funext t; simp only [K, hv, true_and, indicator, mem_Ioi]
-      rw [heq, integral_indicator measurableSet_Ioi, integral_mul_const, integral_Ioi_exp_neg]
+      rw [show (∫ t, K v t) = ∫ t, (Ioi (2 * x * v)).indicator (fun t => Real.exp (-t) * f v) t from
+        congrArg integral heq, integral_indicator measurableSet_Ioi, integral_mul_const,
+        integral_Ioi_exp_neg]
     · rw [indicator_of_notMem (by simpa using hv)]
-      have heq : (fun t => K v t) = 0 := by funext t; simp [K, hv]
-      rw [heq, Pi.zero_apply, integral_zero]
+      have heq : (fun t => K v t) = fun _ => 0 := by funext t; simp [K, hv]
+      rw [show (∫ t, K v t) = ∫ _ : ℝ, (0 : ℝ) from congrArg integral heq, integral_zero]
   have hR : (∫ t, ∫ v, K v t) =
       ∫ t in Ioi (0 : ℝ), Real.exp (-t) * ∫ u in Ioo (-(t / (2 * x))) 0, F u ^ 2 := by
     rw [← integral_indicator measurableSet_Ioi]
     refine integral_congr_ae (Eventually.of_forall fun t => ?_)
+    dsimp only
     by_cases ht : 0 < t
     · rw [indicator_of_mem (mem_Ioi.mpr ht)]
       have heq : (fun v => K v t) = (Ioo 0 (t / (2 * x))).indicator (fun v => Real.exp (-t) * f v) := by
@@ -159,15 +170,16 @@ private theorem dampedMass_eq_scaled_terminal {F : ℝ → ℝ} (hFm : Measurabl
         have hiff : (2 * x * v < t) ↔ (v < t / (2 * x)) :=
           (lt_div_iff₀' (mul_pos two_pos hx)).symm
         simp only [mem_Ioo, hiff]
-      rw [heq, integral_indicator measurableSet_Ioo, integral_const_mul,
+      rw [show (∫ v, K v t) = ∫ v, (Ioo 0 (t / (2 * x))).indicator (fun v => Real.exp (-t) * f v) v
+        from congrArg integral heq, integral_indicator measurableSet_Ioo, integral_const_mul,
         ← integral_reflect_initial_interval (fun u => F u ^ 2) (t / (2 * x))]
     · rw [indicator_of_notMem (by simpa using ht)]
-      have heq : (fun v => K v t) = 0 := by
+      have heq : (fun v => K v t) = fun _ => 0 := by
         funext v; unfold K
         split_ifs with h
         · exfalso; linarith [mul_pos (mul_pos two_pos hx) h.1, h.2]
         · rfl
-      rw [heq, Pi.zero_apply, integral_zero]
+      rw [show (∫ v, K v t) = ∫ _ : ℝ, (0 : ℝ) from congrArg integral heq, integral_zero]
   rw [← hL, hswap, hR]
 
 /-- **Logarithmic Abelian theorem at the wall.** If `(log(1/h)/h) ∫_{-h}^0 F(u)² du → Q` as
@@ -217,7 +229,7 @@ theorem tendsto_mul_log_dampedMass_of_terminal_sq {F : ℝ → ℝ}
   have hdom : Tendsto (fun x => ∫ t in Ioi (0 : ℝ), g x t) atTop
       (𝓝 (∫ t in Ioi (0 : ℝ), Q * (t * Real.exp (-t)))) := by
     refine tendsto_integral_filter_of_dominated_convergence B ?_ ?_ hBi ?_
-    · filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx
+    · filter_upwards [eventually_gt_atTop (0 : ℝ)] with x _
       exact (((continuous_const.mul (Real.continuous_exp.comp continuous_neg)).measurable.mul
         (hSm.comp (measurable_id.div_const (2 * x)))).aestronglyMeasurable)
     · filter_upwards [eventually_ge_atTop (max 16 (1 / δ ^ 2))] with x hx
@@ -261,18 +273,19 @@ theorem tendsto_mul_log_dampedMass_of_terminal_sq {F : ℝ → ℝ}
         have hrat : Real.log x / Real.log (1 / h) ≤ 2 :=
           (div_le_iff₀ hlog_pos).mpr (by linarith)
         have hSb := hS_bound hh0 hhδ
-        have hid : g x t = (t * Real.exp (-t)) * (Real.log x / Real.log (1 / h)) *
-            (Real.log (1 / h) / h * S h) := by
-          dsimp only [g, h]
-          field_simp [hlog_pos.ne', hx0.ne', ht.ne']
+        set Lh := Real.log (1 / h)
+        have hLh_ne : Lh ≠ 0 := hlog_pos.ne'
+        have hid : g x t = (t * Real.exp (-t)) * (Real.log x / Lh) * (Lh / h * S h) := by
+          change (2 * x * Real.log x) * Real.exp (-t) * S h =
+            (t * Real.exp (-t)) * (Real.log x / Lh) * (Lh / (t / (2 * x)) * S h)
+          field_simp [hLh_ne, hx0.ne', ht.ne']
         rw [hid]
-        have hp1 : (Real.log x / Real.log (1 / h)) * (Real.log (1 / h) / h * S h) ≤
+        have hp1 : (Real.log x / Lh) * (Lh / h * S h) ≤
             2 * (Q + 1) := mul_le_mul hrat hSb (mul_nonneg (div_nonneg hlog_pos.le hh0.le) (hS0 h))
               two_pos.le
         have hp2 := mul_exp_neg_le_two_exp_neg_half ht.le
-        calc (t * Real.exp (-t)) * (Real.log x / Real.log (1 / h)) * (Real.log (1 / h) / h * S h)
-            = (t * Real.exp (-t)) * ((Real.log x / Real.log (1 / h)) *
-                (Real.log (1 / h) / h * S h)) := by ring
+        calc (t * Real.exp (-t)) * (Real.log x / Lh) * (Lh / h * S h)
+            = (t * Real.exp (-t)) * ((Real.log x / Lh) * (Lh / h * S h)) := by ring
           _ ≤ (2 * Real.exp (-(t / 2))) * (2 * (Q + 1)) :=
               mul_le_mul hp2 hp1 (mul_nonneg (div_nonneg hlogx hlog_pos.le)
                 (mul_nonneg (div_nonneg hlog_pos.le hh0.le) (hS0 h))) (by positivity)
@@ -303,9 +316,9 @@ theorem tendsto_mul_log_dampedMass_of_terminal_sq {F : ℝ → ℝ}
               nlinarith [mul_nonneg (by positivity : (0 : ℝ) ≤ Q + 1) (Real.exp_pos (-(t / 2))).le]
     · filter_upwards [ae_restrict_mem measurableSet_Ioi] with t (ht : 0 < t)
       have hh_tend : Tendsto (fun x : ℝ => t / (2 * x)) atTop (𝓝[>] 0) := by
-        refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within ?_ ?_
+        apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
         · simpa only [div_eq_mul_inv, mul_inv_rev, mul_zero] using
-            (tendsto_inv_atTop_zero.const_mul (2⁻¹ : ℝ)).const_mul t
+            ((tendsto_inv_atTop_zero (𝕜 := ℝ)).const_mul (2⁻¹ : ℝ)).const_mul t
         · filter_upwards [eventually_gt_atTop (0 : ℝ)] with x hx using div_pos ht (by positivity)
       have hS_tend : Tendsto (fun x : ℝ =>
           Real.log (1 / (t / (2 * x))) / (t / (2 * x)) * S (t / (2 * x))) atTop (𝓝 Q) := by
@@ -318,8 +331,9 @@ theorem tendsto_mul_log_dampedMass_of_terminal_sq {F : ℝ → ℝ}
         have h1 : Tendsto (fun x : ℝ => (1 + Real.log (2 / t) * (Real.log x)⁻¹)⁻¹)
             atTop (𝓝 1) := by
           have hz : Tendsto (fun x : ℝ => Real.log (2 / t) * (Real.log x)⁻¹) atTop (𝓝 0) := by
-            simpa using (tendsto_inv_atTop_zero.comp Real.tendsto_log_atTop).const_mul (Real.log (2 / t))
-          simpa using ((tendsto_const_nhds (x := (1 : ℝ))).add hz).inv₀ one_ne_zero
+            simpa using ((tendsto_inv_atTop_zero (𝕜 := ℝ)).comp Real.tendsto_log_atTop).const_mul
+              (Real.log (2 / t))
+          simpa using ((tendsto_const_nhds (x := (1 : ℝ))).add hz).inv₀ (by norm_num)
         refine h1.congr' ?_
         filter_upwards [eventually_gt_atTop (max 2 (t + 1))] with x hx
         have hx2 : 2 < x := lt_of_le_of_lt (le_max_left _ _) hx
@@ -344,10 +358,13 @@ theorem tendsto_mul_log_dampedMass_of_terminal_sq {F : ℝ → ℝ}
       have hx2 : 2 < x := lt_of_le_of_lt (le_max_left _ _) hx
       have hxt : t < x := by linarith [lt_of_le_of_lt (le_max_right 2 (t + 1)) hx]
       have hx0 : 0 < x := by linarith
-      have hden : Real.log (1 / (t / (2 * x))) ≠ 0 := by
+      set Lh := Real.log (1 / (t / (2 * x)))
+      have hden : Lh ≠ 0 := by
+        dsimp only [Lh]
         rw [one_div_div]
         exact (Real.log_pos ((lt_div_iff₀ ht).mpr (by linarith))).ne'
-      dsimp only [g]
+      change t * Real.exp (-t) * (Real.log x / Lh) * (Lh / (t / (2 * x)) * S (t / (2 * x))) =
+        (2 * x * Real.log x) * Real.exp (-t) * S (t / (2 * x))
       field_simp [hden, hx0.ne', ht.ne']
   rw [integral_const_mul, integral_Ioi_mul_exp_neg, mul_one] at hdom
   have hhalf := hdom.div_const 2
@@ -421,8 +438,9 @@ theorem halfLineEnergyMinimizer_mean_square_wall_trace_zero {R : ℝ} (hR : 0 < 
     Tendsto (fun h : ℝ => (∫ u in Ioo (-h) 0, F u ^ 2) / h) (𝓝[>] 0) (𝓝 0) := by
   have hcusp := halfLineEnergyMinimizer_tendsto_log_div_mul_terminal_sq hR hF
   have hinv_log : Tendsto (fun h : ℝ => (Real.log (1 / h))⁻¹) (𝓝[>] 0) (𝓝 0) := by
-    refine tendsto_inv_atTop_zero.comp ?_
-    simpa only [one_div] using Real.tendsto_log_atTop.comp (tendsto_inv_nhdsGT_zero (𝕜 := ℝ))
+    have hcomp := (tendsto_inv_atTop_zero (𝕜 := ℝ)).comp
+      (Real.tendsto_log_atTop.comp (tendsto_inv_nhdsGT_zero (𝕜 := ℝ)))
+    exact hcomp.congr fun h => by simp [one_div]
   have hprod := hcusp.mul hinv_log
   rw [mul_zero] at hprod
   refine hprod.congr' ?_
@@ -468,12 +486,10 @@ private theorem integrable_boundaryTilt {R : ℝ} (hr : 0 < R) {F : ℝ → ℝ}
     (hF : IsConfinedNullVector R F) : Integrable (boundaryTilt F) := by
   have ht := hF.tilt_domain hr zero_le_one le_rfl
   have hi := integrable_cexp_neg_mul_cx ht (show ((3 : ℂ)).re < 4 by norm_num)
-  have hre : Integrable fun u => (cexp (-((3 : ℂ) * u)) *
-      cx (fun v => Real.exp (-(1 * v)) * F v) u).re := hi.re
-  refine hre.congr (Eventually.of_forall fun u => ?_)
-  change (cexp (-((3 : ℂ) * u)) * ((Real.exp (-(1 * u)) * F u : ℝ) : ℂ)).re =
+  refine hi.re.congr (Eventually.of_forall fun u => ?_)
+  change (cexp (-((3 : ℂ) * (u : ℂ))) * ((Real.exp (-(1 * u)) * F u : ℝ) : ℂ)).re =
     Real.exp (-(4 * u)) * F u
-  rw [show -((3 : ℂ) * u) = (((-(3 * u) : ℝ) : ℂ)) by push_cast; ring,
+  rw [show -((3 : ℂ) * (u : ℂ)) = (((-(3 * u) : ℝ) : ℂ)) by push_cast; ring,
     ← Complex.ofReal_exp, ← Complex.ofReal_mul, Complex.ofReal_re, ← mul_assoc, ← Real.exp_add]
   congr 2
   ring
@@ -522,6 +538,7 @@ private theorem integral_one_sub_cos_boundary {R : ℝ} (hr : 0 < R) {F : ℝ �
       2 * ∫ y : ℝ, (1 - Real.cos (h * y)) * ‖negativeHalfLineLaplace (cx F) ⟨-4, y⟩‖ ^ 2 := by
     rw [← integral_const_mul]
     refine integral_congr_ae (Eventually.of_forall fun y => ?_)
+    dsimp only
     rw [laplace_neg_four_eq_paperFT hF.1 y]
     exact norm_sq_paperFT_increment hGi h y
   have hR : (∫ u : ℝ, ‖cx D u‖ ^ 2) = ∫ u : ℝ, (G u - G (u + h)) ^ 2 := by
@@ -538,7 +555,6 @@ private theorem tendsto_boundaryTilt_sq_increment_div {W₀ : ℝ} (hW : 0 < W�
     Tendsto (fun h : ℝ => (∫ u : ℝ, (boundaryTilt F u - boundaryTilt F (u + h)) ^ 2) / h)
       (𝓝[>] 0) (𝓝 0) := by
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
-  have hnull := isConfinedNullVector_of_groundState hW ht hF
   have hG2 := integrable_sq_boundaryTilt hd
   have hGm : Measurable (boundaryTilt F) :=
     (by fun_prop : Measurable fun u => Real.exp (-(4 * u))).mul hd.meas
@@ -546,7 +562,7 @@ private theorem tendsto_boundaryTilt_sq_increment_div {W₀ : ℝ} (hW : 0 < W�
   have hlim1 := (criticalState_tendsto_weighted_sq_increment_div hW ht hF).const_mul 2
   have hlim2 : Tendsto (fun h : ℝ => 32 * Real.exp 8 * M * h) (𝓝[>] 0) (𝓝 0) := by
     simpa only [mul_zero] using
-      (tendsto_id.mono_left nhdsWithin_le_nhds).const_mul (32 * Real.exp 8 * M)
+      ((tendsto_id (x := 𝓝 (0 : ℝ))).mono_left nhdsWithin_le_nhds).const_mul (32 * Real.exp 8 * M)
   have hsum := hlim1.add hlim2
   rw [mul_zero, add_zero] at hsum
   refine squeeze_zero' ?_ ?_ hsum
@@ -597,7 +613,10 @@ private theorem tendsto_boundaryTilt_sq_increment_div {W₀ : ℝ} (hW : 0 < W�
       have hm2 := mul_le_mul_of_nonneg_right hshift_exp
         (mul_nonneg (by positivity : (0 : ℝ) ≤ 32 * h ^ 2) (sq_nonneg (F (u + h))))
       linarith
-    have hint := integral_mono hiL (hi1.add hi2) hpt
+    have hint : (∫ u : ℝ, (boundaryTilt F u - boundaryTilt F (u + h)) ^ 2) ≤
+        ∫ u : ℝ, (2 * ((F u - F (u + h)) ^ 2 * Real.exp (-(8 * u))) +
+          32 * Real.exp 8 * h ^ 2 * (F (u + h) ^ 2 * Real.exp (-(8 * (u + h))))) :=
+      integral_mono hiL (hi1.add hi2) hpt
     rw [integral_add hi1 hi2, integral_const_mul, integral_const_mul,
       integral_add_right_eq_self (fun v => F v ^ 2 * Real.exp (-(8 * v))) h] at hint
     have hdiv := div_le_div_of_nonneg_right hint hh0'.le
@@ -612,7 +631,9 @@ private theorem integrable_boundary_power {R : ℝ} (hr : 0 < R) {F : ℝ → �
     Integrable fun y : ℝ => ‖negativeHalfLineLaplace (cx F) ⟨-4, y⟩‖ ^ 2 := by
   have hP := integrable_norm_sq_paperFT_cx (integrable_boundaryTilt hr hF)
     (integrable_sq_boundaryTilt hF.1)
-  exact hP.congr (Eventually.of_forall fun y => by rw [laplace_neg_four_eq_paperFT hF.1 y])
+  refine hP.congr (Eventually.of_forall fun y => ?_)
+  dsimp only
+  rw [laplace_neg_four_eq_paperFT hF.1 y]
 
 private theorem tendsto_mul_setIntegral_boundary_octave {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
@@ -622,8 +643,9 @@ private theorem tendsto_mul_setIntegral_boundary_octave {W₀ : ℝ} (hW : 0 < W
   have hnull := isConfinedNullVector_of_groundState hW ht hF
   have hP := integrable_boundary_power hW hnull
   have hh_tend : Tendsto (fun U : ℝ => (2 * U)⁻¹) atTop (𝓝[>] 0) := by
-    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within ?_ ?_
-    · simpa only [mul_inv_rev, zero_mul] using tendsto_inv_atTop_zero.mul_const (2⁻¹ : ℝ)
+    apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
+    · simpa only [mul_inv_rev, zero_mul] using
+        (tendsto_inv_atTop_zero (𝕜 := ℝ)).mul_const (2⁻¹ : ℝ)
     · filter_upwards [eventually_gt_atTop (0 : ℝ)] with U hU using inv_pos.mpr (by positivity)
   have hinc := ((tendsto_boundaryTilt_sq_increment_div hW ht hF).comp hh_tend).const_mul
     (8 * Real.pi)
@@ -646,7 +668,8 @@ private theorem tendsto_mul_setIntegral_boundary_octave {W₀ : ℝ} (hW : 0 < W
       refine setIntegral_mono_on hP.integrableOn (hQi.const_mul 16).integrableOn hSm fun y hy => ?_
       have hhi : |h * y| ≤ 1 := by
         rw [abs_mul, abs_of_pos hh0]
-        exact (inv_mul_le_iff₀ (by positivity)).mpr hy.2
+        dsimp only [h]
+        exact (inv_mul_le_iff₀ (by positivity)).mpr (by linarith [hy.2])
       have hlo : 1 / 2 ≤ |h * y| := by
         rw [abs_mul, abs_of_pos hh0]
         dsimp only [h]
@@ -661,14 +684,13 @@ private theorem tendsto_mul_setIntegral_boundary_octave {W₀ : ℝ} (hW : 0 < W
       setIntegral_le_integral hQi (Eventually.of_forall fun y =>
         mul_nonneg (sub_nonneg.mpr (Real.cos_le_one _)) (sq_nonneg _))
     rw [integral_one_sub_cos_boundary hW hnull hh0.le] at hle2
-    have hcomb := mul_le_mul_of_nonneg_left (hle1.trans (mul_le_mul_of_nonneg_left hle2
-      (by norm_num))) hU.le
-    dsimp only [Function.comp_apply]
-    calc U * ∫ y in S, P y
-        ≤ U * (16 * (Real.pi * ∫ u : ℝ, (boundaryTilt F u - boundaryTilt F (u + h)) ^ 2)) := hcomb
-      _ = 8 * Real.pi * ((∫ u : ℝ, (boundaryTilt F u - boundaryTilt F (u + h)) ^ 2) / h) := by
-          dsimp only [h]
-          field_simp [hU.ne']
+    set I_inc := ∫ u : ℝ, (boundaryTilt F u - boundaryTilt F (u + h)) ^ 2
+    have hcomb : U * ∫ y in S, P y ≤ U * (16 * (Real.pi * I_inc)) :=
+      mul_le_mul_of_nonneg_left (hle1.trans (mul_le_mul_of_nonneg_left hle2 (by norm_num))) hU.le
+    change U * ∫ y in S, P y ≤ 8 * Real.pi * (I_inc / h)
+    refine hcomb.trans_eq ?_
+    dsimp only [h]
+    field_simp [hU.ne']
 
 /-- **Vanishing of the continuous boundary Fourier tail.** For a threshold ground state `F`,
 `T ∫_{|y| > T} ‖L F(-4 + iy)‖² dy → 0` as `T → +∞`. -/
@@ -715,15 +737,15 @@ theorem criticalState_boundary_fourier_tail_zero {W₀ : ℝ} (hW : 0 < W₀)
       · exact ⟨k, hlt, ((div_lt_iff₀ hT0).mp hk2).le⟩
     · rintro ⟨k, hk1, _⟩
       exact lt_of_le_of_lt (le_mul_of_one_le_left hT0.le (one_le_pow₀ (by norm_num))) hk1
-  have hdisj : Pairwise (Disjoint on S) := by
+  have hdisj : Pairwise fun i j => Disjoint (S i) (S j) := by
     intro i j hij
-    rw [Function.onFun, Set.disjoint_left]
+    rw [Set.disjoint_left]
     intro y hyi hyj
-    wlog hlt : i < j generalizing i j
-    · exact this hij.symm hyj hyi (lt_of_le_of_ne (not_lt.mp hlt) hij.symm)
-    have hpow : (2 : ℝ) ^ (i + 1) ≤ (2 : ℝ) ^ j := pow_le_pow_right₀ (by norm_num) hlt
-    have hm := mul_le_mul_of_nonneg_right hpow hT0.le
-    linarith [hyi.2, hyj.1]
+    rcases lt_or_gt_of_ne hij with hlt | hgt
+    · have hpow : (2 : ℝ) ^ (i + 1) ≤ (2 : ℝ) ^ j := pow_le_pow_right₀ (by norm_num) hlt
+      linarith [mul_le_mul_of_nonneg_right hpow hT0.le, hyi.2, hyj.1]
+    · have hpow : (2 : ℝ) ^ (j + 1) ≤ (2 : ℝ) ^ i := pow_le_pow_right₀ (by norm_num) hgt
+      linarith [mul_le_mul_of_nonneg_right hpow hT0.le, hyj.2, hyi.1]
   have hsum_int : (∫ y in {y : ℝ | T < |y|}, P y) = ∑' k : ℕ, ∫ y in S k, P y := by
     rw [hcover, integral_iUnion hSm hdisj hP.integrableOn]
   have hbound : ∀ k : ℕ, ∫ y in S k, P y ≤ (ε / 4 / T) * (1 / 2 : ℝ) ^ k := fun k => by
@@ -770,7 +792,7 @@ theorem criticalState_boundary_fourier_firstMoment_sublogarithmic {W₀ : ℝ} (
   let P := fun y : ℝ => ‖negativeHalfLineLaplace (cx F) ⟨-4, y⟩‖ ^ 2
   let YP := fun y : ℝ => |y| * P y
   have hYP_int_set : ∀ {S : Set ℝ} {B : ℝ}, 0 ≤ B → (∀ y ∈ S, |y| ≤ B) → MeasurableSet S →
-      IntegrableOn YP S := fun {S B} hB hSB hSm => by
+      IntegrableOn YP S := fun {S B} _ hSB hSm => by
     refine (hP.integrableOn.const_mul B).mono'
       (continuous_abs.measurable.aestronglyMeasurable.mul hP.aestronglyMeasurable.restrict) ?_
     filter_upwards [ae_restrict_mem hSm] with y hy
@@ -801,7 +823,9 @@ theorem criticalState_boundary_fourier_firstMoment_sublogarithmic {W₀ : ℝ} (
   have hlogT_pos : 0 < Real.log T := by linarith
   set N : ℕ := ⌊Real.log T / Real.log 2⌋₊ + 1
   have hTN : T < (2 : ℝ) ^ N := by
-    have hlt : Real.log T / Real.log 2 < N := Nat.lt_floor_add_one _
+    have hlt : Real.log T / Real.log 2 < (N : ℝ) := by
+      dsimp only [N]
+      exact_mod_cast Nat.lt_floor_add_one (Real.log T / Real.log 2)
     have h1 : Real.log T < (N : ℝ) * Real.log 2 := (div_lt_iff₀ hlog2).mp hlt
     rw [← Real.log_pow] at h1
     exact (Real.log_lt_log_iff hT0 (pow_pos two_pos N)).mp h1
@@ -809,42 +833,48 @@ theorem criticalState_boundary_fourier_firstMoment_sublogarithmic {W₀ : ℝ} (
   have hOctm : ∀ k, MeasurableSet (Oct k) := fun k =>
     (measurableSet_le measurable_const continuous_abs.measurable).inter
       (measurableSet_lt continuous_abs.measurable measurable_const)
-  let U_fin : Set ℝ := ⋃ k ∈ Finset.Ico k₀ N, Oct k
-  have hU_fin_m : MeasurableSet U_fin :=
-    Finset.measurableSet_biUnion _ fun k _ => hOctm k
-  have hsub : Icc (-T) T ⊆ Icc (-R₀) R₀ ∪ U_fin := by
-    intro y hy
-    have habs : |y| ≤ T := abs_le.mpr hy
-    rcases le_or_gt |y| R₀ with hle | hgt
-    · exact Or.inl (abs_le.mp hle)
-    · right
-      rw [mem_iUnion₂]
-      have hy_gt1 : 1 ≤ |y| := (one_le_pow₀ (by norm_num)).trans hgt.le
-      obtain ⟨k, hk1, hk2⟩ := exists_nat_pow_near hy_gt1 one_lt_two
-      have hk_ge : k₀ ≤ k := by
-        by_contra hlt'
-        have hp : (2 : ℝ) ^ (k + 1) ≤ R₀ :=
-          pow_le_pow_right₀ (by norm_num) (Nat.succ_le_of_lt (not_le.mp hlt'))
-        linarith
-      have hk_lt : k < N := by
-        by_contra hge
-        have hp : (2 : ℝ) ^ N ≤ (2 : ℝ) ^ k := pow_le_pow_right₀ (by norm_num) (not_lt.mp hge)
-        linarith
-      exact ⟨k, Finset.mem_Ico.mpr ⟨hk_ge, hk_lt⟩, hk1, hk2⟩
-  have hYP_R₀ : IntegrableOn YP (Icc (-R₀) R₀) :=
-    hYP_int_set hR₀_pos.le (fun _ hy => abs_le.mpr hy) measurableSet_Icc
+  have hYP_T : IntegrableOn YP (Icc (-T) T) :=
+    hYP_int_set hT0.le (fun _ hy => abs_le.mpr hy) measurableSet_Icc
+  have hYP_R₀ : Integrable fun y => (Icc (-R₀) R₀).indicator YP y :=
+    (hYP_int_set hR₀_pos.le (fun _ hy => abs_le.mpr hy) measurableSet_Icc).integrable_indicator
+      measurableSet_Icc
   have hYP_Oct : ∀ k, IntegrableOn YP (Oct k) := fun k =>
     hYP_int_set (pow_pos two_pos (k + 1)).le (fun _ hy => hy.2.le) (hOctm k)
-  have hYP_U : IntegrableOn YP U_fin :=
-    integrableOn_finset_biUnion.mpr fun k _ => hYP_Oct k
-  have hdisj_Oct : Set.PairwiseDisjoint (↑(Finset.Ico k₀ N) : Set ℕ) Oct := by
-    intro i _ j _ hij
-    rw [Function.onFun, Set.disjoint_left]
-    intro y hyi hyj
-    wlog hlt : i < j generalizing i j
-    · exact this hij.symm hyj hyi (lt_of_le_of_ne (not_lt.mp hlt) hij.symm)
-    have hp : (2 : ℝ) ^ (i + 1) ≤ (2 : ℝ) ^ j := pow_le_pow_right₀ (by norm_num) hlt
-    linarith [hyi.2, hyj.1]
+  have hYP_Oct_ind : ∀ k, Integrable fun y => (Oct k).indicator YP y := fun k =>
+    (hYP_Oct k).integrable_indicator (hOctm k)
+  have hpt_cover : ∀ y : ℝ, (Icc (-T) T).indicator YP y ≤
+      (Icc (-R₀) R₀).indicator YP y + ∑ k ∈ Finset.Ico k₀ N, (Oct k).indicator YP y := fun y => by
+    have hnn_sum : 0 ≤ ∑ k ∈ Finset.Ico k₀ N, (Oct k).indicator YP y :=
+      Finset.sum_nonneg fun k _ => indicator_nonneg
+        (fun _ _ => mul_nonneg (abs_nonneg _) (sq_nonneg _)) y
+    have hnn_R₀ : 0 ≤ (Icc (-R₀) R₀).indicator YP y :=
+      indicator_nonneg (fun _ _ => mul_nonneg (abs_nonneg _) (sq_nonneg _)) y
+    by_cases hy : y ∈ Icc (-T) T
+    · rw [indicator_of_mem hy]
+      have habs : |y| ≤ T := abs_le.mpr hy
+      rcases le_or_gt |y| R₀ with hle | hgt
+      · rw [indicator_of_mem (abs_le.mp hle)]
+        linarith
+      · have hy_gt1 : 1 ≤ |y| := (one_le_pow₀ (by norm_num)).trans hgt.le
+        obtain ⟨k, hk1, hk2⟩ := exists_nat_pow_near hy_gt1 one_lt_two
+        have hk_ge : k₀ ≤ k := by
+          by_contra hlt'
+          have hp : (2 : ℝ) ^ (k + 1) ≤ R₀ :=
+            pow_le_pow_right₀ (by norm_num) (Nat.succ_le_of_lt (not_le.mp hlt'))
+          linarith
+        have hk_lt : k < N := by
+          by_contra hge
+          have hp : (2 : ℝ) ^ N ≤ (2 : ℝ) ^ k := pow_le_pow_right₀ (by norm_num) (not_lt.mp hge)
+          linarith
+        have hk_mem : k ∈ Finset.Ico k₀ N := Finset.mem_Ico.mpr ⟨hk_ge, hk_lt⟩
+        have hsingle : (Oct k).indicator YP y ≤ ∑ j ∈ Finset.Ico k₀ N, (Oct j).indicator YP y :=
+          Finset.single_le_sum
+            (fun j _ => indicator_nonneg (fun _ _ => mul_nonneg (abs_nonneg _) (sq_nonneg _)) y)
+            hk_mem
+        rw [indicator_of_mem ⟨hk1, hk2⟩] at hsingle
+        linarith
+    · rw [indicator_of_notMem hy]
+      linarith
   have hoct_bound : ∀ k ∈ Finset.Ico k₀ N, ∫ y in Oct k, YP y ≤ ε * Real.log 2 / 4 := by
     intro k hk
     have hk_ge : k₀ ≤ k := (Finset.mem_Ico.mp hk).1
@@ -862,20 +892,35 @@ theorem criticalState_boundary_fourier_firstMoment_sublogarithmic {W₀ : ℝ} (
       exact mul_le_mul_of_nonneg_right hy2 (sq_nonneg _)
     have hsub_oct : Oct k ⊆ {y : ℝ | U ≤ |y| ∧ |y| ≤ 2 * U} := fun y hy =>
       ⟨hy.1, by simpa only [U, pow_succ'] using hy.2.le⟩
-    have hle2 := setIntegral_mono_set hP.integrableOn
-      (Eventually.of_forall fun _ => sq_nonneg _) (Eventually.of_forall hsub_oct)
-    have hcomb := hle1.trans (mul_le_mul_of_nonneg_left hle2 (by positivity))
-    linarith [hoct.le, show (2 * U) * ∫ y in {y : ℝ | U ≤ |y| ∧ |y| ≤ 2 * U}, P y =
-      2 * (U * ∫ y in {y : ℝ | U ≤ |y| ∧ |y| ≤ 2 * U}, P y) by ring]
-  have hsum_U : ∫ y in U_fin, YP y ≤ (N : ℝ) * (ε * Real.log 2 / 4) := by
-    rw [setIntegral_biUnion_finset hdisj_Oct (fun k _ => hOctm k) (fun k _ => hYP_Oct k)]
-    calc ∑ k ∈ Finset.Ico k₀ N, ∫ y in Oct k, YP y
-        ≤ ∑ _ ∈ Finset.Ico k₀ N, (ε * Real.log 2 / 4) := Finset.sum_le_sum hoct_bound
-      _ = ((Finset.Ico k₀ N).card : ℝ) * (ε * Real.log 2 / 4) := by simp
-      _ ≤ (N : ℝ) * (ε * Real.log 2 / 4) := by
-          apply mul_le_mul_of_nonneg_right _ (by positivity)
-          rw [Nat.card_Ico]
-          exact_mod_cast Nat.sub_le N k₀
+    have hle2 : ∫ y in Oct k, P y ≤ ∫ y in {y : ℝ | U ≤ |y| ∧ |y| ≤ 2 * U}, P y :=
+      setIntegral_mono_set hP.integrableOn
+        (Eventually.of_forall fun _ => sq_nonneg _) (Eventually.of_forall hsub_oct)
+    have hcomb : ∫ y in Oct k, YP y ≤ 2 * (U * ∫ y in {y : ℝ | U ≤ |y| ∧ |y| ≤ 2 * U}, P y) := by
+      have hm := mul_le_mul_of_nonneg_left hle2 (show (0 : ℝ) ≤ 2 * U by positivity)
+      linarith [hle1, hm]
+    linarith [hoct.le]
+  have htot_int : ∫ y in Icc (-T) T, YP y ≤ C₀ + (N : ℝ) * (ε * Real.log 2 / 4) := by
+    have hi_sum : Integrable fun y => ∑ k ∈ Finset.Ico k₀ N, (Oct k).indicator YP y :=
+      integrable_finset_sum _ fun k _ => hYP_Oct_ind k
+    have hmono := integral_mono (hYP_T.integrable_indicator measurableSet_Icc)
+      (hYP_R₀.add hi_sum) hpt_cover
+    rw [integral_indicator measurableSet_Icc, integral_add hYP_R₀ hi_sum,
+      integral_indicator measurableSet_Icc,
+      integral_finset_sum _ fun k _ => hYP_Oct_ind k] at hmono
+    have hsum_le : (∑ k ∈ Finset.Ico k₀ N, ∫ y, (Oct k).indicator YP y) ≤
+        (N : ℝ) * (ε * Real.log 2 / 4) := by
+      have heq_sum : (∑ k ∈ Finset.Ico k₀ N, ∫ y, (Oct k).indicator YP y) =
+          ∑ k ∈ Finset.Ico k₀ N, ∫ y in Oct k, YP y :=
+        Finset.sum_congr rfl fun k _ => integral_indicator (hOctm k)
+      rw [heq_sum]
+      calc ∑ k ∈ Finset.Ico k₀ N, ∫ y in Oct k, YP y
+          ≤ ∑ _ ∈ Finset.Ico k₀ N, (ε * Real.log 2 / 4) := Finset.sum_le_sum hoct_bound
+        _ = ((Finset.Ico k₀ N).card : ℝ) * (ε * Real.log 2 / 4) := by simp
+        _ ≤ (N : ℝ) * (ε * Real.log 2 / 4) := by
+            apply mul_le_mul_of_nonneg_right _ (by positivity)
+            rw [Nat.card_Ico]
+            exact_mod_cast Nat.sub_le N k₀
+    linarith [hmono, hsum_le]
   have hN_le : (N : ℝ) * Real.log 2 ≤ Real.log T + Real.log 2 := by
     have hfl : (⌊Real.log T / Real.log 2⌋₊ : ℝ) ≤ Real.log T / Real.log 2 :=
       Nat.floor_le (div_nonneg hlogT_pos.le hlog2.le)
@@ -884,19 +929,12 @@ theorem criticalState_boundary_fourier_firstMoment_sublogarithmic {W₀ : ℝ} (
     dsimp only [N]
     push_cast
     linarith
-  have htot_int : ∫ y in Icc (-T) T, YP y ≤ C₀ + (N : ℝ) * (ε * Real.log 2 / 4) := by
-    have h1 := setIntegral_mono_set (hYP_R₀.union hYP_U)
-      (Eventually.of_forall fun _ => mul_nonneg (abs_nonneg _) (sq_nonneg _))
-      (Eventually.of_forall hsub)
-    have h2 : ∫ y in Icc (-R₀) R₀ ∪ U_fin, YP y ≤ C₀ + ∫ y in U_fin, YP y :=
-      setIntegral_union_le (fun _ => mul_nonneg (abs_nonneg _) (sq_nonneg _))
-        measurableSet_Icc hYP_R₀ hYP_U
-    exact h1.trans (h2.trans (add_le_add_left hsum_U C₀))
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (mul_nonneg (inv_nonneg.mpr hlogT_pos.le)
     (setIntegral_nonneg measurableSet_Icc fun _ _ => mul_nonneg (abs_nonneg _) (sq_nonneg _)))]
   rw [inv_mul_lt_iff₀ hlogT_pos]
-  have hbig' : 4 * C₀ + ε * Real.log 2 + 1 ≤ ε * Real.log T :=
+  have hbig' : 4 * C₀ + ε * Real.log 2 + 1 ≤ Real.log T * ε :=
     (div_le_iff₀ hε).mp hlogT_big
+  change ∫ y in Icc (-T) T, YP y < Real.log T * ε
   nlinarith only [htot_int, hN_le, hbig', hC₀_nn, hε]
 
 /-! ### Exact ordinate-tail and first-moment asymptotics under `FiniteOffLine` -/
@@ -922,33 +960,44 @@ private theorem zeroValueMass_reflectOnLine (F : ℝ → ℝ) (q : onLineCopies)
     have hc : centredZero (reflectOnLine q : XiZeroCopy) = -centredZero (q : XiZeroCopy) := by
       simp only [reflectOnLine, Equiv.subtypeEquiv_apply, centredZero, xiZeroCopy_reflect_val]
       ring
+    have hre : (centredZero (q : XiZeroCopy)).re = 0 := q.property
     rw [hc]
     apply Complex.ext
-    · simp [q.property]
+    · simp [hre]
     · simp
   rw [h, show cx F = fun u => (F u : ℂ) from rfl, negativeHalfLineLaplace_real_conj, norm_conj]
 
+private theorem integrableOn_Ioi_inv_sq {R : ℝ} (hR : 0 < R) :
+    IntegrableOn (fun u : ℝ => (u ^ 2)⁻¹) (Ioi R) := by
+  refine (integrableOn_Ioi_rpow_of_lt (by norm_num : (-2 : ℝ) < -1) hR).congr_fun
+    (fun u (hu : R < u) => ?_) measurableSet_Ioi
+  rw [Real.rpow_neg (lt_trans hR hu).le, Real.rpow_two]
+
 private theorem integral_Ioi_inv_sq {R : ℝ} (hR : 0 < R) :
     (∫ u in Ioi R, (u ^ 2)⁻¹) = R⁻¹ := by
-  have hd : ∀ u ∈ Ioi R, HasDerivAt (fun x => -x⁻¹) ((u ^ 2)⁻¹) u := fun u (hu : R < u) => by
+  let g : ℝ → ℝ := fun x => -x⁻¹
+  have hd : ∀ u ∈ Ioi R, HasDerivAt g ((u ^ 2)⁻¹) u := fun u (hu : R < u) => by
     have hne : u ≠ 0 := (lt_trans hR hu).ne'
-    simpa [neg_neg] using (hasDerivAt_inv hne).neg
-  have hi : IntegrableOn (fun u : ℝ => (u ^ 2)⁻¹) (Ioi R) := by
-    simpa only [Real.rpow_neg_two] using integrableOn_Ioi_rpow_of_lt (by norm_num : (-2 : ℝ) < -1) hR
-  have hc : ContinuousWithinAt (fun x : ℝ => -x⁻¹) (Ici R) R :=
+    exact ((hasDerivAt_inv hne).neg : HasDerivAt g (- -(u ^ 2)⁻¹) u).congr_deriv (neg_neg _)
+  have hi : IntegrableOn (fun u : ℝ => (u ^ 2)⁻¹) (Ioi R) := integrableOn_Ioi_inv_sq hR
+  have hc : ContinuousWithinAt g (Ici R) R :=
     (continuousAt_inv₀ hR.ne').neg.continuousWithinAt
-  have hlim : Tendsto (fun x : ℝ => -x⁻¹) atTop (𝓝 0) := by
-    simpa using tendsto_inv_atTop_zero.neg
+  have hlim : Tendsto g atTop (𝓝 0) := by
+    simpa [g] using (tendsto_inv_atTop_zero (𝕜 := ℝ)).neg
   rw [integral_Ioi_of_hasDerivAt_of_tendsto hc hd hi hlim]
+  dsimp only [g]
   ring
 
 private theorem integral_poissonKernel_univ (γ : ℝ) :
     (∫ y : ℝ, 4 / (16 + (y - γ) ^ 2)) = Real.pi := by
   have h4 := integral_inv_sq_add_sq_univ (by norm_num : (0 : ℝ) < 4)
   have hshift : (∫ y : ℝ, 4 / (16 + (y - γ) ^ 2)) = 4 * ∫ u : ℝ, ((4 : ℝ) ^ 2 + u ^ 2)⁻¹ := by
-    rw [← integral_sub_right_eq_self (fun u : ℝ => 4 / (16 + u ^ 2)) γ, ← integral_const_mul]
-    refine integral_congr_ae (Eventually.of_forall fun y => ?_)
-    norm_num [div_eq_mul_inv]
+    calc (∫ y : ℝ, 4 / (16 + (y - γ) ^ 2))
+        = ∫ u : ℝ, 4 / (16 + u ^ 2) :=
+          integral_sub_right_eq_self (fun u : ℝ => 4 / (16 + u ^ 2)) γ
+      _ = ∫ u : ℝ, 4 * ((4 : ℝ) ^ 2 + u ^ 2)⁻¹ :=
+          integral_congr_ae (Eventually.of_forall fun u => by norm_num [div_eq_mul_inv])
+      _ = 4 * ∫ u : ℝ, ((4 : ℝ) ^ 2 + u ^ 2)⁻¹ := integral_const_mul _ _
   rw [hshift, h4]
   ring
 
@@ -979,21 +1028,18 @@ private theorem pi_sub_div_le_setIntegral_poissonKernel (γ : ℝ) {R : ℝ} (hR
   have htot : (∫ u in Ioo (-R) R, K u) + ∫ u in (Ioo (-R) R)ᶜ, K u = Real.pi := by
     rw [integral_add_compl measurableSet_Ioo hKi]
     simpa only [K, sub_zero] using integral_poissonKernel_univ 0
-  have hcompl_sub : (Ioo (-R) R)ᶜ = Iic (-R) ∪ Ici R := compl_Ioo
   have hray_R : ∫ u in Ici R, K u ≤ 4 / R := by
     rw [integral_Ici_eq_integral_Ioi]
-    have hi_inv : IntegrableOn (fun u : ℝ => 4 * (u ^ 2)⁻¹) (Ioi R) := by
-      have h1 : IntegrableOn (fun u : ℝ => (u ^ 2)⁻¹) (Ioi R) := by
-        simpa only [Real.rpow_neg_two] using
-          integrableOn_Ioi_rpow_of_lt (by norm_num : (-2 : ℝ) < -1) hR
-      exact h1.const_mul 4
-    have hle := setIntegral_mono_on hKi.integrableOn hi_inv measurableSet_Ioi fun u _ => by
-      dsimp only [K]
-      rw [div_eq_mul_inv]
-      exact mul_le_mul_of_nonneg_left
-        (inv_anti₀ (sq_pos_of_pos (lt_trans hR ‹_›)) (by linarith)) (by norm_num)
-    rw [integral_const_mul, integral_Ioi_inv_sq hR, div_eq_mul_inv] at hle ⊢
-    exact hle
+    have hi_inv : IntegrableOn (fun u : ℝ => 4 * (u ^ 2)⁻¹) (Ioi R) :=
+      (integrableOn_Ioi_inv_sq hR).const_mul 4
+    have hle : ∫ u in Ioi R, K u ≤ ∫ u in Ioi R, 4 * (u ^ 2)⁻¹ :=
+      setIntegral_mono_on hKi.integrableOn hi_inv measurableSet_Ioi fun u (hu : R < u) => by
+        dsimp only [K]
+        rw [div_eq_mul_inv]
+        exact mul_le_mul_of_nonneg_left
+          (inv_anti₀ (sq_pos_of_pos (lt_trans hR hu)) (by linarith)) (by norm_num)
+    rw [integral_const_mul, integral_Ioi_inv_sq hR] at hle
+    exact hle.trans_eq (div_eq_mul_inv 4 R).symm
   have hray_L : ∫ u in Iic (-R), K u ≤ 4 / R := by
     have heq : (∫ u in Iic (-R), K u) = ∫ u in Ici R, K u := by
       rw [← integral_indicator measurableSet_Iic, ← integral_indicator measurableSet_Ici,
@@ -1004,18 +1050,33 @@ private theorem pi_sub_div_le_setIntegral_poissonKernel (γ : ℝ) {R : ℝ} (hR
       simp only [mem_Iic, mem_Ici, hiff, K, neg_sq]
     exact heq.le.trans hray_R
   have hcompl_le : ∫ u in (Ioo (-R) R)ᶜ, K u ≤ 8 / R := by
-    rw [hcompl_sub]
-    have hu := setIntegral_union_le (fun _ => by dsimp only [K]; positivity) measurableSet_Iic
-      hKi.integrableOn hKi.integrableOn
-    linarith [hu, hray_L, hray_R, show 4 / R + 4 / R = 8 / R by ring]
+    have hi1 := hKi.integrableOn.integrable_indicator measurableSet_Iic
+    have hi2 := hKi.integrableOn.integrable_indicator measurableSet_Ici
+    have hpt : ∀ u : ℝ, ((Ioo (-R) R)ᶜ).indicator K u ≤
+        (Iic (-R)).indicator K u + (Ici R).indicator K u := fun u => by
+      have hKu : 0 ≤ K u := by dsimp only [K]; positivity
+      by_cases hu : u ∈ Ioo (-R) R
+      · rw [indicator_of_notMem (not_notMem.mpr hu)]
+        exact add_nonneg (indicator_nonneg (fun _ _ => by dsimp only [K]; positivity) u)
+          (indicator_nonneg (fun _ _ => by dsimp only [K]; positivity) u)
+      · rw [indicator_of_mem hu]
+        rcases le_or_gt u (-R) with hle | hgt
+        · rw [indicator_of_mem (mem_Iic.mpr hle)]
+          linarith [indicator_nonneg (fun _ _ => by dsimp only [K]; positivity) u]
+        · have hge : R ≤ u := not_lt.mp fun hlt => hu ⟨hgt, hlt⟩
+          rw [indicator_of_mem (mem_Ici.mpr hge)]
+          linarith [indicator_nonneg (fun _ _ => by dsimp only [K]; positivity) u]
+    have hm := integral_mono (hKi.integrableOn.integrable_indicator measurableSet_Ioo.compl)
+      (hi1.add hi2) hpt
+    rw [integral_indicator measurableSet_Ioo.compl, integral_add hi1 hi2,
+      integral_indicator measurableSet_Iic, integral_indicator measurableSet_Ici] at hm
+    linarith [hm, hray_L, hray_R]
   linarith
 
 private theorem tendsto_mul_setIntegral_Ioi_of_sq_tendsto {g : ℝ → ℝ}
     (hg_nn : ∀ y, 0 ≤ g y) (hg_meas : Measurable g) {C : ℝ}
     (hlim : Tendsto (fun y : ℝ => y ^ 2 * g y) atTop (𝓝 C)) :
     Tendsto (fun T : ℝ => T * ∫ y in Ioi T, g y) atTop (𝓝 C) := by
-  have hC0 : 0 ≤ C := ge_of_tendsto hlim
-    (Eventually.of_forall fun y => mul_nonneg (sq_nonneg _) (hg_nn y))
   rw [Metric.tendsto_atTop]
   intro ε hε
   obtain ⟨Y₀, hY₀⟩ := Metric.tendsto_atTop.mp hlim (ε / 2) (half_pos hε)
@@ -1023,14 +1084,13 @@ private theorem tendsto_mul_setIntegral_Ioi_of_sq_tendsto {g : ℝ → ℝ}
   have hT1 : 1 ≤ T := (le_max_right _ _).trans hT
   have hT0 : 0 < T := lt_of_lt_of_le zero_lt_one hT1
   have hTY : Y₀ ≤ T := (le_max_left _ _).trans hT
-  have hi_inv : IntegrableOn (fun y : ℝ => (y ^ 2)⁻¹) (Ioi T) := by
-    simpa only [Real.rpow_neg_two] using integrableOn_Ioi_rpow_of_lt (by norm_num : (-2 : ℝ) < -1) hT0
+  have hi_inv : IntegrableOn (fun y : ℝ => (y ^ 2)⁻¹) (Ioi T) := integrableOn_Ioi_inv_sq hT0
   have hpt_hi : ∀ y ∈ Ioi T, g y ≤ (C + ε / 2) * (y ^ 2)⁻¹ := fun y (hy : T < y) => by
     have hy0 : 0 < y := lt_trans hT0 hy
     have hd := hY₀ y (hTY.trans hy.le)
     rw [Real.dist_eq] at hd
     have hub : y ^ 2 * g y ≤ C + ε / 2 := by linarith [(abs_lt.mp hd).2]
-    exact (le_div_iff₀' (sq_pos_of_pos hy0)).mpr hub |>.trans_eq (div_eq_mul_inv _ _)
+    exact ((le_div_iff₀' (sq_pos_of_pos hy0)).mpr hub).trans_eq (div_eq_mul_inv _ _)
   have hpt_lo : ∀ y ∈ Ioi T, (C - ε / 2) * (y ^ 2)⁻¹ ≤ g y := fun y (hy : T < y) => by
     have hy0 : 0 < y := lt_trans hT0 hy
     have hd := hY₀ y (hTY.trans hy.le)
@@ -1054,10 +1114,22 @@ private theorem tendsto_mul_setIntegral_Ioi_of_sq_tendsto {g : ℝ → ℝ}
   rw [Real.dist_eq, abs_lt]
   constructor <;> linarith
 
-private theorem integrable_and_setIntegral_poissonWindow {m γ : onLineCopies → ℝ}
+private theorem setIntegral_tsum_of_summable_integral_norm {ι : Type*} {μ : Measure ℝ}
+    {f : ι → ℝ → ℝ} (hf_int : ∀ i, Integrable (f i) μ)
+    (hf_sum : Summable fun i => ∫ x, ‖f i x‖ ∂μ) :
+    (∫ x, ∑' i, f i x ∂μ) = ∑' i, ∫ x, f i x ∂μ := by
+  apply MeasureTheory.integral_tsum
+  · exact fun i => (hf_int i).aestronglyMeasurable
+  · have hi : ∀ i, (∫⁻ x, ‖f i x‖ₑ ∂μ) = ‖∫ x, ‖f i x‖ ∂μ‖ₑ := fun i => by
+      dsimp only [enorm]
+      rw [lintegral_coe_eq_integral _ (hf_int i).norm, ENNReal.coe_nnreal_eq,
+        coe_nnnorm, Real.norm_of_nonneg (integral_nonneg fun x => norm_nonneg (f i x))]
+      simp only [coe_nnnorm]
+    rw [funext hi]
+    exact ENNReal.tsum_coe_ne_top_iff_summable.2 (NNReal.summable_coe.1 hf_sum.abs)
+
+private theorem setIntegral_poissonWindow_eq_tsum {m γ : onLineCopies → ℝ}
     (hm_sum : Summable m) (hm_nn : ∀ q, 0 ≤ m q) (η : ℝ) (S : Set ℝ) :
-    Integrable (fun y : ℝ => ∑' q : onLineCopies,
-      if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0) ∧
     (∫ y in S, ∑' q : onLineCopies,
       if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0) =
       ∑' q : onLineCopies, ∫ y in S,
@@ -1071,7 +1143,9 @@ private theorem integrable_and_setIntegral_poissonWindow {m γ : onLineCopies �
         (measurable_const.add ((measurable_id.sub measurable_const).pow_const 2))))
       measurable_const
   have hf_nn : ∀ q y, 0 ≤ f q y := fun q y => by
-    dsimp only [f]; split_ifs; · exact mul_nonneg (hm_nn q) (by positivity); · exact le_rfl
+    dsimp only [f]; split_ifs
+    · exact mul_nonneg (hm_nn q) (by positivity)
+    · exact le_rfl
   have hf_le : ∀ q y, f q y ≤ m q * (4 / (16 + (y - γ q) ^ 2)) := fun q y => by
     dsimp only [f]; split_ifs
     · exact le_rfl
@@ -1079,31 +1153,18 @@ private theorem integrable_and_setIntegral_poissonWindow {m γ : onLineCopies �
   have hf_int : ∀ q, Integrable (f q) := fun q =>
     ((integrable_poissonKernel (γ q)).const_mul (m q)).mono' (hf_meas q).aestronglyMeasurable
       (Eventually.of_forall fun y => by rw [Real.norm_of_nonneg (hf_nn q y)]; exact hf_le q y)
-  have hnorm_le : ∀ q, (∫ y : ℝ, ‖f q y‖) ≤ m q * Real.pi := fun q => by
-    have heq : (∫ y : ℝ, ‖f q y‖) = ∫ y : ℝ, f q y :=
-      integral_congr_ae (Eventually.of_forall fun y => Real.norm_of_nonneg (hf_nn q y))
-    rw [heq]
-    calc (∫ y : ℝ, f q y)
-        ≤ ∫ y : ℝ, m q * (4 / (16 + (y - γ q) ^ 2)) :=
+  have hnorm_le : ∀ q, (∫ y in S, ‖f q y‖) ≤ m q * Real.pi := fun q => by
+    calc (∫ y in S, ‖f q y‖)
+        ≤ ∫ y : ℝ, ‖f q y‖ :=
+          setIntegral_le_integral (hf_int q).norm (Eventually.of_forall fun _ => norm_nonneg _)
+      _ = ∫ y : ℝ, f q y :=
+          integral_congr_ae (Eventually.of_forall fun y => Real.norm_of_nonneg (hf_nn q y))
+      _ ≤ ∫ y : ℝ, m q * (4 / (16 + (y - γ q) ^ 2)) :=
           integral_mono (hf_int q) ((integrable_poissonKernel (γ q)).const_mul (m q)) (hf_le q)
       _ = m q * Real.pi := by rw [integral_const_mul, integral_poissonKernel_univ]
-  have hsum_norm : Summable fun q : onLineCopies => ∫ y : ℝ, ‖f q y‖ :=
-    (hm_sum.mul_right Real.pi).of_nonneg_of_le
-      (fun q => integral_nonneg fun _ => norm_nonneg _) hnorm_le
-  have hP_int : Integrable fun y : ℝ => ∑' q : onLineCopies, f q y :=
-    integrable_tsum (fun q => (hf_meas q).aestronglyMeasurable) (fun q => hf_int q) hsum_norm
-  refine ⟨hP_int, ?_⟩
-  refine integral_tsum (fun q => (hf_meas q).aestronglyMeasurable) ?_
-  have hlin_le : ∀ q, (∫⁻ y in S, ‖f q y‖₊) ≤ ENNReal.ofReal (m q * Real.pi) := fun q => by
-    calc (∫⁻ y in S, ‖f q y‖₊)
-        ≤ ∫⁻ y : ℝ, ‖f q y‖₊ := lintegral_mono' Measure.restrict_le_self le_rfl
-      _ = ENNReal.ofReal (∫ y : ℝ, ‖f q y‖) :=
-          (ofReal_integral_norm_eq_lintegral_nnnorm (hf_int q)).symm
-      _ ≤ ENNReal.ofReal (m q * Real.pi) := ENNReal.ofReal_le_ofReal (hnorm_le q)
-  refine ne_top_of_le_ne_top ?_ (ENNReal.tsum_le_tsum hlin_le)
-  rw [← ENNReal.ofReal_tsum_of_nonneg (fun q => mul_nonneg (hm_nn q) Real.pi_pos.le)
-    (hm_sum.mul_right Real.pi)]
-  exact ENNReal.ofReal_ne_top
+  exact setIntegral_tsum_of_summable_integral_norm (fun q => (hf_int q).integrableOn)
+    ((hm_sum.mul_right Real.pi).of_nonneg_of_le
+      (fun q => integral_nonneg fun _ => norm_nonneg _) hnorm_le)
 
 private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
@@ -1118,7 +1179,10 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
   let M := ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))
   let L := 4 * a * M / Real.pi
   have ha : 0 < a := criticalAliasCoefficient_positive hW
-  have hM : 0 < M := exponentialPair_self_pos hd hnull.2.1
+  have hM_eq : M = criticalHalfLineExponentialPair F F := by
+    dsimp only [M, criticalHalfLineExponentialPair]
+    exact integral_congr_ae (Eventually.of_forall fun u => by ring)
+  have hM : 0 < M := hM_eq ▸ exponentialPair_self_pos hd hnull.2.1
   have hL : 0 < L := by dsimp only [L]; positivity
   let m := fun q : onLineCopies => zeroValueMass F q
   let γ := fun q : onLineCopies => (centredZero q).im
@@ -1126,7 +1190,7 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
   have hm_nn : ∀ q, 0 ≤ m q := fun q => zeroValueMass_nonneg F q
   let posTail : ℝ → ℝ := fun T => ∑' q : onLineCopies, if T < γ q then m q else 0
   have hposTail_nn : ∀ T, 0 ≤ posTail T := fun T =>
-    tsum_nonneg fun q => by split_ifs <;> simp [hm_nn q]
+    tsum_nonneg fun q => by split_ifs; · exact hm_nn q; · exact le_rfl
   let bp := fun y : ℝ => ‖negativeHalfLineLaplace (cx F) ⟨-4, y⟩‖ ^ 2
   have hbp_int : Integrable bp := integrable_boundary_power hW hnull
   have hbp_meas : Measurable bp := by
@@ -1144,18 +1208,18 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
       rw [integral_const_mul]
       have hsub : Ioi T ⊆ {y : ℝ | T < |y|} := fun y (hy : T < y) =>
         lt_of_lt_of_le hy (le_abs_self y)
-      have hle := setIntegral_mono_set hbp_int.integrableOn
-        (Eventually.of_forall fun _ => sq_nonneg _) (Eventually.of_forall hsub)
-      nlinarith [mul_le_mul_of_nonneg_left hle (mul_nonneg hT (by positivity : (0 : ℝ) ≤ a / 2))]
+      have hle : ∫ y in Ioi T, bp y ≤ ∫ y in {y : ℝ | T < |y|}, bp y :=
+        setIntegral_mono_set hbp_int.integrableOn
+          (Eventually.of_forall fun _ => sq_nonneg _) (Eventually.of_forall hsub)
+      have hm := mul_le_mul_of_nonneg_left hle (mul_nonneg hT (by positivity : (0 : ℝ) ≤ a / 2))
+      change T * ((a / 2) * ∫ y in Ioi T, bp y) ≤ (a / 2) * (T * ∫ y in {y : ℝ | T < |y|}, bp y)
+      linarith
   have hP_asymp : ∀ {η : ℝ}, 0 < η → η < 1 →
       Tendsto (fun T : ℝ => T * ∫ y in Ioi T,
         ∑' q : onLineCopies, if |y - γ q| < η * y then
           m q * (4 / (16 + (y - γ q) ^ 2)) else 0)
         atTop (𝓝 (Real.pi * L)) := by
     intro η hη0 hη1
-    let P : ℝ → ℝ := fun y => ∑' q : onLineCopies,
-      if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0
-    have hPint : Integrable P := (integrable_and_setIntegral_poissonWindow hm_sum hm_nn η univ).1
     let f_q : onLineCopies → ℝ → ℝ := fun q y =>
       if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0
     have hfq_meas : ∀ q, Measurable (f_q q) := fun q =>
@@ -1165,9 +1229,12 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
           (measurable_const.add ((measurable_id.sub measurable_const).pow_const 2))))
         measurable_const
     have hfq_nn : ∀ q y, 0 ≤ f_q q y := fun q y => by
-      dsimp only [f_q]; split_ifs; · exact mul_nonneg (hm_nn q) (by positivity); · exact le_rfl
-    have hPm : Measurable P :=
-      (Measurable.ennreal_tsum' fun q => (hfq_meas q).ennreal_ofReal).ennreal_toReal.congr (by
+      dsimp only [f_q]; split_ifs
+      · exact mul_nonneg (hm_nn q) (by positivity)
+      · exact le_rfl
+    let P : ℝ → ℝ := fun y => ∑' q : onLineCopies, f_q q y
+    have hPm : Measurable P := by
+      have heq : P = fun y => (∑' q : onLineCopies, ENNReal.ofReal (f_q q y)).toReal := by
         funext y
         have hs : Summable fun q => f_q q y :=
           hm_sum.of_nonneg_of_le (fun q => hfq_nn q y) fun q => by
@@ -1177,26 +1244,45 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
                 ((div_le_one (by positivity)).mpr (by linarith [sq_nonneg (y - γ q)]))
             · exact hm_nn q
         rw [← ENNReal.ofReal_tsum_of_nonneg (fun q => hfq_nn q y) hs,
-          ENNReal.toReal_ofReal (tsum_nonneg fun q => hfq_nn q y)])
+          ENNReal.toReal_ofReal (tsum_nonneg fun q => hfq_nn q y)]
+      rw [heq]
+      exact (Measurable.tsum fun q => (hfq_meas q).ennreal_ofReal).ennreal_toReal
     let J : ℝ → ℝ := fun y => (a / 2) * bp y + P y
     have hJ_nn : ∀ y, 0 ≤ J y := fun y =>
       add_nonneg (mul_nonneg (by positivity) (sq_nonneg _)) (tsum_nonneg fun q => hfq_nn q y)
     have hJm : Measurable J := (measurable_const.mul hbp_meas).add hPm
     have hloc := (hnull.localized_high_frequency_mass hW hf hη0 hη1).2
     have hpiL : 4 * (a * criticalHalfLineExponentialPair F F) = Real.pi * L := by
-      dsimp only [L, a, M, criticalHalfLineExponentialPair]
-      have hsq : (fun u => F u * F u * Real.exp (-(8 * u))) =
-          fun u => F u ^ 2 * Real.exp (-(8 * u)) := by funext u; ring
-      rw [hsq]
+      rw [← hM_eq]
+      dsimp only [L]
       field_simp [Real.pi_ne_zero]
     rw [hpiL] at hloc
+    obtain ⟨Y₀, hY₀⟩ := Metric.tendsto_atTop.mp hloc 1 zero_lt_one
     have hJ_int := tendsto_mul_setIntegral_Ioi_of_sq_tendsto hJ_nn hJm hloc
     have hdiff := hJ_int.sub hbp_tail
     rw [sub_zero] at hdiff
     refine hdiff.congr' ?_
-    filter_upwards [eventually_gt_atTop (0 : ℝ)] with T _
-    rw [show J = (fun y => (a / 2) * bp y + P y) from rfl,
-      integral_add (hbp_int.const_mul (a / 2)).integrableOn hPint.integrableOn]
+    filter_upwards [eventually_ge_atTop (max Y₀ 1)] with T hT
+    have hT1 : 1 ≤ T := (le_max_right _ _).trans hT
+    have hT0 : 0 < T := lt_of_lt_of_le zero_lt_one hT1
+    have hTY : Y₀ ≤ T := (le_max_left _ _).trans hT
+    have hP_int_T : IntegrableOn P (Ioi T) := by
+      refine ((integrableOn_Ioi_inv_sq hT0).const_mul (Real.pi * L + 1)).mono'
+        hPm.aestronglyMeasurable.restrict ?_
+      filter_upwards [ae_restrict_mem measurableSet_Ioi] with y (hy : T < y)
+      have hy0 : 0 < y := lt_trans hT0 hy
+      have hP_nn : 0 ≤ P y := tsum_nonneg fun q => hfq_nn q y
+      rw [Real.norm_of_nonneg hP_nn]
+      have hd_y := hY₀ y (hTY.trans hy.le)
+      rw [Real.dist_eq] at hd_y
+      have hP_le_J : P y ≤ J y := le_add_of_nonneg_left (mul_nonneg (by positivity) (sq_nonneg _))
+      have hub : y ^ 2 * P y ≤ Real.pi * L + 1 := by
+        have := mul_le_mul_of_nonneg_left hP_le_J (sq_nonneg y)
+        linarith [(abs_lt.mp hd_y).2]
+      exact ((le_div_iff₀' (sq_pos_of_pos hy0)).mpr hub).trans_eq (div_eq_mul_inv _ _)
+    change T * (∫ y in Ioi T, ((a / 2) * bp y + P y)) - T * (∫ y in Ioi T, (a / 2) * bp y) =
+      T * ∫ y in Ioi T, P y
+    rw [integral_add (hbp_int.const_mul (a / 2)).integrableOn hP_int_T]
     ring
   rw [Metric.tendsto_atTop]
   intro ε hε
@@ -1212,16 +1298,11 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
   have hδ_int : 0 < Real.pi * min (ε / 4) (L / 4) := by positivity
   obtain ⟨T₁, hT₁⟩ := Metric.tendsto_atTop.mp (hP_asymp hη0 hη1)
     (Real.pi * min (ε / 4) (L / 4)) hδ_int
-  set δ₀ := min (1 / 4) (ε / (8 * (L + 1)))
-  have hδ₀_pos : 0 < δ₀ := hη0
-  set T₂ : ℝ := (1 + η) * max (max T₁ 1) (64 / (η * Real.pi * δ₀))
+  set T₂ : ℝ := (1 + η) * max (max T₁ 1) (64 / (η * Real.pi * η))
   refine ⟨max T₂ (T₁ + 1), fun T hT => ?_⟩
   have hTT₂ : T₂ ≤ T := (le_max_left _ _).trans hT
   have hTT₁ : T₁ + 1 ≤ T := (le_max_right _ _).trans hT
-  have hT_pos : 0 < T := by
-    have hT₂_pos : 0 < T₂ := by dsimp only [T₂]; positivity
-    exact lt_of_lt_of_le hT₂_pos hTT₂
-  -- Lower bound via `T' = T / (1 - η)`
+  have hT_pos : 0 < T := lt_of_lt_of_le (by dsimp only [T₂]; positivity) hTT₂
   have hlo_bound : L - ε < T * posTail T := by
     set T' := T / (1 - η)
     have h1mη : 0 < 1 - η := by linarith
@@ -1237,7 +1318,7 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
       have hmin : Real.pi * min (ε / 4) (L / 4) ≤ Real.pi * (ε / 4) :=
         mul_le_mul_of_nonneg_left (min_le_left _ _) Real.pi_pos.le
       linarith [(abs_lt.mp hd1).1]
-    rw [(integrable_and_setIntegral_poissonWindow hm_sum hm_nn η (Ioi T')).2] at hP_lb
+    rw [setIntegral_poissonWindow_eq_tsum hm_sum hm_nn η (Ioi T')] at hP_lb
     have hterm_le : ∀ q : onLineCopies,
         (∫ y in Ioi T', if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0) ≤
           if T < γ q then Real.pi * m q else 0 := fun q => by
@@ -1245,7 +1326,9 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
       · have hf_le : ∀ y : ℝ,
             (if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0) ≤
               m q * (4 / (16 + (y - γ q) ^ 2)) := fun y => by
-          split_ifs; · exact le_rfl; · exact mul_nonneg (hm_nn q) (by positivity)
+          split_ifs
+          · exact le_rfl
+          · exact mul_nonneg (hm_nn q) (by positivity)
         have hfm : Measurable fun y : ℝ =>
             if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0 :=
           Measurable.ite (measurableSet_lt (continuous_id.sub continuous_const).abs.measurable
@@ -1258,7 +1341,9 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
           refine ((integrable_poissonKernel (γ q)).const_mul (m q)).integrableOn.mono'
             hfm.aestronglyMeasurable.restrict ?_
           filter_upwards [ae_restrict_mem measurableSet_Ioi] with y _
-          rw [Real.norm_of_nonneg (by split_ifs; · exact mul_nonneg (hm_nn q) (by positivity); · exact le_rfl)]
+          have hnn : 0 ≤ (if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0) := by
+            split_ifs; · exact mul_nonneg (hm_nn q) (by positivity); · exact le_rfl
+          rw [Real.norm_of_nonneg hnn]
           exact hf_le y
         have hm1 := setIntegral_mono_on hfi
           ((integrable_poissonKernel (γ q)).const_mul (m q)).integrableOn measurableSet_Ioi
@@ -1273,22 +1358,21 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
           intro habs
           have h1 : (1 - η) * y < γ q := by linarith [(abs_lt.mp habs).2]
           have h2 : T < (1 - η) * y := by
-            have := mul_lt_mul_of_pos_left hy h1mη
-            rwa [dsimp_T' : (1 - η) * T' = T] at this
-            where dsimp_T' : (1 - η) * T' = T := mul_div_cancel₀ T h1mη.ne'
+            have hm_lt := mul_lt_mul_of_pos_left hy h1mη
+            have heT : (1 - η) * T' = T := mul_div_cancel₀ T h1mη.ne'
+            rwa [heT] at hm_lt
           exact hγT (lt_trans h2 h1)
-        exact (setIntegral_eq_zero_of_forall_eq_zero hzero).le
-    have hsum_int : Summable fun q : onLineCopies =>
-        ∫ y in Ioi T', if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0 := by
-      refine ((hm_sum.mul_left Real.pi).of_nonneg_of_le (fun _ => by split_ifs <;> positivity)
-        fun q => by split_ifs <;> [exact le_rfl; exact mul_nonneg Real.pi_pos.le (hm_nn q)]).of_nonneg_of_le
-        (fun q => integral_nonneg fun y => by
-          split_ifs; · exact mul_nonneg (hm_nn q) (by positivity); · exact le_rfl)
-        hterm_le
+        rw [setIntegral_eq_zero_of_forall_eq_zero hzero]
     have hsum_rhs : Summable fun q : onLineCopies => if T < γ q then Real.pi * m q else 0 :=
       (hm_sum.mul_left Real.pi).of_nonneg_of_le
         (fun q => by split_ifs; · exact mul_nonneg Real.pi_pos.le (hm_nn q); · exact le_rfl)
         (fun q => by split_ifs; · exact le_rfl; · exact mul_nonneg Real.pi_pos.le (hm_nn q))
+    have hsum_int : Summable fun q : onLineCopies =>
+        ∫ y in Ioi T', if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0 :=
+      hsum_rhs.of_nonneg_of_le
+        (fun q => integral_nonneg fun y => by
+          split_ifs; · exact mul_nonneg (hm_nn q) (by positivity); · exact le_rfl)
+        hterm_le
     have htsum_le := Summable.tsum_le_tsum hterm_le hsum_int hsum_rhs
     have hrhs_eq : (∑' q : onLineCopies, if T < γ q then Real.pi * m q else 0) =
         Real.pi * posTail T := by
@@ -1307,35 +1391,30 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
       field_simp [Real.pi_ne_zero, h1mη.ne']
     rw [hsimpL, hsimpR] at hmul
     nlinarith [hηL, hη0, hε]
-  -- Upper bound via `T'' = T / (1 + η)`
   have hhi_bound : T * posTail T < L + ε := by
     set T'' := T / (1 + η)
     have h1pη : 0 < 1 + η := by linarith
     have hT''_pos : 0 < T'' := div_pos hT_pos h1pη
-    have hT''_max : max (max T₁ 1) (64 / (η * Real.pi * δ₀)) ≤ T'' := by
+    have hT''_max : max (max T₁ 1) (64 / (η * Real.pi * η)) ≤ T'' := by
       have h := (le_div_iff₀' h1pη).mpr hTT₂
       simpa only [T₂, T''] using h
     have hT''_T₁ : T₁ ≤ T'' := ((le_max_left _ _).trans (le_max_left _ _)).trans hT''_max
-    have hT''_big : 64 / (η * Real.pi * δ₀) ≤ T'' := (le_max_right _ _).trans hT''_max
+    have hT''_big : 64 / (η * Real.pi * η) ≤ T'' := (le_max_right _ _).trans hT''_max
     have hd2 := hT₁ T'' hT''_T₁
     rw [Real.dist_eq] at hd2
     have hP_ub : T'' * (∫ y in Ioi T'',
         ∑' q : onLineCopies, if |y - γ q| < η * y then
           m q * (4 / (16 + (y - γ q) ^ 2)) else 0) ≤ Real.pi * (L + min (ε / 4) (L / 4)) := by
       linarith [(abs_lt.mp hd2).2]
-    rw [(integrable_and_setIntegral_poissonWindow hm_sum hm_nn η (Ioi T'')).2] at hP_ub
+    rw [setIntegral_poissonWindow_eq_tsum hm_sum hm_nn η (Ioi T'')] at hP_ub
     set R := η / 2 * T''
     have hR_pos : 0 < R := by dsimp only [R]; positivity
-    have h8R : 8 / R ≤ Real.pi * δ₀ / 4 := by
-      have h1 : 64 ≤ T'' * (η * Real.pi * δ₀) :=
-        (div_le_iff₀ (by positivity)).mp hT''_big
-      dsimp only [R]
+    have h8R : 8 / R ≤ Real.pi * η / 4 := by
+      have h1 : 64 ≤ T'' * (η * Real.pi * η) := (div_le_iff₀ (by positivity)).mp hT''_big
       rw [div_le_iff₀ hR_pos]
       dsimp only [R]
       nlinarith
-    have hker_pos : 0 < Real.pi - 8 / R := by
-      have hδ4 : δ₀ ≤ 1 / 4 := min_le_left _ _
-      nlinarith [Real.pi_pos, h8R, hδ4]
+    have hker_pos : 0 < Real.pi - 8 / R := by nlinarith [Real.pi_pos, h8R, hη4]
     have hterm_ge : ∀ q : onLineCopies,
         (if T < γ q then (Real.pi - 8 / R) * m q else 0) ≤
           ∫ y in Ioi T'', if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0 := by
@@ -1364,7 +1443,9 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
           refine ((integrable_poissonKernel (γ q)).const_mul (m q)).integrableOn.mono'
             hfm.aestronglyMeasurable.restrict ?_
           filter_upwards [ae_restrict_mem measurableSet_Ioi] with y _
-          rw [Real.norm_of_nonneg (by split_ifs; · exact mul_nonneg (hm_nn q) (by positivity); · exact le_rfl)]
+          have hnn : 0 ≤ (if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0) := by
+            split_ifs; · exact mul_nonneg (hm_nn q) (by positivity); · exact le_rfl
+          rw [Real.norm_of_nonneg hnn]
           split_ifs; · exact le_rfl; · exact mul_nonneg (hm_nn q) (by positivity)
         have hmono := setIntegral_mono_set hfi
           (Eventually.of_forall fun y => by
@@ -1388,10 +1469,10 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
         (fun q => by split_ifs; · exact le_rfl; · exact mul_nonneg hker_pos.le (hm_nn q))
     have hsum_rhs : Summable fun q : onLineCopies =>
         ∫ y in Ioi T'', if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0 := by
-      refine ((hm_sum.mul_left Real.pi).of_nonneg_of_le
+      refine (hm_sum.mul_left Real.pi).of_nonneg_of_le
         (fun q => integral_nonneg fun y => by
           split_ifs; · exact mul_nonneg (hm_nn q) (by positivity); · exact le_rfl)
-        fun q => ?_)
+        fun q => ?_
       have hfm : Measurable fun y : ℝ =>
           if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0 :=
         Measurable.ite (measurableSet_lt (continuous_id.sub continuous_const).abs.measurable
@@ -1404,7 +1485,9 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
         refine ((integrable_poissonKernel (γ q)).const_mul (m q)).integrableOn.mono'
           hfm.aestronglyMeasurable.restrict ?_
         filter_upwards [ae_restrict_mem measurableSet_Ioi] with y _
-        rw [Real.norm_of_nonneg (by split_ifs; · exact mul_nonneg (hm_nn q) (by positivity); · exact le_rfl)]
+        have hnn : 0 ≤ (if |y - γ q| < η * y then m q * (4 / (16 + (y - γ q) ^ 2)) else 0) := by
+          split_ifs; · exact mul_nonneg (hm_nn q) (by positivity); · exact le_rfl
+        rw [Real.norm_of_nonneg hnn]
         split_ifs; · exact le_rfl; · exact mul_nonneg (hm_nn q) (by positivity)
       have hm1 := setIntegral_mono_on hfi
         ((integrable_poissonKernel (γ q)).const_mul (m q)).integrableOn measurableSet_Ioi fun y _ => by
@@ -1420,27 +1503,24 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
     rw [hlhs_eq] at htsum_ge
     have hm_T'' := mul_le_mul_of_nonneg_left htsum_ge hT''_pos.le
     have hcomb := hm_T''.trans hP_ub
-    have hker_lb : Real.pi * (1 - δ₀ / 4) ≤ Real.pi - 8 / R := by linarith [h8R]
-    have hδ₀_ub : 1 - δ₀ / 4 ≥ 15 / 16 := by
-      have : δ₀ ≤ 1 / 4 := min_le_left _ _
-      linarith
-    have hpos1 : 0 < 1 - δ₀ / 4 := by linarith
-    have hstep1 : Real.pi * (1 - δ₀ / 4) * (T'' * posTail T) ≤
+    have hker_lb : Real.pi * (1 - η / 4) ≤ Real.pi - 8 / R := by linarith [h8R]
+    have hpos1 : 0 < 1 - η / 4 := by linarith [hη4]
+    have hstep1 : Real.pi * (1 - η / 4) * (T'' * posTail T) ≤
         Real.pi * (L + min (ε / 4) (L / 4)) := by
-      calc Real.pi * (1 - δ₀ / 4) * (T'' * posTail T)
-          = T'' * ((Real.pi * (1 - δ₀ / 4)) * posTail T) := by ring
+      calc Real.pi * (1 - η / 4) * (T'' * posTail T)
+          = T'' * ((Real.pi * (1 - η / 4)) * posTail T) := by ring
         _ ≤ T'' * ((Real.pi - 8 / R) * posTail T) :=
             mul_le_mul_of_nonneg_left
               (mul_le_mul_of_nonneg_right hker_lb (hposTail_nn T)) hT''_pos.le
         _ ≤ Real.pi * (L + min (ε / 4) (L / 4)) := hcomb
-    have hstep2 : (1 - δ₀ / 4) * (T * posTail T) ≤ (1 + η) * (L + min (ε / 4) (L / 4)) := by
-      have hc1 : (1 - δ₀ / 4) * (T'' * posTail T) ≤ L + min (ε / 4) (L / 4) :=
+    have hstep2 : (1 - η / 4) * (T * posTail T) ≤ (1 + η) * (L + min (ε / 4) (L / 4)) := by
+      have hc1 : (1 - η / 4) * (T'' * posTail T) ≤ L + min (ε / 4) (L / 4) :=
         le_of_mul_le_mul_left (by linarith [hstep1] :
-          Real.pi * ((1 - δ₀ / 4) * (T'' * posTail T)) ≤
+          Real.pi * ((1 - η / 4) * (T'' * posTail T)) ≤
             Real.pi * (L + min (ε / 4) (L / 4))) Real.pi_pos
       have hm2 := mul_le_mul_of_nonneg_left hc1 h1pη.le
-      have heT : (1 + η) * ((1 - δ₀ / 4) * (T'' * posTail T)) =
-          (1 - δ₀ / 4) * (T * posTail T) := by
+      have heT : (1 + η) * ((1 - η / 4) * (T'' * posTail T)) =
+          (1 - η / 4) * (T * posTail T) := by
         dsimp only [T'']
         field_simp [h1pη.ne']
       linarith
@@ -1450,8 +1530,6 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
       have hm := mul_le_mul_of_nonneg_left hmin_L hη0.le
       linarith [hηL]
     have hη_ε : η * ε ≤ ε / 4 := mul_le_mul_of_nonneg_right hη4 hε.le
-    have hδ_eq : δ₀ = η := rfl
-    rw [hδ_eq] at hstep2 hpos1
     have hstrict : (1 - η / 4) * (T * posTail T) < (1 - η / 4) * (L + ε) := by
       nlinarith only [hstep2, hmin_ε, hηL, hη_min, hη_ε, hε]
     exact lt_of_mul_lt_mul_left hstrict hpos1.le
@@ -1481,10 +1559,10 @@ theorem criticalState_criticalLine_tail_asymptotic {W₀ : ℝ} (hW : 0 < W₀)
   let fpos : onLineCopies → ℝ := fun q => if T < (centredZero q).im then zeroValueMass F q else 0
   let fneg : onLineCopies → ℝ := fun q => if (centredZero q).im < -T then zeroValueMass F q else 0
   have hs_pos : Summable fpos := hm_sum.of_nonneg_of_le
-    (fun q => by dsimp only [fpos]; split_ifs <;> simp [hm_nn q])
+    (fun q => by dsimp only [fpos]; split_ifs; · exact hm_nn q; · exact le_rfl)
     (fun q => by dsimp only [fpos]; split_ifs; · exact le_rfl; · exact hm_nn q)
   have hs_neg : Summable fneg := hm_sum.of_nonneg_of_le
-    (fun q => by dsimp only [fneg]; split_ifs <;> simp [hm_nn q])
+    (fun q => by dsimp only [fneg]; split_ifs; · exact hm_nn q; · exact le_rfl)
     (fun q => by dsimp only [fneg]; split_ifs; · exact le_rfl; · exact hm_nn q)
   have hneg_eq : (∑' q : onLineCopies, fneg q) = ∑' q : onLineCopies, fpos q := by
     rw [← reflectOnLine.tsum_eq fneg]
@@ -1521,26 +1599,27 @@ private theorem posFirstMoment_add_mul_posTail_eq_integral {m γ : onLineCopies 
   have hg_meas : ∀ q, Measurable (g q) := fun q =>
     Measurable.ite (measurableSet_lt measurable_id measurable_const)
       measurable_const measurable_const
-  have hlin_le : ∀ q, (∫⁻ u in Icc 0 T, ‖g q u‖₊) ≤ ENNReal.ofReal (T * m q) := fun q => by
-    have hpt : ∀ u : ℝ, ‖g q u‖₊ ≤ ENNReal.ofReal (m q) := fun u => by
-      dsimp only [g]
-      split_ifs
-      · rw [Real.nnnorm_of_nonneg (hm_nn q), ENNReal.ofReal_eq_coe_nnreal (hm_nn q)]
-      · simp
-    calc (∫⁻ u in Icc 0 T, ‖g q u‖₊)
-        ≤ ∫⁻ _ in Icc 0 T, ENNReal.ofReal (m q) := lintegral_mono hpt
-      _ = ENNReal.ofReal (m q) * volume (Icc 0 T) := setLIntegral_const (Icc 0 T) _
-      _ = ENNReal.ofReal (T * m q) := by
-          rw [Real.volume_Icc, sub_zero, ← ENNReal.ofReal_mul (hm_nn q), mul_comm]
-          exact congrArg (fun x => ENNReal.ofReal (m q) * x) rfl |>.trans
-            (by rw [← ENNReal.ofReal_mul (hm_nn q), mul_comm] :
-              ENNReal.ofReal (m q) * ENNReal.ofReal T = ENNReal.ofReal (T * m q))
+  have hg_int : ∀ q, IntegrableOn (g q) (Icc 0 T) := fun q => by
+    refine (continuousOn_const (c := m q)).integrableOn_Icc.mono'
+      (hg_meas q).aestronglyMeasurable.restrict ?_
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with u _
+    dsimp only [g]
+    split_ifs
+    · rw [Real.norm_of_nonneg (hm_nn q)]
+    · rw [norm_zero]; exact hm_nn q
+  have hnorm_le : ∀ q, (∫ u in Icc 0 T, ‖g q u‖) ≤ T * m q := fun q => by
+    have hm1 := setIntegral_mono_on (hg_int q).norm
+      (continuousOn_const (c := m q)).integrableOn_Icc measurableSet_Icc fun u _ => by
+        dsimp only [g]
+        split_ifs
+        · rw [Real.norm_of_nonneg (hm_nn q)]
+        · rw [norm_zero]; exact hm_nn q
+    rwa [setIntegral_const, Real.volume_real_Icc_of_le hT, sub_zero, smul_eq_mul] at hm1
   have htsum_int : (∫ u in Icc 0 T, ∑' q : onLineCopies, g q u) =
-      ∑' q : onLineCopies, ∫ u in Icc 0 T, g q u := by
-    refine integral_tsum (fun q => (hg_meas q).aestronglyMeasurable) ?_
-    refine ne_top_of_le_ne_top ?_ (ENNReal.tsum_le_tsum hlin_le)
-    rw [← ENNReal.ofReal_tsum_of_nonneg (fun q => mul_nonneg hT (hm_nn q)) (hm_sum.mul_left T)]
-    exact ENNReal.ofReal_ne_top
+      ∑' q : onLineCopies, ∫ u in Icc 0 T, g q u :=
+    setIntegral_tsum_of_summable_integral_norm hg_int
+      ((hm_sum.mul_left T).of_nonneg_of_le
+        (fun q => integral_nonneg fun _ => norm_nonneg _) hnorm_le)
   rw [htsum_int]
   have hterm : ∀ q : onLineCopies,
       (∫ u in Icc 0 T, g q u) =
@@ -1548,25 +1627,28 @@ private theorem posFirstMoment_add_mul_posTail_eq_integral {m γ : onLineCopies 
     rcases le_or_gt (γ q) 0 with hle0 | hgt0
     · have hzero : ∀ u ∈ Icc 0 T, g q u = 0 := fun u hu => by
         dsimp only [g]; rw [if_neg]; linarith [hu.1]
-      rw [setIntegral_eq_zero_of_forall_eq_zero hzero]
-      split_ifs with h1 h2 <;> linarith [h1.1]
+      rw [setIntegral_eq_zero_of_forall_eq_zero hzero,
+        if_neg (fun h => not_lt.mpr hle0 h.1), if_neg (not_lt.mpr (hle0.trans hT)), add_zero]
     · rcases le_or_gt (γ q) T with hleT | hgtT
       · have heq : (Icc 0 T).indicator (g q) = (Ico 0 (γ q)).indicator (fun _ => m q) := by
           funext u
-          unfold indicator g
           by_cases hu : 0 ≤ u ∧ u < γ q
-          · rw [if_pos ⟨hu.1, hu.2.le.trans hleT⟩, if_pos hu.2, if_pos hu]
-          · rw [if_neg hu]
+          · rw [indicator_of_mem ⟨hu.1, hu.2.le.trans hleT⟩, indicator_of_mem hu]
+            dsimp only [g]
+            exact if_pos hu.2
+          · rw [indicator_of_notMem hu]
             by_cases hI : u ∈ Icc 0 T
-            · rw [if_pos hI, if_neg (fun hlt => hu ⟨hI.1, hlt⟩)]
-            · rw [if_neg hI]
+            · rw [indicator_of_mem hI]
+              dsimp only [g]
+              exact if_neg fun hlt => hu ⟨hI.1, hlt⟩
+            · rw [indicator_of_notMem hI]
         rw [← integral_indicator measurableSet_Icc, heq, integral_indicator measurableSet_Ico,
           setIntegral_const, Real.volume_real_Ico_of_le hgt0.le, sub_zero, smul_eq_mul,
           if_pos ⟨hgt0, hleT⟩, if_neg (not_lt.mpr hleT), add_zero]
-      · have heq : ∀ u ∈ Ico 0 T, g q u = m q := fun u hu => by
+      · have heq : ∀ u ∈ Ioo 0 T, g q u = m q := fun u hu => by
           dsimp only [g]; exact if_pos (lt_trans hu.2 hgtT)
-        rw [← integral_Ico_eq_integral_Icc, setIntegral_congr_fun measurableSet_Ico heq,
-          setIntegral_const, Real.volume_real_Ico_of_le hT, sub_zero, smul_eq_mul,
+        rw [integral_Icc_eq_integral_Ioo, setIntegral_congr_fun measurableSet_Ioo heq,
+          setIntegral_const, Real.volume_real_Ioo_of_le hT, sub_zero, smul_eq_mul,
           if_neg (fun h => not_lt.mpr h.2 hgtT), if_pos hgtT, zero_add]
   have hs1 : Summable fun q : onLineCopies => if 0 < γ q ∧ γ q ≤ T then γ q * m q else 0 :=
     (hm_sum.mul_left T).of_nonneg_of_le
@@ -1602,12 +1684,12 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
   let L := 4 * criticalAliasCoefficient W₀ *
     (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) / Real.pi
   let posTail : ℝ → ℝ := fun u => ∑' q : onLineCopies, if u < γ q then m q else 0
+  have hposTail_sum : ∀ u, Summable (fun q : onLineCopies => if u < γ q then m q else 0) :=
+    fun u => hm_sum.of_nonneg_of_le
+      (fun q => by split_ifs; · exact hm_nn q; · exact le_rfl)
+      (fun q => by split_ifs; · exact le_rfl; · exact hm_nn q)
   have hposTail_anti : Antitone posTail := fun u₁ u₂ h12 => by
-    refine Summable.tsum_le_tsum (fun q => ?_)
-      (hm_sum.of_nonneg_of_le (fun q => by split_ifs <;> simp [hm_nn q])
-        fun q => by split_ifs; · exact le_rfl; · exact hm_nn q)
-      (hm_sum.of_nonneg_of_le (fun q => by split_ifs <;> simp [hm_nn q])
-        fun q => by split_ifs; · exact le_rfl; · exact hm_nn q)
+    refine Summable.tsum_le_tsum (fun q => ?_) (hposTail_sum u₂) (hposTail_sum u₁)
     split_ifs with h2 h1
     · exact le_rfl
     · exfalso; linarith
@@ -1615,12 +1697,11 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
     · exact le_rfl
   have hposTail_meas : Measurable posTail := hposTail_anti.measurable
   have hposTail_nn : ∀ u, 0 ≤ posTail u := fun u =>
-    tsum_nonneg fun q => by split_ifs <;> simp [hm_nn q]
+    tsum_nonneg fun q => by split_ifs; · exact hm_nn q; · exact le_rfl
   have hposTail_le : ∀ u, posTail u ≤ ∑' q, m q := fun u =>
-    Summable.tsum_le_tsum (fun q => by split_ifs; · exact le_rfl; · exact hm_nn q)
-      (hm_sum.of_nonneg_of_le (fun q => by split_ifs <;> simp [hm_nn q])
-        fun q => by split_ifs; · exact le_rfl; · exact hm_nn q)
-      hm_sum
+    Summable.tsum_le_tsum
+      (fun q => by split_ifs; · exact le_rfl; · exact hm_nn q)
+      (hposTail_sum u) hm_sum
   have hposTail_int : ∀ A B : ℝ, IntegrableOn posTail (Icc A B) := fun A B => by
     refine (continuousOn_const (c := ∑' q, m q)).integrableOn_Icc.mono'
       hposTail_meas.aestronglyMeasurable.restrict ?_
@@ -1628,7 +1709,6 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
     rw [Real.norm_of_nonneg (hposTail_nn u)]
     exact hposTail_le u
   have htail_lim := criticalState_criticalLine_posTail_asymptotic hW ht hF hf
-  -- Integral of `posTail` divided by `log T` tends to `L`
   have hint_lim : Tendsto (fun T : ℝ => (Real.log T)⁻¹ * ∫ u in Icc 0 T, posTail u)
       atTop (𝓝 L) := by
     rw [Metric.tendsto_atTop]
@@ -1650,9 +1730,9 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
     have hlogT_pos : 0 < Real.log T := lt_of_lt_of_le (by positivity) hlogT_big
     have hsplit : (∫ u in Icc 0 T, posTail u) =
         (∫ u in Icc 0 U₀, posTail u) + ∫ u in Ioc U₀ T, posTail u := by
-      rw [← integral_Ioc_eq_integral_Icc, ← integral_Ioc_eq_integral_Icc,
+      rw [integral_Icc_eq_integral_Ioc, integral_Icc_eq_integral_Ioc,
         ← setIntegral_union (Ioc_disjoint_Ioc_of_le le_rfl) measurableSet_Ioc
-          (hposTail_int 0 U₀).mono_set Ioc_subset_Icc_self
+          ((hposTail_int 0 U₀).mono_set Ioc_subset_Icc_self)
           ((hposTail_int U₀ T).mono_set Ioc_subset_Icc_self),
         Ioc_union_Ioc_eq_Ioc hU₀_pos.le (by linarith)]
     have hhead_le : ∫ u in Icc 0 U₀, posTail u ≤ U₀ * (∑' q, m q) := by
@@ -1661,8 +1741,8 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
         fun u _ => hposTail_le u
       rwa [setIntegral_const, Real.volume_real_Icc_of_le hU₀_pos.le, sub_zero, smul_eq_mul] at hm1
     have hinv_int : IntegrableOn (fun u : ℝ => u⁻¹) (Ioc U₀ T) :=
-      (intervalIntegral.intervalIntegrable_inv (fun u hu => by
-        rcases Set.mem_uIcc.mp hu with h | h <;> linarith [h.1]) |>.1)
+      (continuousOn_id.inv₀ fun u (hu : u ∈ Icc U₀ T) =>
+        (lt_of_lt_of_le hU₀_pos hu.1).ne').integrableOn_Icc.mono_set Ioc_subset_Icc_self
     have hlog_int : (∫ u in Ioc U₀ T, u⁻¹) = Real.log T - Real.log U₀ := by
       rw [← intervalIntegral.integral_of_le (by linarith : U₀ ≤ T),
         integral_inv_of_pos hU₀_pos hT_pos, Real.log_div hT_pos.ne' hU₀_pos.ne']
@@ -1671,7 +1751,7 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
       have hd1 := hU₁ u ((le_max_left U₁ 2).trans hu.1.le)
       rw [Real.dist_eq] at hd1
       have hub : u * posTail u ≤ L + ε / 4 := by linarith [(abs_lt.mp hd1).2]
-      exact (le_div_iff₀' hu0).mpr hub |>.trans_eq (div_eq_mul_inv _ _)
+      exact ((le_div_iff₀' hu0).mpr hub).trans_eq (div_eq_mul_inv _ _)
     have hpt_lo : ∀ u ∈ Ioc U₀ T, (L - ε / 4) * u⁻¹ ≤ posTail u := fun u hu => by
       have hu0 : 0 < u := lt_trans hU₀_pos hu.1
       have hd1 := hU₁ u ((le_max_left U₁ 2).trans hu.1.le)
@@ -1691,20 +1771,20 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
       dsimp only [C₀]
       rw [abs_mul, habs_logU]
       have h1 : |L + ε / 4| ≤ |L| + ε := by
-        have := abs_add_le L (ε / 4)
-        rw [abs_of_pos (by positivity)] at this
+        have hn := norm_add_le L (ε / 4)
+        simp only [Real.norm_eq_abs, abs_of_pos (show (0 : ℝ) < ε / 4 by positivity)] at hn
         linarith
       nlinarith [mul_le_mul_of_nonneg_right h1 hlogU_nn]
     have hC₀_bound2 : |(L - ε / 4) * Real.log U₀| < C₀ := by
       dsimp only [C₀]
       rw [abs_mul, habs_logU]
       have h1 : |L - ε / 4| ≤ |L| + ε := by
-        have := abs_sub L (ε / 4)
-        rw [abs_of_pos (by positivity)] at this
+        have hn := norm_sub_le L (ε / 4)
+        simp only [Real.norm_eq_abs, abs_of_pos (show (0 : ℝ) < ε / 4 by positivity)] at hn
         linarith
       have h2 : 0 ≤ U₀ * (∑' q, m q) := mul_nonneg hU₀_pos.le (tsum_nonneg hm_nn)
       nlinarith [mul_le_mul_of_nonneg_right h1 hlogU_nn]
-    have h4C₀ : 4 * C₀ ≤ ε * Real.log T := (div_le_iff₀ hε).mp hlogT_big
+    have h4C₀ : 4 * C₀ ≤ Real.log T * ε := (div_le_iff₀ hε).mp hlogT_big
     have hX_lo : (L - ε) * Real.log T < ∫ u in Icc 0 T, posTail u := by
       have h1 := le_abs_self ((L - ε / 4) * Real.log U₀)
       rw [hsplit]
@@ -1715,8 +1795,8 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
       nlinarith only [hhead_le, hint_hi, h1, hC₀_bound1, h4C₀, hε, hlogT_pos]
     have hdiv_lo : L - ε < (Real.log T)⁻¹ * ∫ u in Icc 0 T, posTail u := by
       have hm := mul_lt_mul_of_pos_left hX_lo (inv_pos.mpr hlogT_pos)
-      rwa [← mul_assoc, inv_mul_cancel_right₀ hlogT_pos.ne' (L - ε) |>.symm |> fun _ =>
-        show (Real.log T)⁻¹ * (L - ε) * Real.log T = L - ε by field_simp [hlogT_pos.ne']] at hm
+      rwa [show (Real.log T)⁻¹ * ((L - ε) * Real.log T) = L - ε by
+        field_simp [hlogT_pos.ne']] at hm
     have hdiv_hi : (Real.log T)⁻¹ * ∫ u in Icc 0 T, posTail u < L + ε := by
       have hm := mul_lt_mul_of_pos_left hX_hi (inv_pos.mpr hlogT_pos)
       rwa [show (Real.log T)⁻¹ * ((L + ε) * Real.log T) = L + ε by
@@ -1725,7 +1805,7 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
     exact ⟨by linarith, by linarith⟩
   have hrem_lim : Tendsto (fun T : ℝ => (Real.log T)⁻¹ * (T * posTail T)) atTop (𝓝 0) := by
     have hinv_log : Tendsto (fun T : ℝ => (Real.log T)⁻¹) atTop (𝓝 0) :=
-      tendsto_inv_atTop_zero.comp Real.tendsto_log_atTop
+      (tendsto_inv_atTop_zero (𝕜 := ℝ)).comp Real.tendsto_log_atTop
     simpa only [zero_mul] using hinv_log.mul htail_lim
   have hpos_mom : Tendsto (fun T : ℝ => (Real.log T)⁻¹ * ∑' q : onLineCopies,
       if 0 < γ q ∧ γ q ≤ T then γ q * m q else 0) atTop (𝓝 L) := by
@@ -1789,6 +1869,9 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
   ring
 
 #print axioms tendsto_mul_log_dampedMass_of_terminal_sq
+#print axioms halfLineEnergyMinimizer_tendsto_mul_log_dampedMass
+#print axioms halfLineEnergyMinimizer_tendsto_mul_log_vertical_laplace_sq
+#print axioms halfLineEnergyMinimizer_mean_square_wall_trace_zero
 #print axioms criticalState_tendsto_mul_log_dampedMass
 #print axioms criticalState_tendsto_mul_log_vertical_laplace_sq
 #print axioms criticalState_boundary_fourier_tail_zero
@@ -1797,6 +1880,3 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
 #print axioms criticalState_criticalLine_firstMoment_asymptotic
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState
-
-
-

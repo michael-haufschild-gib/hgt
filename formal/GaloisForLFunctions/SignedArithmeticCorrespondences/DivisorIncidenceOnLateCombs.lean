@@ -209,7 +209,10 @@ theorem contactTerm_lateComb_eq (w : ℕ → ℝ) (N K : ℕ) (c e : ℕ → ℝ
         obtain ⟨hne, hnS⟩ := mem_erase.mp hnE
         obtain ⟨_, hn2⟩ := mem_Ioc.mp hnS
         rw [Nat.mul_div_cancel_left k hm0]
-        have hk0 : k ≠ 0 := by rintro rfl; simp at hnS
+        have hk0 : k ≠ 0 := by
+          rintro rfl
+          have := (mem_Ioc.mp hnS).1
+          omega
         have hk1 : k ≠ 1 := by rintro rfl; exact hne (mul_one m)
         have hk3K : k ≤ 3 * K := by
           by_contra hgt
@@ -249,9 +252,11 @@ theorem contactTerm_lateComb_eq (w : ℕ → ℝ) (N K : ℕ) (c e : ℕ → ℝ
     rw [hsub]
   have hsplit : contactTerm w S c e =
       (∑ n ∈ S, ∑ m ∈ S.erase n, c m * e n * (if m ∣ n then w (n / m) else 0)) +
-        ∑ m ∈ S, ∑ n ∈ S.erase m, e m * c n * (if m ∣ n then w (n / m) else 0) := by
+        ∑ n ∈ S, ∑ m ∈ S.erase n, e m * c n * (if m ∣ n then w (n / m) else 0) := by
     simp only [contactTerm, contactW, mul_add, sum_add_distrib]
     congr 1
+    rw [Finset.sum_comm' (s' := fun m => S.erase m) (t' := S) (fun n m => by
+      simp only [mem_erase]; tauto)]
     exact sum_congr rfl fun a _ => sum_congr rfl fun b _ => by ring
   rw [hsplit, hone c e, hone e c, ← sum_add_distrib]
   refine sum_congr rfl fun r _ => ?_
@@ -309,7 +314,8 @@ theorem combFormW_liouville_sub_combForm_coprime (N K d : ℕ)
     ring
   rw [hdiff, contactTerm_coprime_eq_slice_sum _ N K d d hc hc,
     contactTerm_coprime_eq_slice_sum _ N K d d hc hc, ← mul_sub, ← sum_sub_distrib]
-  have hsq : ∀ r : ℕ, ∑ m ∈ combSlice N K r, v m * v m = ∑ m ∈ combSlice N K r, v m ^ 2 :=
+  have hsq : ∀ r : ℕ, ∑ m ∈ combSlice N K r, centeredMultiple d m * centeredMultiple d m =
+      ∑ m ∈ combSlice N K r, v m ^ 2 :=
     fun r => sum_congr rfl fun m _ => (sq (v m)).symm
   simp only [hsq]
   rw [sum_filter]
@@ -321,7 +327,14 @@ theorem combFormW_liouville_sub_combForm_coprime (N K d : ℕ)
     refine sum_congr rfl fun r _ => ?_
     unfold SelectiveArithmetic.liouvilleWeight
     by_cases hs : IsSquare r <;> simp [hs] <;> ring
-  rw [hrew, ← mul_sum]
+  rw [hrew]
+  have hpull : (∑ r ∈ Icc 2 (3 * K),
+        if ¬ IsSquare r then 2 * ((Λ r : ℝ) * ∑ m ∈ combSlice N K r, v m ^ 2) else 0) =
+      2 * ∑ r ∈ Icc 2 (3 * K),
+        if ¬ IsSquare r then (Λ r : ℝ) * ∑ m ∈ combSlice N K r, v m ^ 2 else 0 := by
+    rw [mul_sum]
+    exact sum_congr rfl fun r _ => by split_ifs <;> ring
+  rw [hpull]
   ring
 
 /-- For every `K ≥ 1`, `N ≥ 1`, and `d ≥ 2` coprime to `2..3K` (in particular every
@@ -360,6 +373,7 @@ theorem combForm_lt_combFormW_liouville_coprime {N K d : ℕ}
   have hsum_pos : 0 < ∑ r ∈ (Icc 2 (3 * K)).filter (fun r => ¬ IsSquare r),
       (Λ r : ℝ) * ∑ m ∈ combSlice N K r, centeredMultiple d m ^ 2 :=
     lt_of_lt_of_le hterm2 (single_le_sum
+      (f := fun r => (Λ r : ℝ) * ∑ m ∈ combSlice N K r, centeredMultiple d m ^ 2)
       (fun r _ => mul_nonneg ArithmeticFunction.vonMangoldt_nonneg
         (sum_nonneg fun _ _ => sq_nonneg _)) h2mem)
   linarith
@@ -367,7 +381,7 @@ theorem combForm_lt_combFormW_liouville_coprime {N K d : ℕ}
 /-! ### Count 2: Chinese Remainder shifted-incidence cancellation and mixed `O(log N)` bound -/
 
 private theorem exists_residue_dvd_and_shift_dvd {d₁ d₂ : ℕ}
-    (hd₁ : 0 < d₁) (hd₂ : 0 < d₂) (hc : Nat.Coprime d₁ d₂) (h : ℕ) :
+    (hd₂ : 0 < d₂) (hc : Nat.Coprime d₁ d₂) (h : ℕ) :
     ∃ r₀ : ℕ, ∀ m : ℕ, (d₁ ∣ m ∧ d₂ ∣ m + h) ↔ m % (d₁ * d₂) = r₀ % (d₁ * d₂) := by
   let cr := Nat.chineseRemainder hc 0 (d₂ - h % d₂)
   refine ⟨cr.1, fun m => ?_⟩
@@ -381,6 +395,7 @@ private theorem exists_residue_dvd_and_shift_dvd {d₁ d₂ : ℕ}
     have hsum : (d₂ - h % d₂) + h = d₂ * (h / d₂ + 1) := by
       have hlt := Nat.mod_lt h hd₂
       have hdiv := Nat.div_add_mod h d₂
+      rw [mul_add, mul_one]
       omega
     rw [Nat.ModEq, hsum, Nat.mul_mod_right] at hmod
     exact hmod
@@ -420,8 +435,8 @@ private theorem exists_residue_dvd_and_shift_dvd {d₁ d₂ : ℕ}
     refine ⟨?_, ?_⟩
     · rcases le_total m cr.1 with hle | hle
       · rw [Nat.dist_eq_sub_of_le hle] at hdist₁
-        have heq : m + (cr.1 - m) = cr.1 := Nat.add_sub_of_le hle
-        exact (Nat.dvd_add_iff_left hdist₁).mpr (heq ▸ hr₁)
+        have hr₁' : d₁ ∣ m + (cr.1 - m) := by rwa [Nat.add_sub_of_le hle]
+        exact (Nat.dvd_add_iff_left hdist₁).mpr hr₁'
       · rw [Nat.dist_eq_sub_of_le_right hle] at hdist₁
         have heq : cr.1 + (m - cr.1) = m := Nat.add_sub_of_le hle
         exact heq ▸ dvd_add hr₁ hdist₁
@@ -438,13 +453,13 @@ every shift `h` and interval `(a, b]`, `|∑_{m ∈ (a, b]} v_{d_1}(m) v_{d_2}(m
 theorem abs_sum_centeredMultiple_shift_le {d₁ d₂ : ℕ}
     (hd₁ : 0 < d₁) (hd₂ : 0 < d₂) (hc : Nat.Coprime d₁ d₂) (h a b : ℕ) :
     |∑ m ∈ Ioc a b, centeredMultiple d₁ m * centeredMultiple d₂ (m + h)| ≤ 2 := by
-  rcases eq_or_lt_of_le hd₁ with rfl | hd₁2
+  rcases eq_or_lt_of_le (Nat.succ_le_of_lt hd₁) with rfl | hd₁2
   · have hz : ∀ m, centeredMultiple 1 m = 0 := fun m => by simp [centeredMultiple]
     simp [hz]
-  rcases eq_or_lt_of_le hd₂ with rfl | hd₂2
+  rcases eq_or_lt_of_le (Nat.succ_le_of_lt hd₂) with rfl | hd₂2
   · have hz : ∀ m, centeredMultiple 1 m = 0 := fun m => by simp [centeredMultiple]
     simp [hz]
-  obtain ⟨r₀, hr₀⟩ := exists_residue_dvd_and_shift_dvd hd₁ hd₂ hc h
+  obtain ⟨r₀, hr₀⟩ := exists_residue_dvd_and_shift_dvd hd₂ hc h
   have hprod0 : 0 < d₁ * d₂ := Nat.mul_pos hd₁ hd₂
   have hpt (m : ℕ) :
       centeredMultiple d₁ m * centeredMultiple d₂ (m + h) =
@@ -558,7 +573,7 @@ theorem abs_formBilinW_distinct_primes_le (w : ℕ → ℝ) (N K : ℕ) {p q : �
   have hq0 : 0 < q := hq.pos
   have hlogN_nn : 0 ≤ Real.log N := Real.log_natCast_nonneg N
   have hlogK_nn : 0 ≤ Real.log (1 + 3 * (K : ℝ)) :=
-    Real.log_nonneg (by positivity)
+    Real.log_nonneg (by linarith [show (0 : ℝ) ≤ K from Nat.cast_nonneg K])
   have hw_nn : 0 ≤ ∑ r ∈ Icc 2 (3 * K), |w r| := sum_nonneg fun _ _ => abs_nonneg _
   rcases Nat.eq_zero_or_pos N with rfl | hN
   · have hS0 : S = ∅ := by simp [S]
@@ -579,7 +594,7 @@ theorem abs_formBilinW_distinct_primes_le (w : ℕ → ℝ) (N K : ℕ) {p q : �
         sum_congr rfl fun n _ => by rw [centeredMultiple_eq_centeredResidue hd]
       rw [hrew]
       refine (abs_sum_centeredResidue_harmonic_Ioc_le hd 0 N (N + 3 * K * N)).trans ?_
-      exact div_le_one_of_le₀ (by linarith [Nat.cast_nonneg N]) (by positivity)
+      exact div_le_one_of_le₀ (by linarith [show (0 : ℝ) ≤ N from Nat.cast_nonneg N]) (by positivity)
     have hd2 (d : ℕ) (hd : 0 < d) : |degTwo S (centeredMultiple d)| ≤ 1 :=
       abs_sum_centeredMultiple_Ioc_le_one hd N (N + 3 * K * N)
     have h1 : |degOne S vp * degTwo S vq| ≤ 1 := by
@@ -806,7 +821,9 @@ theorem abs_formBilinW_distinct_primes_le (w : ℕ → ℝ) (N K : ℕ) {p q : �
         intro n _
         ext m
         simp only [mem_erase, mem_union, mem_filter]
-        omega
+        by_cases hmS : m ∈ S
+        · simp only [hmS, and_true, true_and]; omega
+        · simp [hmS]
       have htri_disj : ∀ n : ℕ, Disjoint (S.filter (· < n)) (S.filter (n < ·)) := by
         intro n
         rw [disjoint_filter]
@@ -961,7 +978,7 @@ private theorem sum_centeredMultiple_sq_shifted_period {d : ℕ} (hd : 0 < d) (A
       centeredMultiple d n ^ 2 = (1 / (d : ℝ)) ^ 2 := fun n hn => by
     rw [centeredMultiple, if_neg (mem_filter.mp hn).2, zero_sub, neg_sq]
   have hc2 : ((Ioc A (A + d)).filter (fun n => ¬ d ∣ n)).card = d - 1 := by
-    have hcard := filter_card_add_filter_neg_card_eq_card (s := Ioc A (A + d)) (p := (d ∣ ·))
+    have hcard := card_filter_add_card_filter_not (s := Ioc A (A + d)) (p := (d ∣ ·))
     rw [hc1, Nat.card_Ioc, Nat.add_sub_cancel_left] at hcard
     omega
   rw [hsplit, sum_congr rfl h1, sum_congr rfl h2, sum_const, sum_const, hc1, hc2,
@@ -993,10 +1010,9 @@ theorem sum_centeredMultiple_sq_Ioc_ge {d : ℕ} (hd : 0 < d) (a b : ℕ) :
   · have hba : b - a = 0 := Nat.sub_eq_zero_of_le hlt.le
     simp [hba, Ioc_eq_empty (not_lt.mpr hlt.le)]
   · set q := (b - a) / d
-    have hsub : Ioc a (a + d * q) ⊆ Ioc a b := by
-      refine Ioc_subset_Ioc_right ?_
-      have := Nat.mul_div_le (b - a) d
-      omega
+    have hsub : Ioc a (a + d * q) ⊆ Ioc a b :=
+      Ioc_subset_Ioc_right ((Nat.add_le_add_left (Nat.mul_div_le (b - a) d) a).trans_eq
+        (Nat.add_sub_of_le hab))
     rw [← sum_centeredMultiple_sq_periods hd a q]
     exact sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => sq_nonneg _
 
@@ -1012,10 +1028,9 @@ theorem sum_centeredMultiple_sq_Ioc_le {d : ℕ} (hd : 0 < d) (a b : ℕ) :
   · simp only [Ioc_eq_empty (not_lt.mpr hlt.le), sum_empty]
     positivity
   · set q := (b - a) / d
-    have hsub : Ioc a b ⊆ Ioc a (a + d * (q + 1)) := by
-      refine Ioc_subset_Ioc_right ?_
-      have := Nat.lt_mul_div_succ (b - a) hd
-      omega
+    have hsub : Ioc a b ⊆ Ioc a (a + d * (q + 1)) :=
+      Ioc_subset_Ioc_right ((Nat.add_sub_of_le hab).symm.le.trans
+        (Nat.add_le_add_left (Nat.lt_mul_div_succ (b - a) hd).le a))
     rw [← sum_centeredMultiple_sq_periods hd a (q + 1)]
     exact sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => sq_nonneg _
 

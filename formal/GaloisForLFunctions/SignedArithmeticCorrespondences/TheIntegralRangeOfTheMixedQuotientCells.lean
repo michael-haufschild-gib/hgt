@@ -80,12 +80,14 @@ theorem quotient_profile_of_even_total {N : ℕ} (hN : 0<N) (w : ℕ → ℤ)
   obtain ⟨a,ha⟩ := exists_upper_endpoints N (fun i => if i=1 then 1 else 0)
   obtain ⟨b,hb⟩ := exists_upper_endpoints N v
   have h₁ : 1 ∈ Icc 1 N := mem_Icc.mpr ⟨le_rfl,hN⟩
-  have hatom (i : ℕ) (hi : 0<i) : upperDivisor N a i = if i=1 then 1 else 0 := by
+  have hatom (i : ℕ) (hi : 0 < i) : upperDivisor N a i = if i=1 then 1 else 0 := by
     rw [ha i hi]
     by_cases he : i=1
-    · subst i; simp [hN]
+    · subst i; rw [if_pos (show 1≤N from hN)]
     · simp [he]
-  have hb₁ : upperDivisor N b 1 = t := by simp [hb 1 Nat.zero_lt_one,hN,v]
+  have hb₁ : upperDivisor N b 1 = t := by
+    rw [hb 1 Nat.zero_lt_one,if_pos (show 1≤N from hN)]
+    rfl
   refine ⟨a,b,fun i hi => hatom i (mem_Icc.mp hi).1,?_⟩
   have tails (k : ℕ) (hk : 0<k) :
       ∑ q ∈ Icc k N, twoSidedCoefficient N a b q = ∑ q ∈ Icc k N, (w q:ℝ) := by
@@ -94,7 +96,7 @@ theorem quotient_profile_of_even_total {N : ℕ} (hN : 0<N) (w : ℕ → ℤ)
       · rw [Nat.mul_one,hatom 1 Nat.zero_lt_one,hatom k hk,hb₁,hb k hk,if_pos hcut]
         by_cases he : k=1
         · subst k
-          simp only [if_pos rfl,Int.cast_one,one_mul,mul_one,v]
+          simp [v]
           exact_mod_cast (by omega : t+t = ∑ j ∈ Icc 1 N, w j)
         · simp [v,he]
       · intro i hi he

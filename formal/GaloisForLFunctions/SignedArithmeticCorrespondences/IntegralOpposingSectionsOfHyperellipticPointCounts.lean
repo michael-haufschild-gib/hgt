@@ -14,6 +14,7 @@ namespace GaloisForLFunctions.SignedArithmeticCorrespondences
 open Finset Polynomial ArithmeticEffectivityTheory ArithmeticCastelnuovoSeveri
 open RHTower.Hyperelliptic RHTower.WeilKloosterman
 open scoped ComplexConjugate
+attribute [local instance] Classical.propDecidable
 
 variable {F : Type*} [Field F] [Fintype F]
 
@@ -63,10 +64,14 @@ def opposingFrobeniusSection (q L : ℕ) (A P : ℤ[X]) : ℤ[X] :=
   C (A.coeff 0)^(L+P.natDegree) * (-A.divX)^(L+P.natDegree) *
     ∑ j ∈ P.support, C (P.coeff j*(q:ℤ)^j)*X^(P.natDegree-j)
 
-private theorem opposing_at_root {A P : ℤ[X]} {q : ℕ} {z : ℂ}
-    (hz : ev z A=0) (hq : z*conj z=(q:ℂ)) (L : ℕ) :
-    z^L*ev z P*ev z (opposingFrobeniusSection q L A P) =
-      (((A.coeff 0:ℤ):ℂ)^(L+P.natDegree))^2 * (‖ev z P‖:ℂ)^2 := by
+/-- At an individual Weil root the opposing section implements complex
+conjugation and cancels the prescribed positive Frobenius lag. -/
+theorem opposingFrobeniusSection_eval {A P : ℤ[X]} {q : ℕ} {z : ℂ}
+    (hz : A.eval₂ (Int.castRingHom ℂ) z=0) (hq : z*conj z=(q:ℂ)) (L : ℕ) :
+    z^L*P.eval₂ (Int.castRingHom ℂ) z*
+      (opposingFrobeniusSection q L A P).eval₂ (Int.castRingHom ℂ) z =
+      (((A.coeff 0:ℤ):ℂ)^(L+P.natDegree))^2 * (‖P.eval₂ (Int.castRingHom ℂ) z‖:ℂ)^2 := by
+  change ev z A=0 at hz
   let m := P.natDegree
   let c : ℂ := A.coeff 0
   let s := ev z (-A.divX)
@@ -156,8 +161,37 @@ theorem hyperelliptic_opposing_square (hF : ringChar F ≠ 2) {f : F[X]} (hsq : 
     rw [Complex.mul_conj',← Complex.ofReal_pow,norm_rootEnum_eq hF hsq hodd i,
       Real.sq_sqrt (Nat.cast_nonneg _),Complex.ofReal_natCast]
   simpa only [Complex.ofReal_pow,Complex.ofReal_intCast] using
-    opposing_at_root (P := P) (root_evaluates_zero i) hq (L:ℕ)
+    opposingFrobeniusSection_eval (P := P) (root_evaluates_zero i) hq (L:ℕ)
+
+/-- At each extension degree the measured trace is obtained by counting
+the points on the affine equation, with the rational point at infinity
+cancelling the constant pole. -/
+theorem curveCountPair_trace_counts (hF : ringChar F ≠ 2) {f : F[X]}
+    (hsq : Squarefree f) (hodd : Odd f.natDegree) (E : Type*) [Field E] [Fintype E] [Algebra F E] :
+    (Fintype.card F:ℝ)^(Module.finrank F E)+1-
+      (hyperellipticDatum hF hsq hodd).pointCount (Module.finrank F E) =
+      (Fintype.card F:ℝ)^(Module.finrank F E)-
+        ((univ.filter fun xy : E×E => xy.2^2=aeval xy.1 f).card:ℝ) := by
+  rw [hyperellipticDatum_pointCount hF hsq hodd E]
+  ring
+
+/-- The nullspace consists exactly of sections vanishing on every
+Frobenius root. Repeated roots are counted with their multiplicity. -/
+theorem hyperelliptic_opposing_nullspace (hF : ringChar F ≠ 2) {f : F[X]}
+    (hsq : Squarefree f) (hodd : Odd f.natDegree) (L : ℕ+) (P : ℤ[X]) :
+    curveCountPair hF hsq hodd L P
+        (opposingFrobeniusSection (Fintype.card F) L (integralFrobeniusPolynomial f) P) = 0 ↔
+      ∀ i, P.eval₂ (Int.castRingHom ℂ) (rootEnum (lRoots f) i)=0 := by
+  rw [hyperelliptic_opposing_square]
+  have ha : ((integralFrobeniusPolynomial f).coeff 0:ℝ) ≠ 0 :=
+    Int.cast_ne_zero.mpr (integralFrobeniusPolynomial_constant_ne_zero hF hsq hodd)
+  rw [mul_eq_zero,or_iff_right (pow_ne_zero _ (pow_ne_zero _ ha)),
+    sum_eq_zero_iff_of_nonneg (fun _ _ => sq_nonneg _)]
+  simp
 
 #print axioms integralFrobeniusPolynomial_constant_ne_zero
+#print axioms opposingFrobeniusSection_eval
+#print axioms curveCountPair_trace_counts
 #print axioms hyperelliptic_opposing_square
+#print axioms hyperelliptic_opposing_nullspace
 end GaloisForLFunctions.SignedArithmeticCorrespondences

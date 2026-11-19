@@ -198,7 +198,34 @@ theorem interleaved_joint_separate (N : ℕ) (a b : ℕ → ℤ) (r w : ℕ → 
   change _ ≤ 4*A*B*U*V at hv
   linarith only [hi,hv]
 
+/-- A square-summable pair of scalar prices gives one separate-energy
+constant for all interleavings and all cutoffs. -/
+theorem interleaved_joint_uniform (r w : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm : Monotone r)
+    (hw : ∀ k, 0≤w k) (h₁ : Summable (fun k => (1/r k)^2))
+    (h₂ : Summable (fun k => (w k/r k)^2)) :
+    let A := Real.sqrt (∑' k, (1/r k)^2)
+    let B := Real.sqrt (∑' k, (w k/r k)^2)
+    ∀ (N : ℕ) (a b : ℕ → ℤ),
+      (∑ k ∈ Icc 1 N, w k*|twoSidedCoefficient N a b k|) +
+        (∫ x in (0:ℝ)..1, |mixedJetSection N a b x|)/2 ≤
+          (4*A*B+A^2)*conductorNorm N (fun i => r i*upperDivisor N a i)*
+            conductorNorm N (fun i => r i*upperDivisor N b i) := by
+  intro A B N a b
+  have scalar (f : ℕ → ℝ) (hf : Summable (fun k => f k^2)) :
+      conductorNorm N f ≤ Real.sqrt (∑' k, f k^2) :=
+    Real.sqrt_le_sqrt (hf.sum_le_tsum _ (fun _ _ => sq_nonneg _))
+  have hA := scalar _ h₁
+  have hB := scalar _ h₂
+  have hA₀ : 0≤conductorNorm N (fun k => 1/r k) := Real.sqrt_nonneg _
+  have hB₀ : 0≤conductorNorm N (fun k => w k/r k) := Real.sqrt_nonneg _
+  apply (interleaved_joint_separate N a b r w hr hm hw).trans
+  apply mul_le_mul_of_nonneg_right _ (Real.sqrt_nonneg _)
+  apply mul_le_mul_of_nonneg_right _ (Real.sqrt_nonneg _)
+  exact add_le_add (mul_le_mul (mul_le_mul_of_nonneg_left hA (by norm_num)) hB hB₀
+    (mul_nonneg (by norm_num) (Real.sqrt_nonneg _))) (pow_le_pow_left₀ hA₀ hA 2)
+
 #print axioms twoSided_variation_separate
 #print axioms mixedJetSection_separate
 #print axioms interleaved_joint_separate
+#print axioms interleaved_joint_uniform
 end GaloisForLFunctions.SignedArithmeticCorrespondences

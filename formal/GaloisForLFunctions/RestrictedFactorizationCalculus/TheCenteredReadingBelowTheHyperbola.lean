@@ -15,8 +15,42 @@ noncomputable section
 
 open Filter Finset ArithmeticFunction RHTower.CoprimeMobius
 open scoped Classical
-open GaloisForLFunctions.BezoutValuationIncidence
+open GaloisForLFunctions.BezoutValuationIncidence GaloisForLFunctions.QuantitativeFactorizationMatching
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus
+
+/-- The signed head at a smaller endpoint still reads all the original
+arithmetic increments, with their quotient taken at that endpoint. -/
+theorem coefficient_head_as_quotient_sum (y T : ℕ) (a : ArithmeticFunction ℝ) :
+    quotientReading (roughFloorCoefficient y a) T=
+      ∑ q ∈ Icc 1 T,a q*coprimeMoebiusSum (primorial y) (T/q) := by
+  have zero : coprimeMoebiusSum (primorial y) 0=0 := by simp [coprimeMoebiusSum]
+  have h := (rough_action_as_a_coefficient_prefix y T a).symm.trans
+    (rough_cofactor_reading_as_a_quotient_boundary a y T)
+  simpa only [roughFloorCoefficient,quotientBoundary,Nat.zero_div,zero,sub_zero] using h
+
+/-- The smaller-cofactor sum retains the fixed and crossing charges of
+the original weight at both the observation and the removed head. -/
+theorem signed_flux_of_the_corrected_interior (F : ℕ → ℕ)
+    (law : ∀ n,Squarefree n → F (F n)=n ∧ (F n=n ∨ GlobalDyadicOneTwoRel n (F n)))
+    (a : ArithmeticFunction ℝ) (y X T : ℕ) :
+    roughInteriorReading a y X T=
+      quotientBoundary (smoothLiftedPrefix (fixedSignedPrefix F) y) (Icc 1 X) a (min X T) X+
+      quotientBoundary (smoothLiftedPrefix (crossingSignedPrefix F) y) (Icc 1 X) a (min X T) X := by
+  let L := min X T
+  let M := coprimeMoebiusSum (primorial y)
+  have extend : (∑ q ∈ Icc 1 L,a q*M (L/q))=∑ q ∈ Icc 1 X,a q*M (L/q) := by
+    apply sum_subset (Icc_subset_Icc_right (min_le_left X T))
+    intro q hq outside
+    have high : L<q := lt_of_not_ge (fun h => outside (mem_Icc.mpr ⟨(mem_Icc.mp hq).1,h⟩))
+    simp [Nat.div_eq_of_lt high,M,coprimeMoebiusSum]
+  have split := rough_head_and_interior a y X T
+  rw [rough_action_as_a_coefficient_prefix] at split
+  change quotientReading (roughFloorCoefficient y a) X=
+    roughInteriorReading a y X T+quotientReading (roughFloorCoefficient y a) L at split
+  rw [coefficient_head_as_quotient_sum,coefficient_head_as_quotient_sum,extend] at split
+  rw [←two_cutoff_rough_quotient_flux F law]
+  simp only [quotientBoundary,mul_sub,sum_sub_distrib]
+  exact eq_sub_of_add_eq split.symm
 
 /-- Ordinary primes and all surviving prime powers are read at the same wall. -/
 def roughMangoldtWeight (y : ℕ) := roughRestriction y vonMangoldt
@@ -24,13 +58,13 @@ def roughMangoldtWeight (y : ℕ) := roughRestriction y vonMangoldt
 def roughOrdinaryPrimeWeight (y : ℕ) : ArithmeticFunction ℝ :=
   ⟨fun q => if q.Prime ∧ y<q then Real.log q else 0,by simp⟩
 
-private theorem mangoldt_dominated (y n : ℕ) : |roughMangoldtWeight y n| ≤ vonMangoldt n := by
+theorem mangoldt_dominated (y n : ℕ) : |roughMangoldtWeight y n| ≤ vonMangoldt n := by
   rw [roughMangoldtWeight,roughRestriction_apply]
   split
   · exact (abs_of_nonneg vonMangoldt_nonneg).le
   · rw [abs_zero]; exact vonMangoldt_nonneg
 
-private theorem ordinary_dominated (y n : ℕ) : |roughOrdinaryPrimeWeight y n| ≤ vonMangoldt n := by
+theorem ordinary_dominated (y n : ℕ) : |roughOrdinaryPrimeWeight y n| ≤ vonMangoldt n := by
   change |if n.Prime ∧ y<n then Real.log n else 0| ≤ _
   split
   · rename_i h
@@ -46,7 +80,9 @@ def roughLogarithmicHead (y X : ℕ) := ∑ n ∈ Icc 1 X,RoughReading.row y n*R
 /-- The smooth contribution removed by the exact integer floor center. -/
 def smoothQuotientCenter (y X : ℕ) := (y:ℝ)*(RHTower.Sieve.smoothUpTo (Nat.primesLE y) (X/y)).card
 
-private theorem full_rough_reading {y : ℕ} (hy : 0<y) (X : ℕ) :
+/-- Convolving the surviving prime powers with their rough Möbius row
+gives the negative logarithmic prefix. -/
+theorem full_rough_reading {y : ℕ} (hy : 0<y) (X : ℕ) :
     roughCofactorReading y X (quotientReading (roughMangoldtWeight y))= -roughLogarithmicHead y X := by
   have base := logarithmic_rough_prefix_at_quotient_readings hy X
   have eq : (∑ m ∈ RoughReading.freeSet y (X/y),RoughReading.row y m*roughPrimePowerReading y (X/m))=
@@ -91,6 +127,15 @@ theorem centered_reading_after_rough_interpolation {y : ℕ} (hy : 0<y) (X T : �
   rw [head] at decom
   change roughCofactorReading y X (quotientReading a)= -roughLogarithmicHead y X at total
   linarith only [center,decom,total]
+
+/-- At a frozen sieve wall the corrected prime-power sum reads the
+weighted Möbius tail on the original interval with its negative sign. -/
+theorem interior_reads_the_logarithmic_tail {y : ℕ} (hy : 0<y) (X T : ℕ) :
+    roughInteriorReading (roughMangoldtWeight y) y X T=
+      roughLogarithmicHead y (min X T)-roughLogarithmicHead y X := by
+  have split := centered_reading_after_rough_interpolation hy X T
+  rw [centered_eq_rough_reading_sub_smooth hy,full_rough_reading hy] at split
+  linarith only [split]
 
 /-- Both ordinary primes and prime powers admit the same unconditional
 transfer, including the final sharp prefix. -/
@@ -145,7 +190,7 @@ theorem centered_bound_iff_below_the_hyperbola {ε : ℝ} (hε : 0<ε) :
   have pos : 0<(1:ℝ)/2+ε := by linarith only [hε]
   have c0 : centered 0=0 := by simp [centered,centeredPrimePowerRemainder,RoughReading.freeSet]
   have i0 : primePowerReadingBelowTheHyperbola 0=0 := by simp [primePowerReadingBelowTheHyperbola,roughInteriorReading]
-  refine ⟨transfer_estimate pos i0 (difference_price hε),transfer_estimate pos c0 ?_⟩
+  refine ⟨transfer_estimate pos i0 (difference_price hε),transfer_estimate (D := 1/ε+1) pos c0 ?_⟩
   filter_upwards [difference_price hε] with n hn
   rwa [abs_sub_comm] at hn
 
@@ -159,6 +204,8 @@ theorem mertens_criterion_below_the_hyperbola :
     fun h ε hp => (centered_bound_iff_below_the_hyperbola hp).mp (h ε hp)⟩
 
 #print axioms centered_reading_after_rough_interpolation
+#print axioms signed_flux_of_the_corrected_interior
+#print axioms interior_reads_the_logarithmic_tail
 #print axioms both_prime_readings_below_the_hyperbola
 #print axioms mertens_criterion_below_the_hyperbola
 
