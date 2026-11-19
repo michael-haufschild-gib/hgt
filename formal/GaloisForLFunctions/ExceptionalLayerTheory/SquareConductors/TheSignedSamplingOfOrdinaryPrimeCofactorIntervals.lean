@@ -59,7 +59,7 @@ private theorem transpose_ordinary_endpoint {n Q T : ℕ} (hQ : 0 < Q) (hT : T �
         have hc : p ≤ T/v := (le_max_iff.mp hcap).resolve_left hlo.not_ge
         exact ⟨⟨⟨hlo,hc.trans ((Nat.div_le_self _ _).trans hT)⟩,hp⟩,
           (Nat.le_div_iff_mul_le hp.pos).mpr ((Nat.mul_comm v p).le.trans ((Nat.le_div_iff_mul_le hv0).mp hc))⟩
-    rw [←sum_filter,hs,sum_filter]
+    rw [←sum_filter,←hs,sum_filter]
   change (∑ v ∈ U,_)=∑ p ∈ S,_
   rw [sum_congr rfl point,sum_comm]
   apply sum_congr rfl
@@ -89,7 +89,7 @@ private theorem cofactor_prefix_difference (n : ℕ) {a b : ℕ} (hab : a ≤ b)
     omega
   have h := card_filter_add_card_filter_not (s:=s) (p:=fun v => v ≤ a)
   rw [hl,hu] at h
-  change (s.card:ℝ)-_=_
+  change (s.card:ℝ)-(((Icc 2 a).filter (n.Coprime ·)).card:ℝ)=_
   exact sub_eq_iff_eq_add.mpr (by exact_mod_cast (h.symm.trans (Nat.add_comm ..)))
 
 /-- Above twice the square root, the centered frozen price at its own
@@ -155,7 +155,7 @@ private theorem cofactor_theta_motion {m n Q v j : ℕ} (hm : m ≤ n) (hQ : Q �
     0 ≤ Chebyshev.theta b-Chebyshev.theta a ∧
       Chebyshev.theta b-Chebyshev.theta a ≤ (((j:ℝ)*((n:ℝ)-m)/v)+1)*Real.log (4*n:ℕ) := by
   intro a b
-  have h := Nat.div_le_div_right (k:=v) (Nat.mul_le_mul_left j hm)
+  have h : j*m/v ≤ j*n/v := Nat.div_le_div_right (Nat.mul_le_mul_left j hm)
   have hab : a ≤ b := max_le_max_left _ h
   have hb : b ≤ 4*n := max_le hQ ((Nat.div_le_self ..).trans (Nat.mul_le_mul_right n hj))
   have hjv : (j*m/v:ℕ)*v+v > j*m := by simpa [Nat.succ_mul,Nat.mul_comm v] using Nat.lt_mul_div_succ (j*m) hv
@@ -292,7 +292,7 @@ private theorem finite_cofactor_mass {η : ℝ} (hη : 0 < η) {n Q : ℕ} (hn :
         (20*(n:ℝ)*M*L)*(1/(v:ℝ)) := by
     obtain ⟨hv0,hv4⟩ := mem_Icc.mp (subS hv)
     have A := ordinary_cofactor_row_motion (Nat.zero_le n) hcap hv0
-    have zero := beyond_cofactor_cut (m:=0) hp (by simpa using hv0 : 4*0/Q<v)
+    have zero := beyond_cofactor_cut (m:=0) hp (by simpa using (show 0<v by omega) : 4*0/Q<v)
     rw [zero,sub_zero,Nat.cast_zero,sub_zero] at A
     let R := (n:ℝ)/v
     have hR : 1 ≤ 4*R := by
@@ -312,7 +312,7 @@ private theorem finite_cofactor_mass {η : ℝ} (hη : 0 < η) {n Q : ℕ} (hn :
   rw [←mul_sum]
   have h := (sum_le_sum_of_subset_of_nonneg (f:=fun v : ℕ => 1/(v:ℝ)) subS
     fun _ _ _ => by positivity).trans (_root_.RHTower.Sieve.sum_Icc_one_div_le_one_add_log (4*n))
-  exact (mul_le_mul_of_nonneg_left h (by positivity : 0 ≤ 20*(n:ℝ)*M*L)).trans_eq (by change _=20*(n:ℝ)*M*L^2; ring)
+  exact (mul_le_mul_of_nonneg_left h (by positivity : 0 ≤ 20*(n:ℝ)*M*L)).trans_eq (by change 20*(n:ℝ)*M*L*L=20*(n:ℝ)*M*L^2; ring)
 
 private theorem full_midpoint_motion {m n : ℕ} (hm : m ≤ n) :
     |primeMidpointPrice n-primeMidpointPrice m| ≤ 6*((n:ℝ)-m)*Real.log (4*n:ℕ) := by
@@ -328,8 +328,8 @@ private theorem full_midpoint_motion {m n : ℕ} (hm : m ≤ n) :
     refine ⟨sub_nonneg.mpr (Chebyshev.theta_mono (Nat.cast_le.mpr hc)),?_⟩
     apply ht.trans
     rw [Nat.cast_mul,Nat.cast_mul,←mul_sub]
-    exact mul_le_mul_of_nonneg_left (Real.log_le_log (Nat.cast_pos.mpr (Nat.mul_pos hj hn))
-      (Nat.cast_le.mpr (Nat.mul_le_mul_right n hj4))) (mul_nonneg (Nat.cast_nonneg _) (sub_nonneg.mpr (Nat.cast_le.mpr hm)))
+    exact mul_le_mul_of_nonneg_left (Real.log_le_log (mul_pos (Nat.cast_pos.mpr hj) (Nat.cast_pos.mpr hn))
+      (by exact_mod_cast Nat.mul_le_mul_right n hj4)) (mul_nonneg (Nat.cast_nonneg _) (sub_nonneg.mpr (Nat.cast_le.mpr hm)))
   have h4 := h 4 (by decide) (by decide)
   have h3 := h 3 (by decide) (by decide)
   have h2 := h 2 (by decide) (by decide)
@@ -373,7 +373,7 @@ theorem signed_ordinary_cofactor_window (n Q : ℕ) {V : ℕ} (hV : 1 ≤ V) (a 
       ∑ d ∈ Icc 1 V, |mertens (V/d)| / (L d:ℝ) := by
   let Δ := centeredOrdinaryCofactorInterval n Q
   rw [projected_price_over_all n Q hV]
-  simp only [frozen_window,mul_sum,←mul_assoc]
+  conv_lhs => simp only [frozen_window,mul_sum,←mul_assoc]
   rw [sum_comm]
   simp only [←sum_mul,←sum_sub_distrib,←sub_mul]
   apply (abs_sum_le_sum_abs _ _).trans
@@ -477,7 +477,7 @@ private theorem nearby_frozen_price {η : ℝ} (hη : 0 < η) :
       (15+2*|A|+2*K)*(H:ℝ)*M := by
     apply own.trans
     apply mul_le_mul _ (sampling_divisor_mass hη (by omega) (by omega)) (sum_nonneg fun _ _ => abs_nonneg _) (by positivity)
-    push_cast
+    push_cast at hproper ⊢
     dsimp only [K] at ⊢
     linarith only [hproper,hh]
   have hd := (full_midpoint_motion hmn).trans
@@ -543,10 +543,10 @@ private theorem projected_price_window_estimate {η : ℝ} (hη : 0 < η) :
       obtain ⟨hlo,hhi⟩ := mem_Ioc.mp hk
       rw [endpoint] at hhi
       exact hloc hH hn hnH ((Nat.div_lt_iff_lt_mul hd0).mp hlo |>.trans_eq (Nat.mul_comm k d))
-        (((Nat.le_div_iff_mul_le hd0).mp hhi).trans_eq' (Nat.mul_comm d k))
+        (((Nat.le_div_iff_mul_le hd0).mp hhi).trans_eq' (Nat.mul_comm k d))
     have hassoc : F d-X=(∑ k ∈ Ioc (a d) (a d+L d),(frozenOrdinaryCofactorPrice n (2*H) (d*k)-X))/(L d:ℝ) := by
       rw [sum_sub_distrib,sum_const,Nat.card_Ioc,Nat.add_sub_cancel_left,nsmul_eq_mul,sub_div,mul_div_cancel_left₀ _ (Nat.cast_ne_zero.mpr (hp d hd).ne')]
-    rw [hassoc,abs_div,abs_of_nonneg (Nat.cast_nonneg _),div_le_iff₀ (Nat.cast_pos.mpr (hp d hd))]
+    rw [hassoc,abs_div,abs_of_nonneg (Nat.cast_nonneg (α:=ℝ) (L d)),div_le_iff₀ (Nat.cast_pos.mpr (hp d hd))]
     exact (abs_sum_le_sum_abs ..).trans ((sum_le_sum hterm).trans_eq (by simp [Nat.card_Ioc,mul_comm]))
   let U := ∑ d ∈ S,mertens (V/d)*F d
   have hU : |U-X| ≤ (V:ℝ)*G*B := by
@@ -642,7 +642,10 @@ theorem ordinary_cofactor_signed_sampling {ε : ℝ} (hε : 0 < ε) :
   intro n V hV hV3
   have hv0 := (Nat.cast_pos (α:=ℝ)).mpr hV
   have hv1 := (Nat.one_le_cast (α:=ℝ)).mpr hV
-  have hvn : V ≤ n := (by simpa only [pow_one] using Nat.pow_le_pow_right hV (by decide : 1 ≤ 3)).trans hV3
+  have hvn : V ≤ n := calc
+    V = V^1 := (pow_one V).symm
+    _ ≤ V^3 := Nat.pow_le_pow_right hV (by decide)
+    _ ≤ n := hV3
   have hn := hV.trans hvn
   have hn1 := (Nat.one_le_cast (α:=ℝ)).mpr hn
   have hn0 := (Nat.cast_pos (α:=ℝ)).mpr hn
@@ -676,7 +679,7 @@ theorem ordinary_cofactor_signed_sampling {ε : ℝ} (hε : 0 < ε) :
       (mul_nonneg (Real.sqrt_nonneg V) (Nat.cast_nonneg V)))
     linarith only [bound,hb,hz]
   · have hh : E n V ≤ Z :=
-      (single_le_sum (f:=E n) (fun _ _ => abs_nonneg _) (mem_Icc.mpr ⟨hV,by omega : V ≤ 63⟩)).trans
+      (single_le_sum (s:=Icc 1 63) (f:=E n) (fun _ _ => abs_nonneg _) (mem_Icc.mpr ⟨hV,by omega⟩)).trans
         (single_le_sum (s:=Icc 1 63) (f:=fun k => ∑ v ∈ Icc 1 63,E k v)
           (fun _ _ => sum_nonneg fun _ _ => abs_nonneg _) (mem_Icc.mpr ⟨hn,by omega⟩))
     have pos := add_nonneg (mul_nonneg (mul_nonneg (by norm_num) hK) hJ) hZ
@@ -701,7 +704,7 @@ theorem two_ninths_ordinary_cofactor_sampling {ε : ℝ} (hε : 0<ε) :
   have hv : 1 ≤ V := Nat.le_floor (by simpa using hbase)
   have cap : (V:ℝ) ≤ (n:ℝ)^(2/9:ℝ) := Nat.floor_le (zero_le_one.trans hbase)
   have h3 := pow_le_pow_left₀ (Nat.cast_nonneg (α:=ℝ) V) cap 3
-  rw [←Real.rpow_natCast (n:=3),←Real.rpow_mul hn0.le] at h3
+  rw [←Real.rpow_natCast ((n:ℝ)^(2/9:ℝ)) 3,←Real.rpow_mul hn0.le] at h3
   have h3' : V^3 ≤ n := by
     have hh := h3.trans ((Real.rpow_le_rpow_of_exponent_le hn1 (by norm_num : (2/9:ℝ)*(3:ℕ) ≤ 1)).trans_eq (Real.rpow_one _))
     exact_mod_cast hh

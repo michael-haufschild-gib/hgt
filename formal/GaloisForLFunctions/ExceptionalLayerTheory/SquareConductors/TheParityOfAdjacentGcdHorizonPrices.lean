@@ -46,27 +46,41 @@ theorem adjacent_cofactor_density {m : ℕ} (hm : 1 ≤ m) :
     have h₀ : 0 ≤ (k:ℝ) := Nat.cast_nonneg _
     field_simp <;> ring
 
-private theorem precision_above_sixteenth_power :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ {m M : ℕ}, 1 ≤ m → m^16 ≤ M →
-      |horizonShortfall m M - (Real.log 2 - cofactorIntervalDensity m)| ≤
-        C*(m:ℝ)^(-2-1/3000:ℝ) := by
-  let t : ℝ := 1-(2+1/3000)/16
-  have ht := GaloisForLFunctions.ExceptionalLayerTheory.zeroReSup_le_sub_seven_eighths.trans_lt
-    (show (20999/24000:ℝ) < t by norm_num [t])
+/-- At every octave above the r-th power the density replacement gains
+each exponent strictly below r times the zero-free width. -/
+theorem horizon_density_precision {r : ℕ} (hr : 0 < r) {s : ℝ} (hs : 0 ≤ s)
+    (hgap : s < (r:ℝ)*(1-_root_.RHTower.zeroReSup)) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {m M : ℕ}, 1 ≤ m → m^r ≤ M →
+      |horizonShortfall m M - (Real.log 2 - cofactorIntervalDensity m)| ≤ C*(m:ℝ)^(-s) := by
+  let t := 1-s/(r:ℝ)
+  have hr' : 0 < (r:ℝ) := Nat.cast_pos.mpr hr
+  have ht : _root_.RHTower.zeroReSup < t := by
+    have h := (div_lt_iff₀ hr').mpr (by simpa only [mul_comm (r:ℝ)] using hgap :
+      s < (1-_root_.RHTower.zeroReSup)*(r:ℝ))
+    dsimp only [t]; linarith only [h]
   obtain ⟨C,hC,h⟩ := gcd_product_density_above_zero_width ht
   refine ⟨C,hC,fun {m M} hm hM => ?_⟩
   have hm₀ : 0 < (m:ℝ) := Nat.cast_pos.mpr hm
-  have hM₀ : 1 ≤ m^16 := one_le_pow₀ hm
-  have hab := h (hM₀.trans hM) hm
-  have hpow := Real.rpow_le_rpow_of_nonpos (pow_pos hm₀ 16)
-    (show (m:ℝ)^16 ≤ M by exact_mod_cast hM) (show t-1 ≤ 0 by norm_num [t])
-  rw [← Real.rpow_natCast (m:ℝ) 16, ← Real.rpow_mul hm₀.le,
-    show ((16:ℕ):ℝ)*(t-1) = (-2-1/3000:ℝ) by norm_num [t]] at hpow
+  have hab := h ((one_le_pow₀ hm (n := r)).trans hM) hm
+  have hpow := Real.rpow_le_rpow_of_nonpos (pow_pos hm₀ r)
+    (show (m:ℝ)^r ≤ M by exact_mod_cast hM) (show t-1 ≤ 0 by
+      dsimp only [t]; linarith only [div_nonneg hs hr'.le])
+  rw [← Real.rpow_natCast (m:ℝ) r, ← Real.rpow_mul hm₀.le,
+    show (r:ℝ)*(t-1) = -s by dsimp only [t]; field_simp; ring] at hpow
   have eqn : horizonShortfall m M-(Real.log 2-cofactorIntervalDensity m) =
       -(Real.log (octaveGcdProduct M (m*M))/((m:ℝ)*M)-cofactorIntervalDensity m) := by
     unfold horizonShortfall; ring
   rw [eqn,abs_neg]
   exact hab.trans (mul_le_mul_of_nonneg_left hpow hC)
+
+private theorem precision_above_sixteenth_power :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {m M : ℕ}, 1 ≤ m → m^16 ≤ M →
+      |horizonShortfall m M - (Real.log 2 - cofactorIntervalDensity m)| ≤
+        C*(m:ℝ)^(-2-1/3000:ℝ) := by
+  rw [show (-2-1/3000:ℝ) = -(2+1/3000) by ring]
+  apply horizon_density_precision (by decide) (by norm_num)
+  norm_num only [Nat.cast_ofNat]
+  linarith only [GaloisForLFunctions.ExceptionalLayerTheory.zeroReSup_le_sub_seven_eighths]
 
 /-- Across independently chosen octaves, the arithmetic shortfall has
 the parity-dependent first difference with a uniform power-saving error. -/
@@ -89,6 +103,7 @@ theorem adjacent_gcd_horizons_with_remainder :
          dsimp only [e]
          linarith only [h₁,hh]
 
+#print axioms horizon_density_precision
 #print axioms adjacent_cofactor_density
 #print axioms adjacent_gcd_horizons_with_remainder
 

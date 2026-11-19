@@ -28,8 +28,11 @@ theorem unitarySubset_small_iff_square {k : ℕ} (hk : 0 < k) {S : Finset ℕ} (
   have hprod : primePowerSubset k S * primePowerSubset k (k.primeFactors \ S) = k := by
     rw [primePowerSubset, primePowerSubset, mul_comm, prod_sdiff hS]
     exact (Nat.prod_primeFactors_pow_factorization hk.ne').symm
-  rw [← hprod, pow_two]
-  exact ⟨Nat.mul_le_mul_left _, fun h => Nat.le_of_mul_le_mul_left h hpos⟩
+  calc
+    _ ↔ primePowerSubset k S * primePowerSubset k S ≤
+        primePowerSubset k S * primePowerSubset k (k.primeFactors \ S) :=
+      ⟨Nat.mul_le_mul_left _, fun h => Nat.le_of_mul_le_mul_left h hpos⟩
+    _ ↔ _ := by rw [hprod, pow_two]
 
 private theorem sum_over_pivots {k p : ℕ} (hp : p ∈ k.primeFactors) :
     unitaryHalfWeight k = ∑ S ∈ unitaryPivots k p, (-1 : ℤ)^S.card := by

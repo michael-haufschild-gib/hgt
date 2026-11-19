@@ -54,7 +54,6 @@ theorem jordan_defect (hP : IsProducer c m B) (hK : AlphabetLE c K) :
   have hP0 : (K.factorial : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero K
   rw [jordanEnergy, ← twelve_mul_sievePrimitiveEnergy_eq_jordan_diagonal, sievePrimitiveEnergy]
   simp_rw [centered_floor hP hK]
-  field_simp [hP0]
   have he : ∑ r ∈ range K.factorial,
         (((stepWeight c r : ℝ)-(peak c : ℝ)/2)^2 +
           (stepWeight c r : ℝ)*((peak c : ℝ)-stepWeight c r)) =
@@ -62,6 +61,7 @@ theorem jordan_defect (hP : IsProducer c m B) (hK : AlphabetLE c K) :
     simp_rw [show ∀ a w : ℝ, (a-w/2)^2+a*(w-a)=w^2/4 by intros; ring]
     rw [sum_const, card_range, nsmul_eq_mul]
   rw [sum_add_distrib] at he
+  rw [← mul_div_assoc,div_mul_eq_mul_div,sub_eq_iff_eq_add,← add_div,eq_div_iff hP0]
   linarith only [he]
 
 private theorem defectTerm_nonneg (hP : IsProducer c m B) (r : ℕ) :

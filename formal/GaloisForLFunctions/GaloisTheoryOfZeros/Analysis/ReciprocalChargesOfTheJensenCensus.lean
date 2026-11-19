@@ -15,7 +15,7 @@ noncomputable section
 open Filter Finset
 open scoped Topology
 open GaloisForLFunctions.CumulativeQuadrature
-open RHTower RHTower.DeBruijn RHTower.WindowNonrealBudget FiniteFreeProbability
+open GaloisForLFunctions.HTGeometry RHTower RHTower.DeBruijn RHTower.WindowNonrealBudget FiniteFreeProbability
 
 namespace GaloisForLFunctions.GaloisTheoryOfZeros
 
@@ -93,6 +93,59 @@ theorem off_line_count_iff_sparse_charge_budget (m : ℕ) :
     have bound := (fraction_le_iff (Nat.cast_nonneg _) (Nat.cast_nonneg _)).mp (hh.trans hn)
     exact (jensenNonrealCount_mono (hn'.trans (hu.id_le n))).trans (Nat.cast_le.mp bound)
 
+/-- A further positive logarithmic discount can always be made summable
+by selecting the degrees. One schedule works for every positive exponent,
+even if the nonreal root count diverges. Thus the undiscounted reciprocal
+charge is the last of these tests that detects finiteness on every grid. -/
+theorem exists_sparse_jensen_log_discount :
+    ∃ u : ℕ → ℕ, StrictMono u ∧ ∀ p : ℝ, 0 < p →
+      Summable (logPowerCharge (sampledJensenMass u) p) := by
+  classical
+  by_cases hfin : ∃ K : ℕ, ∀ d, jensenNonrealCount d ≤ K
+  · let u : ℕ → ℕ := id
+    have hu : StrictMono u := strictMono_id
+    obtain ⟨B,hB⟩ := (sampled_bdd hu).mpr hfin
+    have hm := sampled_mono hu.monotone
+    have hn (i : ℕ) : 0 ≤ sampledJensenMass u i := hm (Nat.zero_le i)
+    have hstep (i : ℕ) : sampledJensenMass u (i+1)-sampledJensenMass u i ≤ B :=
+      (sub_le_self _ (hn i)).trans (hB ⟨i+1,rfl⟩)
+    exact ⟨u,hu,fun p _ => (summable_log_power_charge_iff hm (hn 0) hstep p).mpr
+      (Or.inr ⟨B,hB⟩)⟩
+  push_neg at hfin
+  choose w hw using hfin
+  let v (n : ℕ) := w ⌈Real.exp (Real.exp (n:ℝ))⌉₊
+  let u : ℕ → ℕ := fun n => n + ∑ i ∈ range (n+1), v i
+  have hu : StrictMono u := strictMono_nat_of_lt_succ fun i => by
+    dsimp only [u]; rw [sum_range_succ (n := i+1)]; omega
+  have huv (n : ℕ) : v n ≤ u n := by
+    dsimp only [u]; rw [sum_range_succ]; omega
+  have hbig (n : ℕ) : Real.exp (Real.exp (n:ℝ)) ≤ (jensenNonrealCount (u n):ℝ) :=
+    (Nat.le_ceil _).trans (Nat.cast_le.mpr ((hw _).le.trans (jensenNonrealCount_mono (huv n))))
+  refine ⟨u,hu,fun p hp => ?_⟩
+  have hm := sampled_mono hu.monotone
+  let x := sampledJensenMass u
+  have hn (i : ℕ) : 0 ≤ x i := hm (Nat.zero_le i)
+  have hl (i : ℕ) : Real.exp (i:ℝ) ≤ 1+Real.log (1+x (i+1)) := by
+    have hh := Real.log_le_log (Real.exp_pos _) ((hbig i).trans
+      (le_add_of_nonneg_left zero_le_one : (jensenNonrealCount (u i):ℝ) ≤ 1+x (i+1)))
+    rw [Real.log_exp] at hh
+    linarith only [hh]
+  apply (Real.summable_exp_nat_mul_iff.mpr (neg_lt_zero.mpr hp)).of_nonneg_of_le
+  · intro i
+    have hy := (Real.exp_pos _).le.trans (hl i)
+    exact mul_nonneg (mul_nonneg (sub_nonneg.mpr (hm (Nat.le_succ i)))
+      (Real.rpow_nonneg (add_nonneg zero_le_one (hn _)) _)) (Real.rpow_nonneg hy _)
+  intro i
+  have hden := add_pos_of_pos_of_nonneg zero_lt_one (hn (i+1))
+  have he : powerCharge x 1 i ≤ 1 := by
+    rw [powerCharge,Real.rpow_neg_one,←div_eq_mul_inv,div_le_one hden]
+    linarith only [hn i]
+  have hw := Real.rpow_le_rpow_of_nonpos (Real.exp_pos _) (hl i) (neg_nonpos.mpr hp.le)
+  rw [←Real.exp_mul] at hw
+  exact (mul_le_mul_of_nonneg_right he (Real.rpow_nonneg ((Real.exp_pos _).le.trans (hl i)) _)).trans
+    ((one_mul _).le.trans hw)
+
+#print axioms exists_sparse_jensen_log_discount
 #print axioms sparse_jensen_charge_summable_iff
 #print axioms off_line_count_iff_sparse_charge_budget
 

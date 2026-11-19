@@ -2,6 +2,7 @@ import GaloisForLFunctions.RestrictedFactorizationCalculus.TheCostOfFixingTheSem
 import GaloisForLFunctions.RestrictedFactorizationCalculus.SignedFluxOnGrowingQuotientRanges
 import GaloisForLFunctions.RHTower.Sieve.MertensSecond
 import GaloisForLFunctions.RHTower.Sieve.AlmostPrimeGlobalCount
+import GaloisForLFunctions.RHTower.RouteECofactorSquarefreeHarmonic
 
 /-!
 # The semiprime harmonic mass in the fixed boundary
@@ -41,6 +42,7 @@ private theorem pair_product_injective (t : ℕ) : Set.InjOn (fun a : ℕ × ℕ
   have e := le_antisymm (first (Nat.prime_of_mem_primesLE hp) (Nat.prime_of_mem_primesLE hq)
     (Nat.prime_of_mem_primesLE hr) lt eq) (first (Nat.prime_of_mem_primesLE hr) (Nat.prime_of_mem_primesLE hs)
     (Nat.prime_of_mem_primesLE hp) lt' eq.symm)
+  change p = r at e
   subst r
   exact Prod.ext rfl (Nat.eq_of_mul_eq_mul_left (Nat.prime_of_mem_primesLE hp).pos eq)
 
@@ -120,7 +122,11 @@ private theorem lifted_card_as_floor_sum (t : ℕ) :
       · rintro ⟨⟨⟨np,_⟩,sq⟩,hi⟩; exact ⟨⟨np,hi⟩,sq⟩
       · rintro ⟨⟨np,hi⟩,sq⟩; exact ⟨⟨⟨np,hi.trans (Nat.div_le_self ..)⟩,sq⟩,hi⟩
     rw [←sum_filter,eq,sum_const,nsmul_eq_mul,mul_one]
-    rfl
+    congr 1
+    unfold squarefreeOmegaCount
+    apply congrArg Finset.card
+    ext n
+    simp only [semis,mem_filter,squarefreeSemiprimes,Set.mem_setOf_eq]
   rw [sum_congr rfl each,sum_comm]
   apply sum_congr rfl
   intro m hm
@@ -164,8 +170,10 @@ theorem fixed_lift_tracks_the_semiprime_harmonic_mass {G : ℕ → ℕ}
     exact (prescribed _ hit).trans (small.trans_eq (div_eq_mul_inv ..))
   have sum := (abs_sum_le_sum_abs ..).trans (sum_le_sum one)
   rw [sum_sub_distrib,sum_add_distrib,←mul_sum] at sum
-  have square := (mul_le_mul_of_nonneg_left (RHTower.Sieve.sum_sqrtInv_le t) (Real.sqrt_nonneg t)).trans_eq
-    (by rw [mul_left_comm,Real.mul_self_sqrt t0.le])
+  have square : Real.sqrt t * (∑ d ∈ S, (Real.sqrt d)⁻¹) ≤ 2*(t:ℝ) := calc
+    _ ≤ Real.sqrt t * (2 * Real.sqrt t) :=
+      mul_le_mul_of_nonneg_left (RHTower.Sieve.sum_sqrtInv_le t) (Real.sqrt_nonneg t)
+    _ = 2*(t:ℝ) := by rw [mul_left_comm,Real.mul_self_sqrt t0.le]
   have err := sum.trans square
   change |(∑ d ∈ S,fixedSignedPrefix G (t/d))-((∑ d ∈ S,(squarefreeOmegaCount 2 (t/d):ℝ))+∑ _d ∈ S,(1:ℝ))| ≤ 2*t at err
   have fixedSum : (∑ d ∈ S,fixedSignedPrefix G (t/d))=F := by
@@ -175,9 +183,13 @@ theorem fixed_lift_tracks_the_semiprime_harmonic_mass {G : ℕ → ℕ}
   have residue (m : ℕ) (hm : m ∈ semis t) :
       |((t/m:ℕ):ℝ)-(t:ℝ)*recip m| ≤ 1 := by
     have mp := (mem_Icc.mp (mem_filter.mp hm).1).1
-    have gap : (t:ℝ)/m ≤ ((t/m:ℕ):ℝ)+1 := (div_le_iff₀ (Nat.cast_pos.mpr mp)).mpr (by
-      exact_mod_cast (calc t = m*(t/m)+t%m := (Nat.div_add_mod t m).symm
-                            _ ≤ (t/m+1)*m := by rw [Nat.add_mul,Nat.one_mul,Nat.mul_comm m]; exact Nat.add_le_add_left (Nat.mod_lt _ mp).le _))
+    have natGap : t ≤ (t/m+1)*m := calc
+      t = m*(t/m)+t%m := (Nat.div_add_mod t m).symm
+      _ ≤ (t/m+1)*m := by
+        rw [Nat.add_mul,Nat.one_mul,Nat.mul_comm m]
+        exact Nat.add_le_add_left (Nat.mod_lt _ mp).le _
+    have gap : (t:ℝ)/m ≤ ((t/m:ℕ):ℝ)+1 :=
+      (div_le_iff₀ (Nat.cast_pos.mpr mp)).mpr (by exact_mod_cast natGap)
     rw [show (t:ℝ)*recip m=(t:ℝ)/m by dsimp only [recip]; ring]
     exact abs_le.mpr ⟨by linarith only [gap],by linarith only [floor m mp]⟩
   have rounding := (abs_sum_le_sum_abs ..).trans (sum_le_sum residue)

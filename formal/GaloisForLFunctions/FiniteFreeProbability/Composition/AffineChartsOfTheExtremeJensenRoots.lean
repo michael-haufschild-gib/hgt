@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HilbertMetric.Dynamics.AffineCompositionConditionNumber
 import GaloisForLFunctions.FiniteFreeProbability.ImaginaryPartDichotomy
 import GaloisForLFunctions.FiniteFreeProbability.FiniteFreeHardyTheorem
+import GaloisForLFunctions.HTGeometry.CompactClusterLimit
 
 /-!
 # Which affine normalizations preserve the extreme Jensen root test?
@@ -121,6 +122,66 @@ theorem reciprocal_zero_iff_frequent_jensen_root {w : ℂ} (hw : w ≠ 0) :
   ⟨fun hz ε hε => ((reciprocal_zero_iff_eventual_jensen_root hw).mp hz ε hε).frequently,
     zero_of_frequent_jensen_root hw⟩
 
+/-- A compact region visited at arbitrarily large degrees contains a
+reciprocal zero or the origin. The origin is the only point at which
+the reversal chart can lose a limit. -/
+theorem compact_frequent_root {K : Set ℂ} (hK : IsCompact K)
+    (he : ∃ᶠ d : ℕ in atTop, ∃ z : ℂ, (jensenRev d xiSeries).IsRoot z ∧ z/(d:ℂ) ∈ K) :
+    ∃ w ∈ K, w=0 ∨ XiC w⁻¹=0 := by
+  obtain ⟨φ,hφ,hroots⟩ := extraction_of_frequently_atTop he
+  choose z hz hm using hroots
+  let g (n : ℕ) := z n/(φ n:ℂ)
+  have hmem : ∀ᶠ n : ℕ in atTop, g n ∈ K := Eventually.of_forall hm
+  obtain ⟨w,hw,hcl⟩ := exists_clusterPt_of_isCompact hK hmem
+  refine ⟨w,hw,or_iff_not_imp_left.mpr fun hw0 => zero_of_frequent_jensen_root hw0 ?_⟩
+  intro ε hε
+  have hf := frequently_map.mp (clusterPt_iff_frequently.mp hcl _ (ball_mem_nhds w hε))
+  by_contra hn
+  have hno := hφ.tendsto_atTop.eventually (not_frequently.mp hn)
+  obtain ⟨n,hn₁,hn₂⟩ := (hf.and_eventually hno).exists
+  exact hn₂ ⟨z n,hz n,hn₁⟩
+
+private theorem im_near_lower {v : ℝ} {w : ℂ} (hv : v < w.im) :
+    ∃ r : ℝ, 0 < r ∧ ∀ u ∈ ball w r, v < u.im :=
+  Metric.eventually_nhds_iff.mp (Complex.continuous_im.continuousAt.tendsto.eventually_const_lt hv)
+
+/-- The upper slope of the extreme Jensen roots is determined by the
+imaginary parts of the reciprocal zeros. A cofinal strip suffices to
+identify every upper bound on this slope. -/
+theorem upper_slope_iff_reciprocal_heights {B : ℝ} (hB : 0 ≤ B) :
+    (∀ ε : ℝ, 0 < ε → ∃ᶠ d : ℕ in atTop, ∀ z : ℂ,
+      (jensenRev d xiSeries).IsRoot z → (z/(d:ℂ)).im ≤ B+ε) ↔
+    ∀ w : ℂ, w ≠ 0 → XiC w⁻¹=0 → w.im ≤ B := by
+  constructor
+  · intro he w hw hz
+    by_contra! h
+    let ε := (w.im-B)/2
+    have hε : 0 < ε := by dsimp [ε]; linarith
+    obtain ⟨r,hr,hv⟩ := im_near_lower (by dsimp [ε]; linarith : B+ε < w.im)
+    have hnear := (reciprocal_zero_iff_eventual_jensen_root hw).mp hz r hr
+    obtain ⟨d,hd,z,hz',hm⟩ := ((he ε hε).and_eventually hnear).exists
+    exact (hv _ hm).not_ge (hd z hz')
+  · intro hz ε hε
+    apply Eventually.frequently
+    obtain ⟨C,_,hbound⟩ := eventually_linear_norm_jensen_xi
+    let K := closedBall (0:ℂ) C ∩ {w : ℂ | B+ε ≤ w.im}
+    have hc : IsCompact K := (isCompact_closedBall _ _).inter_right
+      (isClosed_le continuous_const Complex.continuous_im)
+    by_contra hn
+    have hf := (not_eventually.mp hn).and_eventually (hbound.and (eventually_gt_atTop 0))
+    have hvisit : ∃ᶠ d : ℕ in atTop, ∃ z : ℂ, (jensenRev d xiSeries).IsRoot z ∧ z/(d:ℂ) ∈ K := by
+      refine hf.mono ?_
+      rintro d ⟨hbad,hnorm,hd⟩
+      push_neg at hbad
+      obtain ⟨z,hroot,hhigh⟩ := hbad
+      refine ⟨z,hroot,?_,hhigh.le⟩
+      rw [mem_closedBall,dist_zero_right,norm_div,Complex.norm_natCast,div_le_iff₀ (Nat.cast_pos.mpr hd)]
+      exact hnorm z hroot
+    obtain ⟨w,hw,hzero⟩ := compact_frequent_root hc hvisit
+    have hi : B+ε ≤ w.im := hw.2
+    have hw0 : w ≠ 0 := by rintro rfl; rw [Complex.zero_im] at hi; linarith
+    linarith only [hi,hε,hz w hw0 (hzero.resolve_left hw0)]
+
 private theorem linear_height_obstruction (h : ¬RiemannHypothesis) :
     ∃ κ : ℝ, 0 < κ ∧ ∀ᶠ d : ℕ in atTop, ∃ z : ℂ,
       (jensenRev d xiSeries).IsRoot z ∧ κ*d ≤ z.im := by
@@ -187,6 +248,8 @@ theorem linear_chart_hides_extreme_heights :
   simpa using chart_upper_of_scale (c := 1) one_pos d (Nat.cast_pos.mpr hd0) hd hC.le
     (by simp : (1:ℝ)*d ≤ d)
 
+#print axioms compact_frequent_root
+#print axioms upper_slope_iff_reciprocal_heights
 #print axioms reciprocal_zero_iff_eventual_jensen_root
 #print axioms reciprocal_zero_iff_frequent_jensen_root
 #print axioms eventually_linear_norm_jensen_xi

@@ -256,9 +256,101 @@ theorem centered_sector_delay (h : CompactPulse) {p : ℕ} (hp : p.Prime) (u : �
     rw [Complex.ofReal_mul, Complex.ofReal_ofNat, show (2:ℂ)*↑(Real.log p)/2 = ↑(Real.log p) by ring,
       ← Complex.ofReal_exp, Real.exp_log (Nat.cast_pos.mpr hp.pos), Complex.ofReal_natCast]
   unfold centeredPrimeSector
-  rw [prime_sector_delay h hp u, h.pulseEcho_eq, add_sub_cancel, hshift]
+  rw [prime_sector_delay h hp u, h.pulseEcho_eq, show echoDelay p+(u-echoDelay p)=u by ring, hshift]
   field_simp [hp0,hp1] <;> ring
 
+/-- A bounded exponential envelope on the physical time axis. -/
+def weightedBound (σ : ℝ) (F : ℝ → ℂ) : Prop :=
+  ∃ C : ℝ, ∀ u : ℝ, ‖(Real.exp (σ*u):ℂ)*F u‖ ≤ C
+
+private theorem stable_delay {Y F : ℝ → ℂ} {a : ℂ} (ha : a ≠ 0) {b d : ℝ}
+    (hb : 0 ≤ b) (hb1 : b < 1) (hd : 0 < d)
+    (he : ∀ u, Y u = a*F u+(b:ℂ)*Y (u-d))
+    {s M : ℝ} (hbefore : ∀ u ≤ s, ‖Y u‖ ≤ M) :
+    (∃ C : ℝ, ∀ u, ‖Y u‖ ≤ C) ↔ ∃ C : ℝ, ∀ u, ‖F u‖ ≤ C := by
+  have hbn : ‖(b:ℂ)‖=b := by rw [Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hb]
+  constructor
+  · rintro ⟨C,hC⟩
+    refine ⟨(C+b*C)/‖a‖, fun u => (le_div_iff₀ (norm_pos_iff.mpr ha)).mpr ?_⟩
+    calc ‖F u‖*‖a‖ = ‖Y u-(b:ℂ)*Y (u-d)‖ := by rw [he u,add_sub_cancel_right,norm_mul,mul_comm]
+         _ ≤ ‖Y u‖+‖(b:ℂ)*Y (u-d)‖ := norm_sub_le _ _
+         _ ≤ _ := by rw [norm_mul,hbn]; exact add_le_add (hC _) (mul_le_mul_of_nonneg_left (hC _) hb)
+  · rintro ⟨C,hC⟩
+    let L := max M (‖a‖*C/(1-b))
+    have hL : ‖a‖*C ≤ L*(1-b) := (div_le_iff₀ (sub_pos.mpr hb1)).mp (le_max_right _ _)
+    have stretch (n : ℕ) : ∀ u ≤ s+n*d, ‖Y u‖ ≤ L := by
+      induction n with
+      | zero =>
+        intro u hu
+        exact (hbefore _ (by simpa using hu)).trans (le_max_left _ _)
+      | succ n ih =>
+        intro u hu
+        have hback : u-d ≤ s+n*d := by push_cast at hu; linarith only [hu]
+        rw [he u]
+        refine (norm_add_le _ _).trans ?_
+        rw [norm_mul,norm_mul,hbn]
+        have hF := mul_le_mul_of_nonneg_left (hC u) (norm_nonneg a)
+        have hY := mul_le_mul_of_nonneg_left (ih _ hback) hb
+        linarith only [hL,hF,hY]
+    refine ⟨L,fun u => ?_⟩
+    obtain ⟨n,hn⟩ := exists_nat_ge ((u-s)/d)
+    exact stretch n u (by linarith only [(div_le_iff₀ hd).mp hn])
+
+private theorem sector_before (h : CompactPulse) {p : ℕ} (hp : p.Prime)
+    {S : ℝ} (hs : ∀ s : ℝ, S < |s| → h s = 0) {u : ℝ} (hu : u ≤ -S) :
+    centeredPrimeSector h p u = -(((p:ℂ)/(p+1))*meanCoefficient h*cexp ((u:ℂ)/2)) := by
+  have hz (a : ℕ) : path h (p*a) (echoDelay p+u) = 0 := by
+    have he := path_prime_tower h hp 0 a u
+    simp only [zero_add,pow_one] at he
+    rw [he,bounce_before_support h hs (by linarith only [hu,echoDelay_nonneg a]),mul_zero]
+  simp [centeredPrimeSector,multipleEcho,hz]
+
+/-- Every prime sector has precisely the same exponential decay thresholds
+as the reflected field below the half-power. The return factor becomes
+exp(σ·2 log p)/p after applying the exponential weight. -/
+theorem prime_sector_weightedBound_iff (h : CompactPulse) {p : ℕ} (hp : p.Prime)
+    {σ : ℝ} (hσ : 0 ≤ σ) (hhalf : σ < 1/2) :
+    weightedBound σ (centeredPrimeSector h p) ↔ weightedBound σ (pulseReflected h) := by
+  let d := echoDelay p
+  let b := Real.exp (σ*d)/(p:ℝ)
+  let a := 1-1/(p:ℂ)
+  let Y := fun u : ℝ => (Real.exp (σ*u):ℂ)*centeredPrimeSector h p u
+  let F := fun u : ℝ => (Real.exp (σ*u):ℂ)*pulseReflected h u
+  have hp0 : 0 < (p:ℝ) := Nat.cast_pos.mpr hp.pos
+  have hp1 : (1:ℝ)<p := by exact_mod_cast hp.one_lt
+  have hlog := Real.log_pos hp1
+  have hd : 0 < d := mul_pos (by norm_num) hlog
+  have hb : 0 ≤ b := div_nonneg (Real.exp_pos _).le hp0.le
+  have hb1 : b < 1 := by
+    apply (div_lt_one hp0).mpr
+    rw [← Real.exp_log hp0]
+    apply Real.exp_lt_exp.mpr
+    change σ*(2*Real.log p) < _
+    nlinarith only [mul_pos (sub_pos.mpr hhalf) hlog]
+  have ha : a ≠ 0 := by
+    have hr : 0 < 1-1/(p:ℝ) := sub_pos.mpr ((div_lt_one hp0).mpr hp1)
+    exact_mod_cast hr.ne'
+  have hrec (u : ℝ) : Y u = a*F u+(b:ℂ)*Y (u-d) := by
+    have hE : (Real.exp (σ*d):ℂ)*(Real.exp (σ*(u-d)):ℂ)=(Real.exp (σ*u):ℂ) := by
+      rw [← Complex.ofReal_mul, ← Real.exp_add, show σ*d+σ*(u-d)=σ*u by ring]
+    dsimp only [Y,F,a,b]
+    rw [centered_sector_delay h hp u,Complex.ofReal_div,Complex.ofReal_natCast]
+    change _ = _ + _ * (_ * centeredPrimeSector h p (u-echoDelay p))
+    linear_combination -(1/(p:ℂ))*centeredPrimeSector h p (u-d)*hE
+  obtain ⟨S,hS,hs⟩ := h.exists_support_bound
+  have hbefore (u : ℝ) (hu : u ≤ -S) : ‖Y u‖ ≤ ‖((p:ℂ)/(p+1))*meanCoefficient h‖ := by
+    have hu0 : u ≤ 0 := by linarith only [hu,hS]
+    have he₁ : Real.exp (σ*u) ≤ 1 := Real.exp_le_one_iff.mpr (mul_nonpos_of_nonneg_of_nonpos hσ hu0)
+    have he₂ : Real.exp (u/2) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith)
+    change ‖(Real.exp (σ*u):ℂ)*centeredPrimeSector h p u‖ ≤ _
+    rw [sector_before h hp hs hu,norm_mul,norm_neg,norm_mul,
+      Complex.norm_real,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _),Complex.norm_exp,
+      Complex.div_ofNat_re,Complex.ofReal_re]
+    exact (mul_le_of_le_one_left (by positivity) he₁).trans
+      (mul_le_of_le_one_right (norm_nonneg _) he₂)
+  exact stable_delay ha hb hb1 hd hrec hbefore
+
+#print axioms prime_sector_weightedBound_iff
 #print axioms repeated_prime_sector
 #print axioms prime_sector_delay
 #print axioms centered_sector_delay
