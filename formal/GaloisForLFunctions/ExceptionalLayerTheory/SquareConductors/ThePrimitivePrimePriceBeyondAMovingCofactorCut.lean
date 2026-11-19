@@ -153,4 +153,72 @@ private theorem moebius_unit_row (V : ℕ) (hV : 1 ≤ V) :
     truncMoebiusDivisorSum V 1=1 := by
   rw [_root_.RHTower.truncMoebiusDivisorSum_of_le (by decide) hV,if_pos rfl]
 
+/-- Actual prime price on the surviving primitive cofactors, before
+subtracting the explicit factorial center. -/
+def remainingPrimitivePrimePrice (n Q V : ℕ) : ℝ :=
+  ∑ v ∈ (Ioc V (4*n)).filter (n.Coprime ·),
+    truncMoebiusDivisorSum V v*primitiveOrdinaryCofactorRow n Q v
+
+private theorem remove_unit_and_small_cofactors {n Q V : ℕ} (hn : 0 < n) (hQ : Q ≤ 2*n)
+    (hV : 1 ≤ V) (hcut : V ≤ 4*n) :
+    (∑ v ∈ (Ioc 0 (4*n)).filter (n.Coprime ·), truncMoebiusDivisorSum V v*primitiveOrdinaryCofactorRow n Q v) =
+      remainingPrimitivePrimePrice n Q V-primeMidpointPrice n := by
+  let f (v : ℕ) := if n.Coprime v then truncMoebiusDivisorSum V v*primitiveOrdinaryCofactorRow n Q v else 0
+  have first : (∑ v ∈ Ioc 0 V,f v)= -primeMidpointPrice n := by
+    rw [sum_eq_single 1]
+    · simp only [f,Nat.coprime_one_right,if_true,moebius_unit_row V hV,one_mul,prime_cofactor_unit_price hn hQ]
+    · intro v hv hv1
+      obtain ⟨hv0,hvV⟩ := mem_Ioc.mp hv
+      simp only [f,_root_.RHTower.truncMoebiusDivisorSum_of_le hv0 hvV,if_neg hv1,zero_mul,ite_self]
+    · exact fun hx => False.elim (hx (mem_Ioc.mpr ⟨by decide,hV⟩))
+  have hs := sum_Ioc_consecutive f (Nat.zero_le V) hcut
+  rw [first] at hs
+  simp only [sum_filter,remainingPrimitivePrimePrice,sum_filter]
+  change (∑ v ∈ Ioc 0 (4*n),f v)=(∑ v ∈ Ioc V (4*n),f v)-_
+  linarith only [hs]
+
+/-- The surviving primitive prime rows recover the midpoint at every integer
+with one small-factor and proper-power allowance per Möbius divisor pair. -/
+theorem remaining_primitive_prime_factorial_bound {n Q V : ℕ} (hn : 0 < n) (hQ : Q ≤ 2*n)
+    (hV : 1 ≤ V) (hcut : V ≤ 4*n) :
+    |remainingPrimitivePrimePrice n Q V-primitiveProjectedFactorial n V-primeMidpointPrice n| ≤
+      V*(squarefreeDivisorMass n*(Chebyshev.psi Q+
+        (Chebyshev.psi (4*n:ℕ)-Chebyshev.theta (4*n:ℕ))+Real.log n)) := by
+  let B := Chebyshev.psi Q+(Chebyshev.psi (4*n:ℕ)-Chebyshev.theta (4*n:ℕ))+Real.log n
+  have power (r : ℕ) : Chebyshev.psi (4*n/r:ℕ)-Chebyshev.theta (4*n/r:ℕ) ≤
+      Chebyshev.psi (4*n:ℕ)-Chebyshev.theta (4*n:ℕ) := by
+    simp only [Chebyshev.psi_sub_theta_eq_sum_not_prime,Nat.floor_natCast]
+    apply sum_le_sum_of_subset_of_nonneg _ (fun _ _ _ => vonMangoldt_nonneg)
+    exact filter_subset_filter _ (Ioc_subset_Ioc_right (Nat.div_le_self _ _))
+  let f (r : ℕ) := divisibleCofactorPrimePrice n Q r-divisibleCofactorFactorial n r
+  have hb {r : ℕ} (hr : 0 < r) : |f r| ≤ B :=
+    (divisible_cofactor_factorial_error hn hr Q).trans (by dsimp only [B]; linarith only [power r])
+  have hproj := primitive_prime_cofactor_projection hn Q V
+  rw [remove_unit_and_small_cofactors hn hQ hV hcut] at hproj
+  have heq : remainingPrimitivePrimePrice n Q V-primitiveProjectedFactorial n V-primeMidpointPrice n =
+      ∑ e ∈ Icc 1 V, (μ e:ℝ)*∑ d ∈ n.divisors,(μ d:ℝ)*f (e.lcm d) := by
+    rw [sub_right_comm,hproj,primitiveProjectedFactorial,←sum_sub_distrib]
+    apply sum_congr rfl
+    intro e _
+    rw [←mul_sub,←sum_sub_distrib]
+    exact congrArg (fun z : ℝ => (μ e:ℝ)*z)
+      (sum_congr rfl fun d _ => (mul_sub (μ d:ℝ) _ _).symm)
+  rw [heq]
+  apply (abs_sum_le_sum_abs _ _).trans
+  calc _ ≤ ∑ _ ∈ Icc 1 V, squarefreeDivisorMass n*B := by
+             apply sum_le_sum
+             intro e he
+             have he0 := (mem_Icc.mp he).1
+             rw [abs_mul]
+             apply (mul_le_of_le_one_left (abs_nonneg _) (by exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n:=e))).trans
+             apply (abs_sum_le_sum_abs _ _).trans
+             rw [squarefreeDivisorMass,sum_mul]
+             apply sum_le_sum
+             intro d hd
+             rw [abs_mul]
+             exact mul_le_mul_of_nonneg_left (hb (Nat.lcm_pos he0 (Nat.pos_of_mem_divisors hd))) (abs_nonneg _)
+       _ = _ := by simp [Nat.card_Icc,B]
+
+#print axioms remaining_primitive_prime_factorial_bound
+
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
