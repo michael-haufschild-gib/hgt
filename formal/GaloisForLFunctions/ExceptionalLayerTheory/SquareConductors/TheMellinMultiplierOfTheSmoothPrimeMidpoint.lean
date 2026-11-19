@@ -1,3 +1,4 @@
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import GaloisForLFunctions.HTGeometry.InfiniteProductNonvanishing
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.DerivHyp
 import Mathlib.Analysis.Convex.SpecificFunctions.Pow
@@ -125,9 +126,86 @@ theorem smooth_prime_midpoint_multiplier_ne_zero {z : ℂ} (hz : 0 < z.re) (h1 :
     Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num : (0:ℝ)<9/4)] at ht
   linarith only [ht,hm]
 
-#print axioms midpoint_box_quadratic
-#print axioms dyadic_midpoint_multiplier_ne_zero
-#print axioms smooth_prime_midpoint_multiplier_one
-#print axioms smooth_prime_midpoint_multiplier_ne_zero
+open MeasureTheory
+
+/-- A box factor is the normalized integral over the actual logarithmic displacement. -/
+theorem midpoint_box_integral (z : ℂ) :
+    midpointBoxFactor z=(∫ t in (-1:ℝ)..1,Complex.exp (z*t))/2 := by
+  rcases eq_or_ne z 0 with rfl | hz
+  · simp [box_zero]
+    <;> norm_num
+  rw [box_value hz,integral_exp_mul_complex hz]
+  simp only [Complex.ofReal_one,Complex.ofReal_neg,mul_neg,mul_one,Complex.sinh]
+  ring
+
+private theorem norm_sinh_realpart (z : ℂ) : ‖Complex.sinh z‖≤Real.exp |z.re| := by
+  have he := norm_sub_le (Complex.exp z) (Complex.exp (-z))
+  rw [Complex.norm_exp,Complex.norm_exp,Complex.neg_re] at he
+  rw [Complex.sinh,norm_div,show ‖(2:ℂ)‖=2 by norm_num]
+  linarith only [he,Real.exp_le_exp.mpr (le_abs_self z.re),Real.exp_le_exp.mpr (neg_le_abs z.re)]
+
+private theorem box_norm_realpart (z : ℂ) : ‖midpointBoxFactor z‖ ≤ Real.exp |z.re| := by
+  have h := intervalIntegral.norm_integral_le_of_norm_le_const (a:=(-1:ℝ)) (b:=1)
+    (C:=Real.exp |z.re|) (f:=fun t : ℝ => Complex.exp (z*t)) (fun t ht => by
+      rw [Set.uIoc_of_le (by norm_num : (-1:ℝ)≤1)] at ht
+      rw [Complex.norm_exp,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,mul_zero,sub_zero]
+      exact Real.exp_le_exp.mpr ((le_abs_self _).trans
+        (by rw [abs_mul]; exact mul_le_of_le_one_right (abs_nonneg _) (abs_le.mpr ⟨ht.1.le,ht.2⟩))))
+  norm_num only [sub_neg_eq_add,one_add_one_eq_two,abs_ofNat] at h
+  rw [midpoint_box_integral,norm_div,show ‖(2:ℂ)‖=2 by norm_num]
+  linarith only [h]
+
+private theorem box_radius_sum (N : ℕ) : (∑ j ∈ range N,boxRadius j)=1-(1/2:ℝ)^N := by
+  induction N with
+  | zero => simp
+  | succ N ih =>
+    rw [sum_range_succ,ih,boxRadius,pow_succ]
+    ring
+
+private theorem multipliable_midpoint_boxes (z : ℂ) :
+    Multipliable (fun j : ℕ => midpointBoxFactor ((boxRadius j:ℂ)*z)) := by
+  have h := Complex.multipliable_one_add_of_summable (dyadic_midpoint_box_summable z).of_norm
+  simpa only [add_sub_cancel] using h
+
+/-- The dyadic multiplier gains any fixed number of powers at vertical
+infinity. The exponential factor depends only on the real part. -/
+theorem dyadic_midpoint_vertical_decay (K : ℕ) (z : ℂ) :
+    ‖z‖^K*‖dyadicMidpointMultiplier z‖ ≤ (∏ j ∈ range K,(boxRadius j)⁻¹)*Real.exp |z.re| := by
+  let F := fun j : ℕ => midpointBoxFactor ((boxRadius j:ℂ)*z)
+  let E := fun j : ℕ => Real.exp (boxRadius j*|z.re|)
+  have hr (j : ℕ) : 0<boxRadius j := by dsimp only [boxRadius]; positivity
+  have hre (j : ℕ) : |((boxRadius j:ℂ)*z).re|=boxRadius j*|z.re| := by
+    rw [Complex.re_ofReal_mul,abs_mul,abs_of_pos (hr j)]
+  have hF (j : ℕ) : ‖F j‖≤E j := (box_norm_realpart _).trans_eq (congrArg Real.exp (hre j))
+  have hstrong (j : ℕ) : ‖z‖*‖F j‖ ≤ (boxRadius j)⁻¹*E j := by
+    rcases eq_or_ne z 0 with rfl | hz
+    · rw [norm_zero,zero_mul]; exact mul_nonneg (inv_nonneg.mpr (hr j).le) (Real.exp_pos _).le
+    have harg := mul_ne_zero (Complex.ofReal_ne_zero.mpr (hr j).ne') hz
+    rw [show ‖F j‖=‖Complex.sinh ((boxRadius j:ℂ)*z)‖/(boxRadius j*‖z‖) by
+      rw [F,box_value harg,norm_div,norm_box_argument]]
+    have hh := norm_sinh_realpart ((boxRadius j:ℂ)*z)
+    rw [hre] at hh
+    calc _ = (boxRadius j)⁻¹*‖Complex.sinh ((boxRadius j:ℂ)*z)‖ := by
+               field_simp [(hr j).ne',norm_ne_zero_iff.mpr hz]
+         _ ≤ _ := mul_le_mul_of_nonneg_left hh (inv_nonneg.mpr (hr j).le)
+  have hfinite (N : ℕ) : ‖z‖^K*‖∏ j ∈ range (K+N),F j‖ ≤
+      (∏ j ∈ range K,(boxRadius j)⁻¹)*Real.exp |z.re| := by
+    rw [norm_prod,prod_range_add,←mul_assoc]
+    have heq : ‖z‖^K*(∏ j ∈ range K,‖F j‖)=∏ j ∈ range K,(‖z‖*‖F j‖) := by
+      rw [prod_mul_distrib,prod_const,card_range]
+    rw [heq]
+    have head := prod_le_prod (s:=range K) (fun j _ => mul_nonneg (norm_nonneg _) (norm_nonneg _))
+      (fun j _ => hstrong j)
+    have tail := prod_le_prod (s:=range N) (fun j _ => norm_nonneg (F (K+j))) (fun j _ => hF (K+j))
+    apply (mul_le_mul head tail (prod_nonneg fun _ _ => norm_nonneg _) (prod_nonneg fun j _ =>
+      mul_nonneg (inv_nonneg.mpr (hr j).le) (Real.exp_pos _).le)).trans
+    rw [prod_mul_distrib,mul_assoc,←prod_range_add]
+    apply mul_le_mul_of_nonneg_left _ (prod_nonneg fun j _ => inv_nonneg.mpr (hr j).le)
+    change (∏ j ∈ range (K+N),Real.exp (boxRadius j*|z.re|))≤_
+    rw [←Real.exp_sum,←sum_mul,box_radius_sum]
+    exact Real.exp_le_exp.mpr (mul_le_of_le_one_left (abs_nonneg _) (sub_le_self _ (by positivity)))
+  have hlim := ((multipliable_midpoint_boxes z).tendsto_prod_tprod_nat.comp
+    (tendsto_atTop_add_const_left atTop K tendsto_id)).norm.const_mul (‖z‖^K)
+  exact le_of_tendsto' hlim hfinite
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

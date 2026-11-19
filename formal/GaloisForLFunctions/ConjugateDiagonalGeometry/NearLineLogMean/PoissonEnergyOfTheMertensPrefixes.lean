@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.MollifiedLogDilationBridge
 import GaloisForLFunctions.ArithmeticGaugeTheory.TheArchimedeanLineCarriesTheExponent
 import GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.LongMoebiusSecondMomentRigidity
+import GaloisForLFunctions.RHTower.MertensSecondTheorem
 import GaloisForLFunctions.RHTower.MobiusReciprocalPrimitiveRatio
 
 /-!
