@@ -24,6 +24,7 @@ private theorem perturbation_price {s C : ℝ} (sp : 0<s) (hC : 0 ≤ C)
     (full : ∀ n,|coprimeMoebiusSum 1 n| ≤ C*(n:ℝ)^s) (y T : ℕ) (a b : ArithmeticFunction ℝ) :
     |H y T a-H y T b| ≤ 2*C*deletionPrice s y*(T:ℝ)^s*
       ∑ q ∈ Icc 1 T,|a q-b q| * (q:ℝ)^(-s) := by
+  dsimp only [H]
   rw [coefficient_head_as_quotient_sum,coefficient_head_as_quotient_sum,←sum_sub_distrib,mul_sum]
   apply (abs_sum_le_sum_abs ..).trans
   apply sum_le_sum
@@ -205,7 +206,7 @@ theorem shrinking_the_cofactor_range_for_prime_readings {α u : ℝ} (ap : 0<α)
   have xpow := Real.one_le_rpow (Nat.one_le_cast.mpr xp) ep.le
   have logcap : 1+Real.log n ≤ (1+1/η)*(X:ℝ)^η := by
     have log := lg.trans (Real.log_le_rpow_div positive.le ep)
-    linarith only [xpow,log]
+    exact (add_le_add xpow log).trans_eq (by ring)
   rw [rough_head_and_interior,add_sub_cancel_left]
   have main := cap y n yp a dom same
   have bounded := mul_le_mul (mul_le_mul (mul_le_mul_of_nonneg_left cheap hK) npow
@@ -235,7 +236,7 @@ theorem ordinary_and_prime_power_transfer_to_three_sevenths :
       ∀ a ∈ ({roughOrdinaryPrimeWeight y,roughMangoldtWeight y} : Finset (ArithmeticFunction ℝ)),
         |roughCofactorReading y X (quotientReading a)-roughInteriorReading a y X T| ≤
           K*(X:ℝ)^(1/2-1/84000:ℝ) := by
-  obtain ⟨K,hK,good⟩ := shrinking_the_cofactor_range_for_prime_readings
+  obtain ⟨K,hK,good⟩ := shrinking_the_cofactor_range_for_prime_readings (u := 1/2-1/84000)
     (by norm_num : (0:ℝ)<4/7) ((mul_le_mul_of_nonneg_left ZeroForcingCalculus.zetaZeroAbscissa_le_sub_seven_eighths (by norm_num : (0:ℝ) ≤ 4/7)).trans_lt (by norm_num))
   refine ⟨K,hK,?_⟩
   filter_upwards [good,eventually_ge_atTop (1:ℕ)] with X bound xp

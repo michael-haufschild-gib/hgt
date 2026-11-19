@@ -84,7 +84,7 @@ theorem optimum (u v a b l : ℝ) :
   obtain ⟨hf,he⟩ := noisy_loss u v a b l (center u v a b) (Real.log V)
   refine ⟨hf,?_⟩
   rw [sub_self,zero_pow (by norm_num : 2 ≠ 0),add_zero,Real.exp_log hv,div_self hv.ne'] at he
-  simpa only [sub_add_cancel] using he
+  simpa only [optimalLoss,V,sub_add_cancel] using he
 
 /-- Exact excess and uniqueness of the Gaussian information projection. -/
 theorem noisy_projection (u v a b l m j : ℝ) :
@@ -163,6 +163,7 @@ theorem small_noise_slope (u v a b : ℝ) :
   filter_upwards [eventually_gt_atTop (0:ℝ)] with s hs
   change (D s-s)/s+1 = D s/s
   field_simp [hs.ne']
+  exact sub_add_cancel _ _
 
 private def logLeft (i : ℕ) := Real.log (logCellWidth (2*(i+1)))
 private def logRight (i : ℕ) := Real.log (logCellWidth (2*(i+1)+1))
@@ -228,7 +229,7 @@ theorem physical_event_law (q d : ℕ → ℝ) (i k : ℕ) (l : ℝ) (S : Set �
   have weighted (A B C : ℝ) :
       (A-C)*logCellWidth (2*a)+(B-C)*logCellWidth (2*a+1) =
         logCellWidth a*(haarRightCoeff a*A+haarLeftCoeff a*B-C) := by
-    rw [mul_sub,mul_add,← mul_assoc (logCellWidth a) _ A,← mul_assoc (logCellWidth a) _ B,
+    rw [mul_sub (logCellWidth a),mul_add (logCellWidth a),← mul_assoc (logCellWidth a) _ A,← mul_assoc (logCellWidth a) _ B,
       hleft,hright,← hlen]
     ring
   rw [detailReadout_law _ d i k,hm]

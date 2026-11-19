@@ -48,6 +48,8 @@ import GaloisForLFunctions.RestrictedFactorizationCalculus.RemovingTerminalQuoti
 import GaloisForLFunctions.RestrictedFactorizationCalculus.RoughDivisorInversionAtTheHyperbola
 import GaloisForLFunctions.RestrictedFactorizationCalculus.TheCenteredReadingBelowTheHyperbola
 import GaloisForLFunctions.RestrictedFactorizationCalculus.TotalVariationOfTheRemovedQuotientHead
+import GaloisForLFunctions.RestrictedFactorizationCalculus.TheSmoothPopulationAtAnInteriorQuotientCut
+import GaloisForLFunctions.RestrictedFactorizationCalculus.ThePrimeErrorInTheCenteredUnitWindow
 
 /-!
 # Quantitative factorization with signed boundaries
@@ -56,5 +58,3 @@ Restricted prime exchanges, least-prime stopping and divisor inversion on sharp
 integer intervals. Fixed vertices, crossing edges and changes of quotient
 reading carry the signed boundary through successive cuts.
 -/
-import GaloisForLFunctions.RestrictedFactorizationCalculus.TheSmoothPopulationAtAnInteriorQuotientCut
-import GaloisForLFunctions.RestrictedFactorizationCalculus.ThePrimeErrorInTheCenteredUnitWindow

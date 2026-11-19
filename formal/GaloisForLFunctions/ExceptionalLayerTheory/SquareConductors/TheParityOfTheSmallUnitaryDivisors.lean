@@ -31,13 +31,13 @@ private theorem complement_twice {S P : Finset ℕ} (h : S ⊆ P) : P \ (P \ S)=
   exact ⟨fun hh => by by_contra hn; exact hh.2 ⟨hh.1,hn⟩,fun hp => ⟨h hp,fun hh => hh.2 hp⟩⟩
 
 private theorem subset_product_pos {k : ℕ} {S : Finset ℕ} (h : S ⊆ k.primeFactors) :
-    0 < primePowerSubset k S := prod_pos fun p hp => pow_pos (Nat.prime_of_mem_primeFactors (h hp)).pos _
+    0 < primePowerSubset k S := prod_pos fun _ hp => pow_pos (Nat.prime_of_mem_primeFactors (h hp)).pos _
 
 private theorem complementary_prime_power_products {k : ℕ} (hk : 0 < k) {S : Finset ℕ} (h : S ⊆ k.primeFactors) :
     primePowerSubset k S*primePowerSubset k (k.primeFactors \ S)=k := by
   unfold primePowerSubset
   rw [mul_comm,prod_sdiff h]
-  exact Nat.prod_primeFactors_pow_factorization hk.ne'
+  exact (Nat.prod_primeFactors_pow_factorization hk.ne').symm
 
 private theorem complementary_products_ne {k : ℕ} (hk : 1 < k) {S : Finset ℕ} (h : S ⊆ k.primeFactors) :
     primePowerSubset k S ≠ primePowerSubset k (k.primeFactors \ S) := by
@@ -73,7 +73,7 @@ theorem unitary_half_weight_even {k : ℕ} (hk : 1 < k) (hpar : Even k.primeFact
   have flip {S : Finset ℕ} (h : S ⊆ P) : small (P \ S) ↔ ¬small S := by
     dsimp only [small]
     rw [complement_twice h,not_le]
-    exact le_iff_lt_of_ne (Ne.symm (complementary_products_ne hk h))
+    exact ⟨fun hh => lt_of_le_of_ne hh (Ne.symm (complementary_products_ne hk h)),LT.lt.le⟩
   have same : (∑ S ∈ P.powerset.filter small,(-1:ℤ)^S.card) =
       ∑ S ∈ P.powerset.filter (fun S => ¬small S),(-1:ℤ)^S.card := by
     apply sum_nbij' (fun S => P \ S) (fun S => P \ S)
@@ -87,11 +87,14 @@ theorem unitary_half_weight_even {k : ℕ} (hk : 1 < k) (hpar : Even k.primeFact
     · exact fun S hS => complement_twice (mem_powerset.mp (mem_filter.mp hS).1)
     · exact fun S hS => complement_twice (mem_powerset.mp (mem_filter.mp hS).1)
     · exact fun S hS => complement_sign hpar (mem_powerset.mp (mem_filter.mp hS).1)
-  have total := sum_filter_add_sum_filter_not P.powerset small (fun S => (-1:ℤ)^S.card)
   have hn : P.Nonempty := Nat.nonempty_primeFactors.mpr hk
-  rw [sum_powerset_neg_one_pow_card_of_nonempty hn,←same] at total
-  change (∑ S ∈ P.powerset.filter small,(-1:ℤ)^S.card)=0
-  omega
+  let v := ∑ S ∈ P.powerset.filter small,(-1:ℤ)^S.card
+  have twice : v+v=0 := calc
+    _ = v+∑ S ∈ P.powerset.filter (fun S => ¬small S),(-1:ℤ)^S.card := congrArg (v+·) same
+    _ = ∑ S ∈ P.powerset,(-1:ℤ)^S.card := sum_filter_add_sum_filter_not _ _ _
+    _ = 0 := sum_powerset_neg_one_pow_card_of_nonempty hn
+  change v=0
+  linarith only [twice]
 
 #print axioms unitary_half_weight_even
 
@@ -139,7 +142,7 @@ theorem unitary_half_weight_singleton {k p : ℕ} (hk : 1 < k) (hs : k.primeFact
   have hp : p ∈ k.primeFactors := by rw [hs]; exact mem_singleton_self p
   have hprod := Nat.prod_primeFactors_pow_factorization (by omega : k ≠ 0)
   rw [hs,prod_singleton] at hprod
-  have hbig : k < (p^k.factorization p)^2 := by rw [hprod]; nlinarith only [hk]
+  have hbig : k < (p^k.factorization p)^2 := by rw [←hprod]; nlinarith only [hk]
   rw [unitary_half_weight_dominant hk hp hbig,hs]
   simp
 

@@ -54,8 +54,8 @@ theorem centered_first_prime_band_for_every_cofactor_selection {ε : ℝ} (ep : 
     rw [Nat.floor_natCast] at err
     have price := floor_window_error pos K t
     have tp : (t:ℝ) ≤ (X:ℝ)/m := (le_div_iff₀ (Nat.cast_pos.mpr mp)).mpr (by exact_mod_cast Nat.div_mul_le_self X m)
-    change |∑ q ∈ Ioc K t,(a-exactQuotientFloorWeight y) q| ≤ _
-    simp only [ArithmeticFunction.sub_apply,sum_sub_distrib,exact_floor_weight_in_an_interval y kt]
+    change |∑ q ∈ Ioc K t,(a q-exactQuotientFloorWeight y q)| ≤ _
+    simp only [sum_sub_distrib,exact_floor_weight_in_an_interval y kt]
     have tri := abs_sub_le (∑ q ∈ Ioc K t,a q) ((t:ℝ)-K) (quotientFloorCenter y t-quotientFloorCenter y K)
     exact tri.trans (add_le_add (err.trans (mul_le_mul_of_nonneg_left tp hp.le)) price)
   have charged (m : ℕ) (mp : 0< m) (mz : m ≤ Z) : |v m*w m| ≤ η*((X:ℝ)/m)+y := by

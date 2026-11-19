@@ -26,4 +26,32 @@ For each coefficient \(h_{j,n}(d)\), write \(Y=n/d\). In an ordered product \(v_
 \]
 where \(0\le\chi\le1\) is smooth, zero through \(1/2\) and one from 1 onward. The denominator is at least one. Fix the other factors with product \(e\). Replace the sum over the selected coordinate \(v_i\) by its real integral, retaining \(\eta_i W(dev_i/n)\log(dev_i)\). This specifies the arithmetic center. Here \(e\ll_jY^{1-1/j}\). Every logarithmic derivative of \(\eta_i\) is bounded uniformly in the other factors. Euler summation of order \(B\ge2\) costs \(O_{j,B}(\log(2n)(Y/e)^{1-B})\), by the integral of the absolute \(B\)-th derivative of the compactly supported row. The other factors have \(O_{j,\delta}(e^\delta)\) choices. Summing costs \(O_{j,B,\delta}(\log(2n)Y^{1-B/j+\delta})\) for \(Y\ge1\); \(1/4\le Y<1\) costs \(O_j(\log(2n))\). Choose \(B\ge j\), then apply the absolute coefficient bound. The total error is half-plus for each fixed arity, uniformly in the midpoint. This center uses no prime-error estimate.
 
-**Open input.** Bound the resulting signed price above its center at all integers. At the first strip milestone any such upper bound for every \(t>5/6\) up to 1 transfers to the full \(11/3\) prefix criterion. The same construction permits any fixed number of prime-power blocks to be removed at half-plus accuracy. Constants depend on that number. Paper reduction; the smooth one-sided transfer and the uniform center estimate await Lean formalization. [First strip equivalence](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/ThePrimeMidpointInTwoAdjacentGcdHorizons.lean#L337)
+### A price on entirely smooth integers
+
+Fix \(0<\delta<1/2\). Put \(X=4n,\ y=X^\delta,\ L=\lceil1/\delta\rceil,\ D=X/y\). There is a second reading whose actual products have **every** prime factor at most \(y\). It has an explicit center depending only on small primes and the Laurent coefficients of \(\zeta\) at one.
+
+Let \(R(k)\) indicate integers all of whose primes exceed \(y\), including the unit. Use Dirichlet convolution \(*\) and its unit \(\mathbf1_*\). On \(k\le X\) the convolution logarithm of \(R\) truncates at order \(L\): every nonunit in \(R\) exceeds \(y\). Its price times \(\log k\) equals \(\Lambda(k)\) on powers of primes above \(y\), zero elsewhere, by the Euler factors. For \(k>1\), expansion of the logarithm gives
+\[
+ (\log_*R)(k)=\sum_{j=1}^L b_jR^{*j}(k),\qquad
+ b_j=(-1)^{j-1}\binom Lj/j.
+\]
+Indeed \(\sum_{l=j}^L\binom lj/l=\binom Lj/j\). Write \(R^{*j}=B_{j,y}*\tau_j\), where \(B_{j,y}(d)=\mu^{*j}(d)\) on \(y\)-smooth integers and zero elsewhere. This follows by multiplying the local Euler polynomials \((1-z)^j\) at the primes through \(y\).
+
+For \(d\le D\) replace the complete inner sum over \(r\) by
+\[
+ M_j(n,d)=\operatorname*{Res}_{s=1}
+ (n/d)^s\zeta(s)^j[\widehat W(s)\log n+\widehat W'(s)].
+\]
+Mellin inversion gives an error \(O_{j,B,W}((n/d)^{-B}\log(2n))\) for any fixed \(B>0\). Shift to \(\Re s=-B\), using rapid vertical decay of both transforms and polynomial growth of \(\zeta\) in a fixed strip. Here \(n/d\ge y/4\) and \(|B_{j,y}(d)|\le\tau_j(d)\ll_{j,\epsilon}d^\epsilon\). The summed replacement error is \(O_{\delta,A}(n^{-A})\) for any fixed \(A>0\) by taking \(B\) sufficiently large. For \(d>D\), a contributing product \(k=dr\le X\) has \(r<y\). Both factors and hence \(k\) itself are \(y\)-smooth. With \(P^+(1)=1\), this gives
+\[
+ -D_W(n)=\sum_{j=1}^L b_j\left[
+ \sum_{d\le D}B_{j,y}(d)M_j(n,d)+
+ \sum_{\substack{2n<k<4n\\P^+(k)\le y}} W(k/n)\log k
+ \sum_{\substack{d\mid k\\ d>D}} B_{j,y}(d)\tau_j(k/d)\right]
+ +O_{\delta,W}(\sqrt n).
+\]
+The last error pays for proper prime powers, priced by \(\log p\). This is a signed identity on actual integers; the center retains the contributions of all completed divisor rows with their signs.
+
+**Coprime products and every endpoint.** At a sufficiently large prime center \(n\), one has \(y<n\), so every surviving smooth product is automatically coprime to \(n\). Such centers suffice for the full criterion. Differentiating twice gives \(|D_W''(x)|\ll_W1/x\) by the Chebyshev upper bound. Bracket each large \(x\) by primes in \([x-O(x^{2/3}),x+O(x^{2/3})]\), applying the prime-gap theorem above and below \(x\). Linear interpolation of the two measured values incurs \(O_W(x^{1/3})\), since the second derivative is bounded on the intervening interval. The interpolant is a convex combination, so one-sided upper estimates transfer to every scale. This step retains the half-power gate. [Prime-gap theorem](../../../../formal/GaloisForLFunctions/RHTower/PrimeShortIntervalsSevenTwelfths.lean#L63)
+
+**Open input.** At every prime center bound the negative of the displayed smooth-integer sum plus its prescribed signed center. For any one fixed \(\delta\) this suffices for the \(11/3\) criterion at exponents above \(5/6\), or for RH at every exponent above \(1/2\). The ability to take arbitrarily small fixed \(\delta\) changes the available prime factors; it supplies no sign estimate on the smooth products. The smooth transfer and center estimates are paper proofs. [First strip equivalence](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/ThePrimeMidpointInTwoAdjacentGcdHorizons.lean#L337)

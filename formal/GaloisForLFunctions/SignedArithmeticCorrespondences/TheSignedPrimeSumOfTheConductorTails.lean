@@ -218,12 +218,15 @@ theorem signed_test_on_zero_prime_ratios {N : ℕ} (hN : 0<N) (m : ℕ → ℕ)
     have hn₃ := (hs n hn h).1
     have hm : 1∈S.erase n := mem_erase.mpr ⟨by omega,h₁⟩
     rw [sum_eq_single_of_mem 1 hm]
-    · simp only [ha 1 h₁,if_pos rfl,Int.cast_one,one_mul]
+    · change (upperDivisor N a 1:ℝ)*(m n:ℝ)*(x^(max 1 n-min 1 n-1)+x^(1+n-1)) ≤ (m n:ℝ)*2*x
+      have hu1 : (upperDivisor N a 1:ℝ)=1 := by simp [ha 1 h₁]
+      rw [hu1,one_mul]
       have hpow (j : ℕ) (hj : 1≤j) : x^j≤x := by
         simpa only [pow_one] using pow_le_pow_of_le_one hx.1 hx.2 hj
       have h := add_le_add (hpow (max 1 n-min 1 n-1) (by omega))
         (hpow (1+n-1) (by omega))
-      exact (mul_le_mul_of_nonneg_left h (Nat.cast_nonneg _)).trans_eq (by ring)
+      calc _ ≤ (m n:ℝ)*(x+x) := mul_le_mul_of_nonneg_left h (Nat.cast_nonneg _)
+           _ = _ := by ring
     · intro i hi he
       simp [ha i (mem_of_mem_erase hi),he]
   have hi := intervalIntegral.integral_mono_on (μ := volume) zero_le_one
@@ -239,8 +242,9 @@ theorem signed_test_on_zero_prime_ratios {N : ℕ} (hN : 0<N) (m : ℕ → ℕ)
 
 private theorem zero_prime_weight_on_sixes {k : ℕ} (hk : 6∣k) : Λ k=0 := by
   apply ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr
-  intro hp
-  obtain ⟨p,l,hp,_,rfl⟩ := (isPrimePow_nat_iff _).mp hp
+  intro hpow
+  obtain ⟨p,l,hp,_,he⟩ := (isPrimePow_nat_iff _).mp hpow
+  rw [← he] at hk
   have h₂ := (Nat.prime_dvd_prime_iff_eq Nat.prime_two hp).mp
     (Nat.prime_two.dvd_of_dvd_pow ((by decide : 2∣6).trans hk))
   have h₃ := (Nat.prime_dvd_prime_iff_eq Nat.prime_three hp).mp
@@ -281,6 +285,7 @@ theorem signed_finite_part_power_iff (s : ℝ) :
       apply Real.sqrt_le_sqrt
       apply sum_le_sum
       intro i hi
+      change (r i*(upperDivisor N b i:ℝ))^2 ≤ (r i*(m i:ℝ))^2
       rw [hb i hi,Int.cast_natCast]
       by_cases hd : 6∣i
       · simp [v,hd]

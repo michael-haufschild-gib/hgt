@@ -19,6 +19,8 @@ namespace GaloisForLFunctions.RestrictedFactorizationCalculus
 def centeredPrimeInterval (a : ArithmeticFunction ℝ) (y l u : ℕ) : ℝ :=
   ∑ q ∈ Ioc l u,(a-exactQuotientFloorWeight y) q
 
+private theorem difference_at (a b : ArithmeticFunction ℝ) (q : ℕ) : (a-b) q=a q-b q := rfl
+
 private theorem floor_residue (y t : ℕ) : quotientFloorCenter y t+((t%y:ℕ):ℝ)=t := by
   unfold quotientFloorCenter
   exact_mod_cast Nat.div_add_mod t y
@@ -32,7 +34,7 @@ theorem centered_ordinary_prime_interval {y l u : ℕ} (first : y ≤ l) (order 
   have per (p : ℕ) (hp : p ∈ Ioc l u) : roughOrdinaryPrimeWeight y p=(if p.Prime then Real.log p else 0) := by
     change (if p.Prime ∧ y<p then Real.log p else 0)=_
     simp only [first.trans_lt (mem_Ioc.mp hp).1,and_true]
-  simp only [centeredPrimeInterval,ArithmeticFunction.sub_apply,sum_sub_distrib,exact_floor_weight_in_an_interval y order]
+  simp only [centeredPrimeInterval,difference_at,sum_sub_distrib,exact_floor_weight_in_an_interval y order]
   rw [sum_congr rfl per,←primes]
   dsimp only [ordinaryThetaError]
   linarith only [floor_residue y u,floor_residue y l]
@@ -43,7 +45,7 @@ theorem proper_power_edits_in_a_prime_interval {y l u : ℕ} (a : ArithmeticFunc
     (fixed : ∀ q ∈ Ioc l u,q.Prime → a q=roughOrdinaryPrimeWeight y q) :
     |centeredPrimeInterval a y l u-centeredPrimeInterval (roughOrdinaryPrimeWeight y) y l u| ≤
       Chebyshev.psi u-Chebyshev.theta u := by
-  simp only [centeredPrimeInterval,ArithmeticFunction.sub_apply,sum_sub_distrib]
+  simp only [centeredPrimeInterval,difference_at,sum_sub_distrib]
   rw [show ∀ v w t : ℝ,(v-t)-(w-t)=v-w from fun _ _ _ => by ring,←sum_sub_distrib]
   have per (q : ℕ) (hq : q ∈ Ioc l u) :
       |a q-roughOrdinaryPrimeWeight y q| ≤ (if ¬q.Prime then vonMangoldt q else 0) := by

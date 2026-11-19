@@ -147,8 +147,9 @@ private theorem two_tail_cost {f : ℝ → ℝ} {D h T : ℝ} {A : Set ℝ} (hD 
         linarith only [hbound,he,hp₀ v]
     · rw [indicator_of_notMem hv,abs_zero]
       exact add_nonneg (hp₀ v) (hq₀ v)
-  have hi := norm_integral_le_of_norm_le (hp.add hq) (Eventually.of_forall hmaj)
-  rw [Real.norm_eq_abs,integral_indicator hA,Pi.add_apply,integral_add hp hq] at hi
+  have hi : ‖∫ v, A.indicator f v‖ ≤ ∫ v : ℝ, p v+q v :=
+    norm_integral_le_of_norm_le (g := fun v => p v+q v) (hp.add hq) (Eventually.of_forall hmaj)
+  rw [Real.norm_eq_abs,integral_indicator hA,integral_add hp hq] at hi
   dsimp only [p,q] at hi
   rw [integral_indicator measurableSet_Iic,integral_const_mul,integral_exp_mul_Iic (by norm_num),
     integral_indicator measurableSet_Icc,setIntegral_const,smul_eq_mul,Real.volume_real_Icc_of_le (neg_nonpos.mpr hh.le)] at hi

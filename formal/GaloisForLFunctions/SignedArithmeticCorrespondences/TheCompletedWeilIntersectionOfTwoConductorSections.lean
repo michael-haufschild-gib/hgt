@@ -238,8 +238,8 @@ theorem completed_weighted_cell_exhaustion (r w u v : ℕ → ℝ)
   intro k
   have hsP : Summable (fun i => P (i,k)) := ((hP.prod_symm.prod_factor k).of_abs)
   have hsQ : Summable (fun i => Q N (i,k)) := (((hQ N).prod_symm.prod_factor k).of_abs)
-  rw [hsQ.tsum_sub hsP]
-  rfl
+  change |(∑' i, Q N (i,k))-(∑' i, P (i,k))| = |∑' i, Q N (i,k)-P (i,k)|
+  exact congrArg abs (hsQ.tsum_sub hsP).symm
 
 /-- At every cutoff the weighted completed cells of the rounded sections
 are exactly the positive quotient cells of the two scaled integral
