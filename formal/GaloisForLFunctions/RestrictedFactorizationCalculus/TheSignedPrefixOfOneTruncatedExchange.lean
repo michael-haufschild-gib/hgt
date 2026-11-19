@@ -99,7 +99,7 @@ theorem uniform_coprime_power_bound {θ : ℝ} (hθ : 0<θ) (h : PrefixPower θ 
       (one_div_le_one_div_of_le (by norm_num : (0:ℝ)<2) hp2) hθ.le
     exact inv_anti₀ (sub_pos.mpr hsmall) (sub_le_sub_left hpow 1)
   have hprod : (∏ p ∈ S,deletionFactor θ p) ≤ K^k := by
-    calc _ ≤ ∏ _p ∈ S,K := prod_le_prod
+    calc _ ≤ ∏ _p ∈ S,K := Finset.prod_le_prod
            (fun p hp => inv_nonneg.mpr (sub_nonneg.mpr (prime_contraction hθ (hP p hp)).le)) bound
          _ = K^S.card := prod_const _
          _ ≤ _ := pow_le_pow_right₀ hK hk

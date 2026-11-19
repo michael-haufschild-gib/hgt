@@ -1,6 +1,5 @@
-import GaloisForLFunctions.ArithmeticPositiveDuality.FractionalDiscrepancyOfAtomicRows
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheOuterCellsOfTheFractionalPrimeMidpoint
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ThePrimeMidpointInTwoAdjacentGcdHorizons
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.OddQuotientsInTheFractionalPrimeTest
 
 /-!
 # Fractional discrepancy at the prime midpoint
@@ -17,14 +16,6 @@ open GaloisForLFunctions.ArithmeticPositiveDuality.FractionalDiscrepancy
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
 open GaloisForLFunctions.ExclusionOfTheCriticalState (ordinaryPrimeExcessCoeff)
-
-/-- Signed discrepancy field of centered prime mass throughout the double interval. -/
-def midpointFractionalField (n : ℕ) (b : ℝ) : ℝ → ℝ :=
-  field (Ioc (2*n) (4*n)) Nat.cast ordinaryPrimeExcessCoeff (b-1)
-
-/-- The inverse test changes sign at the common endpoint of the two prime intervals. -/
-def midpointFractionalTest (n : ℕ) (b t : ℝ) : ℝ :=
-  cutPower (-b) (t-↑(2*n)) - 2*cutPower (-b) (t-↑(3*n))
 
 private theorem centered_interval (a b : ℕ) :
     (∑ p ∈ Ioc a b, ordinaryPrimeExcessCoeff p) =
@@ -90,61 +81,6 @@ theorem half_order_prime_midpoint_spectrum {d : ℝ} (hd : 1/2 ≤ d) :
     exact ⟨Real.pi*C, fun n hn => (mul_le_mul_of_nonneg_left (hC n hn) Real.pi_pos.le).trans_eq
       (mul_assoc _ _ _).symm⟩
 
-/-- Opposite outer edges isolate a unit test and a composite atom of weight −1.
-Their powers are complementary for every choice of fractional order. -/
-theorem midpoint_fractional_edge_values {n : ℕ} (hn : 0 < n) (b : ℝ)
-    {u : ℝ} (hu : u ∈ Set.Ioo 0 1) :
-    midpointFractionalTest n b (↑(2*n)+u) = u^(-b) ∧
-    midpointFractionalField n b (↑(4*n)-u) = -(u^(b-1)) := by
-  have hn' : (1:ℝ) ≤ n := Nat.one_le_cast.mpr hn
-  have ht : ¬ 0 < (↑(2*n):ℝ)+u-↑(3*n) := by push_cast; linarith only [hu.2, hn']
-  constructor
-  · simp [midpointFractionalTest, cutPower, ht, hu.1]
-  · unfold midpointFractionalField field
-    rw [sum_eq_single (4*n)]
-    · have hnp : ¬ (4*n).Prime := by
-        rw [show 4*n=2*(2*n) by omega]
-        exact Nat.not_prime_mul (by norm_num) (by omega)
-      simp [ordinaryPrimeExcessCoeff, hnp, cutPower, hu.1]
-    · intro p hp hpn
-      have hk : p+1 ≤ 4*n := by have := (mem_Ioc.mp hp).2; omega
-      have hh : (p:ℝ)+1 ≤ ↑(4*n) := by exact_mod_cast hk
-      have hz : ¬ 0 < (p:ℝ)-(↑(4*n)-u) := by linarith only [hu.2, hh]
-      simp [cutPower, hz]
-    · intro h
-      exact (h (mem_Ioc.mpr ⟨by omega, le_rfl⟩)).elim
-
-/-- Exact local square-integrability thresholds at the two outer edges. -/
-theorem midpoint_fractional_square_thresholds {n : ℕ} (hn : 0 < n) (b : ℝ) :
-    (IntegrableOn (fun u : ℝ => midpointFractionalTest n b (↑(2*n)+u)^2)
-      (Set.Ioo 0 1) ↔ b < 1/2) ∧
-    (IntegrableOn (fun u : ℝ => midpointFractionalField n b (↑(4*n)-u)^2)
-      (Set.Ioo 0 1) ↔ 1/2 < b) := by
-  have hh (e : ℝ) {u : ℝ} (hu : 0 < u) : (u^e)^2 = u^(2*e) := by
-    rw [pow_two, ← Real.rpow_add hu, two_mul]
-  have ht : (fun u : ℝ => midpointFractionalTest n b (↑(2*n)+u)^2) =ᵐ[volume.restrict (Set.Ioo 0 1)]
-      (fun u => u^(2*(-b))) := ae_restrict_of_forall_mem measurableSet_Ioo fun _ hu => by
-    rw [(midpoint_fractional_edge_values hn b hu).1, hh _ hu.1]
-  have hf : (fun u : ℝ => midpointFractionalField n b (↑(4*n)-u)^2) =ᵐ[volume.restrict (Set.Ioo 0 1)]
-      (fun u => u^(2*(b-1))) := ae_restrict_of_forall_mem measurableSet_Ioo fun _ hu => by
-    rw [(midpoint_fractional_edge_values hn b hu).2, neg_sq, hh _ hu.1]
-  unfold IntegrableOn
-  rw [integrable_congr ht, integrable_congr hf]
-  change (IntegrableOn _ (Set.Ioo (0:ℝ) 1) ↔ _) ∧ (IntegrableOn _ (Set.Ioo (0:ℝ) 1) ↔ _)
-  rw [intervalIntegral.integrableOn_Ioo_rpow_iff zero_lt_one,
-    intervalIntegral.integrableOn_Ioo_rpow_iff zero_lt_one]
-  constructor <;> constructor <;> intro h <;> linarith only [h]
-
-/-- No order makes the inverse test and the centered field both locally square
-integrable at their respective outer endpoints. -/
-theorem midpoint_no_common_square_order {n : ℕ} (hn : 0 < n) :
-    ¬ ∃ b : ℝ, IntegrableOn (fun u : ℝ => midpointFractionalTest n b (↑(2*n)+u)^2) (Set.Ioo 0 1) ∧
-      IntegrableOn (fun u : ℝ => midpointFractionalField n b (↑(4*n)-u)^2) (Set.Ioo 0 1) := by
-  rintro ⟨b,ht,hf⟩
-  obtain ⟨h₁,h₂⟩ := midpoint_fractional_square_thresholds hn b
-  exact (h₁.mp ht).not_gt (h₂.mp hf)
-
-#print axioms midpoint_no_common_square_order
 #print axioms integral_midpointFractionalField
 #print axioms half_order_prime_midpoint_spectrum
 

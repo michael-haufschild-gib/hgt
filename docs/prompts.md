@@ -228,7 +228,7 @@ The goal is met when route QIC is fully closed and formalized unconditionally in
 - https://arxiv.org/abs/2610.40099
 - https://arxiv.org/abs/2610.37750
 
-18 liouville
+18x liouville
 - https://arxiv.org/abs/2611.24842
 - https://arxiv.org/abs/2611.24299
 - https://arxiv.org/abs/2611.23833
@@ -237,7 +237,7 @@ The goal is met when route QIC is fully closed and formalized unconditionally in
 - https://arxiv.org/abs/2611.20739
 - https://arxiv.org/abs/2611.20600
 
-19 Sobolev
+19 x Sobolev
 - https://arxiv.org/abs/2611.24828
 - https://arxiv.org/abs/2611.24746
 - https://arxiv.org/abs/2611.24536
@@ -248,17 +248,23 @@ The goal is met when route QIC is fully closed and formalized unconditionally in
 - https://arxiv.org/abs/2611.22924
 - https://arxiv.org/abs/2611.22706
 
+20  Hölder
+
+21 Gershgorin
+
 ## apply external paper to corpus experiment
 
 task:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2611.21429
-- https://arxiv.org/abs/2611.18873
-- https://arxiv.org/abs/2611.11194
-- https://arxiv.org/abs/2610.35783
-- https://arxiv.org/abs/2610.34775
+- https://arxiv.org/abs/1607.06150
+- https://arxiv.org/abs/2611.11593
+- https://arxiv.org/abs/2611.09555
+- https://arxiv.org/abs/2611.05863
+- https://arxiv.org/abs/2611.00445
+- https://arxiv.org/abs/2610.40099
+- https://arxiv.org/abs/2610.37750
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...

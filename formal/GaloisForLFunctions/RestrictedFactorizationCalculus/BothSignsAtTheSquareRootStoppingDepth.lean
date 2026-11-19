@@ -64,8 +64,12 @@ private theorem prime_box_le_layer (Y j X : ℕ) (size : Y^j ≤ X) :
     have cnt := congrArg Finset.card factors
     rw [card] at cnt
     refine mem_filter.mpr ⟨mem_filter.mpr ⟨mem_filter.mpr ⟨mem_Icc.mpr ⟨hpos,bound.trans size⟩,sq⟩,cnt.ge⟩,
-      cnt,?_,factors ▸ sub⟩
-    rw [moebius_apply_of_squarefree sq,cardFactors_of_squarefree sq,cnt]
+      cnt,?_,?_⟩
+    · rw [moebius_apply_of_squarefree sq,cardFactors_apply]
+      exact congrArg (fun k : ℕ => (-1:ℤ)^k)
+        ((List.toFinset_card_of_nodup sq.nodup_primeFactorsList).symm.trans cnt)
+    · change (∏ p ∈ S,p).primeFactors ⊆ Nat.primesLE Y
+      rwa [factors]
   · intro S hS V hV eq
     obtain ⟨subS,_⟩ := mem_powersetCard.mp hS
     obtain ⟨subV,_⟩ := mem_powersetCard.mp hV
@@ -121,7 +125,8 @@ private theorem box_entropy {L : ℝ} (hL : 0<L) {j : ℕ} (hj : 0<j)
   rw [Real.log_exp,Real.log_mul (pow_pos (by norm_num : (0:ℝ)<2) _).ne' (pow_pos q0 _).ne',
     Real.log_pow,Real.log_pow]
   have lq : Real.log q=Real.log (9/10)+L/j-Real.log L := by
-    rw [q,Real.log_div (by positivity) hL.ne',Real.log_mul (by norm_num) y0.ne',logY]
+    dsimp only [q]
+    rw [Real.log_div (by positivity) hL.ne',Real.log_mul (by norm_num) y0.ne',logY]
   have half : (j:ℝ) ≤ 2*((j/2:ℕ):ℝ)+2 := by exact_mod_cast (by omega : j ≤ 2*(j/2)+2)
   have jdiv : (j:ℝ)*(L/j)=L := by field_simp
   rw [lq]
@@ -307,6 +312,7 @@ theorem exponential_excess_of_each_smooth_sign :
     logs.eventually_ge_atTop 2,eventually_ge_atTop (1:ℕ)] with H supply funded large pos
   let L := Real.log (H:ℝ)
   let k := stoppingDepth (1/2) H
+  change 2 ≤ L at large
   have L1 : 1<L := by linarith only [large]
   have L0 := zero_lt_one.trans L1
   have lp := Real.log_pos L1
@@ -366,6 +372,7 @@ theorem both_smooth_signs_exceed_every_square_root_log_price (D : ℕ) (B : ℝ)
   filter_upwards [pop D (max B 0),(Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop 2]
     with H h large
   intro z hz σ sign
+  change 2 ≤ Real.log (H:ℝ) at large
   have log0 : 0 ≤ Real.log (H:ℝ) := by linarith only [large]
   have ll := Real.log_nonneg (by linarith only [large] : 1 ≤ Real.log (H:ℝ))
   have le := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right (le_max_left B 0) (Real.sqrt_nonneg H))

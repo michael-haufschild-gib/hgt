@@ -239,7 +239,8 @@ private theorem accumulated_power_floor (s : ℕ) (b : Bool) :
   have hk1 := (Nat.one_le_cast (α:=ℝ)).mpr hK
   have he : F K=(∑ m ∈ Icc 1 K,powerFloorPrice s b m)-(1/2:ℝ)*(harmonic K:ℝ) := by
     have hi : Ioc 0 K=Icc 1 K := by ext m; simp only [mem_Ioc,mem_Icc]; omega
-    rw [F,hi,harmonic_eq_sum_Icc,Rat.cast_sum,mul_sum]
+    dsimp only [F]
+    rw [hi,harmonic_eq_sum_Icc,Rat.cast_sum,mul_sum]
     simp only [f,sum_sub_distrib,Rat.cast_inv,Rat.cast_natCast,one_div,mul_inv_rev,mul_comm]
   have h := abs_le.mp (hlim hK)
   rw [he] at h

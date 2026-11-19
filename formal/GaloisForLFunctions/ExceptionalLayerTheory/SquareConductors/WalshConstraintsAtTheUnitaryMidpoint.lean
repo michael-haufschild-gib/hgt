@@ -48,9 +48,10 @@ theorem unitaryWalshContrast_inversion (k : ℕ) {A : Finset ℕ} (hA : A ⊆ k.
     have hs := mem_powerset.mp (mem_filter.mp hS).1
     have iffC : k.primeFactors \ S = A ↔ S = k.primeFactors \ A := by
       constructor
-      · rintro rfl; rw [sdiff_sdiff_eq_self hs]
-      · rintro rfl; rw [sdiff_sdiff_eq_self hA]
-    rw [sum_sub_distrib, block_kernel hs hA, block_kernel sdiff_subset hA, iffC]
+      · rintro rfl; rw [Finset.sdiff_sdiff_eq_self hs]
+      · rintro rfl; rw [Finset.sdiff_sdiff_eq_self hA]
+    rw [sum_sub_distrib, block_kernel hs hA, block_kernel sdiff_subset hA]
+    simp only [iffC]
   rw [sum_congr rfl inner, sum_sub_distrib, sum_ite_eq', sum_ite_eq']
   split_ifs <;> ring
 
@@ -74,7 +75,7 @@ private theorem singleton_reading {k p : ℕ} (hp : p ∈ k.primeFactors)
     {p} ∈ smallUnitarySubsets k ∧ k.primeFactors \ {p} ∉ smallUnitarySubsets k := by
   have hs := singleton_subset_iff.mpr hp
   have hk := Nat.pos_of_ne_zero (Nat.mem_primeFactors.mp hp).2.2
-  have he : primePowerSubset k {p} = p^k.factorization p := prod_singleton _
+  have he : primePowerSubset k {p} = p^k.factorization p := prod_singleton _ _
   have prod : primePowerSubset k {p} * primePowerSubset k (k.primeFactors \ {p}) = k := by
     rw [primePowerSubset, primePowerSubset, mul_comm, prod_sdiff hs]
     exact (Nat.prod_primeFactors_pow_factorization hk.ne').symm
@@ -82,7 +83,7 @@ private theorem singleton_reading {k p : ℕ} (hp : p ∈ k.primeFactors)
   · simpa only [he] using hbal.le
   · intro h
     have hle := (mem_filter.mp h).2
-    rw [sdiff_sdiff_eq_self hs] at hle
+    rw [Finset.sdiff_sdiff_eq_self hs] at hle
     have h := Nat.mul_le_mul_left (primePowerSubset k {p}) hle
     rw [prod, he, ← pow_two] at h
     exact hbal.not_ge h
@@ -177,5 +178,83 @@ theorem balanced_unitary_virial_floor {k : ℕ} (hk : 1 < k)
        _ ≤ _ := mul_le_mul_of_nonneg_left hp (Nat.cast_nonneg _)
 
 #print axioms balanced_unitary_virial_floor
+
+private theorem character_symm (T S : Finset ℕ) : blockCharacter T S = blockCharacter S T := by
+  simp only [blockCharacter, prod_ite, filter_mem_eq_inter, prod_const, one_pow, mul_one, inter_comm T S]
+
+private theorem recover_mode {P T : Finset ℕ} (ht : T ⊆ P) (c : Finset ℕ → ℤ) :
+    ∑ A ∈ P.powerset, ((∑ U ∈ P.powerset, c U*blockCharacter U A)*blockCharacter T A) =
+      c T*(2:ℤ)^P.card := by
+  simp_rw [sum_mul, mul_assoc]
+  rw [sum_comm]
+  have one (U : Finset ℕ) (hU : U ∈ P.powerset) :
+      ∑ A ∈ P.powerset, c U*(blockCharacter U A * blockCharacter T A) =
+        if U=T then c U*2^P.card else 0 := by
+    rw [← mul_sum]
+    simp_rw [character_symm U, character_symm T]
+    rw [block_kernel (mem_powerset.mp hU) ht, mul_ite, mul_zero]
+  rw [sum_congr rfl one, sum_ite_eq', if_pos (mem_powerset.mpr ht)]
+
+/-- A dominant prime-power block puts the entire contrast in that one
+Walsh coordinate, at amplitude equal to the size of the cube. -/
+theorem dominant_unitary_single_mode {k p : ℕ} (hk : 1 < k) (hp : p ∈ k.primeFactors)
+    (hbig : k < (p^k.factorization p)^2) {T : Finset ℕ} (ht : T ⊆ k.primeFactors) :
+    unitaryWalshContrast k T = if T={p} then (2:ℤ)^k.primeFactors.card else 0 := by
+  let P := k.primeFactors
+  have below {A : Finset ℕ} (ha : A ⊆ P) :
+      A ∈ smallUnitarySubsets k ↔ p ∉ A := by
+    rw [small_unitary_subsets_of_dominant hk hp hbig, mem_powerset]
+    exact ⟨fun h hpA => (mem_erase.mp (h hpA)).1 rfl,
+      fun h q hq => mem_erase.mpr ⟨fun he => h (he ▸ hq),ha hq⟩⟩
+  have vertex (A : Finset ℕ) (ha : A ∈ P.powerset) :
+      ∑ U ∈ P.powerset, unitaryWalshContrast k U*blockCharacter U A =
+        (2:ℤ)^P.card * blockCharacter {p} A := by
+    rw [unitaryWalshContrast_inversion k (mem_powerset.mp ha)]
+    by_cases h : p ∈ A <;>
+      simp [below (mem_powerset.mp ha), below (A:=P \ A) sdiff_subset, blockCharacter, P, hp, h]
+  have hrec := recover_mode ht (unitaryWalshContrast k)
+  change (∑ A ∈ P.powerset, _) = _ at hrec
+  rw [sum_congr rfl (fun A ha => congrArg (· * blockCharacter T A) (vertex A ha))] at hrec
+  simp_rw [mul_assoc, character_symm {p}, character_symm T] at hrec
+  rw [← mul_sum, block_kernel (singleton_subset_iff.mpr hp) ht] at hrec
+  apply mul_right_cancel₀ (pow_ne_zero P.card (by norm_num : (2:ℤ) ≠ 0))
+  simpa only [mul_comm ((2:ℤ)^P.card), eq_comm (a:={p}) (b:=T)] using hrec.symm
+
+/-- Critical energy is zero exactly for the degenerate cubes and the integers
+with a block larger than the product of all other blocks. -/
+theorem unitaryVirialEnergy_zero_iff (k : ℕ) :
+    unitaryVirialEnergy (1/10) k = 0 ↔
+      k ≤ 1 ∨ ∃ p ∈ k.primeFactors, k < (p^k.factorization p)^2 := by
+  by_cases hk : k ≤ 1
+  · obtain rfl | rfl : k=0 ∨ k=1 := by omega
+    all_goals simp [unitaryVirialEnergy, unitaryWalshContrast, blockCharacter]
+  have hk1 : 1 < k := by omega
+  constructor
+  · intro hz
+    right
+    by_contra! hn
+    have hbal (p : ℕ) (hp : p ∈ k.primeFactors) : (p^k.factorization p)^2 < k := by
+      apply (hn p hp).lt_of_ne
+      intro he
+      have ha := (Nat.prime_of_mem_primeFactors hp).factorization_pos_of_dvd
+        (Nat.mem_primeFactors.mp hp).2.2 (Nat.mem_primeFactors.mp hp).2.1
+      have he' := congrArg (fun n : ℕ => n.factorization p) he
+      rw [← pow_mul, Nat.factorization_pow_self (Nat.prime_of_mem_primeFactors hp)] at he'
+      omega
+    have h := balanced_unitary_virial_floor hk1 hbal
+    rw [hz, mul_zero] at h
+    exact (by positivity : (0:ℝ) < 7/10*((2:ℝ)^k.primeFactors.card)^2).not_ge h
+  · rintro (hh | ⟨p,hp,hbig⟩)
+    · exact (hk hh).elim
+    apply sum_eq_zero
+    intro T hT
+    rw [dominant_unitary_single_mode hk1 hp hbig (mem_powerset.mp hT)]
+    split_ifs with he
+    · subst T
+      norm_num [blockVirialSymbol]
+    · simp
+
+#print axioms dominant_unitary_single_mode
+#print axioms unitaryVirialEnergy_zero_iff
 end
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

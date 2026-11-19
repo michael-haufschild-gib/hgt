@@ -179,27 +179,26 @@ private theorem source_det_of_moments {τ l u : ℂ} {m : ℕ} (v : Fin m → �
   simp_rw [hm]
   rw [det_powerSum_hankel, Matrix.det_vandermonde]
 
-private theorem source_det_of_simple_sheet_list {τ l u : ℂ}
+private theorem source_moments_of_simple_sheet_list {τ l u : ℂ}
     (hx : l.re ≤ u.re) (hy : l.im ≤ u.im)
     (hb : ∀ t, complexHeat τ (RHTower.rectangleBoundaryPath l u t) ≠ 0)
     {m : ℕ} (v : Fin m → ℂ) (hinj : Function.Injective v)
     (hs : ∀ w, (inBox l u w ∧ complexHeat τ w = 0) ↔ ∃ i, w = v i)
     (hder : ∀ i, deriv (complexHeat τ) (v i) ≠ 0) :
-    heatBoundaryDiscriminant τ l u = (Matrix.vandermonde v).det ^ 2 := by
+    ∀ k, heatBoundaryMoment τ l u k = ∑ i, v i ^ k := by
   classical
   obtain ⟨Z,hZ,hM⟩ := heatBoundaryMoment_eq_weighted τ l u hx hy hb
   have hz : Z = Finset.univ.image v := by
     ext w
     simpa [Finset.mem_image, eq_comm] using (hZ w).trans (hs w)
-  have hm (k : ℕ) : heatBoundaryMoment τ l u k = ∑ i, v i ^ k := by
-    rw [hM, hz, Finset.sum_image (fun i _ j _ e => hinj e)]
-    apply Finset.sum_congr rfl
-    intro i _
-    have hzero := ((hs (v i)).mpr ⟨i,rfl⟩).2
-    have hord := ((differentiable_complexHeat τ).analyticAt (v i)).analyticOrderAt_eq_one_of_zero_deriv_ne_zero
-      hzero (hder i)
-    simp [analyticOrderNatAt, hord]
-  exact source_det_of_moments v hm
+  intro k
+  rw [hM, hz, Finset.sum_image (fun i _ j _ e => hinj e)]
+  apply Finset.sum_congr rfl
+  intro i _
+  have hzero := ((hs (v i)).mpr ⟨i,rfl⟩).2
+  have hord := ((differentiable_complexHeat τ).analyticAt (v i)).analyticOrderAt_eq_one_of_zero_deriv_ne_zero
+    hzero (hder i)
+  simp [analyticOrderNatAt, hord]
 
 private theorem card_increasing_pairs (m : ℕ) :
     (∑ i : Fin m, (Finset.Ioi i).card) = m.choose 2 := by
@@ -213,17 +212,20 @@ private theorem card_increasing_pairs (m : ℕ) :
     _ = ∑ i : Fin m, (i : ℕ) := Fintype.sum_equiv Fin.revPerm _ _ (fun _ => rfl)
     _ = _ := by rw [Fin.sum_univ_eq_sum_range (fun k : ℕ => k) m, Finset.sum_range_id, Nat.choose_two_right]
 
-/-- The source determinant in an isolating spatial square, in the time
-coordinate `τ+s²`. Its remaining factor is holomorphic and nonzero at zero. -/
-private theorem source_sheet_factor {τ z : ℂ} {m : ℕ} (hc : IsCollision τ z m) :
-    ∃ d > 0, (∀ t, complexHeat τ (RHTower.rectangleBoundaryPath (squareLower z d) (squareUpper z d) t) ≠ 0) ∧
-      ∃ U : ℂ → ℂ, AnalyticAt ℂ U 0 ∧ U 0 ≠ 0 ∧
-      ∀ᶠ s in 𝓝 0, heatBoundaryDiscriminant (τ+s^2) (squareLower z d) (squareUpper z d) =
-        (s^2) ^ (m.choose 2) * U s := by
+/-- On every sufficiently small spatial square, all contour moments are the
+power sums of the Hermite sheets throughout a neighborhood of the collision. -/
+theorem IsCollision.small_square_sheet_moments {τ z : ℂ} {m : ℕ} (hc : IsCollision τ z m) :
+    let e := (profileRoots m).orderIsoOfFin (card_profileRoots m)
+    ∃ R > 0, ∀ d : ℝ, 0 < d → d ≤ R → (∀ t, complexHeat τ (RHTower.rectangleBoundaryPath
+        ⟨z.re-d,z.im-d⟩ ⟨z.re+d,z.im+d⟩ t) ≠ 0) ∧
+      ∀ᶠ s in 𝓝 0, (∀ t, complexHeat (τ+s^2) (RHTower.rectangleBoundaryPath
+        ⟨z.re-d,z.im-d⟩ ⟨z.re+d,z.im+d⟩ t) ≠ 0) ∧
+        ∀ k, heatBoundaryMoment (τ+s^2) ⟨z.re-d,z.im-d⟩ ⟨z.re+d,z.im+d⟩ k =
+          ∑ i : Fin m, (collisionZero τ z m ((e i : ℝ) : ℂ) s)^k := by
   classical
   obtain ⟨r,hr,hiso,hcover⟩ := exists_ball_zeros_eq_sheets hc
-  let d := r/4
-  have hd : 0 < d := by dsimp [d]; positivity
+  refine ⟨r/4,by positivity,?_⟩
+  intro d hd hdr
   let l := squareLower z d
   let u := squareUpper z d
   have hx : l.re ≤ u.re := by change z.re-d ≤ z.re+d; linarith
@@ -232,11 +234,84 @@ private theorem source_sheet_factor {τ z : ℂ} {m : ℕ} (hc : IsCollision τ 
     obtain ⟨h₁,h₂,h₃,h₄⟩ := hw
     have h := dist_le_of_in_closed_square (z := z) (d := d) (x := w)
       (Complex.mem_reProdIm.mpr ⟨⟨h₁.le,h₂.le⟩,⟨h₃.le,h₄.le⟩⟩)
-    exact mem_ball.mpr (h.trans_lt (by dsimp [d]; linarith))
+    exact mem_ball.mpr (h.trans_lt (by linarith only [hdr,hr]))
   have hbound (t : ℝ) : RHTower.rectangleBoundaryPath l u t ∈ ball z r := by
     have h := RHTower.rectangleBoundaryPath_mem_reProdIm l u hx hy t
     rw [Set.uIcc_of_le hx, Set.uIcc_of_le hy] at h
-    exact mem_ball.mpr ((dist_le_of_in_closed_square h).trans_lt (by dsimp [d]; linarith))
+    exact mem_ball.mpr ((dist_le_of_in_closed_square h).trans_lt (by linarith only [hdr,hr]))
+  let e := (profileRoots m).orderIsoOfFin (card_profileRoots m)
+  let y (i : Fin m) := collisionBranch τ z m ((e i : ℝ) : ℂ)
+  let v (s : ℂ) (i : Fin m) := collisionZero τ z m ((e i : ℝ) : ℂ) s
+  have hroot (i : Fin m) := heatModelFwd_profileRoot (e i).property
+  have hY (i : Fin m) : AnalyticAt ℂ (y i) 0 := (collisionBranch_spec hc (hroot i)).1
+  have hzero (i : Fin m) := complexHeat_collisionZero hc (hroot i)
+  have hnear (i : Fin m) : ∀ᶠ s in 𝓝 0, dist (v s i) z < d := by
+    have hcont : ContinuousAt (fun s => v s i) 0 :=
+      continuousAt_const.add (continuousAt_id.mul (hY i).continuousAt)
+    have ht : Tendsto (fun s => v s i) (𝓝 0) (𝓝 z) := by
+      simpa [v, collisionZero] using hcont.tendsto
+    exact ht.eventually (ball_mem_nhds _ hd)
+  have hdiff (i j : Fin m) (hne : i ≠ j) := collisionZero_ne hc (hroot i) (hroot j)
+    (fun h => hne (e.injective (Subtype.ext (Complex.ofReal_injective h))))
+  have hseparate : ∀ᶠ s in 𝓝[≠] 0, Function.Injective (v s) := by
+    have h' (i j : Fin m) : ∀ᶠ s in 𝓝[≠] 0, i ≠ j → v s i ≠ v s j := by
+      by_cases h : i = j
+      · simp [h]
+      · exact (hdiff i j h).mono (fun _ hs _ => hs)
+    filter_upwards [Filter.eventually_all.mpr (fun i => Filter.eventually_all.mpr (h' i))] with s hs i j hij
+    exact by_contra (fun hn => hs i j hn hij)
+  have hzi : inBox l u z := inside_of_close (by simpa using hd)
+  have hwb (t : ℝ) (he : complexHeat τ (RHTower.rectangleBoundaryPath l u t) = 0) : False :=
+    boundary_not_inside l u t ((hiso _ (hbound t) he).symm ▸ hzi)
+  have hbase (k : ℕ) : heatBoundaryMoment τ l u k = ∑ i, v 0 i ^ k := by
+    obtain ⟨Z,hZ,hM⟩ := heatBoundaryMoment_eq_weighted τ l u hx hy hwb
+    rw [hM, Finset.sum_eq_single z]
+    · simp [analyticOrderNatAt,isCollision_iff_analyticOrderAt.mp hc,v,collisionZero]
+    · intro w hw hne
+      obtain ⟨hin,hzero⟩ := (hZ w).mp hw
+      exact (hne (hiso w (hins w hin) hzero)).elim
+    · intro hno
+      have hm : m = 0 := by
+        by_contra h
+        exact hno ((hZ z).mpr ⟨hzi,by simpa using hc.vanish 0 (Nat.pos_of_ne_zero h)⟩)
+      simp [analyticOrderNatAt,isCollision_iff_analyticOrderAt.mp hc,hm]
+  refine ⟨hwb,?_⟩
+  rw [eventually_nhdsWithin_iff] at hcover hseparate
+  filter_upwards [hcover,hseparate,Filter.eventually_all.mpr hnear,Filter.eventually_all.mpr hzero]
+    with s hs hinj hclose hzero'
+  by_cases hs0 : s = 0
+  · subst s
+    simpa only [zero_pow two_ne_zero, add_zero] using And.intro hwb hbase
+  have hc' := hs (by simpa using hs0)
+  have hlab {w : ℂ} (hw : w ∈ ball z r) (hz : complexHeat (τ+s^2) w = 0) :
+      ∃ i, w = v s i := by
+    obtain ⟨ρ,hρ,hw'⟩ := (hc'.1 w hw).mp hz
+    obtain ⟨q,hq,rfl⟩ := heatModelFwd_eq_zero_iff.mp hρ
+    obtain ⟨i,hi⟩ := e.surjective ⟨q,hq⟩
+    exact ⟨i,by simpa [v,hi] using hw'⟩
+  have hinside (i : Fin m) : inBox l u (v s i) := inside_of_close (hclose i)
+  have hb (t : ℝ) (he : complexHeat (τ+s^2) (RHTower.rectangleBoundaryPath l u t) = 0) : False := by
+    obtain ⟨i,hi⟩ := hlab (hbound t) he
+    exact boundary_not_inside l u t (hi.symm ▸ hinside i)
+  have hi (w : ℂ) : inBox l u w ∧ complexHeat (τ+s^2) w = 0 ↔ ∃ i, w = v s i := by
+    constructor
+    · exact fun h => hlab (hins w h.1) h.2
+    · rintro ⟨i,rfl⟩
+      exact ⟨hinside i,hzero' i⟩
+  exact ⟨hb,source_moments_of_simple_sheet_list hx hy hb (v s) (hinj (by simpa using hs0)) hi
+    (fun i => hc'.2.1 _ (hins _ (hinside i)) (hzero' i))⟩
+
+
+/-- The source determinant in an isolating spatial square, in the time
+coordinate `τ+s²`. Its remaining factor is holomorphic and nonzero at zero. -/
+private theorem source_sheet_factor {τ z : ℂ} {m : ℕ} (hc : IsCollision τ z m) :
+    ∃ d > 0, (∀ t, complexHeat τ (RHTower.rectangleBoundaryPath (squareLower z d) (squareUpper z d) t) ≠ 0) ∧
+      ∃ U : ℂ → ℂ, AnalyticAt ℂ U 0 ∧ U 0 ≠ 0 ∧
+      ∀ᶠ s in 𝓝 0, heatBoundaryDiscriminant (τ+s^2) (squareLower z d) (squareUpper z d) =
+        (s^2) ^ (m.choose 2) * U s := by
+  classical
+  obtain ⟨d,hd,hall⟩ := hc.small_square_sheet_moments
+  obtain ⟨hwb,hM⟩ := hall d hd le_rfl
   let e := (profileRoots m).orderIsoOfFin (card_profileRoots m)
   let y (i : Fin m) := collisionBranch τ z m ((e i : ℝ) : ℂ)
   let v (s : ℂ) (i : Fin m) := collisionZero τ z m ((e i : ℝ) : ℂ) s
@@ -258,68 +333,12 @@ private theorem source_sheet_factor {τ z : ℂ} {m : ℕ} (hc : IsCollision τ 
     rw [Matrix.det_vandermonde]
     simp only [v, collisionZero, add_sub_add_left_eq_sub, ← mul_sub, Finset.prod_mul_distrib,
       Finset.prod_const, Finset.prod_pow_eq_pow_sum, card_increasing_pairs, P, y]
-  have hzero (i : Fin m) := complexHeat_collisionZero hc (hroot i)
-  have hnear (i : Fin m) : ∀ᶠ s in 𝓝 0, dist (v s i) z < d := by
-    have hcont : ContinuousAt (fun s => v s i) 0 :=
-      continuousAt_const.add (continuousAt_id.mul (hY i).continuousAt)
-    have ht : Tendsto (fun s => v s i) (𝓝 0) (𝓝 z) := by
-      simpa [v, collisionZero] using hcont.tendsto
-    exact ht.eventually (ball_mem_nhds _ hd)
-  have hdiff (i j : Fin m) (hne : i ≠ j) := collisionZero_ne hc (hroot i) (hroot j)
-    (fun h => hne (e.injective (Subtype.ext (Complex.ofReal_injective h))))
-  have hseparate : ∀ᶠ s in 𝓝[≠] 0, Function.Injective (v s) := by
-    have h' (i j : Fin m) : ∀ᶠ s in 𝓝[≠] 0, i ≠ j → v s i ≠ v s j := by
-      by_cases h : i = j
-      · simp [h]
-      · exact (hdiff i j h).mono (fun _ hs _ => hs)
-    filter_upwards [Filter.eventually_all.mpr (fun i => Filter.eventually_all.mpr (h' i))] with s hs i j hij
-    exact by_contra (fun hn => hs i j hn hij)
   have hfact (s : ℂ) : (Matrix.vandermonde (v s)).det ^ 2 =
       (s ^ 2) ^ (m.choose 2) * (P s)^2 := by
     rw [hv, mul_pow, ← pow_mul, ← pow_mul, Nat.mul_comm (m.choose 2) 2]
-  have hzi : inBox l u z := inside_of_close (by simpa using hd)
-  have hwb (t : ℝ) (he : complexHeat τ (RHTower.rectangleBoundaryPath l u t) = 0) : False :=
-    boundary_not_inside l u t ((hiso _ (hbound t) he).symm ▸ hzi)
-  have hbase : heatBoundaryDiscriminant τ l u = (Matrix.vandermonde (v 0)).det ^ 2 := by
-    obtain ⟨Z,hZ,hM⟩ := heatBoundaryMoment_eq_weighted τ l u hx hy hwb
-    apply source_det_of_moments
-    intro k
-    rw [hM, Finset.sum_eq_single z]
-    · simp [analyticOrderNatAt,isCollision_iff_analyticOrderAt.mp hc,v,collisionZero]
-    · intro w hw hne
-      obtain ⟨hin,hzero⟩ := (hZ w).mp hw
-      exact (hne (hiso w (hins w hin) hzero)).elim
-    · intro hno
-      have hm : m = 0 := by
-        by_contra h
-        exact hno ((hZ z).mpr ⟨hzi,by simpa using hc.vanish 0 (Nat.pos_of_ne_zero h)⟩)
-      simp [analyticOrderNatAt,isCollision_iff_analyticOrderAt.mp hc,hm]
   refine ⟨d,hd,hwb,fun s => (P s)^2,hP.pow _,pow_ne_zero _ hp,?_⟩
-  rw [eventually_nhdsWithin_iff] at hcover hseparate
-  filter_upwards [hcover,hseparate,Filter.eventually_all.mpr hnear,Filter.eventually_all.mpr hzero]
-    with s hs hinj hclose hzero'
-  by_cases hs0 : s = 0
-  · subst s
-    simpa only [zero_pow two_ne_zero, add_zero] using hbase.trans (hfact 0)
-  have hc' := hs (by simpa using hs0)
-  have hlab {w : ℂ} (hw : w ∈ ball z r) (hz : complexHeat (τ+s^2) w = 0) :
-      ∃ i, w = v s i := by
-    obtain ⟨ρ,hρ,hw'⟩ := (hc'.1 w hw).mp hz
-    obtain ⟨q,hq,rfl⟩ := heatModelFwd_eq_zero_iff.mp hρ
-    obtain ⟨i,hi⟩ := e.surjective ⟨q,hq⟩
-    exact ⟨i,by simpa [v,hi] using hw'⟩
-  have hinside (i : Fin m) : inBox l u (v s i) := inside_of_close (hclose i)
-  have hb (t : ℝ) (he : complexHeat (τ+s^2) (RHTower.rectangleBoundaryPath l u t) = 0) : False := by
-    obtain ⟨i,hi⟩ := hlab (hbound t) he
-    exact boundary_not_inside l u t (hi.symm ▸ hinside i)
-  have hi (w : ℂ) : inBox l u w ∧ complexHeat (τ+s^2) w = 0 ↔ ∃ i, w = v s i := by
-    constructor
-    · exact fun h => hlab (hins w h.1) h.2
-    · rintro ⟨i,rfl⟩
-      exact ⟨hinside i,hzero' i⟩
-  exact (source_det_of_simple_sheet_list hx hy hb (v s) (hinj (by simpa using hs0)) hi
-    (fun i => hc'.2.1 _ (hins _ (hinside i)) (hzero' i))).trans (hfact s)
-
+  filter_upwards [hM] with s hs
+  exact (source_det_of_moments (v s) hs.2).trans (hfact s)
 
 /-- At a place of order `m` the boundary moments of an isolating
 spatial rectangle give a time discriminant of order `m.choose 2`. Four

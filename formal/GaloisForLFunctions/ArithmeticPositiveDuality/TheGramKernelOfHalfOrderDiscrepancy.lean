@@ -30,10 +30,10 @@ private lemma gram_derivative {d u : ℝ} (hd : 0 < d) (hu : 0 < u) :
   have h₁ := Real.hasDerivAt_sqrt hu.ne'
   have h₂ := ((hasDerivAt_id u).add_const d).sqrt (add_pos hu hd).ne'
   have hh := (((h₁.add h₂).log (add_pos hs ht).ne').const_mul 2)
-  convert hh using 1
-  dsimp
-  field_simp
-  <;> ring
+  refine hh.congr_deriv ?_
+  change 2*((1/(2*Real.sqrt u)+1/(2*Real.sqrt (u+d)))/(Real.sqrt u+Real.sqrt (u+d))) = _
+  field_simp [hs.ne', ht.ne', (add_pos hs ht).ne']
+  ring
 
 private lemma gram_primitive_integral {d p : ℝ} (hd : 0 < d) (hp : 0 ≤ p) :
     (∫ u in 0..p, (Real.sqrt u)⁻¹*(Real.sqrt (u+d))⁻¹) =
@@ -94,6 +94,57 @@ theorem halfAtom_cross_integrable {p q : ℝ} (hp : 0 < p) (hpq : p < q) :
     exact (Real.sqrt_le_sqrt (sub_le_self _ hp.le)).trans_lt (lt_add_of_pos_left _ (Real.sqrt_pos_of_pos hp))
   exact (mul_pos (by norm_num : (0:ℝ)<2) (Real.log_pos hh)).ne he
 
+/-- Deleting the last ε of a single atom costs exactly log(p/ε). -/
+theorem halfAtom_diagonal_truncation {p ε : ℝ} (he : 0 < ε) (hep : ε ≤ p) :
+    (∫ t in 0..(p-ε), halfAtom p t^2) = Real.log (p/ε) := by
+  have horder : 0 ≤ p-ε := sub_nonneg.mpr hep
+  calc
+    _ = ∫ t in 0..(p-ε), (p-t)⁻¹ := by
+      rw [intervalIntegral.integral_of_le horder, intervalIntegral.integral_of_le horder]
+      apply setIntegral_congr_fun measurableSet_Ioc
+      intro t ht
+      have hpos : 0 < p-t := by linarith only [ht.2, he]
+      change halfAtom p t ^ 2 = (p-t)⁻¹
+      rw [halfAtom, if_pos ht.1, kernel_eq_inv_sqrt hpos, inv_pow, Real.sq_sqrt hpos.le]
+    _ = _ := by
+      have h := intervalIntegral.integral_comp_sub_left (a := 0) (b := p-ε) (fun t : ℝ => t⁻¹) p
+      simp only [sub_sub_cancel, sub_zero] at h
+      rw [h, integral_inv_of_pos he (he.trans_le hep)]
+
+/-- A signed row observed only to the right of the ground point zero. -/
+def halfRow (S : Finset ℕ) (w : ℕ → ℝ) (t : ℝ) : ℝ := ∑ i ∈ S, w i * halfAtom i t
+
+/-- With separated supports the entire mixed energy has an ordinary finite
+double-sum formula; diagonal renormalization is unnecessary. -/
+theorem separated_halfRow_pairing (S T : Finset ℕ) (w v : ℕ → ℝ)
+    (h : ∀ i ∈ S, ∀ j ∈ T, 0 < i ∧ i < j) :
+    (∫ t, halfRow S w t * halfRow T v t) =
+      ∑ i ∈ S, ∑ j ∈ T, (w i*v j) *
+        (2*Real.log ((Real.sqrt i + Real.sqrt j)/Real.sqrt (j-i : ℝ))) := by
+  have hi (i : ℕ) (hi : i ∈ S) (j : ℕ) (hj : j ∈ T) :
+      Integrable (fun t => (w i*v j)*(halfAtom i t * halfAtom j t)) :=
+    (halfAtom_cross_integrable (Nat.cast_pos.mpr (h i hi j hj).1)
+      (Nat.cast_lt.mpr (h i hi j hj).2)).const_mul _
+  have expand (t : ℝ) : halfRow S w t * halfRow T v t =
+      ∑ i ∈ S, ∑ j ∈ T, (w i*v j)*(halfAtom i t*halfAtom j t) := by
+    unfold halfRow
+    rw [Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun j _ => by ring
+  simp_rw [expand]
+  rw [integral_finsetSum S (fun i hS => integrable_finsetSum T (hi i hS))]
+  apply Finset.sum_congr rfl
+  intro i hS
+  rw [integral_finsetSum T (hi i hS)]
+  apply Finset.sum_congr rfl
+  intro j hT
+  rw [integral_const_mul, halfAtom_cross_integral (Nat.cast_pos.mpr (h i hS j hT).1)
+    (Nat.cast_lt.mpr (h i hS j hT).2)]
+
+#print axioms halfAtom_diagonal_truncation
+#print axioms separated_halfRow_pairing
 #print axioms halfAtom_cross_integral
 #print axioms halfAtom_cross_integrable
 

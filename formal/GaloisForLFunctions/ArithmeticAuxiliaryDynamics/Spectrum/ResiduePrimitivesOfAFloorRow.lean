@@ -130,7 +130,7 @@ theorem residue_primitive_translation {k : ℕ} (hk : 0 < k) (n L : ℕ) :
   have hr : r < k := Nat.mod_lt L hk
   have hk₀ : 0 < (k:ℝ) := Nat.cast_pos.mpr hk
   have hur : (n+L)%k = (u+r)%k := Nat.add_mod _ _ _
-  simp only [residuePrimitive,hur,←sub_div,abs_div,abs_of_pos (mul_pos (by norm_num) hk₀)]
+  simp only [residuePrimitive,hur,←sub_div,abs_div,abs_of_pos (mul_pos (by norm_num : (0:ℝ) < 2) hk₀)]
   apply div_le_div_of_nonneg_right _ (by positivity)
   change |(((u+r)%k:ℕ):ℝ)*((k:ℝ)-(((u+r)%k:ℕ):ℝ))-(u:ℝ)*((k:ℝ)-u)| ≤ (r:ℝ)*((k:ℝ)-r)
   rw [abs_le]
@@ -151,7 +151,7 @@ theorem residue_primitive_translation {k : ℕ} (hk : 0 < k) (n L : ℕ) :
 /-- Absolute signed-letter cost of an incomplete window; it vanishes on
 every common period of the active alphabet. -/
 def incompletePeriodCost (c : ℕ →₀ ℤ) (L : ℕ) : ℝ :=
-  ∑ k ∈ c.support, |(c k:ℝ)|*residuePrimitive k L
+  ∑ k ∈ c.support, |(c k:ℝ)| * residuePrimitive k L
 
 theorem floor_row_boundary_le {c : ℕ →₀ ℤ} (hc : c 0 = 0) (n L : ℕ) :
     |floorRowPrimitive c (n+L)-floorRowPrimitive c n| ≤ incompletePeriodCost c L := by

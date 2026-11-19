@@ -35,7 +35,7 @@ theorem sharp_smooth_card {s : ℝ} (hs : 0<s) (z N : ℕ) :
   rw [show (1:ℝ)-(1-s)=s by ring,show (1:ℝ)-s-1= -s by ring] at h
   apply h.trans
   apply mul_le_mul_of_nonneg_left _ (Real.rpow_nonneg (Nat.cast_nonneg _) s)
-  apply prod_le_prod
+  apply Finset.prod_le_prod
   · intro p _; positivity
   · intro p hp
     have hpr := (Nat.mem_primesLE.mp hp).2
@@ -114,8 +114,9 @@ theorem power_of_the_small_rough_sector {γ : ℝ} (hγ : 0 ≤ γ) (hγ1 : γ �
   have hs1 : s<1 := by dsimp only [s]; linarith only [min_le_right (η/4) (1/4:ℝ)]
   have hdiff := sub_pos.mpr hs1
   have power : s+γ*(1-s)+e ≤ (1+γ)/2+η := by
+    have heη : e ≤ η/4 := min_le_left ..
     dsimp only [s]
-    nlinarith only [min_le_left (η/4) (1/4:ℝ),mul_nonneg hγ he,hη]
+    nlinarith only [heη,mul_nonneg hγ he.le,hη]
   apply prefixPower_of_eventual (C := 1/(1-s)) (by simp [smallRoughCofactors,squarefreeOf]) (by linarith only [hγ,hη])
   filter_upwards [log_square_deletion_cost hs he,eventually_ge_atTop (1:ℕ)] with X hprice hx
   let z := logSquareCutoff X
@@ -124,7 +125,7 @@ theorem power_of_the_small_rough_sector {γ : ℝ} (hγ : 0 ≤ γ) (hγ1 : γ �
   have hx1 : (1:ℝ) ≤ X := by exact_mod_cast hx
   have hx0 := zero_lt_one.trans_le hx1
   have E1 : 1 ≤ E := deletionPrice_one_le hs0 _
-  have z1 : 1 ≤ (z:ℝ)+1 := by positivity
+  have z1 : 1 ≤ (z:ℝ)+1 := le_add_of_nonneg_left (Nat.cast_nonneg z)
   have hE : E ≤ (X:ℝ)^e := by
     apply le_trans _ hprice
     calc E ≤ E^2 := by nlinarith only [mul_nonneg (sub_nonneg.mpr E1) (zero_le_one.trans E1)]
@@ -136,7 +137,9 @@ theorem power_of_the_small_rough_sector {γ : ℝ} (hγ : 0 ≤ γ) (hγ1 : γ �
   apply (small_rough_cofactor_card_bound hs0 hs1 z X Y).trans
   apply (mul_le_mul (mul_le_mul_of_nonneg_right hE (Real.rpow_nonneg hx0.le _))
     (div_le_div_of_nonneg_right hY hdiff.le) (by positivity) (by positivity)).trans
-  calc _ = (1/(1-s))*(X:ℝ)^(s+γ*(1-s)+e) := by rw [Real.rpow_add hx0,Real.rpow_add hx0]; ring
+  calc _ = (1/(1-s))*(X:ℝ)^(s+γ*(1-s)+e) := by
+             rw [Real.rpow_add hx0 (s+γ*(1-s)) e,Real.rpow_add hx0 s (γ*(1-s))]
+             ring
        _ ≤ _ := mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hx1 power) (by positivity)
 
 
@@ -175,8 +178,10 @@ theorem square_root_charge_of_subpower_rough_cofactors (Y : ℕ → ℕ)
   apply prefixPower_of_eventual (C := C) (by simp [largeRoughCharge,squarefreeOf,coprimeMoebiusSum]) (by linarith only [hε])
   filter_upwards [small γ hg,eventually_ge_atTop (1:ℕ)] with X hx hx1
   have sub : smallRoughCofactors (logSquareCutoff X) X (Y X) ⊆
-      smallRoughCofactors (logSquareCutoff X) X ⌊(X:ℝ)^γ⌋₊ :=
-    filter_subset_filter _ (fun _ h => h.trans (Nat.le_floor hx))
+      smallRoughCofactors (logSquareCutoff X) X ⌊(X:ℝ)^γ⌋₊ := by
+    intro n hn
+    obtain ⟨hs,hr⟩ := mem_filter.mp hn
+    exact mem_filter.mpr ⟨hs,hr.trans (Nat.le_floor hx)⟩
   have hh := hbound X
   change |((smallRoughCofactors (logSquareCutoff X) X ⌊(X:ℝ)^γ⌋₊).card:ℝ)| ≤ _ at hh
   rw [abs_of_nonneg (Nat.cast_nonneg _)] at hh
@@ -203,7 +208,10 @@ private theorem expSqrtLog_subpower {γ : ℝ} (hg : 0<γ) :
   have budget := mul_le_mul_of_nonneg_right ((div_le_iff₀ (sq_pos_of_pos hg)).1 hL) lpos
   have root : Real.sqrt (Real.log ((X:ℝ)+1)) ≤ γ*L := by
     apply (Real.sqrt_le_iff).2
-    exact ⟨mul_nonneg hg.le lpos,by change Real.log ((X:ℝ)+1) ≤ (γ*Real.log X)^2; dsimp only [L] at budget; nlinarith only [htop,budget]⟩
+    refine ⟨mul_nonneg hg.le lpos,?_⟩
+    calc Real.log ((X:ℝ)+1) ≤ 2*L := by simpa only [Nat.cast_ofNat,L] using htop
+         _ ≤ (L*γ^2)*L := budget
+         _ = (γ*L)^2 := by ring
   have h := Real.exp_le_exp.mpr root
   apply (Nat.floor_le (Real.exp_pos _).le).trans
   rw [←Real.exp_log (Real.rpow_pos_of_pos hpos γ),Real.log_rpow hpos]

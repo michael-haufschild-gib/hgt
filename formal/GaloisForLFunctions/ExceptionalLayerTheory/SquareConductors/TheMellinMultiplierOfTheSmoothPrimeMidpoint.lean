@@ -186,7 +186,8 @@ theorem dyadic_midpoint_vertical_decay (K : ℕ) (z : ℂ) :
     · rw [norm_zero,zero_mul]; exact mul_nonneg (inv_nonneg.mpr (hr j).le) (Real.exp_pos _).le
     have harg := mul_ne_zero (Complex.ofReal_ne_zero.mpr (hr j).ne') hz
     rw [show ‖F j‖=‖Complex.sinh ((boxRadius j:ℂ)*z)‖/(boxRadius j*‖z‖) by
-      rw [F,box_value harg,norm_div,norm_box_argument]]
+      dsimp only [F]
+      rw [box_value harg,norm_div,norm_box_argument]]
     have hh := norm_sinh_realpart ((boxRadius j:ℂ)*z)
     rw [hre] at hh
     calc _ = (boxRadius j)⁻¹*‖Complex.sinh ((boxRadius j:ℂ)*z)‖ := by
@@ -198,9 +199,9 @@ theorem dyadic_midpoint_vertical_decay (K : ℕ) (z : ℂ) :
     have heq : ‖z‖^K*(∏ j ∈ range K,‖F j‖)=∏ j ∈ range K,(‖z‖*‖F j‖) := by
       rw [prod_mul_distrib,prod_const,card_range]
     rw [heq]
-    have head := prod_le_prod (s:=range K) (fun j _ => mul_nonneg (norm_nonneg _) (norm_nonneg _))
+    have head := Finset.prod_le_prod (s:=range K) (fun j _ => mul_nonneg (norm_nonneg _) (norm_nonneg _))
       (fun j _ => hstrong j)
-    have tail := prod_le_prod (s:=range N) (fun j _ => norm_nonneg (F (K+j))) (fun j _ => hF (K+j))
+    have tail := Finset.prod_le_prod (s:=range N) (fun j _ => norm_nonneg (F (K+j))) (fun j _ => hF (K+j))
     apply (mul_le_mul head tail (prod_nonneg fun _ _ => norm_nonneg _) (prod_nonneg fun j _ =>
       mul_nonneg (inv_nonneg.mpr (hr j).le) (Real.exp_pos _).le)).trans
     rw [prod_mul_distrib,mul_assoc,←prod_range_add]
@@ -297,7 +298,8 @@ theorem midpoint_log_displacement_transform (z : ℂ) :
     (f:=fun u => Complex.exp (z*(midpointLogDisplacement u:ℂ))) (fun _ => Real.exp |z.re|)
     (fun N => by dsimp [F,logBoxPartial,logBoxCoordinate]; fun_prop)
     (integrable_const _) (fun N => Eventually.of_forall (fun u => by
-      rw [F,Complex.norm_exp,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,mul_zero,sub_zero]
+      dsimp only [F]
+      rw [Complex.norm_exp,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,mul_zero,sub_zero]
       apply Real.exp_le_exp.mpr
       apply (le_abs_self _).trans
       rw [abs_mul]
@@ -416,7 +418,8 @@ theorem mellin_smooth_prime_midpoint_weight {z : ℂ} (hz : z≠0) :
     apply Eventually.of_forall
     rintro ⟨x,u⟩
     by_cases hx : x∈I
-    · rw [Function.uncurry,F,norm_mul,Complex.norm_real,Real.norm_eq_abs]
+    · dsimp only [Function.uncurry,F]
+      rw [norm_mul,Complex.norm_real,Real.norm_eq_abs]
       exact mul_le_mul (hpow hx) (midpoint_window_bound u x) (abs_nonneg _) (Real.exp_pos _).le
     · simp only [Function.uncurry,F,midpoint_window_zero hx,Complex.ofReal_zero,mul_zero,norm_zero]
       dsimp only [B]; positivity

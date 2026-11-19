@@ -42,6 +42,11 @@ theorem consecutive_binomial_mass (b k j : ℕ) :
   | succ k ih =>
     rw [sum_range_succ, ← Nat.add_assoc, ih, ← Nat.add_assoc, Nat.choose_succ_succ, Nat.add_comm]
 
+private theorem sum_base_add_excess {ι : Type*} (b j : ℕ) (t : Finset ι) (f : ι → ℕ) (hf : ∀ x ∈ t, b ≤ f x) :
+      ∑ x ∈ t, (f x).choose j = t.card * b.choose j + ∑ x ∈ t, ((f x).choose j - b.choose j) := by
+    rw [show t.card * b.choose j = ∑ _x ∈ t, b.choose j by simp, ← sum_add_distrib]
+    exact sum_congr rfl fun x hx => (Nat.add_sub_of_le (Nat.choose_le_choose j (hf x hx))).symm
+
 /-- Summing the excess over the minimum once per occupied level pays for
 distinct levels; summing the minimum pays for every occurrence. -/
 theorem multiplicity_binomial_bound {α : Type*} (s : Finset α) (m : α → ℕ)
@@ -51,10 +56,6 @@ theorem multiplicity_binomial_bound {α : Type*} (s : Finset α) (m : α → ℕ
       b.choose (j + 1) + ∑ x ∈ s, (m x).choose j := by
   classical
   let excess (n : ℕ) := n.choose j - b.choose j
-  have expand {ι : Type*} (t : Finset ι) (f : ι → ℕ) (hf : ∀ x ∈ t, b ≤ f x) :
-      ∑ x ∈ t, (f x).choose j = t.card * b.choose j + ∑ x ∈ t, excess (f x) := by
-    rw [show t.card * b.choose j = ∑ _x ∈ t, b.choose j by simp, ← sum_add_distrib]
-    exact sum_congr rfl fun x hx => (Nat.add_sub_of_le (Nat.choose_le_choose j (hf x hx))).symm
   have hd : ∀ n ∈ s.image m, b ≤ n := by
     rintro _ hn
     obtain ⟨x,hx,rfl⟩ := mem_image.mp hn
@@ -71,10 +72,12 @@ theorem multiplicity_binomial_bound {α : Type*} (s : Finset α) (m : α → ℕ
       · rw [sum_insert hm]
         exact Nat.add_le_add_left ih _
   have h := distinct_binomial_bound (s.image m) b j hd
-  have hsplit := @expand ℕ (s.image m) (fun n : ℕ => n) (fun n hn => hd n hn)
+  have hsplit := sum_base_add_excess b j (s.image m) (fun n : ℕ => n) (fun n hn => hd n hn)
+  change _ = _ + ∑ n ∈ s.image m, excess n at hsplit
   rw [hsplit] at h
-  rw [expand s m hb, Nat.sub_mul]
+  rw [sum_base_add_excess b j s m hb, Nat.sub_mul]
   have hcard := Nat.mul_le_mul_right (b.choose j) (card_image_le (s := s) (f := m))
+  change _ ≤ _ + (_ + ∑ x ∈ s, excess (m x))
   omega
 
 /-- A placement of nonattacking rooks inside a finite board. -/
