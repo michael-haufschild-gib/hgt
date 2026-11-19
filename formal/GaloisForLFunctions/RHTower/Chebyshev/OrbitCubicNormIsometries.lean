@@ -21,18 +21,20 @@ private theorem coords_const (m : ℤ) (a : ℚ) : coords m a 0 0=algebraMap ℚ
 private theorem turn_coords (m : ℤ) (a b c : ℚ) :
     turn m (coords m a b c) = coords m (a+b-(m:ℚ)*c) (-c) (b-c) := by
   obtain ⟨_,_,hx,_⟩ := reciprocal_table m
-  have hm (r : ℚ) : turn m (algebraMap ℚ (K m) r) = algebraMap ℚ (K m) r :=
-    DFunLike.congr_fun (Subsingleton.elim ((turn m).comp (algebraMap ℚ (K m))) (algebraMap ℚ (K m))) r
-  simp only [coords,Algebra.smul_def,map_add,map_mul,map_sub,map_neg,mul_one,hm,
-    (turn_units m).1,(turn_units m).2,map_intCast,hx]
+  let g := algebraMap ℚ (K m)
+  have hm (r : ℚ) : turn m (g r) = g r :=
+    DFunLike.congr_fun (Subsingleton.elim ((turn m).comp g) g) r
+  rw [coords_map m g,coords_map m g]
+  simp only [map_add,map_mul,map_sub,map_neg,hm,(turn_units m).1,(turn_units m).2,map_intCast,hx]
   ring
 
 private theorem mul_coords (m : ℤ) (a b c d e f : ℚ) :
     coords m a b c * coords m d e f = coords m (a*d+b*e+c*f)
       (b*d+(a+(1-m)*b-c)*e+(c-b)*f) (c*d+(c-b)*e+(a+b-m*c)*f) := by
   have h := reciprocalMatrix_action m a b c ![d,e,f]
-  simpa only [reciprocalMatrix,Matrix.mulVec,dotProduct,Fin.sum_univ_three,Matrix.of_apply,
-    Matrix.cons_val_zero,Matrix.cons_val_one,Matrix.cons_val_two] using h
+  change coords m a b c * coords m d e f = coords m _ _ _ at h
+  simp only [Matrix.mulVec,dotProduct,Fin.sum_univ_three] at h
+  exact h
 
 /-- Actual field norm equals the product over the displayed conjugates. -/
 theorem norm_conjugate_product (m : ℤ) (z : K m) :

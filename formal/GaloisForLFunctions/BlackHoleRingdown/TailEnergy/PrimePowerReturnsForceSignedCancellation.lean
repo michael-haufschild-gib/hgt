@@ -12,6 +12,7 @@ the exact mean, the other paths must converge to its negative.
 
 noncomputable section
 open Complex MeasureTheory Set Filter Topology Finset
+open scoped ENNReal
 namespace GaloisForLFunctions.BlackHoleRingdown.ReturnCancellation
 
 /-- Response to a single unit-weight bounce at time zero. -/
@@ -410,6 +411,137 @@ theorem rh_iff_one_prime_sector {p : ℕ} (hp : p.Prime) :
   have he := zeroFreeStrip_tailEnergy_equivalences (δ := 1/4) (by norm_num) le_rfl
   exact (RingdownRate.riemannHypothesis_iff_pulse_ringdown.trans he.1.symm).trans
     (strip_iff_one_prime_sector (by norm_num) le_rfl hp)
+
+/-- Compact input built from a pulse and a single delayed copy. It inverts
+the prime-sector delay filter on reflected outputs. -/
+def inverseSectorInput (p : ℕ) (h : CompactPulse) : CompactPulse :=
+  CompactPulse.smul (1-1/(p:ℂ))⁻¹ (h.add (CompactPulse.smul (-(1/(p:ℂ))) (h.delay (echoDelay p))))
+
+private theorem bounded_delay_unique {D : ℝ → ℂ} {b : ℂ} (hb : ‖b‖ < 1) (d C : ℝ)
+    (hC : ∀ u, ‖D u‖ ≤ C) (he : ∀ u, D u=b*D (u-d)) (u : ℝ) : D u=0 := by
+  have hn (n : ℕ) : D u=b^n*D (u-n*d) := by
+    induction n with
+    | zero => simp
+    | succ n ih =>
+      rw [ih,he (u-n*d),pow_succ,Nat.cast_succ]
+      rw [show u-(n*d)-d=u-((n:ℝ)+1)*d by ring]; ring
+  have hh (n : ℕ) : ‖D u‖ ≤ ‖b‖^n*C := by
+    calc _ = ‖b‖^n*‖D (u-n*d)‖ := (congrArg norm (hn n)).trans (by rw [norm_mul,norm_pow])
+         _ ≤ _ := mul_le_mul_of_nonneg_left (hC _) (by positivity)
+  have hlim := (tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg b) hb).mul_const C
+  rw [zero_mul] at hlim
+  exact norm_eq_zero.mp (le_antisymm (ge_of_tendsto' hlim hh) (norm_nonneg _))
+
+private theorem unweighted_sector (g : CompactPulse) {p : ℕ} (hp : p.Prime) :
+    ∃ C : ℝ, ∀ u, ‖centeredPrimeSector g p u‖ ≤ C := by
+  have hf : weightedBound 0 (pulseReflected g) := by
+    simpa only [weightedBound,zero_mul,Real.exp_zero,Complex.ofReal_one,one_mul] using
+      (show ∃ C : ℝ, ∀ u, ‖pulseReflected g u‖ ≤ C from ⟨_,reflected_uniform g⟩)
+  simpa only [weightedBound,zero_mul,Real.exp_zero,Complex.ofReal_one,one_mul] using
+    (prime_sector_weightedBound_iff g hp le_rfl (by norm_num)).mpr hf
+
+/-- Every unfiltered reflected waveform occurs *exactly* inside each
+prescribed prime sector. The required compact input has only two copies
+of the original pulse, with separation twice the logarithm of the prime. -/
+theorem inverse_sector_input_exact (h : CompactPulse) {p : ℕ} (hp : p.Prime) (u : ℝ) :
+    centeredPrimeSector (inverseSectorInput p h) p u=pulseReflected h u := by
+  let b : ℂ := 1/(p:ℂ)
+  let d := echoDelay p
+  let g := inverseSectorInput p h
+  let D := fun t => centeredPrimeSector g p t-pulseReflected h t
+  have hp1 : 1 < (p:ℝ) := by exact_mod_cast hp.one_lt
+  have hb : ‖b‖ < 1 := by
+    dsimp only [b]
+    rw [norm_div,norm_one,Complex.norm_natCast]
+    exact (div_lt_one (Nat.cast_pos.mpr hp.pos)).mpr hp1
+  have ha : 1-b ≠ 0 := sub_ne_zero.mpr fun h₁ => hb.ne (by rw [← h₁,norm_one])
+  obtain ⟨C,hC⟩ := unweighted_sector g hp
+  have hD (t : ℝ) : ‖D t‖ ≤ C+(∫ ξ : ℝ, ‖pulseAmplitude h (ξ:ℂ)‖) :=
+    (norm_sub_le _ _).trans (add_le_add (hC t) (reflected_uniform h t))
+  have hfilter (t : ℝ) : pulseReflected g t =
+      (1-b)⁻¹*(pulseReflected h t-b*pulseReflected h (t-d)) := by
+    simp only [g,inverseSectorInput,pulseReflected_smul,pulseReflected_add,pulseReflected_delay,b,d,
+      neg_mul,sub_eq_add_neg]
+  have he (t : ℝ) : D t=b*D (t-d) := by
+    dsimp only [D]
+    rw [centered_sector_delay g hp t,hfilter]
+    change (1-b)*((1-b)⁻¹*_)+b*_ - _ = _
+    rw [← mul_assoc,mul_inv_cancel₀ ha,one_mul]
+    ring
+  exact sub_eq_zero.mp (bounded_delay_unique hb d _ hD he u)
+
+/-- Late-time energy with its natural nonnegative extended value. -/
+def sectorTailEnergy (p : ℕ) (h : CompactPulse) (T : ℝ) : ℝ≥0∞ :=
+  ∫⁻ u in Ioi T, ENNReal.ofReal (‖centeredPrimeSector h p u‖^2)
+
+/-- The inverse two-copy input preserves the *entire* cumulative energy
+curve, including its normalization at every time. -/
+theorem sectorTail_inverse_input (h : CompactPulse) {p : ℕ} (hp : p.Prime) (T : ℝ) :
+    sectorTailEnergy p (inverseSectorInput p h) T = ENNReal.ofReal (tailEnergy h T) := by
+  rw [sectorTailEnergy,tailEnergy,ofReal_integral_eq_lintegral_ofReal
+    (integrable_norm_sq_pulseReflected h).integrableOn (Eventually.of_forall fun _ => sq_nonneg _)]
+  simp_rw [inverse_sector_input_exact h hp]
+
+private theorem tail_of_sector_envelope {p : ℕ} (h : CompactPulse) {σ : ℝ} (hσ : 0 < σ)
+    (he : weightedBound σ (centeredPrimeSector h p)) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, sectorTailEnergy p h T ≤ ENNReal.ofReal (C*Real.exp (-2*σ*T)) := by
+  obtain ⟨B,hB⟩ := he
+  refine ⟨B^2/(2*σ),by positivity,fun T => ?_⟩
+  have hg : IntegrableOn (fun u : ℝ => B^2*Real.exp (-2*σ*u)) (Ioi T) :=
+    (integrableOn_exp_mul_Ioi (by linarith) T).const_mul _
+  have hI : (∫ u in Ioi T, B^2*Real.exp (-2*σ*u))=B^2/(2*σ)*Real.exp (-2*σ*T) := by
+    rw [integral_const_mul,integral_exp_mul_Ioi (by linarith : -2*σ < 0) T]
+    field_simp [hσ.ne']
+  rw [← hI,ofReal_integral_eq_lintegral_ofReal hg (Eventually.of_forall fun _ => by positivity)]
+  apply lintegral_mono
+  intro u
+  apply ENNReal.ofReal_le_ofReal
+  have hbound := (weighted_estimate _ _ _ _).mp (hB u)
+  have hsq := pow_le_pow_left₀ (norm_nonneg _) hbound 2
+  simpa only [mul_pow,sq (Real.exp (-σ*u)),← Real.exp_add,show -σ*u+ -σ*u= -2*σ*u by ring] using hsq
+
+/-- The usual strip endpoint is detected by the cumulative energy of one
+prime sector alone, for all compact inputs. -/
+theorem strip_iff_one_prime_tail {δ : ℝ} (hδ₀ : 0 < δ) (hδ : δ ≤ 1/4)
+    {p : ℕ} (hp : p.Prime) :
+    (∀ ρ : ℂ, riemannZeta ρ=0 → 0 < ρ.re → ρ.re ≤ 1-2*δ) ↔
+    ∀ σ : ℝ, 0 < σ → σ < δ → ∀ h : CompactPulse,
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 0 ≤ T →
+        sectorTailEnergy p h T ≤ ENNReal.ofReal (C*Real.exp (-2*σ*T)) := by
+  constructor
+  · intro hz σ hσ hσδ h
+    obtain ⟨C,hC,he⟩ := tail_of_sector_envelope h hσ
+      ((strip_iff_one_prime_sector hδ₀ hδ hp).mp hz σ hσ hσδ h)
+    exact ⟨C,hC,fun T _ => he T⟩
+  · intro he
+    apply (zeroFreeStrip_tailEnergy_equivalences hδ₀ hδ).2.2.1.mpr
+    intro ε hε h
+    let s := δ-min ε (δ/2)
+    have hs : 0 < s := by dsimp [s]; linarith only [min_le_right ε (δ/2),hδ₀]
+    have hsδ : s < δ := sub_lt_self _ (lt_min hε (by positivity))
+    obtain ⟨C,hC,hbound⟩ := he s hs hsδ (inverseSectorInput p h)
+    refine ⟨C,fun T hT => ?_⟩
+    have ht := hbound T hT
+    rw [sectorTail_inverse_input h hp] at ht
+    have hreal := (ENNReal.ofReal_le_ofReal_iff (mul_nonneg hC (Real.exp_pos _).le)).mp ht
+    refine hreal.trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) hC)
+    apply mul_le_mul_of_nonneg_right _ hT
+    dsimp only [s]
+    linarith only [min_le_left ε (δ/2)]
+
+/-- A single prime's cumulative reflected energy detects RH at the quarter rate. -/
+theorem rh_iff_one_prime_tail {p : ℕ} (hp : p.Prime) :
+    RiemannHypothesis ↔ ∀ σ : ℝ, 0 < σ → σ < 1/4 → ∀ h : CompactPulse,
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 0 ≤ T →
+        sectorTailEnergy p h T ≤ ENNReal.ofReal (C*Real.exp (-2*σ*T)) :=
+  (rh_iff_one_prime_sector hp).trans
+    ((strip_iff_one_prime_sector (by norm_num) (le_rfl : (1/4:ℝ) ≤ 1/4) hp).symm.trans
+      (strip_iff_one_prime_tail (by norm_num) le_rfl hp))
+
+#print axioms rh_iff_one_prime_tail
+#print axioms inverse_sector_input_exact
+#print axioms sectorTail_inverse_input
+#print axioms strip_iff_one_prime_tail
 
 #print axioms strip_iff_one_prime_sector
 #print axioms rh_iff_one_prime_sector

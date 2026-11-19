@@ -39,7 +39,7 @@ theorem terminal_depth_euler_bound {z : ℝ} (hz : 1 ≤ z) (k X : ℕ) :
     have nn := (mem_Icc.mp hit).1
     have inc : n.primeFactors ⊆ P := fun p hp => Nat.mem_primesLE.mpr
       ⟨(Nat.le_of_dvd nn (Nat.dvd_of_mem_primeFactors hp)).trans (mem_Icc.mp hit).2,Nat.prime_of_mem_primeFactors hp⟩
-    have dvd := prod_dvd_prod_of_subset _ _ id inc
+    have dvd := prod_dvd_prod_of_subset _ _ (fun p : ℕ => p) inc
     rw [Nat.prod_primeFactors_of_squarefree sq] at dvd
     exact Nat.mem_divisors.mpr ⟨dvd,(prod_pos (fun p hp => (prime p hp).pos)).ne'⟩
   have point (n : ℕ) (hn : n ∈ S) : z^k ≤ (X:ℝ)*f n := by
@@ -47,7 +47,9 @@ theorem terminal_depth_euler_bound {z : ℝ} (hz : 1 ≤ z) (k X : ℕ) :
     obtain ⟨hit,sq⟩ := mem_filter.mp hi
     have small := (Nat.cast_le (α := ℝ)).mpr (mem_Icc.mp hit).2
     have hsum : f n=z^n.primeFactors.card/(n:ℝ) := by
-      simp only [f,prod_div_distrib,prod_const,←Nat.cast_prod,Nat.prod_primeFactors_of_squarefree sq]
+      have pd : (∏ p ∈ n.primeFactors,(p:ℝ)) = n := by
+        exact_mod_cast Nat.prod_primeFactors_of_squarefree sq
+      simp only [f,prod_div_distrib,prod_const,pd]
     rw [hsum,mul_div_assoc',le_div_iff₀ (Nat.cast_pos.mpr (mem_Icc.mp hit).1)]
     exact (mul_le_mul (pow_le_pow_right₀ hz deep) small (Nat.cast_nonneg _) (pow_nonneg z0 _)).trans_eq (mul_comm ..)
   have counted := sum_le_sum point
@@ -77,7 +79,9 @@ private theorem price_of_growing_weight {t η : ℝ} (ht : t<1) (hη : 0<η) (C 
   have bound : Real.log L+C ≤ K*L^r := by
     have h := Real.log_le_rpow_div h0.le hr
     have hh := mul_le_mul_of_nonneg_left pow1 (abs_nonneg C)
-    dsimp only [K]; rw [add_mul]; linarith only [h,le_abs_self C,hh]
+    calc
+      _ ≤ L^r/r+|C|*L^r := by linarith only [h,le_abs_self C,hh]
+      _ = K*L^r := by dsimp only [K]; ring
   have h := (div_le_iff₀ hη).mp g
   have hi := mul_le_mul_of_nonneg_right h (Real.rpow_nonneg h0.le (t+r))
   have eq : t+r+r=1 := by dsimp only [r]; ring
@@ -113,6 +117,7 @@ theorem terminal_depth_power_saving {α a : ℝ} (hα : 0<α) (ha : 0<a) (hlt : 
   have cost := (mul_le_mul_of_nonneg_left (RHTower.Sieve.mertensS_le_logLog_add hX) z0.le).trans price
   have num := (terminal_depth_euler_bound z1 k X).trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr cost) X0.le)
   have den0 := (div_le_iff₀ lpos).mp (Nat.le_ceil (α*L/Real.log L))
+  change α*L ≤ (k:ℝ)*Real.log L at den0
   have dk : (a+η)*L ≤ Real.log z*(k:ℝ) := by
     rw [←calib]
     change (t*α)*L ≤ Real.log (L^t)*(k:ℝ)
@@ -156,7 +161,8 @@ theorem square_root_tail_of_the_least_prime_depth :
   let S := squarefreeOf (Icc 1 X)
   let k := stoppingDepth (1/2) X
   have full : coprimeMoebiusSum 1 X=∑ n ∈ S,(μ n:ℝ) := by
-    simp only [coprimeMoebiusSum,coprimeMoebiusIndicator,Nat.coprime_one_left,if_true]
+    rw [show coprimeMoebiusSum 1 X=∑ n ∈ Icc 1 X,(μ n:ℝ) by
+      simp [coprimeMoebiusSum,coprimeMoebiusIndicator]]
     symm
     apply sum_subset (filter_subset ..)
     intro n hn absent
@@ -167,6 +173,6 @@ theorem square_root_tail_of_the_least_prime_depth :
   rw [full,←eq,add_sub_cancel_left]
   apply (abs_sum_le_sum_abs ..).trans
   exact (sum_le_sum (fun n (_ : n ∈ terminalAtDepth k X) =>
-    (show |(μ n:ℝ)| ≤ 1 by exact_mod_cast (abs_moebius_le_one (n := n))))).trans_eq (by simp)
+    (show |(μ n:ℝ)| ≤ 1 by exact_mod_cast (abs_moebius_le_one (n := n))))).trans_eq (by simp [k])
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

@@ -325,11 +325,10 @@ private theorem harmonic_sign_window (sign : Bool) {a v : ℝ} (ap : 0<a) (av : 
     have eq : (P X-Q X)*d=∑ k ∈ cell a v X,(mark sign X k-d/2)*(k:ℝ)⁻¹ := by
       have normalize (s h d : ℝ) (hd : d ≠ 0) :
           (s/d-h/2)*d=s-(d/2)*h := by field_simp [hd] <;> ring
-      simp only [sub_mul,sum_sub_distrib,←mul_sum] on_goal 1 =>
-        skip
-      dsimp only [P,Q,signedMass]
-      rw [div_mul_cancel₀ _ dp.ne']
-      ring
+      calc
+        _ = (∑ k ∈ cell a v X,mark sign X k*(k:ℝ)⁻¹)-d/2*(∑ k ∈ cell a v X,(k:ℝ)⁻¹) :=
+          normalize _ _ _ dp.ne'
+        _ = _ := by simp only [sub_mul,sum_sub_distrib,←mul_sum]
     have h := bd
     change |∑ k ∈ cell a v X,(mark sign X k-d/2)*(k:ℝ)⁻¹| ≤ 2*(η*denom X)*(A:ℝ)⁻¹ at h
     rw [←eq,abs_mul,abs_of_pos dp] at h

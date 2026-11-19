@@ -54,8 +54,11 @@ theorem thetaTuranForm_integral (a b d : ℕ) :
       (integrable_pow_mul_riemannKernel (b+(d-j)))).const_mul _
   rw [MeasureTheory.Measure.volume_eq_prod, funext (pair_expand a b d),
     integral_finsetSum (range (d+1)) (fun j _ => hterm j)]
-  simp only [thetaTuranForm, integral_const_mul,
-    integral_prod_mul, density, ← thetaCuspRawEvenMoment_eq_integral]
+  simp only [thetaTuranForm, integral_const_mul]
+  apply sum_congr rfl
+  intro j _
+  rw [integral_prod_mul (density (a+j)) (density (b+(d-j)))]
+  simp only [density, ← thetaCuspRawEvenMoment_eq_integral]
 
 private theorem integral_form (a b d : ℕ) : (∫ p, pairKernel a b d p) = thetaTuranForm a b d :=
   (thetaTuranForm_integral a b d).symm
