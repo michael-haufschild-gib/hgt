@@ -27,7 +27,7 @@ private theorem subsequence_norm {N : ℕ} (v : ℕ → ℝ) (hv : ∀ j, N<j �
   let S := Icc 1 N
   let T := S.image g
   have him : ∑ k ∈ S, v (g k)^2 = ∑ j ∈ T, v j^2 :=
-    (sum_image (fun _ _ _ _ he => hg he)).symm
+    (sum_image (s := S) (f := fun j => v j^2) (fun _ _ _ _ he => hg he)).symm
   have he : ∑ j ∈ S, v j^2 = ∑ j ∈ T∪S, v j^2 := by
     apply sum_subset subset_union_right
     intro j hj hjs
@@ -44,12 +44,12 @@ private theorem subsequence_norm {N : ℕ} (v : ℕ → ℝ) (hv : ∀ j, N<j �
 private theorem weighted_row {N : ℕ} (r w v : ℕ → ℝ) (hr : ∀ k, 0<r k)
     (hm : Monotone r) (hw : ∀ k, 0≤w k) (hv : ∀ j, N<j → v j=0)
     (g : ℕ → ℕ) (hg : Function.Injective g) (hle : ∀ k, k≤g k) :
-    ∑ k ∈ Icc 1 N, w k*|v (g k)| ≤
+    ∑ k ∈ Icc 1 N, w k* |v (g k)| ≤
       conductorNorm N (fun k => w k/r k)*conductorNorm N (fun j => r j*v j) := by
   let p := fun k => w k/r k
-  let z := fun j => r j*|v j|
-  have he (k : ℕ) : w k*|v (g k)| ≤ p k*z (g k) := by
-    calc _ = p k*(r k*|v (g k)|) := by dsimp [p]; field_simp [(hr k).ne']
+  let z := fun j => r j* |v j|
+  have he (k : ℕ) : w k* |v (g k)| ≤ p k*z (g k) := by
+    calc _ = p k*(r k* |v (g k)|) := by dsimp [p]; field_simp [(hr k).ne']
          _ ≤ _ := mul_le_mul_of_nonneg_left
            (mul_le_mul_of_nonneg_right (hm (hle k)) (abs_nonneg _)) (div_nonneg (hw k) (hr k).le)
   have hz : conductorNorm N z = conductorNorm N (fun j => r j*v j) := by
@@ -63,7 +63,7 @@ private theorem weighted_row {N : ℕ} (r w v : ℕ → ℝ) (hr : ∀ k, 0<r k)
        _ = _ := by rw [hz]
 
 private def contactMajorant (N s : ℕ) (u v w : ℕ → ℝ) : ℝ :=
-  ∑ k ∈ Icc 1 N, w k * ∑ i ∈ Icc 1 N, |u i|*|v ((k+s)*i)|
+  ∑ k ∈ Icc 1 N, w k * ∑ i ∈ Icc 1 N, |u i| * |v ((k+s)*i)|
 
 private theorem contactMajorant_le (N s : ℕ) (r w u v : ℕ → ℝ) (hr : ∀ k, 0<r k)
     (hm : Monotone r) (hw : ∀ k, 0≤w k)
@@ -74,15 +74,15 @@ private theorem contactMajorant_le (N s : ℕ) (r w u v : ℕ → ℝ) (hr : ∀
   let S := Icc 1 N
   let V := conductorNorm N (fun i => r i*v i)
   let W := conductorNorm N (fun k => w k/r k)
-  have hrow (i : ℕ) (hi : i∈S) : ∑ k ∈ S, w k*|v ((k+s)*i)| ≤ W*V := by
+  have hrow (i : ℕ) (hi : i∈S) : ∑ k ∈ S, w k* |v ((k+s)*i)| ≤ W*V := by
     have hip := (mem_Icc.mp hi).1
-    apply weighted_row r w v hr hm hw hv _ (fun k j he => Nat.add_right_cancel
+    apply weighted_row r w v hr hm hw hv (fun k => (k+s)*i) (fun k j he => Nat.add_right_cancel
       (Nat.eq_of_mul_eq_mul_right hip he))
     exact fun k => (Nat.le_add_right k s).trans (Nat.le_mul_of_pos_right (k+s) hip)
   have h₁ := weighted_row (N := N) r (fun _ => 1) u hr hm (fun _ => zero_le_one) hu
     id Function.injective_id (fun _ => le_rfl)
   simp only [id_eq,one_mul] at h₁
-  calc contactMajorant N s u v w = ∑ i ∈ S, |u i|*(∑ k ∈ S, w k*|v ((k+s)*i)|) := by
+  calc contactMajorant N s u v w = ∑ i ∈ S, |u i| * (∑ k ∈ S, w k* |v ((k+s)*i)|) := by
          simp only [contactMajorant,S,mul_sum]
          rw [sum_comm]
          refine sum_congr rfl fun i _ => sum_congr rfl fun k _ => ?_
@@ -101,14 +101,15 @@ theorem twoSided_variation_separate (N : ℕ) (a b : ℕ → ℤ) (r w : ℕ →
     (hr : ∀ k, 0<r k) (hm : Monotone r) (hw : ∀ k, 0≤w k) :
     let u := fun i => (upperDivisor N a i:ℝ)
     let v := fun i => (upperDivisor N b i:ℝ)
-    ∑ k ∈ Icc 1 N, w k*|twoSidedCoefficient N a b k| ≤
+    ∑ k ∈ Icc 1 N, w k* |twoSidedCoefficient N a b k| ≤
       4*conductorNorm N (fun k => 1/r k)*conductorNorm N (fun k => w k/r k)*
         conductorNorm N (fun i => r i*u i)*conductorNorm N (fun i => r i*v i) := by
   intro u v
   let S := Icc 1 N
-  let A (k : ℕ) (u v : ℕ → ℝ) := ∑ i ∈ S, |u i|*|v (k*i)|
+  let A (k : ℕ) (u v : ℕ → ℝ) := ∑ i ∈ S, |u i| * |v (k*i)|
   let T (k : ℕ) := ∑ i ∈ S, (u i*v (k*i)+v i*u (k*i))
   have hA (k : ℕ) : |T k| ≤ A k u v+A k v u := by
+    dsimp only [T,A]
     rw [← sum_add_distrib]
     refine (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun i _ => ?_)
     simpa only [abs_mul] using abs_add_le (u i*v (k*i)) (v i*u (k*i))
@@ -129,7 +130,40 @@ theorem twoSided_variation_separate (N : ℕ) (a b : ℕ → ℤ) (r w : ℕ →
   have h₃ := contactMajorant_le N 1 r w v u hr hm hw hv hu
   simp only [contactMajorant,Nat.add_zero] at h₀ h₁ h₂ h₃
   dsimp only [S,A] at hh
-  linarith only [hh,h₀,h₁,h₂,h₃]
+  calc _ ≤ _ := hh
+       _ ≤ _ := add_le_add (add_le_add h₀ h₂) (add_le_add h₁ h₃)
+       _ = _ := by ring
+
+/-- The unweighted total variations control the entire real jet section
+pointwise on the integration interval. -/
+theorem mixedJetSection_le_total_variations {N : ℕ} (a b : ℕ → ℤ)
+    {x : ℝ} (hx : x ∈ Set.Icc 0 1) :
+    let u := fun i => (upperDivisor N a i:ℝ)
+    let v := fun i => (upperDivisor N b i:ℝ)
+    |mixedJetSection N a b x| ≤
+      2*((∑ i ∈ Icc 1 N, |u i|)*(∑ i ∈ Icc 1 N, |v i|)) := by
+  intro u v
+  let S := Icc 1 N
+  let J (m n : ℕ) := x^(max m n-min m n-1)+x^(m+n-1)
+  have hj (m n : ℕ) : |J m n|≤2 := by
+    dsimp only [J]
+    rw [abs_of_nonneg (add_nonneg (pow_nonneg hx.1 _) (pow_nonneg hx.1 _))]
+    linarith only [pow_le_one₀ (n := max m n-min m n-1) hx.1 hx.2,
+      pow_le_one₀ (n := m+n-1) hx.1 hx.2]
+  have hentry (m n : ℕ) : |u m*v n*J m n| ≤ |u m| * |v n| * 2 := by
+    simp only [abs_mul]
+    exact mul_le_mul_of_nonneg_left (hj m n) (mul_nonneg (abs_nonneg _) (abs_nonneg _))
+  change |∑ n ∈ S, ∑ m ∈ S.erase n, u m*v n*J m n| ≤ _
+  calc _ ≤ ∑ n ∈ S, ∑ m ∈ S.erase n, |u m| * |v n| * 2 := by
+         apply (abs_sum_le_sum_abs _ _).trans
+         exact sum_le_sum fun n _ => (abs_sum_le_sum_abs _ _).trans
+           (sum_le_sum fun m _ => hentry m n)
+       _ ≤ ∑ n ∈ S, ∑ m ∈ S, |u m| * |v n| * 2 :=
+         sum_le_sum fun n _ => sum_le_sum_of_subset_of_nonneg (erase_subset n S)
+           (fun m _ _ => by positivity)
+       _ = 2*((∑ i ∈ S, |u i|)*(∑ i ∈ S, |v i|)) := by
+         simp only [← sum_mul,← mul_sum]
+         ring
 
 /-- On the entire integration interval, each real monomial is bounded by
 one. The two independent weighted energies thus dominate the whole jet. -/
@@ -141,31 +175,12 @@ theorem mixedJetSection_separate {N : ℕ} (a b : ℕ → ℤ) (r : ℕ → ℝ)
       conductorNorm N (fun i => r i*u i)*conductorNorm N (fun i => r i*v i) := by
   intro u v
   let S := Icc 1 N
-  let J (m n : ℕ) := x^(max m n-min m n-1)+x^(m+n-1)
-  have hj (m n : ℕ) : |J m n|≤2 := by
-    dsimp only [J]
-    rw [abs_of_nonneg (add_nonneg (pow_nonneg hx.1 _) (pow_nonneg hx.1 _))]
-    linarith only [pow_le_one₀ (n := max m n-min m n-1) hx.1 hx.2,
-      pow_le_one₀ (n := m+n-1) hx.1 hx.2]
-  have hentry (m n : ℕ) : |u m*v n*J m n| ≤ |u m|*|v n|*2 := by
-    simp only [abs_mul]
-    exact mul_le_mul_of_nonneg_left (hj m n) (mul_nonneg (abs_nonneg _) (abs_nonneg _))
   have hnorm (c : ℕ → ℤ) : ∑ i ∈ S, |(upperDivisor N c i:ℝ)| ≤
       conductorNorm N (fun k => 1/r k)*conductorNorm N (fun i => r i*upperDivisor N c i) := by
     simpa only [one_mul,id_eq] using weighted_row (N := N) r (fun _ => 1)
       (fun i => (upperDivisor N c i:ℝ)) hr hm (fun _ => zero_le_one)
       (fun j hj => by simp [upper_out c hj]) id Function.injective_id (fun _ => le_rfl)
-  change |∑ n ∈ S, ∑ m ∈ S.erase n, u m*v n*J m n| ≤ _
-  calc _ ≤ ∑ n ∈ S, ∑ m ∈ S.erase n, |u m|*|v n|*2 := by
-         apply (abs_sum_le_sum_abs _ _).trans
-         exact sum_le_sum fun n _ => (abs_sum_le_sum_abs _ _).trans
-           (sum_le_sum fun m _ => hentry m n)
-       _ ≤ ∑ n ∈ S, ∑ m ∈ S, |u m|*|v n|*2 :=
-         sum_le_sum fun n _ => sum_le_sum_of_subset_of_nonneg (erase_subset n S)
-           (fun m _ _ => by positivity)
-       _ = 2*((∑ i ∈ S, |u i|)*(∑ i ∈ S, |v i|)) := by
-         simp only [← sum_mul,← mul_sum]
-         ring
+  calc _ ≤ 2*((∑ i ∈ S, |u i|)*(∑ i ∈ S, |v i|)) := mixedJetSection_le_total_variations a b hx
        _ ≤ 2*((conductorNorm N (fun k => 1/r k)*conductorNorm N (fun i => r i*u i))*
            (conductorNorm N (fun k => 1/r k)*conductorNorm N (fun i => r i*v i))) := by
          apply mul_le_mul_of_nonneg_left _ (by norm_num)
@@ -182,7 +197,7 @@ theorem interleaved_joint_separate (N : ℕ) (a b : ℕ → ℤ) (r w : ℕ → 
     let B := conductorNorm N (fun k => w k/r k)
     let U := conductorNorm N (fun i => r i*upperDivisor N a i)
     let V := conductorNorm N (fun i => r i*upperDivisor N b i)
-    (∑ k ∈ Icc 1 N, w k*|twoSidedCoefficient N a b k|) +
+    (∑ k ∈ Icc 1 N, w k* |twoSidedCoefficient N a b k|) +
       (∫ x in (0:ℝ)..1, |mixedJetSection N a b x|)/2 ≤ (4*A*B+A^2)*U*V := by
   intro A B U V
   have hJ : Continuous (mixedJetSection N a b) := by
@@ -190,7 +205,7 @@ theorem interleaved_joint_separate (N : ℕ) (a b : ℕ → ℤ) (r w : ℕ → 
       (upperDivisor N a m:ℝ)*upperDivisor N b n*(x^(max m n-min m n-1)+x^(m+n-1)))
     fun_prop
   have hi := intervalIntegral.integral_mono_on zero_le_one
-    (hJ.abs.intervalIntegrable volume 0 1) (continuous_const.intervalIntegrable volume 0 1)
+    (hJ.abs.intervalIntegrable 0 1) (continuous_const.intervalIntegrable 0 1)
     (fun x hx => mixedJetSection_separate a b r hr hm hx)
   rw [intervalIntegral.integral_const] at hi
   simp only [sub_zero,one_smul] at hi
@@ -207,7 +222,7 @@ theorem interleaved_joint_uniform (r w : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm : 
     let A := Real.sqrt (∑' k, (1/r k)^2)
     let B := Real.sqrt (∑' k, (w k/r k)^2)
     ∀ (N : ℕ) (a b : ℕ → ℤ),
-      (∑ k ∈ Icc 1 N, w k*|twoSidedCoefficient N a b k|) +
+      (∑ k ∈ Icc 1 N, w k* |twoSidedCoefficient N a b k|) +
         (∫ x in (0:ℝ)..1, |mixedJetSection N a b x|)/2 ≤
           (4*A*B+A^2)*conductorNorm N (fun i => r i*upperDivisor N a i)*
             conductorNorm N (fun i => r i*upperDivisor N b i) := by
@@ -226,6 +241,7 @@ theorem interleaved_joint_uniform (r w : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm : 
     (mul_nonneg (by norm_num) (Real.sqrt_nonneg _))) (pow_le_pow_left₀ hA₀ hA 2)
 
 #print axioms twoSided_variation_separate
+#print axioms mixedJetSection_le_total_variations
 #print axioms mixedJetSection_separate
 #print axioms interleaved_joint_separate
 #print axioms interleaved_joint_uniform

@@ -33,6 +33,11 @@ private theorem indicator_le_one (P : Prop) : ind P ≤ 1 := by by_cases h : P <
 private abbrev alive (Y H : ℕ → ℕ) (d i : ℕ) : Prop :=
   IsFree (RoughReading.banned (Y i)) d ∧ d ≤ H i
 
+/-- Indicator that a divisor belongs to the head at the given prime
+wall and height. -/
+def roughHeadIndicator (y h d : ℕ) : ℝ :=
+  ind (IsFree (RoughReading.banned y) d ∧ d ≤ h)
+
 private theorem two_changes_per_divisor (Y H : ℕ → ℕ) (walls : Monotone Y) (heights : Monotone H)
     (d N : ℕ) : (∑ i ∈ range N,|ind (alive Y H d (i+1))-ind (alive Y H d i)|) ≤ 2 := by
   let ok := fun i => IsFree (RoughReading.banned (Y i)) d
@@ -78,7 +83,7 @@ theorem variation_with_changes_of_arithmetic_reading (a : ℕ → ArithmeticFunc
     let c := fun i => quotientFloorCoefficients (a i)
     let P := fun i => quotientReading (roughFloorCoefficient (Y i) (roughRestriction (Y i) (a i))) (H i)
     (∑ i ∈ range N,|P (i+1)-P i|) ≤ ∑ d ∈ Icc 1 (H N),
-      (2*cap d+∑ i ∈ range N,|c (i+1) d-c i d| * (if IsFree (RoughReading.banned (Y (i+1))) d ∧ d ≤ H (i+1) then 1 else 0)) := by
+      (2*cap d+∑ i ∈ range N,|c (i+1) d-c i d| * roughHeadIndicator (Y (i+1)) (H (i+1)) d) := by
   let c := fun i => quotientFloorCoefficients (a i)
   let e := fun d i => ind (alive Y H d i)
   let S := Icc 1 (H N)
@@ -91,11 +96,11 @@ theorem variation_with_changes_of_arithmetic_reading (a : ℕ → ArithmeticFunc
         dsimp only [z]; ring]
       apply (abs_add_le ..).trans
       rw [abs_mul,abs_mul,abs_of_nonneg (indicator_nonneg (alive Y H d (i+1)))]
-      exact add_le_add_right (mul_le_mul_of_nonneg_right (bounded i d (mem_range.mp hi).le hd) (abs_nonneg _)) _
+      exact add_le_add (mul_le_mul_of_nonneg_right (bounded i d (mem_range.mp hi).le hd) (abs_nonneg _)) le_rfl
     apply (sum_le_sum step).trans
     rw [sum_add_distrib,←mul_sum]
-    exact add_le_add_right ((mul_le_mul_of_nonneg_left (two_changes_per_divisor Y H walls heights d N)
-      ((abs_nonneg _).trans (bounded 0 d (Nat.zero_le _) hd))).trans_eq (mul_comm ..)) _
+    exact add_le_add ((mul_le_mul_of_nonneg_left (two_changes_per_divisor Y H walls heights d N)
+      ((abs_nonneg _).trans (bounded 0 d (Nat.zero_le _) hd))).trans_eq (mul_comm ..)) le_rfl
   dsimp only
   calc _ ≤ ∑ i ∈ range N,∑ d ∈ S,|z d (i+1)-z d i| := by
              apply sum_le_sum
@@ -104,7 +109,8 @@ theorem variation_with_changes_of_arithmetic_reading (a : ℕ → ArithmeticFunc
                head_on_the_final_divisor_range _ Y H heights (mem_range.mp hi).le,←sum_sub_distrib]
              exact abs_sum_le_sum_abs ..
        _ = ∑ d ∈ S,∑ i ∈ range N,|z d (i+1)-z d i| := sum_comm
-       _ ≤ _ := sum_le_sum per
+       _ ≤ _ := by
+             simpa only [S,c,e,alive,roughHeadIndicator] using sum_le_sum per
 
 
 private theorem variation_of_a_divisor_coefficient (a : ℕ → ArithmeticFunction ℝ) (N : ℕ)
@@ -154,6 +160,8 @@ theorem total_cost_of_changing_rough_prime_readings (a : ℕ → ArithmeticFunct
              have bound := (sum_le_sum erase).trans (variation_of_a_divisor_coefficient a N change d)
              have order := Real.log_le_log (Nat.cast_pos.mpr (mem_Icc.mp hd).1) (Nat.cast_le.mpr (mem_Icc.mp hd).2)
              have cap := mul_le_mul_of_nonneg_left order (by linarith : 0 ≤ 2+B)
+             change 2*Real.log d+(∑ i ∈ range N,
+               |quotientFloorCoefficients (a (i+1)) d-quotientFloorCoefficients (a i) d| * ind (alive Y H d (i+1))) ≤ _
              linarith only [bound,cap]
        _ = _ := by simp [mul_left_comm,mul_assoc]
 

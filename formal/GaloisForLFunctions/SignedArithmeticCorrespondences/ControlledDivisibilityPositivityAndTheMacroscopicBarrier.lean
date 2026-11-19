@@ -39,7 +39,7 @@ open Finset Filter Topology
 open HodgeTheoryOfAFixedPart
 open AbsoluteGeometryOfSpecZ (jetKernel jetKernel_comm stepPacket packetForm stepEntry
   nestedCoeff stepPacket_eq_nested packetForm_nested_eq abs_half_sum_sum_le
-  sum_nestedCoeff_sq_le sum_blockFunction_sq nested_bounds
+  sum_nestedCoeff_sq_le sum_blockFunction_sq nested_bounds floorGraph
   tendsto_combForm_blockFunction_div combForm_of_subset combForm_congr)
 open scoped ArithmeticFunction.vonMangoldt ArithmeticFunction.Moebius
 
@@ -111,7 +111,10 @@ theorem abs_contactTerm_lateComb_self_le (u : ℕ → ℝ) (N K : ℕ) (c : ℕ 
       _ ≤ (∑ n ∈ S, c n ^ 2) + ∑ n ∈ S, c n ^ 2 := by
           refine add_le_add
             (sum_le_sum_of_subset_of_nonneg hsub1 fun _ _ _ => sq_nonneg _) ?_
-          rw [← sum_image hinj]
+          have himg_eq : ∑ m ∈ combSlice N K r, c (r * m) ^ 2 =
+              ∑ n ∈ (combSlice N K r).image (r * ·), c n ^ 2 :=
+            (sum_image (f := fun n => c n ^ 2) hinj).symm
+          rw [himg_eq]
           exact sum_le_sum_of_subset_of_nonneg hsub2 fun _ _ _ => sq_nonneg _
       _ = 2 * ∑ n ∈ S, c n ^ 2 := by ring
   calc |∑ r ∈ Icc 2 (3 * K), u r * ∑ m ∈ combSlice N K r, (c m * c (r * m) + c (r * m) * c m)|
@@ -136,8 +139,11 @@ private theorem exists_abs_packetForm_stepPacket_le {Q R J : ℕ} (hR : 1 ≤ R)
       |stepEntry Q R (fun j => R + j) i l| ≤ δ := fun i hi l hl => by
     have h1 : |stepEntry Q R (fun j => R + j) i l| ≤
         ∑ l' ∈ range (J + 1), |stepEntry Q R (fun j => R + j) i l'| :=
-      single_le_sum (fun _ _ => abs_nonneg _) hl
-    exact h1.trans (single_le_sum (fun _ _ => sum_nonneg fun _ _ => abs_nonneg _) hi)
+      single_le_sum (f := fun l' => |stepEntry Q R (fun j => R + j) i l'|)
+        (fun _ _ => abs_nonneg _) hl
+    exact h1.trans (single_le_sum
+      (f := fun i' => ∑ l' ∈ range (J + 1), |stepEntry Q R (fun j => R + j) i' l'|)
+      (fun _ _ => sum_nonneg fun _ _ => abs_nonneg _) hi)
   rw [stepPacket_eq_nested hR J σ, packetForm_nested_eq hR (nested_bounds R J)]
   have hab := abs_half_sum_sum_le (s := range (J + 1)) (nestedCoeff J σ)
     (stepEntry Q R (fun j => R + j)) hbound
@@ -210,8 +216,8 @@ theorem eventually_combFormW_controlled_residue_ge (K : ℕ)
     (combForm_of_subset hsub fun n _ hn => if_neg hn).trans
       (combForm_congr fun n hn => if_pos hn)
   have hsq : ∑ n ∈ W, c' n ^ 2 = ∑ n ∈ S, c n ^ 2 := by
-    rw [← sum_subset hsub fun n _ hn => by rw [if_neg hn]; ring]
-    exact sum_congr rfl fun n hn => by rw [if_pos hn]
+    rw [← sum_subset hsub fun n _ hn => by dsimp only [c']; rw [if_neg hn]; ring]
+    exact sum_congr rfl fun n hn => by dsimp only [c']; rw [if_pos hn]
   have hdiv : N₀ / R = B := Nat.mul_div_cancel_left B hR
   -- Step 1: Block reduction with residual floor `κ₀`
   let σ := blockMean N₀ B J c'
@@ -246,7 +252,7 @@ theorem eventually_combFormW_controlled_residue_ge (K : ℕ)
       have h1' : ∑ a ∈ range B, c' (N₀ + 1 + B * j + a) =
           ∑ n ∈ Ioc (N₀ + B * j) (N₀ + B * j + B), c' n := by
         rw [← image_range_block_eq_Ioc N₀ B j, sum_image]
-        intro x _ y _ hxy; omega
+        intro x _ y _ hxy; dsimp only at hxy; omega
       rw [h1']
       dsimp only [c']
       rw [← sum_filter]
@@ -354,11 +360,10 @@ theorem eventually_mixedPrimeDebitW_le_diagRealBudget_of_cost (K : ℕ)
         mixedPrimeDebitW w S c ≤ diagRealBudget S c := by
   obtain ⟨C, hC, hev⟩ := eventually_combFormW_controlled_residue_ge K w zero_lt_one
   refine ⟨1 / C, by positivity, ?_⟩
-  filter_upwards [hev, eventually_ge_atTop 1] with N hN hN1 ι T d r α hd hcost
-  set S := Ioc N (N + 3 * K * N)
-  set c := fun n => ∑ t ∈ T, α t * centeredResidue (d t) (r t) n
+  filter_upwards [hev, eventually_ge_atTop 1] with N hN hN1 ι T d r α hd S c hcost
   rw [mixedPrimeDebitW_le_diagRealBudget_iff]
-  have hmain := hN T d r α hd
+  have hmain : 1 * ∑ n ∈ S, c n ^ 2 - C / (N : ℝ) * (∑ t ∈ T, |α t|) ^ 2 ≤ combFormW w S c :=
+    hN T d r α hd
   have hN0 : (0 : ℝ) < N := by exact_mod_cast hN1
   have hcost' : C / (N : ℝ) * (∑ t ∈ T, |α t|) ^ 2 ≤ 1 * ∑ n ∈ S, c n ^ 2 := by
     calc C / (N : ℝ) * (∑ t ∈ T, |α t|) ^ 2
@@ -418,7 +423,7 @@ private theorem sum_centeredMultiple_sq_lateComb_ge_of_le_sqrt
     calc ((K : ℝ) / c₂) * Real.sqrt N * d
         ≤ ((K : ℝ) / c₂) * Real.sqrt N * (c₂ * Real.sqrt N) :=
           mul_le_mul_of_nonneg_left hdd (by positivity)
-      _ = (K : ℝ) * (Real.sqrt N * Real.sqrt N) := by field_simp [hc₂.ne']; ring
+      _ = (K : ℝ) * (Real.sqrt N * Real.sqrt N) := by field_simp [hc₂.ne']
       _ = (K : ℝ) * N := by rw [hsqN]
   calc ((K : ℝ) / c₂) * Real.sqrt N
       ≤ (K : ℝ) * N / (d : ℝ) := hKN_div
@@ -536,8 +541,8 @@ theorem eventually_pilot_pos_and_cauchy_schwarz {K : ℕ} (hK : 1 ≤ K)
       dsimp only [u]
       rw [← Real.sqrt_sq (by positivity : 0 ≤ 5 * C_B / γ)]
       exact Real.sqrt_le_sqrt hsqrt_CB2
-    have hmul_u := mul_le_mul_of_nonneg_right ((le_div_iff₀ hγ).mp hu_CB) (show 0 ≤ u by linarith)
-    calc 5 * C_B * u ≤ (γ * u) * u := hmul_u
+    have hmul_u := mul_le_mul_of_nonneg_right ((div_le_iff₀ hγ).mp hu_CB) (show 0 ≤ u by linarith)
+    calc 5 * C_B * u ≤ (u * γ) * u := hmul_u
       _ = γ * (u * u) := by ring
       _ = γ * Real.sqrt N := by rw [hu2]
   have hBA : |formBilinW w S vp vq| ≤ combFormW w S vp :=
@@ -566,7 +571,8 @@ theorem eventually_pilot_vonMangoldt_pos_and_cauchy_schwarz {K : ℕ} (hK : 1 �
   filter_upwards [eventually_pilot_pos_and_cauchy_schwarz hK hc₂ (fun k => (Λ k : ℝ))]
     with N hN p q hp hq hpq hp_le hq_le
   obtain ⟨_, _, hA, hC, hCS, hspan⟩ := hN hp hq hpq hp_le hq_le
-  simpa only [combFormW_vonMangoldt, formBilinW_vonMangoldt] using ⟨hA, hC, hCS, hspan⟩
+  simp only [combFormW_vonMangoldt, formBilinW_vonMangoldt] at hA hC hCS hspan
+  exact ⟨hA, hC, hCS, hspan⟩
 
 /-- Specialization of the two-prime pilot to `SelectiveArithmetic.liouvilleWeight`. -/
 theorem eventually_pilot_liouville_pos_and_cauchy_schwarz {K : ℕ} (hK : 1 ≤ K)
@@ -691,7 +697,7 @@ theorem eventually_combFormW_primeSpan_sqrt_ge {K : ℕ} (hK : 1 ≤ K)
     have h1 : (Real.exp L₂ + 5) / C₀ ≤ Real.sqrt N := by
       rw [← Real.sqrt_sq (by positivity : 0 ≤ (Real.exp L₂ + 5) / C₀)]
       exact Real.sqrt_le_sqrt hN_exp
-    exact (div_le_iff₀ hC₀).mp h1
+    exact ((div_le_iff₀ hC₀).mp h1).trans_eq (mul_comm _ _)
   have hX_gt : C₀ * Real.sqrt N - 1 < (X : ℝ) := Nat.sub_one_lt_floor _
   have hexp_le_X : Real.exp L₂ ≤ (X : ℝ) := by linarith
   have hX4 : 4 ≤ X := by
@@ -730,12 +736,12 @@ theorem eventually_combFormW_primeSpan_sqrt_ge {K : ℕ} (hK : 1 ≤ K)
         dsimp only [u]
         rw [← Real.sqrt_sq (by positivity : 0 ≤ 8 * Real.sqrt C₀ / γ)]
         exact Real.sqrt_le_sqrt hsqrt_u2
-      have hmul_u := mul_le_mul_of_nonneg_right ((le_div_iff₀ hγ).mp hu_ge)
+      have hmul_u := mul_le_mul_of_nonneg_right ((div_le_iff₀ hγ).mp hu_ge)
         (show 0 ≤ u by dsimp only [u]; positivity)
       calc 2 * Real.sqrt X
           ≤ 2 * (Real.sqrt C₀ * u) := mul_le_mul_of_nonneg_left hsqrtX (by norm_num)
         _ = (1 / 4) * (8 * Real.sqrt C₀ * u) := by ring
-        _ ≤ (1 / 4) * ((γ * u) * u) := mul_le_mul_of_nonneg_left hmul_u (by norm_num)
+        _ ≤ (1 / 4) * ((u * γ) * u) := mul_le_mul_of_nonneg_left hmul_u (by norm_num)
         _ = (γ / 4) * (u * u) := by ring
         _ = (γ / 4) * Real.sqrt N := by rw [hu2]
     -- Bound `2 * ((2 log 4) X / log X) ≤ (γ / 4) * √N`
@@ -839,12 +845,16 @@ theorem eventually_combFormW_primeSpan_sqrt_ge {K : ℕ} (hK : 1 ≤ K)
     rw [hexp_c]
     linarith
   -- 4. Combine with controlled-cost positivity producer at `2 * κ`
-  have hprod := hN₁ P id (fun _ => 0) α (fun p hp => (Nat.prime_of_mem_primesLE hp).pos)
-  have hce : (fun n => ∑ p ∈ P, α p * centeredResidue p 0 n) = c := by
-    funext n
-    exact sum_congr rfl fun p hp => by
+  have hprod0 : 2 * κ * ∑ n ∈ S, (∑ p ∈ P, α p * centeredResidue p 0 n) ^ 2 -
+      C₁ / (N : ℝ) * (∑ p ∈ P, |α p|) ^ 2 ≤
+      combFormW w S (fun n => ∑ p ∈ P, α p * centeredResidue p 0 n) :=
+    hN₁ P id (fun _ => 0) α (fun p hp => (Nat.prime_of_mem_primesLE hp).pos)
+  have hce : ∀ n, (∑ p ∈ P, α p * centeredResidue p 0 n) = c n := fun n =>
+    sum_congr rfl fun p hp => by
       rw [← centeredMultiple_eq_centeredResidue (Nat.prime_of_mem_primesLE hp).pos]
-  rw [hce] at hprod
+  have hprod : 2 * κ * ∑ n ∈ S, c n ^ 2 - C₁ / (N : ℝ) * (∑ p ∈ P, |α p|) ^ 2 ≤
+      combFormW w S c := by
+    simpa only [hce] using hprod0
   have hcost_le : C₁ / (N : ℝ) * (∑ p ∈ P, |α p|) ^ 2 ≤ κ * ∑ n ∈ S, c n ^ 2 := by
     have hcs := sq_sum_le_card_mul_sum_sq P (fun p => |α p|)
     simp only [sq_abs] at hcs
@@ -868,7 +878,11 @@ theorem eventually_combFormW_primeSpan_sqrt_ge {K : ℕ} (hK : 1 ≤ K)
             (mul_le_mul_of_nonneg_right hcard_C0 (sum_nonneg fun _ _ => sq_nonneg _))
             (by positivity)
       _ = (2 * C₁ * C₀ / (γ * (N : ℝ))) * ((γ / 2) * Real.sqrt N * ∑ p ∈ P, α p ^ 2) := by
-          field_simp [hγ.ne', hN0.ne']; ring
+          rw [show 2 * C₁ * C₀ / (γ * (N : ℝ)) = 2 * C₁ * C₀ * γ⁻¹ * (N : ℝ)⁻¹ by
+                rw [div_eq_mul_inv, mul_inv, ← mul_assoc],
+              show C₁ / (N : ℝ) = C₁ * (N : ℝ)⁻¹ from div_eq_mul_inv _ _]
+          linear_combination -(C₁ * C₀ * (N : ℝ)⁻¹ * Real.sqrt N * ∑ p ∈ P, α p ^ 2) *
+            (mul_inv_cancel₀ hγ.ne')
       _ ≤ κ * ∑ n ∈ S, c n ^ 2 :=
           mul_le_mul hcoeff hgram (by positivity) hκ.le
   linarith
@@ -902,23 +916,25 @@ theorem sum_moebius_div_Icc_ne_zero {Q : ℕ} (hQ : 2 ≤ Q) :
     obtain ⟨ht1, htQ⟩ := mem_Icc.mp htI
     have hk0 : k ≠ 0 := by rintro rfl; omega
     have hk1 : k ≠ 1 := by rintro rfl; exact htp (mul_one p)
-    have hk2 : 2 * p ≤ p * k := by nlinarith
+    have hk2_le : 2 ≤ k := by omega
+    have hk2 : 2 * p ≤ p * k := by rw [mul_comm]; exact Nat.mul_le_mul_left p hk2_le
     omega
   set L : ℕ := ∏ s ∈ E, s
   have hpL : ¬ p ∣ L := by
     intro hdvd
-    obtain ⟨s, hs, hps⟩ := hp.prime.dvd_finset_prod_iff.mp hdvd
+    obtain ⟨s, hs, hps⟩ := (hp.prime.dvd_finsetProd_iff id).mp hdvd
     exact honly s hs hps
   intro hzero
   have hp0R : (p : ℝ) ≠ 0 := by exact_mod_cast hp.ne_zero
   have hmul0 : (p : ℝ) * (L : ℝ) * ∑ t ∈ Icc 1 Q, (μ t : ℝ) / (t : ℝ) = 0 := by
     rw [hzero, mul_zero]
-  rw [← insert_erase hpQ, sum_insert (not_mem_erase p _), mul_add] at hmul0
+  rw [← add_sum_erase _ _ hpQ, mul_add] at hmul0
   have hterm_p : (p : ℝ) * (L : ℝ) * ((μ p : ℝ) / (p : ℝ)) = -((L : ℤ) : ℝ) := by
     rw [ArithmeticFunction.moebius_apply_prime hp]
     push_cast
-    field_simp [hp0R]
-    ring
+    calc (p : ℝ) * (L : ℝ) * (-1 / (p : ℝ))
+        = -(L : ℝ) * ((p : ℝ) / (p : ℝ)) := by ring
+      _ = -(L : ℝ) := by rw [div_self hp0R, mul_one]
   have hterm_E : (p : ℝ) * (L : ℝ) * ∑ t ∈ E, (μ t : ℝ) / (t : ℝ) =
       (((p : ℤ) * ∑ t ∈ E, (μ t : ℤ) * ((L / t : ℕ) : ℤ)) : ℝ) := by
     rw [mul_sum]
@@ -931,14 +947,15 @@ theorem sum_moebius_div_Icc_ne_zero {Q : ℕ} (hQ : 2 ≤ Q) :
     have hL_eq : (L : ℝ) = (t : ℝ) * ((L / t : ℕ) : ℝ) := by
       exact_mod_cast (Nat.mul_div_cancel' hdvd).symm
     rw [hL_eq]
-    field_simp [ht0R]
-    ring
+    calc (p : ℝ) * ((t : ℝ) * ((L / t : ℕ) : ℝ)) * ((μ t : ℝ) / (t : ℝ))
+        = (p : ℝ) * ((μ t : ℝ) * ((L / t : ℕ) : ℝ)) * ((t : ℝ) / (t : ℝ)) := by ring
+      _ = (p : ℝ) * ((μ t : ℝ) * ((L / t : ℕ) : ℝ)) := by rw [div_self ht0R, mul_one]
   rw [hterm_p, hterm_E] at hmul0
   have hInt_eq : ((L : ℤ) : ℝ) = (((p : ℤ) * ∑ t ∈ E, (μ t : ℤ) * ((L / t : ℕ) : ℤ)) : ℝ) := by
     linarith
   have hInt := Int.cast_injective hInt_eq
   have hdvdZ : (p : ℤ) ∣ (L : ℤ) := ⟨∑ t ∈ E, (μ t : ℤ) * ((L / t : ℕ) : ℤ), hInt⟩
-  exact hpL (Int.ofNat_dvd.mp hdvdZ)
+  exact hpL (Int.natCast_dvd_natCast.mp hdvdZ)
 
 /-- **Exact centered-divisibility spanning at macroscopic cost.** For every ratio bound
 `Q ≥ 2` there is `C_Q > 0` (independent of `N`) such that for every `N ≥ 2` and every
@@ -968,7 +985,6 @@ theorem exists_centeredMultiple_comb_representation {Q : ℕ} (hQ : 2 ≤ Q) :
     obtain ⟨hj1, hjtop⟩ := mem_Icc.mp hj
     have hm0 : 0 < m := by omega
     refine mem_Icc.mpr ⟨by nlinarith, ?_⟩
-    rw [mul_comm]
     exact (Nat.le_div_iff_mul_le hm0).mp hjtop
   have hmaps2 : ∀ t ∈ Icc 1 Q, t * N ∈ D := fun t ht => by
     obtain ⟨ht1, htQ⟩ := mem_Icc.mp ht
@@ -1003,8 +1019,14 @@ theorem exists_centeredMultiple_comb_representation {Q : ℕ} (hQ : 2 ≤ Q) :
         (∑ m ∈ S, c m * ∑ j ∈ Icc 1 ((Q * N) / m), (μ j : ℝ) * centeredMultiple (j * m) n) -
           β * ∑ t ∈ Icc 1 Q, (μ t : ℝ) * centeredMultiple (t * N) n := by
       dsimp only [α]
-      simp only [sub_mul, sum_sub_distrib, mul_assoc, ← mul_sum]
-      rw [← hfib2]
+      simp only [sub_mul, sum_sub_distrib]
+      have h2_pull : (∑ d ∈ D, (β * ∑ t ∈ (Icc 1 Q).filter (fun t => t * N = d), (μ t : ℝ)) *
+            centeredMultiple d n) =
+          β * ∑ d ∈ D, (∑ t ∈ (Icc 1 Q).filter (fun t => t * N = d), (μ t : ℝ)) *
+            centeredMultiple d n := by
+        rw [mul_sum]
+        exact sum_congr rfl fun _ _ => by ring
+      rw [h2_pull, hfib2]
       congr 1
       have hswap : (∑ d ∈ D,
             (∑ m ∈ S, ∑ j ∈ (Icc 1 ((Q * N) / m)).filter (fun j => j * m = d), c m * (μ j : ℝ)) *
@@ -1029,13 +1051,13 @@ theorem exists_centeredMultiple_comb_representation {Q : ℕ} (hQ : 2 ≤ Q) :
         rw [mul_sum, ← sum_sub_distrib]
         refine sum_congr rfl fun j _ => ?_
         rw [centeredMultiple, Nat.cast_mul]
-        simp only [one_div, div_eq_mul_inv, mul_inv]
+        simp only [div_eq_mul_inv, mul_inv]
         ring
       rw [hsplit]
       congr 1
       by_cases hmn_dvd : m ∣ n
       · obtain ⟨k, rfl⟩ := hmn_dvd
-        have hk0 : 0 < k := by rcases Nat.eq_zero_or_pos k with rfl | hk; · omega; · exact hk
+        have hk0 : 0 < k := Nat.pos_of_ne_zero (by rintro rfl; simp at hnN)
         have hktop : k ≤ (Q * N) / m :=
           (Nat.le_div_iff_mul_le hm0).mpr (by rw [mul_comm]; exact hnQN)
         have hiff_j : ∀ j : ℕ, (j * m ∣ m * k) ↔ j ∣ k := fun j => by
@@ -1052,7 +1074,7 @@ theorem exists_centeredMultiple_comb_representation {Q : ℕ} (hQ : 2 ≤ Q) :
             ∑ j ∈ k.divisors, (μ j : ℝ) := by
           rw [← hfilt, sum_filter]
           refine sum_congr rfl fun j _ => ?_
-          rw [hiff_j]
+          simp only [hiff_j]
           split_ifs <;> ring
         rw [hsum_k, sum_divisors_moebius_real k]
         have hk1_iff : (k = 1) ↔ (m = m * k) := by
@@ -1078,17 +1100,17 @@ theorem exists_centeredMultiple_comb_representation {Q : ℕ} (hQ : 2 ≤ Q) :
         rw [sum_div, ← sum_sub_distrib]
         refine sum_congr rfl fun t _ => ?_
         rw [centeredMultiple, Nat.cast_mul]
-        simp only [one_div, div_eq_mul_inv, mul_inv]
+        simp only [div_eq_mul_inv, mul_inv]
         ring
       rw [hsplit]
       suffices hz : (∑ t ∈ Icc 1 Q, (μ t : ℝ) * (if t * N ∣ n then 1 else 0)) = 0 by
-        rw [hz, zero_sub]
+        rw [hz, zero_sub, neg_div]
       by_cases hNdvd : N ∣ n
       · obtain ⟨k, rfl⟩ := hNdvd
         have hk2 : 2 ≤ k := by
           rcases k with _ | _ | k
           · simp at hnN
-          · rw [mul_one] at hnN; omega
+          · simp at hnN
           · omega
         have hkQ : k ≤ Q := Nat.le_of_mul_le_mul_right (by rw [mul_comm]; exact hnQN) hN0
         have hiff_t : ∀ t : ℕ, (t * N ∣ N * k) ↔ t ∣ k := fun t => by
@@ -1106,7 +1128,7 @@ theorem exists_centeredMultiple_comb_representation {Q : ℕ} (hQ : 2 ≤ Q) :
             ∑ t ∈ k.divisors, (μ t : ℝ) := by
           rw [← hfilt, sum_filter]
           refine sum_congr rfl fun t _ => ?_
-          rw [hiff_t]
+          simp only [hiff_t]
           split_ifs <;> ring
         rw [hsum_k, sum_divisors_moebius_real k, if_neg (by omega)]
       · exact sum_eq_zero fun t _ => by
@@ -1125,7 +1147,7 @@ theorem exists_centeredMultiple_comb_representation {Q : ℕ} (hQ : 2 ≤ Q) :
     dsimp only [β]
     have hcancel : (∑ m ∈ S, c m * γ m) * (N : ℝ) / μ_Q * (-μ_Q / (N : ℝ)) =
         -(∑ m ∈ S, c m * γ m) := by
-      field_simp [hμQ_ne, hN0R]; ring
+      field_simp [hμQ_ne, hN0R]
     linarith
   · -- Macroscopic `ℓ^1` cost bound `(∑ |α_d|)^2 ≤ C_Q * N * ∑_{n ∈ S} c(n)^2`
     have hN0R : (0 : ℝ) < N := by exact_mod_cast (show 0 < N by omega)
@@ -1144,8 +1166,9 @@ theorem exists_centeredMultiple_comb_representation {Q : ℕ} (hQ : 2 ≤ Q) :
           _ ≤ ∑ _j ∈ Icc 1 ((Q * N) / m), (1 : ℝ) := by
               refine sum_le_sum fun j hj => ?_
               have hj1 : (1 : ℝ) ≤ j := by exact_mod_cast (mem_Icc.mp hj).1
-              rw [abs_div, abs_of_pos (by positivity)]
-              exact div_le_one_of_le₀ ((abs_moebius_real_le_one j).trans hj1) (by positivity)
+              have hj0 : (0 : ℝ) < j := by linarith
+              rw [abs_div, abs_of_pos hj0]
+              exact div_le_one_of_le₀ ((abs_moebius_real_le_one j).trans hj1) hj0.le
           _ = (((Q * N) / m : ℕ) : ℝ) := by rw [sum_const, Nat.card_Icc, Nat.add_sub_cancel, nsmul_eq_mul, mul_one]
           _ ≤ (Q : ℝ) := by exact_mod_cast htopQ
       calc (1 / (m : ℝ)) * |∑ j ∈ Icc 1 ((Q * N) / m), (μ j : ℝ) / (j : ℝ)|
@@ -1168,7 +1191,7 @@ theorem exists_centeredMultiple_comb_representation {Q : ℕ} (hQ : 2 ≤ Q) :
           ≤ (((Q : ℝ) / (N : ℝ)) * ∑ m ∈ S, |c m|) * (N : ℝ) / |μ_Q| :=
             div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_right hcm hN0R.le) hμQ_abs.le
         _ = ((Q : ℝ) / |μ_Q|) * ∑ m ∈ S, |c m| := by
-            field_simp [hN0R.ne', hμQ_abs.ne']; ring
+            field_simp [hN0R.ne', hμQ_abs.ne']
     have hsum_α : ∑ d ∈ D, |α d| ≤ ((Q : ℝ) + (Q : ℝ) ^ 2 / |μ_Q|) * ∑ m ∈ S, |c m| := by
       have hpart1 : ∑ d ∈ D,
             |∑ m ∈ S, ∑ j ∈ (Icc 1 ((Q * N) / m)).filter (fun j => j * m = d), c m * (μ j : ℝ)| ≤
@@ -1295,8 +1318,8 @@ private theorem combFormW_liouville_eq_pencilCombForm_of_lt_three
             have hr2 : r ≠ 2 := fun hr2 => hn2m (by rw [hr2]; ring)
             exfalso
             have hmr : 3 * (A + 1) ≤ m * r := by
-              rw [mul_comm]; exact Nat.mul_le_mul (by omega) hmA
-            linarith
+              rw [mul_comm m r]; exact Nat.mul_le_mul (by omega) (by omega)
+            omega
           · simp [hdvd]
         · intro hnot; exact False.elim (hnot hmem_er)
       · rw [if_neg h2m, mul_zero]
@@ -1310,8 +1333,8 @@ private theorem combFormW_liouville_eq_pencilCombForm_of_lt_three
           have hr2 : r ≠ 2 := fun hr2 => h2m (by rw [← hr2, mul_comm]; exact hnW)
           exfalso
           have hmr : 3 * (A + 1) ≤ m * r := by
-            rw [mul_comm]; exact Nat.mul_le_mul (by omega) hmA
-          linarith
+            rw [mul_comm m r]; exact Nat.mul_le_mul (by omega) (by omega)
+          omega
         · simp [hdvd]
     have hsplit : (∑ n ∈ W, ∑ m ∈ W.erase n,
           c m * c n * contactW (fun k => SelectiveArithmetic.liouvilleWeight k - Λ k) m n) =
@@ -1320,6 +1343,8 @@ private theorem combFormW_liouville_eq_pencilCombForm_of_lt_three
       simp only [contactW, mul_add, sum_add_distrib]
       rw [two_mul]
       congr 1
+      rw [Finset.sum_comm' (s' := fun m => W.erase m) (t' := W) (fun n m => by
+        simp only [mem_erase]; tauto)]
       exact sum_congr rfl fun a _ => sum_congr rfl fun b _ => by ring
     rw [hsplit, hone]
     ring
@@ -1378,11 +1403,11 @@ theorem eventually_exists_liouville_centeredMultiple_neg {K : ℕ} (hK : 1 ≤ K
     have hconst : Tendsto
         (fun _b : ℕ => (1 - (-1 : ℝ)) *
           ∑ j ∈ range J, ∑ l ∈ range J,
-            σ j * σ l * GreenCalculusOfThePrimeFreeWindow.floorGraph 2 (R + j) (R + l))
+            σ j * σ l * floorGraph 2 (R + j) (R + l))
         atTop
         (𝓝 ((1 - (-1 : ℝ)) *
           ∑ j ∈ range J, ∑ l ∈ range J,
-            σ j * σ l * GreenCalculusOfThePrimeFreeWindow.floorGraph 2 (R + j) (R + l))) :=
+            σ j * σ l * floorGraph 2 (R + j) (R + l))) :=
       tendsto_const_nhds
     refine (htend_comb.add hconst).congr' ?_
     filter_upwards [eventually_ge_atTop 1] with b hb1
@@ -1421,6 +1446,7 @@ theorem eventually_exists_liouville_centeredMultiple_neg {K : ℕ} (hK : 1 ≤ K
       have hd0 : GreenCalculusOfThePrimeFreeWindow.doubleContact Wb
           (fun n => σ (blockIndex (R * (2 * b)) (2 * b) n)) = 0 :=
         sum_eq_zero fun m hm => by
+          dsimp only
           by_cases h2 : 2 * m ∈ Wb
           · rw [if_pos h2, hg0 m hm, zero_mul]
           · rw [if_neg h2]
@@ -1438,11 +1464,14 @@ theorem eventually_exists_liouville_centeredMultiple_neg {K : ℕ} (hK : 1 ≤ K
   set S := Ioc N (N + 3 * K * N)
   have hQN_eq : N + 3 * K * N = (1 + 3 * K) * N := by ring
   set b := N / (2 * R) + 1
-  have hb_ge1 : 1 ≤ b := by dsimp only [b]; omega
-  have hb_ge_b0 : b₀ ≤ b := by
-    have : b₀ ≤ N / (2 * R) :=
-      (Nat.le_div_iff_mul_le (by omega : 0 < 2 * R)).mpr (by rw [mul_comm]; linarith)
-    dsimp only [b]; omega
+  have hb_ge1 : 1 ≤ b := Nat.le_add_left 1 (N / (2 * R))
+  have hN_2Rb0 : 2 * R * b₀ ≤ N :=
+    (Nat.le_add_right (2 * R * b₀) (3 * R)).trans ((Nat.le_add_right _ 4).trans hN)
+  have hN3R : 3 * R ≤ N :=
+    (Nat.le_add_left (3 * R) (2 * R * b₀)).trans ((Nat.le_add_right _ 4).trans hN)
+  have hb_ge_b0 : b₀ ≤ b :=
+    ((Nat.le_div_iff_mul_le (by omega : 0 < 2 * R)).mpr
+      (by rw [mul_comm]; exact hN_2Rb0)).trans (Nat.le_succ _)
   set Wb := Ioc (R * (2 * b)) (R * (2 * b) + 2 * b * J)
   have hWb_sub : Wb ⊆ S := by
     refine Ioc_subset_Ioc ?_ ?_
@@ -1460,9 +1489,7 @@ theorem eventually_exists_liouville_centeredMultiple_neg {K : ℕ} (hK : 1 ≤ K
           _ ≤ (10609 * R) * (2 * b) := Nat.mul_le_mul_right _ hnat5000.le
           _ = 10609 * (2 * R * b) := by ring
           _ ≤ 10609 * (N + 2 * R) := Nat.mul_le_mul_left 10609 h2Rb_le
-          _ ≤ 5000 * (4 * N) := by
-              have hN3R : 3 * R ≤ N := by linarith
-              omega
+          _ ≤ 5000 * (4 * N) := by omega
       have htop4N : R * (2 * b) + 2 * b * J ≤ 4 * N :=
         Nat.le_of_mul_le_mul_left htop5000 (by norm_num)
       have h4N_le : 4 * N ≤ N + 3 * K * N := by
@@ -1508,7 +1535,11 @@ theorem eventually_exists_liouville_centeredMultiple_neg {K : ℕ} (hK : 1 ≤ K
     combFormW_congr _ hcg_S
   refine ⟨α, ?_, ?_, ?_, ?_⟩
   · rw [hmass_c]; exact hmass_g_pos
-  · rw [hmass_c, hQN_eq]; exact hα_cost
+  · rw [hmass_c]
+    change (∑ d ∈ Icc 2 ((1 + 3 * K) * N), |α d|) ^ 2 ≤
+      C_span * (N : ℝ) * ∑ n ∈ Ioc N (N + 3 * K * N), g n ^ 2
+    rw [hQN_eq]
+    exact hα_cost
   · rw [hform_c, hmass_c]; exact hform_g
   · have hneg : combFormW SelectiveArithmetic.liouvilleWeight S c < 0 := by
       rw [hform_c]; linarith [hform_g, hmass_g_pos]
@@ -1565,7 +1596,7 @@ theorem riemannHypothesis_iff_macroscopic_cost_centeredMultiple_debit_le_budget 
     obtain ⟨C_K, hCK_pos, hspan⟩ :=
       exists_centeredMultiple_comb_representation (Q := 1 + 3 * K) (by omega)
     refine ⟨C_K, hCK_pos, hspan, ?_⟩
-    filter_upwards [hRH K hK] with N hN α _
+    filter_upwards [hRH K hK] with N hN α S c _
     rw [mixedPrimeDebit_le_diagRealBudget_iff]
     exact hN _
   · intro h K hK

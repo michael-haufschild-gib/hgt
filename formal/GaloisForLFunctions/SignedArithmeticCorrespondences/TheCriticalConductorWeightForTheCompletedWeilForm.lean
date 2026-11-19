@@ -68,7 +68,7 @@ theorem critical_quotient_price_summable {c : ℝ} (hc : 0<c) :
 variation and the actual integrated half-jet at every cutoff. -/
 theorem critical_joint_price {c : ℝ} (hc : 0<c) :
     ∃ C : ℝ, 0≤C ∧ ∀ (N : ℕ) (a b : ℕ → ℤ),
-      (∑ k ∈ Icc 1 N, ((k:ℝ)*Real.exp (-c*Real.sqrt (Real.log k)))*|twoSidedCoefficient N a b k|) +
+      (∑ k ∈ Icc 1 N, ((k:ℝ)*Real.exp (-c*Real.sqrt (Real.log k)))* |twoSidedCoefficient N a b k|) +
         (∫ x in (0:ℝ)..1, |mixedJetSection N a b x|)/2 ≤
       C*conductorNorm N (fun i => criticalConductorWeight i*upperDivisor N a i)*
         conductorNorm N (fun i => criticalConductorWeight i*upperDivisor N b i) := by
@@ -93,14 +93,14 @@ theorem interleaved_finite_part_cubic_energy :
   have hK : 0≤K := hC.trans (le_max_left _ _)
   refine ⟨K*B,mul_nonneg hK hB,fun N a b => ?_⟩
   let w := fun k : ℕ => (k:ℝ)*Real.exp (-c*Real.sqrt (Real.log k))
-  let V := ∑ k ∈ Icc 1 N, w k*|twoSidedCoefficient N a b k|
+  let V := ∑ k ∈ Icc 1 N, w k* |twoSidedCoefficient N a b k|
   let J := (∫ x in (0:ℝ)..1, |mixedJetSection N a b x|)/2
   have h₀ : 0 ∈ range (N+1) := mem_range.mpr (Nat.succ_pos _)
   have hs : (range (N+1)).erase 0=Icc 1 N := by
     ext k
     simp only [mem_erase,mem_range,mem_Icc]
     omega
-  have hsum : (∑ k ∈ range (N+1), |twoSidedCoefficient N a b k|*w k) = V := by
+  have hsum : (∑ k ∈ range (N+1), |twoSidedCoefficient N a b k| * w k) = V := by
     rw [← sum_erase_add _ _ h₀,hs]
     simp only [w,Nat.cast_zero,zero_mul,mul_zero,add_zero]
     exact sum_congr rfl fun k _ => mul_comm _ _
@@ -109,7 +109,7 @@ theorem interleaved_finite_part_cubic_energy :
   have hJ₀ : 0≤J := div_nonneg (intervalIntegral.integral_nonneg_of_forall zero_le_one
     (fun x => abs_nonneg (mixedJetSection N a b x))) (by norm_num)
   have hp := hP N a b
-  change _ ≤ C*(∑ k ∈ range (N+1), |twoSidedCoefficient N a b k|*w k)+J at hp
+  change _ ≤ C*(∑ k ∈ range (N+1), |twoSidedCoefficient N a b k| * w k)+J at hp
   rw [hsum] at hp
   calc _ ≤ C*V+J := hp
        _ ≤ K*(V+J) := by

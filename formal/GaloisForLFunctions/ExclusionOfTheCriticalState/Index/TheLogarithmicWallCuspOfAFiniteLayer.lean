@@ -38,7 +38,7 @@ private theorem integral_Ioi_exp_neg {a : ℝ} :
   let g : ℝ → ℝ := fun x => -Real.exp (-x)
   have hd : ∀ t ∈ Ioi a, HasDerivAt g (Real.exp (-t)) t := fun t _ => by
     have h1 : HasDerivAt (fun x : ℝ => Real.exp (-x)) (-Real.exp (-t)) t :=
-      ((hasDerivAt_id t).neg.exp).congr_deriv (by ring)
+      (hasDerivAt_neg t).exp.congr_deriv (by ring)
     exact h1.neg.congr_deriv (neg_neg _)
   have hi : IntegrableOn (fun t => Real.exp (-t)) (Ioi a) := by
     simpa only [neg_one_mul] using integrableOn_exp_mul_Ioi (a := -1) neg_one_lt_zero a
@@ -84,7 +84,7 @@ private theorem integral_Ioi_mul_exp_neg :
     have h1 : HasDerivAt (fun x : ℝ => -(x + 1)) (-1) t :=
       (((hasDerivAt_id t).add_const (1 : ℝ)).neg : HasDerivAt (fun x : ℝ => -(x + 1)) (-1) t)
     have h2 : HasDerivAt (fun x : ℝ => Real.exp (-x)) (-Real.exp (-t)) t :=
-      ((hasDerivAt_id t).neg.exp).congr_deriv (by ring)
+      (hasDerivAt_neg t).exp.congr_deriv (by ring)
     exact (h1.mul h2).congr_deriv (by ring)
   have hi : IntegrableOn (fun t : ℝ => t * Real.exp (-t)) (Ioi 0) := by
     refine (integrableOn_exp_neg_half.const_mul 2).mono'
@@ -633,7 +633,7 @@ private theorem tendsto_boundaryTilt_sq_increment_div {W₀ : ℝ} (hW : 0 < W�
       div_le_div_of_nonneg_right hint hh0'.le
     calc (∫ u : ℝ, (boundaryTilt F u - boundaryTilt F (u + h)) ^ 2) / h
         ≤ (2 * I1 + 32 * Real.exp 8 * h ^ 2 * M) / h := hdiv
-      _ = 2 * (I1 / h) + 32 * Real.exp 8 * M * h := by field_simp [hh0'.ne']; ring
+      _ = 2 * (I1 / h) + 32 * Real.exp 8 * M * h := by field_simp [hh0'.ne']
 
 private theorem integrable_boundary_power {R : ℝ} (hr : 0 < R) {F : ℝ → ℝ}
     (hF : IsConfinedNullVector R F) :
@@ -656,7 +656,8 @@ private theorem tendsto_mul_setIntegral_boundary_octave {W₀ : ℝ} (hW : 0 < W
     · have h0 : Tendsto (fun U : ℝ => (2⁻¹ : ℝ) * U⁻¹) atTop (𝓝 0) := by
         simpa only [mul_zero] using (tendsto_inv_atTop_zero (𝕜 := ℝ)).const_mul (2⁻¹ : ℝ)
       exact h0.congr fun U => by ring
-    · filter_upwards [eventually_gt_atTop (0 : ℝ)] with U hU using inv_pos.mpr (by positivity)
+    · filter_upwards [eventually_gt_atTop (0 : ℝ)] with U (hU : 0 < U)
+      exact inv_pos.mpr (mul_pos two_pos hU)
   have hinc := ((tendsto_boundaryTilt_sq_increment_div hW ht hF).comp hh_tend).const_mul
     (8 * Real.pi)
   rw [mul_zero] at hinc
@@ -1067,26 +1068,28 @@ private theorem pi_sub_div_le_setIntegral_poissonKernel (γ : ℝ) {R : ℝ} (hR
       simp only [mem_Iic, mem_Ici, hiff, K, neg_sq]
     exact heq.le.trans hray_R
   have hcompl_le : ∫ u in (Ioo (-R) R)ᶜ, K u ≤ 8 / R := by
-    have hi1 : Integrable ((Iic (-R)).indicator K) :=
+    have hK_nn : ∀ x : ℝ, 0 ≤ K x := fun x => div_nonneg (by norm_num) (by positivity)
+    have hi1 : Integrable fun u => (Iic (-R)).indicator K u :=
       (hKi.integrableOn (s := Iic (-R))).integrable_indicator measurableSet_Iic
-    have hi2 : Integrable ((Ici R).indicator K) :=
+    have hi2 : Integrable fun u => (Ici R).indicator K u :=
       (hKi.integrableOn (s := Ici R)).integrable_indicator measurableSet_Ici
     have hpt : ∀ u : ℝ, ((Ioo (-R) R)ᶜ).indicator K u ≤
         (Iic (-R)).indicator K u + (Ici R).indicator K u := fun u => by
-      have hKu : 0 ≤ K u := by dsimp only [K]; positivity
       by_cases hu : u ∈ Ioo (-R) R
       · rw [indicator_of_notMem (not_notMem.mpr hu)]
-        exact add_nonneg (indicator_nonneg (fun _ _ => by dsimp only [K]; positivity) u)
-          (indicator_nonneg (fun _ _ => by dsimp only [K]; positivity) u)
+        exact add_nonneg (indicator_nonneg (fun x _ => hK_nn x) u)
+          (indicator_nonneg (fun x _ => hK_nn x) u)
       · rw [indicator_of_mem hu]
         rcases le_or_gt u (-R) with hle | hgt
         · rw [indicator_of_mem (mem_Iic.mpr hle)]
-          linarith [indicator_nonneg (fun _ _ => by dsimp only [K]; positivity) u]
+          linarith [indicator_nonneg (fun x _ => hK_nn x) u]
         · have hge : R ≤ u := not_lt.mp fun hlt => hu ⟨hgt, hlt⟩
           rw [indicator_of_mem (mem_Ici.mpr hge)]
-          linarith [indicator_nonneg (fun _ _ => by dsimp only [K]; positivity) u]
-    have hm := integral_mono (hKi.integrableOn.integrable_indicator measurableSet_Ioo.compl)
-      (hi1.add hi2) hpt
+          linarith [indicator_nonneg (fun x _ => hK_nn x) u]
+    have hm : (∫ u, ((Ioo (-R) R)ᶜ).indicator K u) ≤
+        ∫ u, ((Iic (-R)).indicator K u + (Ici R).indicator K u) :=
+      integral_mono (hKi.integrableOn.integrable_indicator measurableSet_Ioo.compl)
+        (hi1.add hi2) hpt
     rw [integral_indicator measurableSet_Ioo.compl, integral_add hi1 hi2,
       integral_indicator measurableSet_Iic, integral_indicator measurableSet_Ici] at hm
     linarith [hm, hray_L, hray_R]
@@ -1454,10 +1457,10 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
           have hy1 : γ q - η / 2 * T'' < y := hy.1
           linarith [hy1, hγT, hTT'', hηT'']
         have hnear_I : ∀ y ∈ I_q, |y - γ q| < η * y := fun y hy => by
-          rw [mem_Ioo] at hy
-          have habs : |y - γ q| < η / 2 * T'' :=
-            abs_lt.mpr ⟨by linarith [hy.1], by linarith [hy.2]⟩
           have hy_gt : T'' < y := hsub_Ioi hy
+          rw [mem_Ioo] at hy
+          have habs : |y - γ q| < R := abs_lt.mpr ⟨by linarith [hy.1], by linarith [hy.2]⟩
+          dsimp only [R] at habs
           have hηy : η * T'' < η * y := mul_lt_mul_of_pos_left hy_gt hη0
           have hηT'' : 0 < η * T'' := mul_pos hη0 hT''_pos
           linarith
@@ -1842,7 +1845,7 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
     rw [sub_zero] at hdiff
     refine hdiff.congr' ?_
     filter_upwards [eventually_ge_atTop (0 : ℝ)] with T hT
-    have hid := posFirstMoment_add_mul_posTail_eq_integral hm_sum hm_nn hT
+    have hid := posFirstMoment_add_mul_posTail_eq_integral (γ := γ) hm_sum hm_nn hT
     change (Real.log T)⁻¹ * (∫ u in Icc 0 T, posTail u) - (Real.log T)⁻¹ * (T * posTail T) = _
     rw [← mul_sub, ← hid]
     ring
@@ -1899,8 +1902,9 @@ theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 <
     · rw [abs_of_pos hgt]
       have h1 : ¬ (-T ≤ γ q ∧ γ q < 0) := fun h => absurd hgt (not_lt.mpr h.2.le)
       rw [if_neg h1, add_zero]
-      have hiff : (γ q ≤ T) ↔ (0 < γ q ∧ γ q ≤ T) := ⟨fun h => ⟨hgt, h⟩, fun h => h.2⟩
-      simp only [hiff]
+      by_cases hle : γ q ≤ T
+      · rw [if_pos hle, if_pos ⟨hgt, hle⟩]
+      · rw [if_neg hle, if_neg fun h => hle h.2]
   rw [htot_eq, hneg_eq]
   ring
 

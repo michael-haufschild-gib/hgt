@@ -56,7 +56,7 @@ are exactly the prescribed weighted masses. -/
 theorem anchored_price_test {N : ℕ} (hN : 0<N) (r w : ℕ → ℝ)
     (hr : 0≤r 1) (hw : ∀ k, 0≤w k) (m : ℕ → ℕ) :
     ∃ a b : ℕ → ℤ,
-      (∑ k ∈ Icc 1 N, w k*(m k:ℝ)) ≤ ∑ k ∈ Icc 1 N, w k*|twoSidedCoefficient N a b k| ∧
+      (∑ k ∈ Icc 1 N, w k*(m k:ℝ)) ≤ ∑ k ∈ Icc 1 N, w k* |twoSidedCoefficient N a b k| ∧
       conductorNorm N (fun i => r i*upperDivisor N a i)=r 1 ∧
       conductorNorm N (fun i => r i*upperDivisor N b i)=conductorNorm N (fun i => r i*m i) := by
   let v := fun k => (-1:ℤ)^k*(m k:ℤ)
@@ -129,7 +129,7 @@ to be square summable. The testing divisors have one lower conductor
 and signed integer upper multiplicities of finite support. -/
 theorem dual_price_summable_of_uniform_variation (r w : ℕ → ℝ) (hr : ∀ k, 0<r k)
     (hw : ∀ k, 0≤w k) {C : ℝ} (hC : 0≤C) (h : ∀ (N : ℕ) (a b : ℕ → ℤ),
-      ∑ k ∈ Icc 1 N, w k*|twoSidedCoefficient N a b k| ≤
+      ∑ k ∈ Icc 1 N, w k* |twoSidedCoefficient N a b k| ≤
         C*conductorNorm N (fun i => r i*upperDivisor N a i)*
           conductorNorm N (fun i => r i*upperDivisor N b i)) :
     Summable (fun k => (w k/r k)^2) := by
@@ -162,7 +162,7 @@ two-sided variation and integrated real jet on arbitrary signed divisors. -/
 theorem interleaved_weight_test_iff (r w : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm : Monotone r)
     (hw : ∀ k, 0≤w k) (h₁ : Summable (fun k => (1/r k)^2)) :
     (∃ C : ℝ, 0≤C ∧ ∀ (N : ℕ) (a b : ℕ → ℤ),
-      (∑ k ∈ Icc 1 N, w k*|twoSidedCoefficient N a b k|) +
+      (∑ k ∈ Icc 1 N, w k* |twoSidedCoefficient N a b k|) +
         (∫ x in (0:ℝ)..1, |mixedJetSection N a b x|)/2 ≤
         C*conductorNorm N (fun i => r i*upperDivisor N a i)*
           conductorNorm N (fun i => r i*upperDivisor N b i)) ↔

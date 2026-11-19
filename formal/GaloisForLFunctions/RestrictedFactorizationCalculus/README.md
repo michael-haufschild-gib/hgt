@@ -33,6 +33,101 @@ The principal test uses the rough Möbius row at the log-square prime cutoff. Le
 
 The two cutoff regimes test the signs. At \(y=\lfloor\log(X+1)\rfloor^2\) the weighted rough logarithmic prefix plus its centered reading equals \(-y\Psi(\lfloor X/y\rfloor,y)\) exactly. The critical Euler product obeys \(\log E_{1/2}(y)\sim 2\sqrt y/\log y\). At a polynomial cutoff \(b(n)=\lfloor n^\theta\rfloor\), \(0<\theta<1\), the bias to recover is negative. Compare \(\log X\,A_b(X)\) with \(-b(X)\Psi(\lfloor X/b(X)\rfloor,b(X))\). Here \(A_b\) sifts each integer at its own cutoff, whereas the quotient identity freezes one cutoff across the interval. [Critical Euler product](TheCriticalEulerPriceOfTheLogSquareCutoff.lean) · [Polynomial-cutoff comparison](TheSignedBiasOfOnePolynomialRoughSet.lean)
 
+## The signed boundary at a cutoff
+
+For a cutoff on the least remaining prime, write
+\[
+ F(L,U;y)=-\!\sum_{\substack{\max(1,L)<n\le U\\ P^-(n)>y}}\mu(n).
+\]
+A prime tail ends its branch. Every longer squarefree tail has a unique least prime \(p\). Writing \(P(L,U;y)=\#\{p\text{ prime}:\max(L,y)<p\le U\}\) gives the exact law
+\[
+ F(L,U;y)=P(L,U;y)-
+  \sum_{y<p\le U\atop p\ \mathrm{prime}}
+  F(\lfloor L/p\rfloor,\lfloor U/p\rfloor;p).
+\]
+Stop or expand separately at each row. At a stopped row the factor \(\sum_{d\mid\gcd(n,\prod_{p\le y}p)}\mu(d)\) selects its remaining integers exactly. At an expanded row charge the prime exits and reverse sign for the children. The total of both charges at the root is \(F\) for every stopping rule. Since matched pairs cancel, this also gives the signed count of the actual unmatched endpoints in the interval, including the unit when present. In particular, the prefix through \(X\) is \(\mathbf1_{X\ge1}-F(0,X;0)\). [Signed boundary and divisor inversion](TheSignedBoundaryOfAPrefix.lean)
+
+Full expansion visits exactly one row for the empty prefix and one for each squarefree \(1<m\le U\) with all primes above \(y\). This count includes rows whose sharp interval has no admissible tail. Every adaptive cut visits at most as many. The final obstacle is estimating the signed total of its prime exits and terminal divisor sums.
+
+At a terminal row with \(U\le y^3\), every composite tail has exactly two prime factors. For sufficiently large partial octaves of fixed logarithmic relative width the signed balance \(F\) is at least one tenth of the prime count. This sign forces transport between branches. In every large octave one least-prime branch contributes at least \(X^{3/4}/(80\log X)\). All branches with least prime in \((2X^{1/4},X^{5/16}]\) together contribute at least \(X/(200\log X)\). Every matching must account for that many vertices by unmatched endpoints in the region or by positive endpoints paired outside it. A square-root estimate cannot be obtained by bounding those branches separately in absolute value. [Signed cube-root rows and forced transport](TheSignOfCubeRootRows.lean)
+
+## The smooth term at the quotient wall
+
+Freeze the prime cutoff at \(y\ge1\), write \(\mu_y(n)=\mu(n)1_{(n,P(y))=1}\), and let \(\psi_y(t)\) count the Mangoldt weights of prime powers with base greater than \(y\). Exact divisor inversion gives
+\[
+ \sum_{n\le X}\mu_y(n)\log n
+ =-y\Psi(\lfloor X/y\rfloor,y)
+ -\sum_{m\le X/y}\mu_y(m)
+   \left[\psi_y(\lfloor X/m\rfloor)-y\left\lfloor\frac{X}{ym}\right\rfloor\right].
+\]
+Here \(\Psi(T,y)\) counts all positive integers through \(T\) with prime factors at most \(y\), including repeated factors. Rankin's inequality gives \(\Psi(T,y)\le T^s E_s(y)\). The entire first term therefore costs \(O_\varepsilon(X^{1/2+\varepsilon})\), uniformly for every \(y\le\lfloor\log(X+1)\rfloor^2\). The remaining sum reads the actual prime powers at the sharp quotient endpoints. [Exact centering and the smooth population bound](CenteringThePrimePowerReadingsAtTheirQuotientFloors.lean)
+
+With \(y=b(X)=\lfloor\log(X+1)\rfloor^2\), bounding that **single sequence of centered readings** by \(O_\varepsilon(X^{1/2+\varepsilon})\) is equivalent to the same bound for the full Mertens prefix. For any nondecreasing weight \(v\) with \(v(1)>0\), a bound \(Cv(1)n^s\) on the weighted sum at the single frozen cutoff \(b(n)\) controls every unweighted row with \(y\ge b(n)\) by \(CE_s(y)n^s\). Partial summation spends at most \(CE_s(y)n^s(v(n)-v(1))\) on smaller endpoints. The observed sum pays the remaining unit weight. For logarithmic readings, taking \(v(n)=\log(\max(2,n))\) adds exactly \(\log 2\) at the unit. Undoing the Euler factors then recovers the unrestricted prefix. [Weighted inversion](InvertingAWeightedReadingAtAMovingPrimeCutoff.lean) · [The centered prime-power criterion](OneCenteredPrimePowerReadingAtTheLogSquareCutoff.lean)
+
+## Changing the center on a whole band of quotient cells
+
+Let \(A(t)=\sum_{q\le t}a(q)\), where \(|a(q)|\le\Lambda(q)\), and put \(c=a*\mu\). The finite sum \(B_T(t)=\sum_{d\le T}c(d)\lfloor t/d\rfloor\) agrees with \(A(t)\) at every integer \(t\le T\). Subtracting it therefore removes every cofactor \(m>X/(T+1)\) from the corrected reading. Its full signed cost, including the change on all smaller cofactors, is
+\[
+ \sum_{d\le T}c(d)\Psi(\lfloor X/d\rfloor,y).
+\]
+Since \(|c(d)|\le\sum_{q\mid d}\Lambda(q)=\log d\), the absolute cost is at most \(2E_{1/2}(y)\sqrt{XT}\log T\). At the log-square wall this pays for every \(T=X^{o(1)}\) at half-plus precision, for ordinary primes, prime powers and signed masks of either. Each surviving cofactor still carries \(A(\lfloor X/m\rfloor)-B_T(\lfloor X/m\rfloor)\). [Exact elimination and its price](RemovingTerminalQuotientCellsByDivisorInversion.lean)
+
+Counting rough integers in each quotient extends this elimination to \(T=\lfloor\sqrt X\rfloor\). Write \(R_y(t)=\#\{1\le n\le t:(n,P(y))=1\}\). Its increments have Dirichlet inverse \(\mu_y\). Thus \(\sum_{d\le T}(\mu_y*a)(d)R_y(\lfloor t/d\rfloor)\) agrees with \(A(t)\) for \(t\le T\), and its entire signed contribution through \(X\) equals \(\sum_{d\le\min(T,X)}(\mu_y*a)(d)\). This costs at most \(T\log T\), uniformly in the sieve and every weight dominated by \(\Lambda\). The smaller-cofactor sum runs through \(\lfloor X/(T+1)\rfloor\). With sieve and weight fixed, the removed contribution changes only when the observation crosses a square. On \((L,U]\) it costs at most \((\lfloor\sqrt U\rfloor-\lfloor\sqrt L\rfloor)\log\lfloor\sqrt U\rfloor\). Changing either the sieve or the weight adds the signed coefficient change on the common range of divisors. [Rough counting inversion and the sharp interval bound](RoughDivisorInversionAtTheHyperbola.lean)
+
+For the full surviving prime-power weight, put \(L_y(t)=\sum_{d\le t}\mu_y(d)\log d\). The corrected smaller-cofactor sum equals \(L_y(\min(X,T))-L_y(X)\). Subtracting \(L_y(\min(X,T))\) and \(y\Psi(\lfloor X/y\rfloor,y)\) recovers the original centered reading. At the log-square wall and \(T=\lfloor\sqrt X\rfloor\), the bound \(O_\varepsilon(X^{1/2+\varepsilon})\) for this one smaller-cofactor sum is equivalent to the full Mertens bound. For every arithmetic weight the corrected sum also equals the fixed and crossing flux between \(\min(X,T)\) and \(X\) for the same exchange table. Both quotient endpoints retain the original weight. [Signed tail, fixed and crossing flux, and the Mertens criterion](TheCenteredReadingBelowTheHyperbola.lean)
+
+## Sifting each integer at its own cutoff
+
+For a nondecreasing integer function \(b\), let \(A_b(X)\) sum \(\mu(n)\) over \(n\le X\) that have no prime divisor through \(b(n)\). Put \(E_s(y)=\prod_{p\le y}(1-p^{-s})^{-1}\). If \(|A_b(n)|\le Cn^s\), then
+\[
+ |M(X)|\le 2C(b(X)+1)E_s(b(X))^2 X^s.
+\]
+Conversely, a full-prefix bound \(Cn^s\) gives \(|A_b(X)|\le4C(b(X)+1)E_s(b(X))X^s\). On a constant interval of \(b\), its sifted sum is a difference of ordinary coprime prefixes. Above that cutoff, adding a prime \(p\) leads to the smaller argument \(\lfloor X/p\rfloor\) with relative weight at most \(p^{-s}\). The factor \((1-p^{-s})^{-1}\) pays the whole recursion. Both inequalities use the same fixed arithmetic set at every sharp endpoint. [Recovery from an increasing prime cutoff](RecoveringTheMobiusPrefixFromAnIncreasingPrimeCutoff.lean)
+
+For \(b(n)=\lfloor\log(n+1)\rfloor^2\), this gives an explicit density-zero set carrying the square-root criterion. For every \(s>1/2\) and \(\eta>0\), either prefix bound of order \(X^s\) gives the other of order \(X^{s+\eta}\). Indeed, choosing \(r<1/2\) with \(s+r>1\) bounds \(\log E_s(y)\) by a constant times \(y^r\). The cost of both transfers is therefore \(X^{o(1)}\). Density zero follows by counting residues coprime to each fixed primorial. [The explicit log-square rough set](TheExplicitLogSquareRoughSet.lean)
+
+The positive and negative counts on this set have an explicit common center. Put \(\delta_y=\zeta(2)^{-1}\prod_{p\le y}(1+1/p)^{-1}\) and \(W(X)=\sum_{1\le n\le X}\delta_{b(n)}\). Their **total** is \(W(X)+O_\varepsilon(X^{1/2+\varepsilon})\) at every cutoff. At a real endpoint \(x\), subtract \(x\delta_y\) from the count of squarefree integers avoiding primes through \(y\). For a prime \(p\), the discrepancies obey \(H_{p-1}(x)=H_p(x)+H_p(x/p)\). The squarefree counting estimate at modulus one gives \(|H_y(x)|\le 4E_s(y)x^s\) for \(1/2\le s\le1\). Summing the endpoint differences over constant intervals of \(b\) proves the total estimate. Bounding the deviation of **either individual count** from \(W(X)/2\) at the same exponents is equivalent to the full Möbius square-root criterion. [Both sign counts on the explicit rough set](TheCommonMainTermOfBothRoughSignCounts.lean)
+
+## Prescribing fixed vertices and their charge
+
+A squarefree set \(S\) has density zero exactly when, for every nonnegative \(w(X)\to\infty\), one restricted matching with \(o(X)\) unpaid vertices realizes \(S\cup\{1\}\) with at most \(\min(w(X),\sqrt X)\) membership errors at every cutoff. First protect both endpoints of every edge meeting \(S\). During separated completion, a discrepancy requires an upper endpoint of a changed edge whose lower endpoint has already passed its separation threshold. [Which sparse sets can be fixed](PrescribingTheSquarefreeFixedVertices.lean)
+
+For the squarefree semiprimes, every prime image is a distinct membership error. A fixed prime is unwanted, while a moving prime has a moving semiprime as partner. Sublinear displacement therefore forces at least \(\pi(T)\) errors through every sufficiently large \(X\ge(1+\delta)T\), for each \(\delta>0\). Allowing long exchanges attains any diverging error cap \(w\). The resulting fixed charge tracks \(1+Q_2(X)\) within \(w(X)\), where \(Q_2\) counts all squarefree semiprimes. The crossing charge tracks \(M(X)-1-Q_2(X)\) with the opposite error. [The cost of fixing the semiprimes](TheCostOfFixingTheSemiprimes.lean)
+
+For any integer function \(h\) with \(h(0)=0\) and every increment zero or one, one density-one matching assigns \(h(M(X))\) to its fixed vertices and \(M(X)-h(M(X))\) to its crossings with opposite errors of magnitude at most \(1+w(X)/2\) at every cutoff. Select a fixed sign precisely when that step changes \(h\) along the original walk. The selected signs telescope. Taking \(h(a)=\max(a,0)\) separates the positive and negative excursions. Taking \(h(a)=\lfloor\alpha a\rfloor\) assigns any proportion \(0\le\alpha\le1\). [Nonlinear allocation of the Mertens prefix](NonlinearAllocationOfTheMertensPrefix.lean)
+
+**Transporting charge to distant pairs.** Fix any separation function \(T\) and any nonnegative \(w(X)\to\infty\). One perfect restricted matching outside the unit has a density-zero union of whole pairs \((n,m)\) with \(m>\max(2n,T(n))\). The ordinary signed prefix of those vertices differs from \(M(X)\) by at most \(w(X)\) for all sufficiently large \(X\). A completed pair contributes zero as soon as its upper endpoint arrives. The error counts old crossings changed during completion and the finitely many old exchanges exceeding the separation. With \(w(X)=\log X\), the sparse union retains every positive power bound of \(M\), including an attained endpoint. [Signed charge on arbitrarily long exchanges](TheSignedChargeOfArbitrarilyLongExchanges.lean)
+
+## Signed crossing bounds
+
+A change in one permitted pair can detect a sharp power bound. For \(0<a<b\), let \(D_aG(X)=G(\lfloor X/a\rfloor)\), with \(G(0)=0\). The difference \((D_a-D_b)G\) satisfies \(O(X^\theta)\) exactly when \(G\) does, for each \(\theta>0\). Evaluating at \(X=an\) leaves the smaller argument \(\lfloor an/b\rfloor\), so induction costs a geometric factor. A finite union of gcd classes has signed prefix \(\sum_{d\in E}\mu(d)D_dM_Q\), where \(M_Q\) counts only integers coprime to \(Q\). Keeping or omitting one opposite-sign pair changes this divisor sum by such a difference. At least one choice retains every positive power exponent of the incoming prefix, simultaneously. [Sharp dilation and divisor-class identities](DetectingPowerBoundsByOneExchange.lean)
+
+**The fixed signed prefix alone can detect every power.** For each \(\varepsilon>0\) there is a single involution with displacement at most \(\varepsilon n\) and eventually at most \(\varepsilon X\) fixed or crossing vertices through \(X\). For every \(\theta>0\),
+\[
+  \sum_{n\le X,\ F(n)=n}\mu(n)=O(X^\theta)
+  \quad\Longleftrightarrow\quad
+  \sum_{n\le X}\mu(n)=O(X^\theta).
+\]
+The same map works at the endpoint of the set of admissible powers. In each prime range one can omit one marked exchange or keep it. The two fixed-divisor sums differ by an invertible sharp dilation difference. Their sets of admissible exponents are nested, so one choice retains them all. After selecting the ranges, the first eligible retained exchange determines both directions of each pair. The choice compares growth classes of infinite sequences. [The Mertens exponent on one sparse fixed set](TheMertensExponentOnOneSparseFixedSet.lean)
+
+Cutting a divisor table at two walls retains an exact signed formula. In the local class \(d\mid Q\), write \(e=F(d)\). A crossing \(cd\le X<ce\) with both endpoints in \((L,U]\) has cofactor strictly above \(a=\min(b,\max(\lfloor L/d\rfloor,\lfloor X/e\rfloor))\) and at most \(b=\min(\lfloor X/d\rfloor,\lfloor U/e\rfloor)\). Its row contributes \(\mu(d)(M_Q(b)-M_Q(a))\), where \(M_Q\) is the Möbius prefix restricted to integers coprime to \(Q\). Summing over \(d\mid Q\) gives a power estimate uniform in all three cutoffs whenever the full prefix has that power. [Signed crossings between two walls](TheSignedCrossingsBetweenTwoWalls.lean)
+
+**Signed crossings can grow arbitrarily slowly.** Given any nonnegative \(w(X)\to\infty\), there is one restricted involution \(F\) of displacement \(o(n)\), with \(o(X)\) unpaid squarefree vertices and
+\[
+ \left|M(X)-\sum_{\substack{n\le X\\F(n)=n}}\mu(n)\right|
+ =\left|\sum_{n\le X<F(n)}\mu(n)\right|\le w(X)
+ \qquad\text{for every }X.
+\]
+In particular, choosing \(w(X)=\log(X+1)\) makes the signed sum on the density-zero fixed set satisfy exactly the same positive power bounds as \(M(X)\), including endpoints. The estimate controls the contribution of every moving vertex. The square-root bound for the remaining fixed signs is open. [One matching for all sharp cutoffs](ArbitrarilySlowSignedCrossingsOnOneDenseMatching.lean)
+
+Fix the modulus \(Q\) of a divisor table. The short-interval mean square for Liouville, followed by square-divisor inversion, approximates \(f(n)=\mu(n)1_{(n,Q)=1}\) in mean absolute error by a row \(g\) with bounded partial sums. For an integer cap \(J\), retain an actual sign whenever adding it keeps the running sum \(T\) in \([-J,J]\). For every comparison row with \(|\sum_{n\le X}g(n)|\le J\), the number discarded through \(X\) plus \(|T(X)-\sum_{n\le X}g(n)|\) is at most \(\sum_{n\le X}|f(n)-g(n)|\). Increasing the cap makes the discarded fraction arbitrarily small. Both ends of an exchange have the same external cofactor, so this rule retains whole edges. Each clipped divisor row reads an interval of retained signs and costs at most \(2J\). Placing successive tables on disjoint blocks above their density and cost thresholds gives the global bound. [Bounded-primitive approximation](MeanApproximationOfCoprimeMobiusRows.lean) · [Optimal sequential thinning](BoundedSignedChargeOnCoprimeCofactors.lean) · [Clipped cofactor exchanges](BoundedCrossingChargeAtEveryPairOfWalls.lean)
+
+**Which crossing bounds are attainable?** For a nondecreasing integer cap \(B(X)\), a density-one restricted matching with sublinear displacement can keep its absolute signed crossing charge below or equal to \(B(X)\) at every cutoff exactly when \(B(X)\to\infty\). More generally, fix \(K\). For every set \(S\) and either sign \(\sigma\), at every sufficiently large \(X\),
+\[
+ \#\{n\le X:n\in S,\ \mu(n)=\sigma\}
+ +\#\{n\le X:|\sum_{m\le n,\,m\notin S}\mu(m)|>K\}\ \ge c_K X .
+\]
+For each \(k\), some fixed length has positive lower densities of windows with exactly \(k\) nonzero entries, all positive or all negative. Prime-square congruences erase unwanted offsets in a family of dilations. A multiplier selects \(k\) marks with the same sign, and a fresh prime reverses every selected sign. With \(k=2K+1\), every such window meets the selected set in its own sign or has a complementary excursion at an endpoint. [Simultaneous dilation readings](SelectingMobiusSignsByDilatingOneInterval.lean) · [Positive densities of both window orientations](EqualMobiusSignsInConsecutiveWindows.lean) · [Exact crossing threshold](TheBoundedEndpointOfSignedCrossingCharge.lean)
 
 ## Where a change of fibre matters
 
@@ -84,105 +179,10 @@ The evacuated family has positive density. For every negative squarefree \(c\le 
 
 Every ordered matching can gain at least \(X/49920\) disjoint pairs while retaining all of its positive and negative endpoints. In each affected old row \(b\le X^{1/24}\), set \(T=X/b\) and reassign its prime targets to products whose smaller prime exceeds \(T^{1/16}\). There are enough such products to receive the entire prime row. Deleting their largest prime distinguishes the reassigned positives from the positives reserved for the empty fibres. Alternating transport restores every original positive. The actual unmatched set is a subset of the old one, smaller by at least \(X/24960\). One can also retain every old positive and this same gain while covering the whole empty-fibre family. [Replacement capacity](RoomForDisplacedPrimeTargets.lean) · [Strict gain over ordered matchings](StrictGainOverOrderedMatchings.lean)
 
-## The signed boundary at a cutoff
-
-For a cutoff on the least remaining prime, write
-\[
- F(L,U;y)=-\!\sum_{\substack{\max(1,L)<n\le U\\ P^-(n)>y}}\mu(n).
-\]
-A prime tail ends its branch. Every longer squarefree tail has a unique least prime \(p\). Writing \(P(L,U;y)=\#\{p\text{ prime}:\max(L,y)<p\le U\}\) gives the exact law
-\[
- F(L,U;y)=P(L,U;y)-
-  \sum_{y<p\le U\atop p\ \mathrm{prime}}
-  F(\lfloor L/p\rfloor,\lfloor U/p\rfloor;p).
-\]
-Stop or expand separately at each row. At a stopped row the factor \(\sum_{d\mid\gcd(n,\prod_{p\le y}p)}\mu(d)\) selects its remaining integers exactly. At an expanded row charge the prime exits and reverse sign for the children. The total of both charges at the root is \(F\) for every stopping rule. Since matched pairs cancel, this also gives the signed count of the actual unmatched endpoints in the interval, including the unit when present. In particular, the prefix through \(X\) is \(\mathbf1_{X\ge1}-F(0,X;0)\). [Signed boundary and divisor inversion](TheSignedBoundaryOfAPrefix.lean)
-
-Full expansion visits exactly one row for the empty prefix and one for each squarefree \(1<m\le U\) with all primes above \(y\). This count includes rows whose sharp interval has no admissible tail. Every adaptive cut visits at most as many. The final obstacle is estimating the signed total of its prime exits and terminal divisor sums.
-
-At a terminal row with \(U\le y^3\), every composite tail has exactly two prime factors. For sufficiently large partial octaves of fixed logarithmic relative width the signed balance \(F\) is at least one tenth of the prime count. This sign forces transport between branches. In every large octave one least-prime branch contributes at least \(X^{3/4}/(80\log X)\). All branches with least prime in \((2X^{1/4},X^{5/16}]\) together contribute at least \(X/(200\log X)\). Every matching must account for that many vertices by unmatched endpoints in the region or by positive endpoints paired outside it. A square-root estimate cannot be obtained by bounding those branches separately in absolute value. [Signed cube-root rows and forced transport](TheSignOfCubeRootRows.lean)
-
-A change in one permitted pair can detect a sharp power bound. For \(0<a<b\), let \(D_aG(X)=G(\lfloor X/a\rfloor)\), with \(G(0)=0\). The difference \((D_a-D_b)G\) satisfies \(O(X^\theta)\) exactly when \(G\) does, for each \(\theta>0\). Evaluating at \(X=an\) leaves the smaller argument \(\lfloor an/b\rfloor\), so induction costs a geometric factor. A finite union of gcd classes has signed prefix \(\sum_{d\in E}\mu(d)D_dM_Q\), where \(M_Q\) counts only integers coprime to \(Q\). Keeping or omitting one opposite-sign pair changes this divisor sum by such a difference. At least one choice retains every positive power exponent of the incoming prefix, simultaneously. [Sharp dilation and divisor-class identities](DetectingPowerBoundsByOneExchange.lean)
-
-**The fixed signed prefix alone can detect every power.** For each \(\varepsilon>0\) there is a single involution with displacement at most \(\varepsilon n\) and eventually at most \(\varepsilon X\) fixed or crossing vertices through \(X\). For every \(\theta>0\),
-\[
-  \sum_{n\le X,\ F(n)=n}\mu(n)=O(X^\theta)
-  \quad\Longleftrightarrow\quad
-  \sum_{n\le X}\mu(n)=O(X^\theta).
-\]
-The same map works at the endpoint of the set of admissible powers. In each prime range one can omit one marked exchange or keep it. The two fixed-divisor sums differ by an invertible sharp dilation difference. Their sets of admissible exponents are nested, so one choice retains them all. After selecting the ranges, the first eligible retained exchange determines both directions of each pair. The choice compares growth classes of infinite sequences. [The Mertens exponent on one sparse fixed set](TheMertensExponentOnOneSparseFixedSet.lean)
-
-Cutting a divisor table at two walls retains an exact signed formula. In the local class \(d\mid Q\), write \(e=F(d)\). A crossing \(cd\le X<ce\) with both endpoints in \((L,U]\) has cofactor strictly above \(a=\min(b,\max(\lfloor L/d\rfloor,\lfloor X/e\rfloor))\) and at most \(b=\min(\lfloor X/d\rfloor,\lfloor U/e\rfloor)\). Its row contributes \(\mu(d)(M_Q(b)-M_Q(a))\), where \(M_Q\) is the Möbius prefix restricted to integers coprime to \(Q\). Summing over \(d\mid Q\) gives a power estimate uniform in all three cutoffs whenever the full prefix has that power. [Signed crossings between two walls](TheSignedCrossingsBetweenTwoWalls.lean)
-
-**Signed crossings can grow arbitrarily slowly.** Given any nonnegative \(w(X)\to\infty\), there is one restricted involution \(F\) of displacement \(o(n)\), with \(o(X)\) unpaid squarefree vertices and
-\[
- \left|M(X)-\sum_{\substack{n\le X\\F(n)=n}}\mu(n)\right|
- =\left|\sum_{n\le X<F(n)}\mu(n)\right|\le w(X)
- \qquad\text{for every }X.
-\]
-In particular, choosing \(w(X)=\log(X+1)\) makes the signed sum on the density-zero fixed set satisfy exactly the same positive power bounds as \(M(X)\), including endpoints. The estimate controls the contribution of every moving vertex. The square-root bound for the remaining fixed signs is open. [One matching for all sharp cutoffs](ArbitrarilySlowSignedCrossingsOnOneDenseMatching.lean)
-
-Fix the modulus \(Q\) of a divisor table. The short-interval mean square for Liouville, followed by square-divisor inversion, approximates \(f(n)=\mu(n)1_{(n,Q)=1}\) in mean absolute error by a row \(g\) with bounded partial sums. For an integer cap \(J\), retain an actual sign whenever adding it keeps the running sum \(T\) in \([-J,J]\). For every comparison row with \(|\sum_{n\le X}g(n)|\le J\), the number discarded through \(X\) plus \(|T(X)-\sum_{n\le X}g(n)|\) is at most \(\sum_{n\le X}|f(n)-g(n)|\). Increasing the cap makes the discarded fraction arbitrarily small. Both ends of an exchange have the same external cofactor, so this rule retains whole edges. Each clipped divisor row reads an interval of retained signs and costs at most \(2J\). Placing successive tables on disjoint blocks above their density and cost thresholds gives the global bound. [Bounded-primitive approximation](MeanApproximationOfCoprimeMobiusRows.lean) · [Optimal sequential thinning](BoundedSignedChargeOnCoprimeCofactors.lean) · [Clipped cofactor exchanges](BoundedCrossingChargeAtEveryPairOfWalls.lean)
-
-**Which crossing bounds are attainable?** For a nondecreasing integer cap \(B(X)\), a density-one restricted matching with sublinear displacement can keep its absolute signed crossing charge below or equal to \(B(X)\) at every cutoff exactly when \(B(X)\to\infty\). More generally, fix \(K\). For every set \(S\) and either sign \(\sigma\), at every sufficiently large \(X\),
-\[
- \#\{n\le X:n\in S,\ \mu(n)=\sigma\}
- +\#\{n\le X:|\sum_{m\le n,\,m\notin S}\mu(m)|>K\}\ \ge c_K X .
-\]
-For each \(k\), some fixed length has positive lower densities of windows with exactly \(k\) nonzero entries, all positive or all negative. Prime-square congruences erase unwanted offsets in a family of dilations. A multiplier selects \(k\) marks with the same sign, and a fresh prime reverses every selected sign. With \(k=2K+1\), every such window meets the selected set in its own sign or has a complementary excursion at an endpoint. [Simultaneous dilation readings](SelectingMobiusSignsByDilatingOneInterval.lean) · [Positive densities of both window orientations](EqualMobiusSignsInConsecutiveWindows.lean) · [Exact crossing threshold](TheBoundedEndpointOfSignedCrossingCharge.lean)
-
-## Prescribing fixed vertices and their charge
-
-A squarefree set \(S\) has density zero exactly when, for every nonnegative \(w(X)\to\infty\), one restricted matching with \(o(X)\) unpaid vertices realizes \(S\cup\{1\}\) with at most \(\min(w(X),\sqrt X)\) membership errors at every cutoff. First protect both endpoints of every edge meeting \(S\). During separated completion, a discrepancy requires an upper endpoint of a changed edge whose lower endpoint has already passed its separation threshold. [Which sparse sets can be fixed](PrescribingTheSquarefreeFixedVertices.lean)
-
-For the squarefree semiprimes, every prime image is a distinct membership error. A fixed prime is unwanted, while a moving prime has a moving semiprime as partner. Sublinear displacement therefore forces at least \(\pi(T)\) errors through every sufficiently large \(X\ge(1+\delta)T\), for each \(\delta>0\). Allowing long exchanges attains any diverging error cap \(w\). The resulting fixed charge tracks \(1+Q_2(X)\) within \(w(X)\), where \(Q_2\) counts all squarefree semiprimes. The crossing charge tracks \(M(X)-1-Q_2(X)\) with the opposite error. [The cost of fixing the semiprimes](TheCostOfFixingTheSemiprimes.lean)
-
-For any integer function \(h\) with \(h(0)=0\) and every increment zero or one, one density-one matching assigns \(h(M(X))\) to its fixed vertices and \(M(X)-h(M(X))\) to its crossings with opposite errors of magnitude at most \(1+w(X)/2\) at every cutoff. Select a fixed sign precisely when that step changes \(h\) along the original walk. The selected signs telescope. Taking \(h(a)=\max(a,0)\) separates the positive and negative excursions. Taking \(h(a)=\lfloor\alpha a\rfloor\) assigns any proportion \(0\le\alpha\le1\). [Nonlinear allocation of the Mertens prefix](NonlinearAllocationOfTheMertensPrefix.lean)
-
-**Transporting charge to distant pairs.** Fix any separation function \(T\) and any nonnegative \(w(X)\to\infty\). One perfect restricted matching outside the unit has a density-zero union of whole pairs \((n,m)\) with \(m>\max(2n,T(n))\). The ordinary signed prefix of those vertices differs from \(M(X)\) by at most \(w(X)\) for all sufficiently large \(X\). A completed pair contributes zero as soon as its upper endpoint arrives. The error counts old crossings changed during completion and the finitely many old exchanges exceeding the separation. With \(w(X)=\log X\), the sparse union retains every positive power bound of \(M\), including an attained endpoint. [Signed charge on arbitrarily long exchanges](TheSignedChargeOfArbitrarilyLongExchanges.lean)
-
-## Sifting each integer at its own cutoff
-
-For a nondecreasing integer function \(b\), let \(A_b(X)\) sum \(\mu(n)\) over \(n\le X\) that have no prime divisor through \(b(n)\). Put \(E_s(y)=\prod_{p\le y}(1-p^{-s})^{-1}\). If \(|A_b(n)|\le Cn^s\), then
-\[
- |M(X)|\le 2C(b(X)+1)E_s(b(X))^2 X^s.
-\]
-Conversely, a full-prefix bound \(Cn^s\) gives \(|A_b(X)|\le4C(b(X)+1)E_s(b(X))X^s\). On a constant interval of \(b\), its sifted sum is a difference of ordinary coprime prefixes. Above that cutoff, adding a prime \(p\) leads to the smaller argument \(\lfloor X/p\rfloor\) with relative weight at most \(p^{-s}\). The factor \((1-p^{-s})^{-1}\) pays the whole recursion. Both inequalities use the same fixed arithmetic set at every sharp endpoint. [Recovery from an increasing prime cutoff](RecoveringTheMobiusPrefixFromAnIncreasingPrimeCutoff.lean)
-
-For \(b(n)=\lfloor\log(n+1)\rfloor^2\), this gives an explicit density-zero set carrying the square-root criterion. For every \(s>1/2\) and \(\eta>0\), either prefix bound of order \(X^s\) gives the other of order \(X^{s+\eta}\). Indeed, choosing \(r<1/2\) with \(s+r>1\) bounds \(\log E_s(y)\) by a constant times \(y^r\). The cost of both transfers is therefore \(X^{o(1)}\). Density zero follows by counting residues coprime to each fixed primorial. [The explicit log-square rough set](TheExplicitLogSquareRoughSet.lean)
-
-The positive and negative counts on this set have an explicit common center. Put \(\delta_y=\zeta(2)^{-1}\prod_{p\le y}(1+1/p)^{-1}\) and \(W(X)=\sum_{1\le n\le X}\delta_{b(n)}\). Their **total** is \(W(X)+O_\varepsilon(X^{1/2+\varepsilon})\) at every cutoff. At a real endpoint \(x\), subtract \(x\delta_y\) from the count of squarefree integers avoiding primes through \(y\). For a prime \(p\), the discrepancies obey \(H_{p-1}(x)=H_p(x)+H_p(x/p)\). The squarefree counting estimate at modulus one gives \(|H_y(x)|\le 4E_s(y)x^s\) for \(1/2\le s\le1\). Summing the endpoint differences over constant intervals of \(b\) proves the total estimate. Bounding the deviation of **either individual count** from \(W(X)/2\) at the same exponents is equivalent to the full Möbius square-root criterion. [Both sign counts on the explicit rough set](TheCommonMainTermOfBothRoughSignCounts.lean)
-
-## The smooth term at the quotient wall
-
-Freeze the prime cutoff at \(y\ge1\), write \(\mu_y(n)=\mu(n)1_{(n,P(y))=1}\), and let \(\psi_y(t)\) count the Mangoldt weights of prime powers with base greater than \(y\). Exact divisor inversion gives
-\[
- \sum_{n\le X}\mu_y(n)\log n
- =-y\Psi(\lfloor X/y\rfloor,y)
- -\sum_{m\le X/y}\mu_y(m)
-   \left[\psi_y(\lfloor X/m\rfloor)-y\left\lfloor\frac{X}{ym}\right\rfloor\right].
-\]
-Here \(\Psi(T,y)\) counts all positive integers through \(T\) with prime factors at most \(y\), including repeated factors. Rankin's inequality gives \(\Psi(T,y)\le T^s E_s(y)\). The entire first term therefore costs \(O_\varepsilon(X^{1/2+\varepsilon})\), uniformly for every \(y\le\lfloor\log(X+1)\rfloor^2\). The remaining sum reads the actual prime powers at the sharp quotient endpoints. [Exact centering and the smooth population bound](CenteringThePrimePowerReadingsAtTheirQuotientFloors.lean)
-
-With \(y=b(X)=\lfloor\log(X+1)\rfloor^2\), bounding that **single sequence of centered readings** by \(O_\varepsilon(X^{1/2+\varepsilon})\) is equivalent to the same bound for the full Mertens prefix. For any nondecreasing weight \(v\) with \(v(1)>0\), a bound \(Cv(1)n^s\) on the weighted sum at the single frozen cutoff \(b(n)\) controls every unweighted row with \(y\ge b(n)\) by \(CE_s(y)n^s\). Partial summation spends at most \(CE_s(y)n^s(v(n)-v(1))\) on smaller endpoints. The observed sum pays the remaining unit weight. For logarithmic readings, taking \(v(n)=\log(\max(2,n))\) adds exactly \(\log 2\) at the unit. Undoing the Euler factors then recovers the unrestricted prefix. [Weighted inversion](InvertingAWeightedReadingAtAMovingPrimeCutoff.lean) · [The centered prime-power criterion](OneCenteredPrimePowerReadingAtTheLogSquareCutoff.lean)
-
-## Changing the center on a whole band of quotient cells
-
-Let \(A(t)=\sum_{q\le t}a(q)\), where \(|a(q)|\le\Lambda(q)\), and put \(c=a*\mu\). The finite sum \(B_T(t)=\sum_{d\le T}c(d)\lfloor t/d\rfloor\) agrees with \(A(t)\) at every integer \(t\le T\). Subtracting it therefore removes every cofactor \(m>X/(T+1)\) from the corrected reading. Its full signed cost, including the change on all smaller cofactors, is
-\[
- \sum_{d\le T}c(d)\Psi(\lfloor X/d\rfloor,y).
-\]
-Since \(|c(d)|\le\sum_{q\mid d}\Lambda(q)=\log d\), the absolute cost is at most \(2E_{1/2}(y)\sqrt{XT}\log T\). At the log-square wall this pays for every \(T=X^{o(1)}\) at half-plus precision, for ordinary primes, prime powers and signed masks of either. Each surviving cofactor still carries \(A(\lfloor X/m\rfloor)-B_T(\lfloor X/m\rfloor)\). [Exact elimination and its price](RemovingTerminalQuotientCellsByDivisorInversion.lean)
-
-Counting rough integers in each quotient extends this elimination to \(T=\lfloor\sqrt X\rfloor\). Write \(R_y(t)=\#\{1\le n\le t:(n,P(y))=1\}\). Its increments have Dirichlet inverse \(\mu_y\). Thus \(\sum_{d\le T}(\mu_y*a)(d)R_y(\lfloor t/d\rfloor)\) agrees with \(A(t)\) for \(t\le T\), and its entire signed contribution through \(X\) equals \(\sum_{d\le\min(T,X)}(\mu_y*a)(d)\). This costs at most \(T\log T\), uniformly in the sieve and every weight dominated by \(\Lambda\). The smaller-cofactor sum runs through \(\lfloor X/(T+1)\rfloor\). With sieve and weight fixed, the removed contribution changes only when the observation crosses a square. On \((L,U]\) it costs at most \((\lfloor\sqrt U\rfloor-\lfloor\sqrt L\rfloor)\log\lfloor\sqrt U\rfloor\). Changing either the sieve or the weight adds the signed coefficient change on the common range of divisors. [Rough counting inversion and the sharp interval bound](RoughDivisorInversionAtTheHyperbola.lean)
-
-For the full surviving prime-power weight, put \(L_y(t)=\sum_{d\le t}\mu_y(d)\log d\). The corrected smaller-cofactor sum equals \(L_y(\min(X,T))-L_y(X)\). Subtracting \(L_y(\min(X,T))\) and \(y\Psi(\lfloor X/y\rfloor,y)\) recovers the original centered reading. At the log-square wall and \(T=\lfloor\sqrt X\rfloor\), the bound \(O_\varepsilon(X^{1/2+\varepsilon})\) for this one smaller-cofactor sum is equivalent to the full Mertens bound. For every arithmetic weight the corrected sum also equals the fixed and crossing flux between \(\min(X,T)\) and \(X\) for the same exchange table. Both quotient endpoints retain the original weight. [Signed tail, fixed and crossing flux, and the Mertens criterion](TheCenteredReadingBelowTheHyperbola.lean)
-
 ## Open questions and success criteria
 
-* Can one group of reversible exchanges lower the exponent on a growing range of quotient cells for the prime-power and exact-floor readings together? Both interval endpoints, exceptional divisor classes, changes of reading and the signed fixed contribution enter the estimate.
-* Can the same operation recover the negative smooth bias at a polynomial prime cutoff and the exact negative smooth center at the log-square cutoff, then bound the recombined residual at every endpoint?
-
+* Can one group of reversible exchanges bound the corrected prime-power reading on \(m\le\lfloor X/(\lfloor\sqrt X\rfloor+1)\rfloor\) by \(O_\varepsilon(X^{1/2+\varepsilon})\) at every log-square cutoff? The equivalent signed tail is \(L_y(\lfloor\sqrt X\rfloor)-L_y(X)\). Both interval endpoints, exceptional divisor classes, changes of reading and signed fixed vertices enter the estimate.
+* Which growing sets of quotient cells admit an exponent gain for ordinary primes and prime powers under the same exchange? The signs of the polynomial bias and the log-square center test the proposed transfer.
 * Between the proved logarithmic saving and the obstruction to every power saving, what joint decay of the unpaid fraction and relative displacement can one involution attain?
 * Can the largest-pair rows receive every excess of a maximum ordered matching, including excesses in nonempty fibres? For each new cofactor, the demand is a sum of positive parts of the old rows' deficiencies. A comparison of their signed totals can underestimate that demand.
 * Which stopped rows must cancel against each other or against the prime boundary? The estimate must hold at **every** cutoff. For one global involution the unsigned power theorem forces cancellation between unpaid vertices.

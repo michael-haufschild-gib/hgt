@@ -119,8 +119,8 @@ theorem reflected_shell_reciprocal_harmonics {t ε : ℝ} (ht : 1/2 ≤ t) (ht1 
   have hLB := Real.log_le_log (by exact_mod_cast hA1.trans hAB : (0:ℝ)<B) hBx
   have hLB0 := Real.log_natCast_nonneg B
   have hlogs : 5*D*(1+Real.log B)^4 ≤ P η :=
-    (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by linarith only [hLB0]) (add_le_add_left hLB 1) 4)
-      (by positivity)).trans hlog
+    (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by linarith only [hLB0]) (add_le_add_right hLB 1) 4)
+      (show 0 ≤ 5*D by positivity)).trans hlog
   apply henv'.trans (hacc.trans ?_)
   calc _ ≤ P η*P (t+2*η) := mul_le_mul hlogs (mono hpert) (pos _).le (pos _).le
        _ ≤ _ := by rw [mult]; exact mono (by linarith only [hη4,hη])
@@ -183,7 +183,8 @@ theorem reflected_shell_mangoldt_saw {t ε : ℝ} (ht : 1/2 ≤ t) (ht1 : t < 1)
   let G (h : ℤ) := ∑ j ∈ Ico A B,(vonMangoldt j:ℂ)*fourier h ((k*x/(j:ℝ):ℝ) : UnitAddCircle)
   have hpos {h : ℤ} (hh : 0 < h) (hhH : h.natAbs ≤ H) : ‖G h‖ ≤ P (t+ε/3) := by
     have hhr : (1:ℝ) ≤ h := by exact_mod_cast hh
-    have hcast : (h:ℝ)=(h.natAbs:ℝ) := by exact_mod_cast (Int.natAbs_of_nonneg hh.le).symm
+    have hcast : (h:ℝ)=(h.natAbs:ℝ) := by
+      rw [Nat.cast_natAbs,Int.cast_abs,abs_of_nonneg (Int.cast_nonneg.mpr hh.le)]
     have hhup : (h:ℝ) ≤ P b := hcast.le.trans ((Nat.cast_le.mpr hhH).trans hHle)
     let S := 2*Real.pi*h*k*x
     have hcoef : 1 ≤ 2*Real.pi*h*k := by
@@ -227,7 +228,7 @@ theorem reflected_shell_mangoldt_saw {t ε : ℝ} (ht : 1/2 ≤ t) (ht1 : t < 1)
   have hz := Real.log_nonneg hx
   have haz : P t ≤ (1+Real.log x)*P (t+ε/3) := hpm.trans
     (le_mul_of_one_le_left (pos _).le (by linarith only [hz]))
-  have hmix := mul_le_mul_of_nonneg_left (add_le_add_left hHlog 1) (pos (t+ε/3)).le
+  have hmix := mul_le_mul_of_nonneg_left (add_le_add_right hHlog 1) (pos (t+ε/3)).le
   have hprice : δ*(14*P a)+P (t+ε/3)*(1+Real.log H)+(14*P a)/δ/H ≤
       43*((1+Real.log x)*P (t+ε/3)) := by
     rw [hprec]

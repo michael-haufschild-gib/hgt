@@ -1084,23 +1084,23 @@ private theorem reflectedComposite_violated_of_mode_approx {F : ℝ → ℝ} {z 
       unfold midpointSecondDiff; dsimp [R]; ring
     conv_lhs => rw [hF_split]
     rw [clippedCofactorSliceOp_add, hmid_add]
+    set B₀ := (clippedCofactorOp n P (fun x => x + quartetWaveModel z m x) -
+        reflectedDensity * (n.totient : ℝ) -
+        midpointSecondDiff n (fun x => x + quartetWaveModel z m x)) -
+      2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
+        ((n : ℝ) : ℂ) ^ z).re
     have hid_tot :
         (clippedCofactorOp n P (fun x => x + quartetWaveModel z m x) + clippedCofactorOp n P R -
             reflectedDensity * (n.totient : ℝ) -
             (midpointSecondDiff n (fun x => x + quartetWaveModel z m x) + midpointSecondDiff n R)) -
           2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
             ((n : ℝ) : ℂ) ^ z).re =
-        ((clippedCofactorOp n P (fun x => x + quartetWaveModel z m x) -
-            reflectedDensity * (n.totient : ℝ) -
-            midpointSecondDiff n (fun x => x + quartetWaveModel z m x)) -
-          2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
-            ((n : ℝ) : ℂ) ^ z).re) +
-          clippedCofactorOp n P R - midpointSecondDiff n R := by ring
+        B₀ + clippedCofactorOp n P R - midpointSecondDiff n R := by dsimp [B₀]; ring
     change |(clippedCofactorOp n P (fun x => x + quartetWaveModel z m x) +
           clippedCofactorOp n P R - reflectedDensity * (n.totient : ℝ) - _) - _| ≤ _
     rw [hid_tot]
-    have htri := (abs_sub _ (midpointSecondDiff n R)).trans
-      (add_le_add (abs_add_le _ (clippedCofactorOp n P R)) le_rfl)
+    have htri := (abs_sub (B₀ + clippedCofactorOp n P R) (midpointSecondDiff n R)).trans
+      (add_le_add (abs_add_le B₀ (clippedCofactorOp n P R)) le_rfl)
     rw [show K_err =
       2 * (68 + 6 * |m| * waveTransmissionRate z) + (64 * C / (1 - σ) + 16 * C) * B_lg from rfl]
     linarith only [htri, hbase', hclip_R, hmid_R]
@@ -1126,9 +1126,12 @@ private theorem reflectedComposite_violated_of_mode_approx {F : ℝ → ℝ} {z 
   have hosc_ge : 2 * c₀ * (n : ℝ) ^ z.re ≤
       |2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
         ((n : ℝ) : ℂ) ^ z).re| := by
-    rw [show c₀ = |m| * c from rfl, abs_mul, abs_mul, abs_of_pos two_pos, mul_assoc]
-    exact mul_le_mul_of_nonneg_left
-      ((mul_le_mul_of_nonneg_left hpk (abs_nonneg m)).trans_eq (by ring)) zero_le_two
+    rw [show c₀ = |m| * c from rfl, abs_mul, abs_mul, abs_of_pos two_pos]
+    calc 2 * (|m| * c) * (n : ℝ) ^ z.re
+        = 2 * |m| * (c * (n : ℝ) ^ z.re) := by ring
+      _ ≤ 2 * |m| * |((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
+            ((n : ℝ) : ℂ) ^ z).re| :=
+          mul_le_mul_of_nonneg_left hpk (mul_nonneg zero_le_two (abs_nonneg m))
   have hrpow_n : K_err / c₀ ≤ (n : ℝ) ^ (z.re - η) :=
     hbig.trans (Real.rpow_le_rpow (by positivity) (by exact_mod_cast hn_ge_pk) hgap.le)
   have hK_le : K_err * (n : ℝ) ^ η ≤ c₀ * (n : ℝ) ^ z.re := by
@@ -1247,16 +1250,18 @@ private theorem reflectedComposite_theta_perturbation_violated {Δ : ℝ → ℝ
       rw [hF_op, hG_op, hF_mid, hG_mid]; ring
     rw [hid_eq]
     have hcent := large_prime_cofactor_centering hn1_lt hP_2n
-    rw [hmass2] at hcent
+    rw [← squarefreeDivisorMass, hmass2] at hcent
     have hcent_cost :
         7 * (P : ℝ) + (Chebyshev.psi (4 * n : ℕ) - Chebyshev.theta (4 * n : ℕ)) + 1 ≤
           (15 + 2 * |A_pt|) * Real.sqrt n := by
       have hsq4 : Real.sqrt (4 * n : ℕ) = 2 * Real.sqrt n := by
         rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num),
           show Real.sqrt 4 = 2 by norm_num]
-      have hpt := (hA_pt (4 * n : ℕ)).trans
-        ((mul_le_mul_of_nonneg_right (le_abs_self A_pt) (Real.sqrt_nonneg _)).trans_eq
-          (by rw [hsq4]; ring))
+      have hpt : Chebyshev.psi (4 * n : ℕ) - Chebyshev.theta (4 * n : ℕ) ≤
+          2 * |A_pt| * Real.sqrt n :=
+        (hA_pt (4 * n : ℕ)).trans
+          ((mul_le_mul_of_nonneg_right (le_abs_self A_pt) (Real.sqrt_nonneg _)).trans_eq
+            (by rw [hsq4]; ring))
       linarith only [hhi, hsq1, hpt]
     have hcent' : |largePrimeCofactorPrice n P - reflectedDensity * (n.totient : ℝ) -
         primeMidpointPrice n| ≤ 2 * (15 + 2 * |A_pt|) * Real.sqrt n :=
@@ -1273,7 +1278,9 @@ private theorem reflectedComposite_theta_perturbation_violated {Δ : ℝ → ℝ
     have hlin' : |clippedCofactorOp n P id - reflectedDensity * (n.totient : ℝ)| ≤
         136 * Real.sqrt n :=
       hlin.trans ((mul_le_mul_of_nonneg_right hlin_cost zero_le_two).trans_eq (by ring))
-    have htri := abs_sub _ _
+    have htri := abs_sub
+      (largePrimeCofactorPrice n P - reflectedDensity * (n.totient : ℝ) - primeMidpointPrice n)
+      (clippedCofactorOp n P id - reflectedDensity * (n.totient : ℝ))
     dsimp [K_θid]
     linarith only [htri, hcent', hlin']
   have hgap : 0 < z.re - 1 / 2 := sub_pos.mpr hz0
@@ -2153,13 +2160,13 @@ theorem noSimpleSingleOffLineQuartet_tfae :
           (le_mul_of_one_le_right (by positivity) (one_le_pow₀ hl1)))
       set U := oddCompositeBaseline ⌊x⌋₊ - oddCompositePrimeMass ⌊x⌋₊ +
         2 * ((x : ℂ) ^ ρ₀ / ρ₀).re
+      set V := (oddCompositeBaseline ⌊x⌋₊ - oddCompositePrimeMass ⌊x⌋₊) - (Chebyshev.psi x - x)
       have hid : Chebyshev.theta x - x + 2 * ((x : ℂ) ^ ρ₀ / ρ₀).re =
-          U - ((oddCompositeBaseline ⌊x⌋₊ - oddCompositePrimeMass ⌊x⌋₊) - (Chebyshev.psi x - x)) -
-            (Chebyshev.psi x - Chebyshev.theta x) := by
-        dsimp [U]; ring
+          U - V - (Chebyshev.psi x - Chebyshev.theta x) := by
+        dsimp [U, V]; ring
       rw [hid]
-      have htri := (abs_sub _ (Chebyshev.psi x - Chebyshev.theta x)).trans
-        (add_le_add (abs_sub U _) le_rfl)
+      have htri := (abs_sub (U - V) (Chebyshev.psi x - Chebyshev.theta x)).trans
+        (add_le_add (abs_sub U V) le_rfl)
       linarith only [htri, hK x hx, hd_odd, hd_pt]
     have h8 := unit_theta_wave_implies_radial_and_236 hβ hβ1 hγ hθ
     rcases h5 β γ hβ hβ1 hγ with h | h | h | h

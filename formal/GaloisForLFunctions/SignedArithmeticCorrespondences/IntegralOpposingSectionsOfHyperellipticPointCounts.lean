@@ -32,9 +32,7 @@ private abbrev ev (z : ℂ) : ℤ[X] →+* ℂ := eval₂RingHom (Int.castRingHo
 
 private theorem ev_expansion (P : ℤ[X]) (z : ℂ) :
     ev z P = ∑ j ∈ P.support, (P.coeff j:ℂ)*z^j := by
-  change P.eval₂ (Int.castRingHom ℂ) z = _
-  rw [eval₂_eq_sum]
-  rfl
+  exact eval₂_eq_sum (p := P) (f := Int.castRingHom ℂ) (x := z)
 
 private theorem ev_C (z : ℂ) (c : ℤ) : ev z (C c) = (c:ℂ) := eval₂_C ..
 

@@ -23,6 +23,7 @@ private theorem firstPrimeReadingAbove_clip (P U n : ℕ) :
   have zero (r : ℕ) (h : k ≤ r) : ordinaryFactorTail (max 4 r) k
       (cappedCoprimeSlice 1 1 k (max (productLower 1 k) U) n)=0 := by
     simp [ordinaryFactorTail,Ioc_eq_empty_of_le (h.trans (le_max_right _ _))]
+  beta_reduce
   rw [zero P ((mem_Icc.mp hk).2.trans (le_of_not_ge hP)),zero _ (mem_Icc.mp hk).2]
 
 private theorem uniform_first_prime_cut_price :

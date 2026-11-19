@@ -835,6 +835,176 @@ private theorem tailEnergy_phaseMix_bounds (φ : ℝ) (g w : CompactPulse) (u : 
   rw [hew] at hb
   exact hb
 
+private theorem meanZero_add {g w : CompactPulse}
+    (hg : meanCoefficient g = 0) (hw : meanCoefficient w = 0) :
+    meanCoefficient (g.add w) = 0 := by
+  rw [meanCoefficient, pulseAmplitude_add]
+  have h1 : pulseAmplitude g (-I * (1 / 2)) = 0 := by
+    rw [meanCoefficient] at hg
+    exact (mul_eq_zero.mp hg).resolve_left (by norm_num)
+  have h2 : pulseAmplitude w (-I * (1 / 2)) = 0 := by
+    rw [meanCoefficient] at hw
+    exact (mul_eq_zero.mp hw).resolve_left (by norm_num)
+  rw [h1, h2]; simp
+
+private theorem meanZero_smul (c : ℂ) {w : CompactPulse} (hw : meanCoefficient w = 0) :
+    meanCoefficient (CompactPulse.smul c w) = 0 := by
+  rw [meanCoefficient, pulseAmplitude_smul,
+    show 6 * (c * pulseAmplitude w (-I * (1 / 2))) = c * meanCoefficient w by
+      rw [meanCoefficient]; ring,
+    hw, mul_zero]
+
+private theorem meanZero_phaseMix (φ : ℝ) {g w : CompactPulse}
+    (hg : meanCoefficient g = 0) (hw : meanCoefficient w = 0) :
+    meanCoefficient (g.phaseMix φ w) = 0 :=
+  meanZero_add hg (meanZero_smul _ hw)
+
+private theorem meanZero_l2_eq_tailEnergy_early (h : CompactPulse) {S₀ : ℝ}
+    (hm : meanCoefficient h = 0) (hs : ∀ s : ℝ, S₀ < |s| → h s = 0) :
+    (∫ S : ℝ, ‖h S‖ ^ 2) = tailEnergy h (-(S₀ + 1)) := by
+  have hint := integrable_norm_sq_pulseReflected h
+  have hall := integral_add_compl (s := Ioi (-(S₀ + 1))) measurableSet_Ioi hint
+  rw [integral_norm_sq_pulseReflected h, compl_Ioi] at hall
+  have h0 : (∫ u in Iic (-(S₀ + 1)), ‖pulseReflected h u‖ ^ 2) = 0 := by
+    rw [← setIntegral_congr_set Iio_ae_eq_Iic]
+    refine setIntegral_eq_zero_of_forall_eq_zero fun u hu => ?_
+    have he := h.pulseEcho_eq u
+    rw [hm, zero_mul, add_zero] at he
+    rw [← he, h.pulseEcho_eq_zero (fun s hs' => hs s (by linarith)) hu,
+      norm_zero, sq, mul_zero]
+  unfold tailEnergy
+  linarith
+
+private theorem exists_tolerance_for_stall {θ : ℝ} (hθ : θ < 1) :
+    ∃ δ : ℝ, 0 < δ ∧ δ ≤ 1 / 16 ∧ θ * (1 + δ) ^ 2 < (1 - δ) ^ 2 := by
+  set δ : ℝ := (1 - max θ 0) / 16
+  have hδ0 : 0 < δ := by
+    have : max θ 0 < 1 := max_lt hθ zero_lt_one
+    dsimp only [δ]; linarith
+  have hδ1 : δ ≤ 1 / 16 := by
+    have : 0 ≤ max θ 0 := le_max_right _ _
+    dsimp only [δ]; linarith
+  refine ⟨δ, hδ0, hδ1, ?_⟩
+  have hθm : θ ≤ 1 - 16 * δ := by
+    have : θ ≤ max θ 0 := le_max_left _ _
+    dsimp only [δ]; linarith
+  have h1 : θ * (1 + δ) ^ 2 ≤ (1 - 16 * δ) * (1 + δ) ^ 2 :=
+    mul_le_mul_of_nonneg_right hθm (sq_nonneg _)
+  nlinarith [sq_nonneg δ, mul_pos hδ0 (sq_pos_of_pos hδ0)]
+
+private theorem exists_scaled_trapping_pulse {S₀ μ δ : ℝ}
+    (hS₀ : 0 < S₀) (hμ : 0 < μ) (hδ0 : 0 < δ) (hδ1 : δ ≤ 1 / 16) (B : ℝ) :
+    ∃ w : CompactPulse,
+      meanCoefficient w = 0 ∧
+      (∀ s : ℝ, S₀ < |s| → w s = 0) ∧
+      (∫ S : ℝ, ‖w S‖ ^ 2) = μ ∧
+      (∀ u : ℝ, tailEnergy w u ≤ μ) ∧
+      (1 - δ / 2) ^ 2 * μ ≤ tailEnergy w B := by
+  have hE₀_pos := integral_norm_sq_scaledBumpPulse_pos hS₀
+  have htrap_lim : Tendsto (fun Ω : ℝ =>
+      tailEnergy (cuspTrappingPulse S₀ hS₀ Ω) B -
+        (1 - δ / 2) ^ 2 * ∫ S : ℝ, ‖cuspTrappingPulse S₀ hS₀ Ω S‖ ^ 2) atTop
+      (𝓝 ((1 - (1 - δ / 2) ^ 2) * ∫ S : ℝ, ‖scaledBumpPulse S₀ hS₀ S‖ ^ 2)) := by
+    have ht1 : Tendsto (fun Ω : ℝ => tailEnergy (cuspTrappingPulse S₀ hS₀ Ω) B)
+        atTop (𝓝 (∫ S : ℝ, ‖scaledBumpPulse S₀ hS₀ S‖ ^ 2)) :=
+      (tendsto_tailEnergy_cuspTrappingPulse_sublogarithmic hS₀ B
+        (α := 0) (by norm_num)).congr fun Ω => by simp
+    have ht2 := (tendsto_integral_norm_sq_cuspTrappingPulse hS₀).const_mul ((1 - δ / 2) ^ 2)
+    convert ht1.sub ht2 using 2; ring
+  have hlim_pos : 0 < (1 - (1 - δ / 2) ^ 2) * ∫ S : ℝ, ‖scaledBumpPulse S₀ hS₀ S‖ ^ 2 :=
+    mul_pos (by nlinarith) hE₀_pos
+  obtain ⟨Ω, _, hp_pos, hp_trap⟩ :=
+    ((eventually_ge_atTop (1 : ℝ)).and
+      (((tendsto_integral_norm_sq_cuspTrappingPulse hS₀).eventually
+          (eventually_gt_nhds (half_lt_self hE₀_pos))).and
+        (htrap_lim.eventually (eventually_gt_nhds hlim_pos)))).exists
+  set p := cuspTrappingPulse S₀ hS₀ Ω
+  set Ep₀ : ℝ := ∫ S : ℝ, ‖p S‖ ^ 2
+  have hEp₀_pos : 0 < Ep₀ := lt_trans (by positivity) hp_pos
+  set cw : ℝ := Real.sqrt (μ / Ep₀)
+  have hcw_pos : 0 < cw := Real.sqrt_pos.mpr (div_pos hμ hEp₀_pos)
+  set w := CompactPulse.smul (cw : ℂ) p
+  have hcw_sq : cw ^ 2 * Ep₀ = μ := by
+    dsimp only [cw]
+    rw [Real.sq_sqrt (div_nonneg hμ.le hEp₀_pos.le), div_mul_cancel₀ _ hEp₀_pos.ne']
+  have hw_l2 : (∫ S : ℝ, ‖w S‖ ^ 2) = μ := by
+    have hpt : ∀ S : ℝ, ‖w S‖ ^ 2 = cw ^ 2 * ‖p S‖ ^ 2 := fun S => by
+      dsimp only [w]
+      rw [CompactPulse.smul_apply, norm_mul, Complex.norm_real,
+        Real.norm_of_nonneg hcw_pos.le, mul_pow]
+    simp_rw [hpt, integral_const_mul]
+    exact hcw_sq
+  have hw_energy : ∀ u : ℝ, tailEnergy w u = cw ^ 2 * tailEnergy p u := by
+    intro u
+    unfold tailEnergy
+    rw [← integral_const_mul]
+    refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
+    rw [pulseReflected_smul, norm_mul, Complex.norm_real, Real.norm_of_nonneg hcw_pos.le, mul_pow]
+  refine ⟨w, meanZero_smul _ (meanCoefficient_cuspTrappingPulse hS₀ Ω),
+    fun s hs => by simp [w, p, cuspTrappingPulse_eq_zero_of_le hS₀ Ω hs.le], hw_l2,
+    fun u => ?_, ?_⟩
+  · rw [hw_energy u, ← hcw_sq]
+    exact mul_le_mul_of_nonneg_left (tailEnergy_le_initial p u) (sq_nonneg cw)
+  · rw [hw_energy B, ← hcw_sq]
+    have hp_ineq : (1 - δ / 2) ^ 2 * Ep₀ ≤ tailEnergy p B := by linarith
+    exact mul_le_mul_of_nonneg_left hp_ineq (sq_nonneg cw)
+
+private theorem dominant_stall_bound {g w : CompactPulse} {T L μ δ θ : ℝ}
+    (hL : 0 < L) (hμ : 0 < μ) (hδ0 : 0 < δ) (hδ1 : δ ≤ 1 / 16)
+    (hθ_ratio : θ * (1 + δ) ^ 2 < (1 - δ) ^ 2)
+    (hgT : tailEnergy g T ≤ (δ / 2) ^ 2 * μ)
+    (hwT : tailEnergy w T ≤ μ)
+    (hwTL : (1 - δ / 2) ^ 2 * μ ≤ tailEnergy w (T + L))
+    (φ : ℝ) :
+    0 < tailEnergy (g.phaseMix φ w) T ∧
+      tailEnergy (g.phaseMix φ w) T ≤ 2 * μ ∧
+      θ < tailEnergy (g.phaseMix φ w) (T + L) / tailEnergy (g.phaseMix φ w) T := by
+  have hbT := tailEnergy_phaseMix_bounds φ g w T
+  have hbTL := tailEnergy_phaseMix_bounds φ g w (T + L)
+  have hsqrt_μ_pos : 0 < Real.sqrt μ := Real.sqrt_pos.mpr hμ
+  have hsqrt_gT : Real.sqrt (tailEnergy g T) ≤ (δ / 2) * Real.sqrt μ := by
+    have := Real.sqrt_le_sqrt hgT
+    rwa [Real.sqrt_mul (by positivity), Real.sqrt_sq (by positivity)] at this
+  have hsqrt_gTL : Real.sqrt (tailEnergy g (T + L)) ≤ (δ / 2) * Real.sqrt μ :=
+    (Real.sqrt_le_sqrt (tailEnergy_anti g (by linarith))).trans hsqrt_gT
+  have hsqrt_wT : Real.sqrt (tailEnergy w T) ≤ Real.sqrt μ := Real.sqrt_le_sqrt hwT
+  have hsqrt_wTL : (1 - δ / 2) * Real.sqrt μ ≤ Real.sqrt (tailEnergy w (T + L)) := by
+    have := Real.sqrt_le_sqrt hwTL
+    rwa [Real.sqrt_mul (by linarith), Real.sqrt_sq (by linarith)] at this
+  have hETL_lo : (1 - δ) ^ 2 * μ ≤ tailEnergy (g.phaseMix φ w) (T + L) := by
+    have hnn : 0 ≤ (1 - δ) * Real.sqrt μ := mul_nonneg (by linarith) hsqrt_μ_pos.le
+    have hsub : (1 - δ) * Real.sqrt μ ≤
+        Real.sqrt (tailEnergy w (T + L)) - Real.sqrt (tailEnergy g (T + L)) := by
+      have : (1 - δ) * Real.sqrt μ = (1 - δ / 2) * Real.sqrt μ - (δ / 2) * Real.sqrt μ := by ring
+      linarith
+    have hsq := (pow_le_pow_left₀ hnn hsub 2).trans hbTL.1
+    rwa [mul_pow, Real.sq_sqrt hμ.le] at hsq
+  have hET_hi : tailEnergy (g.phaseMix φ w) T ≤ (1 + δ) ^ 2 * μ := by
+    have hsum : Real.sqrt (tailEnergy w T) + Real.sqrt (tailEnergy g T) ≤
+        (1 + δ) * Real.sqrt μ := by
+      have hd_le : (δ / 2) * Real.sqrt μ ≤ δ * Real.sqrt μ :=
+        mul_le_mul_of_nonneg_right (by linarith) hsqrt_μ_pos.le
+      linarith
+    have hsq := hbT.2.trans (pow_le_pow_left₀ (by positivity) hsum 2)
+    rwa [mul_pow, Real.sq_sqrt hμ.le] at hsq
+  have hETL_pos : 0 < tailEnergy (g.phaseMix φ w) (T + L) :=
+    lt_of_lt_of_le (mul_pos (sq_pos_of_pos (by linarith)) hμ) hETL_lo
+  have hET_pos : 0 < tailEnergy (g.phaseMix φ w) T :=
+    lt_of_lt_of_le hETL_pos (tailEnergy_anti _ (by linarith))
+  have hET_2μ : tailEnergy (g.phaseMix φ w) T ≤ 2 * μ := by
+    have h1d : (1 + δ) ^ 2 ≤ 2 := by nlinarith
+    exact hET_hi.trans (by nlinarith)
+  refine ⟨hET_pos, hET_2μ, ?_⟩
+  rw [lt_div_iff₀ hET_pos]
+  by_cases hθ0 : θ ≤ 0
+  · exact lt_of_le_of_lt (mul_nonpos_of_nonpos_of_nonneg hθ0 hET_pos.le) hETL_pos
+  · push Not at hθ0
+    calc θ * tailEnergy (g.phaseMix φ w) T
+        ≤ θ * ((1 + δ) ^ 2 * μ) := mul_le_mul_of_nonneg_left hET_hi hθ0.le
+      _ = (θ * (1 + δ) ^ 2) * μ := by ring
+      _ < (1 - δ) ^ 2 * μ := mul_lt_mul_of_pos_right hθ_ratio hμ
+      _ ≤ tailEnergy (g.phaseMix φ w) (T + L) := hETL_lo
+
 /-- **Falsification 2 (Deep-Tail Phase-Uniform Two-Pulse Superposition Falsifier).**
 For every support half-width `S₀ > 0`, step `L > 0`, onset `T₀ ∈ ℝ`, deep-tail escape fraction
 `η ∈ (0, 1)` (arbitrarily small), and contraction factor `θ < 1`, there exist mean-zero compact
@@ -855,164 +1025,244 @@ theorem exists_two_pulse_deep_tail_contraction_falsifier {S₀ L η : ℝ}
         tailEnergy (g.phaseMix φ w) T ≤ η * (∫ S : ℝ, ‖(g.phaseMix φ w) S‖ ^ 2) ∧
         θ < tailEnergy (g.phaseMix φ w) (T + L) / tailEnergy (g.phaseMix φ w) T := by
   have hE₀_pos := integral_norm_sq_scaledBumpPulse_pos hS₀
-  -- Step 1: Pick nonzero mean-zero anchor pulse `g` supported in `[-S₀, S₀]`
   obtain ⟨Ω₁, _, hg_pos⟩ :=
     ((eventually_ge_atTop (1 : ℝ)).and
       ((tendsto_integral_norm_sq_cuspTrappingPulse hS₀).eventually
         (eventually_gt_nhds (half_lt_self hE₀_pos)))).exists
   set g := cuspTrappingPulse S₀ hS₀ Ω₁
+  have hg_m : meanCoefficient g = 0 := meanCoefficient_cuspTrappingPulse hS₀ Ω₁
+  have hg_s : ∀ s : ℝ, S₀ < |s| → g s = 0 :=
+    fun s hs => cuspTrappingPulse_eq_zero_of_le hS₀ Ω₁ hs.le
   set Eg₀ : ℝ := ∫ S : ℝ, ‖g S‖ ^ 2
   have hEg₀_pos : 0 < Eg₀ := lt_trans (by positivity) hg_pos
-  -- Step 2: Set target `w` energy `μ = (η / 16) * Eg₀` and tolerance `δ ∈ (0, 1/16]`
   set μ : ℝ := (η / 16) * Eg₀
   have hμ_pos : 0 < μ := by dsimp only [μ]; positivity
-  set δ : ℝ := (1 - max θ 0) / 16
-  have hδ_pos : 0 < δ := by
-    have : max θ 0 < 1 := max_lt hθ zero_lt_one
-    dsimp only [δ]; linarith
-  have hδ_le : δ ≤ 1 / 16 := by
-    have : 0 ≤ max θ 0 := le_max_right _ _
-    dsimp only [δ]; linarith
-  have hθ_ratio : θ * (1 + δ) ^ 2 < (1 - δ) ^ 2 := by
-    have hθm : θ ≤ 1 - 16 * δ := by
-      have : θ ≤ max θ 0 := le_max_left _ _
-      dsimp only [δ]; linarith
-    have h1 : θ * (1 + δ) ^ 2 ≤ (1 - 16 * δ) * (1 + δ) ^ 2 :=
-      mul_le_mul_of_nonneg_right hθm (sq_nonneg _)
-    nlinarith [sq_nonneg δ, mul_pos hδ_pos (sq_pos_of_pos hδ_pos)]
-  -- Step 3: Choose `T ≥ max T₀ 0` so `tailEnergy g T < (δ / 2)^2 * μ`
+  obtain ⟨δ, hδ0, hδ1, hθ_ratio⟩ := exists_tolerance_for_stall hθ
   obtain ⟨T, hT_ge, hEgT⟩ :=
     ((eventually_ge_atTop (max T₀ 0)).and
       ((tendsto_tailEnergy_atTop g).eventually
         (eventually_lt_nhds (by positivity : 0 < (δ / 2) ^ 2 * μ)))).exists
-  -- Step 4: Choose `Ω₂` so `p = cuspTrappingPulse S₀ hS₀ Ω₂` traps `(1 - δ / 2)^2` past `T + L`
-  have htrap_lim : Tendsto (fun Ω : ℝ =>
-      tailEnergy (cuspTrappingPulse S₀ hS₀ Ω) (T + L) -
-        (1 - δ / 2) ^ 2 * ∫ S : ℝ, ‖cuspTrappingPulse S₀ hS₀ Ω S‖ ^ 2) atTop
-      (𝓝 ((1 - (1 - δ / 2) ^ 2) * ∫ S : ℝ, ‖scaledBumpPulse S₀ hS₀ S‖ ^ 2)) := by
-    have ht1 : Tendsto (fun Ω : ℝ => tailEnergy (cuspTrappingPulse S₀ hS₀ Ω) (T + L))
-        atTop (𝓝 (∫ S : ℝ, ‖scaledBumpPulse S₀ hS₀ S‖ ^ 2)) :=
-      (tendsto_tailEnergy_cuspTrappingPulse_sublogarithmic hS₀ (T + L)
-        (α := 0) (by norm_num)).congr fun Ω => by simp
-    have ht2 := (tendsto_integral_norm_sq_cuspTrappingPulse hS₀).const_mul ((1 - δ / 2) ^ 2)
-    convert ht1.sub ht2 using 2; ring
-  have hlim_pos : 0 < (1 - (1 - δ / 2) ^ 2) * ∫ S : ℝ, ‖scaledBumpPulse S₀ hS₀ S‖ ^ 2 :=
-    mul_pos (by nlinarith) hE₀_pos
-  obtain ⟨Ω₂, _, hp_pos, hp_trap⟩ :=
-    ((eventually_ge_atTop (1 : ℝ)).and
-      (((tendsto_integral_norm_sq_cuspTrappingPulse hS₀).eventually
-          (eventually_gt_nhds (half_lt_self hE₀_pos))).and
-        (htrap_lim.eventually (eventually_gt_nhds hlim_pos)))).exists
-  set p := cuspTrappingPulse S₀ hS₀ Ω₂
-  set Ep₀ : ℝ := ∫ S : ℝ, ‖p S‖ ^ 2
-  have hEp₀_pos : 0 < Ep₀ := lt_trans (by positivity) hp_pos
-  set cw : ℝ := Real.sqrt (μ / Ep₀)
-  have hcw_pos : 0 < cw := Real.sqrt_pos.mpr (div_pos hμ_pos hEp₀_pos)
-  set w := CompactPulse.smul (cw : ℂ) p
-  have hcw_sq : cw ^ 2 * Ep₀ = μ := by
-    dsimp only [cw]
-    rw [Real.sq_sqrt (div_nonneg hμ_pos.le hEp₀_pos.le), div_mul_cancel₀ _ hEp₀_pos.ne']
-  have hw_mean : meanCoefficient w = 0 := by
-    rw [meanCoefficient, pulseAmplitude_smul,
-      show 6 * ((cw : ℂ) * pulseAmplitude p (-I * (1 / 2))) = (cw : ℂ) * meanCoefficient p by
-        rw [meanCoefficient]; ring,
-      meanCoefficient_cuspTrappingPulse hS₀ Ω₂, mul_zero]
-  have hw_supp : ∀ s : ℝ, S₀ < |s| → w s = 0 := fun s hs => by
-    simp [w, p, cuspTrappingPulse_eq_zero_of_le hS₀ Ω₂ hs.le]
-  have hw_energy : ∀ u : ℝ, tailEnergy w u = cw ^ 2 * tailEnergy p u := by
-    intro u
-    unfold tailEnergy
-    rw [← integral_const_mul]
-    refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
-    rw [pulseReflected_smul, norm_mul, Complex.norm_real, Real.norm_of_nonneg hcw_pos.le, mul_pow]
-  have hEw_hi : tailEnergy w T ≤ μ := by
-    rw [hw_energy T, ← hcw_sq]
-    exact mul_le_mul_of_nonneg_left (tailEnergy_le_initial p T) (sq_nonneg cw)
-  have hEw_lo : (1 - δ / 2) ^ 2 * μ ≤ tailEnergy w (T + L) := by
-    rw [hw_energy (T + L), ← hcw_sq]
-    have hp_ineq : (1 - δ / 2) ^ 2 * Ep₀ ≤ tailEnergy p (T + L) := by linarith
-    have := mul_le_mul_of_nonneg_left hp_ineq (sq_nonneg cw)
-    linarith
-  refine ⟨g, w, T, meanCoefficient_cuspTrappingPulse hS₀ Ω₁, hw_mean,
-    fun s hs => cuspTrappingPulse_eq_zero_of_le hS₀ Ω₁ hs.le, hw_supp, hT_ge, fun φ => ?_⟩
-  -- Bounds on `E_{g + e^{iφ} w}(T)` and `E_{g + e^{iφ} w}(T + L)`
-  have hbT := tailEnergy_phaseMix_bounds φ g w T
-  have hbTL := tailEnergy_phaseMix_bounds φ g w (T + L)
-  have hsqrt_gT : Real.sqrt (tailEnergy g T) ≤ (δ / 2) * Real.sqrt μ := by
-    have := Real.sqrt_le_sqrt hEgT.le
-    rwa [Real.sqrt_mul (by positivity), Real.sqrt_sq (by positivity)] at this
-  have hsqrt_gTL : Real.sqrt (tailEnergy g (T + L)) ≤ (δ / 2) * Real.sqrt μ :=
-    (Real.sqrt_le_sqrt (tailEnergy_anti g (by linarith))).trans hsqrt_gT
-  have hsqrt_wT : Real.sqrt (tailEnergy w T) ≤ Real.sqrt μ := Real.sqrt_le_sqrt hEw_hi
-  have hsqrt_wTL : (1 - δ / 2) * Real.sqrt μ ≤ Real.sqrt (tailEnergy w (T + L)) := by
-    have := Real.sqrt_le_sqrt hEw_lo
-    rwa [Real.sqrt_mul (by positivity), Real.sqrt_sq (by linarith)] at this
-  have hETL_lo : ((1 - δ) * Real.sqrt μ) ^ 2 ≤ tailEnergy (g.phaseMix φ w) (T + L) := by
-    refine (pow_le_pow_left₀ (by positivity) ?_ 2).trans hbTL.1
-    linarith
-  have hET_hi : tailEnergy (g.phaseMix φ w) T ≤ ((1 + δ) * Real.sqrt μ) ^ 2 := by
-    refine hbT.2.trans (pow_le_pow_left₀ (by positivity) ?_ 2)
-    linarith [Real.sqrt_nonneg μ]
-  have hETL_pos : 0 < tailEnergy (g.phaseMix φ w) (T + L) := by
-    have : 0 < ((1 - δ) * Real.sqrt μ) ^ 2 := sq_pos_of_pos (mul_pos (by linarith)
-      (Real.sqrt_pos.mpr hμ_pos))
-    linarith
-  have hET_pos : 0 < tailEnergy (g.phaseMix φ w) T :=
-    lt_of_lt_of_le hETL_pos (tailEnergy_anti _ (by linarith))
-  -- Lower bound on total initial `L²` norm of `g.phaseMix φ w`
-  have hinit_lo : (1 / 2) * Eg₀ - μ ≤ ∫ S : ℝ, ‖(g.phaseMix φ w) S‖ ^ 2 := by
-    have hg_i : Integrable fun S : ℝ => ‖g S‖ ^ 2 :=
-      (memLp_two_pulse g).integrable_norm_pow (by norm_num)
-    have hp_i : Integrable fun S : ℝ => ‖p S‖ ^ 2 :=
-      (memLp_two_pulse p).integrable_norm_pow (by norm_num)
-    have hmix_i : Integrable fun S : ℝ => ‖(g.phaseMix φ w) S‖ ^ 2 :=
-      (memLp_two_pulse (g.phaseMix φ w)).integrable_norm_pow (by norm_num)
-    have hpt : ∀ S : ℝ, (1 / 2) * ‖g S‖ ^ 2 - cw ^ 2 * ‖p S‖ ^ 2 ≤
-        ‖(g.phaseMix φ w) S‖ ^ 2 := by
-      intro S
-      rw [CompactPulse.phaseMix_apply]
-      set z₁ : ℂ := g S
-      set z₂ : ℂ := Complex.exp (I * (φ : ℂ)) * w S
-      have hz₂_sq : ‖z₂‖ ^ 2 = cw ^ 2 * ‖p S‖ ^ 2 := by
-        dsimp only [z₂, w]
-        rw [norm_mul, CompactPulse.smul_apply, norm_mul, mul_comm I,
-          Complex.norm_exp_ofReal_mul_I, one_mul, Complex.norm_real,
-          Real.norm_of_nonneg hcw_pos.le, mul_pow]
-      rw [← hz₂_sq, ← Complex.normSq_eq_norm_sq, ← Complex.normSq_eq_norm_sq,
-        ← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.normSq_apply,
-        Complex.normSq_apply, Complex.add_re, Complex.add_im]
-      nlinarith [sq_nonneg (z₁.re + 2 * z₂.re), sq_nonneg (z₁.im + 2 * z₂.im)]
-    have hint_le := integral_mono ((hg_i.const_mul (1 / 2)).sub (hp_i.const_mul (cw ^ 2)))
-      hmix_i hpt
-    rw [integral_sub (hg_i.const_mul (1 / 2)) (hp_i.const_mul (cw ^ 2)),
-      integral_const_mul, integral_const_mul] at hint_le
-    dsimp only [Eg₀, Ep₀] at *
-    linarith
+  obtain ⟨w, hw_m, hw_s, hw_l2, hw_hi, hw_lo⟩ :=
+    exists_scaled_trapping_pulse hS₀ hμ_pos hδ0 hδ1 (T + L)
+  refine ⟨g, w, T, hg_m, hw_m, hg_s, hw_s, hT_ge, fun φ => ?_⟩
+  obtain ⟨hET_pos, hET_2μ, hstall⟩ :=
+    dominant_stall_bound hL hμ_pos hδ0 hδ1 hθ_ratio hEgT.le (hw_hi T) hw_lo φ
+  have hmix_s : ∀ s : ℝ, S₀ < |s| → (g.phaseMix φ w) s = 0 := fun s hs => by
+    simp [hg_s s hs, hw_s s hs]
+  have hinit_lo : (1 / 2) * Eg₀ ≤ ∫ S : ℝ, ‖(g.phaseMix φ w) S‖ ^ 2 := by
+    rw [meanZero_l2_eq_tailEnergy_early (g.phaseMix φ w) (meanZero_phaseMix φ hg_m hw_m) hmix_s]
+    have hb_early := (tailEnergy_phaseMix_bounds φ g w (-(S₀ + 1))).1
+    rw [← meanZero_l2_eq_tailEnergy_early g hg_m hg_s,
+      ← meanZero_l2_eq_tailEnergy_early w hw_m hw_s, hw_l2] at hb_early
+    have hsqrt_μ_le : Real.sqrt μ ≤ (1 / 4) * Real.sqrt Eg₀ := by
+      have h1 : μ ≤ (1 / 16) * Eg₀ := by dsimp only [μ]; nlinarith
+      have h2 := Real.sqrt_le_sqrt h1
+      rw [Real.sqrt_mul (by norm_num), show Real.sqrt (1 / 16 : ℝ) = 1 / 4 by
+        rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 1 / 4)]; congr 1; norm_num] at h2
+      exact h2
+    have hsub : (3 / 4) * Real.sqrt Eg₀ ≤ Real.sqrt Eg₀ - Real.sqrt μ := by
+      linarith [Real.sqrt_nonneg Eg₀]
+    have hsq := pow_le_pow_left₀ (by positivity) hsub 2
+    rw [mul_pow, Real.sq_sqrt hEg₀_pos.le,
+      show (Real.sqrt μ - Real.sqrt Eg₀) ^ 2 = (Real.sqrt Eg₀ - Real.sqrt μ) ^ 2 by ring] at hb_early hsq
+    nlinarith
   have hdeep : tailEnergy (g.phaseMix φ w) T ≤ η * ∫ S : ℝ, ‖(g.phaseMix φ w) S‖ ^ 2 := by
-    have h1 : ((1 + δ) * Real.sqrt μ) ^ 2 ≤ 2 * μ := by
-      rw [mul_pow, Real.sq_sqrt hμ_pos.le]
-      nlinarith
-    have h2 : 2 * μ ≤ η * ((1 / 2) * Eg₀ - μ) := by
-      dsimp only [μ]
-      nlinarith
-    exact hET_hi.trans (h1.trans (h2.trans (mul_le_mul_of_nonneg_left hinit_lo hη0.le)))
-  have hstall : θ < tailEnergy (g.phaseMix φ w) (T + L) / tailEnergy (g.phaseMix φ w) T := by
-    rw [lt_div_iff₀ hET_pos]
-    have h1 : ((1 - δ) * Real.sqrt μ) ^ 2 = (1 - δ) ^ 2 * μ := by
-      rw [mul_pow, Real.sq_sqrt hμ_pos.le]
-    have h2 : ((1 + δ) * Real.sqrt μ) ^ 2 = (1 + δ) ^ 2 * μ := by
-      rw [mul_pow, Real.sq_sqrt hμ_pos.le]
-    rw [h1] at hETL_lo
-    rw [h2] at hET_hi
-    by_cases hθ0 : θ ≤ 0
-    · exact lt_of_le_of_lt (mul_nonpos_of_nonpos_of_nonneg hθ0 hET_pos.le) hETL_pos
-    · push Not at hθ0
-      calc θ * tailEnergy (g.phaseMix φ w) T
-          ≤ θ * ((1 + δ) ^ 2 * μ) := mul_le_mul_of_nonneg_left hET_hi hθ0.le
-        _ = (θ * (1 + δ) ^ 2) * μ := by ring
-        _ < (1 - δ) ^ 2 * μ := mul_lt_mul_of_pos_right hθ_ratio hμ_pos
-        _ ≤ tailEnergy (g.phaseMix φ w) (T + L) := hETL_lo
+    have h2 : 2 * μ ≤ η * ((1 / 2) * Eg₀) := by dsimp only [μ]; nlinarith
+    exact hET_2μ.trans (h2.trans (mul_le_mul_of_nonneg_left hinit_lo hη0.le))
   exact ⟨hET_pos, hdeep, hstall⟩
+
+private theorem staircase_step {K : ℕ} {S₀ L η θ : ℝ}
+    (hS₀ : 0 < S₀) (hL : 0 < L) (hη0 : 0 < η) (hθ : θ < 1)
+    {h : CompactPulse} {T : Fin (K + 1) → ℝ}
+    (hh_m : meanCoefficient h = 0) (hh_s : ∀ s : ℝ, S₀ < |s| → h s = 0)
+    (hT0 : 0 ≤ T 0) (hsep : ∀ j : Fin K, T j.castSucc + L < T j.succ)
+    (hinit : tailEnergy h (T 0) < η * (∫ S : ℝ, ‖h S‖ ^ 2))
+    (hinter : ∀ j : Fin K, tailEnergy h (T j.succ) < η * tailEnergy h (T j.castSucc + L))
+    (hstall : ∀ i : Fin (K + 1), θ < tailEnergy h (T i + L) / tailEnergy h (T i)) :
+    ∃ (h' : CompactPulse) (T' : Fin (K + 2) → ℝ),
+      meanCoefficient h' = 0 ∧
+      (∀ s : ℝ, S₀ < |s| → h' s = 0) ∧
+      0 ≤ T' 0 ∧
+      (∀ j : Fin (K + 1), T' j.castSucc + L < T' j.succ) ∧
+      tailEnergy h' (T' 0) < η * (∫ S : ℝ, ‖h' S‖ ^ 2) ∧
+      (∀ j : Fin (K + 1), tailEnergy h' (T' j.succ) < η * tailEnergy h' (T' j.castSucc + L)) ∧
+      (∀ i : Fin (K + 2), θ < tailEnergy h' (T' i + L) / tailEnergy h' (T' i)) := by
+  have hh_ne : ∃ S : ℝ, h S ≠ 0 := by
+    by_contra hall; push Not at hall
+    have hp0 : pulseReflected h = 0 := by
+      funext u
+      have heq : h = CompactPulse.zero := by cases h; congr; funext S; exact hall S
+      rw [heq, pulseReflected_zero]; rfl
+    have hE0 : tailEnergy h (T 0) = 0 := by unfold tailEnergy; simp [hp0]
+    have hI0 : (∫ S : ℝ, ‖h S‖ ^ 2) = 0 := by simp [hall]
+    rw [hE0, hI0, mul_zero] at hinit
+    exact lt_irrefl 0 hinit
+  have hev_init : ∀ᶠ r : ℝ in 𝓝 (0 : ℝ),
+      (Real.sqrt (tailEnergy h (T 0)) + |r|) ^ 2 <
+        η * (max (Real.sqrt (∫ S : ℝ, ‖h S‖ ^ 2) - |r|) 0) ^ 2 := by
+    have hc : Continuous fun r : ℝ =>
+        (Real.sqrt (tailEnergy h (T 0)) + |r|) ^ 2 -
+          η * (max (Real.sqrt (∫ S : ℝ, ‖h S‖ ^ 2) - |r|) 0) ^ 2 := by fun_prop
+    have hv : (Real.sqrt (tailEnergy h (T 0)) + |(0 : ℝ)|) ^ 2 -
+        η * (max (Real.sqrt (∫ S : ℝ, ‖h S‖ ^ 2) - |(0 : ℝ)|) 0) ^ 2 < 0 := by
+      have hI_nn : 0 ≤ ∫ S : ℝ, ‖h S‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
+      simp only [abs_zero, add_zero, sub_zero, max_eq_left (Real.sqrt_nonneg _),
+        Real.sq_sqrt (tailEnergy_nonneg h (T 0)), Real.sq_sqrt hI_nn]
+      linarith
+    exact ((hc.tendsto 0).eventually (eventually_lt_nhds hv)).mono fun _ hr => sub_neg.mp hr
+  have hev_inter : ∀ j : Fin K, ∀ᶠ r : ℝ in 𝓝 (0 : ℝ),
+      (Real.sqrt (tailEnergy h (T j.succ)) + |r|) ^ 2 <
+        η * (max (Real.sqrt (tailEnergy h (T j.castSucc + L)) - |r|) 0) ^ 2 := by
+    intro j
+    have hc : Continuous fun r : ℝ =>
+        (Real.sqrt (tailEnergy h (T j.succ)) + |r|) ^ 2 -
+          η * (max (Real.sqrt (tailEnergy h (T j.castSucc + L)) - |r|) 0) ^ 2 := by fun_prop
+    have hv : (Real.sqrt (tailEnergy h (T j.succ)) + |(0 : ℝ)|) ^ 2 -
+        η * (max (Real.sqrt (tailEnergy h (T j.castSucc + L)) - |(0 : ℝ)|) 0) ^ 2 < 0 := by
+      simp only [abs_zero, add_zero, sub_zero, max_eq_left (Real.sqrt_nonneg _),
+        Real.sq_sqrt (tailEnergy_nonneg h _)]
+      linarith [hinter j]
+    exact ((hc.tendsto 0).eventually (eventually_lt_nhds hv)).mono fun _ hr => sub_neg.mp hr
+  have hev_stall : ∀ i : Fin (K + 1), ∀ᶠ r : ℝ in 𝓝 (0 : ℝ),
+      max θ 0 * (Real.sqrt (tailEnergy h (T i)) + |r|) ^ 2 <
+        (max (Real.sqrt (tailEnergy h (T i + L)) - |r|) 0) ^ 2 ∧
+        0 < max (Real.sqrt (tailEnergy h (T i + L)) - |r|) 0 := by
+    intro i
+    have hET_pos := tailEnergy_pos h hh_ne (T i)
+    have hETL_pos := tailEnergy_pos h hh_ne (T i + L)
+    have hst_i := hstall i
+    rw [lt_div_iff₀ hET_pos] at hst_i
+    have hst_max : max θ 0 * tailEnergy h (T i) < tailEnergy h (T i + L) := by
+      rcases le_or_gt θ 0 with hθ0 | hθ0
+      · rw [max_eq_right hθ0, zero_mul]; exact hETL_pos
+      · rw [max_eq_left hθ0.le]; exact hst_i
+    have hc1 : Continuous fun r : ℝ =>
+        max θ 0 * (Real.sqrt (tailEnergy h (T i)) + |r|) ^ 2 -
+          (max (Real.sqrt (tailEnergy h (T i + L)) - |r|) 0) ^ 2 := by fun_prop
+    have hv1 : max θ 0 * (Real.sqrt (tailEnergy h (T i)) + |(0 : ℝ)|) ^ 2 -
+        (max (Real.sqrt (tailEnergy h (T i + L)) - |(0 : ℝ)|) 0) ^ 2 < 0 := by
+      simp only [abs_zero, add_zero, sub_zero, max_eq_left (Real.sqrt_nonneg _),
+        Real.sq_sqrt hET_pos.le, Real.sq_sqrt hETL_pos.le]
+      linarith
+    have hc2 : Continuous fun r : ℝ => max (Real.sqrt (tailEnergy h (T i + L)) - |r|) 0 := by
+      fun_prop
+    have hv2 : 0 < max (Real.sqrt (tailEnergy h (T i + L)) - |(0 : ℝ)|) 0 := by
+      simp only [abs_zero, sub_zero, max_eq_left (Real.sqrt_nonneg _)]
+      exact Real.sqrt_pos.mpr hETL_pos
+    exact ((hc1.tendsto 0).eventually (eventually_lt_nhds hv1)).mp
+      (((hc2.tendsto 0).eventually (eventually_gt_nhds hv2)).mono fun _ h2 h1 =>
+        ⟨sub_neg.mp h1, h2⟩)
+  have hE_last_pos : 0 < tailEnergy h (T (Fin.last K) + L) := tailEnergy_pos h hh_ne _
+  have hev_last : ∀ᶠ r : ℝ in 𝓝 (0 : ℝ),
+      2 * r ^ 2 < η * (max (Real.sqrt (tailEnergy h (T (Fin.last K) + L)) - |r|) 0) ^ 2 := by
+    have hc : Continuous fun r : ℝ =>
+        2 * r ^ 2 - η * (max (Real.sqrt (tailEnergy h (T (Fin.last K) + L)) - |r|) 0) ^ 2 := by
+      fun_prop
+    have hv : 2 * (0 : ℝ) ^ 2 -
+        η * (max (Real.sqrt (tailEnergy h (T (Fin.last K) + L)) - |(0 : ℝ)|) 0) ^ 2 < 0 := by
+      simp only [abs_zero, sub_zero, max_eq_left (Real.sqrt_nonneg _),
+        Real.sq_sqrt hE_last_pos.le]
+      have : 0 < η * tailEnergy h (T (Fin.last K) + L) := mul_pos hη0 hE_last_pos
+      linarith
+    exact ((hc.tendsto 0).eventually (eventually_lt_nhds hv)).mono fun _ hr => sub_neg.mp hr
+  have hev_all := hev_init.and ((Filter.eventually_all.mpr hev_inter).and
+    ((Filter.eventually_all.mpr hev_stall).and hev_last))
+  obtain ⟨ρ_rad, hρ_pos, hball⟩ := Metric.eventually_nhds_iff.mp hev_all
+  set r₀ : ℝ := ρ_rad / 2
+  have hr₀_pos : 0 < r₀ := half_pos hρ_pos
+  obtain ⟨hr_init, hr_inter, hr_stall, hr_last⟩ :=
+    hball (y := r₀) (by rw [Real.dist_eq, sub_zero, abs_of_pos hr₀_pos]; exact half_lt_self hρ_pos)
+  rw [abs_of_pos hr₀_pos] at hr_init hr_last
+  obtain ⟨δ, hδ0, hδ1, hθ_ratio⟩ := exists_tolerance_for_stall hθ
+  obtain ⟨T_next, hT_next_gt, hEh_next⟩ :=
+    ((eventually_gt_atTop (T (Fin.last K) + L)).and
+      ((tendsto_tailEnergy_atTop h).eventually
+        (eventually_lt_nhds (by positivity : 0 < (δ / 2) ^ 2 * r₀ ^ 2)))).exists
+  obtain ⟨w, hw_m, hw_s, _, hw_le, hw_trap⟩ :=
+    exists_scaled_trapping_pulse hS₀ (sq_pos_of_pos hr₀_pos) hδ0 hδ1 (T_next + L)
+  have hsqrt_w_le : ∀ u : ℝ, Real.sqrt (tailEnergy w u) ≤ r₀ := fun u => by
+    have := Real.sqrt_le_sqrt (hw_le u)
+    rwa [Real.sqrt_sq hr₀_pos.le] at this
+  have hE_up : ∀ u : ℝ, tailEnergy (h.add w) u ≤ (Real.sqrt (tailEnergy h u) + r₀) ^ 2 := fun u =>
+    (tailEnergy_add_bounds h w u).2.trans
+      (pow_le_pow_left₀ (by positivity) (by linarith [hsqrt_w_le u]) 2)
+  have hE_lo : ∀ u : ℝ,
+      (max (Real.sqrt (tailEnergy h u) - r₀) 0) ^ 2 ≤ tailEnergy (h.add w) u := by
+    intro u
+    rcases le_or_gt (Real.sqrt (tailEnergy h u) - r₀) 0 with hle | hgt
+    · rw [max_eq_right hle, sq, zero_mul]
+      exact tailEnergy_nonneg _ u
+    · rw [max_eq_left hgt.le]
+      have hsq : (Real.sqrt (tailEnergy h u) - r₀) ^ 2 ≤
+          (Real.sqrt (tailEnergy w u) - Real.sqrt (tailEnergy h u)) ^ 2 := by
+        rw [show (Real.sqrt (tailEnergy w u) - Real.sqrt (tailEnergy h u)) ^ 2 =
+          (Real.sqrt (tailEnergy h u) - Real.sqrt (tailEnergy w u)) ^ 2 by ring]
+        exact pow_le_pow_left₀ hgt.le (by linarith [hsqrt_w_le u]) 2
+      exact hsq.trans (tailEnergy_add_bounds h w u).1
+  have hh'_m : meanCoefficient (h.add w) = 0 := meanZero_add hh_m hw_m
+  have hh'_s : ∀ s : ℝ, S₀ < |s| → (h.add w) s = 0 := fun s hs => by
+    simp [hh_s s hs, hw_s s hs]
+  have hI_lo : (max (Real.sqrt (∫ S : ℝ, ‖h S‖ ^ 2) - r₀) 0) ^ 2 ≤
+      ∫ S : ℝ, ‖(h.add w) S‖ ^ 2 := by
+    rw [meanZero_l2_eq_tailEnergy_early (h.add w) hh'_m hh'_s,
+      meanZero_l2_eq_tailEnergy_early h hh_m hh_s]
+    exact hE_lo (-(S₀ + 1))
+  -- Define `T' : Fin (K + 2) → ℝ` via `Fin.lastCases T_next T`
+  set T' : Fin (K + 2) → ℝ := Fin.lastCases T_next T
+  have hT'_zero : T' 0 = T 0 := by
+    show Fin.lastCases T_next T (0 : Fin (K + 1)).castSucc = T 0
+    exact Fin.lastCases_castSucc T_next T 0
+  have hdom_next := dominant_stall_bound hL (sq_pos_of_pos hr₀_pos) hδ0 hδ1 hθ_ratio
+    hEh_next.le (hw_le T_next) hw_trap 0
+  have hp0_eq : tailEnergy (h.phaseMix 0 w) = tailEnergy (h.add w) := by
+    funext u; unfold tailEnergy
+    refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
+    rw [pulseReflected_phaseMix, pulseReflected_add]; simp
+  rw [hp0_eq] at hdom_next
+  refine ⟨h.add w, T', hh'_m, hh'_s, by rw [hT'_zero]; exact hT0, ?_, ?_, ?_, ?_⟩
+  · intro j
+    refine Fin.lastCases ?_ (fun j₀ => ?_) j
+    · dsimp only [T']
+      rw [Fin.lastCases_castSucc, Fin.succ_last, Fin.lastCases_last]
+      exact hT_next_gt
+    · dsimp only [T']
+      rw [Fin.lastCases_castSucc, ← Fin.succ_castSucc, Fin.lastCases_castSucc]
+      exact hsep j₀
+  · rw [hT'_zero]
+    exact (hE_up (T 0)).trans_lt (lt_of_lt_of_le hr_init
+      (mul_le_mul_of_nonneg_left hI_lo hη0.le))
+  · intro j
+    refine Fin.lastCases ?_ (fun j₀ => ?_) j
+    · dsimp only [T']
+      rw [Fin.succ_last, Fin.lastCases_last, Fin.lastCases_castSucc]
+      exact hdom_next.2.1.trans_lt (lt_of_lt_of_le hr_last
+        (mul_le_mul_of_nonneg_left (hE_lo (T (Fin.last K) + L)) hη0.le))
+    · dsimp only [T']
+      rw [← Fin.succ_castSucc, Fin.lastCases_castSucc, Fin.lastCases_castSucc]
+      have hj := hr_inter j₀
+      rw [abs_of_pos hr₀_pos] at hj
+      exact (hE_up (T j₀.succ)).trans_lt (lt_of_lt_of_le hj
+        (mul_le_mul_of_nonneg_left (hE_lo (T j₀.castSucc + L)) hη0.le))
+  · intro i
+    refine Fin.lastCases ?_ (fun i₀ => ?_) i
+    · dsimp only [T']
+      rw [Fin.lastCases_last]
+      exact hdom_next.2.2
+    · dsimp only [T']
+      rw [Fin.lastCases_castSucc]
+      obtain ⟨hst_i, hpos_lo⟩ := hr_stall i₀
+      rw [abs_of_pos hr₀_pos] at hst_i hpos_lo
+      have hETL_pos : 0 < tailEnergy (h.add w) (T i₀ + L) :=
+        lt_of_lt_of_le (sq_pos_of_pos hpos_lo) (hE_lo (T i₀ + L))
+      have hET_pos : 0 < tailEnergy (h.add w) (T i₀) :=
+        lt_of_lt_of_le hETL_pos (tailEnergy_anti _ (by linarith))
+      rw [lt_div_iff₀ hET_pos]
+      by_cases hθ0 : θ ≤ 0
+      · exact lt_of_le_of_lt (mul_nonpos_of_nonpos_of_nonneg hθ0 hET_pos.le) hETL_pos
+      · push Not at hθ0
+        rw [max_eq_left hθ0.le] at hst_i
+        exact (mul_le_mul_of_nonneg_left (hE_up (T i₀)) hθ0.le).trans_lt
+          (lt_of_lt_of_le hst_i (hE_lo (T i₀ + L)))
 
 /-- **Falsification 3 (Multi-Epoch Staircase Stall Theorem).**
 For any number of epochs `K + 1` (`K : ℕ`), support half-width `S₀ > 0`, step `L > 0`, inter-epoch
@@ -1053,388 +1303,24 @@ theorem exists_multi_epoch_staircase_falsifier (K : ℕ) {S₀ L η : ℝ}
   induction K with
   | zero =>
     obtain ⟨g, w, T₀, hg_m, hw_m, hg_s, hw_s, hT₀_ge, hφ⟩ :=
-      exists_two_pulse_deep_tail_contraction_falsifier hS₀ hL 0 (by positivity : 0 < η / 2)
+      exists_two_pulse_deep_tail_contraction_falsifier hS₀ hL 0 (half_pos hη0)
         (by linarith) hθ
     obtain ⟨hET_pos, hdeep, hstall⟩ := hφ 0
     set h := g.phaseMix 0 w
-    have hh_m : meanCoefficient h = 0 := by
-      dsimp only [h]
-      rw [CompactPulse.phaseMix, meanCoefficient, pulseAmplitude_add, pulseAmplitude_smul]
-      have hg0 : pulseAmplitude g (-I * (1 / 2)) = 0 := by
-        have := hg_m; rw [meanCoefficient] at this
-        exact (mul_eq_zero.mp this).resolve_left (by norm_num)
-      have hw0 : pulseAmplitude w (-I * (1 / 2)) = 0 := by
-        have := hw_m; rw [meanCoefficient] at this
-        exact (mul_eq_zero.mp this).resolve_left (by norm_num)
-      rw [hg0, hw0]; simp
-    have hh_s : ∀ s : ℝ, S₀ < |s| → h s = 0 := fun s hs => by
-      simp [h, hg_s s hs, hw_s s hs]
-    have hinit_pos : 0 < ∫ S : ℝ, ‖h S‖ ^ 2 := by
-      have := tailEnergy_le_initial h T₀
-      linarith
-    refine ⟨h, fun _ => T₀, hh_m, hh_s, le_trans (le_max_right 0 0) hT₀_ge,
-      fun j => Fin.elim0 j, by linarith, fun j => Fin.elim0 j, fun i => ?_⟩
+    have hinit_pos : 0 < ∫ S : ℝ, ‖h S‖ ^ 2 :=
+      lt_of_lt_of_le hET_pos (tailEnergy_le_initial h T₀)
+    refine ⟨h, fun _ => T₀, meanZero_phaseMix 0 hg_m hw_m,
+      fun s hs => by simp [h, hg_s s hs, hw_s s hs],
+      le_trans (le_max_right 0 0) hT₀_ge,
+      fun j => Fin.elim0 j,
+      lt_of_le_of_lt hdeep (mul_lt_mul_of_pos_right (half_lt_self hη0) hinit_pos),
+      fun j => Fin.elim0 j,
+      fun i => ?_⟩
     fin_cases i
     exact hstall
   | succ K ih =>
     obtain ⟨h, T, hh_m, hh_s, hT0, hsep, hinit, hinter, hstall⟩ := ih
-    have hh_ne : ∃ S : ℝ, h S ≠ 0 := by
-      by_contra hall; push Not at hall
-      have hp0 : pulseReflected h = 0 := by
-        funext u
-        have heq : h = CompactPulse.zero := by cases h; congr; funext S; exact hall S
-        rw [heq, pulseReflected_zero]; rfl
-      have hE0 : tailEnergy h (T 0) = 0 := by unfold tailEnergy; simp [hp0]
-      have hI0 : (∫ S : ℝ, ‖h S‖ ^ 2) = 0 := by simp [hall]
-      rw [hE0, hI0, mul_zero] at hinit
-      exact lt_irrefl 0 hinit
-    -- Continuous perturbation stability on the existing finite set of strict inequalities
-    have hcont_pert : Continuous fun r : ℝ =>
-        let Eh0_up := (Real.sqrt (tailEnergy h (T 0)) + |r|) ^ 2
-        let Ih_lo := (max (Real.sqrt (∫ S : ℝ, ‖h S‖ ^ 2) - |r|) 0) ^ 2
-        Eh0_up - η * Ih_lo := by fun_prop
-    have h0_val : ((Real.sqrt (tailEnergy h (T 0)) + |(0 : ℝ)|) ^ 2 -
-        η * (max (Real.sqrt (∫ S : ℝ, ‖h S‖ ^ 2) - |(0 : ℝ)|) 0) ^ 2) < 0 := by
-      have hI_nn : 0 ≤ ∫ S : ℝ, ‖h S‖ ^ 2 := integral_nonneg fun _ => sq_nonneg _
-      simp only [abs_zero, add_zero, sub_zero, max_eq_left (Real.sqrt_nonneg _),
-        Real.sq_sqrt (tailEnergy_nonneg h (T 0)), Real.sq_sqrt hI_nn]
-      linarith
-    have hev_init := hcont_pert.tendsto 0 |>.eventually (eventually_lt_nhds h0_val)
-    have hev_inter : ∀ j : Fin K, ∀ᶠ r : ℝ in 𝓝 0,
-        (Real.sqrt (tailEnergy h (T j.succ)) + |r|) ^ 2 <
-          η * (max (Real.sqrt (tailEnergy h (T j.castSucc + L)) - |r|) 0) ^ 2 := by
-      intro j
-      have hc : Continuous fun r : ℝ =>
-          (Real.sqrt (tailEnergy h (T j.succ)) + |r|) ^ 2 -
-            η * (max (Real.sqrt (tailEnergy h (T j.castSucc + L)) - |r|) 0) ^ 2 := by fun_prop
-      have hv : (Real.sqrt (tailEnergy h (T j.succ)) + |(0 : ℝ)|) ^ 2 -
-          η * (max (Real.sqrt (tailEnergy h (T j.castSucc + L)) - |(0 : ℝ)|) 0) ^ 2 < 0 := by
-        simp only [abs_zero, add_zero, sub_zero, max_eq_left (Real.sqrt_nonneg _),
-          Real.sq_sqrt (tailEnergy_nonneg h _)]
-        linarith [hinter j]
-      exact ((hc.tendsto 0).eventually (eventually_lt_nhds hv)).mono fun _ hr => sub_neg.mp hr
-    have hev_stall : ∀ i : Fin (K + 1), ∀ᶠ r : ℝ in 𝓝 0,
-        max θ 0 * (Real.sqrt (tailEnergy h (T i)) + |r|) ^ 2 <
-          (max (Real.sqrt (tailEnergy h (T i + L)) - |r|) 0) ^ 2 ∧
-          0 < max (Real.sqrt (tailEnergy h (T i + L)) - |r|) 0 := by
-      intro i
-      have hET_pos := tailEnergy_pos h hh_ne (T i)
-      have hETL_pos := tailEnergy_pos h hh_ne (T i + L)
-      have hst_i := hstall i
-      rw [lt_div_iff₀ hET_pos] at hst_i
-      have hst_max : max θ 0 * tailEnergy h (T i) < tailEnergy h (T i + L) := by
-        rcases le_or_gt θ 0 with hθ0 | hθ0
-        · rw [max_eq_right hθ0, zero_mul]; exact hETL_pos
-        · rw [max_eq_left hθ0.le]; exact hst_i
-      have hc1 : Continuous fun r : ℝ =>
-          max θ 0 * (Real.sqrt (tailEnergy h (T i)) + |r|) ^ 2 -
-            (max (Real.sqrt (tailEnergy h (T i + L)) - |r|) 0) ^ 2 := by fun_prop
-      have hv1 : max θ 0 * (Real.sqrt (tailEnergy h (T i)) + |(0 : ℝ)|) ^ 2 -
-          (max (Real.sqrt (tailEnergy h (T i + L)) - |(0 : ℝ)|) 0) ^ 2 < 0 := by
-        simp only [abs_zero, add_zero, sub_zero, max_eq_left (Real.sqrt_nonneg _),
-          Real.sq_sqrt hET_pos.le, Real.sq_sqrt hETL_pos.le]
-        linarith
-      have hc2 : Continuous fun r : ℝ => max (Real.sqrt (tailEnergy h (T i + L)) - |r|) 0 := by
-        fun_prop
-      have hv2 : 0 < max (Real.sqrt (tailEnergy h (T i + L)) - |(0 : ℝ)|) 0 := by
-        simp only [abs_zero, sub_zero, max_eq_left (Real.sqrt_nonneg _)]
-        exact Real.sqrt_pos.mpr hETL_pos
-      exact ((hc1.tendsto 0).eventually (eventually_lt_nhds hv1)).mp
-        (((hc2.tendsto 0).eventually (eventually_gt_nhds hv2)).mono fun r h2 h1 =>
-          ⟨by linarith, h2⟩)
-    set E_last : ℝ := tailEnergy h (T (Fin.last K) + L)
-    have hE_last_pos : 0 < E_last := tailEnergy_pos h hh_ne _
-    have hev_last : ∀ᶠ r : ℝ in 𝓝 (0 : ℝ),
-        4 * r ^ 2 < η * (max (Real.sqrt E_last - |r|) 0) ^ 2 := by
-      have hc : Continuous fun r : ℝ =>
-          4 * r ^ 2 - η * (max (Real.sqrt E_last - |r|) 0) ^ 2 := by fun_prop
-      have hv : 4 * (0 : ℝ) ^ 2 - η * (max (Real.sqrt E_last - |(0 : ℝ)|) 0) ^ 2 < 0 := by
-        simp only [abs_zero, sub_zero, max_eq_left (Real.sqrt_nonneg _),
-          Real.sq_sqrt hE_last_pos.le]
-        have : 0 < η * E_last := mul_pos hη0 hE_last_pos
-        linarith
-      exact ((hc.tendsto 0).eventually (eventually_lt_nhds hv)).mono fun _ hr => sub_neg.mp hr
-    have hev_all : ∀ᶠ r : ℝ in 𝓝 (0 : ℝ),
-        ((Real.sqrt (tailEnergy h (T 0)) + |r|) ^ 2 <
-          η * (max (Real.sqrt (∫ S : ℝ, ‖h S‖ ^ 2) - |r|) 0) ^ 2) ∧
-        (∀ j : Fin K, (Real.sqrt (tailEnergy h (T j.succ)) + |r|) ^ 2 <
-          η * (max (Real.sqrt (tailEnergy h (T j.castSucc + L)) - |r|) 0) ^ 2) ∧
-        (∀ i : Fin (K + 1),
-          max θ 0 * (Real.sqrt (tailEnergy h (T i)) + |r|) ^ 2 <
-            (max (Real.sqrt (tailEnergy h (T i + L)) - |r|) 0) ^ 2 ∧
-            0 < max (Real.sqrt (tailEnergy h (T i + L)) - |r|) 0) ∧
-        (4 * r ^ 2 < η * (max (Real.sqrt E_last - |r|) 0) ^ 2) := by
-      refine (hev_init.and ((Filter.eventually_all.mpr hev_inter).and
-        ((Filter.eventually_all.mpr hev_stall).and hev_last))).mono ?_
-      rintro r ⟨h1, h2, h3, h4⟩
-      exact ⟨by linarith, h2, h3, h4⟩
-    obtain ⟨ρ_rad, hρ_pos, hball⟩ := Metric.eventually_nhds_iff.mp hev_all
-    set r₀ : ℝ := ρ_rad / 2
-    have hr₀_pos : 0 < r₀ := by dsimp only [r₀]; positivity
-    obtain ⟨hr_init, hr_inter, hr_stall, hr_last⟩ :=
-      hball (y := r₀) (by rw [Real.dist_eq, sub_zero, abs_of_pos hr₀_pos]; dsimp only [r₀]; linarith)
-    set μ : ℝ := r₀ ^ 2
-    have hμ_pos : 0 < μ := sq_pos_of_pos hr₀_pos
-    have hsqrt_μ : Real.sqrt μ = r₀ := Real.sqrt_sq hr₀_pos.le
-    have habs_r₀ : |r₀| = r₀ := abs_of_pos hr₀_pos
-    -- Choose tolerance `δ` and next epoch `T_next > T (Fin.last K) + L`
-    set δ : ℝ := (1 - max θ 0) / 16
-    have hδ_pos : 0 < δ := by
-      have : max θ 0 < 1 := max_lt hθ zero_lt_one
-      dsimp only [δ]; linarith
-    have hδ_le : δ ≤ 1 / 16 := by
-      have : 0 ≤ max θ 0 := le_max_right _ _
-      dsimp only [δ]; linarith
-    have hθ_ratio : θ * (1 + δ) ^ 2 < (1 - δ) ^ 2 := by
-      have hθm : θ ≤ 1 - 16 * δ := by
-        have : θ ≤ max θ 0 := le_max_left _ _
-        dsimp only [δ]; linarith
-      have h1 : θ * (1 + δ) ^ 2 ≤ (1 - 16 * δ) * (1 + δ) ^ 2 :=
-        mul_le_mul_of_nonneg_right hθm (sq_nonneg _)
-      nlinarith [sq_nonneg δ, mul_pos hδ_pos (sq_pos_of_pos hδ_pos)]
-    obtain ⟨T_next, hT_next_gt, hEh_next⟩ :=
-      ((eventually_gt_atTop (T (Fin.last K) + L)).and
-        ((tendsto_tailEnergy_atTop h).eventually
-          (eventually_lt_nhds (by positivity : 0 < (δ / 2) ^ 2 * μ)))).exists
-    -- Construct `w` of total energy `μ` trapped past `T_next + L`
-    have hE₀_pos := integral_norm_sq_scaledBumpPulse_pos hS₀
-    have htrap_lim : Tendsto (fun Ω : ℝ =>
-        tailEnergy (cuspTrappingPulse S₀ hS₀ Ω) (T_next + L) -
-          (1 - δ / 2) ^ 2 * ∫ S : ℝ, ‖cuspTrappingPulse S₀ hS₀ Ω S‖ ^ 2) atTop
-        (𝓝 ((1 - (1 - δ / 2) ^ 2) * ∫ S : ℝ, ‖scaledBumpPulse S₀ hS₀ S‖ ^ 2)) := by
-      have ht1 : Tendsto (fun Ω : ℝ => tailEnergy (cuspTrappingPulse S₀ hS₀ Ω) (T_next + L))
-          atTop (𝓝 (∫ S : ℝ, ‖scaledBumpPulse S₀ hS₀ S‖ ^ 2)) :=
-        (tendsto_tailEnergy_cuspTrappingPulse_sublogarithmic hS₀ (T_next + L)
-          (α := 0) (by norm_num)).congr fun Ω => by simp
-      have ht2 := (tendsto_integral_norm_sq_cuspTrappingPulse hS₀).const_mul ((1 - δ / 2) ^ 2)
-      convert ht1.sub ht2 using 2; ring
-    have hlim_pos : 0 < (1 - (1 - δ / 2) ^ 2) * ∫ S : ℝ, ‖scaledBumpPulse S₀ hS₀ S‖ ^ 2 :=
-      mul_pos (by nlinarith) hE₀_pos
-    obtain ⟨Ω, _, hp_pos, hp_trap⟩ :=
-      ((eventually_ge_atTop (1 : ℝ)).and
-        (((tendsto_integral_norm_sq_cuspTrappingPulse hS₀).eventually
-            (eventually_gt_nhds (half_lt_self hE₀_pos))).and
-          (htrap_lim.eventually (eventually_gt_nhds hlim_pos)))).exists
-    set p := cuspTrappingPulse S₀ hS₀ Ω
-    set Ep₀ : ℝ := ∫ S : ℝ, ‖p S‖ ^ 2
-    have hEp₀_pos : 0 < Ep₀ := lt_trans (by positivity) hp_pos
-    set cw : ℝ := Real.sqrt (μ / Ep₀)
-    have hcw_pos : 0 < cw := Real.sqrt_pos.mpr (div_pos hμ_pos hEp₀_pos)
-    set w := CompactPulse.smul (cw : ℂ) p
-    have hcw_sq : cw ^ 2 * Ep₀ = μ := by
-      dsimp only [cw]
-      rw [Real.sq_sqrt (div_nonneg hμ_pos.le hEp₀_pos.le), div_mul_cancel₀ _ hEp₀_pos.ne']
-    have hw_energy : ∀ u : ℝ, tailEnergy w u = cw ^ 2 * tailEnergy p u := by
-      intro u
-      unfold tailEnergy
-      rw [← integral_const_mul]
-      refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
-      rw [pulseReflected_smul, norm_mul, Complex.norm_real, Real.norm_of_nonneg hcw_pos.le, mul_pow]
-    have hEw_le : ∀ u : ℝ, tailEnergy w u ≤ μ := fun u => by
-      rw [hw_energy u, ← hcw_sq]
-      exact mul_le_mul_of_nonneg_left (tailEnergy_le_initial p u) (sq_nonneg cw)
-    have hsqrt_w_le : ∀ u : ℝ, Real.sqrt (tailEnergy w u) ≤ r₀ := fun u => by
-      rw [← hsqrt_μ]
-      exact Real.sqrt_le_sqrt (hEw_le u)
-    have hEw_trap : (1 - δ / 2) ^ 2 * μ ≤ tailEnergy w (T_next + L) := by
-      rw [hw_energy (T_next + L), ← hcw_sq]
-      have hp_ineq : (1 - δ / 2) ^ 2 * Ep₀ ≤ tailEnergy p (T_next + L) := by linarith
-      have := mul_le_mul_of_nonneg_left hp_ineq (sq_nonneg cw)
-      linarith
-    set h' := h.add w
-    set T' : Fin (K + 2) → ℝ := Fin.snoc T T_next
-    have hT'0 : T' 0 = T 0 := by
-      dsimp only [T']
-      exact Fin.snoc_castSucc (α := fun _ => ℝ) T T_next 0
-    -- Helper bounds on `tailEnergy h' u` and `∫ ‖h'‖²`
-    have hE_up : ∀ u : ℝ, tailEnergy h' u ≤ (Real.sqrt (tailEnergy h u) + r₀) ^ 2 := by
-      intro u
-      have hb := (tailEnergy_add_bounds h w u).2
-      refine hb.trans (pow_le_pow_left₀ (by positivity) ?_ 2)
-      linarith [hsqrt_w_le u]
-    have hE_lo : ∀ u : ℝ, (max (Real.sqrt (tailEnergy h u) - r₀) 0) ^ 2 ≤ tailEnergy h' u := by
-      intro u
-      rcases le_or_gt (Real.sqrt (tailEnergy h u) - r₀) 0 with hle | hgt
-      · rw [max_eq_right hle, sq, zero_mul]
-        exact tailEnergy_nonneg h' u
-      · rw [max_eq_left hgt.le]
-        have hb := (tailEnergy_add_bounds h w u).1
-        have hsub : Real.sqrt (tailEnergy h u) - r₀ ≤
-            Real.sqrt (tailEnergy h u) - Real.sqrt (tailEnergy w u) := by
-          linarith [hsqrt_w_le u]
-        have hsq : (Real.sqrt (tailEnergy h u) - r₀) ^ 2 ≤
-            (Real.sqrt (tailEnergy w u) - Real.sqrt (tailEnergy h u)) ^ 2 := by
-          rw [show (Real.sqrt (tailEnergy w u) - Real.sqrt (tailEnergy h u)) ^ 2 =
-            (Real.sqrt (tailEnergy h u) - Real.sqrt (tailEnergy w u)) ^ 2 by ring]
-          exact pow_le_pow_left₀ hgt.le hsub 2
-        exact hsq.trans hb
-    have hI_lo : (max (Real.sqrt (∫ S : ℝ, ‖h S‖ ^ 2) - r₀) 0) ^ 2 ≤ ∫ S : ℝ, ‖h' S‖ ^ 2 := by
-      rcases le_or_gt (Real.sqrt (∫ S : ℝ, ‖h S‖ ^ 2) - r₀) 0 with hle | hgt
-      · rw [max_eq_right hle, sq, zero_mul]
-        exact integral_nonneg fun _ => sq_nonneg _
-      · rw [max_eq_left hgt.le]
-        -- Use Plancherel `∫ ‖h'‖² = lim_{B → -∞} tailEnergy h' B ≥ tailEnergy h' (-S₀ - 1)`!
-        have hp_zero : ∀ u : ℝ, u < -(S₀ + 1) → pulseReflected h' u = 0 := by
-          intro u hu
-          have hh'_m : meanCoefficient h' = 0 := by
-            dsimp only [h']
-            rw [meanCoefficient, pulseAmplitude_add]
-            have h1 : pulseAmplitude h (-I * (1 / 2)) = 0 := by
-              have := hh_m; rw [meanCoefficient] at this
-              exact (mul_eq_zero.mp this).resolve_left (by norm_num)
-            have h2 : pulseAmplitude w (-I * (1 / 2)) = 0 := by
-              dsimp only [w]
-              rw [pulseAmplitude_smul]
-              have := meanCoefficient_cuspTrappingPulse hS₀ Ω
-              rw [meanCoefficient] at this
-              rw [(mul_eq_zero.mp this).resolve_left (by norm_num), mul_zero]
-            rw [h1, h2]; simp
-          have he := h'.pulseEcho_eq u
-          rw [hh'_m, zero_mul, add_zero] at he
-          rw [← he]
-          exact h'.pulseEcho_eq_zero (fun s hs => by
-            have hs' : S₀ < |s| := by linarith
-            dsimp only [h', w, p]
-            simp [hh_s s hs', cuspTrappingPulse_eq_zero_of_le hS₀ Ω hs'.le]) hu
-        have hI_eq_tail : (∫ S : ℝ, ‖h' S‖ ^ 2) = tailEnergy h' (-(S₀ + 1)) := by
-          have hint := integrable_norm_sq_pulseReflected h'
-          have hall := integral_add_compl (s := Ioi (-(S₀ + 1))) measurableSet_Ioi hint
-          rw [integral_norm_sq_pulseReflected h', compl_Ioi] at hall
-          have h0 : (∫ u in Iic (-(S₀ + 1)), ‖pulseReflected h' u‖ ^ 2) = 0 := by
-            rw [← setIntegral_congr_set Iio_ae_eq_Iic]
-            exact setIntegral_eq_zero_of_forall_eq_zero fun u hu => by
-              rw [hp_zero u hu, norm_zero, sq, mul_zero]
-          unfold tailEnergy; linarith
-        have hIh_eq_tail : (∫ S : ℝ, ‖h S‖ ^ 2) = tailEnergy h (-(S₀ + 1)) := by
-          have hint := integrable_norm_sq_pulseReflected h
-          have hall := integral_add_compl (s := Ioi (-(S₀ + 1))) measurableSet_Ioi hint
-          rw [integral_norm_sq_pulseReflected h, compl_Ioi] at hall
-          have h0 : (∫ u in Iic (-(S₀ + 1)), ‖pulseReflected h u‖ ^ 2) = 0 := by
-            rw [← setIntegral_congr_set Iio_ae_eq_Iic]
-            refine setIntegral_eq_zero_of_forall_eq_zero fun u hu => ?_
-            have he := h.pulseEcho_eq u
-            rw [hh_m, zero_mul, add_zero] at he
-            rw [← he, h.pulseEcho_eq_zero (fun s hs => hh_s s (by linarith)) hu,
-              norm_zero, sq, mul_zero]
-          unfold tailEnergy; linarith
-        rw [hI_eq_tail, hIh_eq_tail]
-        have hb := hE_lo (-(S₀ + 1))
-        rwa [← hIh_eq_tail, max_eq_left hgt.le] at hb
-    -- Assemble all claims for `(h', T')`
-    have hh'_m : meanCoefficient h' = 0 := by
-      dsimp only [h']
-      rw [meanCoefficient, pulseAmplitude_add]
-      have h1 : pulseAmplitude h (-I * (1 / 2)) = 0 := by
-        have := hh_m; rw [meanCoefficient] at this
-        exact (mul_eq_zero.mp this).resolve_left (by norm_num)
-      have h2 : pulseAmplitude w (-I * (1 / 2)) = 0 := by
-        dsimp only [w]; rw [pulseAmplitude_smul]
-        have := meanCoefficient_cuspTrappingPulse hS₀ Ω
-        rw [meanCoefficient] at this
-        rw [(mul_eq_zero.mp this).resolve_left (by norm_num), mul_zero]
-      rw [h1, h2]; simp
-    have hh'_s : ∀ s : ℝ, S₀ < |s| → h' s = 0 := fun s hs => by
-      dsimp only [h', w, p]
-      simp [hh_s s hs, cuspTrappingPulse_eq_zero_of_le hS₀ Ω hs.le]
-    refine ⟨h', T', hh'_m, hh'_s, by rw [hT'0]; exact hT0, ?_, ?_, ?_, ?_⟩
-    · -- Epoch separation `T' j.castSucc + L < T' j.succ`
-      intro j
-      refine Fin.lastCases ?_ (fun j₀ => ?_) j
-      · dsimp only [T']
-        rw [Fin.succ_last, Fin.snoc_last,
-          show (Fin.last K).castSucc = (Fin.last K).castSucc from rfl,
-          Fin.snoc_castSucc]
-        exact hT_next_gt
-      · dsimp only [T']
-        rw [Fin.castSucc_castSucc, Fin.snoc_castSucc,
-          show j₀.castSucc.succ = j₀.succ.castSucc from (Fin.succ_castSucc j₀).symm,
-          Fin.snoc_castSucc]
-        exact hsep j₀
-    · -- Initial drop `tailEnergy h' (T' 0) < η * ∫ ‖h'‖²`
-      rw [hT'0]
-      rw [habs_r₀] at hr_init
-      exact (hE_up (T 0)).trans (lt_of_lt_of_le hr_init
-        (mul_le_mul_of_nonneg_left hI_lo hη0.le))
-    · -- Inter-epoch drops `tailEnergy h' (T' j.succ) < η * tailEnergy h' (T' j.castSucc + L)`
-      intro j
-      refine Fin.lastCases ?_ (fun j₀ => ?_) j
-      · dsimp only [T']
-        rw [Fin.succ_last, Fin.snoc_last, Fin.snoc_castSucc]
-        -- At `T_next`: `tailEnergy h' T_next ≤ (√(tailEnergy h T_next) + r₀)² ≤ 4 r₀²`
-        have hsqrt_next : Real.sqrt (tailEnergy h T_next) ≤ r₀ := by
-          have h1 := Real.sqrt_le_sqrt hEh_next.le
-          rw [Real.sqrt_mul (by positivity), Real.sqrt_sq (by positivity), hsqrt_μ] at h1
-          nlinarith
-        have hup_next : tailEnergy h' T_next ≤ 4 * r₀ ^ 2 :=
-          (hE_up T_next).trans (by
-            have := pow_le_pow_left₀ (by positivity) (by linarith : Real.sqrt (tailEnergy h T_next) + r₀ ≤ 2 * r₀) 2
-            linarith)
-        rw [habs_r₀] at hr_last
-        exact hup_next.trans (lt_of_lt_of_le hr_last
-          (mul_le_mul_of_nonneg_left (hE_lo (T (Fin.last K) + L)) hη0.le))
-      · dsimp only [T']
-        rw [show j₀.castSucc.succ = j₀.succ.castSucc from (Fin.succ_castSucc j₀).symm,
-          Fin.snoc_castSucc, Fin.castSucc_castSucc, Fin.snoc_castSucc]
-        have hj := hr_inter j₀
-        rw [habs_r₀] at hj
-        exact (hE_up (T j₀.succ)).trans (lt_of_lt_of_le hj
-          (mul_le_mul_of_nonneg_left (hE_lo (T j₀.castSucc + L)) hη0.le))
-    · -- Contraction stall on every epoch `i : Fin (K + 2)`
-      intro i
-      refine Fin.lastCases ?_ (fun i₀ => ?_) i
-      · dsimp only [T']
-        rw [Fin.snoc_last]
-        -- At `T_next`: `w` dominates `h`
-        have hb1 := tailEnergy_add_bounds h w T_next
-        have hb2 := tailEnergy_add_bounds h w (T_next + L)
-        have hsqrt_h1 : Real.sqrt (tailEnergy h T_next) ≤ (δ / 2) * r₀ := by
-          have := Real.sqrt_le_sqrt hEh_next.le
-          rwa [Real.sqrt_mul (by positivity), Real.sqrt_sq (by positivity), hsqrt_μ] at this
-        have hsqrt_h2 : Real.sqrt (tailEnergy h (T_next + L)) ≤ (δ / 2) * r₀ :=
-          (Real.sqrt_le_sqrt (tailEnergy_anti h (by linarith))).trans hsqrt_h1
-        have hsqrt_w2 : (1 - δ / 2) * r₀ ≤ Real.sqrt (tailEnergy w (T_next + L)) := by
-          have := Real.sqrt_le_sqrt hEw_trap
-          rwa [Real.sqrt_mul (by positivity), Real.sqrt_sq (by linarith), hsqrt_μ] at this
-        have hETL_lo : (1 - δ) ^ 2 * r₀ ^ 2 ≤ tailEnergy h' (T_next + L) := by
-          have h1 : ((1 - δ) * r₀) ^ 2 ≤
-              (Real.sqrt (tailEnergy w (T_next + L)) - Real.sqrt (tailEnergy h (T_next + L))) ^ 2 :=
-            pow_le_pow_left₀ (by positivity) (by linarith) 2
-          calc (1 - δ) ^ 2 * r₀ ^ 2 = ((1 - δ) * r₀) ^ 2 := by ring
-            _ ≤ tailEnergy h' (T_next + L) := h1.trans hb2.1
-        have hET_hi : tailEnergy h' T_next ≤ (1 + δ) ^ 2 * r₀ ^ 2 := by
-          have h1 : (Real.sqrt (tailEnergy w T_next) + Real.sqrt (tailEnergy h T_next)) ^ 2 ≤
-              ((1 + δ) * r₀) ^ 2 :=
-            pow_le_pow_left₀ (by positivity) (by linarith [hsqrt_w_le T_next]) 2
-          calc tailEnergy h' T_next ≤ ((1 + δ) * r₀) ^ 2 := hb1.2.trans h1
-            _ = (1 + δ) ^ 2 * r₀ ^ 2 := by ring
-        have hETL_pos : 0 < tailEnergy h' (T_next + L) :=
-          lt_of_lt_of_le (mul_pos (sq_pos_of_pos (by linarith)) hμ_pos) hETL_lo
-        have hET_pos : 0 < tailEnergy h' T_next :=
-          lt_of_lt_of_le hETL_pos (tailEnergy_anti h' (by linarith))
-        rw [lt_div_iff₀ hET_pos]
-        by_cases hθ0 : θ ≤ 0
-        · exact lt_of_le_of_lt (mul_nonpos_of_nonpos_of_nonneg hθ0 hET_pos.le) hETL_pos
-        · push Not at hθ0
-          calc θ * tailEnergy h' T_next
-              ≤ θ * ((1 + δ) ^ 2 * r₀ ^ 2) := mul_le_mul_of_nonneg_left hET_hi hθ0.le
-            _ = (θ * (1 + δ) ^ 2) * r₀ ^ 2 := by ring
-            _ < (1 - δ) ^ 2 * r₀ ^ 2 := mul_lt_mul_of_pos_right hθ_ratio hμ_pos
-            _ ≤ tailEnergy h' (T_next + L) := hETL_lo
-      · dsimp only [T']
-        rw [Fin.snoc_castSucc]
-        obtain ⟨hst_i, hpos_lo⟩ := hr_stall i₀
-        rw [habs_r₀] at hst_i hpos_lo
-        have hETL_pos : 0 < tailEnergy h' (T i₀ + L) :=
-          lt_of_lt_of_le (sq_pos_of_pos hpos_lo) (hE_lo (T i₀ + L))
-        have hET_pos : 0 < tailEnergy h' (T i₀) :=
-          lt_of_lt_of_le hETL_pos (tailEnergy_anti h' (by linarith))
-        rw [lt_div_iff₀ hET_pos]
-        by_cases hθ0 : θ ≤ 0
-        · exact lt_of_le_of_lt (mul_nonpos_of_nonpos_of_nonneg hθ0 hET_pos.le) hETL_pos
-        · push Not at hθ0
-          rw [max_eq_left hθ0.le] at hst_i
-          exact (mul_le_mul_of_nonneg_left (hE_up (T i₀)) hθ0.le).trans_lt
-            (lt_of_lt_of_le hst_i (hE_lo (T i₀ + L)))
+    exact staircase_step hS₀ hL hη0 hθ hh_m hh_s hT0 hsep hinit hinter hstall
 
 /-! ## 5. Complete Resolution of the Physical Path-Dephasing Test on `PSL₂(ℤ)\ℍ` -/
 
