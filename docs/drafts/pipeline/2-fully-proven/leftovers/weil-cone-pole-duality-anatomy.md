@@ -65,8 +65,25 @@ for every positive-definite test g = f⋆f̃ (f real, compactly supported).
 ## Gates
 - [x] 0 → 1  in-progress
 - [x] 1 → 2  fully-proven (A–C are short, dependency-closed paper proofs)
-- [ ] 2 → 3  formalized: needs Weil functionals for L(s, f), L(s, χ) and curves, none of which is in
-  the corpus; the core digamma inequality ψ(7) > log 2π is elementary
+- [ ] 2 → 3  formalized: (A), (B) and the σ-picture are in Lean (below); (C) needs curves over
+  F_q, the rationality of their zeta functions and Weil's theorem, which the corpus has only for
+  hyperelliptic curves (`CountingHolography.abs_card_points_sub_le_hyperelliptic`)
+
+## Lean status
+Standard axioms only; wired into `RHTower.lean`.
+- (A), (B): `RHTower/WeilConePoleDualityAnatomy` — `modularDatum_zero_mem_cone` (k ≥ 14),
+  `dirichletDatum_odd_zero_mem_cone` (q ≥ 10), `dirichletDatum_even_zero_mem_cone` (q ≥ 216),
+  `eq_zero_of_cone_pinned`, `weilFunctional_mulDatum`, `vonMangoldt_mem_cone_mulDatum`,
+  `not_riemannHypothesis_of_pinned`, `not_riemannHypothesis_of_pinned_dirichlet`.
+- σ-picture: `RHTower/WeilConeDefectSignRigidity` — `weilDefect_eq` (σ̂ carried by ±log n),
+  `eq_vonMangoldt_of_weilDefect_nonneg`, `eq_vonMangoldt_of_weilDefect_nonpos` (σ ≥ 0 or σ ≤ 0
+  forces σ = 0, for any real weights, without RH), `eq_one_and_eq_vonMangoldt_of_weilFunctional_eq_mul`
+  (no proportional move), `weilDefect_eq_zero_of_weilPositiveFull` (every cone element has σ = 0:
+  the cone is {Λ} unconditionally, `WeilSpectral.eq_vonMangoldt_of_weilPositiveFull`).
+- Anomaly window: `AnomalyWindowTwoPi.anomaly_window_two_pi` (Ω_ζ < 0 exactly on |t| < t₀,
+  2π < t₀ ≤ 2π + 1/50), so θ′ = πΩ_ζ vanishes only at ±t₀.
+- The ratio form and the Hamburger-with-jump equivalence are reformulations of uniqueness, which
+  is proved; they are not separate theorems.
 
 ## Log
 - 2026-10-14 — created from route-tt-loop rows 201–207.
@@ -80,4 +97,3 @@ for every positive-definite test g = f⋆f̃ (f real, compactly supported).
   `RHTower/WeilFullConeKreinMilmanReduction.lean` (`isCompact_weilCone`,
   `riemannHypothesis_of_extremePoints_weilCone`,
   `riemannHypothesis_of_primeBlindPositive_of_extremePoints`). Standard axioms only.
-  (A)–(C) remain paper-only: they need Weil functionals for L(s, f), L(s, χ) and curves.

@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.PMPowerDampedMobiusFiniteDeletion
 import GaloisForLFunctions.RHTower.Sieve.MoebiusLogRecursion
 import GaloisForLFunctions.RHTower.Sieve.SmoothSum
+import GaloisForLFunctions.RHTower.Sieve.BivariateConvolutionSummatorySwap
+import GaloisForLFunctions.RHTower.CausalMobiusThetaUniformCycle
 import GaloisForLFunctions.RestrictedFactorizationCalculus.TheExplicitLogSquareRoughSet
 
 /-!
@@ -42,12 +44,12 @@ theorem primorial_indicator_eq_deleted_mobius (y n : ℕ) (pos : 1 ≤ n) :
   have eq : (primorial y).Coprime n ↔ IsFree (banned y) n := by
     constructor
     · intro h
-      refine ⟨pos.ne',fun p hp small => ?_⟩
+      refine ⟨Nat.ne_of_gt (show 0<n from pos),fun p hp small => ?_⟩
       have prime := Nat.prime_of_mem_primeFactors hp
       exact prime.not_dvd_one (h ▸ Nat.dvd_gcd (prime.dvd_primorial_iff.mpr small) (Nat.dvd_of_mem_primeFactors hp))
     · intro h
       exact RHTower.coprime_primorial_of_primeFactors_gt pos (fun p hp => lt_of_not_ge (h.2 p hp))
-  rw [coprimeMoebiusIndicator,row_value,eq]
+  simp only [coprimeMoebiusIndicator,row_value,eq]
 
 /-- Logarithmically weighted prime powers avoiding all primes through y. -/
 def roughPrimePowerReading (y x : ℕ) : ℝ :=
@@ -99,7 +101,8 @@ theorem logarithmic_rough_prefix_at_quotient_readings {y : ℕ} (hy : 0<y) (X : 
     (∑ n ∈ Icc 1 X,row y n*Real.log n)=
       -∑ m ∈ freeSet y (X/y),row y m*roughPrimePowerReading y (X/m) := by
   rw [sum_congr rfl (fun n _ => log_row y n),sum_neg_distrib,
-    RHTower.Sieve.sum_Icc_divisorsAntidiagonal_swap]
+    RHTower.Sieve.sum_Icc_divisorsAntidiagonal_swap
+      (fun a b => row y a*(if IsFree (banned y) b then vonMangoldt b else 0)) X]
   congr 1
   let f := fun m : ℕ => row y m*roughPrimePowerReading y (X/m)
   have inner (m : ℕ) : (∑ d ∈ Icc 1 (X/m),row y m*
@@ -110,13 +113,13 @@ theorem logarithmic_rough_prefix_at_quotient_readings {y : ℕ} (hy : 0<y) (X : 
   apply sum_subset ((filter_subset ..).trans (Icc_subset_Icc_right (Nat.div_le_self ..)))
   intro m hm outside
   have lo := (mem_Icc.mp hm).1
-  by_cases late : X/y<m
-  · have ym := (Nat.div_lt_iff_lt_mul hy).mp late
-    have small : X/m<y := (Nat.div_lt_iff_lt_mul lo).mpr (by rwa [mul_comm])
-    simp only [f,roughPrimePowerReading_eq_zero small.le,mul_zero]
-  · have early := mem_Icc.mpr ⟨lo,le_of_not_gt late⟩
+  by_cases far : X / y < m
+  · have ym := (Nat.div_lt_iff_lt_mul hy).mp far
+    have small : X / m < y := (Nat.div_lt_iff_lt_mul lo).mpr (by simpa only [Nat.mul_comm] using ym)
+    simp only [roughPrimePowerReading_eq_zero small.le,mul_zero]
+  · have early := mem_Icc.mpr ⟨lo,le_of_not_gt far⟩
     have absent : ¬IsFree (banned y) m := fun h => outside (mem_filter.mpr ⟨early,h⟩)
-    simp only [f,row_value,if_neg absent,zero_mul]
+    simp only [row_value,if_neg absent,zero_mul]
 
 /-- Divisor inversion counts every smooth integer by the rough quotient floors. -/
 theorem smooth_population_as_a_rough_floor_sum (y : ℕ) (t : ℝ) (ht : 0 ≤ t) :
@@ -130,7 +133,7 @@ theorem smooth_population_as_a_rough_floor_sum (y : ℕ) (t : ℝ) (ht : 0 ≤ t
     intro n hn
     have test : IsSmooth (banned y) n ↔ n.primeFactors ⊆ Nat.primesLE y :=
       ⟨fun h p hp => Nat.mem_primesLE.mpr ⟨h.2 p hp,Nat.prime_of_mem_primeFactors hp⟩,
-       fun h => ⟨(mem_Icc.mp hn).1.ne',fun p hp => (Nat.mem_primesLE.mp (h hp)).1⟩⟩
+       fun h => ⟨Nat.ne_of_gt (show 0<n from (mem_Icc.mp hn).1),fun p hp => (Nat.mem_primesLE.mp (h hp)).1⟩⟩
     by_cases h : IsSmooth (banned y) n <;> simp [smoothAF_apply,h,←test]
   have realEq : (∑ m ∈ Icc 1 ⌊t⌋₊,row y m*(⌊t/m⌋:ℝ))=
       ∑ n ∈ Icc 1 ⌊t⌋₊,((smoothAF (banned y) n:ℤ):ℝ) := by
@@ -164,7 +167,9 @@ theorem exact_centered_prime_power_remainder {y : ℕ} (hy : 0<y) (X : ℕ) :
     apply sum_congr rfl; intro m _; ring
   rw [flat]; ring
 
-private theorem smooth_count_by_deletion_price {s : ℝ} (hs : 0<s) (y T : ℕ) :
+/-- Rankin prices every positive smooth integer, with arbitrary prime
+multiplicities, by the same deletion product as the signed rows. -/
+theorem smooth_population_le_deletion_price {s : ℝ} (hs : 0<s) (y T : ℕ) :
     ((RHTower.Sieve.smoothUpTo (Nat.primesLE y) T).card:ℝ) ≤
       (T:ℝ)^s*deletionPrice s y := by
   let S := RHTower.Sieve.smoothUpTo (Nat.primesLE y) T
@@ -216,7 +221,7 @@ theorem smooth_main_term_paid_at_the_log_square_cutoff {ε : ℝ} (hε : 0<ε) :
   let E := deletionPrice s b
   have E1 : 1 ≤ E := deletionPrice_one_le sp b
   have hi := Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.cast_le.mpr (Nat.div_le_self X y)) sp.le
-  have bound := (smooth_count_by_deletion_price sp y (X/y)).trans
+  have bound := (smooth_population_le_deletion_price sp y (X/y)).trans
     (mul_le_mul hi (deletionPrice_mono sp below) (zero_le_one.trans (deletionPrice_one_le sp _))
       (Real.rpow_nonneg (Nat.cast_nonneg _) _))
   have enough : (y:ℝ)*E ≤ ((b:ℝ)+1)*E^2 := by

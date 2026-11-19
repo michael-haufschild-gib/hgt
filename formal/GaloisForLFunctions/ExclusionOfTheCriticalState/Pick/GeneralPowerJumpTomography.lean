@@ -188,7 +188,7 @@ theorem any_nonlinear_weil_readouts {n : ℕ} (k : ℕ) (r s : Fin n → ℝ)
     apply (jumpReadouts_classify r s p).mpr
     have rateEq (j : ℕ) (h : jumpReadout j r p=jumpReadout j s p) (a b : Fin n) :
         powerRate j (r a) (r b)=powerRate j (s a) (s b) := by
-      have hab := Matrix.ext_iff.mp h a b
+      have hab := congrFun (congrFun h a) b
       change (Real.exp (-powerRate j (r a) (r b)) : ℂ)*_ =
         (Real.exp (-powerRate j (s a) (s b)) : ℂ)*_ at hab
       exact neg_inj.mp (Real.exp_injective (Complex.ofReal_inj.mp

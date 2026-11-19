@@ -18,10 +18,13 @@ noncomputable section
 open Finset
 namespace GaloisForLFunctions.HTGeometry.IntegralRootShell
 open CartanPath ClassicalCartan
+local notation "consℤ" => Fin.cons (α := fun _ => ℤ)
 variable {J : Type*} [Fintype J] (Q : Form J) (hQ : Q.PosDef)
 
 noncomputable local instance : Fintype (Component Q hQ) := Fintype.ofFinite _
 noncomputable local instance (c : Component Q hQ) : Fintype (Part Q hQ c) := Fintype.ofFinite _
+noncomputable local instance (c : Component Q hQ) : Fintype ↥c :=
+  inferInstanceAs (Fintype (Part Q hQ c))
 noncomputable local instance (c : Component Q hQ) : DecidableRel c.toSimpleGraph.Adj := Classical.decRel _
 
 private theorem part_degree (c : Component Q hQ) (i : Part Q hQ c) :
@@ -40,7 +43,7 @@ private theorem component_tree (c : Component Q hQ) : c.toSimpleGraph.IsTree :=
   ⟨c.connected_toSimpleGraph,(cartan_acyclic Q hQ).induce c.supp⟩
 
 private theorem part_leaf (c : Component Q hQ) : ∃ i : Part Q hQ c, c.toSimpleGraph.degree i≤1 := by
-  letI : Nonempty (Part Q hQ c) := c.connected_toSimpleGraph.nonempty
+  letI : Nonempty ↥c := c.connected_toSimpleGraph.nonempty
   let f := (SimpleGraph.Embedding.induce (G:=cartanGraph Q hQ) c.supp).toCopy
   obtain ⟨i,small,_⟩ := copy_leaf Q hQ c.toSimpleGraph f
   exact ⟨i,small⟩
@@ -80,7 +83,7 @@ private def radialField {T : Type*} {d : T → ℕ} (t : ℤ) (f : ∀ j,Fin (d 
 private theorem radial_edge_term {T : Type*} {d : T → ℕ} (t : ℤ) (f : ∀ j,Fin (d j+1) → ℤ)
     (j : T) (i : Fin (d j+1)) :
     (radialParent (some ⟨j,i⟩ : Radial T d)).elim 0
-      (fun y => f j i*radialField t f y)=f j i*Fin.cons t (f j) i.castSucc := by
+      (fun y => f j i*radialField t f y)=f j i*consℤ t (f j) i.castSucc := by
   by_cases z : i.val=0
   · have he : i.castSucc=0 := Fin.ext z
     simp [radialParent,z,radialField,he]
@@ -100,7 +103,7 @@ private theorem radial_form {T : Type*} [Fintype T] {d : T → ℕ} (c : Compone
     rw [Fintype.sum_option,Fintype.sum_sigma]
     rfl
   have R : (∑ x : Radial T d,(radialParent x).elim 0 (fun y => a x*a y))=
-      ∑ j,∑ i,f j i*Fin.cons t (f j) i.castSucc := by
+      ∑ j,∑ i,f j i*consℤ t (f j) i.castSucc := by
     rw [Fintype.sum_option,Fintype.sum_sigma]
     change 0+_=_
     rw [zero_add]
@@ -152,7 +155,8 @@ private theorem radial_center {T : Type*} [Fintype T] {d : T → ℕ} (c : Compo
   change (b:ℝ)/(t:ℝ)=1/(((d (g 0)+1:ℕ):ℝ)+1)+1/(((d (g 1)+1:ℕ):ℝ)+1)+1/(((d (g 2)+1:ℕ):ℝ)+1)-1
   dsimp [b,t,N]
   push_cast
-  field_simp <;> ring
+  field_simp
+  ring
 
 private theorem radial_card {T : Type*} [Fintype T] {d : T → ℕ} (c : Component Q hQ)
     (e : Radial T d ≃ Part Q hQ c) (g : Fin 3 ≃ T) :
@@ -166,7 +170,7 @@ private theorem radial_card {T : Type*} [Fintype T] {d : T → ℕ} (c : Compone
 private theorem single_arm {m : ℕ} (one : m=0) (t : ℤ) (f : Fin (m+1) → ℤ) :
     armPiece t f=(f 0)^2-f 0*t := by
   subst m
-  simp [armPiece,Fin.sum_univ_one]
+  simp [armPiece]
 
 private theorem fork_count {T : Type*} [Fintype T] {d : T → ℕ} (c : Component Q hQ)
     (e : Radial T d ≃ Part Q hQ c)
@@ -178,7 +182,7 @@ private theorem fork_count {T : Type*} [Fintype T] {d : T → ℕ} (c : Componen
   let R := Root (componentForm Q hQ c)
   let t (x : R) := x.val (e none)
   let a (x : R) (j : T) (i : Fin (d j+1)) := x.val (e (some ⟨j,i⟩))
-  let trunk (x : R) := Fin.cons (t x) (a x (g 2))
+  let trunk (x : R) := consℤ (t x) (a x (g 2))
   let encode (x : R) : Fork (d (g 2)+2) :=
     (fun i => trunk x i.rev,a x (g 0) 0,a x (g 1) 0)
   have coordinates (x : R) : (fun v => radialField (t x) (a x) (e.symm v))=x.val := by
@@ -210,13 +214,19 @@ private theorem fork_count {T : Type*} [Fintype T] {d : T → ℕ} (c : Componen
     · simpa only [trunk,Fin.cons_zero,t] using eqT 0
     · obtain ⟨z,rfl⟩ := g.surjective j
       fin_cases z
-      · have eq : i=0 := Fin.ext (by have hi := i.isLt; omega)
+      · change Fin (d (g 0)+1) at i
+        have hi := i.isLt
+        have eq : i=0 := Fin.ext (show i.val=0 by omega)
         subst i
         exact eqU
-      · have eq : i=0 := Fin.ext (by have hi := i.isLt; omega)
+      · change Fin (d (g 1)+1) at i
+        have hi := i.isLt
+        have eq : i=0 := Fin.ext (show i.val=0 by omega)
         subst i
         exact eqV
-      · simpa only [trunk,Fin.cons_succ,a] using eqT i.succ
+      · change Fin (d (g 2)+1) at i
+        exact (Fin.cons_succ (α := fun _ => ℤ) (t x) (a x (g 2)) i).symm.trans
+          ((eqT i.succ).trans (Fin.cons_succ (α := fun _ => ℤ) (t y) (a y (g 2)) i))
   let F := (forkRootEquiv (d (g 2)+2)) ∘ f
   have le := Nat.card_le_card_of_injective F ((forkRootEquiv _).injective.comp inj)
   rw [IntegralZeroSum.card_twoShell,Fintype.card_fin] at le
@@ -231,9 +241,8 @@ private theorem fork_count {T : Type*} [Fintype T] {d : T → ℕ} (c : Componen
     simpa [Nat.descFactorial] using Nat.descFactorial_eq_factorial_mul_choose s 2
   apply le.trans
   change 4*s.choose 2≤2*s*(s-1)
-  calc
-    _ = 2*(2*s.choose 2) := by ring
-    _ = 2*s*(s-1) := by rw [←count]; ring
+  rw [show 4*s.choose 2=2*(2*s.choose 2) by ring,←count]
+  exact Nat.le_of_eq (by ring)
 
 /-- A component of rank at least nine contains at most as many signed unit
 vectors as a D lattice of that rank. -/
@@ -249,12 +258,13 @@ theorem large_component_bound (c : Component Q hQ) (large : 9≤Nat.card (Part Q
     calc
       _ ≤ s*(2*(s-1)) := Nat.mul_le_mul_left _ (by dsimp [s]; omega)
       _ = _ := by ring
-  · push_neg at path
+  · push Not at path
     obtain ⟨r,branch⟩ := path
     have three : H.degree r=3 := by
       have le := degree_le_three Q hQ r.val
       change c.toSimpleGraph.degree r=3
-      rw [part_degree] at branch ⊢
+      change 2 < c.toSimpleGraph.degree r at branch
+      rw [part_degree Q hQ c r] at branch ⊢
       omega
     have away (v : Part Q hQ c) (ne : v≠r) : H.degree v≤2 := by
       by_contra! high
@@ -263,9 +273,9 @@ theorem large_component_bound (c : Component Q hQ) (large : 9≤Nat.card (Part Q
       apply trivalent_unique_in_component Q hQ v.val r.val
       · exact SimpleGraph.ConnectedComponent.eq.mp (v.property.trans r.property.symm)
       · rw [← part_degree Q hQ c v]
-        omega
+        exact high
       · rw [← part_degree Q hQ c r]
-        omega
+        exact three.ge
     choose d e start edges using arm_numbering H r away
     let E := radialEquiv H r (component_tree Q hQ c) d e
     have edge := radial_edges H r (component_tree Q hQ c) d e start edges
@@ -314,12 +324,14 @@ private theorem aggregate_components
       (fun _ _ => Nat.zero_le _) (mem_univ c)).trans total
     by_cases h : s≤8
     · apply (small_component_count Q hQ c h).trans
-      exact Nat.mul_le_mul_right _ (Nat.mul_le_mul_left 2 (le_max_left _ _))
+      exact Nat.mul_le_mul_right _ (Nat.mul_le_mul_left 2 (le_max_left 15 (Fintype.card J-1)))
     · apply (large c (by omega)).trans
       rw [Nat.mul_right_comm]
       exact Nat.mul_le_mul_right _ (Nat.mul_le_mul_left 2 ((Nat.sub_le_sub_right sd 1).trans (le_max_right _ _)))
   rw [component_root_count Q hQ]
   exact (sum_le_sum fun c _ => localBound c).trans (by rw [← mul_sum]; exact Nat.mul_le_mul_left W total)
+
+include hQ
 
 /-- The signed shell of every integral positive quadratic form in rank d
 has at most 2d max(15,d−1) points, including nonclassical forms. -/
@@ -328,7 +340,7 @@ theorem quadratic_root_bound : Nat.card (Root Q)≤2*max 15 (Fintype.card J-1)*F
 
 /-- The uniform 480-versus-quadratic bound for the complete signed shell. -/
 theorem uniform_quadratic_root_bound :
-    Nat.card (Root Q)≤max 480 (2*Fintype.card J*(Fintype.card J-1)) := by
+    Nat.card (Root Q) ≤ max 480 (2*Fintype.card J*(Fintype.card J-1)) := by
   let d := Fintype.card J
   have h := quadratic_root_bound Q hQ
   change Nat.card (Root Q)≤2*max 15 (d-1)*d at h

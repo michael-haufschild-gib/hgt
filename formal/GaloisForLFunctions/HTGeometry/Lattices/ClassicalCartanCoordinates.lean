@@ -49,7 +49,8 @@ private theorem boundary_integrate (y : Fin (n+1) → ℤ) (hy : (∑ j,y j)=0) 
     simp only [Fin.snoc_castSucc,Fin.val_castSucc,integrate]
   funext i
   rw [boundary,left,cons_integrate]
-  simp [acc,sum_range_succ,read,i.isLt]
+  have rd : read y i.val=y i := by unfold read; rw [dif_pos i.isLt]
+  simp [acc,sum_range_succ,rd]
 
 private theorem integrate_boundary (a : Fin n → ℤ) : integrate (boundary a)=a := by
   have acc_before (i : Fin (n+1)) : acc (boundary a) i.val=consℤ 0 a i := by
@@ -165,8 +166,8 @@ def forkCoordinates (n : ℕ) : Fork n ≃ {y : Fin (n+2) → ℤ // Even (∑ i
       rw [sum_fork]
       simp only [forkVector,Fin.snoc_last]
       apply Prod.ext <;> dsimp <;> omega
-    unfold forkInverse
-    rw [ends]
+    change forkInverse (forkVector (a,u,v))=(a,u,v)
+    simp only [forkInverse,ends]
     simp only [forkVector,Fin.snoc_castSucc,adjust_undo,integrate_boundary]
   right_inv y := by
     obtain ⟨y,k,hk⟩ := y
@@ -188,7 +189,10 @@ def forkCoordinates (n : ℕ) : Fork n ≃ {y : Fin (n+2) → ℤ // Even (∑ i
       rw [Fin.snoc_last,hu]; ring
     · change snocℤ (adjust (boundary (integrate (adjust z (-(u+v))))) (u+v)) _ j.castSucc=_
       rw [Fin.snoc_castSucc,boundary_integrate _ hs]
-      by_cases eq : j=Fin.last n <;> simp [adjust,eq,z]
+      by_cases eq : j=Fin.last n
+      · simp [adjust,eq,z]
+        abel
+      · simp [adjust,eq,z]
 
 private def tip (a : Fin n → ℤ) := consℤ 0 a (Fin.last n)
 

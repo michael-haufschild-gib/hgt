@@ -49,9 +49,10 @@ def decode (x : Fin 8 → ℤ) : Fin 8 → ℤ :=
   ![x 0,b 1,u₂,u₃,u₄,u₅,u₅+b 6,((∑ i, x i)-8*x 0)/4]
 
 theorem decode_encode (a : Fin 8 → ℤ) : decode (encode a)=a := by
-  have h (b c : ℤ) : (b+2*c-b)/2=c := by omega
+  unfold decode
+  rw [encode_sum]
   funext i
-  fin_cases i <;> simp [decode,half,encode_sum,encode,h] <;> omega
+  fin_cases i <;> simp [half,encode]
 
 theorem encode_decode (x : Fin 8 → ℤ) (hx : compatible x) : encode (decode x)=x := by
   have h (i : Fin 8) : 2*half x i=x i-x 0 := by
@@ -112,8 +113,12 @@ def rootEquiv : Root form ≃ Shell where
     have he := energy_encode (decode x.val)
     rw [encode_decode x.val x.property.1,x.property.2] at he
     omega⟩
-  left_inv a := Subtype.ext (decode_encode _)
-  right_inv x := Subtype.ext (encode_decode _ x.property.1)
+  left_inv a := by
+    apply Subtype.ext
+    exact decode_encode a.val
+  right_inv x := by
+    apply Subtype.ext
+    exact encode_decode x.val x.property.1
 
 theorem root_card : Nat.card (Root form)=240 := (Nat.card_congr rootEquiv).trans shell_card
 
@@ -139,7 +144,9 @@ private theorem feature_independent : LinearIndependent ℚ feature := by
   apply Fintype.linearIndependent_iff.mp hi c
   funext p
   have h := congrFun hc p
-  simp only [Finset.sum_apply,Pi.smul_apply,zsmul_eq_mul,Pi.zero_apply,feature] at h ⊢
+  simp only [Finset.sum_apply,Pi.zero_apply,zsmul_eq_mul] at h ⊢
+  change (∑ i, (c i : ℚ)*(cubicFeatures (lift form i).val p : ℚ))=0 at h
+  change (∑ i, c i*cubicFeatures (lift form i).val p)=0
   exact_mod_cast h
 
 /-- Root evaluation is a basis of the rational symmetric cube in rank eight. -/
@@ -154,7 +161,7 @@ def cubicBasis : Module.Basis (Occupied form) ℚ CubicCoordinates := by
 cubic interpolant. Its value on an input is linear in the cubic monomials. -/
 theorem cubic_interpolation (v : Occupied form → ℚ) :
     ∃! F : Module.Dual ℚ CubicCoordinates, ∀ a, F (feature a)=v a := by
-  have hb (a : Occupied form) : cubicBasis a=feature a := rfl
+  have hb (a : Occupied form) : cubicBasis a=feature a := by simp [cubicBasis]
   refine ⟨cubicBasis.constr ℚ v,fun a => by rw [← hb,Module.Basis.constr_basis],?_⟩
   intro G hG
   apply cubicBasis.ext

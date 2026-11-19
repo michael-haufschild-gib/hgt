@@ -173,8 +173,16 @@ theorem long_orbit_prefix (D G : ℕ → ℕ) (hnD : ∀ n,n ≤ D n)
     exact_mod_cast (show μ (G n)= -μ n by omega)
   have hset : (Icc 1 X).filter (fun n => max X (D n)<G n)=A \ P := by
     ext n
-    simp only [A,P,mem_filter,max_lt_iff,mem_sdiff,not_and,not_le]
-    omega
+    constructor
+    · intro h
+      obtain ⟨hi,hup⟩ := mem_filter.mp h
+      obtain ⟨hx,hd⟩ := max_lt_iff.mp hup
+      exact mem_sdiff.mpr ⟨mem_filter.mpr ⟨hi,hd⟩,fun hP => hx.not_ge (mem_filter.mp hP).2⟩
+    · intro h
+      obtain ⟨ha,hP⟩ := mem_sdiff.mp h
+      obtain ⟨hi,hd⟩ := mem_filter.mp ha
+      have hx : X<G n := lt_of_not_ge (fun low => hP (mem_filter.mpr ⟨ha,low⟩))
+      exact mem_filter.mpr ⟨hi,max_lt_iff.mpr ⟨hx,hd⟩⟩
   rw [he]
   constructor
   · rw [sum_union dis,hsign,longCrossingCharge,hset,sum_sdiff_eq_sub (filter_subset ..)]

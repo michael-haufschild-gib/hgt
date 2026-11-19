@@ -12,7 +12,7 @@ component is a path starting at its unique neighbor of the center.
 noncomputable section
 open Finset
 namespace GaloisForLFunctions.HTGeometry.CartanPath
-variable {V : Type*} [Fintype V] (G : SimpleGraph V) [DecidableRel G.Adj] (r : V)
+variable {V : Type*} (G : SimpleGraph V) (r : V)
 
 abbrev Off := {v : V // v≠r}
 
@@ -71,7 +71,8 @@ def neighborComponentEquiv (tree : G.IsTree) : G.neighborSet r ≃ (punctured G 
   Equiv.ofBijective (armComponent G r) ⟨arms_distinct G r tree.isAcyclic,arms_cover G r tree.connected.preconnected⟩
 
 /-- Component cardinality as an exact consequence of the vertex bijection. -/
-theorem punctured_count (tree : G.IsTree) : Nat.card (punctured G r).ConnectedComponent=G.degree r := by
+theorem punctured_count [Fintype V] [DecidableRel G.Adj] (tree : G.IsTree) :
+    Nat.card (punctured G r).ConnectedComponent=G.degree r := by
   rw [← Nat.card_congr (neighborComponentEquiv G r tree),Nat.card_eq_fintype_card,
     SimpleGraph.card_neighborSet_eq_degree]
 
@@ -81,7 +82,7 @@ private def armStart (j : G.neighborSet r) : armComponent G r j :=
 open Classical in
 /-- The degree bounds in a punctured component charge the edge leading to
 the center separately at its neighbor. -/
-private theorem arm_degree (j : G.neighborSet r) (x : armComponent G r j) :
+private theorem arm_degree [Fintype V] [DecidableRel G.Adj] (j : G.neighborSet r) (x : armComponent G r j) :
     let H := (armComponent G r j).toSimpleGraph
     Nat.card (H.neighborSet x) + (if x=armStart G r j then 1 else 0) ≤ G.degree x.val.val := by
   classical
@@ -97,22 +98,21 @@ private theorem arm_degree (j : G.neighborSet r) (x : armComponent G r j) :
     obtain ⟨y,_,rfl⟩ := mem_map.mp hz
     exact mem_erase.mpr ⟨ne y,mem y⟩
   have le := card_le_card incl
-  rw [card_map,card_univ] at le
-  dsimp only
-  rw [Nat.card_eq_fintype_card]
+  rw [card_map,card_univ,← Nat.card_eq_fintype_card] at le
+  change Nat.card (H.neighborSet x) + _ ≤ M.card
   by_cases eq : x=armStart G r j
   · have hr : r∈M := (G.mem_neighborFinset _ _).mpr (by subst x; exact j.property.symm)
     rw [card_erase_of_mem hr] at le
     have pos : 0<M.card := card_pos.mpr ⟨r,hr⟩
     rw [if_pos eq]
-    change _≤M.card
     omega
   · rw [if_neg eq,add_zero]
     exact le.trans (card_le_card (erase_subset _ _))
 
 /-- A finite tree with a unique possible branching vertex is a collection
 of rooted paths, canonically distinguished by their first vertices. -/
-theorem arm_numbering (bound : ∀ v, v≠r → G.degree v≤2) (j : G.neighborSet r) :
+theorem arm_numbering [Fintype V] [DecidableRel G.Adj] (bound : ∀ v, v≠r → G.degree v≤2)
+    (j : G.neighborSet r) :
     let C := armComponent G r j
     ∃ n, ∃ e : Fin (n+1) ≃ C, (e 0).val.val=j.val ∧
       ∀ i k, C.toSimpleGraph.Adj (e i) (e k) ↔ i.val+1=k.val ∨ k.val+1=i.val := by
@@ -169,7 +169,7 @@ private theorem arm_at_center (tree : G.IsTree) (j : G.neighborSet r) (v : armCo
     let k : G.neighborSet r := ⟨v.val.val,edge⟩
     have equal : armComponent G r k=armComponent G r j := v.property
     have hj : k=j := arms_distinct G r tree.isAcyclic equal
-    exact Subtype.ext (Subtype.ext (congrArg Subtype.val hj))
+    exact Subtype.ext (Subtype.ext (congrArg (fun a : G.neighborSet r => a.val) hj))
   · rintro rfl
     exact j.property
 
@@ -189,7 +189,9 @@ def radialParent {J : Type*} {d : J → ℕ} : Radial J d → Option (Radial J d
 private theorem parent_center {J : Type*} {d : J → ℕ} (j : J) (i : Fin (d j+1)) :
     radialParent (some ⟨j,i⟩ : Radial J d)=some none ↔ i=0 := by
   by_cases eq : i.val=0
-  · simp [radialParent,eq,Fin.ext eq]
+  · have h : i=0 := Fin.ext eq
+    subst i
+    simp [radialParent]
   · have ne : i≠0 := fun h => eq (congrArg Fin.val h)
     simp [radialParent,eq,ne]
 
@@ -198,7 +200,6 @@ private theorem parent_arm {J : Type*} {d : J → ℕ} (j : J) (i l : Fin (d j+1
   by_cases eq : i.val=0
   · simp [radialParent,eq]
   · simp only [radialParent,dif_neg eq,Option.some.injEq,Sigma.mk.inj_iff,heq_eq_eq,true_and,Fin.ext_iff]
-    change i.val-1=l.val ↔ l.val+1=i.val
     omega
 
 private theorem parent_other {J : Type*} {d : J → ℕ} {j k : J} (ne : j≠k) (i : Fin (d j+1)) (l : Fin (d k+1)) :
@@ -248,7 +249,7 @@ theorem radial_edges (tree : G.IsTree) (d : G.neighborSet r → ℕ)
       change (armComponent G r j).toSimpleGraph.Adj (e j i) (e j l) ↔ _
       rw [path,parent_arm,parent_arm,or_comm]
     · change G.Adj (e j i).val.val (e k l).val.val ↔ _
-      simp only [different_arms G r tree eq, parent_other eq, parent_other eq.symm,or_self]
+      simp only [different_arms G r tree eq, parent_other eq, parent_other (Ne.symm eq),or_self]
 
 #print axioms radialEquiv
 #print axioms radial_edges

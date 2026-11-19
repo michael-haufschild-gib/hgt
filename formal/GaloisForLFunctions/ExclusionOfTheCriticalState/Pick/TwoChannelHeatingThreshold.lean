@@ -29,8 +29,8 @@ private theorem square_coeff (P : ℝ[X]) (k : ℕ) (h : P.natDegree≤k) :
 private theorem square_degrees {P A B : ℝ[X]} (d : ℕ) (hp : P.natDegree≤2*d)
     (he : P=A^2+B^2) : A.natDegree≤d ∧ B.natDegree≤d := by
   let m := max A.natDegree B.natDegree
-  have ha : A.natDegree≤m := le_max_left _ _
-  have hb : B.natDegree≤m := le_max_right _ _
+  have ha : A.natDegree ≤ m := le_max_left _ _
+  have hb : B.natDegree ≤ m := le_max_right _ _
   suffices hm : m≤d from ⟨ha.trans hm,hb.trans hm⟩
   by_contra! hm
   have hz := coeff_eq_zero_of_natDegree_lt (p:=P) (by omega : P.natDegree<2*m)

@@ -535,7 +535,8 @@ theorem sixth_seventh_gcd_iff_eleven_thirds :
     subpowerGcdGrid 6 ↔ ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
       |seventeenNinthsConductorPrefix N| ≤ C*(N:ℝ)^(11/3:ℝ) := by
   rw [subpower_gcd_grid_iff_octave,←five_sixths_iff_seventeenNinthsConductorPrefix]
-  convert subpower_octave_grid_iff_abscissa 4 (by norm_num : |(-1:ℝ)|=1) using 1 <;> norm_num
+  convert subpower_octave_grid_iff_abscissa 4 (by norm_num : |(-1:ℝ)|=1) using 1
+  norm_num
 
 #print axioms sixth_seventh_gcd_iff_eleven_thirds
 #print axioms sparse_gcd_deficit_comparison

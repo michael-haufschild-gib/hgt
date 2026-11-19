@@ -13,6 +13,7 @@ noncomputable section
 open Finset
 namespace GaloisForLFunctions.HTGeometry.EightShell
 open IntegralZeroSum
+local notation "snocℤ" => Fin.snoc (α := fun _ => ℤ)
 
 def compatible (x : Fin 8 → ℤ) := (∀ i, x i%2=x 0%2) ∧ (∑ i, x i)%4=0
 abbrev Shell := {x : Fin 8 → ℤ // compatible x ∧ energy x=8}
@@ -21,11 +22,10 @@ abbrev Shell := {x : Fin 8 → ℤ // compatible x ∧ energy x=8}
 integer vectors. Their coordinate sum is automatically divisible by four. -/
 def evenVector (y : TwoShell (Fin 8)) : Shell := by
   let x := fun i => 2*y.val i
-  have hs := energy_sub_sum_even y.val
-  obtain ⟨k,hk⟩ := hs
-  rw [y.property] at hk
   refine ⟨x,⟨fun i => by simp [x],?_⟩,?_⟩
-  · dsimp only [x]
+  · obtain ⟨k,hk⟩ := energy_sub_sum_even y.val
+    rw [y.property] at hk
+    dsimp only [x]
     rw [← mul_sum]
     omega
   · change (∑ i, (2*y.val i)^2)=8
@@ -53,9 +53,9 @@ private theorem lastSign_spec (s : Fin 7 → Bool) :
 
 /-- One compensating sign imposes the E₈ parity constraint. -/
 def oddVector (s : Fin 7 → Bool) : Shell := by
-  let x := Fin.snoc (fun i => unitSign (s i)) (lastSign s)
+  let x := snocℤ (fun i => unitSign (s i)) (lastSign s)
   have unit (i : Fin 8) : x i=1 ∨ x i= -1 := by
-    refine Fin.lastCases (by simpa [x] using (lastSign_spec s).1) (fun i => ?_) i
+    refine Fin.lastCases (by simpa only [x,Fin.snoc_last] using (lastSign_spec s).1) (fun i => ?_) i
     cases h : s i <;> simp [x,unitSign,h]
   refine ⟨x,⟨fun i => by rcases unit i with h|h <;> rcases unit 0 with h'|h' <;> omega,?_⟩,?_⟩
   · simpa only [Fin.sum_univ_castSucc,x,Fin.snoc_castSucc,Fin.snoc_last,sumSeven] using (lastSign_spec s).2
@@ -89,17 +89,18 @@ def shellEquiv : TwoShell (Fin 8) ⊕ (Fin 7 → Bool) ≃ Shell := by
       change 2*x.val i=2*y.val i at e
       omega
     · have e := congrArg (fun z : Shell => z.val (Fin.last 7)) h
-      change 2*x.val (Fin.last 7)=Fin.snoc _ (lastSign t) _ at e
+      change 2*x.val (Fin.last 7)=snocℤ (fun j => unitSign (t j)) (lastSign t) (Fin.last 7) at e
       rw [Fin.snoc_last] at e
       rcases (lastSign_spec t).1 with hh|hh <;> omega
     · have e := congrArg (fun z : Shell => z.val (Fin.last 7)) h
-      change Fin.snoc _ (lastSign s) _=2*y.val (Fin.last 7) at e
+      change snocℤ (fun j => unitSign (s j)) (lastSign s) (Fin.last 7)=2*y.val (Fin.last 7) at e
       rw [Fin.snoc_last] at e
       rcases (lastSign_spec s).1 with hh|hh <;> omega
     · apply congrArg Sum.inr
       funext i
       have e := congrArg (fun z : Shell => z.val i.castSucc) h
-      change Fin.snoc _ (lastSign s) _=Fin.snoc _ (lastSign t) _ at e
+      change snocℤ (fun j => unitSign (s j)) (lastSign s) i.castSucc=
+        snocℤ (fun j => unitSign (t j)) (lastSign t) i.castSucc at e
       rw [Fin.snoc_castSucc,Fin.snoc_castSucc] at e
       cases hs : s i <;> cases ht : t i <;> simp_all [unitSign]
   · intro x
@@ -126,8 +127,9 @@ def shellEquiv : TwoShell (Fin 8) ⊕ (Fin 7 → Bool) ≃ Shell := by
         rw [e] at sum
         rcases odd_units x he (Fin.last 7) with h|h <;> rcases unit with q|q <;> omega
       refine ⟨Sum.inr s,Subtype.ext (funext fun i => ?_)⟩
-      refine Fin.lastCases (by simpa [oddVector] using hlast) (fun j => ?_) i
-      simpa [oddVector] using hs j
+      change snocℤ (fun j => unitSign (s j)) (lastSign s) i=x.val i
+      refine Fin.lastCases (by simpa only [Fin.snoc_last] using hlast) (fun j => ?_) i
+      simpa only [Fin.snoc_castSucc] using hs j
 
 theorem shell_card : Nat.card Shell=240 := by
   rw [← Nat.card_congr shellEquiv,Nat.card_sum,card_twoShell,Nat.card_fun,Nat.card_fin,

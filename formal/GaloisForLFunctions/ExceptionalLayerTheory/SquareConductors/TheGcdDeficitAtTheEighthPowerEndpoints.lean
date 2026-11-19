@@ -271,8 +271,12 @@ theorem eighth_gcd_deficit_centered_converges :
     | zero => simp [powerGridGcdDeficit]
     | succ K ih =>
       rw [powerGridGcdDeficit] at ih ⊢
-      rw [sum_Icc_succ_top (by omega : 1 ≤ K+1),sum_range_succ,harmonic_succ,←ih]
-      dsimp only [f,a]
+      rw [sum_Icc_succ_top (by omega : 1 ≤ K+1),Finset.sum_range_succ f K,harmonic_succ,←ih]
+      dsimp only [f]
+      have hrec : 1/(2*((K:ℝ)+1))=(1/2:ℝ)*((K:ℝ)+1)⁻¹ := by
+        rw [one_div,mul_inv_rev]; ring
+      rw [hrec]
+      dsimp only [a]
       push_cast
       ring
   refine ⟨(∑' i, f i)+(1/2:ℝ)*Real.eulerMascheroniConstant,?_⟩
@@ -280,5 +284,48 @@ theorem eighth_gcd_deficit_centered_converges :
   exact htot.congr fun K => by rw [←hpre]; ring
 
 #print axioms eighth_gcd_deficit_centered_converges
+
+
+/-- Log price of the ordinary primes selected by the two sharp sparse cutoffs. -/
+def eighthOrdinaryPrimePrice (m : ℕ) : ℝ :=
+  ∑ p ∈ (Ioc (m^8) (2*m^8)).filter Nat.Prime, ((m^9/p:ℕ):ℝ)*Real.log p
+
+/-- Removing the proper prime powers preserves the pointwise half-step
+at the original eighth/ninth-power endpoints. -/
+theorem eighth_ordinary_prime_deficit_half_step {δ : ℝ} (hsmall : δ < 1/3000) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {m : ℕ}, 2 ≤ m →
+      |Real.log 2-eighthOrdinaryPrimePrice m/(m:ℝ)^9-1/(2*(m:ℝ))| ≤ C*(m:ℝ)^(-1-δ) := by
+  obtain ⟨B,hB,h⟩ := eighth_power_gcd_deficit_half_step hsmall
+  obtain ⟨A,hA⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  refine ⟨B+|A| * Real.sqrt 2,by positivity,?_⟩
+  intro m hm
+  have hm0 : 0 < m := by omega
+  have hr : 0 < (m:ℝ) := Nat.cast_pos.mpr hm0
+  have hr1 : (1:ℝ) ≤ m := Nat.one_le_cast.mpr hm0
+  let Q := Real.log (octaveGcdProduct (m^8) (m^9))
+  let P := eighthOrdinaryPrimePrice m
+  have hc := octave_gcd_product_ordinary_primes (pow_pos hm0 8) (m^9)
+  change 0 ≤ Q-P ∧ Q-P ≤ _ at hc
+  have hp := (hA ((2*m^8:ℕ):ℝ)).trans
+    (mul_le_mul_of_nonneg_right (le_abs_self A) (Real.sqrt_nonneg _))
+  have hi := hc.2.trans (mul_le_mul_of_nonneg_left hp (by positivity))
+  push_cast at hi
+  have hs : Real.sqrt ((m:ℝ)^8)=(m:ℝ)^4 := by
+    rw [show (m:ℝ)^8=((m:ℝ)^4)^2 by ring,Real.sqrt_sq (pow_nonneg hr.le _)]
+  rw [Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 2),hs] at hi
+  have hdiff : |(Q-P)/(m:ℝ)^9| ≤ (|A| * Real.sqrt 2)/(m:ℝ)^4 := by
+    rw [abs_of_nonneg (div_nonneg hc.1 (pow_nonneg hr.le _))]
+    apply (div_le_div_of_nonneg_right hi (pow_nonneg hr.le _)).trans_eq
+    field_simp
+  have hpow := Real.rpow_le_rpow_of_exponent_le hr1 (by linarith only [hsmall] : (-4:ℝ) ≤ -1-δ)
+  rw [Real.rpow_neg hr.le,show (4:ℝ) = ((4:ℕ):ℝ) by norm_num,Real.rpow_natCast] at hpow
+  have hh := abs_add_le (Real.log 2-Q/(m:ℝ)^9-1/(2*(m:ℝ))) ((Q-P)/(m:ℝ)^9)
+  rw [show Real.log 2-eighthOrdinaryPrimePrice m/(m:ℝ)^9-1/(2*(m:ℝ)) =
+      (Real.log 2-Q/(m:ℝ)^9-1/(2*(m:ℝ)))+((Q-P)/(m:ℝ)^9) by dsimp only [P]; ring]
+  apply hh.trans ((add_le_add (h hm) hdiff).trans ?_)
+  rw [div_eq_mul_inv (|A| * Real.sqrt 2),add_mul]
+  exact add_le_add le_rfl (mul_le_mul_of_nonneg_left hpow (by positivity))
+
+#print axioms eighth_ordinary_prime_deficit_half_step
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

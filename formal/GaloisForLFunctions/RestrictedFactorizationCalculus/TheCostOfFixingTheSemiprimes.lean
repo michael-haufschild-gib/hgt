@@ -24,17 +24,24 @@ namespace GaloisForLFunctions.RestrictedFactorizationCalculus
 /-- The squarefree integers with precisely two prime factors. -/
 def squarefreeSemiprimes : Set ℕ := {n | Squarefree n ∧ n.primeFactors.card=2}
 
+private theorem semiprime_card (X : ℕ) :
+    ((Icc 1 X).filter (· ∈ squarefreeSemiprimes)).card=squarefreeOmegaCount 2 X := by
+  unfold squarefreeOmegaCount
+  apply congrArg Finset.card
+  ext n
+  simp only [mem_filter,squarefreeSemiprimes,Set.mem_setOf_eq]
+
 private theorem partner_of_prime {p n : ℕ} (hp : p.Prime) (edge : GlobalDyadicOneTwoRel p n) :
     n ∈ squarefreeSemiprimes := by
   obtain ⟨_,_,_,c,a,b,d,ha,hb,hd,lt,h⟩ := edge
   apply RHTower.PrimeCells.squarefree_card_primeFactors_two_iff.mpr
   rcases h with ⟨pa,e⟩ | ⟨_,e⟩
-  · have eq : a=p := (Nat.prime_dvd_prime_iff_eq ha hp).mp (pa ▸ dvd_mul_left a c)
+  · have eq : a=p := (Nat.prime_dvd_prime_iff_eq ha hp).mp (by rw [pa]; exact dvd_mul_left a c)
     have one : c=1 := Nat.eq_of_mul_eq_mul_right ha.pos
       (show c*a=1*a by rw [←pa,one_mul,eq])
     exact ⟨b,d,hb,hd,lt,by simpa only [one,one_mul] using e⟩
   · have wrong (q : ℕ) (hq : q.Prime) (dv : q ∣ b*d) : q=p :=
-      (Nat.prime_dvd_prime_iff_eq hq hp).mp (e ▸ dvd_mul_of_dvd_right dv c)
+      (Nat.prime_dvd_prime_iff_eq hq hp).mp (by rw [e]; exact dvd_mul_of_dvd_right dv c)
     exact (lt.ne ((wrong b hb (dvd_mul_right ..)).trans (wrong d hd (dvd_mul_left ..)).symm)).elim
 
 private theorem error_at_image (G : ℕ → ℕ) (back : Function.Involutive G)
@@ -47,13 +54,13 @@ private theorem error_at_image (G : ℕ → ℕ) (back : Function.Involutive G)
       have hc := h.2
       rw [hp.primeFactors,card_singleton] at hc
       omega
-    have hi := mem_Icc.mpr ⟨hp.pos,eq ▸ bound⟩
+    have hi : p ∈ Icc 1 X := mem_Icc.mpr ⟨hp.pos,by simpa only [eq] using bound⟩
     exact mem_filter.mpr ⟨mem_filter.mpr ⟨hi,Irreducible.squarefree hp⟩,
       fun h => (h.mp eq).elim hp.ne_one absent⟩
   · have hit := partner_of_prime hp edge
     have different : p ≠ G p := by
       intro eq
-      have psemi : p ∈ squarefreeSemiprimes := eq ▸ hit
+      have psemi : p ∈ squarefreeSemiprimes := by simpa only [←eq] using hit
       have h := psemi.2
       rw [hp.primeFactors,card_singleton] at h
       omega
@@ -122,7 +129,7 @@ private theorem semiprimes_have_density_zero (ε : ℝ) (hε : 0<ε) :
     have eq : C*(2*d)=ε := by dsimp only [d]; field_simp
     rw [←eq]
     linarith only [mul_le_mul_of_nonneg_left (add_le_add logBound small) hC.le])
-  change (squarefreeOmegaCount 2 X:ℝ) ≤ _
+  rw [semiprime_card]
   have hh := bound X hx
   simp only [pow_one] at hh
   exact hh.trans ((le_of_eq (by dsimp only [L]; ring : C*(X*(logLog X+mertensUpperConst)/Real.log X)=
@@ -147,7 +154,7 @@ private theorem signed_semiprime_target {X : ℕ} (hX : 0<X) :
     ext n
     simp only [squarefreeOf,mem_filter,mem_insert,C]
     by_cases eq : n=1
-    · subst n; simp [hX]
+    · subst n; simp [show 1 ≤ X from hX]
     · simp only [eq,false_or]
       exact ⟨fun h => ⟨h.1.1,h.2⟩,fun h => ⟨⟨h.1,h.2.1⟩,h.2⟩⟩
   have absent : 1 ∉ C := by simp [C,squarefreeSemiprimes]
@@ -157,7 +164,7 @@ private theorem signed_semiprime_target {X : ℕ} (hX : 0<X) :
     rw [isMultiplicative_moebius.map_mul_of_coprime cop,moebius_apply_prime hp,moebius_apply_prime hr]
     norm_num
   rw [same,sum_insert absent,sum_congr rfl positive,sum_const,nsmul_eq_mul,mul_one,moebius_apply_one,Int.cast_one]
-  change 1+(C.card:ℝ)=(C.card:ℝ)+1
+  rw [show C.card=squarefreeOmegaCount 2 X from semiprime_card X]
   exact add_comm ..
 
 /-- In one density-one matching the fixed charge tracks the entire

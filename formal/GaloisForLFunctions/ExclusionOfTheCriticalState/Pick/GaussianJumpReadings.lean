@@ -147,7 +147,7 @@ private theorem line_isometry {ι : Type*} (o : ι) (r s : ι → ℝ)
       rw [hj'] at hg
       rcases he with rfl | rfl <;> linarith only [hg]
     rcases he with rfl | rfl <;> linarith only [hi]
-  · push_neg at hn
+  · push Not at hn
     refine ⟨1,s o-r o,Or.inl rfl,fun i => ?_⟩
     have hz : (s i-s o)^2 = 0 := by simpa [hn i] using (hd i o).symm
     rw [sub_eq_zero.mp (sq_eq_zero_iff.mp hz),hn i]
@@ -209,7 +209,8 @@ theorem jumpReadouts_three_levels {n : ℕ} (r s : Fin (n+1) → ℝ)
   rcases hb with rfl | hsum
   · rcases he with rfl | rfl
     · left; funext i; simpa only [add_zero,one_mul] using hs i
-    · right; left; funext i; simpa only [add_zero,neg_one_mul] using hs i
+    · right; left; funext i
+      simpa only [Pi.neg_apply,add_zero,neg_one_mul] using hs i
   · right; right
     intro i j k
     rcases hsum i j with h | hij

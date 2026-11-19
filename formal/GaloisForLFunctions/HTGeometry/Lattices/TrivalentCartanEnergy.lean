@@ -45,9 +45,10 @@ private theorem arm_minimum {n : ℕ} (t : ℝ) (f : Fin n → ℝ) :
   · rintro rfl
     have h' : ∀ k ≤ n, extend t (ramp n t) k=exceptionalChainRamp n t k := by
       intro k hk
-      rcases lt_or_eq_of_le hk with hk | rfl
+      rcases lt_or_eq_of_le hk with hk | heq
       · simp [extend,hk,ramp]
-      · rw [terminal,exceptionalChainRamp,mul_div_cancel_left₀ _ (by positivity : (n:ℝ)+1 ≠ 0)]
+      · subst k
+        rw [terminal,exceptionalChainRamp,mul_div_cancel_left₀ _ (by positivity : (n:ℝ)+1 ≠ 0)]
     linarith only [he.mpr h']
 
 /-- The Cartan energy in vertex coordinates. Each vertex contributes twice
@@ -114,16 +115,21 @@ theorem positive_iff (n m k : ℕ) : positive n m k ↔ 0 < center n m k := by
 /-- Edge count from the pinned exterior point to the center. -/
 def lengthPNat (n : ℕ) : ℕ+ := ⟨n+1,Nat.succ_pos _⟩
 
+private def reciprocalSum (n m k : ℕ) : ℚ :=
+  1/((n+1:ℕ):ℚ)+1/((m+1:ℕ):ℚ)+1/((k+1:ℕ):ℚ)
+
+private theorem center_eq (n m k : ℕ) : center n m k = ((reciprocalSum n m k : ℚ):ℝ)-1 := by
+  unfold center conductance reciprocalSum
+  push_cast
+  rfl
+
 /-- An actual trivalent Cartan form is positive definite exactly for the A,
 D and E arm triples, up to permutations. -/
 theorem finite_type_classification (n m k : ℕ) :
     positive n m k ↔ ADEInequality.Admissible {lengthPNat n,lengthPNat m,lengthPNat k} := by
-  rw [positive_iff,← ADEInequality.classification,ADEInequality.sumInv_pqr]
-  unfold center conductance
-  change 0 < 1/((n:ℝ)+1)+1/((m:ℝ)+1)+1/((k:ℝ)+1)-1 ↔
-    1 < (((n+1:ℕ):ℚ)⁻¹+((m+1:ℕ):ℚ)⁻¹+((k+1:ℕ):ℚ)⁻¹)
-  rw [sub_pos]
-  simp only [one_div,Nat.cast_add,Nat.cast_one]
+  rw [positive_iff,center_eq,sub_pos,← ADEInequality.classification,ADEInequality.sumInv_pqr]
+  simp only [← one_div]
+  change (1:ℝ) < (reciprocalSum n m k : ℝ) ↔ (1:ℚ) < reciprocalSum n m k
   constructor <;> intro h <;> exact_mod_cast h
 
 /-- Semidefiniteness and the nullspace for every affine arm triple. -/
@@ -136,7 +142,7 @@ theorem affine_nullspace (n m k : ℕ) :
 
 /-- All indefinite trivalent forms have a common explicit negative direction. -/
 theorem negative_direction (n m k : ℕ) :
-    (∃ t (f : Fin n → ℝ) (g : Fin m → ℝ) (h : Fin k → ℝ), energy t f g h < 0) ↔
+    (∃ (t : ℝ) (f : Fin n → ℝ) (g : Fin m → ℝ) (h : Fin k → ℝ), energy t f g h < 0) ↔
       center n m k < 0 := by
   constructor
   · rintro ⟨t,f,g,h,ht⟩
@@ -145,16 +151,9 @@ theorem negative_direction (n m k : ℕ) :
   · intro hs
     exact ⟨1,ramp n 1,ramp m 1,ramp k 1,by simpa only [attains,one_pow,mul_one] using hs⟩
 
-private def reciprocalSum (n m k : ℕ) : ℚ :=
-  1/((n+1:ℕ):ℚ)+1/((m+1:ℕ):ℚ)+1/((k+1:ℕ):ℚ)
-
-private theorem center_eq (n m k : ℕ) : center n m k = ((reciprocalSum n m k : ℚ):ℝ)-1 := by
-  unfold center conductance reciprocalSum
-  push_cast <;> rfl
-
 /-- The zero mode occurs at exactly three ordered arm triples. Here the
 lengths count vertices strictly outside the center. -/
-theorem affine_shape (n m k : ℕ) (hn : 0<n) (hm : n≤m) (hk : m≤k) :
+theorem affine_shape (n m k : ℕ) (hn : 0 < n) (hm : n ≤ m) (hk : m ≤ k) :
     center n m k=0 ↔ (n=1 ∧ m=2 ∧ k=5) ∨ (n=1 ∧ m=3 ∧ k=3) ∨ (n=2 ∧ m=2 ∧ k=2) := by
   constructor
   · intro h
@@ -168,20 +167,24 @@ theorem affine_shape (n m k : ℕ) (hn : 0<n) (hm : n≤m) (hk : m≤k) :
 /-- Indefinite forms have a uniform gap at center one. For ordered arms
 equality singles out the hyperbolic extension of the E₈ diagram. -/
 theorem indefinite_gap (n m k : ℕ) :
-    center n m k<0 → center n m k ≤ -1/42 ∧
-      (n≤m → m≤k → (center n m k= -1/42 ↔ n=1 ∧ m=2 ∧ k=6)) := by
+    center n m k < 0 → center n m k ≤ -1/42 ∧
+      (n ≤ m → m ≤ k → (center n m k= -1/42 ↔ n=1 ∧ m=2 ∧ k=6)) := by
   rw [center_eq]
   intro h
   have hr : reciprocalSum n m k < 1 := by
-    exact_mod_cast (show ((reciprocalSum n m k : ℚ):ℝ)<1 by linarith only [h])
+    exact_mod_cast (show ((reciprocalSum n m k : ℚ):ℝ) < 1 by linarith only [h])
   have hub : reciprocalSum n m k ≤ 41/42 := hurwitz_triple_sum_le_symm (p:=n+1) (q:=m+1)
     (r:=k+1) (by omega) (by omega) (by omega) hr
-  have hh : ((reciprocalSum n m k : ℚ):ℝ) ≤ 41/42 := by exact_mod_cast hub
+  let q : ℚ := 41/42
+  have cast_q : (q:ℝ) = 41/42 := by norm_num [q]
+  have hh : (reciprocalSum n m k : ℝ) ≤ (q:ℝ) := by exact_mod_cast (show reciprocalSum n m k ≤ q from hub)
+  rw [cast_q] at hh
   refine ⟨by linarith only [hh],fun hm hk => ?_⟩
   constructor
   · intro he
     have he' : reciprocalSum n m k=41/42 := by
-      exact_mod_cast (show ((reciprocalSum n m k : ℚ):ℝ)=41/42 by linarith only [he])
+      change reciprocalSum n m k = q
+      exact_mod_cast (show (reciprocalSum n m k : ℝ) = (q:ℝ) by rw [cast_q]; linarith only [he])
     have hs := hurwitz_ordered_eq_237 (p:=n+1) (q:=m+1) (r:=k+1)
       (by omega) (by omega) (by omega) hr he'
     omega
@@ -192,7 +195,7 @@ theorem indefinite_gap (n m k : ℕ) :
 def integerPositive (n m k : ℕ) :=
   ∀ (t : ℤ) (f : Fin n → ℤ) (g : Fin m → ℤ) (h : Fin k → ℤ),
     (t≠0 ∨ f≠0 ∨ g≠0 ∨ h≠0) →
-      0<energy (t:ℝ) (fun i => (f i:ℝ)) (fun i => (g i:ℝ)) (fun i => (h i:ℝ))
+      0 < energy (t:ℝ) (fun i => (f i:ℝ)) (fun i => (g i:ℝ)) (fun i => (h i:ℝ))
 
 private def pin (n m k : ℕ) : ℤ := (n+1:ℤ)*(m+1:ℤ)*(k+1:ℤ)
 
@@ -204,12 +207,11 @@ private theorem integral_arm_ramp (n m k : ℕ) :
   unfold integralArm ramp exceptionalChainRamp pin
   push_cast
   field_simp [show (n:ℝ)+1≠0 by positivity]
-  <;> ring
 
 /-- Multiplying the prescribed center by the product of the three arm
 denominators realizes the Schur-complement minimum at an integer vector. -/
 theorem integral_center_witness (n m k : ℕ) :
-    ∃ (t : ℤ) (f : Fin n → ℤ) (g : Fin m → ℤ) (h : Fin k → ℤ), 0<t ∧
+    ∃ (t : ℤ) (f : Fin n → ℤ) (g : Fin m → ℤ) (h : Fin k → ℤ), 0 < t ∧
       energy (t:ℝ) (fun i => (f i:ℝ)) (fun i => (g i:ℝ)) (fun i => (h i:ℝ))=
         center n m k*(t:ℝ)^2 := by
   refine ⟨pin n m k,integralArm n m k,integralArm m k n,integralArm k n m,by unfold pin; positivity,?_⟩
@@ -225,22 +227,22 @@ theorem integer_positive_iff (n m k : ℕ) : integerPositive n m k ↔ positive 
     obtain ⟨t,f,g,u,ht,e⟩ := integral_center_witness n m k
     have pos := h t f g u (Or.inl ht.ne')
     rw [e] at pos
-    exact (positive_iff n m k).mpr ((mul_pos_iff_of_pos_right (sq_pos_of_pos (by exact_mod_cast ht : (0:ℝ)<t))).mp pos)
+    exact (positive_iff n m k).mpr ((mul_pos_iff_of_pos_right (sq_pos_of_pos (by exact_mod_cast ht : (0:ℝ) < t))).mp pos)
   · intro h t f g u nz
     apply h
     contrapose! nz
     obtain ⟨ht,hf,hg,hu⟩ := nz
     refine ⟨by exact_mod_cast ht,?_,?_,?_⟩
     · funext i
-      exact_mod_cast congrFun hf i
+      exact_mod_cast (show (f i : ℝ) = 0 from congrFun hf i)
     · funext i
-      exact_mod_cast congrFun hg i
+      exact_mod_cast (show (g i : ℝ) = 0 from congrFun hg i)
     · funext i
-      exact_mod_cast congrFun hu i
+      exact_mod_cast (show (u i : ℝ) = 0 from congrFun hu i)
 
-private theorem center_antitone {a b c n m k : ℕ} (ha : a≤n) (hb : b≤m) (hc : c≤k) :
-    center n m k≤center a b c := by
-  have armLe {u v : ℕ} (h : u≤v) : conductance v≤conductance u := by
+private theorem center_antitone {a b c n m k : ℕ} (ha : a ≤ n) (hb : b ≤ m) (hc : c ≤ k) :
+    center n m k ≤ center a b c := by
+  have armLe {u v : ℕ} (h : u ≤ v) : conductance v ≤ conductance u := by
     unfold conductance
     exact one_div_le_one_div_of_le (by positivity) (by exact_mod_cast Nat.add_le_add_right h 1)
   unfold center
@@ -248,12 +250,12 @@ private theorem center_antitone {a b c n m k : ℕ} (ha : a≤n) (hb : b≤m) (h
 
 /-- Sorted nonempty arms give a fork of type D or one of the three exceptional
 length triples (1,2,2), (1,2,3), (1,2,4). -/
-theorem ordered_finite_shape (n m k : ℕ) (hn : 0<n) (hm : n≤m) (hk : m≤k) :
-    integerPositive n m k ↔ n=1 ∧ (m=1 ∨ (m=2 ∧ k≤4)) := by
+theorem ordered_finite_shape (n m k : ℕ) (hn : 0 < n) (hm : n ≤ m) (hk : m ≤ k) :
+    integerPositive n m k ↔ n=1 ∧ (m=1 ∨ (m=2 ∧ k ≤ 4)) := by
   rw [integer_positive_iff,positive_iff]
   constructor
   · intro pos
-    have wall {a b c : ℕ} (ha : a≤n) (hb : b≤m) (hc : c≤k) (z : center a b c=0) : False := by
+    have wall {a b c : ℕ} (ha : a ≤ n) (hb : b ≤ m) (hc : c ≤ k) (z : center a b c=0) : False := by
       have le := center_antitone ha hb hc
       rw [z] at le
       exact pos.not_ge le
@@ -272,9 +274,9 @@ theorem ordered_finite_shape (n m k : ℕ) (hn : 0<n) (hm : n≤m) (hk : m≤k) 
   · rintro ⟨rfl,h⟩
     rcases h with rfl|⟨rfl,len⟩
     · unfold center conductance
-      have pos : 0<1/((k:ℝ)+1) := by positivity
+      have pos : 0 < 1/((k:ℝ)+1) := by positivity
       linarith only [pos]
-    · exact lt_of_lt_of_le (by norm_num [center,conductance] : 0<center 1 2 4)
+    · exact lt_of_lt_of_le (by norm_num [center,conductance] : 0 < center 1 2 4)
         (center_antitone le_rfl le_rfl len)
 
 #print axioms integral_center_witness

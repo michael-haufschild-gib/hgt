@@ -42,10 +42,14 @@ private theorem one_extra_unit (y X : ℕ) (hx : 1 ≤ X) :
 private theorem diag_plus_residual {X : ℕ} (hX : 0<X) (hy : 0<logSquareCutoff X) :
     diag X+residual X=Real.log 2-(logSquareCutoff X:ℝ)*
         (RHTower.Sieve.smoothUpTo (Nat.primesLE (logSquareCutoff X)) (X/logSquareCutoff X)).card := by
-  rw [one_extra_unit _ _ hX]
+  let y := logSquareCutoff X
+  have eq : (∑ n ∈ Icc 1 X,coprimeMoebiusIndicator (primorial y) n*Real.log n)=
+      ∑ n ∈ Icc 1 X,RoughReading.row y n*Real.log n :=
+    sum_congr rfl (fun n hn => congrArg (fun a : ℝ => a*Real.log n)
+      (primorial_indicator_eq_deleted_mobius y n (mem_Icc.mp hn).1))
+  unfold diag residual
+  rw [one_extra_unit _ _ hX,eq]
   have h := exact_centered_prime_power_remainder hy X
-  rw [sum_congr rfl (fun n hn => congrArg (fun a : ℝ => a*Real.log n)
-    (primorial_indicator_eq_deleted_mobius (logSquareCutoff X) n (mem_Icc.mp hn).1))]
   linarith only [h]
 
 private theorem diag_power_iff_residual {s : ℝ} (hs : 1/2<s) :
@@ -89,7 +93,7 @@ private theorem weight_cost {X : ℕ} (hx : 2 ≤ X) :
   have round := Nat.lt_floor_add_one L
   have sq := Nat.le_self_pow (by decide : 2 ≠ 0) ⌊L⌋₊
   rw [logWeight,max_eq_right (show (2:ℝ) ≤ X by exact_mod_cast hx)]
-  exact low.trans (round.le.trans (add_le_add_right (Nat.cast_le.mpr sq) 1))
+  exact low.trans (round.le.trans (add_le_add_left (Nat.cast_le.mpr sq) 1))
 
 private theorem transfer_frozen_logarithmic_diagonal {s : ℝ} (hs : 1/2<s) {η : ℝ} (hη : 0<η) :
     (PrefixPower s diag → PrefixPower (s+η) (coprimeMoebiusSum 1)) ∧

@@ -1,6 +1,6 @@
 # Which sparse sets can be fixed?
 
-- **Stage** 1-in-progress
+- **Stage** 3-formalized
 - **Target** Every density-zero set of squarefree integers can be the fixed set of a density-one restricted matching, through every cutoff up to arbitrarily slowly diverging classification error. A uniform bounded error is impossible even for the semiprimes.
 
 Given a restricted involution \(F\) and a target set \(S\), fix both endpoints of every edge incident with \(S\). An increase in the unpaid count through \(X\) comes only from an old edge already closed there. Charging its two endpoints to its selected endpoint costs at most \(2\#(S\cap[1,X])\). Now use separated completion and restore precisely the new edges with requested lower endpoints. For every threshold \(B\) the resulting involution \(G\) has at most \(D_B(X)=\#\{k\le X:B(k)<X\}\) misclassified squarefree vertices relative to \(S\cup\{1\}\), and \(U_G(X)\le U_F(X)+2\#(S\cap[1,X])+2D_B(X)\). These are simultaneous finite bounds for one global map. Take \(U_F=o(X)\) and space the thresholds so that \(D_B\le\min(\sqrt X,w(X))\) for any nonnegative \(w\to\infty\). Density zero of the target is also necessary for a matching with sublinear unpaid count up to sublinear classification error.
@@ -9,4 +9,4 @@ Take the squarefree semiprimes as target. For every prime \(p\), its image is a 
 
 All squarefree semiprimes have positive sign. The same matching therefore has fixed charge \(1+Q_2(X)+O(w(X))\) for every \(X\ge1\), where \(Q_2(X)\) is the *entire* squarefree semiprime population. Its crossing charge differs from \(M(X)-1-Q_2(X)\) by the opposite error. The family \(2p\), with \(p>2\) prime, already contributes \(\pi(X/2)-1\) for \(X\ge4\).
 
-**Lean status.** The full support equivalence `realizable_sparse_squarefree_supports` and the finite bound `prescribe_any_squarefree_support` are formalized. The semiprime lower bounds and the signed population statement await verification.
+**Lean.** `realizable_sparse_squarefree_supports` characterizes every eligible support. `images_of_primes_force_distinct_support_errors` gives the finite lower bound, `unavoidable_errors_for_the_semiprime_support` gives divergence and the short-displacement bound, and `opposite_charges_from_the_semiprime_population` gives the signed realization. [General support prescription](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/PrescribingTheSquarefreeFixedVertices.lean) · [Semiprime obstruction and charges](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/TheCostOfFixingTheSemiprimes.lean)

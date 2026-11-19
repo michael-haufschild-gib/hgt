@@ -49,7 +49,7 @@ theorem convex_coordinates (n : ℕ) (u v : ℝ) :
     refine ⟨?_,mul_nonneg hl hd.le,mul_nonneg hr hd.le⟩
     nlinarith only [mul_nonneg (sub_nonneg.mpr hs) hd.le]
 
-private theorem interior {m u v : ℤ} (hm : 2≤m) (hu : 0≤u) (hv : 1≤v) (hs : u+v≤m-1) :
+private theorem interior {m u v : ℤ} (hm : 2 ≤ m) (hu : 0≤u) (hv : 1≤v) (hs : u+v ≤ m-1) :
     0<centerMass m u v ∧ 0<leftMass m u v ∧ 0<rightMass m u v := by
   have hm' : 0 ≤ m := by omega
   have hx : 0 ≤ m-1-u-v := by omega
@@ -68,7 +68,7 @@ theorem square_decomposition (m u v x : ℝ) (hx : binary (m-1/2) x 1=0) :
   unfold traceBasis centerMass leftMass rightMass index
   ring
 
-private theorem real_hull_positive {m u v x : ℝ} (hm : 2≤m) (hx : binary (m-1/2) x 1=0)
+private theorem real_hull_positive {m u v x : ℝ} (hm : 2 ≤ m) (hx : binary (m-1/2) x 1=0)
     (hA : 0≤centerMass m u v) (hB : 0≤leftMass m u v) (hC : 0≤rightMass m u v) :
     0 < traceBasis 1 (-u) (-v) x := by
   have hd := index_pos hm
@@ -95,7 +95,7 @@ theorem integer_hull_exact (n : ℕ) (u v : ℤ) :
     let m := (n:ℤ)+2
     positiveSlice m (u,v) ↔ 0 ≤ centerMass m u v ∧ 0 ≤ leftMass m u v ∧ 0 ≤ rightMass m u v := by
   intro m
-  have hm : 2≤m := by dsimp [m]; omega
+  have hm : 2 ≤ m := by dsimp [m]; omega
   have hd := index_pos hm
   constructor
   · intro hp
@@ -103,7 +103,7 @@ theorem integer_hull_exact (n : ℕ) (u v : ℤ) :
     · simpa [centerMass,leftMass,rightMass] using hd.le
     · have hu : u=m-1 := by dsimp [m]; omega
       rw [hu]
-      simp [centerMass,leftMass,rightMass,index,hd.le,show 0≤m*(m-1)+1 from hd.le]
+      simp [centerMass,leftMass,rightMass,index,hd.le,show 0 ≤ m*(m-1)+1 from hd.le]
     · change v=m at h2
       rw [h2]
       have hr : rightMass m (-1) m=index m := by unfold rightMass index; ring
@@ -124,7 +124,7 @@ theorem primitive_boundary (n : ℕ) (u v : ℤ) :
     positiveSlice m (u,v) ∧ (centerMass m u v=0 ∨ leftMass m u v=0 ∨ rightMass m u v=0) ↔
       (u=0 ∧ v=0) ∨ (u=m-1 ∧ v=1) ∨ (u = -1 ∧ v=m) := by
   intro m
-  have hm : 2≤m := by dsimp [m]; omega
+  have hm : 2 ≤ m := by dsimp [m]; omega
   constructor
   · rintro ⟨hp,h⟩
     rcases (exact_positive_slice n u v).mp hp with h0|h1|h2|⟨hu,hv,hs⟩
@@ -143,7 +143,7 @@ theorem primitive_boundary (n : ℕ) (u v : ℤ) :
 /-- Embedded open triangle and integer hull differ in area by exactly three. -/
 theorem area_loss (n : ℕ) :
     let m := (n:ℝ)+2
-    ∃ r, m<r ∧ r<m+1 ∧ binary (m-1/2) r 1=0 ∧ twiceSliceArea r/2-index m/2=3 := by
+    ∃ r, m < r ∧ r < m+1 ∧ binary (m-1/2) r 1=0 ∧ twiceSliceArea r/2-index m/2=3 := by
   intro m
   obtain ⟨r,hl,hr,he,harea,_⟩ := slice_area_discriminant n
   refine ⟨r,hl,hr,he,?_⟩

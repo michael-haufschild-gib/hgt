@@ -226,8 +226,44 @@ private theorem sum_quotient_log_errors {x : ℝ} {N : ℕ} (room : (N:ℝ)+1<x)
   rw [last] at cost
   linarith only [cost,first]
 
-private def logVariation (y N : ℕ) : ℝ :=
+/-- Total variation lost by replacing each rough log weight by its endpoint value. -/
+def logVariation (y N : ℕ) : ℝ :=
   ∑ n ∈ freeSet y N,(Real.log N-Real.log n)
+
+/-- Summation by parts integrates a uniform upper bound on the surviving
+population only up to the specified endpoint. -/
+theorem rough_log_variation_from_prefix_counts (y N : ℕ) {δ K : ℝ} (hδ : 0<δ)
+    (count : ∀ k ≤ N,((freeSet y k).card:ℝ) ≤ δ*k+K) :
+    logVariation y N ≤ δ*N+K*Real.log N := by
+  induction N with
+  | zero => simp [logVariation,freeSet]
+  | succ N ih =>
+    by_cases nz : N=0
+    · subst N
+      simp [logVariation,freeSet,hδ.le]
+    have np : (0:ℝ)<N := Nat.cast_pos.mpr (Nat.pos_of_ne_zero nz)
+    let d := Real.log ((N:ℝ)+1)-Real.log N
+    have dn : 0 ≤ d := sub_nonneg.mpr (Real.log_le_log np (by linarith))
+    have logbound := Real.log_le_sub_one_of_pos (div_pos (by positivity : 0<(N:ℝ)+1) np)
+    rw [Real.log_div (by positivity : (N:ℝ)+1 ≠ 0) np.ne'] at logbound
+    have cost : (N:ℝ)*d ≤ 1 := by
+      have algebra : ((N:ℝ)+1)/N-1=1/N := by field_simp
+      rw [algebra] at logbound
+      exact (mul_comm ..).trans_le ((le_div_iff₀ np).mp logbound)
+    have change_ : logVariation y (N+1)=logVariation y N+(freeSet y N).card*d := by
+      have flat : ((freeSet y N).card:ℝ)*d=∑ m ∈ Icc 1 N,if IsFree (banned y) m then d else 0 := by
+        rw [←sum_filter,sum_const,nsmul_eq_mul]
+      rw [flat]
+      simp only [logVariation,freeSet,sum_filter,sum_Icc_succ_top (by omega : 1 ≤ N+1),sub_self,ite_self,add_zero]
+      rw [←sum_add_distrib]
+      apply sum_congr rfl
+      intro n _
+      by_cases f : IsFree (banned y) n <;> simp [f,d,Nat.cast_succ] <;> ring
+    have step := mul_le_mul_of_nonneg_right (count N (Nat.le_succ _)) dn
+    have prev := ih (fun k hk => count k (Nat.le_succ_of_le hk))
+    rw [change_,Nat.cast_succ]
+    dsimp only [d] at step cost ⊢
+    nlinarith only [prev,step,mul_le_mul_of_nonneg_left cost hδ.le]
 
 private theorem uniform_rough_count_and_variation {δ : ℝ} (hδ : 0<δ) :
     ∃ Z : ℕ,∃ K : ℝ,0 ≤ K ∧ ∀ y : ℕ,Z ≤ y → ∀ N : ℕ,
@@ -253,36 +289,11 @@ private theorem uniform_rough_count_and_variation {δ : ℝ} (hδ : 0<δ) :
     exact total.trans (add_le_add (mul_le_mul_of_nonneg_right hZ.le (Nat.cast_nonneg N)) le_rfl)
   intro N
   refine ⟨count N,?_⟩
-  induction N with
-  | zero => simp [logVariation,freeSet]
-  | succ N ih =>
-    by_cases nz : N=0
-    · subst N
-      simp [logVariation,freeSet,hδ.le]
-    have np : (0:ℝ)<N := Nat.cast_pos.mpr (Nat.pos_of_ne_zero nz)
-    let d := Real.log ((N:ℝ)+1)-Real.log N
-    have dn : 0 ≤ d := sub_nonneg.mpr (Real.log_le_log np (by linarith))
-    have logbound := Real.log_le_sub_one_of_pos (div_pos (by positivity : 0<(N:ℝ)+1) np)
-    rw [Real.log_div (by positivity : (N:ℝ)+1 ≠ 0) np.ne'] at logbound
-    have cost : (N:ℝ)*d ≤ 1 := by
-      have algebra : ((N:ℝ)+1)/N-1=1/N := by field_simp
-      rw [algebra] at logbound
-      exact (mul_comm ..).trans_le ((le_div_iff₀ np).mp logbound)
-    have change_ : logVariation y (N+1)=logVariation y N+(freeSet y N).card*d := by
-      have flat : ((freeSet y N).card:ℝ)*d=∑ m ∈ Icc 1 N,if IsFree (banned y) m then d else 0 := by
-        rw [←sum_filter,sum_const,nsmul_eq_mul]
-      rw [flat]
-      simp only [logVariation,freeSet,sum_filter,sum_Icc_succ_top (by omega : 1 ≤ N+1),sub_self,ite_self,add_zero]
-      rw [←sum_add_distrib]
-      apply sum_congr rfl
-      intro n _
-      by_cases f : IsFree (banned y) n <;> simp [f,d,Nat.cast_succ] <;> ring
-    have step := mul_le_mul_of_nonneg_right (count N) dn
-    rw [change_,Nat.cast_succ]
-    dsimp only [d] at step cost ⊢
-    nlinarith only [ih,step,mul_le_mul_of_nonneg_left cost hδ.le]
+  exact rough_log_variation_from_prefix_counts y N hδ (fun k _ => count k)
 
-private theorem prime_error_over_rough_cofactors :
+/-- The entire prime-reading error is controlled by reciprocal logarithms
+of the prime cutoff, uniformly in the quotient endpoint. -/
+theorem prime_error_over_rough_cofactors :
     ∃ C : ℝ,0<C ∧ ∃ Y : ℕ,4 ≤ Y ∧ ∀ y X : ℕ,Y ≤ y → y ≤ X →
       (∑ m ∈ freeSet y (X/y),|roughPrimePowerReading y (X/m)-((X:ℝ)/m-y)|) ≤
       (C*(2/Real.log ((y:ℝ)/2)+1/Real.log y^2))*X := by

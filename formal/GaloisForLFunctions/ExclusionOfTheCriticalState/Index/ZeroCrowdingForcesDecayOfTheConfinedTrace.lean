@@ -158,7 +158,7 @@ private theorem axis_norm_abs (F : ℝ → ℝ) (y : ℝ) :
       unfold axisH
       rw [he,show negativeHalfLineLaplace (cx F) (conj (iy y)) =
         conj (negativeHalfLineLaplace (cx F) (iy y)) from negativeHalfLineLaplace_real_conj F _]
-      simp
+      simp only [map_mul,map_add,map_ofNat]
     rw [hc,Complex.norm_conj]
 
 /-- With finitely many off-line zeros, the Laplace transform of every positive-ratio
@@ -168,7 +168,7 @@ theorem IsConfinedNullVector.critical_line_laplace_little_o {R : ℝ} (hr : 0 < 
     Tendsto (fun y : ℝ => |y| * ‖negativeHalfLineLaplace (cx F) ((y:ℂ)*I)‖)
       (cocompact ℝ) (𝓝 0) := by
   have habs : Tendsto (fun y : ℝ => |y|) (cocompact ℝ) atTop := by
-    simpa only [Real.norm_eq_abs] using (tendsto_norm_cocompact_atTop (E := ℝ))
+    simpa only [Real.norm_eq_abs] using (show Tendsto (fun y : ℝ => ‖y‖) (cocompact ℝ) atTop from tendsto_norm_cocompact_atTop)
   apply squeeze_zero (fun y => mul_nonneg (abs_nonneg _) (norm_nonneg _)) _
     ((axis_decay hr hF hf).comp habs)
   intro y

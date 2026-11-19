@@ -48,17 +48,19 @@ private theorem complete_ordinary_row :
     have hn0 := (mem_Ioc.mp hn).1.ne'
     have hz : (zeta n:ℝ)=1 := by simp [ArithmeticFunction.zeta_apply,hn0]
     have hval : (vonMangoldt-(zeta : ArithmeticFunction ℝ)) n = vonMangoldt n-1 := by
-      simp only [ArithmeticFunction.sub_apply,ArithmeticFunction.natCoe_apply,hz]
+      change vonMangoldt n-(zeta n:ℝ)=_
+      rw [hz]
     have hmod := Nat.mod_lt (H/n) (by decide : 0<2)
     by_cases h : H/n%2=1
-    · by_cases hp : n.Prime
-      · simp [Z,h,hp,hval,ordinaryPrimeExcessCoeff,vonMangoldt_apply_prime hp]
-      · simp only [if_pos h,Z,hval,h,Nat.cast_one,mul_one,ordinaryPrimeExcessCoeff,if_neg hp,
-          if_pos hp]
-        rw [show (0:ℝ)-1-(vonMangoldt n-1)= -vonMangoldt n by ring,abs_neg,
-          abs_of_nonneg vonMangoldt_nonneg]
+    · have hz₁ : Z n=vonMangoldt n-1 := by simp only [Z,hval,h,Nat.cast_one,mul_one]
+      rw [if_pos h,hz₁,ordinaryPrimeExcessCoeff]
+      by_cases hp : n.Prime
+      · simp [hp,vonMangoldt_apply_prime hp]
+      · rw [if_neg hp,if_pos hp,show (0:ℝ)-1-(vonMangoldt n-1)= -vonMangoldt n by ring,
+          abs_neg,abs_of_nonneg vonMangoldt_nonneg]
     · have hzero : H/n%2=0 := by omega
-      simp only [if_neg h,Z,hzero,Nat.cast_zero,mul_zero,sub_self,abs_zero]
+      have hz₀ : Z n=0 := by simp only [Z,hzero,Nat.cast_zero,mul_zero]
+      rw [if_neg h,hz₀,sub_self,abs_zero]
       split_ifs <;> first | exact vonMangoldt_nonneg | exact le_rfl
   have h := abs_add_le (oddQuotientPrimeExcess (Ioc 0 H) H-∑ n ∈ Ioc 0 H, Z n) (∑ n ∈ Ioc 0 H, Z n)
   rw [sub_add_cancel] at h
@@ -103,18 +105,19 @@ private theorem potential_on (S : Finset ℕ) (N : ℕ) (hS : Ioc 0 N ⊆ S) :
   · have hlt : N<n := lt_of_not_ge (fun h => hn (mem_Ioc.mpr ⟨hp,h⟩))
     rw [Nat.div_eq_of_lt hlt,Nat.cast_zero,mul_zero]
 
-private theorem gated_change (S : Finset ℕ) {M H : ℕ} (hm : M≤H) (P : ℕ → Prop)
-    (hgate : ∀ n, H/n=M/n → (H/n%2=1 ↔ P n)) :
-    |oddQuotientPrimeExcess S H-(∑ n ∈ S, if P n then ordinaryPrimeExcessCoeff n else 0)| ≤ jumpPotential H-jumpPotential M := by
+private theorem gated_change (S : Finset ℕ) {M H : ℕ} (hm : M≤H) (f : ℕ → ℝ)
+    (hgate : ∀ n, H/n=M/n → row H n=f n)
+    (hval : ∀ n, f n=0 ∨ f n=ordinaryPrimeExcessCoeff n) :
+    |oddQuotientPrimeExcess S H-∑ n ∈ S, f n| ≤ jumpPotential H-jumpPotential M := by
   let I := S ∪ Ioc 0 H
   let g := fun (k n : ℕ) => (vonMangoldt n+1)*((k/n:ℕ):ℝ)
   have hmono (n : ℕ) : (M/n:ℕ) ≤ H/n := Nat.div_le_div_right hm
   have hdiff (n : ℕ) : g H n-g M n=(vonMangoldt n+1)*(((H/n:ℕ):ℝ)-((M/n:ℕ):ℝ)) := (mul_sub ..).symm
   have hnn (n : ℕ) : 0≤g H n-g M n := by
     rw [hdiff]; exact mul_nonneg (by positivity) (sub_nonneg.mpr (Nat.cast_le.mpr (hmono n)))
-  have hatom (n : ℕ) : |row H n-(if P n then ordinaryPrimeExcessCoeff n else 0)| ≤ g H n-g M n := by
+  have hatom (n : ℕ) : |row H n-f n| ≤ g H n-g M n := by
     by_cases he : H/n=M/n
-    · simp only [row,hgate n he,sub_self,abs_zero]; exact hnn n
+    · rw [hgate n he,sub_self,abs_zero]; exact hnn n
     have h₁ : (1:ℝ) ≤ ((H/n:ℕ):ℝ)-((M/n:ℕ):ℝ) := by
       have hi : M/n+1 ≤ H/n := by have := hmono n; omega
       have hc : ((M/n:ℕ):ℝ)+1 ≤ ((H/n:ℕ):ℝ) := by exact_mod_cast hi
@@ -122,7 +125,7 @@ private theorem gated_change (S : Finset ℕ) {M H : ℕ} (hm : M≤H) (P : ℕ 
     have hb : |ordinaryPrimeExcessCoeff n| ≤ g H n-g M n := by
       rw [hdiff]
       exact (mass_bound n).trans (le_mul_of_one_le_right (by positivity) h₁)
-    by_cases h : H/n%2=1 <;> by_cases m : P n <;>
+    by_cases h : H/n%2=1 <;> rcases hval n with m | m <;>
       simp only [row,h,m,if_true,if_false,sub_self,abs_zero,zero_sub,abs_neg,sub_zero] <;>
       first | exact hnn n | exact hb
   rw [oddQuotientPrimeExcess,← sum_sub_distrib]
@@ -135,7 +138,8 @@ private theorem gated_change (S : Finset ℕ) {M H : ℕ} (hm : M≤H) (P : ℕ 
 
 private theorem row_change (S : Finset ℕ) {M H : ℕ} (hm : M≤H) :
     |oddQuotientPrimeExcess S H-oddQuotientPrimeExcess S M| ≤ jumpPotential H-jumpPotential M :=
-  gated_change S hm (fun n => M/n%2=1) (fun n h => by rw [h])
+  gated_change S hm (row M) (fun n h => by simp only [row,h])
+    (fun n => by dsimp only [row]; split_ifs <;> simp)
 
 /-- The ordinary-prime excess restricted to denominators whose quotients
 are odd at every selected numerator. -/
@@ -197,13 +201,17 @@ theorem commonOddQuotientPrimeExcess_change (S E : Finset ℕ) {M H : ℕ} (hM :
     |oddQuotientPrimeExcess S H-commonOddQuotientPrimeExcess S E| ≤
       ((H:ℝ)-M)*(2*Real.log H+2+2*|Real.eulerMascheroniConstant|)+40*Real.sqrt H := by
   apply le_trans _ (potential_change hM hMH)
-  apply gated_change S hMH
-  intro n h
-  have hq (j : ℕ) (hj : j∈E) : j/n=H/n := le_antisymm (Nat.div_le_div_right (mem_Icc.mp (hE hj)).2)
-    (h.trans_le (Nat.div_le_div_right (mem_Icc.mp (hE hj)).1))
-  constructor
-  · intro hh j hj; rwa [hq j hj]
-  · intro hall; obtain ⟨j,hj⟩ := hne; simpa only [hq j hj] using hall j hj
+  unfold commonOddQuotientPrimeExcess
+  apply gated_change S hMH (fun n => if ∀ j ∈ E, j/n%2=1 then ordinaryPrimeExcessCoeff n else 0)
+  · intro n h
+    have hq (j : ℕ) (hj : j∈E) : j/n=H/n := le_antisymm (Nat.div_le_div_right (mem_Icc.mp (hE hj)).2)
+      (h.trans_le (Nat.div_le_div_right (mem_Icc.mp (hE hj)).1))
+    have he : (∀ j ∈ E, j/n%2=1) ↔ H/n%2=1 := by
+      constructor
+      · intro hall; obtain ⟨j,hj⟩ := hne; simpa only [hq j hj] using hall j hj
+      · intro hh j hj; rwa [hq j hj]
+    simp only [row,he]
+  · intro n; split_ifs <;> simp
 
 /-- A column survives every numerator of a consecutive block exactly when
 one odd quotient covers the entire block. Its denominator then exceeds the
@@ -228,9 +236,10 @@ theorem odd_quotient_throughout_block {M H n : ℕ} (hMH : M≤H) (hn : 0<n) :
     exact ⟨hq,hright,by omega⟩
   · rintro ⟨h,ho,_⟩ j hj
     obtain ⟨h₁,h₂⟩ := mem_Icc.mp hj
-    have he := le_antisymm (Nat.div_le_div_right h₂ : j/n≤H/n) (h ▸ Nat.div_le_div_right h₁)
+    have he := le_antisymm (Nat.div_le_div_right h₂ : j/n≤H/n) (h.symm.trans_le (Nat.div_le_div_right h₁))
     rwa [he]
 
 #print axioms oddQuotientPrimeExcess_complete_above_sqrt
 #print axioms oddQuotientPrimeExcess_numerator_variation
+#print axioms odd_quotient_throughout_block
 end GaloisForLFunctions.ExclusionOfTheCriticalState

@@ -104,7 +104,7 @@ theorem even_rate_boundary (x y : ℝ) :
     ring
   refine ⟨sub_nonneg.mp (by rw [he]; positivity),?_⟩
   rw [eq_comm,← sub_eq_zero,he]
-  simp [sq_eq_zero_iff,mul_eq_zero,sub_eq_zero,or_assoc]
+  simp [mul_eq_zero,sub_eq_zero,or_assoc]
 
 /-- Every point strictly above the zero quadratic rate and on or above
 the parabola is physically realized, even with nonnegative momenta. -/
@@ -116,6 +116,7 @@ theorem even_rates_realizable (b c : ℝ) :
     rcases (rate_nonneg 2 x y).eq_or_lt with h|h
     · left
       have he : x^2 = y^2 := by
+        apply sub_eq_zero.mp
         simpa [powerRate,gapCost] using h.symm
       exact ⟨h.symm,by simp [powerRate,gapCost,show x^4 = y^4 by linear_combination (x^2+y^2)*he]⟩
     · exact Or.inr ⟨h,(even_rate_boundary x y).1⟩

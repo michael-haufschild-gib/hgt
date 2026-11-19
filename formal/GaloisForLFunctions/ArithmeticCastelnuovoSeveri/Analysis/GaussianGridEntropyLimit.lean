@@ -124,7 +124,7 @@ private theorem strict_interval {a b : ℝ} (hab : a < b) {f g : ℝ → ℝ}
   rwa [intervalIntegral.integral_sub (hg.intervalIntegrable _ _) (hf.intervalIntegrable _ _),sub_pos] at hp
 
 /-- Both sides of a joined strip benefit strictly from the overlapping Gaussian tails. -/
-theorem strip_strict_subadditive (n m : ℕ) (hn : 0<n) (hm : 0<m) :
+theorem strip_strict_subadditive (n m : ℕ) (hn : 0<n) (hm : 0 < m) :
     stripCost (n+m) < stripCost n+stripCost m := by
   have hn' : 0 < (n:ℝ) := by exact_mod_cast hn
   have hm' : 0 < (m:ℝ) := by exact_mod_cast hm

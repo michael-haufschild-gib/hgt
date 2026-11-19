@@ -59,7 +59,7 @@ theorem density_change_rate (a : Shape) (s t x : ℝ) :
   unfold tilt
   ring
 
-private theorem mix_pos (p : Weight) (s t : ℝ) : 0<mixRate p.val s t :=
+private theorem mix_pos (p : Weight) (s t : ℝ) : 0 < mixRate p.val s t :=
   add_pos (mul_pos p.property.1 (Real.exp_pos s)) (mul_pos (sub_pos.mpr p.property.2) (Real.exp_pos t))
 
 /-- Pointwise Chernoff interpolation, including the common vanishing support. -/

@@ -49,7 +49,7 @@ private theorem lower_smooth_fraction (j : ℕ) : ∃ c : ℝ,0<c ∧ ∃ Z : �
     omega
   have uy : u ≤ s^(3*j) := ((Nat.div_le_self T 2).trans ((Nat.div_le_self X y).trans cut)).trans
     ((Nat.pow_le_pow_left cubic j).trans_eq (pow_mul ..).symm)
-  have inputs := hN s ((le_max_right 8 N).trans large.le) u uy
+  have inputs := hN s ((le_max_right 8 N).trans ((Nat.le_succ V).trans large)) u uy
   let S := smoothUpTo (Nat.primesLE y) T
   have sub : smoothQuotientInterval (2*s^2) u ⊆ S := by
     intro n hn

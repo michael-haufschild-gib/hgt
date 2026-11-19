@@ -3,7 +3,7 @@
 - **ID:** ecs
 - **Stage:** 1-in-progress
 - **Type:** programme card (goal loop)
-- **Source:** [Updated ECS programme, §2.16](../../../reports/review-1811/obstacles-summary.md#216-programme-to-close-ecs).
+- **Source:** [Updated ECS programme, §2.16](../../../reports/review-1911/obstacles-summary.md#216-programme-to-close-ecs).
 - **Statement:** make every exact property of the critical half-line state a Lean theorem (stages 1–4: probe kernel, zero side, (★), continuation, sign/decay laws, index law) and attack stage 5 (no state for the zeros of ζ).
 
 ## Goal
@@ -20,7 +20,7 @@ Order: Q1 probe calculus (pole, prime, Gamma parts on `e_p`, Poisson integral of
 state's probe identity in prime coordinates; Q6 finite index law; Q2/Q3 zero side on the domain → (★);
 Q5 sign law via Landau; Q4 decay law (divergent half). Stage 5 entry points: wall, collar, charges, difference equation.
 
-For §2.16 the charged test must exceed $\operatorname{Re}\zeta(1/2)m^2$. If RH fails, every $0<\eta\le1$ has arbitrarily large §2.16 tests $X$ and a subinterval $[a,b]\subset(X^{1/(1+\eta)},\lceil X^{1+\eta}\rceil]$. For some $H\ge X$ with $\sqrt H<a$, the log mass of prime divisors of $H!/\lfloor H/2\rfloor!^2$ in $[a,b]$ differs from the count of integers there with odd $\lfloor H/n\rfloor$ by more than $cX^g\sqrt H$. The constants are uniform in $\eta$. [Odd quotients in the deficit](../3-formalized/ecs-odd-quotients-in-the-ordinary-prime-deficit.md).
+For §2.16 the limsup of the charged test must exceed $\operatorname{Re}\zeta(1/2)m^2$. Under failure of RH, for each $0<\eta\le1$ arbitrarily large test scales $X$ give a selected interval $[a,b]\subset(X^{1/(1+\eta)},\lceil X^{1+\eta}\rceil]$ above $\sqrt H$, with $H\ge X$. On that interval and one whole side, the gcd of the factorial quotients at all integer numerators in $[H-H^{1/2+d},H]$ has opposite prime-divisor discrepancies of magnitude $>cX^g\sqrt H$. The constants $c,g,d>0$ are uniform in $\eta$. [Consecutive factorial numerators](../3-formalized/ecs-compensating-factorial-intervals-at-consecutive-numerators.md). Each side contains unweighted short prime intervals of a fixed length $h$ and one sign for more than $X^e\sqrt h$ consecutive starts. All their discrepancies exceed $X^e\sqrt h$ in magnitude. [Opposite Chebyshev increments](../3-formalized/ecs-opposite-chebyshev-increments-in-the-factorial-intervals.md).
 
 ## Conjecture ledger
 - Integer centering (Lean). The continuous pole and density-one integer reference differ by vanishing absolute Cesàro mean. This reduces the signed error to the weights $1_{\mathbb P}(n)\log n-1$. [Proof](../3-formalized/ecs-integer-quadrature-for-the-critical-state.md). Fixed prime sieves preserve the limit. Removing every prime through T² costs $e^{o(T)}$ in cumulative absolute error and leaves only even gaps on late intervals. [Growing sieve](../3-formalized/ecs-growing-sieve-for-integer-centering.md).

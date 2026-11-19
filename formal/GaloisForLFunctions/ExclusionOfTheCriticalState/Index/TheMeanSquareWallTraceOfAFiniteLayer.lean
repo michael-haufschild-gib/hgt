@@ -21,7 +21,7 @@ private def dampedMass (F : ℝ → ℝ) (x : ℝ) : ℝ :=
   ∫ v in Ioi (0:ℝ), Real.exp (-(2*x*v))*(F (-v))^2
 
 private theorem damped_nonneg (F : ℝ → ℝ) (x : ℝ) : 0 ≤ dampedMass F x :=
-  integral_nonneg fun v => mul_nonneg (Real.exp_pos _).le (sq_nonneg _)
+  integral_nonneg fun _ => mul_nonneg (Real.exp_pos _).le (sq_nonneg _)
 
 private theorem line_mass_eq {F : ℝ → ℝ} (hF : CriticalHalfLineEnergyDomain F) {x : ℝ}
     (hx : 0 < x) :
@@ -50,8 +50,9 @@ private theorem dampedMass_gain {R : ℝ} (hr : 0 < R) {F : ℝ → ℝ}
   have hpt (y : ℝ) : ‖negativeHalfLineLaplace (cx F) (hardyVerticalLine x y)‖^2 ≤
       η^2*(x^2+y^2)⁻¹ := by
     let w := hardyVerticalLine x y
-    have hw : x ≤ ‖w‖ := (le_abs_self w.re).trans (Complex.abs_re_le_norm _)
-    have h := pow_le_pow_left₀ (norm_nonneg _) (hb w hx0.le (hx.trans hw)) 2
+    have hre : w.re = x := hardyVerticalLine_re _ _
+    have hw : x ≤ ‖w‖ := by simpa only [hre] using (le_abs_self w.re).trans (Complex.abs_re_le_norm w)
+    have h := pow_le_pow_left₀ (norm_nonneg _) (hb w (hre.symm ▸ hx0.le) (hx.trans hw)) 2
     rw [norm_mul,mul_pow] at h
     have he : ‖w+5‖^2 = (x+5)^2+y^2 := by
       rw [← Complex.normSq_eq_norm_sq,Complex.normSq_apply]
@@ -87,7 +88,7 @@ private theorem terminal_le_damped {F : ℝ → ℝ} (hF : CriticalHalfLineEnerg
     (hh : 0 < h) : (∫ u in Ioo (-h) 0, F u^2) ≤ Real.exp 2*dampedMass F h⁻¹ := by
   let f := fun v : ℝ => F (-v)^2
   let g := fun v : ℝ => Real.exp (-(2*h⁻¹*v))*f v
-  have hi : Integrable f := hF.sq.comp_neg
+  have hi : Integrable f := (Measure.measurePreserving_neg (volume : Measure ℝ)).integrable_comp_of_integrable hF.sq
   have hgi : IntegrableOn g (Ioi 0) := by
     apply hi.integrableOn.mono' (by
       exact ((Real.continuous_exp.comp (continuous_const.mul continuous_id).neg).aestronglyMeasurable.mul
@@ -96,7 +97,9 @@ private theorem terminal_le_damped {F : ℝ → ℝ} (hF : CriticalHalfLineEnerg
     have hv' : 0 ≤ v := le_of_lt hv
     change ‖Real.exp (-(2*h⁻¹*v))*f v‖ ≤ f v
     rw [Real.norm_eq_abs,abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (sq_nonneg _))]
-    exact mul_le_of_le_one_left (sq_nonneg _) (Real.exp_le_one_iff.mpr (by dsimp; positivity))
+    have hneg : -(2*h⁻¹*v) ≤ 0 := neg_nonpos.mpr
+      (mul_nonneg (mul_nonneg (by norm_num) (inv_nonneg.mpr hh.le)) hv')
+    exact mul_le_of_le_one_left (sq_nonneg _) (Real.exp_le_one_iff.mpr hneg)
   have hsub : Ioo (0:ℝ) h ⊆ Ioi 0 := fun _ hv => hv.1
   have hlo : Real.exp (-2)*(∫ v in Ioo (0:ℝ) h, f v) ≤ dampedMass F h⁻¹ := by
     rw [← integral_const_mul]

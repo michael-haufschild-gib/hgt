@@ -101,17 +101,17 @@ theorem adaptive_lower (d : ℕ) (hd : 0<d) (T : Policy) :
   exact ⟨Q,(unit_history T Q.val _ fun i hi => hq _ (cover i hi)).trans
     (unit_history T 1 _ fun _ _ => by simp [power]).symm,hn⟩
 
-private def prefix (f : Fin (d+1) → ℝ) : ℕ → List ℝ
+private def samplePrefix (f : Fin (d+1) → ℝ) : ℕ → List ℝ
   | 0 => []
-  | k+1 => (if h : k<d+1 then f ⟨k,h⟩ else 0)::prefix f k
+  | k+1 => (if h : k<d+1 then f ⟨k,h⟩ else 0)::samplePrefix f k
 
-private theorem prefix_length (f : Fin (d+1) → ℝ) (k : ℕ) : (prefix f k).length=k := by
+private theorem prefix_length (f : Fin (d+1) → ℝ) (k : ℕ) : (samplePrefix f k).length=k := by
   induction k with
   | zero => rfl
-  | succ k ih => simp only [prefix,List.length_cons,ih]
+  | succ k ih => simp only [samplePrefix,List.length_cons,ih]
 
 private theorem prefix_agrees (f g : Fin (d+1) → ℝ) (k : ℕ) :
-    prefix f k=prefix g k → ∀ i : Fin (d+1), i.val<k → f i=g i := by
+    samplePrefix f k=samplePrefix g k → ∀ i : Fin (d+1), i.val<k → f i=g i := by
   induction k with
   | zero => intro _ i hi; omega
   | succ k ih =>
@@ -125,11 +125,11 @@ private theorem prefix_agrees (f g : Fin (d+1) → ℝ) (k : ℕ) :
 
 private def recorded (ys : List ℝ) : Fin (d+1) → ℝ := by
   classical
-  exact if h : ∃ f : Fin (d+1) → ℝ, prefix f (d+1)=ys then h.choose else 0
+  exact if h : ∃ f : Fin (d+1) → ℝ, samplePrefix f (d+1)=ys then h.choose else 0
 
-private theorem recorded_prefix (f : Fin (d+1) → ℝ) : recorded (prefix f (d+1))=f := by
+private theorem recorded_prefix (f : Fin (d+1) → ℝ) : recorded (samplePrefix f (d+1))=f := by
   classical
-  have e : ∃ g : Fin (d+1) → ℝ, prefix g (d+1)=prefix f (d+1) := ⟨f,rfl⟩
+  have e : ∃ g : Fin (d+1) → ℝ, samplePrefix g (d+1)=samplePrefix f (d+1) := ⟨f,rfl⟩
   rw [recorded,dif_pos e]
   exact funext fun i => prefix_agrees _ _ _ e.choose_spec i i.isLt
 
@@ -139,13 +139,13 @@ def optimalPolicy (v : Nodes d) (ys : List ℝ) : ℝ :=
   if h : ys.length<d+1 then v ⟨ys.length,h⟩ else finalNode v (recorded ys)
 
 private theorem grid_history (v : Nodes d) (P : ℝ[X]) (k : ℕ) (hk : k≤d+1) :
-    history (optimalPolicy v) P k=prefix (fun i => power P (v i)) k := by
+    history (optimalPolicy v) P k=samplePrefix (fun i => power P (v i)) k := by
   induction k with
   | zero => rfl
   | succ k ih =>
     have h : k<d+1 := by omega
     change power P (optimalPolicy v (history _ P k))::history _ P k=_
-    simp only [ih h.le,optimalPolicy,prefix_length,dif_pos h,prefix]
+    simp only [ih h.le,optimalPolicy,prefix_length,dif_pos h,samplePrefix]
 
 /-- The sequential policy attains the upper bound with exactly d+2 readings. -/
 theorem optimal_history (v : Nodes d) (P Q : Channel d) :
@@ -154,7 +154,7 @@ theorem optimal_history (v : Nodes d) (P Q : Channel d) :
   let f := fun i => power P.val (v i)
   let g := fun i => power Q.val (v i)
   have last (U : Channel d) : history (optimalPolicy v) U.val (d+2)=
-      power U.val (finalNode v (fun i => power U.val (v i)))::prefix (fun i => power U.val (v i)) (d+1) := by
+      power U.val (finalNode v (fun i => power U.val (v i)))::samplePrefix (fun i => power U.val (v i)) (d+1) := by
     change power U.val (optimalPolicy v (history _ U.val (d+1)))::history _ U.val (d+1)=_
     rw [grid_history v _ _ le_rfl]
     simp only [optimalPolicy,prefix_length,lt_irrefl,dif_neg,recorded_prefix]

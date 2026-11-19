@@ -73,7 +73,7 @@ theorem tilted_rate (s t : ℝ) : mixRate (centerWeight s t).val s t=centerRate 
     field_simp [sub_ne_zero.mpr (Real.exp_injective.ne h)]
     ring
 
-private theorem mix_positive (p : Weight) (s t : ℝ) : 0<mixRate p.val s t :=
+private theorem mix_positive (p : Weight) (s t : ℝ) : 0 < mixRate p.val s t :=
   add_pos (mul_pos p.property.1 (exp_pos _)) (mul_pos (sub_pos.mpr p.property.2) (exp_pos _))
 
 /-- Exact gap above the optimal logarithmic Chernoff affinity. -/

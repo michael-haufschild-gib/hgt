@@ -30,4 +30,4 @@ For real \(t\) large, split \(S_\theta(t)\) at \(\sqrt t\). All later members av
 
 The weighted error in the boundary law is also \(O_\theta(X/\log X)\) at these polynomial cutoffs. The prime-reading bound is \(O(X/\log y)\). The rounding term costs \(yS_\theta(X/y)\). In the variation sum use \(R_y(t)\le S_\theta(t)\), split at \(\sqrt X\), and sum the increments of \(\log t\). Thus the signed ordinary prefix on \(S_\theta\) equals \(-y\Psi(\lfloor X/y\rfloor,y)/\log X+O_\theta(X/\log^2 X)\) with \(y=\lfloor X^\theta\rfloor\).
 
-**Lean status.** The uniform boundary law, both smooth population bounds and the subpolynomial threshold criterion have Lean sources awaiting verification. The moving-cutoff extension remains on paper.
+**Lean status.** Exact floor centering and the square-root estimate for the smooth term at the log-square cutoff are formalized. The uniform boundary law, both smooth population bounds, the subpolynomial threshold criterion, and the second-logarithm error on the fixed polynomially rough set have Lean sources awaiting verification.
