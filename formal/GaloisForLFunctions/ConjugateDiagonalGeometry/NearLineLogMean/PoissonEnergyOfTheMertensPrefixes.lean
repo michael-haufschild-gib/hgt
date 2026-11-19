@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticInnerFunctionTheory.MollifiedLogDilationBridge
+import GaloisForLFunctions.ArithmeticGaugeTheory.TheArchimedeanLineCarriesTheExponent
 import GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.LongMoebiusSecondMomentRigidity
 import GaloisForLFunctions.RHTower.MobiusReciprocalPrimitiveRatio
 
@@ -140,6 +141,76 @@ theorem width_le_of_cofinal_mertens_gram {b : ℝ} (hb : 0 ≤ b)
   rw [Real.rpow_two, show θ * (2*b) = 2*b*θ by ring]
   ring
 
+/-- Every power strictly above twice the zero width bounds the Poisson
+measurement at every polynomial length. -/
+theorem mertens_gram_upper_power {b : ℝ} (hb : zetaZeroWidth < b) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ N : ℕ, mertensPoissonGram N ≤ B*(N:ℝ)^(2*b) := by
+  have hb₀ := zetaZeroWidth_nonneg.trans_lt hb
+  let a := 1/2+b
+  have ha : zetaZeroAbscissa < a := by
+    rw [GaloisForLFunctions.SquareRootThreshold.zetaZeroWidth_eq_zetaZeroAbscissa_sub_half] at hb
+    dsimp only [a]; linarith only [hb]
+  have ha₀ : 0 ≤ a := by dsimp only [a]; linarith only [hb₀]
+  obtain ⟨C,hC,h⟩ := mobiusMertens_subpower_zetaZeroAbscissa (a-zetaZeroAbscissa) (sub_pos.mpr ha)
+  let A := (C*2^a)^2
+  have hA : 0 ≤ A := sq_nonneg _
+  have hterm (k : ℕ) (hk : 1 ≤ k) :
+      ‖mobiusMertensPartialSum k‖^2/(k:ℝ) ≤ A*(k:ℝ)^(2*b) := by
+    have hk₁ : (1:ℝ) ≤ k := Nat.one_le_cast.mpr hk
+    have hk₀ := zero_lt_one.trans_le hk₁
+    have h₁ := h k
+    rw [show zetaZeroAbscissa+(a-zetaZeroAbscissa) = a by ring] at h₁
+    have hpow := Real.rpow_le_rpow (show (0:ℝ) ≤ k+1 by positivity)
+      (show (k:ℝ)+1 ≤ 2*k by linarith only [hk₁]) ha₀
+    rw [Real.mul_rpow (by norm_num : (0:ℝ) ≤ 2) hk₀.le] at hpow
+    have hh := pow_le_pow_left₀ (norm_nonneg _)
+      (h₁.trans (mul_le_mul_of_nonneg_left hpow hC)) 2
+    apply (div_le_iff₀ hk₀).mpr
+    refine hh.trans_eq ?_
+    rw [←mul_assoc C, mul_pow, ← Real.rpow_natCast ((k:ℝ)^a) 2, ← Real.rpow_mul hk₀.le,
+      show a*((2:ℕ):ℝ) = 2*b+1 by dsimp only [a]; push_cast; ring, Real.rpow_add_one hk₀.ne']
+    dsimp only [A]; ring
+  have hrow (k : ℕ) (hk : 1 ≤ k) :
+      ((k:ℝ)⁻¹-((k:ℝ)+1)⁻¹)*‖mobiusMertensPartialSum k‖^2 ≤ A*(k:ℝ)^(2*b-1) := by
+    have hk₀ : 0 < (k:ℝ) := Nat.cast_pos.mpr hk
+    have hw : (k:ℝ)⁻¹-((k:ℝ)+1)⁻¹ ≤ (k:ℝ)⁻¹*(k:ℝ)⁻¹ := by
+      have hk₁ : 0 < (k:ℝ)+1 := by positivity
+      field_simp
+      nlinarith only [hk₀]
+    calc _ ≤ ((k:ℝ)⁻¹*(k:ℝ)⁻¹)*‖mobiusMertensPartialSum k‖^2 :=
+           mul_le_mul_of_nonneg_right hw (sq_nonneg _)
+         _ = (‖mobiusMertensPartialSum k‖^2/(k:ℝ))/(k:ℝ) := by ring
+         _ ≤ (A*(k:ℝ)^(2*b))/(k:ℝ) := div_le_div_of_nonneg_right (hterm k hk) hk₀.le
+         _ = _ := by rw [Real.rpow_sub_one hk₀.ne']; ring
+  have hb₂ : 0 < 2*b := by positivity
+  refine ⟨A+A*(1+1/(2*b)),by positivity,fun N => ?_⟩
+  cases N with
+  | zero => simp [mertensPoissonGram]
+  | succ n =>
+    have hs := sum_le_sum (s := Icc 1 n) fun i hi => hrow i (mem_Icc.mp hi).1
+    rw [←mul_sum, _root_.RHTower.sum_Icc_eq_sum_range_shift] at hs
+    simp only [Nat.cast_succ] at hs
+    have hsum := hs.trans (mul_le_mul_of_nonneg_left
+      (ArithmeticGaugeTheory.sum_rpow_sub_one_le hb₂ n) hA)
+    rw [mertens_gram_prefix_squares (Nat.succ_pos n),Nat.succ_sub_one]
+    have ht := hterm (n+1) (Nat.succ_pos n)
+    rw [Nat.cast_succ] at ht ⊢
+    linarith only [ht,hsum]
+
+/-- Off the boundary, an arbitrarily late small Poisson measurement is
+equivalent to the same exponent bounding every measurement. -/
+theorem cofinal_mertens_gram_iff {b : ℝ} (hb : 0 ≤ b) (hoff : b ≠ zetaZeroWidth) :
+    (∃ C : ℝ, 0 ≤ C ∧ ∃ᶠ N : ℕ in atTop, mertensPoissonGram N ≤ C*(N:ℝ)^(2*b)) ↔
+      zetaZeroWidth < b := by
+  constructor
+  · intro h
+    exact lt_of_le_of_ne (width_le_of_cofinal_mertens_gram hb h) hoff.symm
+  · intro h
+    obtain ⟨B,hB,h⟩ := mertens_gram_upper_power h
+    exact ⟨B,hB,(Eventually.of_forall h).frequently⟩
+
+#print axioms mertens_gram_upper_power
+#print axioms cofinal_mertens_gram_iff
 #print axioms mertens_gram_prefix_squares
 #print axioms sharp_moebius_moment_le_mertens_gram
 #print axioms width_le_of_cofinal_mertens_gram

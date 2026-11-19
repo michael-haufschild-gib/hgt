@@ -117,6 +117,8 @@ theorem critical_inversion_of_the_ordinary_prime_reading (b : ℕ → ℕ) (hb :
     exact (c.trans (le_max_left ..)).trans (((le_mul_of_one_le_right c0 (v1 t)).trans
       (le_mul_of_one_le_right (a0 t) e1)).trans (le_mul_of_one_le_right H0 root1))
   obtain ⟨observed,positive,high⟩ := late t (le_of_not_gt early)
+  change 4*(K+1) ≤ L at high
+  change |ordinaryPrimeCharge y t| ≤ B*v t*Real.sqrt t*L at observed
   have lp : 0<L := by linarith only [high,hK]
   have rows (k : ℕ) (lt : k<t) : |M y k| ≤ H*Real.sqrt k := by
     have h := ih k lt
@@ -173,7 +175,8 @@ theorem ordinary_prime_readings_from_the_full_prefix (v : ℕ → ℝ) (hv : Mon
       A inc a0 sp _ n y (Nat.zero_le _)
     intro k _ _
     change |M 0 k| ≤ A k*E 0*(k:ℝ)^(1/2:ℝ)
-    simpa [M,E,A,deletionPrice,←Real.sqrt_eq_rpow] using full k
+    rw [←Real.sqrt_eq_rpow]
+    simpa [M,E,A,deletionPrice] using full k
   obtain ⟨K,hK,price⟩ := ordinary_prime_reading_on_smaller_frozen_rows
   refine ⟨K,hK,fun X y hx hy => ?_⟩
   let H := A X*E y

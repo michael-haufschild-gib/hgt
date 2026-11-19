@@ -24,6 +24,9 @@ private def pdf (a : Shape) (s x : ℝ) := ENNReal.ofReal (density a s x)
 private theorem pdf_measurable (a : Shape) (s : ℝ) : Measurable (pdf a s) :=
   ENNReal.measurable_ofReal.comp (measurable_gammaPDFReal _ _)
 
+private theorem pdf_toReal (a : Shape) (s x : ℝ) : (pdf a s x).toReal = density a s x :=
+  ENNReal.toReal_ofReal (gammaPDFReal_nonneg a.property (exp_pos s) x)
+
 private def raised (a : Shape) : Shape := ⟨a.val+1,by linarith only [a.property]⟩
 
 private theorem size_bias (a : Shape) (s : ℝ) :
@@ -35,7 +38,6 @@ private theorem size_bias (a : Shape) (s : ℝ) :
       Real.Gamma_add_one a.property.ne',Real.rpow_add_one (exp_pos s).ne']
     rw [← hxpow]
     field_simp [(Real.Gamma_pos_of_pos a.property).ne',a.property.ne',Real.exp_ne_zero]
-    ring
   · have hn : ¬0≤x := not_le.mpr (lt_of_le_of_ne (le_of_not_gt hp) hx)
     simp [density,gammaPDFReal,hn]
 
@@ -44,7 +46,7 @@ private theorem mean_integrable (a : Shape) (s : ℝ) : Integrable (fun x : ℝ 
   rw [integrable_withDensity_iff_integrable_smul' (pdf_measurable _ _)
     (ae_of_all _ fun _ => ENNReal.ofReal_lt_top)]
   have h := ((density_integrable (raised a) s).const_mul (a.val/exp s)).congr (size_bias a s).symm
-  simpa only [pdf,ENNReal.toReal_ofReal (gammaPDFReal_nonneg a.property (exp_pos s) _),smul_eq_mul] using h
+  simpa only [pdf_toReal,smul_eq_mul] using h
 
 /-- Size bias by the observed position raises the shape by one. -/
 theorem mean (a : Shape) (s : ℝ) : (∫ x : ℝ, x ∂law a s)=a.val/exp s := by
@@ -53,7 +55,7 @@ theorem mean (a : Shape) (s : ℝ) : (∫ x : ℝ, x ∂law a s)=a.val/exp s := 
     (ae_of_all _ fun _ => ENNReal.ofReal_lt_top)]
   have h := integral_congr_ae (size_bias a s)
   rw [integral_const_mul,density_mass,mul_one] at h
-  simpa only [pdf,ENNReal.toReal_ofReal (gammaPDFReal_nonneg a.property (exp_pos s) _),smul_eq_mul] using h
+  simpa only [pdf_toReal,smul_eq_mul] using h
 
 private def score (a : Shape) (s t x : ℝ) := a.val*(s-t)+(exp t-exp s)*x
 
@@ -88,7 +90,8 @@ theorem rate_kl (a : Shape) (s t : ℝ) :
   unfold score
   rw [integral_add (integrable_const _) hlin,integral_const,probReal_univ,one_smul,
     integral_const_mul,mean,exp_sub]
-  field_simp [exp_ne_zero] <;> ring
+  field_simp [exp_ne_zero]
+  ring
 
 /-- The symmetrized true divergence is four times shape times the
 squared reciprocal coherence defect. -/
@@ -103,6 +106,7 @@ theorem jeffreys_coherence (a : Shape) (s t : ℝ) :
   change _=4*a.val*(((u+exp (-((s-t)/2)))/2)^2-1)
   rw [exp_neg,hu',← hu]
   change _=4*a.val*(((u+u⁻¹)/2)^2-1)
-  field_simp [show u≠0 from exp_ne_zero _] <;> ring
+  field_simp [show u≠0 from exp_ne_zero _]
+  ring
 
 end GaloisForLFunctions.HilbertMetric.CauchyDephasing.GammaAffinity

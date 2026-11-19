@@ -142,7 +142,7 @@ theorem exchanged_prime_cofactor_cuts {P p q u v : ℕ} (hP : 0 < P)
       exact (Nat.eq_of_mul_eq_mul_left hq.pos heq).symm
     have hV := projected_weight_at_large_prime hp hpP (u:=1) (by decide) hP
     refine ⟨he,hv,by simpa only [if_pos he] using hU,?_⟩
-    simpa only [hv,one_mul,if_pos rfl] using hV
+    simpa only [hv,one_mul,eq_self,if_true] using hV
   · rintro ⟨_,_,hu',hv'⟩
     rw [hu',hv']
     exact ⟨one_ne_zero,one_ne_zero⟩

@@ -18,44 +18,108 @@ open GaloisForLFunctions.HTGeometry RHTower
 open GaloisForLFunctions.HilbertMetric.Dynamics.AffineComposition
 namespace FiniteFreeProbability
 
+private theorem xi_sum (z : ℂ) : HasSum (fun k => xiCoeff k*z^k) (XiC z) := by
+  simpa [xiCoeff, xiSeries] using hasSum_xiSeries z
+
+private theorem jensen_at_reciprocal {d : ℕ} (hd : 0 < d) {u : ℂ} (hu : u ≠ 0) :
+    (jensenRev d xiSeries).IsRoot ((d : ℂ)/u) ↔ scaledJensen xiCoeff d u = 0 := by
+  rw [Polynomial.IsRoot, ← mk_xiCoeff, eval_jensenRev_div _ hd hu]
+  exact mul_eq_zero.trans (or_iff_right (pow_ne_zero _ (div_ne_zero
+    (by exact_mod_cast hd.ne') hu)))
+
+/-- Every point of the zero-free locus has a whole neighborhood eventually
+free of zeros of the scaled approximants. -/
+private theorem eventually_zero_free_scaled_near {w : ℂ} (hw : XiC w ≠ 0) :
+    ∃ r : ℝ, 0 < r ∧ ∀ᶠ d : ℕ in atTop, ∀ u ∈ ball w r, scaledJensen xiCoeff d u ≠ 0 := by
+  have hloc := tendstoLocallyUniformly_scaledJensen
+    (summable_norm_mul_pow_of_summable fun z => (xi_sum z).summable) (ψ := id) tendsto_id
+  have hfun : (fun z => ∑' k, xiCoeff k*z^k) = XiC := funext fun z => (xi_sum z).tsum_eq
+  rw [hfun] at hloc
+  have hp := norm_pos_iff.mpr hw
+  have hv : ∀ᶠ z in 𝓝 w, ‖XiC w‖/2 < ‖XiC z‖ :=
+    XiC_differentiable.continuous.continuousAt.norm.tendsto.eventually_const_lt (by linarith)
+  obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff.mp hv
+  have hclose := (tendstoLocallyUniformly_iff_forall_isCompact.mp hloc)
+    (closedBall w r) (isCompact_closedBall w r)
+  have hu := Metric.tendstoUniformlyOn_iff.mp hclose (‖XiC w‖/2) (by linarith)
+  refine ⟨r,hr,hu.mono fun d hd u hmem hz => ?_⟩
+  have hh := hd u (ball_subset_closedBall hmem)
+  change dist (XiC u) (scaledJensen xiCoeff d u) < _ at hh
+  rw [hz, dist_zero_right] at hh
+  exact (hball hmem).not_gt hh
+
 /-- A compact zero-free neighborhood of the origin excludes Jensen roots
 beyond a fixed multiple of the degree. -/
 theorem eventually_linear_norm_jensen_xi :
     ∃ C : ℝ, 0 < C ∧ ∀ᶠ d : ℕ in atTop, ∀ z : ℂ,
       (jensenRev d xiSeries).IsRoot z → ‖z‖ ≤ C*d := by
-  have hs (z : ℂ) : HasSum (fun k => xiCoeff k*z^k) (XiC z) := by
-    simpa only [xiCoeff, xiSeries, PowerSeries.coeff_mk] using hasSum_xiSeries z
-  have hloc := tendstoLocallyUniformly_scaledJensen
-    (summable_norm_mul_pow_of_summable fun z => (hs z).summable) (ψ := id) tendsto_id
-  have hfun : (fun z => ∑' k, xiCoeff k*z^k) = XiC := funext fun z => (hs z).tsum_eq
-  rw [hfun] at hloc
-  have hp := norm_pos_iff.mpr XiC_zero_ne
-  have hv : ∀ᶠ z in 𝓝 (0 : ℂ), ‖XiC 0‖/2 < ‖XiC z‖ :=
-    XiC_differentiable.continuous.continuousAt.norm.tendsto.eventually_const_lt (by linarith)
-  obtain ⟨r, hr, hball⟩ := Metric.eventually_nhds_iff.mp hv
-  have hclose := (tendstoLocallyUniformly_iff_forall_isCompact.mp hloc)
-    (closedBall 0 r) (isCompact_closedBall 0 r)
-  have hu := Metric.tendstoUniformlyOn_iff.mp hclose (‖XiC 0‖/2) (by linarith)
+  obtain ⟨r, hr, hev⟩ := eventually_zero_free_scaled_near XiC_zero_ne
   refine ⟨r⁻¹, inv_pos.mpr hr, ?_⟩
-  filter_upwards [hu, eventually_gt_atTop 0] with d hd hd0 z hz
+  filter_upwards [hev, eventually_gt_atTop 0] with d hd hd0 z hz
   by_contra! hbig
   have hdpos : (0 : ℝ) < d := by exact_mod_cast hd0
   have hzpos : 0 < ‖z‖ := (mul_pos (inv_pos.mpr hr) hdpos).trans hbig
   have hz0 := norm_pos_iff.mp hzpos
   let u := (d : ℂ)/z
-  have hu0 : u ≠ 0 := div_ne_zero (by exact_mod_cast hd0.ne') hz0
+  have hd' : (d : ℂ) ≠ 0 := by exact_mod_cast hd0.ne'
+  have hu0 : u ≠ 0 := div_ne_zero hd' hz0
   have hu_norm : ‖u‖ < r := by
     rw [show ‖u‖ = d/‖z‖ by simp [u], div_lt_iff₀ hzpos]
     have h := (div_lt_iff₀ hr).mp (by simpa [div_eq_inv_mul] using hbig : (d : ℝ)/r < ‖z‖)
     linarith only [h]
-  have hzu : (d : ℂ)/u = z := by dsimp [u]; field_simp [hz0, (by exact_mod_cast hd0.ne' : (d:ℂ) ≠ 0)]
-  have he := eval_jensenRev_div xiCoeff hd0 hu0
-  rw [mk_xiCoeff, hzu, hz] at he
-  have hzero := (mul_eq_zero.mp he.symm).resolve_left (pow_ne_zero _ hz0)
-  have hh := hd u (mem_closedBall_zero_iff.mpr hu_norm.le)
-  change dist (XiC u) (scaledJensen xiCoeff d u) < _ at hh
-  rw [hzero, dist_zero_right] at hh
-  exact (hball (by simpa using hu_norm)).not_gt hh
+  have hzu : (d : ℂ)/u = z := by dsimp [u]; field_simp [hz0,hd']
+  exact hd u (by simpa only [mem_ball, dist_zero_right] using hu_norm)
+    ((jensen_at_reciprocal hd0 hu0).mp (hzu.symm ▸ hz))
+
+private theorem near_inverse {w : ℂ} (hw : w ≠ 0) {ε : ℝ} (hε : 0 < ε) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ u ∈ ball w δ, u ≠ 0 ∧ u⁻¹ ∈ ball w⁻¹ ε := by
+  have hne : ∀ᶠ u in 𝓝 w, u ≠ 0 := (tendsto_id : Tendsto id (𝓝 w) (𝓝 w)).eventually_ne hw
+  exact Metric.eventually_nhds_iff.mp (hne.and
+    ((continuousAt_inv₀ hw).tendsto.eventually (ball_mem_nhds _ hε)))
+
+private theorem zero_of_frequent_jensen_root {w : ℂ} (hw : w ≠ 0)
+    (he : ∀ ε : ℝ, 0 < ε → ∃ᶠ d : ℕ in atTop, ∃ z : ℂ,
+      (jensenRev d xiSeries).IsRoot z ∧ z/(d:ℂ) ∈ ball w ε) : XiC w⁻¹ = 0 := by
+  by_contra hx
+  obtain ⟨r,hr,hfree⟩ := eventually_zero_free_scaled_near hx
+  obtain ⟨δ,hδ,hinv⟩ := near_inverse hw hr
+  obtain ⟨d,⟨z,hz,hnear⟩,hfree',hd⟩ := ((he δ hδ).and_eventually (hfree.and (eventually_gt_atTop 0))).exists
+  obtain ⟨hn,hm⟩ := hinv _ hnear
+  have hd' : (d : ℂ) ≠ 0 := by exact_mod_cast hd.ne'
+  have hrec : (d : ℂ)/(z/d)⁻¹ = z := by field_simp [hd']
+  exact hfree' _ hm ((jensen_at_reciprocal hd (inv_ne_zero hn)).mp (hrec.symm ▸ hz))
+
+/-- The nonzero accumulation points of the roots divided by degree are
+exactly the reciprocals of the zeros of Ξ. Every neighborhood of each
+such point contains a normalized root at *every* sufficiently large degree. -/
+theorem reciprocal_zero_iff_eventual_jensen_root {w : ℂ} (hw : w ≠ 0) :
+    XiC w⁻¹ = 0 ↔ ∀ ε : ℝ, 0 < ε → ∀ᶠ d : ℕ in atTop, ∃ z : ℂ,
+      (jensenRev d xiSeries).IsRoot z ∧ z/(d:ℂ) ∈ ball w ε := by
+  constructor
+  · intro hz ε hε
+    obtain ⟨δ,hδ,hu⟩ := near_inverse (inv_ne_zero hw) hε
+    have hsum0 : xiCoeff 0 ≠ 0 := by
+      have h0 := constantCoeff_xiSeries
+      rw [← PowerSeries.coeff_zero_eq_constantCoeff_apply, ← mk_xiCoeff, PowerSeries.coeff_mk] at h0
+      exact h0 ▸ XiC_zero_ne
+    have he := eventually_exists_zero_scaledJensen
+      (summable_norm_mul_pow_of_summable fun z => (xi_sum z).summable) hsum0
+      ((xi_sum w⁻¹).tsum_eq.trans hz) hδ
+    filter_upwards [he, eventually_gt_atTop 0] with d ⟨u,hub,hu0⟩ hd
+    obtain ⟨huz,huinv⟩ := hu u hub
+    have hdc : (d : ℂ) ≠ 0 := by exact_mod_cast hd.ne'
+    refine ⟨d/u,(jensen_at_reciprocal hd huz).mpr hu0,?_⟩
+    rw [show (d:ℂ)/u/d = u⁻¹ by field_simp [huz,hdc]]
+    simpa only [inv_inv] using huinv
+  · exact fun he => zero_of_frequent_jensen_root hw fun ε hε => (he ε hε).frequently
+
+/-- Even cofinal sightings of the same normalized point force a genuine
+reciprocal zero. This excludes spurious nonzero subsequential limits. -/
+theorem reciprocal_zero_iff_frequent_jensen_root {w : ℂ} (hw : w ≠ 0) :
+    XiC w⁻¹ = 0 ↔ ∀ ε : ℝ, 0 < ε → ∃ᶠ d : ℕ in atTop, ∃ z : ℂ,
+      (jensenRev d xiSeries).IsRoot z ∧ z/(d:ℂ) ∈ ball w ε :=
+  ⟨fun hz ε hε => ((reciprocal_zero_iff_eventual_jensen_root hw).mp hz ε hε).frequently,
+    zero_of_frequent_jensen_root hw⟩
 
 private theorem linear_height_obstruction (h : ¬RiemannHypothesis) :
     ∃ κ : ℝ, 0 < κ ∧ ∀ᶠ d : ℕ in atTop, ∃ z : ℂ,
@@ -123,6 +187,8 @@ theorem linear_chart_hides_extreme_heights :
   simpa using chart_upper_of_scale (c := 1) one_pos d (Nat.cast_pos.mpr hd0) hd hC.le
     (by simp : (1:ℝ)*d ≤ d)
 
+#print axioms reciprocal_zero_iff_eventual_jensen_root
+#print axioms reciprocal_zero_iff_frequent_jensen_root
 #print axioms eventually_linear_norm_jensen_xi
 #print axioms bounded_chart_jensen_heights_iff
 #print axioms linear_chart_hides_extreme_heights

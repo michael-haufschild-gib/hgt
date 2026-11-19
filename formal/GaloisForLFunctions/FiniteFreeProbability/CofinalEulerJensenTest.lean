@@ -2,6 +2,7 @@ import GaloisForLFunctions.FiniteFreeProbability.EulerRootFilters
 import GaloisForLFunctions.FiniteFreeProbability.NonRealRootCount
 import GaloisForLFunctions.FiniteFreeProbability.FiniteFreeDeBruijnNewman
 import GaloisForLFunctions.HTGeometry.HeatEscapeNonreal
+import GaloisForLFunctions.«arithmetic-positivity-theory».Jensen.XiStrictRoots
 
 /-!
 # Cofinal Euler-filtered Xi Jensen tests
@@ -79,13 +80,6 @@ private theorem filtered_eventually_bad {p : ℝ[X]} (h : ¬ p.Splits) :
   filter_upwards [hbad] with s hs
   exact fun hf => hs ((Polynomial.Splits.C _).mul hf)
 
-private theorem reverse_splits_of_rh (hRH : RiemannHypothesis) (d : ℕ) : (xiJensenReal d).Splits := by
-  have hJ := splits_jensenPoly_realTaylorCoeff (riemannHypothesis_iff_laguerrePolya_XiC.mp hRH)
-    (fun z => XiC_conj z) d
-  rw [show xiJensenReal d = (jensenPoly (realTaylorCoeff XiC) d).reflect d by
-    rw [← reflect_jensenReverse, Polynomial.reflect_reflect]]
-  exact Splits.reflect hJ (natDegree_jensenPoly_le _ _)
-
 /-- A failure at one unfiltered degree forces failure at all large degrees simultaneously
 for every positive integer anchor, including degree-dependent anchors. -/
 theorem cofinal_filter_obstruction (d : ℕ) :
@@ -109,7 +103,8 @@ theorem riemannHypothesis_iff_cofinal_eulerFilter :
     intro d
     refine ⟨0, ?_⟩
     have h := eulerFilter_real_root_gain 0 (xiJensenReal d)
-    have h0 := (reverse_splits_of_rh hRH d).natDegree_eq_card_roots
+    have h0 := (JensenStrict.jensenReverse_splits (riemannHypothesis_iff_laguerrePolya_XiC.mp hRH)
+      XiC_conj d).natDegree_eq_card_roots
     have h1 := Polynomial.card_roots' (eulerFilter 0 (xiJensenReal d))
     rw [splits_iff_card_roots, eulerFilter_natDegree]
     rw [eulerFilter_natDegree] at h1

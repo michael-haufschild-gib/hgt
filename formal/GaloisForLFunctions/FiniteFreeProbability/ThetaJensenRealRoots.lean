@@ -154,7 +154,7 @@ theorem thetaJensen_real_roots (n d : ℕ) :
   · rw [show d = 2*k by omega, if_pos (even_two_mul k)]
     exact Multiset.eq_zero_of_forall_notMem fun x hx =>
       (thetaJensen_even_pos n k x).ne' (Polynomial.isRoot_of_mem_roots hx)
-  · rw [hk, if_neg (show Odd (2*k+1) from ⟨k, rfl⟩).not_even, show (2*k+1)/2 = k by omega]
+  · rw [hk, if_neg (Nat.not_even_iff_odd.mpr ⟨k, rfl⟩), show (2*k+1)/2 = k by omega]
     ext x
     by_cases hx : x = thetaOddRoot n k
     · subst x

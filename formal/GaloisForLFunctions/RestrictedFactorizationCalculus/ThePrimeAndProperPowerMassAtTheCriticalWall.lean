@@ -79,8 +79,10 @@ theorem critical_mass_of_a_scaled_prime_window {scale : ℝ} (hscale : 1 ≤ sca
     (Nat.mem_primesLE.mp hp).2⟩
   have eq : S.filter (n<·)=S \ T := by
     ext p
-    simp only [S,T,mem_filter,Finset.mem_sdiff,Nat.mem_primesLE]
-    omega
+    rw [mem_filter,Finset.mem_sdiff]
+    exact ⟨fun ⟨h,above⟩ => ⟨h,fun ht => above.not_ge (Nat.mem_primesLE.mp ht).1⟩,
+      fun ⟨h,outside⟩ => ⟨h,lt_of_not_ge (fun le => outside
+        (Nat.mem_primesLE.mpr ⟨le,(Nat.mem_primesLE.mp h).2⟩))⟩⟩
   change rho (z n)/Real.sqrt (z n)*(Real.sqrt (z n)/Real.sqrt n)-rho n/Real.sqrt n=
     (∑ p ∈ S.filter (n<·),Real.log p/Real.sqrt p)/Real.sqrt n
   rw [eq,sum_sdiff_eq_sub sub]
@@ -152,7 +154,7 @@ theorem limiting_mass_of_the_combined_omission {scale : ℝ} (hscale : 1 ≤ sca
   apply (proper_powers_use_half_the_log.add shell).congr'
   filter_upwards [logSquareCutoff_tendsto_atTop.eventually_ge_atTop 1] with X yp
   let S := ∑ p ∈ (Nat.primesLE ⌊scale*(wall X:ℝ)⌋₊).filter (wall X<·),Real.log p/Real.sqrt p
-  change mass (wall X) X/L X+(S/Real.sqrt (wall X))*(Real.sqrt (wall X)/L X)=_
+  change mass (wall X) X/L X+(S/Real.sqrt (wall X))*(Real.sqrt (wall X)/L X)=(mass (wall X) X+S)/L X
   field_simp [(Real.sqrt_pos.mpr (Nat.cast_pos.mpr yp)).ne']
 
 /-- The limiting omission spends strictly less than the full logarithmic

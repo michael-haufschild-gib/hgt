@@ -136,8 +136,9 @@ private theorem nonzero_window_even {j : ZMod (2*n)} (hj : primeWindow n j ≠ 0
     by_contra hn
     exact hj (by simp [primeWindow, mass, hn])
   have hn := Nat.pos_of_ne_zero (NeZero.ne n)
-  have hpar := hp.eq_two_or_odd
-  exact Nat.even_iff.mpr (by omega)
+  rcases hp.eq_two_or_odd with htwo | hodd
+  · omega
+  · exact Nat.even_iff.mpr (by have := Nat.odd_iff.mp hodd; omega)
 
 /-- All sampled primes are odd. On their support the half-period
 modulation is one, so the prime spectrum repeats after `n` frequencies. -/

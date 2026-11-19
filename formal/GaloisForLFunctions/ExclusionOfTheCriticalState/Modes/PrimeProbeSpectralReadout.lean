@@ -90,7 +90,7 @@ theorem levels_injective (s : ℝ) (t : Fin n ↪ ℕ) : Function.Injective (lev
     simpa only [WithLp.toLp_smul,WithLp.toLp_ofLp] using congrArg (WithLp.toLp 2) h
   have hh := congrArg (fun v => inner ℝ (basis s t i) v) hb
   have orth := orthonormal_iff_ite.mp (basis s t).orthonormal
-  simp only [real_inner_smul_right,orth,if_pos rfl,if_neg hij,mul_one,mul_zero] at hh
+  simp [real_inner_smul_right,orth,hij] at hh
   exact (positive_visible_modes s t j).2 (by simpa [reading] using hh)
 
 /-- In the eigenbasis the sampling-rate operator has a Cauchy matrix whose

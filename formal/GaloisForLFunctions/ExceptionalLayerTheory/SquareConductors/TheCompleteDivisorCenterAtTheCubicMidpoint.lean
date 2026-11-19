@@ -164,14 +164,15 @@ private theorem rough_midpoint_proper_power_cost {n : ℕ} (hY : 3 ≤ cubicMidp
   have hcut : Y ≤ 2*n := by omega
   have point {k : ℕ} (hk : Y < k) :
       0 ≤ E k ∧ E k ≤ (if ¬k.Prime then vonMangoldt k else 0) := by
-    change 0 ≤ (if (primorial Y).Coprime k then vonMangoldt k else 0)-
-      (if k.Prime then Real.log k else 0) ∧ _ ≤ _
     by_cases hp : k.Prime
-    · have hc := (hp.coprime_iff_not_dvd.mpr (fun h => hk.not_ge (hp.dvd_primorial_iff.mp h))).symm
-      dsimp only [E,cubicRoughMangoldt]
-      change 0 ≤ (if (primorial Y).Coprime k then vonMangoldt k else 0)-_ ∧
-        (if (primorial Y).Coprime k then vonMangoldt k else 0)-_ ≤ _
-      simp only [hc,if_true,hp,not_true_eq_false,if_false,vonMangoldt_apply_prime hp,sub_self,le_refl,and_self]
+    · have hc : (primorial Y).Coprime k :=
+        (hp.coprime_iff_not_dvd.mpr (fun h => hk.not_ge (hp.dvd_primorial_iff.mp h))).symm
+      have hz : E k=0 := by
+        change (if (primorial Y).Coprime k then vonMangoldt k else 0)-
+          (if k.Prime then Real.log k else 0)=0
+        rw [if_pos hc,if_pos hp,vonMangoldt_apply_prime hp,sub_self]
+      rw [hz,if_neg (not_not_intro hp)]
+      exact ⟨le_rfl,le_rfl⟩
     · change 0 ≤ (if (primorial Y).Coprime k then vonMangoldt k else 0)-_ ∧
         (if (primorial Y).Coprime k then vonMangoldt k else 0)-_ ≤ _
       simp only [if_neg hp,if_pos hp,sub_zero]
@@ -227,9 +228,107 @@ theorem ordinary_prime_midpoint_cubic_center {ε : ℝ} (hε : 0 < ε) :
   change (∑ k ∈ Ioc (2*n) (3*n),cubicRoughMangoldt Y k)-
     (∑ k ∈ Ioc (2*n) (3*n),cubicUncompletedProductPrice n k)=(S (3*n)-S (2*n))/2 at hl
   change |primeMidpointPrice n+((∑ k ∈ Ioc (3*n) (4*n),cubicRoughMangoldt Y k)-
-    ∑ k ∈ Ioc (2*n) (3*n),cubicRoughMangoldt Y k)| ≤ |A|*(2*P) at hb
+    ∑ k ∈ Ioc (2*n) (3*n),cubicRoughMangoldt Y k)| ≤ |A| * (2*P) at hb
   change |_ | ≤ (C+2*|A|)*P
   rw [abs_le]
   constructor <;> linarith only [hr,hl,(abs_le.mp hb).1,(abs_le.mp hb).2,(abs_le.mp hc).1,(abs_le.mp hc).2]
+
+private def longDivisorLogPrice (n k : ℕ) : ℝ :=
+  let Y := cubicMidpointCut n
+  twiceHighDivisorWeight Y (4*n/(Y+1)) k/2*Real.log k
+
+/-- Price of the smooth integers with four or more prime factors,
+counting factors with multiplicity. Both endpoints use the same cutoff. -/
+def cubicSmoothTail (n a b : ℕ) : ℝ :=
+  ∑ k ∈ (Ioc a b).filter (fun k => k ∈ Nat.smoothNumbers (cubicMidpointCut n+1) ∧
+    4 ≤ k.primeFactorsList.length),longDivisorLogPrice n k
+
+/-- The lower smooth triple price. Its coefficients on the three
+multiplicity patterns are 2, 1 and 0. -/
+def lowerCubicTriplePrice (n : ℕ) : ℝ :=
+  ∑ k ∈ (Ioc (2*n) (3*n)).filter (fun k => k ∈ Nat.smoothNumbers (cubicMidpointCut n+1) ∧
+    k.primeFactorsList.length < 4),longDivisorLogPrice n k
+
+/-- One third of the product logarithm for each ordered rough prime triple. -/
+def upperCubicTriplePrice (n : ℕ) : ℝ :=
+  ∑ k ∈ Ioc (3*n) (4*n),(cubicPrimeIndicator (cubicMidpointCut n)^3 : ArithmeticFunction ℝ) k/3*Real.log k
+
+private theorem rough_cube_below_cut {Y k : ℕ} (hk : k<(Y+1)^3) :
+    (cubicPrimeIndicator Y^3 : ArithmeticFunction ℝ) k=0 := by
+  let P := cubicPrimeIndicator Y
+  rw [show cubicPrimeIndicator Y^3=P*P*P by ring,mul_apply]
+  apply sum_eq_zero
+  intro x hx
+  rw [mul_apply,sum_mul]
+  apply sum_eq_zero
+  intro z hz
+  have hprod : z.1*z.2*x.2=k := by
+    rw [(Nat.mem_divisorsAntidiagonal.mp hz).1,(Nat.mem_divisorsAntidiagonal.mp hx).1]
+  simp only [P,cubic_prime_indicator_apply]
+  split_ifs with h₁ h₂ h₃ <;> simp_all only [zero_mul,mul_zero,one_mul]
+  have hle := Nat.mul_le_mul (Nat.mul_le_mul h₁.2 h₂.2) h₃.2
+  rw [show (Y+1)^3=(Y+1)*(Y+1)*(Y+1) by ring] at hk
+  omega
+
+private theorem split_uncompleted_prices {n : ℕ} (hY : 3 ≤ cubicMidpointCut n) :
+    (∑ k ∈ Ioc (3*n) (4*n),cubicUncompletedProductPrice n k)-
+      (∑ k ∈ Ioc (2*n) (3*n),cubicUncompletedProductPrice n k) =
+      upperCubicTriplePrice n-lowerCubicTriplePrice n+
+        (cubicSmoothTail n (3*n) (4*n)-cubicSmoothTail n (2*n) (3*n)) := by
+  let Y := cubicMidpointCut n
+  let D := 4*n/(Y+1)
+  let high := longDivisorLogPrice n
+  let rough := fun k => (cubicPrimeIndicator Y^3 : ArithmeticFunction ℝ) k/3*Real.log k
+  let tail := fun k : ℕ => if k ∈ Nat.smoothNumbers (Y+1) ∧ 4 ≤ k.primeFactorsList.length then high k else 0
+  let tri := fun k : ℕ => if k ∈ Nat.smoothNumbers (Y+1) ∧ k.primeFactorsList.length < 4 then high k else 0
+  have eqn (k : ℕ) : cubicUncompletedProductPrice n k=high k+rough k := by
+    dsimp only [cubicUncompletedProductPrice,high,longDivisorLogPrice,rough,Y]
+    ring
+  have hzero {k : ℕ} (hw : twiceHighDivisorWeight Y D k=0) : high k=0 := by
+    change twiceHighDivisorWeight Y D k/2*Real.log k=0
+    rw [hw,zero_div,zero_mul]
+  have lo (k : ℕ) (hk : k ∈ Ioc (2*n) (3*n)) :
+      cubicUncompletedProductPrice n k=tri k+tail k := by
+    obtain ⟨hl,hu⟩ := mem_Ioc.mp hk
+    rw [eqn,show rough k=0 by
+      dsimp only [rough]
+      rw [rough_cube_below_cut (hu.trans_lt (cubic_midpoint_thresholds n hY).2.1),zero_div,zero_mul],add_zero]
+    dsimp only [tri,tail]
+    by_cases hw : twiceHighDivisorWeight Y D k=0
+    · simp [hzero hw]
+    · have hs := (surviving_long_divisor_products hY hl (hu.trans (by omega)) hw).1
+      by_cases h4 : 4 ≤ k.primeFactorsList.length
+      · simp [hs,h4,not_lt.mpr h4]
+      · simp [hs,h4,lt_of_not_ge h4]
+  have hi (k : ℕ) (hk : k ∈ Ioc (3*n) (4*n)) :
+      cubicUncompletedProductPrice n k=rough k+tail k := by
+    obtain ⟨hl,hu⟩ := mem_Ioc.mp hk
+    rw [eqn,add_comm]
+    congr 1
+    by_cases hw : twiceHighDivisorWeight Y D k=0
+    · simp [tail,hzero hw]
+    · have ⟨hs,hcases⟩ := surviving_long_divisor_products hY (by omega : 2*n<k) hu hw
+      rcases hcases with ⟨p,q,r,hp,hq,hr,hpY,hqY,hrY,hprod⟩ | h4
+      · have htop := (high_divisor_weight_on_smooth_triple hp hq hr hY hpY hqY hrY (by omega)).1
+        omega
+      · simp [tail,hs,h4]
+  rw [sum_congr rfl hi,sum_congr rfl lo,sum_add_distrib,sum_add_distrib]
+  simp only [upperCubicTriplePrice,lowerCubicTriplePrice,cubicSmoothTail,sum_filter]
+  change (∑ k ∈ Ioc (3*n) (4*n),rough k)+(∑ k ∈ Ioc (3*n) (4*n),tail k)-
+    ((∑ k ∈ Ioc (2*n) (3*n),tri k)+(∑ k ∈ Ioc (2*n) (3*n),tail k))=_
+  ring
+
+/-- At each integer midpoint, the lower triple surplus, the signed
+four-or-more-factor price and the two integral moments account for the
+ordinary prime midpoint with error O(n^(5/6+ε)). -/
+theorem ordinary_prime_midpoint_by_smooth_multiplicity {ε : ℝ} (hε : 0<ε) :
+    ∃ C : ℝ, ∀ {n : ℕ}, 3 ≤ cubicMidpointCut n →
+      |primeMidpointPrice n-(lowerCubicTriplePrice n-upperCubicTriplePrice n-cubicShortDivisorIntegral n-
+        (cubicSmoothTail n (3*n) (4*n)-cubicSmoothTail n (2*n) (3*n)))| ≤ C*(n:ℝ)^(5/6+ε) := by
+  obtain ⟨C,h⟩ := ordinary_prime_midpoint_cubic_center hε
+  refine ⟨C,fun hY => ?_⟩
+  have hh := h hY
+  rw [split_uncompleted_prices hY] at hh
+  convert hh using 2 <;> ring
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

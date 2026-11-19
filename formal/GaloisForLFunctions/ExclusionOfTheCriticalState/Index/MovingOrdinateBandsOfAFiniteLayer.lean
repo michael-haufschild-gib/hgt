@@ -85,6 +85,72 @@ theorem moving_ordinate_band_limit {ι : Type*} {l : Filter ι} {T u v : ι → 
   filter_upwards [hT.eventually (eventually_ge_atTop (0:ℝ))] with i hi
   rw [band_eq_tail_sub hs, mul_sub, ← mul_max_of_nonneg _ _ hi]
 
+/-- Combined mass of all zero copies with one absolute ordinate. -/
+def ordinateAtomMass (F : ℝ → ℝ) (t : ℝ) : ℝ :=
+  ∑' q : onLineCopies, if |(centredZero q).im| = t then zeroValueMass F q else 0
+
+private theorem ordinate_atom_nonneg (F : ℝ → ℝ) (t : ℝ) : 0 ≤ ordinateAtomMass F t :=
+  tsum_nonneg fun q => ite_zero_nonneg (zeroValueMass_nonneg F q)
+
+private theorem atom_le_band {F : ℝ → ℝ} (hs : Summable (fun q : onLineCopies => zeroValueMass F q))
+    {u t : ℝ} (hu : u < t) : ordinateAtomMass F t ≤ ordinateBandMass F u t := by
+  have hsum (P : onLineCopies → Prop) [DecidablePred P] :
+      Summable (fun q : onLineCopies => if P q then zeroValueMass F q else 0) :=
+    hs.of_nonneg_of_le (fun q => ite_zero_nonneg (zeroValueMass_nonneg F q))
+      (fun q => ite_zero_le (zeroValueMass_nonneg F q))
+  apply Summable.tsum_le_tsum _ (hsum _) (hsum _)
+  intro q
+  by_cases h : |(centredZero q).im| = t
+  · simp only [if_pos h, h, hu, le_refl, and_self, if_true]
+  · rw [if_neg h]; exact ite_zero_nonneg (zeroValueMass_nonneg F q)
+
+/-- A single ordinate, even with all its multiplicities and both signs
+combined, carries a vanishing fraction of the critical tail. -/
+theorem single_ordinate_mass_vanishes {W : ℝ} {F : ℝ → ℝ} (hW : 0 < W)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W : EReal))
+    (hF : IsCriticalHalfLineGroundState W F) (hf : BacklundConverse.FiniteOffLine) :
+    Tendsto (fun t : ℝ => t*ordinateAtomMass F t) atTop (𝓝 0) := by
+  have hs := (domain_zeroParseval_of_finiteOffLine (criticalHalfLineEnergyDomain_of_groundState hF) hf).1
+  have hu : Tendsto (fun t : ℝ => 1-1/t) atTop (𝓝 1) := by
+    simpa only [sub_zero] using (tendsto_const_nhds (x := (1:ℝ))).sub
+      ((tendsto_const_nhds (x := (1:ℝ))).div_atTop
+        (show Tendsto (fun t : ℝ => t) atTop atTop from tendsto_id))
+  have h := moving_ordinate_band_limit hW ht hF hf tendsto_id hu
+    (tendsto_const_nhds (x := (1:ℝ))) zero_lt_one
+  rw [max_self,sub_self] at h
+  apply tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h
+  · filter_upwards [eventually_ge_atTop (0:ℝ)] with t h₀
+    exact mul_nonneg h₀ (ordinate_atom_nonneg F t)
+  · filter_upwards [eventually_gt_atTop (0:ℝ)] with t h₀
+    rw [mul_one]
+    exact mul_le_mul_of_nonneg_left (atom_le_band hs
+      (by rw [mul_sub,mul_one,mul_one_div_cancel h₀.ne']; linarith)) h₀.le
+
+/-- Uniformly over all moving packets of at most k ordinate heights above
+T, their total mass is o(1/T). The number of copies at any selected height
+is unrestricted. -/
+theorem bounded_ordinate_packets_vanish {W : ℝ} {F : ℝ → ℝ} (hW : 0 < W)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W : EReal))
+    (hF : IsCriticalHalfLineGroundState W F) (hf : BacklundConverse.FiniteOffLine)
+    (k : ℕ) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ t : ℝ in atTop, ∀ S : Finset ℝ, S.card ≤ k → (∀ u ∈ S, t ≤ u) →
+      t*(∑ u ∈ S, ordinateAtomMass F u) < ε := by
+  let δ := ε/((k:ℝ)+1)
+  have hk : 0 < (k:ℝ)+1 := by positivity
+  have hδ : 0 < δ := div_pos hε hk
+  obtain ⟨A,hA⟩ := eventually_atTop.mp
+    ((single_ordinate_mass_vanishes hW ht hF hf).eventually_lt_const hδ)
+  filter_upwards [eventually_ge_atTop A] with t htA
+  intro S hS hloc
+  have h (u : ℝ) (hu : u ∈ S) : t*ordinateAtomMass F u ≤ δ :=
+    (mul_le_mul_of_nonneg_right (hloc u hu) (ordinate_atom_nonneg F u)).trans
+      (hA u (htA.trans (hloc u hu))).le
+  have hsum := Finset.sum_le_sum h
+  rw [←Finset.mul_sum,Finset.sum_const,nsmul_eq_mul] at hsum
+  have hc := (mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hS : (S.card:ℝ) ≤ k) hδ.le)
+  have he : ((k:ℝ)+1)*δ = ε := by dsimp only [δ]; field_simp
+  exact (hsum.trans hc).trans_lt (by linarith only [he,hδ])
+
 /-- Existence of a vanishing sequence in one prescribed multiplicative band,
 for every threshold state in the finite stratum. -/
 def sequentialBandVanishing (p q : ℝ) : Prop :=
@@ -125,6 +191,8 @@ theorem sequential_band_vanishing_iff (p q : ℝ) :
       simpa only [max_eq_left (Real.exp_le_exp.mpr hp), sub_self] using h
     · exact False.elim (hnone.mp hex hf ⟨W,F,hW,ht,hF⟩)
 
+#print axioms single_ordinate_mass_vanishes
+#print axioms bounded_ordinate_packets_vanish
 #print axioms moving_ordinate_band_limit
 #print axioms sequential_band_vanishing_iff
 

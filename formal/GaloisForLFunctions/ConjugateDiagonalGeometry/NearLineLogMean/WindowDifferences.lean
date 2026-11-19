@@ -34,7 +34,7 @@ private theorem expInt_shift (L t h U : ℝ) :
     simp [expInt_zero, phase]
   rw [expInt_eq hL, expInt_eq hL]
   change (phase L (t+h+U) - phase L (t+h)) / _ = (phase L (t+U) - phase L t) / _ * _
-  rw [show t+h+U = (t+U)+h by ring, phase_add L (t+U), phase_add L t]
+  rw [show t+h+U = (t+U)+h by ring, phase_add L (t+U) h, phase_add L t h]
   ring
 
 /-- Exact action on each Fourier window, including zero gap and zero step. -/
@@ -79,11 +79,11 @@ theorem norm_window_difference_le_gap (r : ℕ) (L h U t : ℝ) :
   · subst L
     rw [expInt_diagonal_difference, norm_zero]
     positivity
-  have hc : ‖windowChord L h‖ ≤ |L|*|h| := by
+  have hc : ‖windowChord L h‖ ≤ |L| * |h| := by
     simpa [abs_mul] using windowChord_le_alias L h 0
   rw [expInt_window_difference, norm_mul, norm_pow]
   calc
-    _ ≤ (2 / |L|) * (|L|*|h|)^(r+1) := mul_le_mul (norm_expInt_le hL _ _)
+    _ ≤ (2 / |L|) * (|L| * |h|)^(r+1) := mul_le_mul (norm_expInt_le hL _ _)
       (pow_le_pow_left₀ (norm_nonneg _) hc _) (by positivity) (by positivity)
     _ = _ := by rw [mul_pow, pow_succ |L|]; field_simp [abs_ne_zero.mpr hL]
 

@@ -101,7 +101,7 @@ theorem eigen_reading (r b v : Fin n → ℝ) (level : ℝ) :
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro i _
-    change _*(_*_) = _
+    change rate r i*v i*(level*v i) = level*(rate r i*v i^2)
     ring
   rw [hs] at h
   linear_combination h/2
@@ -135,8 +135,8 @@ theorem simple_eigenvectors (r b u v : Fin n → ℝ) (level : ℝ) :
     (response r b).mulVec u = level • u → (response r b).mulVec v = level • v →
       level=0 ∨ reading b v • u = reading b u • v := by
   intro hu hv
-  by_cases hλ : level=0
-  · exact Or.inl hλ
+  by_cases hlevel : level=0
+  · exact Or.inl hlevel
   right
   let w := reading b v • u - reading b u • v
   have he : (response r b).mulVec w = level • w := by
@@ -154,7 +154,7 @@ theorem simple_eigenvectors (r b u v : Fin n → ℝ) (level : ℝ) :
   apply sub_eq_zero.mp
   change w = 0
   by_contra hz
-  exact hλ ((eigenvalue_detection r b ⟨w,hz⟩ level he).2.mp hw)
+  exact hlevel ((eigenvalue_detection r b ⟨w,hz⟩ level he).2.mp hw)
 
 /-- Symmetry of the real inverse Jordan response. -/
 theorem response_hermitian (r b : Fin n → ℝ) : (response r b).IsHermitian := by
@@ -187,7 +187,7 @@ theorem spectral_collision (r b : Fin n → ℝ) (i j : Fin n) :
     simpa only [WithLp.toLp_smul,WithLp.toLp_ofLp] using congrArg (WithLp.toLp 2) h
   have hh := congrArg (fun v => inner ℝ (B i) v) hb
   have orth := orthonormal_iff_ite.mp B.orthonormal
-  simp only [real_inner_smul_right,orth,if_pos rfl,if_neg hij,mul_one,mul_zero] at hh
+  simp [real_inner_smul_right,orth,hij] at hh
   exact hne ((eigenvalue_detection r b ⟨(B j).ofLp,(WithLp.ofLp_eq_zero 2).ne.2 (B.orthonormal.ne_zero j)⟩
     _ hj).2.mp hh)
 

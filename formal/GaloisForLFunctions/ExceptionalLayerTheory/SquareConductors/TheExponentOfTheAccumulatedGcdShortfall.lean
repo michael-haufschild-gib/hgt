@@ -70,7 +70,8 @@ theorem gcd_grid_upper_power (s : ℕ) {e : ℝ} (he : gcdGridExponent (s+2) < e
         ← Real.rpow_mul hm₀.le] at h
       have hscale : (r:ℝ)*(t-1) = e-1 := by
         dsimp only [t]
-        field_simp <;> ring
+        field_simp
+        ring
       rw [hscale] at h
       have hp : (m:ℝ)⁻¹ ≤ (m:ℝ)^(e-1) := by
         rw [← Real.rpow_neg_one]

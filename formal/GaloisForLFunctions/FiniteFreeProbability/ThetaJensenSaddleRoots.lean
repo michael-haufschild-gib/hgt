@@ -148,7 +148,7 @@ private theorem saddle_reciprocal {z : ℂ} (hz : z ≠ 0) (d n : ℕ) :
 saddle on the Hermite scale, uniformly over the roots and with no simplicity assumption. -/
 theorem thetaSaddleJensen_all_roots_collapse (d : ℕ) (ε : ℝ) (hε : 0 < ε) :
     ∀ᶠ n : ℕ in atTop, ∀ z ∈ ((thetaSaddleJensen d n).map Complex.ofRealHom).roots, ‖z‖ < ε := by
-  let bound (n : ℕ) := ∑ j ∈ range d, |fluctuationCoeff d n (j+1)|*(1+ε⁻¹)^(j+1)
+  let bound (n : ℕ) := ∑ j ∈ range d, |fluctuationCoeff d n (j+1)| * (1+ε⁻¹)^(j+1)
   have hb : Tendsto bound atTop (𝓝 0) := by
     have hj (j : ℕ) : Tendsto (fun n => fluctuationCoeff d n (j+1)) atTop (𝓝 0) := by
       simpa [fluctuationCoeff] using

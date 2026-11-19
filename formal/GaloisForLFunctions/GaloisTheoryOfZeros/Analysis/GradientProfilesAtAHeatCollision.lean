@@ -68,15 +68,20 @@ theorem IsCollision.tendsto_scaled_gradient {τ z y : ℂ} {n : ℕ} (hc : IsCol
   change scaledGradient τ z (n+1) (s,u s) = _
   rw [spatial_gradient_factor hc hs0, mul_div_cancel_left₀ _ (pow_ne_zero _ hs0)]
 
+private theorem branch_tendsto {τ z ρ : ℂ} {m : ℕ} (hc : IsCollision τ z m)
+    (hρ : heatModelFwd m ρ = 0) :
+    Tendsto (collisionBranch τ z m ρ) (𝓝[≠] 0) (𝓝 ρ) := by
+  obtain ⟨ha,h0,_,_⟩ := collisionBranch_spec hc hρ
+  rw [← h0]
+  exact ha.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+
 /-- The Hopf differential of the real part of a heat slice has the square
 of the Hermite gradient as its tangent on every sheet. -/
 theorem IsCollision.sheet_hopf_limit {τ z ρ : ℂ} {n : ℕ} (hc : IsCollision τ z (n+1))
     (hρ : heatModelFwd (n+1) ρ = 0) :
     Tendsto (fun s => (deriv (complexHeat (τ+s^2)) (collisionZero τ z (n+1) ρ s))^2 /
       s^(2*n)) (𝓝[≠] 0) (𝓝 ((collisionGradientProfile τ z (n+1) ρ)^2)) := by
-  obtain ⟨ha, h0, _, _⟩ := collisionBranch_spec hc hρ
-  have hb := ha.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
-  rw [h0] at hb
+  have hb := branch_tendsto hc hρ
   simpa only [collisionZero, div_pow, ← pow_mul, Nat.mul_comm n 2] using
     (hc.tendsto_scaled_gradient hb).pow 2
 
@@ -91,9 +96,7 @@ theorem IsCollision.sheet_reciprocal_residue_limit {τ z ρ : ℂ} {n : ℕ}
     (hc : IsCollision τ z (n+1)) (hρ : heatModelFwd (n+1) ρ = 0) :
     Tendsto (fun s => s^n / deriv (complexHeat (τ+s^2)) (collisionZero τ z (n+1) ρ s))
       (𝓝[≠] 0) (𝓝 (collisionGradientProfile τ z (n+1) ρ)⁻¹) := by
-  obtain ⟨ha, h0, _, _⟩ := collisionBranch_spec hc hρ
-  have hb := ha.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
-  rw [h0] at hb
+  have hb := branch_tendsto hc hρ
   simpa only [inv_div, collisionZero] using
     (hc.tendsto_scaled_gradient hb).inv₀ (hc.gradientProfile_ne_zero hρ)
 
@@ -121,16 +124,14 @@ theorem IsCollision.logDeriv_profile {τ z y : ℂ} {n : ℕ} (hc : IsCollision 
   rw [complexHeat_blowup hc.vanish, pow_succ]
   by_cases hg0 : collisionBlowup τ z (n+1) (s,u s) = 0
   · simp [hg0]
-  · field_simp [hs0, hg0]
+  · field_simp [hs0, hg0] <;> ring
 
 /-- The gradient asymptotics force simplicity of every emerging sheet
 throughout a punctured neighborhood of the collision time parameter. -/
 theorem IsCollision.eventually_sheet_deriv_ne_zero {τ z ρ : ℂ} {n : ℕ}
     (hc : IsCollision τ z (n+1)) (hρ : heatModelFwd (n+1) ρ = 0) :
     ∀ᶠ s in 𝓝[≠] (0 : ℂ), deriv (complexHeat (τ+s^2)) (collisionZero τ z (n+1) ρ s) ≠ 0 := by
-  obtain ⟨ha, h0, _, _⟩ := collisionBranch_spec hc hρ
-  have hb := ha.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
-  rw [h0] at hb
+  have hb := branch_tendsto hc hρ
   filter_upwards [(hc.tendsto_scaled_gradient hb).eventually_ne (hc.gradientProfile_ne_zero hρ)]
     with s hs
   exact fun h => hs (by rw [← collisionZero, h, zero_div])
@@ -195,10 +196,7 @@ theorem IsCollision.residue_polynomial_limit {τ z : ℂ} {n : ℕ}
   apply tendsto_finsetSum
   intro r hr
   have hroot := heatModelFwd_profileRoot hr
-  obtain ⟨ha,h0,_,_⟩ := collisionBranch_spec hc hroot
-  have hx : Tendsto (collisionBranch τ z (n+1) r) (𝓝[≠] 0) (𝓝 (r:ℂ)) := by
-    rw [← h0]
-    exact ha.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  have hx := branch_tendsto hc hroot
   have hh := ((P.continuous.tendsto (r:ℂ)).comp hx).mul (hc.sheet_reciprocal_residue_limit hroot)
   convert hh using 2
   simp only [collisionGradientProfile, mul_inv_rev, div_eq_mul_inv]

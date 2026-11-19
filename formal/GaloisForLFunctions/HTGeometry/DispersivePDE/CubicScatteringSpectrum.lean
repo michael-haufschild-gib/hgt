@@ -94,8 +94,8 @@ theorem tau_root_simple (r a : Fin n → ℝ) (x : ℝ) :
   intro hx
   obtain ⟨i,hi,rfl⟩ := (characteristic_root r a x).mp hx
   let level := levels r a i
-  have hλ : level ≠ 0 := hi.ne'
-  have hroot : (factor level).eval (-level⁻¹) = 0 := by simp [factor,hλ]
+  have hlevel : level ≠ 0 := hi.ne'
+  have hroot : (factor level).eval (-level⁻¹) = 0 := by simp [factor,hlevel]
   let P := ∏ j ∈ univ.erase i, factor (levels r a j)
   have hP : P.eval (-level⁻¹) ≠ 0 := by
     rw [show P = ∏ j ∈ univ.erase i, factor (levels r a j) from rfl,Polynomial.eval_prod]
@@ -103,7 +103,7 @@ theorem tau_root_simple (r a : Fin n → ℝ) (x : ℝ) :
     intro j hj hzero
     have he : levels r a j=level := by
       simp only [factor,eval_add,eval_one,eval_mul,eval_C,eval_X] at hzero
-      field_simp [hλ] at hzero
+      field_simp [hlevel] at hzero
       linarith only [hzero]
     exact ((spectral_collision r (amplitude r a) j i he).resolve_right hi.ne') |> (Finset.ne_of_mem_erase hj)
   have hf : tauPolynomial r a = P*factor level := by
@@ -111,6 +111,6 @@ theorem tau_root_simple (r a : Fin n → ℝ) (x : ℝ) :
     exact (Finset.prod_erase_mul _ _ (Finset.mem_univ i)).symm
   refine ⟨neg_neg_of_pos (inv_pos.mpr hi),?_⟩
   rw [hf,Polynomial.derivative_mul,eval_add,eval_mul,eval_mul,hroot,mul_zero,zero_add]
-  simpa [factor] using mul_ne_zero hP hλ
+  simpa [factor] using mul_ne_zero hP hlevel
 
 end GaloisForLFunctions.HTGeometry.DispersivePDE.CubicScattering
