@@ -23,7 +23,8 @@ theorem unit_trace_factor {a b c : ℂ} (ha : ‖a‖=1) (hb : ‖b‖=1) (hc : 
   rw [Complex.ofReal_sub, Complex.ofReal_one, ← Complex.normSq_eq_norm_sq,
     Complex.normSq_eq_conj_mul_self, map_add, map_add,
     ← Complex.inv_eq_conj ha, ← Complex.inv_eq_conj hb, ← Complex.inv_eq_conj hc]
-  field_simp [hzero ha,hzero hb,hzero hc] <;> ring
+  field_simp [hzero ha,hzero hb,hzero hc]
+  ring
 
 /-- Absolute trace defect is exactly the product of the three antipodal
 chords. This measures near misses as well as exact crossings. -/
@@ -67,7 +68,7 @@ theorem small_defect_forces_antipodes {a b c : ℂ} (ha : ‖a‖=1) (hb : ‖b�
   have hprod {x y z : ℝ} (hx : ε < x) (hy : ε < y) (hz : 1 ≤ z) :
       ε^2 < x*y*z := by
     have hxy : ε*ε < x*y := mul_lt_mul_of_le_of_lt_of_nonneg_of_pos hx.le hy hε (hε.trans_lt hx)
-    exact (by simpa only [sq] using hxy).trans_le
+    exact (show ε^2 < x*y by simpa only [sq] using hxy).trans_le
       (le_mul_of_one_le_right (mul_nonneg (hε.trans hx.le) (hε.trans hy.le)) hz)
   rcases one_le_largest_chord ha hb hc with h | h | h
   · linarith only [he,hprod hn.2.1 hn.2.2 h]
@@ -89,11 +90,12 @@ theorem phase_antipodal_iff (a b : ℕ) (t : ℝ) :
     have hi := congrArg Complex.im he
     simp only [Complex.add_im,Complex.mul_im,Complex.mul_re,Complex.I_re,Complex.I_im,
       Complex.ofReal_re,Complex.ofReal_im,Complex.intCast_re,Complex.intCast_im,
-      Complex.ofNat_re,Complex.ofNat_im] at hi
+      Complex.re_ofNat,Complex.im_ofNat] at hi
     linarith only [hi]
   · intro he
     have h := congrArg ((↑) : ℝ → ℂ) he
-    push_cast at h
+    simp only [Complex.ofReal_mul,Complex.ofReal_sub,Complex.ofReal_add,Complex.ofReal_one,
+      Complex.ofReal_ofNat,Complex.ofReal_intCast] at h
     linear_combination I*h
 
 private def oddCount (w T : ℝ) : ℕ := ⌊(T*w/Real.pi+1)/2⌋₊
@@ -255,7 +257,7 @@ private theorem complementary_period_counts {x y : ℝ} (hx : 0 < x) (hy : 0 < y
   have hxy := add_pos hx hy
   have hT : 0 ≤ T := by dsimp [T]; positivity
   have hs (w : ℝ) : T*w/Real.pi=2*n*w/(x+y) := by
-    dsimp only [T]; field_simp [hxy.ne',Real.pi_ne_zero] <;> ring
+    dsimp only [T]; field_simp [hxy.ne',Real.pi_ne_zero]
   have htot : T*(x+y)/Real.pi=2*n := by rw [hs,mul_div_cancel_right₀ _ hxy.ne']
   have hsum : T*x/Real.pi+T*y/Real.pi=2*n := by rw [← htot]; ring
   have bounds {w : ℝ} (hw : 0 < w) :
@@ -283,7 +285,7 @@ private theorem complementary_period_counts {x y : ℝ} (hx : 0 < x) (hy : 0 < y
   · unfold oddCount
     rw [htot]
     apply (Nat.floor_eq_iff (by positivity)).mpr
-    constructor <;> push_cast <;> linarith
+    constructor <;> linarith
 
 /-- After n complete outer periods exactly 2n unit crossings have
 occurred. The two inner counts complement one another because the
@@ -300,14 +302,15 @@ theorem card_at_outer_period {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r
   have h := complementary_period_counts hx hy (independent_prime_gaps hp hq hr hpq hqr) n
   rw [card_crossingTimes hp hq hr hpq hqr hp₀]
   change oddCount x _ + oddCount y _ + oddCount (Real.log r-Real.log p) _ = 2*n
-  simp only [outerPeriod,he,h.1,h.2,two_mul]
+  simp only [outerPeriod,he]
+  rw [h.1,h.2,two_mul]
 
 /-- Every complete outer period contains exactly two crossings. One
 is the outer pair's antipodal time, leaving exactly one inner pair
 crossing in each period, irrespective of the middle prime. -/
 theorem two_crossings_each_outer_period {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r.Prime)
     (hpq : p < q) (hqr : q < r) (n : ℕ) :
-    ((crossingTimes p q r (outerPeriod p r (n+1))) ∖ (crossingTimes p q r (outerPeriod p r n))).card = 2 := by
+    ((crossingTimes p q r (outerPeriod p r (n+1))) \ (crossingTimes p q r (outerPeriod p r n))).card = 2 := by
   have hg := sub_pos.mpr (Real.log_lt_log (Nat.cast_pos.mpr hp.pos) (Nat.cast_lt.mpr (hpq.trans hqr)))
   have hn : 0 ≤ outerPeriod p r n := by unfold outerPeriod; positivity
   have hle : outerPeriod p r n ≤ outerPeriod p r (n+1) := by

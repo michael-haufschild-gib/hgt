@@ -27,11 +27,13 @@ private theorem unit_difference (a : ArithmeticFunction ℝ) (y n : ℕ) :
     roughInteriorReading a y n (n/2) = headAt a y n - headAt a y (n/2) := by
   have h := rough_head_and_interior a y n (n/2)
   rw [rough_action_as_a_coefficient_prefix,min_eq_right (Nat.div_le_self ..)] at h
-  exact (eq_sub_iff_add_eq.mpr h.symm)
+  exact eq_sub_iff_add_eq.mpr (by simpa only [headAt,roughFloorCoefficient] using h.symm)
 
 /-- At positive quotient the corrected reading uses exactly one cofactor. -/
 theorem half_cut_has_one_cofactor {n : ℕ} (hn : 0 < n) : n/(n/2+1) = 1 := by
-  omega
+  apply Nat.le_antisymm
+  · exact Nat.le_of_lt_succ ((Nat.div_lt_iff_lt_mul (Nat.succ_pos _)).mpr (by omega))
+  · exact (Nat.le_div_iff_mul_le (Nat.succ_pos _)).mpr (by omega)
 
 /-- Exact reconstruction from the dyadic chain, with the sieve and the
 prime reading held at their original observation. -/
@@ -70,7 +72,7 @@ private theorem binary_digits_price {η : ℝ} (he : 0 < η) {X : ℕ} (xp : 0 <
   have q := (le_div_iff₀ h2).mpr (logbound.trans r)
   have one := Real.one_le_rpow (Nat.one_le_cast.mpr xp) he.le
   calc ((Nat.log 2 X:ℕ)+1:ℝ) ≤ (X:ℝ)^η/η/Real.log 2 + (X:ℝ)^η := add_le_add q one
-       _ = _ := by ring
+       _ = _ := by field_simp; ring
 
 /-- The zero abscissa is exactly the growth boundary of the dyadic
 unit-cofactor readings. At each X only its binary quotient chain is tested. -/
@@ -95,8 +97,9 @@ theorem dyadic_single_cofactors_detect_the_strip {b : ℝ} (hb : 1/2 ≤ b)
       ((by norm_num : (0:ℝ)<1/2).trans_le (hb.trans (le_add_of_nonneg_right ep.le)))
     filter_upwards [hc,eventually_ge_atTop (1:ℕ)] with X h xp
     obtain ⟨j,hj,large⟩ := exists_dyadic_unit_reading (a X) (logSquareCutoff X) X
+    have k0 : 0 ≤ K := add_nonneg zero_le_one (by positivity)
     have cost := mul_le_mul (binary_digits_price he xp) (h j hj) (abs_nonneg _)
-      (mul_nonneg (by dsimp only [K]; positivity) (Real.rpow_nonneg (Nat.cast_nonneg X) _))
+      (mul_nonneg k0 (Real.rpow_nonneg (Nat.cast_nonneg X) _))
     simp only [terminalPrimeHead,Real.rpow_one,Nat.floor_natCast]
     apply large.trans (cost.trans_eq ?_)
     rw [show b+ε=η+(b+η) by dsimp only [η]; ring,Real.rpow_add (Nat.cast_pos.mpr xp)]
@@ -112,7 +115,7 @@ theorem dyadic_single_cofactors_detect_the_strip {b : ℝ} (hb : 1/2 ≤ b)
       rwa [rough_head_and_interior,add_sub_cancel_left,min_eq_right hn] at hc
     intro j _
     let n := X/2^j
-    have nx : n ≤ X := Nat.div_le_self .. 
+    have nx : n ≤ X := Nat.div_le_self ..
     rw [dyadicUnitReading,unit_difference]
     exact (abs_sub ..).trans ((add_le_add (heads n nx) (heads (n/2) ((Nat.div_le_self ..).trans nx))).trans_eq
       (add_mul ..).symm)

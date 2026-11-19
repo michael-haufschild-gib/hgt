@@ -19,7 +19,7 @@ private abbrev interior (a : ℕ → ArithmeticFunction ℝ) (T : ℕ → ℕ) (
 private theorem full_as_terminal (a : ℕ → ArithmeticFunction ℝ) (X : ℕ) :
     roughCofactorReading (logSquareCutoff X) X (quotientReading (a X)) =
       terminalPrimeHead 1 a X := by
-  simpa only [terminalPrimeHead,Real.rpow_one,Nat.floor_natCast] using
+  simpa only [terminalPrimeHead,roughFloorCoefficient,Real.rpow_one,Nat.floor_natCast] using
     rough_action_as_a_coefficient_prefix (logSquareCutoff X) X (a X)
 
 private theorem transfer_interior {α s : ℝ} (ap : 0 < α) (sp : 0 < s)

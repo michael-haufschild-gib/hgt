@@ -52,6 +52,7 @@ import GaloisForLFunctions.PrimeTorusTheory.TheLiftOfTheXiCurrent
 import GaloisForLFunctions.PrimeTorusTheory.TheLogarithmOfAFibre
 import GaloisForLFunctions.PrimeTorusTheory.TheHullOverOrderTwoPoints
 import GaloisForLFunctions.PrimeTorusTheory.TheNaturalBoundaryOverOrderTwoPoints
+import GaloisForLFunctions.PrimeTorusTheory.Resonators.TheUnitCrossingsOfThreePrimePhases
 import GaloisForLFunctions.PrimeTorusTheory.TheNaturalBoundaryIsLiouvilleOdd
 
 /-!

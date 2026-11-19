@@ -89,7 +89,7 @@ theorem proper_power_switch_count :
   have hsub : G ⊆ P := fun m hm => lt_of_lt_of_le hm (mul_le_mul_of_nonneg_left (reading_order m) ht.le)
   have he : {m : ℕ | 1 < t*eighthReading true m ∧ t*eighthReading false m ≤ 1} = P \ G := by
     ext m
-    simp only [P,G,mem_sdiff,mem_setOf_eq,not_lt]
+    simp only [P,G,Set.mem_sdiff,mem_setOf_eq,not_lt]
   rw [he,ncard_sdiff' hsub (hp.1 t ht),Nat.cast_sub (ncard_le_ncard hsub (hp.1 t ht)),sub_div]
   rfl
 

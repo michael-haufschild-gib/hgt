@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheParityOfTheSmallUnitaryDivisors
+import Mathlib.Algebra.BigOperators.Group.Finset.Powerset
 import Mathlib.Combinatorics.SetFamily.LYM
 
 /-!
@@ -34,7 +35,8 @@ theorem unitarySubset_small_iff_square {k : ℕ} (hk : 0 < k) {S : Finset ℕ} (
       ⟨Nat.mul_le_mul_left _, fun h => Nat.le_of_mul_le_mul_left h hpos⟩
     _ ↔ _ := by rw [hprod, pow_two]
 
-private theorem sum_over_pivots {k p : ℕ} (hp : p ∈ k.primeFactors) :
+/-- Insertion at any fixed prime block pairs off all noncrossing signs. -/
+theorem unitaryHalfWeight_eq_sum_pivots {k p : ℕ} (hp : p ∈ k.primeFactors) :
     unitaryHalfWeight k = ∑ S ∈ unitaryPivots k p, (-1 : ℤ)^S.card := by
   let P := k.primeFactors.erase p
   let f (S : Finset ℕ) := if (primePowerSubset k S)^2 ≤ k then (-1 : ℤ)^S.card else 0
@@ -57,9 +59,9 @@ private theorem sum_over_pivots {k p : ℕ} (hp : p ∈ k.primeFactors) :
     prod_insert hpS
   have hsquare := Nat.pow_le_pow_left hle 2
   simp only [f, hs, card_insert_of_notMem hpS, pow_succ (-1 : ℤ), mul_neg_one]
-  split_ifs <;> first | omega | ring
+  split_ifs <;> omega
 
-private theorem pivotal_antichain {k p : ℕ} (hp : p ∈ k.primeFactors)
+private theorem pivotal_antichain {k p : ℕ}
     (hmin : ∀ q ∈ k.primeFactors, p^k.factorization p ≤ q^k.factorization q) :
     IsAntichain (· ⊆ ·) (unitaryPivots k p : Set (Finset ℕ)) := by
   intro S hS T hT hne hsub
@@ -105,19 +107,25 @@ theorem unitaryHalfWeight_has_pivotal_antichain (k : ℕ) :
   rcases k.primeFactors.eq_empty_or_nonempty with he | hn
   · exact Or.inl he
   obtain ⟨p,hp,hm⟩ := k.primeFactors.exists_min_image (fun p => p^k.factorization p) hn
-  exact Or.inr ⟨p, hp, pivotal_antichain hp hm, sum_over_pivots hp⟩
+  exact Or.inr ⟨p, hp, pivotal_antichain hm, unitaryHalfWeight_eq_sum_pivots hp⟩
 
 /-- The central binomial bound holds for every integer and arbitrary block multiplicities. -/
 theorem unitaryHalfWeight_central_bound (k : ℕ) :
     |unitaryHalfWeight k| ≤ ((k.primeFactors.card-1).choose ((k.primeFactors.card-1)/2) : ℤ) := by
   rcases unitaryHalfWeight_has_pivotal_antichain k with he | ⟨p,hp,ha,hw⟩
-  · simp [unitaryHalfWeight, smallUnitarySubsets, he, primePowerSubset]
+  · have hempty : smallUnitarySubsets k = {∅} := by
+      ext S
+      simp [smallUnitarySubsets, he, primePowerSubset]
+      rintro rfl
+      simp
+    simp [unitaryHalfWeight, hempty, he]
   have hc := ground_sperner (k.primeFactors.erase p) (unitaryPivots k p)
     (fun S hS => mem_powerset.mp (mem_filter.mp hS).1) ha
   rw [card_erase_of_mem hp] at hc
   rw [hw]
   refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
-  simpa using (show ((unitaryPivots k p).card : ℤ) ≤ _ by exact_mod_cast hc)
+  simp only [abs_pow, abs_neg, abs_one, one_pow, sum_const, nsmul_eq_mul, mul_one]
+  exact_mod_cast hc
 
 #print axioms unitaryHalfWeight_has_pivotal_antichain
 #print axioms unitaryHalfWeight_central_bound

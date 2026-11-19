@@ -115,9 +115,9 @@ theorem norm_isometries (m : ℤ) (F : K m →ₗ[ℚ] K m) :
   intro h
   have hw : Algebra.norm ℚ (F 1)=1 := (h 1).trans (map_one _)
   have h0 : F 1 ≠ 0 := (Algebra.norm_ne_zero_iff_of_basis (reciprocalBasis m)).mp
-    (by rw [hw]; exact one_ne_zero)
+    (fun hz => one_ne_zero (hw.symm.trans hz))
   have hInv := congrArg (Algebra.norm ℚ) (inv_mul_cancel₀ h0)
-  rw [map_mul,map_one,hw,mul_one] at hInv
+  rw [map_mul (Algebra.norm ℚ),hw,mul_one,map_one (Algebra.norm ℚ)] at hInv
   let B := (Algebra.lmul ℚ (K m) (F 1)⁻¹).comp F
   have ho : B 1=1 := inv_mul_cancel₀ h0
   have hn (z : K m) : Algebra.norm ℚ (B z)=Algebra.norm ℚ z := by

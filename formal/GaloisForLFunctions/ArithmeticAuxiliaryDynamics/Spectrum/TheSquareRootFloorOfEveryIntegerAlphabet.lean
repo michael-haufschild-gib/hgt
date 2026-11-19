@@ -81,7 +81,7 @@ private theorem positive_cost {K : ℕ} (hK : 0 < K) (n : ℕ) :
   have h₂ := (le_div_iff₀ (by exact_mod_cast hK : (0:ℝ) < K)).mp (gridSincWeight_le_peak hK z)
   have h₃ := mul_le_mul_of_nonneg_right h₂ (Nat.cast_nonneg (α := ℝ) K)
   let x : ℝ := (n:ℝ)+1
-  have hx : 1 ≤ x := by dsimp [x]; positivity
+  have hx : 1 ≤ x := by dsimp [x]; linarith only [Nat.cast_nonneg (α := ℝ) n]
   have hz : (z : ℝ) = x-4*K := by dsimp [z,x]; push_cast; ring
   have he : x*(x+1) ≤ 4*(z:ℝ)^2+64*(K:ℝ)^2 := by
     rw [hz]
@@ -111,7 +111,7 @@ theorem hasSum_tailCap {K : ℕ} (hK : 0 < K) : HasSum (tailCap K) (1/4) := by
     dsimp [tailCap,u]
     push_cast
     field_simp
-    <;> ring
+    ring
   have ht : Tendsto u atTop (𝓝 0) := tendsto_const_nhds.div_atTop
     (tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop)
   apply (hasSum_iff_tendsto_nat_of_nonneg (fun n => show 0 ≤ tailCap K n by unfold tailCap; positivity) _).mpr
@@ -156,6 +156,9 @@ theorem peak_le_sinc_excess {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer 
         have hcost := mul_le_mul_of_nonneg_right (positive_cost hK n) (hP.excessTerm_nonneg n)
         have hg := mul_le_mul_of_nonneg_left he hW0
         dsimp only [D] at hg
+        change weight K (.ofNat (n+1))*(((n:ℝ)+1)*(n+2))*IsProducer.excessTerm m B c n ≤ _ at hcost
+        change weight K (.ofNat (n+1))*(stepWeight c (n+1):ℝ) ≤
+          weight K (.ofNat (n+1))*m + 68*K*IsProducer.excessTerm m B c n
         linarith only [hg,hcost]
     | negSucc n =>
       have hg : periodicFloorHeight c (.negSucc n) ≤ (peak c : ℝ) := by
@@ -163,6 +166,7 @@ theorem peak_le_sinc_excess {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer 
         exact_mod_cast hP.stepWeight_le_peak _
       have h₁ := mul_le_mul_of_nonneg_left hg hW0
       have h₂ := mul_le_mul_of_nonneg_right (negative_cost hK n) hpeak
+      change weight K (.negSucc n)*(peak c:ℝ) ≤ tailCap K n*(peak c:ℝ) at h₂
       change _ ≤ _ + (peak c : ℝ)*tailCap K n
       linarith only [h₁,h₂,mul_nonneg hW0 (Nat.cast_nonneg (α := ℝ) m)]
   have h := hasSum_le hle hmean hs

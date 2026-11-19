@@ -27,7 +27,8 @@ private theorem abel (w V : ℕ → ℝ) (L : ℕ) :
   induction L with
   | zero => simp; ring
   | succ L ih =>
-    rw [sum_range_succ _ (L+1),ih,sum_range_succ (fun j => (w j-w (j+1))*V (j+1)) L]
+    rw [Finset.sum_range_succ (fun j => w j*(V (j+1)-V j)) (L+1),ih,
+      Finset.sum_range_succ (fun j => (w j-w (j+1))*V (j+1)) L]
     ring
 
 /-- An interval discrepancy bound is equivalent, with unchanged constant,
@@ -60,7 +61,8 @@ theorem variation_iff_intervals (f : ℕ → ℝ) {H : ℝ} (hH : 0 ≤ H) :
       have hhigh := hb j (mem_range.mpr hj)
       rw [abs_le]; dsimp only [V]; constructor <;> linarith only [hdiam,hlow,hhigh]
     have hstep (j : ℕ) : V (j+1)-V j=f (A+j+1) := by
-      simp only [V,P,sum_range_succ]
+      dsimp only [V,P]
+      rw [Finset.sum_range_succ]
       ring
     simp_rw [← hstep]
     rw [abel]
@@ -82,7 +84,9 @@ theorem variation_iff_intervals (f : ℕ → ℝ) {H : ℝ} (hH : 0 ≤ H) :
   · intro h A K
     cases K with
     | zero => simpa using hH
-    | succ L => simpa [variation] using h A L (fun _ => 1)
+    | succ L =>
+      have ht := h A L (fun _ => 1)
+      simpa [variation,show (1+1:ℝ)*(H/2)=H by ring] using ht
 
 private theorem interval_eq {A K : ℕ} (f : ℕ → ℝ) :
     ∑ j ∈ range K, f (A+j+1) = ∑ n ∈ Icc (A+1) (A+K), f n := by
@@ -158,10 +162,10 @@ private def grid (m : ℕ) (j : Fin m) : ℝ := (j.val:ℝ)/m
 
 private theorem grid_separated {m : ℕ} (hm : 0 < m) {i j : Fin m} (hne : i ≠ j) :
     1/(m:ℝ) ≤ toIntDist (grid m i-grid m j) := by
-  have hm' : (0:ℝ)<m := Nat.cast_pos.mpr hm
+  have hm' : (0:ℝ) < m := Nat.cast_pos.mpr hm
   apply one_div_le_toIntDist_of_mul_mem_int hm
   · refine ⟨(i.val:ℤ)-j.val,?_⟩
-    dsimp only [grid]; push_cast; field_simp <;> ring
+    dsimp only [grid]; push_cast; field_simp
   · intro n he
     have hg (k : Fin m) : grid m k ∈ Set.Ico 0 1 :=
       ⟨div_nonneg (Nat.cast_nonneg _) hm'.le,(div_lt_one hm').mpr (Nat.cast_lt.mpr k.isLt)⟩
@@ -174,7 +178,7 @@ private theorem grid_separated {m : ℕ} (hm : 0 < m) {i j : Fin m} (hne : i ≠
 
 private theorem grid_blind {m n : ℕ} (hn : 0 < n) (hnm : n < m) :
     synthesize (grid m) (fun _ => 1) n = 0 := by
-  have hm : (0:ℝ)<m := Nat.cast_pos.mpr (hn.trans hnm)
+  have hm : (0:ℝ) < m := Nat.cast_pos.mpr (hn.trans hnm)
   let z := circleFreq ((n:ℝ)/m)
   have hne : z ≠ 1 := by
     intro he
@@ -207,7 +211,7 @@ theorem optimal_variation_constant (c : ℝ) :
     obtain ⟨n,hn⟩ := exists_nat_gt (1/(1-2*c))
     let m := n+2
     have hm : 0 < m := by dsimp [m]; omega
-    have hm' : (0:ℝ)<m := Nat.cast_pos.mpr hm
+    have hm' : (0:ℝ) < m := Nat.cast_pos.mpr hm
     have he := hall m (grid m) (1/m) (by positivity) (fun _ _ h => grid_separated hm h)
       (fun _ => 1) 0 n (fun _ => 1)
     have energy : (∑ _j : Fin m, ‖(1:ℂ)‖^2) = (m:ℝ) := by simp
@@ -227,8 +231,7 @@ theorem optimal_variation_constant (c : ℝ) :
     push_cast at hcancel
     have hgt := (div_lt_iff₀ hpos).mp hn
     linarith only [hgt,hcancel,hsmall]
-  · intro hc m α δ hδ hs b A L w
-    intro E
+  · intro hc m α δ hδ hs b A L w E
     have hv : 0 ≤ variation w L := by unfold variation; positivity
     have hE : 0 ≤ E := sum_nonneg fun _ _ => sq_nonneg _
     refine (weighted_vandermonde α hδ hs b A L w).trans ?_
@@ -248,7 +251,7 @@ theorem weighted_primitive_energy {Q : ℕ} (hQ : 2 ≤ Q) (c : ℕ → ℝ) (A 
   have hC : 0 ≤ (Q:ℝ)*(Q-1)*E := mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (by linarith)) hE
   apply (variation_iff_intervals (fun n => weightedCenteredSawtoothSum Q c n ^ 2-E) hC).mp _ A L w
   intro M K
-  rw [centered_sum]
+  rw [centered_sum M K (fun n => weightedCenteredSawtoothSum Q c n^2) E]
   have he := abs_window_rootsOfUnity_sub_le hQ (T := primitiveRoots' Q)
     (fun z hz => exists_pow_eq_one_of_mem_responseRoots (mem_of_mem_erase hz)) (primitiveSpectralCoeff Q c) M K
   simpa only [← weightedCenteredSawtoothSum_eq_spectral (by omega : 1 ≤ Q),Complex.norm_real,

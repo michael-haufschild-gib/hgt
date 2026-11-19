@@ -51,7 +51,7 @@ private theorem keep_loss {u : ℝ} (hu : 0 ≤ u) (hu' : u ≤ 1) (j : ℕ) :
     cases j with
     | zero => simp [eulerRetention]
     | succ j =>
-      have hpow : (1-u)^j ≤ 1 := pow_le_one₀ (sub_nonneg.mpr hu') (by linarith) _
+      have hpow : (1-u)^j ≤ 1 := pow_le_one₀ (sub_nonneg.mpr hu') (by linarith)
       have hdrop := keep_drop u j
       have hle := mul_le_mul_of_nonneg_left hpow
         (mul_nonneg (by positivity : 0 ≤ (j : ℝ)+1) (sq_nonneg u))

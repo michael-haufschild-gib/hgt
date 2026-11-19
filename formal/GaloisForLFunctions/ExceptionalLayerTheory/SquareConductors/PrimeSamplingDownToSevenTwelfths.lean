@@ -39,26 +39,21 @@ theorem abs_midpoint_price_shift {n p : ℕ} (hnp : n ≤ p) (hp : 0 < p) :
   · linarith only [h3,l2,l4,mul_le_mul_of_nonneg_left log3 hd]
   · linarith only [h2,h4,l3,mul_le_mul_of_nonneg_left log2 hd]
 
-/-- At every sufficiently large integer the midpoint and its reading at a
-nearby upper prime agree to any power strictly above seven twelfths. -/
-theorem nearby_prime_midpoint_at_every_transfer_exponent {t : ℝ} (ht : 7/12 < t) (ht1 : t < 1) :
-    ∃ B : ℝ, 0 ≤ B ∧ ∀ᶠ n : ℕ in atTop, ∃ p : ℕ, p.Prime ∧ n < p ∧ (p:ℝ) ≤ 2*n ∧
-      |primeMidpointPrice n-primeMidpointPrice p| ≤ B*(n:ℝ)^t := by
-  obtain ⟨α,hα,hαt⟩ := exists_between ht
+/-- A power-length displacement costs any strictly larger power,
+uniformly in the two integer endpoints. -/
+theorem midpoint_shift_on_power_window {α t : ℝ} (hαt : α < t) (ht1 : t < 1) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ {n p : ℕ}, 1 ≤ n → n < p → (p:ℝ) ≤ n+(n:ℝ)^α →
+      (p:ℝ) ≤ 2*n ∧ |primeMidpointPrice n-primeMidpointPrice p| ≤ B*(n:ℝ)^t := by
   let d := t-α
   have hd : 0 < d := sub_pos.mpr hαt
   have h8 := Real.log_nonneg (by norm_num : (1:ℝ) ≤ 8)
-  refine ⟨6*(Real.log 8+1/d),by positivity,?_⟩
-  have hh := (tendsto_natCast_atTop_atTop (R:=ℝ)).eventually
-    (_root_.RHTower.eventually_exists_prime_short_interval_seven_twelfths hα (hαt.trans ht1))
-  filter_upwards [hh,eventually_ge_atTop 1] with n hn hn1
-  obtain ⟨p,hp,hnp,hgap⟩ := hn
+  refine ⟨6*(Real.log 8+1/d),by positivity,fun {n p} hn1 hnp' hgap => ?_⟩
+  have hp : 0 < p := by omega
   have hn' := (Nat.one_le_cast (α:=ℝ)).mpr hn1
   have hn0 := zero_lt_one.trans_le hn'
-  have hnp' : n < p := by exact_mod_cast hnp
   have hα1 := (Real.rpow_le_rpow_of_exponent_le hn' (hαt.trans ht1).le).trans_eq (Real.rpow_one _)
   have h2p : (p:ℝ) ≤ 2*n := by linarith only [hgap,hα1]
-  have hpos := (Nat.cast_pos (α:=ℝ)).mpr hp.pos
+  have hpos := (Nat.cast_pos (α:=ℝ)).mpr hp
   have hlog := Real.log_le_log (by positivity : 0 < 4*(p:ℝ))
     (by linarith only [h2p] : 4*(p:ℝ) ≤ 8*n)
   rw [Real.log_mul (by norm_num) hn0.ne'] at hlog
@@ -74,13 +69,28 @@ theorem nearby_prime_midpoint_at_every_transfer_exponent {t : ℝ} (ht : 7/12 < 
   have hscale : (n:ℝ)^α*u=(n:ℝ)^t := by
     rw [show u=(n:ℝ)^d from rfl,←Real.rpow_add hn0,show α+d=t by dsimp only [d]; ring]
   have hl0 : 0 ≤ Real.log (4*(p:ℝ)) := Real.log_nonneg (by
-    have h := (Nat.one_le_cast (α:=ℝ)).mpr hp.one_le
+    have h := (Nat.one_le_cast (α:=ℝ)).mpr hp
     linarith only [h])
   have hdist : (p:ℝ)-n ≤ (n:ℝ)^α := by linarith only [hgap]
   have hprod := mul_le_mul hdist hlog' hl0 (Real.rpow_nonneg hn0.le _)
   rw [show (n:ℝ)^α*((Real.log 8+1/d)*u)=(Real.log 8+1/d)*((n:ℝ)^α*u) by ring,
     hscale] at hprod
-  exact ⟨p,hp,hnp',h2p,by linarith only [abs_midpoint_price_shift hnp'.le hp.pos,hprod]⟩
+  exact ⟨h2p,by linarith only [abs_midpoint_price_shift hnp'.le hp,hprod]⟩
+
+/-- At every sufficiently large integer the midpoint and its reading at a
+nearby upper prime agree to any power strictly above seven twelfths. -/
+theorem nearby_prime_midpoint_at_every_transfer_exponent {t : ℝ} (ht : 7/12 < t) (ht1 : t < 1) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ᶠ n : ℕ in atTop, ∃ p : ℕ, p.Prime ∧ n < p ∧ (p:ℝ) ≤ 2*n ∧
+      |primeMidpointPrice n-primeMidpointPrice p| ≤ B*(n:ℝ)^t := by
+  obtain ⟨α,hα,hαt⟩ := exists_between ht
+  obtain ⟨B,hB,hshift⟩ := midpoint_shift_on_power_window hαt ht1
+  refine ⟨B,hB,?_⟩
+  have hh := (tendsto_natCast_atTop_atTop (R:=ℝ)).eventually
+    (_root_.RHTower.eventually_exists_prime_short_interval_seven_twelfths hα (hαt.trans ht1))
+  filter_upwards [hh,eventually_ge_atTop 1] with n hn hn1
+  obtain ⟨p,hp,hnp,hgap⟩ := hn
+  have hnp' : n < p := by exact_mod_cast hnp
+  exact ⟨p,hp,hnp',hshift hn1 hnp' hgap⟩
 
 /-- Above the prime-gap threshold a bound on ordinary prime centers alone
 detects the full rightmost zero abscissa, including at the threshold. -/

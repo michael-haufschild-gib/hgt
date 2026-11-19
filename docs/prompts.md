@@ -228,6 +228,26 @@ The goal is met when route QIC is fully closed and formalized unconditionally in
 - https://arxiv.org/abs/2610.40099
 - https://arxiv.org/abs/2610.37750
 
+18 liouville
+- https://arxiv.org/abs/2611.24842
+- https://arxiv.org/abs/2611.24299
+- https://arxiv.org/abs/2611.23833
+- https://arxiv.org/abs/2611.22698
+- https://arxiv.org/abs/2611.22568
+- https://arxiv.org/abs/2611.20739
+- https://arxiv.org/abs/2611.20600
+
+19 Sobolev
+- https://arxiv.org/abs/2611.24828
+- https://arxiv.org/abs/2611.24746
+- https://arxiv.org/abs/2611.24536
+- https://arxiv.org/abs/2611.24317
+- https://arxiv.org/abs/2611.23995
+- https://arxiv.org/abs/2611.23210
+- https://arxiv.org/abs/2611.22942
+- https://arxiv.org/abs/2611.22924
+- https://arxiv.org/abs/2611.22706
+
 ## apply external paper to corpus experiment
 
 task:
@@ -855,7 +875,7 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 read and understand fully: docs/reports/review-1911/obstacles-summary.md
 
-under "## 2.17 The one smaller question with the largest shared payoff" it asks a question.
+under "## 2.19 The one smaller question with the largest shared payoff" it asks a question.
 
 your task: answer the question. find a complete solution for everything asked and unconditionally formalize the answer and its implications and collaries in lean.
 

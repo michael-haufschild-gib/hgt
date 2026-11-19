@@ -41,9 +41,9 @@ private theorem mixed_sum (h : CompactPulse) (k n : ℕ) :
       (node_le i)) _)) (stepDecrement_nonneg _ _ _)
   · intro i
     apply mul_le_of_le_one_left (stepDecrement_nonneg _ _ _)
-    exact mul_le_one₀ (pow_le_one₀ (node_pos i).le (node_le i) _) (pow_nonneg
+    exact mul_le_one₀ (pow_le_one₀ (node_pos i).le (node_le i)) (pow_nonneg
       (sub_nonneg.mpr (node_le i)) _) (pow_le_one₀ (sub_nonneg.mpr (node_le i))
-        (sub_le_self _ (node_pos i).le) _)
+        (sub_le_self _ (node_pos i).le))
 
 private theorem mixed_step (h : CompactPulse) (k n : ℕ) :
     mixed h (k+1) n - mixed h k n = -mixed h k (n+1) := by
@@ -182,7 +182,7 @@ private theorem shifted_sum (h : CompactPulse) (k r : ℕ) :
   (shifted_releases h r).summable.of_nonneg_of_le
     (fun i => mul_nonneg (pow_nonneg (node_pos i).le _) (stepDecrement_nonneg _ _ _))
     (fun i => mul_le_of_le_one_left (stepDecrement_nonneg _ _ _)
-      (pow_le_one₀ (node_pos i).le (node_le i) _))
+      (pow_le_one₀ (node_pos i).le (node_le i)))
 
 /-- The normalized reading overestimates the next release by at most the entire
 following tail times exp(-k), independently of the position of that release. -/
