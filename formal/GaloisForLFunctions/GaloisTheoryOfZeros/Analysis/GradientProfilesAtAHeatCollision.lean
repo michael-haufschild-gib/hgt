@@ -1,4 +1,5 @@
 import GaloisForLFunctions.GaloisTheoryOfZeros.TheHermiteMonodromyOfACollision
+import Mathlib.LinearAlgebra.Lagrange
 
 /-!
 # Gradient and reciprocal-residue profiles of the heat sheets
@@ -12,7 +13,7 @@ profile. Its inverse determines the residue of the reciprocal heat slice.
 -/
 
 noncomputable section
-open Complex Filter Topology
+open Complex Filter Topology RHTower.DeBruijn
 open GaloisForLFunctions.NodalGeometryOfTheDeBruijnFlow
 namespace GaloisForLFunctions.GaloisTheoryOfZeros
 
@@ -118,9 +119,9 @@ theorem IsCollision.logDeriv_profile {τ z y : ℂ} {n : ℕ} (hc : IsCollision 
   have hs0 : s ≠ 0 := hs
   change (_ / s^n) / collisionBlowup τ z (n+1) (s,u s) = s * (_ / _)
   rw [complexHeat_blowup hc.vanish, pow_succ]
-  simp only [div_eq_mul_inv, mul_inv_rev]
-  ring_nf
-  simp [hs0]
+  by_cases hg0 : collisionBlowup τ z (n+1) (s,u s) = 0
+  · simp [hg0]
+  · field_simp [hs0, hg0]
 
 /-- The gradient asymptotics force simplicity of every emerging sheet
 throughout a punctured neighborhood of the collision time parameter. -/
@@ -146,7 +147,75 @@ theorem IsCollision.sheet_pole_limit {τ z ρ : ℂ} {n : ℕ}
     (complexHeat_collisionZero hc hρ).filter_mono nhdsWithin_le_nhds] with s hd hz
   let w := collisionZero τ z (n+1) ρ s
   have hh := ((differentiable_complexHeat (τ+s^2) w).hasDerivAt.tendsto_slope).inv₀ hd
+  change complexHeat (τ+s^2) (collisionZero τ z (n+1) ρ s) = 0 at hz
   simpa only [slope_def_field, w, hz, sub_zero, inv_div] using hh
+
+open GaloisForLFunctions.HTGeometry Polynomial
+
+private theorem profile_eq_nodal (m : ℕ) :
+    profilePolynomial m = Lagrange.nodal (profileRoots m) ((↑) : ℝ → ℂ) := by
+  classical
+  have hm := monic_of_natDegree_le_of_coeff_eq_one m (natDegree_profilePolynomial_le m)
+    (coeff_profilePolynomial_top m)
+  have he := (IsAlgClosed.splits (profilePolynomial m)).eq_prod_roots_of_monic hm
+  rw [roots_profilePolynomial] at he
+  refine he.trans ?_
+  change (∏ z ∈ (profileRoots m).image ((↑) : ℝ → ℂ), (X - C z)) = _
+  rw [Finset.prod_image Complex.ofReal_injective.injOn]
+  rfl
+
+private theorem deriv_at_profile_root {m : ℕ} {r : ℝ} (hr : r ∈ profileRoots m) :
+    deriv (heatModelFwd m) (r : ℂ) = ∏ q ∈ (profileRoots m).erase r, ((r : ℂ)-(q : ℂ)) := by
+  classical
+  rw [show heatModelFwd m = fun w => (profilePolynomial m).eval w from
+    funext fun w => (eval_profilePolynomial m w).symm, Polynomial.deriv, profile_eq_nodal,
+    Lagrange.eval_nodal_derivative_eval_node_eq hr, Lagrange.eval_nodal]
+
+/-- The emerging reciprocal residues act on every spatial polynomial of
+degree at most `n` by extracting its top coefficient. All lower moments of
+the leading singularities cancel between the sheets. -/
+theorem IsCollision.residue_polynomial_limit {τ z : ℂ} {n : ℕ}
+    (hc : IsCollision τ z (n+1)) (P : ℂ[X]) (hd : P.natDegree ≤ n) :
+    Tendsto (fun s => ∑ r ∈ profileRoots (n+1), P.eval (collisionBranch τ z (n+1) r s) *
+      (s^n / deriv (complexHeat (τ+s^2)) (collisionZero τ z (n+1) r s))) (𝓝[≠] 0)
+      (𝓝 (P.coeff n / (iteratedDeriv (n+1) (complexHeat τ) z / ((n+1).factorial : ℂ)))) := by
+  classical
+  let c := iteratedDeriv (n+1) (complexHeat τ) z / ((n+1).factorial : ℂ)
+  have hcoeff : P.coeff n = ∑ r ∈ profileRoots (n+1),
+      P.eval (r : ℂ) / deriv (heatModelFwd (n+1)) (r : ℂ) := by
+    have hdeg : P.degree < ((profileRoots (n+1)).card : WithBot ℕ) := by
+      rw [card_profileRoots]
+      exact degree_le_natDegree.trans_lt (by exact_mod_cast Nat.lt_succ_of_le hd)
+    have he := Lagrange.coeff_eq_sum (s := profileRoots (n+1)) (v := ((↑) : ℝ → ℂ))
+      Complex.ofReal_injective.injOn hdeg
+    rw [card_profileRoots, Nat.add_sub_cancel] at he
+    refine he.trans (Finset.sum_congr rfl fun r hr => ?_)
+    rw [deriv_at_profile_root hr]
+  rw [hcoeff, Finset.sum_div]
+  apply tendsto_finsetSum
+  intro r hr
+  have hroot := heatModelFwd_profileRoot hr
+  obtain ⟨ha,h0,_,_⟩ := collisionBranch_spec hc hroot
+  have hx : Tendsto (collisionBranch τ z (n+1) r) (𝓝[≠] 0) (𝓝 (r:ℂ)) := by
+    rw [← h0]
+    exact ha.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  have hh := ((P.continuous.tendsto (r:ℂ)).comp hx).mul (hc.sheet_reciprocal_residue_limit hroot)
+  convert hh using 2
+  simp only [collisionGradientProfile, mul_inv_rev, div_eq_mul_inv]
+  ring
+
+/-- The highest centered physical moment has a finite nonzero limit even
+though the individual residues grow as `s⁻ⁿ`. Its value is the reciprocal
+of the first nonvanishing Taylor coefficient of the collided slice. -/
+theorem IsCollision.centered_residue_moment {τ z : ℂ} {n : ℕ} (hc : IsCollision τ z (n+1)) :
+    Tendsto (fun s => ∑ r ∈ profileRoots (n+1), (collisionZero τ z (n+1) r s-z)^n /
+      deriv (complexHeat (τ+s^2)) (collisionZero τ z (n+1) r s)) (𝓝[≠] 0)
+      (𝓝 ((iteratedDeriv (n+1) (complexHeat τ) z / ((n+1).factorial : ℂ))⁻¹)) := by
+  have he := hc.residue_polynomial_limit (X^n) (natDegree_X_pow_le n)
+  simp only [eval_pow, eval_X, coeff_X_pow_self, one_div] at he
+  refine he.congr fun s => Finset.sum_congr rfl fun r _ => ?_
+  simp only [collisionZero, add_sub_cancel_left, mul_pow, div_eq_mul_inv]
+  ring
 
 #print axioms IsCollision.tendsto_scaled_gradient
 #print axioms IsCollision.sheet_hopf_limit
@@ -155,4 +224,6 @@ theorem IsCollision.sheet_pole_limit {τ z ρ : ℂ} {n : ℕ}
 #print axioms IsCollision.logDeriv_profile
 #print axioms IsCollision.eventually_sheet_deriv_ne_zero
 #print axioms IsCollision.sheet_pole_limit
+#print axioms IsCollision.residue_polynomial_limit
+#print axioms IsCollision.centered_residue_moment
 end GaloisForLFunctions.GaloisTheoryOfZeros

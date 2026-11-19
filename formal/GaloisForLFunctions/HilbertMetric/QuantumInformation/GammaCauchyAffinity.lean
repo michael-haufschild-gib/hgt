@@ -23,6 +23,7 @@ abbrev Weight := {p : ℝ // 0<p ∧ p<1}
 def density (a : Shape) (s : ℝ) := gammaPDFReal a.val (Real.exp s)
 
 theorem density_mass (a : Shape) (s : ℝ) : (∫ x, density a s x)=1 := by
+  unfold density
   rw [integral_eq_lintegral_of_nonneg_ae (ae_of_all _ (gammaPDFReal_nonneg a.property (Real.exp_pos s)))
     (measurable_gammaPDFReal _ _).aestronglyMeasurable]
   exact congrArg ENNReal.toReal (lintegral_gammaPDF_eq_one a.property (Real.exp_pos s)) |>.trans ENNReal.toReal_one
@@ -71,7 +72,7 @@ theorem interpolate_density (a : Shape) (p : Weight) (s t x : ℝ) :
   · rw [density_tilt a s,density_tilt a t,density_tilt a (Real.log _)]
     change (_*b)^p.val*(_*b)^(1-p.val)=_*(_*b)
     simp [hz,Real.zero_rpow p.property.1.ne']
-  have hb : 0<b := (lt_of_le_of_ne (gammaPDFReal_nonneg a.property (Real.exp_pos 0) x) hz.symm)
+  have hb : 0 < b := lt_of_le_of_ne (gammaPDFReal_nonneg a.property (Real.exp_pos 0) x) (Ne.symm hz)
   rw [density_tilt a s,density_tilt a t,density_tilt a (Real.log _)]
   change (Real.exp _*b)^p.val*(Real.exp _*b)^(1-p.val)=_*(Real.exp _*b)
   rw [Real.mul_rpow (Real.exp_pos _).le hb.le,Real.mul_rpow (Real.exp_pos _).le hb.le]
@@ -79,7 +80,9 @@ theorem interpolate_density (a : Shape) (p : Weight) (s t x : ℝ) :
   rw [mul_mul_mul_comm, hpow,Real.rpow_def_of_pos (Real.exp_pos _),Real.rpow_def_of_pos (Real.exp_pos _),
     Real.log_exp,Real.log_exp,← Real.exp_add,← mul_assoc,← Real.exp_add]
   congr 2
-  simp only [tilt,logAffinity,Real.exp_log (mix_pos p s t),mixRate]
+  simp only [tilt,logAffinity]
+  rw [Real.exp_log (mix_pos p s t)]
+  unfold mixRate
   ring
 
 /-- Exact Chernoff coefficient at every interior weight. -/
@@ -92,8 +95,13 @@ private def half : Weight := ⟨1/2,by norm_num,by norm_num⟩
 private theorem log_half (s t : ℝ) : logAffinity half.val s t = Real.log (coherence s t) := by
   have h : mixRate half.val s t=(Real.exp s+Real.exp t)/2 := by unfold mixRate half; ring
   rw [logAffinity,h,Real.log_div (add_pos (Real.exp_pos _) (Real.exp_pos _)).ne' (by norm_num)]
-  simp only [coherence,Real.log_div (by positivity) (by positivity),Real.log_mul (by positivity) (by positivity),
-    Real.log_exp,half]
+  have h₂ : (2:ℝ) ≠ 0 := by norm_num
+  have hs := mul_ne_zero h₂ (Real.exp_ne_zero (s/2))
+  rw [coherence, Real.log_div (mul_ne_zero hs (Real.exp_ne_zero (t/2)))
+    (add_pos (Real.exp_pos s) (Real.exp_pos t)).ne',
+    Real.log_mul hs (Real.exp_ne_zero (t/2)),Real.log_mul h₂ (Real.exp_ne_zero (s/2)),
+    Real.log_exp,Real.log_exp]
+  unfold half
   ring
 
 /-- The product of the square-root features factors into the Cauchy

@@ -68,7 +68,9 @@ theorem gcd_grid_upper_power (s : ℕ) {e : ℝ} (he : gcdGridExponent (s+2) < e
       have h := hprice (one_le_pow₀ hm₁ (n := r)) hm₁
       rw [Nat.cast_pow, ← pow_succ', ← pow_succ', ← Real.rpow_natCast (m:ℝ) r,
         ← Real.rpow_mul hm₀.le] at h
-      have hscale : (r:ℝ)*(t-1) = e-1 := by dsimp only [t]; field_simp
+      have hscale : (r:ℝ)*(t-1) = e-1 := by
+        dsimp only [t]
+        field_simp <;> ring
       rw [hscale] at h
       have hp : (m:ℝ)⁻¹ ≤ (m:ℝ)^(e-1) := by
         rw [← Real.rpow_neg_one]
@@ -93,7 +95,8 @@ theorem gcd_grid_upper_power (s : ℕ) {e : ℝ} (he : gcdGridExponent (s+2) < e
   rw [sum_range_sub, hd₀, sub_zero, ←mul_sum] at hh
   have h := hh.trans (mul_le_mul_of_nonneg_left
     (_root_.GaloisForLFunctions.ArithmeticGaugeTheory.sum_rpow_sub_one_le he₀ k) hB)
-  have hpow := Real.one_le_rpow (by linarith only [Nat.cast_nonneg k] : (1:ℝ) ≤ k+1) he₀.le
+  have hpow := Real.one_le_rpow (le_add_of_nonneg_left (Nat.cast_nonneg k : 0 ≤ (k:ℝ)) :
+    (1:ℝ) ≤ k+1) he₀.le
   change 1 + powerGridGcdDeficit r k ≤ _
   linarith only [h,hpow]
 

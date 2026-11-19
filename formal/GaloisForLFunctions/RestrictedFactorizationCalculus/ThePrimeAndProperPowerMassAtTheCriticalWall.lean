@@ -54,23 +54,23 @@ theorem log_square_wall_root_ratio :
     rw [add_mul,one_mul,inv_mul_cancel₀ lp.ne']
     linarith only [floor,up,log2]
 
-private theorem sqrt_wall_of_scaled_cut {λ : ℝ} (hλ : 1 ≤ λ) :
-    Tendsto (fun n : ℕ => Real.sqrt (⌊λ*(n:ℝ)⌋₊:ℕ)/Real.sqrt n) atTop (𝓝 (Real.sqrt λ)) := by
-  have h : Tendsto (fun n : ℕ => (⌊λ*(n:ℝ)⌋₊:ℝ)/(n:ℝ)) atTop (𝓝 λ) :=
-    (tendsto_nat_floor_mul_div_atTop (zero_le_one.trans hλ)).comp tendsto_natCast_atTop_atTop
+private theorem sqrt_wall_of_scaled_cut {scale : ℝ} (hscale : 1 ≤ scale) :
+    Tendsto (fun n : ℕ => Real.sqrt (⌊scale*(n:ℝ)⌋₊:ℕ)/Real.sqrt n) atTop (𝓝 (Real.sqrt scale)) := by
+  have h : Tendsto (fun n : ℕ => (⌊scale*(n:ℝ)⌋₊:ℝ)/(n:ℝ)) atTop (𝓝 scale) :=
+    (tendsto_nat_floor_mul_div_atTop (zero_le_one.trans hscale)).comp tendsto_natCast_atTop_atTop
   simpa only [Function.comp_def,Real.sqrt_div (Nat.cast_nonneg _)] using Real.continuous_sqrt.continuousAt.tendsto.comp h
 
 /-- The exact critical mass of the additional ordinary primes in one multiplicative window. -/
-theorem critical_mass_of_a_scaled_prime_window {λ : ℝ} (hλ : 1 ≤ λ) :
-    Tendsto (fun n : ℕ => (∑ p ∈ (Nat.primesLE ⌊λ*(n:ℝ)⌋₊).filter (n<·),Real.log p/Real.sqrt p)/
-      Real.sqrt n) atTop (𝓝 (2*(Real.sqrt λ-1))) := by
-  let z := fun n : ℕ => ⌊λ*(n:ℝ)⌋₊
-  have large (n : ℕ) : n ≤ z n := Nat.le_floor (le_mul_of_one_le_left (Nat.cast_nonneg n) hλ)
+theorem critical_mass_of_a_scaled_prime_window {scale : ℝ} (hscale : 1 ≤ scale) :
+    Tendsto (fun n : ℕ => (∑ p ∈ (Nat.primesLE ⌊scale*(n:ℝ)⌋₊).filter (n<·),Real.log p/Real.sqrt p)/
+      Real.sqrt n) atTop (𝓝 (2*(Real.sqrt scale-1))) := by
+  let z := fun n : ℕ => ⌊scale*(n:ℝ)⌋₊
+  have large (n : ℕ) : n ≤ z n := Nat.le_floor (le_mul_of_one_le_left (Nat.cast_nonneg n) hscale)
   have ztop : Tendsto z atTop atTop := tendsto_atTop.mpr (fun k => (eventually_ge_atTop k).mono
     (fun n h => h.trans (large n)))
-  have upper := (limit_log_weighted_roots_of_primes.comp ztop).mul (sqrt_wall_of_scaled_cut hλ)
+  have upper := (limit_log_weighted_roots_of_primes.comp ztop).mul (sqrt_wall_of_scaled_cut hscale)
   have dif := upper.sub limit_log_weighted_roots_of_primes
-  rw [show (2:ℝ)*Real.sqrt λ-2=2*(Real.sqrt λ-1) by ring] at dif
+  rw [show (2:ℝ)*Real.sqrt scale-2=2*(Real.sqrt scale-1) by ring] at dif
   apply dif.congr'
   filter_upwards [eventually_ge_atTop (1:ℕ)] with n np
   let S := Nat.primesLE (z n)
@@ -79,13 +79,14 @@ theorem critical_mass_of_a_scaled_prime_window {λ : ℝ} (hλ : 1 ≤ λ) :
     (Nat.mem_primesLE.mp hp).2⟩
   have eq : S.filter (n<·)=S \ T := by
     ext p
-    simp only [S,T,mem_filter,mem_sdiff,Nat.mem_primesLE]
+    simp only [S,T,mem_filter,Finset.mem_sdiff,Nat.mem_primesLE]
     omega
   change rho (z n)/Real.sqrt (z n)*(Real.sqrt (z n)/Real.sqrt n)-rho n/Real.sqrt n=
     (∑ p ∈ S.filter (n<·),Real.log p/Real.sqrt p)/Real.sqrt n
   rw [eq,sum_sdiff_eq_sub sub]
+  change _=(rho (z n)-rho n)/Real.sqrt n
   field_simp [(Real.sqrt_pos.mpr (Nat.cast_pos.mpr np)).ne',
-    (Real.sqrt_pos.mpr (Nat.cast_pos.mpr (np.trans (large n)))).ne']
+    (Real.sqrt_pos.mpr (Nat.cast_pos.mpr (np.trans (large n)))).ne'] <;> ring
 
 private theorem log_of_the_wall_is_sublinear :
     Tendsto (fun X : ℕ => Real.log (wall X)/L X) atTop (𝓝 0) := by
@@ -142,16 +143,26 @@ private theorem proper_powers_use_half_the_log :
 
 /-- The threshold for simultaneously omitting proper powers and ordinary
 primes through a multiple of the frozen log-square cutoff. -/
-theorem limiting_mass_of_the_combined_omission {λ : ℝ} (hλ : 1 ≤ λ) :
+theorem limiting_mass_of_the_combined_omission {scale : ℝ} (hscale : 1 ≤ scale) :
     Tendsto (fun X : ℕ => let y := wall X
-      (mass y X+(∑ p ∈ (Nat.primesLE ⌊λ*(y:ℝ)⌋₊).filter (y<·),Real.log p/Real.sqrt p))/L X)
-      atTop (𝓝 (1/2+2*(Real.sqrt λ-1))) := by
-  have shell := ((critical_mass_of_a_scaled_prime_window hλ).comp logSquareCutoff_tendsto_atTop).mul log_square_wall_root_ratio
+      (mass y X+(∑ p ∈ (Nat.primesLE ⌊scale*(y:ℝ)⌋₊).filter (y<·),Real.log p/Real.sqrt p))/L X)
+      atTop (𝓝 (1/2+2*(Real.sqrt scale-1))) := by
+  have shell := ((critical_mass_of_a_scaled_prime_window hscale).comp logSquareCutoff_tendsto_atTop).mul log_square_wall_root_ratio
   rw [mul_one] at shell
   apply (proper_powers_use_half_the_log.add shell).congr'
   filter_upwards [logSquareCutoff_tendsto_atTop.eventually_ge_atTop 1] with X yp
-  let S := ∑ p ∈ (Nat.primesLE ⌊λ*(wall X:ℝ)⌋₊).filter (wall X<·),Real.log p/Real.sqrt p
+  let S := ∑ p ∈ (Nat.primesLE ⌊scale*(wall X:ℝ)⌋₊).filter (wall X<·),Real.log p/Real.sqrt p
   change mass (wall X) X/L X+(S/Real.sqrt (wall X))*(Real.sqrt (wall X)/L X)=_
   field_simp [(Real.sqrt_pos.mpr (Nat.cast_pos.mpr yp)).ne']
+
+/-- The limiting omission spends strictly less than the full logarithmic
+weight precisely below the prime-wall multiplier 25/16. -/
+theorem strict_room_at_the_scaled_prime_wall {scale : ℝ} (hscale : 1 ≤ scale) :
+    1/2+2*(Real.sqrt scale-1)<1 ↔ scale<25/16 := by
+  have bound : 1/2+2*(Real.sqrt scale-1)<1 ↔ Real.sqrt scale<5/4 := by
+    constructor <;> intro h <;> linarith only [h]
+  rw [bound,←sq_lt_sq₀ (Real.sqrt_nonneg scale) (by norm_num : (0:ℝ) ≤ 5/4),
+    Real.sq_sqrt (zero_le_one.trans hscale)]
+  norm_num
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

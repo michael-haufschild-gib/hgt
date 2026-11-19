@@ -193,7 +193,7 @@ private theorem halfDifference_eq (A : ZMod (2*n) → ℂ) (x : ZMod (2*n)) :
     halfDifference A x = halfSum A x - halfSum A (x+n) := by
   rw [halfDifference, sum_sub_distrib, halfSum, halfSum]
   congr 1
-  exact sum_congr rfl fun j _ => by push_cast; rw [add_right_comm, add_assoc]
+  exact sum_congr rfl fun j _ => congrArg A (by push_cast; ring)
 
 private theorem two_shifts (x : ZMod (2*n)) : x+n+n = x := by
   rw [add_assoc, ← Nat.cast_add, ← two_mul, ZMod.natCast_self, add_zero]

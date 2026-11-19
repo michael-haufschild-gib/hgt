@@ -57,7 +57,7 @@ abbrev eigenmode (s : ℝ) (t : Fin n ↪ ℕ) (i : Fin n) := ((basis s t) i).of
 def levels (s : ℝ) (t : Fin n ↪ ℕ) := (bank_hermitian s t).eigenvalues
 
 private theorem eigen (s : ℝ) (t : Fin n ↪ ℕ) (i : Fin n) :
-    (bank s t t) *ᵥ eigenmode s t i = levels s t i • eigenmode s t i :=
+    (bank s t t).mulVec (eigenmode s t i) = levels s t i • eigenmode s t i :=
   (bank_hermitian s t).mulVec_eigenvectorBasis i
 
 private theorem vec_ne (s : ℝ) (t : Fin n ↪ ℕ) (i : Fin n) : eigenmode s t i ≠ 0 :=
@@ -106,10 +106,10 @@ theorem dual_rate_matrix (s : ℝ) (t : Fin n ↪ ℕ) (i j : Fin n) :
   congr 1 <;> apply Finset.sum_congr rfl <;> intro k _ <;> ring
 
 /-- Total output after k iterations, including the initial reading at k=0. -/
-def echo (s : ℝ) (t : Fin n ↪ ℕ) (v : Fin n → ℝ) (k : ℕ) := ∑ i, ((bank s t t)^k *ᵥ v) i
+def echo (s : ℝ) (t : Fin n ↪ ℕ) (v : Fin n → ℝ) (k : ℕ) := ∑ i, (((bank s t t)^k).mulVec v) i
 
 private theorem power_mode (s : ℝ) (t : Fin n ↪ ℕ) (i : Fin n) (k : ℕ) :
-    (bank s t t)^k *ᵥ eigenmode s t i = (levels s t i)^k • eigenmode s t i := by
+    ((bank s t t)^k).mulVec (eigenmode s t i) = (levels s t i)^k • eigenmode s t i := by
   induction k with
   | zero => simp
   | succ k ih => rw [pow_succ',← Matrix.mulVec_mulVec,ih,Matrix.mulVec_smul,eigen,smul_smul,← pow_succ]

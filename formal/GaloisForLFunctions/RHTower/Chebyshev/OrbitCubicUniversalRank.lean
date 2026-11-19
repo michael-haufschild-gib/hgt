@@ -24,7 +24,7 @@ def classicalPositive (Q : Matrix (Fin r) (Fin r) (K m)) :=
   (∀ i j, Q i j ∈ powerOrder m) ∧ (∀ i j, Q i j = Q j i) ∧
     ∀ σ : K m →+* ℝ, (Q.map σ).PosDef
 
-def pair (Q : Matrix (Fin r) (Fin r) (K m)) (x y : Vec m r) := x ⬝ᵥ Q *ᵥ y
+def pair (Q : Matrix (Fin r) (Fin r) (K m)) (x y : Vec m r) := x ⬝ᵥ Q.mulVec y
 
 def integralVector (x : Vec m r) := ∀ i, x i ∈ powerOrder m
 

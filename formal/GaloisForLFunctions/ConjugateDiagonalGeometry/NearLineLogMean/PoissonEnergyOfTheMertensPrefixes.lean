@@ -64,8 +64,7 @@ private theorem kernel_half : halfPlanePoissonKernel 1 = HTGeometry.halfPlanePoi
   rw [halfPlanePoissonKernel_one, HTGeometry.halfPlanePoisson]
   have h : 0 < (1/4:ℝ)+t^2 := by positivity
   norm_num only [show (1/2:ℝ)^2 = 1/4 by norm_num]
-  field_simp [Real.pi_ne_zero, h.ne']
-  ring
+  field_simp [Real.pi_ne_zero, h.ne'] <;> ring
 
 private theorem integrable_section (N : ℕ) :
     Integrable (fun t => ‖criticalSection N t‖^2 * halfPlanePoissonKernel 1 t) := by

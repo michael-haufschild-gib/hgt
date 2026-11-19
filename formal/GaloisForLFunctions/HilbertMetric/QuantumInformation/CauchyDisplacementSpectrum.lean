@@ -44,15 +44,15 @@ private theorem symmetric (r b : Fin n → ℝ) (i j : Fin n) :
 /-- Multiplying an input by the rate minus a constant can be transferred to
 the output, with only a scalar source reading left over. -/
 theorem shifted_action (r b v : Fin n → ℝ) (s : ℝ) (i : Fin n) :
-    (response r b *ᵥ (fun j => (rate r j-s)*v j)) i =
-      2*b i*reading b v-(rate r i+s)*(response r b *ᵥ v) i := by
+    ((response r b).mulVec (fun j => (rate r j-s)*v j)) i =
+      2*b i*reading b v-(rate r i+s)*((response r b).mulVec v) i := by
   simp only [Matrix.mulVec,dotProduct,reading,Finset.mul_sum,← Finset.sum_sub_distrib]
   apply Finset.sum_congr rfl
   intro j _
   linear_combination v j*displacement r b i j
 
 private theorem transpose_sum (r b u v : Fin n → ℝ) :
-    (∑ i, u i*(response r b *ᵥ v) i) = ∑ j, (response r b *ᵥ u) j*v j := by
+    (∑ i, u i*((response r b).mulVec v) i) = ∑ j, ((response r b).mulVec u) j*v j := by
   simp only [Matrix.mulVec,dotProduct,Finset.mul_sum,Finset.sum_mul]
   rw [Finset.sum_comm]
   apply Finset.sum_congr rfl
@@ -65,15 +65,15 @@ private theorem transpose_sum (r b u v : Fin n → ℝ) :
 /-- Polarized displacement identity on two different inputs. -/
 theorem polarized_reading (r b u v : Fin n → ℝ) :
     2*reading b u*reading b v =
-      (∑ i, rate r i*u i*(response r b *ᵥ v) i) +
-      (∑ i, rate r i*v i*(response r b *ᵥ u) i) := by
+      (∑ i, rate r i*u i*((response r b).mulVec v) i) +
+      (∑ i, rate r i*v i*((response r b).mulVec u) i) := by
   have h := transpose_sum r b u (fun i => rate r i*v i)
-  have hrow (i : Fin n) : (response r b *ᵥ (fun j => rate r j*v j)) i =
-      2*b i*reading b v-rate r i*(response r b *ᵥ v) i := by
+  have hrow (i : Fin n) : ((response r b).mulVec (fun j => rate r j*v j)) i =
+      2*b i*reading b v-rate r i*((response r b).mulVec v) i := by
     simpa only [sub_zero,add_zero] using shifted_action r b v 0 i
   simp_rw [hrow] at h
-  have hL : (∑ i, u i*(2*b i*reading b v-rate r i*(response r b *ᵥ v) i)) =
-      2*reading b u*reading b v - ∑ i, rate r i*u i*(response r b *ᵥ v) i := by
+  have hL : (∑ i, u i*(2*b i*reading b v-rate r i*((response r b).mulVec v) i)) =
+      2*reading b u*reading b v - ∑ i, rate r i*u i*((response r b).mulVec v) i := by
     have he : 2*reading b u*reading b v = ∑ i, (b i*u i)*(2*reading b v) := by
       rw [← Finset.sum_mul]
       change 2*reading b u*reading b v = reading b u*(2*reading b v)
@@ -83,20 +83,20 @@ theorem polarized_reading (r b u v : Fin n → ℝ) :
     intro i _
     ring
   rw [hL] at h
-  have hR : (∑ i, (response r b *ᵥ u) i*(rate r i*v i)) =
-      ∑ i, rate r i*v i*(response r b *ᵥ u) i := by
+  have hR : (∑ i, ((response r b).mulVec u) i*(rate r i*v i)) =
+      ∑ i, rate r i*v i*((response r b).mulVec u) i := by
     apply Finset.sum_congr rfl
     intro i _
     ring
   linarith only [h,hR]
 
 /-- Every eigenvalue equals a squared source reading divided by positive energy. -/
-theorem eigen_reading (r b v : Fin n → ℝ) (λ' : ℝ) :
-    response r b *ᵥ v = λ' • v → reading b v^2 = λ'*energy r v := by
+theorem eigen_reading (r b v : Fin n → ℝ) (level : ℝ) :
+    (response r b).mulVec v = level • v → reading b v^2 = level*energy r v := by
   intro he
   have h := polarized_reading r b v v
   rw [he] at h
-  have hs : (∑ i, rate r i*v i*(λ' • v) i) = λ'*energy r v := by
+  have hs : (∑ i, rate r i*v i*(level • v) i) = level*energy r v := by
     unfold energy
     rw [Finset.mul_sum]
     apply Finset.sum_congr rfl
@@ -121,26 +121,26 @@ theorem energy_pos_iff (r v : Fin n → ℝ) : 0 < energy r v ↔ v ≠ 0 := by
 
 /-- All real eigenvalues on nonzero vectors are nonnegative, and exactly the
 zero eigenvalue is invisible to the source reading. -/
-theorem eigenvalue_detection (r b : Fin n → ℝ) (v : {v : Fin n → ℝ // v ≠ 0}) (λ' : ℝ) :
-    response r b *ᵥ v.val = λ' • v.val →
-      0 ≤ λ' ∧ (reading b v.val = 0 ↔ λ' = 0) := by
+theorem eigenvalue_detection (r b : Fin n → ℝ) (v : {v : Fin n → ℝ // v ≠ 0}) (level : ℝ) :
+    (response r b).mulVec v.val = level • v.val →
+      0 ≤ level ∧ (reading b v.val = 0 ↔ level = 0) := by
   intro he
   have hv := (energy_pos_iff r v.val).mpr v.property
-  have h := eigen_reading r b v.val λ' he
+  have h := eigen_reading r b v.val level he
   refine ⟨nonneg_of_mul_nonneg_left (h ▸ sq_nonneg (reading b v.val)) hv,?_⟩
   rw [← sq_eq_zero_iff,h,mul_eq_zero,or_iff_left hv.ne']
 
 /-- Within one nonzero eigenvalue the source reading determines the eigenvector. -/
-theorem simple_eigenvectors (r b u v : Fin n → ℝ) (λ' : ℝ) :
-    response r b *ᵥ u = λ' • u → response r b *ᵥ v = λ' • v →
-      λ'=0 ∨ reading b v • u = reading b u • v := by
+theorem simple_eigenvectors (r b u v : Fin n → ℝ) (level : ℝ) :
+    (response r b).mulVec u = level • u → (response r b).mulVec v = level • v →
+      level=0 ∨ reading b v • u = reading b u • v := by
   intro hu hv
-  by_cases hλ : λ'=0
+  by_cases hλ : level=0
   · exact Or.inl hλ
   right
   let w := reading b v • u - reading b u • v
-  have he : response r b *ᵥ w = λ' • w := by
-    simp only [w,Matrix.mulVec_sub,Matrix.mulVec_smul,hu,hv,smul_sub,smul_comm λ']
+  have he : (response r b).mulVec w = level • w := by
+    simp only [w,Matrix.mulVec_sub,Matrix.mulVec_smul,hu,hv,smul_sub,smul_comm level]
   have hw : reading b w = 0 := by
     have lin (x : ℝ) (y : Fin n → ℝ) : reading b (x • y) = x*reading b y := by
       simp only [reading,Pi.smul_apply,smul_eq_mul,Finset.mul_sum]
@@ -154,7 +154,7 @@ theorem simple_eigenvectors (r b u v : Fin n → ℝ) (λ' : ℝ) :
   apply sub_eq_zero.mp
   change w = 0
   by_contra hz
-  exact hλ ((eigenvalue_detection r b ⟨w,hz⟩ λ' he).2.mp hw)
+  exact hλ ((eigenvalue_detection r b ⟨w,hz⟩ level he).2.mp hw)
 
 /-- Symmetry of the real inverse Jordan response. -/
 theorem response_hermitian (r b : Fin n → ℝ) : (response r b).IsHermitian := by
@@ -193,15 +193,15 @@ theorem spectral_collision (r b : Fin n → ℝ) (i j : Fin n) :
 
 /-- Exact zero modes are weighted cancellations inside each equal-rate fibre. -/
 theorem kernel_fibres (r b v : Fin n → ℝ) :
-    response r b *ᵥ v = 0 ↔ ∀ t : ℝ, ∑ i ∈ univ.filter (fun i => rate r i = t), b i*v i = 0 := by
+    (response r b).mulVec v = 0 ↔ ∀ t : ℝ, ∑ i ∈ univ.filter (fun i => rate r i = t), b i*v i = 0 := by
   classical
   constructor
   · intro hv t
-    have vanish (w : Fin n → ℝ) (hw : response r b *ᵥ w = 0) : reading b w = 0 := by
+    have vanish (w : Fin n → ℝ) (hw : (response r b).mulVec w = 0) : reading b w = 0 := by
       apply sq_eq_zero_iff.mp
       simpa only [zero_mul] using eigen_reading r b w 0 (by simpa using hw)
     have stable (s : Finset ℝ) :
-        response r b *ᵥ (fun i => (∏ y ∈ s, (rate r i-y))*v i) = 0 := by
+        (response r b).mulVec (fun i => (∏ y ∈ s, (rate r i-y))*v i) = 0 := by
       induction s using Finset.induction_on with
       | empty => simpa using hv
       | insert a s ha ih =>

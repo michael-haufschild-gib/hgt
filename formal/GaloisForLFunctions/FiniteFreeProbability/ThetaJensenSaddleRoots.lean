@@ -114,6 +114,74 @@ theorem tendsto_thetaOddRootCoordinate (k : ℕ) : Tendsto (thetaOddRootCoordina
   rw [← odd_coordinate_root k n] at hlo hhi
   exact ⟨(saddle_odd_mono k n).lt_iff_lt.mp hlo, (saddle_odd_mono k n).lt_iff_lt.mp hhi⟩
 
+private def fluctuationCoeff (d n j : ℕ) : ℝ :=
+  (d.choose j : ℝ) * xiThetaExpectation n (xiThetaFluctuation n^j)
+
+/-- Reversing the saddle polynomial at a nonzero argument removes the large power
+of the root. All its remaining coefficients are genuine positive-order fluctuations. -/
+private theorem saddle_reciprocal {z : ℂ} (hz : z ≠ 0) (d n : ℕ) :
+    ((thetaSaddleJensen d n).map Complex.ofRealHom).eval z =
+      z^d * (1 + ∑ j ∈ range d, (fluctuationCoeff d n (j+1) : ℂ) *
+        ((xiJensenDelta n : ℂ)-z⁻¹)^(j+1)) := by
+  rw [thetaSaddleJensen_expansion]
+  simp only [Polynomial.map_sum, Polynomial.map_mul, Polynomial.map_pow, Polynomial.map_sub,
+    Polynomial.map_X, Polynomial.map_one, Polynomial.map_C, eval_finsetSum, eval_mul, eval_C,
+    eval_pow, eval_sub, eval_X, eval_one]
+  have hf : (xiJensenDelta n : ℂ)*z-1 = ((xiJensenDelta n : ℂ)-z⁻¹)*z := by
+    field_simp
+  rw [hf]
+  have hterm (j : ℕ) (hj : j ∈ range (d+1)) :
+      Complex.ofRealHom ((d.choose j : ℝ)*xiThetaExpectation n (xiThetaFluctuation n^j)) *
+          (((xiJensenDelta n : ℂ)-z⁻¹)*z)^j * z^(d-j) =
+        z^d * ((fluctuationCoeff d n j : ℂ)*((xiJensenDelta n : ℂ)-z⁻¹)^j) := by
+    have hd : j ≤ d := mem_range_succ_iff.mp hj
+    rw [mul_pow]
+    unfold fluctuationCoeff
+    change _ = _ * (Complex.ofRealHom _ * _)
+    calc
+      _ = (Complex.ofRealHom _ * ((xiJensenDelta n : ℂ)-z⁻¹)^j) * (z^j*z^(d-j)) := by ring
+      _ = _ := by rw [← pow_add, Nat.add_sub_of_le hd]; ring
+  rw [Finset.sum_congr rfl hterm, ← Finset.mul_sum, Finset.sum_range_succ']
+  simp [fluctuationCoeff, xiThetaExpectation_one, add_comm]
+
+/-- At fixed degree, every complex zero of the theta factor collapses to the
+saddle on the Hermite scale, uniformly over the roots and with no simplicity assumption. -/
+theorem thetaSaddleJensen_all_roots_collapse (d : ℕ) (ε : ℝ) (hε : 0 < ε) :
+    ∀ᶠ n : ℕ in atTop, ∀ z ∈ ((thetaSaddleJensen d n).map Complex.ofRealHom).roots, ‖z‖ < ε := by
+  let bound (n : ℕ) := ∑ j ∈ range d, |fluctuationCoeff d n (j+1)|*(1+ε⁻¹)^(j+1)
+  have hb : Tendsto bound atTop (𝓝 0) := by
+    have hj (j : ℕ) : Tendsto (fun n => fluctuationCoeff d n (j+1)) atTop (𝓝 0) := by
+      simpa [fluctuationCoeff] using
+        (tendsto_xiThetaExpectation_fluctuation_succ j).const_mul (d.choose (j+1) : ℝ)
+    simpa [bound] using tendsto_finsetSum (range d)
+      (fun j _ => (hj j).abs.mul_const ((1+ε⁻¹)^(j+1)))
+  filter_upwards [hb.eventually_lt_const zero_lt_one,
+    tendsto_xiJensenDelta.eventually_lt_const zero_lt_one] with n hsmall hδ
+  intro z hz
+  by_contra! hlarge
+  have hn : 0 < ‖z‖ := hε.trans_le hlarge
+  have hz0 : z ≠ 0 := norm_pos_iff.mp hn
+  have hphase : ‖(xiJensenDelta n : ℂ)-z⁻¹‖ ≤ 1+ε⁻¹ := by
+    refine (norm_sub_le _ _).trans (add_le_add ?_ ?_)
+    · simpa [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (xiJensenDelta_pos n)] using hδ.le
+    · rw [norm_inv]
+      exact inv_anti₀ hε hlarge
+  have hzero := Polynomial.isRoot_of_mem_roots hz
+  rw [Polynomial.IsRoot, saddle_reciprocal hz0, mul_eq_zero] at hzero
+  have H := hzero.resolve_left (pow_ne_zero _ hz0)
+  have he : (∑ j ∈ range d, (fluctuationCoeff d n (j+1) : ℂ) *
+      ((xiJensenDelta n : ℂ)-z⁻¹)^(j+1)) = -1 := by linear_combination H
+  have hbound : ‖∑ j ∈ range d, (fluctuationCoeff d n (j+1) : ℂ) *
+      ((xiJensenDelta n : ℂ)-z⁻¹)^(j+1)‖ ≤ bound n := by
+    apply (norm_sum_le _ _).trans
+    apply sum_le_sum
+    intro j _
+    simp only [norm_mul, norm_pow, Complex.norm_real, Real.norm_eq_abs]
+    exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (norm_nonneg _) hphase _) (abs_nonneg _)
+  rw [he, norm_neg, norm_one] at hbound
+  exact hsmall.not_ge hbound
+
+#print axioms thetaSaddleJensen_all_roots_collapse
 #print axioms thetaSaddleJensen_expansion
 #print axioms tendsto_thetaOddRootCoordinate
 

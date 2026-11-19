@@ -27,9 +27,9 @@ def gcdOsgoodSum (r : ℕ) : ℕ → ℝ := rightSum (powerGridGcdDeficit r) log
 private theorem deriv_anti : AntitoneOn logLogScaleDeriv (Set.Ici 0) := by
   intro a ha b _ hab
   have ha₀ := Set.mem_Ici.mp ha
-  have h₁ := add_le_add_right hab (1:ℝ)
+  have h₁ := add_le_add (le_refl (1:ℝ)) hab
   have h₂ := Real.log_le_log (by linarith only [ha₀]) h₁
-  have h := mul_le_mul h₁ (add_le_add_right h₂ 1)
+  have h := mul_le_mul h₁ (add_le_add (le_refl (1:ℝ)) h₂)
     (zero_le_one.trans (one_le_one_add_log_one_add ha₀)) (by linarith only [ha₀,hab])
   exact one_div_le_one_div_of_le (logLogGrowth_pos ha₀) h
 

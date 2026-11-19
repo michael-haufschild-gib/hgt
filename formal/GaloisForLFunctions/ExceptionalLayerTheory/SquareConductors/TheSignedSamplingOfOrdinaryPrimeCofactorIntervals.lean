@@ -1,3 +1,4 @@
+import GaloisForLFunctions.RHTower.XiZeroShortWeightDyadic
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheForbiddenLargePrimeInTheReflectedCofactorIntervals
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.RoughCofactorsAtPrimorialMidpoints
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.SignedDivisibilityAveragesOfTheReflectedCofactors
@@ -86,7 +87,7 @@ private theorem cofactor_prefix_difference (n : ℕ) {a b : ℕ} (hab : a ≤ b)
     ext v
     simp only [s,mem_filter,mem_Icc,mem_Ioc,max_lt_iff,not_le]
     omega
-  have h := card_filter_add_card_filter_not (s:=s) (fun v => v ≤ a)
+  have h := card_filter_add_card_filter_not (s:=s) (p:=fun v => v ≤ a)
   rw [hl,hu] at h
   change (s.card:ℝ)-_=_
   exact sub_eq_iff_eq_add.mpr (by exact_mod_cast (h.symm.trans (Nat.add_comm ..)))
@@ -161,7 +162,8 @@ private theorem cofactor_theta_motion {m n Q v j : ℕ} (hm : m ≤ n) (hQ : Q �
   have hnv := Nat.div_mul_le_self (j*n) v
   have hs : (b:ℝ)-a ≤ ((j*n/v:ℕ):ℝ)-(j*m/v:ℕ) := by
     have hh : b+(j*m/v) ≤ (j*n/v)+a := by dsimp only [a,b]; omega
-    exact sub_le_sub_iff_add_le_add.mpr (by exact_mod_cast hh)
+    have hreal : (b:ℝ)+(j*m/v:ℕ) ≤ (j*n/v:ℕ)+(a:ℝ) := by exact_mod_cast hh
+    linarith only [hreal]
   have hd : ((j*n/v:ℕ):ℝ)-(j*m/v:ℕ) ≤ ((j:ℝ)*((n:ℝ)-m)/v)+1 := by
     rw [←sub_le_iff_le_add,le_div_iff₀ (Nat.cast_pos.mpr hv)]
     have hm' : (j:ℝ)*m < ((j*m/v:ℕ):ℝ)*v+v := by exact_mod_cast hjv
@@ -413,5 +415,274 @@ theorem ordinary_cofactor_window_cost {V H : ℕ} (hV : 1 ≤ V) (hVH : V ≤ H)
                     ((div_le_iff₀ hlen').mpr (by linarith only [hbound])) (abs_nonneg _)
                   _ = _ := by ring
        _ ≤ _ := by rw [←mul_sum]; exact mul_le_mul_of_nonneg_left hcost (by norm_num)
+
+private theorem nearby_frozen_price {η : ℝ} (hη : 0 < η) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {m n H : ℕ}, 1 ≤ H → 2*H ≤ n → n ≤ H^2 →
+      n-H < m → m ≤ n →
+      |frozenOrdinaryCofactorPrice n (2*H) m-primeMidpointPrice n| ≤
+        C*H*samplingMass η n*(samplingLog n)^2 := by
+  obtain ⟨A,hA⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  let K := max (4+|reflectedDensity|) 6
+  have hK : 0 ≤ K := (by norm_num : (0:ℝ) ≤ 6).trans (le_max_right ..)
+  let C := 32+2*|A|+2*K
+  refine ⟨C,by dsimp only [C]; positivity,?_⟩
+  intro m n H hH hshort hsquare hm hmn
+  have hn : 0 < n := by omega
+  have hm1 : 1 < m := by omega
+  have hp : 0 < 2*H := by omega
+  have hh : (1:ℝ) ≤ H := Nat.one_le_cast.mpr hH
+  let T := 4*n/(2*H)
+  let L := samplingLog n
+  let M := samplingMass η n
+  have hL := sampling_log_one n
+  have hM := sampling_mass_one η n
+  have hL0 : 0 ≤ L := zero_le_one.trans hL
+  have hM0 : 0 ≤ M := zero_le_one.trans hM
+  have hTn : T ≤ 4*n := Nat.div_le_self .. 
+  have hlog : 1+Real.log (T:ℝ) ≤ L := by
+    rcases eq_zero_or_pos T with ht | ht
+    · rw [ht,Nat.cast_zero,Real.log_zero,add_zero]; exact hL
+    · exact add_le_add_right (Real.log_le_log (Nat.cast_pos.mpr ht) (Nat.cast_le.mpr hTn)) 1
+  have hLM : Real.log (4*n:ℕ) ≤ L := le_add_of_nonneg_left zero_le_one
+  have hlog0 := Real.log_natCast_nonneg (4*n)
+  have d : (n:ℝ)-m ≤ H := by
+    have ht : n ≤ H+m := by omega
+    exact sub_le_iff_le_add.mpr (by exact_mod_cast ht)
+  have hT : (T:ℝ) ≤ 2*H := by
+    apply Nat.cast_div_le.trans
+    rw [div_le_iff₀ (Nat.cast_pos.mpr hp)]
+    push_cast
+    have hs : (n:ℝ) ≤ (H:ℝ)^2 := by exact_mod_cast hsquare
+    linarith only [hs]
+  have ht := freeze_ordinary_cofactor_window hmn hp (by omega)
+  have freeze : |frozenOrdinaryCofactorPrice n (2*H) m-frozenOrdinaryCofactorPrice m (2*H) m| ≤
+      10*(H:ℝ)*L^2 := by
+    have h1 := mul_le_mul (mul_le_mul_of_nonneg_left d (by norm_num : (0:ℝ) ≤ 6)) hlog
+      (add_nonneg zero_le_one (Real.log_natCast_nonneg T)) (by positivity)
+    have h2 := mul_le_mul hT hLM hlog0 (by positivity)
+    have h3 := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hL hL0) (Nat.cast_nonneg (α:=ℝ) H)
+    apply ht.trans
+    change _ ≤ 10*(H:ℝ)*L^2
+    change 6*((n:ℝ)-m)*(1+Real.log (T:ℝ))*L+2*(T:ℝ)*Real.log (4*n:ℕ) ≤ _
+    linarith only [mul_le_mul_of_nonneg_right h1 hL0,h2,h3]
+  have hs : Real.sqrt m ≤ H := (Real.sqrt_le_iff).mpr ⟨Nat.cast_nonneg H,by exact_mod_cast hmn.trans hsquare⟩
+  have hcut : ⌊2*Real.sqrt m⌋₊ ≤ 2*H := Nat.floor_le_of_le (by
+    push_cast; exact mul_le_mul_of_nonneg_left hs (by norm_num))
+  have hproper := (hA ((4*m:ℕ):ℝ)).trans
+    (mul_le_mul (le_abs_self A) (show Real.sqrt ((4*m:ℕ):ℝ) ≤ 2*H by
+      rw [Nat.cast_mul,Nat.cast_ofNat,Real.sqrt_mul (by norm_num : (0:ℝ)≤4),show Real.sqrt 4=2 by norm_num]
+      exact mul_le_mul_of_nonneg_left hs (by norm_num)) (Real.sqrt_nonneg _) (abs_nonneg _))
+  have own := frozen_price_at_own_center_error hm1 hp hcut (by omega)
+  have hown : |frozenOrdinaryCofactorPrice m (2*H) m-primeMidpointPrice m| ≤
+      (15+2*|A|+2*K)*(H:ℝ)*M := by
+    apply own.trans
+    apply mul_le_mul _ (sampling_divisor_mass hη (by omega) (by omega)) (sum_nonneg fun _ _ => abs_nonneg _) (by positivity)
+    push_cast
+    dsimp only [K] at ⊢
+    linarith only [hproper,hh]
+  have hd := (full_midpoint_motion hmn).trans
+    (mul_le_mul (mul_le_mul_of_nonneg_left d (by norm_num : (0:ℝ) ≤ 6)) hLM hlog0 (by positivity))
+  have hL2 : 1 ≤ L^2 := one_le_pow₀ hL
+  have hLsq : L ≤ L^2 := by rw [sq]; exact le_mul_of_one_le_right hL0 hL
+  let W := (H:ℝ)*M*L^2
+  have W1 : (H:ℝ)*L^2 ≤ W := by
+    exact mul_le_mul_of_nonneg_right (le_mul_of_one_le_right (Nat.cast_nonneg _) hM) (sq_nonneg L)
+  have W2 : (H:ℝ)*M ≤ W := le_mul_of_one_le_right (by positivity) hL2
+  have W3 : (H:ℝ)*L ≤ W := (mul_le_mul_of_nonneg_left hLsq (Nat.cast_nonneg H)).trans W1
+  have hW : 0 ≤ W := by dsimp only [W]; positivity
+  rw [abs_le]
+  have hf := abs_le.mp freeze
+  have ho := abs_le.mp hown
+  have hd' := abs_le.mp hd
+  have b1 := mul_le_mul_of_nonneg_left W1 (by norm_num : (0:ℝ) ≤ 10)
+  have b2 := mul_le_mul_of_nonneg_left W2 (by positivity : 0 ≤ 15+2*|A|+2*K)
+  have b3 := mul_le_mul_of_nonneg_left W3 (by norm_num : (0:ℝ) ≤ 6)
+  change -((32+2*|A|+2*K)*(H:ℝ)*M*L^2) ≤ _ ∧ _ ≤ _
+  dsimp only [W] at b1 b2 b3 hW
+  constructor <;> linarith only [hf.1,hf.2,ho.1,ho.2,hd'.1,hd'.2,b1,b2,b3,hW]
+
+/-- For the actual backward sampling window all endpoints may be frozen
+at the original midpoint. The total error retains the signed projection. -/
+private theorem projected_price_window_estimate {η : ℝ} (hη : 0 < η) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n V H : ℕ}, 1 ≤ V → V ≤ H → 2*H ≤ n → n*V ≤ H^2 →
+      |projectedOrdinaryCofactorPrice n (2*H) V-primeMidpointPrice n| ≤
+        C*(H:ℝ)*V*samplingMass η n*(samplingLog n)^3 := by
+  obtain ⟨K,hK,hloc⟩ := nearby_frozen_price hη
+  refine ⟨K+40,by positivity,?_⟩
+  intro n V H hV hVH hn hsq
+  have hH := hV.trans hVH
+  have hH0 := (Nat.cast_pos (α:=ℝ)).mpr hH
+  have hn0 : 0 < n := by omega
+  have hnH := (Nat.le_mul_of_pos_right n hV).trans hsq
+  let S := Icc 1 V
+  let a (d : ℕ) := (n-H)/d
+  let L (d : ℕ) := n/d-a d
+  have endpoint (d : ℕ) : a d+L d=n/d :=
+    Nat.add_sub_of_le (Nat.div_le_div_right (Nat.sub_le n H))
+  have hlen (d : ℕ) (hd : d ∈ S) : H/d ≤ L d := by
+    have hpos := (mem_Icc.mp hd).1
+    have he : (a d+H/d)*d ≤ n := by
+      rw [Nat.add_mul]
+      exact (Nat.add_le_add (Nat.div_mul_le_self (n-H) d) (Nat.div_mul_le_self H d)).trans (by omega)
+    have h := (Nat.le_div_iff_mul_le hpos).mpr he
+    dsimp only [L]; omega
+  have hp (d : ℕ) (hd : d ∈ S) : 0 < L d :=
+    (Nat.div_pos ((mem_Icc.mp hd).2.trans hVH) (mem_Icc.mp hd).1).trans_le (hlen d hd)
+  let X := primeMidpointPrice n
+  let M := samplingMass η n
+  let G := samplingLog n
+  let B := K*H*M*G^2
+  let F (d : ℕ) := (∑ k ∈ Ioc (a d) (a d+L d),frozenOrdinaryCofactorPrice n (2*H) (d*k))/(L d:ℝ)
+  have hG : 1 ≤ G := sampling_log_one _
+  have hM : 1 ≤ M := sampling_mass_one .. 
+  have hB : 0 ≤ B := by dsimp only [B]; positivity
+  have avg (d : ℕ) (hd : d ∈ S) : |F d-X| ≤ B := by
+    have hd0 := (mem_Icc.mp hd).1
+    have hterm (k : ℕ) (hk : k ∈ Ioc (a d) (a d+L d)) :
+        |frozenOrdinaryCofactorPrice n (2*H) (d*k)-X| ≤ B := by
+      obtain ⟨hlo,hhi⟩ := mem_Ioc.mp hk
+      rw [endpoint] at hhi
+      exact hloc hH hn hnH ((Nat.div_lt_iff_lt_mul hd0).mp hlo |>.trans_eq (Nat.mul_comm k d))
+        (((Nat.le_div_iff_mul_le hd0).mp hhi).trans_eq' (Nat.mul_comm d k))
+    have hassoc : F d-X=(∑ k ∈ Ioc (a d) (a d+L d),(frozenOrdinaryCofactorPrice n (2*H) (d*k)-X))/(L d:ℝ) := by
+      rw [sum_sub_distrib,sum_const,Nat.card_Ioc,Nat.add_sub_cancel_left,nsmul_eq_mul,sub_div,mul_div_cancel_left₀ _ (Nat.cast_ne_zero.mpr (hp d hd).ne')]
+    rw [hassoc,abs_div,abs_of_nonneg (Nat.cast_nonneg _),div_le_iff₀ (Nat.cast_pos.mpr (hp d hd))]
+    exact (abs_sum_le_sum_abs ..).trans ((sum_le_sum hterm).trans_eq (by simp [Nat.card_Ioc,mul_comm]))
+  let U := ∑ d ∈ S,mertens (V/d)*F d
+  have hU : |U-X| ≤ (V:ℝ)*G*B := by
+    have eqn : U-X=∑ d ∈ S,mertens (V/d)*(F d-X) := by
+      rw [show (∑ d ∈ S,mertens (V/d)*(F d-X))=
+        (∑ d ∈ S,mertens (V/d)*F d)-(∑ d ∈ S,mertens (V/d))*X by simp only [mul_sub,sum_sub_distrib,sum_mul],
+        show (∑ d ∈ S,mertens (V/d))=1 from sum_mertens_floor_eq_one hV,one_mul]
+    rw [eqn]
+    apply (abs_sum_le_sum_abs ..).trans
+    calc _ ≤ ∑ d ∈ S,|mertens (V/d)|*B := sum_le_sum fun d hd => by
+                rw [abs_mul]; exact mul_le_mul_of_nonneg_left (avg d hd) (abs_nonneg _)
+         _ ≤ _ := by
+           rw [←sum_mul]
+           apply mul_le_mul_of_nonneg_right _ hB
+           apply (cofactor_projection_weight_cost V).1.trans
+           exact mul_le_mul_of_nonneg_left (add_le_add_right (Real.log_le_log (Nat.cast_pos.mpr hV)
+             (Nat.cast_le.mpr (by omega : V ≤ 4*n))) 1) (Nat.cast_nonneg V)
+  have hproj := signed_ordinary_cofactor_window n (2*H) hV a L hp
+  change |U-projectedOrdinaryCofactorPrice n (2*H) V| ≤ _ at hproj
+  have mass := finite_cofactor_mass hη hn0 (by omega : 0 < 2*H) (by omega : 2*H ≤ 4*n)
+  have cost := ordinary_cofactor_window_cost hV hVH L hlen
+  have bound := hproj.trans (mul_le_mul mass cost (sum_nonneg fun d _ => div_nonneg (abs_nonneg _) (Nat.cast_nonneg _)) (by positivity))
+  have hb : (n:ℝ)*(V:ℝ) ≤ (H:ℝ)^2 := by exact_mod_cast hsq
+  have balance : (n:ℝ)*(2*(V:ℝ)^2/H) ≤ 2*H*V := by
+    rw [←mul_div_assoc,div_le_iff₀ hH0]
+    nlinarith only [mul_le_mul_of_nonneg_right hb (Nat.cast_nonneg (α:=ℝ) V)]
+  have hG3 : G^2 ≤ G^3 := by rw [pow_succ G 2]; exact le_mul_of_one_le_right (sq_nonneg _) hG
+  have bd := mul_le_mul_of_nonneg_right balance (by positivity : 0 ≤ 20*M*G^2)
+  have up := mul_le_mul_of_nonneg_left hG3 (by positivity : 0 ≤ 40*(H:ℝ)*V*M)
+  rw [abs_le]
+  have hu := abs_le.mp hU
+  have hp' := abs_le.mp bound
+  change -((K+40)*(H:ℝ)*V*M*G^3) ≤ _ ∧ _ ≤ _
+  dsimp only [B] at hu
+  change -_ ≤ U-projectedOrdinaryCofactorPrice n (2*H) V ∧ _ ≤ 20*(n:ℝ)*M*G^2*(2*(V:ℝ)^2/H) at hp'
+  constructor <;> linarith only [hu.1,hu.2,hp'.1,hp'.2,bd,up]
+
+/-- The backward averaging interval has length the ceiling of √(nV). -/
+def cofactorSamplingWidth (n V : ℕ) := ⌈Real.sqrt ((n:ℝ)*V)⌉₊
+
+private theorem balanced_sampling_width {n V : ℕ} (hn : 64 ≤ n) (hV : 1 ≤ V) (hV3 : V^3 ≤ n) :
+    let H := cofactorSamplingWidth n V
+    V ≤ H ∧ 2*H ≤ n ∧ n*V ≤ H^2 ∧ (H:ℝ) ≤ 2*Real.sqrt n*Real.sqrt V := by
+  intro H
+  have hn1 : (1:ℝ) ≤ n := Nat.one_le_cast.mpr (by omega)
+  have hv1 : (1:ℝ) ≤ V := Nat.one_le_cast.mpr hV
+  let R := Real.sqrt ((n:ℝ)*V)
+  have hverts (v : ℕ) (hv : 1 ≤ v) : v ≤ v^3 := by
+    have h := Nat.pow_le_pow_right hv (by decide : 1 ≤ 3)
+    simpa only [pow_one] using h
+  have hvn : V ≤ n := (hverts V hV).trans hV3
+  have hdiv : 16*V ≤ n := by
+    by_cases h : V < 4
+    · omega
+    · have hh := Nat.pow_le_pow_left (Nat.le_of_not_gt h) 2
+      have h16 : 16 ≤ V^2 := hh
+      exact (Nat.mul_le_mul_right V h16).trans ((pow_succ V 2).symm.le.trans hV3)
+  have hr : R^2=(n:ℝ)*V := Real.sq_sqrt (by positivity)
+  have hr0 : 0 ≤ R := Real.sqrt_nonneg _
+  have hr1 : 1 ≤ R := Real.one_le_sqrt.mpr (one_le_mul_of_one_le_of_one_le hn1 hv1)
+  have hlow : R ≤ (H:ℝ) := Nat.le_ceil _
+  have hu : (H:ℝ) ≤ R+1 := (Nat.ceil_lt_add_one hr0).le
+  refine ⟨Nat.cast_le.mp (le_trans ?_ hlow),?_,?_,?_⟩
+  · apply (Real.le_sqrt (Nat.cast_nonneg _) (by positivity)).mpr
+    simpa only [sq] using mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hvn : (V:ℝ) ≤ n) (Nat.cast_nonneg V)
+  · have h16 : 16*(V:ℝ) ≤ n := by exact_mod_cast hdiv
+    have hr4 : R ≤ (n:ℝ)/4 := (Real.sqrt_le_iff).mpr ⟨by positivity,by
+      nlinarith only [mul_le_mul_of_nonneg_left h16 (Nat.cast_nonneg (α:=ℝ) n)]⟩
+    have hn' : (64:ℝ) ≤ n := by exact_mod_cast hn
+    have hh : 2*(H:ℝ) ≤ n := by linarith only [hu,hr4,hn']
+    exact_mod_cast hh
+  · have hh := pow_le_pow_left₀ hr0 hlow 2
+    rw [hr] at hh
+    exact_mod_cast hh
+  · have ht : (H:ℝ) ≤ 2*R := by linarith only [hu,hr1]
+    simpa only [R,Real.sqrt_mul (Nat.cast_nonneg (α:=ℝ) n),mul_assoc] using ht
+
+/-- At every integer midpoint, signed sampling removes all proper
+cofactors through V at cost Oε(n^(1/2+ε) V^(3/2)). -/
+theorem ordinary_cofactor_signed_sampling {ε : ℝ} (hε : 0 < ε) :
+    ∃ C : ℝ, ∀ {n V : ℕ}, 1 ≤ V → V^3 ≤ n →
+      |projectedOrdinaryCofactorPrice n (2*cofactorSamplingWidth n V) V-primeMidpointPrice n| ≤
+        C*(n:ℝ)^(1/2+ε)*(V:ℝ)^(3/2:ℝ) := by
+  let η := ε/2
+  have hη : 0 < η := half_pos hε
+  obtain ⟨K,hK,h⟩ := projected_price_window_estimate hη
+  let J := (1+|_root_.RHTower.Sieve.divisorBoundConst η|)*(1+4/η)^3*(4:ℝ)^ε
+  have hJ : 0 ≤ J := by dsimp only [J]; positivity
+  let E (n V : ℕ) := |projectedOrdinaryCofactorPrice n (2*cofactorSamplingWidth n V) V-primeMidpointPrice n|
+  let Z := ∑ n ∈ Icc 1 63,∑ V ∈ Icc 1 63,E n V
+  have hZ : 0 ≤ Z := sum_nonneg fun n _ => sum_nonneg fun V _ => abs_nonneg _
+  refine ⟨2*K*J+Z,?_⟩
+  intro n V hV hV3
+  have hv0 := (Nat.cast_pos (α:=ℝ)).mpr hV
+  have hv1 := (Nat.one_le_cast (α:=ℝ)).mpr hV
+  have hvn : V ≤ n := (by simpa only [pow_one] using Nat.pow_le_pow_right hV (by decide : 1 ≤ 3)).trans hV3
+  have hn := hV.trans hvn
+  have hn1 := (Nat.one_le_cast (α:=ℝ)).mpr hn
+  have hn0 := (Nat.cast_pos (α:=ℝ)).mpr hn
+  by_cases hlarge : 64 ≤ n
+  · obtain ⟨hVH,hcut,hsq,hwidth⟩ := balanced_sampling_width hlarge hV hV3
+    have bound := h hV hVH hcut hsq
+    let X : ℝ := (4*n:ℕ)
+    have hx : 1 ≤ X := Nat.one_le_cast.mpr (by omega : 1 ≤ 4*n)
+    have hxp := Real.one_le_rpow hx hη.le
+    have logbound := _root_.RHTower.one_add_log_pow_le_rpow 3 hη hx
+    change (samplingLog n)^3 ≤ (1+((3:ℝ)+1)/η)^3*X^η at logbound
+    norm_num only [show (3:ℝ)+1=4 by norm_num] at logbound
+    have mass : samplingMass η n ≤ (1+|_root_.RHTower.Sieve.divisorBoundConst η|)*X^η := by
+      dsimp only [samplingMass,X] at *
+      linarith only [hxp]
+    have ml := mul_le_mul mass logbound (pow_nonneg (zero_le_one.trans (sampling_log_one n)) _)
+      (by positivity)
+    have heq : ((1+|_root_.RHTower.Sieve.divisorBoundConst η|)*X^η)*((1+4/η)^3*X^η)=J*(n:ℝ)^ε := by
+      have hp : X^η*X^η=X^ε := by rw [←Real.rpow_add (zero_lt_one.trans_le hx),show η+η=ε by dsimp only [η]; ring]
+      calc _ = ((1+|_root_.RHTower.Sieve.divisorBoundConst η|)*(1+4/η)^3)*(X^η*X^η) := by ring
+           _ = _ := by rw [hp]; dsimp only [X,J]; rw [Nat.cast_mul,Nat.cast_ofNat,Real.mul_rpow (by norm_num) hn0.le]; ring
+    rw [heq] at ml
+    have w := mul_le_mul_of_nonneg_right hwidth (Nat.cast_nonneg (α:=ℝ) V)
+    have p := mul_le_mul w ml (mul_nonneg (zero_le_one.trans (sampling_mass_one η n))
+      (pow_nonneg (zero_le_one.trans (sampling_log_one n)) _)) (by positivity)
+    have veq : (V:ℝ)^(3/2:ℝ)=Real.sqrt V*V := by
+      rw [show (3/2:ℝ)=1/2+1 by norm_num,Real.rpow_add hv0,Real.rpow_one,Real.sqrt_eq_rpow]
+    rw [Real.rpow_add hn0,←Real.sqrt_eq_rpow,veq]
+    have hb := mul_le_mul_of_nonneg_left p hK
+    have hz := mul_nonneg hZ (mul_nonneg (mul_nonneg (Real.sqrt_nonneg n) (Real.rpow_nonneg hn0.le _))
+      (mul_nonneg (Real.sqrt_nonneg V) (Nat.cast_nonneg V)))
+    linarith only [bound,hb,hz]
+  · have hh : E n V ≤ Z :=
+      (single_le_sum (f:=E n) (fun _ _ => abs_nonneg _) (mem_Icc.mpr ⟨hV,by omega : V ≤ 63⟩)).trans
+        (single_le_sum (s:=Icc 1 63) (f:=fun k => ∑ v ∈ Icc 1 63,E k v)
+          (fun _ _ => sum_nonneg fun _ _ => abs_nonneg _) (mem_Icc.mpr ⟨hn,by omega⟩))
+    have pos := add_nonneg (mul_nonneg (mul_nonneg (by norm_num) hK) hJ) hZ
+    have h1 := Real.one_le_rpow hn1 (by linarith only [hε] : 0 ≤ 1/2+ε)
+    have h2 := Real.one_le_rpow hv1 (by norm_num : (0:ℝ) ≤ 3/2)
+    exact (hh.trans (le_add_of_nonneg_left (by positivity))).trans
+      ((le_mul_of_one_le_right pos h1).trans (le_mul_of_one_le_right (mul_nonneg pos (zero_le_one.trans h1)) h2))
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -62,7 +62,7 @@ theorem eighth_deficit_spacing_iff {ι : Type*} {l : Filter ι} {u v : ι → �
   · intro h
     have ht := he.add ((h.log (Real.exp_pos _).ne').const_mul (1/2:ℝ))
     rw [Real.log_exp, zero_add, show (1/2:ℝ)*(2*L)=L by ring] at ht
-    exact ht.congr fun i => sub_add_cancel .. 
+    exact ht.congr fun i => sub_add_cancel ..
 
 /-- The reciprocal readings at the eighth-power endpoints possess a finite
 part after subtracting log log k. -/
@@ -78,8 +78,7 @@ theorem eighth_reciprocal_deficit_finite_part :
     filter_upwards [eventually_ge_atTop 2] with k hk
     have hl := (Real.log_pos (Nat.one_lt_cast.mpr hk : (1:ℝ)<k)).ne'
     change (1+(powerGridGcdDeficit 8 k-(1/2)*Real.log k))/Real.log k+1/2 = _
-    field_simp
-    ring
+    field_simp <;> ring
   have hlog := hratio.log (by norm_num : (1/2:ℝ) ≠ 0)
   refine ⟨Real.log (1/2)-d, (hlog.sub hd).congr' ?_⟩
   filter_upwards [eventually_ge_atTop 2] with k hk

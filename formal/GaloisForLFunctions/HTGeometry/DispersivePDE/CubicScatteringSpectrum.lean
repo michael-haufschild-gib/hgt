@@ -61,7 +61,7 @@ private theorem spectral_det {M : Matrix (Fin n) (Fin n) ℝ} (hM : M.IsHermitia
   change (↑hM.eigenvectorUnitary * diagonal _ * (star hM.eigenvectorUnitary : Matrix _ _ ℝ)).det = _
   rw [Matrix.det_mul_comm,← Matrix.mul_assoc,Unitary.coe_star_mul_self,one_mul,Matrix.det_diagonal]
 
-private def factor (λ' : ℝ) : ℝ[X] := 1+C λ'*X
+private def factor (level : ℝ) : ℝ[X] := 1+C level*X
 
 /-- Exact real linear factorization of the Hirota subset polynomial. -/
 theorem tau_spectral_product (r a : Fin n → ℝ) :
@@ -93,20 +93,20 @@ theorem tau_root_simple (r a : Fin n → ℝ) (x : ℝ) :
   classical
   intro hx
   obtain ⟨i,hi,rfl⟩ := (characteristic_root r a x).mp hx
-  let λ' := levels r a i
-  have hλ : λ' ≠ 0 := hi.ne'
-  have hroot : (factor λ').eval (-λ'⁻¹) = 0 := by simp [factor,hλ]
+  let level := levels r a i
+  have hλ : level ≠ 0 := hi.ne'
+  have hroot : (factor level).eval (-level⁻¹) = 0 := by simp [factor,hλ]
   let P := ∏ j ∈ univ.erase i, factor (levels r a j)
-  have hP : P.eval (-λ'⁻¹) ≠ 0 := by
+  have hP : P.eval (-level⁻¹) ≠ 0 := by
     rw [show P = ∏ j ∈ univ.erase i, factor (levels r a j) from rfl,Polynomial.eval_prod]
     apply Finset.prod_ne_zero_iff.mpr
     intro j hj hzero
-    have he : levels r a j=λ' := by
+    have he : levels r a j=level := by
       simp only [factor,eval_add,eval_one,eval_mul,eval_C,eval_X] at hzero
       field_simp [hλ] at hzero
       linarith only [hzero]
     exact ((spectral_collision r (amplitude r a) j i he).resolve_right hi.ne') |> (Finset.ne_of_mem_erase hj)
-  have hf : tauPolynomial r a = P*factor λ' := by
+  have hf : tauPolynomial r a = P*factor level := by
     rw [tau_spectral_product]
     exact (Finset.prod_erase_mul _ _ (Finset.mem_univ i)).symm
   refine ⟨neg_neg_of_pos (inv_pos.mpr hi),?_⟩

@@ -66,7 +66,7 @@ private theorem move_cut {ι : Type*} {l : Filter ι} {T u : ι → ℝ} {f : �
   refine h.congr' ?_
   filter_upwards [hu.eventually_ne ha.ne'] with i hi
   change (T i*u i*f (T i*u i))/u i = _
-  field_simp
+  field_simp <;> ring
 
 /-- Moving bands have an exact coefficient, including when their cutoffs
 cross infinitely often. The formula also allows discrete subsequences. -/
