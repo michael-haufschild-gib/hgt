@@ -13,12 +13,12 @@ Keep the ordinary primes above \(y\) with their logarithmic weights and allow ar
 \]
 Every cofactor beyond \(Z\) has quotient at most \(K\); every cofactor through \(Z\) has quotient at least \(K\). Both endpoints of the prime reading occur.
 
-For \(K\ge X^\delta\) with fixed \(\delta>0\), the prime number theorem with a logarithmic remainder replaces each bracket by \(X/m-K\). The total error is \(O_\delta(X/\log X)\), uniformly in the signed choices, since \(\sum_{m\le Z}1/m\le1+\log X\) and the proper-power population is sublinear by a fixed power. Divisor inversion gives \(\Psi(Z,y)=\sum_{m\le Z}\mu_y(m)\lfloor Z/m\rfloor\). If \(R_y(Z)\) counts the rough integers through \(Z\), the endpoint and rounding together give
+Write \(R_y(Z)\) for the number of rough integers through \(Z\). For every \(\Theta<s<1\), where \(\Theta\) is the zeta zero abscissa, both ordinary prime errors in each interval have size \(O_s((X/m)^s)\). The total possible change on proper powers has size \(O(\sqrt{X/m})\) per cofactor. Thus, for \(y\le Z\) and \(yZ\le X\), divisor inversion gives
 \[
  \left|B-\frac XZ\Psi(Z,y)\right|
- \le 2\frac XZ R_y(Z)+O_\delta(X/\log X).
+ \ll_s X^s Z^{1-s}+\frac XZ R_y(Z).
 \]
-As \(Z,y\to\infty\), \(R_y(Z)/Z\to0\) by comparison with any fixed primorial. The upper quotient contribution therefore measures the **positive** smooth proportion at the interior cofactor cutoff. A bound on the recombined reading forces the complementary signed charge with the opposite sign.
+Indeed \(\Psi(Z,y)=\sum_{m\le Z}\mu_y(m)\lfloor Z/m\rfloor\). Replacing \(X/m\) by \((X/Z)\lfloor Z/m\rfloor\) costs less than \(X/Z\) in each row, and the common lower endpoint costs at most another \(X/Z\). Dividing by \(X\), the first term is at most \(y^{s-1}\). The second tends uniformly to zero as \(y\to\infty\) by comparison with a fixed primorial. This identifies the positive smooth proportion throughout the whole upper quotient range, including \(X/Z=X^{o(1)}\).
 
 The first band is [formalized](../3-formalized/qfsb-signed-profile-through-the-first-prime-band.md). The remaining issue is the original exact floor center on the same sector. It is
 \[

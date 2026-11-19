@@ -26,8 +26,8 @@ def completedMultiplePrice (p u v : ℕ → ℝ) : ℝ :=
   ∑' t : ℕ × ℕ, u (t.1+1)*v ((t.2+1)*(t.1+1))*p (t.2+1)
 
 private theorem normalized_multiple_price (N : ℕ) (p u v : ℕ → ℝ) (a b : ℕ → ℤ)
-    (ha : ∀ i, 0<i → (upperDivisor N a i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i)
-    (hb : ∀ i, 0<i → (upperDivisor N b i:ℝ)/((N:ℝ)+1)=normalizedConductor N v i) :
+    (ha : ∀ i, 0 < i → (upperDivisor N a i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i)
+    (hb : ∀ i, 0 < i → (upperDivisor N b i:ℝ)/((N:ℝ)+1)=normalizedConductor N v i) :
     completedMultiplePrice p (normalizedConductor N u) (normalizedConductor N v) =
       (∑ k ∈ Icc 1 N, ∑ i ∈ Icc 1 N, (upperDivisor N a i:ℝ)*upperDivisor N b (k*i)*p k)/
         ((N:ℝ)+1)^2 := by
@@ -115,8 +115,8 @@ theorem completed_interleaved_integral_realization (r u v : ℕ → ℝ) (hr : �
     (hA : Summable (fun k => (1/r k)^2)) (hB : Summable (fun k => (|Λ k-1| / r k)^2))
     (hu : Summable (fun k => (r k*u k)^2)) (hv : Summable (fun k => (r k*v k)^2)) :
     ∃ A B : ℕ → ℕ → ℤ,
-      (∀ N i, 0<i → (upperDivisor N (A N) i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i) ∧
-      (∀ N i, 0<i → (upperDivisor N (B N) i:ℝ)/((N:ℝ)+1)=normalizedConductor N v i) ∧
+      (∀ N i, 0 < i → (upperDivisor N (A N) i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i) ∧
+      (∀ N i, 0 < i → (upperDivisor N (B N) i:ℝ)/((N:ℝ)+1)=normalizedConductor N v i) ∧
       Tendsto (fun N => interleavedFinitePart N (A N) (B N)/((N:ℝ)+1)^2) atTop
         (𝓝 (-(completedMultiplePrice (fun k => Λ k-1) u v+completedMultiplePrice (fun k => Λ k-1) v u)-
           (∫ x in (0:ℝ)..1, completedConductorJet u v x)/2)) := by
@@ -142,8 +142,8 @@ theorem completed_power_integral_realization {s : ℝ} (hs : 1/2 < s) (u v : ℕ
     (hu : Summable (fun k => (powerConductorWeight s k*u k)^2))
     (hv : Summable (fun k => (powerConductorWeight s k*v k)^2)) :
     ∃ A B : ℕ → ℕ → ℤ,
-      (∀ N i, 0<i → (upperDivisor N (A N) i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i) ∧
-      (∀ N i, 0<i → (upperDivisor N (B N) i:ℝ)/((N:ℝ)+1)=normalizedConductor N v i) ∧
+      (∀ N i, 0 < i → (upperDivisor N (A N) i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i) ∧
+      (∀ N i, 0 < i → (upperDivisor N (B N) i:ℝ)/((N:ℝ)+1)=normalizedConductor N v i) ∧
       Tendsto (fun N => interleavedFinitePart N (A N) (B N)/((N:ℝ)+1)^2) atTop
         (𝓝 (-(completedMultiplePrice (fun k => Λ k-1) u v+completedMultiplePrice (fun k => Λ k-1) v u)-
           (∫ x in (0:ℝ)..1, completedConductorJet u v x)/2)) := by
@@ -245,8 +245,8 @@ theorem completed_weighted_cell_exhaustion (r w u v : ℕ → ℝ)
 are exactly the positive quotient cells of the two scaled integral
 endpoint divisors, extended by zero past the cutoff. -/
 theorem normalized_weighted_cell_eq (N k : ℕ) (w u v : ℕ → ℝ) (a b : ℕ → ℤ)
-    (ha : ∀ i, 0<i → (upperDivisor N a i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i)
-    (hb : ∀ i, 0<i → (upperDivisor N b i:ℝ)/((N:ℝ)+1)=normalizedConductor N v i) :
+    (ha : ∀ i, 0 < i → (upperDivisor N a i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i)
+    (hb : ∀ i, 0 < i → (upperDivisor N b i:ℝ)/((N:ℝ)+1)=normalizedConductor N v i) :
     completedWeightedCell w (normalizedConductor N u) (normalizedConductor N v) k =
       if k<N then w (k+1)*twoSidedCoefficient N a b (k+1)/((N:ℝ)+1)^2 else 0 := by
   let q := k+1

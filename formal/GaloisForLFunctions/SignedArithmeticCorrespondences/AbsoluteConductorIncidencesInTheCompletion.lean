@@ -163,7 +163,7 @@ theorem normalizedConductor_tendsto (u : ℕ → ℝ) (i : ℕ) :
 /-- The same array of actual integral endpoint jumps realizes every
 positive normalized conductor in each cutoff. -/
 theorem normalizedConductor_integral_endpoints (u : ℕ → ℝ) (N : ℕ) :
-    ∃ a : ℕ → ℤ, ∀ i, 0<i → (upperDivisor N a i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i := by
+    ∃ a : ℕ → ℤ, ∀ i, 0 < i → (upperDivisor N a i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i := by
   obtain ⟨a,ha⟩ := exists_upper_endpoints N (fun i => roundedJump N (u i))
   refine ⟨a,fun i hi => ?_⟩
   rw [ha i hi,normalizedConductor]
@@ -187,7 +187,7 @@ theorem integral_incidence_exhaustion (s : ℕ) (r w u v : ℕ → ℝ) (hr : �
 /-- The two off-diagonal real monomials, with zero on the diagonal and at
 the unused zero conductor. -/
 def conductorJetEntry (i j : ℕ) (x : ℝ) : ℝ :=
-  if 0<i ∧ 0<j ∧ i≠j then x^(max i j-min i j-1)+x^(i+j-1) else 0
+  if 0 < i ∧ 0 < j ∧ i≠j then x^(max i j-min i j-1)+x^(i+j-1) else 0
 
 /-- The pointwise jet of two infinite conductor sections. -/
 def completedConductorJet (u v : ℕ → ℝ) (x : ℝ) : ℝ :=
@@ -205,8 +205,8 @@ private theorem jet_entry_bound (i j : ℕ) {x : ℝ} (hx : x∈Set.Icc 0 1) :
 /-- Each normalized finite jet equals the real jet of its actual integral
 endpoint presentation divided by the square of the rounding multiplicity. -/
 theorem normalized_jet_eq_integral_section (N : ℕ) (u v : ℕ → ℝ) (a b : ℕ → ℤ)
-    (ha : ∀ i, 0<i → (upperDivisor N a i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i)
-    (hb : ∀ i, 0<i → (upperDivisor N b i:ℝ)/((N:ℝ)+1)=normalizedConductor N v i) (x : ℝ) :
+    (ha : ∀ i, 0 < i → (upperDivisor N a i:ℝ)/((N:ℝ)+1)=normalizedConductor N u i)
+    (hb : ∀ i, 0 < i → (upperDivisor N b i:ℝ)/((N:ℝ)+1)=normalizedConductor N v i) (x : ℝ) :
     completedConductorJet (normalizedConductor N u) (normalizedConductor N v) x =
       mixedJetSection N a b x/((N:ℝ)+1)^2 := by
   let S := Icc 1 N
@@ -279,7 +279,7 @@ theorem uniform_jet_exhaustion (r u v : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm : M
     exact mul_le_mul (hf p) (hk p) (abs_nonneg _) (abs_nonneg _)
   have hp := hPK P fun _ => le_rfl
   have hq := hPK (Q N) (hQ N)
-  change |(∑' p, Q N p*K p)-(∑' p, P p*K p)| ≤ _
+  change |(∑' p, Q N p*K p)-(∑' p, P p*K p)| ≤ (∑' p, D N p)*2
   rw [← hq.tsum_sub hp,← tsum_mul_right]
   have he (p : ℕ × ℕ) : ‖Q N p*K p-P p*K p‖≤D N p*2 := by
     rw [← sub_mul,Real.norm_eq_abs,abs_mul]
