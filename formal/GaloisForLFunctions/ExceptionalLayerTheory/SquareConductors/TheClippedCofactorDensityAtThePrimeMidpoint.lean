@@ -176,7 +176,7 @@ private theorem primitive_length_inversion {n : ℕ} (hn : 0 < n) (P : ℕ) :
 Divisor scales close to the prime cutoff control its remaining error. -/
 theorem primitive_clipped_density_error {n P : ℕ} (hn : 0 < n) (hp : 0 < P) :
     |primitiveCofactorLength n P-reflectedDensity*n.totient| ≤ max (4+|reflectedDensity|) 6 *
-      ∑ d ∈ n.divisors,|(μ d:ℝ)|*min ((n/d:ℕ):ℝ) ((P:ℝ)^2/(n/d:ℕ)) := by
+      ∑ d ∈ n.divisors,|(μ d:ℝ)| * min ((n/d:ℕ):ℝ) ((P:ℝ)^2/(n/d:ℕ)) := by
   have he : primitiveCofactorLength n P-reflectedDensity*n.totient=
       ∑ d ∈ n.divisors,(μ d:ℝ)*(reflectedLatticeLength (n/d) P-reflectedDensity*(n/d:ℕ)) := by
     rw [primitive_length_inversion hn,_root_.RHTower.Sieve.totient_eq_sum_moebius_mul n hn,mul_sum,

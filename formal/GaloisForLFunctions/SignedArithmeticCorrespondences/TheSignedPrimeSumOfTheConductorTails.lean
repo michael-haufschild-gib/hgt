@@ -323,6 +323,95 @@ theorem signed_finite_part_power_iff (s : ℝ) :
   have hfull : Summable (fun n : ℕ => 1/(n:ℝ)) := (summable_nat_add_iff 1).mp hH
   exact (lt_irrefl (1:ℝ)) ((Real.summable_one_div_nat_rpow (p := 1)).mp (by simpa using hfull))
 
+private theorem sum_on_sixes (M : ℕ) (f : ℕ → ℝ) :
+    (∑ k ∈ Icc 1 (6*M), if 6∣k then f (k/6) else 0)=∑ j ∈ Icc 1 M, f j := by
+  have him : (Icc 1 (6*M)).filter (fun k => 6∣k)=(Icc 1 M).image (fun j => 6*j) := by
+    ext k
+    constructor
+    · intro hk
+      obtain ⟨hk,⟨j,rfl⟩⟩ := mem_filter.mp hk
+      obtain ⟨hlo,hhi⟩ := mem_Icc.mp hk
+      exact mem_image.mpr ⟨j,mem_Icc.mpr ⟨by omega,by omega⟩,rfl⟩
+    · intro hk
+      obtain ⟨j,hj,rfl⟩ := mem_image.mp hk
+      obtain ⟨hlo,hhi⟩ := mem_Icc.mp hj
+      exact mem_filter.mpr ⟨mem_Icc.mpr ⟨by omega,by omega⟩,dvd_mul_right _ _⟩
+  rw [← sum_filter,him,sum_image (fun _ _ _ _ he => Nat.eq_of_mul_eq_mul_left (by decide : 0<6) he)]
+  exact sum_congr rfl fun j _ => congrArg f (by omega)
+
+/-- At the critical signed exponent the upper integral multiplicity at
+6j is M!/j. Its exact square energy and signed lower bound exhibit the
+square-root harmonic divergence on this one family. -/
+theorem signed_factorial_witness {M : ℕ} (hM : 0<M) :
+    let N := 6*M
+    let F : ℝ := M.factorial
+    let H := ∑ j ∈ Icc 1 M, 1/(j:ℝ)
+    let r := powerConductorWeight (1/2)
+    ∃ a b : ℕ → ℤ, (∀ i ∈ Icc 1 N, upperDivisor N a i=if i=1 then 1 else 0) ∧
+      (∀ i ∈ Icc 1 N, upperDivisor N b i=if 6∣i then (M.factorial/(i/6):ℕ) else 0) ∧
+      conductorNorm N (fun i => r i*upperDivisor N a i)=1 ∧
+      (conductorNorm N (fun i => r i*upperDivisor N b i))^2=6*F^2*H ∧
+      F*H/2 ≤ interleavedFinitePart N a b ∧
+      Real.sqrt (H/24)*conductorNorm N (fun i => r i*upperDivisor N b i) ≤ interleavedFinitePart N a b := by
+  intro N F H r
+  let m := fun i : ℕ => if 6∣i then M.factorial/(i/6) else 0
+  have hN : 0<N := Nat.mul_pos (by decide : 0<6) hM
+  obtain ⟨a,b,ha,hb,hval⟩ := signed_test_on_zero_prime_ratios hN m (fun k hk hm => by
+    have hd : 6∣k := by by_contra hn; exact hm (if_neg hn)
+    exact ⟨(by have := Nat.le_of_dvd (mem_Icc.mp hk).1 hd; omega),zero_prime_weight_on_sixes hd⟩)
+  have hf (j : ℕ) (hj : j∈Icc 1 M) : ((M.factorial/j:ℕ):ℝ)=F/(j:ℝ) :=
+    Nat.cast_div (Nat.dvd_factorial (mem_Icc.mp hj).1 (mem_Icc.mp hj).2) (Nat.cast_ne_zero.mpr (by have := (mem_Icc.mp hj).1; omega))
+  have hreal (i : ℕ) : (m i:ℝ)=if 6∣i then ((M.factorial/(i/6):ℕ):ℝ) else 0 := by
+    by_cases hd : 6∣i <;> simp [m,hd]
+  have hsum : (∑ i ∈ Icc 1 N, (m i:ℝ))=F*H := by
+    simp only [hreal,N]
+    rw [sum_on_sixes M (fun j : ℕ => ((M.factorial/j:ℕ):ℝ))]
+    simp only [H,mul_sum]
+    refine sum_congr rfl fun j hj => ?_
+    rw [hf j hj,mul_one_div]
+  have ht (k : ℕ) (hk : 1≤k) : (r k)^2=(k:ℝ) := by
+    change (((max k 1:ℕ):ℝ)^(1/2:ℝ))^2=_
+    rw [max_eq_left hk,← Real.sqrt_eq_rpow,Real.sq_sqrt (Nat.cast_nonneg _)]
+  have hn : (conductorNorm N (fun i => r i*upperDivisor N b i))^2=6*F^2*H := by
+    rw [conductorNorm,Real.sq_sqrt (sum_nonneg fun _ _ => sq_nonneg _)]
+    have row (i : ℕ) (hi : i∈Icc 1 N) :
+        (r i*(upperDivisor N b i:ℝ))^2=
+          (if 6∣i then (6*(i/6):ℕ)*((M.factorial/(i/6):ℕ):ℝ)^2 else 0) := by
+      rw [hb i hi,Int.cast_natCast,mul_pow,ht i (mem_Icc.mp hi).1,hreal]
+      by_cases hd : 6∣i
+      · simp only [if_pos hd,Nat.mul_div_cancel' hd]
+      · simp [hd]
+    change (∑ i ∈ Icc 1 N, (r i*(upperDivisor N b i:ℝ))^2)=_
+    rw [sum_congr rfl row]
+    change (∑ i ∈ Icc 1 (6*M), if 6∣i then (fun j => ((6*j:ℕ):ℝ)*((M.factorial/j:ℕ):ℝ)^2) (i/6) else 0)=_
+    rw [sum_on_sixes M (fun j : ℕ => ((6*j:ℕ):ℝ)*((M.factorial/j:ℕ):ℝ)^2)]
+    change _=6*F^2*∑ j ∈ Icc 1 M, 1/(j:ℝ)
+    rw [mul_sum]
+    refine sum_congr rfl fun j hj => ?_
+    change ((6*j:ℕ):ℝ)*((M.factorial/j:ℕ):ℝ)^2=_
+    rw [hf j hj,Nat.cast_mul,Nat.cast_ofNat]
+    field_simp [(Nat.cast_pos.mpr (mem_Icc.mp hj).1 : (0:ℝ)<j).ne']
+    <;> ring
+  have h₁ : 1∈Icc 1 N := mem_Icc.mpr ⟨le_rfl,hN⟩
+  have hu : conductorNorm N (fun i => r i*upperDivisor N a i)=1 := by
+    rw [conductorNorm,sum_eq_single_of_mem 1 h₁]
+    · simp [ha 1 h₁,r,powerConductorWeight]
+    · intro j hj he; simp [ha j hj,he]
+  rw [hsum] at hval
+  refine ⟨a,b,ha,?_,hu,hn,hval,le_trans ?_ hval⟩
+  · intro i hi; rw [hb i hi]; by_cases hd : 6∣i <;> simp [m,hd]
+  have hH : 0≤H := sum_nonneg fun _ _ => by positivity
+  have hF : 0≤F := Nat.cast_nonneg _
+  have hx := Real.sq_sqrt (div_nonneg hH (by norm_num : (0:ℝ)≤24))
+  let V := conductorNorm N (fun i => r i*upperDivisor N b i)
+  change V^2=_ at hn
+  change Real.sqrt (H/24)*V≤F*H/2
+  apply le_of_sq_le_sq _ (by positivity)
+  rw [mul_pow,hx,hn]
+  exact le_of_eq (by ring)
+
+#print axioms signed_factorial_witness
+
 #print axioms signed_finite_part_power_iff
 #print axioms signed_test_on_zero_prime_ratios
 #print axioms signed_finite_part_above_half

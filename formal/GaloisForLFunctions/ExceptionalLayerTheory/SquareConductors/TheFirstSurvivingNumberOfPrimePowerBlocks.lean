@@ -25,7 +25,7 @@ private theorem rank_difference_eq (m t : ℕ) (x : ℤ) :
   unfold rankDifference
   apply sum_congr rfl
   intro j _
-  simp only [rankCoefficient,zsmul_eq_mul,nsmul_eq_mul,mul_one,mul_assoc]
+  simp only [rankCoefficient,zsmul_eq_mul,Int.cast_id,nsmul_eq_mul,mul_one,mul_assoc]
 
 private theorem rank_difference_low {m t : ℕ} (h : t < m) (x : ℤ) :
     rankDifference m t x=0 := by

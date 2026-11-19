@@ -32,3 +32,20 @@ Write \(T_-\) for the unsigned smooth-triple price on the left, excluding pure c
  +O_\epsilon(n^{5/6+\epsilon}).
 \]
 At sufficiently large prime centers all surviving products are coprime to \(n\), since even the rough triple factors are smaller than \(n\). These centers suffice at the first gate. There is a prime within \(O(n^{2/3})\) above every large \(n\); moving the three sharp endpoints changes \(D\) by \(O(n^{2/3}\log n)\). Thus the one-sided upper bound on this combined price at primes implies the full all-integer \(11/3\) prefix criterion. The comparably priced triple boxes and the smooth products of higher multiplicity must still be bounded together. Paper proof. [Prime-gap theorem](../../../../formal/GaloisForLFunctions/RHTower/PrimeShortIntervalsSevenTwelfths.lean#L63) · [First gate](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/ThePrimeMidpointInTwoAdjacentGcdHorizons.lean#L337) · [Smooth half-power reading](acs-pvc-a-smooth-midpoint-on-products-with-many-prime-factors.md)
+
+## Positive surplus of the lower triples
+
+The two triple boxes have a **positive excess on the left at every sufficiently large midpoint**. Write \(y=(3n)^{1/3}\). Then
+\[
+ T_- - T_+\sim \frac{K n}{\log^2(3n)},\qquad
+ K=\frac{27}{2}\int_0^{1/3}\big[\log^2(1-v)-\log^2(1+v)\big]dv>0.
+\]
+Indeed the rescaled prime-count measure on \([2/3,4/3]\), multiplied by \(\log(y)/y\), tends to Lebesgue measure. This follows first on subintervals by the ordinary prime number theorem, then on the triple boxes by finite rectangular approximation because their product boundaries have volume zero. Each log price per ordered triple is \(\log y+O(1)\). Pure cubes cost \(O(y)\). The lower and upper box volumes are \(\frac12\int_{2/3}^1\log^2 u\,du\) and \(\frac12\int_1^{4/3}\log^2 u\,du\), respectively, by taking logarithms of the three coordinates and integrating over their sum. Strict positivity follows from \(-\log(1-v)>\log(1+v)\) for \(0<v<1/3\). [Ordinary prime number theorem](../../../../formal/GaloisForLFunctions/PNTPlus/Consequences.lean#L825)
+
+There is also a pairing of actual primes. For \(0\le t\le y/3\) the excess of the prime count in \((y,y+t]\) over that in \([y-t,y]\) is uniformly \(o(y/\log y)\), by the same theorem on this fixed range of dilates. Discard the first \(E\) upper primes, where \(E\) is the maximum nonnegative excess. Match the \((j+E)\)-th prime above \(y\) to the \(j\)-th below it, including \(y\) if prime. Each matched lower prime is at least the additive reflection of its upper partner. Every retained upper triple maps into the left interval, because
+\[
+ \prod_{i=1}^3(1+u_i)+\prod_{i=1}^3(1-u_i)=2+2\sum_{i<j}u_iu_j>2
+\]
+for its normalized displacements \(u_i=(p_i-y)/y>0\). Discarding incident triples costs \(o(y^3/\log^2 y)\). The weight difference costs \(O(1)\) per matched tuple. Tuples with three equal coordinates can be omitted at \(O(y)\) cost. Every triple in \([7y/8,8y/9]^3\) lies on the left and is outside the image: its hypothetical upper primes would all be at least \(10y/9\), giving product greater than \(4n\). This exhibits a positive-volume supply of unpaired ordinary prime triples.
+
+The excess \(T_--T_+\) exceeds every fixed sublinear power eventually. A first-strip estimate has to cancel its positive main term against the completed center and the smooth products of multiplicity at least four. The coefficient and the prime pairing are proved on paper.

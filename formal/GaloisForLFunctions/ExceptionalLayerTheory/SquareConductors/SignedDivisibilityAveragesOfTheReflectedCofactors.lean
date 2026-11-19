@@ -202,7 +202,7 @@ theorem signed_window_cofactor_density (V : ℕ) {v : ℕ} (hv : 0 < v) (a L : �
     (hL : ∀ d ∈ Icc 1 V,0 < L d) :
     |(∑ d ∈ Icc 1 V,mertens (V/d)*sampledCofactorFrequency v d (a d) (L d))-
       (v.totient:ℝ)/v*truncMoebiusDivisorSum V v| ≤
-      squarefreeDivisorMass v*∑ d ∈ Icc 1 V,|mertens (V/d)|/(L d:ℝ) := by
+      squarefreeDivisorMass v*∑ d ∈ Icc 1 V,|mertens (V/d)| / (L d:ℝ) := by
   rw [←signed_coprime_cofactor_projection _ hv,sum_filter,mul_sum,←sum_sub_distrib,mul_sum]
   apply (abs_sum_le_sum_abs _ _).trans
   apply sum_le_sum

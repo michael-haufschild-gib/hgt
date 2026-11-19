@@ -19,15 +19,14 @@ private def primitivePart (m : ℕ) (f : ArithmeticFunction ℝ) : ArithmeticFun
 private theorem primitive_part_mul (m : ℕ) (f g : ArithmeticFunction ℝ) :
     primitivePart m (f*g)=primitivePart m f*primitivePart m g := by
   ext k
-  change (if m.Coprime k then (f*g) k else 0)=_
-  rw [mul_apply,mul_apply,←Finset.sum_ite_irrel,Finset.sum_const_zero]
-  apply sum_congr rfl
-  intro x hx
-  have heq := (Nat.mem_divisorsAntidiagonal.mp hx).1
-  rw [←heq,Nat.coprime_mul_iff_right]
-  change (if m.Coprime x.1 ∧ m.Coprime x.2 then f x.1*g x.2 else 0)=
-    (if m.Coprime x.1 then f x.1 else 0)*(if m.Coprime x.2 then g x.2 else 0)
-  by_cases h : m.Coprime x.1 <;> by_cases h' : m.Coprime x.2 <;> simp [h,h']
+  have hterm (x : ℕ × ℕ) (hx : x ∈ k.divisorsAntidiagonal) :
+      (primitivePart m f) x.1*(primitivePart m g) x.2=
+        if m.Coprime k then f x.1*g x.2 else 0 := by
+    simp only [←(Nat.mem_divisorsAntidiagonal.mp hx).1,Nat.coprime_mul_iff_right]
+    by_cases h : m.Coprime x.1 <;> by_cases h' : m.Coprime x.2 <;> simp [primitivePart,h,h']
+  change (if m.Coprime k then ∑ x ∈ k.divisorsAntidiagonal,f x.1*g x.2 else 0)=
+    ∑ x ∈ k.divisorsAntidiagonal,(primitivePart m f) x.1*(primitivePart m g) x.2
+  rw [sum_congr rfl hterm,sum_ite_irrel,sum_const_zero]
 
 /-- Indicator of integers having no prime through the chosen cutoff. -/
 def cubicRoughIndicator (Y : ℕ) : ArithmeticFunction ℝ := primitivePart (primorial Y) zeta
@@ -45,7 +44,7 @@ theorem cubic_rough_indicator_eq (Y : ℕ) :
     cubicSmoothMoebius Y*(zeta:ArithmeticFunction ℝ)=cubicRoughIndicator Y := by
   ext k
   rcases eq_or_ne k 0 with rfl | hk
-  · exact (map_zero _).trans (map_zero _).symm
+  · simp only [ArithmeticFunction.map_zero]
   rw [coe_mul_zeta_apply]
   change (∑ d ∈ k.divisors,if d ∣ primorial Y then (moebius d:ℝ) else 0)=
     (if (primorial Y).Coprime k then ((zeta:ArithmeticFunction ℝ) k) else 0)
@@ -58,7 +57,7 @@ theorem cubic_rough_indicator_eq (Y : ℕ) :
   rw [hset,_root_.RHTower.Sieve.sum_divisors_moebius_real,natCoe_apply,zeta_apply_ne hk,Nat.cast_one]
   change (if k.gcd (primorial Y)=1 then (1:ℝ) else 0)=
     (if (primorial Y).gcd k=1 then 1 else 0)
-  rw [Nat.gcd_comm]
+  simp only [Nat.gcd_comm k]
 
 private def logPriceOf (f : ArithmeticFunction ℝ) : ArithmeticFunction ℝ :=
   ⟨fun k => f k*Real.log k,by simp⟩
@@ -67,7 +66,7 @@ private theorem log_price_leibniz (f g : ArithmeticFunction ℝ) :
     logPriceOf (f*g)=logPriceOf f*g+f*logPriceOf g := by
   ext k
   change (f*g) k*Real.log k=_
-  rw [mul_apply,sum_mul,add_apply,mul_apply,mul_apply,←sum_add_distrib]
+  rw [mul_apply,sum_mul,ArithmeticFunction.add_apply,mul_apply,mul_apply,←sum_add_distrib]
   apply sum_congr rfl
   intro x hx
   obtain ⟨hm,hk⟩ := Nat.mem_divisorsAntidiagonal.mp hx
@@ -83,7 +82,7 @@ private theorem rough_log_price (Y : ℕ) :
   rw [←primitive_part_mul,vonMangoldt_mul_zeta]
   ext k
   rcases eq_or_ne k 0 with rfl | hk
-  · exact (map_zero _).trans (map_zero _).symm
+  · simp only [ArithmeticFunction.map_zero]
   change (if (primorial Y).Coprime k then (zeta:ArithmeticFunction ℝ) k else 0)*Real.log k=
     (if (primorial Y).Coprime k then ArithmeticFunction.log k else 0)
   rw [natCoe_apply,zeta_apply_ne hk,Nat.cast_one,ArithmeticFunction.log_apply]

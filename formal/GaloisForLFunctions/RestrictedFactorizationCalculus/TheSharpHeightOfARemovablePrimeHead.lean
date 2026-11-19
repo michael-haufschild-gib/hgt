@@ -1,4 +1,4 @@
-import GaloisForLFunctions.RestrictedFactorizationCalculus.ThePrimeReadingsBeyondTheHyperbola
+import GaloisForLFunctions.RestrictedFactorizationCalculus.RecoveringAMovingPrimeHeadAfterSignedEdits
 
 /-!
 # The exact height of a removable prime head
@@ -14,10 +14,13 @@ open GaloisForLFunctions.BezoutValuationIncidence
 open scoped Classical Topology
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus
 
-/-- Signed full Mangoldt head at the final quotient index floor(X^α). -/
-def terminalMangoldtHead (α : ℝ) (X : ℕ) :=
-  quotientReading (roughFloorCoefficient (logSquareCutoff X) (roughMangoldtWeight (logSquareCutoff X)))
-    ⌊(X:ℝ)^α⌋₊
+/-- Signed terminal head of a prime reading chosen at the current observation. -/
+def terminalPrimeHead (α : ℝ) (a : ℕ → ArithmeticFunction ℝ) (X : ℕ) :=
+  quotientReading (roughFloorCoefficient (logSquareCutoff X) (a X)) ⌊(X:ℝ)^α⌋₊
+
+/-- The terminal head of the full surviving Mangoldt weight. -/
+abbrev terminalMangoldtHead (α : ℝ) :=
+  terminalPrimeHead α (fun X => roughMangoldtWeight (logSquareCutoff X))
 
 private def observation (α : ℝ) (n : ℕ) := ⌈(n:ℝ)^(1/α)⌉₊
 
@@ -65,22 +68,10 @@ private theorem observation_tendsto {α : ℝ} (ap : 0<α) (sm : α ≤ 1) :
     · exact Nat.zero_le _
     · exact (inverse_observation ap sm np).1) tendsto_id
 
-private def positiveLog (n : ℕ) := Real.log (max (2:ℝ) n)
-
-private theorem complete_the_unit_weight {t : ℕ} (tp : 1 ≤ t) (y : ℕ) :
-    weightedFrozenPrefix positiveLog y t=roughLogarithmicHead y t+Real.log 2 := by
-  have each (n : ℕ) (hn : n ∈ Icc 1 t) :
-      coprimeMoebiusIndicator (primorial y) n*positiveLog n=
-        RoughReading.row y n*Real.log n+(if n=1 then Real.log 2 else 0) := by
-    by_cases unit : n=1
-    · simp [unit,positiveLog,coprimeMoebiusIndicator]
-    rw [primorial_indicator_eq_deleted_mobius y n (mem_Icc.mp hn).1,if_neg unit,add_zero,
-      positiveLog,max_eq_right (show (2:ℝ) ≤ n by exact_mod_cast (show 2 ≤ n by have := (mem_Icc.mp hn).1; omega))]
-  rw [weightedFrozenPrefix,roughLogarithmicHead,sum_congr rfl each,sum_add_distrib]
-  simp [tp]
-
 private theorem recover_the_strip_from_the_terminal_heads {α β : ℝ} (ap : 0<α) (sm : α ≤ 1) (critical : 1/2 ≤ β)
-    (heads : ∀ ε : ℝ,0<ε → PrefixPower (α*(β+ε)) (terminalMangoldtHead α)) :
+    (a : ℕ → ArithmeticFunction ℝ) (dom : ∀ X q,|a X q| ≤ vonMangoldt q)
+    (fix : ∀ X p,p.Prime → a X p=roughMangoldtWeight (logSquareCutoff X) p)
+    (heads : ∀ ε : ℝ,0<ε → PrefixPower (α*(β+ε)) (terminalPrimeHead α a)) :
     RHTower.zetaZeroAbscissa ≤ β := by
   by_contra! tooNarrow
   let η := (RHTower.zetaZeroAbscissa-β)/3
@@ -88,50 +79,48 @@ private theorem recover_the_strip_from_the_terminal_heads {α β : ℝ} (ap : 0<
   let s := β+η
   have strict : 1/2<s := critical.trans_lt (lt_add_of_pos_right _ ep)
   have sp := (by norm_num : (0:ℝ)<1/2).trans strict
+  have small : s ≤ 1 := by
+    have strip := ZeroForcingCalculus.zetaZeroAbscissa_le_sub_seven_eighths
+    dsimp only [s,η]; linarith only [strip,tooNarrow]
   let Y := fun n => logSquareCutoff (observation α n)
+  let w := fun n => a (observation α n)
   have ym : Monotone Y := logSquareCutoff_mono.comp (observation_mono ap)
   have yt := logSquareCutoff_tendsto_atTop.comp (observation_tendsto ap sm)
   obtain ⟨C,c0,bound⟩ := heads η ep
-  let diag := fun n => weightedFrozenPrefix positiveLog (Y n) n
-  have diagPower : PrefixPower s diag := by
-    apply prefixPower_of_eventual (C := C*(2:ℝ)^(α*s)+Real.log 2) (by simp [diag,weightedFrozenPrefix]) sp
-    filter_upwards [yt.eventually_ge_atTop 1,eventually_ge_atTop (1:ℕ)] with n high np
+  have reading : ∀ᶠ n : ℕ in atTop,|quotientReading (roughFloorCoefficient (Y n) (w n)) n| ≤
+      (C*(2:ℝ)^(α*s))*(n:ℝ)^s := by
+    filter_upwards [eventually_ge_atTop (1:ℕ)] with n np
     let X := observation α n
     have sample := inverse_observation ap sm np
-    have exactHead : terminalMangoldtHead α X= -roughLogarithmicHead (Y n) n := by
-      rw [terminalMangoldtHead,sample.2.1,←rough_action_as_a_coefficient_prefix,full_rough_reading high]
-    have cost := bound X
-    rw [exactHead,abs_neg] at cost
-    have price := cost.trans (mul_le_mul_of_nonneg_left (sample.2.2 s sp.le) c0)
-    have one := Real.one_le_rpow (Nat.one_le_cast.mpr np) sp.le
-    have term := mul_le_mul_of_nonneg_left one (Real.log_nonneg (by norm_num : (1:ℝ) ≤ 2))
-    change |weightedFrozenPrefix positiveLog (Y n) n| ≤ _
-    rw [complete_the_unit_weight np]
-    change |roughLogarithmicHead (Y n) n+Real.log 2| ≤ (C*2^(α*s)+Real.log 2)*(n:ℝ)^s
-    change |roughLogarithmicHead (Y n) n| ≤ C*(2^(α*s)*(n:ℝ)^s) at price
-    have tri := abs_add_le (roughLogarithmicHead (Y n) n) (Real.log 2)
-    rw [abs_of_nonneg (Real.log_nonneg (by norm_num : (1:ℝ) ≤ 2))] at tri
-    linarith only [price,term,tri]
-  obtain ⟨A,a0,adiag⟩ := diagPower
-  have v0 : 0<positiveLog 1 := by norm_num [positiveLog,Real.log_pos]
-  have mono : Monotone positiveLog := fun _ _ h => Real.log_le_log
-    (lt_of_lt_of_le (by norm_num : (0:ℝ)<2) (le_max_left ..)) (max_le_max_left _ (Nat.cast_le.mpr h))
-  let D := A/positiveLog 1
-  have dp : 0 ≤ D := div_nonneg a0 v0.le
-  have read (n : ℕ) : |diag n| ≤ D*positiveLog 1*(n:ℝ)^s := by
-    rw [show D*positiveLog 1=A from div_mul_cancel₀ _ v0.ne']; exact adiag n
+    have paid := bound X
+    change |quotientReading (roughFloorCoefficient (Y n) (w n)) ⌊(X:ℝ)^α⌋₊| ≤ C*(X:ℝ)^(α*s) at paid
+    rw [sample.2.1] at paid
+    exact paid.trans ((mul_le_mul_of_nonneg_left (sample.2.2 s sp.le) c0).trans_eq (mul_assoc ..).symm)
+  let P := 2*(36/(s-1/2))
+  have logtop := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have active : ∀ᶠ n : ℕ in atTop,0<Y n ∧ w n 1=roughMangoldtWeight (Y n) 1 ∧
+      primeHeadEditMass s (Y n) n (w n) ≤ (1-(1/2:ℝ))*Real.log n := by
+    filter_upwards [yt.eventually_ge_atTop 1,logtop.eventually_ge_atTop (2*P)] with n high large
+    have unit (f : ArithmeticFunction ℝ) (h : |f 1| ≤ vonMangoldt 1) : f 1=0 :=
+      abs_eq_zero.mp (le_antisymm (by simpa using h) (abs_nonneg _))
+    have same : w n 1=roughMangoldtWeight (Y n) 1 :=
+      (unit _ (dom (observation α n) 1)).trans (unit _ (mangoldt_dominated (Y n) 1)).symm
+    have cheap := mass_of_all_signed_proper_power_edits strict small (Y n) n (w n)
+      (dom (observation α n)) (fix (observation α n))
+    exact ⟨high,same,cheap.trans (by change P ≤ _; linarith only [large])⟩
+  obtain ⟨A,a0,restore⟩ := recover_the_prefix_from_a_perturbed_prime_head strict.le
+    (by norm_num : (0:ℝ)<1/2) Y ym w active (mul_nonneg c0 (by positivity)) reading
   have full : PrefixPower (s+η) (coprimeMoebiusSum 1) := by
-    apply prefixPower_of_eventual (C := D*(2:ℝ)^(α*η)) (by simp [coprimeMoebiusSum]) (add_pos sp ep)
+    apply prefixPower_of_eventual (C := A*(2:ℝ)^(α*η)) (by simp [coprimeMoebiusSum]) (add_pos sp ep)
     filter_upwards [(observation_tendsto ap sm) (log_square_deletion_cost strict (mul_pos ap ep)),eventually_ge_atTop (1:ℕ)] with n paid np
     let X := observation α n
     let E := deletionPrice s (Y n)
     have cheap : E^2 ≤ (X:ℝ)^(α*η) :=
       (le_mul_of_one_le_left (sq_nonneg E) (by have := Nat.cast_nonneg (α := ℝ) (Y n); linarith : 1 ≤ (Y n:ℝ)+1)).trans paid
-    have restored := full_prefix_from_one_weighted_reading Y ym positiveLog mono v0 sp dp read n
     have product := cheap.trans ((inverse_observation ap sm np).2.2 η ep.le)
-    have both := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left product dp) (Real.rpow_nonneg (Nat.cast_nonneg n) s)
+    have both := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left product a0) (Real.rpow_nonneg (Nat.cast_nonneg n) s)
     rw [Real.rpow_add (Nat.cast_pos.mpr np)]
-    exact restored.trans (both.trans_eq (by ring))
+    exact (restore n).trans (both.trans_eq (by ring))
   obtain ⟨K,k0,estimate⟩ := full
   have width := zetaZeroAbscissa_le_of_moebius_power_bound k0 (add_pos sp ep).le
     (fun n _ => by simpa [coprimeMoebiusSum,coprimeMoebiusIndicator,moebiusReal] using estimate n)
@@ -148,29 +137,38 @@ def uniformPrimeHeadPower (α u : ℝ) : Prop :=
       roughInteriorReading a (logSquareCutoff X) X T| ≤ K*(X:ℝ)^u
 
 private theorem terminal_price_of_all_lower_heads {α u : ℝ} (ap : 0<α) (sm : α ≤ 1) (up : 0<u)
-    (uniform : uniformPrimeHeadPower α u) : PrefixPower u (terminalMangoldtHead α) := by
+    (a : ℕ → ArithmeticFunction ℝ) (dom : ∀ X q,|a X q| ≤ vonMangoldt q)
+    (fix : ∀ X p,p.Prime → a X p=roughMangoldtWeight (logSquareCutoff X) p)
+    (uniform : uniformPrimeHeadPower α u) : PrefixPower u (terminalPrimeHead α a) := by
   obtain ⟨K,_,budget⟩ := uniform
-  apply prefixPower_of_eventual (C := K) (by simp [terminalMangoldtHead,Real.zero_rpow ap.ne',quotientReading]) up
+  apply prefixPower_of_eventual (C := K) (by simp [terminalPrimeHead,Real.zero_rpow ap.ne',quotientReading]) up
   filter_upwards [budget,eventually_ge_atTop (1:ℕ)] with X paid xp
   let T := ⌊(X:ℝ)^α⌋₊
   let y := logSquareCutoff X
   have size : (T:ℝ) ≤ (X:ℝ)^α := Nat.floor_le (Real.rpow_nonneg (Nat.cast_nonneg _) _)
   have below : T ≤ X := Nat.cast_le.mp (size.trans (by
     simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le (Nat.one_le_cast.mpr xp) sm))
-  have cut := paid T size (roughMangoldtWeight y) (mangoldt_dominated y) (fun _ _ => rfl)
+  have cut := paid T size (a X) (dom X) (fix X)
   rw [rough_head_and_interior,add_sub_cancel_left,min_eq_right below] at cut
   exact cut
 
-/-- Above the square-root line the signed price of just the terminal
-Mangoldt head has exponent α times the ordinary zero abscissa. -/
-theorem terminal_mangoldt_head_detects_the_strip {α β : ℝ} (ap : 0<α) (sm : α ≤ 1) (critical : 1/2 ≤ β) :
-    (∀ ε : ℝ,0<ε → PrefixPower (α*(β+ε)) (terminalMangoldtHead α)) ↔ RHTower.zetaZeroAbscissa ≤ β := by
-  refine ⟨recover_the_strip_from_the_terminal_heads ap sm critical,?_⟩
+/-- Each single prime reading, including independently chosen signed proper
+powers at every observation, detects the zero abscissa in its terminal head. -/
+theorem one_perturbed_terminal_head_detects_the_strip {α β : ℝ} (ap : 0<α) (sm : α ≤ 1) (critical : 1/2 ≤ β)
+    (a : ℕ → ArithmeticFunction ℝ) (dom : ∀ X q,|a X q| ≤ vonMangoldt q)
+    (fix : ∀ X p,p.Prime → a X p=roughMangoldtWeight (logSquareCutoff X) p) :
+    (∀ ε : ℝ,0<ε → PrefixPower (α*(β+ε)) (terminalPrimeHead α a)) ↔ RHTower.zetaZeroAbscissa ≤ β := by
+  refine ⟨recover_the_strip_from_the_terminal_heads ap sm critical a dom fix,?_⟩
   intro strip ε ep
   have u0 := mul_pos ap ((by norm_num : (0:ℝ)<1/2).trans_le (critical.trans (le_add_of_nonneg_right ep.le)))
-  apply terminal_price_of_all_lower_heads ap sm u0
+  apply terminal_price_of_all_lower_heads ap sm u0 a dom fix
   exact shrinking_the_cofactor_range_for_prime_readings ap
     (mul_lt_mul_of_pos_left (strip.trans_lt (lt_add_of_pos_right β ep)) ap)
+
+/-- The full surviving Mangoldt reading at terminal heights alone detects the strip. -/
+theorem terminal_mangoldt_head_detects_the_strip {α β : ℝ} (ap : 0<α) (sm : α ≤ 1) (critical : 1/2 ≤ β) :
+    (∀ ε : ℝ,0<ε → PrefixPower (α*(β+ε)) (terminalMangoldtHead α)) ↔ RHTower.zetaZeroAbscissa ≤ β :=
+  one_perturbed_terminal_head_detects_the_strip ap sm critical _ (fun X => mangoldt_dominated (logSquareCutoff X)) (fun _ _ _ => rfl)
 
 /-- The half-plus price for all heads through X^α is equivalent to
 α times the zero abscissa being at most one half, including equality.
@@ -182,15 +180,16 @@ theorem sharp_square_root_height_for_all_prime_readings {α : ℝ} (ap : 0<α) (
   let β := (1/2:ℝ)/α
   have value : α*β=1/2 := by dsimp only [β]; field_simp
   have critical : 1/2 ≤ β := (le_div_iff₀ ap).mpr (by linarith only [sm])
-  have strips := recover_the_strip_from_the_terminal_heads ap sm critical (fun ε ep => by
+  have strips := (terminal_mangoldt_head_detects_the_strip ap sm critical).mp (fun ε ep => by
     let u := α*(β+ε)
     have scale : u=1/2+α*ε := by dsimp only [u]; rw [mul_add,value]
     have up : 0<u := by rw [scale]; positivity
-    apply terminal_price_of_all_lower_heads ap sm up
+    apply terminal_price_of_all_lower_heads ap sm up _ (fun X => mangoldt_dominated (logSquareCutoff X)) (fun _ _ _ => rfl)
     rw [scale]
     exact prices _ (mul_pos ap ep))
   exact (mul_le_mul_of_nonneg_left strips ap.le).trans_eq value
 
 #print axioms sharp_square_root_height_for_all_prime_readings
+#print axioms one_perturbed_terminal_head_detects_the_strip
 #print axioms terminal_mangoldt_head_detects_the_strip
 end GaloisForLFunctions.RestrictedFactorizationCalculus

@@ -28,7 +28,7 @@ Specifically, for every amplitude `ℓ ∈ ℝ`, the compactly supported collar 
 -/
 
 noncomputable section
-open MeasureTheory Set Filter Complex Topology intervalIntegral Zeta23
+open MeasureTheory Set Filter Complex Topology Zeta23
 open scoped ComplexConjugate ENNReal NNReal
 
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
@@ -146,7 +146,7 @@ private theorem tendsto_log_div_mul_integral_inv_neg_log :
   have hlogh_big : Real.log (1 / η) / η < Real.log (1 / h) := by
     have hl := Real.log_lt_log hh0 hhexp
     rw [Real.log_exp] at hl
-    rw [log_one_div_eq_neg_log]
+    rw [one_div h, Real.log_inv]
     linarith
   let f : ℝ → ℝ := fun u => (-Real.log (-u))⁻¹
   have hf_eq_sq : ∀ u ∈ Ioo (-h) (0 : ℝ), f u = wallLogProfile (1 / 8) u ^ 2 := fun u hu => by
@@ -184,7 +184,7 @@ private theorem tendsto_log_div_mul_integral_inv_neg_log :
       have hl2 : Real.log (1 / (η * h)) = Real.log (1 / η) + Real.log (1 / h) := by
         rw [show 1 / (η * h) = (1 / η) * (1 / h) by ring,
           Real.log_mul (one_div_pos.mpr hη0).ne' (one_div_pos.mpr hh0).ne']
-      have hl3 : Real.log (1 / η) < η * Real.log (1 / h) := (div_lt_iff₀ hη0).mp hlogh_big
+      have hl3 : Real.log (1 / η) < Real.log (1 / h) * η := (div_lt_iff₀ hη0).mp hlogh_big
       have hfu_pos : 0 < -Real.log (-u) := by
         rw [← log_one_div_eq_neg_log]
         exact Real.log_pos (by rw [lt_div_iff₀ hu_pos]; linarith [hu.1])
@@ -224,13 +224,14 @@ theorem smoothedWallLogProfile_tendsto_terminal_sq (ℓ : ℝ) :
       ∫ u in Ioo (-h) 0, smoothedWallLogProfile ℓ u ^ 2) (𝓝[>] 0) (𝓝 (ℓ ^ 2)) := by
   let J : ℝ → ℝ := fun h => Real.log (1 / h) / h * ∫ u in Ioo (-h) 0, (-Real.log (-u))⁻¹
   have hJ := tendsto_log_div_mul_integral_inv_neg_log
+  have hc : Tendsto (fun h : ℝ => ℓ ^ 2 * (1 - 8 * h) ^ 4) (𝓝[>] 0) (𝓝 (ℓ ^ 2)) := by
+    have hcont : Continuous fun h : ℝ => ℓ ^ 2 * (1 - 8 * h) ^ 4 := by fun_prop
+    have h0 := (hcont.continuousAt (x := 0)).tendsto.mono_left nhdsWithin_le_nhds
+    rwa [mul_zero, sub_zero, one_pow, mul_one] at h0
   have hlo : Tendsto (fun h : ℝ => ℓ ^ 2 * (1 - 8 * h) ^ 4 * J h) (𝓝[>] 0) (𝓝 (ℓ ^ 2)) := by
-    have hc : Tendsto (fun h : ℝ => ℓ ^ 2 * (1 - 8 * h) ^ 4) (𝓝[>] 0) (𝓝 (ℓ ^ 2)) := by
-      have hcont : Continuous fun h : ℝ => ℓ ^ 2 * (1 - 8 * h) ^ 4 := by fun_prop
-      simpa using hcont.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
-    simpa using hc.mul hJ
+    simpa only [mul_one] using hc.mul hJ
   have hhi : Tendsto (fun h : ℝ => ℓ ^ 2 * J h) (𝓝[>] 0) (𝓝 (ℓ ^ 2)) := by
-    simpa using hJ.const_mul (ℓ ^ 2)
+    simpa only [mul_one] using hJ.const_mul (ℓ ^ 2)
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlo hhi ?_ ?_
   · filter_upwards [self_mem_nhdsWithin,
       mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds (show (0 : ℝ) < 1 / 8 by norm_num))] with h hh0 hh8
@@ -241,21 +242,22 @@ theorem smoothedWallLogProfile_tendsto_terminal_sq (ℓ : ℝ) :
     have hfi : IntegrableOn (fun u => (-Real.log (-u))⁻¹) (Ioo (-h) 0) := by
       refine ((criticalHalfLineEnergyDomain_wallLogProfile (by norm_num : (1 / 8 : ℝ) ≤ 1 / 4)).sq.integrableOn
         (s := Ioo (-h) 0)).congr_fun (fun u hu => ?_) measurableSet_Ioo
-      rw [wallLogProfile_of_mem (by linarith [hu.1]) hu.2, inv_pow,
-        wallRootLog_sq (by linarith [hu.2]) (by linarith [hu.1])]
+      dsimp only
+      rw [wallLogProfile_of_mem (by linarith [hu.1, hh8']) hu.2, inv_pow,
+        wallRootLog_sq (by linarith [hu.2]) (by linarith [hu.1, hh8'])]
     have hF2i : IntegrableOn (fun u => smoothedWallLogProfile ℓ u ^ 2) (Ioo (-h) 0) :=
       (criticalHalfLineEnergyDomain_smoothedWallLogProfile ℓ).sq.integrableOn
     have hle_int : (ℓ ^ 2 * (1 - 8 * h) ^ 4) * (∫ u in Ioo (-h) 0, (-Real.log (-u))⁻¹) ≤
         ∫ u in Ioo (-h) 0, smoothedWallLogProfile ℓ u ^ 2 := by
       rw [← integral_const_mul]
       refine setIntegral_mono_on (hfi.const_mul _) hF2i measurableSet_Ioo fun u hu => ?_
-      rw [smoothedWallLogProfile_of_mem (by linarith [hu.1]) hu.2, mul_pow, mul_pow, inv_pow,
-        wallRootLog_sq (by linarith [hu.2]) (by linarith [hu.1]), ← mul_assoc]
+      rw [smoothedWallLogProfile_of_mem (by linarith [hu.1, hh8']) hu.2, mul_pow, mul_pow, inv_pow,
+        wallRootLog_sq (by linarith [hu.2]) (by linarith [hu.1, hh8']), ← mul_assoc]
       have hpow : (1 - 8 * h) ^ 4 ≤ (1 + 8 * u) ^ 4 :=
         pow_le_pow_left₀ (by linarith) (by linarith [hu.1]) 4
       rw [show ((1 + 8 * u) ^ 2) ^ 2 = (1 + 8 * u) ^ 4 by ring]
       have hinv_nn : 0 ≤ (-Real.log (-u))⁻¹ :=
-        inv_nonneg.mpr (by linarith [one_le_neg_log (by linarith [hu.2] : 0 < -u) (by linarith [hu.1])])
+        inv_nonneg.mpr (by linarith [one_le_neg_log (by linarith [hu.2] : 0 < -u) (by linarith [hu.1, hh8'])])
       exact mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hpow (sq_nonneg ℓ)) hinv_nn
     have hm := mul_le_mul_of_nonneg_left hle_int hlog_nn
     dsimp only [J]
@@ -272,23 +274,24 @@ theorem smoothedWallLogProfile_tendsto_terminal_sq (ℓ : ℝ) :
     have hfi : IntegrableOn (fun u => (-Real.log (-u))⁻¹) (Ioo (-h) 0) := by
       refine ((criticalHalfLineEnergyDomain_wallLogProfile (by norm_num : (1 / 8 : ℝ) ≤ 1 / 4)).sq.integrableOn
         (s := Ioo (-h) 0)).congr_fun (fun u hu => ?_) measurableSet_Ioo
-      rw [wallLogProfile_of_mem (by linarith [hu.1]) hu.2, inv_pow,
-        wallRootLog_sq (by linarith [hu.2]) (by linarith [hu.1])]
+      dsimp only
+      rw [wallLogProfile_of_mem (by linarith [hu.1, hh8']) hu.2, inv_pow,
+        wallRootLog_sq (by linarith [hu.2]) (by linarith [hu.1, hh8'])]
     have hF2i : IntegrableOn (fun u => smoothedWallLogProfile ℓ u ^ 2) (Ioo (-h) 0) :=
       (criticalHalfLineEnergyDomain_smoothedWallLogProfile ℓ).sq.integrableOn
     have hle_int : ∫ u in Ioo (-h) 0, smoothedWallLogProfile ℓ u ^ 2 ≤
         ℓ ^ 2 * ∫ u in Ioo (-h) 0, (-Real.log (-u))⁻¹ := by
       rw [← integral_const_mul]
       refine setIntegral_mono_on hF2i (hfi.const_mul _) measurableSet_Ioo fun u hu => ?_
-      rw [smoothedWallLogProfile_of_mem (by linarith [hu.1]) hu.2, mul_pow, mul_pow, inv_pow,
-        wallRootLog_sq (by linarith [hu.2]) (by linarith [hu.1])]
+      rw [smoothedWallLogProfile_of_mem (by linarith [hu.1, hh8']) hu.2, mul_pow, mul_pow, inv_pow,
+        wallRootLog_sq (by linarith [hu.2]) (by linarith [hu.1, hh8'])]
       have h1 : ((1 + 8 * u) ^ 2) ^ 2 ≤ 1 := by
-        have hb : 0 ≤ 1 + 8 * u := by linarith [hu.1]
+        have hb : 0 ≤ 1 + 8 * u := by linarith [hu.1, hh8']
         have hu1 : 1 + 8 * u ≤ 1 := by linarith [hu.2]
         have hsq : (1 + 8 * u) ^ 2 ≤ 1 := by nlinarith
         nlinarith [sq_nonneg ((1 + 8 * u) ^ 2)]
       have hinv_nn : 0 ≤ (-Real.log (-u))⁻¹ :=
-        inv_nonneg.mpr (by linarith [one_le_neg_log (by linarith [hu.2] : 0 < -u) (by linarith [hu.1])])
+        inv_nonneg.mpr (by linarith [one_le_neg_log (by linarith [hu.2] : 0 < -u) (by linarith [hu.1, hh8'])])
       exact mul_le_mul_of_nonneg_left
         ((mul_le_mul_of_nonneg_right h1 hinv_nn).trans_eq (one_mul _)) (sq_nonneg ℓ)
     have hm := mul_le_mul_of_nonneg_left hle_int hlog_nn
@@ -304,7 +307,7 @@ theorem smoothedWallLogProfile_no_vanishing_cusp_subsequence {ℓ : ℝ} (hℓ :
         ∫ u in Ioo (-(h j)) 0, smoothedWallLogProfile ℓ u ^ 2) atTop (𝓝 0) := by
   rintro ⟨h, hpos, h0, hvan⟩
   have hnhds : Tendsto h atTop (𝓝[>] 0) :=
-    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within h0 (Eventually.of_forall hpos)
+    tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within h h0 (Eventually.of_forall hpos)
   have hlim := (smoothedWallLogProfile_tendsto_terminal_sq ℓ).comp hnhds
   have heq : ℓ ^ 2 = 0 := tendsto_nhds_unique hlim hvan
   exact pow_ne_zero 2 hℓ heq
@@ -383,8 +386,8 @@ theorem smoothedWallLogProfile_weighted_sq_increment_div_zero (ℓ : ℝ) :
     have hm : 4 / δ * u ≤ -2 := by
       have h1 := mul_le_mul_of_nonneg_left hu (by positivity : (0 : ℝ) ≤ 4 / δ)
       have he : 4 / δ * -(δ / 2) = -2 := by
-        rw [mul_neg, div_mul_div_comm, mul_comm 4 δ, div_mul_eq_div_div, div_self hδ0.ne']
-        norm_num
+        rw [div_eq_mul_inv, show 4 * δ⁻¹ * -(δ / 2) = -2 * (δ * δ⁻¹) by ring,
+          mul_inv_cancel₀ hδ0.ne', mul_one]
       linarith
     rw [max_eq_right (by linarith), min_eq_left zero_le_one]
   have hχ_right : ∀ u, -(δ / 4) ≤ u → χ u = 1 := fun u hu => by
@@ -392,7 +395,8 @@ theorem smoothedWallLogProfile_weighted_sq_increment_div_zero (ℓ : ℝ) :
     have hm : -1 ≤ 4 / δ * u := by
       have h1 := mul_le_mul_of_nonneg_left hu (by positivity : (0 : ℝ) ≤ 4 / δ)
       have he : 4 / δ * -(δ / 4) = -1 := by
-        rw [mul_neg, div_mul_div_comm, mul_comm 4 δ, div_self (mul_pos hδ0 (by norm_num)).ne']
+        rw [div_eq_mul_inv, show 4 * δ⁻¹ * -(δ / 4) = -(δ * δ⁻¹) by ring,
+          mul_inv_cancel₀ hδ0.ne']
       linarith
     rw [max_eq_left (by linarith), min_eq_right (by linarith)]
   have hχ_lip : ∀ u v, |χ u - χ v| ≤ (4 / δ) * |u - v| := fun u v => by
@@ -437,7 +441,7 @@ theorem smoothedWallLogProfile_weighted_sq_increment_div_zero (ℓ : ℝ) :
     rcases le_or_gt u (-(δ / 2)) with hle | hgt
     · rw [hχ_left u hle, zero_mul, mul_zero, mul_zero, zero_mul]
     · rcases le_or_gt 0 u with h0 | h0
-      · rw [wallLogProfile_of_nonneg h0, wallLogProfile_of_nonneg h0, mul_zero, mul_zero, mul_zero]
+      · simp only [wallLogProfile_of_nonneg h0, mul_zero]
       · rw [wallLogProfile_of_mem (by linarith) h0, wallLogProfile_of_mem (by linarith) h0]
         ring
   let cl : ℝ → ℝ := fun u => min (max (-u) (δ / 4)) (1 / 8)
@@ -461,7 +465,8 @@ theorem smoothedWallLogProfile_weighted_sq_increment_div_zero (ℓ : ℝ) :
   have hw_tr_lip : ∀ u v, |w_tr u - w_tr v| ≤ (2 / δ) * |u - v| := fun u v => by
     dsimp only [w_tr]
     have he_div : ∀ a : ℝ, a / (2 * (δ / 4)) = (2 / δ) * a := fun a => by
-      rw [show 2 * (δ / 4) = δ / 2 by ring, div_div_eq_mul_div, mul_comm, mul_div_assoc]
+      rw [div_eq_mul_inv, show 2 * (δ / 4) = 2⁻¹ * δ by ring, mul_inv, inv_inv]
+      ring
     rcases le_total (cl u) (cl v) with hle | hge
     · have hs : 0 < cl u := lt_of_lt_of_le (by positivity) (hcl_lo u)
       have hmono := inv_wallRootLog_mono hs hle ((hcl_hi v).trans (by norm_num))
@@ -495,9 +500,9 @@ theorem smoothedWallLogProfile_weighted_sq_increment_div_zero (ℓ : ℝ) :
         unfold collarSmoothCutoff
         rw [max_eq_right (by linarith), min_eq_left zero_le_one]
         norm_num
-      rw [hcut0, zero_mul, mul_zero, mul_zero, mul_zero, mul_zero]
+      simp only [hcut0, zero_mul, mul_zero]
     · rcases le_or_gt (-(δ / 4)) u with hge | hlt
-      · rw [hχ_right u hge, sub_self, zero_mul, zero_mul, zero_mul, zero_mul]
+      · simp only [hχ_right u hge, sub_self, zero_mul, mul_zero]
       · rw [wallLogProfile_of_mem hgt (by linarith),
           max_eq_left (by linarith), min_eq_left (by linarith)]
         ring
@@ -650,7 +655,12 @@ theorem smoothedWallLogProfile_weighted_sq_increment_div_zero (ℓ : ℝ) :
       (smoothedWallLogProfile ℓ u - smoothedWallLogProfile ℓ (u + h)) ^ 2 *
         Real.exp (-(8 * u))) ≤
       (4 * Real.exp 2 * ℓ ^ 2) * (2 * (wallRootLog δ)⁻¹ ^ 2 * h) + (1 / 4) * (C_quad * h ^ 2) := by
-    have hm := integral_mono hinc_int ((hwd_int.const_mul (4 * Real.exp 2 * ℓ ^ 2)).add hind_int) hpt
+    have hm : (∫ u : ℝ,
+        (smoothedWallLogProfile ℓ u - smoothedWallLogProfile ℓ (u + h)) ^ 2 *
+          Real.exp (-(8 * u))) ≤
+        ∫ u : ℝ, ((4 * Real.exp 2 * ℓ ^ 2) * (wallLogProfile δ u - wallLogProfile δ (u + h)) ^ 2 +
+          S_supp.indicator (fun _ => C_quad * h ^ 2) u) :=
+      integral_mono hinc_int ((hwd_int.const_mul (4 * Real.exp 2 * ℓ ^ 2)).add hind_int) hpt
     rw [integral_add (hwd_int.const_mul _) hind_int, integral_const_mul,
       integral_indicator measurableSet_Icc, setIntegral_const,
       Real.volume_real_Icc_of_le (by norm_num), sub_neg_eq_add, zero_add, smul_eq_mul] at hm
@@ -673,32 +683,51 @@ theorem smoothedWallLogProfile_weighted_sq_increment_div_zero (ℓ : ℝ) :
       mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left (by linarith) (by positivity)) (by positivity)
     have heq : 8 * Real.exp 2 * (ℓ ^ 2 + 1) * (ε / K₀) = ε / 8 := by
-      dsimp only [K₀]
-      have hne : Real.exp 2 * (ℓ ^ 2 + 1) ≠ 0 := by positivity
-      rw [show 64 * Real.exp 2 * (ℓ ^ 2 + 1) = 64 * (Real.exp 2 * (ℓ ^ 2 + 1)) by ring,
-        show 8 * Real.exp 2 * (ℓ ^ 2 + 1) * (ε / (64 * (Real.exp 2 * (ℓ ^ 2 + 1)))) =
-          (ε / 8) * ((Real.exp 2 * (ℓ ^ 2 + 1)) * (Real.exp 2 * (ℓ ^ 2 + 1))⁻¹) by ring,
-        mul_inv_cancel₀ hne, mul_one]
+      set Z := Real.exp 2 * (ℓ ^ 2 + 1)
+      have hZ : Z ≠ 0 := by positivity
+      rw [div_eq_mul_inv, show K₀ = 64 * Z by dsimp only [K₀, Z]; ring, mul_inv,
+        show 8 * Real.exp 2 * (ℓ ^ 2 + 1) * (ε * (64⁻¹ * Z⁻¹)) =
+          (ε / 8) * (Z * Z⁻¹) by dsimp only [Z]; ring,
+        mul_inv_cancel₀ hZ, mul_one]
     linarith
   have hb2 : C_quad * h / 4 ≤ ε / 16 := by
     have hm := mul_le_mul_of_nonneg_left hh_small.le hCq_nn
     have hle : C_quad * (ε / (4 * (C_quad + 1))) ≤ (C_quad + 1) * (ε / (4 * (C_quad + 1))) :=
       mul_le_mul_of_nonneg_right (by linarith) (by positivity)
     have heq : (C_quad + 1) * (ε / (4 * (C_quad + 1))) = ε / 4 := by
-      have hne : C_quad + 1 ≠ 0 := by linarith
-      rw [show (C_quad + 1) * (ε / (4 * (C_quad + 1))) =
-        (ε / 4) * ((C_quad + 1) * (C_quad + 1)⁻¹) by ring, mul_inv_cancel₀ hne, mul_one]
+      set Z := C_quad + 1
+      have hZ : Z ≠ 0 := by linarith
+      rw [div_eq_mul_inv, mul_inv,
+        show Z * (ε * (4⁻¹ * Z⁻¹)) = (ε / 4) * (Z * Z⁻¹) by ring,
+        mul_inv_cancel₀ hZ, mul_one]
     linarith
   linarith
 
 /-! ### Exact Laplace integration by parts, uniform half-plane bound, and imaginary-axis limit -/
 
+private theorem tendsto_sqrt_atTop : Tendsto Real.sqrt atTop atTop :=
+  tendsto_atTop.mpr fun b => (eventually_ge_atTop (max b 0 ^ 2)).mono fun _ hx =>
+    (le_max_left b 0).trans ((Real.sqrt_sq (le_max_right b 0)).symm.le.trans (Real.sqrt_le_sqrt hx))
+
+private theorem intervalIntegrable_ofReal {a b : ℝ} {f : ℝ → ℝ}
+    (hf : IntervalIntegrable f volume a b) :
+    IntervalIntegrable (fun x => (f x : ℂ)) volume a b :=
+  ⟨hf.1.ofReal, hf.2.ofReal⟩
+
+private theorem measurable_wallRootLog : Measurable wallRootLog :=
+  Real.continuous_sqrt.measurable.comp
+    (Real.measurable_log.comp (measurable_const.div measurable_id))
+
 private def invWallRootLogZero (v : ℝ) : ℝ := if v ≤ 0 then 0 else (wallRootLog v)⁻¹
+
+private theorem measurable_invWallRootLogZero : Measurable invWallRootLogZero :=
+  Measurable.ite (measurableSet_le measurable_id measurable_const) measurable_const
+    measurable_wallRootLog.inv
 
 private theorem tendsto_inv_wallRootLog_nhdsGT_zero :
     Tendsto (fun v : ℝ => (wallRootLog v)⁻¹) (𝓝[>] 0) (𝓝 0) := by
   have hcomp := (tendsto_inv_atTop_zero (𝕜 := ℝ)).comp
-    (Real.tendsto_sqrt.comp (Real.tendsto_log_atTop.comp (tendsto_inv_nhdsGT_zero (𝕜 := ℝ))))
+    (tendsto_sqrt_atTop.comp (Real.tendsto_log_atTop.comp (tendsto_inv_nhdsGT_zero (𝕜 := ℝ))))
   exact hcomp.congr fun v => by simp [wallRootLog, one_div]
 
 private theorem continuousOn_invWallRootLogZero :
@@ -746,18 +775,18 @@ private theorem hasDerivAt_invWallRootLogZero {v : ℝ} (hv0 : 0 < v) (hv4 : v �
   filter_upwards [Ioi_mem_nhds hv0] with t (ht : 0 < t)
   simp [invWallRootLogZero, not_le.mpr ht]
 
-private theorem integrableOn_inv_two_mul_wallRootLog_cube {b : ℝ} (hb0 : 0 < b) (hb4 : b ≤ 1 / 4) :
+private theorem integrableOn_inv_two_mul_wallRootLog_cube {b : ℝ} (_ : 0 < b) (hb4 : b ≤ 1 / 4) :
     IntegrableOn (fun v : ℝ => (2 * v * wallRootLog v ^ 3)⁻¹) (Ioc 0 b) :=
   intervalIntegral.integrableOn_deriv_of_nonneg
     (continuousOn_invWallRootLogZero.mono (Icc_subset_Icc le_rfl hb4))
-    (fun v hv => hasDerivAt_invWallRootLogZero hv.1 (hv.2.le.trans hb4))
-    (fun v hv => inv_nonneg.mpr (mul_nonneg (mul_nonneg zero_le_two hv.1.le)
+    (fun _ hv => hasDerivAt_invWallRootLogZero hv.1 (hv.2.le.trans hb4))
+    (fun _ hv => inv_nonneg.mpr (mul_nonneg (mul_nonneg zero_le_two hv.1.le)
       (pow_nonneg (zero_le_one.trans (one_le_wallRootLog hv.1 (hv.2.le.trans hb4))) 3)))
 
 private theorem intervalIntegrable_inv_two_mul_wallRootLog_cube {b : ℝ} (hb0 : 0 < b)
     (hb4 : b ≤ 1 / 4) :
     IntervalIntegrable (fun v : ℝ => (2 * v * wallRootLog v ^ 3)⁻¹) volume 0 b :=
-  (intervalIntegrable_iff_integrableOn_Ioc_of_le hb0.le).mpr
+  (intervalIntegral.intervalIntegrable_iff_integrableOn_Ioc_of_le hb0.le).mpr
     (integrableOn_inv_two_mul_wallRootLog_cube hb0 hb4)
 
 private theorem intervalIntegral_inv_two_mul_wallRootLog_cube {b : ℝ} (hb0 : 0 < b)
@@ -774,6 +803,25 @@ private def reflectedCusp (v : ℝ) : ℝ :=
 
 private def cuspMainDeriv (v : ℝ) : ℝ :=
   (1 - 8 * v) ^ 2 * (2 * v * wallRootLog v ^ 3)⁻¹
+
+private theorem measurable_cuspMainDeriv : Measurable cuspMainDeriv :=
+  ((measurable_const.sub (measurable_const.mul measurable_id)).pow_const 2).mul
+    (((measurable_const.mul measurable_id).mul (measurable_wallRootLog.pow_const 3)).inv)
+
+private theorem intervalIntegrable_cuspMainDeriv_zero {b : ℝ} (hb0 : 0 < b) (hb8 : b ≤ 1 / 8) :
+    IntervalIntegrable cuspMainDeriv volume 0 b := by
+  have hb4 : b ≤ 1 / 4 := hb8.trans (by norm_num)
+  rw [intervalIntegral.intervalIntegrable_iff_integrableOn_Ioc_of_le hb0.le]
+  refine (integrableOn_inv_two_mul_wallRootLog_cube hb0 hb4).mono'
+    measurable_cuspMainDeriv.aestronglyMeasurable ?_
+  filter_upwards [ae_restrict_mem measurableSet_Ioc] with v hv
+  have hpos : 0 ≤ (2 * v * wallRootLog v ^ 3)⁻¹ :=
+    inv_nonneg.mpr (mul_nonneg (mul_nonneg zero_le_two hv.1.le)
+      (pow_nonneg (zero_le_one.trans (one_le_wallRootLog hv.1 (hv.2.trans hb4))) 3))
+  dsimp only [cuspMainDeriv]
+  rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) hpos)]
+  have h1 : (1 - 8 * v) ^ 2 ≤ 1 := by nlinarith [hv.1, hv.2, hb8]
+  exact (mul_le_mul_of_nonneg_right h1 hpos).trans_eq (one_mul _)
 
 private def cuspSubDeriv (v : ℝ) : ℝ :=
   16 * (1 - 8 * v) * invWallRootLogZero v
@@ -797,9 +845,8 @@ private theorem laplace_smoothedWallLogProfile_eq_intervalIntegral (ℓ : ℝ) (
       (ℓ : ℂ) * ∫ v in (0 : ℝ)..(1 / 8),
         Complex.exp (-(w * (v : ℂ))) * (reflectedCusp v : ℂ) := by
   unfold negativeHalfLineLaplace
-  have hneg := (Measure.measurePreserving_neg (volume : Measure ℝ)).integral_comp'
-    (fun u : ℝ => Complex.exp (w * (u : ℂ)) * cx (smoothedWallLogProfile ℓ) u)
-  rw [← hneg]
+  rw [← integral_neg_eq_self
+    (fun u : ℝ => Complex.exp (w * (u : ℂ)) * cx (smoothedWallLogProfile ℓ) u) volume]
   have heq : (fun v : ℝ => Complex.exp (w * ((-v : ℝ) : ℂ)) * cx (smoothedWallLogProfile ℓ) (-v)) =
       fun v : ℝ => (ℓ : ℂ) *
         (Ioc (0 : ℝ) (1 / 8)).indicator
@@ -845,7 +892,7 @@ private theorem ibp_cexp_neg_mul_real {a b : ℝ} (hab : a ≤ b) {g g' : ℝ �
     exact Complex.continuous_ofReal.comp_continuousOn hg_cont
   have hv : ContinuousOn v (uIcc a b) := (by fun_prop : Continuous v).continuousOn
   have hu' : IntervalIntegrable u' volume a b :=
-    Complex.ofRealCLM.intervalIntegrable_comp hg'_int
+    intervalIntegrable_ofReal hg'_int
   have hv' : IntervalIntegrable v' volume a b :=
     (by fun_prop : Continuous v').intervalIntegrable a b
   have hibp := intervalIntegral.integral_mul_deriv_eq_deriv_mul_of_hasDerivAt hu hv
@@ -873,47 +920,28 @@ private theorem mul_laplace_smoothedWallLogProfile_eq (ℓ : ℝ) (w : ℂ) :
     · simp [reflectedCusp, invWallRootLogZero]
     · rcases eq_or_lt_of_le hv.2 with rfl | hv8
       · simp [reflectedCusp]
-      · simp [reflectedCusp, hv0, hv8, invWallRootLogZero, not_le.mpr hv0]
+      · rw [reflectedCusp, if_pos ⟨hv0, hv8⟩, invWallRootLogZero, if_neg (not_le.mpr hv0)]
   have hg_cont : ContinuousOn reflectedCusp (Icc 0 (1 / 8)) :=
     (((by fun_prop : Continuous fun v : ℝ => (1 - 8 * v) ^ 2).continuousOn).mul
       (continuousOn_invWallRootLogZero.mono (Icc_subset_Icc le_rfl (by norm_num)))).congr href_eq
   have hg_deriv : ∀ v ∈ Ioo (0 : ℝ) (1 / 8),
       HasDerivAt reflectedCusp (cuspMainDeriv v - cuspSubDeriv v) v := fun v hv => by
     have hd1 : HasDerivAt (fun t : ℝ => (1 - 8 * t) ^ 2) (-16 * (1 - 8 * v)) v := by
-      have hlin : HasDerivAt (fun t : ℝ => 1 - 8 * t) (-8) v := by
-        simpa using (hasDerivAt_const v (1 : ℝ)).sub ((hasDerivAt_id v).const_mul (8 : ℝ))
+      have hlin : HasDerivAt (fun t : ℝ => 1 - 8 * t) (-8) v :=
+        ((hasDerivAt_const v (1 : ℝ)).sub ((hasDerivAt_id v).const_mul (8 : ℝ))).congr_deriv
+          (by ring)
       exact (hlin.pow 2).congr_deriv (by ring)
     have hd2 := hasDerivAt_inv_wallRootLog hv.1 (by linarith [hv.2])
-    have hprod := (hd1.mul hd2).congr_deriv (by
+    have hprod : HasDerivAt (fun t : ℝ => (1 - 8 * t) ^ 2 * (wallRootLog t)⁻¹)
+        (cuspMainDeriv v - cuspSubDeriv v) v := (hd1.mul hd2).congr_deriv (by
       dsimp only [cuspMainDeriv, cuspSubDeriv]
       rw [invWallRootLogZero, if_neg (not_le.mpr hv.1)]
       ring)
     refine hprod.congr_of_eventuallyEq ?_
     filter_upwards [Ioo_mem_nhds hv.1 hv.2] with t ht
     simp [reflectedCusp, ht.1, ht.2]
-  have hmain_int : IntervalIntegrable cuspMainDeriv volume 0 (1 / 8) := by
-    rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hab]
-    refine (integrableOn_inv_two_mul_wallRootLog_cube (by norm_num) (by norm_num)).mono' ?_ ?_
-    · have hc : ContinuousOn cuspMainDeriv (Ioo 0 (1 / 8)) := by
-        intro v hv
-        have hw_pos : 0 < wallRootLog v :=
-          lt_of_lt_of_le zero_lt_one (one_le_wallRootLog hv.1 (by linarith [hv.2]))
-        have hc_w : ContinuousAt wallRootLog v :=
-          Real.continuous_sqrt.continuousAt.comp
-            ((Real.continuousAt_log (one_div_pos.mpr hv.1).ne').comp
-              (continuousAt_const.div continuousAt_id hv.1.ne'))
-        exact (((by fun_prop : Continuous fun t : ℝ => (1 - 8 * t) ^ 2).continuousAt).mul
-          (((continuousAt_const.mul continuousAt_id).mul (hc_w.pow 3)).inv₀
-            (by positivity))).continuousWithinAt
-      exact (hc.aestronglyMeasurable measurableSet_Ioo).congr_set_ae Ioo_ae_eq_Ioc.symm
-    · filter_upwards [ae_restrict_mem measurableSet_Ioc] with v hv
-      have hpos : 0 ≤ (2 * v * wallRootLog v ^ 3)⁻¹ :=
-        inv_nonneg.mpr (mul_nonneg (mul_nonneg zero_le_two hv.1.le)
-          (pow_nonneg (zero_le_one.trans (one_le_wallRootLog hv.1 (by linarith [hv.2]))) 3))
-      dsimp only [cuspMainDeriv]
-      rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) hpos)]
-      have h1 : (1 - 8 * v) ^ 2 ≤ 1 := by nlinarith [hv.1, hv.2]
-      exact (mul_le_mul_of_nonneg_right h1 hpos).trans_eq (one_mul _)
+  have hmain_int : IntervalIntegrable cuspMainDeriv volume 0 (1 / 8) :=
+    intervalIntegrable_cuspMainDeriv_zero (by norm_num) le_rfl
   have hsub_cont : ContinuousOn cuspSubDeriv (Icc 0 (1 / 8)) :=
     ((by fun_prop : Continuous fun v : ℝ => 16 * (1 - 8 * v)).continuousOn).mul
       (continuousOn_invWallRootLogZero.mono (Icc_subset_Icc le_rfl (by norm_num)))
@@ -929,15 +957,15 @@ private theorem mul_laplace_smoothedWallLogProfile_eq (ℓ : ℝ) (w : ℂ) :
         ∫ v in (0 : ℝ)..(1 / 8), Complex.exp (-(w * (v : ℂ))) * (cuspSubDeriv v : ℂ) := by
     have hi1 : IntervalIntegrable
         (fun v => Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)) volume 0 (1 / 8) :=
-      (Complex.ofRealCLM.intervalIntegrable_comp hmain_int).continuousOn_mul
+      (intervalIntegrable_ofReal hmain_int).continuousOn_mul
         (by fun_prop : Continuous fun v : ℝ => Complex.exp (-(w * (v : ℂ)))).continuousOn
     have hi2 : IntervalIntegrable
         (fun v => Complex.exp (-(w * (v : ℂ))) * (cuspSubDeriv v : ℂ)) volume 0 (1 / 8) :=
-      (Complex.ofRealCLM.intervalIntegrable_comp hsub_int).continuousOn_mul
+      (intervalIntegrable_ofReal hsub_int).continuousOn_mul
         (by fun_prop : Continuous fun v : ℝ => Complex.exp (-(w * (v : ℂ)))).continuousOn
     rw [← intervalIntegral.integral_sub hi1 hi2]
     exact intervalIntegral.integral_congr fun v _ => by push_cast; ring
-  rw [hr0, hr8, Complex.ofReal_zero, mul_zero, sub_self, zero_add, hint_sub]
+  simp only [hr0, hr8, Complex.ofReal_zero, mul_zero, sub_zero, zero_add, hint_sub]
 
 private theorem norm_cexp_neg_mul_le_three {w : ℂ} (hw : -5 ≤ w.re) {v : ℝ}
     (hv0 : 0 ≤ v) (hv8 : v ≤ 1 / 8) :
@@ -959,14 +987,15 @@ private theorem norm_integral_cuspSubDeriv_le {w : ℂ} (hw : -5 ≤ w.re) (hne 
       (continuousOn_invWallRootLogZero.mono (Icc_subset_Icc le_rfl (by norm_num)))
   have hg_deriv : ∀ v ∈ Ioo (0 : ℝ) (1 / 8), HasDerivAt cuspSubDeriv (g' v) v := fun v hv => by
     have hd1 : HasDerivAt (fun t : ℝ => 16 * (1 - 8 * t)) (-128) v := by
-      have hlin : HasDerivAt (fun t : ℝ => 1 - 8 * t) (-8) v := by
-        simpa using (hasDerivAt_const v (1 : ℝ)).sub ((hasDerivAt_id v).const_mul (8 : ℝ))
+      have hlin : HasDerivAt (fun t : ℝ => 1 - 8 * t) (-8) v :=
+        ((hasDerivAt_const v (1 : ℝ)).sub ((hasDerivAt_id v).const_mul (8 : ℝ))).congr_deriv
+          (by ring)
       exact (hlin.const_mul 16).congr_deriv (by ring)
     have hd2 := hasDerivAt_invWallRootLogZero hv.1 (by linarith [hv.2])
     exact (hd1.mul hd2).congr_deriv (by dsimp only [g']; ring)
   let B : ℝ → ℝ := fun v => 128 + 16 * (2 * v * wallRootLog v ^ 3)⁻¹
   have hB_int : IntervalIntegrable B volume 0 (1 / 8) :=
-    (intervalIntegrable_const (c := (128 : ℝ))).add
+    (intervalIntegral.intervalIntegrable_const (c := (128 : ℝ))).add
       ((intervalIntegrable_inv_two_mul_wallRootLog_cube (by norm_num) (by norm_num)).const_mul 16)
   have hg'_bound : ∀ v ∈ Ioc (0 : ℝ) (1 / 8), ‖g' v‖ ≤ B v := fun v hv => by
     have hpos : 0 ≤ (2 * v * wallRootLog v ^ 3)⁻¹ :=
@@ -988,39 +1017,25 @@ private theorem norm_integral_cuspSubDeriv_le {w : ℂ} (hw : -5 ≤ w.re) (hne 
           exact add_le_add ((mul_le_mul_of_nonneg_left hw1 (by norm_num)).trans_eq (mul_one _))
             (mul_le_mul_of_nonneg_right h1m hpos)
   have hg'_int : IntervalIntegrable g' volume 0 (1 / 8) := by
-    rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hab]
-    have hc_g' : ContinuousOn g' (Ioo 0 (1 / 8)) := by
-      intro v hv
-      have hw_pos : 0 < wallRootLog v :=
-        lt_of_lt_of_le zero_lt_one (one_le_wallRootLog hv.1 (by linarith [hv.2]))
-      have hc_w : ContinuousAt wallRootLog v :=
-        Real.continuous_sqrt.continuousAt.comp
-          ((Real.continuousAt_log (one_div_pos.mpr hv.1).ne').comp
-            (continuousAt_const.div continuousAt_id hv.1.ne'))
-      have hc1 : ContinuousWithinAt (fun t => -128 * invWallRootLogZero t) (Ioo 0 (1 / 8)) v :=
-        (continuousWithinAt_const.mul
-          (continuousOn_invWallRootLogZero v ⟨hv.1.le, by linarith [hv.2]⟩)).mono
-          (Ioo_subset_Icc_self.trans (Icc_subset_Icc le_rfl (by norm_num)))
-      have hc2 : ContinuousWithinAt
-          (fun t => 16 * (1 - 8 * t) * (2 * t * wallRootLog t ^ 3)⁻¹) (Ioo 0 (1 / 8)) v :=
-        (((by fun_prop : Continuous fun t : ℝ => 16 * (1 - 8 * t)).continuousAt).mul
-          (((continuousAt_const.mul continuousAt_id).mul (hc_w.pow 3)).inv₀
-            (by positivity))).continuousWithinAt
-      exact hc1.add hc2
-    exact ((intervalIntegrable_iff_integrableOn_Ioc_of_le hab).mp hB_int).mono'
-      ((hc_g'.aestronglyMeasurable measurableSet_Ioo).congr_set_ae Ioo_ae_eq_Ioc.symm)
+    rw [intervalIntegral.intervalIntegrable_iff_integrableOn_Ioc_of_le hab]
+    have hm_g' : Measurable g' :=
+      (measurable_const.mul measurable_invWallRootLogZero).add
+        ((measurable_const.mul (measurable_const.sub (measurable_const.mul measurable_id))).mul
+          (((measurable_const.mul measurable_id).mul (measurable_wallRootLog.pow_const 3)).inv))
+    exact ((intervalIntegral.intervalIntegrable_iff_integrableOn_Ioc_of_le hab).mp hB_int).mono'
+      hm_g'.aestronglyMeasurable
       ((ae_restrict_mem measurableSet_Ioc).mono hg'_bound)
   have hibp := ibp_cexp_neg_mul_real hab hg_cont hg_deriv hg'_int w
   have hs0 : cuspSubDeriv 0 = 0 := by simp [cuspSubDeriv, invWallRootLogZero]
   have hs8 : cuspSubDeriv (1 / 8) = 0 := by simp [cuspSubDeriv]
-  rw [hs0, hs8, Complex.ofReal_zero, mul_zero, sub_self, zero_add] at hibp
+  simp only [hs0, hs8, Complex.ofReal_zero, mul_zero, sub_zero, zero_add] at hibp
   have hnorm_prod : ‖w‖ * ‖∫ v in (0 : ℝ)..(1 / 8),
       Complex.exp (-(w * (v : ℂ))) * (cuspSubDeriv v : ℂ)‖ ≤ 96 := by
     rw [← norm_mul, hibp]
     have hnorm_int := intervalIntegral.norm_integral_le_of_norm_le hab
       (f := fun v => Complex.exp (-(w * (v : ℂ))) * (g' v : ℂ))
       (g := fun v => 3 * B v)
-      (fun v hv => by
+      (Eventually.of_forall fun v hv => by
         rw [norm_mul, Complex.norm_real]
         exact mul_le_mul (norm_cexp_neg_mul_le_three hw hv.1.le hv.2)
           (hg'_bound v hv) (norm_nonneg _) (by norm_num))
@@ -1028,7 +1043,7 @@ private theorem norm_integral_cuspSubDeriv_le {w : ℂ} (hw : -5 ≤ w.re) (hne 
     have hB_val : (∫ v in (0 : ℝ)..(1 / 8), 3 * B v) ≤ 96 := by
       dsimp only [B]
       rw [intervalIntegral.integral_const_mul,
-        intervalIntegral.integral_add (intervalIntegrable_const (c := (128 : ℝ)))
+        intervalIntegral.integral_add (intervalIntegral.intervalIntegrable_const (c := (128 : ℝ)))
           ((intervalIntegrable_inv_two_mul_wallRootLog_cube (by norm_num) (by norm_num)).const_mul 16),
         intervalIntegral.integral_const, intervalIntegral.integral_const_mul,
         intervalIntegral_inv_two_mul_wallRootLog_cube (by norm_num) (by norm_num), smul_eq_mul]
@@ -1064,16 +1079,15 @@ private theorem norm_tail_cuspMainDeriv_le {w : ℂ} (hw : -5 ≤ w.re) (hne : w
     have hv_pos : 0 < v := lt_of_lt_of_le hδ0 hv.1
     have hv4 : v ≤ 1 / 4 := hv.2.trans (by norm_num)
     have hw_pos : 0 < wallRootLog v := lt_of_lt_of_le zero_lt_one (one_le_wallRootLog hv_pos hv4)
-    have hd1 : HasDerivAt (fun t : ℝ => 2 * t) 2 v := by
-      simpa using (hasDerivAt_id v).const_mul (2 : ℝ)
+    have hd1 : HasDerivAt (fun t : ℝ => 2 * t) 2 v :=
+      ((hasDerivAt_id v).const_mul (2 : ℝ)).congr_deriv (mul_one _)
     have hd2 : HasDerivAt (fun t : ℝ => wallRootLog t ^ 3)
-        (3 * wallRootLog v ^ 2 * (-((wallRootLog v)⁻¹ / (2 * v)))) v := by
-      simpa using (hasDerivAt_wallRootLog hv_pos hv4).pow 3
+        (3 * wallRootLog v ^ 2 * (-((wallRootLog v)⁻¹ / (2 * v)))) v :=
+      ((hasDerivAt_wallRootLog hv_pos hv4).pow 3).congr_deriv (by ring)
     refine (hd1.mul hd2).congr_deriv ?_
     dsimp only [D']
     have hsq := wallRootLog_sq hv_pos hv4
     have hw_ne := hw_pos.ne'
-    have hv_ne := hv_pos.ne'
     calc 2 * wallRootLog v ^ 3 + 2 * v * (3 * wallRootLog v ^ 2 * (-((wallRootLog v)⁻¹ / (2 * v))))
         = 2 * (wallRootLog v ^ 2 * wallRootLog v) -
             3 * (wallRootLog v * (wallRootLog v * (wallRootLog v)⁻¹)) * ((2 * v) / (2 * v)) := by
@@ -1083,11 +1097,12 @@ private theorem norm_tail_cuspMainDeriv_le {w : ℂ} (hw : -5 ≤ w.re) (hne : w
           ring
   have hh_deriv : ∀ v ∈ Icc δ (1 / 8), HasDerivAt cuspMainDeriv (h' v) v := fun v hv => by
     have hd1 : HasDerivAt (fun t : ℝ => (1 - 8 * t) ^ 2) (-16 * (1 - 8 * v)) v := by
-      have hlin : HasDerivAt (fun t : ℝ => 1 - 8 * t) (-8) v := by
-        simpa using (hasDerivAt_const v (1 : ℝ)).sub ((hasDerivAt_id v).const_mul (8 : ℝ))
+      have hlin : HasDerivAt (fun t : ℝ => 1 - 8 * t) (-8) v :=
+        ((hasDerivAt_const v (1 : ℝ)).sub ((hasDerivAt_id v).const_mul (8 : ℝ))).congr_deriv
+          (by ring)
       exact (hlin.pow 2).congr_deriv (by ring)
     have hd2 : HasDerivAt (fun t : ℝ => (D t)⁻¹) (-(D' v / D v ^ 2)) v :=
-      (hD_deriv v hv).inv (hD_pos v hv).ne'
+      ((hD_deriv v hv).inv (hD_pos v hv).ne').congr_deriv (neg_div _ _).symm
     exact (hd1.mul hd2).congr_deriv (by dsimp only [h', D]; ring)
   have hh'_nonpos : ∀ v ∈ Icc δ (1 / 8), h' v ≤ 0 := fun v hv => by
     have hv_pos : 0 < v := lt_of_lt_of_le hδ0 hv.1
@@ -1142,7 +1157,7 @@ private theorem norm_tail_cuspMainDeriv_le {w : ℂ} (hw : -5 ≤ w.re) (hne : w
       have h1 := intervalIntegral.norm_integral_le_of_norm_le hδ8
         (f := fun v => Complex.exp (-(w * (v : ℂ))) * (h' v : ℂ))
         (g := fun v => 3 * (-h' v))
-        (fun v hv => by
+        (Eventually.of_forall fun v hv => by
           rw [norm_mul, Complex.norm_real, Real.norm_eq_abs,
             abs_of_nonpos (hh'_nonpos v ⟨hv.1.le, hv.2⟩)]
           exact mul_le_mul_of_nonneg_right
@@ -1165,25 +1180,16 @@ private theorem norm_tail_cuspMainDeriv_le {w : ℂ} (hw : -5 ≤ w.re) (hne : w
             mul_inv]
           ring
   have hcomb := hnorm_prod.trans hmδ_le
-  refine (le_div_iff₀' (mul_pos (mul_pos (norm_pos_iff.mpr hne) hδ0) ?_)).mpr ?_
-  · exact pow_pos (lt_of_lt_of_le zero_lt_one (one_le_wallRootLog hδ0 (hδ8.trans (by norm_num)))) 3
-  · rw [mul_assoc ‖w‖ δ, ← le_div_iff₀' (pow_pos (lt_of_lt_of_le zero_lt_one
-      (one_le_wallRootLog hδ0 (hδ8.trans (by norm_num)))) 3)]
-    -- Direct algebraic rearrangement:
-    have hd_pos : 0 < δ * wallRootLog δ ^ 3 :=
-      mul_pos hδ0 (pow_pos (lt_of_lt_of_le zero_lt_one
-        (one_le_wallRootLog hδ0 (hδ8.trans (by norm_num)))) 3)
-    have hmul := mul_le_mul_of_nonneg_right hcomb hd_pos.le
-    rw [div_mul_cancel₀ _ hd_pos.ne'] at hmul
-    exact (le_div_iff₀ (pow_pos (lt_of_lt_of_le zero_lt_one
-      (one_le_wallRootLog hδ0 (hδ8.trans (by norm_num)))) 3)).mpr
-      (by linarith [show ‖w‖ * (δ * wallRootLog δ ^ 3) =
-        (‖w‖ * ‖∫ v in δ..(1 / 8), Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)‖) *
-          0 + ‖w‖ * (δ * wallRootLog δ ^ 3) by ring,
-        show (‖w‖ * ‖∫ v in δ..(1 / 8), Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)‖) *
-          (δ * wallRootLog δ ^ 3) =
-          ‖∫ v in δ..(1 / 8), Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)‖ *
-            (‖w‖ * δ) * wallRootLog δ ^ 3 by ring])
+  have hw3_pos : 0 < wallRootLog δ ^ 3 :=
+    pow_pos (lt_of_lt_of_le zero_lt_one (one_le_wallRootLog hδ0 (hδ8.trans (by norm_num)))) 3
+  have hd_pos : 0 < δ * wallRootLog δ ^ 3 := mul_pos hδ0 hw3_pos
+  have hmul := mul_le_mul_of_nonneg_right hcomb hd_pos.le
+  rw [div_mul_cancel₀ _ hd_pos.ne'] at hmul
+  rw [le_div_iff₀ (mul_pos (mul_pos (norm_pos_iff.mpr hne) hδ0) hw3_pos)]
+  linarith [show ‖∫ v in δ..(1 / 8), Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)‖ *
+      (‖w‖ * δ * wallRootLog δ ^ 3) =
+    (‖w‖ * ‖∫ v in δ..(1 / 8), Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)‖) *
+      (δ * wallRootLog δ ^ 3) by ring]
 
 private theorem norm_rescaled_laplace_smoothedWallLogProfile_le_five :
     ∀ (ℓ : ℝ) (w : ℂ), -5 ≤ w.re →
@@ -1200,7 +1206,7 @@ private theorem norm_rescaled_laplace_smoothedWallLogProfile_le_five :
       have hint := intervalIntegral.norm_integral_le_of_norm_le (by norm_num : (0 : ℝ) ≤ 1 / 8)
         (f := fun v => Complex.exp (-(w * (v : ℂ))) * (reflectedCusp v : ℂ))
         (g := fun _ => (3 : ℝ))
-        (fun v hv => by
+        (Eventually.of_forall fun v hv => by
           rw [norm_mul, Complex.norm_real, Real.norm_eq_abs]
           have hr1 : |reflectedCusp v| ≤ 1 := by
             dsimp only [reflectedCusp]
@@ -1214,7 +1220,7 @@ private theorem norm_rescaled_laplace_smoothedWallLogProfile_le_five :
             · simp
           exact (mul_le_mul (norm_cexp_neg_mul_le_three hw hv.1.le hv.2) hr1
             (abs_nonneg _) (by norm_num)).trans_eq (mul_one _))
-        intervalIntegrable_const
+        intervalIntegral.intervalIntegrable_const
       rw [intervalIntegral.integral_const, smul_eq_mul] at hint
       have hm := mul_le_mul_of_nonneg_left hint (abs_nonneg ℓ)
       linarith
@@ -1240,39 +1246,17 @@ private theorem norm_rescaled_laplace_smoothedWallLogProfile_le_five :
     have hw_ne : w ≠ 0 := norm_pos_iff.mp hr_pos
     set δ := r⁻¹
     have hδ0 : 0 < δ := inv_pos.mpr hr_pos
-    have hδ16 : δ ≤ 1 / 16 := (inv_le_inv₀ hr_pos (by norm_num)).mpr hge16
+    have hδ16 : δ ≤ 1 / 16 :=
+      (one_div r).symm.trans_le (one_div_le_one_div_of_le (by norm_num) hge16)
     have hδ8 : δ ≤ 1 / 8 := by linarith
     have hδ4 : δ ≤ 1 / 4 := by linarith
     have hwδ_eq : wallRootLog δ = Real.sqrt (Real.log r) := by
-      unfold wallRootLog; rw [one_div_inv]
+      unfold wallRootLog; rw [div_inv_eq_mul, one_mul]
     have hroot1 : 1 ≤ Real.sqrt (Real.log r) := by
       rw [← hwδ_eq]; exact one_le_wallRootLog hδ0 hδ4
     have hmain_int_0δ : IntervalIntegrable
-        (fun v => Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)) volume 0 δ := by
-      have hm_real : IntervalIntegrable cuspMainDeriv volume 0 δ := by
-        rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hδ0.le]
-        refine (integrableOn_inv_two_mul_wallRootLog_cube hδ0 hδ4).mono' ?_ ?_
-        · have hc : ContinuousOn cuspMainDeriv (Ioo 0 δ) := by
-            intro v hv
-            have hc_w : ContinuousAt wallRootLog v :=
-              Real.continuous_sqrt.continuousAt.comp
-                ((Real.continuousAt_log (one_div_pos.mpr hv.1).ne').comp
-                  (continuousAt_const.div continuousAt_id hv.1.ne'))
-            exact (((by fun_prop : Continuous fun t : ℝ => (1 - 8 * t) ^ 2).continuousAt).mul
-              (((continuousAt_const.mul continuousAt_id).mul (hc_w.pow 3)).inv₀
-                (mul_pos (mul_pos two_pos hv.1)
-                  (pow_pos (lt_of_lt_of_le zero_lt_one
-                    (one_le_wallRootLog hv.1 (by linarith [hv.2]))) 3)).ne')).continuousWithinAt
-          exact (hc.aestronglyMeasurable measurableSet_Ioo).congr_set_ae Ioo_ae_eq_Ioc.symm
-        · filter_upwards [ae_restrict_mem measurableSet_Ioc] with v hv
-          have hpos : 0 ≤ (2 * v * wallRootLog v ^ 3)⁻¹ :=
-            inv_nonneg.mpr (mul_nonneg (mul_nonneg zero_le_two hv.1.le)
-              (pow_nonneg (zero_le_one.trans (one_le_wallRootLog hv.1 (by linarith [hv.2]))) 3))
-          dsimp only [cuspMainDeriv]
-          rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) hpos)]
-          have h1 : (1 - 8 * v) ^ 2 ≤ 1 := by nlinarith [hv.1, hv.2, hδ8]
-          exact (mul_le_mul_of_nonneg_right h1 hpos).trans_eq (one_mul _)
-      exact (Complex.ofRealCLM.intervalIntegrable_comp hm_real).continuousOn_mul
+        (fun v => Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)) volume 0 δ :=
+      (intervalIntegrable_ofReal (intervalIntegrable_cuspMainDeriv_zero hδ0 hδ8)).continuousOn_mul
         (by fun_prop : Continuous fun v : ℝ => Complex.exp (-(w * (v : ℂ)))).continuousOn
     have hmain_int_δ8 : IntervalIntegrable
         (fun v => Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)) volume δ (1 / 8) := by
@@ -1288,7 +1272,7 @@ private theorem norm_rescaled_laplace_smoothedWallLogProfile_le_five :
             (mul_pos (mul_pos two_pos hv_pos)
               (pow_pos (lt_of_lt_of_le zero_lt_one
                 (one_le_wallRootLog hv_pos (hv.2.trans (by norm_num)))) 3)).ne')).continuousWithinAt
-      exact (Complex.ofRealCLM.intervalIntegrable_comp
+      exact (intervalIntegrable_ofReal
         (hc.intervalIntegrable_of_Icc hδ8)).continuousOn_mul
         (by fun_prop : Continuous fun v : ℝ => Complex.exp (-(w * (v : ℂ)))).continuousOn
     have hnear_le : ‖∫ v in (0 : ℝ)..δ,
@@ -1297,7 +1281,7 @@ private theorem norm_rescaled_laplace_smoothedWallLogProfile_le_five :
       have h1 := intervalIntegral.norm_integral_le_of_norm_le hδ0.le
         (f := fun v => Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ))
         (g := fun v => 3 * (2 * v * wallRootLog v ^ 3)⁻¹)
-        (fun v hv => by
+        (Eventually.of_forall fun v hv => by
           have hpos : 0 ≤ (2 * v * wallRootLog v ^ 3)⁻¹ :=
             inv_nonneg.mpr (mul_nonneg (mul_nonneg zero_le_two hv.1.le)
               (pow_nonneg (zero_le_one.trans (one_le_wallRootLog hv.1 (by linarith [hv.2]))) 3))
@@ -1327,7 +1311,9 @@ private theorem norm_rescaled_laplace_smoothedWallLogProfile_le_five :
           96 / Real.sqrt (Real.log r) := by
       refine (norm_integral_cuspSubDeriv_le hw hw_ne).trans
         (div_le_div_of_nonneg_left (by norm_num) (lt_of_lt_of_le zero_lt_one hroot1) ?_)
-      have h1 : Real.sqrt (Real.log r) ≤ Real.log r := by nlinarith [hroot1]
+      have h1 : Real.sqrt (Real.log r) ≤ Real.log r := by
+        have hsq := Real.sq_sqrt (Real.log_nonneg (by linarith : (1 : ℝ) ≤ r))
+        nlinarith [hroot1, hsq]
       have h2 : Real.log r ≤ r := by linarith [Real.log_le_sub_one_of_pos hr_pos]
       exact h1.trans h2
     have hwL_le : ‖w * negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) w‖ ≤
@@ -1400,7 +1386,8 @@ theorem smoothedWallLogProfile_axis_lipschitz :
     exact h1.trans (div_le_self (by positivity) hsqrt1)
   have hder : ∀ t : ℝ, ‖deriv H ((t : ℂ) * I)‖ ≤ 500 * |ℓ| := fun t => by
     have hball : ∀ z ∈ Metric.closedBall ((t : ℂ) * I) 1, -4 < z.re := fun z hz => by
-      have h := (Complex.abs_re_le_norm (z - (t : ℂ) * I)).trans (Metric.mem_closedBall_iff_norm.mp hz)
+      rw [Metric.mem_closedBall, dist_eq_norm] at hz
+      have h := (Complex.abs_re_le_norm (z - (t : ℂ) * I)).trans hz
       simp only [sub_re, mul_I_re, ofReal_im, neg_zero, sub_zero] at h
       linarith [(abs_le.mp h).1]
     have hdiff : DifferentiableOn ℂ H (Metric.closedBall ((t : ℂ) * I) 1) :=
@@ -1421,9 +1408,9 @@ theorem smoothedWallLogProfile_axis_lipschitz :
 private theorem norm_cexp_neg_ofReal_mul_I_sub_one_le (t : ℝ) :
     ‖Complex.exp (-((t : ℂ) * I)) - 1‖ ≤ |t| := by
   let f : ℝ → ℂ := fun s => Complex.exp (-((s : ℂ) * I))
-  have hd : ∀ s : ℝ, HasDerivAt f (-I * f s) s := fun s => by
-    have h := hasDerivAt_cexp_neg_mul I s
-    simpa only [f, mul_comm I (s : ℂ)] using h
+  have hd : ∀ s : ℝ, HasDerivAt f (-I * f s) s := fun s =>
+    ((hasDerivAt_cexp_neg_mul I s).congr_of_eventuallyEq
+      (Eventually.of_forall fun t => by simp [f, mul_comm])).congr_deriv (by simp [f, mul_comm])
   have hnorm : ∀ s : ℝ, ‖-I * f s‖ ≤ 1 := fun s => by
     dsimp only [f]
     rw [norm_mul, norm_neg, norm_I, one_mul, Complex.norm_exp]
@@ -1451,7 +1438,7 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
             negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((y : ℂ) * I)) := by ring
       _ = (y : ℂ) * (Real.sqrt (Real.log y) : ℂ) *
             negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((y : ℂ) * I) := by
-          rw [Complex.I_sq, neg_neg, one_mul]
+          rw [Complex.I_mul_I, neg_neg, one_mul]
   let err : ℝ → ℝ := fun y =>
     |ℓ| * (7 / (2 * Real.log y) + 104 * Real.sqrt (Real.log y) / y)
   have herr_zero : Tendsto err atTop (𝓝 0) := by
@@ -1459,11 +1446,12 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
       have hz := ((tendsto_inv_atTop_zero (𝕜 := ℝ)).comp Real.tendsto_log_atTop).const_mul
         (7 / 2 : ℝ)
       rw [mul_zero] at hz
-      exact hz.congr fun y => by ring
+      exact hz.congr fun y => by dsimp only [Function.comp_apply]; ring
     have h2 : Tendsto (fun y : ℝ => 104 * Real.sqrt (Real.log y) / y) atTop (𝓝 0) := by
-      refine squeeze_zero' ?_ ?_ (((tendsto_inv_atTop_zero (𝕜 := ℝ)).comp
-        Real.tendsto_sqrt).const_mul 104 |>.congr'
-          (Eventually.of_forall fun y => by ring) |>.trans (by simp))
+      have hz : Tendsto (fun y : ℝ => 104 * (Real.sqrt y)⁻¹) atTop (𝓝 0) := by
+        simpa only [mul_zero] using
+          ((tendsto_inv_atTop_zero (𝕜 := ℝ)).comp tendsto_sqrt_atTop).const_mul 104
+      refine squeeze_zero' ?_ ?_ hz
       · filter_upwards [eventually_ge_atTop (1 : ℝ)] with y hy
         exact div_nonneg (mul_nonneg (by norm_num) (Real.sqrt_nonneg _)) (by linarith)
       · filter_upwards [eventually_gt_atTop (1 : ℝ)] with y hy
@@ -1489,40 +1477,18 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
   have hw_ne : w ≠ 0 := by rw [← norm_pos_iff, hw_norm]; exact hy_pos
   set δ := y⁻¹
   have hδ0 : 0 < δ := inv_pos.mpr hy_pos
-  have hδ8 : δ ≤ 1 / 8 := (inv_le_inv₀ hy_pos (by norm_num)).mpr (by linarith)
+  have hδ8 : δ ≤ 1 / 8 :=
+    (one_div y).symm.trans_le (one_div_le_one_div_of_le (by norm_num) (by linarith))
   have hδ4 : δ ≤ 1 / 4 := by linarith
   have hwδ_eq : wallRootLog δ = Real.sqrt (Real.log y) := by
-    unfold wallRootLog; rw [one_div_inv]
+    unfold wallRootLog; rw [div_inv_eq_mul, one_mul]
   have hlog_pos : 0 < Real.log y := Real.log_pos (by linarith)
   have hsqrt_pos : 0 < Real.sqrt (Real.log y) := Real.sqrt_pos.mpr hlog_pos
   have hroot1 : 1 ≤ wallRootLog δ := one_le_wallRootLog hδ0 hδ4
   -- Split `0 .. (1/8)` at `δ = 1/y` and compare the `0 .. δ` integral with `(wallRootLog δ)⁻¹`.
   have hmain_int_0δ : IntervalIntegrable
-      (fun v => Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)) volume 0 δ := by
-    have hm_real : IntervalIntegrable cuspMainDeriv volume 0 δ := by
-      rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hδ0.le]
-      refine (integrableOn_inv_two_mul_wallRootLog_cube hδ0 hδ4).mono' ?_ ?_
-      · have hc : ContinuousOn cuspMainDeriv (Ioo 0 δ) := by
-          intro v hv
-          have hc_w : ContinuousAt wallRootLog v :=
-            Real.continuous_sqrt.continuousAt.comp
-              ((Real.continuousAt_log (one_div_pos.mpr hv.1).ne').comp
-                (continuousAt_const.div continuousAt_id hv.1.ne'))
-          exact (((by fun_prop : Continuous fun t : ℝ => (1 - 8 * t) ^ 2).continuousAt).mul
-            (((continuousAt_const.mul continuousAt_id).mul (hc_w.pow 3)).inv₀
-              (mul_pos (mul_pos two_pos hv.1)
-                (pow_pos (lt_of_lt_of_le zero_lt_one
-                  (one_le_wallRootLog hv.1 (by linarith [hv.2]))) 3)).ne')).continuousWithinAt
-        exact (hc.aestronglyMeasurable measurableSet_Ioo).congr_set_ae Ioo_ae_eq_Ioc.symm
-      · filter_upwards [ae_restrict_mem measurableSet_Ioc] with v hv
-        have hpos : 0 ≤ (2 * v * wallRootLog v ^ 3)⁻¹ :=
-          inv_nonneg.mpr (mul_nonneg (mul_nonneg zero_le_two hv.1.le)
-            (pow_nonneg (zero_le_one.trans (one_le_wallRootLog hv.1 (by linarith [hv.2]))) 3))
-        dsimp only [cuspMainDeriv]
-        rw [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) hpos)]
-        have h1 : (1 - 8 * v) ^ 2 ≤ 1 := by nlinarith [hv.1, hv.2, hδ8]
-        exact (mul_le_mul_of_nonneg_right h1 hpos).trans_eq (one_mul _)
-    exact (Complex.ofRealCLM.intervalIntegrable_comp hm_real).continuousOn_mul
+      (fun v => Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)) volume 0 δ :=
+    (intervalIntegrable_ofReal (intervalIntegrable_cuspMainDeriv_zero hδ0 hδ8)).continuousOn_mul
       (by fun_prop : Continuous fun v : ℝ => Complex.exp (-(w * (v : ℂ)))).continuousOn
   have hmain_int_δ8 : IntervalIntegrable
       (fun v => Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)) volume δ (1 / 8) := by
@@ -1538,13 +1504,12 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
           (mul_pos (mul_pos two_pos hv_pos)
             (pow_pos (lt_of_lt_of_le zero_lt_one
               (one_le_wallRootLog hv_pos (hv.2.trans (by norm_num)))) 3)).ne')).continuousWithinAt
-    exact (Complex.ofRealCLM.intervalIntegrable_comp
+    exact (intervalIntegrable_ofReal
       (hc.intervalIntegrable_of_Icc hδ8)).continuousOn_mul
       (by fun_prop : Continuous fun v : ℝ => Complex.exp (-(w * (v : ℂ)))).continuousOn
   have hbase_int : IntervalIntegrable
       (fun v : ℝ => ((2 * v * wallRootLog v ^ 3)⁻¹ : ℂ)) volume 0 δ :=
-    Complex.ofRealCLM.intervalIntegrable_comp
-      (intervalIntegrable_inv_two_mul_wallRootLog_cube hδ0 hδ4)
+    intervalIntegrable_ofReal (intervalIntegrable_inv_two_mul_wallRootLog_cube hδ0 hδ4)
   have hbase_val : (∫ v in (0 : ℝ)..δ, ((2 * v * wallRootLog v ^ 3)⁻¹ : ℂ)) =
       ((Real.sqrt (Real.log y))⁻¹ : ℂ) := by
     have h1 := Complex.ofRealCLM.intervalIntegral_comp_comm
@@ -1561,7 +1526,7 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
       (f := fun v => Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ) -
         ((2 * v * wallRootLog v ^ 3)⁻¹ : ℂ))
       (g := fun _ => y / (2 * wallRootLog δ ^ 3) + 8)
-      (fun v hv => by
+      (Eventually.of_forall fun v hv => by
         have hpos_v : 0 < v := hv.1
         have hphi_nn : 0 ≤ (2 * v * wallRootLog v ^ 3)⁻¹ :=
           inv_nonneg.mpr (mul_nonneg (mul_nonneg zero_le_two hpos_v.le)
@@ -1617,7 +1582,7 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
                 rw [mul_inv, show (16 * v) * (2⁻¹ * v⁻¹) = 8 * (v * v⁻¹) by ring,
                   mul_inv_cancel₀ hpos_v.ne', mul_one]
         exact (norm_add_le _ _).trans (add_le_add hp1 hp2))
-      intervalIntegrable_const
+      intervalIntegral.intervalIntegrable_const
     rw [intervalIntegral.integral_const, sub_zero, smul_eq_mul, hwδ_eq] at hnorm_le
     refine hnorm_le.trans_eq ?_
     dsimp only [δ]
@@ -1685,7 +1650,6 @@ theorem tendsto_sq_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
   filter_upwards [eventually_ge_atTop (1 : ℝ)] with y hy1
   have hy0 : 0 ≤ y := zero_le_one.trans hy1
   have hl0 : 0 ≤ Real.log y := Real.log_nonneg hy1
-  dsimp only
   rw [norm_mul, norm_mul, Complex.norm_real, Complex.norm_real, Real.norm_of_nonneg hy0,
     Real.norm_of_nonneg (Real.sqrt_nonneg _), mul_pow, mul_pow, Real.sq_sqrt hl0]
 
@@ -1705,7 +1669,9 @@ private theorem zeroValueMass_smoothedWallLogProfile_le (ℓ : ℝ) (q : onLineC
       250000 * ℓ ^ 2 / Real.log (|(centredZero q).im| + 4) := by
   have hre : (centredZero q).re = 0 := q.property
   have hw_eq : (centredZero q : ℂ) = ((centredZero q).im : ℂ) * I := by
-    apply Complex.ext <;> simp [hre]
+    apply Complex.ext
+    · simp [hre]
+    · simp
   have hb := norm_rescaled_laplace_smoothedWallLogProfile_le_five ℓ (centredZero q)
     (by linarith [hre])
   have hsq := pow_le_pow_left₀ (norm_nonneg _) hb 2
@@ -1714,9 +1680,9 @@ private theorem zeroValueMass_smoothedWallLogProfile_le (ℓ : ℝ) (q : onLineC
   have hnorm_wp5 : ‖(centredZero q : ℂ) + 5‖ ^ 2 = 25 + (centredZero q).im ^ 2 := by
     rw [hw_eq, ← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
     simp; ring
-  rw [norm_mul, mul_pow, hnorm_wp5, hnorm_w, div_pow, sq_abs,
+  rw [norm_mul, mul_pow, hnorm_wp5, hnorm_w, div_pow, mul_pow, sq_abs,
     Real.sq_sqrt (Real.log_nonneg (by linarith [abs_nonneg (centredZero q).im]))] at hsq
-  simpa only [zeroValueMass, show (500 * ℓ) ^ 2 = 250000 * ℓ ^ 2 by ring, mul_pow, sq_abs] using hsq
+  simpa only [zeroValueMass, show (500 : ℝ) ^ 2 * ℓ ^ 2 = 250000 * ℓ ^ 2 by ring] using hsq
 
 /-- **Unconditional unit-window sample-square bound on `onLineCopies` of `ζ`.** Without assuming
 `FiniteOffLine` or `RH`, the rescaled unit-window squared sample sum of `smoothedWallLogProfile ℓ`
@@ -1757,6 +1723,7 @@ theorem smoothedWallLogProfile_local_critical_line_mass :
         Real.log_le_log (by positivity) hγ_ge
       have hlor_ge : (1 / 2 : ℝ) ≤ lorentzMassTerm y (q : XiZeroCopy) := by
         have he : lorentzMassTerm y (q : XiZeroCopy) = (1 + (y - γ) ^ 2)⁻¹ := by
+          dsimp only [γ]
           rw [im_centredZero, lorentzMassTerm, one_div]
         rw [he, one_div]
         exact inv_anti₀ (by positivity) (by nlinarith only [hsq_d])
@@ -1794,7 +1761,7 @@ theorem smoothedWallLogProfile_local_critical_line_mass :
   rw [tsum_mul_left] at htsum
   have hlor_bd := tsum_onLineCopies_lorentzMassTerm_le y
   have hm := htsum.trans (mul_le_mul_of_nonneg_left hlor_bd
-    (div_nonneg (by positivity) (zero_le_one.trans hlog3_ge1)))
+    (div_nonneg (by positivity : (0 : ℝ) ≤ 1000000 * ℓ ^ 2) (zero_le_one.trans hlog3_ge1)))
   refine hm.trans ?_
   have hnum_le : xiLineTwoLogDerivConstant + Real.log (|y| + 4) ≤
       (|xiLineTwoLogDerivConstant| + 2) * Real.log (|y| + 3) := by
@@ -1856,12 +1823,13 @@ theorem smoothedWallLogProfile_poisson_row_bound :
         linarith
       have hy_sq : 1 + y ^ 2 ≤ 4 * (25 + γ ^ 2) := by
         have hsq := pow_le_pow_left₀ (by positivity) hγ_abs 2
-        rw [sq_abs, sq_abs] at hsq
+        rw [div_pow, sq_abs, sq_abs] at hsq
         linarith
       have hlog_ge : Real.log (|y| / 2 + 4) ≤ Real.log (|γ| + 4) :=
         Real.log_le_log (by positivity) (by linarith)
       have hker_le : 4 / (16 + (y - γ) ^ 2) ≤ 4 * lorentzMassTerm y (q : XiZeroCopy) := by
         have he : lorentzMassTerm y (q : XiZeroCopy) = (1 + (y - γ) ^ 2)⁻¹ := by
+          dsimp only [γ]
           rw [im_centredZero, lorentzMassTerm, one_div]
         rw [he, div_eq_mul_inv]
         exact mul_le_mul_of_nonneg_left
@@ -1888,13 +1856,14 @@ theorem smoothedWallLogProfile_poisson_row_bound :
           (4 * lorentzMassTerm y (q : XiZeroCopy)) =
           (4000000 * ℓ ^ 2 / Real.log (|y| / 2 + 4)) * lorentzMassTerm y (q : XiZeroCopy) by ring]
     · have hker_far : (1 + y ^ 2) * (4 / (16 + (y - γ) ^ 2)) ≤ 16 := by
-        rw [mul_div_assoc, div_le_iff₀ (by positivity)]
+        rw [← mul_div_assoc, div_le_iff₀ (by positivity)]
         have hsq := pow_le_pow_left₀ (by positivity) hfar.le 2
-        rw [sq_abs, abs_sub_comm, sq_abs] at hsq
+        rw [div_pow, sq_abs, abs_sub_comm, sq_abs] at hsq
         linarith
       have hzv_lor0 : zeroValueMass (smoothedWallLogProfile ℓ) q ≤
           250000 * ℓ ^ 2 * lorentzMassTerm 0 (q : XiZeroCopy) := by
         have he : lorentzMassTerm 0 (q : XiZeroCopy) = (1 + γ ^ 2)⁻¹ := by
+          dsimp only [γ]
           rw [im_centredZero, lorentzMassTerm, zero_sub, neg_sq, one_div]
         have hlog_ge : 1 ≤ Real.log (|γ| + 4) :=
           hlog4_ge1.trans (Real.log_le_log (by norm_num) (by linarith [abs_nonneg γ]))
@@ -1928,8 +1897,15 @@ theorem smoothedWallLogProfile_poisson_row_bound :
       hpt
   rw [← tsum_mul_left]
   have htsum := Summable.tsum_le_tsum hpt hsum_lhs hsum_rhs
-  rw [Summable.tsum_add (hlor_y.mul_left _) (hlor_0.mul_left _),
-    tsum_mul_left, tsum_mul_left] at htsum
+  have hts1 : (∑' b : onLineCopies,
+      (4000000 * ℓ ^ 2 / Real.log (|y| / 2 + 4)) * lorentzMassTerm y (b : XiZeroCopy)) =
+      (4000000 * ℓ ^ 2 / Real.log (|y| / 2 + 4)) *
+        ∑' b : onLineCopies, lorentzMassTerm y (b : XiZeroCopy) := tsum_mul_left
+  have hts2 : (∑' b : onLineCopies,
+      (4000000 * ℓ ^ 2) * lorentzMassTerm 0 (b : XiZeroCopy)) =
+      (4000000 * ℓ ^ 2) *
+        ∑' b : onLineCopies, lorentzMassTerm 0 (b : XiZeroCopy) := tsum_mul_left
+  rw [Summable.tsum_add (hlor_y.mul_left _) (hlor_0.mul_left _), hts1, hts2] at htsum
   have hbd_y := tsum_onLineCopies_lorentzMassTerm_le y
   have hbd_0 := tsum_onLineCopies_lorentzMassTerm_le 0
   have hlog_comp : Real.log (|y| + 4) ≤ 2 * Real.log (|y| / 2 + 4) := by
@@ -2047,10 +2023,7 @@ theorem smoothedWallLogProfile_window_crowding_lower_bound {ι : Type*} {γ : ι
     rw [Finset.mul_sum]
     calc (c / 2) * ℓ ^ 2
         = (c * Real.log y) * (ℓ ^ 2 / (2 * Real.log y)) := by
-          rw [div_eq_mul_inv, mul_inv,
-            show (c * Real.log y) * (ℓ ^ 2 * (2⁻¹ * (Real.log y)⁻¹)) =
-              ((c / 2) * ℓ ^ 2) * (Real.log y * (Real.log y)⁻¹) by ring,
-            mul_inv_cancel₀ hlogy_pos.ne', mul_one]
+          field_simp [hlogy_pos.ne']
       _ ≤ (S.card : ℝ) * (ℓ ^ 2 / (2 * Real.log y)) :=
           mul_le_mul_of_nonneg_right hcard (by positivity)
       _ = ∑ _ ∈ S, (ℓ ^ 2 / (2 * Real.log y)) := by simp
@@ -2098,7 +2071,9 @@ theorem smoothedWallLogProfile_saturates_criticalLine_under_finiteOffLine
         zeroValueMass (smoothedWallLogProfile ℓ) q := fun q => by
     have hre : (centredZero q).re = 0 := q.property
     have heq : (((centredZero q).im : ℂ) * I) = centredZero q := by
-      apply Complex.ext <;> simp [hre]
+      apply Complex.ext
+      · simp [hre]
+      · simp
     rw [heq]; rfl
   constructor
   · filter_upwards [hsat] with y ⟨S, hS, hlb⟩
@@ -2170,7 +2145,7 @@ private theorem rvmOrdinate_bounds (q : RvmCopy) :
     (q.1 : ℝ) + 3 ≤ rvmOrdinate q ∧ rvmOrdinate q < (q.1 : ℝ) + 4 := by
   dsimp only [rvmOrdinate]
   have hlog_pos : 0 < Real.log ((q.1 : ℝ) + 3) :=
-    Real.log_pos (by linarith [Nat.cast_nonneg (α := ℝ) q.1])
+    Real.log_pos (by linarith [(Nat.cast_nonneg q.1 : (0 : ℝ) ≤ q.1)])
   have hceil_pos : (0 : ℝ) < (⌈Real.log ((q.1 : ℝ) + 3)⌉₊ : ℝ) :=
     lt_of_lt_of_le hlog_pos (Nat.le_ceil _)
   constructor
@@ -2197,7 +2172,7 @@ theorem rvmOrdinate_crowding {h : ℝ} (hh : 0 < h) :
   have hlogy_big : 8 / h₀ ≤ Real.log y := (Real.le_log_iff_exp_le hy_pos).mpr hy_exp
   have hlogy_pos : 0 < Real.log y := lt_of_lt_of_le (by positivity) hlogy_big
   set n : ℕ := ⌊y⌋₊
-  have hn_ge3 : 3 ≤ n := Nat.le_floor (by linarith)
+  have hn_ge3 : 3 ≤ n := Nat.le_floor (by norm_num; linarith : ((3 : ℕ) : ℝ) ≤ y)
   set m : ℕ := n - 3
   have hm_eq : (m : ℝ) + 3 = (n : ℝ) := by
     have : m + 3 = n := Nat.sub_add_cancel hn_ge3
@@ -2217,7 +2192,9 @@ theorem rvmOrdinate_crowding {h : ℝ} (hh : 0 < h) :
   have hN_pos_real : 0 < (N : ℝ) := lt_of_lt_of_le (by positivity) hN_ge_half_log
   have hh₀N_ge4 : 4 ≤ h₀ * (N : ℝ) := by
     have hm1 := mul_le_mul_of_nonneg_left hN_ge_half_log hh₀_pos.le
-    have hm2 : 8 ≤ h₀ * Real.log y := (le_div_iff₀' hh₀_pos).mp hlogy_big
+    have hm2 : 8 ≤ h₀ * Real.log y := by
+      have := (div_le_iff₀ hh₀_pos).mp hlogy_big
+      linarith
     linarith
   -- Choose `[a, a + h₀] ⊆ [B, B + 1] ∩ [y - h₀, y + h₀]`.
   obtain ⟨a, haB, ha1, hay_lo, hay_hi⟩ :
@@ -2279,6 +2256,7 @@ theorem rvmOrdinate_crowding {h : ℝ} (hh : 0 < h) :
       have h1 : (j : ℝ) ≤ (a - B + h₀) * (N : ℝ) := by nlinarith [hh₀N_ge4]
       have h2 : (j : ℝ) / (N : ℝ) ≤ a - B + h₀ := (div_le_iff₀ hN_pos_real).mpr h1
       linarith
+    dsimp only [emb]
     exact (abs_le.mpr ⟨by linarith, by linarith⟩).trans hh₀_le_h
 
 /-- Every `RvmCopy` family satisfies the uniform rescaled unit-window sample-square bound
@@ -2290,7 +2268,6 @@ theorem smoothedWallLogProfile_rvmOrdinate_unit_window_bound :
           negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ))
             ((rvmOrdinate q : ℂ) * I)‖ ^ 2 ≤ C * ℓ ^ 2 := by
   refine ⟨6000000, by norm_num, fun ℓ y S hS => ?_⟩
-  rcases eq_or_gt y 1 with _ | _ <;> clear * - hS
   by_cases hemp : S = ∅
   · rw [hemp, Finset.sum_empty]
     positivity
@@ -2298,7 +2275,7 @@ theorem smoothedWallLogProfile_rvmOrdinate_unit_window_bound :
     have hy_ge1 : 1 ≤ y := by
       have h0 := (rvmOrdinate_bounds q₀).1
       have h1 := (abs_le.mp (hS q₀ hq₀)).2
-      linarith [Nat.cast_nonneg (α := ℝ) q₀.1]
+      linarith [(Nat.cast_nonneg q₀.1 : (0 : ℝ) ≤ q₀.1)]
     have hlog_pos : 0 < Real.log (y + 2) := Real.log_pos (by linarith)
     -- Every `q ∈ S` has `y - 2 < q.1 + 3 ≤ y + 1`, so `q.1` lies in `Finset.Icc (⌊y⌋₊ - 4) (⌊y⌋₊ + 1)`.
     let M_lo : ℕ := ⌊y⌋₊ - 4
@@ -2328,7 +2305,7 @@ theorem smoothedWallLogProfile_rvmOrdinate_unit_window_bound :
           exact Nat.le_of_lt_succ hnat
       have hj_lt : q.2.1 < N_cap := by
         refine lt_of_lt_of_le q.2.2 (Nat.ceil_mono ?_)
-        exact Real.log_le_log (by linarith [Nat.cast_nonneg (α := ℝ) q.1]) (by linarith)
+        exact Real.log_le_log (by linarith [(Nat.cast_nonneg q.1 : (0 : ℝ) ≤ q.1)]) (by linarith)
       exact ⟨Finset.mem_Icc.mpr ⟨hm_ge, hm_le⟩, hj_lt⟩
     have hcard_le : S.card ≤ 6 * N_cap := by
       let f : {q // q ∈ S} → ↥(Finset.Icc M_lo M_hi) × Fin N_cap :=
@@ -2360,10 +2337,10 @@ theorem smoothedWallLogProfile_rvmOrdinate_unit_window_bound :
       have hsq := pow_le_pow_left₀ (norm_nonneg _) hb 2
       have hnorm : ‖((rvmOrdinate q : ℂ) * I)‖ = rvmOrdinate q := by
         rw [norm_mul, norm_I, mul_one, Complex.norm_real,
-          Real.norm_of_nonneg (by linarith [(rvmOrdinate_bounds q).1, Nat.cast_nonneg (α := ℝ) q.1])]
+          Real.norm_of_nonneg (by linarith [(rvmOrdinate_bounds q).1, (Nat.cast_nonneg q.1 : (0 : ℝ) ≤ q.1)])]
       rw [hnorm, div_pow, sq_abs,
         Real.sq_sqrt (Real.log_nonneg (by linarith [(rvmOrdinate_bounds q).1,
-          Nat.cast_nonneg (α := ℝ) q.1]))] at hsq
+          (Nat.cast_nonneg q.1 : (0 : ℝ) ≤ q.1)]))] at hsq
       have hord_ge : y + 2 ≤ rvmOrdinate q + 4 := by linarith [(abs_le.mp (hS q hq)).1]
       have hlog_ge : Real.log (y + 2) ≤ Real.log (rvmOrdinate q + 4) :=
         Real.log_le_log (by linarith) hord_ge
@@ -2419,7 +2396,7 @@ theorem smoothedWallLogProfile_rvmOrdinate_firstMoment_not_summable {ℓ : ℝ} 
           ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ))
             ((rvmOrdinate ⟨m, j⟩ : ℂ) * I)‖ ^ 2) := by
     have hsig := (summable_sigma_of_nonneg (fun _ => mul_nonneg (abs_nonneg _) (sq_nonneg _))).mp hsum
-    exact hsig.2.congr fun m => (tsum_fintype _).symm
+    exact hsig.2.congr fun m => tsum_eq_sum fun j hj => absurd (Finset.mem_univ j) hj
   have hshift_sum : Summable (fun k : ℕ =>
       ∑ j : Fin (⌈Real.log (((k + m₀ : ℕ) : ℝ) + 3)⌉₊),
         |rvmOrdinate ⟨k + m₀, j⟩| *
@@ -2520,7 +2497,7 @@ theorem exists_halfLineMinimizer_sustaining_wallCusp {R : ℝ} (hR : 0 < R) :
     unfold criticalHalfLineExponentialPair
     exact integral_congr_ae (Eventually.of_forall fun u => by ring)
   have hM_pos : 0 < ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)) :=
-    hM_eq ▸ exponentialPair_self_pos hF.1 hF.2.1
+    hM_eq ▸ exponentialPair_self_pos hF.1 (by rw [hF.2.1]; exact one_ne_zero)
   exact ⟨F, hF, by positivity,
     halfLineEnergyMinimizer_tendsto_log_div_mul_terminal_sq hR hF,
     halfLineEnergyMinimizer_mean_square_wall_trace_zero hR hF,

@@ -130,6 +130,10 @@ theorem completed_interleaved_integral_realization (r u v : ℕ → ℝ) (hr : �
   have hjet : (fun x => completedConductorJet (normalizedConductor N u) (normalizedConductor N v) x)=
       (fun x => mixedJetSection N (A N) (B N) x/((N:ℝ)+1)^2) :=
     funext (normalized_jet_eq_integral_section N u v (A N) (B N) (hA' N) (hB' N))
+  change -(completedMultiplePrice p (normalizedConductor N u) (normalizedConductor N v)+
+    completedMultiplePrice p (normalizedConductor N v) (normalizedConductor N u))-
+    (∫ x in (0:ℝ)..1, completedConductorJet (normalizedConductor N u) (normalizedConductor N v) x)/2=
+      interleavedFinitePart N (A N) (B N)/((N:ℝ)+1)^2
   rw [normalized_multiple_price N p u v _ _ (hA' N) (hB' N),
     normalized_multiple_price N p v u _ _ (hB' N) (hA' N),hjet,intervalIntegral.integral_div,
     interleaved_centered_prime_sum]
@@ -149,6 +153,101 @@ theorem completed_power_integral_realization {s : ℝ} (hs : 1/2 < s) (u v : ℕ
           (∫ x in (0:ℝ)..1, completedConductorJet u v x)/2)) := by
   obtain ⟨hr,hm,hA,hB⟩ := centered_prime_power_prices hs
   exact completed_interleaved_integral_realization _ u v hr hm hA hB hu hv
+
+/-- A single actual conductor with multiplicity one. -/
+def conductorAtom (i n : ℕ) : ℝ := if n=i then 1 else 0
+
+private theorem directed_atom_price (p : ℕ → ℝ) {i j : ℕ} (hi : 0 < i) (hj : 0 < j) :
+    completedMultiplePrice p (conductorAtom i) (conductorAtom j)=if i∣j then p (j/i) else 0 := by
+  unfold completedMultiplePrice
+  have hit (t : ℕ × ℕ) (h₁ : t.1+1=i) (h₂ : (t.2+1)*(t.1+1)=j) :
+      i∣j ∧ t=(i-1,j/i-1) := by
+    rw [h₁] at h₂
+    have hq : t.2+1=j/i := by rw [← h₂,Nat.mul_div_cancel _ hi]
+    exact ⟨⟨t.2+1,by rw [← h₂,Nat.mul_comm]⟩,Prod.ext (by omega) (by omega)⟩
+  by_cases hd : i∣j
+  · rw [if_pos hd,tsum_eq_single (i-1,j/i-1)]
+    · have hq : 0 < j/i := Nat.div_pos (Nat.le_of_dvd hj hd) hi
+      simp [conductorAtom,show i-1+1=i by omega,show j/i-1+1=j/i by omega,Nat.div_mul_cancel hd]
+    · intro t hne
+      by_cases h₁ : t.1+1=i
+      · have h₂ : (t.2+1)*(t.1+1)≠j := fun h => hne (hit t h₁ h).2
+        simp [conductorAtom,h₂]
+      · simp [conductorAtom,h₁]
+  · rw [if_neg hd]
+    trans ∑' _ : ℕ × ℕ, (0:ℝ)
+    · apply tsum_congr
+      intro t
+      by_cases h₁ : t.1+1=i
+      · have h₂ : (t.2+1)*(t.1+1)≠j := fun h => hd (hit t h₁ h).1
+        simp [conductorAtom,h₂]
+      · simp [conductorAtom,h₁]
+    · exact tsum_zero
+
+private theorem atom_jet (i j : ℕ) (x : ℝ) :
+    completedConductorJet (conductorAtom i) (conductorAtom j) x=conductorJetEntry i j x := by
+  unfold completedConductorJet
+  rw [tsum_eq_single (i,j)]
+  · simp [conductorAtom]
+  · intro t ht
+    by_cases h : t.1=i
+    · have hn : t.2≠j := fun hj => ht (Prod.ext h hj)
+      simp [conductorAtom,hn]
+    · simp [conductorAtom,h]
+
+/-- Entries of the completed signed matrix on positive conductors. -/
+def signedConductorEntry (i j : ℕ) : ℝ :=
+  (if i∣j then 1-Λ (j/i) else 0)+(if j∣i then 1-Λ (i/j) else 0)-
+    (∫ x in (0:ℝ)..1, conductorJetEntry i j x)/2
+
+/-- The two divisibility orientations and the integrated off-diagonal
+jet are the exact entries of the signed completed form. -/
+theorem completed_signed_atom_entry {i j : ℕ} (hi : 0 < i) (hj : 0 < j) :
+    -(completedMultiplePrice (fun k => Λ k-1) (conductorAtom i) (conductorAtom j)+
+      completedMultiplePrice (fun k => Λ k-1) (conductorAtom j) (conductorAtom i))-
+      (∫ x in (0:ℝ)..1, completedConductorJet (conductorAtom i) (conductorAtom j) x)/2 = signedConductorEntry i j := by
+  rw [directed_atom_price _ hi hj,directed_atom_price _ hj hi,signedConductorEntry]
+  simp only [atom_jet]
+  by_cases h : i∣j <;> by_cases h' : j∣i <;> simp [h,h'] <;> ring
+
+/-- Each positive diagonal entry equals two. -/
+theorem signedConductorEntry_diagonal {i : ℕ} (hi : 0 < i) : signedConductorEntry i i=2 := by
+  simp [signedConductorEntry,Nat.div_self hi,conductorJetEntry]
+  <;> norm_num
+
+/-- Absolute column entries grow at most logarithmically in the two
+conductors, including their common diagonal. -/
+theorem signedConductorEntry_bound {i j : ℕ} (hi : 0 < i) (hj : 0 < j) :
+    |signedConductorEntry i j| ≤ 3+Real.log i+Real.log j := by
+  have price {a b : ℕ} (hb : 0 < b) :
+      |if a∣b then 1-Λ (b/a) else 0|≤1+Real.log b := by
+    by_cases h : a∣b
+    · have ha : 0 < a := Nat.pos_of_dvd_of_pos h hb
+      have hq : 0 < b/a := Nat.div_pos (Nat.le_of_dvd hb h) ha
+      have hl := Real.log_le_log (Nat.cast_pos.mpr hq : (0:ℝ) < ((b/a:ℕ):ℝ)) (Nat.cast_le.mpr (Nat.div_le_self b a))
+      rw [if_pos h]
+      apply (abs_sub _ _).trans
+      rw [abs_one,abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg]
+      exact add_le_add_left (ArithmeticFunction.vonMangoldt_le_log.trans hl) 1
+    · rw [if_neg h,abs_zero]
+      exact add_nonneg zero_le_one (Real.log_natCast_nonneg _)
+  have hJ : Continuous (conductorJetEntry i j) := by
+    by_cases he : i=j <;> simp [conductorJetEntry,hi,hj,he] <;> fun_prop
+  have hInt : |∫ x in (0:ℝ)..1, conductorJetEntry i j x|≤2 := by
+    apply (intervalIntegral.abs_integral_le_integral_abs zero_le_one).trans
+    have h := intervalIntegral.integral_mono_on (μ := volume) (f := fun x => |conductorJetEntry i j x|)
+      (g := fun _ => (2:ℝ)) zero_le_one (hJ.abs.intervalIntegrable 0 1)
+      (continuous_const.intervalIntegrable 0 1) (fun _ hx => jet_entry_bound i j hx)
+    simpa using h
+  unfold signedConductorEntry
+  apply (abs_sub _ _).trans
+  rw [abs_div,abs_of_pos (by norm_num : (0:ℝ)<2)]
+  have hp := (abs_add_le _ _).trans (add_le_add (price (a := i) hj) (price (a := j) hi))
+  linarith only [hp,hInt]
+
+#print axioms signedConductorEntry_diagonal
+#print axioms signedConductorEntry_bound
+#print axioms completed_signed_atom_entry
 
 private def cellEntry (w u v : ℕ → ℝ) (t : ℕ × ℕ) : ℝ :=
   let i := t.1+1
@@ -197,24 +296,27 @@ private theorem column_variation (z : ℕ × ℕ → ℝ) (hz : Summable (fun t 
   rw [hz.tsum_prod]
   exact Summable.tsum_comm (f := fun i k => |z (i,k)|) hz
 
-/-- The full sequence of weighted quotient cells of normalized conductors
-converges in absolute variation, with both supports growing together. -/
-theorem completed_weighted_cell_exhaustion (r w u v : ℕ → ℝ)
+/-- Independent dominated exhaustions converge in weighted absolute
+variation after taking the difference of the two multiplicative tails. -/
+theorem dominated_weighted_cell_exhaustion (r w u v : ℕ → ℝ)
     (hr : ∀ k, 0<r k) (hm : Monotone r) (hw : ∀ k, 0≤w k)
     (hA : Summable (fun k => (1/r k)^2)) (hB : Summable (fun k => (w k/r k)^2))
-    (hu : Summable (fun k => (r k*u k)^2)) (hv : Summable (fun k => (r k*v k)^2)) :
+    (hu : Summable (fun k => (r k*u k)^2)) (hv : Summable (fun k => (r k*v k)^2))
+    (U V : ℕ → ℕ → ℝ) (hUt : ∀ i, Tendsto (fun N => U N i) atTop (𝓝 (u i)))
+    (hVt : ∀ i, Tendsto (fun N => V N i) atTop (𝓝 (v i)))
+    (hU : ∀ N i, |U N i| ≤ |u i|) (hV : ∀ N i, |V N i| ≤ |v i|) :
     Summable (fun k => |completedWeightedCell w u v k|) ∧
-      Tendsto (fun N => ∑' k, |completedWeightedCell w (normalizedConductor N u) (normalizedConductor N v) k-
+      Tendsto (fun N => ∑' k, |completedWeightedCell w (U N) (V N) k-
         completedWeightedCell w u v k|) atTop (𝓝 0) := by
   let P := cellEntry w u v
-  let Q := fun N => cellEntry w (normalizedConductor N u) (normalizedConductor N v)
+  let Q := fun N => cellEntry w (U N) (V N)
   let M := cellMajorant w u v
   have hs (s : ℕ) := (infinite_conductor_incidences s r w u v hr hm hw hA hB hu hv).1
   have ht (s : ℕ) := (infinite_conductor_incidences s r w v u hr hm hw hA hB hv hu).1
   have hM : Summable M := ((hs 0).add (ht 0)).add ((hs 1).add (ht 1))
   have hp (t : ℕ × ℕ) : |P t|≤M t := cellEntry_le hw (fun _ => le_rfl) (fun _ => le_rfl) t
   have hq (N : ℕ) (t : ℕ × ℕ) : |Q N t|≤M t :=
-    cellEntry_le hw (normalizedConductor_abs N u) (normalizedConductor_abs N v) t
+    cellEntry_le hw (hU N) (hV N) t
   have hP := Summable.of_nonneg_of_le (fun _ => abs_nonneg _) hp hM
   have hQ (N : ℕ) := Summable.of_nonneg_of_le (fun _ => abs_nonneg _) (hq N) hM
   have hD (N : ℕ) (t : ℕ × ℕ) : |Q N t-P t|≤2*M t := by
@@ -223,8 +325,8 @@ theorem completed_weighted_cell_exhaustion (r w u v : ℕ → ℝ)
   have hlim (t : ℕ × ℕ) : Tendsto (fun N => |Q N t-P t|) atTop (𝓝 0) := by
     let i := t.1+1
     let k := t.2+1
-    have ht (j : ℕ) := ((normalizedConductor_tendsto u i).mul (normalizedConductor_tendsto v (j*i))).add
-      ((normalizedConductor_tendsto v i).mul (normalizedConductor_tendsto u (j*i)))
+    have ht (j : ℕ) := ((hUt i).mul (hVt (j*i))).add
+      ((hVt i).mul (hUt (j*i)))
     have he : Tendsto (fun N => Q N t) atTop (𝓝 (P t)) := ((ht k).sub (ht (k+1))).const_mul (w k)
     simpa only [sub_self,abs_zero] using (he.sub_const (P t)).abs
   have htot := tendsto_tsum_of_dominated_convergence (hM.mul_left 2) hlim
@@ -240,6 +342,22 @@ theorem completed_weighted_cell_exhaustion (r w u v : ℕ → ℝ)
   have hsQ : Summable (fun i => Q N (i,k)) := (((hQ N).prod_symm.prod_factor k).of_abs)
   change |(∑' i, Q N (i,k))-(∑' i, P (i,k))| = |∑' i, Q N (i,k)-P (i,k)|
   exact congrArg abs (hsQ.tsum_sub hsP).symm
+
+/-- The full sequence of weighted quotient cells of normalized conductors
+converges in absolute variation, with both supports growing together. -/
+theorem completed_weighted_cell_exhaustion (r w u v : ℕ → ℝ)
+    (hr : ∀ k, 0<r k) (hm : Monotone r) (hw : ∀ k, 0≤w k)
+    (hA : Summable (fun k => (1/r k)^2)) (hB : Summable (fun k => (w k/r k)^2))
+    (hu : Summable (fun k => (r k*u k)^2)) (hv : Summable (fun k => (r k*v k)^2)) :
+    Summable (fun k => |completedWeightedCell w u v k|) ∧
+      Tendsto (fun N => ∑' k, |completedWeightedCell w (normalizedConductor N u) (normalizedConductor N v) k-
+        completedWeightedCell w u v k|) atTop (𝓝 0) :=
+  dominated_weighted_cell_exhaustion r w u v hr hm hw hA hB hu hv
+    (fun N => normalizedConductor N u) (fun N => normalizedConductor N v)
+    (normalizedConductor_tendsto u) (normalizedConductor_tendsto v)
+    (fun N => normalizedConductor_abs N u) (fun N => normalizedConductor_abs N v)
+
+#print axioms dominated_weighted_cell_exhaustion
 
 /-- At every cutoff the weighted completed cells of the rounded sections
 are exactly the positive quotient cells of the two scaled integral

@@ -60,7 +60,7 @@ theorem signed_ordinary_cofactor_window (n Q : ℕ) {V : ℕ} (hV : 1 ≤ V) (a 
       ((∑ k ∈ Ioc (a d) (a d+L d), frozenOrdinaryCofactorPrice n Q (d*k))/(L d:ℝ)))-
       projectedOrdinaryCofactorPrice n Q V| ≤
       (∑ v ∈ Icc 2 (4*n/Q), squarefreeDivisorMass v*|centeredOrdinaryCofactorInterval n Q v|)*
-      ∑ d ∈ Icc 1 V, |mertens (V/d)|/(L d:ℝ) := by
+      ∑ d ∈ Icc 1 V, |mertens (V/d)| / (L d:ℝ) := by
   let Δ := centeredOrdinaryCofactorInterval n Q
   rw [projected_price_over_all n Q hV]
   simp only [frozen_window,mul_sum,←mul_assoc]
@@ -81,7 +81,7 @@ The endpoint loss after signed sampling is at most twice the first moment
 of the divisibility weights divided by H. -/
 theorem ordinary_cofactor_window_cost {V H : ℕ} (hV : 1 ≤ V) (hVH : V ≤ H)
     (L : ℕ → ℕ) (hL : ∀ d ∈ Icc 1 V, H/d ≤ L d) :
-    (∑ d ∈ Icc 1 V, |mertens (V/d)|/(L d:ℝ)) ≤ 2*(V:ℝ)^2/H := by
+    (∑ d ∈ Icc 1 V, |mertens (V/d)| / (L d:ℝ)) ≤ 2*(V:ℝ)^2/H := by
   have hH := (Nat.cast_pos (α:=ℝ)).mpr (lt_of_lt_of_le (by omega : 0 < V) hVH)
   rw [le_div_iff₀ hH,sum_mul]
   have hcost := (cofactor_projection_weight_cost V).2
@@ -102,8 +102,8 @@ theorem ordinary_cofactor_window_cost {V H : ℕ} (hV : 1 ≤ V) (hVH : V ≤ H)
                  rw [Nat.mul_one] at h1
                  omega
                exact_mod_cast hnat
-             calc _ = |mertens (V/d)|*((H:ℝ)/L d) := by ring
-                  _ ≤ |mertens (V/d)|*(2*d) := mul_le_mul_of_nonneg_left
+             calc _ = |mertens (V/d)| * ((H:ℝ)/L d) := by ring
+                  _ ≤ |mertens (V/d)| * (2*d) := mul_le_mul_of_nonneg_left
                     ((div_le_iff₀ hlen').mpr (by linarith only [hbound])) (abs_nonneg _)
                   _ = _ := by ring
        _ ≤ _ := by rw [←mul_sum]; exact mul_le_mul_of_nonneg_left hcost (by norm_num)

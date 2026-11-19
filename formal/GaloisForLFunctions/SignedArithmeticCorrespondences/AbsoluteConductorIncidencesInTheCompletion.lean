@@ -160,6 +160,27 @@ theorem normalizedConductor_tendsto (u : ℕ → ℝ) (i : ℕ) :
   filter_upwards [eventually_ge_atTop i] with N hN
   simp only [normalizedConductor,if_pos hN]
 
+/-- Rounded conductors converge in each divisor's own weighted square
+norm. The dominating square sequence is four times its original energy. -/
+theorem normalizedConductor_energy_limit (r u : ℕ → ℝ)
+    (hu : Summable (fun i => (r i*u i)^2)) :
+    Tendsto (fun N => infiniteConductorNorm (fun i => r i*(normalizedConductor N u i-u i))) atTop (𝓝 0) := by
+  let d := fun N i => r i*(normalizedConductor N u i-u i)
+  have he (i : ℕ) : Tendsto (fun N => (d N i)^2) atTop (𝓝 0) := by
+    simpa only [d,sub_self,mul_zero,zero_pow (by decide : 2≠0)] using
+      ((((normalizedConductor_tendsto u i).sub_const (u i)).const_mul (r i)).pow 2)
+  have hb (N i : ℕ) : ‖(d N i)^2‖≤4*(r i*u i)^2 := by
+    have ha : |normalizedConductor N u i-u i|≤2*|u i| :=
+      ((abs_sub _ _).trans (add_le_add (normalizedConductor_abs N u i) le_rfl)).trans_eq (two_mul _).symm
+    have h := mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (abs_nonneg _) ha 2) (sq_nonneg (r i))
+    rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
+    simp only [mul_pow,sq_abs] at h
+    change (r i*(normalizedConductor N u i-u i))^2≤_
+    rw [mul_pow]
+    exact h.trans_eq (by ring)
+  have hl := tendsto_tsum_of_dominated_convergence (hu.mul_left 4) he (Eventually.of_forall hb)
+  simpa only [infiniteConductorNorm,d,tsum_zero,Real.sqrt_zero] using hl.sqrt
+
 /-- The same array of actual integral endpoint jumps realizes every
 positive normalized conductor in each cutoff. -/
 theorem normalizedConductor_integral_endpoints (u : ℕ → ℝ) (N : ℕ) :
@@ -193,7 +214,8 @@ def conductorJetEntry (i j : ℕ) (x : ℝ) : ℝ :=
 def completedConductorJet (u v : ℕ → ℝ) (x : ℝ) : ℝ :=
   ∑' p : ℕ × ℕ, u p.1*v p.2*conductorJetEntry p.1 p.2 x
 
-private theorem jet_entry_bound (i j : ℕ) {x : ℝ} (hx : x∈Set.Icc 0 1) :
+/-- Each of the two real monomials has absolute value at most one. -/
+theorem jet_entry_bound (i j : ℕ) {x : ℝ} (hx : x∈Set.Icc 0 1) :
     |conductorJetEntry i j x| ≤ 2 := by
   unfold conductorJetEntry
   split
@@ -236,27 +258,29 @@ theorem normalized_jet_eq_integral_section (N : ℕ) (u v : ℕ → ℝ) (a b : 
   simp only [div_eq_mul_inv,← inv_pow]
   ring
 
-/-- Both arbitrary supports exhaust in the uniform norm of the real jet.
-The uniform majorant is twice the absolute mass of the coefficient
-product error, which tends to zero on the same rounded conductors. -/
-theorem uniform_jet_exhaustion (r u v : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm : Monotone r)
+/-- Independent pointwise exhaustions bounded by the individual absolute
+multiplicities converge uniformly in the real-place jet. -/
+theorem dominated_jet_exhaustion (r u v : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm : Monotone r)
     (hA : Summable (fun k => (1/r k)^2))
-    (hu : Summable (fun i => (r i*u i)^2)) (hv : Summable (fun i => (r i*v i)^2)) :
+    (hu : Summable (fun i => (r i*u i)^2)) (hv : Summable (fun i => (r i*v i)^2))
+    (U V : ℕ → ℕ → ℝ) (hUt : ∀ i, Tendsto (fun N => U N i) atTop (𝓝 (u i)))
+    (hVt : ∀ i, Tendsto (fun N => V N i) atTop (𝓝 (v i)))
+    (hU : ∀ N i, |U N i| ≤ |u i|) (hV : ∀ N i, |V N i| ≤ |v i|) :
     ∃ e : ℕ → ℝ, Tendsto e atTop (𝓝 0) ∧ ∀ N x, x∈Set.Icc 0 1 →
-      |completedConductorJet (normalizedConductor N u) (normalizedConductor N v) x-
+      |completedConductorJet (U N) (V N) x-
         completedConductorJet u v x| ≤ e N := by
   have h₁ (f : ℕ → ℝ) (hf : Summable (fun k => (r k*f k)^2)) : Summable (fun i => |f i|) := by
     simpa only [one_mul,id_eq] using (infinite_weighted_row r (fun _ => 1) f hr hm
       (fun _ => zero_le_one) hA hf id Function.injective_id (fun _ => le_rfl)).1
   let P := fun p : ℕ × ℕ => u p.1*v p.2
-  let Q := fun N (p : ℕ × ℕ) => normalizedConductor N u p.1*normalizedConductor N v p.2
+  let Q := fun N (p : ℕ × ℕ) => U N p.1*V N p.2
   have hP : Summable (fun p => |P p|) := by
     have h := summable_mul_of_summable_norm (f := fun i => |u i|) (g := fun j => |v j|)
       (h₁ u hu).norm (h₁ v hv).norm
     simpa only [P,abs_mul] using h
   have hQ (N : ℕ) (p : ℕ × ℕ) : |Q N p| ≤ |P p| := by
     simp only [Q,P,abs_mul]
-    exact mul_le_mul (normalizedConductor_abs N u _) (normalizedConductor_abs N v _) (abs_nonneg _) (abs_nonneg _)
+    exact mul_le_mul (hU N _) (hV N _) (abs_nonneg _) (abs_nonneg _)
   let D := fun N p => |Q N p-P p|
   have hdom (N : ℕ) (p : ℕ × ℕ) : D N p≤2* |P p| := by
     calc _ ≤ |Q N p|+|P p| := abs_sub _ _
@@ -265,9 +289,7 @@ theorem uniform_jet_exhaustion (r u v : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm : M
   have hd (N : ℕ) : Summable (D N) := Summable.of_nonneg_of_le (fun _ => abs_nonneg _) (hdom N) (hP.mul_left 2)
   have hlim : Tendsto (fun N => ∑' p, D N p) atTop (𝓝 0) := by
     simpa only [one_mul,D,Q,P] using pair_price_exhaustion Prod.fst Prod.snd (fun _ => 1) u v
-      (fun _ => zero_le_one) (by simpa only [one_mul] using hP) (fun N => normalizedConductor N u)
-      (fun N => normalizedConductor N v) (normalizedConductor_tendsto u) (normalizedConductor_tendsto v)
-      (fun N => normalizedConductor_abs N u) (fun N => normalizedConductor_abs N v)
+      (fun _ => zero_le_one) (by simpa only [one_mul] using hP) U V hUt hVt hU hV
   refine ⟨fun N => (∑' p, D N p)*2,by simpa only [zero_mul] using hlim.mul_const 2,?_⟩
   intro N x hx
   let K := fun p : ℕ × ℕ => conductorJetEntry p.1 p.2 x
@@ -287,6 +309,21 @@ theorem uniform_jet_exhaustion (r u v : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm : M
   exact (norm_tsum_le_tsum_norm (hq.sub hp).norm).trans
     ((hq.sub hp).norm.tsum_le_tsum he ((hd N).mul_right 2))
 
+/-- Both arbitrary supports exhaust in the uniform norm of the real jet.
+The uniform majorant is twice the absolute mass of the coefficient
+product error, which tends to zero on the same rounded conductors. -/
+theorem uniform_jet_exhaustion (r u v : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm : Monotone r)
+    (hA : Summable (fun k => (1/r k)^2))
+    (hu : Summable (fun i => (r i*u i)^2)) (hv : Summable (fun i => (r i*v i)^2)) :
+    ∃ e : ℕ → ℝ, Tendsto e atTop (𝓝 0) ∧ ∀ N x, x∈Set.Icc 0 1 →
+      |completedConductorJet (normalizedConductor N u) (normalizedConductor N v) x-
+        completedConductorJet u v x| ≤ e N :=
+  dominated_jet_exhaustion r u v hr hm hA hu hv (fun N => normalizedConductor N u) (fun N => normalizedConductor N v)
+    (normalizedConductor_tendsto u) (normalizedConductor_tendsto v)
+    (fun N => normalizedConductor_abs N u) (fun N => normalizedConductor_abs N v)
+
+#print axioms dominated_jet_exhaustion
+#print axioms normalizedConductor_energy_limit
 #print axioms uniform_jet_exhaustion
 #print axioms normalized_jet_eq_integral_section
 #print axioms normalizedConductor_integral_endpoints

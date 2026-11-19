@@ -77,7 +77,7 @@ theorem critical_variation_of_the_frozen_logarithmic_row (y X : ℕ) {H : ℝ} (
       have diff : v (k+1)-v k ≤ (k:ℝ)⁻¹ := by
         change Real.log (k+1:ℕ)-Real.log k ≤ _
         rw [Nat.cast_add,Nat.cast_one]
-        exact price.trans_eq (by field_simp)
+        exact price.trans_eq (by field_simp; ring)
       rw [abs_mul,abs_of_nonneg dk]
       apply (mul_le_mul (rows k (Nat.lt_succ_of_le (mem_Icc.mp hk).2)) diff dk
         (mul_nonneg hH sk.le)).trans_eq
@@ -197,6 +197,8 @@ theorem weighted_reading_from_full_prefix (v : ℕ → ℝ) (hv : Monotone v) (u
     calc _ ≤ H*v X+H*v X := add_le_add a bnd
          _ = _ := by dsimp only [H,X]; ring
 
+#print axioms critical_variation_of_the_frozen_logarithmic_row
+#print axioms induction_above_a_moving_prime_cutoff
 #print axioms full_prefix_from_one_weighted_reading
 #print axioms weighted_reading_from_full_prefix
 

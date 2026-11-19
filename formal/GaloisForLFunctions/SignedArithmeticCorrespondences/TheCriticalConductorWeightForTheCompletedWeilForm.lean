@@ -202,6 +202,129 @@ theorem critical_joint_power_iff {c : ℝ} (hc : 0<c) (s : ℝ) :
     exact mul_le_mul (mul_le_mul_of_nonneg_left (hn a) hC) (hn b) (Real.sqrt_nonneg _)
       (mul_nonneg hC (Real.sqrt_nonneg _))
 
+/-- At every large dyadic cutoff the alternating integral block on (K,2K]
+violates any proposed subcritical separate power bound. Its interior
+quotient cells have absolute value two. -/
+theorem alternating_dyadic_price_obstruction {c s : ℝ} (hc : 0 < c) (hs : s < 3/2) (B : ℝ) :
+    ∀ᶠ K : ℕ in Filter.atTop, ∃ a b : ℕ → ℤ,
+      (∀ i ∈ Icc 1 (2*K), upperDivisor (2*K) a i=if i=1 then 1 else 0) ∧
+      (∀ i ∈ Icc 1 (2*K), upperDivisor (2*K) b i=if K < i then (-1:ℤ)^i else 0) ∧
+      (∀ i ∈ Ioo K (2*K), |twoSidedCoefficient (2*K) a b i|=2) ∧
+      B*conductorNorm (2*K) (fun i => powerConductorWeight s i*upperDivisor (2*K) a i)*
+        conductorNorm (2*K) (fun i => powerConductorWeight s i*upperDivisor (2*K) b i) <
+        ∑ i ∈ Icc 1 (2*K), ((i:ℝ)*Real.exp (-c*Real.sqrt (Real.log i)))*|twoSidedCoefficient (2*K) a b i| := by
+  let t := max s 0
+  let g := (3/2-t)/2
+  have ht : 0 ≤ t := le_max_right _ _
+  have hg : 0 < g := by
+    have he : t < 3/2 := max_lt hs (by norm_num)
+    dsimp only [g]; linarith only [he]
+  let b₀ := max B 1
+  have hb₀ : 0 < b₀ := zero_lt_one.trans_le (le_max_right _ _)
+  obtain ⟨L,hL⟩ := exists_nat_gt (max (Real.exp ((c/g)^2)) ((4*b₀)^(1/g)))
+  filter_upwards [Filter.eventually_ge_atTop (L+1)] with K hK
+  let N := 2*K
+  let S := Icc 1 N
+  let T := Ioc K N
+  let v := fun i : ℕ => if K < i then (-1:ℤ)^i else 0
+  let r := powerConductorWeight s
+  let w := fun i : ℕ => (i:ℝ)*Real.exp (-c*Real.sqrt (Real.log i))
+  have hK₀ : 0 < K := by omega
+  have hN : 0 < N := by dsimp [N]; omega
+  have hKN : K ≤ N := by dsimp [N]; omega
+  have hNR : (0:ℝ) < N := Nat.cast_pos.mpr hN
+  have hLN : (L:ℝ) ≤ N := Nat.cast_le.mpr (by omega)
+  have hT : T⊆S := fun i hi => mem_Icc.mpr ⟨(hK₀.trans (mem_Ioc.mp hi).1),(mem_Ioc.mp hi).2⟩
+  have hcard : T.card=K := by simp only [T,N,Nat.card_Ioc]; omega
+  obtain ⟨a,b,ha,hb,_,hC⟩ := conductor_one_profile hN v
+  let C := twoSidedCoefficient N a b
+  have cell (i : ℕ) (hi : i∈T) : |C i|=if i < N then 2 else 1 := by
+    have hik := (mem_Ioc.mp hi).1
+    have hne : i≠1 := by omega
+    change |twoSidedCoefficient N a b i|=_
+    rw [hC i (hT hi),if_neg hne,add_zero]
+    by_cases hin : i < N
+    · simp only [v,if_pos hik,if_pos (show K < i+1 by omega),if_pos (show i+1 ≤ N by omega),
+        if_pos hin,Int.cast_pow,Int.cast_neg,Int.cast_one,pow_succ,mul_neg_one,sub_neg_eq_add]
+      rw [← two_mul,abs_mul,abs_pow,abs_neg,abs_one,one_pow,mul_one,abs_of_nonneg (by norm_num : (0:ℝ) ≤ 2)]
+    · simp [v,hik,hin,show ¬i+1 ≤ N by omega,abs_pow]
+  have h₁ : 1∈S := mem_Icc.mpr ⟨le_rfl,hN⟩
+  have hu : conductorNorm N (fun i => r i*upperDivisor N a i)=1 := by
+    rw [conductorNorm,sum_eq_single_of_mem 1 h₁]
+    · simp [ha 1 h₁,r,powerConductorWeight]
+    · intro i hi he; simp [ha i hi,he]
+  have hv : conductorNorm N (fun i => r i*upperDivisor N b i) ≤ (N:ℝ)^t*Real.sqrt K := by
+    have entry (i : ℕ) (hi : i∈S) :
+        (r i*(upperDivisor N b i:ℝ))^2 ≤ if i∈T then ((N:ℝ)^t)^2 else 0 := by
+      have h₁ := (mem_Icc.mp hi).1
+      have h₂ := (mem_Icc.mp hi).2
+      rw [hb i hi]
+      by_cases hk : K < i
+      · have hri : r i ≤ (N:ℝ)^t := by
+          change ((max i 1:ℕ):ℝ)^s ≤ _
+          rw [max_eq_left h₁]
+          exact (Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast h₁) (le_max_left s 0)).trans
+            (Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.cast_le.mpr h₂) ht)
+        have hrp : 0 ≤ r i := Real.rpow_nonneg (Nat.cast_nonneg _) _
+        simpa only [if_pos (show i∈T from mem_Ioc.mpr ⟨hk,h₂⟩),v,if_pos hk,Int.cast_pow,
+          Int.cast_neg,Int.cast_one,mul_pow,pow_right_comm (-1:ℝ) i 2,neg_one_sq,one_pow,mul_one]
+          using pow_le_pow_left₀ hrp hri 2
+      · simp [v,T,hk]
+    have e := sum_le_sum (s := S) entry
+    have hfilter : S.filter (fun i => i∈T)=T := by ext i; simp only [mem_filter]; exact and_iff_right_of_imp (fun h => hT h)
+    rw [← sum_filter,hfilter,sum_const,nsmul_eq_mul,hcard] at e
+    apply (Real.sqrt_le_sqrt e).trans_eq
+    rw [Real.sqrt_mul (Nat.cast_nonneg _),Real.sqrt_sq (Real.rpow_nonneg (Nat.cast_nonneg _) _),mul_comm]
+  let e := Real.exp (-c*Real.sqrt (Real.log N))
+  have low : (K:ℝ)^2*e ≤ ∑ i ∈ S, w i*|C i| := by
+    have row (i : ℕ) (hi : i∈T) : (K:ℝ)*e ≤ w i*|C i| := by
+      have h₁ := (mem_Ioc.mp hi).1
+      have h₂ := (mem_Ioc.mp hi).2
+      have hl := Real.sqrt_le_sqrt (Real.log_le_log (Nat.cast_pos.mpr (by omega : 0 < i)) (Nat.cast_le.mpr h₂))
+      have hw : (K:ℝ)*e ≤ w i := mul_le_mul (Nat.cast_le.mpr h₁.le)
+        (Real.exp_le_exp.mpr (mul_le_mul_of_nonpos_left hl (neg_nonpos.mpr hc.le)))
+        (Real.exp_pos _).le (Nat.cast_nonneg _)
+      apply hw.trans (le_mul_of_one_le_right (mul_nonneg (Nat.cast_nonneg _) (Real.exp_pos _).le) ?_)
+      rw [cell i hi]; split <;> norm_num
+    have hsum := sum_le_sum row
+    rw [sum_const,nsmul_eq_mul,hcard] at hsum
+    exact (show (K:ℝ)^2*e=(K:ℝ)*((K:ℝ)*e) by ring).le.trans
+      (hsum.trans (sum_le_sum_of_subset_of_nonneg hT (fun i _ _ => mul_nonneg
+        (mul_nonneg (Nat.cast_nonneg _) (Real.exp_pos _).le) (abs_nonneg _))))
+  have hlog := (Real.le_log_iff_exp_le hNR).mpr (((le_max_left _ _).trans hL.le).trans hLN)
+  have hroot := Real.sqrt_le_sqrt hlog
+  rw [Real.sqrt_sq (div_nonneg hc.le hg.le)] at hroot
+  have he : (N:ℝ)^(-g) ≤ e := by
+    rw [Real.rpow_def_of_pos hNR]
+    apply Real.exp_le_exp.mpr
+    have hcp := mul_le_mul_of_nonneg_right ((div_le_iff₀ hg).mp hroot) (Real.sqrt_nonneg (Real.log N))
+    nlinarith only [hcp,congrArg (fun z : ℝ => g*z) (Real.sq_sqrt ((sq_nonneg _).trans hlog))]
+  have hbN : 4*b₀ < (N:ℝ)^g := by
+    have h := Real.rpow_lt_rpow (Real.rpow_nonneg (mul_nonneg (by norm_num) hb₀.le) _)
+      (((le_max_right _ _).trans_lt hL).trans_le hLN) hg
+    rwa [← Real.rpow_mul (mul_nonneg (by norm_num) hb₀.le),one_div_mul_cancel hg.ne',Real.rpow_one] at h
+  have hsqrt : Real.sqrt K ≤ (N:ℝ)^(1/2:ℝ) := by
+    rw [← Real.sqrt_eq_rpow]
+    exact Real.sqrt_le_sqrt (Nat.cast_le.mpr hKN)
+  have hmul : 0 < (N:ℝ)^t*(N:ℝ)^(1/2:ℝ) := mul_pos (Real.rpow_pos_of_pos hNR _) (Real.rpow_pos_of_pos hNR _)
+  have heq : ((N:ℝ)^g/4)*((N:ℝ)^t*(N:ℝ)^(1/2:ℝ))=(K:ℝ)^2*(N:ℝ)^(-g) := by
+    have hg' : g+(t+1/2)=2+ -g := by dsimp [g]; ring
+    calc _ = (N:ℝ)^(g+(t+1/2))/4 := by rw [Real.rpow_add hNR,Real.rpow_add hNR]; ring
+         _ = (N:ℝ)^2*(N:ℝ)^(-g)/4 := by rw [hg',Real.rpow_add hNR,Real.rpow_two]
+         _ = _ := by dsimp only [N]; push_cast; ring
+  refine ⟨a,b,ha,hb,fun i hi => (cell i (mem_Ioc.mpr ⟨(mem_Ioo.mp hi).1,(mem_Ioo.mp hi).2.le⟩)).trans
+    (if_pos (mem_Ioo.mp hi).2),?_⟩
+  change B*conductorNorm N (fun i => r i*upperDivisor N a i)*conductorNorm N (fun i => r i*upperDivisor N b i) < _
+  rw [hu,mul_one]
+  calc _ ≤ b₀*((N:ℝ)^t*(N:ℝ)^(1/2:ℝ)) := mul_le_mul (le_max_left _ _) (hv.trans
+           (mul_le_mul_of_nonneg_left hsqrt (Real.rpow_nonneg hNR.le _))) (Real.sqrt_nonneg _) hb₀.le
+       _ < _ := mul_lt_mul_of_pos_right (show b₀ < (N:ℝ)^g/4 by linarith only [hbN]) hmul
+       _ = _ := heq
+       _ ≤ _ := mul_le_mul_of_nonneg_left he (sq_nonneg _)
+       _ ≤ _ := low
+
+#print axioms alternating_dyadic_price_obstruction
+
 #print axioms critical_joint_power_iff
 #print axioms critical_quotient_price_summable
 #print axioms critical_joint_price

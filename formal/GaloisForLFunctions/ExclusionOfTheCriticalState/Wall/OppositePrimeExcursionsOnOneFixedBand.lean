@@ -57,8 +57,8 @@ private theorem freeze_pair {k L H : ℕ} {Φ : ℝ → ℝ} {m a g d T r v s : 
   rw [← hcell] at hblocks
   refine ⟨j,hj,?_⟩
   rcases hside with ⟨rfl,rfl⟩ | ⟨rfl,rfl⟩
-  · exact ⟨true,by simpa only [middleTestFlank,if_true,hleft] using hblocks⟩
-  · exact ⟨false,by simpa only [middleTestFlank,Bool.false_eq_true,if_false,hright] using hblocks⟩
+  · exact ⟨true,by simpa only [FixedBandPrimePair,middleTestFlank,if_true,hleft] using hblocks⟩
+  · exact ⟨false,by simpa only [FixedBandPrimePair,middleTestFlank,Bool.false_eq_true,if_false,hright] using hblocks⟩
 
 private theorem integral_split {A B : Set ℝ} {f : ℝ → ℝ} (hf : Integrable f)
     (hA : MeasurableSet A) (hB : MeasurableSet B) :
@@ -128,7 +128,7 @@ private theorem pair_product {k L H : ℕ} {s a g d T : ℝ} {left : Bool}
   have hr2 := Real.sq_sqrt (Nat.cast_nonneg H)
   calc _ = (a*Real.exp (g*T)*Real.sqrt H)^2 := by
              rw [mul_pow (a*Real.exp (g*T)) (Real.sqrt H),hr2]
-             field_simp [Nat.cast_ne_zero.mpr hH.ne'] <;> ring
+             field_simp [Nat.cast_ne_zero.mpr hH.ne']
        _ ≤ _ := by simpa only [sq] using hm
 
 private theorem choose_fixed_pair {Φ f : ℝ → ℝ} {m a g d r T z : ℝ} {k L : ℕ} {E : Set ℝ} {N : Finset ℕ}
@@ -259,14 +259,13 @@ theorem riemannHypothesis_or_fixed_band_opposite_prime_moment : RiemannHypothesi
     obtain ⟨hX,hpow,hHL,_⟩ := (hN H).mp (Finset.mem_filter.mp hj).1
     exact Finset.mem_filter.mpr ⟨Finset.mem_range.mpr hHL,hX,hpow,sqrt_lt_middleBand_start hsc hr hr₁ hrd hX hpow⟩
   have hpos (H : ℕ) (hj : H∈J) := Nat.cast_pos.mp ((Real.exp_pos t).trans_le ((hN H).mp (Finset.mem_filter.mp hj).1).1)
-  have hcost := hcut t (k i) (L i) (Ioc (t/6) (6*t)) U J hpos hU hJ
-  rw [ordinaryBand_delete_eq_setIntegral hi m t (k i) (L i) hU] at hcost
-  change |∫ v in U, f v|≤_ at hcost
   let mass := ∑ H ∈ J, 1/(H:ℝ)
+  have hcost : |∫ v in U, f v| ≤ K*(L i:ℝ)*Real.exp (-t/2)*mass := by
+    calc _ = _ := congrArg abs (ordinaryBand_delete_eq_setIntegral hi m t (k i) (L i) hU).symm
+         _ ≤ _ := hcut t (k i) (L i) (Ioc (t/6) (6*t)) U J hpos hU hJ
   have hpaid : c*Y<(L i:ℝ)*mass*Real.exp (-t/2) := by
     by_contra! hle
     have hh := mul_le_mul_of_nonneg_left hle hK
-    change |∫ v in U, f v|≤K*(L i:ℝ)*Real.exp (-t/2)*mass at hcost
     linarith only [hUn,hcost,hh,neg_le_abs (∫ v in U, f v),congrArg (· *Y) hck,mul_pos hc (Real.exp_pos (g*t))]
   have hmass := mul_lt_mul_of_pos_right hpaid (Real.exp_pos (t/2))
   have hunit : Real.exp (-t/2)*Real.exp (t/2)=1 := by
@@ -300,6 +299,56 @@ theorem riemannHypothesis_or_fixed_band_opposite_prime_moment : RiemannHypothesi
          _ < (a*Real.exp (g*t))^2*((L i:ℝ)*mass) := hfactor
          _ = (L i:ℝ)*((a*Real.exp (g*t))^2*mass) := by ring
          _ ≤ _ := mul_le_mul_of_nonneg_left hm (Nat.cast_nonneg (L i))
+
+/-- Below the upper endpoint the right flank is empty. On the left, the
+mixed moment agrees with the interior second moment up to relative error
+C/B on every subfamily above level B times the square root. -/
+theorem oppositePrimeProduct_below_endpoint :
+    ∃ C : ℝ, 0≤C ∧ ∀ (s : ℝ) (k L : ℕ), (s=1 ∨ s= -1) → k≤L →
+      let P := fun H : ℕ => max 0 (s*oddQuotientPrimeExcess (Finset.Ioc k L) H)
+      let Q := fun H : ℕ => max 0 ((-s)*oddQuotientPrimeExcess (middleTestFlank true k L H) H)
+      (∀ H : ℕ, H≤L → ⌊Real.sqrt H⌋₊≤k →
+        oppositePrimeProduct false s k L H=0 ∧ |P H-Q H|≤C*Real.sqrt H) ∧
+      ∀ (D : Finset ℕ) (B : ℝ), 0<B →
+        (∀ H ∈ D, H≤L ∧ ⌊Real.sqrt H⌋₊≤k ∧ B*Real.sqrt H≤P H) →
+        |(∑ H ∈ D, oppositePrimeProduct true s k L H)-(∑ H ∈ D, (P H)^2/(H:ℝ)^2)| ≤
+          (C/B)*(∑ H ∈ D, (P H)^2/(H:ℝ)^2) := by
+  obtain ⟨C,hC,hrow⟩ := oddQuotientPrimeExcess_complete_above_sqrt
+  refine ⟨C,hC,fun s k L hs hk => ?_⟩
+  let P := fun H : ℕ => max 0 (s*oddQuotientPrimeExcess (Finset.Ioc k L) H)
+  let Q := fun H : ℕ => max 0 ((-s)*oddQuotientPrimeExcess (middleTestFlank true k L H) H)
+  have hpoint (H : ℕ) (hH : H≤L) (hr : ⌊Real.sqrt H⌋₊≤k) :
+      oppositePrimeProduct false s k L H=0 ∧ |P H-Q H|≤C*Real.sqrt H := by
+    have hempty : Finset.Ioc L H=∅ := Finset.Ioc_eq_empty_of_le hH
+    refine ⟨by simp [oppositePrimeProduct,middleTestFlank,hempty,oddQuotientPrimeExcess],?_⟩
+    let I := oddQuotientPrimeExcess (Finset.Ioc k L) H
+    let J := oddQuotientPrimeExcess (Finset.Ioc ⌊Real.sqrt H⌋₊ k) H
+    have heq : J+I=oddQuotientPrimeExcess (Finset.Ioc ⌊Real.sqrt H⌋₊ L) H :=
+      Finset.sum_Ioc_consecutive _ hr hk
+    have hb : |s*I-(-s)*J|≤C*Real.sqrt H := by
+      rw [show s*I-(-s)*J=s*(J+I) by ring,abs_mul,heq]
+      rcases hs with rfl|rfl <;> simpa only [abs_neg,abs_one,one_mul] using hrow H L hH
+    change |max 0 (s*I)-max 0 ((-s)*J)|≤_
+    rw [max_comm 0 (s*I),max_comm 0 ((-s)*J)]
+    exact (abs_max_sub_max_le_abs _ _ _).trans hb
+  refine ⟨hpoint,fun D B hB hD => ?_⟩
+  rw [← Finset.sum_sub_distrib,Finset.mul_sum]
+  apply (Finset.abs_sum_le_sum_abs _ _).trans
+  apply Finset.sum_le_sum
+  intro H hmem
+  obtain ⟨hH,hr,hP⟩ := hD H hmem
+  have hcl := (hpoint H hH hr).2
+  rw [abs_sub_comm] at hcl
+  have hx : Real.sqrt H≤P H/B := (le_div_iff₀ hB).mpr (by simpa only [mul_comm B] using hP)
+  have hy : |Q H-P H| ≤ (C/B)*P H :=
+    hcl.trans ((mul_le_mul_of_nonneg_left hx hC).trans_eq (by ring))
+  have hpos : 0≤P H := le_max_left ..
+  change |P H*Q H/(H:ℝ)^2-(P H)^2/(H:ℝ)^2| ≤ _
+  rw [← sub_div,show P H*Q H-(P H)^2=P H*(Q H-P H) by ring,abs_div,abs_mul,
+    abs_of_nonneg hpos,abs_of_nonneg (sq_nonneg (H:ℝ))]
+  exact (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hy hpos) (sq_nonneg _)).trans_eq (by ring)
+
+#print axioms oppositePrimeProduct_below_endpoint
 
 #print axioms riemannHypothesis_or_fixed_band_opposite_prime_moment
 end GaloisForLFunctions.ExclusionOfTheCriticalState

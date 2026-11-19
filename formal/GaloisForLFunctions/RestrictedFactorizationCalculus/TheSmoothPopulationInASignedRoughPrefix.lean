@@ -265,9 +265,11 @@ theorem rough_log_variation_from_prefix_counts (y N : ℕ) {δ K : ℝ} (hδ : 0
     dsimp only [d] at step cost ⊢
     nlinarith only [prev,step,mul_le_mul_of_nonneg_left cost hδ.le]
 
-private theorem uniform_rough_count_and_variation {δ : ℝ} (hδ : 0<δ) :
+/-- Fixing a sufficiently large primorial bounds every higher rough
+population by an arbitrarily small density and one endpoint constant. -/
+theorem uniform_rough_count_at_large_walls {δ : ℝ} (hδ : 0<δ) :
     ∃ Z : ℕ,∃ K : ℝ,0 ≤ K ∧ ∀ y : ℕ,Z ≤ y → ∀ N : ℕ,
-      ((freeSet y N).card:ℝ) ≤ δ*N+K ∧ logVariation y N ≤ δ*N+K*Real.log N := by
+      ((freeSet y N).card:ℝ) ≤ δ*N+K := by
   obtain ⟨Z,hZ⟩ := (RHTower.WeilSingularArithmetic.tendsto_coprimeDensity_primorial.eventually_lt_const hδ).exists
   let Q := primorial Z
   have qp : 0<Q := primorial_pos _
@@ -276,20 +278,23 @@ private theorem uniform_rough_count_and_variation {δ : ℝ} (hδ : 0<δ) :
   rw [RHTower.WeilSingularArithmetic.coprimeDensity_eq_totient_div] at hZ
   let K : ℝ := Q.totient
   refine ⟨Z,K,Nat.cast_nonneg _,?_⟩
-  intro y zy
-  have count (N : ℕ) : ((freeSet y N).card:ℝ) ≤ δ*N+K := by
-    have sub : freeSet y N ⊆ (Icc 1 N).filter (fun n => Q.Coprime n) := by
-      intro n hn
-      obtain ⟨hi,free⟩ := mem_filter.mp hn
-      exact mem_filter.mpr ⟨hi,RHTower.coprime_primorial_of_primeFactors_gt (mem_Icc.mp hi).1
-        (fun p hp => zy.trans_lt (lt_of_not_ge (show ¬p ≤ y from free.2 p hp)))⟩
-    have total := ((Nat.cast_le (α := ℝ)).mpr (card_le_card sub)).trans (coprime_population_in_a_prefix Q qp N)
-    have eq : (Q.totient:ℝ)*((N:ℝ)/Q+1)=((Q.totient:ℝ)/Q)*N+K := by dsimp only [K]; ring
-    rw [eq] at total
-    exact total.trans (add_le_add (mul_le_mul_of_nonneg_right hZ.le (Nat.cast_nonneg N)) le_rfl)
-  intro N
-  refine ⟨count N,?_⟩
-  exact rough_log_variation_from_prefix_counts y N hδ (fun k _ => count k)
+  intro y zy N
+  have sub : freeSet y N ⊆ (Icc 1 N).filter (fun n => Q.Coprime n) := by
+    intro n hn
+    obtain ⟨hi,free⟩ := mem_filter.mp hn
+    exact mem_filter.mpr ⟨hi,RHTower.coprime_primorial_of_primeFactors_gt (mem_Icc.mp hi).1
+      (fun p hp => zy.trans_lt (lt_of_not_ge (show ¬p ≤ y from free.2 p hp)))⟩
+  have total := ((Nat.cast_le (α := ℝ)).mpr (card_le_card sub)).trans (coprime_population_in_a_prefix Q qp N)
+  have eq : (Q.totient:ℝ)*((N:ℝ)/Q+1)=((Q.totient:ℝ)/Q)*N+K := by dsimp only [K]; ring
+  rw [eq] at total
+  exact total.trans (add_le_add (mul_le_mul_of_nonneg_right hZ.le (Nat.cast_nonneg N)) le_rfl)
+
+private theorem uniform_rough_count_and_variation {δ : ℝ} (hδ : 0<δ) :
+    ∃ Z : ℕ,∃ K : ℝ,0 ≤ K ∧ ∀ y : ℕ,Z ≤ y → ∀ N : ℕ,
+      ((freeSet y N).card:ℝ) ≤ δ*N+K ∧ logVariation y N ≤ δ*N+K*Real.log N := by
+  obtain ⟨Z,K,k0,count⟩ := uniform_rough_count_at_large_walls hδ
+  refine ⟨Z,K,k0,fun y zy N => ⟨count y zy N,?_⟩⟩
+  exact rough_log_variation_from_prefix_counts y N hδ (fun k _ => count y zy k)
 
 /-- The entire prime-reading error is controlled by reciprocal logarithms
 of the prime cutoff, uniformly in the quotient endpoint. -/

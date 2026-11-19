@@ -47,7 +47,7 @@ the finite-layer logarithmic wall-cusp problem (§2.17):
 
 noncomputable section
 open MeasureTheory Set Filter Complex Topology Zeta23
-open GaloisForLFunctions.ExclusionOfTheCriticalState
+open GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations GaloisForLFunctions.ExclusionOfTheCriticalState
 open GaloisForLFunctions.ZeroConfigurationGeometry
 open GaloisForLFunctions.ZeroConfigurationGeometry.ConfigAbscissa
 open GaloisForLFunctions.ZeroConfigurationGeometry.ZetaAbscissa
@@ -136,7 +136,7 @@ private theorem exists_criticalGroundState_of_not_riemannHypothesis (hnRH : ¬ R
 private theorem groundState_confinementMass_pos {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
-    0 < criticalAliasCoefficient W₀ ∧ 0 < ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)) := by
+    0 < HTGeometry.criticalAliasCoefficient W₀ ∧ 0 < ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)) := by
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
   have hnull := isConfinedNullVector_of_groundState hW ht hF
   have hM_eq : (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) =
@@ -144,7 +144,7 @@ private theorem groundState_confinementMass_pos {W₀ : ℝ} (hW : 0 < W₀)
     unfold HTGeometry.criticalHalfLineExponentialPair
     exact integral_congr_ae (Eventually.of_forall fun u => by ring)
   exact ⟨HTGeometry.criticalAliasCoefficient_positive hW,
-    hM_eq ▸ exponentialPair_self_pos hd hnull.2.1⟩
+    hM_eq ▸ exponentialPair_self_pos hd (by rw [hnull.2.1]; exact one_ne_zero)⟩
 
 /-- **Seven-way equivalence of all §2.17 wall-cusp and critical-line ordinate-moment targets with
 `BacklundConverse.FiniteOffLine → RiemannHypothesis` (B13).** -/
@@ -187,7 +187,7 @@ theorem finiteLayer_wallCusp_targets_tfae :
     obtain ⟨ha, hM⟩ := groundState_confinementMass_pos hW ht hF
     obtain ⟨h, hpos, h0, hvan⟩ := h1 hnRH hfin W₀ F hW ht hF
     have hnhds : Tendsto h atTop (𝓝[>] 0) :=
-      tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within h0 (Eventually.of_forall hpos)
+      tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within h h0 (Eventually.of_forall hpos)
     have hlim := (criticalState_tendsto_log_div_mul_terminal_sq hW ht hF).comp hnhds
     have heq := tendsto_nhds_unique hlim hvan
     linarith [mul_pos (mul_pos (by norm_num : (0 : ℝ) < 8) ha) hM]
@@ -237,7 +237,7 @@ theorem finiteLayer_wallCusp_targets_tfae :
     obtain ⟨ha, hM⟩ := groundState_confinementMass_pos hW ht hF
     obtain ⟨h, hpos, h0, hvan⟩ := h6 hfin W₀ F hW ht hF
     have hnhds : Tendsto h atTop (𝓝[>] 0) :=
-      tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within h0 (Eventually.of_forall hpos)
+      tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within h h0 (Eventually.of_forall hpos)
     have hlim := (criticalState_criticalLine_cosine_cusp hW ht hF hfin).comp hnhds
     have heq := tendsto_nhds_unique hlim hvan
     linarith [mul_pos (mul_pos (by norm_num : (0 : ℝ) < 4) ha) hM]
@@ -260,7 +260,7 @@ theorem no_singleOffLineQuartet_of_wallCuspTarget (h : SequentialWallCuspVanishi
     refine hRH ρ₀ hζ ?_ ?_
     · rintro ⟨n, hn⟩
       rw [hn] at h0; simp at h0
-      linarith [Nat.cast_nonneg (α := ℝ) n]
+      linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)]
     · intro heq1; rw [heq1] at h1; norm_num at h1
   linarith
 
@@ -350,7 +350,7 @@ theorem exists_isolatedOuterTail_above_infiniteApproachingBackground {σ₀ : �
     split_ifs
     · exact hd_half
     · have hle : d / ((n : ℝ) + 3) ≤ d :=
-        div_le_self hd_pos.le (by linarith [Nat.cast_nonneg (α := ℝ) n])
+        div_le_self hd_pos.le (by linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)])
       exact hle.trans hd_half
   let Z : ZeroConfig := seqPairConfig δ hδ0 hδ12
   have hinj : Function.Injective (seqUpper δ) := by
@@ -432,7 +432,7 @@ theorem exists_isolatedOuterTail_above_infiniteApproachingBackground {σ₀ : �
           dsimp only [δ]
           split_ifs
           · exact le_rfl
-          · exact div_le_self hd_pos.le (by linarith [Nat.cast_nonneg (α := ℝ) n])
+          · exact div_le_self hd_pos.le (by linarith [(Nat.cast_nonneg n : (0 : ℝ) ≤ n)])
         dsimp only [d] at hle_d
         linarith
       · simp only [seqLower, add_re, ofReal_re, mul_re, I_re, mul_zero, ofReal_im, I_im, mul_one,

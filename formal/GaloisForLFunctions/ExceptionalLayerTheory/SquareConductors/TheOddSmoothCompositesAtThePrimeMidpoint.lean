@@ -116,7 +116,7 @@ theorem odd_smooth_midpoint_error {n : ℕ} (hn : 1 ≤ n) :
     · rfl
   have bound (a b : ℕ) (hb : b ≤ X) :
       (∑ k ∈ Ioc a b,purePowerLog n k) ≤ L*(Chebyshev.psi (X:ℝ)-Chebyshev.theta (X:ℝ)) := by
-    rw [Chebyshev.psi_sub_theta_eq_sum_not_prime,Nat.floor_natCast,mul_sum,sum_filter]
+    rw [Chebyshev.psi_sub_theta_eq_sum_not_prime,Nat.floor_natCast,sum_filter,mul_sum]
     calc _ ≤ ∑ k ∈ Ioc 0 X,purePowerLog n k :=
              sum_le_sum_of_subset_of_nonneg (fun k hk => mem_Ioc.mpr
                ⟨(Nat.zero_le a).trans_lt (mem_Ioc.mp hk).1,(mem_Ioc.mp hk).2.trans hb⟩)
@@ -127,6 +127,8 @@ theorem odd_smooth_midpoint_error {n : ℕ} (hn : 1 ≤ n) :
   have h2 := bound (3*n) (4*n) le_rfl
   have hr := odd_smooth_prime_midpoint_exact hn
   unfold unitarySignedIntervals at hr
+  change |oddSmoothCompositePrice n-unitaryMidpointCenter n-primeMidpointPrice n| ≤
+    L*(Chebyshev.psi (X:ℝ)-Chebyshev.theta (X:ℝ))
   apply abs_le.mpr
   constructor <;> linarith only [hr,h1,h2,
     sum_nonneg (s:=Ioc (2*n) (3*n)) (fun k _ => hnneg k),

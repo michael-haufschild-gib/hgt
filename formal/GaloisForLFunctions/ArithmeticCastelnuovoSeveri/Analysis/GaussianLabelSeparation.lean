@@ -28,7 +28,8 @@ theorem midpoint_density (a b l x : ℝ) :
   have hh : Real.log (f a*f b)=Real.log ((overlap a b l*f ((a+b)/2))^2) := by
     rw [Real.log_mul (hp _).ne' (hp _).ne',Real.log_pow,Real.log_mul ho.ne' (hp _).ne']
     simp only [f,positionGaussianDensity,gaussian_log_pdf,overlap,Real.log_exp,gapCost]
-    field_simp [Real.exp_ne_zero] <;> ring
+    field_simp [Real.exp_ne_zero]
+    ring
   have he := congrArg Real.exp hh
   rw [Real.exp_log (mul_pos (hp _) (hp _)),Real.exp_log (sq_pos_of_pos (mul_pos ho (hp _)))] at he
   change Real.sqrt (f a*f b)=overlap a b l*f ((a+b)/2)
@@ -53,7 +54,9 @@ theorem density_loss_bounds {A B : ℝ} (ha : 0<A) (hb : 0<B) :
   have hor : 0 < 1+r := by linarith only [hr]
   rw [Real.log_mul ha.ne' (sq_pos_of_pos hor).ne',Real.log_pow] at hlog
   have hscalar : Real.log (A+B)-Real.log A ≤ 2*r := by
-    linarith only [hlog,Real.log_le_sub_one_of_pos hor]
+    norm_num at hlog
+    have hl : Real.log (1+r) ≤ r := (Real.log_le_sub_one_of_pos hor).trans_eq (by ring)
+    linarith only [hlog,mul_le_mul_of_nonneg_left hl (show (0:ℝ) ≤ 2 by norm_num)]
   refine ⟨mul_nonneg ha.le (sub_nonneg.mpr (Real.log_le_log ha (le_add_of_nonneg_right hb.le))),?_⟩
   calc
     _ ≤ A*(2*r) := mul_le_mul_of_nonneg_left hscalar ha.le

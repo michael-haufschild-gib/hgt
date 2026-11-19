@@ -195,6 +195,138 @@ theorem interleaved_weight_test_iff (r w : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm 
     exact ⟨_,add_nonneg (mul_nonneg (mul_nonneg (by norm_num) (Real.sqrt_nonneg _))
       (Real.sqrt_nonneg _)) (sq_nonneg _),interleaved_joint_uniform r w hr hm hw h₁ h₂⟩
 
+/-- A real upper section against the atom at one. The sole doubled
+diagonal is at the first quotient and the section ends at the cutoff. -/
+def anchoredCell (N : ℕ) (v : ℕ → ℝ) (k : ℕ) : ℝ :=
+  (if k=1 then 2 else 1)*v k-(if k+1≤N then v (k+1) else 0)
+
+/-- Total absolute price in each column of the anchored difference matrix. -/
+def anchoredColumnPrice (w : ℕ → ℝ) (j : ℕ) : ℝ :=
+  if j=1 then 2*w j else w j+w (j-1)
+
+/-- Every integral input to the anchored difference matrix is realized
+by actual endpoint jumps of the two divisors. -/
+theorem anchored_cell_realization {N : ℕ} (hN : 0<N) (v : ℕ → ℤ) :
+    ∃ a b : ℕ → ℤ, (∀ i ∈ Icc 1 N, upperDivisor N a i=if i=1 then 1 else 0) ∧
+      (∀ i ∈ Icc 1 N, upperDivisor N b i=v i) ∧
+      ∀ k ∈ Icc 1 N, twoSidedCoefficient N a b k=anchoredCell N (fun j => (v j:ℝ)) k := by
+  obtain ⟨a,b,ha,hb,_,hc⟩ := conductor_one_profile hN v
+  refine ⟨a,b,ha,hb,fun k hk => ?_⟩
+  rw [hc k hk,anchoredCell]
+  by_cases h : k=1
+  · subst k; simp; ring
+  · simp [h]
+
+private theorem anchored_column_sum (N : ℕ) (w m : ℕ → ℝ) :
+    (∑ k ∈ Icc 1 N, w k*((if k=1 then 2 else 1)*m k+(if k+1≤N then m (k+1) else 0))) =
+      ∑ j ∈ Icc 1 N, anchoredColumnPrice w j*m j := by
+  let S := Icc 1 N
+  have row (k : ℕ) : w k*(if k+1≤N then m (k+1) else 0)=
+      ∑ j ∈ S, if k+1=j then w k*m j else 0 := by
+    by_cases h : k+1≤N <;> simp [S,h]
+  have col (j : ℕ) (hj : j∈S) :
+      (∑ k ∈ S, if k+1=j then w k*m j else 0) =
+      (if j=1 then 0 else w (j-1))*m j := by
+    have hp := (mem_Icc.mp hj).1
+    have hN := (mem_Icc.mp hj).2
+    have he (k : ℕ) : k+1=j ↔ k=j-1 := by omega
+    simp only [he,sum_ite_eq']
+    by_cases h : j=1
+    · subst j; simp [S]
+    · have hm : j-1∈S := mem_Icc.mpr ⟨by omega,by omega⟩
+      simp [h,hm]
+  change (∑ k ∈ S, _) = ∑ j ∈ S, _
+  simp only [mul_add,sum_add_distrib,row,sum_comm (s := S) (t := S) (f := fun k j => if k+1=j then w k*m j else 0)]
+  rw [sum_congr rfl col,← sum_add_distrib]
+  refine sum_congr rfl fun j _ => ?_
+  by_cases h : j=1 <;> simp [anchoredColumnPrice,h] <;> ring
+
+/-- Alternating signs attain every column's triangle bound at once. -/
+theorem anchored_alternating_variation (N : ℕ) (w m : ℕ → ℝ) (hm : ∀ k, 0≤m k) :
+    (∑ k ∈ Icc 1 N, w k*|anchoredCell N (fun j => (-1:ℝ)^j*m j) k|) =
+      ∑ j ∈ Icc 1 N, anchoredColumnPrice w j*m j := by
+  rw [← anchored_column_sum]
+  refine sum_congr rfl fun k _ => congrArg (w k*·) ?_
+  let d : ℝ := if k=1 then 2 else 1
+  let t := if k+1≤N then m (k+1) else 0
+  have hd : 0≤d := by dsimp [d]; split <;> norm_num
+  have ht : 0≤t := by dsimp [t]; split <;> first | exact hm _ | exact le_rfl
+  have he : anchoredCell N (fun j => (-1:ℝ)^j*m j) k=(-1:ℝ)^k*(d*m k+t) := by
+    by_cases h : k+1≤N <;> simp only [anchoredCell,d,t,h,if_true,if_false,pow_succ] <;> ring
+  rw [he,abs_mul,abs_pow,abs_neg,abs_one,one_pow,one_mul,abs_of_nonneg (add_nonneg (mul_nonneg hd (hm k)) ht)]
+
+private theorem anchored_upper (N : ℕ) (r w v : ℕ → ℝ) (hr : ∀ k, 0<r k) (hw : ∀ k, 0≤w k) :
+    (∑ k ∈ Icc 1 N, w k*|anchoredCell N v k|) ≤
+      conductorNorm N (fun j => anchoredColumnPrice w j/r j)*conductorNorm N (fun j => r j*v j) := by
+  let p := anchoredColumnPrice w
+  calc _ ≤ ∑ j ∈ Icc 1 N, p j*|v j| := by
+         rw [← anchored_column_sum]
+         refine sum_le_sum fun k _ => mul_le_mul_of_nonneg_left ?_ (hw k)
+         unfold anchoredCell
+         apply (abs_sub _ _).trans_eq
+         rw [abs_mul]
+         by_cases h : k=1 <;> by_cases ht : k+1≤N <;> simp [h,ht]
+       _ = ∑ j ∈ Icc 1 N, (p j/r j)*(r j*|v j|) := by
+         refine sum_congr rfl fun j _ => ?_
+         field_simp [(hr j).ne']
+       _ ≤ conductorNorm N (fun j => p j/r j)*conductorNorm N (fun j => r j*|v j|) :=
+         Real.sum_mul_le_sqrt_mul_sqrt _ _ _
+       _ = _ := by simp only [conductorNorm,mul_pow,sq_abs,p]
+
+/-- The sharp real anchored norm is attained by an alternating section
+with magnitudes equal to the column prices divided by squared weights. -/
+theorem anchored_real_extremizer (N : ℕ) (r w : ℕ → ℝ) (hr : ∀ k, 0<r k) (hw : ∀ k, 0≤w k) :
+    let D := conductorNorm N (fun j => anchoredColumnPrice w j/r j)
+    ∃ v : ℕ → ℝ, conductorNorm N (fun j => r j*v j)=D ∧
+      (∑ k ∈ Icc 1 N, w k*|anchoredCell N v k|)=D^2 := by
+  intro D
+  let p := anchoredColumnPrice w
+  let m := fun j => p j/(r j)^2
+  have hp (j : ℕ) : 0≤p j := by
+    dsimp [p,anchoredColumnPrice]; split <;> positivity
+  have hm (j : ℕ) : 0≤m j := div_nonneg (hp j) (sq_nonneg _)
+  refine ⟨fun j => (-1:ℝ)^j*m j,?_,?_⟩
+  · apply congrArg Real.sqrt
+    refine sum_congr rfl fun j _ => ?_
+    change (r j*((-1:ℝ)^j*m j))^2=(p j/r j)^2
+    simp only [mul_pow,pow_right_comm (-1:ℝ) j 2,neg_one_sq,one_pow,one_mul,m]
+    field_simp [(hr j).ne']
+    <;> ring
+  · rw [anchored_alternating_variation N w m hm]
+    change _=(Real.sqrt (∑ j ∈ Icc 1 N, (p j/r j)^2))^2
+    rw [Real.sq_sqrt (sum_nonneg fun _ _ => sq_nonneg _)]
+    refine sum_congr rfl fun j _ => ?_
+    change p j*(p j/(r j)^2)=(p j/r j)^2
+    ring
+
+/-- Real and integral upper sections have exactly the same least
+anchored variation bound, including cutoffs zero and one. -/
+theorem anchored_optimal_constant (N : ℕ) (r w : ℕ → ℝ) (hr : ∀ k, 0<r k) (hw : ∀ k, 0≤w k)
+    {C : ℝ} (hC : 0≤C) :
+    ((∀ v : ℕ → ℤ, (∑ k ∈ Icc 1 N, w k*|anchoredCell N (fun j => (v j:ℝ)) k|) ≤
+      C*conductorNorm N (fun j => r j*v j)) ↔ conductorNorm N (fun j => anchoredColumnPrice w j/r j)≤C) ∧
+    ((∀ v : ℕ → ℝ, (∑ k ∈ Icc 1 N, w k*|anchoredCell N v k|) ≤
+      C*conductorNorm N (fun j => r j*v j)) ↔ conductorNorm N (fun j => anchoredColumnPrice w j/r j)≤C) := by
+  let p := anchoredColumnPrice w
+  have upper (hc : conductorNorm N (fun j => p j/r j)≤C) (v : ℕ → ℝ) :=
+    (anchored_upper N r w v hr hw).trans (mul_le_mul_of_nonneg_right hc (Real.sqrt_nonneg _))
+  have lower (h : ∀ v : ℕ → ℤ, (∑ k ∈ Icc 1 N, w k*|anchoredCell N (fun j => (v j:ℝ)) k|) ≤
+      C*conductorNorm N (fun j => r j*v j)) : conductorNorm N (fun j => p j/r j)≤C := by
+    apply (Real.sqrt_le_iff).mpr
+    refine ⟨hC,finite_dual_test r p hr (fun j => ?_) hC (fun m => ?_)⟩
+    · dsimp [p,anchoredColumnPrice]; split <;> positivity
+    · have he := h (fun j => (-1:ℤ)^j*(m j:ℤ))
+      simp only [Int.cast_mul,Int.cast_pow,Int.cast_neg,Int.cast_one,Int.cast_natCast] at he
+      rw [anchored_alternating_variation N w (fun j => (m j:ℝ)) (fun j => Nat.cast_nonneg _)] at he
+      simpa only [p,conductorNorm,mul_pow,pow_right_comm (-1:ℝ) _ 2,neg_one_sq,one_pow,one_mul] using he
+  exact ⟨⟨lower,fun h v => upper h (fun j => (v j:ℝ))⟩,
+    ⟨fun h => lower (fun v => h (fun j => (v j:ℝ))),upper⟩⟩
+
+#print axioms anchored_cell_realization
+#print axioms anchored_alternating_variation
+#print axioms anchored_real_extremizer
+#print axioms anchored_optimal_constant
+
 #print axioms dual_price_summable_of_integer_tests
 #print axioms dual_price_summable_of_uniform_variation
 #print axioms interleaved_weight_test_iff

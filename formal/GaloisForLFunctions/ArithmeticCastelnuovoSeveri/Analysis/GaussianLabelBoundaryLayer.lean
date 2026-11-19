@@ -49,7 +49,9 @@ private theorem right_tail (x : ℝ) : side x≤4*exp (-x/4) := by
     nlinarith only [show 0≤y from hy.le,sq_nonneg y,pow_nonneg hy.le 3]
   have hl := log_le_log (show 0<1+exp x by positivity) hpow
   rw [log_pow] at hl
-  have hlog := log_le_sub_one_of_pos (show 0<1+y by positivity)
+  norm_num at hl
+  have hlog : log (1+y) ≤ y :=
+    (log_le_sub_one_of_pos (show 0<1+y by positivity)).trans_eq (by ring)
   have hb : log (1+exp x)≤4*y := by linarith only [hl,hlog]
   calc
     _ ≤ exp (-x/2)*(4*y) := mul_le_mul_of_nonneg_left hb (exp_pos _).le

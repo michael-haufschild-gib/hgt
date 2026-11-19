@@ -7,3 +7,4 @@ import GaloisForLFunctions.CurvesOverFiniteFields.Divisors
 import GaloisForLFunctions.CurvesOverFiniteFields.Genus
 import GaloisForLFunctions.CurvesOverFiniteFields.Duality
 import GaloisForLFunctions.CurvesOverFiniteFields.PrincipalDivisors
+import GaloisForLFunctions.CurvesOverFiniteFields.FiniteCounts
