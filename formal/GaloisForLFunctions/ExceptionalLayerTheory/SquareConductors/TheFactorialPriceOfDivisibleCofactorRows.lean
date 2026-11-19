@@ -93,11 +93,12 @@ theorem divisible_cofactor_factorial_error {n r : ℕ} (hn : 0 < n) (hr : 0 < r)
     have hb : |f p| ≤ vonMangoldt p := by
       rw [show f p=vonMangoldt p*midpointFloorWeight n (p*r) from rfl,abs_mul,abs_of_nonneg hμ]
       exact mul_le_of_le_one_right hμ (abs_midpoint_division_le_one (Nat.mul_pos hp0 hr) n)
-    by_cases hq : p ≤ Q <;> by_cases hpr : p.Prime <;> by_cases hd : p ∣ n <;>
-      simp only [ok,hq,hpr,hd,not_lt,lt_iff_not_ge,true_and,and_true,and_false,false_and,
-        not_true_eq_false,not_false_eq_true,if_true,if_false,add_zero,zero_add] at * <;>
-      first | exact hb | exact le_rfl | linarith only [hb,hμ,Real.log_natCast_nonneg p,
-        vonMangoldt_apply_prime (p:=p) (by assumption)] | linarith only [hb,hμ]
+    have hlog : vonMangoldt p ≤ Real.log p := vonMangoldt_le_log
+    have hlo : p ≤ Q ↔ ¬ Q < p := not_lt.symm
+    by_cases hq : Q < p <;> by_cases hpr : p.Prime <;> by_cases hd : p ∣ n <;>
+      simp only [ok,hlo,hq,hpr,hd,and_true,and_false,
+        not_true_eq_false,not_false_eq_true,if_true,if_false,add_zero,zero_add] <;>
+      linarith only [hb,hμ,hlog]
   have hi (X : ℕ) : Ioc 0 X=Icc 1 X := by ext p; simp only [mem_Ioc,mem_Icc]; omega
   have low : (∑ p ∈ S.filter (· ≤ Q),vonMangoldt p) ≤ Chebyshev.psi Q := by
     rw [Chebyshev.psi,Nat.floor_natCast,hi]

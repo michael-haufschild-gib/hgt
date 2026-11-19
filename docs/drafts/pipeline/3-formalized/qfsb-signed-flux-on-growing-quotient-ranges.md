@@ -7,7 +7,7 @@ Let \(M_y\) be the Möbius prefix coprime to the primorial at \(y\). Dirichlet c
 \[
  \sum_{d\le X/q,\ d\text{ smooth}}(D_F+C_F)(\lfloor X/(qd)\rfloor).
 \]
-Subtract the evaluations at both endpoints. This charges one copy per smooth divisor. The convolution recombines those copies to the rough cofactor coefficient. In successive transports the differences of readings telescope at each visit, including returns.
+Subtract the evaluations at both endpoints. This charges one copy per smooth divisor. The convolution recombines those copies to the rough cofactor coefficient. Along an actual sequence of reversible exchanges, orient each step by the parity of previous sign reversals. Each visit contributes the change of weight along the edge, its crossing of the current interval, and the change of observation at arrival. Their sum is the initial signed reading minus the oriented final reading, even when a vertex recurs.
 
 Choose one density-one matching whose crossing prefix has absolute value at most \(\log(1+t)\) at every \(t\). At the upper endpoint \(X\), the total crossing cost on atoms \(q\in S\) is at most
 \[
@@ -15,6 +15,6 @@ Choose one density-one matching whose crossing prefix has absolute value at most
 \]
 The lower endpoint has its own copy of the bound. Thus any polylogarithmic range of atoms with polylogarithmic weights costs \(X^{1/2+o(1)}\) on the moving part at the log-square wall. This applies to ordinary primes, surviving prime powers, and the floor increments \(y1_{y\mid q}\) with the same matching. The fixed contribution and the higher quotient atoms remain signed. These are the unresolved terms in an estimate for the complete centered reading.
 
-**Lean.** `smooth_lift_of_the_full_prefix`, `two_cutoff_rough_quotient_flux`, `signed_flux_along_a_quotient_history` and `one_matching_for_all_rough_quotient_boundaries` establish the exact account and uniform price in [SignedFluxOnGrowingQuotientRanges.lean](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/SignedFluxOnGrowingQuotientRanges.lean).
+**Lean.** `smooth_lift_of_the_full_prefix`, `two_cutoff_rough_quotient_flux`, `signed_flux_along_a_quotient_history`, `transport_along_a_repeated_exchange_path` and `one_matching_for_all_rough_quotient_boundaries` establish the exact account and uniform price in [SignedFluxOnGrowingQuotientRanges.lean](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/SignedFluxOnGrowingQuotientRanges.lean).
 
 **Further question.** Can the prime-minus-floor weights gain on the fixed contribution over the same ranges, retaining all smooth divisor multiplicities?

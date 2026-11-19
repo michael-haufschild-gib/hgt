@@ -18,6 +18,8 @@ jump to zero. -/
 theorem conductor_one_profile {N : ℕ} (hN : 0<N) (v : ℕ → ℤ) :
     ∃ a b : ℕ → ℤ, (∀ i ∈ Icc 1 N, upperDivisor N a i = if i=1 then 1 else 0) ∧
       (∀ i ∈ Icc 1 N, upperDivisor N b i=v i) ∧
+      (∀ k ∈ Icc 1 N, ∑ q ∈ Icc k N, twoSidedCoefficient N a b q =
+        (v k:ℝ)+(if k=1 then (v 1:ℝ) else 0)) ∧
       ∀ k ∈ Icc 1 N, twoSidedCoefficient N a b k =
         (v k:ℝ)-(if k+1≤N then (v (k+1):ℝ) else 0)+(if k=1 then (v 1:ℝ) else 0) := by
   obtain ⟨a,ha⟩ := exists_upper_endpoints N (fun i => if i=1 then 1 else 0)
@@ -43,6 +45,10 @@ theorem conductor_one_profile {N : ℕ} (hN : 0<N) (v : ℕ → ℤ) :
       have hip := (mem_Icc.mp hi).1
       have hki := Nat.le_mul_of_pos_left i hk
       simp [ha' hip,ha' (Nat.mul_pos hk hip),he,show k*i≠1 by omega]
+  refine ⟨?_,?_⟩
+  · intro k hk
+    rw [twoSidedCoefficient_tail]
+    exact (ht (mem_Icc.mp hk).1).trans (by rw [if_pos (mem_Icc.mp hk).2])
   intro k hk
   have he : twoSidedCoefficient N a b k=T k-T (k+1) :=
     twoSidedCoefficient_difference (mem_Icc.mp hk).2 a b
@@ -60,7 +66,7 @@ theorem anchored_price_test {N : ℕ} (hN : 0<N) (r w : ℕ → ℝ)
       conductorNorm N (fun i => r i*upperDivisor N a i)=r 1 ∧
       conductorNorm N (fun i => r i*upperDivisor N b i)=conductorNorm N (fun i => r i*m i) := by
   let v := fun k => (-1:ℤ)^k*(m k:ℤ)
-  obtain ⟨a,b,ha,hb,hc⟩ := conductor_one_profile hN v
+  obtain ⟨a,b,ha,hb,_,hc⟩ := conductor_one_profile hN v
   have h₁ : 1 ∈ Icc 1 N := mem_Icc.mpr ⟨le_rfl,hN⟩
   refine ⟨a,b,sum_le_sum (fun k hk => mul_le_mul_of_nonneg_left ?_ (hw k)),?_,?_⟩
   · rw [hc k hk]
@@ -124,26 +130,17 @@ private theorem finite_dual_test {N : ℕ} (r w : ℕ → ℝ) (hr : ∀ k, 0<r 
   change (∑ k ∈ S, w k*(m k:ℝ)) ≤ _ at hupper
   linarith only [hlow,hupper,hstrict]
 
-/-- A unit-cost joint estimate on all integer pairs forces the dual price
-to be square summable. The testing divisors have one lower conductor
-and signed integer upper multiplicities of finite support. -/
-theorem dual_price_summable_of_uniform_variation (r w : ℕ → ℝ) (hr : ∀ k, 0<r k)
-    (hw : ∀ k, 0≤w k) {C : ℝ} (hC : 0≤C) (h : ∀ (N : ℕ) (a b : ℕ → ℤ),
-      ∑ k ∈ Icc 1 N, w k* |twoSidedCoefficient N a b k| ≤
-        C*conductorNorm N (fun i => r i*upperDivisor N a i)*
-          conductorNorm N (fun i => r i*upperDivisor N b i)) :
-    Summable (fun k => (w k/r k)^2) := by
-  let B := C*r 1
-  have hB : 0≤B := mul_nonneg hC (hr 1).le
+/-- A bound on all positive integer test magnitudes characterizes the
+square summability of the dual price. Finite supports and integer scaling
+suffice to test this real Hilbert norm. -/
+theorem dual_price_summable_of_integer_tests (r w : ℕ → ℝ) (hr : ∀ k, 0<r k)
+    (hw : ∀ k, 0≤w k) {B : ℝ} (hB : 0≤B)
+    (h : ∀ N : ℕ, 0<N → ∀ m : ℕ → ℕ, ∑ k ∈ Icc 1 N, w k*(m k:ℝ) ≤
+      B*conductorNorm N (fun k => r k*m k)) : Summable (fun k => (w k/r k)^2) := by
   have hfin (N : ℕ) : ∑ k ∈ Icc 1 N, (w k/r k)^2 ≤ B^2 := by
     rcases Nat.eq_zero_or_pos N with rfl | hN
     · simpa using sq_nonneg B
-    apply finite_dual_test r w hr hw hB
-    intro m
-    obtain ⟨a,b,hp,ha,hb⟩ := anchored_price_test hN r w (hr 1).le hw m
-    have h' := h N a b
-    rw [ha,hb] at h'
-    exact hp.trans h'
+    exact finite_dual_test r w hr hw hB (h N hN)
   apply summable_of_sum_range_le (c := B^2+(w 0/r 0)^2) (fun _ => sq_nonneg _)
   intro N
   cases N with
@@ -155,6 +152,22 @@ theorem dual_price_summable_of_uniform_variation (r w : ℕ → ℝ) (hr : ∀ k
       omega
     rw [← sum_erase_add _ _ (mem_range.mpr (Nat.succ_pos n) : 0∈range (n+1)),hs]
     exact add_le_add_right (hfin n) _
+
+/-- A unit-cost joint estimate on all integer pairs forces the dual price
+to be square summable. The testing divisors have one lower conductor
+and signed integer upper multiplicities of finite support. -/
+theorem dual_price_summable_of_uniform_variation (r w : ℕ → ℝ) (hr : ∀ k, 0<r k)
+    (hw : ∀ k, 0≤w k) {C : ℝ} (hC : 0≤C) (h : ∀ (N : ℕ) (a b : ℕ → ℤ),
+      ∑ k ∈ Icc 1 N, w k* |twoSidedCoefficient N a b k| ≤
+        C*conductorNorm N (fun i => r i*upperDivisor N a i)*
+          conductorNorm N (fun i => r i*upperDivisor N b i)) :
+    Summable (fun k => (w k/r k)^2) := by
+  apply dual_price_summable_of_integer_tests r w hr hw (mul_nonneg hC (hr 1).le)
+  intro N hN m
+  obtain ⟨a,b,hp,ha,hb⟩ := anchored_price_test hN r w (hr 1).le hw m
+  have h' := h N a b
+  rw [ha,hb] at h'
+  exact hp.trans h'
 
 /-- For increasing individual weights with square-summable reciprocal,
 this scalar test exactly classifies the prices admitted by the full
@@ -178,6 +191,7 @@ theorem interleaved_weight_test_iff (r w : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm 
     exact ⟨_,add_nonneg (mul_nonneg (mul_nonneg (by norm_num) (Real.sqrt_nonneg _))
       (Real.sqrt_nonneg _)) (sq_nonneg _),interleaved_joint_uniform r w hr hm hw h₁ h₂⟩
 
+#print axioms dual_price_summable_of_integer_tests
 #print axioms dual_price_summable_of_uniform_variation
 #print axioms interleaved_weight_test_iff
 #print axioms conductor_one_profile

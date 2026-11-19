@@ -358,7 +358,7 @@ theorem cappedCoprimeSlice_square_split {ℓ p : ℕ} (hℓ : 0 < ℓ) (k Y M : 
     have hq : k/p/(ℓ^2*t) = k/(p*(ℓ^2*t)) := Nat.div_div_eq_div_mul ..
     by_cases h₁ : t = 1
     · subst h₁
-      simp only [g,mul_one,lt_irrefl,false_and,if_false,add_zero,eq_self_iff_true,if_true,↓reduceIte,hdiv]
+      simp only [g,mul_one,lt_irrefl,false_and,add_zero,↓reduceIte,hdiv]
     · have ht₂ : 1 < t := by omega
       simp only [g,h₁,ht₂,true_and,if_false,zero_add,hq]
   rw [hsplit,sum_divisible_Ioc hd,hmin,hdiv,hdiv,sum_congr rfl hterm,sum_add_distrib,sum_ite_eq',

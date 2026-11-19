@@ -701,7 +701,7 @@ private theorem tendsto_mul_setIntegral_boundary_octave {W₀ : ℝ} (hW : 0 < W
     change U * ∫ y in S, P y ≤ 8 * Real.pi * (I_inc / h)
     refine hcomb.trans_eq ?_
     dsimp only [h]
-    field_simp [hU.ne']
+    rw [div_inv_eq_mul]
     ring
 
 /-- **Vanishing of the continuous boundary Fourier tail.** For a threshold ground state `F`,
@@ -788,8 +788,9 @@ theorem criticalState_boundary_fourier_tail_zero {W₀ : ℝ} (hW : 0 < W₀)
     calc T * ∑' k : ℕ, ∫ y in S k, P y
         ≤ T * (ε / 4 / T * (1 - 1 / 2)⁻¹) := hm
       _ = ε / 2 := by
-          rw [show (1 - 1 / 2 : ℝ)⁻¹ = 2 by norm_num]
-          field_simp [hT0.ne']
+          rw [show (1 - 1 / 2 : ℝ)⁻¹ = 2 by norm_num,
+            show ε / 4 / T * 2 = ε / 2 * T⁻¹ by ring,
+            ← mul_assoc, mul_comm T (ε / 2), mul_assoc, mul_inv_cancel₀ hT0.ne', mul_one]
   rw [Real.dist_eq, sub_zero, abs_of_nonneg (mul_nonneg hT0.le
     (integral_nonneg fun _ => sq_nonneg _))]
   linarith

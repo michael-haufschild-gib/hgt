@@ -65,11 +65,10 @@ def opposingFrobeniusSection (q L : ℕ) (A P : ℤ[X]) : ℤ[X] :=
 
 /-- At an individual Weil root the opposing section implements complex
 conjugation and cancels the prescribed positive Frobenius lag. -/
-theorem opposingFrobeniusSection_eval {A P : ℤ[X]} {q : ℕ} {z : ℂ}
+theorem opposingFrobeniusSection_conjugate {A P : ℤ[X]} {q : ℕ} {z : ℂ}
     (hz : A.eval₂ (Int.castRingHom ℂ) z=0) (hq : z*conj z=(q:ℂ)) (L : ℕ) :
-    z^L*P.eval₂ (Int.castRingHom ℂ) z*
-      (opposingFrobeniusSection q L A P).eval₂ (Int.castRingHom ℂ) z =
-      (((A.coeff 0:ℤ):ℂ)^(L+P.natDegree))^2 * (‖P.eval₂ (Int.castRingHom ℂ) z‖:ℂ)^2 := by
+    z^L*(opposingFrobeniusSection q L A P).eval₂ (Int.castRingHom ℂ) z =
+      (((A.coeff 0:ℤ):ℂ)^(L+P.natDegree))^2 * conj (P.eval₂ (Int.castRingHom ℂ) z) := by
   change ev z A=0 at hz
   let m := P.natDegree
   let c : ℂ := A.coeff 0
@@ -88,14 +87,36 @@ theorem opposingFrobeniusSection_eval {A P : ℤ[X]} {q : ℕ} {z : ℂ}
     rw [← hq,mul_pow]
     rw [show z^m = z^j*z^(m-j) by rw [← pow_add]; congr 1; omega]
     ring
-  change z^L*ev z P*ev z (C (A.coeff 0)^(L+m)*(-A.divX)^(L+m)*_) = _
+  change z^L*ev z (C (A.coeff 0)^(L+m)*(-A.divX)^(L+m)*_) = _
   rw [map_mul,map_mul,map_pow,map_pow,ev_C,hv]
-  change z^L*ev z P*(c^(L+m)*s^(L+m)*(z^m*conj (ev z P))) = (c^(L+m))^2*_
-  calc _ = c^(L+m)*(z*s)^(L+m)*(ev z P*conj (ev z P)) := by rw [mul_pow,pow_add z]; ring
-       _ = _ := by
-         rw [hsc,Complex.mul_conj']
-         simp only [ev,coe_eval₂RingHom]
-         ring
+  change z^L*(c^(L+m)*s^(L+m)*(z^m*conj (ev z P))) = (c^(L+m))^2*conj (ev z P)
+  calc _ = c^(L+m)*(z*s)^(L+m)*conj (ev z P) := by rw [mul_pow,pow_add z]; ring
+       _ = _ := by rw [hsc,sq]
+
+/-- Mixed trace on one root after choosing its opposing integral section. -/
+theorem opposingFrobeniusSection_eval {A P : ℤ[X]} {q : ℕ} {z : ℂ}
+    (hz : A.eval₂ (Int.castRingHom ℂ) z=0) (hq : z*conj z=(q:ℂ)) (L : ℕ) :
+    z^L*P.eval₂ (Int.castRingHom ℂ) z*
+      (opposingFrobeniusSection q L A P).eval₂ (Int.castRingHom ℂ) z =
+      (((A.coeff 0:ℤ):ℂ)^(L+P.natDegree))^2 * (‖P.eval₂ (Int.castRingHom ℂ) z‖:ℂ)^2 := by
+  rw [mul_comm (z^L),mul_assoc,opposingFrobeniusSection_conjugate hz hq,
+    mul_left_comm (P.eval₂ (Int.castRingHom ℂ) z),Complex.mul_conj']
+
+/-- At one fixed lag two opposing operations recover the original section
+on the spectrum, with explicit integral factors and the expected pole
+degree q raised to that lag. -/
+theorem opposingFrobeniusSection_twice {A P : ℤ[X]} {q : ℕ} {z : ℂ}
+    (hz : A.eval₂ (Int.castRingHom ℂ) z=0) (hq : z*conj z=(q:ℂ)) (L : ℕ) :
+    let Q := opposingFrobeniusSection q L A P
+    (q:ℂ)^L*(opposingFrobeniusSection q L A Q).eval₂ (Int.castRingHom ℂ) z =
+      (((A.coeff 0:ℤ):ℂ)^(L+Q.natDegree))^2 *
+        (((A.coeff 0:ℤ):ℂ)^(L+P.natDegree))^2 * P.eval₂ (Int.castRingHom ℂ) z := by
+  intro Q
+  have h₁ := congrArg (conj : ℂ → ℂ) (opposingFrobeniusSection_conjugate (P := P) hz hq L)
+  simp only [map_mul,map_pow,map_intCast,starRingEnd_self_apply] at h₁
+  have h₂ := opposingFrobeniusSection_conjugate (P := Q) hz hq L
+  rw [← hq,mul_comm z,mul_pow,mul_assoc,h₂,mul_left_comm ((conj z)^L)]
+  rw [show (conj z)^L*conj (Q.eval₂ (Int.castRingHom ℂ) z)=_ from h₁,mul_assoc]
 
 /-- Pole-subtracted mixed trace in strictly positive extension degrees.
 Every entry of pointCount is the affine point cardinality plus infinity. -/
@@ -192,6 +213,8 @@ theorem hyperelliptic_opposing_nullspace (hF : ringChar F ≠ 2) {f : F[X]}
   simp
 
 #print axioms integralFrobeniusPolynomial_constant_ne_zero
+#print axioms opposingFrobeniusSection_conjugate
+#print axioms opposingFrobeniusSection_twice
 #print axioms opposingFrobeniusSection_eval
 #print axioms curveCountPair_trace_counts
 #print axioms hyperelliptic_opposing_square

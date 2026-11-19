@@ -17,12 +17,12 @@ open MeasureTheory ProbabilityTheory InformationTheory Set HTGeometry
 open scoped ENNReal ProbabilityTheory
 
 private def acceptance (t x : ℝ) : unitInterval :=
-  ⟨(1+Real.cos (t*x))/2,by constructor <;> linarith only
-    [Real.neg_one_le_cos (t*x),Real.cos_le_one (t*x)]⟩
+  ⟨(1+Real.cos (t*x))/2,by
+    constructor <;> linarith only [Real.neg_one_le_cos (t*x),Real.cos_le_one (t*x)]⟩
 
 private theorem acceptance_mass (p : unitInterval) :
     (unitInterval.toNNReal p : ℝ≥0∞) = ENNReal.ofReal (p:ℝ) :=
-  (ENNReal.ofReal_coe_nnreal (unitInterval.toNNReal p)).symm
+  ENNReal.ofReal_coe_nnreal.symm
 
 /-- The binary Fourier experiment accepts x with probability (1+cos(tx))/2. -/
 def cosineSensor (t : ℝ) : Kernel ℝ Bool where
@@ -32,7 +32,9 @@ def cosineSensor (t : ℝ) : Kernel ℝ Bool where
     apply Measure.measurable_of_measurable_coe
     intro s hs
     simp_rw [bernoulliMeasure_apply _ hs]
-    split_ifs <;> simp only [acceptance_mass,unitInterval.coe_symm_eq,acceptance] <;> fun_prop
+    split_ifs <;> first
+      | exact measurable_const
+      | simp only [acceptance_mass,unitInterval.coe_symm_eq,acceptance]; fun_prop
 
 instance (t : ℝ) : IsMarkovKernel (cosineSensor t) :=
   ⟨fun x => inferInstanceAs (IsProbabilityMeasure (bernoulliMeasure true false (acceptance t x)))⟩
@@ -50,9 +52,10 @@ private theorem integral_cosine (μ : Measure ℝ) [IsProbabilityMeasure μ] (t 
     (Filter.Eventually.of_forall fun x => by simp [f,Complex.norm_exp])
   rw [charFun_apply_real]
   change _ = (∫ x, f x ∂μ).re
-  rw [← integral_re hf]
-  apply integral_congr_ae
-  exact Filter.Eventually.of_forall fun x => by simp [f,← Complex.ofReal_mul,Complex.exp_mul_I]
+  calc
+    _ = ∫ x, (f x).re ∂μ := integral_congr_ae (Filter.Eventually.of_forall fun x => by
+      simp [f,← Complex.ofReal_mul,Complex.exp_mul_I])
+    _ = _ := integral_re hf
 
 /-- The binary output is determined by one characteristic-function value. -/
 theorem cosine_output (μ : Measure ℝ) [IsProbabilityMeasure μ] (t : ℝ) :
@@ -63,23 +66,26 @@ theorem cosine_output (μ : Measure ℝ) [IsProbabilityMeasure μ] (t : ℝ) :
         simpa only [Real.norm_eq_abs] using abs_le.mpr ⟨Real.neg_one_le_cos _,Real.cos_le_one _⟩
   have ha : Integrable (fun x => (1+Real.cos (t*x))/2) μ := ((integrable_const 1).add hi).div_const 2
   have hval (x : ℝ) : cosineSensor t x {true} = ENNReal.ofReal ((1+Real.cos (t*x))/2) := by
-    change bernoulliMeasure true false _ {true} = _
+    change bernoulliMeasure true false (acceptance t x) {true} = _
     rw [bernoulliMeasure_apply_of_mem_of_notMem _ (measurableSet_singleton _) (by simp) (by simp)]
-    exact (ENNReal.ofReal_coe_nnreal _).symm
+    exact acceptance_mass (acceptance t x)
   have htrue : (cosineSensor t ∘ₘ μ).real {true} = cosineProbability μ t := by
     rw [Measure.real,Measure.bind_apply (measurableSet_singleton _) (cosineSensor t).aemeasurable]
     simp_rw [hval]
-    rw [← ofReal_integral_eq_lintegral_ofReal ha (Filter.Eventually.of_forall fun x => (acceptance t x).2.1),
-      ENNReal.toReal_ofReal (integral_nonneg fun x => (acceptance t x).2.1),
+    have pos (x : ℝ) : 0 ≤ (1+Real.cos (t*x))/2 := (acceptance t x).2.1
+    have ipos : 0 ≤ ∫ x, (1+Real.cos (t*x))/2 ∂μ := integral_nonneg pos
+    rw [← ofReal_integral_eq_lintegral_ofReal ha (Filter.Eventually.of_forall pos),
+      ENNReal.toReal_ofReal ipos,
       integral_div,integral_add (integrable_const _) hi,integral_const,integral_cosine]
     simp [cosineProbability]
   apply Measure.ext_of_measureReal_singleton
   rintro (_|_)
   · have hc : ({false} : Set Bool) = {true}ᶜ := by ext b; cases b <;> simp
     rw [hc,measureReal_compl (measurableSet_singleton _),measureReal_compl (measurableSet_singleton _),htrue]
-    simp [bernoulliMeasure_real_apply]
+    simp only [probReal_univ]
+    simp
   · rw [htrue]
-    simp [bernoulliMeasure_real_apply]
+    simp
 
 /-- Binary relative entropy of any cosine observation bounds the full relative entropy. -/
 theorem cosine_information (μ ν : Measure ℝ) [IsProbabilityMeasure μ] [IsProbabilityMeasure ν] (t : ℝ) :
@@ -112,7 +118,10 @@ theorem mesh_entropy_gap (n : ℕ) :
   have hp : (p:ℝ) = 1/2 := by
     simp [p,U,cosineProbability,(mesh_characteristic n).1]
   have hq : (q:ℝ) = (1-a)/2 := by
-    simp [q,cosineProbability,(mesh_characteristic n).2,a]
+    change (1+(charFun (mixture n) (reciprocal n)).re)/2=(1-a)/2
+    rw [(mesh_characteristic n).2,Complex.neg_re,Complex.ofReal_re]
+    change (1+-a)/2=(1-a)/2
+    ring
   have hq0 : 0 < (q:ℝ) := by linarith only [hb,hq]
   have hq1 : (q:ℝ) < 1 := by linarith only [ha,hq]
   have hfin := klDiv_bernoulli_ne_top p q (by rw [hp]; norm_num) (by rw [hp]; norm_num) hq0 hq1
@@ -121,8 +130,9 @@ theorem mesh_entropy_gap (n : ℕ) :
   have hA : 0 < 1-a := sub_pos.mpr hb
   have hB : 0 < 1+a := add_pos zero_lt_one ha
   have hcost : (klDiv (bernoulliMeasure true false p) (bernoulliMeasure true false q)).toReal = aliasCost := by
-    rw [he,show (1:ℝ)-1/2 = 1/2 by norm_num,show (1/2:ℝ)/((1-a)/2) = (1-a)⁻¹ by field_simp; ring,
-      show (1/2:ℝ)/(1-(1-a)/2) = (1+a)⁻¹ by field_simp; ring,Real.log_inv,Real.log_inv]
+    rw [he,show (1:ℝ)-1/2 = 1/2 by norm_num,show (1/2:ℝ)/((1-a)/2) = (1-a)⁻¹ by field_simp,
+      show 1-(1-a)/2=(1+a)/2 by ring,show (1/2:ℝ)/((1+a)/2) = (1+a)⁻¹ by field_simp,
+      Real.log_inv,Real.log_inv]
     change _ = -Real.log (1-a^2)/2
     rw [show 1-a^2 = (1-a)*(1+a) by ring,Real.log_mul hA.ne' hB.ne']
     ring

@@ -1,10 +1,6 @@
-# Separate energies for the two-sided quotient variation and the real jet
+# Sharp conductor weights and exhaustion of interleaving supports
 
-Let $u,v$ be the actual signed conductor multiplicities, extended by zero. Give each the independent energy $E_r(u)=\sum_{n\ge1}r(n)^2u_n^2$, where $r>0$ is increasing and $\sum r(n)^{-2}<\infty$. For a nonnegative quotient price $w$ with $w(0)=0$, the proposed sharp criterion for a support-uniform bound on the weighted positive-cell variation plus the real jet $L^1$ norm by $C\sqrt{E_r(u)E_r(v)}$ is $\sum (w(n)/r(n))^2<\infty$.
-
-The directed positive cells are successive differences of $\sum_i u_i v_{ki}$. Cauchy–Schwarz along the multiples of $i$ and then over $i$ gives the sufficient arithmetic bound. The two monomials of an off-diagonal jet integrate to at most two. For necessity test $u=\delta_1$ and alternating signed $v_k$ away from one. Adjacent values add in absolute value, so duality sees the whole weighted square sum. For the power price $w(k)=k^b$, $r(k)=k^s$, $s>1/2$, the threshold is $s>b+1/2$. The exponential factor in the de la Vallée Poussin price makes the endpoint $s=3/2$ summable.
-
-At cutoff $N$, put $A_N^2=\sum_{k=1}^N r(k)^{-2}$ and $B_N^2=\sum_{k=1}^N(w(k)/r(k))^2$. For $s=0,1$ and $i\ge1$, $k\mapsto(k+s)i$ is injective and $r((k+s)i)\ge r(k)$. Each directed absolute term therefore costs at most $A_NB_N\sqrt{E_r(u)E_r(v)}$. The integrated half-jet costs at most $A_N^2\sqrt{E_r(u)E_r(v)}$. All four directed sums occur before the joint estimate $(4A_NB_N+A_N^2)\sqrt{E_r(u)E_r(v)}$. No constant depends on the ordering of the two supports.
+For positive nondecreasing conductor weights $r$ with $1/r\in\ell^2$, a cutoff-independent estimate for the weighted positive cells plus the integrated half-jet holds whenever $w/r\in\ell^2$. The remaining claims are necessity, the critical weight for the de la Vallée Poussin price, and convergence of the sections themselves. [Finite and uniform sufficient estimates](../3-formalized/csac-separate-conductor-energies-on-arbitrary-interleavings.md)
 
 For the converse, take the first conductor against $v_1=0$, $v_k=(-1)^k\lfloor M w(k)/r(k)^2\rfloor$ for $2\le k\le N$. Each $|C_k|$ from $k=2$ onwards dominates $|v_k|$. Divide by $M$ and let it grow with $N$ fixed. A support-independent product bound $C$ then implies $\sum_{k=2}^N(w(k)/r(k))^2\le C^2 r(1)^2$. This uses only integer graph multiplicities.
 

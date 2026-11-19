@@ -7,3 +7,5 @@ On fixed-ratio windows the prime row is bounded, and $D=(\log N)M+O_Q(M)$. The u
 The flat unit-spacing limit is $3\log 3-\log(4\pi)-\gamma$. On $(N,2N]$ the continuum prime overlap $\max(2/k-1,0)$ vanishes for every $k\ge2$. Inserting the two endpoint jets in Weil's flat-packet formula gives this constant. Restriction to that dyadic subwindow bounds the floor for any containing fixed-ratio window.
 
 In fact, if $E=3\log3-\log(4\pi)-\gamma$, the flat dyadic residual at spacing $d$ tends to $E/d+(1-1/d)(2\log2-1-\log(2\pi))+\log d$ after subtraction of $(1-1/d)\log N$. This follows from the exact dilation law and the Riemann sum for $\int_1^2\log x\,dx$. The general finite-scale lower estimate consequently has the optimal leading coefficient.
+
+Lean proves the exact dilation identity `full_comb_dilation`, the dyadic limit `flat_dyadic_comb_limit`, the spacing classification `arbitrarily_large_comb_floor_iff` and the residual limit `flat_dilated_comb_finite_part`. [Formal proof](../../../../formal/GaloisForLFunctions/SignedArithmeticCorrespondences/TheSpacingThresholdForDivergentCombFloors.lean)

@@ -48,7 +48,8 @@ theorem price_of_all_cofactor_multiples (n Q : ℕ) {r : ℕ} (hr : 0 < r) :
     (∑ v ∈ (Ioc 0 (4*n)).filter (fun v => r ∣ v),primitiveOrdinaryCofactorRow n Q v) =
       divisibleCofactorPrimePrice n Q r := by
   simp only [primitiveOrdinaryCofactorRow,sum_add_distrib,sum_sub_distrib,←mul_sum]
-  rw [endpoint_multiple_swap (by omega),endpoint_multiple_swap (by omega),endpoint_multiple_swap (by omega),
+  rw [endpoint_multiple_swap (T:=4*n) le_rfl,endpoint_multiple_swap (T:=3*n) (by omega : 3*n ≤ 4*n),
+    endpoint_multiple_swap (T:=2*n) (by omega : 2*n ≤ 4*n),
     mul_sum,←sum_sub_distrib,←sum_add_distrib]
   let f (p : ℕ) := Real.log p*midpointFloorWeight n (p*r)
   calc _ = ∑ p ∈ allowedPrimes n Q,f p := by
@@ -93,7 +94,7 @@ theorem primitive_prime_cofactor_projection {n : ℕ} (hn : 0 < n) (Q V : ℕ) :
       rw [reflected_coprime_indicator hn]
       by_cases he : e ∣ v
       · simp only [Nat.lcm_dvd_iff,he,true_and,if_true,mul_assoc,mul_sum,sum_mul]
-        exact sum_congr rfl fun d _ => by split_ifs <;> simp [a]
+        exact sum_congr rfl fun d _ => by split_ifs <;> simp [a,mul_assoc]
       · simp only [Nat.lcm_dvd_iff,he,false_and,if_false,mul_zero,sum_const_zero,zero_mul]
     simp_rw [inner]
     rw [←sum_mul,←sum_mul,←sum_filter]
@@ -177,22 +178,20 @@ private theorem remove_unit_and_small_cofactors {n Q V : ℕ} (hn : 0 < n) (hQ :
   change (∑ v ∈ Ioc 0 (4*n),f v)=(∑ v ∈ Ioc V (4*n),f v)-_
   linarith only [hs]
 
-/-- The surviving primitive prime rows recover the midpoint at every integer
-with one small-factor and proper-power allowance per Möbius divisor pair. -/
-theorem remaining_primitive_prime_factorial_bound {n Q V : ℕ} (hn : 0 < n) (hQ : Q ≤ 2*n)
+private theorem proper_power_mass_mono {a b : ℕ} (hab : a ≤ b) :
+    Chebyshev.psi a-Chebyshev.theta a ≤ Chebyshev.psi b-Chebyshev.theta b := by
+  simp only [Chebyshev.psi_sub_theta_eq_sum_not_prime,Nat.floor_natCast]
+  apply sum_le_sum_of_subset_of_nonneg _ (fun _ _ _ => vonMangoldt_nonneg)
+  exact filter_subset_filter _ (Ioc_subset_Ioc_right hab)
+
+/-- Each divisor e pays for proper powers only up to 4n/e. This moving
+endpoint permits separate ordinary-prime ranges to measure the same midpoint. -/
+theorem remaining_prime_price_divided_error {n Q V : ℕ} (hn : 0 < n) (hQ : Q ≤ 2*n)
     (hV : 1 ≤ V) (hcut : V ≤ 4*n) :
     |remainingPrimitivePrimePrice n Q V-primitiveProjectedFactorial n V-primeMidpointPrice n| ≤
-      V*(squarefreeDivisorMass n*(Chebyshev.psi Q+
-        (Chebyshev.psi (4*n:ℕ)-Chebyshev.theta (4*n:ℕ))+Real.log n)) := by
-  let B := Chebyshev.psi Q+(Chebyshev.psi (4*n:ℕ)-Chebyshev.theta (4*n:ℕ))+Real.log n
-  have power (r : ℕ) : Chebyshev.psi (4*n/r:ℕ)-Chebyshev.theta (4*n/r:ℕ) ≤
-      Chebyshev.psi (4*n:ℕ)-Chebyshev.theta (4*n:ℕ) := by
-    simp only [Chebyshev.psi_sub_theta_eq_sum_not_prime,Nat.floor_natCast]
-    apply sum_le_sum_of_subset_of_nonneg _ (fun _ _ _ => vonMangoldt_nonneg)
-    exact filter_subset_filter _ (Ioc_subset_Ioc_right (Nat.div_le_self _ _))
+      ∑ e ∈ Icc 1 V, squarefreeDivisorMass n*(Chebyshev.psi Q+
+        (Chebyshev.psi (4*n/e:ℕ)-Chebyshev.theta (4*n/e:ℕ))+Real.log n) := by
   let f (r : ℕ) := divisibleCofactorPrimePrice n Q r-divisibleCofactorFactorial n r
-  have hb {r : ℕ} (hr : 0 < r) : |f r| ≤ B :=
-    (divisible_cofactor_factorial_error hn hr Q).trans (by dsimp only [B]; linarith only [power r])
   have hproj := primitive_prime_cofactor_projection hn Q V
   rw [remove_unit_and_small_cofactors hn hQ hV hcut] at hproj
   have heq : remainingPrimitivePrimePrice n Q V-primitiveProjectedFactorial n V-primeMidpointPrice n =
@@ -205,18 +204,40 @@ theorem remaining_primitive_prime_factorial_bound {n Q V : ℕ} (hn : 0 < n) (hQ
       (sum_congr rfl fun d _ => (mul_sub (μ d:ℝ) _ _).symm)
   rw [heq]
   apply (abs_sum_le_sum_abs _ _).trans
-  calc _ ≤ ∑ _ ∈ Icc 1 V, squarefreeDivisorMass n*B := by
+  apply sum_le_sum
+  intro e he
+  have he0 := (mem_Icc.mp he).1
+  rw [abs_mul]
+  apply (mul_le_of_le_one_left (abs_nonneg _)
+    (by exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n:=e))).trans
+  apply (abs_sum_le_sum_abs _ _).trans
+  rw [squarefreeDivisorMass,sum_mul]
+  apply sum_le_sum
+  intro d hd
+  have hr := Nat.lcm_pos he0 (Nat.pos_of_mem_divisors hd)
+  have hdiv : 4*n/(e.lcm d) ≤ 4*n/e :=
+    Nat.div_le_div_left (Nat.le_of_dvd hr (Nat.dvd_lcm_left e d)) he0
+  rw [abs_mul]
+  apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
+  exact (divisible_cofactor_factorial_error hn hr Q).trans
+    (by linarith only [proper_power_mass_mono hdiv])
+
+#print axioms remaining_prime_price_divided_error
+
+/-- Coarse uniform bound for cutoffs at the square root. -/
+theorem remaining_primitive_prime_factorial_bound {n Q V : ℕ} (hn : 0 < n) (hQ : Q ≤ 2*n)
+    (hV : 1 ≤ V) (hcut : V ≤ 4*n) :
+    |remainingPrimitivePrimePrice n Q V-primitiveProjectedFactorial n V-primeMidpointPrice n| ≤
+      V*(squarefreeDivisorMass n*(Chebyshev.psi Q+
+        (Chebyshev.psi (4*n:ℕ)-Chebyshev.theta (4*n:ℕ))+Real.log n)) := by
+  apply (remaining_prime_price_divided_error hn hQ hV hcut).trans
+  let B := Chebyshev.psi Q+(Chebyshev.psi (4*n:ℕ)-Chebyshev.theta (4*n:ℕ))+Real.log n
+  calc _ ≤ ∑ _ ∈ Icc 1 V,squarefreeDivisorMass n*B := by
              apply sum_le_sum
-             intro e he
-             have he0 := (mem_Icc.mp he).1
-             rw [abs_mul]
-             apply (mul_le_of_le_one_left (abs_nonneg _) (by exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n:=e))).trans
-             apply (abs_sum_le_sum_abs _ _).trans
-             rw [squarefreeDivisorMass,sum_mul]
-             apply sum_le_sum
-             intro d hd
-             rw [abs_mul]
-             exact mul_le_mul_of_nonneg_left (hb (Nat.lcm_pos he0 (Nat.pos_of_mem_divisors hd))) (abs_nonneg _)
+             intro e _
+             apply mul_le_mul_of_nonneg_left _ (sum_nonneg fun _ _ => abs_nonneg _)
+             dsimp only [B]
+             linarith only [proper_power_mass_mono (Nat.div_le_self (4*n) e)]
        _ = _ := by simp [Nat.card_Icc,B]
 
 #print axioms remaining_primitive_prime_factorial_bound

@@ -1,4 +1,5 @@
-import GaloisForLFunctions.SignedArithmeticCorrespondences.SeparateConductorEnergiesOnInterleavingSupports
+import GaloisForLFunctions.SignedArithmeticCorrespondences.TheSharpWeightTestOnOneConductor
+import GaloisForLFunctions.ZeroConfigurationGeometry.VonMangoldtMomentDiagonalsVanish
 
 /-!
 # Abel summation on both conductor divisors
@@ -114,6 +115,124 @@ theorem interleaved_signed_increment_energy (N : ℕ) (a b : ℕ → ℤ) (r : �
          exact add_le_add hp ((div_le_div_of_nonneg_right hi (by norm_num)).trans hj)
        _ = _ := by ring
 
+/-- Power conductor weights agree with the usual real powers at every
+positive conductor and take value one at zero. -/
+def powerConductorWeight (s : ℝ) (k : ℕ) : ℝ := ((max k 1:ℕ):ℝ)^s
+
+/-- Any exponent above one half controls the signed finite part on all
+interleaved signed conductors. The bound uses the centered prime
+increments and is independent of the cutoff. -/
+theorem signed_finite_part_above_half {s : ℝ} (hs : 1/2<s) :
+    ∃ C : ℝ, 0≤C ∧ ∀ (N : ℕ) (a b : ℕ → ℤ), |interleavedFinitePart N a b| ≤
+      C*conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N a i)*
+        conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N b i) := by
+  let r := powerConductorWeight s
+  have hpos (k : ℕ) : 0 < ((max k 1:ℕ):ℝ) :=
+    Nat.cast_pos.mpr (Nat.zero_lt_one.trans_le (le_max_right _ _))
+  have hr (k : ℕ) : 0<r k := Real.rpow_pos_of_pos (hpos k) s
+  have hm : Monotone r := fun k l h => Real.rpow_le_rpow (hpos k).le
+    (Nat.cast_le.mpr (max_le_max_right 1 h)) (by linarith only [hs])
+  have hσ : 1<2*s := by linarith only [hs]
+  let t := fun n : ℕ => (n:ℝ)^(-(2*s))
+  have ht : Summable t := Real.summable_nat_rpow.mpr (by linarith only [hσ])
+  have hΛ : Summable (fun n : ℕ => (Λ n)^2*t n) :=
+    ZeroConfigurationGeometry.summable_vonMangoldt_sq_rpow hσ
+  have he (n : ℕ) (hn : 1≤n) : (1/r n)^2=t n := by
+    change (1/((max n 1:ℕ):ℝ)^s)^2=(n:ℝ)^(-(2*s))
+    rw [max_eq_left hn,one_div,inv_pow,Real.rpow_neg (Nat.cast_nonneg _),
+      ← Real.rpow_two ((n:ℝ)^s),← Real.rpow_mul (Nat.cast_nonneg _),mul_comm s 2]
+  have hA : Summable (fun k => (1/r k)^2) := by
+    apply (summable_nat_add_iff 1).mp
+    exact ((summable_nat_add_iff 1).mpr ht).congr fun n => (he _ (Nat.succ_pos n)).symm
+  have hB : Summable (fun k => (|Λ k-1| / r k)^2) := by
+    apply (summable_nat_add_iff 1).mp
+    have hmajor := (summable_nat_add_iff 1).mpr ((hΛ.add ht).mul_left 2)
+    apply Summable.of_nonneg_of_le (fun _ => sq_nonneg _) _ hmajor
+    intro n
+    let k := n+1
+    change (|Λ k-1| / r k)^2 ≤ 2*((Λ k)^2*t k+t k)
+    rw [show |Λ k-1| / r k=|Λ k-1| * (1/r k) by ring,mul_pow,sq_abs,he k (Nat.succ_pos _)]
+    have ht₀ : 0≤t k := Real.rpow_nonneg (Nat.cast_nonneg _) _
+    calc _ ≤ (2*((Λ k)^2+1))*t k := mul_le_mul_of_nonneg_right (by nlinarith only [sq_nonneg (Λ k+1)]) ht₀
+         _ = _ := by ring
+  let A := Real.sqrt (∑' k, (1/r k)^2)
+  let B := Real.sqrt (∑' k, (|Λ k-1| / r k)^2)
+  refine ⟨2*A*B+A^2,add_nonneg (mul_nonneg (mul_nonneg (by norm_num) (Real.sqrt_nonneg _))
+    (Real.sqrt_nonneg _)) (sq_nonneg _),fun N a b => ?_⟩
+  have h₁ : conductorNorm N (fun k => 1/r k) ≤ A :=
+    Real.sqrt_le_sqrt (hA.sum_le_tsum _ fun _ _ => sq_nonneg _)
+  have h₂ : conductorNorm N (fun k => |Λ k-1| / r k) ≤ B :=
+    Real.sqrt_le_sqrt (hB.sum_le_tsum _ fun _ _ => sq_nonneg _)
+  apply (interleaved_signed_increment_energy N a b r hr hm).trans
+  apply mul_le_mul_of_nonneg_right _ (Real.sqrt_nonneg _)
+  apply mul_le_mul_of_nonneg_right _ (Real.sqrt_nonneg _)
+  exact add_le_add (mul_le_mul (mul_le_mul_of_nonneg_left h₁ (by norm_num)) h₂
+    (Real.sqrt_nonneg _) (mul_nonneg (by norm_num) (Real.sqrt_nonneg _)))
+    (pow_le_pow_left₀ (Real.sqrt_nonneg _) h₁ 2)
+
+/-- A lower atom against nonnegative multiplicities at composite ratios
+with zero prime weight retains at least half their total mass. The
+off-diagonal real monomials have degree at least one at these ratios. -/
+theorem signed_test_on_zero_prime_ratios {N : ℕ} (hN : 0<N) (m : ℕ → ℕ)
+    (hs : ∀ n ∈ Icc 1 N, m n≠0 → 3≤n ∧ Λ n=0) :
+    ∃ a b : ℕ → ℤ, (∀ i ∈ Icc 1 N, upperDivisor N a i=if i=1 then 1 else 0) ∧
+      (∀ i ∈ Icc 1 N, upperDivisor N b i=(m i:ℤ)) ∧
+      (∑ i ∈ Icc 1 N, (m i:ℝ))/2 ≤ interleavedFinitePart N a b := by
+  obtain ⟨a,b,ha,hb,ht,_⟩ := conductor_one_profile hN (fun i => (m i:ℤ))
+  let S := Icc 1 N
+  let M := ∑ i ∈ S, (m i:ℝ)
+  have h₁ : 1∈S := mem_Icc.mpr ⟨le_rfl,hN⟩
+  have hm₁ : m 1=0 := by
+    by_contra h
+    have := (hs 1 h₁ h).1
+    omega
+  have hp : ∑ k ∈ S, twoSidedMultiple N k a b*(Λ k-1) = -M := by
+    dsimp only [M]
+    rw [← sum_neg_distrib]
+    refine sum_congr rfl fun k hk => ?_
+    have he := (twoSidedCoefficient_tail N k a b).symm.trans (ht k hk)
+    change twoSidedMultiple N k a b=_ at he
+    simp only [hm₁,Nat.cast_zero,Int.cast_zero,ite_self,add_zero,Int.cast_natCast] at he
+    rw [he]
+    by_cases h : m k=0
+    · simp [h]
+    · rw [(hs k hk h).2]; ring
+  have hJ : Continuous (mixedJetSection N a b) := by
+    change Continuous (fun x : ℝ => ∑ n ∈ S, ∑ i ∈ S.erase n,
+      (upperDivisor N a i:ℝ)*upperDivisor N b n*(x^(max i n-min i n-1)+x^(i+n-1)))
+    fun_prop
+  have hpoint (x : ℝ) (hx : x∈Set.Icc 0 1) : mixedJetSection N a b x ≤ (M*2)*x := by
+    change (∑ n ∈ S, ∑ i ∈ S.erase n, (upperDivisor N a i:ℝ)*upperDivisor N b n*
+      (x^(max i n-min i n-1)+x^(i+n-1))) ≤ _
+    simp only [M,sum_mul]
+    refine sum_le_sum fun n hn => ?_
+    rw [hb n hn,Int.cast_natCast]
+    by_cases h : m n=0
+    · simp [h]
+    have hn₃ := (hs n hn h).1
+    have hm : 1∈S.erase n := mem_erase.mpr ⟨by omega,h₁⟩
+    rw [sum_eq_single_of_mem 1 hm]
+    · simp only [ha 1 h₁,if_pos rfl,Int.cast_one,one_mul]
+      have hpow (j : ℕ) (hj : 1≤j) : x^j≤x := by
+        simpa only [pow_one] using pow_le_pow_of_le_one hx.1 hx.2 hj
+      have h := add_le_add (hpow (max 1 n-min 1 n-1) (by omega))
+        (hpow (1+n-1) (by omega))
+      exact (mul_le_mul_of_nonneg_left h (Nat.cast_nonneg _)).trans_eq (by ring)
+    · intro i hi he
+      simp [ha i (mem_of_mem_erase hi),he]
+  have hi := intervalIntegral.integral_mono_on (μ := volume) zero_le_one
+    (hJ.intervalIntegrable 0 1)
+    ((continuous_const.mul continuous_id).intervalIntegrable 0 1) hpoint
+  change (∫ x in (0:ℝ)..1, mixedJetSection N a b x) ≤ ∫ x in (0:ℝ)..1, (M*2)*x at hi
+  rw [intervalIntegral.integral_const_mul,integral_id] at hi
+  norm_num at hi
+  refine ⟨a,b,ha,hb,?_⟩
+  rw [interleaved_centered_prime_sum,hp,neg_neg]
+  change M/2≤_
+  linarith only [hi]
+
+#print axioms signed_test_on_zero_prime_ratios
+#print axioms signed_finite_part_above_half
 #print axioms interleaved_signed_increment_energy
 #print axioms multiple_increment_price
 #print axioms quotient_price_by_increments

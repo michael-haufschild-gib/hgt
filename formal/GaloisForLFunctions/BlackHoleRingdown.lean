@@ -86,6 +86,9 @@ import GaloisForLFunctions.BlackHoleRingdown.ThePositiveEulerTwinsArePassive
 import GaloisForLFunctions.BlackHoleRingdown.CuspEscapeAndMixedPulseInterference
 import GaloisForLFunctions.BlackHoleRingdown.PassiveTwinEchoAndFiniteTimeDistinction
 import GaloisForLFunctions.BlackHoleRingdown.CompleteResolutionOfTheCuspEscapeQuestion
+import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.PolarizationAndPositivity
+import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.RegularityAndReceiverEquivalence
+import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.FixedStepContractionFalsification
 
 /-!
 # Black-hole ringdown and the zeros of zeta

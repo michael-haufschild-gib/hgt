@@ -2259,8 +2259,7 @@ theorem clippedCofactorSliceOp_theta_of_two_le {q : ℕ} (hq : 2 ≤ q) :
               2 * (3 * u * Real.log (3 * u) - 3 * u) +
               (2 * u * Real.log (2 * u) - 2 * u))) := by ring
     rw [hadd_sub]
-    have htri := abs_add_le _ _
-    linarith only [htri, hlog_qd, hst_comb, hsq1]
+    exact (abs_add_le _ _).trans (by linarith only [hlog_qd, hst_comb, hsq1])
   have htri := abs_add_le (clippedCofactorSliceOp n P q Chebyshev.theta - Tq)
     (Tq - (reflectedDensity / (q : ℝ)) * (n.totient : ℝ))
   rw [sub_add_sub_cancel] at htri
