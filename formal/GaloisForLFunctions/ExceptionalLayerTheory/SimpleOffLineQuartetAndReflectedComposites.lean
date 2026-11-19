@@ -5,6 +5,9 @@ import GaloisForLFunctions.WorldsOfTheZeroConfiguration.EveryFiniteLayerIsRealiz
 import GaloisForLFunctions.TransHorizonIncidenceMechanics.TheLogTwistedOscillatingSmoothPowerIsPaidExactlyAtTheDoubleZerosOfZeta
 import GaloisForLFunctions.RHTower.BaezDuarteBurnolMultiplicityAllZeros
 import GaloisForLFunctions.RHTower.WeilConeDilationRealnessRigidity
+import GaloisForLFunctions.RHTower.QuasiRHQuotientHeadAndFiniteContactAbscissaLaw
+import GaloisForLFunctions.RHTower.ZetaZeroFreeRegionUnrestricted
+import GaloisForLFunctions.ZeroForcingCalculus.EulerDilationAndRootCoincidenceExclusion
 
 /-!
 # The Simple Off-Line Quartet Stratum and Reflected-Composite Factorization
@@ -35,14 +38,16 @@ and second-order multiplicity observables:
 
 3. **Rejection of non-`ζ`-zero radius imitators vs. intrinsic Beurling/Euler-twin firewall**
    (`coprimeZeroOneSet_imitator_rejected_by_reflectedComposites`,
-   `unconditional_sEdit_rejected_by_reflectedComposites_on_zeroFreeZone`,
+   `unconditional_sEdit_rejected_above_midpoint_of_zetaZeroAbscissa`,
+   `unconditional_sEdit_rejected_on_fifteen_sixteenths_strip`,
    `rh_sEdit_imitates_radius_but_violates_reflectedComposites`):
    Every `{0, 1}`-coprime integer-set imitator (`1/2 < β < 1`, `ζ(β + iγ) ≠ 0`), every `{0, 1, 2}`
-   prime `sEdit` on `7/8 ≤ β < 1` unconditionally, and every `sEdit` on `3/4 < β < 1` under `RH`
-   violates the ordinary-integer reflected-composite identity at scale `Ω(n^β)`. Meanwhile,
-   first-order reflected-composite transmission and `q`-divisible cofactor slicing are satisfied at
-   every genuine zero `ζ(ρ₀) = 0`, and intrinsic Beurling composites (`β ∈ (1/2, 2/3)`) and
-   positive Euler twins realize simple off-line pairs/quartets on their respective structural sides.
+   prime `sEdit` on `(1 + zetaZeroAbscissa) / 2 < β < 1` unconditionally (in particular across
+   `15/16 ≤ β < 1`), and every `sEdit` on `3/4 < β < 1` under `RH` violates the ordinary-integer
+   reflected-composite identity at scale `Ω(n^β)`. Meanwhile, first-order reflected-composite
+   transmission and `q`-divisible cofactor slicing are satisfied at every genuine zero `ζ(ρ₀) = 0`,
+   and intrinsic Beurling composites (`β ∈ (1/2, 2/3)`) and positive Euler twins realize simple
+   off-line pairs/quartets on their respective structural sides.
 
 4. **Second-order multiplicity separation, global equivalences, and `Θ`-non-advancement**
    (`singleQuartet_simple_iff_logTwisted_unbounded`, `noSimpleSingleOffLineQuartet_tfae`,

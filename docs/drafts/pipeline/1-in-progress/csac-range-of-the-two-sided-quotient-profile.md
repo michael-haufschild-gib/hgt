@@ -1,0 +1,3 @@
+# Integral range of the two-sided quotient profile
+
+For arbitrary signed endpoint jumps on $[1,N]$, determine all simultaneous integral relations between the positive quotient cells in the full mixed Weil form. Their cumulative sum from $k$ onwards counts both directed incidences $i\mapsto ki$ on the two underlying divisors. At $k=1$ the total is twice their integral inner product. Pairing with the fixed divisor at conductor one realizes every integral profile whose total is even. The distinction between mixed intersections and self-intersections matters for recovering positivity from these relations.

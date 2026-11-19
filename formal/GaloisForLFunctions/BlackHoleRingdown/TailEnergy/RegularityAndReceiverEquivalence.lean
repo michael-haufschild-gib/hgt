@@ -807,7 +807,7 @@ theorem zeroFreeStrip_tailEnergy_equivalences {δ : ℝ} (hδ0 : 0 < δ) (hδ : 
           congr 1; push_cast; ring
         rw [hexp4]; ring
       exact hmul.trans hrhs.le
-    have hpt := le_of_pow_four_le (norm_nonneg _) (by positivity) (hreg.trans hprod)
+    have hpt := le_of_pow_four_le (by positivity) (hreg.trans hprod)
     exact hpt.trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by nlinarith)) hM_nn)
   have h31 : P_cusp → P_strip := by
     intro hcusp ρ hρ hρ0

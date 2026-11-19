@@ -54,7 +54,7 @@ private theorem full_rough_reading {y : ℕ} (hy : 0<y) (X : ℕ) :
     simp only [roughCofactorReading,reading_eq]
     apply sum_subset ((filter_subset ..).trans (Icc_subset_Icc_right (Nat.div_le_self ..)))
     intro m hm out
-    by_cases past : X/y<m
+    by_cases past : X/y < m
     · have small : X/m<y := (Nat.div_lt_iff_lt_mul (mem_Icc.mp hm).1).mpr (by
         simpa only [Nat.mul_comm] using (Nat.div_lt_iff_lt_mul hy).mp past)
       rw [roughPrimePowerReading_eq_zero small.le,mul_zero]

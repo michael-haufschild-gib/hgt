@@ -72,7 +72,7 @@ theorem proper_powers_as_smaller_frozen_rows {y : ℕ} (hy : 0<y) (X : ℕ) :
     apply sum_subset ((filter_subset ..).trans (Icc_subset_Icc_right (Nat.div_le_self ..)))
     intro m hm outside
     have mp := (mem_Icc.mp hm).1
-    by_cases past : X/y<m
+    by_cases past : X/y < m
     · have product := (Nat.div_lt_iff_lt_mul hy).mp past
       have bound : X/m<y := (Nat.div_lt_iff_lt_mul mp).mpr (by simpa only [Nat.mul_comm] using product)
       apply sum_eq_zero

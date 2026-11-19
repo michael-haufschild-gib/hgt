@@ -1446,10 +1446,357 @@ private theorem criticalState_criticalLine_posTail_asymptotic {W₀ : ℝ} (hW :
       linarith
     have hmin_ε : min (ε / 4) (L / 4) ≤ ε / 4 := min_le_left _ _
     have hmin_L : min (ε / 4) (L / 4) ≤ L / 4 := min_le_right _ _
-    have hδL : δ₀ * (L + ε) ≤ ε / 4 := by
-      have hδ_le : δ₀ ≤ ε / (8 * (L + 1)) := min_le_right _ _
-      -- Wait: if ε is large (say ε > 4 L), bound using `min (ε / 4) (L / 4) ≤ L / 4`!
-      sorry
-    all_goals sorry
-  all_goals sorry
+    have hη_min : η * min (ε / 4) (L / 4) ≤ ε / 32 := by
+      have hm := mul_le_mul_of_nonneg_left hmin_L hη0.le
+      linarith [hηL]
+    have hη_ε : η * ε ≤ ε / 4 := mul_le_mul_of_nonneg_right hη4 hε.le
+    have hδ_eq : δ₀ = η := rfl
+    rw [hδ_eq] at hstep2 hpos1
+    have hstrict : (1 - η / 4) * (T * posTail T) < (1 - η / 4) * (L + ε) := by
+      nlinarith only [hstep2, hmin_ε, hηL, hη_min, hη_ε, hε]
+    exact lt_of_mul_lt_mul_left hstrict hpos1.le
+  rw [Real.dist_eq, abs_lt]
+  exact ⟨by linarith, by linarith⟩
+
+/-- **Exact high-frequency tail of critical-line zero samples under `FiniteOffLine`.** For a
+threshold ground state `F`, `T · ∑_{|γ_q| > T} ‖L F(iγ_q)‖² → 8 a M / π` as `T → +∞`. -/
+theorem criticalState_criticalLine_tail_asymptotic {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) (hf : BacklundConverse.FiniteOffLine) :
+    Tendsto (fun T : ℝ => T * ∑' q : onLineCopies,
+      if T < |(centredZero q).im| then zeroValueMass F q else 0)
+      atTop (𝓝 (8 * criticalAliasCoefficient W₀ *
+        (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) / Real.pi)) := by
+  have hd := criticalHalfLineEnergyDomain_of_groundState hF
+  have hm_sum : Summable (fun q : onLineCopies => zeroValueMass F q) :=
+    (domain_zeroParseval_of_finiteOffLine hd hf).1
+  have hm_nn : ∀ q : onLineCopies, 0 ≤ zeroValueMass F q := fun q => zeroValueMass_nonneg F q
+  have hpos := (criticalState_criticalLine_posTail_asymptotic hW ht hF hf).const_mul 2
+  rw [show 2 * (4 * criticalAliasCoefficient W₀ *
+      (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) / Real.pi) =
+    8 * criticalAliasCoefficient W₀ *
+      (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) / Real.pi by ring] at hpos
+  refine hpos.congr' ?_
+  filter_upwards [eventually_ge_atTop (0 : ℝ)] with T hT
+  let fpos : onLineCopies → ℝ := fun q => if T < (centredZero q).im then zeroValueMass F q else 0
+  let fneg : onLineCopies → ℝ := fun q => if (centredZero q).im < -T then zeroValueMass F q else 0
+  have hs_pos : Summable fpos := hm_sum.of_nonneg_of_le
+    (fun q => by dsimp only [fpos]; split_ifs <;> simp [hm_nn q])
+    (fun q => by dsimp only [fpos]; split_ifs; · exact le_rfl; · exact hm_nn q)
+  have hs_neg : Summable fneg := hm_sum.of_nonneg_of_le
+    (fun q => by dsimp only [fneg]; split_ifs <;> simp [hm_nn q])
+    (fun q => by dsimp only [fneg]; split_ifs; · exact le_rfl; · exact hm_nn q)
+  have hneg_eq : (∑' q : onLineCopies, fneg q) = ∑' q : onLineCopies, fpos q := by
+    rw [← reflectOnLine.tsum_eq fneg]
+    congr 1; funext q
+    dsimp only [fneg, fpos]
+    rw [im_centredZero_reflectOnLine, zeroValueMass_reflectOnLine]
+    have hiff : (-(centredZero q).im < -T) ↔ (T < (centredZero q).im) :=
+      ⟨fun h => by linarith, fun h => by linarith⟩
+    simp only [hiff]
+  have htot_eq : (∑' q : onLineCopies, if T < |(centredZero q).im| then zeroValueMass F q else 0) =
+      (∑' q : onLineCopies, fpos q) + ∑' q : onLineCopies, fneg q := by
+    rw [← Summable.tsum_add hs_pos hs_neg]
+    congr 1; funext q
+    dsimp only [fpos, fneg]
+    rcases le_total 0 (centredZero q).im with h0 | h0
+    · rw [abs_of_nonneg h0]
+      have hneg_false : ¬ (centredZero q).im < -T := by linarith
+      rw [if_neg hneg_false, add_zero]
+    · rw [abs_of_nonpos h0]
+      have hpos_false : ¬ T < (centredZero q).im := by linarith
+      rw [if_neg hpos_false, zero_add]
+      have hiff : (T < -(centredZero q).im) ↔ ((centredZero q).im < -T) :=
+        ⟨fun h => by linarith, fun h => by linarith⟩
+      simp only [hiff]
+  rw [htot_eq, hneg_eq]
+  ring
+
+private theorem posFirstMoment_add_mul_posTail_eq_integral {m γ : onLineCopies → ℝ}
+    (hm_sum : Summable m) (hm_nn : ∀ q, 0 ≤ m q) {T : ℝ} (hT : 0 ≤ T) :
+    (∑' q : onLineCopies, if 0 < γ q ∧ γ q ≤ T then γ q * m q else 0) +
+      T * (∑' q : onLineCopies, if T < γ q then m q else 0) =
+      ∫ u in Icc 0 T, ∑' q : onLineCopies, if u < γ q then m q else 0 := by
+  let g : onLineCopies → ℝ → ℝ := fun q u => if u < γ q then m q else 0
+  have hg_meas : ∀ q, Measurable (g q) := fun q =>
+    Measurable.ite (measurableSet_lt measurable_id measurable_const)
+      measurable_const measurable_const
+  have hlin_le : ∀ q, (∫⁻ u in Icc 0 T, ‖g q u‖₊) ≤ ENNReal.ofReal (T * m q) := fun q => by
+    have hpt : ∀ u : ℝ, ‖g q u‖₊ ≤ ENNReal.ofReal (m q) := fun u => by
+      dsimp only [g]
+      split_ifs
+      · rw [Real.nnnorm_of_nonneg (hm_nn q), ENNReal.ofReal_eq_coe_nnreal (hm_nn q)]
+      · simp
+    calc (∫⁻ u in Icc 0 T, ‖g q u‖₊)
+        ≤ ∫⁻ _ in Icc 0 T, ENNReal.ofReal (m q) := lintegral_mono hpt
+      _ = ENNReal.ofReal (m q) * volume (Icc 0 T) := setLIntegral_const (Icc 0 T) _
+      _ = ENNReal.ofReal (T * m q) := by
+          rw [Real.volume_Icc, sub_zero, ← ENNReal.ofReal_mul (hm_nn q), mul_comm]
+          exact congrArg (fun x => ENNReal.ofReal (m q) * x) rfl |>.trans
+            (by rw [← ENNReal.ofReal_mul (hm_nn q), mul_comm] :
+              ENNReal.ofReal (m q) * ENNReal.ofReal T = ENNReal.ofReal (T * m q))
+  have htsum_int : (∫ u in Icc 0 T, ∑' q : onLineCopies, g q u) =
+      ∑' q : onLineCopies, ∫ u in Icc 0 T, g q u := by
+    refine integral_tsum (fun q => (hg_meas q).aestronglyMeasurable) ?_
+    refine ne_top_of_le_ne_top ?_ (ENNReal.tsum_le_tsum hlin_le)
+    rw [← ENNReal.ofReal_tsum_of_nonneg (fun q => mul_nonneg hT (hm_nn q)) (hm_sum.mul_left T)]
+    exact ENNReal.ofReal_ne_top
+  rw [htsum_int]
+  have hterm : ∀ q : onLineCopies,
+      (∫ u in Icc 0 T, g q u) =
+        (if 0 < γ q ∧ γ q ≤ T then γ q * m q else 0) + (if T < γ q then T * m q else 0) := fun q => by
+    rcases le_or_gt (γ q) 0 with hle0 | hgt0
+    · have hzero : ∀ u ∈ Icc 0 T, g q u = 0 := fun u hu => by
+        dsimp only [g]; rw [if_neg]; linarith [hu.1]
+      rw [setIntegral_eq_zero_of_forall_eq_zero hzero]
+      split_ifs with h1 h2 <;> linarith [h1.1]
+    · rcases le_or_gt (γ q) T with hleT | hgtT
+      · have heq : (Icc 0 T).indicator (g q) = (Ico 0 (γ q)).indicator (fun _ => m q) := by
+          funext u
+          unfold indicator g
+          by_cases hu : 0 ≤ u ∧ u < γ q
+          · rw [if_pos ⟨hu.1, hu.2.le.trans hleT⟩, if_pos hu.2, if_pos hu]
+          · rw [if_neg hu]
+            by_cases hI : u ∈ Icc 0 T
+            · rw [if_pos hI, if_neg (fun hlt => hu ⟨hI.1, hlt⟩)]
+            · rw [if_neg hI]
+        rw [← integral_indicator measurableSet_Icc, heq, integral_indicator measurableSet_Ico,
+          setIntegral_const, Real.volume_real_Ico_of_le hgt0.le, sub_zero, smul_eq_mul,
+          if_pos ⟨hgt0, hleT⟩, if_neg (not_lt.mpr hleT), add_zero]
+      · have heq : ∀ u ∈ Ico 0 T, g q u = m q := fun u hu => by
+          dsimp only [g]; exact if_pos (lt_trans hu.2 hgtT)
+        rw [← integral_Ico_eq_integral_Icc, setIntegral_congr_fun measurableSet_Ico heq,
+          setIntegral_const, Real.volume_real_Ico_of_le hT, sub_zero, smul_eq_mul,
+          if_neg (fun h => not_lt.mpr h.2 hgtT), if_pos hgtT, zero_add]
+  have hs1 : Summable fun q : onLineCopies => if 0 < γ q ∧ γ q ≤ T then γ q * m q else 0 :=
+    (hm_sum.mul_left T).of_nonneg_of_le
+      (fun q => by split_ifs with h; · exact mul_nonneg h.1.le (hm_nn q); · exact le_rfl)
+      (fun q => by
+        split_ifs with h
+        · exact mul_le_mul_of_nonneg_right h.2 (hm_nn q)
+        · exact mul_nonneg hT (hm_nn q))
+  have hs2 : Summable fun q : onLineCopies => if T < γ q then T * m q else 0 :=
+    (hm_sum.mul_left T).of_nonneg_of_le
+      (fun q => by split_ifs; · exact mul_nonneg hT (hm_nn q); · exact le_rfl)
+      (fun q => by split_ifs; · exact le_rfl; · exact mul_nonneg hT (hm_nn q))
+  simp_rw [hterm]
+  rw [Summable.tsum_add hs1 hs2, ← tsum_mul_left]
+  congr 2; funext q; split_ifs <;> ring
+
+/-- **Exact logarithmic asymptotic of the critical-line first ordinate moment under `FiniteOffLine`.**
+For a threshold ground state `F`,
+`(log T)⁻¹ · ∑_{|γ_q| ≤ T} |γ_q| ‖L F(iγ_q)‖² → 8 a M / π` as `T → +∞`, sharpening
+`criticalState_criticalLine_firstMoment_not_summable` to its exact universal slope. -/
+theorem criticalState_criticalLine_firstMoment_asymptotic {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
+    {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) (hf : BacklundConverse.FiniteOffLine) :
+    Tendsto (fun T : ℝ => (Real.log T)⁻¹ * ∑' q : onLineCopies,
+      if |(centredZero q).im| ≤ T then |(centredZero q).im| * zeroValueMass F q else 0)
+      atTop (𝓝 (8 * criticalAliasCoefficient W₀ *
+        (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) / Real.pi)) := by
+  have hd := criticalHalfLineEnergyDomain_of_groundState hF
+  let m := fun q : onLineCopies => zeroValueMass F q
+  let γ := fun q : onLineCopies => (centredZero q).im
+  have hm_sum : Summable m := (domain_zeroParseval_of_finiteOffLine hd hf).1
+  have hm_nn : ∀ q, 0 ≤ m q := fun q => zeroValueMass_nonneg F q
+  let L := 4 * criticalAliasCoefficient W₀ *
+    (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) / Real.pi
+  let posTail : ℝ → ℝ := fun u => ∑' q : onLineCopies, if u < γ q then m q else 0
+  have hposTail_anti : Antitone posTail := fun u₁ u₂ h12 => by
+    refine Summable.tsum_le_tsum (fun q => ?_)
+      (hm_sum.of_nonneg_of_le (fun q => by split_ifs <;> simp [hm_nn q])
+        fun q => by split_ifs; · exact le_rfl; · exact hm_nn q)
+      (hm_sum.of_nonneg_of_le (fun q => by split_ifs <;> simp [hm_nn q])
+        fun q => by split_ifs; · exact le_rfl; · exact hm_nn q)
+    split_ifs with h2 h1
+    · exact le_rfl
+    · exfalso; linarith
+    · exact hm_nn q
+    · exact le_rfl
+  have hposTail_meas : Measurable posTail := hposTail_anti.measurable
+  have hposTail_nn : ∀ u, 0 ≤ posTail u := fun u =>
+    tsum_nonneg fun q => by split_ifs <;> simp [hm_nn q]
+  have hposTail_le : ∀ u, posTail u ≤ ∑' q, m q := fun u =>
+    Summable.tsum_le_tsum (fun q => by split_ifs; · exact le_rfl; · exact hm_nn q)
+      (hm_sum.of_nonneg_of_le (fun q => by split_ifs <;> simp [hm_nn q])
+        fun q => by split_ifs; · exact le_rfl; · exact hm_nn q)
+      hm_sum
+  have hposTail_int : ∀ A B : ℝ, IntegrableOn posTail (Icc A B) := fun A B => by
+    refine (continuousOn_const (c := ∑' q, m q)).integrableOn_Icc.mono'
+      hposTail_meas.aestronglyMeasurable.restrict ?_
+    filter_upwards [ae_restrict_mem measurableSet_Icc] with u _
+    rw [Real.norm_of_nonneg (hposTail_nn u)]
+    exact hposTail_le u
+  have htail_lim := criticalState_criticalLine_posTail_asymptotic hW ht hF hf
+  -- Integral of `posTail` divided by `log T` tends to `L`
+  have hint_lim : Tendsto (fun T : ℝ => (Real.log T)⁻¹ * ∫ u in Icc 0 T, posTail u)
+      atTop (𝓝 L) := by
+    rw [Metric.tendsto_atTop]
+    intro ε hε
+    obtain ⟨U₁, hU₁⟩ := Metric.tendsto_atTop.mp htail_lim (ε / 4) (by positivity)
+    set U₀ := max U₁ 2
+    have hU₀_pos : 0 < U₀ := by dsimp only [U₀]; positivity
+    have hU₀_ge1 : 1 ≤ U₀ := by dsimp only [U₀]; linarith [le_max_right U₁ 2]
+    set C₀ : ℝ := U₀ * (∑' q, m q) + (|L| + ε) * |Real.log U₀| + 1
+    have hC₀_pos : 0 < C₀ := by
+      have h1 : 0 ≤ U₀ * (∑' q, m q) := mul_nonneg hU₀_pos.le (tsum_nonneg hm_nn)
+      have h2 : 0 ≤ (|L| + ε) * |Real.log U₀| := by positivity
+      linarith
+    refine ⟨max (U₀ + 1) (Real.exp (4 * C₀ / ε)), fun T hT => ?_⟩
+    have hTU : U₀ + 1 ≤ T := (le_max_left _ _).trans hT
+    have hTexp : Real.exp (4 * C₀ / ε) ≤ T := (le_max_right _ _).trans hT
+    have hT_pos : 0 < T := by linarith
+    have hlogT_big : 4 * C₀ / ε ≤ Real.log T := (Real.le_log_iff_exp_le hT_pos).mpr hTexp
+    have hlogT_pos : 0 < Real.log T := lt_of_lt_of_le (by positivity) hlogT_big
+    have hsplit : (∫ u in Icc 0 T, posTail u) =
+        (∫ u in Icc 0 U₀, posTail u) + ∫ u in Ioc U₀ T, posTail u := by
+      rw [← integral_Ioc_eq_integral_Icc, ← integral_Ioc_eq_integral_Icc,
+        ← setIntegral_union (Ioc_disjoint_Ioc_of_le le_rfl) measurableSet_Ioc
+          (hposTail_int 0 U₀).mono_set Ioc_subset_Icc_self
+          ((hposTail_int U₀ T).mono_set Ioc_subset_Icc_self),
+        Ioc_union_Ioc_eq_Ioc hU₀_pos.le (by linarith)]
+    have hhead_le : ∫ u in Icc 0 U₀, posTail u ≤ U₀ * (∑' q, m q) := by
+      have hm1 := setIntegral_mono_on (hposTail_int 0 U₀)
+        (continuousOn_const (c := ∑' q, m q)).integrableOn_Icc measurableSet_Icc
+        fun u _ => hposTail_le u
+      rwa [setIntegral_const, Real.volume_real_Icc_of_le hU₀_pos.le, sub_zero, smul_eq_mul] at hm1
+    have hinv_int : IntegrableOn (fun u : ℝ => u⁻¹) (Ioc U₀ T) :=
+      (intervalIntegral.intervalIntegrable_inv (fun u hu => by
+        rcases Set.mem_uIcc.mp hu with h | h <;> linarith [h.1]) |>.1)
+    have hlog_int : (∫ u in Ioc U₀ T, u⁻¹) = Real.log T - Real.log U₀ := by
+      rw [← intervalIntegral.integral_of_le (by linarith : U₀ ≤ T),
+        integral_inv_of_pos hU₀_pos hT_pos, Real.log_div hT_pos.ne' hU₀_pos.ne']
+    have hpt_hi : ∀ u ∈ Ioc U₀ T, posTail u ≤ (L + ε / 4) * u⁻¹ := fun u hu => by
+      have hu0 : 0 < u := lt_trans hU₀_pos hu.1
+      have hd1 := hU₁ u ((le_max_left U₁ 2).trans hu.1.le)
+      rw [Real.dist_eq] at hd1
+      have hub : u * posTail u ≤ L + ε / 4 := by linarith [(abs_lt.mp hd1).2]
+      exact (le_div_iff₀' hu0).mpr hub |>.trans_eq (div_eq_mul_inv _ _)
+    have hpt_lo : ∀ u ∈ Ioc U₀ T, (L - ε / 4) * u⁻¹ ≤ posTail u := fun u hu => by
+      have hu0 : 0 < u := lt_trans hU₀_pos hu.1
+      have hd1 := hU₁ u ((le_max_left U₁ 2).trans hu.1.le)
+      rw [Real.dist_eq] at hd1
+      have hlb : L - ε / 4 ≤ u * posTail u := by linarith [(abs_lt.mp hd1).1]
+      exact (div_eq_mul_inv (L - ε / 4) u).symm.le.trans ((div_le_iff₀' hu0).mpr hlb)
+    have hint_hi := setIntegral_mono_on ((hposTail_int U₀ T).mono_set Ioc_subset_Icc_self)
+      (hinv_int.const_mul (L + ε / 4)) measurableSet_Ioc hpt_hi
+    have hint_lo := setIntegral_mono_on (hinv_int.const_mul (L - ε / 4))
+      ((hposTail_int U₀ T).mono_set Ioc_subset_Icc_self) measurableSet_Ioc hpt_lo
+    rw [integral_const_mul, hlog_int] at hint_hi hint_lo
+    have hhead_nn : 0 ≤ ∫ u in Icc 0 U₀, posTail u :=
+      setIntegral_nonneg measurableSet_Icc fun u _ => hposTail_nn u
+    have hlogU_nn : 0 ≤ Real.log U₀ := Real.log_nonneg hU₀_ge1
+    have habs_logU : |Real.log U₀| = Real.log U₀ := abs_of_nonneg hlogU_nn
+    have hC₀_bound1 : U₀ * (∑' q, m q) + |(L + ε / 4) * Real.log U₀| < C₀ := by
+      dsimp only [C₀]
+      rw [abs_mul, habs_logU]
+      have h1 : |L + ε / 4| ≤ |L| + ε := by
+        have := abs_add_le L (ε / 4)
+        rw [abs_of_pos (by positivity)] at this
+        linarith
+      nlinarith [mul_le_mul_of_nonneg_right h1 hlogU_nn]
+    have hC₀_bound2 : |(L - ε / 4) * Real.log U₀| < C₀ := by
+      dsimp only [C₀]
+      rw [abs_mul, habs_logU]
+      have h1 : |L - ε / 4| ≤ |L| + ε := by
+        have := abs_sub L (ε / 4)
+        rw [abs_of_pos (by positivity)] at this
+        linarith
+      have h2 : 0 ≤ U₀ * (∑' q, m q) := mul_nonneg hU₀_pos.le (tsum_nonneg hm_nn)
+      nlinarith [mul_le_mul_of_nonneg_right h1 hlogU_nn]
+    have h4C₀ : 4 * C₀ ≤ ε * Real.log T := (div_le_iff₀ hε).mp hlogT_big
+    have hX_lo : (L - ε) * Real.log T < ∫ u in Icc 0 T, posTail u := by
+      have h1 := le_abs_self ((L - ε / 4) * Real.log U₀)
+      rw [hsplit]
+      nlinarith only [hhead_nn, hint_lo, h1, hC₀_bound2, h4C₀, hε, hlogT_pos]
+    have hX_hi : ∫ u in Icc 0 T, posTail u < (L + ε) * Real.log T := by
+      have h1 := neg_le_abs ((L + ε / 4) * Real.log U₀)
+      rw [hsplit]
+      nlinarith only [hhead_le, hint_hi, h1, hC₀_bound1, h4C₀, hε, hlogT_pos]
+    have hdiv_lo : L - ε < (Real.log T)⁻¹ * ∫ u in Icc 0 T, posTail u := by
+      have hm := mul_lt_mul_of_pos_left hX_lo (inv_pos.mpr hlogT_pos)
+      rwa [← mul_assoc, inv_mul_cancel_right₀ hlogT_pos.ne' (L - ε) |>.symm |> fun _ =>
+        show (Real.log T)⁻¹ * (L - ε) * Real.log T = L - ε by field_simp [hlogT_pos.ne']] at hm
+    have hdiv_hi : (Real.log T)⁻¹ * ∫ u in Icc 0 T, posTail u < L + ε := by
+      have hm := mul_lt_mul_of_pos_left hX_hi (inv_pos.mpr hlogT_pos)
+      rwa [show (Real.log T)⁻¹ * ((L + ε) * Real.log T) = L + ε by
+        field_simp [hlogT_pos.ne']] at hm
+    rw [Real.dist_eq, abs_lt]
+    exact ⟨by linarith, by linarith⟩
+  have hrem_lim : Tendsto (fun T : ℝ => (Real.log T)⁻¹ * (T * posTail T)) atTop (𝓝 0) := by
+    have hinv_log : Tendsto (fun T : ℝ => (Real.log T)⁻¹) atTop (𝓝 0) :=
+      tendsto_inv_atTop_zero.comp Real.tendsto_log_atTop
+    simpa only [zero_mul] using hinv_log.mul htail_lim
+  have hpos_mom : Tendsto (fun T : ℝ => (Real.log T)⁻¹ * ∑' q : onLineCopies,
+      if 0 < γ q ∧ γ q ≤ T then γ q * m q else 0) atTop (𝓝 L) := by
+    have hdiff := hint_lim.sub hrem_lim
+    rw [sub_zero] at hdiff
+    refine hdiff.congr' ?_
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with T hT
+    have hid := posFirstMoment_add_mul_posTail_eq_integral hm_sum hm_nn hT
+    change (Real.log T)⁻¹ * (∫ u in Icc 0 T, posTail u) - (Real.log T)⁻¹ * (T * posTail T) = _
+    rw [← mul_sub, ← hid]
+    ring
+  have htwo := hpos_mom.const_mul 2
+  rw [show 2 * L = 8 * criticalAliasCoefficient W₀ *
+      (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) / Real.pi by dsimp only [L]; ring] at htwo
+  refine htwo.congr' ?_
+  filter_upwards [eventually_ge_atTop (0 : ℝ)] with T hT
+  let fpos : onLineCopies → ℝ := fun q => if 0 < γ q ∧ γ q ≤ T then γ q * m q else 0
+  let fneg : onLineCopies → ℝ := fun q => if -T ≤ γ q ∧ γ q < 0 then (-γ q) * m q else 0
+  have hs_pos : Summable fpos := (hm_sum.mul_left T).of_nonneg_of_le
+    (fun q => by dsimp only [fpos]; split_ifs with h; · exact mul_nonneg h.1.le (hm_nn q); · exact le_rfl)
+    (fun q => by
+      dsimp only [fpos]; split_ifs with h
+      · exact mul_le_mul_of_nonneg_right h.2 (hm_nn q)
+      · exact mul_nonneg hT (hm_nn q))
+  have hs_neg : Summable fneg := (hm_sum.mul_left T).of_nonneg_of_le
+    (fun q => by dsimp only [fneg]; split_ifs with h; · exact mul_nonneg (by linarith [h.2]) (hm_nn q); · exact le_rfl)
+    (fun q => by
+      dsimp only [fneg]; split_ifs with h
+      · exact mul_le_mul_of_nonneg_right (by linarith [h.1]) (hm_nn q)
+      · exact mul_nonneg hT (hm_nn q))
+  have hneg_eq : (∑' q : onLineCopies, fneg q) = ∑' q : onLineCopies, fpos q := by
+    rw [← reflectOnLine.tsum_eq fneg]
+    congr 1; funext q
+    dsimp only [fneg, fpos, γ, m]
+    rw [im_centredZero_reflectOnLine, zeroValueMass_reflectOnLine, neg_neg]
+    have hiff : (-T ≤ -(centredZero q).im ∧ -(centredZero q).im < 0) ↔
+        (0 < (centredZero q).im ∧ (centredZero q).im ≤ T) :=
+      ⟨fun h => ⟨by linarith [h.2], by linarith [h.1]⟩,
+        fun h => ⟨by linarith [h.2], by linarith [h.1]⟩⟩
+    simp only [hiff]
+  have htot_eq : (∑' q : onLineCopies, if |γ q| ≤ T then |γ q| * m q else 0) =
+      (∑' q : onLineCopies, fpos q) + ∑' q : onLineCopies, fneg q := by
+    rw [← Summable.tsum_add hs_pos hs_neg]
+    congr 1; funext q
+    dsimp only [fpos, fneg]
+    rcases lt_trichotomy (γ q) 0 with hlt | heq | hgt
+    · rw [abs_of_neg hlt]
+      have h1 : ¬ (0 < γ q ∧ γ q ≤ T) := fun h => absurd hlt (not_lt.mpr h.1.le)
+      rw [if_neg h1, zero_add]
+      have hiff : (-γ q ≤ T) ↔ (-T ≤ γ q ∧ γ q < 0) :=
+        ⟨fun h => ⟨by linarith, hlt⟩, fun h => by linarith [h.1]⟩
+      simp only [hiff]
+    · rw [heq, abs_zero, zero_mul, if_pos hT]
+      simp
+    · rw [abs_of_pos hgt]
+      have h1 : ¬ (-T ≤ γ q ∧ γ q < 0) := fun h => absurd hgt (not_lt.mpr h.2.le)
+      rw [if_neg h1, add_zero]
+      have hiff : (γ q ≤ T) ↔ (0 < γ q ∧ γ q ≤ T) := ⟨fun h => ⟨hgt, h⟩, fun h => h.2⟩
+      simp only [hiff]
+  rw [htot_eq, hneg_eq]
+  ring
+
+#print axioms tendsto_mul_log_dampedMass_of_terminal_sq
+#print axioms criticalState_tendsto_mul_log_dampedMass
+#print axioms criticalState_tendsto_mul_log_vertical_laplace_sq
+#print axioms criticalState_boundary_fourier_tail_zero
+#print axioms criticalState_boundary_fourier_firstMoment_sublogarithmic
+#print axioms criticalState_criticalLine_tail_asymptotic
+#print axioms criticalState_criticalLine_firstMoment_asymptotic
+
+end GaloisForLFunctions.ExclusionOfTheCriticalState
+
+
 
