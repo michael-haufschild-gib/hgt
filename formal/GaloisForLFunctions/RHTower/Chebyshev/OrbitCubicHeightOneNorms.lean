@@ -26,12 +26,18 @@ theorem entry_norm (a b c : ℕ) :
       ((triangleNorm (a:ℤ) b c : ℤ):ℚ) := by
   simpa only [heightEntry,Int.cast_add,Int.cast_one] using norm_barycentric (a:ℤ) b c
 
+private def entryFieldNorm (m u v : ℤ) := Algebra.norm ℚ (heightEntry m u v)
+
+private theorem interior_norm (a b c : ℕ) :
+    entryFieldNorm ((a:ℤ)+b+c+2) a ((b:ℤ)+1) = ((triangleNorm (a:ℤ) b c : ℤ):ℚ) :=
+  entry_norm a b c
+
 private theorem corners (m : ℤ) :
     heightEntry m 0 0 = 1 ∧ heightEntry m (m-1) 1 = U m^2 ∧ heightEntry m (-1) m = V m^2 := by
   obtain ⟨_,_,_,_,hu,hv⟩ := reciprocal_table m
-  simp only [heightEntry,coords,Int.cast_zero,Int.cast_one,Int.cast_neg,Algebra.smul_def,map_one,
+  simp only [heightEntry,coords,Int.cast_zero,Int.cast_one,Int.cast_neg,Int.cast_sub,Algebra.smul_def,map_one,
     map_neg,map_zero,map_sub,map_intCast,neg_zero,zero_mul,add_zero,one_mul,mul_one,neg_neg]
-  refine ⟨rfl,?_,?_⟩
+  refine ⟨trivial,?_,?_⟩
   · linear_combination -hu
   · linear_combination -hv
 
@@ -41,7 +47,8 @@ theorem height_one_entries (n : ℕ) (z : K ((n:ℤ)+2)) :
       ∃ a b c : ℕ, a+b+c=n ∧ z=heightEntry ((n:ℤ)+2) a ((b:ℤ)+1) := by
   let m : ℤ := n+2
   have h0 := (corners m).1
-  have h1 : heightEntry m ((n:ℤ)+1) 1 = U m^2 := by simpa [m] using (corners m).2.1
+  have h1 : heightEntry m ((n:ℤ)+1) 1 = U m^2 := by
+    simpa only [show m-1=(n:ℤ)+1 by dsimp only [m]; ring] using (corners m).2.1
   have h2 := (corners m).2.2
   have mem (u v : ℤ) (h : positiveSlice m (u,v)) : heightEntry m u v ∈ heightOne m :=
     (entry_value m ⟨(u,v),h⟩) ▸ (heightOneEquiv m ⟨(u,v),h⟩).property
@@ -72,7 +79,8 @@ private theorem square_unit_norms (m : ℤ) :
     Algebra.norm ℚ (U m^2) = 1 ∧ Algebra.norm ℚ (V m^2) = 1 := by
   obtain ⟨_,hU,hV⟩ := corners m
   rw [← hU,← hV,heightEntry,heightEntry,norm_coordinates,norm_coordinates]
-  simp only [reciprocalMatrix_det] <;> ring
+  simp only [reciprocalMatrix_det,Int.cast_sub,Int.cast_neg,Int.cast_one]
+  constructor <;> ring
 
 /-- A gap in the field norms of height-one integers. Norm one occurs exactly
 on the three squares, and every other norm is at least 2m−1. -/
@@ -87,16 +95,18 @@ theorem norm_one_and_gap (n : ℕ) (z : heightOne ((n:ℤ)+2)) :
   · exact ⟨⟨fun _ => Or.inr (Or.inl h),sq⟩,Or.inl (sq (Or.inr (Or.inl h)))⟩
   · exact ⟨⟨fun _ => Or.inr (Or.inr h),sq⟩,Or.inl (sq (Or.inr (Or.inr h)))⟩
   · subst n
-    have hh := entry_norm a b c
     have hN : 2*((a:ℚ)+b+c)+3 ≤ Algebra.norm ℚ z.val := by
       rw [he]
-      push_cast
-      rw [hh]
-      simpa [triangleNorm,arm] using (lower_triangle_norm (a:ℚ≥0) (b:ℚ≥0) (c:ℚ≥0)).1
+      change _ ≤ entryFieldNorm ((↑(a+b+c) : ℤ)+2) a ((b:ℤ)+1)
+      rw [Nat.cast_add,Nat.cast_add,interior_norm]
+      have hl := (lower_triangle_norm (R := ℚ)
+        ⟨(a:ℚ),Nat.cast_nonneg a⟩ ⟨(b:ℚ),Nat.cast_nonneg b⟩ ⟨(c:ℚ),Nat.cast_nonneg c⟩).1
+      simpa only [triangleNorm,arm,Int.cast_add,Int.cast_mul,Int.cast_one,Int.cast_natCast] using hl
     have hn : Algebra.norm ℚ z.val ≠ 1 := by
       intro h
       linarith only [hN,h,Nat.cast_nonneg (α:=ℚ) a,Nat.cast_nonneg (α:=ℚ) b,Nat.cast_nonneg (α:=ℚ) c]
-    exact ⟨⟨fun h => (hn h).elim,sq⟩,Or.inr (by push_cast; exact hN)⟩
+    have castSum : ((a+b+c : ℕ) : ℚ) = (a:ℚ)+b+c := by simp only [Nat.cast_add]
+    exact ⟨⟨fun h => (hn h).elim,sq⟩,Or.inr (by rw [castSum]; exact hN)⟩
 
 /-- Among positive height-one elements, having an inverse in the monogenic
 order is equivalent to field norm one. -/
@@ -115,6 +125,11 @@ theorem least_nonunit_norm_attained (n : ℕ) :
   have hz : z ∈ heightOne ((n:ℤ)+2) := (height_one_entries n z).mpr <|
     Or.inr (Or.inr (Or.inr ⟨0,0,n,by simp,by simp [z]⟩))
   refine ⟨⟨z,hz⟩,?_⟩
-  simpa [z,triangleNorm,arm] using entry_norm 0 0 n
+  change entryFieldNorm ((n:ℤ)+2) 0 1 = _
+  have h := interior_norm 0 0 n
+  simp only [Nat.cast_zero,zero_add,triangleNorm,arm,zero_mul,mul_zero,mul_one,one_mul,add_zero] at h
+  rw [h]
+  push_cast
+  ring
 
 end RHTower.OrbitCubic.NumberFieldTrace

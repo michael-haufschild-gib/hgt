@@ -20,6 +20,7 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval.Conductor
 def density (t : ℝ) : ℂ := squarePrimeWeight t/(t:ℂ)^2
 
 private theorem density_integrable : IntegrableOn density (Set.Ioi 0) := by
+  change IntegrableOn (fun t : ℝ => squarePrimeWeight t/(t:ℂ)^2) (Set.Ioi 0)
   simpa only [MellinConvergent,show (-1:ℂ)-1=-(2:ℂ) by norm_num,Complex.cpow_neg,
     Complex.cpow_two,smul_eq_mul,density,div_eq_mul_inv,mul_comm] using
     mellinConvergent_squarePrimeWeight (-1)
@@ -35,7 +36,7 @@ private theorem term_integrable {X : ℝ} (hX : 0 < X) (p : ℕ) (a : ℕ → �
     IntegrableOn (fun t : ℝ => density t*(if (p : ℝ) ≤ X*t then (p:ℂ)*a p else 0)) (Set.Ioi 0) := by
   have hi := (density_integrable.mul_const ((p:ℂ)*a p)).indicator
     (measurableSet_Ici (a := (p:ℝ)/X))
-  refine hi.congr_fun (fun t _ => ?_) measurableSet_Ioi
+  refine IntegrableOn.congr_fun hi (fun t _ => ?_) measurableSet_Ioi
   by_cases he : (p:ℝ)/X ≤ t
   · rw [Set.indicator_of_mem (show t ∈ Set.Ici ((p:ℝ)/X) from he), if_pos (by
       simpa only [mul_comm t X] using (div_le_iff₀ hX).mp he)]
@@ -44,8 +45,8 @@ private theorem term_integrable {X : ℝ} (hX : 0 < X) (p : ℕ) (a : ℕ → �
 
 private theorem firstMoment_integrable {X : ℝ} (hX : 0 < X) (F : Finset ℕ) (a : ℕ → ℂ) :
     IntegrableOn (fun t => density t * firstMoment F a (X*t)) (Set.Ioi 0) := by
-  simpa only [firstMoment,Finset.mul_sum] using
-    (integrable_finsetSum F (fun p _ => term_integrable hX p a))
+  simp only [firstMoment,Finset.mul_sum,IntegrableOn]
+  exact integrable_finsetSum F (fun p _ => term_integrable hX p a)
 
 /-- Exact interchange of a sharp finite row with the signed spline. No
 discrepancy or total variation estimate enters. -/
@@ -63,15 +64,16 @@ theorem finite_spline_reading {X : ℝ} (hX : 0 < X) (F : Finset ℕ) (hF : ∀ 
       density t*(if (p:ℝ) ≤ X*t then (p:ℂ)*a p else 0) =
       (Set.Ici ((p:ℝ)/X)).indicator (fun t => ((p:ℂ)*a p)*density t) t := by
     by_cases he : (p:ℝ)/X ≤ t
-    · rw [Set.indicator_of_mem he,if_pos (by simpa only [mul_comm t X] using (div_le_iff₀ hX).mp he),mul_comm]
-    · rw [Set.indicator_of_notMem he,if_neg (by intro h; exact he ((div_le_iff₀ hX).mpr
+    · rw [Set.indicator_of_mem (show t ∈ Set.Ici ((p:ℝ)/X) from he),
+        if_pos (by simpa only [mul_comm t X] using (div_le_iff₀ hX).mp he),mul_comm]
+    · rw [Set.indicator_of_notMem (show t ∉ Set.Ici ((p:ℝ)/X) from he),if_neg (by intro h; exact he ((div_le_iff₀ hX).mpr
         (by simpa only [mul_comm t X] using h))),mul_zero]
   simp_rw [hpt]
   rw [integral_indicator measurableSet_Ici,Measure.restrict_restrict_of_subset
     (show Set.Ici ((p:ℝ)/X) ⊆ Set.Ioi 0 from fun _ ht => hv.trans_le ht),integral_const_mul,
     Complex.ofReal_div,Complex.ofReal_natCast]
   change _ = ((p:ℂ)*a p)*∫ t in Set.Ici ((p:ℝ)/X), squarePrimeWeight t/(t:ℂ)^2
-  field_simp [Complex.ofReal_ne_zero.mpr hX.ne'] <;> ring
+  field_simp [Complex.ofReal_ne_zero.mpr hX.ne']
 
 /-- Every quadratic background has zero reading. Its signed contributions
 cancel over the complete support of the original conductor spline. -/
@@ -80,16 +82,16 @@ theorem quadratic_background (A : ℂ) (X : ℝ) :
   have he (t : ℝ) (ht : t ∈ Set.Ioi (0:ℝ)) :
       density t*(A*((X*t:ℝ):ℂ)^2) = (A*(X:ℂ)^2)*squarePrimeWeight t := by
     rw [density,Complex.ofReal_mul,mul_pow]
-    field_simp [Complex.ofReal_ne_zero.mpr (show 0 < t from ht).ne'] <;> ring
+    field_simp [Complex.ofReal_ne_zero.mpr (show 0 < t from ht).ne']
   rw [reading,setIntegral_congr_fun measurableSet_Ioi he,integral_const_mul,squarePrimeWeight_mean_zero,mul_zero]
 
 private theorem integrable_background (A : ℂ) (X : ℝ) :
     IntegrableOn (fun t : ℝ => density t*(A*((X*t:ℝ):ℂ)^2)) (Set.Ioi 0) := by
   have hs : IntegrableOn squarePrimeWeight (Set.Ioi 0) := by
     simpa only [MellinConvergent,sub_self,Complex.cpow_zero,one_smul] using mellinConvergent_squarePrimeWeight 1
-  refine (hs.const_mul (A*(X:ℂ)^2)).congr_fun (fun t ht => ?_) measurableSet_Ioi
+  refine IntegrableOn.congr_fun (hs.const_mul (A*(X:ℂ)^2)) (fun t ht => ?_) measurableSet_Ioi
   rw [density,Complex.ofReal_mul,mul_pow]
-  field_simp [Complex.ofReal_ne_zero.mpr (show 0 < t from ht).ne'] <;> ring
+  field_simp [Complex.ofReal_ne_zero.mpr (show 0 < t from ht).ne']
 
 /-- Subtraction of the continuum first moment can be performed inside the
 actual measurement, at every terminal scale. -/
@@ -116,9 +118,9 @@ theorem centered_tail_reading {N : ℕ} (hN : 0 < N) (K : ℕ) (A : ℂ) :
   have hp : ∀ p ∈ (ordinaryPrimeLags H).filter (K < ·), 0 < p := by
     intro p h
     exact (mem_filter.mp (mem_filter.mp h).1).2.pos
-  simpa only [centeredFixedPrimeTail,H,Complex.ofReal_pow,Complex.ofReal_natCast] using
-    congrArg (· + ((innerPrimeSlope*((K:ℝ)*(K+1)/2):ℝ):ℂ))
-      (finite_spline_centered (X := (N:ℝ)^2) (by positivity) _ hp (fun p => (Real.log p:ℂ)) A)
+  have he := finite_spline_centered (X := (N:ℝ)^2) (by positivity) _ hp (fun p => (Real.log p:ℂ)) A
+  rw [Complex.ofReal_pow,Complex.ofReal_natCast] at he
+  exact congrArg (· + ((innerPrimeSlope*((K:ℝ)*(K+1)/2):ℝ):ℂ)) he
 
 /-- The untruncated first ordinary-prime moment. -/
 def primeMoment (x : ℝ) : ℂ :=
@@ -155,9 +157,11 @@ private theorem complete_reading {N : ℕ} (A : ℂ) :
   intro H
   apply setIntegral_congr_fun measurableSet_Ioi
   intro t ht
+  change density t * (firstMoment (ordinaryPrimeLags H) _ ((N:ℝ)^2*t)-_) =
+    density t * (primeMoment ((N:ℝ)^2*t)-_)
   by_cases hs : t ∈ Set.Icc (Real.exp (-8)) (Real.exp (8+Real.log 4))
-  · rw [moment_eq (mul_nonneg (sq_nonneg _) (show 0 < t from ht).le)
-      (Nat.floor_mono (support_below_terminal hs.2))]
+  · rw [moment_eq (H := H) (mul_nonneg (sq_nonneg _) (show 0 < t from ht).le)
+      (Nat.floor_mono (support_below_terminal (N := N) hs.2))]
   · simp only [density,squarePrimeWeight_zero_outside ht hs,zero_div,zero_mul]
 
 /-- Exact first-moment error formula with the quadratic main term removed.
@@ -178,7 +182,8 @@ theorem centered_tail_first_moment {N K : ℕ} (hN : 0 < N)
   have hset : (ordinaryPrimeLags H).filter (fun k => ¬K < k) = ordinaryPrimeLags K := by
     ext k
     simp only [ordinaryPrimeLags,mem_filter,mem_Icc,not_lt]
-    omega
+    exact ⟨fun h => ⟨⟨h.1.1.1,h.2⟩,h.1.2⟩,
+      fun h => ⟨⟨⟨h.1.1,h.1.2.trans hKH⟩,h.2⟩,h.1.2⟩⟩
   have hsplit := sum_filter_add_sum_filter_not (ordinaryPrimeLags H) (K < ·) f
   rw [hset] at hsplit
   have hfull := finite_spline_centered (X := (N:ℝ)^2) (by positivity) (ordinaryPrimeLags H)
@@ -206,8 +211,10 @@ theorem power_reading (s : ℂ) {X : ℝ} (hX : 0 < X) :
   intro t ht
   have ht' : 0 < t := ht
   have htz := Complex.ofReal_ne_zero.mpr ht'.ne'
+  change density t * ((X*t:ℝ):ℂ)^s =
+    (X:ℂ)^s * ((t:ℂ)^(s-1-1) • squarePrimeWeight t)
   rw [density,Complex.ofReal_mul,Complex.mul_cpow_ofReal_nonneg hX.le ht'.le s, smul_eq_mul,
-    show s-1-1=s+(-(2:ℂ)) by ring, Complex.cpow_add htz,Complex.cpow_neg,
+    show s-1-1=s+(-(2:ℂ)) by ring, Complex.cpow_add _ _ htz,Complex.cpow_neg,
     Complex.cpow_two]
   ring
 

@@ -61,6 +61,16 @@ private theorem fraction_le_iff {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
   rw [div_le_div_iff₀ (add_pos_of_pos_of_nonneg zero_lt_one ha) (add_pos_of_pos_of_nonneg zero_lt_one hb)]
   constructor <;> intro h <;> linarith only [h]
 
+private theorem sampled_cost_lower {u : ℕ → ℕ} (hu : StrictMono u) (n : ℕ) :
+    (jensenNonrealCount (u n):ℝ)/(1+jensenNonrealCount (u n)) ≤
+      ∑ i ∈ range (n+1), powerCharge (sampledJensenMass u) 1 i := by
+  have h := (reciprocal_block_bounds (sampled_mono hu.monotone)
+    (by rfl : 0 ≤ sampledJensenMass u 0) 0 (n+1)).1
+  rw [Nat.zero_add (n+1)] at h
+  simp only [Nat.zero_add] at h
+  change ((jensenNonrealCount (u n):ℝ)-0)/(1+jensenNonrealCount (u n)) ≤ _ at h
+  simpa only [sub_zero] using h
+
 /-- The entire off-line divisor has multiplicity at most m precisely when
 some cofinal observation schedule meets the budget m/(1+m) arbitrarily
 late. If the divisor is finite, placing the first sample after its last
@@ -80,17 +90,14 @@ theorem off_line_count_iff_sparse_charge_budget (m : ℕ) :
       exact_mod_cast h
     refine ⟨u,fun _ _ hab => Nat.add_lt_add_left hab K,(Eventually.of_forall fun n => ?_).frequently⟩
     rw [sum_range_succ']
-    have he (i : ℕ) : powerCharge (sampledJensenMass u) 1 (i+1) = 0 := by
-      simp only [powerCharge,sampledJensenMass,hcount,sub_self,zero_mul]
-    simp only [he,sum_const_zero,zero_add,powerCharge,sampledJensenMass,hcount,sub_zero,Real.rpow_neg_one,
-      ← div_eq_mul_inv]
+    simp only [powerCharge,sampledJensenMass,hcount,sub_self,zero_div,sum_const_zero,
+      zero_add,sub_zero,Real.rpow_neg_one,← div_eq_mul_inv]
     exact (fraction_le_iff (Nat.cast_nonneg _) (Nat.cast_nonneg _)).mpr (Nat.cast_le.mpr hm)
   · rintro ⟨u,hu,h⟩
     apply encard_offLine_le_iff_forall.mpr
     intro d
     obtain ⟨n,hn,hn'⟩ := (h.and_eventually (eventually_ge_atTop d)).exists
-    have hh := (reciprocal_block_bounds (sampled_mono hu.monotone) (by rfl : 0 ≤ sampledJensenMass u 0) 0 (n+1)).1
-    simp only [Nat.zero_add,sampledJensenMass,sub_zero] at hh
+    have hh := sampled_cost_lower hu n
     have bound := (fraction_le_iff (Nat.cast_nonneg _) (Nat.cast_nonneg _)).mp (hh.trans hn)
     exact (jensenNonrealCount_mono (hn'.trans (hu.id_le n))).trans (Nat.cast_le.mp bound)
 
@@ -116,9 +123,7 @@ theorem off_line_quartets_iff_strict_charge_budget (m : ℕ) :
     apply encard_offLine_le_iff_forall.mpr
     intro d
     obtain ⟨n,hn,hnd⟩ := (h.and_eventually (eventually_ge_atTop d)).exists
-    have hh := (reciprocal_block_bounds (sampled_mono hu.monotone)
-      (by rfl : 0 ≤ sampledJensenMass u 0) 0 (n+1)).1
-    simp only [Nat.zero_add,sampledJensenMass,sub_zero] at hh
+    have hh := sampled_cost_lower hu n
     have hcnt := (jensenNonrealCount_mono (hnd.trans (hu.id_le n))).trans_lt (hfrac.mp (hh.trans_lt hn))
     rw [jensenNonrealCount_eq_four_mul] at hcnt ⊢
     omega
@@ -152,14 +157,14 @@ theorem exists_sparse_jensen_log_discount :
       (sub_le_self _ (hn i)).trans (hB ⟨i+1,rfl⟩)
     exact ⟨u,hu,fun p _ => (summable_log_power_charge_iff hm (hn 0) hstep p).mpr
       (Or.inr ⟨B,hB⟩)⟩
-  push_neg at hfin
+  push Not at hfin
   choose w hw using hfin
   let v (n : ℕ) := w ⌈Real.exp (Real.exp (n:ℝ))⌉₊
   let u : ℕ → ℕ := fun n => n + ∑ i ∈ range (n+1), v i
   have hu : StrictMono u := strictMono_nat_of_lt_succ fun i => by
-    dsimp only [u]; rw [sum_range_succ (n := i+1)]; omega
+    dsimp only [u]; rw [Finset.sum_range_succ v (i+1)]; omega
   have huv (n : ℕ) : v n ≤ u n := by
-    dsimp only [u]; rw [sum_range_succ]; omega
+    dsimp only [u]; rw [Finset.sum_range_succ v n]; omega
   have hbig (n : ℕ) : Real.exp (Real.exp (n:ℝ)) ≤ (jensenNonrealCount (u n):ℝ) :=
     (Nat.le_ceil _).trans (Nat.cast_le.mpr ((hw _).le.trans (jensenNonrealCount_mono (huv n))))
   refine ⟨u,hu,fun p hp => ?_⟩
@@ -170,7 +175,7 @@ theorem exists_sparse_jensen_log_discount :
     have hh := Real.log_le_log (Real.exp_pos _) ((hbig i).trans
       (le_add_of_nonneg_left zero_le_one : (jensenNonrealCount (u i):ℝ) ≤ 1+x (i+1)))
     rw [Real.log_exp] at hh
-    linarith only [hh]
+    exact hh.trans (le_add_of_nonneg_left zero_le_one)
   apply (Real.summable_exp_nat_mul_iff.mpr (neg_lt_zero.mpr hp)).of_nonneg_of_le
   · intro i
     have hy := (Real.exp_pos _).le.trans (hl i)

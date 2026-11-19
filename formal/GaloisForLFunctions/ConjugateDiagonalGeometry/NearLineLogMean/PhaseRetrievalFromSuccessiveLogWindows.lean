@@ -1,6 +1,8 @@
 import GaloisForLFunctions.RHTower.Sieve.LogWindowKernel
 import GaloisForLFunctions.HTGeometry.LogFrequencySeparation
 import GaloisForLFunctions.RHTower.WardDefectFreedomVacuous
+import GaloisForLFunctions.HTGeometry.ExpNatIrrational
+import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 
 /-!
 # Phase retrieval from successive logarithmic windows
@@ -238,6 +240,119 @@ theorem complex_phase_retrieval (a b : ℕ → ℂ) :
   · rintro ⟨u,hu,h|h⟩ i j hi hj
     · rw [h i hi,h j hj,gram_twist,hu,one_pow,mul_one]
     · rw [h i hi,h j hj,gram_twist,gram_conj,hu,one_pow,mul_one]
+
+/-- Translation by t in the time variable of the exponential polynomial. -/
+def translated (a : ℕ → ℂ) (t : ℝ) (n : ℕ) :=
+  a n * cexp (((t*Real.log n : ℝ):ℂ)*I)
+
+/-- A time shift rotates each complex correlation through its own log gap. -/
+theorem translated_gram (a : ℕ → ℂ) (t : ℝ) (i j : ℕ) :
+    gram (translated a t i) (translated a t j) =
+      gram (a i) (a j)*Real.cos (t*(Real.log i-Real.log j)) -
+      (a i*conj (a j)).im*Real.sin (t*(Real.log i-Real.log j)) := by
+  have he : translated a t i * conj (translated a t j) =
+      (a i*conj (a j)) * cexp (((t*(Real.log i-Real.log j) : ℝ):ℂ)*I) := by
+    simp only [translated,map_mul,← Complex.exp_conj,Complex.conj_ofReal,Complex.conj_I,mul_neg]
+    rw [show (((t*(Real.log i-Real.log j):ℝ):ℂ)*I) =
+      ((t*Real.log i:ℝ):ℂ)*I + -(((t*Real.log j:ℝ):ℂ)*I) by push_cast; ring, Complex.exp_add]
+    ring
+  change (_*conj _).re = _
+  rw [he,Complex.mul_re,Complex.exp_ofReal_mul_I_re,Complex.exp_ofReal_mul_I_im]
+  rfl
+
+/-- The shift π separates every positive integer pair: otherwise the
+exponential of a nonzero integer would be their rational ratio. -/
+theorem pi_shift_separates {i j : ℕ} (hi : 0 < i) (hj : 0 < j) (hij : i ≠ j) :
+    Real.sin (Real.pi*(Real.log i-Real.log j)) ≠ 0 := by
+  intro he
+  obtain ⟨k,hk⟩ := Real.sin_eq_zero_iff.mp he
+  have hlog : Real.log i-Real.log j = (k:ℝ) := by
+    apply mul_right_cancel₀ Real.pi_ne_zero
+    linear_combination -hk
+  have hex : Real.exp k = (i:ℝ)/j := by
+    rw [← hlog,Real.exp_sub,Real.exp_log (Nat.cast_pos.mpr hi),Real.exp_log (Nat.cast_pos.mpr hj)]
+  have hk0 : k ≠ 0 := by
+    rintro rfl
+    rw [Int.cast_zero,Real.exp_zero,eq_div_iff (Nat.cast_ne_zero.mpr hj.ne'),one_mul] at hex
+    exact hij (by exact_mod_cast hex.symm)
+  exact (GaloisForLFunctions.RHTower.exp_int_irrational hk0).ne_rational i j (by exact_mod_cast hex)
+
+/-- Two translated energy curves recover the *imaginary* part of a
+correlation at the same bandwidth resolution as the real part. -/
+theorem read_imaginary_correlation (a : ℕ → ℂ) {N m : ℕ} (hm : m ∈ Icc 1 N) {h : ℝ}
+    (hh : 0 < h) (hcut : h ≤ ((N+1:ℕ):ℝ)⁻¹) :
+    let g := gap N m
+    (second (row a N) g h/(2*h)*Real.cos (Real.pi*g) -
+     second (row (translated a Real.pi) N) g h/(2*h))/Real.sin (Real.pi*g) =
+      (a (N+1)*conj (a m)).im := by
+  intro g
+  have hm' := mem_Icc.mp hm
+  have hs := pi_shift_separates (Nat.succ_pos N) hm'.1 (by omega : N+1 ≠ m)
+  rw [read_gram a hm hh hcut,read_gram _ hm hh hcut,translated_gram,div_eq_iff hs]
+  dsimp only [g,gap]
+  ring
+
+/-- A single prescribed translation together with the original measurement
+determines the whole sequence up to a constant unit phase. -/
+theorem two_translates_recover_phase (a b : ℕ → ℂ) :
+    ((∀ N d, energy a N d = energy b N d) ∧
+      (∀ N d, energy (translated a Real.pi) N d = energy (translated b Real.pi) N d)) ↔
+    ∃ u : ℂ, ‖u‖=1 ∧ ∀ i : ℕ, 0 < i → b i=a i*u := by
+  simp only [equal_energies_iff_grams]
+  constructor
+  · rintro ⟨hg,hs⟩
+    have hprod (i j : ℕ) (hi : 0 < i) (hj : 0 < j) : a i*conj (a j)=b i*conj (b j) := by
+      refine Complex.ext (hg i j hi hj) ?_
+      by_cases he : i=j
+      · subst j; simp only [Complex.mul_conj,Complex.ofReal_im]
+      have h := hs i j hi hj
+      rw [translated_gram,translated_gram,hg i j hi hj] at h
+      exact mul_right_cancel₀ (pi_shift_separates hi hj he) (by linarith only [h])
+    have hn (i : ℕ) (hi : 0 < i) : ‖a i‖=‖b i‖ :=
+      (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp (by simpa only [gram_self] using hg i i hi hi)
+    by_cases hx : ∃ k : ℕ, 0 < k ∧ a k ≠ 0
+    · obtain ⟨k,hk,ha⟩ := hx
+      have hb : b k ≠ 0 := norm_ne_zero_iff.mp ((hn k hk).symm.trans_ne (norm_ne_zero_iff.mpr ha))
+      have hc : conj (b k) ≠ 0 := (map_ne_zero (starRingEnd ℂ)).mpr hb
+      refine ⟨conj (a k)/conj (b k),?_,fun i hi => ?_⟩
+      · rw [norm_div,Complex.norm_conj,Complex.norm_conj,hn k hk,div_self (norm_ne_zero_iff.mpr hb)]
+      · rw [← mul_div_assoc,eq_div_iff hc]
+        exact (hprod i k hi hk).symm
+    · refine ⟨1,norm_one,fun i hi => ?_⟩
+      have hz : a i=0 := not_ne_iff.mp fun he => hx ⟨i,hi,he⟩
+      have hn' := hn i hi
+      rw [hz,norm_zero] at hn'
+      rw [hz,zero_mul,norm_eq_zero.mp hn'.symm]
+  · rintro ⟨u,hu,h⟩
+    have ht (i : ℕ) (hi : 0 < i) :
+        translated b Real.pi i = translated a Real.pi i*u := by
+      simp only [translated,h i hi]; ring
+    constructor <;> intro i j hi hj
+    · rw [h i hi,h j hj,gram_twist,hu,one_pow,mul_one]
+    · rw [ht i hi,ht j hj,gram_twist,hu,one_pow,mul_one]
+
+/-- At every fixed time shift the sine denominator for adjacent
+frequencies is at most |t|/n. Exact identifiability therefore does
+not supply a condition number uniform in the polynomial length. -/
+theorem adjacent_translation_bound (t : ℝ) {n : ℕ} (hn : 0 < n) :
+    |Real.sin (t*gap n n)| ≤ |t|/(n:ℝ) := by
+  have hn' : (0:ℝ) < n := Nat.cast_pos.mpr hn
+  have hnn : 0 ≤ gap n n := (by positivity : 0 ≤ ((n+1:ℕ):ℝ)⁻¹).trans (gap_lower (mem_Icc.mpr ⟨hn,le_rfl⟩))
+  have hg : gap n n ≤ 1/(n:ℝ) := by
+    rw [gap,← Real.log_div (Nat.cast_ne_zero.mpr (Nat.succ_ne_zero n)) hn'.ne']
+    have he := Real.log_le_sub_one_of_pos (div_pos (Nat.cast_pos.mpr (Nat.succ_pos n)) hn')
+    refine he.trans_eq ?_
+    push_cast
+    field_simp [hn'.ne']
+  calc _ ≤ |t*gap n n| := Real.abs_sin_le_abs
+       _ = |t|*gap n n := by rw [abs_mul,abs_of_nonneg hnn]
+       _ ≤ |t|*(1/n) := mul_le_mul_of_nonneg_left hg (abs_nonneg t)
+       _ = _ := by ring
+
+#print axioms pi_shift_separates
+#print axioms read_imaginary_correlation
+#print axioms two_translates_recover_phase
+#print axioms adjacent_translation_bound
 
 #print axioms real_phase_retrieval
 #print axioms complex_phase_retrieval

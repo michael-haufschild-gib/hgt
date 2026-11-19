@@ -18,7 +18,7 @@ def generated (n k : ℕ) (p : ℤ × ℤ) := ∃ xs : List (ℤ × ℤ),
 
 private theorem unit_iff (n : ℕ) (p : ℤ × ℤ) : positiveSlice ((n:ℤ)+2) p ↔ dilated n 1 p := by
   obtain ⟨u,v⟩ := p
-  rw [integer_hull_exact]
+  refine (integer_hull_exact n u v).trans ?_
   simp only [dilated,centerMass,Nat.cast_one,one_mul]
   omega
 
@@ -72,11 +72,11 @@ private theorem generated_turn {n k : ℕ} {p : ℤ × ℤ} (hp : generated n k 
   obtain ⟨xs,rfl,rfl,h⟩ := hp
   have hs (l : List (ℤ × ℤ)) : (l.map (turnPoint n 1)).sum=turnPoint n l.length l.sum := by
     induction l with
-    | nil => simp [turnPoint]
+    | nil => apply Prod.ext <;> simp [turnPoint]
     | cons x l ih =>
       simp only [List.map_cons,List.length_cons,List.sum_cons,ih]
       apply Prod.ext <;> simp [turnPoint] <;> ring
-  refine ⟨_,List.length_map,hs xs,?_⟩
+  refine ⟨xs.map (turnPoint n 1),List.length_map _,hs xs,?_⟩
   intro x hx
   obtain ⟨y,hy,rfl⟩ := List.mem_map.mp hx
   exact (unit_iff _ _).mpr (turn_closed ((unit_iff _ _).mp (h y hy)))
@@ -142,7 +142,7 @@ private theorem fan_generated (n k : ℕ) (u v : ℤ) (hu : 0≤u) (hv : 0≤v)
     have H := generated_cons (fan_row n ha (min_le_right _ _))
       (ih (u-a) (v-1) (sub_nonneg.mpr (min_le_left _ _)) (by omega) (by omega) hr)
     convert H using 1
-    apply Prod.ext <;> simp <;> ring
+    apply Prod.ext <;> simp
 
 /-- In every degree, the three facet inequalities are necessary and sufficient
 for an integral sum of height-one positive elements. -/
@@ -152,12 +152,12 @@ theorem semigroup_exact (n k : ℕ) (p : ℤ × ℤ) : generated n k p ↔ dilat
     exact necessary n xs h
   · intro h
     rcases sector_cover n k ⟨p,h⟩ with ⟨u,v,hu,hv,hs,he⟩|⟨u,v,hu,hv,hk,hs,he⟩
-    · exact he.symm ▸ simplex_generated n k u v hu hv hs
+    · exact (congrArg (generated n k) he).mpr (simplex_generated n k u v hu hv hs)
     have H := fan_generated n k u v hu hv hk.le hs
     rcases he with he|he|he
-    · exact he.symm ▸ H
-    · exact he.symm ▸ generated_turn H
-    · exact he.symm ▸ generated_turn (generated_turn H)
+    · exact (congrArg (generated n k) he).mpr H
+    · exact (congrArg (generated n k) he).mpr (generated_turn H)
+    · exact (congrArg (generated n k) he).mpr (generated_turn (generated_turn H))
 
 /-- Closed formula for the number of distinct sums, with repetitions allowed. -/
 theorem card_distinct_sums (n k : ℕ) :

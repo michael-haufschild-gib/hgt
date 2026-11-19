@@ -118,7 +118,7 @@ private theorem octave_net_count {U P p : ℕ} (hU : 0 < U) (hP : 0 < P)
     (hp : p.Prime) (hu : p ≤ 2*P) :
     |properCofactorMidpoint (U*P) p| ≤ squarefreeDivisorMass (U*P) := by
   have hn := Nat.mul_pos hU hP
-  have hPP : P ≤ U*P := by simpa only [one_mul] using Nat.mul_le_mul_right P hU
+  have hPP : P ≤ U*P := Nat.le_mul_of_pos_left P hU
   have h2 : p ≤ 2*(U*P) := hu.trans (Nat.mul_le_mul_left 2 hPP)
   have h := prime_midpoint_count_split hn hp
   simp only [mem_Ioc,show ¬ 2*(U*P)<p by omega,show ¬ 3*(U*P)<p by omega,false_and,
@@ -252,7 +252,8 @@ theorem cofactor_boundary_error_bound {n B : ℕ} (hn : 0 < n) (hB : 0 < B)
           have hm := (sum_le_sum_of_subset_of_nonneg hT (fun _ _ _ => vonMangoldt_nonneg)).trans
             (_root_.RHTower.sum_vonMangoldt_Icc_le_seven (4*n/B))
           rw [←sum_mul]
-          apply (mul_le_mul_of_nonneg_right hm (mul_nonneg (by norm_num) (sum_nonneg fun _ _ => abs_nonneg _))).trans_eq
+          have hmass : 0 ≤ squarefreeDivisorMass n := sum_nonneg fun _ _ => abs_nonneg _
+          apply (mul_le_mul_of_nonneg_right hm (mul_nonneg (by norm_num : (0:ℝ)≤8) hmass)).trans_eq
           ring
 
 /-- Across adjacent cofactor blocks every interior endpoint discrepancy

@@ -88,14 +88,17 @@ theorem thetaTilts_klDiv (a b : ℝ) :
   letI := thetaTiltProb_probability a
   letI := thetaTiltProb_probability b
   have hac := thetaTilts_ac a b
-  have hll := hac.ae_le (thetaTilts_llr a b)
+  have hll : llr (thetaTiltProb a) (thetaTiltProb b) =ᵐ[thetaTiltProb a]
+      fun x => (a-b)*x - (thetaTiltLogPartition a - thetaTiltLogPartition b) :=
+    hac.ae_le (thetaTilts_llr a b)
   have hf := (tilt_id_integrable a).const_mul (a-b)
   have hc : Integrable (fun _ : ℝ => thetaTiltLogPartition a - thetaTiltLogPartition b)
       (thetaTiltProb a) := integrable_const _
   rw [klDiv_of_ac_of_integrable hac ((hf.sub hc).congr hll.symm), integral_congr_ae hll,
     integral_sub hf hc, integral_const_mul, tilt_mean]
+  congr 1
   simp [tiltGap]
-  <;> congr 1 <;> ring
+  ring
 
 /-- The decorated theta carrier has the same exact cost at every pair of real tilts. -/
 theorem thetaCarrier_klDiv (a b : ℝ) :

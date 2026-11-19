@@ -47,10 +47,14 @@ theorem thetaTuranForm_integral (a b d : ℕ) :
     thetaTuranForm a b d = ∫ p : ℝ × ℝ, (p.1^(2*a)*riemannKernelReal p.1) *
       (p.2^(2*b)*riemannKernelReal p.2) * (p.2^2-p.1^2)^d := by
   change _ = ∫ p, pairKernel a b d p
-  rw [funext (pair_expand a b d), integral_finsetSum _ (fun j _ =>
+  have hterm (j : ℕ) : Integrable (fun p : ℝ × ℝ =>
+      ((d.choose j : ℝ)*(-1)^j) * (density (a+j) p.1 * density (b+(d-j)) p.2))
+      (volume.prod volume) :=
     ((integrable_pow_mul_riemannKernel (a+j)).mul_prod
-      (integrable_pow_mul_riemannKernel (b+(d-j)))).const_mul _)]
-  simp only [thetaTuranForm, integral_const_mul, MeasureTheory.Measure.volume_eq_prod,
+      (integrable_pow_mul_riemannKernel (b+(d-j)))).const_mul _
+  rw [MeasureTheory.Measure.volume_eq_prod, funext (pair_expand a b d),
+    integral_finsetSum (range (d+1)) (fun j _ => hterm j)]
+  simp only [thetaTuranForm, integral_const_mul,
     integral_prod_mul, density, ← thetaCuspRawEvenMoment_eq_integral]
 
 private theorem integral_form (a b d : ℕ) : (∫ p, pairKernel a b d p) = thetaTuranForm a b d :=

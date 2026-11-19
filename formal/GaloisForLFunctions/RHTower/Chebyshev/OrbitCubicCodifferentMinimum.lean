@@ -144,8 +144,8 @@ theorem codifferent_minimum (m : ℤ) (y : {y : K m // y ∈ orderTraceDual m �
   change Algebra.norm ℚ z=(k:ℚ) at hk
   have hk0 : k ≠ 0 := by
     intro h
-    apply (Algebra.norm_ne_zero_iff_of_basis (reciprocalBasis m)).mpr hn
-    simp [hk,h]
+    have nz : Algebra.norm ℚ z ≠ 0 := (Algebra.norm_ne_zero_iff_of_basis (reciprocalBasis m)).mpr hn
+    exact nz (hk.trans (by rw [h,Int.cast_zero]))
   have val : |Algebra.norm ℚ y.val| * orderDiscriminant m = |Algebra.norm ℚ z| := he ▸ calcNorm z
   refine ⟨⟨|k|,by have hh := abs_pos.mpr hk0; omega,by rw [val,hk,Int.cast_abs]⟩,?_⟩
   constructor

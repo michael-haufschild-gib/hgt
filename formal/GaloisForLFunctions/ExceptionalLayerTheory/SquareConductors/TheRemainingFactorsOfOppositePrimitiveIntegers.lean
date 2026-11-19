@@ -40,7 +40,8 @@ theorem remaining_factor_at_large_prime {n Q a p : ℕ} (hp : p.Prime) (ha : 2 �
       rcases hd.dvd_mul.mp hdvd with hda | hdp
       · exact False.elim (hQd.not_ge ((Nat.le_of_dvd (by omega) hda).trans haQ))
       · exact ((Nat.dvd_prime hp).mp hdp).resolve_left hd.ne_one
-    · rintro rfl
+    · intro he
+      subst d
       exact ⟨⟨hp,dvd_mul_left p a,Nat.mul_ne_zero (by omega) hp.ne_zero⟩,
         hpQ,Nat.mul_le_mul_right p ha⟩
   rw [remainingMidpointFactor,hs,prod_singleton,Nat.mul_div_cancel _ hp.pos]
@@ -78,7 +79,7 @@ private theorem proper_prime_prefix (S : Finset ℕ) (hS : ∀ p ∈ S,p.Prime) 
   rw [←sum_filter,_root_.RHTower.Sieve.sum_filter_dvd_eq_sum_scaled hp]
   simp only [Nat.coprime_mul_iff_right,hm]
   by_cases hc : n.Coprime p
-  · simp only [hc,true_and,if_true]
+  · simp only [and_iff_right hc,if_pos hc]
     have hset : (Icc 1 (T/p)).filter (fun j => n.Coprime j ∧ 2 ≤ j) =
         (Icc 2 (T/p)).filter (n.Coprime ·) := by
       ext j
@@ -106,8 +107,13 @@ private theorem price_of_selected_factors (n Q : ℕ) :
   simp only [f,proper_prime_prefix S hS,←sum_sub_distrib]
   apply sum_congr rfl
   intro p _
+  let A (j : ℕ) : ℝ := (((Icc 2 (j*n/p)).filter (n.Coprime ·)).card:ℝ)
   unfold properCofactorMidpoint
-  split_ifs <;> ring
+  split_ifs
+  · change Real.log p*(A 4-2*A 3+A 2)=
+      (Real.log p*A 4-Real.log p*A 3)-(Real.log p*A 3-Real.log p*A 2)
+    ring
+  · ring
 
 private theorem price_at_primitive {n Q x : ℕ} (hx : 0 < x) (hcap : x ≤ 4*n) :
     properPrimePriceAt ((Ioc Q (4*n)).filter Nat.Prime) n x -
@@ -123,9 +129,9 @@ private theorem price_at_primitive {n Q x : ℕ} (hx : 0 < x) (hcap : x ≤ 4*n)
       · rintro ⟨⟨hp,hd,_⟩,hQ,hp2⟩
         exact ⟨⟨⟨hQ,(Nat.le_of_dvd hx hd).trans hcap⟩,hp⟩,hd,hp2⟩
     have hlog := (remaining_factor_log Q hx).2
-    simp only [properPrimePriceAt,hc,true_and,if_true,ite_and] at ⊢
+    simp only [properPrimePriceAt,and_iff_right hc,if_pos hc]
     rw [show (∑ p ∈ (Ioc Q (4*n)).filter Nat.Prime,if p ∣ x then (if 2*p ≤ x then Real.log p else 0) else 0) =
-      ∑ p ∈ selectedPrimes Q x,Real.log p by rw [←he,sum_filter]; simp only [ite_and]]
+      ∑ p ∈ selectedPrimes Q x,Real.log p by simp only [←he,sum_filter,ite_and]]
     linarith only [hlog]
   · simp [properPrimePriceAt,hc]
 

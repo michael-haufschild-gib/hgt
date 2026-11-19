@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RestrictedFactorizationCalculus.TheCommonMainTermOfBothRoughSignCounts
 import GaloisForLFunctions.RestrictedFactorizationCalculus.ThePrimeReadingsBeyondTheHyperbola
 import GaloisForLFunctions.BezoutValuationIncidence.CoprimeMobiusSignAndEvenDilationMeans
+import GaloisForLFunctions.RHTower.RobinLcmCriterion
 import Mathlib.NumberTheory.Harmonic.EulerMascheroni
 
 /-!
@@ -39,7 +40,7 @@ private theorem density_lower (n : ℕ) : density 0 ≤ density n*((n:ℝ)+1) :=
         rw [RHTower.DeletionResidueMartingale.primorial_succ_eq,if_pos prime]
       change _ ≤ coprimeSquarefreeDensity (primorial p)*_
       rw [prod,coprimeSquarefreeDensity_prime_mul prime nd (primorial_ne_zero n)]
-      exact step.trans_eq (by field_simp; ring)
+      exact step.trans_eq (by field_simp)
     · have eq : primorial p=primorial n := by
         rw [RHTower.DeletionResidueMartingale.primorial_succ_eq,if_neg prime]
       change _ ≤ coprimeSquarefreeDensity (primorial p)*_
@@ -107,9 +108,10 @@ private theorem uniform_cofactor_discrepancy {ε : ℝ} (ep : 0<ε) :
   have wle : (w:ℝ) ≤ x^q := (le_add_of_nonneg_right zero_le_one).trans
     ((le_mul_of_one_le_right (by positivity : 0 ≤ (w:ℝ)+1) ep1).trans budget)
   have w1 : 1 ≤ (w:ℝ) := Nat.one_le_cast.mpr yp
-  have fac : (w:ℝ)^(1-exponent) ≤ x^q := (by
+  have fac : (w:ℝ)^(1-exponent) ≤ x^q := by
+    apply le_trans _ wle
     simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le w1
-      (show 1-exponent ≤ 1 by norm_num [exponent])).trans wle
+      (show 1-exponent ≤ 1 by norm_num [exponent])
   have sq := mul_le_mul budget fac (Real.rpow_nonneg wp.le _) (Real.rpow_nonneg x0.le q)
   have fees := mul_le_mul_of_nonneg_right sq (Real.rpow_nonneg x0.le exponent)
   rw [←Real.rpow_add x0,←Real.rpow_add x0] at fees
@@ -138,7 +140,7 @@ private theorem uniform_cofactor_discrepancy {ε : ℝ} (ep : 0<ε) :
        _ ≤ ε*(x/(w:ℝ)*density w)*(((w:ℝ)+1)*w) := by
         have h := mul_le_mul_of_nonneg_left densityBound (mul_nonneg ep.le x0.le)
         calc _ ≤ (ε*x)*(density w*((w:ℝ)+1)) := by linarith only [h]
-             _ = _ := by field_simp [wp.ne']; ring
+             _ = _ := by field_simp [wp.ne']
 
 private theorem cofactor_scale_grows : Tendsto Z atTop atTop := by
   have rt := Real.tendsto_sqrt_atTop.comp (tendsto_natCast_atTop_atTop (R := ℝ))
@@ -155,6 +157,11 @@ private theorem cofactor_scale_grows : Tendsto Z atTop atTop := by
 
 private def mark (b : Bool) (X n : ℕ) : ℝ :=
   if (primorial (y X)).Coprime n ∧ μ n=(if b then (1:ℤ) else -1) then 1 else 0
+
+private theorem mark_nonneg (b : Bool) (X n : ℕ) : 0 ≤ mark b X n := by
+  by_cases h : (primorial (y X)).Coprime n ∧ μ n = (if b then (1:ℤ) else -1)
+  · simp [mark,h]
+  · simp [mark,h]
 
 private theorem rank_step (b : Bool) (X k : ℕ) :
     rankAt b X (k+1)=rankAt b X k+mark b X (k+1) := by
@@ -188,8 +195,9 @@ private theorem rank_at_fraction (b : Bool) {r : ℝ} (lo : 0 ≤ r) (hi : r ≤
   -- Normalize the centered rank by the density of the entire cofactor interval.
   have eq : rankAt b X (atFraction r X)/denom X-r/2=
       (rankAt b X (atFraction r X)-density (y X)*(r*Z X)/2)/denom X := by
-    change _=(_-_)/denom X
-    field_simp [dz.ne']; dsimp only [denom] <;> ring
+    have normalize (s z d : ℝ) (hz : z ≠ 0) (hd : d ≠ 0) :
+        s/(z*d)-r/2=(s-d*(r*z)/2)/(z*d) := by field_simp [hz,hd]
+    exact normalize _ _ _ zp.ne' (coprimeSquarefreeDensity_pos _).ne'
   rw [Real.dist_eq,eq,abs_div,abs_of_pos dz,div_lt_iff₀ dz]
   exact h.trans_lt (mul_lt_mul_of_pos_right (half_lt_self ep) dz)
 
@@ -234,6 +242,7 @@ private theorem decreasing_test_error (F g : ℕ → ℝ) {A B : ℕ} (order : A
     rw [abs_mul,abs_of_nonneg (nn n h)]
     exact mul_le_mul_of_nonneg_right (bounded n h) (nn n h)
   have variation : (∑ n ∈ Ico A B,(g n-g (n+1)))=g A-g B := by
+    clear t mA mB decr nn bounded
     induction B,order using Nat.le_induction with
     | base => simp
     | succ B h ih => rw [sum_Ico_succ_top h,ih]; ring
@@ -270,7 +279,9 @@ private theorem harmonic_window {a v : ℝ} (ap : 0<a) (av : a ≤ v) :
   have an : (A:ℝ) ≠ 0 := (Nat.cast_pos.mpr aa).ne'
   have bn : (B:ℝ) ≠ 0 := (Nat.cast_pos.mpr vv).ne'
   change ((harmonic B:ℝ)-Real.log B-((harmonic A:ℝ)-Real.log A))+Real.log ((B:ℝ)/Z X/((A:ℝ)/Z X))=_
-  rw [show (B:ℝ)/Z X/((A:ℝ)/Z X)=(B:ℝ)/A by field_simp [zp.ne'],Real.log_div bn an]
+  have cancel (a b z : ℝ) (ha : a ≠ 0) (hz : z ≠ 0) : b/z/(a/z)=b/a := by
+    field_simp [ha,hz]
+  rw [cancel _ _ _ an zp.ne',Real.log_div bn an]
   have union : Icc 1 A ∪ Ioc A B=Icc 1 B := by ext; simp only [mem_union,mem_Icc,mem_Ioc]; omega
   have dis : Disjoint (Icc 1 A) (Ioc A B) := disjoint_left.mpr (fun _ ha hb => (mem_Ioc.mp hb).1.not_ge (mem_Icc.mp ha).2)
   simp only [harmonic_eq_sum_Icc,Rat.cast_sum,Rat.cast_inv,Rat.cast_natCast]
@@ -310,11 +321,15 @@ private theorem harmonic_sign_window (sign : Bool) {a v : ℝ} (ap : 0<a) (av : 
       (fun k _ => inv_nonneg.mpr (Nat.cast_nonneg _))
       (fun k hk => inv_anti₀ (An.trans_le (Nat.cast_le.mpr (mem_Ico.mp hk).1))
         (Nat.cast_le.mpr (Nat.le_succ k)))
-    rw [sum_congr rfl (fun k hk => congrArg (· * (k:ℝ)⁻¹) (inc k ((Nat.zero_le A).trans_lt (mem_Ioc.mp hk).1)))] at bd
+    rw [sum_congr (s₁ := Ioc A B) rfl (fun k hk => congrArg (· * (k:ℝ)⁻¹) (inc k ((Nat.zero_le A).trans_lt (mem_Ioc.mp hk).1)))] at bd
     have eq : (P X-Q X)*d=∑ k ∈ cell a v X,(mark sign X k-d/2)*(k:ℝ)⁻¹ := by
-      dsimp only [P,Q,signedMass,d]
-      simp only [sub_mul,sum_sub_distrib,←mul_sum]
-      field_simp [dp.ne']; ring
+      have normalize (s h d : ℝ) (hd : d ≠ 0) :
+          (s/d-h/2)*d=s-(d/2)*h := by field_simp [hd] <;> ring
+      simp only [sub_mul,sum_sub_distrib,←mul_sum] on_goal 1 =>
+        skip
+      dsimp only [P,Q,signedMass]
+      rw [div_mul_cancel₀ _ dp.ne']
+      ring
     have h := bd
     change |∑ k ∈ cell a v X,(mark sign X k-d/2)*(k:ℝ)⁻¹| ≤ 2*(η*denom X)*(A:ℝ)⁻¹ at h
     rw [←eq,abs_mul,abs_of_pos dp] at h
@@ -345,7 +360,9 @@ private theorem signed_readout (b : Bool) {a v : ℝ} (ap : 0<a) (av : a ≤ v) 
   have atom (n : ℕ) : mark b X n*fractionTest X c n=
       Z X*(mark b X n*(n:ℝ)⁻¹)-(1+c)*mark b X n := by dsimp only [fractionTest]; ring
   simp only [signedMass,mul_one,sum_congr rfl (fun n _ => atom n),sum_sub_distrib,←mul_sum]
-  dsimp only [denom]; field_simp [zp.ne',dp.ne']; ring
+  have normalize (a m z d k : ℝ) (hz : z ≠ 0) (hd : d ≠ 0) :
+      a/d-k*(m/(z*d))=(z*a-k*m)/(z*d) := by field_simp [hz,hd]
+  exact normalize _ _ _ _ _ zp.ne' dp.ne'
 
 private theorem cell_union {a d v : ℝ} (ad : a ≤ d) (dv : d ≤ v) (X : ℕ) :
     Disjoint (cell a d X) (cell d v X) ∧ cell a d X ∪ cell d v X=cell a v X := by
@@ -363,7 +380,7 @@ private theorem median_lower_signal (b : Bool) (c : ℝ) :
     Tendsto (fun X => (signedMass b X (cell psi median X) (fractionTest X c)-
       signedMass b X (cell median 1 X) (fractionTest X c))/denom X) atTop (𝓝 boundaryLog) := by
   have left := signed_readout b (by norm_num : 0<psi) (by norm_num : psi ≤ median) (by norm_num : median ≤ 1) c
-  have right := signed_readout b (by norm_num : 0<median) (by norm_num : median ≤ 1) le_rfl c
+  have right := signed_readout b (by norm_num : 0 < median) (by norm_num : median ≤ 1) le_rfl c
   have res := left.sub right
   have parts : Real.log (median/psi)-Real.log (1/median)=Real.log (9/8:ℝ) := by
     rw [←Real.log_div (by norm_num [median,psi]) (by norm_num [median])]; congr 1; norm_num [median,psi]
@@ -382,10 +399,10 @@ private theorem lower_for_the_model (b : Bool) (c : ℝ) (X : ℕ) :
   change _ ≤ ∑ n ∈ cell psi 1 X,mark b X n*|fractionTest X c n|
   rw [←un,sum_union dis,sub_eq_add_neg]
   apply add_le_add
-  · exact sum_le_sum (fun n _ => mul_le_mul_of_nonneg_left (le_abs_self _) (by simp [mark]))
+  · exact sum_le_sum (fun n _ => mul_le_mul_of_nonneg_left (le_abs_self _) (mark_nonneg b X n))
   · dsimp only [signedMass]
     rw [←sum_neg_distrib]
-    exact sum_le_sum (fun n _ => by rw [←mul_neg]; exact mul_le_mul_of_nonneg_left (neg_le_abs _) (by simp [mark]))
+    exact sum_le_sum (fun n _ => by rw [←mul_neg]; exact mul_le_mul_of_nonneg_left (neg_le_abs _) (mark_nonneg b X n))
 
 private def modelLimit (t : ℝ) :=
   (Real.log (t/psi)-Real.log (1/t)-(1/t)*(t-psi)+(1/t)*(1-t))/2
@@ -474,7 +491,7 @@ private theorem actual_minus_model (b : Bool) (c : ℝ) :
   have sum := abs_sum_le_sum_abs (fun n => mark b X n*(|P n|-|fractionTest X c n|)) (cell psi 1 X)
   have fee (n : ℕ) (hn : n∈cell psi 1 X) :
       |mark b X n*(|P n|-|fractionTest X c n|)| ≤ mark b X n*(3*η) := by
-    have m0 : 0 ≤ mark b X n := by simp [mark]
+    have m0 := mark_nonneg b X n
     rw [abs_mul,abs_of_nonneg m0]
     exact mul_le_mul_of_nonneg_left ((abs_abs_sub_abs_le_abs_sub ..).trans (atom n hn)) m0
   have total := sum.trans (sum_le_sum fee)
@@ -504,8 +521,7 @@ theorem lower_price_of_every_constant_center (b : Bool) (c : ℝ) {ε : ℝ} (ep
   rw [add_zero] at h
   filter_upwards [h.eventually_const_lt (sub_lt_self boundaryLog ep)] with X large
   have bound := lower_for_the_model b c X
-  dsimp only at large
-  linarith only [bound,large]
+  exact large.le.trans (by linarith only [bound])
 
 /-- The optimal center is y/3. The original floor center y has the larger
 leading absolute price (1−log 2)/2 for each rough sign. -/
@@ -526,9 +542,9 @@ theorem optimal_and_floor_centers_of_the_first_quotient_cell (b : Bool) :
   exact ⟨transfer_price _ _ mid,transfer_price _ _ far⟩
 
 private theorem unique_optimum_of_the_model {t : ℝ} (tp : 0<t) (ne : t ≠ median) :
-    boundaryLog<modelLimit t := by
+    boundaryLog < modelLimit t := by
   have pp : 0<psi := by norm_num [psi]
-  have mp : 0<median := by norm_num [median]
+  have mp : 0 < median := by norm_num [median]
   have novel : median/t ≠ 1 := fun h => ne (by simpa only [one_mul] using ((div_eq_iff tp.ne').mp h).symm)
   have strict := Real.log_lt_sub_one_of_pos (div_pos mp tp) novel
   have value : Real.log (9/8:ℝ)=2*Real.log median-Real.log psi := by
@@ -536,7 +552,7 @@ private theorem unique_optimum_of_the_model {t : ℝ} (tp : 0<t) (ne : t ≠ med
     norm_num
   rw [Real.log_div mp.ne' tp.ne'] at strict
   dsimp only [boundaryLog,modelLimit]
-  rw [value,Real.log_div tp.ne' pp.ne',Real.log_one_div]
+  rw [value,Real.log_div tp.ne' pp.ne',Real.log_div one_ne_zero tp.ne',Real.log_one,zero_sub]
   have algebra : (1/t)*(1-t)-(1/t)*(t-psi)=2*(median/t-1) := by
     dsimp only [median,psi]; field_simp [tp.ne']; ring
   linarith only [strict,algebra]
@@ -557,7 +573,7 @@ private theorem project_model_center (b : Bool) (c : ℝ) (X : ℕ) :
     apply div_le_div_of_nonneg_right (sum_le_sum ?_) dd
     intro n hn
     have w := (inRange n hn).1
-    apply mul_le_mul_of_nonneg_left _ (by simp [mark])
+    apply mul_le_mul_of_nonneg_left _ (mark_nonneg b X n)
     dsimp only [fractionTest]
     rw [abs_of_nonneg (by linarith only [w]),abs_of_nonneg (by linarith only [w,left])]
     linarith only [left]
@@ -565,7 +581,7 @@ private theorem project_model_center (b : Bool) (c : ℝ) (X : ℕ) :
     apply div_le_div_of_nonneg_right (sum_le_sum ?_) dd
     intro n hn
     have w := (inRange n hn).2
-    apply mul_le_mul_of_nonneg_left _ (by simp [mark])
+    apply mul_le_mul_of_nonneg_left _ (mark_nonneg b X n)
     dsimp only [fractionTest]
     rw [abs_of_nonpos (by linarith only [w]),abs_of_nonpos (by linarith only [w,right])]
     linarith only [right]
