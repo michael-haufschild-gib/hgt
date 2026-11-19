@@ -178,7 +178,7 @@ theorem integer_midpoint_hidden_interpolation (S : Finset ℕ) (v : ℕ → ℝ)
         ((min_le_left _ _).trans (sub_le_self _ (Nat.cast_nonneg j)))) (by norm_num)
     have hF : |F y| ≤ (2*∑ j ∈ S, |v j|)*y := by
       refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
-      calc _ ≤ ∑ j ∈ S, |v j|*(2*y) := Finset.sum_le_sum fun j _ => by
+      calc _ ≤ ∑ j ∈ S, |v j| * (2*y) := Finset.sum_le_sum fun j _ => by
              rw [abs_mul]; exact mul_le_mul_of_nonneg_left (htent j) (abs_nonneg _)
            _ = _ := by rw [← Finset.sum_mul]; ring
     rw [sq_le_sq,abs_div,abs_of_pos hy,abs_of_nonneg (by positivity : 0 ≤ 2*∑ j ∈ S, |v j|)]

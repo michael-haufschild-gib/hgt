@@ -12,7 +12,6 @@ Their exact locations follow from the first upward and last downward contacts.
 -/
 
 open Finset ArithmeticFunction
-open scoped ArithmeticFunction.vonMangoldt
 namespace GaloisForLFunctions.SignedArithmeticCorrespondences
 
 open HodgeTheoryOfAFixedPart (contactW)
@@ -23,18 +22,18 @@ def lastDivisor (n : ℕ) : ℕ := if n = 1 then 0 else n / n.minFac
 
 /-- All off-diagonal prime contacts at a site vanish. -/
 def isolatedPrimeSites (A U : ℕ) : Finset ℕ :=
-  (Ioc A U).filter fun n => ∀ m ∈ (Ioc A U).erase n, contactW Λ n m = 0
+  (Ioc A U).filter fun n => ∀ m ∈ (Ioc A U).erase n, contactW ArithmeticFunction.vonMangoldt n m = 0
 
 private theorem contact_swap (w : ℕ → ℝ) (m n : ℕ) : contactW w m n = contactW w n m :=
   add_comm _ _
 
 private theorem ordered_contact {m n : ℕ} (hm : 0 < m) (h : m < n) :
-    contactW Λ m n = if m ∣ n then Λ (n/m) else 0 := by
+    contactW ArithmeticFunction.vonMangoldt m n = if m ∣ n then ArithmeticFunction.vonMangoldt (n/m) else 0 := by
   have hn : ¬n ∣ m := fun hd => (not_le_of_gt h) (Nat.le_of_dvd hm hd)
   simp only [contactW, if_neg hn, add_zero]
 
 private theorem prime_step {n p : ℕ} (hn : 0 < n) (hp : Nat.Prime p) :
-    contactW Λ n (n*p) ≠ 0 := by
+    contactW ArithmeticFunction.vonMangoldt n (n*p) ≠ 0 := by
   have hlt : n < n*p := by simpa only [Nat.mul_one] using
     (Nat.mul_lt_mul_of_pos_left hp.one_lt hn)
   rw [ordered_contact hn hlt, if_pos (dvd_mul_right n p), Nat.mul_div_cancel_left _ hn]
@@ -104,7 +103,7 @@ theorem mem_isolatedPrimeSites_iff (A U n : ℕ) :
 
 /-- Mangoldt contact entries on the complete integer interval. -/
 def primeContactMatrix (A U : ℕ) : Matrix (Ioc A U) (Ioc A U) ℝ :=
-  fun i j => contactW Λ i.val j.val
+  fun i j => contactW ArithmeticFunction.vonMangoldt i.val j.val
 
 /-- The rank-one coordinate projector commutes with the prime contact
 matrix precisely at the isolated sites classified above. -/
@@ -262,7 +261,9 @@ theorem isolatedPrimeSites_fourfold_card (k : ℕ) :
   have c₂ : (2:ℕ).factorial=2 := rfl
   have c₃ : (3:ℕ).factorial=6 := rfl
   have t₂ : Nat.totient 2=1 := by norm_num
-  have t₃ : Nat.totient 6=2 := by norm_num
+  have t₃ : Nat.totient 6=2 := by
+    rw [show (6:ℕ)=2*3 from rfl,Nat.totient_mul (Nat.coprime_two_left.mpr (show Odd 3 from ⟨1,rfl⟩)),
+      Nat.totient_prime Nat.prime_two,Nat.totient_prime Nat.prime_three]
   rw [c₂,t₂, show 3*k*2=N by dsimp [N]; omega] at h₂
   rw [c₃,t₃, show k*6=N by dsimp [N]; omega] at h₃
   change S.card = _

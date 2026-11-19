@@ -119,7 +119,7 @@ theorem zero_forces_positive_hadamard_area {h T : ℝ} (q : XiZeroCopy)
   refine ⟨p,by change h<dep q-u; linarith only [hu],hy,?_⟩
   rwa [eq]
 
-/-- A zero-free strip above depth h is equivalent to arbitrarily small
+/-- A zero-free strip above depth h is equivalent to zero
 area on cofinally many height windows. Every right zero creates an open
 patch which remains in all later windows. -/
 theorem right_zeros_iff_negative_area_vanishes {h : ℝ} (hh : 0≤h) :

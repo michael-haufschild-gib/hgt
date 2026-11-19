@@ -51,12 +51,13 @@ This module studies the complete Gram matrix of families of signed prime-support
 
 attribute [-instance] CStarMatrix.instHMulOfFintypeOfMulOfAddCommMonoid
 
+open Complex Filter Topology Set Finset Matrix
+open scoped ComplexConjugate Real
+open Zeta23
+
 noncomputable section
 namespace GaloisForLFunctions.CountingHolography.Sections
 
-open Filter Topology Finset Matrix Complex
-open scoped ComplexConjugate Real
-open Zeta23
 open ArithmeticScatteringHolography CountingHolography HTGeometry
 open HeckeKreinToeplitz RenormalizedIntersectionTheory ExclusionOfTheCriticalState
 open ArithmeticCastelnuovoSeveri ArithmeticOrientationGeometry
@@ -135,14 +136,16 @@ theorem hermQuad_probeGramMatrix_eq_atomGram {m : ℕ} (N : ℕ) (a : Fin m → 
   unfold hermQuad probeGramMatrix probePairing
   congr 1
   simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, Complex.star_def,
-    map_sum, map_mul, map_intCast, Complex.ofReal_sum, Complex.ofReal_mul, Complex.ofReal_intCast]
-  simp_rw [hreal, Finset.mul_sum, Finset.sum_mul]
+    map_sum, map_mul, map_intCast, Complex.ofReal_sum, Complex.ofReal_mul, Complex.ofReal_intCast,
+    Finset.mul_sum, Finset.sum_mul]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun r _ => ?_
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.sum_comm]
-  exact Finset.sum_congr rfl fun s _ => Finset.sum_congr rfl fun j _ => by ring
+  refine Finset.sum_congr rfl fun s _ => Finset.sum_congr rfl fun j _ => ?_
+  nth_rw 2 [hreal i j]
+  ring
 
 /-- Evaluating `probeGramMatrix` on an integer coefficient vector computes `integerProbe` on the
 resulting linear combination. -/
@@ -165,31 +168,8 @@ theorem hermNegIndex_probeGramMatrix_le {m : ℕ} (N : ℕ) (a : Fin m → (Fin 
       map_smul' := fun c x => funext fun i => by
         simp only [Pi.smul_apply, smul_eq_mul, RingHom.id_apply, Finset.mul_sum]
         exact Finset.sum_congr rfl fun r _ => by ring }
-  obtain ⟨W, hrank, hW⟩ := exists_isPosDefOn_finrank_eq_posIndex (-(probeGramMatrix N a))
-  have hinj : Function.Injective (L.domRestrict W) := by
-    rw [← LinearMap.ker_eq_bot, Submodule.eq_bot_iff]
-    intro x hx
-    by_contra hx0
-    have hxv : (x : Fin m → ℂ) ≠ 0 := fun h => hx0 (Subtype.ext h)
-    have hpos := hW x x.2 hxv
-    rw [hermQuad_neg, hermQuad_probeGramMatrix_eq_atomGram] at hpos
-    have hLx : L x = 0 := LinearMap.mem_ker.mp hx
-    change hermQuad (atomGram N) (L x) < 0 at hpos
-    rw [hLx] at hpos
-    simp [hermQuad] at hpos
-  have hmap : IsPosDefOn (-atomGram N) (W.map L) := by
-    rintro y ⟨x, hx, rfl⟩ hy0
-    have hx0 : x ≠ 0 := fun h => hy0 (by simp [h])
-    have hpos := hW x hx hx0
-    rwa [hermQuad_neg, hermQuad_probeGramMatrix_eq_atomGram, ← hermQuad_neg] at hpos
-  have hle := finrank_le_posIndex hmap
-  have heq : Module.finrank ℂ W ≤ Module.finrank ℂ (W.map L) := by
-    have hdom := LinearMap.finrank_le_finrank_of_injective hinj
-    have hrange : LinearMap.range (L.domRestrict W) = W.map L := by
-      ext y; simp [LinearMap.domRestrict]
-    rwa [hrange] at hdom
-  unfold hermNegIndex
-  omega
+  exact hermNegIndex_le_of_hermQuad_eq _ _ L fun z =>
+    (hermQuad_probeGramMatrix_eq_atomGram N a z).symm
 
 /-- An `m × m` matrix has full negative index `m` iff its Hermitian quadratic form is strictly
 negative on every nonzero vector. -/
@@ -198,9 +178,9 @@ theorem hermNegIndex_eq_card_iff_negDef {m : ℕ} (H : Matrix (Fin m) (Fin m) �
   constructor
   · intro hm z hz
     obtain ⟨W, hrank, hW⟩ := exists_isPosDefOn_finrank_eq_posIndex (-H)
-    rw [ ← hermNegIndex, hm] at hrank
-    have htop : W = ⊤ := Submodule.eq_top_of_finrank_eq
-      (hrank.trans (Module.finrank_fintype_fun_eq_card ℂ).symm)
+    rw [← hermNegIndex, hm] at hrank
+    have htop : W = ⊤ := Submodule.eq_top_of_finrank_eq <| by
+      rw [hrank, Module.finrank_fintype_fun_eq_card, Fintype.card_fin]
     have hpos := hW z (htop ▸ Submodule.mem_top) hz
     rw [hermQuad_neg] at hpos
     linarith
@@ -226,7 +206,7 @@ theorem hermNegIndex_two_ofReal_iff (g₁₁ g₁₂ g₂₂ : ℝ) :
   have hQ (x : Fin 2 → ℝ) : realQuad G x =
       g₁₁ * (x 0) ^ 2 + 2 * g₁₂ * x 0 * x 1 + g₂₂ * (x 1) ^ 2 := by
     unfold realQuad
-    simp only [Fin.sum_univ_two, G, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons]
+    simp only [Fin.sum_univ_two, G, Matrix.cons_val_zero, Matrix.cons_val_one]
     ring
   rw [hM, hermNegIndex_eq_card_iff_negDef]
   constructor
@@ -248,7 +228,7 @@ theorem hermNegIndex_two_ofReal_iff (g₁₁ g₁₂ g₂₂ : ℝ) :
         linarith
       have h := hneg z hz
       rw [hermQuad_ofReal_matrix, hQ, hQ] at h
-      simp only [z, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons,
+      simp only [z, Matrix.cons_val_zero, Matrix.cons_val_one,
         Complex.neg_re, Complex.ofReal_re, Complex.neg_im, Complex.ofReal_im] at h
       have hid : g₁₁ * (-g₁₂) ^ 2 + 2 * g₁₂ * (-g₁₂) * g₁₁ + g₂₂ * g₁₁ ^ 2 +
           (g₁₁ * (-0) ^ 2 + 2 * g₁₂ * (-0) * 0 + g₂₂ * 0 ^ 2) =
@@ -268,7 +248,7 @@ theorem hermNegIndex_two_ofReal_iff (g₁₁ g₁₂ g₂₂ : ℝ) :
     have hreal_neg (x : Fin 2 → ℝ) (hx : x 0 ≠ 0 ∨ x 1 ≠ 0) : realQuad G x < 0 := by
       rw [hQ]
       by_cases hx1 : x 1 = 0
-      · have hx0 : x 0 ≠ 0 := hx.resolve_right hx1
+      · have hx0 : x 0 ≠ 0 := hx.resolve_right (not_not.mpr hx1)
         rw [hx1]
         have hsq : 0 < (x 0) ^ 2 := sq_pos_of_ne_zero hx0
         nlinarith
@@ -288,8 +268,8 @@ theorem hermNegIndex_two_ofReal_iff (g₁₁ g₁₂ g₂₂ : ℝ) :
       · exact Complex.ext hall.1.1 hall.2.1
       · exact Complex.ext hall.1.2 hall.2.2
     rcases hnz with hre | him
-    · linarith [hreal_neg _ hre, hreal_nonpos (fun r => (z r).im)]
-    · linarith [hreal_nonpos (fun r => (z r).re), hreal_neg _ him]
+    · linarith [hreal_neg (fun r => (z r).re) hre, hreal_nonpos (fun r => (z r).im)]
+    · linarith [hreal_nonpos (fun r => (z r).re), hreal_neg (fun r => (z r).im) him]
 
 /-- Two integer probes span a negative-definite `2 × 2` Gram matrix iff both have strictly negative
 Krein square and `G₁₂² < G₁₁ G₂₂`. -/
@@ -323,15 +303,17 @@ theorem hermNegIndex_eq_of_gershgorin_row_lt_one {m N : ℕ} (a : Fin m → (Fin
     dsimp [d]
     rw [← Real.sqrt_mul (neg_nonneg.mpr (hdiag r).le), neg_mul_neg]
   let K : Fin m → Fin m → ℝ := fun r s => |G r s| / (d r * d s)
+  have hG_symm (r s : Fin m) : G r s = G s r := probePairing_symm N (a r) (a s)
   have hK_symm (r s : Fin m) : K r s = K s r := by
     dsimp [K]
-    rw [probePairing_symm N (a r) (a s), mul_comm (d r) (d s)]
+    rw [hG_symm r s, mul_comm (d r) (d s)]
   have hK_nn (r s : Fin m) : 0 ≤ K r s :=
     div_nonneg (abs_nonneg _) (mul_pos (hd_pos r) (hd_pos s)).le
   have hrow' (r : Fin m) : ∑ s ∈ Finset.univ.erase r, K r s < 1 := by
     simpa only [K, hd_mul] using hrow r
   have hreal_le (x : Fin m → ℝ) :
       realQuad G x ≤ -∑ r : Fin m, (d r * x r) ^ 2 * (1 - ∑ s ∈ Finset.univ.erase r, K r s) := by
+    classical
     let y : Fin m → ℝ := fun r => d r * x r
     have hsplit (r : Fin m) :
         ∑ s : Fin m, G r s * x r * x s =
@@ -362,24 +344,28 @@ theorem hermNegIndex_eq_of_gershgorin_row_lt_one {m N : ℕ} (a : Fin m → (Fin
       have hle1 : (∑ r : Fin m, ∑ s ∈ Finset.univ.erase r, G r s * x r * x s) ≤
           ∑ r : Fin m, ∑ s ∈ Finset.univ.erase r, K r s * (y r ^ 2 + y s ^ 2) / 2 :=
         Finset.sum_le_sum fun r _ => Finset.sum_le_sum fun s _ => hterm r s
+      let K₀ : Fin m → Fin m → ℝ := fun r s => if r = s then 0 else K r s
       have hsym_sum :
           (∑ r : Fin m, ∑ s ∈ Finset.univ.erase r, K r s * y s ^ 2) =
             ∑ r : Fin m, y r ^ 2 * ∑ s ∈ Finset.univ.erase r, K r s := by
-        have h1 : ∀ r : Fin m, ∑ s ∈ Finset.univ.erase r, K r s * y s ^ 2 =
-            ∑ s : Fin m, if s = r then 0 else K r s * y s ^ 2 := fun r => by
-          rw [← Finset.sum_filter]
-          refine Finset.sum_congr ?_ fun _ _ => rfl
-          ext s; simp
+        have h1 (r : Fin m) :
+            ∑ s ∈ Finset.univ.erase r, K r s * y s ^ 2 = ∑ s : Fin m, K₀ r s * y s ^ 2 := by
+          rw [← Finset.add_sum_erase Finset.univ (fun s => K₀ r s * y s ^ 2) (Finset.mem_univ r)]
+          have h0 : K₀ r r * y r ^ 2 = 0 := by simp [K₀]
+          rw [h0, zero_add]
+          exact Finset.sum_congr rfl fun s hs => by
+            rw [show K₀ r s = K r s from if_neg (Finset.mem_erase.mp hs).1.symm]
+        have h2 (s : Fin m) :
+            ∑ r : Fin m, K₀ r s * y s ^ 2 = y s ^ 2 * ∑ r ∈ Finset.univ.erase s, K s r := by
+          rw [← Finset.add_sum_erase Finset.univ (fun r => K₀ r s * y s ^ 2) (Finset.mem_univ s),
+            Finset.mul_sum]
+          have h0 : K₀ s s * y s ^ 2 = 0 := by simp [K₀]
+          rw [h0, zero_add]
+          exact Finset.sum_congr rfl fun r hr => by
+            rw [show K₀ r s = K r s from if_neg (Finset.mem_erase.mp hr).1, hK_symm r s, mul_comm]
         simp_rw [h1]
         rw [Finset.sum_comm]
-        refine Finset.sum_congr rfl fun s _ => ?_
-        have h2 : (∑ r : Fin m, if s = r then 0 else K r s * y s ^ 2) =
-            ∑ r ∈ Finset.univ.erase s, y s ^ 2 * K s r := by
-          rw [← Finset.sum_filter]
-          refine (Finset.sum_congr ?_ fun r _ => ?_)
-          · ext r; simp [eq_comm]
-          · rw [hK_symm r s, mul_comm]
-        rw [h2, ← Finset.mul_sum]
+        exact Finset.sum_congr rfl fun s _ => h2 s
       have havg :
           (∑ r : Fin m, ∑ s ∈ Finset.univ.erase r, K r s * (y r ^ 2 + y s ^ 2) / 2) =
             ∑ r : Fin m, y r ^ 2 * ∑ s ∈ Finset.univ.erase r, K r s := by
@@ -387,7 +373,7 @@ theorem hermNegIndex_eq_of_gershgorin_row_lt_one {m N : ℕ} (a : Fin m → (Fin
             (∑ s ∈ Finset.univ.erase r, K r s * (y r ^ 2 + y s ^ 2) / 2) =
               (y r ^ 2 * ∑ s ∈ Finset.univ.erase r, K r s) / 2 +
                 (∑ s ∈ Finset.univ.erase r, K r s * y s ^ 2) / 2 := by
-          rw [Finset.mul_sum, ← Finset.sum_div, ← Finset.sum_div, ← Finset.sum_add_distrib]
+          rw [Finset.mul_sum, Finset.sum_div, Finset.sum_div, ← Finset.sum_add_distrib]
           exact Finset.sum_congr rfl fun s _ => by ring
         simp_rw [hlin, Finset.sum_add_distrib, ← Finset.sum_div, hsym_sum]
         ring
@@ -413,22 +399,22 @@ theorem hermNegIndex_eq_of_gershgorin_row_lt_one {m N : ℕ} (a : Fin m → (Fin
     mul_nonneg (sq_nonneg _) (sub_pos.mpr (hrow' r)).le
   have hsum_re_nn :
       0 ≤ ∑ r : Fin m, (d r * (z r).re) ^ 2 * (1 - ∑ s ∈ Finset.univ.erase r, K r s) :=
-    Finset.sum_nonneg fun r _ => hterm_nn _ r
+    Finset.sum_nonneg fun r _ => hterm_nn (fun s => (z s).re) r
   have hsum_im_nn :
       0 ≤ ∑ r : Fin m, (d r * (z r).im) ^ 2 * (1 - ∑ s ∈ Finset.univ.erase r, K r s) :=
-    Finset.sum_nonneg fun r _ => hterm_nn _ r
+    Finset.sum_nonneg fun r _ => hterm_nn (fun s => (z s).im) r
   have hnz_part : (z r₀).re ≠ 0 ∨ (z r₀).im ≠ 0 := by
     by_contra! hboth; exact hr₀ (Complex.ext hboth.1 hboth.2)
   rcases hnz_part with hre0 | him0
   · have hpos0 : 0 < (d r₀ * (z r₀).re) ^ 2 * (1 - ∑ s ∈ Finset.univ.erase r₀, K r₀ s) :=
       mul_pos (sq_pos_of_ne_zero (mul_ne_zero (hd_pos r₀).ne' hre0)) (sub_pos.mpr (hrow' r₀))
     have hgt : 0 < ∑ r : Fin m, (d r * (z r).re) ^ 2 * (1 - ∑ s ∈ Finset.univ.erase r, K r s) :=
-      Finset.sum_pos' (fun r _ => hterm_nn _ r) ⟨r₀, Finset.mem_univ r₀, hpos0⟩
+      Finset.sum_pos' (fun r _ => hterm_nn (fun s => (z s).re) r) ⟨r₀, Finset.mem_univ r₀, hpos0⟩
     linarith only [hre_le, him_le, hgt, hsum_im_nn]
   · have hpos0 : 0 < (d r₀ * (z r₀).im) ^ 2 * (1 - ∑ s ∈ Finset.univ.erase r₀, K r₀ s) :=
       mul_pos (sq_pos_of_ne_zero (mul_ne_zero (hd_pos r₀).ne' him0)) (sub_pos.mpr (hrow' r₀))
     have hgt : 0 < ∑ r : Fin m, (d r * (z r).im) ^ 2 * (1 - ∑ s ∈ Finset.univ.erase r, K r s) :=
-      Finset.sum_pos' (fun r _ => hterm_nn _ r) ⟨r₀, Finset.mem_univ r₀, hpos0⟩
+      Finset.sum_pos' (fun r _ => hterm_nn (fun s => (z s).im) r) ⟨r₀, Finset.mem_univ r₀, hpos0⟩
     linarith only [hre_le, him_le, hsum_re_nn, hgt]
 
 /-! ### 2. Shifted prime-cluster approximations and the zero-loss `m`-probe index law -/
@@ -509,9 +495,9 @@ theorem exists_shifted_primeBlocks_log_approx (m M P₀ : ℕ) (Δ : Fin m → �
       · intro j
         dsimp only [f']
         split_ifs with hj
-        ·exact hf_props ⟨j.val, hj⟩
+        · exact hf_props ⟨j.val, hj⟩
         · have hjk : (⟨j.val, j.isLt.trans_le hkL⟩ : Fin L) = ⟨k, hkL⟩ := by
-            have := j.isLt; exact Fin.ext (by omega)
+            apply Fin.ext; dsimp; have := j.isLt; omega
           rw [hjk]
           exact ⟨hq_prime, hq_gt, hq_le, hq_gap.trans hexp_le⟩
   obtain ⟨f, hf_inj, hf_props⟩ := hind L le_rfl
@@ -530,6 +516,7 @@ theorem exists_shifted_primeBlocks_log_approx (m M P₀ : ℕ) (Δ : Fin m → �
   refine ⟨N, ι, ?_, fun r i => ?_⟩
   · rintro ⟨r₁, i₁⟩ ⟨r₂, i₂⟩ hij
     have hv := congrArg Fin.val hij
+    dsimp only at hv
     have h₁ := hι_val r₁ i₁
     have h₂ := hι_val r₂ i₂
     have hfeq : f (eqv.symm (r₁, i₁)) = f (eqv.symm (r₂, i₂)) := by omega
@@ -640,7 +627,7 @@ theorem exists_coScaled_disjoint_primeProbes_near {m M : ℕ} (u : Fin m → (Fi
   have hseq (n : ℕ) := hU (max U (n : ℝ)) (le_max_left _ _)
   choose Nseq ιseq hι_inj hι_props using hseq
   have hι_row_inj (n : ℕ) (r : Fin m) : Function.Injective (ιseq n r) :=
-    fun i j hij => Prod.mk.inj_iff.mp (hι_inj n (p₁ := (r, i)) (p₂ := (r, j)) hij) |>.2
+    fun i j hij => (Prod.ext_iff.mp (hι_inj n (a₁ := (r, i)) (a₂ := (r, j)) hij)).2
   let aseq (n : ℕ) (r : Fin m) : Fin (Nseq n) → ℤ := Function.extend (ιseq n r) (u r) 0
   have hzero : Tendsto (fun n : ℕ => (6 : ℝ) / (n : ℝ)) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
@@ -720,7 +707,7 @@ theorem exists_coScaled_disjoint_primeProbes_near {m M : ℕ} (u : Fin m → (Fi
     by_contra hno; exact hboth.2 (Function.extend_apply' _ _ _ hno)
   obtain ⟨i, rfl⟩ := hex_r
   obtain ⟨j, hj⟩ := hex_s
-  exact hrs (Prod.mk.inj_iff.mp (hι_inj n (p₁ := (r, i)) (p₂ := (s, j)) hj.symm)).1
+  exact hrs (Prod.ext_iff.mp (hι_inj n (a₁ := (r, i)) (a₂ := (s, j)) hj.symm)).1
 
 /-- The zero-sum two-atom cubic-spline difference `B(u) - B(u - log 2)`. -/
 def twoAtomDiffTest : ℝ → ℝ :=
@@ -743,7 +730,7 @@ theorem seenRightZeros_twoAtomDiffTest (Z : ZeroConfig) :
       funext u; simp [twoAtomDiffTest, cx, sub_eq_add_neg]
     rw [hcx, paperFT_add (cx_contDiff contDiff_cubicSpline).continuous
       (cx_hasCompactSupport hasCompactSupport_cubicSpline)
-      ((cx_contDiff hsh.1).continuous.const_smul _) ((cx_hasCompactSupport hsh.2).smul_left),
+      ((cx_contDiff hsh.1).continuous.const_smul (-1 : ℂ)) ((cx_hasCompactSupport hsh.2).smul_left),
       paperFT_smul, paperFT_cx_scaleShift_apply]
     ring
   simp only [seenRightZeros, rightZeros, Set.mem_setOf_eq]
@@ -823,16 +810,16 @@ theorem gram_twoAtomDiffTest_eq_probeGramMatrix (K : ℕ) :
       (fun c => hcB _) (fun c => hsB _)
     exact (congr_fun (congr_fun hw a) b).symm
   rw [gram_orbitKernel]
-  change zetaZeroConfig.W _ _ = _
+  dsimp only [zeroGram]
   rw [hsh_eq k, hsh_eq k',
     W_add_left zetaZeroConfig temperedConfig_zetaZeroConfig (hcB _) (hsB _)
-      ((hcB _).const_smul _) ((hsB _).smul_left)
-      ((hcB _).add ((hcB _).const_smul _)) ((hsB _).add ((hsB _).smul_left)),
+      ((hcB _).const_smul (-1 : ℂ)) ((hsB _).smul_left)
+      ((hcB _).add ((hcB _).const_smul (-1 : ℂ))) ((hsB _).add ((hsB _).smul_left)),
     W_add_right zetaZeroConfig temperedConfig_zetaZeroConfig (hcB _) (hsB _)
-      (hcB _) (hsB _) ((hcB _).const_smul _) ((hsB _).smul_left),
+      (hcB _) (hsB _) ((hcB _).const_smul (-1 : ℂ)) ((hsB _).smul_left),
     W_add_right zetaZeroConfig temperedConfig_zetaZeroConfig
-      ((hcB _).const_smul _) ((hsB _).smul_left)
-      (hcB _) (hsB _) ((hcB _).const_smul _) ((hsB _).smul_left),
+      ((hcB _).const_smul (-1 : ℂ)) ((hsB _).smul_left)
+      (hcB _) (hsB _) ((hcB _).const_smul (-1 : ℂ)) ((hsB _).smul_left),
     W_smul_left, W_smul_left, W_smul_right, W_smul_right,
     hW_atom, hW_atom, hW_atom, hW_atom]
   have hreal (a b : Fin (2 * K)) : atomGram (2 * K) a b = ((atomGram (2 * K) a b).re : ℂ) :=
@@ -853,8 +840,8 @@ private theorem exists_intVectors_near_orthogonal_neg {m K : ℕ}
     (A : Matrix (Fin K) (Fin K) ℝ) (hAsym : ∀ i j, A i j = A j i)
     (hm : m ≤ hermNegIndex (Matrix.of fun i j => (A i j : ℂ)))
     {η : ℝ} (hη : 0 < η) :
+    let B := fun x y : Fin K → ℝ => ∑ i : Fin K, ∑ j : Fin K, A i j * x i * y j
     ∃ z : Fin m → (Fin K → ℤ),
-      let B := fun x y : Fin K → ℝ => ∑ i : Fin K, ∑ j : Fin K, A i j * x i * y j
       (∀ r : Fin m, B (fun i => (z r i : ℝ)) (fun i => (z r i : ℝ)) < 0) ∧
       (∀ r s : Fin m, r ≠ s →
         |B (fun i => (z r i : ℝ)) (fun i => (z s i : ℝ))| /
@@ -875,7 +862,6 @@ private theorem exists_intVectors_near_orthogonal_neg {m K : ℕ}
   have hVT1 : Vᵀ * V = 1 := by
     have h := Unitary.coe_star_mul_self hAH.eigenvectorUnitary
     rwa [Matrix.star_eq_conjTranspose, Matrix.conjTranspose_eq_transpose_of_trivial] at h
-  set VC : Matrix (Fin K) (Fin K) ℂ := A.of fun i j => (V i j : ℂ) with hVC_def
   let VC' : Matrix (Fin K) (Fin K) ℂ := Matrix.of fun i j => (V i j : ℂ)
   have hVC_unit : IsUnit VC' := by
     refine ⟨⟨VC', VC'ᴴ, ?_, ?_⟩, rfl⟩
@@ -883,7 +869,6 @@ private theorem exists_intVectors_near_orthogonal_neg {m K : ℕ}
       have hij := congr_fun (congr_fun hVV1 i) j
       simp only [VC', Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply,
         Complex.star_def, Complex.conj_ofReal, Matrix.one_apply] at hij ⊢
-      rw [← Complex.ofReal_Inj.eq_iff] at *
       exact_mod_cast hij
     · ext i j
       have hij := congr_fun (congr_fun hVT1 i) j
@@ -1039,19 +1024,21 @@ theorem disjoint_signedPrimeProbes_gershgorin_iff_rightZeros_ge (m P₀ : ℕ) {
     have hη : 0 < η := by positivity
     obtain ⟨z, hz_diag, hz_off⟩ := exists_intVectors_near_orthogonal_neg A hAsym hK hη
     let u : Fin m → (Fin (2 * K) → ℤ) := fun r => ∑ k : Fin K, z r k • dyadicDiffAtom K k
+    have hu_cast (r : Fin m) (i : Fin (2 * K)) :
+        (u r i : ℝ) = ∑ k : Fin K, (z r k : ℝ) * (dyadicDiffAtom K k i : ℝ) := by
+      simp [u, Finset.sum_apply, zsmul_eq_mul]
     have hu_pair (r s : Fin m) :
         probePairing (2 * K) (u r) (u s) =
           ∑ k : Fin K, ∑ k' : Fin K, A k k' * (z r k : ℝ) * (z s k' : ℝ) := by
-      unfold probePairing u A
-      simp only [Matrix.of_apply, Finset.sum_apply, Pi.smul_apply, zsmul_eq_mul, Int.cast_id,
-        Int.cast_sum, Int.cast_mul]
+      unfold probePairing A
+      simp only [Matrix.of_apply, hu_cast]
       simp_rw [Finset.mul_sum, Finset.sum_mul]
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl fun k _ => ?_
       rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k' _ => by ring
+      exact Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k' _ => by ring
     have hu_neg (r : Fin m) : probePairing (2 * K) (u r) (u r) < 0 := by
       rw [hu_pair]; exact hz_diag r
     have hu_ne (r : Fin m) : u r ≠ 0 := by
@@ -1065,16 +1052,14 @@ theorem disjoint_signedPrimeProbes_gershgorin_iff_rightZeros_ge (m P₀ : ℕ) {
       simp_rw [Finset.sum_apply]
       rw [Finset.sum_comm]
       refine Finset.sum_eq_zero fun k _ => ?_
-      simp only [Pi.smul_apply, zsmul_eq_mul, Int.cast_id, ← Finset.mul_sum,
+      simp only [Pi.smul_apply, zsmul_eq_mul, ← Finset.mul_sum,
         sum_dyadicDiffAtom K k, mul_zero]
-    -- Choose uniform entry approximation tolerance from continuity of the Gershgorin ratios at `u`
-    let F : (Fin m → Fin m → ℝ) → ℝ := fun G =>
-      ∑ r : Fin m, ∑ s ∈ Finset.univ.erase r, |G r s| / Real.sqrt (G r r * G s s)
     let G₀ : Fin m → Fin m → ℝ := fun r s => probePairing (2 * K) (u r) (u s)
     have hG₀_row (r : Fin m) :
         ∑ s ∈ Finset.univ.erase r, |G₀ r s| / Real.sqrt (G₀ r r * G₀ s s) < ε / 2 := by
       by_cases hm_eq1 : m = 1
-      · have hempty : Finset.univ.erase r = ∅ := by
+      · subst hm_eq1
+        have hempty : Finset.univ.erase r = ∅ := by
           ext s; simp only [Finset.mem_erase, Finset.mem_univ, and_true, Finset.notMem_empty, iff_false, not_not]
           exact Subsingleton.elim s r
         rw [hempty, Finset.sum_empty]; positivity
@@ -1093,15 +1078,15 @@ theorem disjoint_signedPrimeProbes_gershgorin_iff_rightZeros_ge (m P₀ : ℕ) {
         rw [mul_div_assoc', div_lt_div_iff₀ (by positivity) two_pos]
         nlinarith only [hc, hε]
       exact hle.trans_lt hmul
+    have hproj (a b : Fin m) : Continuous (fun G : Fin m → Fin m → ℝ => G a b) := by fun_prop
     have hcontAt (r : Fin m) : ContinuousAt
         (fun G : Fin m → Fin m → ℝ =>
           ∑ s ∈ Finset.univ.erase r, |G r s| / Real.sqrt (G r r * G s s)) G₀ := by
       refine tendsto_finsetSum _ fun s _ => ?_
       have hnum : ContinuousAt (fun G : Fin m → Fin m → ℝ => |G r s|) G₀ :=
-        (continuous_abs.comp ((continuous_apply s).comp (continuous_apply r))).continuousAt
+        (continuous_abs.comp (hproj r s)).continuousAt
       have hden : ContinuousAt (fun G : Fin m → Fin m → ℝ => Real.sqrt (G r r * G s s)) G₀ :=
-        (Real.continuous_sqrt.comp (((continuous_apply r).comp (continuous_apply r)).mul
-          ((continuous_apply s).comp (continuous_apply s)))).continuousAt
+        (Real.continuous_sqrt.comp ((hproj r r).mul (hproj s s))).continuousAt
       have hden_ne : Real.sqrt (G₀ r r * G₀ s s) ≠ 0 :=
         (Real.sqrt_pos.mpr (mul_pos_of_neg_of_neg (hu_neg r) (hu_neg s))).ne'
       exact hnum.div hden hden_ne
@@ -1109,8 +1094,7 @@ theorem disjoint_signedPrimeProbes_gershgorin_iff_rightZeros_ge (m P₀ : ℕ) {
         (∀ r : Fin m, G r r < 0) ∧
         (∀ r : Fin m, ∑ s ∈ Finset.univ.erase r, |G r s| / Real.sqrt (G r r * G s s) < ε) := by
       refine (eventually_all.mpr fun r =>
-        (((continuous_apply r).comp (continuous_apply r)).continuousAt.eventually
-          (gt_mem_nhds (hu_neg r)))).and ?_
+        ((hproj r r).continuousAt.eventually (gt_mem_nhds (hu_neg r)))).and ?_
       exact eventually_all.mpr fun r =>
         (hcontAt r).eventually (gt_mem_nhds ((hG₀_row r).trans (by linarith)))
     obtain ⟨δ, hδ_pos, hball⟩ := Metric.eventually_nhds_iff.mp hev_nhds
@@ -1211,7 +1195,8 @@ theorem twoProbe_gershgorin_and_det_of_neg_integerProbe {N₀ : ℕ} {a₀ : Fin
     (disjoint_signedPrimeProbes_gershgorin_iff_rightZeros_ge 2 P₀ hε hε1).1.mp htwo
   let a₁ := a 0
   let a₂ := a 1
-  have herase0 : Finset.univ.erase (0 : Fin 2) = {1} := by decide
+  have herase0 : Finset.univ.erase (0 : Fin 2) = {1} := by
+    ext s; fin_cases s <;> simp
   have hrow0 := hrow 0
   rw [herase0, Finset.sum_singleton] at hrow0
   have hsqrt_pos : 0 < Real.sqrt (probePairing N a₁ a₁ * probePairing N a₂ a₂) :=
@@ -1229,7 +1214,7 @@ theorem twoProbe_gershgorin_and_det_of_neg_integerProbe {N₀ : ℕ} {a₀ : Fin
     rwa [sq_abs, Real.sq_sqrt (mul_pos_of_neg_of_neg (hdiag 0) (hdiag 1)).le] at h1
   have heq_vec : (![a₁, a₂] : Fin 2 → (Fin N → ℤ)) = a := by
     funext r; fin_cases r <;> rfl
-  exact ⟨N, a₁, a₂, hN, hsig 0, hsig 1, hgt 0, hgt 1, hdisj 0 1 (by decide),
+  exact ⟨N, a₁, a₂, hN, hsig 0, hsig 1, hgt 0, hgt 1, hdisj 0 1 Fin.zero_ne_one,
     hdiag 0, hdiag 1, habs_lt, hsq_lt,
     heq_vec ▸ (twoProbe_negDef_iff_det a₁ a₂).mpr ⟨hdiag 0, hdiag 1, hsq_lt⟩⟩
 
@@ -1311,9 +1296,13 @@ theorem singleRealRightZero_no_twoProbe_det :
   intro g₁ g₂ hg₁ hg₂ ⟨h11, h22, hdet⟩
   let g : Fin 2 → ℝ → ℂ := ![cx g₁, cx g₂]
   have hg_cd : ∀ i, ContDiff ℝ 2 (g i) := fun i => by
-    fin_cases i <;> exacts [cx_contDiff hg₁.1, cx_contDiff hg₂.1]
+    fin_cases i
+    · exact cx_contDiff hg₁.1
+    · exact cx_contDiff hg₂.1
   have hg_cs : ∀ i, HasCompactSupport (g i) := fun i => by
-    fin_cases i <;> exacts [cx_hasCompactSupport hg₁.2, cx_hasCompactSupport hg₂.2]
+    fin_cases i
+    · exact cx_hasCompactSupport hg₁.2
+    · exact cx_hasCompactSupport hg₂.2
   have hle_enc : (hermNegIndex (zeroGram Z g) : ℕ∞) ≤ (rightZeros Z).encard :=
     negIndex_zeroGram_le_of_tempered Z hZ_temp g hg_cd hg_cs
   rw [henc] at hle_enc
@@ -1327,13 +1316,12 @@ theorem singleRealRightZero_no_twoProbe_det :
       simp; linarith
   have hsym_W : (Z.W (cx g₂) (cx g₁)).re = (Z.W (cx g₁) (cx g₂)).re := by
     have hc := W_conj_symm Z (cx g₁) (cx g₂)
-    have him := congrArg Complex.re hc
-    simpa using him.symm
+    simpa using congrArg Complex.re hc
   have hmat : zeroGram Z g =
       Matrix.of ![![(((Z.W (cx g₁) (cx g₁)).re : ℝ) : ℂ), (((Z.W (cx g₁) (cx g₂)).re : ℝ) : ℂ)],
         ![(((Z.W (cx g₁) (cx g₂)).re : ℝ) : ℂ), (((Z.W (cx g₂) (cx g₂)).re : ℝ) : ℂ)]] := by
     ext i j
-    fin_cases i <;> fin_cases j <;> simp [zeroGram, g, ← hreal_W, hsym_W]
+    fin_cases i <;> fin_cases j <;> simp [zeroGram, g, hreal_W, hsym_W]
   have heq2 : hermNegIndex (zeroGram Z g) = 2 := by
     rw [hmat]
     exact (hermNegIndex_two_ofReal_iff _ _ _).mpr ⟨h11, h22, hdet⟩

@@ -236,6 +236,54 @@ theorem balanced_noise_loss {k : ℕ} (hk : 1 < k)
        _ = (∑ T ∈ F, (b T)^2)*((ρ-ρ^3)*∑ T ∈ F, (c T)^2) := by ring
        _ ≤ _ := mul_le_mul_of_nonneg_left hsum (sum_nonneg fun _ _ => sq_nonneg _)
 
+/-- Exactly the integers with a dominant block preserve the full linear
+correlation at any one strictly intermediate noise level. -/
+theorem unitary_noise_linear_iff_dominant {k : ℕ} (hk : 1<k) {ρ : ℝ} (hρ : 0<ρ) (hu : ρ<1) :
+    unitaryNoiseCorrelation k ρ = ρ*((2:ℝ)^k.primeFactors.card)^2 ↔
+      ∃ p ∈ k.primeFactors, k < (p^k.factorization p)^2 := by
+  let P := k.primeFactors
+  let F := nonlinearUnitaryRanks k
+  let c (T : Finset ℕ) : ℝ := unitaryWalshContrast k T
+  let e (T : Finset ℕ) := (ρ-ρ^T.card)*(c T)^2
+  have h₁ : unitaryNoiseCorrelation k 1 = ((2:ℝ)^P.card)^2 := by
+    simp only [unitaryNoiseCorrelation,one_pow,one_mul]
+    exact_mod_cast unitaryWalshContrast_parseval hk
+  have positive {T : Finset ℕ} (ht : T ∈ F) : 0 < ρ-ρ^T.card := by
+    have hge := (mem_filter.mp ht).2.2
+    apply sub_pos.mpr
+    simpa only [pow_one] using pow_lt_pow_of_lt_one hρ hu (show 1<T.card by omega)
+  constructor
+  · intro he
+    have hsum : ∑ T ∈ F, e T = 0 := by
+      rw [←show ρ*unitaryNoiseCorrelation k 1-unitaryNoiseCorrelation k ρ = ∑ T ∈ F,e T from
+        unitaryNoiseCorrelation_defect k ρ,h₁,he,sub_self]
+    have hz := (sum_eq_zero_iff_of_nonneg (fun T ht => mul_nonneg (positive ht).le (sq_nonneg (c T)))).mp hsum
+    have hE : unitaryVirialEnergy (1/10) k=0 := by
+      apply sum_eq_zero
+      intro T hT
+      rcases Nat.even_or_odd T.card with heven|hodd
+      · simp [unitaryWalshContrast_even (mem_powerset.mp hT) heven]
+      by_cases hi : 3 ≤ T.card
+      · have ht : T ∈ F := mem_filter.mpr ⟨hT,hodd,hi⟩
+        have hc := (mul_eq_zero.mp (hz T ht)).resolve_left (positive ht).ne'
+        change _*(c T)^2=0
+        rw [hc,mul_zero]
+      · obtain ⟨j,hj⟩ := hodd
+        have hcard : T.card=1 := by omega
+        norm_num [hcard,blockVirialSymbol]
+    exact ((unitaryVirialEnergy_zero_iff k).mp hE).resolve_left hk.not_ge
+  · rintro ⟨p,hp,hbig⟩
+    rw [unitaryNoiseCorrelation]
+    rw [sum_eq_single {p}]
+    · rw [dominant_unitary_single_mode hk hp hbig (singleton_subset_iff.mpr hp)]
+      simp
+    · intro T hT hne
+      rw [dominant_unitary_single_mode hk hp hbig (mem_powerset.mp hT),if_neg hne]
+      simp
+    · intro hh
+      exact (hh (mem_powerset.mpr (singleton_subset_iff.mpr hp))).elim
+
+#print axioms unitary_noise_linear_iff_dominant
 #print axioms unitaryNoiseCorrelation_physical
 #print axioms unitaryNoiseCorrelation_defect
 #print axioms balanced_noise_loss

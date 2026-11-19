@@ -37,7 +37,7 @@ theorem exists_two_letter_ramp {k : ℕ} (hk : 2 ≤ k) :
     rcases (show j=1 ∨ j=k by simpa using hsupp hj) with rfl | rfl <;> simp
   have hpeak : stepWeight c (k-1) = peak c := by
     have h := stepWeight_reflect_add hzero hbal hd (show 0 < k by omega)
-    simpa only [Nat.sub_zero,stepWeight_zero,add_zero] using h
+    simpa only [Nat.sub_zero,stepWeight_zero,add_zero,peak] using h
   refine ⟨c,D,hP,hsupp,?_,hr⟩
   rw [← hpeak,hr,Nat.mod_eq_of_lt (by omega),Nat.cast_sub (by omega : 1 ≤ k),Nat.cast_one]
 
@@ -74,7 +74,9 @@ theorem two_letter_exact_extremum {r : ℕ} (hr : 0 < r) :
   have he (n : ℕ) : (0:ℝ) ≤ residuePrimitive (2*r) n ∧ residuePrimitive (2*r) n ≤ r/4 := by
     let x : ℝ := (n%(2*r):ℕ)
     have hx : 0 ≤ x := Nat.cast_nonneg _
-    have hy : x ≤ 2*r := by exact_mod_cast (Nat.mod_lt n (by omega : 0 < 2*r)).le
+    have hy : x ≤ 2*r := by
+      dsimp only [x]
+      exact_mod_cast (Nat.mod_lt n (by omega : 0 < 2*r)).le
     change 0 ≤ x*((2*r:ℕ)-x)/(2*(2*r:ℕ)) ∧ x*((2*r:ℕ)-x)/(2*(2*r:ℕ)) ≤ r/4
     push_cast
     exact ⟨div_nonneg (mul_nonneg hx (sub_nonneg.mpr hy)) (by positivity),

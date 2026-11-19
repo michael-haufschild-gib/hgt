@@ -90,11 +90,11 @@ theorem null_pair_cleared_p_laplacian (q r : Fin d → ℝ) (m : ℕ) (p : ℂ) 
     rw [nullPolarization_harmonic,nullPolarization_harmonic,add_zero]
   have hab : waveOverlap b a=waveOverlap a b := sum_congr rfl fun i _ => mul_comm _ _
   have d₁ : (∑ i, C (a i)*pderiv i P)=C (waveOverlap a b)*(C ((m+2:ℕ):ℂ)*M^(m+1)) := by
-    simp only [P,map_add,mul_add,sum_add_distrib,L,M,wave_direction,overlap_self_zero,
-      map_zero,zero_mul,zero_add,a,b]
+    simp only [P,map_add,mul_add,sum_add_distrib,L,M,wave_direction,
+      show waveOverlap a a=0 from overlap_self_zero q,map_zero,zero_mul,zero_add]
   have d₂ : (∑ i, C (b i)*pderiv i P)=C (waveOverlap a b)*(C ((m+2:ℕ):ℂ)*L^(m+1)) := by
-    simp only [P,map_add,mul_add,sum_add_distrib,L,M,wave_direction,overlap_self_zero,
-      map_zero,zero_mul,add_zero,hab,a,b]
+    simp only [P,map_add,mul_add,sum_add_distrib,L,M,wave_direction,
+      show waveOverlap b b=0 from overlap_self_zero r,map_zero,zero_mul,add_zero,hab]
   change clearedPLaplacian p P = _
   rw [clearedPLaplacian,hl,mul_zero,zero_add]
   have hh (i j : Option (Fin d)) : pderiv i (pderiv j P) =
@@ -135,9 +135,34 @@ theorem null_pair_p_harmonic_iff (q r : Fin d → ℝ) (m : ℕ) (p : ℂ) :
     simp only [map_add,map_pow,eval_linear,overlap_self_zero,map_zero,zero_pow (by omega : m+2 ≠ 0),add_zero] at h
     exact pow_ne_zero _ hc h
   change _ ↔ p=2 ∨ waveOverlap a b=0
-  simp [hc,hL,hM,hS,mul_eq_zero,sub_eq_zero,a,b] at *
+  change C ((p-2)*(((m+2:ℕ):ℂ)^3)*((m+1:ℕ):ℂ)*(waveOverlap a b)^2)*
+        (momentLinearForm ℂ a*momentLinearForm ℂ b)^m*
+          (momentLinearForm ℂ a^(m+2)+momentLinearForm ℂ b^(m+2))=0 ↔ _
+  have hd : ((m+2:ℕ):ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  have hpred : ((m+1:ℕ):ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  simp only [mul_eq_zero,MvPolynomial.C_eq_zero,sub_eq_zero,pow_ne_zero _ hd,hpred,
+    pow_ne_zero _ hc,pow_ne_zero _ (mul_ne_zero hL hM),hS,hc,or_false]
+
+/-- The very same Cauchy–Schwarz defect controls the Clifford central
+charge of the pair and its nonlinear polynomial interaction. -/
+theorem null_pair_p_harmonic_iff_radial_equality (q r : Fin d → ℝ) (m : ℕ) (p : ℂ) :
+    let L := momentLinearForm ℂ (nullPolarization q)
+    let M := momentLinearForm ℂ (nullPolarization r)
+    clearedPLaplacian p (L^(m+2)+M^(m+2))=0 ↔
+      p=2 ∨ radialLength q*radialLength r=∑ i, q i*r i := by
+  rw [null_pair_p_harmonic_iff]
+  have he : waveOverlap (nullPolarization q) (nullPolarization r) =
+      ((radialLength q*radialLength r-∑ i, q i*r i : ℝ):ℂ) := by
+    simp only [waveOverlap,Fintype.sum_option,nullPolarization,Complex.ofReal_sub,
+      Complex.ofReal_mul,Complex.ofReal_sum]
+    have hh (i : Fin d) : Complex.I*(q i:ℂ)*(Complex.I*(r i:ℂ)) = -((q i:ℂ)*(r i:ℂ)) := by
+      rw [show Complex.I*(q i:ℂ)*(Complex.I*(r i:ℂ)) = Complex.I^2*((q i:ℂ)*(r i:ℂ)) by ring,
+        Complex.I_sq,neg_one_mul]
+    simp only [hh,sum_neg_distrib,sub_eq_add_neg]
+  rw [he,Complex.ofReal_eq_zero,sub_eq_zero]
 
 #print axioms null_wave_cleared_p_laplacian
 #print axioms null_pair_p_harmonic_iff
+#print axioms null_pair_p_harmonic_iff_radial_equality
 
 end GaloisForLFunctions.RepresentationLifting.Spinor

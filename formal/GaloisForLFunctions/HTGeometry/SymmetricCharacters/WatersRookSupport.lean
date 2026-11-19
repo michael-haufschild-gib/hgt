@@ -161,6 +161,64 @@ theorem watersBoards_next_card (g : ℕ) : (watersBoards (g+1) g).card = 2^(g+1)
   exact ⟨fun hx => (h.mp (Or.inr hx)).resolve_left (mem_sdiff.mp (h₁ hx)).2,
     fun hx => (h.mpr (Or.inr hx)).resolve_left (mem_sdiff.mp (h₂ hx)).2⟩
 
+/-- Exact area of the extremal staircase, including the empty diagram. -/
+theorem rookStaircase_card (k : ℕ) : (rookStaircase k).cells.card = (k+1).choose 2 := by
+  induction k with
+  | zero =>
+    have he : (rookStaircase 0).cells = ∅ := eq_empty_iff_forall_notMem.mpr
+      fun _ hp => (Nat.not_lt_zero _) (mem_triangle.mp hp)
+    simp [he]
+  | succ k ih =>
+    have hs := card_sdiff_add_card_eq_card ((stair_mono_iff k (k+1)).mpr (Nat.le_succ _))
+    rw [step_card,ih] at hs
+    rw [Nat.choose_succ_succ (k+1) 1,Nat.choose_one_right]
+    exact hs.symm
+
+/-- Equality in the rook area bound singles out the entire outer shape. -/
+theorem rook_area_eq_iff {Y : YoungDiagram} {k : ℕ} (hr : HoldsRooks Y.cells k) :
+    Y.card = (k+1).choose 2 ↔ Y = rookStaircase k := by
+  have hle := (holdsRooks_iff_contains Y k).mp hr
+  constructor
+  · intro h
+    have he : (rookStaircase k).cells = Y.cells := eq_of_subset_of_card_le hle (by
+      rw [rookStaircase_card]; exact h.le)
+    exact le_antisymm (show Y.cells ⊆ (rookStaircase k).cells from he.symm.le) hle
+  · rintro rfl
+    exact rookStaircase_card _
+
+/-- The area distribution at the second moment is the full binomial row:
+an excess of exactly j cells leaves exactly g+1 choose j shapes. -/
+theorem watersBoards_next_area (g j : ℕ) :
+    ((watersBoards (g+1) g).filter fun B => B.card = (g+1).choose 2+j).card =
+      (g+1).choose j := by
+  let L := (rookStaircase g).cells
+  let D := (rookStaircase (g+1)).cells \ L
+  have hd (T : Finset (ℕ × ℕ)) (hT : T ⊆ D) : Disjoint L T :=
+    disjoint_left.mpr fun _ hl ht => (mem_sdiff.mp (hT ht)).2 hl
+  have he : ((watersBoards (g+1) g).filter fun B => B.card = (g+1).choose 2+j) =
+      (D.powersetCard j).image (fun T => L∪T) := by
+    ext B
+    rw [mem_filter,watersBoards_next,mem_image,mem_image]
+    constructor
+    · rintro ⟨⟨T,ht,rfl⟩,hB⟩
+      have hT : T ⊆ D := mem_powerset.mp ht
+      change (L∪T).card = _ at hB
+      rw [card_union_of_disjoint (hd T hT),show L.card = _ from rookStaircase_card g] at hB
+      exact ⟨T,mem_powersetCard.mpr ⟨hT,by omega⟩,rfl⟩
+    · rintro ⟨T,ht,rfl⟩
+      obtain ⟨hT,hj⟩ := mem_powersetCard.mp ht
+      refine ⟨⟨T,mem_powerset.mpr hT,rfl⟩,?_⟩
+      rw [card_union_of_disjoint (hd T hT),show L.card = _ from rookStaircase_card g,hj]
+  rw [he,card_image_of_injOn,card_powersetCard,show D.card = g+1 from step_card g]
+  intro A hA B hB h
+  have ca := (mem_powersetCard.mp hA).1
+  have cb := (mem_powersetCard.mp hB).1
+  ext x
+  have hmem := Iff.of_eq (congrArg (fun C : Finset (ℕ × ℕ) => x ∈ C) h)
+  simp only [mem_union] at hmem
+  exact ⟨fun ha => (hmem.mp (Or.inr ha)).resolve_left (mem_sdiff.mp (ca ha)).2,
+    fun hb => (hmem.mpr (Or.inr hb)).resolve_left (mem_sdiff.mp (cb hb)).2⟩
+
 /-- At the first possible moment the unique contributing board carries
 exactly one placement. Both projections of a full placement exhaust the
 coordinate range, so each column must attain its row's upper bound. -/
@@ -195,6 +253,8 @@ theorem waters_first_placement {g : ℕ} {R : Finset (ℕ × ℕ)}
   · rw [card_image_of_injective _ (fun i j hij => congrArg Prod.fst hij), card_range, hcard]
 
 #print axioms holdsRooks_iff_contains
+#print axioms rook_area_eq_iff
+#print axioms watersBoards_next_area
 #print axioms waters_first_placement
 #print axioms watersBoards_nonempty_iff
 #print axioms watersBoards_next_card

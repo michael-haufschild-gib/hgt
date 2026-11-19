@@ -47,7 +47,7 @@ private theorem smooth_prime_product {z H d p : ℕ} (hd : d ∈ squarefreeSmoot
     ext q
     simp only [mem_filter,mem_union,mem_singleton]
     exact ⟨fun ⟨h,notSmall⟩ => h.elim (fun hq => (notSmall (Nat.mem_primesLE.mp (factors hq)).1).elim) id,
-      fun eq => eq ▸ ⟨Or.inr rfl,high.not_ge⟩⟩
+      fun eq => ⟨Or.inr eq,by simpa only [eq] using high.not_ge⟩⟩
   rw [only,prod_singleton]
 
 /-- Multiplying smooth integers of one sign by a prime above the sieve
@@ -116,13 +116,18 @@ private theorem scaled_smooth_boxes {a : ℝ} (ha : 0<a) (a1 : a ≤ 1) :
     eventually_ge_atTop (2:ℕ)] with X supply logH scaled large pos
   let H := boxHeight a X
   let L := Real.log (X:ℝ)
+  change 2 ≤ Real.log (H:ℝ) at logH
+  change 2*E ≤ (X:ℝ)^a at scaled
+  change 2*Real.log (2*E)/a ≤ L at large
   have xp : (0:ℝ)<X := Nat.cast_pos.mpr (by omega)
   have x1 : (1:ℝ) ≤ X := by exact_mod_cast (by omega : 1 ≤ X)
   have lx := Real.log_nonneg x1
   have power := Real.rpow_nonneg xp.le a
   have floor := Nat.floor_le (div_nonneg power Ep.le)
   have floor' := Nat.lt_floor_add_one ((X:ℝ)^a/E)
-  have hp : 1 ≤ H := Nat.le_floor ((le_div_iff₀ Ep).mpr (by linarith only [scaled,Ep]))
+  have hp : 1 ≤ H := Nat.le_floor (show ((1:ℕ):ℝ) ≤ (X:ℝ)^a/E by
+    rw [Nat.cast_one,le_div_iff₀ Ep,one_mul]
+    linarith only [scaled,Ep])
   have hR : (0:ℝ)<H := Nat.cast_pos.mpr hp
   have small : (H:ℝ)*E ≤ (X:ℝ)^a := (le_div_iff₀ Ep).mp floor
   have up : (X:ℝ)^a ≤ (2*E)*H := by
@@ -132,6 +137,7 @@ private theorem scaled_smooth_boxes {a : ℝ} (ha : 0<a) (a1 : a ≤ 1) :
   have lenLog : (a/2)*L ≤ Real.log H := by
     have split := Real.log_le_log (Real.rpow_pos_of_pos xp a) up
     rw [Real.log_rpow xp,Real.log_mul (by positivity) hR.ne'] at split
+    change a*L ≤ Real.log (2*E)+Real.log H at split
     linarith only [split,(div_le_iff₀ ha).mp large]
   have wall : Real.log H^2 ≤ (logSquareCutoff X:ℝ) := by
     apply log_wall_above_smaller_height hp
@@ -168,7 +174,7 @@ private theorem scaled_smooth_boxes {a : ℝ} (ha : 0<a) (a1 : a ≤ 1) :
          _ = _ := by dsimp only [C]; ring
   have c0 : 0 ≤ C := by dsimp only [C,K]; positivity
   exact mul_le_mul base (Real.exp_le_exp.mpr charge) (Real.exp_pos _).le
-    (mul_nonneg (mul_nonneg c0 (Real.sqrt_nonneg H)) (pow_nonneg (by linarith only [logH]) _))
+    (mul_nonneg (mul_nonneg c0 (Real.sqrt_nonneg H)) (pow_nonneg ((by norm_num : (0:ℝ) ≤ 2).trans logH) _))
 
 private theorem drop_exponential {U V c L K : ℝ} (hc : 0 ≤ c) (hL : 1 ≤ L) (u0 : 0 ≤ U)
     (h : max 0 K*U*Real.exp (c*L/Real.log L) ≤ V) : K*U ≤ V := by
@@ -203,9 +209,10 @@ theorem exponential_excess_below_a_polynomial_rough_cut {γ : ℝ} (hg : 0<γ) (
   refine ⟨c,hc,?_⟩
   intro D B
   let K := max 0 B
-  have grow := (tendsto_rpow_atTop hg).comp tendsto_natCast_atTop_atTop
+  have grow : Tendsto (fun X : ℕ => (X:ℝ)^γ) atTop atTop :=
+    (tendsto_rpow_atTop hg).comp tendsto_natCast_atTop_atTop
   have halfTop : Tendsto (fun X : ℕ => (X:ℝ)^γ/2) atTop atTop := tendsto_atTop.mpr
-    (fun c => (grow.eventually_ge_atTop (2*c)).mono (fun n hn => by dsimp only; linarith only [hn]))
+    (fun c => (grow.eventually_ge_atTop (2*c)).mono (fun n hn => by linarith only [hn]))
   filter_upwards [scaled (D+1) (3*K),halfTop eventually_dyadic_prime_lower,
     cutoff_below_power hg,eventually_ge_atTop (2:ℕ)] with X boxes prime gap pos
   intro σ sign
@@ -215,6 +222,7 @@ theorem exponential_excess_below_a_polynomial_rough_cut {γ : ℝ} (hg : 0<γ) (
   let P := (RHTower.windowPrimes (T/2) (2*(T/2))).card
   let Q := ((squarefreeSmoothUpTo z H).filter (fun n => μ n= -σ)).card
   let L := Real.log (X:ℝ)
+  change 2*(z:ℝ) ≤ T at gap
   have x0 : (0:ℝ)<X := Nat.cast_pos.mpr (by omega)
   have lx : 0<L := Real.log_pos (by exact_mod_cast (by omega : 1<X))
   have tpos : 0<T := Real.rpow_pos_of_pos x0 γ
@@ -233,6 +241,7 @@ theorem exponential_excess_below_a_polynomial_rough_cut {γ : ℝ} (hg : 0<γ) (
   change (3*K)*(X:ℝ)^(a/2)*L^(D+1)*Real.exp (c*L/Real.log L) ≤ (Q:ℝ) at smooth
   change (99/100)*(T/2)/Real.log (2*(T/2)) ≤ (P:ℝ) at prime
   rw [twice,Real.log_rpow x0,div_le_iff₀ (mul_pos hg lx)] at prime
+  change (99/100)*(T/2) ≤ (P:ℝ)*(γ*L) at prime
   have density := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right small.le lx.le)
     (Nat.cast_nonneg (α := ℝ) P)
   have pcount : T ≤ 3*(P:ℝ)*L := by linarith only [prime,density,tpos]
@@ -296,6 +305,7 @@ theorem both_signs_below_a_polynomial_rough_cofactor_cut {γ : ℝ} (hg : 0<γ) 
   obtain ⟨c,hc,pop⟩ := exponential_excess_below_a_polynomial_rough_cut hg small
   filter_upwards [pop D (max 0 B),(Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop 1]
     with X h large
+  change 1 ≤ Real.log (X:ℝ) at large
   intro σ sign
   have lx := zero_le_one.trans large
   rw [mul_assoc]
@@ -310,6 +320,7 @@ theorem both_signs_with_unit_rough_cofactor (D : ℕ) (B : ℝ) :
   obtain ⟨c,hc,pop⟩ := scaled_smooth_boxes (a := 1) zero_lt_one le_rfl
   filter_upwards [pop D (max 0 B),(Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop 1]
     with X supply large
+  change 1 ≤ Real.log (X:ℝ) at large
   intro σ sign
   have h := supply σ sign
   rw [←Real.sqrt_eq_rpow] at h
@@ -321,10 +332,10 @@ theorem both_signs_with_unit_rough_cofactor (D : ℕ) (B : ℝ) :
   obtain ⟨mem,mark⟩ := mem_filter.mp hn
   obtain ⟨⟨⟨np,up⟩,factors⟩,sf⟩ := mem_squarefreeSmoothUpTo.mp mem
   have height : boxHeight 1 X ≤ X := by
-    apply Nat.cast_le.mp
-    have floor := Nat.floor_le (div_nonneg (Real.rpow_nonneg (Nat.cast_nonneg X) 1) (Real.exp_pos _).le)
-    rw [Real.rpow_one] at floor
-    exact floor.trans (div_le_self (Nat.cast_nonneg X) (Real.one_le_exp (by norm_num)))
+    rw [boxHeight,Real.rpow_one]
+    apply (Nat.cast_le (α := ℝ)).mp
+    exact (Nat.floor_le (div_nonneg (Nat.cast_nonneg X) (Real.exp_pos 2).le)).trans
+      (div_le_self (Nat.cast_nonneg X) (Real.one_le_exp (by norm_num)))
   have empty : (n.primeFactors.filter (fun p => ¬p ≤ logSquareCutoff X))=∅ :=
     filter_eq_empty_iff.mpr (fun p hp => not_not.mpr (Nat.mem_primesLE.mp (factors hp)).1)
   exact mem_filter.mpr ⟨mem_filter.mpr ⟨mem_filter.mpr ⟨mem_Icc.mpr ⟨np,up.trans height⟩,sf⟩,
@@ -340,12 +351,13 @@ private theorem smooth_quotient_walls :
     eventually_ge_atTop (2:ℕ)] with X small large pos
   let y := logSquareCutoff X
   let T := X/y
+  change 2*(y:ℝ) ≤ (X:ℝ)^(1/2:ℝ) at small
   have xp : (0:ℝ)<X := Nat.cast_pos.mpr (by omega)
   have xe : 1 ≤ (X:ℝ) := by exact_mod_cast (by omega : 1 ≤ X)
   have e : Real.exp 1 ≤ (y:ℝ) := (Nat.le_ceil _).trans (Nat.cast_le.mpr large)
   have y1 : 1 ≤ y := Nat.one_le_cast.mp ((Real.one_le_exp (by norm_num : (0:ℝ) ≤ 1)).trans e)
   have yx : y ≤ X := by
-    apply Nat.cast_le.mp
+    apply (Nat.cast_le (α := ℝ)).mp
     have cheap := Real.rpow_le_rpow_of_exponent_le xe (by norm_num : (1:ℝ)/2 ≤ 1)
     rw [Real.rpow_one] at cheap
     linarith only [small,cheap,Nat.cast_nonneg (α := ℝ) y]
@@ -369,7 +381,7 @@ private theorem smooth_quotient_walls :
     have h := Real.sqrt_le_sqrt br
     rw [Real.sqrt_mul (by positivity)] at h
     exact h.trans (mul_le_mul_of_nonneg_right (Real.sqrt_le_self_iff.mpr (Or.inr
-      (by have r := (Nat.one_le_cast (R := ℝ)).mpr y1; linarith only [r]))) (Real.sqrt_nonneg T))
+      (by have r := (Nat.one_le_cast (α := ℝ)).mpr y1; linarith only [r]))) (Real.sqrt_nonneg T))
   have logt := Real.log_le_log xr a
   rw [Real.log_sqrt xp.le] at logt
   have bound := mul_le_mul_of_nonneg_right e (Nat.cast_nonneg (α := ℝ) T)
@@ -431,6 +443,7 @@ theorem exact_second_order_scale_of_the_smooth_main_term :
   let y := logSquareCutoff X
   let L := Real.log (X:ℝ)
   let l := Real.log (T X:ℝ)
+  change 2 ≤ l at large
   have l1 : 1<l := by linarith only [large]
   have lp := zero_lt_one.trans l1
   have ll := Real.log_pos l1
@@ -439,7 +452,7 @@ theorem exact_second_order_scale_of_the_smooth_main_term :
   have scale : (t/2)*L/Real.log L ≤ t*l/Real.log l := by
     apply LE.le.trans _ (div_le_div_of_nonneg_left (mul_nonneg ht.le lp.le) ll logs_order)
     apply div_le_div_of_nonneg_right _ (ll.trans_le logs_order).le
-    have ready := mul_le_mul_of_nonneg_right wall.2.2.2.1 ht.le
+    have ready := mul_le_mul_of_nonneg_right (show L ≤ 2*l from wall.2.2.2.1) ht.le
     linarith only [ready]
   have size := supply y wall.2.2.2.2 (1:ℤ) (Or.inl rfl)
   simp only [pow_zero,mul_one] at size
