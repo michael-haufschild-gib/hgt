@@ -65,9 +65,10 @@ private theorem chosen_walk (F : ℕ → ℕ) (h : ℤ → ℤ) (zero : h 0=0)
     have step : fixedWalk F (n+1)=s+v := sum_Icc_succ_top (by omega : 1 ≤ n+1) _
     have select : n+1 ∈ chosenSteps F h ↔ h (s+v) ≠ h s := by
       simp only [chosenSteps,Set.mem_setOf_eq,step,Nat.add_sub_cancel]
+      rfl
     rw [sum_Icc_succ_top (by omega),ih,step]
     change h s+(if n+1 ∈ chosenSteps F h then v else 0)=h (s+v)
-    rw [if_congr select (fun _ => rfl) (fun _ => rfl)]
+    simp only [select]
     have sign : v=0 ∨ v=1 ∨ v= -1 := by
       unfold v fixedStep
       split
@@ -79,21 +80,17 @@ private theorem chosen_walk (F : ℕ → ℕ) (h : ℤ → ℤ) (zero : h 0=0)
       rw [hv]; split <;> omega
     · have hh := inc (s-1)
       rw [sub_add_cancel] at hh
-      rw [hv]; split <;> omega
+      have eq : s+v=s-1 := by omega
+      rw [eq]
+      by_cases same : h (s-1)=h s
+      · simp [same]
+      · rw [if_pos same]
+        omega
 
 private theorem compare_requested (F G : ℕ → ℕ) (S : Set ℕ) (X : ℕ) :
     |fixedSignedPrefix G X-(∑ n ∈ requestedFixed F S X,(μ n:ℝ))| ≤ (fixedErrors F G S X).card := by
-  let I := squarefreeOf (Icc 1 X)
-  let want := fun n : ℕ => n=1 ∨ n ∈ S ∧ F n=n
-  change |(∑ n ∈ I.filter (fun n => G n=n),(μ n:ℝ))-(∑ n ∈ I.filter want,(μ n:ℝ))| ≤
-    ((I.filter (fun n => ¬(G n=n ↔ want n))).card:ℝ)
-  rw [sum_filter,sum_filter,←sum_sub_distrib]
-  apply (abs_sum_le_sum_abs ..).trans
-  rw [←sum_boole]
-  apply sum_le_sum
-  intro n _
-  have hm : |(μ n:ℝ)| ≤ 1 := by exact_mod_cast (abs_moebius_le_one (n := n))
-  by_cases hf : G n=n <;> by_cases hw : want n <;> simp [hf,hw,hm]
+  simpa only [requestedFixed,fixedErrors,supportErrors,Set.mem_setOf_eq] using
+    fixed_charge_error_le_support_errors G {n | n ∈ S ∧ F n=n} X
 
 private theorem requested_charge_of_subwalk (F : ℕ → ℕ) (h : ℤ → ℤ) (zero : h 0=0)
     (inc : ∀ a,h (a+1)=h a ∨ h (a+1)=h a+1) (X : ℕ) :
@@ -200,7 +197,7 @@ theorem fractional_allocation_of_the_mertens_prefix (α : ℝ) (hα : 0 ≤ α) 
   have incr (a : ℤ) : h (a+1)=h a ∨ h (a+1)=h a+1 := by
     have eq : α*((a+1:ℤ):ℝ)=α*(a:ℝ)+α := by push_cast; ring
     have lo := Int.floor_mono (le_add_of_nonneg_right hα : α*(a:ℝ) ≤ α*(a:ℝ)+α)
-    have hi := Int.floor_mono (add_le_add_left h1 (α*(a:ℝ)))
+    have hi := Int.floor_mono (show α*(a:ℝ)+α ≤ α*(a:ℝ)+1 by linarith only [h1])
     rw [Int.floor_add_one] at hi
     simp only [h,eq]
     omega

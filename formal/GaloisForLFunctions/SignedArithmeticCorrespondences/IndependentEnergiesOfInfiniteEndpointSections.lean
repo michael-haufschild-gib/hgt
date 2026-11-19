@@ -40,38 +40,40 @@ private theorem mixed_entry_price (u v z C a b : ℝ) (hz₁ : |z| ≤ C*a) (hz�
            (mul_le_mul_of_nonneg_right hz₂ (sq_nonneg v))) (by norm_num)
        _ = _ := by ring
 
-private theorem majorant_total (n : ℕ+) (C : ℝ) (hC : 0 ≤ C) (f g : ℕ → ℝ)
-    (hf : Summable f) (hg : Summable g) (hn : 0 ≤ (∑' i, f i)+(∑' j, g j)) :
-    let M := fun p => (C/2)*(outer f (cell n) p+outer (cell n) g p)
-    Summable M ∧ (∑' p, M p) ≤ C/(2*(n:ℝ))*((∑' i, f i)+(∑' j, g j)) := by
-  intro M
-  have ht : Summable (cell n) := (telescoping_cell_le n n.pos).1
-  obtain ⟨h₁,e₁⟩ := outer_series f (cell n) hf ht
-  obtain ⟨h₂,e₂⟩ := outer_series (cell n) g ht hg
-  refine ⟨(h₁.add h₂).mul_left (C/2),?_⟩
-  change (∑' p, (C/2)*(outer f (cell n) p+outer (cell n) g p)) ≤ _
+/-- A summable row majorant prices an infinite Hankel intersection by the
+two individual square energies. Each row is charged before gluing. -/
+theorem absoluteIntersection_le_row_sum {A B : ℕ → ℝ} {C : ℝ} (hB : Summable B)
+    (hA : ∀ j k : ℕ, j≤k → |A k| ≤ C*B j)
+    (u v : ℕ → ℝ) (hu : Summable (fun i => u i^2)) (hv : Summable (fun j => v j^2)) :
+    Summable (fun p : ℕ × ℕ => |u p.1*v p.2*A (p.1+p.2)|) ∧
+      absoluteIntersection A u v ≤ (C/2)*((∑' i, u i^2)+(∑' j, v j^2))*(∑' j, B j) := by
+  let M (p : ℕ × ℕ) := (C/2)*(u p.1^2*B p.2+B p.1*v p.2^2)
+  have hdom (p : ℕ × ℕ) : |u p.1*v p.2*A (p.1+p.2)| ≤ M p :=
+    mixed_entry_price (u p.1) (v p.2) (A (p.1+p.2)) C (B p.2) (B p.1)
+      (hA p.2 (p.1+p.2) (Nat.le_add_left ..)) (hA p.1 (p.1+p.2) (Nat.le_add_right ..))
+  obtain ⟨h₁,e₁⟩ := outer_series (fun i => u i^2) B hu hB
+  obtain ⟨h₂,e₂⟩ := outer_series B (fun j => v j^2) hB hv
+  have ht : Summable M := (h₁.add h₂).mul_left (C/2)
+  have hs := Summable.of_nonneg_of_le (fun p : ℕ × ℕ => abs_nonneg (u p.1*v p.2*A (p.1+p.2))) hdom ht
+  refine ⟨hs,(hs.tsum_le_tsum hdom ht).trans_eq ?_⟩
+  change (∑' p, (C/2)*(outer (fun i => u i^2) B p+outer B (fun j => v j^2) p)) = _
   rw [tsum_mul_left,h₁.tsum_add h₂,e₁,e₂]
-  have hcell : (∑' j, cell n j) ≤ 1/(n:ℝ) := (telescoping_cell_le n n.pos).2
-  calc _ = (C/2*((∑' i, f i)+(∑' j, g j)))*(∑' j, cell n j) := by ring
-       _ ≤ (C/2*((∑' i, f i)+(∑' j, g j)))*(1/(n:ℝ)) :=
-         mul_le_mul_of_nonneg_left hcell (mul_nonneg (by positivity) hn)
-       _ = _ := by simp only [div_eq_mul_inv,mul_inv_rev]; ring
+  ring
 
 private theorem energy_bound (n : ℕ+) {A : ℕ → ℝ} {C : ℝ} (hC : 0≤C)
     (hA : ∀ j k : ℕ, j≤k → |A k| ≤ C*cell n j)
     (u v : ℕ → ℝ) (hu : Summable (fun i => u i^2)) (hv : Summable (fun j => v j^2)) :
     Summable (fun p : ℕ × ℕ => |u p.1*v p.2*A (p.1+p.2)|) ∧
       absoluteIntersection A u v ≤ C/(2*(n:ℝ))*((∑' i, u i^2)+(∑' j, v j^2)) := by
-  let M (p : ℕ × ℕ) := (C/2)*(u p.1^2*cell n p.2+cell n p.1*v p.2^2)
-  have hdom (p : ℕ × ℕ) : |u p.1*v p.2*A (p.1+p.2)| ≤ M p :=
-    mixed_entry_price (u p.1) (v p.2) (A (p.1+p.2)) C (cell n p.2) (cell n p.1)
-      (hA p.2 (p.1+p.2) (Nat.le_add_left ..)) (hA p.1 (p.1+p.2) (Nat.le_add_right ..))
-  have ht := majorant_total n C hC (fun i => u i^2) (fun j => v j^2) hu hv
-    (add_nonneg (tsum_nonneg fun i => sq_nonneg (u i)) (tsum_nonneg fun j => sq_nonneg (v j)))
-  change Summable M ∧ (∑' p, M p) ≤ _ at ht
-  have hs : Summable (fun p : ℕ × ℕ => |u p.1*v p.2*A (p.1+p.2)|) :=
-    Summable.of_nonneg_of_le (fun p => abs_nonneg _) hdom ht.1
-  exact ⟨hs,(hs.tsum_le_tsum hdom ht.1).trans ht.2⟩
+  obtain ⟨ht,hcell⟩ := telescoping_cell_le n n.pos
+  have h := absoluteIntersection_le_row_sum (B := cell n) ht hA u v hu hv
+  refine ⟨h.1,h.2.trans ?_⟩
+  calc _ ≤ C/2*((∑' i, u i^2)+(∑' j, v j^2))*(1/(n:ℝ)) :=
+         mul_le_mul_of_nonneg_left hcell (mul_nonneg (by positivity)
+           (add_nonneg (tsum_nonneg fun i => sq_nonneg (u i)) (tsum_nonneg fun j => sq_nonneg (v j))))
+       _ = _ := by simp only [div_eq_mul_inv,mul_inv_rev]; ring
+
+#print axioms absoluteIntersection_le_row_sum
 
 /-- Degree-n block curvature on actual integral graphs, shifted by k. -/
 def shiftedBlockCurvature (d n : ℕ+) (k : ℕ) : ℝ :=
@@ -194,7 +196,8 @@ private theorem rounded_limit (u : ℕ → ℝ) (i : ℕ) :
   filter_upwards [eventually_gt_atTop i] with N hi
   simpa only [Real.dist_eq,roundedSection,if_pos hi] using (rounded_bounds N (u i)).2
 
-private theorem integral_exhaustion (A u v : ℕ → ℝ)
+/-- Absolute summability lets the same rounded integral endpoints exhaust the mixed kernel. -/
+theorem roundedIntersection_tendsto (A u v : ℕ → ℝ)
     (h : Summable (fun p : ℕ × ℕ => |u p.1*v p.2*A (p.1+p.2)|)) :
     Tendsto (fun N => roundedIntersection N A u v) atTop (𝓝 (∑' p : ℕ × ℕ, u p.1*v p.2*A (p.1+p.2))) := by
   let F (N : ℕ) (p : ℕ × ℕ) := roundedSection N u p.1*roundedSection N v p.2*A (p.1+p.2)
@@ -229,8 +232,8 @@ theorem integral_sections_realize_both_completions (d n : ℕ+) (u v : ℕ → �
     let D := fun k : ℕ => 2*realEndpoint d ((n:ℕ)+k)
     Tendsto (fun N => roundedIntersection N K u v) atTop (𝓝 (∑' p : ℕ × ℕ,u p.1*v p.2*K (p.1+p.2))) ∧
     Tendsto (fun N => roundedIntersection N D u v) atTop (𝓝 (∑' p : ℕ × ℕ,u p.1*v p.2*D (p.1+p.2))) := by
-  exact ⟨integral_exhaustion _ u v (infinite_block_energy d n u v hu hv).1,
-    integral_exhaustion _ u v (infinite_real_energy d n u v hu hv).1⟩
+  exact ⟨roundedIntersection_tendsto _ u v (infinite_block_energy d n u v hu hv).1,
+    roundedIntersection_tendsto _ u v (infinite_real_energy d n u v hu hv).1⟩
 
 /-- The two effective square forms survive completion for every real
 square-summable endpoint sequence, through the same integral approximants. -/
@@ -297,13 +300,13 @@ theorem infinite_pole_defect_from_integral_divisors (n : ℕ+) (u v : ℕ → �
   have hGentry (k : ℕ) : 0≤G k ∧ G k≤2*D k := ⟨(hmetric k).trans (hg k).1,(hg k).2⟩
   have hG := hs u v hu hv G hGentry
   have hD (k : ℕ) : 0≤D k ∧ D k≤2*D k := ⟨hmetric k,by linarith only [hmetric k]⟩
-  have hI := integral_exhaustion G u v hG
+  have hI := roundedIntersection_tendsto G u v hG
   have hr := infinite_real_energy 1 n u v hu hv
   have hprice : absoluteIntersection G u v ≤ absoluteIntersection (fun k => 2*D k) u v :=
     hG.tsum_le_tsum (dom u v G hGentry) hr.1
   refine ⟨hG,hprice.trans (by simpa using hr.2),hI,?_⟩
-  apply le_of_tendsto_of_tendsto' hI.abs ((integral_exhaustion D u u (hs u u hu hu D hD)).add
-    (integral_exhaustion D v v (hs v v hv hv D hD)))
+  apply le_of_tendsto_of_tendsto' hI.abs ((roundedIntersection_tendsto D u u (hs u u hu hu D hD)).add
+    (roundedIntersection_tendsto D v v (hs v v hv hv D hD)))
   intro N
   let a (i : ℕ) := (roundedJump N (u i):ℝ)/((N:ℝ)+1)
   let b (j : ℕ) := (roundedJump N (v j):ℝ)/((N:ℝ)+1)

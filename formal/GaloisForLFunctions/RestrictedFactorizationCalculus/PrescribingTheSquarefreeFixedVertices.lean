@@ -184,7 +184,7 @@ theorem fixed_charge_error_le_support_errors (G : ℕ → ℕ) (S : Set ℕ) (X 
   apply sum_le_sum
   intro n _
   have one : |(μ n:ℝ)| ≤ 1 := by exact_mod_cast (abs_moebius_le_one (n := n))
-  by_cases fixed : G n=n <;> by_cases selected : want n <;> simp [fixed,selected,one]
+  by_cases fixed : G n=n <;> by_cases selected : n=1 ∨ n ∈ S <;> simp [want,fixed,selected,one]
 
 /-- Any set can be prescribed, whether or not its vertices were
 originally fixed. Only already-closed edges incident with the target

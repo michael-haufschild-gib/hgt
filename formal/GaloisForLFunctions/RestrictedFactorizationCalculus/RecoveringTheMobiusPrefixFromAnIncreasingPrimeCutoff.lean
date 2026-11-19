@@ -107,6 +107,28 @@ private theorem allowance_mono {C : ℝ} (hC : 0 ≤ C) {i j : ℕ} (h : i ≤ j
     allowance C i ≤ allowance C j := mul_le_mul_of_nonneg_left
   (add_le_add_left (Nat.cast_le.mpr h) _) (by positivity)
 
+/-- A row bound at the previous cutoff and a bound at the smaller
+quotient pay for one prime deletion with its exact Euler factor. -/
+theorem extend_bound_across_one_prime_cutoff {s A : ℝ} (hs : 0<s) (hA : 0 ≤ A) (y n : ℕ)
+    (prev : |row y n| ≤ A*deletionPrice s y*(n:ℝ)^s)
+    (smaller : (y+1).Prime → |row (y+1) (n/(y+1))| ≤
+      A*deletionPrice s (y+1)*((n/(y+1):ℕ):ℝ)^s) :
+    |row (y+1) n| ≤ A*deletionPrice s (y+1)*(n:ℝ)^s := by
+  by_cases hp : (y+1).Prime
+  · let r := weight s (y+1)
+    let E := deletionPrice s (y+1)
+    have gap : 0<1-r := sub_pos.mpr (deletion_weight_lt_one hs hp)
+    have pay : E*(1-r)=deletionPrice s y := by
+      dsimp only [E,r]; rw [deletionPrice_succ,if_pos hp,mul_assoc,inv_mul_cancel₀ gap.ne',mul_one]
+    have he := zero_le_one.trans (deletionPrice_one_le hs (y+1))
+    have hh := (smaller hp).trans (mul_le_mul_of_nonneg_left (quotient_weight hs n hp.pos) (mul_nonneg hA he))
+    have split : row (y+1) n=row y n+row (y+1) (n/(y+1)) := by linarith only [row_step hp n]
+    rw [split]
+    apply (abs_add_le ..).trans
+    calc _ ≤ A*deletionPrice s y*(n:ℝ)^s+A*E*(r*(n:ℝ)^s) := add_le_add prev hh
+         _ = _ := by rw [←pay]; ring
+  · simpa only [row_unchanged hp,deletionPrice_succ s y,if_neg hp] using prev
+
 /-- A bound for the ordinary prefix on the fixed sifted set gives a uniform
 bound on every coprime prefix whose prime cutoff is at least b(n). -/
 theorem recovering_above_an_increasing_prime_cutoff (b : ℕ → ℕ) (hb : Monotone b)
@@ -156,27 +178,14 @@ theorem recovering_above_an_increasing_prime_cutoff (b : ℕ → ℕ) (hb : Mono
         rw [sub_add_cancel] at tri
         linarith only [tri,d,hh,bound]
     | succ y hy prev =>
-      by_cases hp : (y+1).Prime
-      · let a := allowance C (b n)
-        let r := weight s (y+1)
-        let E := deletionPrice s (y+1)
-        have he : 0 ≤ E := zero_le_one.trans (deletionPrice_one_le hs _)
-        have ha : 0 ≤ a := by dsimp [a,allowance]; positivity
-        have gap : 0<1-r := sub_pos.mpr (deletion_weight_lt_one hs hp)
-        have pay : E*(1-r)=deletionPrice s y := by
-          dsimp only [E,r]; rw [deletionPrice_succ,if_pos hp,mul_assoc,inv_mul_cancel₀ gap.ne',mul_one]
-        have hsmall := ih (n/(y+1)) (Nat.div_lt_self hn hp.one_lt) (y+1)
-          ((hb (Nat.div_le_self ..)).trans (hy.trans (Nat.le_succ _)))
-        have cap := allowance_mono hC (hb (Nat.div_le_self n (y+1)))
-        have hh := hsmall.trans (mul_le_mul (mul_le_mul_of_nonneg_right cap he)
-          (quotient_weight hs n hp.pos) (pow0 _) (mul_nonneg ha he))
-        have split : row (y+1) n=row y n+row (y+1) (n/(y+1)) := by linarith only [row_step hp n]
-        rw [split]
-        apply (abs_add_le ..).trans
-        change |row y n|+|row (y+1) (n/(y+1))| ≤ a*E*(n:ℝ)^s
-        calc _ ≤ a*deletionPrice s y*(n:ℝ)^s+a*E*(r*(n:ℝ)^s) := add_le_add prev hh
-             _ = _ := by rw [←pay]; ring
-      · simpa only [row_unchanged hp,deletionPrice_succ s y,if_neg hp] using prev
+      have ha : 0 ≤ allowance C (b n) := by dsimp only [allowance]; positivity
+      apply extend_bound_across_one_prime_cutoff hs ha y n prev
+      intro hp
+      have hh := ih (n/(y+1)) (Nat.div_lt_self hn hp.one_lt) (y+1)
+        ((hb (Nat.div_le_self ..)).trans (hy.trans (Nat.le_succ _)))
+      have cap := allowance_mono hC (hb (Nat.div_le_self n (y+1)))
+      exact hh.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right cap
+        (zero_le_one.trans (deletionPrice_one_le hs _))) (pow0 _))
 
 /-- The cost increases as further primes are deleted. -/
 theorem deletionPrice_mono {s : ℝ} (hs : 0<s) : Monotone (deletionPrice s) := by
@@ -190,7 +199,8 @@ theorem deletionPrice_mono {s : ℝ} (hs : 0<s) : Monotone (deletionPrice s) := 
       (sub_le_self _ (Real.rpow_nonneg (by positivity) _))
   · exact le_rfl
 
-private theorem undo_cutoff {s : ℝ} (hs : 0<s) (X y : ℕ) {C : ℝ} (hC : 0 ≤ C)
+/-- Undoing all deletions through a fixed cutoff costs a single Euler product. -/
+theorem restore_full_row_from_prime_cutoff {s : ℝ} (hs : 0<s) (X y : ℕ) {C : ℝ} (hC : 0 ≤ C)
     (h : ∀ n ≤ X,|row y n| ≤ C*(n:ℝ)^s) :
     |row 0 X| ≤ C*deletionPrice s y*(X:ℝ)^s := by
   induction y generalizing C with
@@ -231,11 +241,12 @@ theorem full_prefix_from_sifted_prefix (b : ℕ → ℕ) (hb : Monotone b) {s C 
     exact hh.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
       (allowance_mono hC (hb hn)) he) (Real.rpow_nonneg (Nat.cast_nonneg _) _))
   have hallow : 0 ≤ allowance C (b X) := by dsimp only [allowance]; positivity
-  have result := undo_cutoff hs X (b X) (mul_nonneg hallow he) hrow
+  have result := restore_full_row_from_prime_cutoff hs X (b X) (mul_nonneg hallow he) hrow
   rw [show row 0 X=coprimeMoebiusSum 1 X by simp [row]] at result
   exact result.trans_eq (by dsimp only [allowance,E]; ring)
 
-private theorem constant_rows {s C : ℝ} (hs : 0<s) (hC : 0 ≤ C)
+/-- A bound on the ordinary Mertens sum controls every frozen row. -/
+theorem all_frozen_rows_from_full_prefix {s C : ℝ} (hs : 0<s) (hC : 0 ≤ C)
     (h : ∀ n,|coprimeMoebiusSum 1 n| ≤ C*(n:ℝ)^s) (t y : ℕ) :
     |row y t| ≤ 2*C*deletionPrice s y*(t:ℝ)^s := by
   let b := fun _ : ℕ => (0:ℕ)
@@ -257,8 +268,8 @@ theorem sifted_prefix_from_full_prefix (b : ℕ → ℕ) (hb : Monotone b) {s C 
     have hx := Real.rpow_nonneg (Nat.cast_nonneg X) s
     have hlx := Real.rpow_le_rpow (Nat.cast_nonneg l) (Nat.cast_le.mpr hl) hs.le
     have hid := plateau_difference b hl flat
-    have hr := constant_rows hs hC h X (b X)
-    have hlr := (constant_rows hs hC h l (b X)).trans
+    have hr := all_frozen_rows_from_full_prefix hs hC h X (b X)
+    have hlr := (all_frozen_rows_from_full_prefix hs hC h l (b X)).trans
       (mul_le_mul_of_nonneg_left hlx (mul_nonneg (by positivity) hE))
     have d : |siftedPrefix b X-siftedPrefix b l| ≤ 4*C*V := by
       rw [←hid]

@@ -15,8 +15,12 @@ namespace GaloisForLFunctions.HTGeometry.ClassicalCartan
 open IntegralZeroSum
 variable {n : ℕ}
 
+/- Both tuple operations use the constant family of integers. -/
+local notation "consℤ" => Fin.cons (α := fun _ => ℤ)
+local notation "snocℤ" => Fin.snoc (α := fun _ => ℤ)
+
 /-- Differences of consecutive coefficients padded by zero at the two ends. -/
-def boundary (a : Fin n → ℤ) (i : Fin (n+1)) := Fin.snoc a 0 i-Fin.cons 0 a i
+def boundary (a : Fin n → ℤ) (i : Fin (n+1)) := snocℤ a 0 i-consℤ 0 a i
 
 private def read (y : Fin (n+1) → ℤ) (k : ℕ) := if h : k<n+1 then y ⟨k,h⟩ else 0
 
@@ -26,11 +30,11 @@ def integrate (y : Fin (n+1) → ℤ) (i : Fin n) := acc y (i.val+1)
 
 theorem sum_boundary (a : Fin n → ℤ) : ∑ i, boundary a i=0 := by
   simp only [boundary,sum_sub_distrib]
-  rw [Fin.sum_univ_castSucc (Fin.snoc a 0),Fin.sum_univ_succ (Fin.cons 0 a)]
+  rw [Fin.sum_univ_castSucc (snocℤ a 0),Fin.sum_univ_succ (consℤ 0 a)]
   simp only [Fin.snoc_castSucc,Fin.snoc_last,Fin.cons_zero,Fin.cons_succ,zero_add,add_zero,sub_self]
 
 private theorem cons_integrate (y : Fin (n+1) → ℤ) (i : Fin (n+1)) :
-    Fin.cons 0 (integrate y) i=acc y i.val := by
+    consℤ 0 (integrate y) i=acc y i.val := by
   refine Fin.cases (by simp [acc]) (fun j => ?_) i
   simp only [Fin.cons_succ,Fin.val_succ,integrate]
 
@@ -40,7 +44,7 @@ private theorem acc_total (y : Fin (n+1) → ℤ) : acc y (n+1)=∑ j,y j := by
 
 private theorem boundary_integrate (y : Fin (n+1) → ℤ) (hy : (∑ j,y j)=0) :
     boundary (integrate y)=y := by
-  have left (i : Fin (n+1)) : Fin.snoc (integrate y) 0 i=acc y (i.val+1) := by
+  have left (i : Fin (n+1)) : snocℤ (integrate y) 0 i=acc y (i.val+1) := by
     refine Fin.lastCases (by simp [acc_total,hy]) (fun j => ?_) i
     simp only [Fin.snoc_castSucc,Fin.val_castSucc,integrate]
   funext i
@@ -48,17 +52,17 @@ private theorem boundary_integrate (y : Fin (n+1) → ℤ) (hy : (∑ j,y j)=0) 
   simp [acc,sum_range_succ,read,i.isLt]
 
 private theorem integrate_boundary (a : Fin n → ℤ) : integrate (boundary a)=a := by
-  have partial (i : Fin (n+1)) : acc (boundary a) i.val=Fin.cons 0 a i := by
+  have acc_before (i : Fin (n+1)) : acc (boundary a) i.val=consℤ 0 a i := by
     refine Fin.induction (by simp [acc]) (fun j ih => ?_) i
     rw [Fin.val_succ,acc,sum_range_succ]
     change acc (boundary a) j.castSucc.val+read (boundary a) j.val=_
     rw [ih]
     change _+ (if h : j.val<n+1 then boundary a ⟨j.val,h⟩ else 0)=_
     rw [dif_pos (Nat.lt_succ_of_lt j.isLt)]
-    change Fin.cons 0 a j.castSucc+(Fin.snoc a 0 j.castSucc-Fin.cons 0 a j.castSucc)=Fin.cons 0 a j.succ
+    change consℤ 0 a j.castSucc+(snocℤ a 0 j.castSucc-consℤ 0 a j.castSucc)=consℤ 0 a j.succ
     simp [Fin.snoc_castSucc,Fin.cons_succ]
   funext i
-  exact (partial i.succ).trans (Fin.cons_succ _ _ _)
+  exact (acc_before i.succ).trans (Fin.cons_succ _ _ _)
 
 /-- Integer lattice isomorphism at the level of coordinates, including
 the zero-dimensional path. -/
@@ -70,7 +74,7 @@ def pathCoordinates (n : ℕ) : (Fin n → ℤ) ≃ {y : Fin (n+1) → ℤ // (�
 
 /-- The product of the two padded coordinates counts each path edge once. -/
 def pathEnergy (a : Fin n → ℤ) :=
-  (∑ i,(a i)^2)-∑ i : Fin (n+1), Fin.snoc a 0 i*Fin.cons 0 a i
+  (∑ i,(a i)^2)-∑ i : Fin (n+1), snocℤ a 0 i*consℤ 0 a i
 
 /-- The parent of an index is its predecessor, with no parent at zero. -/
 def previous (i : Fin n) : Option (Fin n) :=
@@ -102,10 +106,10 @@ theorem path_parent_energy (a : Fin n → ℤ) :
     rfl
 
 theorem boundary_energy (a : Fin n → ℤ) : energy (boundary a)=2*pathEnergy a := by
-  have L : (∑ i : Fin (n+1), (Fin.snoc a 0 i)^2)=∑ i,(a i)^2 := by
+  have L : (∑ i : Fin (n+1), (snocℤ a 0 i)^2)=∑ i,(a i)^2 := by
     rw [Fin.sum_univ_castSucc]
     simp only [Fin.snoc_castSucc,Fin.snoc_last,zero_pow (by decide : 2≠0),add_zero]
-  have R : (∑ i : Fin (n+1), (Fin.cons 0 a i)^2)=∑ i,(a i)^2 := by
+  have R : (∑ i : Fin (n+1), (consℤ 0 a i)^2)=∑ i,(a i)^2 := by
     rw [Fin.sum_univ_succ]
     simp only [Fin.cons_succ,Fin.cons_zero,zero_pow (by decide : 2≠0),zero_add]
   unfold energy pathEnergy boundary
@@ -135,7 +139,7 @@ private theorem adjust_undo (y : Fin (n+1) → ℤ) (c : ℤ) : adjust (adjust y
 
 /-- The total sum after adjoining the fork is twice its last terminal coefficient. -/
 def forkVector (a : Fork n) : Fin (n+2) → ℤ :=
-  Fin.snoc (adjust (boundary a.1) (a.2.1+a.2.2)) (a.2.2-a.2.1)
+  snocℤ (adjust (boundary a.1) (a.2.1+a.2.2)) (a.2.2-a.2.1)
 
 private theorem sum_fork (a : Fork n) : (∑ i,forkVector a i)=2*a.2.2 := by
   rw [Fin.sum_univ_castSucc]
@@ -157,9 +161,13 @@ def forkCoordinates (n : ℕ) : Fork n ≃ {y : Fin (n+2) → ℤ // Even (∑ i
   left_inv a := by
     obtain ⟨a,u,v⟩ := a
     have ends : forkEnds (forkVector (a,u,v))=(u,v) := by
-      simp only [forkEnds,sum_fork,forkVector,Fin.snoc_last]
-      ext <;> omega
-    simp only [forkInverse,ends,forkVector,Fin.snoc_castSucc,adjust_undo,integrate_boundary]
+      unfold forkEnds
+      rw [sum_fork]
+      simp only [forkVector,Fin.snoc_last]
+      apply Prod.ext <;> dsimp <;> omega
+    unfold forkInverse
+    rw [ends]
+    simp only [forkVector,Fin.snoc_castSucc,adjust_undo,integrate_boundary]
   right_inv y := by
     obtain ⟨y,k,hk⟩ := y
     let u := (forkEnds y).1
@@ -167,18 +175,22 @@ def forkCoordinates (n : ℕ) : Fork n ≃ {y : Fin (n+2) → ℤ // Even (∑ i
     have hv : v=k := by change (∑ i,y i)/2=k; omega
     have hu : u=v-y (Fin.last (n+1)) := rfl
     let z := fun i : Fin (n+1) => y i.castSucc
-    have hz : (∑ i,z i)=k+k-y (Fin.last (n+1)) := by rw [Fin.sum_univ_castSucc] at hk; omega
+    have hz : (∑ i,z i)=k+k-y (Fin.last (n+1)) := by
+      have e := hk
+      rw [Fin.sum_univ_castSucc] at e
+      change (∑ i,z i)+y (Fin.last (n+1))=k+k at e
+      omega
     have hs : ∑ i,adjust z (-(u+v)) i=0 := by rw [sum_adjust,hz,hu,hv]; ring
     apply Subtype.ext
     funext i
     refine Fin.lastCases ?_ (fun j => ?_) i
-    · change Fin.snoc _ (v-u) (Fin.last (n+1))=_
+    · change snocℤ _ (v-u) (Fin.last (n+1))=_
       rw [Fin.snoc_last,hu]; ring
-    · change Fin.snoc (adjust (boundary (integrate (adjust z (-(u+v))))) (u+v)) _ j.castSucc=_
+    · change snocℤ (adjust (boundary (integrate (adjust z (-(u+v))))) (u+v)) _ j.castSucc=_
       rw [Fin.snoc_castSucc,boundary_integrate _ hs]
       by_cases eq : j=Fin.last n <;> simp [adjust,eq,z]
 
-private def tip (a : Fin n → ℤ) := Fin.cons 0 a (Fin.last n)
+private def tip (a : Fin n → ℤ) := consℤ 0 a (Fin.last n)
 
 def forkEnergy (a : Fork n) := pathEnergy a.1+a.2.1^2+a.2.2^2-tip a.1*(a.2.1+a.2.2)
 
@@ -190,7 +202,7 @@ private theorem energy_adjust (y : Fin (n+1) → ℤ) (c : ℤ) :
   ring
 
 theorem fork_energy (a : Fork n) : energy (forkVector a)=2*forkEnergy a := by
-  change (∑ i,(Fin.snoc (adjust (boundary a.1) (a.2.1+a.2.2)) (a.2.2-a.2.1) i)^2)=_
+  change (∑ i,(snocℤ (adjust (boundary a.1) (a.2.1+a.2.2)) (a.2.2-a.2.1) i)^2)=_
   rw [Fin.sum_univ_castSucc]
   simp only [Fin.snoc_castSucc,Fin.snoc_last]
   change energy (adjust (boundary a.1) (a.2.1+a.2.2))+(a.2.2-a.2.1)^2=_
@@ -208,12 +220,15 @@ def forkRootEquiv (n : ℕ) : {a : Fork n // forkEnergy a=1} ≃ TwoShell (Fin (
   toFun a := ⟨forkVector a.val,by rw [fork_energy,a.property]; norm_num⟩
   invFun y := ⟨(forkCoordinates n).symm ⟨y.val,shell_even y⟩,by
     let b := (forkCoordinates n).symm ⟨y.val,shell_even y⟩
-    have hv : forkVector b=y.val := congrArg Subtype.val ((forkCoordinates n).apply_symm_apply _)
+    have hv : forkVector b=y.val := congrArg (fun z : {z : Fin (n+2) → ℤ // Even (∑ i,z i)} => z.val)
+      ((forkCoordinates n).apply_symm_apply ⟨y.val,shell_even y⟩)
     have e := fork_energy b
     rw [hv,y.property] at e
+    change forkEnergy b=1
     omega⟩
   left_inv a := Subtype.ext ((forkCoordinates n).symm_apply_apply a.val)
-  right_inv y := Subtype.ext (congrArg Subtype.val ((forkCoordinates n).apply_symm_apply ⟨y.val,shell_even y⟩))
+  right_inv y := Subtype.ext (congrArg (fun z : {z : Fin (n+2) → ℤ // Even (∑ i,z i)} => z.val)
+    ((forkCoordinates n).apply_symm_apply ⟨y.val,shell_even y⟩))
 
 theorem fork_root_count (n : ℕ) : Nat.card {a : Fork n // forkEnergy a=1}=4*(n+2).choose 2 := by
   rw [Nat.card_congr (forkRootEquiv n),card_twoShell,Fintype.card_fin]
@@ -221,17 +236,17 @@ theorem fork_root_count (n : ℕ) : Nat.card {a : Fork n // forkEnergy a=1}=4*(n
 /-- Contribution of a single arm, with its inner endpoint adjacent to
 the prescribed center t. Coordinates start at the center's neighbor. -/
 def armPiece (t : ℤ) (f : Fin n → ℤ) :=
-  (∑ i,(f i)^2)-∑ i,f i*Fin.cons t f i.castSucc
+  (∑ i,(f i)^2)-∑ i,f i*consℤ t f i.castSucc
 
 private theorem pad_differences (t : ℤ) (f : Fin n → ℤ) :
-    (∑ i : Fin (n+1), (Fin.snoc f 0 i-Fin.cons t f i)^2)=2*armPiece t f+t^2 := by
-  have L : (∑ i : Fin (n+1), (Fin.snoc f 0 i)^2)=∑ i,(f i)^2 := by
+    (∑ i : Fin (n+1), (snocℤ f 0 i-consℤ t f i)^2)=2*armPiece t f+t^2 := by
+  have L : (∑ i : Fin (n+1), (snocℤ f 0 i)^2)=∑ i,(f i)^2 := by
     rw [Fin.sum_univ_castSucc]
     simp only [Fin.snoc_castSucc,Fin.snoc_last,zero_pow (by decide : 2≠0),add_zero]
-  have R : (∑ i : Fin (n+1), (Fin.cons t f i)^2)=t^2+∑ i,(f i)^2 := by
+  have R : (∑ i : Fin (n+1), (consℤ t f i)^2)=t^2+∑ i,(f i)^2 := by
     rw [Fin.sum_univ_succ]
     simp only [Fin.cons_succ,Fin.cons_zero]
-  have E : (∑ i : Fin (n+1), Fin.snoc f 0 i*Fin.cons t f i)=∑ i,f i*Fin.cons t f i.castSucc := by
+  have E : (∑ i : Fin (n+1), snocℤ f 0 i*consℤ t f i)=∑ i,f i*consℤ t f i.castSucc := by
     rw [Fin.sum_univ_castSucc]
     simp only [Fin.snoc_castSucc,Fin.snoc_last,zero_mul,add_zero]
   simp only [armPiece,sub_sq,sum_add_distrib,sum_sub_distrib,mul_assoc,← mul_sum,L,R,E]
@@ -244,23 +259,23 @@ theorem ramp_piece (b : ℤ) :
     let f := fun i : Fin n => t-((i.val:ℤ)+1)*b
     2*armPiece t f=((n:ℤ)+1)*b^2-t^2 := by
   intro t f
-  have left (i : Fin (n+1)) : Fin.snoc f 0 i=t-((i.val:ℤ)+1)*b := by
+  have left (i : Fin (n+1)) : snocℤ f 0 i=t-((i.val:ℤ)+1)*b := by
     refine Fin.lastCases (by simp [t]) (fun j => ?_) i
     exact Fin.snoc_castSucc _ _ _
-  have right (i : Fin (n+1)) : Fin.cons t f i=t-(i.val:ℤ)*b := by
+  have right (i : Fin (n+1)) : consℤ t f i=t-(i.val:ℤ)*b := by
     refine Fin.cases (by simp) (fun j => ?_) i
     simp [f]
   have h := pad_differences t f
-  have eq (i : Fin (n+1)) : Fin.snoc f 0 i-Fin.cons t f i= -b := by rw [left,right]; ring
+  have eq (i : Fin (n+1)) : snocℤ f 0 i-consℤ t f i= -b := by rw [left,right]; ring
   simp only [eq,neg_sq,sum_const,card_univ,Fintype.card_fin,nsmul_eq_mul,Nat.cast_add,Nat.cast_one] at h
   linarith only [h]
 
 /-- Adjoining the center as the first coordinate turns an arm into an
 ordinary path. -/
 theorem path_cons_arm (t : ℤ) (f : Fin n → ℤ) :
-    pathEnergy (Fin.cons t f)=t^2+armPiece t f := by
-  rw [←path_parent_energy,Fin.sum_univ_succ (fun i => (Fin.cons t f i)^2),
-    Fin.sum_univ_succ (fun i => (previous i).elim 0 (fun j => Fin.cons t f i*Fin.cons t f j))]
+    pathEnergy (consℤ t f)=t^2+armPiece t f := by
+  rw [←path_parent_energy,Fin.sum_univ_succ (fun i => (consℤ t f i)^2),
+    Fin.sum_univ_succ (fun i => (previous i).elim 0 (fun j => consℤ t f i*consℤ t f j))]
   simp only [Fin.cons_zero,Fin.cons_succ]
   have zero : previous (0 : Fin (n+1))=none := by simp [previous]
   have succ (i : Fin n) : previous i.succ=some i.castSucc :=
@@ -271,15 +286,16 @@ theorem path_cons_arm (t : ℤ) (f : Fin n → ℤ) :
 /-- Reversal commutes with path energy because it reverses and negates
 the entire boundary-difference vector. -/
 theorem path_reversal (f : Fin n → ℤ) : pathEnergy (fun i => f i.rev)=pathEnergy f := by
-  have L (i : Fin (n+1)) : Fin.snoc (fun j => f j.rev) 0 i=Fin.cons 0 f i.rev :=
+  have L (i : Fin (n+1)) : snocℤ (fun j => f j.rev) 0 i=consℤ 0 f i.rev :=
     (Fin.cons_rev 0 f i).symm
-  have R (i : Fin (n+1)) : Fin.cons 0 (fun j => f j.rev) i=Fin.snoc f 0 i.rev :=
+  have R (i : Fin (n+1)) : consℤ 0 (fun j => f j.rev) i=snocℤ f 0 i.rev :=
     (Fin.snoc_rev 0 f i).symm
   have e (i : Fin (n+1)) : boundary (fun j => f j.rev) i= -boundary f i.rev := by
     rw [boundary,L,R,boundary,neg_sub]
   have energyEq : energy (boundary (fun i => f i.rev))=energy (boundary f) := by
     simp only [energy,e,neg_sq]
-    exact (Fin.revPerm (n+1)).sum_comp _
+    simpa only [Fin.revPerm_apply] using Equiv.sum_comp (Fin.revPerm (n:=n+1))
+      (fun i : Fin (n+1) => (boundary f i)^2)
   rw [boundary_energy,boundary_energy] at energyEq
   omega
 

@@ -284,6 +284,8 @@ At $T=(7/8)\log k$, all $n>k$ contribute $mA_-\sqrt X\,R(k)+o_\Phi(1)$ on this s
 
 If RH fails, every $0<\eta\le1$ has tests $X=e^T\to\infty$ and $X^{1/(1+\eta)}\le N\le X$ on which ordinary primes against the unit reference on $(N,\lceil X^{1+\eta}\rceil]$ contribute at most $-cX^g+\operatorname{Re}\zeta(1/2)m^2+o(1)$. The constants $c,g>0$ are uniform in $\eta$. The complete uncharged middle integral tends to zero and the proper powers in the interval contribute $-\operatorname{Re}\zeta(1/2)m^2+o(1)$. [Ordinary-prime deficit](Wall/TheSquareChargeInsideTheDiagonalInterval.lean#L409) · [Displacement law](Wall/TheSquareChargeInsideTheDiagonalInterval.lean#L211).
 
+At one displacement of the same test, the signed deficit is carried by an interval above $\sqrt H$ for an integer numerator $H\ge X$. The log mass of prime factors of $H!/\lfloor H/2\rfloor!^2$ there differs from the count of odd quotients by more than $cX^g\sqrt H$, with sign opposite to $m\Phi(v)$. [Factorial discrepancy](Wall/TheOddQuotientIntervalInTheOrdinaryPrimeDeficit.lean#L326).
+
 The equal-prime term of the covariance, divided by the observation time, tends to the
 state autocorrelation at every fixed lag. At zero lag the coefficient is one. The squared
 increment recovers $8a\int F^2e^{-8u}$ after taking the prime limit and then the short-lag limit.

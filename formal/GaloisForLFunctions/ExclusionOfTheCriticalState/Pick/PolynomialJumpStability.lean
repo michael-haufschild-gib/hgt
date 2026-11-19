@@ -30,7 +30,8 @@ theorem signed_realization (v : Nodes n) (D : Table n) (hD : hollow D) :
       gapCost ((if a=i then 1 else 0)-D a i) ((if a=j then 1 else 0)-D a j)-
         gapCost ((if a=i then 1 else 0)+D a i) ((if a=j then 1 else 0)+D a j) =
       ((if a=i then D a j-D a i else 0)-(if a=j then D a j-D a i else 0))/2 := by
-    by_cases hi : a=i <;> by_cases hj : a=j <;> simp only [hi,hj,if_true,if_false,gapCost] <;> ring
+    unfold gapCost
+    split_ifs <;> ring
   simp only [term,← sum_div,sum_sub_distrib,sum_ite_eq',mem_univ,if_true,hD.1,hD.2 j i]
   ring
 
@@ -72,7 +73,7 @@ theorem rate_error_bound (v : Nodes n) (F : Fin k → Channel n) (G : Fin l → 
     (b x y : ℝ) (h : ∀ i j, |table v F i j-table v G i j|≤b) :
     |rate F x y-rate G x y|≤b*gain (difference v x y) := by
   rw [interpolate_rates v F,interpolate_rates v G,decode_sub]
-  exact decode_bound _ _ (fun i => by simp [table,rate,gapCost]) b h
+  exact decode_bound _ _ (fun i => by simp [rate,gapCost]) b h
 
 private def extreme {I : Type*} [DecidableEq I] (w : I → ℝ) (b : ℝ) (i j : I) :=
   if i=j then 0 else if 0≤w i*w j then -b else b
@@ -110,7 +111,7 @@ theorem rate_error_sharp (v : Nodes n) (b : ℝ≥0) (x y : ℝ) :
   refine ⟨F,G,fun i j => ?_,?_⟩
   · rw [eq]
     unfold D extreme
-    split_ifs <;> simp [b.property,abs_of_nonneg]
+    split_ifs <;> simp [abs_of_nonneg]
   · rw [interpolate_rates v F,interpolate_rates v G,decode_sub]
     change decode w (fun i j => table v F i j-table v G i j)=_
     simp only [eq]

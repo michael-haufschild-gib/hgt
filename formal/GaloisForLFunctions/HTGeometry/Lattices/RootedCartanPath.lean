@@ -76,11 +76,13 @@ private def extend {root : V} {n : ℕ} (p : Segment G root n) (z : V)
       simpa using hz
     · simpa only [if_neg (by omega : i≠n+1),if_neg (by omega : i+1≠n+1)] using p.step i (by omega)
 
+omit [DecidableRel G.Adj] in
 private theorem segment_bound {root : V} {n : ℕ} (p : Segment G root n) : n+1≤Fintype.card V := by
   have inj : Function.Injective (fun i : Fin (n+1) => p.vertex i.val) :=
     fun i j he => Fin.ext (p.distinct _ (by omega) _ (by omega) he)
   simpa only [Fintype.card_fin] using Fintype.card_le_of_injective _ inj
 
+omit [Fintype V] [DecidableRel G.Adj] in
 private theorem edge_closed {S : Set V} (all : G.Preconnected)
     (closed : ∀ i∈S, ∀ j, G.Adj i j → j∈S) {r : V} (hr : r∈S) : ∀ v, v∈S := by
   intro v
@@ -108,7 +110,7 @@ theorem rooted_numbering (root : V) (connected : G.Preconnected) (leaf : G.degre
     have hn : n+1≤n := Nat.le_findGreatest (by omega : n+1≤Fintype.card V) (show P (n+1) from ⟨q⟩)
     omega
   have earlier (i : ℕ) (hi : i<n) (v : V) (h : G.Adj (p.vertex i) v) :
-      v=p.vertex (i+1) ∨ (0<i ∧ v=p.vertex (i-1)) := by
+      v = p.vertex (i+1) ∨ (0 < i ∧ v = p.vertex (i-1)) := by
     by_cases zero : i=0
     · subst i
       exact Or.inl (only_neighbor G (by rwa [p.start]) h (p.step _ hi))

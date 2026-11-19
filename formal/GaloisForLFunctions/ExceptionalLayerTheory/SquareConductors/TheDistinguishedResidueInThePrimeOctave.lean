@@ -43,7 +43,6 @@ private theorem mean_sieve_weight (p : Nat.Primes) (d : ℕ) : finiteMean (local
     sum_ite_eq',mem_univ,if_true]
   dsimp only [c]
   field_simp [show (p:ℝ)-1≠0 by linarith,show (p:ℝ)≠0 by linarith]
-  ring
 
 private theorem forbidden_residues_eq (p : Nat.Primes) (d h : ℕ) :
     forbiddenResidue p d=forbiddenResidue p (d+h) ↔ (p:ℕ) ∣ h := by
@@ -64,7 +63,12 @@ private theorem mean_two_sieve_weights (p : Nat.Primes) (d h : ℕ) :
     change (if t=a then 0 else c)*(if t=b then 0 else c)=_
     by_cases ha : t=a
     · subst t; by_cases hb : a=b <;> simp only [hb,if_true,if_false,zero_mul] <;> ring
-    · by_cases hb : t=b <;> simp only [ha,hb,if_true,if_false] <;> ring
+    · by_cases hb : t=b
+      · subst t
+        simp only [if_neg ha,if_true,mul_zero]
+        ring
+      · simp only [if_neg ha,if_neg hb]
+        ring
   have hp : (1:ℝ) < p := by exact_mod_cast p.prop.one_lt
   simp only [Fintype.expect_eq_sum_div_card,hr,sum_add_distrib,sum_sub_distrib,sum_const,card_univ,Fintype.card_fin,
     nsmul_eq_mul,sum_ite_eq',mem_univ,if_true,BezoutValuationIncidence.ramanujanLagWeight_prime p.prop]
@@ -90,33 +94,35 @@ theorem residue_sieve_mean (S : Finset Nat.Primes) (z d : ℕ) :
   by_cases hp : (p.val:ℕ) ≤ z
   · change finiteMean (fun t => if (p.val:ℕ) ≤ z then localSieveWeight p.val d t else 1)=1
     simp only [if_pos hp,mean_sieve_weight]
-  · have hpos : (0:ℝ) < (p.val:ℕ) := Nat.cast_pos.mpr p.val.prop.pos
-    simp [Fintype.expect_eq_sum_div_card,activeFactor,hp,hpos.ne']
+  · simp [activeFactor,hp]
 
 /-- Only primes present at the left endpoint contribute to the joint density under nesting. -/
 theorem residue_sieve_pair_mean (S : Finset Nat.Primes) {z w : ℕ} (hzw : z ≤ w) (d h : ℕ) :
     finiteMean (fun t : PrimeResidues S => residueSieveWeight S z d t * residueSieveWeight S w (d+h) t)=
       finitePairDensity (S.filter (fun p => (p:ℕ) ≤ z)) h := by
   classical
-  simp only [residueSieveWeight,←prod_mul_distrib,mean_product]
+  simp only [residueSieveWeight,←prod_mul_distrib]
+  rw [mean_product (fun (p : S) (v : Fin (p.val:ℕ)) =>
+    activeFactor p.val z d v * activeFactor p.val w (d+h) v)]
   unfold finitePairDensity
   rw [prod_filter]
   change _ = ∏ p ∈ S,(if (p:ℕ) ≤ z then 1+ramanujanLagWeight h p/((p:ℝ)-1)^2 else 1)
-  rw [←Finset.prod_attach]
+  rw [←Finset.prod_attach S]
   apply prod_congr rfl
   intro p _
   by_cases hz : (p.val:ℕ) ≤ z
   · simp only [activeFactor,if_pos hz,if_pos (hz.trans hzw),mean_two_sieve_weights]
   · by_cases hw : (p.val:ℕ) ≤ w
     · simp only [activeFactor,if_neg hz,if_pos hw,one_mul,mean_sieve_weight]
-    · have hpos : (0:ℝ) < (p.val:ℕ) := Nat.cast_pos.mpr p.val.prop.pos
-      simp [activeFactor,hz,hw,Fintype.expect_eq_sum_div_card,hpos.ne']
+    · simp [activeFactor,hz,hw]
 
 /-- The primes at which translations of the complete octave are tested. -/
 def octaveSievePrimes (M : ℕ) : Finset Nat.Primes := (range (M+1)).subtype Nat.Prime
 
 private theorem mem_octave_sieve_primes {M : ℕ} {p : Nat.Primes} :
-    p∈octaveSievePrimes M ↔ (p:ℕ) ≤ M := by simp [octaveSievePrimes,Nat.lt_succ_iff]
+    p∈octaveSievePrimes M ↔ (p:ℕ) ≤ M :=
+  (Finset.mem_subtype (p := Nat.Prime) (s := range (M+1)) (a := p)).trans
+    (mem_range.trans Nat.lt_succ_iff)
 
 /-- The product of the normalizing factors at active primes. -/
 def sieveNormalization (S : Finset Nat.Primes) (z : ℕ) : ℝ :=
@@ -150,7 +156,7 @@ theorem square_root_sieve_at_zero {M z d : ℕ} (hM : 1 ≤ M) (hd : d∈Ioc M (
       simp only [activeFactor,hpz,if_true,localSieveWeight,origin_residue_iff,if_neg hind]
     · simp only [activeFactor,if_neg hpz]
   · rw [if_neg hpr]
-    let p : Nat.Primes := ⟨d.minFac,Nat.minFac_prime (by omega)⟩
+    let p : Nat.Primes := ⟨d.minFac,Nat.minFac_prime (hM.trans_lt hl).ne'⟩
     have hpz : (p:ℕ) ≤ z := (Nat.le_sqrt.mpr (by
       simpa only [←pow_two] using (Nat.minFac_sq_le_self (by omega : 0 < d) hpr).trans hh)).trans hz
     let j : octaveSievePrimes M := ⟨p,mem_octave_sieve_primes.mpr (hpz.trans hzM)⟩
@@ -189,7 +195,7 @@ private theorem centered_sieve_pair_mean (S : Finset Nat.Primes) {z w : ℕ} (hz
   have hr (t : PrimeResidues S) : (f t-1)*(g t-1)=(f t*g t-f t)-(g t-1) := by ring
   haveI := residues_nonempty S
   have h1 : finiteMean (fun _ : PrimeResidues S => (1:ℝ))=1 := by
-    simp [Fintype.expect_eq_sum_div_card,Fintype.card_ne_zero]
+    simp
   change finiteMean (fun t => (f t-1)*(g t-1))=_
   simp only [hr,expect_sub_distrib,h1]
   rw [show finiteMean f=1 from residue_sieve_mean ..,show finiteMean g=1 from residue_sieve_mean ..,
@@ -423,9 +429,8 @@ theorem translated_sieve_boundary {M t d : ℕ} (hM : 5 ≤ M) (ht : t ≤ M)
   have hqM : q ≤ M := by
     have hh := (Nat.mul_le_mul_right q (hy3.trans hyp)).trans_eq hpq
     omega
-  have hqsmall : q < p^2 := by
-    have hpp := Nat.pow_le_pow_left hyp 2
-    omega
+  have hqsmall : q < p^2 := (hqM.trans (by omega : M ≤ 2*M)).trans_lt
+    (hy2.trans_le (Nat.pow_le_pow_left hyp 2))
   change (if 2*M < n ∧ p ≤ q ∧ q.Prime then 1 else 0)=rho q p
   by_cases hρ : rho q p=1
   · have hall := (rho_eq_one_iff.mp hρ).2

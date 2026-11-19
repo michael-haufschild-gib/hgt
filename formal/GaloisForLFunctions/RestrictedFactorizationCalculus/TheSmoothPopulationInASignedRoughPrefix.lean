@@ -1,9 +1,6 @@
-import GaloisForLFunctions.RHTower.PMPowerDampedMobiusFiniteDeletion
-import GaloisForLFunctions.RHTower.Sieve.MoebiusLogRecursion
-import GaloisForLFunctions.RHTower.Sieve.SmoothSum
+import GaloisForLFunctions.RestrictedFactorizationCalculus.CenteringThePrimePowerReadingsAtTheirQuotientFloors
 import GaloisForLFunctions.RHTower.PrimeWindowLogPowerCount
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRemainderOfThePrimeNumberTheoremHasLogarithmicMomentsOnATail
-import GaloisForLFunctions.RestrictedFactorizationCalculus.TheExplicitLogSquareRoughSet
 
 /-!
 # The smooth population in a signed rough prefix
@@ -21,117 +18,17 @@ open GaloisForLFunctions.BezoutValuationIncidence
 open scoped Classical ArithmeticFunction.Moebius
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus
 
-private abbrev banned (y : ℕ) : Set ℕ := {p | p ≤ y}
-private abbrev row (y n : ℕ) : ℝ := (mobiusAF (banned y) n : ℝ)
-private abbrev freeSet (y X : ℕ) := (Icc 1 X).filter (IsFree (banned y))
-
-private theorem row_value (y n : ℕ) :
-    row y n=if IsFree (banned y) n then (μ n:ℝ) else 0 := by
-  by_cases h : IsFree (banned y) n <;> simp [row,mobiusAF,pmul_apply,freeAF_apply,h]
+open RoughReading
 
 private theorem prefix_eq_frozen_row (y X : ℕ) :
-    coprimeMoebiusSum (primorial y) X=∑ n ∈ Icc 1 X,row y n := by
-  apply sum_congr rfl
-  intro n hn
-  have pos := (mem_Icc.mp hn).1
-  have eq : (primorial y).Coprime n ↔ IsFree (banned y) n := by
-    constructor
-    · intro h
-      refine ⟨pos.ne',fun p hp small => ?_⟩
-      have prime := Nat.prime_of_mem_primeFactors hp
-      exact prime.not_dvd_one (h ▸ Nat.dvd_gcd (prime.dvd_primorial_iff.mpr small) (Nat.dvd_of_mem_primeFactors hp))
-    · intro h
-      exact RHTower.coprime_primorial_of_primeFactors_gt pos (fun p hp => lt_of_not_ge (h.2 p hp))
-  rw [coprimeMoebiusIndicator,row_value,eq]
-
-/-- Logarithmically weighted prime powers avoiding all primes through y. -/
-def roughPrimePowerReading (y x : ℕ) : ℝ :=
-  ∑ d ∈ freeSet y x,vonMangoldt d
-
-private theorem short_reading {y x : ℕ} (hx : x ≤ y) : roughPrimePowerReading y x=0 := by
-  apply sum_eq_zero
-  intro d hd
-  obtain ⟨hi,free⟩ := mem_filter.mp hd
-  have small := (mem_Icc.mp hi).2.trans hx
-  by_cases unit : d=1
-  · simp [unit]
-  have prime := Nat.minFac_prime unit
-  have hp : d.minFac ∈ d.primeFactors := Nat.mem_primeFactors.mpr ⟨prime,Nat.minFac_dvd _,free.1⟩
-  exact (free.2 _ hp ((Nat.le_of_dvd (mem_Icc.mp hi).1 (Nat.minFac_dvd d)).trans small)).elim
-
-private theorem log_row (y n : ℕ) :
-    row y n*Real.log n= -∑ d ∈ n.divisorsAntidiagonal,
-      row y d.1*(if IsFree (banned y) d.2 then vonMangoldt d.2 else 0) := by
-  have iden := congrArg (fun f : ArithmeticFunction ℝ => f n) RHTower.Sieve.moebius_pmul_log
-  rw [mul_comm (vonMangoldt : ArithmeticFunction ℝ)] at iden
-  simp only [pmul_apply,intCoe_apply,log_apply,ArithmeticFunction.neg_apply,mul_apply] at iden
-  have split (v : ℕ × ℕ) (hv : v ∈ n.divisorsAntidiagonal) :
-      IsFree (banned y) n ↔ IsFree (banned y) v.1 ∧ IsFree (banned y) v.2 := by
-    obtain ⟨eq,n0⟩ := Nat.mem_divisorsAntidiagonal.mp hv
-    have nz : v.1*v.2 ≠ 0 := eq ▸ n0
-    rw [←eq,isFree_mul_iff _ (mul_ne_zero_iff.mp nz).1 (mul_ne_zero_iff.mp nz).2]
-  by_cases good : IsFree (banned y) n
-  · rw [row_value,if_pos good,iden]
-    congr 1
-    apply sum_congr rfl
-    intro v hv
-    obtain ⟨a,b⟩ := (split v hv).mp good
-    rw [row_value,if_pos a,if_pos b]
-  · rw [row_value,if_neg good,zero_mul]
-    symm
-    apply neg_eq_zero.mpr
-    apply sum_eq_zero
-    intro v hv
-    rw [row_value]
-    by_cases a : IsFree (banned y) v.1
-    · have b : ¬ IsFree (banned y) v.2 := fun b => good ((split v hv).mpr ⟨a,b⟩)
-      simp only [if_neg b,mul_zero]
-    · simp only [if_neg a,zero_mul]
-
-/-- Exact logarithmic summation over the surviving cofactors m≤X/y. -/
-theorem logarithmic_rough_prefix_at_quotient_readings {y : ℕ} (hy : 0<y) (X : ℕ) :
-    (∑ n ∈ Icc 1 X,row y n*Real.log n)=
-      -∑ m ∈ freeSet y (X/y),row y m*roughPrimePowerReading y (X/m) := by
-  rw [sum_congr rfl (fun n _ => log_row y n),sum_neg_distrib,
-    RHTower.Sieve.sum_Icc_divisorsAntidiagonal_swap]
-  congr 1
-  let f := fun m : ℕ => row y m*roughPrimePowerReading y (X/m)
-  have inner (m : ℕ) : (∑ d ∈ Icc 1 (X/m),row y m*
-      (if IsFree (banned y) d then vonMangoldt d else 0))=f m := by
-    rw [←mul_sum]; simp only [f,roughPrimePowerReading,freeSet,sum_filter]
-  rw [sum_congr rfl (fun m _ => inner m)]
-  symm
-  apply sum_subset ((filter_subset ..).trans (Icc_subset_Icc_right (Nat.div_le_self ..)))
-  intro m hm outside
-  have lo := (mem_Icc.mp hm).1
-  by_cases late : X/y<m
-  · have ym := (Nat.div_lt_iff_lt_mul hy).mp late
-    have small : X/m<y := (Nat.div_lt_iff_lt_mul lo).mpr (by rwa [mul_comm])
-    simp only [f,short_reading small.le,mul_zero]
-  · have early := mem_Icc.mpr ⟨lo,le_of_not_gt late⟩
-    have absent : ¬IsFree (banned y) m := fun h => outside (mem_filter.mpr ⟨early,h⟩)
-    simp only [f,row_value,if_neg absent,zero_mul]
+    coprimeMoebiusSum (primorial y) X=∑ n ∈ Icc 1 X,row y n :=
+  sum_congr rfl (fun n hn => primorial_indicator_eq_deleted_mobius y n (mem_Icc.mp hn).1)
 
 private theorem round_smooth_count (y : ℕ) (t : ℝ) (ht : 0 ≤ t) :
     |(∑ m ∈ freeSet y ⌊t⌋₊,row y m*(t/m))-
       ((RHTower.Sieve.smoothUpTo (Nat.primesLE y) ⌊t⌋₊).card:ℝ)| ≤ (freeSet y ⌊t⌋₊).card := by
   let S := RHTower.Sieve.smoothUpTo (Nat.primesLE y) ⌊t⌋₊
-  have eq := RHTower.pm_deleted_mobius_floor_sum (banned y) ht (le_refl ⌊t⌋₊)
-  have count : (∑ n ∈ Icc 1 ⌊t⌋₊,((smoothAF (banned y) n:ℤ):ℝ))=(S.card:ℝ) := by
-    rw [show S=(Icc 1 ⌊t⌋₊).filter (fun n => n.primeFactors ⊆ Nat.primesLE y) from rfl,←sum_boole]
-    apply sum_congr rfl
-    intro n hn
-    have test : IsSmooth (banned y) n ↔ n.primeFactors ⊆ Nat.primesLE y :=
-      ⟨fun h p hp => Nat.mem_primesLE.mpr ⟨h.2 p hp,Nat.prime_of_mem_primeFactors hp⟩,
-       fun h => ⟨(mem_Icc.mp hn).1.ne',fun p hp => (Nat.mem_primesLE.mp (h hp)).1⟩⟩
-    by_cases h : IsSmooth (banned y) n <;> simp [smoothAF_apply,h,←test]
-  have realEq : (∑ m ∈ Icc 1 ⌊t⌋₊,row y m*(⌊t/m⌋:ℝ))=
-      ∑ n ∈ Icc 1 ⌊t⌋₊,((smoothAF (banned y) n:ℤ):ℝ) := by exact_mod_cast eq
-  have floorEq : (∑ m ∈ freeSet y ⌊t⌋₊,row y m*(⌊t/m⌋:ℝ))=(S.card:ℝ) := by
-    rw [←count,←realEq]
-    apply sum_subset (filter_subset ..)
-    intro n hn out
-    rw [row_value,if_neg (fun h => out (mem_filter.mpr ⟨hn,h⟩)),zero_mul]
+  have floorEq := smooth_population_as_a_rough_floor_sum y t ht
   change |_-(S.card:ℝ)| ≤ _
   rw [←floorEq,←sum_sub_distrib]
   apply (abs_sum_le_sum_abs ..).trans
@@ -230,7 +127,7 @@ private theorem reading_between_prime_sums (y : ℕ) {t : ℝ} (hy : (y:ℝ) ≤
     change _+(∑ d ∈ J,f d)=_ at h
     linarith only [h]
   have read := split g
-  rw [←full,←full,short_reading (le_refl y),sub_zero] at read
+  rw [←full,←full,roughPrimePowerReading_eq_zero (le_refl y),sub_zero] at read
   rw [read]
   simp only [Chebyshev.theta,Chebyshev.psi,Nat.floor_natCast,sum_filter,split]
   constructor

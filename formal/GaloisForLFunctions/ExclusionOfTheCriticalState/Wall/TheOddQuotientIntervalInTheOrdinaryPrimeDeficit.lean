@@ -196,7 +196,7 @@ theorem oddQuotientPrimeExcess_eq_factorial_divisors (S : Finset ℕ) (H : ℕ)
   apply Finset.sum_congr rfl
   intro p hm
   by_cases hp : p.Prime
-  · have hlt : (H:ℝ) < (p:ℝ)^2 := (Real.sqrt_lt' (by positivity : (0:ℝ)<p)).mp (hs p hm)
+  · have hlt : (H:ℝ) < (p:ℝ)^2 := (Real.sqrt_lt' (Nat.cast_pos.mpr hp.pos)).mp (hs p hm)
     have hf := halfFactorialQuotient_valuation hp (by exact_mod_cast hlt : H<p^2)
     have hd : p ∣ halfFactorialQuotient H ↔ H/p%2=1 := by
       constructor
@@ -339,6 +339,7 @@ theorem riemannHypothesis_or_odd_quotient_prime_deficit : RiemannHypothesis ∨
           H=⌊(2:ℝ)^(j+1)*Real.exp (T i-v)⌋₊ ∧ Real.exp (T i)≤H ∧
           (H:ℝ)^(g/6) ≤ Real.exp (g*T i) ∧ k i<a ∧ a≤b ∧ b≤L i ∧ Real.sqrt H<a ∧
           ((ordinaryBandAtDisplacement (k i) (L i) (T i) v).filter fun n : ℕ => Real.sqrt H < n)=Finset.Icc a b ∧
+          c*Real.exp (g*T i)*Real.sqrt H < (1+Real.log 4)*b ∧
           c*Real.exp (g*T i)*Real.sqrt H <
             s*((∑ p ∈ Finset.Icc a b with p.Prime ∧ p ∣ halfFactorialQuotient H, Real.log p) -
               (((Finset.Icc a b).filter fun n => H/n%2=1).card:ℝ)) := by
@@ -367,13 +368,18 @@ theorem riemannHypothesis_or_odd_quotient_prime_deficit : RiemannHypothesis ∨
   have hloss : deficitReading Φ (T i) (k i) (L i) < -8*(c*Real.exp (g*T i))*M := by
     change deficitReading Φ (T i) (k i) (L i) ≤ (riemannZeta (1/2)).re*m^2-A*Real.exp (g*T i)+1 at hd
     change (A/2)*Real.exp (g*T i) > _ at hpos
-    change deficitReading Φ (T i) (k i) (L i) < -8*(c*Real.exp (g*T i))*M
     linarith only [hd,hpos,congrArg (· * Real.exp (g*T i)) hAc,
       mul_nonneg hc₀.le (Real.exp_pos (g*T i)).le]
   obtain ⟨v,s,j,H,a,b,hv,hsg,hor,hj,hX,ha,hab,hb,hsq,hcell,hlarge⟩ :=
     extract_quotient ((criticalHalfLineEnergyDomain_of_groundState hF).integrable.congr he) hs hlate hB _ _ hloss
   refine ⟨v,s,j,H,a,b,hv,hsg,hor,hj,hX,
-    numerator_power_at_test hlate hη1 hg hX hsq (hab.trans hb) rfl,ha,hab,hb,hsq,hcell,?_⟩
+    numerator_power_at_test hlate hη1 hg hX hsq (hab.trans hb) rfl,ha,hab,hb,hsq,hcell,?_,?_⟩
+  · apply hlarge.trans_le
+    apply (le_abs_self _).trans
+    have hsabs : |s|=1 := hsg.elim (fun h => by rw [h,abs_one]) (fun h => by rw [h,abs_neg,abs_one])
+    rw [abs_mul,hsabs,one_mul]
+    exact oddQuotientPrimeExcess_le _ b H (fun n hn => Finset.mem_Ioc.mpr
+      ⟨(Nat.zero_lt_of_lt ha).trans_le (Finset.mem_Icc.mp hn).1,(Finset.mem_Icc.mp hn).2⟩)
   rw [← oddQuotientPrimeExcess_eq_factorial_divisors _ _ (fun n hn =>
     hsq.trans_le (Nat.cast_le.mpr (Finset.mem_Icc.mp hn).1))]
   exact hlarge

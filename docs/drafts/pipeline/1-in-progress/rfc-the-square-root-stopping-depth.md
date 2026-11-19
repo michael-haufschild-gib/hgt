@@ -9,4 +9,4 @@ Fix \(0<\alpha<1\), put \(L=\log X\), and stop after \(k=\lceil\alpha L/\log L\r
 
 **Both signs at the endpoint.** Take \(j=k\) or \(k+1\) of the required parity and \(Y=X^{1/j}\). All products of \(j\) distinct primes up to \(Y\) fit below \(X\). With \(P=\pi(Y)\) the prime number theorem gives \((P-j)L/(jY)\to1\), since \(\log Y=L/j\) and \(L/Y\to0\). The first half of the factors of \(j!\) are at most \(j/2\), so \(j!\le j^j2^{-\lfloor j/2\rfloor}\). For any fixed \(1<c<\sqrt2\), eventually \(\binom Pj\ge c^j(Y/L)^j\). Since \(j<\alpha L/\log L+2\), this exceeds \(c^j X^{1-\alpha}/L^2\). The ratio diverges.
 
-**Lean status.** Paper argument. The corpus Mertens upper bound supplies the reciprocal-prime estimate. The counting bound must be uniform in the moving depth.
+**Lean status.** The unsigned upper bound and the lower bounds for both adjacent exact layers have Lean sources awaiting verification.

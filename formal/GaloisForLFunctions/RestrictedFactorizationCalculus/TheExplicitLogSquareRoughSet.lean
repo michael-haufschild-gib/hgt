@@ -38,7 +38,8 @@ private theorem sifted_eq_rough (X : ℕ) :
   rw [logSquareRoughSet,sum_filter]
   rfl
 
-private theorem cutoff_grows : Tendsto logSquareCutoff atTop atTop := by
+/-- The explicit prime cutoff eventually passes every fixed prime. -/
+theorem logSquareCutoff_tendsto_atTop : Tendsto logSquareCutoff atTop atTop := by
   apply tendsto_atTop.mpr
   intro k
   have h := (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop (k:ℝ)
@@ -188,7 +189,7 @@ theorem density_zero_of_log_square_rough_set {ε : ℝ} (hε : 0<ε) :
   haveI : NeZero Q := ⟨qpos.ne'⟩
   change RHTower.WeilSingularArithmetic.coprimeDensity Q<ε/2 at hZ
   rw [RHTower.WeilSingularArithmetic.coprimeDensity_eq_totient_div] at hZ
-  obtain ⟨N,hN⟩ := eventually_atTop.mp (cutoff_grows.eventually_ge_atTop Z)
+  obtain ⟨N,hN⟩ := eventually_atTop.mp (logSquareCutoff_tendsto_atTop.eventually_ge_atTop Z)
   filter_upwards [tendsto_natCast_atTop_atTop.eventually_ge_atTop (2*((N:ℝ)+Q.totient)/ε)] with X hX
   have sub : logSquareRoughSet X ⊆ range N ∪ (Icc 1 X).filter (fun n => Q.Coprime n) := by
     intro n hn

@@ -375,7 +375,7 @@ private theorem even_octave_pointwise_above_width {t : ℝ} (ht : _root_.RHTower
   apply ((abs_add_le U V).trans (add_le_add hu hv)).trans
   rw [Real.mul_rpow (by norm_num : (0:ℝ) ≤ 2) hm0.le,Real.rpow_sub_one hm0.ne']
   have hsc := mul_le_mul_of_nonneg_right hscale (inv_nonneg.mpr hm0.le)
-  simp only [one_div,div_eq_mul_inv] at hsc ⊢
+  simp only [div_eq_mul_inv] at hsc ⊢
   linarith only [hsc]
 
 private theorem root_sum_shift (f : ℕ → ℝ) (K : ℕ) :
@@ -410,6 +410,16 @@ private theorem subpower_grid_of_zeroReSup (s : ℕ) {ε : ℝ} (he : |ε|=1)
     (by linarith only [(Nat.one_le_cast.mpr hK : (1:ℝ) ≤ K)] : (K:ℝ)+1 ≤ 2*K) hδ.le
   rw [Real.mul_rpow (by norm_num : (0:ℝ) ≤ 2) (Nat.cast_nonneg _)] at hpow
   exact hs.trans ((mul_le_mul_of_nonneg_left (ht.trans (mul_le_mul_of_nonneg_left hpow (by positivity))) hB).trans_eq (by ring))
+
+/-- For either sign, subpower growth of the mass sampled at m^r
+is equivalent to the closed zero-free threshold 1-1/r. -/
+theorem subpower_octave_grid_iff_abscissa (s : ℕ) {ε : ℝ} (he : |ε|=1) :
+    subpowerOctaveGrid (s+2) ε ↔ _root_.RHTower.zetaZeroAbscissa ≤ ((s:ℝ)+1)/((s:ℝ)+2) := by
+  refine ⟨zero_abscissa_of_subpower_octave_grid s he,fun h => subpower_grid_of_zeroReSup s he ?_⟩
+  exact _root_.RHTower.zeroReSup_le_of_forall_re_le fun q =>
+    (_root_.RHTower.re_le_zetaZeroAbscissa (_root_.RHTower.riemannZeta_eq_zero_of_xiZeroCopy q)).trans h
+
+#print axioms subpower_octave_grid_iff_abscissa
 
 /-- The Riemann hypothesis is equivalent to a cofinal subpower bound
 on the unweighted negative errors at perfect-square octave endpoints. -/
@@ -519,6 +529,15 @@ theorem eleven_thirds_of_sixth_seventh_gcd_deficit (h : subpowerGcdGrid 6) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, |seventeenNinthsConductorPrefix N| ≤ C*(N:ℝ)^(11/3:ℝ) :=
   eleven_thirds_of_sixth_power_octaves ((subpower_gcd_grid_iff_octave 6).mp h)
 
+/-- The absolute whole-prefix bound at eleven thirds also recovers
+the cofinal subpower deficit for the sixth/seventh-power gcd products. -/
+theorem sixth_seventh_gcd_iff_eleven_thirds :
+    subpowerGcdGrid 6 ↔ ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ,
+      |seventeenNinthsConductorPrefix N| ≤ C*(N:ℝ)^(11/3:ℝ) := by
+  rw [subpower_gcd_grid_iff_octave,←five_sixths_iff_seventeenNinthsConductorPrefix]
+  convert subpower_octave_grid_iff_abscissa 4 (by norm_num : |(-1:ℝ)|=1) using 1 <;> norm_num
+
+#print axioms sixth_seventh_gcd_iff_eleven_thirds
 #print axioms sparse_gcd_deficit_comparison
 #print axioms riemannHypothesis_iff_square_cube_gcd_deficit
 #print axioms eleven_thirds_of_sixth_seventh_gcd_deficit

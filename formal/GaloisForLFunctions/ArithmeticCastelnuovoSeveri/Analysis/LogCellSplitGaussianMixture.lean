@@ -59,7 +59,7 @@ theorem splitGaussian_components (u v : ℝ) (θ η : ℝ × ℝ) :
     rfl
   rw [splitGaussian,he,withDensity_add_left ((measurable_gaussianPDF _ _).const_smul p),
     withDensity_smul p (measurable_gaussianPDF _ _),withDensity_smul q (measurable_gaussianPDF _ _)]
-  simp only [positionGaussian,gaussianReal_of_var_ne_zero _ (var_ne _),g,h,p,q]
+  simp only [positionGaussian,gaussianReal_of_var_ne_zero _ (var_ne _),p,q]
 
 instance splitGaussian_probability (u v : ℝ) (θ η : ℝ × ℝ) :
     IsProbabilityMeasure (splitGaussian u v θ η) where
@@ -97,6 +97,7 @@ private theorem integral_strict {a b : ℝ} (hab : a < b) {f g : ℝ → ℝ}
     (∫ x in a..b, f x) < ∫ x in a..b, g x := by
   have hp := intervalIntegral.intervalIntegral_pos_of_pos ((hg.sub hf).intervalIntegrable _ _)
     (fun x => sub_pos.mpr (h x)) hab
+  change 0 < ∫ x in a..b, g x-f x at hp
   rwa [intervalIntegral.integral_sub (hg.intervalIntegrable _ _) (hf.intervalIntegrable _ _),sub_pos] at hp
 
 /-- The overlap correction is strictly positive on both adjacent cells.
@@ -164,7 +165,9 @@ theorem split_fit_beats_every_gaussian (t u v m l : ℝ) :
   have hb := (position_projection_exact t (Real.log (a+b)) m l).1
   have h' : (a+b)*(2*(klDiv P (splitGaussian u v θ η)).toReal) <
       (a+b)*(Real.log (2*Real.pi)-Real.log 12+1) := by
-    dsimp only at h
+    change (a+b)*(klDiv P (splitGaussian u v θ η)).toReal <
+      a*(klDiv (positionLaw t u) (positionGaussian θ.1 θ.2)).toReal +
+      b*(klDiv (positionLaw (t+a) v) (positionGaussian η.1 η.2)).toReal at h
     linear_combination 2*h + a*h1 + b*h2
   have hsum : 0 < a+b := add_pos (Real.exp_pos _) (Real.exp_pos _)
   have hl := (lt_of_mul_lt_mul_left h' hsum.le)

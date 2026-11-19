@@ -97,6 +97,20 @@ $$\sum_{i,j}|u_iv_j K_d(n+i+j)|\le \frac{d^2 E}{n(n+1)},\qquad
 
 Charge the two terms in $2|u_iv_j|\le u_i^2+v_j^2$ to their separate telescoping row sums. This proof covers generating functions that diverge at $x=1$. In particular, for bounded individual energies the mixed block curvature tends to zero whenever $d=o(n)$, even as both divisor supports exhaust the integers. [Infinite energy estimates and integral realization](IndependentEnergiesOfInfiniteEndpointSections.lean)
 
+## Aligned divisibility sieves
+
+At the upper endpoint $qm$, delete every lower graph whose conductor is divisible by $q$. The omitted pole product and prime order project exactly to the full prefix at $m$. The remaining defect is $A(qm)-A(m)$, where $A(m)=mH_m-\log(m!)$. More generally, assign lower graph $i$ the integer multiplicity $w(i)=\sum_t a_t(\mathbf1_{d_t\mid i}-\mathbf1_{q\mid i})$ with $d_t\mid q$. Write $L=\sum_t|a_t|$ and $K_w(m)$ for the second difference of the defect in $m$. Deleting every $q$-th conductor costs $L=1$.
+
+For $m\ge1$, define the separate energy $E_m(u)=\sum_{i,j}u_i u_j[D_1(m+i+j-1)-D_1(m+i+j)]$. Its density is $x^{m-1}(1-x)^2/2$ against the square of the endpoint polynomial. For all $u,v\in\ell^2$, the signed and absolute intersections satisfy
+
+$$
+\left|\sum_{i,j}u_i v_j K_w(m+i+j)\right|\le\tfrac{L}{4}\bigl(E_m(u)+E_m(v)\bigr),\qquad
+\sum_{i,j}|u_i v_j K_w(m+i+j)|\le
+\frac{L(\|u\|_2^2+\|v\|_2^2)}{8m(m+1)}.
+$$
+
+The extra factor of decay comes from canceling a common curvature. Adding $\tfrac12\log m$ to $A(m)$ leaves a negative second difference with positive moment density bounded by $(1-x)^2/4$. Each stride has the same logarithmic second difference at aligned cuts. Subtracting divisibility classes cancels it exactly. Both estimates are uniform in $q$, and the completed intersection is the limit of rounded integral divisors. Giving the multiples of $q$ a common multiplicity $b$ adds exactly $bG(m)$ to the curvature, with the original full-prefix energy multiplied by $|b|$. This covers every finite signed combination of divisibility classes at the same cut. [Common logarithmic term and positive remainder](TheTrapezoidRemainderOfStridedPrefixes.lean) · [Sieved integral divisors and separate energies](SeparateEnergiesOfSievedIntegralDivisors.lean)
+
 ## Opposing sections and integral duality
 
 Put the lower divisors at $1\le i\le X$ and the upper jumps at $j\ge X+L$. Add the directed order minus its pole product to the flat-tail Weil rows with their constant diagonal removed. For this joint height $J$, the prime contributions cancel exactly. With $S_i(x)=1+\cdots+x^{i-1}$,
@@ -135,7 +149,7 @@ At separation $4(L+1)$, put $U_b=\sum_{i\equiv b\pmod 2} u_i(-1)^{\lfloor i/2\rf
 ## Tests and open questions
 
 * Which relations between distinct quotient cells survive when the lower divisor ranges beyond the full families used in a residue block? A single quotient realizes the ordinary unsmoothed Chebyshev error.
-* Beyond full prefixes, can the combined quotient variation and real jet norm of arbitrary interleaving divisors be bounded by energies computed separately on the two divisors? The all-support power criterion specifies the zero-free consequence of any proposed exponent.
+* Beyond aligned divisibility sieves, can the combined quotient variation and real jet norm of arbitrary interleaving divisors be bounded by energies computed separately on the two divisors? The all-support power criterion specifies the zero-free consequence of any proposed exponent.
 * Which opposing sections recover the effectivity supplied by curve point counts for Frobenius eigenvalues beyond the Kummer family? On the integers, a candidate must distinguish the ordinary prefix from its Liouville twist on the same divisors. [Curve model and Stepanov](../ExclusionOfTheCriticalState/Models/CurveCriticalStatesAndStepanovExclusion.lean) · [Ordinary and twisted prefixes](TheUnscaledIntersectionOfTheLiouvilleTwin.lean)
 
 A contribution must prove a new uniform estimate, determine a sharp obstruction with a surviving arithmetic invariant, or recover a term of the completed intersection from independently defined operations. For an estimate on exhausting divisors, state which supports may grow, what each section pays, which pole and diagonal terms were removed, and whether the estimate survives passage to the limit.

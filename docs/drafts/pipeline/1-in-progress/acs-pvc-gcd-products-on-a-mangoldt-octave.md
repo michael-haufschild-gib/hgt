@@ -85,3 +85,5 @@ The only remaining signed terms are the finite quotient cells \(1\le j\le\lfloor
 A lower bound by \(-A N^{-1/6}\) for this combined sum at every large even \(N\) suffices for the whole-prefix \(11/3\) estimate. The two terms use the same Möbius values at both sharp endpoints. This lower bound remains open.
 
 On paper it suffices to bound the sum of the negative parts of these cell totals by \(O(T^{5/6})\) for even \(N\) in \((\sqrt T,T]\) along an unbounded sequence of \(T\). The small-divisor errors sum to \(O(T^{5/6})\), and the odd endpoint adds the nonnegative term \(\Lambda(2M+1)/(2M+1)\) to \(e_{2M}\). The required deficit bound remains open. [Positive mean and cofinal deficit criterion](acs-pvc-one-sided-mass-in-the-reciprocal-prime-octave.md)
+
+At the sparse horizons \(M=m^r, X=m^{r+1}\), let the deficit be \((\log 2-\log Q_M(X)/X)^+\). A subpower bound for its sum on cofinal prefixes characterizes RH at \(r=2\) and implies the absolute \(N^{11/3}\) conductor bound at \(r=6\). Both transfers are formalized. [Sparse integer products](acs-pvc-sparse-square-and-sixth-power-prime-octaves.md)

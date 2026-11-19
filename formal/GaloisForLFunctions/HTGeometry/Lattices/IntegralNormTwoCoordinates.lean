@@ -23,7 +23,9 @@ abbrev SignedPair (J : Type*) := Σ S : Set.powersetCard J 2, S.val → Bool
 /-- Squared energy and coordinate sum have the same parity. -/
 theorem energy_sub_sum_even (x : J → ℤ) :
     Even (energy x-∑ i, x i) := by
-  have h (i) : Even ((x i)^2-x i) := by convert Int.even_mul_pred_self (x i) using 1 <;> ring
+  have h (i) : Even ((x i)^2-x i) := by
+    convert Int.even_mul_pred_self (x i) using 1
+    ring
   choose k hk using h
   refine ⟨∑ i,k i,?_⟩
   rw [energy,← sum_sub_distrib,← sum_add_distrib]
@@ -36,7 +38,8 @@ private theorem sign_sq (b : Bool) : unitSign b^2=1 := by cases b <;> norm_num [
 
 private theorem unitSign_injective : Function.Injective unitSign := by
   intro a b h
-  cases a <;> cases b <;> norm_num [unitSign] at h ⊢
+  cases a <;> cases b <;> try rfl
+  all_goals norm_num [unitSign] at h
 
 private def support₂ (x : J → ℤ) : Finset J := univ.filter fun i => x i≠0
 
@@ -52,11 +55,16 @@ private theorem coord_values (x : TwoShell J) (i : J) :
   omega
 
 private theorem support_two (x : TwoShell J) : (support₂ x.val).card=2 := by
-  have e : (∑ j, if x.val j≠0 then (1:ℤ) else 0)=2 := by
-    rw [← x.property]
-    exact sum_congr rfl fun i _ => by
+  have e : ((support₂ x.val).card:ℤ)=2 := calc
+    _ = ∑ _i ∈ support₂ x.val, (1:ℤ) := by simp
+    _ = ∑ i, if x.val i≠0 then (1:ℤ) else 0 := by rw [support₂,sum_filter]
+    _ = energy x.val := by
+      unfold energy
+      apply sum_congr rfl
+      intro i _
       rcases coord_values x i with h|h|h <;> simp [h]
-  simpa [support₂] using e
+    _ = 2 := x.property
+  exact_mod_cast e
 
 /-- Synthesis from the unordered support and the signs at its two endpoints. -/
 def fromPair (p : SignedPair J) : TwoShell J := by
@@ -66,7 +74,7 @@ def fromPair (p : SignedPair J) : TwoShell J := by
   have sq (i) : (x i)^2=if i∈p.1.val then (1:ℤ) else 0 := by
     by_cases h : i∈p.1.val <;> simp [x,h,sign_sq]
   simp only [energy,sq]
-  simp [p.1.property]
+  simp
 
 private theorem support_fromPair (p : SignedPair J) : support₂ (fromPair p).val=p.1.val := by
   classical

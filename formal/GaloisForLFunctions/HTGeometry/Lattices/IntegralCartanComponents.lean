@@ -72,7 +72,7 @@ def componentRootEquiv : (Σ c : Component Q hQ, Root (componentForm Q hQ c)) �
   constructor
   · rintro ⟨c,x⟩ ⟨d,y⟩ he
     have e : extend Q hQ c x.val=extend Q hQ d y.val := synth_injective Q hQ (congrArg Subtype.val he)
-    have nx : x.val≠0 := fun hz => zero_ne_one (by simpa [hz] using x.property)
+    have nx : x.val≠0 := fun hz => (zero_ne_one : (0:ℤ)≠1) (by simpa [hz] using x.property)
     obtain ⟨i,hi⟩ := Function.ne_iff.mp nx
     have cd : c=d := by
       by_contra h
@@ -106,8 +106,11 @@ private theorem restrict_sum (c : Component Q hQ) (F : Vertex Q hQ → ℤ)
   let P := fun i => (cartanGraph Q hQ).connectedComponentMk i=c
   have vanished : (∑ i : {i // ¬P i}, F i.val)=0 := sum_eq_zero fun i _ => outside i.val i.property
   calc
-    _ = (∑ i : {i // P i}, F i.val)+(∑ i : {i // ¬P i}, F i.val) :=
-      (Fintype.sum_subtype_add_sum_subtype P F).symm
+    _ = (∑ i : {i // P i}, F i.val)+(∑ i : {i // ¬P i}, F i.val) := by
+      have same : Subtype.fintype P=inferInstanceAs (Fintype (Part Q hQ c)) := Subsingleton.elim _ _
+      have split := (Fintype.sum_subtype_add_sum_subtype P F).symm
+      rw [same] at split
+      exact split
     _ = _ := by rw [vanished,add_zero]
 
 /-- The doubled component form has its own Cartan matrix; the complement

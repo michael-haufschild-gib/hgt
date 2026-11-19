@@ -11,7 +11,7 @@ interpolation consequently bounds the entire shell, including rank zero.
 
 noncomputable section
 namespace GaloisForLFunctions.HTGeometry.IntegralRootShell
-variable {J : Type*} [Fintype J]
+variable {J : Type*}
 
 abbrev Occupied (Q : Form J) := Set.range (fun x : Root Q => parity x.val)
 
@@ -60,6 +60,8 @@ def parityEquiv (Q : Form J) (hQ : Q.PosDef) : Occupied Q × Bool ≃ Root Q := 
     rcases (root_parity_iff Q hQ (lift Q a) x).mp (parity_lift Q a) with e|e
     · exact ⟨(a,false),Subtype.ext e⟩
     · exact ⟨(a,true),Subtype.ext (by change -(lift Q a).val=x.val; rw [e,neg_neg])⟩
+
+variable [Fintype J]
 
 theorem card_roots (Q : Form J) (hQ : Q.PosDef) :
     Nat.card (Root Q)=2*Nat.card (Occupied Q) := by

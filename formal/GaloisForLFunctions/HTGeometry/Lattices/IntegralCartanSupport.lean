@@ -36,7 +36,7 @@ private theorem cut_energy (a b : Vertex Q hQ → ℤ)
     · rw [hb,mul_zero,zero_mul]
     obtain ⟨ne,noEdge⟩ := cross i j ha hb
     simp [cartanEntry,ne,noEdge]
-  rw [synth_add,QuadraticMap.map_add,← QuadraticMap.polarBilin_apply_apply,orth,add_zero]
+  rw [synth_add,QuadraticMap.map_add Q,← QuadraticMap.polarBilin_apply_apply,orth,add_zero]
 
 /-- Two nonempty mutually nonadjacent pieces of an integral expansion
 have total energy at least two. -/
@@ -58,7 +58,7 @@ theorem coordinates_nonzero (x : Root Q) : rootCoordinates Q hQ x≠0 := by
   intro hz
   have he := x.property
   rw [← synth_rootCoordinates Q hQ x,hz] at he
-  simpa [synth] using he
+  simp [synth] at he
 
 /-- The induced graph on the nonzero coordinates of every root is connected. -/
 theorem root_support_connected (x : Root Q) :

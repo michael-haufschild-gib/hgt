@@ -27,8 +27,8 @@ private theorem width_bounds {x : ℝ} (hx : 0 < x) :
     linarith only [(div_eq_iff hx.ne').mp e])
   rw [Real.log_div hx.ne' h1.ne'] at h
   rw [Real.log_div h1.ne' hx.ne'] at g
-  have he : x/(x+1)-1 = -(1/(x+1)) := by field_simp <;> ring
-  have he' : (x+1)/x-1 = 1/x := by field_simp <;> ring
+  have he : x/(x+1)-1 = -(1/(x+1)) := by field_simp; ring
+  have he' : (x+1)/x-1 = 1/x := by field_simp; ring
   rw [he] at h
   exact ⟨by unfold widthAt; linarith only [h],g.trans_eq he'⟩
 
@@ -41,15 +41,18 @@ private theorem width_derivative {x : ℝ} (hx : 0 < x) :
   have raw : HasDerivAt widthAt (1/(x+1)-x⁻¹) x :=
     (((hasDerivAt_id x).add_const 1).log h1.ne').sub (Real.hasDerivAt_log hx.ne')
   convert raw using 1
-  field_simp [hx.ne',h1.ne'] <;> ring
+  field_simp [hx.ne',h1.ne']
+  ring
 
 private theorem adjacent_ratio_strict :
     StrictAntiOn (fun x : ℝ => widthAt x / widthAt (x+1)) (Ioi 0) := by
   have hder (x : ℝ) (hx : 0 < x) : HasDerivAt (fun y => widthAt y/widthAt (y+1))
       ((-1/(x*(x+1))*widthAt (x+1)-widthAt x*(-1/((x+1)*(x+1+1))*1))/(widthAt (x+1))^2) x := by
     have hx1 : 0<x+1 := by linarith only [hx]
-    have shift : HasDerivAt (fun y : ℝ => widthAt (y+1)) (-1/((x+1)*(x+1+1))*1) x :=
-      (width_derivative hx1).comp x ((hasDerivAt_id x).add_const 1)
+    have inner : HasDerivAt (fun y : ℝ => y+1) 1 x := (hasDerivAt_id x).add_const 1
+    have shift : HasDerivAt (fun y : ℝ => widthAt (y+1)) (-1/((x+1)*(x+1+1))*1) x := by
+      simpa only [Function.comp_def] using HasDerivAt.comp (h₂:=widthAt) (h:=fun y : ℝ => y+1) x
+        (width_derivative hx1) inner
     exact (width_derivative hx).div shift (width_pos hx1).ne'
   apply strictAntiOn_of_deriv_neg (convex_Ioi 0)
   · exact fun x hx => (hder x hx).continuousAt.continuousWithinAt
@@ -64,7 +67,8 @@ private theorem adjacent_ratio_strict :
     have hj := (div_le_iff₀ hx2).mp (width_bounds hx1).1
     have he : -1/(x*(x+1))*widthAt (x+1)-widthAt x*(-1/((x+1)*(x+1+1))*1) =
         (widthAt x*x-widthAt (x+1)*(x+1+1))/(x*(x+1)*(x+1+1)) := by
-      field_simp [hx.ne',hx1.ne',hx2.ne'] <;> ring
+      field_simp [hx.ne',hx1.ne',hx2.ne']
+      ring
     rw [he]
     exact div_neg_of_neg_of_pos (by linarith only [hi,hj]) (mul_pos (mul_pos hx hx1) hx2)
 

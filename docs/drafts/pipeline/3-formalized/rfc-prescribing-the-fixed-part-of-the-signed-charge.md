@@ -1,6 +1,6 @@
 # Prescribing the fixed part of the signed charge
 
-- **Stage** 1-in-progress
+- **Stage** 3-formalized
 
 Let \(F\) be a legal involution, \(S\) any subset of its squarefree fixed nonunits, and \(B(k)\) any threshold. There is another legal involution \(G\) whose squarefree fixed set through \(X\) differs from \(\{1\}\cup S\) in at most
 \[
@@ -14,4 +14,6 @@ The signed allocation can be nonlinear. Let \(h:\mathbb Z\to\mathbb Z\) satisfy 
 
 Start with a density-one matching whose signed crossings stay below one quarter of the prescribed diverging envelope \(w\). Choose \(B(k)\ge(k+1)^2\) so that \(w(X)\ge4(k+1)\) for \(X>B(k)\). Then \(D_B(X)\le\sqrt X\) and \(D_B(X)\le w(X)/4\). Since \(h\) is 1-Lipschitz, one resulting matching has unpaid count \(o(X)\) and its fixed and crossing charges approximate \(h(M(X))\) and \(M(X)-h(M(X))\) to error at most \(w(X)\) at every sufficiently large cutoff.
 
-Taking \(h(a)=\max(a,0)\) separates the upward and downward parts of the actual Mertens prefix. Taking \(h(a)=\lfloor\alpha a\rfloor\) gives every constant fraction \(0\le\alpha\le1\). The two approximation errors have opposite signs. Lean verification of the completion and allocation bounds is pending.
+Taking \(h(a)=\max(a,0)\) separates the upward and downward parts of the actual Mertens prefix. Taking \(h(a)=\lfloor\alpha a\rfloor\) gives every constant fraction \(0\le\alpha\le1\). The two approximation errors have opposite signs.
+
+**Lean.** `prescribe_fixed_vertices_at_all_cutoffs`, `nonlinear_allocation_of_the_mertens_prefix`, `separate_the_positive_and_negative_mertens_excursions`, and `fractional_allocation_of_the_mertens_prefix`. [Support prescription](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/PrescribingTheSquarefreeFixedVertices.lean) · [Signed allocation](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/NonlinearAllocationOfTheMertensPrefix.lean)
