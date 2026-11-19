@@ -81,7 +81,7 @@ private theorem model_octave :
   have he := (abs_sum_le_sum_abs ..).trans (sum_le_sum compare)
   rw [←mul_sum] at he
   have hh := mul_le_mul_of_nonneg_left he (Real.sqrt_nonneg (M:ℝ))
-  rw [mul_left_comm,drop_sum mp] at hh
+  rw [mul_left_comm (Real.sqrt (M:ℝ)) (ε/2),drop_sum mp] at hh
   exact hh.trans_lt (by linarith only [ep,mul_nonneg ep.le (div_nonneg zero_le_one (Real.sqrt_nonneg 2))])
 
 private theorem reciprocal_error {a : ℕ → ℝ}
@@ -100,7 +100,7 @@ private theorem reciprocal_error {a : ℕ → ℝ}
     have nr := Real.sqrt_pos.mpr (Nat.cast_pos.mpr nn : 0<(n:ℝ))
     have h := hK n ((le_max_left K 1).trans (hM.trans hn))
     rw [Real.dist_eq,sub_zero,abs_div,abs_of_pos nr] at h
-    apply ((lt_div_iff₀ nr).mp h).le.trans
+    apply ((div_lt_iff₀ nr).mp h).le.trans
     calc ε/4*root n = L*(root M*root n) := by dsimp only [L]; field_simp
          _ ≤ L*(root n*root n) := mul_le_mul_of_nonneg_left
            (mul_le_mul_of_nonneg_right (Real.sqrt_le_sqrt (Nat.cast_le.mpr hn)) nr.le) l0

@@ -334,8 +334,7 @@ private def dilationBox (a b : ℝ) (u : ℕ → ℝ) (x : ℝ) : ℝ :=
 private def midpointWindowAt (u : ℕ → ℝ) (x : ℝ) : ℝ :=
   dilationBox 3 (15/4) u x-dilationBox (9/4) 3 u x
 
-/-- Signed weight obtained by uniformly and independently dilating the three
-endpoints in logarithmic scale. -/
+/-- Mean signed weight of the two intervals under one common random dilation. -/
 def smoothPrimeMidpointWeight (x : ℝ) : ℝ := ∫ u,midpointWindowAt u x ∂logBoxLaw
 
 private theorem dilation_box_support {a b : ℝ} (ha : 9/4≤a) (hb : b≤15/4) (u : ℕ → ℝ) :
@@ -430,8 +429,9 @@ theorem mellin_smooth_prime_midpoint_weight {z : ℂ} (hz : z≠0) :
         (Complex.continuous_ofReal.measurable.comp hh)).aestronglyMeasurable
       filter_upwards [ae_restrict_mem (μ:=volume) (measurableSet_Ioc (a:=(2:ℝ)) (b:=4))] with x hx
       unfold dilationBox
-      split_ifs <;> simpa only [Complex.ofReal_one,Complex.ofReal_zero,mul_one,mul_zero,norm_zero] using
-        (by first | exact hpow hx | exact (Real.exp_pos _).le)
+      split_ifs
+      · simpa only [Complex.ofReal_one,mul_one] using hpow hx
+      · simpa only [Complex.ofReal_zero,mul_zero,norm_zero] using (Real.exp_pos _).le
     simp only [F,midpointWindowAt,Complex.ofReal_sub,mul_sub,integral_sub (hInt _ _) (hInt _ _)]
     rw [show μ=volume.restrict (Set.Ioc 2 4) by rfl,
       dilated_box_integral (by norm_num) (by norm_num) le_rfl hz,

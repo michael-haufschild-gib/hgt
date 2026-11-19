@@ -1,4 +1,7 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ThePivotalBlockAtTheUnitaryMidpoint
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
 
 /-!
 # Boundary measure of the small unitary divisors
@@ -180,7 +183,7 @@ theorem unitaryHalfWeight_log_flux (k : ℕ) :
     exact_mod_cast Nat.prod_primeFactors_pow_factorization hk
   have hl : Real.log k = ∑ p ∈ k.primeFactors, Real.log (p^k.factorization p : ℕ) := by
     conv_lhs => arg 1; rw [hm]
-    exact Real.log_prod _ _ fun p hp => by
+    exact Real.log_prod fun p hp => by
       exact_mod_cast (pow_pos (Nat.prime_of_mem_primeFactors hp).pos (k.factorization p)).ne'
   rw [hl, mul_sum]
   refine sum_congr rfl fun p hp => ?_

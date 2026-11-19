@@ -109,7 +109,9 @@ theorem prime_windows_strictly_below_abscissa (h : 1/2 < zetaZeroAbscissa) :
   have hz : z ≤ 7/12 := le_of_not_gt hh
   have hp : 0 < 3/2-z := by linarith only [hz]
   have he : 1-(1-z)/(1-1*(z-1/2)) = (1/2)/(3/2-z) := by
-    rw [show 1-1*(z-1/2)=3/2-z by ring]; field_simp; ring
+    rw [show 1-1*(z-1/2)=3/2-z by ring]
+    calc 1-(1-z)/(3/2-z) = (3/2-z)/(3/2-z)-(1-z)/(3/2-z) := by rw [div_self hp.ne']
+         _ = _ := by rw [←sub_div,show 3/2-z-(1-z)=(1/2:ℝ) by ring]
   refine ⟨(1/2)/(3/2-z),(le_div_iff₀ hp).2 (by dsimp only [z]; linarith only [h]),?_,?_⟩
   · apply (div_lt_iff₀ hp).2
     have hz0 : 1/2 < z := h

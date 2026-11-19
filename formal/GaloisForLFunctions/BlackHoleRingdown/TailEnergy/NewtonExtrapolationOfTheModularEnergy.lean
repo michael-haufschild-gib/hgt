@@ -20,40 +20,41 @@ namespace GaloisForLFunctions.BlackHoleRingdown
 
 noncomputable section
 
-private def node (i : ℕ) : ℝ := Real.exp (-(i : ℝ))
-private theorem node_pos (i : ℕ) : 0 < node i := Real.exp_pos _
-private theorem node_le (i : ℕ) : node i ≤ 1 := Real.exp_le_one_iff.mpr (by positivity)
+/-- Laplace node of the unit-time release at index i. -/
+def radiationNode (i : ℕ) : ℝ := Real.exp (-(i : ℝ))
+theorem radiationNode_pos (i : ℕ) : 0 < radiationNode i := Real.exp_pos _
+theorem radiationNode_le_one (i : ℕ) : radiationNode i ≤ 1 := Real.exp_le_one_iff.mpr (by positivity)
 
 /-- Unit-grid Laplace samples of the nonnegative energy released in each unit interval. -/
 def radiationSample (h : CompactPulse) (k : ℕ) : ℝ :=
-  ∑' i : ℕ, node i^k * stepDecrement h i 1
+  ∑' i : ℕ, radiationNode i^k * stepDecrement h i 1
 
 private def mixed (h : CompactPulse) (k n : ℕ) : ℝ :=
-  ∑' i : ℕ, node i^k * (1-node i)^n * stepDecrement h i 1
+  ∑' i : ℕ, radiationNode i^k * (1-radiationNode i)^n * stepDecrement h i 1
 
-private theorem mixed_sum (h : CompactPulse) (k n : ℕ) :
-    Summable fun i : ℕ => node i^k*(1-node i)^n*stepDecrement h i 1 := by
+theorem summable_radiation_kernel (h : CompactPulse) (k n : ℕ) :
+    Summable fun i : ℕ => radiationNode i^k*(1-radiationNode i)^n*stepDecrement h i 1 := by
   have hm : Summable (fun i : ℕ => stepDecrement h i 1) := by
     simpa using (unit_decrements_have_sum h 0).summable
   apply hm.of_nonneg_of_le
   · intro i
-    exact mul_nonneg (mul_nonneg (pow_nonneg (node_pos i).le _) (pow_nonneg (sub_nonneg.mpr
-      (node_le i)) _)) (stepDecrement_nonneg _ _ _)
+    exact mul_nonneg (mul_nonneg (pow_nonneg (radiationNode_pos i).le _) (pow_nonneg (sub_nonneg.mpr
+      (radiationNode_le_one i)) _)) (stepDecrement_nonneg _ _ _)
   · intro i
     apply mul_le_of_le_one_left (stepDecrement_nonneg _ _ _)
-    exact mul_le_one₀ (pow_le_one₀ (node_pos i).le (node_le i)) (pow_nonneg
-      (sub_nonneg.mpr (node_le i)) _) (pow_le_one₀ (sub_nonneg.mpr (node_le i))
-        (sub_le_self _ (node_pos i).le))
+    exact mul_le_one₀ (pow_le_one₀ (radiationNode_pos i).le (radiationNode_le_one i)) (pow_nonneg
+      (sub_nonneg.mpr (radiationNode_le_one i)) _) (pow_le_one₀ (sub_nonneg.mpr (radiationNode_le_one i))
+        (sub_le_self _ (radiationNode_pos i).le))
 
 private theorem mixed_step (h : CompactPulse) (k n : ℕ) :
     mixed h (k+1) n - mixed h k n = -mixed h k (n+1) := by
-  rw [mixed, mixed, mixed, ← (mixed_sum h (k+1) n).tsum_sub (mixed_sum h k n), ← tsum_neg]
+  rw [mixed, mixed, mixed, ← (summable_radiation_kernel h (k+1) n).tsum_sub (summable_radiation_kernel h k n), ← tsum_neg]
   exact tsum_congr fun i => by simp only [pow_succ]; ring
 
 /-- The signed differences at every starting sample have an exact positive kernel. -/
 theorem radiationSample_signed_difference (h : CompactPulse) (k n : ℕ) :
     (-1 : ℝ)^n * (fwdDiff 1)^[n] (radiationSample h) k =
-      ∑' i : ℕ, node i^k*(1-node i)^n*stepDecrement h i 1 := by
+      ∑' i : ℕ, radiationNode i^k*(1-radiationNode i)^n*stepDecrement h i 1 := by
   suffices H : ∀ k, (fwdDiff 1)^[n] (radiationSample h) k = (-1 : ℝ)^n*mixed h k n by
     rw [H, ← mul_assoc, ← mul_pow]
     simp [mixed]
@@ -76,16 +77,16 @@ private theorem coeff_nonneg {b : ℝ} (hb : 0 ≤ b) (n : ℕ) : 0 ≤ Ring.mul
   exact nonneg_of_mul_nonneg_right (hp.trans_eq h.symm) (by positivity : (0 : ℝ) < n.factorial)
 
 private theorem binomial_kernel (b : ℝ) (i : ℕ) :
-    HasSum (fun n : ℕ => Ring.multichoose b n * (1-node i)^n) (Real.exp (b*i)) := by
-  have hn : ‖1-node i‖ < 1 := by
-    rw [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr (node_le i))]
-    linarith only [node_pos i]
-  have hm : 1-node i ∈ Metric.eball (0 : ℝ) 1 := by
+    HasSum (fun n : ℕ => Ring.multichoose b n * (1-radiationNode i)^n) (Real.exp (b*i)) := by
+  have hn : ‖1-radiationNode i‖ < 1 := by
+    rw [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr (radiationNode_le_one i))]
+    linarith only [radiationNode_pos i]
+  have hm : 1-radiationNode i ∈ Metric.eball (0 : ℝ) 1 := by
     rw [mem_eball_zero_iff]
     exact_mod_cast hn
   have H := (Real.one_div_one_sub_rpow_hasFPowerSeriesOnBall_zero b).hasSum hm
   simpa only [FormalMultilinearSeries.ofScalars_apply_eq, smul_eq_mul, ← Ring.multichoose_eq,
-    zero_add, sub_sub_cancel, node, ← Real.exp_mul, one_div, ← Real.exp_neg, neg_mul, neg_neg,
+    zero_add, sub_sub_cancel, radiationNode, ← Real.exp_mul, one_div, ← Real.exp_neg, neg_mul, neg_neg,
     mul_comm (i : ℝ) b] using H
 
 /-- Newton terms at a negative real argument, computed entirely from nonnegative integer samples. -/
@@ -94,25 +95,25 @@ def radiationNewtonTerm (h : CompactPulse) (b : ℝ) (n : ℕ) : ℝ :=
 
 private theorem newton_term (h : CompactPulse) (b : ℝ) (n : ℕ) :
     radiationNewtonTerm h b n =
-      ∑' i : ℕ, Ring.multichoose b n * ((1-node i)^n * stepDecrement h i 1) := by
+      ∑' i : ℕ, Ring.multichoose b n * ((1-radiationNode i)^n * stepDecrement h i 1) := by
   simp only [radiationNewtonTerm, radiationSample_signed_difference, pow_zero, one_mul, tsum_mul_left]
 
 theorem radiationNewtonTerm_nonneg (h : CompactPulse) {b : ℝ} (hb : 0 ≤ b) (n : ℕ) :
     0 ≤ radiationNewtonTerm h b n := by
   rw [newton_term]
   exact tsum_nonneg fun i => mul_nonneg (coeff_nonneg hb n)
-    (mul_nonneg (pow_nonneg (sub_nonneg.mpr (node_le i)) _) (stepDecrement_nonneg _ _ _))
+    (mul_nonneg (pow_nonneg (sub_nonneg.mpr (radiationNode_le_one i)) _) (stepDecrement_nonneg _ _ _))
 
 /-- Newton extrapolation on one fixed grid has exactly the same sum and convergence
 domain as the exponential moment of the physical releases. -/
 theorem radiationNewton_hasSum_iff (h : CompactPulse) {b : ℝ} (hb : 0 ≤ b) (L : ℝ) :
     HasSum (radiationNewtonTerm h b) L ↔
       HasSum (fun i : ℕ => Real.exp (b*i)*stepDecrement h i 1) L := by
-  let A (n i : ℕ) := Ring.multichoose b n * ((1-node i)^n * stepDecrement h i 1)
+  let A (n i : ℕ) := Ring.multichoose b n * ((1-radiationNode i)^n * stepDecrement h i 1)
   have hpos (n i : ℕ) : 0 ≤ A n i := mul_nonneg (coeff_nonneg hb n)
-    (mul_nonneg (pow_nonneg (sub_nonneg.mpr (node_le i)) _) (stepDecrement_nonneg _ _ _))
+    (mul_nonneg (pow_nonneg (sub_nonneg.mpr (radiationNode_le_one i)) _) (stepDecrement_nonneg _ _ _))
   have hrow (n : ℕ) : Summable (A n) := by
-    simpa only [A, pow_zero, one_mul] using (mixed_sum h 0 n).mul_left (Ring.multichoose b n)
+    simpa only [A, pow_zero, one_mul] using (summable_radiation_kernel h 0 n).mul_left (Ring.multichoose b n)
   have hcol (i : ℕ) : HasSum (fun n => A n i) (Real.exp (b*i)*stepDecrement h i 1) := by
     simpa only [A, mul_assoc] using (binomial_kernel b i).mul_right (stepDecrement h i 1)
   have hr := summable_prod_of_nonneg (f := fun p : ℕ × ℕ => A p.1 p.2) fun p => hpos _ _
@@ -156,45 +157,45 @@ theorem rh_iff_radiationNewton : RiemannHypothesis ↔
         exact mul_le_of_le_one_left (stepDecrement_nonneg _ _ _)
           (Real.exp_le_one_iff.mpr (mul_nonpos_of_nonpos_of_nonneg (le_of_not_gt hb) (Nat.cast_nonneg _)))
 
-/-- Remove the first releases, then normalize the next node to one. -/
+/-- Remove the first releases, then normalize the next radiationNode to one. -/
 def radiationRemainder (h : CompactPulse) (r k : ℕ) : ℝ :=
-  (radiationSample h k - ∑ i ∈ range r, node i^k*stepDecrement h i 1) / node r^k
+  (radiationSample h k - ∑ i ∈ range r, radiationNode i^k*stepDecrement h i 1) / radiationNode r^k
 
-private theorem shifted_releases (h : CompactPulse) (r : ℕ) :
+theorem shifted_releases_have_sum (h : CompactPulse) (r : ℕ) :
     HasSum (fun i : ℕ => stepDecrement h (i+r : ℕ) 1) (tailEnergy h r) := by
   simpa only [Nat.cast_add, add_comm (r : ℝ)] using unit_decrements_have_sum h r
 
 private theorem remainder_eq (h : CompactPulse) (r k : ℕ) :
-    radiationRemainder h r k = ∑' i : ℕ, node i^k * stepDecrement h (i+r : ℕ) 1 := by
-  have hs : Summable (fun i : ℕ => node i^k*stepDecrement h i 1) := by
-    simpa only [pow_zero, mul_one] using mixed_sum h k 0
+    radiationRemainder h r k = ∑' i : ℕ, radiationNode i^k * stepDecrement h (i+r : ℕ) 1 := by
+  have hs : Summable (fun i : ℕ => radiationNode i^k*stepDecrement h i 1) := by
+    simpa only [pow_zero, mul_one] using summable_radiation_kernel h k 0
   have htail := hs.sum_add_tsum_nat_add r
-  have hf (i : ℕ) : node (i+r) = node i*node r := by
-    simp only [node, Nat.cast_add, neg_add_rev, Real.exp_add, mul_comm]
-  apply (div_eq_iff (pow_ne_zero _ (node_pos r).ne')).mpr
+  have hf (i : ℕ) : radiationNode (i+r) = radiationNode i*radiationNode r := by
+    simp only [radiationNode, Nat.cast_add, neg_add_rev, Real.exp_add, mul_comm]
+  apply (div_eq_iff (pow_ne_zero _ (radiationNode_pos r).ne')).mpr
   change radiationSample h k - _ = _
   rw [sub_eq_iff_eq_add, radiationSample, ← htail, ← tsum_mul_right, add_comm]
   congr 1
   exact tsum_congr fun i => by rw [hf, mul_pow]; ring
 
 private theorem shifted_sum (h : CompactPulse) (k r : ℕ) :
-    Summable fun i : ℕ => node i^k * stepDecrement h (i+r : ℕ) 1 :=
-  (shifted_releases h r).summable.of_nonneg_of_le
-    (fun i => mul_nonneg (pow_nonneg (node_pos i).le _) (stepDecrement_nonneg _ _ _))
+    Summable fun i : ℕ => radiationNode i^k * stepDecrement h (i+r : ℕ) 1 :=
+  (shifted_releases_have_sum h r).summable.of_nonneg_of_le
+    (fun i => mul_nonneg (pow_nonneg (radiationNode_pos i).le _) (stepDecrement_nonneg _ _ _))
     (fun i => mul_le_of_le_one_left (stepDecrement_nonneg _ _ _)
-      (pow_le_one₀ (node_pos i).le (node_le i)))
+      (pow_le_one₀ (radiationNode_pos i).le (radiationNode_le_one i)))
 
 /-- The normalized reading overestimates the next release by at most the entire
 following tail times exp(-k), independently of the position of that release. -/
 theorem radiationRemainder_bounds (h : CompactPulse) (r k : ℕ) :
     stepDecrement h r 1 ≤ radiationRemainder h r k ∧
-    radiationRemainder h r k ≤ stepDecrement h r 1 + node 1^k * tailEnergy h (r+1 : ℕ) := by
+    radiationRemainder h r k ≤ stepDecrement h r 1 + radiationNode 1^k * tailEnergy h (r+1 : ℕ) := by
   rw [remainder_eq, (shifted_sum h k r).tsum_eq_zero_add]
-  simp only [zero_add, node, Nat.cast_zero, neg_zero, Real.exp_zero, one_pow, one_mul,
+  simp only [zero_add, radiationNode, Nat.cast_zero, neg_zero, Real.exp_zero, one_pow, one_mul,
     le_add_iff_nonneg_right, add_le_add_iff_left]
   constructor
   · exact tsum_nonneg fun i => mul_nonneg (pow_nonneg (Real.exp_pos _).le _) (stepDecrement_nonneg _ _ _)
-  · have H := shifted_releases h (r+1)
+  · have H := shifted_releases_have_sum h (r+1)
     rw [← H.tsum_eq, ← tsum_mul_left]
     apply (summable_nat_add_iff 1 |>.mpr (shifted_sum h k r)).tsum_le_tsum _
       (H.summable.mul_left _)
@@ -210,8 +211,8 @@ theorem radiationRemainder_bounds (h : CompactPulse) (r k : ℕ) :
 integer Laplace samples. -/
 theorem radiationRemainder_tendsto (h : CompactPulse) (r : ℕ) :
     Tendsto (radiationRemainder h r) atTop (𝓝 (stepDecrement h r 1)) := by
-  have hn : node 1 < 1 := Real.exp_lt_one_iff.mpr (by norm_num)
-  have hlim := (tendsto_pow_atTop_nhds_zero_of_lt_one (node_pos 1).le hn).mul_const
+  have hn : radiationNode 1 < 1 := Real.exp_lt_one_iff.mpr (by norm_num)
+  have hlim := (tendsto_pow_atTop_nhds_zero_of_lt_one (radiationNode_pos 1).le hn).mul_const
     (tailEnergy h (r+1 : ℕ))
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
     (by simpa using (tendsto_const_nhds (x := stepDecrement h r 1)).add hlim)

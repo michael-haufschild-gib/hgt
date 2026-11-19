@@ -60,7 +60,8 @@ private theorem between_passages {h : ℝ} (hp : 0 < h) :
 
 private abbrev jump (k : ℕ) := D (k+1)-D k
 
-private theorem jump_law :
+/-- Each positive jump has limiting harmonic coefficient one half. -/
+theorem eighth_gcd_jump_law :
     Tendsto (fun k : ℕ => ((k+1:ℕ):ℝ)*jump k) atTop (𝓝 (1/2:ℝ)) := by
   have h := (eighth_reading_harmonic_limit false).comp (tendsto_add_atTop_nat 1)
   apply h.congr'
@@ -76,7 +77,7 @@ private theorem jump_law :
 
 private theorem jump_zero : Tendsto jump atTop (𝓝 0) := by
   have ht := (tendsto_natCast_atTop_atTop (R:=ℝ)).comp (tendsto_add_atTop_nat 1)
-  exact (jump_law.div_atTop ht).congr fun k => by
+  exact (eighth_gcd_jump_law.div_atTop ht).congr fun k => by
     change ((k+1:ℕ):ℝ)*jump k/((k+1:ℕ):ℝ)=jump k
     field_simp
 
@@ -113,7 +114,7 @@ theorem eighth_scaled_overshoot_cluster_iff (z : ℝ) :
   · rintro ⟨h,ht,hl⟩
     refine ⟨ge_of_tendsto hl (.of_forall fun n => mul_nonneg (Nat.cast_nonneg _)
       (sub_nonneg.mpr (Nat.find_spec (reached _)))),?_⟩
-    apply le_of_tendsto_of_tendsto hl (jump_law.comp (prev_top.comp ht))
+    apply le_of_tendsto_of_tendsto hl (eighth_gcd_jump_law.comp (prev_top.comp ht))
     filter_upwards [ht.eventually_gt_atTop 0] with n hp
     exact mul_le_mul_of_nonneg_left (sub_le_sub_left (between_passages hp).1.le _) (Nat.cast_nonneg _)
   · rintro ⟨hz,hz'⟩
@@ -132,7 +133,7 @@ theorem eighth_scaled_overshoot_cluster_iff (z : ℝ) :
         (tendsto_atTop_add_const_right _ 1 (tendsto_natCast_atTop_atTop (R:=ℝ)))
       simpa only [r,sub_zero,mul_one] using ((tendsto_const_nhds (x:=(1:ℝ))).sub hu).const_mul (2*z)
     have inside : ∀ᶠ n : ℕ in atTop, D n < h n ∧ h n ≤ D (n+1) := by
-      filter_upwards [jump_law.eventually_const_lt (by norm_num : (0:ℝ)<1/2)] with n hn
+      filter_upwards [eighth_gcd_jump_law.eventually_const_lt (by norm_num : (0:ℝ)<1/2)] with n hn
       have hj := pos_of_mul_pos_right hn (Nat.cast_nonneg _)
       have d := mul_lt_mul_of_pos_right (rn n).2 hj
       have p := mul_nonneg (rn n).1 hj.le
@@ -146,7 +147,7 @@ theorem eighth_scaled_overshoot_cluster_iff (z : ℝ) :
         exact hn.1.not_ge ((Nat.find_spec (reached (h n))).trans (monotone_gcd_deficit 8 hle))
       omega
     refine ⟨h,tendsto_atTop_mono' atTop (inside.mono fun _ hn => hn.1.le) mass_top,?_⟩
-    have lim := rlim.mul jump_law
+    have lim := rlim.mul eighth_gcd_jump_law
     rw [show 2*z*(1/2)=z by ring] at lim
     apply lim.congr'
     filter_upwards [peq] with n hn

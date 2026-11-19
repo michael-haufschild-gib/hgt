@@ -141,6 +141,113 @@ theorem compact_frequent_root {K : Set ℂ} (hK : IsCompact K)
   obtain ⟨n,hn₁,hn₂⟩ := (hf.and_eventually hno).exists
   exact hn₂ ⟨z n,hz n,hn₁⟩
 
+/-- Normalized roots at one degree and their compact limiting set. -/
+def normalizedXiRoots (d : ℕ) : Set ℂ :=
+  {u | ∃ z : ℂ, (jensenRev d xiSeries).IsRoot z ∧ z/(d:ℂ)=u}
+
+/-- The origin completes the reciprocal zero divisor at infinite height. -/
+def reciprocalXiRoots : Set ℂ := {w | w=0 ∨ XiC w⁻¹=0}
+
+private theorem eventual_root_in_ball (w : ℂ) (hw : w ∈ reciprocalXiRoots)
+    {ε : ℝ} (hε : 0<ε) :
+    ∀ᶠ d : ℕ in atTop, ∃ z ∈ normalizedXiRoots d, z ∈ ball w ε := by
+  have lift (v : ℂ) (hv : v ≠ 0) (hz : XiC v⁻¹=0) (r : ℝ) (hr : 0<r) :
+      ∀ᶠ d : ℕ in atTop, ∃ z ∈ normalizedXiRoots d, z ∈ ball v r := by
+    filter_upwards [(reciprocal_zero_iff_eventual_jensen_root hv).mp hz r hr] with d ⟨z,h₁,h₂⟩
+    exact ⟨z/d,⟨z,h₁,rfl⟩,h₂⟩
+  by_cases hn : w=0
+  · subst w
+    obtain ⟨x,hx,hz⟩ := exists_Xi_zero_gt (2/ε)
+    have hx₀ := (div_pos (by norm_num : (0:ℝ)<2) hε).trans hx
+    have hv : (x:ℂ)⁻¹ ≠ 0 := inv_ne_zero (Complex.ofReal_ne_zero.mpr hx₀.ne')
+    have hhalf : 0<ε/2 := by linarith
+    have hsmall : dist (x:ℂ)⁻¹ 0 < ε/2 := by
+      rw [dist_zero_right,norm_inv,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hx₀,
+        inv_lt_comm₀ hx₀ hhalf]
+      simpa only [inv_div] using hx
+    have hz' : XiC ((x:ℂ)⁻¹)⁻¹=0 := by rw [inv_inv,XiC_ofReal,hz,Complex.ofReal_zero]
+    filter_upwards [lift _ hv hz' _ hhalf] with d ⟨u,hu,hd⟩
+    refine ⟨u,hu,?_⟩
+    change dist u 0 < ε
+    have hu' : dist u (x:ℂ)⁻¹ < ε/2 := hd
+    linarith only [dist_triangle u (x:ℂ)⁻¹ 0,hu',hsmall]
+  · exact lift w hn (hw.resolve_left hn) ε hε
+
+theorem isCompact_reciprocalXiRoots : IsCompact reciprocalXiRoots := by
+  have hc : IsClosed reciprocalXiRoots := by
+    apply isOpen_compl_iff.mp
+    apply isOpen_iff_mem_nhds.mpr
+    intro w hw
+    have hw₀ : w ≠ 0 := fun h => hw (Or.inl h)
+    have hx : XiC w⁻¹ ≠ 0 := fun h => hw (Or.inr h)
+    have ht := XiC_differentiable.continuous.continuousAt.comp (continuousAt_inv₀ hw₀)
+    filter_upwards [((continuousAt_id : ContinuousAt id w).tendsto.eventually_ne hw₀),
+      ht.tendsto.eventually_ne hx] with u hu hxi
+    exact fun h => h.elim hu hxi
+  obtain ⟨C,hC,hbound⟩ := eventually_linear_norm_jensen_xi
+  refine (isCompact_closedBall (0:ℂ) C).of_isClosed_subset hc ?_
+  intro w hw
+  rw [mem_closedBall,dist_zero_right]
+  by_contra! h
+  have hε : 0 < ‖w‖-C := sub_pos.mpr h
+  obtain ⟨d,⟨v,⟨z,hz,rfl⟩,hne⟩,hd,hd₀⟩ :=
+    ((eventual_root_in_ball w hw hε).and (hbound.and (eventually_gt_atTop 0))).exists
+  have hsize : ‖z/(d:ℂ)‖ ≤ C := by
+    rw [norm_div,Complex.norm_natCast,div_le_iff₀ (Nat.cast_pos.mpr hd₀)]
+    exact hd z hz
+  have hdist : dist (z/(d:ℂ)) w < ‖w‖-C := hne
+  linarith only [norm_sub_norm_le w (z/(d:ℂ)), hsize, (show ‖w-z/(d:ℂ)‖ < ‖w‖-C by
+    simpa only [←dist_eq_norm,dist_comm w] using hdist)]
+
+/-- The normalized Jensen root sets of all degrees converge in Hausdorff
+distance to the zeros of Ξ under inversion, together with the origin.
+Hardy's real zeros give the origin even along the even degrees. -/
+theorem normalized_jensen_hausdorff :
+    Tendsto (fun d => hausdorffDist (normalizedXiRoots d) reciprocalXiRoots) atTop (𝓝 0) := by
+  classical
+  apply Metric.tendsto_atTop.mpr
+  intro ε hε
+  let r := ε/3
+  have hr : 0<r := by dsimp [r]; positivity
+  obtain ⟨S,hS,hfin,hcover⟩ := finite_cover_balls_of_compact isCompact_reciprocalXiRoots hr
+  have hs : ∀ᶠ d : ℕ in atTop, ∀ w ∈ S, ∃ v ∈ normalizedXiRoots d, v ∈ ball w r :=
+    (hfin.eventually_all).mpr fun w hw => eventual_root_in_ball w (hS hw) hr
+  let U := ⋃ w ∈ reciprocalXiRoots, ball w r
+  have hopen : IsOpen U := isOpen_iUnion fun _ => isOpen_iUnion fun _ => isOpen_ball
+  obtain ⟨C,_,hbound⟩ := eventually_linear_norm_jensen_xi
+  have hupper : ∀ᶠ d : ℕ in atTop, normalizedXiRoots d ⊆ U := by
+    by_contra hn
+    let K := closedBall (0:ℂ) C ∩ Uᶜ
+    have hK : IsCompact K := (isCompact_closedBall _ _).inter_right hopen.isClosed_compl
+    have hv : ∃ᶠ d : ℕ in atTop, ∃ z : ℂ,
+        (jensenRev d xiSeries).IsRoot z ∧ z/(d:ℂ) ∈ K := by
+      refine ((not_eventually.mp hn).and_eventually (hbound.and (eventually_gt_atTop 0))).mono ?_
+      rintro d ⟨hbad,hd,hd₀⟩
+      obtain ⟨v,⟨z,hz,rfl⟩,hv⟩ := Set.not_subset.mp hbad
+      refine ⟨z,hz,?_,hv⟩
+      rw [mem_closedBall,dist_zero_right,norm_div,Complex.norm_natCast,div_le_iff₀ (Nat.cast_pos.mpr hd₀)]
+      exact hd z hz
+    obtain ⟨w,hw,hzero⟩ := compact_frequent_root hK hv
+    exact hw.2 (Set.mem_iUnion₂.mpr ⟨w,hzero,mem_ball_self hr⟩)
+  obtain ⟨D,hD⟩ := eventually_atTop.mp (hupper.and hs)
+  refine ⟨D,fun d hd => ?_⟩
+  rw [Real.dist_eq,sub_zero,abs_of_nonneg hausdorffDist_nonneg]
+  refine (hausdorffDist_le_of_mem_dist (add_nonneg hr.le hr.le) ?_ ?_).trans_lt
+    (show r+r<ε by dsimp [r]; linarith)
+  · intro v hv
+    obtain ⟨w,hw,hv'⟩ := Set.mem_iUnion₂.mp ((hD d hd).1 hv)
+    exact ⟨w,hw,(show dist v w < r from hv').le.trans (le_add_of_nonneg_right hr.le)⟩
+  · intro w hw
+    obtain ⟨u,hu,hw'⟩ := Set.mem_iUnion₂.mp (hcover hw)
+    obtain ⟨v,hv,hv'⟩ := (hD d hd).2 u hu
+    refine ⟨v,hv,?_⟩
+    have h₁ : dist w u < r := hw'
+    have h₂ : dist u v < r := by rw [dist_comm]; exact hv'
+    exact (dist_triangle w u v).trans (add_le_add h₁.le h₂.le)
+
+#print axioms isCompact_reciprocalXiRoots
+#print axioms normalized_jensen_hausdorff
+
 private theorem im_near_lower {v : ℝ} {w : ℂ} (hv : v < w.im) :
     ∃ r : ℝ, 0 < r ∧ ∀ u ∈ ball w r, v < u.im :=
   Metric.eventually_nhds_iff.mp (Complex.continuous_im.continuousAt.tendsto.eventually_const_lt hv)

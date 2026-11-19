@@ -30,7 +30,7 @@ theorem periodicFloorHeight_natCast {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsPro
     (n / IsProducer.period c) (n % IsProducer.period c)).symm.trans
       (congrArg (stepWeight c) (by rw [Nat.mul_comm, Nat.div_add_mod]))
 
-private theorem residue_class_mean (k : ℕ) [NeZero k] :
+theorem residue_class_mean (k : ℕ) [NeZero k] :
     ∑ j : ZMod k, residue k j.val = 0 := by
   cases k with
   | zero => exact (NeZero.ne 0 rfl).elim
@@ -124,13 +124,23 @@ private def majorant (c : ℕ →₀ ℤ) (m B K : ℕ) : ℤ → ℝ
   | .ofNat (n+1) => 68*K*IsProducer.excessTerm m B c n
   | .negSucc n => (peak c : ℝ)*tailCap K n
 
-/-- The peak is bounded by the window height plus the excess times the alphabet width. -/
-theorem peak_le_sinc_excess {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer c m B)
-    (hK : 0 < K) (hal : AlphabetLE c K) :
-    (peak c : ℝ) ≤ 4*m + 272*K*excess c m B := by
-  have hmean := sinc_mean_periodicFloorHeight hP hK hal (4*K)
+/-- The shifted sinc mean is paid by the window, the positive excess and at most
+a quarter of the peak from negative indices. This holds at every sampling width. -/
+theorem sinc_floor_height_budget {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer c m B)
+    (hK : 0 < K) :
+    (∑' z : ℤ, gridSincWeight K (z-4*K)*periodicFloorHeight c z) ≤
+      m + 68*K*excess c m B + (peak c : ℝ)/4 := by
   have hW : HasSum (weight K) 1 :=
     (Equiv.subRight (4*(K:ℤ))).hasSum_iff.mpr ((summable_gridSincWeight hK).hasSum_iff.mpr (tsum_gridSincWeight hK))
+  have hmean : Summable (fun z : ℤ => weight K z * periodicFloorHeight c z) := by
+    apply (hW.summable.mul_right (peak c : ℝ)).of_nonneg_of_le
+    · intro z
+      exact mul_nonneg (gridSincWeight_nonneg _ _)
+        (by exact_mod_cast hP.nonneg (z : ZMod (IsProducer.period c)).val)
+    · intro z
+      exact mul_le_mul_of_nonneg_left
+        (by exact_mod_cast hP.stepWeight_le_peak (z : ZMod (IsProducer.period c)).val)
+        (gridSincWeight_nonneg _ _)
   have hpos : HasSum (fun n : ℕ => majorant c m B K (n+1)) (68*K*excess c m B) :=
     hP.hasSum_excess.mul_left _
   have hneg : HasSum (fun n : ℕ => majorant c m B K (-(n+1))) ((peak c : ℝ)*(1/4)) :=
@@ -169,8 +179,16 @@ theorem peak_le_sinc_excess {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer 
       change weight K (.negSucc n)*(peak c:ℝ) ≤ tailCap K n*(peak c:ℝ) at h₂
       change _ ≤ _ + (peak c : ℝ)*tailCap K n
       linarith only [h₁,h₂,mul_nonneg hW0 (Nat.cast_nonneg (α := ℝ) m)]
-  have h := hasSum_le hle hmean hs
-  change (peak c : ℝ)/2 ≤ 1*m+(68*K*excess c m B+0+(peak c : ℝ)*(1/4)) at h
+  have h := hasSum_le hle hmean.hasSum hs
+  change _ ≤ 1*m+(68*K*excess c m B+0+(peak c : ℝ)*(1/4)) at h
+  exact h.trans_eq (by ring)
+
+/-- The peak is bounded by the window height plus the excess times the alphabet width. -/
+theorem peak_le_sinc_excess {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer c m B)
+    (hK : 0 < K) (hal : AlphabetLE c K) :
+    (peak c : ℝ) ≤ 4*m + 272*K*excess c m B := by
+  have h := sinc_floor_height_budget hP hK
+  rw [(sinc_mean_periodicFloorHeight hP hK hal (4*K)).tsum_eq] at h
   linarith only [h]
 
 /-- The normalized rate of every admissible integer floor row on [1,K] is
