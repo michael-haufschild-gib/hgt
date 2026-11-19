@@ -18,13 +18,14 @@ namespace GaloisForLFunctions.ArithmeticAuxiliaryDynamics.FloorSpectrum
 
 noncomputable section
 
-private def fullHeight (c : ℕ →₀ ℤ) (z : ℤ) : ℝ :=
+/-- The floor multiplicity on all integer translates of its common period. -/
+def periodicFloorHeight (c : ℕ →₀ ℤ) (z : ℤ) : ℝ :=
   stepWeight c (z : ZMod (IsProducer.period c)).val
 
-private theorem full_nat {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsProducer c m B) (n : ℕ) :
-    fullHeight c n = stepWeight c n := by
-  simp only [fullHeight,Int.cast_natCast,ZMod.val_natCast]
-  apply congrArg Int.cast
+theorem periodicFloorHeight_natCast {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsProducer c m B) (n : ℕ) :
+    periodicFloorHeight c n = stepWeight c n := by
+  simp only [periodicFloorHeight,Int.cast_natCast,ZMod.val_natCast]
+  apply congrArg (fun u : ℤ => (u : ℝ))
   exact (stepWeight_periodic hP.zero hP.balanced IsProducer.dvd_period
     (n / IsProducer.period c) (n % IsProducer.period c)).symm.trans
       (congrArg (stepWeight c) (by rw [Nat.mul_comm, Nat.div_add_mod]))
@@ -39,9 +40,9 @@ private theorem residue_class_mean (k : ℕ) [NeZero k] :
     exact (isMeanZero_residue (Nat.succ_pos k)).mean
 
 /-- Exact whole-line reconstruction of the peak from one shifted positive sampler. -/
-theorem sinc_mean_fullHeight {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer c m B)
+theorem sinc_mean_periodicFloorHeight {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer c m B)
     (hK : 0 < K) (hal : AlphabetLE c K) (s : ℤ) :
-    HasSum (fun z : ℤ => gridSincWeight K (z-s)*fullHeight c z) ((peak c : ℝ)/2) := by
+    HasSum (fun z : ℤ => gridSincWeight K (z-s)*periodicFloorHeight c z) ((peak c : ℝ)/2) := by
   let L := IsProducer.period c
   letI : NeZero L := ⟨hP.period_pos.ne'⟩
   have hW : HasSum (fun z : ℤ => gridSincWeight K (z-s)) 1 :=
@@ -69,7 +70,7 @@ theorem sinc_mean_fullHeight {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer
   simp only [one_mul,sum_const_zero,add_zero] at hs
   apply hs.congr_fun
   intro z
-  rw [fullHeight,stepWeight_eq_mean_add hP.zero hP.balanced,mul_add,mul_sum]
+  rw [periodicFloorHeight,stepWeight_eq_mean_add hP.zero hP.balanced,mul_add,mul_sum]
 
 private def weight (K : ℕ) (z : ℤ) := gridSincWeight K (z-4*K)
 
@@ -90,7 +91,8 @@ private theorem positive_cost {K : ℕ} (hK : 0 < K) (n : ℕ) :
   rw [show (n:ℝ)+2=x+1 by dsimp [x]; ring]
   linarith only [hb,h₁,h₃]
 
-private def tailCap (K n : ℕ) : ℝ := (K:ℝ)/(((n:ℝ)+4*K)*((n:ℝ)+4*K+1))
+/-- A telescoping upper bound for one tail of the translated sampler. -/
+def tailCap (K n : ℕ) : ℝ := (K:ℝ)/(((n:ℝ)+4*K)*((n:ℝ)+4*K+1))
 
 private theorem negative_cost {K : ℕ} (hK : 0 < K) (n : ℕ) :
     weight K (-((n:ℤ)+1)) ≤ tailCap K n := by
@@ -103,7 +105,7 @@ private theorem negative_cost {K : ℕ} (hK : 0 < K) (n : ℕ) :
   rw [he]
   nlinarith only [Nat.cast_nonneg (α := ℝ) n,Nat.cast_nonneg (α := ℝ) K]
 
-private theorem cap_sum {K : ℕ} (hK : 0 < K) : HasSum (tailCap K) (1/4) := by
+theorem hasSum_tailCap {K : ℕ} (hK : 0 < K) : HasSum (tailCap K) (1/4) := by
   let u (n : ℕ) := 1/((n:ℝ)+4*K)
   have hstep (n : ℕ) : tailCap K n = (K:ℝ)*(u n-u (n+1)) := by
     dsimp [tailCap,u]
@@ -126,38 +128,38 @@ private def majorant (c : ℕ →₀ ℤ) (m B K : ℕ) : ℤ → ℝ
 theorem peak_le_sinc_excess {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer c m B)
     (hK : 0 < K) (hal : AlphabetLE c K) :
     (peak c : ℝ) ≤ 4*m + 272*K*excess c m B := by
-  have hmean := sinc_mean_fullHeight hP hK hal (4*K)
+  have hmean := sinc_mean_periodicFloorHeight hP hK hal (4*K)
   have hW : HasSum (weight K) 1 :=
     (Equiv.subRight (4*(K:ℤ))).hasSum_iff.mpr ((summable_gridSincWeight hK).hasSum_iff.mpr (tsum_gridSincWeight hK))
   have hpos : HasSum (fun n : ℕ => majorant c m B K (n+1)) (68*K*excess c m B) :=
     hP.hasSum_excess.mul_left _
   have hneg : HasSum (fun n : ℕ => majorant c m B K (-(n+1))) ((peak c : ℝ)*(1/4)) :=
-    (cap_sum hK).mul_left _
+    (hasSum_tailCap hK).mul_left _
   have hpeak : 0 ≤ (peak c : ℝ) := by exact_mod_cast (hP.nonneg 0).trans (hP.stepWeight_le_peak _)
   have hs := (hW.mul_right (m:ℝ)).add (hpos.of_add_one_of_neg_add_one hneg)
-  have hle (z : ℤ) : weight K z * fullHeight c z ≤ weight K z * m + majorant c m B K z := by
+  have hle (z : ℤ) : weight K z * periodicFloorHeight c z ≤ weight K z * m + majorant c m B K z := by
     have hW0 : 0 ≤ weight K z := gridSincWeight_nonneg _ _
     cases z with
     | ofNat n =>
       cases n with
-      | zero => simp [fullHeight,majorant,stepWeight_zero]; positivity
+      | zero => simp [periodicFloorHeight,majorant,stepWeight_zero]; positivity
       | succ n =>
-        change weight K ((n:ℤ)+1)*fullHeight c ((n+1:ℕ) : ℤ) ≤ _ + 68*K*IsProducer.excessTerm m B c n
-        rw [full_nat hP]
+        change weight K ((n:ℤ)+1)*periodicFloorHeight c ((n+1:ℕ) : ℤ) ≤ _ + 68*K*IsProducer.excessTerm m B c n
+        rw [periodicFloorHeight_natCast hP]
         let D : ℝ := ((n:ℝ)+1)*((n:ℝ)+2)
         have hD : D ≠ 0 := by dsimp [D]; positivity
         have he : (stepWeight c (n+1) : ℝ) ≤ m + D*IsProducer.excessTerm m B c n := by
           unfold IsProducer.excessTerm
           change _ ≤ m+D*((_ - _)/D)
-          rw [mul_div_cancel₀' _ hD]
+          rw [mul_div_cancel₀ _ hD]
           split_ifs <;> linarith only [Nat.cast_nonneg (α := ℝ) m]
         have hcost := mul_le_mul_of_nonneg_right (positive_cost hK n) (hP.excessTerm_nonneg n)
         have hg := mul_le_mul_of_nonneg_left he hW0
         dsimp only [D] at hg
         linarith only [hg,hcost]
     | negSucc n =>
-      have hg : fullHeight c (.negSucc n) ≤ (peak c : ℝ) := by
-        unfold fullHeight
+      have hg : periodicFloorHeight c (.negSucc n) ≤ (peak c : ℝ) := by
+        unfold periodicFloorHeight
         exact_mod_cast hP.stepWeight_le_peak _
       have h₁ := mul_le_mul_of_nonneg_left hg hW0
       have h₂ := mul_le_mul_of_nonneg_right (negative_cost hK n) hpeak
@@ -198,11 +200,13 @@ theorem exists_log_free_half_floor :
   have hy : ε*Real.sqrt K ≤ 1 := by linarith only [hn,hδ1]
   have hy2 := mul_le_mul_of_nonneg_left hy (mul_nonneg hε.le hSp.le)
   rw [mul_one] at hy2
-  have he : (ε*Real.sqrt K)*(ε*Real.sqrt K) = K*ε^2 := by rw [← hS2]; ring
+  have he : (ε*Real.sqrt K)*(ε*Real.sqrt K) = K*ε^2 := by
+    calc _ = (Real.sqrt K)^2*ε^2 := by ring
+         _ = _ := by rw [hS2]
   rw [he] at hy2
   linarith only [hlow,hprod,hεS,hy2,hn]
 
-#print axioms sinc_mean_fullHeight
+#print axioms sinc_mean_periodicFloorHeight
 #print axioms peak_le_sinc_excess
 #print axioms exists_log_free_half_floor
 

@@ -229,7 +229,7 @@ theorem ordinary_prime_midpoint_cubic_center {ε : ℝ} (hε : 0 < ε) :
     (∑ k ∈ Ioc (2*n) (3*n),cubicUncompletedProductPrice n k)=(S (3*n)-S (2*n))/2 at hl
   change |primeMidpointPrice n+((∑ k ∈ Ioc (3*n) (4*n),cubicRoughMangoldt Y k)-
     ∑ k ∈ Ioc (2*n) (3*n),cubicRoughMangoldt Y k)| ≤ |A| * (2*P) at hb
-  change |_ | ≤ (C+2*|A|)*P
+  change abs _ ≤ (C+2*|A|)*P
   rw [abs_le]
   constructor <;> linarith only [hr,hl,(abs_le.mp hb).1,(abs_le.mp hb).2,(abs_le.mp hc).1,(abs_le.mp hc).2]
 
@@ -266,7 +266,7 @@ private theorem rough_cube_below_cut {Y k : ℕ} (hk : k<(Y+1)^3) :
     rw [(Nat.mem_divisorsAntidiagonal.mp hz).1,(Nat.mem_divisorsAntidiagonal.mp hx).1]
   simp only [P,cubic_prime_indicator_apply]
   split_ifs with h₁ h₂ h₃ <;> simp_all only [zero_mul,mul_zero,one_mul]
-  have hle := Nat.mul_le_mul (Nat.mul_le_mul h₁.2 h₂.2) h₃.2
+  have hle : (Y+1)*(Y+1)*(Y+1) ≤ z.1*z.2*x.2 := Nat.mul_le_mul (Nat.mul_le_mul h₁.2 h₂.2) h₃.2
   rw [show (Y+1)^3=(Y+1)*(Y+1)*(Y+1) by ring] at hk
   omega
 
@@ -296,7 +296,7 @@ private theorem split_uncompleted_prices {n : ℕ} (hY : 3 ≤ cubicMidpointCut 
     dsimp only [tri,tail]
     by_cases hw : twiceHighDivisorWeight Y D k=0
     · simp [hzero hw]
-    · have hs := (surviving_long_divisor_products hY hl (hu.trans (by omega)) hw).1
+    · have hs : k ∈ Nat.smoothNumbers (Y+1) := (surviving_long_divisor_products hY hl (hu.trans (by omega)) hw).1
       by_cases h4 : 4 ≤ k.primeFactorsList.length
       · simp [hs,h4,not_lt.mpr h4]
       · simp [hs,h4,lt_of_not_ge h4]
@@ -308,6 +308,7 @@ private theorem split_uncompleted_prices {n : ℕ} (hY : 3 ≤ cubicMidpointCut 
     by_cases hw : twiceHighDivisorWeight Y D k=0
     · simp [tail,hzero hw]
     · have ⟨hs,hcases⟩ := surviving_long_divisor_products hY (by omega : 2*n<k) hu hw
+      change k ∈ Nat.smoothNumbers (Y+1) at hs
       rcases hcases with ⟨p,q,r,hp,hq,hr,hpY,hqY,hrY,hprod⟩ | h4
       · have htop := (high_divisor_weight_on_smooth_triple hp hq hr hY hpY hqY hrY (by omega)).1
         omega

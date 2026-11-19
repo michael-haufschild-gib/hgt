@@ -49,7 +49,8 @@ private theorem parameter_factor {s : Branch} {x : ℝ} (hx : s.contains x) (q :
     binary q x 1 = (x*(x-1))*(parameterOf x-q) := by
   rw [arrowhead_secular]
   unfold parameterOf
-  field_simp [(away hx).1,(away hx).2] <;> ring
+  field_simp [(away hx).1,(away hx).2]
+  ring
 
 private theorem parameter_root (s : Branch) (q : ℝ) : parameterOf (branchRoot s q) = q := by
   obtain ⟨hl,he⟩ := root_spec s q
@@ -77,7 +78,8 @@ private theorem stiffness_gt {s : Branch} {x y : ℝ} (hx : s.contains x) (hy : 
 private theorem parameter_secant {s : Branch} {x y : ℝ} (hx : s.contains x) (hy : s.contains y) :
     parameterOf x - parameterOf y = (x-y)*stiffness x y := by
   unfold parameterOf stiffness
-  field_simp [(away hx).1,(away hx).2,(away hy).1,(away hy).2] <;> ring
+  field_simp [(away hx).1,(away hx).2,(away hy).1,(away hy).2]
+  ring
 
 /-- Each whole pole interval is parametrized by exactly one root branch. -/
 theorem branchRoot_iff (s : Branch) (q x : ℝ) :
@@ -98,7 +100,7 @@ theorem branch_displacement (s : Branch) (p q : ℝ) :
     let x := branchRoot s p
     let y := branchRoot s q
     p-q = (x-y)*(1+(x*y)⁻¹+((x-1)*(y-1))⁻¹) := by
-  simpa only [parameter_root] using parameter_secant (root_spec s p).1 (root_spec s q).1
+  simpa only [parameter_root,stiffness] using parameter_secant (root_spec s p).1 (root_spec s q).1
 
 /-- The three roots increase strictly, with every nonzero secant slope below one. -/
 theorem branch_increment (s : Branch) (q h : ℝ) :
@@ -107,7 +109,7 @@ theorem branch_increment (s : Branch) (q h : ℝ) :
   let x := branchRoot s (q+Real.exp h)
   let y := branchRoot s q
   have he : Real.exp h = (x-y)*stiffness x y := by
-    simpa only [add_sub_cancel_left] using branch_displacement s (q+Real.exp h) q
+    simpa only [add_sub_cancel_left,x,y,stiffness] using branch_displacement s (q+Real.exp h) q
   have hc : 1 < stiffness x y := stiffness_gt (root_spec s _).1 (root_spec s _).1
   have hxy : 0 < x-y := pos_of_mul_pos_left (he ▸ Real.exp_pos h) (by linarith only [hc])
   change 0 < x-y ∧ x-y < Real.exp h
@@ -132,12 +134,19 @@ theorem branch_hasDerivAt (s : Branch) (q : ℝ) :
   obtain ⟨h0,h1⟩ := away (root_spec s q).1
   have hf : HasDerivAt parameterOf (1+(x^2)⁻¹+((x-1)^2)⁻¹) x := by
     have hi := ((hasDerivAt_id x).sub_const 1).inv h1
-    convert (((hasDerivAt_id x).sub_const (1/2:ℝ)).sub (hasDerivAt_inv h0)).sub hi using 1 <;>
-      simp [parameterOf,div_eq_mul_inv,sub_eq_add_neg]
+    have hd := (((hasDerivAt_id x).sub_const (1/2:ℝ)).sub (hasDerivAt_inv (x := x) h0)).sub hi
+    change HasDerivAt parameterOf (1-(-(x^2)⁻¹)-(-1/(x-1)^2)) x at hd
+    simpa only [neg_div,one_div,sub_neg_eq_add] using hd
   have hp : 1 < 1+(x^2)⁻¹+((x-1)^2)⁻¹ := by
     simpa only [stiffness,← pow_two] using stiffness_gt (root_spec s q).1 (root_spec s q).1
   exact hf.of_local_left_inverse (branch_lipschitz s).continuous.continuousAt (by linarith only [hp])
     (Filter.Eventually.of_forall (parameter_root s))
+
+private theorem residue_denominator (x : ℝ) (h0 : x≠0) (h1 : x-1≠0) :
+    3*x^2-2*(parameterOf x+3/2)*x+parameterOf x-3/2 = x*(x-1)*stiffness x x := by
+  simp only [parameterOf,stiffness,mul_inv_rev]
+  field_simp [h0,h1]
+  ring
 
 /-- The trace-dual numerator divided by the ordinary cubic derivative is
 the velocity of each root as the orbit parameter changes. -/
@@ -149,14 +158,13 @@ theorem branch_deriv_residue (s : Branch) (q : ℝ) :
   have hs : 0 < stiffness x x := by linarith only [stiffness_gt (root_spec s q).1 (root_spec s q).1]
   have hf : 3*x^2-2*(q+3/2)*x+q-3/2 = (x*(x-1))*stiffness x x := by
     conv_lhs => rw [← parameter_root s q]
-    change 3*x^2-2*(parameterOf x+3/2)*x+parameterOf x-3/2 = _
-    unfold parameterOf stiffness
-    field_simp [h0,h1] <;> ring
+    exact residue_denominator x h0 h1
   change deriv (branchRoot s) q = x*(x-1)/_
   rw [(branch_hasDerivAt s q).deriv,hf]
   change (1+(x^2)⁻¹+((x-1)^2)⁻¹)⁻¹ = _
   simp only [pow_two]
   change (stiffness x x)⁻¹ = _
-  field_simp [h0,h1,hs.ne']
+  apply (eq_div_iff (mul_ne_zero (mul_ne_zero h0 h1) hs.ne')).mpr
+  rw [mul_left_comm,inv_mul_cancel₀ hs.ne',mul_one]
 
 end RHTower.OrbitCubic

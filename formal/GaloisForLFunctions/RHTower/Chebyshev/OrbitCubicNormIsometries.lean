@@ -42,7 +42,8 @@ theorem norm_conjugate_product (m : ℤ) (z : K m) :
   obtain ⟨⟨a,b,c⟩,rfl⟩ := (coords_bijective m).surjective z
   rw [← coords_const,norm_coordinates]
   simp only [turn_coords,mul_coords]
-  congr 1 <;> simp only [reciprocalMatrix_det] <;> ring
+  rw [reciprocalMatrix_det]
+  congr 1 <;> ring
 
 private theorem translated_products {R : Type*} [Field R] [CharZero R] (a b c A B C : R)
     (h₀ : A*B*C=a*b*c)
@@ -95,7 +96,8 @@ theorem unital_norm_rigidity (m : ℤ) (B : K m →ₗ[ℚ] K m) :
   rw [hkij] at hi
   change B (z+i.val • root m)=f (z+i.val • root m) at hi
   change B (z+j.val • root m)=f (z+j.val • root m) at hj
-  simp only [map_add,map_nsmul,nsmul_eq_mul] at hi hj
+  simp only [map_add,map_nsmul] at hi hj
+  simp only [nsmul_eq_mul] at hi hj
   have hc : (i.val:K m)-(j.val:K m) ≠ 0 := by
     intro he
     exact hij (Fin.ext (by exact_mod_cast sub_eq_zero.mp he))
@@ -112,12 +114,15 @@ theorem norm_isometries (m : ℤ) (F : K m →ₗ[ℚ] K m) :
       Algebra.norm ℚ (F 1)=1 ∧ ∃ i : Fin 3, ∀ z, F z=F 1*conjugateMap m i z := by
   intro h
   have hw : Algebra.norm ℚ (F 1)=1 := (h 1).trans (map_one _)
-  have h0 : F 1 ≠ 0 := by intro he; rw [he,map_zero] at hw; exact zero_ne_one hw
+  have h0 : F 1 ≠ 0 := (Algebra.norm_ne_zero_iff_of_basis (reciprocalBasis m)).mp
+    (by rw [hw]; exact one_ne_zero)
+  have hInv := congrArg (Algebra.norm ℚ) (inv_mul_cancel₀ h0)
+  rw [map_mul,map_one,hw,mul_one] at hInv
   let B := (Algebra.lmul ℚ (K m) (F 1)⁻¹).comp F
   have ho : B 1=1 := inv_mul_cancel₀ h0
   have hn (z : K m) : Algebra.norm ℚ (B z)=Algebra.norm ℚ z := by
     change Algebra.norm ℚ ((F 1)⁻¹*F z)=_
-    rw [map_mul,map_inv₀,hw,inv_one,one_mul,h]
+    rw [map_mul,hInv,one_mul,h]
   obtain ⟨i,he⟩ := unital_norm_rigidity m B ⟨ho,hn⟩
   refine ⟨hw,i,fun z => ?_⟩
   change _=F 1*conjugateMap m i z

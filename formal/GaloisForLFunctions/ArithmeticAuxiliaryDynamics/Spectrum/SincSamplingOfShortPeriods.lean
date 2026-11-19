@@ -38,7 +38,7 @@ private theorem char_sum {K k : ℕ} [NeZero k] (hk : k ≤ K) (j : ZMod k) :
   have hW := summable_gridSincWeight hK
   by_cases hj : j = 0
   · subst j
-    simpa only [zero_mul,map_zero_eq_one,mul_one,if_true] using
+    simpa only [zero_mul,AddChar.map_zero_eq_one,mul_one,if_true,Complex.ofReal_one] using
       (Complex.hasSum_ofReal.mpr (hW.hasSum_iff.mpr (tsum_gridSincWeight hK)))
   rw [if_neg hj]
   have ha : 0 < 1/(K:ℝ) := by positivity
@@ -57,6 +57,7 @@ private theorem char_sum {K k : ℕ} [NeZero k] (hk : k ≤ K) (j : ZMod k) :
     exact Circle.norm_coe _
   apply (hW.of_norm_bounded (fun z => by
     rw [norm_mul,hnorm,mul_one,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (gridSincWeight_nonneg K z)])).hasSum_iff.mpr
+  simp only [mul_assoc] at hz
   simp only [he,gridSincWeight,Complex.ofReal_mul,mul_assoc,tsum_mul_left,hz,mul_zero]
 
 private theorem uniform_complex {K k : ℕ} [NeZero k] (hk : k ≤ K) (f : ZMod k → ℂ) :
@@ -83,20 +84,21 @@ theorem hasSum_gridSinc_periodic_mean {K k : ℕ} [NeZero k] (hk : k ≤ K)
     HasSum (fun z : ℤ => gridSincWeight K (z-s)*f (z : ZMod k)) ((∑ j, f j)/(k : ℝ)) := by
   let g (j : ZMod k) := f (j+(s : ZMod k))
   have h := uniform_complex hk (fun j => (g j : ℂ))
-  have he : ∑ j, g j = ∑ j, f j := (Equiv.addRight (s : ZMod k)).sum_comp f
+  have he : ∑ j, g j = ∑ j, f j := Equiv.sum_comp (Equiv.addRight (s : ZMod k)) f
   have hr : HasSum (fun z : ℤ => gridSincWeight K z * g (z : ZMod k)) ((∑ j, g j)/(k : ℝ)) := by
     apply Complex.hasSum_ofReal.mp
     simpa only [Complex.ofReal_mul,Complex.ofReal_div,Complex.ofReal_sum,Complex.ofReal_natCast,
-      div_eq_inv_mul] using h
+      div_eq_inv_mul,Complex.ofReal_inv,Complex.ofReal_natCast] using h
   rw [he] at hr
   apply (Equiv.addRight s).hasSum_iff.mp
-  simpa only [Function.comp_apply,Equiv.coe_addRight,add_sub_cancel_right,Int.cast_add,g] using hr
+  change HasSum (fun z : ℤ => gridSincWeight K ((z+s)-s) * f ((z+s : ℤ) : ZMod k)) _
+  simpa only [add_sub_cancel_right,Int.cast_add,g] using hr
 
 /-- The sampler cannot exceed its peak 1/K. -/
 theorem gridSincWeight_le_peak {K : ℕ} (hK : 0 < K) (z : ℤ) : gridSincWeight K z ≤ 1/(K:ℝ) := by
   apply mul_le_of_le_one_right (by positivity)
   rw [← sq_abs]
-  exact pow_le_one₀ (abs_nonneg _) (Real.abs_sinc_le_one _) 2
+  exact pow_le_one₀ (abs_nonneg _) (Real.abs_sinc_le_one _)
 
 /-- Its inverse-square tail has the same power as the pronic excess of an integer floor row. -/
 theorem gridSincWeight_mul_sq_le {K : ℕ} (hK : 0 < K) (z : ℤ) :
@@ -109,7 +111,6 @@ theorem gridSincWeight_mul_sq_le {K : ℕ} (hK : 0 < K) (z : ℤ) :
   have he : 1/(K:ℝ)*(Real.sin (Real.pi*(1/(K:ℝ))*z)/(Real.pi*(1/K)*z))^2*(z:ℝ)^2 =
       (K:ℝ)*(Real.sin (Real.pi*(1/(K:ℝ))*z))^2/Real.pi^2 := by
     field_simp [Real.pi_ne_zero,show (z:ℝ) ≠ 0 from Int.cast_ne_zero.mpr hz]
-    <;> ring
   rw [he,div_le_iff₀ (sq_pos_of_pos Real.pi_pos)]
   exact mul_le_mul_of_nonneg_left ((Real.sin_sq_le_one _).trans (by nlinarith only [Real.pi_gt_three])) (Nat.cast_nonneg _)
 

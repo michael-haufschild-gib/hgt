@@ -182,7 +182,9 @@ theorem real_phase_retrieval (a b : ℕ → ℝ) :
   simp only [gram,Complex.conj_ofReal,← Complex.ofReal_mul,Complex.ofReal_re]
   constructor
   · exact real_sign_rigidity a b
-  · rintro (h|h) i j hi hj <;> rw [h i hi,h j hj] <;> ring
+  · rintro (h|h) i j hi hj
+    · rw [h i hi,h j hj]
+    · rw [h i hi,h j hj,neg_mul_neg]
 
 private theorem gram_twist (z w c : ℂ) : gram (z*c) (w*c)=gram z w * ‖c‖^2 := by
   simp only [gram,Complex.mul_re,Complex.mul_im,Complex.conj_re,Complex.conj_im,
@@ -256,9 +258,7 @@ theorem translated_gram (a : ℕ → ℂ) (t : ℝ) (i j : ℕ) :
     rw [show (((t*(Real.log i-Real.log j):ℝ):ℂ)*I) =
       ((t*Real.log i:ℝ):ℂ)*I + -(((t*Real.log j:ℝ):ℂ)*I) by push_cast; ring, Complex.exp_add]
     ring
-  change (_*conj _).re = _
-  rw [he,Complex.mul_re,Complex.exp_ofReal_mul_I_re,Complex.exp_ofReal_mul_I_im]
-  rfl
+  simp only [gram,he,Complex.mul_re,Complex.exp_ofReal_mul_I_re,Complex.exp_ofReal_mul_I_im]
 
 /-- The shift π separates every positive integer pair: otherwise the
 exponential of a nonzero integer would be their rational ratio. -/
@@ -275,7 +275,8 @@ theorem pi_shift_separates {i j : ℕ} (hi : 0 < i) (hj : 0 < j) (hij : i ≠ j)
     rintro rfl
     rw [Int.cast_zero,Real.exp_zero,eq_div_iff (Nat.cast_ne_zero.mpr hj.ne'),one_mul] at hex
     exact hij (by exact_mod_cast hex.symm)
-  exact (GaloisForLFunctions.RHTower.exp_int_irrational hk0).ne_rational i j (by exact_mod_cast hex)
+  exact (GaloisForLFunctions.RHTower.exp_int_irrational hk0).ne_rational i j (by
+    simpa only [Int.cast_natCast] using hex)
 
 /-- Two translated energy curves recover the *imaginary* part of a
 correlation at the same bandwidth resolution as the real part. -/
@@ -288,8 +289,9 @@ theorem read_imaginary_correlation (a : ℕ → ℂ) {N m : ℕ} (hm : m ∈ Icc
   intro g
   have hm' := mem_Icc.mp hm
   have hs := pi_shift_separates (Nat.succ_pos N) hm'.1 (by omega : N+1 ≠ m)
-  rw [read_gram a hm hh hcut,read_gram _ hm hh hcut,translated_gram,div_eq_iff hs]
+  rw [read_gram a hm hh hcut,read_gram _ hm hh hcut,translated_gram]
   dsimp only [g,gap]
+  rw [div_eq_iff hs]
   ring
 
 /-- A single prescribed translation together with the original measurement
@@ -344,9 +346,10 @@ theorem adjacent_translation_bound (t : ℝ) {n : ℕ} (hn : 0 < n) :
     refine he.trans_eq ?_
     push_cast
     field_simp [hn'.ne']
+    ring
   calc _ ≤ |t*gap n n| := Real.abs_sin_le_abs
-       _ = |t|*gap n n := by rw [abs_mul,abs_of_nonneg hnn]
-       _ ≤ |t|*(1/n) := mul_le_mul_of_nonneg_left hg (abs_nonneg t)
+       _ = |t| * gap n n := by rw [abs_mul,abs_of_nonneg hnn]
+       _ ≤ |t| * (1/n) := mul_le_mul_of_nonneg_left hg (abs_nonneg t)
        _ = _ := by ring
 
 #print axioms pi_shift_separates

@@ -160,8 +160,8 @@ private def mark (b : Bool) (X n : ℕ) : ℝ :=
 
 private theorem mark_nonneg (b : Bool) (X n : ℕ) : 0 ≤ mark b X n := by
   by_cases h : (primorial (y X)).Coprime n ∧ μ n = (if b then (1:ℤ) else -1)
-  · simp [mark,h]
-  · simp [mark,h]
+  · simpa only [mark,if_pos h] using (zero_le_one : (0:ℝ) ≤ 1)
+  · simpa only [mark,if_neg h] using (le_refl (0:ℝ))
 
 private theorem rank_step (b : Bool) (X k : ℕ) :
     rankAt b X (k+1)=rankAt b X k+mark b X (k+1) := by
@@ -324,7 +324,7 @@ private theorem harmonic_sign_window (sign : Bool) {a v : ℝ} (ap : 0<a) (av : 
     rw [sum_congr (s₁ := Ioc A B) rfl (fun k hk => congrArg (· * (k:ℝ)⁻¹) (inc k ((Nat.zero_le A).trans_lt (mem_Ioc.mp hk).1)))] at bd
     have eq : (P X-Q X)*d=∑ k ∈ cell a v X,(mark sign X k-d/2)*(k:ℝ)⁻¹ := by
       have normalize (s h d : ℝ) (hd : d ≠ 0) :
-          (s/d-h/2)*d=s-(d/2)*h := by field_simp [hd] <;> ring
+          (s/d-h/2)*d=s-(d/2)*h := by field_simp [hd]
       calc
         _ = (∑ k ∈ cell a v X,mark sign X k*(k:ℝ)⁻¹)-d/2*(∑ k ∈ cell a v X,(k:ℝ)⁻¹) :=
           normalize _ _ _ dp.ne'

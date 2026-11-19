@@ -83,9 +83,11 @@ theorem two_node_quadrature_unique (q u v p : ℝ) :
   · rintro ⟨hn,rfl⟩
     rcases hn with ⟨rfl,rfl⟩ | ⟨rfl,rfl⟩
     · refine ⟨hs,hp,?_⟩
-      field_simp [(sub_pos.mpr (hl.trans hr)).ne'] <;> ring
+      field_simp [(sub_pos.mpr (hl.trans hr)).ne']
+      ring
     · refine ⟨by rwa [add_comm],by rwa [mul_comm],?_⟩
-      field_simp [(sub_neg.mpr (hl.trans hr)).ne] <;> ring
+      field_simp [(sub_neg.mpr (hl.trans hr)).ne]
+      ring
 
 /-- The normalized positive trace on three actual roots and its two-node
 quadrature agree through degree three. The first missed moment has the
@@ -106,7 +108,7 @@ theorem trace_quadrature_fourth_gap (q : ℝ) :
   refine ⟨a,b,c,ha,hb,hc,div_pos hr hgap,(div_lt_one hgap).mpr (by linarith only [hl]),?_,?_⟩
   · intro k hk
     interval_cases k
-    · simp [h0,twoMoment]
+    · exact h0.trans (by simp [twoMoment])
     · exact h1.trans e1.symm
     · exact h2.trans e2.symm
     · exact h3.trans e3.symm
@@ -154,7 +156,7 @@ theorem jacobi_resolvent_error (q z : ℝ) :
     exact ⟨hf,fun hg => by rw [hf,hg] at h; norm_num at h⟩
   by_cases hg : g = 0
   · exact Or.inr (Or.inl ⟨hg,hf⟩)
-  right
+  refine Or.inr (Or.inr ?_)
   rw [div_sub_div _ _ hf hg,mul_comm f (z+q),h]
   ring
 

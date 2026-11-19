@@ -48,7 +48,9 @@ theorem terminal_depth_euler_bound {z : ℝ} (hz : 1 ≤ z) (k X : ℕ) :
     have small := (Nat.cast_le (α := ℝ)).mpr (mem_Icc.mp hit).2
     have hsum : f n=z^n.primeFactors.card/(n:ℝ) := by
       have pd : (∏ p ∈ n.primeFactors,(p:ℝ)) = n := by
-        exact_mod_cast Nat.prod_primeFactors_of_squarefree sq
+        calc
+          _ = ((∏ p ∈ n.primeFactors,p : ℕ) : ℝ) := by rw [Nat.cast_prod]
+          _ = (n:ℝ) := congrArg (fun j : ℕ => (j:ℝ)) (Nat.prod_primeFactors_of_squarefree sq)
       simp only [f,prod_div_distrib,prod_const,pd]
     rw [hsum,mul_div_assoc',le_div_iff₀ (Nat.cast_pos.mpr (mem_Icc.mp hit).1)]
     exact (mul_le_mul (pow_le_pow_right₀ hz deep) small (Nat.cast_nonneg _) (pow_nonneg z0 _)).trans_eq (mul_comm ..)
@@ -80,7 +82,7 @@ private theorem price_of_growing_weight {t η : ℝ} (ht : t<1) (hη : 0<η) (C 
     have h := Real.log_le_rpow_div h0.le hr
     have hh := mul_le_mul_of_nonneg_left pow1 (abs_nonneg C)
     calc
-      _ ≤ L^r/r+|C|*L^r := by linarith only [h,le_abs_self C,hh]
+      _ ≤ L^r/r + |C| * L^r := by linarith only [h,le_abs_self C,hh]
       _ = K*L^r := by dsimp only [K]; ring
   have h := (div_le_iff₀ hη).mp g
   have hi := mul_le_mul_of_nonneg_right h (Real.rpow_nonneg h0.le (t+r))

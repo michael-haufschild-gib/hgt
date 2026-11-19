@@ -86,7 +86,7 @@ theorem log_discount_iff_of_bounded_ratios {x : ℕ → ℝ} (hx : Monotone x) (
       linarith only [hh]
     · rintro ⟨B,hB⟩
       exact ⟨Real.log (1+B),fun _ ⟨i,hi⟩ => hi ▸
-        Real.log_le_log (hpos i) (add_le_add_left (hB (mem_range_self i)) 1)⟩
+        Real.log_le_log (hpos i) (add_le_add (le_refl 1) (hB (mem_range_self i)))⟩
   rw [←hbound,←summable_power_charge_arbitrary_jumps hy (hy₀ 0)]
   have hw (i : ℕ) := Real.rpow_nonneg (add_nonneg zero_le_one (hy₀ (i+1))) (-p)
   have hcell (i : ℕ) : powerCharge x 1 i ≤ y (i+1)-y i ∧

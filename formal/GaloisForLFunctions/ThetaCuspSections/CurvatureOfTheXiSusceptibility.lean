@@ -123,7 +123,7 @@ private theorem sum_poles_lower {w : ℝ} (hw : 0 < w) (n : ℕ) :
 private theorem tendsto_inv_shift (w : ℝ) :
     Tendsto (fun n : ℕ => (w+poleShift n)⁻¹) atTop (𝓝 0) := by
   apply tendsto_inv_atTop_zero.comp
-  apply tendsto_atTop_mono' _ _ tendsto_natCast_atTop_atTop
+  refine tendsto_atTop_mono' _ ?_ tendsto_natCast_atTop_atTop
   filter_upwards [eventually_ge_atTop ⌈|w|⌉₊] with n hn
   have h := (Nat.le_ceil |w|).trans (Nat.cast_le.mpr hn)
   dsimp [poleShift]
