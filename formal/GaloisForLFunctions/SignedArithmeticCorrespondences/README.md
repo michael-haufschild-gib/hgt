@@ -149,6 +149,8 @@ $$
 $$
 Each multiplicative tail has two orientations. Taking its first difference gives four terms, and Cauchy–Schwarz on each sequence of multiples costs $A_NB_N$. The two real monomials have absolute value at most one on the integration interval. When both scalar square sums converge, their limits give one bound for all cutoffs and all signed coefficients. [Separate conductor energies](SeparateConductorEnergiesOnInterleavingSupports.lean)
 
+For fixed $r$ with $1/r\in\ell^2$, the criterion $w/r\in\ell^2$ is necessary as well. Against $u=\delta_1$, the cells are $2v_1-v_2$ and $v_k-v_{k+1}$ for $k\ge2$, with $v_{N+1}=0$. Alternating signed multiplicities ensure $|c_k|\ge|v_k|$ simultaneously. Taking $|v_k|=\lfloor M w_k/r_k^2\rfloor$ and letting the integer $M$ grow forces $\sum_{k=1}^N(w_k/r_k)^2\le C^2r_1^2$ for every cutoff. This converse uses actual integral divisors with the same single lower conductor throughout. [Sharp weight test](TheSharpWeightTestOnOneConductor.lean)
+
 ## Relation to the other programmes
 
 Arithmetic Castelnuovo–Severi supplies the integral vertical orders. Absolute Geometry supplies the real-place kernel and identifies its contact correction on reduced square degrees. Arithmetic Orientation Geometry identifies the growth measured by translated Weil tests. Here the question concerns the price of the mixed terms when the arithmetic divisors themselves grow. [Carrier and contact](../AbsoluteGeometryOfSpecZ/TheCarrierKernelIsWeilMinusTheContact.lean) · [Arithmetic Orientation Geometry](../ArithmeticOrientationGeometry/README.md)
@@ -158,6 +160,17 @@ Arithmetic Castelnuovo–Severi supplies the integral vertical orders. Absolute 
 For a three-point Kummer curve over $\mathbf F_{Q^2}$, a finite closed place of degree $h$ contributes $h$ to the square contact in degree $m$ precisely when $2h\mid m$. Including the rational point at infinity, the square contact at $m=2e>0$ equals the actual extension point count $N_e$. Removing the two poles and normalizing gives $(Q^{2e}+1-N_e)/Q^e=2g(-1)^e$, where $g$ is the dimension of the regular differentials.
 
 At separation $4(L+1)$, put $U_b=\sum_{i\equiv b\pmod 2} u_i(-1)^{\lfloor i/2\rfloor}$, and likewise for $V_b$. After signed gluing the entire normalized trace is $2g(U_0V_0-U_1V_1)$ for every $L$ and both supports. Negating the odd part of the opposing divisor gives the effective square $2g(U_0^2+U_1^2)$. Without that sign the square is nonnegative for all divisors exactly when $g=0$, equivalently $Q+1\mid R$ for the branch exponent $R$. At $R=1$ the odd singleton is negative in every block. [Closed-place trace and duality](TheTwoSquareChannelsOfKummerPointCounts.lean)
+
+For $y^2=f(x)$ with $f$ squarefree of odd degree over a finite field of odd characteristic, every integral polynomial $P$ has an integral opposing polynomial $Q$ at every lag $L\ge1$. Write the reversed L-polynomial as $A(T)=a+TB(T)$ and $m=\deg P$. For each Frobenius root $z$, $z[-B(z)]=a\ne0$ and $z\bar z=q$. Hence
+$$
+Q(T)=a^{L+m}[-B(T)]^{L+m}\sum_{j=0}^m P_j q^j T^{m-j},
+\qquad z^LQ(z)=a^{2(L+m)}\overline{P(z)}.
+$$
+Writing $N_n$ for the curve's point count over the degree-$n$ extension, the resulting mixed trace is
+$$
+\sum_{j,k}P_j Q_k(q^{L+j+k}+1-N_{L+j+k})=a^{2(L+m)}\sum_z |P(z)|^2.
+$$
+It vanishes exactly when $P$ vanishes on every Frobenius root. Applying the opposing operation twice returns the original section on the spectrum after explicit scalar multiplication. [Integral construction, composition and nullspace](IntegralOpposingSectionsOfHyperellipticPointCounts.lean)
 
 ## Dilation on late interleaved combs
 
@@ -207,7 +220,7 @@ Consequently, for any $C_0>0$, both the two-prime pilot ($A_w,C_w>0$ and $B_w^2\
 
 * Beyond full lower prefixes, the multiplicative tail formula holds on arbitrary mixed divisors. Even total is the sole constraint on their positive integral quotient cells. [Range theorem](TheIntegralRangeOfTheMixedQuotientCells.lean)
 * At unit spacing, a flat dyadic divisor rules out a divergent coefficient-uniform floor. A fixed positive floor on each window ratio for all signed coefficients remains equivalent to RH. [Exact late-comb criterion](../HodgeTheoryOfAFixedPart/TheRiemannHypothesisIsExactEventualCombPositivity.lean)
-* Arbitrary interleaving divisors admit separate energies for the combined quotient variation and real jet when $1/r$ and $w/r$ are square summable. [Uniform estimate](SeparateConductorEnergiesOnInterleavingSupports.lean)
-* Which opposing sections recover the effectivity supplied by curve point counts for Frobenius eigenvalues beyond the Kummer family? On the integers, a candidate must distinguish the ordinary prefix from its Liouville twist on the same divisors. [Curve model and Stepanov](../ExclusionOfTheCriticalState/Models/CurveCriticalStatesAndStepanovExclusion.lean) · [Ordinary and twisted prefixes](TheUnscaledIntersectionOfTheLiouvilleTwin.lean)
+* For $1/r\in\ell^2$ and nondecreasing $r>0$, a support-uniform separate bound for the quotient variation and real jet holds exactly when $w/r\in\ell^2$. [Uniform estimate](SeparateConductorEnergiesOnInterleavingSupports.lean) · [Converse](TheSharpWeightTestOnOneConductor.lean)
+* An integral opposing polynomial recovers a square at every positive lag for every squarefree odd-degree hyperelliptic curve in odd characteristic. On the integers, the ordinary and Liouville-twisted prefix curvatures have opposite signs at arbitrarily late cuts. [Opposing curve sections](IntegralOpposingSectionsOfHyperellipticPointCounts.lean) · [Curve model and Stepanov](../ExclusionOfTheCriticalState/Models/CurveCriticalStatesAndStepanovExclusion.lean) · [Ordinary and twisted prefixes](TheUnscaledIntersectionOfTheLiouvilleTwin.lean)
 
 A contribution must prove a new uniform estimate, determine a sharp obstruction with a surviving arithmetic invariant, or recover a term of the completed intersection from independently defined operations. For an estimate on exhausting divisors, state which supports may grow, what each section pays, which pole and diagonal terms were removed, and whether the estimate survives passage to the limit.

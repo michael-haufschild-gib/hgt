@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheNumeratorsCarryingOppositePrimeExcursions
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheFixedInteriorOfTheMiddleTest
+import Mathlib.MeasureTheory.Function.Floor
 
 /-!
 # Opposite prime excursions on one fixed band
@@ -40,9 +41,13 @@ private theorem freeze_pair {k L H : ℕ} {Φ : ℝ → ℝ} {m a g d T r v s : 
     rcases hs with rfl|rfl <;> rcases hs' with rfl|rfl <;> first | rfl | exfalso; linarith only [hor,hor']
   subst s'
   have hroot := sqrt_lt_middleBand_start h hr hsmall hd hX hp
-  change ((ordinaryIndicesAt k L (Ioc (T/6) (6*T)) v).filter _) = _ at hcell
-  rw [ordinaryIndicesAt_eq_full hr hsmall h hv,Finset.filter_true_of_mem (fun n hn =>
-    hroot.trans_lt (Nat.cast_lt.mpr (Finset.mem_Ioc.mp hn).1))] at hcell
+  have hfull : ordinaryBandAtDisplacement k L T v=Finset.Ioc k L := by
+    rw [← ordinaryIndicesAt_eq_full hr hsmall h hv]
+    ext n
+    simp only [ordinaryBandAtDisplacement,ordinaryIndicesAt,Finset.mem_filter]
+  have hkeep (n : ℕ) (hn : n∈Finset.Ioc k L) : Real.sqrt H<n :=
+    hroot.trans (Nat.cast_lt.mpr (Finset.mem_Ioc.mp hn).1)
+  rw [hfull,Finset.filter_true_of_mem hkeep] at hcell
   have hkL := hkb.trans_le (hbe.trans he)
   have hb : k+1∈Finset.Icc b e := hcell ▸ (Finset.mem_Ioc.mpr (show k<k+1 ∧ k+1≤L by omega))
   have he' : L∈Finset.Icc b e := hcell ▸ (Finset.mem_Ioc.mpr ⟨hkL,le_rfl⟩)
@@ -66,7 +71,7 @@ private theorem choose_piece {A B : Set ℝ} {f : ℝ → ℝ} {z : ℝ} (hf : I
     ∃ U : Set ℝ, MeasurableSet U ∧ U ⊆ A ∧ (U ⊆ B ∨ ∀ v ∈ U, v∉B) ∧ (∫ v in U, f v)<z := by
   by_cases h : (∫ v in A∩B, f v)<z
   · exact ⟨A∩B,hA.inter hB,inter_subset_left,Or.inl inter_subset_right,h⟩
-  · exact ⟨A\B,hA.diff hB,diff_subset,Or.inr (fun _ hv => hv.2),
+  · exact ⟨A\B,hA.diff hB,sdiff_subset,Or.inr (fun _ hv => hv.2),
       by linarith only [integral_split hf hA hB,h,hz]⟩
 
 private def digit (T v : ℝ) (j : ℕ) : ℕ := ⌊(2:ℝ)^(j+1)*Real.exp (T-v)⌋₊
@@ -82,19 +87,25 @@ private theorem measurable_digit_hits (T : ℝ) (P : Set ℕ) : MeasurableSet {v
 def middleTestNumerators (T d : ℝ) (k L : ℕ) : Finset ℕ :=
   (Finset.range (L^2)).filter fun H => Real.exp T≤H ∧ (H:ℝ)^(1/2+d)<L ∧ Real.sqrt H<k
 
+/-- Joint upper tail of both signed arithmetic discrepancies at the same numerator. -/
+def largeOppositePrimeNumerators (left : Bool) (s a g d T : ℝ) (k L : ℕ) : Finset ℕ :=
+  (middleTestNumerators T d k L).filter fun H =>
+    a*Real.exp (g*T)*Real.sqrt H < s*oddQuotientPrimeExcess (Finset.Ioc k L) H ∧
+    a*Real.exp (g*T)*Real.sqrt H < (-s)*oddQuotientPrimeExcess (middleTestFlank left k L H) H
+
 /-- Product of oppositely oriented positive parts at a common numerator. -/
 def oppositePrimeProduct (left : Bool) (s : ℝ) (k L H : ℕ) : ℝ :=
   max 0 (s*oddQuotientPrimeExcess (Finset.Ioc k L) H) *
     max 0 ((-s)*oddQuotientPrimeExcess (middleTestFlank left k L H) H) / (H:ℝ)^2
 
-private theorem pair_product {k L H : ℕ} {s a g d T : ℝ} {left : Bool}
-    (ha : 0<a) (hH : 0<H) (hr : Real.sqrt H<k) (hkL : k≤L)
-    (h : FixedBandPrimePair left k L H s a g d T) :
-    (a*Real.exp (g*T))^2*(1/(H:ℝ)) ≤ oppositePrimeProduct left s k L H := by
-  have hi (n : ℕ) (hn : n∈Finset.Ioc k L) := hr.trans_lt (Nat.cast_lt.mpr (Finset.mem_Ioc.mp hn).1)
+private theorem singleton_pair {k L H : ℕ} {s a g d T : ℝ} {left : Bool}
+    (hH : 0<H) (hr : Real.sqrt H<k) (hkL : k≤L) (h : FixedBandPrimePair left k L H s a g d T) :
+    a*Real.exp (g*T)*Real.sqrt H < s*oddQuotientPrimeExcess (Finset.Ioc k L) H ∧
+    a*Real.exp (g*T)*Real.sqrt H < (-s)*oddQuotientPrimeExcess (middleTestFlank left k L H) H := by
+  have hi (n : ℕ) (hn : n∈Finset.Ioc k L) := hr.trans (Nat.cast_lt.mpr (Finset.mem_Ioc.mp hn).1)
   have ho (n : ℕ) (hn : n∈middleTestFlank left k L H) : Real.sqrt H<n := by
     cases left
-    · exact hr.trans_lt (Nat.cast_lt.mpr (hkL.trans_lt (Finset.mem_Ioc.mp hn).1))
+    · exact hr.trans (Nat.cast_lt.mpr (hkL.trans_lt (Finset.mem_Ioc.mp hn).1))
     · exact (Nat.floor_lt (Real.sqrt_nonneg _)).mp (Finset.mem_Ioc.mp hn).1
   have heq (S : Finset ℕ) (hS : ∀ n ∈ S, Real.sqrt H<n) :
       commonFactorialDivisorDiscrepancy S {H}=oddQuotientPrimeExcess S H := by
@@ -102,7 +113,13 @@ private theorem pair_product {k L H : ℕ} {s a g d T : ℝ} {left : Bool}
     simp only [commonOddQuotientPrimeExcess,Finset.mem_singleton,forall_eq,oddQuotientPrimeExcess]
   have hb := (h H hH le_rfl (by rw [sub_self]; exact Real.rpow_nonneg (Nat.cast_nonneg _) _)).1
     {H} (Finset.singleton_nonempty _) (by simp)
-  rw [heq _ hi,heq _ ho] at hb
+  rwa [heq _ hi,heq _ ho] at hb
+
+private theorem pair_product {k L H : ℕ} {s a g d T : ℝ} {left : Bool}
+    (ha : 0<a) (hj : H∈largeOppositePrimeNumerators left s a g d T k L) :
+    (a*Real.exp (g*T))^2*(1/(H:ℝ)) ≤ oppositePrimeProduct left s k L H := by
+  obtain ⟨hnum,hb⟩ := Finset.mem_filter.mp hj
+  have hH : 0<H := Nat.cast_pos.mp ((Real.exp_pos _).trans_le (Finset.mem_filter.mp hnum).2.1)
   have hpos : 0≤a*Real.exp (g*T)*Real.sqrt H := by positivity
   have hm := mul_le_mul (hb.1.le.trans (le_max_right 0 _)) (hb.2.le.trans (le_max_right 0 _))
     hpos ((le_max_left 0 _))
@@ -111,7 +128,7 @@ private theorem pair_product {k L H : ℕ} {s a g d T : ℝ} {left : Bool}
   have hr2 := Real.sq_sqrt (Nat.cast_nonneg H)
   calc _ = (a*Real.exp (g*T)*Real.sqrt H)^2 := by
              rw [mul_pow (a*Real.exp (g*T)) (Real.sqrt H),hr2]
-             field_simp [Nat.cast_ne_zero.mpr hH.ne']
+             field_simp [Nat.cast_ne_zero.mpr hH.ne'] <;> ring
        _ ≤ _ := by simpa only [sq] using hm
 
 private theorem choose_fixed_pair {Φ f : ℝ → ℝ} {m a g d r T z : ℝ} {k L : ℕ} {E : Set ℝ} {N : Finset ℕ}
@@ -128,9 +145,9 @@ private theorem choose_fixed_pair {Φ f : ℝ → ℝ} {m a g d r T z : ℝ} {k 
   obtain ⟨V,hV,hVE,hor,hVneg⟩ := choose_piece (z:=2*z) hf hE hmB (by linarith only [hneg])
   have hsign : ∃ s : ℝ, (s=1 ∨ s= -1) ∧ ∀ v ∈ V, s*m*Φ v<0 := by
     rcases hor with hpos|hmin
-    · exact ⟨1,Or.inl rfl,fun v hv => by simpa only [one_mul] using hpos hv⟩
+    · exact ⟨1,Or.inl rfl,fun v hv => by simpa only [B,Set.mem_setOf_eq,one_mul] using hpos hv⟩
     · refine ⟨-1,Or.inr rfl,fun v hv => ?_⟩
-      have h₀ : 0≤m*Φ v := le_of_not_gt (hmin v hv)
+      have h₀ : 0 ≤ m*Φ v := le_of_not_gt (hmin v hv)
       obtain ⟨H,_,σ,j,b,e,l,u,_,hσ,hstrict,_⟩ := hit v (hVE hv)
       rcases hσ with rfl|rfl <;> linarith only [h₀,hstrict]
   obtain ⟨s,hs,hsm⟩ := hsign
@@ -149,16 +166,13 @@ private theorem choose_fixed_pair {Φ f : ℝ → ℝ} {m a g d r T z : ℝ} {k 
     · exact False.elim (hright v hv ⟨j,hn,hb⟩)
 
 private theorem summed_pair_product {k L : ℕ} {s a g d T : ℝ} {left : Bool} {N : Finset ℕ}
-    (ha : 0<a) (hkL : k≤L) (hN : N ⊆ middleTestNumerators T d k L)
-    (hp : ∀ H ∈ N, FixedBandPrimePair left k L H s a g d T) :
+    (ha : 0<a) (hN : N ⊆ largeOppositePrimeNumerators left s a g d T k L) :
     (a*Real.exp (g*T))^2 * (∑ H ∈ N, 1/(H:ℝ)) ≤
-      ∑ H ∈ middleTestNumerators T d k L, oppositePrimeProduct left s k L H := by
+      ∑ H ∈ largeOppositePrimeNumerators left s a g d T k L, oppositePrimeProduct left s k L H := by
   rw [Finset.mul_sum]
-  apply (Finset.sum_le_sum fun H hn => ?_).trans
+  exact (Finset.sum_le_sum fun _ hn => pair_product ha (hN hn)).trans
     (Finset.sum_le_sum_of_subset_of_nonneg hN (fun H _ _ => div_nonneg
       (mul_nonneg (le_max_left ..) (le_max_left ..)) (sq_nonneg _)))
-  have hH := (Finset.mem_filter.mp (hN hn)).2
-  exact pair_product ha (Nat.cast_pos.mp ((Real.exp_pos _).trans_le hH.1)) hH.2.2 hkL (hp H hn)
 
 /-- A common interval, orientation and flank carry signed loss in each late
 original test. Their mixed arithmetic moment runs over an explicit range
@@ -178,14 +192,14 @@ theorem riemannHypothesis_or_fixed_band_opposite_prime_moment : RiemannHypothesi
         ∀ᶠ i in atTop, ∃ (U : Set ℝ) (N : Finset ℕ) (s : ℝ) (left : Bool),
           MeasurableSet U ∧ U ⊆ middleBandInterior r (T i) ∧ (s=1 ∨ s= -1) ∧
           (∀ v ∈ U, s*m*Φ v<0 ∧ ∃ j : ℕ, ⌊(2:ℝ)^(j+1)*Real.exp (T i-v)⌋₊∈N) ∧
-          N ⊆ middleTestNumerators (T i) d (k i) (L i) ∧
+          N ⊆ largeOppositePrimeNumerators left s a g d (T i) (k i) (L i) ∧
           (∀ H ∈ N, (∃ v ∈ U, ∃ j : ℕ, H=⌊(2:ℝ)^(j+1)*Real.exp (T i-v)⌋₊) ∧
             FixedBandPrimePair left (k i) (L i) H s a g d (T i)) ∧
           signedOrdinaryMiddleResponse m Φ (k i) (L i) (T i) -
             signedOrdinaryMiddleResponse m (Uᶜ.indicator Φ) (k i) (L i) (T i) < -c*Real.exp (g*T i) ∧
           c*Real.exp ((g+1/2)*T i)<L i*∑ H ∈ N, (1/(H:ℝ)) ∧
           c*a^2*Real.exp ((1/2+3*g)*T i) <
-            L i*∑ H ∈ middleTestNumerators (T i) d (k i) (L i), oppositePrimeProduct left s (k i) (L i) H := by
+            L i*∑ H ∈ largeOppositePrimeNumerators left s a g d (T i) (k i) (L i), oppositePrimeProduct left s (k i) (L i) H := by
   rcases riemannHypothesis_or_abundant_opposite_prime_excursions with hh | ⟨W,F,Φ,a,b,g,d,hW,ht,hF,hΦ,he,ha,hb,hg,hd,hd₁,hseq⟩
   · exact Or.inl hh
   obtain ⟨_,_,Ψ,hΨ,heΨ,_,⟨C,hC,hconf⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
@@ -208,10 +222,10 @@ theorem riemannHypothesis_or_fixed_band_opposite_prime_moment : RiemannHypothesi
   let L := fun i => ⌈Real.exp ((1+η)*T i)⌉₊
   have hgap : 0<g-8*r := by linarith only [hrg,hg]
   have htail := ((Real.tendsto_exp_atTop.comp (hT.const_mul_atTop hgap)).const_mul_atTop
-    (by positivity : 0<b/2)).eventually_gt_atTop (2*|m|*C)
+    (by positivity : 0<b/2)).eventually_gt_atTop (2*|m| *C)
   refine ⟨T,k,hT,hk,fun i => (mul_le_mul_of_nonneg_right (by linarith only [hcb,hb] : c≤b)
     (Real.exp_pos _).le).trans (hgain i),?_⟩
-  filter_upwards [hsel,htail,hT.eventually (eventually_middleBandScale hr hr₁)] with i hseli hprice hscale
+  filter_upwards [hsel,htail,hT.eventually (eventually_middleBandScale hr)] with i hseli hprice hscale
   obtain ⟨E,N,hE,hit,hN,hdef,_,_⟩ := hseli
   let t := T i
   let Y := Real.exp (g*t)
@@ -225,12 +239,12 @@ theorem riemannHypothesis_or_fixed_band_opposite_prime_moment : RiemannHypothesi
   have hout := ordinaryDisplacementDensity_outside (m:=m) hC hconf hr hr₁ hsc (hE.diff hG)
     (fun v hv => ⟨h₀ v hv.1,hv.2⟩)
   have hexp : Real.exp ((g-8*r)*t)*Real.exp (8*r*t)=Y := by rw [← Real.exp_add]; congr 1; ring
-  change 2*|m|*C<(b/2)*Real.exp ((g-8*r)*t) at hprice
+  change 2*|m| *C<(b/2)*Real.exp ((g-8*r)*t) at hprice
   have hbudget := mul_lt_mul_of_pos_right hprice (Real.exp_pos (8*r*t))
   rw [mul_assoc (b/2),hexp] at hbudget
   have hwhole : (∫ v in E, f v)< -b*Y := by
-    rw [← ordinaryBand_delete_eq_setIntegral hi m t (k i) (L i) hE]
-    exact hdef
+    calc _ = _ := (ordinaryBand_delete_eq_setIntegral hi m t (k i) (L i) hE).symm
+         _ < _ := hdef
   have hbulk : (∫ v in E∩G, f v)<4*(-(b/8)*Y) := by
     change |∫ v in E\G, f v|≤_ at hout
     linarith only [hwhole,integral_split hf hE hG,hout,hbudget,neg_le_abs (∫ v in E\G, f v)]
@@ -255,30 +269,37 @@ theorem riemannHypothesis_or_fixed_band_opposite_prime_moment : RiemannHypothesi
     change |∫ v in U, f v|≤K*(L i:ℝ)*Real.exp (-t/2)*mass at hcost
     linarith only [hUn,hcost,hh,neg_le_abs (∫ v in U, f v),congrArg (· *Y) hck,mul_pos hc (Real.exp_pos (g*t))]
   have hmass := mul_lt_mul_of_pos_right hpaid (Real.exp_pos (t/2))
-  rw [mul_assoc ((L i:ℝ)*mass),← Real.exp_add,show -t/2+t/2=0 by ring,Real.exp_zero,mul_one,
-    mul_assoc c,← Real.exp_add,show g*t+t/2=(g+1/2)*t by ring] at hmass
+  have hunit : Real.exp (-t/2)*Real.exp (t/2)=1 := by
+    rw [← Real.exp_add,show -t/2+t/2=0 by ring,Real.exp_zero]
+  have hY : Y*Real.exp (t/2)=Real.exp ((g+1/2)*t) := by
+    dsimp only [Y]; rw [← Real.exp_add]; congr 1; ring
+  rw [mul_assoc ((L i:ℝ)*mass),hunit,mul_one,mul_assoc c,hY] at hmass
   have hkL : k i≤L i := by
     by_contra! hh
     have heL := (Nat.le_ceil (Real.exp ((1+η)*t))).trans_lt (Nat.cast_lt.mpr hh)
     have hkpos := (Real.exp_pos _).trans heL
     have hlt := (Real.lt_log_iff_exp_lt hkpos).mpr heL
     linarith only [hlt,(hk i).2,mul_pos hη hsc.pos]
-  have hm := summed_pair_product ha hkL hallowed (fun _ hj => (Finset.mem_filter.mp hj).2.2)
+  have htailset : J ⊆ largeOppositePrimeNumerators left s a g d t (k i) (L i) := by
+    intro H hj
+    have hn := hallowed hj
+    exact Finset.mem_filter.mpr ⟨hn,singleton_pair (hpos H hj) (Finset.mem_filter.mp hn).2.2.2 hkL (Finset.mem_filter.mp hj).2.2⟩
+  have hm := summed_pair_product ha htailset
   have hfactor := mul_lt_mul_of_pos_left hmass (sq_pos_of_pos (mul_pos ha (Real.exp_pos (g*t))))
   have hpowers : Real.exp (g*t)^2*Real.exp ((g+1/2)*t)=Real.exp ((1/2+3*g)*t) := by
     rw [sq,← Real.exp_add,← Real.exp_add]; congr 1; ring
   refine ⟨U,J,s,left,hU,hUG.trans inter_subset_right,hs,fun v hv => ⟨hor v hv,hJ v hv⟩,
-    hallowed,fun H hj => (Finset.mem_filter.mp hj).2,?_,hmass,?_⟩
+    htailset,fun H hj => (Finset.mem_filter.mp hj).2,?_,hmass,?_⟩
   · change _ - _ < -c*Y
     rw [show signedOrdinaryMiddleResponse m Φ (k i) (L i) t -
       signedOrdinaryMiddleResponse m (Uᶜ.indicator Φ) (k i) (L i) t=(∫ v in U, f v) from
       ordinaryBand_delete_eq_setIntegral hi m t (k i) (L i) hU]
     exact hUn.trans_le (mul_le_mul_of_nonneg_right (neg_le_neg hcb) (Real.exp_pos _).le)
   · change c*a^2*Real.exp ((1/2+3*g)*t)<_
-    rw [← hpowers]
-    dsimp only [mass] at hfactor
-    rw [mul_pow] at hfactor
-    linarith only [hfactor,mul_le_mul_of_nonneg_left hm (Nat.cast_nonneg (L i))]
+    calc _ = (a*Real.exp (g*t))^2*(c*Real.exp ((g+1/2)*t)) := by rw [← hpowers]; ring
+         _ < (a*Real.exp (g*t))^2*((L i:ℝ)*mass) := hfactor
+         _ = (L i:ℝ)*((a*Real.exp (g*t))^2*mass) := by ring
+         _ ≤ _ := mul_le_mul_of_nonneg_left hm (Nat.cast_nonneg (L i))
 
 #print axioms riemannHypothesis_or_fixed_band_opposite_prime_moment
 end GaloisForLFunctions.ExclusionOfTheCriticalState

@@ -36,7 +36,7 @@ theorem sevenFourthsShell_conductors (N M q v : ℕ) :
     rw [sevenFourthsCut,Nat.floor_lt hn₀]
     simpa only [hpow] using (Real.rpow_lt_rpow_iff hn₀ (Nat.cast_nonneg q) hpos).symm
   have hlo : q≤2*sevenFourthsCut n ↔ (((q+1)/2:ℕ):ℝ)^(4/7:ℝ)≤n := by
-    rw [show q≤2*sevenFourthsCut n ↔ (q+1)/2≤sevenFourthsCut n by omega,
+    rw [show q≤2*sevenFourthsCut n ↔ (q+1)/2≤ sevenFourthsCut n by omega,
       sevenFourthsCut,Nat.le_floor_iff hn₀]
     simpa only [hpow] using (Real.rpow_le_rpow_iff (Nat.cast_nonneg (α := ℝ) ((q+1)/2)) hn₀ hpos).symm
   simp only [mem_filter,mem_Ioc,mem_Ico,max_le_iff,lt_min_iff,Nat.ceil_le,Nat.lt_ceil,hup,hlo]
@@ -48,7 +48,7 @@ theorem sevenFourthsShell_conductors (N M q v : ℕ) :
 
 private theorem shell_geometry : ∀ᶠ n : ℕ in atTop,
     0<sevenFourthsCut n ∧ 2*(sevenFourthsCut n:ℝ)+1<Real.exp (-8)*(n:ℝ)^2 ∧
-    productLower 1 (splineHorizon n)≤sevenFourthsCut n := by
+    productLower 1 (splineHorizon n)≤ sevenFourthsCut n := by
   obtain ⟨A,hA,hwin⟩ := successorSquare_window_bound
   have ht : Tendsto (fun n : ℕ => (n:ℝ)^(1/4:ℝ)) atTop atTop :=
     (tendsto_rpow_atTop (by norm_num : (0:ℝ)<1/4)).comp tendsto_natCast_atTop_atTop

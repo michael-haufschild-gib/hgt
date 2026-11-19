@@ -65,8 +65,8 @@ theorem label_bounds (u v a b l : ℝ) :
   constructor
   · exact add_nonneg (mul_nonneg (lengthRatio_pos _ _).le ENNReal.toReal_nonneg)
       (mul_nonneg (lengthRatio_pos _ _).le ENNReal.toReal_nonneg)
-  · have h := add_le_add (mul_le_mul_of_nonneg_left ha (lengthRatio_pos _ _).le)
-      (mul_le_mul_of_nonneg_left hb (lengthRatio_pos _ _).le)
+  · have h := add_le_add (mul_le_mul_of_nonneg_left ha (lengthRatio_pos u v).le)
+      (mul_le_mul_of_nonneg_left hb (lengthRatio_pos v u).le)
     simpa only [labelInformation,labelEntropy,mul_neg,sub_eq_add_neg] using h
 
 /-- Divergence at the Gaussian with matching mean and variance. -/
@@ -84,7 +84,7 @@ theorem optimum (u v a b l : ℝ) :
   obtain ⟨hf,he⟩ := noisy_loss u v a b l (center u v a b) (Real.log V)
   refine ⟨hf,?_⟩
   rw [sub_self,zero_pow (by norm_num : 2 ≠ 0),add_zero,Real.exp_log hv,div_self hv.ne'] at he
-  linarith only [he]
+  simpa only [sub_add_cancel] using he
 
 /-- Exact excess and uniqueness of the Gaussian information projection. -/
 theorem noisy_projection (u v a b l m j : ℝ) :
@@ -129,7 +129,8 @@ theorem small_noise_bounds (u v : ℝ) (a b : ℝ) (s : ℝ≥0) :
   have hv := variance_pos (u := u) (v := v) he
   have ht : Real.exp (-2*(s:ℝ)) ≤ 1 := Real.exp_le_one_iff.mpr (by linarith only [s.2])
   have hl := Real.log_le_log hv (le_add_of_nonneg_left (Real.exp_pos (-2*(s:ℝ))).le)
-  have hh := Real.log_le_log (add_pos (Real.exp_pos (-2*(s:ℝ))) hv) (add_le_add_right ht _)
+  have hh := Real.log_le_log (add_pos (Real.exp_pos (-2*(s:ℝ))) hv)
+    (add_le_add ht (le_refl (signalVariance u v a b)))
   have ho := (optimum u v a b (-2*(s:ℝ))).2
   obtain ⟨h0,h1⟩ := label_bounds u v a b (-2*(s:ℝ))
   constructor <;> linarith only [hl,hh,ho,h0,h1]
@@ -155,7 +156,7 @@ theorem small_noise_slope (u v a b : ℝ) :
       D s-s ≤ Real.log (1+signalVariance u v a b)/2 :=
     (eventually_ge_atTop (0:ℝ)).mono fun s hs => (small_noise_bounds u v a b ⟨s,hs⟩).resolve_left he
   have lim := tendsto_bdd_div_atTop_nhds_zero (bounds.mono fun _ h => h.1)
-    (bounds.mono fun _ h => h.2) (tendsto_id (α := ℝ) (f := atTop))
+    (bounds.mono fun _ h => h.2) (show Tendsto (fun s : ℝ => s) atTop atTop from tendsto_id)
   have hsum := lim.add (tendsto_const_nhds (x := (1:ℝ)))
   rw [zero_add] at hsum
   apply hsum.congr'
@@ -178,7 +179,7 @@ private theorem cell_weights (i : ℕ) :
   have hl := logCellWidth_pos (show 1 ≤ 2*(i+1) by omega)
   have hr := logCellWidth_pos (show 1 ≤ 2*(i+1)+1 by omega)
   simp only [lengthRatio,logLeft,logRight,Real.exp_log hl,Real.exp_log hr,haarRightCoeff,haarLeftCoeff]
-  exact ⟨rfl,by rw [add_comm (logCellWidth (2*(i+1)+1)) (logCellWidth (2*(i+1)))]⟩
+  exact ⟨True.intro,by rw [add_comm (logCellWidth (2*(i+1)+1)) (logCellWidth (2*(i+1)))]⟩
 
 private theorem cell_gap (q d : ℕ → ℝ) (i : ℕ) :
     leftValue q d i-rightValue q d i=d (i+1) := by
@@ -214,10 +215,26 @@ theorem physical_event_law (q d : ℕ → ℝ) (i k : ℕ) (l : ℝ) (S : Set �
     simp only [smul_eq_mul,ENNReal.toReal_add
       (ENNReal.mul_ne_top ENNReal.ofReal_ne_top (measure_ne_top _ _))
       (ENNReal.mul_ne_top ENNReal.ofReal_ne_top (measure_ne_top _ _)),ENNReal.toReal_mul,
-      ENNReal.toReal_ofReal (lengthRatio_pos _ _).le,hp,hq,measureReal_def,a]
-  rw [detailReadout_law,hm,← logCellWidth_pair_sum (show 1 ≤ a by dsimp [a]; omega)]
-  simp only [a,leftValue,rightValue,sub_eq_add_neg,add_zero,haarRightCoeff,haarLeftCoeff]
-  field_simp [(add_pos hl hr).ne'] <;> ring
+      ENNReal.toReal_ofReal (lengthRatio_pos (logLeft i) (logRight i)).le,
+      ENNReal.toReal_ofReal (lengthRatio_pos (logRight i) (logLeft i)).le,measureReal_def]
+    rw [hp,hq]
+  have hlen := logCellWidth_pair_sum (show 1 ≤ a by dsimp [a]; omega)
+  have hleft : logCellWidth a * haarRightCoeff a = logCellWidth (2*a) := by
+    rw [← hlen, haarRightCoeff]
+    field_simp [(add_pos hl hr).ne']
+  have hright : logCellWidth a * haarLeftCoeff a = logCellWidth (2*a+1) := by
+    rw [← hlen, haarLeftCoeff]
+    field_simp [(add_pos hl hr).ne']
+  have weighted (A B C : ℝ) :
+      (A-C)*logCellWidth (2*a)+(B-C)*logCellWidth (2*a+1) =
+        logCellWidth a*(haarRightCoeff a*A+haarLeftCoeff a*B-C) := by
+    rw [mul_sub,mul_add,← mul_assoc (logCellWidth a) _ A,← mul_assoc (logCellWidth a) _ B,
+      hleft,hright,← hlen]
+    ring
+  rw [detailReadout_law _ d i k,hm]
+  simpa only [leftValue,rightValue,add_zero,sub_eq_add_neg] using
+    weighted ((positionGaussian (leftValue q d i) l).real S)
+      ((positionGaussian (rightValue q d i) l).real S) ((positionGaussian (q a) l).real S)
 
 /-- Unique Gaussian fit of the smoothed profile has its actual coarse value
 as mean, and its Haar variance plus the smoothing variance as variance. -/

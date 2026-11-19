@@ -32,4 +32,41 @@ Balanced triples cannot be removed by another normalized weight on the small uni
 
 Here the only unweighted rough composites (\(s=1\)) have two or three prime factors counted with multiplicity. A surviving mixed composite has \(\operatorname{rad}(s)>Y\), since otherwise the complete Möbius sum vanishes. It carries one or two prime factors above \(Y\), counted with multiplicity. These statements follow from \(k\le4n\le Y^4\). Repeated primes enter through the ordinary multiplicity in \(\log r\).
 
-**Status.** Paper identities. The one-sided bound at all integers for either centered price remains open. [Report route](../../../reports/review-1911/obstacles-summary.md#218-best-prospect-for-a-full-proof) · [Divisible cofactor rows](acs-pvc-factorial-completion-of-divisible-cofactor-rows.md)
+### Six colors at the first strip milestone
+
+Let \(m\ge2\) and \(\zeta=e^{2\pi i/m}\). Color the distinct prime-power blocks of \(k>1\) with colors \(0,\dots,m-1\). Let \(a_j\) be the product of blocks of color \(j\), with empty product one. Define \(U_m(k)\) as the sum of \(\zeta^{\sum_j j\omega(a_j)}\) over colorings for which \(a_0\) is largest. The largest product is unique because the products are pairwise coprime and at least one exceeds one. Conjugating all colors preserves the sum, so the weight is real. The two-color weight is \(u(k)\).
+
+* Every pure prime power has weight one. Every mixed product with a block greater than its square root has weight zero. The dominant block must have color zero, and all remaining colors can be summed freely.
+* If \(m\mid\omega(k)\), the weight is zero. Cyclically shifting all colors preserves their weight. The unrestricted color sum is zero and equals \(m U_m(k)\).
+* Every product with \(2\le\omega(k)\le m\) has weight zero, including all multiplicities. Partition its blocks into nonempty color classes. The largest class product fixes color zero. For the remaining \(r\) classes of sizes \(t_1,\ldots,t_r\), the sum over distinct nonzero colors is \((-1)^r r!\). Indeed their total size is less than \(m\). In partition-lattice inclusion–exclusion, each group of colliding labels contributes \(\sum_{c=1}^{m-1}\zeta^{c\sum t_i}=-1\). The factor \((-1)^{s-1}(s-1)!\) for a collision group of size \(s\) then leaves the common sign \((-1)^r\); the sum of the remaining factorial products counts the \(r!\) permutations by cycles. Summing over all original partitions gives \(\sum_j {\omega(k)\brace j}(-1)^{j-1}(j-1)!=0\) for \(\omega(k)>1\), by the Stirling recurrence.
+
+The first surviving class is sharp. If \(k\) has \(m+1\) blocks and the largest block is smaller than the product of the two smallest, then \(U_m(k)=(-1)^{m-1}m!\). For every partition with a nonsingleton winning class, the distinct-label calculation still applies. A singleton can win only when all classes are singletons. This partition has no admissible labeling and removes exactly \((-1)^m m!\) from the zero Stirling sum.
+
+**Arithmetic center.** For fixed losing products \(a_1,\ldots,a_{m-1}\), set \(e=\prod a_i\), \(M=\max a_i\). The remaining factor satisfies \(k/e>M\) and \((k/e,en)=1\), with \((e,n)=1\). At \(k\le X=4n\), this requires \(e\le X^{1-1/m}\). Expanding coprimality over \(d\mid en\) gives ordinary factorial log sums on the progressions \(edj\), retaining the lower endpoint \(eM\) and both original interval signs. Replacing each progression by its log integral costs \(O(\log X)\). The total cost is
+\[
+ O\!\left(\log X\sum_{e\le X^{1-1/m}}(m-1)^{\omega(e)}2^{\omega(en)}\right)
+ =O_{m,\varepsilon}(n^{1-1/m+\varepsilon}).
+\]
+Each fixed-base power of \(\omega(e)\) satisfies the subpower bound by separating the finitely many primes below a fixed threshold. The same integral calculation uses density \(\varphi(en)/(e^2 n)\) on \(x>eM\), one term per losing-product tuple.
+
+Consequently at \(m=6\) the centered price on **balanced composites with at least seven distinct prime factors**, omitting every multiple of six in the number of factors, recovers \(D(n)\) to \(O_\varepsilon(n^{5/6+\varepsilon})\) at every midpoint. Here balanced means every prime-power block is smaller than the product of the others. These integers are disjoint from all composites carrying the original prime \(p>2\sqrt n\). Seven comparable blocks have weight \(-720\). At \(m=2\) the loss is half-plus and three comparable blocks have weight \(-2\).
+
+### An integer weight constant on the first surviving class
+
+Write \(w=\omega(k)\), \(c_j=(-1)^{j-1}\binom mj\), and
+\[
+ K_m(t)=\sum_{j=0}^m(-1)^j\binom mj(j-1)^t,\qquad
+ V_m(k)=\sum_{j=1}^m c_j j^{w-1}
+       +\sum_{d\parallel k,\ d^2<k}K_m(\omega(d)).
+\]
+Finite differences give \(K_m(t)=0\) for \(t<m\) and \(K_m(m)=(-1)^mm!\). Choose the largest prime-power block \(b\). Expanding \(j^{w-1}=(1+(j-1))^{w-1}\) over subsets of the other blocks gives
+\[
+ V_m(k)=\mathbf1_{w=1}
+  +\sum_{d\parallel k,\ d^2<k}K_m(\omega(d))
+  -\sum_{d\parallel k/b}K_m(\omega(d)).
+\]
+For dominant \(b\) the two divisor sets agree. For \(w\le m\) both sums vanish. When \(w=m+1\) and \(b^2<k\), every divisor formed from \(m\) blocks is larger than \(\sqrt k\). The last sum then consists of the sole nonzero term \(K_m(m)\). Hence **every balanced product with exactly seven distinct prime factors has weight \(-720\) at \(m=6\)**. This applies to arbitrary multiplicities and unequal block sizes.
+
+The small-divisor part has a half-plus progression error as in the two-color center. The integer \(j^{w-1}\) counts colorings into \(j\) colors with the largest class product at color zero. Indeed every coloring has one largest product, and exactly one of its \(j\) cyclic shifts has that property. Enumerating the other products gives the same factorial progressions as above with \(e\le X^{1-1/j}\). Thus \(V_m\) has an integral center at cost \(O_{m,\varepsilon}(n^{1-1/m+\varepsilon})\). Its independent one-sided bound is open. Unlike the cyclic root-of-unity weight, this integer weight makes no assertion of vanishing when \(m\mid w\) for \(w>m\).
+
+**Status.** The two finite-color constructions and their deterministic centers have paper proofs. The one-sided bound for the remaining signed composite price is open. [Report route](../../../reports/review-1911/obstacles-summary.md#218-best-prospect-for-a-full-proof) · [Divisible cofactor rows](acs-pvc-factorial-completion-of-divisible-cofactor-rows.md)

@@ -100,6 +100,51 @@ theorem arbitrarily_large_comb_floor_iff (d Q : ℕ+) :
     simpa [hd₁,Nat.card_Ioc] using hlow (Ioc N (N+N)) hs (fun _ => 1)
   exact (not_lt_of_ge ((le_div_iff₀ (Nat.cast_pos.mpr hN : (0:ℝ)<N)).mpr hmass)) hhigh
 
+/-- The same sharp spacing threshold holds at every fixed real aperture,
+however narrow. A single flat block beginning at a sufficiently large
+integer multiple of its width has a finite unit-spacing Rayleigh limit. -/
+theorem divergent_comb_floor_at_any_aperture_iff (d : ℕ+) {θ : ℝ} (hθ : 0<θ) :
+    (∀ B : ℝ, ∀ᶠ N : ℕ in atTop, ∀ S : Finset ℕ, S ⊆ Ioc N (N+⌊θ*(N:ℝ)⌋₊) →
+      ∀ c : ℕ → ℝ, let T := S.image (fun n => (d:ℕ)*n)
+        B*(∑ n ∈ T, c n^2) ≤ combForm T c) ↔ 2≤(d:ℕ) := by
+  constructor
+  · intro h
+    by_contra! hd
+    have hd₁ : (d:ℕ)=1 := by have := d.pos; omega
+    obtain ⟨R,hR⟩ := exists_nat_gt (1/θ)
+    have hR₀ : 0<R := Nat.cast_pos.mp ((one_div_pos.mpr hθ).trans hR)
+    have hRθ : 1≤θ*(R:ℝ) := by simpa only [mul_comm] using ((div_lt_iff₀ hθ).mp hR).le
+    let E := AbsoluteGeometryOfSpecZ.packetForm 2 (stepPacket R 1 (fun _ => 1))
+    have hi := tendsto_combForm_blockFunction_div (R := R) (J := 1) (Q := 2)
+      hR₀ (by omega) (fun _ => 1)
+    have hflat : Tendsto (fun n : ℕ => combForm (Ioc (R*n) (R*n+n)) (fun _ => 1)/(n:ℝ))
+        atTop (𝓝 E) := by simpa only [mul_one] using hi
+    obtain ⟨N₀,hfloor⟩ := eventually_atTop.mp (h (E+1))
+    obtain ⟨n,⟨hn,hn₀⟩,hhi⟩ := (((eventually_ge_atTop 1).and (eventually_ge_atTop N₀)).and
+      (hflat.eventually (Iio_mem_nhds (show E<E+1 by linarith)))).exists
+    have hnR : N₀≤R*n := hn₀.trans (Nat.le_mul_of_pos_left n hR₀)
+    have hwidth : n≤⌊θ*((R*n:ℕ):ℝ)⌋₊ := by
+      apply Nat.le_floor
+      rw [Nat.cast_mul,← mul_assoc]
+      simpa only [one_mul] using mul_le_mul_of_nonneg_right hRθ (Nat.cast_nonneg (α := ℝ) n)
+    have hS : Ioc (R*n) (R*n+n) ⊆ Ioc (R*n) (R*n+⌊θ*((R*n:ℕ):ℝ)⌋₊) :=
+      Ioc_subset_Ioc le_rfl (Nat.add_le_add_left hwidth _)
+    have hl : (E+1)*(n:ℝ)≤combForm (Ioc (R*n) (R*n+n)) (fun _ => 1) := by
+      simpa [hd₁,Nat.card_Ioc] using hfloor (R*n) hnR _ hS (fun _ => 1)
+    exact (not_lt_of_ge ((le_div_iff₀ (Nat.cast_pos.mpr hn : (0:ℝ)<n)).mpr hl)) hhi
+  · intro hd
+    let Q : ℕ+ := ⟨⌈θ⌉₊+1,Nat.succ_pos _⟩
+    have hQ : θ≤((Q:ℕ):ℝ) := (Nat.le_ceil θ).trans (Nat.cast_le.mpr (Nat.le_succ _))
+    intro B
+    filter_upwards [eventually_dilated_comb_floor d hd Q B] with N hN
+    intro S hS c
+    have hwidth : ⌊θ*(N:ℝ)⌋₊≤(Q:ℕ)*N := by
+      apply (Nat.cast_le (α := ℝ)).mp
+      rw [Nat.cast_mul]
+      exact (Nat.floor_le (mul_nonneg hθ.le (Nat.cast_nonneg _))).trans
+        (mul_le_mul_of_nonneg_right hQ (Nat.cast_nonneg _))
+    exact hN S (hS.trans (Ioc_subset_Ioc le_rfl (Nat.add_le_add_left hwidth _))) c
+
 private theorem mean_dyadic_diagonal :
     Tendsto (fun N : ℕ => (∑ n ∈ Ioc N (N+N), counterterm n)/(N:ℝ)-Real.log N) atTop
       (𝓝 (2*Real.log 2-1-Real.log (2*Real.pi))) := by
@@ -176,6 +221,7 @@ theorem flat_dilated_comb_finite_part (d : ℕ+) :
   field_simp
   ring
 
+#print axioms divergent_comb_floor_at_any_aperture_iff
 #print axioms flat_dilated_comb_finite_part
 #print axioms flat_dyadic_comb_limit
 #print axioms full_comb_dilation

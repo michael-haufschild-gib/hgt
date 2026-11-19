@@ -266,7 +266,7 @@ def capFreePrimeDensityReading (U n : ℕ) :=
   splineCountReading n (continuousFirstPrimeQuotients (max 4 (capFreeFirstPrimeCut n):ℕ) U)
 
 private theorem density_at_conductor_horizons :
-    ∃ C : ℝ, 0≤C ∧ ∀ {n : ℕ}, 0<n → ∀ {k : ℕ}, k≤splineHorizon n →
+    ∃ C : ℝ, 0≤C ∧ ∀ {n : ℕ}, 0<n → ∀ {k : ℕ}, k≤ splineHorizon n →
       |continuousFirstPrimeQuotients (max 4 (capFreeFirstPrimeCut n):ℕ) ⌊(n:ℝ)^(17/9:ℝ)⌋₊ k| ≤
         C*(n:ℝ)^(2/9:ℝ) := by
   obtain ⟨A,hA,ha⟩ := continuous_first_prime_quotient_bound

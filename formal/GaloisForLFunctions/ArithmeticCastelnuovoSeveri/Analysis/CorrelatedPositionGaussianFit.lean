@@ -113,12 +113,13 @@ theorem joint_loss (t w s v m l h k j : ℝ) :
   dsimp only
   rw [he]
   refine ⟨ENNReal.add_ne_top.mpr ⟨hfin,ENNReal.ofReal_ne_top⟩,?_⟩
-  rw [ENNReal.toReal_add hfin ENNReal.ofReal_ne_top,ENNReal.toReal_ofReal (integral_nonneg hnon)]
+  have havg : 0 ≤ ∫ x, f x ∂μ := integral_nonneg hnon
+  rw [ENNReal.toReal_add hfin ENNReal.ofReal_ne_top,ENNReal.toReal_ofReal havg]
   have hi := continuous_int t w (f := fun x => (offset s v h k (mid t w) x)^2)
     (by unfold offset; fun_prop)
   dsimp only [f,fibreScore]
   rw [integral_add (integrable_const _) (hi.const_mul _),integral_const,integral_const_mul]
-  simp only [measureReal_univ,one_smul,offset,affine_square,neg_sq]
+  simp only [probReal_univ,one_smul,offset,affine_square,neg_sq]
   unfold effectiveVariance
   ring
 

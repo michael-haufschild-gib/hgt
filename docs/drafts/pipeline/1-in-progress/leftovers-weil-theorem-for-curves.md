@@ -46,9 +46,9 @@ Modules in `CurvesOverFiniteFields/`, all checked, wired into `CurvesOverFiniteF
 | `EulerCharacteristic` | χ = dim(M⊓U) − dim V/(M⊔U) grows by dim N/M, finiteness both ways (`euler_step`, `euler_step_down`) |
 | `Divisors` | divisors on finite and infinite places, `Divisor.deg`, L(D) = I(D) ⊓ J(D), H¹(D) = K/(I(D) ⊔ J(D)), χ = ℓ − h¹; one-place steps (`chi_raiseFin`, `chi_raiseInf`); if L(0), H¹(0) are finite then every D has finite L, H¹ and χ(D) = deg D + χ(0) (`chi_eq_deg_add_chi_zero`) |
 | `Genus` | exact constant field ⇒ L(0) = F, ℓ(0) = 1; K/(A + O∞) finite-dimensional; genus g = h¹(0); Riemann's theorem ℓ(D) − h¹(D) = deg D + 1 − g (`riemann_roch_chi`), ℓ(D) ≥ deg D + 1 − g (`riemann_inequality`) |
+| `Duality` | Weil differentials Ω(D) = (I(D) + J(D))^⊥, dim Ω(D) = h¹(D); h¹(D) = 0 in high degree; nonzero differentials are K-proportional; canonical divisor as the largest level; principal divisors `pdiv`; Riemann–Roch ℓ(D) − ℓ(W − D) = deg D + 1 − g, deg W = 2g − 2, ℓ(W) = g (`riemann_roch`) |
 
-Next (duality): Weil differentials Ω(D) = annihilator of I(D) + J(D) in Hom_F(K, F), dim Ω(D) = h¹(D);
-h¹(D) = 0 once deg D is large (multiplication by x ∈ L(D − nE₀) with A + J(nE₀) = K);
-dim_K Ω = 1 by the dimension count against Riemann's inequality; canonical divisor W as the
-maximum of {D : ω ∈ Ω(D)} (one-place raise via the simple quotient I(E+P)/I(E)); principal
-divisors, x·I(E) = I(E + (x)); Riemann–Roch h¹(D) = ℓ(W − D), deg W = 2g − 2. Then steps 5–9.
+Next (step 5, zeta function): L(D + (x)) = x·L(D), deg (x) = 0; over a finite field finitely many
+places of each degree and effective divisors of each degree; finite class group of degree 0;
+A_n = Σ_classes (q^ℓ − 1)/(q − 1) and A_n = h(q^{n+1−g} − 1)/(q − 1) for n > 2g − 2; rationality.
+Then constant field extensions (step 6) for F. K. Schmidt and N_1(K_r) = N_r(K), steps 7–9.

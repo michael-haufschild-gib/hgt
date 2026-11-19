@@ -39,6 +39,12 @@ There is an explicit signed profile inside the quotient sum. Keep the ordinary p
 \]
 Only the positive unit and negative primes appear among the rough cofactors through \(Z\). At the log-square wall, \(Z=y^2\) gives positive coefficient \(1-\log 2\). In the polynomial range \(y^2\le X\le y^3\), choosing \(Z=\lfloor X/y\rfloor\) captures the full surviving Mangoldt sum. Its coefficient in the logarithmic Möbius prefix has the opposite sign. [Uniform signed profile and its two specializations](TheSmoothPopulationAtAnInteriorQuotientCut.lean)
 
+The top quotient band already detects the ordinary prime error. Write \(K=\lfloor X/(y+1)\rfloor\) and \(E(t)=\vartheta(t)-t\). For \(K<q\le X\) the only nonzero rough cofactor is the unit. Subtracting the original floor increment at every atom therefore gives, whenever \(K\ge y\),
+\[
+ U(X)=E(X)-E(K)+(X\bmod y)-(K\bmod y).
+\]
+At the log-square wall the residue difference is smaller than \(y\), and \(K\le X/2\) eventually. Telescoping over successive smaller arguments recovers every positive power exponent of \(E\) from \(U\). Proper prime powers can change the band by at most \(\psi(X)-\vartheta(X)=O(\sqrt X)\), including when the choices change at every observation. For any \(\alpha\ge0\), all bounds \(O_\varepsilon(X^{1/2+\alpha+\varepsilon})\) on this one band are equivalent to every zeta zero in the critical strip satisfying \(\Re\rho\le 1/2+\alpha\). Thus a separate half-plus estimate on the unit band already proves RH. A proof using the lower quotient indices can keep their signed compensation. [The exact floor boundary and its zero-free criterion](ThePrimeErrorInTheCenteredUnitWindow.lean)
+
 ## The signed boundary at a cutoff
 
 For a cutoff on the least remaining prime, write
@@ -190,7 +196,7 @@ Every ordered matching can gain at least \(X/49920\) disjoint pairs while retain
 ## Open questions and success criteria
 
 * Can one group of reversible exchanges bound the corrected prime-power reading on \(m\le\lfloor X/(\lfloor\sqrt X\rfloor+1)\rfloor\) by \(O_\varepsilon(X^{1/2+\varepsilon})\) at every log-square cutoff? The equivalent signed tail is \(L_y(\lfloor\sqrt X\rfloor)-L_y(X)\). Both interval endpoints, exceptional divisor classes, changes of reading and signed fixed vertices enter the estimate.
-* Which growing sets of quotient cells admit an exponent gain for ordinary primes and prime powers under the same exchange? The signs of the polynomial bias and the log-square center test the proposed transfer.
+* Which lower quotient indices compensate the prime error at the two endpoints of the unit-cofactor band? A separate half-plus bound on that band is equivalent to RH for both ordinary primes and prime powers. A transfer across the band must retain the same arithmetic reading at its shared boundary. [Unit-band equivalence](ThePrimeErrorInTheCenteredUnitWindow.lean)
 * Between the proved logarithmic saving and the obstruction to every power saving, what joint decay of the unpaid fraction and relative displacement can one involution attain?
 * Can the largest-pair rows receive every excess of a maximum ordered matching, including excesses in nonempty fibres? For each new cofactor, the demand is a sum of positive parts of the old rows' deficiencies. A comparison of their signed totals can underestimate that demand.
 * Which stopped rows must cancel against each other or against the prime boundary? The estimate must hold at **every** cutoff. For one global involution the unsigned power theorem forces cancellation between unpaid vertices.

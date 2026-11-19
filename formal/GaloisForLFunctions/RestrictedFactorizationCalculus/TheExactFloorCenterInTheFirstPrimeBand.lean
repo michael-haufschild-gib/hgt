@@ -46,7 +46,7 @@ theorem centered_first_prime_band_for_every_cofactor_selection {ε : ℝ} (ep : 
   have pos : 0<y := by omega
   have zp := pos.trans_le yz
   have yk : y ≤ K := (Nat.le_div_iff_mul_le zp).mpr room
-  have per (m : ℕ) (mp : 0<m) (mz : m ≤ Z) : |w m| ≤ η*((X:ℝ)/m)+y := by
+  have per (m : ℕ) (mp : 0< m) (mz : m ≤ Z) : |w m| ≤ η*((X:ℝ)/m)+y := by
     let t := X/m
     have kt : K ≤ t := (Nat.le_div_iff_mul_le mp).mpr
       ((Nat.mul_le_mul_left K mz).trans (Nat.div_mul_le_self X Z))
@@ -58,7 +58,7 @@ theorem centered_first_prime_band_for_every_cofactor_selection {ε : ℝ} (ep : 
     simp only [ArithmeticFunction.sub_apply,sum_sub_distrib,exact_floor_weight_in_an_interval y kt]
     have tri := abs_sub_le (∑ q ∈ Ioc K t,a q) ((t:ℝ)-K) (quotientFloorCenter y t-quotientFloorCenter y K)
     exact tri.trans (add_le_add (err.trans (mul_le_mul_of_nonneg_left tp hp.le)) price)
-  have charged (m : ℕ) (mp : 0<m) (mz : m ≤ Z) : |v m*w m| ≤ η*((X:ℝ)/m)+y := by
+  have charged (m : ℕ) (mp : 0< m) (mz : m ≤ Z) : |v m*w m| ≤ η*((X:ℝ)/m)+y := by
     rw [abs_mul]
     exact (mul_le_mul_of_nonneg_right (cap m) (abs_nonneg _)).trans ((one_mul _).le.trans (per m mp mz))
   have one : |v 1*w 1| ≤ η*X+y := by simpa only [Nat.cast_one,div_one] using charged 1 (by decide) zp
@@ -69,6 +69,7 @@ theorem centered_first_prime_band_for_every_cofactor_selection {ε : ℝ} (ep : 
     rw [mul_sum]
     exact sum_congr rfl (fun _ _ => by ring)
   rw [factor] at tail
+  change |∑ m ∈ Icc 1 Z,RoughReading.row y m*(v m*w m)| ≤ _
   rw [rough_row_through_the_first_prime_band zp zz (fun m => v m*w m)]
   have z := (div_le_iff₀ (Nat.cast_pos.mpr zp)).mp (count Z yz)
   have price := (mul_le_mul_of_nonneg_right z (Nat.cast_nonneg (α := ℝ) y)).trans_eq

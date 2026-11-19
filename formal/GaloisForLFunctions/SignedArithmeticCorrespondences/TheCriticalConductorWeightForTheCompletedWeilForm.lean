@@ -54,7 +54,7 @@ theorem critical_quotient_price_summable {c : ℝ} (hc : 0<c) :
   have hex : Real.exp 1≤(k:ℝ) := (Nat.le_ceil _).trans (Nat.cast_le.mpr (by dsimp [k,K]; omega))
   have hl : 1≤Real.log (k:ℝ) := (Real.le_log_iff_exp_le hkR).mpr hex
   let e := Real.exp (-c*Real.sqrt (Real.log k))
-  have he : e≤1 := Real.exp_le_one_iff.mpr (mul_nonpos_of_nonpos_of_nonneg hc.le.neg (Real.sqrt_nonneg _))
+  have he : e≤1 := Real.exp_le_one_iff.mpr (mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr hc.le) (Real.sqrt_nonneg _))
   have he₂ : e^2≤C/(Real.log k)^2 :=
     (show e^2≤e by rw [sq]; exact mul_le_of_le_one_right (Real.exp_pos _).le he).trans
       (_root_.RHTower.PrimeCells.exp_neg_mul_sqrt_le hc hl 2)
@@ -155,8 +155,8 @@ private theorem divergent_subcritical_price {c s : ℝ} (hc : 0<c) (hs : s<3/2) 
            _ ≤ _ := mul_le_mul_of_nonneg_left he hkR.le
     rw [powerConductorWeight,max_eq_left h₁]
     calc 1/(k:ℝ) = ((k:ℝ)^(-(1/2:ℝ)))^2 := by
-           rw [← Real.rpow_two,← Real.rpow_mul hkR.le]
-           norm_num
+           rw [← Real.rpow_two,← Real.rpow_mul hkR.le,show (-(1/2:ℝ))*2 = -1 by norm_num,
+             Real.rpow_neg_one,one_div]
          _ ≤ _ := pow_le_pow_left₀ (Real.rpow_nonneg hkR.le _) hbase 2
   have htail := (summable_nat_add_iff K).mpr h
   have hH : Summable (fun n : ℕ => 1/(n:ℝ)) := (summable_nat_add_iff K).mp
@@ -171,7 +171,7 @@ theorem critical_joint_power_iff {c : ℝ} (hc : 0<c) (s : ℝ) :
       (∑ k ∈ Icc 1 N, ((k:ℝ)*Real.exp (-c*Real.sqrt (Real.log k)))* |twoSidedCoefficient N a b k|) +
         (∫ x in (0:ℝ)..1, |mixedJetSection N a b x|)/2 ≤
       C*conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N a i)*
-        conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N b i)) ↔ 3/2≤s := by
+        conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N b i)) ↔ 3/2 ≤ s := by
   constructor
   · rintro ⟨C,hC,h⟩
     by_contra! hs

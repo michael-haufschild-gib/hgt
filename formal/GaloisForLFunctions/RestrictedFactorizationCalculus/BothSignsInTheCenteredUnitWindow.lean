@@ -25,7 +25,9 @@ private theorem prime_excursions (σ : ℝ) (dir : σ=1 ∨ σ= -1) :
       change _ < (-1:ℝ)*_
       linarith only [large])
 
-private theorem critical_record (σ : ℝ) (dir : σ=1 ∨ σ= -1) (B : ℝ) (N : ℕ) :
+/-- Arbitrarily late record highs of either oriented normalized prime error
+retain the Littlewood lower bound. Each controls every earlier integer. -/
+theorem oriented_prime_error_records (σ : ℝ) (dir : σ=1 ∨ σ= -1) (B : ℝ) (N : ℕ) :
     ∃ m : ℕ,N ≤ m ∧ B < σ*ordinaryThetaError m/Real.sqrt m ∧
       c/2*L m < σ*ordinaryThetaError m/Real.sqrt m ∧
       ∀ k : ℕ,k ≤ m → σ*ordinaryThetaError k/Real.sqrt k ≤ σ*ordinaryThetaError m/Real.sqrt m := by
@@ -62,7 +64,7 @@ private theorem critical_record (σ : ℝ) (dir : σ=1 ∨ σ= -1) (B : ℝ) (N 
   obtain ⟨m,hm,record⟩ := Finset.exists_max_image (Icc 0 n) H ⟨n,mem_Icc.mpr ⟨Nat.zero_le n,le_rfl⟩⟩
   have best := record n (mem_Icc.mpr ⟨Nat.zero_le _,le_rfl⟩)
   have above : A<H m := (le_max_left A B).trans_lt ((le_max_left (max A B) 2).trans_lt (height.trans (leader.trans_le best)))
-  have mlarge : M<m := by
+  have mlarge : M< m := by
     by_contra! small
     have cap := single_le_sum (s := Icc 0 M) (f := fun k => |H k|) (fun _ _ => abs_nonneg _) (mem_Icc.mpr ⟨Nat.zero_le m,small⟩)
     exact (not_le_of_gt above) ((le_abs_self _).trans cap)
@@ -90,7 +92,7 @@ theorem simultaneous_littlewood_excursions_of_the_centered_unit_window :
   obtain ⟨D,d0,paid⟩ := uniform_change_from_the_two_prime_errors
   obtain ⟨N,late⟩ := eventually_atTop.mp paid
   refine ⟨c/16,div_pos cpos (by norm_num),fun σ dir => frequently_atTop.mpr (fun T => ?_)⟩
-  obtain ⟨m,ml,big,scale,record⟩ := critical_record σ dir (8*D+1) (max (max N T) 1)
+  obtain ⟨m,ml,big,scale,record⟩ := oriented_prime_error_records σ dir (8*D+1) (max (max N T) 1)
   refine ⟨m,((le_max_right N T).trans (le_max_left _ 1)).trans ml,?_⟩
   obtain ⟨half,changeWeight⟩ := late m (((le_max_left N T).trans (le_max_left _ 1)).trans ml)
   let K := m/(logSquareCutoff m+1)

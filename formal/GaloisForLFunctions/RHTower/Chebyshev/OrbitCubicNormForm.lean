@@ -102,17 +102,17 @@ theorem norm_barycentric (a b c : ℤ) :
   push_cast
   ring
 
-private theorem excess (a b c : ℚ) :
+private theorem excess {R : Type*} [CommRing R] (a b c : R) :
     triangleNorm a b c - (2*(a+b+c)+3) =
       2*(a*b+b*c+c*a) + (a*(1+c))*(b*(1+a))+
         (b*(1+a))*(c*(1+b))+(c*(1+b))*(a*(1+c)) := by unfold triangleNorm arm; ring
 
-/-- The three vertices give the smallest nonsquare norm, 2m−1. All other
-points of the array have strictly greater norm. -/
-theorem lower_triangle_norm (a b c : ℚ≥0) :
-    let x : ℚ := a
-    let y : ℚ := b
-    let z : ℚ := c
+/-- On each triangle of fixed coordinate sum, the minimum occurs exactly at its vertices. -/
+theorem lower_triangle_norm {R : Type*} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
+    (a b c : {t : R // 0 ≤ t}) :
+    let x : R := a
+    let y : R := b
+    let z : R := c
     2*(x+y+z)+3 ≤ triangleNorm x y z ∧
       (triangleNorm x y z = 2*(x+y+z)+3 ↔ x*y+y*z+z*x = 0) := by
   intro x y z
@@ -133,15 +133,15 @@ theorem lower_triangle_norm (a b c : ℚ≥0) :
   rw [h,he]
   linear_combination (1+z)*(1+x)*xy + (1+x)*(1+y)*yz + (1+y)*(1+z)*zx
 
-private theorem spread (A B C : ℚ) :
+private theorem spread {R : Type*} [Field R] [LinearOrder R] [IsStrictOrderedRing R] (A B C : R) :
     (A+B+C)^2 - 3*(A*B+B*C+C*A) = ((A-B)^2+(B-C)^2+(C-A)^2)/2 := by ring
 
-/-- The discriminant divided by 27 is the sharp continuous norm ceiling.
-An integral centroid exists precisely when m is two modulo three. -/
-theorem upper_triangle_norm (a b c : ℚ≥0) :
-    let x : ℚ := a
-    let y : ℚ := b
-    let z : ℚ := c
+/-- The discriminant divided by 27 is the sharp norm ceiling. Equality characterizes the centroid. -/
+theorem upper_triangle_norm {R : Type*} [Field R] [LinearOrder R] [IsStrictOrderedRing R]
+    (a b c : {t : R // 0 ≤ t}) :
+    let x : R := a
+    let y : R := b
+    let z : R := c
     let s := x+y+z
     27*triangleNorm x y z ≤ (s^2+3*s+9)^2 ∧
       (27*triangleNorm x y z = (s^2+3*s+9)^2 ↔ x=y ∧ y=z) := by

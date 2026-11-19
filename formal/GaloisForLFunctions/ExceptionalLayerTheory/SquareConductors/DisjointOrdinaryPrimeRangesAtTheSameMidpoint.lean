@@ -26,7 +26,7 @@ theorem two_cut_prime_price_error :
   have hi : Ioc 0 Q=Icc 1 Q := by ext p; simp only [mem_Ioc,mem_Icc]; omega
   have hpsi : Chebyshev.psi Q ≤ 7*Q := by
     simpa only [Chebyshev.psi,Nat.floor_natCast,hi] using _root_.RHTower.sum_vonMangoldt_Icc_le_seven Q
-  let K := 2*|C|*Real.sqrt n
+  let K := 2 * |C| * Real.sqrt n
   have hK : 0 ≤ K := by dsimp only [K]; positivity
   have hrow (e : ℕ) : Chebyshev.psi (4*n/e:ℕ)-Chebyshev.theta (4*n/e:ℕ) ≤ K*(1/Real.sqrt e) := by
     have hc : ((4*n/e:ℕ):ℝ) ≤ ((4*n:ℕ):ℝ)/e := Nat.cast_div_le
@@ -39,8 +39,8 @@ theorem two_cut_prime_price_error :
   apply (remaining_prime_price_divided_error hn hQ hV hVn).trans
   rw [←mul_sum]
   apply mul_le_mul_of_nonneg_left _ hM
-  calc _ ≤ ∑ e ∈ Icc 1 V, (7*(Q:ℝ)+Real.log n)+K*(1/Real.sqrt e) := by
-             exact sum_le_sum fun e _ => by linarith only [hpsi,hrow e]
+  calc _ ≤ ∑ e ∈ Icc 1 V, ((7*(Q:ℝ)+Real.log n)+K*(1/Real.sqrt e)) := by
+             exact sum_le_sum (s:=Icc 1 V) fun e _ => by linarith only [hpsi,hrow e]
        _ = (V:ℝ)*(7*(Q:ℝ)+Real.log n)+K*∑ e ∈ Icc 1 V,1/Real.sqrt e := by
              rw [sum_add_distrib,←mul_sum,sum_const,Nat.card_Icc,Nat.add_one_sub_one,nsmul_eq_mul]
        _ ≤ _ := by

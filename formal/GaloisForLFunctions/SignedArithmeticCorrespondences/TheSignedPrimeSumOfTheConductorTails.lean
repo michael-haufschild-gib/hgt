@@ -115,14 +115,13 @@ theorem interleaved_signed_increment_energy (N : ℕ) (a b : ℕ → ℤ) (r : �
          exact add_le_add hp ((div_le_div_of_nonneg_right hi (by norm_num)).trans hj)
        _ = _ := by ring
 
-/-- Any exponent above one half controls the signed finite part on all
-interleaved signed conductors. The bound uses the centered prime
-increments and is independent of the cutoff. -/
-theorem signed_finite_part_above_half {s : ℝ} (hs : 1/2<s) :
-    ∃ C : ℝ, 0≤C ∧ ∀ (N : ℕ) (a b : ℕ → ℤ), |interleavedFinitePart N a b| ≤
-      C*conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N a i)*
-        conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N b i) := by
-  let r := powerConductorWeight s
+/-- Above one half both the reciprocal power weight and the centered
+prime increments divided by that weight have finite square mass. -/
+theorem centered_prime_power_prices {s : ℝ} (hs : 1/2 < s) :
+    let r := powerConductorWeight s
+    (∀ k, 0<r k) ∧ Monotone r ∧ Summable (fun k => (1/r k)^2) ∧
+      Summable (fun k => (|Λ k-1| / r k)^2) := by
+  intro r
   have hpos (k : ℕ) : 0 < ((max k 1:ℕ):ℝ) :=
     Nat.cast_pos.mpr (Nat.zero_lt_one.trans_le (le_max_right _ _))
   have hr (k : ℕ) : 0<r k := Real.rpow_pos_of_pos (hpos k) s
@@ -151,6 +150,17 @@ theorem signed_finite_part_above_half {s : ℝ} (hs : 1/2<s) :
     have ht₀ : 0≤t k := Real.rpow_nonneg (Nat.cast_nonneg _) _
     calc _ ≤ (2*((Λ k)^2+1))*t k := mul_le_mul_of_nonneg_right (by nlinarith only [sq_nonneg (Λ k+1)]) ht₀
          _ = _ := by ring
+  exact ⟨hr,hm,hA,hB⟩
+
+/-- Any exponent above one half controls the signed finite part on all
+interleaved signed conductors. The bound uses the centered prime
+increments and is independent of the cutoff. -/
+theorem signed_finite_part_above_half {s : ℝ} (hs : 1/2 < s) :
+    ∃ C : ℝ, 0≤C ∧ ∀ (N : ℕ) (a b : ℕ → ℤ), |interleavedFinitePart N a b| ≤
+      C*conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N a i)*
+        conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N b i) := by
+  let r := powerConductorWeight s
+  obtain ⟨hr,hm,hA,hB⟩ := centered_prime_power_prices hs
   let A := Real.sqrt (∑' k, (1/r k)^2)
   let B := Real.sqrt (∑' k, (|Λ k-1| / r k)^2)
   refine ⟨2*A*B+A^2,add_nonneg (mul_nonneg (mul_nonneg (by norm_num) (Real.sqrt_nonneg _))
@@ -242,7 +252,7 @@ atom against multiples of six detects divergence already at one half. -/
 theorem signed_finite_part_power_iff (s : ℝ) :
     (∃ C : ℝ, 0≤C ∧ ∀ (N : ℕ) (a b : ℕ → ℤ), |interleavedFinitePart N a b| ≤
       C*conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N a i)*
-        conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N b i)) ↔ 1/2<s := by
+        conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N b i)) ↔ 1/2 < s := by
   refine ⟨?_,signed_finite_part_above_half⟩
   rintro ⟨C,hC,h⟩
   let r := powerConductorWeight s

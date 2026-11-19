@@ -182,13 +182,15 @@ theorem centered_unit_window_power_iff_prime_error {s : ℝ} (sp : 0<s) :
     have h : 2 ≤ max 1 (logSquareCutoff X)+1 := by have := le_max_left 1 (logSquareCutoff X); omega
     exact (Nat.mul_le_mul_right (K X) h).trans (by simpa [K,Nat.mul_comm] using Nat.div_mul_le_self X (max 1 (logSquareCutoff X)+1))
   refine Iff.trans (comparable_power (g := fun X => ordinaryThetaError X-ordinaryThetaError (K X)) sp
-    (by simp [centeredUnitWindow]) (by simp [K]) (B := 1) ?_) (power_of_a_contracting_boundary_difference sp K half _ (by simp [Chebyshev.theta]))
+    (by simp [centeredUnitWindow]) (by simp [K]) (B := 1) ?_) (power_of_a_contracting_boundary_difference sp K half ordinaryThetaError (by simp [ordinaryThetaError,Chebyshev.theta]))
   filter_upwards [room_for_the_unit_window,log_wall_subpower sp] with X room cap
   let y := logSquareCutoff X
   have same : K X=X/(y+1) := by simp only [K,y,max_eq_right room.1]
   rw [ordinary_unit_window_reads_the_prime_error room.2,←same]
   have hX : ((X%y:ℕ):ℝ)<y := Nat.cast_lt.mpr (Nat.mod_lt _ room.1)
   have hK : ((K X%y:ℕ):ℝ)<y := Nat.cast_lt.mpr (Nat.mod_lt _ room.1)
+  change (y:ℝ)+1 ≤ (X:ℝ)^s at cap
+  change |(ordinaryThetaError X-ordinaryThetaError (K X))+((X%y:ℕ):ℝ)-((K X%y:ℕ):ℝ)-(ordinaryThetaError X-ordinaryThetaError (K X))| ≤ 1*(X:ℝ)^s
   apply abs_le.mpr
   constructor <;> linarith only [hX,hK,Nat.cast_nonneg (α := ℝ) (X%y),Nat.cast_nonneg (α := ℝ) (K X%y),cap]
 
@@ -303,7 +305,7 @@ theorem zero_width_of_the_centered_unit_window {α : ℝ} (nonneg : 0 ≤ α)
     rw [show (1:ℝ)/2+(s-1/2)=s by ring] at pp
     have gap : |(⌊x⌋₊:ℝ)-x| ≤ 1 := by rw [abs_of_nonpos (sub_nonpos.mpr floor)]; linarith only [Nat.lt_floor_add_one x]
     have triangle := (abs_sub_le (Chebyshev.psi x) (Chebyshev.theta x) x).trans
-      (add_le_add_left (abs_sub_le (Chebyshev.theta x) (⌊x⌋₊:ℝ) x) _)
+      (add_le_add le_rfl (abs_sub_le (Chebyshev.theta x) (⌊x⌋₊:ℝ) x))
     change _ ≤ (C+1+2/(s-1/2))*x^s
     linarith only [triangle,pp,pe,gap,Real.one_le_rpow one sp.le]
   · intro zeros ε ep

@@ -57,3 +57,4 @@ integer intervals. Fixed vertices, crossing edges and changes of quotient
 reading carry the signed boundary through successive cuts.
 -/
 import GaloisForLFunctions.RestrictedFactorizationCalculus.TheSmoothPopulationAtAnInteriorQuotientCut
+import GaloisForLFunctions.RestrictedFactorizationCalculus.ThePrimeErrorInTheCenteredUnitWindow

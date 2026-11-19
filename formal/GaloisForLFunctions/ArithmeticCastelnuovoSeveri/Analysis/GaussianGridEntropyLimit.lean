@@ -47,9 +47,11 @@ private theorem scaled_atom (n j : ℕ) (x : ℝ) :
       gaussianPDFReal (center n j) (Real.toNNReal ((width n)^2/12)) x := by
   have hw : 0 < width n := by unfold width; positivity
   have he := gaussianPDFReal_inv_mul (μ := (j:ℝ)+1/2) (v := (1/12:ℝ≥0)) hw.ne' x
-  have hv : (⟨(width n)^2,sq_nonneg _⟩ : ℝ≥0)*(1/12) = Real.toNNReal ((width n)^2/12) := by
-    ext
-    simp [Real.coe_toNNReal _ (by positivity : 0 ≤ width n^2/12)]
+  have hv : NNReal.mk ((width n)^2) (sq_nonneg _)*(1/12) = Real.toNNReal ((width n)^2/12) := by
+    apply Subtype.ext
+    change (width n)^2*(1/12:ℝ) = (Real.toNNReal ((width n)^2/12) : ℝ)
+    rw [Real.coe_toNNReal _ (by positivity)]
+    ring
   have hinv : (width n)⁻¹=(n:ℝ)+1 := by simp [width]
   simpa only [atom,center,hinv,abs_of_pos hw,hv,mul_comm (width n) ((j:ℝ)+1/2)] using he
 
@@ -67,9 +69,10 @@ theorem mixture_strip (n : ℕ) : mixture n =
     induction N with
     | zero => simp
     | succ N ih =>
-      simp only [sum_range_succ]
-      rw [show (fun x => (∑ j ∈ range N, g j x)+g N x) = (fun x => ∑ j ∈ range N, g j x)+g N from rfl,
-        withDensity_add_left (hg N),ih,component,gaussianReal_of_var_ne_zero _ hv]
+      have hs : (fun x => ∑ j ∈ range (N+1), g j x) = (fun x => ∑ j ∈ range N, g j x)+g N :=
+        funext fun x => Finset.sum_range_succ (fun j => g j x) N
+      have hcomp : volume.withDensity (g N) = component n N := (gaussianReal_of_var_ne_zero _ hv).symm
+      rw [hs,withDensity_add_left (hg N),ih,Finset.sum_range_succ (component n) N,hcomp]
   have hfun : (fun x => ENNReal.ofReal (strip (n+1) (((n:ℝ)+1)*x))) =
       ENNReal.ofReal (width n) • (fun x => ∑ j ∈ range (n+1), g j x) := by
     funext x
@@ -121,6 +124,7 @@ private theorem strict_interval {a b : ℝ} (hab : a < b) {f g : ℝ → ℝ}
     (∫ x in a..b, f x) < ∫ x in a..b, g x := by
   have hp := intervalIntegral.intervalIntegral_pos_of_pos ((hg.sub hf).intervalIntegrable _ _)
     (fun x => sub_pos.mpr (h x)) hab
+  change 0 < (∫ x in a..b, g x - f x) at hp
   rwa [intervalIntegral.integral_sub (hg.intervalIntegrable _ _) (hf.intervalIntegrable _ _),sub_pos] at hp
 
 /-- Both sides of a joined strip benefit strictly from the overlapping Gaussian tails. -/
@@ -177,11 +181,13 @@ theorem forward_entropy_limit : ∃ L : ℝ, aliasCost ≤ L ∧
     have hQ : 0<(N:ℝ) := by exact_mod_cast hN
     have he := strip_strict_subadditive N N hN hN
     have hL := subadd.lim_le_div lower (Nat.add_pos_left hN N).ne'
-    rw [(grid_cost n).2]
-    change subadd.lim < stripCost N/(N:ℝ)
+    have hden : (N:ℝ) = (n:ℝ)+1 := by simp only [N,Nat.cast_add,Nat.cast_one]
+    rw [(grid_cost n).2,← hden]
     apply hL.trans_lt
     rw [Nat.cast_add,div_lt_div_iff₀ (add_pos hQ hQ) hQ]
-    linear_combination (N:ℝ)*he
+    calc
+      _ < (stripCost N+stripCost N)*(N:ℝ) := mul_lt_mul_of_pos_right he hQ
+      _ = _ := by ring
 
 #print axioms strip_add
 #print axioms mixture_strip

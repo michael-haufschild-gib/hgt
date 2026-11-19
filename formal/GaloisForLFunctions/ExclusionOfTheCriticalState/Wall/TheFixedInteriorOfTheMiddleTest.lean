@@ -25,7 +25,7 @@ structure MiddleBandScale (r T : ℝ) (k L : ℕ) : Prop where
   count : (L:ℝ)≤Real.exp ((1+2*r)*T)
   poly : 1+2*T≤Real.exp (2*r*T)
 
-theorem eventually_middleBandScale {r : ℝ} (hr : 0<r) (hr₁ : r≤1/64) :
+theorem eventually_middleBandScale {r : ℝ} (hr : 0<r) :
     ∀ᶠ T : ℝ in atTop, ∀ {η : ℝ} {k : ℕ}, 0<η → η≤r → T/(1+η)≤Real.log k →
       MiddleBandScale r T k ⌈Real.exp ((1+η)*T)⌉₊ := by
   have hrt := (tendsto_id.const_mul_atTop hr : Tendsto (fun T : ℝ => r*T) atTop atTop)
@@ -53,24 +53,28 @@ theorem eventually_middleBandScale {r : ℝ} (hr : 0<r) (hr₁ : r≤1/64) :
   rw [show 2*r*T=r*T+r*T by ring,Real.exp_add]
   calc 1+2*T ≤ (2+2/r)*Real.exp (r*T) := by
           have h := mul_le_mul_of_nonneg_left ht (by norm_num : (0:ℝ)≤2)
+          rw [← mul_div_assoc] at h
           rw [add_mul,div_mul_eq_mul_div]
           linarith only [h,h₂]
        _ ≤ _ := mul_le_mul_of_nonneg_right hcut (Real.exp_pos _).le
+
+private theorem MiddleBandScale.start_pos {k L : ℕ} {r T : ℝ}
+    (h : MiddleBandScale r T k L) (hsmall : r≤1/64) : 0<(k:ℝ) := by
+  by_contra! hk
+  have hk' : k=0 := by exact_mod_cast le_antisymm hk (Nat.cast_nonneg k)
+  have hl := h.lower
+  rw [hk',Nat.cast_zero,Real.log_zero] at hl
+  linarith only [hl,mul_le_mul_of_nonneg_right hsmall h.pos.le,h.pos]
 
 /-- Every physical abscissa is active throughout the interior. -/
 theorem ordinaryIndicesAt_eq_full {k L : ℕ} {r T v : ℝ} (hr : 0<r) (hsmall : r≤1/64)
     (h : MiddleBandScale r T k L) (hv : v∈middleBandInterior r T) :
     ordinaryIndicesAt k L (Ioc (T/6) (6*T)) v=Finset.Ioc k L := by
-  apply Finset.filter_true_of_mem
+  simp only [ordinaryIndicesAt,Finset.filter_eq_self]
   intro n hn
   obtain ⟨hkn,hnL⟩ := Finset.mem_Ioc.mp hn
   have hrT := mul_le_mul_of_nonneg_right hsmall h.pos.le
-  have hkpos : 0<(k:ℝ) := by
-    by_contra! hk
-    have hk' : k=0 := by exact_mod_cast le_antisymm hk (Nat.cast_nonneg k)
-    have hl := h.lower
-    rw [hk',Nat.cast_zero,Real.log_zero] at hl
-    linarith only [hl,hrT,h.pos]
+  have hkpos := h.start_pos hsmall
   have hnpos : 0<(n:ℝ) := Nat.cast_pos.mpr (Nat.zero_lt_of_lt hkn)
   have hlo := h.lower.trans (Real.log_le_log hkpos (Nat.cast_le.mpr hkn.le))
   have hup := (Real.log_le_log hnpos (Nat.cast_le.mpr hnL)).trans h.upper
@@ -112,12 +116,7 @@ theorem sqrt_lt_middleBand_start {k L H : ℕ} {r T d : ℝ} (h : MiddleBandScal
   have hcmp : Real.exp ((1+2*r)*T)≤Real.exp (Real.log k)*Real.exp (d*T) := by
     rw [← Real.exp_add,Real.exp_le_exp]
     linarith only [h.lower,mul_le_mul_of_nonneg_right hd h.pos.le]
-  have hkpos : 0<(k:ℝ) := by
-    by_contra! hk
-    have hk' : k=0 := by exact_mod_cast le_antisymm hk (Nat.cast_nonneg k)
-    have hl := h.lower
-    rw [hk',Nat.cast_zero,Real.log_zero] at hl
-    linarith only [hl,mul_le_mul_of_nonneg_right hsmall h.pos.le,h.pos]
+  have hkpos := h.start_pos hsmall
   rw [Real.exp_log hkpos] at hcmp
   exact (lt_of_mul_lt_mul_right (hroot.trans_le hcmp) (Real.exp_pos _).le)
 
@@ -127,7 +126,9 @@ private theorem two_tail_cost {f : ℝ → ℝ} {D h T : ℝ} {A : Set ℝ} (hD 
     |∫ v in A, f v| ≤ D*(Real.exp (2*(-T/3))/2+h) := by
   let p := (Iic (-T/3)).indicator (fun v : ℝ => D*Real.exp (2*v))
   let q := (Icc (-h) 0).indicator (fun _ : ℝ => D)
-  have hp : Integrable p := ((integrableOn_exp_mul_Iic (by norm_num : 0<(2:ℝ)) (-T/3)).const_mul D).integrable_indicator measurableSet_Iic
+  have hp' : IntegrableOn (fun v : ℝ => D*Real.exp (2*v)) (Iic (-T/3)) :=
+    (integrableOn_exp_mul_Iic (by norm_num : 0<(2:ℝ)) (-T/3)).const_mul D
+  have hp : Integrable p := hp'.integrable_indicator measurableSet_Iic
   have hq : Integrable q := (integrableOn_const (measure_Icc_lt_top.ne) :
     IntegrableOn (fun _ : ℝ => D) (Icc (-h) 0)).integrable_indicator measurableSet_Icc
   have hp₀ (v : ℝ) : 0≤p v := indicator_nonneg (fun _ _ => mul_nonneg hD (Real.exp_pos _).le) v
@@ -147,7 +148,7 @@ private theorem two_tail_cost {f : ℝ → ℝ} {D h T : ℝ} {A : Set ℝ} (hD 
     · rw [indicator_of_notMem hv,abs_zero]
       exact add_nonneg (hp₀ v) (hq₀ v)
   have hi := norm_integral_le_of_norm_le (hp.add hq) (Eventually.of_forall hmaj)
-  rw [Real.norm_eq_abs,integral_indicator hA,integral_add hp hq] at hi
+  rw [Real.norm_eq_abs,integral_indicator hA,Pi.add_apply,integral_add hp hq] at hi
   dsimp only [p,q] at hi
   rw [integral_indicator measurableSet_Iic,integral_const_mul,integral_exp_mul_Iic (by norm_num),
     integral_indicator measurableSet_Icc,setIntegral_const,smul_eq_mul,Real.volume_real_Icc_of_le (neg_nonpos.mpr hh.le)] at hi
@@ -160,9 +161,9 @@ theorem ordinaryDisplacementDensity_outside {Φ : ℝ → ℝ} {C r T m : ℝ} {
     (h : MiddleBandScale r T k L) {A : Set ℝ} (hA : MeasurableSet A)
     (hs : ∀ v ∈ A, v≤0 ∧ v∉middleBandInterior r T) :
     |∫ v in A, ordinaryDisplacementDensity Φ m T k L v| ≤
-      2*|m|*C*Real.exp (8*r*T) := by
+      2*|m| *C*Real.exp (8*r*T) := by
   let w := Real.exp ((-1/2+4*r)*T)
-  let D := |m|*C*((1+Real.log L)*L)*Real.exp (-T/2)
+  let D := |m| *C*((1+Real.log L)*L)*Real.exp (-T/2)
   have hlog := Real.log_natCast_nonneg L
   have hD : 0≤D := by dsimp only [D]; positivity
   have h₁ := two_tail_cost (T:=T) (h:=w) hD (Real.exp_pos _) hA (fun v hv => by
@@ -179,8 +180,8 @@ theorem ordinaryDisplacementDensity_outside {Φ : ℝ → ℝ} {C r T m : ℝ} {
   have hscale : Real.exp (2*r*T)*Real.exp ((1+2*r)*T)*Real.exp (-T/2)*w=Real.exp (8*r*T) := by
     dsimp only [w]; rw [← Real.exp_add,← Real.exp_add,← Real.exp_add]; congr 1; ring
   calc _ ≤ D*(2*w) := h₁.trans (mul_le_mul_of_nonneg_left (by linarith only [hleft,(Real.exp_pos (2*(-T/3)))]) hD)
-       _ = (2*|m|*C)*(((1+Real.log L)*L)*Real.exp (-T/2)*w) := by dsimp only [D]; ring
-       _ ≤ (2*|m|*C)*(Real.exp (2*r*T)*Real.exp ((1+2*r)*T)*Real.exp (-T/2)*w) :=
+       _ = (2*|m| *C)*(((1+Real.log L)*L)*Real.exp (-T/2)*w) := by dsimp only [D]; ring
+       _ ≤ (2*|m| *C)*(Real.exp (2*r*T)*Real.exp ((1+2*r)*T)*Real.exp (-T/2)*w) :=
          mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right hprod
            (Real.exp_pos _).le) (Real.exp_pos _).le) (by positivity)
        _ = _ := by rw [hscale]

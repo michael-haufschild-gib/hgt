@@ -69,8 +69,11 @@ private theorem band_integral_at_displacement {Φ : ℝ → ℝ} (hi : Integrabl
     let G := fun v => Φ v*(fractionalPrimeExcess (ordinaryTestDisplacementSupport k L T v) (Real.exp (T-v)) /
       Real.sqrt (Real.exp (T-v)))
     Integrable G ∧ (∫ t in Ioc (T/6) (6*T), ordinaryPrimeComplementBand Φ k L t*fractionalPrimeTest (T-t)) =
-      ∫ v, G v :=
-  ordinaryBand_displacement_integral hi k L T _ measurableSet_Ioc
+      ∫ v, G v := by
+    have hs (v : ℝ) : ordinaryIndicesAt k L (Ioc (T/6) (6*T)) v=ordinaryTestDisplacementSupport k L T v := by
+      ext n
+      simp only [ordinaryIndicesAt,ordinaryTestDisplacementSupport,Finset.mem_filter]
+    simpa only [hs] using ordinaryBand_displacement_integral hi k L T _ measurableSet_Ioc
 
 /-- An adverse displacement selects its own numerator, sign and entire interior interval. -/
 def HasOrientedQuotientWitness (Φ : ℝ → ℝ) (m T B : ℝ) (k L : ℕ) (v : ℝ) : Prop :=

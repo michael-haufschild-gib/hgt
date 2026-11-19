@@ -19,6 +19,9 @@ open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri HTGeometry
 def ordinaryIndicesAt (k L : ℕ) (A : Set ℝ) (v : ℝ) : Finset ℕ :=
   (Finset.Ioc k L).filter fun n => v+Real.log n ∈ A ∧ pastCriticalEdge n (v+Real.log n)
 
+theorem ordinaryIndicesAt_subset (k L : ℕ) (A : Set ℝ) (v : ℝ) :
+    ordinaryIndicesAt k L A v ⊆ Finset.Ioc k L := Finset.filter_subset ..
+
 /-- Dividing the physical edge by its exponential abscissa gives the relative width. -/
 theorem pastCriticalEdge_at_displacement {n : ℕ} (hn : 0<n) (v : ℝ) :
     let t := v+Real.log n
@@ -138,7 +141,7 @@ theorem fractionalPrimeExcess_abs_le_band {S : Finset ℕ} {k L : ℕ} (hS : S �
   calc _ ≤ ∑ _ ∈ S, (1+Real.log L) := Finset.sum_le_sum fun n hn => by
             obtain ⟨hk,hnL⟩ := Finset.mem_Ioc.mp (hS hn)
             have hlog := Real.log_le_log (Nat.cast_pos.mpr (Nat.zero_lt_of_lt hk)) (Nat.cast_le.mpr hnL)
-            rw [abs_mul,abs_of_nonneg (Int.fract_nonneg _)]
+            rw [abs_mul,abs_of_nonneg (Int.fract_nonneg (y/(n:ℝ)))]
             apply (mul_le_of_le_one_right (abs_nonneg _) (Int.fract_lt_one _).le).trans
             unfold ordinaryPrimeExcessCoeff
             by_cases hp : n.Prime
@@ -160,7 +163,7 @@ theorem ordinaryDisplacementDensity_bound {Φ : ℝ → ℝ} {C : ℝ} (hC : 0�
       (|m| * C*((1+Real.log L)*L)*Real.exp (-T/2))*Real.exp (2*v) := by
   let S := ordinaryIndicesAt k L (Ioc (T/6) (6*T)) v
   have hrow := fractionalPrimeExcess_abs_le_band (k := k) (L := L)
-    (show S ⊆ Finset.Ioc k L from Finset.filter_subset ..) (Real.exp (T-v))
+    (show S ⊆ Finset.Ioc k L from ordinaryIndicesAt_subset k L _ v) (Real.exp (T-v))
   have hroot : (Real.sqrt (Real.exp (T-v)))⁻¹≤Real.exp (-T/2) := by
     rw [← Real.exp_half,← Real.exp_neg,Real.exp_le_exp]; linarith only [hv]
   change |m*(Φ v*(fractionalPrimeExcess S (Real.exp (T-v))/Real.sqrt (Real.exp (T-v))))| ≤ _
