@@ -114,12 +114,15 @@ theorem sharp_divisor_log_row (d : ℕ) (hd : 1 ≤ d) {a b : ℝ} (ha : 1 ≤ a
     exact fun t ht => congrArg (· * divisorCount t) (hdF (Set.Ioc_subset_Icc_self ht))
   change _=F b*divisorCount b-F a*divisorCount a-_ at hAbel
   rw [hderInt] at hAbel
-  have hmain := intervalIntegral.integral_mul_deriv_eq_deriv_mul
+  have hG' : ContinuousOn (fun t : ℝ => Real.log t+2*Real.eulerMascheroniConstant) (Set.Icc a b) :=
+    (Real.continuousOn_log.mono fun _ ht => (hp ht).ne').add continuousOn_const
+  have hmain := intervalIntegral.integral_mul_deriv_eq_deriv_mul (a:=a) (b:=b)
+    (u:=F) (v:=divisorPrimitive) (u':=fun t => t⁻¹)
+    (v':=fun t => Real.log t+2*Real.eulerMascheroniConstant)
     (fun t ht => hf t ((Set.uIcc_of_le hab) ▸ ht))
     (fun t ht => divisor_primitive_deriv (hp ((Set.uIcc_of_le hab) ▸ ht)))
     ((hcont.mono (Set.uIcc_of_le hab).subset).intervalIntegrable)
-    ((((Real.continuousOn_log.mono (fun _ ht => (hp ht).ne')).add continuousOn_const).mono
-      (Set.uIcc_of_le hab).subset).intervalIntegrable)
+    ((hG'.mono (Set.uIcc_of_le hab).subset).intervalIntegrable)
   have hI := intervalIntegral.norm_integral_le_of_norm_le_const
     (f:=fun t => t⁻¹*E t) (C:=a⁻¹*B) (a:=a) (b:=b) (by
       intro t ht

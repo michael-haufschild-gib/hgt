@@ -747,9 +747,10 @@ theorem unit_trial_under_noSimple_forces_ramified_quartet
     have hden : 0 < β ^ 2 + γ ^ 2 := by positivity
     have hlt_sq : (quartetCopyMult ρ_k : ℝ) ^ 2 * (β ^ 2 + γ ^ 2) <
         ((2 * (k : ℝ) + 1) ^ 2) * (β ^ 2 + γ ^ 2) := by
-      rw [hpyth]
+      rw [hpyth, mul_pow]
       have hkR1 : (1 : ℝ) ≤ k := by exact_mod_cast hk_ge1
-      nlinarith only [hβ2, hkR1]
+      have hgt1 : 1 < (2 * (k : ℝ) + 1) ^ 2 := by nlinarith only [hkR1]
+      nlinarith only [hβ2, hgt1]
     have hm_lt : (quartetCopyMult ρ_k : ℝ) ^ 2 < (2 * (k : ℝ) + 1) ^ 2 :=
       lt_of_mul_lt_mul_right hlt_sq hden.le
     have hm_lt' : (quartetCopyMult ρ_k : ℝ) < 2 * (k : ℝ) + 1 := by
@@ -766,7 +767,10 @@ theorem unit_trial_under_noSimple_forces_ramified_quartet
     have h5γ2 : 5 * γ ^ 2 = 3 * β ^ 2 := by linarith only [hpyth]
     have h4_im := hq.four_lt_abs_im
     have him_eq : ρ_k.im = 3 * γ := by
-      dsimp [ρ_k]; simp; ring
+      dsimp [ρ_k]
+      simp only [Complex.ofReal_re, Complex.ofReal_im, Complex.mul_im,
+        Complex.I_re, Complex.I_im, Nat.cast_one]
+      ring
     rw [him_eq, abs_of_pos (by positivity)] at h4_im
     have h9 : 16 < (3 * γ) ^ 2 := by nlinarith only [h4_im]
     have hβ_sq1 : β ^ 2 < 1 := by nlinarith only [hβ, hβ1]
@@ -951,7 +955,8 @@ private theorem clippedCofactorOp_abs_le_of_rpow {h : ℝ → ℝ} {C σ : ℝ} 
         rw [Real.mul_rpow (by norm_num) (Real.sqrt_nonneg n), Real.sqrt_eq_rpow,
           ← Real.rpow_mul hn0.le, show (1 / 2 : ℝ) * (1 - σ) = (1 - σ) / 2 by ring] at hr1
         have h4_le : (4 : ℝ) ^ (1 - σ) ≤ 4 := by
-          simpa using Real.rpow_le_rpow_of_exponent_le (by norm_num : (1 : ℝ) ≤ 4) (by linarith)
+          simpa using
+            Real.rpow_le_rpow_of_exponent_le (by norm_num : (1 : ℝ) ≤ 4) (by linarith : 1 - σ ≤ 1)
         exact hr1.trans (mul_le_mul_of_nonneg_right h4_le (Real.rpow_nonneg hn0.le _))
     _ = (64 * C / (1 - σ)) * ((n : ℝ) ^ σ * (n : ℝ) ^ ((1 - σ) / 2)) *
           (1 + Real.log (4 * (n : ℝ))) ^ r := by ring

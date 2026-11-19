@@ -19,8 +19,9 @@ private abbrev wall := logSquareCutoff
 private abbrev rho (n : ℕ) := ∑ p ∈ Nat.primesLE n,Real.log p/Real.sqrt p
 private abbrev mass (y X : ℕ) := ∑ d ∈ Icc 1 X,roughProperPowerWeight y d/Real.sqrt d
 
-private theorem log_square_wall_root_ratio :
-    Tendsto (fun X : ℕ => Real.sqrt (wall X)/L X) atTop (𝓝 1) := by
+/-- The square root of the rounded log-square wall is asymptotic to log X. -/
+theorem log_square_wall_root_ratio :
+    Tendsto (fun X : ℕ => Real.sqrt (logSquareCutoff X)/Real.log (X:ℝ)) atTop (𝓝 1) := by
   have logtop : Tendsto L atTop atTop := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   have tiny : Tendsto (fun n : ℕ => (L n)⁻¹) atTop (𝓝 0) := tendsto_inv_atTop_zero.comp logtop
   have low := (tendsto_const_nhds (x := (1:ℝ))).sub tiny

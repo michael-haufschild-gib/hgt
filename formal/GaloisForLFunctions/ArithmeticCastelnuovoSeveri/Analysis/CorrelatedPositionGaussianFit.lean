@@ -144,7 +144,9 @@ theorem fixed_slope_projection (t w s v m l h k j : ℝ) :
     change _ = _+_+_-_+(V+_)/_ at e
     simpa only [h₀,Real.exp_log hV,sub_self,zero_pow (by norm_num : 2≠0),add_zero,div_self hV.ne'] using e
   let z := Real.log V-j
-  have hZ : Real.exp z=V/Real.exp j := by rw [z,Real.exp_sub,Real.exp_log hV]
+  have hZ : Real.exp z=V/Real.exp j := by
+    dsimp only [z]
+    rw [Real.exp_sub,Real.exp_log hV]
   have hL : 0 ≤ Real.exp z-1-z := by linarith only [Real.add_one_le_exp z]
   have hX : 0 ≤ (mid s v-h)^2/Real.exp j := div_nonneg (sq_nonneg _) (Real.exp_pos _).le
   let L := 2*(klDiv (positionLaw t w) (positionGaussian m l)).toReal

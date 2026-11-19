@@ -54,7 +54,8 @@ private theorem primitive_deriv {w z : ℝ} (hw : w∈OpenDisk) (hz : z∈OpenDi
     HasDerivAt (fun x => x*logRatio (x*w)) (1-z*w)⁻¹ z := by
   by_cases h : w=0
   · subst w
-    simp only [mul_zero,logRatio,if_pos rfl,mul_one,sub_zero,inv_one]
+    have hzero : logRatio 0 = 1 := by simp [logRatio]
+    simp only [mul_zero,hzero,mul_one,sub_zero,inv_one]
     exact hasDerivAt_id z
   have he : (fun x => x*logRatio (x*w))=(fun x => -log (1-x*w)/w) := by
     funext x
@@ -107,10 +108,60 @@ theorem derivative_det_ne {n : ℕ} (z w : Fin n ↪ OpenDisk) :
       linear_combination e
     apply cancel _ _ _ hx hy (sub_pos.mpr (disk_product (z i).property (w j).property)).ne' (sums i j)
     dsimp [a,b,cayley]
-    field_simp [hx,hy] <;> ring
+    field_simp [hx,hy]
+    ring
   rw [he,det_mul_column,det_mul_row]
   exact mul_ne_zero (prod_ne_zero_iff.mpr fun i _ => div_ne_zero (by norm_num) (sub_pos.mpr (z i).property.2).ne')
     (mul_ne_zero (prod_ne_zero_iff.mpr fun j _ => inv_ne_zero (sub_pos.mpr (w j).property.2).ne') hn)
+
+/-- Rolle interlacing supplies one fewer zero than the number of distinct knots.
+When zero is an original knot, its derivative zero compensates for the repeated knot. -/
+private theorem interleaved_count (A T : Finset ℝ)
+    (h : (insert 0 A).card ≤ (T \ insert 0 A).card+1)
+    (hzero : (0:ℝ) ∈ A → 0 ∈ T) : A.card ≤ T.card := by
+  classical
+  by_cases hz : (0:ℝ) ∈ A
+  · rw [Finset.insert_eq_of_mem hz] at h
+    have keep : T \ A ⊆ T.erase 0 := by
+      intro x hx
+      obtain ⟨ht,ha⟩ := Finset.mem_sdiff.mp hx
+      exact Finset.mem_erase.mpr ⟨fun he => ha (he ▸ hz),ht⟩
+    have hc := Finset.card_le_card keep
+    rw [Finset.card_erase_of_mem (hzero hz)] at hc
+    have ht : 0 < T.card := Finset.card_pos.mpr ⟨0,hzero hz⟩
+    omega
+  · rw [Finset.card_insert_of_notMem hz] at h
+    have hc : (T \ insert 0 A).card ≤ T.card :=
+      Finset.card_le_card (fun _ hx => (Finset.mem_sdiff.mp hx).1)
+    omega
+
+private theorem rolle_zeros (A : Finset ℝ) (F G : ℝ → ℝ)
+    (dF : ∀ x ∈ OpenDisk, HasDerivAt F (G x) x)
+    (inside : ∀ {x : ℝ}, x ∈ insert 0 A → x ∈ OpenDisk)
+    (zeros : ∀ {x : ℝ}, x ∈ insert 0 A → F x = 0)
+    (atZero : (0:ℝ) ∈ A → G 0 = 0) :
+    ∃ T : Finset ℝ, A.card ≤ T.card ∧ ∀ x ∈ T, x ∈ OpenDisk ∧ G x = 0 := by
+  classical
+  let S := insert (0:ℝ) A
+  let P := {p : S × S // (p.1:ℝ)<(p.2:ℝ)}
+  have inter (p : P) : ∃ x : ℝ, x∈Ioo (p.val.1:ℝ) (p.val.2:ℝ) ∧ x∈OpenDisk ∧ G x=0 := by
+    have segment {x : ℝ} (hx : x∈Icc (p.val.1:ℝ) (p.val.2:ℝ)) : x∈OpenDisk :=
+      ⟨(inside p.val.1.property).1.trans_le hx.1,hx.2.trans_lt (inside p.val.2.property).2⟩
+    obtain ⟨x,hx,e⟩ := exists_hasDerivAt_eq_zero p.property
+      (fun x hx => (dF x (segment hx)).continuousAt.continuousWithinAt)
+      ((zeros p.val.1.property).trans (zeros p.val.2.property).symm)
+      (fun x hx => dF x (segment ⟨hx.1.le,hx.2.le⟩))
+    exact ⟨x,hx,segment ⟨hx.1.le,hx.2.le⟩,e⟩
+  choose pick loc inDisk isZero using inter
+  let T := (insert (0:ℝ) (Finset.univ.image pick)).filter (fun x => x∈OpenDisk ∧ G x=0)
+  have interlace : S.card≤(T \ S).card+1 := by
+    apply card_le_sdiff_of_interleaved
+    intro x hx y hy hxy _
+    let p : P := ⟨(⟨x,hx⟩,⟨y,hy⟩),hxy⟩
+    exact ⟨pick p,mem_filter.mpr ⟨mem_insert_of_mem (mem_image_of_mem _ (mem_univ p)),inDisk p,isZero p⟩,
+      (loc p).1,(loc p).2⟩
+  refine ⟨T,interleaved_count A T interlace (fun hA => ?_),fun _ hx => (mem_filter.mp hx).2⟩
+  exact mem_filter.mpr ⟨mem_insert_self _ _,inside (mem_insert_self _ _),atZero hA⟩
 
 private theorem null_coefficients {n : ℕ} (z w : Fin n ↪ OpenDisk) (c : Fin n → ℝ)
     (h : ∀ i, ∑ j, c j*logRatio ((z i).val*(w j).val)=0) : c=0 := by
@@ -134,48 +185,24 @@ private theorem null_coefficients {n : ℕ} (z w : Fin n ↪ OpenDisk) (c : Fin 
         _ = (z i).val*∑ j, c j*logRatio ((z i).val*(w j).val) := by
           simp only [F,mul_sum]; exact sum_congr rfl fun _ _ => by ring
         _ = 0 := by rw [h,mul_zero]
-  let P := {p : S × S // (p.1:ℝ)<(p.2:ℝ)}
-  have inter (p : P) : ∃ x : ℝ, x∈Ioo (p.val.1:ℝ) (p.val.2:ℝ) ∧ x∈OpenDisk ∧ G x=0 := by
-    have segment {x : ℝ} (hx : x∈Icc (p.val.1:ℝ) (p.val.2:ℝ)) : x∈OpenDisk :=
-      ⟨(inside p.val.1.property).1.trans_le hx.1,hx.2.trans_lt (inside p.val.2.property).2⟩
-    obtain ⟨x,hx,e⟩ := exists_hasDerivAt_eq_zero p.property
-      (fun x hx => (dF x (segment hx)).continuousAt.continuousWithinAt)
-      ((zeros p.val.1.property).trans (zeros p.val.2.property).symm)
-      (fun x hx => dF x (segment ⟨hx.1.le,hx.2.le⟩))
-    exact ⟨x,hx,segment ⟨hx.1.le,hx.2.le⟩,e⟩
-  choose pick loc inDisk isZero using inter
-  let T := (insert (0:ℝ) (Finset.univ.image pick)).filter (fun x => x∈OpenDisk ∧ G x=0)
-  have interlace : S.card≤(T \ S).card+1 := by
-    apply card_le_sdiff_of_interleaved
-    intro x hx y hy hxy _
-    let p : P := ⟨(⟨x,hx⟩,⟨y,hy⟩),hxy⟩
-    exact ⟨pick p,mem_filter.mpr ⟨mem_insert_of_mem (mem_image_of_mem _ (mem_univ p)),inDisk p,isZero p⟩,
-      (loc p).1,(loc p).2⟩
   have ca : A.card=n := (card_image_of_injective _ (Subtype.val_injective.comp z.injective)).trans (by simp)
-  have enough : n≤T.card := by
-    by_cases e : 0∈A
-    · obtain ⟨i,_,ei⟩ := mem_image.mp e
-      have gz : G 0=0 := by simpa [G,ei,logRatio] using h i
-      have mem : 0∈T := mem_filter.mpr ⟨mem_insert_self _ _,by constructor <;> norm_num,gz⟩
-      have sub : T \ S ⊆ T.erase 0 := fun x hx => mem_erase.mpr
-        ⟨fun eq => (mem_sdiff.mp hx).2 (eq ▸ mem_insert_self _ _),(mem_sdiff.mp hx).1⟩
-      have hs : S.card=n := by simpa [S,insert_eq_of_mem e] using ca
-      have hcard := card_le_card sub
-      rw [card_erase_of_mem mem] at hcard
-      have hp := card_pos.mpr ⟨0,mem⟩
-      omega
-    · have hs : S.card=n+1 := by rw [show S=insert 0 A from rfl,card_insert_of_notMem e,ca]
-      have hcard := card_le_card (sdiff_subset : T \ S ⊆ T)
-      omega
+  have atZero (hA : (0:ℝ) ∈ A) : G 0 = 0 := by
+    obtain ⟨i,_,ei⟩ := Finset.mem_image.mp hA
+    simpa [G,ei,logRatio] using h i
+  obtain ⟨T,hcard,hT⟩ := rolle_zeros A F G dF inside zeros atZero
+  have enough : n ≤ T.card := ca ▸ hcard
   let e := (Fin.castLEOrderEmb enough).trans (T.orderIsoOfFin rfl).toOrderEmbedding
-  let t : Fin n ↪ OpenDisk := ⟨fun i => ⟨(e i).val,(mem_filter.mp (e i).property).2.1⟩,
-    fun _ _ he => e.injective (Subtype.ext (congrArg Subtype.val he))⟩
+  let t : Fin n ↪ OpenDisk := ⟨fun i => ⟨(e i).val,(hT _ (e i).property).1⟩,
+    fun _ _ he => e.injective (Subtype.ext (congrArg (fun x : OpenDisk => x.val) he))⟩
   let M := Matrix.of fun i j => (1-(t i).val*(w j).val)⁻¹
   have inv : IsUnit M := M.isUnit_iff_isUnit_det.mpr (derivative_det_ne t w).isUnit
   apply Matrix.mulVec_injective_iff_isUnit.mpr inv
   rw [Matrix.mulVec_zero]
   funext i
-  simpa only [M,mulVec,dotProduct,Matrix.of_apply,G,mul_comm] using (mem_filter.mp (e i).property).2.2
+  change (∑ j, (1-(e i).val*(w j).val)⁻¹*c j) = 0
+  calc
+    _ = ∑ j, c j*(1-(e i).val*(w j).val)⁻¹ := Finset.sum_congr rfl fun _ _ => mul_comm _ _
+    _ = 0 := (hT _ (e i).property).2
 
 /-- Every normalized logarithmic cross matrix on distinct signed contrasts
 is nonsingular; neither grid needs to stay on one side of the anchor. -/

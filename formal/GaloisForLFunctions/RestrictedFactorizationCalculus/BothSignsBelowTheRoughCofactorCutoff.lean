@@ -50,7 +50,9 @@ private theorem smooth_prime_product {z H d p : ℕ} (hd : d ∈ squarefreeSmoot
       fun eq => eq ▸ ⟨Or.inr rfl,high.not_ge⟩⟩
   rw [only,prod_singleton]
 
-private theorem products_supply_one_rough_sign (z H X Y : ℕ) (v : ℝ) (v0 : 0<v)
+/-- Multiplying smooth integers of one sign by a prime above the sieve
+gives distinct integers of the opposite sign and prescribed rough part. -/
+theorem products_supply_one_rough_sign (z H X Y : ℕ) (v : ℝ) (v0 : 0<v)
     (zv : (z:ℝ) ≤ v) (size : (H:ℝ)*(2*v) ≤ X) (rough : ⌊2*v⌋₊ ≤ Y) (σ : ℤ) :
     ((squarefreeSmoothUpTo z H).filter (fun n => μ n= -σ)).card*
       (RHTower.windowPrimes v (2*v)).card ≤
@@ -174,7 +176,8 @@ private theorem drop_exponential {U V c L K : ℝ} (hc : 0 ≤ c) (hL : 1 ≤ L)
   exact (mul_le_mul_of_nonneg_right (le_max_right 0 K) u0).trans
     ((le_mul_of_one_le_right (mul_nonneg (le_max_left 0 K) u0) e).trans h)
 
-private theorem cutoff_below_power {γ : ℝ} (hγ : 0<γ) :
+/-- Every fixed positive power eventually exceeds twice the log-square wall. -/
+theorem cutoff_below_power {γ : ℝ} (hγ : 0<γ) :
     ∀ᶠ X : ℕ in atTop,2*(logSquareCutoff X:ℝ) ≤ (X:ℝ)^γ := by
   have g := half_pos hγ
   filter_upwards [log_square_deletion_cost (by norm_num : (1:ℝ)/2<1) g,

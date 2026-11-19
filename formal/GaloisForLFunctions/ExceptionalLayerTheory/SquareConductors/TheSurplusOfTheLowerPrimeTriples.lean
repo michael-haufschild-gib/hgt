@@ -1,4 +1,4 @@
-import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 import Mathlib.Data.Finset.Sort
 import Mathlib.Order.Interval.Finset.Fin
@@ -97,9 +97,127 @@ theorem unmatched_lower_triple_box {x y z : ℝ}
       (lo (by norm_num) (by linarith only [hx.2,ha]) (by linarith only [hy.2,hb])
         (by linarith only [hz.2,hc]))
 
+/-- Integrating the innermost multiplicative threshold leaves this common
+two-coordinate slice on either side of one. The orientation accounts for
+the reversal of the lower box. -/
+theorem prime_triple_inner_volume {v : ℝ} (hv : 0<v) :
+    (∫ x in 1..v,(v/x-1))=1-v+v*Real.log v := by
+  have hpos {x : ℝ} (hx : x ∈ Set.uIcc 1 v) : 0<x :=
+    (lt_min zero_lt_one hv).trans_le hx.1
+  have hcon : ContinuousOn (fun x : ℝ => v/x) (Set.uIcc 1 v) :=
+    continuousOn_const.div continuousOn_id fun _ hx => (hpos hx).ne'
+  rw [intervalIntegral.integral_sub hcon.intervalIntegrable intervalIntegrable_const,
+    intervalIntegral.integral_const,smul_eq_mul]
+  simp only [div_eq_mul_inv,intervalIntegral.integral_const_mul,integral_inv_of_pos zero_lt_one hv,
+    div_one]
+  ring
+
+/-- In dimension three the ordered continuous volume between one and a
+product threshold has density one half times the squared logarithm. -/
+theorem prime_triple_box_volume {s : ℝ} (hs : 0<s) :
+    (∫ x in 1..s, (1-s/x+(s/x)*Real.log (s/x))) =
+      (1/2:ℝ)*∫ x in 1..s,Real.log x^2 := by
+  have hp {x : ℝ} (hx : x ∈ Set.uIcc 1 s) : 0<x :=
+    (lt_min zero_lt_one hs).trans_le hx.1
+  have hc : ContinuousOn Real.log (Set.uIcc 1 s) :=
+    Real.continuousOn_log.mono fun _ hx => (hp hx).ne'
+  have hq : ContinuousOn (fun x : ℝ => s/x) (Set.uIcc 1 s) :=
+    continuousOn_const.div continuousOn_id fun _ hx => (hp hx).ne'
+  have hl : ContinuousOn (fun x : ℝ => Real.log (s/x)) (Set.uIcc 1 s) :=
+    hq.log fun x hx => (div_pos hs (hp hx)).ne'
+  let F := fun x : ℝ => x-s*Real.log x-s/2*(Real.log s-Real.log x)^2
+  have hF (x : ℝ) (hx : x ∈ Set.uIcc 1 s) :
+      HasDerivAt F (1-s/x+(s/x)*Real.log (s/x)) x := by
+    have h := Real.hasDerivAt_log (hp hx).ne'
+    have hh := ((hasDerivAt_id x).sub (h.const_mul s)).sub
+      ((((hasDerivAt_const x (Real.log s)).sub h).pow 2).const_mul (s/2))
+    apply hh.congr_deriv
+    rw [Real.log_div hs.ne' (hp hx).ne']
+    simp only [div_eq_mul_inv]
+    ring
+  let G := fun x : ℝ => x*(Real.log x^2-2*Real.log x+2)
+  have hG (x : ℝ) (hx : x ∈ Set.uIcc 1 s) : HasDerivAt G (Real.log x^2) x := by
+    have h := Real.hasDerivAt_log (hp hx).ne'
+    apply ((hasDerivAt_id x).mul (((h.pow 2).sub (h.const_mul 2)).add_const 2)).congr_deriv
+    simp only [id_eq]
+    field_simp [(hp hx).ne']
+    <;> ring
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hF
+    (((continuousOn_const.sub hq).add (hq.mul hl)).intervalIntegrable),
+    intervalIntegral.integral_eq_sub_of_hasDerivAt hG (hc.pow 2).intervalIntegrable]
+  simp only [F,G,Real.log_one]
+  ring
+
+#print axioms prime_triple_inner_volume
+#print axioms prime_triple_box_volume
 #print axioms lower_triple_surplus_constant_pos
 #print axioms reflected_upper_triple_is_lower
 #print axioms unmatched_lower_triple_box
+
+/-- Ordered triples obtained by permuting three factors, retaining repeated primes. -/
+def primeTripleOrderings (p q r : ℕ) : Finset (ℕ × ℕ × ℕ) :=
+  {(p,q,r),(p,r,q),(q,p,r),(q,r,p),(r,p,q),(r,q,p)}
+
+private theorem prime_pair_orders {a b p q : ℕ} (ha : a.Prime) (hp : p.Prime)
+    (hq : q.Prime) (h : a*b=p*q) : (a=p ∧ b=q) ∨ (a=q ∧ b=p) := by
+  rcases ha.dvd_mul.mp (h ▸ dvd_mul_right a b) with hdiv | hdiv
+  · have e := (Nat.prime_dvd_prime_iff_eq ha hp).mp hdiv
+    subst p
+    exact Or.inl ⟨rfl,Nat.eq_of_mul_eq_mul_left ha.pos h⟩
+  · have e := (Nat.prime_dvd_prime_iff_eq ha hq).mp hdiv
+    subst q
+    rw [mul_comm p a] at h
+    exact Or.inr ⟨rfl,Nat.eq_of_mul_eq_mul_left ha.pos h⟩
+
+/-- The explicit orderings exhaust all prime triples of the given product. -/
+theorem mem_prime_triple_orderings {p q r a b c : ℕ} (hp : p.Prime) (hq : q.Prime)
+    (hr : r.Prime) :
+    (a,b,c) ∈ primeTripleOrderings p q r ↔ a.Prime ∧ b.Prime ∧ c.Prime ∧ a*b*c=p*q*r := by
+  simp only [primeTripleOrderings,mem_insert,mem_singleton,Prod.mk.injEq]
+  constructor
+  · rintro (⟨rfl,rfl,rfl⟩ | ⟨rfl,rfl,rfl⟩ | ⟨rfl,rfl,rfl⟩ | ⟨rfl,rfl,rfl⟩ |
+      ⟨rfl,rfl,rfl⟩ | ⟨rfl,rfl,rfl⟩) <;> exact ⟨by assumption,by assumption,by assumption,by ac_rfl⟩
+  · rintro ⟨ha,hb,_,h⟩
+    have hd : a ∣ p*q*r := h ▸ (dvd_mul_of_dvd_left (dvd_mul_right a b) c)
+    rcases (ha.dvd_mul.mp hd) with hd | hd
+    · rcases (ha.dvd_mul.mp hd) with hd | hd
+      · have he := (Nat.prime_dvd_prime_iff_eq ha hp).mp hd
+        subst a
+        simp only [mul_assoc] at h
+        rcases prime_pair_orders hb hq hr (Nat.eq_of_mul_eq_mul_left hp.pos h) with h | h
+        · exact Or.inl ⟨rfl,h⟩
+        · exact Or.inr (Or.inl ⟨rfl,h⟩)
+      · have he := (Nat.prime_dvd_prime_iff_eq ha hq).mp hd
+        subst a
+        rw [mul_comm p q] at h
+        simp only [mul_assoc] at h
+        rcases prime_pair_orders hb hp hr (Nat.eq_of_mul_eq_mul_left hq.pos h) with h | h
+        · exact Or.inr (Or.inr (Or.inl ⟨rfl,h⟩))
+        · exact Or.inr (Or.inr (Or.inr (Or.inl ⟨rfl,h⟩)))
+    · have he := (Nat.prime_dvd_prime_iff_eq ha hr).mp hd
+      subst a
+      rw [mul_comm (p*q) r,mul_assoc] at h
+      rcases prime_pair_orders hb hp hq (Nat.eq_of_mul_eq_mul_left hr.pos h) with h | h
+      · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl ⟨rfl,h⟩))))
+      · exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr ⟨rfl,h⟩))))
+
+/-- The lower coefficients two and one are a third of the corresponding
+ordered counts. A pure cube has a single ordering and is excluded. -/
+theorem prime_triple_ordering_counts (p q r : ℕ) :
+    (primeTripleOrderings p q r).card =
+      if p=q ∧ q=r then 1 else if p=q ∨ p=r ∨ q=r then 3 else 6 := by
+  rcases eq_or_ne p q with rfl | hpq
+  · rcases eq_or_ne p r with rfl | hpr
+    · simp [primeTripleOrderings]
+    · simp [primeTripleOrderings,hpr,hpr.symm]
+  rcases eq_or_ne p r with rfl | hpr
+  · simp [primeTripleOrderings,hpq,hpq.symm]
+  rcases eq_or_ne q r with rfl | hqr
+  · simp [primeTripleOrderings,hpq,hpq.symm]
+  simp [primeTripleOrderings,hpq,hpq.symm,hpr,hpr.symm,hqr,hqr.symm]
+
+#print axioms mem_prime_triple_orderings
+#print axioms prime_triple_ordering_counts
 
 private theorem rank_prefix {α : Type*} [LinearOrder α] (S : Finset α) (i : Fin S.card) :
     (S.filter (· ≤ S.orderEmbOfFin rfl i)).card=i.val+1 ∧
@@ -109,12 +227,15 @@ private theorem rank_prefix {α : Type*} [LinearOrder α] (S : Finset α) (i : F
   have he (P : α → Prop) [DecidablePred P] :
       (S.filter P).card=(univ.filter (fun j : Fin S.card => P (e j))).card := by
     conv_lhs => rw [←hs,filter_map,card_map]
+    apply congrArg card
+    ext j
+    simp only [mem_filter,mem_univ,true_and,Function.comp_apply]
   have hle : univ.filter (fun j : Fin S.card => e j ≤ e i)=Iic i := by
     ext j; simp only [mem_filter,mem_univ,true_and,mem_Iic,e.le_iff_le]
   have hlt : univ.filter (fun j : Fin S.card => e j < e i)=Iio i := by
     ext j; simp only [mem_filter,mem_univ,true_and,mem_Iio,e.lt_iff_lt]
-  exact ⟨(he _).trans ((congrArg card hle).trans Fin.card_Iic),
-    (he _).trans ((congrArg card hlt).trans Fin.card_Iio)⟩
+  exact ⟨(he _).trans ((congrArg card hle).trans (Fin.card_Iic i)),
+    (he _).trans ((congrArg card hlt).trans (Fin.card_Iio i))⟩
 
 /-- Maximum excess of upper counts over lower counts at a common displacement. -/
 def triplePairingDeficit (U L : Finset ℝ) : ℕ :=
@@ -205,7 +326,7 @@ theorem actual_prime_triple_pairing (y : ℝ) :
 
 #print axioms actual_prime_triple_pairing
 
-open Filter RHTower RHTower.PrimeCells in
+open Filter _root_.RHTower _root_.RHTower.PrimeCells in
 /-- Uniform prime counting discrepancy for every slice of a triple box,
 including slices whose length tends to zero. -/
 theorem triple_box_prime_window_discrepancy :
@@ -257,7 +378,7 @@ theorem triple_box_prime_window_discrepancy :
 
 #print axioms triple_box_prime_window_discrepancy
 
-open RHTower in
+open _root_.RHTower in
 private theorem reflected_prime_counts {y t : ℝ} (hy : 0 < y) (ht : 0 ≤ t) (hcap : t ≤ y/3) :
     ((upperTripleDistances y).filter (· ≤ t)).card=(windowPrimes y (y+t)).card ∧
       (windowPrimes (y-t) y).card ≤ ((lowerTripleDistances y).filter (· ≤ t)).card := by
@@ -292,7 +413,7 @@ private theorem reflected_prime_counts {y t : ℝ} (hy : 0 < y) (ht : 0 ≤ t) (
         by linarith only [hyp]⟩
   exact ⟨hu ▸ card_image_of_injective _ hi,(card_image_of_injective _ hj).symm.le.trans (card_le_card hl)⟩
 
-open Filter RHTower in
+open Filter _root_.RHTower in
 /-- The number of discarded upper primes is little-o of the prime
 counting scale, uniformly across all displacements used by the pairing. -/
 theorem negligible_prime_triple_pairing_deficit :

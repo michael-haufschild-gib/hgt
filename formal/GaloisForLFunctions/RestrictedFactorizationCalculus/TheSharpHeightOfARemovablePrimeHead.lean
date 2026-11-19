@@ -102,6 +102,7 @@ private theorem recover_the_strip_from_the_terminal_heads {α β : ℝ} (ap : 0<
       (unit _ (dom (observation α n) 1)).trans (unit _ (mangoldt_dominated (Y n) 1)).symm
     have cheap := mass_of_all_signed_proper_power_edits strict small (Y n) n (w n)
       (dom (observation α n)) (fix (observation α n))
+    change 2*P ≤ Real.log (n:ℝ) at large
     exact ⟨high,same,cheap.trans (by change P ≤ _; linarith only [large])⟩
   obtain ⟨A,a0,restore⟩ := recover_the_prefix_from_a_perturbed_prime_head strict.le
     (by norm_num : (0:ℝ)<1/2) Y ym w active (mul_nonneg c0 (by positivity)) reading

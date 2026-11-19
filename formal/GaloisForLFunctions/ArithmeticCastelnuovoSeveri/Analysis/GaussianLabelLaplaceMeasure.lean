@@ -61,14 +61,16 @@ theorem lossMeasure_positive_rates (h : ℝ) (d : {u : ℝ // u≠0}) :
 private theorem laplace_integral (h d t : ℝ) : HTGeometry.finiteRealLaplace (lossMeasure h d) t =
     ∫ z, oddsKernel z*exp (-t*(z-h)^2/(2*d^2)) := by
   rw [HTGeometry.finiteRealLaplace,lossMeasure,integral_map (oddsRate_measurable _ _).aemeasurable (by fun_prop)]
-  rw [oddsMeasure,integral_withDensity_eq_integral_toReal_smul (ENNReal.measurable_ofReal.comp oddsKernel_cont.measurable)
-    (ae_of_all _ fun _ => ENNReal.ofReal_lt_top)]
+  have hm : Measurable (fun z : ℝ => ENNReal.ofReal (oddsKernel z)) :=
+    ENNReal.measurable_ofReal.comp oddsKernel_cont.measurable
+  rw [oddsMeasure,integral_withDensity_eq_integral_toReal_smul hm
+    (ae_of_all volume fun _ => ENNReal.ofReal_lt_top) (fun x : ℝ => exp (-t*oddsRate h d x))]
   apply integral_congr_ae
   exact ae_of_all _ fun z => by
-    rw [ENNReal.toReal_ofReal (oddsKernel_pos _).le,smul_eq_mul]
-    congr 2
-    unfold oddsRate
-    ring
+    change (ENNReal.ofReal (oddsKernel z)).toReal • exp (-t*oddsRate h d z) =
+      oddsKernel z*exp (-t*(z-h)^2/(2*d^2))
+    rw [ENNReal.toReal_ofReal (oddsKernel_pos z).le,smul_eq_mul,
+      show -t*oddsRate h d z = -t*(z-h)^2/(2*d^2) by unfold oddsRate; ring]
 
 /-- Conditional entropy calibrated by its explicit density and separation
 factors. The formal variance argument lies on the positive half-line. -/
@@ -87,7 +89,7 @@ theorem calibrated_laplace (u v : ℝ) (p : {p : ℝ × ℝ // p.1≠p.2}) :
   have h2 := (sqrt_pos.mpr (by positivity : (0:ℝ)<2*π)).ne'
   have h3 := abs_ne_zero.mpr (sub_ne_zero.mpr (Ne.symm hab))
   have h4 := (show 0<overlap a b (log t) from exp_pos _).ne'
-  field_simp [h1,h2,h3,h4,(sqrt_pos.mpr ht).ne'] <;> ring
+  field_simp [h1,h2,h3,h4,(sqrt_pos.mpr ht).ne']
 
 /-- Complete monotonicity and continuity hold for the actual calibrated
 conditional entropy at every positive variance. -/

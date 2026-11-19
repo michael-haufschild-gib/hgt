@@ -47,7 +47,7 @@ the finite-layer logarithmic wall-cusp problem (§2.17):
 
 noncomputable section
 open MeasureTheory Set Filter Complex Topology Zeta23
-open GaloisForLFunctions GaloisForLFunctions.ExclusionOfTheCriticalState GaloisForLFunctions.CriticalArithmeticCorrelationTheory GaloisForLFunctions.HTGeometry
+open GaloisForLFunctions GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations GaloisForLFunctions.ArithmeticCastelnuovoSeveri GaloisForLFunctions.ExclusionOfTheCriticalState GaloisForLFunctions.CriticalArithmeticCorrelationTheory GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.ZeroConfigurationGeometry
 open GaloisForLFunctions.ZeroConfigurationGeometry.ConfigAbscissa
 open GaloisForLFunctions.ZeroConfigurationGeometry.ZetaAbscissa
@@ -128,22 +128,22 @@ private theorem exists_criticalGroundState_of_not_riemannHypothesis (hnRH : ¬ R
     ∃ (W₀ : ℝ) (F : ℝ → ℝ), 0 < W₀ ∧
       (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal) ∧
       IsCriticalHalfLineGroundState W₀ F := by
-  have hnCont : ¬ ArithmeticCastelnuovoSeveri.ZetaBeyondTheWallPrimeContinuation :=
-    mt ArithmeticCastelnuovoSeveri.zetaBeyondTheWallPrimeContinuation_iff_riemannHypothesis.mp hnRH
+  have hnCont : ¬ ZetaBeyondTheWallPrimeContinuation :=
+    mt zetaBeyondTheWallPrimeContinuation_iff_riemannHypothesis.mp hnRH
   by_contra hno
   exact hnCont (zetaBeyondTheWallPrimeContinuation_iff_no_criticalState.mpr hno)
 
 private theorem groundState_confinementMass_pos {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W₀ : EReal))
     {F : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) :
-    0 < HTGeometry.criticalAliasCoefficient W₀ ∧ 0 < ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)) := by
+    0 < criticalAliasCoefficient W₀ ∧ 0 < ∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u)) := by
   have hd := criticalHalfLineEnergyDomain_of_groundState hF
   have hnull := isConfinedNullVector_of_groundState hW ht hF
   have hM_eq : (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) =
-      HTGeometry.criticalHalfLineExponentialPair F F := by
-    unfold HTGeometry.criticalHalfLineExponentialPair
+      criticalHalfLineExponentialPair F F := by
+    unfold criticalHalfLineExponentialPair
     exact integral_congr_ae (Eventually.of_forall fun u => by ring)
-  exact ⟨HTGeometry.criticalAliasCoefficient_positive hW,
+  exact ⟨criticalAliasCoefficient_positive hW,
     hM_eq ▸ exponentialPair_self_pos hd hnull.2.1⟩
 
 /-- **Seven-way equivalence of all §2.17 wall-cusp and critical-line ordinate-moment targets with
@@ -199,7 +199,7 @@ theorem finiteLayer_wallCusp_targets_tfae :
     obtain ⟨x, hx, hvan⟩ := h2 hfin W₀ F hW ht hF
     have hlim := (criticalState_tendsto_mul_log_vertical_laplace_sq hW ht hF).comp hx
     have heq := tendsto_nhds_unique hlim hvan
-    have hpos_lim : 0 < 8 * Real.pi * HTGeometry.criticalAliasCoefficient W₀ *
+    have hpos_lim : 0 < 8 * Real.pi * criticalAliasCoefficient W₀ *
         (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) := by positivity
     linarith
   tfae_have 3 → 7 := by
@@ -216,7 +216,7 @@ theorem finiteLayer_wallCusp_targets_tfae :
     obtain ⟨T, hT, hvan⟩ := h4 hfin W₀ F hW ht hF
     have hlim := (criticalState_criticalLine_firstMoment_asymptotic hW ht hF hfin).comp hT
     have heq := tendsto_nhds_unique hlim hvan
-    have hpos_lim : 0 < 8 * HTGeometry.criticalAliasCoefficient W₀ *
+    have hpos_lim : 0 < 8 * criticalAliasCoefficient W₀ *
         (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) / Real.pi := by positivity
     linarith
   tfae_have 5 → 7 := by
@@ -227,7 +227,7 @@ theorem finiteLayer_wallCusp_targets_tfae :
     obtain ⟨T, hT, hvan⟩ := h5 hfin W₀ F hW ht hF
     have hlim := (criticalState_criticalLine_tail_asymptotic hW ht hF hfin).comp hT
     have heq := tendsto_nhds_unique hlim hvan
-    have hpos_lim : 0 < 8 * HTGeometry.criticalAliasCoefficient W₀ *
+    have hpos_lim : 0 < 8 * criticalAliasCoefficient W₀ *
         (∫ u : ℝ, F u ^ 2 * Real.exp (-(8 * u))) / Real.pi := by positivity
     linarith
   tfae_have 6 → 7 := by

@@ -55,6 +55,7 @@ theorem nearby_upper_prime_midpoint :
     have h8 := Real.log_nonneg (by norm_num : (1:ℝ) ≤ 8)
     linarith only [hlog,hlogu,he,le_mul_of_one_le_right h8 hu]
   have hscale : (n:ℝ)^(2/3:ℝ)*u=(n:ℝ)^(5/6:ℝ) := by
+    dsimp only [u]
     rw [←Real.rpow_add hn0]; norm_num
   have hl0 : 0 ≤ Real.log (4*(p:ℝ)) := Real.log_nonneg (by
     have hh := (Nat.one_le_cast (α:=ℝ)).mpr hp.one_le

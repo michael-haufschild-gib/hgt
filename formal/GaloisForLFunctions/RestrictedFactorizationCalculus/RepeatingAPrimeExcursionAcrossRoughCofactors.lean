@@ -287,8 +287,10 @@ private theorem compare_rectangle_with_prime_error {a : ℝ} (ap : 0<a) :
   change |R+(S.card:ℝ)*E| ≤ (S.card:ℝ)*(D*Real.sqrt T) at diff
   have left := abs_sub (R+(S.card:ℝ)*E) ((S.card:ℝ)*E)
   have right := abs_sub (R+(S.card:ℝ)*E) R
-  rw [add_sub_cancel_right,abs_mul,abs_of_nonneg (Nat.cast_nonneg S.card)] at left
-  rw [add_sub_cancel_left,abs_mul,abs_of_nonneg (Nat.cast_nonneg S.card)] at right
+  have factor : |(S.card:ℝ)*E| = (S.card:ℝ)*|E| := by
+    rw [abs_mul,abs_of_nonneg (Nat.cast_nonneg (α := ℝ) S.card)]
+  rw [add_sub_cancel_right,factor] at left
+  rw [add_sub_cancel_left,factor] at right
   change |R| ≤ _ ∧ (S.card:ℝ)*|E| ≤ _
   constructor <;> linarith only [left,right,diff]
 
