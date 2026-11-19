@@ -11,7 +11,7 @@ over a set of primes removes precisely the occupied atoms touched by those
 primes, independently of the common dilation and of the time window.
 -/
 
-open Finset RHTower RHTower.Sieve GaloisForLFunctions.ArithmeticCorrelationGeometry
+open MeasureTheory Finset RHTower RHTower.Sieve GaloisForLFunctions.ArithmeticCorrelationGeometry
 namespace GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram
 noncomputable section
 
@@ -189,6 +189,53 @@ theorem square_root_sign_average_close_nonneg {N Y : ℕ} (hcut : N ≤ Y^2) :
     apply mul_nonneg_of_nonpos_of_nonpos <;>
       exact div_nonpos_of_nonpos_of_nonneg (by norm_num) (Real.sqrt_nonneg _)
 
+private def twistCoeff (P : Finset ℕ) (s : P → ℤˣ) (n : ℕ) : ℝ := (primeSignTwist P s n:ℝ)*coeff n
+
+/-- Energy of the twisted Möbius polynomial in the physical logarithmic
+window. This uses the original coefficients at every integer in the horizon. -/
+def twistedShortEnergy (N : ℕ) (P : Finset ℕ) (s : P → ℤˣ) (δ : ℝ) : ℝ :=
+  ∫ u : ℝ, ‖logWindowSum (fun n => (twistCoeff P s n:ℂ)) (Icc 1 N) δ u‖^2
+
+private theorem twist_pair (P : Finset ℕ) (s : P → ℤˣ) (m n : ℕ) :
+    twistCoeff P s m * twistCoeff P s n =
+      ((primeSignTwist P s m*primeSignTwist P s n:ℤ):ℝ)*(coeff m*coeff n) := by
+  push_cast
+  dsimp only [twistCoeff]
+  ring
+
+/-- Every sign choice changes only the off-diagonal of the integrated
+Gram energy. Its signed primitive spectrum has the triangular multiplier. -/
+theorem twisted_short_spectrum (N : ℕ) (P : Finset ℕ) (s : P → ℤˣ) (δ : ℝ) :
+    twistedShortEnergy N P s δ = max δ 0 * (∑ n ∈ Icc 1 N, mobiusRealCoefficient n^2/n) +
+      signedRatioReading N P s (fun u => max (δ-|u|) 0) := by
+  let K := fun u : ℝ => max (δ-|u|) 0
+  let F := fun m n : ℕ => twistCoeff P s m * twistCoeff P s n * K (Real.log m-Real.log n)
+  have diag (n : ℕ) : F n n = max δ 0 * (mobiusRealCoefficient n^2/n) := by
+    simp only [F,K,twist_pair,sign_sq,Int.cast_one,one_mul,sub_self,abs_zero,sub_zero]
+    rw [← sq,coeff,div_pow,Real.sq_sqrt (Nat.cast_nonneg n),mul_comm]
+  have off : (∑ q ∈ offDiagPairs N, F q.1 q.2) = signedRatioReading N P s K := by
+    rw [← signedRatioReading_eq_original]
+    exact sum_congr rfl fun q _ => by rw [F,twist_pair,mul_assoc]
+  rw [twistedShortEnergy,integral_normSq_logWindowSum]
+  simp only [Complex.conj_ofReal,← Complex.ofReal_mul,Complex.ofReal_re]
+  change (∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, F m n) = _ + signedRatioReading N P s K
+  rw [← off,sum_offDiagPairs_eq_double,mul_sum,← sum_add_distrib]
+  apply sum_congr rfl
+  intro m hm
+  rw [← diag m,add_comm,sum_erase_add _ _ hm]
+
+/-- Averaging the measured short-interval energy over all prime signs gives
+the original diagonal exactly at every length and bandwidth. -/
+theorem twisted_short_energy_average (N : ℕ) (δ : ℝ) :
+    let P := (range (N+1)).filter Nat.Prime
+    ∑ s : P → ℤˣ, twistedShortEnergy N P s δ =
+      (Fintype.card (P → ℤˣ):ℝ)*(max δ 0 * ∑ n ∈ Icc 1 N, mobiusRealCoefficient n^2/n) := by
+  intro P
+  simp only [twisted_short_spectrum,sum_add_distrib,sum_const,card_univ,nsmul_eq_mul]
+  rw [full_primeSign_average_off_diagonal,add_zero]
+
+#print axioms twisted_short_spectrum
+#print axioms twisted_short_energy_average
 #print axioms square_root_sign_average_close_nonneg
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram

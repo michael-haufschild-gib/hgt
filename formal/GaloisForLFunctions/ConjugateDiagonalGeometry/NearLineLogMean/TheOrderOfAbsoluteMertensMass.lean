@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.EveryMertensSectionPaysForEachZetaZero
-import GaloisForLFunctions.ArithmeticGaugeTheory.TheArchimedeanLineCarriesTheExponent
+import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.PowerMassOfAnExceptionalSet
 
 /-!
 # The ordinary growth order of the absolute Mertens mass
@@ -102,39 +102,11 @@ theorem supercritical_mertens_abel_mass {a : ℝ} (ha : zetaZeroAbscissa < a) :
 theorem mertens_abel_mass_log_order :
     Tendsto (fun N : ℕ => Real.log (1+mertensAbelMass N)/Real.log ((N:ℝ)+1))
       atTop (𝓝 zetaZeroAbscissa) := by
-  apply tendsto_order.mpr
-  constructor
-  · intro b hb
-    let c := (max 0 b+zetaZeroAbscissa)/2
-    have hθ : 0<zetaZeroAbscissa := (by norm_num : (0:ℝ)<1/2).trans_le half_le_zetaZeroAbscissa
-    have hm : max 0 b < zetaZeroAbscissa := max_lt hθ hb
-    have hbc : b<c := by dsimp only [c]; linarith only [le_max_right 0 b,hm]
-    have hc0 : 0 ≤ c := by dsimp only [c]; linarith only [le_max_left 0 b,hθ]
-    have hc : c < zetaZeroAbscissa := by dsimp only [c]; linarith only [hm]
-    filter_upwards [eventually_large_mertens_abel_mass hc0 hc 1,eventually_ge_atTop 1] with N hn hN
-    have hX : 1<(N:ℝ)+1 := by linarith only [(Nat.one_le_cast (α:=ℝ)).mpr hN]
-    rw [one_mul] at hn
-    have hl := Real.log_lt_log (Real.rpow_pos_of_pos (zero_lt_one.trans hX) c)
-      (hn.trans (lt_add_of_pos_left _ zero_lt_one))
-    rw [Real.log_rpow (zero_lt_one.trans hX)] at hl
-    exact hbc.trans ((lt_div_iff₀ (Real.log_pos hX)).mpr hl)
-  · intro b hb
-    obtain ⟨a,ha,hab⟩ := exists_between hb
-    obtain ⟨C,hC,hbound⟩ := supercritical_mertens_abel_mass ha
-    have ha0 : 0≤a := by linarith only [half_le_zetaZeroAbscissa,ha]
-    have hX : Tendsto (fun N : ℕ => (N:ℝ)+1) atTop atTop := tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
-    filter_upwards [((tendsto_rpow_atTop (sub_pos.mpr hab)).comp hX).eventually_gt_atTop (1+C),
-      eventually_ge_atTop 1] with N hn hN
-    have hx : 1<(N:ℝ)+1 := by linarith only [(Nat.one_le_cast (α:=ℝ)).mpr hN]
-    have hp := zero_lt_one.trans hx
-    have hw := Real.one_le_rpow hx.le ha0
-    have hs := mul_lt_mul_of_pos_right hn (Real.rpow_pos_of_pos hp a)
-    change (1+C)*((N:ℝ)+1)^a < ((N:ℝ)+1)^(b-a)*((N:ℝ)+1)^a at hs
-    rw [←Real.rpow_add hp,sub_add_cancel] at hs
-    have hle : 1+mertensAbelMass N < ((N:ℝ)+1)^b := by linarith only [hw,hs,hbound N]
-    have hl := Real.log_lt_log (by linarith only [mertens_abel_mass_nonneg N] : 0<1+mertensAbelMass N) hle
-    rw [Real.log_rpow hp] at hl
-    exact (div_lt_iff₀ (Real.log_pos hx)).mpr hl
+  apply ArithmeticPowerMass.log_order_of_power_envelope
+    ((by norm_num : (0:ℝ)<1/2).trans_le half_le_zetaZeroAbscissa) mertens_abel_mass_nonneg
+  · intro b hb h
+    simpa only [one_mul] using eventually_large_mertens_abel_mass hb h 1
+  · exact fun h => supercritical_mertens_abel_mass h
 
 #print axioms upper_half_mertens_abel_selection
 #print axioms eventually_large_mertens_abel_mass

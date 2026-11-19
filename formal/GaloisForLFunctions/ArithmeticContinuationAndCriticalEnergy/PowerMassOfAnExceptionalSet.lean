@@ -10,7 +10,8 @@ comparable to the cardinality raised to that power.
 -/
 
 noncomputable section
-open Finset
+open Finset Filter
+open scoped Topology
 namespace GaloisForLFunctions.ArithmeticPowerMass
 
 /-- The reciprocal power mass of m distinct positive indices is largest at the first m. -/
@@ -64,6 +65,44 @@ theorem cardinal_power_le_mass (S : Finset ℕ) {v : ℝ} (hv : 0≤v) :
   rw [Real.rpow_add hm,Real.rpow_one,Real.rpow_add (by norm_num : (0:ℝ)<2),Real.rpow_one]
   linarith only [mul_le_mul_of_nonneg_right hcard (Real.rpow_nonneg hm.le v),hsum,
     mul_le_mul_of_nonneg_left hall (Real.rpow_nonneg (by norm_num : (0:ℝ)≤2) v)]
+
+/-- Strict lower powers and upper power bounds determine the ordinary
+logarithmic order of a nonnegative mass. -/
+theorem log_order_of_power_envelope {H : ℕ → ℝ} {θ : ℝ} (hθ : 0<θ) (hH : ∀ N, 0≤H N)
+    (hlo : ∀ {b : ℝ}, 0≤b → b<θ → ∀ᶠ N : ℕ in Filter.atTop, ((N:ℝ)+1)^b < H N)
+    (hhi : ∀ {b : ℝ}, θ<b → ∃ C : ℝ, 0≤C ∧ ∀ N, H N ≤ C*((N:ℝ)+1)^b) :
+    Tendsto (fun N : ℕ => Real.log (1+H N)/Real.log ((N:ℝ)+1)) atTop (𝓝 θ) := by
+  apply tendsto_order.mpr
+  constructor
+  · intro b hb
+    let c := (max 0 b+θ)/2
+    have hm : max 0 b < θ := max_lt hθ hb
+    have hbc : b<c := by dsimp only [c]; linarith only [le_max_right 0 b,hm]
+    have hc0 : 0 ≤ c := by dsimp only [c]; linarith only [le_max_left 0 b,hθ]
+    have hc : c < θ := by dsimp only [c]; linarith only [hm]
+    filter_upwards [hlo hc0 hc,eventually_ge_atTop 1] with N hn hN
+    have hX : 1<(N:ℝ)+1 := by linarith only [(Nat.one_le_cast (α:=ℝ)).mpr hN]
+    have hl := Real.log_lt_log (Real.rpow_pos_of_pos (zero_lt_one.trans hX) c)
+      (hn.trans (lt_add_of_pos_left _ zero_lt_one))
+    rw [Real.log_rpow (zero_lt_one.trans hX)] at hl
+    exact hbc.trans ((lt_div_iff₀ (Real.log_pos hX)).mpr hl)
+  · intro b hb
+    obtain ⟨a,ha,hab⟩ := exists_between hb
+    obtain ⟨C,hC,hbound⟩ := hhi ha
+    have ha0 : 0≤a := hθ.le.trans ha.le
+    have hX : Tendsto (fun N : ℕ => (N:ℝ)+1) atTop atTop := tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
+    filter_upwards [((tendsto_rpow_atTop (sub_pos.mpr hab)).comp hX).eventually_gt_atTop (1+C),
+      eventually_ge_atTop 1] with N hn hN
+    have hx : 1<(N:ℝ)+1 := by linarith only [(Nat.one_le_cast (α:=ℝ)).mpr hN]
+    have hp := zero_lt_one.trans hx
+    have hw := Real.one_le_rpow hx.le ha0
+    have hs := mul_lt_mul_of_pos_right hn (Real.rpow_pos_of_pos hp a)
+    change (1+C)*((N:ℝ)+1)^a < ((N:ℝ)+1)^(b-a)*((N:ℝ)+1)^a at hs
+    rw [←Real.rpow_add hp,sub_add_cancel] at hs
+    have hle : 1+H N < ((N:ℝ)+1)^b := by linarith only [hw,hs,hbound N]
+    have hl := Real.log_lt_log (by linarith only [hH N] : 0<1+H N) hle
+    rw [Real.log_rpow hp] at hl
+    exact (div_lt_iff₀ (Real.log_pos hx)).mpr hl
 
 #print axioms packed_power
 #print axioms cardinal_power_le_mass

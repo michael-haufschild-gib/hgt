@@ -25,6 +25,9 @@ def lastDivisor (n : ℕ) : ℕ := if n = 1 then 0 else n / n.minFac
 def isolatedPrimeSites (A U : ℕ) : Finset ℕ :=
   (Ioc A U).filter fun n => ∀ m ∈ (Ioc A U).erase n, contactW Λ n m = 0
 
+private theorem contact_swap (w : ℕ → ℝ) (m n : ℕ) : contactW w m n = contactW w n m :=
+  add_comm _ _
+
 private theorem ordered_contact {m n : ℕ} (hm : 0 < m) (h : m < n) :
     contactW Λ m n = if m ∣ n then Λ (n/m) else 0 := by
   have hn : ¬n ∣ m := fun hd => (not_le_of_gt h) (Nat.le_of_dvd hm hd)
@@ -81,7 +84,7 @@ theorem mem_isolatedPrimeSites_iff (A U n : ℕ) :
       have hmem : q ∈ (Ioc A U).erase n :=
         mem_erase.mpr ⟨hlt.ne, mem_Ioc.mpr ⟨hA,hlt.le.trans hnU⟩⟩
       have hz := hh _ hmem
-      rw [contactW_comm] at hz
+      rw [contact_swap] at hz
       exact prime_step hq hp (by rwa [hprod])
   · rintro ⟨hn,hupper,hlower⟩
     obtain ⟨ha,hu⟩ := mem_Ioc.mp hn
@@ -89,7 +92,7 @@ theorem mem_isolatedPrimeSites_iff (A U n : ℕ) :
     obtain ⟨hne,hmem⟩ := mem_erase.mp hm
     obtain ⟨ham,hmu⟩ := mem_Ioc.mp hmem
     rcases lt_or_gt_of_ne hne with h|h
-    · rw [contactW_comm, ordered_contact (Nat.zero_lt_of_lt ham) h,
+    · rw [contact_swap, ordered_contact (Nat.zero_lt_of_lt ham) h,
         if_neg (fun hd => (not_le_of_gt ham) ((proper_dvd_le_last (Nat.zero_lt_of_lt ham) h hd).trans hlower))]
     · rw [ordered_contact (Nat.zero_lt_of_lt ha) h, if_neg]
       rintro ⟨q,rfl⟩
@@ -129,7 +132,7 @@ theorem singleton_commutes_primeContactMatrix (A U : ℕ) (i : Ioc A U) :
       simp [hb, primeContactMatrix, h]
     · subst b
       have h := hz a (mem_erase.mpr ⟨(fun e => ha (Subtype.ext e)),a.property⟩)
-      rw [contactW_comm] at h
+      rw [contact_swap] at h
       simp [ha, primeContactMatrix, h]
     · simp [ha,hb]
 
@@ -166,7 +169,7 @@ theorem contactTerm_delete_isolated (A U : ℕ) (w c e : ℕ → ℝ) :
     have hi : n ∈ isolatedPrimeSites A U := by
       by_contra hi
       exact h (mem_sdiff.mpr ⟨hn,hi⟩)
-    exact sum_eq_zero fun m hm => by rw [contactW_comm, arbitrary_contact_at_isolated hi w hm, mul_zero]
+    exact sum_eq_zero fun m hm => by rw [contact_swap, arbitrary_contact_at_isolated hi w hm, mul_zero]
   change (∑ n ∈ S, _) = ∑ n ∈ T, _
   rw [← sum_subset hsub houter]
   refine sum_congr rfl fun n hn => (sum_subset (erase_subset_erase n hsub) ?_).symm

@@ -52,7 +52,8 @@ theorem surviving_primes_in_power_windows {α e : ℝ} (he : e < α) (ha : α < 
       exact hnone ⟨p,hpr,hnot,(Nat.floor_lt hx0.le).mp hlo,by linarith only [hpx,hr]⟩
     exact ⟨mem_filter.mpr ⟨Nat.mem_primesLE.mpr ⟨hhi.trans (Nat.floor_le_floor h2),hpr⟩,hpe⟩,hpx.trans h2⟩
   have hcard : (P.card:ℝ) ≤ deletedCount E (2*x) := by
-    exact_mod_cast card_le_card (fun p hp => (excl hp).1)
+    unfold deletedCount
+    exact Nat.cast_le.mpr (card_le_card (fun p hp => (excl hp).1))
   have hcount := hX (2*x) (by linarith only [(le_max_left X 1).trans hx,hx0])
   have hl := _root_.RHTower.Mertens.log_le_rpow (x:=2*x) (by positivity) hd
   have ht : 0 ≤ Real.log (2*x) := Real.log_nonneg (by linarith only [hx1])
@@ -169,9 +170,8 @@ theorem exceptional_count_midpoint_spectrum {b : ℝ} (hb : 1/2 ≤ b) :
   · intro hz t ht ht1
     obtain ⟨C,hC⟩ := (ordinary_prime_center_spectrum hb).mpr hz t ht ht1
     refine ⟨C,0,le_rfl,Eventually.of_forall fun x => ?_⟩
-    have hem : ((Nat.primesLE ⌊x⌋₊).filter (fun p => C*(p:ℝ)^t < primeMidpointPrice p)) = ∅ :=
-      filter_eq_empty_iff.mpr fun p hp => not_lt.mpr (hC p (Nat.prime_of_mem_primesLE hp))
-    simp [deletedCount,hem]
+    simp [deletedCount]
+    exact fun _ hp => hC _ (Nat.prime_of_mem_primesLE hp)
 
 /-- RH is equivalent to controlling the counts of exceptional ordinary
 prime centers at every exponent strictly above one half. -/

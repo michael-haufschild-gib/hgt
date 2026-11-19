@@ -17,52 +17,58 @@ open scoped Topology
 open GaloisForLFunctions.ReciprocalOctaves
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-private def pp (d : ℕ) : ℝ := if d.Prime then 0 else vonMangoldt d
-private theorem pp_nonneg (d : ℕ) : 0 ≤ pp d := by
-  unfold pp; split <;> first | exact le_rfl | exact vonMangoldt_nonneg
+/-- Mangoldt weight carried only by proper prime powers. -/
+def properOctaveWeight (d : ℕ) : ℝ := if d.Prime then 0 else vonMangoldt d
+private theorem pp_nonneg (d : ℕ) : 0 ≤ properOctaveWeight d := by
+  unfold properOctaveWeight; split <;> first | exact le_rfl | exact vonMangoldt_nonneg
 
-private abbrev prefix (n : ℕ) := ∑ d ∈ Icc 1 n, pp d
+/-- Cumulative logarithmic weight of proper prime powers. -/
+abbrev properOctavePrefix (n : ℕ) := ∑ d ∈ Icc 1 n, properOctaveWeight d
 
-private theorem prefix_eq (n : ℕ) : prefix n = Chebyshev.psi n-Chebyshev.theta n := by
+theorem proper_octave_prefix_eq (n : ℕ) : properOctavePrefix n = Chebyshev.psi n-Chebyshev.theta n := by
   rw [Chebyshev.psi_sub_theta_eq_sum_not_prime,Nat.floor_natCast,sum_filter]
   have hset : Icc 1 n=Ioc 0 n := by ext d; simp only [mem_Icc,mem_Ioc]; omega
-  simp only [prefix,hset,pp,ite_not]
+  simp only [properOctavePrefix,hset,properOctaveWeight,ite_not]
+
+/-- The logarithmic mass of proper powers has square-root density one. -/
+theorem proper_chebyshev_square_root_density :
+    Tendsto (fun x : ℝ => (Chebyshev.psi x-Chebyshev.theta x)/Real.sqrt x) atTop (𝓝 1) := by
+  have h := _root_.RHTower.tendsto_ccmProperPrimePowerSource_scaled_one.comp Real.tendsto_log_atTop
+  apply h.congr'
+  filter_upwards [eventually_gt_atTop (0:ℝ)] with x hx
+  change Real.exp (-Real.log x/2)*(Chebyshev.psi (Real.exp (Real.log x))-Chebyshev.theta
+    (Real.exp (Real.log x)))=_
+  rw [Real.exp_log hx,Real.sqrt_eq_rpow,Real.rpow_def_of_pos hx,
+    show -Real.log x/2 = -(Real.log x*(1/2)) by ring,Real.exp_neg,div_eq_mul_inv,mul_comm]
 
 private theorem pp_prefix_density :
-    Tendsto (fun n : ℕ => prefix n/Real.sqrt n) atTop (𝓝 1) := by
-  have h := _root_.RHTower.tendsto_ccmProperPrimePowerSource_scaled_one.comp
-    (Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop (R:=ℝ)))
-  apply h.congr'
-  filter_upwards [eventually_ge_atTop (1:ℕ)] with n hn
-  have hr := (Nat.cast_pos (α:=ℝ)).mpr hn
-  change Real.exp (-Real.log n/2)*(Chebyshev.psi (Real.exp (Real.log n))-Chebyshev.theta
-    (Real.exp (Real.log n)))=_
-  rw [Real.exp_log hr,prefix_eq,Real.sqrt_eq_rpow,Real.rpow_def_of_pos hr,
-    show -Real.log n/2 = -(Real.log n*(1/2)) by ring,Real.exp_neg,div_eq_mul_inv,mul_comm]
+    Tendsto (fun n : ℕ => properOctavePrefix n/Real.sqrt n) atTop (𝓝 1) := by
+  simpa only [proper_octave_prefix_eq,Function.comp_def] using
+    proper_chebyshev_square_root_density.comp (tendsto_natCast_atTop_atTop (R:=ℝ))
 
 /-- Extra logarithmic price of the gcd product beyond its ordinary primes. -/
 def properGcdOctavePrice (M X : ℕ) : ℝ := Real.log (octaveGcdProduct M X)-
   ∑ p ∈ (Ioc M (2*M)).filter Nat.Prime, ((X/p:ℕ):ℝ)*Real.log p
 
-private theorem floors (M X : ℕ) (mp : 0<M) :
-    properGcdOctavePrice M X = ∑ d ∈ Ioc M (2*M), ((X/d:ℕ):ℝ)*pp d := by
+theorem proper_gcd_as_floor_sum (M X : ℕ) (mp : 0<M) :
+    properGcdOctavePrice M X = ∑ d ∈ Ioc M (2*M), ((X/d:ℕ):ℝ)*properOctaveWeight d := by
   rw [properGcdOctavePrice,log_octave_gcd_product mp,sum_filter,←sum_sub_distrib]
   apply sum_congr rfl
   intro d _
-  by_cases hp : d.Prime <;> simp [pp,hp,vonMangoldt_apply_prime]
+  by_cases hp : d.Prime <;> simp [properOctaveWeight,hp,vonMangoldt_apply_prime]
 
 /-- The signed floor error lies between zero and the weighted proper-power
 count in the octave, independent of the cofactor horizon. -/
 theorem proper_gcd_rounding {M : ℕ} (mp : 0<M) (X : ℕ) :
-    0 ≤ (X:ℝ)*price pp M-properGcdOctavePrice M X ∧
-      (X:ℝ)*price pp M-properGcdOctavePrice M X ≤ prefix (2*M)-prefix M := by
+    0 ≤ (X:ℝ)*price properOctaveWeight M-properGcdOctavePrice M X ∧
+      (X:ℝ)*price properOctaveWeight M-properGcdOctavePrice M X ≤ properOctavePrefix (2*M)-properOctavePrefix M := by
   have sets : Icc 1 (2*M) \ Icc 1 M = Ioc M (2*M) := by
     ext d; simp only [mem_sdiff,mem_Icc,mem_Ioc]; omega
-  have diff : prefix (2*M)-prefix M = ∑ d ∈ Ioc M (2*M),pp d := by
+  have diff : properOctavePrefix (2*M)-properOctavePrefix M = ∑ d ∈ Ioc M (2*M),properOctaveWeight d := by
     rw [←sets,sum_sdiff_eq_sub (Icc_subset_Icc_right (show M ≤ 2*M by omega))]
-  rw [price,floors _ _ mp,mul_sum,←sum_sub_distrib,diff]
-  have term (d : ℕ) : (X:ℝ)*(pp d/d)-((X/d:ℕ):ℝ)*pp d =
-      ((X:ℝ)/d-((X/d:ℕ):ℝ))*pp d := by ring
+  rw [price,proper_gcd_as_floor_sum _ _ mp,mul_sum,←sum_sub_distrib,diff]
+  have term (d : ℕ) : (X:ℝ)*(properOctaveWeight d/d)-((X/d:ℕ):ℝ)*properOctaveWeight d =
+      ((X:ℝ)/d-((X/d:ℕ):ℝ))*properOctaveWeight d := by ring
   simp_rw [term]
   refine ⟨sum_nonneg fun d _ => mul_nonneg (sub_nonneg.mpr Nat.cast_div_le) (pp_nonneg d),?_⟩
   apply sum_le_sum
@@ -83,7 +89,7 @@ theorem dilated_gcd_proper_power_mass {ι : Type*} {l : Filter ι} {M X : ι →
   rw [one_mul] at main
   obtain ⟨C,hC⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
   have tiny := (tendsto_const_nhds (x:=|C|*Real.sqrt 2)).div_atTop hr
-  have delta : Tendsto (fun i => Real.sqrt (M i)*price pp (M i)-
+  have delta : Tendsto (fun i => Real.sqrt (M i)*price properOctaveWeight (M i)-
       Real.sqrt (M i)*properGcdOctavePrice (M i) (X i)/(X i:ℝ)) l (𝓝 0) := by
     apply squeeze_zero' _ _ tiny
     all_goals
@@ -91,15 +97,15 @@ theorem dilated_gcd_proper_power_mass {ι : Type*} {l : Filter ι} {M X : ι →
       have mr := (Nat.cast_pos (α:=ℝ)).mpr mpos
       have xr : 0 < (X i:ℝ) := (div_pos_iff_of_pos_right mr).mp xpos
       have h := proper_gcd_rounding mpos (X i)
-      have factor : Real.sqrt (M i)*price pp (M i)-
+      have factor : Real.sqrt (M i)*price properOctaveWeight (M i)-
           Real.sqrt (M i)*properGcdOctavePrice (M i) (X i)/(X i:ℝ) =
-          Real.sqrt (M i)/(X i:ℝ)*((X i:ℝ)*price pp (M i)-properGcdOctavePrice (M i) (X i)) := by
+          Real.sqrt (M i)/(X i:ℝ)*((X i:ℝ)*price properOctaveWeight (M i)-properGcdOctavePrice (M i) (X i)) := by
         field_simp; ring
       rw [factor]
     · exact mul_nonneg (div_nonneg (Real.sqrt_nonneg _) xr.le) h.1
     · have hc := (hC ((2*M i:ℕ):ℝ)).trans (mul_le_mul_of_nonneg_right (le_abs_self C) (Real.sqrt_nonneg _))
-      rw [←prefix_eq,Nat.cast_mul,Nat.cast_ofNat,Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 2)] at hc
-      have plen := (sub_le_self _ (sum_nonneg (fun n _ => pp_nonneg n) : 0 ≤ prefix (M i))).trans hc
+      rw [←proper_octave_prefix_eq,Nat.cast_mul,Nat.cast_ofNat,Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 2)] at hc
+      have plen := (sub_le_self _ (sum_nonneg (fun n _ => pp_nonneg n) : 0 ≤ properOctavePrefix (M i))).trans hc
       apply (mul_le_mul_of_nonneg_left (h.2.trans plen) (div_nonneg (Real.sqrt_nonneg _) xr.le)).trans_eq
       calc _ = |C|*Real.sqrt 2*(Real.sqrt (M i)*Real.sqrt (M i))/(X i:ℝ) := by ring
            _ = _ := by rw [Real.mul_self_sqrt mr.le]; field_simp

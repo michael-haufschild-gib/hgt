@@ -1,7 +1,6 @@
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
 import Mathlib.LinearAlgebra.Matrix.Trace
-import Mathlib.Data.Matrix.Notation
-import Mathlib.Data.Fintype.Units
+import Mathlib.Algebra.GroupWithZero.Units.Fintype
 import Mathlib.Tactic
 
 /-!
@@ -124,8 +123,50 @@ theorem card_traceDetFibre_repeated {K : Type*} [Field K] [Finite K] (u : K) :
       exact sub_eq_zero.mp (by
         by_contra hn
         exact (pow_ne_zero 2 hn) h)) }
-  rw [card_traceDetFibre, Nat.card_unique, Nat.sub_add_cancel (Nat.card_pos (α := K)), sq]
+  rw [card_traceDetFibre, Nat.card_unique (α := traceDetRoot (2*u) (u^2)), Nat.sub_add_cancel (Nat.card_pos (α := K)), sq]
 
+/-- The cardinal formula applies to literal characteristic-polynomial fibres. -/
+theorem card_rankTwo_charpoly {K : Type*} [Field K] [Finite K] (t d : K) :
+    Nat.card {A : Matrix (Fin 2) (Fin 2) K // A.charpoly = X^2 - C t*X + C d} =
+      Nat.card K * (Nat.card K - 1 + Nat.card (traceDetRoot t d)) := by
+  have iff_coefficients (A : Matrix (Fin 2) (Fin 2) K) :
+      A.charpoly = X^2 - C t*X + C d ↔ A.trace=t ∧ A.det=d := by
+    rw [charpoly_fin_two]
+    constructor
+    · intro he
+      have h₁ := congrArg (fun f : K[X] => f.coeff 1) he
+      have h₀ := congrArg (fun f : K[X] => f.coeff 0) he
+      simpa [coeff_X_pow,coeff_X,coeff_C] using And.intro h₁ h₀
+    · rintro ⟨ht,hd⟩
+      rw [ht,hd]
+  simp_rw [iff_coefficients]
+  exact card_traceDetFibre t d
+
+/-- Distinct split eigenvalues give q(q+1) matrices over every finite field. -/
+theorem card_traceDetFibre_distinct {K : Type*} [Field K] [Finite K] {u v : K} (huv : u≠v) :
+    Nat.card {A : Matrix (Fin 2) (Fin 2) K // A.trace=u+v ∧ A.det=u*v} =
+      Nat.card K * (Nat.card K + 1) := by
+  classical
+  have roots (x : K) : x*(u+v-x)=u*v ↔ x∈({u,v}:Finset K) := by
+    simp only [Finset.mem_insert,Finset.mem_singleton]
+    constructor
+    · intro h
+      have h0 : (x-u)*(x-v)=0 := by linear_combination -h
+      exact (mul_eq_zero.mp h0).imp sub_eq_zero.mp sub_eq_zero.mp
+    · rintro (rfl|rfl) <;> ring
+  let e : traceDetRoot (u+v) (u*v) ≃ ↥({u,v}:Finset K) :=
+    ⟨fun x => ⟨x.val,(roots x.val).mp x.property⟩,
+      fun x => ⟨x.val,(roots x.val).mpr x.property⟩,fun _ => rfl,fun _ => rfl⟩
+  have hcard : Nat.card (traceDetRoot (u+v) (u*v)) = 2 := by
+    rw [Nat.card_congr e,Nat.card_eq_fintype_card,Fintype.card_coe]
+    simp [huv]
+  rw [card_traceDetFibre,hcard]
+  have hpos := Nat.card_pos (α := K)
+  congr 1
+  omega
+
+#print axioms card_rankTwo_charpoly
+#print axioms card_traceDetFibre_distinct
 #print axioms card_traceDetFibre
 #print axioms card_traceDetFibre_repeated
 end

@@ -13,7 +13,8 @@ open Finset
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 noncomputable section
 
-private theorem block_kernel {P A B : Finset ℕ} (ha : A ⊆ P) (hb : B ⊆ P) :
+/-- Orthogonality in the coordinate indexing the Walsh characters. -/
+theorem blockCharacter_column_orthogonality {P A B : Finset ℕ} (ha : A ⊆ P) (hb : B ⊆ P) :
     ∑ T ∈ P.powerset, blockCharacter T A * blockCharacter T B =
       if A = B then (2:ℤ)^P.card else 0 := by
   simp_rw [blockCharacter, ← prod_mul_distrib]
@@ -50,7 +51,7 @@ theorem unitaryWalshContrast_inversion (k : ℕ) {A : Finset ℕ} (hA : A ⊆ k.
       constructor
       · rintro rfl; rw [Finset.sdiff_sdiff_eq_self hs]
       · rintro rfl; rw [Finset.sdiff_sdiff_eq_self hA]
-    rw [sum_sub_distrib, block_kernel hs hA, block_kernel sdiff_subset hA]
+    rw [sum_sub_distrib, blockCharacter_column_orthogonality hs hA, blockCharacter_column_orthogonality sdiff_subset hA]
     simp only [iffC]
   rw [sum_congr rfl inner, sum_sub_distrib, sum_ite_eq', sum_ite_eq']
   split_ifs <;> ring
@@ -179,10 +180,12 @@ theorem balanced_unitary_virial_floor {k : ℕ} (hk : 1 < k)
 
 #print axioms balanced_unitary_virial_floor
 
-private theorem character_symm (T S : Finset ℕ) : blockCharacter T S = blockCharacter S T := by
+/-- The subset character depends symmetrically on its two arguments. -/
+theorem blockCharacter_comm (T S : Finset ℕ) : blockCharacter T S = blockCharacter S T := by
   simp only [blockCharacter, prod_ite, filter_mem_eq_inter, prod_const, one_pow, mul_one, inter_comm T S]
 
-private theorem recover_mode {P T : Finset ℕ} (ht : T ⊆ P) (c : Finset ℕ → ℤ) :
+/-- Applying the unnormalized Walsh transform twice multiplies by the cube size. -/
+theorem blockCharacter_double_transform {P T : Finset ℕ} (ht : T ⊆ P) (c : Finset ℕ → ℤ) :
     ∑ A ∈ P.powerset, ((∑ U ∈ P.powerset, c U*blockCharacter U A)*blockCharacter T A) =
       c T*(2:ℤ)^P.card := by
   simp_rw [sum_mul, mul_assoc]
@@ -191,8 +194,8 @@ private theorem recover_mode {P T : Finset ℕ} (ht : T ⊆ P) (c : Finset ℕ �
       ∑ A ∈ P.powerset, c U*(blockCharacter U A * blockCharacter T A) =
         if U=T then c U*2^P.card else 0 := by
     rw [← mul_sum]
-    simp_rw [character_symm U, character_symm T]
-    rw [block_kernel (mem_powerset.mp hU) ht, mul_ite, mul_zero]
+    simp_rw [blockCharacter_comm U, blockCharacter_comm T]
+    rw [blockCharacter_column_orthogonality (mem_powerset.mp hU) ht, mul_ite, mul_zero]
   rw [sum_congr rfl one, sum_ite_eq', if_pos (mem_powerset.mpr ht)]
 
 /-- A dominant prime-power block puts the entire contrast in that one
@@ -212,11 +215,11 @@ theorem dominant_unitary_single_mode {k p : ℕ} (hk : 1 < k) (hp : p ∈ k.prim
     rw [unitaryWalshContrast_inversion k (mem_powerset.mp ha)]
     by_cases h : p ∈ A <;>
       simp [below (mem_powerset.mp ha), below (A:=P \ A) sdiff_subset, blockCharacter, P, hp, h]
-  have hrec := recover_mode ht (unitaryWalshContrast k)
+  have hrec := blockCharacter_double_transform ht (unitaryWalshContrast k)
   change (∑ A ∈ P.powerset, _) = _ at hrec
   rw [sum_congr rfl (fun A ha => congrArg (· * blockCharacter T A) (vertex A ha))] at hrec
-  simp_rw [mul_assoc, character_symm {p}, character_symm T] at hrec
-  rw [← mul_sum, block_kernel (singleton_subset_iff.mpr hp) ht] at hrec
+  simp_rw [mul_assoc, blockCharacter_comm {p}, blockCharacter_comm T] at hrec
+  rw [← mul_sum, blockCharacter_column_orthogonality (singleton_subset_iff.mpr hp) ht] at hrec
   apply mul_right_cancel₀ (pow_ne_zero P.card (by norm_num : (2:ℤ) ≠ 0))
   simpa only [mul_comm ((2:ℤ)^P.card), eq_comm (a:={p}) (b:=T)] using hrec.symm
 

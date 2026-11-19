@@ -258,8 +258,9 @@ theorem difference_multiplicity_budget {m : ℕ} {T h r : ℝ} (x : Fin (m+1) �
   have hs' : 1+h ≤ 2 := by linarith
   have hpd := positive_prime_field hh
   have hf₀ : f 0 ≤ 1/h-1/5 := by
-    simpa only [f,zetaRealLogDeriv,Complex.ofReal_zero,zero_mul,add_zero,add_sub_cancel_left,
-      sub_eq_add_neg] using neg_re_logDeriv_riemannZeta_real_le_neg hs hs'
+    have hreal := neg_re_logDeriv_riemannZeta_real_le_neg hs hs'
+    rw [show 1+h-1 = h by ring] at hreal
+    simpa only [f,zetaRealLogDeriv,Complex.ofReal_zero,zero_mul,add_zero,sub_eq_add_neg] using hreal
   have hsum : 0 ≤ ∑ j, ∑ k, f (x j-x k) := by
     simpa only [one_mul] using hpd.posDef (m+1) x (fun _ => 1)
   have hentry (j k : Fin (m+1)) (hn : j ≠ k) :
@@ -286,7 +287,7 @@ theorem difference_multiplicity_budget {m : ℕ} {T h r : ℝ} (x : Fin (m+1) �
       simpa only [sub_self] using Finset.sum_erase_add (s := Finset.univ)
         (fun k => f (x j-x k)) (Finset.mem_univ j)
     rw [← heq,← add_assoc]
-    apply add_le_add_right
+    apply add_le_add _ (le_refl (f 0))
     change (∑ k ∈ S, ((diskCopies 1 |x j-x k| r).card:ℝ))/(h+r) + _ ≤ _
     rw [Finset.sum_div,←Finset.sum_add_distrib]
     calc _ ≤ ∑ _k ∈ S,A := Finset.sum_le_sum fun k hk => hentry j k (Finset.ne_of_mem_erase hk).symm
@@ -394,7 +395,7 @@ theorem quarter_of_harmonic_disks_empty {m : ℕ} (hm : 8 ≤ m) {t : ℝ} (ht :
   have hh := hb.trans (progression_vacancies_le m ht₀ r)
   have hm₀ : 0<(m:ℝ)+1 := by positivity
   have hcan : (m:ℝ)*(1-1/4)-2 ≤ 2*vacantHarmonics m t r :=
-    (mul_le_mul_iff_right₀ hm₀).mp (by convert hh using 1 <;> ring)
+    (mul_le_mul_iff_right₀ hm₀).mp (by convert hh using 1; ring)
   linarith only [hm₁,hcan]
 
 #print axioms quarter_of_harmonic_disks_empty

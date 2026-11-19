@@ -224,17 +224,16 @@ theorem heatTimeProduct_orbits {M : Type*} [CommMonoid M] (r : ℝ) (f : ℝ →
   let w (p : ℂ × ℂ) := f p.1.re ^ heatIntersectionMultiplicity p
   have h := prod_oriented (heatBoxSites r) (fun p => p.2.re) w reflectSite
     (fun p => by simp [reflectSite]) (fun _ hp => reflect_mem hp) (fun _ => rfl)
-    (fun p => by simp only [w,weight_reflect]; rfl)
+    (fun p => by simp only [w,weight_reflect] <;> rfl)
   have hempty : ((heatBoxSites r).filter fun p => p.2.re = 0) = ∅ :=
     filter_eq_empty_iff.mpr fun p hp => site_re_ne_zero hp
   rw [hempty, prod_empty, one_mul] at h
   have h' := prod_oriented S (fun p => p.2.im) w conjugateSite
     (fun p => by simp [conjugateSite]) (fun p hp => mem_filter.mpr
       ⟨conjugate_mem (mem_filter.mp hp).1, (mem_filter.mp hp).2⟩) (fun _ => rfl)
-    (fun p => by simp only [w,weight_conjugate]; rfl)
+    (fun p => by simp only [w,weight_conjugate] <;> rfl)
   change heatTimeProduct (heatBoxSites r) f = (∏ p ∈ S, w p)^2 at h
-  rw [h,h',mul_pow,← pow_mul]
-  rfl
+  rw [h,h',mul_pow,← pow_mul] <;> rfl
 
 /-- On the entire complex time plane the projected discriminant admits
 an explicit polynomial square root, with a double factor for each quartet. -/
@@ -247,7 +246,7 @@ theorem projectedHeatDiscriminant_realBox (r : ℝ) (t : ℂ) :
       refine prod_congr rfl fun p hp => ?_
       obtain ⟨a,_,he⟩ := (mem_heatBoxSites.mp hp).1.1
       simp only [← he, Complex.ofReal_re]
-    _ = _ := by rw [heatTimeProduct_orbits, mul_pow, ← pow_mul]; rfl
+    _ = _ := by rw [heatTimeProduct_orbits, mul_pow, ← pow_mul] <;> rfl
 
 /-- The norm of the actual contour integral has gap 4π at zero. The
 rectangle encloses the projected times even if a spatial face contains a collision. -/

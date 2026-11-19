@@ -80,7 +80,7 @@ theorem odd_band_separated_moments (a b c H : ℕ) :
         (oddBandWeight H i * oddBandWeight H j)
   apply h.congr_fun
   intro k
-  rw [Finset.mul_sum, Finset.sum_mul]
+  rw [Finset.mul_sum (Ioc a b), Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro i _
   rw [Finset.mul_sum]

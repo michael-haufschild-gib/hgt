@@ -252,6 +252,12 @@ The goal is met when route QIC is fully closed and formalized unconditionally in
 
 21 Gershgorin
 
+22 Riesz
+
+23 Pitaevskii
+
+24 Jensen
+
 ## apply external paper to corpus experiment
 
 task:

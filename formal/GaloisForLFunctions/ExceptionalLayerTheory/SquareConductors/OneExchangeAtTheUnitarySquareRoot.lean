@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ThePivotalBlockAtTheUnitaryMidpoint
 import Mathlib.Data.Nat.Log
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
 # A two-vertex change at the unitary square root
@@ -206,6 +207,45 @@ theorem balanced_minus_two_at_every_odd_rank (r : ℕ) :
     rw [hneg] at hh
     split_ifs at hh <;> omega
 
+private theorem dyadic_cofactor_le_sqrt {m X : ℕ} (hk : dyadicUnitaryCompletion m ≤ X) :
+    m ≤ Nat.sqrt (2*X) := by
+  apply Nat.le_sqrt.mpr
+  have h := Nat.lt_pow_succ_log_self (by decide : 1<2) m
+  rw [pow_succ] at h
+  calc m*m ≤ (2^Nat.log 2 m*2)*m := Nat.mul_le_mul_right m h.le
+       _ = 2*dyadicUnitaryCompletion m := by unfold dyadicUnitaryCompletion; ring
+       _ ≤ _ := Nat.mul_le_mul_left 2 hk
+
+/-- The entire dyadically completed family costs only a square root times
+one logarithm in the priced midpoint sum. The signs can represent either
+adjacent window, coprimality restrictions, and arbitrary subsampling. -/
+theorem dyadic_midpoint_price_bound (S : Finset ℕ) (X : ℕ) (w : ℕ → ℝ)
+    (hS : ∀ k ∈ S, k ≤ X ∧ ∃ m : ℕ, 1<m ∧ ¬ 2 ∣ m ∧ Even m.primeFactors.card ∧
+      k=dyadicUnitaryCompletion m) (hw : ∀ k ∈ S, |w k| ≤ 1) :
+    |∑ k ∈ S, w k*Real.log k*(unitaryHalfWeight k:ℝ)| ≤
+      2*Real.log X*((Nat.sqrt (2*X):ℝ)+1) := by
+  have sub : S ⊆ (range (Nat.sqrt (2*X)+1)).image dyadicUnitaryCompletion := by
+    intro k hk
+    obtain ⟨hle,m,_,_,_,rfl⟩ := hS k hk
+    exact mem_image.mpr ⟨m,mem_range.mpr (Nat.lt_succ_of_le (dyadic_cofactor_le_sqrt hle)),rfl⟩
+  have hc := (card_le_card sub).trans card_image_le
+  rw [card_range] at hc
+  have hl := Real.log_natCast_nonneg X
+  have point (k : ℕ) (hk : k ∈ S) : |w k*Real.log k*(unitaryHalfWeight k:ℝ)| ≤ 2*Real.log X := by
+    obtain ⟨hle,m,hm,hodd,he,hk'⟩ := hS k hk
+    have hpos : 0 < k := by rw [hk',dyadicUnitaryCompletion]; positivity
+    have hprice : unitaryHalfWeight k = -2 := hk' ▸ dyadic_completion_midpoint hm hodd he
+    rw [hprice,abs_mul,abs_mul,abs_of_nonneg (Real.log_natCast_nonneg k)]
+    have h := mul_le_mul (hw k hk) (Real.log_le_log (Nat.cast_pos.mpr hpos)
+      (Nat.cast_le.mpr hle)) (Real.log_natCast_nonneg k) zero_le_one
+    norm_num at h ⊢
+    linarith only [h]
+  calc _ ≤ ∑ k ∈ S, |w k*Real.log k*(unitaryHalfWeight k:ℝ)| := abs_sum_le_sum_abs ..
+       _ ≤ ∑ _k ∈ S, 2*Real.log X := sum_le_sum point
+       _ = 2*Real.log X*(S.card:ℝ) := by rw [sum_const,nsmul_eq_mul,mul_comm]
+       _ ≤ _ := mul_le_mul_of_nonneg_left (by exact_mod_cast hc) (by positivity)
+
+#print axioms dyadic_midpoint_price_bound
 #print axioms dyadic_completion_midpoint
 #print axioms balanced_minus_two_at_every_odd_rank
 #print axioms small_unitary_subsets_one_exchange

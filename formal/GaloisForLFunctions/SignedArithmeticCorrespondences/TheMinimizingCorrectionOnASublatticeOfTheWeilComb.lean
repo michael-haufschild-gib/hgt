@@ -1,10 +1,13 @@
 import GaloisForLFunctions.SignedArithmeticCorrespondences.WeilMassOnDilatedCombWindows
+import GaloisForLFunctions.HodgeTheoryOfAFixedPart.TheRiemannHypothesisIsExactEventualCombPositivity
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheFormOfLogarithmicTailsIsDeterminedByTheRowsOfTheFlatTail
 
 /-!
 # Minimizing Weil's form over the sites of a proper sublattice
 
-For every exterior profile there is a unique correction on the sublattice
+The coercive inversion in Lauritsen–Lewin–Oldenburg, Lemma 3.2, has a
+finite analogue for the arithmetic sublattice. For every exterior
+profile there is a unique correction on the sublattice
 that annihilates all its rows. The reduction in energy equals the energy of
 the correction. The growing sublattice floor controls the inverse response
 to any forcing on the rows.
@@ -161,6 +164,50 @@ theorem eventually_comb_minimizing_correction (d : ℕ+) (hd : 2 ≤ (d:ℕ)) (Q
   rw [exact_cost,add_sub_cancel_left]
   exact floor _ (fun n _ hn => dif_neg fun h => hn (mem_filter.mp h).2)
 
+/-- The full eventual Weil sign is equivalent to testing, on cofinal aligned
+windows, just the profiles whose exact Weil rows at every even site vanish.
+Their odd values are free; their even values are determined by minimization. -/
+theorem rh_iff_cofinal_even_row_equilibria :
+    RiemannHypothesis ↔ ∀ K : ℕ, 1 ≤ K → ∃ᶠ N : ℕ in atTop,
+      let S := Ioc (2*N) (2*(N+3*K*N))
+      ∀ c : ℕ → ℝ, (∀ i ∈ S, 2 ∣ i → combSiteRow S c i = 0) → 0 ≤ combForm S c := by
+  let S (K N : ℕ) := Ioc (2*N) (2*(N+3*K*N))
+  have win (K N : ℕ) : S K N = Ioc (2*N) (2*N+3*K*(2*N)) := by
+    dsimp only [S]; congr 1; ring
+  have top : Tendsto (fun n : ℕ => 2*n) atTop atTop :=
+    tendsto_atTop_mono (fun n => Nat.le_mul_of_pos_left n (by decide : 0 < 2)) tendsto_id
+  constructor
+  · intro h K _
+    apply Eventually.frequently
+    filter_upwards [top (eventually_combForm_nonneg_of_riemannHypothesis h K)] with N hN
+    intro c _
+    change 0 ≤ combForm (S K N) c
+    rw [win]
+    exact hN c
+  · intro h
+    apply riemannHypothesis_of_frequently_combForm_ge
+    intro K hk η hη
+    let Q : ℕ+ := ⟨3*K,by omega⟩
+    have minimize := eventually_comb_minimizing_correction (2:ℕ+) (by decide) Q 1 zero_lt_one
+    have floor := eventually_full_comb_on_multiples (2:ℕ+) (by decide) Q 1
+    apply frequently_atTop.mpr
+    intro M
+    obtain ⟨N,⟨⟨hN,hmin⟩,hfloor⟩,hM⟩ := ((((h K hk).and_eventually minimize).and_eventually floor).and_eventually
+      (eventually_ge_atTop M)).exists
+    refine ⟨2*N,by omega,fun o => ?_⟩
+    rw [←win]
+    apply (mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr hη.le) (sum_nonneg fun _ _ => sq_nonneg _)).trans
+    let E := (S K N).filter (fun n => 2 ∣ n)
+    obtain ⟨x,hrow,hrelease,_,_⟩ := hmin o
+    let e := combSiteExtension E x
+    have hc : 0 ≤ combForm (S K N) (fun n => o n+e n) :=
+      hN _ (fun i hi hd => hrow ⟨i,mem_filter.mpr ⟨hi,hd⟩⟩)
+    have he := hfloor e (fun n _ hn => dif_neg (fun h => hn (mem_filter.mp h).2))
+    change 1*(∑ n ∈ S K N, (e n)^2) ≤ combForm (S K N) e at he
+    change combForm (S K N) (fun n => o n+e n) = combForm (S K N) o-combForm (S K N) e at hrelease
+    linarith only [hc,hrelease,he,sum_nonneg (s:=S K N) (fun n _ => sq_nonneg (e n))]
+
+#print axioms rh_iff_cofinal_even_row_equilibria
 #print axioms eventually_comb_site_response
 #print axioms eventually_comb_minimizing_correction
 end GaloisForLFunctions.SignedArithmeticCorrespondences

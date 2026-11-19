@@ -30,7 +30,8 @@ private theorem sign_odd_product {a b : ℕ} (ha : a % 2 = 1) (hb : b % 2 = 1) (
       (H % n + H / n) % 2 = H % 2 := by
     have h := congrArg (fun t : ℕ => t % 2) (Nat.mod_add_div H n)
     change (H % n + n * (H / n)) % 2 = H % 2 at h
-    rwa [Nat.add_mod, Nat.mul_mod, hn, one_mul, ← Nat.add_mod] at h
+    rw [Nat.add_mod, Nat.mul_mod, hn, one_mul, ← Nat.add_mod] at h
+    omega
   have h₁ := digit ha
   have h₂ := digit hb
   unfold quotientSign
@@ -167,7 +168,7 @@ theorem centeredQuotientReading_eq (S : Finset ℕ) (H : ℕ) :
   unfold quotientSign
   rw [neg_one_pow_eq_pow_mod_two]
   have hb := Nat.mod_lt (H/n) (by decide : 0 < 2)
-  rcases (show H/n%2=0 ∨ H/n%2=1 by omega) with h|h <;> simp [h] <;> ring
+  rcases (show H/n%2=0 ∨ H/n%2=1 by omega) with h|h <;> (simp [h]; ring)
 
 private theorem quotientSign_period (n : ℕ) : Function.Periodic (quotientSign n) (2*n) := by
   rcases n with _|n
@@ -219,7 +220,7 @@ theorem centeredQuotientReading_prefix_product (S T : Finset ℕ) (X : ℕ) :
       ∑ n ∈ S, ∑ m ∈ T, ordinaryPrimeExcessCoeff n * ordinaryPrimeExcessCoeff m *
         (((X / (2*n.lcm m) : ℕ) : ℝ) * quotientGramMass n m +
           ∑ H ∈ range (X % (2*n.lcm m)), quotientSign n H * quotientSign m H) := by
-  conv_lhs => simp_rw [centeredQuotientReading_eq, sum_mul, mul_sum]
+  conv_lhs => simp only [centeredQuotientReading_eq, sum_mul, mul_sum]
   rw [sum_comm]
   apply sum_congr rfl
   intro n _

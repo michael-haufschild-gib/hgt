@@ -94,6 +94,93 @@ theorem producer_infinite_tail_budget {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsP
   apply add_le_add _ le_rfl
   exact sum_le_sum_of_subset_of_nonneg (range_mono hKM) fun i _ _ => by positivity
 
+private theorem floor_tail_step (c : ℕ →₀ ℤ) (m B M i : ℕ) :
+    floorExcessTail c m B M i = floorExcessTail c m B M (i+1)+IsProducer.excessTerm m B c i := by
+  simp only [floorExcessTail,Finset.sum_range_succ (IsProducer.excessTerm m B c) i]
+  ring
+
+/-- The exact deficit from twice the cap times total mass consists of a
+squared-increment cost and the unoccupied tail capacity at each site. -/
+theorem floor_tail_capacity_identity (c : ℕ →₀ ℤ) (m B M : ℕ) (P : ℝ) :
+    let R := floorExcessTail c m B M
+    let e := IsProducer.excessTerm m B c
+    (∑ i ∈ range M, (R i)^2+((i:ℝ)+1)*(e i)^2 + 2*e i*(P-((i:ℝ)+1)*R i)) =
+      2*P*R 0 := by
+  intro R e
+  let v (i : ℕ) := (i:ℝ)*(R i)^2
+  have cell (i : ℕ) :
+      (R i)^2+((i:ℝ)+1)*(e i)^2+2*e i*(P-((i:ℝ)+1)*R i) =
+        2*P*e i + (v (i+1)-v i) := by
+    dsimp only [v]
+    rw [show R i=R (i+1)+e i from floor_tail_step c m B M i,Nat.cast_succ]
+    ring
+  simp_rw [cell]
+  rw [sum_add_distrib,← mul_sum,Finset.sum_range_sub]
+  have hM : R M=0 := sub_self _
+  dsimp only [v]
+  simp only [hM,Nat.cast_zero,zero_mul,ne_eq,OfNat.ofNat_ne_zero,not_false_eq_true,zero_pow,
+    mul_zero,sub_zero,add_zero,R,floorExcessTail,range_zero,sum_empty]
+
+private theorem producer_pronic_cap {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsProducer c m B) (i : ℕ) :
+    IsProducer.excessTerm m B c i ≤ (peak c:ℝ)/(((i:ℝ)+1)*((i:ℝ)+2)) := by
+  unfold IsProducer.excessTerm
+  apply div_le_div_of_nonneg_right _ (by positivity)
+  have hp : (stepWeight c (i+1) : ℝ) ≤ peak c := by exact_mod_cast hP.stepWeight_le_peak (i+1)
+  split_ifs <;> linarith only [hp,Nat.cast_nonneg (α:=ℝ) m]
+
+private theorem finite_tail_capacity {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsProducer c m B) (i M : ℕ) (hi : i ≤ M) :
+    floorExcessTail c m B M i ≤ (peak c:ℝ)/((i:ℝ)+1)-(peak c:ℝ)/((M:ℝ)+1) := by
+  induction M,hi using Nat.le_induction with
+  | base => simp [floorExcessTail]
+  | succ M _ ih =>
+    have add_term : floorExcessTail c m B (M+1) i =
+        floorExcessTail c m B M i + IsProducer.excessTerm m B c M := by
+      simp only [floorExcessTail,Finset.sum_range_succ (IsProducer.excessTerm m B c) M]
+      ring
+    rw [add_term,Nat.cast_succ]
+    apply (add_le_add ih (producer_pronic_cap hP M)).trans
+    apply le_of_eq
+    field_simp
+    ring
+
+/-- Positivity and the actual site cap improve the Hardy constant from four
+to two, while also paying for the squared pronic increments. -/
+theorem producer_tail_energy_and_increments {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsProducer c m B) (M : ℕ) :
+    (∑ i ∈ range M, (floorExcessTail c m B M i)^2+((i:ℝ)+1)*(IsProducer.excessTerm m B c i)^2)
+      ≤ 2*(peak c:ℝ)*floorExcessTail c m B M 0 := by
+  rw [← floor_tail_capacity_identity c m B M (peak c)]
+  apply sum_le_sum
+  intro i hi
+  apply le_add_of_nonneg_right
+  apply mul_nonneg (mul_nonneg (by norm_num) (hP.excessTerm_nonneg i))
+  apply sub_nonneg.mpr
+  have hp : (0:ℝ) ≤ peak c := by exact_mod_cast (Int.natCast_nonneg m).trans hP.le_peak
+  have h := (finite_tail_capacity hP i M (mem_range.mp hi).le).trans
+    (sub_le_self _ (div_nonneg hp (by positivity)))
+  simpa only [mul_comm (floorExcessTail c m B M i)] using (le_div_iff₀ (by positivity)).mp h
+
+/-- The total quadratic cost of all limiting tails and their increments is
+uniformly bounded on every finite window. -/
+theorem producer_infinite_energy_and_increments {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsProducer c m B) (K : ℕ) :
+    (∑ i ∈ range K,
+      (excess c m B-∑ j ∈ range i, IsProducer.excessTerm m B c j)^2+
+        ((i:ℝ)+1)*(IsProducer.excessTerm m B c i)^2) ≤ 2*(peak c:ℝ)*excess c m B := by
+  let e := IsProducer.excessTerm m B c
+  have ht : Filter.Tendsto (fun M => ∑ i ∈ range M, e i) Filter.atTop (nhds (excess c m B)) :=
+    hP.hasSum_excess.tendsto_sum_nat
+  have lim (i : ℕ) : Filter.Tendsto (fun M => floorExcessTail c m B M i) Filter.atTop
+      (nhds (excess c m B-∑ j ∈ range i, e j)) := ht.sub_const _
+  have hzero : Filter.Tendsto (fun M => floorExcessTail c m B M 0) Filter.atTop (nhds (excess c m B)) := by
+    simpa only [range_zero,sum_empty,sub_zero] using lim 0
+  have hsum := tendsto_finsetSum (range K) (fun i _ => ((lim i).pow 2).add_const (((i:ℝ)+1)*(e i)^2))
+  apply le_of_tendsto_of_tendsto hsum (hzero.const_mul (2*(peak c:ℝ)))
+  filter_upwards [Filter.eventually_ge_atTop K] with M hm
+  apply le_trans _ (producer_tail_energy_and_increments hP M)
+  exact sum_le_sum_of_subset_of_nonneg (range_mono hm) fun i _ _ => by positivity
+
+#print axioms floor_tail_capacity_identity
+#print axioms producer_tail_energy_and_increments
+#print axioms producer_infinite_energy_and_increments
 #print axioms producer_floorExcessTail_budget
 #print axioms producer_infinite_tail_budget
 
