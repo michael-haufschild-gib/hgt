@@ -68,10 +68,12 @@ theorem cubic_rough_indicator_eq (Y : ℕ) :
     (if (primorial Y).gcd k=1 then 1 else 0)
   simp only [Nat.gcd_comm k]
 
-private def logPriceOf (f : ArithmeticFunction ℝ) : ArithmeticFunction ℝ :=
+/-- Multiply each arithmetic coefficient by the logarithm of its index. -/
+def logPriceOf (f : ArithmeticFunction ℝ) : ArithmeticFunction ℝ :=
   ⟨fun k => f k*Real.log k,by simp⟩
 
-private theorem log_price_leibniz (f g : ArithmeticFunction ℝ) :
+/-- Index logarithms turn Dirichlet convolution into a derivation. -/
+theorem log_price_leibniz (f g : ArithmeticFunction ℝ) :
     logPriceOf (f*g)=logPriceOf f*g+f*logPriceOf g := by
   ext k
   change (f*g) k*Real.log k=_
@@ -85,7 +87,8 @@ private theorem log_price_leibniz (f g : ArithmeticFunction ℝ) :
   change _=f x.1*Real.log x.1*g x.2+f x.1*(g x.2*Real.log x.2)
   ring
 
-private theorem rough_log_price (Y : ℕ) :
+/-- The logarithm on a rough integer is the sum of its rough Mangoldt divisor prices. -/
+theorem rough_log_price (Y : ℕ) :
     logPriceOf (cubicRoughIndicator Y)=cubicRoughMangoldt Y*cubicRoughIndicator Y := by
   unfold cubicRoughMangoldt cubicRoughIndicator
   rw [←primitive_part_mul,vonMangoldt_mul_zeta]
@@ -181,6 +184,16 @@ private theorem rough_mangoldt_value (Y a : ℕ) :
   · have h : a=0 ∨ a=1 := by omega
     rcases h with rfl | rfl <;> simp [cubicNonunit,cubicRoughMangoldt,primitivePart]
 
+/-- A nonunit rough factor and every nonzero rough Mangoldt coefficient
+both have index strictly above the cutoff. -/
+theorem cubic_nonunit_index {Y a : ℕ}
+    (h : (cubicRoughIndicator Y-1) a ≠ 0 ∨ cubicRoughMangoldt Y a ≠ 0) : Y < a := by
+  classical
+  by_cases hs : cubicNonunit Y a
+  · exact (cubic_le_minFac hs.1 hs.2).trans (Nat.le_of_dvd hs.1.le (Nat.minFac_dvd a))
+  · exfalso
+    simpa only [rough_nonunit_value,rough_mangoldt_value,if_neg hs,ne_self_iff_false,or_self] using h
+
 private theorem triple_price_congr {k : ℕ} {f g h F G H : ArithmeticFunction ℝ}
     (he : ∀ a b c : ℕ, a*b*c=k → f a*g b*h c=F a*G b*H c) :
     (f*g*h) k=(F*G*H) k := by
@@ -227,5 +240,47 @@ theorem cubic_rough_triple_price {n Y k : ℕ} (hc : 3*n < (Y+1)^3)
 
 #print axioms cubic_prime_indicator_apply
 #print axioms cubic_rough_triple_price
+
+/-- The integer cube root of the actual shared endpoint. -/
+def cubicMidpointCut (n : ℕ) : ℕ := ⌊(3*(n:ℝ))^(1/3:ℝ)⌋₊
+
+/-- Sharp cube-root and large-divisor thresholds for the two original intervals. -/
+theorem cubic_midpoint_thresholds (n : ℕ) (hY : 3 ≤ cubicMidpointCut n) :
+    let Y := cubicMidpointCut n
+    Y^3 ≤ 3*n ∧ 3*n < (Y+1)^3 ∧ 4*n < (Y+1)^4 ∧ Y^2 ≤ 4*n/(Y+1) := by
+  let x := (3*(n:ℝ))^(1/3:ℝ)
+  let Y := cubicMidpointCut n
+  have hx0 : 0 ≤ x := Real.rpow_nonneg (by positivity) _
+  have hx : x^3=3*n := by
+    dsimp only [x]
+    rw [←Real.rpow_natCast,←Real.rpow_mul (by positivity)]
+    norm_num
+  have hlo : (Y:ℝ) ≤ x := Nat.floor_le hx0
+  have hhi : x < (Y:ℝ)+1 := Nat.lt_floor_add_one _
+  have hleft := pow_le_pow_left₀ (Nat.cast_nonneg Y) hlo 3
+  have hright := pow_lt_pow_left₀ hhi hx0 (by decide : (3:ℕ)≠0)
+  rw [hx] at hleft hright
+  have h1 : Y^3 ≤ 3*n := by exact_mod_cast hleft
+  have h2 : 3*n < (Y+1)^3 := by exact_mod_cast hright
+  have hY' : 3 ≤ Y := hY
+  have h3 : 3*Y^2 ≤ Y^3 := by
+    rw [pow_succ Y 2,mul_comm (Y^2)]; exact Nat.mul_le_mul_right _ hY'
+  have h4 : 2*(Y+1)^3 ≤ (Y+1)^4 := by
+    rw [pow_succ (Y+1) 3,mul_comm ((Y+1)^3)]
+    exact Nat.mul_le_mul_right _ (by omega)
+  refine ⟨h1,h2,by omega,(Nat.le_div_iff_mul_le (Nat.succ_pos _)).mpr ?_⟩
+  rw [Nat.mul_succ,←pow_succ]
+  omega
+
+/-- Exact right triple price for the floor of the cube root of the shared
+endpoint, with no auxiliary power-cut assumptions. -/
+theorem cubic_midpoint_rough_triple_price {n k : ℕ} (hY : 3 ≤ cubicMidpointCut n) (hk : k≤4*n) :
+    let Y := cubicMidpointCut n
+    3*((cubicRoughMangoldt Y*(cubicRoughIndicator Y-1)^2 : ArithmeticFunction ℝ) k)=
+      (cubicPrimeIndicator Y^3 : ArithmeticFunction ℝ) k*Real.log k := by
+  have ht := cubic_midpoint_thresholds n hY
+  exact cubic_rough_triple_price ht.2.1 ht.2.2.1 hk
+
+#print axioms cubic_midpoint_rough_triple_price
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

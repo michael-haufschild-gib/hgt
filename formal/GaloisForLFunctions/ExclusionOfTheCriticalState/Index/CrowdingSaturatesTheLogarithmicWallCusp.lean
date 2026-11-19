@@ -226,7 +226,7 @@ theorem smoothedWallLogProfile_tendsto_terminal_sq (ℓ : ℝ) :
   have hJ := tendsto_log_div_mul_integral_inv_neg_log
   have hc : Tendsto (fun h : ℝ => ℓ ^ 2 * (1 - 8 * h) ^ 4) (𝓝[>] 0) (𝓝 (ℓ ^ 2)) := by
     have hcont : Continuous fun h : ℝ => ℓ ^ 2 * (1 - 8 * h) ^ 4 := by fun_prop
-    have h0 := (hcont.continuousAt (x := 0)).tendsto.mono_left nhdsWithin_le_nhds
+    have h0 := (hcont.continuousAt (x := 0)).tendsto.mono_left (nhdsWithin_le_nhds (s := Ioi 0))
     rwa [mul_zero, sub_zero, one_pow, mul_one] at h0
   have hlo : Tendsto (fun h : ℝ => ℓ ^ 2 * (1 - 8 * h) ^ 4 * J h) (𝓝[>] 0) (𝓝 (ℓ ^ 2)) := by
     simpa only [mul_one] using hc.mul hJ
@@ -786,7 +786,7 @@ private theorem integrableOn_inv_two_mul_wallRootLog_cube {b : ℝ} (_ : 0 < b) 
 private theorem intervalIntegrable_inv_two_mul_wallRootLog_cube {b : ℝ} (hb0 : 0 < b)
     (hb4 : b ≤ 1 / 4) :
     IntervalIntegrable (fun v : ℝ => (2 * v * wallRootLog v ^ 3)⁻¹) volume 0 b :=
-  (intervalIntegral.intervalIntegrable_iff_integrableOn_Ioc_of_le hb0.le).mpr
+  (intervalIntegrable_iff_integrableOn_Ioc_of_le hb0.le).mpr
     (integrableOn_inv_two_mul_wallRootLog_cube hb0 hb4)
 
 private theorem intervalIntegral_inv_two_mul_wallRootLog_cube {b : ℝ} (hb0 : 0 < b)
@@ -811,7 +811,7 @@ private theorem measurable_cuspMainDeriv : Measurable cuspMainDeriv :=
 private theorem intervalIntegrable_cuspMainDeriv_zero {b : ℝ} (hb0 : 0 < b) (hb8 : b ≤ 1 / 8) :
     IntervalIntegrable cuspMainDeriv volume 0 b := by
   have hb4 : b ≤ 1 / 4 := hb8.trans (by norm_num)
-  rw [intervalIntegral.intervalIntegrable_iff_integrableOn_Ioc_of_le hb0.le]
+  rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hb0.le]
   refine (integrableOn_inv_two_mul_wallRootLog_cube hb0 hb4).mono'
     measurable_cuspMainDeriv.aestronglyMeasurable ?_
   filter_upwards [ae_restrict_mem measurableSet_Ioc] with v hv
@@ -861,7 +861,7 @@ private theorem laplace_smoothedWallLogProfile_eq_intervalIntegral (ℓ : ℝ) (
       have hr0 : reflectedCusp v = 0 := by
         dsimp only [reflectedCusp]
         exact if_neg fun h => hv ⟨h.1, h.2.le⟩
-      rw [hr0, Complex.ofReal_zero, mul_zero, mul_zero, mul_zero]
+      simp only [hr0, Complex.ofReal_zero, mul_zero]
   rw [show (∫ x : ℝ, Complex.exp (w * ((-x : ℝ) : ℂ)) * cx (smoothedWallLogProfile ℓ) (-x)) = _ from
       congrArg (fun f : ℝ → ℂ => ∫ x, f x) heq,
     integral_const_mul, integral_indicator measurableSet_Ioc,
@@ -920,7 +920,8 @@ private theorem mul_laplace_smoothedWallLogProfile_eq (ℓ : ℝ) (w : ℂ) :
     · simp [reflectedCusp, invWallRootLogZero]
     · rcases eq_or_lt_of_le hv.2 with rfl | hv8
       · simp [reflectedCusp]
-      · rw [reflectedCusp, if_pos ⟨hv0, hv8⟩, invWallRootLogZero, if_neg (not_le.mpr hv0)]
+      · unfold reflectedCusp invWallRootLogZero
+        rw [if_pos ⟨hv0, hv8⟩, if_neg (not_le.mpr hv0)]
   have hg_cont : ContinuousOn reflectedCusp (Icc 0 (1 / 8)) :=
     (((by fun_prop : Continuous fun v : ℝ => (1 - 8 * v) ^ 2).continuousOn).mul
       (continuousOn_invWallRootLogZero.mono (Icc_subset_Icc le_rfl (by norm_num)))).congr href_eq
@@ -934,12 +935,12 @@ private theorem mul_laplace_smoothedWallLogProfile_eq (ℓ : ℝ) (w : ℂ) :
     have hd2 := hasDerivAt_inv_wallRootLog hv.1 (by linarith [hv.2])
     have hprod : HasDerivAt (fun t : ℝ => (1 - 8 * t) ^ 2 * (wallRootLog t)⁻¹)
         (cuspMainDeriv v - cuspSubDeriv v) v := (hd1.mul hd2).congr_deriv (by
-      dsimp only [cuspMainDeriv, cuspSubDeriv]
-      rw [invWallRootLogZero, if_neg (not_le.mpr hv.1)]
+      dsimp only [cuspMainDeriv, cuspSubDeriv, invWallRootLogZero]
+      rw [if_neg (not_le.mpr hv.1)]
       ring)
     refine hprod.congr_of_eventuallyEq ?_
     filter_upwards [Ioo_mem_nhds hv.1 hv.2] with t ht
-    simp [reflectedCusp, ht.1, ht.2]
+    rw [reflectedCusp, if_pos ⟨ht.1, ht.2⟩]
   have hmain_int : IntervalIntegrable cuspMainDeriv volume 0 (1 / 8) :=
     intervalIntegrable_cuspMainDeriv_zero (by norm_num) le_rfl
   have hsub_cont : ContinuousOn cuspSubDeriv (Icc 0 (1 / 8)) :=
@@ -992,11 +993,11 @@ private theorem norm_integral_cuspSubDeriv_le {w : ℂ} (hw : -5 ≤ w.re) (hne 
           (by ring)
       exact (hlin.const_mul 16).congr_deriv (by ring)
     have hd2 := hasDerivAt_invWallRootLogZero hv.1 (by linarith [hv.2])
-    exact (hd1.mul hd2).congr_deriv (by dsimp only [g']; ring)
+    exact hd1.mul hd2
   let B : ℝ → ℝ := fun v => 128 + 16 * (2 * v * wallRootLog v ^ 3)⁻¹
   have hB_int : IntervalIntegrable B volume 0 (1 / 8) :=
-    (intervalIntegral.intervalIntegrable_const (c := (128 : ℝ))).add
-      ((intervalIntegrable_inv_two_mul_wallRootLog_cube (by norm_num) (by norm_num)).const_mul 16)
+    (intervalIntegrable_const (c := (128 : ℝ))).add
+      ((intervalIntegrable_inv_two_mul_wallRootLog_cube (b := 1 / 8) (by norm_num) (by norm_num)).const_mul 16)
   have hg'_bound : ∀ v ∈ Ioc (0 : ℝ) (1 / 8), ‖g' v‖ ≤ B v := fun v hv => by
     have hpos : 0 ≤ (2 * v * wallRootLog v ^ 3)⁻¹ :=
       inv_nonneg.mpr (mul_nonneg (mul_nonneg zero_le_two hv.1.le)
@@ -1017,12 +1018,12 @@ private theorem norm_integral_cuspSubDeriv_le {w : ℂ} (hw : -5 ≤ w.re) (hne 
           exact add_le_add ((mul_le_mul_of_nonneg_left hw1 (by norm_num)).trans_eq (mul_one _))
             (mul_le_mul_of_nonneg_right h1m hpos)
   have hg'_int : IntervalIntegrable g' volume 0 (1 / 8) := by
-    rw [intervalIntegral.intervalIntegrable_iff_integrableOn_Ioc_of_le hab]
+    rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hab]
     have hm_g' : Measurable g' :=
       (measurable_const.mul measurable_invWallRootLogZero).add
         ((measurable_const.mul (measurable_const.sub (measurable_const.mul measurable_id))).mul
           (((measurable_const.mul measurable_id).mul (measurable_wallRootLog.pow_const 3)).inv))
-    exact ((intervalIntegral.intervalIntegrable_iff_integrableOn_Ioc_of_le hab).mp hB_int).mono'
+    exact ((intervalIntegrable_iff_integrableOn_Ioc_of_le hab).mp hB_int).mono'
       hm_g'.aestronglyMeasurable
       ((ae_restrict_mem measurableSet_Ioc).mono hg'_bound)
   have hibp := ibp_cexp_neg_mul_real hab hg_cont hg_deriv hg'_int w
@@ -1043,10 +1044,10 @@ private theorem norm_integral_cuspSubDeriv_le {w : ℂ} (hw : -5 ≤ w.re) (hne 
     have hB_val : (∫ v in (0 : ℝ)..(1 / 8), 3 * B v) ≤ 96 := by
       dsimp only [B]
       rw [intervalIntegral.integral_const_mul,
-        intervalIntegral.integral_add (intervalIntegral.intervalIntegrable_const (c := (128 : ℝ)))
-          ((intervalIntegrable_inv_two_mul_wallRootLog_cube (by norm_num) (by norm_num)).const_mul 16),
+        intervalIntegral.integral_add (intervalIntegrable_const (c := (128 : ℝ)))
+          ((intervalIntegrable_inv_two_mul_wallRootLog_cube (b := 1 / 8) (by norm_num) (by norm_num)).const_mul 16),
         intervalIntegral.integral_const, intervalIntegral.integral_const_mul,
-        intervalIntegral_inv_two_mul_wallRootLog_cube (by norm_num) (by norm_num), smul_eq_mul]
+        intervalIntegral_inv_two_mul_wallRootLog_cube (b := 1 / 8) (by norm_num) (by norm_num), smul_eq_mul]
       have hw8 : (wallRootLog (1 / 8))⁻¹ ≤ 1 :=
         inv_le_one_of_one_le₀ (one_le_wallRootLog (by norm_num) (by norm_num))
       linarith
@@ -1102,7 +1103,7 @@ private theorem norm_tail_cuspMainDeriv_le {w : ℂ} (hw : -5 ≤ w.re) (hne : w
           (by ring)
       exact (hlin.pow 2).congr_deriv (by ring)
     have hd2 : HasDerivAt (fun t : ℝ => (D t)⁻¹) (-(D' v / D v ^ 2)) v :=
-      ((hD_deriv v hv).inv (hD_pos v hv).ne').congr_deriv (neg_div _ _).symm
+      ((hD_deriv v hv).inv (hD_pos v hv).ne').congr_deriv (by ring)
     exact (hd1.mul hd2).congr_deriv (by dsimp only [h', D]; ring)
   have hh'_nonpos : ∀ v ∈ Icc δ (1 / 8), h' v ≤ 0 := fun v hv => by
     have hv_pos : 0 < v := lt_of_lt_of_le hδ0 hv.1
@@ -1211,16 +1212,17 @@ private theorem norm_rescaled_laplace_smoothedWallLogProfile_le_five :
           have hr1 : |reflectedCusp v| ≤ 1 := by
             dsimp only [reflectedCusp]
             split_ifs with hm
-            · rw [abs_of_nonneg (mul_nonneg (sq_nonneg _)
-                (inv_nonneg.mpr (Real.sqrt_nonneg _)))]
-              have h1 : (1 - 8 * v) ^ 2 ≤ 1 := by nlinarith [hm.1, hm.2]
-              have h2 : (wallRootLog v)⁻¹ ≤ 1 :=
+            · have h2 : (wallRootLog v)⁻¹ ≤ 1 :=
                 inv_le_one_of_one_le₀ (one_le_wallRootLog hm.1 (by linarith [hm.2]))
-              nlinarith [inv_nonneg.mpr (Real.sqrt_nonneg (Real.log (1 / v)))]
+              have hw_nn : 0 ≤ (wallRootLog v)⁻¹ :=
+                inv_nonneg.mpr (zero_le_one.trans (one_le_wallRootLog hm.1 (by linarith [hm.2])))
+              rw [abs_of_nonneg (mul_nonneg (sq_nonneg _) hw_nn)]
+              have h1 : (1 - 8 * v) ^ 2 ≤ 1 := by nlinarith [hm.1, hm.2]
+              nlinarith
             · simp
           exact (mul_le_mul (norm_cexp_neg_mul_le_three hw hv.1.le hv.2) hr1
             (abs_nonneg _) (by norm_num)).trans_eq (mul_one _))
-        intervalIntegral.intervalIntegrable_const
+        intervalIntegrable_const
       rw [intervalIntegral.integral_const, smul_eq_mul] at hint
       have hm := mul_le_mul_of_nonneg_left hint (abs_nonneg ℓ)
       linarith
@@ -1449,7 +1451,7 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
       exact hz.congr fun y => by dsimp only [Function.comp_apply]; ring
     have h2 : Tendsto (fun y : ℝ => 104 * Real.sqrt (Real.log y) / y) atTop (𝓝 0) := by
       have hz : Tendsto (fun y : ℝ => 104 * (Real.sqrt y)⁻¹) atTop (𝓝 0) := by
-        simpa only [mul_zero] using
+        simpa only [mul_zero, Function.comp_def] using
           ((tendsto_inv_atTop_zero (𝕜 := ℝ)).comp tendsto_sqrt_atTop).const_mul 104
       refine squeeze_zero' ?_ ?_ hz
       · filter_upwards [eventually_ge_atTop (1 : ℝ)] with y hy
@@ -1462,10 +1464,9 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
             ≤ 104 * Real.sqrt y / y :=
               div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hs (by norm_num)) hy_pos.le
           _ = 104 * (Real.sqrt y)⁻¹ := by
-              rw [div_eq_mul_inv, mul_assoc]
-              congr 1
-              rw [eq_inv_iff_mul_eq_one, mul_right_comm, Real.mul_self_sqrt hy_pos.le,
-                inv_mul_cancel₀ hy_pos.ne']
+              have hs0 : Real.sqrt y ≠ 0 := (Real.sqrt_pos.mpr hy_pos).ne'
+              field_simp [hy_pos.ne', hs0]
+              exact (Real.sq_sqrt hy_pos.le).symm
     simpa [err] using (h1.add h2).const_mul |ℓ|
   rw [tendsto_iff_norm_sub_tendsto_zero]
   refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ herr_zero
@@ -1508,23 +1509,23 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
       (hc.intervalIntegrable_of_Icc hδ8)).continuousOn_mul
       (by fun_prop : Continuous fun v : ℝ => Complex.exp (-(w * (v : ℂ)))).continuousOn
   have hbase_int : IntervalIntegrable
-      (fun v : ℝ => ((2 * v * wallRootLog v ^ 3)⁻¹ : ℂ)) volume 0 δ :=
+      (fun v : ℝ => (((2 * v * wallRootLog v ^ 3)⁻¹ : ℝ) : ℂ)) volume 0 δ :=
     intervalIntegrable_ofReal (intervalIntegrable_inv_two_mul_wallRootLog_cube hδ0 hδ4)
-  have hbase_val : (∫ v in (0 : ℝ)..δ, ((2 * v * wallRootLog v ^ 3)⁻¹ : ℂ)) =
-      ((Real.sqrt (Real.log y))⁻¹ : ℂ) := by
+  have hbase_val : (∫ v in (0 : ℝ)..δ, (((2 * v * wallRootLog v ^ 3)⁻¹ : ℝ) : ℂ)) =
+      ((Real.sqrt (Real.log y) : ℂ))⁻¹ := by
     have h1 := Complex.ofRealCLM.intervalIntegral_comp_comm
       (intervalIntegrable_inv_two_mul_wallRootLog_cube hδ0 hδ4)
-    change (∫ v in (0 : ℝ)..δ, ((2 * v * wallRootLog v ^ 3)⁻¹ : ℂ)) = _ at h1
-    rw [h1, intervalIntegral_inv_two_mul_wallRootLog_cube hδ0 hδ4, hwδ_eq]
-    rfl
+    change (∫ v in (0 : ℝ)..δ, (((2 * v * wallRootLog v ^ 3)⁻¹ : ℝ) : ℂ)) =
+      (((∫ v in (0 : ℝ)..δ, (2 * v * wallRootLog v ^ 3)⁻¹) : ℝ) : ℂ) at h1
+    rw [h1, intervalIntegral_inv_two_mul_wallRootLog_cube hδ0 hδ4, hwδ_eq, Complex.ofReal_inv]
   have hnear_diff : ‖(∫ v in (0 : ℝ)..δ,
       Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)) -
-        ((Real.sqrt (Real.log y))⁻¹ : ℂ)‖ ≤
+        ((Real.sqrt (Real.log y) : ℂ))⁻¹‖ ≤
       1 / (2 * Real.sqrt (Real.log y) ^ 3) + 8 / y := by
     rw [← hbase_val, ← intervalIntegral.integral_sub hmain_int_0δ hbase_int]
     have hnorm_le := intervalIntegral.norm_integral_le_of_norm_le hδ0.le
       (f := fun v => Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ) -
-        ((2 * v * wallRootLog v ^ 3)⁻¹ : ℂ))
+        (((2 * v * wallRootLog v ^ 3)⁻¹ : ℝ) : ℂ))
       (g := fun _ => y / (2 * wallRootLog δ ^ 3) + 8)
       (Eventually.of_forall fun v hv => by
         have hpos_v : 0 < v := hv.1
@@ -1532,7 +1533,7 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
           inv_nonneg.mpr (mul_nonneg (mul_nonneg zero_le_two hpos_v.le)
             (pow_nonneg (zero_le_one.trans (one_le_wallRootLog hpos_v (by linarith [hv.2]))) 3))
         have hsplit_pt : Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ) -
-            ((2 * v * wallRootLog v ^ 3)⁻¹ : ℂ) =
+            (((2 * v * wallRootLog v ^ 3)⁻¹ : ℝ) : ℂ) =
           (Complex.exp (-(((y * v : ℝ) : ℂ) * I)) - 1) * (cuspMainDeriv v : ℂ) +
             ((((1 - 8 * v) ^ 2 - 1) * (2 * v * wallRootLog v ^ 3)⁻¹ : ℝ) : ℂ) := by
           dsimp only [w, cuspMainDeriv]
@@ -1582,7 +1583,7 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
                 rw [mul_inv, show (16 * v) * (2⁻¹ * v⁻¹) = 8 * (v * v⁻¹) by ring,
                   mul_inv_cancel₀ hpos_v.ne', mul_one]
         exact (norm_add_le _ _).trans (add_le_add hp1 hp2))
-      intervalIntegral.intervalIntegrable_const
+      intervalIntegrable_const
     rw [intervalIntegral.integral_const, sub_zero, smul_eq_mul, hwδ_eq] at hnorm_le
     refine hnorm_le.trans_eq ?_
     dsimp only [δ]
@@ -1605,14 +1606,14 @@ theorem tendsto_axis_laplace_smoothedWallLogProfile (ℓ : ℝ) :
       (Real.sqrt (Real.log y) : ℂ) - (ℓ : ℂ) =
       (ℓ : ℂ) * (Real.sqrt (Real.log y) : ℂ) *
         (((∫ v in (0 : ℝ)..δ, Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)) -
-            ((Real.sqrt (Real.log y))⁻¹ : ℂ)) +
+            ((Real.sqrt (Real.log y) : ℂ))⁻¹) +
           (∫ v in δ..(1 / 8), Complex.exp (-(w * (v : ℂ))) * (cuspMainDeriv v : ℂ)) -
           (∫ v in (0 : ℝ)..(1 / 8), Complex.exp (-(w * (v : ℂ))) * (cuspSubDeriv v : ℂ))) := by
     rw [mul_laplace_smoothedWallLogProfile_eq,
       ← intervalIntegral.integral_add_adjacent_intervals hmain_int_0δ hmain_int_δ8]
-    have hinv_c : (Real.sqrt (Real.log y) : ℂ) * ((Real.sqrt (Real.log y))⁻¹ : ℂ) = 1 := by
-      rw [← Complex.ofReal_mul, mul_inv_cancel₀ hsqrt_pos.ne', Complex.ofReal_one]
-    linear_combination -(ℓ : ℂ) * hinv_c
+    have hinv_c : (Real.sqrt (Real.log y) : ℂ) * ((Real.sqrt (Real.log y) : ℂ))⁻¹ = 1 :=
+      mul_inv_cancel₀ (Complex.ofReal_ne_zero.mpr hsqrt_pos.ne')
+    linear_combination (ℓ : ℂ) * hinv_c
   change ‖(w * negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) w) *
       (Real.sqrt (Real.log y) : ℂ) - (ℓ : ℂ)‖ ≤ err y
   rw [hident, norm_mul, norm_mul, Complex.norm_real, Complex.norm_real,
@@ -1676,7 +1677,8 @@ private theorem zeroValueMass_smoothedWallLogProfile_le (ℓ : ℝ) (q : onLineC
     (by linarith [hre])
   have hsq := pow_le_pow_left₀ (norm_nonneg _) hb 2
   have hnorm_w : ‖(centredZero q : ℂ)‖ = |(centredZero q).im| := by
-    rw [hw_eq, norm_mul, norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
+    conv_lhs => rw [hw_eq]
+    rw [norm_mul, norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs]
   have hnorm_wp5 : ‖(centredZero q : ℂ) + 5‖ ^ 2 = 25 + (centredZero q).im ^ 2 := by
     rw [hw_eq, ← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
     simp; ring
@@ -1758,7 +1760,11 @@ theorem smoothedWallLogProfile_local_critical_line_mass :
       hterm_le
   rw [← tsum_mul_left]
   have htsum := Summable.tsum_le_tsum hterm_le hsum_lhs (hlor_sum.mul_left _)
-  rw [tsum_mul_left] at htsum
+  have hts_r : (∑' q : onLineCopies,
+      (1000000 * ℓ ^ 2 / Real.log (|y| + 3)) * lorentzMassTerm y (q : XiZeroCopy)) =
+      (1000000 * ℓ ^ 2 / Real.log (|y| + 3)) *
+        ∑' q : onLineCopies, lorentzMassTerm y (q : XiZeroCopy) := tsum_mul_left
+  rw [hts_r] at htsum
   have hlor_bd := tsum_onLineCopies_lorentzMassTerm_le y
   have hm := htsum.trans (mul_le_mul_of_nonneg_left hlor_bd
     (div_nonneg (by positivity : (0 : ℝ) ≤ 1000000 * ℓ ^ 2) (zero_le_one.trans hlog3_ge1)))
@@ -1956,7 +1962,7 @@ any window half-width `h > 0`, and any crowding constant `c > 0`, logarithmic cr
 `(c / 2) ℓ²` of rescaled squared mass in that window. The dependence on `c` (window width) and
 on multiplicity copies in `S` is exact and linear. -/
 theorem smoothedWallLogProfile_window_crowding_lower_bound {ι : Type*} {γ : ι → ℝ}
-    {h c : ℝ} (hh : 0 < h) (hc : 0 < c)
+    {h c : ℝ} (_ : 0 < h) (hc : 0 < c)
     (hcrowd : ∀ᶠ y : ℝ in atTop, ∃ S : Finset ι,
       c * Real.log y ≤ S.card ∧ ∀ q ∈ S, |γ q - y| ≤ h)
     (ℓ : ℝ) :
@@ -2256,7 +2262,8 @@ theorem rvmOrdinate_crowding {h : ℝ} (hh : 0 < h) :
       have h1 : (j : ℝ) ≤ (a - B + h₀) * (N : ℝ) := by nlinarith [hh₀N_ge4]
       have h2 : (j : ℝ) / (N : ℝ) ≤ a - B + h₀ := (div_le_iff₀ hN_pos_real).mpr h1
       linarith
-    dsimp only [emb]
+    have hemb : emb ⟨j, hj⟩ = ⟨m, ⟨j, hj_lt_N j hj⟩⟩ := rfl
+    rw [hemb]
     exact (abs_le.mpr ⟨by linarith, by linarith⟩).trans hh₀_le_h
 
 /-- Every `RvmCopy` family satisfies the uniform rescaled unit-window sample-square bound
@@ -2338,7 +2345,7 @@ theorem smoothedWallLogProfile_rvmOrdinate_unit_window_bound :
       have hnorm : ‖((rvmOrdinate q : ℂ) * I)‖ = rvmOrdinate q := by
         rw [norm_mul, norm_I, mul_one, Complex.norm_real,
           Real.norm_of_nonneg (by linarith [(rvmOrdinate_bounds q).1, (Nat.cast_nonneg q.1 : (0 : ℝ) ≤ q.1)])]
-      rw [hnorm, div_pow, sq_abs,
+      rw [hnorm, div_pow, mul_pow, sq_abs,
         Real.sq_sqrt (Real.log_nonneg (by linarith [(rvmOrdinate_bounds q).1,
           (Nat.cast_nonneg q.1 : (0 : ℝ) ≤ q.1)]))] at hsq
       have hord_ge : y + 2 ≤ rvmOrdinate q + 4 := by linarith [(abs_le.mp (hS q hq)).1]
@@ -2347,8 +2354,8 @@ theorem smoothedWallLogProfile_rvmOrdinate_unit_window_bound :
       calc ‖(((rvmOrdinate q : ℂ) * I) + 5) *
             negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ))
               ((rvmOrdinate q : ℂ) * I)‖ ^ 2
-          ≤ (500 * |ℓ|) ^ 2 / Real.log (rvmOrdinate q + 4) := hsq
-        _ = 250000 * ℓ ^ 2 / Real.log (rvmOrdinate q + 4) := by rw [mul_pow, sq_abs]; ring
+          ≤ 500 ^ 2 * ℓ ^ 2 / Real.log (rvmOrdinate q + 4) := hsq
+        _ = 250000 * ℓ ^ 2 / Real.log (rvmOrdinate q + 4) := by ring
         _ ≤ 250000 * ℓ ^ 2 / Real.log (y + 2) :=
             div_le_div_of_nonneg_left (by positivity) hlog_pos hlog_ge
     have hsum_le : ∑ q ∈ S,
@@ -2380,104 +2387,131 @@ theorem smoothedWallLogProfile_rvmOrdinate_unit_window_bound :
       _ = 6000000 * ℓ ^ 2 * (Real.log (y + 2) * (Real.log (y + 2))⁻¹) := by ring
       _ = 6000000 * ℓ ^ 2 := by rw [mul_inv_cancel₀ hlog_pos.ne', mul_one]
 
+/-- **Divergence of the first ordinate moment under window crowding.** On any ordinate family
+`γ : ι → ℝ` with logarithmic crowding in `[y - 1/4, y + 1/4]`, the first absolute ordinate moment
+of `smoothedWallLogProfile ℓ` (`ℓ ≠ 0`) diverges. -/
+theorem smoothedWallLogProfile_crowding_firstMoment_not_summable {ι : Type*} {γ : ι → ℝ}
+    {c : ℝ} (hc : 0 < c)
+    (hcrowd : ∀ᶠ y : ℝ in atTop, ∃ S : Finset ι,
+      c * Real.log y ≤ S.card ∧ ∀ q ∈ S, |γ q - y| ≤ 1 / 4)
+    {ℓ : ℝ} (hℓ : ℓ ≠ 0) :
+    ¬ Summable (fun q : ι =>
+      |γ q| *
+        ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((γ q : ℂ) * I)‖ ^ 2) := by
+  classical
+  let g : ι → ℝ := fun q =>
+    |γ q| * ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((γ q : ℂ) * I)‖ ^ 2
+  intro hsum
+  have hℓ2 : 0 < ℓ ^ 2 := sq_pos_of_ne_zero hℓ
+  have hsat := smoothedWallLogProfile_window_crowding_lower_bound (h := 1 / 4)
+    (by norm_num) hc hcrowd ℓ
+  obtain ⟨Y₀, hY₀⟩ := eventually_atTop.mp hsat
+  let N₀ : ℕ := max ⌈Y₀⌉₊ 2
+  have hex_n : ∀ n : ℕ, ∃ S : Finset ι, N₀ ≤ n →
+      (∀ q ∈ S, |γ q - (n : ℝ)| ≤ 1 / 4) ∧
+      (c * ℓ ^ 2) / (4 * (n : ℝ)) ≤ ∑ q ∈ S, g q := by
+    intro n
+    by_cases hn : N₀ ≤ n
+    · have hnY : Y₀ ≤ (n : ℝ) :=
+        (Nat.le_ceil Y₀).trans (by exact_mod_cast (le_max_left ⌈Y₀⌉₊ 2).trans hn)
+      have hn2 : (2 : ℝ) ≤ (n : ℝ) := by exact_mod_cast (le_max_right ⌈Y₀⌉₊ 2).trans hn
+      obtain ⟨S, hS_win, hS_lb⟩ := hY₀ (n : ℝ) hnY
+      refine ⟨S, fun _ => ⟨hS_win, ?_⟩⟩
+      have hle_sum : (n : ℝ) ^ 2 * (∑ q ∈ S,
+          ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((γ q : ℂ) * I)‖ ^ 2) ≤
+          (2 * (n : ℝ)) * ∑ q ∈ S, g q := by
+        rw [Finset.mul_sum, Finset.mul_sum]
+        refine Finset.sum_le_sum fun q hq => ?_
+        have hd := (abs_le.mp (hS_win q hq)).1
+        have hγ_ge : (n : ℝ) / 2 ≤ |γ q| := (by linarith : (n : ℝ) / 2 ≤ γ q).trans (le_abs_self _)
+        have hm := mul_le_mul_of_nonneg_left hγ_ge (by positivity : (0 : ℝ) ≤ 2 * (n : ℝ))
+        have hZ_nn : 0 ≤
+            ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((γ q : ℂ) * I)‖ ^ 2 :=
+          sq_nonneg _
+        dsimp only [g]
+        have hm2 := mul_le_mul_of_nonneg_right hm hZ_nn
+        linarith [show 2 * (n : ℝ) * ((n : ℝ) / 2) *
+            ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((γ q : ℂ) * I)‖ ^ 2 =
+          (n : ℝ) ^ 2 *
+            ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((γ q : ℂ) * I)‖ ^ 2 by ring,
+          show 2 * (n : ℝ) * |γ q| *
+            ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((γ q : ℂ) * I)‖ ^ 2 =
+          2 * (n : ℝ) * (|γ q| *
+            ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((γ q : ℂ) * I)‖ ^ 2) by ring]
+      rw [div_le_iff₀ (by linarith)]
+      linarith [hS_lb.trans hle_sum,
+        show (∑ q ∈ S, g q) * (4 * (n : ℝ)) = 2 * ((2 * (n : ℝ)) * ∑ q ∈ S, g q) by ring]
+    · exact ⟨∅, fun h => absurd h hn⟩
+  choose S_nat hS_nat using hex_n
+  let ε : ℝ := c * ℓ ^ 2 / 16
+  have hε : 0 < ε := by dsimp only [ε]; positivity
+  obtain ⟨S₀, hS₀⟩ := eventually_atTop.mp (Metric.tendsto_nhds.mp hsum.hasSum ε hε)
+  let B : ℕ := max N₀ ((∑ q ∈ S₀, (⌈|γ q|⌉₊ + 2)) + 2)
+  have hB_ge_N₀ : N₀ ≤ B := le_max_left _ _
+  have hB_ge2 : 2 ≤ B := (le_max_right ⌈Y₀⌉₊ 2).trans hB_ge_N₀
+  have hB_pos : 0 < (B : ℝ) := by exact_mod_cast (lt_of_lt_of_le (by norm_num : 0 < 2) hB_ge2)
+  have hS₀_lt : ∀ q ∈ S₀, |γ q| + 1 < (B : ℝ) := fun q hq => by
+    have h1 : ⌈|γ q|⌉₊ + 2 ≤ ∑ r ∈ S₀, (⌈|γ r|⌉₊ + 2) :=
+      Finset.single_le_sum (fun _ _ => Nat.zero_le _) hq
+    have h2 : (⌈|γ q|⌉₊ : ℝ) + 2 + 2 ≤ (B : ℝ) := by
+      have : (⌈|γ q|⌉₊ + 2) + 2 ≤ B := (Nat.add_le_add_right h1 2).trans (le_max_right _ _)
+      exact_mod_cast this
+    linarith [Nat.le_ceil |γ q|]
+  let I_B : Finset ℕ := Finset.Ico B (2 * B)
+  let T : Finset ι := I_B.biUnion S_nat
+  have hdisj : Disjoint S₀ T := by
+    rw [Finset.disjoint_left]
+    intro q hq₀ hqT
+    obtain ⟨n, hnI, hqn⟩ := Finset.mem_biUnion.mp hqT
+    have hn_ge_B : B ≤ n := (Finset.mem_Ico.mp hnI).1
+    have hn_real : (B : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn_ge_B
+    have hd := (abs_le.mp ((hS_nat n (hB_ge_N₀.trans hn_ge_B)).1 q hqn)).1
+    have hlt := hS₀_lt q hq₀
+    linarith [le_abs_self (γ q)]
+  have hpair : (I_B : Set ℕ).PairwiseDisjoint S_nat := by
+    intro n₁ hn₁ n₂ hn₂ hne
+    rw [Function.onFun, Finset.disjoint_left]
+    intro q hq₁ hq₂
+    have hn₁_ge : N₀ ≤ n₁ := hB_ge_N₀.trans (Finset.mem_Ico.mp (Finset.mem_coe.mp hn₁)).1
+    have hn₂_ge : N₀ ≤ n₂ := hB_ge_N₀.trans (Finset.mem_Ico.mp (Finset.mem_coe.mp hn₂)).1
+    have hd₁ := abs_le.mp ((hS_nat n₁ hn₁_ge).1 q hq₁)
+    have hd₂ := abs_le.mp ((hS_nat n₂ hn₂_ge).1 q hq₂)
+    have hclose : |(n₁ : ℝ) - (n₂ : ℝ)| ≤ 1 / 2 := abs_le.mpr ⟨by linarith, by linarith⟩
+    rcases lt_or_gt_of_ne hne with hlt | hgt
+    · have hge1 : (n₁ : ℝ) + 1 ≤ (n₂ : ℝ) := by exact_mod_cast Nat.succ_le_of_lt hlt
+      linarith [(abs_le.mp hclose).1]
+    · have hge1 : (n₂ : ℝ) + 1 ≤ (n₁ : ℝ) := by exact_mod_cast Nat.succ_le_of_lt hgt
+      linarith [(abs_le.mp hclose).2]
+  have hd0 := hS₀ S₀ le_rfl
+  have hd1 := hS₀ (S₀ ∪ T) Finset.subset_union_left
+  rw [Real.dist_eq] at hd0 hd1
+  change |∑ q ∈ S₀, g q - _| < ε at hd0
+  change |∑ q ∈ S₀ ∪ T, g q - _| < ε at hd1
+  rw [Finset.sum_union hdisj] at hd1
+  have hub_T : ∑ q ∈ T, g q < 2 * ε := by
+    linarith [(abs_lt.mp hd0).1, (abs_lt.mp hd0).2, (abs_lt.mp hd1).1, (abs_lt.mp hd1).2]
+  have hlb_T : c * ℓ ^ 2 / 8 ≤ ∑ q ∈ T, g q := by
+    rw [Finset.sum_biUnion hpair]
+    have hterm : ∀ n ∈ I_B, (c * ℓ ^ 2) / (8 * (B : ℝ)) ≤ ∑ q ∈ S_nat n, g q := fun n hn => by
+      have hn_ge : N₀ ≤ n := hB_ge_N₀.trans (Finset.mem_Ico.mp hn).1
+      have hn_lt : (n : ℝ) ≤ 2 * (B : ℝ) := by exact_mod_cast (Finset.mem_Ico.mp hn).2.le
+      exact (div_le_div_of_nonneg_left (by positivity) (by positivity) (by linarith)).trans
+        (hS_nat n hn_ge).2
+    have hsum_le := Finset.sum_le_sum hterm
+    have hcard : I_B.card = B := by dsimp only [I_B]; rw [Nat.card_Ico]; omega
+    rw [Finset.sum_const, hcard, nsmul_eq_mul] at hsum_le
+    refine le_trans ?_ hsum_le
+    field_simp [hB_pos.ne']
+  dsimp only [ε] at hub_T
+  linarith
+
 /-- Divergence of the first ordinate moment of `smoothedWallLogProfile ℓ` (`ℓ ≠ 0`) on `RvmCopy`. -/
 theorem smoothedWallLogProfile_rvmOrdinate_firstMoment_not_summable {ℓ : ℝ} (hℓ : ℓ ≠ 0) :
     ¬ Summable (fun q : RvmCopy =>
       |rvmOrdinate q| *
         ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((rvmOrdinate q : ℂ) * I)‖ ^ 2) := by
-  intro hsum
-  have hℓ2 : 0 < ℓ ^ 2 := sq_pos_of_ne_zero hℓ
-  obtain ⟨T₀, hT₀⟩ := Metric.tendsto_atTop.mp
-    (tendsto_sq_axis_laplace_smoothedWallLogProfile ℓ) (ℓ ^ 2 / 2) (by positivity)
-  obtain ⟨m₀, hm₀⟩ := exists_nat_gt (max T₀ 4)
-  have hblock_sum : Summable (fun m : ℕ =>
-      ∑ j : Fin (⌈Real.log ((m : ℝ) + 3)⌉₊),
-        |rvmOrdinate ⟨m, j⟩| *
-          ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ))
-            ((rvmOrdinate ⟨m, j⟩ : ℂ) * I)‖ ^ 2) := by
-    have hsig := (summable_sigma_of_nonneg (fun _ => mul_nonneg (abs_nonneg _) (sq_nonneg _))).mp hsum
-    exact hsig.2.congr fun m => tsum_eq_sum fun j hj => absurd (Finset.mem_univ j) hj
-  have hshift_sum : Summable (fun k : ℕ =>
-      ∑ j : Fin (⌈Real.log (((k + m₀ : ℕ) : ℝ) + 3)⌉₊),
-        |rvmOrdinate ⟨k + m₀, j⟩| *
-          ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ))
-            ((rvmOrdinate ⟨k + m₀, j⟩ : ℂ) * I)‖ ^ 2) :=
-    (summable_nat_add_iff m₀).mpr hblock_sum
-  have hharm_not : ¬ Summable (fun k : ℕ => (ℓ ^ 2 / 16) * (((k : ℝ) + (m₀ : ℝ) + 4)⁻¹)) := by
-    intro hh
-    have hh1 : Summable (fun k : ℕ => (((k + (m₀ + 4) : ℕ) : ℝ)⁻¹)) := by
-      have hc := hh.mul_left ((ℓ ^ 2 / 16)⁻¹)
-      refine hc.congr fun k => ?_
-      rw [← mul_assoc, inv_mul_cancel₀ (by positivity), one_mul]
-      push_cast; ring_nf
-    have hh2 : Summable (fun n : ℕ => (n : ℝ)⁻¹) := (summable_nat_add_iff (m₀ + 4)).mp hh1
-    exact Real.not_summable_natCast_inv hh2
-  refine hharm_not (hshift_sum.of_nonneg_of_le (fun _ => by positivity) fun k => ?_)
-  set m := k + m₀
-  have hm_ge4 : 4 ≤ (m : ℝ) := by
-    have h1 : 4 < (m₀ : ℝ) := lt_of_le_of_lt (le_max_right T₀ 4) hm₀
-    have h2 : (m₀ : ℝ) ≤ (m : ℝ) := by dsimp only [m]; exact_mod_cast Nat.le_add_left m₀ k
-    linarith
-  have hm_geT₀ : T₀ ≤ (m : ℝ) + 3 := by
-    have h1 : T₀ < (m₀ : ℝ) := lt_of_le_of_lt (le_max_left T₀ 4) hm₀
-    have h2 : (m₀ : ℝ) ≤ (m : ℝ) := by dsimp only [m]; exact_mod_cast Nat.le_add_left m₀ k
-    linarith
-  have hpt : ∀ j : Fin (⌈Real.log ((m : ℝ) + 3)⌉₊),
-      (ℓ ^ 2 / 16) / (((m : ℝ) + 4) * Real.log ((m : ℝ) + 3)) ≤
-        |rvmOrdinate ⟨m, j⟩| *
-          ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ))
-            ((rvmOrdinate ⟨m, j⟩ : ℂ) * I)‖ ^ 2 := fun j => by
-    set t := rvmOrdinate ⟨m, j⟩
-    have hb := rvmOrdinate_bounds ⟨m, j⟩
-    have ht_pos : 0 < t := by linarith [hb.1, hm_ge4]
-    have hd := hT₀ t (hm_geT₀.trans hb.1)
-    rw [Real.dist_eq] at hd
-    have hlb_t : (ℓ ^ 2 / 2) ≤ t ^ 2 * Real.log t *
-        ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((t : ℂ) * I)‖ ^ 2 := by
-      linarith [(abs_lt.mp hd).1]
-    have hlog_le : Real.log t ≤ 2 * Real.log ((m : ℝ) + 3) := by
-      have hsq : t ≤ ((m : ℝ) + 3) ^ 2 := by nlinarith [hb.2, hm_ge4]
-      have hl := Real.log_le_log ht_pos hsq
-      rwa [Real.log_pow, Nat.cast_ofNat] at hl
-    have ht_le : t ≤ 2 * ((m : ℝ) + 3) := by linarith [hb.2, hm_ge4]
-    have ht_ge_half : ((m : ℝ) + 4) / 2 ≤ t := by linarith [hb.1, hm_ge4]
-    set Z := ‖negativeHalfLineLaplace (cx (smoothedWallLogProfile ℓ)) ((t : ℂ) * I)‖ ^ 2
-    have hZ_nn : 0 ≤ Z := sq_nonneg _
-    have hub1 : t * Real.log t ≤ 4 * ((m : ℝ) + 3) * Real.log ((m : ℝ) + 3) := by
-      have hlogt_nn : 0 ≤ Real.log t := Real.log_nonneg (by linarith [hb.1, hm_ge4])
-      have hm1 := mul_le_mul ht_le hlog_le hlogt_nn (by linarith)
-      linarith [show (2 * ((m : ℝ) + 3)) * (2 * Real.log ((m : ℝ) + 3)) =
-        4 * ((m : ℝ) + 3) * Real.log ((m : ℝ) + 3) by ring]
-    have hub2 : ℓ ^ 2 / 2 ≤ (4 * ((m : ℝ) + 3) * Real.log ((m : ℝ) + 3)) * (t * Z) := by
-      have hm2 := mul_le_mul_of_nonneg_right hub1 (mul_nonneg ht_pos.le hZ_nn)
-      linarith [hlb_t, show t * Real.log t * (t * Z) = t ^ 2 * Real.log t * Z by ring]
-    have hub3 : ℓ ^ 2 / 2 ≤ (8 * ((m : ℝ) + 4) * Real.log ((m : ℝ) + 3)) * (t * Z) := by
-      have hle_m : 4 * ((m : ℝ) + 3) ≤ 8 * ((m : ℝ) + 4) := by linarith [hm_ge4]
-      have hlog_nn : 0 ≤ Real.log ((m : ℝ) + 3) := Real.log_nonneg (by linarith)
-      have hm3 := mul_le_mul_of_nonneg_right
-        (mul_le_mul_of_nonneg_right hle_m hlog_nn) (mul_nonneg ht_pos.le hZ_nn)
-      linarith
-    rw [abs_of_pos ht_pos, div_le_iff₀ (mul_pos (by linarith) (Real.log_pos (by linarith)))]
-    linarith [show (t * Z) * (((m : ℝ) + 4) * Real.log ((m : ℝ) + 3)) =
-      (1 / 8) * ((8 * ((m : ℝ) + 4) * Real.log ((m : ℝ) + 3)) * (t * Z)) by ring]
-  have hlog_pos : 0 < Real.log ((m : ℝ) + 3) := Real.log_pos (by linarith)
-  have hsum_lb := Finset.sum_le_sum fun j (_ : j ∈ Finset.univ) => hpt j
-  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at hsum_lb
-  have hceil_ge : Real.log ((m : ℝ) + 3) ≤ (⌈Real.log ((m : ℝ) + 3)⌉₊ : ℝ) := Nat.le_ceil _
-  calc (ℓ ^ 2 / 16) * (((k : ℝ) + (m₀ : ℝ) + 4)⁻¹)
-      = Real.log ((m : ℝ) + 3) *
-          ((ℓ ^ 2 / 16) / (((m : ℝ) + 4) * Real.log ((m : ℝ) + 3))) := by
-        have hm_cast : (m : ℝ) + 4 = (k : ℝ) + (m₀ : ℝ) + 4 := by dsimp only [m]; push_cast; ring
-        rw [hm_cast, div_eq_mul_inv, mul_inv,
-          show Real.log ((m : ℝ) + 3) *
-            ((ℓ ^ 2 / 16) * (((k : ℝ) + (m₀ : ℝ) + 4)⁻¹ * (Real.log ((m : ℝ) + 3))⁻¹)) =
-            ((ℓ ^ 2 / 16) * (((k : ℝ) + (m₀ : ℝ) + 4)⁻¹)) *
-              (Real.log ((m : ℝ) + 3) * (Real.log ((m : ℝ) + 3))⁻¹) by ring,
-          mul_inv_cancel₀ hlog_pos.ne', mul_one]
-    _ ≤ (⌈Real.log ((m : ℝ) + 3)⌉₊ : ℝ) *
-          ((ℓ ^ 2 / 16) / (((m : ℝ) + 4) * Real.log ((m : ℝ) + 3))) :=
-        mul_le_mul_of_nonneg_right hceil_ge (by positivity)
-    _ ≤ _ := hsum_lb
+  obtain ⟨c, hc, hcr⟩ := rvmOrdinate_crowding (by norm_num : (0 : ℝ) < 1 / 4)
+  exact smoothedWallLogProfile_crowding_firstMoment_not_summable hc hcr hℓ
 
 /-- **Every positive half-line confinement ratio `R > 0` admits a variational ground state
 sustaining the logarithmic wall cusp.** -/
@@ -2520,6 +2554,7 @@ theorem exists_halfLineMinimizer_sustaining_wallCusp {R : ℝ} (hR : 0 < R) :
 #print axioms smoothedWallLogProfile_saturates_criticalLine_under_finiteOffLine
 #print axioms rvmOrdinate_crowding
 #print axioms smoothedWallLogProfile_rvmOrdinate_unit_window_bound
+#print axioms smoothedWallLogProfile_crowding_firstMoment_not_summable
 #print axioms smoothedWallLogProfile_rvmOrdinate_firstMoment_not_summable
 #print axioms exists_halfLineMinimizer_sustaining_wallCusp
 

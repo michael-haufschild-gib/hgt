@@ -28,7 +28,9 @@ theorem oddsKernel_pos (x : ℝ) : 0<oddsKernel x := add_pos (side_pos _) (side_
 
 private theorem side_cont : Continuous side := by
   unfold side
-  fun_prop (disch := positivity)
+  apply Continuous.mul
+  · fun_prop
+  · exact (continuous_const.add continuous_exp).log (fun x => (add_pos zero_lt_one (exp_pos x)).ne')
 
 theorem oddsKernel_cont : Continuous oddsKernel :=
   side_cont.add (side_cont.comp continuous_neg)
@@ -71,7 +73,7 @@ private theorem side_int : Integrable side := by
 
 theorem oddsKernel_integrable : Integrable oddsKernel := side_int.add side_int.comp_neg
 
-private def primitive (x : ℝ) := -2*side x+4*arctan (exp (x/2))
+private def primitive (x : ℝ) : ℝ := -2*side x+4*Real.arctan (Real.exp (x/2))
 
 private theorem primitive_deriv (x : ℝ) : HasDerivAt primitive (side x) x := by
   let y := exp (x/2)
@@ -82,10 +84,16 @@ private theorem primitive_deriv (x : ℝ) : HasDerivAt primitive (side x) x := b
   have d := (((hasDerivAt_id x).neg.div_const 2).exp).mul
     (((hasDerivAt_exp x).const_add 1).log (by positivity))
   have full := (d.const_mul (-2)).add (((hasDerivAt_arctan y).comp x e).const_mul 4)
-  convert full using 1
-  · rfl
-  · simp only [side,id_eq,Pi.neg_apply,hm,← hp,show exp (x/2)=y from rfl]
-    field_simp [hy,show 1+y^2≠0 by positivity] <;> ring
+  have coeff :
+      -2*(exp (-x/2)*(-1/2)*log (1+exp x)+exp (-x/2)*(exp x/(1+exp x)))+
+        4*(1/(1+y^2)*(exp (x/2)*(1/2))) = side x := by
+    rw [side,hm,← hp]
+    change -2*(y⁻¹*(-1/2)*log (1+y^2)+y⁻¹*(y^2/(1+y^2)))+
+      4*(1/(1+y^2)*(y*(1/2))) = y⁻¹*log (1+y^2)
+    field_simp [hy,show 1+y^2≠0 by positivity]
+    ring
+  simp only [Pi.neg_apply,id_eq,coeff] at full
+  exact full
 
 private theorem left_limit : Tendsto side atBot (𝓝 0) := by
   apply squeeze_zero (fun x => (side_pos x).le) left_tail
@@ -100,10 +108,12 @@ private theorem side_mass : (∫ x, side x)=2*π := by
   have H := tendsto_id.atTop_div_const (by norm_num : (0:ℝ)<2)
   have e := tendsto_exp_atBot.comp (tendsto_id.atBot_div_const (by norm_num : (0:ℝ)<2))
   have low : Tendsto primitive atBot (𝓝 0) := by
-    simpa only [primitive,Function.comp_def,id_eq,mul_zero,arctan_zero,add_zero] using
+    unfold primitive
+    simpa only [Function.comp_def,id_eq,mul_zero,arctan_zero,add_zero] using
       (left_limit.const_mul (-2)).add ((continuous_arctan.continuousAt.tendsto.comp e).const_mul 4)
   have high : Tendsto primitive atTop (𝓝 (4*(π/2))) := by
-    simpa only [primitive,Function.comp_def,id_eq,mul_zero,zero_add] using
+    unfold primitive
+    simpa only [Function.comp_def,id_eq,mul_zero,zero_add] using
       (right_limit.const_mul (-2)).add
         ((tendsto_arctan_atTop.mono_right nhdsWithin_le_nhds |>.comp (tendsto_exp_atTop.comp H)).const_mul 4)
   rw [integral_of_hasDerivAt_of_tendsto primitive_deriv side_int low high]
@@ -126,16 +136,19 @@ theorem log_odds_loss (A B : {u : ℝ // 0<u}) :
   have eb : exp (m+z/2)=B.val := by rw [show m+z/2=log B.val by dsimp [m,z]; ring,exp_log B.property]
   have hm : sqrt (A.val*B.val)=exp m := by
     rw [← ea,← eb,← exp_add,show m-z/2+(m+z/2)=m+m by ring,exp_add,← sq,sqrt_sq (exp_pos _).le]
-  have hz : exp z=B.val/A.val := by rw [z,exp_sub,exp_log A.property,exp_log B.property]
+  have hz : exp z=B.val/A.val := by dsimp only [z]; rw [exp_sub,exp_log A.property,exp_log B.property]
   have hn : exp (-z)=A.val/B.val := by rw [exp_neg,hz,inv_div]
   have la : log (A.val+B.val)-log A.val=log (1+exp z) := by
     rw [← log_div (add_pos A.property B.property).ne' A.property.ne',hz,add_div,div_self A.property.ne']
   have lb : log (A.val+B.val)-log B.val=log (1+exp (-z)) := by
     rw [← log_div (add_pos A.property B.property).ne' B.property.ne',hn,add_div,div_self B.property.ne',add_comm]
   change _=sqrt (A.val*B.val)*oddsKernel z
-  rw [hm,la,lb,oddsKernel,side,side,mul_add,← mul_assoc,← mul_assoc,← exp_add,← exp_add]
-  simpa only [neg_neg,← sub_eq_add_neg,neg_div] using
-    congrArg₂ (·+·) (congrArg (·*log (1+exp z)) ea.symm) (congrArg (·*log (1+exp (-z))) eb.symm)
+  have fa : exp m*exp (-z/2) = A.val := by
+    rw [← exp_add,show m+-z/2=m-z/2 by ring]
+    exact ea
+  have fb : exp m*exp (z/2) = B.val := by rw [← exp_add]; exact eb
+  rw [hm,la,lb]
+  simp only [oddsKernel,side,neg_neg,mul_add (exp m),← mul_assoc (exp m),fa,fb]
 
 /-- A vanishing Gaussian damping in the log-odds coordinate preserves
 the full boundary-layer mass for any fixed prior odds. -/
@@ -151,8 +164,10 @@ theorem damped_odds_limit (h d : ℝ) :
           (by positivity)))
   · exact oddsKernel_integrable
   · refine ae_of_all _ fun z => ?_
-    have ht := (((tendsto_exp_atBot.neg).mul_const ((z-h)^2)).div_const (2*d^2)).exp
-    simpa only [neg_zero,zero_mul,zero_div,exp_zero,mul_one] using ht.const_mul (oddsKernel z)
+    have ht := Real.continuous_exp.continuousAt.tendsto.comp
+      (((tendsto_exp_atBot.neg).mul_const ((z-h)^2)).div_const (2*d^2))
+    simpa only [Function.comp_apply,neg_zero,zero_mul,zero_div,exp_zero,mul_one] using
+      ht.const_mul (oddsKernel z)
 
 #print axioms oddsKernel_mass
 #print axioms log_odds_loss

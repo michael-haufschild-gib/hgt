@@ -136,7 +136,7 @@ private theorem primitive_scaled_prefix {e n : ℕ} (he : 0 < e) (hn : 0 < n) (T
              intro d hd
              have hd0 := Nat.pos_of_mem_divisors hd
              rw [←sum_filter,_root_.RHTower.Sieve.sum_filter_dvd_eq_sum_scaled hd0,←mul_sum]
-             simp only [←Nat.mul_assoc,Nat.div_div_eq_mul,log_scaled_sum _ (Nat.mul_pos he hd0),
+             simp only [←Nat.mul_assoc,Nat.div_div_eq_div_mul,log_scaled_sum _ (Nat.mul_pos he hd0),
                progressionLogFactorial]
 
 /-- The primitive multiples of a small unitary divisor start exactly at its
@@ -146,14 +146,14 @@ theorem small_unitary_factorial_row {e n T : ℕ} (he : 0 < e) (hn : 0 < n) (hT 
       ∑ d ∈ (e*n).divisors,(moebius d:ℝ)*
         (progressionLogFactorial (e*d) T-progressionLogFactorial (e*d) (e^2-1)) := by
   let f (m : ℕ) := if (e*n).Coprime m then Real.log (e*m:ℕ) else 0
-  have prefix (s : ℕ) : (∑ m ∈ Ioc 0 (s/e),f m)=
+  have hpref (s : ℕ) : (∑ m ∈ Ioc 0 (s/e),f m)=
       ∑ d ∈ (e*n).divisors,(moebius d:ℝ)*progressionLogFactorial (e*d) s := by
     have hi : Icc 1 (s/e)=Ioc 0 (s/e) := by ext j; simp only [mem_Icc,mem_Ioc]; omega
     simpa only [sum_filter,hi,f] using primitive_scaled_prefix he hn s
   rw [sum_filter]
   change (∑ m ∈ Ioc ((e^2-1)/e) (T/e),f m)=_
   simp only [mul_sub,sum_sub_distrib]
-  rw [←prefix T,←prefix (e^2-1)]
+  rw [←hpref T,←hpref (e^2-1)]
   exact eq_sub_of_add_eq' (sum_Ioc_consecutive f (Nat.zero_le _)
     (Nat.div_le_div_right ((Nat.sub_le _ _).trans hT)))
 
@@ -207,10 +207,10 @@ theorem small_unitary_factorial_center (w : ℕ → ℝ) {n : ℕ} (hn : 0 < n) 
              intro k hk
              rw [small_unitary_sum_on_divisors w (mem_Icc.mp hk).1]
              by_cases hc : n.Coprime k
-             · simp only [if_pos hc,sum_mul,sum_filter,f,hc,true_and]
+             · simp only [if_pos hc,sum_mul,sum_filter,f]
                apply sum_congr rfl
                intro e _
-               by_cases hd : e.Coprime (k/e) <;> by_cases hs : e^2 ≤ k <;> simp [hd,hs]
+               split_ifs <;> simp_all
              · simp [f,hc]
        _ = _ := by
              rw [transpose_small_divisors,sum_filter]
@@ -222,8 +222,10 @@ theorem small_unitary_factorial_center (w : ℕ → ℝ) {n : ℕ} (hn : 0 < n) 
              · rw [if_pos hc,←small_unitary_factorial_row he0 hn (mem_filter.mp he).2,sum_filter,mul_sum]
                apply sum_congr rfl
                intro j _
-               simp only [f,Nat.coprime_mul_iff_right,Nat.coprime_mul_iff_left,hc,true_and,
-                 Nat.mul_div_cancel_left _ he0,mul_ite,mul_zero,and_comm]
+               have hcond : n.Coprime (e*j) ∧ e.Coprime ((e*j)/e) ↔ (e*n).Coprime j := by
+                 rw [Nat.coprime_mul_iff_right,Nat.coprime_mul_iff_left,Nat.mul_div_cancel_left _ he0]
+                 tauto
+               simp only [f,hcond,mul_ite,mul_zero]
              · simp [f,Nat.coprime_mul_iff_right,hc]
 
 #print axioms small_unitary_factorial_center

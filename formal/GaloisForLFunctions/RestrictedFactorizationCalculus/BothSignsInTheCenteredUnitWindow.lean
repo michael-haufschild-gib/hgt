@@ -22,7 +22,8 @@ private theorem prime_excursions (σ : ℝ) (dir : σ=1 ∨ σ= -1) :
   rcases dir with rfl | rfl
   · simpa only [one_mul] using RHTower.chebyshevTheta_sub_omega_pm_littlewood.2
   · exact RHTower.chebyshevTheta_sub_omega_pm_littlewood.1.mono (fun x large => by
-      change _ < (-1:ℝ)*_
+      change Chebyshev.theta x-x < -(c*Real.sqrt x*L x) at large
+      change c*Real.sqrt x*L x < (-1:ℝ)*(Chebyshev.theta x-x)
       linarith only [large])
 
 /-- Arbitrarily late record highs of either oriented normalized prime error
@@ -46,7 +47,7 @@ theorem oriented_prime_error_records (σ : ℝ) (dir : σ=1 ∨ σ= -1) (B : ℝ
     linarith only [room]
   have L0 : 0<L x := pos_of_mul_pos_right (by linarith only [height,two] : 0<c/2*L x) (half_pos cpos).le
   have xp : 1 ≤ x := by linarith only [hx]
-  have np : 1 ≤ n := Nat.le_floor xp
+  have np : 1 ≤ n := Nat.le_floor (by simpa only [Nat.cast_one] using xp)
   have fl : (n:ℝ) ≤ x := Nat.floor_le (zero_le_one.trans xp)
   have θ : Chebyshev.theta (n:ℝ)=Chebyshev.theta x := by simp [Chebyshev.theta,n]
   have gap : σ*(x-(n:ℝ)) ≥ -1 := by
@@ -126,5 +127,6 @@ theorem simultaneous_littlewood_excursions_of_the_centered_unit_window :
   change c/2*L m*Real.sqrt m < H m*Real.sqrt m at reading
   linarith only [(abs_le.mp oriented).1,absorb,reading,lower,mr]
 
+#print axioms oriented_prime_error_records
 #print axioms simultaneous_littlewood_excursions_of_the_centered_unit_window
 end GaloisForLFunctions.RestrictedFactorizationCalculus

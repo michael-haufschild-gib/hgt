@@ -155,13 +155,13 @@ theorem centered_price_of_opposite_factors {n : ℕ} (hn : 1 < n) (Q : ℕ) :
   let S := (Ioc Q (4*n)).filter Nat.Prime
   let f (x : ℕ) := if n.Coprime x then Real.log (x:ℝ) else 0
   let r (x : ℕ) := if n.Coprime x then Real.log (remainingMidpointFactor Q x) else 0
-  have prefix (T : ℕ) : (∑ x ∈ Ioc 0 T,f x)=∑ x ∈ (Icc 1 T).filter (n.Coprime ·),Real.log x := by
+  have hpref (T : ℕ) : (∑ x ∈ Ioc 0 T,f x)=∑ x ∈ (Icc 1 T).filter (n.Coprime ·),Real.log x := by
     rw [sum_filter,show Icc 1 T=Ioc 0 T by ext x; simp only [mem_Icc,mem_Ioc]; omega]
   have center : reflectedCoprimePrice n=(∑ x ∈ Ioc (3*n) (4*n),f x)-(∑ x ∈ Ioc (2*n) (3*n),f x) := by
     change (∑ x ∈ (Icc 1 (4*n)).filter (n.Coprime ·),Real.log x) -
       2*(∑ x ∈ (Icc 1 (3*n)).filter (n.Coprime ·),Real.log x) +
       (∑ x ∈ (Icc 1 (2*n)).filter (n.Coprime ·),Real.log x) = _
-    simp only [←prefix]
+    simp only [←hpref]
     linarith only [sum_Ioc_consecutive f (Nat.zero_le (3*n)) (show 3*n ≤ 4*n by omega),
       sum_Ioc_consecutive f (Nat.zero_le (2*n)) (show 2*n ≤ 3*n by omega)]
   have inter (u v : ℕ) (hv : v ≤ 4*n) : (∑ x ∈ Ioc u v,properPrimePriceAt S n x) -
