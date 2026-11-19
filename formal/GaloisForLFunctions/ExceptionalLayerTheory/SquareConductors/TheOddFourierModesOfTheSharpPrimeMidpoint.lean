@@ -314,7 +314,8 @@ theorem odd_center_difference_energy (hn : Odd n) :
   have hshift : (∑ x : ZMod (2*n), ‖A (x+n)‖^2) = ∑ x : ZMod (2*n), ‖A x‖^2 :=
     Fintype.sum_equiv (Equiv.addRight (n : ZMod (2*n))) _ _ fun _ => rfl
   change (∑ x : ZMod (2*n), ‖halfDifference A (x+1)-halfDifference A x‖^2) = _
-  simp only [halfDifference_step, norm_mul, Complex.norm_ofNat, mul_pow, horth, ← mul_sum,
+  simp only [halfDifference_step, norm_mul, show ‖(2:ℂ)‖=(2:ℝ) by norm_num,
+    mul_pow, horth, ← mul_sum,
     sum_add_distrib, hshift]
   change (2:ℝ)^2*((∑ x, ‖A x‖^2)+∑ x, ‖A x‖^2) = 8 * ∑ x, ‖A x‖^2
   ring

@@ -53,7 +53,7 @@ private theorem sum_over_pivots {k p : ℕ} (hp : p ∈ k.primeFactors) :
   have hs : primePowerSubset k (insert p S) = p^k.factorization p * primePowerSubset k S :=
     prod_insert hpS
   have hsquare := Nat.pow_le_pow_left hle 2
-  simp only [f, hs, card_insert_of_notMem hpS, pow_succ, mul_neg_one]
+  simp only [f, hs, card_insert_of_notMem hpS, pow_succ (-1 : ℤ), mul_neg_one]
   split_ifs <;> first | omega | ring
 
 private theorem pivotal_antichain {k p : ℕ} (hp : p ∈ k.primeFactors)

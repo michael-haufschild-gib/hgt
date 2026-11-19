@@ -52,7 +52,7 @@ theorem fallPoly_change_step (a b : ℂ) (n : ℕ) :
     let c := factorialConnection a b n
     have step (k : ℕ) : C (c k) * fallPoly b k * (X - C ((n : ℂ)*a)) =
         C (c k) * fallPoly b (k+1) + C (((k : ℂ)*b-(n : ℂ)*a)*c k) * fallPoly b k := by
-      rw [fallPoly_succ, map_mul, map_sub]
+      simp only [fallPoly_succ, map_mul, map_sub]
       ring
     rw [fallPoly_succ, ih, Finset.sum_mul]
     change ∑ k ∈ range (n+1), C (c k) * fallPoly b k * (X - C ((n : ℂ)*a)) = _

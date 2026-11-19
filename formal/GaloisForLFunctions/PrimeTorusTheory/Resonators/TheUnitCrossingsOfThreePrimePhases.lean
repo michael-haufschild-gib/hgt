@@ -44,19 +44,35 @@ theorem unit_trace_iff {a b c : ℂ} (ha : ‖a‖=1) (hb : ‖b‖=1) (hc : ‖
   simp only [mul_eq_zero,norm_eq_zero,add_eq_zero_iff_neg_eq,or_assoc,eq_comm (a := -a),
     eq_comm (a := -b)]
 
-/-- A near-unit observation forces at least one near-antipodal pair.
-The cubic threshold is uniform over the whole torus. -/
+private theorem one_le_largest_chord {a b c : ℂ} (ha : ‖a‖=1) (hb : ‖b‖=1) (hc : ‖c‖=1) :
+    1 ≤ ‖a+b‖ ∨ 1 ≤ ‖a+c‖ ∨ 1 ≤ ‖b+c‖ := by
+  have energy : ‖a+b‖^2+‖a+c‖^2+‖b+c‖^2 =
+      ‖a‖^2+‖b‖^2+‖c‖^2+‖a+b+c‖^2 := by
+    simp only [← Complex.normSq_eq_norm_sq,Complex.normSq_apply,Complex.add_re,Complex.add_im]
+    ring
+  rw [ha,hb,hc] at energy
+  by_contra! h
+  have small {z : ℂ} (hz : ‖z‖ < 1) : ‖z‖^2 < 1 := by
+    simpa using pow_lt_pow_left₀ hz (norm_nonneg z) (by decide : 2 ≠ 0)
+  linarith only [energy,small h.1,small h.2.1,small h.2.2,sq_nonneg ‖a+b+c‖]
+
+/-- Quadratic stability of the antipodal walls. At least one of the three
+chords has length one or greater, so the defect bounds the square of
+the distance to the nearest wall. -/
 theorem small_defect_forces_antipodes {a b c : ℂ} (ha : ‖a‖=1) (hb : ‖b‖=1) (hc : ‖c‖=1)
-    {ε : ℝ} (hε : 0 ≤ ε) (he : |‖a+b+c‖^2-1| ≤ ε^3) :
+    {ε : ℝ} (hε : 0 ≤ ε) (he : |‖a+b+c‖^2-1| ≤ ε^2) :
     ‖a+b‖ ≤ ε ∨ ‖a+c‖ ≤ ε ∨ ‖b+c‖ ≤ ε := by
   rw [abs_trace_defect ha hb hc] at he
   by_contra! hn
-  have hp : ε^3 < ‖a+b‖*‖a+c‖*‖b+c‖ := by
-    rw [pow_succ, sq]
-    exact mul_lt_mul_of_le_of_lt_of_nonneg_of_pos
-      (mul_le_mul hn.1.le hn.2.1.le hε (norm_nonneg _)) hn.2.2 hε
-      (mul_pos (hε.trans_lt hn.1) (hε.trans_lt hn.2.1))
-  exact hp.not_ge he
+  have hprod {x y z : ℝ} (hx : ε < x) (hy : ε < y) (hz : 1 ≤ z) :
+      ε^2 < x*y*z := by
+    have hxy : ε*ε < x*y := mul_lt_mul_of_le_of_lt_of_nonneg_of_pos hx.le hy hε (hε.trans_lt hx)
+    exact (by simpa only [sq] using hxy).trans_le
+      (le_mul_of_one_le_right (mul_nonneg (hε.trans hx.le) (hε.trans hy.le)) hz)
+  rcases one_le_largest_chord ha hb hc with h | h | h
+  · linarith only [he,hprod hn.2.1 hn.2.2 h]
+  · linarith only [he,hprod hn.1 hn.2.2 h]
+  · exact (hprod hn.1 hn.2.1 h).not_ge he
 
 /-- A pair of integer phases becomes antipodal exactly at the odd
 half-periods of its logarithmic gap. -/
@@ -101,7 +117,7 @@ private theorem mem_clock {w T t : ℝ} (hw : 0 < w) (hT : 0 ≤ T) :
   rw [clock, mem_image]
   constructor
   · rintro ⟨j,hj,rfl⟩
-    refine ⟨by positivity,hbound j |>.mp (mem_range.mp hj), (j:ℤ), ?_⟩
+    refine ⟨by positivity,(hbound j).mp (mem_range.mp hj), (j:ℤ), ?_⟩
     push_cast
     field_simp
   · rintro ⟨ht,htT,j,hj⟩
@@ -113,7 +129,7 @@ private theorem mem_clock {w T t : ℝ} (hw : 0 < w) (hT : 0 ≤ T) :
     lift j to ℕ using hj0 with k
     push_cast at hj
     have he : (2*(k:ℝ)+1)*Real.pi/w=t := (div_eq_iff hw.ne').mpr (by linarith only [hj])
-    exact ⟨k,mem_range.mpr ((hbound k).mpr (he ▸ htT)),he⟩
+    exact ⟨k,mem_range.mpr ((hbound k).mpr (he.symm ▸ htT)),he⟩
 
 private theorem card_clock {w : ℝ} (hw : 0 < w) (T : ℝ) : (clock w T).card = oddCount w T := by
   rw [clock, card_image_of_injective,card_range]

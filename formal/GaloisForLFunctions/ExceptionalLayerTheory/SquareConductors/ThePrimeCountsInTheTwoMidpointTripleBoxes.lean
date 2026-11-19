@@ -683,4 +683,318 @@ theorem prime_triple_surplus_exceeds_power {t : ℝ} (ht : t < 1) (A : ℝ) :
   exact h.not_ge (mul_le_mul_of_nonneg_left hle (div_nonneg (sq_nonneg _) hn0.le))
 
 
+section ProductFibers
+open Finset ArithmeticFunction
+
+private def boxProductFiber (P : Finset ℕ) (k : ℕ) (omit : Bool) : Finset (ℕ × ℕ × ℕ) :=
+  (P ×ˢ P ×ˢ P).filter fun x => x.1*x.2.1*x.2.2=k ∧ ¬(omit=true ∧ x.1=x.2.1 ∧ x.1=x.2.2)
+
+private theorem box_fiber_sum (I P : Finset ℕ) (omit : Bool) :
+    (∑ k ∈ I,((boxProductFiber P k omit).card:ℝ)*(Real.log k/3)) =
+      ∑ p ∈ P,∑ q ∈ P,∑ r ∈ P,if p*q*r ∈ I then
+        (if omit=true ∧ p=q ∧ p=r then 0 else Real.log (p*q*r:ℕ)/3) else 0 := by
+  classical
+  let S := P ×ˢ P ×ˢ P
+  let F (x : ℕ × ℕ × ℕ) := x.1*x.2.1*x.2.2
+  let C (x : ℕ × ℕ × ℕ) := omit=true ∧ x.1=x.2.1 ∧ x.1=x.2.2
+  have h (k : ℕ) : ((boxProductFiber P k omit).card:ℝ)*(Real.log k/3)=
+      ∑ x ∈ S,if F x=k then (if C x then 0 else Real.log k/3) else 0 := by
+    rw [←nsmul_eq_mul,←sum_const]
+    unfold boxProductFiber
+    rw [sum_filter]
+    apply sum_congr rfl
+    intro x _
+    by_cases he : F x=k <;> by_cases hc : C x <;>
+      simp only [F,C] at he hc ⊢ <;> simp [he,hc]
+  rw [sum_congr rfl (fun k _ => h k),sum_comm]
+  have point (x : ℕ × ℕ × ℕ) :
+      (∑ k ∈ I,if F x=k then (if C x then 0 else Real.log k/3) else 0)=
+        if F x ∈ I then (if C x then 0 else Real.log (F x)/3) else 0 := by
+    classical
+    rw [sum_ite_eq]
+  rw [sum_congr rfl (fun x _ => point x)]
+  simp only [S,sum_product,F,C]
+
+private theorem lower_triple_ordering_weight {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r.Prime) :
+    twiceSmoothTripleWeight (p*q*r)/2 =
+      if p=q ∧ q=r then 0 else ((primeTripleOrderings p q r).card:ℝ)/3 := by
+  rw [prime_triple_ordering_counts]
+  rcases eq_or_ne p q with rfl | hpq
+  · rcases eq_or_ne p r with rfl | hpr
+    · rw [show p*p*p=p^3 by ring,smooth_triple_cube hp]
+      norm_num
+    · rw [←pow_two,smooth_triple_repeated hp hr hpr]
+      simp [hpr]
+      <;> norm_num
+  rcases eq_or_ne p r with rfl | hpr
+  · rw [show p*q*p=p^2*q by ring,smooth_triple_repeated hp hq hpq]
+    simp [hpq]
+    <;> norm_num
+  rcases eq_or_ne q r with rfl | hqr
+  · rw [show p*q*q=q^2*p by ring,smooth_triple_repeated hq hp hpq.symm]
+    simp [hpq]
+    <;> norm_num
+  rw [smooth_triple_distinct hp hq hr hpq hpr hqr]
+  simp [hpq,hpr,hqr]
+  <;> norm_num
+
+private def orderedCubeIndex (k : ℕ) :=
+  k.divisorsAntidiagonal.sigma (fun x => x.1.divisorsAntidiagonal)
+
+private def orderedCubeTriple (z : Sigma (fun _ : ℕ × ℕ => ℕ × ℕ)) : ℕ × ℕ × ℕ :=
+  (z.2.1,z.2.2,z.1.2)
+
+private theorem upper_fiber_count (Y k : ℕ) (hk : 0<k) (P : Finset ℕ)
+    (hP : ∀ p q r : ℕ, p*q*r=k →
+      (p.Prime ∧ Y<p) ∧ (q.Prime ∧ Y<q) ∧ (r.Prime ∧ Y<r) ↔
+        p∈P ∧ q∈P ∧ r∈P) :
+    (cubicPrimeIndicator Y^3 : ArithmeticFunction ℝ) k=(boxProductFiber P k false).card := by
+  classical
+  let A (p : ℕ) := p.Prime ∧ Y<p
+  let S := (orderedCubeIndex k).filter (fun z => A z.2.1 ∧ A z.2.2 ∧ A z.1.2)
+  have hcard : S.card=(boxProductFiber P k false).card := by
+    apply card_bij' (fun z _ => orderedCubeTriple z) (fun x _ => ⟨(x.1*x.2.1,x.2.2),(x.1,x.2.1)⟩)
+    · intro z hz
+      obtain ⟨hm,ha⟩ := mem_filter.mp hz
+      obtain ⟨ho,hi⟩ := mem_sigma.mp hm
+      have he := (Nat.mem_divisorsAntidiagonal.mp hi).1
+      have hp : z.2.1*z.2.2*z.1.2=k := by rw [he,(Nat.mem_divisorsAntidiagonal.mp ho).1]
+      obtain ⟨h1,h2,h3⟩ := (hP _ _ _ hp).mp ha
+      exact mem_filter.mpr ⟨mem_product.mpr ⟨h1,mem_product.mpr ⟨h2,h3⟩⟩,hp,by simp⟩
+    · rintro ⟨p,q,r⟩ hx
+      obtain ⟨hm,hp,_⟩ := mem_filter.mp hx
+      obtain ⟨h1,h23⟩ := mem_product.mp hm
+      obtain ⟨h2,h3⟩ := mem_product.mp h23
+      have ha := (hP p q r hp).mpr ⟨h1,h2,h3⟩
+      exact mem_filter.mpr ⟨mem_sigma.mpr ⟨Nat.mem_divisorsAntidiagonal.mpr ⟨hp,hk.ne'⟩,
+        Nat.mem_divisorsAntidiagonal.mpr ⟨rfl,(Nat.mul_pos ha.1.1.pos ha.2.1.1.pos).ne'⟩⟩,ha⟩
+    · rintro ⟨⟨u,r⟩,p,q⟩ hz
+      have he := (Nat.mem_divisorsAntidiagonal.mp (mem_sigma.mp (mem_filter.mp hz).1).2).1
+      change p*q=u at he
+      subst u
+      rfl
+    · intro _ _; rfl
+  rw [←hcard,show cubicPrimeIndicator Y^3=cubicPrimeIndicator Y*cubicPrimeIndicator Y*cubicPrimeIndicator Y by ring,
+    mul_apply]
+  change _=(S.card:ℝ)
+  have hsum : (S.card:ℝ)=∑ z ∈ orderedCubeIndex k,if A z.2.1 ∧ A z.2.2 ∧ A z.1.2 then 1 else 0 := by
+    simp [S]
+  rw [hsum,orderedCubeIndex,sum_sigma]
+  apply sum_congr rfl
+  intro x _
+  rw [mul_apply,sum_mul]
+  apply sum_congr rfl
+  intro z _
+  simp only [cubic_prime_indicator_apply,A]
+  split_ifs <;> simp_all
+
+private theorem prime_box_as_product_sum {a b y : ℝ} (ha : 0≤a) (hb : 0≤b) (hy : 0<y)
+    (t : ℝ) (omit : Bool) :
+    primeTripleLogPrice a b t y omit =
+      let P := windowPrimes (a*y) (b*y)
+      ∑ p ∈ P,∑ q ∈ P,∑ r ∈ P,if ((p*q*r:ℕ):ℝ) ≤ t*y^3 then
+        (if omit=true ∧ p=q ∧ p=r then 0 else Real.log (p*q*r:ℕ)/3) else 0 := by
+  let P := windowPrimes (a*y) (b*y)
+  have hmem {p : ℕ} (hp : p∈P) : (p:ℝ)/y ∈ Set.Ioc a b := by
+    obtain ⟨_,hl,hu⟩ := (mem_windowPrimes (mul_nonneg ha hy.le) (mul_nonneg hb hy.le)).mp hp
+    exact ⟨(lt_div_iff₀ hy).mpr hl,(div_le_iff₀ hy).mpr hu⟩
+  unfold primeTripleLogPrice
+  apply sum_congr rfl
+  intro p hp
+  apply sum_congr rfl
+  intro q hq
+  apply sum_congr rfl
+  intro r hr
+  have e : (p:ℝ)/y*((q:ℝ)/y)*((r:ℝ)/y)=((p*q*r:ℕ):ℝ)/y^3 := by
+    push_cast
+    rw [div_mul_div_comm,div_mul_div_comm,pow_three]
+  simp only [boxTest,hmem hp,hmem hq,hmem hr,true_and,e,div_le_iff₀ (pow_pos hy 3)]
+  split_ifs <;> simp
+
+private theorem lower_coordinate {p q r y : ℝ} (hy : 0<y) (hp : 0≤p) (hq : 0≤q) (hr : 0≤r)
+    (hqy : q≤y) (hry : r≤y) (hprod : (2/3)*y^3<p*q*r) : (2/3)*y<p := by
+  have hm := mul_le_mul (mul_le_mul_of_nonneg_left hqy hp) hry hr (mul_nonneg hp hy.le)
+  exact (lt_of_mul_lt_mul_right (b:=y^2) (by nlinarith only [hprod,hm]) (sq_nonneg y))
+
+private theorem upper_coordinate {p q r y : ℝ} (hy : 0<y) (hp : 0≤p)
+    (hq : y<q) (hr : y<r) (hprod : p*q*r≤(4/3)*y^3) : p≤(4/3)*y := by
+  have hm := mul_le_mul (mul_le_mul_of_nonneg_left hq.le hp) hr.le hy.le
+    (mul_nonneg hp (hy.trans hq).le)
+  apply le_of_mul_le_mul_right (b:=y^2) _ (sq_pos_of_pos hy)
+  nlinarith only [hm,hprod]
+
+private theorem lower_fiber_coefficient {n k : ℕ} (hY : 3 ≤ cubicMidpointCut n)
+    (hk : k∈Finset.Ioc (2*n) (3*n)) (y : ℝ) (hy : 0<y)
+    (hy3 : y^3=3*(n:ℝ)) (hf : cubicMidpointCut n=⌊y⌋₊) :
+    (if k∈Nat.smoothNumbers (cubicMidpointCut n+1) ∧ k.primeFactorsList.length<4 then
+      twiceHighDivisorWeight (cubicMidpointCut n) (4*n/(cubicMidpointCut n+1)) k/2 else 0) =
+        ((boxProductFiber (windowPrimes ((2/3)*y) (1*y)) k true).card:ℝ)/3 := by
+  classical
+  let Y := cubicMidpointCut n
+  let P := windowPrimes ((2/3)*y) (1*y)
+  let F := boxProductFiber P k true
+  obtain ⟨hl,hu⟩ := Finset.mem_Ioc.mp hk
+  have hmem {p : ℕ} : p∈P ↔ p.Prime ∧ (2/3)*y<p ∧ (p:ℝ)≤y := by
+    simpa only [one_mul] using (mem_windowPrimes (p:=p) (x:=(2/3)*y) (y:=1*y) (by positivity) (by positivity))
+  have cut {p : ℕ} : p≤Y ↔ (p:ℝ)≤y := by rw [show Y=⌊y⌋₊ from hf,Nat.le_floor_iff hy.le]
+  have hgt : (2/3)*y^3<(k:ℝ) := by rw [hy3]; exact_mod_cast (by linarith only [show 2*(n:ℝ)<k by exact_mod_cast hl] : (2/3:ℝ)*(3*n)<k)
+  have members {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r.Prime)
+      (h1 : p≤Y) (h2 : q≤Y) (h3 : r≤Y) (e : p*q*r=k) : p∈P ∧ q∈P ∧ r∈P := by
+    have hg := hgt
+    rw [←e,Nat.cast_mul,Nat.cast_mul] at hg
+    have h (a b c : ℕ) (ha : a.Prime) (haY : a≤Y) (hbY : b≤Y) (hcY : c≤Y)
+        (hs : (2/3)*y^3<(a:ℝ)*b*c) : a∈P :=
+      hmem.mpr ⟨ha,lower_coordinate hy (Nat.cast_nonneg _) (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+        (cut.mp hbY) (cut.mp hcY) hs,cut.mp haY⟩
+    exact ⟨h p q r hp h1 h2 h3 hg,h q p r hq h2 h1 h3 (by linarith only [hg]),
+      h r p q hr h3 h1 h2 (by linarith only [hg])⟩
+  by_cases hex : ∃ p q r : ℕ,p.Prime ∧ q.Prime ∧ r.Prime ∧ p≤Y ∧ q≤Y ∧ r≤Y ∧ k=p*q*r
+  · obtain ⟨p,q,r,hp,hq,hr,h1,h2,h3,rfl⟩ := hex
+    have ⟨hpm,hqm,hrm⟩ := members hp hq hr h1 h2 h3 rfl
+    have smooth {a : ℕ} (ha : a.Prime) (h : a≤Y) : a∈Nat.smoothNumbers (Y+1) :=
+      Nat.mem_smoothNumbers'.mpr fun b hb hd => (Nat.prime_dvd_prime_iff_eq hb ha).mp hd ▸ Nat.lt_succ_of_le h
+    have hs := Nat.mul_mem_smoothNumbers (Nat.mul_mem_smoothNumbers (smooth hp h1) (smooth hq h2)) (smooth hr h3)
+    have hlen : (p*q*r).primeFactorsList.length<4 := by
+      rw [(Nat.perm_primeFactorsList_mul (Nat.mul_ne_zero hp.ne_zero hq.ne_zero) hr.ne_zero).length_eq,
+        List.length_append,(Nat.perm_primeFactorsList_mul hp.ne_zero hq.ne_zero).length_eq,
+        List.length_append,hp.primeFactorsList,hq.primeFactorsList,hr.primeFactorsList]
+      decide
+    rw [if_pos ⟨hs,hlen⟩,(high_divisor_weight_on_smooth_triple hp hq hr hY h1 h2 h3 hl).2,
+      lower_triple_ordering_weight hp hq hr]
+    have hperm (a b c : ℕ) (ha : a∈P) (hb : b∈P) (hc : c∈P) (e : a*b*c=p*q*r) :
+        (a,b,c)∈primeTripleOrderings p q r :=
+      (mem_prime_triple_orderings hp hq hr).mpr ⟨(hmem.mp ha).1,(hmem.mp hb).1,(hmem.mp hc).1,e⟩
+    have eqs : boxProductFiber P (p*q*r) true =
+        (primeTripleOrderings p q r).filter (fun x => ¬(x.1=x.2.1 ∧ x.1=x.2.2)) := by
+      ext ⟨a,b,c⟩
+      simp only [boxProductFiber,mem_filter,mem_product,true_and]
+      constructor
+      · rintro ⟨⟨ha,hb,hc⟩,he,hn⟩
+        exact ⟨hperm _ _ _ ha hb hc he,hn⟩
+      · rintro ⟨ho,hn⟩
+        have he := ((mem_prime_triple_orderings hp hq hr).mp ho).2.2.2
+        simp only [primeTripleOrderings,mem_insert,mem_singleton,Prod.mk.injEq] at ho
+        rcases ho with ⟨rfl,rfl,rfl⟩|⟨rfl,rfl,rfl⟩|⟨rfl,rfl,rfl⟩|
+          ⟨rfl,rfl,rfl⟩|⟨rfl,rfl,rfl⟩|⟨rfl,rfl,rfl⟩ <;> exact ⟨⟨by assumption,by assumption,by assumption⟩,he,hn⟩
+    change _=((boxProductFiber P (p*q*r) true).card:ℝ)/3
+    rw [eqs]
+    by_cases same : p=q ∧ q=r
+    · obtain ⟨rfl,rfl⟩ := same
+      simp [primeTripleOrderings]
+    · rw [if_neg same]
+      have all : ∀ x ∈ primeTripleOrderings p q r,¬(x.1=x.2.1 ∧ x.1=x.2.2) := by
+        rintro ⟨a,b,c⟩ ho ⟨rfl,rfl⟩
+        simp only [primeTripleOrderings,mem_insert,mem_singleton,Prod.mk.injEq] at ho
+        rcases ho with h|h|h|h|h|h <;> obtain ⟨h₁,h₂,h₃⟩ := h <;> exact same ⟨by omega,by omega⟩
+      rw [filter_eq_self.mpr all]
+  · have empty : F=∅ := by
+      apply eq_empty_iff_forall_notMem.mpr
+      rintro ⟨p,q,r⟩ h
+      obtain ⟨hm,he,_⟩ := mem_filter.mp h
+      obtain ⟨hpm,hqr⟩ := mem_product.mp hm
+      obtain ⟨hqm,hrm⟩ := mem_product.mp hqr
+      obtain ⟨hp,_,h1⟩ := hmem.mp hpm
+      obtain ⟨hq,_,h2⟩ := hmem.mp hqm
+      obtain ⟨hr,_,h3⟩ := hmem.mp hrm
+      exact hex ⟨p,q,r,hp,hq,hr,cut.mpr h1,cut.mpr h2,cut.mpr h3,he.symm⟩
+    change _=(F.card:ℝ)/3
+    rw [empty,card_empty,Nat.cast_zero,zero_div]
+    split_ifs with h
+    · have hw : twiceHighDivisorWeight Y (4*n/(Y+1)) k=0 := by
+        by_contra hn
+        exact (surviving_long_divisor_products hY hl (hu.trans (by omega)) hn).2.elim hex (not_le.mpr h.2)
+      rw [hw,zero_div]
+    · rfl
+
+/-- Grouping the sharp prime boxes by their integer product gives exactly
+the lower long-divisor triple price and the upper rough convolution cube. -/
+theorem cubic_triple_prices_eq_sharp_boxes {n : ℕ} (hY : 3 ≤ cubicMidpointCut n) :
+    lowerCubicTriplePrice n-upperCubicTriplePrice n=sharpPrimeTripleSurplus ((3*(n:ℝ))^(1/3:ℝ)) := by
+  classical
+  let y := (3*(n:ℝ))^(1/3:ℝ)
+  let Y := cubicMidpointCut n
+  have hn : 0<n := by
+    by_contra! hn
+    have he : n=0 := by omega
+    subst n
+    norm_num [cubicMidpointCut,Real.zero_rpow] at hY
+  have hy : 0<y := Real.rpow_pos_of_pos (by positivity) _
+  have hy3 : y^3=3*(n:ℝ) := by
+    dsimp only [y]
+    rw [←Real.rpow_natCast,←Real.rpow_mul (by positivity)]
+    norm_num
+  let P := windowPrimes ((2/3)*y) (1*y)
+  let Q := windowPrimes (1*y) ((4/3)*y)
+  have h3 : 1*y^3=((3*n:ℕ):ℝ) := by rw [one_mul,hy3,Nat.cast_mul,Nat.cast_ofNat]
+  have h2 : (2/3)*y^3=((2*n:ℕ):ℝ) := by rw [hy3,Nat.cast_mul,Nat.cast_ofNat]; ring
+  have h4 : (4/3)*y^3=((4*n:ℕ):ℝ) := by rw [hy3,Nat.cast_mul,Nat.cast_ofNat]; ring
+  have lower : lowerCubicTriplePrice n=primeTripleLogPrice (2/3) 1 1 y true-
+      primeTripleLogPrice (2/3) 1 (2/3) y true := by
+    rw [lowerCubicTriplePrice,sum_filter]
+    trans ∑ k ∈ Finset.Ioc (2*n) (3*n),((boxProductFiber P k true).card:ℝ)*(Real.log k/3)
+    · apply sum_congr rfl
+      intro k hk
+      have hh := lower_fiber_coefficient hY hk y hy hy3 rfl
+      change (if k∈Nat.smoothNumbers (Y+1) ∧ k.primeFactorsList.length<4 then
+        twiceHighDivisorWeight Y (4*n/(Y+1)) k/2*Real.log k else 0)=_
+      by_cases hs : k∈Nat.smoothNumbers (Y+1) ∧ k.primeFactorsList.length<4
+      · rw [if_pos hs] at hh ⊢
+        rw [hh]; ring
+      · rw [if_neg hs] at hh ⊢
+        rw [show ((boxProductFiber P k true).card:ℝ)=0 by linarith only [hh],zero_mul]
+    rw [box_fiber_sum,prime_box_as_product_sum (by norm_num) (by norm_num) hy,
+      prime_box_as_product_sum (by norm_num) (by norm_num) hy,h3,h2]
+    simp only [Nat.cast_le,←sum_sub_distrib]
+    apply sum_congr rfl
+    intro p _
+    apply sum_congr rfl
+    intro q _
+    apply sum_congr rfl
+    intro r _
+    simp only [Finset.mem_Ioc]
+    split_ifs <;> first | rfl | omega | ring
+  have hQ {p : ℕ} : p∈Q ↔ p.Prime ∧ y<p ∧ (p:ℝ)≤(4/3)*y := by
+    simpa only [one_mul] using (mem_windowPrimes (p:=p) (x:=1*y) (y:=(4/3)*y) (by positivity) (by positivity))
+  have cut {p : ℕ} : Y<p ↔ y<(p:ℝ) := Nat.floor_lt hy.le
+  have upmem {k : ℕ} (hk : k≤4*n) (p q r : ℕ) (he : p*q*r=k) :
+      ((p.Prime ∧ Y<p) ∧ (q.Prime ∧ Y<q) ∧ (r.Prime ∧ Y<r)) ↔ p∈Q ∧ q∈Q ∧ r∈Q := by
+    constructor
+    · rintro ⟨⟨hp,hp'⟩,⟨hq,hq'⟩,hr,hr'⟩
+      have hbd : (p:ℝ)*q*r≤(4/3)*y^3 := by rw [h4]; exact_mod_cast he.le.trans hk
+      have h (a b c : ℕ) (ha : a.Prime) (haY : Y<a) (hbY : Y<b) (hcY : Y<c)
+          (hs : (a:ℝ)*b*c≤(4/3)*y^3) : a∈Q :=
+        hQ.mpr ⟨ha,cut.mp haY,upper_coordinate hy (Nat.cast_nonneg _) (cut.mp hbY) (cut.mp hcY) hs⟩
+      exact ⟨h p q r hp hp' hq' hr' hbd,h q p r hq hq' hp' hr' (by linarith only [hbd]),
+        h r p q hr hr' hp' hq' (by linarith only [hbd])⟩
+    · rintro ⟨hp,hq,hr⟩
+      exact ⟨⟨(hQ.mp hp).1,cut.mpr (hQ.mp hp).2.1⟩,⟨(hQ.mp hq).1,cut.mpr (hQ.mp hq).2.1⟩,
+        (hQ.mp hr).1,cut.mpr (hQ.mp hr).2.1⟩
+  have upper : upperCubicTriplePrice n=primeTripleLogPrice 1 (4/3) (4/3) y false := by
+    unfold upperCubicTriplePrice
+    trans ∑ k ∈ Finset.Ioc (3*n) (4*n),((boxProductFiber Q k false).card:ℝ)*(Real.log k/3)
+    · apply sum_congr rfl
+      intro k hk
+      obtain ⟨hl,hu⟩ := Finset.mem_Ioc.mp hk
+      rw [upper_fiber_count Y k (by omega) Q (upmem hu)]
+      ring
+    rw [box_fiber_sum,prime_box_as_product_sum (by norm_num) (by norm_num) hy,h4]
+    apply sum_congr rfl
+    intro p hp
+    apply sum_congr rfl
+    intro q hq
+    apply sum_congr rfl
+    intro r hr
+    have hh := mul_lt_mul_of_pos_right
+      (mul_lt_mul_of_pos_right (hQ.mp hp).2.1 hy) hy
+    have hq' := mul_lt_mul_of_pos_right
+      (mul_lt_mul_of_pos_left (hQ.mp hq).2.1 (hy.trans (hQ.mp hp).2.1)) hy
+    have hr' := mul_lt_mul_of_pos_left (hQ.mp hr).2.1 (mul_pos (hy.trans (hQ.mp hp).2.1) (hy.trans (hQ.mp hq).2.1))
+    have gt : 3*n<p*q*r := by
+      have he : ((3*n:ℕ):ℝ)<(p:ℝ)*q*r := by rw [←h3,one_mul,pow_three]; exact hh.trans (hq'.trans hr')
+      exact_mod_cast he
+    simp only [Finset.mem_Ioc,gt,true_and,Nat.cast_le]
+  rw [lower,upper,sharpPrimeTripleSurplus]
+
+end ProductFibers
+
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
