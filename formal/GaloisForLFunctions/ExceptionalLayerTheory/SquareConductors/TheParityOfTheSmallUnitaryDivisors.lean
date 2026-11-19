@@ -252,4 +252,74 @@ theorem small_unitary_subset_card {k : ℕ} (hk : 1 < k) {S : Finset ℕ}
   rw [hsingle] at hsmall hm
   exact hb.not_ge (hm.symm.trans_le ((Nat.mul_le_mul_right _ hsmall).trans_eq (pow_two _).symm))
 
+/-- For two prime-power blocks with the larger block a prime, only the
+unit and the smaller block contribute to the weighted small-divisor sum. -/
+theorem small_unitary_pair_price (w : ℕ → ℤ) {p q a : ℕ}
+    (hp : p.Prime) (hq : q.Prime) (ha : 0<a) (hlt : p^a<q) :
+    (∑ S ∈ smallUnitarySubsets (p^a*q),w (primePowerSubset (p^a*q) S))=w 1+w (p^a) := by
+  let k := p^a*q
+  have hpa := pow_pos hp.pos a
+  have hpq := (Nat.le_of_dvd hpa (dvd_pow_self p ha.ne')).trans_lt hlt
+  have hqnd := Nat.not_dvd_of_pos_of_lt hpa hlt
+  have hpnd : ¬p ∣ q := fun h => hpq.ne ((Nat.prime_dvd_prime_iff_eq hp hq).mp h)
+  have hP : k.primeFactors=({p,q}:Finset ℕ) := by
+    dsimp only [k]
+    rw [Nat.primeFactors_mul hpa.ne' hq.ne_zero,Nat.primeFactors_pow p ha.ne',hp.primeFactors,hq.primeFactors]
+    simp
+  have hqexp : k.factorization q=1 := by
+    dsimp only [k]
+    rw [Nat.factorization_mul hpa.ne' hq.ne_zero,Finsupp.add_apply,
+      Nat.factorization_eq_zero_of_not_dvd hqnd,hq.factorization_self,zero_add]
+  have hpexp : k.factorization p=a := by
+    dsimp only [k]
+    rw [Nat.factorization_mul hpa.ne' hq.ne_zero,Finsupp.add_apply,
+      Nat.factorization_eq_zero_of_not_dvd hpnd,Nat.factorization_pow_self hp,add_zero]
+  have hk := hq.one_lt.trans_le (Nat.le_mul_of_pos_left q hpa)
+  have hbig : k < (q^k.factorization q)^2 := by
+    rw [hqexp,pow_one,pow_two]
+    exact Nat.mul_lt_mul_of_pos_right hlt hq.pos
+  have hqmem : q ∈ k.primeFactors := by simp [hP]
+  change (∑ S ∈ smallUnitarySubsets k,w (primePowerSubset k S))=_
+  rw [small_unitary_subsets_of_dominant hk hqmem hbig,hP]
+  simp [Finset.powerset_insert,primePowerSubset,hpq.ne,hpq.ne.symm,hpexp,add_comm]
+
+/-- Any normalization assigning the unit weight one and killing all
+two-block products forces weight minus one on every prime-power block
+and total weight minus two on every balanced triple. -/
+theorem small_unitary_pair_rigidity (w : ℕ → ℤ) (hunit : w 1=1) :
+    (∀ p q a : ℕ, p.Prime → q.Prime → 0<a → p^a<q →
+      (∑ S ∈ smallUnitarySubsets (p^a*q),w (primePowerSubset (p^a*q) S))=0) ↔
+    (∀ p a : ℕ, p.Prime → 0<a → w (p^a)= -1) ∧
+      (∀ k : ℕ, 1<k → k.primeFactors.card=3 →
+        (∀ p ∈ k.primeFactors, (p^k.factorization p)^2<k) →
+        (∑ S ∈ smallUnitarySubsets k,w (primePowerSubset k S))= -2) := by
+  constructor
+  · intro h
+    have hv (p a : ℕ) (hp : p.Prime) (ha : 0<a) : w (p^a)= -1 := by
+      obtain ⟨q,hqle,hq⟩ := Nat.exists_infinite_primes (p^a+1)
+      have hr := h p q a hp hq ha hqle
+      rw [small_unitary_pair_price w hp hq ha hqle,hunit] at hr
+      omega
+    refine ⟨hv,fun k hk ht hb => ?_⟩
+    rw [←unitary_half_weight_balanced_triple hk ht hb]
+    apply sum_congr rfl
+    intro S hS
+    have hc := (small_unitary_subset_card hk hS).2 hb
+    rw [ht] at hc
+    rcases Nat.eq_zero_or_pos S.card with he | he
+    · rw [card_eq_zero.mp he]
+      simp [primePowerSubset,hunit]
+    · obtain ⟨p,hp⟩ := card_eq_one.mp (by omega : S.card=1)
+      have hps : p ∈ S := by rw [hp]; exact mem_singleton_self p
+      have hmem := mem_powerset.mp (mem_filter.mp hS).1 hps
+      obtain ⟨hprime,hd,hk0⟩ := Nat.mem_primeFactors.mp hmem
+      rw [hp]
+      simp [primePowerSubset,hv p _ hprime (hprime.factorization_pos_of_dvd hk0 hd)]
+  · rintro ⟨h,_⟩ p q a hp hq ha hlt
+    rw [small_unitary_pair_price w hp hq ha hlt,hunit,h p a hp ha]
+    norm_num
+
+#print axioms small_unitary_pair_price
+#print axioms small_unitary_pair_rigidity
+
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

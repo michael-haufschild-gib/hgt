@@ -1,5 +1,5 @@
 import GaloisForLFunctions.RHTower.CCM.CCMFUSuzukiMobiusDivisorDilationChannels
-import GaloisForLFunctions.RestrictedFactorizationCalculus.CenteringThePrimePowerReadingsAtTheirQuotientFloors
+import GaloisForLFunctions.RestrictedFactorizationCalculus.TheCenteredReadingBelowTheHyperbola
 
 /-!
 # Ordinary primes at the quotient endpoints
@@ -99,6 +99,122 @@ theorem exact_centered_ordinary_prime_reading {y : ℕ} (hy : 0<y) (X : ℕ) :
       (∑ d ∈ Icc 1 X,roughProperPowerWeight y d*coprimeMoebiusSum (primorial y) (X/d))=
       -(y:ℝ)*(RHTower.Sieve.smoothUpTo (Nat.primesLE y) (X/y)).card := by
   linarith only [proper_powers_as_smaller_frozen_rows hy X,exact_centered_prime_power_remainder hy X]
+
+
+open scoped ArithmeticFunction.Moebius
+
+private theorem restrict_the_ordinary_prime_weight (y : ℕ) :
+    roughOrdinaryPrimeWeight y=roughRestriction y (roughOrdinaryPrimeWeight 0) := by
+  ext n
+  rw [roughRestriction_apply]
+  change (if n.Prime ∧ y<n then Real.log n else 0)=
+    if IsFree (banned y) n then (if n.Prime ∧ 0<n then Real.log n else 0) else 0
+  by_cases prime : n.Prime
+  · have eq : IsFree (banned y) n ↔ y<n := by
+      simpa only [banned,Set.mem_setOf_eq,not_le] using isFree_prime (banned y) prime
+    simp [prime,prime.pos,eq]
+  · simp [prime]
+
+/-- The coefficient of an ordinary-prime quotient head is a signed sum
+over the distinct prime factors of its index, with its roughness test frozen. -/
+theorem ordinary_prime_floor_coefficient (y d : ℕ) :
+    roughFloorCoefficient y (roughOrdinaryPrimeWeight y) d =
+      if IsFree (banned y) d then ∑ p ∈ d.primeFactors,(μ (d/p):ℝ)*Real.log p else 0 := by
+  rw [roughFloorCoefficient,restrict_the_ordinary_prime_weight y]
+  change (roughRestriction y (μ : ArithmeticFunction ℝ)*roughRestriction y (roughOrdinaryPrimeWeight 0)) d=_
+  rw [show roughRestriction y (μ : ArithmeticFunction ℝ)*roughRestriction y (roughOrdinaryPrimeWeight 0)=
+    roughRestriction y ((μ : ArithmeticFunction ℝ)*roughOrdinaryPrimeWeight 0) from
+      (GaloisForLFunctions.SelbergClass.DirichletSeries.primeRestrict_mul ..).symm,roughRestriction_apply]
+  split_ifs with hd
+  · rw [Nat.primeFactors_eq_to_filter_divisors_prime,sum_filter,mul_comm,ArithmeticFunction.mul_apply,Nat.sum_divisorsAntidiagonal]
+    apply sum_congr rfl
+    intro p _
+    change (if p.Prime ∧ 0<p then Real.log p else 0)*(μ (d/p):ℝ)=_
+    by_cases hp : p.Prime
+    · simp only [hp,hp.pos,and_self,if_true,mul_comm]
+    · simp [hp]
+  · rfl
+
+private theorem ordinary_coefficient_on_squarefree (d : ℕ) (square : Squarefree d) :
+    (∑ p ∈ d.primeFactors,(μ (d/p):ℝ)*Real.log p)= -(μ d:ℝ)*Real.log d := by
+  have neg (p : ℕ) (hp : p∈d.primeFactors) : (μ (d/p):ℝ)= -(μ d:ℝ) := by
+    obtain ⟨prime,dvd,_⟩ := Nat.mem_primeFactors.mp hp
+    have eq := Nat.mul_div_cancel' dvd
+    have cop := Nat.coprime_of_squarefree_mul (eq.symm ▸ square)
+    have val := ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime cop
+    rw [eq,ArithmeticFunction.moebius_apply_prime prime] at val
+    exact_mod_cast (show μ (d/p)= -(μ d) by linarith only [val])
+  rw [sum_congr rfl (fun p hp => congrArg (· * Real.log p) (neg p hp)),←mul_sum]
+  have logs : Real.log (d:ℝ)=∑ p ∈ d.primeFactors,Real.log p := by
+    conv_lhs => rw [←Nat.prod_primeFactors_of_squarefree square,Nat.cast_prod]
+    exact Real.log_prod (fun p hp => Nat.cast_ne_zero.mpr (Nat.prime_of_mem_primeFactors hp).ne_zero)
+  rw [logs]
+
+/-- A squarefree rough index has the same logarithmic coefficient for
+ordinary primes as for the full Mangoldt reading. -/
+theorem ordinary_head_on_a_squarefree_rough_index {y d : ℕ} (rough : IsFree (banned y) d) (sq : Squarefree d) :
+    roughFloorCoefficient y (roughOrdinaryPrimeWeight y) d= -(μ d:ℝ)*Real.log d := by
+  rw [ordinary_prime_floor_coefficient,if_pos rough,ordinary_coefficient_on_squarefree d sq]
+
+/-- If deleting a single prime from a nonsquarefree integer gives a
+squarefree quotient, that prime occurs exactly twice and is its only repetition. -/
+private theorem recover_the_repeated_prime {n p : ℕ} (prime : p.Prime) (dvd : p ∣ n)
+    (bad : ¬Squarefree n) (clean : Squarefree (n/p)) :
+    ∃ r,Squarefree r ∧ ¬p ∣ r ∧ n=p^2*r := by
+  have eq := Nat.mul_div_cancel' dvd
+  have again : p ∣ n/p := by
+    by_contra nd
+    exact bad (eq ▸ (Nat.squarefree_mul_iff.mpr ⟨prime.coprime_iff_not_dvd.mpr nd,prime.squarefree,clean⟩))
+  obtain ⟨r,hr⟩ := again
+  have pair := Nat.squarefree_mul_iff.mp (hr ▸ clean)
+  refine ⟨r,pair.2.2,prime.coprime_iff_not_dvd.mp pair.1,?_⟩
+  calc n = p*(n/p) := eq.symm
+       _ = _ := by rw [hr]; ring
+
+/-- At a rough index with a single doubled prime the coefficient is
+minus the sign of the remaining squarefree part times the log of that prime. -/
+theorem ordinary_head_at_one_doubled_prime {y p r : ℕ} (prime : p.Prime) (sq : Squarefree r)
+    (nd : ¬p ∣ r) (free : IsFree (banned y) (p^2*r)) :
+    roughFloorCoefficient y (roughOrdinaryPrimeWeight y) (p^2*r)= -(μ r:ℝ)*Real.log p := by
+  let n := p^2*r
+  have form : n=p*(p*r) := by dsimp only [n]; ring
+  have div : n/p=p*r := by rw [form,Nat.mul_div_cancel_left _ prime.pos]
+  have mem : p∈n.primeFactors := Nat.mem_primeFactors.mpr ⟨prime,by rw [form]; exact dvd_mul_right p _,free.1⟩
+  rw [ordinary_prime_floor_coefficient,if_pos free]
+  change (∑ q ∈ n.primeFactors,(μ (n/q):ℝ)*Real.log q)=_
+  rw [sum_eq_single p]
+  · rw [div,ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime (prime.coprime_iff_not_dvd.mpr nd),
+      ArithmeticFunction.moebius_apply_prime prime]
+    push_cast; ring
+  · intro q hq ne
+    obtain ⟨qp,qd,_⟩ := Nat.mem_primeFactors.mp hq
+    have cop : (p*p).Coprime q := (Nat.coprime_primes prime qp |>.mpr ne.symm).mul_left
+      (Nat.coprime_primes prime qp |>.mpr ne.symm)
+    have twice : p*p ∣ q*(n/q) := by rw [Nat.mul_div_cancel' qd]; exact ⟨r,by dsimp only [n]; ring⟩
+    have nc : ¬Squarefree (n/q) := fun s =>
+      Nat.squarefree_iff_prime_squarefree.mp s p prime (cop.dvd_of_dvd_mul_left twice)
+    rw [ArithmeticFunction.moebius_eq_zero_of_not_squarefree nc]; simp
+  · exact fun h => (h mem).elim
+
+/-- On nonsquarefree indices every nonzero ordinary-prime coefficient
+comes from one doubled prime times a coprime squarefree remainder. -/
+theorem support_of_the_nonsquarefree_ordinary_head {y n : ℕ} (ns : ¬Squarefree n)
+    (active : roughFloorCoefficient y (roughOrdinaryPrimeWeight y) n ≠ 0) :
+    IsFree (banned y) n ∧ ∃ p r,p.Prime ∧ Squarefree r ∧ ¬p ∣ r ∧ n=p^2*r := by
+  rw [ordinary_prime_floor_coefficient] at active
+  split_ifs at active with free
+  · obtain ⟨p,hp,term⟩ := exists_ne_zero_of_sum_ne_zero active
+    have sq : Squarefree (n/p) := by
+      by_contra bad; exact term (by rw [ArithmeticFunction.moebius_eq_zero_of_not_squarefree bad]; simp)
+    obtain ⟨pr,dvd,_⟩ := Nat.mem_primeFactors.mp hp
+    obtain ⟨r,rs,nd,shape⟩ := recover_the_repeated_prime pr dvd ns sq
+    exact ⟨free,p,r,pr,rs,nd,shape⟩
+  · contradiction
+
+#print axioms ordinary_prime_floor_coefficient
+#print axioms ordinary_head_on_a_squarefree_rough_index
+#print axioms ordinary_head_at_one_doubled_prime
+#print axioms support_of_the_nonsquarefree_ordinary_head
 
 #print axioms exact_centered_ordinary_prime_reading
 #print axioms proper_powers_as_smaller_frozen_rows

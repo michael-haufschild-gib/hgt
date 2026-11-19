@@ -108,8 +108,7 @@ theorem prime_triple_inner_volume {v : ℝ} (hv : 0<v) :
     continuousOn_const.div continuousOn_id fun _ hx => (hpos hx).ne'
   rw [intervalIntegral.integral_sub hcon.intervalIntegrable intervalIntegrable_const,
     intervalIntegral.integral_const,smul_eq_mul]
-  simp only [div_eq_mul_inv,intervalIntegral.integral_const_mul,integral_inv_of_pos zero_lt_one hv,
-    div_one]
+  simp only [div_eq_mul_inv,intervalIntegral.integral_const_mul,integral_inv_of_pos zero_lt_one hv]
   ring
 
 /-- In dimension three the ordered continuous volume between one and a
@@ -133,15 +132,15 @@ theorem prime_triple_box_volume {s : ℝ} (hs : 0<s) :
       ((((hasDerivAt_const x (Real.log s)).sub h).pow 2).const_mul (s/2))
     apply hh.congr_deriv
     rw [Real.log_div hs.ne' (hp hx).ne']
-    simp only [div_eq_mul_inv]
+    simp only [div_eq_mul_inv,Pi.sub_apply]
     ring
   let G := fun x : ℝ => x*(Real.log x^2-2*Real.log x+2)
   have hG (x : ℝ) (hx : x ∈ Set.uIcc 1 s) : HasDerivAt G (Real.log x^2) x := by
     have h := Real.hasDerivAt_log (hp hx).ne'
     apply ((hasDerivAt_id x).mul (((h.pow 2).sub (h.const_mul 2)).add_const 2)).congr_deriv
-    simp only [id_eq]
+    simp only [id_eq,Pi.pow_apply,Pi.sub_apply]
     field_simp [(hp hx).ne']
-    <;> ring
+    ring
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt hF
     (((continuousOn_const.sub hq).add (hq.mul hl)).intervalIntegrable),
     intervalIntegral.integral_eq_sub_of_hasDerivAt hG (hc.pow 2).intervalIntegrable]
@@ -230,6 +229,7 @@ private theorem rank_prefix {α : Type*} [LinearOrder α] (S : Finset α) (i : F
     apply congrArg card
     ext j
     simp only [mem_filter,mem_univ,true_and,Function.comp_apply]
+    exact Iff.rfl
   have hle : univ.filter (fun j : Fin S.card => e j ≤ e i)=Iic i := by
     ext j; simp only [mem_filter,mem_univ,true_and,mem_Iic,e.le_iff_le]
   have hlt : univ.filter (fun j : Fin S.card => e j < e i)=Iio i := by

@@ -48,7 +48,7 @@ private theorem divisor_count_real {x : ℝ} (hx : 1 ≤ x) :
   have hr := Real.log_le_sub_one_of_pos (div_pos hx0 hm0)
   rw [Real.log_div hx0.ne' hm0.ne'] at hr
   have hprod := mul_le_mul_of_nonneg_right hr hm0.le
-  rw [sub_mul,div_mul_cancel₀ _ hm0.ne',one_mul] at hprod
+  simp only [sub_mul,div_mul_cancel₀ _ hm0.ne',one_mul] at hprod
   have hdiff : |divisorPrimitive x-divisorPrimitive m| ≤ Real.log x+1+|c| := by
     rw [show divisorPrimitive x-divisorPrimitive m=
       (x-m)*Real.log x+(Real.log x-Real.log m)*m+c*(x-m) by unfold divisorPrimitive; dsimp only [c]; ring]
@@ -96,7 +96,7 @@ theorem sharp_divisor_log_row (d : ℕ) (hd : 1 ≤ d) {a b : ℝ} (ha : 1 ≤ a
   have hcont : ContinuousOn (fun t : ℝ => t⁻¹) (Set.Icc a b) :=
     continuousOn_id.inv₀ fun t ht => (hp ht).ne'
   have hdF : Set.EqOn (deriv F) (fun t : ℝ => t⁻¹) (Set.Icc a b) := fun t ht => (hf t ht).deriv
-  have hint := (hcont.congr hdF).integrableOn_Icc
+  have hint : IntegrableOn (deriv F) (Set.Icc a b) volume := (hcont.congr hdF).integrableOn_Icc
   have hAbel := sum_mul_eq_sub_sub_integral_mul (fun k : ℕ => (k.divisors.card:ℝ)) h0.le hab
     (fun t ht => (hf t ht).differentiableAt) hint
   have hcount : IntervalIntegrable (fun t : ℝ => t⁻¹*divisorCount t) volume a b := by
@@ -112,7 +112,8 @@ theorem sharp_divisor_log_row (d : ℕ) (hd : 1 ≤ d) {a b : ℝ} (ha : 1 ≤ a
     rw [intervalIntegral.integral_of_le hab]
     apply MeasureTheory.setIntegral_congr_fun measurableSet_Ioc
     exact fun t ht => congrArg (· * divisorCount t) (hdF (Set.Ioc_subset_Icc_self ht))
-  change _=F b*divisorCount b-F a*divisorCount a-_ at hAbel
+  change (∑ k ∈ Ioc ⌊a⌋₊ ⌊b⌋₊,F k*(k.divisors.card:ℝ))=
+    F b*divisorCount b-F a*divisorCount a-(∫ t in Set.Ioc a b,deriv F t*divisorCount t) at hAbel
   rw [hderInt] at hAbel
   have hG' : ContinuousOn (fun t : ℝ => Real.log t+2*Real.eulerMascheroniConstant) (Set.Icc a b) :=
     (Real.continuousOn_log.mono fun _ ht => (hp ht).ne').add continuousOn_const
@@ -197,8 +198,11 @@ private theorem scaled_divisor_log_integral (d : ℝ) {Y l r : ℝ} (hY : 0<Y)
     dsimp only [F,A,B]
     rw [Real.log_mul hY.ne' hu0.ne']
     ring
-  rw [he,intervalIntegral.integral_add (intervalIntegrable_const.add h1) h2,
-    intervalIntegral.integral_add intervalIntegrable_const h1,intervalIntegral.integral_const,
+  rw [he,intervalIntegral.integral_add
+    (f:=fun u : ℝ => A*B+(A+B)*Real.log u) (g:=fun u : ℝ => Real.log u^2)
+    (intervalIntegrable_const.add h1) h2,
+    intervalIntegral.integral_add (f:=fun _ : ℝ => A*B) (g:=fun u : ℝ => (A+B)*Real.log u)
+      intervalIntegrable_const h1,intervalIntegral.integral_const,
     intervalIntegral.integral_const_mul,smul_eq_mul] at hs
   have hh := congrArg (fun t : ℝ => Y*t) hs
   dsimp only at hh

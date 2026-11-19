@@ -171,7 +171,9 @@ theorem second_coefficient_of_the_smooth_quotient_center :
   dsimp only [H,second,l]
   field_simp [mh]; ring
 
-private def roughSignCount (γ : ℝ) (b : Bool) (X : ℕ) :=
+/-- Number of squarefree integers of the selected sign with rough part
+at most the specified power of X at the log-square sieve wall. -/
+def polynomialRoughSignCount (γ : ℝ) (b : Bool) (X : ℕ) :=
   ((smallRoughCofactors (W X) X ⌊(X:ℝ)^γ⌋₊).filter (fun n => μ n=if b then (1:ℤ) else -1)).card
 
 private theorem signed_rough_sandwich {γ : ℝ} (gp : 0<γ) (g1 : γ<1) (b : Bool)
@@ -179,7 +181,7 @@ private theorem signed_rough_sandwich {γ : ℝ} (gp : 0<γ) (g1 : γ<1) (b : Bo
     ∀ᶠ X in atTop,let a := 1-γ
       let H := a*L X
       let E := deletionPrice (s X) (W X)
-      let C := Real.log (roughSignCount γ b X)
+      let C := Real.log (polynomialRoughSignCount γ b X)
       Real.log (signedSmoothSector (!b) (W X) H).card+γ*L X-M X-Real.log 4 ≤ C ∧
       C ≤ γ*L X+s X*H+Real.log E+Real.log 4 := by
   let a := 1-γ
@@ -193,7 +195,7 @@ private theorem signed_rough_sandwich {γ : ℝ} (gp : 0<γ) (g1 : γ<1) (b : Bo
   let T := (X:ℝ)^γ
   let P := (windowPrimes (T/2) (2*(T/2))).card
   let A := (signedSmoothSector (!b) y H).card
-  let N := roughSignCount γ b X
+  let N := polynomialRoughSignCount γ b X
   let E := deletionPrice (s X) y
   let σ : ℤ := if b then 1 else -1
   have sign : (if !b then (1:ℤ) else -1)= -σ := by cases b <;> decide
@@ -240,7 +242,7 @@ private theorem signed_rough_sandwich {γ : ℝ} (gp : 0<γ) (g1 : γ<1) (b : Bo
 /-- With rough part at most X^γ, each squarefree sign has leading log-height
 (1+γ)log X/2 and second coefficient (1−γ)(1+log(2/(1−γ)))/2. -/
 theorem second_coefficient_with_a_polynomial_rough_cutoff {γ : ℝ} (gp : 0<γ) (g1 : γ<1) (b : Bool) :
-    Tendsto (fun X => second X ((1+γ)*L X/2) (Real.log (roughSignCount γ b X))) atTop
+    Tendsto (fun X => second X ((1+γ)*L X/2) (Real.log (polynomialRoughSignCount γ b X))) atTop
       (𝓝 (((1-γ)/2)*(1+Real.log (2/(1-γ))))) := by
   let a := 1-γ
   let c := Real.log (2/a)
@@ -251,7 +253,7 @@ theorem second_coefficient_with_a_polynomial_rough_cutoff {γ : ℝ} (gp : 0<γ)
     simpa only [s,criticalWallTilt,add_zero] using (ll.const_div_atTop c).const_add (1/2:ℝ)
   let A := fun X => Real.log (signedSmoothSector (!b) (W X) (a*L X)).card
   let E := fun X => Real.log (deletionPrice (s X) (W X))
-  let N := fun X => Real.log (roughSignCount γ b X)
+  let N := fun X => Real.log (polynomialRoughSignCount γ b X)
   have density := (second_coefficient_of_the_smooth_sign_populations ap).1 (!b)
   obtain ⟨first,square⟩ := normalized_log_losses
   have cost := square.add (first.const_mul (Real.log 4))

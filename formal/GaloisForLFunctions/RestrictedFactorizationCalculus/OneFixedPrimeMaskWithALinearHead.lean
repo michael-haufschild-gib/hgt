@@ -129,7 +129,7 @@ private theorem terminal_octave_limit :
   let h := n/2
   have hp : (0:ℝ)<(h:ℝ) := Nat.cast_pos.mpr (show 0<n/2 by omega)
   change Chebyshev.theta n/(n:ℝ)-Chebyshev.theta h/(h:ℝ)*((h:ℝ)/(n:ℝ))=_
-  field_simp [hp.ne'] <;> ring
+  field_simp [hp.ne']; ring
 
 /-- One fixed ordinary-prime mask has normalized signed head tending
 to one half along a cofinal sequence. No sublinear head budget can
@@ -141,7 +141,7 @@ theorem one_fixed_prime_mask_with_linear_head (Y T : ℕ → ℕ) (top : Tendsto
         (roughRestriction (Y (x j)) (markedOrdinaryPrimeWeight A))) (T (x j))/(T (x j):ℝ)) atTop (𝓝 (1/2)) := by
   obtain ⟨A,x,hx,ht,heads⟩ := one_prime_mask_with_exact_octave_heads Y T top space
   refine ⟨A,x,hx,(terminal_octave_limit.comp ht.tendsto_atTop).congr (fun j => ?_)⟩
-  rw [heads]
+  simp only [Function.comp_apply,heads]
 
 #print axioms one_prime_mask_with_exact_octave_heads
 #print axioms one_fixed_prime_mask_with_linear_head

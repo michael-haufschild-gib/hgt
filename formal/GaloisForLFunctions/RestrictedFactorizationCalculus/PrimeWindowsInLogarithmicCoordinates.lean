@@ -1,3 +1,5 @@
+import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import GaloisForLFunctions.RestrictedFactorizationCalculus.PrimeSupplyAtTheCubeRootBoundary
 
 /-!
@@ -308,6 +310,146 @@ theorem semiprime_logarithmic_weight {h d : ℝ} (hh : 0 < h) (hd : 0 < d)
     rw [show 1-Real.log p/h = (h-Real.log p)/h from by field_simp]
     field_simp [hh.ne',hl.ne',hp0.ne',hne] <;> ring
   rwa [sum_congr rfl terms] at ht
+
+
+open MeasureTheory intervalIntegral
+
+/-- Positive part of the prime row deficit when the smaller factor of a
+replacement pair has logarithmic exponent at least x. -/
+def orderedRowDeficit (x : ℝ) := max 0 (1-(pairPrimitive (1/2)-pairPrimitive x))
+
+private theorem deficit_envelope {x : ℝ} (xp : 0<x) (xh : x ≤ 1/2) :
+    orderedRowDeficit x ≤ max 0 (4*x-1) ∧
+    (1/3 ≤ x → x ≤ 3/8 → orderedRowDeficit x ≤ 4*x-1-1/96) := by
+  have lower := (pairPrimitive_increment xp le_rfl xh
+    (show 1/2 ≤ 1-x by linarith only [xh])).1
+  norm_num only at lower
+  have nonneg : 0 ≤ (1-2*x)^3 := pow_nonneg (by linarith only [xh]) 3
+  constructor
+  · exact max_le_max_left _ (by linarith only [lower,nonneg])
+  · intro a b
+    have cube := pow_le_pow_left₀ (by norm_num : (0:ℝ) ≤ 1/4)
+      (show 1/4 ≤ 1-2*x by linarith only [b]) 3
+    exact max_le (by linarith only [a]) (by linarith only [lower,cube])
+
+/-- The small rows require no additional primes. -/
+theorem no_limiting_deficit_below_one_quarter {x : ℝ} (xp : 0<x) (small : x ≤ 1/4) :
+    orderedRowDeficit x=0 := by
+  have up := (deficit_envelope xp (small.trans (by norm_num))).1
+  rw [max_eq_left (by linarith only [small])] at up
+  exact le_antisymm up (le_max_left ..)
+
+private lemma deficit_continuous {a b : ℝ} (ap : 0<a) (half : b ≤ 1/2) :
+    ContinuousOn orderedRowDeficit (Set.Icc a b) := by
+  apply continuousOn_const.max
+  apply continuousOn_const.sub
+  apply continuousOn_const.sub
+  exact fun x hx => (primitive_derivative (ap.trans_le hx.1) (hx.2.trans_lt (half.trans_lt (by norm_num)))).continuousAt.continuousWithinAt
+
+/-- The linear capacity envelope costs exactly one prime row. Integrating
+the cubic gain on [1/3,3/8] saves at least log(9/8)/96 of that row. -/
+theorem strict_spare_capacity_in_the_limiting_prime_row :
+    (∫ x in (1/4:ℝ)..1/2,orderedRowDeficit x/x)+(∫ x in (1/2:ℝ)..1,x⁻¹)
+        ≤ 1-Real.log (9/8)/96 ∧
+    (∫ x in (1/4:ℝ)..1/2,(4*x-1)/x)+(∫ x in (1/2:ℝ)..1,x⁻¹)=1 := by
+  let A := (1/4:ℝ)
+  let B := (1/2:ℝ)
+  let s := (1/3:ℝ)
+  let t := (3/8:ℝ)
+  let gap := fun x : ℝ => (4*x-1)/x-orderedRowDeficit x/x
+  have AB : A ≤ B := by norm_num [A,B]
+  have sT : s ≤ t := by norm_num [s,t]
+  have As : A ≤ s := by norm_num [A,s]
+  have tB : t ≤ B := by norm_num [t,B]
+  have ap : 0<A := by norm_num [A]
+  have pos {x : ℝ} (h : x∈Set.Icc A B) := ap.trans_le h.1
+  have inv : ContinuousOn (fun x : ℝ => x⁻¹) (Set.Icc A B) := continuousOn_id.inv₀ (fun _ h => (pos h).ne')
+  have env : ContinuousOn (fun x : ℝ => (4*x-1)/x) (Set.Icc A B) :=
+    ((continuousOn_const.mul continuousOn_id).sub continuousOn_const).div continuousOn_id (fun _ h => (pos h).ne')
+  have demand : ContinuousOn (fun x => orderedRowDeficit x/x) (Set.Icc A B) :=
+    (deficit_continuous ap le_rfl).div continuousOn_id (fun _ h => (pos h).ne')
+  have cont : ContinuousOn gap (Set.Icc A B) := env.sub demand
+  have integ {f : ℝ → ℝ} (c : ContinuousOn f (Set.Icc A B)) : IntervalIntegrable f volume A B :=
+    c.intervalIntegrable_of_Icc AB
+  have ge {x : ℝ} (h : x∈Set.Icc A B) : 0 ≤ gap x := by
+    have k := (deficit_envelope (pos h) h.2).1
+    have env0 : 0 ≤ 4*x-1 := by have h0 := h.1; dsimp only [A] at h0; linarith only [h0]
+    rw [max_eq_right env0] at k
+    exact sub_nonneg.mpr (div_le_div_of_nonneg_right k (pos h).le)
+  have sub : Set.Icc s t ⊆ Set.Icc A B := Set.Icc_subset_Icc As tB
+  have hgap := intervalIntegral.integral_mono_interval As sT tB
+    ((ae_restrict_mem measurableSet_Ioc).mono (fun x hx => ge ⟨hx.1.le,hx.2⟩)) (integ cont)
+  have short := intervalIntegral.integral_mono_on sT
+    (((continuousOn_const.mul inv).mono sub).intervalIntegrable_of_Icc sT)
+    ((cont.mono sub).intervalIntegrable_of_Icc sT) (fun x hx => by
+      change (1/96:ℝ)*x⁻¹ ≤ (4*x-1)/x-orderedRowDeficit x/x
+      rw [←div_eq_mul_inv,←sub_div,div_le_div_iff_of_pos_right (pos (sub hx))]
+      linarith only [(deficit_envelope (pos (sub hx)) (sub hx).2).2 hx.1 hx.2])
+  rw [intervalIntegral.integral_const_mul,integral_inv_of_pos (by norm_num [s]) (by norm_num [t]),
+    show t/s=9/8 by norm_num [s,t]] at short
+  have total : (∫ x in A..B,(4*x-1)/x)+(∫ x in B..1,x⁻¹)=1 := by
+    have iden := intervalIntegral.integral_congr (a := A) (b := B) (f := fun x : ℝ => (4*x-1)/x)
+      (g := fun x : ℝ => 4-x⁻¹) (fun x hx => by
+        rw [Set.uIcc_of_le AB] at hx; field_simp [(pos hx).ne'])
+    rw [iden,intervalIntegral.integral_sub intervalIntegrable_const (integ inv),intervalIntegral.integral_const,
+      integral_inv_of_pos ap (by norm_num [B]),integral_inv_of_pos (by norm_num [B]) (by norm_num)]
+    norm_num [A,B]
+  have supply := short.trans hgap
+  change _ ≤ ∫ x in A..B,((4*x-1)/x-orderedRowDeficit x/x) at supply
+  rw [intervalIntegral.integral_sub (integ env) (integ demand)] at supply
+  exact ⟨by linarith only [supply,total],total⟩
+
+/-- The limiting semiprime population from the quarter to the half power
+is log 3 prime rows. Even the restricted triple interval from 1/3 to 1/2
+leaves a surplus of at least 31/1620 after paying these semiprimes. -/
+theorem limiting_surplus_at_the_fourth_root :
+    let Q := pairPrimitive (1/2)-pairPrimitive (1/4)
+    let T := ∫ x in (1/3:ℝ)..1/2,(pairPrimitive (1/2)-pairPrimitive x)/x
+    Q=Real.log 3 ∧ 1<Q ∧ Q ≤ 67/60 ∧ 11/81 ≤ T ∧ 31/1620 ≤ 1+T-Q := by
+  let Q := pairPrimitive (1/2)-pairPrimitive (1/4)
+  let A := (1/3:ℝ)
+  let B := (1/2:ℝ)
+  let f := fun x : ℝ => (2-4*x)*(4-4*x)
+  let F := fun x : ℝ => (16/3)*x^3-12*x^2+8*x
+  let g := fun x : ℝ => (pairPrimitive B-pairPrimitive x)/x
+  have ab : A ≤ B := by norm_num [A,B]
+  have pos {x : ℝ} (hx : x∈Set.Icc A B) := (by norm_num : 0<A).trans_le hx.1
+  have primitive (x : ℝ) : HasDerivAt F (f x) x := by
+    dsimp only [F,f]
+    convert (((((hasDerivAt_id x).pow 3).const_mul (16/3:ℝ)).sub
+      (((hasDerivAt_id x).pow 2).const_mul (12:ℝ))).add ((hasDerivAt_id x).const_mul (8:ℝ))) using 1 <;> ring
+  have cf : Continuous f := by dsimp only [f]; fun_prop
+  have cp : ContinuousOn pairPrimitive (Set.Icc A B) :=
+    fun x hx => (primitive_derivative (pos hx) (hx.2.trans_lt (by norm_num : B<1))).continuousAt.continuousWithinAt
+  have cg : ContinuousOn g (Set.Icc A B) := (continuousOn_const.sub cp).div continuousOn_id (fun _ hx => (pos hx).ne')
+  have point (x : ℝ) (hx : x∈Set.Icc A B) : f x ≤ g x := by
+    have xp := pos hx
+    have upper : x ≤ 1/2 := hx.2
+    have cost := (pairPrimitive_increment xp le_rfl upper (by linarith only [upper] : (1/2:ℝ) ≤ 1-x)).1
+    norm_num only at cost
+    have cubic : 0 ≤ (1-2*x)^3 := pow_nonneg (by linarith only [upper]) 3
+    have e : 2-4*x ≤ pairPrimitive B-pairPrimitive x := by dsimp only [B]; linarith only [cost,cubic]
+    have inv : 4-4*x ≤ 1/x := (le_div_iff₀ xp).mpr (by nlinarith only [sq_nonneg (2*x-1)])
+    calc f x ≤ (2-4*x)*(1/x) := mul_le_mul_of_nonneg_left inv (by linarith only [upper])
+         _ ≤ (pairPrimitive B-pairPrimitive x)*(1/x) := mul_le_mul_of_nonneg_right e (one_div_pos.mpr xp).le
+         _ = _ := by dsimp only [g]; ring
+  have lower := intervalIntegral.integral_mono_on ab (cf.intervalIntegrable _ _) (cg.intervalIntegrable_of_Icc ab) point
+  rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => primitive x) (cf.intervalIntegrable _ _)] at lower
+  have q : Q=Real.log 3 := by
+    dsimp only [Q,pairPrimitive]
+    rw [show (1:ℝ)-1/2=1/2 by norm_num,sub_self,zero_sub,neg_sub,
+      ←Real.log_div (by norm_num) (by norm_num)]
+    congr 1; norm_num
+  have t : (11/81:ℝ) ≤ ∫ x in A..B,g x := by norm_num [F,A,B] at lower; exact lower
+  change Q=Real.log 3 ∧ _ ∧ _ ∧ _ ∧ _
+  refine ⟨q,?_,?_,t,?_⟩
+  · linarith only [q,Real.log_three_gt_d9]
+  · linarith only [q,Real.log_three_lt_d9]
+  · linarith only [q,Real.log_three_lt_d9,t]
+
+#print axioms limiting_surplus_at_the_fourth_root
+
+#print axioms strict_spare_capacity_in_the_limiting_prime_row
 
 #print axioms sharp_prime_quadrature
 #print axioms semiprime_logarithmic_weight

@@ -32,7 +32,7 @@ def regression (b m k l : ℝ) : Kernel ℝ ℝ where
     (m+k*(x-b),Real.toNNReal (Real.exp l))) by fun_prop)
 
 instance (b m k l : ℝ) : IsMarkovKernel (regression b m k l) :=
-  ⟨fun x => inferInstanceAs (IsProbabilityMeasure (positionGaussian _ _))⟩
+  ⟨fun _ => inferInstanceAs (IsProbabilityMeasure (positionGaussian _ _))⟩
 
 def source (t w s v : ℝ) := (positionLaw t w).prod (positionLaw s v)
 
@@ -70,14 +70,18 @@ private def fibreScore (s v h k b j x : ℝ) :=
   (Real.log (2*Real.pi)+j-2*v+variance v/Real.exp j)/2 +
     (1/(2*Real.exp j))*(offset s v h k b x)^2
 
+private theorem fibreScore_eq (s v h k b j x : ℝ) :
+    fibreScore s v h k b j x =
+      (klDiv (positionLaw s v) (positionGaussian (h+k*(x-b)) j)).toReal := by
+  have H := (position_gaussian_kl s v (h+k*(x-b)) j).2
+  unfold fibreScore offset mid variance
+  linear_combination -H/2
+
 private theorem fibre (s v h k b j x : ℝ) :
     klDiv (positionLaw s v) (regression b h k j x) =
       ENNReal.ofReal (fibreScore s v h k b j x) := by
-  have H := position_gaussian_kl s v (h+k*(x-b)) j
-  rw [← ENNReal.ofReal_toReal H.1]
-  apply congrArg ENNReal.ofReal
-  unfold fibreScore offset mid variance
-  linear_combination H.2/2
+  change klDiv (positionLaw s v) (positionGaussian (h+k*(x-b)) j) = _
+  rw [fibreScore_eq, ENNReal.ofReal_toReal (position_gaussian_kl s v (h+k*(x-b)) j).1]
 
 /-- Exact relative entropy against the full nonsingular regression family. -/
 theorem joint_loss (t w s v m l h k j : ℝ) :
@@ -93,16 +97,14 @@ theorem joint_loss (t w s v m l h k j : ℝ) :
   have hac : μ ⊗ₘ κ ≪ μ ⊗ₘ η := Measure.absolutelyContinuous_compProd_right_iff.mpr <|
     Filter.Eventually.of_forall fun x => (klDiv_ne_top_iff.mp
       (position_gaussian_kl s v (h+k*(x-mid t w)) j).1).1
-  have hf : Integrable f μ := continuous_int t w (by dsimp [f,fibreScore,offset]; fun_prop)
+  have hf : Integrable f μ := continuous_int t w (by
+    change Continuous (fun x : ℝ => fibreScore s v h k (mid t w) j x)
+    unfold fibreScore offset
+    fun_prop)
   have hnon (x : ℝ) : 0 ≤ f x := by
-    have H := (position_gaussian_kl s v (h+k*(x-mid t w)) j).2
-    have hn := ENNReal.toReal_nonneg (a := klDiv (positionLaw s v)
-      (positionGaussian (h+k*(x-mid t w)) j))
-    have he : f x = (klDiv (positionLaw s v) (positionGaussian (h+k*(x-mid t w)) j)).toReal := by
-      dsimp [f,fibreScore,offset,mid,variance]
-      linear_combination -H/2
-    rw [he]
-    exact hn
+    change 0 ≤ fibreScore s v h k (mid t w) j x
+    rw [fibreScore_eq]
+    exact ENNReal.toReal_nonneg
   have he : klDiv (source t w s v) (target (mid t w) m l h k j) =
       klDiv μ (positionGaussian m l) + ENNReal.ofReal (∫ x, f x ∂μ) := by
     rw [source,← Measure.compProd_const,target,klDiv_compProd_eq_add,

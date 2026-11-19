@@ -105,7 +105,9 @@ private theorem signed_product_injective {y : ℕ} (b : Bool) :
     Function.Injective (signedProduct (y := y) b) := by
   intro S T h
   have same : configurationProduct S=configurationProduct T := by
-    unfold signedProduct at h
+    let target : ℤ := if b then 1 else -1
+    change (if μ (configurationProduct S)=target then configurationProduct S else 2*configurationProduct S)=
+      (if μ (configurationProduct T)=target then configurationProduct T else 2*configurationProduct T) at h
     split_ifs at h with i j j
     · exact h
     · exact False.elim ((Nat.prime_two.coprime_iff_not_dvd.mp (configuration_odd S))
@@ -134,9 +136,11 @@ private theorem signed_product_below {y : ℕ} (yp : 2 ≤ y) (b : Bool) (H : �
     rw [show n.primeFactors=configurationPrimes S from recover_the_configuration S]
     exact fun p hp => (mem_erase.mp (configuration_factors S p hp)).2
   change (if μ n=(if b then (1:ℤ) else -1) then n else 2*n) ∈ _
-  split_ifs with fixed
-  · exact mem_filter.mpr ⟨mem_smoothUpTo.mpr ⟨⟨np,by omega⟩,sm⟩,fixed⟩
-  · have signs := ArithmeticFunction.moebius_ne_zero_iff_eq_or.mp
+  by_cases fixed : μ n=(if b then (1:ℤ) else -1)
+  · rw [if_pos fixed]
+    exact mem_filter.mpr ⟨mem_smoothUpTo.mpr ⟨⟨np,by omega⟩,sm⟩,fixed⟩
+  · rw [if_neg fixed]
+    have signs := ArithmeticFunction.moebius_ne_zero_iff_eq_or.mp
         (ArithmeticFunction.moebius_ne_zero_iff_squarefree.mpr sq)
     apply mem_filter.mpr
     refine ⟨mem_smoothUpTo.mpr ⟨⟨by omega,hi⟩,?_⟩,?_⟩
@@ -144,7 +148,8 @@ private theorem signed_product_below {y : ℕ} (yp : 2 ≤ y) (b : Bool) (H : �
       exact union_subset (singleton_subset_iff.mpr (Nat.mem_primesLE.mpr ⟨yp,Nat.prime_two⟩)) sm
     · rw [ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime (configuration_odd S),
         ArithmeticFunction.moebius_apply_prime Nat.prime_two]
-      cases b <;> simp_all
+      change (-1:ℤ)*μ n=(if b then 1 else -1)
+      cases b <;> simp only [Bool.false_eq_true,if_false,if_true,neg_one_mul] at fixed ⊢ <;> omega
 
 private def occupation (s : ℝ) (p : ℕ) := (p:ℝ)^(-s)/(1+(p:ℝ)^(-s))
 
@@ -175,6 +180,7 @@ private theorem tilt_weight_by_log_product (y : ℕ) (s : ℝ) (S : Finset ↥(o
   rw [log_configuration,linearStat,mul_sum,Real.exp_sum]
   apply prod_congr rfl
   intro p _
+  dsimp only [u]
   rw [Real.rpow_def_of_pos (Nat.cast_pos.mpr (prime p).pos)]
   congr 1; ring
 
@@ -255,7 +261,7 @@ private theorem log_rankin_at_a_real_height {H s : ℝ} (sp : 0<s) (hp : 0 ≤ H
   let T := ⌊Real.exp H⌋₊
   have E := zero_lt_one.trans_le (deletionPrice_one_le sp y)
   have one : 1∈allSmoothSector y H := mem_smoothUpTo.mpr ⟨⟨le_rfl,Nat.le_floor (by simpa using Real.exp_le_exp.mpr hp)⟩,by simp⟩
-  have card := Nat.cast_pos.mpr (card_pos.mpr ⟨1,one⟩)
+  have card : (0:ℝ)<(allSmoothSector y H).card := Nat.cast_pos.mpr (card_pos.mpr ⟨1,one⟩)
   have paid := smooth_population_le_deletion_price sp y T
   have cap := Real.rpow_le_rpow (Nat.cast_nonneg T) (Nat.floor_le (Real.exp_pos H).le) sp.le
   rw [←Real.exp_mul] at cap
@@ -270,19 +276,24 @@ private theorem saddle_scales {Y : ℕ → ℕ} (wall : Tendsto Y atTop atTop) :
     Tendsto (fun n => Real.log (Y n)/Real.sqrt (Y n)) atTop (𝓝 0) := by
   have cast : Tendsto (fun n => (Y n:ℝ)) atTop atTop := tendsto_natCast_atTop_atTop.comp wall
   have p : (0:ℝ)<1/6 := by norm_num
-  have inv := tendsto_inv_atTop_zero.comp ((tendsto_rpow_atTop p).comp cast)
-  have log := (isLittleO_log_rpow_atTop p).tendsto_div_nhds_zero.comp cast
-  have half := (isLittleO_log_rpow_atTop (by norm_num : (0:ℝ)<1/2)).tendsto_div_nhds_zero.comp cast
+  have inv : Tendsto (fun n => ((Y n:ℝ)^(1/6:ℝ))⁻¹) atTop (𝓝 0) :=
+    tendsto_inv_atTop_zero.comp ((tendsto_rpow_atTop p).comp cast)
+  have log : Tendsto (fun n => Real.log (Y n)/(Y n:ℝ)^(1/6:ℝ)) atTop (𝓝 0) :=
+    (isLittleO_log_rpow_atTop p).tendsto_div_nhds_zero.comp cast
+  have half : Tendsto (fun n => Real.log (Y n)/(Y n:ℝ)^(1/2:ℝ)) atTop (𝓝 0) :=
+    (isLittleO_log_rpow_atTop (by norm_num : (0:ℝ)<1/2)).tendsto_div_nhds_zero.comp cast
   have sq (y : ℕ) (yp : 0<y) : Real.sqrt y=saddleWidth y*(y:ℝ)^(1/6:ℝ) := by
     rw [Real.sqrt_eq_rpow,←Real.rpow_add (Nat.cast_pos.mpr yp)]; norm_num
   refine ⟨inv.congr' ?_,log.congr' ?_,?_⟩
   · filter_upwards [wall.eventually_ge_atTop 1] with n yn
-    rw [sq _ yn]; change _=saddleWidth _/(_*_)
-    field_simp [(Real.rpow_pos_of_pos (Nat.cast_pos.mpr yn : (0:ℝ)<Y n) (1/3)).ne']
+    rw [sq _ yn]
+    field_simp [(Real.rpow_pos_of_pos (Nat.cast_pos.mpr yn : (0:ℝ)<Y n) (1/3)).ne',
+      (Real.rpow_pos_of_pos (Nat.cast_pos.mpr yn : (0:ℝ)<Y n) (1/6)).ne']
   · filter_upwards [wall.eventually_ge_atTop 1] with n yn
-    rw [sq _ yn]; change _=saddleWidth _*_/(_*_)
-    field_simp [(Real.rpow_pos_of_pos (Nat.cast_pos.mpr yn : (0:ℝ)<Y n) (1/3)).ne']
-  · simpa only [Real.sqrt_eq_rpow,Function.comp_apply] using half
+    rw [sq _ yn]
+    field_simp [(Real.rpow_pos_of_pos (Nat.cast_pos.mpr yn : (0:ℝ)<Y n) (1/3)).ne',
+      (Real.rpow_pos_of_pos (Nat.cast_pos.mpr yn : (0:ℝ)<Y n) (1/6)).ne']
+  · simpa only [Real.sqrt_eq_rpow] using half
 
 /-- At log-height H asymptotic to a√y, the coefficient of √y/log y after
 subtracting H/2 is a(1+log(2/a)), both for either squarefree sign and for
