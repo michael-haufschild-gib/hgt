@@ -22,7 +22,9 @@ def reciprocalMatrix {R : Type*} [CommRing R] (m a b c : R) : Matrix (Fin 3) (Fi
 private def fromVector (m : ℤ) : (Fin 3 → ℚ) →ₗ[ℚ] K m where
   toFun x := coords m (x 0) (x 1) (x 2)
   map_add' x y := by simp only [Pi.add_apply,coords,add_smul]; abel
-  map_smul' r x := by simp [coords,smul_add,smul_smul,smul_eq_mul]
+  map_smul' r x := by
+    change coords m (r*x 0) (r*x 1) (r*x 2) = r • coords m (x 0) (x 1) (x 2)
+    simp only [coords,smul_add,smul_smul]
 
 /-- Synthesis from the three rational reciprocal coordinates. -/
 def reciprocalEquiv (m : ℤ) : (Fin 3 → ℚ) ≃ₗ[ℚ] K m := by
@@ -43,11 +45,16 @@ theorem reciprocalMatrix_action (m : ℤ) (a b c : ℚ) (v : Fin 3 → ℚ) :
     coords m a b c * reciprocalEquiv m v = reciprocalEquiv m ((reciprocalMatrix (m:ℚ) a b c).mulVec v) := by
   obtain ⟨_,_,_,huv,hu,hv⟩ := reciprocal_table m
   change coords m a b c * coords m (v 0) (v 1) (v 2) = coords m _ _ _
-  simp only [Matrix.mulVec,dotProduct,Fin.sum_univ_three,reciprocalMatrix,Matrix.cons_val_zero,
-    Matrix.cons_val_one,Matrix.cons_val_two,Matrix.of_apply,coords,Algebra.smul_def,
-    map_add,map_sub,map_one,map_mul,map_intCast]
-  linear_combination ((b*v 1:ℚ):K m)*hu + ((c*v 2:ℚ):K m)*hv +
-      ((b*v 2+c*v 1:ℚ):K m)*huv
+  simp only [Matrix.mulVec,dotProduct,Fin.sum_univ_three]
+  change _ = coords m (a*v 0+b*v 1+c*v 2)
+    (b*v 0+(a+(1-(m:ℚ))*b-c)*v 1+(c-b)*v 2)
+    (c*v 0+(c-b)*v 1+(a+b-(m:ℚ)*c)*v 2)
+  simp only [coords,Algebra.smul_def,map_add,map_sub,map_one,map_mul,map_intCast]
+  linear_combination
+    (algebraMap ℚ (K m) b * algebraMap ℚ (K m) (v 1))*hu +
+    (algebraMap ℚ (K m) c * algebraMap ℚ (K m) (v 2))*hv +
+    (algebraMap ℚ (K m) b * algebraMap ℚ (K m) (v 2) +
+      algebraMap ℚ (K m) c * algebraMap ℚ (K m) (v 1))*huv
 
 /-- Rational basis underlying the reciprocal integral lattice. -/
 def reciprocalBasis (m : ℤ) := Basis.ofEquivFun (reciprocalEquiv m).symm
@@ -70,7 +77,16 @@ theorem reciprocal_leftMulMatrix (m : ℤ) (a b c : ℚ) :
 /-- The determinant is the actual algebraic number-field norm. -/
 theorem norm_coordinates (m : ℤ) (a b c : ℚ) :
     Algebra.norm ℚ (coords m a b c) = (reciprocalMatrix (m:ℚ) a b c).det := by
-  rw [Algebra.norm_eq_matrix_det (reciprocalBasis m),reciprocal_leftMulMatrix]
+  rw [← reciprocal_leftMulMatrix]
+  exact Algebra.norm_eq_matrix_det (reciprocalBasis m) (coords m a b c)
+
+private theorem reciprocalMatrix_det {R : Type*} [CommRing R] (m a b c : R) :
+    let d := a+(1-m)*b-c
+    let e := c-b
+    let f := a+b-m*c
+    (reciprocalMatrix m a b c).det =
+      a*d*f-a*e*e-b*b*f+b*e*c+c*b*e-c*d*c :=
+  Matrix.det_fin_three _
 
 /-- Every element of the order has an integral field norm. -/
 theorem integral_norm (m : ℤ) (z : {w : K m // w ∈ powerOrder m}) :
@@ -78,7 +94,7 @@ theorem integral_norm (m : ℤ) (z : {w : K m // w ∈ powerOrder m}) :
   obtain ⟨a,b,c,he⟩ := (powerOrder_eq_coords m z.val).mp z.property
   refine ⟨(reciprocalMatrix m a b c).det,?_⟩
   rw [he,norm_coordinates]
-  simp [reciprocalMatrix,Matrix.det_fin_three]
+  simp [reciprocalMatrix_det]
 
 /-- The three cyclic factors in barycentric coordinates. -/
 def arm {R : Type*} [CommSemiring R] (x y : R) := 1+x*(1+y)
@@ -95,10 +111,8 @@ theorem norm_barycentric (a b c : ℤ) :
     Algebra.norm ℚ (coords m 1 (-(a:ℚ)) (-(b+1:ℚ))) = (triangleNorm a b c : ℤ) := by
   intro m
   rw [norm_coordinates]
-  unfold reciprocalMatrix triangleNorm arm
-  simp only [Matrix.det_fin_three,Matrix.cons_val_zero,Matrix.cons_val_one,Matrix.cons_val_two,
-    Matrix.of_apply]
-  dsimp only [m]
+  rw [reciprocalMatrix_det]
+  dsimp only [m,triangleNorm,arm]
   push_cast
   ring
 

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheParityOfTheSmallUnitaryDivisors
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheIntegralCenterOfTheSmallUnitaryDivisors
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ThePrimeMidpointInTwoAdjacentGcdHorizons
 import Mathlib.Data.Nat.Factorization.PrimePow
 
@@ -190,5 +190,55 @@ theorem odd_smooth_upper_spectrum_iff {b : ℝ} (hb : 1/2 ≤ b) :
 
 #print axioms odd_smooth_half_power
 #print axioms odd_smooth_upper_spectrum_iff
+
+/-- Signed integral center at four, three and two times the midpoint. -/
+def oddSmoothIntegralCenter (n : ℕ) : ℝ :=
+  let F := smallUnitaryIntegralCenter (fun j => (-1:ℝ)^j) n
+  F (4*n)-2*F (3*n)+F (2*n)
+
+private theorem parity_integral_midpoint_error {ε : ℝ} (hε : 0<ε) :
+    ∃ C : ℝ, ∀ {n : ℕ}, 1≤n →
+      |unitaryMidpointCenter n-oddSmoothIntegralCenter n| ≤ C*(n:ℝ)^(1/2+ε) := by
+  obtain ⟨A,hA⟩ := unitary_parity_integral_half_power hε
+  refine ⟨4*A,?_⟩
+  intro n hn
+  let H := fun T : ℕ => ∑ k ∈ (Icc 1 T).filter (n.Coprime ·),unitaryLog k
+  let F := smallUnitaryIntegralCenter (fun j => (-1:ℝ)^j) n
+  let B := A*(n:ℝ)^(1/2+ε)
+  have he {T : ℕ} (hT : 1≤T) (hcut : T≤4*n) : |H T-F T| ≤ B := hA hn hT hcut
+  have h2 := abs_le.mp (he (T:=2*n) (by omega) (by omega))
+  have h3 := abs_le.mp (he (T:=3*n) (by omega) (by omega))
+  have h4 := abs_le.mp (he (T:=4*n) (by omega) le_rfl)
+  have hi (a b : ℕ) (hab : a≤b) :
+      (∑ k ∈ Ioc a b,if n.Coprime k then unitaryLog k else 0)=H b-H a := by
+    have hI (T : ℕ) : Icc 1 T=Ioc 0 T := by ext k; simp only [mem_Icc,mem_Ioc]; omega
+    simp only [H,sum_filter,hI]
+    exact eq_sub_of_add_eq' (sum_Ioc_consecutive _ (Nat.zero_le a) hab)
+  unfold unitaryMidpointCenter unitarySignedIntervals
+  rw [hi _ _ (by omega),hi _ _ (by omega),abs_le]
+  change -((4*A)*(n:ℝ)^(1/2+ε)) ≤
+    (H (4*n)-H (3*n)-(H (3*n)-H (2*n)))-(F (4*n)-2*F (3*n)+F (2*n)) ∧ _
+  dsimp only [B] at h2 h3 h4
+  change _ ∧ (H (4*n)-H (3*n)-(H (3*n)-H (2*n)))-(F (4*n)-2*F (3*n)+F (2*n)) ≤ _
+  constructor <;> linarith only [h2.1,h2.2,h3.1,h3.2,h4.1,h4.2]
+
+/-- The explicit integral center preserves the one-sided zero-abscissa
+criterion on the remaining odd balanced composites at every integer. -/
+theorem odd_smooth_integral_spectrum_iff {b : ℝ} (hb : 1/2≤b) :
+    (∀ t : ℝ,b<t → t<1 → ∃ C : ℝ,∀ n : ℕ,1≤n →
+      oddSmoothCompositePrice n-oddSmoothIntegralCenter n ≤ C*(n:ℝ)^t) ↔
+      _root_.RHTower.zetaZeroAbscissa ≤ b := by
+  rw [←odd_smooth_upper_spectrum_iff hb]
+  constructor <;> intro h t ht ht1 <;> obtain ⟨C,hC⟩ := h t ht ht1 <;>
+    obtain ⟨A,hA⟩ := parity_integral_midpoint_error (sub_pos.mpr (hb.trans_lt ht)) <;>
+    refine ⟨C+A,fun n hn => ?_⟩
+  · have he := (abs_le.mp (hA hn)).1
+    rw [show 1/2+(t-1/2)=t by ring] at he
+    linarith only [he,hC n hn]
+  · have he := (abs_le.mp (hA hn)).2
+    rw [show 1/2+(t-1/2)=t by ring] at he
+    linarith only [he,hC n hn]
+
+#print axioms odd_smooth_integral_spectrum_iff
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -397,9 +397,9 @@ private theorem model_limit_at_cut (b : Bool) {t : ℝ} (low : psi ≤ t) (high 
   have left := signed_readout b (by norm_num : 0<psi) low high c
   have right := signed_readout b tp high le_rfl c
   have result := left.sub right
-  rw [eq] at result
-  convert result.congr' ?_ using 2
-  · dsimp only [modelLimit]; ring
+  rw [eq,show (Real.log (t/psi)-(1/t)*(t-psi))/2-
+      (Real.log (1/t)-(1/t)*(1-t))/2=modelLimit t by dsimp only [modelLimit]; ring] at result
+  apply result.congr'
   filter_upwards [cofactor_scale_grows.eventually_gt_atTop 0] with X pos
   obtain ⟨dis,un⟩ := cell_union low high X
   change _ = modelCost b X c psi 1

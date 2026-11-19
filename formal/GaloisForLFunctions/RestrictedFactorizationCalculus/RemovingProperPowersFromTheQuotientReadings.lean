@@ -126,7 +126,9 @@ theorem ordinary_prime_floor_coefficient (y d : ℕ) :
     roughRestriction y ((μ : ArithmeticFunction ℝ)*roughOrdinaryPrimeWeight 0) from
       (GaloisForLFunctions.SelbergClass.DirichletSeries.primeRestrict_mul ..).symm,roughRestriction_apply]
   split_ifs with hd
-  · rw [Nat.primeFactors_eq_to_filter_divisors_prime,sum_filter,mul_comm,ArithmeticFunction.mul_apply,Nat.sum_divisorsAntidiagonal]
+  · rw [Nat.primeFactors_eq_to_filter_divisors_prime,sum_filter,mul_comm,ArithmeticFunction.mul_apply]
+    simp only [ArithmeticFunction.intCoe_apply]
+    rw [Nat.sum_divisorsAntidiagonal (fun p m => roughOrdinaryPrimeWeight 0 p * (μ m : ℝ))]
     apply sum_congr rfl
     intro p _
     change (if p.Prime ∧ 0<p then Real.log p else 0)*(μ (d/p):ℝ)=_
@@ -144,7 +146,10 @@ private theorem ordinary_coefficient_on_squarefree (d : ℕ) (square : Squarefre
     have val := ArithmeticFunction.isMultiplicative_moebius.map_mul_of_coprime cop
     rw [eq,ArithmeticFunction.moebius_apply_prime prime] at val
     exact_mod_cast (show μ (d/p)= -(μ d) by linarith only [val])
-  rw [sum_congr rfl (fun p hp => congrArg (· * Real.log p) (neg p hp)),←mul_sum]
+  have factor : (∑ p ∈ d.primeFactors,(μ (d/p):ℝ)*Real.log p) =
+      ∑ p ∈ d.primeFactors, (-(μ d:ℝ))*Real.log p :=
+    sum_congr rfl (fun p hp => congrArg (· * Real.log p) (neg p hp))
+  rw [factor,←mul_sum]
   have logs : Real.log (d:ℝ)=∑ p ∈ d.primeFactors,Real.log p := by
     conv_lhs => rw [←Nat.prod_primeFactors_of_squarefree square,Nat.cast_prod]
     exact Real.log_prod (fun p hp => Nat.cast_ne_zero.mpr (Nat.prime_of_mem_primeFactors hp).ne_zero)
@@ -171,9 +176,9 @@ private theorem recover_the_repeated_prime {n p : ℕ} (prime : p.Prime) (dvd : 
   calc n = p*(n/p) := eq.symm
        _ = _ := by rw [hr]; ring
 
-/-- At a rough index with a single doubled prime the coefficient is
-minus the sign of the remaining squarefree part times the log of that prime. -/
-theorem ordinary_head_at_one_doubled_prime {y p r : ℕ} (prime : p.Prime) (sq : Squarefree r)
+/-- At a rough index where a prime occurs exactly twice, its coefficient is
+minus the Möbius value of the remaining part times the log of that prime. -/
+theorem ordinary_head_at_one_doubled_prime {y p r : ℕ} (prime : p.Prime)
     (nd : ¬p ∣ r) (free : IsFree (banned y) (p^2*r)) :
     roughFloorCoefficient y (roughOrdinaryPrimeWeight y) (p^2*r)= -(μ r:ℝ)*Real.log p := by
   let n := p^2*r

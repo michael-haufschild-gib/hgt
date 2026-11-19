@@ -50,7 +50,7 @@ theorem vanishing_absolute_price_of_all_rough_prime_subwindows {ε : ℝ} (ep : 
   have raw := price y X Z yp S nsub l u supported a dom fix
   have cap := (Nat.cast_le.mpr (card_le_card sub)).trans (density Z yz)
   have room' : (y:ℝ)*Z ≤ X := by exact_mod_cast room
-  have xpos : 0<X := (Nat.mul_pos yp (yp.trans yz)).trans_le room
+  have xpos : 0<X := (Nat.mul_pos yp (yp.trans_le yz)).trans_le room
   have x0 : 0<(X:ℝ) := Nat.cast_pos.mpr xpos
   have crossing := Real.rpow_le_rpow (mul_nonneg (Nat.cast_nonneg y) (Nat.cast_nonneg Z)) room' d.le
   rw [Real.mul_rpow (Nat.cast_nonneg y) (Nat.cast_nonneg Z)] at crossing
@@ -188,7 +188,7 @@ theorem raw_prime_profile_at_every_interior_cut {ε : ℝ} (ep : 0<ε) :
   intro Z X yz room a dom fix
   let S := RoughReading.freeSet y Z
   let k := X/Z
-  have zp := yp.trans yz
+  have zp := yp.trans_le yz
   have yk : y ≤ k := (Nat.le_div_iff_mul_le zp).mpr room
   have admissible (m : ℕ) (hm : m ∈ S) : y ≤ k ∧ k ≤ X/m ∧ X/m ≤ X/m := by
     obtain ⟨mp,mz⟩ := mem_Icc.mp (mem_filter.mp hm).1
