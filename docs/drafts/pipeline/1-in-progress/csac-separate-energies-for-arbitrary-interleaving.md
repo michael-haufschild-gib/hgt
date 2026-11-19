@@ -1,0 +1,5 @@
+# Separate energies for the two-sided quotient variation and the real jet
+
+Let $u,v$ be the actual signed conductor multiplicities, extended by zero. Give each the independent energy $E_r(u)=\sum_{n\ge1}r(n)^2u_n^2$, where $r>0$ is increasing and $\sum r(n)^{-2}<\infty$. For a nonnegative quotient price $w$ with $w(0)=0$, the proposed sharp criterion for a support-uniform bound on the weighted positive-cell variation plus the real jet $L^1$ norm by $C\sqrt{E_r(u)E_r(v)}$ is $\sum (w(n)/r(n))^2<\infty$.
+
+The directed positive cells are successive differences of $\sum_i u_i v_{ki}$. Cauchy–Schwarz along the multiples of $i$ and then over $i$ gives the sufficient arithmetic bound. The two monomials of an off-diagonal jet integrate to at most two. For necessity test $u=\delta_1$ and alternating signed $v_k$ away from one. Adjacent values add in absolute value, so duality sees the whole weighted square sum. For the power price $w(k)=k^b$, $r(k)=k^s$, $s>1/2$, the threshold is $s>b+1/2$. The exponential factor in the de la Vallée Poussin price makes the endpoint $s=3/2$ summable.

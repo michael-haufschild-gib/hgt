@@ -86,8 +86,14 @@ theorem quotient_profile_of_even_total {N : ℕ} (hN : 0<N) (w : ℕ → ℤ)
   intro k hk
   have h := tails k (mem_Icc.mp hk).1
   have hnext := tails (k+1) (Nat.succ_pos _)
-  rw [sum_eq_sum_Ico_succ_bot] at h <;> skip
-  exact sub_right_injective (b := (0:ℝ)) (by linarith only [h,hnext])
+  have hs : Icc (k+1) N = (Icc k N).erase k := by
+    ext j
+    simp only [mem_Icc,mem_erase]
+    omega
+  rw [hs] at hnext
+  have hmem : k ∈ Icc k N := mem_Icc.mpr ⟨le_rfl,(mem_Icc.mp hk).2⟩
+  rw [← sum_erase_add _ _ hmem,← sum_erase_add (Icc k N) (fun q => (w q:ℝ)) hmem] at h
+  linarith only [h,hnext]
 
 /-- Exact integral image on positive quotient cells. -/
 theorem exists_twoSidedCoefficient_iff_even (N : ℕ) (w : ℕ → ℤ) :
