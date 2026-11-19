@@ -51,7 +51,7 @@ even for a dispersion outside the integrable hierarchy. -/
 theorem threeWave_multiplicity (P : ℝ → ℝ → ℝ) (q : ℕ) (a b c : ℝ) :
     threeWave P q a b c = common a b c ^ (2*q) * threeWave P 0 a b c := by
   simp only [threeWave,paritySum,multiplicity_term,common,even_two.neg_pow,
-    mul_zero,pow_zero,one_mul,mul_add]
+    mul_zero,pow_zero,one_mul,mul_add,Nat.zero_add,pow_one]
 
 private def alternant (H : ℝ → ℝ → ℝ) (a b c : ℝ) : ℝ :=
   paritySum (fun x y z => vandermonde x y z * H (x+y+z) (x^3+y^3+z^3)) a b c
@@ -94,7 +94,10 @@ theorem threeWave_vanishes (w : Weights) (q : ℕ) (a b c : ℝ) :
     threeWave (dispersion w) q a b c = 0 := by
   obtain ⟨h4,h6,h8,h10,h12⟩ := alternants a b c
   have hz : alternant (cofactor w) a b c = 0 := by
-    simp only [cofactor,alternant_linear,h4,h6,h8,h10,h12,mul_zero,zero_add]
+    change alternant (fun u v => w.w4*H₄ u v+(w.w6*H₆ u v+(w.w8*H₈ u v+
+      (w.w10*H₁₀ u v+(w.w12*H₁₂ u v+0))))) a b c = 0
+    rw [alternant_linear,alternant_linear,alternant_linear,alternant_linear,alternant_linear,
+      h4,h6,h8,h10,h12]
     simp [alternant,paritySum]
   rw [threeWave_multiplicity]
   suffices h : threeWave (dispersion w) 0 a b c = common a b c * alternant (cofactor w) a b c by

@@ -90,7 +90,11 @@ theorem subquadratic_cut_geometry {α β c : ℝ} (hα : 1 < α) (hαβ : α ≤
     calc _ = (n:ℝ)^(α-1)*(n:ℝ)^(1:ℝ) := by rw [Real.rpow_one]
          _ = _ := by rw [←Real.rpow_add hn0,sub_add_cancel]
   rw [←he]
-  linarith only [hpl,hr,mul_le_mul_of_nonneg_right hcap hn0.le]
+  change Real.sqrt (splineHorizon n) ≤ A*(n:ℝ) at hr
+  calc _ ≤ 2*Real.sqrt (splineHorizon n) := hpl
+       _ ≤ 2*(A*(n:ℝ)) := mul_le_mul_of_nonneg_left hr (by norm_num)
+       _ = (2*A)*(n:ℝ) := by ring
+       _ ≤ _ := mul_le_mul_of_nonneg_right hcap hn0.le
 
 /-- The signed change between two subquadratic power cuts on one conductor.
 The final prime-error sample is taken at the actual upper product. -/
@@ -125,9 +129,9 @@ theorem subquadratic_centered_band {α β γ : ℝ} (hα : 1 < α) (hab : α ≤
       intro q hq
       have hq' := (Nat.zero_le V).trans_lt (mem_Ioc.mp hq).1
       have hb : splineHorizon n < q*b := (Nat.lt_succ_self _).trans_le (Nat.le_mul_of_pos_left b hq')
-      rw [←div_eq_mul_one_div,←mul_assoc,mul_comm (n:ℝ) (a q),mul_assoc,
-        ←unitHorizonPair_real_profile hn hq' hb]
-      ring
+      rw [←div_eq_mul_one_div]
+      calc _ = a q*((n:ℝ)^2*unitHorizonPair n q) := by ring
+           _ = _ := by rw [unitHorizonPair_real_profile hn hq' hb]; ring
     change |row n| ≤ _
     rw [he,abs_mul,abs_of_pos hn']
     have hc := mul_le_mul_of_nonneg_left (h b V U (one_div_pos.mpr (sq_pos_of_pos hn')) hVU) hn'.le

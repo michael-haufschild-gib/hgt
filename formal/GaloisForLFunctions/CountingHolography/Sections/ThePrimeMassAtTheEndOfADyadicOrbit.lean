@@ -217,14 +217,14 @@ private theorem scaled_spline_step {K H : ℝ} (hK : 0 ≤ K) (hH : 0 ≤ H)
     ring
   have hab : |a-b| ≤ 2*K/x := by
     have h := hl (t-Real.log (x^2)) (t-Real.log ((x+1)^2))
-    rw [show (t-Real.log (x^2))-(t-Real.log ((x+1)^2))=Real.log ((x+1)^2)-Real.log (x^2) by ring,
-      Real.log_pow,Real.log_pow,Nat.cast_ofNat] at h
-    rw [abs_of_nonneg (by nlinarith only [Real.log_le_log hx (show x ≤ x+1 by linarith)] :
-      0 ≤ (2:ℝ)*Real.log (x+1)-2*Real.log x)] at h
-    calc _ ≤ K*(2*Real.log (x+1)-2*Real.log x) := h
-      _ = K*(2*(Real.log (x+1)-Real.log x)) := by ring
-      _ ≤ K*(2*(1/x)) := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hlx (by norm_num)) hK
-      _ = _ := by ring
+    have hd : |(t-Real.log (x^2))-(t-Real.log ((x+1)^2))| ≤ 2*(1/x) := by
+      rw [show (t-Real.log (x^2))-(t-Real.log ((x+1)^2))=2*(Real.log (x+1)-Real.log x) by
+        rw [Real.log_pow,Real.log_pow]; push_cast; ring]
+      rw [abs_of_nonneg (mul_nonneg zero_le_two (sub_nonneg.mpr (Real.log_le_log hx (by linarith))))]
+      exact mul_le_mul_of_nonneg_left hlx zero_le_two
+    calc |a-b| ≤ K*|(t-Real.log (x^2))-(t-Real.log ((x+1)^2))| := h
+      _ ≤ K*(2*(1/x)) := mul_le_mul_of_nonneg_left hd hK
+      _ = 2*K/x := by ring
   have hinv : 0 ≤ 1/x^2-1/(x+1)^2 := sub_nonneg.mpr
     (div_le_div_of_nonneg_left zero_le_one (sq_pos_of_pos hx) (by nlinarith only [hx]))
   have hstep : 1/x^2-1/(x+1)^2 ≤ 2/x^3 := by
@@ -375,7 +375,8 @@ theorem fourthPower_square_prime_mass_escape :
       (show Summable (fun n : ℕ => E (n,k)) from hE.prod_symm.prod_factor k)]
     apply congrArg (· + ∑' n : ℕ, E (n,k))
     have hlim := (hs.sub ((hf 2 (by decide)).mul_left 2)).hasSum.tendsto_sum_nat
-    have pairlim := (hP.prod_symm.prod_factor k).hasSum.tendsto_sum_nat
+    have pairlim :=
+      (show Summable (fun j : ℕ => pairedEndpoint (j,k)) from hP.prod_symm.prod_factor k).hasSum.tendsto_sum_nat
     refine tendsto_nhds_unique hlim (pairlim.congr' ?_)
     filter_upwards [eventually_ge_atTop (J+1)] with N hN
     have htail : (∑ j ∈ Ioc N (2*N), B j k)=0 :=
@@ -410,7 +411,7 @@ theorem fourthPower_square_prime_mass_escape :
     rw [(h1.sub h2).tsum_add h3,h1.tsum_sub h2,tsum_mul_left]
     rfl
   have hpair (j : ℕ) : mass (2*j+1)-mass (2*j+2) = ∑' k, pairedEndpoint (j,k) :=
-    ((hB _ (by omega)).tsum_sub (hB _ (by omega))).symm
+    ((hB (2*j+1) (by omega)).tsum_sub (hB (2*j+2) (by omega))).symm
   have he : Tendsto (fun N : ℕ => ∑ n ∈ Ioc 0 N, ∑' k : ℕ, E (n,k)) atTop (𝓝 (∑' n, ∑' k, E (n,k))) := by
     have hz : (∑' k, E (0,k))=0 := by simp only [hzero,tsum_zero]
     have hi := hE.prod.hasSum.tendsto_sum_nat.comp (tendsto_add_atTop_nat 1)
@@ -419,7 +420,9 @@ theorem fourthPower_square_prime_mass_escape :
     change (∑ n ∈ range (N+1), ∑' k, E (n,k))=_
     rw [range_eq_zero_add_interval,hz,zero_add]
   have hp := hP.prod.hasSum.tendsto_sum_nat
-  have ht := ((tendsto_const_nhds.sub hp).add (tendsto_const_nhds.sub he)).add squarePrimeEndpoint_mass_on_doubled_interval
+  have ht := (((tendsto_const_nhds (x := ∑' j : ℕ, ∑' k : ℕ, pairedEndpoint (j,k))).sub hp).add
+    ((tendsto_const_nhds (x := ∑' n : ℕ, ∑' k : ℕ, E (n,k))).sub he)).add
+      squarePrimeEndpoint_mass_on_doubled_interval
   rw [sub_self,sub_self,zero_add,zero_add] at ht
   refine ht.congr fun N => ?_
   rw [hcols,sum_congr rfl (fun n hn => hrow n (mem_Ioc.mp hn).1),sum_add_distrib,
@@ -704,11 +707,13 @@ theorem squareGeneratorPrefix_cubic_of_even_boundary
     unfold squareGeneratorPrefix
     push_cast
     exact Real.log_prod (fun n _ => (show 0 < (q n:ℝ) by exact_mod_cast
-      (show 0 < q n from prod_pos fun k _ => zpow_pos (Nat.cast_pos.mpr (contactBase_pos k)) _)).ne')
+      (show 0 < q n by
+        unfold q ordinaryPrimeGenerator
+        exact prod_pos fun k _ => zpow_pos (Nat.cast_pos.mpr (contactBase_pos k) : (0:ℚ) < _) _)).ne')
   rw [hlog,show (∑ n ∈ Ioc 0 N, Real.log (q n:ℝ))=(∑ j ∈ range N, delta j*T j)-(N:ℝ)^4*T N
     from eq_sub_of_add_eq (hsum N)]
   refine (abs_sub _ _).trans ?_
-  rw [abs_mul,abs_of_nonneg (pow_nonneg (Nat.cast_nonneg N) 4)]
+  rw [abs_mul,abs_of_nonneg (pow_nonneg (Nat.cast_nonneg N : (0:ℝ) ≤ N) 4)]
   have hx := mul_le_mul_of_nonneg_left (one_le_pow₀ hN (n := 3)) (abs_nonneg (T 0))
   linarith only [hend,hbound,hx]
 
@@ -859,8 +864,8 @@ theorem not_summable_dyadic_square_log_valuations {n : ℕ} (hn : 0 < n) :
     ∑ j ∈ range K, factor j*Real.log (q (orbit n j):ℝ)) atTop _ at he
   simp_rw [← hprice] at he
   rw [h.tsum_comm] at he
-  have hp : 0 < 4*(n:ℝ)^3*squareAutocorrelationMass :=
-    mul_pos (mul_pos (by norm_num) (pow_pos (Nat.cast_pos.mpr hn) 3)) squareAutocorrelationMass_pos
+  have hp : 0 < 4*((n:ℝ)^3*squareAutocorrelationMass) :=
+    mul_pos (by norm_num) (mul_pos (pow_pos (Nat.cast_pos.mpr hn) 3) squareAutocorrelationMass_pos)
   exact hp.ne' (tendsto_nhds_unique he hzero)
 
 private theorem abs_row_sum {n : ℕ} (hn : 0 < n) :
@@ -870,6 +875,7 @@ private theorem abs_row_sum {n : ℕ} (hn : 0 < n) :
   refine sum_congr rfl fun k hk => ?_
   have hp := (mem_filter.mp hk).2
   rw [price,abs_mul,weight,if_pos hp,abs_of_nonneg (Real.log_natCast_nonneg k),vonMangoldt_apply_prime hp]
+  rfl
 
 /-- One eighth is exactly the radius of absolute convergence of the
 prime-by-prime dyadic series, on every positive starting conductor. -/
@@ -908,13 +914,13 @@ theorem summable_dyadic_square_log_valuations_iff {n : ℕ} (hn : 0 < n) {r : �
         change Real.log (q m).num.natAbs ≤ B*m*(m:ℝ)^2 at hu
         change Real.log (q m).den ≤ B*((m:ℝ)*(m:ℝ)^2+m^2) at hv
         linarith only [hu,hv,mul_le_mul_of_nonneg_left hsub hB]
+      show (∑' k, r^j * |price (orbit n j) k|) ≤ _
       rw [tsum_mul_left,abs_row_sum (orbit_pos hn j)]
       refine (mul_le_mul_of_nonneg_left htot (pow_nonneg hr j)).trans_eq ?_
       dsimp only [m,orbit]
       push_cast
       rw [mul_pow ((2:ℝ)^j),← pow_mul,Nat.mul_comm j 3,pow_mul]
-      change r^j*(3*B*(8^j*(n:ℝ)^3))=_
-      rw [mul_pow r 8 j]; ring
+      rw [show ((2:ℝ)^3) = 8 by norm_num, mul_pow r 8 j]; ring
 
 private theorem endpoint_nonneg (n k : ℕ) : 0 ≤ squarePrimeEndpoint n k := by
   have hw : 0 ≤ weight k := by
@@ -993,7 +999,12 @@ theorem dyadic_square_log_centered_endpoint : ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : 
   have ht : Tendsto (fun K => (∑' k, ∑' j, row n j k) -
       ∑ j ∈ range K, (1/8:ℝ)^j*Real.log (q (2^j*n):ℝ)) atTop (𝓝 D) := by
     refine (dyadic_square_prime_mass_escape hn).congr fun K => ?_
-    simp only [row,factor,price,orbit,q,weight,mul_assoc]
+    have hsum : (∑' p : ℕ, ∑' j : ℕ, (1/8:ℝ)^j*
+        (deningerRatExp (ordinaryPrimeGenerator ((2^j*n) • successorSquareTriple (2^j*n))) p:ℝ)*
+        (if p.Prime then Real.log p else 0)) = ∑' k, ∑' j, row n j k :=
+      tsum_congr fun k => tsum_congr fun j => by rw [row,factor,price,orbit,q,weight]; ring
+    rw [hsum]
+    rfl
   rw [hcols] at ht
   refine ⟨(A+∑' k, R k)-D,?_,?_⟩
   · exact ((tendsto_const_nhds (x := A+∑' k, R k)).sub ht).congr (fun _ => by ring)
@@ -1150,7 +1161,8 @@ theorem dyadic_square_conductor_order {n : ℕ} (hn : 0 < n) {r : ℝ} (hr : 0 �
   rw [show 2*((2:ℝ)^j*n)=2^j*(2*n) by ring,Real.mul_rpow (by positivity) (by positivity),
     mul_pow ((2:ℝ)^j),← Real.rpow_natCast_mul (by norm_num : (0:ℝ) ≤ 2),
     show (j:ℝ)*b=b*j by ring,Real.rpow_mul (by norm_num : (0:ℝ) ≤ 2),Real.rpow_natCast,
-    Real.rpow_add (by norm_num : (0:ℝ) < 2),Real.rpow_two,mul_pow r,mul_pow (2^2:ℝ)]
+    Real.rpow_add (by norm_num : (0:ℝ) < 2),Real.rpow_two,mul_pow r,mul_pow (2^2:ℝ),← pow_mul,← pow_mul,
+    show (2:ℝ)^(2*SquareRootThreshold.zetaZeroWidth) = (2:ℝ)^b from rfl]
   ring
 
 end GaloisForLFunctions.CountingHolography.Sections

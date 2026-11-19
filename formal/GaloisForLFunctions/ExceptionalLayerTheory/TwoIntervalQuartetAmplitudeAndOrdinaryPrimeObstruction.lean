@@ -2605,7 +2605,7 @@ private theorem finite_right_layer_collapse (S_right : Finset XiZeroCopy)
       filter_upwards [eventually_ge_atTop (max T_rad 3)] with t ht
       have ht0 : 0 ≤ t := by linarith only [le_max_right T_rad 3, ht]
       have ht1_le : 1 ≤ t := by linarith only [le_max_right T_rad 3, ht]
-      rw [Real.norm_eq_abs, Real.rpow_two, Real.rpow_zero, one_mul]
+      rw [Real.norm_eq_abs, Real.rpow_two, Real.rpow_zero, one_mul, one_mul]
       set v_top := twoIntervalVec W_top h A t
       set v_sub := twoIntervalVec W_sub h A t
       set v_2 := twoIntervalVec W_2 h A t
@@ -2668,8 +2668,11 @@ private theorem finite_right_layer_collapse (S_right : Finset XiZeroCopy)
               ‖v_sub‖ ^ 2 - 2 * (conj v_top * v_3).re := by linarith only [hexp_id]
         have habs := congrArg abs h1
         rw [abs_mul, abs_of_pos h2exp_pos] at habs
-        have ht_tri := (abs_sub _ _).trans (add_le_add (abs_sub _ _) le_rfl)
-        rw [abs_of_nonneg (sq_nonneg _), abs_mul, abs_of_pos two_pos] at ht_tri
+        have ht_tri := (abs_sub ((‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t)) -
+            ‖v_sub‖ ^ 2) (2 * (conj v_top * v_3).re)).trans
+          (add_le_add (abs_sub (‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t))
+            (‖v_sub‖ ^ 2)) le_rfl)
+        rw [abs_of_nonneg (sq_nonneg ‖v_sub‖), abs_mul, abs_of_pos (two_pos : (0:ℝ) < 2)] at ht_tri
         linarith only [habs, ht_tri]
       have hp1 : |‖twoIntervalVec W_all h A t‖ ^ 2 - C ^ 2 * Real.exp (2 * β * t)| ≤
           K_rad_sq * t ^ 2 * Real.exp ((β + 1 / 2) * t) := by

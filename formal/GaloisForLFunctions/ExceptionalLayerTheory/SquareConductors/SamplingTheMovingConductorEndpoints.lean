@@ -21,7 +21,7 @@ uniformly in the real product boundary, the mesh and the product. -/
 theorem real_tail_sampling_error :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {N M : ℕ}, 0 < N → N ≤ M → ∀ (b : ℕ) {q : ℝ},
       0 < q → ∀ l : ℝ,
-      |(∑ n ∈ Ioc N M with l ≤ (n:ℝ), (n:ℝ)*quotientMeshProfile b (q/(n:ℝ)^2)) -
+      |(∑ n ∈ (Ioc N M).filter (fun n : ℕ => l ≤ (n:ℝ)), (n:ℝ)*quotientMeshProfile b (q/(n:ℝ)^2)) -
         ∫ x in realTailStart N M l..M, x*quotientMeshProfile b (q/x^2)| ≤ K*(M+1:ℕ) := by
   obtain ⟨C,hC,hmesh⟩ := real_conductor_mesh_sampling
   obtain ⟨D,hD,hsamp⟩ := conductor_mesh_integral_error
@@ -38,7 +38,7 @@ theorem real_tail_sampling_error :
     exact hd.continuousAt.continuousWithinAt
   by_cases hl : l ≤ (M:ℝ)
   swap
-  · have hem : ((Ioc N M).filter (fun n => l ≤ (n:ℝ))) = ∅ := by
+  · have hem : ((Ioc N M).filter (fun n : ℕ => l ≤ (n:ℝ))) = ∅ := by
       apply eq_empty_iff_forall_notMem.mpr
       intro n hn
       exact hl ((mem_filter.mp hn).2.trans (Nat.cast_le.mpr (mem_Ioc.mp (mem_filter.mp hn).1).2))
@@ -60,7 +60,7 @@ theorem real_tail_sampling_error :
     apply max_le
     · push_cast; linarith only [hrN]
     · exact (Nat.ceil_lt_add_one (hN'.trans_le hrN).le).le
-  have he : ((Ioc N M).filter fun n => l ≤ (n:ℝ)) = Ico a (M+1) := by
+  have he : ((Ioc N M).filter fun n : ℕ => l ≤ (n:ℝ)) = Ico a (M+1) := by
     ext n
     simp only [a,r,mem_filter,mem_Ioc,mem_Ico,max_le_iff,Nat.ceil_le]
     constructor
@@ -79,14 +79,14 @@ theorem real_tail_sampling_error :
     exact hh.trans (by simpa only [mul_one] using
       mul_le_mul_of_nonneg_left hlen (by positivity : 0 ≤ C*(M+1:ℕ)))
   have hlow := hprice hrN har (Nat.cast_le.mpr ha) (by linarith only [har1])
-  have hhigh := hprice hNM' hMM le_rfl (by push_cast; ring_nf; exact le_rfl)
+  have hhigh := hprice hNM' hMM le_rfl (by push_cast; linarith only)
   have hM0 := hN'.trans_le hNM'
   have hd0 : (0:ℝ) < (M+1:ℕ) := hM0.trans_le hMM
   have hr0 := hN'.trans_le hrN
   have ha0' := hr0.trans_le har
   have hjoin1 := intervalIntegral.integral_add_adjacent_intervals (hint hr0 ha0') (hint ha0' hd0)
   have hjoin2 := intervalIntegral.integral_add_adjacent_intervals (hint hr0 hM0) (hint hM0 hd0)
-  change |(∑ n ∈ (Ioc N M).filter (fun n => l ≤ (n:ℝ)), F n) - ∫ x in realTailStart N M l..M, F x| ≤ _
+  change |(∑ n ∈ (Ioc N M).filter (fun n : ℕ => l ≤ (n:ℝ)), F n) - ∫ x in realTailStart N M l..M, F x| ≤ _
   rw [he,realTailStart,min_eq_right hrM]
   have hid : (∑ n ∈ Ico a (M+1), F n) - ∫ x in r..M, F x =
       ((∑ n ∈ Ico a (M+1), F n) - ∫ x in (a:ℝ)..((M+1:ℕ):ℝ), F x) +
@@ -116,14 +116,14 @@ private theorem indicator_tail_integral (F : ℝ → ℝ) {N M : ℕ} (h : N ≤
             simp only [Set.indicator_apply,Set.mem_Ioi,le_iff_lt_or_eq,Ne.symm hx,or_false]
        _ = _ := by
             rw [intervalIntegral.integral_of_le hNM,setIntegral_indicator measurableSet_Ioi,hcut,
-              intervalIntegral.integral_of_le (min_le_left (M:ℝ) (max N l))]
+              intervalIntegral.integral_of_le (show realTailStart N M l ≤ (M:ℝ) from min_le_left _ _)]
 
 /-- Sampling on a two-ended shell of positive powers costs O(M) per product.
 Rounding is uniform even when either product cut crosses the terminal conductor. -/
 theorem power_shell_sampling_error :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ {N M : ℕ}, 0 < N → N ≤ M → ∀ (b : ℕ) {q α β c : ℝ},
       0 < q → 0 < α → 0 < β → 0 < c →
-      |(∑ n ∈ Ioc N M with (n:ℝ)^α < q ∧ q ≤ c*(n:ℝ)^β,
+      |(∑ n ∈ (Ioc N M).filter (fun n : ℕ => (n:ℝ)^α < q ∧ q ≤ c*(n:ℝ)^β),
           (n:ℝ)*quotientMeshProfile b (q/(n:ℝ)^2)) -
         ∫ x in (N:ℝ)..M, if x^α < q ∧ q ≤ c*x^β then x*quotientMeshProfile b (q/x^2) else 0| ≤
           K*(M+1:ℕ) := by
@@ -152,7 +152,11 @@ theorem power_shell_sampling_error :
     obtain ⟨_,_,hd⟩ := (hb b hq (hpos.trans_le hx.1)).2
     exact hd.continuousAt.continuousWithinAt
   have hint (r : ℝ) : IntervalIntegrable (G r) volume (N:ℝ) M := by
+    have he : G r = (Set.Ici r).indicator F := by
+      funext x
+      by_cases hx : r≤x <;> simp [G,hx]
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hNM'] at hint_base ⊢
+    rw [he]
     exact hint_base.indicator measurableSet_Ici
   have hen : (∫ x in (N:ℝ)..M, if x^α < q ∧ q ≤ c*x^β then F x else 0) =
       (∫ x in realTailStart N M l..M, F x) - ∫ x in realTailStart N M v..M, F x := by
@@ -162,11 +166,11 @@ theorem power_shell_sampling_error :
     intro x hx
     rw [Set.uIcc_of_le hNM'] at hx
     exact fpoint x (hpos.trans_le hx.1).le
-  have hsum : (∑ n ∈ Ioc N M with (n:ℝ)^α < q ∧ q ≤ c*(n:ℝ)^β, F n) =
-      (∑ n ∈ Ioc N M with l ≤ (n:ℝ), F n) - ∑ n ∈ Ioc N M with v ≤ (n:ℝ), F n := by
+  have hsum : (∑ n ∈ (Ioc N M).filter (fun n : ℕ => (n:ℝ)^α < q ∧ q ≤ c*(n:ℝ)^β), F n) =
+      (∑ n ∈ (Ioc N M).filter (fun n : ℕ => l ≤ (n:ℝ)), F n) - ∑ n ∈ (Ioc N M).filter (fun n : ℕ => v ≤ (n:ℝ)), F n := by
     simp only [sum_filter,←sum_sub_distrib]
     exact sum_congr rfl fun n _ => fpoint n (Nat.cast_nonneg n)
-  change |(∑ n ∈ Ioc N M with (n:ℝ)^α < q ∧ q ≤ c*(n:ℝ)^β, F n) -
+  change |(∑ n ∈ (Ioc N M).filter (fun n : ℕ => (n:ℝ)^α < q ∧ q ≤ c*(n:ℝ)^β), F n) -
     ∫ x in (N:ℝ)..M, if x^α < q ∧ q ≤ c*x^β then F x else 0| ≤ _
   rw [hsum,hen,sub_sub_sub_comm]
   exact (abs_sub _ _).trans ((add_le_add (h hN hNM b hq l) (h hN hNM b hq v)).trans_eq (by ring))
@@ -174,8 +178,10 @@ theorem power_shell_sampling_error :
 private theorem integral_on_padded_interval (F : ℝ → ℝ) {a l u z : ℝ}
     (hal : a ≤ l) (hlu : l ≤ u) (huz : u ≤ z) :
     (∫ x in a..z, if l < x ∧ x ≤ u then F x else 0) = ∫ x in l..u, F x := by
-  change (∫ x in a..z, (Set.Ioc l u).indicator F x) = _
-  rw [intervalIntegral.integral_of_le (hal.trans (hlu.trans huz)),setIntegral_indicator measurableSet_Ioc,
+  have he : (fun x => if l < x ∧ x ≤ u then F x else 0) = (Set.Ioc l u).indicator F := by
+    funext x
+    by_cases hx : l < x ∧ x ≤ u <;> simp [hx]
+  rw [he,intervalIntegral.integral_of_le (hal.trans (hlu.trans huz)),setIntegral_indicator measurableSet_Ioc,
     Set.inter_eq_right.mpr (Set.Ioc_subset_Ioc hal huz),←intervalIntegral.integral_of_le hlu]
 
 private theorem centered_product_total_variation (H : ℕ) :
@@ -196,7 +202,7 @@ theorem power_shell_rescaled_quadrature :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {N M H : ℕ}, 0 < N → N ≤ M → ∀ (b : ℕ) {α β c T Z : ℝ},
       0 < α → 0 < β → 0 < c → 0 < T → T ≤ Z → T*Real.sqrt H ≤ N → (M:ℝ) ≤ Z →
       |(∑ q ∈ Ioc 0 H, (vonMangoldt q-1) *
-          ∑ n ∈ Ioc N M with (n:ℝ)^α < q ∧ (q:ℝ) ≤ c*(n:ℝ)^β,
+          ∑ n ∈ (Ioc N M).filter (fun n : ℕ => (n:ℝ)^α < q ∧ (q:ℝ) ≤ c*(n:ℝ)^β),
             (n:ℝ)*quotientMeshProfile b (q/(n:ℝ)^2)) -
         ∫ t in T..Z, (t*quotientMeshProfile b (1/t^2)) *
           ∑ q ∈ rescaledShellProducts H N M t α β c with 0 < q, (vonMangoldt q-1)*q| ≤
@@ -206,7 +212,7 @@ theorem power_shell_rescaled_quadrature :
   let F (q : ℕ) (x : ℝ) := x*quotientMeshProfile b (q/x^2)
   let A (q : ℕ) (x : ℝ) := x^α < q ∧ (q:ℝ) ≤ c*x^β
   let a := fun q => vonMangoldt q-1
-  let S (q : ℕ) := ∑ n ∈ Ioc N M with A q n, F q n
+  let S (q : ℕ) := ∑ n ∈ (Ioc N M).filter (fun n : ℕ => A q n), F q n
   let I (q : ℕ) := ∫ x in (N:ℝ)..M, if A q x then F q x else 0
   have pad (q : ℕ) (hq : q ∈ Ioc 0 H) :
       (∫ x in T*Real.sqrt q..Z*Real.sqrt q,
@@ -214,8 +220,8 @@ theorem power_shell_rescaled_quadrature :
     have hq1 := (mem_Ioc.mp hq).1
     have hl := (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt
       (Nat.cast_le.mpr (mem_Ioc.mp hq).2)) hT.le).trans hTN
-    have hs : 1 ≤ Real.sqrt q := by simpa only [Real.sqrt_one] using
-      Real.sqrt_le_sqrt (Nat.one_le_cast.mpr hq1 : (1:ℝ) ≤ q)
+    have hs : 1 ≤ Real.sqrt q := by
+      simpa only [Real.sqrt_one] using (Real.sqrt_le_sqrt (Nat.one_le_cast.mpr hq1 : (1:ℝ) ≤ q))
     have hu := hMZ.trans (le_mul_of_one_le_right (hT.trans_le hTZ).le hs)
     rw [show (fun x : ℝ => if (N:ℝ)<x ∧ x ≤ M ∧ A q x then a q*F q x else 0) =
         fun x => if (N:ℝ)<x ∧ x ≤ M then a q*(if A q x then F q x else 0) else 0 from
@@ -225,7 +231,7 @@ theorem power_shell_rescaled_quadrature :
     sum_congr rfl pad,←sum_sub_distrib]
   change |∑ q ∈ Ioc 0 H, (a q*S q-a q*I q)| ≤ _
   apply (abs_sum_le_sum_abs _ _).trans
-  calc _ ≤ ∑ q ∈ Ioc 0 H, |a q|*(K*(M+1:ℕ)) := by
+  calc _ ≤ ∑ q ∈ Ioc 0 H, |a q| * (K*(M+1:ℕ)) := by
               apply sum_le_sum
               intro q hq
               rw [←mul_sub,abs_mul]
@@ -244,7 +250,7 @@ theorem discrete_rescaled_shell_bound :
       0 < T → T ≤ Z → T*Real.sqrt H ≤ N → (M:ℝ) ≤ Z →
       7/T^2 < Real.exp (-8) → 4*Real.exp 8 < b/Z^2 →
       |∑ q ∈ Ioc 0 H, (vonMangoldt q-1) *
-          ∑ n ∈ Ioc N M with (n:ℝ)^α < q ∧ (q:ℝ) ≤ c*(n:ℝ)^β,
+          ∑ n ∈ (Ioc N M).filter (fun n : ℕ => (n:ℝ)^α < q ∧ (q:ℝ) ≤ c*(n:ℝ)^β),
             (n:ℝ)*quotientMeshProfile b (q/(n:ℝ)^2)| ≤
           C*(((M+1:ℕ):ℝ)*H+(H:ℝ)^(1+(8/9:ℝ))/T^12) := by
   obtain ⟨A,hA,ha⟩ := power_shell_rescaled_quadrature
@@ -255,7 +261,7 @@ theorem discrete_rescaled_shell_bound :
   have h := ha hN hNM b hα hβ hc hT hTZ hTN hMZ
   have j := hb H b hH 0 (Nat.zero_le H) N M c hα2 hβ2 hT hTZ hs hl
   let S := ∑ q ∈ Ioc 0 H, (vonMangoldt q-1) *
-          ∑ n ∈ Ioc N M with (n:ℝ)^α < q ∧ (q:ℝ) ≤ c*(n:ℝ)^β,
+          ∑ n ∈ (Ioc N M).filter (fun n : ℕ => (n:ℝ)^α < q ∧ (q:ℝ) ≤ c*(n:ℝ)^β),
             (n:ℝ)*quotientMeshProfile b (q/(n:ℝ)^2)
   change |S-I| ≤ _ at h
   change |I| ≤ _ at j
@@ -264,9 +270,9 @@ theorem discrete_rescaled_shell_bound :
   apply hs'.trans ((add_le_add h j).trans _)
   have hr : 0 ≤ (H:ℝ)^(1+(8/9:ℝ))/T^12 := by positivity
   have hQ : 0 ≤ ((M+1:ℕ):ℝ)*H := by positivity
-  push_cast
-  push_cast at hQ
-  linarith only [mul_nonneg hA hr,mul_nonneg hB hQ]
+  rw [mul_assoc A, mul_div_assoc B, mul_add]
+  exact add_le_add (mul_le_mul_of_nonneg_right (le_add_of_nonneg_right hB) hQ)
+    (mul_le_mul_of_nonneg_right (le_add_of_nonneg_left hA) hr)
 
 #print axioms discrete_rescaled_shell_bound
 #print axioms power_shell_rescaled_quadrature

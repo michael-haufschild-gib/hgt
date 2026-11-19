@@ -92,7 +92,7 @@ private theorem residue_increment (d : ℕ+) (n r : ℕ) (hr : r ∈ range (d : 
          refine sum_congr rfl fun j hj => ?_
          have hz := (offset_bounds (mem_range.mp hr) (mem_range.mp hj)).1
          have hpos : 0 < 1 + offset d r j/(n+1) := by
-           have : -(n+1 : ℝ) < offset d r j := by linarith [Nat.cast_nonneg (R := ℝ) n]
+           have : -(n+1 : ℝ) < offset d r j := by linarith [Nat.cast_nonneg (α := ℝ) n]
            linarith only [(lt_div_iff₀ hn).mpr (show -1 * (n+1 : ℝ) < offset d r j by linarith)]
          rw [← Real.log_div (by positivity) hn.ne', ← Real.log_mul hd.ne' hpos.ne']
          congr 1
@@ -115,9 +115,9 @@ private theorem sum_reflect_offset (d : ℕ+) (F : ℝ → ℝ) :
               F (offset d ((d : ℕ)-1-r) ((d : ℕ)-1-j)) := by
              refine sum_congr rfl fun r hr => sum_congr rfl fun j hj => ?_
              rw [offset_reflect (mem_range.mp hr) (mem_range.mp hj)]
-       _ = _ := by
-         simp_rw [sum_range_reflect (fun j => F (offset d _ j))]
-         exact sum_range_reflect (fun r => ∑ j ∈ range (d : ℕ), F (offset d r j)) _
+       _ = ∑ r ∈ range (d:ℕ), ∑ j ∈ range (d:ℕ), F (offset d ((d:ℕ)-1-r) j) :=
+         sum_congr rfl fun r _ => sum_range_reflect (fun j => F (offset d ((d:ℕ)-1-r) j)) _
+       _ = _ := sum_range_reflect (fun r => ∑ j ∈ range (d:ℕ), F (offset d r j)) _
 
 private theorem log_reflection {x z : ℝ} (hx : 1 ≤ x) (hz : -1 < z ∧ z < 1) :
     Real.log (1+z/x) + Real.log (1+(-z)/x) = Real.log (1-(z/x)^2) := by
@@ -140,7 +140,7 @@ private theorem twice_increment (d : ℕ+) (n : ℕ) :
   refine sum_congr rfl fun r hr => ?_
   rw [← sum_add_distrib]
   refine sum_congr rfl fun j hj => ?_
-  linarith only [log_reflection (x := (n:ℝ)+1) (by linarith [Nat.cast_nonneg (R := ℝ) n])
+  linarith only [log_reflection (x := (n:ℝ)+1) (by linarith [Nat.cast_nonneg (α := ℝ) n])
     (offset_bounds (mem_range.mp hr) (mem_range.mp hj))]
 
 /-- Exact second difference of a complete signed block. Every summand is the
@@ -224,7 +224,9 @@ theorem block_curvature_bounds (d : ℕ+) (n : ℕ) (hn : 1 ≤ n) :
   change 0 ≤ K ∧ K ≤ 2 * ((d : ℕ) : ℝ)^2 / t^3
   constructor
   · linarith only [hlo]
-  · linarith only [hhi]
+  · have he : ((d:ℕ):ℝ)*(((d:ℕ):ℝ)*(4/t^3)) = 2*(2*((d:ℕ):ℝ)^2/t^3) := by ring
+    rw [he] at hhi
+    linarith only [hhi]
 
 /-- Height of one residue endpoint against the full lower family and its d-fold subtraction. -/
 def residueHeight (d r n : ℕ) : ℝ := prefixHeight (d*n+r) - (d : ℝ)*prefixHeight n
@@ -251,9 +253,9 @@ private theorem centered_log_bounds {t z : ℝ} (ht : 1 ≤ t) (hz : -1 < z ∧ 
            dsimp [x]
            field_simp
            ring
-         _ ≤ _ := add_le_add_right (mul_le_mul_of_nonneg_left (Real.one_sub_inv_le_log_of_pos hx) hm) _
+         _ ≤ _ := add_le_add (mul_le_mul_of_nonneg_left (Real.one_sub_inv_le_log_of_pos hx) hm) le_rfl
   · calc _ ≤ t*(t+1)*(x-1)+z :=
-           add_le_add_right (mul_le_mul_of_nonneg_left (Real.log_le_sub_one_of_pos hx) hm) _
+           add_le_add (mul_le_mul_of_nonneg_left (Real.log_le_sub_one_of_pos hx) hm) le_rfl
          _ = z^2/(t+z) := by
            dsimp [x]
            field_simp
@@ -285,7 +287,7 @@ theorem residue_curvature_bounds (d : ℕ+) (n r : ℕ) (hr : r < d) :
     rw [hK,mul_sum]
     exact (sum_add_distrib ..).symm
   rw [he]
-  have ht : 1 ≤ t := by dsimp [t]; linarith only [Nat.cast_nonneg (R := ℝ) n]
+  have ht : 1 ≤ t := by dsimp [t]; linarith only [Nat.cast_nonneg (α := ℝ) n]
   constructor
   · exact sum_le_sum fun j hj => (centered_log_bounds ht (offset_bounds hr (mem_range.mp hj))).1
   · exact sum_le_sum fun j hj => (centered_log_bounds ht (offset_bounds hr (mem_range.mp hj))).2

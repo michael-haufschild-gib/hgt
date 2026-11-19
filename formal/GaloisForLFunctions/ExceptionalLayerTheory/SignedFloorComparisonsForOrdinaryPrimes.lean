@@ -25,8 +25,8 @@ theorem ordinaryPrimeRead_eq_finite {f : ℝ → ℂ} {δ x : ℝ} (hδ : 0<δ) 
     (hz : ∀ t, 0<t → t<δ → f t=0) {N : ℕ} (hN : x/δ≤N) :
     ordinaryPrimeRead f x=∑ p ∈ Nat.primesLE N, f (x/(p:ℝ)) := by
   classical
-  let S := (Nat.primesLE N).attach.map
-    ⟨fun k => (⟨k.1,Nat.prime_of_mem_primesLE k.2⟩ : Nat.Primes),
+  let S : Finset Nat.Primes := (Nat.primesLE N).attach.map
+    ⟨fun k : {n // n ∈ Nat.primesLE N} => (⟨k.1,Nat.prime_of_mem_primesLE k.2⟩ : Nat.Primes),
       fun i j e => Subtype.ext (congrArg (fun p : Nat.Primes => (p : ℕ)) e)⟩
   have hmem (p : Nat.Primes) : p ∈ S ↔ p.1≤N := by
     constructor
@@ -42,7 +42,7 @@ theorem ordinaryPrimeRead_eq_finite {f : ℝ → ℂ} {δ x : ℝ} (hδ : 0<δ) 
     exact hz _ (div_pos hx hpp) ((div_lt_iff₀ hpp).mpr
       (by linarith only [(div_lt_iff₀ hδ).mp (hN.trans_lt hlt)])))]
   simp only [S,sum_map,Function.Embedding.coeFn_mk]
-  exact Finset.sum_attach _ _
+  exact Finset.sum_attach (Nat.primesLE N) (fun p => f (x/(p:ℝ)))
 
 private theorem local_of_bounded {f : ℝ → ℂ} (hm : Measurable f)
     (hb : ∀ T : ℝ, 0<T → ∃ B : ℝ, ∀ x : ℝ, 0<x → x<T → ‖f x‖≤B) :
@@ -259,18 +259,18 @@ private theorem no_small_prime_read {f : ℝ → ℂ} (hm : Measurable f) {δ A 
   have hgd := mellin_diff_of_power hgl hδ' hgz hc
   have hDm : MeromorphicOn D (V 0) := fun z hz =>
     ((hgd.analyticOnNhd (hopen 0) z hz).meromorphicAt).add
-      (meromorphicAt_const.div (meromorphicAt_id.sub meromorphicAt_const))
+      ((MeromorphicAt.const _ _).div ((MeromorphicAt.id _).sub (MeromorphicAt.const _ _)))
   have hread0 (t : ℝ) (ht : 0<t) (hh : t<δ) : ordinaryPrimeRead f t=0 := by
-    apply tsum_eq_zero
-    intro p
-    have h1 : (1:ℝ)≤p.1 := by exact_mod_cast p.2.pos
-    exact hz _ (div_pos ht (zero_lt_one.trans_le h1)) ((div_le_self ht.le h1).trans_lt hh)
+    have hzero (p : Nat.Primes) : f (t/(p.1:ℝ)) = 0 := by
+      have h1 : (1:ℝ)≤p.1 := by exact_mod_cast p.2.pos
+      exact hz _ (div_pos ht (zero_lt_one.trans_le h1)) ((div_le_self ht.le h1).trans_lt hh)
+    simp only [ordinaryPrimeRead,hzero,tsum_zero]
   have hHd := mellin_diff_of_power (read_local hm hδ hA hz hb) hδ hread0 hsmall
   have hfs {s : ℂ} (hs : 1<s.re) := mellin_conv_of_power hfl hδ hz (of_linear_bound hb) hs
   have heuler {s : ℂ} (hs : 1<s.re) : D s=mellin f (-s) := by
     have hrc := mellin_conv_of_power hcut zero_lt_one (fun t _ ht => by simp [linearCut,ht.not_gt])
       (of_linear_bound (fun _ hx => cut_bound c hx)) hs
-    rw [show D s=mellin g (-s)+mellin (linearCut c) (-s) by rw [mellin_linearCut c hs]; rfl]
+    rw [show D s=mellin g (-s)+mellin (linearCut c) (-s) by rw [mellin_linearCut c hs] ]
     simp only [mellin,g,smul_sub,integral_sub (hfs hs) hrc,sub_add_cancel]
   have h1 : (1:ℂ)∈V 0 := by change (0:ℝ)<(1:ℂ).re; norm_num
   have hm1 := (hHd.analyticOnNhd (hopen b) 1 (by simpa [V] using hb1)).meromorphicAt

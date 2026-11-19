@@ -39,7 +39,8 @@ private theorem geom_mul (i : ℕ) (x : ℝ) : geom i x*(1-x) = 1-x^i := by
 private theorem integrated_geom (k i : ℕ) :
     (∫ x in (0:ℝ)..1, x^k * geom i x) = harm (k+i)-harm k := by
   simp only [geom,mul_sum,← pow_add]
-  rw [intervalIntegral.integral_finsetSum (fun a _ => (continuous_id.pow _).intervalIntegrable _ _)]
+  rw [intervalIntegral.integral_finsetSum (f := fun a (x : ℝ) => x^(k+a))
+    (fun a _ => Continuous.intervalIntegrable (by fun_prop) _ _)]
   simp only [hilbertMoment_eq_integral_pow]
   rw [harm, sum_range_add]
   change (∑ a ∈ range i, 1 / (((k+a : ℕ) : ℝ)+1)) =
@@ -77,7 +78,8 @@ theorem realEndpoint_mixed (i L : ℕ) (hi : 0 < i) (S T : Finset ℕ) (u v : �
     rw [mul_assoc, sum_mul_sum]
     simp only [mul_sum,pow_add,w,geom]
     exact sum_congr rfl fun j _ => sum_congr rfl fun k _ => by ring
-  simp only [h,mul_sum]
+  rw [intervalIntegral.integral_congr (fun x _ => h x)]
+  simp only [mul_sum]
   rw [intervalIntegral.integral_finsetSum (fun j _ => Continuous.intervalIntegrable (by fun_prop) _ _)]
   refine sum_congr rfl fun j _ => ?_
   rw [intervalIntegral.integral_finsetSum (fun k _ => Continuous.intervalIntegrable (by fun_prop) _ _)]
@@ -102,6 +104,57 @@ theorem realEndpoint_hankel_nonneg (i L : ℕ) (hi : 0 < i) (S : Finset ℕ) (u 
       (sq_nonneg _)) (sq_nonneg _)
   linarith only [hp]
 
+/-- The centered real-place polynomial subtracts the monomial at the mean
+of the two residue indices. This is the part shared with the finite block. -/
+def centeredResiduePolynomial (d : ℕ+) (x : ℝ) : ℝ :=
+  (∑ a ∈ range (d:ℕ), x^a)^2 - ((d:ℕ):ℝ)^2*x^((d:ℕ)-1)
+
+/-- Reflection of one residue index turns Cauchy–Schwarz into the sign of the
+centered real-place density, including the two collision endpoints. -/
+theorem centeredResiduePolynomial_nonneg (d : ℕ+) {x : ℝ} (hx : 0 ≤ x) :
+    0 ≤ centeredResiduePolynomial d x := by
+  let y := Real.sqrt x
+  have hy (j : ℕ) : (y^j)^2 = x^j := by
+    rw [← pow_mul,Nat.mul_comm,pow_mul,Real.sq_sqrt hx]
+  have hm : (∑ a ∈ range (d:ℕ), y^a*y^((d:ℕ)-1-a)) = (d:ℝ)*y^((d:ℕ)-1) := by
+    calc _ = ∑ _a ∈ range (d:ℕ), y^((d:ℕ)-1) := by
+           refine sum_congr rfl fun a ha => ?_
+           rw [← pow_add]
+           congr 1
+           have := mem_range.mp ha
+           omega
+         _ = _ := by simp only [sum_const,card_range,nsmul_eq_mul]
+  have h := sum_mul_sq_le_sq_mul_sq (range (d:ℕ)) (fun a => y^a) (fun a => y^((d:ℕ)-1-a))
+  rw [hm,mul_pow,hy] at h
+  simp only [hy,sum_range_reflect (fun a => x^a)] at h
+  exact sub_nonneg.mpr (by simpa only [← sq] using h)
+
+/-- Moments after centering the two residue indices. The subtracted rational
+term is the exact integral of the central monomial against (1−x)dx. -/
+def centeredRealEndpoint (d : ℕ+) (k : ℕ) : ℝ :=
+  2*realEndpoint d k - (d:ℝ)^2*(1/((k:ℝ)+(d:ℕ))-1/((k:ℝ)+(d:ℕ)+1))
+
+theorem centeredRealEndpoint_moment (d : ℕ+) (k : ℕ) :
+    centeredRealEndpoint d k = ∫ x in (0:ℝ)..1, x^k*(1-x)*centeredResiduePolynomial d x := by
+  let m := k+((d:ℕ)-1)
+  have hmd : (m:ℝ)+1 = (k:ℝ)+(d:ℕ) := by
+    dsimp only [m]
+    rw [Nat.cast_add,Nat.cast_sub d.pos,Nat.cast_one]
+    ring
+  have hsplit (x : ℝ) : x^k*(1-x)*centeredResiduePolynomial d x =
+      x^k*(1-x)*(∑ a ∈ range (d:ℕ), x^a)^2 - (d:ℝ)^2*(x^m-x^(m+1)) := by
+    rw [centeredResiduePolynomial,pow_succ x m,show x^m = x^k*x^((d:ℕ)-1) from pow_add ..]
+    ring
+  simp only [hsplit,centeredRealEndpoint]
+  rw [intervalIntegral.integral_sub (Continuous.intervalIntegrable (by fun_prop) _ _)
+    (Continuous.intervalIntegrable (by fun_prop) _ _),← realEndpoint_moment _ _ d.pos,
+    intervalIntegral.integral_const_mul,intervalIntegral.integral_sub
+    (f := fun x : ℝ => x^m) (g := fun x : ℝ => x^(m+1))
+    (Continuous.intervalIntegrable (by fun_prop) _ _) (Continuous.intervalIntegrable (by fun_prop) _ _),
+    hilbertMoment_eq_integral_pow,hilbertMoment_eq_integral_pow,Nat.cast_succ,hmd]
+
+#print axioms centeredResiduePolynomial_nonneg
+#print axioms centeredRealEndpoint_moment
 #print axioms realEndpoint_moment
 #print axioms realEndpoint_mixed
 #print axioms realEndpoint_hankel_nonneg

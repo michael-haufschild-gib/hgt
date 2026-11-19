@@ -64,14 +64,18 @@ theorem fiveRoot_dipole_bounds {u v x z : ℝ} (hu : 0 < u) (huv : u ≤ v)
     rw [div_sub_one hz.ne']
     exact div_le_div_of_nonneg_right hg hz.le)
   refine ⟨hlo,hhi,?_,?_⟩
-  · linarith only [hprice,hxu]
-  · linarith only [mul_le_mul_of_nonneg_right hlog2 hv.le,hvz]
+  · have e1 : 2*Real.log (x/u)/u = 2*(Real.log (x/u)/u) := by ring
+    have e2 : 2*x/u = 2*(x/u) := by ring
+    linarith only [hprice,hxu,e1,e2]
+  · have e3 : 2*Real.log (v/z)*v = 2*(Real.log (v/z)*v) := by ring
+    have e4 : 2/z*v = 2*(v/z) := by ring
+    linarith only [mul_le_mul_of_nonneg_right hlog2 hv.le,hvz,e3,e4]
 
 /-- The signed exponential multiplier of two unit graphs against three,
 normalized at the middle negative root. -/
 def fiveRootMultiplier (u v x z : ℝ) (w : ℂ) :=
-  (cexp (w*(2*Real.log u:ℝ))-cexp (w*(2*Real.log x:ℝ)))+
-    (cexp (w*(2*Real.log v:ℝ))-cexp (w*(2*Real.log z:ℝ)))-1
+  (Complex.exp (w*(2*Real.log u:ℝ))-Complex.exp (w*(2*Real.log x:ℝ)))+
+    (Complex.exp (w*(2*Real.log v:ℝ))-Complex.exp (w*(2*Real.log z:ℝ)))-1
 
 /-- Uniform closure of the five-graph multiplier on the two spectral
 boundary lines and everywhere between them. -/
@@ -100,9 +104,11 @@ theorem fiveRootMultiplier_bound {u v x z : ℝ} (hu : 0 < u) (huv : u ≤ v)
   unfold fiveRootMultiplier
   refine (norm_sub_le _ _).trans ?_
   rw [norm_one]
-  have ht := norm_add_le (cexp (w*(2*Real.log u:ℝ))-cexp (w*(2*Real.log x:ℝ)))
-    (cexp (w*(2*Real.log v:ℝ))-cexp (w*(2*Real.log z:ℝ)))
-  linarith only [ht,hlow,hhigh,h₁,h₂]
+  have ht := norm_add_le (Complex.exp (w*(2*Real.log u:ℝ))-Complex.exp (w*(2*Real.log x:ℝ)))
+    (Complex.exp (w*(2*Real.log v:ℝ))-Complex.exp (w*(2*Real.log z:ℝ)))
+  have e5 : ‖w‖*(2*Real.log (x/u))*u⁻¹ = ‖w‖*(2*Real.log (x/u)/u) := by ring
+  have e6 : ‖w‖*(2*Real.log (v/z))*v = ‖w‖*(2*Real.log (v/z)*v) := by ring
+  linarith only [ht,hlow,hhigh,h₁,h₂,e5,e6]
 
 /-- The same quadratic spectral envelope works for every normalized
 five-graph multiplier. -/
@@ -131,7 +137,7 @@ theorem summable_quadratic_lag_envelope {Z : ZeroConfig} (hZ : TemperedConfig Z)
   field_simp [hy.ne'] <;> ring
 
 private def exponentialSum {ι : Type*} [Fintype ι] (v c : ι → ℝ) (z : ℂ) : ℂ :=
-  ∑ i, (c i:ℂ)*cexp (z*(v i:ℂ))
+  ∑ i, (c i:ℂ)*Complex.exp (z*(v i:ℂ))
 
 private theorem trace_form {ι : Type*} [Fintype ι] (v c : ι → ℝ) :
     (∑ i, (∑ j, realSplineTrace (v i-v j)*c j)*c i) =
@@ -142,20 +148,20 @@ private theorem trace_form {ι : Type*} [Fintype ι] (v c : ι → ℝ) :
   let S := lagStructure zetaZeroConfig b
   have hz (u : ℝ) := lagStructure_eq_tsum_lagCoeff zetaZeroConfig temperedConfig_zetaZeroConfig
     (contDiff_boxSpline_two (le_refl 3)) (boxSpline_support (r := 1) one_pos 3) u
-  have hs (u : ℝ) : HasSum (fun z : ℂ => D z*cexp (z*(u:ℂ))) (S u) := by
+  have hs (u : ℝ) : HasSum (fun z : ℂ => D z*Complex.exp (z*(u:ℂ))) (S u) := by
     rw [show S u = _ from (hz u).2]
     exact (hz u).1.hasSum
   have he (z : ℂ) : D z*exponentialSum v c z*exponentialSum v c (-z) =
-      ∑ i, ∑ j, D z*cexp (z*((v i-v j:ℝ):ℂ))*(c j:ℂ)*(c i:ℂ) := by
+      ∑ i, ∑ j, D z*Complex.exp (z*((v i-v j:ℝ):ℂ))*(c j:ℂ)*(c i:ℂ) := by
     unfold exponentialSum
-    rw [mul_sum,sum_mul]
+    rw [mul_assoc,Finset.sum_mul_sum,Finset.mul_sum]
     refine sum_congr rfl fun i _ => ?_
-    rw [mul_sum]
+    rw [Finset.mul_sum]
     refine sum_congr rfl fun j _ => ?_
     have harg : z*((v i-v j:ℝ):ℂ) = z*(v i:ℂ)+(-z)*(v j:ℂ) := by push_cast; ring
     rw [harg,Complex.exp_add]
     ring
-  have hadd : HasSum (fun z : ℂ => ∑ i, ∑ j, D z*cexp (z*((v i-v j:ℝ):ℂ))*(c j:ℂ)*(c i:ℂ))
+  have hadd : HasSum (fun z : ℂ => ∑ i, ∑ j, D z*Complex.exp (z*((v i-v j:ℝ):ℂ))*(c j:ℂ)*(c i:ℂ))
       (∑ i, ∑ j, S (v i-v j)*(c j:ℂ)*(c i:ℂ)) :=
     hasSum_sum fun i _ => hasSum_sum fun j _ => ((hs (v i-v j)).mul_right _).mul_right _
   change _ = (∑' z : ℂ, D z*exponentialSum v c z*exponentialSum v c (-z)).re
@@ -200,7 +206,7 @@ theorem fiveUnitTraceForm_bounded :
   let P := fiveRootMultiplier u v x z
   have hb (w : ℂ) : ‖D w*P w*P (-w)‖ ≤ G w := by
     by_cases hD : D w = 0
-    · simp only [hD,zero_mul,norm_zero,G]
+    · simp only [hD,zero_mul,norm_zero,G,le_refl]
     have hw := abs_re_le_of_lagCoeff_ne_zero hD
     have h₁ := fiveRootMultiplier_bound hu huv hx hx1 hz1 hp hm hw
     have h₂ := fiveRootMultiplier_bound hu huv hx hx1 hz1 hp hm (w := -w)
@@ -238,12 +244,17 @@ theorem fiveUnitDivisor_degree_bound :
     simpa only [positivePoleDegree,fiveUnitDivisor,sum_integralGraphSum,r] using hp
   have hm' : (∑ i, (r i)⁻¹*(unitCoefficients i:ℝ)) = 0 := by
     simpa only [negativePoleDegree,fiveUnitDivisor,sum_integralGraphSum,r] using hm
-  norm_num [Fin.sum_univ_succ,unitCoefficients] at hp' hm'
+  have hu0 : unitCoefficients 0 = 1 := rfl
+  have hu1 : unitCoefficients 1 = 1 := rfl
+  have hu2 : unitCoefficients 2 = -1 := rfl
+  have hu3 : unitCoefficients 3 = -1 := rfl
+  have hu4 : unitCoefficients 4 = -1 := rfl
+  simp only [Fin.sum_univ_five,hu0,hu1,hu2,hu3,hu4,Int.cast_one,Int.cast_neg,mul_one,mul_neg] at hp' hm'
   have hsum : r 0+r 1=r 2+r 3+r 4 := by linarith only [hp']
   have hinv : (r 0)⁻¹+(r 1)⁻¹=(r 2)⁻¹+(r 3)⁻¹+(r 4)⁻¹ := by linarith only [hm']
   have hpR : R 0+R 1=R 2+1+R 4 := by
-    simpa only [R,add_div,div_self hy.ne'] using congrArg (fun q : ℝ => q/y) hsum
-  have hrec (i : Fin 5) : 1/R i=y*(r i)⁻¹ := by simp only [R,one_div,inv_div,div_eq_mul_inv]
+    simpa only [R,add_div,show r 3 / y = 1 from div_self hy.ne'] using congrArg (fun q : ℝ => q/y) hsum
+  have hrec (i : Fin 5) : 1/R i=y*(r i)⁻¹ := by simp only [R]; rw [one_div_div,div_eq_mul_inv]
   have hone : y*(r 3)⁻¹=1 := mul_inv_cancel₀ hy.ne'
   have hmR : 1/R 0+1/R 1=1/R 2+1+1/R 4 := by
     simp only [hrec]

@@ -23,7 +23,7 @@ private theorem shell_mesh_exchange {N M H b : ℕ} (α β c : ℝ)
     (∑ n ∈ Ioc N M, (n:ℝ)^2*(centeredProductReading ⌊(n:ℝ)^α⌋₊ n -
         centeredProductReading ⌊c*(n:ℝ)^β⌋₊ n)) =
       ∑ q ∈ Ioc 0 H, (vonMangoldt q-1) *
-        ∑ n ∈ Ioc N M with (n:ℝ)^α < q ∧ (q:ℝ) ≤ c*(n:ℝ)^β,
+        ∑ n ∈ (Ioc N M).filter (fun n : ℕ => (n:ℝ)^α < q ∧ (q:ℝ) ≤ c*(n:ℝ)^β),
             (n:ℝ)*quotientMeshProfile b (q/(n:ℝ)^2) := by
   let a := fun q : ℕ => vonMangoldt q-1
   let F (q n : ℕ) := (n:ℝ)*quotientMeshProfile b (q/(n:ℝ)^2)
@@ -122,7 +122,11 @@ private theorem nineteen_tenths_top {N M : ℕ} (hN : 0 < N) (hNM : N ≤ M) (hM
   have hTN : U/4*Real.sqrt H ≤ N := by
     have h := mul_le_mul_of_nonneg_left hr (div_nonneg hU.le (by norm_num : (0:ℝ)≤4))
     exact h.trans_eq (by rw [←hUV]; ring)
-  refine ⟨Nat.le_floor (by linarith only [hX] : (1:ℝ) ≤ 8*X),div_pos hU (by norm_num),
+  have hH₁ : 1 ≤ H := by
+    apply Nat.le_floor
+    rw [Nat.cast_one]
+    linarith only [hX]
+  refine ⟨hH₁,div_pos hU (by norm_num),
     (div_le_self hU.le (by norm_num : (1:ℝ)≤4)).trans (hU1.trans (Nat.cast_le.mpr hNM)),hTN,?_⟩
   have hMp : ((M+1:ℕ):ℝ) ≤ 3*(N:ℝ) := by
     have hM' : (M:ℝ) ≤ (2*N:ℕ) := Nat.cast_le.mpr hM
@@ -190,7 +194,7 @@ private theorem include_initial_octaves (S : ℕ → ℝ) {k : ℕ} {C : ℝ} (h
   · have hsub : Ioc N M ⊆ Icc 1 (2*k) := by
       intro n hn
       obtain ⟨hl,hu⟩ := mem_Ioc.mp hn
-      exact mem_Icc.mpr ⟨hN.trans hl.le,hu.trans (hMN.trans (Nat.mul_le_mul_left _ (Nat.le_of_not_ge hk)))⟩
+      exact mem_Icc.mpr ⟨hN.trans_le hl.le,hu.trans (hMN.trans (Nat.mul_le_mul_left _ (Nat.le_of_not_ge hk)))⟩
     have hb := (abs_sum_le_sum_abs S (Ioc N M)).trans
       (sum_le_sum_of_subset_of_nonneg hsub (fun n _ _ => abs_nonneg (S n)))
     rw [mul_assoc]
@@ -261,7 +265,7 @@ private theorem one_product_row_error :
   let S := Ioc (max Y V) k
   let f := fun q : ℕ => (vonMangoldt q-1)*centeredPrimeWeight 1 (k/q)
   have hs : S ⊆ T := Ioc_subset_Ioc_left (max_le_max_left Y hUV)
-  have hsingle : T ∖ S ⊆ {V} := by
+  have hsingle : T \ S ⊆ {V} := by
     intro q hq
     obtain ⟨hT,hn⟩ := mem_sdiff.mp hq
     obtain ⟨hg,hk⟩ := mem_Ioc.mp hT
@@ -270,10 +274,10 @@ private theorem one_product_row_error :
     exact mem_singleton.mpr (by omega)
   have hsum := sum_sdiff (f := f) hs
   change |(∑ q ∈ T, f q) - ∑ q ∈ S, f q| ≤ _
-  rw [show (∑ q ∈ T, f q) - ∑ q ∈ S, f q = ∑ q ∈ T ∖ S, f q by linarith only [hsum]]
+  rw [show (∑ q ∈ T, f q) - ∑ q ∈ S, f q = ∑ q ∈ T \ S, f q by linarith only [hsum]]
   have hlog := Real.log_natCast_nonneg k
   have hcost : 0 ≤ F*(1+Real.log k) := by positivity
-  calc _ ≤ ∑ _q ∈ T ∖ S, F*(1+Real.log k) := by
+  calc _ ≤ ∑ _q ∈ T \ S, F*(1+Real.log k) := by
             apply (abs_sum_le_sum_abs _ _).trans
             apply sum_le_sum
             intro q hq
@@ -317,7 +321,7 @@ private theorem adjacent_cut_reading_error :
        _ ≤ (A*n)^2*((F*(J*conductorLog n))*(D/(n:ℝ)^3)) := by
               rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
               exact mul_le_mul_of_nonneg_right (ha hn) (by positivity)
-       _ = _ := by field_simp <;> ring
+       _ = _ := by field_simp
 
 private theorem double_floor_cut (x : ℝ) (hx : 0 ≤ x) :
     2*⌊x⌋₊ ≤ ⌊2*x⌋₊ ∧ ⌊2*x⌋₊ ≤ 2*⌊x⌋₊+1 := by

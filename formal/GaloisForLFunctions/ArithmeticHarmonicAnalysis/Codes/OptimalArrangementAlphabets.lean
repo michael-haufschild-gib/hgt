@@ -45,7 +45,8 @@ theorem completeWeights_rigid (w : ι → ℕ)
     have hn : z^(w i) ≠ 1 := by
       intro h
       have hh := Nat.le_of_dvd (hw i) ((hz.pow_eq_one_iff_dvd _).mp h)
-      omega
+      have h0 := hw i
+      first | omega | linarith
     have hminus := (sq_eq_one_iff.mp hsq).resolve_left hn
     have hzsum : (∑ k ∈ range M, z^k) = 0 := by
       rw [← hprod]
@@ -77,12 +78,14 @@ theorem optimalArrangement_strata {A : ι → Type*} [∀ i, Fintype (A i)] (D :
     (hc : Fintype.card (∀ i, A i)+1 = 2^(2^Fintype.card ι)) :
     ∃ e : Finset ι ≃ Fin (2^Fintype.card ι), ∀ S, faceWeight D S = 2^(e S).val := by
   let f (K : Finset (Finset ι)) : Fin (2^(Fintype.card (Finset ι))) :=
-    ⟨(arrangementWords D K).card,by rw [Fintype.card_finset,← hc]; exact
-      Nat.lt_succ_of_le (arrangementWords D K).card_le_univ⟩
+    ⟨(arrangementWords D K).card, by
+      rw [Fintype.card_finset,← hc]
+      exact Nat.lt_succ_of_le (arrangementWords D K).card_le_univ⟩
   let E := Equiv.ofBijective f ((Fintype.bijective_iff_injective_and_card f).mpr
     ⟨fun _ _ h => hi (congrArg Fin.val h),by simp⟩)
   have h := completeWeights_rigid (faceWeight D) E (fun K => card_arrangementWords D K)
-  simpa only [Fintype.card_finset] using h
+  rw [Fintype.card_finset] at h
+  exact h
 
 /-- Changing which side of a coordinate split is called distinguished is an
 involution on the labelled face lattice. -/
@@ -172,7 +175,7 @@ theorem optimalArrangement_iff {A : ι → Type*} [∀ i, Fintype (A i)] (D : �
   have hg (K : Finset (Finset ι)) : (arrangementWords D K).card = ∑ k ∈ K.image v, 2^k := by
     rw [card_arrangementWords,sum_image hv.injOn]
     refine sum_congr rfl fun T _ => ?_
-    simpa only [Equiv.apply_symm_apply,v] using hw ((switchFace s).symm T)
+    simpa only [Equiv.apply_symm_apply,v,faceWeight] using hw ((switchFace s).symm T)
   constructor
   · intro K L h
     simp only [hg] at h
@@ -188,6 +191,7 @@ theorem optimalArrangement_iff {A : ι → Type*} [∀ i, Fintype (A i)] (D : �
       _ = _ := by
         have h := labelledWordSpace_optimal n
         rw [Fintype.card_pi] at h
+        simp only [labelledLetter,Fintype.card_fin,Fin.valEmbedding_apply] at h
         exact h
 
 end

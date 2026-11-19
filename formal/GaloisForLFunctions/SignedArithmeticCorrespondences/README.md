@@ -10,7 +10,7 @@ $$
  I_X(f,g)=2\sum_{n\ge1}\frac{\Lambda(n)}{\sqrt n}\,h(\log(n/X)).
 $$
 
-The common lower and upper graph multiplicities in the integral model fix the factor two. Replacing the contact measure by Lebesgue measure in the positive multiplicative coordinate gives
+The sampled graph height is twice the directed logarithmic order of the integral divisors. With this same factor on the degree side, replacing the contact measure by Lebesgue measure on the positive ratio axis gives
 
 $$
  P_X(f,g)=2\sqrt X\left(\int f(u)e^{-u/2}\,du\right)
@@ -29,16 +29,113 @@ $$
 
 The proof gives an identity at every separation. Put $a=(d-1)/2$, $F(u)=f(du)e^{au}$ and $G(v)=g(dv)e^{-av}$. Then $I^{[d]}_{Y^d}(f,g)=dY^{-a}I_Y(F,G)$. At $d=2$, the unscaled square contact tends to $(\int f)(\int g)$. Thus a term invisible after division by $\sqrt X$ survives in the finite part. [Exact descent and limit](PowerContactsAndTheirOppositeDegrees.lean)
 
+Twisting the finite contacts by the Liouville sign $\lambda(p^k)=(-1)^k$ reverses the leading pole term. The ordinary contact plus its twist equals twice the square contact at every separation, so their unscaled sum tends to $2(\int f)(\int g)$. Opposite exponential tilts of a fixed positive bump give ordinary and twisted contacts of strictly opposite signs at every sufficiently large separation. [Liouville twist and square contact](TheUnscaledIntersectionOfTheLiouvilleTwin.lean)
+
 ## How to measure a glued intersection
 
-On the positive real axis a graph displacement tests the signed measure $d\psi(y)-dy$ against $h(\log(y/X))/\sqrt y$. Summation by parts moves its primitive $\psi(y)-y$ onto variations of the *combined* profile. An effective bound must specify the norm paid by that profile and keep the terms at any cuts. A pole-subtracted bound uniform in support size would permit a passage to completed intersections if those norms remain controlled in the limit.
+Let $u_i$ be the lower multiplicities and $b_j$ the jumps of the upper divisor. Every integral upper divisor supported on $[1,N]$ has such a presentation. A pair $(i,j)$ integrates the same contact measure $d\psi(y)$ up to $j/i$. Replacing it by $dy$ gives $j/i$. In the smooth profile pairing the test carries the additional factor $2h(\log(y/X))/\sqrt y$, so the same replacement gives $P_X$. For the signed logarithmic graph order $H$, put
+
+$$
+c_k=\sum_{\lfloor j/i\rfloor=k}u_i b_j,\quad
+P=\left(\sum_i u_i/i\right)\left(\sum_j b_jj\right),\quad
+F=\sum_{i,j}u_i b_j\{j/i\}.
+$$
+
+Then $H-P+F=\sum_k c_k(\psi(k)-k)$. For each nonnegative weight $W$ and constant $C$, the bound $|H-P+F|\le C\sum_k |c_k|W(k)$ holds for every support and both signed divisors exactly when $|\psi(k)-k|\le CW(k)$ for every $k\ge1$. One lower graph against one effective upper endpoint realizes each positive quotient separately. A gain from gluing must therefore use additional structure of the divisor family or a norm that retains relations between distinct quotients. [Finite part and sharp bound](GluingIntegerGraphsAtTheirQuotientEndpoints.lean)
+
+The de la Vallée Poussin estimate gives an unconditional price $W(k)=k\exp(-c\sqrt{\log k})$ for some $c>0$. Whenever $\sum_k|a_k|W(k)<\infty$, the completed finite part $\sum_k a_k(\psi(k)-k)$ converges absolutely. For a power price $W(k)=k^{1/2+\alpha+\varepsilon}$, estimates for every $\varepsilon>0$ and every pair of signed divisors are equivalent to the assertion that the supremum of the real parts of the nontrivial zeta zeros is at most $1/2+\alpha$. The converse follows by testing effective single endpoints and passing from integer to real cuts. This identifies the exact analytic content of changing the exponent. [Completion and the zero-abscissa criterion](CompletingTheMixedIntersectionInWeightedVariation.lean)
+
+Multiplying each lower degree $i$ by $d$ is adjoint to moving each upper jump at $j$ to $\lfloor j/d\rfloor$. This preserves the raw height, every positive quotient coefficient and the full boundary-corrected finite part. The difference of the two pole products is $(\sum_i u_i/i)\sum_j b_j\{j/d\}$. Two successive contractions agree with contraction by the product on every positive quotient. At zero, exact composition restores the jumps that had already reached zero on the first step. [Projection and its zero-boundary term](ProjectionOfTheMixedGraphHeightUnderDilation.lean)
+
+## Effectivity from integer factorization
+
+Intersect every lower graph through $M$ with the upper endpoint $M$. The resulting height $H(M)$ equals $\log(M!)$ by $\sum_{q\mid m}\Lambda(q)=\log m$. Glue a whole residue block after subtracting the common dilation, setting $A_d(n)=\sum_{r<d}(H(dn+r)-dH(n))$. Then, for every $d\ge1$ and $n\ge1$,
+
+$$0\le A_d(n+2)-2A_d(n+1)+A_d(n)\le\frac{2d^2}{(n+1)^3}.$$
+
+The two residue indices have opposite offsets under reflection. For a single residue with offsets $z_j=(r+j+1-d)/d$ and $t=n+1$, its curvature $K$ instead satisfies $\sum_j z_j^2/(t+1+z_j)\le t(t+1)K+\sum_j z_j\le\sum_j z_j^2/(t+z_j)$. This identifies the first moment that survives a partial block and confines the rest to a sign-controlled second moment. [Complete and incomplete block bounds](EffectivityAcrossCompleteEndpointBlocks.lean)
+
+Let $K_d(n)=\Delta^2 A_d(n)$. Frullani’s integral pairs the reflected offsets into a positive measure. Each endpoint shift multiplies the density by a monomial. Thus the mixed sum $\sum_{i,j}u_i v_jK_d(n+i+j)$ is the integral of $U(x)V(x)$ for $U(x)=\sum_i u_ix^i$ and $V(x)=\sum_j v_jx^j$. The constant section attains the exact operator norm $K_d(n)$. The bound $2d^2\|UV\|_\infty/(n+1)^3$ applies to arbitrary signed supports and the integral extends to continuous sections. This curvature concerns the logarithmic graph orders $H$. [Positive block measure and sharp norm](ThePositiveMeasureOfAMixedConductorBlock.lean)
+
+## The real-place metric
+
+In the Weil row of a flat upper divisor, remove $j/i-\psi(\lfloor j/i\rfloor)$ and the diagonal constant $3/(4i)-\log(2\pi)$. At $j=i+k$ the remaining entry $D_i(k)$ is half the second harmonic difference $2H_{k+i}-H_k-H_{k+2i}$. All these offsets are moments of one positive measure,
+
+$$2D_i(k)=\int_0^1 x^k(1-x)(1+x+\cdots+x^{i-1})^2\,dx.$$
+
+Gluing two signed families of shifts inserts their two polynomials under this integral. Equal families give a nonnegative square at every separation. Even after removing the central monomial $i^2x^{i-1}$ from the squared geometric sum, the density stays nonnegative by Cauchy–Schwarz applied to the residue indices in reverse order. The removed contribution to $2D_i(k)$ is exactly $i^2/[(k+i)(k+i+1)]$. [Mixed real-place moments](TheRealPlaceAfterGluingSignedEndpoints.lean)
+
+Let $C_d(k)$ denote $2D_d(k)$ after this central contribution is removed. The same positive polynomial $S_d(x)^2-d^2x^{d-1}$ occurs in the integer block and the centered real metric. Shifting the complete block by one conductor gives the comparison
+
+$$\sum_{r,j<d} C_d(dn+r+j+1)\ \le\ K_d(n)-K_d(n+1)\ \le\ \sum_{r,j<d} C_d(dn+r+j).$$
+
+This is a quadratic-form inequality. It persists when the density in each integral is multiplied by the same square $P(x^d)^2$ for any continuous signed section $P$. For polynomial sections the metric is exactly the sum of the shifted real Weil entries. [Adjacent real metrics and the change of prime curvature](TheRealMetricBoundsTheChangeOfPrimeCurvature.lean)
+
+## The prime defect measured by real Weil energy
+
+For the full lower prefix through $M$ against the upper endpoint $M$, the actual opposite-degree product is $M H_M$, where $H_M$ is the harmonic number. Subtract the ordinary prime-power graph height $\log(M!)$. The second difference $G$ of this defect has entries
+
+$$G(m)=\frac1{m+1}-\log\frac{m+2}{m+1}
+=\int_0^1 x^m\left(1-\frac{1-x}{-\log x}\right)dx.$$
+
+On $0<x<1$ the logarithmic mean $(1-x)/(-\log x)$ lies between $x$ and $(1+x)/2$. The degree-one real Weil metric has density $(1-x)/2$. Multiplying these inequalities by $x^n U(x)^2$ proves $D_1\le G\le2D_1$ as quadratic forms on arbitrary signed endpoint shifts. Consequently $|G(U,V)|\le D_1(U,U)+D_1(V,V)$ at every separation $n$. Both costs are computed from their individual divisors, before intersection. The estimate retains the pole product and all prime contacts of the full prefixes. [Mixed defect and real Weil energies](ThePoleDefectOfFullIntegralPrefixes.lean)
+
+Keep these divisors and their pole products fixed and twist only the local contacts. At $m=b^2a$ with $a$ squarefree, the twisted column is $-\log a$. For every integer $t\ge2$, the twisted curvature is at least $\log 2$ at $t^2-1$ and at most $-1/3$ at $t^2-2$. Thus the ordinary positive lower bound fails at arbitrarily large conductors on precisely the same test. [Squarefree columns and sign failure](TheUnscaledIntersectionOfTheLiouvilleTwin.lean)
+
+## Infinite endpoint supports
+
+For any $u,v\in\ell^2(\mathbb N;\mathbb R)$, write $E=\|u\|_2^2+\|v\|_2^2$. The actual pole-subtracted prime curvature satisfies
+
+$$\sum_{i,j\ge0}|u_i v_j G(n+i+j)|\le \frac{E}{2n}\qquad(n\ge1).$$
+
+The absolute value of the signed sum also satisfies the bound by the two separate real Weil energies. These intersections arise from integral divisors. Truncate at $N$ and round each coefficient toward zero in units of $1/(N+1)$. The same two arrays of signed integer multiplicities, divided by their common scale in each variable, recover the completed intersections at both places.
+
+The corresponding estimates for the complete block and the real metric are
+
+$$\sum_{i,j}|u_iv_j K_d(n+i+j)|\le \frac{d^2 E}{n(n+1)},\qquad
+\sum_{i,j}|u_iv_j\,2D_d(n+i+j)|\le \frac{d^2 E}{2n}.$$
+
+Charge the two terms in $2|u_iv_j|\le u_i^2+v_j^2$ to their separate telescoping row sums. This proof covers generating functions that diverge at $x=1$. In particular, for bounded individual energies the mixed block curvature tends to zero whenever $d=o(n)$, even as both divisor supports exhaust the integers. [Infinite energy estimates and integral realization](IndependentEnergiesOfInfiniteEndpointSections.lean)
+
+## Opposing sections and integral duality
+
+Put the lower divisors at $1\le i\le X$ and the upper jumps at $j\ge X+L$. Add the directed order minus its pole product to the flat-tail Weil rows with their constant diagonal removed. For this joint height $J$, the prime contributions cancel exactly. With $S_i(x)=1+\cdots+x^{i-1}$,
+
+$$
+2J=\int_0^1x^L(1-x)U(x)V(x)\,dx,\qquad
+U(x)=\sum_i u_i x^{X-i}S_i(x)^2,\quad V(x)=\sum_j b_jx^{j-X-L}.
+$$
+
+Every integer polynomial occurs as an upper section. The coefficient of $x^{X-i}$ in $(1-x)^2U(x)$ recovers $u_i$. Choosing upper jumps from the coefficients of $U$ therefore produces a strictly positive square for every nonzero lower divisor. For arbitrary mixed divisors, the bound is $|2J|\le\|UV\|_\infty/[(L+1)(L+2)]$, including $L=0$. Uniform convergence of the product sections gives convergence of the joint heights. [Opposing sections and strict duality](OppositeSectionsOfTheIntegralGraphGauge.lean)
+
+The ordinary centered row on one effective endpoint $m$ still equals $m-\psi(m)+1/[2m(m+1)]$. For every $B>0$, this row exceeds $B\sqrt m$ and falls below $-B\sqrt m$ at arbitrarily late endpoints. Thus even effective divisors exhibit both signs. For arbitrary opposing divisors the centered row is bounded by the sum of the quotient variation with the de la Vallée Poussin weight and the real-place price $\|UV\|_\infty/[2(L+1)(L+2)]$. [Effective endpoint oscillations and mixed row estimate](CompletingTheMixedIntersectionInWeightedVariation.lean)
+
+## The full Weil form on interleaving supports
+
+Present both divisors $u,v$ by integral endpoint jumps. They may intersect on the diagonal or interleave in either order. Let $c_k$ be the **sum** of the quotient coefficients for the two directions, $F_{u,v},F_{v,u}$ their fractional boundaries, and $D=\sum_i u_iv_i\log(i/(2\pi))$ the diagonal counterterm. The off-diagonal real kernels give a single polynomial
+
+$$J(x)=\sum_{i\ne j}u_i v_j\big(x^{|i-j|-1}+x^{i+j-1}\big).$$
+
+The full mixed Weil form is recovered by
+
+$$W(u,v)-F_{u,v}-F_{v,u}-D=-\sum_k c_k(\psi(k)-k)-\tfrac12\int_0^1 J(x)\,dx.$$
+
+The two pole products in $W$ arise from the continuum degrees of the two directed integer heights. The completed finite part is independent of the exhaustion whenever $c_k$ converges in de la Vallée Poussin weighted variation and $J$ converges in $L^1[0,1]$. The distance is bounded by the weighted distance of the combined coefficients times a universal constant plus half the $L^1$ distance of the real sections. [Arbitrary supports and quantitative completion](TheFullWeilFormOnInterleavingDivisors.lean)
+
+## Relation to the other programmes
 
 Arithmetic Castelnuovo–Severi supplies the integral vertical orders. Absolute Geometry supplies the real-place kernel and identifies its contact correction on reduced square degrees. Arithmetic Orientation Geometry identifies the growth measured by translated Weil tests. Here the question concerns the price of the mixed terms when the arithmetic divisors themselves grow. [Carrier and contact](../AbsoluteGeometryOfSpecZ/TheCarrierKernelIsWeilMinusTheContact.lean) · [Arithmetic Orientation Geometry](../ArithmeticOrientationGeometry/README.md)
 
+## What the curve point count pays for
+
+For a three-point Kummer curve over $\mathbf F_{Q^2}$, a finite closed place of degree $h$ contributes $h$ to the square contact in degree $m$ precisely when $2h\mid m$. Including the rational point at infinity, the square contact at $m=2e>0$ equals the actual extension point count $N_e$. Removing the two poles and normalizing gives $(Q^{2e}+1-N_e)/Q^e=2g(-1)^e$, where $g$ is the dimension of the regular differentials.
+
+At separation $4(L+1)$, put $U_b=\sum_{i\equiv b\pmod 2} u_i(-1)^{\lfloor i/2\rfloor}$, and likewise for $V_b$. After signed gluing the entire normalized trace is $2g(U_0V_0-U_1V_1)$ for every $L$ and both supports. Negating the odd part of the opposing divisor gives the effective square $2g(U_0^2+U_1^2)$. Without that sign the square is nonnegative for all divisors exactly when $g=0$, equivalently $Q+1\mid R$ for the branch exponent $R$. At $R=1$ the odd singleton is negative in every block. [Closed-place trace and duality](TheTwoSquareChannelsOfKummerPointCounts.lean)
+
 ## Tests and open questions
 
-* Can the same finite orders recover a local prime-power contact, the opposite pole degrees and an error estimate for signed mixtures with increasing support?
-* Which norm of a glued profile can integer factorization or an estimate for sections bound independently of zero locations? A quantitative estimate below RH must identify its exponent, the range of supports and all dependence on the test.
-* On a curve over a finite field, which term in the mixed estimate is paid by the point-count bound over every extension? For the integers, which term changes when prime contacts are twisted by the Liouville sign? [Curve model and Stepanov](../ExclusionOfTheCriticalState/Models/CurveCriticalStatesAndStepanovExclusion.lean) · [Sign-twist control](../GreenCalculusOfThePrimeFreeWindow/TheFirstOverlapStepOfWeilsFormFailsForTheSignTwin.lean)
+* Which relations between distinct quotient cells survive when the lower divisor ranges beyond the full families used in a residue block? A single quotient realizes the ordinary unsmoothed Chebyshev error.
+* Beyond full prefixes, can the combined quotient variation and real jet norm of arbitrary interleaving divisors be bounded by energies computed separately on the two divisors? The all-support power criterion specifies the zero-free consequence of any proposed exponent.
+* Which opposing sections recover the effectivity supplied by curve point counts for Frobenius eigenvalues beyond the Kummer family? On the integers, a candidate must distinguish the ordinary prefix from its Liouville twist on the same divisors. [Curve model and Stepanov](../ExclusionOfTheCriticalState/Models/CurveCriticalStatesAndStepanovExclusion.lean) · [Ordinary and twisted prefixes](TheUnscaledIntersectionOfTheLiouvilleTwin.lean)
 
-A contribution must prove a new uniform estimate, determine a sharp obstruction with a surviving arithmetic invariant, or recover a missing term of the completed intersection from independently defined operations. The full target is control of the mixed finite part on exhausting supports, with the real-place metric and opposite degrees in the same normalization. Equality on individual graphs leaves this question open.
+A contribution must prove a new uniform estimate, determine a sharp obstruction with a surviving arithmetic invariant, or recover a term of the completed intersection from independently defined operations. For an estimate on exhausting divisors, state which supports may grow, what each section pays, which pole and diagonal terms were removed, and whether the estimate survives passage to the limit.

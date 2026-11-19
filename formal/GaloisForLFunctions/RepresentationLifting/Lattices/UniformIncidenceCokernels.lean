@@ -33,7 +33,7 @@ private theorem exchange_mem (k : Set.Ioo (0:ℕ) (Fintype.card ι)) (i j : ι) 
   by_cases hi : i=j
   · simp [hi]
   let U := ((univ : Finset ι).erase i).erase j
-  have hj : j ∈ (univ : Finset ι).erase i := mem_erase.mpr ⟨hi.symm,mem_univ _⟩
+  have hj : j ∈ (univ : Finset ι).erase i := mem_erase.mpr ⟨Ne.symm hi,mem_univ _⟩
   have hsize : k.val-1 ≤ U.card := by
     have hk := k.property.2
     simp only [U,card_erase_of_mem hj,card_erase_of_mem (mem_univ i),card_univ]
@@ -48,13 +48,13 @@ private theorem exchange_mem (k : Set.Ioo (0:ℕ) (Fintype.card ι)) (i j : ι) 
     funext z
     by_cases hzi : z=i
     · subst z
-      simp [edgeIndicator,Pi.single_apply,hi,hi.symm,hn₁]
+      simp [edgeIndicator,Pi.single_apply,hi,Ne.symm hi,hn₁]
     · by_cases hzj : z=j
       · subst z
-        simp [edgeIndicator,Pi.single_apply,hi,hi.symm,hn₂]
+        simp [edgeIndicator,Pi.single_apply,hi,Ne.symm hi,hzi,hn₂]
       · simp [edgeIndicator,Pi.single_apply,hzi,hzj,Ne.symm hzi,Ne.symm hzj]
   rw [← hv]
-  exact sub_mem _ (edge_mem R _ (hcard' hn₁)) (edge_mem R _ (hcard' hn₂))
+  exact sub_mem (edge_mem R _ (hcard' hn₁)) (edge_mem R _ (hcard' hn₂))
 
 private theorem total_edge (S : Finset ι) : ∑ i, edgeIndicator R S i = (S.card:R) := by
   simp [edgeIndicator,sum_boole]
@@ -76,7 +76,7 @@ theorem uniformEdgeSpan_mem (k : Set.Ioo (0:ℕ) (Fintype.card ι)) (x : ι → 
     x ∈ uniformEdgeSpan R k.val ↔ (k.val:R) ∣ ∑ i, x i := by
   let T : (ι → R) →ₗ[R] R := ∑ i, LinearMap.proj i
   have hT (y : ι → R) : T y = ∑ i, y i := by simp [T]
-  have hle : uniformEdgeSpan (ι:=ι) R k.val ≤ (Ideal.span ({(k.val:R)} : Set R)).comap T := by
+  have hle : uniformEdgeSpan (ι:=ι) R k.val ≤ Submodule.comap T (Ideal.span ({(k.val:R)} : Set R)) := by
     apply span_le.mpr
     rintro _ ⟨S,hS,rfl⟩
     change T (edgeIndicator R S) ∈ Ideal.span _
@@ -92,7 +92,7 @@ theorem uniformEdgeSpan_mem (k : Set.Ioo (0:ℕ) (Fintype.card ι)) (x : ι → 
     have hz : ∑ i, (x-a • edgeIndicator R S) i = 0 := by
       simp only [Pi.sub_apply,Pi.smul_apply,smul_eq_mul,sum_sub_distrib,← mul_sum,total_edge,hc,ha]
       ring
-    have hh := add_mem (uniformEdgeSpan (ι:=ι) R k.val) (augmentation_mem R k j _ hz)
+    have hh := add_mem (augmentation_mem R k j _ hz)
       (smul_mem _ a (edge_mem R _ hc))
     simpa only [sub_add_cancel] using hh
 
@@ -128,7 +128,7 @@ theorem uniformEdge_kernel (k : Set.Ioo (0:ℕ) (Fintype.card ι)) (y : ι → R
     have hle : uniformEdgeSpan R k.val ≤ f.ker := by
       apply span_le.mpr
       rintro _ ⟨S,h,rfl⟩
-      rw [LinearMap.mem_ker,hS,hy S h]
+      rw [SetLike.mem_coe,LinearMap.mem_ker,hS,hy S h]
     have hn := Fintype.card_pos_iff.mp (k.property.1.trans k.property.2)
     obtain ⟨j⟩ := hn
     have hconst (i : ι) : y i = y j := by
@@ -171,7 +171,8 @@ private theorem uniform_sup_mem (k l : Set.Ioo (0:ℕ) (Fintype.card ι)) (x : �
     apply Submodule.mem_sup.mpr
     refine ⟨x-w,(uniformEdgeSpan_mem R k _).mpr ⟨a,?_⟩,w,
       (uniformEdgeSpan_mem R l _).mpr ⟨b,hw⟩,sub_add_cancel _ _⟩
-    rw [show (∑ i, (x-w) i) = (∑ i, x i)-∑ i,w i from sum_sub_distrib,h,hw,add_sub_cancel_right]
+    rw [show (∑ i, (x-w) i) = (∑ i, x i)-∑ i,w i by simp only [Pi.sub_apply,sum_sub_distrib],h,hw,
+      add_sub_cancel_right]
 
 open scoped Matroid in
 /-- Joint incidence of uniform matroid bases and dual bases detects the gcd

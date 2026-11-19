@@ -1,5 +1,4 @@
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheRemoteVariationOfTheStateWeights
-import GaloisForLFunctions.RHTower.ChebyshevErrorExponentLaw
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.ReciprocalPrimeIntervalsAtTheZeroAbscissa
 import GaloisForLFunctions.MetaplecticMobiusDescent.Detector.SubSevenEighthsZeroFreeHalfPlane
 
 /-!
@@ -16,32 +15,6 @@ open scoped Classical
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations _root_.RHTower
 
-private theorem centeredAbelPrefix_zero_base (j : ℕ) :
-    centeredAbelPrefix 0 j = Chebyshev.psi j-j := by
-  have h := _root_.RHTower.Sieve.psi_sub_eq_sum_Ioc (Nat.cast_nonneg (α := ℝ) j)
-  simp only [Chebyshev.psi_zero,sub_zero,Nat.floor_zero,Nat.floor_natCast] at h
-  rw [centeredAbelPrefix,Finset.sum_sub_distrib,← h,Finset.sum_const,Nat.card_Ioc,
-    Nat.sub_zero,nsmul_eq_mul,mul_one]
-
-/-- Concavity of the power d majorizes the reciprocal Abel cost by a
-telescoping difference at consecutive positive real abscissae. -/
-private theorem reciprocal_power_step {d x : ℝ} (hd : 0 < d) (hd1 : d ≤ 1) (hx : 1 ≤ x) :
-    x^(1-d)*(x⁻¹-(x+1)⁻¹) ≤ (x^(-d)-(x+1)^(-d))/d := by
-  have hx0 := zero_lt_one.trans_le hx
-  have hx1 : 0 < x+1 := by linarith only [hx]
-  have hBern := rpow_one_add_le_one_add_mul_self (s := -(x+1)⁻¹)
-    (by have h := inv_le_one_of_one_le₀ (by linarith only [hx] : 1 ≤ x+1); linarith only [h]) hd.le hd1
-  rw [show 1 + -(x+1)⁻¹ = x/(x+1) by field_simp; ring,Real.div_rpow hx0.le hx1.le] at hBern
-  have hmult := mul_le_mul_of_nonneg_left hBern (Real.rpow_nonneg hx0.le (-d))
-  have hcancel : x^(-d)*(x^d/(x+1)^d)=(x+1)^(-d) := by
-    rw [← mul_div_assoc,← Real.rpow_add hx0,neg_add_cancel,Real.rpow_zero,Real.rpow_neg hx1.le,one_div]
-  rw [hcancel] at hmult
-  have hleft : x^(1-d)*(x⁻¹-(x+1)⁻¹) = x^(-d)*(x+1)⁻¹ := by
-    rw [sub_eq_add_neg (1:ℝ),Real.rpow_add hx0,Real.rpow_one]
-    field_simp [hx0.ne',hx1.ne']; ring
-  rw [hleft,le_div_iff₀ hd]
-  linarith only [hmult]
-
 /-- All ordered reciprocal prime-excess tails above a given starting index
 have a uniform power saving from the unconditional zero-free strip. -/
 theorem centered_reciprocal_prime_intervals {d : ℝ} (hd : 0 < d) (hd' : d < 3001/24000) :
@@ -51,52 +24,7 @@ theorem centered_reciprocal_prime_intervals {d : ℝ} (hd : 0 < d) (hd' : d < 30
     by_contra! hq
     exact MetaplecticMobiusDescent.CubicEisenstein.riemannZeta_ne_zero_of_sub_seven_eighths_lt_re hq
       (riemannZeta_eq_zero_of_xiZeroCopy q)
-  obtain ⟨C,hC,hE⟩ := exists_abs_chebyshevPsi_sub_le_rpow
-    (by linarith only [hd',hΘ] : zeroReSup < 1-d)
-  have hd1 : d ≤ 1 := by linarith only [hd']
-  let D := fun n : ℕ => (n:ℝ)^(-d)
-  let P := centeredAbelPrefix 0
-  have herr (j : ℕ) (hj : 1 ≤ j) : |P j| ≤ C*(j:ℝ)^(1-d) := by
-    rw [show P j=Chebyshev.psi j-j from centeredAbelPrefix_zero_base j]
-    exact hE j (by exact_mod_cast hj)
-  have hend (j : ℕ) (hj : 1 ≤ j) : |(j:ℝ)⁻¹*P j| ≤ C*D j := by
-    have hj0 : (0:ℝ) < j := by exact_mod_cast hj
-    rw [abs_mul,abs_of_nonneg (inv_nonneg.mpr hj0.le)]
-    apply (mul_le_mul_of_nonneg_left (herr j hj) (inv_nonneg.mpr hj0.le)).trans_eq
-    have heq : (j:ℝ)^(1-d) = j*D j := by
-      rw [sub_eq_add_neg,Real.rpow_add hj0,Real.rpow_one]
-    rw [heq]; field_simp
-  have hcost (j : ℕ) (hj : 1 ≤ j) :
-      |P j*((j:ℝ)⁻¹-((j+1:ℕ):ℝ)⁻¹)| ≤ (C/d)*(D j-D (j+1)) := by
-    have hj0 : (0:ℝ) < j := by exact_mod_cast hj
-    have hdec : 0 ≤ (j:ℝ)⁻¹-((j:ℝ)+1)⁻¹ := sub_nonneg.mpr
-      ((inv_le_inv₀ (by positivity) hj0).2 (le_add_of_nonneg_right zero_le_one))
-    rw [Nat.cast_add_one,abs_mul,abs_of_nonneg hdec]
-    apply (mul_le_mul_of_nonneg_right (herr j hj) hdec).trans
-    have h := mul_le_mul_of_nonneg_left (reciprocal_power_step hd hd1
-      (show (1:ℝ) ≤ j by exact_mod_cast hj)) hC
-    simpa only [D,Nat.cast_add_one,div_eq_mul_inv,mul_assoc,mul_left_comm,mul_comm] using h
-  refine ⟨2*C+C/d,by positivity,fun k L hk hkL => ?_⟩
-  have hsum : ∑ j ∈ Finset.Ico k L, |P j*((j:ℝ)⁻¹-((j+1:ℕ):ℝ)⁻¹)| ≤ (C/d)*(D k-D L) := by
-    induction L, hkL using Nat.le_induction with
-    | base => simp
-    | succ L hL ih =>
-      rw [Finset.sum_Ico_succ_top hL]
-      linarith only [add_le_add ih (hcost L (hk.trans hL))]
-  have hparts := centeredAbelPrefix_by_parts (fun j : ℕ => (j:ℝ)⁻¹) (Nat.zero_le k) hkL
-  simp only [div_eq_mul_inv]
-  rw [hparts]
-  rw [div_eq_mul_inv C d] at hsum
-  have hD := Real.rpow_le_rpow_of_nonpos (by exact_mod_cast (show 0 < k by omega) : (0:ℝ) < k)
-    (show (k:ℝ) ≤ L by exact_mod_cast hkL) (neg_nonpos.mpr hd.le)
-  have hA := abs_add_le ((L:ℝ)⁻¹*P L-(k:ℝ)⁻¹*P k)
-    (∑ j ∈ Finset.Ico k L, P j*((j:ℝ)⁻¹-((j+1:ℕ):ℝ)⁻¹))
-  have hB := abs_sub ((L:ℝ)⁻¹*P L) ((k:ℝ)⁻¹*P k)
-  have hS := Finset.abs_sum_le_sum_abs (fun j : ℕ => P j*((j:ℝ)⁻¹-((j+1:ℕ):ℝ)⁻¹)) (Finset.Ico k L)
-  have hDL : 0 ≤ D L := Real.rpow_nonneg (Nat.cast_nonneg _) _
-  change D L ≤ D k at hD
-  linarith only [hA,hB,hS,hsum,hend k hk,hend L (hk.trans hkL),
-    mul_le_mul_of_nonneg_left hD hC,mul_nonneg (mul_nonneg hC (inv_nonneg.mpr hd.le)) hDL]
+  exact centered_reciprocal_prime_intervals_of_zeroReSup hd (by linarith only [hd',hΘ])
 
 private theorem criticalRelativeWidth_antitone {s t : ℝ} (hs : 1 ≤ s) (hst : s ≤ t) :
     Real.exp (-t/2)*Real.sqrt t ≤ Real.exp (-s/2)*Real.sqrt s := by
@@ -265,6 +193,7 @@ private theorem lateComplement_time_translation {Φ : ℝ → ℝ}
           rw [← Real.exp_add,← Real.exp_add,← Real.exp_add]; congr 1; ring
         rw [hk,continuousIntegerAtom,hsqrt]
         dsimp only [g,a]; field_simp [hn0.ne']
+        simp only [neg_div] at hex ⊢
         linear_combination (vonMangoldt n-1)*Φ (t-Real.log n)*hex
       · rw [if_neg hedge,zero_mul,show G n (t-Real.log n)=0 from indicator_of_notMem
           (fun h => hedge (hmem.mp h)) _,mul_zero]
@@ -276,6 +205,7 @@ private theorem lateComplement_time_translation {Φ : ℝ → ℝ}
       intro h
       apply ht
       have hlt := h.1
+      change R < t
       simpa only [sub_add_cancel] using hlt
   have hshiftInt (n : ℕ) : Integrable (fun t : ℝ => G n (t-Real.log n)) :=
     (hgi n).comp_sub_right _
@@ -304,15 +234,21 @@ theorem criticalComplement_late_bound {Φ : ℝ → ℝ}
   let A := fun v : ℝ => (Finset.Ioc k L).filter (fun n : ℕ => R < v+Real.log n ∧
     pastCriticalEdge n (v+Real.log n))
   let H := B*((max k ⌊Real.exp R⌋₊ : ℕ):ℝ)^(-d)
-  have hab : |∫ v, g v*∑ n ∈ A v, (vonMangoldt n-1)/(n:ℝ)| ≤ H*(∫ v, |g v|) := by
-    rw [← integral_const_mul]
-    apply norm_integral_le_of_norm_le (hp.abs.const_mul H)
-    apply Eventually.of_forall fun v => ?_
+  let f := fun v : ℝ => g v*∑ n ∈ A v, (vonMangoldt n-1)/(n:ℝ)
+  let G := fun v : ℝ => H*|g v|
+  have hiG : Integrable G volume := hp.abs.const_mul H
+  have hpoint (v : ℝ) : ‖f v‖ ≤ G v := by
+    rw [Real.norm_eq_abs]
     change |g v*(∑ n ∈ A v, (vonMangoldt n-1)/(n:ℝ))| ≤ H*|g v|
     rw [abs_mul,mul_comm H]
     rcases le_or_gt v 0 with hv | hv
     · exact mul_le_mul_of_nonneg_left (h R v k L hR hv) (abs_nonneg _)
-    · simp only [g,hs v hv.le,mul_zero,abs_zero,zero_mul]
+    · simp only [g,hs v hv.le,mul_zero,abs_zero,zero_mul,le_refl]
+  have hab : |∫ v, f v| ≤ H*(∫ v, |g v|) := by
+    have habs := norm_integral_le_of_norm_le (μ := volume) (f := f) (g := G) hiG
+      (Eventually.of_forall hpoint)
+    rw [Real.norm_eq_abs] at habs
+    exact habs.trans_eq (integral_const_mul H (fun v => |g v|))
   rw [(lateComplement_time_translation hp hTR k L).2,abs_mul,abs_of_pos (Real.exp_pos _)]
   apply (mul_le_mul_of_nonneg_left hab (Real.exp_pos _).le).trans_eq
   dsimp only [H]; ring
@@ -405,6 +341,7 @@ theorem finiteCriticalComplementBand_on_bounded_cut {Φ : ℝ → ℝ} (hc : Con
     (integrableOn_const hfin)
   · intro L
     filter_upwards [ae_restrict_mem (μ := volume) (measurableSet_Ioc (a := R) (b := M))] with t ht
+    change ‖finiteCriticalComplementBand Φ k L t*fractionalPrimeTest (T-t)‖ ≤ _
     rw [Real.norm_eq_abs,abs_mul]
     apply (mul_le_of_le_one_right (abs_nonneg _) (fractionalPrimeTest_bounds _).1).trans
     rw [hrepr]
@@ -458,13 +395,13 @@ theorem riemannHypothesis_or_late_critical_complement : RiemannHypothesis ∨
   have hL (L : ℕ) : |m*(∫ t in Ioc R M, finiteCriticalComplementRow Φ L t*fractionalPrimeTest (T-t))| ≤
       2*|m| *B*(2:ℝ)^(1/10:ℝ)*Real.exp (-T/10) := by
     let f := fun t => finiteCriticalComplementRow Φ L t*fractionalPrimeTest (T-t)
-    have hi := (lateComplement_time_translation hp hTR 0 L).1
+    have hi : IntegrableOn f (Ioi R) := (lateComplement_time_translation hp hTR 0 L).1
     have hsplit : (∫ t in Ioc R M, f t)+(∫ t in Ioi M, f t)=∫ t in Ioi R, f t := by
       rw [← setIntegral_union Ioc_disjoint_Ioi_same measurableSet_Ioi
         (hi.mono_set (fun _ hx => hx.1)) (hi.mono_set (Ioi_subset_Ioi hM)),Ioc_union_Ioi_eq_Ioi hM]
     have htail (x : ℝ) (hx : R ≤ x) : |∫ t in Ioi x, f t| ≤ B*((2:ℝ)^(1/10:ℝ)*Real.exp (-T/10)) :=
       (show |∫ t in Ioi x, f t| ≤ B*Real.exp (T/2)*(⌊Real.exp x⌋₊:ℝ)^(-(1/10:ℝ)) by
-        simpa only [Nat.zero_max] using h T x 0 L (hR.trans hx) (hTR.trans hx)).trans (by rw [mul_assoc]; exact mul_le_mul_of_nonneg_left (hflo x hx) hB)
+        simpa only [f,finiteCriticalComplementRow,Nat.zero_max] using h T x 0 L (hR.trans hx) (hTR.trans hx)).trans (by rw [mul_assoc]; exact mul_le_mul_of_nonneg_left (hflo x hx) hB)
     change |m*(∫ t in Ioc R M, f t)| ≤ _
     rw [eq_sub_of_add_eq hsplit,abs_mul]
     apply (mul_le_mul_of_nonneg_left (abs_sub _ _) (abs_nonneg m)).trans

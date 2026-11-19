@@ -52,7 +52,7 @@ theorem primitive_collocation_nonsingular {n : ℕ} (F D : Fin n → ℝ → ℝ
     have hval : i.val < j.val := hij
     have hj : j.val ≠ 0 := by omega
     have hle : i ≤ (⟨j.val-1,by omega⟩ : Fin n) := by change i.val ≤ j.val-1; omega
-    have hx' : (x i).val ≤ prev j := by simpa only [prev,if_neg hj] using x.monotone hle
+    have hx' : (x i).val ≤ prev j := by simp only [prev,if_neg hj]; exact x.monotone hle
     exact (ht i).2.trans (hx'.trans_lt (ht j).1)
   apply hD (OrderEmbedding.ofStrictMono z hmono)
   apply Matrix.exists_mulVec_eq_zero_iff.mp
@@ -86,17 +86,21 @@ private theorem wellPrimitive_det_ne {n : ℕ} (a : ℝ) (ha : 0 ≤ a) (b : Fin
       Real.zero_rpow (sub_ne_zero.mpr (hb j).ne')]
   · exact fun _ _ ht => wellPrimitive_deriv ht
   · intro t
-    rw [det_mul_column,det_mul_row]
+    rw [det_mul_column]
+    erw [det_mul_row]
     have he : (of fun i j => (t i).val^(b j)) =
         expNodeMatrix (fun i => Real.log (t i).val) b := by
       ext i j
       exact Real.rpow_def_of_pos (t i).property _
+    change (∏ i, ((t i).val^(a-1)+(t i).val^(-a-1))) *
+      ((∏ i, (b i^2-a^2)) * (of fun i j => (t i).val^(b j)).det) ≠ 0
     rw [he]
     apply ne_of_gt
     exact mul_pos (prod_pos fun i _ => add_pos (Real.rpow_pos_of_pos (t i).property _)
         (Real.rpow_pos_of_pos (t i).property _))
-      (mul_pos (prod_pos fun j _ => by nlinarith only [mul_pos (sub_pos.mpr (hb j))
-        (show 0 < b j+a by linarith [hb j])])
+      (mul_pos (prod_pos fun j _ => by
+          have h1 := mul_pos (sub_pos.mpr (hb j)) (show 0 < b j+a by linarith [hb j])
+          nlinarith only [h1])
         (det_expKernel_pos (fun i j h => Real.log_lt_log (t i).property (t.strictMono h)) b.strictMono))
 
 /-- Varying the potential strength from zero fixes the orientation of every
@@ -107,7 +111,7 @@ theorem wellPrimitive_det_pos {n : ℕ} (a : ℝ) (ha : 0 ≤ a) (b : Fin n ↪o
     0 < (of fun i j => wellPrimitive a (b j) (x i).val).det := by
   let d (s : ℝ) := (of fun i j => wellPrimitive s (b j) (x i).val).det
   have hc : Continuous d := by
-    apply Matrix.continuous_det.comp
+    apply Continuous.matrix_det
     refine continuous_pi fun i => continuous_pi fun j => ?_
     change Continuous fun s => (b j-s)*(x i).val^(b j+s)+(b j+s)*(x i).val^(b j-s)
     fun_prop (disch := exact (x i).property.ne')
@@ -159,15 +163,16 @@ theorem wellEigenMode_pos_iff (l b : ℝ) :
   constructor
   · intro h
     have hlim : Tendsto (fun x => Real.exp l*Real.tanh (Real.exp l*x)) atTop (𝓝 (Real.exp l)) := by
-      simpa only [mul_one] using (tendsto_tanh_atTop_one.comp
+      simpa only [mul_one,Function.comp_def,id_eq] using (tendsto_tanh_atTop_one.comp
         (tendsto_id.const_mul_atTop (Real.exp_pos l))).const_mul (Real.exp l)
     refine le_of_tendsto hlim (Eventually.of_forall fun x => ?_)
     exact (sub_pos.mp ((mul_pos_iff_of_pos_left (Real.exp_pos _)).mp (h x))).le
   · intro hb x
     apply mul_pos (Real.exp_pos _)
     apply sub_pos.mpr
-    exact lt_of_lt_of_le (by simpa only [mul_one] using
-      mul_lt_mul_of_pos_left (Real.tanh_lt_one (Real.exp l*x)) (Real.exp_pos l)) hb
+    have h1 := mul_lt_mul_of_pos_left (Real.tanh_lt_one (Real.exp l*x)) (Real.exp_pos l)
+    rw [mul_one] at h1
+    exact lt_of_lt_of_le h1 hb
 
 theorem wellEigenMode_endpoint (l x : ℝ) :
     wellEigenMode (Real.exp l) (Real.exp l) x = Real.exp l / Real.cosh (Real.exp l*x) := by

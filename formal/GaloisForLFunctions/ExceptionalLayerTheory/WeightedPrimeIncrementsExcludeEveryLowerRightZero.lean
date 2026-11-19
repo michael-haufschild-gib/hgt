@@ -80,7 +80,8 @@ private theorem mul_exp_boundaryTrace_eq_neg_top_wave {β : ℝ}
     rw [hsum,Finset.mul_sum,offLineWave]
     apply Finset.sum_congr rfl
     intro q hq
-    simp only [f, if_pos (hf.mem_toFinset.mp hq)]
+    have hre : (q.1 : ℂ).re = β := hf.mem_toFinset.mp hq
+    simp only [f, if_pos hre]
     rw [Complex.cpow_def_of_ne_zero (by exact_mod_cast Real.exp_ne_zero t),
       ← Complex.ofReal_log (Real.exp_pos t).le, Real.log_exp, ← mul_div_assoc,
       Complex.ofReal_exp, ← Complex.exp_add]
@@ -98,7 +99,8 @@ private theorem subtractedTheta_step (β h t : ℝ) :
     subtractedTheta β (t+h)-subtractedTheta β t = Real.exp (β*t)*
       (normalizedPrimeIncrement β h t - boundaryStep β h (primeErrorBoundaryTrace β) t) := by
   simp only [subtractedTheta,normalizedPrimeIncrement,logStepIncrement,boundaryStep,mul_add,Real.exp_add]
-  field_simp <;> ring
+  field_simp
+  ring
 
 private theorem lagPole_notMem_linePoles_of_ne_re {β : ℝ}
     (hf : {p : XiZeroCopy | (p.1 : ℂ).re = β}.Finite) (q : XiZeroCopy) (hq : (q.1 : ℂ).re ≠ β) :
@@ -118,8 +120,10 @@ private theorem intervalIntegrable_subtractedTheta {β : ℝ} (hβ : 1/2 < β) (
     exact Complex.continuous_re.comp (continuous_expSeriesCarrier (summable_primeErrorBoundaryAmplitude hβ) _)
   have hθ : Monotone (fun t : ℝ => Chebyshev.theta (Real.exp t)) :=
     Chebyshev.theta_mono.comp Real.exp_monotone
-  exact (hθ.intervalIntegrable.sub Real.continuous_exp.intervalIntegrable).sub
-    (((Real.continuous_exp.comp (continuous_const.mul continuous_id)).mul hF).intervalIntegrable)
+  have hprod : Continuous (fun t => Real.exp (β*t)*primeErrorBoundaryTrace β t) :=
+    (Real.continuous_exp.comp (continuous_const.mul continuous_id)).mul hF
+  exact (hθ.intervalIntegrable.sub (Real.continuous_exp.intervalIntegrable a b)).sub
+    (hprod.intervalIntegrable a b)
 
 /-- Absolute weighted integrability of the unsmoothed ordinary-prime error
 after its extremal zero contribution is removed. -/
@@ -134,7 +138,8 @@ theorem integrableOn_tail_subtractedTheta {γ s : ℝ} {m : ℕ}
     (by linarith only [hs] : 0 < s) (intervalIntegrable_subtractedTheta hΘ) ?_⟩
   apply hi.congr_fun _ measurableSet_Ioi
   intro t _
-  rw [subtractedTheta_step,← mul_assoc,← Real.exp_add,show -s*t+β*t=(β-s)*t by ring]
+  change Real.exp ((β-s)*t)*_ = Real.exp (-s*t)*(subtractedTheta β (t+h)-subtractedTheta β t)
+  rw [subtractedTheta_step β h t,← mul_assoc,← Real.exp_add,show -s*t+β*t=(β-s)*t by ring]
 
 private theorem weighted_theta_mass {γ s : ℝ} {m : ℕ} (hΘ : 1/2 < zetaZeroAbscissa)
     (hs : 1/2 < s) (hγ : γ ≠ 0) (hm : 1 ≤ m)
@@ -162,12 +167,17 @@ private theorem weighted_theta_mass {γ s : ℝ} {m : ℕ} (hΘ : 1/2 < zetaZero
       exact ⟨Real.log x,Real.log_pos hx,Real.exp_log (zero_lt_one.trans hx)⟩
   rw [← hset, integrableOn_image_iff_integrableOn_abs_deriv_smul measurableSet_Ioi
     (fun x _ => (Real.hasDerivAt_exp x).hasDerivWithinAt) Real.exp_injective.injOn]
-  apply hg.norm.congr_fun _ measurableSet_Ioi
+  have hgn : IntegrableOn (fun t => ‖g t‖) (Ioi 0) := hg.norm
+  apply hgn.congr_fun _ measurableSet_Ioi
   intro t _
   have hf : {q : XiZeroCopy | (q.1 : ℂ).re = β}.Finite :=
     finite_top_of_bounded_thetaRadial hΘ hγ hb
-  dsimp only [g,subtractedTheta,thetaLogError]
-  rw [mul_exp_boundaryTrace_eq_neg_top_wave hf,sub_neg_eq_add,norm_mul,
+  change ‖Real.exp (-s*t)*subtractedTheta β t‖ = |Real.exp t| •
+    (|Chebyshev.theta (Real.exp t)-Real.exp t+(offLineWave S (Real.exp t)).re| * (Real.exp t)^(-s-1))
+  have hcorr : subtractedTheta β t =
+      Chebyshev.theta (Real.exp t)-Real.exp t+(offLineWave S (Real.exp t)).re := by
+    rw [subtractedTheta,thetaLogError,mul_exp_boundaryTrace_eq_neg_top_wave hf,sub_neg_eq_add]
+  rw [hcorr,norm_mul,
     Real.norm_of_nonneg (Real.exp_pos _).le,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _),
     smul_eq_mul,← Real.exp_mul]
   have he : Real.exp (-s*t) = Real.exp t * Real.exp (t*(-s-1)) := by
@@ -212,6 +222,7 @@ private theorem re_le_of_weighted_theta_mass (S : Finset XiZeroCopy) {s : ℝ}
           (hpos y (hx.trans hy))
     have H := setIntegral_mono_on hint.neg ((hG.mono_set hsub).const_mul (x^(s-1)))
       measurableSet_Ioi hle
+    change (∫ y in Ioi x, -(P y / y^2)) ≤ ∫ y in Ioi x, x^(s-1)*G y at H
     rw [integral_neg,integral_const_mul] at H
     refine H.trans (mul_le_mul_of_nonneg_left ?_ hpow)
     exact setIntegral_mono_set hG (by filter_upwards [ae_restrict_mem measurableSet_Ioi] with y hy; exact hpos y hy)

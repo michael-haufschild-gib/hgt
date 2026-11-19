@@ -67,7 +67,9 @@ theorem orderedMinor_product_pos_iff (A : Matrix ι κ ℝ) (B : Matrix κ τ �
   · rintro ⟨e,ha,hb⟩
     apply sum_pos' (fun S _ => hnn S)
     refine ⟨Set.powersetCard.ofFinEmbEquiv e,mem_univ _,?_⟩
-    simpa only [subsetEnum,Equiv.symm_apply_apply] using mul_pos ha hb
+    have hse : subsetEnum (Set.powersetCard.ofFinEmbEquiv e) = ⇑e := by
+      funext i; simp [subsetEnum]
+    rw [hse]; exact mul_pos ha hb
 
 private def powerMinorTerm {n : ℕ} (e : ℕ ↪o ℕ) (a : ℕ → ℝ)
     (x y : Fin n → ℝ) (J : Fin n → ℕ) :=
@@ -84,13 +86,13 @@ theorem powerKernel_det_sum {n : ℕ} (e : ℕ ↪o ℕ) (a : ℕ → ℝ)
   let B : Matrix (Fin N) (Fin n) ℝ := of fun m j => a m.val*(y j)^(e m.val)
   have he : (of fun i j => ∑ m ∈ range N, a m*(x i*y j)^(e m)) = A*B := by
     ext i j
-    rw [mul_apply,Fin.sum_univ_eq_sum_range]
-    simp only [A,B,of_apply,mul_pow]
+    simp only [A,B,of_apply,mul_apply]
+    rw [Fin.sum_univ_eq_sum_range (fun m => x i ^ e m * (a m * y j ^ e m)) N]
     apply sum_congr rfl
     intro m _
     ring
   rw [he]
-  have h := orderedMinor_product A B (OrderEmbedding.refl (Fin n)) (OrderEmbedding.refl (Fin n))
+  have h := orderedMinor_product A B (OrderIso.refl (Fin n)).toOrderEmbedding (OrderIso.refl (Fin n)).toOrderEmbedding
   change (A*B).det = _ at h
   rw [h]
   refine sum_congr rfl fun S _ => ?_
@@ -126,39 +128,48 @@ private theorem powerKernel_partial_lower {n N : ℕ} (hn : n ≤ N)
     (mem_univ (Set.powersetCard.ofFinEmbEquiv J))
   simpa only [subsetEnum,Equiv.symm_apply_apply,J,Fin.castLEOrderEmb_apply,Fin.val_castLE] using h
 
+/-- Convergence at the sampled products suffices for the lower bound from
+the first exponent block. This includes power series of finite radius. -/
+theorem seriesMinor_grid_lower {n : ℕ} (e : ℕ ↪o ℕ) (a : ℕ → Set.Ioi (0:ℝ))
+    (x y : Fin n ↪o Set.Ioi (0:ℝ)) (M : Matrix (Fin n) (Fin n) ℝ)
+    (hM : ∀ i j, HasSum (fun m => (a m).val*((x i).val*(y j).val)^(e m)) (M i j)) :
+    (genVandermonde (fun i : Fin n => e i.val) (fun i => (x i).val)).det *
+      ((∏ i : Fin n, (a i.val).val) *
+        (genVandermonde (fun i : Fin n => e i.val) (fun i => (y i).val)).det) ≤ M.det := by
+  have hmat : Tendsto (fun N : ℕ => (of fun i j => ∑ m ∈ range N,
+      (a m).val*((x i).val*(y j).val)^(e m))) atTop (𝓝 M) :=
+    tendsto_pi_nhds.mpr fun i => tendsto_pi_nhds.mpr fun j => (hM i j).tendsto_sum_nat
+  exact ge_of_tendsto ((continuous_id.matrix_det.tendsto M).comp hmat)
+    ((eventually_ge_atTop n).mono fun _ h => powerKernel_partial_lower h e a x y)
+
 /-- Absolutely monotone product kernels with infinitely many positive
 coefficients are strictly totally positive on independent positive grids,
 including sparse exponent sequences. -/
 theorem sparseSeriesKernel_det_pos {n : ℕ} (e : ℕ ↪o ℕ) (a : ℕ → Set.Ioi (0:ℝ))
     (f : ℝ → ℝ) (hf : ∀ t ∈ Set.Ioi (0:ℝ), HasSum (fun m => (a m).val*t^(e m)) (f t))
     (x y : Fin n ↪o Set.Ioi (0:ℝ)) :
-    0 < (of fun i j => f ((x i).val*(y j).val)).det := by
-  have hmat : Tendsto (fun N : ℕ => (of fun i j => ∑ m ∈ range N,
-      (a m).val*((x i).val*(y j).val)^(e m))) atTop
-      (𝓝 (of fun i j => f ((x i).val*(y j).val))) :=
-    tendsto_pi_nhds.mpr fun i => tendsto_pi_nhds.mpr fun j =>
-      (hf _ (mul_pos (x i).property (y j).property)).tendsto_sum_nat
-  exact (powerMinorTerm_pos e a x y Fin.val Fin.val_strictMono).trans_le
-    (le_of_tendsto (continuous_det.continuousAt.tendsto.comp hmat)
-      ((eventually_ge_atTop n).mono fun _ h => powerKernel_partial_lower h e a x y))
+    0 < (of fun i j => f ((x i).val*(y j).val)).det :=
+  (powerMinorTerm_pos e a x y Fin.val Fin.val_strictMono).trans_le
+    (seriesMinor_grid_lower e a x y _ fun i j => hf _
+      (Set.mem_Ioi.mpr (mul_pos (Set.mem_Ioi.mp (x i).property) (Set.mem_Ioi.mp (y j).property))))
 
 /-- Every rectangular-grid minor of the hyperbolic cosine product kernel is positive. -/
 theorem coshProduct_det_pos {n : ℕ} (x y : Fin n ↪o Set.Ioi (0:ℝ)) :
     0 < (of fun i j => Real.cosh ((x i).val*(y j).val)).det := by
-  let e := OrderEmbedding.ofStrictMono (fun m : ℕ => 2*m) (by intro i j h; omega)
-  let a (m : ℕ) : Set.Ioi (0:ℝ) := ⟨((2*m).factorial:ℝ)⁻¹,by positivity⟩
+  let e := OrderEmbedding.ofStrictMono (fun m : ℕ => 2*m) (by intro i j h; dsimp only; omega)
+  let a (m : ℕ) : Set.Ioi (0:ℝ) := ⟨((2*m).factorial:ℝ)⁻¹,show (0:ℝ) < _ by positivity⟩
   apply sparseSeriesKernel_det_pos e a
   intro t _
-  simpa only [e,a,OrderEmbedding.ofStrictMono_apply,div_eq_inv_mul] using Real.hasSum_cosh t
+  simpa only [e,a,OrderEmbedding.coe_ofStrictMono,div_eq_inv_mul] using Real.hasSum_cosh t
 
 /-- The odd part of the exponential has strictly positive minors too. -/
 theorem sinhProduct_det_pos {n : ℕ} (x y : Fin n ↪o Set.Ioi (0:ℝ)) :
     0 < (of fun i j => Real.sinh ((x i).val*(y j).val)).det := by
-  let e := OrderEmbedding.ofStrictMono (fun m : ℕ => 2*m+1) (by intro i j h; omega)
-  let a (m : ℕ) : Set.Ioi (0:ℝ) := ⟨((2*m+1).factorial:ℝ)⁻¹,by positivity⟩
+  let e := OrderEmbedding.ofStrictMono (fun m : ℕ => 2*m+1) (by intro i j h; dsimp only; omega)
+  let a (m : ℕ) : Set.Ioi (0:ℝ) := ⟨((2*m+1).factorial:ℝ)⁻¹,show (0:ℝ) < _ by positivity⟩
   apply sparseSeriesKernel_det_pos e a
   intro t _
-  simpa only [e,a,OrderEmbedding.ofStrictMono_apply,div_eq_inv_mul] using Real.hasSum_sinh t
+  simpa only [e,a,OrderEmbedding.coe_ofStrictMono,div_eq_inv_mul] using Real.hasSum_sinh t
 
 end
 end GaloisForLFunctions.HilbertMetric

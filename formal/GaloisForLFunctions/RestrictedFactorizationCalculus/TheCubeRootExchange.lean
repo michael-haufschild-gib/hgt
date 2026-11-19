@@ -34,7 +34,7 @@ private theorem sqrt_quotient_eq (X c : ℕ) : Real.sqrt ((X:ℝ)/c) = sixthScal
 private theorem small_factor_upper {z : ℝ} {q r : ℕ} (hz : 0 ≤ z) (hqr : q < r)
     (hprod : (q:ℝ)*r ≤ 2*z^6) : (q:ℝ) ≤ 2*z^3 := by
   have hq : (q:ℝ)^2 ≤ 2*z^6 :=
-    (show (q:ℝ)^2 ≤ (q:ℝ)*r by rw [pow_two]; gcongr; exact_mod_cast hqr.le).trans hprod
+    (show (q:ℝ)^2 ≤ (q:ℝ)*r by rw [pow_two]; exact mul_le_mul_of_nonneg_left (by exact_mod_cast hqr.le) (Nat.cast_nonneg q)).trans hprod
   by_contra! h
   have hv := mul_lt_mul_of_pos_right h (show 0 < (q:ℝ)+2*z^3 by
     have h' : 0 ≤ 2*z^3 := by positivity
@@ -64,7 +64,7 @@ theorem exists_cube_root_exchange :
   change Real.sqrt ((X:ℝ)/c) = z^3 at hs
   change z^6 = (X:ℝ)/c at h6
   have hsplit : Real.sqrt ((X:ℝ)/c) / K c = z^2/2 := by
-    rw [hs]; change z^3/(2*z) = z^2/2; field_simp; ring
+    rw [hs]; change z^3/(2*z) = z^2/2; field_simp
   have hcell {a b : ℕ} (ha : a.Prime) (hb : b.Prime) (hab : c*(a*b) ∈ Ioc X (2*X)) :
       b ∈ windowPrimes ((X:ℝ)/c/a) ((2*X:ℕ)/(c:ℝ)/a) := by
     have ha0 : (0:ℝ)<a := by exact_mod_cast ha.pos

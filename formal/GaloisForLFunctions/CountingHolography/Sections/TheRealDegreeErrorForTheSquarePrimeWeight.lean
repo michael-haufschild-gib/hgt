@@ -435,7 +435,7 @@ private theorem balancedFloor_integral {j : ℕ} (hj : 0 < j) :
   congr 1
   rw [show (∫ x in Set.Ioi (0:ℝ), u x)=∫ x in Set.Ioc (1:ℝ) j, x⁻¹ by
         rw [show u=J.indicator (fun x : ℝ => x⁻¹) from rfl,integral_indicator measurableSet_Ioc,
-          Measure.restrict_restrict measurableSet_Ioc,Set.inter_eq_left.mpr (fun x (hx : x ∈ Set.Ioc (1:ℝ) j) => zero_lt_one.trans hx.1)],
+          Measure.restrict_restrict measurableSet_Ioc,Set.inter_eq_left.mpr (show Set.Ioc (1:ℝ) j ⊆ Set.Ioi 0 from fun x hx => zero_lt_one.trans hx.1)],
       ← intervalIntegral.integral_of_le hj₁,integral_inv_of_pos zero_lt_one hj',div_one]
 
 private def coefficients (X : ℝ) (j : ℕ) :=

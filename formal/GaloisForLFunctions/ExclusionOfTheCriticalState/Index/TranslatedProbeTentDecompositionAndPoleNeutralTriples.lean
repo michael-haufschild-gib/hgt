@@ -50,7 +50,7 @@ exponential probes and three-probe Lagrange combinations:
 noncomputable section
 set_option autoImplicit false
 
-open MeasureTheory Set Filter Zeta23 Complex Metric Topology Finset
+open MeasureTheory Set Filter Zeta23 Complex Metric Topology Finset Matrix
 open scoped ComplexConjugate
 
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
@@ -61,8 +61,8 @@ open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
 /-! ## 1. Symmetric Laplace-tent overlap and horizon split of `primeMixedForm` -/
 
 /-- Symmetric Laplace-tent overlap of `probe p` against `shiftProfile (probe p) R (· - L)`:
-for `p > 0`, `L ≥ 0`, and `R ≥ 0`, the correlation integral equals `exp(-p |L - R|) / (2 p)`. -/
-theorem integral_probe_mul_shiftProfile_sub {p L R : ℝ} (hp : 0 < p) (hL : 0 ≤ L) (hR : 0 ≤ R) :
+for `p > 0` and arbitrary `L, R ∈ ℝ`, the correlation integral equals `exp(-p |L - R|) / (2 p)`. -/
+theorem integral_probe_mul_shiftProfile_sub {p : ℝ} (hp : 0 < p) (L R : ℝ) :
     (∫ t, probe p t * shiftProfile (probe p) R (t - L)) = Real.exp (-p * |L - R|) / (2 * p) := by
   have h2p : 0 < p + p := by linarith
   rcases le_or_gt L R with hle | hgt
@@ -84,10 +84,11 @@ for `p > 0`, `L ≥ 0`, and `R ≥ 0`, the integral equals `exp(-p (L + R)) / (2
 theorem integral_probe_mul_shiftProfile_add {p L R : ℝ} (hp : 0 < p) (hL : 0 ≤ L) (hR : 0 ≤ R) :
     (∫ t, probe p t * shiftProfile (probe p) R (t + L)) = Real.exp (-p * (L + R)) / (2 * p) := by
   have h2p : 0 < p + p := by linarith
+  have hLR : 0 ≤ L + R := add_nonneg hL hR
   have hpt : (fun t => probe p t * shiftProfile (probe p) R (t + L)) =
       fun t => probe p t * probe p (t + (L + R)) := by
     funext t; unfold shiftProfile; congr 2; ring
-  rw [hpt, integral_probe_mul_probe_add h2p (by linarith)]
+  rw [hpt, integral_probe_mul_probe_add h2p hLR]
   ring_nf
 
 /-- **Laplace-tent formula and nonnegativity of each prime correlation term.** -/
@@ -101,7 +102,7 @@ theorem primePairTerm_probe_shiftProfile {p R : ℝ} (hp : 0 < p) (hR : 0 ≤ R)
       vonMangoldtAtom n *
         (Real.exp (-p * |Real.log n - R|) + Real.exp (-p * (Real.log n + R))) / (2 * p) := by
     unfold primePairTerm
-    rw [integral_probe_mul_shiftProfile_sub hp hL hR,
+    rw [integral_probe_mul_shiftProfile_sub hp (Real.log n) R,
       integral_probe_mul_shiftProfile_add hp hL hR]
     ring
   refine ⟨heq, ?_⟩
@@ -125,20 +126,20 @@ theorem primeMixedForm_shiftProfile_probe_eq (p R : ℝ) :
     unfold primePairTerm shiftProfile
     have ha : (∫ t, probe p (t + R) * probe p (t - Real.log n)) =
         ∫ u, probe p u * probe p (u + Real.log n + R) := by
-      rw [← integral_add_right_eq_self (fun u => probe p (u + Real.log n + R) * probe p u)
-        (-Real.log n)]
-      refine integral_congr_ae (Eventually.of_forall fun t => ?_)
-      dsimp only
+      have htr := integral_add_right_eq_self (μ := volume)
+        (fun u => probe p u * probe p (u + Real.log n + R)) (-Real.log n)
+      refine (integral_congr_ae (Eventually.of_forall fun t => ?_)).trans htr
       rw [mul_comm]
-      congr 2 <;> ring
+      congr 2
+      ring
     have hb : (∫ t, probe p (t + R) * probe p (t + Real.log n)) =
         ∫ u, probe p u * probe p (u - Real.log n + R) := by
-      rw [← integral_add_right_eq_self (fun u => probe p (u - Real.log n + R) * probe p u)
-        (Real.log n)]
-      refine integral_congr_ae (Eventually.of_forall fun t => ?_)
-      dsimp only
+      have htr := integral_add_right_eq_self (μ := volume)
+        (fun u => probe p u * probe p (u - Real.log n + R)) (Real.log n)
+      refine (integral_congr_ae (Eventually.of_forall fun t => ?_)).trans htr
       rw [mul_comm]
-      congr 2 <;> ring
+      congr 2
+      ring
     rw [ha, hb, add_comm]
   exact ⟨hterm, by unfold primeMixedForm; exact tsum_congr hterm⟩
 
@@ -187,8 +188,9 @@ theorem primeMixedForm_probe_shiftProfile_horizon_split {p R : ℝ} (hp : 1 / 2 
     have hm_eq : k + (N + 1) = m := by dsimp [m]; omega
     rw [hm_eq]
     have hm_gt : Real.exp R < (m : ℝ) := by
-      have hlt : Real.exp R < ((N + 1 : ℕ) : ℝ) := Nat.lt_floor_add_one (Real.exp R)
-      have hle : ((N + 1 : ℕ) : ℝ) ≤ (m : ℝ) := by exact_mod_cast (by dsimp [m]; omega : N + 1 ≤ m)
+      have hlt : Real.exp R < (N : ℝ) + 1 := Nat.lt_floor_add_one (Real.exp R)
+      have hle : (N : ℝ) + 1 ≤ (m : ℝ) := by
+        exact_mod_cast (by dsimp [m]; omega : N + 1 ≤ m)
       exact hlt.trans_le hle
     have hm_pos : (0 : ℝ) < (m : ℝ) := (Real.exp_pos R).trans hm_gt
     have hlog_gt : R < Real.log m := (Real.lt_log_iff_exp_lt hm_pos).mpr hm_gt
@@ -224,16 +226,15 @@ theorem primeMixedForm_probe_shiftProfile_horizon_split {p R : ℝ} (hp : 1 / 2 
     rcases eq_or_lt_of_le hn1 with rfl | hn_gt1
     · simp [f₁, vonMangoldtAtom]
     · have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast (by omega : 0 < n)
-      have hn_le_exp : (n : ℝ) ≤ Real.exp R := Nat.le_of_floor_ge hnN
+      have hn_le_exp : (n : ℝ) ≤ Real.exp R := (Nat.le_floor_iff (Real.exp_pos R).le).mp hnN
       have hlog_le : Real.log n ≤ R := (Real.log_le_iff_le_exp hn_pos).mpr hn_le_exp
+      have hrpow_sub : (n : ℝ) ^ (p - 1 / 2) = (n : ℝ) ^ p / (n : ℝ) ^ (1 / 2 : ℝ) := by
+        rw [sub_eq_add_neg, Real.rpow_add hn_pos, Real.rpow_neg hn_pos.le, ← div_eq_mul_inv]
       dsimp [f₁]
       rw [abs_of_nonpos (by linarith), vonMangoldtAtom, if_pos (by omega : 2 ≤ n),
         show -p * -(Real.log n - R) = -p * R + Real.log n * p by ring, Real.exp_add,
-        ← Real.rpow_def_of_pos hn_pos, Real.sqrt_eq_rpow,
-        show (n : ℝ) ^ (p - 1 / 2) = (n : ℝ) ^ p / (n : ℝ) ^ (1 / 2 : ℝ) by
-          rw [sub_eq_add_neg, Real.rpow_add hn_pos, Real.rpow_neg hn_pos.le, div_eq_mul_inv]]
+        ← Real.rpow_def_of_pos hn_pos, Real.sqrt_eq_rpow, hrpow_sub]
       field_simp [hp0.ne', (Real.rpow_pos_of_pos hn_pos (1 / 2)).ne']
-      ring
   unfold primeMixedForm
   simp_rw [hterm_split]
   rw [hs_f₁.tsum_add hs_f₂, ← hs_f₁.sum_add_tsum_nat_add (N + 1), hf₁_head]
@@ -271,29 +272,45 @@ theorem polePart_probe_shiftProfile {p : ℝ} (hp : 1 / 2 < p) (R : ℝ) :
   have hi2 := integrable_probe_mul_exp (p := p) (c := -(1 / 2)) (by linarith)
   have hc : Integrable fun u => probe p u * Real.cosh (u / 2) := by
     refine ((hi1.add hi2).div_const 2).congr (Eventually.of_forall fun u => ?_)
-    dsimp only; rw [Real.cosh_eq]; ring_nf
+    simp only [Pi.add_apply, Real.cosh_eq]
+    rw [show u / 2 = 1 / 2 * u by ring, show -(1 / 2 * u) = -(1 / 2) * u by ring]
+    ring
   have hs : Integrable fun u => probe p u * Real.sinh (u / 2) := by
     refine ((hi1.sub hi2).div_const 2).congr (Eventually.of_forall fun u => ?_)
-    dsimp only; rw [Real.sinh_eq]; ring_nf
-  rw [coshHalfMoment_shiftProfile hc hs, sinhHalfMoment_shiftProfile hc hs,
-    coshHalfMoment_probe hp, sinhHalfMoment_probe hp]
-  have h1 : 2 * p + 1 ≠ 0 := by linarith
-  have h2 : 2 * p - 1 ≠ 0 := by linarith
-  have h3 : p ^ 2 - 1 / 4 ≠ 0 := by nlinarith
-  rw [show p + 1 / 2 = (2 * p + 1) / 2 by ring, show p - 1 / 2 = (2 * p - 1) / 2 by ring]
-  field_simp
-  ring
+    simp only [Pi.sub_apply, Real.sinh_eq]
+    rw [show u / 2 = 1 / 2 * u by ring, show -(1 / 2 * u) = -(1 / 2) * u by ring]
+    ring
+  rw [coshHalfMoment_shiftProfile hc hs, sinhHalfMoment_shiftProfile hc hs]
+  have hsq : coshHalfMoment (probe p) ^ 2 - sinhHalfMoment (probe p) ^ 2 =
+      1 / (p ^ 2 - 1 / 4) := by
+    rw [coshHalfMoment_probe hp, sinhHalfMoment_probe hp]
+    calc ((1 / (p + 1 / 2) + 1 / (p - 1 / 2)) / 2) ^ 2 -
+            ((1 / (p + 1 / 2) - 1 / (p - 1 / 2)) / 2) ^ 2
+        = (1 / (p + 1 / 2)) * (1 / (p - 1 / 2)) := by ring
+      _ = 1 / ((p + 1 / 2) * (p - 1 / 2)) := one_div_mul_one_div _ _
+      _ = 1 / (p ^ 2 - 1 / 4) := by congr 1; ring
+  calc 2 * coshHalfMoment (probe p) *
+          (Real.cosh (R / 2) * coshHalfMoment (probe p) -
+            Real.sinh (R / 2) * sinhHalfMoment (probe p)) -
+        2 * sinhHalfMoment (probe p) *
+          (Real.cosh (R / 2) * sinhHalfMoment (probe p) -
+            Real.sinh (R / 2) * coshHalfMoment (probe p))
+      = 2 * Real.cosh (R / 2) *
+          (coshHalfMoment (probe p) ^ 2 - sinhHalfMoment (probe p) ^ 2) := by ring
+    _ = 2 * Real.cosh (R / 2) * (1 / (p ^ 2 - 1 / 4)) := by rw [hsq]
+    _ = 2 * Real.cosh (R / 2) / (p ^ 2 - 1 / 4) := mul_one_div _ _
 
 /-- **Uniform `R`-independent Gamma bound along translations.** For any `F` with `Integrable F` and
 `Integrable (r ↦ ‖F̂(r)‖² γ(r))` and any `R ∈ ℝ`, `|gammaMixedForm F (shiftProfile F R)|` is
 bounded by `(1 / (2π)) ∫ ‖F̂(r)‖² |γ(r)| dr`. -/
-theorem abs_gammaMixedForm_shiftProfile_le {F : ℝ → ℝ} (hF : Integrable F)
+theorem abs_gammaMixedForm_shiftProfile_le {F : ℝ → ℝ} (_hF : Integrable F)
     (hγ : Integrable fun r : ℝ => ‖paperFT (cx F) r‖ ^ 2 * EF.gammaBracket r) (R : ℝ) :
     |gammaMixedForm F (shiftProfile F R)| ≤
       1 / (2 * Real.pi) * ∫ r : ℝ, ‖paperFT (cx F) r‖ ^ 2 * |EF.gammaBracket r| := by
   have hmaj : Integrable fun r : ℝ => ‖paperFT (cx F) r‖ ^ 2 * |EF.gammaBracket r| := by
     refine hγ.norm.congr (Eventually.of_forall fun r => ?_)
-    simp [Real.norm_eq_abs, abs_mul, abs_of_nonneg (sq_nonneg _)]
+    dsimp only
+    rw [Real.norm_eq_abs, abs_mul, abs_of_nonneg (sq_nonneg ‖paperFT (cx F) r‖)]
   have hpt : ∀ r : ℝ, ‖gammaFourierPair F (shiftProfile F R) r * EF.gammaBracket r‖ ≤
       ‖paperFT (cx F) r‖ ^ 2 * |EF.gammaBracket r| := by
     intro r
@@ -373,10 +390,11 @@ theorem nonneg_twoProbe_bareMixedEnergy_unbounded_of_singleQuartet {ρ₀ : ℂ}
           2 * bareMixedEnergy (probe p) (shiftProfile (probe p) R) := by
     intro R hR
     have hFs := criticalHalfLineEnergyDomain_shiftProfile hFp hR
-    have hsum : CriticalHalfLineEnergyDomain (fun u => probe p u + shiftProfile (probe p) R u) := by
-      simpa [one_mul] using hFp.add_const_mul hFs 1
-    rw [bareMixedEnergy_add_right hsum hFp hFs, bareMixedEnergy_symm hsum (probe p),
-      bareMixedEnergy_add_right hFp hFp hFs, bareMixedEnergy_symm hsum (shiftProfile (probe p) R),
+    set S : ℝ → ℝ := fun u => probe p u + shiftProfile (probe p) R u
+    have hsum : CriticalHalfLineEnergyDomain S := by
+      simpa [S, one_mul] using hFp.add_const_mul hFs 1
+    rw [bareMixedEnergy_add_right hsum hFp hFs, bareMixedEnergy_symm S (probe p),
+      bareMixedEnergy_add_right hFp hFp hFs, bareMixedEnergy_symm S (shiftProfile (probe p) R),
       bareMixedEnergy_add_right hFs hFp hFs, bareMixedEnergy_symm (shiftProfile (probe p) R) (probe p),
       bareMixedEnergy_shiftProfile (integrable_mul_cosh_half_of_domain hFp)
         (integrable_mul_sinh_half_of_domain hFp) (integrable_mul_cosh_half_of_domain hFp)
@@ -445,14 +463,22 @@ theorem negativeHalfLineLaplace_poleNeutralTriple {p q r : ℝ}
       funext u; simp [cx, mul_comm]
     rw [heq, integral_probe_mul_cexp hs]
   unfold negativeHalfLineLaplace poleNeutralTriple
+  have hi1 : Integrable fun u : ℝ => (c₁ : ℂ) * (cexp (w * u) * cx (probe p) u) :=
+    (hi hpw).const_mul (c₁ : ℂ)
+  have hi2 : Integrable fun u : ℝ => (c₂ : ℂ) * (cexp (w * u) * cx (probe q) u) :=
+    (hi hqw).const_mul (c₂ : ℂ)
+  have hi3 : Integrable fun u : ℝ => (c₃ : ℂ) * (cexp (w * u) * cx (probe r) u) :=
+    (hi hrw).const_mul (c₃ : ℂ)
+  have hi12 : Integrable fun u : ℝ =>
+      (c₁ : ℂ) * (cexp (w * u) * cx (probe p) u) +
+        (c₂ : ℂ) * (cexp (w * u) * cx (probe q) u) := hi1.add hi2
   have hpt : (fun u : ℝ => cexp (w * u) * cx (fun u =>
       c₁ * probe p u + c₂ * probe q u + c₃ * probe r u) u) =
       fun u : ℝ => ((c₁ : ℂ) * (cexp (w * u) * cx (probe p) u) +
         (c₂ : ℂ) * (cexp (w * u) * cx (probe q) u)) +
         (c₃ : ℂ) * (cexp (w * u) * cx (probe r) u) := by
     funext u; simp [cx]; ring
-  rw [hpt, integral_add (((hi hpw).const_mul _).add ((hi hqw).const_mul _)) ((hi hrw).const_mul _),
-    integral_add ((hi hpw).const_mul _) ((hi hqw).const_mul _),
+  rw [hpt, integral_add hi12 hi3, integral_add hi1 hi2,
     integral_const_mul, integral_const_mul, integral_const_mul,
     hval hpw, hval hqw, hval hrw]
   have hpq_c : (p : ℂ) - q ≠ 0 := sub_ne_zero.mpr (by exact_mod_cast hpq)
@@ -497,7 +523,7 @@ theorem poleNeutralTriple_changes_sign {p q r : ℝ} (hp : 1 / 2 < p) (hpq : p <
   have hg_cont : Continuous g := by dsimp [g]; fun_prop
   have hg0 : g 0 = 1 := by simp [g, hsum1]
   have h_ev_pos : ∀ᶠ u : ℝ in 𝓝 0, 0 < g u :=
-    hg_cont.continuousAt.eventually (gt_mem_nhds (by rw [hg0]; norm_num))
+    hg_cont.continuousAt.eventually (Ioi_mem_nhds (show (0 : ℝ) < g 0 by rw [hg0]; norm_num))
   obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhds_iff.mp h_ev_pos
   have hu_pos_mem : -(δ / 2) < 0 ∧ 0 < poleNeutralTriple p q r (-(δ / 2)) := by
     have hneg : -(δ / 2) < 0 := by linarith
@@ -547,10 +573,13 @@ theorem poleNeutralTriple_changes_sign {p q r : ℝ} (hp : 1 / 2 < p) (hpq : p <
     (integral_eq_zero_iff_of_nonneg hnn hint).mp hint_zero
   have hcont_Iio : ContinuousOn (fun u : ℝ => poleNeutralTriple p q r u * Real.exp (1 / 2 * u))
       (Iio 0) := by
-    refine (hg_cont.mul (by fun_prop)).continuousOn.congr fun u hu => ?_
+    refine (hg_cont.mul (by fun_prop : Continuous fun u : ℝ => Real.exp (1 / 2 * u))).continuousOn.congr
+      fun u hu => ?_
     unfold poleNeutralTriple
     rw [probe_of_neg hu, probe_of_neg hu, probe_of_neg hu]
-  have heq0 := Measure.eqOn_open_of_ae_eq hae isOpen_Iio hcont_Iio continuousOn_const hu_pos_mem.1
+    rfl
+  have heq0 := Measure.eqOn_open_of_ae_eq (ae_restrict_of_ae hae) isOpen_Iio hcont_Iio
+    continuousOn_const hu_pos_mem.1
   dsimp only [Pi.zero_apply] at heq0
   exact (ne_of_gt (mul_pos hu_pos_mem.2 (Real.exp_pos _))) heq0
 
@@ -604,10 +633,14 @@ theorem halfMoments_shiftProfile_poleNeutralTriple_eq_zero {p q r : ℝ}
   have hi_neg := hexp_int (-(1 / 2)) (by linarith)
   have hHc : Integrable fun u : ℝ => H u * Real.cosh (u / 2) := by
     refine ((hi_pos.add hi_neg).div_const 2).congr (Eventually.of_forall fun u => ?_)
-    dsimp only; rw [Real.cosh_eq]; ring_nf
+    simp only [Pi.add_apply, Real.cosh_eq]
+    rw [show u / 2 = 1 / 2 * u by ring, show -(1 / 2 * u) = -(1 / 2) * u by ring]
+    ring
   have hHs : Integrable fun u : ℝ => H u * Real.sinh (u / 2) := by
     refine ((hi_pos.sub hi_neg).div_const 2).congr (Eventually.of_forall fun u => ?_)
-    dsimp only; rw [Real.sinh_eq]; ring_nf
+    simp only [Pi.sub_apply, Real.sinh_eq]
+    rw [show u / 2 = 1 / 2 * u by ring, show -(1 / 2 * u) = -(1 / 2) * u by ring]
+    ring
   have hC0 : coshHalfMoment H = 0 := by
     unfold coshHalfMoment
     have hpt : (fun x : ℝ => H x * Real.cosh (x / 2)) =
@@ -812,7 +845,8 @@ theorem poleNeutralTriple_primeMixed_unbounded_of_singleQuartet {ρ₀ : ℂ}
       have := mul_lt_mul_of_pos_left hlt_div hm_pos
       have hsimp : 2 * (quartetCopyMult ρ₀ : ℝ) *
           -((|M| + Γmax + onLineEnergy H) / (2 * (quartetCopyMult ρ₀ : ℝ))) =
-          -(|M| + Γmax + onLineEnergy H) := by field_simp [hm_pos.ne']
+          -(|M| + Γmax + onLineEnergy H) := by
+        rw [mul_neg, mul_div_cancel₀ _ hm_pos.ne']
       rwa [hsimp] at this
     linarith [le_abs_self M, hbare, hsq, hon, hγ]
   · obtain ⟨R, hR, hgt⟩ := exists_nonneg_exp_mul_re_gt hw₀_ne hq.im_ne_zero hδ_pos B

@@ -1232,11 +1232,13 @@ theorem rightZeros_encard_eq_iSup_primeSubmatrix (P₀ : ℕ) :
         ≤ (hermNegIndex (Hseq n) : ℕ∞) := by exact_mod_cast hn
       _ ≤ ⨆ (M' : ℕ) (N' : ℕ) (ι' : PrimeConductorEmbedding M' N' P₀),
             (hermNegIndex ((atomGram N').submatrix ι'.val ι'.val) : ℕ∞) :=
-          le_iSup_of_le M (le_iSup_of_le (Nseq n) (le_iSup _ emb))
+          le_iSup_of_le M (le_iSup_of_le (Nseq n) (le_iSup (fun ι' : PrimeConductorEmbedding M (Nseq n) P₀ =>
+            (hermNegIndex ((atomGram (Nseq n)).submatrix ι'.val ι'.val) : ℕ∞)) emb))
   · apply iSup_le; intro M; apply iSup_le; intro N; apply iSup_le; intro ι
     calc (hermNegIndex ((atomGram N).submatrix ι.val ι.val) : ℕ∞)
         ≤ (hermNegIndex (atomGram N) : ℕ∞) := by
           exact_mod_cast hermNegIndex_submatrix_le (atomGram N) ι.property.1
-      _ ≤ ⨆ K : ℕ, (hermNegIndex (atomGram K) : ℕ∞) := le_iSup _ N
+      _ ≤ ⨆ K : ℕ, (hermNegIndex (atomGram K) : ℕ∞) :=
+          le_iSup (fun K : ℕ => (hermNegIndex (atomGram K) : ℕ∞)) N
 
 end GaloisForLFunctions.CountingHolography.Sections

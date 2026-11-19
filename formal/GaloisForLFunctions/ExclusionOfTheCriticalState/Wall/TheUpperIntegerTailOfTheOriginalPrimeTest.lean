@@ -65,18 +65,22 @@ private theorem upper_band_before_center {Φ : ℝ → ℝ} (hc : Continuous Φ)
   have hsub : Ioc U T ⊆ Iic T := fun _ ht => ht.2
   have hH := hHm.mono_set hsub
   have hm : Measurable (finiteCriticalComplementBand Φ k L) := by
-    apply Finset.measurable_sum
+    unfold finiteCriticalComplementBand
+    refine Finset.measurable_sum (Finset.Ioc k L) ?_
     intro n _
     exact Measurable.ite (measurableSet_lt (by fun_prop : Measurable fun t : ℝ =>
       Real.exp t+Real.exp (t/2)*Real.sqrt t) measurable_const)
       (measurable_const.mul (measurable_const.mul (hc.measurable.comp (measurable_id.sub_const _)))) measurable_const
   have hf (t : ℝ) : ‖f t‖ ≤ H t := by
+    change ‖finiteCriticalComplementBand Φ k L t*fractionalPrimeTest (T-t)‖ ≤ H t
     rw [Real.norm_eq_abs,abs_mul]
     exact (mul_le_of_le_one_right (abs_nonneg _) (fractionalPrimeTest_bounds _).1).trans (hab k L hk t)
   refine ⟨hH.mono' ((hm.mul (measurable_fractionalPrimeTest.comp
     (measurable_const.sub measurable_id))).aestronglyMeasurable) (Eventually.of_forall hf),?_⟩
   change |∫ t in Ioc U T, f t| ≤ _
-  apply (norm_integral_le_of_norm_le hH (Eventually.of_forall hf)).trans
+  rw [← Real.norm_eq_abs]
+  apply (norm_integral_le_of_norm_le (μ := volume.restrict (Ioc U T))
+    (f := f) (g := H) hH (Eventually.of_forall hf)).trans
   have hnon : 0 ≤ᵐ[volume.restrict (Iic T)] H :=
     Eventually.of_forall fun t => by dsimp only [H,Pi.zero_apply]; positivity
   apply (setIntegral_mono_set hHm hnon (Eventually.of_forall fun _ hx => hsub hx)).trans_eq
@@ -104,7 +108,7 @@ theorem criticalState_upper_integer_tail {W₀ : ℝ} (hW : 0 < W₀)
     rw [hv,show (-1/2:ℝ)*v = -v/2 by ring,mul_comm]
   obtain ⟨B,hB,hlate⟩ := criticalComplement_late_band_interval hs hp (by norm_num : (0:ℝ)<1/8) (by norm_num)
   let m := ∫ v, Φ v
-  refine ⟨|m|*(A/2+B),by positivity,
+  refine ⟨|m| *(A/2+B),by positivity,
     fun U T M s k hU hM hT hS hcut => ?_⟩
   have hk0 := (Real.exp_pos _).trans_le hcut
   have hk : 1 ≤ k := by exact_mod_cast (Real.one_le_exp (by linarith only [hT,hS])).trans hcut
@@ -120,10 +124,12 @@ theorem criticalState_upper_integer_tail {W₀ : ℝ} (hW : 0 < W₀)
     apply (mul_le_mul_of_nonneg_left h (Real.exp_pos _).le).trans_eq
     rw [← Real.exp_mul,← Real.exp_add]; congr 1; ring
   have hL (L : ℕ) : |m*(∫ t in Ioc U M, finiteCriticalComplementBand Φ k L t*fractionalPrimeTest (T-t))|
-      ≤ |m|*(A/2+B)*Real.exp (-s/8) := by
+      ≤ |m| *(A/2+B)*Real.exp (-s/8) := by
     let f := fun t => finiteCriticalComplementBand Φ k L t*fractionalPrimeTest (T-t)
     obtain ⟨hi,hei⟩ := upper_band_before_center hc hA habs U T k L hk
     obtain ⟨hj,hej⟩ := hlate T M k L hk hT hM
+    change IntegrableOn f (Ioc U T) at hi
+    change IntegrableOn f (Ioc T M) at hj
     have hsplit : (∫ t in Ioc U M, f t)=(∫ t in Ioc U T, f t)+(∫ t in Ioc T M, f t) := by
       rw [← setIntegral_union (Ioc_disjoint_Ioc_of_le le_rfl) measurableSet_Ioc hi hj,Ioc_union_Ioc_eq_Ioc hU hM]
     change |m*(∫ t in Ioc U M, f t)| ≤ _
@@ -138,6 +144,44 @@ theorem criticalState_upper_integer_tail {W₀ : ℝ} (hW : 0 < W₀)
   have hl := (finiteCriticalComplementBand_on_bounded_cut hc hC hb k U M T).const_mul m
   exact le_of_tendsto hl.abs (Eventually.of_forall hL)
 
+/-- Removing the part through k from the original far-edge sum leaves the
+doubly truncated series, with its original signs and both endpoint conventions. -/
+theorem far_integer_sum_sub_prefix {Φ : ℝ → ℝ} {C : ℝ}
+    (hb : ∀ v, |Φ v| ≤ C*Real.exp (2*v)) (k : ℕ) (t : ℝ) :
+    (∑' n : {j : ℕ // pastCriticalEdge j t}, (vonMangoldt n.val-1)*continuousIntegerAtom Φ n.val t) -
+      finiteCriticalComplementRow Φ k t = criticalComplementBand Φ k t := by
+  let a := fun n : ℕ => (vonMangoldt n-1)*continuousIntegerAtom Φ n t
+  let A : Set ℕ := {n | pastCriticalEdge n t}
+  let J := Finset.Ioc 0 k
+  have ha : Summable a := ((summable_mangoldt_integerAtom hb t).sub
+    (summable_continuousIntegerAtom hb t)).congr fun n => by simp only [a,sub_mul,one_mul]
+  have hsplit : (∑ n ∈ J, A.indicator a n) +
+      (∑' n : {j : ℕ // j ∉ J}, A.indicator a n.val) = ∑' n, A.indicator a n :=
+    (ha.indicator A).sum_add_tsum_compl (s := J)
+  have hf : finiteCriticalComplementRow Φ k t = ∑ n ∈ J, A.indicator a n := rfl
+  let B : Set ℕ := {j | j ∉ J}
+  have hrest : (∑' n : {j : ℕ // j ∉ J}, A.indicator a n.val) = criticalComplementBand Φ k t := by
+    change (∑' n : B, A.indicator a n.val) = _
+    refine (tsum_subtype B (A.indicator a)).trans ?_
+    unfold criticalComplementBand
+    apply tsum_congr fun n => ?_
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · have hB : 0 ∈ B := by simp [B,J]
+      have ha0 : A.indicator a 0 = 0 := by
+        by_cases h : 0 ∈ A <;> simp [h,a,continuousIntegerAtom]
+      rw [indicator_of_mem hB,ha0,if_neg (fun h => (Nat.not_lt_zero k) h.1)]
+    · have hJ : n ∈ J ↔ n ≤ k := by simp [J,hn]
+      by_cases hkn : k < n
+      · have hB : n ∈ B := fun h => (not_le.mpr hkn) (hJ.mp h)
+        rw [indicator_of_mem hB]
+        by_cases hA : n ∈ A
+        · rw [indicator_of_mem hA,if_pos ⟨hkn,hA⟩]
+        · rw [indicator_of_notMem hA,if_neg (fun h => hA h.2)]
+      · have hB : n ∉ B := fun h => h (hJ.mpr (le_of_not_gt hkn))
+        rw [indicator_of_notMem hB,if_neg (fun h => hkn h.1)]
+  change (∑' n : A, a n.val) - _ = _
+  rw [tsum_subtype A a,hf,← hsplit,hrest,add_sub_cancel_left]
+
 /-- On the original middle time interval, all integers past exp(4T+s) have
 total oriented signed cost O(exp(-s/8)), uniformly in T and in the cutoff.
 The moving first window has already been excluded inside the infinite series. -/
@@ -147,12 +191,15 @@ theorem riemannHypothesis_or_upper_integer_tail_of_original_test : RiemannHypoth
       IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧
       ∃ D : ℝ, 0 ≤ D ∧ ∀ (U T M s : ℝ) (k : ℕ), U ≤ T → T ≤ M → 1 ≤ T →
         0 ≤ s → Real.exp (4*T+s) ≤ k →
-        |(∫ v, Φ v)*(∫ t in Ioc U M, criticalComplementBand Φ k t*fractionalPrimeTest (T-t))|
+        |(∫ v, Φ v)*(∫ t in Ioc U M, ((∑' n : {j : ℕ // pastCriticalEdge j t},
+          (vonMangoldt n.val-1)*continuousIntegerAtom Φ n.val t)-finiteCriticalComplementRow Φ k t)*
+          fractionalPrimeTest (T-t))|
           ≤ D*Real.exp (-s/8) := by
   rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hr | ⟨W₀,F,hW,ht,hF⟩
   · exact Or.inl hr
-  obtain ⟨_,_,Φ,hc,he,_⟩ := criticalState_exists_continuous_representative hW ht hF
-  exact Or.inr ⟨W₀,F,Φ,hW,ht,hF,hc,he,criticalState_upper_integer_tail hW ht hF hc he⟩
+  obtain ⟨_,_,Φ,hc,he,_,⟨_,_,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hc,he,?_⟩
+  simpa only [far_integer_sum_sub_prefix hb] using criticalState_upper_integer_tail hW ht hF hc he
 
 #print axioms criticalState_upper_integer_tail
 #print axioms riemannHypothesis_or_upper_integer_tail_of_original_test

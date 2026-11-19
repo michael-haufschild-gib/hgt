@@ -131,6 +131,7 @@ private theorem firstPrimeSpline_mesh {U n p : ℕ} (hn : 0 < n) (hp : 0<p)
     calc _ = ∑ k ∈ Icc 1 L, ∑ v ∈ I, if p*v≤k then signedCoprimeCofactor p v*(z k*w v k) else 0 := by
               apply sum_congr rfl
               intro k hk
+              change cappedCoprimeSlice 1 1 k (max (productLower 1 k) U) n p * z k = _
               rw [cell k hk,sum_mul]
               apply sum_congr rfl
               intro v _
@@ -156,8 +157,12 @@ private theorem firstPrimeSpline_mesh {U n p : ℕ} (hn : 0 < n) (hp : 0<p)
   have hd : ((p*v:ℕ):ℝ)/(n:ℝ)^2 = (v:ℝ)*(p/(n:ℝ)^2) := by push_cast; ring
   rw [hd] at hprofile
   rw [hsum,one_cell_mesh,sampledSpline,hd]
-  have hn' := (Nat.cast_pos.mpr (α := ℝ) hn).ne'
-  have hs (x : ℝ) : (n:ℝ)^2*(x/n)=n*x := by field_simp
+  have hn' : (n:ℝ) ≠ 0 := (Nat.cast_pos.mpr hn).ne'
+  have hs (x : ℝ) : (n:ℝ)^2*(x/n)=n*x := by
+    linear_combination (n:ℝ)*(div_mul_cancel₀ x hn')
+  change (n:ℝ)^2*(signedCoprimeCofactor p v*(unitHorizonPair n (p*v)+
+    dyadicSpline ((v:ℝ)*(p/(n:ℝ)^2))/n)) = (n:ℝ)*(signedCoprimeCofactor p v*
+      (quotientMeshProfile b ((v:ℝ)*(p/(n:ℝ)^2)) - -dyadicSpline ((v:ℝ)*(p/(n:ℝ)^2))))
   linear_combination signedCoprimeCofactor p v*(hprofile+hs (dyadicSpline ((v:ℝ)*(p/(n:ℝ)^2))))
 
 /-- The capped product after a sharp lower cut on its first prime. -/
@@ -238,7 +243,9 @@ private theorem firstPrime_price_partition (P₀ U n : ℕ) :
   rw [mul_sum]
   exact sum_congr rfl fun k _ => mul_assoc _ _ _
 
-private theorem small_first_prime_price :
+/-- The total price of first primes through any prescribed integer cut,
+with the cofactor cap and both horizon endpoints. -/
+theorem first_prime_cut_price :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (P₀ : ℕ) {U n : ℕ}, 0<n → (∀ k ≤ splineHorizon n, productLower 1 k ≤ U) →
       |(n:ℝ)^2*(cappedUpperProductReading U n n-firstPrimeReadingAbove P₀ U n)| ≤
         C*(n:ℝ)*P₀*conductorLog n := by
@@ -286,7 +293,8 @@ private theorem small_first_prime_price :
             exact mul_le_mul_of_nonneg_right hmass (by positivity)
        _ = _ := by dsimp only [H]; ring
 
-private theorem eventually_seventeenNinths_above_lower :
+/-- The sharp product cut eventually clears every lower horizon in the row. -/
+theorem eventually_seventeenNinths_above_lower :
     ∀ᶠ n : ℕ in atTop, ∀ k ≤ splineHorizon n, productLower 1 k ≤ ⌊(n:ℝ)^(17/9:ℝ)⌋₊ := by
   obtain ⟨T,hT,hwin⟩ := successorSquare_window_bound
   have hup := (tendsto_rpow_atTop (by norm_num : (0:ℝ)<8/9)).comp tendsto_natCast_atTop_atTop
@@ -305,12 +313,14 @@ private theorem eventually_seventeenNinths_above_lower :
        _ = (n:ℝ)^(8/9:ℝ)*(n:ℝ)^(1:ℝ) := by rw [Real.rpow_one]
        _ = _ := by rw [←Real.rpow_add hn',show (8/9:ℝ)+1=17/9 by norm_num]
 
-private theorem linear_first_prime_cut_fragments (P : ℕ → ℕ) {K : ℝ} (hK : 0≤K)
+/-- Any cutoff bounded by a fixed multiple of the conductor removes at most
+a cubic-logarithmic price, uniformly on all terminal fragments. -/
+theorem linear_first_prime_cut_fragments (P : ℕ → ℕ) {K : ℝ} (hK : 0≤K)
     (hP : ∀ {n : ℕ}, 0<n → (P n:ℝ)≤K*n) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ J M : ℕ,
       |∑ n ∈ Ioc J M, (n:ℝ)^2*(cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n n -
         firstPrimeReadingAbove (P n) ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n)| ≤ C*(M:ℝ)^3*conductorLog M := by
-  obtain ⟨C,hC,hsmall⟩ := small_first_prime_price
+  obtain ⟨C,hC,hsmall⟩ := first_prime_cut_price
   let A := C*K
   have hA : 0≤A := mul_nonneg hC hK
   have h {n U : ℕ} (hn : 0<n) (hY : ∀ k ≤ splineHorizon n, productLower 1 k≤U) :
@@ -357,12 +367,16 @@ theorem seventeenNinths_first_primes_beyond_conductor :
 
 /-- All primes above this threshold have natural complementary upper bound
 at most the conductor, even at the last spline horizon. -/
-def capFreeFirstPrimeCut (n : ℕ) := max n (splineHorizon n/(n+1))
+def capFreeFirstPrimeCut (n : ℕ) :=
+  max n (max (splineHorizon n/(n+1)) (2*⌊Real.sqrt (splineHorizon n)⌋₊))
 
-private theorem capFreeFirstPrimeCut_linear :
+/-- The threshold for removing both cofactor restrictions grows at most
+linearly with the conductor. -/
+theorem capFreeFirstPrimeCut_linear :
     ∃ K : ℝ, 0≤K ∧ ∀ {n : ℕ}, 0<n → (capFreeFirstPrimeCut n:ℝ)≤K*n := by
-  obtain ⟨T,_,hL⟩ := successorSquare_window_bound
-  refine ⟨1+T^2,by positivity,fun {n} hn => ?_⟩
+  obtain ⟨T,hT,hL⟩ := successorSquare_window_bound
+  have hT' := zero_le_one.trans hT
+  refine ⟨1+T^2+2*T,by positivity,fun {n} hn => ?_⟩
   have hn' := Nat.cast_nonneg (α := ℝ) n
   have ht := mul_nonneg (sq_nonneg T) hn'
   have hq : ((splineHorizon n/(n+1):ℕ):ℝ) ≤ T^2*n := by
@@ -371,19 +385,30 @@ private theorem capFreeFirstPrimeCut_linear :
     apply (hL hn).trans
     push_cast
     nlinarith only [ht]
-  rw [capFreeFirstPrimeCut,Nat.cast_max]
-  exact max_le (by linarith only [ht]) (by linarith only [hq,hn'])
+  have hroot := Real.sqrt_le_sqrt (hL hn)
+  rw [Real.sqrt_sq (mul_nonneg hT' hn')] at hroot
+  have hf := (Nat.floor_le (Real.sqrt_nonneg (splineHorizon n))).trans hroot
+  simp only [capFreeFirstPrimeCut,Nat.cast_max,Nat.cast_mul,Nat.cast_ofNat]
+  have htn := mul_nonneg hT' hn'
+  refine max_le (by linarith only [ht,htn]) (max_le ?_ ?_)
+  · linarith only [hq,hn',htn]
+  · linarith only [hf,hn',ht]
 
 /-- The surviving ordinary-prime reading. The cofactor has only the
 original lower product endpoint and the natural upper product endpoint. -/
-def capFreeFirstPrimeReading (U n : ℕ) : ℝ :=
-  splineCountReading n (fun k => ordinaryFactorTail (max 4 (capFreeFirstPrimeCut n)) k
-    (fun p => ∑ v ∈ Ioc (max (productLower 1 k) U/p) (k/p),
+def unrestrictedFirstPrimeReading (P U n : ℕ) : ℝ :=
+  splineCountReading n (fun k => ordinaryFactorTail (max 4 P) k
+    (fun p => ∑ v ∈ Ioc (U/p) (k/p),
       innerJump 1 v*centeredPrimeWeight 1 (k/(p*v))))
 
-theorem capFreeFirstPrimeReading_eq (n U : ℕ) :
-    firstPrimeReadingAbove (capFreeFirstPrimeCut n) U n = capFreeFirstPrimeReading U n := by
-  unfold firstPrimeReadingAbove capFreeFirstPrimeReading splineCountReading
+/-- The unrestricted cofactor reading at the conductor's own prime cut. -/
+abbrev capFreeFirstPrimeReading (U n : ℕ) := unrestrictedFirstPrimeReading (capFreeFirstPrimeCut n) U n
+
+/-- At every horizon the old moving lower cut has quotient zero at these
+primes, and the natural upper endpoint is already within the cofactor cap. -/
+theorem firstPrimeReadingAbove_eq_unrestricted {P n : ℕ} (hcut : capFreeFirstPrimeCut n ≤ P) (U : ℕ) :
+    firstPrimeReadingAbove P U n = unrestrictedFirstPrimeReading P U n := by
+  unfold firstPrimeReadingAbove unrestrictedFirstPrimeReading splineCountReading
   apply sum_congr rfl
   intro k hk
   congr 1
@@ -392,17 +417,29 @@ theorem capFreeFirstPrimeReading_eq (n U : ℕ) :
   intro p hp
   congr 1
   obtain ⟨hip,hpr⟩ := mem_filter.mp hp
-  have hP := (le_max_right 4 _).trans_lt (mem_Ioc.mp hip).1
-  obtain ⟨hnp,hlp⟩ := max_lt_iff.mp hP
+  have hP := hcut.trans_lt ((le_max_right 4 _).trans_lt (mem_Ioc.mp hip).1)
+  obtain ⟨hnp,hrest⟩ := max_lt_iff.mp hP
+  obtain ⟨hlp,hsqrt⟩ := max_lt_iff.mp hrest
+  have hy : productLower 1 k < p := (min_le_right _ _).trans_lt
+    ((Nat.mul_le_mul_left 2 (Nat.floor_mono (Real.sqrt_le_sqrt (Nat.cast_le.mpr (mem_Icc.mp hk).2)))).trans_lt hsqrt)
+  have hyq : max (productLower 1 k) U/p = U/p := by
+    by_cases h : productLower 1 k ≤ U
+    · rw [max_eq_right h]
+    · have hu := lt_of_not_ge h
+      rw [max_eq_left hu.le,Nat.div_eq_of_lt hy,Nat.div_eq_of_lt (hu.trans hy)]
   have hkpn : k/p≤n := Nat.le_of_lt_succ ((Nat.div_lt_iff_lt_mul hpr.pos).mpr
     ((mem_Icc.mp hk).2.trans_lt (by simpa only [Nat.mul_comm] using
       (Nat.div_lt_iff_lt_mul (Nat.succ_pos n)).mp hlp)))
-  rw [cappedCoprimeSlice,min_eq_left hkpn,sum_filter]
+  rw [cappedCoprimeSlice,min_eq_left hkpn,hyq,sum_filter]
   apply sum_congr rfl
   intro v hv
   obtain ⟨hl,hu⟩ := mem_Ioc.mp hv
   rw [if_pos (first_prime_above_conductor_unique hpr hnp ((Nat.zero_le _).trans_lt hl)
     (hu.trans hkpn)).1,Nat.div_div_eq_div_mul]
+
+theorem capFreeFirstPrimeReading_eq (n U : ℕ) :
+    firstPrimeReadingAbove (capFreeFirstPrimeCut n) U n = capFreeFirstPrimeReading U n :=
+  firstPrimeReadingAbove_eq_unrestricted le_rfl U
 
 /-- The entire artificial cofactor cap and coprimality restriction disappear
 from the full signed prefix at cubic-logarithmic error on every fragment. -/
@@ -463,6 +500,7 @@ theorem prefix_upper_iff_cap_free_first_primes {η : ℝ} (hη : 0 < η) :
 #print axioms aboveConductorFirstPrimeReading_eq
 #print axioms firstPrimeSpline_mesh
 #print axioms firstPrime_price_partition
+#print axioms linear_first_prime_cut_fragments
 #print axioms seventeenNinths_first_primes_beyond_conductor
 #print axioms prefix_upper_iff_first_primes_beyond_conductor
 #print axioms capFreeFirstPrimeReading_eq

@@ -44,8 +44,9 @@ theorem splineSource_translatedTwoPole {N p : ℕ} (hp : 16*p < N) (hpp : 0 < p)
   let G := fun i : Fin 16 => B (u-Real.log p-Real.log ((i:ℝ)+1))
   have hl : splineSource (translatedTwoPole p hp) u = ∑ i : Fin N, F ((i:ℝ)+1)*(translatedTwoPole p hp i:ℝ) :=
     sum_congr rfl fun i _ => mul_comm _ _
-  have hr : twoPoleAtom (u-Real.log p) = ∑ i : Fin 16, G i*(twoPoleDivisor i:ℝ) :=
-    sum_congr rfl fun i _ => mul_comm _ _
+  have hr : twoPoleAtom (u-Real.log p) = ∑ i : Fin 16, G i*(twoPoleDivisor i:ℝ) := by
+    unfold twoPoleAtom splineSource
+    exact sum_congr rfl fun i _ => mul_comm _ _
   rw [hl,hr,eval_translate hp hpp F,twoPoleDivisor,sum_threeGraphDivisor]
   have h₀ : ((0 : Fin 16):ℝ)+1 = 1 := by norm_num
   have h₃ : ((3 : Fin 16):ℝ)+1 = 4 := by change ((3:ℕ):ℝ)+1 = 4; norm_num
@@ -62,7 +63,10 @@ theorem translatedTwoPole_degrees {N p : ℕ} (hp : 16*p < N) (hpp : 0 < p) :
   unfold positivePoleDegree negativePoleDegree
   rw [eval_translate hp hpp Real.sqrt,eval_translate hp hpp (fun x => (Real.sqrt x)⁻¹),
     Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 4),Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 16)]
-  norm_num [mul_inv_rev] <;> ring
+  have h4 : Real.sqrt 4 = 2 := by rw [show (4:ℝ) = 2^2 by norm_num, Real.sqrt_sq (by norm_num)]
+  have h16 : Real.sqrt 16 = 4 := by rw [show (16:ℝ) = 4^2 by norm_num, Real.sqrt_sq (by norm_num)]
+  rw [h4,h16]
+  constructor <;> ring
 
 /-- Sum of two integral translates, with at most eighteen units of total variation. -/
 def twoPolePair (p q : ℕ) : Fin (16*(p+q)+1) → ℤ :=
@@ -70,9 +74,8 @@ def twoPolePair (p q : ℕ) : Fin (16*(p+q)+1) → ℤ :=
 
 theorem twoPolePair_degrees {p q : ℕ} (hp : 0 < p) (hq : 0 < q) :
     positivePoleDegree (twoPolePair p q) = 0 ∧ negativePoleDegree (twoPolePair p q) = 0 := by
-  let N := 16*(p+q)+1
-  have h₁ := translatedTwoPole_degrees (N := N) (by dsimp [N]; omega) hp
-  have h₂ := translatedTwoPole_degrees (N := N) (by dsimp [N]; omega) hq
+  have h₁ := translatedTwoPole_degrees (N := 16*(p+q)+1) (by omega) hp
+  have h₂ := translatedTwoPole_degrees (N := 16*(p+q)+1) (by omega) hq
   simp only [twoPolePair,positivePoleDegree,negativePoleDegree] at h₁ h₂ ⊢
   simp only [Pi.add_apply,Int.cast_add,mul_add,sum_add_distrib,h₁.1,h₁.2,h₂.1,h₂.2,zero_add,and_self]
 
@@ -155,11 +158,10 @@ private theorem primeOrbitConductors_spec {p : ℕ} (hp : p.Prime) (j : ℤ) :
   cases j with
   | ofNat k =>
     refine ⟨Nat.mul_pos hp' (pow_pos (by decide) _),one_pos,?_⟩
-    change Real.log ((p*4^k:ℕ):ℝ)-Real.log 1 = _
+    change Real.log ((p*4^k:ℕ):ℝ)-Real.log ((1:ℕ):ℝ) = _
     push_cast
     rw [Real.log_mul (Nat.cast_pos.mpr hp').ne' (pow_pos (by norm_num : (0:ℝ) < 4) _).ne',
-      Real.log_pow,Real.log_one,sub_zero]
-    norm_num
+      Real.log_pow,Real.log_one,sub_zero] <;> norm_num
   | negSucc k =>
     refine ⟨hp',pow_pos (by decide) _,?_⟩
     change Real.log p-Real.log ((4^(k+1):ℕ):ℝ) = _
@@ -194,8 +196,9 @@ theorem riemannHypothesis_iff_twoPolePair_power :
     apply ((herr h₁ h₂).mono fun m hm => ?_).frequently
     have he := generator_le_power_iff (m • twoPolePair c.1 c.2) hB 1 m
     simp only [one_mul,Nat.cast_one,one_pow,mul_one] at he
-    exact he.mpr (by linarith only [(abs_le.mp hm).2,mul_le_mul_of_nonneg_right hl (sq_nonneg (m:ℝ)),
-      mul_nonneg (riemannHypothesis_iff_integerProbes.mp hRH _ (twoPolePair c.1 c.2)) (sq_nonneg (m:ℝ))])
+    have hll := mul_le_mul_of_nonneg_right hl (sq_nonneg (m:ℝ))
+    have hnn := mul_nonneg (riemannHypothesis_iff_integerProbes.mp hRH _ (twoPolePair c.1 c.2)) (sq_nonneg (m:ℝ))
+    exact he.mpr (by linarith only [(abs_le.mp hm).2,hll,hnn])
   · rintro ⟨B,hB,hb⟩
     apply riemannHypothesis_iff_twoPoleTrace_prime_orbits.mpr
     refine ⟨(-Real.log B-D)/2-twoPoleTrace 0,fun p hp j => ?_⟩

@@ -111,8 +111,8 @@ def sqrtMeshErrorTerm (W : CompactBVPrimeWindow) (k : ℕ) (s : ℂ) :=
 private theorem differentiable_sqrtMeshErrorTerm (W : CompactBVPrimeWindow) (k : ℕ) :
     Differentiable ℂ (sqrtMeshErrorTerm W k) := by
   rcases eq_or_ne k 0 with rfl | hk
-  · simpa [sqrtMeshErrorTerm] using
-      (differentiable_const (c := (0:ℂ)) : Differentiable ℂ (fun _ : ℂ => (0:ℂ)))
+  · have h0 : sqrtMeshErrorTerm W 0 = fun _ => 0 := by funext s; simp [sqrtMeshErrorTerm]
+    rw [h0]; exact differentiable_const 0
   have h : Differentiable ℂ (fun z : ℂ => (k:ℂ)^(1-z/2)) :=
     ((differentiable_id.div_const (2:ℂ)).const_sub 1).const_cpow (Or.inl (Nat.cast_ne_zero.mpr hk))
   unfold sqrtMeshErrorTerm
@@ -187,7 +187,9 @@ private theorem rootWindow_regular : ContDiffOn ℝ 1 rootWindowRaw (Set.Icc lo 
   have hl := (Real.contDiffAt_log (n := 1)).mpr hx'.ne'
   apply ContDiffAt.contDiffWithinAt
   change ContDiffAt ℝ 1 (fun t : ℝ => ((2*t^2*squareLogProfile (-2*Real.log t):ℝ):ℂ)) x
-  fun_prop
+  have hin : ContDiffAt ℝ 1 (fun t : ℝ => 2*t^2*squareLogProfile (-2*Real.log t)) x :=
+    (contDiffAt_const.mul (contDiffAt_id.pow 2)).mul (hF.contDiffAt.comp x (contDiffAt_const.mul hl))
+  exact Complex.ofRealCLM.contDiff.comp_contDiffAt x hin
 
 /-- The compact conductor window at the square root of each prime. -/
 def squareConductorBVWindow : CompactBVPrimeWindow where
@@ -792,9 +794,13 @@ theorem squarePrimeCumulativeWeight_eq {v : ℝ} (hv : 0 < v) :
   rw [hbottom,zero_add] at h₁
   change (∫ x in (0:ℝ)..v, w x)=_
   rw [← intervalIntegral.integral_add_adjacent_intervals (hwi le_rfl (Real.exp_pos _).le) (hwi (Real.exp_pos _).le hbase),ht,zero_add,
-    intervalIntegral.integral_of_le hbase,← Real.exp_log hv,Sieve.integral_Ioc_eq_integral_log w a U,
+    intervalIntegral.integral_of_le hbase]
+  conv_lhs => rw [← Real.exp_log hv]
+  rw [Sieve.integral_Ioc_eq_integral_log w a U,
     ← intervalIntegral.integral_of_le hau,show (fun t => Real.exp t*w (Real.exp t))=(fun t => 2*F t-2*F (t-d)) from funext he,
-    intervalIntegral.integral_sub ((hF.const_mul 2).intervalIntegrable _ _) (((hF.comp (continuous_id.sub continuous_const)).const_mul 2).intervalIntegrable _ _),
+    intervalIntegral.integral_sub ((hF.const_mul 2).intervalIntegrable _ _)
+      (show IntervalIntegrable (fun t => 2*F (t-d)) volume a U from
+        ((hF.comp (continuous_id.sub continuous_const)).const_mul 2).intervalIntegrable _ _),
     intervalIntegral.integral_const_mul,intervalIntegral.integral_const_mul,intervalIntegral.integral_comp_sub_right]
   change 2*(∫ t in a..U, F t)-2*(∫ t in a-d..U-d, F t)=2*∫ t in U-d..U, F t
   linarith only [h₁,h₂]
@@ -832,7 +838,7 @@ theorem squarePrime_fourthPower_integral {p N M : ℝ} (hp : 0 < p) (hN : 0 < N)
       continuousAt_const.div (continuousAt_id.pow 2) (sq_pos_of_pos ht').ne'
     exact ((continuousAt_const.div (continuousAt_id.pow 3) (pow_ne_zero _ ht'.ne')).mul
       ((Complex.continuous_re.continuousAt.comp (continuousAt_squarePrimeWeight (div_pos hp (sq_pos_of_pos ht')))).comp
-        harg)).continuousWithinAt
+        (f := fun x : ℝ => p/x^2) harg)).continuousWithinAt
   have h := intervalIntegral.integral_eq_sub_of_hasDerivAt (fun t ht => he t (hN.trans_le ((Set.uIcc_of_le hNM ▸ ht).1))) hu.intervalIntegrable
   exact h.trans (by dsimp only [f,A]; ring)
 

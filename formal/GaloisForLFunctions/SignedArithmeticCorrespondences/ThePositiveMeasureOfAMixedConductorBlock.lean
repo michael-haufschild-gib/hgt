@@ -36,8 +36,18 @@ private theorem logCell_frullani (a : ℝ) (ha : 0 < a) :
   · change Integrable (logCell a) (volume.restrict (Ioi 0))
     exact hc.re.congr (Filter.Eventually.of_forall fun t => (hf t).symm)
   · simp_rw [hf]
-    rw [integral_re hc,he,Complex.sub_re,Complex.log_re,Complex.log_re]
-    simp [abs_of_pos ha,abs_of_pos hb,b]
+    calc _ = (∫ t in Ioi (0:ℝ),
+              (Complex.exp (-((a:ℂ)*t))-Complex.exp (-((b:ℂ)*t)))/(t:ℂ)).re := integral_re hc
+         _ = _ := ?_
+    rw [he,Complex.sub_re,Complex.log_re,Complex.log_re]
+    change Real.log ‖(b:ℂ)‖-Real.log ‖(a:ℂ)‖ = Real.log b-Real.log a
+    simp only [Complex.norm_real,Real.norm_eq_abs,abs_of_pos ha,abs_of_pos hb]
+
+/-- The logarithmic increment at one positive conductor is the integral
+of its two adjacent exponential rates. -/
+theorem integral_log_increment (a : ℝ) (ha : 0<a) :
+    (∫ t in Set.Ioi (0:ℝ), (Real.exp (-(a*t))-Real.exp (-((a+1)*t)))/t) =
+      Real.log (a+1)-Real.log a := (logCell_frullani a ha).2
 
 private def reflectedCell (a z t : ℝ) : ℝ :=
   logCell (a+z) t+logCell (a-z) t-2*logCell a t
@@ -60,7 +70,8 @@ private theorem reflected_integral {a z : ℝ} (ha : 1 ≤ a) (hz : -1 < z ∧ z
     norm_num
   refine ⟨(hp.1.add hm.1).sub (h0.1.const_mul 2),?_⟩
   simp only [reflectedCell]
-  rw [integral_sub (hp.1.add hm.1) (h0.1.const_mul 2),integral_add hp.1 hm.1,
+  rw [integral_sub (f := fun t => logCell (a+z) t + logCell (a-z) t)
+      (g := fun t => 2*logCell a t) (hp.1.add hm.1) (h0.1.const_mul 2),integral_add hp.1 hm.1,
     integral_const_mul,hp.2,hm.2,h0.2,hlog (v := a+1) (by linarith),hlog ha]
   rw [show a+z+1 = a+1+z by ring,show a-z+1 = a+1-z by ring]
   ring
@@ -69,8 +80,12 @@ private theorem reflected_formula (a z t : ℝ) :
     reflectedCell a z t =
       Real.exp (-(a*t)) * (1-Real.exp (-t)) *
       (Real.exp (z*t)+Real.exp (-(z*t))-2) / t := by
-  simp only [reflectedCell,logCell,add_mul,sub_mul,one_mul,neg_add_rev,neg_sub,
-    sub_eq_add_neg,Real.exp_add,neg_neg]
+  have step (b : ℝ) : logCell b t = Real.exp (-(b*t))*(1-Real.exp (-t))/t := by
+    rw [logCell,show -((b+1)*t) = -(b*t)+(-t) by ring,Real.exp_add]
+    ring
+  simp only [reflectedCell,step]
+  rw [show -((a+z)*t) = -(a*t) + -(z*t) by ring,
+    show -((a-z)*t) = -(a*t) + z*t by ring,Real.exp_add,Real.exp_add]
   ring
 
 private theorem reflected_nonneg {a z t : ℝ} (ht : 0 < t) : 0 ≤ reflectedCell a z t := by
@@ -88,6 +103,23 @@ private theorem reflected_nonneg {a z t : ℝ} (ht : 0 < t) : 0 ≤ reflectedCel
 def blockDensity (d : ℕ+) (n : ℕ) (t : ℝ) : ℝ :=
   ∑ r ∈ range (d:ℕ), ∑ j ∈ range (d:ℕ), reflectedCell ((n:ℝ)+1) (offset d r j) t
 
+/-- Exponential densities of the two reflected residue classes. The common
+factor is the integral over one unit logarithmic increment. -/
+theorem blockDensity_offsets (d : ℕ+) (n : ℕ) (t : ℝ) :
+    blockDensity d n t = ((1-Real.exp (-t))/t) *
+      ∑ r ∈ range (d:ℕ), ∑ j ∈ range (d:ℕ),
+        (Real.exp (-((((n:ℝ)+1)+offset d r j)*t))+
+         Real.exp (-((((n:ℝ)+1)-offset d r j)*t))-2*Real.exp (-(((n:ℝ)+1)*t))) := by
+  simp only [blockDensity,mul_sum]
+  refine sum_congr rfl fun r _ => sum_congr rfl fun j _ => ?_
+  let a := (n:ℝ)+1
+  let z := offset d r j
+  change reflectedCell a z t = _ * (Real.exp (-((a+z)*t))+Real.exp (-((a-z)*t))-2*Real.exp (-(a*t)))
+  rw [reflected_formula]
+  rw [show -((a+z)*t) = -(a*t) + -(z*t) by ring,
+    show -((a-z)*t) = -(a*t) + z*t by ring,Real.exp_add,Real.exp_add]
+  ring
+
 private theorem cell_offset {d r j : ℕ} (hr : r ∈ range d) (hj : j ∈ range d) :
     -1 < offset d r j ∧ offset d r j < 1 := offset_bounds (mem_range.mp hr) (mem_range.mp hj)
 
@@ -96,7 +128,7 @@ theorem blockDensity_mass (d : ℕ+) (n : ℕ) :
     IntegrableOn (blockDensity d n) (Ioi 0) ∧
       (∫ t in Ioi (0:ℝ), blockDensity d n t) =
         2*(blockHeight d (n+2)-2*blockHeight d (n+1)+blockHeight d n) := by
-  have ha : 1 ≤ (n:ℝ)+1 := by linarith only [Nat.cast_nonneg (R := ℝ) n]
+  have ha : 1 ≤ (n:ℝ)+1 := by linarith only [Nat.cast_nonneg (α := ℝ) n]
   have hi (r : ℕ) (hr : r ∈ range (d:ℕ)) :
       IntegrableOn (fun t => ∑ j ∈ range (d:ℕ), reflectedCell ((n:ℝ)+1) (offset d r j) t)
         (Ioi 0) := integrable_finsetSum _ fun j hj => (reflected_integral ha (cell_offset hr hj)).1
@@ -185,7 +217,9 @@ theorem sectionIntersection_gluing (d : ℕ+) (n : ℕ) (S T : Finset ℕ) (u v 
     filter_upwards [ae_restrict_mem (μ := volume) measurableSet_Ioi] with t ht
     have ht' : 0 ≤ t := le_of_lt ht
     simp only [ContinuousMap.mul_apply,endpointPolynomial,ContinuousMap.coe_mk,sectionCoordinate,
-      abs_of_nonneg ht',sum_mul_sum,mul_sum]
+      abs_of_nonneg ht']
+    rw [sum_mul_sum]
+    simp only [mul_sum]
     refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
     rw [Nat.add_assoc,blockDensity_shift,pow_add]
     ring
@@ -221,6 +255,7 @@ theorem sectionIntersection_square_nonneg (d : ℕ+) (n : ℕ) (P : C(Set.Icc (0
   exact mul_nonneg (blockDensity_nonneg d n ht) (mul_self_nonneg _)
 
 #print axioms blockDensity_mass
+#print axioms blockDensity_offsets
 #print axioms sectionIntersection_gluing
 #print axioms mixed_block_curvature_bound
 #print axioms sectionIntersection_square_nonneg

@@ -19,12 +19,13 @@ private def simpleCell (a : ℕ) : SimpleFunc ℝ ℝ :=
   (SimpleFunc.const ℝ 1).restrict (Ico (Real.log a) (Real.log ((a+1:ℕ):ℝ)))
 
 private theorem simpleCell_apply (a : ℕ) (x : ℝ) : simpleCell a x = rawCell a x := by
-  simp only [simpleCell,SimpleFunc.coe_restrict _ measurableSet_Ico,SimpleFunc.coe_const,rawCell] <;> rfl
+  simp only [simpleCell,SimpleFunc.coe_restrict _ measurableSet_Ico,SimpleFunc.coe_const,rawCell]
+  rfl
 
 private def pairSimple (q d : ℕ → ℝ) (X : ℕ) : SimpleFunc ℝ ℝ :=
   ∑ a ∈ Finset.Icc 1 X,
-    (q a) • (simpleCell (2*a) + simpleCell (2*a+1)) +
-    (d a) • (haarLeftCoeff a • simpleCell (2*a) - haarRightCoeff a • simpleCell (2*a+1))
+    ((q a) • (simpleCell (2*a) + simpleCell (2*a+1)) +
+      (d a) • (haarLeftCoeff a • simpleCell (2*a) - haarRightCoeff a • simpleCell (2*a+1)))
 
 private theorem eval_simple_sum {ι : Type*} (s : Finset ι) (f : ι → SimpleFunc ℝ ℝ) (x : ℝ) :
     (∑ i ∈ s, f i) x = ∑ i ∈ s, f i x := by

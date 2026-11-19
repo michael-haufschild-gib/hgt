@@ -111,9 +111,8 @@ theorem centered_trace_invariants (q : ℝ) :
         M 2 * M 4 - M 3 ^ 2 - M 2 ^ 3 = 1 := by
   obtain ⟨a,b,c,_,_,_,_,ea,eb,ec,pa,pb,pc,hm⟩ := exists_positive_trace_law q
   refine ⟨a,b,c,ea,eb,ec,pa,pb,pc,?_⟩
-  dsimp only
-  simp only [hm, remainder]
-  exact ⟨by ring, by ring, by ring, by ring, by ring, by ring⟩
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩ <;> simp only [hm] <;>
+    norm_num [remainder] <;> ring
 
 #print axioms affine_trace_obstruction
 #print axioms exists_positive_trace_law

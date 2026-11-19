@@ -1,0 +1,183 @@
+import GaloisForLFunctions.RHTower.Chebyshev.OrbitCubicFieldTrace
+import Mathlib.RingTheory.Norm.Basic
+import Mathlib.LinearAlgebra.Matrix.Determinant.Misc
+
+/-!
+# Norms in reciprocal coordinates on the cubic order
+
+Multiplication is symmetric in the trace-orthonormal basis. On the triangular
+height-one array the norm has a subtraction-free cyclic expression. Its least
+value is attained exactly at the three vertices, and the centroid is the unique
+maximizer in the real triangle.
+-/
+
+noncomputable section
+namespace RHTower.OrbitCubic.NumberFieldTrace
+open Matrix Module
+
+/-- Multiplication in the reciprocal basis 1,U,V. -/
+def reciprocalMatrix {R : Type*} [CommRing R] (m a b c : R) : Matrix (Fin 3) (Fin 3) R :=
+  !![a,b,c; b,a+(1-m)*b-c,c-b; c,c-b,a+b-m*c]
+
+private def fromVector (m : ℤ) : (Fin 3 → ℚ) →ₗ[ℚ] K m where
+  toFun x := coords m (x 0) (x 1) (x 2)
+  map_add' x y := by simp only [Pi.add_apply,coords,add_smul]; abel
+  map_smul' r x := by simp [coords,smul_add,smul_smul,smul_eq_mul]
+
+/-- Synthesis from the three rational reciprocal coordinates. -/
+def reciprocalEquiv (m : ℤ) : (Fin 3 → ℚ) ≃ₗ[ℚ] K m := by
+  apply LinearEquiv.ofBijective (fromVector m)
+  constructor
+  · intro v w he
+    have h := (coords_bijective m).1 (a₁ := (v 0,v 1,v 2)) (a₂ := (w 0,w 1,w 2)) he
+    obtain ⟨h0,h12⟩ := Prod.mk.inj h
+    obtain ⟨h1,h2⟩ := Prod.mk.inj h12
+    funext j
+    fin_cases j <;> assumption
+  · intro z
+    obtain ⟨⟨a,b,c⟩,he⟩ := (coords_bijective m).2 z
+    exact ⟨![a,b,c],he⟩
+
+/-- Multiplication by an arbitrary field element in reciprocal coordinates. -/
+theorem reciprocalMatrix_action (m : ℤ) (a b c : ℚ) (v : Fin 3 → ℚ) :
+    coords m a b c * reciprocalEquiv m v = reciprocalEquiv m ((reciprocalMatrix (m:ℚ) a b c).mulVec v) := by
+  obtain ⟨_,_,_,huv,hu,hv⟩ := reciprocal_table m
+  change coords m a b c * coords m (v 0) (v 1) (v 2) = coords m _ _ _
+  simp only [Matrix.mulVec,dotProduct,Fin.sum_univ_three,reciprocalMatrix,Matrix.cons_val_zero,
+    Matrix.cons_val_one,Matrix.cons_val_two,Matrix.of_apply,coords,Algebra.smul_def,
+    map_add,map_sub,map_one,map_mul,map_intCast]
+  linear_combination ((b*v 1:ℚ):K m)*hu + ((c*v 2:ℚ):K m)*hv +
+      ((b*v 2+c*v 1:ℚ):K m)*huv
+
+/-- Rational basis underlying the reciprocal integral lattice. -/
+def reciprocalBasis (m : ℤ) := Basis.ofEquivFun (reciprocalEquiv m).symm
+
+theorem reciprocalBasis_apply (m : ℤ) (j : Fin 3) :
+    reciprocalBasis m j = reciprocalEquiv m (Pi.single j 1) := by
+  simp [reciprocalBasis,Basis.coe_ofEquivFun]
+
+/-- The regular representation of the cubic field in its integral basis. -/
+theorem reciprocal_leftMulMatrix (m : ℤ) (a b c : ℚ) :
+    Algebra.leftMulMatrix (reciprocalBasis m) (coords m a b c) =
+      reciprocalMatrix (m:ℚ) a b c := by
+  ext i j
+  rw [Algebra.leftMulMatrix_eq_repr_mul]
+  change (Basis.ofEquivFun (reciprocalEquiv m).symm).repr (coords m a b c * reciprocalBasis m j) i = _
+  rw [Basis.ofEquivFun_repr_apply,reciprocalBasis_apply,reciprocalMatrix_action,
+    LinearEquiv.symm_apply_apply,Matrix.mulVec_single_one]
+  rfl
+
+/-- The determinant is the actual algebraic number-field norm. -/
+theorem norm_coordinates (m : ℤ) (a b c : ℚ) :
+    Algebra.norm ℚ (coords m a b c) = (reciprocalMatrix (m:ℚ) a b c).det := by
+  rw [Algebra.norm_eq_matrix_det (reciprocalBasis m),reciprocal_leftMulMatrix]
+
+/-- Every element of the order has an integral field norm. -/
+theorem integral_norm (m : ℤ) (z : {w : K m // w ∈ powerOrder m}) :
+    ∃ k : ℤ, Algebra.norm ℚ z.val = (k:ℚ) := by
+  obtain ⟨a,b,c,he⟩ := (powerOrder_eq_coords m z.val).mp z.property
+  refine ⟨(reciprocalMatrix m a b c).det,?_⟩
+  rw [he,norm_coordinates]
+  simp [reciprocalMatrix,Matrix.det_fin_three]
+
+/-- The three cyclic factors in barycentric coordinates. -/
+def arm {R : Type*} [CommSemiring R] (x y : R) := 1+x*(1+y)
+
+def triangleNorm {R : Type*} [CommSemiring R] (a b c : R) :=
+  arm a c * arm b a + arm b a * arm c b + arm c b * arm a c
+
+theorem triangle_norm_cycle {R : Type*} [CommSemiring R] (a b c : R) :
+    triangleNorm a b c = triangleNorm c a b := by unfold triangleNorm; ring
+
+/-- Subtraction-free norm formula at every face and vertex of the triangular array. -/
+theorem norm_barycentric (a b c : ℤ) :
+    let m := a+b+c+2
+    Algebra.norm ℚ (coords m 1 (-(a:ℚ)) (-(b+1:ℚ))) = (triangleNorm a b c : ℤ) := by
+  intro m
+  rw [norm_coordinates]
+  unfold reciprocalMatrix triangleNorm arm
+  simp only [Matrix.det_fin_three,Matrix.cons_val_zero,Matrix.cons_val_one,Matrix.cons_val_two,
+    Matrix.of_apply]
+  dsimp only [m]
+  push_cast
+  ring
+
+private theorem excess (a b c : ℚ) :
+    triangleNorm a b c - (2*(a+b+c)+3) =
+      2*(a*b+b*c+c*a) + (a*(1+c))*(b*(1+a))+
+        (b*(1+a))*(c*(1+b))+(c*(1+b))*(a*(1+c)) := by unfold triangleNorm arm; ring
+
+/-- The three vertices give the smallest nonsquare norm, 2m−1. All other
+points of the array have strictly greater norm. -/
+theorem lower_triangle_norm (a b c : ℚ≥0) :
+    let x : ℚ := a
+    let y : ℚ := b
+    let z : ℚ := c
+    2*(x+y+z)+3 ≤ triangleNorm x y z ∧
+      (triangleNorm x y z = 2*(x+y+z)+3 ↔ x*y+y*z+z*x = 0) := by
+  intro x y z
+  have hx : 0 ≤ x := a.2
+  have hy : 0 ≤ y := b.2
+  have hz : 0 ≤ z := c.2
+  have h := excess x y z
+  have hxy : 0 ≤ x*y+y*z+z*x := by positivity
+  have h1 : 0 ≤ x*(1+z)*(y*(1+x)) := by positivity
+  have h2 : 0 ≤ y*(1+x)*(z*(1+y)) := by positivity
+  have h3 : 0 ≤ z*(1+y)*(x*(1+z)) := by positivity
+  refine ⟨by linarith only [h,hxy,h1,h2,h3],⟨fun he => by linarith only [h,he,hxy,h1,h2,h3],?_⟩⟩
+  intro he
+  have xy : x*y = 0 := by linarith only [he,mul_nonneg hx hy,mul_nonneg hy hz,mul_nonneg hz hx]
+  have yz : y*z = 0 := by linarith only [he,mul_nonneg hx hy,mul_nonneg hy hz,mul_nonneg hz hx]
+  have zx : z*x = 0 := by linarith only [he,mul_nonneg hx hy,mul_nonneg hy hz,mul_nonneg hz hx]
+  apply sub_eq_zero.mp
+  rw [h,he]
+  linear_combination (1+z)*(1+x)*xy + (1+x)*(1+y)*yz + (1+y)*(1+z)*zx
+
+private theorem spread (A B C : ℚ) :
+    (A+B+C)^2 - 3*(A*B+B*C+C*A) = ((A-B)^2+(B-C)^2+(C-A)^2)/2 := by ring
+
+/-- The discriminant divided by 27 is the sharp continuous norm ceiling.
+An integral centroid exists precisely when m is two modulo three. -/
+theorem upper_triangle_norm (a b c : ℚ≥0) :
+    let x : ℚ := a
+    let y : ℚ := b
+    let z : ℚ := c
+    let s := x+y+z
+    27*triangleNorm x y z ≤ (s^2+3*s+9)^2 ∧
+      (27*triangleNorm x y z = (s^2+3*s+9)^2 ↔ x=y ∧ y=z) := by
+  intro x y z s
+  have hx : 0 ≤ x := a.2
+  have hy : 0 ≤ y := b.2
+  have hz : 0 ≤ z := c.2
+  let S := arm x z+arm y x+arm z y
+  have hA : 0 < S := by dsimp [S,arm]; positivity
+  have hB : 3*triangleNorm x y z ≤ S^2 := by
+    have h := spread (arm x z) (arm y x) (arm z y)
+    unfold triangleNorm
+    dsimp only [S]
+    linarith only [h,sq_nonneg (arm x z-arm y x),sq_nonneg (arm y x-arm z y),sq_nonneg (arm z y-arm x z)]
+  have he : s^2+3*s+9 - 3*S = ((x-y)^2+(y-z)^2+(z-x)^2)/2 := by dsimp [s,S,arm]; ring
+  have hC : 3*S ≤ s^2+3*s+9 := by linarith only [he,sq_nonneg (x-y),sq_nonneg (y-z),sq_nonneg (z-x)]
+  have hD := mul_self_le_mul_self (by linarith only [hA] : 0 ≤ 3*S) hC
+  refine ⟨by nlinarith only [hB,hD],⟨?_,?_⟩⟩
+  · intro hmax
+    have eq : s^2+3*s+9 = 3*S := by
+      by_contra hne
+      have lt := lt_of_le_of_ne hC (Ne.symm hne)
+      have hlt := mul_self_lt_mul_self (by linarith only [hA] : 0 ≤ 3*S) lt
+      nlinarith only [hB,hmax,hlt]
+    rw [eq,sub_self] at he
+    exact ⟨sub_eq_zero.mp (sq_eq_zero_iff.mp (by linarith only [he,sq_nonneg (x-y),sq_nonneg (y-z),sq_nonneg (z-x)])),
+      sub_eq_zero.mp (sq_eq_zero_iff.mp (by linarith only [he,sq_nonneg (x-y),sq_nonneg (y-z),sq_nonneg (z-x)]))⟩
+  · rintro ⟨hxy,hyz⟩
+    dsimp only [s]
+    rw [hxy,hyz]
+    unfold triangleNorm arm
+    ring
+
+#print axioms norm_coordinates
+#print axioms integral_norm
+#print axioms norm_barycentric
+#print axioms lower_triangle_norm
+#print axioms upper_triangle_norm
+end RHTower.OrbitCubic.NumberFieldTrace

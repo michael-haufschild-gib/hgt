@@ -32,8 +32,8 @@ private theorem sum_reduce (m d : ℕ+) (F : ZMod (m : ℕ) → ℂ) :
     obtain ⟨y,hy⟩ := ZMod.castHom_surjective (dvd_mul_right (m : ℕ) (d : ℕ)) x
     exact mem_image.mpr ⟨y,mem_univ _,hy⟩
   have h := RHTower.WeilKloosterman.card_eq_card_ker_mul_card_image f
-  rw [hu,card_univ,ZMod.card,ZMod.card,mul_comm (m : ℕ) (d : ℕ)] at h
-  have hk := Nat.eq_of_mul_eq_mul_right m.property h
+  rw [hu,card_univ,ZMod.card,ZMod.card] at h
+  have hk := Nat.eq_of_mul_eq_mul_left m.property (h.trans (mul_comm _ _))
   have he := RHTower.WeilKloosterman.sum_comp_eq_card_ker_mul f F
   rw [hu,← hk,nsmul_eq_mul] at he
   exact he
@@ -105,13 +105,18 @@ theorem one_shell (χ : DirichletCharacter ℂ (M : ℕ)) (hχ : χ.IsPrimitive)
     exact unaligned M D χ _ (fun hd => (not_le_of_gt h)
       ((Nat.pow_dvd_pow_iff_le_right p.property.one_lt).mp hd))
   · obtain ⟨u,rfl⟩ := Nat.exists_eq_add_of_le h
-    rw [pow_add,aligned M D]
+    rw [pow_add,show p.val^k*p.val^u = (D : ℕ)*p.val^u from rfl,aligned M D]
     have hG : coeff (M : ℕ) χ (p.val^u) =
-        χ⁻¹ ((p.val^u : ℕ) : ZMod (M : ℕ))*gaussSum χ ZMod.stdAddChar :=
-      gaussSum_mulShift_of_isPrimitive ZMod.stdAddChar hχ _
+        χ⁻¹ ((p.val^u : ℕ) : ZMod (M : ℕ))*gaussSum χ ZMod.stdAddChar := by
+      rw [← gaussSum_mulShift_of_isPrimitive ZMod.stdAddChar hχ ((p.val^u : ℕ) : ZMod (M : ℕ))]
+      unfold coeff gaussSum
+      simp only [AddChar.mulShift_apply]
     rw [hG]
     cases u with
-    | zero => simp [pp]
+    | zero =>
+      rw [if_pos (add_zero k),pow_zero,Nat.cast_one,map_one,one_mul]
+      congr 1
+      simp [pp]
     | succ u =>
       have hn : ¬IsUnit ((p.val^(u+1) : ℕ) : ZMod (M : ℕ)) := by
         rw [ZMod.isUnit_iff_coprime]
@@ -130,7 +135,7 @@ theorem hasSum_monomial (χ : DirichletCharacter ℂ (M : ℕ)) (hχ : χ.IsPrim
   by_cases he : v=k
   · subst v
     rw [if_pos rfl,if_pos rfl,div_pow]
-    field_simp [Nat.cast_ne_zero.mpr p.property.ne_zero : (p.val : ℂ)≠0]
+    field_simp [(Nat.cast_ne_zero.mpr p.property.ne_zero : (p.val : ℂ)≠0)]
   · simp only [he,ite_false,zero_mul]
 
 /-- The exact local norm at arbitrary damping and conductor loss. -/

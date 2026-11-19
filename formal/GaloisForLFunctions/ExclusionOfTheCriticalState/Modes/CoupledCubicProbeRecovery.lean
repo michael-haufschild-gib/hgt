@@ -52,11 +52,13 @@ def recover (z : Readings ℝ) : Row ℝ :=
 
 theorem recover_measure (second : Bool) (r : Row ℝ) : recover (measureRow second r) = r := by
   cases r
-  cases second <;> unfold recover measureRow response <;> congr 1 <;> ring
+  cases second <;> unfold recover measureRow response <;> congr 1 <;>
+    simp only [Bool.false_eq_true, if_false, if_true] <;> ring
 
 theorem measure_recover (second : Bool) (z : Readings ℝ) : measureRow second (recover z) = z := by
   cases z
-  cases second <;> unfold recover measureRow response <;> congr 1 <;> ring
+  cases second <;> unfold recover measureRow response <;> congr 1 <;>
+    simp only [Bool.false_eq_true, if_false, if_true] <;> ring
 
 /-- Three-direction mixed polarization of the cubic term, valid even in
 the presence of the unknown linear coupling. -/
@@ -74,7 +76,8 @@ sample times and distinct integer translates. -/
 def bank {n : ℕ} (s : ℝ) (time shift : Fin n ↪ ℕ) : Matrix (Fin n) (Fin n) ℝ :=
   probeHankelMinor (probe (Real.exp s)) time shift
 
-private theorem bank_bijective {n : ℕ} (s : ℝ) (time shift : Fin n ↪ ℕ) :
+/-- Distinct sampling times and translates give an invertible velocity sensor. -/
+theorem bank_bijective {n : ℕ} (s : ℝ) (time shift : Fin n ↪ ℕ) :
     Function.Bijective (bank s time shift).mulVec := by
   have h := exponentialProbeHankel_isUnit (t := Real.exp s)
     (by linarith only [Real.exp_pos s]) time shift
@@ -103,7 +106,8 @@ theorem sample_bijective {n : ℕ} (s : ℝ) (time shift : Fin n ↪ ℕ) (secon
   · apply Function.RightInverse.surjective (g := inverse)
     intro z
     funext i
-    simp only [inverse,sample,Row.map,he,measure_recover]
+    simp only [inverse,sample,Row.map,he]
+    exact measure_recover second (z i)
 
 /-- Diagonal trials alone cannot tell which component carries the square. -/
 theorem diagonal_model_ambiguity (r : Row ℝ) (x : ℝ) (sign : Bool) :
@@ -117,7 +121,7 @@ theorem model_distinction_iff (r : Row ℝ) (x y : ℝ) :
     response false r x y = response true r x y ↔
       x = y ∨ x = -y ∨ x*r.cubicX+y*r.cubicY = 0 := by
   have he : response false r x y - response true r x y =
-      ((x-y)*(x+y))*(x*r.cubicX+y*r.cubicY) := by simp only [response,if_false,if_true]; ring
+      ((x-y)*(x+y))*(x*r.cubicX+y*r.cubicY) := by simp only [response,Bool.false_eq_true,if_false,if_true]; ring
   rw [← sub_eq_zero,he]
   simp only [mul_eq_zero,sub_eq_zero,add_eq_zero_iff_eq_neg,or_assoc]
 
@@ -125,6 +129,7 @@ theorem model_distinction_iff (r : Row ℝ) (x y : ℝ) :
 #print axioms measure_recover
 #print axioms third_response
 #print axioms sample_bijective
+#print axioms bank_bijective
 #print axioms diagonal_model_ambiguity
 #print axioms model_distinction_iff
 end GaloisForLFunctions.ExclusionOfTheCriticalState.CubicRecovery

@@ -58,7 +58,7 @@ theorem sum_cost (J : ℕ) : ∑ n ∈ Ioc 0 J, cost n = padicValNat 2 (J/2).fac
       have hw' : w = J/2+1 := by omega
       have hd : (J+1)/2 = J/2+1 := by omega
       have hn : w≠0 := by omega
-      rw [hd,Nat.factorial_succ,padicValNat.mul (Nat.succ_ne_zero _) (Nat.factorial_ne_zero _)]
+      rw [hd,Nat.factorial_succ,padicValNat.mul (by omega : J/2+1 ≠ 0) (Nat.factorial_ne_zero _)]
       unfold cost
       rw [hw,padicValNat.mul (by norm_num : (2:ℕ)≠0) hn,padicValNat_self,hw']
       omega
@@ -84,7 +84,7 @@ theorem box_cost (J : ℕ) (height : ℕ × ℕ → ℕ) :
   have hsum : ∑ p ∈ square J, (cost p.1+cost p.2) =
       2*J*padicValNat 2 (J/2).factorial := by
     simp only [square,sum_product,sum_add_distrib,sum_const,Nat.card_Ioc,Nat.sub_zero,
-      nsmul_eq_mul,← mul_sum,sum_cost]
+      smul_eq_mul,← mul_sum,sum_cost]
     ring
   calc
     _ ≤ ∑ p ∈ primitive J, (cost p.1+cost p.2) := by
@@ -120,7 +120,9 @@ theorem primitive_density (J : ℕ) : 51*J^2 ≤ 100*(primitive J).card := by
     refine (card_le_card hsub).trans (card_biUnion_le.trans ?_)
     apply sum_le_sum
     intro p _
-    rw [card_product,D,Nat.Ioc_filter_dvd_card_eq_div,pow_two]
+    rw [card_product]
+    simp only [D]
+    rw [Nat.Ioc_filter_dvd_card_eq_div,pow_two]
   have hr : (bad.card : ℝ) ≤ (J : ℝ)^2*(49/100) := by
     calc
       _ ≤ ∑ p ∈ P, ((J/p : ℕ) : ℝ)^2 := by exact_mod_cast hcard
@@ -136,7 +138,9 @@ theorem primitive_density (J : ℕ) : 51*J^2 ≤ 100*(primitive J).card := by
         rw [← mul_sum]
         exact mul_le_mul_of_nonneg_left (RHTower.sum_primesBelow_one_div_sq_le (J+1)) (sq_nonneg _)
   have h₀ : (primitive J).card+bad.card=J^2 := by
-    rw [primitive,bad,card_filter_add_card_filter_not,square,card_product,Nat.card_Ioc,Nat.sub_zero,pow_two]
+    rw [primitive]
+    simp only [bad]
+    rw [card_filter_add_card_filter_not,square,card_product,Nat.card_Ioc,Nat.sub_zero,pow_two]
   have hn : 100*bad.card ≤ 49*J^2 := by
     exact_mod_cast (show (100 : ℝ)*bad.card≤49*(J : ℝ)^2 by linarith only [hr])
   omega

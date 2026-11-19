@@ -156,7 +156,7 @@ theorem quotientMeshProfile_product_variation :
   have ht' := zero_lt_one.trans_le ht
   have ht2 : t^2 = (q+1)/q := Real.sq_sqrt (zero_le_one.trans hr)
   have hratio : s/t^2 = q*d := by
-    rw [ht2]; dsimp only [s]; field_simp [(by linarith only [hq] : q+1≠0)] <;> ring
+    rw [ht2]; dsimp only [s]; field_simp [(by linarith only [hq] : q+1≠0)]
   have hdist : t-1 ≤ 1/q := by
     have hh := le_mul_of_one_le_right ht'.le ht
     rw [←sq,ht2] at hh
@@ -410,7 +410,7 @@ theorem rescaled_shell_integral_bound :
         (pow_le_pow_left₀ ht0.le ht.2 2))
     rw [Real.norm_eq_abs,abs_mul,abs_mul,abs_of_pos ht0]
     have hm := ha (one_div_pos.mpr (sq_pos_of_pos ht0)) hst b hbt
-    have he : t*(A*(1/t^2)^7) = A/t^13 := by field_simp <;> ring
+    have he : t*(A*(1/t^2)^7) = A/t^13 := by field_simp
     apply (mul_le_mul (mul_le_mul_of_nonneg_left hm ht0.le) (hp H hH Q hQ L U c ht0.le hα hβ)
       (abs_nonneg _) (by positivity)).trans
     rw [he]
@@ -429,8 +429,10 @@ theorem rescaled_shell_integral_bound :
              apply intervalIntegral.integral_congr
              exact fun x _ => (zpow_negSucc x 12).symm
          _ = _ := by
-             rw [integral_zpow (Or.inr ⟨by norm_num,hzero⟩)]
-             norm_num [zpow_negSucc] <;> simp only [inv_pow] <;> ring
+             rw [integral_zpow (Or.inr ⟨by norm_num,hzero⟩),show (-13:ℤ)+1=-12 by norm_num]
+             have hp (x : ℝ) : x^(-12:ℤ)=(x^12)⁻¹ := zpow_negSucc x 11
+             rw [hp,hp]
+             norm_num
   rw [hi] at h
   have hdrop := mul_nonneg hB (inv_nonneg.mpr (pow_nonneg (hT.trans_le hTZ).le 12))
   dsimp only [B] at h hdrop

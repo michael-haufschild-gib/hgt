@@ -26,10 +26,15 @@ private theorem binaryLift_cases (A : Matrix ι κ (ZMod 2)) (i : ι) (j : κ) :
   change ((A i j).val:ℤ)=0 ∨ ((A i j).val:ℤ)=1
   omega
 
-theorem binaryLift_reduction (A : Matrix ι κ (ZMod 2)) : (Int.castRingHom (ZMod 2)).mapMatrix (binaryLift A)=A := by
+theorem binaryLift_reduction (A : Matrix ι κ (ZMod 2)) : (binaryLift A).map (Int.castRingHom (ZMod 2)) = A := by
   ext i j
   change (((A i j).val : ℤ):ZMod 2) = _
   simp
+
+/-- Reducing an integral determinant commutes with reducing the matrix. -/
+private theorem det_map_intCast {m : Type*} [Fintype m] [DecidableEq m] (M : Matrix m m ℤ) (q : ℕ) :
+    ((Int.castRingHom (ZMod q)).mapMatrix M).det = (M.det : ZMod q) := by
+  rw [← RingHom.map_det, eq_intCast]
 
 private def signBorder {n : ℕ} (B : Matrix (Fin n) (Fin n) ℤ) :
     Matrix (Fin n ⊕ Fin 1) (Fin n ⊕ Fin 1) ℤ :=
@@ -43,7 +48,6 @@ private theorem signBorder_det {n : ℕ} (B : Matrix (Fin n) (Fin n) ℤ) :
       (-2:ℤ) • B := by
     ext i j
     simp [Matrix.mul_apply]
-    ring
   rw [h,Matrix.det_smul,Fintype.card_fin]
 
 /-- An integral determinant bound for binary matrices, valid in all orders.
@@ -77,7 +81,9 @@ theorem binaryLift_det_bound {n : ℕ} (A : Matrix (Fin n) (Fin n) (ZMod 2)) :
   have he : S.det.natAbs = 2^n*B.det.natAbs := by
     simp [S,signBorder_det,Int.natAbs_mul,Int.natAbs_pow]
   have hz : ((S.det.natAbs:ℕ):ℝ)^2 = (S.det:ℝ)^2 := by
-    rw [Int.cast_natAbs,sq_abs]
+    first
+    | simp [sq_abs]
+    | rw [← Int.cast_natCast,Int.natCast_natAbs,Int.cast_abs,sq_abs]
   rw [← hz] at h
   have hnat : S.det.natAbs^2 ≤ (n+1)^(n+1) := by exact_mod_cast h
   rw [he,mul_pow,← pow_mul,Nat.mul_comm n 2,pow_mul] at hnat
@@ -87,9 +93,11 @@ private theorem odd_of_binary {n : ℕ} (A : Matrix (Fin n) (Fin n) (ZMod 2)) (h
     ¬ 2 ∣ (binaryLift A).det.natAbs := by
   intro hd
   apply h
-  rw [← binaryLift_reduction A,← RingHom.map_det]
-  apply (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr
-  exact Int.natAbs_dvd_natAbs.mp hd
+  have hr := (Int.castRingHom (ZMod 2)).map_det (binaryLift A)
+  change _ = ((binaryLift A).map (Int.castRingHom (ZMod 2))).det at hr
+  rw [binaryLift_reduction,eq_intCast] at hr
+  rw [← hr]
+  exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr (Int.ofNat_dvd_left.mpr hd)
 
 /-- Every binary basis in rank three lifts canonically to an integral basis. -/
 theorem rankThree_binaryBasis_unimodular (A : {M : Matrix (Fin 3) (Fin 3) (ZMod 2) // M.det ≠ 0}) :
@@ -130,20 +138,23 @@ preserves every binary basis simultaneously in all characteristics at least five
 theorem rankFour_transfer {V : Type*} (A : Matrix (Fin 4) V (ZMod 2))
     (p : {p : Nat.Primes // 3 < p.val}) (c : Fin 4 → V) :
     (A.submatrix id c).det ≠ 0 →
-      (((Int.castRingHom (ZMod p.val.val)).mapMatrix (binaryLift A)).submatrix id c).det ≠ 0 := by
+      (((binaryLift A).map (Int.castRingHom (ZMod p.val.val))).submatrix id c).det ≠ 0 := by
   intro h
   let B := binaryLift (A.submatrix id c)
   have hr := rankFour_binaryBasis_det ⟨A.submatrix id c,h⟩
-  have he : (((Int.castRingHom (ZMod p.val.val)).mapMatrix (binaryLift A)).submatrix id c).det =
-      (B.det:ZMod p.val.val) := ((Int.castRingHom _).map_det B).symm
-  rw [he,ZMod.intCast_zmod_eq_zero_iff_dvd]
-  intro hd
-  have hh := Int.natAbs_dvd_natAbs.mpr hd
-  change p.val.val ∣ B.det.natAbs at hh
+  have he : (((binaryLift A).map (Int.castRingHom (ZMod p.val.val))).submatrix id c).det =
+      (B.det:ZMod p.val.val) := det_map_intCast B _
+  rw [he]
+  intro h0
+  have hd := (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mp h0
+  have hh : p.val.val ∣ B.det.natAbs := Int.ofNat_dvd_left.mp hd
   have hlt : 3 < p.val.val := p.property
-  rcases hr with h₁ | h₃
-  · exact (by omega : ¬ p.val.val ≤ 1) (Nat.le_of_dvd zero_lt_one (h₁ ▸ hh))
-  · exact (by omega : ¬ p.val.val ≤ 3) (Nat.le_of_dvd (by norm_num) (h₃ ▸ hh))
+  have hr' : B.det.natAbs = 1 ∨ B.det.natAbs = 3 := hr
+  rcases hr' with h₁ | h₃
+  · rw [h₁] at hh
+    exact (by omega : ¬ p.val.val ≤ 1) (Nat.le_of_dvd zero_lt_one hh)
+  · rw [h₃] at hh
+    exact (by omega : ¬ p.val.val ≤ 3) (Nat.le_of_dvd (by norm_num) hh)
 
 private def outsideDiagonal (n : ℕ) : Matrix (Fin n) (Fin n) ℤ := of fun i j => if i=j then 0 else 1
 
@@ -154,22 +165,21 @@ theorem rankFour_exception_realized :
       ((Int.castRingHom (ZMod 3)).mapMatrix (binaryLift A)).det=0 := by
   let H := outsideDiagonal 4
   have hdet : H.det = -3 := by
-    let u : Fin 4 → ℤ := fun _ => -1
-    let v : Fin 4 → ℤ := fun _ => 1
-    have he : -H = 1+replicateCol (Fin 1) u * replicateRow (Fin 1) v := by
+    have he : H = -(1 + (of fun (_ : Fin 4) (_ : Fin 1) => (-1:ℤ)) *
+        (of fun (_ : Fin 1) (_ : Fin 4) => (1:ℤ))) := by
       ext i j
-      by_cases h : i=j <;> simp [H,outsideDiagonal,u,v,h,one_apply,Matrix.mul_apply]
-    have hh := congrArg Matrix.det he
-    rw [det_neg,det_one_add_replicateCol_mul_replicateRow] at hh
-    simpa [v,u,dotProduct] using hh
+      by_cases h : i=j <;> simp [H,outsideDiagonal,h,one_apply,Matrix.mul_apply]
+    rw [he,det_neg,det_one_add_mul_comm,det_unique,Fintype.card_fin]
+    norm_num [Matrix.mul_apply]
   let A := (Int.castRingHom (ZMod 2)).mapMatrix H
   have hA : binaryLift A=H := by
     ext i j
-    by_cases h : i=j <;> simp [binaryLift,A,H,outsideDiagonal,h]
+    by_cases h : i=j <;> simp [binaryLift,A,H,outsideDiagonal,h] <;> first | rfl | decide
   refine ⟨A,?_,by rw [hA,hdet],?_⟩
-  · rw [show A.det=(H.det:ZMod 2) from ((Int.castRingHom _).map_det H).symm,hdet]
+  · show ((Int.castRingHom (ZMod 2)).mapMatrix H).det ≠ 0
+    rw [det_map_intCast,hdet]
     exact (not_congr (ZMod.intCast_zmod_eq_zero_iff_dvd _ _)).mpr (by norm_num)
-  · rw [hA,← RingHom.map_det,hdet]
+  · rw [hA,det_map_intCast,hdet]
     exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr (by norm_num)
 
 
@@ -193,13 +203,16 @@ theorem borderedClique_det {n : ℕ} (S : Finset (Fin n)) :
       -(1 + U*V) := by
     ext i j
     by_cases h : i=j <;>
-      simp [outsideDiagonal,U,V,one_apply,Matrix.mul_apply,Fin.sum_univ_two,h]
+      simp [outsideDiagonal,U,V,one_apply,Matrix.mul_apply,Fin.sum_univ_two,h] <;> ring
   have h₂ : V*U = !![-(n:ℤ), (S.card:ℤ); -(S.card:ℤ), (S.card:ℤ)] := by
     ext i j
     fin_cases i <;> fin_cases j <;> simp [U,V,Matrix.mul_apply,hsum,hsq]
+  have h₃ : (1 : Matrix (Fin 2) (Fin 2) ℤ) + !![-(n:ℤ), (S.card:ℤ); -(S.card:ℤ), (S.card:ℤ)] =
+      !![1-(n:ℤ), (S.card:ℤ); -(S.card:ℤ), 1+(S.card:ℤ)] := by
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp [one_apply] <;> ring
   rw [borderedClique,det_fromBlocks_one₂₂,show (of fun i (_ : Fin 1) => if i ∈ S then (1:ℤ) else 0) =
-      (of fun i (_ : Fin 1) => b i) from rfl,hcore,det_neg,Fintype.card_fin,det_one_add_mul_comm,h₂,det_fin_two]
-  simp [one_apply,pow_two]
+      (of fun i (_ : Fin 1) => b i) from rfl,hcore,det_neg,Fintype.card_fin,det_one_add_mul_comm,h₂,h₃,det_fin_two_of]
   ring
 
 /-- Rank five is the first rank in which the zero-one lift of a binary basis
@@ -241,11 +254,12 @@ theorem rankFive_five_realized :
   have hl : binaryLift A = H := by
     ext i j
     change ((H i j : ZMod 2).val : ℤ) = H i j
-    rcases entries i j with h|h <;> simp [h]
+    rcases entries i j with h|h <;> simp [h] <;> first | rfl | decide
   refine ⟨A,?_,by rw [hl,hd],?_⟩
-  · rw [show A.det=(H.det:ZMod 2) from ((Int.castRingHom _).map_det H).symm,hd]
+  · show ((Int.castRingHom (ZMod 2)).mapMatrix H).det ≠ 0
+    rw [det_map_intCast,hd]
     exact (not_congr (ZMod.intCast_zmod_eq_zero_iff_dvd _ _)).mpr (by norm_num)
-  · rw [hl,← RingHom.map_det,hd]
+  · rw [hl,det_map_intCast,hd]
     exact (ZMod.intCast_zmod_eq_zero_iff_dvd _ _).mpr (by norm_num)
 end
 end GaloisForLFunctions.RepresentationLifting

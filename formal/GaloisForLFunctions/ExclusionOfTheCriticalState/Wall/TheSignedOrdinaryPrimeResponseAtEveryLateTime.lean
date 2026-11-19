@@ -19,7 +19,8 @@ namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
   CriticalArithmeticCorrelationTheory HTGeometry _root_.RHTower
 
-private theorem fractional_test_mass : Integrable fractionalPrimeTest ∧
+/-- The positive fractional-part kernel has total mass given by the central zeta value. -/
+theorem fractionalPrimeTest_mass : Integrable fractionalPrimeTest ∧
     (∫ v, fractionalPrimeTest v)= -2*(riemannZeta (1/2)).re := by
   let f := weightedFloorDiscrepancy (1/2)
   have he : fractionalPrimeTest=fun v => -f v := by
@@ -61,7 +62,7 @@ private theorem fractional_convolution_limit {Q : ℝ → ℝ} (hm : Measurable 
     (∀ T : ℝ, Integrable (fun t => Q t*fractionalPrimeTest (T-t))) ∧
       Tendsto (fun T : ℝ => ∫ t, Q t*fractionalPrimeTest (T-t)) atTop (𝓝 (L*∫ v, fractionalPrimeTest v)) := by
   let K := fractionalPrimeTest
-  have hiK : Integrable K := fractional_test_mass.1
+  have hiK : Integrable K := fractionalPrimeTest_mass.1
   have hmK : Measurable K := measurable_fractionalPrimeTest
   have hiB := hiK.abs.const_mul B
   have hmQ (T : ℝ) : Measurable (fun v : ℝ => Q (T-v)*K v) := (hm.comp (by fun_prop)).mul hmK
@@ -151,7 +152,7 @@ theorem riemannHypothesis_or_ordinary_fractional_response : RiemannHypothesis �
     rw [hefun,integral_sub hI (hconv.1 T)]
     exact ⟨hI.sub (hconv.1 T),congrArg (· - ∫ t, properRow Φ t*K (T-t)) hfull.2.1⟩
   have hc : 0-(m/2)*(∫ v, K v)=(riemannZeta (1/2)).re*m := by
-    rw [show (∫ v, K v)=_ from fractional_test_mass.2]; ring
+    rw [show (∫ v, K v)=_ from fractionalPrimeTest_mass.2]; ring
   have hlim := (tendsto_stirling_response hC hb).sub hconv.2
   rw [hc] at hlim
   have hread : Tendsto (fun T : ℝ => ∫ t, f T t) atTop (𝓝 ((riemannZeta (1/2)).re*m)) :=

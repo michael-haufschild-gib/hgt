@@ -13,18 +13,4 @@ At $j=i$ the two harmonic terms cancel. At larger $j$ the last term is a recipro
 
 **Full lower divisor.** Transpose at fixed upper degree $m>0$. The jet sum is $m(H_{m-1}+H_{2m-1}-H_m)/2=mH_{2m-1}/2-1/2$. The contact sum is $\sum_{q\mid m}\Lambda(q)=\log m$. Thus a single independently evaluated column should control all signed upper divisors, with the archimedean and finite-place terms retained together. The arithmetic issue for a restricted lower divisor is precisely which complementary terms survive.
 
-**Including the diagonal.** In the existing flat-divisor gauge the exact real variation at $j=i+k$ is $D_i(k)=H_{i+k}-(H_k+H_{2i+k})/2$. A candidate positive measure for its Hankel matrix has moments
-
-$$
-2D_i(k)=\int_0^1 x^k(1-x)\left(\sum_{a=0}^{i-1}x^a\right)^2\,dx.
-$$
-
-This would retain the real contribution as one positive quadratic form after arbitrary signed endpoint gluing. The Chebyshev remainder, the fractional boundary and the diagonal constant still enter the full pairing. [Flat-divisor gauge](../../../../formal/GaloisForLFunctions/HodgeTheoryOfAFixedPart/WeilsFormInTheGaugeOfTheFlatTail.lean)
-
-**Comparison with integer block curvature.** Remove the centered monomial from the real-place measure. Its moments are $C_d(k)=2D_d(k)-d^2\{1/(k+d)-1/(k+d+1)\}$. Write $B_d(x)=S_d(x)^2-d^2x^{d-1}$, where $S_d(x)=\sum_{j<d}x^j$. The real-place density is then $(1-x)B_d(x)$, while the finite-place block curvature $K_d(n)$ has density $x^{dn}(1-x^d)B_d(x)/(-\log x)$. Both contain the same positive polynomial. The inequality $x\le(1-x)/(-\log x)\le1$ gives
-
-$$
-\sum_{r,j<d} C_d(dn+r+j+1)\ \le K_d(n)-K_d(n+1)\ \le\sum_{r,j<d} C_d(dn+r+j).
-$$
-
-The inequalities should persist as quadratic forms after arbitrary signed endpoint shifts: insert the same square $P(x^d)^2$ into each integral. This tests the price of the **actual** mixed finite-place variation against the real-place metric at two adjacent cuts. Evaluating a single positive endpoint does not prove the quadratic-form comparison.
+**Including the diagonal.** The residual in the exact Weil row is $D_i(k)=H_{i+k}-(H_k+H_{2i+k})/2$. Its positive measure and the centered monomial are [formalized](../3-formalized/sac-real-place-endpoint-measure.md). The adjacent-cut comparison on complete blocks is [formalized](../3-formalized/sac-adjacent-weil-metrics-and-prime-curvature.md).

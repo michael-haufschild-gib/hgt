@@ -51,7 +51,7 @@ private theorem old_decompose (K : Finset (Finset (α ⊕ β))) :
       rw [← h,toLeft_disjSum_toRight]
     constructor
     · intro hk
-      exact mem_union_right _ (mem_map.mpr ⟨s.toRight, mem_filter.mpr ⟨mem_univ _,hs ▸ hk⟩,hs⟩)
+      exact mem_union_right _ (mem_map.mpr ⟨s.toRight, mem_filter.mpr ⟨mem_univ _,by rw [hs]; exact hk⟩,hs⟩)
     · intro hk
       rcases mem_union.mp hk with hd | h'
       · exact (mem_filter.mp hd).1
@@ -83,7 +83,7 @@ private theorem sum_proper_weight (x y : R) :
       (x+y)^Fintype.card α - x^Fintype.card α := by
   have ht := prod_add (fun _ : α => x) (fun _ : α => y) univ
   have he : (∑ u : Finset α, faceWeightAt u x y) = (x+y)^Fintype.card α := by
-    simpa [faceWeightAt,card_compl] using ht.symm
+    simpa [faceWeightAt,card_compl,card_univ_sdiff] using ht.symm
   have h := sum_erase_add (univ : Finset (Finset α)) (fun u => faceWeightAt u x y) (mem_univ univ)
   rw [he] at h
   simp only [faceWeightAt,card_univ,Nat.sub_self,pow_zero,mul_one] at h
@@ -104,6 +104,8 @@ theorem faceEnumerator_stellar (K : Finset (Finset (α ⊕ β))) (x y : R) :
     · congr 1
       refine sum_congr rfl fun v _ => ?_
       simp [fullCenter,split_weight,faceWeightAt]
+      rw [Nat.add_sub_add_left,pow_add]
+      ring
     · apply disjoint_left.mpr
       intro s hs ht
       obtain ⟨v,_,rfl⟩ := mem_map.mp ht
@@ -123,8 +125,8 @@ theorem faceEnumerator_stellar (K : Finset (Finset (α ⊕ β))) (x y : R) :
   change faceEnumerator ((offCenter K).map liftOld ∪ ((U ×ˢ L).map joinFaces).map insertNone.toEmbedding) x y = _
   unfold faceEnumerator
   rw [sum_union]
-  · simp only [sum_map,RelEmbedding.toEmbedding_apply,hlift,hapex,← mul_sum,sum_product]
-    simp_rw [← mul_sum,← sum_mul]
+  · simp only [sum_map,RelEmbedding.coe_toEmbedding,hlift,hapex,← mul_sum,sum_product]
+    simp only [← mul_sum,← sum_mul]
     rw [show (∑ u ∈ U, faceWeightAt u x y) = _ from sum_proper_weight x y]
     change y*faceEnumerator (offCenter K) x y +
       x*(((x+y)^Fintype.card α-x^Fintype.card α)*faceEnumerator L x y) = _
@@ -163,7 +165,7 @@ theorem stellar_pointCount (F : Type*) [Field F] [Fintype F] (K : Finset (Finset
       (q^Fintype.card α-q)*fieldSupportCount F {0} (subdivisionLink K) := by
   dsimp only
   have h := congrArg (Polynomial.eval (Fintype.card F:ℤ)) (arrangementPolynomial_stellar K)
-  simpa only [eval_add,eval_mul,eval_sub,eval_X,eval_pow,eval_one,eval_arrangementPolynomial] using h
+  simpa only [fieldSupportCount,eval_add,eval_mul,eval_sub,eval_X,eval_pow,eval_one,eval_arrangementPolynomial] using h
 
 private theorem complementary_count (F : Type*) [Field F] [Fintype F] (K : Finset (Finset ι)) :
     ((arrangementWords (fun _ : ι => ({0} : Finset F)ᶜ) K).card:ℤ) =

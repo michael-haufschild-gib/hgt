@@ -40,9 +40,10 @@ def truncatedFaceIdeal (facets : Finset (Finset ι)) (r : ι → ℕ) : Ideal (M
 theorem truncatedFaceIdeal_eq (facets : Finset (Finset ι)) (r : ι → ℕ) :
     truncatedFaceIdeal K facets r = stanleyReisnerIdeal K facets ⊔
       Ideal.span (Set.range fun i => (X i : MvPolynomial ι K)^(r i+1)) := by
-  rw [truncatedFaceIdeal,Set.image_union,Ideal.span_union,stanleyReisnerIdeal,Set.image_range]
+  rw [truncatedFaceIdeal,Set.image_union,Ideal.span_union,stanleyReisnerIdeal,← Set.range_comp]
   simp [Function.comp_def,X_pow_eq_monomial]
 
+include K in
 private theorem nonface_divisor_iff (facets : Finset (Finset ι)) (e : ι →₀ ℕ) :
     (∃ d ∈ nonfaceExponents facets, d ≤ e) ↔ ¬IsFaceOf (facets : Set (Finset ι)) e.support := by
   have h := mem_stanleyReisnerIdeal_iff (R := K) facets (monomial e (1:K))
@@ -72,7 +73,7 @@ theorem mem_truncatedFaceIdeal (facets : Finset (Finset ι)) (r : ι → ℕ) (p
       by_cases hj : i = j
       · subst j
         simpa using hi
-      · simp [Finsupp.single_eq_of_ne hj]
+      · simp [Finsupp.single_apply,hj]
     · obtain ⟨d,hd,hde⟩ := (nonface_divisor_iff K facets e).mpr hf
       exact ⟨d,Or.inl hd,hde⟩
 
@@ -122,11 +123,14 @@ face enumerator. Its values count standard monomials over every coefficient fiel
 theorem truncatedFace_finrank (facets : Finset (Finset ι)) (r : ι → ℕ) :
     Module.finrank K (MvPolynomial ι K ⧸ truncatedFaceIdeal K facets r) =
       ∑ s ∈ facetFaces facets, ∏ i ∈ s, r i := by
-  rw [(truncatedFaceCoordinates K facets r).finrank_eq,finrank_pi,Fintype.card_coe]
+  rw [(truncatedFaceCoordinates K facets r).finrank_eq,Module.finrank_pi,Fintype.card_coe]
   let D := fun i => ({0} : Finset (Fin (r i+1)))ᶜ
   have he (x : ∀ i, Fin (r i+1)) : matchSet D x = (boxExponent x).support := by
     ext i
-    simp [matchSet,D,Finsupp.mem_support_iff,boxExponent_apply,Fin.ext_iff]
+    rw [Finsupp.mem_support_iff,boxExponent_apply]
+    unfold matchSet
+    simp only [mem_filter,mem_univ,true_and,D,mem_compl,mem_singleton]
+    exact ⟨fun h hv => h (Fin.ext hv),fun h hv => h (by rw [hv]; rfl)⟩
   have h := card_arrangementWords D (facetFaces facets)
   have hW : allowedBox facets r = arrangementWords D (facetFaces facets) := by
     ext x
@@ -151,8 +155,8 @@ theorem truncatedFaceIdeal_frobenius (facets : Finset (Finset ι)) (p e : ℕ)
       (Ideal.span (Set.range (X : ι → MvPolynomial ι K))).map
         (iterateFrobenius (MvPolynomial ι K) p e) := by
   have hpos := pow_pos (Fact.out : p.Prime).pos e
-  rw [truncatedFaceIdeal_eq,Ideal.map_span,Set.image_range]
-  congr 2
+  rw [truncatedFaceIdeal_eq,Ideal.map_span,← Set.range_comp]
+  congr 3
   funext i
   simp only [Function.comp_apply,iterateFrobenius_def,Nat.sub_add_cancel hpos]
 
@@ -165,10 +169,8 @@ def truncatedFaceAlgEquiv (facets : Finset (Finset ι)) (r : ι → ℕ) :
   let J := Ideal.span (Set.range fun i => (X i : MvPolynomial ι K)^(r i+1))
   have he : J.map (Ideal.Quotient.mkₐ K I) =
       Ideal.span (Set.range fun i => (srVertexX K facets i)^(r i+1)) := by
-    rw [Ideal.map_span,Set.image_range]
+    rw [Ideal.map_span,← Set.range_comp]
     congr 2
-    funext i
-    exact map_pow _ _ _
   rw [← he,truncatedFaceIdeal_eq]
   exact DoubleQuot.quotQuotEquivQuotSupₐ K I J
 
@@ -180,7 +182,7 @@ theorem faceRing_hilbertKunz (facets : Finset (Finset ι)) (p e : ℕ) [Fact p.P
       ∑ s ∈ facetFaces facets, (p^e-1)^s.card := by
   have hpos := pow_pos (Fact.out : p.Prime).pos e
   have he := (truncatedFaceAlgEquiv K facets (fun _ => p^e-1)).toLinearEquiv.finrank_eq
-  simp only [Nat.sub_add_cancel hpos] at he
+  conv_lhs => rw [show (p^e) = p^e - 1 + 1 from (Nat.sub_add_cancel hpos).symm]
   rw [he,truncatedFace_finrank]
   simp
 
@@ -212,7 +214,7 @@ theorem faceRing_hilbertKunz_multiplicity (facets : Finset (Finset ι)) (p : ℕ
       Tendsto (fun e => (q e-1)^s.card/(q e)^D) atTop (𝓝 (if s.card=D then 1 else 0)) := by
     have hk : s.card ≤ D := le_sup hs
     simp_rw [hnorm _ hk]
-    have h := ((tendsto_const_nhds.sub hlim).pow s.card).mul (hlim.pow (D-s.card))
+    have h := (((tendsto_const_nhds (x := (1:ℝ))).sub hlim).pow s.card).mul (hlim.pow (D-s.card))
     by_cases he : s.card=D
     · simpa [he] using h
     · simpa [he,zero_pow (Nat.sub_ne_zero_of_lt (lt_of_le_of_ne hk he))] using h
@@ -221,9 +223,10 @@ theorem faceRing_hilbertKunz_multiplicity (facets : Finset (Finset ι)) (p : ℕ
     simp only [← sum_filter,sum_const,nsmul_eq_mul,mul_one]
   rw [ht] at hsum
   refine hsum.congr' (Eventually.of_forall fun e => ?_)
+  dsimp only
   rw [faceRing_hilbertKunz,Nat.cast_sum,sum_div]
   refine sum_congr rfl fun s _ => ?_
-  simp only [Nat.cast_pow,Nat.cast_sub (pow_pos (Fact.out : p.Prime).pos e),Nat.cast_one,q]
+  simp only [Nat.cast_pow,Nat.cast_sub (pow_pos (Fact.out : p.Prime).pos e),Nat.cast_one,q,D,S]
 
 end
 end GaloisForLFunctions.HTGeometry

@@ -69,9 +69,7 @@ private def nodalRows (m : ℕ+) (t : ℕ) : nodalFiber m t ≃
   left_inv v := Subtype.ext (Prod.ext (ZMod.natCast_zmod_val _) rfl)
   right_inv z := by
     rcases z with ⟨i,y,hy⟩
-    dsimp
-    congr 1
-    exact Fin.ext (ZMod.val_natCast_of_lt i.isLt)
+    exact Sigma.subtype_ext (Fin.ext (ZMod.val_natCast_of_lt i.isLt)) rfl
 
 /-- The entire arithmetic product distribution on ℤ/mℤ. Taking t=0
 recovers the classical gcd-sum function at m. -/
@@ -80,13 +78,13 @@ theorem nodalFiber_count (m : ℕ+) (t : ℕ) :
       ∑ d ∈ (m:ℕ).divisors, if d ∣ t then ((m:ℕ)/d).totient*d else 0 := by
   rw [Nat.card_congr (nodalRows m t),Nat.card_sigma]
   simp_rw [nodal_row_card]
-  rw [Fin.sum_univ_eq_sum_range]
+  rw [Fin.sum_univ_eq_sum_range (fun i => if Nat.gcd (m:ℕ) i ∣ t then Nat.gcd (m:ℕ) i else 0) (m:ℕ)]
   have h := SuccessorShellArithmetic.sum_range_gcd_profile m.property
     (fun d => if d ∣ t then (d:ℝ) else 0)
-  have he (d : ℕ) : (((m:ℕ)/d).totient:ℝ)*(if d ∣ t then (d:ℝ) else 0) =
-      (if d ∣ t then ((((m:ℕ)/d).totient*d:ℕ):ℝ) else 0) := by split_ifs <;> simp
-  simp_rw [he] at h
-  exact_mod_cast h
+  have h2 := h.trans (sum_congr rfl fun d _ => (by by_cases hd : d ∣ t <;> simp [hd] :
+    (((m:ℕ)/d).totient:ℝ) * (if d ∣ t then (d:ℝ) else 0) =
+      ((if d ∣ t then ((m:ℕ)/d).totient*d else 0 : ℕ) : ℝ)))
+  exact_mod_cast h2
 
 private theorem pow_quot {p k j : ℕ} (hp : 0 < p) (hj : j ≤ k) : p^k/p^j = p^(k-j) := by
   rw [show p^k = p^(k-j)*p^j by rw [← pow_add,Nat.sub_add_cancel hj],Nat.mul_div_cancel _ (pow_pos hp _)]
@@ -96,16 +94,16 @@ singular fiber. The top stratum contributes the entire remaining axis. -/
 theorem node_primePower (p : Nat.Primes) (k : ℕ) :
     Nat.card (nodalFiber (p.val^(k+1)) 0) = p.val^(k+1)+(k+1)*p.val^k*(p.val-1) := by
   have h := nodalFiber_count (⟨p.val^(k+1),pow_pos p.property.pos _⟩ : ℕ+) 0
-  simp only [dvd_zero,if_true] at h
+  simp only [dvd_zero,if_true,PNat.mk_coe] at h
   rw [h,Nat.divisors_prime_pow p.property,sum_map]
   simp only [Function.Embedding.coeFn_mk]
-  rw [sum_range_succ,Nat.div_self (pow_pos p.property.pos _),Nat.totient_one,one_mul]
+  rw [Finset.sum_range_succ,Nat.div_self (pow_pos p.property.pos _),Nat.totient_one,one_mul]
   have he (i : ℕ) (hi : i ∈ range (k+1)) : (p.val^(k+1)/p.val^i).totient*p.val^i =
       p.val^k*(p.val-1) := by
     have hi' := mem_range.mp hi
     rw [pow_quot p.property.pos hi'.le,show k+1-i=(k-i)+1 by omega,
       Nat.totient_prime_pow_succ p.property,mul_right_comm,← pow_add,Nat.sub_add_cancel (by omega)]
-  rw [sum_congr rfl he,sum_const,card_range,nsmul_eq_mul]
+  rw [sum_congr rfl he,sum_const,card_range,smul_eq_mul]
   ring
 
 /-- Parallel nodal equations give the integral model of the cross-polytope
@@ -149,7 +147,7 @@ def nodeCharacterEquiv {ι R : Type*} [CommRing R] (t : ι → R) :
       Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.subset_span ⟨i,rfl⟩)
     have hh := congrArg f he
     apply sub_eq_zero.mp
-    simpa [map_sub,map_mul,Q] using hh
+    simpa [map_sub,map_mul,Q,I] using hh
   · intro f
     apply Ideal.Quotient.algHom_ext
     apply MvPolynomial.algHom_ext
@@ -199,18 +197,19 @@ theorem nodeSeries_rational (p : Nat.Primes) :
   | zero =>
     simp only [PowerSeries.coeff_zero_eq_constantCoeff,map_mul,map_sub,map_one,
       PowerSeries.constantCoeff_X,mul_zero,sub_zero,one_mul]
-    exact nodeSeries_zero p
+    simpa only [PowerSeries.coeff_zero_eq_constantCoeff_apply] using nodeSeries_zero p
   | succ k =>
     rw [coeff_linear]
     cases k with
     | zero =>
-      rw [coeff_linear,nodeSeries_succ,nodeSeries_zero]
-      change _ - _*PowerSeries.constantCoeff _ = _
-      simp [nodeSeries_zero,pow_succ]
+      rw [coeff_linear,nodeSeries_succ,nodeSeries_zero,PowerSeries.coeff_zero_eq_constantCoeff_apply,
+        map_mul,map_sub,map_one,map_mul,PowerSeries.constantCoeff_C,PowerSeries.constantCoeff_X,mul_zero,
+        sub_zero,one_mul,← PowerSeries.coeff_zero_eq_constantCoeff_apply,nodeSeries_zero]
+      simp <;> ring
     | succ k =>
       rw [coeff_linear,coeff_linear,nodeSeries_succ,nodeSeries_succ]
       cases k with
-      | zero => simp [nodeSeries_zero,pow_succ]; ring
-      | succ k => rw [nodeSeries_succ]; simp [pow_succ]; ring
+      | zero => simp [nodeSeries_zero,pow_succ,PowerSeries.coeff_X] <;> ring
+      | succ k => rw [nodeSeries_succ]; simp [pow_succ,PowerSeries.coeff_X] <;> ring
 end
 end GaloisForLFunctions.HTGeometry.NormalCrossings

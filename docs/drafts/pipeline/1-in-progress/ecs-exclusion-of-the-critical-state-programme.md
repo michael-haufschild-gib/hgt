@@ -3,7 +3,7 @@
 - **ID:** ecs
 - **Stage:** 1-in-progress
 - **Type:** programme card (goal loop)
-- **Source:** docs/reports/review-1511/obstacles-summary.md §2.18 ("the most likely route to a proof, as a research programme")
+- **Source:** [Updated ECS programme, §2.16](../../../reports/review-1811/obstacles-summary.md#216-programme-to-close-ecs).
 - **Statement:** make every exact property of the critical half-line state a Lean theorem (stages 1–4: probe kernel, zero side, (★), continuation, sign/decay laws, index law) and attack stage 5 (no state for the zeros of ζ).
 
 ## Goal
@@ -19,6 +19,8 @@ README: `formal/GaloisForLFunctions/ExclusionOfTheCriticalState/README.md` (Q1�
 Order: Q1 probe calculus (pole, prime, Gamma parts on `e_p`, Poisson integral of Re ψ) → probe kernel;
 state's probe identity in prime coordinates; Q6 finite index law; Q2/Q3 zero side on the domain → (★);
 Q5 sign law via Landau; Q4 decay law (divergent half). Stage 5 entry points: wall, collar, charges, difference equation.
+
+For §2.16 the charged test must exceed $\operatorname{Re}\zeta(1/2)m^2$. If RH fails, every $0<\eta\le1$ has tests $X=e^T\to\infty$ and $X^{1/(1+\eta)}\le N\le X$ on which ordinary primes against the unit reference on $(N,\lceil X^{1+\eta}\rceil]$ contribute at most $-cX^g+\operatorname{Re}\zeta(1/2)m^2+o(1)$. The constants $c,g>0$ are uniform in $\eta$. The missing arithmetic input must exclude that deficit on the same tests. [Ordinary-prime deficit and square charge](../3-formalized/ecs-proper-power-charge-inside-the-diagonal-interval.md).
 
 ## Conjecture ledger
 - Integer centering (Lean). The continuous pole and density-one integer reference differ by vanishing absolute Cesàro mean. This reduces the signed error to the weights $1_{\mathbb P}(n)\log n-1$. [Proof](../3-formalized/ecs-integer-quadrature-for-the-critical-state.md). Fixed prime sieves preserve the limit. Removing every prime through T² costs $e^{o(T)}$ in cumulative absolute error and leaves only even gaps on late intervals. [Growing sieve](../3-formalized/ecs-growing-sieve-for-integer-centering.md).

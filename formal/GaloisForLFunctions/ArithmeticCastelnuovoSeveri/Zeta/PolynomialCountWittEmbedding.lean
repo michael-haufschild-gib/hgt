@@ -21,13 +21,14 @@ def countWittHom (q : A) : Polynomial ℤ →+* DeningerBigWittRing A :=
 theorem countWitt_ghost (P : Polynomial ℤ) (q : A) (k : ℕ+) :
     deningerBigWittGhostComponent k.val k.property (countWittHom q P) =
       P.eval₂ (Int.castRingHom A) (q^k.val) := by
-  change _ (P.eval₂ (Int.castRingHom _) _) = _
+  change (deningerBigWittGhostComponent k.val k.property)
+    (P.eval₂ (Int.castRingHom _) (deningerBigWittRingTeichmuller q)) = _
   rw [Polynomial.ringHom_eval₂_intCastRingHom,deningerBigWittGhostComponent_teichmuller]
 
 /-- Naturality in the coefficient ring includes reductions in positive characteristic. -/
 theorem countWitt_natural (f : A →+* B) (P : Polynomial ℤ) (q : A) :
     deningerBigWittRingMap f (countWittHom q P) = countWittHom (f q) P := by
-  change _ (P.eval₂ (Int.castRingHom _) _) = _
+  change (deningerBigWittRingMap f) (P.eval₂ (Int.castRingHom _) (deningerBigWittRingTeichmuller q)) = _
   rw [Polynomial.ringHom_eval₂_intCastRingHom,deningerBigWittRingMap_teichmuller]
   rfl
 
@@ -35,7 +36,7 @@ theorem countWitt_natural (f : A →+* B) (P : Polynomial ℤ) (q : A) :
 rings where ghost components fail to distinguish Witt vectors. -/
 theorem countWitt_frobenius (P : Polynomial ℤ) (q : A) :
     deningerBigWittFrobeniusTwoRingHom (countWittHom q P) = countWittHom (q^2) P := by
-  change _ (P.eval₂ (Int.castRingHom _) _) = _
+  change deningerBigWittFrobeniusTwoRingHom (P.eval₂ (Int.castRingHom _) (deningerBigWittRingTeichmuller q)) = _
   rw [Polynomial.ringHom_eval₂_intCastRingHom,deningerBigWittFrobeniusTwoRingHom_teichmuller]
   rfl
 
@@ -53,7 +54,8 @@ theorem countWitt_injective_integer (q : ℕ) : Function.Injective (countWittHom
   let k : ℕ+ := ⟨n+1,Nat.succ_pos _⟩
   have he := congrArg (deningerBigWittGhostComponent k.val k.property (A := ℤ)) h
   rw [countWitt_ghost P b k,countWitt_ghost Q b k] at he
-  simpa [Polynomial.eval,Int.castRingHom,k,b] using he
+  rw [Int.castRingHom_int] at he
+  exact he
 
 /-- The local zeta factor is the literal big-Witt series of the additive
 negative of the Tate class, accounting for the negative logarithmic
@@ -70,8 +72,8 @@ theorem polynomialCountZeta_eq_wittSeries (P : Polynomial ℤ) (q : ℂ) :
     · let j : ℕ+ := ⟨k,Nat.pos_of_ne_zero hk⟩
       have hh := map_neg (deningerBigWittGhostComponent k j.property) (countWittHom q P)
       change PowerSeries.coeff k (deningerBigWittGhostSeries u) = _ at hh
-      rw [countWitt_ghost P q j] at hh
-      simpa only [map_neg,polynomialCountSeries,coeff_mk,if_neg hk] using hh
+      rw [show deningerBigWittGhostComponent k j.property (countWittHom q P) = _ from countWitt_ghost P q j] at hh
+      simpa only [map_neg,polynomialCountSeries,coeff_mk,if_neg hk,j,PNat.mk_coe] using hh
   symm
   apply (polynomialCountZeta_eq_iff _ _ _).mpr
   refine ⟨deningerBigWittSeries_constantCoeff _,?_⟩

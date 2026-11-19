@@ -35,12 +35,13 @@ theorem agreeingDegrees_bound (q : ℕ) (S : Finset ℕ) {P Q : ℤ[X]} (hne : P
     obtain ⟨n,hn,rfl⟩ := mem_image.mp hu
     have hn' : P.eval (b^n)=Q.eval (b^n) := (mem_filter.mp hn).2
     apply (mem_posRoots hne').mpr
-    refine ⟨by exact_mod_cast (pow_pos (zero_lt_one.trans hb) n),?_⟩
+    refine ⟨show (0:ℝ) < ((b^n : ℤ) : ℝ) by exact_mod_cast pow_pos (zero_lt_one.trans hb) n,?_⟩
     change ((P-Q).map f).eval (f (b^n))=0
     rw [Polynomial.eval_map,Polynomial.eval₂_at_apply,Polynomial.eval_sub,hn',sub_self,map_zero]
   have hs : H.support ⊆ P.support ∪ Q.support := by
     intro j hj
     by_contra! h
+    simp only [mem_union, not_or] at h
     have hp := Polynomial.notMem_support_iff.mp h.1
     have hq := Polynomial.notMem_support_iff.mp h.2
     exact (Polynomial.mem_support_iff.mp hj) (by simp [H,Polynomial.coeff_map,hp,hq])
@@ -101,12 +102,12 @@ theorem evenOdd_sample_collision (s : ℕ) (b : Fin (2*s+1) → ℕ+) :
   have hdeg : H.natDegree = 2*s+1 := by
     dsimp [H]
     rw [natDegree_prod_of_monic]
-    · simp [natDegree_X_add_C]
+    · simp only [natDegree_X_add_C, Finset.sum_const, Finset.card_univ, Fintype.card_fin, smul_eq_mul, mul_one]
     · exact fun i _ => monic_X_add_C _
   refine ⟨fun i => H.coeff (2*i.val),fun i => H.coeff (2*i.val+1),?_,?_⟩
   · change 0 < H.coeff 0
     have he : H.coeff 0 = ∏ j, (b j).val := by
-      rw [← Polynomial.eval_zero]
+      rw [Polynomial.coeff_zero_eq_eval_zero]
       simp [H,eval_prod]
     rw [he]
     exact prod_pos fun j _ => (b j).property
@@ -120,11 +121,14 @@ theorem evenOdd_sample_collision (s : ℕ) (b : Fin (2*s+1) → ℕ+) :
       sum_add_distrib] at hz
     have he (i : ℕ) : (-x)^(2*i) = x^(2*i) := by simp [pow_mul]
     have ho (i : ℕ) : (-x)^(2*i+1) = -(x^(2*i+1)) := by rw [pow_succ,he,pow_succ]; ring
-    simp only [Nat.castRingHom_apply,he,ho,mul_neg,sum_neg_distrib] at hz
-    rw [Fin.sum_univ_eq_sum_range,Fin.sum_univ_eq_sum_range]
-    exact_mod_cast (sub_eq_zero.mp (by simpa [sub_eq_add_neg] using hz) :
-      (∑ i ∈ range (s+1), (H.coeff (2*i):ℤ)*x^(2*i)) =
-        ∑ i ∈ range (s+1), (H.coeff (2*i+1):ℤ)*x^(2*i+1))
+    simp only [Nat.coe_castRingHom,he,ho,mul_neg,sum_neg_distrib] at hz
+    have key : ∑ i ∈ range (s+1), H.coeff (2*i) * ((b j : ℕ))^(2*i) =
+        ∑ i ∈ range (s+1), H.coeff (2*i+1) * ((b j : ℕ))^(2*i+1) := by
+      have h2 : (∑ i ∈ range (s+1), (H.coeff (2*i):ℤ)*((b j : ℕ):ℤ)^(2*i)) =
+          ∑ i ∈ range (s+1), (H.coeff (2*i+1):ℤ)*((b j : ℕ):ℤ)^(2*i+1) :=
+        sub_eq_zero.mp (by simpa [sub_eq_add_neg] using hz)
+      exact_mod_cast h2
+    simpa only [Finset.sum_range] using key
 
 open PowerSeries in
 /-- Truncated normalized local factors determine all ghost components through
@@ -141,7 +145,7 @@ private theorem ghost_trunc_congr {F F' G G' : PowerSeries ℂ} (hF : HasGhost F
     split_ifs with hj
     · cases j with
       | zero => simp
-      | succ j => rw [coeff_succ_X_mul,coeff_succ_X_mul,coeff_derivative,coeff_derivative,hcoeff _ hj]
+      | succ j => rw [coeff_succ_X_mul,coeff_succ_X_mul,PowerSeries.coeff_derivative,PowerSeries.coeff_derivative,hcoeff _ hj]
     · rfl
   have hd' : trunc n (F*G) = trunc n (F*G') := by
     rw [hd,← trunc_trunc_mul (n := n) F' G',← he,trunc_trunc_mul]

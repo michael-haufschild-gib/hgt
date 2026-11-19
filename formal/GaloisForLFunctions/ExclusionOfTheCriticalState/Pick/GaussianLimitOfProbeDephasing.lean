@@ -33,6 +33,7 @@ private theorem log_cosh_remainder (x : ℝ) :
     nlinarith only [pow_nonneg hu 3]
   exact ⟨sub_nonneg.mpr ((Real.log_le_iff_le_exp (Real.cosh_pos x)).mpr
       (Real.cosh_le_exp_half_sq x)),by
+    change u-Real.log (Real.cosh x) ≤ u^2
     linarith only [ht,hlog,Real.log_le_log hp hlow]⟩
 
 /-- Gaussian dephasing rate in the normalization of the Cauchy kernel. -/
@@ -49,7 +50,6 @@ theorem weakCoherence_log_error (n : ℕ) (s t : ℝ) :
   let N : ℝ := n+1
   let x := (s/Real.sqrt N-t/Real.sqrt N)/2
   have hN : 0 < N := by dsimp [N]; positivity
-  have hroot : Real.sqrt N ≠ 0 := (Real.sqrt_pos.mpr hN).ne'
   have hx : x^2/2 = gapCost s t / N := by
     dsimp only [x,gapCost]
     rw [← sub_div,div_pow,div_pow,Real.sq_sqrt hN.le]
@@ -68,13 +68,12 @@ theorem weakCoherence_log_error (n : ℕ) (s t : ℝ) :
   rw [hfactor]
   refine ⟨mul_nonneg hN.le hl, (mul_le_mul_of_nonneg_left hu hN.le).trans_eq ?_⟩
   field_simp [hN.ne']
-  ring
 
 /-- The exact continuous multiplier arising from infinitely many weak steps. -/
 theorem weakCoherence_tendsto (s t : ℝ) :
     Tendsto (fun n => weakCoherence n s t) atTop (𝓝 (Real.exp (-gapCost s t))) := by
   have ht : Tendsto (fun n : ℕ => gapCost s t ^ 2 / (n+1:ℝ)) atTop (𝓝 0) := by
-    simpa only [div_eq_mul_inv,one_div,mul_zero] using
+    simpa only [div_eq_mul_inv,one_div,one_mul,mul_zero] using
       tendsto_one_div_add_atTop_nhds_zero_nat.const_mul (gapCost s t ^ 2)
   have hzero := squeeze_zero (fun n => (weakCoherence_log_error n s t).1)
     (fun n => (weakCoherence_log_error n s t).2) ht

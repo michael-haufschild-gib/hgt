@@ -51,7 +51,8 @@ private theorem glue_x (u : B) : glueAxes (u*nodalBoundaryX) = glueAxes u*nodalS
   linear_combination -h
 
 private theorem glue_y (u : B) : glueAxes (u*nodalBoundaryY) = glueAxes u*nodalStanleyReisnerY := by
-  have h := axes_zeroProduct (mul_comm _ _ ▸ quotient_xy (F:=F)) u.val.1
+  have h := axes_zeroProduct (show (nodalStanleyReisnerY : Q) * nodalStanleyReisnerX = 0 by
+    rw [mul_comm]; exact quotient_xy) u.val.1
   simp only [glueAxes,nodalBoundaryY,Subalgebra.coe_mul,Prod.fst_mul,Prod.snd_mul,mul_zero,map_zero,
     zero_add,map_mul,aeval_X,coeff_zero,sub_zero]
   linear_combination -h
@@ -170,10 +171,12 @@ theorem nodalKoszul_normalForm (v : Fin 2 → B) :
       funext i
       apply Subtype.ext
       fin_cases i
-      · rw [hp]
+      · show (v 0).val = ((nodalKoszulBoundary c + a • nodalDisconnectCycle : Fin 2 → B) 0).val
+        rw [hp]
         apply Prod.ext <;> simp [nodalKoszulBoundary,nodalDisconnectCycle,nodalBoundaryY,
           c,Algebra.smul_def,sub_mul] <;> ring
-      · rw [hq]
+      · show (v 1).val = ((nodalKoszulBoundary c + a • nodalDisconnectCycle : Fin 2 → B) 1).val
+        rw [hq]
         apply Prod.ext <;> simp [nodalKoszulBoundary,nodalDisconnectCycle,nodalBoundaryX,c]
     refine ⟨(c,a),he,?_⟩
     rintro ⟨w,b⟩ hh
@@ -196,6 +199,7 @@ theorem nodalKoszul_boundary_iff (v : Fin 2 → B) (h : nodalKoszulRelation v=0)
     exact boundary_residue c
   · intro hv
     obtain ⟨⟨c,a⟩,he,_⟩ := (nodalKoszul_normalForm v).mp h
+    dsimp only at he
     rw [he,residue_normal] at hv
     exact ⟨c,by simpa [hv] using he⟩
 
@@ -207,14 +211,29 @@ def nodalFirstDifferential : (Fin 2 → B) →ₗ[F] B where
 
 def nodalSecondDifferential : B →ₗ[F] (Fin 2 → B) where
   toFun := nodalKoszulBoundary
-  map_add' c d := by funext i; fin_cases i <;> simp [nodalKoszulBoundary,add_mul]
-  map_smul' r c := by funext i; fin_cases i <;> simp [nodalKoszulBoundary,smul_mul_assoc]
+  map_add' c d := by funext i; fin_cases i <;> simp [nodalKoszulBoundary,add_mul] <;> ring
+  map_smul' r c := by funext i; fin_cases i <;> simp [nodalKoszulBoundary,Algebra.smul_def] <;> ring
+
+private instance nodalKerAddCommGroup : AddCommGroup (nodalFirstDifferential (F:=F)).ker :=
+  Submodule.addCommGroup _
+
+private instance nodalKerAddCommMonoid : AddCommMonoid (nodalFirstDifferential (F:=F)).ker :=
+  nodalKerAddCommGroup.toAddCommMonoid
+
+private instance nodalKerModule : Module F (nodalFirstDifferential (F:=F)).ker :=
+  Submodule.module _
 
 /-- First Koszul homology of the two coordinate functions, as an actual
 quotient of the kernel by the boundaries. -/
 abbrev NodalKoszulH1 (F : Type*) [Field F] :=
   (nodalFirstDifferential (F:=F)).ker ⧸ (nodalSecondDifferential (F:=F)).range.comap
     (nodalFirstDifferential (F:=F)).ker.subtype
+
+private instance nodalH1AddCommGroup : AddCommGroup (NodalKoszulH1 F) :=
+  Submodule.Quotient.addCommGroup _
+
+private instance nodalH1Module : Module F (NodalKoszulH1 F) :=
+  Submodule.Quotient.module _
 
 private def nodalResidueLinear : (nodalFirstDifferential (F:=F)).ker →ₗ[F] F where
   toFun v := nodalKoszulResidue v.val
@@ -225,58 +244,75 @@ private def nodalResidueLinear : (nodalFirstDifferential (F:=F)).ker →ₗ[F] F
 
 /-- The disconnected-vertex class supplies the full first homology without
 a grading or finite-dimensional truncation. The residue is its coordinate. -/
-def nodalKoszulH1Equiv : NodalKoszulH1 F ≃ₗ[F] F := by
-  have he : (nodalSecondDifferential (F:=F)).range.comap nodalFirstDifferential.ker.subtype =
+private theorem nodalH1_comap_eq :
+    (nodalSecondDifferential (F:=F)).range.comap nodalFirstDifferential.ker.subtype =
       nodalResidueLinear.ker := by
-    ext v
-    change (∃ c : B, nodalKoszulBoundary c=v.val) ↔ nodalKoszulResidue v.val=0
-    simpa only [eq_comm (a:=nodalKoszulBoundary _)] using nodalKoszul_boundary_iff v.val v.property
-  have hsurj : Function.Surjective (nodalResidueLinear (F:=F)) := by
-    intro a
-    let v : Fin 2 → B := nodalKoszulBoundary 0+a • nodalDisconnectCycle
-    have h₁ : nodalKoszulRelation v=0 := by
-      change (-0*nodalBoundaryY+a • nodalBoundaryY)*nodalBoundaryX+
-        (0*nodalBoundaryX+a • (0:B))*nodalBoundaryY=0
-      simp [smul_mul_assoc,mul_comm (nodalBoundaryY : B) nodalBoundaryX]
-    exact ⟨⟨v,h₁⟩,residue_normal 0 a⟩
-  exact (Submodule.quotEquivOfEq _ _ he).trans (nodalResidueLinear.quotKerEquivOfSurjective hsurj)
+  ext v
+  change (∃ c : B, nodalKoszulBoundary c=v.val) ↔ nodalKoszulResidue v.val=0
+  simpa only [eq_comm (a:=nodalKoszulBoundary _)] using nodalKoszul_boundary_iff v.val v.property
+
+private theorem nodalResidueLinear_surjective : Function.Surjective (nodalResidueLinear (F:=F)) := by
+  intro a
+  let v : Fin 2 → B := nodalKoszulBoundary 0+a • nodalDisconnectCycle
+  have h₁ : nodalKoszulRelation v=0 := by
+    change (-0*nodalBoundaryY+a • nodalBoundaryY)*nodalBoundaryX+
+      (0*nodalBoundaryX+a • (0:B))*nodalBoundaryY=0
+    simp [smul_mul_assoc,mul_comm (nodalBoundaryY : B) nodalBoundaryX]
+  exact ⟨⟨v,h₁⟩,residue_normal 0 a⟩
+
+def nodalKoszulH1Equiv : NodalKoszulH1 F ≃ₗ[F] F :=
+  let e₁ : NodalKoszulH1 F ≃ₗ[F]
+      ((nodalFirstDifferential (F:=F)).ker ⧸ LinearMap.ker (nodalResidueLinear (F:=F))) :=
+    Submodule.quotEquivOfEq (M := (nodalFirstDifferential (F:=F)).ker) _ _ nodalH1_comap_eq
+  let e₂ : ((nodalFirstDifferential (F:=F)).ker ⧸ LinearMap.ker (nodalResidueLinear (F:=F))) ≃ₗ[F] F :=
+    LinearMap.quotKerEquivOfSurjective (M := (nodalFirstDifferential (F:=F)).ker) (M₂ := F)
+      nodalResidueLinear nodalResidueLinear_surjective
+  e₁.trans e₂
 
 theorem nodalKoszulH2_trivial : (nodalSecondDifferential (F:=F)).ker = ⊥ :=
   LinearMap.ker_eq_bot.mpr boundary_inj
 
 /-- In the Stanley--Reisner quotient itself every first cycle has the
 same unique decomposition, through its two genuine coordinate classes. -/
+private theorem axesEquiv_relation (v : Fin 2 → Q) :
+    nodalKoszulRelation (nodalAxesEquiv ∘ v) =
+      nodalAxesEquiv (v 0*nodalStanleyReisnerX+v 1*nodalStanleyReisnerY) := by
+  have hEX : nodalAxesEquiv (F:=F) nodalStanleyReisnerX = nodalBoundaryX := axes_x
+  have hEY : nodalAxesEquiv (F:=F) nodalStanleyReisnerY = nodalBoundaryY := axes_y
+  simp only [nodalKoszulRelation,map_add,map_mul,Function.comp_apply,hEX,hEY]
+
+private theorem axesEquiv_cycle (v : Fin 2 → Q) (z : Q × F) :
+    v=nodalStanleyReisnerKoszulBoundary z.1+z.2 • nodalStanleyReisnerDisconnectCycle ↔
+      nodalAxesEquiv ∘ v=nodalKoszulBoundary (nodalAxesEquiv z.1)+z.2 • nodalDisconnectCycle := by
+  let E := nodalAxesEquiv (F:=F)
+  rw [funext_iff,funext_iff]
+  apply forall_congr'
+  intro i
+  rw [← E.injective.eq_iff]
+  simp only [Pi.add_apply,Pi.smul_apply,map_add,map_smul,Function.comp_apply]
+  change _ ↔ _=nodalKoszulBoundary (nodalStanleyReisnerBoundaryMap z.1) i+_
+  rw [← nodalStanleyReisnerKoszulBoundary_map,← nodalStanleyReisnerDisconnectCycle_map (F:=F) i]
+  rfl
+
 theorem nodalStanleyReisner_normalForm (v : Fin 2 → Q) :
     v 0*nodalStanleyReisnerX+v 1*nodalStanleyReisnerY=0 ↔
       ∃! z : Q × F, v=nodalStanleyReisnerKoszulBoundary z.1+z.2 • nodalStanleyReisnerDisconnectCycle := by
-  let E := nodalAxesEquiv (F:=F)
-  have hrel : nodalKoszulRelation (E ∘ v) = E (v 0*nodalStanleyReisnerX+v 1*nodalStanleyReisnerY) := by
-    simp only [nodalKoszulRelation,map_add,map_mul,Function.comp_apply]
-    rfl
-  have hx (z : Q × F) :
-      v=nodalStanleyReisnerKoszulBoundary z.1+z.2 • nodalStanleyReisnerDisconnectCycle ↔
-      E ∘ v=nodalKoszulBoundary (E z.1)+z.2 • nodalDisconnectCycle := by
-    rw [funext_iff,funext_iff]
-    apply forall_congr'
-    intro i
-    rw [← E.injective.eq_iff]
-    simp only [Pi.add_apply,Pi.smul_apply,map_add,map_smul,Function.comp_apply]
-    change _ ↔ _=nodalKoszulBoundary (nodalStanleyReisnerBoundaryMap z.1) i+_
-    rw [← nodalStanleyReisnerKoszulBoundary_map,← nodalStanleyReisnerDisconnectCycle_map (F:=F) i]
-    rfl
-  have hzero : nodalKoszulRelation (E ∘ v)=0 ↔
-      v 0*nodalStanleyReisnerX+v 1*nodalStanleyReisnerY=0 := by rw [hrel,map_eq_zero_iff _ E.injective]
+  have hzero : nodalKoszulRelation (nodalAxesEquiv ∘ v)=0 ↔
+      v 0*nodalStanleyReisnerX+v 1*nodalStanleyReisnerY=0 := by
+    rw [axesEquiv_relation,map_eq_zero_iff _ (nodalAxesEquiv (F:=F)).injective]
   rw [← hzero,nodalKoszul_normalForm]
   constructor
   · rintro ⟨⟨c,a⟩,he,hu⟩
-    refine ⟨(E.symm c,a),(hx _).mpr (by simpa using he),?_⟩
+    refine ⟨((nodalAxesEquiv (F:=F)).symm c,a),(axesEquiv_cycle v _).mpr (by simpa using he),?_⟩
     rintro ⟨w,b⟩ hw
-    have hz := hu (E w,b) ((hx _).mp hw)
-    exact Prod.ext ((E.eq_symm_apply).mpr (congrArg Prod.fst hz)) (congrArg Prod.snd hz)
+    have hz := hu (nodalAxesEquiv w,b) ((axesEquiv_cycle v (w,b)).mp hw)
+    exact Prod.ext (((nodalAxesEquiv (F:=F)).eq_symm_apply).mpr (congrArg Prod.fst hz))
+      (by simpa using congrArg Prod.snd hz)
   · rintro ⟨⟨c,a⟩,he,hu⟩
-    refine ⟨(E c,a),(hx _).mp he,?_⟩
+    refine ⟨(nodalAxesEquiv c,a),(axesEquiv_cycle v (c,a)).mp he,?_⟩
     rintro ⟨w,b⟩ hw
-    have hz := hu (E.symm w,b) ((hx _).mpr (by simpa using hw))
-    exact Prod.ext (by simpa using congrArg E (congrArg Prod.fst hz)) (congrArg Prod.snd hz)
+    have hz := hu ((nodalAxesEquiv (F:=F)).symm w,b) ((axesEquiv_cycle v _).mpr (by simpa using hw))
+    exact Prod.ext (by simpa using congrArg nodalAxesEquiv (congrArg Prod.fst hz))
+      (by simpa using congrArg Prod.snd hz)
 end
 end GaloisForLFunctions

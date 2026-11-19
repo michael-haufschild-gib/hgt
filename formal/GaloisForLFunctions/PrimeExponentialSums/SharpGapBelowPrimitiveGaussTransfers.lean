@@ -55,13 +55,15 @@ theorem nonprincipal_shape (p : Nat.Primes) (e : ℕ)
   obtain ⟨j,hj,rfl⟩ := (Nat.dvd_prime_pow p.property).1 hd
   cases j with
   | zero =>
-    exact (hn ((DirichletCharacter.eq_one_iff_conductor_eq_one χ).2 (by simpa using hc))).elim
+    exact (hn (DirichletCharacter.eq_one_iff_conductor_eq_one.2 (by simpa using hc))).elim
   | succ j =>
     let k := e+1-(j+1)
     have hk : j+1+k=e+1 := by dsimp [k]; omega
     have hm : p.val^(e+1)=p.val^(j+1)*p.val^k := by rw [← pow_add,hk]
     refine ⟨j,k,hk,hc,?_⟩
-    rw [← he,lifted_value p j k _ hm hd ψ hψ,GaussShell.norm_monomial p j k ψ hψ,
+    rw [← he,lifted_value p j k _ hm hd ψ hψ,
+      show ‖gaussSum ψ ZMod.stdAddChar*z^k‖ = Real.sqrt ((p.val : ℝ)^(j+1))*‖z‖^k from
+        GaussShell.norm_monomial p j k ψ hψ z,
       mul_pow,Real.sq_sqrt (pow_nonneg (Nat.cast_nonneg _) _)]
 
 theorem primitive_energy (p : Nat.Primes) (e : ℕ) (χ : DirichletCharacter ℂ (p.val^(e+1)))
@@ -79,18 +81,20 @@ theorem nonprincipal_imprimitive_energy (p : Nat.Primes) (e : ℕ)
   have hk : k≠0 := by
     rintro rfl
     simp only [add_zero] at he
-    exact hi (by rwa [DirichletCharacter.isPrimitive_def,hc,he])
+    exact hi (by rw [DirichletCharacter.isPrimitive_def,hc,he])
   have hQ : 2≤p.val^k := by
     have := one_lt_pow₀ p.property.one_lt hk
     omega
   have hz₀ : (‖z‖^k)^2≤1 := pow_le_one₀ (pow_nonneg (norm_nonneg _) _) (pow_le_one₀ (norm_nonneg _) hz)
-  rw [hval,← he,pow_add]
+  rw [hval,← he,pow_add (p.val : ℝ) (j+1) k]
   have hP : 0≤(p.val : ℝ)^(j+1) := by positivity
   have h2 : (2 : ℝ)≤(p.val : ℝ)^k := by exact_mod_cast hQ
   calc
     _ ≤ 2*((p.val : ℝ)^(j+1)*1) := by
       exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hz₀ hP) (by norm_num)
-    _ ≤ _ := by simpa only [mul_one,mul_comm] using mul_le_mul_of_nonneg_left h2 hP
+    _ ≤ _ := by
+      rw [mul_one,mul_comm]
+      exact mul_le_mul_of_nonneg_left h2 hP
 
 private theorem principal_gap (p : Nat.Primes) (e : ℕ) {z : ℂ} (hz : ‖z‖≤1) :
     9*‖readout p (p.val^(e+1)) 1 z‖^2 ≤ 8*(p.val : ℝ)^(e+1) := by

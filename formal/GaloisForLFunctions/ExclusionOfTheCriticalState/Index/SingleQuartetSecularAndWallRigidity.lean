@@ -1,7 +1,7 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Index.TheOnLineResolventOfAFiniteLayer
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Energy.TheChargeHyperplaneHasItsOwnCriticalRatio
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheProfileBeyondTheWallInPrimeForm
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Modes.TheAveragedStateIsTheSumOfItsZeroModes
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Modes.EveryConfinedStateHasAnAbsoluteZeroModeExpansion
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Models.TheOffLineLayersOfTheBeurlingAndTwinModelsCarryCriticalStates
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.ANonRealPairAloneOnTopOfATwoSidedEdit
 import GaloisForLFunctions.RHTower.FiniteOffLineConverse
@@ -1762,271 +1762,13 @@ theorem singleQuartet_twoRung_wall_and_primeForm
       with x hp hpnt
     exact ⟨hp.1, hpnt⟩
 
-private theorem domain_summable_sq_zeroValues_of_finiteOffLine {F : ℝ → ℝ}
-    (hF : CriticalHalfLineEnergyDomain F) (hfin : BacklundConverse.FiniteOffLine) :
-    Summable fun q : XiZeroCopy => ‖negativeHalfLineLaplace (cx F) (centredZero q)‖ ^ 2 := by
-  haveI : Finite ↑onLineCopiesᶜ := (compl_onLineCopies_finite_of_finiteOffLine hfin).to_subtype
-  exact Summable.add_compl (s := onLineCopies)
-    (domain_zeroParseval_of_finiteOffLine hF hfin).1 Summable.of_finite
-
-private theorem domain_summable_norm_zeroModeCoeff_of_finiteOffLine (R : ℝ) {F : ℝ → ℝ}
-    (hF : CriticalHalfLineEnergyDomain F) (hfin : BacklundConverse.FiniteOffLine) :
-    Summable fun q => ‖zeroModeCoeff R F q‖ := by
-  have hp : ∀ q : XiZeroCopy, (1 / 2 : ℝ) ≤ ‖(-1 : ℂ) - centredZero q‖ := fun q => by
-    have hre := (abs_lt.mp (abs_re_centredZero_lt q)).1
-    have h := Complex.abs_re_le_norm ((-1 : ℂ) - centredZero q)
-    rw [Complex.sub_re, Complex.neg_re, Complex.one_re, abs_of_neg (by linarith)] at h
-    linarith
-  have hs := summable_norm_mul_inv_sub_centredZero
-    (domain_summable_sq_zeroValues_of_finiteOffLine hF hfin) (by norm_num : (0 : ℝ) < 1 / 2) hp
-  refine (hs.mul_left ‖(criticalAliasCoefficient R : ℂ)⁻¹‖).of_nonneg_of_le
-    (fun q => norm_nonneg _) fun q => ?_
-  unfold zeroModeCoeff
-  rw [norm_mul, norm_mul, norm_neg, norm_mul, mul_assoc]
-  gcongr
-  exact norm_averageSymbol_centredZero_sub_le q
-
-private theorem domain_averagedState_exp_three_le {F : ℝ → ℝ}
-    (hF : CriticalHalfLineEnergyDomain F) :
-    ∃ B : ℝ, 0 ≤ B ∧ ∀ t : ℝ, 0 < t → |averagedState F t| ≤ B * Real.exp (-(3 * t)) := by
-  set g : ℝ → ℝ := fun u => (F u ^ 2 * Real.exp (-(8 * u)) + probe 2 u) / 2
-  have hg : Integrable g := (hF.exponential.add (integrable_probe (by norm_num : (0 : ℝ) < 2))).div_const 2
-  have hg_neg : Integrable fun h : ℝ => g (-h) := hg.comp_neg
-  have hg_nn : ∀ h : ℝ, 0 ≤ g (-h) := fun h =>
-    div_nonneg (add_nonneg (mul_nonneg (sq_nonneg _) (Real.exp_pos _).le) (probe_nonneg 2 (-h)))
-      (by norm_num)
-  set I : ℝ := ∫ h : ℝ, g (-h)
-  have hI_nn : 0 ≤ I := integral_nonneg hg_nn
-  have hexp_b : ∀ {b : ℝ}, 3 ≤ b → ∀ {t : ℝ}, 0 < t →
-      |expAverage b F t| ≤ I * Real.exp (-(3 * t)) := by
-    intro b hb t ht
-    rw [expAverage_eq_setIntegral b F ht]
-    have hmaj : Integrable (fun h : ℝ => Real.exp (-(3 * t)) * g (-h))
-        (volume.restrict (Ioc (0 : ℝ) t)) := (hg_neg.const_mul (Real.exp (-(3 * t)))).restrict
-    refine (Real.norm_eq_abs _).ge.trans ((norm_integral_le_of_norm_le hmaj ?_).trans ?_)
-    · refine (ae_restrict_iff' measurableSet_Ioc).mpr (Eventually.of_forall fun h hh => ?_)
-      rw [Real.norm_eq_abs, abs_mul, abs_of_pos (Real.exp_pos _)]
-      have hexp1 : Real.exp (-(b * (t - h))) ≤ Real.exp (-(3 * t)) * Real.exp (3 * h) := by
-        rw [← Real.exp_add]
-        refine Real.exp_le_exp.mpr ?_
-        have hdiff : 0 ≤ (b - 3) * (t - h) := mul_nonneg (by linarith) (sub_nonneg.mpr hh.2)
-        linarith
-      have hneg_h : -h < 0 := neg_lt_zero.mpr hh.1
-      have hsq_F : (|F (-h)| * Real.exp (-(4 * (-h)))) ^ 2 = F (-h) ^ 2 * Real.exp (-(8 * (-h))) := by
-        rw [mul_pow, sq_abs, sq (Real.exp (-(4 * (-h)))), ← Real.exp_add]; congr 2; ring
-      have hsq_e : Real.exp (-h) ^ 2 = probe 2 (-h) := by
-        rw [probe_of_neg hneg_h, sq, ← Real.exp_add]; congr 1; ring
-      have hprod : (|F (-h)| * Real.exp (-(4 * (-h)))) * Real.exp (-h) =
-          Real.exp (3 * h) * |F (-h)| := by
-        rw [mul_assoc, ← Real.exp_add, mul_comm |F (-h)|]; congr 2; ring
-      have hle_g : Real.exp (3 * h) * |F (-h)| ≤ g (-h) := by
-        dsimp [g]
-        nlinarith [sq_nonneg (|F (-h)| * Real.exp (-(4 * (-h))) - Real.exp (-h)),
-          hsq_F, hsq_e, hprod]
-      calc Real.exp (-(b * (t - h))) * |F (-h)|
-          ≤ (Real.exp (-(3 * t)) * Real.exp (3 * h)) * |F (-h)| :=
-            mul_le_mul_of_nonneg_right hexp1 (abs_nonneg _)
-        _ = Real.exp (-(3 * t)) * (Real.exp (3 * h) * |F (-h)|) := by ring
-        _ ≤ Real.exp (-(3 * t)) * g (-h) :=
-            mul_le_mul_of_nonneg_left hle_g (Real.exp_pos _).le
-    · calc ∫ h in Ioc (0 : ℝ) t, Real.exp (-(3 * t)) * g (-h)
-          ≤ ∫ h : ℝ, Real.exp (-(3 * t)) * g (-h) :=
-            setIntegral_le_integral (hg_neg.const_mul _)
-              (Eventually.of_forall fun h => mul_nonneg (Real.exp_pos _).le (hg_nn h))
-        _ = I * Real.exp (-(3 * t)) := by rw [integral_const_mul, mul_comm]
-  refine ⟨2 * I, by positivity, fun t ht => ?_⟩
-  obtain ⟨l9, u9⟩ := abs_le.mp (hexp_b (by norm_num : (3 : ℝ) ≤ 9) ht)
-  obtain ⟨l10, u10⟩ := abs_le.mp (hexp_b (by norm_num : (3 : ℝ) ≤ 10) ht)
-  obtain ⟨l11, u11⟩ := abs_le.mp (hexp_b (by norm_num : (3 : ℝ) ≤ 11) ht)
-  obtain ⟨l12, u12⟩ := abs_le.mp (hexp_b (by norm_num : (3 : ℝ) ≤ 12) ht)
-  unfold averagedState
-  rw [abs_le]
-  constructor <;> linarith
-
-private theorem nullVector_hasSum_stateMeromorphic_of_finiteOffLine {R : ℝ}
-    (hF : IsConfinedNullVector R F) (hfin : BacklundConverse.FiniteOffLine)
-    {w : ℂ} (hw : xi (1 / 2 + (w + 8)) ≠ 0) :
-    HasSum (fun q : XiZeroCopy => -(criticalAliasCoefficient R : ℂ)⁻¹ *
-        (negativeHalfLineLaplace (cx F) (centredZero q) * (w + 8 - centredZero q)⁻¹))
-      (stateMeromorphic R F w) := by
-  have h := (hasSum_zeroValues_cauchy hF.1
-    (domain_summable_sq_zeroValues_of_finiteOffLine hF.1 hfin) hw).mul_left
-      (-(criticalAliasCoefficient R : ℂ)⁻¹)
-  have e : stateMeromorphic R F w =
-      -(criticalAliasCoefficient R : ℂ)⁻¹ * globalRemainder F (w + 8) := by
-    unfold stateMeromorphic; ring
-  rwa [← e] at h
-
-/-- **Exact zero-mode expansion of `averagedState F` for any confined null vector under `FiniteOffLine`.** -/
+/-- The zero-mode expansion specialized to a finite off-line divisor. -/
 theorem nullVector_averagedState_eq_modes {R : ℝ} (hR : 0 < R)
     {F : ℝ → ℝ} (hF : IsConfinedNullVector R F) (hfin : BacklundConverse.FiniteOffLine)
     {t : ℝ} (ht : 0 < t) :
     (averagedState F t : ℂ) = zeroModeSeries R F t + archimedeanModes R F t := by
-  have hS_sum : Summable fun q => ‖zeroModeCoeff R F q‖ :=
-    domain_summable_norm_zeroModeCoeff_of_finiteOffLine R hF.1 hfin
-  obtain ⟨B, hB0, hB⟩ := domain_averagedState_exp_three_le hF.1
-  set S : ℝ := ∑' q, ‖zeroModeCoeff R F q‖
-  set K : ℝ := ‖stateMeromorphic R F (-9)‖ + ‖stateMeromorphic R F (-10)‖ +
-    ‖stateMeromorphic R F (-11)‖ + ‖stateMeromorphic R F (-12)‖
-  have hS0 : 0 ≤ S := tsum_nonneg fun q => norm_nonneg _
-  have hK0 : 0 ≤ K := by positivity
-  have hcA : Continuous fun s : ℝ => ((averagedState F s : ℝ) : ℂ) :=
-    Complex.continuous_ofReal.comp (continuous_averagedState hF.1.integrable)
-  have hcZ_Ici : ContinuousOn (zeroModeSeries R F) (Ici 0) := by
-    refine continuousOn_tsum (fun q => (by fun_prop : Continuous fun s : ℝ =>
-        zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * s)).continuousOn)
-      hS_sum fun q s hs => ?_
-    rw [norm_mul]
-    calc ‖zeroModeCoeff R F q‖ * ‖Complex.exp ((centredZero q - 8) * s)‖
-        ≤ ‖zeroModeCoeff R F q‖ * 1 :=
-          mul_le_mul_of_nonneg_left ((norm_cexp_zeroMode_le q hs).trans
-            (Real.exp_le_one_iff.mpr (by nlinarith [mem_Ici.mp hs]))) (norm_nonneg _)
-      _ = ‖zeroModeCoeff R F q‖ := mul_one _
-  have hcZ : ContinuousOn (zeroModeSeries R F) (Ioi 0) := hcZ_Ici.mono Ioi_subset_Ici_self
-  have hcR : Continuous (archimedeanModes R F) := by unfold archimedeanModes; fun_prop
-  have hφc : ContinuousOn (fun s : ℝ => ((averagedState F s : ℝ) : ℂ) - zeroModeSeries R F s -
-      archimedeanModes R F s) (Ioi 0) :=
-    (hcA.continuousOn.sub hcZ).sub hcR.continuousOn
-  have bA : ∀ s : ℝ, 0 < s → ‖((averagedState F s : ℝ) : ℂ)‖ ≤ B * Real.exp (-(3 * s)) :=
-    fun s hs => by rw [Complex.norm_real, Real.norm_eq_abs]; exact hB s hs
-  have bZ : ∀ s : ℝ, 0 < s → ‖zeroModeSeries R F s‖ ≤ S * Real.exp (-(3 * s)) := by
-    intro s hs
-    have hb : ∀ q, ‖zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * s)‖ ≤
-        ‖zeroModeCoeff R F q‖ * Real.exp (-(15 / 2 * s)) := fun q => by
-      rw [norm_mul]
-      exact mul_le_mul_of_nonneg_left (norm_cexp_zeroMode_le q hs.le) (norm_nonneg _)
-    have h15 : ‖zeroModeSeries R F s‖ ≤ S * Real.exp (-(15 / 2 * s)) := by
-      unfold zeroModeSeries; dsimp [S]; rw [← tsum_mul_right]
-      exact (norm_tsum_le_tsum_norm
-        ((hS_sum.mul_right _).of_nonneg_of_le (fun q => norm_nonneg _) hb)).trans
-        (Summable.tsum_le_tsum hb
-          ((hS_sum.mul_right _).of_nonneg_of_le (fun q => norm_nonneg _) hb)
-          (hS_sum.mul_right _))
-    exact h15.trans (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) hS0)
-  have bR : ∀ s : ℝ, 0 < s → ‖archimedeanModes R F s‖ ≤ K * Real.exp (-(3 * s)) := fun s hs =>
-    (norm_archimedeanModes_le R F hs.le).trans
-      (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) hK0)
-  have hmem : MemLp (fun s : ℝ => ((averagedState F s : ℝ) : ℂ) - zeroModeSeries R F s -
-      archimedeanModes R F s) 2 (volume.restrict (Ioi (0 : ℝ))) := by
-    refine ((memLp_two_expRay_restrict (w := 3) (by norm_num) 0).const_mul
-      (((B + S + K : ℝ)) : ℂ)).of_le (hφc.aestronglyMeasurable measurableSet_Ioi)
-      ((ae_restrict_iff' measurableSet_Ioi).mpr (Eventually.of_forall fun s hs => ?_))
-    rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (by positivity), norm_expRay,
-      show -((3 : ℂ).re * s) = -(3 * s) by simp]
-    calc ‖((averagedState F s : ℝ) : ℂ) - zeroModeSeries R F s - archimedeanModes R F s‖
-        ≤ ‖((averagedState F s : ℝ) : ℂ)‖ + ‖zeroModeSeries R F s‖ + ‖archimedeanModes R F s‖ :=
-          (norm_sub_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
-      _ ≤ (B + S + K) * Real.exp (-(3 * s)) := by nlinarith [bA s hs, bZ s hs, bR s hs]
-  have hlap : ∀ w : ℂ, 0 < w.re → laplaceRay (fun s : ℝ => ((averagedState F s : ℝ) : ℂ) -
-      zeroModeSeries R F s - archimedeanModes R F s) w = 0 := by
-    intro w hw
-    have ha : (criticalAliasCoefficient R : ℂ) ≠ 0 := by
-      exact_mod_cast (criticalAliasCoefficient_positive hR).ne'
-    have hexp : ∀ s : ℝ, 0 < s → ‖expRay w s‖ ≤ 1 := fun s hs => by
-      rw [norm_expRay]; exact Real.exp_le_one_iff.mpr (by nlinarith)
-    have hint : ∀ f : ℝ → ℂ, ContinuousOn f (Ioi 0) → ∀ M : ℝ,
-        (∀ s : ℝ, 0 < s → ‖f s‖ ≤ M * Real.exp (-(3 * s))) →
-          IntegrableOn (fun s => f s * expRay w s) (Ioi 0) := by
-      intro f hf M hM
-      refine ((exp_neg_integrableOn_Ioi 0 (by norm_num : (0 : ℝ) < 3)).const_mul M).mono'
-        ((hf.mul (continuous_expRay w).continuousOn).aestronglyMeasurable measurableSet_Ioi)
-        ((ae_restrict_iff' measurableSet_Ioi).mpr (Eventually.of_forall fun s hs => ?_))
-      rw [norm_mul, show -3 * s = -(3 * s) by ring]
-      calc ‖f s‖ * ‖expRay w s‖ ≤ M * Real.exp (-(3 * s)) * 1 :=
-            mul_le_mul (hM s hs) (hexp s hs) (norm_nonneg _) ((norm_nonneg _).trans (hM s hs))
-        _ = M * Real.exp (-(3 * s)) := mul_one _
-    have iA := hint _ hcA.continuousOn _ bA
-    have iZ := hint _ hcZ _ bZ
-    have iR := (integral_archimedeanModes_mul_expRay R F hw).1
-    have vA : ∫ s in Ioi (0 : ℝ), ((averagedState F s : ℝ) : ℂ) * expRay w s =
-        averageSymbol w * negativeHalfLineLaplace (cx F) w := by
-      rw [← integral_averagedState_laplace hF.1 hw]
-      refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
-      simp only [expRay]; ring
-    have hsum_trans : HasSum (fun q => zeroModeCoeff R F q * (w + 8 - centredZero q)⁻¹)
-        (averageSymbol w * negativeHalfLineLaplace (cx F) w - archimedeanTransform R F w) := by
-      have hA := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin
-        (xi_half_add_ne_zero_of_re hw)).mul_left (averageSymbol w)
-      have h9 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -9)
-        (by convert xi_half_add_ofReal_ne_zero (-9) using 3; norm_num)).mul_left
-          (1 / 6 * (w + 9)⁻¹)
-      have h10 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -10)
-        (by convert xi_half_add_ofReal_ne_zero (-10) using 3; norm_num)).mul_left
-          (1 / 2 * (w + 10)⁻¹)
-      have h11 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -11)
-        (by convert xi_half_add_ofReal_ne_zero (-11) using 3; norm_num)).mul_left
-          (1 / 2 * (w + 11)⁻¹)
-      have h12 := (nullVector_hasSum_stateMeromorphic_of_finiteOffLine hF hfin (w := -12)
-        (by convert xi_half_add_ofReal_ne_zero (-12) using 3; norm_num)).mul_left
-          (1 / 6 * (w + 12)⁻¹)
-      have hC := hA.sub (((h9.sub h10).add h11).sub h12)
-      have hLF : stateMeromorphic R F w = negativeHalfLineLaplace (cx F) w :=
-        nullVector_stateMeromorphic_eq_laplace hR hF (by linarith)
-      have hv : averageSymbol w * negativeHalfLineLaplace (cx F) w - archimedeanTransform R F w =
-          averageSymbol w * stateMeromorphic R F w -
-            (1 / 6 * (w + 9)⁻¹ * stateMeromorphic R F (-9) -
-              1 / 2 * (w + 10)⁻¹ * stateMeromorphic R F (-10) +
-              1 / 2 * (w + 11)⁻¹ * stateMeromorphic R F (-11) -
-              1 / 6 * (w + 12)⁻¹ * stateMeromorphic R F (-12)) := by
-        rw [hLF]; unfold archimedeanTransform; ring
-      rw [hv]
-      refine hC.congr_fun fun q => ?_
-      rw [averageSymbol_mul_zeroResolvent ha hw (abs_re_centredZero_lt q)]
-      unfold zeroModeCoeff; ring
-    have hsum_int : HasSum (fun q => zeroModeCoeff R F q * (w + 8 - centredZero q)⁻¹)
-        (∫ s in Ioi (0 : ℝ), zeroModeSeries R F s * expRay w s) := by
-      have hlt : ∀ q : XiZeroCopy, (centredZero q - 8).re < w.re := fun q => by
-        have := (abs_lt.mp (abs_re_centredZero_lt q)).2
-        have hre : (centredZero q - 8).re = (centredZero q).re - 8 := by simp
-        linarith
-      have hI : ∀ q : XiZeroCopy, Integrable (fun s : ℝ => zeroModeCoeff R F q *
-          (Complex.exp ((centredZero q - 8) * s) * expRay w s)) (volume.restrict (Ioi 0)) :=
-        fun q => (integrableOn_cexp_mul_expRay (hlt q)).const_mul _
-      have hN : ∀ q : XiZeroCopy, ∫ s in Ioi (0 : ℝ), ‖zeroModeCoeff R F q *
-          (Complex.exp ((centredZero q - 8) * s) * expRay w s)‖ =
-            ‖zeroModeCoeff R F q‖ * (w.re - (centredZero q - 8).re)⁻¹ := fun q => by
-        simp_rw [norm_mul (zeroModeCoeff R F q)]
-        rw [integral_const_mul, integral_norm_cexp_mul_expRay (hlt q)]
-      have hS_int : Summable fun q : XiZeroCopy => ∫ s in Ioi (0 : ℝ), ‖zeroModeCoeff R F q *
-          (Complex.exp ((centredZero q - 8) * s) * expRay w s)‖ := by
-        simp_rw [hN]
-        refine (hS_sum.mul_right (2 / 15)).of_nonneg_of_le
-          (fun q => mul_nonneg (norm_nonneg _) (inv_nonneg.mpr (by linarith [hlt q])))
-          fun q => mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
-        have := (abs_lt.mp (abs_re_centredZero_lt q)).2
-        have hre : (centredZero q - 8).re = (centredZero q).re - 8 := by simp
-        rw [hre]
-        calc (w.re - ((centredZero q).re - 8))⁻¹ ≤ (15 / 2 : ℝ)⁻¹ :=
-              inv_anti₀ (by norm_num) (by linarith)
-          _ = 2 / 15 := by norm_num
-      have h := hasSum_integral_of_summable_integral_norm hI hS_int
-      have hval : ∫ s in Ioi (0 : ℝ), zeroModeSeries R F s * expRay w s =
-          ∫ s in Ioi (0 : ℝ), ∑' q, zeroModeCoeff R F q *
-            (Complex.exp ((centredZero q - 8) * s) * expRay w s) := by
-        refine setIntegral_congr_fun measurableSet_Ioi fun s _ => ?_
-        simp only [zeroModeSeries]; rw [← tsum_mul_right]; exact tsum_congr fun q => by ring
-      rw [hval]
-      refine h.congr_fun fun q => ?_
-      rw [integral_const_mul, integral_cexp_mul_expRay (hlt q)]
-      congr 2; ring
-    have vZ := hsum_int.unique hsum_trans
-    have iAZ : IntegrableOn (fun x : ℝ => ((averagedState F x : ℝ) : ℂ) * expRay w x -
-        zeroModeSeries R F x * expRay w x) (Ioi 0) := iA.sub iZ
-    have hpt : ∀ x : ℝ, (((averagedState F x : ℝ) : ℂ) - zeroModeSeries R F x -
-        archimedeanModes R F x) * expRay w x = ((averagedState F x : ℝ) : ℂ) * expRay w x -
-          zeroModeSeries R F x * expRay w x - archimedeanModes R F x * expRay w x := fun x => by ring
-    unfold laplaceRay
-    simp_rw [hpt]
-    rw [integral_sub iAZ iR, integral_sub iA iZ, vA, vZ,
-      (integral_archimedeanModes_mul_expRay R F hw).2]
-    ring
-  have hae := ae_eq_zero_of_laplaceRay_eq_zero hmem hlap
-  have heq := Measure.eqOn_open_of_ae_eq (f := fun s : ℝ => ((averagedState F s : ℝ) : ℂ) -
-      zeroModeSeries R F s - archimedeanModes R F s) (g := fun _ => (0 : ℂ))
-    hae isOpen_Ioi hφc continuousOn_const
-  have h0 := heq ht
-  simp only at h0
-  linear_combination h0
+  clear hfin
+  exact hF.averagedState_eq_modes hR ht
 
 /-- **Under `FiniteOffLine`, `averagedState F` of every confined null vector `(R, F)` (`R > 0`)
 equals its finite right-zero mode sum up to `O(e^{-8t})`.** -/
@@ -2037,28 +1779,9 @@ theorem nullVector_averagedState_finiteLayer {R : ℝ} (hR : 0 < R)
       ‖(averagedState F t : ℂ) - ∑ q ∈ hfin_right.toFinset,
           zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ))‖ ≤
         K * Real.exp (-(8 * t)) := by
-  have hS := domain_summable_norm_zeroModeCoeff_of_finiteOffLine R hF.1 hfin
-  refine ⟨(∑' q, ‖zeroModeCoeff R F q‖) + (‖stateMeromorphic R F (-9)‖ +
-    ‖stateMeromorphic R F (-10)‖ + ‖stateMeromorphic R F (-11)‖ +
-    ‖stateMeromorphic R F (-12)‖), fun t ht => ?_⟩
-  have hs : Summable fun q => zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) := by
-    refine Summable.of_norm_bounded (hS.mul_right (Real.exp (-(15 / 2 * t)))) fun q => ?_
-    rw [norm_mul]
-    exact mul_le_mul_of_nonneg_left (norm_cexp_zeroMode_le q ht.le) (norm_nonneg _)
-  have hle : ∀ q, ‖(if 0 < (centredZero q).re then
-      zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0)‖ ≤
-        ‖zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ))‖ := fun q => by
-    split_ifs <;> simp
-  have hsR := Summable.of_norm_bounded hs.norm hle
-  have hb : ∀ q, ‖zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) -
-      (if 0 < (centredZero q).re then
-        zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0)‖ ≤
-        ‖zeroModeCoeff R F q‖ * Real.exp (-(8 * t)) := fun q => by
-    split_ifs with h
-    · rw [sub_self, norm_zero]; positivity
-    · rw [sub_zero, norm_mul, norm_cexp_zeroMode]
-      refine mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr ?_) (norm_nonneg _)
-      nlinarith [not_lt.mp h]
+  clear hfin
+  obtain ⟨K, hK⟩ := hF.averagedState_sub_rightModes_le hR
+  refine ⟨K, fun t ht => ?_⟩
   have e_fin : ∑' q : XiZeroCopy, (if 0 < (centredZero q).re then
       zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0) =
       ∑ q ∈ hfin_right.toFinset,
@@ -2066,29 +1789,7 @@ theorem nullVector_averagedState_finiteLayer {R : ℝ} (hR : 0 < R)
     rw [tsum_eq_sum (s := hfin_right.toFinset) fun q hq => if_neg (by simpa using hq)]
     exact Finset.sum_congr rfl fun q hq => if_pos (by simpa using hq)
   rw [← e_fin]
-  have e2 : (averagedState F t : ℂ) - ∑' q : XiZeroCopy, (if 0 < (centredZero q).re then
-      zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0) =
-      (∑' q, (zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) -
-        (if 0 < (centredZero q).re then
-          zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0))) +
-        archimedeanModes R F t := by
-    rw [nullVector_averagedState_eq_modes hR hF hfin ht, hs.tsum_sub hsR]
-    unfold zeroModeSeries; ring
-  rw [e2]
-  have h1 : ‖∑' q, (zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) -
-      (if 0 < (centredZero q).re then
-        zeroModeCoeff R F q * Complex.exp ((centredZero q - 8) * (t : ℂ)) else 0))‖ ≤
-      (∑' q, ‖zeroModeCoeff R F q‖) * Real.exp (-(8 * t)) := by
-    rw [← tsum_mul_right]
-    have hn := (hS.mul_right (Real.exp (-(8 * t)))).of_nonneg_of_le (fun q => norm_nonneg _) hb
-    exact (norm_tsum_le_tsum_norm hn).trans (Summable.tsum_le_tsum hb hn (hS.mul_right _))
-  have h2 := (norm_archimedeanModes_le R F ht.le).trans
-    (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by linarith)) (by positivity) :
-      _ ≤ (‖stateMeromorphic R F (-9)‖ + ‖stateMeromorphic R F (-10)‖ +
-        ‖stateMeromorphic R F (-11)‖ + ‖stateMeromorphic R F (-12)‖) * Real.exp (-(8 * t)))
-  calc _ ≤ _ := norm_add_le _ _
-    _ ≤ _ := add_le_add h1 h2
-    _ = _ := by ring
+  exact hK t ht
 
 /-- **Nondegenerate single-conjugate-pair asymptotic of `averagedState F` for every rung `(R, F)`.**
 Under `HasSingleOffLineQuartet ρ₀`, for every confined null vector `(R, F)` (`R > 0`) — in particular

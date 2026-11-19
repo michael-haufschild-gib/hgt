@@ -1,0 +1,7 @@
+# Square contact and duality on a Kummer curve
+
+Lean declarations include `kummerClosedSquareContact_even`, `kummer_mixed_square_trace`, `kummer_dual_square_trace`, `kummer_unmodified_effective_iff` and `kummer_has_negative_ordinary_square`. [Proofs](../../../../formal/GaloisForLFunctions/SignedArithmeticCorrespondences/TheTwoSquareChannelsOfKummerPointCounts.lean)
+
+A closed place of degree $h$ contributes $h$ to the square contact in degree $m$ precisely when $2h\mid m$. The rational point at infinity contributes one in even degree. The contact at $m=2e>0$ is therefore the literal extension point count $N_e$. For the three-point Kummer family over $\mathbf F_{Q^2}$ this gives $(Q^{2e}+1-N_e)/Q^e=2g(-1)^e$, where $g$ is the dimension of the regular differentials.
+
+At separation $4(L+1)$, gluing offsets $i,j$ pairs only equal parities. Put $U_b=\sum_{i\equiv b\ (2)}u_i(-1)^{\lfloor i/2\rfloor}$. The mixed trace is $2g(U_0V_0-U_1V_1)$ on every finite support. Negating the odd part of the second divisor gives $2g(U_0^2+U_1^2)$ on a square. The unmodified trace is effective for all divisors exactly when $g=0$, equivalently $Q+1\mid R$ for the branch exponent $R$. At $R=1$ a single odd shift gives a negative square in every block. [Extension point counts](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FunctionField/KummerExtensionCountSequence.lean) · [Closed primes](../../../../formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri/FunctionField/KummerClosedPointDegrees.lean)

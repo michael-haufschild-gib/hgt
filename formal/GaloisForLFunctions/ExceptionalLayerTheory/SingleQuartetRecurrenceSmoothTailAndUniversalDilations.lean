@@ -134,8 +134,8 @@ theorem zetaReturnSet_confined_of_singleQuartet {ρ₀ : ℂ} (hq : HasSingleOff
   refine ⟨hor, ?_⟩
   rcases hor with hleft | hright
   · linarith [abs_nonneg ρ₀.im]
-  · have htri := abs_sub_le (τ + 2 * ρ₀.im) (2 * ρ₀.im) 0
-    rw [sub_zero, sub_zero, add_sub_cancel_right, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)] at htri
+  · have htri := abs_add_le (τ + 2 * ρ₀.im) (-(2 * ρ₀.im))
+    rw [add_neg_cancel_right, abs_neg, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 2)] at htri
     linarith
 
 /-! ## 2. `N`-smooth alternating Euler-product nonvanishing and Rouché tail floor -/
@@ -216,7 +216,7 @@ theorem hasSum_smoothAltEulerProduct {N : ℕ} (hN : 2 ≤ N) {ω : ℕ →* ℂ
   set f : ℕ → ℂ := S.indicator fun n => ω n * (n : ℂ) ^ (-s)
   have hf_sum : HasSum f E := by
     refine (hasSum_subtype_iff_indicator (s := S)).mp (hsum_sub.congr_fun fun n => ?_)
-    change eulerPhaseMonoidHom ω s (n : ℕ) = _
+    change ω (n : ℕ) * ((n : ℕ) : ℂ) ^ (-s) = eulerPhaseMonoidHom ω s (n : ℕ)
     dsimp [eulerPhaseMonoidHom]
     rw [if_neg (Nat.ne_zero_of_mem_smoothNumbers n.2)]
   -- Even subseries via the injective doubling map `m ↦ 2 * m`.
@@ -232,7 +232,8 @@ theorem hasSum_smoothAltEulerProduct {N : ℕ} (hN : 2 ≤ N) {ω : ℕ →* ℂ
     · intro n hn
       have hndvd : ¬ 2 ∣ n := fun ⟨m, hm⟩ => hn ⟨m, hm.symm⟩
       simp [g, hndvd]
-    · rw [hg_comp]
+    · change HasSum (fun m : ℕ => g (2 * m)) (E * (ω 2 * (2 : ℂ) ^ (-s)))
+      rw [hg_comp]
       exact hf_sum.mul_right (ω 2 * (2 : ℂ) ^ (-s))
   have hdiff := hf_sum.sub (hg_sum.mul_left 2)
   have hval : E - 2 * (E * (ω 2 * (2 : ℂ) ^ (-s))) = smoothAltEulerProduct N ω s := by
@@ -411,8 +412,8 @@ theorem smoothAltTail_lower_bound_near_zero {ρ₀ : ℂ} (hζ₀ : riemannZeta 
     exact (han_sm z (hball_strip z hz)).div hden_an (h1_sub_nz (hball_strip z hz).2)
   -- Continuous difference `z ↦ ‖riemannZeta z - g z‖` attains a maximum `≥ d` on `closedBall ρ₀ r`.
   have hcont_diff : ContinuousOn (fun z : ℂ => ‖riemannZeta z - g z‖) (closedBall ρ₀ r) := by
-    have hsub : closedBall ρ₀ r ⊆ ball ρ₀ (r + η) := closedBall_subset_ball (by linarith)
-    obtain ⟨_, _, hg_an, _⟩ := hg_target
+    obtain ⟨η', hη'_pos, hg_an, _⟩ := hg_target
+    have hsub : closedBall ρ₀ r ⊆ ball ρ₀ (r + η') := closedBall_subset_ball (by linarith)
     exact ((RHTower.continuousOn_riemannZeta_closedBall h1).sub
       (hg_an.continuousOn.mono hsub)).norm
   obtain ⟨z₀, hz₀, hmax⟩ := (isCompact_closedBall ρ₀ r).exists_isMaxOn
@@ -440,8 +441,8 @@ theorem smoothAltTail_lower_bound_near_zero {ρ₀ : ℂ} (hζ₀ : riemannZeta 
         Complex.sub_re, Complex.one_re]
     have hpow_mono : (2 : ℝ) ^ (1 - (ρ₀.re + r)) ≤ (2 : ℝ) ^ (1 - z₀.re) :=
       Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
-    have htri := norm_sub_le ((2 : ℂ) ^ (1 - z₀)) ((2 : ℂ) ^ (1 - z₀) - 1)
-    rw [sub_sub_cancel, norm_one, norm_sub_rev] at htri
+    have htri := norm_add_le ((2 : ℂ) ^ (1 - z₀) - 1) 1
+    rw [sub_add_cancel, norm_one, norm_sub_rev] at htri
     dsimp [m₂]; linarith
   have hprod_eq : ‖1 - (2 : ℂ) ^ (1 - z₀)‖ * ‖riemannZeta z₀ - g z₀‖ =
       ‖(1 - (2 : ℂ) ^ (1 - z₀)) * riemannZeta z₀ - smoothAltEulerProduct N ω z₀‖ := by
@@ -482,13 +483,15 @@ theorem sin_mul_log_two_ne_zero_or_three_ne_zero {γ : ℝ} (hγ : γ ≠ 0) :
     intro hm0
     rw [hm0, zero_mul] at hm
     exact mul_ne_zero hγ hlog2.ne' hm.symm
-  have hrat : Real.log 3 / Real.log 2 = ((n : ℚ) / (m : ℚ) : ℝ) := by
+  set q : ℚ := (n : ℚ) / (m : ℚ)
+  have hrat : (q : ℝ) = Real.log ((3 : ℕ) : ℝ) / Real.log ((2 : ℕ) : ℝ) := by
+    dsimp [q]
     push_cast
     have hdiv : (γ * Real.log 3) / (γ * Real.log 2) = Real.log 3 / Real.log 2 :=
       mul_div_mul_left _ _ hγ
     rw [← hdiv, ← hn, ← hm, mul_div_mul_right _ _ Real.pi_pos.ne']
   exact GaloisForLFunctions.RHTower.irrational_log_ratio
-    Nat.prime_two Nat.prime_three (by decide) ⟨(n : ℚ) / (m : ℚ), hrat.symm⟩
+    Nat.prime_two Nat.prime_three (by decide) ⟨q, hrat⟩
 
 /-- First real two-scale spanning coefficient `α_{ρ₀, q₀}(u)` solving `u^{ρ₀} = α + β q₀^{ρ₀}`. -/
 def dilationAlpha (ρ₀ : ℂ) (q₀ : ℕ) (u : ℝ) : ℝ :=
@@ -513,9 +516,8 @@ theorem cpow_eq_dilationAlpha_add_dilationBeta (ρ₀ : ℂ) {q₀ : ℕ} (hq₀
     intro y hy
     have hy_ne : (y : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hy.ne'
     rw [Complex.cpow_def_of_ne_zero hy_ne, ← Complex.ofReal_log hy.le]
-    have hexp : Complex.log y * ρ₀ =
+    have hexp : ((Real.log y : ℝ) : ℂ) * ρ₀ =
         ((Real.log y * ρ₀.re : ℝ) : ℂ) + ((ρ₀.im * Real.log y : ℝ) : ℂ) * I := by
-      rw [← Complex.ofReal_log hy.le]
       apply Complex.ext <;> simp [mul_comm]
     rw [hexp, Complex.exp_add, ← Complex.ofReal_exp, ← Real.rpow_def_of_pos hy,
       Complex.exp_mul_I, Complex.ofReal_cos, Complex.ofReal_sin]

@@ -23,24 +23,26 @@ def cubeProducts (s u v : ℝ) : Finset ℕ :=
   (windowPrimes (s^2/2) (2*s^3)).biUnion fun q =>
     (windowPrimes (u/q) (v/q)).image (q*·)
 
+/-- The prime window is the difference of the two exact integer prefix sets. -/
+theorem windowPrimes_eq_primesLE_sdiff (u v : ℝ) : RHTower.windowPrimes u v =
+    Nat.primesLE ⌊v⌋₊ \ Nat.primesLE ⌊u⌋₊ := by
+  apply Finset.ext
+  intro q
+  rw [Finset.mem_sdiff, Nat.mem_primesLE, Nat.mem_primesLE]
+  change q ∈ (Ioc _ _).filter Nat.Prime ↔ _
+  simp only [mem_filter,mem_Ioc]
+  constructor
+  · rintro ⟨⟨hlo,hhi⟩,hp⟩
+    exact ⟨⟨hhi,hp⟩,fun h => hlo.not_ge h.1⟩
+  · rintro ⟨⟨hhi,hp⟩,hn⟩
+    exact ⟨⟨lt_of_not_ge (fun h => hn ⟨h,hp⟩),hhi⟩,hp⟩
+
 private theorem cube_band_mass {s : ℝ} (hs : 2 ≤ s)
     (hL : 20*(Real.log 2 + Real.log 4 + mertensBlockGapConst) ≤ Real.log s) :
     ∑ q ∈ windowPrimes (s^2/2) (2*s^3), Real.log q / q ≤ 21/20 * Real.log s := by
   have hs0 : 0 < s := by linarith only [hs]
   have ha : 2 ≤ s^2/2 := by nlinarith only [hs, sq_nonneg (s-2)]
   have hab : s^2/2 ≤ 2*s^3 := by nlinarith only [mul_le_mul_of_nonneg_right hs (sq_nonneg s),sq_nonneg s]
-  have hset : windowPrimes (s^2/2) (2*s^3) =
-      Nat.primesLE ⌊2*s^3⌋₊ \ Nat.primesLE ⌊s^2/2⌋₊ := by
-    apply Finset.ext
-    intro q
-    rw [Finset.mem_sdiff, Nat.mem_primesLE, Nat.mem_primesLE]
-    change q ∈ (Ioc _ _).filter Nat.Prime ↔ _
-    simp only [mem_filter,mem_Ioc]
-    constructor
-    · rintro ⟨⟨hlo,hhi⟩,hp⟩
-      exact ⟨⟨hhi,hp⟩,fun h => hlo.not_ge h.1⟩
-    · rintro ⟨⟨hhi,hp⟩,hn⟩
-      exact ⟨⟨lt_of_not_ge (fun h => hn ⟨h,hp⟩),hhi⟩,hp⟩
   have haN : 1 ≤ ⌊s^2/2⌋₊ := (Nat.one_le_floor_iff _).2 (by linarith only [ha])
   have hA : s^2/4 ≤ (⌊s^2/2⌋₊ : ℝ) := by
     linarith only [Nat.lt_floor_add_one (s^2/2),ha]
@@ -52,7 +54,7 @@ private theorem cube_band_mass {s : ℝ} (hs : 2 ≤ s)
   rw [Real.log_mul (by norm_num) (by positivity),Real.log_pow] at hu
   rw [Real.log_div (by positivity) (by norm_num),Real.log_pow] at hl
   norm_num1 at hu hl
-  rw [hset]
+  rw [windowPrimes_eq_primesLE_sdiff]
   linarith only [mertensFirst_general_block haN (Nat.floor_le_floor hab), hL, hu, hl]
 
 private theorem cube_logs {s : ℝ} (hs : 2 ≤ s) (hL : 10*Real.log 2 ≤ Real.log s)
@@ -157,5 +159,19 @@ theorem eventually_cubeProducts_capacity (B : ℕ) :
   filter_upwards [eventually_cubeProducts_nine_tenths B] with s hs u v hu huv hv hw
   have := hs u v hu huv hv hw
   omega
+
+/-- Ordinary prime supply in a full sharp octave. -/
+theorem eventually_dyadic_prime_lower :
+    ∀ᶠ v : ℝ in atTop, (99/100)*v/Real.log (2*v) ≤ ((windowPrimes v (2*v)).card:ℝ) := by
+  obtain ⟨H,_,hc⟩ := exists_card_windowPrimes_div_ge 0 (by norm_num : (0:ℝ)<1/100)
+  filter_upwards [eventually_ge_atTop (max 2 H)] with v hv
+  have hv0 : 0<v := by linarith only [((le_max_left _ _).trans hv : 2≤v)]
+  have h := hc (2*v) (by linarith only [((le_max_right _ _).trans hv : H≤v),hv0])
+    2 (by norm_num) (by norm_num) (2*v) (2*(2*v)) le_rfl (by linarith only [hv0]) le_rfl
+    (by rw [Real.rpow_zero,div_one]; linarith)
+  rw [mul_div_cancel_left₀ _ (by norm_num : (2:ℝ) ≠ 0),
+    mul_div_cancel_left₀ _ (by norm_num : (2:ℝ) ≠ 0)] at h
+  convert h using 1
+  ring
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

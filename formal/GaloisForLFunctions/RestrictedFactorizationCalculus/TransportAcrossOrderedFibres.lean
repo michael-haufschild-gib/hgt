@@ -35,7 +35,8 @@ theorem stem_mul_of_largest {c p : ℕ} (hc : c ≠ 0) (hp : p.Prime)
     · exact Nat.le_of_dvd hp.pos h
   simp only [stem, hmax, Nat.mul_div_cancel _ hp.pos]
 
-private theorem below_pair {c q r : ℕ} (hc : c ≠ 0) (hq : q.Prime) (hqr : q < r)
+/-- All factors of the intermediate cofactor lie below the last prime. -/
+theorem below_pair {c q r : ℕ} (hc : c ≠ 0) (hq : q.Prime) (hqr : q < r)
     (htop : ∀ d ∈ c.primeFactors, d < q) :
     ∀ d ∈ (c*q).primeFactors, d < r := by
   intro d hd
@@ -44,15 +45,21 @@ private theorem below_pair {c q r : ℕ} (hc : c ≠ 0) (hq : q.Prime) (hqr : q 
   · exact (htop _ (Nat.mem_primeFactors.mpr ⟨hdp, h, hc⟩)).trans hqr
   · exact (Nat.le_of_dvd hq.pos h).trans_lt hqr
 
+/-- Removing the largest two primes in order recovers both intermediate cofactors. -/
+theorem ordered_stems {c q r : ℕ} (hc : c≠0) (hq : q.Prime) (hr : r.Prime)
+    (hqr : q<r) (ht : ∀ d ∈ c.primeFactors, d<q) :
+    stem (c*(q*r))=c*q ∧ stem (stem (c*(q*r)))=c := by
+  rw [←mul_assoc,stem_mul_of_largest (Nat.mul_ne_zero hc hq.ne_zero) hr (below_pair hc hq hqr ht),
+    stem_mul_of_largest hc hq ht]
+  exact ⟨rfl,rfl⟩
+
 /-- For ordered primes the last two deletions recover both intermediate cofactors. -/
 theorem stem_ordered_triple {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r.Prime)
     (hpq : p < q) (hqr : q < r) :
     stem (p*(q*r)) = p*q ∧ stem (stem (p*(q*r))) = p := by
   have ht : ∀ d ∈ p.primeFactors, d < q :=
     fun _ hd => (Nat.le_of_dvd hp.pos (Nat.dvd_of_mem_primeFactors hd)).trans_lt hpq
-  rw [← mul_assoc, stem_mul_of_largest (Nat.mul_ne_zero hp.ne_zero hq.ne_zero) hr
-    (below_pair hp.ne_zero hq hqr ht), stem_mul_of_largest hp.ne_zero hq ht]
-  exact ⟨rfl,rfl⟩
+  exact ordered_stems hp.ne_zero hq hr hqr ht
 
 /-- Appending a strictly larger prime adds one distinct factor. -/
 theorem card_append_largest {c p : ℕ} (hc : c ≠ 0) (hp : p.Prime)
@@ -318,7 +325,20 @@ theorem exists_ranked_transport (K : ℕ → ℝ) (L U : ℕ) :
   exact congrArg (fun x : productRow (K c) L U c => c * (x:ℕ))
     ((productRow (K c) L U c).orderIsoOfFin rfl |>.apply_symm_apply ⟨w,hw⟩)
 
-private theorem ordered_cofactor_of_negative {n : ℕ} (hμ : μ n = -1) :
+/-- For a positive vertex of an octave the ordered cofactor removes exactly
+the two largest prime factors. -/
+theorem ordered_cofactor_of_positive {X m : ℕ} (hm : m ∈ posParity (Ioc X (2*X))) :
+    evenPrefixCofactor m = stem (stem m) := by
+  have hi := mem_Ioc.mp (mem_filter.mp hm).1
+  have hX : 1≤X := by omega
+  let b := evenPrefixCofactor m
+  have hf : m ∈ fibrePos X b := mem_filter.mpr ⟨hm,rfl⟩
+  obtain ⟨hb,_,q,r,hq,hr,hqr,he,ht⟩ := mem_fibrePos_structure hX hf
+  change b = stem (stem m)
+  exact (congrArg (fun u => stem (stem u)) he |>.trans (ordered_stems hb.ne_zero hq hr hqr ht).2).symm
+
+/-- For a negative vertex the ordered cofactor removes exactly its largest prime. -/
+theorem ordered_cofactor_of_negative {n : ℕ} (hμ : μ n = -1) :
     evenPrefixCofactor n = stem n := by
   have hs := squarefree_iff_moebius_ne_zero.mpr (show μ n ≠ 0 by omega)
   have hodd : ¬ Even n.primeFactors.card := by

@@ -21,15 +21,27 @@ private theorem stencil_at_two (f : ℕ → ℝ) :
     stencil 2 f = f 1+(cofactorDyadicCoefficient-2)*f 2-2*cofactorDyadicCoefficient*f 4 := by
   let a := stencil 2 (fun d => if d=2 then 1 else 0)
   let b := stencil 2 (fun d => if d=4 then 1 else 0)
-  have expand (w : ℕ → ℝ) : stencil 2 w = w 1+a*w 2+b*w 4 := by
-    have hm : ((moebius 1 : ℤ):ℝ)=1 := by simp
+  let u := stencil 2 (fun d => if d=1 then 1 else 0)
+  have hu : u=1 := by
+    have he (d : ℕ) : (if d=1 then (1:ℝ) else 0)=((1/d:ℕ):ℝ) := by
+      by_cases h : d=1
+      · subst d; simp
+      by_cases hz : d=0
+      · subst d; simp
+      rw [if_neg h,Nat.div_eq_of_lt (by omega : 1<d),Nat.cast_zero]
+    dsimp only [u]
+    simp_rw [he]
+    exact prefix_one (by decide : 1≤1) (by decide : 1<2)
+  have basis (w : ℕ → ℝ) : stencil 2 w = u*w 1+a*w 2+b*w 4 := by
     have hi : Icc 1 2 = ({1,2} : Finset ℕ) := by decide
-    dsimp only [a,b,stencil]
+    dsimp only [u,a,b,stencil]
     simp only [hi,sum_insert (by decide : 1∉({2} : Finset ℕ)),sum_singleton,
-      show 2*2=4 by decide,hm,if_pos rfl,if_neg (by decide : (1:ℕ)≠2),
+      show 2*2=4 by decide,if_true,if_neg (by decide : (1:ℕ)≠2),
+      if_neg (by decide : (2:ℕ)≠1),if_neg (by decide : (4:ℕ)≠1),
       if_neg (by decide : (1:ℕ)≠4),if_neg (by decide : (2:ℕ)≠4),
-      if_neg (by decide : (4:ℕ)≠2),mul_zero,mul_one,one_mul,zero_add,add_zero,sub_zero]
+      if_neg (by decide : (4:ℕ)≠2),mul_zero,mul_one,zero_add,add_zero,sub_zero]
     ring
+  have expand (w : ℕ → ℝ) : stencil 2 w=w 1+a*w 2+b*w 4 := by rw [basis,hu,one_mul]
   have hz := expand (fun d => 1/d)
   rw [stencil_linear_quotient (by decide : 1≤2) 1] at hz
   norm_num only [Nat.cast_one,Nat.cast_ofNat,div_one] at hz
@@ -52,9 +64,9 @@ theorem innerJump_dyadic_pair (k : ℕ) :
     simp only [one_dvd,if_true,if_pos he,mul_one]
     rcases Nat.even_or_odd k with ⟨j,hj⟩ | ⟨j,hj⟩
     · rw [if_neg (by omega : ¬4 ∣ 2*k+2),show k=2*j by omega,pow_mul]
-      norm_num <;> ring
+      norm_num; ring
     · rw [if_pos (by omega : 4 ∣ 2*k+2),show k=2*j+1 by omega,pow_succ,pow_mul]
-      norm_num <;> ring
+      norm_num; ring
 
 /-- Actual signed cofactor response through its sharp cap. -/
 def cofactorDirichletPrefix (s : ℂ) (N : ℕ) : ℂ :=
@@ -83,30 +95,38 @@ theorem cofactorDirichletPrefix_eq (s : ℂ) (N : ℕ) :
       by_cases h : k=0
       · subst k
         norm_num [dqptRp]
-      · simp [h,show 2*k≠0 by omega]
+      · simp [h,show 2*k≠0 by omega]; ring
     · rw [show N=2*k+1 by omega,show 2*k+1+1=2*k+2 by omega,(innerJump_dyadic_pair k).2,
-        show (2*k+2)/2=k+1 by omega,show (2*k+1)/2=k by omega,dqptAltPartialSum_succ,
+        show (2*k+2)/2=k+1 by omega,show (2*k+1)/2=k by omega,dqptAltPartialSum_succ s k,
         pow_succ (-1:ℂ) (2*k),pow_mul]
       push_cast
       rw [show (2:ℝ)*k+1+1=2*((k:ℝ)+1) by ring,rp_double]
-      simp only [Nat.succ_ne_zero,if_false,neg_one_sq,one_pow,one_mul,Complex.ofReal_one,
-        neg_mul,one_mul]
+      simp only [neg_one_sq,one_pow,one_mul,neg_mul]
       ring
 
-/-- Every right zero sees unit mass in the limit of the original cofactor
-coefficients. -/
-theorem cofactorDirichletPrefix_at_zero {s : ℂ} (hs : 0<s.re) (hs1 : s≠1) (hz : riemannZeta s=0) :
-    Tendsto (cofactorDirichletPrefix s) atTop (𝓝 1) := by
-  have h := dqpt_altPartialSum_tendsto hs hs1
-  rw [hz,mul_zero] at h
+/-- The full cofactor multiplier in the positive half-plane. Its departure
+from one is exactly a two-term Dirichlet polynomial times the eta function. -/
+theorem cofactorDirichletPrefix_tendsto {s : ℂ} (hs : 0<s.re) (hs1 : s≠1) :
+    Tendsto (cofactorDirichletPrefix s) atTop
+      (𝓝 (1-(1+cofactorDyadicCoefficient*dqptRp s 2)*((1-(2:ℂ)^(1-s))*riemannZeta s))) := by
+  let η := (1-(2:ℂ)^(1-s))*riemannZeta s
+  let a : ℂ := cofactorDyadicCoefficient*dqptRp s 2
+  have h : Tendsto (dqptAltPartialSum s) atTop (𝓝 η) := dqpt_altPartialSum_tendsto hs hs1
   have hdiv : Tendsto (fun n : ℕ => n/2) atTop atTop := by
     refine tendsto_atTop.mpr fun b => ?_
     filter_upwards [eventually_ge_atTop (2*b)] with n hn
     omega
   have hc : Tendsto (fun n : ℕ => if n=0 then (0:ℂ) else 1) atTop (𝓝 1) :=
     tendsto_const_nhds.congr' (by filter_upwards [eventually_ge_atTop (1:ℕ)] with n hn; simp [Nat.ne_of_gt hn])
-  simp_rw [funext (cofactorDirichletPrefix_eq s)]
-  simpa using (hc.sub h).sub (tendsto_const_nhds.mul (h.comp hdiv))
+  change Tendsto (cofactorDirichletPrefix s) atTop (𝓝 (1-(1+a)*η))
+  rw [funext (cofactorDirichletPrefix_eq s),show 1-(1+a)*η=1-η-a*η by ring]
+  exact (hc.sub h).sub ((tendsto_const_nhds (x := a)).mul (h.comp hdiv))
+
+/-- Every right zero sees unit mass in the limit of the original cofactor
+coefficients. -/
+theorem cofactorDirichletPrefix_at_zero {s : ℂ} (hs : 0<s.re) (hs1 : s≠1) (hz : riemannZeta s=0) :
+    Tendsto (cofactorDirichletPrefix s) atTop (𝓝 1) := by
+  simpa only [hz,mul_zero,sub_zero] using cofactorDirichletPrefix_tendsto hs hs1
 
 /-- The Dirichlet probe of the actual clipped cofactor interval for one prime. -/
 def cofactorDirichletWindow (s : ℂ) (k U n p : ℕ) : ℂ :=
@@ -133,7 +153,7 @@ private theorem cofactorDirichletWindow_eq {p n : ℕ} (hp : p.Prime) (hnp : n<p
     simp only [Nat.add_sub_cancel_right,cofactorDirichletPrefix,f,Nat.add_comm 1,Nat.cast_add,Nat.cast_one]
   change (∑ v ∈ (Ioc l m).filter (p.Coprime ·), f v) = cofactorDirichletPrefix s m-cofactorDirichletPrefix s (min l m)
   rw [he]
-  by_cases hl : l≤m
+  by_cases hl : l ≤ m
   · have h := sum_Ioc_consecutive f (Nat.zero_le l) hl
     rw [hG,hG] at h
     rw [min_eq_left hl,←h,add_sub_cancel_left]
@@ -145,7 +165,7 @@ cut omits at most the unit cofactor, the probe instead retains unit mass. -/
 theorem cofactor_zero_selection_at_the_product_cut {s : ℂ} (hs : 0<s.re) (hs1 : s≠1)
     (hz : riemannZeta s=0) {ε : ℝ} (hε : 0<ε) :
     ∃ d : ℕ, 2≤d ∧ ∀ {p n : ℕ}, p.Prime → n<p → ∀ k U : ℕ, d≤n → d*p≤k →
-      (d*p≤max (productLower 1 k) U → ‖cofactorDirichletWindow s k U n p‖<ε) ∧
+      (d*p ≤ max (productLower 1 k) U → ‖cofactorDirichletWindow s k U n p‖<ε) ∧
       (max (productLower 1 k) U<2*p → ‖cofactorDirichletWindow s k U n p-1‖<ε) := by
   have hlim := cofactorDirichletPrefix_at_zero hs hs1 hz
   obtain ⟨b,hb⟩ := eventually_atTop.mp ((Metric.tendsto_nhds.mp hlim) (ε/2) (half_pos hε))
@@ -167,7 +187,8 @@ theorem cofactor_zero_selection_at_the_product_cut {s : ℂ} (hs : 0<s.re) (hs1 
     exact tri.trans_lt ((add_lt_add hm' hc).trans_eq (add_halves ε))
   · intro hd
     have hl : l<2 := (Nat.div_lt_iff_lt_mul hp.pos).mpr hd
-    have hv : min l m=0 ∨ min l m=1 := by omega
+    have hv : min l m=0 ∨ min l m=1 :=
+      Nat.le_one_iff_eq_zero_or_eq_one.mp (Nat.le_of_lt_succ ((min_le_left l m).trans_lt hl))
     have hzero : cofactorDirichletPrefix s (min l m)=0 := by
       rcases hv with h | h <;> rw [h] <;> simp [cofactorDirichletPrefix,innerJump_small (le_refl 1)]
     change ‖cofactorDirichletPrefix s m-cofactorDirichletPrefix s (min l m)-1‖<ε
@@ -191,15 +212,18 @@ private theorem etaMidpoint_at_zero {s : ℂ} (hs : 0 < s.re) (hs1 : s≠1)
 
 /-- The four actual adjacent caps remove the leading alternating boundary
 at every zeta zero in the positive half-plane, gaining one whole power. -/
-theorem mean_four_cofactor_caps_at_zero {s : ℂ} (hs : 0<s.re) (hs1 : s≠1) (hz : riemannZeta s=0) :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ {K : ℕ}, 0<K →
-      ‖(cofactorDirichletPrefix s (4*K)+cofactorDirichletPrefix s (4*K+1)+
-        cofactorDirichletPrefix s (4*K+2)+cofactorDirichletPrefix s (4*K+3))/4-1‖ ≤
-        C*((K:ℝ)+1)^(-s.re-1) := by
+theorem mean_four_cofactor_caps_at_zero {s : ℂ} (hs : 0<s.re) (hs1 : s≠1) (hz : riemannZeta s=0)
+    {K : ℕ} (hK : 0<K) :
+    ‖(cofactorDirichletPrefix s (4*K)+cofactorDirichletPrefix s (4*K+1)+
+      cofactorDirichletPrefix s (4*K+2)+cofactorDirichletPrefix s (4*K+3))/4-1‖ ≤
+      (1+|cofactorDyadicCoefficient|)*(3/4*(‖s‖*‖s+1‖))*((K:ℝ)+1)^(-s.re-1) := by
   let a : ℂ := cofactorDyadicCoefficient*dqptRp s 2
   let H : ℝ := 3/4*(‖s‖*‖s+1‖)
   have hH : 0≤H := by dsimp only [H]; positivity
-  refine ⟨(1+‖a‖)*H,by positivity,fun {K} hK => ?_⟩
+  have ha : ‖a‖ ≤ |cofactorDyadicCoefficient| := by
+    change ‖(cofactorDyadicCoefficient:ℂ)*dqptRp s 2‖ ≤ _
+    rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,dqptRp_norm (by norm_num : (0:ℝ)<2)]
+    exact mul_le_of_le_one_right (abs_nonneg _) (Real.rpow_le_one_of_one_le_of_nonpos (by norm_num) (neg_nonpos.mpr hs.le))
   let E := ((K:ℝ)+1)^(-s.re-1)
   have bound {j : ℕ} (hj : K≤j) : ‖etaMidpoint s j‖ ≤ H*E := by
     apply (etaMidpoint_at_zero hs hs1 hz j).trans
@@ -222,10 +246,23 @@ theorem mean_four_cofactor_caps_at_zero {s : ℂ} (hs : 0<s.re) (hs1 : s≠1) (h
   rw [norm_div,norm_mul]
   norm_num only [Complex.norm_ofNat]
   exact (add_le_add (div_le_div_of_nonneg_right h₁ (by norm_num : (0:ℝ)≤2))
-      (mul_le_mul_of_nonneg_left (bound (by omega : K≤2*K)) (norm_nonneg a))).trans_eq (by ring)
+      (mul_le_mul ha (bound (by omega : K≤2*K)) (norm_nonneg _) (abs_nonneg _))).trans_eq
+      (by dsimp only [H,E]; ring)
 
+/-- The logarithmic stencil moment cancels the full harmonic density. -/
+theorem cofactor_density_normalization :
+    (1+cofactorDyadicCoefficient/2)*Real.log 2=1 := by
+  have h := stencil_log_quotient (by decide : 1≤2) 1 0
+  rw [stencil_at_two] at h
+  have h4 : Real.log 4=2*Real.log 2 := by
+    rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]; norm_num
+  norm_num [h4] at h
+  linarith only [h]
+
+#print axioms cofactor_density_normalization
 #print axioms innerJump_dyadic_pair
 #print axioms cofactorDirichletPrefix_eq
+#print axioms cofactorDirichletPrefix_tendsto
 #print axioms cofactorDirichletPrefix_at_zero
 #print axioms cofactor_zero_selection_at_the_product_cut
 #print axioms mean_four_cofactor_caps_at_zero

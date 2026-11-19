@@ -1,0 +1,7 @@
+# Integral duality of the opposite endpoint sections
+
+At lower cut $X$ and upper gap $L$, let $J$ be the directed graph order minus the pole product plus the mixed flat-tail Weil row with its diagonal constant removed. Its lower and upper sections are $U=\sum_i u_i x^{X-i}S_i^2$ and $V=\sum_j b_jx^{j-X-L}$, where $S_i=\sum_{a<i}x^a$. Then $2J=\int_0^1x^L(1-x)UV\,dx$. The functional extends to continuous product sections with norm at most $1/[(L+1)(L+2)]$.
+
+The identity follows by gluing the individual real-place moments after the prime orders cancel. Multiplication of $U$ by $(1-x)^2$ replaces each squared geometric sum by $(1-x^i)^2$. Its coefficient at $X-i$ is $u_i$. Thus $U$ vanishes identically exactly for the zero lower divisor. Every integral polynomial is realized by its upper jumps starting at $X+L$. Taking $V=U$ gives a square, strictly positive for every nonzero lower divisor because the interior weight is positive and a nonzero polynomial has finitely many roots. The centered Weil row on a single effective endpoint is $m-\psi(m)+1/[2m(m+1)]$.
+
+**Lean.** `jointGraphHeight_sections`, `jointGraphHeight_distance`, `upperSection_of_integer_polynomial`, `recover_lower_multiplicity`, `exists_effective_integral_dual`, `dual_section_strict_iff`, `centeredWeilRow_single`. [Proof](../../../../formal/GaloisForLFunctions/SignedArithmeticCorrespondences/OppositeSectionsOfTheIntegralGraphGauge.lean)

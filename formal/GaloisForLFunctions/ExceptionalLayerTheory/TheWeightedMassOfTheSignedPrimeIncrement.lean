@@ -82,7 +82,7 @@ private theorem damped_cosine_reciprocal {ω δ d : ℝ} (hω : 0 < ω) (hδ : 0
   apply integrableOn_damped_periodic (P := P) (by dsimp only [P]; positivity) hd
   · intro t
     change |Real.cos (ω*(t+P)+φ)|^(-δ) = _
-    rw [show ω*(t+P)+φ=(ω*t+φ)+2*Real.pi by dsimp only [P]; field_simp [hω.ne'] <;> ring,
+    rw [show ω*(t+P)+φ=(ω*t+φ)+2*Real.pi by dsimp only [P]; field_simp [hω.ne']; ring,
       Real.cos_add_two_pi]
   · intro t
     exact Real.rpow_nonneg (abs_nonneg _) _

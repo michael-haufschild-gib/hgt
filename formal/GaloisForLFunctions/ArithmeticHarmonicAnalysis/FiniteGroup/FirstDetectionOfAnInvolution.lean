@@ -42,7 +42,7 @@ theorem parity_balance (n : ℕ) (g : Mˣ) (hg : g^2=1) :
   classical
   let f := (powMonoidHom n : Mˣ →* Mˣ)
   let H := unitEndomorphismCharacters (R := ℂ) f
-  letI : Fintype H := Fintype.ofFinite _
+  letI : Fintype (MulChar M ℂ) := Fintype.ofFinite _
   let A := univ.filter (fun χ : H => χ.val (g : M) = -1)
   let e : ↥A ≃ Detectors n g :=
     { toFun := fun χ => ⟨χ.val.val,(mem_powerEndomorphismCharacters_iff n _).1 χ.val.property,
@@ -64,7 +64,7 @@ theorem parity_balance (n : ℕ) (g : Mˣ) (hg : g^2=1) :
   have value (χ : H) : χ.val (g : M) =
       1-2*(if χ.val (g : M) = -1 then (1 : ℂ) else 0) := by
     rcases signs χ with h | h <;> rw [h] <;> norm_num
-  simp_rw [value] at h₂
+  rw [sum_congr rfl fun χ _ => value χ] at h₂
   rw [sum_sub_distrib,← mul_sum,← natCast_card_filter] at h₂
   simp only [sum_const,card_univ,nsmul_eq_mul,mul_one] at h₂
   change (roots n g : ℂ)=Fintype.card H - 2*(A.card : ℂ) at h₂
@@ -99,7 +99,13 @@ theorem detection_iff (n : ℕ) (g : Mˣ) (hg : g^2=1) :
   have nonempty_iff : Nonempty (Detectors n g) ↔ 0<Nat.card (Detectors n g) :=
     ⟨fun he => Nat.card_pos_iff.mpr ⟨he,inferInstance⟩,fun he => (Nat.card_pos_iff.mp he).1⟩
   rw [nonempty_iff]
-  by_cases he : ∃ u : Mˣ, u^n=g <;> simp only [he,ite_true,ite_false] at h ⊢ <;> omega
+  by_cases he : ∃ u : Mˣ, u^n=g
+  · rw [if_pos he] at h
+    simp only [he,not_true_eq_false,iff_false,not_lt]
+    omega
+  · rw [if_neg he] at h
+    simp only [he,not_false_eq_true,iff_true]
+    omega
 
 /-- Exact layer of new detectors when increasing the cutoff from 2^j to
 2^(j+1). It is obtained by subtracting power-fiber deficits. -/
@@ -110,7 +116,7 @@ theorem exact_layer (j : ℕ) (g : Mˣ) (hg : g^2=1) :
   classical
   have exactOrder (χ : MulChar M ℂ) : orderOf χ=2^(j+1) ↔
       χ^(2^(j+1))=1 ∧ χ^(2^j)≠1 := by
-    simp only [← orderOf_dvd_iff_pow_eq_one]
+    simp only [ne_eq,← orderOf_dvd_iff_pow_eq_one]
     constructor
     · rintro he
       rw [he]

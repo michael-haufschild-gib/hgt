@@ -352,7 +352,7 @@ theorem signed_prime_increment_on_extremal_wave {γ σ : ℝ} {m : ℕ}
     rw [← abs_of_pos (show (0:ℝ) < 2 from zero_lt_two),← abs_mul,show (2:ℝ)*(D t*(U t-D t)) =
       (U t^2-D t^2)-(U t-D t)^2 by ring]
     refine (abs_sub _ _).trans ?_
-    rw [abs_of_nonneg (sq_nonneg _)]
+    rw [abs_of_nonneg (sq_nonneg (U t-D t))]
     exact add_le_add hsq le_rfl
   change _ ≤ (4*M+5)*w t
   have hMpos : 0 ≤ M*w t := (sq_nonneg _).trans hm'

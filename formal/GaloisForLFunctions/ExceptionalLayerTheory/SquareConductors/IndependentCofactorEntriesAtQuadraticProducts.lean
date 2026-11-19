@@ -50,7 +50,7 @@ theorem innerJump_at_odd_cofactor {t : ℕ} (ht : 2 ≤ t) (ho : ¬ 2 ∣ t) :
   rw [innerJump_divisor_stencil ht,stencil]
   norm_num only [show (1+1:ℕ)=2 by decide,show (2*2:ℕ)=4 by decide,
     sum_Icc_succ_top (by decide : 1 ≤ 1+1),Icc_self,sum_singleton,one_dvd,if_true,if_neg ho,if_neg h4,
-    mul_zero,sub_zero,add_zero,mul_one,hμ,neg_inj]
+    mul_zero,sub_zero,add_zero,mul_one,neg_inj] <;> exact hμ
 
 /-- Log mass at the newly admitted cofactor, including the signed inner
 jump of the actual fixed-product row. -/

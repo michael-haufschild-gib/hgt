@@ -41,7 +41,8 @@ theorem hasSum_transfer (p : Nat.Primes) (k : ℕ) {z : ℂ} (hz : ‖z‖<(p.va
   have hP : P≠0 := Nat.cast_ne_zero.mpr p.property.ne_zero
   have hx : ‖x‖<1 := by simpa only [x,P,norm_div,Complex.norm_natCast,div_lt_one hp] using hz
   have ht (a : ℕ) := (geom_tail x hx a).mul_left (P^a)
-  have hmul (a : ℕ) : P^a*x^a=z^a := by rw [← mul_pow,x,← mul_div_assoc,mul_div_cancel_left₀ _ hP]
+  have hmul (a : ℕ) : P^a*x^a=z^a := by
+    rw [← mul_pow,show P*x = P*z/P from (mul_div_assoc P z P).symm,mul_div_cancel_left₀ _ hP]
   have hn : P-z ≠ 0 := by
     intro he
     rw [← sub_eq_zero.mp he] at hz
@@ -58,10 +59,12 @@ theorem hasSum_transfer (p : Nat.Primes) (k : ℕ) {z : ℂ} (hz : ‖z‖<(p.va
   rw [← value]
   apply ((ht (k+1)).sub (ht k)).congr_fun
   intro j
-  rw [ramanujanPrimePower_two_divisibility_layers]
+  have hl := ramanujanPrimePower_two_divisibility_layers p k (p.val^j)
+  rw [Nat.cast_pow] at hl
+  rw [hl]
   simp only [Nat.pow_dvd_pow_iff_le_right p.property.one_lt]
   by_cases h₁ : k+1≤j <;> by_cases h₀ : k≤j <;>
-    simp only [h₁,h₀,ite_true,ite_false,sub_mul,zero_mul,P,x]
+    simp only [h₁,h₀,ite_true,ite_false,sub_mul,zero_mul,mul_zero,P,x,Nat.cast_pow]
 
 private theorem real_sub_ne {p r : ℝ} (h : r<p) {z : ℂ} (hz : ‖z‖≤r) (hp : 0≤p) :
     (p : ℂ)-z≠0 := by

@@ -89,7 +89,6 @@ theorem repeated_pair_cancellation (w : Weights) (n : ℕ) (a b : ℝ) :
     change ((s-t)/(s+t))^2 * _ = _
     rw [hp,hm]
     field_simp
-    ring
   have hbase := (phase_locus w a b (contrast a b^2)).mpr (Or.inr rfl)
   change _ * graph (s+t) (s^3+t^3)^(2*n) * _ + graph (s-t) (s^3-t^3)^(2*n) * _ = 0
   rw [pow_succ, pow_mul, pow_mul, ← scale, mul_pow]

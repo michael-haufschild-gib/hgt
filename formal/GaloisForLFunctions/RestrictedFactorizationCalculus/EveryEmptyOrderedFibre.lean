@@ -18,35 +18,6 @@ open GaloisForLFunctions.QuantitativeFactorizationMatching
 
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus
 
-private theorem max_insert_above {S : Finset ℕ} {p : ℕ} (ht : ∀ d ∈ S, d < p) :
-    (insert p S).max' (insert_nonempty p S) = p := by
-  apply le_antisymm (max'_le _ _ _ fun d hd => ?_) (le_max' _ _ (mem_insert_self _ _))
-  rcases mem_insert.mp hd with rfl | h
-  · exact le_rfl
-  · exact (ht _ h).le
-
-private theorem ordered_pair_cofactor {a p q : ℕ} (ha : a ≠ 0) (he : Even a.primeFactors.card)
-    (hp : p.Prime) (hq : q.Prime) (hpq : p < q) (hta : ∀ d ∈ a.primeFactors, d < p) :
-    evenPrefixCofactor (a*(p*q)) = a := by
-  have hpn : p ∉ a.primeFactors := fun h => (hta _ h).false
-  have htq : ∀ d ∈ insert p a.primeFactors, d < q := by
-    intro d hd
-    exact (mem_insert.mp hd).elim (fun e => e ▸ hpq) (fun h => (hta d h).trans hpq)
-  have hqn : q ∉ insert p a.primeFactors := fun h => (htq _ h).false
-  have hF : (a*(p*q)).primeFactors = insert q (insert p a.primeFactors) := by
-    rw [← mul_assoc, Nat.primeFactors_mul (Nat.mul_ne_zero ha hp.ne_zero) hq.ne_zero,
-      Nat.primeFactors_mul ha hp.ne_zero,hp.primeFactors,hq.primeFactors]
-    ext d; simp [or_comm,or_left_comm,or_assoc]
-  have hcard : Even (a*(p*q)).primeFactors.card := by
-    rw [hF, card_insert_of_notMem hqn,card_insert_of_notMem hpn]
-    obtain ⟨k,hk⟩ := he
-    exact ⟨k+1,by omega⟩
-  unfold evenPrefixCofactor
-  simp only [hF] at hcard ⊢
-  rw [dif_pos (insert_nonempty _ _), if_pos hcard,max_insert_above htq,
-    erase_insert hqn,dif_pos (insert_nonempty _ _),max_insert_above hta,
-    Nat.mul_div_cancel _ (Nat.mul_pos hp.pos hq.pos)]
-
 /-- If the cofactor primes are below the square root of its quotient scale,
 two larger primes in separated windows give a positive endpoint. -/
 private theorem eventually_positive_fibre :
@@ -83,12 +54,16 @@ private theorem eventually_positive_fibre :
     calc _ ≤ ((1+1/8)*t)*((1+1/8)*((1+1/8)*t)) :=
               mul_le_mul hp1.le hq1.le (Nat.cast_nonneg _) (by positivity)
          _ ≤ _ := by nlinarith only [sq_nonneg t]
-  refine ⟨a*(p*q),mem_filter.mpr ⟨mem_filter.mpr ⟨mem_Ioc.mpr ⟨?_,?_⟩,hprice⟩,
-    ordered_pair_cofactor ha.ne_zero he hp hq hpq htp⟩⟩
-  · exact_mod_cast (by simpa only [mul_comm (a:ℝ)] using (div_lt_iff₀ ha0).1 hl :
-      (X:ℝ)<a*((p:ℝ)*q))
-  · rw [← mul_div_assoc,le_div_iff₀ ha0] at hu
-    exact_mod_cast (by simpa only [mul_comm (a:ℝ)] using hu : (a:ℝ)*((p:ℝ)*q) ≤ 2*X)
+  have hI : a*(p*q) ∈ Ioc X (2*X) := by
+    apply mem_Ioc.mpr
+    constructor
+    · exact_mod_cast (by simpa only [mul_comm (a:ℝ)] using (div_lt_iff₀ ha0).1 hl :
+        (X:ℝ)<a*((p:ℝ)*q))
+    · rw [← mul_div_assoc,le_div_iff₀ ha0] at hu
+      exact_mod_cast (by simpa only [mul_comm (a:ℝ)] using hu : (a:ℝ)*((p:ℝ)*q) ≤ 2*X)
+  have hm : a*(p*q) ∈ posParity (Ioc X (2*X)) := mem_filter.mpr ⟨hI,hprice⟩
+  exact ⟨a*(p*q),mem_filter.mpr ⟨hm,(ordered_cofactor_of_positive hm).trans
+    (ordered_stems ha.ne_zero hp hq hpq htp).2⟩⟩
 
 /-- Uniform escape of the largest-prime quotient scale over all negative vertices. -/
 private theorem eventually_quotient_ge (R : ℝ) : ∀ᶠ X : ℕ in atTop,

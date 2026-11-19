@@ -21,27 +21,27 @@ abbrev Extensions (H : Subgroup G) (ψ : H →* ℂˣ) :=
 def twistEquiv (H : Subgroup G) (ψ : H →* ℂˣ) (base : Extensions H ψ) :
     (G ⧸ H →* ℂˣ) ≃ Extensions H ψ where
   toFun η := ⟨base.val*η.comp (QuotientGroup.mk' H),by
-    ext x
+    refine MonoidHom.ext fun x => ?_
     have hb := DFunLike.congr_fun base.property x
     change base.val x * η ((QuotientGroup.mk' H) x) = ψ x
-    rw [(QuotientGroup.eq_one_iff _).2 x.property,map_one,mul_one]
+    rw [show (QuotientGroup.mk' H) (x : G) = 1 from (QuotientGroup.eq_one_iff _).2 x.property,
+      map_one,mul_one]
     exact hb⟩
   invFun χ := QuotientGroup.lift H (χ.val/base.val) (by
     intro g hg
     have he := (DFunLike.congr_fun χ.property ⟨g,hg⟩).trans
       (DFunLike.congr_fun base.property ⟨g,hg⟩).symm
     change χ.val g/base.val g=1
-    rw [show χ.val g=base.val g from he,div_self])
+    rw [show χ.val g=base.val g from he,div_self'])
   left_inv η := by
-    ext y
-    obtain ⟨x,rfl⟩ := QuotientGroup.mk'_surjective H y
+    refine QuotientGroup.monoidHom_ext H (MonoidHom.ext fun x => ?_)
     change (base.val x*η ((QuotientGroup.mk' H) x))/base.val x=_
-    group
+    exact mul_div_cancel_left _ _
   right_inv χ := by
     apply Subtype.ext
-    ext x
+    refine MonoidHom.ext fun x => ?_
     change base.val x*(χ.val x/base.val x)=_
-    group
+    exact mul_div_cancel _ _
 
 theorem twist_value (H : Subgroup G) (ψ : H →* ℂˣ) (base : Extensions H ψ)
     (η : G ⧸ H →* ℂˣ) (x : G) :
@@ -64,6 +64,8 @@ private theorem eval_in_roots (x : G) :
 theorem count_values [Finite G] (x : G) : Nat.card (evaluation x).range = orderOf x := by
   haveI : Finite (G →* ℂˣ) := _root_.RHTower.deningerCharacterGroup_finite
   let J := (evaluation x).range
+  haveI : Finite (evaluation x).range :=
+    Finite.of_surjective _ (evaluation x).rangeRestrict_surjective
   haveI : NeZero (orderOf x) := ⟨(orderOf_pos x).ne'⟩
   have upper := Nat.card_le_card_of_injective (Subgroup.inclusion (eval_in_roots x))
     (Subgroup.inclusion_injective _)
@@ -80,6 +82,8 @@ theorem count_values [Finite G] (x : G) : Nat.card (evaluation x).range = orderO
 theorem evaluation_range [Finite G] (x : G) :
     (evaluation x).range = rootsOfUnity (orderOf x) ℂ := by
   haveI : Finite (G →* ℂˣ) := _root_.RHTower.deningerCharacterGroup_finite
+  haveI : Finite (evaluation x).range :=
+    Finite.of_surjective _ (evaluation x).rangeRestrict_surjective
   rw [← count_values x]
   exact _root_.RHTower.deningerFiniteSubgroupUnits_eq_rootsOfUnity _
 
@@ -93,7 +97,7 @@ theorem evaluation_multiplicity [Finite G] (x : G) (z : ℂˣ) (hz : z^(orderOf 
   have hc := (evaluation x).ker.card_eq_card_quotient_mul_card_subgroup
   rw [Nat.card_congr (QuotientGroup.quotientKerEquivRange (evaluation x)).toEquiv,
     count_values,_root_.RHTower.deningerCharacter_card] at hc
-  change Nat.card {η : G →* ℂˣ // evaluation x η=evaluation x χ} * _=_
+  change Nat.card ((evaluation x) ⁻¹' {(evaluation x) χ}) * _=_
   rw [he,mul_comm]
   exact hc.symm
 
@@ -123,11 +127,11 @@ theorem value_occurs_iff [Finite (G ⧸ H)] (x : G) (z : ℂˣ) :
     have he : z/b.val x ∈ (evaluation ((QuotientGroup.mk' H) x)).range := by
       rw [evaluation_range,mem_rootsOfUnity,div_pow]
       change z^(relativeOrder H x)/(b.val x)^(relativeOrder H x)=1
-      rw [hz,power_value H ψ b x,div_self]
+      rw [hz,power_value H ψ b x,div_self']
     obtain ⟨η,hη⟩ := he
     refine ⟨twistEquiv H ψ b η,?_⟩
     rw [twist_value,show η ((QuotientGroup.mk' H) x)=z/b.val x from hη]
-    group
+    exact mul_div_cancel _ _
 
 /-- Every admissible value has exactly [G:H]/e extensions. The product
 form retains divisibility of the index as part of the conclusion. -/
@@ -149,7 +153,7 @@ theorem joint_multiplicity (J : Subgroup G) (hHJ : H ≤ J) [Finite (G ⧸ J)]
   let e : {χ : Extensions H ψ // χ.val.comp J.subtype=φ} ≃ Extensions J φ :=
     { toFun := fun χ => ⟨χ.val.val,χ.property⟩
       invFun := fun χ => ⟨⟨χ.val,by
-        ext s
+        refine MonoidHom.ext fun s => ?_
         exact (DFunLike.congr_fun χ.property ((Subgroup.inclusion hHJ) s)).trans
           (DFunLike.congr_fun hφ s)⟩,χ.property⟩
       left_inv := fun _ => rfl

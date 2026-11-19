@@ -77,39 +77,40 @@ private theorem density_laplace (e : ℝ) {v : ℂ} (hv : 1/2 < v.re) :
   simp_rw [hP] at hD
   let x := fun u : ℝ => Real.exp (u/2)
   have hd (u : ℝ) : HasDerivAt x (x u/2) u := by
-    simpa only [x,one_div,mul_inv_rev,inv_inv,div_eq_mul_inv] using
+    simpa only [x,id_eq,one_mul,div_eq_mul_inv] using
       (((hasDerivAt_id u).div_const (2:ℝ)).exp)
   have him : x '' (Set.Ioi 0) = Set.Ioi 1 := by
     ext t; constructor
     · rintro ⟨u,hu,rfl⟩
-      exact Real.one_lt_exp (by change 0 < u at hu; positivity)
+      exact Real.one_lt_exp_iff.mpr (half_pos hu)
     · intro ht
       change 1 < t at ht
       exact ⟨2*Real.log t,mul_pos two_pos (Real.log_pos ht),by simp [x,Real.exp_log (zero_lt_one.trans ht)]⟩
   have hi := integral_image_eq_integral_abs_deriv_smul measurableSet_Ioi
     (fun u _ => (hd u).hasDerivWithinAt)
-    (fun u _ t _ he => by have hh := Real.exp_injective he; dsimp only [x] at hh; linarith : Set.InjOn x (Set.Ioi 0)) g
+    (fun u _ t _ he => by have hh := Real.exp_injective he; linarith : Set.InjOn x (Set.Ioi 0)) g
   rw [him] at hi
   have hsub : (∫ u in Set.Ioi (0:ℝ), (density e u:ℂ)*Complex.exp (-v*(u:ℂ))) =
       (2*(e:ℂ))*(∫ t in Set.Ioi (1:ℝ), g t) := by
     rw [hi,← integral_const_mul]
     apply setIntegral_congr_fun measurableSet_Ioi
     intro u _
-    rw [abs_of_pos (half_pos (Real.exp_pos _)),Complex.real_smul]
+    dsimp only
+    rw [abs_of_pos (show 0 < x u / 2 from half_pos (Real.exp_pos _)),Complex.real_smul]
     have hx : ((x u:ℝ):ℂ)^(-(s+1)) = Complex.exp ((u/2:ℝ)*(-(s+1))) := by
       rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (Real.exp_pos _).ne'),
         ← Complex.ofReal_log (Real.exp_pos _).le,Real.log_exp]
     simp only [density,g,hx,Complex.ofReal_mul,Complex.ofReal_div,Complex.ofReal_ofNat]
     dsimp only [x,s]
     push_cast
-    rw [Complex.ofReal_exp,Complex.ofReal_exp]
-    ring_nf
-    simp only [← Complex.exp_add]
-    congr 2 <;> ring
+    have h1 : Complex.exp (↑u / 2) * Complex.exp (↑u / 2 * -(3 + 2 * v + 1)) =
+        Complex.exp (-3 * ↑u / 2) * Complex.exp (-v * ↑u) := by
+      rw [← Complex.exp_add, ← Complex.exp_add]; congr 1; ring
+    linear_combination (-((e:ℂ) * (P ⌊Real.exp (u / 2)⌋₊ : ℂ))) * h1
   change LSeries squareConductorPrice s = s*(∫ t in Set.Ioi (1:ℝ), g t) at hD
   have hn : v+3/2 ≠ 0 := fun he => by have h := congrArg Complex.re he; simp at h; linarith only [h,hv]
-  rw [hsub,show 3+2*v=s from rfl,hD]
-  dsimp only [s]; field_simp; ring
+  rw [hsub,show 3+2*v=s from rfl,hD,eq_div_iff hn]
+  dsimp only [s]; ring
 
 private theorem density_growth {e C b u : ℝ} (hC : 0 ≤ C) (hb : 0 ≤ 3+2*b)
     (hp : ∀ N : ℕ, e*P N ≤ C*(N:ℝ)^(3+2*b)) :
@@ -149,7 +150,7 @@ private theorem extension_of_prefix_bound {a e C : ℝ} (ha : 0 ≤ a) (ha' : a 
         analyticAt_squarePriceRegularContinuation_real (t := 3+2*t) (by linarith only [ha,ht])
     have hz : (t:ℂ)+3/2 ≠ 0 := by
       intro h; have h' := congrArg Complex.re h; simp at h'; linarith only [ha,ht,h']
-    exact (analyticAt_const.mul (hh.comp (by fun_prop : AnalyticAt ℂ (fun v : ℂ => 3+2*v) t))).div
+    exact (analyticAt_const.mul (hh.comp (f := fun v : ℂ => 3+2*v) (x := (t:ℂ)) (by fun_prop))).div
       (analyticAt_id.add analyticAt_const) hz
   have hright (v : ℂ) (hv : 1/2 < v.re) :
       squarePriceRegularContinuation (3+2*v) = squareConductorContinuation (3+2*v) := by
@@ -184,7 +185,7 @@ private theorem extension_of_prefix_bound {a e C : ℝ} (ha : 0 ≤ a) (ha' : a 
     rw [hFright _ h]
     dsimp only [Λ]
     rw [hright _ h,show 3+2*(z-1/2)=J z by ring,show z-1/2+3/2=z+1 by ring]
-    field_simp [hz']; linear_combination (squareConductorContinuation (J z)*(z+1))*he₂
+    field_simp [hz']; linear_combination (squareConductorContinuation (J z))*he₂
 
 private theorem cleared_price_iff {z h : ℂ} (hz : z ≠ 1) (hu : zetaResidueUnit z ≠ 0) :
     h = squareConductorContinuation (J z) ↔
@@ -211,17 +212,17 @@ private theorem width_of_price_extension {a : ℝ} (ha : 0 ≤ a) (ha' : a < 1/2
     have h3 : 3 < (J z).re := by change 1/2+a < z.re at hz; simp [J]; linarith only [ha,hz]
     exact (((analyticAt_id.sub analyticAt_const).mul (analyticAt_zetaResidueUnit z)).mul
       ((hH z hz).sub ((analytic_squareConductorAnalyticRemainder _ h3).comp
-        (by dsimp only [J]; fun_prop : AnalyticAt ℂ J z))))
+        (f := J) (show AnalyticAt ℂ J z from (by fun_prop : AnalyticAt ℂ (fun z : ℂ => 2+2*z) z)))))
   have hR : AnalyticOnNhd ℂ R U := by
     intro z _
-    have hW := (differentiable_mellin_squarePrimeWeight.differentiableOn.analyticOnNhd Set.isOpen_univ) z (Set.mem_univ _)
+    have hW := (differentiable_mellin_squarePrimeWeight.differentiableOn.analyticOnNhd isOpen_univ) z (Set.mem_univ _)
     exact hW.mul ((analyticAt_zetaResidueUnit z).sub ((analyticAt_id.sub analyticAt_const).mul
       (analyticAt_zetaResidueUnit z).deriv))
   have h2 : (2:ℂ) ∈ U := by change 1/2+a < (2:ℂ).re; norm_num; linarith only [ha']
   have hEq : Set.EqOn L R U := hL.eqOn_of_preconnected_of_eventuallyEq hR
     (convex_halfSpace_re_gt (1/2+a)).isPreconnected h2 (by
-      filter_upwards [Complex.continuous_re.continuousAt.eventually_gt
-        (by norm_num : (1:ℝ)<(2:ℂ).re)] with z hz
+      filter_upwards [(Complex.continuous_re.continuousAt (x := (2:ℂ))).eventually
+        (lt_mem_nhds (by norm_num : (1:ℝ)<(2:ℂ).re))] with z hz
       have hz₁ : z ≠ 1 := fun he => hz.ne' (by rw [he]; rfl)
       have hu : zetaResidueUnit z ≠ 0 := by
         rw [zetaResidueUnit,Function.update_of_ne hz₁]
@@ -229,9 +230,7 @@ private theorem width_of_price_extension {a : ℝ} (ha : 0 ≤ a) (ha' : a < 1/2
       exact (cleared_price_iff hz₁ hu).mp (hagree z hz))
   have hρ' : ρ.re < 1 := by
     by_contra! h
-    have hz := (zetaZeroWidth_le_iff_suzukiZetaZeroFreeRightOf (by norm_num : (0:ℝ) ≤ 1/4)).mp
-      (ZeroForcingCalculus.zetaZeroWidth_le_sub_three_eighths.trans (by norm_num))
-    exact hz ρ (by linarith only [h]) hρ₁ hζ
+    exact riemannZeta_ne_zero_of_one_le_re h hζ
   have h₀ := analyticAt_riemannZeta_primeShiftResidueClosability hρ₁
   obtain ⟨g,hg,hg₀,hfac⟩ := h₀.analyticOrderAt_ne_top.mp (analyticOrderAt_riemannZeta_ne_top hρ₁)
   have hnear : H =ᶠ[𝓝[≠] ρ] fun z => squareConductorContinuation (J z) := by
@@ -247,12 +246,13 @@ private theorem width_of_price_extension {a : ℝ} (ha : 0 ≤ a) (ha' : a < 1/2
   obtain ⟨hne,hres⟩ := squareConductorContinuation_zero_residue hζ (by linarith only [hρ,ha]) hρ'
   have hJ : Tendsto J (𝓝[≠] ρ) (𝓝[≠] J ρ) := by
     apply tendsto_nhdsWithin_iff.mpr
-    refine ⟨(show Continuous J by dsimp only [J]; fun_prop).continuousAt.tendsto.mono_left nhdsWithin_le_nhds,?_⟩
+    refine ⟨(show Continuous J from (by fun_prop : Continuous fun z : ℂ => 2+2*z)).continuousAt.tendsto.mono_left
+      nhdsWithin_le_nhds,?_⟩
     filter_upwards [self_mem_nhdsWithin (a := ρ) (s := {ρ}ᶜ)] with z hz
     intro h
     apply hz
     change 2+2*z=2+2*ρ at h
-    linear_combination h/2
+    exact Set.mem_singleton_iff.mpr (by linear_combination h/2)
   have hlim : Tendsto (fun z => (J z-J ρ)*H z) (𝓝[≠] ρ)
       (𝓝 (-2*(zetaMultiplicity ρ:ℂ)*W ρ)) :=
     (hres.comp hJ).congr' (hnear.mono fun z he => by dsimp only [Function.comp_apply]; rw [he])

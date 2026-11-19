@@ -69,7 +69,7 @@ theorem project_graph_height (d : ℕ+) (X N : ℕ) (u b : ℕ → ℤ) :
 theorem project_quotient_coefficient (d : ℕ+) (X N : ℕ) (u b : ℕ → ℤ) {k : ℕ} (hk : 0<k) :
     quotientCoefficient ((d:ℕ)*X) N (dilateLower d u) b k =
       quotientCoefficient X N u (contractEndpoints d N b) k := by
-  have h := project_quotient_test d X N u b (fun q => if q=k then 1 else 0) (by simp [hk.ne'])
+  have h := project_quotient_test d X N u b (fun q => if q=k then 1 else 0) (if_neg hk.ne)
   simpa only [quotientCoefficient,mul_ite,mul_one,mul_zero] using h
 
 /-- Projection preserves the finite part, including integer cuts below d. -/
@@ -97,12 +97,48 @@ theorem project_opposite_degrees (d : ℕ+) (X N : ℕ) (u b : ℕ → ℤ) :
     rw [Nat.cast_mul,mul_inv_rev]
     ring
   rw [poleProduct,poleProduct,hl,contraction_sum d N b (fun j => (j:ℝ)) (by simp)]
-  rw [div_mul_eq_mul_div, mul_div_assoc, ← mul_sub, Finset.sum_div, ← sum_sub_distrib]
+  rw [show ∀ s t e c : ℝ, (s/c)*t-s*e = s*(t/c-e) by intros; ring,
+    Finset.sum_div, ← sum_sub_distrib]
   congr 1
   exact sum_congr rfl fun j _ => by ring
 
 #print axioms project_graph_height
 #print axioms project_finite_part
 #print axioms project_opposite_degrees
+
+/-- Successive contractions agree at every positive endpoint. At zero
+the second contraction drops exactly the jumps that had already reached
+zero on the first step. Restoring that mass gives exact composition. -/
+theorem contract_composition (d e : ℕ+) (N : ℕ) (b : ℕ → ℤ) (k : ℕ) :
+    contractEndpoints e N (contractEndpoints d N b) k+
+      (if k=0 then contractEndpoints d N b 0 else 0) =
+      contractEndpoints (d*e) N b k := by
+  have hrow (i : ℕ) : (if i/e=k then contractEndpoints d N b i else 0) =
+      ∑ j ∈ Icc 1 N, if i/e=k ∧ j/d=i then b j else 0 := by
+    by_cases h : i/e=k <;> simp [contractEndpoints,h]
+  have hedge : (if k=0 then contractEndpoints d N b 0 else 0) =
+      ∑ j ∈ Icc 1 N, if k=0 ∧ j/d=0 then b j else 0 := by
+    by_cases h : k=0 <;> simp [contractEndpoints,h]
+  change (∑ i ∈ Icc 1 N, if i/e=k then contractEndpoints d N b i else 0)+
+    (if k=0 then contractEndpoints d N b 0 else 0) =
+    ∑ j ∈ Icc 1 N, if j/((d*e:ℕ+):ℕ)=k then b j else 0
+  rw [sum_congr rfl (fun i _ => hrow i),sum_comm,hedge,← sum_add_distrib]
+  refine sum_congr rfl fun j hj => ?_
+  let q := j/(d:ℕ)
+  have hq : q≤N := (Nat.div_le_self j d).trans (mem_Icc.mp hj).2
+  have hcut : j/((d*e:ℕ+):ℕ)=q/e := (Nat.div_div_eq_div_mul j d e).symm
+  have hi (i : ℕ) : (if i/e=k ∧ q=i then b j else 0) =
+      if q=i then (if q/e=k then b j else 0) else 0 := by
+    by_cases h : q=i
+    · subst i; simp
+    · simp [h]
+  change (∑ i ∈ Icc 1 N, if i/e=k ∧ q=i then b j else 0)+
+    (if k=0 ∧ q=0 then b j else 0) = if j/((d*e:ℕ+):ℕ)=k then b j else 0
+  simp only [hi,hcut,sum_ite_eq]
+  rcases Nat.eq_zero_or_pos q with h | h
+  · by_cases hk : k=0 <;> simp [h,hk,eq_comm]
+  · simp [mem_Icc.mpr ⟨h,hq⟩,h.ne']
+
+#print axioms contract_composition
 
 end GaloisForLFunctions.SignedArithmeticCorrespondences

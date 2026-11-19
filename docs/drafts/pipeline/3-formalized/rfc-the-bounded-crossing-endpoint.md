@@ -1,0 +1,16 @@
+# The bounded endpoint for signed crossings
+
+- **Stage** 3-formalized
+- **Target** For every fixed cap \(K\), sets whose complementary Möbius prefix stays within \([-K,K]\) must contain positive lower natural densities of both signs. In particular no matching with density-zero squarefree fixed set has bounded signed crossing charge.
+
+**Equal-sign intervals.** For each positive integer \(k\), some fixed length \(H\) has a positive lower density of starts at which precisely \(k\) entries are nonzero and all equal \(+1\). The same \(H\) works for \(-1\).
+
+Take \(m=2k\) marked offsets forming a set \(P\) of distinct primes above \(4m\), and one further prime \(z\). For every \(E\subseteq P\) use both multipliers \(t_E=\prod_{p\in P\setminus E}p\) and \(zt_E\). Take \(H\) above every \(tp\). Start with \(x\) divisible by the square of \((4m)!z\prod_{p\in P}p\). Each mark \(x+p\) then has precisely one factor \(p\) and is coprime to every other label prime and to \(z\).
+
+For each unwanted position \(1\le r\le H\), \(r\ne tp\) for every mark, impose a fresh prime-square divisor of \(tx+r\). On the current progression \(x=b+Dn\), choose its prime \(q\) larger than \(tD+r+\max_p tp\). The new congruence determines one residue for \(n\bmod q^2\). Its nonzero determinants \(r-tp\) ensure \(q\nmid x+p\) for every mark. Thus no prime dividing the final progression modulus can square-divide a mark. Every other offending prime exceeds \(4m\) and excludes at most \(N/q^2+1\) progression indices through \(N\) at each mark. Summing through \(\sqrt{DN+b+\max P}\) excludes at most \(N/4+O(\sqrt N)\) indices in total. A positive fraction realizes all marked squarefree values simultaneously.
+
+For each good \(x\), the only nonzero terms in \((tx,tx+H]\) are the \(t(x+p)\) for \(p\in E\), of sign \(\mu(t)\mu(x+p)\). Select exactly \(k\) entries from the larger sign class. The optional prime \(z\) reverses every retained sign. There are finitely many multipliers and each dilation is injective, giving positive lower density in both orientations. Take \(k>2K\). Every such window must contain a selected vertex of its own sign. Each selected vertex belongs to at most \(H\) windows. The two lower-density bounds depend only on \(K\).
+
+**Sharp conclusion.** For every fixed \(K\) there are constants \(C,X_0\) such that, uniformly over \(X\ge X_0\), every set \(S\) and both signs, the number of selected occurrences of that sign plus the number of excursions of the complementary prefix beyond \([-K,K]\) is at least \(X/C\). A pure window may hit a selected vertex in at most \(H\) ways and an excursion at either of its two endpoints. Taking \(S\) to be the squarefree fixed vertices of a matching identifies its complementary prefix with the signed crossings. A density-zero fixed set rules out a bounded crossing cap. Conversely the bounded-primitive approximation and clipped divisor tables attain every diverging nondecreasing cap.
+
+**Lean declarations.** `all_bounded_dilations_of_one_mobius_window`, `positive_lower_density_of_equal_sign_windows`, `bounded_charge_requires_both_signs_or_frequent_excursions`, and `attainable_monotone_crossing_caps`. The logarithmic-density rate in \(K\) is a [separate question](../1-in-progress/rfc-logarithmic-cost-of-a-bounded-complementary-charge.md).
