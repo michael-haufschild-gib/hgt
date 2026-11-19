@@ -44,7 +44,9 @@ private theorem logG_mean (p q : ℝ × ℝ) :
     norm_num [Finset.sum_range_succ,h2,HTGeometry.integral_pow_one_gaussianReal,
       HTGeometry.integral_pow_zero_gaussianReal,σ,Real.coe_toNNReal _ (Real.exp_pos _).le] <;> ring
   simp_rw [logG_formula]
-  rw [integral_sub (integrable_const _) ((gauss_offset_integrable _ _ _ _).div_const _),
+  have hi : Integrable (fun x : ℝ => (x-q.1)^2) (law p) :=
+    gauss_offset_integrable p.1 q.1 σ 2
+  rw [integral_sub (integrable_const _) (hi.div_const (2*Real.exp q.2)),
     integral_const,integral_div,h]
   simp
 
@@ -86,7 +88,8 @@ theorem gaussian_kl (a l b j : ℝ) :
   change (klDiv _ _).toReal = ∫ x, logG (a,l) x-logG (b,j) x ∂law (a,l) at he
   rw [he,integral_sub (logG_int _ _) (logG_int _ _),logG_mean,logG_mean]
   dsimp only
-  field_simp [Real.exp_ne_zero] <;> ring
+  field_simp [Real.exp_ne_zero]
+  ring
 
 private theorem logM_lower (u v a b l x : ℝ) :
     Real.log (lengthRatio u v)+logG (a,l) x ≤ logM u v a b l x ∧
@@ -134,7 +137,7 @@ private theorem logM_int (u v a b l : ℝ) (z : ℝ × ℝ) : Integrable (logM u
 The positive weight is written in logarithmic coordinates. -/
 theorem component_label_loss (u v a b l t w : ℝ) :
     let p := Real.exp w
-    let D := (klDiv (positionGaussian t l) (splitGaussian u v (a,l) (b,l))).toReal
+    let D := (klDiv (positionGaussian t l) (splitGaussian u v (a,l) (b,l))).toReal;
     -p*w-p*D = ∫ x, (p*positionGaussianDensity (t,l) x) *
       (Real.log (splitGaussianDensity u v (a,l) (b,l) x)-Real.log (p*positionGaussianDensity (t,l) x)) := by
   intro p D
@@ -176,7 +179,7 @@ theorem mixture_decomposition (u v a b l m j : ℝ) :
   let f := logM u v a b l
   let g := logG (m,j)
   have h (t : ℝ) : Integrable (fun x => f x-g x) (positionGaussian t l) :=
-    (logM_int _ _ _ _ _ _).sub (logG_int _ _)
+    (logM_int u v a b l (t,l)).sub (logG_int (t,l) (m,j))
   have hM : Integrable (fun x => f x-g x) M := by
     change Integrable _ (splitGaussian _ _ _ _)
     rw [splitGaussian_components,integrable_add_measure]
@@ -217,5 +220,6 @@ theorem mixture_decomposition (u v a b l m j : ℝ) :
   ring
 
 #print axioms gaussian_kl
+#print axioms component_label_loss
 #print axioms mixture_decomposition
 end GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells.NoisyPair

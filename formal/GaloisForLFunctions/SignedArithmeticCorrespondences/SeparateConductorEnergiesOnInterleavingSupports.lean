@@ -145,7 +145,8 @@ theorem mixedJetSection_separate {N : ℕ} (a b : ℕ → ℤ) (r : ℕ → ℝ)
   have hj (m n : ℕ) : |J m n|≤2 := by
     dsimp only [J]
     rw [abs_of_nonneg (add_nonneg (pow_nonneg hx.1 _) (pow_nonneg hx.1 _))]
-    linarith only [pow_le_one₀ hx.1 hx.2 (max m n-min m n-1),pow_le_one₀ hx.1 hx.2 (m+n-1)]
+    linarith only [pow_le_one₀ (n := max m n-min m n-1) hx.1 hx.2,
+      pow_le_one₀ (n := m+n-1) hx.1 hx.2]
   have hentry (m n : ℕ) : |u m*v n*J m n| ≤ |u m|*|v n|*2 := by
     simp only [abs_mul]
     exact mul_le_mul_of_nonneg_left (hj m n) (mul_nonneg (abs_nonneg _) (abs_nonneg _))

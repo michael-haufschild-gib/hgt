@@ -80,7 +80,7 @@ theorem opposingFrobeniusSection_eval {A P : ℤ[X]} {q : ℕ} {z : ℂ}
     simp only [map_add,map_mul,ev_X,ev_C,hz] at he
     dsimp only [s,c]
     rw [map_neg,mul_neg]
-    exact neg_eq_of_add_eq_zero_left he
+    linear_combination -he
   have hv : ev z (∑ j ∈ P.support, C (P.coeff j*(q:ℤ)^j)*X^(m-j)) = z^m*conj (ev z P) := by
     simp only [map_sum,map_mul,ev_C,map_pow,ev_X,Int.cast_mul,Int.cast_pow,Int.cast_natCast,
       ev_expansion P z,map_intCast,mul_sum]

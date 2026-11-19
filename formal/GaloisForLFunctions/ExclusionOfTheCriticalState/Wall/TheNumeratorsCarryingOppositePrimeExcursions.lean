@@ -203,14 +203,17 @@ theorem riemannHypothesis_or_abundant_opposite_prime_excursions : RiemannHypothe
     dsimp only [changeInReading]
     linarith only [hfull,hrest,hmargin,congrArg (· *Y) hscale,mul_pos ha₀ (Real.exp_pos (g*T i)),
       mul_pos hA (Real.exp_pos (g*T i))]
-  have hmass := reciprocal_and_count hc₀ hK hKscale (fun H hn => (hN H hn).1)
-    (lt_of_lt_of_le (by linarith only [hneg,neg_le_abs changeInReading] : (A/4)*Y<|changeInReading|) hcost)
+  have hpaid : (A/4)*Y < |changeInReading| := by linarith only [hneg,neg_le_abs changeInReading]
+  have hmass := reciprocal_and_count (g := g) (T := T i) (L := L i) hc₀ hK hKscale
+    (fun H hn => (hN H hn).1) (hpaid.trans_le hcost)
+  have hdrop : changeInReading < -c*Y := hneg.trans_le
+    (mul_le_mul_of_nonneg_right (neg_le_neg hcA) (Real.exp_pos (g*T i)).le)
   have hfamily (H : ℕ) : H∈N ↔ Real.exp (T i)≤H ∧ (H:ℝ)^(1/2+d)<L i ∧ H<(L i)^2 ∧ ∃ v ∈ E, P H v := by
     refine ⟨fun hn => ?_,fun hw => Finset.mem_filter.mpr ⟨Finset.mem_range.mpr hw.2.2.1,hw.2.2.2⟩⟩
     obtain ⟨hX,hL,v,hev,hw⟩ := hN H hn
     have hH := (Real.one_lt_exp_iff.mpr (show 0<T i by linarith only [hlate])).trans_le hX
     exact ⟨hX,CarriesOppositePrimeExcursions.power_lt_aperture hw hH (min_le_right ..),hL,v,hev,hw⟩
-  exact ⟨E,N,hE,hhit,hfamily,hneg.trans_le (by linarith only [mul_le_mul_of_nonneg_right hcA (Real.exp_pos (g*T i)).le]),hmass⟩
+  exact ⟨E,N,hE,hhit,hfamily,hdrop,hmass⟩
 
 #print axioms riemannHypothesis_or_abundant_opposite_prime_excursions
 end GaloisForLFunctions.ExclusionOfTheCriticalState

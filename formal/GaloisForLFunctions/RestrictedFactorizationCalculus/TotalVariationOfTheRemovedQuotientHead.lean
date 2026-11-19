@@ -78,15 +78,15 @@ theorem variation_with_changes_of_arithmetic_reading (a : ℕ → ArithmeticFunc
     let c := fun i => quotientFloorCoefficients (a i)
     let P := fun i => quotientReading (roughFloorCoefficient (Y i) (roughRestriction (Y i) (a i))) (H i)
     (∑ i ∈ range N,|P (i+1)-P i|) ≤ ∑ d ∈ Icc 1 (H N),
-      (2*cap d+∑ i ∈ range N,|c (i+1) d-c i d|*(if IsFree (RoughReading.banned (Y (i+1))) d ∧ d ≤ H (i+1) then 1 else 0)) := by
+      (2*cap d+∑ i ∈ range N,|c (i+1) d-c i d| * (if IsFree (RoughReading.banned (Y (i+1))) d ∧ d ≤ H (i+1) then 1 else 0)) := by
   let c := fun i => quotientFloorCoefficients (a i)
   let e := fun d i => ind (alive Y H d i)
   let S := Icc 1 (H N)
   let z := fun d i => c i d*e d i
   have per (d : ℕ) (hd : d ∈ S) :
-      (∑ i ∈ range N,|z d (i+1)-z d i|) ≤ 2*cap d+∑ i ∈ range N,|c (i+1) d-c i d|*e d (i+1) := by
+      (∑ i ∈ range N,|z d (i+1)-z d i|) ≤ 2*cap d+∑ i ∈ range N,|c (i+1) d-c i d| * e d (i+1) := by
     have step (i : ℕ) (hi : i ∈ range N) :
-        |z d (i+1)-z d i| ≤ cap d*|e d (i+1)-e d i|+|c (i+1) d-c i d|*e d (i+1) := by
+        |z d (i+1)-z d i| ≤ cap d*|e d (i+1)-e d i|+|c (i+1) d-c i d| * e d (i+1) := by
       rw [show z d (i+1)-z d i=c i d*(e d (i+1)-e d i)+(c (i+1) d-c i d)*e d (i+1) by
         dsimp only [z]; ring]
       apply (abs_add_le ..).trans
@@ -123,7 +123,9 @@ private theorem variation_of_a_divisor_coefficient (a : ℕ → ArithmeticFuncti
     apply sum_le_sum
     intro q _
     rw [←sub_mul,abs_mul]
-    have mw : |w q| ≤ 1 := by exact_mod_cast abs_moebius_le_one (n := d/q)
+    have mw : |w q| ≤ 1 := by
+      change |(μ (d/q):ℝ)| ≤ 1
+      exact_mod_cast abs_moebius_le_one (n := d/q)
     exact (mul_le_mul_of_nonneg_left mw (abs_nonneg _)).trans_eq (mul_one _)
   apply (sum_le_sum price).trans
   rw [sum_comm,←vonMangoldt_sum (n := d),mul_sum]
@@ -146,7 +148,7 @@ theorem total_cost_of_changing_rough_prime_readings (a : ℕ → ArithmeticFunct
              apply sum_le_sum
              intro d hd
              have erase (i : ℕ) (_ : i ∈ range N) :
-                 |quotientFloorCoefficients (a (i+1)) d-quotientFloorCoefficients (a i) d|*ind (alive Y H d (i+1)) ≤
+                 |quotientFloorCoefficients (a (i+1)) d-quotientFloorCoefficients (a i) d| * ind (alive Y H d (i+1)) ≤
                     |quotientFloorCoefficients (a (i+1)) d-quotientFloorCoefficients (a i) d| :=
                (mul_le_mul_of_nonneg_left (indicator_le_one _) (abs_nonneg _)).trans_eq (mul_one _)
              have bound := (sum_le_sum erase).trans (variation_of_a_divisor_coefficient a N change d)
@@ -210,13 +212,22 @@ theorem total_cost_of_moving_rough_hyperbola_heads {a : ArithmeticFunction ℝ}
     (∑ i ∈ range N,|P (i+1)-P i|) ≤ 2*((X N).sqrt:ℝ)*Real.log (X N).sqrt := by
   let H := fun i => (X i).sqrt
   have mono : Monotone H := fun _ _ h => Nat.sqrt_le_sqrt (cuts h)
-  simp only [rough_head_and_interior,add_sub_cancel_left,min_eq_right (Nat.sqrt_le_self _)]
+  let f := fun i => roughRestriction (Y i) a
+  let raw := fun i => roughCofactorReading (Y i) (X i) (quotientReading (f i))-
+    roughInteriorReading (f i) (Y i) (X i) (X i).sqrt
+  have paid (i : ℕ) : raw i=quotientReading (roughFloorCoefficient (Y i) (f i)) (H i) := by
+    dsimp only [raw,H]
+    rw [rough_head_and_interior,add_sub_cancel_left,min_eq_right (Nat.sqrt_le_self _)]
+  change (∑ i ∈ range N,|raw (i+1)-raw i|) ≤ _
+  simp only [paid]
   have var := variation_of_the_rough_coefficient_head a Y H walls mono N
   have per (d : ℕ) (hd : d ∈ Icc 1 (H N)) : |quotientFloorCoefficients a d| ≤ Real.log (H N) :=
     (interpolating_coefficients_le_log dom d).trans (Real.log_le_log (Nat.cast_pos.mpr (mem_Icc.mp hd).1)
       (Nat.cast_le.mpr (mem_Icc.mp hd).2))
-  exact var.trans ((mul_le_mul_of_nonneg_left (sum_le_sum per) (by norm_num : (0:ℝ) ≤ 2)).trans_eq
-    (by simp [H,mul_assoc]))
+  apply var.trans
+  calc _ ≤ 2*∑ _d ∈ Icc 1 (H N),Real.log (H N) :=
+             mul_le_mul_of_nonneg_left (sum_le_sum per) (by norm_num)
+       _ = 2*((X N).sqrt:ℝ)*Real.log (X N).sqrt := by simp [H,mul_assoc]
 
 private theorem smooth_center_mono (y : ℕ) {l u : ℕ} (order : l ≤ u) :
     smoothQuotientCenter y l ≤ smoothQuotientCenter y u := by

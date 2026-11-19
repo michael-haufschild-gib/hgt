@@ -35,6 +35,15 @@ every curve of genus g over F lies in the cone of every other.
 
 ## Status
 
-| Step | Lean |
+Modules in `CurvesOverFiniteFields/`, all checked, wired into `CurvesOverFiniteFields.lean`:
+
+| Module | Content |
 |---|---|
-| 1–9 | not started |
+| `Basic` | valuation ring at infinity is a DVR; finite chart (integral closure of F[x]) and infinite chart (integral closure of the ring at infinity) are Dedekind with fraction field K; places |
+| `Residues` | residue field at infinity is spanned by constants; residue rings of all places are finite over F; finitely many infinite places |
+| `ValuationSpaces` | spaces cut out by valuation bounds; raising a divisor by one at v adds exactly dim_F(R/v) (`finrank_valSpace_step`) |
+| `MayerVietoris` | dim N/M = dim (N⊓U)/(M⊓U) + dim (N⊔U)/(M⊔U) |
+| `EulerCharacteristic` | χ = dim(M⊓U) − dim V/(M⊔U) grows by dim N/M, finiteness both ways (`euler_step`, `euler_step_down`) |
+
+Next: divisors on the curve, χ(D) = deg D + χ(0) by induction, base case ℓ(0) = 1 (exact constant
+field) and finite h¹(0) = g; then steps 3–9 above.

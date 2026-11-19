@@ -1,5 +1,6 @@
 import GaloisForLFunctions.SignedArithmeticCorrespondences.WeilMassOnDilatedCombWindows
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRiemannHypothesisIsTheSignOfWeilsFormOnStepPackets
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheTwistedDensityOfTheCarrierIsWeilsSymbol
 
 /-!
 # The spacing threshold for divergent Weil mass floors
@@ -97,6 +98,80 @@ theorem arbitrarily_large_comb_floor_iff (d Q : ℕ+) :
     simpa [hd₁,Nat.card_Ioc] using hlow (Ioc N (N+N)) hs (fun _ => 1)
   exact (not_lt_of_ge ((le_div_iff₀ (Nat.cast_pos.mpr hN : (0:ℝ)<N)).mpr hmass)) hhigh
 
+private theorem mean_dyadic_diagonal :
+    Tendsto (fun N : ℕ => (∑ n ∈ Ioc N (N+N), counterterm n)/(N:ℝ)-Real.log N) atTop
+      (𝓝 (2*Real.log 2-1-Real.log (2*Real.pi))) := by
+  let g := fun y : ℝ => Real.log (1+y)
+  have hg : ContinuousOn g (Set.Ioc 0 1) :=
+    (continuous_const.add continuous_id).continuousOn.log (fun y hy => by linarith only [hy.1])
+  have hbound (y : ℝ) (hy : y∈Set.Ioc 0 1) : |g y|≤Real.log 2 := by
+    change |Real.log (1+y)|≤_
+    rw [abs_of_nonneg (Real.log_nonneg (by linarith only [hy.1]))]
+    exact Real.log_le_log (by linarith only [hy.1]) (by linarith only [hy.2])
+  have hI : (∫ y in (0:ℝ)..1, g y)=2*Real.log 2-1 := by
+    dsimp only [g]
+    rw [intervalIntegral.integral_comp_add_left,integral_log]
+    norm_num
+    ring
+  have hl := tendsto_riemannSum_of_continuousOn_Ioc hg hbound
+  rw [hI] at hl
+  apply (hl.sub_const (Real.log (2*Real.pi))).congr'
+  filter_upwards [eventually_ge_atTop 1] with N hN
+  have hpos : (0:ℝ)<N := Nat.cast_pos.mpr hN
+  let f := fun k : ℕ => N+(k+1)
+  have hs : Ioc N (N+N)=(range N).image f := by
+    ext j
+    simp only [mem_Ioc,mem_image,mem_range,f]
+    constructor
+    · intro h
+      exact ⟨j-(N+1),by omega,by omega⟩
+    · rintro ⟨k,hk,rfl⟩
+      omega
+  have hentry (k : ℕ) : counterterm (f k)=Real.log N+g (((k:ℝ)+1)/N)-Real.log (2*Real.pi) := by
+    dsimp only [counterterm,f,g]
+    push_cast
+    rw [Real.log_div (by positivity) (by positivity),
+      show (N:ℝ)+((k:ℝ)+1)=N*(1+((k:ℝ)+1)/N) by field_simp,
+      Real.log_mul hpos.ne' (by positivity)]
+  rw [hs,sum_image (fun _ _ _ _ h => by dsimp only [f] at h; omega)]
+  simp only [hentry,sum_sub_distrib,sum_add_distrib,sum_const,card_range,nsmul_eq_mul]
+  field_simp
+
+private theorem dyadic_contact_zero {N m n : ℕ} (hm : m∈Ioc N (N+N)) (hn : n∈Ioc N (N+N))
+    (he : m≠n) : HodgeTheoryOfAFixedPart.contact m n=0 := by
+  have hd {a b : ℕ} (ha : a∈Ioc N (N+N)) (hb : b∈Ioc N (N+N)) (hne : a≠b) : ¬a∣b := by
+    rintro ⟨k,hk⟩
+    obtain ⟨ha₁,ha₂⟩ := mem_Ioc.mp ha
+    obtain ⟨hb₁,hb₂⟩ := mem_Ioc.mp hb
+    have hk₀ : k≠0 := fun h => by simp [h] at hk; omega
+    have hk₁ : k≠1 := fun h => hne (by simpa [h] using hk.symm)
+    have hh := Nat.mul_le_mul_left a (show 2≤k by omega)
+    omega
+  simp [HodgeTheoryOfAFixedPart.contact,hd hm hn he,hd hn hm he.symm]
+
+/-- Flat integral combs attain the leading logarithmic floor at every
+spacing; the residual has an explicit finite limit. -/
+theorem flat_dilated_comb_finite_part (d : ℕ+) :
+    Tendsto (fun N : ℕ => combForm ((Ioc N (N+N)).image (fun n => (d:ℕ)*n)) (fun _ => 1)/(N:ℝ)-
+      (1-1/(d:ℝ))*Real.log N) atTop
+      (𝓝 ((3*Real.log 3-Real.log (4*Real.pi)-Real.eulerMascheroniConstant)/(d:ℝ)+
+        (1-1/(d:ℝ))*(2*Real.log 2-1-Real.log (2*Real.pi))+Real.log d)) := by
+  apply (((flat_dyadic_comb_limit.div_const (d:ℝ)).add
+    (mean_dyadic_diagonal.const_mul (1-1/(d:ℝ)))).add_const (Real.log d)).congr'
+  filter_upwards [eventually_ge_atTop 1] with N hN
+  let S := Ioc N (N+N)
+  have hP : (∑ n ∈ S, ∑ m ∈ S.erase n, HodgeTheoryOfAFixedPart.contact m n)=0 :=
+    sum_eq_zero fun n hn => sum_eq_zero fun m hm => dyadic_contact_zero (mem_of_mem_erase hm) hn (mem_erase.mp hm).1
+  have hmass : (S.card:ℝ)=N := by simp [S,Nat.card_Ioc]
+  have h := full_comb_dilation d S (fun n hn => (Nat.zero_le N).trans_lt (mem_Ioc.mp hn).1) (fun _ => 1)
+  simp only [one_mul,one_pow,hP,sub_zero,sum_const,nsmul_eq_mul,mul_one,hmass] at h
+  rw [h]
+  have hn : (N:ℝ)≠0 := (Nat.cast_pos.mpr hN).ne'
+  have hd : (d:ℝ)≠0 := (Nat.cast_pos.mpr d.pos).ne'
+  field_simp
+  <;> ring
+
+#print axioms flat_dilated_comb_finite_part
 #print axioms flat_dyadic_comb_limit
 #print axioms full_comb_dilation
 #print axioms arbitrarily_large_comb_floor_iff

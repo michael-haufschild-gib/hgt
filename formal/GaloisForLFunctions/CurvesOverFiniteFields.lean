@@ -1,3 +1,5 @@
 import GaloisForLFunctions.CurvesOverFiniteFields.Basic
 import GaloisForLFunctions.CurvesOverFiniteFields.ValuationSpaces
 import GaloisForLFunctions.CurvesOverFiniteFields.MayerVietoris
+import GaloisForLFunctions.CurvesOverFiniteFields.Residues
+import GaloisForLFunctions.CurvesOverFiniteFields.EulerCharacteristic

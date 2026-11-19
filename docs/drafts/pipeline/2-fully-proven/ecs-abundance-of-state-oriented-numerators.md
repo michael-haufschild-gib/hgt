@@ -1,6 +1,6 @@
 # Abundance of state-oriented common numerators
 
-On the original §2.16 sequence put $X=e^T$, $L=\lceil X^{1+\eta}\rceil$, $m=\int\Phi$. If RH fails, there are fixed $c,g,d>0$ such that every sufficiently late test has a measurable set $E$ of displacements and a finite set $N\subset[X,L^2)$ with
+Put $X=e^T$, $L=\lceil X^{1+\eta}\rceil$ and $m=\int\Phi$. If RH fails, there are fixed $c,g,d>0$ such that for every $0<\eta\le1$, every sufficiently late test on its original §2.16 sequence has a measurable set $E$ of displacements and a finite set $N\subset[X,L^2)$ with
 $$
  R(\Phi)-R(\mathbf1_{E^c}\Phi)<-cX^g,\qquad
  L\sum_{H\in N}H^{-1}>cX^{g+1/2},\qquad L\,\#N>cX^{g+3/2}.

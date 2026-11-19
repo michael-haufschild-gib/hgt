@@ -251,7 +251,7 @@ theorem exists_norm_scatteringPhase_lineOne_le :
   refine ⟨C_sc, hC_pos, fun y => ?_⟩
   have hsy_pos : 0 < Real.sqrt (1 + |y|) := Real.sqrt_pos.mpr (by linarith [abs_nonneg y])
   by_cases hy : 1 ≤ |y|
-  · have hw_half : 1 / 2 < (linePoint 1 y).re := by simp [linePoint]
+  · have hw_half : 1 / 2 < (linePoint 1 y).re := by simp [linePoint]; norm_num
     have hre3 : 2 < (2 * linePoint 1 y + 1).re := by simp [linePoint]
     have hsc_eq : scatteringPhase (linePoint 1 y) =
         Complex.betaIntegral (linePoint 1 y) (1 / 2) *
@@ -717,7 +717,8 @@ theorem exists_radiated_energy_cuspTrappingPulse_le {S₀ : ℝ} (hS₀ : 0 < S�
       refine hsq.trans (le_of_eq ?_)
       rw [show u + u = 2 * u by ring]
       ring
-    have hmono := setIntegral_mono hint_sq.integrableOn hcont_maj.integrableOn_Ioc hpt_sq
+    have hmono := setIntegral_mono (hint_sq.integrableOn (s := Ioc (-S₀) T))
+      (hcont_maj.integrableOn_Ioc (a := -S₀) (b := T)) hpt_sq
     have hftc : (∫ u in (-S₀)..T, Real.exp (2 * u)) =
         (1 / 2) * Real.exp (2 * T) - (1 / 2) * Real.exp (2 * (-S₀)) := by
       refine intervalIntegral.integral_eq_sub_of_hasDerivAt

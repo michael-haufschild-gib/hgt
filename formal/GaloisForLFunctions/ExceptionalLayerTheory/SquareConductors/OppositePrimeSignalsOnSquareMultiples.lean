@@ -323,9 +323,135 @@ theorem aligned_square_multiples_prefix {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ : 4
   rw [sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel]
   exact (mul_le_mul_of_nonneg_right (Nat.cast_le.mpr (Nat.div_le_self N ℓ) : ((N/ℓ:ℕ):ℝ)≤N) (by positivity)).trans_eq (by ring)
 
+/-- Cofactors of the actual capped row that are not divisible by ℓ². -/
+def squareCoprimeCofactorReading (ℓ n : ℕ) := splineCountReading n (fun k => ordinaryFactorTail 4 k (fun p =>
+  ∑ v ∈ Ioc (max (productLower 1 k) (n*n.sqrt)/p) (min (k/p) n) with ¬ ℓ^2 ∣ v,
+    if p.Coprime v then innerJump 1 v*centeredPrimeWeight 1 (k/p/v) else 0))
+
+/-- At one first prime the capped slice splits into the cofactors prime to
+ℓ², the square ℓ² itself and its proper multiples, with the same endpoints. -/
+theorem cappedCoprimeSlice_square_split {ℓ p : ℕ} (hℓ : 0 < ℓ) (k Y M : ℕ) :
+    cappedCoprimeSlice 1 1 k Y M p =
+      (∑ v ∈ Ioc (Y/p) (min (k/p) M) with ¬ ℓ^2 ∣ v,
+        if p.Coprime v then innerJump 1 v*centeredPrimeWeight 1 (k/p/v) else 0) +
+      (if 1 ∈ Ioc (Y/ℓ^2/p) (min (k/ℓ^2/p) (M/ℓ^2)) ∧ p.Coprime (ℓ^2) then
+          innerJump 1 (ℓ^2)*centeredPrimeWeight 1 (k/ℓ^2/p) else 0) +
+      properSquareSlice ℓ k Y M p := by
+  have hd : 0 < ℓ^2 := pow_pos hℓ 2
+  have hdiv (x : ℕ) : x/p/ℓ^2 = x/ℓ^2/p := by
+    rw [Nat.div_div_eq_div_mul,Nat.div_div_eq_div_mul,Nat.mul_comm]
+  have hmin (a b : ℕ) : min a b/ℓ^2 = min (a/ℓ^2) (b/ℓ^2) := by
+    rcases le_total a b with h|h
+    · rw [min_eq_left h,min_eq_left (Nat.div_le_div_right h)]
+    · rw [min_eq_right h,min_eq_right (Nat.div_le_div_right h)]
+  let g (v : ℕ) : ℝ := if p.Coprime v then innerJump 1 v*centeredPrimeWeight 1 (k/p/v) else 0
+  have hsplit : cappedCoprimeSlice 1 1 k Y M p =
+      (∑ v ∈ Ioc (Y/p) (min (k/p) M) with ¬ ℓ^2 ∣ v, g v) +
+        ∑ v ∈ Ioc (Y/p) (min (k/p) M) with ℓ^2 ∣ v, g v := by
+    rw [add_comm,sum_filter_add_sum_filter_not,cappedCoprimeSlice,sum_filter]
+  have hterm (t : ℕ) (ht : t ∈ Ioc (Y/ℓ^2/p) (min (k/ℓ^2/p) (M/ℓ^2))) : g (ℓ^2*t) =
+      (if t = 1 then (if p.Coprime (ℓ^2) then innerJump 1 (ℓ^2)*centeredPrimeWeight 1 (k/ℓ^2/p) else 0)
+        else 0) +
+      (if 1 < t ∧ p.Coprime (ℓ^2*t) then
+        innerJump 1 (ℓ^2*t)*centeredPrimeWeight 1 (k/(p*(ℓ^2*t))) else 0) := by
+    have ht₀ : 0 < t := (Nat.zero_le _).trans_lt (mem_Ioc.mp ht).1
+    have hq : k/p/(ℓ^2*t) = k/(p*(ℓ^2*t)) := Nat.div_div_eq_div_mul ..
+    by_cases h₁ : t = 1
+    · subst h₁
+      simp only [g,mul_one,lt_irrefl,false_and,if_false,add_zero,eq_self_iff_true,if_true,↓reduceIte,hdiv]
+    · have ht₂ : 1 < t := by omega
+      simp only [g,h₁,ht₂,true_and,if_false,zero_add,hq]
+  rw [hsplit,sum_divisible_Ioc hd,hmin,hdiv,hdiv,sum_congr rfl hterm,sum_add_distrib,sum_ite_eq',
+    ite_and,add_assoc]
+  all_goals rfl
+
+private theorem cappedRow_square_split {ℓ : ℕ} (hℓ : 0 < ℓ) (U M k : ℕ) :
+    ordinaryFactorTail 4 k (cappedCoprimeSlice 1 1 k (max (productLower 1 k) U) M) =
+      ordinaryFactorTail 4 k (fun p => ∑ v ∈ Ioc (max (productLower 1 k) U/p) (min (k/p) M) with ¬ ℓ^2 ∣ v,
+        if p.Coprime v then innerJump 1 v*centeredPrimeWeight 1 (k/p/v) else 0) +
+      cappedSquareComplementRow ℓ U M k +
+      ordinaryFactorTail 4 (k/ℓ^2) (properSquareSlice ℓ k (max (productLower 1 k) U) M) := by
+  have hd : 0 < ℓ^2 := pow_pos hℓ 2
+  have hpad : ordinaryFactorTail 4 (k/ℓ^2) (properSquareSlice ℓ k (max (productLower 1 k) U) M) =
+      ordinaryFactorTail 4 k (properSquareSlice ℓ k (max (productLower 1 k) U) M) :=
+    unit_prime_padding (Nat.div_le_self k (ℓ^2)) _ fun p hp => by
+      unfold properSquareSlice
+      rw [Nat.div_eq_of_lt hp,min_eq_left (Nat.zero_le _),Ioc_eq_empty_of_le (Nat.zero_le _),sum_empty]
+  have hsing : ordinaryFactorTail 4 k (fun p =>
+      if 1 ∈ Ioc (max (productLower 1 k) U/ℓ^2/p) (min (k/ℓ^2/p) (M/ℓ^2)) ∧ p.Coprime (ℓ^2) then
+        innerJump 1 (ℓ^2)*centeredPrimeWeight 1 (k/ℓ^2/p) else 0) = cappedSquareComplementRow ℓ U M k := by
+    unfold ordinaryFactorTail cappedSquareComplementRow
+    simp only [mul_ite,mul_zero,← sum_filter,filter_filter]
+    by_cases hM : ℓ^2 ≤ M
+    · rw [if_pos hM]
+      refine sum_congr ?_ (fun p _ => by ring)
+      ext p
+      simp only [mem_filter,mem_Ioc,mem_Icc,le_min_iff]
+      constructor
+      · rintro ⟨⟨h4,-⟩,hp,⟨hlo,h1k,-⟩,hc⟩
+        have hp0 := hp.pos
+        have hlt : max (productLower 1 k) U < p*ℓ^2 := by
+          have h := (Nat.div_lt_iff_lt_mul hp0).mp hlo
+          rw [one_mul] at h
+          exact (Nat.div_lt_iff_lt_mul hd).mp h
+        have hle : p ≤ k/ℓ^2 := by
+          have h := (Nat.le_div_iff_mul_le hp0).mp h1k
+          rwa [one_mul] at h
+        exact ⟨⟨hp.one_lt.le,hle⟩,⟨hp,h4,hc,(max_lt_iff.mp hlt).1⟩,(max_lt_iff.mp hlt).2⟩
+      · rintro ⟨⟨-,hle⟩,⟨hp,h4,hc,hpl⟩,hU⟩
+        have hp0 := hp.pos
+        refine ⟨⟨h4,hle.trans (Nat.div_le_self _ _)⟩,hp,⟨?_,?_,?_⟩,hc⟩
+        · rw [Nat.div_lt_iff_lt_mul hp0,one_mul,Nat.div_lt_iff_lt_mul hd]
+          exact max_lt hpl hU
+        · rw [Nat.le_div_iff_mul_le hp0,one_mul]
+          exact hle
+        · rw [Nat.le_div_iff_mul_le hd,one_mul]
+          exact hM
+    · rw [if_neg hM]
+      refine sum_eq_zero fun p hp => absurd ?_ hM
+      have h := (mem_filter.mp hp).2.2.1
+      rw [mem_Ioc,le_min_iff] at h
+      simpa only [one_mul] using (Nat.le_div_iff_mul_le hd).mp h.2.2
+  rw [hpad,← hsing]
+  unfold ordinaryFactorTail
+  rw [← sum_add_distrib,← sum_add_distrib]
+  refine sum_congr rfl fun p _ => ?_
+  rw [cappedCoprimeSlice_square_split hℓ,mul_add,mul_add]
+
+/-- The actual capped reading splits exactly by divisibility of the cofactor
+by ℓ² into the remaining class, the square ℓ² and its proper multiples. -/
+theorem cappedUpperProductReading_square_split {ℓ : ℕ} (hℓ : 0 < ℓ) (n : ℕ) :
+    cappedUpperProductReading (n*n.sqrt) n n =
+      squareCoprimeCofactorReading ℓ n + singletonSquareReading ℓ n + properSquareReading ℓ n := by
+  unfold cappedUpperProductReading squareCoprimeCofactorReading singletonSquareReading
+    properSquareReading splineCountReading
+  rw [← sum_add_distrib,← sum_add_distrib]
+  refine sum_congr rfl fun k _ => ?_
+  beta_reduce
+  rw [← add_mul,← add_mul,cappedRow_square_split hℓ]
+
+/-- The whole square-divisible family of the actual capped reading, summed
+over the aligned conductors ℓm ≤ N, costs a cube and six logarithms. -/
+theorem aligned_square_divisible_family_prefix {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ : 4 < ℓ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, |∑ m ∈ Icc 1 (N/ℓ), ((ℓ:ℝ)*m)^2*
+      (cappedUpperProductReading ((ℓ*m)*(ℓ*m).sqrt) (ℓ*m) (ℓ*m) -
+        squareCoprimeCofactorReading ℓ (ℓ*m))| ≤ C*(N:ℝ)^3*(conductorLog N)^6 := by
+  obtain ⟨C,hC,h⟩ := aligned_square_multiples_prefix hℓ h₄
+  refine ⟨C,hC,fun N => ?_⟩
+  have he : ∀ m ∈ Icc 1 (N/ℓ), ((ℓ:ℝ)*m)^2*(cappedUpperProductReading ((ℓ*m)*(ℓ*m).sqrt) (ℓ*m) (ℓ*m) -
+      squareCoprimeCofactorReading ℓ (ℓ*m)) =
+      ((ℓ:ℝ)*m)^2*(properSquareReading ℓ (ℓ*m)+singletonSquareReading ℓ (ℓ*m)) := fun m _ => by
+    rw [cappedUpperProductReading_square_split hℓ.pos]
+    ring
+  rw [sum_congr rfl he]
+  exact h N
+
 #print axioms properSquareSlice_divided
 #print axioms properSquareReading_eventually_exact
 #print axioms properSquareReading_prime_contact
 #print axioms singletonSquareReading_prime_contact
 #print axioms aligned_square_multiples_prefix
+#print axioms cappedCoprimeSlice_square_split
+#print axioms cappedUpperProductReading_square_split
+#print axioms aligned_square_divisible_family_prefix
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

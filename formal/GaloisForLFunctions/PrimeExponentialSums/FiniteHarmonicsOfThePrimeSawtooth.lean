@@ -78,8 +78,8 @@ private theorem harmonic_coefficient_bounds {A δ : ℝ} (hA : 0 ≤ A) (hδ : 0
 /-- A bound for the first H harmonics of a positive finite measure
 controls its sharp centered fractional-part sum, including atoms at jumps. -/
 theorem sawtooth_from_finite_harmonics :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ {ι : Type} (s : Finset ι) (y w : ι → ℝ) (hw : ∀ i, 0 ≤ w i)
-      {H : ℕ} (hH : 0 < H) {δ L M : ℝ}, 0 < δ → 0 ≤ L → (∑ i ∈ s,w i) ≤ M →
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {ι : Type} (s : Finset ι) (y w : ι → ℝ) (_ : ∀ i, 0 ≤ w i)
+      {H : ℕ} (_ : 0 < H) {δ L M : ℝ}, 0 < δ → 0 ≤ L → (∑ i ∈ s,w i) ≤ M →
       (∀ h : ℤ, h ≠ 0 → h.natAbs ≤ H →
         ‖∑ i ∈ s,(w i:ℂ)*fourier h (y i : UnitAddCircle)‖ ≤ L) →
       ‖∑ i ∈ s,(w i:ℂ)*(saw (y i):ℂ)‖ ≤ C*(δ*M+L*(1+Real.log H)+M/δ / H) := by

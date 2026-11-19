@@ -4,6 +4,7 @@
 - **Stage:** 1-in-progress
 - **Type:** FORMALIZATION PROGRAMME
 - **Scope:** every proven theorem on the cards in `docs/drafts/pipeline/2-fully-proven/leftovers/`.
+- **Execution:** PAUSED by user 2026-11-19 after finishing started Lean work; resume only on request.
 - **Rules:** exact statements and constants; no hypotheses, axioms, sorry, computations or raised
   limits; corpus search before new code; one `lake --old env lean` check per finished module;
   new modules wired into their umbrella; a card moves to `3-formalized/leftovers/` only when every
