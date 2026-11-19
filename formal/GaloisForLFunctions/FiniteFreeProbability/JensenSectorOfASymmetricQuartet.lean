@@ -20,8 +20,9 @@ private def biquad (A B D : ℝ) : ℝ[X] := C A * X^4 - C (2*B)*X^2 + C D
 private theorem even_quadratic_splits {u : ℝ} (hu : 0 ≤ u) :
     ((X : ℝ[X])^2 - C u).Splits := by
   have he : (X : ℝ[X])^2-C u = (X-C (Real.sqrt u))*(X+C (Real.sqrt u)) := by
-    rw [show u = Real.sqrt u ^ 2 from (Real.sq_sqrt hu).symm, map_pow]
-    ring
+    calc
+      _ = X^2-(C (Real.sqrt u))^2 := by rw [← map_pow, Real.sq_sqrt hu]
+      _ = _ := by ring
   rw [he]
   exact (Splits.X_sub_C _).mul (by simpa only [sub_neg_eq_add, C_neg, sub_neg_eq_add] using
     (Splits.X_sub_C (-Real.sqrt u)))
@@ -123,9 +124,89 @@ theorem squaredJensenSector_square (d : ℕ) (z : ℂ) :
     InSquaredJensenSector d (z^2) ↔ z.im^2 < z.re^2 ∧
       ((d : ℝ)-2)*((d : ℝ)-3)*(z.re^2+z.im^2)^2 ≤
         (d : ℝ)*((d : ℝ)-1)*(z.re^2-z.im^2)^2 := by
-  simp only [InSquaredJensenSector, map_pow, Complex.sq_re, Complex.normSq_apply]
-  rw [← sq, ← sq, sub_pos]
+  have hre : (z^2).re = z.re^2-z.im^2 := by simp only [sq, Complex.mul_re]
+  rw [InSquaredJensenSector, hre, map_pow, Complex.normSq_apply, sub_pos]
+  simp only [sq]
 
+private theorem irreducible_factor {p f : ℝ[X]} (hi : Irreducible p) (hf : ¬ IsUnit f)
+    (hd : f ∣ p) : ∃ c : ℝ, p = C c*f := by
+  obtain ⟨g,hg⟩ := hd
+  obtain ⟨c, -, hc⟩ := Polynomial.isUnit_iff.mp ((hi.isUnit_or_isUnit hg).resolve_left hf)
+  exact ⟨c, by rw [hg, ← hc, mul_comm]⟩
+
+private theorem expand_pair (w : ℂ) : expand ℝ 2 (pairSymbol w) = squaredPairSymbol w := by
+  simp only [pairSymbol, map_add, map_sub, map_mul, map_pow, expand_C, expand_X, squaredPairSymbol,
+    biquad, C_1, one_mul]
+  ring
+
+private theorem irreducible_expand_splits (k : ℕ) {p : ℝ[X]} (hi : Irreducible p)
+    (hsec : ∀ w : ℂ, aeval w p = 0 → InSquaredJensenSector (k+4) w) :
+    (diffOp (expand ℝ 2 p) (X^(k+4))).Splits := by
+  obtain ⟨w,hw⟩ := IsAlgClosed.exists_aeval_eq_zero ℂ p (degree_pos_of_irreducible hi).ne'
+  have h := hsec w hw
+  by_cases hr : w.im = 0
+  · have hw' : (w.re : ℂ) = w := Complex.ext rfl (by simpa using hr.symm)
+    have hval : p.IsRoot w.re := by
+      have he : (p.map Complex.ofRealHom).eval (w.re : ℂ) = 0 := by
+        rw [hw']
+        exact (eval_map_algebraMap p w).trans hw
+      rw [eval_map_apply] at he
+      exact Complex.ofReal_injective he
+    obtain ⟨c,hc⟩ := irreducible_factor hi (not_isUnit_X_sub_C w.re) (dvd_iff_isRoot.mpr hval)
+    rw [hc, map_mul, expand_C, map_sub, expand_X, expand_C, diffOp_C_mul_left]
+    apply Splits.C_mul
+    have h₀ : ((X : ℝ[X])^2-C w.re).coeff 0 ≠ 0 := by simp [h.1.ne']
+    have hdeg : ((X : ℝ[X])^2-C w.re).natDegree ≤ 2 :=
+      (natDegree_sub_le _ _).trans (max_le (natDegree_X_pow_le _) (by simp))
+    apply (splits_diffOp_X_pow_iff_of_natDegree_le_two hdeg h₀ (k+2)).mpr
+    simp only [coeff_sub, coeff_C, coeff_X_pow, ↓reduceIte, sub_zero, zero_sub, sub_self,
+      zero_pow (by decide : 2 ≠ 0), mul_zero, mul_one]
+    have hpos := h.1
+    positivity
+  · have hd : pairSymbol w ∣ p := by
+      simpa only [pairSymbol, Complex.normSq_eq_norm_sq] using
+        p.quadratic_dvd_of_aeval_eq_zero_im_ne_zero hw hr
+    have hnot : ¬ IsUnit (pairSymbol w) := by
+      rintro hu
+      obtain ⟨c,-,hc⟩ := Polynomial.isUnit_iff.mp hu
+      have he := congrArg (fun q : ℝ[X] => q.coeff 2) hc
+      simpa [pairSymbol] using he
+    obtain ⟨c,hc⟩ := irreducible_factor hi hnot hd
+    rw [hc, map_mul, expand_C, expand_pair, diffOp_C_mul_left]
+    exact ((squaredPairSymbol_splits_iff k (fun he => by simp [he] at hr)).mpr h).C_mul _
+
+/-- The signed-pair sector suffices for arbitrary even symbols. Each irreducible
+factor of the polynomial in the squared coordinate contributes either one real
+pair or one full quartet, and Walsh convolution multiplies the admissible symbols. -/
+theorem splits_diffOp_expand_two_of_squared_sector (k : ℕ) (p : ℝ[X]) (hp : p.coeff 0 ≠ 0)
+    (hsec : ∀ w : ℂ, aeval w p = 0 → InSquaredJensenSector (k+4) w) :
+    (diffOp (expand ℝ 2 p) (X^(k+4))).Splits := by
+  induction p using WfDvdMonoid.induction_on_irreducible with
+  | zero => simp at hp
+  | unit u hu =>
+    obtain ⟨c,-,rfl⟩ := Polynomial.isUnit_iff.mp hu
+    rw [expand_C]
+    have he : diffOp (C c) (X^(k+4)) = C c*X^(k+4) := by
+      simpa [diffOp] using diffOp_C_mul_left c 1 ((X : ℝ[X])^(k+4))
+    rw [he]
+    exact (Splits.X_pow _).C_mul _
+  | mul a i _ hi ih =>
+    rw [mul_coeff_zero] at hp
+    have hi0 : i.coeff 0 ≠ 0 := left_ne_zero_of_mul hp
+    have ha0 : a.coeff 0 ≠ 0 := right_ne_zero_of_mul hp
+    have hroot (w : ℂ) : aeval w i = 0 ∨ aeval w a = 0 → InSquaredJensenSector (k+4) w := by
+      intro hw
+      apply hsec w
+      rw [map_mul, mul_eq_zero]
+      exact hw
+    rw [map_mul]
+    apply splits_diffOp_mul_X_pow
+    · simpa [coeff_expand (by decide : 0 < 2)] using hi0
+    · simpa [coeff_expand (by decide : 0 < 2)] using ha0
+    · exact irreducible_expand_splits k hi fun w hw => hroot w (Or.inl hw)
+    · exact ih ha0 fun w hw => hroot w (Or.inr hw)
+
+#print axioms splits_diffOp_expand_two_of_squared_sector
 #print axioms squaredPairSymbol_splits_iff
 #print axioms squaredJensenSector_square
 

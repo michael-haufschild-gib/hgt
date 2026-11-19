@@ -74,8 +74,9 @@ private theorem tilt_id_integrable (a : ℝ) : Integrable (fun x : ℝ => x) (th
     integrable_thetaTiltIntegrand_global a 1
 
 private theorem tilt_mean (a : ℝ) : (∫ x : ℝ, x ∂thetaTiltProb a) = thetaTiltMean a := by
-  rw [thetaTiltProb, integral_tilted, integral_thetaBaseMeasure, integral_exp_mul_thetaBase,
-    thetaTiltMean, thetaTiltMoment, ← integral_div]
+  rw [thetaTiltProb, integral_tilted, integral_exp_mul_thetaBase, integral_thetaBaseMeasure]
+  change _ = (∫ x : ℝ, x^1 * Real.exp (a*x) * thetaCuspFullSource x) / thetaTiltMoment a 0
+  rw [← integral_div]
   apply integral_congr_ae
   filter_upwards with x
   simp only [smul_eq_mul, pow_one]

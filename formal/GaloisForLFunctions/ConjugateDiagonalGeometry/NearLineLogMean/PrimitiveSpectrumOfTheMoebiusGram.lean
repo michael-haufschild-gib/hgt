@@ -224,10 +224,8 @@ private theorem atom_comm (N a b : ℕ) : atom N a b = atom N b a := by
     ext d
     simp only [ratioScales, mem_filter]
     tauto
-  rw [atom, atom, mul_comm (coeff a), primitiveCubicScaleWeight, primitiveCubicScaleWeight, hscale]
-  congr 1
-  exact sum_congr rfl fun d _ => by
-    by_cases ha : d.Coprime a <;> simp [ha]
+  rw [← scale_correlation N a b, ← scale_correlation N b a, hscale]
+  exact sum_congr rfl fun d _ => mul_comm _ _
 
 /-- Three energy measurements isolate each individual reduced rational
 frequency. The same resolution works for every ratio at cutoff N. -/

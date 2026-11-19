@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.ArbitraryJumpsOfCumulativeMass
 import GaloisForLFunctions.GaloisTheoryOfZeros.JensenQuartetExhaustion
+import GaloisForLFunctions.RHTower.LiClockThetaSingleDampingStrip
 
 /-!
 # Charging new nonreal Jensen roots along sparse degrees
@@ -122,6 +123,17 @@ theorem off_line_quartets_iff_strict_charge_budget (m : ℕ) :
     rw [jensenNonrealCount_eq_four_mul] at hcnt ⊢
     omega
 
+/-- A cofinal total charge strictly below four fifths on one sparse
+degree schedule is necessary and sufficient for RH. -/
+theorem rh_iff_sparse_jensen_charge_lt_four_fifths :
+    RiemannHypothesis ↔ ∃ u : ℕ → ℕ, StrictMono u ∧ ∃ᶠ n : ℕ in atTop,
+      (∑ i ∈ range (n+1), powerCharge (sampledJensenMass u) 1 i) < (4/5:ℝ) := by
+  have h := off_line_quartets_iff_strict_charge_budget 0
+  norm_num only [Nat.zero_add,Nat.mul_one,Nat.mul_zero,Nat.cast_ofNat,Nat.cast_zero,
+    nonpos_iff_eq_zero,Set.encard_eq_zero,show (1:ℝ)+4=5 by norm_num] at h
+  rw [←h,riemannHypothesis_iff_forall_xiSpectralPoint_im_eq_zero]
+  simp only [Set.eq_empty_iff_forall_notMem,Set.mem_setOf_eq,not_not]
+
 /-- A further positive logarithmic discount can always be made summable
 by selecting the degrees. One schedule works for every positive exponent,
 even if the nonreal root count diverges. Thus the undiscounted reciprocal
@@ -175,6 +187,7 @@ theorem exists_sparse_jensen_log_discount :
     ((one_mul _).le.trans hw)
 
 #print axioms exists_sparse_jensen_log_discount
+#print axioms rh_iff_sparse_jensen_charge_lt_four_fifths
 #print axioms off_line_quartets_iff_strict_charge_budget
 #print axioms sparse_jensen_charge_summable_iff
 #print axioms off_line_count_iff_sparse_charge_budget

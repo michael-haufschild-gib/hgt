@@ -216,7 +216,8 @@ private theorem card_increasing_pairs (m : ℕ) :
 /-- The source determinant in an isolating spatial square, in the time
 coordinate `τ+s²`. Its remaining factor is holomorphic and nonzero at zero. -/
 private theorem source_sheet_factor {τ z : ℂ} {m : ℕ} (hc : IsCollision τ z m) :
-    ∃ d > 0, ∃ U : ℂ → ℂ, AnalyticAt ℂ U 0 ∧ U 0 ≠ 0 ∧
+    ∃ d > 0, (∀ t, complexHeat τ (RHTower.rectangleBoundaryPath (squareLower z d) (squareUpper z d) t) ≠ 0) ∧
+      ∃ U : ℂ → ℂ, AnalyticAt ℂ U 0 ∧ U 0 ≠ 0 ∧
       ∀ᶠ s in 𝓝 0, heatBoundaryDiscriminant (τ+s^2) (squareLower z d) (squareUpper z d) =
         (s^2) ^ (m.choose 2) * U s := by
   classical
@@ -276,10 +277,10 @@ private theorem source_sheet_factor {τ z : ℂ} {m : ℕ} (hc : IsCollision τ 
   have hfact (s : ℂ) : (Matrix.vandermonde (v s)).det ^ 2 =
       (s ^ 2) ^ (m.choose 2) * (P s)^2 := by
     rw [hv, mul_pow, ← pow_mul, ← pow_mul, Nat.mul_comm (m.choose 2) 2]
+  have hzi : inBox l u z := inside_of_close (by simpa using hd)
+  have hwb (t : ℝ) (he : complexHeat τ (RHTower.rectangleBoundaryPath l u t) = 0) : False :=
+    boundary_not_inside l u t ((hiso _ (hbound t) he).symm ▸ hzi)
   have hbase : heatBoundaryDiscriminant τ l u = (Matrix.vandermonde (v 0)).det ^ 2 := by
-    have hzi : inBox l u z := inside_of_close (by simpa using hd)
-    have hwb (t : ℝ) (he : complexHeat τ (RHTower.rectangleBoundaryPath l u t) = 0) : False :=
-      boundary_not_inside l u t ((hiso _ (hbound t) he).symm ▸ hzi)
     obtain ⟨Z,hZ,hM⟩ := heatBoundaryMoment_eq_weighted τ l u hx hy hwb
     apply source_det_of_moments
     intro k
@@ -293,7 +294,7 @@ private theorem source_sheet_factor {τ z : ℂ} {m : ℕ} (hc : IsCollision τ 
         by_contra h
         exact hno ((hZ z).mpr ⟨hzi,by simpa using hc.vanish 0 (Nat.pos_of_ne_zero h)⟩)
       simp [analyticOrderNatAt,isCollision_iff_analyticOrderAt.mp hc,hm]
-  refine ⟨d,hd,fun s => (P s)^2,hP.pow _,pow_ne_zero _ hp,?_⟩
+  refine ⟨d,hd,hwb,fun s => (P s)^2,hP.pow _,pow_ne_zero _ hp,?_⟩
   rw [eventually_nhdsWithin_iff] at hcover hseparate
   filter_upwards [hcover,hseparate,Filter.eventually_all.mpr hnear,Filter.eventually_all.mpr hzero]
     with s hs hinj hclose hzero'
@@ -324,15 +325,16 @@ private theorem source_sheet_factor {τ z : ℂ} {m : ℕ} (hc : IsCollision τ 
 spatial rectangle give a time discriminant of order `m.choose 2`. Four
 further edge integrals in time give this multiplicity using only the
 original heat transform on the spatial boundary. -/
-theorem IsCollision.boundaryMoment_winding {τ z : ℂ} {m : ℕ}
+theorem IsCollision.boundaryMoment_regular_winding {τ z : ℂ} {m : ℕ}
     (hc : IsCollision τ z m) :
     ∃ l u : ℂ, (l.re < z.re ∧ z.re < u.re ∧ l.im < z.im ∧ z.im < u.im) ∧
+      (∀ t, complexHeat τ (RHTower.rectangleBoundaryPath l u t) ≠ 0) ∧
       let D := fun w => heatBoundaryDiscriminant (τ + w) l u
       AnalyticAt ℂ D 0 ∧ analyticOrderAt D 0 = (m.choose 2 : ℕ∞) ∧
       ∃ R > 0, ∀ a b : ℂ, a.re < 0 → 0 < b.re → a.im < 0 → 0 < b.im →
         (uIcc a.re b.re ×ℂ uIcc a.im b.im) ⊆ ball 0 R →
         RHTower.rectIntegral (logDeriv D) a b = 2 * Real.pi * I * (m.choose 2 : ℂ) := by
-  obtain ⟨d,hd,U,hU,hu,he⟩ := source_sheet_factor hc
+  obtain ⟨d,hd,hb,U,hU,hu,he⟩ := source_sheet_factor hc
   let D (w : ℂ) := heatBoundaryDiscriminant (τ+w) (squareLower z d) (squareUpper z d)
   have ht : Tendsto (fun s : ℂ => -s) (𝓝 0) (𝓝 0) := by
     simpa only [neg_zero] using (continuous_neg (G := ℂ)).tendsto (0 : ℂ)
@@ -360,7 +362,7 @@ theorem IsCollision.boundaryMoment_winding {τ z : ℂ} {m : ℕ}
     rw [mem_ball_zero_iff] at hw ⊢
     exact lt_of_pow_lt_pow_left₀ 2 hδ.le (by simpa only [norm_pow] using hw)
   have hD := ((analyticAt_id.pow (m.choose 2)).mul hVa).congr heq.symm
-  refine ⟨squareLower z d,squareUpper z d,inside_of_close (by simpa using hd),hD,
+  refine ⟨squareLower z d,squareUpper z d,inside_of_close (by simpa using hd),hb,hD,
     hD.analyticOrderAt_eq_natCast.mpr ⟨V,hVa,hv,heq.mono (fun w hw => by simpa only [sub_zero, smul_eq_mul] using hw)⟩,?_⟩
   obtain ⟨R,hR,hball⟩ := Metric.mem_nhds_iff.mp
     (heq.and (hVa.eventually_analyticAt.and (hVa.continuousAt.eventually_ne hv)))
@@ -370,6 +372,18 @@ theorem IsCollision.boundaryMoment_winding {τ z : ℂ} {m : ℕ}
     hsub (fun w hw => (hball hw).2.1) (fun w hw => (hball hw).2.2)
     (fun w hw => by simpa using (hball hw).1)
   simpa using hw
+
+/-- The spatial moments recover the order and the argument winding in time. -/
+theorem IsCollision.boundaryMoment_winding {τ z : ℂ} {m : ℕ}
+    (hc : IsCollision τ z m) :
+    ∃ l u : ℂ, (l.re < z.re ∧ z.re < u.re ∧ l.im < z.im ∧ z.im < u.im) ∧
+      let D := fun w => heatBoundaryDiscriminant (τ + w) l u
+      AnalyticAt ℂ D 0 ∧ analyticOrderAt D 0 = (m.choose 2 : ℕ∞) ∧
+      ∃ R > 0, ∀ a b : ℂ, a.re < 0 → 0 < b.re → a.im < 0 → 0 < b.im →
+        (uIcc a.re b.re ×ℂ uIcc a.im b.im) ⊆ ball 0 R →
+        RHTower.rectIntegral (logDeriv D) a b = 2 * Real.pi * I * (m.choose 2 : ℂ) := by
+  obtain ⟨l,u,hin,_,h⟩ := hc.boundaryMoment_regular_winding
+  exact ⟨l,u,hin,h⟩
 
 /-- Every marked place of the actual heat family admits a spatial rectangle
 whose contour moments recover its local intersection multiplicity. -/
@@ -536,6 +550,7 @@ theorem exists_real_heat_boundary_windings :
 #print axioms heatBoundaryDiscriminant_eq_vandermonde
 #print axioms heatBoundaryDiscriminant_eq_zero_iff
 #print axioms IsCollision.boundaryMoment_winding
+#print axioms IsCollision.boundaryMoment_regular_winding
 #print axioms heatIntersectionMultiplicity_from_boundary
 #print axioms vandermonde_square_insert_sheet
 #print axioms glued_discriminant_trace

@@ -44,7 +44,8 @@ theorem adjacent_cofactor_density {m : ℕ} (hm : 1 ≤ m) :
     rw [he]
     push_cast
     have h₀ : 0 ≤ (k:ℝ) := Nat.cast_nonneg _
-    field_simp <;> ring
+    field_simp
+    ring
 
 /-- At every octave above the r-th power the density replacement gains
 each exponent strictly below r times the zero-free width. -/

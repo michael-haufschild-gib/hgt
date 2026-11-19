@@ -18,7 +18,7 @@ open GaloisForLFunctions.HTGeometry GaloisForLFunctions.SquareRootThreshold
 namespace GaloisForLFunctions.VerifiedHeightRungs
 
 /-- The narrower symmetric strip gives the width used in the Jensen sector inequality. -/
-private theorem width_bound : zetaZeroWidth ≤ 8999 / 24000 := by
+theorem zetaZeroWidth_le_8999_div_24000 : zetaZeroWidth ≤ 8999 / 24000 := by
   refine (zetaZeroWidth_le_iff_re_le (by norm_num : (0 : ℝ) ≤ 8999/24000)).2 ?_
   intro ρ hρ
   obtain ⟨hz, hpos, -⟩ := (show Zeta23.IsNontrivialZero ρ from hρ)
@@ -45,7 +45,7 @@ theorem jensenNonrealCount_eq_zero_through_31929 (d : Fin 31930) : jensenNonreal
   have h := (jensen_sector_at_sixtySeven_iff d).2 (by omega)
   rcases le_or_gt ((d.val : ℝ)-1) 0 with hd | hd
   · exact (mul_nonpos_of_nonpos_of_nonneg hd (sq_nonneg _)).trans (sq_nonneg _)
-  · exact (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ zetaZeroWidth_nonneg width_bound 2) hd.le).trans h
+  · exact (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ zetaZeroWidth_nonneg zetaZeroWidth_le_8999_div_24000 2) hd.le).trans h
 
 /-- A word's nonreal multiplicity is a lower bound on the actual unshifted Xi count. -/
 theorem weightedXiJensen_nonreal_le (w : List ℕ) (d : ℕ) :

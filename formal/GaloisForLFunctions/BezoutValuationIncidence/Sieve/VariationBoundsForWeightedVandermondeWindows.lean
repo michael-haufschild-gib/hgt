@@ -154,6 +154,88 @@ theorem stable_recovery {ι : Type*} [Fintype ι] [DecidableEq ι] (α : ι → 
   rw [mul_comm]
   simpa only [hd] using h
 
+private def grid (m : ℕ) (j : Fin m) : ℝ := (j.val:ℝ)/m
+
+private theorem grid_separated {m : ℕ} (hm : 0 < m) {i j : Fin m} (hne : i ≠ j) :
+    1/(m:ℝ) ≤ toIntDist (grid m i-grid m j) := by
+  have hm' : (0:ℝ)<m := Nat.cast_pos.mpr hm
+  apply one_div_le_toIntDist_of_mul_mem_int hm
+  · refine ⟨(i.val:ℤ)-j.val,?_⟩
+    dsimp only [grid]; push_cast; field_simp <;> ring
+  · intro n he
+    have hg (k : Fin m) : grid m k ∈ Set.Ico 0 1 :=
+      ⟨div_nonneg (Nat.cast_nonneg _) hm'.le,(div_lt_one hm').mpr (Nat.cast_lt.mpr k.isLt)⟩
+    have hn₁ : (-1:ℤ)<n := by exact_mod_cast (show (-1:ℝ)<n by linarith only [he,(hg i).1,(hg j).2])
+    have hn₂ : n < (1:ℤ) := by exact_mod_cast (show (n:ℝ)<1 by linarith only [he,(hg j).1,(hg i).2])
+    have hn : n=0 := by omega
+    rw [hn,Int.cast_zero,sub_eq_zero] at he
+    apply hne
+    exact Fin.ext (by exact_mod_cast (div_left_inj' hm'.ne').mp he)
+
+private theorem grid_blind {m n : ℕ} (hn : 0 < n) (hnm : n < m) :
+    synthesize (grid m) (fun _ => 1) n = 0 := by
+  have hm : (0:ℝ)<m := Nat.cast_pos.mpr (hn.trans hnm)
+  let z := circleFreq ((n:ℝ)/m)
+  have hne : z ≠ 1 := by
+    intro he
+    obtain ⟨k,hk⟩ := exists_int_of_circleFreq_eq_one he
+    have hk₁ : (0:ℤ)<k := by exact_mod_cast (hk ▸ div_pos (Nat.cast_pos.mpr hn) hm)
+    have hk₂ : k < (1:ℤ) := by exact_mod_cast (hk ▸ (div_lt_one hm).mpr (Nat.cast_lt.mpr hnm))
+    omega
+  have hp : z^m=1 := by
+    rw [show z=circleFreq ((n:ℝ)/m) from rfl,circleFreq_pow,
+      show (m:ℝ)*((n:ℝ)/m)=n by field_simp, circleFreq_natCast]
+  have he (j : Fin m) : circleFreq ((n:ℝ)*grid m j)=z^j.val := by
+    rw [show z=circleFreq ((n:ℝ)/m) from rfl,circleFreq_pow,grid]; congr 1; ring
+  simp only [synthesize,one_mul,he]
+  rw [Fin.sum_univ_eq_sum_range (fun j => z^j) m,geom_sum_eq hne,hp,sub_self,zero_div]
+
+/-- No universal improvement in the variation factor is possible. At
+m equally spaced nodes the vector of ones is invisible on the first
+m−1 samples. The loss of this single sampling class attains the limiting
+constant one half. -/
+theorem optimal_variation_constant (c : ℝ) :
+    (∀ (m : ℕ) (α : Fin m → ℝ) (δ : ℝ), 0 < δ →
+      (∀ r s, r ≠ s → δ ≤ toIntDist (α r-α s)) → ∀ (b : Fin m → ℂ) (A L : ℕ) (w : ℕ → ℝ),
+      let E := ∑ r, ‖b r‖^2
+      |∑ j ∈ range (L+1), w j*(‖synthesize α b (A+j+1)‖^2-E)| ≤ c*variation w L*δ⁻¹*E) ↔
+      1/2 ≤ c := by
+  constructor
+  · intro hall
+    by_contra! hsmall
+    have hpos : 0 < 1-2*c := by linarith
+    obtain ⟨n,hn⟩ := exists_nat_gt (1/(1-2*c))
+    let m := n+2
+    have hm : 0 < m := by dsimp [m]; omega
+    have hm' : (0:ℝ)<m := Nat.cast_pos.mpr hm
+    have he := hall m (grid m) (1/m) (by positivity) (fun _ _ h => grid_separated hm h)
+      (fun _ => 1) 0 n (fun _ => 1)
+    have energy : (∑ _j : Fin m, ‖(1:ℂ)‖^2) = (m:ℝ) := by simp
+    simp only [energy,Nat.zero_add,one_mul,one_div,inv_inv] at he
+    have hsum : (∑ j ∈ range (n+1), (‖synthesize (grid m) (fun _ => 1) (j+1)‖^2-(m:ℝ))) =
+        ((n:ℝ)+1)*(-(m:ℝ)) := by
+      have ht (j : ℕ) (hj : j ∈ range (n+1)) :
+          ‖synthesize (grid m) (fun _ => 1) (j+1)‖^2-(m:ℝ) = -(m:ℝ) := by
+        have h := mem_range.mp hj
+        rw [grid_blind (by omega) (by dsimp [m]; omega)]; simp
+      rw [sum_congr rfl ht,sum_const,card_range,nsmul_eq_mul,Nat.cast_add,Nat.cast_one]
+    rw [hsum,abs_mul,abs_neg,abs_of_nonneg hm'.le,abs_of_nonneg (by positivity : 0≤(n:ℝ)+1)] at he
+    have hvar : variation (fun _ => 1) n=2 := by simp [variation]; norm_num
+    rw [hvar] at he
+    have hcancel := (mul_le_mul_iff_left₀ hm').mp he
+    change (n:ℝ)+1 ≤ c*2*((n+2:ℕ):ℝ) at hcancel
+    push_cast at hcancel
+    have hgt := (div_lt_iff₀ hpos).mp hn
+    linarith only [hgt,hcancel,hsmall]
+  · intro hc m α δ hδ hs b A L w
+    intro E
+    have hv : 0 ≤ variation w L := by unfold variation; positivity
+    have hE : 0 ≤ E := sum_nonneg fun _ _ => sq_nonneg _
+    refine (weighted_vandermonde α hδ hs b A L w).trans ?_
+    change variation w L*(δ⁻¹*E/2) ≤ _
+    have h := mul_le_mul_of_nonneg_right hc (mul_nonneg (mul_nonneg hv (inv_nonneg.mpr hδ.le)) hE)
+    linarith only [h]
+
 /-- Primitive divisor coordinates retain the sharp Farey spacing on every
 signed window. The mean energy is the full Jordan diagonal divided by twelve. -/
 theorem weighted_primitive_energy {Q : ℕ} (hQ : 2 ≤ Q) (c : ℕ → ℝ) (A L : ℕ) (w : ℕ → ℝ) :
@@ -176,5 +258,6 @@ theorem weighted_primitive_energy {Q : ℕ} (hQ : 2 ≤ Q) (c : ℕ → ℝ) (A 
 #print axioms weighted_vandermonde
 #print axioms signed_frame_bounds
 #print axioms stable_recovery
+#print axioms optimal_variation_constant
 #print axioms weighted_primitive_energy
 end GaloisForLFunctions.BezoutValuationIncidence.WeightedWindow

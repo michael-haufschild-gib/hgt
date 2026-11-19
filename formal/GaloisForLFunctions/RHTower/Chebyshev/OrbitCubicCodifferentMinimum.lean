@@ -56,7 +56,8 @@ theorem order_trace_matrix (m : ℤ) :
 
 private theorem det_inverse_matrix (m : ℚ) :
     (reciprocalMatrix m 3 (2-m) (-m-1)).det = (m^2-m+7)^2 := by
-  simp only [reciprocalMatrix_det] <;> ring
+  rw [reciprocalMatrix_det]
+  ring
 
 /-- The square discriminant is computed inside the actual cubic field. -/
 theorem actual_order_discriminant (m : ℤ) : orderDiscriminant m = ((m:ℚ)^2-m+7)^2 := by
@@ -135,11 +136,12 @@ theorem codifferent_minimum (m : ℤ) (y : {y : K m // y ∈ orderTraceDual m �
     pos_of_mul_pos_left (by rw [hd]; exact zero_lt_one) hpos.le
   have calcNorm (z : K m) : |Algebra.norm ℚ (delta m*z)| * orderDiscriminant m =
       |Algebra.norm ℚ z| := by rw [map_mul,abs_mul,abs_of_pos nd,mul_right_comm,hd,one_mul]
-  have hy := y.property.1
-  rw [codifferent_powerOrder] at hy
-  obtain ⟨z,hz,he⟩ := hy
+  obtain ⟨z,hz,he⟩ := (congrArg (fun S : Set (K m) => y.val ∈ S)
+    (codifferent_powerOrder m)).mp y.property.1
+  change delta m*z=y.val at he
   have hn : z ≠ 0 := by intro h; exact y.property.2 (by rw [← he,h,mul_zero])
   obtain ⟨k,hk⟩ := integral_norm m ⟨z,hz⟩
+  change Algebra.norm ℚ z=(k:ℚ) at hk
   have hk0 : k ≠ 0 := by
     intro h
     apply (Algebra.norm_ne_zero_iff_of_basis (reciprocalBasis m)).mpr hn
