@@ -172,7 +172,8 @@ theorem tendsto_tailEnergy_atTop (h : CompactPulse) :
     · refine Eventually.of_forall fun u => ?_
       refine tendsto_const_nhds.congr' ?_
       filter_upwards [eventually_ge_atTop u] with T hTu
-      rw [indicator_of_notMem (not_lt.mpr hTu)]
+      have hnot : u ∉ Ioi T := not_lt.mpr hTu
+      rw [indicator_of_notMem hnot]
   refine hdom.congr fun T => ?_
   rw [integral_indicator measurableSet_Ioi]
   rfl
@@ -206,7 +207,9 @@ theorem hasDerivAt_tailEnergy (h : CompactPulse) (T : ℝ) :
     (intervalIntegral.integral_hasStrictDerivAt_right
       (hf_cont.intervalIntegrable 0 T) (hf_cont.stronglyMeasurableAtFilter volume (𝓝 T))
       hf_cont.continuousAt).hasDerivAt
-  have hd := ((hasDerivAt_const T (∫ u in Ioi (0 : ℝ), f u)).sub hd_int).congr_deriv (by ring)
+  have hd : HasDerivAt (fun x : ℝ => (∫ u in Ioi (0 : ℝ), f u) - ∫ u in (0 : ℝ)..x, f u)
+      (-(‖pulseReflected h T‖ ^ 2)) T :=
+    ((hasDerivAt_const T (∫ u in Ioi (0 : ℝ), f u)).sub hd_int).congr_deriv (by dsimp [f]; ring)
   exact hd.congr_of_eventuallyEq (Eventually.of_forall hsplit)
 
 /-! ## 2. Two-Pulse Superposition, Relative Phase, and Four-Phase Polarization -/
@@ -251,9 +254,12 @@ theorem tailEnergy_linComb (c₁ c₂ : ℂ) (g h : CompactPulse) (T : ℝ) :
     intro u
     rw [pulseReflected_add, pulseReflected_smul, pulseReflected_smul]
     exact norm_sq_linComb c₁ c₂ _ _
+  have hsum12 : IntegrableOn
+      (fun u : ℝ => ‖c₁‖ ^ 2 * ‖pulseReflected g u‖ ^ 2 + ‖c₂‖ ^ 2 * ‖pulseReflected h u‖ ^ 2)
+      (Ioi T) := hg_int.add hh_int
   unfold tailEnergy tailCrossEnergy
   simp_rw [hpt]
-  rw [integral_add (hg_int.add hh_int) hgh_re, integral_add hg_int hh_int,
+  rw [integral_add hsum12 hgh_re, integral_add hg_int hh_int,
     integral_const_mul, integral_const_mul, integral_const_mul]
   have hre := Complex.reCLM.integral_comp_comm hgh_c
   simp only [Complex.reCLM_apply] at hre
@@ -292,9 +298,10 @@ theorem tailEnergy_phase_average (φ : ℝ) (g h : CompactPulse) (T : ℝ) :
       -Complex.exp (-(I * (φ : ℂ))) := by
     have hsplit : -(I * ((φ + Real.pi : ℝ) : ℂ)) =
         -(I * (φ : ℂ)) + (-(Real.pi : ℂ) * I) := by push_cast; ring
-    rw [hsplit, Complex.exp_add,
-      show -(Real.pi : ℂ) * I = -((Real.pi : ℂ) * I) by ring,
-      Complex.exp_neg, Complex.exp_pi_mul_I, inv_neg, inv_one, mul_neg_one]
+    have hpi_exp : Complex.exp (-(Real.pi : ℂ) * I) = -1 := by
+      rw [show -(Real.pi : ℂ) * I = -((Real.pi : ℂ) * I) by ring,
+        Complex.exp_neg, Complex.exp_pi_mul_I, inv_neg, inv_one]
+    rw [hsplit, Complex.exp_add, hpi_exp, mul_neg_one]
   rw [hexp, neg_mul, Complex.neg_re]
   ring
 
@@ -339,8 +346,11 @@ theorem tailCrossEnergy_eq_polarization (g h : CompactPulse) (T : ℝ) :
   have hc34 : IntegrableOn
       (fun u : ℝ => ((‖pulseReflected p3 u‖ ^ 2 - ‖pulseReflected p4 u‖ ^ 2 : ℝ) : ℂ)) (Ioi T) :=
     Complex.ofRealCLM.integrable_comp (hi3.sub hi4)
-  rw [integral_add hc12 (hc34.const_mul I), integral_const_mul,
-    integral_ofReal, integral_ofReal, integral_sub hi1 hi2, integral_sub hi3 hi4]
+  have ho12 := Complex.ofRealCLM.integral_comp_comm (hi1.sub hi2)
+  have ho34 := Complex.ofRealCLM.integral_comp_comm (hi3.sub hi4)
+  simp only [Complex.ofRealCLM_apply] at ho12 ho34
+  rw [integral_add hc12 (hc34.const_mul I), integral_const_mul, ho12, ho34,
+    integral_sub hi1 hi2, integral_sub hi3 hi4]
 
 /-- **Four-Phase Polarization Identity for the Finite-Step Cross-Decrement.** -/
 theorem stepCrossDecrement_eq_polarization (g h : CompactPulse) (T : ℝ) {L : ℝ} (hL : 0 ≤ L) :
@@ -518,7 +528,7 @@ theorem pulseAmplitude_eq_zero_of_pulseReflected_decay (h : CompactPulse) {δ C�
     exact hagree w hw
   have hp_eq := hEq hp_δ
   dsimp only [Φ₁, Φ₂] at hp_eq
-  rw [hp_xi, mul_zero, zero_mul, add_zero] at hp_eq
+  rw [hp_xi] at hp_eq
   have hpi : (2 : ℂ) * (Real.pi : ℂ) ≠ 0 :=
     mul_ne_zero two_ne_zero (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero)
   have h12p : 1 + 2 * p ≠ 0 := fun h0 => by
@@ -618,7 +628,9 @@ theorem tailEnergy_pos (h : CompactPulse) (hne : ∃ S : ℝ, h S ≠ 0) (T : �
       have him : w.im = z.im / 2 + 1 / 4 := by simp [w]
       rw [him]
       calc |z.im / 2 + 1 / 4| ≤ |z.im / 2| + |1 / 4| := abs_add_le _ _
-        _ = |z.im| / 2 + 1 / 4 := by rw [abs_div, abs_of_pos (by norm_num), abs_of_pos (by norm_num)]
+        _ = |z.im| / 2 + 1 / 4 := by
+          rw [abs_div, abs_of_pos (by norm_num : (0 : ℝ) < 2),
+            abs_of_pos (by norm_num : (0 : ℝ) < 1 / 4)]
         _ ≤ ‖z‖ / 2 + 1 / 4 := by linarith [Complex.abs_im_le_norm z]
     have hpi_inv : ‖(2 * Real.pi : ℂ)⁻¹‖ = (2 * Real.pi)⁻¹ := by
       rw [norm_inv, show (2 * Real.pi : ℂ) = ((2 * Real.pi : ℝ) : ℂ) by push_cast; rfl,
@@ -692,7 +704,7 @@ theorem norm_tailCrossEnergy_sq_le_mul (g h : CompactPulse) (T : ℝ) :
     push Not at hgt
     have hpos : 0 < ‖tailCrossEnergy g h T‖ ^ 2 := hgt
     have ht := hexp (tailEnergy h T + 1)
-    nlinarith
+    nlinarith [tailEnergy_nonneg h T]
   · have hg_pos : 0 < tailEnergy g T :=
       lt_of_le_of_ne (tailEnergy_nonneg g T) (Ne.symm hg0)
     set c₁ : ℂ := (starRingEnd ℂ) (tailCrossEnergy g h T)

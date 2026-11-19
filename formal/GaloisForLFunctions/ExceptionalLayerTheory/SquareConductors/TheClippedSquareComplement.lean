@@ -64,7 +64,7 @@ theorem squareComplementRow_sub_capped {ℓ U M : ℕ} (hℓ : 0<ℓ) (hM : ℓ^
       if t=v then (if p*v≤k ∧ productLower 1 k<p*v then innerJump 1 v*centeredPrimeWeight 1 (k/(p*v)) else 0) else 0 := by
     by_cases he : t=v
     · subst t; by_cases hk : p*v≤k
-      · simp only [cofactorColumnHorizonEnd,if_pos rfl,hk,true_and,column_cell hk,mul_ite,mul_zero]
+      · simp only [cofactorColumnHorizonEnd,↓reduceIte,hk,true_and,column_cell hk,mul_ite,mul_zero]
       · simp [hk,cofactorColumnHorizonEnd]
     · simp [cofactorColumnHorizonEnd,he]
   rw [hleft,hST]
@@ -163,8 +163,9 @@ theorem squareMultipleSlice_divided {ℓ p : ℕ} (hℓ : ℓ.Prime) (h₄ : 4<�
     have ht₀ := (Nat.zero_le _).trans_lt (mem_Ioc.mp ht).1
     rw [←Nat.div_div_eq_div_mul (k/p) d t,hdiv,hjump t ht₀]
     by_cases hut : t=1
-    · subst t; simp [hcop,hc,sub_mul]
-    · simp [hcop,hc,hut]
+    · subst t; simp [hc,sub_mul]
+    · have hct : p.Coprime (d*t) ↔ p.Coprime t := (hcop t).trans (and_iff_right hc)
+      simp only [hct,hut,↓reduceIte,sub_zero]
   rw [sum_congr (s₁ := S) rfl he,sum_sub_distrib,sum_ite_eq']
   simp only [cappedCoprimeSlice,sum_filter,S,d]
 

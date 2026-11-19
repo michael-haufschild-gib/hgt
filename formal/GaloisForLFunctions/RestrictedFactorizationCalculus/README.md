@@ -8,6 +8,8 @@ On a sharp interval \((L,U]\), each squarefree integer carries its Möbius sign 
 
 The final bound remains open. One equivalent target is the centered prime-power sum at the log-square cutoff below. A global matching can leave only a vanishing fraction of vertices unpaid, but their unsigned count has power exponent one. [Centered quotient criterion](#the-smooth-term-at-the-quotient-wall) · [Unsigned obstruction](ThePowerExponentOfEveryUnsignedPrefix.lean)
 
+Restricted factorization matching supplies the reversible moves. Signed divisor sums account for their effects on arithmetic readings across changing cuts. [Signed arithmetic programme, §§2.6 and 2.11](../../../docs/reports/review-1911/obstacles-summary.md#211-a-field-for-a-proof-by-signed-cancellation-alone)
+
 A matching stores its positive endpoints in `sources` and their negative partners in `targets`. Transporting a negative debt follows the corresponding exchange from its negative endpoint to its positive partner.
 
 ## What a signed boundary measures
@@ -21,6 +23,9 @@ An edge spanning both cuts cancels from the difference. Prescribing the semiprim
 A quotient reading can jump **inside** an interval. For a kernel with increments \(a(q)\), each jump places another cut at \(\lfloor X/q\rfloor\). Adding adjacent intervals cancels their common boundary when the reading agrees there. Changing the reading at that boundary leaves its signed difference. A sequence of transports must retain every intermediate change, including repeated visits to one integer. In a divisor expansion the same product can occur in several fibres. Their signed multiplicities must be recombined before estimating the error.
 
 The principal test uses the rough Möbius row at the log-square prime cutoff. Least-prime stopping supplies its terminal rows, divisor inversion gives its smooth center, and the signed flux measures the effect of moving the quotient cuts. A quantitative gain must include the final endpoint. A general rule should gain on several weights using arithmetic independent of a Mertens bound at the proposed output exponent. [Least-prime recursion](TheSignedBoundaryOfAPrefix.lean) · [Exact quotient center](CenteringThePrimePowerReadingsAtTheirQuotientFloors.lean)
+
+The two cutoff regimes test the signs. At \(y=\lfloor\log(X+1)\rfloor^2\) the weighted rough logarithmic prefix plus its centered reading equals \(-y\Psi(\lfloor X/y\rfloor,y)\) exactly. The critical Euler product obeys \(\log E_{1/2}(y)\sim 2\sqrt y/\log y\). At a polynomial cutoff \(b(n)=\lfloor n^\theta\rfloor\), \(0<\theta<1\), the bias to recover is negative. Compare \(\log X\,A_b(X)\) with \(-b(X)\Psi(\lfloor X/b(X)\rfloor,b(X))\). Here \(A_b\) sifts each integer at its own cutoff, whereas the quotient identity freezes one cutoff across the interval. [Critical Euler product](TheCriticalEulerPriceOfTheLogSquareCutoff.lean) · [Polynomial-cutoff comparison](TheSignedBiasOfOnePolynomialRoughSet.lean)
+
 
 ## Where a change of fibre matters
 

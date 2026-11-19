@@ -38,7 +38,8 @@ theorem smooth_lift_of_the_full_prefix (y X : ℕ) :
     rw [primorial_indicator_eq_deleted_mobius y n (mem_Icc.mp hn).1]
     change (mobiusAF B n:ℝ)=_
     rw [←inv,mul_apply]
-    push_cast <;> rfl
+    push_cast
+    rfl
   rw [coprimeMoebiusSum,sum_congr rfl row,RHTower.Sieve.sum_Icc_divisorsAntidiagonal_swap
     (fun d k => ((smoothAF B d:ℤ):ℝ)*(μ k:ℝ)) X]
   unfold smoothLiftedPrefix
@@ -103,11 +104,12 @@ theorem signed_flux_along_a_quotient_history (F : ℕ → ℕ → ℕ)
       (cut i) (cut (i+1))=value i (cut (i+1))-value i (cut i) := by
     simp only [value,quotientBoundary,mul_sub,sum_sub_distrib]
   simp only [←leg,endpoints]
-  induction N with
-  | zero => simp
-  | succ N ih =>
-    rw [sum_range_succ,sum_range_succ (fun i => value (i+1) (cut (i+1))-value i (cut (i+1)))]
-    linarith only [ih]
+  change (∑ i ∈ range N,(value i (cut (i+1))-value i (cut i)))+
+    (∑ i ∈ range N,(value (i+1) (cut (i+1))-value i (cut (i+1))))=value N (cut N)-value 0 (cut 0)
+  rw [←sum_add_distrib]
+  calc _ = ∑ i ∈ range N,(value (i+1) (cut (i+1))-value i (cut i)) :=
+             sum_congr rfl (fun _ _ => by ring)
+       _ = _ := Finset.sum_range_sub (fun i => value i (cut i)) N
 
 private def logBudget (X : ℕ) := Real.log ((X:ℝ)+1)
 private theorem logBudget_nonneg (X : ℕ) : 0 ≤ logBudget X :=

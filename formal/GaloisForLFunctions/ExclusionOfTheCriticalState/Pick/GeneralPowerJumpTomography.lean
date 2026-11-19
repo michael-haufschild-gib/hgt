@@ -70,8 +70,14 @@ private theorem midpoint_strict (n : ℕ) {d : ℝ} (hd : 0 < d) :
   have h : HasDerivAt (difference (n+2) d)
       (((n+2:ℕ):ℝ)*(s+d)^(n+1)-((n+2:ℕ):ℝ)*(s-d)^(n+1)) s := by
     change HasDerivAt (fun x : ℝ => (x+d)^(n+2)-(x-d)^(n+2)) _ s
-    simpa only [show n+2-1=n+1 by omega,id_eq,mul_one] using
-      ((((hasDerivAt_id s).add_const d).pow (n+2)).sub (((hasDerivAt_id s).sub_const d).pow (n+2)))
+    have plus := ((hasDerivAt_id s).add_const d).pow (n+2)
+    have minus := ((hasDerivAt_id s).sub_const d).pow (n+2)
+    have eq : (fun x : ℝ => (x+d)^(n+2)-(x-d)^(n+2)) =
+        (fun x : ℝ => x+d)^(n+2)-(fun x : ℝ => x-d)^(n+2) := by
+      funext x
+      simp
+    rw [eq]
+    simpa only [show n+2-1=n+1 by omega,id_eq,mul_one] using plus.sub minus
   rw [h.deriv,← mul_sub]
   exact mul_pos (by positivity) (difference_pos n hd hs)
 

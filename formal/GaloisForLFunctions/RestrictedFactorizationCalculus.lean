@@ -42,3 +42,12 @@ import GaloisForLFunctions.RestrictedFactorizationCalculus.CenteringThePrimePowe
 import GaloisForLFunctions.RestrictedFactorizationCalculus.InvertingAWeightedReadingAtAMovingPrimeCutoff
 import GaloisForLFunctions.RestrictedFactorizationCalculus.OneCenteredPrimePowerReadingAtTheLogSquareCutoff
 import GaloisForLFunctions.RestrictedFactorizationCalculus.TheSignedChargeOfArbitrarilyLongExchanges
+import GaloisForLFunctions.RestrictedFactorizationCalculus.TheCriticalEulerPriceOfTheLogSquareCutoff
+
+/-!
+# Quantitative factorization with signed boundaries
+
+Restricted prime exchanges, least-prime stopping and divisor inversion on sharp
+integer intervals. Fixed vertices, crossing edges and changes of quotient
+reading carry the signed boundary through successive cuts.
+-/

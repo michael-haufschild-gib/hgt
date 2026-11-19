@@ -55,7 +55,7 @@ private theorem upper_count_ge (n : ℕ) {B w : ℕ} (h : B ≤ w) :
   linarith only [sum_Ioc_consecutive f (Nat.zero_le B) h]
 
 private theorem upper_count_le (n : ℕ) {B w : ℕ} (h : w ≤ B) : upperCofactorCount n B w=0 := by
-  simp [upperCofactorCount,Ioc_eq_empty h]
+  simp [upperCofactorCount,Ioc_eq_empty (not_lt.mpr h)]
 
 /-- Right-minus-left cofactor count strictly above 2U in the two
 adjacent intervals of length UP. -/
@@ -108,7 +108,8 @@ theorem upper_octave_cofactor_profile {U P p : ℕ} (hU : 0 < U) (hP : 0 < P)
 
 #print axioms upper_octave_cofactor_profile
 
-/-- Count in the complementary cofactor range 2 ≤ v ≤ 2U. -/
+/-- Net proper cofactor count after subtracting the upper part. For
+p coprime to UP this counts the complementary range 2 ≤ v ≤ 2U. -/
 def lowerOctaveCofactorCount (U P p : ℕ) : ℝ :=
   properCofactorMidpoint (U*P) p - upperOctaveCofactorCount U P p
 
@@ -248,7 +249,8 @@ theorem cofactor_boundary_error_bound {n B : ℕ} (hn : 0 < n) (hB : 0 < B)
           apply sum_le_sum
           intro p hp
           have hpr := hS p (hs hp)
-          rw [f,abs_mul,vonMangoldt_apply_prime hpr,abs_of_nonneg (Real.log_nonneg (Nat.one_le_cast.mpr hpr.pos))]
+          dsimp only [f]
+          rw [abs_mul,vonMangoldt_apply_prime hpr,abs_of_nonneg (Real.log_nonneg (Nat.one_le_cast.mpr hpr.pos))]
           exact mul_le_mul_of_nonneg_left (tail_count_error hn hpr.pos B) (Real.log_nonneg (Nat.one_le_cast.mpr hpr.pos))
        _ ≤ _ := by
           have hT : T ⊆ Icc 1 (4*n/B) := fun p hp => mem_Icc.mpr ⟨(hS p (hs hp)).pos,(mem_filter.mp hp).2⟩

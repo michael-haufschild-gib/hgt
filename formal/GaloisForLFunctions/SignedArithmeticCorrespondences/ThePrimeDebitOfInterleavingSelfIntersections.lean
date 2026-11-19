@@ -1,5 +1,5 @@
 import GaloisForLFunctions.SignedArithmeticCorrespondences.TheFullWeilFormOnInterleavingDivisors
-import GaloisForLFunctions.HodgeTheoryOfAFixedPart.ShortWindowsDoNotSeeTheContacts
+import GaloisForLFunctions.HodgeTheoryOfAFixedPart.TheCombOfUnitMassesFixesTheContacts
 import GaloisForLFunctions.HTGeometry.FiniteReversedAbelBounds
 
 /-!
@@ -156,7 +156,7 @@ theorem centeredMultiple_eq_centeredResidue {d : ℕ} (hd : 0 < d) (n : ℕ) :
   simp only [centeredMultiple, centeredResidue, hd.ne', if_false, Nat.zero_mod,
     Nat.dvd_iff_mod_eq_zero]
 
-private theorem card_Ioc_mod_eq {d : ℕ} (hd : 0 < d) (r a q : ℕ) :
+theorem card_Ioc_mod_eq {d : ℕ} (hd : 0 < d) (r a q : ℕ) :
     ((Ioc a (a + d * q)).filter (fun n => n % d = r % d)).card = q := by
   induction q with
   | zero => simp
@@ -200,7 +200,7 @@ private theorem card_Ioc_mod_eq {d : ℕ} (hd : 0 < d) (r a q : ℕ) :
     rw [Nat.dist] at hge
     omega
 
-private theorem card_Ioc_short_mod_le_one {d : ℕ} (hd : 0 < d) (r A m : ℕ) (hm : m < d) :
+theorem card_Ioc_short_mod_le_one {d : ℕ} (hd : 0 < d) (r A m : ℕ) (hm : m < d) :
     ((Ioc A (A + m)).filter (fun n => n % d = r % d)).card ≤ 1 := by
   refine card_le_one.mpr fun x hx y hy => ?_
   obtain ⟨hxI, hxm⟩ := mem_filter.mp hx
@@ -353,7 +353,6 @@ theorem abs_sum_jetKernel_centeredResidue_erase_le {d : ℕ} (hd : 0 < d)
       |∑ m ∈ Ioc A (n - 1), centeredResidue d r m * (1 / (2 * |(m : ℝ) - n|))| ≤ 1 / 2 := by
     rw [← AbsoluteGeometryOfSpecZ.Ico_succ_succ_eq_Ioc', sum_Ico_eq_sum_range]
     set L := n - 1 + 1 - (A + 1)
-    have hAL : A + 1 + L = n := by omega
     have hrew : (∑ i ∈ range L,
           centeredResidue d r (A + 1 + i) * (1 / (2 * |((A + 1 + i : ℕ) : ℝ) - n|))) =
         ∑ j ∈ range L, (1 / (2 * ((j : ℝ) + 1))) * centeredResidue d r (A + 1 + (L - 1 - j)) := by
@@ -494,7 +493,7 @@ theorem unshifted_prefix_two_debit_gt_budget :
     rw [hform]
     linarith
 
-private theorem abs_centeredMultiple_le_one {d : ℕ} (hd : 0 < d) (n : ℕ) :
+theorem abs_centeredMultiple_le_one {d : ℕ} (hd : 0 < d) (n : ℕ) :
     |centeredMultiple d n| ≤ 1 := by
   have hd1 : (1 : ℝ) ≤ d := by exact_mod_cast hd
   have hinv : 0 ≤ 1 / (d : ℝ) ∧ 1 / (d : ℝ) ≤ 1 :=
@@ -502,7 +501,7 @@ private theorem abs_centeredMultiple_le_one {d : ℕ} (hd : 0 < d) (n : ℕ) :
   unfold centeredMultiple
   split_ifs <;> rw [abs_le] <;> constructor <;> linarith
 
-private theorem sum_centeredMultiple_sq_period {d : ℕ} (hd : 0 < d) (j : ℕ) :
+theorem sum_centeredMultiple_sq_period {d : ℕ} (hd : 0 < d) (j : ℕ) :
     ∑ n ∈ Ioc (d * j) (d * (j + 1)), centeredMultiple d n ^ 2 = 1 - 1 / (d : ℝ) := by
   have hmem : d * (j + 1) ∈ Ioc (d * j) (d * (j + 1)) :=
     mem_Ioc.mpr ⟨by nlinarith, le_rfl⟩
@@ -626,17 +625,19 @@ theorem tendsto_combForm_Icc_centeredMultiple_atBot {p : ℕ} (hp : p.Prime) :
     linarith
   have hub : ∀ N : ℕ, p ≤ N →
       combForm (Icc 1 N) v ≤
-        2 + (1 - 1 / (p : ℝ)) * (((N / p : ℕ) : ℝ) * Real.log p + Real.log ((N / p).factorial : ℝ)) +
-          (p : ℝ) * Real.log N + 2 * (N : ℝ) -
-          2 * (1 - 1 / (p : ℝ)) * Real.log ((N / p).factorial : ℝ) +
-          2 * Real.log p * (N : ℝ) := by
+        2 + (1 - 1 / (p : ℝ)) * (((N / p : ℕ) : ℝ) * Real.log p) +
+          (p : ℝ) * Real.log N + 2 * (N : ℝ) + 2 * Real.log p * (N : ℝ) -
+          (1 - 1 / (p : ℝ)) * Real.log ((N / p).factorial : ℝ) := by
     intro N hpN
-    have hN1 : 1 ≤ N := hp0.trans_le hpN
-    have hIoc : Icc 1 N = Ioc 0 N := (Icc_one_eq_Ioc_zero N)
+    have _hN1 : 1 ≤ N := hp0.trans_le hpN
+    have hIoc : Icc 1 N = Ioc 0 N := Icc_one_eq_Ioc_zero N
     -- 1. Pole bound
     have hd1 : |degOne (Icc 1 N) v| ≤ 1 := by
-      rw [degOne, hIoc, centeredMultiple_eq_centeredResidue hp0 |> fun h =>
-        sum_congr rfl fun n _ => by rw [centeredMultiple_eq_centeredResidue hp0]]
+      rw [degOne, hIoc]
+      have hrew : (∑ n ∈ Ioc 0 N, v n / (n : ℝ)) =
+          ∑ n ∈ Ioc 0 N, centeredResidue p 0 n / (n : ℝ) :=
+        sum_congr rfl fun n _ => by rw [centeredMultiple_eq_centeredResidue hp0]
+      rw [hrew]
       simpa using abs_sum_centeredResidue_harmonic_Ioc_le hp0 0 0 N
     have hd2 : |degTwo (Icc 1 N) v| ≤ 1 := by
       rw [degTwo, hIoc]
@@ -763,7 +764,6 @@ theorem tendsto_combForm_Icc_centeredMultiple_atBot {p : ℕ} (hp : p.Prime) :
         congr 1
         refine sum_congr rfl fun m hm => ?_
         have hm0 : 0 < m := (mem_Icc.mp hm).1
-        rw [mul_ite, mul_zero |> fun _ => by rfl]
         have hfilt : ∑ n ∈ (Icc 1 N).erase m, v m * v n * (if m ∣ n then (Λ (n / m) : ℝ) else 0) =
             ∑ n ∈ ((Icc 1 N).erase m).filter (m ∣ ·), v m * v n * (Λ (n / m) : ℝ) := by
           rw [sum_filter]
@@ -851,7 +851,7 @@ theorem tendsto_combForm_Icc_centeredMultiple_atBot {p : ℕ} (hp : p.Prime) :
               refine sum_le_sum fun j _ => ?_
               rw [← sum_centeredMultiple_sq_period hp0 j, sum_mul]
               refine sum_le_sum fun m hm => mul_le_mul_of_nonneg_left (hmono ?_) (sq_nonneg _)
-              obtain ⟨hm1, hm2⟩ := mem_Ioc.mp hm
+              obtain ⟨_, hm2⟩ := mem_Ioc.mp hm
               have hdiv1 : M / (j + 1) = N / (p * (j + 1)) := by
                 rw [Nat.div_div_eq_div_mul, mul_comm]
               rw [hdiv1]
@@ -861,7 +861,7 @@ theorem tendsto_combForm_Icc_centeredMultiple_atBot {p : ℕ} (hp : p.Prime) :
         have hex : ∑ m ∈ Icc 1 N, ∑ k ∈ Icc 2 (N / m), (if p ∣ k then (Λ k : ℝ) else 0) =
             ∑ m ∈ Icc 1 N, ∑ k ∈ Icc 2 N,
               if k ≤ N / m then (if p ∣ k then (Λ k : ℝ) else 0) else 0 := by
-          refine sum_congr rfl fun m hm => ?_
+          refine sum_congr rfl fun m _ => ?_
           rw [← sum_filter]
           have hf : (Icc 2 N).filter (fun k => k ≤ N / m) = Icc 2 (N / m) := by
             ext k; simp only [mem_filter, mem_Icc]
@@ -911,18 +911,12 @@ theorem tendsto_combForm_Icc_centeredMultiple_atBot {p : ℕ} (hp : p.Prime) :
       rw [hpk]
       ring
     rw [hform]
+    rw [mul_add] at hdiag
     linarith
   have htend : Tendsto (fun N : ℕ => combForm (Icc 1 N) v) atTop atBot := by
     rw [tendsto_atBot]
     intro B
-    -- Choose `K₀` large enough that `log k ≥ L₀` for `k > K₀` overwhelms the linear terms
-    set C₁ : ℝ := 3 + 3 * Real.log p
-    set L₀ : ℝ := (4 * (p : ℝ) * C₁ + 8) / (1 - 1 / (p : ℝ))
-    set K₀ : ℕ := ⌈Real.exp L₀⌉₊ + 2
-    have hK₀_pos : 0 < K₀ := by positivity
-    -- Also bound `p * log N ≤ N` for `N ≥ p ^ 2`... even simpler: `Real.log N ≤ N` for `N ≥ 1`!
-    -- Wait: `(p : ℝ) * Real.log N ≤ p * N`? NO, `p * N` is STILL linear in `N`!!
-    set C₂ : ℝ := C₁ + p
+    set C₂ : ℝ := 3 + 3 * Real.log p + p
     set L₁ : ℝ := (4 * (p : ℝ) * C₂ + 8) / (1 - 1 / (p : ℝ))
     set K₁ : ℕ := ⌈Real.exp L₁⌉₊ + 2
     set N₀ : ℕ := p * (2 * K₁ + ⌈|B| + (1 - 1 / (p : ℝ)) * K₁ * L₁ + 10⌉₊ + 4)
@@ -934,8 +928,10 @@ theorem tendsto_combForm_Icc_centeredMultiple_atBot {p : ℕ} (hp : p.Prime) :
       have : 2 * K₁ + ⌈|B| + (1 - 1 / (p : ℝ)) * K₁ * L₁ + 10⌉₊ + 4 ≤ M :=
         (Nat.le_div_iff_mul_le hp0).mpr (by rw [mul_comm]; exact hN)
       omega
-    have hMB : ⌈|B| + (1 - 1 / (p : ℝ)) * K₁ * L₁ + 10⌉₊ + 2 * K₁ + 4 ≤ M :=
-      (Nat.le_div_iff_mul_le hp0).mpr (by rw [mul_comm]; exact hN)
+    have hMB : ⌈|B| + (1 - 1 / (p : ℝ)) * K₁ * L₁ + 10⌉₊ + 2 * K₁ + 4 ≤ M := by
+      have : 2 * K₁ + ⌈|B| + (1 - 1 / (p : ℝ)) * K₁ * L₁ + 10⌉₊ + 4 ≤ M :=
+        (Nat.le_div_iff_mul_le hp0).mpr (by rw [mul_comm]; exact hN)
+      omega
     have hlogM : ((M - K₁ : ℕ) : ℝ) * L₁ ≤ Real.log (M.factorial : ℝ) := by
       rw [← sum_log_Icc M]
       have hsub : Ioc K₁ M ⊆ Icc 1 M := fun k hk =>
@@ -949,7 +945,7 @@ theorem tendsto_combForm_Icc_centeredMultiple_atBot {p : ℕ} (hp : p.Prime) :
               (Nat.le_ceil _).trans (by exact_mod_cast (show ⌈Real.exp L₁⌉₊ ≤ k by omega))
             exact (Real.le_log_iff_exp_le (by exact_mod_cast (by omega : 0 < k))).mpr hexp
         _ ≤ ∑ k ∈ Icc 1 M, Real.log k :=
-            sum_le_sum_of_subset_of_nonneg hsub fun k hk _ =>
+            sum_le_sum_of_subset_of_nonneg hsub fun k _ _ =>
               Real.log_natCast_nonneg k
     have hlogN : Real.log N ≤ N := by
       have hN0 : (0 : ℝ) < N := by exact_mod_cast (hp0.trans_le hpN)
@@ -962,15 +958,17 @@ theorem tendsto_combForm_Icc_centeredMultiple_atBot {p : ℕ} (hp : p.Prime) :
       linarith
     have hL₁_nonneg : 0 ≤ L₁ := by
       have hC₂ : 0 ≤ C₂ := by
-        dsimp [C₂, C₁]
+        dsimp [C₂]
         have := Real.log_nonneg (by linarith : (1 : ℝ) ≤ p)
         positivity
       exact div_nonneg (by positivity) hfac.le
-    have hprod : (1 - 1 / (p : ℝ)) * (((M : ℝ) / 2) * L₁) = (2 * (p : ℝ) * C₂ + 4) * M := by
+    have hprod : (1 - 1 / (p : ℝ)) * (((M : ℝ) / 2) * L₁) =
+        2 * (p : ℝ) * C₂ * M + 4 * M := by
       dsimp [L₁]
       field_simp [hfac.ne']
       ring
-    have hhalf : (2 * (p : ℝ) * C₂ + 4) * M ≤ (1 - 1 / (p : ℝ)) * Real.log (M.factorial : ℝ) := by
+    have hhalf : 2 * (p : ℝ) * C₂ * M + 4 * M ≤
+        (1 - 1 / (p : ℝ)) * Real.log (M.factorial : ℝ) := by
       rw [← hprod]
       exact mul_le_mul_of_nonneg_left
         ((mul_le_mul_of_nonneg_right hM2 hL₁_nonneg).trans hlogM) hfac.le
@@ -981,11 +979,27 @@ theorem tendsto_combForm_Icc_centeredMultiple_atBot {p : ℕ} (hp : p.Prime) :
       have hM1 : (1 : ℝ) ≤ M := by exact_mod_cast (show 1 ≤ M by omega)
       have hNle : (N : ℝ) ≤ 2 * (p : ℝ) * M := by nlinarith
       have h1 : (1 - 1 / (p : ℝ)) * ((M : ℝ) * Real.log p) ≤ (p : ℝ) * Real.log p * M := by
-        have : 1 - 1 / (p : ℝ) ≤ p := by linarith [show (0 : ℝ) ≤ 1 / p by positivity]
-        nlinarith
-      have h2 : (p : ℝ) * Real.log N ≤ (p : ℝ) * (2 * (p : ℝ) * M) := by nlinarith
-      dsimp [C₂, C₁]
-      nlinarith
+        have h1p : 1 - 1 / (p : ℝ) ≤ p := by linarith [show (0 : ℝ) ≤ 1 / p by positivity]
+        have hMlp : 0 ≤ (M : ℝ) * Real.log p := mul_nonneg (by positivity) hlp
+        calc (1 - 1 / (p : ℝ)) * ((M : ℝ) * Real.log p)
+            ≤ (p : ℝ) * ((M : ℝ) * Real.log p) := mul_le_mul_of_nonneg_right h1p hMlp
+          _ = (p : ℝ) * Real.log p * M := by ring
+      have h2 : (p : ℝ) * Real.log N ≤ 2 * (p : ℝ) ^ 2 * M := by
+        calc (p : ℝ) * Real.log N ≤ (p : ℝ) * N := mul_le_mul_of_nonneg_left hlogN (by positivity)
+          _ ≤ (p : ℝ) * (2 * (p : ℝ) * M) := mul_le_mul_of_nonneg_left hNle (by positivity)
+          _ = 2 * (p : ℝ) ^ 2 * M := by ring
+      have h3 : 2 * Real.log p * (N : ℝ) ≤ 4 * (p : ℝ) * Real.log p * M := by
+        calc 2 * Real.log p * (N : ℝ)
+            ≤ 2 * Real.log p * (2 * (p : ℝ) * M) :=
+              mul_le_mul_of_nonneg_left hNle (mul_nonneg (by norm_num) hlp)
+          _ = 4 * (p : ℝ) * Real.log p * M := by ring
+      have hexpC : 2 * (p : ℝ) * C₂ * M =
+          6 * (p : ℝ) * M + 6 * (p : ℝ) * Real.log p * M + 2 * (p : ℝ) ^ 2 * M := by
+        dsimp [C₂]; ring
+      have hpM_nonneg : 0 ≤ (p : ℝ) * M := by positivity
+      have hpMlp_nonneg : 0 ≤ (p : ℝ) * Real.log p * M := by positivity
+      rw [hexpC]
+      linarith
     have hBceil : |B| + 10 ≤ (M : ℝ) := by
       have hceil := Nat.le_ceil (|B| + (1 - 1 / (p : ℝ)) * K₁ * L₁ + 10)
       have hMge : (⌈|B| + (1 - 1 / (p : ℝ)) * K₁ * L₁ + 10⌉₊ : ℝ) ≤ M := by
@@ -1024,7 +1038,7 @@ theorem lateComb_mixedPrimeDebit_pos {K N p : ℕ} (hK : 1 ≤ K) (hN : 4 ≤ N)
   have hnonneg : ∀ n ∈ S, ∀ m ∈ S.erase n, 0 ≤ v m * v n * contact m n := by
     intro n hn m hm
     obtain ⟨hmne, hmS⟩ := mem_erase.mp hm
-    have h side : ∀ a b : ℕ, a ∈ S → b ∈ S → a ≠ b →
+    have hside : ∀ a b : ℕ, a ∈ S → b ∈ S → a ≠ b →
         0 ≤ v a * v b * (if a ∣ b then (Λ (b / a) : ℝ) else 0) := by
       intro a b ha hb hab
       by_cases hd : a ∣ b
@@ -1053,7 +1067,7 @@ theorem lateComb_mixedPrimeDebit_pos {K N p : ℕ} (hK : 1 ≤ K) (hN : 4 ≤ N)
           v n * v m * (if n ∣ m then (Λ (m / n) : ℝ) else 0) := by
       rw [contact]; ring
     rw [hexp]
-    exact add_nonneg (h m n hmS hn hmne) (h n m hn hmS hmne.symm)
+    exact add_nonneg (hside m n hmS hn hmne) (hside n m hn hmS hmne.symm)
   -- Exhibit one multiple `m₀ = p * (N / p + 1) ∈ (N, 2N]` with `2 * m₀ ∈ S`
   set m₀ := p * (N / p + 1)
   have hm₀_gt : N < m₀ := by
@@ -1070,9 +1084,6 @@ theorem lateComb_mixedPrimeDebit_pos {K N p : ℕ} (hK : 1 ≤ K) (hN : 4 ≤ N)
       ∑ n ∈ S, ∑ m ∈ S.erase n, v m * v n * contact m n := by
     calc (1 / 2 : ℝ) * Real.log 2
         ≤ v m₀ * v (2 * m₀) * contact m₀ (2 * m₀) := by
-          have h2p : ¬ p ∣ 2 := fun h => by
-            have := Nat.le_of_dvd (by norm_num) h
-            omega
           have hvm₀ : v m₀ = 1 - 1 / (p : ℝ) := by
             simp [v, centeredMultiple, m₀, dvd_mul_right]
           have hv2m₀ : v (2 * m₀) = 1 - 1 / (p : ℝ) := by
@@ -1093,7 +1104,7 @@ theorem lateComb_mixedPrimeDebit_pos {K N p : ℕ} (hK : 1 ≤ K) (hN : 4 ≤ N)
           single_le_sum (fun m hm => hnonneg _ h2m₀S m hm) (mem_erase.mpr ⟨hne, hm₀S⟩)
       _ ≤ ∑ n ∈ S, ∑ m ∈ S.erase n, v m * v n * contact m n :=
           single_le_sum (fun n hn => sum_nonneg fun m hm => hnonneg n hn m hm) h2m₀S
-  rw [mixedPrimeDebit, mixedPrimeDebitW, combFormW_vonMangoldt |> fun _ => by rfl]
+  rw [mixedPrimeDebit, mixedPrimeDebitW]
   have hcont_eq : ∀ m n, contactW (fun k => (Λ k : ℝ)) m n = contact m n := fun _ _ => rfl
   simp only [hcont_eq]
   have hlog2 : (0.69 : ℝ) < Real.log 2 := lt_trans (by norm_num) Real.log_two_gt_d9

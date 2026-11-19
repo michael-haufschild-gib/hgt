@@ -18,16 +18,16 @@ variable {n : ℕ}
 private abbrev Probes (n : ℕ) := Fin n → {x : ℝ // 1 ≤ x}
 
 /-- Only the two observed entries on each edge are used. -/
-def matches (G : SimpleGraph (Fin n)) (r s : Fin n → ℝ) (p : Probes n) :=
+def «matches» (G : SimpleGraph (Fin n)) (r s : Fin n → ℝ) (p : Probes n) :=
   ∀ i j, G.Adj i j → jumpReadout 1 r p i j = jumpReadout 1 s p i j ∧
     jumpReadout 2 r p i j = jumpReadout 2 s p i j
 
 theorem edges_exact (G : SimpleGraph (Fin n)) (r s : Fin n → ℝ) (p : Probes n) :
-    matches G r s p ↔ ∀ i j, G.Adj i j → indistinguishablePair (r i) (r j) (s i) (s j) := by
+    «matches» G r s p ↔ ∀ i j, G.Adj i j → indistinguishablePair (r i) (r j) (s i) (s j) := by
   have he (k : ℕ) (i j : Fin n) :
       jumpReadout k r p i j = jumpReadout k s p i j ↔ powerRate k (r i) (r j)=powerRate k (s i) (s j) :=
     (reading_eq_iff _ _ _).trans (or_iff_right (safe_probeGram_entry_ne_zero p i j))
-  simp only [matches,he,pair_two_rates_iff]
+  simp only [«matches»,he,pair_two_rates_iff]
 
 private theorem along {V : Type*} {G : SimpleGraph V} {P : V → Prop}
     (step : ∀ i j, G.Adj i j → P i → P j) {i j : V} (h : G.Reachable i j) : P i → P j := by
@@ -48,14 +48,14 @@ private theorem swapped {x y u v : ℝ} (he : indistinguishablePair x y u v) (hn
 
 /-- Exact magnitude propagation, including through zero-momentum vertices. -/
 theorem anchored_magnitudes (G : SimpleGraph (Fin n)) (r s : Fin n → ℝ) (p : Probes n)
-    (o : Fin n) : matches G r s p → r o^2=s o^2 → ∀ i, G.Reachable o i → r i^2=s i^2 := by
+    (o : Fin n) : «matches» G r s p → r o^2=s o^2 → ∀ i, G.Reachable o i → r i^2=s i^2 := by
   intro h ho i hi
   exact along (fun j k hjk => propagate ((edges_exact _ _ _ _).mp h j k hjk)) hi ho
 
 /-- Every uncalibrated component consists of a globally exchanged pair of
 squared levels. Even the signed product of old and new labels is constant. -/
 theorem component_alternative (G : SimpleGraph (Fin n)) (r s : Fin n → ℝ) (p : Probes n)
-    (o : Fin n) : matches G r s p →
+    (o : Fin n) : «matches» G r s p →
     (∀ i, G.Reachable o i → r i^2=s i^2) ∨
     (r o^2≠s o^2 ∧ ∀ i, G.Reachable o i →
       (r i^2=r o^2 ∧ s i^2=s o^2 ∨ r i^2=s o^2 ∧ s i^2=r o^2) ∧ r i*s i=r o*s o) := by
@@ -81,7 +81,7 @@ theorem component_alternative (G : SimpleGraph (Fin n)) (r s : Fin n → ℝ) (p
 /-- Once absolute momenta agree, the remaining edge information is exactly
 the sign of the product. This criterion includes zero and diagonal edges. -/
 theorem magnitude_and_edge_products (G : SimpleGraph (Fin n)) (r s : Fin n → ℝ) (p : Probes n) :
-    (∀ i, r i^2=s i^2) → (matches G r s p ↔ ∀ i j, G.Adj i j → r i*r j=s i*s j) := by
+    (∀ i, r i^2=s i^2) → («matches» G r s p ↔ ∀ i j, G.Adj i j → r i*r j=s i*s j) := by
   intro hmag
   rw [edges_exact]
   constructor
@@ -104,7 +104,7 @@ private def support (r : Fin n → ℝ) := {i | r i ≠ 0}
 /-- The unobservable signs are exactly independent common signs on the
 connected components of the nonzero induced graph. -/
 theorem sign_freedom (G : SimpleGraph (Fin n)) (r : Fin n → ℝ) (p : Probes n) (e : Fin n → Bool) :
-    matches G r (flip e r) p ↔
+    «matches» G r (flip e r) p ↔
       ∀ i j : support r, (G.induce (support r)).Reachable i j → e i.val=e j.val := by
   have hm (i) : r i^2=flip e r i^2 := by cases h : e i <;> simp [flip,h]
   rw [magnitude_and_edge_products _ _ _ _ hm]

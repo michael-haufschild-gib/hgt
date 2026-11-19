@@ -4,6 +4,7 @@ import GaloisForLFunctions.RHTower.Sieve.DivisorBound
 import GaloisForLFunctions.RHTower.Sieve.TotientMoebiusNormalisation
 import GaloisForLFunctions.RHTower.Sieve.SelbergInversion
 import GaloisForLFunctions.RHTower.HarmonicStirlingExactBounds
+import GaloisForLFunctions.RHTower.Sieve.MultiplicativeLogRecursion
 
 /-!
 # The totient term in the reflected composite price
@@ -37,26 +38,29 @@ def reflectedCompositePrice (n : ℕ) : ℝ :=
   (∑ a ∈ (Ioc (3*n) (4*n)).filter (fun a => n.Coprime a ∧ ¬a.Prime), Real.log a) -
   (∑ a ∈ (Ioc (2*n) (3*n)).filter (fun a => n.Coprime a ∧ ¬a.Prime), Real.log a)
 
+/-- Möbius detector on divisors of the fixed modulus. -/
+theorem reflected_coprime_indicator {n : ℕ} (hn : 0 < n) (a : ℕ) :
+    (if n.Coprime a then (1:ℝ) else 0)=∑ d ∈ n.divisors, if d ∣ a then (μ d:ℝ) else 0 := by
+  classical
+  rw [←sum_filter]
+  have hset : n.divisors.filter (· ∣ a) = (n.gcd a).divisors := by
+    ext d
+    simp only [mem_filter,Nat.mem_divisors,Nat.dvd_gcd_iff]
+    exact ⟨fun h => ⟨⟨h.1.1,h.2⟩,(Nat.gcd_pos_of_pos_left a hn).ne'⟩,
+      fun h => ⟨⟨h.1.1,hn.ne'⟩,h.1.2⟩⟩
+  rw [hset,_root_.RHTower.Sieve.sum_divisors_moebius_real]
+
 private theorem coprime_log_prefix (n T : ℕ) (hn : 0 < n) :
     coprimeLogPrefix n T =
       ∑ d ∈ n.divisors, (μ d : ℝ) * (((T/d : ℕ) : ℝ) * Real.log d + logPrefix (T/d)) := by
   classical
-  have detector (a : ℕ) :
-      (if n.Coprime a then (1:ℝ) else 0)=∑ d ∈ n.divisors, if d ∣ a then (μ d:ℝ) else 0 := by
-    rw [←sum_filter]
-    have hset : n.divisors.filter (· ∣ a) = (n.gcd a).divisors := by
-      ext d
-      simp only [mem_filter,Nat.mem_divisors,Nat.dvd_gcd_iff]
-      exact ⟨fun h => ⟨⟨h.1.1,h.2⟩,(Nat.gcd_pos_of_pos_left a hn).ne'⟩,
-        fun h => ⟨⟨h.1.1,hn.ne'⟩,h.1.2⟩⟩
-    rw [hset,_root_.RHTower.Sieve.sum_divisors_moebius_real]
   rw [coprimeLogPrefix,sum_filter]
   calc _ = ∑ a ∈ Icc 1 T, ∑ d ∈ n.divisors, if d ∣ a then (μ d:ℝ)*Real.log a else 0 := by
              apply sum_congr rfl
              intro a _
              rw [show (if n.Coprime a then Real.log (a:ℝ) else 0)=
                (if n.Coprime a then (1:ℝ) else 0)*Real.log a by split_ifs <;> simp,
-               detector,sum_mul]
+               reflected_coprime_indicator hn,sum_mul]
              exact sum_congr rfl fun d _ => by split_ifs <;> simp
        _ = _ := by
              rw [sum_comm]
@@ -296,7 +300,8 @@ theorem large_prime_cofactor_price_exact {n P : ℕ} (hn : 0 < n) (hP : P ≤ 2*
     apply sum_congr rfl
     intro p hp
     have hpr := (mem_filter.mp hp).2
-    rw [f,vonMangoldt_apply_prime hpr,prime_midpoint_count_split hn hpr,mul_add]
+    dsimp only [f]
+    rw [vonMangoldt_apply_prime hpr,prime_midpoint_count_split hn hpr,mul_add]
   change (∑ p ∈ (Ioc P (4*n)).filter Nat.Prime, f p)=_ at hc
   change _ = -(smallMidpointFactorPrice n P + ∑ q ∈ (Ioc P (4*n)).filter (fun q => ¬q.Prime),f q)
   linarith only [ht,hs,hc]
@@ -395,7 +400,9 @@ theorem cofactor_below_reflected_prime_cut {b : ℝ} {n p v : ℕ} (hn : 0 < n)
     rw [show 2*(n:ℝ)^(1-b)*(2*(n:ℝ)^b)=4*((n:ℝ)^(1-b)*(n:ℝ)^b) by ring,
       ←Real.rpow_add hn',sub_add_cancel,Real.rpow_one]
   by_cases hv0 : v=0
-  · subst v; positivity
+  · subst v
+    rw [Nat.cast_zero]
+    exact mul_pos (by norm_num) (Real.rpow_pos_of_pos hn' _)
   have hlow := mul_lt_mul_of_pos_left hp' (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hv0))
   have hu : (p:ℝ)*v ≤ 4*n := by exact_mod_cast hv
   apply (mul_lt_mul_iff_left₀ (show 0 < 2*(n:ℝ)^b by positivity)).mp
@@ -441,5 +448,15 @@ theorem all_endpoint_large_cofactor_error {b ε : ℝ} (hb : 1/2 ≤ b) (hb1 : b
 
 #print axioms cofactor_below_reflected_prime_cut
 #print axioms all_endpoint_large_cofactor_error
+
+/-- Removing the coprimality condition gives a factorial ratio whose
+linear term has the same density. Its endpoint correction is explicit. -/
+theorem reflected_factorial_center {n : ℕ} (hn : 0 < n) :
+    |Real.log ((4*n).factorial:ℕ)-2*Real.log ((3*n).factorial:ℕ)+Real.log ((2*n).factorial:ℕ)-
+      reflectedDensity*n-(Real.log 4-2*Real.log 3+Real.log 2)/2| ≤ 1/(n:ℝ) := by
+  simpa only [factorialGap,logPrefix,gapConstant,_root_.RHTower.Sieve.sum_Icc_log_eq_log_factorial]
+    using factorial_gap_error hn
+
+#print axioms reflected_factorial_center
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

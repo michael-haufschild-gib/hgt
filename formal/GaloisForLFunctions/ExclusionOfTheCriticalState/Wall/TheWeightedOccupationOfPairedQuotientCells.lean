@@ -299,7 +299,7 @@ theorem criticalState_ordinaryBand_occupation {W₀ : ℝ} (hW₀ : 0<W₀)
   have hwpos : 0≤∫ v, w v := integral_nonneg fun v => mul_nonneg (Real.exp_pos _).le (abs_nonneg _)
   have hprod := mul_le_mul (mul_le_mul_of_nonneg_right (ordinary_mass k L) (Real.exp_pos (-T/2)).le)
     hmass hwpos (by positivity)
-  exact (mul_le_mul_of_nonneg_left hprod (abs_nonneg m)).trans_eq (by dsimp only [kappa]; ring)
+  exact (mul_le_mul_of_nonneg_left hprod (abs_nonneg m)).trans_eq (by ring)
 
 /-- Removing the selected displacements subtracts precisely their response
 from the original band, before taking any absolute value or time integral. -/
@@ -331,7 +331,7 @@ theorem criticalState_paired_cell_occupation {W₀ : ℝ} (hW₀ : 0<W₀)
   let W := Ico (Real.log (pairNumeratorStart a b D)) (Real.log (pairNumeratorStop a b))
   let m := ∫ v, Φ v
   let E := {v : ℝ | s*m*Φ v<0} ∩ hitsLogNumerators T W
-  have hq₀ : 0<a.quotient := Nat.pos_of_ne_zero (fun hz => by simpa [hz] using hq)
+  have hq₀ : 0<a.quotient := Nat.pos_of_ne_zero (fun hz => by simp [hz] at hq)
   have hset : {v : ℝ | s*m*Φ v<0 ∧ ∃ j : ℕ, let H := ⌊(2:ℝ)^(j+1)*Real.exp (T-v)⌋₊
       a.holds H D ∧ b.holds H D}=E := by
     ext v; exact and_congr_right fun _ => (hitsLogNumerators_pair_iff a b ha hb hq₀ D T v).symm

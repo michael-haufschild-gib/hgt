@@ -274,4 +274,61 @@ theorem unrestricted_large_prime_factorial_error {n P : ℕ} (hn : 0 < n) (hP : 
 
 #print axioms unrestricted_large_prime_factorial_error
 
+/-- Every prime divider through n^(500/999) leaves the same factorial
+center and midpoint to square-root error at every positive integer. -/
+theorem midpoint_after_paid_prime_shell :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n Q : ℕ}, 1 ≤ n → ⌊2*Real.sqrt n⌋₊ ≤ Q →
+      Q ≤ max ⌊2*Real.sqrt n⌋₊ ⌊(n:ℝ)^(500/999:ℝ)⌋₊ →
+      |unrestrictedLargePrimePrice n Q-completeMidpointFactorial n-primeMidpointPrice n|
+        ≤ C*Real.sqrt n := by
+  obtain ⟨K,hK,hblock⟩ := prime_floor_shell_beyond_square_root
+  obtain ⟨D,hD⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  refine ⟨14+2*|D|+K,by positivity,?_⟩
+  intro n Q hn hPQ hQ
+  let P := ⌊2*Real.sqrt n⌋₊
+  change P ≤ Q at hPQ
+  have hn1 := (Nat.one_le_cast (α:=ℝ)).mpr hn
+  have hn0 : 0 < n := hn
+  have hroot : Real.sqrt n ≤ (n:ℝ) := by
+    rw [Real.sqrt_eq_rpow]
+    exact (Real.rpow_le_rpow_of_exponent_le hn1 (by norm_num : (1/2:ℝ) ≤ 1)).trans_eq (Real.rpow_one _)
+  have hcut : (P:ℝ) ≤ 2*Real.sqrt n := Nat.floor_le (by positivity)
+  have hP : P ≤ 2*n := by
+    exact_mod_cast hcut.trans (mul_le_mul_of_nonneg_left hroot (by norm_num : (0:ℝ) ≤ 2))
+  have hboundQ : Q ≤ 2*n := by
+    apply hQ.trans (max_le hP ?_)
+    have hc := (Nat.floor_le (Real.rpow_nonneg (Nat.cast_nonneg n) (500/999:ℝ))).trans
+      ((Real.rpow_le_rpow_of_exponent_le hn1 (by norm_num : (500/999:ℝ)≤1)).trans_eq (Real.rpow_one _))
+    exact (Nat.cast_le.mp hc).trans (by omega)
+  let B := midpointFloorPrimeBlock n (P+1) (Q+1)
+  have hB : |B| ≤ K*Real.sqrt n := by
+    rcases le_max_iff.mp hQ with h | h
+    · have he : Q=P := le_antisymm h hPQ
+      simp only [B,he,midpointFloorPrimeBlock,Ico_self,filter_empty,sum_empty,abs_zero]
+      positivity
+    · exact hblock hn (Nat.lt_succ_self P) (Nat.add_le_add_right h 1)
+  have hi : Ico (P+1) (Q+1)=Ioc P Q := by ext j; simp only [mem_Ico,mem_Ioc]; omega
+  have hjoin : B+unrestrictedLargePrimePrice n Q=unrestrictedLargePrimePrice n P := by
+    simp only [B,midpointFloorPrimeBlock,hi,unrestrictedLargePrimePrice,sum_filter]
+    exact sum_Ioc_consecutive _ hPQ hboundQ
+  have hi' : Ioc 0 P=Icc 1 P := by ext j; simp only [mem_Ico,mem_Icc,mem_Ioc]; omega
+  have hψ : Chebyshev.psi P ≤ 7*P := by
+    simpa only [Chebyshev.psi,Nat.floor_natCast,hi'] using _root_.RHTower.sum_vonMangoldt_Icc_le_seven P
+  have hproper := hD ((4*n:ℕ):ℝ)
+  rw [Nat.cast_mul,Nat.cast_ofNat,Real.sqrt_mul (by norm_num : (0:ℝ)≤4),
+    show Real.sqrt 4 = 2 by norm_num] at hproper
+  have habs := mul_le_mul_of_nonneg_right (le_abs_self D) (mul_nonneg (by norm_num : (0:ℝ)≤2) (Real.sqrt_nonneg (n:ℝ)))
+  have herr := unrestricted_large_prime_factorial_error hn0 hP
+  have hid : unrestrictedLargePrimePrice n Q-completeMidpointFactorial n-primeMidpointPrice n =
+      (unrestrictedLargePrimePrice n P-completeMidpointFactorial n-primeMidpointPrice n)+(-B) := by
+    linarith only [hjoin]
+  rw [hid]
+  apply (abs_add_le _ _).trans
+  rw [abs_neg]
+  have hr := add_le_add herr hB
+  push_cast at hr
+  linarith only [hr,hψ,hcut,hproper,habs]
+
+#print axioms midpoint_after_paid_prime_shell
+
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
