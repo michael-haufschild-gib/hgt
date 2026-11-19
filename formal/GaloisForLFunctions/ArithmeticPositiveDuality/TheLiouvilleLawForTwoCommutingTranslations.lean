@@ -71,7 +71,9 @@ theorem harmonic_variance (w : ℝ) (a b : G) {f : G → ℝ} (hf : mean w a b f
   | succ n ih =>
     rw [walk_succ_right, show mean w a b (fun y => f y^2) =
         (fun y => f y^2 + (w*(1-w))*contrast a b f y^2) from
-          funext fun y => by rw [mean_square, hf], walk_linear, sum_range_succ, ih]
+          funext fun y => by rw [mean_square, hf], walk_linear, sum_range_succ]
+    dsimp only
+    rw [ih]
     ring
 
 private lemma walk_le_const (w : ℝ) (hw : w ∈ Set.Icc 0 1) (a b : G) {f : G → ℝ}
@@ -102,7 +104,7 @@ theorem contrast_forces_linear_variance (w : ℝ) (hw : w ∈ Set.Icc 0 1) (a b 
     {f : G → ℝ} (hf : mean w a b f = f) (n : ℕ) (x : G) :
     f x^2 + w*(1-w)*(n*contrast a b f x^2) ≤ walk w a b n (fun y => f y^2) x := by
   rw [harmonic_variance _ _ _ hf]
-  apply add_le_add_left
+  apply add_le_add le_rfl
   apply mul_le_mul_of_nonneg_left _ (mul_nonneg hw.1 (sub_nonneg.mpr hw.2))
   have hd : mean w a b (contrast a b f) = contrast a b f := (mean_contrast ..).trans (by rw [hf])
   simpa only [sum_const, card_range, nsmul_eq_mul] using

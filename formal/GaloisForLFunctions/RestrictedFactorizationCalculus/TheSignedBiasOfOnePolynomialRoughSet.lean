@@ -51,6 +51,7 @@ private theorem weighted_freezing_error {θ : ℝ} (hθ : 0<θ) (small : θ<1) {
   obtain ⟨D,hD,errors⟩ := second_log_saving_for_freezing_a_polynomial_cutoff hθ small
   have large := (Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop).eventually_ge_atTop (D/ε)
   filter_upwards [errors,large,eventually_ge_atTop (2:ℕ)] with X err hi pos
+  change D/ε ≤ Real.log (X:ℝ) at hi
   have lx := Real.log_pos (show (1:ℝ)<X by exact_mod_cast (by omega : 1<X))
   have limit := (div_le_iff₀ hε).mp hi
   have gap := mul_le_mul_of_nonneg_right (signed_freezing_error hθ X) (sq_nonneg (Real.log X))
@@ -160,7 +161,8 @@ theorem second_log_error_in_the_signed_smooth_main_term {θ : ℝ} (hθ : 0<θ) 
   let K := A+12*C/θ+D
   have kp : 0<K := by dsimp only [K]; positivity
   refine ⟨K,kp,?_⟩
-  have logs := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
+  have logs : Tendsto (fun X : ℕ => Real.log (X:ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   filter_upwards [vr,freeze,fit Y,tendsto_natCast_atTop_atTop (logarithmic_bounds_on_a_power_cutoff hθ),
     logs.eventually_ge_atTop (4*(1+Real.log 2)/θ),eventually_ge_atTop (2:ℕ)] with X var fr wall scale hi pos
   let y := powerCutoff θ X

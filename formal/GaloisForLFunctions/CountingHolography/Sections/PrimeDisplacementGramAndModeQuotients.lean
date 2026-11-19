@@ -1093,20 +1093,6 @@ theorem disjoint_signedPrimeProbes_gershgorin_iff_rightZeros_ge (m P₀ : ℕ) {
         rw [mul_div_assoc', div_lt_div_iff₀ (by positivity) two_pos]
         nlinarith only [hc, hε]
       exact hle.trans_lt hmul
-    let Vopen : Set (Fin m → Fin m → ℝ) :=
-      {G | (∀ r : Fin m, G r r < 0) ∧
-        (∀ r : Fin m, ∑ s ∈ Finset.univ.erase r, |G r s| / Real.sqrt (G r r * G s s) < ε)}
-    have hV_open : IsOpen Vopen := by
-      refine (isOpen_iInter_of_finite fun r =>
-        isOpen_lt ((continuous_apply r).comp (continuous_apply r)) continuous_const).inter ?_
-      refine isOpen_iInter_of_finite fun r => isOpen_lt ?_ continuous_const
-      refine continuous_finset_sum _ fun s _ => ?_
-      exact (continuous_abs.comp ((continuous_apply s).comp (continuous_apply r))).div
-        (Real.continuous_sqrt.comp (((continuous_apply r).comp (continuous_apply r)).mul
-          ((continuous_apply s).comp (continuous_apply s))))
-        fun G => ?_
-      --Wait: continuousAt is cleaner than global Continuous because `sqrt = 0` outside `Vopen`!
-    -- Use `ContinuousAt` at `G₀` directly!
     have hcontAt (r : Fin m) : ContinuousAt
         (fun G : Fin m → Fin m → ℝ =>
           ∑ s ∈ Finset.univ.erase r, |G r s| / Real.sqrt (G r r * G s s)) G₀ := by
@@ -2329,11 +2315,381 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
       rw [hpkt_v]; exact hind_K Finset.univ
     rw [paperFT_realProbePacket_gammaOf_conj] at hft_zero
     have hB_ne : paperFT (cx cubicSpline) (gammaOf (conj ρ)) ≠ 0 :=
-      offLineGeneric_cubicSpline zetaZeroConfig (conj ρ)
-        (fesSymmetric_zetaZeroConfig.conj_mem
-          (by
-            -- `offLineGeneric_cubicSpline` only uses `im_gammaOf_ne_zero`!
-            exact hstar.1)) -- wait: let's use `paperFT_cubicSpline_ne_zero` directly!
-        -- Let's replace with `paperFT_cubicSpline_ne_zero (SquareRootThreshold.im_gammaOf_ne_zero ...)`!
-      sorry
-  sorry
+      BiScaleUncertainty.ChebyshevGauge.paperFT_cubicSpline_ne_zero
+        (SquareRootThreshold.im_gammaOf_ne_zero (by rw [Complex.conj_re]; linarith [hS₀_re ρ hρ]))
+    have hev_zero : charEval (modeChar ρ) (fun i : Fin M => natSlope i.val) (fun i => (v i : ℂ)) = 0 :=
+      (mul_eq_zero.mp hft_zero).resolve_right hB_ne
+    unfold modePairProduct
+    rw [hev_zero, norm_zero, zero_mul]
+  -- Step 3: Zero-sum rational approximation of `v` and denominator clearing.
+  let i_zero : Fin M := ⟨0, by omega⟩
+  let projZero : (Fin M → ℝ) → (Fin M → ℝ) := fun x i =>
+    if i = i_zero then -∑ j ∈ Finset.univ.erase i_zero, x j else x i
+  have hproj_cont : Continuous projZero := by
+    refine continuous_pi fun i => ?_
+    dsimp [projZero]
+    split_ifs
+    · exact (continuous_finset_sum _ fun j _ => continuous_apply j).neg
+    · exact continuous_apply i
+  have hproj_v : projZero v = v := by
+    funext i
+    dsimp [projZero]
+    split_ifs with hi
+    · subst hi
+      have hsp := Finset.add_sum_erase Finset.univ v (Finset.mem_univ i_zero)
+      linarith only [hsp, hv_sum]
+    · rfl
+  let Q_real : (Fin M → ℝ) → ℝ := realQuad (fun i j => (atomGram M i j).re)
+  let MP_real (ρ : ℂ) : (Fin M → ℝ) → ℝ := fun x =>
+    modePairProduct ρ M (fun i => (x i : ℂ))
+  have hMP_cont (ρ : ℂ) : Continuous (MP_real ρ) := by
+    dsimp [MP_real, modePairProduct, charEval]
+    fun_prop
+  have hev_w : ∀ᶠ x : Fin M → ℝ in 𝓝 v,
+      Q_real (projZero x) < 0 ∧
+      ∀ ρ ∈ S₀, MP_real ρ (projZero x) < (δ / 2) * (-Q_real (projZero x)) := by
+    have hQv : Q_real (projZero v) < 0 := by rwa [hproj_v]
+    refine (((continuous_realQuad _).comp hproj_cont).continuousAt.eventually
+      (gt_mem_nhds hQv)).and ?_
+    rw [eventually_all_finset]
+    intro ρ hρ
+    have h0v : MP_real ρ (projZero v) < (δ / 2) * (-Q_real (projZero v)) := by
+      rw [hproj_v]
+      dsimp [MP_real]
+      rw [hv_mode_zero ρ hρ]
+      exact mul_pos (half_pos hδ) (neg_pos.mpr hv_quad)
+    have hdiff_cont : Continuous
+        (fun x : Fin M → ℝ => (δ / 2) * (-Q_real (projZero x)) - MP_real ρ (projZero x)) :=
+      (continuous_const.mul (((continuous_realQuad _).comp hproj_cont).neg)).sub
+        ((hMP_cont ρ).comp hproj_cont)
+    exact (hdiff_cont.continuousAt.eventually (lt_mem_nhds (sub_pos.mpr h0v))).mono fun x hx => by
+      linarith only [hx]
+  have hdense_Q : DenseRange (fun q₀ : Fin M → ℚ => fun i => ((q₀ i : ℚ) : ℝ)) :=
+    DenseRange.piMap fun _ => Rat.denseRange_cast
+  obtain ⟨r_rad, hr_pos, hball_v⟩ := Metric.eventually_nhds_iff.mp hev_w
+  obtain ⟨q₀, hq₀_dist⟩ := Metric.denseRange_iff.mp hdense_Q v r_rad hr_pos
+  rw [dist_comm] at hq₀_dist
+  obtain ⟨hQ_neg_q, hMP_lt_q⟩ := hball_v hq₀_dist
+  let q : Fin M → ℚ := fun i =>
+    if i = i_zero then -∑ j ∈ Finset.univ.erase i_zero, q₀ j else q₀ i
+  have hq_cast : (fun i : Fin M => ((q i : ℚ) : ℝ)) = projZero (fun i => ((q₀ i : ℚ) : ℝ)) := by
+    funext i
+    dsimp [q, projZero]
+    split_ifs <;> push_cast <;> rfl
+  have hq_sum : (∑ i : Fin M, q i) = 0 := by
+    rw [← Finset.add_sum_erase Finset.univ q (Finset.mem_univ i_zero)]
+    have hi0 : q i_zero = -∑ j ∈ Finset.univ.erase i_zero, q₀ j := if_pos rfl
+    have hrest : ∑ j ∈ Finset.univ.erase i_zero, q j = ∑ j ∈ Finset.univ.erase i_zero, q₀ j :=
+      Finset.sum_congr rfl fun j hj => if_neg (Finset.mem_erase.mp hj).1
+    rw [hi0, hrest, neg_add_cancel]
+  obtain ⟨D, u, hD_pos, hu_eq⟩ := exists_common_denominator q
+  have hD_r : (0 : ℝ) < D := Nat.cast_pos.mpr hD_pos
+  have hu_sum : (∑ i : Fin M, u i) = 0 := by
+    have hreal : (∑ i : Fin M, (u i : ℝ)) = 0 := by
+      simp_rw [← hu_eq, ← Finset.sum_mul]
+      have hqr : (∑ i : Fin M, ((q i : ℚ) : ℝ)) = 0 := by exact_mod_cast hq_sum
+      rw [hqr, zero_mul]
+    exact_mod_cast hreal
+  have hu_probe : integerProbe M u = (D : ℝ) ^ 2 * Q_real (projZero (fun i => ((q₀ i : ℚ) : ℝ))) := by
+    rw [integerProbe_eq_sum, ← hq_cast]
+    dsimp [Q_real, realQuad]
+    simp_rw [← hu_eq, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
+  have hu_neg : integerProbe M u < 0 := by
+    rw [hu_probe]
+    exact mul_neg_of_pos_of_neg (pow_pos hD_r 2) hQ_neg_q
+  have hu_ne : u ≠ 0 := by
+    rintro rfl
+    rw [integerProbe_eq_sum] at hu_neg
+    simp at hu_neg
+  have hu_mp_lt (ρ : ℂ) (hρ : ρ ∈ S₀) :
+      modePairProduct ρ M (fun i => (u i : ℂ)) < (δ / 2) * (-integerProbe M u) := by
+    have hmp_scale :
+        modePairProduct ρ M (fun i => (u i : ℂ)) =
+          (D : ℝ) ^ 2 * MP_real ρ (projZero (fun i => ((q₀ i : ℚ) : ℝ))) := by
+      rw [← hq_cast]
+      dsimp [MP_real, modePairProduct]
+      have hc1 : charEval (modeChar ρ) (fun i : Fin M => natSlope i.val) (fun i => (u i : ℂ)) =
+          (D : ℂ) * charEval (modeChar ρ) (fun i : Fin M => natSlope i.val)
+            (fun i => (((q i : ℚ) : ℝ) : ℂ)) := by
+        simp only [charEval_apply, Finset.mul_sum]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        have hi : (u i : ℂ) = (((q i : ℚ) : ℝ) : ℂ) * (D : ℂ) := by exact_mod_cast (hu_eq i).symm
+        rw [hi]; ring
+      have hc2 : charEval (reflectChar (modeChar ρ)) (fun i : Fin M => natSlope i.val)
+          (fun i => (u i : ℂ)) =
+          (D : ℂ) * charEval (reflectChar (modeChar ρ)) (fun i : Fin M => natSlope i.val)
+            (fun i => (((q i : ℚ) : ℝ) : ℂ)) := by
+        simp only [charEval_apply, Finset.mul_sum]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        have hi : (u i : ℂ) = (((q i : ℚ) : ℝ) : ℂ) * (D : ℂ) := by exact_mod_cast (hu_eq i).symm
+        rw [hi]; ring
+      rw [hc1, hc2, norm_mul, norm_mul, Complex.norm_natCast]
+      ring
+    rw [hmp_scale, hu_probe]
+    have hlt := hMP_lt_q ρ hρ
+    nlinarith [pow_pos hD_r 2]
+  -- Step 4: Transport `u` to a co-scaled prime cluster above `P₀`, preserving `modePairProduct`.
+  obtain ⟨i₀, hi₀⟩ : ∃ i : Fin M, u i ≠ 0 := by simpa [funext_iff] using hu_ne
+  obtain ⟨U, _, hU⟩ := exists_shifted_primeBlocks_log_approx 1 M P₀ ![0]
+    (fun r => by fin_cases r; exact le_rfl)
+  have hseq (n : ℕ) := hU (max U (n : ℝ)) (le_max_left _ _)
+  choose Nseq ιseq hι_inj hι_props using hseq
+  have hι0_inj (n : ℕ) : Function.Injective (ιseq n 0) :=
+    fun i j hij => Prod.mk.inj_iff.mp (hι_inj n (p₁ := (0, i)) (p₂ := (0, j)) hij) |>.2
+  let aseq (n : ℕ) : Fin (Nseq n) → ℤ := Function.extend (ιseq n 0) u 0
+  have hzero : Tendsto (fun n : ℕ => (6 : ℝ) / (n : ℝ)) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop tendsto_natCast_atTop_atTop
+  have hexp_bound (n : ℕ) (hn1 : 1 ≤ n) :
+      2 * Real.exp (-(1 / 3 : ℝ) * (n : ℝ)) ≤ (6 : ℝ) / (n : ℝ) := by
+    have hlin : (1 / 3 : ℝ) * (n : ℝ) ≤ Real.exp ((1 / 3 : ℝ) * (n : ℝ)) := by
+      linarith [Real.add_one_le_exp ((1 / 3 : ℝ) * (n : ℝ))]
+    rw [neg_mul, Real.exp_neg]
+    have hinv := inv_anti₀ (by positivity : 0 < (1 / 3 : ℝ) * (n : ℝ)) hlin
+    rw [show ((1 / 3 : ℝ) * (n : ℝ))⁻¹ = (3 : ℝ) / (n : ℝ) by field_simp] at hinv
+    calc 2 * (Real.exp ((1 / 3 : ℝ) * (n : ℝ)))⁻¹ ≤ 2 * ((3 : ℝ) / (n : ℝ)) :=
+          mul_le_mul_of_nonneg_left hinv (by norm_num)
+      _ = 6 / (n : ℝ) := by ring
+  obtain ⟨N₀, hN₀⟩ := exists_nat_gt U
+  have herr_zero (i : Fin M) :
+      Tendsto (fun n : ℕ =>
+        Real.log (((ιseq n 0 i).val : ℝ) + 1) - (max U (n : ℝ) + Real.log ((i : ℝ) + 1)))
+        atTop (𝓝 0) := by
+    refine tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (by simpa using hzero.neg) tendsto_const_nhds ?_ ?_
+    · filter_upwards [eventually_ge_atTop (max N₀ 1)] with n hn
+      have hmax : max U (n : ℝ) = (n : ℝ) :=
+        max_eq_right (hN₀.le.trans (by exact_mod_cast (le_max_left N₀ 1).trans hn))
+      have hb := hexp_bound n ((le_max_right N₀ 1).trans hn)
+      have hi := (hι_props n 0 i).2.2.2
+      simp only [Matrix.cons_val_zero, add_zero] at hi
+      rw [hmax] at hi ⊢
+      linarith only [hi, hb]
+    · filter_upwards [eventually_ge_atTop 0] with n _
+      have hi := (hι_props n 0 i).2.2.1
+      simp only [Matrix.cons_val_zero, add_zero] at hi
+      linarith only [hi]
+  have hconv_Q : Tendsto (fun n : ℕ => integerProbe (Nseq n) (aseq n))
+      atTop (𝓝 (integerProbe M u)) := by
+    rw [← probePairing_self M u]
+    unfold probePairing
+    refine (tendsto_finsetSum Finset.univ fun i _ =>
+      tendsto_finsetSum Finset.univ fun j _ => ?_).congr fun n => by
+        rw [← probePairing_self, extend_probePairing_eq (hι0_inj n) (hι0_inj n) u u]
+    have harg : Tendsto
+        (fun n : ℕ =>
+          Real.log (((ιseq n 0 i).val : ℝ) + 1) - Real.log (((ιseq n 0 j).val : ℝ) + 1))
+        atTop (𝓝 (Real.log ((i : ℝ) + 1) - Real.log ((j : ℝ) + 1))) := by
+      have hd := (herr_zero i).sub (herr_zero j)
+      simp only [sub_zero] at hd
+      refine (tendsto_const_nhds.add hd).congr' ?_
+      filter_upwards with n; ring
+    rw [atomGram_eq_splineSeries M i j]
+    have hsp := ((Complex.continuous_re.comp continuous_splineSeries).tendsto _).comp harg
+    refine ((hsp.mul_const (u i : ℝ)).mul_const (u j : ℝ)).congr fun n => ?_
+    dsimp only [Function.comp_apply]
+    rw [atomGram_eq_splineSeries (Nseq n) (ιseq n 0 i) (ιseq n 0 j)]
+  have hconv_MP (ρ : ℂ) :
+      Tendsto (fun n : ℕ => modePairProduct ρ (Nseq n) (fun ℓ => (aseq n ℓ : ℂ)))
+        atTop (𝓝 (modePairProduct ρ M (fun i => (u i : ℂ)))) := by
+    let s_exp : ℂ := conj ρ - 1 / 2
+    have hsum_ext_cx (n : ℕ) (w : Fin (Nseq n) → ℂ) :
+        (∑ ℓ : Fin (Nseq n), ((aseq n ℓ : ℤ) : ℂ) * w ℓ) =
+          ∑ i : Fin M, (u i : ℂ) * w (ιseq n 0 i) := by
+      have hoff : ∀ ℓ : Fin (Nseq n), ℓ ∉ Finset.univ.image (ιseq n 0) →
+          ((aseq n ℓ : ℤ) : ℂ) * w ℓ = 0 := by
+        intro ℓ hℓ
+        have hz : aseq n ℓ = 0 :=
+          Function.extend_apply' _ _ _ fun ⟨i, hi⟩ => hℓ (Finset.mem_image.mpr ⟨i, Finset.mem_univ _, hi⟩)
+        rw [hz, Int.cast_zero, zero_mul]
+      rw [← Finset.sum_subset (Finset.subset_univ (Finset.univ.image (ιseq n 0)))
+        fun ℓ _ hℓ => hoff ℓ hℓ,
+        Finset.sum_image fun i _ j _ h => hι0_inj n h]
+      exact Finset.sum_congr rfl fun i _ => by simp only [aseq, (hι0_inj n).extend_apply]
+    have hprod_eq (n : ℕ) :
+        modePairProduct ρ (Nseq n) (fun ℓ => (aseq n ℓ : ℂ)) =
+          ‖∑ i : Fin M, (u i : ℂ) *
+              cexp (s_exp * ((Real.log ((i : ℝ) + 1) +
+                (Real.log (((ιseq n 0 i).val : ℝ) + 1) -
+                  (max U (n : ℝ) + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ))‖ *
+            ‖∑ i : Fin M, (u i : ℂ) *
+              cexp ((-conj s_exp) * ((Real.log ((i : ℝ) + 1) +
+                (Real.log (((ιseq n 0 i).val : ℝ) + 1) -
+                  (max U (n : ℝ) + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ))‖ := by
+      unfold modePairProduct
+      rw [charEval_apply, charEval_apply, hsum_ext_cx, hsum_ext_cx]
+      let Tn : ℝ := max U (n : ℝ)
+      have hc1 :
+          (∑ i : Fin M, (u i : ℂ) * modeChar ρ (natSlope (ιseq n 0 i).val)) =
+            cexp (s_exp * (Tn : ℂ)) *
+              ∑ i : Fin M, (u i : ℂ) *
+                cexp (s_exp * ((Real.log ((i : ℝ) + 1) +
+                  (Real.log (((ιseq n 0 i).val : ℝ) + 1) - (Tn + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ)) := by
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [modeChar, zeroChar, logChar_apply, scale_natSlope]
+        have harg_eq :
+            s_exp * (Real.log ((((ιseq n 0 i).val + 1 : ℕ) : ℝ)) : ℂ) =
+              s_exp * (Tn : ℂ) +
+                s_exp * ((Real.log ((i : ℝ) + 1) +
+                  (Real.log (((ιseq n 0 i).val : ℝ) + 1) - (Tn + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ) := by
+          push_cast; ring
+        change (u i : ℂ) * cexp (s_exp * (Real.log ((((ιseq n 0 i).val + 1 : ℕ) : ℝ)) : ℂ)) = _
+        rw [harg_eq, Complex.exp_add]
+        ring
+      have hc2 :
+          (∑ i : Fin M, (u i : ℂ) * reflectChar (modeChar ρ) (natSlope (ιseq n 0 i).val)) =
+            cexp ((-conj s_exp) * (Tn : ℂ)) *
+              ∑ i : Fin M, (u i : ℂ) *
+                cexp ((-conj s_exp) * ((Real.log ((i : ℝ) + 1) +
+                  (Real.log (((ιseq n 0 i).val : ℝ) + 1) - (Tn + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ)) := by
+        rw [Finset.mul_sum]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        rw [modeChar, zeroChar, reflectChar_logChar, logChar_apply, scale_natSlope]
+        have harg_eq :
+            (-conj s_exp) * (Real.log ((((ιseq n 0 i).val + 1 : ℕ) : ℝ)) : ℂ) =
+              (-conj s_exp) * (Tn : ℂ) +
+                (-conj s_exp) * ((Real.log ((i : ℝ) + 1) +
+                  (Real.log (((ιseq n 0 i).val : ℝ) + 1) - (Tn + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ) := by
+          push_cast; ring
+        change (u i : ℂ) * cexp ((-conj s_exp) * (Real.log ((((ιseq n 0 i).val + 1 : ℕ) : ℝ)) : ℂ)) = _
+        rw [harg_eq, Complex.exp_add]
+        ring
+      rw [hc1, hc2, norm_mul, norm_mul]
+      have hnorm_cancel :
+          ‖cexp (s_exp * (Tn : ℂ))‖ * ‖cexp ((-conj s_exp) * (Tn : ℂ))‖ = 1 := by
+        rw [Complex.norm_exp, Complex.norm_exp, ← Real.exp_add]
+        have hre0 : (s_exp * (Tn : ℂ)).re + ((-conj s_exp) * (Tn : ℂ)).re = 0 := by
+          simp
+        rw [hre0, Real.exp_zero]
+      calc (‖cexp (s_exp * (Tn : ℂ))‖ * _) * (‖cexp ((-conj s_exp) * (Tn : ℂ))‖ * _)
+          = (‖cexp (s_exp * (Tn : ℂ))‖ * ‖cexp ((-conj s_exp) * (Tn : ℂ))‖) * (_ * _) := by ring
+        _ = _ := by rw [hnorm_cancel, one_mul]
+    have hlim1 :
+        Tendsto (fun n : ℕ =>
+          ‖∑ i : Fin M, (u i : ℂ) *
+              cexp (s_exp * ((Real.log ((i : ℝ) + 1) +
+                (Real.log (((ιseq n 0 i).val : ℝ) + 1) -
+                  (max U (n : ℝ) + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ))‖)
+          atTop (𝓝 ‖charEval (modeChar ρ) (fun i : Fin M => natSlope i.val) (fun i => (u i : ℂ))‖) := by
+      have hexp_lim :
+          Tendsto (fun n : ℕ =>
+            ∑ i : Fin M, (u i : ℂ) *
+              cexp (s_exp * ((Real.log ((i : ℝ) + 1) +
+                (Real.log (((ιseq n 0 i).val : ℝ) + 1) -
+                  (max U (n : ℝ) + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ)))
+            atTop (𝓝 (charEval (modeChar ρ) (fun i : Fin M => natSlope i.val) (fun i => (u i : ℂ)))) := by
+        rw [charEval_apply]
+        refine tendsto_finsetSum Finset.univ fun i _ => ?_
+        have h1 : Tendsto (fun n : ℕ =>
+            s_exp * ((Real.log ((i : ℝ) + 1) +
+              (Real.log (((ιseq n 0 i).val : ℝ) + 1) -
+                (max U (n : ℝ) + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ))
+            atTop (𝓝 (s_exp * (Real.log ((i.val + 1 : ℕ) : ℝ) : ℂ))) := by
+          have hc : ((i : ℝ) + 1) = ((i.val + 1 : ℕ) : ℝ) := by push_cast; rfl
+          rw [← hc]
+          have hr := tendsto_const_nhds.add (herr_zero i)
+          rw [add_zero] at hr
+          exact ((Complex.continuous_ofReal.tendsto _).comp hr).const_mul s_exp
+        have h2 := (Complex.continuous_exp.tendsto _).comp h1
+        have hgoal : modeChar ρ (natSlope i.val) =
+            cexp (s_exp * (Real.log ((i.val + 1 : ℕ) : ℝ) : ℂ)) := by
+          rw [modeChar, zeroChar, logChar_apply, scale_natSlope]
+        rw [hgoal]
+        exact h2.const_mul (u i : ℂ)
+      exact (continuous_norm.tendsto _).comp hexp_lim
+    have hlim2 :
+        Tendsto (fun n : ℕ =>
+          ‖∑ i : Fin M, (u i : ℂ) *
+              cexp ((-conj s_exp) * ((Real.log ((i : ℝ) + 1) +
+                (Real.log (((ιseq n 0 i).val : ℝ) + 1) -
+                  (max U (n : ℝ) + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ))‖)
+          atTop (𝓝 ‖charEval (reflectChar (modeChar ρ)) (fun i : Fin M => natSlope i.val)
+            (fun i => (u i : ℂ))‖) := by
+      have hexp_lim :
+          Tendsto (fun n : ℕ =>
+            ∑ i : Fin M, (u i : ℂ) *
+              cexp ((-conj s_exp) * ((Real.log ((i : ℝ) + 1) +
+                (Real.log (((ιseq n 0 i).val : ℝ) + 1) -
+                  (max U (n : ℝ) + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ)))
+            atTop (𝓝 (charEval (reflectChar (modeChar ρ)) (fun i : Fin M => natSlope i.val)
+              (fun i => (u i : ℂ)))) := by
+        rw [charEval_apply]
+        refine tendsto_finsetSum Finset.univ fun i _ => ?_
+        have h1 : Tendsto (fun n : ℕ =>
+            (-conj s_exp) * ((Real.log ((i : ℝ) + 1) +
+              (Real.log (((ιseq n 0 i).val : ℝ) + 1) -
+                (max U (n : ℝ) + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ))
+            atTop (𝓝 ((-conj s_exp) * (Real.log ((i.val + 1 : ℕ) : ℝ) : ℂ))) := by
+          have hc : ((i : ℝ) + 1) = ((i.val + 1 : ℕ) : ℝ) := by push_cast; rfl
+          rw [← hc]
+          have hr := tendsto_const_nhds.add (herr_zero i)
+          rw [add_zero] at hr
+          exact ((Complex.continuous_ofReal.tendsto _).comp hr).const_mul (-conj s_exp)
+        have h2 := (Complex.continuous_exp.tendsto _).comp h1
+        have hgoal : reflectChar (modeChar ρ) (natSlope i.val) =
+            cexp ((-conj s_exp) * (Real.log ((i.val + 1 : ℕ) : ℝ) : ℂ)) := by
+          rw [modeChar, zeroChar, reflectChar_logChar, logChar_apply, scale_natSlope]
+        rw [hgoal]
+        exact h2.const_mul (u i : ℂ)
+      exact (continuous_norm.tendsto _).comp hexp_lim
+    exact (hlim1.mul hlim2).congr fun n => (hprod_eq n).symm
+  have hev_final : ∀ᶠ n : ℕ in atTop,
+      integerProbe (Nseq n) (aseq n) < 0 ∧
+      ∀ ρ ∈ S₀, modePairProduct ρ (Nseq n) (fun ℓ => (aseq n ℓ : ℂ)) <
+        δ * (-integerProbe (Nseq n) (aseq n)) := by
+    refine (hconv_Q.eventually (gt_mem_nhds hu_neg)).and ?_
+    rw [eventually_all_finset]
+    intro ρ hρ
+    have hlim_sub :
+        Tendsto (fun n : ℕ =>
+          δ * (-integerProbe (Nseq n) (aseq n)) -
+            modePairProduct ρ (Nseq n) (fun ℓ => (aseq n ℓ : ℂ)))
+          atTop (𝓝 (δ * (-integerProbe M u) - modePairProduct ρ M (fun i => (u i : ℂ)))) :=
+      (hconv_Q.neg.const_mul δ).sub (hconv_MP ρ)
+    have hpos_lim : 0 < δ * (-integerProbe M u) - modePairProduct ρ M (fun i => (u i : ℂ)) := by
+      have h1 := hu_mp_lt ρ hρ
+      have h2 : (δ / 2) * (-integerProbe M u) < δ * (-integerProbe M u) :=
+        mul_lt_mul_of_pos_right (half_lt_self hδ) (neg_pos.mpr hu_neg)
+      linarith only [h1, h2]
+    exact (hlim_sub.eventually (lt_mem_nhds hpos_lim)).mono fun n hn => by linarith only [hn]
+  obtain ⟨n, hn_neg, hn_mp⟩ := hev_final.exists
+  have hN_gt : P₀ < Nseq n := by
+    have h1 := (hι_props n 0 i₀).2.1
+    have h2 := (ιseq n 0 i₀).isLt
+    omega
+  exact ⟨Nseq n, aseq n, hN_gt,
+    (isSignedPrimeSupported_extend (hι0_inj n)
+      (fun i => ⟨(hι_props n 0 i).1, (hι_props n 0 i).2.1⟩) hu_ne hu_sum).1,
+    (isSignedPrimeSupported_extend (hι0_inj n)
+      (fun i => ⟨(hι_props n 0 i).1, (hι_props n 0 i).2.1⟩) hu_ne hu_sum).2,
+    hn_neg, hn_mp⟩
+
+/-- **Exact finite-mode quotient and near-annihilator dichotomy.**
+For any conjugation-closed finite set `S₀ ⊆ {s : 1/2 < Re s}`, `rightZeros zetaZeroConfig ⊆ S₀`
+holds if and only if there is no sequence of signed prime-supported negative probes above a cutoff
+`P₀` with arbitrarily small normalized `S₀`-mode pair products. -/
+theorem rightZeros_subset_iff_no_nearAnnihilating_neg_primeProbe {S₀ : Finset ℂ}
+    (hS₀_re : ∀ ρ ∈ S₀, 1 / 2 < ρ.re)
+    (hS₀_conj : ∀ ρ ∈ S₀, conj ρ ∈ S₀) (P₀ : ℕ) :
+    rightZeros zetaZeroConfig ⊆ (S₀ : Set ℂ) ↔
+      ∃ η : ℝ, 0 < η ∧ ∀ (N : ℕ) (a : Fin N → ℤ),
+        P₀ < N → isSignedPrimeSupported a →
+        (∀ ℓ : Fin N, a ℓ ≠ 0 → P₀ < ℓ.val + 1) →
+        integerProbe N a < 0 →
+        ∃ ρ ∈ S₀, η * (-integerProbe N a) ≤ modePairProduct ρ N (fun i => (a i : ℂ)) := by
+  constructor
+  · intro hsub
+    obtain ⟨η, hη, hall⟩ := exists_uniform_modePair_lower_of_rightZeros_subset hsub
+    exact ⟨η, hη, fun N a _ _ _ hneg => hall N a hneg⟩
+  · rintro ⟨η, hη, hall⟩ ρ_star hstar
+    by_contra hnot1
+    have hnot1' : ρ_star ∉ S₀ := hnot1
+    have hnot2' : conj ρ_star ∉ S₀ := fun hc => hnot1' (by simpa using hS₀_conj _ hc)
+    obtain ⟨N, a, hN, hsig, hgt, hneg, hmp_lt⟩ :=
+      exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair hS₀_re hstar hnot1' hnot2' P₀ hη
+    obtain ⟨ρ, hρ, hge⟩ := hall N a hN hsig hgt hneg
+    exact (not_lt_of_ge hge) (hmp_lt ρ hρ)
+
+end GaloisForLFunctions.CountingHolography.Sections
+

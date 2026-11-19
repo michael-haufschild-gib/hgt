@@ -1,6 +1,6 @@
 import GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.TheAccumulatedMertensSquareSeesTheZeroWidth
 import GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.HowManyMertensPrefixesReachASubcriticalPower
-import GaloisForLFunctions.ZeroConfigurationGeometry.HeatStepsNeverShrinkTheMesh
+import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.PowerMassOfAnExceptionalSet
 import GaloisForLFunctions.ZeroForcingCalculus.EulerDilationAndRootCoincidenceExclusion
 
 /-!
@@ -14,27 +14,9 @@ counting exponent one at every large cutoff.
 -/
 
 noncomputable section
-open Finset Filter
+open Finset Filter GaloisForLFunctions.ArithmeticPowerMass
 open _root_.RHTower GaloisForLFunctions.SquareRootThreshold
 namespace GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
-
-private theorem packed_power {v : ℝ} (hv : 0<v) (hv1 : v ≤ 1)
-    (S : Finset ℕ) (hs : ∀ k ∈ S, 1 ≤ k) :
-    (∑ k ∈ S, (k:ℝ)^(v-1)) ≤ (1+1/v)*((S.card:ℝ)+1)^v := by
-  have sep (k l : ℕ) (hne : k ≠ l) : 1 ≤ |(-(k:ℝ)) - (-(l:ℝ))| := by
-    rw [show -(k:ℝ) - -(l:ℝ) = l-k by ring]
-    rcases lt_or_gt_of_ne hne with h|h
-    · have h' : (k:ℝ)+1 ≤ l := by exact_mod_cast h
-      rw [abs_of_nonneg (by linarith)]; linarith
-    · have h' : (l:ℝ)+1 ≤ k := by exact_mod_cast h
-      rw [abs_of_nonpos (by linarith)]; linarith
-  have h := ZeroConfigurationGeometry.sum_le_sum_range_of_sep (fun k : ℕ => -(k:ℝ))
-    (μ:=1) zero_le_one S.card S 0 (fun t => t^(v-1)) rfl
-    (fun t ht => Real.rpow_nonneg (zero_le_one.trans ht) _)
-    (fun x y hx hxy => Real.rpow_le_rpow_of_nonpos (zero_lt_one.trans_le hx) hxy (sub_nonpos.mpr hv1))
-    (fun k _ l _ => sep k l) (fun k hk => by simpa using (Nat.one_le_cast (α:=ℝ)).mpr (hs k hk))
-  simp only [zero_sub,neg_neg,mul_one] at h
-  exact h.trans (ArithmeticGaugeTheory.sum_rpow_sub_one_le hv _)
 
 private theorem mass_on_set {b : ℝ} (hb : 0<b) (hb1 : b ≤ 1/2)
     {A : ℝ} (hA : 0 ≤ A) (S : Finset ℕ) (hs : ∀ k ∈ S, 1 ≤ k)

@@ -63,7 +63,8 @@ def traceDetFibreEquiv {K : Type*} [Field K] (t d : K) :
         let p := (traceDetChart x y).symm (t,d)
         ⟨!![x, (y:K); p.1, p.2], by
           have h := (traceDetChart x y).apply_symm_apply (t,d)
-          exact ⟨congrArg Prod.fst h, (det_fin_two_of ..).trans (congrArg Prod.snd h)⟩⟩
+          exact ⟨(trace_fin_two_of ..).trans (congrArg Prod.fst h),
+            (det_fin_two_of ..).trans (congrArg Prod.snd h)⟩⟩
     | Sum.inr (x,z) =>
         ⟨!![(x:K),0;z,t-x], by
           rw [trace_fin_two_of, det_fin_two_of, zero_mul, sub_zero]
@@ -120,7 +121,9 @@ theorem card_traceDetFibre_repeated {K : Type*} [Field K] [Finite K] (u : K) :
     uniq := fun x => Subtype.ext (by
       change (x : K) = u
       have h : ((x:K)-u)^2=0 := by linear_combination -x.2
-      exact sub_eq_zero.mp (pow_eq_zero h)) }
+      exact sub_eq_zero.mp (by
+        by_contra hn
+        exact (pow_ne_zero 2 hn) h)) }
   rw [card_traceDetFibre, Nat.card_unique, Nat.sub_add_cancel (Nat.card_pos (α := K)), sq]
 
 #print axioms card_traceDetFibre

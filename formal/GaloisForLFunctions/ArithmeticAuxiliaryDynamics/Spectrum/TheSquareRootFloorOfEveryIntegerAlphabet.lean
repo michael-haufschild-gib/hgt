@@ -39,34 +39,37 @@ theorem residue_class_mean (k : ℕ) [NeZero k] :
     rw [Fin.sum_univ_eq_sum_range]
     exact (isMeanZero_residue (Nat.succ_pos k)).mean
 
+/-- One supported sawtooth has zero sinc mean as soon as its period fits the sampler. -/
+theorem sinc_mean_floor_saw {c : ℕ →₀ ℤ} {m B K k : ℕ} (hP : IsProducer c m B)
+    (hk : k ∈ c.support) (hshort : k ≤ K) (s : ℤ) :
+    HasSum (fun z : ℤ => gridSincWeight K (z-s) *
+      ((-(c k : ℝ)/k)*residue k (z : ZMod (IsProducer.period c)).val)) 0 := by
+  let L := IsProducer.period c
+  letI : NeZero L := ⟨hP.period_pos.ne'⟩
+  have hk0 : k ≠ 0 := fun he => Finsupp.mem_support_iff.mp hk (he ▸ hP.zero)
+  letI : NeZero k := ⟨hk0⟩
+  have h := hasSum_gridSinc_periodic_mean hshort (fun j : ZMod k => residue k j.val) s
+  rw [residue_class_mean,zero_div] at h
+  have h' := h.mul_left (-(c k : ℝ)/k)
+  rw [mul_zero] at h'
+  apply h'.congr_fun
+  intro z
+  have hcast : (((z : ZMod L).val : ℕ) : ZMod k) = (z : ZMod k) := by
+    have H := congrArg (ZMod.castHom (IsProducer.dvd_period k hk) (ZMod k))
+      (ZMod.natCast_zmod_val (z : ZMod L))
+    simpa only [map_natCast,map_intCast] using H
+  have hres : (z : ZMod L).val % k = (z : ZMod k).val := by
+    simpa only [ZMod.val_natCast] using congrArg ZMod.val hcast
+  simp only [residue,hres,Nat.mod_eq_of_lt (ZMod.val_lt _)]
+  ring
+
 /-- Exact whole-line reconstruction of the peak from one shifted positive sampler. -/
 theorem sinc_mean_periodicFloorHeight {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer c m B)
     (hK : 0 < K) (hal : AlphabetLE c K) (s : ℤ) :
     HasSum (fun z : ℤ => gridSincWeight K (z-s)*periodicFloorHeight c z) ((peak c : ℝ)/2) := by
-  let L := IsProducer.period c
-  letI : NeZero L := ⟨hP.period_pos.ne'⟩
   have hW : HasSum (fun z : ℤ => gridSincWeight K (z-s)) 1 :=
     (Equiv.subRight s).hasSum_iff.mpr ((summable_gridSincWeight hK).hasSum_iff.mpr (tsum_gridSincWeight hK))
-  have hc (k : ℕ) (hk : k ∈ c.support) :
-      HasSum (fun z : ℤ => gridSincWeight K (z-s) *
-        ((-(c k : ℝ)/k)*residue k (z : ZMod L).val)) 0 := by
-    have hk0 : k ≠ 0 := fun he => Finsupp.mem_support_iff.mp hk (he ▸ hP.zero)
-    letI : NeZero k := ⟨hk0⟩
-    have h := hasSum_gridSinc_periodic_mean (hal k hk) (fun j : ZMod k => residue k j.val) s
-    rw [residue_class_mean,zero_div] at h
-    have h' := h.mul_left (-(c k : ℝ)/k)
-    rw [mul_zero] at h'
-    apply h'.congr_fun
-    intro z
-    have hcast : (((z : ZMod L).val : ℕ) : ZMod k) = (z : ZMod k) := by
-      have H := congrArg (ZMod.castHom (IsProducer.dvd_period k hk) (ZMod k))
-        (ZMod.natCast_zmod_val (z : ZMod L))
-      simpa only [map_natCast,map_intCast] using H
-    have hres : (z : ZMod L).val % k = (z : ZMod k).val := by
-      simpa only [ZMod.val_natCast] using congrArg ZMod.val hcast
-    simp only [residue,hres,Nat.mod_eq_of_lt (ZMod.val_lt _)]
-    ring
-  have hs := (hW.mul_right ((peak c : ℝ)/2)).add (hasSum_sum (s := c.support) hc)
+  have hs := (hW.mul_right ((peak c : ℝ)/2)).add (hasSum_sum (s := c.support) fun k hk => sinc_mean_floor_saw hP hk (hal k hk) s)
   simp only [one_mul,sum_const_zero,add_zero] at hs
   apply hs.congr_fun
   intro z
@@ -136,10 +139,10 @@ theorem sinc_floor_height_budget {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProd
     apply (hW.summable.mul_right (peak c : ℝ)).of_nonneg_of_le
     · intro z
       exact mul_nonneg (gridSincWeight_nonneg _ _)
-        (by exact_mod_cast hP.nonneg (z : ZMod (IsProducer.period c)).val)
+        (by unfold periodicFloorHeight; exact_mod_cast hP.nonneg (z : ZMod (IsProducer.period c)).val)
     · intro z
       exact mul_le_mul_of_nonneg_left
-        (by exact_mod_cast hP.stepWeight_le_peak (z : ZMod (IsProducer.period c)).val)
+        (by unfold periodicFloorHeight; exact_mod_cast hP.stepWeight_le_peak (z : ZMod (IsProducer.period c)).val)
         (gridSincWeight_nonneg _ _)
   have hpos : HasSum (fun n : ℕ => majorant c m B K (n+1)) (68*K*excess c m B) :=
     hP.hasSum_excess.mul_left _

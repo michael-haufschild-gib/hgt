@@ -28,7 +28,9 @@ theorem exists_two_letter_ramp {k : ℕ} (hk : 2 ≤ k) :
     obtain ⟨hlo,hhi⟩ := mem_Ico.mp h
     have he := hr r
     rw [Nat.mod_eq_of_lt hhi] at he
-    have hle : (D:ℝ) ≤ stepWeight c r := he ▸ le_mul_of_one_le_right (Nat.cast_nonneg _) (by exact_mod_cast hlo)
+    have hle : (D:ℝ) ≤ stepWeight c r := by
+      rw [he]
+      exact le_mul_of_one_le_right (Nat.cast_nonneg _) (by exact_mod_cast hlo)
     exact_mod_cast hle⟩
   have hd : ∀ j ∈ c.support, j ∣ k := by
     intro j hj

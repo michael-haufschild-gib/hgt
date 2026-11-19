@@ -30,28 +30,6 @@ private theorem saw_bound {c : ℕ →₀ ℤ} {k : ℕ} (hk : 0 < k) (z : ℤ) 
   exact (mul_le_mul_of_nonneg_left (abs_residue_le hk _) (by positivity)).trans_eq
     (div_mul_cancel₀ _ hkr.ne')
 
-private theorem short_saw_mean {c : ℕ →₀ ℤ} {m B H k : ℕ} (hP : IsProducer c m B)
-    (hk : k ∈ c.support) (hshort : k ≤ H) (s : ℤ) :
-    HasSum (fun z : ℤ => gridSincWeight H (z-s)*saw c k z) 0 := by
-  let L := IsProducer.period c
-  letI : NeZero L := ⟨hP.period_pos.ne'⟩
-  letI : NeZero k := ⟨fun he => Finsupp.mem_support_iff.mp hk (he ▸ hP.zero)⟩
-  have h := hasSum_gridSinc_periodic_mean hshort (fun j : ZMod k => residue k j.val) s
-  rw [residue_class_mean,zero_div] at h
-  have h' := h.mul_left (-(c k : ℝ)/k)
-  rw [mul_zero] at h'
-  apply h'.congr_fun
-  intro z
-  have Hcast := congrArg (ZMod.castHom (IsProducer.dvd_period k hk) (ZMod k))
-    (ZMod.natCast_zmod_val (z : ZMod L))
-  have hh : (((z : ZMod L).val : ℕ) : ZMod k) = (z : ZMod k) := by
-    simpa only [map_natCast,map_intCast] using Hcast
-  have he : (z : ZMod L).val % k = (z : ZMod k).val := by
-    simpa only [ZMod.val_natCast] using congrArg ZMod.val hh
-  change gridSincWeight H (z-s)*((-(c k : ℝ)/k)*residue k (z : ZMod L).val) = _
-  simp only [residue,he,Nat.mod_eq_of_lt (ZMod.val_lt _)]
-  ring
-
 /-- Each omitted letter costs at most its coefficient mass in reconstructing
 the mean, uniformly in the center of the sampling window. -/
 theorem short_sinc_height_error {c : ℕ →₀ ℤ} {m B H : ℕ} (hP : IsProducer c m B)
@@ -74,16 +52,16 @@ theorem short_sinc_height_error {c : ℕ →₀ ℤ} {m B H : ℕ} (hP : IsProdu
     exact Nat.pos_of_ne_zero fun he =>
       Finsupp.mem_support_iff.mp (mem_filter.mp hk).1 (he ▸ hP.zero)
   have hs := (hW.mul_right ((peak c : ℝ)/2)).add
-    (hasSum_sum (s := S) fun k hk => short_saw_mean hP (mem_filter.mp hk).1 (mem_filter.mp hk).2 s)
+    (hasSum_sum (s := S) fun k hk => sinc_mean_floor_saw hP (mem_filter.mp hk).1 (mem_filter.mp hk).2 s)
   simp only [one_mul,sum_const_zero,add_zero] at hs
   have hu : Summable (fun z : ℤ => W z*periodicFloorHeight c z) := by
     apply (hW.summable.mul_right (peak c : ℝ)).of_nonneg_of_le
     · intro z
       exact mul_nonneg (gridSincWeight_nonneg _ _)
-        (by exact_mod_cast hP.nonneg (z : ZMod (IsProducer.period c)).val)
+        (by unfold periodicFloorHeight; exact_mod_cast hP.nonneg (z : ZMod (IsProducer.period c)).val)
     · intro z
       exact mul_le_mul_of_nonneg_left
-        (by exact_mod_cast hP.stepWeight_le_peak (z : ZMod (IsProducer.period c)).val)
+        (by unfold periodicFloorHeight; exact_mod_cast hP.stepWeight_le_peak (z : ZMod (IsProducer.period c)).val)
         (gridSincWeight_nonneg _ _)
   have ht := hu.hasSum.sub hs
   have hdom (z : ℤ) : |W z*periodicFloorHeight c z -

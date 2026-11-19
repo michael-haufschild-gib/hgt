@@ -72,7 +72,7 @@ private theorem conjugate_mem {r : ℝ} {p : ℂ × ℂ} (hp : p ∈ heatBoxSite
     conjugateSite p ∈ heatBoxSites r := by
   obtain ⟨⟨⟨t,ht,he⟩, hw⟩, hm⟩ := mem_heatBoxSites.mp hp
   obtain ⟨ha,⟨hc,hd⟩⟩ := Complex.mem_reProdIm.mp hw
-  exact mem_heatBoxSites.mpr ⟨⟨⟨t,ht,by simpa only [conjugateSite, ← he, Complex.conj_ofReal]⟩,
+  exact mem_heatBoxSites.mpr ⟨⟨⟨t,ht,by simp only [conjugateSite, ← he, Complex.conj_ofReal]⟩,
     Complex.mem_reProdIm.mpr ⟨ha,⟨by change -r ≤ -p.2.im; linarith,
       by change -p.2.im ≤ r; linarith⟩⟩⟩,
     (heatIntersectionMultiplicity_ne_zero_iff _).mp (weight_conjugate p ▸
@@ -187,6 +187,116 @@ theorem heatBoxWinding_le_one_iff_rh :
         ((one_div_pos.mpr hr).trans_le ht.1) ⟨p, hcol, he.symm⟩
     simp [heatBoxWinding, he]
 
+/-- Evaluating the spatial orbit product in any commutative monoid groups
+the time factors before taking degrees or logarithmic derivatives. -/
+private theorem prod_oriented {α M : Type*} [CommMonoid M]
+    (S : Finset α) (v : α → ℝ) (w : α → M)
+    (ι : α → α) (inv : Function.Involutive ι) (hs : ∀ x ∈ S, ι x ∈ S)
+    (hv : ∀ x, v (ι x) = -v x) (hw : ∀ x, w (ι x) = w x) :
+    ∏ x ∈ S, w x = (∏ x ∈ S with v x = 0, w x) * (∏ x ∈ S with 0 < v x, w x)^2 := by
+  let f (x : α) := if 0 < v x then w x else 1
+  have hprod : ∏ x ∈ S, f (ι x) = ∏ x ∈ S, f x :=
+    prod_bij' (fun x _ => ι x) (fun x _ => ι x) hs hs (fun x _ => inv x)
+      (fun x _ => inv x) (fun _ _ => rfl)
+  have hx (x : α) : w x = (if v x = 0 then w x else 1) * (f x * f (ι x)) := by
+    rcases lt_trichotomy (v x) 0 with h|h|h
+    · simp only [f, hv, hw, h.ne, h.not_gt, neg_pos, h, if_false, if_true, one_mul]
+    · simp [f, hv, h]
+    · simp only [f, hv, hw, h.ne', h, neg_pos, h.not_gt, if_false, if_true, mul_one, one_mul]
+  simp_rw [prod_filter]
+  change _ = _ * (∏ x ∈ S, f x)^2
+  calc
+    _ = ∏ x ∈ S, ((if v x = 0 then w x else 1) * (f x * f (ι x))) :=
+      prod_congr rfl fun x _ => hx x
+    _ = _ := by rw [prod_mul_distrib, prod_mul_distrib, hprod, sq]
+
+/-- A real-time factor attached to each site, repeated with its local
+intersection multiplicity. This includes linear factors over ℝ or ℂ. -/
+def heatTimeProduct {M : Type*} [CommMonoid M] (S : Finset (ℂ × ℂ)) (f : ℝ → M) : M :=
+  ∏ p ∈ S, f p.1.re ^ heatIntersectionMultiplicity p
+
+/-- The real-pair part of the time divisor is a square, the nonreal-quartet
+part is a fourth power, even when their times coincide. -/
+theorem heatTimeProduct_orbits {M : Type*} [CommMonoid M] (r : ℝ) (f : ℝ → M) :
+    heatTimeProduct (heatBoxSites r) f =
+      heatTimeProduct (heatRealPairs r) f ^ 2 * heatTimeProduct (heatNonrealQuartets r) f ^ 4 := by
+  let S := (heatBoxSites r).filter fun p => 0 < p.2.re
+  let w (p : ℂ × ℂ) := f p.1.re ^ heatIntersectionMultiplicity p
+  have h := prod_oriented (heatBoxSites r) (fun p => p.2.re) w reflectSite
+    (fun p => by simp [reflectSite]) (fun _ hp => reflect_mem hp) (fun _ => rfl)
+    (fun p => by simp only [w,weight_reflect]; rfl)
+  have hempty : ((heatBoxSites r).filter fun p => p.2.re = 0) = ∅ :=
+    filter_eq_empty_iff.mpr fun p hp => site_re_ne_zero hp
+  rw [hempty, prod_empty, one_mul] at h
+  have h' := prod_oriented S (fun p => p.2.im) w conjugateSite
+    (fun p => by simp [conjugateSite]) (fun p hp => mem_filter.mpr
+      ⟨conjugate_mem (mem_filter.mp hp).1, (mem_filter.mp hp).2⟩) (fun _ => rfl)
+    (fun p => by simp only [w,weight_conjugate]; rfl)
+  change heatTimeProduct (heatBoxSites r) f = (∏ p ∈ S, w p)^2 at h
+  rw [h,h',mul_pow,← pow_mul]
+  rfl
+
+/-- On the entire complex time plane the projected discriminant admits
+an explicit polynomial square root, with a double factor for each quartet. -/
+theorem projectedHeatDiscriminant_realBox (r : ℝ) (t : ℂ) :
+    projectedHeatDiscriminant (heatBoxSites r) t =
+      (heatTimeProduct (heatRealPairs r) (fun a : ℝ => t-a) *
+        heatTimeProduct (heatNonrealQuartets r) (fun a : ℝ => t-a)^2)^2 := by
+  calc
+    _ = heatTimeProduct (heatBoxSites r) (fun a : ℝ => t-a) := by
+      refine prod_congr rfl fun p hp => ?_
+      obtain ⟨a,_,he⟩ := (mem_heatBoxSites.mp hp).1.1
+      simp only [← he, Complex.ofReal_re]
+    _ = _ := by rw [heatTimeProduct_orbits, mul_pow, ← pow_mul]; rfl
+
+/-- The norm of the actual contour integral has gap 4π at zero. The
+rectangle encloses the projected times even if a spatial face contains a collision. -/
+theorem heatBox_contour_norm (r : ℝ) (hr : 0 < r) :
+    ‖rectIntegral (logDeriv (projectedHeatDiscriminant (heatBoxSites r)))
+        ⟨0,-1⟩ ⟨r+1,1⟩‖ = (2 * Real.pi) * heatBoxWinding r := by
+  obtain ⟨C,hC,_,hI⟩ := compact_heatDiscriminant_winding (realTimeHeatBox r) (compact_real_box r)
+    (a := ⟨0,-1⟩) (b := ⟨r+1,1⟩) (by
+      rintro p ⟨⟨a,ha,he⟩,_⟩ _
+      rw [← he]
+      exact ⟨(one_div_pos.mpr hr).trans_le ha.1,ha.2.trans_lt (lt_add_one r),
+        neg_one_lt_zero,zero_lt_one⟩)
+  have he : C = heatBoxSites r := Finset.ext fun p => (hC p).trans mem_heatBoxSites.symm
+  subst C
+  rw [hI]
+  simp [norm_mul, abs_of_pos Real.pi_pos, heatBoxWinding]
+
+/-- A cofinal family of projected contours with norm strictly below 4π
+already excludes every positive-time collision. -/
+theorem cofinal_heatBox_contour_lt_iff_rh :
+    (∀ u : ℝ, ∃ r > max u 0, ‖rectIntegral
+      (logDeriv (projectedHeatDiscriminant (heatBoxSites r))) ⟨0,-1⟩ ⟨r+1,1⟩‖ < 4*Real.pi) ↔
+      RiemannHypothesis := by
+  rw [← heatBoxWinding_le_one_iff_rh]
+  constructor
+  · intro h u hu
+    obtain ⟨r,hr,hsmall⟩ := h u
+    rw [heatBox_contour_norm r ((le_max_right _ _).trans_lt hr)] at hsmall
+    have hn : (heatBoxWinding r : ℝ) < 2 := by
+      apply (mul_lt_mul_iff_right₀ (show 0 < 2*Real.pi by positivity)).mp
+      linarith only [hsmall]
+    have hsub : heatBoxSites u ⊆ heatBoxSites r := fun p hp => by
+      obtain ⟨hbox,hm⟩ := mem_heatBoxSites.mp hp
+      exact mem_heatBoxSites.mpr ⟨realTimeHeatBox_mono hu ((le_max_left _ _).trans hr.le) hbox,hm⟩
+    have hle : heatBoxWinding u ≤ heatBoxWinding r := sum_le_sum_of_subset hsub
+    have htwo : heatBoxWinding r < 2 := by exact_mod_cast hn
+    omega
+  · intro h u
+    let r := max u 0 + 1
+    have hr : max u 0 < r := lt_add_one _
+    have hp := (le_max_right _ _).trans_lt hr
+    refine ⟨r,hr,?_⟩
+    rw [heatBox_contour_norm r hp]
+    have hone : (heatBoxWinding r : ℝ) ≤ 1 := by exact_mod_cast h r hp
+    nlinarith only [mul_le_mul_of_nonneg_left hone (show 0 ≤ 2*Real.pi by positivity), Real.pi_pos]
+
+#print axioms heatTimeProduct_orbits
+#print axioms projectedHeatDiscriminant_realBox
+#print axioms cofinal_heatBox_contour_lt_iff_rh
 #print axioms heatBoxWinding_orbits
 #print axioms heatOrderLevels_cost
 #print axioms heatBoxWinding_strata

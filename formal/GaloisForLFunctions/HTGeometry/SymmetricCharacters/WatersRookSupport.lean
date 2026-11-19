@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SymmetricCharacters.StaircasePacking
+import Mathlib.Algebra.BigOperators.Intervals
 
 /-!
 # Support of the rook expansion of the KMK moments
@@ -73,7 +74,7 @@ private theorem stair_mono_iff (g k : ℕ) :
     by_contra! hk
     have hg : (k,0) ∈ (rookStaircase g).cells := mem_triangle.mpr (by simpa using hk)
     have := mem_triangle.mp (h hg)
-    simpa using this
+    simp at this
   · intro h p hp
     exact mem_triangle.mpr ((mem_triangle.mp hp).trans_le h)
 
@@ -91,8 +92,9 @@ theorem watersBoards_nonempty_iff (k g : ℕ) : (watersBoards k g).Nonempty ↔ 
 theorem watersBoards_first (g : ℕ) : watersBoards g g = {(rookStaircase g).cells} := by
   ext B
   rw [mem_watersBoards, mem_singleton]
-  exact ⟨fun h => Subset.antisymm h.2.2 h.2.1, fun e => e ▸
-    ⟨(rookStaircase g).isLowerSet, Subset.rfl, Subset.rfl⟩⟩
+  refine ⟨fun h => Subset.antisymm h.2.2 h.2.1, ?_⟩
+  rintro rfl
+  exact ⟨(rookStaircase g).isLowerSet, Subset.rfl, Subset.rfl⟩
 
 /-- Each cell on the new antidiagonal may be included independently. -/
 theorem watersBoards_next (g : ℕ) :
@@ -106,7 +108,7 @@ theorem watersBoards_next (g : ℕ) :
   rw [mem_watersBoards, mem_image]
   constructor
   · rintro ⟨_, hl, hu⟩
-    exact ⟨B \ L, mem_powerset.mpr (sdiff_subset_sdiff_left hu),
+    exact ⟨B \ L, mem_powerset.mpr (sdiff_subset_sdiff_left L hu),
       union_sdiff_of_subset hl⟩
   · rintro ⟨T,hT,rfl⟩
     have ht : T ⊆ U \ L := mem_powerset.mp hT
@@ -159,7 +161,41 @@ theorem watersBoards_next_card (g : ℕ) : (watersBoards (g+1) g).card = 2^(g+1)
   exact ⟨fun hx => (h.mp (Or.inr hx)).resolve_left (mem_sdiff.mp (h₁ hx)).2,
     fun hx => (h.mpr (Or.inr hx)).resolve_left (mem_sdiff.mp (h₂ hx)).2⟩
 
+/-- At the first possible moment the unique contributing board carries
+exactly one placement. Both projections of a full placement exhaust the
+coordinate range, so each column must attain its row's upper bound. -/
+theorem waters_first_placement {g : ℕ} {R : Finset (ℕ × ℕ)}
+    (hR : R ⊆ (rookStaircase g).cells) (hcard : R.card = g)
+    (hr : Set.InjOn Prod.fst (R : Set (ℕ × ℕ)))
+    (hc : Set.InjOn Prod.snd (R : Set (ℕ × ℕ))) :
+    R = (range g).image (fun i => (i,g-1-i)) := by
+  have coords (f : ℕ × ℕ → ℕ) (hf : Set.InjOn f (R : Set (ℕ × ℕ)))
+      (hlim : ∀ p ∈ R, f p < g) : R.image f = range g := by
+    apply eq_of_subset_of_card_le
+    · intro x hx
+      obtain ⟨p,hp,rfl⟩ := mem_image.mp hx
+      exact mem_range.mpr (hlim p hp)
+    · rw [card_range, card_image_of_injOn hf, hcard]
+  have hrow := coords Prod.fst hr (fun p hp => by have := mem_triangle.mp (hR hp); omega)
+  have hcol := coords Prod.snd hc (fun p hp => by have := mem_triangle.mp (hR hp); omega)
+  have he : ∑ p ∈ R, p.2 = ∑ p ∈ R, (g-1-p.1) := calc
+    _ = ∑ j ∈ R.image Prod.snd, j := (sum_image hc).symm
+    _ = ∑ i ∈ range g, (g-1-i) := by rw [hcol]; exact (sum_range_reflect id g).symm
+    _ = _ := by rw [← hrow, sum_image hr]
+  have hlim (p : ℕ × ℕ) (hp : p ∈ R) : p.2 ≤ g-1-p.1 := by
+    have := mem_triangle.mp (hR hp)
+    omega
+  apply eq_of_subset_of_card_le
+  · intro p hp
+    have hbound := mem_triangle.mp (hR hp)
+    have hsat : p.2 = g-1-p.1 := by
+      by_contra hn
+      exact he.not_lt (sum_lt_sum hlim ⟨p,hp,lt_of_le_of_ne (hlim p hp) hn⟩)
+    exact mem_image.mpr ⟨p.1,mem_range.mpr (by omega),Prod.ext rfl hsat.symm⟩
+  · rw [card_image_of_injective _ (fun i j hij => congrArg Prod.fst hij), card_range, hcard]
+
 #print axioms holdsRooks_iff_contains
+#print axioms waters_first_placement
 #print axioms watersBoards_nonempty_iff
 #print axioms watersBoards_next_card
 

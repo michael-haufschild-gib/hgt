@@ -157,7 +157,7 @@ theorem rh_iff_radiationNewton : RiemannHypothesis ↔
         exact mul_le_of_le_one_left (stepDecrement_nonneg _ _ _)
           (Real.exp_le_one_iff.mpr (mul_nonpos_of_nonpos_of_nonneg (le_of_not_gt hb) (Nat.cast_nonneg _)))
 
-/-- Remove the first releases, then normalize the next radiationNode to one. -/
+/-- Remove the first releases, then normalize the next Laplace node to one. -/
 def radiationRemainder (h : CompactPulse) (r k : ℕ) : ℝ :=
   (radiationSample h k - ∑ i ∈ range r, radiationNode i^k*stepDecrement h i 1) / radiationNode r^k
 

@@ -44,10 +44,8 @@ private theorem halo_sum {K : ℕ} (hK : 0 < K) : HasSum (halo K) (1/4) := by
       sum_eq_zero fun n hn => if_neg (not_le.mpr (mem_range.mp hn))
     rw [hz,sub_zero]
     have h := (hasSum_tailCap (show 0 < 2*K by omega)).mul_left (1/2 : ℝ)
-    convert h using 1
-    · funext n
-      simp [side]
-    · norm_num
+    rw [show (1/8:ℝ) = (1/2)*(1/4) by norm_num]
+    exact h.congr_fun fun n => by simp [side]
   have h := HasSum.of_add_one_of_neg_add_one (f := halo K) hp hp
   convert h using 1 <;> norm_num [halo]
 
@@ -140,7 +138,7 @@ private def discrepancy (g : ℤ → ℝ) (w : ℝ) (L : ℕ) (s : ℤ) :=
 private theorem discrepancy_step (g : ℤ → ℝ) (w : ℝ) (L : ℕ) (s : ℤ) :
     discrepancy g w L (s+1)-discrepancy g w L s = g (s+L)-g s := by
   have h := Finset.sum_range_succ' (fun j : ℕ => g (s+j)) L
-  rw [sum_range_succ] at h
+  rw [Finset.sum_range_succ (fun j : ℕ => g (s+j)) L] at h
   simp only [Nat.cast_zero,add_zero,Nat.cast_add_one] at h
   have hs (j : ℕ) : s+(j+1) = s+1+j := by omega
   simp only [hs] at h
@@ -155,8 +153,12 @@ theorem floor_window_discrepancy_le {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsP
   let g := periodicFloorHeight c
   let w : ℝ := peak c
   let f := discrepancy g w L
-  have hlo (s : ℤ) : 0 ≤ g s := by exact_mod_cast hP.nonneg (s : ZMod (IsProducer.period c)).val
-  have hhi (s : ℤ) : g s ≤ w := by exact_mod_cast hP.stepWeight_le_peak (s : ZMod (IsProducer.period c)).val
+  have hlo (s : ℤ) : 0 ≤ g s := by
+    dsimp only [g,periodicFloorHeight]
+    exact_mod_cast hP.nonneg (s : ZMod (IsProducer.period c)).val
+  have hhi (s : ℤ) : g s ≤ w := by
+    dsimp only [g,w,periodicFloorHeight]
+    exact_mod_cast hP.stepWeight_le_peak (s : ZMod (IsProducer.period c)).val
   have hw := (hlo 0).trans (hhi 0)
   have hBdd : BddAbove (Set.range fun s => |f s|) := by
     refine ⟨(L:ℝ)*w, ?_⟩
@@ -181,7 +183,9 @@ theorem floor_window_discrepancy_le {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsP
     refine h.congr_fun fun z => ?_
     change gridSincWeight K z*((∑ j ∈ range L, g (s+z+j))-L*w/2) = _
     rw [mul_sub,mul_sum]
-    exact congrArg (· - gridSincWeight K z*(L*w/2)) (sum_congr rfl fun j _ => by rw [add_right_comm s z])
+    apply congrArg₂ (· - ·)
+    · exact sum_congr rfl fun j _ => by rw [add_right_comm s z]
+    · ring
   have H := abs_le_of_sinc_mean_zero hK f hBdd hw hd hm (n:ℤ)
   change |(∑ j ∈ range L, periodicFloorHeight c ((n:ℤ)+j))-L*w/2| ≤ _ at H
   simpa only [←Nat.cast_add,periodicFloorHeight_natCast hP] using H

@@ -110,7 +110,7 @@ theorem quadratic_disk_count {h r v : ℝ} (hh : 0 < h) (t : ℝ)
   rw [sq_abs] at hs
   have hg := prime_double_gram hh t
   change 2*(zetaRealLogDeriv (1+h) t)^2 ≤ D*(D+zetaRealLogDeriv (1+h) (2*t)) at hg
-  refine (mul_le_mul_of_nonneg_left hs (by norm_num : (0:ℝ)≤2)).trans (hg.trans ?_)
+  refine (mul_le_mul_of_nonneg_left hs (by norm_num : (0:ℝ) ≤ 2)).trans (hg.trans ?_)
   apply mul_le_mul_of_nonneg_left _ hD
   linarith only [hb (2*t) v hv]
 
@@ -175,7 +175,7 @@ theorem coupled_disk_count {t h r v : ℝ} (ht : 4 ≤ t) (hh : 0 < h) (hh1 : h 
 private theorem coupledCost_ge_three {t : ℝ} (ht : 4 ≤ t) : 3 ≤ coupledCost t := by
   unfold coupledCost dlvpHalfConstant
   have h₂ := Real.one_sub_inv_le_log_of_pos (by norm_num : (0:ℝ)<2)
-  have ht₂ := Real.log_le_log (by norm_num : (0:ℝ)<2) (by linarith : 2≤t)
+  have ht₂ := Real.log_le_log (by norm_num : (0:ℝ)<2) (by linarith : 2 ≤ t)
   linarith only [h₂,ht₂]
 
 /-- For radius `3u²/L` and offset `3u/L`, the weighted number of zeros
@@ -248,17 +248,18 @@ private theorem difference_count_or_vacancy {m : ℕ} (x : Fin (m+1) → ℝ) (r
 multiplicity over all difference disks. Only the diagonal pays the
 real-axis pole; all other entries pay a logarithmic archimedean cost. -/
 theorem difference_multiplicity_budget {m : ℕ} {T h r : ℝ} (x : Fin (m+1) → ℝ)
-    (hx : ∀ j k, j≠k → |x j-x k| ∈ Set.Icc 4 T) (hh : 0<h) (hh₁ : h≤1)
-    (hr : 0≤r) (hrh : r≤h) :
+    (hx : ∀ j k, j≠k → |x j-x k| ∈ Set.Icc 4 T) (hh : 0<h) (hh₁ : h ≤ 1)
+    (hr : 0 ≤ r) (hrh : r ≤ h) :
     (differenceMultiplicity x r : ℝ)/(h+r) ≤
       (m+1)*((m:ℝ)*(Real.log T/2+1/2)+1/h-1/5) := by
   let A := Real.log T/2+1/2
   let f := zetaRealLogDeriv (1+h)
   have hs : 1 < 1+h := by linarith
-  have hs' : 1+h≤2 := by linarith
+  have hs' : 1+h ≤ 2 := by linarith
   have hpd := positive_prime_field hh
   have hf₀ : f 0 ≤ 1/h-1/5 := by
-    simpa [f,zetaRealLogDeriv] using neg_re_logDeriv_riemannZeta_real_le_neg hs hs'
+    simpa only [f,zetaRealLogDeriv,Complex.ofReal_zero,zero_mul,add_zero,add_sub_cancel_left,
+      sub_eq_add_neg] using neg_re_logDeriv_riemannZeta_real_le_neg hs hs'
   have hsum : 0 ≤ ∑ j, ∑ k, f (x j-x k) := by
     simpa only [one_mul] using hpd.posDef (m+1) x (fun _ => 1)
   have hentry (j k : Fin (m+1)) (hn : j ≠ k) :
@@ -267,14 +268,15 @@ theorem difference_multiplicity_budget {m : ℕ} {T h r : ℝ} (x : Fin (m+1) �
     have harch := arch_cost hs hs' hu.1
     have hcount := disk_count_le_resolvent (b := 1) (t := |x j-x k|) hr hrh hs
     have hker : ((diskCopies 1 |x j-x k| r).card:ℝ)/(h+r) ≤ resolvent (1+h) |x j-x k| :=
-      (div_le_iff₀ (add_pos_of_pos_of_nonneg hh hr)).mpr (by simpa only [mul_comm] using hcount)
+      (div_le_iff₀ (add_pos_of_pos_of_nonneg hh hr)).mpr (by rw [mul_comm]; exact hcount)
     have hf : f |x j-x k| = f (x j-x k) := by
       rcases le_or_gt 0 (x j-x k) with h|h
       · rw [abs_of_nonneg h]
-      · rw [abs_of_neg h,hpd.even]
+      · rw [abs_of_neg h]
+        exact hpd.even _
     change resolvent (1+h) |x j-x k| + f |x j-x k| ≤ _ at harch
     rw [hf] at harch
-    have hlog := Real.log_le_log (by linarith only [hu.1] : 0<|x j-x k|) hu.2
+    have hlog := Real.log_le_log (by linarith only [hu.1] : 0 < |x j-x k|) hu.2
     dsimp only [A]
     linarith only [harch,hker,hlog]
   let row := fun j : Fin (m+1) => ∑ k ∈ Finset.univ.erase j, ((diskCopies 1 |x j-x k| r).card:ℝ)
@@ -303,7 +305,7 @@ theorem difference_multiplicity_budget {m : ℕ} {T h r : ℝ} (x : Fin (m+1) �
 radius. Among m(m+1) ordered pairs the occupied fraction is at most
 2/m + r(1+log T); multiple zeros only increase their cost. -/
 theorem vacant_difference_floor {m : ℕ} {T r : ℝ} (x : Fin (m+1) → ℝ)
-    (hx : ∀ j k, j≠k → |x j-x k| ∈ Set.Icc 4 T) (hr : 0<r) (hr₁ : r≤1) :
+    (hx : ∀ j k, j≠k → |x j-x k| ∈ Set.Icc 4 T) (hr : 0<r) (hr₁ : r ≤ 1) :
     (m+1:ℝ)*(m*(1-r*(1+Real.log T))-2) ≤ vacantDifferences x r := by
   have h := difference_multiplicity_budget x hx hr hr₁ hr.le le_rfl
   rw [div_le_iff₀ (add_pos hr hr)] at h
@@ -312,12 +314,12 @@ theorem vacant_difference_floor {m : ℕ} {T r : ℝ} (x : Fin (m+1) → ℝ)
   have hcancel : (m+1:ℝ)*(m*(Real.log T/2+1/2)+1/r-1/5)*(r+r) =
       (m+1:ℝ)*(m*r*(1+Real.log T)+2-2*r/5) := by field_simp [hr.ne']; ring
   rw [hcancel] at h
-  linarith only [h,hc,mul_nonneg (by positivity : 0≤(m:ℝ)+1) hr.le]
+  linarith only [h,hc,mul_nonneg (by positivity : 0 ≤ (m:ℝ)+1) hr.le]
 
 #print axioms difference_multiplicity_budget
 #print axioms vacant_difference_floor
 
-private theorem abs_grid_difference {t : ℝ} (ht : 0≤t) (i j : ℕ) :
+private theorem abs_grid_difference {t : ℝ} (ht : 0 ≤ t) (i j : ℕ) :
     |(i:ℝ)*t-j*t| = ((max i j-min i j : ℕ):ℝ)*t := by
   rw [←sub_mul,abs_mul,abs_of_nonneg ht,Nat.cast_sub (min_le_max ..)]
   rcases le_total i j with h|h
@@ -327,9 +329,9 @@ private theorem abs_grid_difference {t : ℝ} (ht : 0≤t) (i j : ℕ) :
 
 /-- Number of nonzero harmonics up to m at which the disk is empty. -/
 def vacantHarmonics (m : ℕ) (t r : ℝ) : ℕ :=
-  ((Finset.range (m+1)).filter fun k => k≠0 ∧ (diskCopies 1 (k*t) r).card=0).card
+  ((Finset.range (m+1)).filter fun k : ℕ => k≠0 ∧ (diskCopies 1 (k*t) r).card=0).card
 
-private theorem progression_vacancies_le (m : ℕ) {t : ℝ} (ht : 0≤t) (r : ℝ) :
+private theorem progression_vacancies_le (m : ℕ) {t : ℝ} (ht : 0 ≤ t) (r : ℝ) :
     (vacantDifferences (fun i : Fin (m+1) => (i.val:ℝ)*t) r:ℝ) ≤
       2*((m:ℝ)+1)*vacantHarmonics m t r := by
   let f : ℕ → ℝ := fun k => if k≠0 ∧ (diskCopies 1 (k*t) r).card=0 then 1 else 0
@@ -349,37 +351,40 @@ private theorem progression_vacancies_le (m : ℕ) {t : ℝ} (ht : 0≤t) (r : �
       2 * ∑ k ∈ Finset.range (m+1), (((m:ℝ)+1)-k)*f k := by
     unfold vacantDifferences
     push_cast
-    simp_rw [row,Fin.sum_univ_eq_sum_range]
+    have hinner (i : ℕ) := Fin.sum_univ_eq_sum_range (fun j => f (max i j-min i j)) (m+1)
+    simp_rw [row,hinner]
+    rw [Fin.sum_univ_eq_sum_range (fun i => ∑ j ∈ Finset.range (m+1), f (max i j-min i j)) (m+1)]
     simpa only [Nat.cast_add,Nat.cast_one,h₀,mul_zero,sub_zero] using
       Sieve.sum_dist_double f (m+1)
   have hcount : (∑ k ∈ Finset.range (m+1),f k)=(vacantHarmonics m t r:ℝ) := by
     simp [f,vacantHarmonics,Finset.sum_boole]
-  rw [htot,← hcount,mul_assoc,Finset.mul_sum]
+  rw [htot,← hcount,mul_assoc]
   apply mul_le_mul_of_nonneg_left _ (by norm_num)
+  rw [Finset.mul_sum]
   exact Finset.sum_le_sum fun k _ => mul_le_mul_of_nonneg_right
     (sub_le_self _ (Nat.cast_nonneg k)) (by dsimp [f]; split <;> norm_num)
 
 /-- At least one quarter of the first m harmonic disks are empty at
 radius 1/[4(1+log(mt))], for every m≥8 and every step t≥4. Repeated
 differences in the Gram form are counted with their exact Fejér weights. -/
-theorem quarter_of_harmonic_disks_empty {m : ℕ} (hm : 8≤m) {t : ℝ} (ht : 4≤t) :
+theorem quarter_of_harmonic_disks_empty {m : ℕ} (hm : 8 ≤ m) {t : ℝ} (ht : 4 ≤ t) :
     let r := 1/(4*(1+Real.log (m*t)))
     (m:ℝ) ≤ 4*vacantHarmonics m t r := by
   intro r
   let x := fun i : Fin (m+1) => (i.val:ℝ)*t
-  have hm₁ : (8:ℝ)≤m := by exact_mod_cast hm
-  have ht₀ : 0≤t := by linarith
-  have hT : 1≤(m:ℝ)*t := by nlinarith only [hm₁,ht,mul_nonneg (sub_nonneg.mpr hm₁) ht₀]
+  have hm₁ : (8:ℝ) ≤ m := by exact_mod_cast hm
+  have ht₀ : 0 ≤ t := by linarith
+  have hT : 1 ≤ (m:ℝ)*t := by nlinarith only [hm₁,ht,mul_nonneg (sub_nonneg.mpr hm₁) ht₀]
   have hlog := Real.log_nonneg hT
   have hr : 0<r := by dsimp only [r]; positivity
-  have hr₁ : r≤1 := by
+  have hr₁ : r ≤ 1 := by
     dsimp only [r]
     exact (div_le_one (by positivity)).mpr (by linarith only [hlog])
   have hspace (i j : Fin (m+1)) (hn : i≠j) : |x i-x j| ∈ Set.Icc 4 ((m:ℝ)*t) := by
     rw [show |x i-x j|=_ from abs_grid_difference ht₀ i.val j.val]
     have hv : i.val≠j.val := fun h => hn (Fin.ext h)
-    have h₁ : 1≤max i.val j.val-min i.val j.val := by omega
-    have h₂ : max i.val j.val-min i.val j.val≤m := by have := i.isLt; have := j.isLt; omega
+    have h₁ : 1 ≤ max i.val j.val-min i.val j.val := by omega
+    have h₂ : max i.val j.val-min i.val j.val ≤ m := by have := i.isLt; have := j.isLt; omega
     exact ⟨ht.trans (le_mul_of_one_le_left ht₀ (by exact_mod_cast h₁)),
       mul_le_mul_of_nonneg_right (Nat.cast_le.mpr h₂) ht₀⟩
   have hb := vacant_difference_floor x hspace hr hr₁
