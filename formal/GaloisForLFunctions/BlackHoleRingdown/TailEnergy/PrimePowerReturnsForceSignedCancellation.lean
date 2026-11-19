@@ -350,6 +350,69 @@ theorem prime_sector_weightedBound_iff (h : CompactPulse) {p : ℕ} (hp : p.Prim
       (mul_le_of_le_one_right (norm_nonneg _) he₂)
   exact stable_delay ha hb hb1 hd hrec hbefore
 
+private theorem weighted_estimate (σ u C : ℝ) (z : ℂ) :
+    ‖(Real.exp (σ*u):ℂ)*z‖ ≤ C ↔ ‖z‖ ≤ C*Real.exp (-σ*u) := by
+  rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _),
+    mul_comm (Real.exp (σ*u)),← le_div_iff₀ (Real.exp_pos _),div_eq_mul_inv,
+    ← Real.exp_neg,neg_mul]
+
+private theorem reflected_uniform (h : CompactPulse) (u : ℝ) :
+    ‖pulseReflected h u‖ ≤ ∫ ξ : ℝ, ‖pulseAmplitude h (ξ:ℂ)‖ := by
+  unfold pulseReflected
+  refine (norm_integral_le_integral_norm _).trans_eq ?_
+  simp only [norm_mul,norm_scatteringPhase_line,norm_exp_I_mul,mul_one]
+
+private theorem reflected_weighted_iff (h : CompactPulse) {σ : ℝ} (hσ : 0 ≤ σ) :
+    weightedBound σ (pulseReflected h) ↔
+      ∃ C : ℝ, ∀ u : ℝ, 0 ≤ u → ‖pulseReflected h u‖ ≤ C*Real.exp (-σ*u) := by
+  constructor
+  · rintro ⟨C,hC⟩
+    exact ⟨C,fun u _ => (weighted_estimate _ _ _ _).mp (hC u)⟩
+  · rintro ⟨C,hC⟩
+    let M := ∫ ξ : ℝ, ‖pulseAmplitude h (ξ:ℂ)‖
+    refine ⟨max C M,fun u => ?_⟩
+    rcases le_or_gt 0 u with hu | hu
+    · exact ((weighted_estimate _ _ _ _).mpr (hC _ hu)).trans (le_max_left _ _)
+    · rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (Real.exp_pos _)]
+      have hsmall := Real.exp_le_one_iff.mpr (mul_nonpos_of_nonneg_of_nonpos hσ hu.le)
+      exact ((mul_le_of_le_one_left (norm_nonneg _) hsmall).trans (reflected_uniform h u)).trans
+        (le_max_right _ _)
+
+/-- Looking at denominators divisible by a single fixed prime still
+recovers the entire zero-free strip. The target rate is approached from
+below to allow poles at its endpoint. -/
+theorem strip_iff_one_prime_sector {δ : ℝ} (hδ₀ : 0 < δ) (hδ : δ ≤ 1/4)
+    {p : ℕ} (hp : p.Prime) :
+    (∀ ρ : ℂ, riemannZeta ρ=0 → 0 < ρ.re → ρ.re ≤ 1-2*δ) ↔
+      ∀ σ : ℝ, 0 < σ → σ < δ → ∀ h : CompactPulse, weightedBound σ (centeredPrimeSector h p) := by
+  constructor
+  · intro hz σ hσ hσδ h
+    obtain ⟨C,_,he,_⟩ := pulseReflected_decay_of_zeroFree hδ hσ hσδ hz h
+    exact (prime_sector_weightedBound_iff h hp hσ.le (by linarith)).mpr
+      ((reflected_weighted_iff h hσ.le).mpr ⟨C,he⟩)
+  · intro hsector ρ hρ hρ0
+    by_contra! hbad
+    let σ := (δ+max 0 ((1-ρ.re)/2))/2
+    have hlt : max 0 ((1-ρ.re)/2) < δ := max_lt hδ₀ (by linarith only [hbad])
+    have hσ : 0 < σ := by dsimp [σ]; linarith only [hδ₀,le_max_left 0 ((1-ρ.re)/2)]
+    have hσδ : σ < δ := by dsimp [σ]; linarith only [hlt]
+    have hd (h : CompactPulse) := (reflected_weighted_iff h hσ.le).mp
+      ((prime_sector_weightedBound_iff h hp hσ.le (by linarith)).mp (hsector σ hσ hσδ h))
+    have he := re_le_of_pulseReflected_decay hσ (hσδ.le.trans hδ) hd hρ hρ0
+    dsimp only [σ] at he
+    linarith only [he,hlt,le_max_right 0 ((1-ρ.re)/2)]
+
+/-- For any chosen prime the centered sector alone detects RH at the
+quarter-rate threshold, on all compact pulses. -/
+theorem rh_iff_one_prime_sector {p : ℕ} (hp : p.Prime) :
+    RiemannHypothesis ↔ ∀ σ : ℝ, 0 < σ → σ < 1/4 →
+      ∀ h : CompactPulse, weightedBound σ (centeredPrimeSector h p) := by
+  have he := zeroFreeStrip_tailEnergy_equivalences (δ := 1/4) (by norm_num) le_rfl
+  exact (RingdownRate.riemannHypothesis_iff_pulse_ringdown.trans he.1.symm).trans
+    (strip_iff_one_prime_sector (by norm_num) le_rfl hp)
+
+#print axioms strip_iff_one_prime_sector
+#print axioms rh_iff_one_prime_sector
 #print axioms prime_sector_weightedBound_iff
 #print axioms repeated_prime_sector
 #print axioms prime_sector_delay

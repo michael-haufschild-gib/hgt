@@ -242,6 +242,88 @@ theorem crossing_count_error {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r
   rw [he]
   exact rounded_pair_error (posGap hp.pos hpq) (posGap hq.pos hqr)
 
+/-- End of the nth complete relative revolution of the two outer primes. -/
+def outerPeriod (p r n : ℕ) := 2*(n:ℝ)*Real.pi/(Real.log r-Real.log p)
+
+private theorem complementary_period_counts {x y : ℝ} (hx : 0 < x) (hy : 0 < y)
+    (hi : independent x y) (n : ℕ) :
+    let T := 2*(n:ℝ)*Real.pi/(x+y)
+    oddCount x T + oddCount y T = n ∧ oddCount (x+y) T = n := by
+  intro T
+  let a := oddCount x T
+  let b := oddCount y T
+  have hxy := add_pos hx hy
+  have hT : 0 ≤ T := by dsimp [T]; positivity
+  have hs (w : ℝ) : T*w/Real.pi=2*n*w/(x+y) := by
+    dsimp only [T]; field_simp [hxy.ne',Real.pi_ne_zero] <;> ring
+  have htot : T*(x+y)/Real.pi=2*n := by rw [hs,mul_div_cancel_right₀ _ hxy.ne']
+  have hsum : T*x/Real.pi+T*y/Real.pi=2*n := by rw [← htot]; ring
+  have bounds {w : ℝ} (hw : 0 < w) :
+      2*(oddCount w T:ℝ)-1 ≤ T*w/Real.pi ∧ T*w/Real.pi < 2*(oddCount w T:ℝ)+1 := by
+    have h₁ := Nat.floor_le (show 0 ≤ (T*w/Real.pi+1)/2 by positivity)
+    have h₂ := Nat.lt_floor_add_one ((T*w/Real.pi+1)/2)
+    unfold oddCount
+    constructor <;> linarith only [h₁,h₂]
+  obtain ⟨ha₁,ha₂⟩ := bounds hx
+  obtain ⟨hb₁,hb₂⟩ := bounds hy
+  change 2*(a:ℝ)-1 ≤ _ at ha₁
+  change _ < 2*(a:ℝ)+1 at ha₂
+  change 2*(b:ℝ)-1 ≤ _ at hb₁
+  change _ < 2*(b:ℝ)+1 at hb₂
+  constructor
+  · change a+b=n
+    by_contra hn
+    have hl : n < a+b+1 := by exact_mod_cast (show (n:ℝ) < (a:ℝ)+b+1 by linarith only [ha₂,hb₂,hsum])
+    have hu : a+b ≤ n+1 := by exact_mod_cast (show (a:ℝ)+b ≤ n+1 by linarith only [ha₁,hb₁,hsum])
+    have hab : (a:ℝ)+b=n+1 := by exact_mod_cast (show a+b=n+1 by omega)
+    have htie : T*x/Real.pi = 2*(a:ℝ)-1 := by linarith only [ha₁,hb₁,hsum,hab]
+    rw [hs,div_eq_iff hxy.ne'] at htie
+    have h := hi (2*(n:ℤ)-(2*(a:ℤ)-1)) (-(2*(a:ℤ)-1)) (by push_cast; linarith only [htie])
+    omega
+  · unfold oddCount
+    rw [htot]
+    apply (Nat.floor_eq_iff (by positivity)).mpr
+    constructor <;> push_cast <;> linarith
+
+/-- After n complete outer periods exactly 2n unit crossings have
+occurred. The two inner counts complement one another because the
+half-integer rounding ties would contradict prime-log independence. -/
+theorem card_at_outer_period {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r.Prime)
+    (hpq : p < q) (hqr : q < r) (n : ℕ) :
+    (crossingTimes p q r (outerPeriod p r n)).card = 2*n := by
+  let x := Real.log q-Real.log p
+  let y := Real.log r-Real.log q
+  have hx : 0 < x := sub_pos.mpr (Real.log_lt_log (by exact_mod_cast hp.pos) (by exact_mod_cast hpq))
+  have hy : 0 < y := sub_pos.mpr (Real.log_lt_log (by exact_mod_cast hq.pos) (by exact_mod_cast hqr))
+  have he : Real.log r-Real.log p=x+y := by dsimp [x,y]; ring
+  have hp₀ : 0 ≤ outerPeriod p r n := by rw [outerPeriod,he]; positivity
+  have h := complementary_period_counts hx hy (independent_prime_gaps hp hq hr hpq hqr) n
+  rw [card_crossingTimes hp hq hr hpq hqr hp₀]
+  change oddCount x _ + oddCount y _ + oddCount (Real.log r-Real.log p) _ = 2*n
+  simp only [outerPeriod,he,h.1,h.2,two_mul]
+
+/-- Every complete outer period contains exactly two crossings. One
+is the outer pair's antipodal time, leaving exactly one inner pair
+crossing in each period, irrespective of the middle prime. -/
+theorem two_crossings_each_outer_period {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r.Prime)
+    (hpq : p < q) (hqr : q < r) (n : ℕ) :
+    ((crossingTimes p q r (outerPeriod p r (n+1))) ∖ (crossingTimes p q r (outerPeriod p r n))).card = 2 := by
+  have hg := sub_pos.mpr (Real.log_lt_log (Nat.cast_pos.mpr hp.pos) (Nat.cast_lt.mpr (hpq.trans hqr)))
+  have hn : 0 ≤ outerPeriod p r n := by unfold outerPeriod; positivity
+  have hle : outerPeriod p r n ≤ outerPeriod p r (n+1) := by
+    unfold outerPeriod
+    apply div_le_div_of_nonneg_right _ hg.le
+    push_cast
+    linarith only [Real.pi_pos]
+  have hs : crossingTimes p q r (outerPeriod p r n) ⊆ crossingTimes p q r (outerPeriod p r (n+1)) := by
+    intro t ht
+    obtain ⟨h₁,h₂,h₃⟩ := (mem_crossingTimes hp.pos hpq hqr hn).mp ht
+    exact (mem_crossingTimes hp.pos hpq hqr (hn.trans hle)).mpr ⟨h₁,h₂.trans hle,h₃⟩
+  rw [card_sdiff_of_subset hs,card_at_outer_period hp hq hr hpq hqr,card_at_outer_period hp hq hr hpq hqr]
+  omega
+
+#print axioms card_at_outer_period
+#print axioms two_crossings_each_outer_period
 #print axioms unit_trace_factor
 #print axioms abs_trace_defect
 #print axioms unit_trace_iff

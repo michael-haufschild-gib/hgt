@@ -227,7 +227,7 @@ private theorem atom_comm (N a b : ℕ) : atom N a b = atom N b a := by
   rw [atom, atom, mul_comm (coeff a), primitiveCubicScaleWeight, primitiveCubicScaleWeight, hscale]
   congr 1
   exact sum_congr rfl fun d _ => by
-    rw [show (d.Coprime a ∧ d.Coprime b) ↔ (d.Coprime b ∧ d.Coprime a) from and_comm]
+    by_cases ha : d.Coprime a <;> simp [ha]
 
 /-- Three energy measurements isolate each individual reduced rational
 frequency. The same resolution works for every ratio at cutoff N. -/
