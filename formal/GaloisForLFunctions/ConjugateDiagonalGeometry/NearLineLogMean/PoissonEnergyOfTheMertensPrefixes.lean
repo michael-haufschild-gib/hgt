@@ -35,21 +35,19 @@ private theorem section_continuous (N : ℕ) : Continuous (criticalSection N) :=
 
 theorem mertens_gram_poisson_integral (N : ℕ) :
     mobiusWeightedLineEnergy (halfPlanePoissonKernel 1) (1/2) N = mertensPoissonGram N := by
-  have he (t : ℝ) : realDirichletPoly N mobiusRealCoefficient ((1/2:ℂ)+t*I) = criticalSection N t := by
-    simp [criticalSection, realDirichletPoly, edPoly, mobCoeff, mobiusRealCoefficient]
+  have he (t : ℝ) : ArithmeticInnerFunctionTheory.realDirichletPoly N mobiusRealCoefficient
+      ((1/2:ℂ)+t*I) = criticalSection N t := by
+    simp [criticalSection, ArithmeticInnerFunctionTheory.realDirichletPoly, edPoly, mobCoeff,
+      mobiusRealCoefficient]
   have h := integral_dirichletPoly_norm_sq_poisson N mobiusRealCoefficient 0
   simpa only [Complex.ofReal_zero, add_zero, neg_zero, Real.rpow_zero, mul_one, he,
     mobiusWeightedLineEnergy, mertensPoissonGram, criticalSection] using h
 
 private theorem prefix_complex (k : ℕ) :
     ((∑ m ∈ Icc 1 k, mobiusRealCoefficient m : ℝ) : ℂ) = mobiusMertensPartialSum k := by
-  rw [←sum_range_mobCoeff_succ_eq_mobiusMertensPartialSum]
-  induction k with
-  | zero => simp
-  | succ k ih =>
-    rw [sum_Icc_succ_top (Nat.succ_le_succ (Nat.zero_le k)), Complex.ofReal_add,
-      sum_range_succ, ih]
-    simp [mobiusRealCoefficient,mobCoeff]
+  rw [←sum_range_mobCoeff_succ_eq_mobiusMertensPartialSum,
+    _root_.RHTower.sum_Icc_eq_sum_range_shift, Complex.ofReal_sum]
+  exact sum_congr rfl fun i _ => by simp [mobiusRealCoefficient,mobCoeff]
 
 /-- The fixed time-weighted measurement is an arithmetic sum of nonnegative
 terms. Its first term is the terminal Mertens value. -/
@@ -66,7 +64,7 @@ private theorem kernel_half : halfPlanePoissonKernel 1 = HTGeometry.halfPlanePoi
   rw [halfPlanePoissonKernel_one, HTGeometry.halfPlanePoisson]
   have h : 0 < (1/4:ℝ)+t^2 := by positivity
   norm_num only [show (1/2:ℝ)^2 = 1/4 by norm_num]
-  field_simp [Real.pi_ne_zero, h.ne'] <;> ring
+  field_simp [Real.pi_ne_zero, h.ne']
 
 private theorem integrable_section (N : ℕ) :
     Integrable (fun t => ‖criticalSection N t‖^2 * halfPlanePoissonKernel 1 t) := by
@@ -107,7 +105,8 @@ theorem sharp_moebius_moment_le_mertens_gram (N : ℕ) {T : ℝ} (hT : 1 ≤ T) 
            ((hi.const_mul C).integrableOn) measurableSet_Ioc
          intro t ht
          have hh := mul_le_mul_of_nonneg_left (hl t ht) (sq_nonneg ‖criticalSection N t‖)
-         linarith only [hh]
+         change ‖criticalSection N t‖^2 ≤ C*(‖criticalSection N t‖^2 * halfPlanePoissonKernel 1 t)
+         simpa only [mul_one,mul_left_comm C] using hh
        _ ≤ ∫ t : ℝ, C*(‖criticalSection N t‖^2 * halfPlanePoissonKernel 1 t) :=
          setIntegral_le_integral (hi.const_mul C) (Eventually.of_forall fun t => mul_nonneg hC
            (mul_nonneg (sq_nonneg _) (hk t)))
@@ -186,10 +185,10 @@ theorem mertens_gram_upper_power {b : ℝ} (hb : zetaZeroWidth < b) :
   have hb₂ : 0 < 2*b := by positivity
   refine ⟨A+A*(1+1/(2*b)),by positivity,fun N => ?_⟩
   cases N with
-  | zero => simp [mertensPoissonGram]
+  | zero => simp [mertensPoissonGram,Real.zero_rpow hb₂.ne']
   | succ n =>
     have hs := sum_le_sum (s := Icc 1 n) fun i hi => hrow i (mem_Icc.mp hi).1
-    rw [←mul_sum, _root_.RHTower.sum_Icc_eq_sum_range_shift] at hs
+    rw [←mul_sum, _root_.RHTower.sum_Icc_eq_sum_range_shift (fun k => (k:ℝ)^(2*b-1))] at hs
     simp only [Nat.cast_succ] at hs
     have hsum := hs.trans (mul_le_mul_of_nonneg_left
       (ArithmeticGaugeTheory.sum_rpow_sub_one_le hb₂ n) hA)

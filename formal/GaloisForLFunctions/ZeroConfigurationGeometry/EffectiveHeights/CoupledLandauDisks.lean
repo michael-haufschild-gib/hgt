@@ -34,22 +34,28 @@ def archField (σ t : ℝ) : ℝ :=
 open GaloisForLFunctions.MultiplicativePositivityGeometry
 open GaloisForLFunctions.ArithmeticCastelnuovoSeveri
 
+private theorem prime_field_split {h : ℝ} (hh : 0 < h) (v : ℝ) :
+    zetaRealLogDeriv (1+h) v =
+      archField (1+h) v - (logDeriv xi (((1+h : ℝ) : ℂ)+v*I)).re := by
+  rw [zetaRealLogDeriv,Sieve.neg_div_re_eq_neg_logDeriv_re,
+    logDeriv_xi_split (by simp; linarith : 1 < (((1+h : ℝ) : ℂ)+v*I).re),
+    Complex.add_re,archField]
+  ring
+
+private theorem positive_prime_field {h : ℝ} (hh : 0 < h) :
+    IsEvenPosDef (zetaRealLogDeriv (1+h)) := by
+  have he := funext (zetaRealLogDeriv_eq_cosineTrace hh)
+  rw [he]
+  exact isEvenPosDef_cosineTrace (zetaBoundaryWeight_nonneg h) (summable_zetaBoundaryWeight hh) logFrequency
+
 /-- On every finite difference set the archimedean matrix dominates the
 full zero resolvent as a quadratic form. The difference is the Gram
 matrix of the damped prime-power measure. The test weights may be signed. -/
 theorem resolvent_gram_le {h : ℝ} (hh : 0 < h) {m : ℕ} (x c : Fin m → ℝ) :
     ∑ j, ∑ k, c j*c k*(logDeriv xi (((1+h : ℝ) : ℂ)+((x j-x k : ℝ) : ℂ)*I)).re ≤
     ∑ j, ∑ k, c j*c k*archField (1+h) (x j-x k) := by
-  have hpd := (isEvenPosDef_cosineTrace (zetaBoundaryWeight_nonneg h)
-    (summable_zetaBoundaryWeight hh) logFrequency).posDef m x c
-  simp_rw [← zetaRealLogDeriv_eq_cosineTrace hh] at hpd
-  have herr (v : ℝ) : zetaRealLogDeriv (1+h) v =
-      archField (1+h) v - (logDeriv xi (((1+h : ℝ) : ℂ)+v*I)).re := by
-    rw [zetaRealLogDeriv, Sieve.neg_div_re_eq_neg_logDeriv_re,
-      logDeriv_xi_split (by simp; linarith : 1 < (((1+h : ℝ) : ℂ)+v*I).re),
-      Complex.add_re, archField]
-    ring
-  simp only [herr, mul_sub, Finset.sum_sub_distrib] at hpd
+  have hpd := (positive_prime_field hh).posDef m x c
+  simp only [prime_field_split hh, mul_sub, Finset.sum_sub_distrib] at hpd
   exact sub_nonneg.mp hpd
 
 /-- Nonnegative sampling weights convert the matrix bound into a joint
@@ -64,6 +70,49 @@ theorem difference_disk_count {h : ℝ} (hh : 0 < h) {m : ℕ} (x c : Fin m → 
     mul_le_mul_of_nonneg_left ?_ (mul_nonneg (hc j) (hc k))) (resolvent_gram_le hh x c)
   rw [div_le_iff₀ (add_pos_of_pos_of_nonneg hh (hr j k).1), mul_comm]
   exact disk_count_le_resolvent (hr j k).1 (hr j k).2 (by linarith)
+
+/-- The first two harmonics of the prime logarithmic derivative obey the
+quadratic Toeplitz constraint. The middle coefficient in the three-point
+test is chosen to minimize the Gram form. -/
+theorem prime_double_gram {h : ℝ} (hh : 0 < h) (t : ℝ) :
+    let f := zetaRealLogDeriv (1+h)
+    2*(f t)^2 ≤ f 0*(f 0+f (2*t)) := by
+  intro f
+  have hf : IsEvenPosDef f := positive_prime_field hh
+  rcases hf.apply_zero_nonneg.eq_or_lt with hz | hp
+  · have ht := hf.abs_le_apply_zero t
+    rw [← hz,abs_nonpos_iff] at ht
+    rw [← hz,ht]
+    norm_num
+  · have he := hf.three_point t t (-2*f t) (f 0) (f 0)
+    rw [← two_mul t] at he
+    apply (mul_le_mul_iff_left₀ hp).mp
+    linarith only [he]
+
+/-- Nonlinear tradeoff between two disk occupancies. The positive excess
+of the first disk over its archimedean budget is squared and must be paid
+for by the remaining prime mass at the double height. -/
+theorem quadratic_disk_count {h r v : ℝ} (hh : 0 < h) (t : ℝ)
+    (hr : r ∈ Set.Icc 0 h) (hv : v ∈ Set.Icc 0 h) :
+    let D := zetaRealLogDeriv (1+h) 0
+    2*(max (((diskCopies 1 t r).card:ℝ)/(h+r)-archField (1+h) t) 0)^2 ≤
+      D*(D+archField (1+h) (2*t)-((diskCopies 1 (2*t) v).card:ℝ)/(h+v)) := by
+  intro D
+  have hD : 0 ≤ D := (positive_prime_field hh).apply_zero_nonneg
+  have hb (y w : ℝ) (hw : w ∈ Set.Icc 0 h) :
+      ((diskCopies 1 y w).card:ℝ)/(h+w) ≤ archField (1+h) y-zetaRealLogDeriv (1+h) y := by
+    rw [prime_field_split hh, sub_sub_cancel, div_le_iff₀ (add_pos_of_pos_of_nonneg hh hw.1), mul_comm]
+    exact disk_count_le_resolvent hw.1 hw.2 (by linarith)
+  have hmax : max (((diskCopies 1 t r).card:ℝ)/(h+r)-archField (1+h) t) 0 ≤ |zetaRealLogDeriv (1+h) t| :=
+    max_le (le_trans (by linarith only [hb t r hr]) (neg_le_abs _)) (abs_nonneg _)
+  have hs := sq_le_sq' (by linarith only [le_max_right (((diskCopies 1 t r).card:ℝ)/(h+r)-
+    archField (1+h) t) 0,abs_nonneg (zetaRealLogDeriv (1+h) t)]) hmax
+  rw [sq_abs] at hs
+  have hg := prime_double_gram hh t
+  change 2*(zetaRealLogDeriv (1+h) t)^2 ≤ D*(D+zetaRealLogDeriv (1+h) (2*t)) at hg
+  refine (mul_le_mul_of_nonneg_left hs (by norm_num : (0:ℝ)≤2)).trans (hg.trans ?_)
+  apply mul_le_mul_of_nonneg_left _ hD
+  linarith only [hb (2*t) v hv]
 
 private theorem arch_cost {σ t : ℝ} (hs : 1 < σ) (hs2 : σ ≤ 2) (ht : 4 ≤ t) :
     resolvent σ t + (-deriv riemannZeta ((σ : ℂ)+t*I) / riemannZeta ((σ : ℂ)+t*I)).re ≤
@@ -171,6 +220,8 @@ theorem disk_empty_at_coupled_radius {t : ℝ} (ht : 4 ≤ t) :
   exact Finset.card_eq_zero.mp (by omega)
 
 #print axioms coupled_resolvent_bound
+#print axioms prime_double_gram
+#print axioms quadratic_disk_count
 #print axioms resolvent_gram_le
 #print axioms difference_disk_count
 #print axioms coupled_disk_count
