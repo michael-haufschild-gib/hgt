@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheFixedPrimeCutAfterSummingConductors
+import GaloisForLFunctions.BiScaleUncertainty.PacketZeroAmplitudeLaw
 
 /-!
 # The first prime moment seen by the integrated conductor spline
@@ -190,7 +191,9 @@ theorem centered_tail_first_moment {N K : ℕ} (hN : 0 < N)
   change (N:ℂ)^2*(∑ p ∈ ordinaryPrimeLags K, f p) = _ at hlo
   rw [hlo] at hfull
   change (N:ℂ)^2*(∑ p ∈ (ordinaryPrimeLags H).filter (K < ·), f p) + _ = _
-  simp only [primeMoment,Nat.floor_natCast,Complex.ofReal_mul,Complex.ofReal_div,
+  have hmoment : primeMoment K = ∑ p ∈ ordinaryPrimeLags K, (p:ℂ)*(Real.log p:ℂ) := by
+    simp only [primeMoment,Nat.floor_natCast]
+  simp only [hmoment,Complex.ofReal_mul,Complex.ofReal_div,
     Complex.ofReal_add,Complex.ofReal_one,Complex.ofReal_ofNat,Complex.ofReal_natCast]
   linear_combination hfull
 
@@ -208,6 +211,98 @@ theorem power_reading (s : ℂ) {X : ℝ} (hX : 0 < X) :
     Complex.cpow_two]
   ring
 
+open GaloisForLFunctions.BiScaleUncertainty.ChebyshevGauge
+
+/-- The removable value of the hyperbolic sinc at zero is one. -/
+def sinhRatio (z : ℂ) := if z=0 then 1 else Complex.sinh z/z
+
+private theorem spline_at (z : ℂ) :
+    Zeta23.paperFT (fun x => (cubicSpline x:ℂ)) (z/I) = sinhRatio z^4 := by
+  by_cases hz : z=0
+  · subst z; simp only [zero_div,paperFT_cubicSpline_zero,sinhRatio,if_true,one_pow]
+  · rw [sinhRatio,if_neg hz]
+    exact ArithmeticCouplingTheory.ConeMoments.paperFT_cubicSpline_div_I hz
+
+private theorem sinhRatio_neg (z : ℂ) : sinhRatio (-z) = sinhRatio z := by
+  simp [sinhRatio,Complex.sinh_neg]
+
+/-- Full transfer function on power inputs, including the removable value
+at the midpoint between the two exceptional vertical lines. -/
+theorem power_reading_formula (s : ℂ) {X : ℝ} (hX : 0 < X) :
+    let z := s-3/2
+    reading X (fun x => (x:ℂ)^s) =
+      (X:ℂ)^s * ((2-cexp (z*(Real.log 4:ℝ)))*(sinhRatio z)^8) := by
+  intro z
+  rw [power_reading s hX,mellin_squarePrimeWeight_formula]
+  have hz : s-1-1/2=z := by dsimp [z]; ring
+  rw [hz]
+  change _ * (_ * (Zeta23.paperFT (fun x => (cubicSpline x:ℂ)) (z/I) *
+    Zeta23.paperFT (fun x => (cubicSpline x:ℂ)) (-(z/I)))) = _
+  rw [← neg_div, spline_at, spline_at,sinhRatio_neg,← pow_add]
+
+private theorem sinhRatio_eq_zero (z : ℂ) :
+    sinhRatio z=0 ↔ ∃ k : ℤ, k ≠ 0 ∧ z=k*(Real.pi*I) := by
+  have hpi : ((Real.pi:ℂ)*I) ≠ 0 := mul_ne_zero (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero) I_ne_zero
+  by_cases hz : z=0
+  · subst z
+    simp [sinhRatio,hpi,eq_comm (a := (0:ℂ))]
+  rw [sinhRatio,if_neg hz,div_eq_zero_iff,or_iff_left hz,Complex.sinh,div_eq_zero_iff,
+    or_iff_left (by norm_num : (2:ℂ) ≠ 0),sub_eq_zero,Complex.exp_eq_exp_iff_exists_int]
+  refine exists_congr fun k => ⟨fun he => ?_,fun hk => ?_⟩
+  · have h : z=(k:ℂ)*(Real.pi*I) := by linear_combination he/2
+    exact ⟨fun hk => hz (by simpa [hk] using h),h⟩
+  · linear_combination 2*hk.2
+
+private theorem dyadic_factor_zero (z : ℂ) :
+    2-cexp (z*(Real.log 4:ℝ))=0 ↔
+      ∃ k : ℤ, z=1/2+k*(2*Real.pi*I)/(Real.log 4:ℝ) := by
+  have h2 : cexp (Real.log 2:ℝ)=2 := by
+    rw [← Complex.ofReal_exp,Real.exp_log (by norm_num : (0:ℝ)<2),Complex.ofReal_ofNat]
+  have hl : (Real.log 4:ℂ)=2*(Real.log 2:ℂ) := by
+    exact_mod_cast (show Real.log 4=2*Real.log 2 by rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]; norm_num)
+  have hpos : (Real.log 4:ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.log_pos (by norm_num)).ne'
+  calc 2-cexp (z*(Real.log 4:ℝ))=0 ↔ cexp (z*(Real.log 4:ℝ))=cexp (Real.log 2:ℝ) := by
+         rw [sub_eq_zero,h2,eq_comm]
+       _ ↔ _ := by
+         rw [Complex.exp_eq_exp_iff_exists_int]
+         apply exists_congr
+         intro k
+         have hiff : z=1/2+k*(2*Real.pi*I)/(Real.log 4:ℝ) ↔
+             (z-1/2)*(Real.log 4:ℝ)=k*(2*Real.pi*I) := by
+           constructor
+           · intro h
+             rw [h,add_sub_cancel_left,div_mul_cancel₀ _ hpos]
+           · intro h
+             rw [← h,mul_div_cancel_right₀ _ hpos]
+             ring
+         rw [hiff]
+         constructor
+         · intro h; linear_combination h - hl/2
+         · intro h; linear_combination h + hl/2
+
+/-- A complex power is invisible at a single positive scale exactly on two
+vertical lattices. It then disappears at every scale. The quadratic
+background is the zero-frequency member of the dyadic lattice. -/
+theorem power_reading_zero_iff (s : ℂ) {X : ℝ} (hX : 0 < X) :
+    reading X (fun x => (x:ℂ)^s)=0 ↔
+      (∃ k : ℤ, s=2+k*(2*Real.pi*I)/(Real.log 4:ℝ)) ∨
+      (∃ k : ℤ, k ≠ 0 ∧ s=3/2+k*(Real.pi*I)) := by
+  have hX0 := Complex.cpow_ne_zero_iff.mpr (Or.inl (Complex.ofReal_ne_zero.mpr hX.ne') :
+    (X:ℂ) ≠ 0 ∨ s=0)
+  rw [power_reading_formula s hX,mul_eq_zero,or_iff_right hX0,mul_eq_zero,
+    pow_eq_zero_iff (by decide : 8 ≠ 0),dyadic_factor_zero,sinhRatio_eq_zero]
+  apply or_congr
+  · apply exists_congr
+    intro k
+    constructor <;> intro he <;> linear_combination he
+  · apply exists_congr
+    intro k
+    apply and_congr_right
+    intro _
+    constructor <;> intro he <;> linear_combination he
+
+#print axioms power_reading_formula
+#print axioms power_reading_zero_iff
 #print axioms finite_spline_reading
 #print axioms quadratic_background
 #print axioms finite_spline_centered

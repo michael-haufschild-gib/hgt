@@ -204,8 +204,8 @@ private theorem frequency_gap {N a b c d : ℕ} (ha : a ∈ Icc 1 N) (hb : b ∈
     (Nat.mul_le_mul (mem_Icc.mp ha).2 (mem_Icc.mp hd).2)
     (Nat.mul_le_mul (mem_Icc.mp hb).2 (mem_Icc.mp hc).2)
   rw [Nat.cast_mul, Nat.cast_mul, Nat.cast_mul,
-    Real.log_mul (by exact_mod_cast (mem_Icc.mp ha).1.ne') (by exact_mod_cast (mem_Icc.mp hd).1.ne'),
-    Real.log_mul (by exact_mod_cast (mem_Icc.mp hb).1.ne') (by exact_mod_cast (mem_Icc.mp hc).1.ne')] at hdif
+    Real.log_mul (Nat.cast_ne_zero.mpr (Nat.ne_of_gt (mem_Icc.mp ha).1)) (Nat.cast_ne_zero.mpr (Nat.ne_of_gt (mem_Icc.mp hd).1)),
+    Real.log_mul (Nat.cast_ne_zero.mpr (Nat.ne_of_gt (mem_Icc.mp hb).1)) (Nat.cast_ne_zero.mpr (Nat.ne_of_gt (mem_Icc.mp hc).1))] at hdif
   rw [sq, show (Real.log a-Real.log b)-(Real.log c-Real.log d) =
     (Real.log a+Real.log d)-(Real.log b+Real.log c) by ring]
   exact hdif
@@ -226,7 +226,8 @@ private theorem atom_comm (N a b : ℕ) : atom N a b = atom N b a := by
     tauto
   rw [atom, atom, mul_comm (coeff a), primitiveCubicScaleWeight, primitiveCubicScaleWeight, hscale]
   congr 1
-  exact sum_congr rfl fun d _ => by rw [and_comm (d.Coprime a)]
+  exact sum_congr rfl fun d _ => by
+    rw [show (d.Coprime a ∧ d.Coprime b) ↔ (d.Coprime b ∧ d.Coprime a) from and_comm]
 
 /-- Three energy measurements isolate each individual reduced rational
 frequency. The same resolution works for every ratio at cutoff N. -/
@@ -249,7 +250,7 @@ theorem read_primitive_ratio {N a b : ℕ} (ha : a ∈ Icc 1 N) (hb : b ∈ Icc 
   have hne : (a,b) ≠ (b,a) := fun he => hba.ne' (congrArg Prod.fst he)
   have isolate {c d : ℕ} (hq : (c,d) ∈ primitiveRatioPairs N)
       (h1 : (c,d) ≠ (a,b)) (h2 : (c,d) ≠ (b,a)) :
-      h ≤ |x-|Real.log c-Real.log d|| := by
+      h ≤ abs (x-|Real.log c-Real.log d|) := by
     obtain ⟨hprod,hcd,_⟩ := mem_filter.mp hq
     obtain ⟨hc,hd⟩ := mem_product.mp hprod
     rcases le_or_gt 0 (Real.log c-Real.log d) with hg | hg
@@ -269,15 +270,15 @@ theorem read_primitive_ratio {N a b : ℕ} (ha : a ∈ Icc 1 N) (hb : b ∈ Icc 
   rw [← add_sum_erase _ _ hpair,
     ← add_sum_erase _ _ (mem_erase.mpr ⟨hne.symm,hrev⟩)]
   have hrest : ∑ q ∈ ((primitiveRatioPairs N).erase (a,b)).erase (b,a),
-      atom N q.1 q.2 * max (h-|x-|Real.log q.1-Real.log q.2||) 0 = 0 := by
+      atom N q.1 q.2 * max (h-abs (x-|Real.log q.1-Real.log q.2|)) 0 = 0 := by
     apply sum_eq_zero
     rintro ⟨c,d⟩ hq
     have hq1 := mem_erase.mp hq
     have hq2 := mem_erase.mp hq1.2
     rw [max_eq_right (sub_nonpos.mpr (isolate hq2.2 hq2.1 hq1.1)), mul_zero]
   rw [hrest, add_zero]
-  change atom N a b * max (h-|x-|x||) 0 +
-    atom N b a * max (h-|x-|Real.log b-Real.log a||) 0 = _
+  change atom N a b * max (h-abs (x-|x|)) 0 +
+    atom N b a * max (h-abs (x-|Real.log b-Real.log a|)) 0 = _
   rw [abs_sub_comm (Real.log b), abs_of_pos hx, sub_self, abs_zero, sub_zero,
     max_eq_left hh.le, atom_comm N b a]
   ring
@@ -285,8 +286,7 @@ theorem read_primitive_ratio {N a b : ℕ} (ha : a ∈ Icc 1 N) (hb : b ∈ Icc 
 private theorem one_le_fibre_weight {N a b : ℕ} (ha : a ∈ Icc 1 N) (hb : b ∈ Icc 1 N) :
     1 ≤ primitiveCubicScaleWeight 0 N a b := by
   have h1 : 1 ∈ ratioScales N a b := mem_filter.mpr ⟨mem_Icc.mpr
-    ⟨le_rfl,(mem_Icc.mp ha).1.trans (mem_Icc.mp ha).2⟩, by simpa using
-      And.intro (mem_Icc.mp ha).2 (mem_Icc.mp hb).2⟩
+    ⟨le_rfl,(mem_Icc.mp ha).1.trans (mem_Icc.mp ha).2⟩, by simpa using (And.intro (mem_Icc.mp ha).2 (mem_Icc.mp hb).2)⟩
   unfold primitiveCubicScaleWeight
   have hn (d : ℕ) (hd : d ∈ ratioScales N a b) : 0 ≤
       (if Nat.Coprime d a ∧ Nat.Coprime d b
@@ -373,7 +373,8 @@ theorem sharp_interval_spectrum (N : ℕ) (A B : ℝ) :
     (by fun_prop : Continuous _).intervalIntegrable _ _
   have hsum : IntervalIntegrable (fun t => ∑ q ∈ primitiveRatioPairs N,
       atom N q.1 q.2 * Real.cos ((Real.log q.1 - Real.log q.2)*t)) volume A B := by
-    simpa only [Finset.sum_apply] using IntervalIntegrable.sum (primitiveRatioPairs N) (fun q _ => hI q)
+    apply Continuous.intervalIntegrable
+    fun_prop
   rw [intervalIntegral.integral_add intervalIntegrable_const hsum,
     intervalIntegral.integral_const, smul_eq_mul, intervalIntegral.integral_finsetSum
       (fun q _ => hI q)]

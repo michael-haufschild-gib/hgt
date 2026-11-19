@@ -131,10 +131,10 @@ private theorem lifted_card_as_floor_sum (t : ℕ) :
     by_cases pos : 0<d
     · simp only [Nat.le_div_iff_mul_le pos,Nat.le_div_iff_mul_le mp]
       constructor
-      · rintro ⟨⟨p,_⟩,h⟩; exact ⟨p,(Nat.mul_comm d m ▸ h)⟩
+      · rintro ⟨⟨p,_⟩,h⟩; exact ⟨p,by simpa only [Nat.mul_comm d m] using h⟩
       · rintro ⟨p,h⟩
         have h' := (Nat.le_div_iff_mul_le mp).mpr h
-        exact ⟨⟨p,h'.trans (Nat.div_le_self ..)⟩,Nat.mul_comm m d ▸ h⟩
+        exact ⟨⟨p,h'.trans (Nat.div_le_self ..)⟩,by simpa only [Nat.mul_comm m d] using h⟩
     · simp [show d=0 by omega]
   rw [←sum_filter,eq]
   simp

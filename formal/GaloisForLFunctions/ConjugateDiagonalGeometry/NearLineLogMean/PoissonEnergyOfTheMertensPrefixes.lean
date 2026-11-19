@@ -210,6 +210,32 @@ theorem cofinal_mertens_gram_iff {b : ℝ} (hb : 0 ≤ b) (hoff : b ≠ zetaZero
     obtain ⟨B,hB,h⟩ := mertens_gram_upper_power h
     exact ⟨B,hB,(Eventually.of_forall h).frequently⟩
 
+/-- For every positive loss the height intercept in the long pure Möbius
+moment is two, uniformly over length exponents. The coefficient of the
+length exponent is twice the zero width. -/
+theorem long_moebius_moment_poisson_bound {θ δ : ℝ} (hθ : 0 < θ) (hδ : 0 < δ) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ T : ℝ, 1 ≤ T →
+      (∫ t in (1:ℝ)..T, ‖edPoly moebiusMollifierCoeff (Icc 1 ⌊T^θ⌋₊)
+        (((1/2:ℝ):ℂ)+t*I)‖^2) ≤ C*T^(2+δ+2*zetaZeroWidth*θ) := by
+  let b := zetaZeroWidth+δ/(2*θ)
+  have hb : zetaZeroWidth < b := lt_add_of_pos_right _ (div_pos hδ (by positivity))
+  have hb₀ := zetaZeroWidth_nonneg.trans_lt hb
+  obtain ⟨B,hB,h⟩ := mertens_gram_upper_power hb
+  refine ⟨4*Real.pi*B,by positivity,fun T hT => ?_⟩
+  have hT₀ := zero_lt_one.trans_le hT
+  have hs := Real.rpow_le_rpow (Nat.cast_nonneg ⌊T^θ⌋₊)
+    (Nat.floor_le (Real.rpow_nonneg hT₀.le θ)) (show 0 ≤ 2*b by positivity)
+  have hg := (h ⌊T^θ⌋₊).trans (mul_le_mul_of_nonneg_left hs hB)
+  have he : 2+δ+2*zetaZeroWidth*θ = 2+θ*(2*b) := by
+    dsimp only [b]
+    field_simp
+    ring
+  refine (sharp_moebius_moment_le_mertens_gram _ hT).trans
+    ((mul_le_mul_of_nonneg_left hg (by positivity)).trans_eq ?_)
+  rw [he,Real.rpow_add hT₀,Real.rpow_two,Real.rpow_mul hT₀.le]
+  ring
+
+#print axioms long_moebius_moment_poisson_bound
 #print axioms mertens_gram_upper_power
 #print axioms cofinal_mertens_gram_iff
 #print axioms mertens_gram_prefix_squares

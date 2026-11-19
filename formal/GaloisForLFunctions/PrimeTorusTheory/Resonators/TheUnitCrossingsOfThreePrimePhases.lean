@@ -205,26 +205,42 @@ theorem card_crossingTimes {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r.P
     disjoint_clocks hy (add_pos hx hy) hT hi₂⟩), card_union_of_disjoint (disjoint_clocks hx hy hT hi),
     card_clock hx,card_clock hy,card_clock (add_pos hx hy)]
 
-/-- The counting error is at most three halves for every time. The middle
-prime drops out of the linear term. -/
+private theorem rounded_pair_error {u v : ℝ} (hu : 0 ≤ u) (hv : 0 ≤ v) :
+    let R := fun x : ℝ => ⌊(x+1)/2⌋₊
+    |((R u + R v + R (u+v) : ℕ) : ℝ) - (u+v)| ≤ 1 := by
+  intro R
+  have hr (x : ℝ) (hx : 0 ≤ x) : 2*(R x:ℝ)-1 ≤ x ∧ x ≤ 2*(R x:ℝ)+1 := by
+    have h₁ := Nat.floor_le (show 0 ≤ (x+1)/2 by positivity)
+    have h₂ := Nat.lt_floor_add_one ((x+1)/2)
+    dsimp only [R]
+    constructor <;> linarith only [h₁,h₂]
+  obtain ⟨hu₁,hu₂⟩ := hr u hu
+  obtain ⟨hv₁,hv₂⟩ := hr v hv
+  obtain ⟨hw₁,hw₂⟩ := hr (u+v) (add_nonneg hu hv)
+  rw [abs_le]
+  push_cast
+  rcases lt_trichotomy (R u+R v) (R (u+v)) with h | h | h
+  · have h' : (R u:ℝ)+R v+1 ≤ R (u+v) := by exact_mod_cast Nat.succ_le_of_lt h
+    constructor <;> linarith only [hu₁,hu₂,hv₁,hv₂,hw₁,hw₂,h']
+  · have h' : (R u:ℝ)+R v=R (u+v) := by exact_mod_cast h
+    constructor <;> linarith only [hw₁,hw₂,h']
+  · have h' : (R (u+v):ℝ)+1 ≤ R u+R v := by exact_mod_cast Nat.succ_le_of_lt h
+    constructor <;> linarith only [hu₁,hu₂,hv₁,hv₂,hw₁,hw₂,h']
+
+/-- The counting error is at most one for every time. The middle prime
+drops out of the linear term. Rounding the largest gap couples the
+other two rounding errors since their unrounded gaps add exactly. -/
 theorem crossing_count_error {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r.Prime)
     (hpq : p < q) (hqr : q < r) {T : ℝ} (hT : 0 ≤ T) :
-    |((crossingTimes p q r T).card : ℝ) - T*(Real.log r-Real.log p)/Real.pi| ≤ 3/2 := by
+    |((crossingTimes p q r T).card : ℝ) - T*(Real.log r-Real.log p)/Real.pi| ≤ 1 := by
   rw [card_crossingTimes hp hq hr hpq hqr hT]
-  push_cast
-  have hround {w : ℝ} (hw : 0 ≤ w) :
-      |(⌊(T*w/Real.pi+1)/2⌋₊:ℝ)-T*w/(2*Real.pi)| ≤ 1/2 := by
-    have h1 := Nat.floor_le (show 0 ≤ (T*w/Real.pi+1)/2 by positivity)
-    have h2 := Nat.lt_floor_add_one ((T*w/Real.pi+1)/2)
-    rw [abs_le]
-    constructor <;> linarith only [h1,h2]
-  have posGap {a b : ℕ} (ha : 0 < a) (hab : a < b) : 0 ≤ Real.log b-Real.log a :=
-    sub_nonneg.mpr (Real.log_le_log (by exact_mod_cast ha) (by exact_mod_cast hab.le))
-  obtain ⟨h₁,h₂⟩ := abs_le.mp (hround (posGap hp.pos hpq))
-  obtain ⟨h₃,h₄⟩ := abs_le.mp (hround (posGap hq.pos hqr))
-  obtain ⟨h₅,h₆⟩ := abs_le.mp (hround (posGap hp.pos (hpq.trans hqr)))
-  rw [abs_le]
-  constructor <;> linarith only [h₁,h₂,h₃,h₄,h₅,h₆]
+  have posGap {a b : ℕ} (ha : 0 < a) (hab : a < b) : 0 ≤ T*(Real.log b-Real.log a)/Real.pi :=
+    div_nonneg (mul_nonneg hT (sub_nonneg.mpr (Real.log_le_log
+      (by exact_mod_cast ha) (by exact_mod_cast hab.le)))) Real.pi_pos.le
+  have he : T*(Real.log r-Real.log p)/Real.pi =
+      T*(Real.log q-Real.log p)/Real.pi + T*(Real.log r-Real.log q)/Real.pi := by ring
+  rw [he]
+  exact rounded_pair_error (posGap hp.pos hpq) (posGap hq.pos hqr)
 
 #print axioms unit_trace_factor
 #print axioms abs_trace_defect

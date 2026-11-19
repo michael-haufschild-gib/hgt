@@ -66,7 +66,8 @@ def centerWeight (s t : ℝ) : Weight := ⟨fraction s t,by
     constructor <;> linarith only [hl,hr]⟩
 
 theorem tilted_rate (s t : ℝ) : mixRate (centerWeight s t).val s t=centerRate s t := by
-  unfold mixRate centerWeight fraction
+  change fraction s t * exp s + (1-fraction s t)*exp t = centerRate s t
+  unfold fraction
   by_cases h : s=t
   · subst t; simp [centerRate]; ring
   · rw [if_neg h]
@@ -109,7 +110,7 @@ theorem optimal_chernoff (a : Shape) (p : Weight) (s t : ℝ) :
   change logAffinity p.val s t-logAffinity q.val s t=r-1-log r at gap
   have bound : logAffinity q.val s t≤logAffinity p.val s t := by linarith only [gap,log_le_sub_one_of_pos hr]
   have val (w : Weight) : C w=exp (a.val*logAffinity w.val s t) := chernoff_mass a w s t
-  rw [val,val,exp_le_exp,exp_inj,mul_right_inj' a.property.ne']
+  rw [val,val,exp_le_exp,Real.exp_injective.eq_iff,mul_right_inj' a.property.ne']
   refine ⟨mul_le_mul_of_nonneg_left bound a.property.le,?_⟩
   change logAffinity q.val s t=logAffinity p.val s t ↔ s=t ∨ p=q
   constructor

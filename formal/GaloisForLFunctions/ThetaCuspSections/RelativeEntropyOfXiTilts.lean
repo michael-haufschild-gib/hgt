@@ -124,7 +124,7 @@ theorem thetaCarrier_cost_identifies (a a' b c : ℝ) :
         (klDiv (thetaCarrierPacket a') (thetaCarrierPacket c)).toReal ↔ b = c ∨ a = a' := by
   simp only [thetaCarrier_cost_difference, add_right_inj, mul_eq_mul_left_iff,
     sub_eq_zero, strictMono_xiRealLogDeriv.injective.eq_iff]
-  tauto
+  aesop
 
 #print axioms thetaTilts_klDiv
 #print axioms thetaCarrier_klDiv

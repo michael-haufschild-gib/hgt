@@ -13,6 +13,7 @@ even when the parameters lie on opposite sides of the origin.
 -/
 
 open Set Filter Topology RHTower InformationTheory
+open scoped NNReal
 
 namespace ThetaCuspSections
 
@@ -45,7 +46,7 @@ theorem susceptibility_strictAntiOn : StrictAntiOn (deriv xiRealLogDeriv) (Ici 0
     filter_upwards [Ioo_mem_nhds (by linarith : a < (a+b)/2) (by linarith : (a+b)/2 < b)]
       with x hx
     have hx' : x ∈ Ici (0 : ℝ) := le_trans ha hx.1.le
-    exact (hanti ha hx' hx.1.le).antisymm (he ▸ hanti hx' hb hx.2.le)
+    exact (hanti ha hx' hx.1.le).antisymm (he.symm.le.trans (hanti hx' hb hx.2.le))
   have hg : deriv xiRealLogDeriv = fun _ => deriv xiRealLogDeriv a :=
     AnalyticOnNhd.eq_of_eventuallyEq (fun x _ => (mean_analytic x).deriv)
       (fun _ _ => analyticAt_const) hlocal
@@ -69,7 +70,7 @@ theorem thetaTiltVariance_lt_iff (a b : ℝ) : thetaTiltVariance a < thetaTiltVa
     · rw [abs_of_nonneg h]
     · rw [abs_of_nonpos h, hneg]
   rw [← habs a, ← habs b, ← susceptibility, ← susceptibility]
-  exact susceptibility_strictAntiOn.lt_iff_lt (abs_nonneg _) (abs_nonneg _)
+  exact susceptibility_strictAntiOn.lt_iff_gt (abs_nonneg _) (abs_nonneg _)
 
 /-- Antisymmetric information cost for two packets equally spaced about a fixed tilt. -/
 private def direction (m h : ℝ) := tiltGap (m-h) (m+h) - tiltGap (m+h) (m-h)

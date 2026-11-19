@@ -4,7 +4,7 @@ import Mathlib.Analysis.Complex.Polynomial.GaussLucas
 /-!
 # Euler coefficient filters and real-root loss
 
-Shi's anchored logarithmic-derivative argument (arXiv:2610.35783, §4)
+Shi's anchored logarithmic-derivative argument (arXiv:2610.35783, Lemma 3.3)
 localizes the roots of `s p + X p′`. At positive integer weight this is the
 derivative of `X^s p` with a known zero power removed. Rolle's theorem then
 controls the number of nonreal roots even for input polynomials with mixed
