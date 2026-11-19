@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.ArbitraryJumpsOfCumulativeMass
-import GaloisForLFunctions.FiniteFreeProbability.JensenCountsOffLineZeros
+import GaloisForLFunctions.GaloisTheoryOfZeros.JensenQuartetExhaustion
 
 /-!
 # Charging new nonreal Jensen roots along sparse degrees
@@ -93,6 +93,35 @@ theorem off_line_count_iff_sparse_charge_budget (m : ℕ) :
     have bound := (fraction_le_iff (Nat.cast_nonneg _) (Nat.cast_nonneg _)).mp (hh.trans hn)
     exact (jensenNonrealCount_mono (hn'.trans (hu.id_le n))).trans (Nat.cast_le.mp bound)
 
+/-- The full gap up to the next quartet is available as a strict error
+margin. For zero allowed quartets the limiting budget is four fifths. -/
+theorem off_line_quartets_iff_strict_charge_budget (m : ℕ) :
+    {q : XiZeroCopy | (xiSpectralPoint q).im ≠ 0}.encard ≤ (4*m : ℕ) ↔
+      ∃ u : ℕ → ℕ, StrictMono u ∧ ∃ᶠ n : ℕ in atTop,
+        (∑ i ∈ range (n+1), powerCharge (sampledJensenMass u) 1 i) <
+          ((4*(m+1):ℕ):ℝ)/(1+((4*(m+1):ℕ):ℝ)) := by
+  have hfrac {a b : ℕ} : (a:ℝ)/(1+a) < (b:ℝ)/(1+b) ↔ a < b := by
+    have hle := fraction_le_iff (Nat.cast_nonneg (α:=ℝ) b) (Nat.cast_nonneg (α:=ℝ) a)
+    constructor
+    · intro h
+      exact lt_of_not_ge fun hn => h.not_ge (hle.mpr (Nat.cast_le.mpr hn))
+    · intro h
+      exact lt_of_not_ge fun hh => h.not_ge (Nat.cast_le.mp (hle.mp hh))
+  constructor
+  · intro h
+    obtain ⟨u,hu,hh⟩ := (off_line_count_iff_sparse_charge_budget (4*m)).mp h
+    exact ⟨u,hu,hh.mono fun _ hn => hn.trans_lt (hfrac.mpr (by omega : 4*m < 4*(m+1)))⟩
+  · rintro ⟨u,hu,h⟩
+    apply encard_offLine_le_iff_forall.mpr
+    intro d
+    obtain ⟨n,hn,hnd⟩ := (h.and_eventually (eventually_ge_atTop d)).exists
+    have hh := (reciprocal_block_bounds (sampled_mono hu.monotone)
+      (by rfl : 0 ≤ sampledJensenMass u 0) 0 (n+1)).1
+    simp only [Nat.zero_add,sampledJensenMass,sub_zero] at hh
+    have hcnt := (jensenNonrealCount_mono (hnd.trans (hu.id_le n))).trans_lt (hfrac.mp (hh.trans_lt hn))
+    rw [jensenNonrealCount_eq_four_mul] at hcnt ⊢
+    omega
+
 /-- A further positive logarithmic discount can always be made summable
 by selecting the degrees. One schedule works for every positive exponent,
 even if the nonreal root count diverges. Thus the undiscounted reciprocal
@@ -146,6 +175,7 @@ theorem exists_sparse_jensen_log_discount :
     ((one_mul _).le.trans hw)
 
 #print axioms exists_sparse_jensen_log_discount
+#print axioms off_line_quartets_iff_strict_charge_budget
 #print axioms sparse_jensen_charge_summable_iff
 #print axioms off_line_count_iff_sparse_charge_budget
 

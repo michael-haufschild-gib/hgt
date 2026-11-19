@@ -50,7 +50,8 @@ private def coordEquiv (n k : ℕ) : latticePoint n k ≃ {x : Triple // inside 
   invFun x := ⟨(x.val.a,x.val.b+k),(coordinates _ _ _ _).mp (by
     have he : coord n k x.val.a (x.val.b+k)=x.val := by
       ext <;> simp only [coord] <;> linarith only [x.property.1]
-    rwa [he])⟩
+    rw [he]
+    exact x.property)⟩
   left_inv p := by apply Subtype.ext; apply Prod.ext <;> simp [coord]
   right_inv x := by apply Subtype.ext; ext <;> simp only [coord] <;> linarith only [x.property.1]
 
@@ -233,8 +234,9 @@ theorem sector_cover (n k : ℕ) (p : latticePoint n k) :
 
 private theorem twice_fan (n k : ℕ) : 2*Fintype.card (Fan n k)=(n+1)*k*(k-1)+2*k := by
   rw [Fintype.card_sigma]
-  simp only [Fintype.card_fin,Fin.sum_univ_eq_sum_range,Finset.sum_add_distrib,
-    ← Finset.mul_sum,Finset.sum_const,Finset.card_range,smul_eq_mul,mul_one]
+  simp only [Fintype.card_fin,Finset.sum_add_distrib,
+    ← Finset.mul_sum,Finset.sum_const,Finset.card_univ,smul_eq_mul,mul_one]
+  rw [Fin.sum_univ_eq_sum_range (fun i : ℕ => i) k]
   have h := Finset.sum_range_id_mul_two k
   nlinarith only [congrArg (fun x => (n+1)*x) h]
 

@@ -171,8 +171,9 @@ private theorem cofactor_theta_motion {m n Q v j : ℕ} (hm : m ≤ n) (hQ : Q �
     linarith only [hm',hn']
   refine ⟨sub_nonneg.mpr (Chebyshev.theta_mono (Nat.cast_le.mpr hab)),?_⟩
   have hlog : Real.log (b:ℝ) ≤ Real.log (4*n:ℕ) := by
-    rcases eq_zero_or_pos b with rfl | hpos
-    · simpa using Real.log_natCast_nonneg (4*n)
+    rcases eq_zero_or_pos b with hbzero | hpos
+    · rw [hbzero,Nat.cast_zero,Real.log_zero]
+      exact Real.log_natCast_nonneg (4*n)
     · exact Real.log_le_log (Nat.cast_pos.mpr hpos) (Nat.cast_le.mpr hb)
   exact (theta_integer_interval_bound hab).trans (mul_le_mul (hs.trans hd) hlog
     (Real.log_natCast_nonneg _) ((sub_nonneg.mpr (Nat.cast_le.mpr hab)).trans (hs.trans hd)))
@@ -675,14 +676,14 @@ theorem ordinary_cofactor_signed_sampling {ε : ℝ} (hε : 0 < ε) :
       rw [show (3/2:ℝ)=1/2+1 by norm_num,Real.rpow_add hv0,Real.rpow_one,Real.sqrt_eq_rpow]
     rw [Real.rpow_add hn0,←Real.sqrt_eq_rpow,veq]
     have hb := mul_le_mul_of_nonneg_left p hK
-    have hz := mul_nonneg hZ (mul_nonneg (mul_nonneg (Real.sqrt_nonneg n) (Real.rpow_nonneg hn0.le _))
+    have hz := mul_nonneg hZ (mul_nonneg (mul_nonneg (Real.sqrt_nonneg n) (Real.rpow_nonneg hn0.le ε))
       (mul_nonneg (Real.sqrt_nonneg V) (Nat.cast_nonneg V)))
     linarith only [bound,hb,hz]
   · have hh : E n V ≤ Z :=
       (single_le_sum (s:=Icc 1 63) (f:=E n) (fun _ _ => abs_nonneg _) (mem_Icc.mpr ⟨hV,by omega⟩)).trans
         (single_le_sum (s:=Icc 1 63) (f:=fun k => ∑ v ∈ Icc 1 63,E k v)
           (fun _ _ => sum_nonneg fun _ _ => abs_nonneg _) (mem_Icc.mpr ⟨hn,by omega⟩))
-    have pos := add_nonneg (mul_nonneg (mul_nonneg (by norm_num) hK) hJ) hZ
+    have pos : 0 ≤ 2*K*J+Z := add_nonneg (mul_nonneg (mul_nonneg (by norm_num) hK) hJ) hZ
     have h1 := Real.one_le_rpow hn1 (by linarith only [hε] : 0 ≤ 1/2+ε)
     have h2 := Real.one_le_rpow hv1 (by norm_num : (0:ℝ) ≤ 3/2)
     exact (hh.trans (le_add_of_nonneg_left (by positivity))).trans

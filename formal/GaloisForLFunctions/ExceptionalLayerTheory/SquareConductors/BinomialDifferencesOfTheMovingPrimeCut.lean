@@ -102,7 +102,6 @@ private theorem inner_atom {N p : ℕ} (hN : 0 < N) (hp : 0 < p)
     push_cast
     have hn' : (N : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hN.ne'
     field_simp [hn']
-    <;> ring
   · rfl
 
 private theorem coherent_inner_difference {N K : ℕ} (r : ℕ) (hN : 0 < N) (hK : 2 ≤ K)
@@ -131,9 +130,9 @@ private theorem coherent_inner_difference {N K : ℕ} (r : ℕ) (hN : 0 < N) (hK
 private theorem terminal_inner_window (r : ℕ) : ∀ᶠ N : ℕ in atTop,
     let K := ⌊(N : ℝ)^(17/9 : ℝ)⌋₊
     0 < N ∧ 2 ≤ K ∧ ((K+r+3 : ℕ) : ℝ) ≤ Real.exp (-8)*(N : ℝ)^2 := by
-  have ha := (Real.tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 17/9)).comp
+  have ha := (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 17/9)).comp
     (tendsto_natCast_atTop_atTop (R := ℝ))
-  have hb := (Real.tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1/9)).comp
+  have hb := (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1/9)).comp
     (tendsto_natCast_atTop_atTop (R := ℝ))
   filter_upwards [eventually_ge_atTop 1, ha.eventually_ge_atTop ((r : ℝ)+3),
     hb.eventually_ge_atTop (2*Real.exp 8)] with N hN hA hB
@@ -190,7 +189,9 @@ theorem moving_cut_difference_norm (r : ℕ) : ∀ᶠ N : ℕ in atTop,
   dsimp only at he ⊢
   rw [he, norm_mul, norm_mul, norm_pow, norm_neg, norm_one, one_pow, one_mul, Complex.norm_real,
     Real.norm_eq_abs, abs_of_pos innerPrimeSlope_pos, Complex.norm_real, Real.norm_eq_abs]
-  rw [abs_of_nonneg (Finset.sum_nonneg (fun j _ => term_nonneg _ _ j))]
+  have hmass (K m : ℕ) : 0 ≤ binomialPrimeMass K m :=
+    Finset.sum_nonneg (fun j _ => term_nonneg K m j)
+  rw [abs_of_nonneg (hmass _ _)]
 
 /-- Prime gaps are exactly the vanishing higher cut differences, eventually for each order. -/
 theorem moving_cut_difference_ne_zero_iff (r : ℕ) : ∀ᶠ N : ℕ in atTop,
