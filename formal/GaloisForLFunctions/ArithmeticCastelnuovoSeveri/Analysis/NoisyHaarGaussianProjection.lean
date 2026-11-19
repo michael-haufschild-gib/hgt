@@ -15,7 +15,7 @@ deviation, with a bounded error controlled by the entropy of the cell label.
 
 noncomputable section
 open MeasureTheory ProbabilityTheory InformationTheory Filter
-open scoped Topology
+open scoped Topology NNReal
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells.NoisyPair
 open BiarithmeticGaugeGeometry
 

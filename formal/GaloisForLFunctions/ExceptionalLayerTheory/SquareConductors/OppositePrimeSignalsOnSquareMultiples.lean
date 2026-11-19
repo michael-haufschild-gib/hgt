@@ -71,7 +71,7 @@ private theorem lower_mono {a b : ℕ} (hab : a≤b) : productLower 1 a≤produc
 
 /-- Exact identity once the sharp product threshold is above the moving
 lower endpoint on both finite spline horizons. -/
-theorem properSquareReading_exact {ℓ m : ℕ} (hℓ : ℓ.Prime) (h₄ : 4<ℓ) (hm : 0<m)
+theorem properSquareReading_exact {ℓ m : ℕ} (hℓ : ℓ.Prime) (h₄ : 4<ℓ) (hm : 0< m)
     (hl : ℓ≤(ℓ*m).sqrt)
     (hlarge : productLower 1 (splineHorizon (ℓ*m))≤(ℓ*m)*(ℓ*m).sqrt)
     (hsmall : productLower 1 (splineHorizon m)≤((ℓ*m)*(ℓ*m).sqrt)/ℓ^2) :
@@ -162,7 +162,7 @@ private theorem capped_at_divided_scale (r : ℕ) : ∃ K : ℝ, 0≤K ∧
   let H := conductorLog m
   have hH : 1≤H := conductorLog_one_le m
   have hH₀ := zero_le_one.trans hH
-  have hm' : (0:ℝ)<m := Nat.cast_pos.mpr hm
+  have hm' : (0:ℝ)< m := Nat.cast_pos.mpr hm
   have hu' : (0:ℝ)<U := Nat.cast_pos.mpr hU
   have hL : 1+Real.log L≤J*H := hlog hm
   have hAterm := pow_le_pow_left₀ (add_nonneg zero_le_one (Real.log_natCast_nonneg L)) hL 6
@@ -201,12 +201,12 @@ theorem properSquareReading_prime_contact {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ :
   let F := ∑ j ∈ Icc 1 B, E j
   have hF : 0≤F := sum_nonneg (fun _ _ => abs_nonneg _)
   refine ⟨F+K,add_nonneg hF hK,fun {m} hm => ?_⟩
-  by_cases hbig : B≤m
+  by_cases hbig : B≤ m
   swap
   · have hf : E m≤F := single_le_sum (fun _ _ => abs_nonneg _) (mem_Icc.mpr ⟨hm,by omega⟩)
     exact hf.trans ((le_add_of_nonneg_right hK).trans (le_mul_of_one_le_right (add_nonneg hF hK)
       (one_le_pow₀ (conductorLog_one_le m))))
-  have hml : ℓ≤m := (le_max_right ..).trans hbig
+  have hml : ℓ≤ m := (le_max_right ..).trans hbig
   let n := ℓ*m
   have hd : ℓ^2≤n := by simpa only [sq,n] using Nat.mul_le_mul_left ℓ hml
   have hs : ℓ≤n.sqrt := Nat.le_sqrt'.mpr hd
@@ -227,9 +227,9 @@ theorem properSquareReading_prime_contact {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ :
 /-- The singleton square fibre of the actual conductor cutoffs. -/
 def singletonSquareReading (ℓ n : ℕ) := splineCountReading n (cappedSquareComplementRow ℓ (n*n.sqrt) n)
 
-private theorem conductorLog_dilate {ℓ m : ℕ} (hℓ : 0<ℓ) (hm : 0<m) :
+private theorem conductorLog_dilate {ℓ m : ℕ} (hℓ : 0<ℓ) (hm : 0< m) :
     conductorLog (ℓ*m)≤(1+Real.log ℓ)*conductorLog m := by
-  have hm' : (1:ℝ)≤m := by exact_mod_cast hm
+  have hm' : (1:ℝ)≤ m := by exact_mod_cast hm
   have hl' : (0:ℝ)<ℓ := Nat.cast_pos.mpr hℓ
   have ht : 1≤2*(m:ℝ) := by linarith only [hm']
   simp only [conductorLog,Nat.cast_mul]
@@ -251,7 +251,7 @@ theorem singletonSquareReading_prime_contact {ℓ : ℕ} (hℓ : ℓ.Prime) (h�
   have hF : 0≤F := sum_nonneg fun _ _ => abs_nonneg _
   have hK : 0≤K := by dsimp [K]; positivity
   refine ⟨F+K*H₀^6,by positivity,fun {m} hm => ?_⟩
-  by_cases hlarge : ℓ≤m
+  by_cases hlarge : ℓ≤ m
   swap
   · have hsmall : E m≤F := single_le_sum (fun _ _ => abs_nonneg _) (mem_Icc.mpr ⟨hm,by omega⟩)
     exact hsmall.trans ((le_add_of_nonneg_right (mul_nonneg hK (by positivity : 0≤H₀^6))).trans
@@ -288,7 +288,7 @@ theorem singletonSquareReading_prime_contact {ℓ : ℕ} (hℓ : ℓ.Prime) (h�
   change |(ℓ:ℝ)*g+dyadicPrimeContact m|≤_
   rw [he]
   apply (abs_sub _ _).trans
-  rw [abs_mul,abs_of_nonneg (Nat.cast_nonneg ℓ)]
+  rw [abs_mul,abs_of_nonneg (Nat.cast_nonneg (α := ℝ) ℓ)]
   have hab : 2*B*J^6*H^6+(ℓ:ℝ)*(2*A*H^6)=K*H^6 := by dsimp only [K]; ring
   apply ((add_le_add hf (mul_le_mul_of_nonneg_left hhead (Nat.cast_nonneg ℓ))).trans_eq hab).trans
   have hgrow := pow_le_pow_left₀ (zero_le_one.trans h₁) (conductorLog_dilate hℓ.pos hm) 6
@@ -316,7 +316,7 @@ theorem aligned_square_multiples_prefix {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ : 4
     have he : (ℓ:ℝ)*(P+S)=(ℓ*P-dyadicPrimeContact m)+(ℓ*S+dyadicPrimeContact m) := by ring
     have hcomb : |P+S|≤(A+B)*(conductorLog m)^6 := by
       calc |P+S| ≤ (ℓ:ℝ)*|P+S| := le_mul_of_one_le_left (abs_nonneg _) hℓ'
-           _ = |(ℓ:ℝ)*(P+S)| := by rw [abs_mul,abs_of_nonneg (Nat.cast_nonneg ℓ)]
+           _ = |(ℓ:ℝ)*(P+S)| := by rw [abs_mul,abs_of_nonneg (Nat.cast_nonneg (α := ℝ) ℓ)]
            _ ≤ _ := by rw [he]; exact (abs_add_le _ _).trans ((add_le_add (ha hpos) (hb hpos)).trans_eq (by ring))
     rw [abs_mul,abs_of_nonneg (sq_nonneg _)]
     exact mul_le_mul (pow_le_pow_left₀ (by positivity) (by exact_mod_cast hnm : (ℓ:ℝ)*m≤N) 2)

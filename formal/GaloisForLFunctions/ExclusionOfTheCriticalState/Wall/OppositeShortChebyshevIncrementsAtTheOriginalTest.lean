@@ -323,6 +323,38 @@ private theorem mesh_price {c g : ℝ} (hc : 0<c) (hg : 0<g) :
        _ ≤ (B*c)*(B^3*Real.sqrt H) := mul_le_mul_of_nonneg_right hprice (by positivity)
        _ = _ := by ring
 
+/-- Any two opposite discrepancies on a terminal block give runs of
+ordinary prime increments at the same numerator, uniformly at late tests. -/
+theorem eventually_sliding_of_factorial_pair {c g : ℝ} (hc : 0<c) (hg : 0<g) :
+    ∀ᶠ T : ℝ in atTop, ∀ (H a b l u M : ℕ) (s : ℝ), 1≤M → M≤H →
+      (H:ℝ)^(g/6)≤Real.exp (g*T) → (s=1 ∨ s= -1) → a≤b → Real.sqrt H<a →
+      ((l=⌊Real.sqrt H⌋₊ ∧ u=a-1) ∨ (l=b ∧ u=H)) →
+      c*Real.exp (g*T)*Real.sqrt H < s*commonFactorialDivisorDiscrepancy (Finset.Icc a b) (Finset.Icc M H) →
+      c*Real.exp (g*T)*Real.sqrt H < (-s)*commonFactorialDivisorDiscrepancy (Finset.Ioc l u) (Finset.Icc M H) →
+      let B := Real.exp ((g/4)*T)
+      HasSlidingThetaIncrements M H ⌈B⌉₊ (Finset.Icc a b) s B (Real.exp ((g/8)*T)) ∧
+      HasSlidingThetaIncrements M H ⌈B⌉₊ (Finset.Ioc l u) (-s) B (Real.exp ((g/8)*T)) := by
+  filter_upwards [mesh_price hc hg,eventually_sliding_price hg] with T hp hslide
+  intro H a b l u M s hm hMH hpow hs hab hroot hside hin houtside
+  let B := Real.exp ((g/4)*T)
+  have hB : 0<B := Real.exp_pos _
+  have hP : 0<⌈B⌉₊ := Nat.ceil_pos.mpr hB
+  have hprice := hp H (hm.trans hMH) hpow
+  have has : 0<a := Nat.cast_pos.mp ((Real.sqrt_nonneg _).trans_lt hroot)
+  have heq : Finset.Icc a b=Finset.Ioc (a-1) b := by ext n; simp only [Finset.mem_Icc,Finset.mem_Ioc]; omega
+  rw [heq] at hin ⊢
+  have hinside (n : ℕ) (hn : n∈Finset.Ioc (a-1) b) : Real.sqrt H<n :=
+    hroot.trans_le (Nat.cast_le.mpr (by have := (Finset.mem_Ioc.mp hn).1; omega : a≤n))
+  have hout (n : ℕ) (hn : n∈Finset.Ioc l u) : Real.sqrt H<n := by
+    rcases hside with ⟨hl,_⟩|⟨hl,_⟩
+    · exact (Nat.floor_lt (Real.sqrt_nonneg _)).mp (hl ▸ (Finset.mem_Ioc.mp hn).1)
+    · exact hroot.trans_le (Nat.cast_le.mpr (hab.trans (hl ▸ (Finset.mem_Ioc.mp hn).1.le)))
+  have hneg : -s=1 ∨ -s= -1 := hs.elim (fun h => Or.inr (by rw [h])) (fun h => Or.inl (by rw [h,neg_neg]))
+  have hincr := shortThetaIncrement_of_commonFactorialDivisorDiscrepancy hm hMH hP hinside hB (hprice.trans_lt hin)
+  have houtcr := shortThetaIncrement_of_commonFactorialDivisorDiscrepancy hm hMH hP hout hB (hprice.trans_lt houtside)
+  exact ⟨hincr.sliding hMH hs (Real.exp_pos _) (hslide H (hm.trans hMH) hpow),
+    houtcr.sliding hMH hneg (Real.exp_pos _) (hslide H (hm.trans hMH) hpow)⟩
+
 /-- The original signed tests force a prime excess and a prime deficit on
 power-short intervals. Each unweighted error exceeds the square root of its
 own interval length by a power of the test scale, and every denominator on
@@ -353,28 +385,11 @@ theorem riemannHypothesis_or_opposite_short_theta_increments : RiemannHypothesis
   refine Or.inr ⟨W,F,Φ,c,g,d,hW,ht,hF,hc,he,hc₀,hg,hd,hd₁,fun η hη hη₁ => ?_⟩
   obtain ⟨T,k,hT,hk,hgain,hw⟩ := hh η hη hη₁
   refine ⟨T,k,hT,hk,hgain,?_⟩
-  filter_upwards [hw,hT.eventually (mesh_price hc₀ hg),hT.eventually (eventually_sliding_price hg)] with i hi hp hslide
+  filter_upwards [hw,hT.eventually (eventually_sliding_of_factorial_pair hc₀ hg)] with i hi hp
   obtain ⟨v,s,j,H,a,b,l,u,hv,hs,hor,hj,hX,hpow,ha,hab,hb,hroot,hcell,hside,hpair⟩ := hi
   refine ⟨v,s,j,H,a,b,l,u,hv,hs,hor,hj,hX,ha,hab,hb,hroot,hcell,hside,fun M hm hMH hwide => ?_⟩
-  let B := Real.exp ((g/4)*T i)
-  have hB : 0<B := Real.exp_pos _
-  have hP : 0<⌈B⌉₊ := Nat.ceil_pos.mpr hB
-  have hprice := hp H (hm.trans hMH) hpow
   have hpairs := hpair M hm hMH hwide (Finset.Icc M H) ⟨M,Finset.mem_Icc.mpr ⟨le_rfl,hMH⟩⟩ (by rfl)
-  have has : 0<a := Nat.cast_pos.mp ((Real.sqrt_nonneg _).trans_lt hroot)
-  have heq : Finset.Icc a b=Finset.Ioc (a-1) b := by ext n; simp only [Finset.mem_Icc,Finset.mem_Ioc]; omega
-  rw [heq] at hpairs ⊢
-  have hinside (n : ℕ) (hn : n∈Finset.Ioc (a-1) b) : Real.sqrt H<n :=
-    hroot.trans_le (Nat.cast_le.mpr (by have := (Finset.mem_Ioc.mp hn).1; omega : a≤n))
-  have hout (n : ℕ) (hn : n∈Finset.Ioc l u) : Real.sqrt H<n := by
-    rcases hside with ⟨hl,_⟩|⟨hl,_⟩
-    · exact (Nat.floor_lt (Real.sqrt_nonneg _)).mp (hl ▸ (Finset.mem_Ioc.mp hn).1)
-    · exact hroot.trans_le (Nat.cast_le.mpr (hab.trans (hl ▸ (Finset.mem_Ioc.mp hn).1.le)))
-  have hneg : -s=1 ∨ -s= -1 := hs.elim (fun h => Or.inr (by rw [h])) (fun h => Or.inl (by rw [h,neg_neg]))
-  have hincr := shortThetaIncrement_of_commonFactorialDivisorDiscrepancy hm hMH hP hinside hB (hprice.trans_lt hpairs.1)
-  have houtcr := shortThetaIncrement_of_commonFactorialDivisorDiscrepancy hm hMH hP hout hB (hprice.trans_lt hpairs.2)
-  exact ⟨hincr.sliding hMH hs (Real.exp_pos _) (hslide H (hm.trans hMH) hpow),
-    houtcr.sliding hMH hneg (Real.exp_pos _) (hslide H (hm.trans hMH) hpow)⟩
+  exact hp H a b l u M s hm hMH hpow hs hab hroot hside hpairs.1 hpairs.2
 
 #print axioms shortThetaIncrement_of_commonFactorialDivisorDiscrepancy
 #print axioms riemannHypothesis_or_opposite_short_theta_increments

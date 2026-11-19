@@ -113,8 +113,13 @@ theorem sign_freedom (G : SimpleGraph (Fin n)) (r : Fin n → ℝ) (p : Probes n
     have step (u v : support r) (he : (G.induce _).Adj u v) : e u.val=e v.val := by
       have H := hp u.val v.val he
       have hn : r u.val*r v.val ≠ 0 := mul_ne_zero u.property v.property
-      cases hu : e u.val <;> cases hv : e v.val <;> simp_all [flip]
-      all_goals exact hn (by linarith only [H])
+      have different (h : r u.val*r v.val = -(r u.val*r v.val)) : False :=
+        hn (by linarith only [h])
+      cases hu : e u.val <;> cases hv : e v.val
+      · rfl
+      · exact (different (by simpa only [flip,hu,hv,Bool.false_eq_true,if_false,if_true,mul_neg] using H)).elim
+      · exact (different (by simpa only [flip,hu,hv,Bool.false_eq_true,if_false,if_true,neg_mul] using H)).elim
+      · rfl
     exact along (P := fun v : support r => e i.val=e v.val) (fun u v he hu => hu.trans (step u v he)) hj rfl
   · intro h i j he
     by_cases hi : r i=0

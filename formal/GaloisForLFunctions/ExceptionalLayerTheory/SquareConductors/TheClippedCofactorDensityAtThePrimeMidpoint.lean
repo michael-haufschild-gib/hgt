@@ -20,10 +20,11 @@ private def clippedRay (N P v : ℕ) : ℝ := max ((N:ℝ)/v-P) 0
 def reflectedCofactorLength (n P v : ℕ) : ℝ :=
   clippedRay (4*n) P v-2*clippedRay (3*n) P v+clippedRay (2*n) P v
 
-private def latticeLength (n P : ℕ) : ℝ :=
+/-- Total clipped prime length over all positive integer cofactors. -/
+def reflectedLatticeLength (n P : ℕ) : ℝ :=
   ∑ v ∈ Icc 1 (4*n/P),reflectedCofactorLength n P v
 
-/-- Sum of the two clipped interval lengths on the primitive cofactors. -/
+/-- Signed clipped interval length summed over the primitive cofactors. -/
 def primitiveCofactorLength (n P : ℕ) : ℝ :=
   ∑ v ∈ (Icc 1 (4*n/P)).filter (n.Coprime ·),reflectedCofactorLength n P v
 
@@ -85,12 +86,12 @@ private theorem length_height (n P v : ℕ) :
 
 /-- Cancellation of all three harmonic endpoint terms in the lattice sum. -/
 theorem clipped_lattice_density_error {m P : ℕ} (hm : 0 < m) (hP : 0 < P) :
-    |latticeLength m P-reflectedDensity*m| ≤
+    |reflectedLatticeLength m P-reflectedDensity*m| ≤
       max (4+|reflectedDensity|) 6 * min (m:ℝ) ((P:ℝ)^2/m) := by
   let T := 4*m/P
   let H (k : ℕ) := ∑ v ∈ Icc 1 T,clippedRay (k*m) P v
-  have hsum : latticeLength m P=H 4-2*H 3+H 2 := by
-    simp only [latticeLength,reflectedCofactorLength,H,T,sum_add_distrib,sum_sub_distrib,mul_sum]
+  have hsum : reflectedLatticeLength m P=H 4-2*H 3+H 2 := by
+    simp only [reflectedLatticeLength,reflectedCofactorLength,H,T,sum_add_distrib,sum_sub_distrib,mul_sum]
   have hm' := (Nat.cast_pos (α:=ℝ)).mpr hm
   have hp' := (Nat.cast_pos (α:=ℝ)).mpr hP
   have hmain : rayMain (4*m) P-2*rayMain (3*m) P+rayMain (2*m) P=reflectedDensity*m := by
@@ -106,7 +107,7 @@ theorem clipped_lattice_density_error {m P : ℕ} (hm : 0 < m) (hP : 0 < P) :
   have ef := abs_le.mp (err 4 (by decide) (by decide))
   have et := abs_le.mp (err 3 (by decide) (by decide))
   have es := abs_le.mp (err 2 (by decide) (by decide))
-  have hlarge : |latticeLength m P-reflectedDensity*m| ≤ 6*((P:ℝ)^2/m) := by
+  have hlarge : |reflectedLatticeLength m P-reflectedDensity*m| ≤ 6*((P:ℝ)^2/m) := by
     rw [hsum,abs_le]
     push_cast at ef et es
     have f (k : ℝ) : 4*(P:ℝ)^2/(k*m)=(4/k)*((P:ℝ)^2/m) := by
@@ -116,13 +117,13 @@ theorem clipped_lattice_density_error {m P : ℕ} (hm : 0 < m) (hP : 0 < P) :
     rw [f 2] at es
     have hpos : 0 ≤ (P:ℝ)^2/m := by positivity
     constructor <;> linarith only [ef.1,ef.2,et.1,et.2,es.1,es.2,hmain,hpos]
-  have hn : 0 ≤ latticeLength m P := sum_nonneg fun v _ => (length_height m P v).1
-  have hheight : latticeLength m P ≤ 4*(m:ℝ) := by
+  have hn : 0 ≤ reflectedLatticeLength m P := sum_nonneg fun v _ => (length_height m P v).1
+  have hheight : reflectedLatticeLength m P ≤ 4*(m:ℝ) := by
     have h := sum_le_sum (s:=Icc 1 T) (fun v _ => (length_height m P v).2)
     simp only [sum_const,Nat.card_Icc,Nat.add_one_sub_one,nsmul_eq_mul] at h
     have hdiv : T*P ≤ 4*m := Nat.div_mul_le_self _ _
     exact h.trans (by exact_mod_cast hdiv)
-  have hsmall := (abs_sub (latticeLength m P) (reflectedDensity*m)).trans
+  have hsmall := (abs_sub (reflectedLatticeLength m P) (reflectedDensity*m)).trans
     (add_le_add_right ((abs_of_nonneg hn).le.trans hheight) |reflectedDensity*m|)
   rw [abs_mul,abs_of_nonneg hm'.le] at hsmall
   rcases le_total (m:ℝ) ((P:ℝ)^2/m) with h | h
@@ -149,7 +150,7 @@ private theorem length_on_divisor {n d : ℕ} (hd : d ∈ n.divisors) (P w : ℕ
   simp only [reflectedCofactorLength,clippedRay,he]
 
 private theorem primitive_length_inversion {n : ℕ} (hn : 0 < n) (P : ℕ) :
-    primitiveCofactorLength n P=∑ d ∈ n.divisors,(μ d:ℝ)*latticeLength (n/d) P := by
+    primitiveCofactorLength n P=∑ d ∈ n.divisors,(μ d:ℝ)*reflectedLatticeLength (n/d) P := by
   classical
   let L := reflectedCofactorLength n P
   rw [primitiveCofactorLength,sum_filter]
@@ -168,7 +169,7 @@ private theorem primitive_length_inversion {n : ℕ} (hn : 0 < n) (P : ℕ) :
              have hcut : 4*n/P/d=4*(n/d)/P := by
                rw [Nat.div_div_eq_div_mul,Nat.mul_comm P d,←Nat.div_div_eq_div_mul,Nat.mul_div_assoc _ hdiv]
              rw [←sum_filter,_root_.RHTower.Sieve.sum_filter_dvd_eq_sum_scaled (Nat.pos_of_mem_divisors hd),
-               hcut,latticeLength,mul_sum]
+               hcut,reflectedLatticeLength,mul_sum]
              exact sum_congr rfl fun v _ => congrArg (fun z => (μ d:ℝ)*z) (length_on_divisor hd P v)
 
 /-- The discrete primitive length has its totient center at every integer.
@@ -177,7 +178,7 @@ theorem primitive_clipped_density_error {n P : ℕ} (hn : 0 < n) (hp : 0 < P) :
     |primitiveCofactorLength n P-reflectedDensity*n.totient| ≤ max (4+|reflectedDensity|) 6 *
       ∑ d ∈ n.divisors,|(μ d:ℝ)|*min ((n/d:ℕ):ℝ) ((P:ℝ)^2/(n/d:ℕ)) := by
   have he : primitiveCofactorLength n P-reflectedDensity*n.totient=
-      ∑ d ∈ n.divisors,(μ d:ℝ)*(latticeLength (n/d) P-reflectedDensity*(n/d:ℕ)) := by
+      ∑ d ∈ n.divisors,(μ d:ℝ)*(reflectedLatticeLength (n/d) P-reflectedDensity*(n/d:ℕ)) := by
     rw [primitive_length_inversion hn,_root_.RHTower.Sieve.totient_eq_sum_moebius_mul n hn,mul_sum,
       ←sum_sub_distrib]
     exact sum_congr rfl fun d _ => by ring
@@ -190,5 +191,24 @@ theorem primitive_clipped_density_error {n P : ℕ} (hn : 0 < n) (hp : 0 < P) :
   exact mul_le_mul_of_nonneg_left (clipped_lattice_density_error hm hp) (abs_nonneg _)
 
 #print axioms primitive_clipped_density_error
+
+/-- At a prime center the two divisor scales are 1 and n. Throughout
+the square-root cutoff range their total clipping error is bounded. -/
+theorem prime_center_clipped_density {p P : ℕ} (hp : p.Prime) (hP : 0 < P) (hsq : P^2 ≤ 4*p) :
+    |primitiveCofactorLength p P-reflectedDensity*p.totient| ≤ 5*max (4+|reflectedDensity|) 6 := by
+  apply (primitive_clipped_density_error hp.pos hP).trans
+  have hmax : 0 ≤ max (4+|reflectedDensity|) 6 := (by norm_num : (0:ℝ)≤6).trans (le_max_right _ _)
+  rw [mul_comm (5:ℝ)]
+  apply mul_le_mul_of_nonneg_left _ hmax
+  rw [hp.divisors,sum_pair (Ne.symm hp.ne_one)]
+  simp only [Nat.div_one,Nat.div_self hp.pos,Nat.cast_one]
+  have hm (d : ℕ) : |(μ d:ℝ)| ≤ 1 := by exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n:=d)
+  have hrat : (P:ℝ)^2/p ≤ 4 := (div_le_iff₀ (Nat.cast_pos.mpr hp.pos)).mpr (by exact_mod_cast hsq)
+  have h1 := mul_le_mul (hm 1) ((min_le_right _ _).trans hrat)
+    (le_min (Nat.cast_nonneg p) (by positivity : 0 ≤ (P:ℝ)^2/p)) zero_le_one
+  have h2 := mul_le_mul (hm p) (min_le_left 1 ((P:ℝ)^2/1)) (le_min zero_le_one (by positivity)) zero_le_one
+  linarith only [h1,h2]
+
+#print axioms prime_center_clipped_density
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

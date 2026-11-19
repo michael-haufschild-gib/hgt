@@ -1,6 +1,6 @@
 # Quantitative factorization with signed boundaries
 
-On a sharp interval \((L,U]\), each squarefree integer carries its Möbius sign and may carry a second arithmetic weight, such as a prime sum read at \(\lfloor X/n\rfloor\). An exchange replaces one prime factor by two distinct primes, or reverses that operation, with both integers in the interval. For the constant weight, removing disjoint opposite-sign pairs preserves the sum. For a reading \(w\), a pair \((n,m)\) contributes \(\mu(n)(w(n)-w(m))\). A pair cut by an endpoint contributes the signed reading of its retained vertex. The question is which exchanges unique factorization supplies, and how much signed mass survives at every cutoff. The target is
+On a sharp interval \((L,U]\), each squarefree integer carries its Möbius sign and may carry a second arithmetic weight, such as a prime sum read at \(\lfloor X/n\rfloor\). An exchange replaces one prime factor by two distinct primes, or reverses that operation, while preserving their common cofactor. For the constant weight, removing disjoint pairs lying wholly inside the interval preserves the sum. For a reading \(w\), a pair \((n,m)\) contributes \(\mu(n)(w(n)-w(m))\). A pair cut by an endpoint contributes the signed reading of its retained vertex. The question is which exchanges unique factorization supplies, and how much signed mass survives at every cutoff. The target is
 \[
   \left|\sum_{1\le n\le X}\mu(n)\right|\ll_\varepsilon X^{1/2+\varepsilon}
   \qquad(\varepsilon>0).
@@ -21,6 +21,13 @@ For a single involution \(F\), write \(D_F(t)\) for the signed fixed vertices th
 An edge spanning both cuts cancels from the difference. Prescribing the semiprimes as fixed points can make the two charges individually as large as the semiprime count. Their signs and the choice of the same involution at both cuts are essential. [Signed crossings at two walls](TheSignedCrossingsBetweenTwoWalls.lean) · [Semiprime prescription](TheCostOfFixingTheSemiprimes.lean)
 
 A quotient reading can jump **inside** an interval. For a kernel with increments \(a(q)\), each jump places another cut at \(\lfloor X/q\rfloor\). Adding adjacent intervals cancels their common boundary when the reading agrees there. Changing the reading at that boundary leaves its signed difference. A sequence of transports must retain every intermediate change, including repeated visits to one integer. In a divisor expansion the same product can occur in several fibres. Their signed multiplicities must be recombined before estimating the error.
+
+There is one density-one matching for all quotient jumps and all frozen prime walls. To recover the rough row, apply its fixed and crossing prefixes at \(\lfloor X/(qd)\rfloor\) for every quotient jump \(q\) and every divisor \(d\le X/q\) supported on primes through \(y\). The signed multiplicities give \(\mu_y=1_{y\text{-smooth}}*\mu\) exactly. For jumps of size \(a(q)\) on a finite set \(S\), the crossing contribution at one endpoint is at most
+\[
+ \log(1+X)\,E_{1/2}(y)\sqrt X
+ \sum_{q\in S}\frac{|a(q)|}{\sqrt q}.
+\]
+The two-endpoint estimate adds the corresponding costs at \(L\) and \(U\). In a sequence of exchanges, every change of reading is evaluated at the shared cutoff. This leaves the signed fixed contribution accessible to further arithmetic analysis. [Composition and quantitative crossing bound](SignedFluxOnGrowingQuotientRanges.lean)
 
 The principal test uses the rough Möbius row at the log-square prime cutoff. Least-prime stopping supplies its terminal rows, divisor inversion gives its smooth center, and the signed flux measures the effect of moving the quotient cuts. A quantitative gain must include the final endpoint. A general rule should gain on several weights using arithmetic independent of a Mertens bound at the proposed output exponent. [Least-prime recursion](TheSignedBoundaryOfAPrefix.lean) · [Exact quotient center](CenteringThePrimePowerReadingsAtTheirQuotientFloors.lean)
 
@@ -158,6 +165,14 @@ Freeze the prime cutoff at \(y\ge1\), write \(\mu_y(n)=\mu(n)1_{(n,P(y))=1}\), a
 Here \(\Psi(T,y)\) counts all positive integers through \(T\) with prime factors at most \(y\), including repeated factors. Rankin's inequality gives \(\Psi(T,y)\le T^s E_s(y)\). The entire first term therefore costs \(O_\varepsilon(X^{1/2+\varepsilon})\), uniformly for every \(y\le\lfloor\log(X+1)\rfloor^2\). The remaining sum reads the actual prime powers at the sharp quotient endpoints. [Exact centering and the smooth population bound](CenteringThePrimePowerReadingsAtTheirQuotientFloors.lean)
 
 With \(y=b(X)=\lfloor\log(X+1)\rfloor^2\), bounding that **single sequence of centered readings** by \(O_\varepsilon(X^{1/2+\varepsilon})\) is equivalent to the same bound for the full Mertens prefix. For any nondecreasing weight \(v\) with \(v(1)>0\), a bound \(Cv(1)n^s\) on the weighted sum at the single frozen cutoff \(b(n)\) controls every unweighted row with \(y\ge b(n)\) by \(CE_s(y)n^s\). Partial summation spends at most \(CE_s(y)n^s(v(n)-v(1))\) on smaller endpoints. The observed sum pays the remaining unit weight. For logarithmic readings, taking \(v(n)=\log(\max(2,n))\) adds exactly \(\log 2\) at the unit. Undoing the Euler factors then recovers the unrestricted prefix. [Weighted inversion](InvertingAWeightedReadingAtAMovingPrimeCutoff.lean) · [The centered prime-power criterion](OneCenteredPrimePowerReadingAtTheLogSquareCutoff.lean)
+
+## Changing the center on a whole band of quotient cells
+
+Let \(A(t)=\sum_{q\le t}a(q)\), where \(|a(q)|\le\Lambda(q)\), and put \(c=a*\mu\). The finite sum \(B_T(t)=\sum_{d\le T}c(d)\lfloor t/d\rfloor\) agrees with \(A(t)\) at every integer \(t\le T\). Subtracting it therefore removes every cofactor \(m>X/(T+1)\) from the corrected reading. Its full signed cost, including the change on all smaller cofactors, is
+\[
+ \sum_{d\le T}c(d)\Psi(\lfloor X/d\rfloor,y).
+\]
+Since \(|c(d)|\le\sum_{q\mid d}\Lambda(q)=\log d\), the absolute cost is at most \(2E_{1/2}(y)\sqrt{XT}\log T\). At the log-square wall this pays for every \(T=X^{o(1)}\) at half-plus precision, for ordinary primes, prime powers and signed masks of either. Each surviving cofactor still carries \(A(\lfloor X/m\rfloor)-B_T(\lfloor X/m\rfloor)\). [Exact elimination and its price](RemovingTerminalQuotientCellsByDivisorInversion.lean)
 
 ## Open questions and success criteria
 

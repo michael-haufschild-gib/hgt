@@ -5,7 +5,7 @@ If RH fails, the §2.16 tests with exterior gain $cX^g$ also contain a single in
  s\sum_{\substack{a\le n\le b\\ \lfloor H/n\rfloor\ {\rm odd}}}
    (\mathbf1_{n\ {\rm prime}}\log n-1)>cX^g\sqrt H .
 \]
-Here $X=e^T\to\infty$, $X^{1/(1+\eta)}\le N\le X$, and $c,g>0$ are independent of the fixed $0<\eta\le1$. The primes in this sum are exactly the prime divisors of $H!/\lfloor H/2\rfloor!^2$ in $[a,b]$. The sign $s=\pm1$ satisfies $s\,m\Phi(v)<0$ at the displacement $v\le0$ selecting this interval, where $m=\int\Phi$. The endpoints include the original time and moving-edge restrictions. An arithmetic bound ruling out this signed discrepancy on the selected intervals remains open. [Same-test theorem](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheOddQuotientIntervalInTheOrdinaryPrimeDeficit.lean#L326).
+Here $X=e^T\to\infty$, $X^{1/(1+\eta)}\le N\le X$, and $c,g>0$ are independent of the fixed $0<\eta\le1$. The primes in this sum are exactly the prime divisors of $H!/\lfloor H/2\rfloor!^2$ in $[a,b]$. The sign $s=\pm1$ satisfies $s\,m\Phi(v)<0$ at the displacement $v\le0$ selecting this interval, where $m=\int\Phi$. The endpoints include the original time and moving-edge restrictions. An arithmetic bound ruling out this signed discrepancy on the selected intervals remains open. [Same-test theorem](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheOddQuotientIntervalInTheOrdinaryPrimeDeficit.lean#L89).
 
 **One interval at fixed displacement.** Write $q_n=\mathbf1_{n\ {\rm prime}}\log n-1$. Substitute $t=v+\log n$ separately in each term of the finite band. With $Y=e^{T-v}$, the atom and exponential part of the kernel give exactly $\Phi(v)/\sqrt Y$. Thus the ordinary-prime test is
 \[
@@ -26,4 +26,4 @@ If every doubled numerator $z=2^{j+1}Y$ had $sD_S(\lfloor z\rfloor)\le2B\sqrt z$
 \[
  v_p(Q_H)=\lfloor H/p\rfloor-2\lfloor H/(2p)\rfloor=\lfloor H/p\rfloor\bmod 2 .
 \]
-This works for odd and even $H$. Thus the prime term in the discrepancy is exactly the sum of $\log p$ over prime divisors of this one integer in $[a,b]$. The reference counts every integer in the interval with odd quotient. [Factorial identity](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheOddQuotientIntervalInTheOrdinaryPrimeDeficit.lean#L181).
+This works for odd and even $H$. Thus the prime term in the discrepancy is exactly the sum of $\log p$ over prime divisors of this one integer in $[a,b]$. The reference counts every integer in the interval with odd quotient. [Factorial identity](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/TheOddQuotientIntervalInTheOrdinaryPrimeDeficit.lean#L48).

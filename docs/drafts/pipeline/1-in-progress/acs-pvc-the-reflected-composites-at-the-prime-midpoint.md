@@ -35,7 +35,7 @@ For \(n=u^r\), \(r=2\) or \(6\), take \(P=u^{r-1}\) and define
  \sum_{p>u^{r-1}}
  \bigl(\mathbf1_{3u^r<pv\le4u^r}-\mathbf1_{2u^r<pv\le3u^r}\bigr)\log p .
 \]
-The inner sum runs over ordinary primes and is finite on its displayed support. Then on paper, at every \(u\ge2\),
+The inner sum runs over ordinary primes and is finite on its displayed support. Lean verified that at every \(u\ge2\),
 \[
  P(u^r)=H_r(u)-cu^{r-1}\varphi(u)+O_{r,\varepsilon}(u^{r-1+\varepsilon}).
 \]

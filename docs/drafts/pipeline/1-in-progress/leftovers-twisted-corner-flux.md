@@ -57,34 +57,18 @@ For the main potential construction the appropriate regular remainder is
 global Dirichlet/ Martin producers, the homogeneous corner expansion,
 Green regularization and uniqueness remains part of the full programme.
 
-## Proof dependencies and status
+## Lean formalization
 
-Corpus search and source inspection locate `WhittakerStreamFunction`
-(`hasDerivAt_kMoment_comp_mul`, `kMoment_two_eq`),
-`WhittakerStreamCorner` (actual corner height), and the underlying
-positive Bessel integral. The elementary derivative and finite-sum
-identities above are dependency-closed paper calculations. Lean audit
-is pending. The counterexample is not yet a promoted no-go, and the
-original card is not retired or marked fully formalized.
+`formal/GaloisForLFunctions/RHTower/WhittakerCornerFlux.lean`, namespace `RHTower.ModularCorner`,
+wired into `RHTower.lean`; standard axioms only.
 
-The full strip admissibility proof must additionally certify actual
-boundedness, periodicity, evenness and the equation for `W`; it must not
-replace those with assumption fields. The final failure of the (C1)
-estimate is a consequence of the explicit admissible witness and its
-nonzero continuous flux limit.
+| Claim | Declarations |
+|---|---|
+| Modes are smooth, even, 1-periodic, bounded on the strip, and solve div(y∇W) = 0 | `contDiffOn_cosineMode`, `cosineMode_even`, `cosineMode_periodic`, `cosineMode_modular_strip_bound`, `cosineMode_axisymmetric_equation` |
+| Corner jet law F(P) = −(3/2) g′(1/2) for every differentiable even periodic W | `corner_radial_deriv_eq_trace_deriv` |
+| Exact finite-mode corner flux; vanishing iff the trace slope vanishes | `cosineArcFlux_corner`, `cosineArcFlux_corner_eq_slope`, `sum_cosineArcFlux_corner_eq_slope`, `sum_cosineArcFlux_corner_eq_zero_iff` |
+| The mode k = 4π has flux −4πy₀K₁(4πy₀) < 0 at the corner, continuous there | `cosineArcFlux_second_corner_neg`, `continuousAt_cosineArcFlux_corner` |
+| The flux is not O(r^{1/2}) at the corner | `not_isBigO_cosineArcFlux_corner_sqrt_distance`, `not_isBigO_cosineMode_corner_radial_deriv` |
 
-The scratch draft `/tmp/leftovers_whittaker_corner_flux.lean` contains
-29 declarations: smoothness of all actual Bessel moments, actual mode
-smoothness/evenness/periodicity, literal first and second derivatives and
-the axisymmetric equation, a bound on the whole modular strip, exact
-the general even-periodic corner-jet identity, exact single/finite-mode identities, and failure of the square-root
-distance estimate for the literal radial derivative. The draft is not
-certified. Its first source/axiom check (session 9319) found three
-elaboration errors in a reflected derivative, a product curve and a
-continuity composition. Smoothness, boundedness, the literal PDE, trace
-derivatives and all finite-mode endpoint identities already had standard
-axioms. Explicit compositions and conversions address these errors; the
-revised full audit was cancelled after the user cleared the goal
-(session 61715, exit 143). Fixes remain unchecked. The draft is preserved
-in [the checkpoint](leftovers-formalization-checkpoint/WhittakerCornerFlux.lean.draft). This is a classical
-calculus correction, with no claim of scientific novelty.
+The corrected main-construction statement (homogeneous corner law (C3) for `J − D_g`) belongs to
+the open primal-construction items on the twisted-minimum-principle card.

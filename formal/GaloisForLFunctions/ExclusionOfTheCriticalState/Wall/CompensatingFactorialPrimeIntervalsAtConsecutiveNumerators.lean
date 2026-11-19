@@ -1,5 +1,5 @@
 import Mathlib.Algebra.GCDMonoid.Finset
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.VariationOfTheFactorialPrimeDiscrepancy
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.PersistentOppositeOddQuotientIntervals
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheOddQuotientIntervalInTheOrdinaryPrimeDeficit
 
 /-!
@@ -53,83 +53,6 @@ theorem commonFactorialDivisorDiscrepancy_eq (S E : Finset ℕ) (H : ℕ)
     by_cases h : keep p <;> simp [ordinaryPrimeExcessCoeff,hp,hg,h]
   · by_cases h : keep p <;> simp [ordinaryPrimeExcessCoeff,hp,h]
 
-private theorem oriented_le_abs {s : ℝ} (hs : s=1 ∨ s= -1) (x : ℝ) : s*x ≤ |x| := by
-  rcases hs with rfl|rfl
-  · simpa only [one_mul] using le_abs_self x
-  · simpa only [neg_one_mul] using (neg_le_abs x)
-
-/-- A discrepancy beyond the complete square-root bound on one interval
-forces the opposite sign on one of its two exact complementary intervals. -/
-private theorem other_interval {H a b : ℕ} {C B s : ℝ} (hC : 0≤C) (hB : 4*C≤B)
-    (hs : s=1 ∨ s= -1) (hab : a≤b) (ha : Real.sqrt H<a)
-    (hall : ∀ L : ℕ, H≤L → |oddQuotientPrimeExcess (Finset.Ioc ⌊Real.sqrt H⌋₊ L) H| ≤ C*Real.sqrt H)
-    (hbig : B*Real.sqrt H < s*oddQuotientPrimeExcess (Finset.Icc a b) H) :
-    ∃ l u : ℕ, ((l=⌊Real.sqrt H⌋₊ ∧ u=a-1) ∨ (l=b ∧ u=H)) ∧
-      (∀ n ∈ Finset.Ioc l u, Real.sqrt H<n) ∧
-      (B/4)*Real.sqrt H < (-s)*oddQuotientPrimeExcess (Finset.Ioc l u) H := by
-  let r := ⌊Real.sqrt H⌋₊
-  let L := max b H
-  let O := fun (S : Finset ℕ) => oddQuotientPrimeExcess S H
-  have hra : r<a := (Nat.floor_lt (Real.sqrt_nonneg _)).mpr ha
-  have hpos : 1≤a := Nat.zero_lt_of_lt hra
-  have hm : Finset.Ioc (a-1) b=Finset.Icc a b := by
-    ext n; simp only [Finset.mem_Ioc,Finset.mem_Icc]; omega
-  have hend : Finset.Ioc b L=Finset.Ioc b H := by
-    ext n; simp only [Finset.mem_Ioc,L]; omega
-  have split : O (Finset.Ioc r L) =
-      O (Finset.Ioc r (a-1))+O (Finset.Icc a b)+O (Finset.Ioc b H) := by
-    dsimp only [O,oddQuotientPrimeExcess]
-    rw [← Finset.sum_Ioc_consecutive _ (by omega : r≤b) (le_max_left b H),
-        ← Finset.sum_Ioc_consecutive _ (by omega : r≤a-1) (by omega : a-1≤b),hm,hend]
-  have hnet := (oriented_le_abs hs _).trans (hall L (le_max_right ..))
-  change s*O (Finset.Ioc r L) ≤ _ at hnet
-  rw [split] at hnet
-  by_cases hl : (B/4)*Real.sqrt H < (-s)*O (Finset.Ioc r (a-1))
-  · exact ⟨r,a-1,Or.inl ⟨rfl,rfl⟩,fun n hn => (Nat.floor_lt (Real.sqrt_nonneg _)).mp
-      (Finset.mem_Ioc.mp hn).1,hl⟩
-  · refine ⟨b,H,Or.inr ⟨rfl,rfl⟩,fun n hn => ha.trans_le (Nat.cast_le.mpr
-      (hab.trans (Finset.mem_Ioc.mp hn).1.le)),?_⟩
-    change _ < (-s)*O (Finset.Ioc b H)
-    change B*Real.sqrt H < s*O (Finset.Icc a b) at hbig
-    linarith only [hnet,hbig,le_of_not_gt hl,mul_le_mul_of_nonneg_right hB (Real.sqrt_nonneg H),
-      mul_nonneg hC (Real.sqrt_nonneg H)]
-
-private theorem eventual_log_price {d A : ℝ} (hd : 0<d) (hA : 0<A) :
-    ∀ᶠ x : ℝ in atTop, 2*Real.log x+2+2*|Real.eulerMascheroniConstant| ≤ (A/16)*x^d := by
-  have hlog := (isLittleO_log_rpow_atTop hd).bound (show 0<A/64 by positivity)
-  have hex := (tendsto_rpow_atTop hd).const_mul_atTop (show 0<A/32 by positivity)
-  filter_upwards [hlog,hex.eventually_ge_atTop (2+2*|Real.eulerMascheroniConstant|),
-    eventually_ge_atTop (1:ℝ)] with x h hx hx1
-  rw [Real.norm_eq_abs,Real.norm_eq_abs,abs_of_nonneg (Real.log_nonneg hx1),
-    abs_of_nonneg (Real.rpow_nonneg (by linarith only [hx1]) d)] at h
-  change _ ≤ (A/32)*x^d at hx
-  linarith only [h,hx]
-
-private theorem block_cost {H M : ℕ} {d A E : ℝ} (hM : 1≤M) (hMH : M≤H) (hA : 0<A)
-    (hd : (H:ℝ)^d*(H:ℝ)^d ≤ E) (hE : 40 ≤ (A/16)*E)
-    (hlog : 2*Real.log H+2+2*|Real.eulerMascheroniConstant| ≤ (A/16)*(H:ℝ)^d)
-    (hwidth : (H:ℝ)-M ≤ (H:ℝ)^(1/2+d)) :
-    ((H:ℝ)-M)*(2*Real.log H+2+2*|Real.eulerMascheroniConstant|)+40*Real.sqrt H ≤
-      (A*E/8)*Real.sqrt H := by
-  have hp : 0<(H:ℝ) := Nat.cast_pos.mpr (hM.trans hMH)
-  have hR : 0≤(H:ℝ)^d := Real.rpow_nonneg hp.le _
-  have hpos : 0≤2*Real.log H+2+2*|Real.eulerMascheroniConstant| := by
-    have h := Real.log_natCast_nonneg H
-    positivity
-  rw [Real.rpow_add hp,← Real.sqrt_eq_rpow] at hwidth
-  have h₁ := mul_le_mul hwidth hlog hpos (mul_nonneg (Real.sqrt_nonneg H) hR)
-  have h₂ := mul_le_mul_of_nonneg_left hd (mul_nonneg (by positivity : 0≤A/16) (Real.sqrt_nonneg H))
-  linarith only [h₁,h₂,mul_le_mul_of_nonneg_right hE (Real.sqrt_nonneg H)]
-
-private theorem persist {s B : ℝ} (hs : s=1 ∨ s= -1) (S E : Finset ℕ) (hne : E.Nonempty)
-    {M H : ℕ} (hM : 1≤M) (hMH : M≤H) (hE : E ⊆ Finset.Icc M H) (hS : ∀ n ∈ S, Real.sqrt H<n)
-    (hmargin : B/4*Real.sqrt H < s*oddQuotientPrimeExcess S H)
-    (hcost : ((H:ℝ)-M)*(2*Real.log H+2+2*|Real.eulerMascheroniConstant|)+40*Real.sqrt H ≤ B/8*Real.sqrt H) :
-    (B/8)*Real.sqrt H < s*commonFactorialDivisorDiscrepancy S E := by
-  have hdiff := (oriented_le_abs hs _).trans ((commonOddQuotientPrimeExcess_change S E hM hMH hne hE).trans hcost)
-  rw [commonFactorialDivisorDiscrepancy_eq S E H (fun _ hj => (Finset.mem_Icc.mp (hE hj)).2) hS]
-  linarith only [hdiff,hmargin]
-
 /-- At each selected late test, one fixed interior interval and one fixed
 exterior interval of prime factors carry opposite discrepancies for the gcd over every
 nonempty selection from a common block of length H^(1/2+d). The exterior
@@ -157,42 +80,27 @@ theorem riemannHypothesis_or_consecutive_factorial_discrepancies : RiemannHypoth
               c*Real.exp (g*T i)*Real.sqrt H < (-s)*commonFactorialDivisorDiscrepancy (Finset.Ioc l u) E := by
   rcases riemannHypothesis_or_odd_quotient_prime_deficit with hr | ⟨W,F,Φ,A,g,hW,ht,hF,hc,he,hA,hg,h⟩
   · exact Or.inl hr
-  obtain ⟨C,hC,hall⟩ := oddQuotientPrimeExcess_complete_above_sqrt
   let d := min (g/12) (1/4)
   have hd : 0<d := lt_min (by positivity) (by norm_num)
-  obtain ⟨U,hlog⟩ := eventually_atTop.mp (eventual_log_price hd hA)
   refine Or.inr ⟨W,F,Φ,A/8,g,d,hW,ht,hF,hc,he,by positivity,hg,hd,min_le_right ..,fun η hη hη1 => ?_⟩
   obtain ⟨T,k,hT,hk,hgain,hw⟩ := h η hη hη1
   let L := fun i => ⌈Real.exp ((1+η)*T i)⌉₊
-  have hE := Real.tendsto_exp_atTop.comp (hT.const_mul_atTop hg)
-  have hX := Real.tendsto_exp_atTop.comp hT
   refine ⟨T,k,hT,hk,fun i => (mul_le_mul_of_nonneg_right (by linarith only [hA] : A/8≤A)
     (Real.exp_pos _).le).trans (hgain i),?_⟩
-  filter_upwards [hw,hX.eventually_ge_atTop (max U 1),
-    (hE.const_mul_atTop hA).eventually_ge_atTop (4*C),
-    (hE.const_mul_atTop (show 0<A/16 by positivity)).eventually_ge_atTop 40] with i hw hU hbig h40
+  filter_upwards [hw,hT.eventually (eventually_paired_quotient_intervals hA hg)] with i hw hp
   obtain ⟨v,s,j,H,a,b,hv,hs,hor,hj,hHX,hpow,ha,hab,hb,hroot,hcell,_,hdef⟩ := hw
-  let E := Real.exp (g*T i)
-  let B := A*E
-  have hH : 1≤(H:ℝ) := (le_max_right U 1).trans (hU.trans hHX)
-  have hS (n : ℕ) (hn : n∈Finset.Icc a b) : Real.sqrt H<n :=
+  have hin (n : ℕ) (hn : n∈Finset.Icc a b) : Real.sqrt H<n :=
     hroot.trans_le (Nat.cast_le.mpr (Finset.mem_Icc.mp hn).1)
-  have hmid : B*Real.sqrt H < s*oddQuotientPrimeExcess (Finset.Icc a b) H := by
-    rw [oddQuotientPrimeExcess_eq_factorial_divisors _ _ hS]
-    exact hdef
-  obtain ⟨l,u,hside,hsideS,hother⟩ := other_interval hC hbig hs hab hroot (hall H) hmid
-  refine ⟨v,s,j,H,a,b,l,u,hv,hs,hor,hj,hHX,hpow,ha,hab,hb,hroot,hcell,hside,fun M hM hMH hwidth J hJ hsub => ?_⟩
-  have hd₂ : (H:ℝ)^d*(H:ℝ)^d ≤ E := by
-    rw [← Real.rpow_add (by linarith only [hH] : 0<(H:ℝ))]
-    exact (Real.rpow_le_rpow_of_exponent_le hH (by linarith only [min_le_left (g/12) (1/4:ℝ)] : d+d≤g/6)).trans hpow
-  have hcost := block_cost hM hMH hA hd₂ h40 (hlog _ ((le_max_left U 1).trans (hU.trans hHX))) hwidth
-  have hB : 0≤B := mul_nonneg hA.le (Real.exp_pos _).le
-  have hlow := persist hs (Finset.Icc a b) J hJ hM hMH hsub hS
-    (lt_of_le_of_lt (mul_le_mul_of_nonneg_right (by linarith only [hB] : B/4≤B) (Real.sqrt_nonneg _)) hmid) hcost
-  have hneg : -s=1 ∨ -s= -1 := hs.elim (fun h => Or.inr (by rw [h])) (fun h => Or.inl (by rw [h,neg_neg]))
-  have hhigh := persist hneg (Finset.Ioc l u) J hJ hM hMH hsub hsideS hother hcost
-  have heq : A/8*Real.exp (g*T i)=B/8 := by dsimp only [B,E]; ring
-  rw [heq]; exact ⟨hlow,hhigh⟩
+  rw [← oddQuotientPrimeExcess_eq_factorial_divisors _ _ hin] at hdef
+  obtain ⟨l,u,hside,hpair⟩ := hp H a b s hHX hpow hs hab hroot hdef
+  refine ⟨v,s,j,H,a,b,l,u,hv,hs,hor,hj,hHX,hpow,ha,hab,hb,hroot,hcell,hside,fun M hm hMH hwidth J hJ hsub => ?_⟩
+  have hout (n : ℕ) (hn : n∈Finset.Ioc l u) : Real.sqrt H<n := by
+    rcases hside with ⟨hl,_⟩|⟨hl,_⟩
+    · exact (Nat.floor_lt (Real.sqrt_nonneg _)).mp (hl ▸ (Finset.mem_Ioc.mp hn).1)
+    · exact hroot.trans_le (Nat.cast_le.mpr (hab.trans (hl ▸ (Finset.mem_Ioc.mp hn).1.le)))
+  have htop (j : ℕ) (hj : j∈J) := (Finset.mem_Icc.mp (hsub hj)).2
+  rw [commonFactorialDivisorDiscrepancy_eq _ J H htop hin,commonFactorialDivisorDiscrepancy_eq _ J H htop hout]
+  exact hpair M hm hMH hwidth J hJ hsub
 
 #print axioms riemannHypothesis_or_consecutive_factorial_discrepancies
 end GaloisForLFunctions.ExclusionOfTheCriticalState

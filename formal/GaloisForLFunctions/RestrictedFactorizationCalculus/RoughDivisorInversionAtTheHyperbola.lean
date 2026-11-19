@@ -119,16 +119,8 @@ theorem rough_head_and_interior (a : ArithmeticFunction ℝ) (y X T : ℕ) :
     roughCofactorReading y X (quotientReading a)=
       roughInteriorReading a y X T+quotientReading (roughFloorCoefficient y a) (min X T) := by
   rw [←head_price,←sub_eq_iff_eq_add]
-  unfold roughCofactorReading roughInteriorReading
-  rw [←sum_sub_distrib]
-  simp only [←mul_sub]
-  symm
-  apply sum_subset (Icc_subset_Icc_right (Nat.div_le_self ..))
-  intro m hm outside
-  have past : X/(T+1)<m := lt_of_not_ge (fun h => outside (mem_Icc.mpr ⟨(mem_Icc.mp hm).1,h⟩))
-  have small : X/m<T+1 := (Nat.div_lt_iff_lt_mul (mem_Icc.mp hm).1).mpr (by
-    simpa only [Nat.mul_comm] using (Nat.div_lt_iff_lt_mul (Nat.succ_pos T)).mp past)
-  rw [rough_counting_center_exact (Nat.le_of_lt_succ small),sub_self,mul_zero]
+  exact cofactor_difference_below_the_terminal_band _ _ y X T
+    (fun _ ht => (rough_counting_center_exact ht a y).symm)
 
 private theorem coeff_interval (c : ArithmeticFunction ℝ) {l u : ℕ} (h : l ≤ u) :
     quotientReading c u-quotientReading c l=∑ d ∈ Ioc l u,c d := by
@@ -155,7 +147,8 @@ theorem two_cutoff_change_of_the_rough_reading (a b : ArithmeticFunction ℝ) (y
 
 private theorem coefficient_le_log {a : ArithmeticFunction ℝ} (dom : ∀ n,|a n| ≤ vonMangoldt n) (y d : ℕ) :
     |roughFloorCoefficient y a d| ≤ Real.log d := by
-  rw [roughFloorCoefficient,mul_comm (roughMobiusWeight y),mul_apply,Nat.sum_divisorsAntidiagonal,←vonMangoldt_sum (n := d)]
+  rw [roughFloorCoefficient,mul_comm (roughMobiusWeight y),mul_apply,Nat.sum_divisorsAntidiagonal
+    (fun q k => a q*roughMobiusWeight y k),←vonMangoldt_sum (n := d)]
   apply (abs_sum_le_sum_abs ..).trans (sum_le_sum (fun q _ => ?_))
   rw [abs_mul]
   have small : |roughMobiusWeight y (d/q)| ≤ 1 := by

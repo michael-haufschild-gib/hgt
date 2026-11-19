@@ -15,7 +15,7 @@ grid cost and bounded below by the positive Fourier-observation cost.
 noncomputable section
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells.GaussianGrid
 open MeasureTheory ProbabilityTheory InformationTheory HTGeometry Filter Set Finset
-open scoped ENNReal Topology
+open scoped ENNReal Topology NNReal
 
 private def atom (j : ℕ) := gaussianPDFReal ((j:ℝ)+1/2) (1/12)
 

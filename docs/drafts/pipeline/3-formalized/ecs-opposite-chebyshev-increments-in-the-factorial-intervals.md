@@ -4,7 +4,7 @@ If RH fails, arbitrarily late original §2.16 tests force two disjoint ordinary-
 $$
  h\le 1+v/X^e,\qquad |\theta(v)-\theta(u)-h|>X^e\sqrt h.
 $$
-Every integer on either interval has one fixed odd quotient throughout the selected consecutive block of numerators. Each interval can have its own quotient. The sign on the interior interval is opposite to the state orientation $m\Phi$ at the original displacement. [Original test theorem](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/OppositeShortChebyshevIncrementsAtTheOriginalTest.lean#L330).
+Every integer on either interval has one fixed odd quotient throughout the selected consecutive block of numerators. Each interval can have its own quotient. The sign on the interior interval is opposite to the state orientation $m\Phi$ at the original displacement. [Original test theorem](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Wall/OppositeShortChebyshevIncrementsAtTheOriginalTest.lean#L362).
 
 **Quotient intervals.** Use the [compensating discrepancies](../3-formalized/ecs-compensating-factorial-intervals-at-consecutive-numerators.md) for the entire block $[M,H]$. On either side $(x,y]$, all surviving denominators with odd quotient $q$ form one interval
 $$

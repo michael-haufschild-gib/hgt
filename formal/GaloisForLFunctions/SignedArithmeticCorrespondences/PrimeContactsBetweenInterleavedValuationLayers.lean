@@ -67,7 +67,7 @@ private theorem distinct_atoms (W : Finset ℕ) {m n : ℕ} (hm : m∈W) (hn : n
         if j=n then x*y*HodgeTheoryOfAFixedPart.pairKernel m n else 0 := by
     by_cases hj : j=n
     · subst j
-      simp only [if_pos rfl,ite_mul,zero_mul,sum_ite_eq',if_pos he]
+      simp [ite_mul,he]
     · simp only [if_neg hj,mul_zero,zero_mul,sum_const_zero]
   rw [formBilin,combBilin,sum_congr rfl (fun j _ => hrow j)]
   simp only [degOne,degTwo,ite_div,zero_div,ite_mul,zero_mul,
@@ -119,8 +119,8 @@ theorem layerPair_exact {p : ℕ} (hp : p.Prime) (h d : ℕ+) (S : Finset ℕ)
     rw [ratioContact_dilate,ratioContact_prime_layers hp h η (hs a ha) (hs b hb),jetKernel_dilate]
     simp only [Nat.cast_mul,div_eq_mul_inv,mul_inv_rev]
     by_cases he : a=b
-    · subst b; simp only [if_pos rfl,c]; ring
-    · simp only [if_neg he,if_neg he.symm]; ring
+    · subst b; simp [c]; ring
+    · simp only [if_neg he,if_neg (Ne.symm he)]; ring
   unfold layerPair layerGeometry
   rw [sum_congr rfl fun a ha => sum_congr rfl fun b hb => e a b ha hb]
   simp only [sum_sub_distrib,sum_ite_eq',sum_div,mul_sum]
@@ -165,9 +165,12 @@ private theorem geom_row {N M n : ℕ} (hN : 0<N) (hn : n∈Ioc N (N+M)) :
     one_div_le_one_div_of_le hnR (Nat.cast_le.mpr (mem_Ioc.mp hm).1.le)
   have h (m : ℕ) (hm : m∈W.erase n) : |geomEntry m n| ≤ 2/(N:ℝ)+jetKernel m n := by
     have hz := abs_sub (1/(m:ℝ)+1/(n:ℝ)) (jetKernel m n)
-    rw [abs_of_nonneg (by positivity),abs_of_nonneg (jetKernel_nonneg m n)] at hz
-    dsimp only [geomEntry]
-    linarith only [hz,hdiv (mem_of_mem_erase hm),hdiv hn]
+    have hpoles : 0 ≤ 1/(m:ℝ)+1/(n:ℝ) := by positivity
+    rw [abs_of_nonneg hpoles,abs_of_nonneg (jetKernel_nonneg m n)] at hz
+    calc |geomEntry m n| ≤ 1/(m:ℝ)+1/(n:ℝ)+jetKernel m n := hz
+         _ ≤ 1/(N:ℝ)+1/(N:ℝ)+jetKernel m n :=
+           add_le_add (add_le_add (hdiv (mem_of_mem_erase hm)) (hdiv hn)) le_rfl
+         _ = _ := by ring
   have hc : ((W.erase n).card:ℝ) ≤ M := by
     have he := card_le_card (erase_subset n W)
     have hw : W.card=M := by simp [W,Nat.card_Ioc]
@@ -231,7 +234,10 @@ theorem layerPair_error {p : ℕ} (hp : p.Prime) (h d : ℕ+) (S : Finset ℕ)
   · intro b hb
     apply geom_subrow hN (hw b hb).2 S id Function.injective_id
     intro a ha
-    exact mem_erase.mpr ⟨fun he => hs a ha (he.symm ▸ layer_dvd p h b),(hw a ha).1⟩
+    refine mem_erase.mpr ⟨?_,(hw a ha).1⟩
+    change a ≠ p^(h:ℕ)*b
+    intro he
+    exact hs a ha (he.symm ▸ layer_dvd p h b)
 
 open Classical in
 /-- Multiplier for the Liouville twist on prime powers. -/
@@ -290,7 +296,9 @@ theorem late_odd_layers_opposite_signs (k : ℕ) :
       simp only [mem_Ioc]
       omega
     · have hlt : A/Real.log 2 < (D:ℝ) := by
-        simpa only [D,Nat.cast_succ] using Nat.lt_floor_add_one (A/Real.log 2)
+        change A/Real.log 2 < ((⌊A/Real.log 2⌋₊+1:ℕ):ℝ)
+        rw [Nat.cast_succ]
+        exact Nat.lt_floor_add_one _
       have hle : (D:ℝ) ≤ d := by exact_mod_cast hd
       exact (div_lt_iff₀ hl).mp (hlt.trans_le hle)
 
@@ -306,11 +314,11 @@ theorem completed_layerPair_two_spacings {p : ℕ} (hp : p.Prime) (h : ℕ+) (d 
   have hs : Summable F := by
     apply Summable.of_norm_bounded ((hu.add hv).div_const 2)
     intro a
-    simp only [F,Real.norm_eq_abs,Pi.add_apply]
+    simp only [F,Real.norm_eq_abs]
     split_ifs
+    · rw [abs_zero]; positivity
     · rw [abs_mul]
       nlinarith only [sq_nonneg (|u a| - |v a|),sq_abs (u a),sq_abs (v a)]
-    · rw [abs_zero]; positivity
   apply (hs.hasSum.tendsto_sum_nat.const_mul (-(η (p^(h:ℕ))*Real.log p))).congr
   intro N
   rw [layerPair_two_spacings hp h (d N) (S N) (fun _ ha => (mem_filter.mp ha).2)]
@@ -350,7 +358,7 @@ theorem integral_exhaustion_of_prime_layers {p : ℕ} (hp : p.Prime) (h : ℕ+) 
   let F (N a : ℕ) := if a∈S N then U N a*V N a else 0
   have he (a : ℕ) : Tendsto (fun N => F N a) atTop (𝓝 (if ¬p ∣ a then u a*v a else 0)) := by
     by_cases ha : p ∣ a
-    · simpa [F,S,ha] using (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0:ℝ)) atTop (𝓝 0))
+    · simp [F,S,ha]
     · rw [if_pos ha]
       apply ((scaledJump_limit (u a)).mul (scaledJump_limit (v a))).congr'
       filter_upwards [eventually_gt_atTop a] with N hN
@@ -358,7 +366,7 @@ theorem integral_exhaustion_of_prime_layers {p : ℕ} (hp : p.Prime) (h : ℕ+) 
   have hdom (N a : ℕ) : ‖F N a‖ ≤ (u a^2+v a^2)/2 := by
     rw [Real.norm_eq_abs]
     by_cases ha : a∈S N
-    · rw [F,if_pos ha,abs_mul]
+    · simp only [F,if_pos ha,abs_mul]
       calc _ ≤ |u a| * |v a| := mul_le_mul (scaledJump_abs N _) (scaledJump_abs N _) (abs_nonneg _) (abs_nonneg _)
            _ ≤ _ := by nlinarith only [sq_nonneg (|u a| - |v a|),sq_abs (u a),sq_abs (v a)]
     · simp only [F,if_neg ha,abs_zero]; positivity
@@ -372,6 +380,7 @@ theorem integral_exhaustion_of_prime_layers {p : ℕ} (hp : p.Prime) (h : ℕ+) 
 
 #print axioms ratioContact_prime_layers
 #print axioms formBilin_prime_layers
+#print axioms layerPair_exact
 #print axioms layerPair_compose
 #print axioms layerPair_two_spacings
 #print axioms layerPair_error

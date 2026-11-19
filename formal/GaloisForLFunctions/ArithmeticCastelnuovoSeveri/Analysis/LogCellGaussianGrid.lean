@@ -16,7 +16,7 @@ vanishes.
 noncomputable section
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells.GaussianGrid
 open MeasureTheory ProbabilityTheory InformationTheory Filter Set HTGeometry
-open scoped ENNReal Topology
+open scoped ENNReal Topology NNReal
 
 def width (n : ℕ) : ℝ := 1/((n:ℝ)+1)
 private theorem width_pos (n : ℕ) : 0 < width n := by unfold width; positivity

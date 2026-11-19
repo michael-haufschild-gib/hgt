@@ -13,7 +13,7 @@ split is the midpoint and gives a factor of sixteen.
 
 noncomputable section
 open MeasureTheory ProbabilityTheory Set Finset
-open scoped ENNReal
+open scoped ENNReal NNReal
 namespace GaloisForLFunctions.ArithmeticCastelnuovoSeveri.LogCells
 
 private def meanPower (k : ℕ) (t a z : ℝ) :=
@@ -28,6 +28,7 @@ theorem position_moment (k : ℕ) (t w z : ℝ) :
     intervalIntegral.integral_comp_sub_right (fun x : ℝ => x^k) z,integral_pow]
   unfold meanPower
   push_cast
+  field_simp [Real.exp_ne_zero w,show (k:ℝ)+1≠0 by positivity]
   ring
 
 private theorem gauss_power_integrable (m : ℝ) (v : ℝ≥0) (k : ℕ) :
@@ -92,7 +93,8 @@ private theorem meanPower_split (k : ℕ) (t z u v : ℝ) :
   unfold lengthRatio meanPower
   rw [add_comm (Real.exp v) (Real.exp u),add_assoc t (Real.exp u) (Real.exp v)]
   field_simp [Real.exp_ne_zero _,(add_pos (Real.exp_pos u) (Real.exp_pos v)).ne',
-    (by positivity : (k:ℝ)+1 ≠ 0)] <;> ring
+    (by positivity : (k:ℝ)+1 ≠ 0)]
+  ring
 
 /-- Mixture of the two moment-matched components on adjacent intervals. -/
 def fittedSplit (t u v : ℝ) := splitGaussian u v
@@ -104,30 +106,36 @@ gives physical length one. -/
 def splitDefect (u v : ℝ) :=
   ((Real.exp u)^5+(Real.exp v)^5)/(120*(Real.exp u+Real.exp v))
 
+private theorem fittedSplit_integral (t u v z : ℝ) (k : ℕ) :
+    (∫ x, (x-z)^k ∂fittedSplit t u v) =
+      lengthRatio u v*(∫ x, (x-z)^k ∂fittedPosition t u) +
+      lengthRatio v u*(∫ x, (x-z)^k ∂fittedPosition (t+Real.exp u) v) := by
+  have hi (s w : ℝ) : Integrable (fun x : ℝ => (x-z)^k) (fittedPosition s w) :=
+    gauss_offset_integrable _ z _ k
+  rw [fittedSplit,splitGaussian_components]
+  change (∫ x, (x-z)^k ∂(ENNReal.ofReal (lengthRatio u v) • fittedPosition t u +
+    ENNReal.ofReal (lengthRatio v u) • fittedPosition (t+Real.exp u) v))=_
+  rw [integral_add_measure ((hi t u).smul_measure ENNReal.ofReal_ne_top)
+    ((hi (t+Real.exp u) v).smul_measure ENNReal.ofReal_ne_top),integral_smul_measure,integral_smul_measure]
+  simp only [ENNReal.toReal_ofReal (lengthRatio_pos _ _).le,smul_eq_mul]
+
 /-- The first three moments of the genuine split and uniform measures agree
 at every center. Their fourth moments differ by exactly the weighted defect. -/
 theorem split_moment_error (t u v z : ℝ) (k : ℕ) : k ≤ 4 →
     let P := positionLaw t (Real.log (Real.exp u+Real.exp v))
     (∫ x, (x-z)^k ∂fittedSplit t u v) - (∫ x, (x-z)^k ∂P) = if k = 4 then splitDefect u v else 0 := by
   intro hk P
-  let a := Real.exp u
-  let b := Real.exp v
   have hab := add_pos (Real.exp_pos u) (Real.exp_pos v)
-  change (∫ x, (x-z)^k ∂splitGaussian _ _ _ _) - (∫ x, (x-z)^k ∂positionLaw _ _) = _
-  rw [splitGaussian_components,integral_add_measure,integral_smul_measure,integral_smul_measure,
-    position_moment,Real.exp_log hab]
-  · have non (s t : ℝ) : 0 ≤ lengthRatio s t := div_nonneg (Real.exp_pos _).le (add_pos (Real.exp_pos _) (Real.exp_pos _)).le
-    simp only [ENNReal.toReal_ofReal (non _ _),smul_eq_mul]
-    change lengthRatio u v*(∫ x, (x-z)^k ∂fittedPosition t u)+
-      lengthRatio v u*(∫ x, (x-z)^k ∂fittedPosition (t+a) v)-meanPower k t (a+b) z = _
-    rw [fitted_position_moments _ _ _ _ hk,fitted_position_moments _ _ _ _ hk,← meanPower_split]
-    by_cases he : k = 4
-    · simp only [he,if_true]
-      unfold splitDefect lengthRatio
-      rw [add_comm (Real.exp v) (Real.exp u)]
-      field_simp [hab.ne'] <;> ring
-    · simp [he]
-  all_goals exact (gauss_offset_integrable _ _ _ _).smul_measure ENNReal.ofReal_ne_top
+  dsimp only [P]
+  rw [fittedSplit_integral,position_moment,Real.exp_log hab,fitted_position_moments _ _ _ _ hk,
+    fitted_position_moments _ _ _ _ hk,← meanPower_split]
+  by_cases he : k = 4
+  · simp only [he,if_true]
+    unfold splitDefect lengthRatio
+    rw [add_comm (Real.exp v) (Real.exp u)]
+    field_simp [hab.ne']
+    ring
+  · simp [he]
 
 /-- Equal splitting uniquely minimizes the fourth defect at fixed total
 width; the exact excess is a strictly positive factor times (a−b)². -/
@@ -142,7 +150,8 @@ theorem split_defect_midpoint (u v : ℝ) :
   have hs := add_pos ha hb
   have h : 1920*splitDefect u v-(a+b)^4 = 5*(a-b)^2*(3*a^2+2*a*b+3*b^2) := by
     change 1920*((a^5+b^5)/(120*(a+b)))-_ = _
-    field_simp [hs.ne'] <;> ring
+    field_simp [hs.ne']
+    ring
   have hp : 0 < 3*a^2+2*a*b+3*b^2 := by positivity
   refine ⟨h,by linarith only [h,mul_nonneg (mul_nonneg (by norm_num : (0:ℝ) ≤ 5) (sq_nonneg (a-b))) hp.le],?_⟩
   constructor
@@ -153,7 +162,8 @@ theorem split_defect_midpoint (u v : ℝ) :
   · rintro rfl
     change (Real.exp u+Real.exp u)^4/1920 = splitDefect u u
     unfold splitDefect
-    field_simp [(add_pos ha ha).ne'] <;> ring
+    field_simp [(add_pos ha ha).ne']
+    ring
 
 #print axioms position_moment
 #print axioms fitted_position_moments

@@ -14,10 +14,11 @@ noncomputable section
 open Finset
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-private def residueCount (a t : ℕ) : ℝ :=
+/-- Number of residues in the closed prefix 1 through t that are coprime to a. -/
+def reflectedCofactorResidueCount (a t : ℕ) : ℝ :=
   (((Icc 1 t).filter (a.Coprime ·)).card : ℝ)
 
-private theorem residueCount_mono (a : ℕ) : Monotone (residueCount a) := by
+private theorem residue_count_mono (a : ℕ) : Monotone (reflectedCofactorResidueCount a) := by
   intro s t hst
   apply Nat.cast_le.mpr
   apply card_le_card
@@ -25,8 +26,8 @@ private theorem residueCount_mono (a : ℕ) : Monotone (residueCount a) := by
   obtain ⟨hi,hc⟩ := mem_filter.mp hw
   exact mem_filter.mpr ⟨mem_Icc.mpr ⟨(mem_Icc.mp hi).1,(mem_Icc.mp hi).2.trans hst⟩,hc⟩
 
-private theorem residueCount_period {a : ℕ} (ha : 0 < a) : residueCount a a=a.totient := by
-  rw [residueCount,_root_.RHTower.Sieve.coprimeCount_eq_sum_divisors ha,
+private theorem residue_count_period {a : ℕ} (ha : 0 < a) : reflectedCofactorResidueCount a a=a.totient := by
+  rw [reflectedCofactorResidueCount,_root_.RHTower.Sieve.coprimeCount_eq_sum_divisors ha,
     ←_root_.RHTower.Sieve.totient_eq_sum_moebius_mul a ha]
 
 /-- Cumulative cofactor price with p allowed even if it divides n,
@@ -37,7 +38,7 @@ def unrestrictedPrimeCofactorCut (n p K : ℕ) : ℝ :=
 
 private theorem shifted_coprime_prefix {a p : ℕ} (hp : p.Prime) (hsep : 4*a < p)
     {j t : ℕ} (hj : j ≤ 3) (ht : t ≤ a) :
-    (((Ioc (j*a) (j*a+t)).filter ((a*p).Coprime ·)).card : ℝ)=residueCount a t := by
+    (((Ioc (j*a) (j*a+t)).filter ((a*p).Coprime ·)).card : ℝ)=reflectedCofactorResidueCount a t := by
   classical
   have hcop {w : ℕ} (hw : w ∈ Icc 1 t) : (a*p).Coprime (j*a+w) ↔ a.Coprime w := by
     obtain ⟨hw1,hwt⟩ := mem_Icc.mp hw
@@ -69,7 +70,7 @@ private theorem shifted_coprime_prefix {a p : ℕ} (hp : p.Prime) (hsep : 4*a < 
 private theorem truncated_period {a p : ℕ} (hp : p.Prime) (hsep : 4*a < p)
     (j K : ℕ) (hj : j ≤ 3) :
     (((Ioc (j*a) (min K ((j+1)*a))).filter ((a*p).Coprime ·)).card : ℝ) =
-      residueCount a (min a (K-j*a)) := by
+      reflectedCofactorResidueCount a (min a (K-j*a)) := by
   have he : Ioc (j*a) (min K ((j+1)*a))=Ioc (j*a) (j*a+min a (K-j*a)) := by
     ext v
     simp only [mem_Ioc,Nat.add_mul,Nat.one_mul]
@@ -83,7 +84,7 @@ theorem forbidden_prime_cofactor_cut {n p : ℕ} (hn : 0 < n) (hp : p.Prime)
     (hdiv : p ∣ n) (hlarge : 4*n < p^2) (K : ℕ) :
     let a := n/p
     unrestrictedPrimeCofactorCut n p K =
-      residueCount a (min a (K-3*a))-residueCount a (min a (K-2*a)) := by
+      reflectedCofactorResidueCount a (min a (K-3*a))-reflectedCofactorResidueCount a (min a (K-2*a)) := by
   let a := n/p
   have hmul : a*p=n := Nat.div_mul_cancel hdiv
   have ha : 0 < a := Nat.div_pos (Nat.le_of_dvd hn hdiv) hp.pos
@@ -91,7 +92,7 @@ theorem forbidden_prime_cofactor_cut {n p : ℕ} (hn : 0 < n) (hp : p.Prime)
     rw [Nat.mul_assoc,hmul,←sq]; exact hlarge)
   have hq (j : ℕ) : j*n/p=j*a := Nat.mul_div_assoc j hdiv
   dsimp only
-  change unrestrictedPrimeCofactorCut n p K=residueCount a (min a (K-3*a))-residueCount a (min a (K-2*a))
+  change unrestrictedPrimeCofactorCut n p K=reflectedCofactorResidueCount a (min a (K-3*a))-reflectedCofactorResidueCount a (min a (K-2*a))
   simp only [unrestrictedPrimeCofactorCut,hq,max_eq_right (show 1 ≤ 2*a by omega),
     max_eq_right (show 1 ≤ 3*a by omega)]
   rw [←hmul]
@@ -109,23 +110,22 @@ theorem forbidden_prime_cofactor_boundaries {n p : ℕ} (hn : 0 < n) (hp : p.Pri
   let a := n/p
   have ha : 0 < a := Nat.div_pos (Nat.le_of_dvd hn hdiv) hp.pos
   have hf (K : ℕ) : unrestrictedPrimeCofactorCut n p K =
-      residueCount a (min a (K-3*a))-residueCount a (min a (K-2*a)) :=
+      reflectedCofactorResidueCount a (min a (K-3*a))-reflectedCofactorResidueCount a (min a (K-2*a)) :=
     forbidden_prime_cofactor_cut hn hp hdiv hlarge K
-  have hz : residueCount a 0=0 := by simp [residueCount]
+  have hz : reflectedCofactorResidueCount a 0=0 := by simp [reflectedCofactorResidueCount]
   change (∀ K : ℕ, -(a.totient:ℝ) ≤ unrestrictedPrimeCofactorCut n p K ∧ unrestrictedPrimeCofactorCut n p K ≤ 0) ∧
     unrestrictedPrimeCofactorCut n p (3*a) = -(a.totient:ℝ) ∧ unrestrictedPrimeCofactorCut n p (4*a) = 0
   constructor
   · intro K
     rw [hf]
-    change -(a.totient:ℝ) ≤ residueCount a _-residueCount a _ ∧ residueCount a _-residueCount a _ ≤ 0
-    refine ⟨?_,sub_nonpos.mpr (residueCount_mono a (by omega))⟩
-    have h1 := residueCount_mono a (min_le_left a (K-2*a))
-    have h2 := residueCount_mono a (Nat.zero_le (min a (K-3*a)))
-    rw [residueCount_period ha] at h1
+    refine ⟨?_,sub_nonpos.mpr (residue_count_mono a (by omega))⟩
+    have h1 := residue_count_mono a (min_le_left a (K-2*a))
+    have h2 := residue_count_mono a (Nat.zero_le (min a (K-3*a)))
+    rw [residue_count_period ha] at h1
     linarith only [h1,h2,hz]
   · rw [hf,hf]
     simp only [Nat.sub_self,Nat.min_zero,show 3*a-2*a=a by omega,show 4*a-3*a=a by omega,min_self,
-      min_eq_left (show a ≤ 4*a-2*a by omega),hz,residueCount_period ha,zero_sub,sub_self,and_self]
+      min_eq_left (show a ≤ 4*a-2*a by omega),hz,residue_count_period ha,zero_sub,sub_self,and_self]
 
 /-- At the exact integer cutoff the complete forbidden row vanishes,
 including the last cofactor multiple. -/
@@ -141,5 +141,21 @@ theorem forbidden_prime_at_square_root_cut {n p : ℕ} (hn : 0 < n) (hp : p.Prim
 #print axioms forbidden_prime_at_square_root_cut
 #print axioms forbidden_prime_cofactor_cut
 #print axioms forbidden_prime_cofactor_boundaries
+
+/-- The prime coprimality restriction can be dropped from any selection
+of complete rows above twice the square root. -/
+theorem reflected_price_without_prime_coprimality {n : ℕ} (hn : 0 < n) (S : Finset ℕ)
+    (hS : ∀ p ∈ S,p.Prime ∧ ⌊2*Real.sqrt n⌋₊ < p) :
+    (∑ p ∈ S.filter (n.Coprime ·),Real.log p*unrestrictedPrimeCofactorCut n p (4*n/p)) =
+      ∑ p ∈ S,Real.log p*unrestrictedPrimeCofactorCut n p (4*n/p) := by
+  apply sum_subset (filter_subset _ _)
+  intro p hp hnot
+  obtain ⟨hpr,hcut⟩ := hS p hp
+  have hdiv : p ∣ n := by
+    by_contra h
+    exact hnot (mem_filter.mpr ⟨hp,(hpr.coprime_iff_not_dvd.mpr h).symm⟩)
+  rw [Nat.mul_div_assoc 4 hdiv,forbidden_prime_at_square_root_cut hn hpr hdiv hcut,mul_zero]
+
+#print axioms reflected_price_without_prime_coprimality
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

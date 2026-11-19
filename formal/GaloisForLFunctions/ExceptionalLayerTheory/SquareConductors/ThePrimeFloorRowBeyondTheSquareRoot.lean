@@ -2,7 +2,7 @@ import GaloisForLFunctions.PrimeExponentialSums.FractionalPartsOfReciprocalPrime
 import GaloisForLFunctions.RHTower.BurnolCoPoissonFractionalKernel
 import GaloisForLFunctions.ExceptionalLayerTheory.LogFactorialWeightsForTheMiddlePrimeInterval
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ThePrimeMidpointInTwoAdjacentGcdHorizons
-import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheSmallPrimeFactorsOfTheReflectedComposites
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheTotientTermInTheReflectedCompositePrice
 
 /-!
 # The signed prime cofactor row beyond twice the square root
@@ -30,7 +30,8 @@ private theorem real_quotient_floor (T p : ℕ) :
   have h := _root_.RHTower.natFloor_cast_eq_sub_fract (by positivity : 0 ≤ (T:ℝ)/p)
   rwa [Nat.floor_div_natCast,Nat.floor_natCast] at h
 
-private theorem midpoint_saw (n p : ℕ) :
+/-- The three linear reciprocal terms cancel even at quotient jumps. -/
+theorem midpoint_floor_weight_as_sawtooths (n p : ℕ) :
     midpointFloorWeight n p =
       2*(Int.fract ((3*(n:ℝ))/p)-1/2)-(Int.fract ((2*(n:ℝ))/p)-1/2)-
         (Int.fract ((4*(n:ℝ))/p)-1/2) := by
@@ -52,14 +53,15 @@ theorem midpoint_floor_prime_block_saving :
       ((mul_le_mul_of_nonneg_right hk' (Nat.cast_nonneg n)).trans hhi)
   have he : midpointFloorPrimeBlock n A B=2*F 3-F 2-F 4 := by
     simp only [midpointFloorPrimeBlock,F,mul_sum,←sum_sub_distrib]
-    exact sum_congr rfl fun p _ => by rw [midpoint_saw]; ring
+    exact sum_congr rfl fun p _ => by rw [midpoint_floor_weight_as_sawtooths]; ring
   have h2 := abs_le.mp (hE 2 (by norm_num) (by norm_num))
   have h3 := abs_le.mp (hE 3 (by norm_num) (by norm_num))
   have h4 := abs_le.mp (hE 4 (by norm_num) (by norm_num))
   rw [he,abs_le]
   constructor <;> linarith only [h2.1,h2.2,h3.1,h3.2,h4.1,h4.2]
 
-private theorem floor_block_append (n : ℕ) {A B C : ℕ} (h : A ≤ B) (h' : B ≤ C) :
+/-- Adjacent half-open prime intervals concatenate with no endpoint loss. -/
+theorem midpoint_floor_block_append (n : ℕ) {A B C : ℕ} (h : A ≤ B) (h' : B ≤ C) :
     midpointFloorPrimeBlock n A B+midpointFloorPrimeBlock n B C=midpointFloorPrimeBlock n A C := by
   simp only [midpointFloorPrimeBlock,sum_filter]
   exact sum_Ico_consecutive _ h h'
@@ -113,7 +115,7 @@ private theorem dyadic_midpoint_bound :
           linarith only [hh]
         have hscale := Real.rpow_le_rpow (Nat.cast_nonneg _) hfrac' hs.le
         rw [Real.mul_rpow (by norm_num : (0:ℝ) ≤ 3/4) (Nat.cast_nonneg B)] at hscale
-        rw [←floor_block_append n hAM hMB.le]
+        rw [←midpoint_floor_block_append n hAM hMB.le]
         apply (abs_add_le _ _).trans
         have hleft := ih M hMB n A ha hAM ((show M-1 ≤ B-1 by omega).trans hcut) hstart
         have hright := hbound hAM hMB hhalf
@@ -311,7 +313,7 @@ theorem midpoint_after_paid_prime_shell :
   have hjoin : B+unrestrictedLargePrimePrice n Q=unrestrictedLargePrimePrice n P := by
     simp only [B,midpointFloorPrimeBlock,hi,unrestrictedLargePrimePrice,sum_filter]
     exact sum_Ioc_consecutive _ hPQ hboundQ
-  have hi' : Ioc 0 P=Icc 1 P := by ext j; simp only [mem_Ico,mem_Icc,mem_Ioc]; omega
+  have hi' : Ioc 0 P=Icc 1 P := by ext j; simp only [mem_Icc,mem_Ioc]; omega
   have hψ : Chebyshev.psi P ≤ 7*P := by
     simpa only [Chebyshev.psi,Nat.floor_natCast,hi'] using _root_.RHTower.sum_vonMangoldt_Icc_le_seven P
   have hproper := hD ((4*n:ℕ):ℝ)
@@ -330,5 +332,125 @@ theorem midpoint_after_paid_prime_shell :
   linarith only [hr,hψ,hcut,hproper,habs]
 
 #print axioms midpoint_after_paid_prime_shell
+
+/-- The true cofactor count strictly above V uses a half-integer wall.
+On the active side its error from length is precisely the centered sawtooth. -/
+private theorem proper_tail_as_shifted_saw (T V : ℕ) {p : ℕ} (hp : 0 < p) :
+    ((T/p-V:ℕ):ℝ) - max ((T:ℝ)/p-((V:ℝ)+1/2)) 0 =
+      if p ≤ 2*T/(2*V+1) then -(Int.fract ((T:ℝ)/p)-1/2) else 0 := by
+  have hp' := (Nat.cast_pos (α:=ℝ)).mpr hp
+  have hwall : p ≤ 2*T/(2*V+1) ↔ (V:ℝ)+1/2 ≤ (T:ℝ)/p := by
+    rw [Nat.le_div_iff_mul_le (by omega : 0 < 2*V+1),le_div_iff₀ hp']
+    constructor
+    · intro h
+      have h' : (p:ℝ)*(2*V+1) ≤ 2*T := by exact_mod_cast h
+      linarith only [h']
+    · intro h
+      have h' : (p:ℝ)*(2*V+1) ≤ 2*T := by linarith only [h]
+      exact_mod_cast h'
+  by_cases h : p ≤ 2*T/(2*V+1)
+  · have hw := hwall.mp h
+    have hf : V ≤ T/p := (Nat.le_div_iff_mul_le hp).mpr (by
+      have hh := (le_div_iff₀ hp').mp (show (V:ℝ) ≤ (T:ℝ)/p by linarith only [hw])
+      exact_mod_cast hh)
+    rw [if_pos h,Nat.cast_sub hf,max_eq_left (sub_nonneg.mpr hw),real_quotient_floor]
+    ring
+  · have hw := lt_of_not_ge (fun hh => h (hwall.mpr hh))
+    have hl : T/p < V+1 := (Nat.div_lt_iff_lt_mul hp).mpr (by
+      have hh := (div_lt_iff₀ hp').mp (show (T:ℝ)/p < (V:ℝ)+1 by linarith only [hw])
+      exact_mod_cast hh)
+    rw [if_neg h,Nat.sub_eq_zero_of_le (by omega),Nat.cast_zero,max_eq_right (sub_nonpos.mpr hw.le),sub_zero]
+
+private def clippedSawPrice (T V A B : ℕ) : ℝ :=
+  ∑ p ∈ (Ico A B).filter Nat.Prime, Real.log p*
+    (if p ≤ 2*T/(2*V+1) then Int.fract ((T:ℝ)/p)-1/2 else 0)
+
+private theorem clipped_saw_price_interval {A B : ℕ} (hab : A ≤ B) (T V : ℕ) :
+    clippedSawPrice T V A B =
+      ∑ p ∈ (Ico A (max A (min B (2*T/(2*V+1)+1)))).filter Nat.Prime,
+        Real.log p*(Int.fract ((T:ℝ)/p)-1/2) := by
+  let cutoff := 2*T/(2*V+1)
+  let I := (Ico A B).filter Nat.Prime
+  have hi : I.filter (· ≤ cutoff)=(Ico A (max A (min B (cutoff+1)))).filter Nat.Prime := by
+    ext p
+    simp only [I,mem_filter,mem_Ico]
+    omega
+  rw [←hi,sum_filter]
+  apply sum_congr rfl
+  intro p _
+  change Real.log p*(if p ≤ cutoff then _ else 0)=(if p ≤ cutoff then _ else 0)
+  split_ifs <;> simp
+
+/-- Difference between the exact signed price above cofactor V and the
+joint interval length clipped at V+1/2, on a sharp prime interval. -/
+def shiftedCofactorBlockError (n V A B : ℕ) : ℝ :=
+  let discrepancy (T p : ℕ) : ℝ :=
+    ((T/p-V:ℕ):ℝ)-max ((T:ℝ)/p-((V:ℝ)+1/2)) 0
+  ∑ p ∈ (Ico A B).filter Nat.Prime,Real.log p*
+    (discrepancy (4*n) p-2*discrepancy (3*n) p+discrepancy (2*n) p)
+
+/-- The same prime saving holds uniformly after a cofactor truncation,
+including thresholds meeting the middle reflected endpoint. -/
+theorem half_shifted_cofactor_block_saving :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n A B : ℕ} (V : ℕ), 1 ≤ A → A ≤ B → B ≤ 2*A →
+      (A:ℝ)^(999/500:ℝ) ≤ 2*n → 4*(n:ℝ) ≤ (A:ℝ)^(1001/500:ℝ) →
+      |shiftedCofactorBlockError n V A B| ≤ C*(A:ℝ)^(999/1000:ℝ) := by
+  obtain ⟨K,hK,h⟩ := GaloisForLFunctions.PrimeExponentialSums.centered_fractional_reciprocal_prime_block
+  refine ⟨4*K,by positivity,?_⟩
+  intro n A B V hA hab hB hlo hhi
+  have hn (k : ℕ) (hk : 2 ≤ k) (hk' : k ≤ 4) :
+      |clippedSawPrice (k*n) V A B| ≤ K*(A:ℝ)^(999/1000:ℝ) := by
+    rw [clipped_saw_price_interval hab]
+    apply h A _ ((k*n:ℕ):ℝ) hA (le_max_left _ _) (max_le (by omega) ((min_le_left _ _).trans hB))
+    · apply hlo.trans
+      exact_mod_cast Nat.mul_le_mul_right n hk
+    · apply le_trans _ hhi
+      exact_mod_cast Nat.mul_le_mul_right n hk'
+  have hid : shiftedCofactorBlockError n V A B =
+      -clippedSawPrice (4*n) V A B+2*clippedSawPrice (3*n) V A B-clippedSawPrice (2*n) V A B := by
+    simp only [shiftedCofactorBlockError,clippedSawPrice,←sum_neg_distrib,mul_sum,←sum_add_distrib,←sum_sub_distrib]
+    apply sum_congr rfl
+    intro p hp
+    simp only [proper_tail_as_shifted_saw _ _ (mem_filter.mp hp).2.pos]
+    split_ifs <;> ring
+  have h2 := abs_le.mp (hn 2 (by decide) (by decide))
+  have h3 := abs_le.mp (hn 3 (by decide) (by decide))
+  have h4 := abs_le.mp (hn 4 (by decide) (by decide))
+  rw [hid,abs_le]
+  constructor <;> linarith only [h2.1,h2.2,h3.1,h3.2,h4.1,h4.2]
+
+#print axioms half_shifted_cofactor_block_saving
+
+/-- Removing both coprimality conditions from the recombined large-prime
+price replaces the totient density by the linear density. The estimate
+also allows any further prime cutoff in the square-root-error shell. -/
+theorem primitive_to_unrestricted_midpoint {ε : ℝ} (he : 0 < ε) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n Q : ℕ}, 1 < n → ⌊2*Real.sqrt n⌋₊ ≤ Q →
+      Q ≤ max ⌊2*Real.sqrt n⌋₊ ⌊(n:ℝ)^(500/999:ℝ)⌋₊ →
+      |unrestrictedLargePrimePrice n Q-largePrimeCofactorPrice n ⌊2*Real.sqrt n⌋₊-
+        reflectedDensity*((n:ℝ)-n.totient)| ≤ C*(n:ℝ)^(1/2+ε) := by
+  obtain ⟨A,hA,ha⟩ := all_endpoint_large_cofactor_error (b:=1/2) le_rfl (by norm_num) he
+  obtain ⟨K,hK,hk⟩ := midpoint_after_paid_prime_shell
+  let J := (Real.log 4-2*Real.log 3+Real.log 2)/2
+  refine ⟨A+K+1+|J|,by positivity,?_⟩
+  intro n Q hn hP hQ
+  have hn1 := (Nat.one_le_cast (α:=ℝ)).mpr hn.le
+  have hprim := ha n hn
+  simp only [reflectedPrimeCut,←Real.sqrt_eq_rpow] at hprim
+  have hsq : Real.sqrt n ≤ (n:ℝ)^(1/2+ε) := by
+    rw [Real.sqrt_eq_rpow]
+    exact Real.rpow_le_rpow_of_exponent_le hn1 (by linarith only [he])
+  have hu := (hk hn.le hP hQ).trans (mul_le_mul_of_nonneg_left hsq hK)
+  have hF : |completeMidpointFactorial n-reflectedDensity*n-J| ≤ 1/(n:ℝ) :=
+    reflected_factorial_center (by omega)
+  have hf := abs_le.mp (hF.trans (div_le_self zero_le_one hn1))
+  have h1 : 1 ≤ (n:ℝ)^(1/2+ε) := Real.one_le_rpow hn1 (by linarith only [he])
+  have hj := le_mul_of_one_le_right (abs_nonneg J) h1
+  obtain ⟨hp1,hp2⟩ := abs_le.mp hprim
+  obtain ⟨hu1,hu2⟩ := abs_le.mp hu
+  rw [abs_le]
+  constructor <;> linarith only [hp1,hp2,hu1,hu2,hf.1,hf.2,h1,hj,neg_abs_le J,le_abs_self J]
+
+#print axioms primitive_to_unrestricted_midpoint
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

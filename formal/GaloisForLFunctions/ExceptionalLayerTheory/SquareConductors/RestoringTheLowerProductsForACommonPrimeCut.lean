@@ -207,7 +207,7 @@ theorem restored_seventeen_ninths_fragments :
     have hL : 0<L := by dsimp only [L]; omega
     have hLM : L<M := by dsimp only [L]; omega
     have hML : M≤2*L := by dsimp only [L]; omega
-    have monot {i j : ℕ} (hi : 0<i) (hij : i≤j) :
+    have monot {i j : ℕ} (hi : 0 < i) (hij : i ≤ j) :
         K*(i:ℝ)^3*conductorLog i ≤ C*(j:ℝ)^3*conductorLog j := by
       exact mul_le_mul (mul_le_mul hKC (pow_le_pow_left₀ (Nat.cast_nonneg i) (Nat.cast_le.mpr hij) 3)
         (pow_nonneg (Nat.cast_nonneg i) 3) hC) (conductorLog_mono hi hij)

@@ -370,10 +370,6 @@ theorem largePrimeCofactorPrice_eq_clippedCofactorOp {n P : ℕ} (hn : 1 ≤ n)
                 exact ⟨⟨hPp, le_max_of_le_right hpv⟩, hp⟩
               · rintro ⟨⟨hPp, hpmax⟩, hp⟩
                 have hp0 : 0 < p := hp.pos
-                have hpv : p ≤ k * n / v := (max_le_iff.mp (hpmax.trans le_rfl)).resolve_left ?_
-                rotate_left
-                · -- direct bound from `P < p ≤ max P (k*n/v)`
-                  exact hpmax
                 have hp_le_knv : p ≤ k * n / v := by omega
                 have hmul : p * v ≤ k * n := (Nat.le_div_iff_mul_le hv0).mp hp_le_knv
                 have hvp : v ≤ k * n / p :=
@@ -1482,6 +1478,78 @@ private theorem wave_cut_rpow_le {n : ℕ} (hn : 1 ≤ n) {β : ℝ} (h0 : 0 < �
             rw [← Real.rpow_add hn0]; congr 1; ring
   linarith only [h1_term, h2_term]
 
+/-- Explicit reflected-composite defect formula on `x + quartetWaveModel z m x` (`0 < Re z < 1`,
+`n ≥ 1`): isolates the exact `ζ(z)`-proportional oscillatory obstruction
+`2 m Re((M(z)/z) ζ(z) E_n(z) n^z)` up to `(68 + 6 |m| waveTransmissionRate z) √n squarefreeDivisorMass n`. -/
+theorem clippedCofactorOp_linear_add_wave_defect {n : ℕ} (hn : 1 ≤ n) {z : ℂ} (hz0 : 0 < z.re)
+    (h1 : z.re < 1) (m : ℝ) :
+    |(clippedCofactorOp n ⌊2 * Real.sqrt n⌋₊ (fun x => x + quartetWaveModel z m x) -
+        reflectedDensity * (n.totient : ℝ) -
+        midpointSecondDiff n (fun x => x + quartetWaveModel z m x)) -
+      2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
+        ((n : ℝ) : ℂ) ^ z).re| ≤
+      (68 + 6 * |m| * waveTransmissionRate z) * Real.sqrt n * squarefreeDivisorMass n := by
+  set P := ⌊2 * Real.sqrt n⌋₊
+  obtain ⟨hP1, hP2, hlo, hhi⟩ := floor_two_sqrt_bounds hn
+  have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hsq1 : 1 ≤ Real.sqrt n := Real.one_le_sqrt.mpr hnR1
+  have hlin := clippedCofactorSliceOp_linear hn hP1 hP2 le_rfl (Nat.coprime_one_right n)
+  rw [Nat.cast_one, div_one, one_mul] at hlin
+  have hlin_cost : 20 * ((P : ℝ) + 1) + 12 * (n : ℝ) / ((P : ℝ) + 1) ≤ 68 * Real.sqrt n := by
+    have hlt_fl : 2 * Real.sqrt n < (P : ℝ) + 1 := Nat.lt_floor_add_one _
+    have hdiv : 12 * (n : ℝ) / ((P : ℝ) + 1) ≤ 6 * Real.sqrt n := by
+      rw [div_le_iff₀ (by positivity)]
+      have hsq := Real.sq_sqrt (by positivity : (0 : ℝ) ≤ n)
+      nlinarith only [hlt_fl, hsq, Real.sqrt_nonneg n]
+    linarith only [hhi, hsq1, hdiv]
+  have hlin' : |clippedCofactorOp n P id - reflectedDensity * (n.totient : ℝ)| ≤
+      68 * Real.sqrt n * squarefreeDivisorMass n :=
+    hlin.trans ((mul_le_mul_of_nonneg_right hlin_cost
+      (sum_nonneg fun _ _ => abs_nonneg _)).trans_eq (by ring))
+  have hwave := clippedCofactorSliceOp_wave hn hP1 hP2 le_rfl (Nat.coprime_one_right n) hz0 h1 m
+  rw [if_pos rfl, Nat.cast_one, Complex.ofReal_one, Complex.one_cpow, one_mul] at hwave
+  have hw_pow : (P : ℝ) ^ z.re + (n : ℝ) * (P : ℝ) ^ (z.re - 2) ≤ 3 * Real.sqrt n := by
+    refine (wave_cut_rpow_le hn hz0 h1).trans ?_
+    rw [Real.sqrt_eq_rpow]
+    exact mul_le_mul_of_nonneg_left
+      (Real.rpow_le_rpow_of_exponent_le hnR1 (by linarith)) (by norm_num)
+  have hwave' : |clippedCofactorOp n P (quartetWaveModel z m) -
+      (-(2 * m * ((midpointMultiplier z / z) *
+        (1 - riemannZeta z * coprimeEulerFactor n z) * ((n : ℝ) : ℂ) ^ z).re))| ≤
+      (6 * |m| * waveTransmissionRate z) * Real.sqrt n * squarefreeDivisorMass n := by
+    refine hwave.trans ?_
+    have h1_w := mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_left hw_pow
+        (mul_nonneg (mul_nonneg zero_le_two (abs_nonneg m)) (waveTransmissionRate_nonneg hz0)))
+      (sum_nonneg fun _ _ => abs_nonneg _)
+    exact h1_w.trans_eq (by ring)
+  have hmid_split : midpointSecondDiff n (fun x => x + quartetWaveModel z m x) =
+      midpointSecondDiff n (quartetWaveModel z m) := by
+    unfold midpointSecondDiff; push_cast; ring
+  have hmid_w := midpointSecondDiff_quartetWaveModel n z m
+  have hre_split : ((midpointMultiplier z / z) *
+      (1 - riemannZeta z * coprimeEulerFactor n z) * ((n : ℝ) : ℂ) ^ z).re =
+      ((midpointMultiplier z / z) * ((n : ℝ) : ℂ) ^ z).re -
+        ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
+          ((n : ℝ) : ℂ) ^ z).re := by
+    rw [← Complex.sub_re]; congr 1; ring
+  rw [clippedCofactorSliceOp_add, hmid_split, hmid_w]
+  have hid : (clippedCofactorOp n P id + clippedCofactorOp n P (quartetWaveModel z m) -
+        reflectedDensity * (n.totient : ℝ) -
+        -(2 * m * ((midpointMultiplier z / z) * ((n : ℝ) : ℂ) ^ z).re)) -
+      2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
+        ((n : ℝ) : ℂ) ^ z).re =
+      (clippedCofactorOp n P id - reflectedDensity * (n.totient : ℝ)) +
+        (clippedCofactorOp n P (quartetWaveModel z m) -
+          -(2 * m * ((midpointMultiplier z / z) *
+            (1 - riemannZeta z * coprimeEulerFactor n z) * ((n : ℝ) : ℂ) ^ z).re)) := by
+    rw [hre_split]; ring
+  change |(clippedCofactorOp n P id + clippedCofactorOp n P (quartetWaveModel z m) -
+        reflectedDensity * (n.totient : ℝ) -
+        -(2 * m * ((midpointMultiplier z / z) * ((n : ℝ) : ℂ) ^ z).re)) - _| ≤ _
+  rw [hid]
+  exact (abs_add_le _ _).trans ((add_le_add hlin' hwave').trans_eq (by ring))
+
 /-- **Exact `ζ(z) = 0` selectivity of reflected-composite wave transmission.**
 For `1/2 < Re z < 1`, `Im z ≠ 0`, and `m ≠ 0`, inserting `x + quartetWaveModel z m x` into
 `clippedCofactorOp n ⌊2√n⌋₊` reproduces `reflectedDensity * φ(n) + midpointSecondDiff` within
@@ -1496,74 +1564,6 @@ theorem reflectedComposite_wave_compatible_iff_zeta_zero {z : ℂ} (hhalf : 1 / 
       riemannZeta z = 0 := by
   have hz0 : 0 < z.re := by linarith
   have hzne0 : z ≠ 0 := fun he => by rw [he, Complex.zero_re] at hz0; exact lt_irrefl 0 hz0
-  -- Uniform error formula on `x + quartetWaveModel z m x` for all `n ≥ 1`
-  have hdefect (n : ℕ) (hn : 1 ≤ n) :
-      |(clippedCofactorOp n ⌊2 * Real.sqrt n⌋₊ (fun x => x + quartetWaveModel z m x) -
-          reflectedDensity * (n.totient : ℝ) -
-          midpointSecondDiff n (fun x => x + quartetWaveModel z m x)) -
-        2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
-          ((n : ℝ) : ℂ) ^ z).re| ≤
-        (68 + 6 * |m| * waveTransmissionRate z) * Real.sqrt n * squarefreeDivisorMass n := by
-    set P := ⌊2 * Real.sqrt n⌋₊
-    obtain ⟨hP1, hP2, hlo, hhi⟩ := floor_two_sqrt_bounds hn
-    have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
-    have hsq1 : 1 ≤ Real.sqrt n := Real.one_le_sqrt.mpr hnR1
-    have hlin := clippedCofactorSliceOp_linear hn hP1 hP2 le_rfl (Nat.coprime_one_right n)
-    rw [Nat.cast_one, div_one, one_mul] at hlin
-    have hlin_cost : 20 * ((P : ℝ) + 1) + 12 * (n : ℝ) / ((P : ℝ) + 1) ≤ 68 * Real.sqrt n := by
-      have hlt_fl : 2 * Real.sqrt n < (P : ℝ) + 1 := Nat.lt_floor_add_one _
-      have hdiv : 12 * (n : ℝ) / ((P : ℝ) + 1) ≤ 6 * Real.sqrt n := by
-        rw [div_le_iff₀ (by positivity)]
-        have hsq := Real.sq_sqrt (by positivity : (0 : ℝ) ≤ n)
-        nlinarith only [hlt_fl, hsq, Real.sqrt_nonneg n]
-      linarith only [hhi, hsq1, hdiv]
-    have hlin' : |clippedCofactorOp n P id - reflectedDensity * (n.totient : ℝ)| ≤
-        68 * Real.sqrt n * squarefreeDivisorMass n :=
-      hlin.trans ((mul_le_mul_of_nonneg_right hlin_cost
-        (sum_nonneg fun _ _ => abs_nonneg _)).trans_eq (by ring))
-    have hwave := clippedCofactorSliceOp_wave hn hP1 hP2 le_rfl (Nat.coprime_one_right n) hz0 h1 m
-    rw [if_pos rfl, Nat.cast_one, Complex.ofReal_one, Complex.one_cpow, one_mul] at hwave
-    have hw_pow : (P : ℝ) ^ z.re + (n : ℝ) * (P : ℝ) ^ (z.re - 2) ≤ 3 * Real.sqrt n := by
-      refine (wave_cut_rpow_le hn hz0 h1).trans ?_
-      rw [Real.sqrt_eq_rpow]
-      exact mul_le_mul_of_nonneg_left
-        (Real.rpow_le_rpow_of_exponent_le hnR1 (by linarith)) (by norm_num)
-    have hwave' : |clippedCofactorOp n P (quartetWaveModel z m) -
-        (-(2 * m * ((midpointMultiplier z / z) *
-          (1 - riemannZeta z * coprimeEulerFactor n z) * ((n : ℝ) : ℂ) ^ z).re))| ≤
-        (6 * |m| * waveTransmissionRate z) * Real.sqrt n * squarefreeDivisorMass n := by
-      refine hwave.trans ?_
-      have h1_w := mul_le_mul_of_nonneg_right
-        (mul_le_mul_of_nonneg_left hw_pow
-          (mul_nonneg (mul_nonneg zero_le_two (abs_nonneg m)) (waveTransmissionRate_nonneg hz0)))
-        (sum_nonneg fun _ _ => abs_nonneg _)
-      exact h1_w.trans_eq (by ring)
-    have hmid_split : midpointSecondDiff n (fun x => x + quartetWaveModel z m x) =
-        midpointSecondDiff n (quartetWaveModel z m) := by
-      unfold midpointSecondDiff; push_cast; ring
-    have hmid_w := midpointSecondDiff_quartetWaveModel n z m
-    have hre_split : ((midpointMultiplier z / z) *
-        (1 - riemannZeta z * coprimeEulerFactor n z) * ((n : ℝ) : ℂ) ^ z).re =
-        ((midpointMultiplier z / z) * ((n : ℝ) : ℂ) ^ z).re -
-          ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
-            ((n : ℝ) : ℂ) ^ z).re := by
-      rw [← Complex.sub_re]; congr 1; ring
-    rw [clippedCofactorSliceOp_add, hmid_split, hmid_w]
-    have hid : (clippedCofactorOp n P id + clippedCofactorOp n P (quartetWaveModel z m) -
-          reflectedDensity * (n.totient : ℝ) -
-          -(2 * m * ((midpointMultiplier z / z) * ((n : ℝ) : ℂ) ^ z).re)) -
-        2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
-          ((n : ℝ) : ℂ) ^ z).re =
-        (clippedCofactorOp n P id - reflectedDensity * (n.totient : ℝ)) +
-          (clippedCofactorOp n P (quartetWaveModel z m) -
-            -(2 * m * ((midpointMultiplier z / z) *
-              (1 - riemannZeta z * coprimeEulerFactor n z) * ((n : ℝ) : ℂ) ^ z).re)) := by
-      rw [hre_split]; ring
-    change |(clippedCofactorOp n P id + clippedCofactorOp n P (quartetWaveModel z m) -
-          reflectedDensity * (n.totient : ℝ) -
-          -(2 * m * ((midpointMultiplier z / z) * ((n : ℝ) : ℂ) ^ z).re)) - _| ≤ _
-    rw [hid]
-    exact (abs_add_le _ _).trans ((add_le_add hlin' hwave').trans_eq (by ring))
   constructor
   · rintro ⟨C, hC⟩
     by_contra hζ_ne
@@ -1594,7 +1594,7 @@ theorem reflectedComposite_wave_compatible_iff_zeta_zero {z : ℂ} (hhalf : 1 / 
       (mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_right (le_abs_self C) (Real.sqrt_nonneg n))
         (by rw [hmass2]; norm_num))
-    have hb2 := hdefect n (by omega)
+    have hb2 := clippedCofactorOp_linear_add_wave_defect (by omega) hz0 h1 m
     rw [hmass2] at hb1 hb2
     have hupper : |2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
         ((n : ℝ) : ℂ) ^ z).re| ≤ K_tot * Real.sqrt n := by
@@ -1625,7 +1625,7 @@ theorem reflectedComposite_wave_compatible_iff_zeta_zero {z : ℂ} (hhalf : 1 / 
     linarith only [hupper, hlower, hm2, hle_K]
   · intro hζ0
     refine ⟨68 + 6 * |m| * waveTransmissionRate z, fun n hn => ?_⟩
-    have hd := hdefect n (by omega)
+    have hd := clippedCofactorOp_linear_add_wave_defect (by omega) hz0 h1 m
     simpa [hζ0] using hd
 
 /-- **Zero off-line wave on every `q ≥ 2` cofactor-divisibility slice of actual primes.**
@@ -1642,7 +1642,7 @@ theorem clippedCofactorSliceOp_theta_of_two_le {q : ℕ} (hq : 2 ≤ q) :
   obtain ⟨A_pt, hA_pt⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
   have hq0 : 0 < q := by omega
   have hqR : (0 : ℝ) < q := by exact_mod_cast hq0
-  refine ⟨40 + 2 * |A_pt|, by positivity, fun {n} hq_sq hcop => ?_⟩
+  refine ⟨52 + 2 * |A_pt|, by positivity, fun {n} hq_sq hcop => ?_⟩
   have hn1 : 1 ≤ n := by nlinarith only [hq_sq, hq]
   have hnR : (1 : ℝ) ≤ n := by exact_mod_cast hn1
   have hsq1 : 1 ≤ Real.sqrt n := Real.one_le_sqrt.mpr hnR
@@ -1653,7 +1653,6 @@ theorem clippedCofactorSliceOp_theta_of_two_le {q : ℕ} (hq : 2 ≤ q) :
     have hR : (q : ℝ) ^ 2 ≤ (2 * Real.sqrt n) ^ 2 := by
       rw [mul_pow, Real.sq_sqrt (by positivity)]; exact_mod_cast hq_sq
     nlinarith only [hR, hqR, Real.sqrt_nonneg n]
-  -- Swap `clippedCofactorSliceOp n P q θ` to sum over primes `p ∈ Ioc P (4*n)`
   let cp (m : ℕ) : ℝ := (((Icc 1 m).filter (n.Coprime ·)).card : ℝ)
   let wq (r : ℕ) : ℝ := cp (4 * n / (q * r)) - 2 * cp (3 * n / (q * r)) + cp (2 * n / (q * r))
   have hwq_le (r : ℕ) (hr : 1 ≤ r) : |wq r| ≤ squarefreeDivisorMass n := by
@@ -1754,28 +1753,27 @@ theorem clippedCofactorSliceOp_theta_of_two_le {q : ℕ} (hq : 2 ≤ q) :
             rw [← hrow 4 (by decide), ← hrow 3 (by decide), ← hrow 2 (by decide),
               Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
             exact Finset.sum_congr rfl fun _ _ => by dsimp [wq]; ring
-  -- Complete `∑_{p > P} log p * wq p` to `∑_{r ∈ Icc 1 (4*n)} Λ(r) * wq(r / gcd(q, r))`
-  -- Simpler: sum `log(q b)` directly over `b ∈ Ioc (3n/q) (4n/q)` minus `Ioc (2n/q) (3n/q)` with `n.Coprime b`!
   let Tq : ℝ :=
     (∑ b ∈ (Ioc (3 * n / q) (4 * n / q)).filter (n.Coprime ·), Real.log ((q * b : ℕ) : ℝ)) -
       (∑ b ∈ (Ioc (2 * n / q) (3 * n / q)).filter (n.Coprime ·), Real.log ((q * b : ℕ) : ℝ))
-  -- Identify `Tq = ∑_{r ∈ Icc 1 (4*n)} Λ(r) * wq'(r)` where `wq'(r) = wq(r)` for `r = p > P` prime!
   let rStep (r : ℕ) : ℕ := r / Nat.gcd q r
   let wqr (r : ℕ) : ℝ :=
-    cp (4 * n / (q * rStep r)) - 2 * cp (3 * n / (q * rStep r)) + cp (2 * n / (q * rStep r))
-  have hwqr_eq_wq_of_prime_gt_P {p : ℕ} (hp : p.Prime) (hPp : P < p) : wqr p = wq p := by
-    dsimp [wqr, wq, rStep]
-    have hcop_qp : Nat.Coprime q p :=
-      (hp.coprime_iff_not_dvd.mpr fun hd => (hqP.trans_lt hPp).not_ge (Nat.le_of_dvd hq0 hd)).symm
-    rw [hcop_qp.gcd_eq_one, Nat.div_one]
+    if n.Coprime (rStep r) then
+      cp (4 * n / (q * rStep r)) - 2 * cp (3 * n / (q * rStep r)) + cp (2 * n / (q * rStep r))
+    else 0
   have hwqr_le (r : ℕ) (hr : 1 ≤ r) : |wqr r| ≤ squarefreeDivisorMass n := by
-    have hrs : 1 ≤ rStep r :=
-      Nat.div_pos (Nat.le_of_dvd hr (Nat.gcd_dvd_right q r)) (Nat.gcd_pos_of_pos_left r hq0)
-    exact hwq_le (rStep r) hrs
+    dsimp [wqr]
+    split_ifs with hc
+    · have hrs : 1 ≤ rStep r :=
+        Nat.div_pos (Nat.le_of_dvd hr (Nat.gcd_dvd_right q r)) (Nat.gcd_pos_of_pos_left r hq0)
+      exact hwq_le (rStep r) hrs
+    · rw [abs_zero]
+      exact sum_nonneg fun _ _ => abs_nonneg _
   have hTq_mangoldt : Tq = ∑ r ∈ Icc 1 (4 * n), vonMangoldt r * wqr r := by
     have hpre (k : ℕ) (hk : k ≤ 4) :
         ∑ b ∈ (Icc 1 (k * n / q)).filter (n.Coprime ·), Real.log ((q * b : ℕ) : ℝ) =
-          ∑ r ∈ Icc 1 (4 * n), vonMangoldt r * cp (k * n / (q * rStep r)) := by
+          ∑ r ∈ Icc 1 (4 * n),
+            vonMangoldt r * (if n.Coprime (rStep r) then cp (k * n / (q * rStep r)) else 0) := by
       have hlog_qb (b : ℕ) (hb : b ∈ (Icc 1 (k * n / q)).filter (n.Coprime ·)) :
           Real.log ((q * b : ℕ) : ℝ) =
             ∑ r ∈ Icc 1 (4 * n), if rStep r ∣ b then vonMangoldt r else 0 := by
@@ -1815,14 +1813,15 @@ theorem clippedCofactorSliceOp_theta_of_two_le {q : ℕ} (hq : 2 ≤ q) :
         _ = ∑ r ∈ Icc 1 (4 * n),
               ∑ b ∈ (Icc 1 (k * n / q)).filter (n.Coprime ·),
                 if rStep r ∣ b then vonMangoldt r else 0 := Finset.sum_comm
-        _ = ∑ r ∈ Icc 1 (4 * n), vonMangoldt r * cp (k * n / (q * rStep r)) := by
+        _ = ∑ r ∈ Icc 1 (4 * n),
+              vonMangoldt r * (if n.Coprime (rStep r) then cp (k * n / (q * rStep r)) else 0) := by
               refine Finset.sum_congr rfl fun r hr => ?_
               have hr1 : 1 ≤ r := (mem_Icc.mp hr).1
               have hrs0 : 0 < rStep r :=
                 Nat.div_pos (Nat.le_of_dvd hr1 (Nat.gcd_dvd_right q r))
                   (Nat.gcd_pos_of_pos_left r hq0)
               by_cases hrcop : n.Coprime (rStep r)
-              · rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_comm]
+              · rw [if_pos hrcop, ← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul, mul_comm]
                 congr 1
                 dsimp [cp]
                 congr 1
@@ -1851,16 +1850,1106 @@ theorem clippedCofactorSliceOp_theta_of_two_le {q : ℕ} (hq : 2 ≤ q) :
                     Nat.Coprime.mul_right hrcop huc⟩, dvd_mul_right _ _⟩
                 · intro b hb; exact Nat.mul_div_cancel' (mem_filter.mp hb).2
                 · intro u _; exact Nat.mul_div_right u hrs0
-              · -- If `¬ n.Coprime (rStep r)`, no `b` coprime to `n` can be divisible by `rStep r`,
-                -- UNLESS `vonMangoldt r = 0` or `r = p^j` with `p ∣ n`:
-                by_cases hvm : vonMangoldt r = 0
-                · rw [hvm, zero_mul]
-                  exact Finset.sum_eq_zero fun _ _ => by split_ifs <;> simp [hvm]
-                · --Wait: if `¬ n.Coprime (rStep r)`, then `gcd(n, rStep r) > 1`, so `rStep r ∣ b`
-                  -- implies `¬ n.Coprime b`! Wait: why would `cp (k*n/(q*rStep r))` vanish?!
-                  -- IT DOES NOT! Wait — let's put `if n.Coprime (rStep r)` inside `wqr`!
-                  exfalso; exact hrcop hrcop
-    sorry
-  sorry
+              · rw [if_neg hrcop, mul_zero]
+                refine Finset.sum_eq_zero fun b hb => ?_
+                rw [if_neg]
+                intro hdvd
+                exact hrcop ((mem_filter.mp hb).2.coprime_dvd_right hdvd)
+    have hsplit_b {l u : ℕ} (hlu : l ≤ u) :
+        (∑ b ∈ (Ioc l u).filter (n.Coprime ·), Real.log ((q * b : ℕ) : ℝ)) =
+          (∑ b ∈ (Icc 1 u).filter (n.Coprime ·), Real.log ((q * b : ℕ) : ℝ)) -
+            (∑ b ∈ (Icc 1 l).filter (n.Coprime ·), Real.log ((q * b : ℕ) : ℝ)) := by
+      simp only [Finset.sum_filter, show Icc 1 u = Ioc 0 u by ext x; simp [mem_Icc, mem_Ioc]; omega,
+        show Icc 1 l = Ioc 0 l by ext x; simp [mem_Icc, mem_Ioc]; omega]
+      linarith only [Finset.sum_Ioc_consecutive
+        (fun b : ℕ => if n.Coprime b then Real.log ((q * b : ℕ) : ℝ) else 0) (Nat.zero_le l) hlu]
+    dsimp [Tq]
+    rw [hsplit_b (Nat.div_le_div_right (show 3 * n ≤ 4 * n by omega)),
+      hsplit_b (Nat.div_le_div_right (show 2 * n ≤ 3 * n by omega)),
+      hpre 4 (by decide), hpre 3 (by decide), hpre 2 (by decide),
+      ← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun r _ => ?_
+    dsimp [wqr]; split_ifs <;> ring
+  have hlog4n_2 : Real.log (4 * (n : ℝ)) ≤ 2 * Real.sqrt n := by
+    have hl1 := Real.log_le_sub_one_of_pos (by positivity : (0 : ℝ) < Real.sqrt n)
+    have hl2 : Real.log 2 ≤ 1 := by linarith [Real.log_two_lt_d9]
+    have h4n : Real.log (4 * (n : ℝ)) = 2 * Real.log 2 + 2 * Real.log (Real.sqrt n) := by
+      rw [Real.log_mul (by norm_num) (by positivity),
+        show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow,
+        ← Real.sq_sqrt (by positivity : (0 : ℝ) ≤ n), Real.log_pow]
+      ring
+    linarith only [h4n, hl1, hl2]
+  have hslice_sub_Tq :
+      |clippedCofactorSliceOp n P q Chebyshev.theta - Tq| ≤
+        (18 + 2 * |A_pt|) * Real.sqrt n * squarefreeDivisorMass n := by
+    rw [hswap_q, hTq_mangoldt]
+    have hIcc_split : Icc 1 (4 * n) = Icc 1 P ∪ Ioc P (4 * n) := by
+      ext r; simp only [mem_Icc, mem_union, mem_Ioc]; omega
+    have hdisj : Disjoint (Icc 1 P) (Ioc P (4 * n)) :=
+      Finset.disjoint_left.mpr fun _ h1 h2 => (mem_Ioc.mp h2).1.not_ge (mem_Icc.mp h1).2
+    rw [hIcc_split, Finset.sum_union hdisj,
+      ← Finset.sum_filter_add_sum_filter_not (Ioc P (4 * n)) Nat.Prime]
+    have hsmall : |∑ r ∈ Icc 1 P, vonMangoldt r * wqr r| ≤
+        14 * Real.sqrt n * squarefreeDivisorMass n := by
+      refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+      have h1 : ∑ r ∈ Icc 1 P, |vonMangoldt r * wqr r| ≤
+          (∑ r ∈ Icc 1 P, vonMangoldt r) * squarefreeDivisorMass n := by
+        rw [Finset.sum_mul]
+        refine Finset.sum_le_sum fun r hr => ?_
+        rw [abs_mul, abs_of_nonneg vonMangoldt_nonneg]
+        exact mul_le_mul_of_nonneg_left (hwqr_le r (mem_Icc.mp hr).1) vonMangoldt_nonneg
+      have h7 : ∑ r ∈ Icc 1 P, vonMangoldt r ≤ 14 * Real.sqrt n :=
+        (_root_.RHTower.sum_vonMangoldt_Icc_le_seven P).trans (by linarith only [hhi])
+      exact h1.trans (mul_le_mul_of_nonneg_right h7 (sum_nonneg fun _ _ => abs_nonneg _))
+    have hpow : |∑ r ∈ (Ioc P (4 * n)).filter (fun r => ¬ r.Prime), vonMangoldt r * wqr r| ≤
+        2 * |A_pt| * Real.sqrt n * squarefreeDivisorMass n := by
+      refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+      have h1 : ∑ r ∈ (Ioc P (4 * n)).filter (fun r => ¬ r.Prime), |vonMangoldt r * wqr r| ≤
+          (∑ r ∈ (Ioc 0 (4 * n)).filter (fun r => ¬ r.Prime), vonMangoldt r) *
+            squarefreeDivisorMass n := by
+        rw [Finset.sum_mul]
+        refine (Finset.sum_le_sum fun r hr => ?_).trans
+          (Finset.sum_le_sum_of_subset_of_nonneg ?_
+            (fun _ _ _ => mul_nonneg vonMangoldt_nonneg (sum_nonneg fun _ _ => abs_nonneg _)))
+        · rw [abs_mul, abs_of_nonneg vonMangoldt_nonneg]
+          exact mul_le_mul_of_nonneg_left
+            (hwqr_le r (by linarith [(mem_Ioc.mp (mem_filter.mp hr).1).1])) vonMangoldt_nonneg
+        · intro r hr
+          obtain ⟨hrI, hrnp⟩ := mem_filter.mp hr
+          exact mem_filter.mpr ⟨mem_Ioc.mpr ⟨by linarith [(mem_Ioc.mp hrI).1], (mem_Ioc.mp hrI).2⟩,
+            hrnp⟩
+      rw [← Chebyshev.psi_sub_theta_eq_sum_not_prime, Nat.floor_natCast] at h1
+      have hpt : Chebyshev.psi (4 * n : ℕ) - Chebyshev.theta (4 * n : ℕ) ≤
+          2 * |A_pt| * Real.sqrt n := by
+        have hsq4 : Real.sqrt (4 * n : ℕ) = 2 * Real.sqrt n := by
+          rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num),
+            show Real.sqrt 4 = 2 by norm_num]
+        exact (hA_pt (4 * n : ℕ)).trans
+          ((mul_le_mul_of_nonneg_right (le_abs_self A_pt) (Real.sqrt_nonneg _)).trans_eq
+            (by rw [hsq4]; ring))
+      exact h1.trans (mul_le_mul_of_nonneg_right hpt (sum_nonneg fun _ _ => abs_nonneg _))
+    have hforb : |(∑ p ∈ (Ioc P (4 * n)).filter Nat.Prime, Real.log p * wq p) -
+        (∑ p ∈ (Ioc P (4 * n)).filter Nat.Prime, vonMangoldt p * wqr p)| ≤
+        4 * Real.sqrt n * squarefreeDivisorMass n := by
+      rw [← Finset.sum_sub_distrib]
+      let Fb := ((Ioc P (4 * n)).filter Nat.Prime).filter (· ∣ n)
+      have hcard_Fb : Fb.card ≤ 1 := by
+        rw [Finset.card_le_one_iff]
+        intro p₁ p₂ hp₁ hp₂
+        by_contra hne
+        obtain ⟨hp₁S, hd₁⟩ := mem_filter.mp hp₁
+        obtain ⟨hp₂S, hd₂⟩ := mem_filter.mp hp₂
+        obtain ⟨hp₁I, hpr₁⟩ := mem_filter.mp hp₁S
+        obtain ⟨hp₂I, hpr₂⟩ := mem_filter.mp hp₂S
+        have hgt₁ : 2 * Real.sqrt n < p₁ := (Nat.floor_lt (by positivity)).mp (mem_Ioc.mp hp₁I).1
+        have hgt₂ : 2 * Real.sqrt n < p₂ := (Nat.floor_lt (by positivity)).mp (mem_Ioc.mp hp₂I).1
+        have hcop₁₂ : Nat.Coprime p₁ p₂ :=
+          (hpr₁.coprime_iff_not_dvd.mpr fun hd =>
+            hne ((Nat.dvd_prime hpr₂).mp hd |>.resolve_left hpr₁.ne_one)).symm
+        have hmul_dvd : p₁ * p₂ ∣ n := hcop₁₂.symm.mul_dvd_of_dvd_of_dvd hd₁ hd₂
+        have hmul_le : (p₁ : ℝ) * (p₂ : ℝ) ≤ n := by
+          exact_mod_cast Nat.le_of_dvd hn1 hmul_dvd
+        have hmul_gt : 4 * (n : ℝ) < (p₁ : ℝ) * (p₂ : ℝ) := by
+          have hm := mul_lt_mul'' hgt₁ hgt₂ (by positivity) (by positivity)
+          nlinarith only [hm, Real.sq_sqrt (by positivity : (0 : ℝ) ≤ n)]
+        linarith only [hmul_le, hmul_gt, hnR]
+      have hsupp : ∑ p ∈ (Ioc P (4 * n)).filter Nat.Prime,
+          (Real.log p * wq p - vonMangoldt p * wqr p) =
+          ∑ p ∈ Fb, Real.log p * wq p := by
+        rw [← Finset.sum_subset (Finset.filter_subset _ _)]
+        · refine Finset.sum_congr rfl fun p hpFb => ?_
+          obtain ⟨hpS, hdvd⟩ := mem_filter.mp hpFb
+          obtain ⟨hpI, hpr⟩ := mem_filter.mp hpS
+          have hPp : P < p := (mem_Ioc.mp hpI).1
+          have hcop_qp : Nat.Coprime q p :=
+            (hpr.coprime_iff_not_dvd.mpr fun hd =>
+              (hqP.trans_lt hPp).not_ge (Nat.le_of_dvd hq0 hd)).symm
+          have hrp : rStep p = p := by dsimp [rStep]; rw [hcop_qp.gcd_eq_one, Nat.div_one]
+          have hncop : ¬ n.Coprime (rStep p) := by
+            rw [hrp]
+            intro hc
+            exact hpr.ne_one (Nat.eq_one_of_dvd_one (hc.gcd_eq_one ▸ Nat.dvd_gcd hdvd dvd_rfl))
+          dsimp [wqr]
+          rw [if_neg hncop, mul_zero, sub_zero]
+        · intro p hpS hpnot
+          obtain ⟨hpI, hpr⟩ := mem_filter.mp hpS
+          have hndvd : ¬ p ∣ n := fun hd => hpnot (mem_filter.mpr ⟨hpS, hd⟩)
+          have hPp : P < p := (mem_Ioc.mp hpI).1
+          have hcop_qp : Nat.Coprime q p :=
+            (hpr.coprime_iff_not_dvd.mpr fun hd =>
+              (hqP.trans_lt hPp).not_ge (Nat.le_of_dvd hq0 hd)).symm
+          have hrp : rStep p = p := by dsimp [rStep]; rw [hcop_qp.gcd_eq_one, Nat.div_one]
+          have hcop_np : n.Coprime (rStep p) := by
+            rw [hrp]; exact (hpr.coprime_iff_not_dvd.mpr hndvd).symm
+          rw [vonMangoldt_apply_prime hpr]
+          dsimp [wqr]
+          rw [if_pos hcop_np, hrp, sub_self]
+      rw [hsupp]
+      refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+      have hpt_Fb : ∀ p ∈ Fb, |Real.log p * wq p| ≤
+          4 * Real.sqrt n * squarefreeDivisorMass n := by
+        intro p hpFb
+        obtain ⟨hpS, _⟩ := mem_filter.mp hpFb
+        have hpr := (mem_filter.mp hpS).2
+        have hpn : p ≤ 4 * n := (mem_Ioc.mp (mem_filter.mp hpS).1).2
+        have hlp : Real.log p ≤ 4 * Real.sqrt n := by
+          have hl1 := (Real.log_le_log (by exact_mod_cast hpr.pos) (by exact_mod_cast hpn)).trans
+            (by simpa only [Nat.cast_mul, Nat.cast_ofNat] using hlog4n_2)
+          linarith only [hl1, Real.sqrt_nonneg n]
+        rw [abs_mul, abs_of_nonneg (Real.log_nonneg (by exact_mod_cast hpr.one_lt.le))]
+        exact mul_le_mul hlp (hwq_le p hpr.one_lt.le) (abs_nonneg _) (by positivity)
+      calc ∑ p ∈ Fb, |Real.log p * wq p|
+          ≤ ∑ _p ∈ Fb, 4 * Real.sqrt n * squarefreeDivisorMass n := Finset.sum_le_sum hpt_Fb
+        _ = (Fb.card : ℝ) * (4 * Real.sqrt n * squarefreeDivisorMass n) := by
+            rw [Finset.sum_const, nsmul_eq_mul]
+        _ ≤ 1 * (4 * Real.sqrt n * squarefreeDivisorMass n) :=
+            mul_le_mul_of_nonneg_right (by exact_mod_cast hcard_Fb)
+              (mul_nonneg (by positivity) (sum_nonneg fun _ _ => abs_nonneg _))
+        _ = 4 * Real.sqrt n * squarefreeDivisorMass n := one_mul _
+    set S_sm := ∑ r ∈ Icc 1 P, vonMangoldt r * wqr r
+    set S_pr := ∑ p ∈ (Ioc P (4 * n)).filter Nat.Prime, vonMangoldt p * wqr p
+    set S_pw := ∑ r ∈ (Ioc P (4 * n)).filter (fun r => ¬ r.Prime), vonMangoldt r * wqr r
+    set S_sl := ∑ p ∈ (Ioc P (4 * n)).filter Nat.Prime, Real.log p * wq p
+    have hsplit_eq : S_sl - (S_sm + (S_pr + S_pw)) = (S_sl - S_pr) - S_sm - S_pw := by ring
+    rw [hsplit_eq]
+    have ht1 := (abs_sub (S_sl - S_pr - S_sm) S_pw).trans
+      (add_le_add (abs_sub (S_sl - S_pr) S_sm) le_rfl)
+    linarith only [ht1, hforb, hsmall, hpow]
+  have hTq_totient :
+      |Tq - (reflectedDensity / (q : ℝ)) * (n.totient : ℝ)| ≤
+        34 * Real.sqrt n * squarefreeDivisorMass n := by
+    have hstirling_all {t : ℝ} (ht : 0 < t) (ht_hi : t ≤ 4 * (n : ℝ)) :
+        |(∑ j ∈ Icc 1 ⌊t⌋₊, Real.log (j : ℝ)) - (t * Real.log t - t)| ≤
+          3 * Real.sqrt n + 4 := by
+      by_cases ht1 : 1 ≤ t
+      · set M := ⌊t⌋₊
+        have hM1 : 1 ≤ M := Nat.le_floor ht1
+        have hMR1 : (1 : ℝ) ≤ M := by exact_mod_cast hM1
+        have hMt : (M : ℝ) ≤ t := Nat.floor_le ht.le
+        have ht_M1 : t ≤ (M : ℝ) + 1 := (Nat.lt_floor_add_one t).le
+        obtain ⟨hlo_st, hhi_st⟩ := _root_.RHTower.sum_log_Icc_exact_stirling_bounds hM1
+        have hlogt_2 : Real.log t ≤ 2 * Real.sqrt n :=
+          (Real.log_le_log ht ht_hi).trans hlog4n_2
+        have hlogM_2 : Real.log (M : ℝ) ≤ 2 * Real.sqrt n :=
+          (Real.log_le_log (by positivity) (hMt.trans ht_hi)).trans hlog4n_2
+        have hpi_le : Real.log (2 * Real.pi) / 2 ≤ 2 := by
+          have h2pi : 2 * Real.pi ≤ Real.exp 4 := by
+            have hpi : Real.pi < 4 := Real.pi_lt_four
+            have he1 : (2 : ℝ) < Real.exp 1 := by linarith [Real.exp_one_gt_d9]
+            have he4 : (16 : ℝ) ≤ Real.exp 4 := by
+              rw [show (4 : ℝ) = ((4 : ℕ) : ℝ) * 1 by norm_num, Real.exp_nat_mul, mul_one]
+              exact (show (16 : ℝ) = 2 ^ 4 by norm_num).trans_le
+                (pow_le_pow_left₀ (by norm_num) he1.le 4)
+            linarith
+          have hl := Real.log_le_log (by positivity) h2pi
+          rw [Real.log_exp] at hl; linarith
+        have hst_M : |(∑ j ∈ Icc 1 M, Real.log (j : ℝ)) - ((M : ℝ) * Real.log M - M)| ≤
+            Real.sqrt n + 3 := by
+          have h12 : 1 / (12 * (M : ℝ)) ≤ 1 := by
+            rw [div_le_iff₀ (by positivity)]; linarith only [hMR1]
+          have hlogM_nn : 0 ≤ Real.log (M : ℝ) := Real.log_nonneg hMR1
+          have hpi_nn : 0 ≤ Real.log (2 * Real.pi) :=
+            Real.log_nonneg (by linarith [Real.pi_gt_three])
+          rw [abs_le]
+          constructor <;> linarith only [hlo_st, hhi_st, hlogM_2, hlogM_nn, hpi_le, hpi_nn, h12]
+        have hmvt_st : |(t * Real.log t - t) - ((M : ℝ) * Real.log M - M)| ≤ 2 * Real.sqrt n := by
+          have hlo_d : 0 ≤ (t * Real.log t - t) - ((M : ℝ) * Real.log M - M) := by
+            have hl := Real.log_le_sub_one_of_pos (div_pos (by positivity : (0 : ℝ) < M) ht)
+            rw [Real.log_div (by positivity) ht.ne'] at hl
+            have hm := mul_le_mul_of_nonneg_left hl ht.le
+            rw [mul_sub, mul_sub, mul_div_cancel₀ _ ht.ne'] at hm
+            have hlogM_le_t : Real.log M ≤ Real.log t := Real.log_le_log (by positivity) hMt
+            have hdiff_nn : 0 ≤ t - M := sub_nonneg.mpr hMt
+            nlinarith only [hm, hlogM_le_t, hdiff_nn, Real.log_nonneg hMR1]
+          have hhi_d : (t * Real.log t - t) - ((M : ℝ) * Real.log M - M) ≤ 2 * Real.sqrt n := by
+            have hl := Real.log_le_sub_one_of_pos (div_pos ht (by positivity : (0 : ℝ) < M))
+            rw [Real.log_div ht.ne' (by positivity)] at hl
+            have hm := mul_le_mul_of_nonneg_left hl (by positivity : (0 : ℝ) ≤ M)
+            rw [mul_sub, mul_sub, mul_div_cancel₀ _ (by positivity : (M : ℝ) ≠ 0)] at hm
+            have hdiff1 : t - M ≤ 1 := by linarith only [ht_M1]
+            have hlogt_nn : 0 ≤ Real.log t := Real.log_nonneg ht1
+            have h1 : (t - M) * Real.log t ≤ 1 * (2 * Real.sqrt n) :=
+              mul_le_mul hdiff1 hlogt_2 hlogt_nn zero_le_one
+            nlinarith only [hm, h1]
+          exact abs_le.mpr ⟨by linarith only [hlo_d, Real.sqrt_nonneg n], hhi_d⟩
+        have htri := abs_sub ((∑ j ∈ Icc 1 M, Real.log (j : ℝ)) - ((M : ℝ) * Real.log M - M))
+          ((t * Real.log t - t) - ((M : ℝ) * Real.log M - M))
+        rw [sub_sub_sub_cancel_right] at htri
+        linarith only [htri, hst_M, hmvt_st]
+      · push Not at ht1
+        have hfl0 : ⌊t⌋₊ = 0 := Nat.floor_eq_zero.mpr ht1
+        rw [hfl0]
+        simp only [Icc_eq_empty (by decide : ¬ 1 ≤ 0), Finset.sum_empty, zero_sub, abs_neg]
+        have hl := Real.log_le_sub_one_of_pos (inv_pos.mpr ht)
+        rw [Real.log_inv] at hl
+        have hm := mul_le_mul_of_nonneg_left hl ht.le
+        rw [mul_neg, mul_sub, mul_inv_cancel₀ ht.ne', mul_one] at hm
+        have hhi_0 : t * Real.log t ≤ 0 :=
+          mul_nonpos_of_nonneg_of_nonpos ht.le (Real.log_nonpos ht.le ht1.le)
+        rw [abs_le]
+        constructor <;> linarith only [hm, hhi_0, ht, ht1, Real.sqrt_nonneg n]
+    have hTq_moeb : Tq = ∑ d ∈ n.divisors, (μ d : ℝ) *
+        (Real.log ((q * d : ℕ) : ℝ) *
+          (((4 * n / (q * d) : ℕ) : ℝ) - 2 * ((3 * n / (q * d) : ℕ) : ℝ) +
+            ((2 * n / (q * d) : ℕ) : ℝ)) +
+          ((∑ j ∈ Icc 1 (4 * n / (q * d)), Real.log (j : ℝ)) -
+            2 * (∑ j ∈ Icc 1 (3 * n / (q * d)), Real.log (j : ℝ)) +
+            (∑ j ∈ Icc 1 (2 * n / (q * d)), Real.log (j : ℝ)))) := by
+      have hpre_b (k : ℕ) :
+          ∑ b ∈ (Icc 1 (k * n / q)).filter (n.Coprime ·), Real.log ((q * b : ℕ) : ℝ) =
+            ∑ d ∈ n.divisors, (μ d : ℝ) *
+              (Real.log ((q * d : ℕ) : ℝ) * ((k * n / (q * d) : ℕ) : ℝ) +
+                ∑ j ∈ Icc 1 (k * n / (q * d)), Real.log (j : ℝ)) := by
+        rw [sum_coprime_Icc_real hn1]
+        refine Finset.sum_congr rfl fun d hd => ?_
+        congr 1
+        have hd0 : 0 < d := Nat.pos_of_mem_divisors hd
+        rw [Nat.div_div_eq_div_mul]
+        have hlj (j : ℕ) (hj : j ∈ Icc 1 (k * n / (q * d))) :
+            Real.log ((q * (d * j) : ℕ) : ℝ) = Real.log ((q * d : ℕ) : ℝ) + Real.log (j : ℝ) := by
+          have hj1 : 1 ≤ j := (mem_Icc.mp hj).1
+          rw [show (q * (d * j) : ℕ) = (q * d) * j by ring, Nat.cast_mul,
+            Real.log_mul (by exact_mod_cast (Nat.mul_pos hq0 hd0).ne')
+              (by exact_mod_cast (by omega : j ≠ 0))]
+        rw [Finset.sum_congr rfl hlj, Finset.sum_add_distrib, Finset.sum_const, Nat.card_Icc,
+          Nat.add_sub_cancel, nsmul_eq_mul, mul_comm _ (Real.log ((q * d : ℕ) : ℝ))]
+      have hsplit_b {l u : ℕ} (hlu : l ≤ u) :
+          (∑ b ∈ (Ioc l u).filter (n.Coprime ·), Real.log ((q * b : ℕ) : ℝ)) =
+            (∑ b ∈ (Icc 1 u).filter (n.Coprime ·), Real.log ((q * b : ℕ) : ℝ)) -
+              (∑ b ∈ (Icc 1 l).filter (n.Coprime ·), Real.log ((q * b : ℕ) : ℝ)) := by
+        simp only [Finset.sum_filter, show Icc 1 u = Ioc 0 u by ext x; simp [mem_Icc, mem_Ioc]; omega,
+          show Icc 1 l = Ioc 0 l by ext x; simp [mem_Icc, mem_Ioc]; omega]
+        linarith only [Finset.sum_Ioc_consecutive
+          (fun b : ℕ => if n.Coprime b then Real.log ((q * b : ℕ) : ℝ) else 0) (Nat.zero_le l) hlu]
+      dsimp [Tq]
+      rw [hsplit_b (Nat.div_le_div_right (show 3 * n ≤ 4 * n by omega)),
+        hsplit_b (Nat.div_le_div_right (show 2 * n ≤ 3 * n by omega)),
+        hpre_b 4, hpre_b 3, hpre_b 2, ← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
+      exact Finset.sum_congr rfl fun _ _ => by ring
+    have htot : (reflectedDensity / (q : ℝ)) * (n.totient : ℝ) =
+        ∑ d ∈ n.divisors, (μ d : ℝ) * (reflectedDensity * (n : ℝ) / ((q : ℝ) * (d : ℝ))) := by
+      rw [← _root_.RHTower.Sieve.totient_eq_sum_moebius_mul n hn1, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun d hd => ?_
+      have hdvd : d ∣ n := Nat.dvd_of_mem_divisors hd
+      have hd0 : (0 : ℝ) < d := by exact_mod_cast Nat.pos_of_mem_divisors hd
+      have hnd : ((n / d : ℕ) : ℝ) = (n : ℝ) / (d : ℝ) := by
+        exact_mod_cast Nat.cast_div hdvd hd0.ne'
+      rw [hnd]; field_simp [hqR.ne', hd0.ne']
+    rw [hTq_moeb, htot, ← Finset.sum_sub_distrib]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    rw [squarefreeDivisorMass, Finset.mul_sum]
+    refine Finset.sum_le_sum fun d hd => ?_
+    have hd0 : 0 < d := Nat.pos_of_mem_divisors hd
+    have hdR : (0 : ℝ) < d := by exact_mod_cast hd0
+    have hdn : d ≤ n := Nat.le_of_dvd hn1 (Nat.dvd_of_mem_divisors hd)
+    rw [← mul_sub, abs_mul, mul_comm (34 * Real.sqrt n) |(μ d : ℝ)|]
+    refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+    have hlog_qd : |Real.log ((q * d : ℕ) : ℝ) *
+        (((4 * n / (q * d) : ℕ) : ℝ) - 2 * ((3 * n / (q * d) : ℕ) : ℝ) +
+          ((2 * n / (q * d) : ℕ) : ℝ))| ≤ 6 * Real.sqrt n := by
+      have hqd1 : (1 : ℝ) ≤ (q * d : ℕ) := by exact_mod_cast Nat.mul_pos hq0 hd0
+      have hqd_le : ((q * d : ℕ) : ℝ) ≤ (2 * Real.sqrt n) ^ 3 := by
+        have hq_le : (q : ℝ) ≤ 2 * Real.sqrt n := (by exact_mod_cast hqP : (q : ℝ) ≤ P).trans hhi
+        have hd_le : (d : ℝ) ≤ (Real.sqrt n) ^ 2 := by
+          rw [Real.sq_sqrt (by positivity)]; exact_mod_cast hdn
+        push_cast
+        nlinarith only [hq_le, hd_le, hsq1, hqR, hdR]
+      have hl_qd : Real.log ((q * d : ℕ) : ℝ) ≤ 6 * Real.sqrt n := by
+        have hl1 := Real.log_le_log (by positivity) hqd_le
+        rw [Real.log_pow] at hl1
+        have hl2 := Real.log_le_sub_one_of_pos (by positivity : (0 : ℝ) < 2 * Real.sqrt n)
+        linarith only [hl1, hl2, hsq1]
+      rw [abs_mul, abs_of_nonneg (Real.log_nonneg hqd1)]
+      exact mul_le_of_le_one_right (by positivity)
+        (abs_midpoint_division_le_one (Nat.mul_pos hq0 hd0) n) |>.trans hl_qd
+    set u : ℝ := (n : ℝ) / ((q : ℝ) * (d : ℝ))
+    have hu : 0 < u := by dsimp [u]; positivity
+    have hfl_u (k : ℕ) : k * n / (q * d) = ⌊(k : ℝ) * u⌋₊ := by
+      have he : (k : ℝ) * u = ((k * n : ℕ) : ℝ) / (((q * d : ℕ) : ℝ)) := by
+        dsimp [u]; push_cast; ring
+      rw [he, Nat.floor_div_natCast, Nat.floor_natCast]
+    have hu_le (k : ℕ) (hk : k ≤ 4) : (k : ℝ) * u ≤ 4 * (n : ℝ) := by
+      dsimp [u]
+      have hqd1 : (1 : ℝ) ≤ (q : ℝ) * (d : ℝ) := by
+        exact_mod_cast Nat.mul_pos hq0 hd0
+      calc (k : ℝ) * ((n : ℝ) / ((q : ℝ) * (d : ℝ)))
+          = ((k : ℝ) * (n : ℝ)) / ((q : ℝ) * (d : ℝ)) := by ring
+        _ ≤ (4 * (n : ℝ)) / 1 :=
+            div_le_div₀ (by positivity)
+              (mul_le_mul_of_nonneg_right (by exact_mod_cast hk) (by positivity)) zero_lt_one hqd1
+        _ = 4 * (n : ℝ) := div_one _
+    have hmain_st :
+        ((4 : ℝ) * u * Real.log ((4 : ℝ) * u) - (4 : ℝ) * u) -
+          2 * ((3 : ℝ) * u * Real.log ((3 : ℝ) * u) - (3 : ℝ) * u) +
+          ((2 : ℝ) * u * Real.log ((2 : ℝ) * u) - (2 : ℝ) * u) =
+          reflectedDensity * (n : ℝ) / ((q : ℝ) * (d : ℝ)) := by
+      have hl4 : Real.log ((4 : ℝ) * u) = 2 * Real.log 2 + Real.log u := by
+        rw [Real.log_mul (by norm_num) hu.ne', show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+        norm_num
+      have hl3 : Real.log ((3 : ℝ) * u) = Real.log 3 + Real.log u :=
+        Real.log_mul (by norm_num) hu.ne'
+      have hl2 : Real.log ((2 : ℝ) * u) = Real.log 2 + Real.log u :=
+        Real.log_mul (by norm_num) hu.ne'
+      rw [hl4, hl3, hl2, reflectedDensity]
+      dsimp [u]; ring
+    rw [hfl_u 4, hfl_u 3, hfl_u 2, ← hmain_st]
+    have hs4 := hstirling_all (show 0 < ((4 : ℕ) : ℝ) * u by positivity) (hu_le 4 (by decide))
+    have hs3 := hstirling_all (show 0 < ((3 : ℕ) : ℝ) * u by positivity) (hu_le 3 (by decide))
+    have hs2 := hstirling_all (show 0 < ((2 : ℕ) : ℝ) * u by positivity) (hu_le 2 (by decide))
+    simp only [Nat.cast_ofNat] at hs4 hs3 hs2 ⊢
+    obtain ⟨l4, u4⟩ := abs_le.mp hs4
+    obtain ⟨l3, u3⟩ := abs_le.mp hs3
+    obtain ⟨l2, u2⟩ := abs_le.mp hs2
+    have hst_comb : |((∑ j ∈ Icc 1 ⌊4 * u⌋₊, Real.log (j : ℝ)) -
+          2 * (∑ j ∈ Icc 1 ⌊3 * u⌋₊, Real.log (j : ℝ)) +
+          (∑ j ∈ Icc 1 ⌊2 * u⌋₊, Real.log (j : ℝ))) -
+        ((4 * u * Real.log (4 * u) - 4 * u) -
+          2 * (3 * u * Real.log (3 * u) - 3 * u) +
+          (2 * u * Real.log (2 * u) - 2 * u))| ≤ 12 * Real.sqrt n + 16 := by
+      rw [abs_le]; constructor <;> linarith only [l4, u4, l3, u3, l2, u2]
+    have hadd_sub :
+        Real.log ((q * d : ℕ) : ℝ) *
+            (((4 * n / (q * d) : ℕ) : ℝ) - 2 * ((3 * n / (q * d) : ℕ) : ℝ) +
+              ((2 * n / (q * d) : ℕ) : ℝ)) +
+          ((∑ j ∈ Icc 1 ⌊4 * u⌋₊, Real.log (j : ℝ)) -
+            2 * (∑ j ∈ Icc 1 ⌊3 * u⌋₊, Real.log (j : ℝ)) +
+            (∑ j ∈ Icc 1 ⌊2 * u⌋₊, Real.log (j : ℝ))) -
+          ((4 * u * Real.log (4 * u) - 4 * u) -
+            2 * (3 * u * Real.log (3 * u) - 3 * u) +
+            (2 * u * Real.log (2 * u) - 2 * u)) =
+        Real.log ((q * d : ℕ) : ℝ) *
+            (((4 * n / (q * d) : ℕ) : ℝ) - 2 * ((3 * n / (q * d) : ℕ) : ℝ) +
+              ((2 * n / (q * d) : ℕ) : ℝ)) +
+          (((∑ j ∈ Icc 1 ⌊4 * u⌋₊, Real.log (j : ℝ)) -
+              2 * (∑ j ∈ Icc 1 ⌊3 * u⌋₊, Real.log (j : ℝ)) +
+              (∑ j ∈ Icc 1 ⌊2 * u⌋₊, Real.log (j : ℝ))) -
+            ((4 * u * Real.log (4 * u) - 4 * u) -
+              2 * (3 * u * Real.log (3 * u) - 3 * u) +
+              (2 * u * Real.log (2 * u) - 2 * u))) := by ring
+    rw [hadd_sub]
+    have htri := abs_add_le _ _
+    linarith only [htri, hlog_qd, hst_comb, hsq1]
+  have htri := abs_add_le (clippedCofactorSliceOp n P q Chebyshev.theta - Tq)
+    (Tq - (reflectedDensity / (q : ℝ)) * (n.totient : ℝ))
+  rw [sub_add_sub_cancel] at htri
+  linarith only [htri, hslice_sub_Tq, hTq_totient]
+
+/-! ### 6. Remainder cancellation and individual cofactor cells under `HasSingleOffLineQuartet` -/
+
+private theorem singleQuartet_theta_mode_all {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ x : ℝ, 1 ≤ x →
+      |Chebyshev.theta x - x - quartetWaveModel ρ₀ (quartetCopyMult ρ₀ : ℝ) x| ≤
+        K * Real.sqrt x * (1 + Real.log x) ^ 2 := by
+  obtain ⟨K₀, hK₀⟩ := (hasSingleOffLineQuartet_iff_chebyshevPsi_singleWave hq.1 hq.2.1).mp hq
+  obtain ⟨A_pt, hA_pt⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  have hρ_ne : ρ₀ ≠ 0 := fun he => by
+    have h := hq.1; rw [he, Complex.zero_re] at h; linarith
+  set D_w : ℝ := 2 * (quartetCopyMult ρ₀ : ℝ) / ‖ρ₀‖
+  refine ⟨|K₀| + |A_pt| + 80 + 16 * D_w, by dsimp [D_w]; positivity, fun x hx => ?_⟩
+  have hx0 : 0 < x := zero_lt_one.trans_le hx
+  have hsq1 : 1 ≤ Real.sqrt x := Real.one_le_sqrt.mpr hx
+  have hlog_nn : 0 ≤ Real.log x := Real.log_nonneg hx
+  have h1_sq : 1 ≤ (1 + Real.log x) ^ 2 := by nlinarith
+  have hpt : |Chebyshev.psi x - Chebyshev.theta x| ≤
+      |A_pt| * Real.sqrt x * (1 + Real.log x) ^ 2 := by
+    rw [abs_of_nonneg (sub_nonneg.mpr (Chebyshev.theta_le_psi x))]
+    exact (hA_pt x).trans
+      ((mul_le_mul_of_nonneg_right (le_abs_self A_pt) (Real.sqrt_nonneg x)).trans
+        (le_mul_of_one_le_right (by positivity) h1_sq))
+  by_cases hx16 : 16 ≤ x
+  · have hpsi := hK₀ x hx16
+    have hsq_le : (Real.log x) ^ 2 ≤ (1 + Real.log x) ^ 2 := by nlinarith
+    have hpsi' : |Chebyshev.psi x - x - quartetWaveModel ρ₀ (quartetCopyMult ρ₀ : ℝ) x| ≤
+        |K₀| * Real.sqrt x * (1 + Real.log x) ^ 2 := by
+      rw [quartetWaveModel, sub_neg_eq_add]
+      refine hpsi.trans ?_
+      exact (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right (le_abs_self K₀) (Real.sqrt_nonneg x)) (sq_nonneg _)).trans
+        (mul_le_mul_of_nonneg_left hsq_le (by positivity))
+    have htri := abs_sub (Chebyshev.psi x - x - quartetWaveModel ρ₀ (quartetCopyMult ρ₀ : ℝ) x)
+      (Chebyshev.psi x - Chebyshev.theta x)
+    rw [show (Chebyshev.psi x - x - quartetWaveModel ρ₀ (quartetCopyMult ρ₀ : ℝ) x) -
+        (Chebyshev.psi x - Chebyshev.theta x) =
+        Chebyshev.theta x - x - quartetWaveModel ρ₀ (quartetCopyMult ρ₀ : ℝ) x by ring] at htri
+    have hextra : 0 ≤ (80 + 16 * D_w) * Real.sqrt x * (1 + Real.log x) ^ 2 := by
+      dsimp [D_w]; positivity
+    linarith only [htri, hpsi', hpt, hextra]
+  · push Not at hx16
+    have h5 := _root_.RHTower.RiemannGaussian.abs_chebyshevPsi_sub_self_le_five_mul_self_of_one_le hx
+    have hw_le : |quartetWaveModel ρ₀ (quartetCopyMult ρ₀ : ℝ) x| ≤ 16 * D_w := by
+      rw [quartetWaveModel, abs_neg, abs_mul, abs_of_nonneg (by positivity)]
+      have h1 := (Complex.abs_re_le_norm ((x : ℂ) ^ ρ₀ / ρ₀)).trans_eq (norm_div _ _)
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hx0] at h1
+      have hrp : x ^ ρ₀.re ≤ 16 :=
+        (Real.rpow_le_rpow_of_exponent_le hx hq.re_lt_one.le).trans
+          (by rw [Real.rpow_one]; exact hx16.le)
+      calc 2 * (quartetCopyMult ρ₀ : ℝ) * |((x : ℂ) ^ ρ₀ / ρ₀).re|
+          ≤ 2 * (quartetCopyMult ρ₀ : ℝ) * (16 / ‖ρ₀‖) :=
+            mul_le_mul_of_nonneg_left (h1.trans (div_le_div_of_nonneg_right hrp (norm_nonneg _)))
+              (by positivity)
+        _ = 16 * D_w := by dsimp [D_w]; ring
+    have hpsi_low : |Chebyshev.psi x - x - quartetWaveModel ρ₀ (quartetCopyMult ρ₀ : ℝ) x| ≤
+        80 + 16 * D_w :=
+      (abs_sub _ _).trans (by linarith only [h5, hx16, hw_le])
+    have hprod1 : 1 ≤ Real.sqrt x * (1 + Real.log x) ^ 2 :=
+      one_le_mul_of_one_le_of_one_le hsq1 h1_sq
+    have hlow_scaled : 80 + 16 * D_w ≤ (80 + 16 * D_w) * (Real.sqrt x * (1 + Real.log x) ^ 2) :=
+      le_mul_of_one_le_right (by dsimp [D_w]; positivity) hprod1
+    have htri := abs_sub (Chebyshev.psi x - x - quartetWaveModel ρ₀ (quartetCopyMult ρ₀ : ℝ) x)
+      (Chebyshev.psi x - Chebyshev.theta x)
+    rw [show (Chebyshev.psi x - x - quartetWaveModel ρ₀ (quartetCopyMult ρ₀ : ℝ) x) -
+        (Chebyshev.psi x - Chebyshev.theta x) =
+        Chebyshev.theta x - x - quartetWaveModel ρ₀ (quartetCopyMult ρ₀ : ℝ) x by ring] at htri
+    have hextra : 0 ≤ |K₀| * Real.sqrt x * (1 + Real.log x) ^ 2 := by positivity
+    nlinarith only [htri, hpsi_low, hlow_scaled, hpt, hextra]
+
+/-- **Signed remainder cancellation in the reflected composite factorization at an actual quartet.**
+Under `HasSingleOffLineQuartet ρ₀`, although the triangle inequality over `v ≤ 2√n` would give only
+`O(n^{3/4} log² n)`, the signed cofactor sum of `θ(x) - x - quartetWaveModel ρ₀ m x` cancels down
+to `O(√n ((log n)² + squarefreeDivisorMass n))` across all `n ≥ 2`. -/
+theorem singleQuartet_reflectedComposite_remainder_cancellation {ρ₀ : ℂ}
+    (hq : HasSingleOffLineQuartet ρ₀) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 2 ≤ n →
+      |clippedCofactorOp n ⌊2 * Real.sqrt n⌋₊
+          (fun x => Chebyshev.theta x - x - quartetWaveModel ρ₀ (quartetCopyMult ρ₀ : ℝ) x)| ≤
+        C * Real.sqrt n * ((Real.log n) ^ 2 + squarefreeDivisorMass n) := by
+  set m : ℝ := (quartetCopyMult ρ₀ : ℝ)
+  have hm_ne : m ≠ 0 := by exact_mod_cast hq.quartetCopyMult_pos.ne'
+  obtain ⟨C_w, hC_w⟩ := (reflectedComposite_wave_compatible_iff_zeta_zero hq.1 hq.re_lt_one
+    hq.im_ne_zero hm_ne).mpr hq.2.1.1
+  obtain ⟨A_pt, hA_pt⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  obtain ⟨K_θ, hK_θ, hmode⟩ := singleQuartet_theta_mode_all hq
+  -- Note `1 + log(4 n) ≤ 6 * log n` for `n ≥ 2` since `log 2 ≥ 1/2`
+  set C_all : ℝ := |C_w| + 15 + 2 * |A_pt| + 288 * K_θ
+  refine ⟨C_all, by dsimp [C_all]; positivity, fun n hn => ?_⟩
+  have hn1 : 1 < n := by omega
+  have hnR2 : (2 : ℝ) ≤ n := by exact_mod_cast hn
+  have hsq1 : 1 ≤ Real.sqrt n := Real.one_le_sqrt.mpr (by linarith)
+  set P := ⌊2 * Real.sqrt n⌋₊
+  obtain ⟨_, hP2, _, hhi⟩ := floor_two_sqrt_bounds (by omega)
+  let E_rem (x : ℝ) : ℝ := Chebyshev.theta x - x - quartetWaveModel ρ₀ m x
+  have hlin_op : clippedCofactorOp n P E_rem =
+      largePrimeCofactorPrice n P -
+        clippedCofactorOp n P (fun x => x + quartetWaveModel ρ₀ m x) := by
+    rw [largePrimeCofactorPrice_eq_clippedCofactorOp (by omega) le_rfl,
+      ← clippedCofactorSliceOp_sub]
+    unfold clippedCofactorOp clippedCofactorSliceOp
+    refine Finset.sum_congr rfl fun _ _ => by dsimp [E_rem]; ring
+  have hmid_eq : primeMidpointPrice n -
+      midpointSecondDiff n (fun x => x + quartetWaveModel ρ₀ m x) =
+      midpointSecondDiff n E_rem := by
+    rw [prime_midpoint_price_eq]
+    unfold midpointSecondDiff; dsimp [E_rem]; push_cast; ring
+  have hcent := large_prime_cofactor_centering hn1 hP2
+  have hcent_cost :
+      7 * (P : ℝ) + (Chebyshev.psi (4 * n : ℕ) - Chebyshev.theta (4 * n : ℕ)) + 1 ≤
+        (15 + 2 * |A_pt|) * Real.sqrt n := by
+    have hsq4 : Real.sqrt (4 * n : ℕ) = 2 * Real.sqrt n := by
+      rw [Nat.cast_mul, Nat.cast_ofNat, Real.sqrt_mul (by norm_num),
+        show Real.sqrt 4 = 2 by norm_num]
+    have hpt := (hA_pt (4 * n : ℕ)).trans
+      ((mul_le_mul_of_nonneg_right (le_abs_self A_pt) (Real.sqrt_nonneg _)).trans_eq
+        (by rw [hsq4]; ring))
+    linarith only [hhi, hsq1, hpt]
+  have hcent' : |largePrimeCofactorPrice n P - reflectedDensity * (n.totient : ℝ) -
+      primeMidpointPrice n| ≤
+      (15 + 2 * |A_pt|) * Real.sqrt n * squarefreeDivisorMass n :=
+    hcent.trans ((mul_le_mul_of_nonneg_right hcent_cost
+      (sum_nonneg fun _ _ => abs_nonneg _)).trans_eq (by ring))
+  have hw_b : |clippedCofactorOp n P (fun x => x + quartetWaveModel ρ₀ m x) -
+      reflectedDensity * (n.totient : ℝ) -
+      midpointSecondDiff n (fun x => x + quartetWaveModel ρ₀ m x)| ≤
+      |C_w| * Real.sqrt n * squarefreeDivisorMass n :=
+    (hC_w n hn).trans (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (le_abs_self C_w) (Real.sqrt_nonneg n))
+      (sum_nonneg fun _ _ => abs_nonneg _))
+  -- Bound `|midpointSecondDiff n E_rem|`
+  have hlog2_lo : (1 / 2 : ℝ) ≤ Real.log n := by
+    have hl2 : (1 / 2 : ℝ) ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]
+    exact hl2.trans (Real.log_le_log (by norm_num) hnR2)
+  have hmid_b : |midpointSecondDiff n E_rem| ≤ 288 * K_θ * Real.sqrt n * (Real.log n) ^ 2 := by
+    have hk_b (k : ℕ) (hk1 : 1 ≤ k) (hk4 : k ≤ 4) :
+        |E_rem (k * n : ℕ)| ≤ 72 * K_θ * Real.sqrt n * (Real.log n) ^ 2 := by
+      have hkn1 : (1 : ℝ) ≤ (k * n : ℕ) := by exact_mod_cast Nat.mul_pos hk1 (by omega)
+      have hb := hmode (k * n : ℕ) hkn1
+      have hsq_kn : Real.sqrt (k * n : ℕ) ≤ 2 * Real.sqrt n := by
+        have hle : ((k * n : ℕ) : ℝ) ≤ 4 * (n : ℝ) := by
+          push_cast; exact mul_le_mul_of_nonneg_right (by exact_mod_cast hk4) (by positivity)
+        exact (Real.sqrt_le_sqrt hle).trans_eq
+          (by rw [Real.sqrt_mul (by norm_num), show Real.sqrt 4 = 2 by norm_num])
+      have hlg_kn : 1 + Real.log (k * n : ℕ) ≤ 6 * Real.log n := by
+        have hle : ((k * n : ℕ) : ℝ) ≤ (n : ℝ) ^ 3 := by
+          have : (k : ℝ) ≤ (n : ℝ) ^ 2 := by
+            have hkR : (k : ℝ) ≤ 4 := by exact_mod_cast hk4
+            nlinarith only [hkR, hnR2]
+          push_cast; nlinarith only [this, hnR2]
+        have hl1 := Real.log_le_log (by positivity) hle
+        rw [Real.log_pow] at hl1
+        linarith only [hl1, hlog2_lo]
+      have hsq_lg : (1 + Real.log (k * n : ℕ)) ^ 2 ≤ 36 * (Real.log n) ^ 2 := by
+        have := pow_le_pow_left₀ (by linarith [Real.log_nonneg hkn1]) hlg_kn 2
+        linarith only [this]
+      calc |E_rem (k * n : ℕ)|
+          ≤ K_θ * Real.sqrt (k * n : ℕ) * (1 + Real.log (k * n : ℕ)) ^ 2 := hb
+        _ ≤ K_θ * (2 * Real.sqrt n) * (36 * (Real.log n) ^ 2) :=
+            mul_le_mul (mul_le_mul_of_nonneg_left hsq_kn hK_θ) hsq_lg (sq_nonneg _)
+              (by positivity)
+        _ = 72 * K_θ * Real.sqrt n * (Real.log n) ^ 2 := by ring
+    unfold midpointSecondDiff
+    obtain ⟨l2, u2⟩ := abs_le.mp (hk_b 2 (by decide) (by decide))
+    obtain ⟨l3, u3⟩ := abs_le.mp (hk_b 3 (by decide) (by decide))
+    obtain ⟨l4, u4⟩ := abs_le.mp (hk_b 4 (by decide) (by decide))
+    rw [abs_le]; constructor <;> linarith only [l2, u2, l3, u3, l4, u4]
+  rw [hlin_op]
+  have hid_tot :
+      largePrimeCofactorPrice n P -
+          clippedCofactorOp n P (fun x => x + quartetWaveModel ρ₀ m x) =
+        (largePrimeCofactorPrice n P - reflectedDensity * (n.totient : ℝ) -
+          primeMidpointPrice n) -
+        (clippedCofactorOp n P (fun x => x + quartetWaveModel ρ₀ m x) -
+          reflectedDensity * (n.totient : ℝ) -
+          midpointSecondDiff n (fun x => x + quartetWaveModel ρ₀ m x)) +
+        midpointSecondDiff n E_rem := by
+    linear_combination hmid_eq
+  rw [hid_tot]
+  have htri := (abs_add_le _ (midpointSecondDiff n E_rem)).trans
+    (add_le_add (abs_sub _ _) le_rfl)
+  have hextra1 : 0 ≤ (|C_w| + 15 + 2 * |A_pt|) * Real.sqrt n * (Real.log n) ^ 2 := by positivity
+  have hextra2 : 0 ≤ 288 * K_θ * Real.sqrt n * squarefreeDivisorMass n := by
+    have : 0 ≤ squarefreeDivisorMass n := sum_nonneg fun _ _ => abs_nonneg _
+    positivity
+  dsimp [C_all]
+  linarith only [htri, hcent', hw_b, hmid_b, hextra1, hextra2]
+
+/-- **Single-cell prime-cofactor wave transmission under `HasSingleOffLineQuartet`.**
+For every fixed cofactor `v₀ ≥ 2` and `n ≥ 2 * v₀`, the single cell `(4n/v₀, 3n/v₀, 2n/v₀)`
+transmits `+2 m Re((midpointMultiplier ρ₀ / ρ₀) v₀^{-ρ₀} n^{ρ₀})` up to `O(√(n/v₀) (1 + log n)²)`. -/
+theorem singleQuartet_individual_cofactor_cell {ρ₀ : ℂ} (hq : HasSingleOffLineQuartet ρ₀)
+    {v₀ : ℕ} (hv₀ : 2 ≤ v₀) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 2 * v₀ ≤ n →
+      |(Chebyshev.theta (4 * n / v₀ : ℕ) - 2 * Chebyshev.theta (3 * n / v₀ : ℕ) +
+            Chebyshev.theta (2 * n / v₀ : ℕ)) -
+          2 * (quartetCopyMult ρ₀ : ℝ) *
+            ((midpointMultiplier ρ₀ / ρ₀) * ((v₀ : ℝ) : ℂ) ^ (-ρ₀) * ((n : ℝ) : ℂ) ^ ρ₀).re| ≤
+        C * Real.sqrt ((n : ℝ) / v₀) * (1 + Real.log n) ^ 2 := by
+  obtain ⟨K_θ, hK_θ, hmode⟩ := singleQuartet_theta_mode_all hq
+  set m : ℝ := (quartetCopyMult ρ₀ : ℝ)
+  have hv0_pos : 0 < v₀ := by omega
+  have hv0R : (0 : ℝ) < v₀ := by exact_mod_cast hv0_pos
+  have hρ0 : 0 < ρ₀.re := by linarith [hq.1]
+  have hρ_ne : ρ₀ ≠ 0 := fun he => by rw [he, Complex.zero_re] at hρ0; exact lt_irrefl 0 hρ0
+  refine ⟨32 * K_θ + 8 * m + 1, by dsimp [m]; positivity, fun n hn => ?_⟩
+  have hn0 : 0 < n := by omega
+  have hnR : (0 : ℝ) < n := by exact_mod_cast hn0
+  have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn0
+  have hnv1 : 1 ≤ (n : ℝ) / v₀ := by
+    rw [le_div_iff₀ hv0R]
+    have : (2 * v₀ : ℝ) ≤ n := by exact_mod_cast hn
+    linarith only [this, hv0R]
+  have hsq_nv1 : 1 ≤ Real.sqrt ((n : ℝ) / v₀) := Real.one_le_sqrt.mpr hnv1
+  have h1_lg : 1 ≤ (1 + Real.log n) ^ 2 := by nlinarith [Real.log_nonneg hnR1]
+  have hprod1 : 1 ≤ Real.sqrt ((n : ℝ) / v₀) * (1 + Real.log n) ^ 2 :=
+    one_le_mul_of_one_le_of_one_le hsq_nv1 h1_lg
+  let E_rem (x : ℝ) : ℝ := Chebyshev.theta x - x - quartetWaveModel ρ₀ m x
+  have hθ_expand (k : ℕ) : Chebyshev.theta (k * n / v₀ : ℕ) =
+      ((k * n / v₀ : ℕ) : ℝ) + quartetWaveModel ρ₀ m (k * n / v₀ : ℕ) + E_rem (k * n / v₀ : ℕ) := by
+    dsimp [E_rem]; ring
+  have hlin_b : |((4 * n / v₀ : ℕ) : ℝ) - 2 * ((3 * n / v₀ : ℕ) : ℝ) + ((2 * n / v₀ : ℕ) : ℝ)| ≤ 1 :=
+    abs_midpoint_division_le_one hv0_pos n
+  have hw_round (k : ℕ) (hk2 : 2 ≤ k) :
+      |quartetWaveModel ρ₀ m (k * n / v₀ : ℕ) -
+          quartetWaveModel ρ₀ m (((k * n : ℕ) : ℝ) / v₀)| ≤ 2 * m := by
+    have hq1 : 1 ≤ k * n / v₀ :=
+      (Nat.le_div_iff_mul_le hv0_pos).mpr (by nlinarith only [hn, hk2])
+    set x₁ : ℝ := ((k * n / v₀ : ℕ) : ℝ)
+    set x₂ : ℝ := ((k * n : ℕ) : ℝ) / v₀
+    have hx₁_1 : 1 ≤ x₁ := by exact_mod_cast hq1
+    have hx₁_pos : 0 < x₁ := by linarith
+    have hx₁₂ : x₁ ≤ x₂ := Nat.cast_div_le
+    have hdiff1 : x₂ - x₁ ≤ 1 := by
+      have := (abs_le.mp (_root_.RHTower.Sieve.abs_natDiv_sub_div_le (N := k * n) hv0_pos)).1
+      dsimp [x₁, x₂]; linarith
+    unfold quartetWaveModel
+    rw [show -(2 * m * ((x₁ : ℂ) ^ ρ₀ / ρ₀).re) - -(2 * m * ((x₂ : ℂ) ^ ρ₀ / ρ₀).re) =
+        2 * m * (((x₂ : ℂ) ^ ρ₀ - (x₁ : ℂ) ^ ρ₀) / ρ₀).re by
+          rw [sub_div, Complex.sub_re]; ring,
+      abs_mul, abs_of_nonneg (by dsimp [m]; positivity)]
+    refine mul_le_of_le_one_right (by dsimp [m]; positivity) ?_
+    refine ((Complex.abs_re_le_norm _).trans_eq (norm_div _ _)).trans ?_
+    rw [div_le_one (norm_pos_iff.mpr hρ_ne)]
+    have hmvt := _root_.RHTower.norm_ofReal_cpow_sub_cpow_le hx₁_pos hx₁₂ hρ0 hq.re_lt_one.le
+    have hrp1 : x₁ ^ (ρ₀.re - 1) ≤ 1 :=
+      Real.rpow_le_one_of_one_le_of_nonpos hx₁_1 (by linarith [hq.re_lt_one])
+    calc ‖(x₂ : ℂ) ^ ρ₀ - (x₁ : ℂ) ^ ρ₀‖
+        ≤ ‖ρ₀‖ * (x₂ - x₁) * x₁ ^ (ρ₀.re - 1) := hmvt
+      _ ≤ ‖ρ₀‖ * 1 * 1 :=
+          mul_le_mul (mul_le_of_le_one_right (norm_nonneg _) hdiff1) hrp1
+            (Real.rpow_nonneg hx₁_pos.le _) (norm_nonneg _)
+      _ = ‖ρ₀‖ := by ring
+  have hw_exact :
+      quartetWaveModel ρ₀ m (((4 * n : ℕ) : ℝ) / v₀) -
+        2 * quartetWaveModel ρ₀ m (((3 * n : ℕ) : ℝ) / v₀) +
+        quartetWaveModel ρ₀ m (((2 * n : ℕ) : ℝ) / v₀) =
+        2 * m * ((midpointMultiplier ρ₀ / ρ₀) * ((v₀ : ℝ) : ℂ) ^ (-ρ₀) * ((n : ℝ) : ℂ) ^ ρ₀).re := by
+    have hkc (k : ℕ) (hk : 0 < k) :
+        ((((k * n : ℕ) : ℝ) / v₀ : ℝ) : ℂ) ^ ρ₀ =
+          (k : ℂ) ^ ρ₀ * ((v₀ : ℝ) : ℂ) ^ (-ρ₀) * ((n : ℝ) : ℂ) ^ ρ₀ := by
+      have hkR : (0 : ℝ) < k := by exact_mod_cast hk
+      have hknR : (0 : ℝ) < (k * n : ℕ) := by exact_mod_cast Nat.mul_pos hk hn0
+      rw [cpow_pos_div hknR hv0R ρ₀, show ((k * n : ℕ) : ℝ) = (k : ℝ) * (n : ℝ) by push_cast; rfl,
+        cpow_pos_mul hkR hnR ρ₀, Complex.cpow_neg, div_eq_mul_inv]
+      ring
+    unfold quartetWaveModel
+    have hid : ((((4 * n : ℕ) : ℝ) / v₀ : ℝ) : ℂ) ^ ρ₀ / ρ₀ -
+        2 * (((((3 * n : ℕ) : ℝ) / v₀ : ℝ) : ℂ) ^ ρ₀ / ρ₀) +
+        ((((2 * n : ℕ) : ℝ) / v₀ : ℝ) : ℂ) ^ ρ₀ / ρ₀ =
+        -((midpointMultiplier ρ₀ / ρ₀) * ((v₀ : ℝ) : ℂ) ^ (-ρ₀) * ((n : ℝ) : ℂ) ^ ρ₀) := by
+      rw [hkc 4 (by decide), hkc 3 (by decide), hkc 2 (by decide), midpointMultiplier]; ring
+    have hre := congrArg Complex.re hid
+    simp only [Complex.sub_re, Complex.add_re, Complex.neg_re, Complex.mul_re,
+      Complex.re_ofNat, Complex.im_ofNat, zero_mul, sub_zero] at hre
+    linarith only [congrArg (fun u => -(2 * m * u)) hre]
+  have hrem_k (k : ℕ) (hk2 : 2 ≤ k) (hk4 : k ≤ 4) :
+      |E_rem (k * n / v₀ : ℕ)| ≤ 8 * K_θ * Real.sqrt ((n : ℝ) / v₀) * (1 + Real.log n) ^ 2 := by
+    have hq1 : 1 ≤ k * n / v₀ :=
+      (Nat.le_div_iff_mul_le hv0_pos).mpr (by nlinarith only [hn, hk2])
+    have hqR1 : (1 : ℝ) ≤ (k * n / v₀ : ℕ) := by exact_mod_cast hq1
+    have hq_le_4 : ((k * n / v₀ : ℕ) : ℝ) ≤ 4 * ((n : ℝ) / v₀) := by
+      refine Nat.cast_div_le.trans ?_
+      push_cast
+      calc ((k : ℝ) * (n : ℝ)) / v₀ ≤ (4 * (n : ℝ)) / v₀ :=
+            div_le_div_of_nonneg_right
+              (mul_le_mul_of_nonneg_right (by exact_mod_cast hk4) hnR.le) hv0R.le
+        _ = 4 * ((n : ℝ) / v₀) := by ring
+    have hq_le_2n : ((k * n / v₀ : ℕ) : ℝ) ≤ 2 * (n : ℝ) := by
+      have h4_2 : 4 * ((n : ℝ) / v₀) ≤ 2 * (n : ℝ) := by
+        rw [mul_div_assoc', div_le_iff₀ hv0R]
+        have hv2 : (2 : ℝ) ≤ v₀ := by exact_mod_cast hv₀
+        nlinarith only [hv2, hnR]
+      exact hq_le_4.trans h4_2
+    have hsq_q : Real.sqrt (k * n / v₀ : ℕ) ≤ 2 * Real.sqrt ((n : ℝ) / v₀) :=
+      (Real.sqrt_le_sqrt hq_le_4).trans_eq
+        (by rw [Real.sqrt_mul (by norm_num), show Real.sqrt 4 = 2 by norm_num])
+    have hlg_q : (1 + Real.log (k * n / v₀ : ℕ)) ^ 2 ≤ 4 * (1 + Real.log n) ^ 2 := by
+      have hl1 := Real.log_le_log (by positivity) hq_le_2n
+      rw [Real.log_mul (by norm_num) hnR.ne'] at hl1
+      have hl2 : Real.log 2 ≤ 1 := by linarith [Real.log_two_lt_d9]
+      have hlin_lg : 1 + Real.log (k * n / v₀ : ℕ) ≤ 2 * (1 + Real.log n) := by
+        linarith only [hl1, hl2, Real.log_nonneg hnR1]
+      exact (pow_le_pow_left₀ (by linarith [Real.log_nonneg hqR1]) hlin_lg 2).trans_eq (by ring)
+    calc |E_rem (k * n / v₀ : ℕ)|
+        ≤ K_θ * Real.sqrt (k * n / v₀ : ℕ) * (1 + Real.log (k * n / v₀ : ℕ)) ^ 2 :=
+          hmode _ hqR1
+      _ ≤ K_θ * (2 * Real.sqrt ((n : ℝ) / v₀)) * (4 * (1 + Real.log n) ^ 2) :=
+          mul_le_mul (mul_le_mul_of_nonneg_left hsq_q hK_θ) hlg_q (sq_nonneg _) (by positivity)
+      _ = 8 * K_θ * Real.sqrt ((n : ℝ) / v₀) * (1 + Real.log n) ^ 2 := by ring
+  rw [hθ_expand 4, hθ_expand 3, hθ_expand 2, ← hw_exact]
+  obtain ⟨r4l, r4u⟩ := abs_le.mp (hw_round 4 (by decide))
+  obtain ⟨r3l, r3u⟩ := abs_le.mp (hw_round 3 (by decide))
+  obtain ⟨r2l, r2u⟩ := abs_le.mp (hw_round 2 (by decide))
+  obtain ⟨e4l, e4u⟩ := abs_le.mp (hrem_k 4 (by decide) (by decide))
+  obtain ⟨e3l, e3u⟩ := abs_le.mp (hrem_k 3 (by decide) (by decide))
+  obtain ⟨e2l, e2u⟩ := abs_le.mp (hrem_k 2 (by decide) (by decide))
+  obtain ⟨ll, lu⟩ := abs_le.mp hlin_b
+  have hconst_scaled : 8 * m + 1 ≤
+      (8 * m + 1) * (Real.sqrt ((n : ℝ) / v₀) * (1 + Real.log n) ^ 2) :=
+    le_mul_of_one_le_right (by dsimp [m]; positivity) hprod1
+  rw [abs_le]
+  constructor <;>
+    linarith only [r4l, r4u, r3l, r3u, r2l, r2u, e4l, e4u, e3l, e3u, e2l, e2u, ll, lu,
+      hconst_scaled]
+
+/-! ### 7. Second-order (log-twisted) wave transmission and multiplicity separation -/
+
+/-- Log-twisted single-mode wave `-2 Re((x^z log x) / z - x^z / z²)` obtained by differentiating
+`quartetWaveModel z 1 x` with respect to `z`. -/
+def logTwistedWaveModel (z : ℂ) (x : ℝ) : ℝ :=
+  -(2 * ((x : ℂ) ^ z * (Real.log x : ℂ) / z - (x : ℂ) ^ z / z ^ 2).re)
+
+private def complexWaveRemainder (n : ℕ) (z : ℂ) : ℂ :=
+  clippedCofactorComplexSliceOp n ⌊2 * Real.sqrt n⌋₊ 1 (fun x => (x : ℂ) ^ z / z) -
+    midpointComplexSecondDiff n (fun x => (x : ℂ) ^ z / z) +
+    riemannZeta z * ((midpointMultiplier z / z) * coprimeEulerFactor n z * ((n : ℝ) : ℂ) ^ z)
+
+private theorem hasDerivAt_pos_cpow_div {a : ℝ} (ha : 0 < a) {z : ℂ} (hz0 : z ≠ 0) :
+    HasDerivAt (fun w : ℂ => (a : ℂ) ^ w / w)
+      ((a : ℂ) ^ z * (Real.log a : ℂ) / z - (a : ℂ) ^ z / z ^ 2) z := by
+  have haC : (a : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr ha.ne'
+  have hc := (hasDerivAt_id z).const_cpow (c := (a : ℂ)) (Or.inl haC)
+  rw [← Complex.ofReal_log ha.le, mul_one] at hc
+  refine (hc.div (hasDerivAt_id z) hz0).congr_deriv ?_
+  dsimp [id]
+  field_simp [hz0]
+  ring
+
+private theorem differentiableAt_complexWaveRemainder {n : ℕ} (hn : 1 ≤ n) {z : ℂ}
+    (hz0 : z ≠ 0) (hz1 : z ≠ 1) :
+    DifferentiableAt ℂ (complexWaveRemainder n) z := by
+  unfold complexWaveRemainder clippedCofactorComplexSliceOp midpointComplexSecondDiff
+  obtain ⟨hP1, _, _, _⟩ := floor_two_sqrt_bounds hn
+  have hd_g (m : ℕ) (hm : 1 ≤ m) : DifferentiableAt ℂ (fun w : ℂ => ((m : ℝ) : ℂ) ^ w / w) z :=
+    (hasDerivAt_pos_cpow_div (by exact_mod_cast hm) hz0).differentiableAt
+  have hd_clip : DifferentiableAt ℂ
+      (fun w : ℂ => ∑ v ∈ (Icc 2 (4 * n)).filter (fun v => n.Coprime v ∧ 1 ∣ v),
+        ((((max ⌊2 * Real.sqrt n⌋₊ (4 * n / v) : ℕ) : ℝ) : ℂ) ^ w / w -
+          2 * ((((max ⌊2 * Real.sqrt n⌋₊ (3 * n / v) : ℕ) : ℝ) : ℂ) ^ w / w) +
+          ((((max ⌊2 * Real.sqrt n⌋₊ (2 * n / v) : ℕ) : ℝ) : ℂ) ^ w / w))) z := by
+    refine DifferentiableAt.fun_sum fun v _ => ?_
+    exact ((hd_g _ (hP1.trans (le_max_left _ _))).sub
+      ((hd_g _ (hP1.trans (le_max_left _ _))).const_mul 2)).add
+      (hd_g _ (hP1.trans (le_max_left _ _)))
+  have hd_mid : DifferentiableAt ℂ
+      (fun w : ℂ => 2 * ((((3 * n : ℕ) : ℝ) : ℂ) ^ w / w) -
+        ((((2 * n : ℕ) : ℝ) : ℂ) ^ w / w) -
+        ((((4 * n : ℕ) : ℝ) : ℂ) ^ w / w)) z :=
+    (((hd_g (3 * n) (by omega)).const_mul 2).sub (hd_g (2 * n) (by omega))).sub
+      (hd_g (4 * n) (by omega))
+  have hd_mult : DifferentiableAt ℂ midpointMultiplier z := by
+    unfold midpointMultiplier
+    exact (((differentiableAt_id.const_cpow (Or.inl (by norm_num : (3 : ℂ) ≠ 0))).const_mul 2).sub
+      (differentiableAt_id.const_cpow (Or.inl (by norm_num : (2 : ℂ) ≠ 0)))).sub
+      (differentiableAt_id.const_cpow (Or.inl (by norm_num : (4 : ℂ) ≠ 0)))
+  have hd_eul : DifferentiableAt ℂ (coprimeEulerFactor n) z := by
+    unfold coprimeEulerFactor
+    refine DifferentiableAt.fun_sum fun d hd => ?_
+    have hdR : ((d : ℝ) : ℂ) ≠ 0 := by
+      exact_mod_cast (Nat.pos_of_mem_divisors hd).ne'
+    exact (differentiableAt_id.neg.const_cpow (Or.inl hdR)).const_mul (μ d : ℂ)
+  have hd_npow : DifferentiableAt ℂ (fun w : ℂ => ((n : ℝ) : ℂ) ^ w) z :=
+    differentiableAt_id.const_cpow (Or.inl (by exact_mod_cast (by omega : n ≠ 0)))
+  have hd_prod : DifferentiableAt ℂ
+      (fun w : ℂ => riemannZeta w * ((midpointMultiplier w / w) * coprimeEulerFactor n w *
+        ((n : ℝ) : ℂ) ^ w)) z :=
+    (differentiableAt_riemannZeta hz1).mul
+      (((hd_mult.div differentiableAt_id hz0).mul hd_eul).mul hd_npow)
+  exact (hd_clip.sub hd_mid).add hd_prod
+
+private theorem deriv_complexWaveRemainder_at_zero {n : ℕ} (hn : 1 ≤ n) {ρ₀ : ℂ}
+    (h0 : ρ₀ ≠ 0) (h1 : ρ₀ ≠ 1) (hζ : riemannZeta ρ₀ = 0) :
+    deriv (complexWaveRemainder n) ρ₀ =
+      clippedCofactorComplexSliceOp n ⌊2 * Real.sqrt n⌋₊ 1
+          (fun x => (x : ℂ) ^ ρ₀ * (Real.log x : ℂ) / ρ₀ - (x : ℂ) ^ ρ₀ / ρ₀ ^ 2) -
+        midpointComplexSecondDiff n
+          (fun x => (x : ℂ) ^ ρ₀ * (Real.log x : ℂ) / ρ₀ - (x : ℂ) ^ ρ₀ / ρ₀ ^ 2) +
+        deriv riemannZeta ρ₀ *
+          ((midpointMultiplier ρ₀ / ρ₀) * coprimeEulerFactor n ρ₀ * ((n : ℝ) : ℂ) ^ ρ₀) := by
+  obtain ⟨hP1, _, _, _⟩ := floor_two_sqrt_bounds hn
+  let dg (x : ℝ) : ℂ := (x : ℂ) ^ ρ₀ * (Real.log x : ℂ) / ρ₀ - (x : ℂ) ^ ρ₀ / ρ₀ ^ 2
+  have h1_der : HasDerivAt
+      (fun w : ℂ => clippedCofactorComplexSliceOp n ⌊2 * Real.sqrt n⌋₊ 1 (fun x => (x : ℂ) ^ w / w))
+      (clippedCofactorComplexSliceOp n ⌊2 * Real.sqrt n⌋₊ 1 dg) ρ₀ := by
+    unfold clippedCofactorComplexSliceOp
+    refine HasDerivAt.fun_sum fun v _ => ?_
+    have hd4 := hasDerivAt_pos_cpow_div
+      (a := ((max ⌊2 * Real.sqrt n⌋₊ (4 * n / v) : ℕ) : ℝ))
+      (by exact_mod_cast hP1.trans (le_max_left _ _)) h0
+    have hd3 := hasDerivAt_pos_cpow_div
+      (a := ((max ⌊2 * Real.sqrt n⌋₊ (3 * n / v) : ℕ) : ℝ))
+      (by exact_mod_cast hP1.trans (le_max_left _ _)) h0
+    have hd2 := hasDerivAt_pos_cpow_div
+      (a := ((max ⌊2 * Real.sqrt n⌋₊ (2 * n / v) : ℕ) : ℝ))
+      (by exact_mod_cast hP1.trans (le_max_left _ _)) h0
+    exact (hd4.sub (hd3.const_mul 2)).add hd2
+  have h2_der : HasDerivAt
+      (fun w : ℂ => midpointComplexSecondDiff n (fun x => (x : ℂ) ^ w / w))
+      (midpointComplexSecondDiff n dg) ρ₀ := by
+    unfold midpointComplexSecondDiff
+    have hm3 := hasDerivAt_pos_cpow_div (a := ((3 * n : ℕ) : ℝ)) (by exact_mod_cast (by omega : 0 < 3 * n)) h0
+    have hm2 := hasDerivAt_pos_cpow_div (a := ((2 * n : ℕ) : ℝ)) (by exact_mod_cast (by omega : 0 < 2 * n)) h0
+    have hm4 := hasDerivAt_pos_cpow_div (a := ((4 * n : ℕ) : ℝ)) (by exact_mod_cast (by omega : 0 < 4 * n)) h0
+    exact ((hm3.const_mul 2).sub hm2).sub hm4
+  let Hn (w : ℂ) : ℂ := (midpointMultiplier w / w) * coprimeEulerFactor n w * ((n : ℝ) : ℂ) ^ w
+  have hd_Hn : DifferentiableAt ℂ Hn ρ₀ := by
+    dsimp [Hn]
+    have hd_mult : DifferentiableAt ℂ midpointMultiplier ρ₀ := by
+      unfold midpointMultiplier
+      exact (((differentiableAt_id.const_cpow (Or.inl (by norm_num : (3 : ℂ) ≠ 0))).const_mul 2).sub
+        (differentiableAt_id.const_cpow (Or.inl (by norm_num : (2 : ℂ) ≠ 0)))).sub
+        (differentiableAt_id.const_cpow (Or.inl (by norm_num : (4 : ℂ) ≠ 0)))
+    have hd_eul : DifferentiableAt ℂ (coprimeEulerFactor n) ρ₀ := by
+      unfold coprimeEulerFactor
+      refine DifferentiableAt.fun_sum fun d hd => ?_
+      have hdR : ((d : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (Nat.pos_of_mem_divisors hd).ne'
+      exact (differentiableAt_id.neg.const_cpow (Or.inl hdR)).const_mul (μ d : ℂ)
+    have hd_npow : DifferentiableAt ℂ (fun w : ℂ => ((n : ℝ) : ℂ) ^ w) ρ₀ :=
+      differentiableAt_id.const_cpow (Or.inl (by exact_mod_cast (by omega : n ≠ 0)))
+    exact ((hd_mult.div differentiableAt_id h0).mul hd_eul).mul hd_npow
+  have h3_der : HasDerivAt (fun w : ℂ => riemannZeta w * Hn w)
+      (deriv riemannZeta ρ₀ * Hn ρ₀) ρ₀ := by
+    have hm := (differentiableAt_riemannZeta h1).hasDerivAt.mul hd_Hn.hasDerivAt
+    rw [hζ, zero_mul, add_zero] at hm
+    exact hm
+  exact ((h1_der.sub h2_der).add h3_der).deriv
+
+/-- **Second-order (log-twisted) reflected-composite wave transmission at a strip zero `ζ(ρ₀) = 0`.**
+Differentiating the reflected-composite remainder on a disc around `ρ₀` (`1/2 < Re ρ₀ < 1`,
+`ζ(ρ₀) = 0`) proves that `logTwistedWaveModel ρ₀` has reflected-composite defect
+`+2 Re((midpointMultiplier ρ₀ / ρ₀) ζ'(ρ₀) coprimeEulerFactor n ρ₀ n^{ρ₀})` up to a strictly
+sub-square-root remainder `O_{ρ₀}(n^{(1 + Re ρ₀)/4} squarefreeDivisorMass n)`. -/
+theorem clippedCofactorOp_logTwistedWave_at_zero {ρ₀ : ℂ} (hhalf : 1 / 2 < ρ₀.re)
+    (h1 : ρ₀.re < 1) (hζ : riemannZeta ρ₀ = 0) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ n : ℕ, 2 ≤ n →
+      |clippedCofactorOp n ⌊2 * Real.sqrt n⌋₊ (logTwistedWaveModel ρ₀) -
+          midpointSecondDiff n (logTwistedWaveModel ρ₀) -
+          2 * ((midpointMultiplier ρ₀ / ρ₀) * deriv riemannZeta ρ₀ * coprimeEulerFactor n ρ₀ *
+            ((n : ℝ) : ℂ) ^ ρ₀).re| ≤
+        C * (n : ℝ) ^ ((1 + ρ₀.re) / 4) * squarefreeDivisorMass n := by
+  set r : ℝ := (1 - ρ₀.re) / 2
+  have hr_pos : 0 < r := by dsimp [r]; linarith
+  -- Uniform bound on `waveTransmissionRate z` over `closedBall ρ₀ r`
+  set M_rate : ℝ :=
+    4 * (12 * (3 + 2 / r + 12 * (‖ρ₀‖ + r)) + 4) + 12
+  have hM_rate_nn : 0 ≤ M_rate := by dsimp [M_rate]; positivity
+  have hball_bounds {z : ℂ} (hz : z ∈ closedBall ρ₀ r) :
+      1 / 4 < z.re ∧ z.re ≤ (1 + ρ₀.re) / 2 ∧ z.re < 1 ∧
+        waveTransmissionRate z ≤ M_rate := by
+    rw [mem_closedBall, dist_eq_norm] at hz
+    have hre_diff := abs_le.mp ((Complex.abs_re_le_norm (z - ρ₀)).trans hz)
+    rw [Complex.sub_re] at hre_diff
+    have hz_lo : 1 / 4 < z.re := by dsimp [r] at hre_diff; linarith
+    have hz_mid : z.re ≤ (1 + ρ₀.re) / 2 := by dsimp [r] at hre_diff; linarith
+    have hz_hi : z.re < 1 := by linarith
+    have h1z_ge : r ≤ ‖1 - z‖ := by
+      have hre1 : r ≤ (1 - z).re := by
+        rw [Complex.sub_re, Complex.one_re]; dsimp [r]; linarith
+      exact hre1.trans (Complex.re_le_norm (1 - z))
+    have hz_ge : 1 / 4 ≤ ‖z‖ := hz_lo.le.trans (Complex.re_le_norm z)
+    have hz_le : ‖z‖ ≤ ‖ρ₀‖ + r := by
+      have ht := norm_add_le (z - ρ₀) ρ₀
+      rw [sub_add_cancel] at ht
+      linarith only [ht, hz]
+    have hinv_1z : 2 / ‖1 - z‖ ≤ 2 / r :=
+      div_le_div_of_nonneg_left zero_le_two hr_pos h1z_ge
+    have hinv_zre : 3 * ‖z‖ / z.re ≤ 12 * (‖ρ₀‖ + r) := by
+      rw [div_le_iff₀ (by linarith)]
+      nlinarith only [hz_lo, hz_le, norm_nonneg z]
+    have hnum_le : 12 * (3 + 2 / ‖1 - z‖ + 3 * ‖z‖ / z.re) + 4 ≤
+        12 * (3 + 2 / r + 12 * (‖ρ₀‖ + r)) + 4 := by
+      linarith only [hinv_1z, hinv_zre]
+    have hdiv_z : (12 * (3 + 2 / ‖1 - z‖ + 3 * ‖z‖ / z.re) + 4) / ‖z‖ ≤
+        4 * (12 * (3 + 2 / r + 12 * (‖ρ₀‖ + r)) + 4) := by
+      rw [div_le_iff₀ (by linarith)]
+      have hnum_nn : 0 ≤ 12 * (3 + 2 / r + 12 * (‖ρ₀‖ + r)) + 4 := by positivity
+      nlinarith only [hnum_le, hz_ge, hnum_nn]
+    refine ⟨hz_lo, hz_mid, hz_hi, ?_⟩
+    unfold waveTransmissionRate
+    dsimp [M_rate]
+    linarith only [hdiv_z]
+  refine ⟨6 * M_rate / r, by positivity, fun n hn => ?_⟩
+  have hn1 : 1 ≤ n := by omega
+  have hnR : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+  have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast hn1
+  obtain ⟨hP1, hP2, _, _⟩ := floor_two_sqrt_bounds hn1
+  have hdiffCont : DiffContOnCl ℂ (complexWaveRemainder n) (ball ρ₀ r) := by
+    refine DifferentiableOn.diffContOnCl ?_
+    rw [closure_ball ρ₀ hr_pos.ne']
+    intro z hz
+    obtain ⟨hz_lo, _, hz_hi, _⟩ := hball_bounds hz
+    have hz0 : z ≠ 0 := fun he => by rw [he, Complex.zero_re] at hz_lo; linarith
+    have hz1 : z ≠ 1 := fun he => by rw [he, Complex.one_re] at hz_hi; linarith
+    exact (differentiableAt_complexWaveRemainder hn1 hz0 hz1).differentiableWithinAt
+  have hsphere : ∀ z ∈ sphere ρ₀ r,
+      ‖complexWaveRemainder n z‖ ≤
+        3 * M_rate * (n : ℝ) ^ ((1 + ρ₀.re) / 4) * squarefreeDivisorMass n := by
+    intro z hz
+    obtain ⟨hz_lo, hz_mid, hz_hi, hrate⟩ := hball_bounds (sphere_subset_closedBall hz)
+    have hz0 : 0 < z.re := by linarith
+    have hmid_eq : midpointComplexSecondDiff n (fun x => (x : ℂ) ^ z / z) =
+        (midpointMultiplier z / z) * ((n : ℝ) : ℂ) ^ z := by
+      unfold midpointComplexSecondDiff
+      have hc (k : ℕ) (hk : 0 < k) : (((k * n : ℕ) : ℝ) : ℂ) ^ z =
+          (k : ℂ) ^ z * ((n : ℝ) : ℂ) ^ z := by
+        have hkR : (0 : ℝ) < k := by exact_mod_cast hk
+        simpa only [Nat.cast_mul] using cpow_pos_mul hkR hnR z
+      rw [hc 3 (by decide), hc 2 (by decide), hc 4 (by decide), midpointMultiplier]
+      ring
+    have hrem_eq : complexWaveRemainder n z =
+        clippedCofactorComplexSliceOp n ⌊2 * Real.sqrt n⌋₊ 1 (fun x => (x : ℂ) ^ z / z) -
+          (midpointMultiplier z / z) *
+            ((if (1 : ℕ) = 1 then (1 : ℂ) else 0) -
+              ((1 : ℝ) : ℂ) ^ (-z) * riemannZeta z * coprimeEulerFactor n z) *
+            ((n : ℝ) : ℂ) ^ z := by
+      unfold complexWaveRemainder
+      rw [hmid_eq, if_pos rfl, Complex.ofReal_one, Complex.one_cpow, one_mul]
+      ring
+    rw [hrem_eq]
+    have hb := clippedCofactorComplexSliceOp_cpow hn1 hP1 hP2 le_rfl (Nat.coprime_one_right n)
+      hz0 hz_hi
+    have hcut := wave_cut_rpow_le hn1 hz0 hz_hi
+    have hexp_le : (n : ℝ) ^ (z.re / 2) ≤ (n : ℝ) ^ ((1 + ρ₀.re) / 4) :=
+      Real.rpow_le_rpow_of_exponent_le hnR1 (by linarith only [hz_mid])
+    have hmass_nn : 0 ≤ squarefreeDivisorMass n := sum_nonneg fun _ _ => abs_nonneg _
+    calc ‖_‖
+        ≤ waveTransmissionRate z *
+            ((⌊2 * Real.sqrt n⌋₊ : ℝ) ^ z.re +
+              (n : ℝ) * (⌊2 * Real.sqrt n⌋₊ : ℝ) ^ (z.re - 2)) *
+            squarefreeDivisorMass n := hb
+      _ ≤ M_rate * (3 * (n : ℝ) ^ (z.re / 2)) * squarefreeDivisorMass n :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul hrate hcut (by positivity) hM_rate_nn) hmass_nn
+      _ ≤ M_rate * (3 * (n : ℝ) ^ ((1 + ρ₀.re) / 4)) * squarefreeDivisorMass n :=
+          mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_left
+              (mul_le_mul_of_nonneg_left hexp_le (by norm_num)) hM_rate_nn) hmass_nn
+      _ = 3 * M_rate * (n : ℝ) ^ ((1 + ρ₀.re) / 4) * squarefreeDivisorMass n := by ring
+  have hcauchy := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le hr_pos hdiffCont hsphere
+  have hρ0_ne0 : ρ₀ ≠ 0 := fun he => by rw [he, Complex.zero_re] at hhalf; linarith
+  have hρ0_ne1 : ρ₀ ≠ 1 := fun he => by rw [he, Complex.one_re] at h1; linarith
+  have hder_eq := deriv_complexWaveRemainder_at_zero hn1 hρ0_ne0 hρ0_ne1 hζ
+  rw [hder_eq] at hcauchy
+  have hre_id :
+      clippedCofactorOp n ⌊2 * Real.sqrt n⌋₊ (logTwistedWaveModel ρ₀) -
+          midpointSecondDiff n (logTwistedWaveModel ρ₀) -
+          2 * ((midpointMultiplier ρ₀ / ρ₀) * deriv riemannZeta ρ₀ * coprimeEulerFactor n ρ₀ *
+            ((n : ℝ) : ℂ) ^ ρ₀).re =
+        -(2 * (clippedCofactorComplexSliceOp n ⌊2 * Real.sqrt n⌋₊ 1
+              (fun x => (x : ℂ) ^ ρ₀ * (Real.log x : ℂ) / ρ₀ - (x : ℂ) ^ ρ₀ / ρ₀ ^ 2) -
+            midpointComplexSecondDiff n
+              (fun x => (x : ℂ) ^ ρ₀ * (Real.log x : ℂ) / ρ₀ - (x : ℂ) ^ ρ₀ / ρ₀ ^ 2) +
+            deriv riemannZeta ρ₀ *
+              ((midpointMultiplier ρ₀ / ρ₀) * coprimeEulerFactor n ρ₀ * ((n : ℝ) : ℂ) ^ ρ₀)).re) := by
+    unfold clippedCofactorOp clippedCofactorSliceOp clippedCofactorComplexSliceOp
+      midpointSecondDiff midpointComplexSecondDiff logTwistedWaveModel
+    simp only [Complex.add_re, Complex.sub_re, Complex.re_sum, Finset.mul_sum,
+      ← Finset.sum_neg_distrib, Complex.mul_re, Complex.re_ofNat, Complex.im_ofNat,
+      zero_mul, sub_zero]
+    have hmul_comm : (deriv riemannZeta ρ₀ *
+        ((midpointMultiplier ρ₀ / ρ₀) * coprimeEulerFactor n ρ₀ * ((n : ℝ) : ℂ) ^ ρ₀)).re =
+        ((midpointMultiplier ρ₀ / ρ₀) * deriv riemannZeta ρ₀ * coprimeEulerFactor n ρ₀ *
+          ((n : ℝ) : ℂ) ^ ρ₀).re := by congr 1; ring
+    rw [hmul_comm]
+    have hsum_eq :
+        ∑ v ∈ (Icc 2 (4 * n)).filter (fun v => n.Coprime v ∧ 1 ∣ v),
+            (-(2 * ((((max ⌊2 * Real.sqrt n⌋₊ (4 * n / v) : ℕ) : ℂ) ^ ρ₀ *
+                (Real.log (max ⌊2 * Real.sqrt n⌋₊ (4 * n / v) : ℕ) : ℂ) / ρ₀ -
+              ((max ⌊2 * Real.sqrt n⌋₊ (4 * n / v) : ℕ) : ℂ) ^ ρ₀ / ρ₀ ^ 2).re)) -
+            2 * -(2 * ((((max ⌊2 * Real.sqrt n⌋₊ (3 * n / v) : ℕ) : ℂ) ^ ρ₀ *
+                (Real.log (max ⌊2 * Real.sqrt n⌋₊ (3 * n / v) : ℕ) : ℂ) / ρ₀ -
+              ((max ⌊2 * Real.sqrt n⌋₊ (3 * n / v) : ℕ) : ℂ) ^ ρ₀ / ρ₀ ^ 2).re)) +
+            -(2 * ((((max ⌊2 * Real.sqrt n⌋₊ (2 * n / v) : ℕ) : ℂ) ^ ρ₀ *
+                (Real.log (max ⌊2 * Real.sqrt n⌋₊ (2 * n / v) : ℕ) : ℂ) / ρ₀ -
+              ((max ⌊2 * Real.sqrt n⌋₊ (2 * n / v) : ℕ) : ℂ) ^ ρ₀ / ρ₀ ^ 2).re))) =
+          -(∑ v ∈ (Icc 2 (4 * n)).filter (fun v => n.Coprime v ∧ 1 ∣ v),
+            2 * (((((max ⌊2 * Real.sqrt n⌋₊ (4 * n / v) : ℕ) : ℝ) : ℂ) ^ ρ₀ *
+                (Real.log (max ⌊2 * Real.sqrt n⌋₊ (4 * n / v) : ℕ) : ℂ) / ρ₀ -
+              (((max ⌊2 * Real.sqrt n⌋₊ (4 * n / v) : ℕ) : ℝ) : ℂ) ^ ρ₀ / ρ₀ ^ 2).re -
+              2 * (((((max ⌊2 * Real.sqrt n⌋₊ (3 * n / v) : ℕ) : ℝ) : ℂ) ^ ρ₀ *
+                  (Real.log (max ⌊2 * Real.sqrt n⌋₊ (3 * n / v) : ℕ) : ℂ) / ρ₀ -
+                (((max ⌊2 * Real.sqrt n⌋₊ (3 * n / v) : ℕ) : ℝ) : ℂ) ^ ρ₀ / ρ₀ ^ 2).re) +
+              ((((max ⌊2 * Real.sqrt n⌋₊ (2 * n / v) : ℕ) : ℝ) : ℂ) ^ ρ₀ *
+                  (Real.log (max ⌊2 * Real.sqrt n⌋₊ (2 * n / v) : ℕ) : ℂ) / ρ₀ -
+                (((max ⌊2 * Real.sqrt n⌋₊ (2 * n / v) : ℕ) : ℝ) : ℂ) ^ ρ₀ / ρ₀ ^ 2).re)) := by
+      rw [← Finset.sum_neg_distrib]
+      refine Finset.sum_congr rfl fun v _ => ?_
+      push_cast; ring
+    push_cast at hsum_eq ⊢
+    linarith only [hsum_eq]
+  rw [hre_id, abs_neg, abs_mul, abs_of_pos two_pos]
+  calc 2 * |_ |
+      ≤ 2 * ‖_‖ := mul_le_mul_of_nonneg_left (Complex.abs_re_le_norm _) zero_le_two
+    _ ≤ 2 * (3 * M_rate * (n : ℝ) ^ ((1 + ρ₀.re) / 4) * squarefreeDivisorMass n / r) :=
+        mul_le_mul_of_nonneg_left hcauchy zero_le_two
+    _ = 6 * M_rate / r * (n : ℝ) ^ ((1 + ρ₀.re) / 4) * squarefreeDivisorMass n := by ring
+
+/-- **Exact `ζ'(ρ₀) = 0` characterization via the log-twisted reflected-composite defect.**
+At any off-line zero `ρ₀` (`1/2 < Re ρ₀ < 1`, `Im ρ₀ ≠ 0`, `ζ(ρ₀) = 0`), the log-twisted wave
+defect `clippedCofactorOp n ⌊2√n⌋₊ (logTwistedWaveModel ρ₀) - midpointSecondDiff n (logTwistedWaveModel ρ₀)`
+is `O(√n squarefreeDivisorMass n)` across `n ≥ 2` **if and only if** `deriv riemannZeta ρ₀ = 0`
+(equivalently, `ρ₀` has multiplicity `≥ 2`). -/
+theorem logTwisted_wave_compatible_iff_deriv_zero {ρ₀ : ℂ} (hhalf : 1 / 2 < ρ₀.re)
+    (h1 : ρ₀.re < 1) (him : ρ₀.im ≠ 0) (hζ : riemannZeta ρ₀ = 0) :
+    (∃ C : ℝ, ∀ n : ℕ, 2 ≤ n →
+      |clippedCofactorOp n ⌊2 * Real.sqrt n⌋₊ (logTwistedWaveModel ρ₀) -
+          midpointSecondDiff n (logTwistedWaveModel ρ₀)| ≤
+        C * Real.sqrt n * squarefreeDivisorMass n) ↔
+      deriv riemannZeta ρ₀ = 0 := by
+  have hz0 : 0 < ρ₀.re := by linarith
+  have hzne0 : ρ₀ ≠ 0 := fun he => by rw [he, Complex.zero_re] at hz0; exact lt_irrefl 0 hz0
+  obtain ⟨C₀, hC₀, htw⟩ := clippedCofactorOp_logTwistedWave_at_zero hhalf h1 hζ
+  constructor
+  · rintro ⟨C, hC⟩
+    by_contra hder_ne
+    have hA_ne : (midpointMultiplier ρ₀ / ρ₀) * deriv riemannZeta ρ₀ ≠ 0 :=
+      mul_ne_zero (div_ne_zero (midpointMultiplier_ne_zero hz0 h1) hzne0) hder_ne
+    obtain ⟨p, c, hp, _, hc_pos, hpeaks⟩ :=
+      exists_prime_power_re_lower_bound 1 hz0 him hA_ne
+    set K_tot : ℝ := 2 * (|C| + C₀)
+    have hgap : 0 < ρ₀.re - 1 / 2 := sub_pos.mpr hhalf
+    have htend : Tendsto (fun k : ℕ => ((p ^ k : ℕ) : ℝ) ^ (ρ₀.re - 1 / 2)) atTop atTop :=
+      (_root_.tendsto_rpow_atTop hgap).comp
+        (tendsto_natCast_atTop_atTop.comp (Nat.tendsto_pow_atTop_atTop_of_one_lt hp.one_lt))
+    obtain ⟨k, hk1, hbig⟩ :=
+      ((eventually_ge_atTop 1).and
+        (htend.eventually_gt_atTop ((K_tot + 1) / (2 * c)))).exists
+    obtain ⟨n, hn_mem, _, hmass2, hpk⟩ := hpeaks k hk1
+    have hn_ge_pk : p ^ k ≤ n := by
+      simp only [Finset.mem_insert, Finset.mem_singleton] at hn_mem
+      rcases hn_mem with rfl | rfl
+      · exact le_rfl
+      · exact Nat.pow_le_pow_right hp.pos (Nat.le_succ k)
+    have hn2 : 2 ≤ n := (by simpa using hp.two_le : 2 ≤ p ^ 1).trans
+      ((Nat.pow_le_pow_right hp.pos hk1).trans hn_ge_pk)
+    have hn0 : (0 : ℝ) < n := by exact_mod_cast (by omega : 0 < n)
+    have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast (by omega : 1 ≤ n)
+    have hb1 := (hC n hn2).trans (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (le_abs_self C) (Real.sqrt_nonneg n))
+      (by rw [hmass2]; norm_num))
+    have hb2_raw := htw n hn2
+    have hexp_le : (n : ℝ) ^ ((1 + ρ₀.re) / 4) ≤ Real.sqrt n := by
+      rw [Real.sqrt_eq_rpow]
+      exact Real.rpow_le_rpow_of_exponent_le hnR1 (by linarith)
+    have hb2 : |(clippedCofactorOp n ⌊2 * Real.sqrt n⌋₊ (logTwistedWaveModel ρ₀) -
+          midpointSecondDiff n (logTwistedWaveModel ρ₀)) -
+        2 * ((midpointMultiplier ρ₀ / ρ₀) * deriv riemannZeta ρ₀ * coprimeEulerFactor n ρ₀ *
+          ((n : ℝ) : ℂ) ^ ρ₀).re| ≤ C₀ * Real.sqrt n * squarefreeDivisorMass n :=
+      hb2_raw.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hexp_le hC₀)
+        (sum_nonneg fun _ _ => abs_nonneg _))
+    rw [hmass2] at hb1 hb2
+    have hupper : |2 * ((midpointMultiplier ρ₀ / ρ₀) * deriv riemannZeta ρ₀ *
+        coprimeEulerFactor n ρ₀ * ((n : ℝ) : ℂ) ^ ρ₀).re| ≤ K_tot * Real.sqrt n := by
+      set D := clippedCofactorOp n ⌊2 * Real.sqrt n⌋₊ (logTwistedWaveModel ρ₀) -
+        midpointSecondDiff n (logTwistedWaveModel ρ₀)
+      have htri := abs_sub D
+        (D - 2 * ((midpointMultiplier ρ₀ / ρ₀) * deriv riemannZeta ρ₀ *
+          coprimeEulerFactor n ρ₀ * ((n : ℝ) : ℂ) ^ ρ₀).re)
+      rw [sub_sub_cancel] at htri
+      dsimp [K_tot]
+      linarith only [htri, hb1, hb2]
+    have hlower : 2 * c * (n : ℝ) ^ ρ₀.re ≤
+        |2 * ((midpointMultiplier ρ₀ / ρ₀) * deriv riemannZeta ρ₀ *
+          coprimeEulerFactor n ρ₀ * ((n : ℝ) : ℂ) ^ ρ₀).re| := by
+      rw [abs_mul, abs_of_pos two_pos, mul_assoc]
+      exact mul_le_mul_of_nonneg_left hpk zero_le_two
+    have hrpow_n : (K_tot + 1) / (2 * c) < (n : ℝ) ^ (ρ₀.re - 1 / 2) :=
+      hbig.trans_le (Real.rpow_le_rpow (by positivity) (by exact_mod_cast hn_ge_pk) hgap.le)
+    have hm1 := (div_lt_iff₀ (mul_pos two_pos hc_pos)).mp hrpow_n
+    have hm2 := mul_lt_mul_of_pos_right hm1 (Real.sqrt_pos.mpr hn0)
+    rw [mul_comm _ (2 * c), mul_assoc, Real.sqrt_eq_rpow, ← Real.rpow_add hn0,
+      sub_add_cancel, ← Real.sqrt_eq_rpow] at hm2
+    have hle_K : K_tot * Real.sqrt n < (K_tot + 1) * Real.sqrt n :=
+      mul_lt_mul_of_pos_right (by linarith) (Real.sqrt_pos.mpr hn0)
+    linarith only [hupper, hlower, hm2, hle_K]
+  · intro hder0
+    refine ⟨C₀, fun n hn => ?_⟩
+    have hnR1 : (1 : ℝ) ≤ n := by exact_mod_cast (by omega : 1 ≤ n)
+    have hexp_le : (n : ℝ) ^ ((1 + ρ₀.re) / 4) ≤ Real.sqrt n := by
+      rw [Real.sqrt_eq_rpow]
+      exact Real.rpow_le_rpow_of_exponent_le hnR1 (by linarith)
+    have hb := htw n hn
+    simp only [hder0, mul_zero, zero_mul, Complex.zero_re, sub_zero] at hb
+    exact hb.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hexp_le hC₀)
+      (sum_nonneg fun _ _ => abs_nonneg _))
+
+#print axioms midpointMultiplier_ne_zero
+#print axioms exists_prime_power_re_lower_bound
+#print axioms largePrimeCofactorPrice_eq_clippedCofactorOp
+#print axioms clippedCofactorSliceOp_linear
+#print axioms clippedCofactorSliceOp_wave
+#print axioms reflectedComposite_wave_compatible_iff_zeta_zero
+#print axioms clippedCofactorSliceOp_theta_of_two_le
+#print axioms singleQuartet_reflectedComposite_remainder_cancellation
+#print axioms singleQuartet_individual_cofactor_cell
+#print axioms clippedCofactorOp_logTwistedWave_at_zero
+#print axioms logTwisted_wave_compatible_iff_deriv_zero
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

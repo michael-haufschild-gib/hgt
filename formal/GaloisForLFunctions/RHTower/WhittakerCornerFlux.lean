@@ -66,8 +66,8 @@ private theorem derivative_zero_of_even {f : ℝ → ℝ} {d : ℝ}
     (hf : HasDerivAt f d 0) (he : ∀ t, f (-t) = f t) : d = 0 := by
   have hf0 : HasDerivAt f d (-(0 : ℝ)) := by simpa only [neg_zero] using hf
   have hneg : HasDerivAt (fun t => f (-t)) (-d) 0 := by
-    convert! hf0.hasFDerivAt.comp_hasDerivAt 0 (hasDerivAt_id (0 : ℝ)).neg using 1 <;>
-      simp [Function.comp_def, smul_eq_mul]
+    convert! hf0.hasFDerivAt.comp_hasDerivAt 0 (hasDerivAt_id (0 : ℝ)).neg using 1
+    simp [smul_eq_mul]
   rw [show (fun t => f (-t)) = f from funext he] at hneg
   have hh := hf.unique hneg
   linarith only [hh]
@@ -83,7 +83,7 @@ theorem corner_radial_deriv_eq_trace_deriv {W : ℝ × ℝ → ℝ} {L : (ℝ ×
       (L (1, 0)) 0 := by
     have hc : HasDerivAt (fun t : ℝ => (1 / 2 + t, modularArcHeight (1 / 2))) (1, 0) 0 := by
       convert! ((hasDerivAt_id (0 : ℝ)).const_add (1 / 2 : ℝ)).prodMk
-        (hasDerivAt_const (0 : ℝ) (modularArcHeight (1 / 2))) using 1 <;> norm_num
+        (hasDerivAt_const (0 : ℝ) (modularArcHeight (1 / 2))) using 1
     have hw : HasFDerivAt W L ((1 / 2 : ℝ) + 0, modularArcHeight (1 / 2)) := by
       simpa only [add_zero] using hW
     exact hw.comp_hasDerivAt 0 hc

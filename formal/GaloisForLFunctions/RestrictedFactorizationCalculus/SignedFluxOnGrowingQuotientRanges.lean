@@ -86,6 +86,49 @@ theorem two_cutoff_rough_quotient_flux (F : ℕ → ℕ)
   rw [part (U/q),part (L/q)]
   ring
 
+/-- The oriented interval indicator is the difference of its two sharp cuts. -/
+def intervalObservation (L U n : ℕ) : ℝ :=
+  (if n ≤ U then 1 else 0)-(if n ≤ L then 1 else 0)
+
+/-- Each genuine exchange reverses the sign carried by a moving vertex.
+A stationary step preserves it, including when the same vertex is revisited. -/
+def exchangePathOrientation (v : ℕ → ℕ) (i : ℕ) : ℝ :=
+  ∏ j ∈ range i,if v (j+1)=v j then 1 else -1
+
+/-- The lower and upper wall crossings, the change of reading on each
+edge, and the change of observation at its destination account for a
+whole exchange walk. No disjointness of visited vertices is required. -/
+theorem transport_along_a_repeated_exchange_path (v L U : ℕ → ℕ) (w : ℕ → ℕ → ℝ)
+    (steps : ∀ i,v (i+1)=v i ∨ GlobalDyadicOneTwoRel (v i) (v (i+1))) (N : ℕ) :
+    let I := fun i => intervalObservation (L i) (U i)
+    (∑ i ∈ range N,exchangePathOrientation v i*(μ (v i):ℝ)*
+      (I i (v i)*(w i (v i)-w i (v (i+1)))+
+       (I i (v i)-I i (v (i+1)))*w i (v (i+1))+
+       (I i (v (i+1))*w i (v (i+1))-I (i+1) (v (i+1))*w (i+1) (v (i+1)))))=
+      (μ (v 0):ℝ)*(I 0 (v 0)*w 0 (v 0)-I N (v N)*w N (v N)) := by
+  let I := fun i => intervalObservation (L i) (U i)
+  let V := fun i => I i (v i)*w i (v i)
+  have sign (i : ℕ) : exchangePathOrientation v i*(μ (v i):ℝ)=(μ (v 0):ℝ) := by
+    induction i with
+    | zero => simp [exchangePathOrientation]
+    | succ i ih =>
+      rw [exchangePathOrientation,Finset.prod_range_succ]
+      by_cases same : v (i+1)=v i
+      · rw [if_pos same,mul_one,same]
+        exact ih
+      · have edge := (steps i).resolve_left same
+        have flip : (μ (v i):ℝ)= -(μ (v (i+1)):ℝ) := by exact_mod_cast edge.2.2.1
+        rw [if_neg same,mul_assoc,neg_one_mul,←flip]
+        exact ih
+  simp only [sign,←mul_sum]
+  apply congrArg (fun z : ℝ => (μ (v 0):ℝ)*z)
+  calc _ = ∑ i ∈ range N,(V i-V (i+1)) := by
+             apply sum_congr rfl
+             intro i _
+             dsimp only [V,I]
+             ring
+       _ = _ := Finset.sum_range_sub' V N
+
 /-- Summing successive exchange tables and quotient readings counts each
 visit at its own cutoff. A change of table alone cancels between fixed
 and crossing flux. Changes of reading or prime wall remain explicit. -/
@@ -163,6 +206,7 @@ theorem one_matching_for_all_rough_quotient_boundaries :
     (abs_nonneg _)).trans_eq (by unfold logBudget; ring)
 
 #print axioms smooth_lift_of_the_full_prefix
+#print axioms transport_along_a_repeated_exchange_path
 #print axioms signed_flux_along_a_quotient_history
 #print axioms compose_quotient_boundaries
 #print axioms two_cutoff_rough_quotient_flux

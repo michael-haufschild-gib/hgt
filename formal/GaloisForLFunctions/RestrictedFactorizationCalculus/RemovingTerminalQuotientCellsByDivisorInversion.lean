@@ -79,6 +79,7 @@ private theorem rough_floor_at_integer (y Z : ℕ) :
   have floor (m : ℕ) : (⌊(Z:ℝ)/m⌋:ℝ)=((Z/m:ℕ):ℝ) := by
     rw [←natCast_floor_eq_intCast_floor (div_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)),
       Nat.floor_div_natCast,Nat.floor_natCast]
+  unfold smoothCount
   rw [←h]
   simp only [floor,RoughReading.freeSet,sum_filter]
   apply sum_congr rfl
@@ -96,7 +97,7 @@ private theorem one_floor_price (y X d : ℕ) :
   symm
   apply sum_subset (Icc_subset_Icc_right (Nat.div_le_self X d))
   intro m hm outside
-  have past : X/d<m := by
+  have past : X/d < m := by
     by_contra! no
     exact outside (mem_Icc.mpr ⟨(mem_Icc.mp hm).1,no⟩)
   rw [Nat.div_eq_of_lt past,Nat.cast_zero,mul_zero]
@@ -122,30 +123,38 @@ def interiorQuotientReading (a : ArithmeticFunction ℝ) (y X T : ℕ) : ℝ :=
   ∑ m ∈ Icc 1 (X/(T+1)),RoughReading.row y m*
     (quotientReading a (X/m)-interpolatedQuotientFloor a T (X/m))
 
+/-- If two quotient readings agree through T, their exact difference is
+supported on cofactors up to the quotient by T+1. -/
+theorem cofactor_difference_below_the_terminal_band (f g : ℕ → ℝ) (y X T : ℕ)
+    (agree : ∀ t,t ≤ T → f t=g t) :
+    roughCofactorReading y X f-roughCofactorReading y X g=
+      ∑ m ∈ Icc 1 (X/(T+1)),RoughReading.row y m*(f (X/m)-g (X/m)) := by
+  unfold roughCofactorReading
+  rw [←sum_sub_distrib]
+  simp only [←mul_sub]
+  symm
+  apply sum_subset (Icc_subset_Icc_right (Nat.div_le_self ..))
+  intro m hm outside
+  have past : X/(T+1) < m := lt_of_not_ge (fun h => outside (mem_Icc.mpr ⟨(mem_Icc.mp hm).1,h⟩))
+  have small : X/m<T+1 := (Nat.div_lt_iff_lt_mul (mem_Icc.mp hm).1).mpr (by
+    simpa only [Nat.mul_comm] using (Nat.div_lt_iff_lt_mul (Nat.succ_pos T)).mp past)
+  rw [agree _ (Nat.le_of_lt_succ small),sub_self,mul_zero]
+
 /-- Every terminal quotient cell vanishes. The displayed smooth price
 includes all changes to the arithmetic reading on the surviving cells. -/
 theorem eliminating_the_terminal_quotient_cells (a : ArithmeticFunction ℝ) (y X T : ℕ) :
     roughCofactorReading y X (quotientReading a)=
       interiorQuotientReading a y X T+smoothInterpolationPrice a y X T := by
   rw [←signed_price_of_the_interpolated_center,←sub_eq_iff_eq_add]
-  unfold roughCofactorReading interiorQuotientReading
-  rw [←sum_sub_distrib]
-  simp only [←mul_sub]
-  symm
-  apply sum_subset (Icc_subset_Icc_right (Nat.div_le_self ..))
-  intro m hm outside
-  have past : X/(T+1)<m := by
-    by_contra! no
-    exact outside (mem_Icc.mpr ⟨(mem_Icc.mp hm).1,no⟩)
-  have small : X/m<T+1 := (Nat.div_lt_iff_lt_mul (mem_Icc.mp hm).1).mpr (by
-    simpa only [Nat.mul_comm] using (Nat.div_lt_iff_lt_mul (Nat.succ_pos T)).mp past)
-  rw [exact_interpolation_on_terminal_quotients a (Nat.le_of_lt_succ small),sub_self,mul_zero]
+  exact cofactor_difference_below_the_terminal_band _ _ y X T
+    (fun _ ht => exact_interpolation_on_terminal_quotients a ht)
 
 /-- Every selection or signed modulation of Mangoldt increments has
 floor coefficients bounded by log d, independently of its prime wall. -/
 theorem interpolating_coefficients_le_log {a : ArithmeticFunction ℝ} (dom : ∀ n,|a n| ≤ vonMangoldt n) (d : ℕ) :
     |quotientFloorCoefficients a d| ≤ Real.log d := by
-  rw [quotientFloorCoefficients,mul_apply,Nat.sum_divisorsAntidiagonal,←vonMangoldt_sum (n := d)]
+  rw [quotientFloorCoefficients,mul_apply,Nat.sum_divisorsAntidiagonal
+    (fun q k => a q*(moebius : ArithmeticFunction ℝ) k),←vonMangoldt_sum (n := d)]
   apply (abs_sum_le_sum_abs ..).trans (sum_le_sum (fun q _ => ?_))
   rw [abs_mul,intCoe_apply]
   have small : |(μ (d/q):ℝ)| ≤ 1 := by exact_mod_cast abs_moebius_le_one (n := d/q)

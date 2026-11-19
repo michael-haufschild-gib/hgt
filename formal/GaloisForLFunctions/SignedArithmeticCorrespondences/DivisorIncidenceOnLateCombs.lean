@@ -35,7 +35,8 @@ noncomputable section
 namespace GaloisForLFunctions.SignedArithmeticCorrespondences
 
 open Finset Filter Topology
-open AbsoluteGeometryOfSpecZ HodgeTheoryOfAFixedPart
+open AbsoluteGeometryOfSpecZ (jetKernel jetKernel_comm)
+open HodgeTheoryOfAFixedPart
 open scoped ArithmeticFunction.vonMangoldt
 
 /-! ### Four-part bilinear decomposition of the weighted Weil form -/
@@ -454,20 +455,16 @@ theorem abs_sum_centeredMultiple_shift_le {d₁ d₂ : ℕ}
     simp only [centeredMultiple, centeredResidue, hprod0.ne', if_false, Nat.cast_mul]
     by_cases h1 : d₁ ∣ m <;> by_cases h2 : d₂ ∣ m + h
     · have hm : m % (d₁ * d₂) = r₀ % (d₁ * d₂) := hiff.mp ⟨h1, h2⟩
-      simp only [h1, h2, hm, if_true]
-      field_simp
+      simp only [h1, h2, hm, if_true, one_div, mul_inv]
       ring
     · have hm : m % (d₁ * d₂) ≠ r₀ % (d₁ * d₂) := fun hm => h2 (hiff.mpr hm).2
-      simp only [h1, h2, hm, if_true, if_false]
-      field_simp
+      simp only [h1, h2, hm, if_true, if_false, one_div, mul_inv]
       ring
     · have hm : m % (d₁ * d₂) ≠ r₀ % (d₁ * d₂) := fun hm => h1 (hiff.mpr hm).1
-      simp only [h1, h2, hm, if_true, if_false]
-      field_simp
+      simp only [h1, h2, hm, if_true, if_false, one_div, mul_inv]
       ring
     · have hm : m % (d₁ * d₂) ≠ r₀ % (d₁ * d₂) := fun hm => h1 (hiff.mpr hm).1
-      simp only [h1, h2, hm, if_false]
-      field_simp
+      simp only [h1, h2, hm, if_false, one_div, mul_inv]
       ring
   have hsum : ∑ m ∈ Ioc a b, centeredMultiple d₁ m * centeredMultiple d₂ (m + h) =
       (∑ m ∈ Ioc a b, centeredResidue (d₁ * d₂) r₀ m) -
@@ -539,7 +536,7 @@ private theorem sum_harmonic_Icc_le (L : ℕ) :
         have hlog := Real.log_le_sub_one_of_pos (div_pos hn0 hn1)
         rw [Real.log_div hn0.ne' hn1.ne'] at hlog
         have hdiff : (n : ℝ) / ((n : ℝ) + 1) - 1 = -(1 / ((n : ℝ) + 1)) := by
-          field_simp; ring
+          field_simp [hn1.ne']; ring
         rw [hdiff] at hlog
         push_cast
         linarith
@@ -719,7 +716,7 @@ theorem abs_formBilinW_distinct_primes_le (w : ℕ → ℝ) (N K : ℕ) {p q : �
         (∑ n ∈ S, ∑ m ∈ S.erase n, vp m * vq n * (1 / (2 * |(m : ℝ) - n|))) +
           ∑ n ∈ S, ∑ m ∈ S.erase n, vp m * vq n * (1 / (2 * ((m : ℝ) + n))) := by
       unfold jetTerm
-      simp only [jetKernel, mul_add, sum_add_distrib]
+      simp only [jetKernel_eq_add_halves, mul_add, sum_add_distrib]
     -- 4a. Smooth kernel `1 / (2 * (m + n))` bounded by `(3 / 2) * K`
     have hreg : |∑ n ∈ S, ∑ m ∈ S.erase n, vp m * vq n * (1 / (2 * ((m : ℝ) + n)))| ≤
         2 * (K : ℝ) := by
@@ -781,7 +778,8 @@ theorem abs_formBilinW_distinct_primes_le (w : ℕ → ℝ) (N K : ℕ) {p q : �
               ≤ 1 * (1 / (4 * ((N : ℝ) + 1))) :=
                 mul_le_mul hvq1 hfull (abs_nonneg _) (by positivity)
             _ = 1 / (4 * ((N : ℝ) + 1)) := one_mul _
-        rw [hadd_diag]
+        rw [hadd_diag, show (2 : ℝ) / (4 * ((N : ℝ) + 1)) =
+          1 / (4 * ((N : ℝ) + 1)) + 1 / (4 * ((N : ℝ) + 1)) by ring]
         have htri := abs_sub (vq n * ∑ m ∈ S, vp m * (1 / (2 * ((m : ℝ) + n))))
           (vp n * vq n * (1 / (2 * ((n : ℝ) + n))))
         linarith
@@ -816,8 +814,12 @@ theorem abs_formBilinW_distinct_primes_le (w : ℕ → ℝ) (N K : ℕ) {p q : �
       have hsplit_ul : (∑ n ∈ S, ∑ m ∈ S.erase n, vp m * vq n * (1 / (2 * |(m : ℝ) - n|))) =
           (∑ n ∈ S, ∑ m ∈ S.filter (· < n), vp m * vq n * (1 / (2 * |(m : ℝ) - n|))) +
             ∑ m ∈ S, ∑ n ∈ S.filter (· < m), vp m * vq n * (1 / (2 * |(m : ℝ) - n|)) := by
-        rw [sum_congr rfl fun n hn => by rw [htri_part n hn, sum_union (htri_disj n)]]
-        rw [sum_add_distrib]
+        have hrow_split : ∀ n ∈ S,
+            (∑ m ∈ S.erase n, vp m * vq n * (1 / (2 * |(m : ℝ) - n|))) =
+              (∑ m ∈ S.filter (· < n), vp m * vq n * (1 / (2 * |(m : ℝ) - n|))) +
+                ∑ m ∈ S.filter (n < ·), vp m * vq n * (1 / (2 * |(m : ℝ) - n|)) :=
+          fun n hn => by rw [htri_part n hn, sum_union (htri_disj n)]
+        rw [sum_congr rfl hrow_split, sum_add_distrib]
         congr 1
         exact Finset.sum_comm' (s' := fun m => S.filter (· < m)) (t' := S) fun n m => by
           simp only [mem_filter]; tauto
@@ -965,7 +967,7 @@ private theorem sum_centeredMultiple_sq_shifted_period {d : ℕ} (hd : 0 < d) (A
   rw [hsplit, sum_congr rfl h1, sum_congr rfl h2, sum_const, sum_const, hc1, hc2,
     nsmul_eq_mul, nsmul_eq_mul, Nat.cast_one, Nat.cast_sub hd]
   have hd0 : (d : ℝ) ≠ 0 := by exact_mod_cast hd.ne'
-  field_simp
+  field_simp [hd0]
   ring
 
 private theorem sum_centeredMultiple_sq_periods {d : ℕ} (hd : 0 < d) (a q : ℕ) :

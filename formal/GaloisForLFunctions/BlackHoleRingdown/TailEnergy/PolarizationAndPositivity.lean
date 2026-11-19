@@ -348,7 +348,7 @@ theorem tailCrossEnergy_eq_polarization (g h : CompactPulse) (T : ℝ) :
     Complex.ofRealCLM.integrable_comp (hi3.sub hi4)
   have ho12 := Complex.ofRealCLM.integral_comp_comm (hi1.sub hi2)
   have ho34 := Complex.ofRealCLM.integral_comp_comm (hi3.sub hi4)
-  simp only [Complex.ofRealCLM_apply] at ho12 ho34
+  simp only [Complex.ofRealCLM_apply, Pi.sub_apply] at ho12 ho34
   rw [integral_add hc12 (hc34.const_mul I), integral_const_mul, ho12, ho34,
     integral_sub hi1 hi2, integral_sub hi3 hi4]
 

@@ -62,16 +62,16 @@ private theorem harmonic_coefficient_bounds {A δ : ℝ} (hA : 0 ≤ A) (hδ : 0
   have hl2 : ‖k‖ ≤ A/u := by
     apply hk.trans
     apply (mul_le_mul_of_nonneg_left (inv_anti₀ hprod h1) (mul_nonneg hA hδ.le)).trans_eq
-    field_simp
+    field_simp [hu.ne',hδ.ne'] <;> ring
   have hu1 : ‖a‖ ≤ A/(δ*u^2) := by
     apply ha.trans
     apply (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left (inv_anti₀ hprod h1) hA) hu.le).trans_eq
-    field_simp
+    field_simp [hu.ne',hδ.ne'] <;> ring
   have hu2 : ‖k‖ ≤ A/(δ*u^2) := by
     apply hk.trans
     apply (mul_le_mul_of_nonneg_left (inv_anti₀ (sq_pos_of_pos hprod) (le_add_of_nonneg_left zero_le_one))
       (mul_nonneg hA hδ.le)).trans_eq
-    field_simp
+    field_simp [hu.ne',hδ.ne'] <;> ring
   exact ⟨(add_le_add hl1 hl2).trans_eq (by dsimp only [u]; ring),
     (add_le_add hu1 hu2).trans_eq (by dsimp only [u]; ring)⟩
 

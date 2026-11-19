@@ -417,19 +417,17 @@ private theorem band_test_integrable {Φ : ℝ → ℝ} (hi : Integrable Φ) (T 
   · rw [indicator_of_mem h,if_pos (show pastCriticalEdge n t from h)]
   · rw [indicator_of_notMem h,if_neg (show ¬pastCriticalEdge n t from h),zero_mul]
 
-/-- Removing every displacement which hits a listed common numerator at
-any digit changes the original signed reading by at most its cardinality
-times L X^(-3/2), uniformly for numerators at or above X. -/
-theorem criticalState_sparse_numerator_removal {W₀ : ℝ} (hW₀ : 0<W₀)
+/-- Signed removal cost of a finite family, charged by its reciprocal mass. -/
+theorem criticalState_reciprocal_numerator_removal {W₀ : ℝ} (hW₀ : 0<W₀)
     (ht : (⨅ (a : ℝ) (_ : 0≤a), windowThreshold a)=(W₀:EReal)) {F Φ : ℝ → ℝ}
     (hF : IsCriticalHalfLineGroundState W₀ F) (hc : Continuous Φ) (he : F =ᵐ[volume] Φ) :
     ∃ K : ℝ, 0≤K ∧ ∀ (T : ℝ) (k L : ℕ) (A E : Set ℝ) (N : Finset ℕ),
-      (∀ H ∈ N, Real.exp T≤H) → MeasurableSet E →
+      (∀ H ∈ N, 0<H) → MeasurableSet E →
       (∀ v ∈ E, ∃ j : ℕ, ⌊(2:ℝ)^(j+1)*Real.exp (T-v)⌋₊∈N) →
       let m := ∫ v, Φ v
       |m*(∫ t in A, ordinaryPrimeComplementBand Φ k L t*fractionalPrimeTest (T-t)) -
        m*(∫ t in A, ordinaryPrimeComplementBand (Eᶜ.indicator Φ) k L t*fractionalPrimeTest (T-t))| ≤
-        K*L*N.card*Real.exp (-3*T/2) := by
+        K*L*Real.exp (-T/2)*∑ H ∈ N, (1/(H:ℝ)) := by
   obtain ⟨K,hK,h⟩ := criticalState_listed_numerator_occupation hW₀ ht hF hc he
   refine ⟨K,hK,fun T k L A E N hN hE hhit => ?_⟩
   let m := ∫ v, Φ v
@@ -446,18 +444,37 @@ theorem criticalState_sparse_numerator_removal {W₀ : ℝ} (hW₀ : 0<W₀)
   rw [← mul_sub,hchange,← integral_const_mul]
   have hnorm := norm_integral_le_integral_norm (μ := volume.restrict A) (fun t => m*f (E.indicator Φ) t)
   simp only [Real.norm_eq_abs] at hnorm
+  have hcost := h T k L A E N hN hE hhit
+  change (∫ t in A, |m*ordinaryPrimeComplementBand (E.indicator Φ) k L t*fractionalPrimeTest (T-t)|) ≤ _ at hcost
+  simp_rw [mul_assoc m] at hcost
+  exact hnorm.trans hcost
+
+/-- Removing every displacement which hits a listed common numerator at
+any digit changes the original signed reading by at most its cardinality
+times L X^(-3/2), uniformly for numerators at or above X. -/
+theorem criticalState_sparse_numerator_removal {W₀ : ℝ} (hW₀ : 0<W₀)
+    (ht : (⨅ (a : ℝ) (_ : 0≤a), windowThreshold a)=(W₀:EReal)) {F Φ : ℝ → ℝ}
+    (hF : IsCriticalHalfLineGroundState W₀ F) (hc : Continuous Φ) (he : F =ᵐ[volume] Φ) :
+    ∃ K : ℝ, 0≤K ∧ ∀ (T : ℝ) (k L : ℕ) (A E : Set ℝ) (N : Finset ℕ),
+      (∀ H ∈ N, Real.exp T≤H) → MeasurableSet E →
+      (∀ v ∈ E, ∃ j : ℕ, ⌊(2:ℝ)^(j+1)*Real.exp (T-v)⌋₊∈N) →
+      let m := ∫ v, Φ v
+      |m*(∫ t in A, ordinaryPrimeComplementBand Φ k L t*fractionalPrimeTest (T-t)) -
+       m*(∫ t in A, ordinaryPrimeComplementBand (Eᶜ.indicator Φ) k L t*fractionalPrimeTest (T-t))| ≤
+        K*L*N.card*Real.exp (-3*T/2) := by
+  obtain ⟨K,hK,h⟩ := criticalState_reciprocal_numerator_removal hW₀ ht hF hc he
+  refine ⟨K,hK,fun T k L A E N hN hE hhit => ?_⟩
   have hcost := h T k L A E N (fun n hn => Nat.cast_pos.mp ((Real.exp_pos _).trans_le (hN n hn))) hE hhit
   have hsum := Finset.sum_le_sum (s := N) (g := fun _ => (Real.exp T)⁻¹) (fun n hn =>
     (show 1/(n:ℝ)≤(Real.exp T)⁻¹ by rw [one_div]; exact inv_anti₀ (Real.exp_pos _) (hN n hn)))
   rw [Finset.sum_const,nsmul_eq_mul] at hsum
-  change (∫ t in A, |m*ordinaryPrimeComplementBand (E.indicator Φ) k L t*fractionalPrimeTest (T-t)|) ≤ _ at hcost
-  simp_rw [mul_assoc m] at hcost
-  apply (hnorm.trans hcost).trans
+  apply hcost.trans
   calc _ ≤ K*L*Real.exp (-T/2)*((N.card:ℝ)*(Real.exp T)⁻¹) :=
               mul_le_mul_of_nonneg_left hsum (by positivity)
        _ = K*L*N.card*(Real.exp (-T/2)*Real.exp (-T)) := by rw [Real.exp_neg T]; ring
        _ = _ := by rw [← Real.exp_add]; congr 2; ring
 
+#print axioms criticalState_reciprocal_numerator_removal
 #print axioms criticalState_sparse_numerator_removal
 
 #print axioms criticalState_paired_cell_occupation

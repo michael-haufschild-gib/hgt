@@ -1,8 +1,6 @@
-import GaloisForLFunctions.RHTower.Sieve.KubalalikaFibreCondition
-import GaloisForLFunctions.RHTower.Sieve.KubalalikaLargeScale
+import GaloisForLFunctions.PrimeExponentialSums.ReciprocalVaughanOnPowerRanges
 import GaloisForLFunctions.RHTower.VonMangoldtLogSummatory
 import GaloisForLFunctions.GreenCalculusOfThePrimeFreeWindow.TheFloorGraphNormAndTopOctaveBlindnessOfWindowGluing
-import Mathlib.Analysis.Calculus.Deriv.Slope
 
 /-!
 # Reciprocal phases over ordinary primes
@@ -23,49 +21,6 @@ def reciprocalPhase (S : ℝ) (n : ℕ) : ℂ := Complex.exp (((S/(n : ℝ) : �
 
 private theorem norm_reciprocalPhase (S : ℝ) (n : ℕ) : ‖reciprocalPhase S n‖ = 1 := by
   simp [reciprocalPhase,Complex.norm_exp]
-
-private theorem tendsto_ndPhaseExp (S : ℝ) (n : ℕ) :
-    Tendsto (fun r : ℝ => ndPhaseExp (S/r) r n) (𝓝[>] 0) (𝓝 (reciprocalPhase S n)) := by
-  have hd : HasDerivAt (fun r : ℝ => Real.log (1+r/(n : ℝ))) (1/(n : ℝ)) 0 := by
-    simpa using (((hasDerivAt_const (0 : ℝ) (1 : ℝ)).add
-      ((hasDerivAt_id (0 : ℝ)).div_const (n : ℝ))).log (by simp))
-  have hsl : Tendsto (fun r : ℝ => r⁻¹ * Real.log (1+r/n)) (𝓝[>] 0) (𝓝 (1/(n : ℝ))) := by
-    simpa only [zero_add,zero_div,add_zero,Real.log_one,sub_zero,smul_eq_mul] using hd.tendsto_slope_zero_right
-  have hc (t : ℝ) : 2*Real.pi*(t/(2*Real.pi)) = t := by field_simp
-  have hp (r : ℝ) : 2*Real.pi*nearDiagonalPhase (S/r) r n = S*(r⁻¹*Real.log (1+r/n)) := by
-    unfold nearDiagonalPhase
-    rw [← mul_assoc, hc]
-    ring
-  simp only [ndPhaseExp,RHTower.Sieve.phaseExp,hp,reciprocalPhase]
-  have h := (Complex.continuous_ofReal.continuousAt.tendsto.comp ((tendsto_const_nhds (x := S)).mul hsl)).mul
-    (tendsto_const_nhds (x := Complex.I))
-  simpa only [Function.comp_def, mul_one_div] using Complex.continuous_exp.continuousAt.tendsto.comp h
-
-/-- Preserve the full Vaughan estimate when the logarithmic phase tends to
-a reciprocal phase, with no error depending on the block length. -/
-private theorem reciprocal_envelope :
-    ∃ D : ℝ, 0 < D ∧ ∀ {S : ℝ} {A B U V : ℕ},
-      0 < S → 1 ≤ A → A ≤ B → B ≤ 2*A → 1 ≤ U → 1 ≤ V → U < A →
-      U*V ≤ A → S*((U*V : ℕ) : ℝ)^3 ≤ 72*Real.pi*(A : ℝ)^4 →
-      (10 : ℝ)^27 * A ≤ S →
-      ‖∑ n ∈ Ico A B, (vonMangoldt n : ℂ)*reciprocalPhase S n‖ ≤
-        kubalalikaBlockPower D S 1 A B U V := by
-  obtain ⟨D,hD,h⟩ := exists_norm_sum_vonMangoldt_ndPhaseExp_le_kubalalika_power'
-  refine ⟨D,hD,?_⟩
-  intro S A B U V hS hA hAB hB hU hV hu huv hcur hbig
-  have ht := tendsto_finsetSum (Ico A B) fun n _ =>
-    (tendsto_const_nhds (x := (vonMangoldt n : ℂ))).mul (tendsto_ndPhaseExp S n)
-  apply le_of_tendsto ht.norm
-  have ha : (0 : ℝ) < A := by exact_mod_cast hA
-  have hA0 : 0 < (A : ℝ)/8 := by positivity
-  have hsmall : ∀ᶠ r : ℝ in 𝓝[>] 0, r < (A : ℝ)/8 :=
-    mem_nhdsWithin_of_mem_nhds (Iio_mem_nhds hA0)
-  filter_upwards [self_mem_nhdsWithin,hsmall] with r hr hsmall
-  change 0 < r at hr
-  have he : S/r*r = S := div_mul_cancel₀ _ hr.ne'
-  have hh := h (T := S/r) (r := r) (div_pos hS hr) hr hA hAB hB hU hV hu huv
-    (by linarith only [hsmall]) (by simpa only [he] using hcur) (by simpa only [he] using hbig)
-  simpa only [kubalalikaBlockPower, he, mul_one] using hh
 
 /-- At large block scale the five terms of the envelope all save a power. -/
 private theorem large_block {D S : ℝ} {A B : ℕ} (hD : 0 < D) (hA : 1 ≤ A)
@@ -192,7 +147,7 @@ theorem reciprocal_mangoldt_block :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (A B : ℕ) (S : ℝ), 1 ≤ A → A ≤ B → B ≤ 2*A →
       (A : ℝ)^(199/100 : ℝ) ≤ S → S ≤ (A : ℝ)^(201/100 : ℝ) →
       ‖∑ n ∈ Ico A B, (vonMangoldt n : ℂ)*reciprocalPhase S n‖ ≤ C*(A : ℝ)^(99/100 : ℝ) := by
-  obtain ⟨D,hD,henv⟩ := reciprocal_envelope
+  obtain ⟨D,hD,henv⟩ := reciprocal_vaughan_envelope
   have hb : ∀ᶠ x : ℝ in atTop, (10 : ℝ)^27 ≤ x^(1/1000 : ℝ) := by
     simpa only [pow_zero,mul_one] using (eventually_const_mul_one_add_log_pow_le_rpow
       (by norm_num : (0 : ℝ) < 1/1000) (show (0 : ℝ) < 10^27 by norm_num) 0)
