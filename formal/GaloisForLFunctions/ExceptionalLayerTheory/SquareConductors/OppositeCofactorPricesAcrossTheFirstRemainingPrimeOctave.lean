@@ -272,4 +272,57 @@ theorem joint_cofactor_block_boundary (S : Finset ℕ) (n V W : ℕ) :
 #print axioms cofactor_boundary_error_bound
 #print axioms joint_cofactor_block_boundary
 
+/-- If both reflected primitive integers have a prime factor above six,
+their cofactors share exactly the part of the first integer dividing six. -/
+theorem opposite_prime_cofactor_gcd {n a b p q : ℕ} (hs : a*p+b*q=6*n)
+    (hn : (a*p).Coprime n) (hp : p.Prime) (hq : q.Prime) (hp6 : 6 < p) (hq6 : 6 < q) :
+    a.gcd b = (a*p).gcd 6 := by
+  apply Nat.dvd_antisymm
+  · have hx := (Nat.gcd_dvd_left a b).trans (dvd_mul_right a p)
+    have hy := (Nat.gcd_dvd_right a b).trans (dvd_mul_right b q)
+    have hsum := Nat.dvd_add hx hy
+    rw [hs] at hsum
+    exact Nat.dvd_gcd hx ((Nat.Coprime.of_dvd_left hx hn).dvd_mul_right.mp hsum)
+  · let d := (a*p).gcd 6
+    have hd : d ∣ 6 := Nat.gcd_dvd_right _ _
+    have hx : d ∣ a*p := Nat.gcd_dvd_left _ _
+    have hy : d ∣ b*q := by
+      rw [show b*q=6*n-a*p by omega]
+      exact Nat.dvd_sub (hd.trans (dvd_mul_right 6 n)) hx
+    have drop {r v : ℕ} (hr : r.Prime) (h6 : 6 < r) (h : d ∣ v*r) : d ∣ v := by
+      have hc : r.Coprime d := hr.coprime_iff_not_dvd.mpr fun hrd =>
+        (Nat.not_dvd_of_pos_of_lt (by decide : 0 < 6) h6) (hrd.trans hd)
+      exact hc.symm.dvd_mul_right.mp h
+    exact Nat.dvd_gcd (drop hp hp6 hx) (drop hq hq6 hy)
+
+/-- When both partners supply a large factor, their signed log price
+differs from the log of the reversed cofactor ratio by at most log two. -/
+theorem opposite_factor_log_price {n a b p q : ℕ} (hn : 0 < n) (hs : a*p+b*q=6*n)
+    (hlo : 3*n ≤ a*p) (hhi : a*p ≤ 4*n) :
+    0 ≤ Real.log p-Real.log q-Real.log ((b:ℝ)/a) ∧
+      Real.log p-Real.log q-Real.log ((b:ℝ)/a) ≤ Real.log 2 := by
+  have hx : 0 < a*p := by omega
+  have hy : 0 < b*q := by omega
+  obtain ⟨ha,hp⟩ := Nat.mul_pos_iff.mp hx
+  obtain ⟨hb,hq⟩ := Nat.mul_pos_iff.mp hy
+  have hy' := (Nat.cast_pos (α:=ℝ)).mpr hy
+  have hratio : Real.log p-Real.log q-Real.log ((b:ℝ)/a) =
+      Real.log (((a*p:ℕ):ℝ)/(b*q:ℕ)) := by
+    rw [Real.log_div (Nat.cast_ne_zero.mpr hb.ne') (Nat.cast_ne_zero.mpr ha.ne'),
+      Real.log_div (Nat.cast_ne_zero.mpr hx.ne') (Nat.cast_ne_zero.mpr hy.ne')]
+    simp only [Nat.cast_mul,Real.log_mul (Nat.cast_ne_zero.mpr ha.ne') (Nat.cast_ne_zero.mpr hp.ne'),
+      Real.log_mul (Nat.cast_ne_zero.mpr hb.ne') (Nat.cast_ne_zero.mpr hq.ne')]
+    ring
+  rw [hratio]
+  constructor
+  · apply Real.log_nonneg
+    rw [le_div_iff₀ hy',one_mul]
+    exact_mod_cast (show b*q ≤ a*p by omega)
+  · apply Real.log_le_log (div_pos (Nat.cast_pos.mpr hx) hy')
+    apply (div_le_iff₀ hy').mpr
+    exact_mod_cast (show a*p ≤ 2*(b*q) by omega)
+
+#print axioms opposite_prime_cofactor_gcd
+#print axioms opposite_factor_log_price
+
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

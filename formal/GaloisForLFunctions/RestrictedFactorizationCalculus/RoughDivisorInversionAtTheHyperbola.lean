@@ -25,7 +25,8 @@ theorem roughRestriction_apply (y : ℕ) (f : ArithmeticFunction ℝ) (n : ℕ) 
   rcases eq_or_ne n 0 with rfl | hn
   · simp
   · have eq : ((↑n.primeFactors : Set ℕ) ⊆ {p | y<p}) ↔ IsFree (RoughReading.banned y) n :=
-      ⟨fun h => ⟨hn,fun p hp => not_le.mpr (h hp)⟩,fun h p hp => lt_of_not_ge (h.2 p hp)⟩
+      ⟨fun h => ⟨hn,fun p hp => not_le.mpr (show y<p from h hp)⟩,
+       fun h p hp => show y<p from lt_of_not_ge (show ¬p ≤ y from h.2 p hp)⟩
     simp only [roughRestriction,GaloisForLFunctions.SelbergClass.DirichletSeries.primeRestrict_apply,eq]
 
 /-- Möbius coefficients after deleting primes through y. -/
@@ -34,7 +35,8 @@ abbrev roughMobiusWeight (y : ℕ) := roughRestriction y (μ : ArithmeticFunctio
 abbrev roughCountingWeight (y : ℕ) := roughRestriction y (ζ : ArithmeticFunction ℝ)
 
 private theorem roughMobiusWeight_apply (y n : ℕ) : roughMobiusWeight y n=RoughReading.row y n := by
-  rw [RoughReading.row_value,roughMobiusWeight,roughRestriction_apply] <;> rfl
+  rw [RoughReading.row_value,roughMobiusWeight,roughRestriction_apply]
+  rfl
 
 /-- The inverse identity includes the unit, repeated factors and every
 excluded divisor class. -/
@@ -185,7 +187,7 @@ theorem transfer_below_the_hyperbola {a : ArithmeticFunction ℝ} (dom : ∀ n,|
     have log : Real.log (X.sqrt:ℝ) ≤ Real.log X := by
       rcases Nat.eq_zero_or_pos X with rfl | xp
       · simp
-      · have sqp : 1 ≤ X.sqrt := Nat.le_sqrt.mpr (by simpa using xp)
+      · have sqp : 1 ≤ X.sqrt := Nat.le_sqrt.mpr (by simpa only [Nat.one_mul] using (show 1 ≤ X by omega))
         exact Real.log_le_log (Nat.cast_pos.mpr sqp) (Nat.cast_le.mpr (Nat.sqrt_le_self X))
     exact (rough_interpolation_price dom y X X.sqrt).trans
       (mul_le_mul low log (Real.log_natCast_nonneg _) (Real.sqrt_nonneg _))

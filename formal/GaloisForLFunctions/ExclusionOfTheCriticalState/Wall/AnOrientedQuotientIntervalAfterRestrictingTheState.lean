@@ -278,7 +278,7 @@ theorem exists_oriented_quotient_displacements {Φ : ℝ → ℝ} (hi : Integrab
     (hs : ∀ v, 0≤v → Φ v=0) {T B : ℝ} (hT : 6≤T) (hB : 1+Real.log 4 ≤ B)
     (k L : ℕ) (m : ℝ) :
     ∃ E : Set ℝ, MeasurableSet E ∧ (∀ v ∈ E, HasOrientedQuotientWitness Φ m T B k L v) ∧
-      -8*B*(|m|*(∫ v, |Φ v|)) ≤ m*(∫ t in Ioc (T/6) (6*T),
+      -8*B*(|m| *(∫ v, |Φ v|)) ≤ m*(∫ t in Ioc (T/6) (6*T),
         ordinaryPrimeComplementBand (Eᶜ.indicator Φ) k L t*fractionalPrimeTest (T-t)) := by
   let E := {v : ℝ | m*(Φ v*fractionalRow k L T v) < (-8*B*|m|)*|Φ v|}
   have hE : MeasurableSet E := measurableSet_lt
@@ -320,5 +320,6 @@ theorem quotient_numerator_power_at_test {H a L : ℕ} {T η g : ℝ} (hT : 6≤
   rw [Real.rpow_def_of_pos hp,Real.exp_le_exp]
   linarith only [mul_le_mul_of_nonneg_right ((Real.log_le_iff_le_exp hp).mpr hl) hg.le]
 
+#print axioms exists_oriented_quotient_displacements
 #print axioms exists_oriented_quotient_interval
 end GaloisForLFunctions.ExclusionOfTheCriticalState

@@ -45,7 +45,8 @@ theorem variation_of_the_rough_coefficient_head (a : ArithmeticFunction ℝ)
   let P := fun i => quotientReading (roughFloorCoefficient (Y i) (roughRestriction (Y i) a)) (H i)
   let S := Icc 1 (H N)
   have falls (d i : ℕ) (h : ok d (i+1)) : ok d i :=
-    ⟨h.1,fun p hp bad => h.2 p hp (bad.trans (walls (Nat.le_succ i)))⟩
+    ⟨h.1,fun p hp bad => h.2 p hp (show p ≤ Y (i+1) from
+      (show p ≤ Y i from bad).trans (walls (Nat.le_succ i)))⟩
   have per (d : ℕ) : (∑ i ∈ range N,|z d (i+1)-z d i|) ≤ 2*|c d| := by
     have first (i : ℕ) : u d (i+1) ≤ u d i := indicator_mono (falls ..)
     have second (i : ℕ) : v d (i+1) ≤ v d i := indicator_mono

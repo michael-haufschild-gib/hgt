@@ -38,7 +38,7 @@ Möbius inversion makes each signed three-floor count at most \(M(n)\). The smal
 \[
  |H^*(n,P)-F(n)-D(n)|\le\psi(P)+\psi(4n)-\theta(4n).
 \]
-Lean verified this factorial error bound. It also verified the same center to \(O(\sqrt n)\) after every further prime cut through \(n^{500/999}\). [Unrestricted factorial identity and sharp cutoff theorem](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/ThePrimeFloorRowBeyondTheSquareRoot.lean#L281)
+Lean verified this factorial error bound. It also verified the same center to \(O(\sqrt n)\) after every further prime cut through \(n^{500/999}\). [Unrestricted factorial identity and sharp cutoff theorem](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/ThePrimeFloorRowBeyondTheSquareRoot.lean#L302)
 
 Lean also verifies the explicit Stirling endpoint correction. [Factorial center](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/TheTotientTermInTheReflectedCompositePrice.lean#L454) The center satisfies \(F(n)=cn+\tfrac12\log(8/9)+O(1/n)\). Comparing with the primitive identity gives \(H^*(n,P)-H(n,P)=c(n-\varphi(n))+O((P+\sqrt n)M(n))\). At the report's cutoff the unrestricted row alone recovers the midpoint with \(O(\sqrt n)\) error at every endpoint. Its price is precisely
 \[
@@ -49,6 +49,12 @@ For \(x=\{n/p\}\), the weight is \(+1,-1,+1,-1\) on \([1/4,1/3),[1/3,1/2),[1/2,2
 The continuous log-prime replacement for the last display gives \(cn+O(P^2/n)\), hence \(cn+O(1)\) at \(P=\lfloor2\sqrt n\rfloor\). Indeed the period-one function \(k(t)=\lfloor4t\rfloor-2\lfloor3t\rfloor+\lfloor2t\rfloor\) has mean zero and bounded primitive. Substituting \(t=n/x\) shows \(\int_0^P k(n/x)\,dx=O(P^2/n)\) by integration by parts. On \((2n,4n]\) the integral is zero. Integrating the three floors from \(\delta>0\) to \(4n\) gives the three harmonic sums \(kn H_{\lfloor kn/\delta\rfloor}-\delta\lfloor kn/\delta\rfloor\) for \(k=4,3,2\). Their signed combination tends to \(cn\). The remaining research target is cancellation against the actual ordinary-prime measure in those four bands.
 
 **Which cofactors remain?** The ordinary-prime reciprocal Vaughan bound gives, on paper, \(O_\varepsilon(n^{5/6+\varepsilon})\) for every partial prime shell between \(n^{5/6}\) and \(n^{8/9}\). The corresponding half-plus estimate pays through \(n^{18/35}\). The joint upper bounds still needed therefore involve \(2\le v<4n^{1/9}\) and \(2\le v<4n^{17/35}\), respectively, with the unrestricted linear center. [Signed shell estimates and proof](acs-pvc-reciprocal-prime-cancellation-in-the-midpoint-floor-row.md)
+
+**Pair the integers before subtracting the center.** For \(n>1\) use the same \(1\le j<n\), \((j,n)=1\), on both sides, with \(x=3n+j\), \(y=3n-j\). The original unpaired endpoints \(3n,4n\) both fail coprimality. For \(Q\ge P\), put \(r_Q(x)=x/p\) if \(x\) is composite with a prime \(p>Q\), and \(r_Q(x)=x\) otherwise. Uniqueness and subtraction of the exact integer center give
+\[
+ H(n,Q)-A(n)=\sum_{\substack{1\le j<n\\(j,n)=1}}\log\frac{r_Q(y)}{r_Q(x)}.
+\]
+When \(x=ap\) and \(y=bq\) both have a selected factor, the centered price is exactly \(\log(b/a)\). For \(p,q>6\), \(\gcd(a,b)=\gcd(x,6)\). Indeed every common divisor of \(x,y\) divides \(6n\) and is coprime to \(n\), and each divisor of \(\gcd(x,6)\) divides both cofactors. If only \(x\) supplies a large factor the price is \(\log(y/a)>0\). If only \(y\) does, it is \(\log(b/x)<0\). If neither does, it is \(\log(y/x)<0\). This leaves a specific pairing question on paper: can the negative single-factor terms and the unselected pairs pay the positive single-factor terms and the signed cofactor ratios after summation? The two-sided gcd restriction alone gives no bound on that sum. [Paired ordinary factors](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/OppositeCofactorPricesAcrossTheFirstRemainingPrimeOctave.lean#L277)
 
 **Which zero signal reaches the small cofactors?** For a test density \(x^{s-1}dx\), \(0<\sigma=\Re s<1\), put \(m(s)=4^s-2\cdot3^s+2^s\). The unrestricted row above any \(0<Q\le2n\) has moment
 \[

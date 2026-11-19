@@ -7,6 +7,8 @@ Write \(y=\lfloor\log(X+1)\rfloor^2\), \(Z=X/y\), \(\delta_y=\frac6{\pi^2}\prod_
 
 Consequently any constant center \(cy\) on that quotient band incurs at least \((\tfrac12\log(9/8)+o(1))X\delta_y\) in **each sign** after taking absolute values. The minimizing limiting center is \(c=1/3\), because the weighted median of \(u\) is \(4/3\). The original floor center \(c=1\) incurs \(\tfrac12(1-\log 2)X\delta_y\) in each sign to leading order. This obstruction already occurs within the first quotient band.
 
+**Centers that vary inside a quotient band.** Divisor interpolation realizes the actual reading at every quotient through \(T\). Its total cost over all rough cofactors is the single signed sum \(\sum_{d\le T}(a*\mu)(d)\Psi(\lfloor X/d\rfloor,y)\). Thus the lower bound for constant centering identifies precisely which freedom removes the first-band obstruction. [Exact full-prefix price](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/RemovingTerminalQuotientCellsByDivisorInversion.lean)
+
 **Signed alternative.** Omit all surviving proper powers and all ordinary primes in \((y,\lambda y]\), while retaining the same cofactor cutoff. At square-root price the omitted kernel has exact leading coefficient
 \[
  \frac{1}{\log X}\left(\sum_{p>y,\ k\ge2,\ p^k\le X}\frac{\log p}{p^{k/2}}

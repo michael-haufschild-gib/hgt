@@ -127,7 +127,7 @@ theorem riemannHypothesis_or_abundant_opposite_prime_excursions : RiemannHypothe
   subst Ψ
   obtain ⟨K,hK,hcut⟩ := criticalState_reciprocal_numerator_removal hW ht hF hc he
   let m := ∫ v, Φ v
-  let M := |m|*(∫ v, |Φ v|)
+  let M := |m| *(∫ v, |Φ v|)
   let a₀ := A/(32*(M+1))
   let c := (A/4)/(K+1)
   let d := min (g/12) (1/4)

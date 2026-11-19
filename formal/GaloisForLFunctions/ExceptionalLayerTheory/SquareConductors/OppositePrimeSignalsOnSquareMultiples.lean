@@ -28,71 +28,69 @@ def properSquareReading (ℓ n : ℕ) := splineCountReading n (fun k =>
 
 /-- At the capped product cutoff the missing first prime ℓ cannot occur.
 The original slice on proper multiples is exactly the divided slice. -/
-theorem properSquareSlice_divided {ℓ p n Y : ℕ} (hℓ : ℓ.Prime) (h₄ : 4<ℓ)
-    (hp : p.Prime) (hl : ℓ≤n.sqrt) (hY : n*n.sqrt≤Y) (k : ℕ) :
+theorem properSquareSlice_divided {ℓ p n Y : ℕ} (hℓ : ℓ.Prime) (h₄ : 4 < ℓ)
+    (hp : p.Prime) (hl : ℓ ≤ n.sqrt) (hY : n*n.sqrt ≤ Y) (k : ℕ) :
     properSquareSlice ℓ k Y n p=cappedCoprimeSlice 1 1 (k/ℓ^2) (Y/ℓ^2) (n/ℓ^2) p := by
-  let d := ℓ^2
-  have hd : 0<d := pow_pos hℓ.pos 2
+  have hd : 0 < ℓ^2 := pow_pos hℓ.pos 2
   unfold properSquareSlice cappedCoprimeSlice
   rw [sum_filter]
   apply sum_congr rfl; intro t ht
   obtain ⟨htl,htu⟩ := mem_Ioc.mp ht
   have ht₀ := (Nat.zero_le _).trans_lt htl
-  have hdt : d*t≤n := by
-    simpa only [Nat.mul_comm t d] using (Nat.le_div_iff_mul_le hd).mp (htu.trans (min_le_right ..))
-  have hprod : Y<p*(d*t) := by
+  have hdt : ℓ^2*t ≤ n := by
+    simpa only [Nat.mul_comm t (ℓ^2)] using (Nat.le_div_iff_mul_le hd).mp (htu.trans (min_le_right ..))
+  have hprod : Y < p*(ℓ^2*t) := by
     have h := (Nat.div_lt_iff_lt_mul hd).mp ((Nat.div_lt_iff_lt_mul hp.pos).mp htl)
-    simpa only [Nat.mul_comm,Nat.mul_left_comm,Nat.mul_assoc] using h
-  have hbig : ℓ<p := by
+    calc Y < t*p*ℓ^2 := h
+      _ = p*(ℓ^2*t) := by ring
+  have hbig : ℓ < p := by
     by_contra! h
-    exact hprod.not_ge ((Nat.mul_le_mul (h.trans hl) hdt).trans
-      (by simpa only [Nat.mul_comm n.sqrt n] using hY))
-  have hcop : p.Coprime d := hp.coprime_iff_not_dvd.mpr (fun h => by
-    change p ∣ ℓ^2 at h
+    exact hprod.not_ge ((Nat.mul_le_mul (h.trans hl) hdt).trans (by rw [Nat.mul_comm]; exact hY))
+  have hcop : ¬ p ∣ ℓ^2 := fun h => by
     rw [sq,hp.dvd_mul] at h
-    exact hbig.not_ge (Nat.le_of_dvd hℓ.pos (h.elim id id)))
-  have hcd : p.Coprime (d*t) ↔ p.Coprime t := by
-    have hnd := hp.coprime_iff_not_dvd.mp hcop
-    simp only [hp.coprime_iff_not_dvd,hp.dvd_mul,hnd,false_or]
-  have hq : k/(p*(d*t))=k/d/p/t := by simp only [Nat.div_div_eq_div_mul,Nat.mul_assoc,Nat.mul_comm,Nat.mul_left_comm]
-  change (if 1<t ∧ p.Coprime (d*t) then innerJump 1 (d*t)*centeredPrimeWeight 1 (k/(p*(d*t))) else 0) = _
-  rw [hcd,hq]
+    exact hbig.not_ge (Nat.le_of_dvd hℓ.pos (h.elim id id))
+  have hcd : p.Coprime (ℓ^2*t) ↔ p.Coprime t := by
+    simp only [hp.coprime_iff_not_dvd,hp.dvd_mul,hcop,false_or]
+  have hq : k/(p*(ℓ^2*t))=k/ℓ^2/p/t := by
+    rw [Nat.div_div_eq_div_mul,Nat.div_div_eq_div_mul]
+    congr 1
+    ring
+  rw [hq]
   by_cases h₁ : t=1
-  · subst t; simp only [lt_irrefl,false_and,if_false,innerJump_small (D := 1) le_rfl,zero_mul,ite_self]
-  · have ht₂ : 1<t := by omega
+  · subst h₁
+    simp only [lt_irrefl,false_and,if_false,innerJump_small (D := 1) le_rfl,zero_mul,ite_self]
+  · have ht₂ : 1 < t := by omega
     have hlt : ℓ*t≠1 := by have := Nat.le_mul_of_pos_right ℓ ht₀; omega
-    have hg : innerJump 1 (d*t)=innerJump 1 t := by
-      dsimp only [d]; rw [sq,Nat.mul_assoc,innerJump_prime_multiple le_rfl hℓ h₄ (Nat.mul_pos hℓ.pos ht₀),
+    have hg : innerJump 1 (ℓ^2*t)=innerJump 1 t := by
+      rw [sq,Nat.mul_assoc,innerJump_prime_multiple le_rfl hℓ h₄ (Nat.mul_pos hℓ.pos ht₀),
         if_neg hlt,sub_zero,innerJump_prime_multiple le_rfl hℓ h₄ ht₀,if_neg h₁,sub_zero]
-    simp only [ht₂,true_and,hg,d]
+    simp only [ht₂,true_and,hcd,hg]
 
 private theorem lower_mono {a b : ℕ} (hab : a≤b) : productLower 1 a≤productLower 1 b :=
   min_le_min hab (Nat.mul_le_mul_left _ (Nat.floor_mono (Real.sqrt_le_sqrt (by exact_mod_cast hab))))
 
 /-- Exact identity once the sharp product threshold is above the moving
 lower endpoint on both finite spline horizons. -/
-theorem properSquareReading_exact {ℓ m : ℕ} (hℓ : ℓ.Prime) (h₄ : 4<ℓ) (hm : 0< m)
-    (hl : ℓ≤(ℓ*m).sqrt)
-    (hlarge : productLower 1 (splineHorizon (ℓ*m))≤(ℓ*m)*(ℓ*m).sqrt)
-    (hsmall : productLower 1 (splineHorizon m)≤((ℓ*m)*(ℓ*m).sqrt)/ℓ^2) :
+theorem properSquareReading_exact {ℓ m : ℕ} (hℓ : ℓ.Prime) (h₄ : 4 < ℓ) (hm : 0 < m)
+    (hl : ℓ ≤ (ℓ*m).sqrt)
+    (hlarge : productLower 1 (splineHorizon (ℓ*m)) ≤ (ℓ*m)*(ℓ*m).sqrt)
+    (hsmall : productLower 1 (splineHorizon m) ≤ ((ℓ*m)*(ℓ*m).sqrt)/ℓ^2) :
     properSquareReading ℓ (ℓ*m)=
       cappedUpperProductReading (((ℓ*m)*(ℓ*m).sqrt)/ℓ^2) ((ℓ*m)/ℓ^2) m/ℓ := by
-  let n := ℓ*m
-  let U := n*n.sqrt
-  let d := ℓ^2
-  let f (j : ℕ) := ordinaryFactorTail 4 j (cappedCoprimeSlice 1 1 j (U/d) (n/d))
+  let f (j : ℕ) := ordinaryFactorTail 4 j (cappedCoprimeSlice 1 1 j (((ℓ*m)*(ℓ*m).sqrt)/ℓ^2) ((ℓ*m)/ℓ^2))
   have hf : f 0=0 := by simp [f,ordinaryFactorTail]
-  have h₁ : properSquareReading ℓ n=splineCountReading n (fun k => f (k/d)) := by
+  have h₁ : properSquareReading ℓ (ℓ*m)=splineCountReading (ℓ*m) (fun k => f (k/ℓ^2)) := by
     unfold properSquareReading splineCountReading
     apply sum_congr rfl; intro k hk
-    have hy : productLower 1 k≤U := (lower_mono (mem_Icc.mp hk).2).trans hlarge
-    rw [max_eq_right hy]
+    beta_reduce
+    rw [max_eq_right ((lower_mono (mem_Icc.mp hk).2).trans hlarge)]
     congr 1
-    unfold ordinaryFactorTail f
-    exact sum_congr rfl fun p hp => by rw [properSquareSlice_divided hℓ h₄ (mem_filter.mp hp).2 hl (le_refl U)]
-  have h₂ : splineCountReading m f=cappedUpperProductReading (U/d) (n/d) m := by
+    unfold ordinaryFactorTail
+    exact sum_congr rfl fun p hp => by rw [properSquareSlice_divided hℓ h₄ (mem_filter.mp hp).2 hl le_rfl]
+  have h₂ : splineCountReading m f=cappedUpperProductReading (((ℓ*m)*(ℓ*m).sqrt)/ℓ^2) ((ℓ*m)/ℓ^2) m := by
     unfold cappedUpperProductReading splineCountReading
     apply sum_congr rfl; intro k hk
+    beta_reduce
     rw [max_eq_right ((lower_mono (mem_Icc.mp hk).2).trans hsmall)]
   exact h₁.trans ((splineCountReading_square_dilation hm hℓ.pos f hf).trans (congrArg (·/(ℓ:ℝ)) h₂))
 
@@ -128,7 +126,7 @@ theorem properSquareReading_eventually_exact {ℓ : ℕ} (hℓ : ℓ.Prime) (h�
   have hl : ℓ≤n.sqrt := (Nat.le_mul_of_pos_right ℓ hK).trans hs
   have hk : K≤n.sqrt := (Nat.le_mul_of_pos_left K hℓ.pos).trans hs
   apply properSquareReading_exact hℓ h₄ hm hl ((hbound (Nat.mul_pos hℓ.pos hm)).trans
-    (by simpa only [Nat.mul_comm K n] using Nat.mul_le_mul_left n hk))
+    (by rw [Nat.mul_comm K]; exact Nat.mul_le_mul_left _ hk))
   apply (Nat.le_div_iff_mul_le (pow_pos hℓ.pos 2)).mpr
   calc productLower 1 (splineHorizon m)*ℓ^2 ≤ (K*m)*ℓ^2 := Nat.mul_le_mul_right _ (hbound hm)
        _ = n*(ℓ*K) := by dsimp [n]; ring
@@ -144,12 +142,12 @@ private theorem divided_cut_sq {ℓ m : ℕ} (hℓ : 0<ℓ) :
     exact_mod_cast (show n.sqrt^2≤n by simpa only [sq] using Nat.sqrt_le n)
   have hcut : ((n*n.sqrt/ℓ^2:ℕ):ℝ)≤(m:ℝ)*n.sqrt/ℓ := by
     apply (Nat.cast_div_le (m := n*n.sqrt) (n := ℓ^2)).trans_eq
-    dsimp only [n]; push_cast; field_simp <;> ring
+    dsimp only [n]; push_cast; field_simp
   apply (pow_le_pow_left₀ (Nat.cast_nonneg _) hcut 2).trans
   calc ((m:ℝ)*n.sqrt/ℓ)^2 = (m:ℝ)^2*(n.sqrt:ℝ)^2/(ℓ:ℝ)^2 := by ring
        _ ≤ (m:ℝ)^2*((ℓ:ℝ)*m)/(ℓ:ℝ)^2 :=
           div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hs (sq_nonneg _)) (sq_nonneg _)
-       _ = (m:ℝ)^3/ℓ := by field_simp <;> ring
+       _ = (m:ℝ)^3/ℓ := by field_simp
        _ ≤ (m:ℝ)^3 := div_le_self (by positivity) (by exact_mod_cast hℓ)
 
 private theorem capped_at_divided_scale (r : ℕ) : ∃ K : ℝ, 0≤K ∧
@@ -218,8 +216,7 @@ theorem properSquareReading_prime_contact {ℓ : ℕ} (hℓ : ℓ.Prime) (h₄ :
     exact ((Nat.div_lt_iff_lt_mul hℓ.pos).mp (Nat.lt_succ_self (m/ℓ))).le
   have he : (ℓ:ℝ)*properSquareReading ℓ (ℓ*m)=cappedUpperProductReading (n*n.sqrt/ℓ^2) (n/ℓ^2) m := by
     rw [hN m ((le_max_left ..).trans hbig)]
-    have hl : (0:ℝ)<ℓ := Nat.cast_pos.mpr hℓ.pos
-    field_simp [n]
+    exact (Ne.isUnit (Nat.cast_ne_zero.mpr hℓ.ne_zero : (ℓ:ℝ) ≠ 0)).mul_div_cancel _
   rw [he,abs_sub_comm]
   exact (h hm hu (divided_cut_sq hℓ.pos) hr).trans
     (mul_le_mul_of_nonneg_right (le_add_of_nonneg_left hF) (by positivity))
@@ -295,7 +292,7 @@ theorem singletonSquareReading_prime_contact {ℓ : ℕ} (hℓ : ℓ.Prime) (h�
   rw [mul_pow] at hgrow
   exact (mul_le_mul_of_nonneg_left hgrow hK).trans
     (by simpa only [mul_assoc,H₀] using mul_le_mul_of_nonneg_right
-      (show K*H₀^6≤F+K*H₀^6 from le_add_of_nonneg_left hF) (by positivity : 0≤(conductorLog m)^6))
+          (show K*H₀^6≤F+K*H₀^6 from le_add_of_nonneg_left hF) (by positivity : 0≤(conductorLog m)^6))
 
 /-- Removing the singleton together with its proper multiples at every
 aligned conductor costs only a cubic times six logarithms through all N. -/

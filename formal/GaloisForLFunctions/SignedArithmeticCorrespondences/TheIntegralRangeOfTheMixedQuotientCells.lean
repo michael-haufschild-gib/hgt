@@ -50,6 +50,25 @@ theorem twoSidedCoefficient_total (N : ℕ) (a b : ℕ → ℤ) :
   rw [one_mul]
   ring
 
+private theorem cell_eq_tail_sub {k N : ℕ} (hk : k≤N) (f : ℕ → ℝ) :
+    f k = (∑ q ∈ Icc k N, f q) - ∑ q ∈ Icc (k+1) N, f q := by
+  have hs : Icc (k+1) N = (Icc k N).erase k := by
+    ext j
+    simp only [mem_Icc,mem_erase]
+    omega
+  rw [hs,← sum_erase_add (Icc k N) f (mem_Icc.mpr ⟨le_rfl,hk⟩)]
+  ring
+
+/-- A cell is the first difference of the two directed multiplicative
+correlations. Values of the upper divisors beyond the cut are zero. -/
+theorem twoSidedCoefficient_difference {k N : ℕ} (hk : k≤N) (a b : ℕ → ℤ) :
+    let T := fun j => ∑ i ∈ Icc 1 N,
+      ((upperDivisor N a i:ℝ)*upperDivisor N b (j*i) +
+        (upperDivisor N b i:ℝ)*upperDivisor N a (j*i))
+    twoSidedCoefficient N a b k = T k-T (k+1) := by
+  simpa only [twoSidedCoefficient_tail] using
+    cell_eq_tail_sub hk (twoSidedCoefficient N a b)
+
 /-- An atom at conductor one already realizes every admissible integral
 profile simultaneously. The total of the targets specifies its partner's
 multiplicity at one, and all other multiplicities are prescribed tails. -/
@@ -84,16 +103,9 @@ theorem quotient_profile_of_even_total {N : ℕ} (hN : 0<N) (w : ℕ → ℤ)
         simp [hatom i hip,hatom (k*i) (Nat.mul_pos hk hip),he,show k*i≠1 by omega]
     · simp [Icc_eq_empty_of_lt (lt_of_not_ge hcut)]
   intro k hk
-  have h := tails k (mem_Icc.mp hk).1
-  have hnext := tails (k+1) (Nat.succ_pos _)
-  have hs : Icc (k+1) N = (Icc k N).erase k := by
-    ext j
-    simp only [mem_Icc,mem_erase]
-    omega
-  rw [hs] at hnext
-  have hmem : k ∈ Icc k N := mem_Icc.mpr ⟨le_rfl,(mem_Icc.mp hk).2⟩
-  rw [← sum_erase_add _ _ hmem,← sum_erase_add (Icc k N) (fun q => (w q:ℝ)) hmem] at h
-  linarith only [h,hnext]
+  calc _ = _ := cell_eq_tail_sub (mem_Icc.mp hk).2 (twoSidedCoefficient N a b)
+       _ = _ := by rw [tails k (mem_Icc.mp hk).1,tails (k+1) (Nat.succ_pos _)]
+       _ = (w k:ℝ) := (cell_eq_tail_sub (mem_Icc.mp hk).2 (fun q => (w q:ℝ))).symm
 
 /-- Exact integral image on positive quotient cells. -/
 theorem exists_twoSidedCoefficient_iff_even (N : ℕ) (w : ℕ → ℤ) :
@@ -115,6 +127,7 @@ theorem exists_twoSidedCoefficient_iff_even (N : ℕ) (w : ℕ → ℤ) :
 #print axioms quotientCoefficient_tail
 #print axioms twoSidedCoefficient_tail
 #print axioms twoSidedCoefficient_total
+#print axioms twoSidedCoefficient_difference
 #print axioms quotient_profile_of_even_total
 #print axioms exists_twoSidedCoefficient_iff_even
 end GaloisForLFunctions.SignedArithmeticCorrespondences

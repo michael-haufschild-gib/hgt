@@ -29,7 +29,6 @@ theorem position_moment (k : ℕ) (t w z : ℝ) :
   unfold meanPower
   push_cast
   field_simp [Real.exp_ne_zero w,show (k:ℝ)+1≠0 by positivity]
-  ring
 
 private theorem gauss_power_integrable (m : ℝ) (v : ℝ≥0) (k : ℕ) :
     Integrable (fun x : ℝ => x^k) (gaussianReal m v) := by

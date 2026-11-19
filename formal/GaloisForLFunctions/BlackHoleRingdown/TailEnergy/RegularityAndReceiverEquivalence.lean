@@ -149,6 +149,7 @@ private theorem hasDerivAt_norm_sq_pulseReflected (h : CompactPulse) (u : ℝ) :
         (pulseReflected h u).im * (pulseReflected h.D u).im)) u := by
     exact ((hre.pow 2).add (him.pow 2)).congr_deriv (by ring)
   refine hsum.congr_of_eventuallyEq (Eventually.of_forall fun t => ?_)
+  dsimp only
   rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply]
   ring
 
@@ -386,8 +387,8 @@ private theorem integral_norm_sq_le_two_mul_support (g : CompactPulse) {S₀ : �
     integrableOn_const (by rw [Real.volume_Icc]; exact ENNReal.ofReal_ne_top)
   have hpt : ∀ S : ℝ, 2 * t * ‖g S‖ ≤ ‖g S‖ ^ 2 + t ^ 2 := fun S => by
     nlinarith [sq_nonneg (‖g S‖ - t)]
-  have hmono := setIntegral_mono hg1 (hg2.add hc) hpt
   have hsum : IntegrableOn (fun S : ℝ => ‖g S‖ ^ 2 + t ^ 2) (Icc (-S₀) S₀) := hg2.add hc
+  have hmono := setIntegral_mono hg1 hsum hpt
   have hlhs : (∫ S in Icc (-S₀) S₀, 2 * t * ‖g S‖) = 2 * t * A := by
     rw [integral_const_mul, ← hsupp]
   have hconst : (∫ _S in Icc (-S₀) S₀, t ^ 2) = 2 * S₀ * t ^ 2 := by
@@ -398,7 +399,7 @@ private theorem integral_norm_sq_le_two_mul_support (g : CompactPulse) {S₀ : �
     setIntegral_le_integral hg2_all (Eventually.of_forall fun _ => sq_nonneg _)
   rw [hlhs, integral_add hg2 hc, hconst] at hmono
   have hineq : 2 * t * A ≤ E + 2 * S₀ * t ^ 2 := by linarith
-  have h2tA : 2 * t * A = A ^ 2 / S₀ := by dsimp only [t]; field_simp [hS₀.ne']; ring
+  have h2tA : 2 * t * A = A ^ 2 / S₀ := by dsimp only [t]; field_simp [hS₀.ne']
   have h2St : 2 * S₀ * t ^ 2 = A ^ 2 / (2 * S₀) := by dsimp only [t]; field_simp [hS₀.ne']
   rw [h2tA, h2St] at hineq
   have hmul := mul_le_mul_of_nonneg_left hineq (show (0 : ℝ) ≤ 2 * S₀ by positivity)

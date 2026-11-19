@@ -67,16 +67,19 @@ theorem midpoint_floor_block_append (n : ℕ) {A B C : ℕ} (h : A ≤ B) (h' : 
   exact sum_Ico_consecutive _ h h'
 
 /-- Uniform geometric summation with the last partial interval retained. -/
-private theorem dyadic_midpoint_bound :
-    ∃ K : ℝ, 0 ≤ K ∧ ∀ B n A : ℕ, 1 ≤ A → A ≤ B →
+private theorem dyadic_midpoint_bound {C : ℝ} (hC : 0 ≤ C) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ (B n A : ℕ) (w : ℕ → ℝ),
+      (∀ {X Y : ℕ}, 1 ≤ X → X ≤ Y → Y ≤ 2*X →
+        (X:ℝ)^(999/500:ℝ) ≤ 2*n → 4*(n:ℝ) ≤ (X:ℝ)^(1001/500:ℝ) →
+        |∑ p ∈ (Ico X Y).filter Nat.Prime,w p| ≤ C*(X:ℝ)^(999/1000:ℝ)) →
+      1 ≤ A → A ≤ B →
       (B-1:ℕ) ≤ ⌊(n:ℝ)^(500/999:ℝ)⌋₊ → 4*(n:ℝ) ≤ (A:ℝ)^2 →
-      |midpointFloorPrimeBlock n A B| ≤ K*(B:ℝ)^(999/1000:ℝ) := by
+      |∑ p ∈ (Ico A B).filter Nat.Prime,w p| ≤ K*(B:ℝ)^(999/1000:ℝ) := by
   let s : ℝ := 999/1000
   have hs : 0 < s := by norm_num [s]
   let q := (3/4:ℝ)^s
   have hq : q < 1 := Real.rpow_lt_one (by norm_num) (by norm_num) hs
   have hq0 : 0 ≤ q := Real.rpow_nonneg (by norm_num) _
-  obtain ⟨C,hC,hblock⟩ := midpoint_floor_prime_block_saving
   let K := C/(1-q)
   have hk0 : 0 ≤ K := div_nonneg hC (sub_nonneg.mpr hq.le)
   have hk : K*(1-q)=C := div_mul_cancel₀ _ (sub_ne_zero.mpr hq.ne')
@@ -86,9 +89,9 @@ private theorem dyadic_midpoint_bound :
   intro B
   induction B using Nat.strong_induction_on with
   | h B ih =>
-    intro n A ha hab hcut hstart
+    intro n A w hblock ha hab hcut hstart
     have hbound {X : ℕ} (hAX : A ≤ X) (hXB : X < B) (hshort : B ≤ 2*X) :
-        |midpointFloorPrimeBlock n X B| ≤ C*(X:ℝ)^s := by
+        |∑ p ∈ (Ico X B).filter Nat.Prime,w p| ≤ C*(X:ℝ)^s := by
       have hXt : (X:ℝ) ≤ (n:ℝ)^(500/999:ℝ) := (Nat.cast_le.mpr
         ((show X ≤ B-1 by omega).trans hcut)).trans (Nat.floor_le (by positivity))
       have hLo := Real.rpow_le_rpow (Nat.cast_nonneg _) hXt (by norm_num : (0:ℝ) ≤ 999/500)
@@ -100,7 +103,7 @@ private theorem dyadic_midpoint_bound :
       exact hblock (ha.trans hAX) hXB.le hshort (by linarith only [hLo,Nat.cast_nonneg (α:=ℝ) n])
         ((hstart.trans hsq).trans hpow)
     rcases eq_or_lt_of_le hab with rfl | hAB
-    · simp only [midpointFloorPrimeBlock,Ico_self,filter_empty,sum_empty,abs_zero]
+    · simp only [Ico_self,filter_empty,sum_empty,abs_zero]
       exact mul_nonneg hk0 (Real.rpow_nonneg (Nat.cast_nonneg _) _)
     · by_cases hshort : B ≤ 2*A
       · exact (hbound (le_refl A) hAB hshort).trans (mul_le_mul hcK
@@ -115,9 +118,13 @@ private theorem dyadic_midpoint_bound :
           linarith only [hh]
         have hscale := Real.rpow_le_rpow (Nat.cast_nonneg _) hfrac' hs.le
         rw [Real.mul_rpow (by norm_num : (0:ℝ) ≤ 3/4) (Nat.cast_nonneg B)] at hscale
-        rw [←midpoint_floor_block_append n hAM hMB.le]
+        have glue : (∑ p ∈ (Ico A M).filter Nat.Prime,w p) +
+            (∑ p ∈ (Ico M B).filter Nat.Prime,w p) = ∑ p ∈ (Ico A B).filter Nat.Prime,w p := by
+          simp only [sum_filter]
+          exact sum_Ico_consecutive _ hAM hMB.le
+        rw [←glue]
         apply (abs_add_le _ _).trans
-        have hleft := ih M hMB n A ha hAM ((show M-1 ≤ B-1 by omega).trans hcut) hstart
+        have hleft := ih M hMB n A w hblock ha hAM ((show M-1 ≤ B-1 by omega).trans hcut) hstart
         have hright := hbound hAM hMB hhalf
         calc _ ≤ (K+C)*(M:ℝ)^s := (add_le_add hleft hright).trans_eq (add_mul ..).symm
              _ ≤ (K+C)*(q*(B:ℝ)^s) := mul_le_mul_of_nonneg_left hscale (add_nonneg hk0 hC)
@@ -125,22 +132,24 @@ private theorem dyadic_midpoint_bound :
 
 #print axioms midpoint_floor_prime_block_saving
 
-/-- At every center and every partial prime endpoint between twice the
-square root and n^(500/999), the actual signed cofactor price costs O(√n). -/
-theorem prime_floor_shell_beyond_square_root :
-    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n A B : ℕ}, 1 ≤ n → ⌊2*Real.sqrt n⌋₊ < A →
-      B ≤ ⌊(n:ℝ)^(500/999:ℝ)⌋₊+1 → |midpointFloorPrimeBlock n A B| ≤ C*Real.sqrt n := by
-  obtain ⟨K,hK,h⟩ := dyadic_midpoint_bound
+private theorem square_root_shell_of_blocks {C : ℝ} (hC : 0 ≤ C) :
+    ∃ K : ℝ, 0 ≤ K ∧ ∀ {n A B : ℕ} (w : ℕ → ℝ),
+      (∀ {X Y : ℕ}, 1 ≤ X → X ≤ Y → Y ≤ 2*X →
+        (X:ℝ)^(999/500:ℝ) ≤ 2*n → 4*(n:ℝ) ≤ (X:ℝ)^(1001/500:ℝ) →
+        |∑ p ∈ (Ico X Y).filter Nat.Prime,w p| ≤ C*(X:ℝ)^(999/1000:ℝ)) →
+      1 ≤ n → ⌊2*Real.sqrt n⌋₊ < A → B ≤ ⌊(n:ℝ)^(500/999:ℝ)⌋₊+1 →
+      |∑ p ∈ (Ico A B).filter Nat.Prime,w p| ≤ K*Real.sqrt n := by
+  obtain ⟨K,hK,h⟩ := dyadic_midpoint_bound hC
   let s : ℝ := 999/1000
   have hs : 0 < s := by norm_num [s]
   refine ⟨K*(2:ℝ)^s,by positivity,?_⟩
-  intro n A B hn hA hB
+  intro n A B w hblock hn hA hB
   by_cases hab : A ≤ B
   · have hl : 2*Real.sqrt n < (A:ℝ) := (Nat.floor_lt (by positivity)).mp hA
     have hsq := sq_le_sq' (by linarith only [hl,Real.sqrt_nonneg (n:ℝ)] : -(A:ℝ) ≤ 2*Real.sqrt n) hl.le
     rw [mul_pow,Real.sq_sqrt (Nat.cast_nonneg n)] at hsq
     have hstart : 4*(n:ℝ) ≤ (A:ℝ)^2 := by linarith only [hsq]
-    have hbound := h B n A (by omega) hab (by omega) hstart
+    have hbound := h B n A w hblock (by omega) hab (by omega) hstart
     have hcut : (⌊(n:ℝ)^(500/999:ℝ)⌋₊:ℝ) ≤ (n:ℝ)^(500/999:ℝ) := Nat.floor_le (by positivity)
     have hone := Real.one_le_rpow ((Nat.one_le_cast (α:=ℝ)).mpr hn) (by norm_num : (0:ℝ) ≤ 500/999)
     have hBr := (Nat.cast_le (α:=ℝ)).mpr hB
@@ -150,8 +159,20 @@ theorem prime_floor_shell_beyond_square_root :
     rw [Real.mul_rpow (by norm_num : (0:ℝ) ≤ 2) (by positivity),←Real.rpow_mul (Nat.cast_nonneg n),
       show (500/999:ℝ)*s=1/2 by norm_num [s],←Real.sqrt_eq_rpow] at hbnd
     exact hbound.trans ((mul_le_mul_of_nonneg_left hbnd hK).trans_eq (mul_assoc ..).symm)
-  · rw [midpointFloorPrimeBlock,Ico_eq_empty (by omega : ¬A<B),filter_empty,sum_empty,abs_zero]
+  · rw [Ico_eq_empty (by omega : ¬A<B),filter_empty,sum_empty,abs_zero]
     positivity
+
+/-- At every center and every partial prime endpoint between twice the
+square root and n^(500/999), the actual signed cofactor price costs O(√n). -/
+theorem prime_floor_shell_beyond_square_root :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n A B : ℕ}, 1 ≤ n → ⌊2*Real.sqrt n⌋₊ < A →
+      B ≤ ⌊(n:ℝ)^(500/999:ℝ)⌋₊+1 → |midpointFloorPrimeBlock n A B| ≤ C*Real.sqrt n := by
+  obtain ⟨C,hC,hblock⟩ := midpoint_floor_prime_block_saving
+  obtain ⟨K,hK,hshell⟩ := square_root_shell_of_blocks hC
+  refine ⟨K,hK,?_⟩
+  intro n A B hn hA hB
+  exact hshell (fun p => Real.log p*midpointFloorWeight n p)
+    (fun ha hab hb hlo hhi => hblock ha hab hb hlo hhi) hn hA hB
 
 #print axioms prime_floor_shell_beyond_square_root
 
@@ -365,16 +386,24 @@ private def clippedSawPrice (T V A B : ℕ) : ℝ :=
   ∑ p ∈ (Ico A B).filter Nat.Prime, Real.log p*
     (if p ≤ 2*T/(2*V+1) then Int.fract ((T:ℝ)/p)-1/2 else 0)
 
-private theorem clipped_saw_price_interval {A B : ℕ} (hab : A ≤ B) (T V : ℕ) :
+private theorem clipped_saw_price_interval (A B T V : ℕ) :
     clippedSawPrice T V A B =
       ∑ p ∈ (Ico A (max A (min B (2*T/(2*V+1)+1)))).filter Nat.Prime,
         Real.log p*(Int.fract ((T:ℝ)/p)-1/2) := by
   let cutoff := 2*T/(2*V+1)
   let I := (Ico A B).filter Nat.Prime
   have hi : I.filter (· ≤ cutoff)=(Ico A (max A (min B (cutoff+1)))).filter Nat.Prime := by
-    ext p
+    apply Finset.ext
+    intro p
     simp only [I,mem_filter,mem_Ico]
-    omega
+    constructor
+    · rintro ⟨⟨⟨hA,hB⟩,hprime⟩,hcut⟩
+      exact ⟨⟨hA,(lt_min hB (Nat.lt_succ_of_le hcut)).trans_le (le_max_right _ _)⟩,hprime⟩
+    · rintro ⟨⟨hA,hB⟩,hprime⟩
+      rcases lt_max_iff.mp hB with h | h
+      · exact False.elim ((not_lt.mpr hA) h)
+      · exact ⟨⟨⟨hA,h.trans_le (min_le_left _ _)⟩,hprime⟩,
+          Nat.le_of_lt_succ (h.trans_le (min_le_right _ _))⟩
   rw [←hi,sum_filter]
   apply sum_congr rfl
   intro p _
@@ -400,7 +429,7 @@ theorem half_shifted_cofactor_block_saving :
   intro n A B V hA hab hB hlo hhi
   have hn (k : ℕ) (hk : 2 ≤ k) (hk' : k ≤ 4) :
       |clippedSawPrice (k*n) V A B| ≤ K*(A:ℝ)^(999/1000:ℝ) := by
-    rw [clipped_saw_price_interval hab]
+    rw [clipped_saw_price_interval]
     apply h A _ ((k*n:ℕ):ℝ) hA (le_max_left _ _) (max_le (by omega) ((min_le_left _ _).trans hB))
     · apply hlo.trans
       exact_mod_cast Nat.mul_le_mul_right n hk
@@ -420,6 +449,21 @@ theorem half_shifted_cofactor_block_saving :
   constructor <;> linarith only [h2.1,h2.2,h3.1,h3.2,h4.1,h4.2]
 
 #print axioms half_shifted_cofactor_block_saving
+
+/-- A single constant pays the cofactor clipping error up to any terminal
+prime in the entire shell, uniformly in the cofactor divider. -/
+theorem half_shifted_cofactor_shell_saving :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n A B : ℕ} (V : ℕ), 1 ≤ n → ⌊2*Real.sqrt n⌋₊ < A →
+      B ≤ ⌊(n:ℝ)^(500/999:ℝ)⌋₊+1 → |shiftedCofactorBlockError n V A B| ≤ C*Real.sqrt n := by
+  obtain ⟨C,hC,hblock⟩ := half_shifted_cofactor_block_saving
+  obtain ⟨K,hK,hshell⟩ := square_root_shell_of_blocks hC
+  refine ⟨K,hK,?_⟩
+  intro n A B V hn hA hB
+  let e (T p : ℕ) : ℝ := ((T/p-V:ℕ):ℝ)-max ((T:ℝ)/p-((V:ℝ)+1/2)) 0
+  exact hshell (fun p => Real.log p*(e (4*n) p-2*e (3*n) p+e (2*n) p))
+    (fun ha hab hb hlo hhi => hblock V ha hab hb hlo hhi) hn hA hB
+
+#print axioms half_shifted_cofactor_shell_saving
 
 /-- Removing both coprimality conditions from the recombined large-prime
 price replaces the totient density by the linear density. The estimate

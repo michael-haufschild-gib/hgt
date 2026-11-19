@@ -71,6 +71,7 @@ theorem centered_eq_rough_reading_sub_smooth {y : ℕ} (hy : 0<y) (X : ℕ) :
       smoothQuotientCenter y X := by
   rw [full_rough_reading hy]
   have eq := exact_centered_prime_power_remainder hy X
+  rw [neg_mul] at eq
   change roughLogarithmicHead y X+centeredPrimePowerRemainder y X= -smoothQuotientCenter y X at eq
   linarith only [eq]
 
@@ -85,6 +86,7 @@ theorem centered_reading_after_rough_interpolation {y : ℕ} (hy : 0<y) (X T : �
     (rough_action_as_a_coefficient_prefix y (min X T) a).symm.trans (full_rough_reading hy _)
   have total := full_rough_reading hy X
   have center := exact_centered_prime_power_remainder hy X
+  rw [neg_mul] at center
   change roughLogarithmicHead y X+centeredPrimePowerRemainder y X= -smoothQuotientCenter y X at center
   rw [head] at decom
   change roughCofactorReading y X (quotientReading a)= -roughLogarithmicHead y X at total
@@ -144,7 +146,8 @@ theorem centered_bound_iff_below_the_hyperbola {ε : ℝ} (hε : 0<ε) :
   have c0 : centered 0=0 := by simp [centered,centeredPrimePowerRemainder,RoughReading.freeSet]
   have i0 : primePowerReadingBelowTheHyperbola 0=0 := by simp [primePowerReadingBelowTheHyperbola,roughInteriorReading]
   refine ⟨transfer_estimate pos i0 (difference_price hε),transfer_estimate pos c0 ?_⟩
-  simpa only [abs_sub_comm] using difference_price hε
+  filter_upwards [difference_price hε] with n hn
+  rwa [abs_sub_comm] at hn
 
 /-- The full Mertens half-plus criterion is equivalent to one arithmetic
 reading involving only cofactors m ≤ X/(floor(sqrt X)+1). -/
