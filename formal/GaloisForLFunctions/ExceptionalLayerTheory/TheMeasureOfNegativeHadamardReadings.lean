@@ -119,6 +119,50 @@ theorem zero_forces_positive_hadamard_area {h T : ℝ} (q : XiZeroCopy)
   refine ⟨p,by change h<dep q-u; linarith only [hu],hy,?_⟩
   rwa [eq]
 
+/-- A zero-free strip above depth h is equivalent to arbitrarily small
+area on cofinally many height windows. Every right zero creates an open
+patch which remains in all later windows. -/
+theorem right_zeros_iff_negative_area_vanishes {h : ℝ} (hh : 0≤h) :
+    (∀ q : XiZeroCopy, dep q ≤ h) ↔
+      ∃ᶠ T : ℝ in atTop, (volume.prod volume) (negativeHadamardWindow h T)=0 := by
+  classical
+  constructor
+  · intro hz
+    apply Eventually.frequently (Eventually.of_forall ?_)
+    intro T
+    have hem : hadamardShadowZeros h T=∅ := Finset.filter_eq_empty_iff.mpr
+      (fun q _ => not_lt.mpr (hz q))
+    exact le_antisymm (by simpa only [hem,Finset.sum_empty] using negative_hadamard_window_area (T:=T) hh) bot_le
+  · intro hc q
+    by_contra! hq
+    obtain ⟨T,hT,hzero⟩ := frequently_atTop.mp hc (|ord q|+1)
+    have hp := zero_forces_positive_hadamard_area q hq (by linarith only [hT])
+    exact hp.ne' hzero
+
+/-- At a cut ε below a depth ceiling, every remaining disk costs at
+most 2ε^(3/2) in negative area. The extra square root comes from the
+narrow chord of a disk near its right endpoint. -/
+theorem negative_hadamard_area_near_edge {h D T : ℝ} (hh : 0≤h) (hD : h≤D) (hD' : D≤1/2)
+    (hzero : ∀ q ∈ hadamardShadowZeros h T, dep q≤D) :
+    (volume.prod volume) (negativeHadamardWindow h T) ≤
+      (hadamardShadowZeros h T).card • ENNReal.ofReal (2*(D-h)*Real.sqrt (D-h)) := by
+  apply (negative_hadamard_window_area hh).trans
+  rw [←Finset.sum_const]
+  apply Finset.sum_le_sum
+  intro q hq
+  have hδ := (Finset.mem_filter.mp hq).2
+  have hqD := hzero q hq
+  have hsum : dep q+h≤1 := by linarith only [hD,hD',hqD]
+  have hdiff : dep q^2-h^2≤D-h := by
+    calc dep q^2-h^2 = (dep q-h)*(dep q+h) := by ring
+         _ ≤ dep q-h := mul_le_of_le_one_right (sub_nonneg.mpr hδ.le) hsum
+         _ ≤ D-h := sub_le_sub_right hqD h
+  apply ENNReal.ofReal_le_ofReal
+  exact mul_le_mul (mul_le_mul_of_nonneg_left (sub_le_sub_right hqD h) (by norm_num))
+    (Real.sqrt_le_sqrt hdiff) (Real.sqrt_nonneg _) (mul_nonneg (by norm_num) (sub_nonneg.mpr hD))
+
+#print axioms right_zeros_iff_negative_area_vanishes
+#print axioms negative_hadamard_area_near_edge
 #print axioms negative_hadamard_window_area
 #print axioms zero_forces_positive_hadamard_area
 end GaloisForLFunctions.ExceptionalLayerTheory

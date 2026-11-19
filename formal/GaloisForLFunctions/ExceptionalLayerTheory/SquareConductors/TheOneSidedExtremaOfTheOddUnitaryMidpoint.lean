@@ -34,7 +34,7 @@ private theorem block_mono {k : ℕ} {S T : Finset ℕ} (h : S ⊆ T) (hT : T �
 private theorem overweight_mono {k : ℕ} {S T : Finset ℕ} (h : S ⊆ T) (hT : T ⊆ k.primeFactors)
     (hS : primePowerSubset k (k.primeFactors \ S) < primePowerSubset k S) :
     primePowerSubset k (k.primeFactors \ T) < primePowerSubset k T :=
-  (block_mono (sdiff_subset_sdiff_left h) sdiff_subset).trans_lt (hS.trans_le (block_mono h hT))
+  (block_mono (sdiff_subset_sdiff_right k.primeFactors h) sdiff_subset).trans_lt (hS.trans_le (block_mono h hT))
 
 /-- Each lower-rank overweight subset extends in every unused prime. -/
 theorem unitaryDefectLayer_normalized_growth (k j : ℕ) :
@@ -45,7 +45,8 @@ theorem unitaryDefectLayer_normalized_growth (k j : ℕ) :
     obtain ⟨hs,hcard,hheavy⟩ := mem_layer.mp hS
     have hinj : Set.InjOn (fun a => insert a S) (k.primeFactors \ S) :=
       (insert_inj_on S).mono fun a ha => (mem_sdiff.mp ha).2
-    rw [←hcard,←card_sdiff_of_subset hs,←card_image_of_injOn hinj]
+    rw [show k.primeFactors.card-j = (k.primeFactors \ S).card by rw [card_sdiff_of_subset hs,hcard],
+      ←card_image_of_injOn hinj]
     apply card_le_card
     rintro _ h
     obtain ⟨a,ha,rfl⟩ := mem_image.mp h
@@ -55,14 +56,14 @@ theorem unitaryDefectLayer_normalized_growth (k j : ℕ) :
       overweight_mono (subset_insert ..) hT hheavy⟩,subset_insert ..⟩
   · intro T hT
     obtain ⟨_,hcard,_⟩ := mem_layer.mp hT
-    rw [←hcard,←card_image_of_injOn T.erase_injOn]
+    conv_rhs => rw [←hcard,←card_image_of_injOn T.erase_injOn]
     apply card_le_card
     intro S hS
     obtain ⟨hs,hsub⟩ := mem_bipartiteBelow.mp hS
     have hc := (mem_layer.mp hs).2.1
     obtain ⟨a,ha,he⟩ := exists_eq_insert_iff.mpr ⟨hsub,by omega⟩
     apply mem_image.mpr
-    exact ⟨a,he ▸ mem_insert_self a S,by rw [he,erase_insert ha]⟩
+    exact ⟨a,he ▸ mem_insert_self a S,by rw [←he,erase_insert ha]⟩
 
 private theorem layer_mono {k r j : ℕ} (hr : k.primeFactors.card=2*r+1) (hj : j < r) :
     (unitaryDefectLayer k j).card ≤ (unitaryDefectLayer k (j+1)).card := by
@@ -96,7 +97,7 @@ theorem unitaryDefectLayer_erdos_ko_rado {k j : ℕ} (hj : j ≤ k.primeFactors.
     subtype_map_of_mem fun _ hi => hground S hs hi
   have hinj : Set.InjOn lift (F : Set (Finset ℕ)) := by
     intro S hS T hT h
-    have hh := (map_inj e).mp h
+    have hh := Finset.map_injective e h
     rw [←hback S hS,hh,hback T hT]
   let A := F.image lift
   have hsize : (A : Set (Finset (Fin P.card))).Sized j := by

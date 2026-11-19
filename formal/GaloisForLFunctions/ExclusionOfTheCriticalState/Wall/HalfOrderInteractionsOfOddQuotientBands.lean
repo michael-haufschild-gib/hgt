@@ -59,7 +59,7 @@ private lemma log_kernel_odd_series {p q : ℝ} (hp : 0 < p) (hpq : p < q) :
   have hrat : ((a+b)/Real.sqrt (q-p))^2 = (1+a/b)/(1-a/b) := by
     rw [div_pow, Real.sq_sqrt (sub_pos.mpr hpq).le, hfac]
     field_simp [hb.ne', (sub_pos.mpr hab).ne', (add_pos hb ha).ne', (sub_pos.mpr hr).ne']
-    <;> ring
+    ring
   have hlog := congrArg Real.log hrat
   rw [Real.log_pow, Real.log_div (by positivity : 1+a/b≠0) (sub_pos.mpr hr).ne'] at hlog
   norm_num only [Nat.cast_ofNat] at hlog

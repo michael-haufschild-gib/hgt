@@ -121,6 +121,29 @@ theorem finite_right_support_forces_probe_energy {r m N : ℕ}
     (add_nonneg (Nat.cast_nonneg m) (probe_energy_nn a))
   linarith only [h,probe_negative_index_energy a hd]
 
+/-- Some distinct pair meets the finite-index Welch bound. For a single
+off-line quartet the squared correlation tends to at least one half as the
+number of negative probes increases. -/
+theorem exists_correlated_pair_of_finite_right_support {r m N : ℕ} (hm : 2 ≤ m)
+    (hr : (rightZeros zetaZeroConfig).encard ≤ r) (a : Fin m → (Fin N → ℤ))
+    (hd : ∀ i, probePairing N (a i) (a i) < 0) :
+    ∃ i j, i ≠ j ∧ (m:ℝ)-r ≤ r*((m:ℝ)-1)*(probeCorrelation a i j)^2 := by
+  by_contra! h
+  haveI : Nonempty (Fin m) := ⟨⟨0,by omega⟩⟩
+  have hrow (i : Fin m) : ∑ j ∈ univ.erase i, (r*((m:ℝ)-1)*(probeCorrelation a i j)^2) <
+      ∑ _j ∈ univ.erase i, ((m:ℝ)-r) := by
+    have hcard : (univ.erase i).card=m-1 := by simp
+    apply sum_lt_sum_of_nonempty (card_pos.mp (by omega))
+    intro j hj
+    exact h i j (mem_erase.mp hj).1.symm
+  have he := sum_lt_sum_of_nonempty (s:=univ) univ_nonempty (fun i _ => hrow i)
+  have hcast : ((m-1:ℕ):ℝ) = (m:ℝ)-1 := by rw [Nat.cast_sub (by omega : 1 ≤ m),Nat.cast_one]
+  simp only [←mul_sum,sum_const,card_erase_of_mem (mem_univ _),card_univ,Fintype.card_fin,
+    nsmul_eq_mul,hcast] at he
+  change r*((m:ℝ)-1)*distinctProbeEnergy a < m*(((m:ℝ)-1)*(m-r)) at he
+  have hpos : (0:ℝ) ≤ (m:ℝ)-1 := sub_nonneg.mpr (by exact_mod_cast (show 1 ≤ m by omega))
+  linarith only [he,mul_le_mul_of_nonneg_left (finite_right_support_forces_probe_energy hr a hd) hpos]
+
 /-- The number of right zeros is detected by a single total mixed-square budget
 on a disjoint family above any specified prime cutoff. -/
 theorem rightZeros_ge_iff_distinct_probe_energy (r P : ℕ) :
@@ -162,6 +185,7 @@ theorem rightZeros_ge_iff_distinct_probe_energy (r P : ℕ) :
 
 #print axioms probe_negative_index_energy
 #print axioms finite_right_support_forces_probe_energy
+#print axioms exists_correlated_pair_of_finite_right_support
 #print axioms rightZeros_ge_iff_distinct_probe_energy
 
 end

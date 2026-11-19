@@ -79,7 +79,8 @@ theorem primeSign_average_primitive_spectrum (N : ℕ) (P : Finset ℕ) (K : ℝ
   rw [sum_comm, sum_filter, mul_sum]
   refine sum_congr rfl fun q hq => ?_
   obtain ⟨_,hab,_⟩ := mem_filter.mp hq
-  rw [← sum_mul, ← Int.cast_sum, sum_primeSignTwist_mul, prod_two_or_zero]
+  rw [← sum_mul, ← Int.cast_sum, sum_primeSignTwist_mul,
+    prod_two_or_zero P (fun p => q.1.factorization p + q.2.factorization p)]
   by_cases h : Squarefree q.1 ∧ Squarefree q.2
   · simp only [even_exponents_iff h.1 h.2 hab]
     split_ifs <;> push_cast <;> ring
@@ -117,7 +118,10 @@ theorem signedRatioReading_eq_original (N : ℕ) (P : Finset ℕ) (s : P → ℤ
       (((primeSignTwist P s q.1 * primeSignTwist P s q.2 : ℤ):ℝ) *
         (coeff q.1 * coeff q.2 * K (Real.log q.1 - Real.log q.2))) =
       signedRatioReading N P s K := by
-  rw [sum_offDiagPairs_eq_sum_ratio, signedRatioReading]
+  let F := fun m n : ℕ => ((primeSignTwist P s m * primeSignTwist P s n : ℤ):ℝ) *
+    (coeff m * coeff n * K (Real.log m - Real.log n))
+  change (∑ q ∈ offDiagPairs N, F q.1 q.2) = _
+  rw [sum_offDiagPairs_eq_sum_ratio N F, signedRatioReading]
   refine sum_congr rfl fun q hq => ?_
   obtain ⟨ha,hb⟩ := mem_product.mp (mem_filter.mp hq).1
   have ha0 := Nat.ne_of_gt (mem_Icc.mp ha).1
@@ -126,7 +130,7 @@ theorem signedRatioReading_eq_original (N : ℕ) (P : Finset ℕ) (s : P → ℤ
   apply sum_congr rfl
   intro d hd
   have hd0 := Nat.ne_of_gt (mem_Icc.mp (mem_filter.mp hd).1).1
-  simp only [signed_ratio_scale P s hd0 ha0 hb0, Nat.cast_mul,
+  simp only [F,signed_ratio_scale P s hd0 ha0 hb0, Nat.cast_mul,
     Real.log_mul (Nat.cast_ne_zero.mpr hd0) (Nat.cast_ne_zero.mpr ha0),
     Real.log_mul (Nat.cast_ne_zero.mpr hd0) (Nat.cast_ne_zero.mpr hb0), add_sub_add_left_eq_sub]
 
@@ -159,7 +163,7 @@ private theorem rough_unit_or_prime {n N Y : ℕ} (hn : n ∈ Icc 1 N) (hcut : N
     exact hm.not_gt (Nat.pow_lt_pow_left hlt (by decide : 2 ≠ 0))
   have hpr := Nat.minFac_prime h1
   exact h n.minFac (mem_filter.mpr ⟨mem_range.mpr (by omega),hpr⟩)
-    (Nat.mem_primeFactors.mpr ⟨hpr, Nat.minFac_dvd _, (mem_Icc.mp hn).1.ne'⟩)
+    (Nat.mem_primeFactors.mpr ⟨hpr, Nat.minFac_dvd _, Nat.ne_of_gt (mem_Icc.mp hn).1⟩)
 
 /-- Beyond the square-root sieve, all surviving close ratios are
 prime against prime. Their Möbius signs reinforce for the triangular
@@ -169,7 +173,7 @@ theorem square_root_sign_average_close_nonneg {N Y : ℕ} (hcut : N ≤ Y^2) :
       signedRatioReading N ((range (Y+1)).filter Nat.Prime) s
         (fun x => max (Real.log 2 - |x|) 0) := by
   rw [primeSign_average_primitive_spectrum]
-  apply mul_nonneg (by positivity) (sum_nonneg ?_)
+  refine mul_nonneg (by positivity) (sum_nonneg ?_)
   intro q hq
   obtain ⟨hr, hrough⟩ := mem_filter.mp hq
   obtain ⟨hpair,_,hne⟩ := mem_filter.mp hr
@@ -215,7 +219,7 @@ theorem twisted_short_spectrum (N : ℕ) (P : Finset ℕ) (s : P → ℤˣ) (δ 
     rw [← sq,coeff,div_pow,Real.sq_sqrt (Nat.cast_nonneg n),mul_comm]
   have off : (∑ q ∈ offDiagPairs N, F q.1 q.2) = signedRatioReading N P s K := by
     rw [← signedRatioReading_eq_original]
-    exact sum_congr rfl fun q _ => by rw [F,twist_pair,mul_assoc]
+    exact sum_congr rfl fun q _ => by dsimp only [F]; rw [twist_pair,mul_assoc]
   rw [twistedShortEnergy,integral_normSq_logWindowSum]
   simp only [Complex.conj_ofReal,← Complex.ofReal_mul,Complex.ofReal_re]
   change (∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, F m n) = _ + signedRatioReading N P s K
