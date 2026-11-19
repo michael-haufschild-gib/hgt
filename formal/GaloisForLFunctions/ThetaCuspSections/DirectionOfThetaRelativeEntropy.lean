@@ -137,6 +137,77 @@ theorem thetaTilts_klDiv_lt_reverse_iff (a b : ℝ) :
       exact (h.ne he).elim
   · exact hab
 
+/-- Square root of the sum of the two directed relative entropies. -/
+def thetaJeffreysLength (a b : ℝ) : ℝ :=
+  Real.sqrt ((klDiv (thetaTiltProb a) (thetaTiltProb b)).toReal +
+    (klDiv (thetaTiltProb b) (thetaTiltProb a)).toReal)
+
+private theorem length_eq (a b : ℝ) :
+    thetaJeffreysLength a b = Real.sqrt ((b-a)*(xiRealLogDeriv b-xiRealLogDeriv a)) := by
+  rw [thetaJeffreysLength, thetaTilts_klDiv, thetaTilts_klDiv,
+    ENNReal.toReal_ofReal (tiltGap_nonneg _ _), ENNReal.toReal_ofReal (tiltGap_nonneg _ _),
+    tiltGap_symmetrized]
+
+private theorem segment_defect {a b c : ℝ} (hab : a ≤ b) (hbc : b ≤ c) :
+    thetaJeffreysLength a c ^ 2 - (thetaJeffreysLength a b + thetaJeffreysLength b c)^2 =
+      (Real.sqrt ((b-a)*(xiRealLogDeriv c-xiRealLogDeriv b)) -
+        Real.sqrt ((c-b)*(xiRealLogDeriv b-xiRealLogDeriv a)))^2 := by
+  let A := b-a
+  let B := c-b
+  let U := xiRealLogDeriv b - xiRealLogDeriv a
+  let V := xiRealLogDeriv c - xiRealLogDeriv b
+  have hA : 0 ≤ A := sub_nonneg.mpr hab
+  have hB : 0 ≤ B := sub_nonneg.mpr hbc
+  have hU : 0 ≤ U := sub_nonneg.mpr (strictMono_xiRealLogDeriv.monotone hab)
+  have hV : 0 ≤ V := sub_nonneg.mpr (strictMono_xiRealLogDeriv.monotone hbc)
+  simp only [length_eq, show c-a = A+B by dsimp [A,B]; ring,
+    show xiRealLogDeriv c-xiRealLogDeriv a = U+V by dsimp [U,V]; ring]
+  change Real.sqrt ((A+B)*(U+V))^2 - (Real.sqrt (A*U)+Real.sqrt (B*V))^2 =
+    (Real.sqrt (A*V)-Real.sqrt (B*U))^2
+  rw [Real.sq_sqrt (mul_nonneg (add_nonneg hA hB) (add_nonneg hU hV))]
+  simp only [Real.sqrt_mul hA, Real.sqrt_mul hB]
+  calc
+    _ = (Real.sqrt A^2 + Real.sqrt B^2)*(Real.sqrt U^2 + Real.sqrt V^2) -
+        (Real.sqrt A*Real.sqrt U + Real.sqrt B*Real.sqrt V)^2 := by
+          rw [Real.sq_sqrt hA, Real.sq_sqrt hB, Real.sq_sqrt hU, Real.sq_sqrt hV]
+    _ = _ := by ring
+
+/-- Along an ordered chain the square root of Jeffreys divergence satisfies the
+reverse triangle inequality. The squared defect is an explicit nonnegative square. -/
+theorem thetaJeffreys_reverse_triangle (a : ℝ) (u v : ℝ≥0) :
+    thetaJeffreysLength a (a+u) + thetaJeffreysLength (a+u) (a+u+v) ≤
+      thetaJeffreysLength a (a+u+v) := by
+  have he := segment_defect (a := a) (b := a+u) (c := a+u+v)
+    (le_add_of_nonneg_right u.2) (le_add_of_nonneg_right v.2)
+  have hp : 0 ≤ thetaJeffreysLength a (a+u+v) := Real.sqrt_nonneg _
+  nlinarith only [he, hp, sq_nonneg (Real.sqrt (((a+u)-a) *
+    (xiRealLogDeriv (a+u+v)-xiRealLogDeriv (a+u))) -
+    Real.sqrt (((a+u+v)-(a+u))*(xiRealLogDeriv (a+u)-xiRealLogDeriv a)))]
+
+/-- Every strictly ordered triple on the positive ray violates the usual metric triangle
+inequality. Strict GHS concavity rules out equality of the adjacent secant slopes. -/
+theorem thetaJeffreys_strict_reverse_triangle (a : ℝ≥0) (u v : {x : ℝ // 0 < x}) :
+    thetaJeffreysLength a (a+u.val) + thetaJeffreysLength (a+u.val) (a+u.val+v.val) <
+      thetaJeffreysLength a (a+u.val+v.val) := by
+  let b : ℝ := a+u.val
+  let c : ℝ := b+v.val
+  have hab : (a : ℝ) < b := lt_add_of_pos_right _ u.property
+  have hbc : b < c := lt_add_of_pos_right _ v.property
+  have hc : c ∈ Ici (0 : ℝ) := a.2.trans (hab.trans hbc).le
+  have H := strictConcaveOn_xiRealLogDeriv.slope_anti_adjacent a.2 hc hab hbc
+  rw [div_lt_div_iff₀ (sub_pos.mpr hbc) (sub_pos.mpr hab)] at H
+  have hUV : 0 ≤ (b-a)*(xiRealLogDeriv c-xiRealLogDeriv b) :=
+    mul_nonneg (sub_nonneg.mpr hab.le) (sub_nonneg.mpr (strictMono_xiRealLogDeriv hbc).le)
+  have hh : Real.sqrt ((b-a)*(xiRealLogDeriv c-xiRealLogDeriv b)) <
+      Real.sqrt ((c-b)*(xiRealLogDeriv b-xiRealLogDeriv a)) :=
+    Real.sqrt_lt_sqrt hUV (by linarith only [H])
+  have he := segment_defect hab.le hbc.le
+  have hs := sq_pos_of_ne_zero (sub_ne_zero.mpr hh.ne)
+  change thetaJeffreysLength a b + thetaJeffreysLength b c < thetaJeffreysLength a c
+  have hp : 0 ≤ thetaJeffreysLength a c := Real.sqrt_nonneg _
+  nlinarith only [he,hs,hp]
+
+#print axioms thetaJeffreys_strict_reverse_triangle
 #print axioms strictConcaveOn_xiRealLogDeriv
 #print axioms thetaTiltVariance_lt_iff
 #print axioms thetaTilts_klDiv_lt_reverse_iff
