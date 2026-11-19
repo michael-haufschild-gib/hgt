@@ -182,7 +182,7 @@ theorem reflected_shell_mangoldt_saw {t ε : ℝ} (ht : 1/2 ≤ t) (ht1 : t < 1)
   have hpos {h : ℤ} (hh : 0 < h) (hhH : h.natAbs ≤ H) : ‖G h‖ ≤ P (t+ε/3) := by
     have hhr : (1:ℝ) ≤ h := by exact_mod_cast hh
     have hcast : (h:ℝ)=(h.natAbs:ℝ) := by
-      rw [Nat.cast_natAbs,Int.cast_abs,abs_of_nonneg (Int.cast_nonneg.mpr hh.le)]
+      rw [Nat.cast_natAbs,Int.cast_abs,abs_of_nonneg (zero_le_one.trans hhr)]
     have hhup : (h:ℝ) ≤ P b := hcast.le.trans ((Nat.cast_le.mpr hhH).trans hHle)
     let S := 2*Real.pi*h*k*x
     have hcoef : 1 ≤ 2*Real.pi*h*k := by

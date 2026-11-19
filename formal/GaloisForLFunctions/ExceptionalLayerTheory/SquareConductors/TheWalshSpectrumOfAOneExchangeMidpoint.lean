@@ -93,7 +93,8 @@ theorem one_exchange_virial_spectrum {k p : ℕ} (hp : p ∈ k.primeFactors)
     · rw [if_neg he,zero_add]
       rcases Nat.even_or_odd T.card with h|h
       · simp [E,b,h.not_odd,unitaryWalshContrast_even (mem_powerset.mp hT) h]
-      · rw [show E T = _ from rfl,unitaryWalshContrast_one_exchange hp hl hu (mem_powerset.mp hT) h,
+      · dsimp only [E]
+        rw [unitaryWalshContrast_one_exchange hp hl hu (mem_powerset.mp hT) h,
           if_neg he,zero_add]
         by_cases hpt : p ∈ T <;> simp [hpt,b,h] <;> ring
   change (∑ T ∈ P.powerset, E T) = d + _
@@ -103,6 +104,67 @@ theorem one_exchange_virial_spectrum {k p : ℕ} (hp : p ∈ k.primeFactors)
   refine sum_congr rfl fun j _ => ?_
   by_cases h : Odd j <;> simp [b,h,nsmul_eq_mul,P,r]
 
+
+private def shiftedSymbol (γ : ℝ) (a j : ℕ) : ℝ :=
+  if Odd (a+j) then blockVirialSymbol γ (2*(a+j:ℕ)) else 0
+
+private def cubicMean (γ r m : ℝ) : ℝ :=
+  γ*(m^3+3*r*m)+(4*γ-1)*(m^2+r)+3*γ*m+1
+
+/-- Four free coordinates make the parity restriction invisible to a cubic
+moment. Pascal's rule then transports the identity to every higher rank. -/
+private theorem odd_symbol_moment (γ : ℝ) {r : ℕ} (hr : 4≤r) (a : ℕ) :
+    2*(∑ j ∈ range (r+1), (r.choose j:ℝ)*shiftedSymbol γ a j) =
+      (2:ℝ)^r*cubicMean γ r (2*a+r) := by
+  induction r,hr using Nat.le_induction generalizing a with
+  | base =>
+    by_cases h : Odd a <;>
+      norm_num [sum_range_succ,shiftedSymbol,Nat.odd_add,h,Nat.choose,
+        cubicMean,blockVirialSymbol] <;> ring
+  | succ r hr ih =>
+    have hs := Nat.sum_choose_succ_mul (fun j _ => shiftedSymbol γ a j) r
+    have shift (j : ℕ) : shiftedSymbol γ a (j+1) = shiftedSymbol γ (a+1) j := by
+      simp only [shiftedSymbol,show a+(j+1) = a+1+j by omega]
+    simp only [shift] at hs
+    rw [hs,mul_add,ih a,ih (a+1),pow_succ]
+    push_cast
+    unfold cubicMean
+    ring
+
+/-- Beyond rank three, the complete virial energy depends only on the rank
+and coupling. The exponential leading term is the energy of the surviving
+linear coordinate, and the correction is a cubic times two to the rank. -/
+theorem one_exchange_virial_closed_form {k p : ℕ} (hp : p ∈ k.primeFactors)
+    (hl : (p^k.factorization p)^2 < k) (hu : k < (2*p^k.factorization p)^2)
+    (hr : 4≤k.primeFactors.card) (γ : ℝ) :
+    let r := k.primeFactors.card
+    unitaryVirialEnergy γ k = (2:ℝ)^(2*r)*(30*γ-3) +
+      8*2^r*(γ*((r:ℝ)^3+7*r^2+7*r-30)-r^2-r+4) := by
+  intro r
+  have h := odd_symbol_moment γ hr 0
+  change 2*(∑ j ∈ range (r+1), (r.choose j:ℝ)*shiftedSymbol γ 0 j) = _ at h
+  simp only [shiftedSymbol,zero_add,Nat.cast_zero,mul_zero,cubicMean,mul_ite,mul_zero] at h
+  rw [one_exchange_virial_spectrum hp hl hu]
+  change (((2:ℝ)^r-4)^2-16)*blockVirialSymbol γ 2 + _ = _
+  rw [Nat.mul_comm 2 r,pow_mul]
+  rw [show blockVirialSymbol γ 2 = 30*γ-3 by unfold blockVirialSymbol; ring]
+  change 2*(∑ j ∈ range (r+1), if Odd j then (r.choose j:ℝ)*_ else 0) = _ at h
+  linear_combination 8*h
+
+/-- At the arithmetic critical coupling the entire one-exchange defect
+factors, giving the precise cost of avoiding a dominant prime block. -/
+theorem one_exchange_critical_energy {k p : ℕ} (hp : p ∈ k.primeFactors)
+    (hl : (p^k.factorization p)^2 < k) (hu : k < (2*p^k.factorization p)^2)
+    (hr : 4≤k.primeFactors.card) :
+    let r := k.primeFactors.card
+    unitaryVirialEnergy (1/10) k = 4/5*(2:ℝ)^r*(r-2)*(r^2-r-5) := by
+  intro r
+  rw [one_exchange_virial_closed_form hp hl hu hr]
+  change _ = 4/5*(2:ℝ)^r*((r:ℝ)-2)*(r^2-r-5)
+  ring
+
+#print axioms one_exchange_virial_closed_form
+#print axioms one_exchange_critical_energy
 #print axioms unitaryWalshContrast_one_exchange
 #print axioms one_exchange_virial_spectrum
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

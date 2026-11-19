@@ -77,7 +77,7 @@ theorem acousticCorrector_range (k z : ℝ) :
     linarith only [sq_nonneg (solitonT (k*z))]
   have hW : acousticPulse k z ≤ 0 := mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr (sq_nonneg k)) hq
   have hD : 0 ≤ k^2+acousticPulse k z := by
-    simpa only [acousticPulse,neg_mul,mul_sub,mul_one] using mul_nonneg (sq_nonneg k) (sub_nonneg.mpr h1)
+    simpa only [acousticPulse,neg_mul,mul_sub,mul_one,sub_eq_add_neg] using mul_nonneg (sq_nonneg k) (sub_nonneg.mpr h1)
   rw [acousticCorrector_polynomial,acousticCorrector_polynomial k 0]
   have sqid : k^4/8 - (-(acousticPulse k z)*(k^2+acousticPulse k z)/2) =
       (acousticPulse k z + k^2/2)^2/2 := by ring

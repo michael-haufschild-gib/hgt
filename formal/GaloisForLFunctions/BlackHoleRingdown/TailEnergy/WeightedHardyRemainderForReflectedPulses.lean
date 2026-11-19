@@ -25,10 +25,12 @@ def hardyRemainder (h : CompactPulse) (s t : ℝ) : ℝ :=
   Real.exp (2*s*t)*‖s • pulseReflected h t + pulseReflected h.D t‖^2
 
 private lemma continuous_hardyRemainder (h : CompactPulse) (s : ℝ) :
-    Continuous (hardyRemainder h s) :=
-  (Real.continuous_exp.comp (continuous_const.mul continuous_id)).mul
-    (((continuous_const.smul (continuous_pulseReflected h)).add
-      (continuous_pulseReflected h.D)).norm.pow 2)
+    Continuous (hardyRemainder h s) := by
+  have he : Continuous (fun t : ℝ => Real.exp (2*s*t)) :=
+    Real.continuous_exp.comp (continuous_id.const_mul (2*s))
+  have hd : Continuous (fun t : ℝ => s • pulseReflected h t + pulseReflected h.D t) :=
+    ((continuous_pulseReflected h).const_smul s).add (continuous_pulseReflected h.D)
+  exact he.mul (hd.norm.pow 2)
 
 private lemma boundary_derivative (h : CompactPulse) (s t : ℝ) :
     HasDerivAt (fun u => s * (Real.exp (2*s*u)*‖pulseReflected h u‖^2))

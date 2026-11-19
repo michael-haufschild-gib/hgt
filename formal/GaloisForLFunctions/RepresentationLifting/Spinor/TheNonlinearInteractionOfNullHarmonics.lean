@@ -161,8 +161,50 @@ theorem null_pair_p_harmonic_iff_radial_equality (q r : Fin d → ℝ) (m : ℕ)
     simp only [hh,sum_neg_distrib,sub_eq_add_neg]
   rw [he,Complex.ofReal_eq_zero,sub_eq_zero]
 
+private lemma radialLength_neg (q : Fin d → ℝ) : radialLength (-q)=radialLength q := by
+  simp only [radialLength,Pi.neg_apply,neg_sq]
+
+/-- Opposite polarizations yield twice the real part of the original
+harmonic power at every real point of the ambient space. -/
+theorem opposite_null_pair_real_slice (q : Fin d → ℝ) (m : ℕ) (x : Option (Fin d) → ℝ) :
+    let L := momentLinearForm ℂ (nullPolarization q)
+    let M := momentLinearForm ℂ (nullPolarization (-q))
+    MvPolynomial.eval (fun i => (x i : ℂ)) (L^m+M^m) =
+      2*((MvPolynomial.eval (fun i => (x i : ℂ)) L)^m).re := by
+  dsimp only
+  have he : MvPolynomial.eval (fun i => (x i : ℂ)) (momentLinearForm ℂ (nullPolarization (-q))) =
+      (starRingEnd ℂ) (MvPolynomial.eval (fun i => (x i : ℂ)) (momentLinearForm ℂ (nullPolarization q))) := by
+    simp only [eval_linear,waveOverlap,Fintype.sum_option,nullPolarization,radialLength_neg,
+      map_add,map_sum,map_mul,Complex.conj_ofReal,Complex.conj_I,Pi.neg_apply,Complex.ofReal_neg]
+    simp only [neg_mul,mul_neg]
+  rw [map_add,map_pow,map_pow,he,← map_pow,Complex.add_conj]
+  push_cast
+  ring
+
+/-- The real harmonic slice at every degree at least two has a critical
+point at the origin. Its nonlinear principal polynomial vanishes exactly
+at the ordinary harmonic exponent, provided the lift is nonzero. -/
+theorem opposite_null_pair_p_harmonic_iff (q : Fin d → ℝ) (hq : q≠0) (m : ℕ) (p : ℝ) :
+    let L := momentLinearForm ℂ (nullPolarization q)
+    let M := momentLinearForm ℂ (nullPolarization (-q))
+    clearedPLaplacian (p:ℂ) (L^(m+2)+M^(m+2))=0 ↔ p=2 := by
+  rw [null_pair_p_harmonic_iff_radial_equality,radialLength_neg]
+  have ht : ∃ i, q i≠0 := by
+    by_contra! h
+    exact hq (funext h)
+  obtain ⟨i,hi⟩ := ht
+  have hs := Finset.sum_pos' (s:=Finset.univ) (fun j _ => sq_nonneg (q j))
+    ⟨i,Finset.mem_univ i,sq_pos_of_ne_zero hi⟩
+  have hneq : radialLength q*radialLength q≠∑ j, q j*(-q) j := by
+    rw [← sq,radialLength,Real.sq_sqrt hs.le]
+    simp only [Pi.neg_apply,mul_neg,← sq,Finset.sum_neg_distrib]
+    linarith only [hs]
+  simp only [hneq,or_false]
+  norm_cast
+
 #print axioms null_wave_cleared_p_laplacian
 #print axioms null_pair_p_harmonic_iff
 #print axioms null_pair_p_harmonic_iff_radial_equality
+#print axioms opposite_null_pair_p_harmonic_iff
 
 end GaloisForLFunctions.RepresentationLifting.Spinor

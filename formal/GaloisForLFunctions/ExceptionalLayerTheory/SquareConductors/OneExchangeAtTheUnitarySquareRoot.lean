@@ -196,7 +196,7 @@ theorem balanced_minus_two_at_every_odd_rank (r : ℕ) :
   refine ⟨k,hk,fun p hp => ?_,hneg⟩
   have hprime := Nat.mem_primeFactors.mp hp
   have hk1 := Nat.nonempty_primeFactors.mp ⟨p,hp⟩
-  rcases lt_trichotomy (p^k.factorization p)^2 k with h|h|h
+  rcases lt_trichotomy ((p^k.factorization p)^2) k with h|h|h
   · exact h
   · have hh := congrArg (fun n : ℕ => n.factorization p) h
     rw [← pow_mul,Nat.factorization_pow_self hprime.1] at hh
@@ -205,7 +205,7 @@ theorem balanced_minus_two_at_every_odd_rank (r : ℕ) :
   · have hh := unitary_half_weight_dominant hk1 hp h
     change unitaryHalfWeight k = -2 at hneg
     rw [hneg] at hh
-    split_ifs at hh <;> omega
+    split_ifs at hh
 
 private theorem dyadic_cofactor_le_sqrt {m X : ℕ} (hk : dyadicUnitaryCompletion m ≤ X) :
     m ≤ Nat.sqrt (2*X) := by

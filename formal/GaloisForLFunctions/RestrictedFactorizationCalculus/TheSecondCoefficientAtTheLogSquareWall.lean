@@ -106,7 +106,10 @@ private theorem growth_of_the_prime_octave {γ : ℝ} (gp : 0<γ) (g1 : γ ≤ 1
       0<P ∧ γ*L X-M X-Real.log 4 ≤ Real.log P := by
   have grows : Tendsto (fun X : ℕ => (X:ℝ)^γ/2) atTop atTop :=
     tendsto_atTop.mpr (fun k => (((tendsto_rpow_atTop gp).comp tendsto_natCast_atTop_atTop).eventually_ge_atTop (2*k)).mono
-      (fun n h => by dsimp only; linarith only [h]))
+      (fun n h => by
+        change 2*k ≤ (n:ℝ)^γ at h
+        change k ≤ (n:ℝ)^γ/2
+        linarith only [h]))
   filter_upwards [grows eventually_dyadic_prime_lower,ln_infty.eventually_gt_atTop 0,
     eventually_ge_atTop (2:ℕ)] with X supply lp xp
   let V := (X:ℝ)^γ

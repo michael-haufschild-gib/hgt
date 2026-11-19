@@ -238,6 +238,144 @@ theorem twisted_short_energy_average (N : ℕ) (δ : ℝ) :
   simp only [twisted_short_spectrum,sum_add_distrib,sum_const,card_univ,nsmul_eq_mul]
   rw [full_primeSign_average_off_diagonal,add_zero]
 
+
+/-- Squarefree products supporting a nonzero multiplicative sign character. -/
+def primitiveSignProducts (N : ℕ) : Finset ℕ :=
+  ((primitiveRatioPairs N).image (fun q => q.1*q.2)).filter Squarefree
+
+/-- Total reading from all factorizations of a fixed product into a
+coprime numerator and denominator. -/
+def primitiveProductReading (N m : ℕ) (K : ℝ → ℝ) : ℝ :=
+  ∑ q ∈ (primitiveRatioPairs N).filter (fun q => q.1*q.2=m),
+    atom N q.1 q.2*K (Real.log q.1-Real.log q.2)
+
+private theorem product_reading_factor (N m : ℕ) (K : ℝ → ℝ) :
+    primitiveProductReading N m K = coeff m *
+      ∑ q ∈ (primitiveRatioPairs N).filter (fun q => q.1*q.2=m),
+        primitiveCubicScaleWeight 0 N q.1 q.2*K (Real.log q.1-Real.log q.2) := by
+  rw [primitiveProductReading,mul_sum]
+  apply sum_congr rfl
+  intro q hq
+  obtain ⟨hq, rfl⟩ := mem_filter.mp hq
+  have hc := (mem_filter.mp hq).2.1
+  unfold atom coeff mobiusRealCoefficient
+  rw [moebius_mul_of_coprime hc,Int.cast_mul,Nat.cast_mul,Real.sqrt_mul (Nat.cast_nonneg _)]
+  ring
+
+private theorem signed_product_expansion (N : ℕ) (P : Finset ℕ) (s : P → ℤˣ) (K : ℝ → ℝ) :
+    signedRatioReading N P s K = ∑ m ∈ primitiveSignProducts N,
+      (primeSignTwist P s m:ℝ)*primitiveProductReading N m K := by
+  let F (q : ℕ × ℕ) := q.1*q.2
+  let S := primitiveRatioPairs N
+  have maps : ∀ q ∈ S, F q ∈ S.image F := fun _ h => mem_image_of_mem F h
+  rw [signedRatioReading,←sum_fiberwise_of_maps_to maps,primitiveSignProducts,sum_filter]
+  apply sum_congr rfl
+  intro m _
+  by_cases hm : Squarefree m
+  · rw [if_pos hm,primitiveProductReading,mul_sum]
+    apply sum_congr rfl
+    intro q hq
+    obtain ⟨h,e⟩ := mem_filter.mp hq
+    obtain ⟨ha,hb⟩ := mem_product.mp (mem_filter.mp h).1
+    rw [←e,show F q = q.1*q.2 from rfl,sign_mul P s (Nat.ne_of_gt (mem_Icc.mp ha).1)
+      (Nat.ne_of_gt (mem_Icc.mp hb).1)]
+  · rw [if_neg hm]
+    apply sum_eq_zero
+    intro q hq
+    obtain ⟨h,e⟩ := mem_filter.mp hq
+    have hc := (mem_filter.mp h).2.1
+    have hz : ¬(Squarefree q.1 ∧ Squarefree q.2) :=
+      fun hsf => hm (e ▸ (Nat.squarefree_mul hc).mpr hsf)
+    simp [atom_zero_of_nonsquarefree hz]
+
+private theorem sign_product_support {N m : ℕ} (hm : m ∈ primitiveSignProducts N) :
+    m.primeFactors ⊆ (range (N+1)).filter Nat.Prime := by
+  obtain ⟨q,hq,rfl⟩ := mem_image.mp (mem_filter.mp hm).1
+  obtain ⟨ha,hb⟩ := mem_product.mp (mem_filter.mp hq).1
+  intro p hp
+  have hd := Nat.mem_primeFactors.mp hp
+  apply mem_filter.mpr
+  refine ⟨mem_range.mpr ?_,hd.1⟩
+  rcases hd.1.dvd_mul.mp hd.2.1 with h | h
+  · exact Nat.lt_succ_of_le ((Nat.le_of_dvd (mem_Icc.mp ha).1 h).trans (mem_Icc.mp ha).2)
+  · exact Nat.lt_succ_of_le ((Nat.le_of_dvd (mem_Icc.mp hb).1 h).trans (mem_Icc.mp hb).2)
+
+private theorem prime_sign_product_orthogonality {N m n : ℕ}
+    (hm : m ∈ primitiveSignProducts N) (hn : n ∈ primitiveSignProducts N) :
+    let P := (range (N+1)).filter Nat.Prime
+    ∑ s : P → ℤˣ, (primeSignTwist P s m:ℝ)*(primeSignTwist P s n:ℝ) =
+      if m=n then (2:ℝ)^P.card else 0 := by
+  intro P
+  have sm : Squarefree m := (mem_filter.mp hm).2
+  have sn : Squarefree n := (mem_filter.mp hn).2
+  have he : (∀ p ∈ P, Even (m.factorization p+n.factorization p)) ↔ m=n := by
+    constructor
+    · intro h
+      apply Nat.factorization_inj sm.ne_zero sn.ne_zero
+      ext p
+      by_cases hp : p ∈ P
+      · obtain ⟨j,hj⟩ := h p hp
+        have hm₁ := sm.natFactorization_le_one p
+        have hn₁ := sn.natFactorization_le_one p
+        omega
+      · have z {a : ℕ} (ha : a ∈ primitiveSignProducts N) : a.factorization p = 0 := by
+          by_contra hh
+          exact hp (sign_product_support ha (by simpa only [← Nat.support_factorization,
+            Finsupp.mem_support_iff] using hh))
+        rw [z hm,z hn]
+    · rintro rfl p _
+      exact ⟨_,rfl⟩
+  simp only [←Int.cast_mul,←Int.cast_sum,sum_primeSignTwist_mul,prod_two_or_zero,he]
+  split_ifs <;> push_cast <;> rfl
+
+/-- Multiplicative sign measurements recover each product fibre, even
+when several directed ratios share its numerator-denominator product. -/
+theorem prime_sign_product_readout {N m : ℕ} (hm : m ∈ primitiveSignProducts N) (K : ℝ → ℝ) :
+    let P := (range (N+1)).filter Nat.Prime
+    ∑ s : P → ℤˣ, signedRatioReading N P s K*(primeSignTwist P s m:ℝ) =
+      (2:ℝ)^P.card*primitiveProductReading N m K := by
+  intro P
+  simp only [signed_product_expansion,sum_mul]
+  rw [sum_comm]
+  have term (n : ℕ) (hn : n ∈ primitiveSignProducts N) :
+      ∑ s : P → ℤˣ, (primeSignTwist P s n:ℝ)*primitiveProductReading N n K*(primeSignTwist P s m:ℝ) =
+        if n=m then (2:ℝ)^P.card*primitiveProductReading N m K else 0 := by
+    simp_rw [mul_right_comm _ (primitiveProductReading N n K),←sum_mul]
+    rw [prime_sign_product_orthogonality hn hm]
+    split_ifs with e <;> simp_all
+  rw [sum_congr rfl term,sum_ite_eq',if_pos hm]
+
+/-- Exact covariance of two centered sign readings. Only equal squarefree
+products can contribute, across every pair of spectral windows. -/
+theorem prime_sign_product_covariance (N : ℕ) (K L : ℝ → ℝ) :
+    let P := (range (N+1)).filter Nat.Prime
+    ∑ s : P → ℤˣ, signedRatioReading N P s K*signedRatioReading N P s L =
+      (2:ℝ)^P.card*∑ m ∈ primitiveSignProducts N,
+        primitiveProductReading N m K*primitiveProductReading N m L := by
+  intro P
+  simp_rw [signed_product_expansion N P _ L,mul_sum]
+  rw [sum_comm,mul_sum]
+  refine sum_congr rfl fun m hm => ?_
+  simp_rw [←mul_assoc,←sum_mul]
+  rw [prime_sign_product_readout hm,mul_assoc]
+
+/-- Nonnegative windows give positively correlated physical readings:
+Möbius multiplicativity gives every factorization in one fibre the same sign. -/
+theorem prime_sign_covariance_nonnegative (N : ℕ) (K L : ℝ → ℝ)
+    (hK : ∀ x, 0≤K x) (hL : ∀ x, 0≤L x) :
+    let P := (range (N+1)).filter Nat.Prime
+    0 ≤ ∑ s : P → ℤˣ, signedRatioReading N P s K*signedRatioReading N P s L := by
+  intro P
+  rw [prime_sign_product_covariance]
+  refine mul_nonneg (by positivity) (sum_nonneg fun m _ => ?_)
+  rw [product_reading_factor,product_reading_factor,mul_mul_mul_comm]
+  exact mul_nonneg (mul_self_nonneg _) (mul_nonneg
+    (sum_nonneg fun q _ => mul_nonneg (primitiveCubicScaleWeight_nonneg ..) (hK _))
+    (sum_nonneg fun q _ => mul_nonneg (primitiveCubicScaleWeight_nonneg ..) (hL _)))
+
+#print axioms prime_sign_product_readout
+#print axioms prime_sign_product_covariance
+#print axioms prime_sign_covariance_nonnegative
 #print axioms twisted_short_spectrum
 #print axioms twisted_short_energy_average
 #print axioms square_root_sign_average_close_nonneg

@@ -7,7 +7,9 @@ In the Gram expansion of Gabet, Ferreira Da Costa and Lee
 (arXiv:2611.18900, §4), discarding cross terms retains the individual
 path intensities. At the modular cusp, the same prime-power path recurs
 at arbitrarily late times with unchanged amplitude. After subtracting
-the exact mean, the other paths must converge to its negative.
+the exact mean, the other paths must converge to its negative. In
+multiplicative time a prime sector is a normalized Jackson integral
+(arXiv:2611.23023, Definition 2.2), with a sharp residual bound.
 -/
 
 noncomputable section
@@ -439,6 +441,107 @@ private theorem unweighted_sector (g : CompactPulse) {p : ℕ} (hp : p.Prime) :
       (show ∃ C : ℝ, ∀ u, ‖pulseReflected g u‖ ≤ C from ⟨_,reflected_uniform g⟩)
   simpa only [weightedBound,zero_mul,Real.exp_zero,Complex.ofReal_one,one_mul] using
     (prime_sector_weightedBound_iff g hp le_rfl (by norm_num)).mpr hf
+
+/-- Partial Jackson sums leave exactly one earlier copy of the centered field. -/
+theorem sector_jackson_remainder (h : CompactPulse) {p : ℕ} (hp : p.Prime) (u : ℝ) (n : ℕ) :
+    let q := 1/(p:ℂ)
+    centeredPrimeSector h p u -
+      ∑ j ∈ range n, (1-q)*q^j*pulseReflected h (u-j*echoDelay p) =
+      q^n*centeredPrimeSector h p (u-n*echoDelay p) := by
+  intro q
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [sum_range_succ, ← sub_sub, ih, centered_sector_delay h hp (u-n*echoDelay p),
+      pow_succ,Nat.cast_succ,show u-(n:ℝ)*echoDelay p-echoDelay p = u-((n:ℝ)+1)*echoDelay p by ring]
+    dsimp only [q]
+    ring
+
+private theorem prime_scale_lt_one {p : ℕ} (hp : p.Prime) : ‖1/(p:ℂ)‖ < 1 := by
+  rw [norm_div,norm_one,Complex.norm_natCast]
+  exact (div_lt_one (Nat.cast_pos.mpr hp.pos)).mpr (by exact_mod_cast hp.one_lt)
+
+/-- In the coordinate x = exp(u/2) a prime sector is the Jackson integral of
+the reflected field divided by x, with q = 1/p. The series converges absolutely. -/
+theorem prime_sector_normalized_jackson (h : CompactPulse) {p : ℕ} (hp : p.Prime)
+    {x : ℝ} (hx : 0 < x) :
+    let q := 1/(p:ℝ)
+    HasSum (fun j : ℕ => (1-(q:ℂ))*(q:ℂ)^j*pulseReflected h (2*Real.log (x*q^j)))
+      (centeredPrimeSector h p (2*Real.log x)) := by
+  intro q
+  have hq : 0 < q := one_div_pos.mpr (Nat.cast_pos.mpr hp.pos)
+  let b : ℂ := 1/(p:ℂ)
+  have hc : (q:ℂ)=b := by simp [q,b]
+  have hb : ‖b‖ < 1 := prime_scale_lt_one hp
+  let u := 2*Real.log x
+  have htime (j : ℕ) : 2*Real.log (x*q^j) = u-j*echoDelay p := by
+    rw [Real.log_mul hx.ne' (pow_pos hq _).ne',Real.log_pow]
+    simp only [u,q,one_div,Real.log_inv,echoDelay]
+    ring
+  simp_rw [hc,htime]
+  let M := ∫ ξ : ℝ, ‖pulseAmplitude h (ξ:ℂ)‖
+  have ha : Summable (fun j : ℕ => ‖(1-b)*b^j*pulseReflected h (u-j*echoDelay p)‖) := by
+    refine Summable.of_nonneg_of_le (fun _ => norm_nonneg _) (fun j => ?_)
+      (((summable_geometric_of_lt_one (norm_nonneg b) hb).mul_left ‖1-b‖).mul_right M)
+    rw [norm_mul,norm_mul,norm_pow]
+    exact mul_le_mul_of_nonneg_left (reflected_uniform h _) (by positivity)
+  apply (hasSum_iff_tendsto_nat_of_summable_norm ha).mpr
+  obtain ⟨C,hC⟩ := unweighted_sector h hp
+  have hlim := (tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg b) hb).mul_const C
+  rw [zero_mul] at hlim
+  rw [Metric.tendsto_nhds]
+  intro ε hε
+  filter_upwards [hlim.eventually_lt_const hε] with n hn
+  rw [dist_comm,dist_eq_norm,sector_jackson_remainder h hp u n,norm_mul,norm_pow]
+  exact (mul_le_mul_of_nonneg_left (hC _) (pow_nonneg (norm_nonneg b) n)).trans_lt hn
+
+/-- The exact uniform error obtained from a prime-delay residual. The optimal
+error multiplier is p/(p−1), attained by adding a constant to the sector. -/
+theorem sector_residual_bound (h : CompactPulse) {p : ℕ} (hp : p.Prime)
+    (A : ℝ → ℂ) {C ε : ℝ} (hA : ∀ u, ‖A u‖ ≤ C)
+    (herr : ∀ u, ‖A u-(1-1/(p:ℂ))*pulseReflected h u-(1/(p:ℂ))*A (u-echoDelay p)‖ ≤ ε)
+    (u : ℝ) : ‖A u-centeredPrimeSector h p u‖ ≤ ε/(1-1/(p:ℝ)) := by
+  let b : ℂ := 1/(p:ℂ)
+  let D := fun v => A v-centeredPrimeSector h p v
+  let L := ε/(1-‖b‖)
+  have hb := prime_scale_lt_one hp
+  have hL : L*(1-‖b‖)=ε := div_mul_cancel₀ ε (sub_pos.mpr hb).ne'
+  have hstep (v : ℝ) : ‖D v‖ ≤ ε+‖b‖*‖D (v-echoDelay p)‖ := by
+    have he : D v = (A v-(1-b)*pulseReflected h v-b*A (v-echoDelay p))+b*D (v-echoDelay p) := by
+      dsimp only [D,b]
+      rw [centered_sector_delay h hp v]
+      ring
+    rw [he]
+    exact (norm_add_le _ _).trans (add_le_add (herr v) (norm_mul ..).le)
+  obtain ⟨B,hB⟩ := unweighted_sector h hp
+  have hε : 0 ≤ ε := (norm_nonneg _).trans (herr u)
+  have hL0 : 0 ≤ L := div_nonneg hε (sub_pos.mpr hb).le
+  have hn (n : ℕ) (v : ℝ) : ‖D v‖ ≤ L+‖b‖^n*(C+B) := by
+    induction n generalizing v with
+    | zero =>
+      simp only [pow_zero,one_mul]
+      exact ((norm_sub_le _ _).trans (add_le_add (hA v) (hB v))).trans (le_add_of_nonneg_left hL0)
+    | succ n ih =>
+      refine (hstep v).trans ((add_le_add_left
+        (mul_le_mul_of_nonneg_left (ih (v-echoDelay p)) (norm_nonneg b)) ε).trans_eq ?_)
+      rw [pow_succ]
+      linear_combination -hL
+  have hlim := ((tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg b) hb).mul_const (C+B)).const_add L
+  rw [zero_mul,add_zero] at hlim
+  have he := ge_of_tendsto' hlim (fun n => hn n u)
+  simpa only [D,L,b,norm_div,norm_one,Complex.norm_natCast] using he
+
+/-- Constant perturbations attain the residual bound for every pulse and prime. -/
+theorem sector_residual_constant (h : CompactPulse) {p : ℕ} (hp : p.Prime) (c : ℂ) (u : ℝ) :
+    let A := fun v => centeredPrimeSector h p v+c
+    A u-(1-1/(p:ℂ))*pulseReflected h u-(1/(p:ℂ))*A (u-echoDelay p)=(1-1/(p:ℂ))*c := by
+  dsimp only
+  rw [centered_sector_delay h hp u]
+  ring
+
+#print axioms prime_sector_normalized_jackson
+#print axioms sector_residual_bound
+#print axioms sector_residual_constant
 
 /-- Every unfiltered reflected waveform occurs *exactly* inside each
 prescribed prime sector. The required compact input has only two copies

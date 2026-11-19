@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.OneSidedHigherDifferencesOnTheIntegerLine
-import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.RegularityAndReceiverEquivalence
+import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.NoDifferentialEquationAnnihilatesALateReceiver
 import Mathlib.Analysis.InnerProductSpace.Calculus
 
 /-!
@@ -17,20 +17,12 @@ open scoped Topology ContDiff
 open GaloisForLFunctions.ArithmeticPositiveDuality
 namespace GaloisForLFunctions.BlackHoleRingdown
 
-private theorem reflected_iterated_deriv (h : CompactPulse) (n : ℕ) :
-    iteratedDeriv n (pulseReflected h) = pulseReflected (CompactPulse.iterD n h) := by
-  induction n with
-  | zero => rw [iteratedDeriv_zero]; rfl
-  | succ n ih =>
-    rw [iteratedDeriv_succ,ih]
-    exact funext fun t => (hasDerivAt_pulseReflected _ t).deriv
-
 /-- Smoothness of the full receiver tail, including the incident wavefront. -/
 theorem smooth_receiver_tail (h : CompactPulse) : ContDiff ℝ ∞ (tailEnergy h) := by
   have hs : ContDiff ℝ ∞ (pulseReflected h) := by
     apply contDiff_of_differentiable_iteratedDeriv
     intro n _
-    rw [reflected_iterated_deriv]
+    rw [receiver_iterated_deriv]
     exact fun t => (hasDerivAt_pulseReflected _ t).differentiableAt
   refine contDiff_infty_iff_deriv.mpr ⟨fun t => (hasDerivAt_tailEnergy h t).differentiableAt,?_⟩
   rw [show deriv (tailEnergy h)=(fun t => -(‖pulseReflected h t‖^2)) from

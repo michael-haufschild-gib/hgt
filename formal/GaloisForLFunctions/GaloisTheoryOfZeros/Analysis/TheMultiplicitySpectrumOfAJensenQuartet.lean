@@ -44,7 +44,10 @@ theorem jensenQuartetOrders_cost (d b : ℕ) :
   rw [hsum] at hle
   have hall := Nat.mul_le_mul_left 4 (h.trans (Nat.add_le_add_left hle _))
   rw [jensenNonrealCount_eq_four_mul]
-  simpa only [Nat.mul_add 4 (b.choose 2)] using hall
+  have hM : M.card = jensenQuartetCount d := by
+    unfold M jensenQuadrantRoots jensenQuartetCount
+    congr!
+  simpa only [Nat.mul_add 4 (b.choose 2),hM] using hall
 
 /-- The whole quartet spectrum costs a triangular number even before
 the extra charge for a second orbit of the same multiplicity. -/
@@ -83,7 +86,7 @@ theorem eventually_jensenQuartetOrders_fourth :
   rw [show 4*(k+1).choose 2 = 2*(2*(k+1).choose 2) by ring, twice_triangle] at ht
   have htR : 2*((k:ℝ)*((k:ℝ)+1)) ≤ (jensenNonrealCount d : ℝ) := by exact_mod_cast ht
   have hk : (k:ℝ)^2 ≤ 150 * Real.sqrt ((d:ℝ)*Real.log d) := by
-    nlinarith only [htR, hd, Nat.cast_nonneg (R := ℝ) k]
+    nlinarith only [htR, hd, Nat.cast_nonneg (α := ℝ) k]
   have hs := pow_le_pow_left₀ (sq_nonneg (k:ℝ)) hk 2
   rw [mul_pow, Real.sq_sqrt (mul_nonneg (Nat.cast_nonneg _) (Real.log_natCast_nonneg _))] at hs
   change (k:ℝ)^4 ≤ _

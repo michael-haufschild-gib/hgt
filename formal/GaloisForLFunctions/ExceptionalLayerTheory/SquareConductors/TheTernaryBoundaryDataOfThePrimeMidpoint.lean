@@ -147,4 +147,44 @@ theorem ternary_modes_are_invisible (l : ℝ) :
 #print axioms theta_integer_midpoint_inverse
 #print axioms ternary_modes_are_invisible
 
+/-- Linear-size boundary and forcing data attain an exact loss of one sixth
+of the normalized forcing per ternary layer. -/
+theorem ternary_row_linear_response (C A : ℝ) (b m : ℕ) :
+    ternaryMidpointRow (fun j => C*j) (fun j => A*j) b m =
+      (3:ℝ)^b*m*(C+b*A/6) := by
+  induction b generalizing m with
+  | zero => simp [ternaryMidpointRow,mul_comm]
+  | succ b ih =>
+    rw [ternaryMidpointRow,ih,ih]
+    push_cast
+    rw [pow_succ]
+    ring
+
+/-- Optimal noise amplification of integer midpoint reconstruction. Independent
+errors of at most Cn in the boundary data and An in the observations produce
+at most n(C+A·v₃(n)/6) at n. The positive linear data attain this bound. -/
+theorem sharp_integer_midpoint_amplification (C A : ℝ) (n : ℕ) :
+    (∀ seed data : ℕ → ℝ, (∀ j, |seed j| ≤ C*j) → (∀ j, |data j| ≤ A*j) →
+      |integerMidpointInverse seed data n| ≤ n*(C+n.factorization 3*A/6)) ∧
+    integerMidpointInverse (fun j => C*j) (fun j => A*j) n =
+      n*(C+n.factorization 3*A/6) := by
+  have scaled : (3:ℝ)^(n.factorization 3)*(ordCompl[3] n : ℕ) = n := by
+    exact_mod_cast Nat.ordProj_mul_ordCompl_eq_self n 3
+  constructor
+  · intro seed data hs hd
+    have hrow (b m : ℕ) : |ternaryMidpointRow seed data b m| ≤
+        ternaryMidpointRow (fun j => C*j) (fun j => A*j) b m := by
+      induction b generalizing m with
+      | zero => exact hs m
+      | succ b ih =>
+        simp only [ternaryMidpointRow,abs_div,abs_of_pos (by norm_num : (0:ℝ)<2)]
+        apply div_le_div_of_nonneg_right _ (by norm_num)
+        exact (abs_add_le _ _).trans (add_le_add
+          ((abs_add_le _ _).trans (add_le_add (ih _) (ih _))) (hd _))
+    simpa only [integerMidpointInverse,ternary_row_linear_response,scaled] using
+      hrow (n.factorization 3) (ordCompl[3] n)
+  · rw [integerMidpointInverse,ternary_row_linear_response,scaled]
+
+#print axioms sharp_integer_midpoint_amplification
+
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

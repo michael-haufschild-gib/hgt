@@ -23,6 +23,26 @@ def pulseDecayThrough (h : CompactPulse) (δ : ℝ) : Prop :=
 /-- The fixed pulse associated to a carrier of the unit bump. -/
 def carrierDerivativePulse (ω : ℝ) := ((excitingPulse 0).modulate ω).D
 
+/-- A zero beyond the proposed strip forces every sufficiently fast
+derivative pulse to have a blind frequency at its associated pole. -/
+theorem fast_derivative_hides_zeta_zero (h : CompactPulse) {δ : ℝ} (hdec : pulseDecayThrough h.D δ)
+    {ρ : ℂ} (hρ : riemannZeta ρ=0) (hρ0 : 0<ρ.re) (hright : 1-2*δ<ρ.re) :
+    pulseAmplitude h (-I*((ρ-1)/2))=0 := by
+  have hρ1 : ρ.re<1 := lt_of_not_ge fun h1 => riemannZeta_ne_zero_of_one_le_re h1 hρ
+  have hne : ρ≠1 := by intro he; rw [he,Complex.one_re] at hρ1; exact lt_irrefl _ hρ1
+  let p := (ρ-1)/2
+  have hpρ : 1+2*p=ρ := by dsimp only [p]; ring
+  have hp : xi (1+2*p)=0 := by rw [hpρ]; exact (xi_eq_zero_iff hρ0 hne).mpr hρ
+  have hre : p.re=(ρ.re-1)/2 := by simp [p]
+  have hp0 : p.re<0 := by linarith only [hre,hρ1]
+  have hcut : -p.re<δ := by linarith only [hre,hright]
+  obtain ⟨σ,hσ,hσδ⟩ := exists_between hcut
+  have hσ0 := (neg_pos.mpr hp0).trans hσ
+  obtain ⟨C,hE⟩ := hdec σ hσ0 hσδ
+  obtain ⟨A,_,hA⟩ := reflected_decay_from_derivative_energy h hσ0 hE
+  exact pulseAmplitude_eq_zero_of_pulseReflected_decay _ hσ0 hA hp
+    (by linarith only [hre,hρ0]) hp0 (by linarith only [hσ])
+
 /-- One admissible carrier simultaneously tests every intermediate
 strip and the critical-line endpoint. -/
 theorem single_carrier_strip {ω : ℝ} (hω : ω ∉ missedCarriers (excitingPulse 0) poleFrequencies)
@@ -32,21 +52,12 @@ theorem single_carrier_strip {ω : ℝ} (hω : ω ∉ missedCarriers (excitingPu
   constructor
   · intro h ρ hρ hρ0
     by_contra! hright
-    have hρ1 : ρ.re<1 := lt_of_not_ge fun h1 => riemannZeta_ne_zero_of_one_le_re h1 hρ
-    have hne : ρ≠1 := by intro he; rw [he,Complex.one_re] at hρ1; exact lt_irrefl _ hρ1
     let p := (ρ-1)/2
-    have hpρ : 1+2*p=ρ := by dsimp only [p]; ring
-    have hp : xi (1+2*p)=0 := by rw [hpρ]; exact (xi_eq_zero_iff hρ0 hne).mpr hρ
-    have hre : p.re=(ρ.re-1)/2 := by simp [p]
-    have hp0 : p.re<0 := by linarith only [hre,hρ1]
-    have hcut : -p.re<δ := by linarith only [hre,hright]
-    obtain ⟨σ,hσ,hσδ⟩ := exists_between hcut
-    have hσ0 := (neg_pos.mpr hp0).trans hσ
-    obtain ⟨C,hE⟩ := h σ hσ0 hσδ
-    obtain ⟨A,_,hA⟩ := reflected_decay_from_derivative_energy ((excitingPulse 0).modulate ω) hσ0 hE
-    have hz := pulseAmplitude_eq_zero_of_pulseReflected_decay _ hσ0 hA hp
-      (by linarith only [hre,hρ0]) hp0 (by linarith only [hσ])
-    exact hω ⟨-I*p,⟨p,hp,rfl⟩,hz⟩
+    have hp : xi (1+2*p)=0 := by
+      rw [show 1+2*p=ρ by dsimp only [p]; ring]
+      exact (xi_eq_zero_iff hρ0 (fun he => riemannZeta_ne_zero_of_one_le_re
+        (by rw [he,Complex.one_re]) hρ)).mpr hρ
+    exact hω ⟨-I*p,⟨p,hp,rfl⟩,fast_derivative_hides_zeta_zero _ h hρ hρ0 hright⟩
   · intro h σ hσ hσδ
     obtain ⟨C,hC⟩ := (zeroFreeStrip_tailEnergy_equivalences hδ hquarter).2.2.1.mp h
       (δ-σ) (sub_pos.mpr hσδ) (carrierDerivativePulse ω)

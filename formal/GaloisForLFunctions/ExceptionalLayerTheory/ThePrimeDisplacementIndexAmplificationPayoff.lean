@@ -1,4 +1,5 @@
 import GaloisForLFunctions.CountingHolography.Sections.PrimeDisplacementGramAndModeQuotients
+import GaloisForLFunctions.ArithmeticOrientationGeometry.TheIndexExit
 import GaloisForLFunctions.ExceptionalLayerTheory.TheFiniteLayerWallCuspPayoff
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Index.StageTwoHasPrimeSideRows
 import GaloisForLFunctions.InfiniteRankWeilTheory.TheFiniteStratumIsAMetricZeroOneLaw
@@ -170,7 +171,7 @@ theorem threeProbeAmplificationLaw_iff_no_singleQuartet :
         ⟨N₂, a₂, hN₂, hsig₂, hgt₂, hdisj₂, hidx4⟩
   · rintro (hRH | hge4) N₀ a₀ _ hneg₀ P₀
     · exact False.elim ((not_lt_of_ge (riemannHypothesis_iff_integerProbes.mp hRH N₀ a₀)) hneg₀)
-    · have hge3 : ((3 : ℕ) : ℕ∞) ≤ (rightZeros zetaZeroConfig).encard :=
+    · have hge3 : ((3 : ℕ) : ℕ∞) ≤ (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard :=
         le_trans (by norm_num : ((3 : ℕ) : ℕ∞) ≤ 4) hge4
       exact (disjoint_signedPrimeProbes_gershgorin_iff_rightZeros_ge 3 P₀ one_pos le_rfl).2.mp hge3
 
@@ -269,30 +270,33 @@ theorem primeDisplacement_amplification_tfae :
       exists_twoPrime_diff_neg_integerProbe_of_not_rh hnRH 0
     have htop := h1 N₀ a₀ hsig₀ hneg₀ 0
     rw [← rightZeros_encard_eq_iSup_primeSubmatrix 0] at htop
-    have hf : (rightZeros zetaZeroConfig).Finite :=
+    have hf : (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).Finite :=
       rightZeros_zeta_finite_iff_finiteOffLine.mpr hfin
     exact hf.encard_lt_top.ne htop
   tfae_have 5 → 3 := by
     intro hb13 N₀ a₀ _ hneg₀ m P₀ ε hε hε1
     have hnRH : ¬ RiemannHypothesis := fun hRH =>
       (not_lt_of_ge (riemannHypothesis_iff_integerProbes.mp hRH N₀ a₀)) hneg₀
-    have hnfin : ¬ (rightZeros zetaZeroConfig).Finite := fun hf =>
+    have hnfin : ¬ (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).Finite := fun hf =>
       hnRH (hb13 (rightZeros_zeta_finite_iff_finiteOffLine.mp hf))
-    have hinf : (rightZeros zetaZeroConfig).Infinite := hnfin
-    have hge : (m : ℕ∞) ≤ (rightZeros zetaZeroConfig).encard := by
+    have hinf : (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).Infinite := hnfin
+    have hge : (m : ℕ∞) ≤ (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).encard := by
       rw [hinf.encard_eq]; exact le_top
     exact (disjoint_signedPrimeProbes_gershgorin_iff_rightZeros_ge m P₀ hε hε1).1.mp hge
-  tfae_have 5 ↔ 6 := finiteOffLine_imp_rh_iff_packetIndex_zero_or_infinite
+  tfae_have 5 ↔ 6 := ArithmeticCastelnuovoSeveri.finiteOffLine_imp_rh_iff_packetIndex_zero_or_infinite
   tfae_have 5 ↔ 7 := (finiteLayer_wallCusp_targets_tfae.out 4 6).symm
   tfae_have 5 ↔ 8 := stageTwo_primeSide_tfae.out 0 3
-  tfae_have 5 ↔ 9 := InfiniteRankWeilTheory.b13_iff_pos_volume_subexponentialLagBases
+  tfae_have 5 ↔ 9 := by
+    have hf_iff : BacklundConverse.FiniteOffLine ↔ InfiniteRankWeilTheory.FiniteOffLine :=
+      finiteOffLine_iff_finite_re_ne_half
+    simpa only [hf_iff] using InfiniteRankWeilTheory.b13_iff_pos_volume_subexponentialLagBases
   tfae_have 5 → 10 := by
     intro hb13 N₀ a₀ _ hneg₀ S₀ hS₀_re hS₀_conj P₀ δ hδ
     have hnRH : ¬ RiemannHypothesis := fun hRH =>
       (not_lt_of_ge (riemannHypothesis_iff_integerProbes.mp hRH N₀ a₀)) hneg₀
-    have hinf : (rightZeros zetaZeroConfig).Infinite := fun hf =>
+    have hinf : (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).Infinite := fun hf =>
       hnRH (hb13 (rightZeros_zeta_finite_iff_finiteOffLine.mp hf))
-    have hnot_sub : ¬ (rightZeros zetaZeroConfig ⊆ (S₀ : Set ℂ)) :=
+    have hnot_sub : ¬ (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig ⊆ (S₀ : Set ℂ)) :=
       fun hsub => hinf (S₀.finite_toSet.subset hsub)
     obtain ⟨ρ_star, hstar, hnot1⟩ := Set.not_subset.mp hnot_sub
     have hnot1' : ρ_star ∉ S₀ := hnot1
@@ -303,10 +307,10 @@ theorem primeDisplacement_amplification_tfae :
     by_contra hnRH
     obtain ⟨N₀, a₀, _, _, hsig₀, _, _, _, _, _, _, _, hneg₀⟩ :=
       exists_twoPrime_diff_neg_integerProbe_of_not_rh hnRH 0
-    have hf : (rightZeros zetaZeroConfig).Finite :=
+    have hf : (ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig).Finite :=
       rightZeros_zeta_finite_iff_finiteOffLine.mpr hfin
     let S₀ : Finset ℂ := hf.toFinset
-    have hsub : rightZeros zetaZeroConfig ⊆ (S₀ : Set ℂ) :=
+    have hsub : ArithmeticCastelnuovoSeveri.rightZeros zetaZeroConfig ⊆ (S₀ : Set ℂ) :=
       fun ρ hρ => hf.mem_toFinset.mpr hρ
     have hS₀_re : ∀ ρ ∈ S₀, 1 / 2 < ρ.re :=
       fun ρ hρ => (hf.mem_toFinset.mp hρ).2

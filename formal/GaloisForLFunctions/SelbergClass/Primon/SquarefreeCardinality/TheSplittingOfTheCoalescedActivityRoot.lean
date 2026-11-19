@@ -137,7 +137,8 @@ theorem squarefreeCardinality_eventually_not_splits {P : Finset ℕ} (hP : ∀ p
   have hroot : Tendsto (fun β : ℝ => β^((m:ℝ)⁻¹)) (𝓝[>] 0) (𝓝 0) := by
     have hpos : 0 < (m:ℝ)⁻¹ := inv_pos.mpr (Nat.cast_pos.mpr hm')
     simpa only [Real.zero_rpow hpos.ne'] using
-      ((Real.continuous_rpow_const hpos.le).continuousAt (x:=0)).continuousWithinAt.tendsto (s:=Set.Ioi 0)
+      (((Real.continuous_rpow_const hpos.le).tendsto (0:ℝ)).mono_left
+        (nhdsWithin_le_nhds : 𝓝[>] (0:ℝ) ≤ 𝓝 0))
   filter_upwards [hroot.eventually hn,self_mem_nhdsWithin] with β hβ hb
   let t := β^((m:ℝ)⁻¹)
   have ht : 0 < t := Real.rpow_pos_of_pos hb _

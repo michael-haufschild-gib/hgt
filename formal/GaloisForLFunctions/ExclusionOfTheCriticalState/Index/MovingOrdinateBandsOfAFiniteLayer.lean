@@ -1,5 +1,4 @@
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Index.TheLogarithmicWallCuspOfAFiniteLayer
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Index.FiniteLayerKreinStructureAndRigidity
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Index.TheConditionalOrdinateLawOnMultiplicativeBands
 
 /-!
 # Critical-line mass on moving ordinate bands
@@ -19,16 +18,6 @@ namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
   CriticalArithmeticCorrelationTheory HTGeometry _root_.RHTower
 
-/-- Actual critical-line mass strictly above ordinate height T. -/
-def ordinateTailMass (F : ℝ → ℝ) (T : ℝ) : ℝ :=
-  ∑' q : onLineCopies, if T < |(centredZero q).im| then zeroValueMass F q else 0
-
-/-- Mass of the half-open band (u,v] in absolute ordinate. Reversed
-cutoffs select the empty set. -/
-def ordinateBandMass (F : ℝ → ℝ) (u v : ℝ) : ℝ :=
-  ∑' q : onLineCopies, if u < |(centredZero q).im| ∧ |(centredZero q).im| ≤ v
-    then zeroValueMass F q else 0
-
 private theorem band_eq_tail_sub {F : ℝ → ℝ}
     (hs : Summable (fun q : onLineCopies => zeroValueMass F q)) (u v : ℝ) :
     ordinateBandMass F u v = ordinateTailMass F u - ordinateTailMass F (max u v) := by
@@ -42,20 +31,16 @@ private theorem band_eq_tail_sub {F : ℝ → ℝ}
   by_cases hu : u < |(centredZero q).im| <;> by_cases hv : v < |(centredZero q).im| <;>
     simp [← not_lt, hu, hv, max_lt_iff]
 
-/-- The endpoint coefficient of the critical-line tail. -/
-def ordinateTailCoefficient (W : ℝ) (F : ℝ → ℝ) : ℝ :=
-  8 * criticalAliasCoefficient W * (∫ u : ℝ, F u ^ 2 * Real.exp (-(8*u))) / Real.pi
-
 private theorem coefficient_pos {W : ℝ} {F : ℝ → ℝ} (hW : 0 < W)
     (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W : EReal))
-    (hF : IsCriticalHalfLineGroundState W F) : 0 < ordinateTailCoefficient W F := by
+    (hF : IsCriticalHalfLineGroundState W F) : 0 < ordinateCuspConstant W F := by
   have ha := criticalAliasCoefficient_positive hW
   have hm := exponentialPair_self_pos (criticalHalfLineEnergyDomain_of_groundState hF)
     (isConfinedNullVector_of_groundState hW ht hF).2.1
   have he : (∫ u : ℝ, F u ^ 2 * Real.exp (-(8*u))) = criticalHalfLineExponentialPair F F := by
     unfold criticalHalfLineExponentialPair
     exact integral_congr_ae (Eventually.of_forall fun u => by ring)
-  rw [ordinateTailCoefficient, he]
+  rw [ordinateCuspConstant, he]
   positivity
 
 private theorem move_cut {ι : Type*} {l : Filter ι} {T u : ι → ℝ} {f : ℝ → ℝ} {c a : ℝ}
@@ -76,9 +61,9 @@ theorem moving_ordinate_band_limit {ι : Type*} {l : Filter ι} {T u v : ι → 
     (hF : IsCriticalHalfLineGroundState W F) (hf : BacklundConverse.FiniteOffLine)
     (hT : Tendsto T l atTop) (hu : Tendsto u l (𝓝 a)) (hv : Tendsto v l (𝓝 b)) (ha : 0 < a) :
     Tendsto (fun i => T i * ordinateBandMass F (T i*u i) (T i*v i)) l
-      (𝓝 (ordinateTailCoefficient W F/a - ordinateTailCoefficient W F/max a b)) := by
+      (𝓝 (ordinateCuspConstant W F/a - ordinateCuspConstant W F/max a b)) := by
   have hs := (domain_zeroParseval_of_finiteOffLine (criticalHalfLineEnergyDomain_of_groundState hF) hf).1
-  have hh : Tendsto (fun t => t * ordinateTailMass F t) atTop (𝓝 (ordinateTailCoefficient W F)) :=
+  have hh : Tendsto (fun t => t * ordinateTailMass F t) atTop (𝓝 (ordinateCuspConstant W F)) :=
     criticalState_criticalLine_tail_asymptotic hW ht hF hf
   have h := (move_cut hh hT hu ha).sub (move_cut hh hT (hu.max hv) (ha.trans_le (le_max_left ..)))
   refine h.congr' ?_
@@ -92,7 +77,7 @@ theorem uniform_relative_ordinate_tail {W : ℝ} {F : ℝ → ℝ} (hW : 0 < W)
     (hF : IsCriticalHalfLineGroundState W F) (hf : BacklundConverse.FiniteOffLine)
     {ε : ℝ} (hε : 0 < ε) : ∀ᶠ t : ℝ in atTop, 0 < ordinateTailMass F t ∧
       ∀ b : ℝ, 1 ≤ b → |b*ordinateTailMass F (b*t)/ordinateTailMass F t - 1| < ε := by
-  let C := ordinateTailCoefficient W F
+  let C := ordinateCuspConstant W F
   have hC : 0 < C := coefficient_pos hW ht hF
   have h : Tendsto (fun t => t*ordinateTailMass F t) atTop (𝓝 C) :=
     criticalState_criticalLine_tail_asymptotic hW ht hF hf
