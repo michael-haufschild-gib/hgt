@@ -388,10 +388,8 @@ theorem signed_factorial_witness {M : ℕ} (hM : 0<M) :
     change _=6*F^2*∑ j ∈ Icc 1 M, 1/(j:ℝ)
     rw [mul_sum]
     refine sum_congr rfl fun j hj => ?_
-    change ((6*j:ℕ):ℝ)*((M.factorial/j:ℕ):ℝ)^2=_
     rw [hf j hj,Nat.cast_mul,Nat.cast_ofNat]
     field_simp [(Nat.cast_pos.mpr (mem_Icc.mp hj).1 : (0:ℝ)<j).ne']
-    <;> ring
   have h₁ : 1∈Icc 1 N := mem_Icc.mpr ⟨le_rfl,hN⟩
   have hu : conductorNorm N (fun i => r i*upperDivisor N a i)=1 := by
     rw [conductorNorm,sum_eq_single_of_mem 1 h₁]

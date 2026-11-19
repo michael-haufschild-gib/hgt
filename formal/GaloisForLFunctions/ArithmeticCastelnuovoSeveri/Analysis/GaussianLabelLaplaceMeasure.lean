@@ -23,7 +23,7 @@ private theorem odds_mass : oddsMeasure univ=ENNReal.ofReal (4*π) := by
     ← ofReal_integral_eq_lintegral_ofReal oddsKernel_integrable (ae_of_all _ fun z => (oddsKernel_pos z).le),
     oddsKernel_mass]
 
-private instance oddsFinite : IsFiniteMeasure oddsMeasure := ⟨odds_mass ▸ ENNReal.ofReal_lt_top⟩
+private instance oddsFinite : IsFiniteMeasure oddsMeasure := ⟨odds_mass.trans_lt ENNReal.ofReal_lt_top⟩
 
 private def oddsRate (h d z : ℝ) := (z-h)^2/(2*d^2)
 
@@ -61,7 +61,7 @@ theorem lossMeasure_positive_rates (h : ℝ) (d : {u : ℝ // u≠0}) :
 private theorem laplace_integral (h d t : ℝ) : HTGeometry.finiteRealLaplace (lossMeasure h d) t =
     ∫ z, oddsKernel z*exp (-t*(z-h)^2/(2*d^2)) := by
   rw [HTGeometry.finiteRealLaplace,lossMeasure,integral_map (oddsRate_measurable _ _).aemeasurable (by fun_prop)]
-  rw [oddsMeasure,integral_withDensity_eq_integral_toReal_smul (by fun_prop (disch := exact oddsKernel_cont))
+  rw [oddsMeasure,integral_withDensity_eq_integral_toReal_smul (ENNReal.measurable_ofReal.comp oddsKernel_cont.measurable)
     (ae_of_all _ fun _ => ENNReal.ofReal_lt_top)]
   apply integral_congr_ae
   exact ae_of_all _ fun z => by

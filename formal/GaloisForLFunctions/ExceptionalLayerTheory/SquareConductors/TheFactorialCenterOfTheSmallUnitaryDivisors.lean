@@ -2,6 +2,7 @@ import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheParityOfTh
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheTotientTermInTheReflectedCompositePrice
 import GaloisForLFunctions.RHTower.Sieve.DifferentiatedBarbanVehovScaledKernels
 import Mathlib.Algebra.BigOperators.Associated
+import GaloisForLFunctions.ArithmeticKreinLangerTheory.FinitePrimeHeckeAuxiliaryObstructions
 
 /-!
 # The progression center of the smaller unitary divisors
@@ -107,6 +108,43 @@ theorem small_unitary_sum_on_divisors {M : Type*} [AddCommMonoid M] (w : ℕ →
 def progressionLogFactorial (l T : ℕ) : ℝ :=
   ((T/l:ℕ):ℝ)*Real.log l+Real.log ((T/l).factorial:ℕ)
 
+/-- The log integral on a progression has a uniform logarithmic endpoint
+error, including an endpoint before the first multiple. -/
+theorem progression_log_factorial_error {l : ℕ} (hl : 0 < l) (T : ℕ) :
+    |progressionLogFactorial l T-(T:ℝ)/l*(Real.log T-1)| ≤ 3+4*Real.log T := by
+  rcases eq_or_ne T 0 with rfl | hT
+  · simp [progressionLogFactorial]
+  have hT' := Nat.pos_of_ne_zero hT
+  have hl' := (Nat.cast_pos (α:=ℝ)).mpr hl
+  have hlogT := Real.log_nonneg ((Nat.one_le_cast (α:=ℝ)).mpr hT')
+  have hlogl := Real.log_nonneg ((Nat.one_le_cast (α:=ℝ)).mpr hl)
+  let t := (T:ℝ)/l
+  have ht : 0 ≤ t := div_nonneg (Nat.cast_nonneg _) hl'.le
+  by_cases hTl : T < l
+  · have ht1 : t ≤ 1 := (div_le_one hl').mpr (by exact_mod_cast hTl.le)
+    simp only [progressionLogFactorial,Nat.div_eq_of_lt hTl,Nat.cast_zero,zero_mul,
+      Nat.factorial_zero,Nat.cast_one,Real.log_one,add_zero,zero_sub,abs_neg,abs_mul]
+    change |t| * |Real.log T-1| ≤ _
+    rw [abs_of_nonneg ht]
+    have he := abs_sub (Real.log T) 1
+    rw [abs_of_nonneg hlogT,abs_one] at he
+    have hb := mul_le_mul ht1 he (abs_nonneg _) zero_le_one
+    linarith only [hb,hlogT]
+  · have hll := Real.log_le_log hl' ((Nat.cast_le (α:=ℝ)).mpr (le_of_not_gt hTl))
+    have hq : ((T/l:ℕ):ℝ) ≤ t := Nat.cast_div_le
+    have htq : t ≤ ((T/l:ℕ):ℝ)+1 := by
+      apply (div_le_iff₀ hl').mpr
+      exact_mod_cast (Nat.lt_mul_div_succ T hl).le.trans_eq (Nat.mul_comm l _)
+    have he := ArithmeticKreinLangerTheory.abs_log_div_factorial_sub_le hT' hl
+    change |Real.log ((T/l).factorial:ℕ)-t*(Real.log T-Real.log l-1)| ≤ _ at he
+    have hlo := mul_le_mul_of_nonneg_right hq hlogl
+    have hhi := mul_le_mul_of_nonneg_right htq hlogl
+    change |((T/l:ℕ):ℝ)*Real.log l+Real.log ((T/l).factorial:ℕ)-t*(Real.log T-1)| ≤ _
+    exact abs_le.mpr ⟨by linarith only [(abs_le.mp he).1,hhi,hll],
+      by linarith only [(abs_le.mp he).2,hlo,hll,hlogT]⟩
+
+#print axioms progression_log_factorial_error
+
 private theorem log_scaled_sum (l : ℕ) (hl : 0 < l) (q : ℕ) :
     (∑ j ∈ Icc 1 q,Real.log (l*j:ℕ))=
       (q:ℝ)*Real.log l+Real.log (q.factorial:ℕ) := by
@@ -158,6 +196,33 @@ theorem small_unitary_factorial_row {e n T : ℕ} (he : 0 < e) (hn : 0 < n) (hT 
     (Nat.div_le_div_right ((Nat.sub_le _ _).trans hT)))
 
 #print axioms small_unitary_factorial_row
+
+private theorem primitive_progression_density (e : ℕ) {m : ℕ} (hm : 0 < m) (x : ℝ) :
+    x*m.totient/((e:ℝ)*m)=∑ d ∈ m.divisors,(moebius d:ℝ)*(x/(e*d:ℕ)) := by
+  rw [show x*m.totient/((e:ℝ)*m)=(x/e)*((m.totient:ℝ)/m) by simp only [div_eq_mul_inv,mul_inv_rev]; ring,
+    ←_root_.RHTower.Sieve.sum_moebius_div_divisors_eq_totient_div hm,mul_sum]
+  exact sum_congr rfl fun d _ => by simp only [Nat.cast_mul,div_eq_mul_inv,mul_inv_rev]; ring
+
+/-- Density of the primitive cofactor row is φ(en)/(e²n). The uniform
+endpoint error costs at most one logarithm per divisor of en. -/
+theorem primitive_scaled_log_density {e n : ℕ} (he : 0 < e) (hn : 0 < n) (T : ℕ) :
+    |(∑ j ∈ (Icc 1 (T/e)).filter ((e*n).Coprime ·),Real.log (e*j:ℕ))-
+      ((T:ℝ)*(Real.log T-1))*(e*n).totient/((e:ℝ)*(e*n:ℕ))| ≤
+      ((e*n).divisors.card:ℝ)*(3+4*Real.log T) := by
+  rw [primitive_scaled_prefix he hn,primitive_progression_density e (Nat.mul_pos he hn),
+    ←sum_sub_distrib]
+  apply (abs_sum_le_sum_abs _ _).trans
+  calc _ ≤ ∑ _d ∈ (e*n).divisors,(3+4*Real.log T) := by
+             apply sum_le_sum
+             intro d hd
+             rw [←mul_sub,abs_mul,show (T:ℝ)*(Real.log T-1)/(e*d:ℕ)=
+               (T:ℝ)/(e*d:ℕ)*(Real.log T-1) by ring]
+             have hμ : |(moebius d:ℝ)| ≤ 1 := by exact_mod_cast abs_moebius_le_one (n:=d)
+             exact (mul_le_mul hμ (progression_log_factorial_error
+               (Nat.mul_pos he (Nat.pos_of_mem_divisors hd)) T) (abs_nonneg _) zero_le_one).trans_eq (one_mul _)
+       _ = _ := by rw [sum_const,nsmul_eq_mul]
+
+#print axioms primitive_scaled_log_density
 
 /-- Positive row indices whose square is reached by the endpoint. -/
 def smallDivisorIndices (T : ℕ) : Finset ℕ := (Icc 1 T).filter (fun e => e^2 ≤ T)

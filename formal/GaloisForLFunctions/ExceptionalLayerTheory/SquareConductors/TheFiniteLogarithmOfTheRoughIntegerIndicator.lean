@@ -13,6 +13,9 @@ noncomputable section
 open ArithmeticFunction Finset
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
+private theorem real_scale (r : ℝ) (f : ArithmeticFunction ℝ) :
+    r • f=algebraMap ℝ (ArithmeticFunction ℝ) r*f := Algebra.smul_def r f
+
 private theorem rough_power_derivative (Y j : ℕ) :
     logPriceOf (cubicRoughIndicator Y^j) =
       (j:ℝ) • (cubicRoughMangoldt Y*cubicRoughIndicator Y^j) := by
@@ -26,8 +29,8 @@ private theorem rough_power_derivative (Y j : ℕ) :
     · simp [h]
     · exact zero_mul _
   | succ j ih =>
-    rw [pow_succ,log_price_leibniz,ih,rough_log_price,pow_succ]
-    simp only [Algebra.smul_def,Nat.cast_succ,map_add,map_one]
+    rw [pow_succ,log_price_leibniz,ih,rough_log_price]
+    simp only [real_scale,Nat.cast_succ,map_add,map_one]
     ring
 
 /-- Coefficient of the (j+1)-fold complete row of a logarithm truncated at L. -/
@@ -51,7 +54,7 @@ private theorem complete_rough_rows (Y L : ℕ) :
   rw [rough_power_derivative,smul_smul]
   have hc : roughLogarithmCoefficient L j*((j+1:ℕ):ℝ)=(-1:ℝ)^j*L.choose (j+1) := by
     rw [roughLogarithmCoefficient,Nat.cast_succ,div_mul_cancel₀ _ (by positivity)]
-  rw [hc,Algebra.smul_def]
+  rw [hc,real_scale]
   simp only [map_mul,map_pow,map_neg,map_one,map_natCast]
   change -(A*((-R)^(j+1)*(L.choose (j+1):ℕ)))=
     ((-1:ArithmeticFunction ℝ)^j*(L.choose (j+1):ℕ))*(A*R^(j+1))

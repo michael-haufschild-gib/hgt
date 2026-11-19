@@ -8,7 +8,7 @@ On a sharp interval \((L,U]\), each squarefree integer carries its Möbius sign 
 
 The final bound remains open. One equivalent target is the centered prime-power sum at the log-square cutoff below. A global matching can leave only a vanishing fraction of vertices unpaid, but their unsigned count has power exponent one. [Centered quotient criterion](#the-smooth-term-at-the-quotient-wall) · [Unsigned obstruction](ThePowerExponentOfEveryUnsignedPrefix.lean)
 
-Restricted factorization matching supplies the reversible moves. Signed divisor sums account for their effects on arithmetic readings across changing cuts. [Signed arithmetic programme, §§2.6 and 2.11](../../../docs/reports/review-1911/obstacles-summary.md#211-a-field-for-a-proof-by-signed-cancellation-alone)
+Restricted factorization matching supplies the reversible moves. Signed divisor sums account for their effects on arithmetic readings across changing cuts. [Signed arithmetic programme, §§2.6 and 2.11](../../../docs/reports/review-1911/obstacles-summary.md#211-a-field-for-an-rh-proof-with-no-positivity-or-spectral-input)
 
 A matching stores its positive endpoints in `sources` and their negative partners in `targets`. Transporting a negative debt follows the corresponding exchange from its negative endpoint to its positive partner.
 
@@ -46,6 +46,10 @@ The top quotient band already detects the ordinary prime error. Write \(K=\lfloo
  U(X)=E(X)-E(K)+(X\bmod y)-(K\bmod y).
 \]
 At the log-square wall the residue difference is smaller than \(y\), and \(K\le X/2\) eventually. Telescoping over successive smaller arguments recovers every positive power exponent of \(E\) from \(U\). Proper prime powers can change the band by at most \(\psi(X)-\vartheta(X)=O(\sqrt X)\), including when the choices change at every observation. For any \(\alpha\ge0\), all bounds \(O_\varepsilon(X^{1/2+\alpha+\varepsilon})\) on this one band are equivalent to every zeta zero in the critical strip satisfying \(\Re\rho\le 1/2+\alpha\). Thus a separate half-plus estimate on the unit band already proves RH. A proof using the lower quotient indices can keep their signed compensation. [The exact floor boundary and its zero-free criterion](ThePrimeErrorInTheCenteredUnitWindow.lean)
+
+For each sign there are arbitrarily large \(X\) at which the centered unit band exceeds \(c\sqrt X\log\log\log X\) in that direction, simultaneously for every admissible choice at proper prime powers. A record of the signed prime error divided by \(\sqrt X\) controls its earlier endpoint \(K\). [Both signs at the critical exponent](BothSignsInTheCenteredUnitWindow.lean)
+
+For a set \(S\) of cofactors through \(Z\), each \(m\in S\) may choose both ends of its own interval \(y\le l_m\le u_m\le X/m\) and its own proper-power weights. For \(\Theta<s<1\), the sum of the absolute centered readings is at most \(C_sX^sZ^{1-s}+y\#S\). The last term counts one floor residue difference per cofactor. [Independent-window estimate](IndependentPrimeWindowsOnRoughCofactors.lean)
 
 ## The signed boundary at a cutoff
 

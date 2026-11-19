@@ -74,13 +74,13 @@ theorem odd_smooth_prime_midpoint_exact {n : ℕ} (hn : 1 ≤ n) :
       · by_cases hone : k.primeFactors.card=1
         · obtain ⟨p,hs⟩ := card_eq_one.mp hone
           have hno : ¬oddSmoothSupport k := fun h => by have := h.2.1; omega
-          simp [unitaryLog,unitary_half_weight_singleton hk1 hs,purePowerLog,hp,hcop,hone,hno]
+          simp [unitaryLog,unitary_half_weight_singleton hk1 hs,purePowerLog,hp,hone,hno]
         · by_cases h : oddSmoothSupport k
-          · simp [purePowerLog,hp,hcop,hone,h]
+          · simp [purePowerLog,hp,hone,h]
           · have hz : unitaryHalfWeight k=0 := by
               by_contra hw
               exact h (unitary_half_weight_support hk1 hw hone)
-            simp [purePowerLog,unitaryLog,hp,hcop,hone,h,hz]
+            simp [purePowerLog,unitaryLog,hp,hone,h,hz]
       · simp [purePowerLog,hp,hcop]
   unfold primeMidpointPrice oddSmoothCompositePrice unitaryMidpointCenter unitarySignedIntervals
   linarith only [interval (2*n) (3*n) (by omega),interval (3*n) (4*n) (by omega)]
@@ -100,8 +100,9 @@ theorem odd_smooth_midpoint_error {n : ℕ} (hn : 1 ≤ n) :
   have point {k : ℕ} (hk : k ≤ X) :
       purePowerLog n k ≤ if ¬k.Prime then L*vonMangoldt k else 0 := by
     unfold purePowerLog
-    split_ifs with h hnp hnp
-    · have hpow := isPrimePow_iff_card_primeFactors_eq_one.mpr h.2.2
+    by_cases h : n.Coprime k ∧ ¬k.Prime ∧ k.primeFactors.card=1
+    · rw [if_pos h,if_pos h.2.1]
+      have hpow := isPrimePow_iff_card_primeFactors_eq_one.mpr h.2.2
       have hk1 := hpow.one_lt
       have hp := (Nat.minFac_prime (by omega : k ≠ 1)).two_le
       have hl := Real.log_le_log (by norm_num : (0:ℝ)<2) (by exact_mod_cast hp : (2:ℝ) ≤ k.minFac)
@@ -111,9 +112,11 @@ theorem odd_smooth_midpoint_error {n : ℕ} (hn : 1 ≤ n) :
       apply hlk.trans
       calc Real.log (X:ℝ) = L*Real.log 2 := (div_mul_cancel₀ _ hlog2.ne').symm
            _ ≤ _ := mul_le_mul_of_nonneg_left hl hL
-    · exact (hnp h.2.1).elim
-    · exact mul_nonneg hL vonMangoldt_nonneg
-    · rfl
+    · rw [if_neg h]
+      by_cases hp : k.Prime
+      · rw [if_neg (not_not.mpr hp)]
+      · rw [if_pos hp]
+        exact mul_nonneg hL vonMangoldt_nonneg
   have bound (a b : ℕ) (hb : b ≤ X) :
       (∑ k ∈ Ioc a b,purePowerLog n k) ≤ L*(Chebyshev.psi (X:ℝ)-Chebyshev.theta (X:ℝ)) := by
     rw [Chebyshev.psi_sub_theta_eq_sum_not_prime,Nat.floor_natCast,sum_filter,mul_sum]
@@ -137,5 +140,55 @@ theorem odd_smooth_midpoint_error {n : ℕ} (hn : 1 ≤ n) :
 #print axioms odd_smooth_has_no_large_prime
 #print axioms odd_smooth_prime_midpoint_exact
 #print axioms odd_smooth_midpoint_error
+
+/-- The full-log price of the discarded prime powers fits each exponent
+strictly above one half, uniformly in the integer center. -/
+theorem odd_smooth_half_power {t : ℝ} (ht : 1/2 < t) :
+    ∃ A : ℝ, ∀ {n : ℕ}, 1 ≤ n →
+      |oddSmoothCompositePrice n-unitaryMidpointCenter n-primeMidpointPrice n| ≤ A*(n:ℝ)^t := by
+  obtain ⟨C,hC⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  let a := t-1/2
+  have ha : 0 < a := sub_pos.mpr ht
+  have h2 := Real.log_pos (by norm_num : (1:ℝ) < 2)
+  refine ⟨(4:ℝ)^t * |C| / (a*Real.log 2),?_⟩
+  intro n hn
+  let X := 4*(n:ℝ)
+  have hX : 1 ≤ X := by
+    have hn' := (Nat.one_le_cast (α:=ℝ)).mpr hn
+    dsimp only [X]; linarith only [hn']
+  have hpos := zero_lt_one.trans_le hX
+  have hh := odd_smooth_midpoint_error hn
+  push_cast at hh
+  change _ ≤ Real.log X/Real.log 2*(Chebyshev.psi X-Chebyshev.theta X) at hh
+  have hprice := (hC X).trans (mul_le_mul_of_nonneg_right (le_abs_self C) (Real.sqrt_nonneg X))
+  have hlog := div_le_div_of_nonneg_right (Real.log_le_rpow_div hpos.le ha) h2.le
+  have hprod := mul_le_mul hlog hprice (sub_nonneg.mpr (Chebyshev.theta_le_psi X))
+    (div_nonneg (div_nonneg (Real.rpow_nonneg hpos.le _) ha.le) h2.le)
+  apply (hh.trans hprod).trans_eq
+  rw [Real.sqrt_eq_rpow]
+  calc X^a/a/Real.log 2*(|C| * X^(1/2:ℝ)) =
+          (X^a*X^(1/2:ℝ)) * |C| / (a*Real.log 2) := by
+            simp only [div_eq_mul_inv,mul_inv_rev]
+            ring
+       _ = _ := by
+          rw [←Real.rpow_add hpos,show a+1/2=t by dsimp only [a]; ring,
+            show X^t=(4:ℝ)^t*(n:ℝ)^t from Real.mul_rpow (by norm_num) (Nat.cast_nonneg _)]
+          ring
+
+/-- The centered odd smooth composite prices have the same one-sided
+threshold as the prime midpoint at every integer. -/
+theorem odd_smooth_upper_spectrum_iff {b : ℝ} (hb : 1/2 ≤ b) :
+    (∀ t : ℝ,b < t → t < 1 → ∃ C : ℝ,∀ n : ℕ,1 ≤ n →
+      oddSmoothCompositePrice n-unitaryMidpointCenter n ≤ C*(n:ℝ)^t) ↔
+        _root_.RHTower.zetaZeroAbscissa ≤ b := by
+  rw [←prime_midpoint_upper_spectrum_iff hb]
+  constructor <;> intro h t ht ht1 <;> obtain ⟨C,hC⟩ := h t ht ht1 <;>
+    obtain ⟨A,hA⟩ := odd_smooth_half_power (hb.trans_lt ht) <;>
+    refine ⟨C+A,fun n hn => ?_⟩
+  · linarith only [(abs_le.mp (hA hn)).1,hC n hn]
+  · linarith only [(abs_le.mp (hA hn)).2,hC n hn]
+
+#print axioms odd_smooth_half_power
+#print axioms odd_smooth_upper_spectrum_iff
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

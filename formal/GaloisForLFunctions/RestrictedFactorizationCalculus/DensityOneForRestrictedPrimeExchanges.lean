@@ -341,11 +341,12 @@ theorem prefix_switch_balance (F : ℕ → ℕ)
           by_cases h : Squarefree n <;> simp [h,moebius_eq_zero_of_not_squarefree]
        _ = _ := by omega
 
-/-- One involution for all sharp prefixes at the requested tolerance. Its
-actual unpaid vertices recover the Möbius sum exactly at every cutoff and
-have upper density at most ε. Each nontrivial edge is a prime exchange. -/
-theorem one_switch_for_all_prefixes {ε : ℝ} (hε : 0 < ε) :
-    ∃ F : ℕ → ℕ, (∀ n : ℕ, Squarefree n → F (F n)=n ∧
+/-- One finite collection of prime ranges serves at every sharp
+prefix for a fixed population and displacement tolerance. -/
+theorem dense_prime_range_table_at_every_prefix {ε : ℝ} (hε : 0 < ε) :
+    ∃ J : ℕ, ∃ I : Finset ℕ, (∀ k ∈ I, bandReady J k) ∧
+      let F := rangeSwitch J I
+      (∀ n : ℕ, Squarefree n → F (F n)=n ∧
         (F n=n ∨ GlobalDyadicOneTwoRel n (F n)) ∧ |(F n:ℝ)-n| ≤ ε*n) ∧
       (∀ X : ℕ, ∑ n ∈ Icc 1 X, μ n = ∑ n ∈ prefixUnpaid F X, μ n) ∧
       ∀ᶠ X : ℕ in atTop, ((prefixUnpaid F X).card:ℝ) ≤ ε*X := by
@@ -359,7 +360,7 @@ theorem one_switch_for_all_prefixes {ε : ℝ} (hε : 0 < ε) :
     calc _ = (1/(J:ℝ))*n := by ring
          _ ≤ _ := mul_le_mul_of_nonneg_right h (Nat.cast_nonneg n)
   have law (n : ℕ) (hn : Squarefree n) := rangeSwitch_involution J I hI hco hn
-  refine ⟨F,fun n hn => ⟨(law n hn).1,(law n hn).2.2.2,(law n hn).2.1.trans (near n)⟩,
+  refine ⟨J,I,hI,fun n hn => ⟨(law n hn).1,(law n hn).2.2.2,(law n hn).2.1.trans (near n)⟩,
     prefix_switch_balance F (fun n hn => ⟨(law n hn).1,(law n hn).2.2.2⟩),?_⟩
   filter_upwards [eventually_ge_atTop ⌈4*((B.card:ℝ)+1)/ε⌉₊] with X hX
   let d := ⌈(X:ℝ)/J⌉₊
@@ -398,6 +399,18 @@ theorem one_switch_for_all_prefixes {ε : ℝ} (hε : 0 < ε) :
   have hr : ((prefixUnpaid F X).card:ℝ) ≤ (T.card:ℝ)+d := by exact_mod_cast hcount
   nlinarith only [hr,hT,hd',hceil,hwide,mul_nonneg hε.le (Nat.cast_nonneg X)]
 
+/-- One involution for all sharp prefixes at the requested tolerance. Its
+actual unpaid vertices recover the Möbius sum exactly at every cutoff and
+have upper density at most ε. Each nontrivial edge is a prime exchange. -/
+theorem one_switch_for_all_prefixes {ε : ℝ} (hε : 0 < ε) :
+    ∃ F : ℕ → ℕ, (∀ n : ℕ, Squarefree n → F (F n)=n ∧
+        (F n=n ∨ GlobalDyadicOneTwoRel n (F n)) ∧ |(F n:ℝ)-n| ≤ ε*n) ∧
+      (∀ X : ℕ, ∑ n ∈ Icc 1 X, μ n = ∑ n ∈ prefixUnpaid F X, μ n) ∧
+      ∀ᶠ X : ℕ in atTop, ((prefixUnpaid F X).card:ℝ) ≤ ε*X := by
+  obtain ⟨J,I,_,law,balance,count⟩ := dense_prime_range_table_at_every_prefix hε
+  exact ⟨rangeSwitch J I,law,balance,count⟩
+
+#print axioms dense_prime_range_table_at_every_prefix
 #print axioms one_switch_for_all_prefixes
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

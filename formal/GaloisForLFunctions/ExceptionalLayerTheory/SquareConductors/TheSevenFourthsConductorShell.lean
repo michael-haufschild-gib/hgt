@@ -123,7 +123,8 @@ theorem sevenFourthsShell_bound :
     norm_num
   apply (h hn hv hbirth hY).trans
   apply (div_le_iff₀ (pow_pos hn₀ 5)).mpr
-  have hpos := Real.log_nonneg (by have hv' : (1:ℝ)≤V := by exact_mod_cast hv; linarith : (1:ℝ)≤2*V)
+  have hv1 : (1:ℝ) ≤ V := by exact_mod_cast hv
+  have hpos := Real.log_nonneg (by linarith only [hv1] : (1:ℝ) ≤ 2*V)
   have hh := mul_le_mul (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (Nat.cast_nonneg V) hfloor 3) hC)
     hlog (by positivity) (by positivity : 0≤C*X^3)
   rw [hscale] at hh
@@ -176,7 +177,9 @@ theorem sevenFourthsShell_conductor_saving :
   obtain ⟨B,hB,hlog⟩ := conductorLog_subpower (by norm_num : (0:ℝ)<1/8)
   refine ⟨C*B,mul_nonneg hC hB,fun N M hN hM => (h N M hN hM).trans ?_⟩
   rcases Nat.eq_zero_or_pos N with rfl|hn
-  · simp [Real.zero_rpow (by norm_num : (13/4:ℝ)≠0), Real.zero_rpow (by norm_num : (7/2-1/8:ℝ)≠0)]
+  · simp only [Nat.cast_zero]
+    rw [Real.zero_rpow (by norm_num : (13/4:ℝ)≠0),Real.zero_rpow (by norm_num : (7/2-1/8:ℝ)≠0)]
+    simp
   have hh := (le_self_pow₀ (conductorLog_one_le N) (by decide : 6≠0)).trans (hlog hn)
   apply (mul_le_mul_of_nonneg_left hh (by positivity : 0≤C*(N:ℝ)^(13/4:ℝ))).trans_eq
   rw [show (7/2-1/8:ℝ)=13/4+1/8 by norm_num,Real.rpow_add (Nat.cast_pos.mpr hn : (0:ℝ)<N)]

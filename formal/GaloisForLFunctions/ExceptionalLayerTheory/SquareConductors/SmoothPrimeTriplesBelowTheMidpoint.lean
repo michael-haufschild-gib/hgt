@@ -33,10 +33,11 @@ private theorem smooth_moebius_value (Y d : ℕ) :
       · rw [moebius_eq_zero_of_not_squarefree hsf,Int.cast_zero]
     · rfl
 
-private theorem smooth_convolution_value (Y d : ℕ) :
-    (cubicSmoothMoebius Y^2 : ArithmeticFunction ℝ) d=
-      if d ∈ Nat.smoothNumbers (Y+1) then ((moebius:ArithmeticFunction ℝ)^2 : ArithmeticFunction ℝ) d else 0 := by
-  simp only [pow_two,mul_apply]
+private theorem smooth_product_value (Y d : ℕ) (f F g G : ArithmeticFunction ℝ)
+    (hf : ∀ k, f k=if k ∈ Nat.smoothNumbers (Y+1) then F k else 0)
+    (hg : ∀ k, g k=if k ∈ Nat.smoothNumbers (Y+1) then G k else 0) :
+    (f*g) d=if d ∈ Nat.smoothNumbers (Y+1) then (F*G) d else 0 := by
+  simp only [mul_apply]
   by_cases hs : d ∈ Nat.smoothNumbers (Y+1)
   · rw [if_pos hs]
     apply sum_congr rfl
@@ -44,17 +45,45 @@ private theorem smooth_convolution_value (Y d : ℕ) :
     have hm := (Nat.mem_divisorsAntidiagonal.mp hx).1
     have h1 := Nat.mem_smoothNumbers_of_dvd hs (Dvd.intro x.2 hm)
     have h2 := Nat.mem_smoothNumbers_of_dvd hs (Dvd.intro_left x.1 hm)
-    rw [smooth_moebius_value,smooth_moebius_value,if_pos h1,if_pos h2]
-    rfl
+    rw [hf,hg,if_pos h1,if_pos h2]
   · rw [if_neg hs]
     apply sum_eq_zero
     intro x hx
-    rw [smooth_moebius_value,smooth_moebius_value]
+    rw [hf,hg]
     by_cases h : x.1 ∈ Nat.smoothNumbers (Y+1)
     · have h' : x.2 ∉ Nat.smoothNumbers (Y+1) := fun hh => hs
         ((Nat.mem_divisorsAntidiagonal.mp hx).1 ▸ Nat.mul_mem_smoothNumbers h hh)
       rw [if_neg h',mul_zero]
     · rw [if_neg h,zero_mul]
+
+/-- The coefficients of every completed rough-convolution row are exactly
+the corresponding unrestricted Möbius convolution on smooth integers. -/
+theorem smooth_moebius_power (Y j d : ℕ) :
+    (cubicSmoothMoebius Y^j : ArithmeticFunction ℝ) d=
+      if d ∈ Nat.smoothNumbers (Y+1) then ((moebius:ArithmeticFunction ℝ)^j : ArithmeticFunction ℝ) d else 0 := by
+  induction j generalizing d with
+  | zero =>
+    rw [pow_zero,pow_zero]
+    by_cases hs : d ∈ Nat.smoothNumbers (Y+1)
+    · rw [if_pos hs]
+    · rw [if_neg hs]
+      apply one_apply_ne
+      intro he
+      apply hs
+      rw [he]
+      exact Nat.mem_smoothNumbers'.mpr fun p hp hd => (hp.not_dvd_one hd).elim
+  | succ j ih =>
+    rw [pow_succ,pow_succ]
+    exact smooth_product_value Y d _ _ _ _ ih (smooth_moebius_value Y)
+
+/-- Separating smooth Möbius coefficients from the unrestricted ordered
+factorizations gives the full power of the rough indicator. -/
+theorem complete_rough_factorization (Y j : ℕ) :
+    cubicRoughIndicator Y^j=cubicSmoothMoebius Y^j*(zeta:ArithmeticFunction ℝ)^j := by
+  rw [←mul_pow,cubic_rough_indicator_eq]
+
+#print axioms smooth_moebius_power
+#print axioms complete_rough_factorization
 
 /-- Products in either high-divisor row have every prime at or below the
 cut, including integers with repeated primes. -/
@@ -64,7 +93,7 @@ theorem high_cubic_rows_are_smooth {n Y d r : ℕ} (hr : 0 < r) (hk : d*r ≤ 4*
     d*r ∈ Nat.smoothNumbers (Y+1) := by
   have hd : d ∈ Nat.smoothNumbers (Y+1) := by
     by_contra h
-    simpa only [smooth_moebius_value,smooth_convolution_value,if_neg h,ne_self_iff_false,or_self] using hw
+    simp only [smooth_moebius_value,smooth_moebius_power,if_neg h,ne_self_iff_false,or_self] at hw
   have hrle : r ≤ Y := by
     by_contra! hh
     have hl := (Nat.div_lt_iff_lt_mul (Nat.succ_pos Y)).mp hcut
@@ -102,6 +131,53 @@ theorem smooth_prime_triple_divisor {Y p q r d : ℕ} (hp : p.Prime) (hq : q.Pri
 def twiceSmoothTripleWeight (k : ℕ) : ℝ :=
   4*(moebius k:ℝ)-((moebius:ArithmeticFunction ℝ)^2 : ArithmeticFunction ℝ) k
 
+/-- Twice the contribution beyond the large-divisor cutoff in the two
+complete convolution rows, before multiplication by the product logarithm. -/
+def twiceHighDivisorWeight (Y D k : ℕ) : ℝ :=
+  ∑ d ∈ k.divisors.filter (D < ·),(4*cubicSmoothMoebius Y d-
+    (cubicSmoothMoebius Y^2 : ArithmeticFunction ℝ) d*
+      ((zeta:ArithmeticFunction ℝ)^2 : ArithmeticFunction ℝ) (k/d))
+
+/-- At the actual cube-root cutoff, only the full divisor contributes to
+a smooth triple in the midpoint intervals. The product lies on the lower side. -/
+theorem high_divisor_weight_on_smooth_triple {n p q r : ℕ}
+    (hp : p.Prime) (hq : q.Prime) (hr : r.Prime) (hY : 3 ≤ cubicMidpointCut n)
+    (hpY : p ≤ cubicMidpointCut n) (hqY : q ≤ cubicMidpointCut n)
+    (hrY : r ≤ cubicMidpointCut n) (hk : 2*n < p*q*r) :
+    let Y := cubicMidpointCut n
+    p*q*r ≤ 3*n ∧ twiceHighDivisorWeight Y (4*n/(Y+1)) (p*q*r)=twiceSmoothTripleWeight (p*q*r) := by
+  let Y := cubicMidpointCut n
+  let k := p*q*r
+  have hk0 : 0<k := Nat.mul_pos (Nat.mul_pos hp.pos hq.pos) hr.pos
+  have ht := cubic_midpoint_thresholds n hY
+  have hupper : k ≤ 3*n := (show k ≤ Y^3 by
+    simpa only [pow_succ,pow_zero,one_mul] using Nat.mul_le_mul (Nat.mul_le_mul hpY hqY) hrY).trans ht.1
+  have hsmall : 4*n/(Y+1) < k := by
+    apply (Nat.div_lt_iff_lt_mul (Nat.succ_pos Y)).mpr
+    have h2 : 2 ≤ Y+1 := by change 3 ≤ Y at hY; omega
+    exact (by change 2*n < k at hk; omega : 4*n < k*2).trans_le (Nat.mul_le_mul_left k h2)
+  have hset : k.divisors.filter (4*n/(Y+1) < ·)={k} := by
+    ext d
+    simp only [mem_filter,Nat.mem_divisors,mem_singleton]
+    constructor
+    · exact fun h => smooth_prime_triple_divisor hp hq hr hpY hqY hrY h.1.1 (ht.2.2.2.trans_lt h.2)
+    · intro h
+      rw [h]
+      exact ⟨⟨dvd_rfl,hk0.ne'⟩,hsmall⟩
+  have prime_smooth {a : ℕ} (ha : a.Prime) (h : a ≤ Y) : a ∈ Nat.smoothNumbers (Y+1) :=
+    Nat.mem_smoothNumbers'.mpr fun b hb hba =>
+      (Nat.prime_dvd_prime_iff_eq hb ha).mp hba ▸ Nat.lt_succ_of_le h
+  have hs := Nat.mul_mem_smoothNumbers (Nat.mul_mem_smoothNumbers
+    (prime_smooth hp hpY) (prime_smooth hq hqY)) (prime_smooth hr hrY)
+  change k ∈ Nat.smoothNumbers (Y+1) at hs
+  refine ⟨hupper,?_⟩
+  change twiceHighDivisorWeight Y (4*n/(Y+1)) k=twiceSmoothTripleWeight k
+  rw [twiceHighDivisorWeight,hset,sum_singleton,Nat.div_self hk0,smooth_moebius_value,
+    smooth_moebius_power,if_pos hs,twiceSmoothTripleWeight]
+  simp [hs,pow_two]
+
+#print axioms high_divisor_weight_on_smooth_triple
+
 private theorem square_moebius_at_prime {p : ℕ} (hp : p.Prime) :
     ((moebius:ArithmeticFunction ℝ)^2 : ArithmeticFunction ℝ) p= -2 := by
   have h := _root_.RHTower.moebius_mul_apply_prime_pow (moebius:ArithmeticFunction ℝ) (k:=1) hp one_ne_zero
@@ -110,7 +186,7 @@ private theorem square_moebius_at_prime {p : ℕ} (hp : p.Prime) :
 
 private theorem square_moebius_at_square {p : ℕ} (hp : p.Prime) :
     ((moebius:ArithmeticFunction ℝ)^2 : ArithmeticFunction ℝ) (p^2)=1 := by
-  rw [show (moebius:ArithmeticFunction ℝ)^2=moebius*moebius by ring,
+  rw [pow_two (moebius:ArithmeticFunction ℝ),
     _root_.RHTower.moebius_mul_apply_prime_pow _ hp (by decide)]
   norm_num [intCoe_apply,moebius_apply_prime_pow hp (by decide : (2:ℕ) ≠ 0),moebius_apply_prime hp]
 
@@ -139,7 +215,7 @@ theorem smooth_triple_repeated {p q : ℕ} (hp : p.Prime) (hq : q.Prime) (hpq : 
 
 /-- A pure cube has zero complete-row coefficient. -/
 theorem smooth_triple_cube {p : ℕ} (hp : p.Prime) : twiceSmoothTripleWeight (p^3)=0 := by
-  rw [twiceSmoothTripleWeight,show (moebius:ArithmeticFunction ℝ)^2=moebius*moebius by ring,
+  rw [twiceSmoothTripleWeight,pow_two (moebius:ArithmeticFunction ℝ),
     _root_.RHTower.moebius_mul_apply_prime_pow _ hp (by decide)]
   norm_num [intCoe_apply,moebius_apply_prime_pow hp (by decide : (3:ℕ)≠0),
     moebius_apply_prime_pow hp (by decide : (2:ℕ)≠0)]

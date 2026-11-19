@@ -349,8 +349,8 @@ theorem act_distance (e : PrimitiveExchange) {J : ℕ}
 end PrimitiveExchange
 /-- A single sufficiently high primitive exchange can be arbitrarily short
 relative to either endpoint. -/
-theorem exists_short_primitive_exchange (J V : ℕ) (hJ : 0<J) :
-    ∃ e : PrimitiveExchange, V<e.p ∧ V<e.w ∧
+theorem exists_short_primitive_exchange_above (J V : ℕ) (hJ : 0<J) :
+    ∃ e : PrimitiveExchange, V<e.p ∧ V<e.q ∧ V<e.r ∧
       |(e.p:ℝ)-e.w| ≤ (e.p:ℝ)/J ∧ |(e.p:ℝ)-e.w| ≤ (e.w:ℝ)/J := by
   obtain ⟨H,hH⟩ := eventually_atTop.mp (eventually_bandReady J hJ)
   let k := max H V
@@ -367,8 +367,16 @@ theorem exists_short_primitive_exchange (J V : ℕ) (hJ : 0<J) :
   let e : PrimitiveExchange := ⟨bandPartner J k w,q,r,(mem_switchPrimes.mp hp).1,
     (mem_switchPrimes.mp hq).1,(mem_switchPrimes.mp hr).1,hqr⟩
   have he : e.w=w := hform.symm
-  exact ⟨e,high hp,(high hq).trans_le (Nat.le_mul_of_pos_right q (mem_switchPrimes.mp hr).1.pos),
+  exact ⟨e,high hp,high hq,high hr,
     he ▸ hnear',he ▸ hnear⟩
+
+/-- A single sufficiently high primitive exchange can be arbitrarily short
+relative to either endpoint. -/
+theorem exists_short_primitive_exchange (J V : ℕ) (hJ : 0<J) :
+    ∃ e : PrimitiveExchange, V<e.p ∧ V<e.w ∧
+      |(e.p:ℝ)-e.w| ≤ (e.p:ℝ)/J ∧ |(e.p:ℝ)-e.w| ≤ (e.w:ℝ)/J := by
+  obtain ⟨e,p,q,_,near,near'⟩ := exists_short_primitive_exchange_above J V hJ
+  exact ⟨e,p,q.trans_le (Nat.le_mul_of_pos_right e.q e.prime_r.pos),near,near'⟩
 
 /-- On the complete cofactor line, this one pair already has the entire
 Mertens power spectrum. -/

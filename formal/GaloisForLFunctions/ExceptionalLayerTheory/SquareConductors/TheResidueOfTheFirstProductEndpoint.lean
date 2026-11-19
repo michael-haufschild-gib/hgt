@@ -92,8 +92,9 @@ theorem firstEndpointContinuation_zero_residue {ρ : ℂ} (hz : riemannZeta ρ =
   obtain ⟨ha,hr⟩ := squareConductorContinuation_zero_residue hz hhalf h₁
   have hc : 3 < c.re := by dsimp only [c]; simp [Complex.add_re,Complex.mul_re]; linarith only [hhalf]
   have hdiff : Tendsto (fun s : ℂ => s-c) (𝓝[≠] c) (𝓝 0) := by
-    simpa only [sub_self] using ((continuous_id.sub continuous_const).continuousAt (x := c)).tendsto.mono_left
-      (nhdsWithin_le_nhds : 𝓝[≠] c ≤ 𝓝 c)
+    have h : Tendsto (fun s : ℂ => s-c) (𝓝 c) (𝓝 (c-c)) := (continuous_id.sub continuous_const).tendsto c
+    rw [sub_self] at h
+    exact h.mono_left nhdsWithin_le_nhds
   have hE := (analytic_endpoint_error hc).continuousAt.tendsto.mono_left
     (nhdsWithin_le_nhds : 𝓝[≠] c ≤ 𝓝 c)
   refine ⟨ha,?_⟩
@@ -218,7 +219,7 @@ theorem squareDivider_opposite_fragment_prices :
     have he := mul_le_mul_of_nonneg_left ((div_le_iff₀ hc).mp hg')
       (Real.rpow_nonneg hn'.le (25/9:ℝ))
     have hr : (n:ℝ)^(25/9:ℝ)*(n:ℝ)^(2/9:ℝ)=(n:ℝ)^3 := by
-      rw [←Real.rpow_add hn',show (25/9:ℝ)+2/9=3 by norm_num,Real.rpow_natCast _ 3]
+      rw [←Real.rpow_add hn',show (25/9:ℝ)+2/9=((3:ℕ):ℝ) by norm_num,Real.rpow_natCast]
     change (n:ℝ)^(25/9:ℝ)*C ≤ (n:ℝ)^(25/9:ℝ)*((n:ℝ)^(2/9:ℝ)*c) at he
     rw [←mul_assoc,hr] at he
     have hlow := (abs_le.mp ((le_add_of_nonneg_right (abs_nonneg _)).trans (h hn₂))).1
@@ -265,7 +266,7 @@ theorem squareDivider_opposite_real_poles :
     have hsP : LSeriesSummable P s := (lseriesSummable_cpow _ _).mpr (LSeriesSummable_one_iff.mpr hz)
     have hf' : (fun n => (f n:ℂ)) = (c:ℂ) • P + e := by
       funext n
-      simp only [Pi.add_apply,Pi.smul_apply,smul_eq_mul,P,e,Complex.cpow_natCast,Complex.ofReal_sub,
+      simp only [Pi.add_apply,Pi.smul_apply,smul_eq_mul,P,e,Complex.ofReal_sub,
         Complex.ofReal_mul,Complex.ofReal_pow,Complex.ofReal_natCast]
       norm_num only [Complex.cpow_ofNat]
       ring

@@ -142,7 +142,7 @@ private theorem smooth_step (b : Bool) {a u t : ℝ}
   have xp {p : ℕ} (h : p ∈ P) :
       x^(1-u) ≤ x/(p:ℝ) ∧ x/(p:ℝ) ≤ x^(1-a) := by
     obtain ⟨hp,hlo,hhi⟩ := pf h
-    have hp0 := Nat.cast_pos.mpr (α := ℝ) hp.pos
+    have hp0 := (Nat.cast_pos (α := ℝ)).mpr hp.pos
     constructor
     · apply (le_div_iff₀ hp0).2
       calc _ ≤ x^(1-u)*x^u := mul_le_mul_of_nonneg_left hhi (Real.rpow_nonneg hx0.le _)
@@ -153,7 +153,7 @@ private theorem smooth_step (b : Bool) {a u t : ℝ}
   have facts {p m : ℕ} (hp : p ∈ P) (hm : m ∈ V p) :
       m ≠ 0 ∧ (∀ q ∈ m.primeFactors,q<p) ∧ m*p ∈ smoothSignOctave b u x := by
     obtain ⟨hpr,hlo,hhi⟩ := pf hp
-    have hp0 := Nat.cast_pos.mpr (α := ℝ) hpr.pos
+    have hp0 := (Nat.cast_pos (α := ℝ)).mpr hpr.pos
     obtain ⟨hi,hl,hμ,hsm⟩ := mem_filter.mp hm
     obtain ⟨hm1,hmU⟩ := mem_Icc.mp hi
     have hm0 := Nat.ne_of_gt hm1

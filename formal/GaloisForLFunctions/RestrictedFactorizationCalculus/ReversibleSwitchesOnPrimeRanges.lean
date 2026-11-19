@@ -104,7 +104,7 @@ private theorem flip_spec {J k d : ℕ} (h : bandReady J k) (hd : d ∈ bandEndp
       Or.inl ⟨rfl,hwr⟩⟩
 
 /-- No prime of the modulus survives in the complementary squarefree cofactor. -/
-private theorem coprime_without_gcd {n : ℕ} (hn : Squarefree n) (M : ℕ) :
+theorem coprime_without_gcd {n : ℕ} (hn : Squarefree n) (M : ℕ) :
     (n/n.gcd M).Coprime M := by
   rw [Nat.coprime_iff_gcd_eq_one]
   by_contra h

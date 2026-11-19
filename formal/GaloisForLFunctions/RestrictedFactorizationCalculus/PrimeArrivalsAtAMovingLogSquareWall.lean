@@ -1,4 +1,5 @@
 import Mathlib.Analysis.MeanInequalitiesPow
+import GaloisForLFunctions.RHTower.Sieve.DivisorSumMeanSquare
 import GaloisForLFunctions.RestrictedFactorizationCalculus.ThePrimeReadingsBeyondTheHyperbola
 import GaloisForLFunctions.RestrictedFactorizationCalculus.TotalVariationOfTheRemovedQuotientHead
 import GaloisForLFunctions.WorldsOfTheZeroConfiguration.PrimesRoundAnOscillatingDensity
@@ -204,7 +205,7 @@ theorem upper_variation_at_moving_prime_walls {s : ℝ} (strip : RHTower.zetaZer
       dsimp only [D,nextAtSameWall]
       rw [if_pos eq]
       exact tri.trans (add_le_add_right move _)
-    · have gap := Nat.cast_le.mpr (α := ℝ) (show Y i+1 ≤ Y (i+1) from lt_of_le_of_ne (walls (Nat.le_succ i)) (Ne.symm eq))
+    · have gap := (Nat.cast_le (α := ℝ)).mpr (show Y i+1 ≤ Y (i+1) from lt_of_le_of_ne (walls (Nat.le_succ i)) (Ne.symm eq))
       rw [Nat.cast_add,Nat.cast_one] at gap
       have debt := mul_le_mul_of_nonneg_right (show (1:ℝ) ≤ (Y (i+1):ℝ)-Y i by linarith only [gap])
         (mul_nonneg (by norm_num : (0:ℝ) ≤ 2) u0)
@@ -388,6 +389,77 @@ theorem polynomial_head_variation_has_the_height_exponent {α : ℝ} (ap : 0<α)
     rw [abs_of_nonneg pos,Real.rpow_add n0]
     linarith only [result,wall,edit,last]
 
+/-- At a fixed height only multiples of a newly admitted prime can
+change their logarithmic Möbius coefficient. Counting all multiples
+gives a bound uniform in both sieve walls. -/
+theorem price_of_moving_the_logarithmic_head_wall (y z T : ℕ) (order : y ≤ z) :
+    |roughLogarithmicHead z T-roughLogarithmicHead y T| ≤
+      ((z-y:ℕ):ℝ)*((T:ℝ)/(y+1))*Real.log T := by
+  let P := Ioc y z
+  let cost := fun p d : ℕ => if p ∣ d then Real.log T else 0
+  have nonneg (p d : ℕ) : 0 ≤ cost p d := by
+    dsimp only [cost]; split <;> first | exact Real.log_natCast_nonneg _ | exact le_rfl
+  have per (d : ℕ) (hd : d ∈ Icc 1 T) :
+      |RoughReading.row z d*Real.log d-RoughReading.row y d*Real.log d| ≤ ∑ p ∈ P,cost p d := by
+    have zero := sum_nonneg (s := P) (fun p _ => nonneg p d)
+    rw [RoughReading.row_value,RoughReading.row_value]
+    by_cases old : IsFree (RoughReading.banned y) d
+    · rw [if_pos old]
+      by_cases kept : IsFree (RoughReading.banned z) d
+      · simpa only [if_pos kept,sub_self,abs_zero] using zero
+      rw [if_neg kept,zero_mul,zero_sub,abs_neg,abs_mul,abs_of_nonneg (Real.log_natCast_nonneg d)]
+      have existsPrime : ∃ p ∈ d.primeFactors,p ≤ z := by
+        by_contra! no
+        exact kept ⟨old.1,fun p hp => not_le.mpr (no p hp)⟩
+      obtain ⟨p,hp,upper⟩ := existsPrime
+      have belongs : p ∈ P := mem_Ioc.mpr ⟨lt_of_not_ge (old.2 p hp),upper⟩
+      have paid := single_le_sum (fun q _ => nonneg q d) belongs
+      rw [show cost p d=Real.log T from if_pos (Nat.dvd_of_mem_primeFactors hp)] at paid
+      have mu : |(ArithmeticFunction.moebius d:ℝ)| ≤ 1 := by exact_mod_cast abs_moebius_le_one (n := d)
+      exact (mul_le_mul_of_nonneg_right mu (Real.log_natCast_nonneg d)).trans
+        ((one_mul _).le.trans ((Real.log_le_log (Nat.cast_pos.mpr (mem_Icc.mp hd).1) (Nat.cast_le.mpr (mem_Icc.mp hd).2)).trans paid))
+    · have out : ¬IsFree (RoughReading.banned z) d := fun h =>
+        old ⟨h.1,fun p hp blocked => h.2 p hp (le_trans (show p ≤ y from blocked) order)⟩
+      simpa only [if_neg old,if_neg out,zero_mul,sub_self,abs_zero] using zero
+  have row (p : ℕ) (hp : p ∈ P) :
+      (∑ d ∈ Icc 1 T,cost p d) ≤ (T:ℝ)/(y+1)*Real.log T := by
+    have lower := (mem_Ioc.mp hp).1
+    have pp := (Nat.zero_le y).trans_lt lower
+    have cap : ((T/p:ℕ):ℝ)*((y:ℝ)+1) ≤ T := by
+      exact_mod_cast (Nat.mul_le_mul_left (T/p) lower).trans (Nat.div_mul_le_self T p)
+    dsimp only [cost]
+    rw [←sum_filter,sum_const,nsmul_eq_mul,RHTower.Sieve.card_filter_dvd_Icc pp]
+    exact mul_le_mul_of_nonneg_right ((le_div_iff₀ (by positivity)).mpr cap) (Real.log_natCast_nonneg T)
+  rw [roughLogarithmicHead,roughLogarithmicHead,←sum_sub_distrib]
+  apply (abs_sum_le_sum_abs ..).trans ((sum_le_sum per).trans ?_)
+  rw [sum_comm]
+  exact (sum_le_sum row).trans_eq (by simp only [P,sum_const,nsmul_eq_mul,Nat.card_Ioc]; ring)
+
+/-- The jump from k² to (k+1)² costs at most a constant times the
+hyperbola height. At the log-square cutoff this height is O(exp(k/2)). -/
+theorem price_of_one_log_square_wall_jump {k T : ℕ} (kp : 1 ≤ k)
+    (height : (T:ℝ) ≤ Real.exp (((k:ℝ)+2)/2)) :
+    |roughLogarithmicHead ((k+1)^2) T-roughLogarithmicHead (k^2) T| ≤ 9*(T:ℝ) := by
+  have order : k^2 ≤ (k+1)^2 := Nat.pow_le_pow_left (Nat.le_succ k) _
+  have raw := price_of_moving_the_logarithmic_head_wall _ _ T order
+  have count : (k+1)^2-k^2=2*k+1 := by
+    rw [show (k+1)^2=k^2+(2*k+1) by ring,Nat.add_sub_cancel_left]
+  simp only [count,Nat.cast_add,Nat.cast_mul,Nat.cast_ofNat,Nat.cast_one,Nat.cast_pow] at raw
+  have kr : (1:ℝ) ≤ k := Nat.one_le_cast.mpr kp
+  have logT : Real.log T ≤ (k:ℝ)+2 := by
+    rcases Nat.eq_zero_or_pos T with rfl | tp
+    · simp only [Nat.cast_zero,Real.log_zero]; positivity
+    · have h := (Real.log_le_iff_le_exp (Nat.cast_pos.mpr tp)).mpr height
+      linarith only [h,kr]
+  have top := mul_le_mul (by linarith only [kr] : 2*(k:ℝ)+1 ≤ 3*k) (by linarith only [kr] : (k:ℝ)+2 ≤ 3*k)
+    (by positivity : 0 ≤ (k:ℝ)+2) (by positivity : 0 ≤ 3*(k:ℝ))
+  have cap : (2*(k:ℝ)+1)*((k:ℝ)+2)/((k:ℝ)^2+1) ≤ 9 :=
+    (div_le_iff₀ (by positivity)).mpr (by linarith only [top])
+  apply raw.trans ((mul_le_mul_of_nonneg_left logT (by positivity)).trans ?_)
+  calc _ = (2*(k:ℝ)+1)*((k:ℝ)+2)/((k:ℝ)^2+1)*(T:ℝ) := by ring
+       _ ≤ _ := mul_le_mul_of_nonneg_right cap (Nat.cast_nonneg (α := ℝ) T)
+
+#print axioms price_of_one_log_square_wall_jump
 #print axioms polynomial_head_variation_has_the_height_exponent
 
 #print axioms upper_variation_at_moving_prime_walls

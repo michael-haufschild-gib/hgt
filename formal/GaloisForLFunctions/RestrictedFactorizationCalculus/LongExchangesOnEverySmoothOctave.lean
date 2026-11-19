@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.RestrictedFactorizationCalculus
 
 private theorem smooth_edge_cost {n m : ℕ} {y : ℝ} (hy : 1 ≤ y)
     (smooth : ∀ q ∈ n.primeFactors,(q:ℝ) ≤ y) (edge : GlobalDyadicOneTwoRel n m) :
-    (n:ℝ) ≤ |(m:ℝ)-n|*y^2 := by
+    (n:ℝ) ≤ |(m:ℝ)-n| *y^2 := by
   obtain ⟨hs,_,_,c,p,q,r,hp,hq,hr,_,he⟩ := edge
   have hne : p ≠ q*r := by
     intro h
@@ -37,7 +37,7 @@ private theorem smooth_edge_cost {n m : ℕ} {y : ℝ} (hy : 1 ≤ y)
       have hl : (b:ℝ)+1 ≤ a := by exact_mod_cast h
       linarith only [hl]
   have bound {a b : ℕ} (hn : n=c*a) (hm : m=c*b) (hu : (a:ℝ) ≤ y^2) (hab : a ≠ b) :
-      (n:ℝ) ≤ |(m:ℝ)-n|*y^2 := by
+      (n:ℝ) ≤ |(m:ℝ)-n| *y^2 := by
     rw [hn,hm,Nat.cast_mul,Nat.cast_mul,←mul_sub,abs_mul,abs_of_nonneg (Nat.cast_nonneg c)]
     have hh : (c:ℝ) ≤ c*|(b:ℝ)-a| := by
       simpa only [mul_one] using mul_le_mul_of_nonneg_left (gap hab) (Nat.cast_nonneg c)

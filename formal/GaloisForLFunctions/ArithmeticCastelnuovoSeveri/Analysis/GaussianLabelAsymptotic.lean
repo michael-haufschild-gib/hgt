@@ -50,10 +50,15 @@ private theorem density_loss_int {p q : ℝ} (hp : 0<p) (hq : 0<q) (a b l : ℝ)
   apply ae_of_all
   intro x
   obtain ⟨hn,he⟩ := density_loss_bounds (pa x) (pb x)
+  change ‖A x*(log (A x+B x)-log (A x))‖ ≤ _
   rw [Real.norm_eq_abs,abs_of_nonneg hn]
   calc
     _ ≤ 2*sqrt (A x*B x) := he
-    _ = _ := by rw [sqrt_weighted hp hq]; ring
+    _ = _ := by
+      change 2*sqrt (weightedDensity p a l x*weightedDensity q b l x) =
+        (2*(sqrt (p*q)*overlap a b l))*positionGaussianDensity ((a+b)/2,l) x
+      rw [sqrt_weighted hp hq]
+      ring
 
 private theorem loss_as_midpoint_expectation (u v a b l : ℝ) :
     let p := lengthRatio u v
@@ -92,13 +97,14 @@ private theorem loss_as_midpoint_expectation (u v a b l : ℝ) :
   rw [add_comm (B x) (A x),h,sqrt_weighted hp hq,odds_coordinate hp hq,mul_assoc]
 
 private theorem affine_integral (f : ℝ → ℝ) (h k c : ℝ) :
-    (∫ x, f (h+k*(x-c)))=|k⁻¹|*(∫ z, f z) := by
+    (∫ x, f (h+k*(x-c))) = |k⁻¹| * (∫ z, f z) := by
   calc
     _ = ∫ x, (fun y => f (h+k*y)) (x+(-c)) :=
       integral_congr_ae (ae_of_all _ fun _ => by rw [sub_eq_add_neg])
-    _ = ∫ x, (fun y => f (h+y)) (k*x) := integral_add_right_eq_self _ _
-    _ = |k⁻¹| • ∫ x, f (h+x) := Measure.integral_comp_mul_left _ _
-    _ = _ := by rw [integral_add_left_eq_self,smul_eq_mul]
+    _ = ∫ x, (fun y => f (h+y)) (k*x) :=
+      integral_add_right_eq_self (μ := volume) (fun y : ℝ => f (h+k*y)) (-c)
+    _ = |k⁻¹| • ∫ x, f (h+x) := Measure.integral_comp_mul_left (fun y : ℝ => f (h+y)) k
+    _ = _ := by rw [integral_add_left_eq_self (μ := volume) f h,smul_eq_mul]
 
 private theorem scaled_midpoint (a b l h : ℝ) (hd : b-a≠0) :
     (∫ x, positionGaussianDensity ((a+b)/2,l) x*oddsKernel (h+(b-a)/exp l*(x-(a+b)/2))) =
@@ -108,14 +114,17 @@ private theorem scaled_midpoint (a b l h : ℝ) (hd : b-a≠0) :
   let c := (a+b)/2
   let V := exp l
   have hv : 0<V := exp_pos _
+  have hd' : d ≠ 0 := hd
+  have hvar : (Real.toNNReal (exp l) : ℝ) = V := Real.coe_toNNReal _ (exp_pos l).le
   have hs := sqrt_pos.mpr hv
   have ht : 0<sqrt (2*π) := sqrt_pos.mpr (by positivity)
   let F := fun z => oddsKernel z*exp (-V*(z-h)^2/(2*d^2))
   have density (x : ℝ) : positionGaussianDensity (c,l) x*oddsKernel (h+d/V*(x-c)) =
       (sqrt (2*π*V))⁻¹*F (h+d/V*(x-c)) := by
     have he : -V*(h+d/V*(x-c)-h)^2/(2*d^2)= -(x-c)^2/(2*V) := by
-      field_simp [hd,hv.ne'] <;> ring
-    simp only [F,he,positionGaussianDensity,gaussianPDFReal,Real.coe_toNNReal _ hv.le]
+      rw [add_sub_cancel_left]
+      field_simp [hd',hv.ne']
+    simp only [F,he,positionGaussianDensity,gaussianPDFReal,hvar]
     change (_*exp _)*_= _*(_*exp _)
     ring
   change (∫ x, positionGaussianDensity (c,l) x*oddsKernel (h+d/V*(x-c)))= _*∫ z, F z
@@ -124,7 +133,7 @@ private theorem scaled_midpoint (a b l h : ℝ) (hd : b-a≠0) :
   congr 1
   rw [inv_div,abs_div,abs_of_pos hv,sqrt_mul (by positivity : 0≤2*π)]
   change (_*sqrt V)⁻¹*(V/|d|)=sqrt V/(sqrt (2*π)*|d|)
-  field_simp [ht.ne',hs.ne',abs_ne_zero.mpr hd]
+  field_simp [ht.ne',hs.ne',abs_ne_zero.mpr hd']
   nlinarith only [sq_sqrt hv.le]
 
 /-- Exact conditional entropy at every positive noise variance, in the
@@ -136,7 +145,8 @@ theorem exact_boundary_layer (u v a b l : ℝ) (hab : a≠b) :
       (sqrt (p*q)*overlap a b l)*(sqrt (exp l)/(sqrt (2*π)*|b-a|))*
       ∫ z, oddsKernel z*exp (-(exp l)*(z-(log q-log p))^2/(2*(b-a)^2)) := by
   intro p q
-  rw [loss_as_midpoint_expectation,scaled_midpoint a b l _ (sub_ne_zero.mpr hab.symm),mul_assoc]
+  rw [loss_as_midpoint_expectation,scaled_midpoint a b l _ (sub_ne_zero.mpr (Ne.symm hab))]
+  simp only [p,q,mul_assoc]
 
 /-- The missing label entropy divided by the coherence and the noise
 standard deviation has a finite, strictly positive sharp limit. -/
@@ -150,7 +160,7 @@ theorem sharp_entropy_prefactor (u v a b : ℝ) :
   let p := lengthRatio u v
   let q := lengthRatio v u
   let k := sqrt (p*q)/(sqrt (2*π)*|b-a|)
-  have hd := abs_ne_zero.mpr (sub_ne_zero.mpr hab.symm)
+  have hd := abs_ne_zero.mpr (sub_ne_zero.mpr (Ne.symm hab))
   have hs : 0<sqrt (2*π) := sqrt_pos.mpr (by positivity)
   have lim := (damped_odds_limit (log q-log p) (b-a)).const_mul k
   have he : k*(4*π)=2*sqrt (2*π)*sqrt (p*q)/|b-a| := by
@@ -164,7 +174,7 @@ theorem sharp_entropy_prefactor (u v a b : ℝ) :
   have ho : 0<overlap a b l := exp_pos _
   have hv := sqrt_pos.mpr (exp_pos l)
   dsimp only [k,p,q,Function.comp_apply]
-  field_simp [ho.ne',hv.ne',hs.ne',hd] <;> ring
+  field_simp [ho.ne',hv.ne',hs.ne',hd]
 
 #print axioms exact_boundary_layer
 #print axioms sharp_entropy_prefactor

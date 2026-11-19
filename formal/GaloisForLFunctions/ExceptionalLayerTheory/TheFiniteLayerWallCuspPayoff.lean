@@ -47,7 +47,7 @@ the finite-layer logarithmic wall-cusp problem (§2.17):
 
 noncomputable section
 open MeasureTheory Set Filter Complex Topology Zeta23
-open GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations GaloisForLFunctions.ExclusionOfTheCriticalState
+open GaloisForLFunctions GaloisForLFunctions.ExclusionOfTheCriticalState GaloisForLFunctions.CriticalArithmeticCorrelationTheory GaloisForLFunctions.HTGeometry
 open GaloisForLFunctions.ZeroConfigurationGeometry
 open GaloisForLFunctions.ZeroConfigurationGeometry.ConfigAbscissa
 open GaloisForLFunctions.ZeroConfigurationGeometry.ZetaAbscissa
@@ -144,7 +144,7 @@ private theorem groundState_confinementMass_pos {W₀ : ℝ} (hW : 0 < W₀)
     unfold HTGeometry.criticalHalfLineExponentialPair
     exact integral_congr_ae (Eventually.of_forall fun u => by ring)
   exact ⟨HTGeometry.criticalAliasCoefficient_positive hW,
-    hM_eq ▸ exponentialPair_self_pos hd (by rw [hnull.2.1]; exact one_ne_zero)⟩
+    hM_eq ▸ exponentialPair_self_pos hd hnull.2.1⟩
 
 /-- **Seven-way equivalence of all §2.17 wall-cusp and critical-line ordinate-moment targets with
 `BacklundConverse.FiniteOffLine → RiemannHypothesis` (B13).** -/
@@ -306,7 +306,7 @@ theorem no_properPower_twoWave_quartet_of_wallCuspTarget
 reducing `RiemannHypothesis` to `ZerosApproachLine ∧ ZetaLandingLaw`. -/
 theorem riemannHypothesis_iff_zal_and_landing_of_wallCuspTarget
     (h : SequentialWallCuspVanishingTarget) :
-    RiemannHypothesis ↔ ZerosApproachLine ∧ ZetaLandingLaw := by
+    RiemannHypothesis ↔ BacklundConverse.ZerosApproachLine ∧ ZetaLandingLaw := by
   have hb13 : BacklundConverse.FiniteOffLine → RiemannHypothesis :=
     (finiteLayer_wallCusp_targets_tfae.out 0 6).mp h
   rw [riemannHypothesis_iff_three_atoms]
@@ -504,7 +504,7 @@ theorem finiteLayer_wallCusp_complete_resolution :
       TwoIntervalRadialExclusionLaw ∧
       (ArithmeticCastelnuovoSeveri.realPacketNegIndex = 0 ∨
         ArithmeticCastelnuovoSeveri.realPacketNegIndex = ⊤) ∧
-      (RiemannHypothesis ↔ ZerosApproachLine ∧ ZetaLandingLaw)) ∧
+      (RiemannHypothesis ↔ BacklundConverse.ZerosApproachLine ∧ ZetaLandingLaw)) ∧
     (∀ σ₀ : ℝ, 1 / 2 < σ₀ → σ₀ < 1 →
       ∃ Z : ZeroConfig,
         (rightOf Z ((σ₀ - 1 / 2) / 2)).Finite ∧

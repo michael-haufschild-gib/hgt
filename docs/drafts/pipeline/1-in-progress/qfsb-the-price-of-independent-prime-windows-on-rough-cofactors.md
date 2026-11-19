@@ -11,6 +11,8 @@ For each \(\Theta<s<1\), the total absolute value of these centered window readi
 \]
 Here \(\Theta\) is the zeta zero abscissa. At each endpoint \(|\vartheta(t)-t|\ll_s t^s\); the total variation allowed on proper powers relative to ordinary primes costs at most \(\psi(u_m)-\vartheta(u_m)\ll\sqrt{u_m}\). The two floor residues differ by less than \(y\). Summing \(m^{-s}\) proves the assertion without a sign estimate between cofactors. At the log-square cutoff the normalized bound tends to zero uniformly for \(y\le Z\le X/y\): the first term costs \(O_s((X/Z)^{s-1})\) relative to \(X\); the second costs at most the density of rough integers through \(Z\), which tends uniformly to zero.
 
+The finite estimate is formalized in `absolute_price_of_independent_quotient_subwindows`. [IndependentPrimeWindowsOnRoughCofactors.lean](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/IndependentPrimeWindowsOnRoughCofactors.lean)
+
 **Sharp boundary for polynomially many windows.** Fix \(a>0\), take \(v=T^a\), \(X=T\lceil2v\rceil\), \(y=b(X)\), and retain prime cofactors in \(S=(v,2v]\). Each cofactor can use the common physical window \((y,T]\). Write \(E(t)=\vartheta(t)-t\). For ordinary primes the signed sum is exactly
 \[
  -\#S\,[E(T)-E(y)+(T\bmod y)].

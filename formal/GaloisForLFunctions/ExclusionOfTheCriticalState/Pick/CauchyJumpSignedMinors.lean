@@ -18,7 +18,9 @@ private def shift (t x : ℝ) := (1-t/2)*x+t/2
 
 private theorem shift_mono {t : ℝ} (ht : t∈Icc (0:ℝ) 1) : StrictMono (shift t) := by
   intro x y h
-  exact add_lt_add_right (mul_lt_mul_of_pos_left h (by linarith only [ht.2])) _
+  have hs : 0 < 1-t/2 := by linarith only [ht.2]
+  unfold shift
+  linarith only [mul_lt_mul_of_pos_left h hs]
 
 private theorem shift_inside {t x : ℝ} (ht : t∈Icc (0:ℝ) 1) (hx : x∈OpenDisk) :
     shift t x∈OpenDisk := by

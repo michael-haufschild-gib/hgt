@@ -44,7 +44,7 @@ theorem cross_det_lower {n : ℕ} (z w : ContrastGrid n) :
     gridVolume (fun i => (z i).val)*gridVolume (fun i => (w i).val)/(n.factorial:ℝ) ≤
       (Matrix.of fun i j => diskKernel (z i).val (w j).val).det := by
   let e := OrderEmbedding.ofStrictMono (fun k : ℕ => k+1) (fun _ _ h => Nat.succ_lt_succ h)
-  let a (k : ℕ) : Set.Ioi (0:ℝ) := ⟨((k:ℝ)+1)⁻¹,by positivity⟩
+  let a (k : ℕ) : Set.Ioi (0:ℝ) := ⟨((k:ℝ)+1)⁻¹,show (0:ℝ) < ((k:ℝ)+1)⁻¹ by positivity⟩
   have H := HilbertMetric.seriesMinor_grid_lower e a (positiveGrid z) (positiveGrid w)
     (Matrix.of fun i j => diskKernel (z i).val (w j).val) (fun i j => by
       have h := diskKernel_hasSum
@@ -57,7 +57,8 @@ theorem cross_det_lower {n : ℕ} (z w : ContrastGrid n) :
     ((∏ i : Fin n, ((i.val:ℝ)+1)⁻¹) *
       (genVandermonde (fun i : Fin n => i.val+1) (fun i => (w i).val)).det) ≤ _ at H
   rw [shifted_vandermonde,shifted_vandermonde,first_coefficients] at H
-  convert H using 1 <;> ring
+  convert H using 1
+  ring
 
 /-- The logarithmic jump kernel is strictly totally positive on either
 ordered positive contrast grid. -/

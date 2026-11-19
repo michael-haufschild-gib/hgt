@@ -64,7 +64,7 @@ and second-order multiplicity observables:
 noncomputable section
 set_option autoImplicit false
 
-open Complex Filter Topology Set Finset MeasureTheory
+open Complex Filter Topology Finset MeasureTheory
 open scoped ComplexConjugate BigOperators
 open RHTower Zeta23
 open GaloisForLFunctions.ZeroConfigurationGeometry
@@ -93,9 +93,24 @@ multi-quartet or infinite off-line configuration, and a single quartet of multip
 def NoSimpleSingleOffLineQuartet : Prop :=
   ∀ ρ₀ : ℂ, ¬ HasSimpleSingleOffLineQuartet ρ₀
 
+private theorem analyticOnNhd_riemannZeta_compl_one :
+    AnalyticOnNhd ℂ riemannZeta ({1}ᶜ : Set ℂ) :=
+  DifferentiableOn.analyticOnNhd
+    (fun _ hz => (differentiableAt_riemannZeta hz).differentiableWithinAt)
+    isOpen_compl_singleton
+
+private theorem analyticOrderAt_riemannZeta_ne_top {ρ : ℂ} (hρ1 : ρ ≠ 1) :
+    analyticOrderAt riemannZeta ρ ≠ ⊤ := by
+  apply analyticOnNhd_riemannZeta_compl_one.analyticOrderAt_ne_top_of_isPreconnected
+    (isConnected_compl_singleton_of_one_lt_rank (by simp) (1 : ℂ)).isPreconnected
+    (x := 2) (show (2 : ℂ) ∈ ({1}ᶜ : Set ℂ) by norm_num) hρ1
+  rw [analyticOrderAt_eq_zero.mpr (Or.inr
+    (riemannZeta_ne_zero_of_one_lt_re (by norm_num : 1 < (2 : ℂ).re)))]
+  exact ENat.zero_ne_top
+
 /-- On `{0 < Re ρ < 1}` where `ζ(ρ) = 0`, `quartetCopyMult ρ` coincides with `analyticOrderNatAt riemannZeta ρ`. -/
 theorem quartetCopyMult_eq_analyticOrderNatAt {ρ : ℂ} (h0 : 0 < ρ.re) (h1 : ρ.re < 1)
-    (hζ : riemannZeta ρ = 0) :
+    (_hζ : riemannZeta ρ = 0) :
     quartetCopyMult ρ = analyticOrderNatAt riemannZeta ρ := by
   have hρ0 : ρ ≠ 0 := fun h => by rw [h, Complex.zero_re] at h0; exact lt_irrefl 0 h0
   have hρ1 : ρ ≠ 1 := fun h => by rw [h, Complex.one_re] at h1; exact lt_irrefl 1 h1
@@ -116,14 +131,8 @@ theorem quartetCopyMult_eq_analyticOrderNatAt {ρ : ℂ} (h0 : 0 < ρ.re) (h1 : 
     rw [RHTower.xi_eq_half_mul hs0 hs.2, Pi.mul_apply, riemannZeta_def_of_ne_zero hs0]
     dsimp [g]
     field_simp [Complex.Gammaℝ_ne_zero_of_re_pos hs.1]
-  have han : AnalyticAt ℂ riemannZeta ρ := RHTower.analyticOn_riemannZeta ρ hρ1
-  have htop : analyticOrderAt riemannZeta ρ ≠ ⊤ := by
-    apply RHTower.analyticOn_riemannZeta.analyticOrderAt_ne_top_of_isPreconnected
-      (isConnected_compl_singleton_of_one_lt_rank (by simp) (1 : ℂ)).isPreconnected
-      (x := 2) (by simp) (by simpa using hρ1)
-    rw [analyticOrderAt_eq_zero.mpr (Or.inr
-      (riemannZeta_ne_zero_of_one_lt_re (by norm_num : 1 < (2 : ℂ).re)))]
-    exact ENat.zero_ne_top
+  have han : AnalyticAt ℂ riemannZeta ρ := analyticOnNhd_riemannZeta_compl_one ρ hρ1
+  have htop : analyticOrderAt riemannZeta ρ ≠ ⊤ := analyticOrderAt_riemannZeta_ne_top hρ1
   have hcast := Nat.cast_analyticOrderNatAt htop
   have hm_zeta : meromorphicOrderAt riemannZeta ρ =
       ((analyticOrderNatAt riemannZeta ρ : ℤ) : WithTop ℤ) := by
@@ -140,17 +149,11 @@ theorem quartetCopyMult_eq_analyticOrderNatAt {ρ : ℂ} (h0 : 0 < ρ.re) (h1 : 
 /-- At any strip zero `ρ ∈ zetaZeroConfig.carrier`, `quartetCopyMult ρ = 1` iff `deriv riemannZeta ρ ≠ 0`. -/
 theorem quartetCopyMult_eq_one_iff_deriv_ne_zero {ρ : ℂ} (hmem : ρ ∈ zetaZeroConfig.carrier) :
     quartetCopyMult ρ = 1 ↔ deriv riemannZeta ρ ≠ 0 := by
-  obtain ⟨hζ, h0, h1⟩ := hmem
+  have ⟨hζ, h0, h1⟩ := hmem
   have hρ1 : ρ ≠ 1 := fun h => by rw [h, Complex.one_re] at h1; exact lt_irrefl 1 h1
   rw [quartetCopyMult_eq_analyticOrderNatAt h0 h1 hζ]
   obtain ⟨hge1, hvan⟩ := RHTower.one_le_analyticOrderNatAt_and_iteratedDeriv_riemannZeta hρ1 hζ
-  have htop : analyticOrderAt riemannZeta ρ ≠ ⊤ := by
-    apply RHTower.analyticOn_riemannZeta.analyticOrderAt_ne_top_of_isPreconnected
-      (isConnected_compl_singleton_of_one_lt_rank (by simp) (1 : ℂ)).isPreconnected
-      (x := 2) (by simp) (by simpa using hρ1)
-    rw [analyticOrderAt_eq_zero.mpr (Or.inr
-      (riemannZeta_ne_zero_of_one_lt_re (by norm_num : 1 < (2 : ℂ).re)))]
-    exact ENat.zero_ne_top
+  have htop : analyticOrderAt riemannZeta ρ ≠ ⊤ := analyticOrderAt_riemannZeta_ne_top hρ1
   constructor
   · intro heq1
     have hord1 : analyticOrderAt riemannZeta ρ = 1 := by
@@ -166,7 +169,7 @@ theorem quartetCopyMult_eq_one_iff_deriv_ne_zero {ρ : ℂ} (hmem : ρ ∈ zetaZ
 /-- At any strip zero `ρ ∈ zetaZeroConfig.carrier`, `2 ≤ quartetCopyMult ρ` iff `deriv riemannZeta ρ = 0`. -/
 theorem two_le_quartetCopyMult_iff_deriv_eq_zero {ρ : ℂ} (hmem : ρ ∈ zetaZeroConfig.carrier) :
     2 ≤ quartetCopyMult ρ ↔ deriv riemannZeta ρ = 0 := by
-  obtain ⟨hζ, h0, h1⟩ := hmem
+  have ⟨hζ, h0, h1⟩ := hmem
   have hρ1 : ρ ≠ 1 := fun h => by rw [h, Complex.one_re] at h1; exact lt_irrefl 1 h1
   have hge1 : 1 ≤ quartetCopyMult ρ := by
     rw [quartetCopyMult_eq_analyticOrderNatAt h0 h1 hζ]
@@ -216,7 +219,7 @@ private theorem xiZeroCopy_fiber_encard {z : ℂ} (hz : z ∈ zetaZeroConfig.car
   have hinj : Function.Injective (fun k : Fin m => (⟨ρ_s, k⟩ : XiZeroCopy)) := by
     intro a b h
     exact eq_of_heq (Sigma.mk.inj_iff.mp h).2
-  rw [← himg, hinj.InjOn.encard_image, Set.encard_univ, ENat.card_eq_coe_fintype_card,
+  rw [← himg, hinj.injOn.encard_image, Set.encard_univ, ENat.card_eq_coe_fintype_card,
     Fintype.card_fin]
   rfl
 
@@ -239,7 +242,7 @@ theorem rightXiZeroCopy_encard_of_singleQuartet {ρ₀ : ℂ} (hq : HasSingleOff
       · exact Or.inr h
       · exfalso; rw [h] at hgt; simp at hgt; linarith [hq.1]
       · exfalso; rw [h] at hgt; simp at hgt; linarith [hq.1]
-    · rintro (h | h) <;> rw [h] <;> simp [hq.1]
+    · rintro (h | h) <;> rw [h] <;> simp <;> linarith [hq.1]
   have hne : ρ₀ ≠ conj ρ₀ := fun he => by
     apply hq.im_ne_zero; have := congrArg Complex.im he; simp at this; linarith
   have hdisj : Disjoint {q : XiZeroCopy | (q.1 : ℂ) = ρ₀}
@@ -264,7 +267,7 @@ theorem offLineXiZeroCopy_encard_of_singleQuartet {ρ₀ : ℂ} (hq : HasSingleO
     simp only [Finset.sum_const, nsmul_eq_mul, mul_one] at hs
     have h4 : (1 : ℂ) + 1 + 1 + 1 = (4 : ℕ) := by norm_num
     rw [h4, ← Nat.cast_mul] at hs
-    exact Nat.cast_injective (R := ℂ) hs
+    exact (Nat.cast_injective (R := ℂ) hs).trans (mul_comm _ 4)
   have hset : (offLineCopyFinset hq.finiteOffLine : Set XiZeroCopy) =
       {q : XiZeroCopy | (q.1 : ℂ).re ≠ 1 / 2} := by
     ext q
@@ -289,7 +292,13 @@ private theorem rightZeros_le_rightXiZeroCopy_encard :
     have hb : ((f b).1.1 : ℂ) = b.1 :=
       Classical.choose_spec (exists_xiZeroCopy_of_xi_eq_zero (xi_zero_of_mem_carrier b.2.1))
     exact Subtype.ext (ha.symm.trans (hq_eq.trans hb))
-  rw [← Set.encard_univ_coe, ← Set.encard_univ_coe]
+  have heq1 : (rightZeros zetaZeroConfig).encard =
+      (Set.univ : Set (rightZeros zetaZeroConfig)).encard := by
+    rw [← Subtype.val_injective.injOn.encard_image]; simp
+  have heq2 : {q : XiZeroCopy | 1 / 2 < (q.1 : ℂ).re}.encard =
+      (Set.univ : Set {q : XiZeroCopy | 1 / 2 < (q.1 : ℂ).re}).encard := by
+    rw [← Subtype.val_injective.injOn.encard_image]; simp
+  rw [heq1, heq2]
   exact Set.encard_le_encard_of_injOn (f := f) (s := Set.univ) (t := Set.univ)
     (fun _ _ => Set.mem_univ _) (fun _ _ _ _ h => hinj h)
 
@@ -301,7 +310,7 @@ private theorem rightXiZeroCopy_le_offLineXiZeroCopy_two_mul :
     ext q; simp only [Set.mem_setOf_eq, Set.mem_union]; exact ne_iff_lt_or_gt.trans or_comm
   have hdisj : Disjoint {q : XiZeroCopy | 1 / 2 < (q.1 : ℂ).re}
       {q : XiZeroCopy | (q.1 : ℂ).re < 1 / 2} :=
-    Set.disjoint_left.mpr fun _ h1 h2 => (lt_trans h2 h1).false
+    Set.disjoint_left.mpr fun _ h1 h2 => by simp only [Set.mem_setOf_eq] at h1 h2; linarith
   -- Reflection `z ↦ 1 - z` on `XiZeroCopy` preserves divisor multiplicity (`xi_divisor_one_sub`)
   let reflSupport (ρ : XiDivisorSupport) : XiDivisorSupport :=
     ⟨1 - (ρ : ℂ), by
@@ -309,11 +318,15 @@ private theorem rightXiZeroCopy_le_offLineXiZeroCopy_two_mul :
       rwa [Function.mem_support, xi_divisor_one_sub]⟩
   let reflCopy (q : XiZeroCopy) : XiZeroCopy :=
     ⟨reflSupport q.1, Fin.cast (by dsimp [reflSupport]; rw [xi_divisor_one_sub]) q.2⟩
+  have hcopy_ext : ∀ {q₁ q₂ : XiZeroCopy},
+      (q₁.1 : ℂ) = (q₂.1 : ℂ) → (q₁.2 : ℕ) = (q₂.2 : ℕ) → q₁ = q₂ := by
+    rintro ⟨ρ₁, k₁⟩ ⟨ρ₂, k₂⟩ h1 h2
+    have hρ : ρ₁ = ρ₂ := Subtype.ext h1
+    subst hρ
+    exact congrArg (Sigma.mk ρ₁) (Fin.ext h2)
   have hrefl_inv : ∀ q : XiZeroCopy, reflCopy (reflCopy q) = q := by
-    rintro ⟨⟨z, hz⟩, k⟩
-    have h1 : (1 : ℂ) - (1 - z) = z := by ring
-    refine Sigma.ext (Subtype.ext h1) ?_
-    simp [reflCopy, reflSupport]
+    intro q
+    exact hcopy_ext (by dsimp [reflCopy, reflSupport]; ring) (by simp [reflCopy])
   have hinj_r : Function.Injective reflCopy := Function.LeftInverse.injective hrefl_inv
   have himg_r : reflCopy '' {q : XiZeroCopy | 1 / 2 < (q.1 : ℂ).re} =
       {q : XiZeroCopy | (q.1 : ℂ).re < 1 / 2} := by
@@ -327,7 +340,7 @@ private theorem rightXiZeroCopy_le_offLineXiZeroCopy_two_mul :
       refine ⟨reflCopy q, ?_, hrefl_inv q⟩
       change 1 / 2 < (1 - (q.1 : ℂ)).re
       simp; linarith
-  rw [hpart, Set.encard_union_eq hdisj, ← himg_r, hinj_r.InjOn.encard_image, two_mul]
+  rw [hpart, Set.encard_union_eq hdisj, ← himg_r, hinj_r.injOn.encard_image, two_mul]
 
 /-- Unit-wave on `θ - id` implies bounded unit-multiplicity two-interval radius and bounded `(2, 3, 6)`
 ordinary-prime dilation residuals. -/
@@ -348,7 +361,8 @@ private theorem unit_theta_wave_implies_radial_and_236 {β γ : ℝ} (hβ : 1 / 
   have hrad : ¬ IsLogSqrtSqUnbounded (thetaRadialDiscrepancy β γ 1) := by
     set h := quarterPeriodStep γ
     have hh : 0 < h := quarterPeriodStep_pos hγ.ne'
-    rw [thetaRadialDiscrepancy, isLogSqrtSqUnbounded_iff_not_eventually_le, not_not]
+    unfold thetaRadialDiscrepancy
+    rw [isLogSqrtSqUnbounded_iff_not_eventually_le, not_not]
     refine ⟨4 * |K| * Real.exp h * (1 + 2 * h) ^ 2, 3, fun t ht => ?_⟩
     set B_t : ℝ := |K| * Real.exp ((t + 2 * h) / 2) * (1 + (t + 2 * h)) ^ 2
     have hm_step : ∀ s : ℝ, t ≤ s → s ≤ t + 2 * h →
@@ -366,7 +380,7 @@ private theorem unit_theta_wave_implies_radial_and_236 {β γ : ℝ} (hβ : 1 / 
         rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (Real.exp_pos s).ne'),
           ← Complex.ofReal_log (Real.exp_pos s).le, Real.log_exp, mul_comm]
       rw [hcp, ← Real.exp_half, Real.log_exp] at hb
-      rw [Nat.cast_one, one_mul]
+      rw [Nat.cast_one, mul_one]
       change |Chebyshev.theta (Real.exp s) - Real.exp s +
           2 * (Complex.exp (ρ * (s : ℂ)) / ρ).re| ≤ B_t
       refine hb.trans ?_
@@ -419,15 +433,17 @@ private theorem unit_theta_wave_implies_radial_and_236 {β γ : ℝ} (hβ : 1 / 
     have hW_zero : dilationRecurrenceOp a β γ W x = 0 := by
       unfold dilationRecurrenceOp
       dsimp [W]
-      have hcp_a (u : ℝ) (hu : 0 < u) : ((u * x : ℝ) : ℂ) ^ ρ = (u : ℂ) ^ ρ * (x : ℂ) ^ ρ := by
-        rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (mul_pos hu hx0).ne'),
+      have hcp_a (u v : ℝ) (hu : 0 < u) (hv : 0 < v) :
+          ((u * v : ℝ) : ℂ) ^ ρ = (u : ℂ) ^ ρ * (v : ℂ) ^ ρ := by
+        rw [Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (mul_pos hu hv).ne'),
           Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr hu.ne'),
-          Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr hx0.ne'),
-          ← Complex.ofReal_log (mul_pos hu hx0).le, ← Complex.ofReal_log hu.le,
-          ← Complex.ofReal_log hx0.le, Real.log_mul hu.ne' hx0.ne', Complex.ofReal_add,
-          mul_add, Complex.exp_add]
+          Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr hv.ne'),
+          ← Complex.ofReal_log (mul_pos hu hv).le, ← Complex.ofReal_log hu.le,
+          ← Complex.ofReal_log hv.le, Real.log_mul hu.ne' hv.ne', Complex.ofReal_add,
+          add_mul, Complex.exp_add]
       have ha2 : ((a ^ 2 * x : ℝ) : ℂ) ^ ρ = ((a : ℂ) ^ ρ) ^ 2 * (x : ℂ) ^ ρ := by
-        rw [sq a, mul_assoc, hcp_a a ha0, hcp_a a ha0, sq ((a : ℂ) ^ ρ), mul_assoc]
+        rw [sq a, mul_assoc, hcp_a a (a * x) ha0 (mul_pos ha0 hx0), hcp_a a x ha0 hx0,
+          sq ((a : ℂ) ^ ρ), mul_assoc]
       have hchar : ((a : ℂ) ^ ρ) ^ 2 -
           (((2 * a ^ β * Real.cos (γ * Real.log a) : ℝ) : ℂ)) * (a : ℂ) ^ ρ +
           ((a ^ (2 * β) : ℝ) : ℂ) = 0 := by
@@ -443,12 +459,18 @@ private theorem unit_theta_wave_implies_radial_and_236 {β γ : ℝ} (hβ : 1 / 
         have hsc : Complex.cos (((γ * Real.log a : ℝ) : ℂ)) ^ 2 +
             Complex.sin (((γ * Real.log a : ℝ) : ℂ)) ^ 2 = 1 :=
           Complex.cos_sq_add_sin_sq _
-        rw [Complex.ofReal_mul, Complex.ofReal_mul, Complex.ofReal_ofNat, Complex.ofReal_cos]
-        linear_combination (((a ^ β : ℝ) : ℂ) ^ 2) * (hsc - 1)
+        have hc1 : (((2 * a ^ β * Real.cos (γ * Real.log a) : ℝ) : ℂ)) =
+            2 * ((a ^ β : ℝ) : ℂ) * Complex.cos (((γ * Real.log a : ℝ) : ℂ)) := by
+          push_cast; rfl
+        have hc2 : (((a ^ β) ^ 2 : ℝ) : ℂ) = ((a ^ β : ℝ) : ℂ) ^ 2 := by push_cast; rfl
+        have hI2 : (I : ℂ) ^ 2 = -1 := Complex.I_sq
+        rw [hc1, hc2]
+        linear_combination -(((a ^ β : ℝ) : ℂ) ^ 2) * hsc +
+          (((a ^ β : ℝ) : ℂ) ^ 2 * Complex.sin (((γ * Real.log a : ℝ) : ℂ)) ^ 2) * hI2
       have hcomb : (((a ^ 2 * x : ℝ) : ℂ) ^ ρ / ρ) -
           (((2 * a ^ β * Real.cos (γ * Real.log a) : ℝ) : ℂ)) * (((a * x : ℝ) : ℂ) ^ ρ / ρ) +
           ((a ^ (2 * β) : ℝ) : ℂ) * ((x : ℂ) ^ ρ / ρ) = 0 := by
-        rw [ha2, hcp_a a ha0]
+        rw [ha2, hcp_a a x ha0 hx0]
         linear_combination ((x : ℂ) ^ ρ / ρ) * hchar
       have hre := congrArg Complex.re hcomb
       simp only [Complex.add_re, Complex.sub_re, Complex.re_ofReal_mul, Complex.zero_re] at hre
@@ -501,17 +523,8 @@ theorem hasSimpleSingleOffLineQuartet_tfae {ρ₀ : ℂ} (hre : 1 / 2 < ρ₀.re
     norm_num
   tfae_have 3 → 1 := by
     intro h2
-    have hnrh : ¬ RiemannHypothesis := by
-      intro hrh
-      have hemp : {q : XiZeroCopy | 1 / 2 < (q.1 : ℂ).re} = ∅ :=
-        Set.eq_empty_of_forall_notMem fun q hq =>
-          (lt_irrefl (1 / 2 : ℝ)) ((RHTower.xiZeroCopy_re_eq_half_of_riemannHypothesis hrh q) ▸ hq)
-      rw [hemp, Set.encard_empty] at h2
-      norm_num at h2
     have hle2 : (rightZeros zetaZeroConfig).encard ≤ 2 :=
       rightZeros_le_rightXiZeroCopy_encard.trans h2.le
-    have hrz2 : (rightZeros zetaZeroConfig).encard = 2 :=
-      (exists_singleOffLineQuartet_ecs_tfae.out 2 1).mp ⟨hnrh, hle2⟩
     have hne_conj : ρ₀ ≠ conj ρ₀ := fun he => by
       have := congrArg Complex.im he; simp at this; linarith
     have hc_mem : conj ρ₀ ∈ zetaZeroConfig.carrier := by
@@ -522,7 +535,9 @@ theorem hasSimpleSingleOffLineQuartet_tfae {ρ₀ : ℂ} (hre : 1 / 2 < ρ₀.re
     have hsub : ({ρ₀, conj ρ₀} : Set ℂ) ⊆ rightZeros zetaZeroConfig := by
       rintro z (rfl | rfl)
       · exact ⟨hmem, hre⟩
-      · exact ⟨hc_mem, by simp [hre]⟩
+      · exact ⟨hc_mem, by simp; linarith [hre]⟩
+    have hrz2 : (rightZeros zetaZeroConfig).encard = 2 :=
+      le_antisymm hle2 ((Set.encard_pair hne_conj) ▸ Set.encard_mono hsub)
     have hright_eq : ({ρ₀, conj ρ₀} : Set ℂ) = rightZeros zetaZeroConfig :=
       ((Set.finite_singleton _).insert _).eq_of_subset_of_encard_le hsub
         (by rw [hrz2, Set.encard_pair hne_conj])
@@ -628,7 +643,10 @@ theorem hasSimpleSingleOffLineQuartet_tfae {ρ₀ : ℂ} (hre : 1 / 2 < ρ₀.re
       have htri := abs_add_le
         ((oddCompositeBaseline ⌊x⌋₊ - oddCompositePrimeMass ⌊x⌋₊) - (Chebyshev.psi x - x))
         (Chebyshev.psi x - x + 2 * ((x : ℂ) ^ ρ₀ / ρ₀).re)
-      rw [sub_add_add_cancel] at htri
+      rw [show (oddCompositeBaseline ⌊x⌋₊ - oddCompositePrimeMass ⌊x⌋₊ - (Chebyshev.psi x - x)) +
+          (Chebyshev.psi x - x + 2 * ((x : ℂ) ^ ρ₀ / ρ₀).re) =
+          oddCompositeBaseline ⌊x⌋₊ - oddCompositePrimeMass ⌊x⌋₊ +
+            2 * ((x : ℂ) ^ ρ₀ / ρ₀).re by ring] at htri
       linarith only [htri, hdiff x hx, hK x hx]
     · rintro ⟨K, hK⟩
       refine ⟨K + A + 1, fun x hx => ?_⟩
@@ -672,7 +690,7 @@ theorem unit_multiplicity_no_odd_harmonic_alias {β γ ω : ℝ} {m k : ℕ} (h�
     have hk_pos : 0 < (k : ℝ) := lt_of_le_of_ne hk_nn (Ne.symm hkne)
     have hgt : 1 < (2 * (k : ℝ) + 1) ^ 2 := by nlinarith only [hk_pos]
     have h1 : β ^ 2 + γ ^ 2 < β ^ 2 + (2 * (k : ℝ) + 1) ^ 2 * γ ^ 2 := by
-      rw [sq_abs] at hpyth ⊢; nlinarith only [hgt, hγ2]
+      nlinarith only [hgt, hγ2]
     have h2 : β ^ 2 + (2 * (k : ℝ) + 1) ^ 2 * |γ| ^ 2 ≤
         (m : ℝ) ^ 2 * (β ^ 2 + ((2 * (k : ℝ) + 1) * |γ|) ^ 2) := by
       have hnn : 0 ≤ β ^ 2 + ((2 * (k : ℝ) + 1) * |γ|) ^ 2 := by positivity
@@ -682,13 +700,13 @@ theorem unit_multiplicity_no_odd_harmonic_alias {β γ ω : ℝ} {m k : ℕ} (h�
       exact mul_le_mul_of_nonneg_right hm2 hnn
     rw [sq_abs] at h2
     linarith only [hpyth, h1, h2]
-  have hk0 : k = 0 := Nat.cast_injective hk0R
+  have hk0 : k = 0 := Nat.cast_eq_zero.mp hk0R
   subst hk0
   simp only [Nat.cast_zero, mul_zero, zero_add, one_mul, sq_abs] at hpyth hω
   have hden : 0 < β ^ 2 + γ ^ 2 := by positivity
   have hm_sq1 : (m : ℝ) ^ 2 = 1 := by nlinarith only [hpyth, hden]
   have hm1R : (m : ℝ) = 1 := by nlinarith only [hm_sq1, hmR1]
-  exact ⟨rfl, Nat.cast_injective hm1R, hω⟩
+  exact ⟨rfl, by exact_mod_cast hm1R, hω⟩
 
 /-- Under `NoSimpleSingleOffLineQuartet`, any bounded unit-multiplicity trial
 `¬ IsLogSqrtSqUnbounded (thetaRadialDiscrepancy β γ 1)` (`1/2 < β < 1`, `0 < γ`) forces `k ≥ 2`
@@ -712,7 +730,8 @@ theorem unit_trial_under_noSimple_forces_ramified_quartet
   have hder0 : deriv riemannZeta ρ_k = 0 :=
     (two_le_quartetCopyMult_iff_deriv_eq_zero hq.2.1).mp hm_ge2
   obtain ⟨hω, hpyth⟩ := halias
-  rw [Nat.cast_one, one_pow, one_mul, abs_of_pos hγ] at hpyth hω
+  rw [Nat.cast_one, one_pow, one_mul] at hpyth
+  rw [abs_of_pos hγ] at hω
   have hk_ne0 : k ≠ 0 := by
     rintro rfl
     simp only [Nat.cast_zero, mul_zero, zero_add, one_mul] at hpyth
@@ -721,7 +740,7 @@ theorem unit_trial_under_noSimple_forces_ramified_quartet
       mul_right_cancel₀ hden.ne' (hpyth.trans (one_mul _).symm)
     have hm1R : (quartetCopyMult ρ_k : ℝ) = 1 := by
       nlinarith only [hm_sq, show (0 : ℝ) ≤ quartetCopyMult ρ_k by positivity]
-    exact hm_ne1 (Nat.cast_injective hm1R)
+    exact hm_ne1 (by exact_mod_cast hm1R)
   have hk_ge1 : 1 ≤ k := by omega
   have hm_le_2k : quartetCopyMult ρ_k ≤ 2 * k := by
     have hβ2 : 0 < β ^ 2 := by positivity
@@ -756,6 +775,11 @@ theorem unit_trial_under_noSimple_forces_ramified_quartet
 
 /-! ### 4. Reflected-composite rejection of radius imitators vs. intrinsic Beurling / twin models -/
 
+private theorem clippedCofactorOp_add (n P : ℕ) (F G : ℝ → ℝ) :
+    clippedCofactorOp n P (fun x => F x + G x) =
+      clippedCofactorOp n P F + clippedCofactorOp n P G :=
+  clippedCofactorSliceOp_add n P 1 F G
+
 /-- General power-growth triangle bound for `clippedCofactorOp n ⌊2√n⌋₊`: if
 `|h x| ≤ C * x ^ σ * (1 + log x) ^ r` (`0 ≤ σ < 1`) for `x ≥ 1`, then summing over the `≤ 4 n / P`
 active cofactors yields `O(n^{(1 + σ) / 2} (1 + log(4n)) ^ r)`. -/
@@ -786,13 +810,14 @@ private theorem clippedCofactorOp_abs_le_of_rpow {h : ℝ → ℝ} {C σ : ℝ} 
       ∑ v ∈ ((Icc 2 (4 * n)).filter (fun v => n.Coprime v ∧ 1 ∣ v)).filter (· ≤ M), gv v := by
     unfold clippedCofactorOp clippedCofactorSliceOp
     change ∑ v ∈ (Icc 2 (4 * n)).filter (fun v => n.Coprime v ∧ 1 ∣ v), gv v = _
-    rw [← Finset.sum_subset (Finset.filter_subset _ _)]
+    rw [← Finset.sum_subset
+      (Finset.filter_subset (· ≤ M) ((Icc 2 (4 * n)).filter (fun v => n.Coprime v ∧ 1 ∣ v)))]
     intro v hv hvnot
     have hv0 : 0 < v := by linarith [(mem_Icc.mp (mem_filter.mp hv).1).1]
     have hgt : M < v := not_le.mp fun hle => hvnot (mem_filter.mpr ⟨hv, hle⟩)
     have hmul : 4 * n < v * P := (Nat.div_lt_iff_lt_mul (by omega : 0 < P)).mp hgt
     have h4 : 4 * n / v < P :=
-      (Nat.div_lt_iff_lt_mul hv0).mpr (by rwa [mul_comm])
+      (Nat.div_lt_iff_lt_mul hv0).mpr (by rw [mul_comm P v]; exact hmul)
     have h3 : 3 * n / v ≤ P := (Nat.div_le_div_right (by omega : 3 * n ≤ 4 * n)).trans h4.le
     have h2 : 2 * n / v ≤ P := (Nat.div_le_div_right (by omega : 2 * n ≤ 4 * n)).trans h4.le
     dsimp [gv]
@@ -853,7 +878,7 @@ private theorem clippedCofactorOp_abs_le_of_rpow {h : ℝ → ℝ} {C σ : ℝ} 
     | succ m ih =>
       rw [Finset.sum_Icc_succ_top (by omega)]
       rcases Nat.eq_zero_or_pos m with rfl | hm0
-      · simp [Real.zero_rpow ha_pos.ne']; linarith
+      · simp; linarith
       · have hmR : (0 : ℝ) < m := by exact_mod_cast hm0
         -- MVT: `(1 - σ) * (m + 1)^{-σ} ≤ (m + 1)^{1 - σ} - m^{1 - σ}`
         have hstep : ((m + 1 : ℕ) : ℝ) ^ (-σ) * (1 - σ) ≤
@@ -922,7 +947,7 @@ private theorem clippedCofactorOp_abs_le_of_rpow {h : ℝ → ℝ} {C σ : ℝ} 
         refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ (by positivity))
           (mul_nonneg (mul_nonneg (by positivity) (Real.rpow_nonneg hn0.le σ))
             (pow_nonneg (by linarith [Real.log_nonneg (by linarith : (1 : ℝ) ≤ 4 * n)]) r))
-        have hr1 := Real.rpow_le_rpow (Nat.cast_nonneg M) hM_le (by linarith)
+        have hr1 := Real.rpow_le_rpow (z := 1 - σ) (Nat.cast_nonneg M) hM_le (by linarith)
         rw [Real.mul_rpow (by norm_num) (Real.sqrt_nonneg n), Real.sqrt_eq_rpow,
           ← Real.rpow_mul hn0.le, show (1 / 2 : ℝ) * (1 - σ) = (1 - σ) / 2 by ring] at hr1
         have h4_le : (4 : ℝ) ^ (1 - σ) ≤ 4 := by
@@ -1082,8 +1107,9 @@ private theorem reflectedComposite_violated_of_mode_approx {F : ℝ → ℝ} {z 
     have hmid_add : midpointSecondDiff n F =
         midpointSecondDiff n (fun x => x + quartetWaveModel z m x) + midpointSecondDiff n R := by
       unfold midpointSecondDiff; dsimp [R]; ring
+    rw [hmid_add]
     conv_lhs => rw [hF_split]
-    rw [clippedCofactorSliceOp_add, hmid_add]
+    rw [clippedCofactorOp_add]
     set B₀ := (clippedCofactorOp n P (fun x => x + quartetWaveModel z m x) -
         reflectedDensity * (n.totient : ℝ) -
         midpointSecondDiff n (fun x => x + quartetWaveModel z m x)) -
@@ -1126,7 +1152,8 @@ private theorem reflectedComposite_violated_of_mode_approx {F : ℝ → ℝ} {z 
   have hosc_ge : 2 * c₀ * (n : ℝ) ^ z.re ≤
       |2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
         ((n : ℝ) : ℂ) ^ z).re| := by
-    rw [show c₀ = |m| * c from rfl, abs_mul, abs_mul, abs_of_pos two_pos]
+    rw [show c₀ = |m| * c from rfl]
+    conv_rhs => rw [abs_mul, abs_mul, abs_of_pos two_pos]
     calc 2 * (|m| * c) * (n : ℝ) ^ z.re
         = 2 * |m| * (c * (n : ℝ) ^ z.re) := by ring
       _ ≤ 2 * |m| * |((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
@@ -1142,8 +1169,9 @@ private theorem reflectedComposite_violated_of_mode_approx {F : ℝ → ℝ} {z 
     midpointSecondDiff n F
   set W_osc := 2 * m * ((midpointMultiplier z / z) * riemannZeta z * coprimeEulerFactor n z *
     ((n : ℝ) : ℂ) ^ z).re
-  have htri := abs_sub W_osc (W_osc - D)
-  rw [sub_sub_cancel, abs_sub_comm] at htri
+  have htri : |W_osc| ≤ |D - W_osc| + |D| := by
+    have h := abs_add_le (W_osc - D) D
+    rwa [sub_add_cancel, abs_sub_comm W_osc D] at h
   linarith only [htri, herr, hosc_ge, hK_le]
 
 /-- **Reflected-composite rejection of `{0, 1}`-coprime radius imitators across all `1/2 < β < 1`.**
@@ -1235,9 +1263,9 @@ private theorem reflectedComposite_theta_perturbation_violated {Δ : ℝ → ℝ
       exact_mod_cast (by linarith only [hhi, hsq_n] : (P : ℝ) ≤ 2 * n)
     have hF_op : clippedCofactorOp n P F = largePrimeCofactorPrice n P + clippedCofactorOp n P Δ := by
       dsimp [F]
-      rw [clippedCofactorSliceOp_add, ← largePrimeCofactorPrice_eq_clippedCofactorOp hn1 le_rfl]
+      rw [clippedCofactorOp_add, ← largePrimeCofactorPrice_eq_clippedCofactorOp hn1 le_rfl]
     have hG_op : clippedCofactorOp n P G = clippedCofactorOp n P id + clippedCofactorOp n P Δ := by
-      dsimp [G]; exact clippedCofactorSliceOp_add n P 1 id Δ
+      dsimp [G]; exact clippedCofactorOp_add n P id Δ
     have hF_mid : midpointSecondDiff n F = primeMidpointPrice n + midpointSecondDiff n Δ := by
       rw [prime_midpoint_price_eq]; unfold midpointSecondDiff; dsimp [F]; ring
     have hG_mid : midpointSecondDiff n G = midpointSecondDiff n Δ := by
@@ -1306,22 +1334,27 @@ private theorem reflectedComposite_theta_perturbation_violated {Δ : ℝ → ℝ
     hbig.trans (Real.rpow_le_rpow (by positivity) (by exact_mod_cast hn_ge_pk) hgap.le)
   have hK_le : K_θid * Real.sqrt n ≤ (c₁ / 2) * (n : ℝ) ^ z.re := by
     have hm1 := (div_le_iff₀ (half_pos hc₁_pos)).mp hrpow_n
-    have hm2 := mul_le_mul_of_nonneg_right hm1 (Real.sqrt_nonneg n)
-    rwa [mul_comm _ (c₁ / 2), mul_assoc, Real.sqrt_eq_rpow, ← Real.rpow_add hn0,
-      sub_add_cancel] at hm2
+    calc K_θid * Real.sqrt n
+        ≤ ((n : ℝ) ^ (z.re - 1 / 2) * (c₁ / 2)) * Real.sqrt n :=
+          mul_le_mul_of_nonneg_right hm1 (Real.sqrt_nonneg n)
+      _ = (c₁ / 2) * ((n : ℝ) ^ (z.re - 1 / 2) * (n : ℝ) ^ (1 / 2 : ℝ)) := by
+          rw [Real.sqrt_eq_rpow]; ring
+      _ = (c₁ / 2) * (n : ℝ) ^ z.re := by
+          rw [← Real.rpow_add hn0, sub_add_cancel]
   set DF := clippedCofactorOp n ⌊2 * Real.sqrt n⌋₊ F - reflectedDensity * (n.totient : ℝ) -
     midpointSecondDiff n F
   set DG := clippedCofactorOp n ⌊2 * Real.sqrt n⌋₊ G - reflectedDensity * (n.totient : ℝ) -
     midpointSecondDiff n G
-  have htri := abs_sub DG (DG - DF)
-  rw [sub_sub_cancel, abs_sub_comm] at htri
+  have htri : |DG| ≤ |DF - DG| + |DF| := by
+    have h := abs_add_le (DG - DF) DF
+    rwa [sub_add_cancel, abs_sub_comm DG DF] at h
   linarith only [htri, hGn, hdiff, hK_le]
 
 /-- Sharp partial-summation wave approximation under an integer Chebyshev power bound
 `|θ(n) - n| ≤ K_θ n^{θ₀}` (`1/2 ≤ θ₀ < 1`): because the factor `n^{β - 1}` damps `θ(n) - n` to
 `n^{θ₀ + β - 1}` while `n^{β - 2}` (`β < 1`) is summable, `2 ∑_{p ≤ x} p^{β - 1} cos(γ log p) log p`
 approximates `2 Re(x^{β + iγ} / (β + iγ))` within `O(x^{max (1/4) (θ₀ + β - 1)})` across `x ≥ 1`. -/
-private theorem theta_power_prime_wave_approx {θ₀ β K_θ : ℝ} (hθ_lo : 1 / 2 ≤ θ₀) (hθ_hi : θ₀ < 1)
+private theorem theta_power_prime_wave_approx {θ₀ β K_θ : ℝ} (_hθ_lo : 1 / 2 ≤ θ₀) (hθ_hi : θ₀ < 1)
     (hβ : 1 / 2 < β) (hβ1 : β < 1) (hK : 0 ≤ K_θ)
     (hθ : ∀ n : ℕ, 1 ≤ n → |Chebyshev.theta (n : ℝ) - (n : ℝ)| ≤ K_θ * (n : ℝ) ^ θ₀) (γ : ℝ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 1 ≤ x →
@@ -1344,7 +1377,7 @@ private theorem theta_power_prime_wave_approx {θ₀ β K_θ : ℝ} (hθ_lo : 1 
   have hsum_μpow (M : ℕ) (hM1 : 1 ≤ M) :
       ∑ n ∈ Icc 1 M, (n : ℝ) ^ (μ - 1) ≤ 4 * (M : ℝ) ^ μ := by
     induction M, hM1 using Nat.le_induction with
-    | base => simp [Real.one_rpow]; norm_num
+    | base => simp
     | succ k hk ih =>
       have hkR1 : (1 : ℝ) ≤ k := by exact_mod_cast hk
       have hk0 : (0 : ℝ) < k := zero_lt_one.trans_le hkR1
@@ -1424,7 +1457,7 @@ private theorem theta_power_prime_wave_approx {θ₀ β K_θ : ℝ} (hθ_lo : 1 
         ← Complex.exp_add]
       congr 1; dsimp [ρ]; push_cast; ring
     rw [hcp, Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
-    simp only [Complex.re_ofReal_mul, Complex.add_re, Complex.mul_re, Complex.ofReal_re,
+    simp only [Complex.add_re, Complex.mul_re, Complex.ofReal_re,
       Complex.ofReal_im, Complex.I_re, Complex.I_im]
     ring
   have hjump (n : ℕ) (hn : 1 ≤ n) :
@@ -1813,7 +1846,9 @@ theorem rh_sEdit_imitates_radius_but_violates_reflectedComposites (hRH : Riemann
     obtain ⟨C₁, hC₁, hedit⟩ := sEdit_primeLog_wave_approx (by linarith) hβα hα1 γ 0
     -- Integer `θ` bound at exponent `3 / 5` (since `β - 2 / 5 < 1 / 2`? No: we need `O(√x log² x)`!)
     -- Bound `|Chebyshev.theta y - y| ≤ K_rh √y (1 + log y)²` for `y ≥ 1` under `hRH`
-    set K_rh : ℝ := |200 * (RHTower.xiLineTwoLogDerivConstant + 2)| + 80 + 3 * (Real.log 4 + 4)
+    set M₁₆ : ℝ := Chebyshev.psi 16 + 16
+    have hM₁₆_nn : 0 ≤ M₁₆ := by have := Chebyshev.psi_nonneg 16; dsimp [M₁₆]; linarith
+    set K_rh : ℝ := |200 * (RHTower.xiLineTwoLogDerivConstant + 2)| + M₁₆ + 3 * (Real.log 4 + 4)
     have hK_rh : 0 ≤ K_rh := by dsimp [K_rh]; positivity
     have hθ_rh : ∀ y : ℝ, 1 ≤ y →
         |Chebyshev.theta y - y| ≤ K_rh * Real.sqrt y * (1 + Real.log y) ^ 2 := by
@@ -1826,7 +1861,7 @@ theorem rh_sEdit_imitates_radius_but_violates_reflectedComposites (hRH : Riemann
         exact (GreenCalculusOfThePrimeFreeWindow.psi_sub_theta_le_three_mul_sqrt y).trans
           (le_mul_of_one_le_right (by positivity) h1_sq)
       have hpsi : |Chebyshev.psi y - y| ≤
-          (|200 * (RHTower.xiLineTwoLogDerivConstant + 2)| + 80) *
+          (|200 * (RHTower.xiLineTwoLogDerivConstant + 2)| + M₁₆) *
             Real.sqrt y * (1 + Real.log y) ^ 2 := by
         by_cases hy16 : 16 ≤ y
         · have h1 := (RHTower.abs_chebyshevPsi_sub_le_of_riemannHypothesis hRH hy16).trans
@@ -1834,16 +1869,21 @@ theorem rh_sEdit_imitates_radius_but_violates_reflectedComposites (hRH : Riemann
               (mul_le_mul_of_nonneg_right (le_abs_self _) (Real.sqrt_nonneg _)) (sq_nonneg _))
           have hsq : Real.log y ^ 2 ≤ (1 + Real.log y) ^ 2 := by nlinarith [Real.log_nonneg hy]
           exact h1.trans ((mul_le_mul_of_nonneg_left hsq (by positivity)).trans
-            (by nlinarith [Real.sqrt_nonneg y, sq_nonneg (1 + Real.log y)]))
-        · have h5 := RHTower.RiemannGaussian.abs_chebyshevPsi_sub_self_le_five_mul_self_of_one_le hy
-          have hy_lt : y ≤ 16 := (not_le.mp hy16).le
+            (mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_right (by linarith [hM₁₆_nn]) (Real.sqrt_nonneg y))
+              (sq_nonneg _)))
+        · have hy_lt : y ≤ 16 := (not_le.mp hy16).le
+          have h5 : |Chebyshev.psi y - y| ≤ M₁₆ := by
+            have hnn := Chebyshev.psi_nonneg y
+            have hmo := Chebyshev.psi_mono hy_lt
+            dsimp [M₁₆]; rw [abs_le]; constructor <;> linarith only [hnn, hmo, hy, hy_lt]
           have hprod : 1 ≤ Real.sqrt y * (1 + Real.log y) ^ 2 :=
             one_le_mul_of_one_le_of_one_le hsqrt1 h1_sq
-          calc |Chebyshev.psi y - y| ≤ 80 := by linarith
-            _ ≤ (|200 * (RHTower.xiLineTwoLogDerivConstant + 2)| + 80) *
+          calc |Chebyshev.psi y - y| ≤ M₁₆ := h5
+            _ ≤ (|200 * (RHTower.xiLineTwoLogDerivConstant + 2)| + M₁₆) *
                   (Real.sqrt y * (1 + Real.log y) ^ 2) :=
                 (by linarith [abs_nonneg (200 * (RHTower.xiLineTwoLogDerivConstant + 2))] :
-                  (80 : ℝ) ≤ |200 * (RHTower.xiLineTwoLogDerivConstant + 2)| + 80).trans
+                  M₁₆ ≤ |200 * (RHTower.xiLineTwoLogDerivConstant + 2)| + M₁₆).trans
                   (le_mul_of_one_le_right (by positivity) hprod)
             _ = _ := by ring
       have htri := abs_sub (Chebyshev.psi y - y) (Chebyshev.psi y - Chebyshev.theta y)
@@ -2059,6 +2099,7 @@ theorem noSimpleSingleOffLineQuartet_tfae :
         exact_mod_cast (show n = 2 by omega)
   tfae_have 1 ↔ 3 := by
     rw [← not_iff_not]
+    unfold NoSimpleSingleOffLineQuartet
     push Not
     constructor
     · rintro ⟨ρ₀, hq, hm1⟩
@@ -2084,7 +2125,7 @@ theorem noSimpleSingleOffLineQuartet_tfae :
             rw [xi_conj, xi_zero_of_mem_carrier hz_mem, map_zero]
           obtain ⟨qc, hqc⟩ := exists_xiZeroCopy_of_xi_eq_zero hxi_c
           exact hqc ▸ xiZeroCopy_mem_carrier qc
-        have hconj_re : 1 / 2 < (conj z₀).re := by simp [hz_re]
+        have hconj_re : 1 / 2 < (conj z₀).re := by simp; linarith [hz_re]
         exact ⟨conj z₀,
           ((hasSimpleSingleOffLineQuartet_tfae hconj_re hconj_im hconj_mem).out 2 0).mp h2⟩
   tfae_have 1 ↔ 5 := by
@@ -2096,7 +2137,8 @@ theorem noSimpleSingleOffLineQuartet_tfae :
     · intro h5 ρ₀ ⟨hq, hm1⟩
       by_cases him_pos : 0 < ρ₀.im
       · have hρ_eq : ((ρ₀.re : ℂ) + I * (ρ₀.im : ℂ)) = ρ₀ := by apply Complex.ext <;> simp
-        have h8 := ((hasSimpleSingleOffLineQuartet_tfae hq.1 him_pos hq.2.1).out 0 7).mp ⟨hq, hm1⟩
+        have h8 := ((hasSimpleSingleOffLineQuartet_tfae hq.1 him_pos hq.2.1).out 0 7).mp
+          (⟨hq, hm1⟩ : HasSimpleSingleOffLineQuartet ρ₀)
         rcases h5 ρ₀.re ρ₀.im hq.1 hq.re_lt_one him_pos with h | h | h | h
         · exact h8.1 h
         · exact h8.2.1 h
@@ -2104,18 +2146,18 @@ theorem noSimpleSingleOffLineQuartet_tfae :
         · exact h8.2.2.2 h
       · have him_lt : ρ₀.im < 0 := lt_of_le_of_ne (not_lt.mp him_pos) hq.im_ne_zero
         have hqc : HasSingleOffLineQuartet (conj ρ₀) := by
-          refine ⟨by simp [hq.1], ?_, ?_⟩
+          refine ⟨by simp; linarith [hq.1], ?_, ?_⟩
           · have : conj ρ₀ ∈ {z ∈ zetaZeroConfig.carrier | z.re ≠ 1 / 2} := by
               rw [hq.2.2]; exact Or.inr (Or.inl rfl)
             exact this.1
           · rw [hq.2.2]
             ext z
-            simp only [zeroQuartetSet, Set.mem_insert_iff, Set.mem_singleton_iff, conj_conj,
-              map_sub, map_one]
+            simp only [zeroQuartetSet, Set.mem_insert_iff, Set.mem_singleton_iff, conj_conj]
             tauto
         have hmc1 : quartetCopyMult (conj ρ₀) = 1 := by rwa [quartetCopyMult_conj]
         have hcim : 0 < (conj ρ₀).im := by simp; linarith
-        have h8 := ((hasSimpleSingleOffLineQuartet_tfae hqc.1 hcim hqc.2.1).out 0 7).mp ⟨hqc, hmc1⟩
+        have h8 := ((hasSimpleSingleOffLineQuartet_tfae hqc.1 hcim hqc.2.1).out 0 7).mp
+          (⟨hqc, hmc1⟩ : HasSimpleSingleOffLineQuartet (conj ρ₀))
         rcases h5 (conj ρ₀).re (conj ρ₀).im hqc.1 hqc.re_lt_one hcim with h | h | h | h
         · exact h8.1 h
         · exact h8.2.1 h
@@ -2178,25 +2220,26 @@ theorem noSimpleSingleOffLineQuartet_tfae :
     intro h6 ρ₀ ⟨hq, hm1⟩
     by_cases him_pos : 0 < ρ₀.im
     · have hρ_eq : ((ρ₀.re : ℂ) + I * (ρ₀.im : ℂ)) = ρ₀ := by apply Complex.ext <;> simp
-      have h7 := ((hasSimpleSingleOffLineQuartet_tfae hq.1 him_pos hq.2.1).out 0 6).mp ⟨hq, hm1⟩
+      have h7 := ((hasSimpleSingleOffLineQuartet_tfae hq.1 him_pos hq.2.1).out 0 6).mp
+        (⟨hq, hm1⟩ : HasSimpleSingleOffLineQuartet ρ₀)
       rw [← hρ_eq] at h7
       exact h6 ρ₀.re ρ₀.im hq.1 hq.re_lt_one him_pos h7
     · have him_lt : ρ₀.im < 0 := lt_of_le_of_ne (not_lt.mp him_pos) hq.im_ne_zero
       have hqc : HasSingleOffLineQuartet (conj ρ₀) := by
-        refine ⟨by simp [hq.1], ?_, ?_⟩
+        refine ⟨by simp; linarith [hq.1], ?_, ?_⟩
         · have : conj ρ₀ ∈ {z ∈ zetaZeroConfig.carrier | z.re ≠ 1 / 2} := by
             rw [hq.2.2]; exact Or.inr (Or.inl rfl)
           exact this.1
         · rw [hq.2.2]
           ext z
-          simp only [zeroQuartetSet, Set.mem_insert_iff, Set.mem_singleton_iff, conj_conj,
-            map_sub, map_one]
+          simp only [zeroQuartetSet, Set.mem_insert_iff, Set.mem_singleton_iff, conj_conj]
           tauto
       have hmc1 : quartetCopyMult (conj ρ₀) = 1 := by rwa [quartetCopyMult_conj]
       have hcim : 0 < (conj ρ₀).im := by simp; linarith
       have hρc_eq : (((conj ρ₀).re : ℂ) + I * ((conj ρ₀).im : ℂ)) = conj ρ₀ := by
         apply Complex.ext <;> simp
-      have h7 := ((hasSimpleSingleOffLineQuartet_tfae hqc.1 hcim hqc.2.1).out 0 6).mp ⟨hqc, hmc1⟩
+      have h7 := ((hasSimpleSingleOffLineQuartet_tfae hqc.1 hcim hqc.2.1).out 0 6).mp
+        (⟨hqc, hmc1⟩ : HasSimpleSingleOffLineQuartet (conj ρ₀))
       rw [← hρc_eq] at h7
       exact h6 (conj ρ₀).re (conj ρ₀).im hqc.1 hqc.re_lt_one hcim h7
   tfae_finish
@@ -2243,7 +2286,7 @@ theorem corollaries_of_noSimpleSingleOffLineQuartet (hno : NoSimpleSingleOffLine
         rw [← rightXiZeroCopy_le_offLineXiZeroCopy_two_mul]
         calc (8 : ℕ∞) = 2 * 4 := by norm_num
           _ ≤ 2 * {q : XiZeroCopy | 1 / 2 < (q.1 : ℂ).re}.encard :=
-              mul_le_mul_left' hge4 2
+              mul_le_mul_right hge4 2
       exact ⟨hge4, hge8, Or.inl h4⟩
     · have hge4 : 4 ≤ {q : XiZeroCopy | 1 / 2 < (q.1 : ℂ).re}.encard := by
         rw [rightXiZeroCopy_encard_of_singleQuartet hq₀]
@@ -2285,15 +2328,16 @@ theorem abscissa_unconstrained_under_no_simple_single_layer {b β : ℝ} (hb0 : 
   have hb_pos : 0 < b := by linarith
   have hb_lt1 : b < 1 := by linarith
   have hζ1 : riemannZeta ((b : ℂ) + I) ≠ 0 :=
-    RHTower.riemannZeta_ne_zero_of_abs_im_lt_four (by simp [hb_pos]) (by simp [hb_lt1])
-      (by simp; norm_num)
+    RHTower.riemannZeta_ne_zero_of_abs_im_lt_four (by simp [hb_pos]) (by simp [hb_lt1]) (by simp)
   refine ⟨?_, ?_⟩
-  · exact exists_isEdit_fake_with_layer Finset.univ (fun _ : Fin 2 => (b : ℂ) + I) hb0 hb
-      (fun _ _ => by simp [hb0]) ⟨0, Finset.mem_univ 0, hζ1⟩ hβ hβ1
-  · exact exists_isEdit_fake_with_layer Finset.univ
-      (fun j : Bool => if j then (b : ℂ) + I else (b : ℂ) + 2 * I) hb0 hb
-      (fun j _ => by cases j <;> simp [hb0])
-      ⟨true, Finset.mem_univ true, by simpa using hζ1⟩ hβ hβ1
+  · simpa only [Finset.mem_univ, true_and] using
+      exists_isEdit_fake_with_layer Finset.univ (fun _ : Fin 2 => (b : ℂ) + I) hb0 hb
+        (fun _ _ => by simp; linarith [hb0]) ⟨0, Finset.mem_univ 0, hζ1⟩ hβ hβ1
+  · simpa only [Finset.mem_univ, true_and] using
+      exists_isEdit_fake_with_layer Finset.univ
+        (fun j : Bool => if j then (b : ℂ) + I else (b : ℂ) + 2 * I) hb0 hb
+        (fun j _ => by cases j <;> simp <;> linarith [hb0])
+        ⟨true, Finset.mem_univ true, by simpa using hζ1⟩ hβ hβ1
 
 #print axioms quartetCopyMult_eq_one_iff_deriv_ne_zero
 #print axioms hasSimpleSingleOffLineQuartet_tfae

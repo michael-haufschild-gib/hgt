@@ -91,10 +91,12 @@ private theorem smooth_rounding_per_cofactor {y Z X m : ℕ} (yp : 0<y) (zp : 0<
   have floor (n : ℕ) : 0 ≤ quotientFloorCenter y n ∧ quotientFloorCenter y n ≤ n ∧
       (n:ℝ) ≤ quotientFloorCenter y n+y := by
     have exactPrice : quotientFloorCenter y n+((n%y:ℕ):ℝ)=n := by unfold quotientFloorCenter; exact_mod_cast Nat.div_add_mod n y
-    have residue := Nat.cast_le.mpr (α := ℝ) (Nat.mod_lt n yp).le
+    have residue := (Nat.cast_le (α := ℝ)).mpr (Nat.mod_lt n yp).le
     exact ⟨mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _),
       by linarith only [exactPrice,Nat.cast_nonneg (α := ℝ) (n%y)],by linarith only [exactPrice,residue]⟩
-  have base : z*((Z:ℝ)/m)=(X:ℝ)/m := by dsimp only [z]; field_simp
+  have base : z*((Z:ℝ)/m)=(X:ℝ)/m := by
+    dsimp only [z]
+    field_simp [zpos.ne', (Nat.cast_pos.mpr mp : (0:ℝ)<m).ne'] <;> ring
   have low := (mul_le_mul_of_nonneg_left (Int.floor_le ((Z:ℝ)/m)) z0).trans_eq base
   have high := mul_le_mul_of_nonneg_left (Int.lt_floor_add_one ((Z:ℝ)/m)).le z0
   rw [base] at high
@@ -195,7 +197,7 @@ theorem raw_prime_profile_at_every_interior_cut {ε : ℝ} (ep : 0<ε) :
     (fun _ => a) (fun _ _ q _ => dom q) (fun _ _ q _ => fix q)
   have positive : 0<(Z:ℝ) := Nat.cast_pos.mpr zp
   have room' := mul_le_mul_of_nonneg_left (count Z yz) (mul_nonneg (by norm_num : (0:ℝ) ≤ 3) (div_nonneg (Nat.cast_nonneg X) positive.le))
-  have unify : 3*((X:ℝ)/Z)*(ε/6*Z)=ε/2*X := by field_simp; ring
+  have unify : 3*((X:ℝ)/Z)*(ε/6*Z)=ε/2*X := by field_simp [positive.ne']; ring
   have fit := room'.trans_eq unify
   exact (raw_price_from_centered_subwindows yp zp room a).trans (by linarith only [fit,price])
 

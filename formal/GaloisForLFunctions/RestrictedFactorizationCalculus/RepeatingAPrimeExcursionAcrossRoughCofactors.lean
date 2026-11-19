@@ -46,7 +46,7 @@ private theorem cost_at_the_lower_sieve_endpoint :
   have per : |ordinaryThetaError y| ≤ (Real.log 4+1)*(y:ℝ) := by
     change |Chebyshev.theta y-y| ≤ _
     have tri := abs_sub (Chebyshev.theta y) (y:ℝ)
-    rw [abs_of_nonneg (Chebyshev.theta_nonneg _),abs_of_nonneg (Nat.cast_nonneg _)] at tri
+    rw [abs_of_nonneg (Chebyshev.theta_nonneg (y:ℝ)),abs_of_nonneg (Nat.cast_nonneg (α := ℝ) y)] at tri
     linarith only [tri,prime]
   have residue : ((T%y:ℕ):ℝ) ≤ y := Nat.cast_le.mpr (Nat.mod_lt _ yp).le
   let b := roughOrdinaryPrimeWeight y
@@ -104,7 +104,7 @@ private theorem rectangle_size {a : ℝ} (ap : 0<a) {T : ℕ} (tp : 1 ≤ T) :
   have hi := Nat.ceil_lt_add_one (mul_nonneg (by norm_num : (0:ℝ) ≤ 2) v0)
   have lo := Nat.le_ceil (2*(T:ℝ)^a)
   have z1 : 1 ≤ ⌈2*(T:ℝ)^a⌉₊ := Nat.one_le_cast.mp (by linarith only [v1,lo] : (1:ℝ) ≤ (⌈2*(T:ℝ)^a⌉₊:ℕ))
-  refine ⟨by simpa using Nat.mul_le_mul_left T z1,?_⟩
+  refine ⟨by simpa only [primeRectangleHeight,Nat.mul_one] using Nat.mul_le_mul_left T z1,?_⟩
   rw [primeRectangleHeight,Nat.cast_mul,Real.rpow_add (zero_lt_one.trans_le t1),Real.rpow_one]
   have cap := mul_le_mul_of_nonneg_left (by linarith only [hi,v1] : (⌈2*(T:ℝ)^a⌉₊:ℝ) ≤ 3*(T:ℝ)^a) (Nat.cast_nonneg (α := ℝ) T)
   linarith only [cap]
@@ -195,6 +195,7 @@ theorem both_signs_above_every_smaller_rectangle_power {a r : ℝ} (ap : 0<a) (r
     have h1 := mul_le_mul_of_nonneg_left (Real.one_le_rpow t1 kp.le) l2
     have h2 := mul_le_mul_of_nonneg_left (Real.log_le_rpow_div t0.le kp) ap.le
     dsimp only [D]
+    simp only [div_eq_mul_inv] at h2 ⊢
     linarith only [h1,h2]
   have exponent : (1+a)*r+k+k=a+1/2 := by dsimp only [k]; ring
   have scaled := mul_lt_mul_of_pos_right ((div_lt_iff₀ denom).mp scale)
@@ -249,6 +250,7 @@ private theorem rectangle_multiplicity {a η : ℝ} (ap : 0<a) (ep : 0<η) :
     rw [Real.log_mul (by norm_num) v0.ne',show Real.log v=a*Real.log T from Real.log_rpow t0 a]
     have h1 := mul_le_mul_of_nonneg_left (Real.one_le_rpow t1 ep.le) l2.le
     have h2 := mul_le_mul_of_nonneg_left (Real.log_le_rpow_div t0.le ep) ap.le
+    simp only [div_eq_mul_inv] at h2 ⊢
     linarith only [h1,h2]
   have bound := ((div_le_iff₀ lpos).mp count).trans
     (mul_le_mul_of_nonneg_left lcap (Nat.cast_nonneg (α := ℝ) S.card))
@@ -267,8 +269,7 @@ private theorem compare_rectangle_with_prime_error {a : ℝ} (ap : 0<a) :
   obtain ⟨D,d0,bound⟩ := cost_at_the_lower_sieve_endpoint
   refine ⟨D,d0,?_⟩
   filter_upwards [log_square_wall_inside_a_prime_rectangle ap,eventually_ge_atTop (1:ℕ)] with T room tp
-  intro w dom prime
-  let y := logSquareCutoff (primeRectangleHeight a T)
+  intro y w dom prime
   let S := rectanglePrimes a T
   let v := (T:ℝ)^a
   let E := ordinaryThetaError T
@@ -346,7 +347,7 @@ theorem sharp_exponent_of_a_single_prime_rectangle {a β : ℝ} (ap : 0<a) (crit
            _ = n*(A*C*t^(β+ε)) := by rw [←ex]; ring
     have np : 0<n := by
       by_contra! low
-      have p := mul_nonpos_of_nonneg_of_nonpos (mul_nonneg apos.le (Real.rpow_nonneg t0.le _)) low
+      have p := mul_nonpos_of_nonneg_of_nonpos (mul_nonneg apos.le (Real.rpow_nonneg t0.le η)) low
       exact (not_le_of_gt (Real.rpow_pos_of_pos t0 a)) (mult.trans p)
     have roots : Real.sqrt t ≤ t^(β+ε) := by
       rw [Real.sqrt_eq_rpow]; exact Real.rpow_le_rpow_of_exponent_le t1 (by linarith only [critical,ep])
@@ -371,7 +372,8 @@ theorem sharp_exponent_of_a_single_prime_rectangle {a β : ℝ} (ap : 0<a) (crit
     have pay := mul_le_mul ncap.2 localPrice (add_nonneg (abs_nonneg _) (mul_nonneg d0 (Real.sqrt_nonneg _)))
       (mul_nonneg (by norm_num) (Real.rpow_nonneg t0.le _))
     apply bound.trans (pay.trans_eq ?_)
-    rw [show a+β+ε=a+(β+ε) by ring,Real.rpow_add t0]
+    change 2*t^a*(C*t^(β+ε)+D*t^(β+ε)) = 2*(C+D)*t^(a+β+ε)
+    rw [show a+β+ε=a+(β+ε) by ring,Real.rpow_add t0 a (β+ε)]
     ring
 
 #print axioms sharp_exponent_of_a_single_prime_rectangle

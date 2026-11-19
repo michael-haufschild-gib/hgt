@@ -89,8 +89,8 @@ theorem price_of_an_independent_prime_interval {s : ℝ} (strip : RHTower.zetaZe
   have low := (price l lp).trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.cast_le.mpr lu) sp.le) ap.le)
   have endpoint := (abs_sub _ _).trans (add_le_add (price u up) low)
   have residues : |((u%y:ℕ):ℝ)-((l%y:ℕ):ℝ)| ≤ y := by
-    have hu := Nat.cast_le.mpr (α := ℝ) (Nat.mod_lt u yp).le
-    have hl := Nat.cast_le.mpr (α := ℝ) (Nat.mod_lt l yp).le
+    have hu := (Nat.cast_le (α := ℝ)).mpr (Nat.mod_lt u yp).le
+    have hl := (Nat.cast_le (α := ℝ)).mpr (Nat.mod_lt l yp).le
     exact abs_le.mpr ⟨by linarith only [hl,Nat.cast_nonneg (α := ℝ) (u%y)],
       by linarith only [hu,Nat.cast_nonneg (α := ℝ) (l%y)]⟩
   have plain : |W| ≤ A*(u:ℝ)^s+A*(u:ℝ)^s+y := by
@@ -133,8 +133,13 @@ theorem absolute_price_of_independent_quotient_subwindows {s : ℝ} (strip : RHT
   have allm : (∑ m ∈ Icc 1 Z,(m:ℝ)^(-s)) ≤ (Z:ℝ)^(1-s)/(1-s) := by
     have h := HTGeometry.sum_rpow_sub_one_le dp (by linarith only [sp] : (1:ℝ)-s<1) Z
     rw [show (1:ℝ)-s-1= -s by ring] at h
-    rw [sum_Icc_eq_sum_range]
-    simpa only [Nat.add_sub_cancel,Nat.cast_add,Nat.cast_one,add_comm (1:ℝ)] using h
+    have shift (n : ℕ) : (∑ m ∈ Icc 1 n,(m:ℝ)^(-s)) =
+        ∑ j ∈ range n,((j:ℝ)+1)^(-s) := by
+      induction n with
+      | zero => simp
+      | succ n ih =>
+        rw [sum_Icc_succ_top (Nat.succ_pos _),Finset.sum_range_succ,ih,Nat.cast_succ]
+    exact (shift Z).le.trans h
   have summed := sum_le_sum per
   rw [sum_add_distrib,←mul_sum,sum_const,nsmul_eq_mul] at summed
   have mult := mul_le_mul_of_nonneg_left (finite.trans allm) (mul_nonneg ap (Real.rpow_nonneg (Nat.cast_nonneg X) s))

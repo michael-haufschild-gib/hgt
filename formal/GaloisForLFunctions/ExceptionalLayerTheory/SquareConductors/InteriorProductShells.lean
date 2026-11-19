@@ -135,7 +135,7 @@ private theorem horizonPair_bound :
   apply hb.trans
   have hh := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hlen
     (mul_nonneg hC (sq_nonneg (q:ℝ)))) (by positivity : 0≤B/(n:ℝ)^7)
-  exact hh.trans_eq (by field_simp <;> ring)
+  exact hh.trans_eq (by field_simp)
 
 /-- For every interior shell V<pv≤2V and cap v≤n, the full signed
 ordinary-prime reading costs V³ log(2V)/n⁵. -/
@@ -181,7 +181,9 @@ theorem capped_interior_shell_bound :
   apply (abs_sum_le_sum_abs _ _).trans ((sum_le_sum hh).trans _)
   rw [sum_const,nsmul_eq_mul,le_div_iff₀ hp']
   have he := mul_le_mul_of_nonneg_right hc (by positivity : 0≤G*(K*(U:ℝ)^2/(n:ℝ)^5))
-  linarith only [he]
+  calc _ = ((cappedShellFactors n V p).card:ℝ)*p*(G*(K*(U:ℝ)^2/(n:ℝ)^5)) := by ring
+    _ ≤ (U:ℝ)*(G*(K*(U:ℝ)^2/(n:ℝ)^5)) := he
+    _ = _ := by ring
 
 #print axioms capped_interior_shell_bound
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

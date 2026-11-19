@@ -22,12 +22,15 @@ abbrev OpenDisk := Ioo (-1:ℝ) 1
 def logRatio (t : ℝ) := if t=0 then 1 else -log (1-t)/t
 
 theorem diskKernel_factor (z w : ℝ) : diskKernel z w=(z*w)*logRatio (z*w) := by
-  by_cases h : z*w=0 <;> simp [diskKernel,logRatio,h]
+  by_cases h : z*w=0
+  · simp [diskKernel,logRatio,h]
+  · rw [diskKernel,logRatio,if_neg h,mul_div_cancel₀ _ h]
 
 private theorem log_deriv (z : ℝ) (h : z<1) :
     HasDerivAt (fun x : ℝ => -log (1-x)) (1-z)⁻¹ z := by
-  convert (((hasDerivAt_id z).const_sub 1).log (sub_pos.mpr h).ne').neg using 1 <;>
-    simp [div_eq_mul_inv]
+  have hd := (((hasDerivAt_id z).const_sub (1:ℝ)).log (sub_pos.mpr h).ne').neg
+  change HasDerivAt (fun x : ℝ => -log (1-x)) (-(-1/(1-z))) z at hd
+  simpa only [neg_div,neg_neg,one_div] using hd
 
 theorem logRatio_continuousAt {t : ℝ} (ht : t<1) : ContinuousAt logRatio t := by
   by_cases h : t=0
@@ -50,7 +53,9 @@ private theorem disk_product {z w : ℝ} (hz : z ∈ OpenDisk) (hw : w ∈ OpenD
 private theorem primitive_deriv {w z : ℝ} (hw : w∈OpenDisk) (hz : z∈OpenDisk) :
     HasDerivAt (fun x => x*logRatio (x*w)) (1-z*w)⁻¹ z := by
   by_cases h : w=0
-  · subst w; simpa [logRatio] using hasDerivAt_id z
+  · subst w
+    simp only [mul_zero,logRatio,if_pos rfl,mul_one,sub_zero,inv_one]
+    exact hasDerivAt_id z
   have he : (fun x => x*logRatio (x*w))=(fun x => -log (1-x*w)/w) := by
     funext x
     apply (eq_div_iff h).mpr
@@ -58,8 +63,10 @@ private theorem primitive_deriv {w z : ℝ} (hw : w∈OpenDisk) (hz : z∈OpenDi
       _ = (x*w)*logRatio (x*w) := by ring
       _ = _ := (diskKernel_factor x w).symm
   rw [he]
-  convert (((log_deriv (z*w) (disk_product hz hw)).comp z ((hasDerivAt_id z).mul_const w)).div_const w) using 1
-  field_simp [h]
+  have hd := (((log_deriv (z*w) (disk_product hz hw)).comp z ((hasDerivAt_id z).mul_const w)).div_const w)
+  change HasDerivAt (fun x : ℝ => -log (1-x*w)/w) (((1-z*w)⁻¹*(1*w))/w) z at hd
+  have cancel : ((1-z*w)⁻¹*(1*w))/w = (1-z*w)⁻¹ := by rw [one_mul,div_eq_iff h]
+  rwa [cancel] at hd
 
 private def cayley (x : ℝ) := (1+x)/(1-x)
 
@@ -91,10 +98,16 @@ theorem derivative_det_ne {n : ℕ} (z w : Fin n ↪ OpenDisk) :
       Matrix.of fun i j => (2/(1-(z i).val))*(Matrix.of fun u v => (1-(w v).val)⁻¹*A u v) i j := by
     ext i j
     simp only [Matrix.of_apply,A,HTGeometry.cauchyMatrix_apply]
-    have ht := sums i j
-    dsimp [a,b,cayley] at ht ⊢
-    field_simp [(sub_pos.mpr (z i).property.2).ne',(sub_pos.mpr (w j).property.2).ne',
-      (sub_pos.mpr (disk_product (z i).property (w j).property)).ne',ht] <;> ring
+    have hx := (sub_pos.mpr (z i).property.2).ne'
+    have hy := (sub_pos.mpr (w j).property.2).ne'
+    have cancel (x y U : ℝ) (hx : 1-x ≠ 0) (hy : 1-y ≠ 0) (hxy : 1-x*y ≠ 0)
+        (hU : U ≠ 0) (e : U*((1-x)*(1-y)) = 2*(1-x*y)) :
+        (1-x*y)⁻¹ = 2/(1-x)*((1-y)⁻¹*U⁻¹) := by
+      field_simp [hx,hy,hxy,hU]
+      linear_combination e
+    apply cancel _ _ _ hx hy (sub_pos.mpr (disk_product (z i).property (w j).property)).ne' (sums i j)
+    dsimp [a,b,cayley]
+    field_simp [hx,hy] <;> ring
   rw [he,det_mul_column,det_mul_row]
   exact mul_ne_zero (prod_ne_zero_iff.mpr fun i _ => div_ne_zero (by norm_num) (sub_pos.mpr (z i).property.2).ne')
     (mul_ne_zero (prod_ne_zero_iff.mpr fun j _ => inv_ne_zero (sub_pos.mpr (w j).property.2).ne') hn)
@@ -102,8 +115,8 @@ theorem derivative_det_ne {n : ℕ} (z w : Fin n ↪ OpenDisk) :
 private theorem null_coefficients {n : ℕ} (z w : Fin n ↪ OpenDisk) (c : Fin n → ℝ)
     (h : ∀ i, ∑ j, c j*logRatio ((z i).val*(w j).val)=0) : c=0 := by
   classical
-  let A := univ.image (fun i => (z i).val)
-  let S := insert 0 A
+  let A : Finset ℝ := Finset.univ.image (fun i => (z i).val)
+  let S := insert (0:ℝ) A
   let F := fun x : ℝ => ∑ j, c j*(x*logRatio (x*(w j).val))
   let G := fun x : ℝ => ∑ j, c j*(1-x*(w j).val)⁻¹
   have dF (x : ℝ) (hx : x∈OpenDisk) : HasDerivAt F (G x) x :=
@@ -131,7 +144,7 @@ private theorem null_coefficients {n : ℕ} (z w : Fin n ↪ OpenDisk) (c : Fin 
       (fun x hx => dF x (segment ⟨hx.1.le,hx.2.le⟩))
     exact ⟨x,hx,segment ⟨hx.1.le,hx.2.le⟩,e⟩
   choose pick loc inDisk isZero using inter
-  let T := (insert 0 (univ.image pick)).filter (fun x => x∈OpenDisk ∧ G x=0)
+  let T := (insert (0:ℝ) (Finset.univ.image pick)).filter (fun x => x∈OpenDisk ∧ G x=0)
   have interlace : S.card≤(T \ S).card+1 := by
     apply card_le_sdiff_of_interleaved
     intro x hx y hy hxy _

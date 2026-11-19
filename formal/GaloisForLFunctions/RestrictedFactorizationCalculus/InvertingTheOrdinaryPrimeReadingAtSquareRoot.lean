@@ -131,7 +131,7 @@ theorem critical_inversion_of_the_ordinary_prime_reading (b : ℕ → ℕ) (hb :
   have tri := abs_sub (M y t*L+ordinaryPrimeCharge y t) (ordinaryPrimeCharge y t)
   rw [add_sub_cancel_right,abs_mul,abs_of_pos lp] at tri
   apply le_of_mul_le_mul_right _ lp
-  change |M y t|*L ≤ Z*L
+  change |M y t| *L ≤ Z*L
   change |M y t*L+ordinaryPrimeCharge y t| ≤ Z*(L/2+K) at err
   linarith only [tri,err,observed,mul_le_mul_of_nonneg_right scale lp.le,
     mul_le_mul_of_nonneg_left high z0,z0]

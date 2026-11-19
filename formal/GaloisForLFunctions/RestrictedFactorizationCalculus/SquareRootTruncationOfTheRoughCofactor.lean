@@ -92,8 +92,13 @@ theorem small_rough_cofactor_card_bound {s : ℝ} (hs : 0<s) (hs1 : s<1) (z X Y 
   have sum : ∑ r ∈ Icc 1 Y,(r:ℝ)^(-s) ≤ (Y:ℝ)^(1-s)/(1-s) := by
     have h := HTGeometry.sum_rpow_sub_one_le (sub_pos.mpr hs1) (by linarith only [hs] : (1:ℝ)-s<1) Y
     rw [show (1:ℝ)-s-1= -s by ring] at h
-    rw [sum_Icc_eq_sum_range]
-    simpa only [Nat.add_sub_cancel,Nat.cast_add,Nat.cast_one,add_comm (1:ℝ)] using h
+    have shift (n : ℕ) : (∑ m ∈ Icc 1 n,(m:ℝ)^(-s)) =
+        ∑ j ∈ range n,((j:ℝ)+1)^(-s) := by
+      induction n with
+      | zero => simp
+      | succ n ih =>
+        rw [sum_Icc_succ_top (Nat.succ_pos _),Finset.sum_range_succ,ih,Nat.cast_succ]
+    exact (shift Y).le.trans h
   exact hh.trans ((sum_le_sum hr).trans (by rw [←mul_sum]; exact mul_le_mul_of_nonneg_left sum (by positivity)))
 
 /-- Every fixed power cut in the rough cofactor has unsigned exponent

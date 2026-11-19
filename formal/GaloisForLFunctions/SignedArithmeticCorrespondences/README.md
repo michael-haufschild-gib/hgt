@@ -149,11 +149,17 @@ $$
 $$
 Each multiplicative tail has two orientations. Taking its first difference gives four terms, and Cauchy–Schwarz on each sequence of multiples costs $A_NB_N$. The two real monomials have absolute value at most one on the integration interval. When both scalar square sums converge, their limits give one bound for all cutoffs and all signed coefficients. [Separate conductor energies](SeparateConductorEnergiesOnInterleavingSupports.lean)
 
-For fixed $r$ with $1/r\in\ell^2$, the criterion $w/r\in\ell^2$ is necessary as well. Against $u=\delta_1$, the cells are $2v_1-v_2$ and $v_k-v_{k+1}$ for $k\ge2$, with $v_{N+1}=0$. Alternating signed multiplicities ensure $|c_k|\ge|v_k|$ simultaneously. Taking $|v_k|=\lfloor M w_k/r_k^2\rfloor$ and letting the integer $M$ grow forces $\sum_{k=1}^N(w_k/r_k)^2\le C^2r_1^2$ for every cutoff. This converse uses actual integral divisors with the same single lower conductor throughout. [Sharp weight test](TheSharpWeightTestOnOneConductor.lean)
+For fixed $r$ with $1/r\in\ell^2$, the criterion $w/r\in\ell^2$ is necessary as well. Against $u=\delta_1$, the cells are $2v_1-v_2$ and $v_k-v_{k+1}$ for $k\ge2$, with $v_{N+1}=0$. Alternating signed multiplicities ensure $|c_k|\ge|v_k|$ simultaneously. Taking $|v_k|=\lfloor M w_k/r_k^2\rfloor$ and letting the integer $M$ grow forces $\sum_{k=1}^N(w_k/r_k)^2\le C^2r_1^2$ for every cutoff. This converse uses actual integral divisors with the same single lower conductor throughout. In fact the exact anchored norm, with $u=\delta_1$ fixed and only the upper energy in the denominator, is $\big[(2w_1/r_1)^2+\sum_{j=2}^N((w_j+w_{j-1})/r_j)^2\big]^{1/2}$ for $N\ge1$. Alternating real multiplicities attain it, and integral multiplicities give the same supremum. [Sharp weight test](TheSharpWeightTestOnOneConductor.lean)
 
 For the de la Vallée Poussin price $w_k=k\exp(-c\sqrt{\log k})$ with fixed $c>0$, a power weight $r_k=k^s$ pays for both quotient variation and real jet exactly when $s\ge3/2$. At equality the squared dual price is $k^{-1}\exp(-2c\sqrt{\log k})$, which is summable. Below equality it eventually dominates $1/k$. Thus cubic conductor energies $\sum_i i^3u_i^2$ and $\sum_j j^3v_j^2$ bound the full mixed finite part uniformly. [Sharp quotient threshold](TheCriticalConductorWeightForTheCompletedWeilForm.lean)
 
 Keeping the signs through summation by parts gives a different sharp threshold. With $T_k=\sum_i(u_i v_{ki}+v_i u_{ki})$, the prime part is $-\sum_k T_k(\Lambda(k)-1)$. Together with the real half-jet its absolute value is bounded by $C_s\|i^s u_i\|_2\|j^s v_j\|_2$ at every cutoff exactly when $s>1/2$. At the endpoint, test $u=\delta_1$ against nonnegative multiplicities on multiples of six. Their prime weight vanishes, and the real jet consumes at most half their total multiplicity. [Signed finite part and sharp power threshold](TheSignedPrimeSumOfTheConductorTails.lean)
+
+For infinite sections of finite power energy with $s>1/2$, round each actual conductor toward zero in units of $1/(N+1)$ and take its terminal differences as integral endpoint jumps. Dividing the finite intersection by $(N+1)^2$ gives the limit
+$$
+-\sum_{k,i\ge1}(u_i v_{ki}+v_i u_{ki})(\Lambda(k)-1)-\tfrac12\int_0^1 J_\infty(x)\,dx .
+$$
+The prime sum converges absolutely and the real jet converges uniformly. Both use the same two integer divisors at each cutoff. When $1/r$ and $w/r$ belong to $\ell^2$, the weighted cells also converge in absolute variation under independently dominated pointwise exhaustions. [Incidence and jet convergence](AbsoluteConductorIncidencesInTheCompletion.lean) · [Integral realization and weighted cells](TheCompletedWeilIntersectionOfTwoConductorSections.lean)
 
 ## Relation to the other programmes
 

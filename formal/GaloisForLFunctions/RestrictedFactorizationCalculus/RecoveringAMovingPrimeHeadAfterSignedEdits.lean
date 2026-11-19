@@ -17,7 +17,7 @@ private abbrev rowPrefix (y n : ℕ) := coprimeMoebiusSum (primorial y) n
 
 /-- Absolute mass of the edits to a genuine Mangoldt reading at a given exponent. -/
 def primeHeadEditMass (s : ℝ) (y n : ℕ) (a : ArithmeticFunction ℝ) :=
-  ∑ q ∈ Icc 1 n,|a q-roughMangoldtWeight y q|*(q:ℝ)^(-s)
+  ∑ q ∈ Icc 1 n,|a q-roughMangoldtWeight y q| *(q:ℝ)^(-s)
 
 private theorem edit_price_on_smaller_rows {s H : ℝ} (sp : 0<s) (hH : 0 ≤ H)
     {n : ℕ} (np : 0<n) (y : ℕ) (a : ArithmeticFunction ℝ) (unit : a 1=roughMangoldtWeight y 1)
@@ -56,7 +56,7 @@ private theorem log_price_on_smaller_rows {s H : ℝ} (hs : 1/2 ≤ s) (hH : 0 �
   have budget := critical_variation_of_the_frozen_logarithmic_row y n
     (mul_nonneg hH (Real.rpow_nonneg n0.le h)) (fun k kn => by
       rcases Nat.eq_zero_or_pos k with rfl | kp
-      · simp [rowPrefix,coprimeMoebiusSum]
+      · simp [coprimeMoebiusSum]
       have smaller := rows k kn
       rw [←pp k kp] at smaller
       have growth := Real.rpow_le_rpow (Nat.cast_nonneg k) (Nat.cast_le.mpr kn.le) hp
@@ -81,7 +81,7 @@ theorem recover_the_prefix_from_a_perturbed_prime_head {s δ : ℝ} (hs : 1/2 �
   have top := Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
   obtain ⟨N,late⟩ := eventually_atTop.mp (active.and (reading.and (top.eventually_ge_atTop (3/δ))))
   let C := max (N:ℝ) B
-  have c0 : 0 ≤ C := (Nat.cast_nonneg N).trans (le_max_left ..)
+  have c0 : 0 ≤ C := bp.trans (le_max_right ..)
   have allRows (n y : ℕ) (high : b n ≤ y) : |rowPrefix y n| ≤ C*deletionPrice s y*(n:ℝ)^s := by
     apply induction_above_a_moving_prime_cutoff b inc (fun _ => C) (fun _ _ _ => le_rfl)
       (fun _ => c0) sp _ n y high
@@ -100,7 +100,8 @@ theorem recover_the_prefix_from_a_perturbed_prime_head {s δ : ℝ} (hs : 1/2 �
     obtain ⟨⟨yp,unit,mass⟩,seen,logsize⟩ := late t (le_of_not_gt early)
     have edit := edit_price_on_smaller_rows sp h0 tp Y (a t) unit ih
     have variation := log_price_on_smaller_rows hs h0 tp Y ih
-    have full := (rough_action_as_a_coefficient_prefix Y t (roughMangoldtWeight Y)).symm.trans (full_rough_reading yp t)
+    have full : quotientReading (roughFloorCoefficient Y (roughMangoldtWeight Y)) t= -roughLogarithmicHead Y t :=
+      (rough_action_as_a_coefficient_prefix Y t (roughMangoldtWeight Y)).symm.trans (full_rough_reading yp t)
     rw [full,sub_neg_eq_add] at edit
     have editCost := edit.trans (mul_le_mul_of_nonneg_left mass z0)
     have observation := seen.trans (mul_le_mul_of_nonneg_right ((le_max_right _ B).trans hc)
@@ -109,9 +110,10 @@ theorem recover_the_prefix_from_a_perturbed_prime_head {s δ : ℝ} (hs : 1/2 �
     let L := Real.log (t:ℝ)
     let V := roughLogarithmicHead Y t
     let R := quotientReading (roughFloorCoefficient Y (a t)) t
+    change 3/δ ≤ L at logsize
     have identity : M*L=(M*L-V)+(R+V)-R := by ring
     have tri := (abs_sub ((M*L-V)+(R+V)) R).trans
-      (add_le_add_right (abs_add_le (M*L-V) (R+V)) _)
+      (add_le_add (abs_add_le (M*L-V) (R+V)) (le_refl |R|))
     rw [←identity] at tri
     have Lp : 0<L := (div_pos (by norm_num) dp).trans_le logsize
     rw [abs_mul,abs_of_pos Lp] at tri
@@ -148,7 +150,7 @@ theorem mass_of_all_signed_proper_power_edits {s : ℝ} (hs : 1/2<s) (upper : s 
   · simp [fix q hp,hp]
   · simp only [hp,not_false_eq_true,if_true]
     have diff := (abs_sub (a q) (roughMangoldtWeight y q)).trans ((add_le_add (dom q) (mangoldt_dominated y q)).trans_eq (two_mul _).symm)
-    exact (mul_le_mul_of_nonneg_right diff (Real.rpow_nonneg (Nat.cast_nonneg q) _)).trans_eq (by ring)
+    exact (mul_le_mul_of_nonneg_right diff (Real.rpow_nonneg (Nat.cast_nonneg q) (-s))).trans_eq (by ring)
 
 #print axioms recover_the_prefix_from_a_perturbed_prime_head
 #print axioms mass_of_all_signed_proper_power_edits

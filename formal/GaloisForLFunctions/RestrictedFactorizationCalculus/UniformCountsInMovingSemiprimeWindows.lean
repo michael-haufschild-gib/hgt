@@ -63,7 +63,7 @@ private theorem normalized_pair_error {T η : ℝ} (hT : 1 < T) {a b : ℕ}
     have hc := mul_le_mul_of_nonneg_right (hcount q hq) (div_nonneg hl.le hT0.le)
     -- Put the positive normalization inside the absolute value on the left.
     have hs : 2*(T/(q:ℝ)) = 2*T/q := (mul_div_assoc ..).symm
-    calc _ = |((windowPrimes (T/q) (2*T/q)).card:ℝ)-(T/q)/Real.log (T/q)|*(h/T) := by
+    calc _ = |((windowPrimes (T/q) (2*T/q)).card:ℝ)-(T/q)/Real.log (T/q)| *(h/T) := by
                rw [←hid,←sub_mul,abs_mul,abs_of_pos (div_pos hl hT0)]
          _ ≤ (η*((T/q)/Real.log (T/q)))*(h/T) := by simpa only [hs] using hc
          _ = _ := by rw [mul_assoc,hid]

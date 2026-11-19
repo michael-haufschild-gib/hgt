@@ -1,6 +1,7 @@
 import GaloisForLFunctions.RHTower.Sieve.SelbergInversion
 import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 import Mathlib.NumberTheory.Primorial
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 /-!
 # Rough prime triples on the right of the sharp midpoint
@@ -191,8 +192,7 @@ theorem cubic_nonunit_index {Y a : ℕ}
   classical
   by_cases hs : cubicNonunit Y a
   · exact (cubic_le_minFac hs.1 hs.2).trans (Nat.le_of_dvd hs.1.le (Nat.minFac_dvd a))
-  · exfalso
-    simpa only [rough_nonunit_value,rough_mangoldt_value,if_neg hs,ne_self_iff_false,or_self] using h
+  · simp only [rough_nonunit_value,rough_mangoldt_value,if_neg hs,ne_self_iff_false,or_self] at h
 
 private theorem triple_price_congr {k : ℕ} {f g h F G H : ArithmeticFunction ℝ}
     (he : ∀ a b c : ℕ, a*b*c=k → f a*g b*h c=F a*G b*H c) :
@@ -268,8 +268,10 @@ theorem cubic_midpoint_thresholds (n : ℕ) (hY : 3 ≤ cubicMidpointCut n) :
   have h4 : 2*(Y+1)^3 ≤ (Y+1)^4 := by
     rw [pow_succ (Y+1) 3,mul_comm ((Y+1)^3)]
     exact Nat.mul_le_mul_right _ (by omega)
+  change Y^3 ≤ 3*n ∧ 3*n < (Y+1)^3 ∧ 4*n < (Y+1)^4 ∧ Y^2 ≤ 4*n/(Y+1)
   refine ⟨h1,h2,by omega,(Nat.le_div_iff_mul_le (Nat.succ_pos _)).mpr ?_⟩
   rw [Nat.mul_succ,←pow_succ]
+  change Y^3+Y^2 ≤ 4*n
   omega
 
 /-- Exact right triple price for the floor of the cube root of the shared

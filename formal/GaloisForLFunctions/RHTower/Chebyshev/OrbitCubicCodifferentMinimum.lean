@@ -126,14 +126,14 @@ private theorem discr_pos (m : ℤ) : 0 < orderDiscriminant m := by
 absolute norm. The generator is a minimizer and all minimizers are exactly
 its order-unit multiples. -/
 theorem codifferent_minimum (m : ℤ) (y : {y : K m // y ∈ orderTraceDual m ∧ y ≠ 0}) :
-    let S := |Algebra.norm ℚ y.val|*orderDiscriminant m
+    let S := |Algebra.norm ℚ y.val| * orderDiscriminant m
     (∃ k : ℤ, 1 ≤ k ∧ S=k) ∧ (S=1 ↔ ∃ z : {z : K m // z ∈ powerOrder m},
       (∃ w ∈ powerOrder m, z.val*w=1) ∧ y.val=delta m*z.val) := by
   have hpos := discr_pos m
   have hd := dual_generator_norm m
   have nd : 0 < Algebra.norm ℚ (delta m) :=
     pos_of_mul_pos_left (by rw [hd]; exact zero_lt_one) hpos.le
-  have calcNorm (z : K m) : |Algebra.norm ℚ (delta m*z)|*orderDiscriminant m =
+  have calcNorm (z : K m) : |Algebra.norm ℚ (delta m*z)| * orderDiscriminant m =
       |Algebra.norm ℚ z| := by rw [map_mul,abs_mul,abs_of_pos nd,mul_right_comm,hd,one_mul]
   have hy := y.property.1
   rw [codifferent_powerOrder] at hy
@@ -144,13 +144,13 @@ theorem codifferent_minimum (m : ℤ) (y : {y : K m // y ∈ orderTraceDual m �
     intro h
     apply (Algebra.norm_ne_zero_iff_of_basis (reciprocalBasis m)).mpr hn
     simp [hk,h]
-  have val : |Algebra.norm ℚ y.val|*orderDiscriminant m = |Algebra.norm ℚ z| := he ▸ calcNorm z
+  have val : |Algebra.norm ℚ y.val| * orderDiscriminant m = |Algebra.norm ℚ z| := he ▸ calcNorm z
   refine ⟨⟨|k|,by have hh := abs_pos.mpr hk0; omega,by rw [val,hk,Int.cast_abs]⟩,?_⟩
   constructor
   · intro h
     exact ⟨⟨z,hz⟩,(order_unit_norm_iff m ⟨z,hz⟩).mpr (val.symm.trans h),he.symm⟩
   · rintro ⟨w,hw,hew⟩
-    change |Algebra.norm ℚ y.val|*orderDiscriminant m=1
+    change |Algebra.norm ℚ y.val| * orderDiscriminant m=1
     rw [hew,calcNorm,(order_unit_norm_iff m w).mp hw]
 
 #print axioms order_trace_matrix

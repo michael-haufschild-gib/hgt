@@ -1,6 +1,6 @@
 # Both signs in the centered unit window
 
-- **Stage** 1-in-progress
+- **Stage** 3-formalized
 
 Use the [exact two-endpoint formula](../3-formalized/qfsb-the-centered-unit-window-detects-the-prime-error.md) with \(E=\vartheta-\mathrm{id}\) and \(K(X)=\lfloor X/(b(X)+1)\rfloor\). 
 
@@ -9,3 +9,5 @@ Use the [exact two-endpoint formula](../3-formalized/qfsb-the-centered-unit-wind
  s(E(m)-E(K(m)))\ge (1-2^{-1/2})\,sE(m).
 \]
 The floor residues cost \(o(\sqrt m)\) and all proper-power edits together cost \(O(\sqrt m)\). Since \(L(x)\ge L(m)\) at large arguments, the signed band exceeds \(c'\sqrt m L(m)\) simultaneously for every edit. In particular its exact square-root bound fails in both directions.
+
+**Lean.** `oriented_prime_error_records` and `simultaneous_littlewood_excursions_of_the_centered_unit_window`. [BothSignsInTheCenteredUnitWindow.lean](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/BothSignsInTheCenteredUnitWindow.lean)

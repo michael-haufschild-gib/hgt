@@ -61,7 +61,7 @@ private theorem harmonic_tail_bounds (m : ℕ) : 0<_root_.RHTower.burnolAltTail 
   have hm : (0:ℝ)<(m:ℝ)+1 := by positivity
   have hu := one_div_le_one_div_of_le hm
     (le_mul_of_one_le_right hm.le (by linarith only [Nat.cast_nonneg (α := ℝ) m] : (1:ℝ)≤(m:ℝ)+2))
-  have he : 1/(2*((m:ℝ)+1))=(1/((m:ℝ)+1))/2 := by field_simp <;> ring
+  have he : 1/(2*((m:ℝ)+1))=(1/((m:ℝ)+1))/2 := by field_simp
   rw [he]
   constructor
   · exact add_pos_of_pos_of_nonneg (half_pos (one_div_pos.mpr hm)) (div_nonneg h₀ (by norm_num))
@@ -75,9 +75,9 @@ theorem cofactorDirichletPrefix_density_bound {N : ℕ} (hN : 0<N) :
   apply (abs_add_le _ _).trans
   simp only [abs_mul,abs_pow,abs_neg,abs_one,one_pow,one_mul,mul_one,
     abs_of_pos (harmonic_tail_bounds N).1,abs_of_pos (harmonic_tail_bounds (N/2)).1,
-    abs_of_pos (div_pos cofactorDyadicCoefficient_pos (by norm_num))]
+    abs_of_pos (div_pos cofactorDyadicCoefficient_pos (by norm_num : (0:ℝ) < 2))]
   exact add_le_add (harmonic_tail_bounds N).2
-    (mul_le_mul_of_nonneg_left (harmonic_tail_bounds (N/2)).2 (div_pos cofactorDyadicCoefficient_pos (by norm_num)).le)
+    (mul_le_mul_of_nonneg_left (harmonic_tail_bounds (N/2)).2 (div_pos cofactorDyadicCoefficient_pos (by norm_num : (0:ℝ) < 2)).le)
 
 /-- Two sharp caps in each block of four give opposite strict density signs. -/
 theorem opposite_cofactor_density_endpoints {K : ℕ} (hK : 0<K) :
@@ -147,18 +147,18 @@ private theorem scaled_harmonic_tail {y : ℝ} {j : ℕ} (hl : (j:ℝ)≤y) (hu 
   rw [show (j:ℝ)+2=L+1 by dsimp only [L]; ring] at htail
   have hsplit : y*_root_.RHTower.burnolAltTail j-1/2 =
       y*(_root_.RHTower.burnolAltTail j-1/(2*L))-(L-y)/(2*L) := by
-    field_simp [hL.ne'] <;> ring
+    field_simp [hL.ne']; ring
   rw [hsplit]
   apply (abs_sub _ _).trans
   rw [abs_mul,abs_of_nonneg hy,abs_of_nonneg (div_nonneg (sub_nonneg.mpr hu) (by positivity))]
   have ht := mul_le_mul hu htail (abs_nonneg _) hL.le
-  have he : L*(1/(2*L*(L+1)))=1/(2*(L+1)) := by field_simp [hL.ne',hL'.ne'] <;> ring
+  have he : L*(1/(2*L*(L+1)))=1/(2*(L+1)) := by field_simp [hL.ne',hL'.ne']
   rw [he] at ht
   have hfirst := ht.trans (one_div_le_one_div_of_le (by positivity : 0<2*L)
     (by linarith only : 2*L≤2*(L+1)))
   have hsecond := div_le_div_of_nonneg_right (show L-y≤1 by dsimp only [L]; linarith only [hl])
     (by positivity : 0≤2*L)
-  exact (add_le_add hfirst hsecond).trans_eq (by change 1/(2*L)+1/(2*L)=1/L; field_simp [hL.ne'] <;> ring)
+  exact (add_le_add hfirst hsecond).trans_eq (by change 1/(2*L)+1/(2*L)=1/L; field_simp [hL.ne']; ring)
 
 /-- The signed density through one product cut has a constant leading term.
 The cap-dependent parity terms of both terminal moments cancel. -/
@@ -199,7 +199,7 @@ theorem cofactor_density_ramp_asymptotic {x : ℝ} (hx0 : 0<x) :
   have ha := (scaled_harmonic_tail hmx hxm).trans (one_div_le_one_div_of_le hx0 hxm)
   have hb := (scaled_harmonic_tail hkx hxk).trans (one_div_le_one_div_of_le (half_pos hx0) hxk)
   exact (add_le_add ha (mul_le_mul_of_nonneg_left hb (abs_nonneg c))).trans_eq
-    (by change 1/x+|c| * (1/(x/2))=(1+2*|c|)/x; field_simp [hx0.ne'] <;> ring)
+    (by change 1/x+|c| * (1/(x/2))=(1+2*|c|)/x; field_simp [hx0.ne'])
 
 /-- Signed continuous prime mass on the sharp product cell a < pv ≤ b,
 with common lower prime endpoint P. The bound is uniform in b. -/
@@ -217,7 +217,7 @@ theorem cofactor_density_on_product_interval {P a b : ℝ} (hP : 0<P) (ha : 0<a)
   rw [←mul_sub,abs_mul,abs_of_pos hP,show cofactorDensityRamp (b/P)-cofactorDensityRamp (a/P)=
     (cofactorDensityRamp (b/P)-c)-(cofactorDensityRamp (a/P)-c) by ring]
   exact (mul_le_mul_of_nonneg_left ((abs_sub _ _).trans (add_le_add h₂ h₁)) hP.le).trans_eq
-    (by change P*(K/(a/P)+K/(a/P))=2*K*P^2/a; field_simp [hP.ne',ha.ne'] <;> ring)
+    (by change P*(K/(a/P)+K/(a/P))=2*K*P^2/a; field_simp [hP.ne',ha.ne']; ring)
 
 /-- Continuous first-prime mass in the original positive quotient cells
 above U. The last cell is clipped at U with its original sign. -/
@@ -259,7 +259,7 @@ theorem continuous_first_prime_quotient_bound :
        _ ≤ ((k:ℝ)/U)*(B*(A*P^2/U)) := by
               rw [sum_const,Nat.card_Icc,Nat.add_sub_cancel,nsmul_eq_mul]
               exact mul_le_mul_of_nonneg_right Nat.cast_div_le (by positivity)
-       _ = _ := by field_simp [hU.ne'] <;> ring
+       _ = _ := by field_simp [hU.ne']
 
 /-- Lebesgue density at the exact first-prime cutoff and all spline horizons. -/
 def capFreePrimeDensityReading (U n : ℕ) :=
@@ -341,7 +341,7 @@ theorem seventeenNinths_prime_density_fragments :
     apply (mul_le_mul_of_nonneg_left hp (sq_nonneg (n:ℝ))).trans_eq
     rw [show (11/9:ℝ)=1+2/9 by norm_num,Real.rpow_add hn₀,Real.rpow_one]
     dsimp only [C,E,R]
-    field_simp [hn₀.ne'] <;> ring
+    field_simp [hn₀.ne']
   refine ⟨C,hC,fun J M => ?_⟩
   rcases Nat.eq_zero_or_pos M with rfl | hM
   · simp

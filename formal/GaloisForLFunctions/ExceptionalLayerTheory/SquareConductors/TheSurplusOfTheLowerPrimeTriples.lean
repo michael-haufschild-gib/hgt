@@ -263,10 +263,11 @@ private theorem reflected_prime_counts {y t : ℝ} (hy : 0 < y) (ht : 0 ≤ t) (
       (windowPrimes (y-t) y).card ≤ ((lowerTripleDistances y).filter (· ≤ t)).card := by
   classical
   have hi : Function.Injective (fun p : ℕ => (p:ℝ)-y) := by
-    intro a b h; exact_mod_cast (sub_left_injective h)
+    intro a b h
+    exact_mod_cast (show (a:ℝ)=b by linarith only [h])
   have hj : Function.Injective (fun p : ℕ => y-(p:ℝ)) := by
-    intro a b h; exact_mod_cast (sub_right_injective h)
-  have hY : 0 ≤ 4*y/3 := by positivity
+    intro a b h
+    exact_mod_cast (show (a:ℝ)=b by linarith only [h])
   have hu : (upperTripleDistances y).filter (· ≤ t)=
       (windowPrimes y (y+t)).image (fun p : ℕ => (p:ℝ)-y) := by
     ext u
@@ -306,7 +307,8 @@ theorem negligible_prime_triple_pairing_deficit :
   have hbound : 2*(K*y/Real.log y) ≤ ε*y := by
     have he := (div_le_iff₀ hε).mp hlog
     have hf := mul_le_mul_of_nonneg_right he hy0.le
-    rw [←mul_div_assoc,le_div_iff₀] <;> first | positivity | linarith
+    rw [←mul_div_assoc,div_le_iff₀ hL]
+    linarith only [hf]
   rcases (upperTripleDistances y).eq_empty_or_nonempty with hU | hU
   · simp only [triplePairingDeficit,hU,sup_empty,Nat.bot_eq_zero,Nat.cast_zero,zero_mul]
     exact mul_nonneg hε.le hy0.le

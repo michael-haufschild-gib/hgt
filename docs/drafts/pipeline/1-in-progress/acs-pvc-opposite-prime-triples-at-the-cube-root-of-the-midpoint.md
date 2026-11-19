@@ -14,7 +14,7 @@ Expand the two complete terms using \(R=\mu_Y*1\) and \(R*R=(\mu_Y*\mu_Y)*\tau\)
 \[
  a_n(k)=\sum_{d\mid k,\ d>D}\big[2\mu(d)-\tfrac12(\mu*\mu)(d)\tau(k/d)\big].
 \]
-In the two intervals a smooth product has at least three prime factors. Exactly three imply \(k\le Y^3\le3n\), and each factor is greater than \(2n/Y^2\). Since \(D\ge Y^2\), the sole contributing divisor is \(d=k\). For three distinct primes the coefficient is 2, for \(p^2q\) it is 1, and for \(p^3\) it is zero. Thus the smooth triples on the left also have price \(\log k/3\) per ordered tuple, omitting their pure cubes.
+In the two intervals a smooth product has at least three prime factors. Exactly three imply \(k\le Y^3\le3n\), and each factor is greater than \(2n/Y^2\). Lean verifies that \(D\ge Y^2\), that the sole contributing divisor is \(d=k\), and that the coefficients for three distinct primes, \(p^2q\) with \(p\ne q\), and \(p^3\) are respectively 2, 1 and 0. The first two cases have six and three orderings, so both give price \(\log k/3\) per ordered tuple. [Sharp divisor cutoff and lower triple coefficients](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/SmoothPrimeTriplesBelowTheMidpoint.lean)
 
 For \(d\le D\) use the ordinary summatory divisor theorem. The \(1\) and \(\tau\) rows have respective densities \(1\) and \(\log r+2\gamma\). Partial summation on the two sharp intervals, including the shared endpoint, costs \(O(\sqrt{n/d}\log(4n))\) per row. Finite Euler factors give \(|(\mu*\mu)(d)|\le\tau(d)\), so the total cost is \(O_\epsilon(n^{5/6+\epsilon})\) since \(D\ll n^{2/3}\). With \(c_i=\int_3^4\log^i u\,du-\int_2^3\log^i u\,du\), \(c_1=10\log 2-6\log3\), the resulting center is
 \[

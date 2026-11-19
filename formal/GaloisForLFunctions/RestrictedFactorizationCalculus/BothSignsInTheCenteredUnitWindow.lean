@@ -23,7 +23,6 @@ private theorem prime_excursions (σ : ℝ) (dir : σ=1 ∨ σ= -1) :
   · simpa only [one_mul] using RHTower.chebyshevTheta_sub_omega_pm_littlewood.2
   · exact RHTower.chebyshevTheta_sub_omega_pm_littlewood.1.mono (fun x large => by
       change Chebyshev.theta x-x < -(c*Real.sqrt x*L x) at large
-      change c*Real.sqrt x*L x < (-1:ℝ)*(Chebyshev.theta x-x)
       linarith only [large])
 
 /-- Arbitrarily late record highs of either oriented normalized prime error

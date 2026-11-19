@@ -309,4 +309,7 @@ theorem semiprime_logarithmic_weight {h d : ℝ} (hh : 0 < h) (hd : 0 < d)
     field_simp [hh.ne',hl.ne',hp0.ne',hne] <;> ring
   rwa [sum_congr rfl terms] at ht
 
+#print axioms sharp_prime_quadrature
+#print axioms semiprime_logarithmic_weight
+
 end GaloisForLFunctions.RestrictedFactorizationCalculus

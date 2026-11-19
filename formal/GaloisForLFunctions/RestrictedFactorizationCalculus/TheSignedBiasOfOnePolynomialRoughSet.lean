@@ -151,7 +151,7 @@ ordinary signed prefix has an explicit main term and an error of
 order X/log² X, uniformly at every sufficiently large endpoint. -/
 theorem second_log_error_in_the_signed_smooth_main_term {θ : ℝ} (hθ : 0<θ) (small : θ<1) :
     ∃ K : ℝ,0<K ∧ ∀ᶠ X : ℕ in atTop,let y := powerCutoff θ X
-      |Real.log X*siftedPrefix (powerCutoff θ) X+(y:ℝ)*(smoothUpTo (Nat.primesLE y) (X/y)).card|*
+      |Real.log X*siftedPrefix (powerCutoff θ) X+(y:ℝ)*(smoothUpTo (Nat.primesLE y) (X/y)).card| *
         Real.log X ≤ K*X := by
   obtain ⟨A,hA,vr⟩ := variation_and_rounding_at_power_cutoff hθ small
   obtain ⟨C,hC,Y,Y4,pr⟩ := prime_error_over_rough_cofactors
@@ -204,7 +204,7 @@ theorem second_log_error_in_the_signed_smooth_main_term {θ : ℝ} (hθ : 0<θ) 
   let F := siftedPrefix (powerCutoff θ) X
   have tri := abs_add_le (L*(F-M)) (L*M+S)
   rw [show L*(F-M)+(L*M+S)=L*F+S by ring,abs_mul,abs_of_nonneg lx.le] at tri
-  change |L*F+S|*L ≤ K*X
+  change |L*F+S| *L ≤ K*X
   dsimp only [K]
   linarith only [mul_le_mul_of_nonneg_right tri lx.le,err,full,var,primeCost]
 

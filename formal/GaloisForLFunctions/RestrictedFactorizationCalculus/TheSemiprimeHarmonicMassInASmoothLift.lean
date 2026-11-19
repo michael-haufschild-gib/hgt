@@ -33,7 +33,7 @@ private theorem pair_product_injective (t : ℕ) : Set.InjOn (fun a : ℕ × ℕ
   obtain ⟨hr,hs⟩ := mem_product.mp more
   have first {a b c d : ℕ} (pa : a.Prime) (pb : b.Prime) (pc : c.Prime)
       (order : a<b) (same : a*b=c*d) : a ≤ c := by
-    have dvd : c ∣ a*b := same ▸ Nat.dvd_mul_right _ _
+    have dvd : c ∣ a*b := by rw [same]; exact Nat.dvd_mul_right c d
     rcases pc.dvd_mul.mp dvd with h | h
     · exact ((Nat.prime_dvd_prime_iff_eq pc pa).mp h).symm.le
     · exact order.le.trans ((Nat.prime_dvd_prime_iff_eq pc pb).mp h).symm.le
@@ -163,7 +163,7 @@ theorem fixed_lift_tracks_the_semiprime_harmonic_mass {G : ℕ → ℕ}
     rw [Real.sqrt_div t0.le] at small
     exact (prescribed _ hit).trans (small.trans_eq (div_eq_mul_inv ..))
   have sum := (abs_sum_le_sum_abs ..).trans (sum_le_sum one)
-  rw [←sum_sub_distrib,sum_add_distrib,←mul_sum] at sum
+  rw [sum_sub_distrib,sum_add_distrib,←mul_sum] at sum
   have square := (mul_le_mul_of_nonneg_left (RHTower.Sieve.sum_sqrtInv_le t) (Real.sqrt_nonneg t)).trans_eq
     (by rw [mul_left_comm,Real.mul_self_sqrt t0.le])
   have err := sum.trans square
@@ -179,15 +179,15 @@ theorem fixed_lift_tracks_the_semiprime_harmonic_mass {G : ℕ → ℕ}
     rw [show (t:ℝ)*recip m=(t:ℝ)/m by dsimp only [recip]; ring]
     exact abs_le.mpr ⟨by linarith only [gap],by linarith only [floor m mp]⟩
   have rounding := (abs_sum_le_sum_abs ..).trans (sum_le_sum residue)
-  rw [←sum_sub_distrib,←mul_sum,sum_const,nsmul_eq_mul,mul_one] at rounding
+  rw [sum_sub_distrib,←mul_sum,sum_const,nsmul_eq_mul,mul_one] at rounding
   have count : (semis t).card ≤ t := (card_filter_le ..).trans (by simp)
   have total : |F-(t:ℝ)*semiprimeHarmonicMass t| ≤ 4*t := by
     have lift := abs_le.mp err
     have rounded := abs_le.mp rounding
     dsimp only [semiprimeHarmonicMass]
-    exact abs_le.mpr ⟨by linarith only [lift.1,rounded.1,Nat.cast_le.mpr (α := ℝ) count,t0],
-      by linarith only [lift.2,rounded.2,Nat.cast_le.mpr (α := ℝ) count]⟩
-  rw [show F/(t:ℝ)-semiprimeHarmonicMass t=(F-t*semiprimeHarmonicMass t)/(t:ℝ) by field_simp,
+    exact abs_le.mpr ⟨by linarith only [lift.1,rounded.1,(Nat.cast_le (α := ℝ)).mpr count,t0],
+      by linarith only [lift.2,rounded.2,(Nat.cast_le (α := ℝ)).mpr count]⟩
+  rw [show F/(t:ℝ)-semiprimeHarmonicMass t=(F-t*semiprimeHarmonicMass t)/(t:ℝ) by field_simp [t0.ne'],
     abs_div,abs_of_pos t0]
   exact (div_le_iff₀ t0).mpr total
 

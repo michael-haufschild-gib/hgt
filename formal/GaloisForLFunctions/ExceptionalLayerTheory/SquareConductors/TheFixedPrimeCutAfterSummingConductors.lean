@@ -28,8 +28,9 @@ theorem mellin_squarePrimeWeight_neg_one :
     rw [show (4:ℝ)=2^2 by norm_num,Real.log_pow]; norm_num
   have hexp : Real.exp ((-(3/2):ℝ)*Real.log 4) = 1/8 := by
     rw [hlog,show (-(3/2):ℝ)*(2*Real.log 2) = -(3*Real.log 2) by ring,
-      Real.exp_neg,←show Real.log (2^3:ℝ)=3*Real.log 2 by rw [Real.log_pow]; norm_num]
-    norm_num [Real.exp_log (by norm_num : (0:ℝ)<2^3)]
+      Real.exp_neg,←show Real.log (2^3:ℝ)=3*Real.log 2 by rw [Real.log_pow]; norm_num,
+      Real.exp_log (by norm_num : (0:ℝ)<2^3)]
+    norm_num
   rw [mellin_squarePrimeWeight_formula]
   norm_num only [show (-1:ℂ)-1/2=-(3/2) by norm_num]
   let a := (3/2:ℂ)
@@ -42,9 +43,9 @@ theorem mellin_squarePrimeWeight_neg_one :
   change (2-Complex.exp (-a*(Real.log 4:ℝ)))*
     (paperFT (fun x => (cubicSpline x:ℂ)) (-a/Complex.I) *
      paperFT (fun x => (cubicSpline x:ℂ)) (-(-a/Complex.I))) = _
-  rw [he,hm,←neg_div,neg_neg,hp,Complex.sinh_neg,neg_div_neg_eq]
+  rw [he,hm,neg_div,neg_neg,hp,Complex.sinh_neg,neg_div_neg_eq]
   simp only [a,innerPrimeSlope,Complex.ofReal_mul,Complex.ofReal_div,Complex.ofReal_ofNat,
-    Complex.ofReal_pow,Complex.ofReal_sinh]
+    Complex.ofReal_one,Complex.ofReal_pow,Complex.ofReal_sinh]
   ring
 
 /-- On the entire inner interval the integrated weight is a positive linear
@@ -85,8 +86,10 @@ theorem fixed_inner_prime_price {N K : ℕ} (hN : 0 < N)
   have hk := (Nat.cast_le.mpr (mem_Icc.mp h.1).2 : (p:ℝ) ≤ K).trans hK
   rw [squarePrefixPrimeWeight_before_first_knot (div_pos (Nat.cast_pos.mpr h.2.pos) (sq_pos_of_pos hn))
     ((div_le_iff₀ (sq_pos_of_pos hn)).mpr hk)]
-  push_cast
-  field_simp [Nat.cast_ne_zero.mpr hN.ne' : (N:ℂ) ≠ 0] <;> ring
+  have hv : ((((p:ℝ)/(N:ℝ)^2:ℝ)):ℂ)*(N:ℂ)^2 = p := by
+    rw [Complex.ofReal_div,Complex.ofReal_pow,Complex.ofReal_natCast,Complex.ofReal_natCast]
+    exact div_mul_cancel₀ _ (pow_ne_zero 2 (Nat.cast_ne_zero.mpr hN.ne'))
+  linear_combination (Real.log p*innerPrimeSlope:ℂ)*hv
 
 /-- The rational price with the first prime moment restored at the same
 terminal conductor. The uniform cubic error is charged once for both sides. -/
@@ -216,7 +219,7 @@ private theorem terminal_cut_comparison {d e : ℝ} (hd : 0 ≤ d) (he : 3 ≤ e
     apply (ha hN hK hcut).trans
     apply (mul_le_mul_of_nonneg_left (add_le_add hcube hq) hA).trans
     linarith only [mul_nonneg hD (zero_le_one.trans hY)]
-  · have he : price N ≤ D := single_le_sum (fun n _ => norm_nonneg _) (mem_range.mpr (lt_of_not_ge hlate))
+  · have he : price N ≤ D := single_le_sum (f := price) (fun n _ => norm_nonneg _) (mem_range.mpr (lt_of_not_ge hlate))
     apply he.trans ((le_mul_of_one_le_right hD hY).trans ?_)
     exact mul_le_mul_of_nonneg_right (le_add_of_nonneg_left (by positivity)) (zero_le_one.trans hY)
 

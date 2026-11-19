@@ -35,7 +35,7 @@ Let \(R(k)\) indicate integers all of whose primes exceed \(y\), including the u
  (\log_*R)(k)=\sum_{j=1}^L b_jR^{*j}(k),\qquad
  b_j=(-1)^{j-1}\binom Lj/j.
 \]
-Indeed \(\sum_{l=j}^L\binom lj/l=\binom Lj/j\). Write \(R^{*j}=B_{j,y}*\tau_j\), where \(B_{j,y}(d)=\mu^{*j}(d)\) on \(y\)-smooth integers and zero elsewhere. This follows by multiplying the local Euler polynomials \((1-z)^j\) at the primes through \(y\).
+Lean verifies the finite identity for every integer cut \(Y\) and every \(k<(Y+1)^{L+1}\). The remainder has one rough Mangoldt factor and \(L\) nonunit rough factors. Write \(R^{*j}=B_{j,y}*\tau_j\), where \(B_{j,y}(d)=\mu^{*j}(d)\) on \(y\)-smooth integers and zero elsewhere. This follows by multiplying the local Euler polynomials \((1-z)^j\) at the primes through \(y\). [Finite convolution logarithm](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/TheFiniteLogarithmOfTheRoughIntegerIndicator.lean)
 
 For \(d\le D\) replace the complete inner sum over \(r\) by
 \[

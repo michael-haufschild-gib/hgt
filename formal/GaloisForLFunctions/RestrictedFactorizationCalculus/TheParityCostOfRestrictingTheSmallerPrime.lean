@@ -156,7 +156,7 @@ private theorem gcd_charge_mul_prime {Q c q : ℕ} (hq : q.Prime) (hcop : c.Copr
 
 private theorem short_edge_charge {S : Finset ℕ} (hS : ∀ s ∈ S,Nat.Prime s)
     {Y X a b : ℕ} (hY : ∀ s ∈ S,s ≤ Y) (hY1 : 1 ≤ Y) (ha : a ∈ Ioc X (2*X)) (hb : b ∈ Ioc X (2*X))
-    (hsqa : Squarefree a) (hsqb : Squarefree b) (hshort : |(a:ℝ)-b|*(Y:ℝ)^2 ≤ X)
+    (hsqa : Squarefree a) (hsqb : Squarefree b) (hshort : |(a:ℝ)-b| *(Y:ℝ)^2 ≤ X)
     (he : usesSmallSplit S a b) :
     let Q := ∏ s ∈ S,s
     μ (a.gcd Q) = -μ (b.gcd Q) := by
@@ -169,7 +169,7 @@ private theorem short_edge_charge {S : Finset ℕ} (hS : ∀ s ∈ S,Nat.Prime s
       linarith only [hv,neg_le_abs ((p:ℝ)-(q*r:ℕ))]
     · have hv : ((q*r:ℕ):ℝ)+1 ≤ p := by exact_mod_cast Nat.succ_le_of_lt h
       linarith only [hv,le_abs_self ((p:ℝ)-(q*r:ℕ))]
-  have cost : |(c:ℝ)*p-c*(q*r:ℕ)|*(Y:ℝ)^2 ≤ X := by
+  have cost : |(c:ℝ)*p-c*(q*r:ℕ)| *(Y:ℝ)^2 ≤ X := by
     rcases hor with ⟨rfl,rfl⟩ | ⟨rfl,rfl⟩
     · push_cast at hshort ⊢; exact hshort
     · rw [abs_sub_comm] at hshort; push_cast at hshort ⊢; exact hshort
@@ -202,7 +202,7 @@ private theorem short_edge_charge {S : Finset ℕ} (hS : ∀ s ∈ S,Nat.Prime s
 private theorem paired_charge {S : Finset ℕ} (hS : ∀ p ∈ S,Nat.Prime p) {Y X : ℕ}
     (hY : ∀ p ∈ S,p ≤ Y) (hY1 : 1 ≤ Y)
     (M : OppositeParityMatching GlobalDyadicOneTwoRel (Ioc X (2*X)))
-    (hshort : ∀ n ∈ M.sources, |(M.partner n:ℝ)-n|*(Y:ℝ)^2 ≤ X) :
+    (hshort : ∀ n ∈ M.sources, |(M.partner n:ℝ)-n| *(Y:ℝ)^2 ≤ X) :
     let Q := ∏ p ∈ S,p
     (∑ n ∈ squarefreeOf (Ioc X (2*X)), (μ (n.gcd Q):ℝ)) ≤
       (M.unmatchedSet.card:ℝ)+2*((M.sources.filter (fun n => ¬usesSmallSplit S n (M.partner n))).card:ℝ) := by
@@ -244,7 +244,7 @@ theorem smaller_primes_must_escape (S : Finset ℕ) (hS : ∀ p ∈ S,Nat.Prime 
     (Y : ℕ) (hY1 : 1 ≤ Y) (hY : ∀ p ∈ S,p ≤ Y) {ε : ℝ} (hε : 0<ε) :
     let Q := ∏ p ∈ S,p
     ∀ᶠ X : ℕ in atTop, ∀ M : OppositeParityMatching GlobalDyadicOneTwoRel (Ioc X (2*X)),
-      (∀ n ∈ M.sources, |(M.partner n:ℝ)-n|*(Y:ℝ)^2 ≤ X) →
+      (∀ n ∈ M.sources, |(M.partner n:ℝ)-n| *(Y:ℝ)^2 ≤ X) →
       (smallerPrimeBias Q-ε)*X ≤ (M.unmatchedSet.card:ℝ)+
         2*((M.sources.filter (fun n => ¬usesSmallSplit S n (M.partner n))).card:ℝ) := by
   let Q := ∏ p ∈ S,p

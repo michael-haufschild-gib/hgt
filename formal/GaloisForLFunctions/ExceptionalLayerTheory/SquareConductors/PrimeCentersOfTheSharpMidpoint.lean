@@ -79,7 +79,7 @@ theorem prime_centers_iff_eleven_thirds :
     let B := 6*(Real.log 8+6)
     have hA : 0 ≤ A := sum_nonneg fun _ _ => abs_nonneg _
     have hB : 0 ≤ B := by dsimp only [B]; positivity
-    refine ⟨A+2*|C|+B,?_⟩
+    refine ⟨A + 2 * |C| + B,?_⟩
     intro n hn
     have hn' := (Nat.one_le_cast (α:=ℝ)).mpr hn
     have ht0 : 0 ≤ t := by linarith only [ht]
@@ -88,7 +88,7 @@ theorem prime_centers_iff_eleven_thirds :
     · have hi : |primeMidpointPrice n| ≤ A := single_le_sum
         (fun j (_ : j ∈ range N) => abs_nonneg (primeMidpointPrice j)) (mem_range.mpr hsmall)
       calc primeMidpointPrice n ≤ A := (le_abs_self _).trans hi
-           _ ≤ A+2*|C|+B := by linarith only [abs_nonneg C,hB]
+           _ ≤ A + 2 * |C| + B := by linarith only [abs_nonneg C,hB]
            _ ≤ _ := le_mul_of_one_le_right (by positivity) hnt
     · obtain ⟨p,hp,_,hp2,hupper⟩ := hN n (le_of_not_gt hsmall)
       have hp' := Real.rpow_le_rpow (Nat.cast_nonneg p) hp2 ht0

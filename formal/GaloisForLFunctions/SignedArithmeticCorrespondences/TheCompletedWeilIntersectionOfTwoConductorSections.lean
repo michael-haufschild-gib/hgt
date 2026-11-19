@@ -19,7 +19,7 @@ private theorem positive_sum (f : ℕ → ℝ) (N : ℕ) :
     (∑ k ∈ range N, f (k+1))=∑ k ∈ Icc 1 N, f k := by
   induction N with
   | zero => simp
-  | succ n ih => rw [sum_range_succ,ih,sum_Icc_succ_top (by omega)]
+  | succ n ih => rw [Finset.sum_range_succ (fun k => f (k+1)) n,ih,sum_Icc_succ_top (by omega)]
 
 /-- Directed local price on the actual multiplicity at every multiple. -/
 def completedMultiplePrice (p u v : ℕ → ℝ) : ℝ :=
@@ -35,8 +35,9 @@ private theorem normalized_multiple_price (N : ℕ) (p u v : ℕ → ℝ) (a b :
   rw [tsum_eq_sum (s := (range N)×ˢ(range N)) (fun t ht => by
     by_cases hi : t.1<N
     · have hk : ¬t.2<N := fun hk => ht (mem_product.mpr ⟨mem_range.mpr hi,mem_range.mpr hk⟩)
-      have hg := Nat.le_mul_of_pos_right (t.2+1) (Nat.succ_pos t.1)
-      simp [normalizedConductor,show ¬(t.2+1)*(t.1+1)≤N by omega]
+      have hg : t.2+1 ≤ (t.2+1)*(t.1+1) := Nat.le_mul_of_pos_right _ (Nat.succ_pos t.1)
+      have hcut := not_le.mpr ((Nat.lt_succ_of_le (Nat.le_of_not_gt hk)).trans_le hg)
+      simp [normalizedConductor,hcut]
     · simp [normalizedConductor,show ¬t.1+1≤N by omega]),sum_product,sum_comm]
   rw [positive_sum (fun k => ∑ i ∈ range N,
     normalizedConductor N u (i+1)*normalizedConductor N v (k*(i+1))*p k),sum_div]
@@ -97,7 +98,7 @@ theorem completed_jet_integral_limit (r u v : ℕ → ℝ) (hr : ∀ k, 0<r k) (
     exact (herr N x hx).trans_lt hN
   have hG := hU.continuousOn (Eventually.of_forall fun N => (hF N).continuousOn).frequently
   refine ⟨hG,tendsto_iff_dist_tendsto_zero.mpr ?_⟩
-  apply squeeze_zero (fun _ => dist_nonneg _ _) _ he
+  apply squeeze_zero (fun _ => dist_nonneg) _ he
   intro N
   change dist (∫ x in (0:ℝ)..1, F N x) (∫ x in (0:ℝ)..1, G x) ≤ e N
   rw [Real.dist_eq,← intervalIntegral.integral_sub ((hF N).intervalIntegrable 0 1)
@@ -208,12 +209,13 @@ theorem completed_signed_atom_entry {i j : ℕ} (hi : 0 < i) (hj : 0 < j) :
       (∫ x in (0:ℝ)..1, completedConductorJet (conductorAtom i) (conductorAtom j) x)/2 = signedConductorEntry i j := by
   rw [directed_atom_price _ hi hj,directed_atom_price _ hj hi,signedConductorEntry]
   simp only [atom_jet]
-  by_cases h : i∣j <;> by_cases h' : j∣i <;> simp [h,h'] <;> ring
+  by_cases h : i∣j <;> by_cases h' : j∣i <;> simp [h,h']
+  ring
 
 /-- Each positive diagonal entry equals two. -/
 theorem signedConductorEntry_diagonal {i : ℕ} (hi : 0 < i) : signedConductorEntry i i=2 := by
   simp [signedConductorEntry,Nat.div_self hi,conductorJetEntry]
-  <;> norm_num
+  norm_num
 
 /-- Absolute column entries grow at most logarithmically in the two
 conductors, including their common diagonal. -/
@@ -228,11 +230,18 @@ theorem signedConductorEntry_bound {i j : ℕ} (hi : 0 < i) (hj : 0 < j) :
       rw [if_pos h]
       apply (abs_sub _ _).trans
       rw [abs_one,abs_of_nonneg ArithmeticFunction.vonMangoldt_nonneg]
-      exact add_le_add_left (ArithmeticFunction.vonMangoldt_le_log.trans hl) 1
+      exact add_le_add le_rfl (ArithmeticFunction.vonMangoldt_le_log.trans hl)
     · rw [if_neg h,abs_zero]
       exact add_nonneg zero_le_one (Real.log_natCast_nonneg _)
   have hJ : Continuous (conductorJetEntry i j) := by
-    by_cases he : i=j <;> simp [conductorJetEntry,hi,hj,he] <;> fun_prop
+    change Continuous (fun x : ℝ => conductorJetEntry i j x)
+    by_cases he : i=j
+    · subst j
+      have hz (x : ℝ) : conductorJetEntry i i x=0 := by simp [conductorJetEntry]
+      simpa only [hz] using (continuous_const : Continuous (fun _ : ℝ => (0:ℝ)))
+    · have hn : 0 < i ∧ 0 < j ∧ i≠j := ⟨hi,hj,he⟩
+      simp only [conductorJetEntry,if_pos hn]
+      fun_prop
   have hInt : |∫ x in (0:ℝ)..1, conductorJetEntry i j x|≤2 := by
     apply (intervalIntegral.abs_integral_le_integral_abs zero_le_one).trans
     have h := intervalIntegral.integral_mono_on (μ := volume) (f := fun x => |conductorJetEntry i j x|)
@@ -340,7 +349,6 @@ theorem dominated_weighted_cell_exhaustion (r w u v : ℕ → ℝ)
   intro k
   have hsP : Summable (fun i => P (i,k)) := ((hP.prod_symm.prod_factor k).of_abs)
   have hsQ : Summable (fun i => Q N (i,k)) := (((hQ N).prod_symm.prod_factor k).of_abs)
-  change |(∑' i, Q N (i,k))-(∑' i, P (i,k))| = |∑' i, Q N (i,k)-P (i,k)|
   exact congrArg abs (hsQ.tsum_sub hsP).symm
 
 /-- The full sequence of weighted quotient cells of normalized conductors

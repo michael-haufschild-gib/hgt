@@ -91,4 +91,7 @@ theorem exists_donorRise_of_positive_total (H : ℕ → ℤ) (N : ℕ)
   have := hfirst j hj
   omega
 
+#print axioms donorRise_iff_fall_after_flip
+#print axioms exists_donorRise_of_positive_total
+
 end GaloisForLFunctions.RestrictedFactorizationCalculus
