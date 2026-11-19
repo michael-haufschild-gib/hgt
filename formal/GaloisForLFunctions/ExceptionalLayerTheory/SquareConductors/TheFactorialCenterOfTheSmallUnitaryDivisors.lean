@@ -159,7 +159,8 @@ theorem small_unitary_factorial_row {e n T : ℕ} (he : 0 < e) (hn : 0 < n) (hT 
 
 #print axioms small_unitary_factorial_row
 
-private def smallDivisorIndices (T : ℕ) := (Icc 1 T).filter (fun e => e^2 ≤ T)
+/-- Positive row indices whose square is reached by the endpoint. -/
+def smallDivisorIndices (T : ℕ) : Finset ℕ := (Icc 1 T).filter (fun e => e^2 ≤ T)
 
 /-- Transpose the square-root divisor cutoff without losing its square endpoint. -/
 private theorem transpose_small_divisors (T : ℕ) (f : ℕ → ℕ → ℝ) :
@@ -226,5 +227,85 @@ theorem small_unitary_factorial_center (w : ℕ → ℝ) {n : ℕ} (hn : 0 < n) 
              · simp [f,Nat.coprime_mul_iff_right,hc]
 
 #print axioms small_unitary_factorial_center
+
+/-- Möbius sum through the square root, with ordinary divisors. -/
+def halfMoebius (k : ℕ) : ℤ := ∑ d ∈ k.divisors.filter (fun d => d^2 ≤ k),moebius d
+
+/-- On squarefree integers the ordinary and unitary divisor sums agree. -/
+theorem half_moebius_squarefree {k : ℕ} (hs : Squarefree k) :
+    halfMoebius k=unitaryHalfWeight k := by
+  have hk := Nat.pos_of_ne_zero hs.ne_zero
+  rw [halfMoebius,unitaryHalfWeight,small_unitary_sum_on_divisors _ hk]
+  have heq : k.divisors.filter (fun d => d.Coprime (k/d) ∧ d^2 ≤ k)=
+      k.divisors.filter (fun d => d^2 ≤ k) := by
+    ext d
+    simp only [mem_filter]
+    constructor
+    · exact fun h => ⟨h.1,h.2.2⟩
+    · rintro ⟨hd,h⟩
+      have hm := Nat.mul_div_cancel' (Nat.dvd_of_mem_divisors hd)
+      exact ⟨hd,Nat.coprime_of_squarefree_mul (by simpa only [hm] using hs),h⟩
+  rw [heq]
+  apply sum_congr rfl
+  intro d hd
+  have hsf := hs.squarefree_of_dvd (Nat.dvd_of_mem_divisors (mem_filter.mp hd).1)
+  rw [moebius_apply_of_squarefree hsf,
+    ←(cardDistinctFactors_eq_cardFactors_iff_squarefree hsf.ne_zero).mpr hsf,
+    cardDistinctFactors_apply,←Nat.toFinset_factors,List.card_toFinset]
+
+private theorem log_multiple_interval {l : ℕ} (hl : 0 < l) (A T : ℕ) (h : A ≤ T) :
+    (∑ k ∈ (Ioc A T).filter (l ∣ ·),Real.log k)=
+      progressionLogFactorial l T-progressionLogFactorial l A := by
+  rw [_root_.RHTower.Sieve.sum_filter_dvd_Ioc_eq_sum_scaled hl]
+  have pref (s : ℕ) : (∑ j ∈ Ioc 0 (s/l), Real.log (l*j:ℕ))=progressionLogFactorial l s := by
+    have hi : Icc 1 (s/l)=Ioc 0 (s/l) := by ext j; simp only [mem_Icc,mem_Ioc]; omega
+    rw [←hi,log_scaled_sum l hl,progressionLogFactorial]
+  rw [←pref T,←pref A]
+  exact eq_sub_of_add_eq' (sum_Ioc_consecutive _ (Nat.zero_le _) (Nat.div_le_div_right h))
+
+/-- The ordinary half-Möbius center at every cutoff uses the lcm of the
+small divisor and each divisor of the coprimality modulus. -/
+theorem half_moebius_factorial_center {n : ℕ} (hn : 0 < n) (T : ℕ) :
+    (∑ k ∈ (Icc 1 T).filter (n.Coprime ·),(halfMoebius k:ℝ)*Real.log k)=
+      ∑ e ∈ smallDivisorIndices T,(moebius e:ℝ)*∑ d ∈ n.divisors,(moebius d:ℝ)*
+        (progressionLogFactorial (e.lcm d) T-progressionLogFactorial (e.lcm d) (e^2-1)) := by
+  classical
+  let f (e k : ℕ) := (moebius e:ℝ)*(if n.Coprime k then Real.log k else 0)
+  rw [sum_filter]
+  calc _ = ∑ k ∈ Icc 1 T,∑ e ∈ k.divisors.filter (fun e => e^2 ≤ k),f e k := by
+             apply sum_congr rfl
+             intro k _
+             by_cases h : n.Coprime k <;> simp [h,f,halfMoebius,Int.cast_sum,sum_mul]
+       _ = _ := by
+             rw [transpose_small_divisors]
+             apply sum_congr rfl
+             intro e he
+             have he0 := (mem_Icc.mp (mem_filter.mp he).1).1
+             have heT := (mem_filter.mp he).2
+             simp only [f,←mul_sum]
+             congr 1
+             let I := Ioc (e^2-1) T
+             calc _ = ∑ k ∈ I.filter (e ∣ ·),∑ d ∈ n.divisors,
+                          if d ∣ k then (moebius d:ℝ)*Real.log k else 0 := by
+                        apply sum_congr rfl
+                        intro k _
+                        rw [show (if n.Coprime k then Real.log k else 0)=
+                          (if n.Coprime k then (1:ℝ) else 0)*Real.log k by split_ifs <;> simp,
+                          reflected_coprime_indicator hn,sum_mul]
+                        exact sum_congr rfl fun d _ => by split_ifs <;> simp
+                  _ = _ := by
+                        rw [sum_comm]
+                        apply sum_congr rfl
+                        intro d hd
+                        have hd0 := Nat.pos_of_mem_divisors hd
+                        have hij : (I.filter (e ∣ ·)).filter (d ∣ ·)=I.filter (e.lcm d ∣ ·) := by
+                          ext k
+                          simp only [mem_filter,Nat.lcm_dvd_iff]
+                          tauto
+                        rw [←sum_filter,hij,←mul_sum,log_multiple_interval (Nat.lcm_pos he0 hd0) _ _
+                          ((Nat.sub_le _ _).trans heT)]
+
+#print axioms half_moebius_squarefree
+#print axioms half_moebius_factorial_center
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

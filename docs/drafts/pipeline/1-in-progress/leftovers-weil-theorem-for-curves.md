@@ -47,8 +47,13 @@ Modules in `CurvesOverFiniteFields/`, all checked, wired into `CurvesOverFiniteF
 | `Divisors` | divisors on finite and infinite places, `Divisor.deg`, L(D) = I(D) ⊓ J(D), H¹(D) = K/(I(D) ⊔ J(D)), χ = ℓ − h¹; one-place steps (`chi_raiseFin`, `chi_raiseInf`); if L(0), H¹(0) are finite then every D has finite L, H¹ and χ(D) = deg D + χ(0) (`chi_eq_deg_add_chi_zero`) |
 | `Genus` | exact constant field ⇒ L(0) = F, ℓ(0) = 1; K/(A + O∞) finite-dimensional; genus g = h¹(0); Riemann's theorem ℓ(D) − h¹(D) = deg D + 1 − g (`riemann_roch_chi`), ℓ(D) ≥ deg D + 1 − g (`riemann_inequality`) |
 | `Duality` | Weil differentials Ω(D) = (I(D) + J(D))^⊥, dim Ω(D) = h¹(D); h¹(D) = 0 in high degree; nonzero differentials are K-proportional; canonical divisor as the largest level; principal divisors `pdiv`; Riemann–Roch ℓ(D) − ℓ(W − D) = deg D + 1 − g, deg W = 2g − 2, ℓ(W) = g (`riemann_roch`) |
+| `PrincipalDivisors` | `pdiv` multiplicative; multiplication by x maps I(D), J(D) onto I(D + (x)), J(D + (x)), so ℓ and h¹ are class invariants; deg (x) = 0 (`deg_pdiv`); x ∈ L(D) ⇔ (x) ≤ D; (x) = 0 only for constants |
+| `FiniteCounts` | F finite: Frobenius a^{q^N} ≡ a mod P for deg P ∣ N; finitely many places of degree ≤ n (`finite_finPlace_deg_le`); finitely many effective divisors of each degree (`finite_effective`) |
+| `ClassGroup` | principal divisors as a subgroup; effective divisors in the class of D ↔ projective space of L(D); their number is 1 + q + ⋯ + q^{ℓ(D)−1} (`card_effClass`) |
 
-Next (step 5, zeta function): L(D + (x)) = x·L(D), deg (x) = 0; over a finite field finitely many
-places of each degree and effective divisors of each degree; finite class group of degree 0;
-A_n = Σ_classes (q^ℓ − 1)/(q − 1) and A_n = h(q^{n+1−g} − 1)/(q − 1) for n > 2g − 2; rationality.
-Then constant field extensions (step 6) for F. K. Schmidt and N_1(K_r) = N_r(K), steps 7–9.
+Next (step 5): finitely many classes of each degree (an effective representative of D + mP₀ once
+deg ≥ g), class number h; A_n = Σ_classes (1 + ⋯ + q^{ℓ−1}) and A_n = h(1 + ⋯ + q^{n−g}) for
+n > 2g − 2; Z(t) rational with denominator in t^δ (δ = gcd of degrees). Then constant field
+extensions K_r = K ⊗ F_{q^r} (step 6): integral closure A ⊗ F_{q^r}, place splitting,
+Z_{K_r}(t^r) = Π_{ζ^r=1} Z_K(ζt), F. K. Schmidt δ = 1, N_1(K_r) = N_r(K); then steps 7–9
+(Bombieri's upper bound; lower bound through a Galois closure of K/F(x) and twisted Frobenius).

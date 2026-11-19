@@ -8,7 +8,7 @@ Let \(s(k)=\mathbf1_{(3n,4n]}(k)-\mathbf1_{(2n,3n]}(k)\), \(Y=\lfloor(3n)^{1/3}\
 \]
 Indeed \(\ell(R*R)=2\Lambda_Y*R*R\) and the three convolution terms telescope.
 
-The last convolution is supported above \(3n\) because \((Y+1)^3>3n\). Through \(4n\), its three factors must all be ordinary primes above \(Y\): four prime factors of that size already exceed \(4n\). Its weight at \(k\) is \(\log k/3\) times the number of ordered rough prime triples of product \(k\), by symmetry. Each priced prime lies below \(4n/(Y+1)^2\).
+The last convolution is supported above \(3n\) because \((Y+1)^3>3n\). Through \(4n\), its three factors must all be ordinary primes above \(Y\), since four prime factors of that size already exceed \(4n\). Its weight at \(k\) is \(\log k/3\) times the number of ordered rough prime triples of product \(k\), by symmetry. Each priced prime is at most \(4n/(Y+1)^2\). Lean verifies the convolution identity, the support, and the exact ordered-triple weight. [Rough prime triples](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/OppositePrimeTriplesAtTheCubeRootOfTheMidpoint.lean)
 
 Expand the two complete terms using \(R=\mu_Y*1\) and \(R*R=(\mu_Y*\mu_Y)*\tau\). On \(d>D\), the complementary factor \(r=k/d\) is at most \(Y\), so the entire product is \(Y\)-smooth. Its signed coefficient before the logarithm is
 \[

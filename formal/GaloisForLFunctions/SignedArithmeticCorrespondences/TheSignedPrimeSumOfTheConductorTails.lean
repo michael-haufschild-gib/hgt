@@ -398,8 +398,7 @@ theorem signed_factorial_witness {M : ℕ} (hM : 0<M) :
     · simp [ha 1 h₁,r,powerConductorWeight]
     · intro j hj he; simp [ha j hj,he]
   rw [hsum] at hval
-  refine ⟨a,b,ha,?_,hu,hn,hval,le_trans ?_ hval⟩
-  · intro i hi; rw [hb i hi]; by_cases hd : 6∣i <;> simp [m,hd]
+  refine ⟨a,b,ha,hb,hu,hn,hval,le_trans ?_ hval⟩
   have hH : 0≤H := sum_nonneg fun _ _ => by positivity
   have hF : 0≤F := Nat.cast_nonneg _
   have hx := Real.sq_sqrt (div_nonneg hH (by norm_num : (0:ℝ)≤24))

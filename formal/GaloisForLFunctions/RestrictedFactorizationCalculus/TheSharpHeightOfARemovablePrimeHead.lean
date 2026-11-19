@@ -1,3 +1,4 @@
+import Mathlib.Analysis.MeanInequalitiesPow
 import GaloisForLFunctions.RestrictedFactorizationCalculus.RecoveringAMovingPrimeHeadAfterSignedEdits
 
 /-!
@@ -43,13 +44,7 @@ private theorem inverse_observation {α : ℝ} (ap : 0<α) (small : α ≤ 1) {n
   have original (x : ℝ) (nn : 0 ≤ x) : (x^d)^α=x := by rw [←Real.rpow_mul nn,inv,Real.rpow_one]
   have positivePow : 1 ≤ (n:ℝ)^d := Real.one_le_rpow n1 (zero_le_one.trans d1)
   have jump : (n:ℝ)^d+1 ≤ ((n:ℝ)+1)^d := by
-    have split (x : ℝ) (p : 0<x) : x^d=x*x^(d-1) := by
-      calc _ = x^(1+(d-1)) := by rw [show 1+(d-1)=d by ring]
-           _ = _ := by rw [Real.rpow_add p,Real.rpow_one]
-    rw [split _ n0,split _ (by positivity)]
-    have mono := Real.rpow_le_rpow n0.le (by linarith : (n:ℝ) ≤ n+1) (sub_nonneg.mpr d1)
-    have one := Real.one_le_rpow n1 (sub_nonneg.mpr d1)
-    linarith only [mul_le_mul_of_nonneg_left mono n0.le,one,mono]
+    simpa only [Real.one_rpow] using Real.add_rpow_le_rpow_add (Nat.cast_nonneg n) zero_le_one d1
   have early := (show (n:ℝ) ≤ (n:ℝ)^d by
     simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le n1 d1).trans low
   refine ⟨Nat.cast_le.mp early,(Nat.floor_eq_iff (Real.rpow_nonneg (Nat.cast_nonneg _) _)).mpr ⟨?_,?_⟩,?_⟩

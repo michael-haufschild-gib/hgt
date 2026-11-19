@@ -147,7 +147,8 @@ theorem two_cutoff_change_of_the_rough_reading (a b : ArithmeticFunction ℝ) (y
   unfold quotientReading
   ring
 
-private theorem coefficient_le_log {a : ArithmeticFunction ℝ} (dom : ∀ n,|a n| ≤ vonMangoldt n) (y d : ℕ) :
+/-- The absolute inverse coefficient costs at most the full divisor logarithm. -/
+theorem rough_coefficient_le_log {a : ArithmeticFunction ℝ} (dom : ∀ n,|a n| ≤ vonMangoldt n) (y d : ℕ) :
     |roughFloorCoefficient y a d| ≤ Real.log d := by
   rw [roughFloorCoefficient,mul_comm (roughMobiusWeight y),mul_apply,Nat.sum_divisorsAntidiagonal
     (fun q k => a q*roughMobiusWeight y k),←vonMangoldt_sum (n := d)]
@@ -167,7 +168,7 @@ theorem rough_interpolation_price {a : ArithmeticFunction ℝ} (dom : ∀ n,|a n
   rw [rough_head_and_interior,add_sub_cancel_left]
   apply (abs_sum_le_sum_abs ..).trans
   have cap (d : ℕ) (hd : d ∈ Icc 1 (min X T)) : |roughFloorCoefficient y a d| ≤ Real.log T :=
-    (coefficient_le_log dom y d).trans (Real.log_le_log (Nat.cast_pos.mpr (mem_Icc.mp hd).1)
+    (rough_coefficient_le_log dom y d).trans (Real.log_le_log (Nat.cast_pos.mpr (mem_Icc.mp hd).1)
       (Nat.cast_le.mpr ((mem_Icc.mp hd).2.trans (min_le_right ..))))
   apply (sum_le_sum cap).trans
   simpa using mul_le_mul_of_nonneg_right ((Nat.cast_le (α := ℝ)).mpr (min_le_right X T)) (Real.log_natCast_nonneg T)
@@ -207,7 +208,7 @@ theorem square_crossings_pay_the_interval_error {a : ArithmeticFunction ℝ}
   rw [change]
   apply (abs_sum_le_sum_abs ..).trans
   have localBound (d : ℕ) (hd : d ∈ Ioc L.sqrt U.sqrt) : |roughFloorCoefficient y a d| ≤ Real.log U.sqrt :=
-    (coefficient_le_log dom y d).trans (Real.log_le_log (Nat.cast_pos.mpr ((Nat.zero_le _).trans_lt (mem_Ioc.mp hd).1))
+    (rough_coefficient_le_log dom y d).trans (Real.log_le_log (Nat.cast_pos.mpr ((Nat.zero_le _).trans_lt (mem_Ioc.mp hd).1))
       (Nat.cast_le.mpr (mem_Ioc.mp hd).2))
   exact (sum_le_sum localBound).trans_eq (by simp)
 

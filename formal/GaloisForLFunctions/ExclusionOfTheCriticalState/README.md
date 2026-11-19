@@ -288,6 +288,8 @@ At one displacement of the same test, the signed deficit is carried by an interv
 
 For two prescribed quotient intervals and terminal block width $D$, the common numerator range is $[D+\max_i q_i v_i,\min_i(q_i+1)(u_i+1))$. Its log length bounds the original oriented band on all displacements hitting that pair at any binary digit, with multiplier $C_\Phi L/\sqrt X$. Deleting all displacements hitting a list of $r$ numerators above $X$ costs at most $C_\Phi Lr/X^{3/2}$ in the signed integral. [Weighted occupation](Wall/TheWeightedOccupationOfPairedQuotientCells.lean#L318). Under failure of RH a measurable set of displacements carrying opposite runs contributes $<-cX^g$ to the signed test. Its distinct numerators satisfy $L\sum_H1/H>cX^{g+1/2}$ and $H^{1/2+d}<L$. [Abundance theorem](Wall/TheNumeratorsCarryingOppositePrimeExcursions.lean#L131).
 
+On sufficiently thin selected tests, one denominator band $(k,L]$, one sign, and one flank retain the signed loss. The joint upper tail alone contributes $\gg X^{1/2+3g}$ to the mixed moment after multiplication by $L$. For $H\le L$ the right flank is empty. On the left the mixed moment equals the interior second moment up to relative error $O(X^{-g})$ at the forced threshold. [Fixed band](Wall/OppositePrimeExcursionsOnOneFixedBand.lean#L180) · [Below the endpoint](Wall/OppositePrimeExcursionsOnOneFixedBand.lean#L306).
+
 The equal-prime term of the covariance, divided by the observation time, tends to the
 state autocorrelation at every fixed lag. At zero lag the coefficient is one. The squared
 increment recovers $8a\int F^2e^{-8u}$ after taking the prime limit and then the short-lag limit.

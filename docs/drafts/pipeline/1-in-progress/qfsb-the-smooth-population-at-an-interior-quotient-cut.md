@@ -20,7 +20,7 @@ Write \(R_y(Z)\) for the number of rough integers through \(Z\). For every \(\Th
 \]
 Indeed \(\Psi(Z,y)=\sum_{m\le Z}\mu_y(m)\lfloor Z/m\rfloor\). Replacing \(X/m\) by \((X/Z)\lfloor Z/m\rfloor\) costs less than \(X/Z\) in each row, and the common lower endpoint costs at most another \(X/Z\). Dividing by \(X\), the first term is at most \(y^{s-1}\). The second tends uniformly to zero as \(y\to\infty\) by comparison with a fixed primorial. This identifies the positive smooth proportion throughout the whole upper quotient range, including \(X/Z=X^{o(1)}\).
 
-The first band is [formalized](../3-formalized/qfsb-signed-profile-through-the-first-prime-band.md). The remaining issue is the original exact floor center on the same sector. It is
+The first band is [formalized](../3-formalized/qfsb-signed-profile-through-the-first-prime-band.md). The original exact floor center on the same sector is
 \[
  y\sum_{m\le Z}\mu_y(m)
  \left(\left\lfloor\frac{X}{ym}\right\rfloor-\left\lfloor\frac K y\right\rfloor\right).

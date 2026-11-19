@@ -67,7 +67,9 @@ theorem nearby_primorial_midpoint {n : ℕ} (hn : 1 < n) :
 
 #print axioms nearby_primorial_midpoint
 
-private theorem theta_integer_interval_bound {a b : ℕ} (hab : a ≤ b) :
+/-- Prime log mass in an integer interval is at most its length times the
+largest possible logarithm. -/
+theorem theta_integer_interval_bound {a b : ℕ} (hab : a ≤ b) :
     Chebyshev.theta b-Chebyshev.theta a ≤ ((b:ℝ)-a)*Real.log b := by
   let f (p : ℕ) := if p.Prime then Real.log (p:ℝ) else 0
   have hf : (∑ p ∈ Ioc a b,f p) ≤ ∑ _ ∈ Ioc a b,Real.log b := by

@@ -39,6 +39,8 @@ There is an explicit signed profile inside the quotient sum. Keep the ordinary p
 \]
 Only the positive unit and negative primes appear among the rough cofactors through \(Z\). At the log-square wall, \(Z=y^2\) gives positive coefficient \(1-\log 2\). In the polynomial range \(y^2\le X\le y^3\), choosing \(Z=\lfloor X/y\rfloor\) captures the full surviving Mangoldt sum. Its coefficient in the logarithmic Möbius prefix has the opposite sign. [Uniform signed profile and its two specializations](TheSmoothPopulationAtAnInteriorQuotientCut.lean)
 
+Subtracting the original floor increments on that same sector removes its macroscopic charge. Each cofactor pays at most one residue of size \(y\). There are \(o(Z)\) rough cofactors through \(Z\), so their total floor error is \(o(X)\). The centered estimate holds uniformly even after multiplying each cofactor by its own scalar in \([-1,1]\). [First-band floor cancellation](TheExactFloorCenterInTheFirstPrimeBand.lean)
+
 The top quotient band already detects the ordinary prime error. Write \(K=\lfloor X/(y+1)\rfloor\) and \(E(t)=\vartheta(t)-t\). For \(K<q\le X\) the only nonzero rough cofactor is the unit. Subtracting the original floor increment at every atom therefore gives, whenever \(K\ge y\),
 \[
  U(X)=E(X)-E(K)+(X\bmod y)-(K\bmod y).

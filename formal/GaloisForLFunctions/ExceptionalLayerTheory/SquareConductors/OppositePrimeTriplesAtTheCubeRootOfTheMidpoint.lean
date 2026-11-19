@@ -1,4 +1,5 @@
-import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheTotientTermInTheReflectedCompositePrice
+import GaloisForLFunctions.RHTower.Sieve.SelbergInversion
+import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
 import Mathlib.NumberTheory.Primorial
 
 /-!
@@ -22,8 +23,16 @@ private theorem primitive_part_mul (m : ℕ) (f g : ArithmeticFunction ℝ) :
   have hterm (x : ℕ × ℕ) (hx : x ∈ k.divisorsAntidiagonal) :
       (primitivePart m f) x.1*(primitivePart m g) x.2=
         if m.Coprime k then f x.1*g x.2 else 0 := by
-    simp only [←(Nat.mem_divisorsAntidiagonal.mp hx).1,Nat.coprime_mul_iff_right]
-    by_cases h : m.Coprime x.1 <;> by_cases h' : m.Coprime x.2 <;> simp [primitivePart,h,h']
+    change (if m.Coprime x.1 then f x.1 else 0)*(if m.Coprime x.2 then g x.2 else 0)=_
+    rw [←(Nat.mem_divisorsAntidiagonal.mp hx).1]
+    by_cases h : m.Coprime (x.1*x.2)
+    · obtain ⟨ha,hb⟩ := Nat.coprime_mul_iff_right.mp h
+      rw [if_pos ha,if_pos hb,if_pos h]
+    · rw [if_neg h]
+      by_cases ha : m.Coprime x.1
+      · have hb : ¬m.Coprime x.2 := fun hb => h (Nat.coprime_mul_iff_right.mpr ⟨ha,hb⟩)
+        rw [if_neg hb,mul_zero]
+      · rw [if_neg ha,zero_mul]
   change (if m.Coprime k then ∑ x ∈ k.divisorsAntidiagonal,f x.1*g x.2 else 0)=
     ∑ x ∈ k.divisorsAntidiagonal,(primitivePart m f) x.1*(primitivePart m g) x.2
   rw [sum_congr rfl hterm,sum_ite_irrel,sum_const_zero]
@@ -134,5 +143,89 @@ theorem cubic_rough_factor_support {n Y a b c : ℕ} (hcut : 3*n < (Y+1)^3)
 #print axioms cubic_rough_indicator_eq
 #print axioms cubic_rough_logarithm_identity
 #print axioms cubic_rough_factor_support
+
+private def cubicNonunit (Y a : ℕ) : Prop := 1 < a ∧ (primorial Y).Coprime a
+
+open Classical in
+/-- Ordinary primes exceeding the base-prime cutoff, each counted once. -/
+def cubicPrimeIndicator (Y : ℕ) : ArithmeticFunction ℝ :=
+  ⟨fun a => if cubicNonunit Y a ∧ a.Prime then 1 else 0,by simp [cubicNonunit]⟩
+
+/-- The convolution cube counts ordered prime triples, including repetitions. -/
+theorem cubic_prime_indicator_apply (Y p : ℕ) :
+    cubicPrimeIndicator Y p=if p.Prime ∧ Y<p then 1 else 0 := by
+  classical
+  change (if cubicNonunit Y p ∧ p.Prime then (1:ℝ) else 0)=_
+  by_cases hp : p.Prime
+  · have hc : (primorial Y).Coprime p ↔ Y<p := by
+      rw [Nat.coprime_comm,hp.coprime_iff_not_dvd,hp.dvd_primorial_iff,not_le]
+    simp [cubicNonunit,hp,hp.one_lt,hc]
+  · simp [hp]
+
+open Classical in
+private theorem rough_nonunit_value (Y a : ℕ) :
+    (cubicRoughIndicator Y-1) a=if cubicNonunit Y a then (1:ℝ) else 0 := by
+  rcases a with _ | _ | a
+  · simp [cubicNonunit]
+  · change cubicRoughIndicator Y 1-(1:ArithmeticFunction ℝ) 1=_
+    simp [cubicNonunit,cubicRoughIndicator,primitivePart]
+  · change (if (primorial Y).Coprime (a+2) then (zeta:ArithmeticFunction ℝ) (a+2) else 0) -
+        (1:ArithmeticFunction ℝ) (a+2)=_
+    simp [cubicNonunit,natCoe_apply,zeta_apply_ne (by omega : a+2≠0),one_apply_ne (by omega : a+2≠1)]
+
+open Classical in
+private theorem rough_mangoldt_value (Y a : ℕ) :
+    cubicRoughMangoldt Y a=if cubicNonunit Y a then vonMangoldt a else 0 := by
+  by_cases ha : 1 < a
+  · simp [cubicRoughMangoldt,primitivePart,cubicNonunit,ha]
+  · have h : a=0 ∨ a=1 := by omega
+    rcases h with rfl | rfl <;> simp [cubicNonunit,cubicRoughMangoldt,primitivePart]
+
+private theorem triple_price_congr {k : ℕ} {f g h F G H : ArithmeticFunction ℝ}
+    (he : ∀ a b c : ℕ, a*b*c=k → f a*g b*h c=F a*G b*H c) :
+    (f*g*h) k=(F*G*H) k := by
+  rw [mul_apply,mul_apply]
+  apply sum_congr rfl
+  intro x hx
+  rw [mul_apply,mul_apply,sum_mul,sum_mul]
+  apply sum_congr rfl
+  intro z hz
+  exact he _ _ _ (by rw [(Nat.mem_divisorsAntidiagonal.mp hz).1,(Nat.mem_divisorsAntidiagonal.mp hx).1])
+
+/-- Through the fourth power of the rough cutoff, the entire remainder
+has weight one third of the product logarithm per ordered prime triple. -/
+theorem cubic_rough_triple_price {n Y k : ℕ} (hc : 3*n < (Y+1)^3)
+    (hf : 4*n < (Y+1)^4) (hk : k ≤ 4*n) :
+    3*((cubicRoughMangoldt Y*(cubicRoughIndicator Y-1)^2 : ArithmeticFunction ℝ) k)=
+      (cubicPrimeIndicator Y^3 : ArithmeticFunction ℝ) k*Real.log k := by
+  classical
+  let P := cubicPrimeIndicator Y
+  have hrep : (cubicRoughMangoldt Y*(cubicRoughIndicator Y-1)*(cubicRoughIndicator Y-1)) k=
+      (logPriceOf P*P*P) k := by
+    apply triple_price_congr
+    intro a b c he
+    rw [rough_mangoldt_value,rough_nonunit_value,rough_nonunit_value]
+    change _=(if cubicNonunit Y a ∧ a.Prime then (1:ℝ) else 0)*Real.log a*
+      (if cubicNonunit Y b ∧ b.Prime then 1 else 0)*(if cubicNonunit Y c ∧ c.Prime then 1 else 0)
+    by_cases ha : cubicNonunit Y a
+    · by_cases hb : cubicNonunit Y b
+      · by_cases hz : cubicNonunit Y c
+        · obtain ⟨_,pa,pb,pc,_⟩ := cubic_rough_factor_support hc hf (he.le.trans hk)
+            ha.1 hb.1 hz.1 ha.2 hb.2 hz.2
+          simp [ha,hb,hz,pa,pb,pc,vonMangoldt_apply_prime pa]
+        · simp [hz]
+      · simp [hb]
+    · simp [ha]
+  have hder : logPriceOf (P^3)=logPriceOf P*P*P+logPriceOf P*P*P+logPriceOf P*P*P := by
+    rw [show P^3=P*P*P by ring,log_price_leibniz,log_price_leibniz]
+    ring
+  have hd := congrArg (fun f : ArithmeticFunction ℝ => f k) hder
+  change (P^3) k*Real.log k=(logPriceOf P*P*P) k+(logPriceOf P*P*P) k+(logPriceOf P*P*P) k at hd
+  rw [pow_two,←mul_assoc,hrep]
+  change _=(P^3) k*Real.log k
+  linarith only [hd]
+
+#print axioms cubic_prime_indicator_apply
+#print axioms cubic_rough_triple_price
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
