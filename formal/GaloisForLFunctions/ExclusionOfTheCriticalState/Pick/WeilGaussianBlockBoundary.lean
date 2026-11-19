@@ -219,9 +219,4 @@ theorem positive_time_kernel {m : ℕ} (logTime : ℝ) (y : Fin n → Fin d → 
     rw [h,mul_zero,zero_sub,neg_nonneg] at hhi
     exact le_antisymm hhi hjpos
 
-#print axioms evolve_limit
-#print axioms signed_weil_eventual
-#print axioms evolve_signed_complex
-#print axioms positive_time_comparison
-#print axioms positive_time_kernel
 end GaloisForLFunctions.ExclusionOfTheCriticalState.ProbeWalk.Blocks

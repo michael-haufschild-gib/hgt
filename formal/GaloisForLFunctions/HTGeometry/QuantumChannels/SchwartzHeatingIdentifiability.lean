@@ -91,8 +91,4 @@ theorem operator_and_pair_recover (F : Fin k â†’ CubicHeating.Jump) (G : Fin l â
         CubicHeating.rate F = CubicHeating.rate G) :=
   fun he => CubicHeating.single_rate_recovery F G p ((cubic_heating_iff F G).mp he)
 
-#print axioms bank_heating_iff
-#print axioms single_heating_iff
-#print axioms indistinguishable_operator_heating
-#print axioms operator_and_pair_recover
 end GaloisForLFunctions.PolynomialJump.Schwartz

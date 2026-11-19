@@ -67,7 +67,7 @@ private theorem symmetric_mass (t : ℕ) :
     · simp [lt,lt.asymm,lt.ne']
     · simp
     · simp [gt,gt.asymm,gt.ne]
-  have all := sum_congr (s := P) rfl (fun p _ => sum_congr (s := P) rfl (fun q _ => split p q))
+  have all := sum_congr (s₁ := P) rfl (fun p _ => sum_congr (s₁ := P) rfl (fun q _ => split p q))
   simp only [sum_add_distrib] at all
   have diag (p : ℕ) (hp : p ∈ P) : (∑ q ∈ P,if q=p then recip p*recip p else 0)=recip p*recip p := by simp [hp]
   rw [sum_congr rfl diag,flip] at all
@@ -168,7 +168,9 @@ theorem fixed_lift_tracks_the_semiprime_harmonic_mass {G : ℕ → ℕ}
     (by rw [mul_left_comm,Real.mul_self_sqrt t0.le])
   have err := sum.trans square
   change |(∑ d ∈ S,fixedSignedPrefix G (t/d))-((∑ d ∈ S,(squarefreeOmegaCount 2 (t/d):ℝ))+∑ _d ∈ S,(1:ℝ))| ≤ 2*t at err
-  have fixedSum : (∑ d ∈ S,fixedSignedPrefix G (t/d))=F := by simp only [F,smoothLiftedPrefix,eq]
+  have fixedSum : (∑ d ∈ S,fixedSignedPrefix G (t/d))=F := by
+    change _=∑ d ∈ RHTower.Sieve.smoothUpTo (Nat.primesLE y) t,fixedSignedPrefix G (t/d)
+    rw [eq]
   rw [fixedSum,show (∑ _d ∈ S,(1:ℝ))=t by simp [S],lifted_card_as_floor_sum] at err
   have residue (m : ℕ) (hm : m ∈ semis t) :
       |((t/m:ℕ):ℝ)-(t:ℝ)*recip m| ≤ 1 := by
@@ -259,8 +261,4 @@ theorem a_semiprime_prescription_in_the_original_quotient_lift :
   have tri := abs_sub_le (smoothLiftedPrefix (fixedSignedPrefix G) y t/(t:ℝ)) (semiprimeHarmonicMass t) ((logLog t)^2/2)
   linarith only [tri,near,profile,l0]
 
-#print axioms a_semiprime_prescription_in_the_original_quotient_lift
-
-#print axioms harmonic_semiprime_sandwich
-#print axioms fixed_lift_tracks_the_semiprime_harmonic_mass
 end GaloisForLFunctions.RestrictedFactorizationCalculus

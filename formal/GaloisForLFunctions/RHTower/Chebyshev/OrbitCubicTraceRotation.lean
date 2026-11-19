@@ -120,7 +120,7 @@ theorem rotation_invariants (m : ℤ) (z : K m) :
   obtain ⟨⟨a,b,c⟩,rfl⟩ := (coords_bijective m).surjective z
   simp only [rotate_coords,height,trace_coords,norm_coordinates]
   refine ⟨rfl,?_,?_⟩
-  · simp [reciprocalMatrix,Matrix.det_fin_three] <;> ring
+  · simp only [reciprocalMatrix_det] <;> ring
   · congr 1 <;> ring
 
 private theorem positive_rotates {m : ℤ} {z : K m} (h : totallyPositive m z) :
@@ -169,13 +169,4 @@ theorem rotation_fixed_point (m : ℤ) (a b : ℚ) :
   · rintro ⟨h₁,h₂⟩
     congr 1 <;> linarith only [h₁,h₂]
 
-#print axioms conjugate_factorization
-#print axioms turn_cube
-#print axioms all_field_maps
-#print axioms rotate_coords
-#print axioms turn_generator
-#print axioms rotation_invariants
-#print axioms sliceRotation
-#print axioms rotate_triangle
-#print axioms rotation_fixed_point
 end RHTower.OrbitCubic.NumberFieldTrace

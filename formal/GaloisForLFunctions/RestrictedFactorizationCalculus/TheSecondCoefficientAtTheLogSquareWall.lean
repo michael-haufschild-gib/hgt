@@ -292,7 +292,4 @@ theorem second_coefficient_with_a_polynomial_rough_cutoff {γ : ℝ} (gp : 0<γ)
     apply le_of_eq
     field_simp [llp.ne',lp.ne']; ring
 
-#print axioms second_coefficient_of_the_smooth_sign_populations
-#print axioms second_coefficient_of_the_smooth_quotient_center
-#print axioms second_coefficient_with_a_polynomial_rough_cutoff
 end GaloisForLFunctions.RestrictedFactorizationCalculus

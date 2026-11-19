@@ -394,10 +394,5 @@ theorem PrimitiveExchange.difference_power_iff (e : PrimitiveExchange) {θ : ℝ
       exact ⟨C,hC,fun n => (abs_sub_comm (F (n/b)) _).le.trans (h n)⟩
     exact (Iff.intro swap swap).trans (prefixPower_dilationDifference_iff e.prime_p.pos h hθ _ h0)
 
-#print axioms sharp_prime_deletion_bound
-#print axioms PrimitiveExchange.moved_power_bound
-#print axioms exists_short_primitive_exchange
-#print axioms PrimitiveExchange.difference_power_iff
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus
 

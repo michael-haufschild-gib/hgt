@@ -40,6 +40,15 @@ def reciprocalEquiv (m : ℤ) : (Fin 3 → ℚ) ≃ₗ[ℚ] K m := by
     obtain ⟨⟨a,b,c⟩,he⟩ := (coords_bijective m).2 z
     exact ⟨![a,b,c],he⟩
 
+/-- Product expansion in any commutative ring with the reciprocal multiplication table. -/
+private theorem multiply_coordinates {R : Type*} [CommRing R]
+    (m u v a b c x y z : R) (hu : u^2 = 1+(1-m)*u-v)
+    (hv : v^2 = 1+u-m*v) (huv : u*v = v-u) :
+    (a+b*u+c*v)*(x+y*u+z*v) =
+      (a*x+b*y+c*z)+(b*x+(a+(1-m)*b-c)*y+(c-b)*z)*u+
+        (c*x+(c-b)*y+(a+b-m*c)*z)*v := by
+  linear_combination (b*y)*hu + (c*z)*hv + (b*z+c*y)*huv
+
 /-- Multiplication by an arbitrary field element in reciprocal coordinates. -/
 theorem reciprocalMatrix_action (m : ℤ) (a b c : ℚ) (v : Fin 3 → ℚ) :
     coords m a b c * reciprocalEquiv m v = reciprocalEquiv m ((reciprocalMatrix (m:ℚ) a b c).mulVec v) := by
@@ -49,12 +58,8 @@ theorem reciprocalMatrix_action (m : ℤ) (a b c : ℚ) (v : Fin 3 → ℚ) :
   change _ = coords m (a*v 0+b*v 1+c*v 2)
     (b*v 0+(a+(1-(m:ℚ))*b-c)*v 1+(c-b)*v 2)
     (c*v 0+(c-b)*v 1+(a+b-(m:ℚ)*c)*v 2)
-  simp only [coords,Algebra.smul_def,map_add,map_sub,map_one,map_mul,map_intCast]
-  linear_combination
-    (algebraMap ℚ (K m) b * algebraMap ℚ (K m) (v 1))*hu +
-    (algebraMap ℚ (K m) c * algebraMap ℚ (K m) (v 2))*hv +
-    (algebraMap ℚ (K m) b * algebraMap ℚ (K m) (v 2) +
-      algebraMap ℚ (K m) c * algebraMap ℚ (K m) (v 1))*huv
+  simp only [coords,Algebra.smul_def,map_add,map_sub,map_one,map_mul,map_intCast,mul_one]
+  exact multiply_coordinates _ _ _ _ _ _ _ _ _ hu hv huv
 
 /-- Rational basis underlying the reciprocal integral lattice. -/
 def reciprocalBasis (m : ℤ) := Basis.ofEquivFun (reciprocalEquiv m).symm
@@ -80,7 +85,8 @@ theorem norm_coordinates (m : ℤ) (a b c : ℚ) :
   rw [← reciprocal_leftMulMatrix]
   exact Algebra.norm_eq_matrix_det (reciprocalBasis m) (coords m a b c)
 
-private theorem reciprocalMatrix_det {R : Type*} [CommRing R] (m a b c : R) :
+/-- Six-term determinant expansion in the three reciprocal coordinates. -/
+theorem reciprocalMatrix_det {R : Type*} [CommRing R] (m a b c : R) :
     let d := a+(1-m)*b-c
     let e := c-b
     let f := a+b-m*c

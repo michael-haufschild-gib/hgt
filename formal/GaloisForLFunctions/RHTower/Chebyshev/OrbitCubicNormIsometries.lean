@@ -40,7 +40,7 @@ theorem norm_conjugate_product (m : ℤ) (z : K m) :
   obtain ⟨⟨a,b,c⟩,rfl⟩ := (coords_bijective m).surjective z
   rw [← coords_const,norm_coordinates]
   simp only [turn_coords,mul_coords]
-  congr 1 <;> simp [reciprocalMatrix,Matrix.det_fin_three] <;> ring
+  congr 1 <;> simp only [reciprocalMatrix_det] <;> ring
 
 private theorem translated_products {R : Type*} [Field R] [CharZero R] (a b c A B C : R)
     (h₀ : A*B*C=a*b*c)
@@ -185,9 +185,4 @@ theorem norm_height_stabilizer (m : ℤ) (F : K m →ₗ[ℚ] K m) :
     · rw [h]; exact ⟨(rotation_invariants m _).2.1.trans (rotation_invariants m z).2.1,
         (rotation_invariants m _).1.trans (rotation_invariants m z).1⟩
 
-#print axioms norm_conjugate_product
-#print axioms unital_norm_rigidity
-#print axioms norm_isometries
-#print axioms rotation_exact_period
-#print axioms norm_height_stabilizer
 end RHTower.OrbitCubic.NumberFieldTrace

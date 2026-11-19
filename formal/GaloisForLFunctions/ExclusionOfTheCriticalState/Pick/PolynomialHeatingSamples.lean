@@ -24,7 +24,7 @@ def power (P : ℝ[X]) (x : ℝ) := (P.eval x)^2
 theorem power_eq_iff (P Q : ℝ[X]) : power P=power Q ↔ P=Q ∨ P= -Q := by
   constructor
   · intro h
-    have e : P^2=Q^2 := Polynomial.funext fun x => by simpa only [eval_pow] using congrFun h x
+    have e : P^2=Q^2 := Polynomial.funext fun x => by simpa only [power,eval_pow] using congrFun h x
     have hz : (P-Q)*(P+Q)=0 := by linear_combination e
     exact (mul_eq_zero.mp hz).imp sub_eq_zero.mp eq_neg_of_add_eq_zero_left
   · rintro (e|e)
@@ -55,7 +55,7 @@ private theorem vanishing_ne (S : Finset ℝ) : vanishing S≠0 := (monic_prod_X
 
 theorem vanishing_eval (S : Finset ℝ) (x : ℝ) : (vanishing S).eval x=0 ↔ x∈S := by
   classical
-  simp [vanishing,eval_prod,prod_eq_zero_iff,sub_eq_zero,eq_comm]
+  simp [vanishing,eval_prod,prod_eq_zero_iff,sub_eq_zero]
 
 /-- Exactly the number of distinct fixed nodes required; repeated samples
 carry no additional information. -/
@@ -89,9 +89,9 @@ theorem fixed_threshold (d : ℕ) (S : Finset ℝ) :
       rw [natDegree_pow]
       exact Nat.mul_le_mul_left 2 U.property
     have he := eq_of_natDegree_lt_card_of_eval_eq' (P.val^2) (Q.val^2) S
-      (fun i hi => by simpa only [eval_pow] using e i hi) ((max_le (deg _) (deg _)).trans_lt h)
+      (fun i hi => by simpa only [power,eval_pow] using e i hi) ((max_le (deg _) (deg _)).trans_lt h)
     funext x
-    simpa only [eval_pow] using congrArg (Polynomial.eval x) he
+    simpa only [power,eval_pow] using congrArg (Polynomial.eval x) he
 
 private def candidate (v : Nodes d) (data : Fin (d+1) → ℝ) (s : Fin (d+1) → Bool) : Channel d :=
   interpolateValues v (fun i => if s i then Real.sqrt (data i) else -Real.sqrt (data i))
@@ -103,8 +103,9 @@ private theorem candidate_complete (v : Nodes d) (P : Channel d) :
   refine ⟨s,Subtype.ext (Polynomial.funext fun x => ?_)⟩
   let Q := candidate v (fun i => power P.val (v i)) s
   have he (i : Fin (d+1)) : Q.val.eval (v i)=P.val.eval (v i) := by
-    by_cases h : 0≤P.val.eval (v i) <;>
-      simp [Q,candidate,eval_values,s,h,power,Real.sqrt_sq_eq_abs,abs_of_nonneg,abs_of_neg]
+    by_cases h : 0≤P.val.eval (v i)
+    · simp [Q,candidate,eval_values,s,h,power,Real.sqrt_sq_eq_abs,abs_of_nonneg h]
+    · simp [Q,candidate,eval_values,s,h,power,Real.sqrt_sq_eq_abs,abs_of_neg (lt_of_not_ge h)]
   rw [HTGeometry.eval_eq_sum_lagrangeBasis Q.val Q.property v v.injective,
     HTGeometry.eval_eq_sum_lagrangeBasis P.val P.property v v.injective]
   simp only [he]
@@ -134,7 +135,7 @@ theorem adaptive_recovery (v : Nodes d) (P Q : Channel d)
     intro eq
     apply neq
     funext a
-    simpa only [eval_pow] using congrArg (Polynomial.eval a) (sub_eq_zero.mp eq)
+    simpa only [power,eval_pow] using congrArg (Polynomial.eval a) (sub_eq_zero.mp eq)
   have root : x∈(P.val^2-Q.val^2).roots.toFinset := by
     rw [Multiset.mem_toFinset,mem_roots hn,IsRoot.def,eval_sub,eval_pow,eval_pow,sub_eq_zero]
     exact ef

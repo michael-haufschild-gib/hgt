@@ -106,8 +106,6 @@ theorem upper_octave_cofactor_profile {U P p : ℕ} (hU : 0 < U) (hP : 0 < P)
         density*U*(4*(P:ℝ)/p-2) := by dsimp only [n]; push_cast; ring
     constructor <;> linarith only [r4.1,r4.2,rB.1,rB.2,hcent,hbase]
 
-#print axioms upper_octave_cofactor_profile
-
 /-- Net proper cofactor count after subtracting the upper part. For
 p coprime to UP this counts the complementary range 2 ≤ v ≤ 2U. -/
 def lowerOctaveCofactorCount (U P p : ℕ) : ℝ :=
@@ -174,9 +172,6 @@ theorem selected_octave_cofactor_cancellation {U P : ℕ} (hU : 0 < U) (hP : 0 <
        _ ≤ _ := by
           rw [←sum_mul]
           exact mul_le_mul_of_nonneg_right hmass (sum_nonneg fun _ _ => abs_nonneg _)
-
-#print axioms opposite_octave_cofactor_profiles
-#print axioms selected_octave_cofactor_cancellation
 
 private theorem clipped_count_error {n p : ℕ} (hn : 0 < n) (hp : 0 < p) (B T : ℕ) :
     |upperCofactorCount n B (T/p)-(n.totient:ℝ)/n*max ((T:ℝ)/p-B) 0| ≤ 2*squarefreeDivisorMass n := by
@@ -269,9 +264,6 @@ theorem joint_cofactor_block_boundary (S : Finset ℕ) (n V W : ℕ) :
   rw [cofactorBoundaryError,cofactorBoundaryError,←sum_sub_distrib]
   exact sum_congr rfl fun p _ => by ring
 
-#print axioms cofactor_boundary_error_bound
-#print axioms joint_cofactor_block_boundary
-
 /-- If both reflected primitive integers have a prime factor above six,
 their cofactors share exactly the part of the first integer dividing six. -/
 theorem opposite_prime_cofactor_gcd {n a b p q : ℕ} (hs : a*p+b*q=6*n)
@@ -321,8 +313,5 @@ theorem opposite_factor_log_price {n a b p q : ℕ} (hn : 0 < n) (hs : a*p+b*q=6
   · apply Real.log_le_log (div_pos (Nat.cast_pos.mpr hx) hy')
     apply (div_le_iff₀ hy').mpr
     exact_mod_cast (show a*p ≤ 2*(b*q) by omega)
-
-#print axioms opposite_prime_cofactor_gcd
-#print axioms opposite_factor_log_price
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -239,6 +239,4 @@ theorem both_signs_at_every_smoothness_exponent {δ : ℝ} (hδ : 0<δ) (b : Boo
   obtain ⟨hi,hl,hm,ht⟩ := mem_filter.mp hn
   exact mem_filter.mpr ⟨hi,hl,hm,fun q hq => (ht q hq).trans (Real.rpow_le_rpow_of_exponent_le hx1 hle)⟩
 
-#print axioms both_signs_at_every_smoothness_exponent
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

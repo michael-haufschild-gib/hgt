@@ -1,0 +1,131 @@
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Index.TheLogarithmicWallCuspOfAFiniteLayer
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Index.FiniteLayerKreinStructureAndRigidity
+
+/-!
+# Critical-line mass on moving ordinate bands
+
+Ponge and Tian's moving-dilation law for regularly varying functions
+(arXiv:2605.25591, Lemma 2.17) applies to the ordinate tail of a threshold
+state in the finite stratum. Two cutoffs asymptotic to aT and bT select
+mass with coefficient C(1/a − 1/max(a,b)). Bands of sublinear thickness
+are invisible at this normalization. A band of positive relative thickness
+gives a localized test for exclusion of a finite off-line divisor.
+-/
+
+noncomputable section
+
+open Filter Set MeasureTheory Topology Zeta23
+namespace GaloisForLFunctions.ExclusionOfTheCriticalState
+open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
+  CriticalArithmeticCorrelationTheory HTGeometry _root_.RHTower
+
+/-- Actual critical-line mass strictly above ordinate height T. -/
+def ordinateTailMass (F : ℝ → ℝ) (T : ℝ) : ℝ :=
+  ∑' q : onLineCopies, if T < |(centredZero q).im| then zeroValueMass F q else 0
+
+/-- Mass of the half-open band (u,v] in absolute ordinate. Reversed
+cutoffs select the empty set. -/
+def ordinateBandMass (F : ℝ → ℝ) (u v : ℝ) : ℝ :=
+  ∑' q : onLineCopies, if u < |(centredZero q).im| ∧ |(centredZero q).im| ≤ v
+    then zeroValueMass F q else 0
+
+private theorem band_eq_tail_sub {F : ℝ → ℝ}
+    (hs : Summable (fun q : onLineCopies => zeroValueMass F q)) (u v : ℝ) :
+    ordinateBandMass F u v = ordinateTailMass F u - ordinateTailMass F (max u v) := by
+  have hs' (t : ℝ) : Summable (fun q : onLineCopies =>
+      if t < |(centredZero q).im| then zeroValueMass F q else 0) :=
+    hs.of_nonneg_of_le (fun q => ite_zero_nonneg (zeroValueMass_nonneg F q))
+      (fun q => ite_zero_le (zeroValueMass_nonneg F q))
+  rw [ordinateBandMass, ordinateTailMass, ordinateTailMass, ← (hs' u).tsum_sub (hs' _)]
+  apply tsum_congr
+  intro q
+  by_cases hu : u < |(centredZero q).im| <;> by_cases hv : v < |(centredZero q).im| <;>
+    simp [← not_lt, hu, hv, max_lt_iff]
+
+/-- The endpoint coefficient of the critical-line tail. -/
+def ordinateTailCoefficient (W : ℝ) (F : ℝ → ℝ) : ℝ :=
+  8 * criticalAliasCoefficient W * (∫ u : ℝ, F u ^ 2 * Real.exp (-(8*u))) / Real.pi
+
+private theorem coefficient_pos {W : ℝ} {F : ℝ → ℝ} (hW : 0 < W)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W : EReal))
+    (hF : IsCriticalHalfLineGroundState W F) : 0 < ordinateTailCoefficient W F := by
+  have ha := criticalAliasCoefficient_positive hW
+  have hm := exponentialPair_self_pos (criticalHalfLineEnergyDomain_of_groundState hF)
+    (isConfinedNullVector_of_groundState hW ht hF).2.1
+  have he : (∫ u : ℝ, F u ^ 2 * Real.exp (-(8*u))) = criticalHalfLineExponentialPair F F := by
+    unfold criticalHalfLineExponentialPair
+    exact integral_congr_ae (Eventually.of_forall fun u => by ring)
+  rw [ordinateTailCoefficient, he]
+  positivity
+
+private theorem move_cut {ι : Type*} {l : Filter ι} {T u : ι → ℝ} {f : ℝ → ℝ} {c a : ℝ}
+    (htail : Tendsto (fun t => t*f t) atTop (𝓝 c)) (hT : Tendsto T l atTop)
+    (hu : Tendsto u l (𝓝 a)) (ha : 0 < a) :
+    Tendsto (fun i => T i*f (T i*u i)) l (𝓝 (c/a)) := by
+  have h := (htail.comp (hT.atTop_mul_pos ha hu)).div hu ha.ne'
+  refine h.congr' ?_
+  filter_upwards [hu.eventually_ne ha.ne'] with i hi
+  change (T i*u i*f (T i*u i))/u i = _
+  field_simp
+
+/-- Moving bands have an exact coefficient, including when their cutoffs
+cross infinitely often. The formula also allows discrete subsequences. -/
+theorem moving_ordinate_band_limit {ι : Type*} {l : Filter ι} {T u v : ι → ℝ}
+    {a b W : ℝ} {F : ℝ → ℝ} (hW : 0 < W)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W : EReal))
+    (hF : IsCriticalHalfLineGroundState W F) (hf : BacklundConverse.FiniteOffLine)
+    (hT : Tendsto T l atTop) (hu : Tendsto u l (𝓝 a)) (hv : Tendsto v l (𝓝 b)) (ha : 0 < a) :
+    Tendsto (fun i => T i * ordinateBandMass F (T i*u i) (T i*v i)) l
+      (𝓝 (ordinateTailCoefficient W F/a - ordinateTailCoefficient W F/max a b)) := by
+  have hs := (domain_zeroParseval_of_finiteOffLine (criticalHalfLineEnergyDomain_of_groundState hF) hf).1
+  have hh : Tendsto (fun t => t * ordinateTailMass F t) atTop (𝓝 (ordinateTailCoefficient W F)) :=
+    criticalState_criticalLine_tail_asymptotic hW ht hF hf
+  have h := (move_cut hh hT hu ha).sub (move_cut hh hT (hu.max hv) (ha.trans_le (le_max_left ..)))
+  refine h.congr' ?_
+  filter_upwards [hT.eventually (eventually_ge_atTop (0:ℝ))] with i hi
+  rw [band_eq_tail_sub hs, mul_sub, ← mul_max_of_nonneg _ _ hi]
+
+/-- Existence of a vanishing sequence in one prescribed multiplicative band,
+for every threshold state in the finite stratum. -/
+def sequentialBandVanishing (p q : ℝ) : Prop :=
+  BacklundConverse.FiniteOffLine → ∀ (W : ℝ) (F : ℝ → ℝ), 0 < W →
+    (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W : EReal) →
+    IsCriticalHalfLineGroundState W F →
+    ∃ T : ℕ → ℝ, Tendsto T atTop atTop ∧ Tendsto
+      (fun n => T n * ordinateBandMass F (T n * Real.exp p) (T n * Real.exp q)) atTop (𝓝 0)
+
+/-- A vanishing sequence on any fixed band of positive logarithmic width
+is equivalent to finite-layer exclusion. At zero or negative width the
+vanishing test always holds. -/
+theorem sequential_band_vanishing_iff (p q : ℝ) :
+    sequentialBandVanishing p q ↔ q ≤ p ∨ (BacklundConverse.FiniteOffLine → RiemannHypothesis) := by
+  have hnone : (BacklundConverse.FiniteOffLine → RiemannHypothesis) ↔
+      (BacklundConverse.FiniteOffLine → ¬ ∃ (W : ℝ) (F : ℝ → ℝ), 0 < W ∧
+        (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W : EReal) ∧
+        IsCriticalHalfLineGroundState W F) := finiteLayer_ecs_b13_tfae.out 0 1
+  constructor
+  · intro test
+    by_cases h : q ≤ p
+    · exact Or.inl h
+    right
+    apply hnone.mpr
+    rintro hf ⟨W,F,hW,ht,hF⟩
+    obtain ⟨T,hT,hv⟩ := test hf W F hW ht hF
+    have hab := Real.exp_lt_exp.mpr (lt_of_not_ge h)
+    have he := moving_ordinate_band_limit hW ht hF hf hT
+      (tendsto_const_nhds (x := Real.exp p)) (tendsto_const_nhds (x := Real.exp q)) (Real.exp_pos _)
+    rw [max_eq_right hab.le] at he
+    have hp := div_lt_div_of_pos_left (coefficient_pos hW ht hF) (Real.exp_pos _) hab
+    exact (sub_pos.mpr hp).ne' (tendsto_nhds_unique he hv)
+  · rintro (hp|hex) hf W F hW ht hF
+    · refine ⟨fun n => (n:ℝ), tendsto_natCast_atTop_atTop, ?_⟩
+      have h := moving_ordinate_band_limit hW ht hF hf (T := fun n : ℕ => (n:ℝ))
+        tendsto_natCast_atTop_atTop (tendsto_const_nhds (x := Real.exp p))
+        (tendsto_const_nhds (x := Real.exp q)) (Real.exp_pos _)
+      simpa only [max_eq_left (Real.exp_le_exp.mpr hp), sub_self] using h
+    · exact False.elim (hnone.mp hex hf ⟨W,F,hW,ht,hF⟩)
+
+#print axioms moving_ordinate_band_limit
+#print axioms sequential_band_vanishing_iff
+
+end GaloisForLFunctions.ExclusionOfTheCriticalState

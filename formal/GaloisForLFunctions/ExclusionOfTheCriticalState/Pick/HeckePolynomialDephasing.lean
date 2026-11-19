@@ -105,12 +105,4 @@ theorem gapFlow_fixed_iff (g t : ℝ) (X : A) :
     simp only [mul_eq_zero,neg_eq_zero,sq_eq_zero_iff]
   rw [he,or_assoc]
 
-#print axioms jumpBracket_gap
-#print axioms jumpBracket_cross
-#print axioms jumpBracket_square_zero_iff
-#print axioms momentum_power_at_reflection
-#print axioms mixed_attenuation
-#print axioms hullAttenuation_mul
-#print axioms gapFlow_add
-#print axioms gapFlow_fixed_iff
 end GaloisForLFunctions.ExclusionOfTheCriticalState.ProbeWalk

@@ -322,6 +322,4 @@ theorem simultaneous_mertens_powers_on_fixed_and_crossing_vertices {ε : ℝ} (e
     rw [funext (price i),funext rest]
     exact detect s sp
 
-#print axioms simultaneous_mertens_powers_on_fixed_and_crossing_vertices
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

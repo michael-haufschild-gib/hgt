@@ -256,7 +256,4 @@ theorem smaller_primes_must_escape (S : Finset ℕ) (hS : ∀ p ∈ S,Nat.Prime 
   exact ((lt_div_iff₀ (show (0:ℝ)<X by exact_mod_cast hX)).1 hbound).le.trans
     (paired_charge hS hY hY1 M hm)
 
-#print axioms smallerPrimeBias_eq
-#print axioms smaller_primes_must_escape
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

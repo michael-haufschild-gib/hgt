@@ -130,6 +130,4 @@ theorem optimal_alternating_transport {S : Finset ℕ} (A B : OppositeParityMatc
   obtain ⟨M,ha,hb,he⟩ := combine_matchings A B
   exact ⟨M,ha,hb,he,exact_gain_of_joint_transport A B M ha hb he⟩
 
-#print axioms optimal_alternating_transport
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

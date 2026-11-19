@@ -159,10 +159,4 @@ theorem branch_deriv_residue (s : Branch) (q : ℝ) :
   change (stiffness x x)⁻¹ = _
   field_simp [h0,h1,hs.ne']
 
-#print axioms branchRoot_iff
-#print axioms branch_displacement
-#print axioms branch_increment
-#print axioms branch_lipschitz
-#print axioms branch_hasDerivAt
-#print axioms branch_deriv_residue
 end RHTower.OrbitCubic

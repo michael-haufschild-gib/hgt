@@ -134,8 +134,4 @@ theorem fractional_inverse_checkerboard (a : Shape) {n : ℕ} (r s : Fin (n+1) �
       conv_lhs => rw [← one_mul (M.det⁻¹*_),← square]
       ring
 
-#print axioms binomial_minor_lower
-#print axioms fractional_cross_det_pos
-#print axioms gamma_affinity_cross_det_pos
-#print axioms fractional_inverse_checkerboard
 end GaloisForLFunctions.ExclusionOfTheCriticalState.ProbeWalk.GammaProbes

@@ -73,6 +73,7 @@ theorem integer_norm_peak (a b c : ℕ) :
   have hk : 0 ≤ k := by dsimp only [k]; positivity
   have hs (r : ℕ) (hr : s%3 = r) : (a:ℤ)+b+c = 3*k+r := by
     have hn : a+b+c = 3*(s/3)+r := by dsimp only [s] at *; omega
+    dsimp only [k]
     exact_mod_cast hn
   have split (A B C : ℤ) (hm : M=triangleNorm A B C)
       (hS : (a:ℤ)+b+c=A+B+C)
@@ -92,20 +93,19 @@ theorem integer_norm_peak (a b c : ℕ) :
   have ranges : s%3=0 ∨ s%3=1 ∨ s%3=2 := by omega
   rcases ranges with h0 | h1 | h2
   · have he := hs 0 h0
-    apply split k k k (by simp [M,h0]) (by omega)
+    refine split k k k (by simp [M,h0]) (by omega) ?_ ?_ ?_
     · unfold pairs; nlinarith only
     · unfold total triangleNorm arm; nlinarith only [hk,sq_nonneg k]
     · unfold balanced; omega
   · have he := hs 1 h1
-    apply split (k+1) k k (by simp [M,h1]) (by omega)
+    refine split (k+1) k k (by simp [M,h1]) (by omega) ?_ ?_ ?_
     · unfold pairs; nlinarith only
     · unfold total triangleNorm arm; nlinarith only [hk,sq_nonneg k]
     · unfold balanced; omega
   · have he := hs 2 h2
-    apply split k (k+1) (k+1) (by simp [M,h2]) (by omega)
+    refine split k (k+1) (k+1) (by simp [M,h2]) (by omega) ?_ ?_ ?_
     · unfold pairs; nlinarith only
     · unfold total triangleNorm arm; nlinarith only [hk,sq_nonneg k]
     · unfold balanced; omega
 
-#print axioms integer_norm_peak
 end RHTower.OrbitCubic.NumberFieldTrace

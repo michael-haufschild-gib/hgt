@@ -148,9 +148,4 @@ theorem scalar_echo_injective (s : ℝ) (t : Fin n ↪ ℕ) :
        _ = ∑ i, coefficient s t v i • eigenmode s t i := Finset.sum_congr rfl fun i _ => by rw [hc]
        _ = v := synthesis s t v
 
-#print axioms bank_response
-#print axioms positive_visible_modes
-#print axioms levels_injective
-#print axioms dual_rate_matrix
-#print axioms scalar_echo_injective
 end GaloisForLFunctions.ExclusionOfTheCriticalState.CubicRecovery.ProbeSpectrum

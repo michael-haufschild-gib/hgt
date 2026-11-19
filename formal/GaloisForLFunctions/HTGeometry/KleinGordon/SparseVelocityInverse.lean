@@ -108,8 +108,4 @@ theorem cofinal_shots_identify (W V : Op) :
   · rintro rfl
     exact (Eventually.of_forall fun _ => rfl).frequently
 
-#print axioms velocity_difference_limit
-#print axioms sparse_shots_iff
-#print axioms first_order_invisibility_iff
-#print axioms cofinal_shots_identify
 end GaloisForLFunctions.HTGeometry.KGSparseInverse

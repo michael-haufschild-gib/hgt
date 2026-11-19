@@ -156,6 +156,4 @@ theorem no_universal_below_trace_bound (n r : ℕ) :
   rintro hr ⟨Q,hQ,h⟩
   exact hr.not_ge (trace_one_rank_obstruction n r Q hQ fun z => h z.val z.property.1 z.property.2.1)
 
-#print axioms trace_one_rank_obstruction
-#print axioms no_universal_below_trace_bound
 end RHTower.OrbitCubic.NumberFieldTrace.UniversalRank

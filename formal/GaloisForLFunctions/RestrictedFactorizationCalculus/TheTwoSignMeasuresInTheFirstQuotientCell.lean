@@ -603,8 +603,4 @@ theorem unique_constant_center_in_the_first_quotient_cell (b : Bool) (c : ℝ) :
     by_contra ne; exact (unique_optimum_of_the_model t0 ne).ne eq
   rw [←pick,tt]; norm_num [median]
 
-#print axioms sign_measure_in_the_first_quotient_cell
-#print axioms lower_price_of_every_constant_center
-#print axioms optimal_and_floor_centers_of_the_first_quotient_cell
-#print axioms unique_constant_center_in_the_first_quotient_cell
 end GaloisForLFunctions.RestrictedFactorizationCalculus

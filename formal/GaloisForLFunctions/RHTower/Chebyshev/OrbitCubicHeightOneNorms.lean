@@ -72,7 +72,7 @@ private theorem square_unit_norms (m : ℤ) :
     Algebra.norm ℚ (U m^2) = 1 ∧ Algebra.norm ℚ (V m^2) = 1 := by
   obtain ⟨_,hU,hV⟩ := corners m
   rw [← hU,← hV,heightEntry,heightEntry,norm_coordinates,norm_coordinates]
-  simp [reciprocalMatrix,Matrix.det_fin_three] <;> ring
+  simp only [reciprocalMatrix_det] <;> ring
 
 /-- A gap in the field norms of height-one integers. Norm one occurs exactly
 on the three squares, and every other norm is at least 2m−1. -/
@@ -117,9 +117,4 @@ theorem least_nonunit_norm_attained (n : ℕ) :
   refine ⟨⟨z,hz⟩,?_⟩
   simpa [z,triangleNorm,arm] using entry_norm 0 0 n
 
-#print axioms entry_norm
-#print axioms height_one_entries
-#print axioms norm_one_and_gap
-#print axioms order_unit_iff_norm_one
-#print axioms least_nonunit_norm_attained
 end RHTower.OrbitCubic.NumberFieldTrace

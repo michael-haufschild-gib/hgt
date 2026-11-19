@@ -221,9 +221,4 @@ theorem sharp_boolean_fibre_decomposition (b : ℕ → ℕ) (hb : Monotone b) (X
   · push_neg at h
     exact complete_fibre_zero (tail ha) (lt_of_le_of_ne (tail ha).prime.two_le h.1.symm) h.2
 
-#print axioms exists_terminal_prime_tail
-#print axioms unique_terminal_prime_tail
-#print axioms signed_terminal_fibre
-#print axioms sharp_boolean_fibre_decomposition
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

@@ -243,12 +243,4 @@ theorem kernel_fibres (r b v : Fin n → ℝ) :
       ring
     rw [eq,h,mul_zero]
 
-#print axioms response_jordan
-#print axioms polarized_reading
-#print axioms eigen_reading
-#print axioms eigenvalue_detection
-#print axioms simple_eigenvectors
-#print axioms levels_nonnegative
-#print axioms spectral_collision
-#print axioms kernel_fibres
 end GaloisForLFunctions.HilbertMetric.CauchySpectrum

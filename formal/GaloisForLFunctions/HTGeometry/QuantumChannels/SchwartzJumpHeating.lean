@@ -106,9 +106,4 @@ theorem quartic_heating :
   · rw [heating_order]
     norm_num
 
-#print axioms position_power
-#print axioms position_heating
-#print axioms conserved_observables
-#print axioms heating_order
-#print axioms quartic_heating
 end GaloisForLFunctions.PolynomialJump.Schwartz

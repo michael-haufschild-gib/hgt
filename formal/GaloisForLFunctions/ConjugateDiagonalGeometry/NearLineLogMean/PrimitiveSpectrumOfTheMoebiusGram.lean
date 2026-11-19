@@ -1,0 +1,275 @@
+import GaloisForLFunctions.RHTower.MobiusReciprocalPrimitiveRatio
+import GaloisForLFunctions.RHTower.Sieve.GallagherReverse
+import GaloisForLFunctions.HTGeometry.GeneralizedDirichletMeanValue
+import GaloisForLFunctions.HTGeometry.LogFrequencySeparation
+import GaloisForLFunctions.MultiscaleMollifiedZetaField.TheZeroForcesALogarithmicFloor
+
+/-!
+# The signed spectrum of the critical Möbius Gram form
+
+In the weighted Vandermonde Gram expansion of Gabet, Ferreira Da Costa and Lee
+(arXiv:2611.18900, §4), Fourier support selects frequency differences.
+For the logarithmic frequencies of the critical Möbius polynomial, each
+distinct difference has a rational ratio and a coefficient of fixed sign.
+Changing the observation window changes the multiplier on this same spectrum.
+-/
+
+noncomputable section
+open Finset Complex Filter Topology MeasureTheory RHTower RHTower.Sieve
+namespace GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram
+
+/-- Critical-line coefficient of the truncated Möbius Dirichlet series. -/
+def coeff (n : ℕ) : ℝ := mobiusRealCoefficient n / Real.sqrt n
+
+/-- The atom at the directed frequency `log a - log b` after reducing the ratio. -/
+def atom (N a b : ℕ) : ℝ := coeff a * coeff b * primitiveCubicScaleWeight 0 N a b
+
+private theorem coeff_mul (d a : ℕ) :
+    coeff (d*a) = if Nat.Coprime d a then coeff d * coeff a else 0 := by
+  unfold coeff mobiusRealCoefficient
+  rw [Nat.cast_mul, Real.sqrt_mul (Nat.cast_nonneg _)]
+  split_ifs with h
+  · rw [moebius_mul_of_coprime h, Int.cast_mul]
+    simp only [div_eq_mul_inv, mul_inv_rev]
+    ring
+  · simp [moebius_mul_eq_zero_of_not_coprime h]
+
+private theorem coeff_sq (n : ℕ) :
+    coeff n ^ 2 = mobiusRealCoefficient n ^ 2 / n := by
+  rw [coeff, div_pow, Real.sq_sqrt (Nat.cast_nonneg _)]
+
+private theorem scale_product (d a b : ℕ) :
+    coeff (d*a)*coeff (d*b) = coeff a * coeff b *
+      (if d.Coprime a ∧ d.Coprime b then mobiusRealCoefficient d ^ 2 * (d : ℝ)⁻¹ else 0) := by
+  by_cases ha : d.Coprime a
+  · by_cases hb : d.Coprime b
+    · rw [coeff_mul d a, coeff_mul d b, if_pos ha, if_pos hb, if_pos (And.intro ha hb)]
+      calc _ = coeff a * coeff b * coeff d^2 := by ring
+           _ = _ := by rw [coeff_sq]; ring
+    · simp [coeff_mul d b, hb]
+  · simp [coeff_mul d a, ha]
+
+/-- All dilations of a fixed directed ratio add with the same Möbius sign. -/
+theorem scale_correlation (N a b : ℕ) :
+    ∑ d ∈ ratioScales N a b, coeff (d*a)*coeff (d*b) = atom N a b := by
+  simp only [scale_product, atom, primitiveCubicScaleWeight, sub_zero, Real.rpow_neg_one,
+    Finset.mul_sum]
+
+/-- Triangle inequality is an equality within every ratio fibre, even before
+putting a spectral window on it. -/
+theorem absolute_scale_correlation (N a b : ℕ) :
+    ∑ d ∈ ratioScales N a b, |coeff (d*a)*coeff (d*b)| = |atom N a b| := by
+  rw [atom, abs_mul, abs_of_nonneg (primitiveCubicScaleWeight_nonneg 0 N a b),
+    primitiveCubicScaleWeight, Finset.mul_sum]
+  apply Finset.sum_congr rfl
+  intro d _
+  rw [scale_product, abs_mul (coeff a * coeff b)]
+  simp only [sub_zero, Real.rpow_neg_one]
+  congr 1
+  apply abs_of_nonneg
+  split_ifs <;> positivity
+
+/-- A spectral multiplier acts only on primitive log ratios. This applies to
+every real kernel, including signed and discontinuous windows. -/
+theorem gram_spectrum (N : ℕ) (K : ℝ → ℝ) :
+    (∑ m ∈ Icc 1 N, ∑ n ∈ Icc 1 N, coeff m * coeff n * K (Real.log m - Real.log n)) =
+      K 0 * (∑ n ∈ Icc 1 N, mobiusRealCoefficient n^2 / n) +
+        ∑ q ∈ primitiveRatioPairs N, atom N q.1 q.2 * K (Real.log q.1 - Real.log q.2) := by
+  classical
+  let F := fun m n : ℕ => coeff m * coeff n * K (Real.log m - Real.log n)
+  have hd : ∀ m ∈ Icc 1 N, F m m = K 0 * (mobiusRealCoefficient m^2 / m) := by
+    intro m _
+    simp only [F, sub_self, ← sq, coeff_sq]
+    ring
+  have hoff : (∑ p ∈ offDiagPairs N, F p.1 p.2) =
+      ∑ q ∈ primitiveRatioPairs N, atom N q.1 q.2 * K (Real.log q.1 - Real.log q.2) := by
+    rw [sum_offDiagPairs_eq_sum_ratio]
+    refine Finset.sum_congr rfl fun q hq => ?_
+    obtain ⟨ha, hb⟩ := Finset.mem_product.mp (Finset.mem_filter.mp hq).1
+    rw [← scale_correlation, Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro d hdm
+    have hd0 : (d : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr
+      (Nat.ne_of_gt (Finset.mem_Icc.mp (Finset.mem_filter.mp hdm).1).1)
+    have ha0 : (q.1 : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.ne_of_gt (Finset.mem_Icc.mp ha).1)
+    have hb0 : (q.2 : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.ne_of_gt (Finset.mem_Icc.mp hb).1)
+    simp only [F, Nat.cast_mul, Real.log_mul hd0 ha0, Real.log_mul hd0 hb0, add_sub_add_left_eq_sub]
+  rw [← hoff, sum_offDiagPairs_eq_double, Finset.mul_sum, ← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro m hm
+  rw [← hd m hm, add_comm, Finset.sum_erase_add _ _ hm]
+
+/-- Exact continuous short-interval energy. Only reduced ratios at logarithmic
+distance strictly below the bandwidth contribute. -/
+theorem short_interval_spectrum (N : ℕ) (δ : ℝ) :
+    (∫ u : ℝ, ‖logWindowSum (fun n => (coeff n : ℂ)) (Icc 1 N) δ u‖^2) =
+      max δ 0 * (∑ n ∈ Icc 1 N, mobiusRealCoefficient n ^ 2 / n) +
+      ∑ q ∈ primitiveRatioPairs N, atom N q.1 q.2 *
+        max (δ - |Real.log q.1 - Real.log q.2|) 0 := by
+  rw [integral_normSq_logWindowSum]
+  simpa only [Complex.conj_ofReal, ← Complex.ofReal_mul, Complex.ofReal_re, abs_zero, sub_zero]
+    using gram_spectrum N (fun x => max (δ - |x|) 0)
+
+/-- The bandlimited weight integrates the critical polynomial to the same
+finite arithmetic spectrum, including its signs. -/
+theorem bandlimited_spectrum (N : ℕ) {δ : ℝ} (hδ : 0 < δ) :
+    (∫ w : ℝ, (FourierTransform.fourier (triC δ) w).re *
+      ‖logPoly (fun n => (coeff n : ℂ)) (Icc 1 N) w‖^2) =
+      δ * (∑ n ∈ Icc 1 N, mobiusRealCoefficient n ^ 2 / n) +
+      ∑ q ∈ primitiveRatioPairs N, atom N q.1 q.2 *
+        max (δ - |Real.log q.1 - Real.log q.2|) 0 := by
+  rw [← gallagher_identity _ _ hδ, short_interval_spectrum, max_eq_left hδ.le]
+
+/-- Short-window energy as a function of the physical logarithmic bandwidth. -/
+def bandEnergy (N : ℕ) (δ : ℝ) : ℝ :=
+  ∫ u : ℝ, ‖logWindowSum (fun n => (coeff n : ℂ)) (Icc 1 N) δ u‖^2
+
+/-- On the inverse-length scale the Möbius energy is exactly diagonal. -/
+theorem bandEnergy_diagonal {N : ℕ} {δ : ℝ} (hδ : 0 ≤ δ) (hcut : δ ≤ (N : ℝ)⁻¹) :
+    bandEnergy N δ = δ * ∑ n ∈ Icc 1 N, mobiusRealCoefficient n ^ 2 / n := by
+  rw [bandEnergy, short_interval_spectrum, max_eq_left hδ]
+  refine add_eq_left.mpr (sum_eq_zero fun q hq => ?_)
+  obtain ⟨hq', _, hne⟩ := mem_filter.mp hq
+  obtain ⟨ha, hb⟩ := mem_product.mp hq'
+  have h := _root_.HTGeometry.inv_le_abs_log_sub_log_of_le
+    (mem_Icc.mp ha).1 (mem_Icc.mp hb).1 hne (mem_Icc.mp ha).2 (mem_Icc.mp hb).2
+  rw [max_eq_right (sub_nonpos.mpr (hcut.trans h)), mul_zero]
+
+private theorem hinge_difference (y : ℝ) {h : ℝ} (hh : 0 ≤ h) :
+    max (y+h) 0 - 2*max y 0 + max (y-h) 0 = max (h-|y|) 0 := by
+  rcases le_or_gt y 0 with hy | hy
+  · rw [max_eq_right hy, max_eq_right (by linarith : y-h ≤ 0), abs_of_nonpos hy,
+      sub_neg_eq_add, add_comm h y]
+    ring
+  rw [max_eq_left hy.le, max_eq_left (by linarith : 0 ≤ y+h), abs_of_nonneg hy.le]
+  rcases le_or_gt h y with he | he
+  · rw [max_eq_left (sub_nonneg.mpr he), max_eq_right (sub_nonpos.mpr he)]
+    ring
+  · rw [max_eq_right (sub_nonpos.mpr he.le), max_eq_left (sub_nonneg.mpr he.le)]
+    ring
+
+/-- Second differences of the observed energy localize the signed spectrum
+in a movable triangular window centered at `x`. -/
+theorem bandEnergy_second_difference (N : ℕ) (x : ℝ) {h : ℝ} (hh : 0 ≤ h) :
+    bandEnergy N (x+h) - 2*bandEnergy N x + bandEnergy N (x-h) =
+      max (h-|x|) 0 * (∑ n ∈ Icc 1 N, mobiusRealCoefficient n ^ 2 / n) +
+      ∑ q ∈ primitiveRatioPairs N, atom N q.1 q.2 *
+        max (h-abs (x-|Real.log q.1-Real.log q.2|)) 0 := by
+  simp only [bandEnergy, short_interval_spectrum]
+  have shifted (g : ℝ) : max (x+h-g) 0 - 2*max (x-g) 0 + max (x-h-g) 0 =
+      max (h-|x-g|) 0 := by
+    simpa only [show x-g+h=x+h-g by ring, show x-g-h=x-h-g by ring]
+      using hinge_difference (x-g) hh
+  rw [← hinge_difference x hh]
+  simp_rw [← shifted, mul_add, mul_sub, Finset.sum_add_distrib, Finset.sum_sub_distrib,
+    show ∀ a b : ℝ, a*(2*b)=2*(a*b) by intros; ring, ← Finset.mul_sum]
+  ring
+
+/-- As the bandwidth probe narrows, its normalized second difference is
+eventually exactly the signed mass at that distance. This recovers the
+spectrum from short-window energy measurements alone. -/
+theorem recover_band_atom (N : ℕ) {x : ℝ} (hx : 0 < x) :
+    ∀ᶠ h in nhdsWithin (0 : ℝ) (Set.Ioi 0),
+      (bandEnergy N (x+h) - 2*bandEnergy N x + bandEnergy N (x-h))/h =
+        ∑ q ∈ (primitiveRatioPairs N).filter (fun q =>
+          |Real.log q.1-Real.log q.2| = x), atom N q.1 q.2 := by
+  classical
+  have hlocal (g : ℝ) : ∀ᶠ h in nhdsWithin (0 : ℝ) (Set.Ioi 0),
+      max (h-|x-g|) 0 = if g=x then h else 0 := by
+    by_cases hg : g = x
+    · subst g
+      filter_upwards [self_mem_nhdsWithin] with h (hh : 0 < h)
+      simp [hh.le]
+    · have hp : 0 < |x-g| := abs_pos.mpr (sub_ne_zero.mpr (Ne.symm hg))
+      filter_upwards [(gt_mem_nhds hp).filter_mono nhdsWithin_le_nhds] with h hh
+      rw [if_neg hg, max_eq_right (sub_nonpos.mpr (le_of_lt hh))]
+  have hj := (Filter.eventually_all_finset (primitiveRatioPairs N)).mpr
+    (fun q _ => hlocal |Real.log q.1-Real.log q.2|)
+  filter_upwards [hj, hlocal 0, self_mem_nhdsWithin] with h hq h0 (hh : 0 < h)
+  rw [bandEnergy_second_difference N x hh.le]
+  simp only [sub_zero, if_neg hx.ne] at h0
+  rw [h0, zero_mul, zero_add, div_eq_iff hh.ne']
+  rw [sum_filter, sum_mul]
+  apply sum_congr rfl
+  intro q hmem
+  rw [hq q hmem]
+  split_ifs <;> ring
+
+open GaloisForLFunctions.MultiscaleMollifiedZetaField
+
+private theorem critical_poly (N : ℕ) (t : ℝ) :
+    moebiusPoly N (MultiscaleMollifiedZetaField.linePoint t) = _root_.HTGeometry.genPoly (fun n => (coeff n : ℂ))
+      (fun n => -Real.log n) (Icc 1 N) t := by
+  unfold moebiusPoly edPoly _root_.HTGeometry.genPoly
+  apply Finset.sum_congr rfl
+  intro n hn
+  have h : (0 : ℝ) < n := Nat.cast_pos.mpr (Finset.mem_Icc.mp hn).1
+  have hn' : ((n : ℝ) : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr h.ne'
+  have hscale : ((Real.sqrt n : ℝ) : ℂ)⁻¹ = cexp (((Real.log n : ℝ) : ℂ) * (-1/2)) := by
+    rw [Real.sqrt_eq_rpow, ← Complex.ofReal_inv, ← Real.rpow_neg h.le, Real.rpow_def_of_pos h, Complex.ofReal_exp]
+    push_cast
+    ring_nf
+  rw [Complex.cpow_def_of_ne_zero hn', ← Complex.ofReal_log h.le, MultiscaleMollifiedZetaField.linePoint]
+  simp only [coeff, mobiusRealCoefficient, mobCoeff, Complex.ofReal_div, Complex.ofReal_intCast,
+    div_eq_mul_inv, hscale, Complex.ofReal_neg]
+  rw [mul_assoc, ← Complex.exp_add]
+  congr 2
+  ring
+
+/-- Instantaneous power of the literal critical Möbius polynomial as a cosine
+series. Its frequencies and signed amplitudes work for every time window. -/
+theorem critical_power_spectrum (N : ℕ) (t : ℝ) :
+    ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint t)‖^2 =
+      (∑ n ∈ Icc 1 N, mobiusRealCoefficient n^2 / n) +
+      ∑ q ∈ primitiveRatioPairs N, atom N q.1 q.2 *
+        Real.cos ((Real.log q.1 - Real.log q.2)*t) := by
+  have hg := congrArg Complex.re (_root_.HTGeometry.genPoly_mul_conj
+    (fun n => (coeff n : ℂ)) (fun n => -Real.log n) (Icc 1 N) t)
+  rw [Complex.mul_conj, Complex.ofReal_re, Complex.normSq_eq_norm_sq, ← critical_poly] at hg
+  simp only [Complex.re_sum, Complex.conj_ofReal, ← Complex.ofReal_mul] at hg
+  rw [hg]
+  have hterm (a b : ℕ) :
+      (((coeff b * coeff a : ℝ) : ℂ) *
+        cexp (I * (((-Real.log b - -Real.log a : ℝ) : ℂ) * t))).re =
+      coeff a * coeff b * Real.cos ((Real.log a - Real.log b)*t) := by
+    rw [show I * (((-Real.log b - -Real.log a : ℝ) : ℂ) * t) =
+      ((((Real.log a - Real.log b)*t : ℝ) : ℂ) * I) by push_cast; ring,
+      Complex.re_ofReal_mul, Complex.exp_ofReal_mul_I_re, mul_comm (coeff b)]
+  calc _ = ∑ a ∈ Icc 1 N, ∑ b ∈ Icc 1 N, coeff a * coeff b *
+          Real.cos ((Real.log a-Real.log b)*t) := by
+         apply Finset.sum_congr rfl
+         intro a _
+         apply Finset.sum_congr rfl
+         intro b _
+         simpa only [← Complex.ofReal_mul] using hterm a b
+       _ = _ := by simpa using gram_spectrum N (fun x => Real.cos (x*t))
+
+/-- Exact integral on the sharp interval, retaining the contribution from each
+nonzero log ratio even when two frequencies are arbitrarily close. -/
+theorem sharp_interval_spectrum (N : ℕ) (A B : ℝ) :
+    (∫ t in A..B, ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint t)‖^2) =
+      (B-A) * (∑ n ∈ Icc 1 N, mobiusRealCoefficient n^2 / n) +
+      ∑ q ∈ primitiveRatioPairs N, atom N q.1 q.2 *
+        (∫ t in A..B, Real.cos ((Real.log q.1 - Real.log q.2)*t)) := by
+  simp_rw [critical_power_spectrum]
+  have hI (q : ℕ × ℕ) : IntervalIntegrable
+      (fun t => atom N q.1 q.2 * Real.cos ((Real.log q.1 - Real.log q.2)*t)) volume A B :=
+    (by fun_prop : Continuous _).intervalIntegrable _ _
+  rw [intervalIntegral.integral_add intervalIntegrable_const
+    (IntervalIntegrable.sum _ fun q _ => hI q),
+    intervalIntegral.integral_const, smul_eq_mul, intervalIntegral.integral_finsetSum
+      (fun q _ => hI q)]
+  congr 1
+  exact Finset.sum_congr rfl fun q _ => intervalIntegral.integral_const_mul _ _
+
+#print axioms scale_correlation
+#print axioms absolute_scale_correlation
+#print axioms gram_spectrum
+#print axioms short_interval_spectrum
+#print axioms bandlimited_spectrum
+#print axioms bandEnergy_diagonal
+#print axioms bandEnergy_second_difference
+#print axioms recover_band_atom
+#print axioms critical_power_spectrum
+#print axioms sharp_interval_spectrum
+end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram

@@ -265,8 +265,4 @@ theorem critical_scale_iff_one_ordinary_prime_reading :
   exact ⟨stable_at_the_critical_euler_scale (fun _ _ h1 => shift_center h1 center_price),
     stable_at_the_critical_euler_scale (fun _ _ h1 => shift_center h1 (fun n => by rw [abs_sub_comm]; exact center_price n))⟩
 
-#print axioms critical_scale_iff_one_ordinary_prime_reading
-#print axioms uncentered_ordinary_prime_transfer
-#print axioms square_root_iff_one_ordinary_prime_reading
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

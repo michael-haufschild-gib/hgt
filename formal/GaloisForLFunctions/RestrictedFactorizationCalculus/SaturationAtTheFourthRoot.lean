@@ -278,7 +278,4 @@ theorem eventually_saturation_at_the_fourth_root :
   · rw [hu] at hn
     exact prime_left (hsH ▸ (mem_sdiff.mp hn).1) hμ
 
-#print axioms eventually_fourth_root_balance_monotone
-#print axioms eventually_saturation_at_the_fourth_root
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

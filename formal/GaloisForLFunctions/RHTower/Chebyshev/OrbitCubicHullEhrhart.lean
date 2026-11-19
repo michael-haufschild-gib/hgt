@@ -253,6 +253,4 @@ theorem ehrhart (n k : ℕ) :
     simp only [Nat.succ_sub_one] at hf
     nlinarith only [hf,hcore]
 
-#print axioms triangulation
-#print axioms ehrhart
 end RHTower.OrbitCubic.IntegerHull.Ehrhart

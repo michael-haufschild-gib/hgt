@@ -237,9 +237,4 @@ theorem square_root_after_sharp_rough_truncation :
     rw [show M-(M-G)=G by ring] at hh
     rw [add_mul]; exact hh.trans (add_le_add (ha X) (hb X))
 
-#print axioms sharp_smooth_card
-#print axioms small_rough_cofactor_card_bound
-#print axioms power_of_the_small_rough_sector
-#print axioms square_root_after_sharp_rough_truncation
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

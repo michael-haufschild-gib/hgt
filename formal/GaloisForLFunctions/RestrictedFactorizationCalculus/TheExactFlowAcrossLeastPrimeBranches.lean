@@ -272,6 +272,4 @@ theorem eventually_exact_least_prime_exports :
     have hgt := (sizes (hV h).2).1
     exact hgt.not_ge (small_cofactor_cases hsm).2.2
 
-#print axioms eventually_exact_least_prime_exports
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

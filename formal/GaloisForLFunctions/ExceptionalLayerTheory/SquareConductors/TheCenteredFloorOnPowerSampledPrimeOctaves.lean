@@ -1,3 +1,5 @@
+import GaloisForLFunctions.RHTower.SqrtTelescopeSums
+import GaloisForLFunctions.RHTower.LogLatticePoissonAnticoncentration
 import GaloisForLFunctions.PrimeExponentialSums.FractionalPartsOnIntegerReciprocalBlocks
 import GaloisForLFunctions.RHTower.BourgainPartialSummation
 import GaloisForLFunctions.RHTower.ZetaSymbolArchimedeanHorizon
@@ -115,18 +117,131 @@ theorem conductor_monomial_phase_bound (s : ℕ) :
       sum_const,card_range,nsmul_eq_mul,mul_one]
     exact (hN.trans hsmall).trans (le_mul_of_one_le_left hroot hC)
 
-/-- Centered fractional parts on every subinterval, including divisibilities.
-Taking δ equal to D^(-1/4) gives total discrepancy of order D^(3/4). -/
-theorem centered_power_quotient_fragment (s : ℕ) :
-    ∃ B : ℝ, 0 ≤ B ∧ ∀ {D d a : ℝ} {N : ℕ}, 0 < D → D^(s+1) ≤ d →
+private def sqrtModeWeight (H j : ℕ) : ℝ :=
+  if j ≤ H then 1/Real.sqrt j else (H:ℝ)/Real.sqrt ((j:ℝ)^3)
+
+private theorem sqrt_mode_sum {H : ℕ} (hH : 0 < H) (N : ℕ) :
+    ∑ j ∈ Ioo 0 N,sqrtModeWeight H j ≤ 4*Real.sqrt H := by
+  let s := Ioo 0 N
+  have hl : s.filter (· ≤ H) ⊆ Icc 1 H := fun _ h =>
+    mem_Icc.mpr ⟨(mem_Ioo.mp (mem_filter.mp h).1).1,(mem_filter.mp h).2⟩
+  have hu : s.filter (fun j => ¬j ≤ H) ⊆ Icc (H+1) (max N H) := by
+    intro j h
+    obtain ⟨hj,hj'⟩ := mem_filter.mp h
+    exact mem_Icc.mpr ⟨by omega,(mem_Ioo.mp hj).2.le.trans (le_max_left ..)⟩
+  have low := (sum_le_sum_of_subset_of_nonneg (f:=fun j : ℕ => 1/Real.sqrt j) hl
+    fun _ _ _ => by positivity).trans (_root_.RHTower.sum_inv_sqrt_le H)
+  have tail := _root_.RHTower.sum_inv_sqrt_cube_le (R:=H+1) (by omega) (max N H) (by omega)
+  simp only [Nat.add_one_sub_one] at tail
+  have high := (sum_le_sum_of_subset_of_nonneg
+    (f:=fun j : ℕ => 1/Real.sqrt ((j:ℝ)^3)) hu fun _ _ _ => by positivity).trans tail
+  change (∑ j ∈ s,_) ≤ _
+  rw [←sum_filter_add_sum_filter_not s (· ≤ H) (sqrtModeWeight H)]
+  have eqL (j : ℕ) (hj : j ∈ s.filter (· ≤ H)) :
+      sqrtModeWeight H j=1/Real.sqrt j := if_pos (mem_filter.mp hj).2
+  have eqU (j : ℕ) (hj : j ∈ s.filter (fun j => ¬j ≤ H)) :
+      sqrtModeWeight H j=(H:ℝ)*(1/Real.sqrt ((j:ℝ)^3)) := by
+    rw [sqrtModeWeight,if_neg (mem_filter.mp hj).2,mul_one_div]
+  rw [sum_congr rfl eqL,sum_congr rfl eqU,←mul_sum]
+  apply (add_le_add low (mul_le_mul_of_nonneg_left high (Nat.cast_nonneg H))).trans_eq
+  have hp := Real.sqrt_pos.mpr (Nat.cast_pos.mpr hH : 0 < (H:ℝ))
+  field_simp [hp.ne']
+  nlinarith only [Real.sq_sqrt (Nat.cast_nonneg (α:=ℝ) H)]
+
+/-- Summing square-root harmonic estimates below and above the inverse
+smoothing width costs its square root, including the discontinuity at zero. -/
+private theorem sqrt_harmonic_discrepancy :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ {N H : ℕ}, 0 < H → ∀ (y : ℕ → ℝ) {M : ℝ}, 0 ≤ M →
+      (∀ h : ℤ, h ≠ 0 → ‖∑ i ∈ range N,fourier h (y i : UnitAddCircle)‖ ≤ M*Real.sqrt |(h:ℝ)|) →
+      |∑ i ∈ range N,(Int.fract (y i)-1/2)| ≤ B*((N:ℝ)/H+M*Real.sqrt H) := by
+  obtain ⟨A,hA,hdec⟩ := GaloisForLFunctions.HTGeometry.SmoothedSawtooth.exists_saw_decomposition
+  refine ⟨16*A,by positivity,?_⟩
+  intro N H hH y M hM hmode
+  have hp : 0 < (H:ℝ) := Nat.cast_pos.mpr hH
+  let δ := (H:ℝ)⁻¹
+  have hδ : 0 < δ := inv_pos.mpr hp
+  obtain ⟨a,k,has,hks,ha,hk,hd⟩ := hdec δ hδ
+  let E (h : ℤ) := ‖∑ i ∈ range N,fourier h (y i : UnitAddCircle)‖
+  have head := hd (range N) y (fun _ => (1:ℂ)) (fun _ => (1:ℝ)) (fun _ => by simp)
+  have sa := GaloisForLFunctions.HTGeometry.SmoothedSawtooth.summable_mul_norm_sum
+    (range N) (fun _ => (1:ℂ)) y has
+  have sk := GaloisForLFunctions.HTGeometry.SmoothedSawtooth.summable_mul_norm_sum
+    (range N) (fun _ => (1:ℂ)) y hks
+  simp only [one_mul,Complex.ofReal_one,←Complex.ofReal_sum,Complex.norm_real,Real.norm_eq_abs,
+    GaloisForLFunctions.HTGeometry.SmoothedSawtooth.saw] at head sa sk
+  rw [←sa.tsum_add sk] at head
+  apply head.trans
+  apply le_of_tendsto (sa.add sk).hasSum
+  apply Filter.Eventually.of_forall
+  intro t
+  let Z := A*δ*N
+  have zbound : (∑ h ∈ t,if h=0 then Z else 0) ≤ Z := by
+    rw [sum_ite_eq']
+    split_ifs
+    · exact le_rfl
+    · dsimp only [Z]; positivity
+  have total := _root_.RHTower.LogLatticePoisson.sum_int_natAbs_le (g:=sqrtModeWeight H)
+    (fun j => by unfold sqrtModeWeight; split_ifs <;> positivity) (sqrt_mode_sum hH) t
+  have ht : (∑ h ∈ t,(‖a h‖*E h+‖k h‖*E h)) ≤
+      (∑ h ∈ t,if h=0 then Z else 0)+2*A*M*∑ h ∈ t.filter (fun h => h≠0),sqrtModeWeight H h.natAbs := by
+    rw [sum_filter,mul_sum,←sum_add_distrib]
+    apply sum_le_sum
+    intro h _
+    rcases eq_or_ne h 0 with rfl | hh
+    · have ha0 : ‖a 0‖=0 := le_antisymm (by simpa using ha 0) (norm_nonneg _)
+      have hk0 : ‖k 0‖ ≤ A*δ := by simpa using hk 0
+      simpa [E,Z,ha0] using mul_le_mul_of_nonneg_right hk0 (Nat.cast_nonneg (α:=ℝ) N)
+    · let u := |(h:ℝ)|
+      have hu : 0 < u := abs_pos.mpr (by exact_mod_cast hh)
+      have he : ((h:ℝ)*δ)^2=(u*δ)^2 := by dsimp only [u]; rw [mul_pow,mul_pow,sq_abs]
+      have hav := ha h
+      have hkv := hk h
+      rw [he] at hav hkv
+      change ‖a h‖ ≤ A*(1+(u*δ)^2)⁻¹/u at hav
+      have hu' : (h.natAbs:ℝ)=u := by rw [Nat.cast_natAbs,Int.cast_abs]
+      have ht : 0 < 1+(u*δ)^2 := by positivity
+      have key : ‖a h‖+‖k h‖ ≤ A*(1+u*δ)/(u*(1+(u*δ)^2)) :=
+        (add_le_add hav hkv).trans_eq (by field_simp)
+      have hr := Real.sq_sqrt hu.le
+      have hrs := Real.sqrt_pos.mpr hu
+      have hz : (1+u*δ) ≤ 2*(1+(u*δ)^2) := by nlinarith only [sq_nonneg (u*δ-1/2)]
+      have hzt : (1+u*δ)*(u*δ) ≤ 2*(1+(u*δ)^2) := by nlinarith only [sq_nonneg (u*δ-1/2)]
+      have coeff := (mul_le_mul_of_nonneg_right key (norm_nonneg _)).trans
+        (mul_le_mul_of_nonneg_left (hmode h hh) (by positivity))
+      simp only [if_neg hh,if_pos hh,zero_add,←add_mul]
+      apply coeff.trans
+      change A*(1+u*δ)/(u*(1+(u*δ)^2))*(M*Real.sqrt u) ≤ _
+      rw [sqrtModeWeight]
+      have hsqr : Real.sqrt u/u=1/Real.sqrt u := by
+        field_simp [hu.ne',hrs.ne']
+        nlinarith only [hr]
+      have repr : A*(1+u*δ)/(u*(1+(u*δ)^2))*(M*Real.sqrt u) =
+          (A*M/Real.sqrt u)*((1+u*δ)/(1+(u*δ)^2)) := by
+        calc _ = (A*M*((1+u*δ)/(1+(u*δ)^2)))*(Real.sqrt u/u) := by ring
+             _ = _ := by rw [hsqr]; ring
+      rw [repr]
+      by_cases hj : h.natAbs ≤ H
+      · rw [if_pos hj,hu']
+        exact (mul_le_mul_of_nonneg_left ((div_le_iff₀ ht).mpr hz)
+          (by positivity : 0 ≤ A*M/Real.sqrt u)).trans_eq (by ring)
+      · rw [if_neg hj,hu',show u^3=u^2*u by ring,Real.sqrt_mul (sq_nonneg u),Real.sqrt_sq hu.le]
+        calc _ = (A*M*(H:ℝ)/(u*Real.sqrt u))*((1+u*δ)*(u*δ)/(1+(u*δ)^2)) := by
+                   dsimp only [δ]
+                   field_simp [hu.ne',hrs.ne',hp.ne'] <;> ring
+             _ ≤ (A*M*(H:ℝ)/(u*Real.sqrt u))*2 := mul_le_mul_of_nonneg_left ((div_le_iff₀ ht).mpr hzt) (by positivity)
+             _ = _ := by ring
+  apply ht.trans ((add_le_add zbound (mul_le_mul_of_nonneg_left total (by positivity))).trans ?_)
+  dsimp only [Z,δ]
+  linarith only [mul_nonneg hA (div_nonneg (Nat.cast_nonneg (α:=ℝ) N) hp.le)]
+
+private theorem power_quotient_harmonics (s : ℕ) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ {D d a : ℝ} {N : ℕ}, 0 < D → D^(s+1) ≤ d →
       d ≤ 2*(2*D)^(s+1) → D ≤ a → a+((N-1:ℕ):ℝ) ≤ 2*D → (N:ℝ) ≤ D →
-      ∀ δ : ℝ, 0 < δ →
-        |∑ n ∈ range N, (Int.fract ((a+n)^(s+2)/d)-1/2)| ≤ B*(δ*D+Real.sqrt D/δ) := by
+      ∀ k : ℤ, k ≠ 0 → ‖∑ n ∈ range N,fourier k (((a+n)^(s+2)/d:ℝ) : UnitAddCircle)‖ ≤
+        C*Real.sqrt D*Real.sqrt |(k:ℝ)| := by
   obtain ⟨C,hC,hf⟩ := conductor_monomial_phase_bound s
-  obtain ⟨K,hK,hs⟩ := GaloisForLFunctions.PrimeExponentialSums.sawtooth_of_sqrt_harmonics
-  have hC0 := zero_le_one.trans hC
-  refine ⟨K*C,mul_nonneg hK hC0,?_⟩
-  intro D d a N hD hlo hhi ha he hN δ hδ
+  refine ⟨C,hC,?_⟩
+  intro D d a N hD hlo hhi ha he hN
   let y (n : ℕ) := (a+n)^(s+2)/d
   have posmode (k : ℤ) (hk : 0 < k) :
       ‖∑ n ∈ range N, fourier k (y n : UnitAddCircle)‖ ≤ C*Real.sqrt D*Real.sqrt |(k:ℝ)| := by
@@ -149,6 +264,22 @@ theorem centered_power_quotient_fragment (s : ℕ) :
     rcases lt_or_gt_of_ne hk with hn | hp
     · simpa only [fourier_neg,←map_sum,RCLike.norm_conj,Int.cast_neg,abs_neg] using posmode (-k) (neg_pos.mpr hn)
     · exact posmode k hp
+  exact mode
+
+/-- Centered fractional parts on every subinterval, including divisibilities.
+Taking δ equal to D^(-1/4) gives total discrepancy of order D^(3/4). -/
+theorem centered_power_quotient_fragment (s : ℕ) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ {D d a : ℝ} {N : ℕ}, 0 < D → D^(s+1) ≤ d →
+      d ≤ 2*(2*D)^(s+1) → D ≤ a → a+((N-1:ℕ):ℝ) ≤ 2*D → (N:ℝ) ≤ D →
+      ∀ δ : ℝ, 0 < δ →
+        |∑ n ∈ range N, (Int.fract ((a+n)^(s+2)/d)-1/2)| ≤ B*(δ*D+Real.sqrt D/δ) := by
+  obtain ⟨C,hC,hf⟩ := power_quotient_harmonics s
+  obtain ⟨K,hK,hs⟩ := GaloisForLFunctions.PrimeExponentialSums.sawtooth_of_sqrt_harmonics
+  have hC0 := zero_le_one.trans hC
+  refine ⟨K*C,mul_nonneg hK hC0,?_⟩
+  intro D d a N hD hlo hhi ha he hN δ hδ
+  let y (n : ℕ) := (a+n)^(s+2)/d
+  have mode := hf hD hlo hhi ha he hN
   have ht := hs (range N) y (fun _ => (1:ℂ)) (fun _ => (1:ℝ)) hδ
     (mul_nonneg hC0 (Real.sqrt_nonneg D)) (fun _ => by simp) (fun k hk => by
       simpa only [Complex.ofReal_one,one_mul,and_self] using mode k hk)
@@ -163,8 +294,43 @@ theorem centered_power_quotient_fragment (s : ℕ) :
            mul_le_mul_of_nonneg_left (add_le_add hmul le_rfl) hK
        _ = _ := by ring
 
-#print axioms conductor_monomial_phase_bound
-#print axioms centered_power_quotient_fragment
+private theorem sharp_power_quotient_fragment (s : ℕ) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ {D d a : ℝ} {N : ℕ}, 1 ≤ D → D^(s+1) ≤ d →
+      d ≤ 2*(2*D)^(s+1) → D ≤ a → a+((N-1:ℕ):ℝ) ≤ 2*D → (N:ℝ) ≤ D →
+      |∑ n ∈ range N,(Int.fract ((a+n)^(s+2)/d)-1/2)| ≤ B*D^(2/3:ℝ) := by
+  obtain ⟨C,hC,hm⟩ := power_quotient_harmonics s
+  obtain ⟨B,hB,h⟩ := sqrt_harmonic_discrepancy
+  have hC0 := zero_le_one.trans hC
+  refine ⟨B*(1+2*C),by positivity,?_⟩
+  intro D d a N hD hlo hhi ha he hN
+  have hD0 := zero_lt_one.trans_le hD
+  let R := D^(1/3:ℝ)
+  let H := ⌈R⌉₊
+  have hR : 1 ≤ R := Real.one_le_rpow hD (by norm_num)
+  have hR0 := zero_lt_one.trans_le hR
+  have hRH : R ≤ (H:ℝ) := Nat.le_ceil _
+  have hHp := hR0.trans_le hRH
+  have hH : (H:ℝ) ≤ 2*R := (Nat.ceil_lt_add_one hR0.le).le.trans (by linarith only [hR])
+  have hs : Real.sqrt (H:ℝ) ≤ 2*Real.sqrt R := by
+    calc Real.sqrt (H:ℝ) ≤ Real.sqrt (4*R) := Real.sqrt_le_sqrt (by linarith only [hH,hR])
+         _ = _ := by rw [Real.sqrt_mul (by norm_num : (0:ℝ)≤4),show Real.sqrt 4=2 by norm_num]
+  have hs' := h (Nat.cast_pos.mp hHp) (fun n : ℕ => (a+n)^(s+2)/d)
+    (mul_nonneg hC0 (Real.sqrt_nonneg D)) (hm hD0 hlo hhi ha he hN)
+  have he1 : D/R=D^(2/3:ℝ) := by
+    calc _ = D^((1:ℝ)-1/3) := by rw [Real.rpow_sub hD0,Real.rpow_one]
+         _ = _ := by norm_num
+  have he2 : Real.sqrt D*Real.sqrt R=D^(2/3:ℝ) := by
+    rw [Real.sqrt_eq_rpow,Real.sqrt_eq_rpow]
+    dsimp only [R]
+    rw [←Real.rpow_mul hD0.le,←Real.rpow_add hD0]
+    norm_num
+  have h1 := (div_le_div_of_nonneg_right hN hHp.le).trans (div_le_div_of_nonneg_left hD0.le hR0 hRH)
+  rw [he1] at h1
+  have h2 := mul_le_mul_of_nonneg_left hs (mul_nonneg hC0 (Real.sqrt_nonneg D))
+  apply hs'.trans ((mul_le_mul_of_nonneg_left (add_le_add h1 h2) hB).trans_eq ?_)
+  rw [←he2]
+  ring
+
 private def eligibleConductors (s D K d : ℕ) :=
   (Ioc D K).filter (fun m => m^(s+1) < d ∧ d ≤ 2*m^(s+1))
 
@@ -194,12 +360,11 @@ def centeredQuotient (s d m : ℕ) : ℝ := Int.fract ((m:ℝ)^(s+2)/d)-1/2
 single sharp interval, even on an incomplete octave. -/
 private theorem centered_conductors_at_divisor (s : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {D K d : ℕ}, 1 ≤ D → K ≤ 2*D →
-      ∀ δ : ℝ, 0 < δ →
       |∑ m ∈ eligibleConductors s D K d,centeredQuotient s d m| ≤
-        C*(δ*D+Real.sqrt D/δ) := by
-  obtain ⟨C,hC,hs⟩ := centered_power_quotient_fragment s
+        C*(D:ℝ)^(2/3:ℝ) := by
+  obtain ⟨C,hC,hs⟩ := sharp_power_quotient_fragment s
   refine ⟨C,hC,?_⟩
-  intro D K d hD hK δ hδ
+  intro D K d hD hK
   rcases (eligibleConductors s D K d).eq_empty_or_nonempty with hz | hn
   · rw [hz,sum_empty,abs_zero]
     positivity
@@ -214,7 +379,7 @@ private theorem centered_conductors_at_divisor (s : ℕ) :
   have hN : (N:ℝ) ≤ D := by exact_mod_cast (show N ≤ D by dsimp only [N]; omega)
   have hend : (a:ℝ)+((N-1:ℕ):ℝ) ≤ 2*D := by
     exact_mod_cast (show a+(N-1) ≤ 2*D by dsimp only [N]; omega)
-  have h := hs (Nat.cast_pos.mpr hD) hdlo hdhi (Nat.cast_le.mpr ha.le) hend hN δ hδ
+  have h := hs (Nat.one_le_cast.mpr hD) hdlo hdhi (Nat.cast_le.mpr ha.le) hend hN
   rw [he,←Ico_add_one_right_eq_Icc,sum_Ico_eq_sum_range]
   simpa only [centeredQuotient,Nat.cast_add,N] using h
 
@@ -225,29 +390,28 @@ private def signedFloorCoefficient (s d m : ℕ) : ℝ :=
 sharp fragment of the moving divisor interval. -/
 private theorem weighted_conductors_at_divisor (s : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {D K : ℕ}, 1 ≤ D → D ≤ K → K ≤ 2*D →
-      ∀ (d : ℕ) (δ : ℝ), 0 < δ →
+      ∀ d : ℕ,
       |∑ m ∈ Ioc D K, ((m:ℝ)^(s+2))⁻¹*signedFloorCoefficient s d m| ≤
-        C*(δ*D+Real.sqrt D/δ)*((D:ℝ)^(s+2))⁻¹ := by
+        C*(D:ℝ)^(2/3:ℝ)*((D:ℝ)^(s+2))⁻¹ := by
   obtain ⟨C,hC,h⟩ := centered_conductors_at_divisor s
   refine ⟨C,hC,?_⟩
-  intro D K hD hDK hK d δ hδ
+  intro D K hD hDK hK d
   have hp : 0 < (D:ℝ) := Nat.cast_pos.mpr hD
-  have hB : 0 ≤ C*(δ*D+Real.sqrt D/δ) := by positivity
+  have hB : 0 ≤ C*(D:ℝ)^(2/3:ℝ) := by positivity
   rcases hDK.eq_or_lt with rfl | hlt
   · rw [Ioc_self,sum_empty,abs_zero]; positivity
   let w (m : ℕ) := ((m:ℝ)^(s+2))⁻¹
   have hw {a b : ℕ} (ha : 0 < a) (hab : a ≤ b) : w b ≤ w a :=
     inv_anti₀ (pow_pos (Nat.cast_pos.mpr ha) _) (pow_le_pow_left₀ (Nat.cast_nonneg _) (Nat.cast_le.mpr hab) _)
   have pref (n : ℕ) (hn : n ∈ Ioc D K) :
-      ‖∑ m ∈ Ioc D n, ((signedFloorCoefficient s d m:ℝ):ℂ)‖ ≤ C*(δ*D+Real.sqrt D/δ) := by
+      ‖∑ m ∈ Ioc D n, ((signedFloorCoefficient s d m:ℝ):ℂ)‖ ≤ C*(D:ℝ)^(2/3:ℝ) := by
     rw [←Complex.ofReal_sum,Complex.norm_real,Real.norm_eq_abs]
-    simpa only [eligibleConductors,sum_filter,signedFloorCoefficient] using h hD ((mem_Ioc.mp hn).2.trans hK) (d := d) δ hδ
+    simpa only [eligibleConductors,sum_filter,signedFloorCoefficient] using h hD ((mem_Ioc.mp hn).2.trans hK) (d := d)
   have hb := _root_.RHTower.norm_sum_Ioc_weight_mul_le (fun m => ((signedFloorCoefficient s d m:ℝ):ℂ)) w hlt
     (fun m => by dsimp only [w]; positivity) (fun m hm => hw (hD.trans (mem_Ioc.mp hm).1.le) (Nat.le_succ _)) pref
   simp only [←Complex.ofReal_mul,←Complex.ofReal_sum,Complex.norm_real,Real.norm_eq_abs] at hb
   exact hb.trans (mul_le_mul_of_nonneg_left (hw hD (Nat.le_succ _)) hB)
 
-#print axioms weighted_conductors_at_divisor
 
 /-- Total centered division error, normalized by the product horizon,
 on one arbitrary partial octave of conductors. -/
@@ -276,20 +440,18 @@ private theorem transpose_floor_fragment (s D K : ℕ) (hK : K ≤ 2*D) (w : ℕ
 
 /-- The centered floor term costs a summable power on each octave even
 after assigning independent signed weights up to Λ(d) to its divisors. -/
-theorem sparse_floor_fragment_uniform (s : ℕ) :
+theorem sparse_floor_fragment_cubic_saving (s : ℕ) :
     ∃ A : ℝ, 0 ≤ A ∧ ∀ {D K : ℕ}, 1 ≤ D → D ≤ K → K ≤ 2*D →
       ∀ w : ℕ → ℝ, (∀ d, |w d| ≤ ArithmeticFunction.vonMangoldt d) →
-      |sparseFloorFragment s D K w| ≤ A*(D:ℝ)^(-(1/4):ℝ) := by
+      |sparseFloorFragment s D K w| ≤ A*(D:ℝ)^(-(1/3):ℝ) := by
   obtain ⟨C,hC,h⟩ := weighted_conductors_at_divisor s
   let L : ℝ := 2*2^(s+1)
   have hL : 0 ≤ L := by dsimp only [L]; positivity
-  refine ⟨14*L*C,by positivity,?_⟩
+  refine ⟨7*L*C,by positivity,?_⟩
   intro D K hD hDK hK w hw
   have hDr : 0 < (D:ℝ) := Nat.cast_pos.mpr hD
-  let δ := (D:ℝ)^(-(1/4):ℝ)
-  have hδ : 0 < δ := Real.rpow_pos_of_pos hDr _
   let U := 2*(2*D)^(s+1)
-  let V := C*(δ*D+Real.sqrt D/δ)*((D:ℝ)^(s+2))⁻¹
+  let V := C*(D:ℝ)^(2/3:ℝ)*((D:ℝ)^(s+2))⁻¹
   have hV : 0 ≤ V := by dsimp only [V]; positivity
   let f (d : ℕ) := ∑ m ∈ Ioc D K,((m:ℝ)^(s+2))⁻¹*signedFloorCoefficient s d m
   have hsum : |sparseFloorFragment s D K w| ≤ (7*(U:ℝ))*V := by
@@ -299,22 +461,26 @@ theorem sparse_floor_fragment_uniform (s : ℕ) :
            apply sum_le_sum
            intro d _
            rw [abs_mul]
-           exact mul_le_mul (hw _) (h hD hDK hK d δ hδ) (abs_nonneg _) ArithmeticFunction.vonMangoldt_nonneg
+           exact mul_le_mul (hw _) (h hD hDK hK d) (abs_nonneg _) ArithmeticFunction.vonMangoldt_nonneg
          _ ≤ _ := by rw [←sum_mul]; exact mul_le_mul_of_nonneg_right (_root_.RHTower.sum_vonMangoldt_Icc_le_seven U) hV
   have hu : (U:ℝ)=L*(D:ℝ)^(s+1) := by dsimp only [U,L]; push_cast; rw [mul_pow]; ring
-  have he : Real.sqrt D/δ=δ*D := by
-    change Real.sqrt D/(D:ℝ)^(-(1/4):ℝ)=(D:ℝ)^(-(1/4):ℝ)*D
-    calc _ = (D:ℝ)^((1/2:ℝ)-(-(1/4):ℝ)) := by rw [Real.sqrt_eq_rpow,Real.rpow_sub hDr]
-         _ = (D:ℝ)^((-(1/4):ℝ)+1) := by norm_num
-         _ = _ := by rw [Real.rpow_add hDr,Real.rpow_one]
+  have he : (D:ℝ)^(2/3:ℝ)=(D:ℝ)^(-(1/3):ℝ)*D := by
+    rw [←show (D:ℝ)^((-(1/3):ℝ)+1)=(D:ℝ)^(-(1/3):ℝ)*D by rw [Real.rpow_add hDr,Real.rpow_one]]
+    norm_num
   apply hsum.trans_eq
   rw [hu]
   dsimp only [V]
   rw [he,show (D:ℝ)^(s+2)=(D:ℝ)^(s+1)*D by rw [pow_succ]]
-  change _=14*L*C*δ
   field_simp
   ring
 
-#print axioms sparse_floor_fragment_uniform
+/-- The weaker quarter-power saving follows on the same partial octave. -/
+theorem sparse_floor_fragment_uniform (s : ℕ) :
+    ∃ A : ℝ, 0 ≤ A ∧ ∀ {D K : ℕ}, 1 ≤ D → D ≤ K → K ≤ 2*D →
+      ∀ w : ℕ → ℝ, (∀ d, |w d| ≤ ArithmeticFunction.vonMangoldt d) →
+      |sparseFloorFragment s D K w| ≤ A*(D:ℝ)^(-(1/4):ℝ) := by
+  obtain ⟨A,hA,h⟩ := sparse_floor_fragment_cubic_saving s
+  refine ⟨A,hA,fun hD hDK hK w hw => (h hD hDK hK w hw).trans ?_⟩
+  exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le (Nat.one_le_cast.mpr hD) (by norm_num)) hA
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

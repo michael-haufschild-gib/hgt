@@ -325,8 +325,4 @@ theorem arbitrarily_high_fixed_divisor_cancellation (J : ℕ) (hJ : 0 < J) (m : 
   rw [hi] at hl hn
   exact ⟨I,hi,hr,hl,hn,fun X => fixed_prefix_as_coprime_quotients J X I hr hco⟩
 
-#print axioms arbitrarily_high_fixed_divisor_cancellation
-#print axioms first_fixed_divisor_moment
-#print axioms fixed_prefix_as_coprime_quotients
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

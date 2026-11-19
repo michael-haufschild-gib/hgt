@@ -136,7 +136,5 @@ theorem four_sparse_shots_identify (s : ℝ) (time shift : Fin n ↪ ℕ) (K : S
   · rintro rfl _ _
     exact (Eventually.of_forall fun _ => rfl).frequently
 
-#print axioms trajectory_solves
-#print axioms four_sparse_shots_identify
 end Oscillator
 end GaloisForLFunctions.ExclusionOfTheCriticalState.CubicRecovery

@@ -242,8 +242,4 @@ theorem uniform_logarithmic_upper_bound_for_smooth_population :
   change (S.card:ℝ)*Real.log T ≤ _
   linarith only [variation,charge]
 
-#print axioms uniform_logarithmic_upper_bound_for_smooth_population
-
-#print axioms positive_smooth_population_at_all_polynomial_walls
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

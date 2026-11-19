@@ -1,6 +1,7 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.SquareAndSixthPowerSamplesOfTheReciprocalPrimeOctave
 import GaloisForLFunctions.ExceptionalLayerTheory.GrowingQuotientBandsInBinomialCarries
 import GaloisForLFunctions.RHTower.HarmonicHalfErrorBounds
+import GaloisForLFunctions.RHTower.SqrtCarrierCertificate
 
 /-!
 # Continuous cofactor density of the sparse gcd product
@@ -106,8 +107,6 @@ theorem gcd_product_density_above_zero_width {t : ℝ} (ht : _root_.RHTower.zero
   apply (div_le_iff₀ hden).mpr
   exact hh.trans_eq (by field_simp)
 
-#print axioms gcd_product_cofactor_intervals
-#print axioms gcd_product_density_above_zero_width
 
 private theorem harmonic_prefix (n : ℕ) :
     (∑ j ∈ Ioc 0 n,1/(j:ℝ))=(harmonic n:ℝ) := by
@@ -234,38 +233,39 @@ theorem eighth_power_gcd_deficit_half_step {δ : ℝ} (hsmall : δ < 1/3000) :
   apply (abs_sub _ _).trans
   exact (add_le_add (hD.trans (mul_le_mul_of_nonneg_left hscale (by norm_num : (0:ℝ) ≤ 20))) hb).trans_eq (by ring)
 
-#print axioms cofactor_density_harmonic
-#print axioms cofactor_density_half_step
-#print axioms eighth_power_gcd_deficit_half_step
 
 
 /-- The accumulated positive deficit of the actual eighth/ninth-power
 gcd products has logarithmic coefficient one half and a convergent remainder. -/
-theorem eighth_gcd_deficit_centered_converges :
+theorem eighth_gcd_deficit_with_remainder :
     ∃ c : ℝ, Filter.Tendsto (fun K : ℕ => powerGridGcdDeficit 8 K-(1/2:ℝ)*Real.log K)
-      Filter.atTop (nhds c) := by
+      Filter.atTop (nhds c) ∧ ∀ {δ : ℝ}, 0 < δ → δ < 1/3000 → ∃ B : ℝ,
+      ∀ {K : ℕ}, 1 ≤ K → |powerGridGcdDeficit 8 K-(1/2:ℝ)*Real.log K-c| ≤ B*(K:ℝ)^(-δ) := by
   let a (m : ℕ) := Real.log 2-Real.log (octaveGcdProduct (m^8) (m^9))/(m:ℝ)^9
   let f (i : ℕ) := max (a (i+1)) 0-1/(2*((i:ℝ)+1))
-  let δ : ℝ := 1/6000
-  obtain ⟨C,hC,h⟩ := eighth_power_gcd_deficit_half_step (δ := δ) (by norm_num [δ])
-  have expneg : -1-δ < -1 := by norm_num [δ]
-  have hf : Summable f := by
-    apply ((Real.summable_nat_rpow.mpr expneg).mul_left C).of_norm_bounded_eventually_nat
-    filter_upwards [Filter.eventually_ge_atTop 1] with n hn
-    have hr : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
-    have hu := h (m := n+1) (by omega)
+  have point {δ : ℝ} (hsmall : δ < 1/3000) :
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 1 ≤ n → |f n| ≤ C*((n:ℝ)+1)^(-1-δ) := by
+    obtain ⟨C,hC,h⟩ := eighth_power_gcd_deficit_half_step hsmall
+    refine ⟨C,hC,?_⟩
+    intro n hn
+    have hu := h (m:=n+1) (by omega)
     change |a (n+1)-1/(2*((n+1:ℕ):ℝ))| ≤ _ at hu
     rw [Nat.cast_succ] at hu
-    have hm := Real.rpow_le_rpow_of_nonpos hr (by linarith only : (n:ℝ) ≤ n+1) (by linarith only [expneg] : -1-δ ≤ 0)
     have hb : 0 ≤ 1/(2*((n:ℝ)+1)) := by positivity
-    have hc : |f n| ≤ |a (n+1)-1/(2*((n:ℝ)+1))| := by
-      dsimp only [f]
-      rcases le_total 0 (a (n+1)) with hp | hp
-      · rw [max_eq_left hp]
-      · rw [max_eq_right hp,zero_sub,abs_neg,abs_of_nonneg hb,abs_of_nonpos (sub_nonpos.mpr (hp.trans hb))]
-        linarith only [hp]
+    dsimp only [f]
+    rcases le_total 0 (a (n+1)) with hp | hp
+    · simpa only [max_eq_left hp] using hu
+    · rw [max_eq_right hp,zero_sub,abs_neg,abs_of_nonneg hb]
+      rw [abs_of_nonpos (sub_nonpos.mpr (hp.trans hb))] at hu
+      linarith only [hp,hu]
+  have hf : Summable f := by
+    obtain ⟨C,hC,h⟩ := point (δ:=1/6000) (by norm_num)
+    have expneg : (-1-1/6000:ℝ) < -1 := by norm_num
+    apply ((Real.summable_nat_rpow.mpr expneg).mul_left C).of_norm_bounded_eventually_nat
+    filter_upwards [Filter.eventually_ge_atTop 1] with n hn
     rw [Real.norm_eq_abs]
-    exact hc.trans (hu.trans (mul_le_mul_of_nonneg_left hm hC))
+    exact (h hn).trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_nonpos
+      (Nat.cast_pos.mpr hn) (by linarith only : (n:ℝ) ≤ n+1) (by norm_num)) hC)
   have hpre (K : ℕ) : powerGridGcdDeficit 8 K-(1/2:ℝ)*(harmonic K:ℝ)=∑ i ∈ range K,f i := by
     induction K with
     | zero => simp [powerGridGcdDeficit]
@@ -279,12 +279,51 @@ theorem eighth_gcd_deficit_centered_converges :
       dsimp only [a]
       push_cast
       ring
-  refine ⟨(∑' i, f i)+(1/2:ℝ)*Real.eulerMascheroniConstant,?_⟩
-  have htot := hf.hasSum.tendsto_sum_nat.add (Real.tendsto_harmonic_sub_log.const_mul (1/2:ℝ))
-  exact htot.congr fun K => by rw [←hpre]; ring
+  refine ⟨(∑' i, f i)+(1/2:ℝ)*Real.eulerMascheroniConstant,?_,?_⟩
+  · have htot := hf.hasSum.tendsto_sum_nat.add (Real.tendsto_harmonic_sub_log.const_mul (1/2:ℝ))
+    exact htot.congr fun K => by rw [←hpre]; ring
+  intro δ hδ hsmall
+  obtain ⟨C,hC,h⟩ := point hsmall
+  refine ⟨C/δ+1,?_⟩
+  intro K hK
+  have hK0 := (Nat.cast_pos (α:=ℝ)).mpr hK
+  have hK1 := (Nat.one_le_cast (α:=ℝ)).mpr hK
+  let P := (K:ℝ)^(-δ)
+  have hi (i : ℕ) : ‖f (i+K)‖ ≤ C*((i+(K+1):ℕ):ℝ)^(-(1+δ)) := by
+    rw [Real.norm_eq_abs]
+    simpa only [Nat.cast_add,Nat.cast_one,add_assoc,neg_add_rev,sub_eq_add_neg,add_comm (-(1:ℝ))] using
+      h (n:=i+K) (by omega)
+  have hsum : Summable (fun i : ℕ => ‖f (i+K)‖) :=
+    (summable_nat_add_iff (f:=fun i => ‖f i‖) K).mpr hf.norm
+  have htail : |∑' i : ℕ,f (i+K)| ≤ C/δ*P := by
+    rw [←Real.norm_eq_abs]
+    apply (norm_tsum_le_tsum_norm hsum).trans
+    apply Real.tsum_le_of_sum_range_le (fun i => norm_nonneg _) (fun m => ?_)
+    apply (sum_le_sum fun i _ => hi i).trans
+    rw [←mul_sum]
+    have hbound := _root_.RHTower.sum_range_add_rpow_neg_le (c:=1+δ) (by linarith only [hδ]) hK m
+    rw [show 1-(1+δ)= -δ by ring,show 1+δ-1=δ by ring] at hbound
+    exact (mul_le_mul_of_nonneg_left hbound hC).trans_eq (by dsimp only [P]; ring)
+  have h1 := Real.rpow_le_rpow_of_exponent_le hK1 (by linarith only [hsmall] : -(1:ℝ) ≤ -δ)
+  have h2 := Real.rpow_le_rpow_of_exponent_le hK1 (by linarith only [hsmall] : -(2:ℝ) ≤ -δ)
+  rw [Real.rpow_neg hK0.le,Real.rpow_one] at h1
+  rw [Real.rpow_neg hK0.le,Real.rpow_two] at h2
+  have hH := abs_le.mp (harmonic_remainder_sq hK)
+  dsimp only [harmonicRemainder] at hH
+  have hrec : 1/(2*(K:ℝ))=(1/2:ℝ)*(K:ℝ)⁻¹ := by rw [one_div,mul_inv_rev]; ring
+  rw [one_div ((K:ℝ)^2),hrec] at hH
+  have hsplit := hf.sum_add_tsum_nat_add K
+  have hpreK := hpre K
+  have hT := abs_le.mp htail
+  dsimp only [P] at hT
+  rw [abs_le]
+  constructor <;> linarith only [hpreK,hsplit,hH.1,hH.2,h1,h2,hT.1,hT.2,inv_nonneg.mpr hK0.le]
 
-#print axioms eighth_gcd_deficit_centered_converges
-
+theorem eighth_gcd_deficit_centered_converges :
+    ∃ c : ℝ, Filter.Tendsto (fun K : ℕ => powerGridGcdDeficit 8 K-(1/2:ℝ)*Real.log K)
+      Filter.atTop (nhds c) := by
+  obtain ⟨c,h,_⟩ := eighth_gcd_deficit_with_remainder
+  exact ⟨c,h⟩
 
 /-- Log price of the ordinary primes selected by the two sharp sparse cutoffs. -/
 def eighthOrdinaryPrimePrice (m : ℕ) : ℝ :=
@@ -326,6 +365,5 @@ theorem eighth_ordinary_prime_deficit_half_step {δ : ℝ} (hsmall : δ < 1/3000
   rw [div_eq_mul_inv (|A| * Real.sqrt 2),add_mul]
   exact add_le_add le_rfl (mul_le_mul_of_nonneg_left hpow (by positivity))
 
-#print axioms eighth_ordinary_prime_deficit_half_step
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -158,9 +158,4 @@ theorem jacobi_resolvent_error (q z : ℝ) :
   rw [div_sub_div _ _ hf hg,mul_comm f (z+q),h]
   ring
 
-#print axioms two_node_quadrature_unique
-#print axioms trace_quadrature_fourth_gap
-#print axioms jacobi_quadrature_bezout
-#print axioms cubic_at_quadrature_nodes
-#print axioms jacobi_resolvent_error
 end RHTower.OrbitCubic

@@ -105,8 +105,4 @@ theorem jeffreys_coherence (a : Shape) (s t : ℝ) :
   change _=4*a.val*(((u+u⁻¹)/2)^2-1)
   field_simp [show u≠0 from exp_ne_zero _] <;> ring
 
-#print axioms mean
-#print axioms log_likelihood
-#print axioms rate_kl
-#print axioms jeffreys_coherence
 end GaloisForLFunctions.HilbertMetric.CauchyDephasing.GammaAffinity

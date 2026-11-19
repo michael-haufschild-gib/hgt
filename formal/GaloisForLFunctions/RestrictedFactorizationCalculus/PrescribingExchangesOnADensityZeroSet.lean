@@ -114,6 +114,4 @@ theorem density_one_with_prescribed_exchanges (T : Set ℕ) (G : ℕ → ℕ)
     · rw [sub_self,abs_zero]; positivity
     · exact h₂.2
 
-#print axioms density_one_with_prescribed_exchanges
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

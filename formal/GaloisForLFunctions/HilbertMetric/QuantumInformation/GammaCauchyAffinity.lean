@@ -142,8 +142,4 @@ theorem fractional_positive {n : ℕ} (t : ℝ≥0) (r : Fin n → ℝ) : (fract
   simp only [inner_feature]
   exact ((density_integrable a _).const_mul _).ofReal
 
-#print axioms chernoff_mass
-#print axioms hellinger_product
-#print axioms hellinger_mass
-#print axioms fractional_positive
 end GaloisForLFunctions.HilbertMetric.CauchyDephasing.GammaAffinity

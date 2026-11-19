@@ -71,7 +71,7 @@ theorem smooth_main_term_error_at_every_rough_cutoff {y : ℕ} (hy : 0<y) (X : �
     intro n hn
     by_cases free : IsFree (banned y) n
     · rw [if_pos free,mul_comm (Real.log X),←mul_sub,abs_mul]
-      have lo := Nat.cast_pos.mpr (mem_Icc.mp hn).1
+      have lo : (0:ℝ)<n := Nat.cast_pos.mpr (mem_Icc.mp hn).1
       have hi := (Nat.cast_le (α := ℝ)).mpr (mem_Icc.mp hn).2
       have diff := sub_nonneg.mpr (Real.log_le_log lo hi)
       rw [abs_of_nonneg diff]
@@ -81,7 +81,8 @@ theorem smooth_main_term_error_at_every_rough_cutoff {y : ℕ} (hy : 0<y) (X : �
   have primeErr : |L+D| ≤ E+(y:ℝ)*B.card := by
     have l := logarithmic_rough_prefix_at_quotient_readings hy X
     change L= -∑ m ∈ B,row y m*roughPrimePowerReading y (X/m) at l
-    rw [l,neg_add_eq_sub,D,←sum_sub_distrib]
+    dsimp only [D]
+    rw [l,neg_add_eq_sub,←sum_sub_distrib]
     apply (abs_sum_le_sum_abs ..).trans
     have per (m : ℕ) (_ : m ∈ B) : |row y m*((X:ℝ)/m)-row y m*roughPrimePowerReading y (X/m)| ≤
         |roughPrimePowerReading y (X/m)-((X:ℝ)/m-y)|+(y:ℝ) := by
@@ -99,7 +100,7 @@ theorem smooth_main_term_error_at_every_rough_cutoff {y : ℕ} (hy : 0<y) (X : �
     apply sum_congr rfl
     intro m hm
     dsimp only [t]
-    field_simp [y0.ne',(Nat.cast_pos.mpr (mem_Icc.mp (mem_filter.mp hm).1).1 : (0:ℝ)<m).ne']
+    field_simp [y0.ne',(Nat.cast_pos.mpr (mem_Icc.mp (mem_filter.mp hm).1).1 : (0:ℝ)< m).ne']
   have round := mul_le_mul_of_nonneg_left floor y0.le
   change (y:ℝ)*|(∑ m ∈ B,row y m*(t/m))-(S.card:ℝ)| ≤ _ at round
   have mult (v : ℝ) : (y:ℝ)*|v|=|(y:ℝ)*v| := by rw [abs_mul,abs_of_nonneg y0.le]
@@ -108,7 +109,7 @@ theorem smooth_main_term_error_at_every_rough_cutoff {y : ℕ} (hy : 0<y) (X : �
   have sumerr := abs_add_le (Real.log X*M-L) (L+D)
   have allerr := abs_add_le (Real.log X*M+D) ((y:ℝ)*S.card-D)
   rw [show Real.log X*M-L+(L+D)=Real.log X*M+D by ring] at sumerr
-  rw [show Real.log X*M+D+(y*S.card-D)=Real.log X*M+y*S.card by ring,abs_sub_comm ((y:ℝ)*S.card)] at allerr
+  rw [show Real.log X*M+D+((y:ℝ)*S.card-D)=Real.log X*M+(y:ℝ)*S.card by ring,abs_sub_comm ((y:ℝ)*S.card)] at allerr
   change |Real.log X*M+(y:ℝ)*S.card| ≤ _+E+2*(y:ℝ)*B.card
   linarith only [weighted,primeErr,round,sumerr,allerr]
 
@@ -135,8 +136,8 @@ private theorem reading_between_prime_sums (y : ℕ) {t : ℝ} (hy : (y:ℝ) ≤
     intro d hd
     by_cases prime : d.Prime
     · have free := (isFree_prime (banned y) prime).mpr (not_le.mpr (mem_Ioc.mp hd).1)
-      rw [if_pos prime,g,if_pos free,vonMangoldt_apply_prime prime]
-    · rw [if_neg prime,g]; split <;> first | exact vonMangoldt_nonneg | exact le_rfl
+      simp only [g,if_pos prime,if_pos free,vonMangoldt_apply_prime prime,le_refl]
+    · simp only [if_neg prime,g]; split <;> first | exact vonMangoldt_nonneg | exact le_rfl
   · apply sum_le_sum
     intro d _
     dsimp only [g]; split <;> first | exact le_rfl | exact vonMangoldt_nonneg
@@ -183,7 +184,7 @@ private theorem sum_quotient_log_errors {x : ℝ} {N : ℕ} (room : (N:ℝ)+1<x)
   have step (m : ℕ) (hm : m ∈ Icc 1 N) :
       1/((m:ℝ)*(Real.log (x/m))^2) ≤ 2*(pot (m+1)-pot m) := by
     have m1 : (1:ℝ) ≤ m := Nat.one_le_cast.mpr (mem_Icc.mp hm).1
-    have mp : (0:ℝ)<m := zero_lt_one.trans_le m1
+    have mp : (0:ℝ)< m := zero_lt_one.trans_le m1
     have upper := (Nat.cast_le (α := ℝ)).mpr (mem_Icc.mp hm).2
     have mx : (m:ℝ)+1<x := lt_of_le_of_lt (by linarith only [upper]) room
     have mx0 : (0:ℝ)<(m:ℝ)+1 := by positivity
@@ -206,13 +207,15 @@ private theorem sum_quotient_log_errors {x : ℝ} {N : ℕ} (room : (N:ℝ)+1<x)
     have whole := (div_le_iff₀ mx0).mp gap
     have one : (1:ℝ) ≤ 2*m*(a-b) :=
       whole.trans (by nlinarith only [mul_le_mul_of_nonneg_right m1 (sub_nonneg.mpr order)])
-    have numer : b ≤ 2*m*(a-b)*a := order.trans (by simpa only [one_mul] using
-      mul_le_mul_of_nonneg_right one apos.le)
+    have scaled := mul_le_mul_of_nonneg_right one apos.le
+    rw [one_mul] at scaled
+    have numer := order.trans scaled
     change 1/((m:ℝ)*a^2) ≤ 2*(1/Real.log (x/((m+1:ℕ):ℝ))-1/a)
     rw [Nat.cast_add,Nat.cast_one]
     change 1/((m:ℝ)*a^2) ≤ 2*(1/b-1/a)
-    field_simp [mp.ne',bpos.ne',apos.ne',mp,bpos,apos]
-    nlinarith only [numer]
+    have eq : 2*(1/b-1/a)=2*(a-b)/(b*a) := by field_simp
+    rw [eq,div_le_div_iff₀ (mul_pos mp (sq_pos_of_pos apos)) (mul_pos bpos apos)]
+    linarith only [mul_le_mul_of_nonneg_right numer apos.le]
   have telescope (k : ℕ) : (∑ m ∈ Icc 1 k,(pot (m+1)-pot m))=pot (k+1)-pot 1 := by
     induction k with
     | zero => simp
@@ -221,10 +224,10 @@ private theorem sum_quotient_log_errors {x : ℝ} {N : ℕ} (room : (N:ℝ)+1<x)
   rw [←mul_sum,telescope] at cost
   have first : 0 ≤ pot 1 := by
     dsimp only [pot]; rw [Nat.cast_one,div_one]
-    exact one_div_nonneg.mpr (Real.log_nonneg (by linarith only [room,Nat.cast_nonneg N]))
+    exact one_div_nonneg.mpr (Real.log_nonneg (by linarith only [room,Nat.cast_nonneg (α := ℝ) N]))
   have last : pot (N+1)=1/Real.log (x/((N:ℝ)+1)) := by simp only [pot,Nat.cast_succ]
   rw [last] at cost
-  linarith only [cost,first]
+  exact cost.trans ((mul_le_mul_of_nonneg_left (sub_le_self _ first) (by norm_num : (0:ℝ) ≤ 2)).trans_eq (by ring))
 
 /-- Total variation lost by replacing each rough log weight by its endpoint value. -/
 def logVariation (y N : ℕ) : ℝ :=
@@ -240,14 +243,14 @@ theorem rough_log_variation_from_prefix_counts (y N : ℕ) {δ K : ℝ} (hδ : 0
   | succ N ih =>
     by_cases nz : N=0
     · subst N
-      simp [logVariation,freeSet,hδ.le]
+      simp [logVariation,freeSet,sum_filter,hδ.le]
     have np : (0:ℝ)<N := Nat.cast_pos.mpr (Nat.pos_of_ne_zero nz)
     let d := Real.log ((N:ℝ)+1)-Real.log N
     have dn : 0 ≤ d := sub_nonneg.mpr (Real.log_le_log np (by linarith))
     have logbound := Real.log_le_sub_one_of_pos (div_pos (by positivity : 0<(N:ℝ)+1) np)
     rw [Real.log_div (by positivity : (N:ℝ)+1 ≠ 0) np.ne'] at logbound
     have cost : (N:ℝ)*d ≤ 1 := by
-      have algebra : ((N:ℝ)+1)/N-1=1/N := by field_simp
+      have algebra : ((N:ℝ)+1)/N-1=1/N := by field_simp; ring
       rw [algebra] at logbound
       exact (mul_comm ..).trans_le ((le_div_iff₀ np).mp logbound)
     have change_ : logVariation y (N+1)=logVariation y N+(freeSet y N).card*d := by
@@ -258,7 +261,7 @@ theorem rough_log_variation_from_prefix_counts (y N : ℕ) {δ K : ℝ} (hδ : 0
       rw [←sum_add_distrib]
       apply sum_congr rfl
       intro n _
-      by_cases f : IsFree (banned y) n <;> simp [f,d,Nat.cast_succ] <;> ring
+      by_cases f : IsFree (banned y) n <;> simp [f,d,Nat.cast_succ]
     have step := mul_le_mul_of_nonneg_right (count N (Nat.le_succ _)) dn
     have prev := ih (fun k hk => count k (Nat.le_succ_of_le hk))
     rw [change_,Nat.cast_succ]
@@ -354,10 +357,12 @@ theorem signed_rough_prefix_tracks_smooth_population {ε : ℝ} (hε : 0<ε) :
   let D := fun n : ℕ => Real.log ((n:ℝ)/2)
   have logtop : Tendsto D atTop atTop := Real.tendsto_log_atTop.comp
     (tendsto_atTop.mpr fun b => (tendsto_natCast_atTop_atTop.eventually_ge_atTop (2*b)).mono
-      (fun n hn => by dsimp only; linarith only [hn]))
+      (fun n hn => by change b ≤ (n:ℝ)/2; linarith only [hn]))
   obtain ⟨A,logA⟩ := eventually_atTop.mp (logtop.eventually_ge_atTop L)
   have weak := Real.isLittleO_log_id_atTop.bound (div_pos hd (by positivity : (0:ℝ)<K+1))
-  obtain ⟨B,logB⟩ := eventually_atTop.mp (tendsto_natCast_atTop_atTop weak)
+  have weakNat : ∀ᶠ n : ℕ in atTop, ‖Real.log (n:ℝ)‖ ≤ δ/(K+1)*‖(n:ℝ)‖ :=
+    (tendsto_natCast_atTop_atTop (R := ℝ)).eventually weak
+  obtain ⟨B,logB⟩ := eventually_atTop.mp weakNat
   let W := max (max (max Z Y) (max A B)) ⌈2*K/δ⌉₊
   have big : Y ≤ W := ((le_max_right Z Y).trans (le_max_left ..)).trans (le_max_left ..)
   have wpos : 0<W := lt_of_lt_of_le (by omega : 0<Y) big
@@ -375,7 +380,7 @@ theorem signed_rough_prefix_tracks_smooth_population {ε : ℝ} (hε : 0<ε) :
   have fees : C*(2/D y+1/Real.log y^2) ≤ δ := by
     have dpos := hl.trans_le Ly
     have less := div_le_div_of_nonneg_left zero_le_one dpos square
-    have sum := mul_le_mul_of_nonneg_left (add_le_add le_rfl less) hC.le
+    have sum := mul_le_mul_of_nonneg_left (add_le_add (le_refl (2/D y)) less) hC.le
     apply sum.trans
     rw [←add_div,mul_div_assoc',div_le_iff₀ dpos]
     linarith only [dl,hC]
@@ -403,7 +408,5 @@ theorem signed_rough_prefix_tracks_smooth_population {ε : ℝ} (hε : 0<ε) :
   nlinarith only [paid,c1,c3,ld,kprice,rest,logX,mul_le_mul_of_nonneg_left quotient hε.le,
     mul_nonneg hε.le x0]
 
-#print axioms signed_rough_prefix_tracks_smooth_population
 
-#print axioms smooth_main_term_error_at_every_rough_cutoff
 end GaloisForLFunctions.RestrictedFactorizationCalculus

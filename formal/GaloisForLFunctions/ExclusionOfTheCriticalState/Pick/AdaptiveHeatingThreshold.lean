@@ -67,10 +67,14 @@ private theorem unit_alias (d : ℕ) (hd : 0<d) (S : Finset ℝ) (hs : S.Nonempt
   · have hcard : S.card=d+1 := by omega
     let U := vanishing (S.erase a)
     have hzero : U.eval a≠0 := fun h => (Finset.notMem_erase _ _) ((vanishing_eval _ _).mp h)
+    have hU : U.natDegree ≤ d := by
+      rw [show U = vanishing (S.erase a) from rfl,vanishing_degree,card_erase_of_mem ha,hcard]
+      omega
     let Q : Channel d := ⟨1-C (2/U.eval a)*U,(natDegree_sub_le _ _).trans
-      (max_le (by simp) ((natDegree_C_mul_le _ _).trans (by rw [show U=vanishing _ from rfl,
-        vanishing_degree,card_erase_of_mem ha,hcard]; omega)))⟩
-    have atA : Q.val.eval a= -1 := by simp only [Q,eval_sub,eval_one,eval_mul,eval_C]; field_simp
+      (max_le (by simp) ((natDegree_C_mul_le _ _).trans hU))⟩
+    have atA : Q.val.eval a= -1 := by
+      rw [show Q.val = 1-C (2/U.eval a)*U from rfl,eval_sub,eval_one,eval_mul,eval_C,div_mul_cancel₀ _ hzero]
+      norm_num
     have other (x : ℝ) (hx : x∈S.erase a) : Q.val.eval x=1 := by
       simp [Q,show U.eval x=0 from (vanishing_eval _ _).mpr hx]
     refine ⟨Q,fun x hx => ?_,?_⟩
@@ -157,7 +161,7 @@ theorem optimal_history (v : Nodes d) (P Q : Channel d) :
       power U.val (finalNode v (fun i => power U.val (v i)))::samplePrefix (fun i => power U.val (v i)) (d+1) := by
     change power U.val (optimalPolicy v (history _ U.val (d+1)))::history _ U.val (d+1)=_
     rw [grid_history v _ _ le_rfl]
-    simp only [optimalPolicy,prefix_length,lt_irrefl,dif_neg,recorded_prefix]
+    simp only [optimalPolicy,prefix_length,dif_neg (Nat.lt_irrefl _),recorded_prefix]
   rw [last,last]
   constructor
   · intro e
@@ -180,10 +184,10 @@ theorem sequential_threshold (d : ℕ) (hd : 0<d) (n : ℕ) :
     obtain ⟨Q,eq,diff⟩ := adaptive_lower d hd T
     exact diff (hT Q ⟨1,by simp⟩ (readings_shorter T _ _ (by omega : n≤d+1) eq))
   · intro hn
-    let v : Nodes d := ⟨fun i => (i.val:ℝ),fun i j h => Fin.ext (by exact_mod_cast h)⟩
+    let v : Nodes d := ⟨fun i => (i.val:ℝ),by
+      intro i j h
+      change (i.val : ℝ) = (j.val : ℝ) at h
+      exact Fin.ext (by exact_mod_cast h)⟩
     exact ⟨optimalPolicy v,fun P Q e => (optimal_history v P Q).mp (readings_shorter _ _ _ hn e)⟩
 
-#print axioms adaptive_lower
-#print axioms optimal_history
-#print axioms sequential_threshold
 end GaloisForLFunctions.ExclusionOfTheCriticalState.ProbeWalk.HeatSamples

@@ -18,7 +18,9 @@ Write \(R_y(Z)\) for the number of rough integers through \(Z\). For every \(\Th
  \left|B-\frac XZ\Psi(Z,y)\right|
  \ll_s X^s Z^{1-s}+\frac XZ R_y(Z).
 \]
-Indeed \(\Psi(Z,y)=\sum_{m\le Z}\mu_y(m)\lfloor Z/m\rfloor\). Replacing \(X/m\) by \((X/Z)\lfloor Z/m\rfloor\) costs less than \(X/Z\) in each row, and the common lower endpoint costs at most another \(X/Z\). Dividing by \(X\), the first term is at most \(y^{s-1}\). The second tends uniformly to zero as \(y\to\infty\) by comparison with a fixed primorial. This identifies the positive smooth proportion throughout the whole upper quotient range, including \(X/Z=X^{o(1)}\).
+Indeed \(\Psi(Z,y)=\sum_{m\le Z}\mu_y(m)\lfloor Z/m\rfloor\). Replacing \(X/m\) by \((X/Z)\lfloor Z/m\rfloor\) costs less than \(X/Z\) in each row, and the common lower endpoint costs at most another \(X/Z\). Dividing by \(X\), the first term is at most \(y^{s-1}\). The second tends uniformly to zero as \(y\to\infty\) by comparison with a fixed primorial. Lean proves the finite estimate and uniform decay in `quantitative_smooth_profile_at_every_interior_cut` and `raw_prime_profile_at_every_interior_cut`. [All interior cuts](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/TheSmoothProportionAtEveryInteriorQuotientCut.lean)
+
+This identifies the positive smooth proportion throughout the whole upper quotient range, including \(X/Z=X^{o(1)}\).
 
 The first band is [formalized](../3-formalized/qfsb-signed-profile-through-the-first-prime-band.md). The original exact floor center on the same sector is
 \[

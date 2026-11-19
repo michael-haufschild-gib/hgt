@@ -60,7 +60,7 @@ theorem power_freezing_errors_le_prime_cofactor_product {θ : ℝ} (hθ : 0<θ) 
     have psmall : p ≤ powerCutoff θ X :=
       (Nat.minFac_le_of_dvd (Nat.prime_of_mem_primeFactors hq).two_le (Nat.dvd_of_mem_primeFactors hq)).trans cut
     have pm : p*m=n := Nat.mul_div_cancel' (Nat.minFac_dvd _)
-    have mpos : 0<m := by
+    have mpos : 0< m := by
       apply Nat.pos_of_ne_zero; intro z
       have zero : n=0 := pm.symm.trans (by rw [z,mul_zero])
       exact Nat.ne_of_gt (show 0<n from pos) zero
@@ -257,9 +257,5 @@ theorem signed_freezing_error {θ : ℝ} (hθ : 0<θ) (X : ℕ) :
       exact_mod_cast (abs_moebius_le_one (n := n))
     · have no : ¬e n := fun h => own h.1
       simp [fixed,own,no]
-
-#print axioms power_freezing_errors_le_prime_cofactor_product
-#print axioms second_log_saving_for_freezing_a_polynomial_cutoff
-#print axioms signed_freezing_error
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

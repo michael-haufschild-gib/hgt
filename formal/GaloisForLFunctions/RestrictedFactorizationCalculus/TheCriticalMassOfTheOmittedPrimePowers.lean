@@ -91,13 +91,13 @@ private theorem higher_power_mass :
 private theorem on_prime_square (y : ℕ) {p : ℕ} (hp : p.Prime) :
     roughProperPowerWeight y (p^2)/Real.sqrt (p^2:ℕ)=if y<p then Real.log p/p else 0 := by
   have free : IsFree (RoughReading.banned y) (p^2) ↔ y<p := by
-    rw [pow_two,isFree_mul_iff _ hp.ne_zero hp.ne_zero,isFree_prime,and_self]
-    exact not_le
+    rw [pow_two,isFree_mul_iff _ hp.ne_zero hp.ne_zero,isFree_prime _ hp,and_self]
+    exact (not_le : (¬p ≤ y) ↔ y<p)
   have p2 : 1<p^2 := one_lt_pow₀ hp.one_lt (by decide)
   have no : ¬(p^2).Prime := Nat.Prime.not_prime_pow' (by decide : 2 ≠ 1)
   by_cases high : y<p
   · have far := high.trans_le (Nat.le_self_pow (by decide : 2 ≠ 0) p)
-    simp only [roughProperPowerWeight,p2,far,no,free,high,and_self,if_true,Nat.cast_pow,
+    simp only [roughProperPowerWeight,p2,far,no,free,high,not_false_eq_true,and_self,if_true,Nat.cast_pow,
       Real.sqrt_sq (Nat.cast_nonneg _),vonMangoldt_apply_pow (by decide : 2 ≠ 0),vonMangoldt_apply_prime hp]
   · simp [roughProperPowerWeight,free,high]
 
@@ -139,7 +139,7 @@ theorem critical_mass_of_the_rough_proper_powers :
     · simp [sq,higherWeight]
     by_cases h : 1<d ∧ y<d ∧ ¬d.Prime ∧ IsFree (RoughReading.banned y) d
     · simp only [f,roughProperPowerWeight,if_pos h,if_pos h.2.2.1,sq,not_false_eq_true,if_true,
-        higherWeight,if_false,Real.rpow_neg (Nat.cast_nonneg _),←Real.sqrt_eq_rpow,div_eq_mul_inv,le_refl]
+        higherWeight,if_false,Real.rpow_neg (Nat.cast_nonneg _),Real.sqrt_eq_rpow,div_eq_mul_inv,le_refl]
     · simp only [f,roughProperPowerWeight,if_neg h,zero_div,ite_self]
       split <;> first | exact mul_nonneg vonMangoldt_nonneg (weight_nonneg _) | rfl
   have split := sum_filter_add_sum_filter_not B primeSquare f
@@ -154,7 +154,7 @@ their logarithmic distance up to a uniform additive constant. -/
 theorem sharp_logarithmic_length_of_the_omitted_powers :
     ∃ K : ℝ,0 ≤ K ∧ ∀ y X : ℕ,1 ≤ y → 1 ≤ X →
       |(∑ d ∈ Icc 1 X,roughProperPowerWeight y d/Real.sqrt d)-
-        (Real.log X.sqrt-Real.log (min y X.sqrt))| ≤ K := by
+        (Real.log X.sqrt-Real.log (min y X.sqrt : ℕ))| ≤ K := by
   obtain ⟨K,hK,price⟩ := critical_mass_of_the_rough_proper_powers
   have log4 := Real.log_nonneg (by norm_num : (1:ℝ) ≤ 4)
   refine ⟨K+9+Real.log 4,by linarith only [hK,log4],fun y X hy hx => ?_⟩
@@ -168,8 +168,13 @@ theorem sharp_logarithmic_length_of_the_omitted_powers :
     ⟨(Nat.mem_primesLE.mp hp).1.trans (min_le_right ..),(Nat.mem_primesLE.mp hp).2⟩
   have eq : S.filter (y<·)=S \ T := by
     ext p
-    simp only [S,T,m,mem_filter,mem_sdiff,Nat.mem_primesLE,le_min_iff]
-    omega
+    rw [mem_filter,Finset.mem_sdiff]
+    constructor
+    · rintro ⟨inside,above⟩
+      exact ⟨inside,fun ht => above.not_ge ((Nat.mem_primesLE.mp ht).1.trans (min_le_left y M))⟩
+    · rintro ⟨inside,outside⟩
+      obtain ⟨leM,pr⟩ := Nat.mem_primesLE.mp inside
+      exact ⟨inside,lt_of_not_ge (fun py => outside (Nat.mem_primesLE.mpr ⟨le_min py leM,pr⟩))⟩
   have law := price y X
   change (∑ p ∈ S.filter (y<·),Real.log p/p) ≤ _ ∧ _ ≤ (∑ p ∈ S.filter (y<·),Real.log p/p)+K at law
   rw [eq,sum_sdiff_eq_sub sub] at law
@@ -202,9 +207,5 @@ theorem half_logarithmic_price_of_proper_powers :
   rw [Real.log_sqrt (Nat.cast_nonneg _)] at logwall
   change (∑ p ∈ Nat.primesLE X.sqrt,Real.log p/p) ≤ _ at prime
   linarith only [(cost y X).2,sub,prime,logwall]
-
-#print axioms sharp_logarithmic_length_of_the_omitted_powers
-#print axioms critical_mass_of_the_rough_proper_powers
-#print axioms half_logarithmic_price_of_proper_powers
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

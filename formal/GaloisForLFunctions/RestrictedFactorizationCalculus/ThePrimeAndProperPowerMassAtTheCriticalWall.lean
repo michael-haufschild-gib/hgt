@@ -154,6 +154,4 @@ theorem limiting_mass_of_the_combined_omission {λ : ℝ} (hλ : 1 ≤ λ) :
   change mass (wall X) X/L X+(S/Real.sqrt (wall X))*(Real.sqrt (wall X)/L X)=_
   field_simp [(Real.sqrt_pos.mpr (Nat.cast_pos.mpr yp)).ne']
 
-#print axioms critical_mass_of_a_scaled_prime_window
-#print axioms limiting_mass_of_the_combined_omission
 end GaloisForLFunctions.RestrictedFactorizationCalculus

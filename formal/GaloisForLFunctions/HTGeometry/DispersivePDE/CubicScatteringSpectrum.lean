@@ -113,6 +113,4 @@ theorem tau_root_simple (r a : Fin n → ℝ) (x : ℝ) :
   rw [hf,Polynomial.derivative_mul,eval_add,eval_mul,eval_mul,hroot,mul_zero,zero_add]
   simpa [factor] using mul_ne_zero hP hλ
 
-#print axioms tau_spectral_product
-#print axioms tau_root_simple
 end GaloisForLFunctions.HTGeometry.DispersivePDE.CubicScattering

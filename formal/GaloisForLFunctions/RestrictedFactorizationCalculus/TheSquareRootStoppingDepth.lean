@@ -169,8 +169,4 @@ theorem square_root_tail_of_the_least_prime_depth :
   exact (sum_le_sum (fun n (_ : n ∈ terminalAtDepth k X) =>
     (show |(μ n:ℝ)| ≤ 1 by exact_mod_cast (abs_moebius_le_one (n := n))))).trans_eq (by simp)
 
-#print axioms terminal_depth_euler_bound
-#print axioms terminal_depth_power_saving
-#print axioms square_root_tail_of_the_least_prime_depth
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

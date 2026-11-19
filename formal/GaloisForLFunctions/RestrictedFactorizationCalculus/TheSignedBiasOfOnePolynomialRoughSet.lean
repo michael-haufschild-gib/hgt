@@ -239,8 +239,4 @@ theorem negative_charge_on_one_polynomial_rough_set {θ : ℝ} (hθ : 0<θ) (sma
   have bound := negative _ X hx.1 hx.2.1 hx.2.2
   linarith only [bound,(abs_le.mp gap).2]
 
-#print axioms second_log_error_in_the_signed_smooth_main_term
-#print axioms signed_smooth_main_term_on_one_polynomial_rough_set
-#print axioms negative_charge_on_one_polynomial_rough_set
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

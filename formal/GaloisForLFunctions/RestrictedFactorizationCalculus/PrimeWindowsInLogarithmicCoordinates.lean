@@ -447,11 +447,4 @@ theorem limiting_surplus_at_the_fourth_root :
   · linarith only [q,Real.log_three_lt_d9]
   · linarith only [q,Real.log_three_lt_d9,t]
 
-#print axioms limiting_surplus_at_the_fourth_root
-
-#print axioms strict_spare_capacity_in_the_limiting_prime_row
-
-#print axioms sharp_prime_quadrature
-#print axioms semiprime_logarithmic_weight
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

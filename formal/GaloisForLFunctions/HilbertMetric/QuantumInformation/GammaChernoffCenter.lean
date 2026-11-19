@@ -152,8 +152,4 @@ theorem equal_divergence_iff (a : Shape) (u s t : ℝ) :
     · field_simp [exp_ne_zero]
       linarith only [he]
 
-#print axioms tilted_rate
-#print axioms chernoff_gap
-#print axioms optimal_chernoff
-#print axioms equal_divergence_iff
 end GaloisForLFunctions.HilbertMetric.CauchyDephasing.GammaAffinity

@@ -49,8 +49,6 @@ theorem signed_coprime_cofactor_projection (V : ℕ) {v : ℕ} (hv : 0 < v) :
              rw [multiples_mertens_weight (Nat.pos_of_mem_divisors he)]
              split_ifs <;> simp
 
-#print axioms signed_coprime_cofactor_projection
-
 /-- Every proper cofactor up to V vanishes identically in the projected sum. -/
 theorem projected_proper_cofactor_zero {V v : ℕ} (hv : 1 < v) (hV : v ≤ V) :
     (∑ d ∈ (Icc 1 V).filter (v.Coprime ·),mertens (V/d))=0 := by
@@ -81,9 +79,6 @@ theorem first_projected_cofactor_octave {V v : ℕ} (hv : 1 < v) (hlo : V < v) (
   have hs := sum_filter_add_sum_filter_not v.divisors (· ≤ V) (fun e => (μ e:ℝ))
   rw [hlast,sum_singleton,_root_.RHTower.Sieve.sum_divisors_moebius_real,if_neg hv.ne'] at hs
   linarith only [hs]
-
-#print axioms projected_proper_cofactor_zero
-#print axioms first_projected_cofactor_octave
 
 /-- A prime above the level disappears from every divisor test in the
 truncated row. If the other factor is within the level, only a unit
@@ -121,7 +116,36 @@ theorem surviving_cofactor_with_large_prime {V v p : ℕ} (hv : 1 ≤ v) (hsq : 
   rw [←hmul,projected_weight_at_large_prime hp hVp hu huV,hmul]
   simp only [eq1]
 
-#print axioms surviving_cofactor_with_large_prime
+/-- With the cuts P and P² exchanged, a product surviving in both prime
+readings is their common semiprime. On it both divisor weights equal one. -/
+theorem exchanged_prime_cofactor_cuts {P p q u v : ℕ} (hP : 0 < P)
+    (hp : p.Prime) (hq : q.Prime) (hpP : P < p) (hqP : P^2 < q)
+    (hu : P^2 < u) (hcap : p*u ≤ (P^2)^2) (heq : p*u=q*v) :
+    (truncMoebiusDivisorSum (P^2) u ≠ 0 ∧ truncMoebiusDivisorSum P v ≠ 0) ↔
+      u=q ∧ v=p ∧ truncMoebiusDivisorSum (P^2) u=1 ∧ truncMoebiusDivisorSum P v=1 := by
+  have hp2 : p < P^2 := by
+    by_contra! h
+    have hbad := Nat.mul_lt_mul_of_pos_left hu (pow_pos hP 2)
+    rw [←pow_two] at hbad
+    exact hbad.not_ge ((Nat.mul_le_mul_right u h).trans hcap)
+  have hqu : q ∣ u := by
+    have hdiv : q ∣ p*u := by rw [heq]; exact dvd_mul_right q v
+    exact (hq.dvd_mul.mp hdiv).resolve_left
+      (Nat.not_dvd_of_pos_of_lt hp.pos (hp2.trans hqP))
+  have hU := surviving_cofactor_with_large_prime ((pow_pos hP 2).trans hu)
+    ((Nat.le_mul_of_pos_left u hp.pos).trans hcap) hq hqP hqu
+  constructor
+  · rintro ⟨h,_⟩
+    have he : u=q := by by_contra hh; rw [hU,if_neg hh] at h; exact h rfl
+    have hv : v=p := by
+      rw [he,Nat.mul_comm p q] at heq
+      exact (Nat.eq_of_mul_eq_mul_left hq.pos heq).symm
+    have hV := projected_weight_at_large_prime hp hpP (u:=1) (by decide) hP
+    refine ⟨he,hv,by simpa only [if_pos he] using hU,?_⟩
+    simpa only [hv,one_mul,if_pos rfl] using hV
+  · rintro ⟨_,_,hu',hv'⟩
+    rw [hu',hv']
+    exact ⟨one_ne_zero,one_ne_zero⟩
 
 /-- Total variation and its first divisibility moment, for use on short
 intervals whose number of multiples depends on d. -/
@@ -146,8 +170,6 @@ theorem cofactor_projection_weight_cost (V : ℕ) :
                have hd0 := (Nat.cast_pos (α:=ℝ)).mpr (mem_Icc.mp h).1
                exact (mul_le_mul_of_nonneg_left (hd d) hd0.le).trans_eq (mul_div_cancel₀ _ hd0.ne')
          _ = _ := by simp [Nat.card_Icc,pow_two]
-
-#print axioms cofactor_projection_weight_cost
 
 /-- Primitive frequency among the multiples d k in a consecutive
 window of L quotient indices. -/
@@ -216,8 +238,6 @@ theorem signed_window_cofactor_density (V : ℕ) {v : ℕ} (hv : 0 < v) (a L : �
   exact (mul_le_mul_of_nonneg_left (sampled_cofactor_frequency_error hv (hL d hd) d (a d))
     (abs_nonneg M)).trans_eq (by ring)
 
-#print axioms signed_window_cofactor_density
-
 /-- Every normalized signed sample which removes all prime cofactors up
 to V pays at least log(V#) in total log modulus. -/
 theorem signed_sampling_primorial_cost (V : ℕ) (S : Finset ℕ) (w : ℕ → ℝ)
@@ -257,7 +277,5 @@ theorem signed_sampling_primorial_cost (V : ℕ) (S : Finset ℕ) (w : ℕ → �
              apply sum_le_sum
              intro m hm
              exact mul_le_mul (le_abs_self _) (hlocal m hm) (sum_nonneg fun p _ => Real.log_natCast_nonneg p) (abs_nonneg _)
-
-#print axioms signed_sampling_primorial_cost
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -147,7 +147,4 @@ theorem subpolynomial_cutoff_iff_logarithmic_signed_saving (y : ℕ → ℕ)
     have xpos := mul_nonneg hε.le (Nat.cast_nonneg (α := ℝ) X)
     constructor <;> linarith only [approx.1,approx.2,paid,pos,xpos]
 
-#print axioms negative_charge_of_every_polynomial_rough_cutoff
-#print axioms subpolynomial_cutoff_iff_logarithmic_signed_saving
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

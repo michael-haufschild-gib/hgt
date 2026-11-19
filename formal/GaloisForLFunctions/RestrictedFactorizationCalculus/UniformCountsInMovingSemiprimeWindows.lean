@@ -160,6 +160,4 @@ theorem eventually_uniform_semiprime_counts {d ε : ℝ} (hd : 0 < d) (hd' : d �
   have hpart := hc.trans ((mul_le_mul_of_nonneg_left hW hη.le).trans_eq hε')
   exact (abs_sub_le _ W Δ).trans ((add_le_add hpart (hkernel.trans (min_le_right _ _))).trans_eq (by ring))
 
-#print axioms eventually_uniform_semiprime_counts
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

@@ -88,9 +88,4 @@ theorem common_slope_tau_positive (ρ a b v s t τ x y : ℝ) :
     realEvolutionJetKPScale,realEvolutionJetKPConst,wave,mondalExpWave]
   positivity
 
-#print axioms scattering_residual
-#print axioms scattering_solves_iff
-#print axioms scattering_exists_iff
-#print axioms common_slope_solves_iff
-#print axioms common_slope_tau_positive
 end GaloisForLFunctions.HTGeometry.DispersivePDE

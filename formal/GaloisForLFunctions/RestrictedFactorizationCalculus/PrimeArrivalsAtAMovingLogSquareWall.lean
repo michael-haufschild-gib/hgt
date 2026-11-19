@@ -459,9 +459,4 @@ theorem price_of_one_log_square_wall_jump {k T : ℕ} (kp : 1 ≤ k)
   calc _ = (2*(k:ℝ)+1)*((k:ℝ)+2)/((k:ℝ)^2+1)*(T:ℝ) := by ring
        _ ≤ _ := mul_le_mul_of_nonneg_right cap (Nat.cast_nonneg (α := ℝ) T)
 
-#print axioms price_of_one_log_square_wall_jump
-#print axioms polynomial_head_variation_has_the_height_exponent
-
-#print axioms upper_variation_at_moving_prime_walls
-#print axioms prime_arrivals_force_head_variation
 end GaloisForLFunctions.RestrictedFactorizationCalculus

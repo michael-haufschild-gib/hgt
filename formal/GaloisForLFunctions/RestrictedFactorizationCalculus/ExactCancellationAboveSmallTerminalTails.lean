@@ -85,7 +85,7 @@ theorem diameter_of_small_terminal_tails :
     dsimp only [logHeight]; nlinarith only [hh,sq_nonneg (Real.log ((r:ℝ)+1)-1)]
   refine ⟨K,by linarith only [hK],?_⟩
   rintro Y m ⟨_,hs,hm⟩
-  have mpos : (0:ℝ)<m := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hs.ne_zero)
+  have mpos : (0:ℝ)< m := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hs.ne_zero)
   rw [Real.log_mul (by norm_num) mpos.ne']
   rcases hm with ⟨_,hle⟩ | ⟨p,r,c,tail,hc,hry,rfl⟩
   · have h1 : 1 ≤ logHeight m := by unfold logHeight; linarith only [sq_nonneg (Real.log ((m:ℝ)+1))]
@@ -147,8 +147,5 @@ theorem exact_cancellation_above_small_terminal_tails :
   rw [smallTerminalVertices,same,sum_union dis,sum_image inj]
   change (∑ m ∈ A,(μ m:ℝ))+(∑ m ∈ A,(μ (2*m):ℝ))=0
   rw [sum_congr rfl opp,sum_neg_distrib,add_neg_cancel]
-
-#print axioms diameter_of_small_terminal_tails
-#print axioms exact_cancellation_above_small_terminal_tails
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

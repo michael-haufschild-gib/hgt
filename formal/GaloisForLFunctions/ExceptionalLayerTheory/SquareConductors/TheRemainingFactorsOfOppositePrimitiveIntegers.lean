@@ -45,8 +45,6 @@ theorem remaining_factor_at_large_prime {n Q a p : ℕ} (hp : p.Prime) (ha : 2 �
         hpQ,Nat.mul_le_mul_right p ha⟩
   rw [remainingMidpointFactor,hs,prod_singleton,Nat.mul_div_cancel _ hp.pos]
 
-#print axioms remaining_factor_at_large_prime
-
 private theorem remaining_factor_log (Q : ℕ) {x : ℕ} (hx : 0 < x) :
     0 < remainingMidpointFactor Q x ∧ Real.log (remainingMidpointFactor Q x) =
       Real.log x-∑ p ∈ selectedPrimes Q x,Real.log p := by
@@ -203,8 +201,6 @@ theorem centered_price_of_opposite_factors {n : ℕ} (hn : 1 < n) (Q : ℕ) :
   simp only [r,hc]
   split_ifs <;> simp
 
-#print axioms centered_price_of_opposite_factors
-
 /-- The opposite residual factors give the prime midpoint up to the
 small Mangoldt mass and the proper-power mass at the common cutoff. -/
 theorem opposite_factor_midpoint_error {n Q : ℕ} (hn : 1 < n) (hQ : Q ≤ 2*n) :
@@ -219,7 +215,5 @@ theorem opposite_factor_midpoint_error {n Q : ℕ} (hn : 1 < n) (hQ : Q ≤ 2*n)
   rw [←centered_price_of_opposite_factors hn,large_prime_cofactor_price_exact (by omega) hQ,abs_neg,add_mul]
   exact (abs_add_le _ _).trans (add_le_add (abs_small_midpoint_factor_price (by omega) Q)
     (midpoint_selected_proper_power_price (by omega) S hS))
-
-#print axioms opposite_factor_midpoint_error
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

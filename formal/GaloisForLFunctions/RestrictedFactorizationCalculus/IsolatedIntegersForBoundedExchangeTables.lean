@@ -207,7 +207,4 @@ theorem density_one_requires_growing_type_multiplicity (D : ℕ) {ε : ℝ} (hε
     (show (0:ℝ)<X by exact_mod_cast hX)
   exact (hlt.not_ge (lower.trans (upper.trans hM)))
 
-#print axioms positive_density_isolated_of_bounded_types
-#print axioms density_one_requires_growing_type_multiplicity
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

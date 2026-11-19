@@ -56,7 +56,7 @@ theorem order_trace_matrix (m : ℤ) :
 
 private theorem det_inverse_matrix (m : ℚ) :
     (reciprocalMatrix m 3 (2-m) (-m-1)).det = (m^2-m+7)^2 := by
-  simp [reciprocalMatrix,Matrix.det_fin_three] <;> ring
+  simp only [reciprocalMatrix_det] <;> ring
 
 /-- The square discriminant is computed inside the actual cubic field. -/
 theorem actual_order_discriminant (m : ℤ) : orderDiscriminant m = ((m:ℚ)^2-m+7)^2 := by
@@ -153,10 +153,4 @@ theorem codifferent_minimum (m : ℤ) (y : {y : K m // y ∈ orderTraceDual m �
     change |Algebra.norm ℚ y.val| * orderDiscriminant m=1
     rw [hew,calcNorm,(order_unit_norm_iff m w).mp hw]
 
-#print axioms order_trace_matrix
-#print axioms actual_order_discriminant
-#print axioms dual_generator_norm
-#print axioms integral_inverse_numerator
-#print axioms order_unit_norm_iff
-#print axioms codifferent_minimum
 end RHTower.OrbitCubic.NumberFieldTrace

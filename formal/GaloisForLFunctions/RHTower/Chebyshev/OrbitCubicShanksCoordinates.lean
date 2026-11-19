@@ -85,10 +85,4 @@ theorem shanks_entries_have_height_one (n : ℕ) (u w : ℤ) :
     Or.inr (Or.inr (Or.inr ⟨hu,hv,by dsimp only [m] at hs; omega⟩))
   exact ⟨heightOneEquiv m ⟨(u,v),hp⟩,shanks_triangle_transport m u v⟩
 
-#print axioms shanks_equation
-#print axioms shanks_to_reciprocal
-#print axioms shanks_height
-#print axioms shanks_triangle_transport
-#print axioms shanks_triangle_range
-#print axioms shanks_entries_have_height_one
 end RHTower.OrbitCubic.NumberFieldTrace

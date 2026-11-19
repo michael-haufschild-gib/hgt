@@ -82,9 +82,6 @@ theorem complete_rough_factorization (Y j : ℕ) :
     cubicRoughIndicator Y^j=cubicSmoothMoebius Y^j*(zeta:ArithmeticFunction ℝ)^j := by
   rw [←mul_pow,cubic_rough_indicator_eq]
 
-#print axioms smooth_moebius_power
-#print axioms complete_rough_factorization
-
 /-- Products in either high-divisor row have every prime at or below the
 cut, including integers with repeated primes. -/
 theorem high_cubic_rows_are_smooth {n Y d r : ℕ} (hr : 0 < r) (hk : d*r ≤ 4*n)
@@ -138,6 +135,110 @@ def twiceHighDivisorWeight (Y D k : ℕ) : ℝ :=
     (cubicSmoothMoebius Y^2 : ArithmeticFunction ℝ) d*
       ((zeta:ArithmeticFunction ℝ)^2 : ArithmeticFunction ℝ) (k/d))
 
+/-- The complementary part of the two complete convolution rows. -/
+def twiceLowDivisorWeight (Y D k : ℕ) : ℝ :=
+  ∑ d ∈ k.divisors.filter (· ≤ D),(4*cubicSmoothMoebius Y d-
+    (cubicSmoothMoebius Y^2 : ArithmeticFunction ℝ) d*
+      ((zeta:ArithmeticFunction ℝ)^2 : ArithmeticFunction ℝ) (k/d))
+
+/-- Exact sharp-endpoint decomposition into short divisors, long divisors
+and ordered rough prime triples, with multiplicity and the full log price. -/
+theorem cubic_divisor_and_triple_decomposition {n k : ℕ} (hY : 3 ≤ cubicMidpointCut n)
+    (hk : k ≤ 4*n) :
+    let Y := cubicMidpointCut n
+    let D := 4*n/(Y+1)
+    2*cubicRoughMangoldt Y k=(twiceLowDivisorWeight Y D k+twiceHighDivisorWeight Y D k)*Real.log k+
+      (2/3:ℝ)*(cubicPrimeIndicator Y^3 : ArithmeticFunction ℝ) k*Real.log k := by
+  let Y := cubicMidpointCut n
+  let D := 4*n/(Y+1)
+  have h1 : cubicRoughIndicator Y k=∑ d ∈ k.divisors,cubicSmoothMoebius Y d := by
+    rw [←cubic_rough_indicator_eq,coe_mul_zeta_apply]
+  have h2 : (cubicRoughIndicator Y^2 : ArithmeticFunction ℝ) k =
+      ∑ d ∈ k.divisors,(cubicSmoothMoebius Y^2 : ArithmeticFunction ℝ) d*
+        ((zeta:ArithmeticFunction ℝ)^2 : ArithmeticFunction ℝ) (k/d) := by
+    rw [complete_rough_factorization,mul_apply]
+    exact Nat.sum_divisorsAntidiagonal (fun d r =>
+      (cubicSmoothMoebius Y^2 : ArithmeticFunction ℝ) d*((zeta:ArithmeticFunction ℝ)^2 : ArithmeticFunction ℝ) r)
+  have hsplit : twiceLowDivisorWeight Y D k+twiceHighDivisorWeight Y D k =
+      4*cubicRoughIndicator Y k-(cubicRoughIndicator Y^2 : ArithmeticFunction ℝ) k := by
+    rw [h1,h2,mul_sum,←sum_sub_distrib]
+    simpa only [twiceLowDivisorWeight,twiceHighDivisorWeight,not_le] using
+      sum_filter_add_sum_filter_not k.divisors (· ≤ D)
+        (fun d => 4*cubicSmoothMoebius Y d-(cubicSmoothMoebius Y^2 : ArithmeticFunction ℝ) d*
+          ((zeta:ArithmeticFunction ℝ)^2 : ArithmeticFunction ℝ) (k/d))
+  have h := congrArg (fun f : ArithmeticFunction ℝ => f k) (cubic_rough_logarithm_identity Y)
+  have four (f : ArithmeticFunction ℝ) : 4*f=(f+f)+(f+f) := by ring
+  simp only [four,two_mul] at h
+  let R := cubicRoughIndicator Y
+  let L := cubicRoughMangoldt Y
+  let u := R k*Real.log k
+  let v := (R^2 : ArithmeticFunction ℝ) k*Real.log k
+  let w := (L*(R-1)^2 : ArithmeticFunction ℝ) k
+  change L k+L k=(u+u+(u+u)-v)+(w+w) at h
+  change 2*cubicRoughMangoldt Y k=(twiceLowDivisorWeight Y D k+twiceHighDivisorWeight Y D k)*_+_
+  rw [hsplit]
+  have ht := cubic_midpoint_rough_triple_price hY hk
+  change 3*((cubicRoughMangoldt Y*(cubicRoughIndicator Y-1)^2 : ArithmeticFunction ℝ) k)=_ at ht
+  dsimp only [L,R,u,v,w] at h
+  linarith only [h,ht]
+
+/-- In either sharp interval a nonzero long-divisor weight belongs to a
+smooth triple or to a smooth product of at least four prime factors. -/
+theorem surviving_long_divisor_products {n k : ℕ} (hY : 3 ≤ cubicMidpointCut n)
+    (hlo : 2*n < k) (hhi : k ≤ 4*n) :
+    let Y := cubicMidpointCut n
+    twiceHighDivisorWeight Y (4*n/(Y+1)) k ≠ 0 →
+      k ∈ Nat.smoothNumbers (Y+1) ∧
+      ((∃ p q r : ℕ,p.Prime ∧ q.Prime ∧ r.Prime ∧ p ≤ Y ∧ q ≤ Y ∧ r ≤ Y ∧ k=p*q*r) ∨
+        4 ≤ k.primeFactorsList.length) := by
+  intro Y hw
+  have hk := (Nat.zero_le _).trans_lt hlo
+  have hs : k ∈ Nat.smoothNumbers (Y+1) := by
+    by_contra hns
+    apply hw
+    unfold twiceHighDivisorWeight
+    refine sum_eq_zero fun d hd => ?_
+    obtain ⟨hd,hcut⟩ := mem_filter.mp hd
+    have hdiv := (Nat.mem_divisors.mp hd).1
+    have he := Nat.mul_div_cancel' hdiv
+    have hq := Nat.div_pos (Nat.le_of_dvd hk hdiv) (Nat.pos_of_mem_divisors hd)
+    have hz : ¬(cubicSmoothMoebius Y d ≠ 0 ∨ (cubicSmoothMoebius Y^2 : ArithmeticFunction ℝ) d ≠ 0) := by
+      intro h
+      have hs' := high_cubic_rows_are_smooth hq (he.le.trans hhi) hcut h
+      exact hns (he ▸ hs')
+    obtain ⟨h1,h2⟩ := not_or.mp hz
+    simp only [not_not] at h1 h2
+    rw [h1,h2,mul_zero,zero_mul,sub_zero]
+  refine ⟨hs,?_⟩
+  by_cases h4 : 4 ≤ k.primeFactorsList.length
+  · exact Or.inr h4
+  have hsmall {p : ℕ} (hp : p ∈ k.primeFactorsList) : p ≤ Y := Nat.le_of_lt_succ
+    (Nat.mem_smoothNumbers'.mp hs p (Nat.prime_of_mem_primeFactorsList hp) (Nat.dvd_of_mem_primeFactorsList hp))
+  have bound (l : List ℕ) : (∀ p ∈ l,p ≤ Y) → l.prod ≤ Y^l.length := by
+    induction l with
+    | nil => simp
+    | cons p l ih =>
+      intro hl
+      rw [List.prod_cons,List.length_cons,pow_succ,Nat.mul_comm (Y^l.length)]
+      exact Nat.mul_le_mul (hl p (List.mem_cons_self ..)) (ih fun q hq => hl q (List.mem_cons_of_mem _ hq))
+  have hlen : k.primeFactorsList.length=3 := by
+    by_contra h
+    have hle := (bound k.primeFactorsList fun _ hp => hsmall hp).trans
+      (Nat.pow_le_pow_right (show 0 < Y by omega) (show k.primeFactorsList.length ≤ 2 by omega))
+    rw [Nat.prod_primeFactorsList hk.ne'] at hle
+    have hcube := (cubic_midpoint_thresholds n hY).1
+    change Y^3 ≤ 3*n at hcube
+    have h3 : 3*Y^2 ≤ Y^3 := by rw [pow_succ Y 2,Nat.mul_comm (Y^2)]; exact Nat.mul_le_mul_right _ hY
+    omega
+  obtain ⟨p,q,r,hl⟩ := List.length_eq_three.mp hlen
+  have hmem {x : ℕ} (hx : x ∈ [p,q,r]) : x ∈ k.primeFactorsList := hl ▸ hx
+  have hp := hmem (show p ∈ [p,q,r] by simp)
+  have hq := hmem (show q ∈ [p,q,r] by simp)
+  have hr := hmem (show r ∈ [p,q,r] by simp)
+  refine Or.inl ⟨p,q,r,Nat.prime_of_mem_primeFactorsList hp,Nat.prime_of_mem_primeFactorsList hq,
+    Nat.prime_of_mem_primeFactorsList hr,hsmall hp,hsmall hq,hsmall hr,?_⟩
+  simpa only [hl,List.prod_cons,List.prod_nil,mul_one,mul_assoc] using (Nat.prod_primeFactorsList hk.ne').symm
+
 /-- At the actual cube-root cutoff, only the full divisor contributes to
 a smooth triple in the midpoint intervals. The product lies on the lower side. -/
 theorem high_divisor_weight_on_smooth_triple {n p q r : ℕ}
@@ -175,8 +276,6 @@ theorem high_divisor_weight_on_smooth_triple {n p q r : ℕ}
   rw [twiceHighDivisorWeight,hset,sum_singleton,Nat.div_self hk0,smooth_moebius_value,
     smooth_moebius_power,if_pos hs,twiceSmoothTripleWeight]
   simp [hs,pow_two]
-
-#print axioms high_divisor_weight_on_smooth_triple
 
 private theorem square_moebius_at_prime {p : ℕ} (hp : p.Prime) :
     ((moebius:ArithmeticFunction ℝ)^2 : ArithmeticFunction ℝ) p= -2 := by
@@ -219,11 +318,5 @@ theorem smooth_triple_cube {p : ℕ} (hp : p.Prime) : twiceSmoothTripleWeight (p
     _root_.RHTower.moebius_mul_apply_prime_pow _ hp (by decide)]
   norm_num [intCoe_apply,moebius_apply_prime_pow hp (by decide : (3:ℕ)≠0),
     moebius_apply_prime_pow hp (by decide : (2:ℕ)≠0)]
-
-#print axioms high_cubic_rows_are_smooth
-#print axioms smooth_prime_triple_divisor
-#print axioms smooth_triple_distinct
-#print axioms smooth_triple_repeated
-#print axioms smooth_triple_cube
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

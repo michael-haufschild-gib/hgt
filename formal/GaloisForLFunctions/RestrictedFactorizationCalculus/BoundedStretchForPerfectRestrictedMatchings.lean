@@ -272,7 +272,7 @@ private theorem completed_law {F : ℕ → ℕ} (law : seedLaw F) (n : ℕ) :
   · obtain ⟨b,t,hn,st,odd⟩ := canonical_layer sq
     subst n
     have pair {m z : ℕ} (first : G m=z) (back : G z=m) (edge : GlobalDyadicOneTwoRel m z) (width : z ≤ 8*m) :
-        G (G m)=m ∧ (G m=m ∨ GlobalDyadicOneTwoRel m (G m)) ∧ (Squarefree m → 1<m → G m ≠ m) ∧ G m ≤ 8*m := by
+        G (G m)=m ∧ (G m=m ∨ GlobalDyadicOneTwoRel m (G m)) ∧ (Squarefree m → 1< m → G m ≠ m) ∧ G m ≤ 8*m := by
       rw [first]; exact ⟨back,Or.inr edge,fun _ _ => endpoints_differ edge,width⟩
     by_cases ray : onRay t
     · obtain ⟨j,rfl⟩ := ray
@@ -502,6 +502,4 @@ theorem perfect_restricted_matching_with_bounded_stretch :
   exact ⟨G,fun n => (pair n).1,fun n => (pair n).2.1,perfect,fun n => (pair n).2.2.2,rare,
     fun _ ep => unpaid_of_few_long_exchanges perfect rare ep⟩
 
-#print axioms perfect_restricted_matching_with_bounded_stretch
-#print axioms density_one_matching_preserving_two
 end GaloisForLFunctions.RestrictedFactorizationCalculus

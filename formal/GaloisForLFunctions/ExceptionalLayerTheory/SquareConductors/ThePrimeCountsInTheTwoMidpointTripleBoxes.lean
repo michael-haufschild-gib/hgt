@@ -328,11 +328,13 @@ theorem upper_prime_triple_volume {s : ℝ} (hs : 1 ≤ s) :
   have hx0 := zero_lt_one.trans_le hx.1
   have hv1 := (one_le_div hx0).mpr hx.2
   have hvs := div_le_self (zero_le_one.trans hs) hx.1
+  dsimp only
   rw [←upper_volume_column hv1 hvs]
   apply intervalIntegral.integral_congr
   intro y hy
   rw [uIcc_of_le hs] at hy
   have hxy := one_le_mul_of_one_le_of_one_le hx.1 hy.1
+  dsimp only
   rw [min_eq_right (div_le_self (zero_le_one.trans hs) hxy),div_div]
 
 #print axioms upper_prime_triple_volume
@@ -397,6 +399,7 @@ theorem lower_prime_triple_volume {s : ℝ} (hs : 0<s) (hs1 : s ≤ 1) :
     have hxy := mul_pos hx0 (hs.trans_le hy.1)
     have he := mul_le_one₀ hx.2 (hs.trans_le hy.1).le hy.2
     have hlo := (le_div_iff₀ hxy).mpr (mul_le_of_le_one_right hs.le he)
+    dsimp only
     rw [max_eq_right (le_min hs1 hlo),div_div]
   rw [intervalIntegral.integral_congr hinner,
     intervalIntegral.integral_sub intervalIntegrable_const hc.intervalIntegrable,
@@ -529,7 +532,7 @@ private theorem triple_log_error {a b y : ℝ} (ha : 0<a) (hab : a ≤ b) (hy : 
         have qq := abs_le.mp (hbase hq).2
         have rr := abs_le.mp (hbase hr).2
         constructor <;> linarith only [pp.1,pp.2,qq.1,qq.2,rr.1,rr.2]
-      rw [show f p q r*W p q r/L-f p q r=f p q r*(W p q r-L)/L by field_simp; ring,
+      rw [show f p q r*W p q r/L-f p q r=f p q r*(W p q r-L)/L by field_simp,
         abs_div,abs_mul,abs_of_pos hL]
       apply (div_le_div_of_nonneg_right ((mul_le_mul hb hw (abs_nonneg _) zero_le_one).trans_eq
         (one_mul C)) hL.le).trans
@@ -577,7 +580,7 @@ theorem priced_prime_triple_box_tendsto {a b : ℝ} (ha : 1/2 ≤ a) (hab : a �
       atTop (nhds (primeTripleBoxVolume a b t)) := by
   let C := |Real.log a|+|Real.log b|
   have hρ : Tendsto (fun y : ℝ => Real.log y/y) atTop (nhds 0) := by
-    simpa only [Real.rpow_one] using (Real.isLittleO_log_rpow_atTop (by norm_num : (0:ℝ)<1)).tendsto_div_nhds_zero
+    simpa only [Real.rpow_one] using (isLittleO_log_rpow_atTop (by norm_num : (0:ℝ)<1)).tendsto_div_nhds_zero
   have hL : Tendsto (fun y : ℝ => C/Real.log y) atTop (nhds 0) :=
     tendsto_const_nhds.div_atTop Real.tendsto_log_atTop
   have hbound : Tendsto (fun y : ℝ => (C/Real.log y)*27+(Real.log y/y)^2*3) atTop (nhds 0) := by
@@ -661,5 +664,30 @@ theorem integer_prime_triple_surplus_tendsto :
 #print axioms priced_prime_triple_box_tendsto
 #print axioms sharp_prime_triple_surplus_tendsto
 #print axioms integer_prime_triple_surplus_tendsto
+
+/-- The excess of lower prime triples eventually exceeds each fixed
+multiple of each power strictly below one. -/
+theorem prime_triple_surplus_exceeds_power {t : ℝ} (ht : t < 1) (A : ℝ) :
+    ∀ᶠ n : ℕ in atTop, A*(n:ℝ)^t < sharpPrimeTripleSurplus ((3*(n:ℝ))^(1/3:ℝ)) := by
+  have hx : Tendsto (fun n : ℕ => 3*(n:ℝ)) atTop atTop :=
+    Filter.Tendsto.const_mul_atTop (by norm_num) tendsto_natCast_atTop_atTop
+  have hlog := ((isLittleO_log_rpow_rpow_atTop 2 (sub_pos.mpr ht)).tendsto_div_nhds_zero.comp hx).const_mul
+    (A*(3:ℝ)^(1-t))
+  simp only [mul_zero] at hlog
+  filter_upwards [hlog.eventually_lt integer_prime_triple_surplus_tendsto lower_triple_surplus_constant_pos,
+    eventually_ge_atTop 1] with n h hn
+  have hn0 : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
+  have hscale : A*(3:ℝ)^(1-t)*(Real.log (3*(n:ℝ))^(2:ℝ)/(3*(n:ℝ))^(1-t)) =
+      Real.log (3*(n:ℝ))^2/(n:ℝ)*(A*(n:ℝ)^t) := by
+    rw [Real.rpow_two,Real.mul_rpow (by norm_num : (0:ℝ) ≤ 3) hn0.le,
+      Real.rpow_sub hn0,Real.rpow_one]
+    field_simp [(Real.rpow_pos_of_pos (by norm_num : (0:ℝ)<3) (1-t)).ne',
+      (Real.rpow_pos_of_pos hn0 t).ne']
+  change A*(3:ℝ)^(1-t)*(Real.log (3*(n:ℝ))^(2:ℝ)/(3*(n:ℝ))^(1-t)) < _ at h
+  rw [hscale] at h
+  by_contra! hle
+  exact h.not_ge (mul_le_mul_of_nonneg_left hle (div_nonneg (sq_nonneg _) hn0.le))
+
+#print axioms prime_triple_surplus_exceeds_power
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -138,12 +138,4 @@ theorem finite_stable (v : ℝ) (G : ℝ≥0) :
       hev.mono fun p hp => fun hs => (not_lt_of_ge hp.le) ((stable_iff _ _ _).mp hs)
     simpa using (Filter.eventually_cofinite.mp hc)
 
-#print axioms rate_gap
-#print axioms exponent_limit
-#print axioms scaled_gap_limit
-#print axioms uniform_margin
-#print axioms all_stable
-#print axioms critical_prime_modes
-#print axioms explicit_cutoff
-#print axioms finite_stable
 end GaloisForLFunctions.OscillatorHeating.PrimeModes

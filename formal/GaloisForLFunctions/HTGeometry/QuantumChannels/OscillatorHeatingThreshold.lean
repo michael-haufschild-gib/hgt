@@ -166,10 +166,4 @@ theorem critical_drift (w g k : ℝ) (K U S : ℝ) :
   rw [he]
   positivity
 
-#print axioms growth_gap
-#print axioms roots
-#print axioms real_dispersion_sign
-#print axioms spectral_stability
-#print axioms rate_projection
-#print axioms critical_drift
 end GaloisForLFunctions.OscillatorHeating

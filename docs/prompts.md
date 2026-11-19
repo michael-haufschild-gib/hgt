@@ -192,6 +192,41 @@ The goal is met when route QIC is fully closed and formalized unconditionally in
 - https://arxiv.org/abs/2611.07571
 - https://arxiv.org/abs/2611.07186
  
+13x Karamata
+- https://arxiv.org/abs/2611.24340
+- https://arxiv.org/abs/2608.08337
+- https://arxiv.org/abs/2605.25591
+- https://arxiv.org/abs/2603.08959
+  
+14 uncertainty
+- https://arxiv.org/abs/2611.24604
+- https://arxiv.org/abs/2611.24538
+- https://arxiv.org/abs/2611.24374
+- https://arxiv.org/abs/2611.23922
+- https://arxiv.org/abs/2611.23709
+
+15x beurling
+- https://arxiv.org/abs/2611.24046
+- https://arxiv.org/abs/2611.18900
+- https://arxiv.org/abs/2611.17392
+- https://arxiv.org/abs/2611.03356
+- https://arxiv.org/abs/2610.42022
+
+16x stirling
+- https://arxiv.org/abs/2611.21429
+- https://arxiv.org/abs/2611.18873
+- https://arxiv.org/abs/2611.11194
+- https://arxiv.org/abs/2610.35783
+- https://arxiv.org/abs/2610.34775
+
+17 Plancherel
+- https://arxiv.org/abs/1607.06150
+- https://arxiv.org/abs/2611.11593
+- https://arxiv.org/abs/2611.09555
+- https://arxiv.org/abs/2611.05863
+- https://arxiv.org/abs/2611.00445
+- https://arxiv.org/abs/2610.40099
+- https://arxiv.org/abs/2610.37750
 
 ## apply external paper to corpus experiment
 
@@ -199,11 +234,11 @@ task:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/2611.17965
-- https://arxiv.org/abs/2611.17260
-- https://arxiv.org/abs/2611.16022
-- https://arxiv.org/abs/2611.23133
-- https://arxiv.org/abs/2611.22194
+- https://arxiv.org/abs/2611.21429
+- https://arxiv.org/abs/2611.18873
+- https://arxiv.org/abs/2611.11194
+- https://arxiv.org/abs/2610.35783
+- https://arxiv.org/abs/2610.34775
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -224,7 +259,11 @@ use the search tool for the lean corpus to check what already was formalized so 
 
 put new code into the relevant subfolders to not bloat RHTower and HTGeometry folders even more
 
-goal is met when 250 significant contributions to our lean corpus and research have been made. focus on formal/GaloisForLFunctions/ExclusionOfTheCriticalState and formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri but not exclusively on them.
+goal is met when 250 significant contributions to our lean corpus and research have been made. focus on providing solutions answers insights to the problems in docs/reports/review-1911/todo.md
+
+do not edit the todo.md
+
+formal/GaloisForLFunctions/ExclusionOfTheCriticalState and formal/GaloisForLFunctions/ArithmeticCastelnuovoSeveri but not exclusively on them.
 
 
 ## computations
@@ -483,10 +522,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 a while ago we did create these documents:
-- docs/reports/review-1811/walls-ledger.md
-- docs/reports/review-1811/route-obstacles.md
-- docs/reports/review-1811/route-unification-ledger.md
-- docs/reports/review-1811/obstacles-summary.md
+- docs/reports/review-1911/walls-ledger.md
+- docs/reports/review-1911/route-obstacles.md
+- docs/reports/review-1911/route-unification-ledger.md
+- docs/reports/review-1911/obstacles-summary.md
   
 read also but do not edit:
 - docs/reports/rh-current-frontier-map.md
@@ -511,9 +550,10 @@ write new reports from scratch to reflect the current status quo and frontier of
    2.14. Design a research programme aiming at closing the RH proof route ACS, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
    2.15. Design a research programme aiming at closing the RH proof route ZCG, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
    2.16. Design a research programme aiming at closing the RH proof route ECS, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
-   2.17. Design a research programme aiming at closing the RH proof route ECS, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
-   2.18 What is the one big question the is less hard than proving RH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
-   2.19 Ideate based on everything you have understood about RH, the differente routes in our lean corpus, the advancements and nogos we have proven surpassing external SOTA research, and knowing that likely new mathematics are needed and there is no shortcut and no known mathematical mechanism will deliver the RH proof as otherwise somebody would have found it already, give it your best shot: what is the most likely RH proof route you see - regardless of whether it is already a route we follow or completely new or a "frankenstein"? describe it in form of a research programme with its proof mechanism, steps, possible failures and what these failures would teach us.  
+   2.17. Design a research programme aiming at closing the RH proof route PM, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.
+   2.18. Design a research programme aiming at proving the 5/6 quasiRH bound, what it would be like, what criteria it must meet, what questions it must answer, what tools it aims to develop, what objects and language and mechanisms it must be built on or would aim to discover.   
+   2.19 What is the one big question the is less hard than proving RH outright and would, when answered, bring a real breakthrough in our research because it may kill several routes, establish a new route, or solve a hard mathematical obstacle blocking several routes?
+   2.20 Ideate based on everything you have understood about RH, the differente routes in our lean corpus, the advancements and nogos we have proven surpassing external SOTA research, and knowing that likely new mathematics are needed and there is no shortcut and no known mathematical mechanism will deliver the RH proof as otherwise somebody would have found it already, give it your best shot: what is the most likely RH proof route you see - regardless of whether it is already a route we follow or completely new or a "frankenstein"? describe it in form of a research programme with its proof mechanism, steps, possible failures and what these failures would teach us.  
 3. based on that an updated wall-ledger where walls have changed, were solved, or new walls were added.
 4. also provide a new version of the route-unification-ledger.md which shows which routes are just different faces of the same problem similar to the wall-ledger unifies all walls into 3 core problem families.
 
@@ -524,7 +564,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-place the reports in folder docs/reports/review-1911/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-1911/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 make sure to validate every claim. we have seen in previous rounds you simply restating old reports without actually validating that the old report facts were still valid. 
@@ -788,18 +828,23 @@ Goal is met when a solution for B13 is found and formalized.
 
 ## question paper
 
-read and understand fully: docs/reports/review-1311/obstacles-summary.md
+docs/reports/review-1911/todo.md asks 18 questions / asks for 18 proofs.
 
-under "## 2.21 The one big question: the first selective sign (B192)" it asks a question.
+your task: work through each question/proof one by one, answer the question, find a complete solution for it and unconditionally formalize the answer and its implications and collaries as paper proofs ready for another ai agent to formalize in lean.
 
-your task: answer the question, find a complete solution for it and unconditionally formalize the answer and its implications and collaries as paper proofs ready for another ai agent to formalize in lean.
+work backwards, start with question 18, then 17, then 16, ...
 
 We are not interested in estimates, criterias what the answer could be like, what is not the answer, busywork - we accept only a full and final answer/solution to the posed question.
 
-**Rules:**
+**Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ... 
-2. No computations
-3. Paper proof only, but complete and understandable in a pipeline card, ready for another coding agent to pick up and formalize in lean.
+2. Always build in the foreground, one build process per agent at the time (other agents can also build in parallel to you).
+3. No computations
+4. Always use  lake env lean \<filmodule> for the final audit. Use --old flag to not unncessarily rebuild unchanged modules. Do not forget to wire new modules into the umbrellas.
+5. do not run full builds. check ins that are needed, wirefinished modules into their umbrella but do not run full umbrella builds.
+6. make sure you don't leave staleclean up after yourself.
+7. Optimize lean code. No raising heartbeat hacks.
+8. Add helpful, crisp, not verbose comments to lean code to make clear what the code is about.
 
 Make good use of the search tool for our lean corpus.
 

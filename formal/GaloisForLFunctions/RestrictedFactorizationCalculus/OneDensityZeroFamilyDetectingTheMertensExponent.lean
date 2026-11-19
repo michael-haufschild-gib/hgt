@@ -512,6 +512,4 @@ theorem a_density_zero_family_of_exchanges_detects_every_mertens_power :
     have hg := detect_from_witnesses ev (fun j => (Nat.zero_le _).trans_lt (spec j).gap_after) (fun j => (lower j).2)
     exact ⟨iff_of_false hf h,iff_of_false hg h⟩
 
-#print axioms a_density_zero_family_of_exchanges_detects_every_mertens_power
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

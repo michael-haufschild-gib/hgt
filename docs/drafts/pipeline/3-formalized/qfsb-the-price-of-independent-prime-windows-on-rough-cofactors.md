@@ -1,6 +1,6 @@
 # The price of independent prime windows on rough cofactors
 
-- **Stage** 1-in-progress
+- **Stage** 3-formalized
 
 At a frozen sieve wall \(y\ge1\), choose a set \(S\) of rough squarefree cofactors through \(Z\). For each \(m\in S\) choose its own subinterval \(y\le l_m\le u_m\le\lfloor X/m\rfloor\). Keep the ordinary primes in this window with their logarithmic weights and allow independent signed changes bounded by \(\Lambda\) on its proper powers. Subtract the original floor increment \(y(\lfloor u_m/y\rfloor-\lfloor l_m/y\rfloor)\).
 
@@ -11,7 +11,7 @@ For each \(\Theta<s<1\), the total absolute value of these centered window readi
 \]
 Here \(\Theta\) is the zeta zero abscissa. At each endpoint \(|\vartheta(t)-t|\ll_s t^s\); the total variation allowed on proper powers relative to ordinary primes costs at most \(\psi(u_m)-\vartheta(u_m)\ll\sqrt{u_m}\). The two floor residues differ by less than \(y\). Summing \(m^{-s}\) proves the assertion without a sign estimate between cofactors. At the log-square cutoff the normalized bound tends to zero uniformly for \(y\le Z\le X/y\): the first term costs \(O_s((X/Z)^{s-1})\) relative to \(X\); the second costs at most the density of rough integers through \(Z\), which tends uniformly to zero.
 
-The finite estimate is formalized in `absolute_price_of_independent_quotient_subwindows`. [IndependentPrimeWindowsOnRoughCofactors.lean](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/IndependentPrimeWindowsOnRoughCofactors.lean)
+The finite estimate is formalized in `absolute_price_of_independent_quotient_subwindows`. Uniform decay for every diverging wall follows from [vanishing_absolute_price_of_all_rough_prime_subwindows](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/TheSmoothProportionAtEveryInteriorQuotientCut.lean). [IndependentPrimeWindowsOnRoughCofactors.lean](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/IndependentPrimeWindowsOnRoughCofactors.lean)
 
 **Sharp boundary for polynomially many windows.** Fix \(a>0\), take \(v=T^a\), \(X=T\lceil2v\rceil\), \(y=b(X)\), and retain prime cofactors in \(S=(v,2v]\). Each cofactor can use the common physical window \((y,T]\). Write \(E(t)=\vartheta(t)-t\). For ordinary primes the signed sum is exactly
 \[

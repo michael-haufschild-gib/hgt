@@ -36,14 +36,17 @@ theorem quotient_cells_with_unit_rough_prefix (a : ArithmeticFunction ℝ) (y T 
     have unit : 1 ≤ T/q := (Nat.le_div_iff_mul_le pos).mpr (by simpa only [Nat.one_mul] using hi.2)
     simp only [f,rough_prefix_through_the_unit unit ((Nat.le_of_lt_succ floor).trans range),mul_one]
   have part : Icc 1 T \ Icc 1 k=Ioc k T := by
-    ext n; simp only [Finset.mem_sdiff,mem_Icc,mem_Ioc]; omega
+    ext n
+    simp only [Finset.mem_sdiff,mem_Icc,mem_Ioc]
+    exact ⟨fun ⟨ht,hn⟩ => ⟨lt_of_not_ge (fun h => hn ⟨ht.1,h⟩),ht.2⟩,
+      fun ⟨hk,ht⟩ => ⟨⟨(Nat.zero_le k).trans_lt hk,ht⟩,fun h => hk.not_ge h.2⟩⟩
   rw [coefficient_head_as_quotient_sum,eq,←part,sum_sdiff_eq_sub (Icc_subset_Icc_right (Nat.div_le_self T (J+1)))]
   change (∑ q ∈ Icc 1 k,f q)+((∑ q ∈ Icc 1 T,f q)-(∑ q ∈ Icc 1 k,f q))=_
   ring
 
 private theorem prime_interval {y k T : ℕ} (h : k ≤ T) :
     (∑ q ∈ Ioc k T,roughOrdinaryPrimeWeight y q)=
-      Chebyshev.theta T-Chebyshev.theta (min T (max y k)) := by
+      Chebyshev.theta T-Chebyshev.theta (min T (max y k) : ℕ) := by
   rw [GaloisForLFunctions.WorldsOfTheZeroConfiguration.PrimeEdits.theta_sub_theta (min_le_left ..)]
   have sets : Ioc (min T (max y k)) T=(Ioc k T).filter (y<·) := by
     ext n; simp only [mem_filter,mem_Ioc]; omega
@@ -57,7 +60,7 @@ private theorem prime_interval {y k T : ℕ} (h : k ≤ T) :
 interval above the quotient cut, keeping both of its arithmetic walls. -/
 theorem compensating_prime_interval (y T J : ℕ) (hj : J ≤ y) :
     (∑ q ∈ Icc 1 (T/(J+1)),roughOrdinaryPrimeWeight y q*coprimeMoebiusSum (primorial y) (T/q))+
-      (Chebyshev.theta T-Chebyshev.theta (min T (max y (T/(J+1)))))=
+      (Chebyshev.theta T-Chebyshev.theta (min T (max y (T/(J+1))) : ℕ))=
       quotientReading (roughFloorCoefficient y (roughOrdinaryPrimeWeight y)) T := by
   rw [←prime_interval (Nat.div_le_self T (J+1))]
   exact quotient_cells_with_unit_rough_prefix _ y T J hj
@@ -75,7 +78,8 @@ private theorem lift_of_the_unit_before_the_prime_wall {G : ℕ → ℕ}
     intro d hd p hp
     exact Nat.mem_primesLE.mpr ⟨(Nat.le_of_dvd (mem_Icc.mp hd).1
       (Nat.dvd_of_mem_primeFactors hp)).trans ((mem_Icc.mp hd).2.trans small),Nat.prime_of_mem_primeFactors hp⟩
-  rw [smoothLiftedPrefix,seteq]
+  change (∑ d ∈ RHTower.Sieve.smoothUpTo (Nat.primesLE y) t,fixedSignedPrefix G (t/d))=_
+  rw [seteq]
   calc _ = ∑ _d ∈ Icc 1 t,(1:ℝ) := by
              apply sum_congr rfl
              intro d hd
@@ -94,7 +98,7 @@ private theorem sharp_floor_in_a_prime_window {K X : ℕ} (kp : 1 ≤ K) (size :
       Nat.mem_primesLE.mpr ⟨(Nat.mem_primesLE.mp hp).1.trans size,(Nat.mem_primesLE.mp hp).2⟩
     have eq : S=Nat.primesLE X \ Nat.primesLE K := by
       ext p
-      simp only [S,primeWindow,mem_filter,mem_sdiff,Nat.mem_primesLE,lt_iff_not_ge]
+      simp only [S,primeWindow,mem_filter,Finset.mem_sdiff,Nat.mem_primesLE,lt_iff_not_ge]
       tauto
     rw [eq,sum_sdiff_eq_sub sub]
   have pos := kp.trans size
@@ -174,6 +178,4 @@ theorem opposite_prime_window_flux_for_one_perfect_matching :
   exact abs_le.mpr ⟨by linarith only [add,(abs_le.mp cost).2,pos,th],
     by linarith only [add,(abs_le.mp cost).1,th]⟩
 
-#print axioms opposite_prime_window_flux_for_one_perfect_matching
-#print axioms compensating_prime_interval
 end GaloisForLFunctions.RestrictedFactorizationCalculus

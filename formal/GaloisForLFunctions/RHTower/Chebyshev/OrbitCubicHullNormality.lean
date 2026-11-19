@@ -166,6 +166,4 @@ theorem card_distinct_sums (n k : ℕ) :
     Equiv.subtypeEquivRight fun p => semigroup_exact n k p
   rw [Nat.card_congr e,ehrhart]
 
-#print axioms semigroup_exact
-#print axioms card_distinct_sums
 end RHTower.OrbitCubic.IntegerHull.Ehrhart

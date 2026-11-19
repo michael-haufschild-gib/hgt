@@ -210,6 +210,4 @@ theorem arbitrarily_large_donor_mass {p J : ℕ} (hp : p.Prime) (hJ : 0<J) (V : 
          _ = ∑ i ∈ I,C*(1/((i:ℝ)+1)) := mul_sum ..
          _ ≤ _ := sum_le_sum fun i _ => row i
 
-#print axioms arbitrarily_large_donor_mass
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

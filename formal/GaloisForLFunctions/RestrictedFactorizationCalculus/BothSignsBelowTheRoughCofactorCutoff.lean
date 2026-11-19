@@ -467,12 +467,4 @@ theorem negative_excursion_in_one_of_the_two_centered_readings (D : ℕ) (B : �
   change min L R ≤ _
   linarith only [min_le_left L R,min_le_right L R,cost,total]
 
-#print axioms second_order_scale_of_both_rough_signs
-#print axioms exact_second_order_scale_of_the_smooth_main_term
-#print axioms negative_excursion_in_one_of_the_two_centered_readings
-#print axioms exponential_excess_below_a_polynomial_rough_cut
-#print axioms both_signs_below_a_polynomial_rough_cofactor_cut
-#print axioms both_signs_with_unit_rough_cofactor
-#print axioms smooth_main_term_exceeds_every_square_root_log_price
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

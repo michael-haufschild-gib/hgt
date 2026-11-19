@@ -163,6 +163,4 @@ theorem uniform_density_outside_sparse_divisors (family : Set (Finset ℕ))
   rw [show 1/(4*(Q:ℝ))*X=(X:ℝ)/Q/4 by ring]
   linarith only [hc,hg,hScost,hRcost,hscale]
 
-#print axioms uniform_density_outside_sparse_divisors
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

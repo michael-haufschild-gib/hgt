@@ -79,8 +79,6 @@ theorem large_midpoint_prime_block {t ε : ℝ} (ht : 1/2 ≤ t) (ht1 : t < 1) (
   rw [heq]
   exact (abs_sub _ _).trans ((add_le_add hall he').trans_eq (by ring))
 
-#print axioms large_midpoint_prime_block
-
 /-- Summing dyadic blocks whose individual bound is L costs at most a
 fixed multiple of L B^σ for any positive σ. -/
 private theorem dyadic_terminal_bound {σ : ℝ} (hσ : 0 < σ) :
@@ -225,8 +223,6 @@ theorem large_midpoint_prime_shell {t ε : ℝ} (ht : 1/2 ≤ t) (ht1 : t < 1) (
     dsimp only [C]
     linarith only [hh,hB',mul_nonneg (mul_nonneg hK0 hD) (Real.rpow_nonneg (by norm_num : (0:ℝ)≤2) η)]
 
-#print axioms large_midpoint_prime_shell
-
 /-- After moving the prime cutoff through the wider shell, the remaining
 joint cofactor price retains its full factorial center at the target power. -/
 theorem midpoint_after_large_ordinary_prime_shell {t ε : ℝ} (ht : 1/2 ≤ t) (ht1 : t < 1)
@@ -263,8 +259,6 @@ theorem midpoint_after_large_ordinary_prime_shell {t ε : ℝ} (ht : 1/2 ≤ t) 
   rw [heq]
   exact (abs_sub _ _).trans ((add_le_add hh hlow).trans_eq (by ring))
 
-#print axioms midpoint_after_large_ordinary_prime_shell
-
 /-- The linear center of the unrestricted cofactor price at the wider
 prime cut is independent of the arithmetic of the center n. -/
 theorem large_prime_shell_linear_center {b ε : ℝ} (hb : 1/2 ≤ b) (hb1 : b < 1) (he : 0 < ε) :
@@ -300,8 +294,5 @@ theorem large_prime_shell_upper_spectrum {b : ℝ} (hb : 1/2 ≤ b) (hb1 : b < 1
   · have h := abs_le.mp (hA hn (le_refl ⌊(n:ℝ)^(reflectedPrimeShellExponent b)⌋₊))
     rw [show b+(t-b)=t by ring] at h
     linarith only [h.2,hK n hn]
-
-#print axioms large_prime_shell_linear_center
-#print axioms large_prime_shell_upper_spectrum
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

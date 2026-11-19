@@ -125,8 +125,6 @@ theorem reflected_shell_reciprocal_harmonics {t ε : ℝ} (ht : 1/2 ≤ t) (ht1 
   calc _ ≤ P η*P (t+2*η) := mul_le_mul hlogs (mono hpert) (pos _).le (pos _).le
        _ ≤ _ := by rw [mult]; exact mono (by linarith only [hη4,hη])
 
-#print axioms reflected_shell_reciprocal_harmonics
-
 private theorem real_weight_fourier_neg (s : Finset ℕ) (y w : ℕ → ℝ) (h : ℤ) :
     (∑ j ∈ s,(w j:ℂ)*fourier (-h) (y j : UnitAddCircle)) =
       star (∑ j ∈ s,(w j:ℂ)*fourier h (y j : UnitAddCircle)) := by
@@ -243,7 +241,5 @@ theorem reflected_shell_mangoldt_saw {t ε : ℝ} (ht : 1/2 ≤ t) (ht1 : t < 1)
   have hfinal := hbound.trans htotal
   simpa only [HTGeometry.SmoothedSawtooth.saw,←Complex.ofReal_mul,←Complex.ofReal_sum,
     Complex.norm_real,Real.norm_eq_abs] using hfinal
-
-#print axioms reflected_shell_mangoldt_saw
 
 end GaloisForLFunctions.PrimeExponentialSums

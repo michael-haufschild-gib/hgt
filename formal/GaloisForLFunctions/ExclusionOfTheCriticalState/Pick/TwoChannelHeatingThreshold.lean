@@ -163,7 +163,4 @@ theorem two_channel_sequential_threshold (d n : ℕ) :
     have heads := (List.cons.inj e).1
     simpa only [T,readings_length] using heads
 
-#print axioms two_channel_cone
-#print axioms two_channel_adaptive_lower
-#print axioms two_channel_sequential_threshold
 end GaloisForLFunctions.ExclusionOfTheCriticalState.ProbeWalk.HeatSamples

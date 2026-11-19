@@ -96,8 +96,6 @@ theorem unitary_half_weight_even {k : ℕ} (hk : 1 < k) (hpar : Even k.primeFact
   change v=0
   linarith only [twice]
 
-#print axioms unitary_half_weight_even
-
 /-- A dominant prime-power block leaves every subset of the other blocks
 on the smaller side. -/
 theorem small_unitary_subsets_of_dominant {k p : ℕ} (hk : 1 < k) (hp : p ∈ k.primeFactors)
@@ -132,8 +130,6 @@ theorem unitary_half_weight_dominant {k p : ℕ} (hk : 1 < k) (hp : p ∈ k.prim
     (hbig : k < (p^k.factorization p)^2) :
     unitaryHalfWeight k=if k.primeFactors.erase p=∅ then 1 else 0 := by
   rw [unitaryHalfWeight,small_unitary_subsets_of_dominant hk hp hbig,sum_powerset_neg_one_pow_card]
-
-#print axioms unitary_half_weight_dominant
 
 /-- An integer supported on a single prime has unit weight, including all
 proper powers of that prime. -/
@@ -185,9 +181,6 @@ theorem unitary_half_weight_balanced_triple {k : ℕ} (hk : 1 < k) (hthree : k.p
   rw [hthree]
   norm_num [sum_range_succ]
 
-#print axioms unitary_half_weight_singleton
-#print axioms unitary_half_weight_balanced_triple
-
 /-- Every surviving integer other than a pure prime power has odd support
 of size at least three, with all prime-power blocks strictly below its square root. -/
 theorem unitary_half_weight_support {k : ℕ} (hk : 1 < k) (hw : unitaryHalfWeight k ≠ 0)
@@ -218,8 +211,6 @@ theorem unitary_half_weight_support {k : ℕ} (hk : 1 < k) (hw : unitaryHalfWeig
     rw [pow_two] at heq
     exact hn (Nat.eq_of_mul_eq_mul_left (pow_pos (Nat.prime_of_mem_primeFactors hp).pos _)
       (heq.trans hprod.symm))
-
-#print axioms unitary_half_weight_support
 
 /-- Every small subset omits at least one block. If every block is below
 the square root, it must omit at least two. -/
@@ -318,8 +309,5 @@ theorem small_unitary_pair_rigidity (w : ℕ → ℤ) (hunit : w 1=1) :
   · rintro ⟨h,_⟩ p q a hp hq ha hlt
     rw [small_unitary_pair_price w hp hq ha hlt,hunit,h p a hp ha]
     norm_num
-
-#print axioms small_unitary_pair_price
-#print axioms small_unitary_pair_rigidity
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -151,9 +151,4 @@ theorem area_loss (n : ℕ) :
   dsimp only [m,index]
   ring
 
-#print axioms convex_coordinates
-#print axioms square_decomposition
-#print axioms integer_hull_exact
-#print axioms primitive_boundary
-#print axioms area_loss
 end RHTower.OrbitCubic.IntegerHull

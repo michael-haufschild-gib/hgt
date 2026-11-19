@@ -50,7 +50,7 @@ theorem vanishing_absolute_price_of_all_rough_prime_subwindows {ε : ℝ} (ep : 
   have raw := price y X Z yp S nsub l u supported a dom fix
   have cap := (Nat.cast_le.mpr (card_le_card sub)).trans (density Z yz)
   have room' : (y:ℝ)*Z ≤ X := by exact_mod_cast room
-  have xpos : 0<X := (Nat.mul_pos yp (yp.trans_le yz)).trans_le room
+  have xpos : 0<X := (Nat.mul_pos yp (yp.trans yz)).trans_le room
   have x0 : 0<(X:ℝ) := Nat.cast_pos.mpr xpos
   have crossing := Real.rpow_le_rpow (mul_nonneg (Nat.cast_nonneg y) (Nat.cast_nonneg Z)) room' d.le
   rw [Real.mul_rpow (Nat.cast_nonneg y) (Nat.cast_nonneg Z)] at crossing
@@ -96,7 +96,7 @@ private theorem smooth_rounding_per_cofactor {y Z X m : ℕ} (yp : 0<y) (zp : 0<
       by linarith only [exactPrice,Nat.cast_nonneg (α := ℝ) (n%y)],by linarith only [exactPrice,residue]⟩
   have base : z*((Z:ℝ)/m)=(X:ℝ)/m := by
     dsimp only [z]
-    field_simp [zpos.ne', (Nat.cast_pos.mpr mp : (0:ℝ)<m).ne'] <;> ring
+    field_simp [zpos.ne', (Nat.cast_pos.mpr mp : (0:ℝ)< m).ne'] <;> ring
   have low := (mul_le_mul_of_nonneg_left (Int.floor_le ((Z:ℝ)/m)) z0).trans_eq base
   have high := mul_le_mul_of_nonneg_left (Int.lt_floor_add_one ((Z:ℝ)/m)).le z0
   rw [base] at high
@@ -165,7 +165,7 @@ theorem quantitative_smooth_profile_at_every_interior_cut {s : ℝ} (strip : RHT
   refine ⟨C,c0,fun y Z X yp yz room a dom fix => ?_⟩
   let S := RoughReading.freeSet y Z
   let k := X/Z
-  have zp := yp.trans_le yz
+  have zp : 0<Z := (show 0<y from yp).trans_le yz
   have yk : y ≤ k := (Nat.le_div_iff_mul_le zp).mpr room
   have bounds (m : ℕ) (hm : m ∈ S) : y ≤ k ∧ k ≤ X/m ∧ X/m ≤ X/m := by
     obtain ⟨mp,mz⟩ := mem_Icc.mp (mem_filter.mp hm).1
@@ -188,7 +188,7 @@ theorem raw_prime_profile_at_every_interior_cut {ε : ℝ} (ep : 0<ε) :
   intro Z X yz room a dom fix
   let S := RoughReading.freeSet y Z
   let k := X/Z
-  have zp := yp.trans_le yz
+  have zp : 0<Z := (show 0<y from yp).trans_le yz
   have yk : y ≤ k := (Nat.le_div_iff_mul_le zp).mpr room
   have admissible (m : ℕ) (hm : m ∈ S) : y ≤ k ∧ k ≤ X/m ∧ X/m ≤ X/m := by
     obtain ⟨mp,mz⟩ := mem_Icc.mp (mem_filter.mp hm).1
@@ -201,8 +201,4 @@ theorem raw_prime_profile_at_every_interior_cut {ε : ℝ} (ep : 0<ε) :
   have fit := room'.trans_eq unify
   exact (raw_price_from_centered_subwindows yp zp room a).trans (by linarith only [fit,price])
 
-#print axioms vanishing_absolute_price_of_all_rough_prime_subwindows
-#print axioms exact_floor_profile_at_an_interior_cut
-#print axioms quantitative_smooth_profile_at_every_interior_cut
-#print axioms raw_prime_profile_at_every_interior_cut
 end GaloisForLFunctions.RestrictedFactorizationCalculus

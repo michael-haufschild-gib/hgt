@@ -152,8 +152,4 @@ theorem weyl_square_closure (f : ℂ[X]) :
   · intro hf
     exact ⟨_,by rw [hd]; omega,rfl⟩
 
-#print axioms canonical_aeval_injective
-#print axioms highest_commutator
-#print axioms weyl_top
-#print axioms weyl_square_closure
 end GaloisForLFunctions.PolynomialJump

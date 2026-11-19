@@ -187,9 +187,4 @@ theorem ordinary_prime_readings_from_the_full_prefix (v : ℕ → ℝ) (hv : Mon
   change _ ≤ H*Real.sqrt X*(3*Real.log X/2+K)
   exact tri.trans ((add_le_add err (mul_le_mul_of_nonneg_right (cap X le_rfl) lx)).trans_eq (by ring))
 
-#print axioms ordinary_prime_readings_from_the_full_prefix
-#print axioms ordinary_prime_charge_as_a_quotient_sum
-#print axioms ordinary_prime_reading_on_smaller_frozen_rows
-#print axioms critical_full_prefix_from_the_ordinary_prime_reading
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

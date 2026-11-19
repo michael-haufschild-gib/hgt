@@ -121,8 +121,4 @@ theorem unavoidable_error (j : Fin 4) (estimate : ℝ) :
   rw [hc]
   linarith only [le_abs_self (estimate- -gain j),lt_of_not_ge h]
 
-#print axioms decode_exact
-#print axioms four_shot_error
-#print axioms exact_coordinate_gain
-#print axioms unavoidable_error
 end GaloisForLFunctions.ExclusionOfTheCriticalState.CubicRecovery.Design.Minimax

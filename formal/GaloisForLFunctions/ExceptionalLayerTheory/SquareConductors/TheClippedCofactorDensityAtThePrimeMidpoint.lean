@@ -84,6 +84,32 @@ private theorem length_height (n P v : ℕ) :
   simp only [reflectedCofactorLength,clippedRay,Nat.cast_mul,Nat.cast_ofNat,mul_div_assoc,max_def]
   split_ifs <;> constructor <;> linarith only [*,Nat.cast_nonneg (α:=ℝ) P]
 
+private theorem clipped_ray_motion {m n : ℕ} (hm : m ≤ n) (k P v : ℕ) :
+    0 ≤ clippedRay (k*n) P v-clippedRay (k*m) P v ∧
+    clippedRay (k*n) P v-clippedRay (k*m) P v ≤ (k:ℝ)*(((n:ℝ)-m)/v) := by
+  have h := div_le_div_of_nonneg_right (Nat.cast_le.mpr hm : (m:ℝ) ≤ n) (Nat.cast_nonneg (α:=ℝ) v)
+  have hk := mul_le_mul_of_nonneg_left h (Nat.cast_nonneg (α:=ℝ) k)
+  simp only [clippedRay,Nat.cast_mul,mul_div_assoc,sub_div,max_def]
+  split_ifs <;> constructor <;> linarith only [*,hk]
+
+/-- Motion of the three clipped lengths with a fixed cofactor and prime cut. -/
+theorem reflected_cofactor_length_motion {m n : ℕ} (hm : m ≤ n) (Q v : ℕ) :
+    |reflectedCofactorLength n Q v-reflectedCofactorLength m Q v| ≤ 6*(((n:ℝ)-m)/v) := by
+  have h4 := clipped_ray_motion hm 4 Q v
+  have h3 := clipped_ray_motion hm 3 Q v
+  have h2 := clipped_ray_motion hm 2 Q v
+  norm_num only [Nat.cast_ofNat] at h4 h3 h2
+  rw [reflectedCofactorLength,reflectedCofactorLength,abs_le]
+  constructor <;> linarith only [h4.1,h4.2,h3.1,h3.2,h2.1,h2.2]
+
+/-- Absolute size of one signed clipped length. -/
+theorem reflected_cofactor_length_bound (n Q v : ℕ) :
+    |reflectedCofactorLength n Q v| ≤ 6*((n:ℝ)/v) := by
+  have h := reflected_cofactor_length_motion (Nat.zero_le n) Q v
+  have hz : reflectedCofactorLength 0 Q v=0 := by
+    simp [reflectedCofactorLength,clippedRay,Nat.cast_nonneg (α:=ℝ) Q]
+  simpa only [hz,Nat.cast_zero,sub_zero] using h
+
 /-- Cancellation of all three harmonic endpoint terms in the lattice sum. -/
 theorem clipped_lattice_density_error {m P : ℕ} (hm : 0 < m) (hP : 0 < P) :
     |reflectedLatticeLength m P-reflectedDensity*m| ≤
@@ -133,8 +159,6 @@ theorem clipped_lattice_density_error {m P : ℕ} (hm : 0 < m) (hP : 0 < P) :
     exact mul_le_mul_of_nonneg_right (le_max_left _ _) hm'.le
   · rw [min_eq_right h]
     exact hlarge.trans (mul_le_mul_of_nonneg_right (le_max_right _ _) (by positivity))
-
-#print axioms clipped_lattice_density_error
 
 private theorem length_on_divisor {n d : ℕ} (hd : d ∈ n.divisors) (P w : ℕ) :
     reflectedCofactorLength n P (d*w)=reflectedCofactorLength (n/d) P w := by
@@ -190,7 +214,35 @@ theorem primitive_clipped_density_error {n P : ℕ} (hn : 0 < n) (hp : 0 < P) :
   rw [abs_mul,mul_left_comm (max _ _)]
   exact mul_le_mul_of_nonneg_left (clipped_lattice_density_error hm hp) (abs_nonneg _)
 
-#print axioms primitive_clipped_density_error
+/-- Each divisor scale costs at most the cutoff. The full clipping error
+is bounded by the cutoff times the squarefree divisor mass. -/
+theorem primitive_clipped_density_cutoff {n P : ℕ} (hn : 0 < n) (hp : 0 < P) :
+    |primitiveCofactorLength n P-reflectedDensity*n.totient| ≤
+      max (4+|reflectedDensity|) 6 * ((P:ℝ)*squarefreeDivisorMass n) := by
+  apply (primitive_clipped_density_error hn hp).trans
+  apply mul_le_mul_of_nonneg_left _ ((by norm_num : (0:ℝ) ≤ 6).trans (le_max_right ..))
+  rw [squarefreeDivisorMass,mul_sum]
+  apply sum_le_sum
+  intro d hd
+  let m : ℝ := (n/d:ℕ)
+  have hm : 0 < m := Nat.cast_pos.mpr (Nat.div_pos (Nat.le_of_dvd hn (Nat.dvd_of_mem_divisors hd))
+    (Nat.pos_of_mem_divisors hd))
+  have hmin : min m ((P:ℝ)^2/m) ≤ P := by
+    rcases le_total m (P:ℝ) with h | h
+    · exact (min_le_left ..).trans h
+    · apply (min_le_right ..).trans ((div_le_iff₀ hm).mpr ?_)
+      simpa only [pow_two] using mul_le_mul_of_nonneg_left h (Nat.cast_nonneg (α:=ℝ) P)
+  exact (mul_le_mul_of_nonneg_left hmin (abs_nonneg _)).trans_eq (mul_comm ..)
+
+/-- A cutoff below twice the midpoint gives the unit cofactor zero length. -/
+theorem unit_reflected_cofactor_length {n P : ℕ} (hp : P ≤ 2*n) : reflectedCofactorLength n P 1=0 := by
+  have h (k : ℕ) (hk : 2 ≤ k) : P ≤ k*n := hp.trans (Nat.mul_le_mul_right n hk)
+  have ray (k : ℕ) (hk : 2 ≤ k) : clippedRay (k*n) P 1=(k:ℝ)*n-P := by
+    simp only [clippedRay,Nat.cast_one,div_one,max_eq_left (sub_nonneg.mpr (Nat.cast_le.mpr (h k hk))),
+      Nat.cast_mul]
+  rw [reflectedCofactorLength,ray 4 (by decide),ray 3 (by decide),ray 2 le_rfl]
+  push_cast
+  ring
 
 /-- At a prime center the two divisor scales are 1 and n. Throughout
 the square-root cutoff range their total clipping error is bounded. -/
@@ -208,7 +260,5 @@ theorem prime_center_clipped_density {p P : ℕ} (hp : p.Prime) (hP : 0 < P) (hs
     (le_min (Nat.cast_nonneg p) (by positivity : 0 ≤ (P:ℝ)^2/p)) zero_le_one
   have h2 := mul_le_mul (hm p) (min_le_left 1 ((P:ℝ)^2/1)) (le_min zero_le_one (by positivity)) zero_le_one
   linarith only [h1,h2]
-
-#print axioms prime_center_clipped_density
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

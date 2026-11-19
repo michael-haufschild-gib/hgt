@@ -373,10 +373,4 @@ theorem both_smooth_signs_exceed_every_square_root_log_price (D : ℕ) (B : ℝ)
   exact le.trans ((le_mul_of_one_le_right (mul_nonneg (mul_nonneg (le_max_right B 0) (Real.sqrt_nonneg H))
     (pow_nonneg log0 D)) (Real.one_le_exp (div_nonneg (mul_nonneg hc.le log0) ll))).trans (h z hz σ sign))
 
-#print axioms exponential_excess_of_each_smooth_sign
-#print axioms both_smooth_signs_exceed_every_square_root_log_price
-#print axioms exponential_excess_in_both_stopping_prime_boxes
-#print axioms both_exact_layers_exceed_the_endpoint_power
-#print axioms both_terminal_signs_exceed_the_endpoint_power
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus

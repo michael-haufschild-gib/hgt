@@ -106,9 +106,4 @@ theorem single_jump_operator_threshold (d n : ℕ) (hd : 0<d) :
     simp only [Fin.sum_univ_one,derivative_primitive,power]
   simpa only [eq] using sequential_threshold d hd n
 
-#print axioms two_jump_operator_cone
-#print axioms two_jump_compression
-#print axioms one_jump_operator_cone
-#print axioms two_jump_operator_threshold
-#print axioms single_jump_operator_threshold
 end GaloisForLFunctions.PolynomialJump.Schwartz

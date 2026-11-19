@@ -225,7 +225,4 @@ theorem unsigned_traffic_on_every_octave {γ : ℝ} (hγ : 0<γ) (hsub : γ<1) :
   rw [Real.rpow_add hx0,Real.rpow_one]
   linarith only [hrect,harea]
 
-#print axioms positive_density_of_forced_long_moves
-#print axioms unsigned_traffic_on_every_octave
-
 end GaloisForLFunctions.RestrictedFactorizationCalculus
