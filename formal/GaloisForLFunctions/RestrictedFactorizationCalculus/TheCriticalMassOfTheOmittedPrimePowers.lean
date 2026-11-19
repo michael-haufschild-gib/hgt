@@ -94,7 +94,7 @@ private theorem on_prime_square (y : ℕ) {p : ℕ} (hp : p.Prime) :
     rw [pow_two,isFree_mul_iff _ hp.ne_zero hp.ne_zero,isFree_prime,and_self]
     exact not_le
   have p2 : 1<p^2 := one_lt_pow₀ hp.one_lt (by decide)
-  have no : ¬(p^2).Prime := Nat.Prime.not_prime_pow' (by decide : 1<2)
+  have no : ¬(p^2).Prime := Nat.Prime.not_prime_pow' (by decide : 2 ≠ 1)
   by_cases high : y<p
   · have far := high.trans_le (Nat.le_self_pow (by decide : 2 ≠ 0) p)
     simp only [roughProperPowerWeight,p2,far,no,free,high,and_self,if_true,Nat.cast_pow,
@@ -197,7 +197,7 @@ theorem half_logarithmic_price_of_proper_powers :
       (Nat.cast_nonneg (α := ℝ) p))
   have wall : (X.sqrt:ℝ) ≤ Real.sqrt X := by
     rw [Real.le_sqrt (Nat.cast_nonneg _) (Nat.cast_nonneg _)]
-    exact_mod_cast (show X.sqrt^2 ≤ X by simpa only [pow_two] using Nat.sqrt_le X)
+    exact_mod_cast Nat.sqrt_le' X
   have logwall := Real.log_le_log (Nat.cast_pos.mpr r1) wall
   rw [Real.log_sqrt (Nat.cast_nonneg _)] at logwall
   change (∑ p ∈ Nat.primesLE X.sqrt,Real.log p/p) ≤ _ at prime

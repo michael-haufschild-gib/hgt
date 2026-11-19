@@ -47,7 +47,7 @@ private theorem proper_power_correction (y X : ℕ) (xp : 0<X) {H : ℝ} (hH : 0
   · have w0 : 0 ≤ roughProperPowerWeight y d := by
       rw [roughProperPowerWeight,if_pos ok]; exact ArithmeticFunction.vonMangoldt_nonneg
     have dp := (mem_Icc.mp hd).1
-    have d0 := Nat.cast_pos.mpr (α := ℝ) dp
+    have d0 := (Nat.cast_pos (α := ℝ)).mpr dp
     have frac : ((X/d:ℕ):ℝ) ≤ (X:ℝ)/d :=
       (le_div_iff₀ d0).mpr (by exact_mod_cast Nat.div_mul_le_self X d)
     have root := Real.sqrt_le_sqrt frac

@@ -269,7 +269,7 @@ theorem second_order_scale_of_both_rough_signs {γ : ℝ} (hg : 0<γ) (small : �
     apply LE.le.trans _ hi.2
     have e2 : E ≤ E^2 := by nlinarith only [sq_nonneg (E-1),e1]
     exact e2.trans (le_mul_of_one_le_left (sq_nonneg E) (by have := Nat.cast_nonneg (α := ℝ) b; linarith))
-  have x0 := Nat.cast_pos.mpr (α := ℝ) pos
+  have x0 := (Nat.cast_pos (α := ℝ)).mpr pos
   have wall := Nat.floor_le (Real.rpow_nonneg x0.le γ)
   have rt := Real.rpow_le_rpow (Nat.cast_nonneg Y) wall sp.le
   rw [←Real.rpow_mul x0.le] at rt

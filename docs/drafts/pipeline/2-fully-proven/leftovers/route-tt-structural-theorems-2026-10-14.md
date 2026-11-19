@@ -24,7 +24,8 @@ These record the dependency-closed positive survivors of failed conjectures (no-
 - *Claim.* D_gap(s) = Σ_k (p_{k+1} − p_k) p_k^{−s} is holomorphic on Re s > θ₂ except for a simple pole at s = 1 with residue 1.
 - *Proof.* Σ_{p ≤ x} gap = x + E(x), where E is a sawtooth with 0 ≤ E(x) ≤ gap(x) + O(1). Then D_gap(s) = s/(s−1) + s∫E(x)x^{−s−1}dx + (constant terms).
   - Since ∫_X^{2X}E ≤ Σ_{X<p≤2X}gap² ≪ X^{1+θ₂}, the integral converges absolutely for Re s > θ₂. ∎
-- *Note.* This corrects route-tt row 247, which used the maximal-gap exponent. On the line, |D_gap(½+it)| ≍ |t|, so the archimedean excess is linear.
+- *Note.* This corrects route-tt row 247, which used the maximal-gap exponent.
+- *Correction (critical line).* The earlier claim |D_gap(½+it)| ≍ |t| is false. For every admissible θ₂ < ½, D_gap = 1/(s−1) + (2^{1−s}−1)/(s−1) + Σ_k r_k(s) with r_k(s)/s → 0 for each k and |r_k(s)/s| ≤ g_k² p_k^{−3/2} summable, so |D_gap(½+it)| = o(|t|) (Tannery). The archimedean excess is at most linear, and not of exact linear order.
 
 **T3 (invariant forms on the zero algebra).** Let A = O/(Ξ) be decay-class entire functions modulo Ξ-multiples. ℚ^×_{>0} acts by M_q F = q^{iz}F, and the ρ-component transforms by the character χ_ρ(q) = q^{iγ_ρ}.
 - *Claim.* Every M-invariant Hermitian form on A is Σ_{γ_ρ ∈ ℝ} w_ρ |F(γ_ρ)|² + Σ_{off-line pairs} 2Re(w_ρ F(γ_ρ) conj F(γ̄_ρ)) (finite sums on finitely supported data). Hence a positive-definite invariant form exists iff every γ_ρ is real, i.e. RH.
@@ -295,7 +296,9 @@ with `lake env lean`, and wired into `GaloisForLFunctions/RHTower.lean`.
   `RHTower.LineShiftHalfPlaneHolomorphic`.
 - **T2** [L] `RHTower.PrimeGapDirichletContinuation`: `exists_gapDirichlet_continuation`,
   `tendsto_sub_one_mul_gapDirichletCont`, `norm_gapDirichletCont_critical_le`, unconditional instance
-  at θ₂ = 71/100 (`gapDirichlet_continuation_hoheisel`). Heath-Brown's 5/18 is a cited input.
+  at θ₂ = 71/100 (`gapDirichlet_continuation_hoheisel`). Critical-line correction [L]
+  `RHTower.PrimeGapDirichletCriticalLittleO`: `tendsto_norm_gapDirichletCont_critical_div` (o(|t|)),
+  `not_exists_linear_lower_bound_gapDirichletCont`. Open: Heath-Brown's θ₂ = 5/18 + ε.
 - **T3** [L] `RHTower.ZeroAlgebraJetInvariantForms` (with the multiplicity correction).
 - **T4** [L] `RHTower.TranslationAveragedDensityDepthBlindness`.
 - **T7** [L] corpus MUST-1442.
@@ -342,4 +345,8 @@ with `lake env lean`, and wired into `GaloisForLFunctions/RHTower.lean`.
   HTGeometry `DiscHolomorphicFixedPoint`, `DiscCoefficientExpansion`, `WeightedCompositionTrace`,
   `GeometricDecayMatrixPowers`, `GeometricDecayFredholmDeterminant`, `AnalyticMarkovSystem`,
   `AnalyticMarkovTransferMatrix`.
-- **Open formalization items**: T5 (Ruelle–Pollicott), L7 (Davenport–Heilbronn).
+- **T5** [L] `ArithmeticResonanceTheory.riemannZeta_ne_zero_of_holderRealization`: a realization of ζ
+  by a Hölder suspension of a mixing subshift of finite type gives ζ(s) ≠ 0 on Re s > 1 − ε, from the
+  Ruelle–Pollicott continuation `HTGeometry.Symbolic.exists_holomorphic_reciprocal`. The
+  Pollicott–Sharp orbit-count remark is an explanation, not part of T5.
+- **Open formalization items**: L7 (Davenport–Heilbronn); T2 at θ₂ = 5/18 + ε (Heath-Brown).

@@ -56,11 +56,15 @@ private theorem shifted_coprime_prefix {a p : ℕ} (hp : p.Prime) (hsep : 4*a < 
   · intro w hw
     obtain ⟨hi,hc⟩ := mem_filter.mp hw
     obtain ⟨hl,hu⟩ := mem_Icc.mp hi
+    change j*a+w ∈ (Ioc (j*a) (j*a+t)).filter ((a*p).Coprime ·)
     exact mem_filter.mpr ⟨mem_Ioc.mpr ⟨by omega,by omega⟩,(hcop hi).mpr hc⟩
   · intro v hv
     have := (mem_Ioc.mp (mem_filter.mp hv).1).1
+    change j*a+(v-j*a)=v
     omega
-  · intro w _; omega
+  · intro w _
+    change j*a+w-j*a=w
+    omega
 
 private theorem truncated_period {a p : ℕ} (hp : p.Prime) (hsep : 4*a < p)
     (j K : ℕ) (hj : j ≤ 3) :
@@ -87,7 +91,7 @@ theorem forbidden_prime_cofactor_cut {n p : ℕ} (hn : 0 < n) (hp : p.Prime)
     rw [Nat.mul_assoc,hmul,←sq]; exact hlarge)
   have hq (j : ℕ) : j*n/p=j*a := Nat.mul_div_assoc j hdiv
   dsimp only
-  change unrestrictedPrimeCofactorCut n p K=residueCount a _-residueCount a _
+  change unrestrictedPrimeCofactorCut n p K=residueCount a (min a (K-3*a))-residueCount a (min a (K-2*a))
   simp only [unrestrictedPrimeCofactorCut,hq,max_eq_right (show 1 ≤ 2*a by omega),
     max_eq_right (show 1 ≤ 3*a by omega)]
   rw [←hmul]
@@ -104,9 +108,12 @@ theorem forbidden_prime_cofactor_boundaries {n p : ℕ} (hn : 0 < n) (hp : p.Pri
     unrestrictedPrimeCofactorCut n p (4*a) = 0 := by
   let a := n/p
   have ha : 0 < a := Nat.div_pos (Nat.le_of_dvd hn hdiv) hp.pos
-  have hf (K : ℕ) := forbidden_prime_cofactor_cut hn hp hdiv hlarge K
+  have hf (K : ℕ) : unrestrictedPrimeCofactorCut n p K =
+      residueCount a (min a (K-3*a))-residueCount a (min a (K-2*a)) :=
+    forbidden_prime_cofactor_cut hn hp hdiv hlarge K
   have hz : residueCount a 0=0 := by simp [residueCount]
-  change (∀ K : ℕ, -(a.totient:ℝ) ≤ _ ∧ _ ≤ (0:ℝ)) ∧ _ ∧ _
+  change (∀ K : ℕ, -(a.totient:ℝ) ≤ unrestrictedPrimeCofactorCut n p K ∧ unrestrictedPrimeCofactorCut n p K ≤ 0) ∧
+    unrestrictedPrimeCofactorCut n p (3*a) = -(a.totient:ℝ) ∧ unrestrictedPrimeCofactorCut n p (4*a) = 0
   constructor
   · intro K
     rw [hf]
@@ -117,10 +124,21 @@ theorem forbidden_prime_cofactor_boundaries {n p : ℕ} (hn : 0 < n) (hp : p.Pri
     rw [residueCount_period ha] at h1
     linarith only [h1,h2,hz]
   · rw [hf,hf]
-    change residueCount a _-residueCount a _ = -(a.totient:ℝ) ∧ residueCount a _-residueCount a _ = 0
     simp only [Nat.sub_self,Nat.min_zero,show 3*a-2*a=a by omega,show 4*a-3*a=a by omega,min_self,
       min_eq_left (show a ≤ 4*a-2*a by omega),hz,residueCount_period ha,zero_sub,sub_self,and_self]
 
+/-- At the exact integer cutoff the complete forbidden row vanishes,
+including the last cofactor multiple. -/
+theorem forbidden_prime_at_square_root_cut {n p : ℕ} (hn : 0 < n) (hp : p.Prime)
+    (hdiv : p ∣ n) (hcut : ⌊2*Real.sqrt n⌋₊ < p) :
+    unrestrictedPrimeCofactorCut n p (4*(n/p))=0 := by
+  have hlt : 2*Real.sqrt n < (p:ℝ) := (Nat.floor_lt (by positivity)).mp hcut
+  have hsq := mul_self_lt_mul_self (by positivity : (0:ℝ) ≤ 2*Real.sqrt n) hlt
+  have hR : 4*(n:ℝ) < (p:ℝ)^2 := by
+    nlinarith only [hsq,Real.sq_sqrt (Nat.cast_nonneg (α:=ℝ) n)]
+  exact (forbidden_prime_cofactor_boundaries hn hp hdiv (by exact_mod_cast hR)).2.2
+
+#print axioms forbidden_prime_at_square_root_cut
 #print axioms forbidden_prime_cofactor_cut
 #print axioms forbidden_prime_cofactor_boundaries
 

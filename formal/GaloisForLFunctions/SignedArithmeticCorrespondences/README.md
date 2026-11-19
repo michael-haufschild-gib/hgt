@@ -1,4 +1,4 @@
-# Signed arithmetic correspondences
+# Completed signed arithmetic correspondences
 
 An integral graph can meet another graph at a prime power. Moving one graph far along the logarithmic axis turns the sum of these local contacts into a product of degrees. The question is how much the signed intersection can differ from that product when both divisors vary. A bound must survive gluing many graphs, including graphs of opposing sign.
 
@@ -146,9 +146,25 @@ For a three-point Kummer curve over $\mathbf F_{Q^2}$, a finite closed place of 
 
 At separation $4(L+1)$, put $U_b=\sum_{i\equiv b\pmod 2} u_i(-1)^{\lfloor i/2\rfloor}$, and likewise for $V_b$. After signed gluing the entire normalized trace is $2g(U_0V_0-U_1V_1)$ for every $L$ and both supports. Negating the odd part of the opposing divisor gives the effective square $2g(U_0^2+U_1^2)$. Without that sign the square is nonnegative for all divisors exactly when $g=0$, equivalently $Q+1\mid R$ for the branch exponent $R$. At $R=1$ the odd singleton is negative in every block. [Closed-place trace and duality](TheTwoSquareChannelsOfKummerPointCounts.lean)
 
+## Dilation on late interleaved combs
+
+In Weil's full comb form, multiply every conductor by an integer $d\ge1$. Each prime-power ratio contact is unchanged. Both mixed pole products and each off-diagonal real jet divide by $d$. Each common diagonal gains $\log d$. For any $S\subset(N,N+M]$, $N+M\le QN$, and any signed coefficients on $dS$, the resulting square divided by coefficient square mass is at least
+
+$$
+\log(dN/(2\pi))-2\psi(Q)-
+\frac{H_M+M/(4N)+M^3/(2N^3)}{d}.
+$$
+
+The inequality itself includes zero mass. For every fixed ratio and every fixed integer spacing $d\ge2$, the floor eventually exceeds any prescribed constant, uniformly in the coefficients and in the subset. Further dilation divides the harmonic loss again. At spacing one, the harmonic loss has the same leading logarithm as the diagonal. [Full comb mass under dilation](WeilMassOnDilatedCombWindows.lean)
+
+A prime $p$ distinguishes two interleaved layers more finely. Pair conductors $da$ and $dp^h b$, where the cores $a,b$ are prime to $p$ and $h\ge1$. The sole prime-power contact occurs at $a=b$. Let $I_d$ be the full mixed intersection, $\eta$ the multiplier on the prime contacts, and $P=\eta(p^h)\log p\sum_a u_av_a$. Then $I_{ed}+P=(I_d+P)/e$. In particular $2I_{2d}-I_d=-P$ for every finite cutoff. Truncating square-summable coefficients and rounding them toward zero at multiplicity $N+1$ gives this inner product in the limit. Both spacings use the same two integer divisors, and the starting spacing may change at every cutoff.
+
+If both undilated layers lie in $(N,N+M]$, put $A=2M/N+H_M+M/(4N)$. Then $|I_d+P|\le A(\|u\|_2^2+\|v\|_2^2)/(2d)$. For example, take every odd core from $2k+3$ to $4k+7$ and its double. Their endpoints interleave. Once $d\log2>A$, every nonzero matched signed vector gives a strictly negative ordinary mixed intersection and a strictly positive Liouville mixed intersection with the same pole degrees and jets. This sign refers to the two **distinct** layers. In the Kummer model, the negative unmodified square instead comes from the odd parity moment in $2g(U_0^2-U_1^2)$, and reversing that moment on one divisor gives $2g(U_0^2+U_1^2)$. [Interleaved layers and completion](PrimeContactsBetweenInterleavedValuationLayers.lean) · [Kummer parity law](TheTwoSquareChannelsOfKummerPointCounts.lean)
+
 ## Tests and open questions
 
 * Which relations between distinct quotient cells survive when the lower divisor ranges beyond the full families used in a residue block? A single quotient realizes the ordinary unsmoothed Chebyshev error.
+* Can a coefficient-uniform full-square floor survive removal of the spacing restriction on every fixed-ratio window? At unit spacing, eventual nonnegativity for all signed coefficients is equivalent to RH. [Exact late-comb criterion](../HodgeTheoryOfAFixedPart/TheRiemannHypothesisIsExactEventualCombPositivity.lean)
 * Beyond aligned divisibility sieves, can the combined quotient variation and real jet norm of arbitrary interleaving divisors be bounded by energies computed separately on the two divisors? The all-support power criterion specifies the zero-free consequence of any proposed exponent.
 * Which opposing sections recover the effectivity supplied by curve point counts for Frobenius eigenvalues beyond the Kummer family? On the integers, a candidate must distinguish the ordinary prefix from its Liouville twist on the same divisors. [Curve model and Stepanov](../ExclusionOfTheCriticalState/Models/CurveCriticalStatesAndStepanovExclusion.lean) · [Ordinary and twisted prefixes](TheUnscaledIntersectionOfTheLiouvilleTwin.lean)
 

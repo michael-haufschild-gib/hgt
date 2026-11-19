@@ -137,7 +137,9 @@ theorem opposite_octave_cofactor_profiles {U P p : ℕ} (hU : 0 < U) (hP : 0 < P
   dsimp only
   have h := upper_octave_cofactor_profile hU hP hl hu
   refine ⟨h,?_⟩
-  have hh := abs_sub_le (properCofactorMidpoint (U*P) p) (upperOctaveCofactorCount U P p-upperOctaveMain U P p)
+  have tri (x y : ℝ) : |x-y| ≤ |x|+|y| := by
+    simpa only [sub_zero,zero_sub,abs_neg] using abs_sub_le x 0 y
+  have hh := tri (properCofactorMidpoint (U*P) p) (upperOctaveCofactorCount U P p-upperOctaveMain U P p)
   change |properCofactorMidpoint (U*P) p-upperOctaveCofactorCount U P p+upperOctaveMain U P p| ≤ _
   rw [show properCofactorMidpoint (U*P) p-upperOctaveCofactorCount U P p+upperOctaveMain U P p =
       properCofactorMidpoint (U*P) p-(upperOctaveCofactorCount U P p-upperOctaveMain U P p) by ring]

@@ -44,7 +44,6 @@ private theorem centre_re_bound (q : XiZeroCopy) : -4 < (centredZero q).re := by
 private theorem line_difference_mass {F : ℝ → ℝ} (hd : CriticalHalfLineEnergyDomain F)
     {h : ℝ} (hh : 0 ≤ h) (q : onLineCopies) :
     zeroValueMass (diff F h) q = 2 * ((1-Real.cos (h*(centredZero q).im)) * zeroValueMass F q) := by
-  change ‖L (diff F h) (centredZero q)‖^2 = _
   change ‖negativeHalfLineLaplace (cx fun u => F u + (-1)*F (u+h)) (centredZero q)‖^2 = _
   rw [laplace_translation_difference hd hh (centre_re_bound _), norm_mul, mul_pow]
   have he : -(centredZero q * h) = ((-(h*(centredZero q).im) : ℝ) : ℂ)*I := by
@@ -59,10 +58,11 @@ private theorem off_difference_slope (F : ℝ → ℝ) (q : offCopy) :
   have hm := (hasDerivAt_const (0:ℂ) (1:ℂ)).sub ((hasDerivAt_const_mul (x := (0:ℂ)) (-z)).cexp)
   have hp := (hasDerivAt_const (0:ℂ) (1:ℂ)).sub ((hasDerivAt_const_mul (x := (0:ℂ)) z).cexp)
   have hd : HasDerivAt (offTerm F q) 0 0 := by
-    simpa [offTerm,z] using (hm.mul hp).mul_const (L F z * L F (-z))
+    change HasDerivAt (fun t : ℂ => (1-cexp (-z*t))*(1-cexp (z*t))*(L F z*L F (-z))) 0 0
+    simpa using (hm.mul hp).mul_const (L F z * L F (-z))
   have hr := Complex.continuous_re.tendsto (0:ℂ) |>.comp hd.comp_ofReal.tendsto_slope_zero_right
   have h0 : offTerm F q 0 = 0 := by simp [offTerm]
-  simpa only [Function.comp_apply,zero_add,Complex.ofReal_zero,h0,sub_zero,
+  simpa only [Function.comp_def,zero_add,Complex.ofReal_zero,h0,sub_zero,
     Complex.smul_re,smul_eq_mul,Complex.zero_re,div_eq_inv_mul] using hr
 
 private theorem difference_zero_formula {F : ℝ → ℝ} (hd : CriticalHalfLineEnergyDomain F)
@@ -126,12 +126,11 @@ theorem criticalState_criticalLine_cosine_cusp {W : ℝ} (hW : 0 < W)
   filter_upwards [self_mem_nhdsWithin] with h hh
   have hh' : (0:ℝ) < h := hh
   have hz := difference_zero_formula hd hf hh'.le
-  rw [tsum_fintype,Complex.re_sum] at hz
+  rw [tsum_fintype (fun q : offCopy => offTerm F q h),Complex.re_sum] at hz
   change (bareMixedEnergy (diff F h) (diff F h)/h -
     (∑ q : offCopy, (offTerm F q h).re/h))/2 = _
-  rw [← Finset.sum_div]
-  field_simp [hh'.ne']
-  linarith only [hz]
+  rw [← Finset.sum_div,← hz]
+  ring
 
 /-- The first absolute ordinate moment of the ground state's critical-line
 samples diverges whenever the off-line divisor is finite. -/
@@ -162,7 +161,8 @@ theorem criticalState_criticalLine_firstMoment_not_summable {W : ℝ} (hW : 0 < 
     rw [← div_eq_inv_mul,div_le_iff₀ hh]
     linarith only [mul_le_mul_of_nonneg_right hcos hm0]
   have hzero := tendsto_tsum_of_dominated_convergence hm hl hb
-  simp only [tsum_zero,f,tsum_mul_left,← div_eq_inv_mul] at hzero
+  simp only [tsum_zero,f,tsum_mul_left] at hzero
+  simp only [← div_eq_inv_mul] at hzero
   have he := tendsto_nhds_unique (criticalState_criticalLine_cosine_cusp hW ht hF hf) hzero
   exact (mul_pos (mul_pos (by norm_num : (0:ℝ)<4) (criticalAliasCoefficient_positive hW))
     (criticalState_exponentialMass_pos hW hF)).ne' he

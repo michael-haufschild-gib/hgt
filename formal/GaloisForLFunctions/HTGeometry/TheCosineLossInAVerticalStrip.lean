@@ -1,7 +1,8 @@
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Bounds
 import Mathlib.Analysis.Normed.Group.Tannery
-import Mathlib.Tactic
+import Mathlib.Tactic.LinearCombination
+import Mathlib.Tactic.Linarith
 
 /-!
 # Cosine loss on a vertical strip
@@ -47,7 +48,9 @@ private theorem exponentialLoss_axis (z : ℂ) (h : ℝ) :
 private theorem exponentialLoss_hasDerivAt (z : ℂ) : HasDerivAt (exponentialLoss z) 0 0 := by
   have hd (w : ℂ) := (hasDerivAt_const (0:ℂ) (1:ℂ)).sub
     ((hasDerivAt_const_mul (x := (0:ℂ)) w).cexp)
-  simpa [exponentialLoss] using (hd z).mul (hd (-z))
+  change HasDerivAt (fun t : ℂ => (1-cexp (z*t))*(1-cexp (-z*t))) 0 0
+  simpa only [Pi.mul_def,Pi.sub_def,mul_zero,Complex.exp_zero,sub_self,zero_mul,mul_add,
+    add_zero] using (hd z).mul (hd (-z))
 
 private theorem exp_axis_bound {z : ℂ} (hz : |z.re| ≤ 1) {h : ℝ} (hh : 0 ≤ h) (h₁ : h ≤ 1) :
     ‖cexp (z*h) - cexp (axis z*h)‖ ≤ 2*h := by

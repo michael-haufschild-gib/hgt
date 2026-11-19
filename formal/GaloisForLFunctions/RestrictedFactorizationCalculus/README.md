@@ -1,12 +1,26 @@
-# Restricted factorization calculus
+# Quantitative factorization with signed boundaries
 
-For a sharp interval \((L,U]\), each squarefree integer carries its Möbius sign. An exchange replaces one prime factor by two distinct primes, or reverses that operation, with both integers in the interval. Removing disjoint opposite-sign pairs preserves the signed sum exactly. The question is which exchanges unique factorization supplies, and how much signed mass survives at every cutoff. The target is
+On a sharp interval \((L,U]\), each squarefree integer carries its Möbius sign and may carry a second arithmetic weight, such as a prime sum read at \(\lfloor X/n\rfloor\). An exchange replaces one prime factor by two distinct primes, or reverses that operation, with both integers in the interval. For the constant weight, removing disjoint opposite-sign pairs preserves the sum. For a reading \(w\), a pair \((n,m)\) contributes \(\mu(n)(w(n)-w(m))\). A pair cut by an endpoint contributes the signed reading of its retained vertex. The question is which exchanges unique factorization supplies, and how much signed mass survives at every cutoff. The target is
 \[
   \left|\sum_{1\le n\le X}\mu(n)\right|\ll_\varepsilon X^{1/2+\varepsilon}
   \qquad(\varepsilon>0).
 \]
 
+The final bound remains open. One equivalent target is the centered prime-power sum at the log-square cutoff below. A global matching can leave only a vanishing fraction of vertices unpaid, but their unsigned count has power exponent one. [Centered quotient criterion](#the-smooth-term-at-the-quotient-wall) · [Unsigned obstruction](ThePowerExponentOfEveryUnsignedPrefix.lean)
+
 A matching stores its positive endpoints in `sources` and their negative partners in `targets`. Transporting a negative debt follows the corresponding exchange from its negative endpoint to its positive partner.
+
+## What a signed boundary measures
+
+For a single involution \(F\), write \(D_F(t)\) for the signed fixed vertices through \(t\) and \(C_F(t)\) for the signed lower ends of edges crossing \(t\). The exact interval account is
+\[
+ M(U)-M(L)=D_F(U)-D_F(L)+C_F(U)-C_F(L).
+\]
+An edge spanning both cuts cancels from the difference. Prescribing the semiprimes as fixed points can make the two charges individually as large as the semiprime count. Their signs and the choice of the same involution at both cuts are essential. [Signed crossings at two walls](TheSignedCrossingsBetweenTwoWalls.lean) · [Semiprime prescription](TheCostOfFixingTheSemiprimes.lean)
+
+A quotient reading can jump **inside** an interval. For a kernel with increments \(a(q)\), each jump places another cut at \(\lfloor X/q\rfloor\). Adding adjacent intervals cancels their common boundary when the reading agrees there. Changing the reading at that boundary leaves its signed difference. A sequence of transports must retain every intermediate change, including repeated visits to one integer. In a divisor expansion the same product can occur in several fibres. Their signed multiplicities must be recombined before estimating the error.
+
+The principal test uses the rough Möbius row at the log-square prime cutoff. Least-prime stopping supplies its terminal rows, divisor inversion gives its smooth center, and the signed flux measures the effect of moving the quotient cuts. A quantitative gain must include the final endpoint. A general rule should gain on several weights using arithmetic independent of a Mertens bound at the proposed output exponent. [Least-prime recursion](TheSignedBoundaryOfAPrefix.lean) · [Exact quotient center](CenteringThePrimePowerReadingsAtTheirQuotientFloors.lean)
 
 ## Where a change of fibre matters
 
@@ -27,6 +41,8 @@ Let \(A\) consist of products \(qr\in(u,v]\) with both factors prime and \(s/K<q
 The height at which this holds is independent of both cell endpoints. For each \(q\), the prime number theorem bounds the number of possible \(r\) in the exact interval \((u/q,v/q]\). Summing over the balanced primes \(q\) uses one more factor of \(1/\log s\) than counting the available primes in \((u,v]\). This supplies spare partners even inside partial octaves. [Prime supply for balanced products](PrimeSupplyForBalancedProducts.lean)
 
 At scale \(T=s^6\), the smaller prime can range over the entire interval \((s^2/2,2s^3]\). On sharp cells in \([T,2T]\) of width at least \(T/(\log s)^B\), these products use at most nine tenths of the available primes. Mertens' first theorem bounds the total \(\sum_q (\log q)/q\) in this exponent range. The complementary prime window supplies the second logarithm. This covers the cube-root boundary where the original cofactor can first run out of positive partners. [Uniform cube-root estimate](PrimeSupplyAtTheCubeRootBoundary.lean)
+
+## Short exchanges on the whole half-line
 
 Arbitrarily short exchanges retain a fixed reciprocal mass. Given an integer \(J\ge1\), every sufficiently high band \((2^k,2^{24k}]\) contains a table of distinct prime partners \(p\) for distinct semiprimes \(qr\), with all three primes in the band. Every pair satisfies \(|p-qr|\le\min(p,qr)/J\), and the paired primes satisfy \(\sum 1/p\ge1/1040\). Partition each product octave into \(J\) cells and add the reciprocal mass from \(k\) disjoint octaves. The lower bound is independent of \(J\). [Short prime exchanges](ShortPrimeExchangesOfPositiveMass.lean)
 
@@ -103,7 +119,9 @@ Fix the modulus \(Q\) of a divisor table. The short-interval mean square for Lio
 \]
 For each \(k\), some fixed length has positive lower densities of windows with exactly \(k\) nonzero entries, all positive or all negative. Prime-square congruences erase unwanted offsets in a family of dilations. A multiplier selects \(k\) marks with the same sign, and a fresh prime reverses every selected sign. With \(k=2K+1\), every such window meets the selected set in its own sign or has a complementary excursion at an endpoint. [Simultaneous dilation readings](SelectingMobiusSignsByDilatingOneInterval.lean) · [Positive densities of both window orientations](EqualMobiusSignsInConsecutiveWindows.lean) · [Exact crossing threshold](TheBoundedEndpointOfSignedCrossingCharge.lean)
 
-**Prescribing fixed vertices and their charge.** A squarefree set \(S\) has density zero exactly when, for every nonnegative \(w(X)\to\infty\), one restricted matching with \(o(X)\) unpaid vertices realizes \(S\cup\{1\}\) with at most \(\min(w(X),\sqrt X)\) membership errors at every cutoff. First protect both endpoints of every edge meeting \(S\). During separated completion, a discrepancy requires an upper endpoint of a changed edge whose lower endpoint has already passed its separation threshold. [Which sparse sets can be fixed](PrescribingTheSquarefreeFixedVertices.lean)
+## Prescribing fixed vertices and their charge
+
+A squarefree set \(S\) has density zero exactly when, for every nonnegative \(w(X)\to\infty\), one restricted matching with \(o(X)\) unpaid vertices realizes \(S\cup\{1\}\) with at most \(\min(w(X),\sqrt X)\) membership errors at every cutoff. First protect both endpoints of every edge meeting \(S\). During separated completion, a discrepancy requires an upper endpoint of a changed edge whose lower endpoint has already passed its separation threshold. [Which sparse sets can be fixed](PrescribingTheSquarefreeFixedVertices.lean)
 
 For the squarefree semiprimes, every prime image is a distinct membership error. A fixed prime is unwanted, while a moving prime has a moving semiprime as partner. Sublinear displacement therefore forces at least \(\pi(T)\) errors through every sufficiently large \(X\ge(1+\delta)T\), for each \(\delta>0\). Allowing long exchanges attains any diverging error cap \(w\). The resulting fixed charge tracks \(1+Q_2(X)\) within \(w(X)\), where \(Q_2\) counts all squarefree semiprimes. The crossing charge tracks \(M(X)-1-Q_2(X)\) with the opposite error. [The cost of fixing the semiprimes](TheCostOfFixingTheSemiprimes.lean)
 
@@ -111,7 +129,9 @@ For any integer function \(h\) with \(h(0)=0\) and every increment zero or one, 
 
 **Transporting charge to distant pairs.** Fix any separation function \(T\) and any nonnegative \(w(X)\to\infty\). One perfect restricted matching outside the unit has a density-zero union of whole pairs \((n,m)\) with \(m>\max(2n,T(n))\). The ordinary signed prefix of those vertices differs from \(M(X)\) by at most \(w(X)\) for all sufficiently large \(X\). A completed pair contributes zero as soon as its upper endpoint arrives. The error counts old crossings changed during completion and the finitely many old exchanges exceeding the separation. With \(w(X)=\log X\), the sparse union retains every positive power bound of \(M\), including an attained endpoint. [Signed charge on arbitrarily long exchanges](TheSignedChargeOfArbitrarilyLongExchanges.lean)
 
-**Sifting each integer at its own cutoff.** For a nondecreasing integer function \(b\), let \(A_b(X)\) sum \(\mu(n)\) over \(n\le X\) that have no prime divisor through \(b(n)\). Put \(E_s(y)=\prod_{p\le y}(1-p^{-s})^{-1}\). If \(|A_b(n)|\le Cn^s\), then
+## Sifting each integer at its own cutoff
+
+For a nondecreasing integer function \(b\), let \(A_b(X)\) sum \(\mu(n)\) over \(n\le X\) that have no prime divisor through \(b(n)\). Put \(E_s(y)=\prod_{p\le y}(1-p^{-s})^{-1}\). If \(|A_b(n)|\le Cn^s\), then
 \[
  |M(X)|\le 2C(b(X)+1)E_s(b(X))^2 X^s.
 \]
@@ -121,7 +141,9 @@ For \(b(n)=\lfloor\log(n+1)\rfloor^2\), this gives an explicit density-zero set 
 
 The positive and negative counts on this set have an explicit common center. Put \(\delta_y=\zeta(2)^{-1}\prod_{p\le y}(1+1/p)^{-1}\) and \(W(X)=\sum_{1\le n\le X}\delta_{b(n)}\). Their **total** is \(W(X)+O_\varepsilon(X^{1/2+\varepsilon})\) at every cutoff. At a real endpoint \(x\), subtract \(x\delta_y\) from the count of squarefree integers avoiding primes through \(y\). For a prime \(p\), the discrepancies obey \(H_{p-1}(x)=H_p(x)+H_p(x/p)\). The squarefree counting estimate at modulus one gives \(|H_y(x)|\le 4E_s(y)x^s\) for \(1/2\le s\le1\). Summing the endpoint differences over constant intervals of \(b\) proves the total estimate. Bounding the deviation of **either individual count** from \(W(X)/2\) at the same exponents is equivalent to the full Möbius square-root criterion. [Both sign counts on the explicit rough set](TheCommonMainTermOfBothRoughSignCounts.lean)
 
-**The smooth term at the quotient wall.** Freeze the prime cutoff at \(y\ge1\), write \(\mu_y(n)=\mu(n)1_{(n,P(y))=1}\), and let \(\psi_y(t)\) count the Mangoldt weights of prime powers with base greater than \(y\). Exact divisor inversion gives
+## The smooth term at the quotient wall
+
+Freeze the prime cutoff at \(y\ge1\), write \(\mu_y(n)=\mu(n)1_{(n,P(y))=1}\), and let \(\psi_y(t)\) count the Mangoldt weights of prime powers with base greater than \(y\). Exact divisor inversion gives
 \[
  \sum_{n\le X}\mu_y(n)\log n
  =-y\Psi(\lfloor X/y\rfloor,y)
@@ -133,6 +155,9 @@ Here \(\Psi(T,y)\) counts all positive integers through \(T\) with prime factors
 With \(y=b(X)=\lfloor\log(X+1)\rfloor^2\), bounding that **single sequence of centered readings** by \(O_\varepsilon(X^{1/2+\varepsilon})\) is equivalent to the same bound for the full Mertens prefix. For any nondecreasing weight \(v\) with \(v(1)>0\), a bound \(Cv(1)n^s\) on the weighted sum at the single frozen cutoff \(b(n)\) controls every unweighted row with \(y\ge b(n)\) by \(CE_s(y)n^s\). Partial summation spends at most \(CE_s(y)n^s(v(n)-v(1))\) on smaller endpoints. The observed sum pays the remaining unit weight. For logarithmic readings, taking \(v(n)=\log(\max(2,n))\) adds exactly \(\log 2\) at the unit. Undoing the Euler factors then recovers the unrestricted prefix. [Weighted inversion](InvertingAWeightedReadingAtAMovingPrimeCutoff.lean) · [The centered prime-power criterion](OneCenteredPrimePowerReadingAtTheLogSquareCutoff.lean)
 
 ## Open questions and success criteria
+
+* Can one group of reversible exchanges lower the exponent on a growing range of quotient cells for the prime-power and exact-floor readings together? Both interval endpoints, exceptional divisor classes, changes of reading and the signed fixed contribution enter the estimate.
+* Can the same operation recover the negative smooth bias at a polynomial prime cutoff and the exact negative smooth center at the log-square cutoff, then bound the recombined residual at every endpoint?
 
 * Between the proved logarithmic saving and the obstruction to every power saving, what joint decay of the unpaid fraction and relative displacement can one involution attain?
 * Can the largest-pair rows receive every excess of a maximum ordered matching, including excesses in nonempty fibres? For each new cofactor, the demand is a sum of positive parts of the old rows' deficiencies. A comparison of their signed totals can underestimate that demand.

@@ -42,6 +42,9 @@ private theorem hasSum_reflected_increment {W : ℝ} (hW : 0 < W)
     (summable_norm_sq_laplace_neg_centredZero hTG) (tendsto_heatedZeroPairing hG hG)
   refine hs.congr_fun fun q => ?_
   have hz : -4 < (centredZero q).re := by linarith only [(abs_lt.mp (abs_re_centredZero_lt q)).1]
+  change exponentialLoss (centredZero q) h * reflectedLaplaceProduct F q =
+    negativeHalfLineLaplace (cx fun u => F u + (-1)*F (u+h)) (centredZero q) *
+      negativeHalfLineLaplace (cx fun u => F u + (-1)*F (u+h)) (-centredZero q)
   rw [laplace_translation_difference hd hh hz,
     laplace_translation_difference hd hh (neg_centredZero_re_gt_neg_four q)]
   simp only [exponentialLoss,reflectedLaplaceProduct,neg_mul,neg_neg]

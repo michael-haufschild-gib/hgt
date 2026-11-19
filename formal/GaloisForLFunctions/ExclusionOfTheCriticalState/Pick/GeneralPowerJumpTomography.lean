@@ -69,7 +69,8 @@ private theorem midpoint_strict (n : ℕ) {d : ℝ} (hd : 0 < d) :
   rw [interior_Ici] at hs
   have h : HasDerivAt (difference (n+2) d)
       (((n+2:ℕ):ℝ)*(s+d)^(n+1)-((n+2:ℕ):ℝ)*(s-d)^(n+1)) s := by
-    simpa only [difference,Nat.add_sub_cancel,id_eq,mul_one] using
+    change HasDerivAt (fun x : ℝ => (x+d)^(n+2)-(x-d)^(n+2)) _ s
+    simpa only [show n+2-1=n+1 by omega,id_eq,mul_one] using
       ((((hasDerivAt_id s).add_const d).pow (n+2)).sub (((hasDerivAt_id s).sub_const d).pow (n+2)))
   rw [h.deriv,← mul_sub]
   exact mul_pos (by positivity) (difference_pos n hd hs)
@@ -85,9 +86,11 @@ theorem any_nonlinear_pair_classifies (n : ℕ) (x y u v : ℝ) :
     have hd := (sq_eq_sq₀ (half_nonneg x y) (half_nonneg u v)).mp
       (by linarith only [h1] : halfGap x y^2=halfGap u v^2)
     by_cases hd0 : halfGap x y=0
-    · have zero {a b : ℝ} (h : halfGap a b=0) : a=b := by simpa [halfGap] using h
+    · have zero {a b : ℝ} (h : halfGap a b=0) : a=b := by
+        apply sub_eq_zero.mp
+        simpa [halfGap] using h
       exact Or.inl ⟨zero hd0,zero (hd.symm.trans hd0)⟩
-    have hdpos := lt_of_le_of_ne (half_nonneg x y) hd0.symm
+    have hdpos := lt_of_le_of_ne (half_nonneg x y) (Ne.symm hd0)
     rw [canonical_rate,canonical_rate,← hd] at hk
     have hp := difference_nonneg (n+2) (half_nonneg x y) (mid_nonneg x y)
     have hq := difference_nonneg (n+2) (half_nonneg x y) (mid_nonneg u v)
@@ -132,7 +135,11 @@ private theorem minimum_gap (k : ℕ) (d : ℝ) :
     difference k d 0 ^ 2/8 = minimumPowerRate k (d^2/2) := by
   rcases Nat.even_or_odd k with he|ho
   · simp [difference,minimumPowerRate,he,he.neg_pow]
-  · simp only [minimumPowerRate,if_neg ho.not_even,difference,zero_add,zero_sub,ho.neg_pow,
+  · have he : ¬ Even k := by
+      rintro ⟨i,hi⟩
+      obtain ⟨j,hj⟩ := ho
+      omega
+    simp only [minimumPowerRate,if_neg he,difference,zero_add,zero_sub,ho.neg_pow,
       sub_neg_eq_add,show 2*(d^2/2) = d^2 by ring,← pow_mul]
     rw [Nat.mul_comm 2 k,pow_mul]
     ring
@@ -149,7 +156,7 @@ theorem nonlinear_rate_image (n : ℕ) (a b : ℝ) :
     let d := halfGap x y
     let s := midMagnitude x y
     have hd : 0 < d := div_pos (abs_pos.mpr (sub_ne_zero.mpr hxy)) (by norm_num)
-    have hmono := (midpoint_strict n hd).monotoneOn (show (0:ℝ) ∈ Ici 0 from le_rfl)
+    have hmono := (midpoint_strict n hd).monotoneOn (show (0:ℝ) ∈ Ici 0 from le_refl (0:ℝ))
       (show s ∈ Ici 0 from mid_nonneg x y) (mid_nonneg x y)
     rw [linear_gap,canonical_rate (n+2)]
     right

@@ -48,7 +48,7 @@ theorem limit_reciprocal_roots_of_primes :
   have eq := expose_prime_two hn (fun p => 1/Real.sqrt p)
   have point (p : ℕ) : (p:ℝ)^((1/2:ℝ)-1)=1/Real.sqrt p := by
     rw [show (1/2:ℝ)-1= -(1/2) by norm_num,Real.rpow_neg (Nat.cast_nonneg _),←Real.sqrt_eq_rpow,one_div]
-  simp only [primeRpowSumIoc,Nat.floor_natCast,point,←Real.sqrt_eq_rpow,Function.comp_apply]
+  simp only [primeRpowSumIoc,Nat.floor_natCast,point,←Real.sqrt_eq_rpow]
   change _ = (∑ p ∈ Nat.primesLE N,1/Real.sqrt p)*Real.log N/Real.sqrt N
   rw [eq]; push_cast; ring
 
@@ -69,7 +69,7 @@ theorem limit_log_weighted_roots_of_primes :
   have point (p : ℕ) : (p:ℝ)^((1/2:ℝ)-1)*Real.log p=Real.log p/Real.sqrt p := by
     rw [show (1/2:ℝ)-1= -(1/2) by norm_num,Real.rpow_neg (Nat.cast_nonneg _),←Real.sqrt_eq_rpow]
     rw [div_eq_mul_inv,mul_comm]
-  simp only [primeRpowLogSumIoc,Nat.floor_natCast,point,←Real.sqrt_eq_rpow,Function.comp_apply]
+  simp only [primeRpowLogSumIoc,Nat.floor_natCast,point,←Real.sqrt_eq_rpow]
   rw [eq]; push_cast; ring
 
 private theorem root_weight (p : ℕ) : (1/(p:ℝ))^(1/2:ℝ)=1/Real.sqrt p := by
@@ -133,10 +133,10 @@ theorem limit_of_the_critical_euler_price :
       exact div_nonneg (mul_nonneg (price y).1 (Real.log_nonneg (Nat.one_le_cast.mpr yp))) (Real.sqrt_nonneg _)
     · filter_upwards [cast fee,eventually_ge_atTop (1:ℕ)] with y paid yp
       let u := (y:ℝ)^(1/4:ℝ)
-      have p := Nat.cast_pos.mpr (α := ℝ) yp
+      have p : 0<(y:ℝ) := Nat.cast_pos.mpr yp
       have up : 0<u := Real.rpow_pos_of_pos p _
       have root := Real.sqrt_pos.mpr p
-      have L := Real.log_nonneg (Nat.one_le_cast.mpr (α := ℝ) yp)
+      have L := Real.log_nonneg (((Nat.one_le_cast (α := ℝ)).mpr yp))
       change A*(1+Real.log y)^2 ≤ u at paid
       have step := mul_le_mul_of_nonneg_right (price y).2 L
       have pad := mul_nonneg hA.le (show 0 ≤ 1+Real.log y by linarith only [L])
@@ -148,7 +148,7 @@ theorem limit_of_the_critical_euler_price :
       linarith only [step,pad,paid]
   have both := limit_reciprocal_roots_of_primes.add err
   rw [add_zero] at both
-  exact both.congr (fun y => by dsimp only; ring)
+  exact both.congr (fun y => by ring)
 
 /-- At exponent one half the log of the deletion product has the exact
 order sqrt(y)/log y. Both inequalities hold at every sufficiently large
@@ -161,7 +161,7 @@ theorem critical_euler_price_at_every_prime_cutoff :
   refine ⟨3,by norm_num,?_⟩
   filter_upwards [lim.eventually_const_lt (by norm_num : (1:ℝ)<2),
     lim.eventually_lt_const (by norm_num : (2:ℝ)<3),eventually_ge_atTop (1:ℕ)] with y lower upper hy
-  have root := Real.sqrt_pos.mpr (Nat.cast_pos.mpr (α := ℝ) hy)
+  have root := Real.sqrt_pos.mpr (((Nat.cast_pos (α := ℝ)).mpr hy))
   exact ⟨by linarith only [(lt_div_iff₀ root).mp lower,root],((div_lt_iff₀ root).mp upper).le⟩
 
 /-- At the moving log-square cutoff the log-price has order

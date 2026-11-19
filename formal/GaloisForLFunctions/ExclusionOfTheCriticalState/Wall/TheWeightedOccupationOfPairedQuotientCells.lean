@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheOddQuotientIntervalInTheOrdinaryPrimeDeficit
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheSquareChargeInsideTheDiagonalInterval
 
 /-!
 # Weighted occupation of paired quotient intervals
@@ -135,6 +135,7 @@ private theorem displacement_integrable {Φ : ℝ → ℝ} (hi : Integrable Φ) 
   have h := hi.indicator hm
   apply h.abs.mono' ((by fun_prop : Measurable (fun v : ℝ => Real.exp (v/2))).aestronglyMeasurable.mul h.abs.aestronglyMeasurable)
   filter_upwards [] with v
+  change ‖Real.exp (v/2)*|E.indicator Φ v|‖ ≤ |E.indicator Φ v|
   rw [Real.norm_eq_abs,abs_of_nonneg (mul_nonneg (Real.exp_pos _).le (abs_nonneg _))]
   by_cases hv : v≤0
   · exact mul_le_of_le_one_left (abs_nonneg _) (Real.exp_le_one_iff.mpr (by linarith only [hv]))
@@ -155,6 +156,7 @@ theorem weighted_occupation_log_numerators {Φ : ℝ → ℝ} {C : ℝ} (hC : 0�
   have hi (j : ℕ) : Integrable (f j) := by
     apply (hconst 1).mono' ((measurable_density.comp (measurable_const.sub measurable_id)).indicator hW).aestronglyMeasurable
     filter_upwards [] with z
+    change ‖f j z‖ ≤ W.indicator (fun _ : ℝ => (1:ℝ)) z
     by_cases hz : z∈W
     · simp only [f,indicator_of_mem hz,Real.norm_eq_abs,abs_of_nonneg (density_bounds _).1]
       exact (density_bounds _).2
@@ -228,8 +230,8 @@ private theorem atom_price (Φ : ℝ → ℝ) {n : ℕ} (hn : 0<n) (T t : ℝ) :
     rw [← Real.exp_add,← Real.exp_add]; congr 1; ring
   calc _ = (Real.exp (-T/2)*(Real.exp ((t-Real.log n)/2)*|Φ (t-Real.log n)|))*Int.fract (Real.exp (T-t)) := by
             simp only [continuousIntegerAtom,fractionalPrimeTest,ha,abs_mul,abs_of_pos (Real.exp_pos _),
-              abs_of_nonneg (Int.fract_nonneg _)]
-            linear_combination (|Φ (t-Real.log n)|*Int.fract (Real.exp (T-t)))*hex
+              abs_of_nonneg (Int.fract_nonneg (Real.exp (T-t)))]
+            linear_combination (|Φ (t-Real.log n)| *Int.fract (Real.exp (T-t)))*hex
        _ ≤ _ := mul_le_of_le_one_right (by positivity) (Int.fract_lt_one _).le
 
 /-- The restricted profile masks only the actual atom displacement. The
@@ -247,12 +249,12 @@ theorem criticalState_ordinaryBand_occupation {W₀ : ℝ} (hW₀ : 0<W₀)
   subst Ψ
   have hi := ((criticalHalfLineEnergyDomain_of_groundState hF).integrable).congr he
   let m := ∫ v, Φ v
-  refine ⟨2*C*|m|*(1+Real.log 4),by positivity,fun T k L A W E hW hf hU hE hV => ?_⟩
+  refine ⟨2*C*|m| *(1+Real.log 4),by positivity,fun T k L A W E hW hf hU hE hV => ?_⟩
   let w := fun v : ℝ => Real.exp (v/2)*|E.indicator Φ v|
   have hw : Integrable w := displacement_integrable hi hs hE
   have hmass := weighted_occupation_log_numerators hC hs hbound hi T hE hW hf hU hV
   let kappa := Real.exp (-T/2)
-  let g := fun (n : ℕ) (t : ℝ) => (|coeff n|*kappa)*w (t-Real.log n)
+  let g := fun (n : ℕ) (t : ℝ) => (|coeff n| *kappa)*w (t-Real.log n)
   let S := Finset.Ioc k L
   have hg (n : ℕ) : Integrable (g n) := (hw.comp_sub_right _).const_mul _
   have hnn (n : ℕ) (t : ℝ) : 0≤g n t := by dsimp only [g,kappa,w]; positivity
@@ -277,13 +279,14 @@ theorem criticalState_ordinaryBand_occupation {W₀ : ℝ} (hW₀ : 0<W₀)
     apply Measurable.ite (measurableSet_lt (by fun_prop : Measurable fun t : ℝ => Real.exp t+Real.exp (t/2)*Real.sqrt t) measurable_const)
     · exact measurable_const.mul (measurable_const.mul ((hc.measurable.indicator hE).comp (measurable_id.sub measurable_const)))
     · exact measurable_const
-  have hri : Integrable read := hG.mono' hmeas.aestronglyMeasurable (Eventually.of_forall hread)
-  have hpoint (t : ℝ) : |m*read t|≤|m|*G t := by
+  have hri : Integrable read := hG.mono' hmeas.aestronglyMeasurable
+    (Eventually.of_forall fun t => by simpa only [Real.norm_eq_abs] using hread t)
+  have hpoint (t : ℝ) : |m*read t|≤|m| *G t := by
     rw [abs_mul]; exact mul_le_mul_of_nonneg_left (hread _) (abs_nonneg _)
   have hGG := hG.const_mul |m|
   have hboundA := (integral_mono ((hri.const_mul m).abs.integrableOn (s := A)) hGG.integrableOn hpoint).trans
-    (setIntegral_le_integral_of_nonneg_ae hGG (Eventually.of_forall fun t => mul_nonneg (abs_nonneg _) (Finset.sum_nonneg (fun n _ => hnn n t))))
-  have hgj (n : ℕ) : (∫ t, g n t)=(|coeff n|*kappa)*(∫ v, w v) := by
+    (setIntegral_le_integral hGG (Eventually.of_forall fun t => mul_nonneg (abs_nonneg _) (Finset.sum_nonneg (fun n _ => hnn n t))))
+  have hgj (n : ℕ) : (∫ t, g n t)=(|coeff n| *kappa)*(∫ v, w v) := by
     dsimp only [g]; rw [integral_const_mul,integral_sub_right_eq_self]
   have hGI : (∫ t, G t)=(∑ n ∈ S, |coeff n|)*kappa*(∫ v, w v) := by
     dsimp only [G]; rw [integral_finsetSum _ (fun n _ => hg n)]; simp_rw [hgj]
@@ -328,7 +331,7 @@ theorem criticalState_paired_cell_occupation {W₀ : ℝ} (hW₀ : 0<W₀)
   let W := Ico (Real.log (pairNumeratorStart a b D)) (Real.log (pairNumeratorStop a b))
   let m := ∫ v, Φ v
   let E := {v : ℝ | s*m*Φ v<0} ∩ hitsLogNumerators T W
-  have hq₀ : 0<a.quotient := by by_contra! hh; have hz : a.quotient=0 := by omega; simp [hz] at hq
+  have hq₀ : 0<a.quotient := Nat.pos_of_ne_zero (fun hz => by simpa [hz] using hq)
   have hset : {v : ℝ | s*m*Φ v<0 ∧ ∃ j : ℕ, let H := ⌊(2:ℝ)^(j+1)*Real.exp (T-v)⌋₊
       a.holds H D ∧ b.holds H D}=E := by
     ext v; exact and_congr_right fun _ => (hitsLogNumerators_pair_iff a b ha hb hq₀ D T v).symm
@@ -360,7 +363,7 @@ theorem criticalState_listed_numerator_occupation {W₀ : ℝ} (hW₀ : 0<W₀)
     obtain ⟨n,hn⟩ := mem_iUnion.mp hz
     obtain ⟨hn,hz⟩ := mem_iUnion.mp hn
     have hmax : n≤N.sup id := Finset.le_sup (f := id) hn
-    exact hz.2.le.trans (Real.log_le_log (by positivity) (add_le_add_right (Nat.cast_le.mpr hmax) 1))
+    exact hz.2.le.trans (Real.log_le_log (by positivity) (add_le_add (Nat.cast_le.mpr hmax) le_rfl))
   have hsub : W ⊆ Icc 0 (Real.log (((N.sup (id : ℕ → ℕ):ℕ):ℝ)+1)) := by
     intro z hz
     obtain ⟨n,hn⟩ := mem_iUnion.mp hz
@@ -402,6 +405,7 @@ private theorem band_test_integrable {Φ : ℝ → ℝ} (hi : Integrable Φ) (T 
       ((hi.comp_sub_right _).const_mul (Real.sqrt n)⁻¹).const_mul _
     apply h.abs.mono' (h.aestronglyMeasurable.mul hK.aestronglyMeasurable)
     filter_upwards [] with t
+    change ‖(coeff n*continuousIntegerAtom Φ n t)*fractionalPrimeTest (T-t)‖ ≤ |coeff n*continuousIntegerAtom Φ n t|
     rw [Real.norm_eq_abs,abs_mul]
     exact mul_le_of_le_one_right (abs_nonneg _) (fractionalPrimeTest_bounds _).1
   apply (integrable_finsetSum (Finset.Ioc k L) (fun n _ => (hG n).indicator (hA n))).congr
@@ -409,7 +413,9 @@ private theorem band_test_integrable {Φ : ℝ → ℝ} (hi : Integrable Φ) (T 
   rw [ordinaryPrimeComplementBand,Finset.sum_mul]
   apply Finset.sum_congr rfl
   intro n _
-  by_cases h : t∈A n <;> simp [G,coeff,A] at h ⊢ <;> simp [h]
+  by_cases h : t∈A n
+  · rw [indicator_of_mem h,if_pos (show pastCriticalEdge n t from h)]
+  · rw [indicator_of_notMem h,if_neg (show ¬pastCriticalEdge n t from h),zero_mul]
 
 /-- Removing every displacement which hits a listed common numerator at
 any digit changes the original signed reading by at most its cardinality
@@ -444,7 +450,8 @@ theorem criticalState_sparse_numerator_removal {W₀ : ℝ} (hW₀ : 0<W₀)
   have hsum := Finset.sum_le_sum (s := N) (g := fun _ => (Real.exp T)⁻¹) (fun n hn =>
     (show 1/(n:ℝ)≤(Real.exp T)⁻¹ by rw [one_div]; exact inv_anti₀ (Real.exp_pos _) (hN n hn)))
   rw [Finset.sum_const,nsmul_eq_mul] at hsum
-  simp only [f,← mul_assoc] at hnorm
+  change (∫ t in A, |m*ordinaryPrimeComplementBand (E.indicator Φ) k L t*fractionalPrimeTest (T-t)|) ≤ _ at hcost
+  simp_rw [mul_assoc m] at hcost
   apply (hnorm.trans hcost).trans
   calc _ ≤ K*L*Real.exp (-T/2)*((N.card:ℝ)*(Real.exp T)⁻¹) :=
               mul_le_mul_of_nonneg_left hsum (by positivity)

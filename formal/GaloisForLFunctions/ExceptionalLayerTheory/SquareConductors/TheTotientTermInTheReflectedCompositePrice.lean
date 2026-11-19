@@ -46,10 +46,10 @@ private theorem coprime_log_prefix (n T : ℕ) (hn : 0 < n) :
     rw [←sum_filter]
     have hset : n.divisors.filter (· ∣ a) = (n.gcd a).divisors := by
       ext d
-      simp only [mem_filter,Nat.mem_divisors,Nat.dvd_gcd_iff,hn.ne',
-        (Nat.gcd_pos_of_pos_left a hn).ne',and_true]
+      simp only [mem_filter,Nat.mem_divisors,Nat.dvd_gcd_iff]
+      exact ⟨fun h => ⟨⟨h.1.1,h.2⟩,(Nat.gcd_pos_of_pos_left a hn).ne'⟩,
+        fun h => ⟨⟨h.1.1,hn.ne'⟩,h.1.2⟩⟩
     rw [hset,_root_.RHTower.Sieve.sum_divisors_moebius_real]
-    rfl
   rw [coprimeLogPrefix,sum_filter]
   calc _ = ∑ a ∈ Icc 1 T, ∑ d ∈ n.divisors, if d ∣ a then (μ d:ℝ)*Real.log a else 0 := by
              apply sum_congr rfl
@@ -224,9 +224,19 @@ private theorem complete_factor_price (n : ℕ) :
     by_cases hc : n.Coprime a
     · have he : (Icc 1 (4*n)).filter (· ∣ a)=a.divisors := by
         ext d
-        simp only [mem_filter,mem_Icc,Nat.mem_divisors,ha.ne',and_true]
-        exact ⟨fun hh => hh.2,fun hd => ⟨⟨Nat.pos_of_dvd_of_pos hd ha,(Nat.le_of_dvd ha hd).trans hT⟩,hd⟩⟩
-      simp only [f,coprimeSmallFactorLog,hc,true_and,if_true,←sum_filter,he,vonMangoldt_sum]
+        simp only [mem_filter,mem_Icc,Nat.mem_divisors]
+        exact ⟨fun hh => ⟨hh.2,ha.ne'⟩,fun hd => ⟨⟨Nat.pos_of_dvd_of_pos hd.1 ha,
+          (Nat.le_of_dvd ha hd.1).trans hT⟩,hd.1⟩⟩
+      change (∑ q ∈ Icc 1 (4*n),if n.Coprime a ∧ q ∣ a then vonMangoldt q else 0)=
+        if n.Coprime a then Real.log a else 0
+      rw [if_pos hc]
+      calc _ = ∑ q ∈ Icc 1 (4*n), if q ∣ a then vonMangoldt q else 0 := by
+                 apply sum_congr rfl
+                 intro q _
+                 by_cases hq : q ∣ a
+                 · rw [if_pos ⟨hc,hq⟩,if_pos hq]
+                 · rw [if_neg (fun h => hq h.2),if_neg hq]
+           _ = _ := by rw [←sum_filter,he,vonMangoldt_sum]
     · simp [coprimeSmallFactorLog,f,hc]
   have hi (T : ℕ) : coprimeLogPrefix n T=∑ a ∈ Ioc 0 T,f a := by
     rw [coprimeLogPrefix,sum_filter,show Icc 1 T=Ioc 0 T by ext a; simp only [mem_Icc,mem_Ioc]; omega]
@@ -280,7 +290,7 @@ theorem large_prime_cofactor_price_exact {n P : ℕ} (hn : 0 < n) (hP : P ≤ 2*
   rw [←small,←small,complete_factor_price] at ht
   have hs := sum_filter_add_sum_filter_not (Ioc P (4*n)) Nat.Prime f
   have hc : (∑ p ∈ S,f p)=largePrimeCofactorPrice n P-primeMidpointPrice n := by
-    rw [←add_neg_eq_sub,←prime_singleton_price hP]
+    rw [sub_eq_add_neg,←prime_singleton_price hP]
     dsimp only [largePrimeCofactorPrice]
     rw [←sum_add_distrib]
     apply sum_congr rfl
@@ -320,7 +330,9 @@ theorem large_prime_cofactor_centering {n P : ℕ} (hn : 1 < n) (hP : P ≤ 2*n)
   change _ = -(smallMidpointFactorPrice n P+R) at he
   rw [show largePrimeCofactorPrice n P-reflectedDensity*n.totient-primeMidpointPrice n =
       (reflectedCoprimePrice n-reflectedDensity*n.totient)-(smallMidpointFactorPrice n P+R) by linarith only [he]]
-  apply (abs_sub_le _ _).trans ((add_le_add hb ((abs_add_le _ _).trans (add_le_add hs hr))).trans_eq ?_)
+  have tri (x y : ℝ) : |x-y| ≤ |x|+|y| := by
+    simpa only [sub_zero,zero_sub,abs_neg] using abs_sub_le x 0 y
+  apply (tri _ _).trans ((add_le_add hb ((abs_add_le _ _).trans (add_le_add hs hr))).trans_eq ?_)
   ring
 
 /-- At every power endpoint the omitted prime factors and proper powers
@@ -335,7 +347,6 @@ theorem large_prime_cofactor_price_on_powers {r : ℕ} (hr : 2 ≤ r) {ε : ℝ}
   refine ⟨(8+2*|A|)*D,by dsimp only [D]; positivity,?_⟩
   intro u hu
   have hu0 : 0 < u := by omega
-  have hu1 := Nat.one_le_cast.mpr (α:=ℝ) hu0
   let P := u^(r-1)
   let n := u^r
   have hn : 1 < n := one_lt_pow₀ (show 1<u by omega) (by omega)
@@ -352,7 +363,7 @@ theorem large_prime_cofactor_price_on_powers {r : ℕ} (hr : 2 ≤ r) {ε : ℝ}
     exact mul_le_mul_of_nonneg_left (Real.sqrt_le_iff.mpr ⟨Nat.cast_nonneg _,hPs⟩) (by norm_num)
   have hproper := (hA ((4*n:ℕ):ℝ)).trans (mul_le_mul (le_abs_self A) hsq (Real.sqrt_nonneg _) (abs_nonneg _))
   have hK : 7*(P:ℝ)+(Chebyshev.psi (4*n:ℕ)-Chebyshev.theta (4*n:ℕ))+1 ≤ (8+2*|A|)*P := by
-    linarith only [hproper,Nat.one_le_cast.mpr (α:=ℝ) hPpos]
+    linarith only [hproper,(Nat.one_le_cast (α:=ℝ)).mpr hPpos]
   have hd := _root_.RHTower.Sieve.card_divisors_le_rpow ht (by omega : n ≠ 0)
   have hmass : squarefreeDivisorMass n ≤ D*(u:ℝ)^ε := by
     have hm := sum_le_sum (s:=n.divisors) (fun d _ =>
@@ -367,5 +378,68 @@ theorem large_prime_cofactor_price_on_powers {r : ℕ} (hr : 2 ≤ r) {ε : ℝ}
 
 #print axioms large_prime_cofactor_centering
 #print axioms large_prime_cofactor_price_on_powers
+
+/-- The squared large-prime cut is obtained at b = 1/2; larger b moves
+the same cut while retaining the signed cofactor intervals. -/
+def reflectedPrimeCut (b : ℝ) (n : ℕ) : ℕ := ⌊2*(n:ℝ)^b⌋₊
+
+/-- A prime above the power cut has cofactor strictly less than
+2 n^(1-b), with no endpoint loss from integer rounding. -/
+theorem cofactor_below_reflected_prime_cut {b : ℝ} {n p v : ℕ} (hn : 0 < n)
+    (hp : reflectedPrimeCut b n < p) (hv : p*v ≤ 4*n) :
+    (v:ℝ) < 2*(n:ℝ)^(1-b) := by
+  have hn' : 0 < (n:ℝ) := Nat.cast_pos.mpr hn
+  have hr : 0 < (n:ℝ)^b := Real.rpow_pos_of_pos hn' _
+  have hp' : 2*(n:ℝ)^b < p := (Nat.floor_lt (by positivity)).mp hp
+  have ht : (2*(n:ℝ)^(1-b))*(2*(n:ℝ)^b)=4*n := by
+    rw [show 2*(n:ℝ)^(1-b)*(2*(n:ℝ)^b)=4*((n:ℝ)^(1-b)*(n:ℝ)^b) by ring,
+      ←Real.rpow_add hn',sub_add_cancel,Real.rpow_one]
+  by_cases hv0 : v=0
+  · subst v; positivity
+  have hlow := mul_lt_mul_of_pos_left hp' (Nat.cast_pos.mpr (Nat.pos_of_ne_zero hv0))
+  have hu : (p:ℝ)*v ≤ 4*n := by exact_mod_cast hv
+  apply (mul_lt_mul_iff_left₀ (show 0 < 2*(n:ℝ)^b by positivity)).mp
+  rw [ht]
+  linarith only [hlow,hu]
+
+/-- For every integer center, removing all ordinary prime factors up to
+2 n^b costs at most n^(b+ε) in the centered joint price. At b=1/2 the
+large prime is unique, and at b=5/6 only cofactors below 2 n^(1/6) remain. -/
+theorem all_endpoint_large_cofactor_error {b ε : ℝ} (hb : 1/2 ≤ b) (hb1 : b ≤ 1) (hε : 0 < ε) :
+    ∃ A : ℝ, 0 ≤ A ∧ ∀ n : ℕ, 1 < n →
+      |largePrimeCofactorPrice n (reflectedPrimeCut b n)-reflectedDensity*n.totient-primeMidpointPrice n| ≤
+        A*(n:ℝ)^(b+ε) := by
+  obtain ⟨C,hC⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  let D := |_root_.RHTower.Sieve.divisorBoundConst ε|
+  refine ⟨(15+2*|C|)*D,by dsimp only [D]; positivity,?_⟩
+  intro n hn
+  have hn0 : 0 < n := by omega
+  have h1 := (Nat.one_le_cast (α:=ℝ)).mpr hn0
+  have hpow : 1 ≤ (n:ℝ)^b := Real.one_le_rpow h1 (by linarith only [hb])
+  have hcut : (reflectedPrimeCut b n:ℝ) ≤ 2*(n:ℝ)^b := Nat.floor_le (by positivity)
+  have hlin : (n:ℝ)^b ≤ n := by simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le h1 hb1
+  have hcap : reflectedPrimeCut b n ≤ 2*n := by
+    have h : (reflectedPrimeCut b n:ℝ) ≤ 2*n := by linarith only [hcut,hlin]
+    exact_mod_cast h
+  have hs : Real.sqrt (4*n:ℕ) ≤ 2*(n:ℝ)^b := by
+    rw [Nat.cast_mul,Nat.cast_ofNat,Real.sqrt_mul (by norm_num : (0:ℝ)≤4),show Real.sqrt 4=2 by norm_num,
+      Real.sqrt_eq_rpow]
+    exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le h1 hb) (by norm_num)
+  have hc := (hC ((4*n:ℕ):ℝ)).trans (mul_le_mul (le_abs_self C) hs (Real.sqrt_nonneg _) (abs_nonneg _))
+  have hm : squarefreeDivisorMass n ≤ D*(n:ℝ)^ε := by
+    have hh := sum_le_sum (s:=n.divisors) fun d _ =>
+      (show |(μ d:ℝ)| ≤ 1 by exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n:=d))
+    simp only [sum_const,nsmul_eq_mul,mul_one] at hh
+    exact (hh.trans (_root_.RHTower.Sieve.card_divisors_le_rpow hε hn0.ne')).trans
+      (mul_le_mul_of_nonneg_right (le_abs_self _) (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+  have hcost : 7*(reflectedPrimeCut b n:ℝ)+(Chebyshev.psi (4*n:ℕ)-Chebyshev.theta (4*n:ℕ))+1 ≤
+      (15+2*|C|)*(n:ℝ)^b := by linarith only [hcut,hpow,hc]
+  apply (large_prime_cofactor_centering hn hcap).trans
+  apply (mul_le_mul hcost hm (sum_nonneg fun _ _ => abs_nonneg _) (by positivity)).trans_eq
+  rw [Real.rpow_add (Nat.cast_pos.mpr hn0)]
+  ring
+
+#print axioms cofactor_below_reflected_prime_cut
+#print axioms all_endpoint_large_cofactor_error
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

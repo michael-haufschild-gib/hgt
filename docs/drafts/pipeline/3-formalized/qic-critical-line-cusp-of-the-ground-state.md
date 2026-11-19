@@ -1,7 +1,8 @@
 # Critical-line cusp of the ground state
 
-- **Stage:** 2-fully-proven
+- **Stage:** 3-formalized
 - **Source:** [QIC](../../../reports/rh-current-frontier-map.md#qic)
+- **Lean:** [Weighted increment](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/TheConfinementEnergyOfAGroundStateIncrement.lean#L98) · [Critical-line cusp](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Index/TheCriticalLineCuspOfTheGroundState.lean#L112) · [Divergent first moment](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Index/TheCriticalLineCuspOfTheGroundState.lean#L137)
 
 Let $F$ be a threshold ground state, $a$ its confinement coefficient and $M=\int F(u)^2e^{-8u}\,du$. For $G_h(u)=F(u)-F(u+h)$,
 $$

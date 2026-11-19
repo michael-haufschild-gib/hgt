@@ -33,7 +33,7 @@ private theorem p1 (X : ℕ) : 1 ≤ P X := one_le_mul_of_one_le_of_one_le (b1 _
 private theorem product_mono : Monotone P := by
   intro j k jk
   have e := deletionPrice_mono (by norm_num : 0<(1/2:ℝ)) (logSquareCutoff_mono jk)
-  exact mul_le_mul (add_le_add_right (Nat.cast_le.mpr (logSquareCutoff_mono jk)) _)
+  exact mul_le_mul (add_le_add_left (Nat.cast_le.mpr (logSquareCutoff_mono jk)) _)
     (pow_le_pow_left₀ (zero_le_one.trans (e1 j)) e 2) (sq_nonneg _) (zero_le_one.trans (b1 k))
 
 /-- A sharp square-root estimate with the specified multiplicative allowance. -/
@@ -89,7 +89,7 @@ private theorem log_le_wall (X : ℕ) (xp : 0<X) : Real.log X ≤ (b X:ℝ)+1 :=
   let t := Real.log ((X:ℝ)+1)
   have relate := Real.log_le_log (Nat.cast_pos.mpr xp) (by linarith : (X:ℝ) ≤ X+1)
   have sq := Nat.le_self_pow (by decide : 2 ≠ 0) ⌊t⌋₊
-  exact relate.trans ((Nat.lt_floor_add_one t).le.trans (add_le_add_right (Nat.cast_le.mpr sq) _))
+  exact relate.trans ((Nat.lt_floor_add_one t).le.trans (add_le_add_left (Nat.cast_le.mpr sq) _))
 
 private theorem allowance_mono {v w f : ℕ → ℝ} (le : ∀ᶠ n : ℕ in atTop,v n ≤ w n)
     (h : squareRootAllowance v f) : squareRootAllowance w f := by

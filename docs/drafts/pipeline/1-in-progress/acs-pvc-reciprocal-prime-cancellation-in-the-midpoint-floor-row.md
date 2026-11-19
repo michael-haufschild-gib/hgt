@@ -1,0 +1,25 @@
+# Reciprocal prime cancellation in the midpoint floor row
+
+For every integer \(n>1\), the unrestricted reflected-composite price above the prime cutoff \(P\le2n\) is \(\sum_{P<p\le2n}(\log p)k_n(p)\), where \(k_n(p)=\lfloor4n/p\rfloor-2\lfloor3n/p\rfloor+\lfloor2n/p\rfloor\). Its center is \((10\log2-6\log3)n\) at half-plus precision when \(P=\lfloor2\sqrt n\rfloor\). [Factorization and signed center](acs-pvc-the-joint-cofactor-block-at-the-reflected-midpoint.md)
+
+**A prime shell beyond the half-power cutoff.** On paper, for every partial ordinary-prime interval
+\[
+ 2\sqrt n<A\le p<B\le n^{500/999}+1,
+ \qquad \left|\sum_{A\le p<B}(\log p) k_n(p)\right|\ll\sqrt n .
+\]
+Write \(s(x)=\{x\}-1/2\). The exact row is \(2s(3n/p)-s(2n/p)-s(4n/p)\), including its discontinuities. On every sharp block \([X,Y)\) with \(X<Y\le2X\), all three frequencies are between \(X^{999/500}\) and \(X^{1001/500}\): the lower bound follows from \(X\le n^{500/999}\) and the upper bound from \(X\ge2\sqrt n\). The ordinary-prime reciprocal-phase theorem bounds each signed fractional sum by \(O(X^{999/1000})\). Lean verified this signed block estimate at every sharp endpoint. [Midpoint floor row](../../../../formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/ThePrimeFloorRowBeyondTheSquareRoot.lean#L42) Summing full blocks and the final partial block costs \(O((n^{500/999})^{999/1000})=O(\sqrt n)\). This pays primes strictly past twice the square root, where an absolute prime-mass bound no longer suffices. At the RH gate it leaves only \(2\le v<4n^{499/999}\) in the unrestricted composite row, with the linear center \(cn\). [Ordinary-prime reciprocal theorem](../../../../formal/GaloisForLFunctions/PrimeExponentialSums/FractionalPartsOfReciprocalPrimes.lean#L181)
+
+**An independent shell at the first strip milestone, on paper.** For \(n^{5/6}\le X\le n^{8/9}\), a partial block \([X,Y)\) with \(Y\le2X\) costs \(O_\varepsilon(n^{5/6+\varepsilon})\). Use the mixed Vaughan envelope on each harmonic \(1\le h\le H=n^{1/6}\), with reciprocal frequency \(S=2\pi hkn\) for \(k=2,3,4\) and \(U=V=\lfloor X^{1/3}\rfloor\). Its five terms, up to constant and logarithmic factors, are bounded by
+\[
+ X^{2/3} S^{1/6},\quad X^{3/2} S^{-1/2},\quad
+ X^{5/6},\quad S^{1/4} X^{7/12},\quad X^{5/6}.
+\]
+All are \(O(n^{5/6})\) throughout this range. In particular \(X^{3/2}/\sqrt n\) reaches the stated exponent at \(X=n^{8/9}\). The envelope's curvature and lower-frequency conditions hold uniformly for all sufficiently large \(n\). The square-root proper-power mass allows the same bound on ordinary primes. To pass to the unweighted sawtooth, bracket it by differences of the periodic second Bernoulli polynomial at spacing \(\delta=n^{-1/18}\). The constant error costs \(O(\delta X)\). The nonconstant Fourier coefficients have magnitude \(O(\min(1/h,1/(\delta h^2)))\); the harmonics above \(H\) therefore cost \(O(X/(\delta H))\). The lower harmonics cost \(O_\varepsilon(n^{5/6+\varepsilon})\) including all logarithms. The bound sums over every partial sequence of dyadic prime blocks. This moves the cutoff to \(n^{8/9}\), leaving \(v<4n^{1/9}\) for the intermediate upper estimate. The prime sum on those remaining cofactors is open. [Reciprocal Vaughan envelope](../../../../formal/GaloisForLFunctions/PrimeExponentialSums/ReciprocalPhasesNearTheSquareRoot.lean#L46) · [Five explicit terms](../../../../formal/GaloisForLFunctions/RHTower/Sieve/KubalalikaPowerEnvelope.lean#L440)
+
+At the **half-plus** gate the same envelope gives a larger shell on paper. For \(2\sqrt n\le X\le n^{18/35}\), use \(U=\lfloor n^{2/7}\rfloor\), \(V=\lfloor n^{1/35}\rfloor\), \(H=\lfloor n^{1/35}\rfloor\), \(\delta=n^{-1/70}\). Then \(S\ll n^{36/35}\). The curvature cost \(S(UV)^3\ll n^{69/35}\) lies below \(X^4\). The first, third and fourth terms of the five-term envelope have exponents respectively \(6/35+6/35+11/70=1/2\), \(18/35-1/70=1/2\), and \(9/35+27/70-1/7=1/2\). The second and fifth are smaller. Both Fourier errors \(X\delta\) and \(X/(\delta H)\) cost \(O(\sqrt n)\). Thus the shell costs \(O_\varepsilon(n^{1/2+\varepsilon})\) at every terminal prime cut. Unlike the smaller pure-square-root estimate above, this absorbs the envelope's logarithms. At half-plus precision it leaves only \(v<4n^{17/35}\).
+
+**Range of this argument.** For \(1/2\le t<1\), take
+\[
+ a=\min\left(\frac{46t-5}{35},\frac{2t+1}{3}\right).
+\]
+The same argument pays all primes through \(n^a\) at \(O_\varepsilon(n^{t+\varepsilon})\) for the unrestricted floor row. In the band \(n^t\le X\le n^a\), use \(H=n^{2(a-t)}\), \(\delta=n^{t-a}\), and factors of sizes \(n^u,n^v\) with \(v=2(a-t)\), \(u=1/2+5a/2-3t\). The second envelope term requires \(3a/2-1/2\le t\), the first requires \(35a+5\le46t\), and the third and fourth have exponent \(t\). Both \(u+v<t\) and \(1+2(a-t)+3(u+v)<4t\) hold on the two branches, which meet at \(t=25/34\). The Fourier errors have exponent \(t\). This produces a joint arithmetic saving in a positive-width shell at every such \(t\). Since \(a<1\), primes with bounded or slowly growing cofactors still require an independent estimate.

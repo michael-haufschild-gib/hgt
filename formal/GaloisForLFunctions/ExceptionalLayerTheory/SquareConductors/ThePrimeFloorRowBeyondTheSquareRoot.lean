@@ -140,15 +140,15 @@ theorem prime_floor_shell_beyond_square_root :
     have hstart : 4*(n:ℝ) ≤ (A:ℝ)^2 := by linarith only [hsq]
     have hbound := h B n A (by omega) hab (by omega) hstart
     have hcut : (⌊(n:ℝ)^(500/999:ℝ)⌋₊:ℝ) ≤ (n:ℝ)^(500/999:ℝ) := Nat.floor_le (by positivity)
-    have hone := Real.one_le_rpow (Nat.one_le_cast.mpr (α:=ℝ) hn) (by norm_num : (0:ℝ) ≤ 500/999)
-    have hBr := Nat.cast_le.mpr (α:=ℝ) hB
+    have hone := Real.one_le_rpow ((Nat.one_le_cast (α:=ℝ)).mpr hn) (by norm_num : (0:ℝ) ≤ 500/999)
+    have hBr := (Nat.cast_le (α:=ℝ)).mpr hB
     rw [Nat.cast_add,Nat.cast_one] at hBr
     have hbnd := Real.rpow_le_rpow (Nat.cast_nonneg B)
       (by linarith only [hcut,hone,hBr] : (B:ℝ) ≤ 2*(n:ℝ)^(500/999:ℝ)) hs.le
     rw [Real.mul_rpow (by norm_num : (0:ℝ) ≤ 2) (by positivity),←Real.rpow_mul (Nat.cast_nonneg n),
       show (500/999:ℝ)*s=1/2 by norm_num [s],←Real.sqrt_eq_rpow] at hbnd
     exact hbound.trans ((mul_le_mul_of_nonneg_left hbnd hK).trans_eq (mul_assoc ..).symm)
-  · rw [midpointFloorPrimeBlock,Ico_eq_empty (le_of_not_ge hab),filter_empty,sum_empty,abs_zero]
+  · rw [midpointFloorPrimeBlock,Ico_eq_empty (by omega : ¬A<B),filter_empty,sum_empty,abs_zero]
     positivity
 
 #print axioms prime_floor_shell_beyond_square_root
@@ -236,7 +236,8 @@ theorem unrestricted_large_prime_factorial_error {n P : ℕ} (hn : 0 < n) (hP : 
     apply (abs_sum_le_sum_abs _ _).trans
     apply sum_le_sum
     intro q hq
-    rw [f,abs_mul,abs_of_nonneg vonMangoldt_nonneg]
+    dsimp only [f]
+    rw [abs_mul,abs_of_nonneg vonMangoldt_nonneg]
     exact mul_le_of_le_one_right vonMangoldt_nonneg (abs_midpoint_division_le_one (ht q hq) n)
   have low := bound (T:=Ioc 0 P) (fun _ h => (mem_Ioc.mp h).1)
   have powc := bound (T:=S) (fun _ h => (Nat.zero_le P).trans_lt (mem_Ioc.mp (mem_filter.mp h).1).1)
