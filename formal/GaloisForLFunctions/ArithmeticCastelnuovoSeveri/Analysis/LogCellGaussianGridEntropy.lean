@@ -54,7 +54,8 @@ private theorem integral_cosine (μ : Measure ℝ) [IsProbabilityMeasure μ] (t 
   change _ = (∫ x, f x ∂μ).re
   calc
     _ = ∫ x, (f x).re ∂μ := integral_congr_ae (Filter.Eventually.of_forall fun x => by
-      simp [f,← Complex.ofReal_mul,Complex.exp_mul_I])
+      simp [f,← Complex.ofReal_mul,Complex.exp_mul_I]
+      rfl)
     _ = _ := integral_re hf
 
 /-- The binary output is determined by one characteristic-function value. -/

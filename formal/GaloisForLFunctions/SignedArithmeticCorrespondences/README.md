@@ -176,6 +176,33 @@ A prime $p$ distinguishes two interleaved layers more finely. Pair conductors $d
 
 If both undilated layers lie in $(N,N+M]$, put $A=2M/N+H_M+M/(4N)$. Then $|I_d+P|\le A(\|u\|_2^2+\|v\|_2^2)/(2d)$. For example, take every odd core from $2k+3$ to $4k+7$ and its double. Their endpoints interleave. Once $d\log2>A$, every nonzero matched signed vector gives a strictly negative ordinary mixed intersection and a strictly positive Liouville mixed intersection with the same pole degrees and jets. This sign refers to the two **distinct** layers. In the Kummer model, the negative unmodified square instead comes from the odd parity moment in $2g(U_0^2-U_1^2)$, and reversing that moment on one divisor gives $2g(U_0^2+U_1^2)$. [Interleaved layers and completion](PrimeContactsBetweenInterleavedValuationLayers.lean) · [Kummer parity law](TheTwoSquareChannelsOfKummerPointCounts.lean)
 
+## Divisor incidence, the prime debit, and the macroscopic cost barrier
+
+For any finite support $S\subset\mathbf N_{>0}$, contact weight $w:\mathbf N\to\mathbf R$, and real divisor $c:S\to\mathbf R$, split the Weil self-pairing as $\mathrm{combFormW}(w,S,c)=B_{\mathrm{dr}}(S,c)-D_w(S,c)$, where
+
+$$
+B_{\mathrm{dr}}(S,c)=\sum_{n\in S}c_n^2\log\frac{n}{2\pi}-\sum_{n\in S}\sum_{m\in S\setminus\{n\}}c_m c_n\,\mathrm{jetKernel}(m,n),
+$$
+
+$$
+D_w(S,c)=\sum_{n\in S}\sum_{m\in S\setminus\{n\}}c_m c_n\,\mathrm{contactW}(w,m,n)-2\left(\sum_{n\in S}\frac{c_n}{n}\right)\left(\sum_{n\in S}c_n\right).
+$$
+
+On $S=[1,N]$ and $u=\mathrm{upperDivisor}(N,a)$, these two pieces match the diagonal-plus-real-jet budget and the mixed prime-plus-boundary debit of `interleaved_finite_part` term for term. Write $v_{d,r}(n)=\mathbf 1_{n\equiv r\pmod d}-1/d$ and $v_d=v_{d,0}$. On unshifted prefixes $[1,N]$, divisor incidence cannot pay its prime debit: already at $N=2$ the integral centered divisor $u_2(n)=2\mathbf 1_{2\mid n}-1$ satisfies $B_{\mathrm{dr}}([1,2],u_2)<D_\Lambda([1,2],u_2)$, and for every prime $p$ the self-pairing $\mathrm{combForm}([1,N],v_p)$ diverges to $-\infty$ at rate $-\frac{1}{p}(1-\frac{1}{p})N\log N$. Even on late combs $S=(N,N+3KN]$ ($K\ge1$), $D_\Lambda(S,v_p)>0$ for every prime $3K<p\le KN$, so the isolated prime-and-boundary term is strictly negative before spending $B_{\mathrm{dr}}(S,v_p)$. [Budget–debit split and prefix obstruction](ThePrimeDebitOfInterleavingSelfIntersections.lean)
+
+On late combs $S=(N,N+3KN]$ with slices $S_r=(N,\lfloor(1+3K)N/r\rfloor]$, three elementary divisibility counts govern all residue refinements:
+1. For $d_1,d_2$ coprime to $\{2,\dots,3K\}$, multiplication $m\mapsto rm$ preserves divisibility on $S_r$, giving $\sum_{m\ne n\in S}v_{d_1}(m)v_{d_2}(n)\,\mathrm{contactW}(w,m,n)=2\sum_{r=2}^{3K}w(r)\sum_{m\in S_r}v_{d_1}(m)v_{d_2}(m)$. Replacing $\Lambda$ by $\lambda\Lambda$ leaves the endpoint, real-jet, and diagonal terms unchanged and flips only nonsquare ratios $2\le r\le 3K$ from $-\Lambda(r)$ to $+\Lambda(r)$, strictly increasing every self-pairing by $4\sum_{2\le r\le 3K,\,\neg\mathrm{IsSquare}(r)}\Lambda(r)\sum_{m\in S_r}v_d(m)^2>0$.
+2. For coprime $d_1,d_2\ge 1$ and any shift $h\ge 0$, Chinese Remainder incidence cancels $(b-a)/(d_1 d_2)$ identically in $\sum_{m\in(a,b]}v_{d_1}(m)v_{d_2}(m+h)$, leaving discrepancy at most $2$. Direct and reversed Abel summation give $|\mathrm{formBilinW}(w,S,v_p,v_q)|\le C_{K,w}(1+\log N)$ uniformly for all distinct primes $p\ne q$.
+3. Partitioning into complete periods gives $\sum_{n\in(a,b]}v_d(n)^2\ge\lfloor(b-a)/d\rfloor(1-1/d)$ and $|\sum_{n\in(a,b]}v_{d,r}(n)|\le 1$. [Divisor incidence counts on late combs](DivisorIncidenceOnLateCombs.lean)
+
+Orthogonal block reduction and the bounded-ratio Schur estimate combine with $|\sum_{n\in(a,b]}v_{d,r}(n)|\le 1$ to give, for every $K\ge 1$, contact weight $w$, and $\kappa>0$, a constant $C_{K,w,\kappa}>0$ such that eventually in $N$, every finite linear combination $c=\sum_{t\in T}\alpha_t v_{d_t,r_t}$ ($d_t\ge 1$) satisfies
+
+$$
+\mathrm{combFormW}(w,S,c)\ge\kappa\sum_{n\in S}c_n^2-\frac{C_{K,w,\kappa}}{N}\left(\sum_{t\in T}|\alpha_t|\right)^2.
+$$
+
+Consequently, for any $C_0>0$, both the two-prime pilot ($A_w,C_w>0$ and $B_w^2\le A_w C_w$ uniformly for moving primes $p\ne q\le\lfloor C_0\sqrt N\rfloor$) and unconditional eventual positivity on the entire unrestricted span $\{v_p:p\le\lfloor C_0\sqrt N\rfloor\}$ hold for both $\Lambda$ and $\lambda\Lambda$. Conversely, upper-triangular Möbius inversion on $S=(N,QN]$ and Bertrand's postulate ($\sum_{t=1}^Q\mu(t)/t\ne 0$ for all $Q\ge 2$) represent **every** real vector $c:S\to\mathbf R$ as $\sum_{d=2}^{QN}\alpha_d v_d$ on $S$ at macroscopic cost $(\sum_{d=2}^{QN}|\alpha_d|)^2\le C_Q N\sum_{n\in S}c_n^2$. At $Q=1+3K$, embedding the first-step sign-twin failure window produces macroscopic-cost divisibility combinations with $\mathrm{combFormW}(\lambda\Lambda,S,c)<-(1/2000)\sum_{n\in S}c_n^2<0$, proving that the $N^{-1}(\sum|\alpha_t|)^2$ cost law is sharp up to a constant factor; for $\Lambda$, paying $D_\Lambda(S,c)\le B_{\mathrm{dr}}(S,c)$ across macroscopic-cost centered-divisibility combinations at every $K\ge 1$ is unconditionally equivalent to `RiemannHypothesis`. [Controlled positivity and macroscopic barrier](ControlledDivisibilityPositivityAndTheMacroscopicBarrier.lean)
+
 ## Tests and open questions
 
 * Beyond full lower prefixes, the multiplicative tail formula holds on arbitrary mixed divisors. Even total is the sole constraint on their positive integral quotient cells. [Range theorem](TheIntegralRangeOfTheMixedQuotientCells.lean)

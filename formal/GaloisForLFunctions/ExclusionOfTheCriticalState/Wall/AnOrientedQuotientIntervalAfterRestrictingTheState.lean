@@ -1,5 +1,4 @@
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.OddQuotientsInTheFractionalPrimeTest
-import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheSquareChargeInsideTheDiagonalInterval
+import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.TheDisplacementIntegralOfAnOrdinaryPrimeBand
 
 /-!
 # State-oriented quotient intervals in a restricted prime test
@@ -19,25 +18,6 @@ open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri HTGeometry
 /-- Integer abscissae in the original middle test at fixed state displacement. -/
 def ordinaryTestDisplacementSupport (k L : ℕ) (T v : ℝ) : Finset ℕ :=
   (Finset.Ioc k L).filter fun n => v+Real.log n ∈ Ioc (T/6) (6*T) ∧ pastCriticalEdge n (v+Real.log n)
-
-private theorem coeff_eq (n : ℕ) :
-    ordinaryPrimeExcessCoeff n = (if n.Prime then vonMangoldt n else 0)-1 := by
-  unfold ordinaryPrimeExcessCoeff
-  by_cases hp : n.Prime
-  · rw [if_pos hp,if_pos hp,vonMangoldt_apply_prime hp]
-  · rw [if_neg hp,if_neg hp]
-
-private theorem edge_at_displacement {n : ℕ} (hn : 0<n) (v : ℝ) :
-    let t := v+Real.log n
-    pastCriticalEdge n t ↔ 1+Real.exp (-t/2)*Real.sqrt t < Real.exp (-v) := by
-  let t := v+Real.log n
-  have hn' : Real.exp t*Real.exp (-v)=(n:ℝ) := by
-    rw [← Real.exp_add,show t+ -v=Real.log n by dsimp only [t]; ring,Real.exp_log (Nat.cast_pos.mpr hn)]
-  have he : Real.exp t*Real.exp (-t/2)=Real.exp (t/2) := by rw [← Real.exp_add]; congr 1; ring
-  change Real.exp t+Real.exp (t/2)*Real.sqrt t < (n:ℝ) ↔ _
-  calc _ ↔ Real.exp t*(1+Real.exp (-t/2)*Real.sqrt t)<Real.exp t*Real.exp (-v) := by
-             rw [hn',mul_add,mul_one,← mul_assoc,he]
-       _ ↔ _ := mul_lt_mul_iff_right₀ (Real.exp_pos t)
 
 private theorem relative_width_antitone {t u : ℝ} (ht : 1≤t) (htu : t≤u) :
     Real.exp (-u/2)*Real.sqrt u ≤ Real.exp (-t/2)*Real.sqrt t := by
@@ -81,76 +61,16 @@ private theorem active_interval {k L H : ℕ} {T v : ℝ} (hT : 6≤T)
       (by linarith only [hat.1.1,hT]) (by linarith only [h₁])
     refine (hmem _).mpr ⟨⟨hak.1.trans_le han,hnb.trans hbL.2⟩,
       ⟨⟨by linarith only [hat.1.1,h₁],by linarith only [hbt.1.2,h₂]⟩,
-        (edge_at_displacement hn0 v).mpr ?_⟩,hroot.trans_le (Nat.cast_le.mpr han)⟩
-    linarith only [hwidth,(edge_at_displacement ha0 v).mp hat.2]
+        (pastCriticalEdge_at_displacement hn0 v).mpr ?_⟩,hroot.trans_le (Nat.cast_le.mpr han)⟩
+    linarith only [hwidth,(pastCriticalEdge_at_displacement ha0 v).mp hat.2]
 
 private theorem band_integral_at_displacement {Φ : ℝ → ℝ} (hi : Integrable Φ)
     (k L : ℕ) (T : ℝ) :
     let G := fun v => Φ v*(fractionalPrimeExcess (ordinaryTestDisplacementSupport k L T v) (Real.exp (T-v)) /
       Real.sqrt (Real.exp (T-v)))
     Integrable G ∧ (∫ t in Ioc (T/6) (6*T), ordinaryPrimeComplementBand Φ k L t*fractionalPrimeTest (T-t)) =
-      ∫ v, G v := by
-  let A := Ioc (T/6) (6*T)
-  let I := Finset.Ioc k L
-  let E := fun n : ℕ => A ∩ {t : ℝ | pastCriticalEdge n t}
-  let f := fun (n : ℕ) => (E n).indicator (fun t => ordinaryPrimeExcessCoeff n*continuousIntegerAtom Φ n t*
-    fractionalPrimeTest (T-t))
-  have hf (n : ℕ) : Integrable (f n) := by
-    have hE : MeasurableSet (E n) := measurableSet_Ioc.inter (measurableSet_lt
-      (by fun_prop : Measurable fun t : ℝ => Real.exp t+Real.exp (t/2)*Real.sqrt t) measurable_const)
-    have h := ((hi.comp_sub_right (Real.log n)).const_mul (Real.sqrt n)⁻¹).const_mul (ordinaryPrimeExcessCoeff n)
-    have hK := measurable_fractionalPrimeTest.comp (show Measurable (fun t : ℝ => T-t) from measurable_const.sub measurable_id)
-    apply Integrable.indicator _ hE
-    apply h.abs.mono' (h.aestronglyMeasurable.mul hK.aestronglyMeasurable)
-    apply Eventually.of_forall
-    intro t
-    change |ordinaryPrimeExcessCoeff n*continuousIntegerAtom Φ n t * fractionalPrimeTest (T-t)| ≤ _
-    rw [abs_mul]
-    exact mul_le_of_le_one_right (abs_nonneg _) (fractionalPrimeTest_bounds _).1
-  have hrow (t : ℝ) : (∑ n ∈ I, f n t)= A.indicator (fun u => ordinaryPrimeComplementBand Φ k L u*
-      fractionalPrimeTest (T-u)) t := by
-    by_cases h : t∈A
-    · rw [indicator_of_mem h,ordinaryPrimeComplementBand,Finset.sum_mul]
-      apply Finset.sum_congr rfl
-      intro n _
-      by_cases he : pastCriticalEdge n t
-      · rw [if_pos he,show f n t=_ from indicator_of_mem (show t∈E n from ⟨h,he⟩) _,coeff_eq]
-      · rw [if_neg he,zero_mul]; exact indicator_of_notMem (fun hm : t∈E n => he hm.2) _
-    · rw [indicator_of_notMem h]
-      exact Finset.sum_eq_zero fun n _ => indicator_of_notMem (fun hm : t∈E n => h hm.1) _
-  let p := fun (n : ℕ) (v : ℝ) => f n (v+Real.log n)
-  have hp (n : ℕ) : Integrable (p n) := (hf n).comp_add_right _
-  have hread (v : ℝ) : (∑ n ∈ I, p n v)=Φ v*(fractionalPrimeExcess (ordinaryTestDisplacementSupport k L T v)
-      (Real.exp (T-v))/Real.sqrt (Real.exp (T-v))) := by
-    rw [fractionalPrimeExcess,ordinaryTestDisplacementSupport,Finset.sum_filter,Finset.sum_div,Finset.mul_sum]
-    apply Finset.sum_congr rfl
-    intro n hn
-    have hn0 : 0<(n:ℝ) := Nat.cast_pos.mpr (Nat.zero_lt_of_lt (Finset.mem_Ioc.mp hn).1)
-    let t := v+Real.log n
-    by_cases hm : t ∈ E n
-    · rw [if_pos (show v+Real.log n∈A ∧ pastCriticalEdge n (v+Real.log n) from hm)]
-      change (E n).indicator _ t=_
-      rw [indicator_of_mem hm]
-      have hphase : Real.exp (T-t)=Real.exp (T-v)/n := by
-        rw [show T-t=(T-v)-Real.log n by dsimp only [t]; ring,Real.exp_sub,Real.exp_log hn0]
-      have hroot : (Real.sqrt n)⁻¹=Real.exp (-(Real.log n)/2) := by
-        rw [neg_div,Real.exp_neg,Real.exp_half,Real.exp_log hn0]
-      have hscale : (Real.sqrt n)⁻¹*Real.exp (-(T-t)/2)=(Real.sqrt (Real.exp (T-v)))⁻¹ := by
-        rw [hroot,← Real.exp_add,← Real.exp_half,← Real.exp_neg]
-        congr 1; dsimp only [t]; ring
-      dsimp only [continuousIntegerAtom,fractionalPrimeTest]
-      rw [show t-Real.log n=v by dsimp only [t]; ring,hphase]
-      linear_combination ordinaryPrimeExcessCoeff n*Φ v*Int.fract (Real.exp (T-v)/n)*hscale
-    · rw [if_neg (show ¬(v+Real.log n∈A ∧ pastCriticalEdge n (v+Real.log n)) from hm),zero_div,mul_zero]
-      exact indicator_of_notMem hm _
-  have hpint := integrable_finsetSum I (fun n _ => hp n)
-  refine ⟨hpint.congr (Eventually.of_forall hread),?_⟩
-  rw [← integral_indicator measurableSet_Ioc]
-  calc _ = ∫ t, ∑ n ∈ I, f n t := integral_congr_ae (Eventually.of_forall fun t => (hrow t).symm)
-       _ = ∑ n ∈ I, ∫ t, f n t := integral_finsetSum _ (fun n _ => hf n)
-       _ = ∑ n ∈ I, ∫ v, p n v := Finset.sum_congr rfl fun n _ => (integral_add_right_eq_self (f n) (Real.log n)).symm
-       _ = ∫ v, ∑ n ∈ I, p n v := (integral_finsetSum _ (fun n _ => hp n)).symm
-       _ = _ := integral_congr_ae (Eventually.of_forall hread)
+      ∫ v, G v :=
+  ordinaryBand_displacement_integral hi k L T _ measurableSet_Ioc
 
 /-- An adverse displacement selects its own numerator, sign and entire interior interval. -/
 def HasOrientedQuotientWitness (Φ : ℝ → ℝ) (m T B : ℝ) (k L : ℕ) (v : ℝ) : Prop :=

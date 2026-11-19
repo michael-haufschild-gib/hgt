@@ -101,7 +101,7 @@ theorem noisy_projection (u v a b l m j : ℝ) :
   obtain ⟨ho,ho'⟩ := optimum u v a b l
   have he : 2*(D.toReal-(optimalLoss u v a b l).toReal) =
       Real.exp z-1-z+(center u v a b-m)^2/Real.exp j := by
-    dsimp only [z]
+    dsimp only [z,V,D]
     rw [Real.exp_sub,Real.exp_log hv]
     linear_combination h-ho'
   have hscale : 0 ≤ Real.exp z-1-z := by linarith only [Real.add_one_le_exp z]
@@ -178,7 +178,7 @@ private theorem cell_weights (i : ℕ) :
   have hl := logCellWidth_pos (show 1 ≤ 2*(i+1) by omega)
   have hr := logCellWidth_pos (show 1 ≤ 2*(i+1)+1 by omega)
   simp only [lengthRatio,logLeft,logRight,Real.exp_log hl,Real.exp_log hr,haarRightCoeff,haarLeftCoeff]
-  exact ⟨rfl,by rw [add_comm]⟩
+  exact ⟨rfl,by rw [add_comm (logCellWidth (2*(i+1)+1)) (logCellWidth (2*(i+1)))]⟩
 
 private theorem cell_gap (q d : ℕ → ℝ) (i : ℕ) :
     leftValue q d i-rightValue q d i=d (i+1) := by

@@ -115,10 +115,6 @@ theorem interleaved_signed_increment_energy (N : ℕ) (a b : ℕ → ℤ) (r : �
          exact add_le_add hp ((div_le_div_of_nonneg_right hi (by norm_num)).trans hj)
        _ = _ := by ring
 
-/-- Power conductor weights agree with the usual real powers at every
-positive conductor and take value one at zero. -/
-def powerConductorWeight (s : ℝ) (k : ℕ) : ℝ := ((max k 1:ℕ):ℝ)^s
-
 /-- Any exponent above one half controls the signed finite part on all
 interleaved signed conductors. The bound uses the centered prime
 increments and is independent of the cutoff. -/
@@ -231,6 +227,88 @@ theorem signed_test_on_zero_prime_ratios {N : ℕ} (hN : 0<N) (m : ℕ → ℕ)
   change M/2≤_
   linarith only [hi]
 
+private theorem zero_prime_weight_on_sixes {k : ℕ} (hk : 6∣k) : Λ k=0 := by
+  apply ArithmeticFunction.vonMangoldt_eq_zero_iff.mpr
+  intro hp
+  obtain ⟨p,l,hp,_,rfl⟩ := (isPrimePow_nat_iff _).mp hp
+  have h₂ := (Nat.prime_dvd_prime_iff_eq Nat.prime_two hp).mp
+    (Nat.prime_two.dvd_of_dvd_pow ((by decide : 2∣6).trans hk))
+  have h₃ := (Nat.prime_dvd_prime_iff_eq Nat.prime_three hp).mp
+    (Nat.prime_three.dvd_of_dvd_pow ((by decide : 3∣6).trans hk))
+  omega
+
+/-- Exact power threshold for the signed finite part. A conductor-one
+atom against multiples of six detects divergence already at one half. -/
+theorem signed_finite_part_power_iff (s : ℝ) :
+    (∃ C : ℝ, 0≤C ∧ ∀ (N : ℕ) (a b : ℕ → ℤ), |interleavedFinitePart N a b| ≤
+      C*conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N a i)*
+        conductorNorm N (fun i => powerConductorWeight s i*upperDivisor N b i)) ↔ 1/2<s := by
+  refine ⟨?_,signed_finite_part_above_half⟩
+  rintro ⟨C,hC,h⟩
+  let r := powerConductorWeight s
+  let w := fun k : ℕ => if 6∣k then (1:ℝ) else 0
+  have hr (k : ℕ) : 0<r k := Real.rpow_pos_of_pos
+    (Nat.cast_pos.mpr (Nat.zero_lt_one.trans_le (le_max_right _ _))) s
+  have hw (k : ℕ) : 0≤w k := by dsimp [w]; split <;> norm_num
+  have hprice : Summable (fun k => (w k/r k)^2) := by
+    apply dual_price_summable_of_integer_tests r w hr hw (B := 2*C) (mul_nonneg (by norm_num) hC)
+    intro N hN m
+    let v := fun k => if 6∣k then m k else 0
+    have hsix (k : ℕ) (hk : k∈Icc 1 N) (hv : v k≠0) : 3≤k ∧ Λ k=0 := by
+      have hd : 6∣k := by
+        by_contra hn
+        exact hv (if_neg hn)
+      have h₆ := Nat.le_of_dvd (mem_Icc.mp hk).1 hd
+      exact ⟨by omega,zero_prime_weight_on_sixes hd⟩
+    obtain ⟨a,b,ha,hb,hvalue⟩ := signed_test_on_zero_prime_ratios hN v hsix
+    have h₁ : 1∈Icc 1 N := mem_Icc.mpr ⟨le_rfl,hN⟩
+    have hn : conductorNorm N (fun i => r i*upperDivisor N a i)=1 := by
+      rw [conductorNorm,sum_eq_single_of_mem 1 h₁]
+      · simp [ha 1 h₁,r,powerConductorWeight]
+      · intro i hi he
+        simp [ha i hi,he]
+    have hnorm : conductorNorm N (fun i => r i*upperDivisor N b i) ≤ conductorNorm N (fun i => r i*m i) := by
+      apply Real.sqrt_le_sqrt
+      apply sum_le_sum
+      intro i hi
+      rw [hb i hi,Int.cast_natCast]
+      by_cases hd : 6∣i
+      · simp [v,hd]
+      · simpa only [v,if_neg hd,Nat.cast_zero,mul_zero,zero_pow (by decide : 2≠0)] using
+          sq_nonneg (r i*(m i:ℝ))
+    have he : (∑ k ∈ Icc 1 N, w k*(m k:ℝ))=∑ k ∈ Icc 1 N, (v k:ℝ) := by
+      refine sum_congr rfl fun k _ => ?_
+      by_cases hd : 6∣k <;> simp [w,v,hd]
+    have hup := (le_abs_self _).trans (h N a b)
+    change _ ≤ C*conductorNorm N (fun i => r i*upperDivisor N a i)*
+      conductorNorm N (fun i => r i*upperDivisor N b i) at hup
+    rw [hn,mul_one] at hup
+    have ht := hup.trans (mul_le_mul_of_nonneg_left hnorm hC)
+    rw [he]
+    linarith only [hvalue,ht]
+  by_contra! hl
+  let g := fun n : ℕ => 6*(n+1)
+  have hg : Function.Injective g := fun n m he =>
+    Nat.add_right_cancel (Nat.eq_of_mul_eq_mul_left (by decide : 0<6) he)
+  have hsub := (hprice.comp_injective hg).mul_left 6
+  have hH : Summable (fun n : ℕ => 1/((n+1:ℕ):ℝ)) := by
+    apply Summable.of_nonneg_of_le (fun _ => by positivity) _ hsub
+    intro n
+    have hn : 1≤g n := by dsimp [g]; omega
+    have hh : (r (g n))^2≤(g n:ℝ) := by
+      change (((max (g n) 1:ℕ):ℝ)^s)^2≤_
+      rw [max_eq_left hn,← Real.rpow_two,← Real.rpow_mul (Nat.cast_nonneg _)]
+      simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le
+        (show (1:ℝ)≤g n by exact_mod_cast hn) (show s*2≤1 by linarith only [hl])
+    change 1/((n+1:ℕ):ℝ) ≤ 6*(w (g n)/r (g n))^2
+    rw [show w (g n)=1 from if_pos (dvd_mul_right _ _),div_pow,one_pow]
+    have hnr : (0:ℝ)<((n+1:ℕ):ℝ) := Nat.cast_pos.mpr (Nat.succ_pos _)
+    rw [mul_one_div,div_le_div_iff₀ hnr (sq_pos_of_pos (hr _)),one_mul]
+    simpa only [g,Nat.cast_mul,Nat.cast_ofNat] using hh
+  have hfull : Summable (fun n : ℕ => 1/(n:ℝ)) := (summable_nat_add_iff 1).mp hH
+  exact (lt_irrefl (1:ℝ)) ((Real.summable_one_div_nat_rpow (p := 1)).mp (by simpa using hfull))
+
+#print axioms signed_finite_part_power_iff
 #print axioms signed_test_on_zero_prime_ratios
 #print axioms signed_finite_part_above_half
 #print axioms interleaved_signed_increment_energy

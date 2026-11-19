@@ -67,7 +67,7 @@ theorem price_of_all_cofactor_multiples (n Q : ℕ) {r : ℕ} (hr : 0 < r) :
                have hpr := (Nat.div_lt_iff_lt_mul hr).mp hcut
                have hz (k : ℕ) (hk : k ≤ 4) : k*n/(p*r)=0 :=
                  Nat.div_eq_of_lt ((Nat.mul_le_mul_right n hk).trans_lt hpr)
-               simp only [f,midpointFloorWeight,hz 4 (by decide),hz 3 (by decide),hz 2 (by decide),
+               simp only [midpointFloorWeight,hz 4 (by decide),hz 3 (by decide),hz 2 (by decide),
                  Nat.cast_zero,mul_zero,sub_zero,add_zero]
 
 #print axioms price_of_all_cofactor_multiples
@@ -94,7 +94,7 @@ theorem primitive_prime_cofactor_projection {n : ℕ} (hn : 0 < n) (Q V : ℕ) :
       rw [reflected_coprime_indicator hn]
       by_cases he : e ∣ v
       · simp only [Nat.lcm_dvd_iff,he,true_and,if_true,mul_assoc,mul_sum,sum_mul]
-        exact sum_congr rfl fun d _ => by split_ifs <;> simp [a,mul_assoc]
+        exact sum_congr rfl fun d _ => by split_ifs <;> simp [a]
       · simp only [Nat.lcm_dvd_iff,he,false_and,if_false,mul_zero,sum_const_zero,zero_mul]
     simp_rw [inner]
     rw [←sum_mul,←sum_mul,←sum_filter]
@@ -111,7 +111,6 @@ theorem primitive_prime_cofactor_projection {n : ℕ} (hn : 0 < n) (Q V : ℕ) :
   intro d hd
   have hl : 0 < e.lcm d := Nat.lcm_pos (mem_Icc.mp he).1 (Nat.pos_of_mem_divisors hd)
   rw [←price_of_all_cofactor_multiples n Q hl,sum_filter,mul_sum,mul_sum]
-  exact sum_congr rfl fun _ _ => rfl
 
 #print axioms primitive_prime_cofactor_projection
 
@@ -167,7 +166,8 @@ private theorem remove_unit_and_small_cofactors {n Q V : ℕ} (hn : 0 < n) (hQ :
   let f (v : ℕ) := if n.Coprime v then truncMoebiusDivisorSum V v*primitiveOrdinaryCofactorRow n Q v else 0
   have first : (∑ v ∈ Ioc 0 V,f v)= -primeMidpointPrice n := by
     rw [sum_eq_single 1]
-    · simp only [f,Nat.coprime_one_right,if_true,moebius_unit_row V hV,one_mul,prime_cofactor_unit_price hn hQ]
+    · rw [show f 1 = (if n.Coprime 1 then truncMoebiusDivisorSum V 1*primitiveOrdinaryCofactorRow n Q 1 else 0) from rfl,
+        if_pos ((Nat.coprime_one_right_iff n).mpr trivial),moebius_unit_row V hV,one_mul,prime_cofactor_unit_price hn hQ]
     · intro v hv hv1
       obtain ⟨hv0,hvV⟩ := mem_Ioc.mp hv
       simp only [f,_root_.RHTower.truncMoebiusDivisorSum_of_le hv0 hvV,if_neg hv1,zero_mul,ite_self]
@@ -291,7 +291,7 @@ theorem projected_midpoint_power_error {b ε : ℝ} (hb : 1/2 ≤ b) (hb1 : b �
     have h := sum_le_sum (s:=n.divisors) fun d _ =>
       (show |(μ d:ℝ)| ≤ 1 by exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n:=d))
     simp only [sum_const,nsmul_eq_mul,mul_one] at h
-    exact h.trans (_root_.RHTower.Sieve.card_divisors_le_rpow he hn.ne')
+    exact h.trans (_root_.RHTower.Sieve.card_divisors_le_rpow he (by omega))
   apply (remaining_primitive_prime_factorial_bound hn hQn hV0 (by omega : V ≤ 4*n)).trans
   have hM : 0 ≤ squarefreeDivisorMass n := sum_nonneg fun _ _ => abs_nonneg _
   have hnon := mul_nonneg (show 0 ≤ 16+2*|A| by positivity) (Real.sqrt_nonneg (n:ℝ))

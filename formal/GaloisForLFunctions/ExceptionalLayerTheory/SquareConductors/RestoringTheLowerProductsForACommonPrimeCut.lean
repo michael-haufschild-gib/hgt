@@ -122,7 +122,9 @@ theorem restored_seventeen_ninths_late_octaves :
     rw [Real.exp_neg,inv_mul_eq_div,lt_div_iff₀ (Real.exp_pos 8),←hpow]
     have h₁ := mul_le_mul_of_nonneg_right hW (Real.exp_pos 8).le
     linarith only [h₁,mul_lt_mul_of_pos_left hg hX]
-  have hW1 : 1 ≤ W := Nat.le_floor (Real.one_le_rpow (Nat.one_le_cast.mpr (hN.trans hNM)) ha)
+  have hW1 : 1 ≤ W := Nat.le_floor (by
+    rw [Nat.cast_one]
+    exact Real.one_le_rpow (Nat.one_le_cast.mpr (hN.trans hNM)) ha)
   have hlog : Real.log W ≤ 2*conductorLog N := by
     have hlarge : (1:ℝ)≤2*N := by linarith only [hN1]
     have hh := Real.log_le_log (Nat.cast_pos.mpr hW1)
@@ -130,6 +132,7 @@ theorem restored_seventeen_ninths_late_octaves :
         ((Real.rpow_le_rpow_of_exponent_le hlarge (by norm_num [a] : a≤2)).trans_eq
           (Real.rpow_two _))))
     rw [Real.log_pow] at hh
+    push_cast at hh
     dsimp only [conductorLog]
     linarith only [hh]
   have term (m k : ℕ) (hm : m≤9) (he : a*m-k≤3) :

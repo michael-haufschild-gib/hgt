@@ -108,7 +108,7 @@ theorem grid_cost (n : ℕ) :
   have hn : ((n:ℝ)+1) ≠ 0 := by positivity
   have he := intervalIntegral.integral_comp_mul_left (a := (0:ℝ)) (b := (1:ℝ))
     (fun x => -Real.log (strip (n+1) x)) hn
-  simp only [g,Real.exp_zero,zero_add,zero_sub,div_one,he,mul_zero,mul_one,smul_eq_mul,
+  simp only [g,Real.exp_zero,neg_zero,zero_add,zero_sub,div_one,he,mul_zero,mul_one,smul_eq_mul,
     stripCost,Nat.cast_add,Nat.cast_one] at H ⊢
   rw [H.2]
   ring

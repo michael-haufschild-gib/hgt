@@ -27,11 +27,17 @@ There is one density-one matching for all quotient jumps and all frozen prime wa
  \log(1+X)\,E_{1/2}(y)\sqrt X
  \sum_{q\in S}\frac{|a(q)|}{\sqrt q}.
 \]
-The two-endpoint estimate adds the corresponding costs at \(L\) and \(U\). In a sequence of exchanges, every change of reading is evaluated at the shared cutoff. This leaves the signed fixed contribution accessible to further arithmetic analysis. [Composition and quantitative crossing bound](SignedFluxOnGrowingQuotientRanges.lean)
+The two-endpoint estimate adds the corresponding costs at \(L\) and \(U\). Along a path of exchanges, multiply the sign at each visit by \((-1)^r\), where \(r\) counts earlier sign reversals. The change of weight along the edge, the interval crossing, and the change of reading at arrival then telescope to the two endpoint values. This holds when a vertex is visited repeatedly. [Composition and quantitative crossing bound](SignedFluxOnGrowingQuotientRanges.lean)
 
 The principal test uses the rough Möbius row at the log-square prime cutoff. Least-prime stopping supplies its terminal rows, divisor inversion gives its smooth center, and the signed flux measures the effect of moving the quotient cuts. A quantitative gain must include the final endpoint. A general rule should gain on several weights using arithmetic independent of a Mertens bound at the proposed output exponent. [Least-prime recursion](TheSignedBoundaryOfAPrefix.lean) · [Exact quotient center](CenteringThePrimePowerReadingsAtTheirQuotientFloors.lean)
 
 The two cutoff regimes test the signs. At \(y=\lfloor\log(X+1)\rfloor^2\) the weighted rough logarithmic prefix plus its centered reading equals \(-y\Psi(\lfloor X/y\rfloor,y)\) exactly. The critical Euler product obeys \(\log E_{1/2}(y)\sim 2\sqrt y/\log y\). At a polynomial cutoff \(b(n)=\lfloor n^\theta\rfloor\), \(0<\theta<1\), the bias to recover is negative. Compare \(\log X\,A_b(X)\) with \(-b(X)\Psi(\lfloor X/b(X)\rfloor,b(X))\). Here \(A_b\) sifts each integer at its own cutoff, whereas the quotient identity freezes one cutoff across the interval. [Critical Euler product](TheCriticalEulerPriceOfTheLogSquareCutoff.lean) · [Polynomial-cutoff comparison](TheSignedBiasOfOnePolynomialRoughSet.lean)
+
+There is an explicit signed profile inside the quotient sum. Keep the ordinary primes above \(y\) with their logarithmic weights and give each proper prime power any weight in \([-\Lambda(q),\Lambda(q)]\). For \(y\le Z\le y^2\) and \(X\ge yZ\), the raw contribution from indices \(q>\lfloor X/Z\rfloor\), divided by \(X\), is uniformly
+\[
+  1-\log\!\left(\frac{\log Z}{\log y}\right)+o(1)\qquad(y\to\infty).
+\]
+Only the positive unit and negative primes appear among the rough cofactors through \(Z\). At the log-square wall, \(Z=y^2\) gives positive coefficient \(1-\log 2\). In the polynomial range \(y^2\le X\le y^3\), choosing \(Z=\lfloor X/y\rfloor\) captures the full surviving Mangoldt sum. Its coefficient in the logarithmic Möbius prefix has the opposite sign. [Uniform signed profile and its two specializations](TheSmoothPopulationAtAnInteriorQuotientCut.lean)
 
 ## The signed boundary at a cutoff
 

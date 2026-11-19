@@ -50,9 +50,13 @@ theorem cross_det_lower {n : ℕ} (z w : ContrastGrid n) :
       have h := diskKernel_hasSum
         (show |(z i).val|<1 by rw [abs_of_pos (z i).property.1]; exact (z i).property.2)
         (show |(w j).val|<1 by rw [abs_of_pos (w j).property.1]; exact (w j).property.2)
-      simpa only [e,a,positiveGrid,OrderEmbedding.ofStrictMono_apply,Matrix.of_apply,
-        mul_pow,div_eq_inv_mul,mul_assoc] using h)
-  simp only [e,a,positiveGrid,OrderEmbedding.ofStrictMono_apply,shifted_vandermonde,first_coefficients] at H
+      change HasSum (fun k : ℕ => ((k:ℝ)+1)⁻¹*((z i).val*(w j).val)^(k+1))
+        (diskKernel (z i).val (w j).val)
+      simpa only [mul_pow,div_eq_inv_mul] using h)
+  change (genVandermonde (fun i : Fin n => i.val+1) (fun i => (z i).val)).det *
+    ((∏ i : Fin n, ((i.val:ℝ)+1)⁻¹) *
+      (genVandermonde (fun i : Fin n => i.val+1) (fun i => (w i).val)).det) ≤ _ at H
+  rw [shifted_vandermonde,shifted_vandermonde,first_coefficients] at H
   convert H using 1 <;> ring
 
 /-- The logarithmic jump kernel is strictly totally positive on either

@@ -139,7 +139,7 @@ theorem ordinary_prime_bands_measure_midpoint {b ε : ℝ} (_hb : 1/2 ≤ b) (hb
     have h := sum_le_sum (s:=n.divisors) fun d _ =>
       (show |(ArithmeticFunction.moebius d:ℝ)| ≤ 1 by exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n:=d))
     simp only [sum_const,nsmul_eq_mul,mul_one] at h
-    exact h.trans (_root_.RHTower.Sieve.card_divisors_le_rpow he hn.ne')
+    exact h.trans (_root_.RHTower.Sieve.card_divisors_le_rpow he (by omega))
   have htotal : (V:ℝ)*(7*(Q:ℝ)+Real.log n)+A*Real.sqrt n*Real.sqrt V ≤ K*x^b := by
     have hs := mul_le_mul_of_nonneg_left hsV hA
     dsimp only [K]

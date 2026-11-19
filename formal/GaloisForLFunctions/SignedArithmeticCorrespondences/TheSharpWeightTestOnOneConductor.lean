@@ -12,6 +12,10 @@ noncomputable section
 namespace GaloisForLFunctions.SignedArithmeticCorrespondences
 open Finset MeasureTheory
 
+/-- Power conductor weights agree with the usual real powers at every
+positive conductor and take value one at zero. -/
+def powerConductorWeight (s : ℝ) (k : ℕ) : ℝ := ((max k 1:ℕ):ℝ)^s
+
 /-- All positive cells read by a fixed conductor-one atom. The partner is
 the given signed integral divisor on the window, including its terminal
 jump to zero. -/
@@ -151,7 +155,7 @@ theorem dual_price_summable_of_integer_tests (r w : ℕ → ℝ) (hr : ∀ k, 0<
       simp only [mem_erase,mem_range,mem_Icc]
       omega
     rw [← sum_erase_add _ _ (mem_range.mpr (Nat.succ_pos n) : 0∈range (n+1)),hs]
-    exact add_le_add_right (hfin n) _
+    exact add_le_add (hfin n) le_rfl
 
 /-- A unit-cost joint estimate on all integer pairs forces the dual price
 to be square summable. The testing divisors have one lower conductor
@@ -184,7 +188,7 @@ theorem interleaved_weight_test_iff (r w : ℕ → ℝ) (hr : ∀ k, 0<r k) (hm 
   · rintro ⟨C,hC,h⟩
     apply dual_price_summable_of_uniform_variation r w hr hw hC
     intro N a b
-    have hj := intervalIntegral.integral_nonneg_of_forall zero_le_one
+    have hj := intervalIntegral.integral_nonneg_of_forall (μ := volume) zero_le_one
       (fun x => abs_nonneg (mixedJetSection N a b x))
     exact (le_add_of_nonneg_right (div_nonneg hj (by norm_num))).trans (h N a b)
   · intro h₂

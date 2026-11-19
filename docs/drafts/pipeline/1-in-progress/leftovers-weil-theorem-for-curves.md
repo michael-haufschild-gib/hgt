@@ -45,7 +45,10 @@ Modules in `CurvesOverFiniteFields/`, all checked, wired into `CurvesOverFiniteF
 | `MayerVietoris` | dim N/M = dim (N⊓U)/(M⊓U) + dim (N⊔U)/(M⊔U) |
 | `EulerCharacteristic` | χ = dim(M⊓U) − dim V/(M⊔U) grows by dim N/M, finiteness both ways (`euler_step`, `euler_step_down`) |
 | `Divisors` | divisors on finite and infinite places, `Divisor.deg`, L(D) = I(D) ⊓ J(D), H¹(D) = K/(I(D) ⊔ J(D)), χ = ℓ − h¹; one-place steps (`chi_raiseFin`, `chi_raiseInf`); if L(0), H¹(0) are finite then every D has finite L, H¹ and χ(D) = deg D + χ(0) (`chi_eq_deg_add_chi_zero`) |
+| `Genus` | exact constant field ⇒ L(0) = F, ℓ(0) = 1; K/(A + O∞) finite-dimensional; genus g = h¹(0); Riemann's theorem ℓ(D) − h¹(D) = deg D + 1 − g (`riemann_roch_chi`), ℓ(D) ≥ deg D + 1 − g (`riemann_inequality`) |
 
-Next: base case — ℓ(0) = 1 (the two charts meet in the constants, from the exact-constant-field
-hypothesis) and h¹(0) = dim K/(A + O∞) finite; this gives Riemann's theorem χ(D) = deg D + 1 − g.
-Then steps 3–9 above.
+Next (duality): Weil differentials Ω(D) = annihilator of I(D) + J(D) in Hom_F(K, F), dim Ω(D) = h¹(D);
+h¹(D) = 0 once deg D is large (multiplication by x ∈ L(D − nE₀) with A + J(nE₀) = K);
+dim_K Ω = 1 by the dimension count against Riemann's inequality; canonical divisor W as the
+maximum of {D : ω ∈ Ω(D)} (one-place raise via the simple quotient I(E+P)/I(E)); principal
+divisors, x·I(E) = I(E + (x)); Riemann–Roch h¹(D) = ℓ(W − D), deg W = 2g − 2. Then steps 5–9.
