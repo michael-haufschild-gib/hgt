@@ -17,4 +17,4 @@ Consequently any constant center \(cy\) on that quotient band incurs at least \(
 \]
 The squares give \(\frac12\log X-\log y+O(1)\), the higher powers are bounded, and partial summation of the prime number theorem gives the second term. Hence \(25/16\) is the exact transition for a fixed positive fraction of unused logarithmic weight in the induction. At the endpoint the leading coefficient alone leaves the sign of the residual unresolved. A wall chosen by cumulative prime weight can reserve an exact additive margin while retaining the same limiting ratio. The signed ordinary-prime sum beyond the removable wall still requires cancellation.
 
-**Lean status.** The density and prime-mass estimates are separate inputs. The limiting measure, optimal center and joint wall transition await formalization.
+**Lean status.** The joint omitted mass and the strict threshold \(25/16\) are formalized. The limiting sign measures and the optimal center remain in progress. [Prime and proper-power mass](../../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/ThePrimeAndProperPowerMassAtTheCriticalWall.lean)

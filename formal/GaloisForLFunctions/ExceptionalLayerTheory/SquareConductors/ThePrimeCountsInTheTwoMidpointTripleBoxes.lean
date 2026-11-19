@@ -1,3 +1,4 @@
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheCompleteDivisorCenterAtTheCubicMidpoint
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheSurplusOfTheLowerPrimeTriples
 import Mathlib.MeasureTheory.Integral.Prod
 
@@ -277,7 +278,6 @@ theorem normalized_prime_triple_count_tendsto {a b : ℝ} (ha : 1/2 ≤ a) (hab 
   have he := (div_lt_iff₀ hε).mp ((le_max_right _ _).trans_lt hlog)
   linarith only [he]
 
-#print axioms normalized_prime_triple_count_tendsto
 
 private theorem box_volume_by_slices {a b : ℝ} (ha : 0<a) (hab : a ≤ b) (t : ℝ) :
     primeTripleBoxVolume a b t =
@@ -337,7 +337,6 @@ theorem upper_prime_triple_volume {s : ℝ} (hs : 1 ≤ s) :
   dsimp only
   rw [min_eq_right (div_le_self (zero_le_one.trans hs) hxy),div_div]
 
-#print axioms upper_prime_triple_volume
 
 private theorem lower_volume_column {s v : ℝ} (hs : 0<s) (hsv : s ≤ v) (hv : v ≤ 1) :
     (∫ y in s..1,(min 1 (v/y)-s)) = (1-s)^2-(1-v+v*Real.log v) := by
@@ -410,7 +409,6 @@ theorem lower_prime_triple_volume {s : ℝ} (hs : 0<s) (hs1 : s ≤ 1) :
     intervalIntegral.integral_symm (a:=1) (b:=s) (f:=fun x => Real.log x^2),he]
   ring
 
-#print axioms lower_prime_triple_volume
 
 private theorem whole_box_volume {a b : ℝ} (ha : 0<a) (hab : a ≤ b) :
     primeTripleBoxVolume a b (b^3)=(b-a)^3 := by
@@ -467,7 +465,6 @@ theorem prime_triple_count_surplus_tendsto :
   rw [one_pow] at hw
   rwa [hw,volume_difference_constant] at h
 
-#print axioms prime_triple_count_surplus_tendsto
 
 /-- Ordered prime triples priced by one third of the product logarithm.
 The flag deletes pure cubes as required on the smooth side. -/
@@ -661,9 +658,6 @@ theorem integer_prime_triple_surplus_tendsto :
   field_simp [hn0,hlog0]
   ring
 
-#print axioms priced_prime_triple_box_tendsto
-#print axioms sharp_prime_triple_surplus_tendsto
-#print axioms integer_prime_triple_surplus_tendsto
 
 /-- The excess of lower prime triples eventually exceeds each fixed
 multiple of each power strictly below one. -/
@@ -688,6 +682,5 @@ theorem prime_triple_surplus_exceeds_power {t : ℝ} (ht : t < 1) (A : ℝ) :
   by_contra! hle
   exact h.not_ge (mul_le_mul_of_nonneg_left hle (div_nonneg (sq_nonneg _) hn0.le))
 
-#print axioms prime_triple_surplus_exceeds_power
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

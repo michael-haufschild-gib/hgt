@@ -138,9 +138,6 @@ theorem forbidden_prime_at_square_root_cut {n p : ℕ} (hn : 0 < n) (hp : p.Prim
     nlinarith only [hsq,Real.sq_sqrt (Nat.cast_nonneg (α:=ℝ) n)]
   exact (forbidden_prime_cofactor_boundaries hn hp hdiv (by exact_mod_cast hR)).2.2
 
-#print axioms forbidden_prime_at_square_root_cut
-#print axioms forbidden_prime_cofactor_cut
-#print axioms forbidden_prime_cofactor_boundaries
 
 /-- The prime coprimality restriction can be dropped from any selection
 of complete rows above twice the square root. -/
@@ -156,6 +153,5 @@ theorem reflected_price_without_prime_coprimality {n : ℕ} (hn : 0 < n) (S : Fi
     exact hnot (mem_filter.mpr ⟨hp,(hpr.coprime_iff_not_dvd.mpr h).symm⟩)
   rw [Nat.mul_div_assoc 4 hdiv,forbidden_prime_at_square_root_cut hn hpr hdiv hcut,mul_zero]
 
-#print axioms reflected_price_without_prime_coprimality
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

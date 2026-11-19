@@ -68,7 +68,7 @@ theorem moebius_energy_newton (X N : ℕ) (t h : ℝ) :
   change F (t+N • h) = _
   rw [shift_eq_sum_fwdDiff_iter h F N t, sum_range_succ']
   have ht : F t = 0 := by simp [F]
-  simp only [Function.iterate_zero, id_eq, ht, smul_zero, add_zero, zero_add]
+  simp only [Function.iterate_zero, id_eq, ht, smul_zero, add_zero]
   refine sum_congr rfl fun k _ => ?_
   rw [Function.iterate_succ_apply, hinc, moebiusNewtonRow_eq_difference]
 
