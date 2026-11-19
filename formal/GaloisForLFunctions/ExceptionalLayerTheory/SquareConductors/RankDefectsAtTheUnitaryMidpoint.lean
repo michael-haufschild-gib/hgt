@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheOddSmoothCompositesAtThePrimeMidpoint
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ThePivotalBlockAtTheUnitaryMidpoint
 
 /-!
 # Rank defects at the unitary midpoint
@@ -129,6 +130,7 @@ def rankCompositeWeight (k : ℕ) : ℤ :=
   let r := k.primeFactors.card/2
   (-1 : ℤ)^r * (2*r).choose r - 2 * ∑ S ∈ unitaryRankDefects k r, (-1 : ℤ)^S.card
 
+open Classical in
 /-- In the sharp arithmetic midpoint, the only correction to the central binomial
 price is the signed mass of low-rank unitary divisors above the square root. -/
 theorem oddSmoothCompositePrice_rank_expansion (n : ℕ) :
@@ -147,6 +149,55 @@ theorem oddSmoothCompositePrice_rank_expansion (n : ℕ) :
     rfl
   · rfl
 
+/-- Two prime-power blocks whose product alone crosses the square-root cutoff. -/
+def heavyUnitaryPairs (k : ℕ) : Finset (Finset ℕ) :=
+  (k.primeFactors.powersetCard 2).filter fun S => k < (primePowerSubset k S)^2
+
+private theorem rank_two_defects {k : ℕ} (hk : 1 < k)
+    (hbal : ∀ p ∈ k.primeFactors, (p^k.factorization p)^2 < k) :
+    unitaryRankDefects k 2 = heavyUnitaryPairs k := by
+  ext S
+  simp only [unitaryRankDefects, heavyUnitaryPairs, mem_filter, mem_powersetCard, mem_powerset]
+  by_cases hs : S ⊆ k.primeFactors
+  · have hsm : S ∈ smallUnitarySubsets k ↔ (primePowerSubset k S)^2 ≤ k := by
+      simpa only [smallUnitarySubsets, mem_filter, mem_powerset, hs, true_and] using
+        unitarySubset_small_iff_square (by omega : 0 < k) hs
+    simp only [hs, true_and, hsm, not_le]
+    refine ⟨fun ⟨hc,hgt⟩ => ⟨?_,hgt⟩, fun ⟨hc,hgt⟩ => ⟨hc.le,hgt⟩⟩
+    by_contra hne
+    rcases Nat.eq_zero_or_pos S.card with hz | hz
+    · rw [card_eq_zero.mp hz] at hgt
+      simp [primePowerSubset] at hgt
+      omega
+    · obtain ⟨p,he⟩ := card_eq_one.mp (by omega : S.card=1)
+      subst S
+      have hbelow := hbal p (hs (mem_singleton_self p))
+      simp only [primePowerSubset, prod_singleton] at hgt
+      omega
+  · simp [hs]
+
+/-- At a balanced integer with five distinct primes, the number of heavy pairs
+determines both the sign and the exact price. -/
+theorem balanced_five_unitary_weight
+    (k : {k : ℕ // k.primeFactors.card = 5 ∧ oddSmoothSupport k}) :
+    unitaryHalfWeight k = 6 - 2 * ((heavyUnitaryPairs k).card : ℤ) := by
+  obtain ⟨k, hc, hb⟩ := k
+  have hk : 1 < k := Nat.nonempty_primeFactors.mp (card_pos.mp (by omega))
+  have he := odd_defect_formula (r := 2) hk (by omega)
+  rw [rank_two_defects hk hb.2.2] at he
+  have hs : (∑ S ∈ heavyUnitaryPairs k, (-1 : ℤ)^S.card) = (heavyUnitaryPairs k).card := by
+    calc _ = ∑ _S ∈ heavyUnitaryPairs k, (1 : ℤ) := by
+              apply sum_congr rfl
+              intro S hS
+              have H := (mem_powersetCard.mp (mem_filter.mp hS).1).2
+              rw [H]
+              norm_num
+         _ = _ := by simp
+  rw [hs] at he
+  norm_num [Nat.choose] at he
+  exact he
+
+#print axioms balanced_five_unitary_weight
 #print axioms oddSmoothCompositePrice_rank_expansion
 #print axioms unitaryHalfWeight_rank_formula
 

@@ -26,7 +26,8 @@ theorem eighth_exponential_deficit_density :
     ∃ A : ℝ, 0 < A ∧ Tendsto (fun k : ℕ => Real.exp (2*powerGridGcdDeficit 8 k)/(k:ℝ))
       atTop (𝓝 A) := by
   obtain ⟨c,hc⟩ := eighth_gcd_deficit_centered_converges
-  refine ⟨Real.exp (2*c), Real.exp_pos _, ((hc.const_mul 2).exp).congr' ?_⟩
+  refine ⟨Real.exp (2*c), Real.exp_pos _,
+    (Real.continuous_exp.continuousAt.tendsto.comp (hc.const_mul 2)).congr' ?_⟩
   filter_upwards [eventually_ge_atTop 1] with k hk
   change Real.exp (2*(powerGridGcdDeficit 8 k-(1/2)*Real.log k)) = _
   rw [show 2*(powerGridGcdDeficit 8 k-(1/2)*Real.log k) =
@@ -52,7 +53,7 @@ theorem eighth_deficit_spacing_iff {ι : Type*} {l : Filter ι} {u v : ι → �
     ring
   constructor
   · intro h
-    have ht := ((h.sub he).const_mul 2).exp
+    have ht := Real.continuous_exp.continuousAt.tendsto.comp ((h.sub he).const_mul 2)
     rw [sub_zero] at ht
     apply ht.congr'
     filter_upwards [hu.eventually (eventually_ge_atTop 1), hv.eventually (eventually_ge_atTop 1)]

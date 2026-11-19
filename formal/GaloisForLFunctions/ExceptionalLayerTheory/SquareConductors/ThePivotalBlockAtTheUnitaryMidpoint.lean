@@ -20,7 +20,8 @@ def unitaryPivots (k p : ℕ) : Finset (Finset ℕ) :=
   (k.primeFactors.erase p).powerset.filter fun S =>
     (primePowerSubset k S)^2 ≤ k ∧ k < (p^k.factorization p * primePowerSubset k S)^2
 
-private theorem small_iff_square {k : ℕ} (hk : 0 < k) {S : Finset ℕ} (hS : S ⊆ k.primeFactors) :
+/-- Comparison with the complementary product is the exact squared-divisor test. -/
+theorem unitarySubset_small_iff_square {k : ℕ} (hk : 0 < k) {S : Finset ℕ} (hS : S ⊆ k.primeFactors) :
     primePowerSubset k S ≤ primePowerSubset k (k.primeFactors \ S) ↔ (primePowerSubset k S)^2 ≤ k := by
   have hpos : 0 < primePowerSubset k S :=
     prod_pos fun _ hi => pow_pos (Nat.prime_of_mem_primeFactors (hS hi)).pos _
@@ -28,7 +29,7 @@ private theorem small_iff_square {k : ℕ} (hk : 0 < k) {S : Finset ℕ} (hS : S
     rw [primePowerSubset, primePowerSubset, mul_comm, prod_sdiff hS]
     exact (Nat.prod_primeFactors_pow_factorization hk.ne').symm
   rw [← hprod, pow_two]
-  exact (Nat.mul_le_mul_left_iff hpos).symm
+  exact ⟨Nat.mul_le_mul_left _, fun h => Nat.le_of_mul_le_mul_left h hpos⟩
 
 private theorem sum_over_pivots {k p : ℕ} (hp : p ∈ k.primeFactors) :
     unitaryHalfWeight k = ∑ S ∈ unitaryPivots k p, (-1 : ℤ)^S.card := by
@@ -39,7 +40,7 @@ private theorem sum_over_pivots {k p : ℕ} (hp : p ∈ k.primeFactors) :
     unfold unitaryHalfWeight smallUnitarySubsets
     rw [sum_filter]
     refine sum_congr rfl fun S hS => ?_
-    simp only [f, small_iff_square hk (mem_powerset.mp hS)]
+    simp only [f, unitarySubset_small_iff_square hk (mem_powerset.mp hS)]
   have hpP : p ∉ P := notMem_erase _ _
   have he : insert p P = k.primeFactors := insert_erase hp
   rw [h, ← he, sum_powerset_insert hpP, ← sum_add_distrib, unitaryPivots, sum_filter]

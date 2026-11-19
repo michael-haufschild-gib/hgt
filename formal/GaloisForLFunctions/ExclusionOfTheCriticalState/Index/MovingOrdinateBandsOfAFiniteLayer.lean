@@ -85,6 +85,42 @@ theorem moving_ordinate_band_limit {ι : Type*} {l : Filter ι} {T u v : ι → 
   filter_upwards [hT.eventually (eventually_ge_atTop (0:ℝ))] with i hi
   rw [band_eq_tail_sub hs, mul_sub, ← mul_max_of_nonneg _ _ hi]
 
+/-- Conditional on exceeding t, the relative tail at bt is asymptotic to
+1/b. Relative error is uniform for every b ≥ 1, including unbounded b. -/
+theorem uniform_relative_ordinate_tail {W : ℝ} {F : ℝ → ℝ} (hW : 0 < W)
+    (ht : (⨅ (A : ℝ) (_ : 0 ≤ A), windowThreshold A) = (W : EReal))
+    (hF : IsCriticalHalfLineGroundState W F) (hf : BacklundConverse.FiniteOffLine)
+    {ε : ℝ} (hε : 0 < ε) : ∀ᶠ t : ℝ in atTop, 0 < ordinateTailMass F t ∧
+      ∀ b : ℝ, 1 ≤ b → |b*ordinateTailMass F (b*t)/ordinateTailMass F t - 1| < ε := by
+  let C := ordinateTailCoefficient W F
+  have hC : 0 < C := coefficient_pos hW ht hF
+  have h : Tendsto (fun t => t*ordinateTailMass F t) atTop (𝓝 C) :=
+    criticalState_criticalLine_tail_asymptotic hW ht hF hf
+  let δ := min (C/2) (ε*C/8)
+  have hδ : 0 < δ := lt_min (by positivity) (by positivity)
+  obtain ⟨A,hA⟩ := eventually_atTop.mp ((Metric.tendsto_nhds.mp h) δ hδ)
+  filter_upwards [eventually_ge_atTop A,eventually_gt_atTop (0:ℝ)] with t htA ht₀
+  have he (v : ℝ) (hv : A ≤ v) : |v*ordinateTailMass F v-C| < δ := by
+    simpa only [Real.dist_eq] using hA v hv
+  have htlo := (abs_lt.mp (he t htA)).1
+  have hden : C/2 < t*ordinateTailMass F t := by linarith only [htlo,min_le_left (C/2) (ε*C/8)]
+  have hprod := (half_pos hC).trans hden
+  have htail := pos_of_mul_pos_right hprod ht₀.le
+  refine ⟨htail,fun b hb => ?_⟩
+  have hbt := htA.trans (le_mul_of_one_le_left ht₀.le hb)
+  have hdiff := abs_sub_le (b*t*ordinateTailMass F (b*t)) C (t*ordinateTailMass F t)
+  rw [abs_sub_comm C] at hdiff
+  have h₁ := he (b*t) hbt
+  have h₂ := he t htA
+  have hnum : |b*t*ordinateTailMass F (b*t)-t*ordinateTailMass F t| < ε*(t*ordinateTailMass F t) := by
+    have hbound := min_le_right (C/2) (ε*C/8)
+    linarith only [hdiff,h₁,h₂,hbound,mul_lt_mul_of_pos_left hden hε,mul_pos hε hC]
+  have heq : b*ordinateTailMass F (b*t)/ordinateTailMass F t-1 =
+      (b*t*ordinateTailMass F (b*t)-t*ordinateTailMass F t)/(t*ordinateTailMass F t) := by
+    field_simp <;> ring
+  rw [heq,abs_div,abs_of_pos hprod]
+  exact (div_lt_iff₀ hprod).mpr hnum
+
 /-- Combined mass of all zero copies with one absolute ordinate. -/
 def ordinateAtomMass (F : ℝ → ℝ) (t : ℝ) : ℝ :=
   ∑' q : onLineCopies, if |(centredZero q).im| = t then zeroValueMass F q else 0
@@ -191,6 +227,7 @@ theorem sequential_band_vanishing_iff (p q : ℝ) :
       simpa only [max_eq_left (Real.exp_le_exp.mpr hp), sub_self] using h
     · exact False.elim (hnone.mp hex hf ⟨W,F,hW,ht,hF⟩)
 
+#print axioms uniform_relative_ordinate_tail
 #print axioms single_ordinate_mass_vanishes
 #print axioms bounded_ordinate_packets_vanish
 #print axioms moving_ordinate_band_limit

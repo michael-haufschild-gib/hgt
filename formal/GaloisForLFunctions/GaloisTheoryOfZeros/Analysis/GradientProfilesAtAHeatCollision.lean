@@ -72,8 +72,8 @@ private theorem branch_tendsto {τ z ρ : ℂ} {m : ℕ} (hc : IsCollision τ z 
     (hρ : heatModelFwd m ρ = 0) :
     Tendsto (collisionBranch τ z m ρ) (𝓝[≠] 0) (𝓝 ρ) := by
   obtain ⟨ha,h0,_,_⟩ := collisionBranch_spec hc hρ
-  rw [← h0]
-  exact ha.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+  simpa only [h0] using (ha.continuousAt.tendsto.mono_left
+    (nhdsWithin_le_nhds : 𝓝[≠] (0:ℂ) ≤ 𝓝 0))
 
 /-- The Hopf differential of the real part of a heat slice has the square
 of the Hermite gradient as its tangent on every sheet. -/
@@ -124,7 +124,8 @@ theorem IsCollision.logDeriv_profile {τ z y : ℂ} {n : ℕ} (hc : IsCollision 
   rw [complexHeat_blowup hc.vanish, pow_succ]
   by_cases hg0 : collisionBlowup τ z (n+1) (s,u s) = 0
   · simp [hg0]
-  · field_simp [hs0, hg0] <;> ring
+  · field_simp [hs0, hg0]
+    ring
 
 /-- The gradient asymptotics force simplicity of every emerging sheet
 throughout a punctured neighborhood of the collision time parameter. -/
@@ -198,9 +199,13 @@ theorem IsCollision.residue_polynomial_limit {τ z : ℂ} {n : ℕ}
   have hroot := heatModelFwd_profileRoot hr
   have hx := branch_tendsto hc hroot
   have hh := ((P.continuous.tendsto (r:ℂ)).comp hx).mul (hc.sheet_reciprocal_residue_limit hroot)
-  convert hh using 2
-  simp only [collisionGradientProfile, mul_inv_rev, div_eq_mul_inv]
-  ring
+  have hval : P.eval (r:ℂ) / deriv (heatModelFwd (n+1)) (r:ℂ) / c =
+      P.eval (r:ℂ) * (collisionGradientProfile τ z (n+1) r)⁻¹ := by
+    change _ / _ / c = _ * (c * _)⁻¹
+    simp only [div_eq_mul_inv, mul_inv_rev, mul_assoc]
+  change Tendsto _ _ (𝓝 (P.eval (r:ℂ) / deriv (heatModelFwd (n+1)) (r:ℂ) / c))
+  rw [hval]
+  exact hh
 
 /-- The highest centered physical moment has a finite nonzero limit even
 though the individual residues grow as `s⁻ⁿ`. Its value is the reciprocal

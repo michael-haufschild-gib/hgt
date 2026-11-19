@@ -61,8 +61,11 @@ private theorem half_turn : ZMod.stdAddChar (n : ZMod (2*n)) = -1 := by
 
 private theorem half_turn_power (h : ZMod (2*n)) :
     ZMod.stdAddChar h ^ n = (-1 : ℂ)^h.val := by
-  rw [← stdAddChar_mul_natCast_pow, mul_comm, ← half_turn (n := n),
-    ← stdAddChar_mul_natCast_pow, ZMod.natCast_zmod_val]
+  calc
+    _ = ZMod.stdAddChar (h*(n : ZMod (2*n))) := (stdAddChar_mul_natCast_pow h n).symm
+    _ = ZMod.stdAddChar ((n : ZMod (2*n))*(h.val : ZMod (2*n))) := by
+      rw [ZMod.natCast_zmod_val, mul_comm h]
+    _ = _ := by rw [stdAddChar_mul_natCast_pow, half_turn]
 
 /-- The half-period multiplier vanishes on even modes and has an explicit
 Cauchy denominator on every odd mode. -/
@@ -138,7 +141,7 @@ private theorem nonzero_window_even {j : ZMod (2*n)} (hj : primeWindow n j ≠ 0
   have hn := Nat.pos_of_ne_zero (NeZero.ne n)
   rcases hp.eq_two_or_odd with htwo | hodd
   · omega
-  · exact Nat.even_iff.mpr (by have := Nat.odd_iff.mp hodd; omega)
+  · exact Nat.even_iff.mpr (by omega)
 
 /-- All sampled primes are odd. On their support the half-period
 modulation is one, so the prime spectrum repeats after `n` frequencies. -/
@@ -187,6 +190,9 @@ theorem odd_center_price (hn : Odd n) :
   push_cast
   ring
 
+section
+omit [NeZero n]
+
 private def halfSum (A : ZMod (2*n) → ℂ) (x : ZMod (2*n)) : ℂ :=
   ∑ j ∈ range n, A (x+j)
 
@@ -234,27 +240,84 @@ theorem all_halfDifferences_zero_iff (A : ZMod (2*n) → ℂ) :
     intro j _
     rw [Nat.cast_add, ← add_assoc, h, sub_self]
 
-/-- At an odd center the two opposite samples have different parity.
-Consequently the translated midpoint prices recover each ordinary-prime
-weight individually from two consecutive measurements. -/
-theorem recover_odd_center_prime_window (hn : Odd n) (x : ZMod (2*n)) :
-    primeWindow n x = if Even x.val then
-      (halfDifference (primeWindow n) x-halfDifference (primeWindow n) (x+1))/2 else 0 := by
+end
+
+private theorem shifted_parity (x : ZMod (2*n)) :
+    (x+n).val % 2 = (x.val+n)%2 := by
+  have hn0 := Nat.pos_of_ne_zero (NeZero.ne n)
+  rw [ZMod.val_add, Nat.mod_mod_of_dvd _ (dvd_mul_right 2 n),
+    ZMod.val_natCast_of_lt (by omega : n < 2*n)]
+
+private theorem opposite_zero_of_even (A : ZMod (2*n) → ℂ) (hs : ∀ x, A x ≠ 0 → Even x.val)
+    (hn : Odd n) {x : ZMod (2*n)} (hx : Even x.val) : A (x+n) = 0 := by
+  by_contra h
+  have he := Nat.even_iff.mp (hs _ h)
+  rw [shifted_parity] at he
+  have h1 := Nat.even_iff.mp hx
+  have h2 := Nat.odd_iff.mp hn
+  omega
+
+/-- Two consecutive translated measurements recover any even-supported
+signal when the center is odd. -/
+theorem recover_even_support (A : ZMod (2*n) → ℂ) (hs : ∀ x, A x ≠ 0 → Even x.val)
+    (hn : Odd n) (x : ZMod (2*n)) :
+    A x = if Even x.val then (halfDifference A x-halfDifference A (x+1))/2 else 0 := by
   by_cases hx : Even x.val
   · rw [if_pos hx]
-    have hn0 := Nat.pos_of_ne_zero (NeZero.ne n)
-    have hxo : ¬Even (x+n).val := by
-      rw [Nat.even_iff, ZMod.val_add, Nat.mod_mod_of_dvd _ (dvd_mul_right 2 n),
-        ZMod.val_natCast_of_lt (by omega : n < 2*n)]
-      have h1 := Nat.even_iff.mp hx
-      have h2 := Nat.odd_iff.mp hn
-      omega
-    have hw : primeWindow n (x+n) = 0 := not_ne_iff.mp (fun h => hxo (nonzero_window_even h))
-    have he := halfDifference_step (primeWindow n) x
-    rw [hw, zero_sub] at he
+    have he := halfDifference_step A x
+    rw [opposite_zero_of_even A hs hn hx, zero_sub] at he
     linear_combination he/2
   · rw [if_neg hx]
-    exact not_ne_iff.mp (fun h => hx (nonzero_window_even h))
+    exact not_ne_iff.mp fun h => hx (hs x h)
+
+/-- The odd-center condition is exact. At an even center the indicator
+of even residues is a nonzero prime-parity signal invisible at all translates. -/
+theorem detects_even_support_iff :
+    (∀ A : ZMod (2*n) → ℂ, (∀ x, A x ≠ 0 → Even x.val) →
+      (∀ x, halfDifference A x = 0) → ∀ x, A x = 0) ↔ Odd n := by
+  constructor
+  · intro hall
+    by_contra hn
+    have hn' := Nat.even_iff.mp (Nat.not_odd_iff_even.mp hn)
+    let A := fun x : ZMod (2*n) => if Even x.val then (1:ℂ) else 0
+    have hs (x : ZMod (2*n)) (hx : A x ≠ 0) : Even x.val := by
+      by_contra he
+      exact hx (if_neg he)
+    have hperiod (x : ZMod (2*n)) : A (x+n) = A x := by
+      have hpar : Even (x+n).val ↔ Even x.val := by
+        rw [Nat.even_iff, shifted_parity, Nat.even_iff]; omega
+      simp only [A,hpar]
+    have hzero := hall A hs ((all_halfDifferences_zero_iff A).mpr hperiod) 0
+    simp [A] at hzero
+  · intro hn A hs hh x
+    rw [recover_even_support A hs hn x, hh, hh]
+    simp
+
+/-- At an odd center the translated sharp prices recover every ordinary-prime
+weight in the entire moving block. -/
+theorem recover_odd_center_prime_window (hn : Odd n) (x : ZMod (2*n)) :
+    primeWindow n x = if Even x.val then
+      (halfDifference (primeWindow n) x-halfDifference (primeWindow n) (x+1))/2 else 0 :=
+  recover_even_support _ (fun _ => nonzero_window_even) hn x
+
+/-- The sum of squared changes in the observed prices is eight times the
+energy of the ordinary-prime samples at every odd center. -/
+theorem odd_center_difference_energy (hn : Odd n) :
+    (∑ x : ZMod (2*n), ‖halfDifference (primeWindow n) (x+1)-
+      halfDifference (primeWindow n) x‖^2) = 8 * ∑ x : ZMod (2*n), ‖primeWindow n x‖^2 := by
+  let A := primeWindow n
+  have horth (x : ZMod (2*n)) : ‖A (x+n)-A x‖^2 = ‖A (x+n)‖^2+‖A x‖^2 := by
+    by_cases hx : A x = 0
+    · simp [hx]
+    · have hz := opposite_zero_of_even A (fun _ => nonzero_window_even) hn (nonzero_window_even hx)
+      simp [hz]
+  have hshift : (∑ x : ZMod (2*n), ‖A (x+n)‖^2) = ∑ x : ZMod (2*n), ‖A x‖^2 :=
+    Fintype.sum_equiv (Equiv.addRight (n : ZMod (2*n))) _ _ fun _ => rfl
+  change (∑ x : ZMod (2*n), ‖halfDifference A (x+1)-halfDifference A x‖^2) = _
+  simp only [halfDifference_step, norm_mul, Complex.norm_ofNat, mul_pow, horth, ← mul_sum,
+    sum_add_distrib, hshift]
+  change (2:ℝ)^2*((∑ x, ‖A x‖^2)+∑ x, ‖A x‖^2) = 8 * ∑ x, ‖A x‖^2
+  ring
 
 #print axioms price_eq_halfDifference
 #print axioms half_multiplier
@@ -267,5 +330,8 @@ theorem recover_odd_center_prime_window (hn : Odd n) (x : ZMod (2*n)) :
 #print axioms halfDifference_shift
 #print axioms halfDifference_step
 #print axioms all_halfDifferences_zero_iff
+#print axioms recover_even_support
+#print axioms detects_even_support_iff
+#print axioms odd_center_difference_energy
 #print axioms recover_odd_center_prime_window
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval.MidpointFourier

@@ -258,7 +258,7 @@ private theorem frozen_price_at_own_center_error {m Q : ℕ} (hm : 1 < m) (hp : 
 
 private def samplingLog (n : ℕ) := 1+Real.log (4*n:ℕ)
 
-private def samplingMass (η : ℝ) (n : ℕ) := 1+|_root_.RHTower.Sieve.divisorBoundConst η|*((4*n:ℕ):ℝ)^η
+private def samplingMass (η : ℝ) (n : ℕ) := 1+|_root_.RHTower.Sieve.divisorBoundConst η| * ((4*n:ℕ):ℝ)^η
 
 private theorem sampling_log_one (n : ℕ) : 1 ≤ samplingLog n :=
   le_add_of_nonneg_right (Real.log_natCast_nonneg _)
@@ -556,7 +556,7 @@ private theorem projected_price_window_estimate {η : ℝ} (hη : 0 < η) :
         show (∑ d ∈ S,mertens (V/d))=1 from sum_mertens_floor_eq_one hV,one_mul]
     rw [eqn]
     apply (abs_sum_le_sum_abs ..).trans
-    calc _ ≤ ∑ d ∈ S,|mertens (V/d)|*B := sum_le_sum fun d hd => by
+    calc _ ≤ ∑ d ∈ S,|mertens (V/d)| * B := sum_le_sum fun d hd => by
                 rw [abs_mul]; exact mul_le_mul_of_nonneg_left (avg d hd) (abs_nonneg _)
          _ ≤ _ := by
            rw [←sum_mul]
@@ -684,5 +684,34 @@ theorem ordinary_cofactor_signed_sampling {ε : ℝ} (hε : 0 < ε) :
     have h2 := Real.one_le_rpow hv1 (by norm_num : (0:ℝ) ≤ 3/2)
     exact (hh.trans (le_add_of_nonneg_left (by positivity))).trans
       ((le_mul_of_one_le_right pos h1).trans (le_mul_of_one_le_right (mul_nonneg pos (zero_le_one.trans h1)) h2))
+
+/-- At level ⌊n^(2/9)⌋ the finite-window projection has first-strip
+accuracy at every positive integer midpoint. -/
+theorem two_ninths_ordinary_cofactor_sampling {ε : ℝ} (hε : 0<ε) :
+    ∃ C : ℝ, ∀ {n : ℕ}, 1 ≤ n →
+      let V := ⌊(n:ℝ)^(2/9:ℝ)⌋₊
+      |projectedOrdinaryCofactorPrice n (2*cofactorSamplingWidth n V) V-primeMidpointPrice n| ≤
+        C*(n:ℝ)^(5/6+ε) := by
+  obtain ⟨C,h⟩ := ordinary_cofactor_signed_sampling hε
+  refine ⟨|C|,?_⟩
+  intro n hn V
+  have hn1 := (Nat.one_le_cast (α:=ℝ)).mpr hn
+  have hn0 := zero_lt_one.trans_le hn1
+  have hbase := Real.one_le_rpow hn1 (by norm_num : (0:ℝ) ≤ 2/9)
+  have hv : 1 ≤ V := Nat.le_floor (by simpa using hbase)
+  have cap : (V:ℝ) ≤ (n:ℝ)^(2/9:ℝ) := Nat.floor_le (zero_le_one.trans hbase)
+  have h3 := pow_le_pow_left₀ (Nat.cast_nonneg (α:=ℝ) V) cap 3
+  rw [←Real.rpow_natCast (n:=3),←Real.rpow_mul hn0.le] at h3
+  have h3' : V^3 ≤ n := by
+    have hh := h3.trans ((Real.rpow_le_rpow_of_exponent_le hn1 (by norm_num : (2/9:ℝ)*(3:ℕ) ≤ 1)).trans_eq (Real.rpow_one _))
+    exact_mod_cast hh
+  have hw := Real.rpow_le_rpow (Nat.cast_nonneg V) cap (by norm_num : (0:ℝ) ≤ 3/2)
+  rw [←Real.rpow_mul hn0.le] at hw
+  apply (h hv h3').trans
+  apply (mul_le_mul (mul_le_mul_of_nonneg_right (le_abs_self C) (Real.rpow_nonneg hn0.le _)) hw
+    (Real.rpow_nonneg (Nat.cast_nonneg _) _) (by positivity)).trans_eq
+  rw [mul_assoc,←Real.rpow_add hn0]
+  congr 2
+  ring
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -58,7 +58,9 @@ theorem binomial_minor_lower (a : Shape) {n : ℕ} (z w : ContrastGrid n) :
   have H := seriesMinor_grid_lower e (coefficient a) (positiveGrid z) (positiveGrid w) (disk a z w)
     (fun i j => by
       have hp := mul_pos (z i).property.1 (w j).property.1
-      exact binomial_sum a _ (by rw [abs_of_pos hp]; exact product_lt_one _ _))
+      exact binomial_sum a ((z i).val*(w j).val) (by
+        rw [abs_of_pos hp]
+        exact product_lt_one _ _))
   simpa only [e,OrderEmbedding.coe_ofStrictMono,positiveGrid,coefficient,vandermonde_eq] using H
 
 private theorem disk_positive (a : Shape) {n : ℕ} (z w : ContrastGrid n) : 0<(disk a z w).det := by

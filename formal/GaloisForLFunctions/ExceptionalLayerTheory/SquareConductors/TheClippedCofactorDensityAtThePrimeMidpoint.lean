@@ -75,22 +75,23 @@ private theorem ray_error {N P T : ℕ} (hN : 0 < N) (hP : 0 < P) (hT : N/P ≤ 
     <;> ring
   rw [ray_range hP hT,hmain,←mul_sub,abs_mul,abs_of_nonneg hP'.le]
   apply h.trans_eq
-  dsimp only [x]
   field_simp [hN'.ne',hP'.ne']
   <;> ring
 
 private theorem length_height (n P v : ℕ) :
     0 ≤ reflectedCofactorLength n P v ∧ reflectedCofactorLength n P v ≤ P := by
   simp only [reflectedCofactorLength,clippedRay,Nat.cast_mul,Nat.cast_ofNat,mul_div_assoc,max_def]
-  split_ifs <;> constructor <;> linarith only [*,Nat.cast_nonneg (α:=ℝ) P]
+  have hp := Nat.cast_nonneg (α:=ℝ) P
+  have hx : 0 ≤ (n:ℝ)/v := by positivity
+  split_ifs <;> constructor <;> linarith
 
 private theorem clipped_ray_motion {m n : ℕ} (hm : m ≤ n) (k P v : ℕ) :
     0 ≤ clippedRay (k*n) P v-clippedRay (k*m) P v ∧
     clippedRay (k*n) P v-clippedRay (k*m) P v ≤ (k:ℝ)*(((n:ℝ)-m)/v) := by
   have h := div_le_div_of_nonneg_right (Nat.cast_le.mpr hm : (m:ℝ) ≤ n) (Nat.cast_nonneg (α:=ℝ) v)
   have hk := mul_le_mul_of_nonneg_left h (Nat.cast_nonneg (α:=ℝ) k)
-  simp only [clippedRay,Nat.cast_mul,mul_div_assoc,sub_div,max_def]
-  split_ifs <;> constructor <;> linarith only [*,hk]
+  simp only [clippedRay,Nat.cast_mul,mul_div_assoc,sub_div,mul_sub,max_def]
+  split_ifs <;> constructor <;> linarith
 
 /-- Motion of the three clipped lengths with a fixed cofactor and prime cut. -/
 theorem reflected_cofactor_length_motion {m n : ℕ} (hm : m ≤ n) (Q v : ℕ) :
@@ -150,7 +151,7 @@ theorem clipped_lattice_density_error {m P : ℕ} (hm : 0 < m) (hP : 0 < P) :
     have hdiv : T*P ≤ 4*m := Nat.div_mul_le_self _ _
     exact h.trans (by exact_mod_cast hdiv)
   have hsmall := (abs_sub (reflectedLatticeLength m P) (reflectedDensity*m)).trans
-    (add_le_add_right ((abs_of_nonneg hn).le.trans hheight) |reflectedDensity*m|)
+    (add_le_add ((abs_of_nonneg hn).le.trans hheight) (le_refl |reflectedDensity*m|))
   rw [abs_mul,abs_of_nonneg hm'.le] at hsmall
   rcases le_total (m:ℝ) ((P:ℝ)^2/m) with h | h
   · rw [min_eq_left h]
@@ -238,8 +239,8 @@ theorem primitive_clipped_density_cutoff {n P : ℕ} (hn : 0 < n) (hp : 0 < P) :
 theorem unit_reflected_cofactor_length {n P : ℕ} (hp : P ≤ 2*n) : reflectedCofactorLength n P 1=0 := by
   have h (k : ℕ) (hk : 2 ≤ k) : P ≤ k*n := hp.trans (Nat.mul_le_mul_right n hk)
   have ray (k : ℕ) (hk : 2 ≤ k) : clippedRay (k*n) P 1=(k:ℝ)*n-P := by
-    simp only [clippedRay,Nat.cast_one,div_one,max_eq_left (sub_nonneg.mpr (Nat.cast_le.mpr (h k hk))),
-      Nat.cast_mul]
+    rw [clippedRay,Nat.cast_one,div_one,max_eq_left (sub_nonneg.mpr
+      (Nat.cast_le.mpr (h k hk) : (P:ℝ) ≤ ((k*n:ℕ):ℝ))),Nat.cast_mul]
   rw [reflectedCofactorLength,ray 4 (by decide),ray 3 (by decide),ray 2 le_rfl]
   push_cast
   ring

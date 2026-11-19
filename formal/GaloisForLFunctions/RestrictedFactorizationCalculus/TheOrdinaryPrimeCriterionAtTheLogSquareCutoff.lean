@@ -81,7 +81,6 @@ private theorem shift_center {v f g : ℕ → ℝ} (v1 : ∀ n,1 ≤ v n) (dif :
   have cost := le_mul_of_one_le_left (zero_le_one.trans (p1 X)) (v1 X)
   have keep := le_mul_of_one_le_right (mul_nonneg hC (zero_le_one.trans (v1 X))) (p1 X)
   apply tri.trans ((add_le_add (dif X) hx).trans ?_)
-  dsimp only
   linarith only [mul_le_mul_of_nonneg_right cost (Real.sqrt_nonneg X),
     mul_le_mul_of_nonneg_right keep (Real.sqrt_nonneg X)]
 
@@ -114,7 +113,7 @@ theorem uncentered_ordinary_prime_transfer (v : ℕ → ℝ) (hv : Monotone v) (
     refine ⟨C,hC,Eventually.of_forall (fun X => ?_)⟩
     have cheap := le_mul_of_one_le_left (sq_nonneg (E X)) (b1 X)
     exact (full X).trans ((mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_left cheap (mul_nonneg hC (zero_le_one.trans (v1 _)))) (Real.sqrt_nonneg _)).trans_eq (by ring))
+      (mul_le_mul_of_nonneg_left cheap (mul_nonneg hC (zero_le_one.trans (v1 _)))) (Real.sqrt_nonneg _)).trans_eq (by dsimp only [P,criticalLogSquarePrice]; ring))
   · intro h
     obtain ⟨C,hC,full⟩ := full_from_eventual v1 h
     obtain ⟨K,hK,read⟩ := ordinary_prime_readings_from_the_full_prefix v hv
@@ -231,12 +230,14 @@ theorem critical_euler_allowances_in_logarithmic_coordinates (f : ℕ → ℝ) :
     have es : E X ≤ (E X)^2 := by nlinarith only [e1 X,sq_nonneg (E X-1)]
     have ep : E X ≤ P X := es.trans (le_mul_of_one_le_left (sq_nonneg _) (b1 X))
     have lo := cost.1.trans (mul_le_mul_of_nonneg_right (Real.log_le_log (zero_lt_one.trans_le (e1 X)) ep) llp.le)
+    change (1/32:ℝ)*L ≤ Real.log (P X)*Real.log L at lo
+    have l0 : 0 ≤ L := zero_le_one.trans log1
     have coef : A ≤ (j:ℝ)*(1/32) := by linarith only [hj]
     have cap : Real.exp (A*L/Real.log L) ≤ P X^j := by
       apply (Real.log_le_log_iff (Real.exp_pos _) (pow_pos pp j)).mp
       rw [Real.log_exp,Real.log_pow,div_le_iff₀ llp]
       linarith only [mul_le_mul_of_nonneg_left lo (Nat.cast_nonneg (α := ℝ) j),
-        mul_le_mul_of_nonneg_right coef (zero_le_one.trans log1)]
+        mul_le_mul_of_nonneg_right coef l0]
     exact good.trans (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left cap hC) (Real.sqrt_nonneg _))
 
 private theorem stable_at_the_critical_euler_scale {f g : ℕ → ℝ}

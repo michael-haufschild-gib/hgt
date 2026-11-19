@@ -77,7 +77,7 @@ theorem calibrated_osgood_gcd_amplitude (s : ℕ) :
   have hquot := hn.add (gcd_grid_logarithmic_exponent s)
   rw [zero_add] at hquot
   refine ⟨Real.exp (-c),Real.exp_pos _,Real.exp_le_one_iff.mpr (neg_nonpos.mpr hc),
-    (hlim.neg.exp.mul hquot).congr fun k => ?_⟩
+    ((Real.continuous_exp.continuousAt.tendsto.comp hlim.neg).mul hquot).congr fun k => ?_⟩
   have hD : 0 ≤ powerGridGcdDeficit r k := Finset.sum_nonneg fun _ _ => le_max_right _ _
   have harg : 0 < 1 + Real.log (1 + powerGridGcdDeficit r k) :=
     zero_lt_one.trans_le (one_le_one_add_log_one_add hD)

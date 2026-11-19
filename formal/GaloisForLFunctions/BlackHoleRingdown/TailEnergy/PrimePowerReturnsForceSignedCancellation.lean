@@ -133,6 +133,135 @@ theorem prime_power_cancellation_limit (h : CompactPulse) {S : ℝ} (hS : 0 ≤ 
   rw [dist_eq_norm, sub_neg_eq_add]
   exact (hC u k hk1 ht).trans_lt hk
 
+private theorem bounce_before_support (h : CompactPulse) {S : ℝ} (hs : ∀ s : ℝ, S < |s| → h s = 0)
+    {u : ℝ} (hu : u ≤ -S) : bounce h u = 0 := by
+  apply setIntegral_eq_zero_of_forall_eq_zero
+  intro v hv
+  have hl : S < |u-v| := by
+    rw [abs_sub_comm]
+    exact (by linarith only [hu, (show 0 < v from hv)] : S < v-u).trans_le (le_abs_self _)
+  simp only [hs _ hl, zero_mul]
+
+private theorem path_finite (h : CompactPulse) {S : ℝ} (hs : ∀ s : ℝ, S < |s| → h s = 0)
+    (t : ℝ) (c : ℕ) (hc : c ∉ Finset.Icc 1 (pathReturnCutoff (t+S))) : path h c t = 0 := by
+  rcases Nat.eq_zero_or_pos c with rfl | hpos
+  · simp [path,echoWeight]
+  have hc' : pathReturnCutoff (t+S) < c := lt_of_not_ge (fun hle => hc (mem_Icc.mpr ⟨hpos,hle⟩))
+  have he := (Nat.le_ceil (Real.exp ((t+S)/2))).trans (Nat.cast_le.mpr hc'.le)
+  have hl := (Real.le_log_iff_exp_le (Nat.cast_pos.mpr hpos)).mpr he
+  rw [path, bounce_before_support h hs (by unfold echoDelay; linarith only [hl]), mul_zero]
+
+private theorem path_hasSum (h : CompactPulse) (t : ℝ) :
+    HasSum (fun c => path h c t) (pulseEcho h t) := by
+  obtain ⟨S,_,hs⟩ := h.exists_support_bound
+  have he := hasSum_sum_of_ne_finset_zero (path_finite h hs t)
+  rwa [finite_return_sum h hs (le_refl t), ← h.pulseEcho_eq] at he
+
+/-- The part of the echo carried by denominators divisible by q. -/
+def multipleEcho (h : CompactPulse) (q : ℕ) (t : ℝ) : ℂ :=
+  ∑' a : ℕ, path h (q*a) t
+
+private theorem echoWeight_prime_mul {p : ℕ} (hp : p.Prime) (a : ℕ) :
+    echoWeight (p*a) = if p ∣ a then echoWeight a else (1-1/(p:ℝ))*echoWeight a := by
+  have hp0 := (Nat.cast_pos.mpr hp.pos : (0:ℝ) < p).ne'
+  unfold echoWeight
+  rw [Nat.cast_mul]
+  split_ifs with hd
+  · rw [Nat.totient_mul_of_prime_of_dvd hp hd, Nat.cast_mul, mul_div_mul_left _ _ hp0]
+  · rw [Nat.totient_mul_of_prime_of_not_dvd hp hd, Nat.cast_mul, Nat.cast_sub hp.one_le, Nat.cast_one]
+    by_cases ha : a = 0
+    · subst a; simp
+    field_simp [hp0, (by exact_mod_cast ha : (a:ℝ) ≠ 0)] <;> ring
+
+private theorem echoDelay_mul {a b : ℕ} (ha : 0 < a) (hb : 0 < b) :
+    echoDelay (a*b) = echoDelay a+echoDelay b := by
+  rw [echoDelay, Nat.cast_mul, Real.log_mul (by exact_mod_cast ha.ne') (by exact_mod_cast hb.ne')]
+  unfold echoDelay
+  ring
+
+private theorem path_prime_tower (h : CompactPulse) {p : ℕ} (hp : p.Prime) (k a : ℕ) (u : ℝ) :
+    path h (p^(k+1)*a) (echoDelay (p^(k+1))+u) =
+      (echoWeight (p*a) : ℂ)*bounce h (u-echoDelay a) := by
+  rcases Nat.eq_zero_or_pos a with rfl | ha
+  · simp [path,echoWeight]
+  have hw : echoWeight (p^(k+1)*a) = echoWeight (p*a) := by
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      rw [pow_succ', mul_assoc, echoWeight_prime_mul hp, if_pos, ih]
+      exact dvd_mul_of_dvd_left (dvd_pow_self _ (by omega)) _
+  rw [path, hw, echoDelay_mul (pow_pos hp.pos _) ha]
+  congr 2
+  ring
+
+/-- At the corresponding translated time the entire prime-power sector
+repeats exactly, for every compact input and every positive power. -/
+theorem repeated_prime_sector (h : CompactPulse) {p : ℕ} (hp : p.Prime) (k : ℕ) (u : ℝ) :
+    multipleEcho h (p^(k+1)) (echoDelay (p^(k+1))+u) = multipleEcho h p (echoDelay p+u) := by
+  unfold multipleEcho
+  apply tsum_congr
+  intro a
+  exact (path_prime_tower h hp k a u).trans (by simpa using (path_prime_tower h hp 0 a u).symm)
+
+private theorem tsum_on_multiples (h : CompactPulse) {q : ℕ} (hq : 0 < q) (t : ℝ) :
+    (∑' a, if q ∣ a then path h a t else 0) = multipleEcho h q t := by
+  let f := fun a : ℕ => if q ∣ a then path h a t else 0
+  have hi : Function.Injective (fun a : ℕ => q*a) := fun _ _ he => Nat.eq_of_mul_eq_mul_left hq he
+  have hs : Function.support f ⊆ Set.range (fun a : ℕ => q*a) := by
+    intro a ha
+    by_contra hn
+    have hnd : ¬q ∣ a := fun ⟨d,hd⟩ => hn ⟨d,hd.symm⟩
+    exact ha (if_neg hnd)
+  simpa only [f, if_pos (dvd_mul_right q _), multipleEcho] using (hi.tsum_eq hs).symm
+
+/-- The sector at its first prime delay satisfies a scalar delay recurrence.
+The forcing is the full physical echo, including the mean. -/
+theorem prime_sector_delay (h : CompactPulse) {p : ℕ} (hp : p.Prime) (u : ℝ) :
+    multipleEcho h p (echoDelay p+u) =
+      (1-1/(p:ℂ))*pulseEcho h u + (1/(p:ℂ))*multipleEcho h p u := by
+  let A := fun a : ℕ => path h a u
+  let B := fun a : ℕ => if p ∣ a then A a else 0
+  have hA : Summable A := (path_hasSum h u).summable
+  have hB : Summable B := by
+    obtain ⟨S,_,hs⟩ := h.exists_support_bound
+    exact summable_of_ne_finset_zero (s := Finset.Icc 1 (pathReturnCutoff (u+S)))
+      (fun a ha => by simp [B,A,path_finite h hs u a ha])
+  have term (a : ℕ) : path h (p*a) (echoDelay p+u) =
+      (1-1/(p:ℂ))*A a + (1/(p:ℂ))*B a := by
+    rw [show path h (p*a) (echoDelay p+u) = _ from
+      (by simpa using path_prime_tower h hp 0 a u :
+        path h (p*a) (echoDelay p+u) = (echoWeight (p*a):ℂ)*bounce h (u-echoDelay a)),
+      echoWeight_prime_mul hp]
+    by_cases hd : p ∣ a <;> simp only [B,A,path, if_pos, if_neg, hd, ↓reduceIte,
+      Complex.ofReal_mul, Complex.ofReal_sub, Complex.ofReal_div, Complex.ofReal_one,
+      Complex.ofReal_natCast] <;> ring
+  conv_lhs => rw [multipleEcho]; simp_rw [term]
+  rw [(hA.mul_left _).tsum_add (hB.mul_left _), tsum_mul_left, tsum_mul_left,
+    (path_hasSum h u).tsum_eq, tsum_on_multiples h hp.pos u]
+
+/-- Subtracting the exact prime-sector mean gives the same scalar recurrence
+forced by the decaying reflected field. The mean weight is p/(p+1). -/
+def centeredPrimeSector (h : CompactPulse) (p : ℕ) (u : ℝ) : ℂ :=
+  multipleEcho h p (echoDelay p+u) -
+    ((p:ℂ)/(p+1))*meanCoefficient h*cexp ((u:ℂ)/2)
+
+theorem centered_sector_delay (h : CompactPulse) {p : ℕ} (hp : p.Prime) (u : ℝ) :
+    centeredPrimeSector h p u = (1-1/(p:ℂ))*pulseReflected h u +
+      (1/(p:ℂ))*centeredPrimeSector h p (u-echoDelay p) := by
+  have hp0 : (p : ℂ) ≠ 0 := by exact_mod_cast hp.ne_zero
+  have hp1 : (p : ℂ)+1 ≠ 0 := by exact_mod_cast (Nat.succ_ne_zero p)
+  have hshift : cexp (((u-echoDelay p : ℝ):ℂ)/2) = cexp ((u:ℂ)/2)/(p:ℂ) := by
+    rw [echoDelay, Complex.ofReal_sub, sub_div, Complex.exp_sub]
+    congr 1
+    rw [Complex.ofReal_mul, Complex.ofReal_ofNat, show (2:ℂ)*↑(Real.log p)/2 = ↑(Real.log p) by ring,
+      ← Complex.ofReal_exp, Real.exp_log (Nat.cast_pos.mpr hp.pos), Complex.ofReal_natCast]
+  unfold centeredPrimeSector
+  rw [prime_sector_delay h hp u, h.pulseEcho_eq, add_sub_cancel, hshift]
+  field_simp [hp0,hp1] <;> ring
+
+#print axioms repeated_prime_sector
+#print axioms prime_sector_delay
+#print axioms centered_sector_delay
 #print axioms finite_return_sum
 #print axioms erase_one_return
 #print axioms prime_power_cancellation_rate

@@ -125,13 +125,67 @@ theorem saturation_iff_peak_dvd_letters (hP : IsProducer c m B) (hK : AlphabetLE
     · exact Or.inl h.symm
     · exact Or.inr ((hP.stepWeight_le_peak r).antisymm (Int.le_of_dvd h hd))
 
+private theorem one_mem_window (hP : IsProducer c m B) : 1 ∈ Ico 1 B :=
+  mem_Ico.mpr ⟨le_rfl,hP.two_le_B⟩
+
+/-- The first positive multiplicity has to become a vanishing fraction
+of the peak along every family of rates tending to zero. -/
+theorem first_height_rate_floor :
+    ∃ η : ℝ, 0 < η ∧ ∀ (c : ℕ →₀ ℤ) (m B : ℕ), IsProducer c m B →
+      η*(stepWeight c 1 : ℝ) ≤ rate c m B*(peak c : ℝ) := by
+  obtain ⟨δ,hδ,hδ1,hlaw⟩ := exists_uncertainty_constant
+  refine ⟨δ/5, by positivity, fun c m B hP => ?_⟩
+  have hm := hP.m_pos
+  have hpeak : (0 : ℝ) ≤ peak c := by exact_mod_cast (hP.nonneg 1).trans (hP.stepWeight_le_peak 1)
+  by_cases hr : rate c m B ≤ 1
+  · have hcost := hP.sum_sub_le_excess (n := 1) le_rfl 1
+    norm_num at hcost
+    have hlarge := hP.excess_le.trans (mul_le_mul_of_nonneg_left hr hm.le)
+    have height : (stepWeight c 1 : ℝ) ≤ 5*m := by linarith only [hcost,hlarge]
+    have h := hlaw c m B hP hr
+    rw [IsProducer.peakRatio, ← mul_div_assoc, le_div_iff₀ hm] at h
+    calc δ/5*(stepWeight c 1 : ℝ) ≤ δ/5*(5*m) :=
+           mul_le_mul_of_nonneg_left height (by positivity)
+         _ = δ*m := by ring
+         _ ≤ _ := h
+  · have he : (δ/5) ≤ rate c m B := by linarith only [hδ1,lt_of_not_ge hr]
+    exact (mul_le_mul_of_nonneg_left (by exact_mod_cast hP.stepWeight_le_peak 1) (by positivity :
+      0 ≤ δ/5)).trans (mul_le_mul_of_nonneg_right he hpeak)
+
+/-- The peak measured in units of *any* common letter divisor must grow
+at least as fast as the reciprocal rate. This also applies to rows
+rescaled by arbitrarily large integers. -/
+theorem common_divisor_rate_floor :
+    ∃ η : ℝ, 0 < η ∧ ∀ (c : ℕ →₀ ℤ) (m B : ℕ), IsProducer c m B →
+      ∀ D : ℤ, (∀ k, D ∣ c k) → η*D ≤ rate c m B*(peak c : ℝ) := by
+  obtain ⟨η,hη,h⟩ := first_height_rate_floor
+  refine ⟨η,hη,fun c m B hP D hdiv => ?_⟩
+  have hd : D ∣ stepWeight c 1 :=
+    Finset.dvd_sum fun k _ => dvd_mul_of_dvd_left (hdiv k) _
+  have hpos : 0 < stepWeight c 1 := lt_of_lt_of_le
+    (Int.natCast_pos.mpr hP.one_le_m) (hP.window 1 (one_mem_window hP))
+  exact (mul_le_mul_of_nonneg_left (by exact_mod_cast Int.le_of_dvd hpos hd) hη.le).trans (h c m B hP)
+
+/-- A universal positive floor excludes all Jordan-saturating rows from
+any construction with vanishing rate, independently of alphabet,
+multiplicity and window. -/
+theorem saturated_rate_floor :
+    ∃ η : ℝ, 0 < η ∧ ∀ (K : ℕ) (c : ℕ →₀ ℤ) (m B : ℕ), IsProducer c m B → AlphabetLE c K →
+      jordanEnergy K c = 3*(peak c : ℝ)^2 → η ≤ rate c m B := by
+  obtain ⟨η,hη,h⟩ := common_divisor_rate_floor
+  refine ⟨η,hη,fun K c m B hP hK he => ?_⟩
+  have hpos : 0 < (peak c : ℝ) := by
+    have := (hP.window 1 (one_mem_window hP)).trans (hP.stepWeight_le_peak 1)
+    exact lt_of_lt_of_le hP.m_pos (by exact_mod_cast this)
+  exact (mul_le_mul_iff_left₀ hpos).mp (h c m B hP (peak c)
+    ((saturation_iff_peak_dvd_letters hP hK).mp he))
+
 /-- A long initial producer window constrains its full Jordan spectrum
 through its slope excess. Every sample uses the actual multiplicity. -/
 theorem window_energy_le_excess (hP : IsProducer c m B) (hK : AlphabetLE c K) (hK2 : 2 ≤ K)
     (L : ℕ) (hL : L < B) :
     ((L:ℝ)-(2*(K:ℝ)^2-1)) * jordanEnergy K c ≤
       12*((L:ℝ)*((m:ℝ)-(peak c : ℝ)/2)^2 + m*(1+(L:ℝ))^2*excess c m B) := by
-  let E := sievePrimitiveEnergy K (fun k => (c k : ℝ))
   have hwin := abs_window_sum_sq_weightedCenteredSawtoothSum_sub_le hK2
     (fun k => (c k : ℝ)) 0 L
   simp only [Nat.zero_add, centered_floor hP hK] at hwin
@@ -165,5 +219,8 @@ theorem window_energy_le_excess (hP : IsProducer c m B) (hK : AlphabetLE c K) (h
 #print axioms jordan_ceiling
 #print axioms jordan_ceiling_eq_iff
 #print axioms saturation_iff_peak_dvd_letters
+#print axioms first_height_rate_floor
+#print axioms common_divisor_rate_floor
+#print axioms saturated_rate_floor
 #print axioms window_energy_le_excess
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics.FloorSpectrum
