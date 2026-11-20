@@ -93,7 +93,7 @@ theorem primeLogVacuumDistanceEstimate_error (P : Finset Nat.Primes) (β : ℝ) 
     change w / (d : ℝ) ^ 2 + r = w / (d : ℝ) ^ 2 * q ^ 2
     rw [hsq]
     dsimp only [u]
-    field_simp [hw.ne', hd.ne'] <;> ring
+    field_simp [hw.ne', hd.ne']
   have hest : primeLogVacuumDistanceEstimate P β d = (d : ℝ) / q := by
     rw [primeLogVacuumDistanceEstimate, hJ,
       show weight P β none / (w / (d : ℝ) ^ 2 * q ^ 2) = ((d : ℝ) / q) ^ 2 by
@@ -102,7 +102,8 @@ theorem primeLogVacuumDistanceEstimate_error (P : Finset Nat.Primes) (β : ℝ) 
       Real.sqrt_sq (div_nonneg hd.le hqpos.le)]
   have herr : (d : ℝ) - (d : ℝ) / q = (d : ℝ) * u / (q * (q + 1)) := by
     rw [show u = q ^ 2 - 1 by linarith only [hsq]]
-    field_simp [hqpos.ne', (by positivity : 0 < q + 1).ne'] <;> ring
+    field_simp [hqpos.ne', (by positivity : 0 < q + 1).ne']
+    ring
   have hlarge : 2 ≤ q * (q + 1) := by
     have hl := mul_le_mul hq (add_le_add hq (le_refl (1 : ℝ)))
       (by positivity : 0 ≤ (1 : ℝ) + 1) hqpos.le
@@ -118,7 +119,7 @@ theorem primeLogVacuumDistanceEstimate_error (P : Finset Nat.Primes) (β : ℝ) 
         (by positivity)
     _ = _ := by
       change _ = (d : ℝ) ^ 3 * (1 - w) / (2 * w * (Real.log 2 + (d : ℝ)) ^ 2)
-      rw [mul_div_assoc, div_div, mul_comm ((Real.log 2 + (d : ℝ)) ^ 2)]
+      rw [← mul_div_assoc, div_div, mul_comm ((Real.log 2 + (d : ℝ)) ^ 2)]
 
 #print axioms primeLogVacuumResolventRemainder_bounds
 #print axioms primeLogVacuumDistanceEstimate_error

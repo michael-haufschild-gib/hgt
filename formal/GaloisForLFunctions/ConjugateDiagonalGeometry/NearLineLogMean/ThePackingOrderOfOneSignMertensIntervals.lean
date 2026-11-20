@@ -174,7 +174,10 @@ theorem contiguous_mertens_counting_order {a : ℝ} (ha : 0 < a) (hθ : a < zeta
           simp only [signedMertensBlocks, mem_filter] at hj
           exact hj.1
       rw [card_range] at hb
-      exact_mod_cast (Nat.mul_le_mul_right L hb).trans (Nat.div_mul_le_self (N+1) L)
+      have h' := (Nat.mul_le_mul_right L hb).trans (Nat.div_mul_le_self (N+1) L)
+      have h'' : ((signedMertensBlocks L N (A*X^a)).card : ℝ) * L ≤ (N:ℝ) + 1 := by
+        exact_mod_cast h'
+      exact h''
     have hq : (C N) ≤ X^(1-a) := by
       rw [Real.rpow_sub xp,Real.rpow_one]
       exact (le_div_iff₀ (Real.rpow_pos_of_pos xp a)).mpr

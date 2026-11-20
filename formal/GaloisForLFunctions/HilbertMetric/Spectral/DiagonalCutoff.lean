@@ -58,6 +58,9 @@ theorem squared_error [DecidableEq ι] (modes kept : Finset ι)
     have hki := (Finset.mem_filter.mp hi).2
     simp only [recover_sub, if_neg hki, norm_neg]
 
+#print axioms measure_injective
+#print axioms squared_error
+
 end
 
 end GaloisForLFunctions.HilbertMetric.DiagonalCutoff

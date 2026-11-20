@@ -74,7 +74,8 @@ theorem characterMoment_integral {n : ℕ} (φ : TestWeight) (h : modulusGRH (n+
   refine ⟨(integrable_finsetSum X hi).const_mul _,?_⟩
   rw [integral_const_mul,integral_finsetSum X hi]
   have hN : 0 < (N:ℝ) := Nat.cast_pos.mpr (Nat.succ_pos n)
-  have hs : (Real.sqrt N : ℂ)^2 = (N : ℂ) := by exact_mod_cast Real.sq_sqrt hN.le
+  have hs : (Real.sqrt N : ℂ)^2 = (N : ℂ) := by
+    rw [← Complex.ofReal_pow,Real.sq_sqrt hN.le,Complex.ofReal_natCast]
   have hn0 : (Real.sqrt N : ℂ) ≠ 0 := ofReal_ne_zero.mpr (Real.sqrt_pos.mpr hN).ne'
   have hval (χ) (hχ : χ ∈ X) : c^2 * (∫ p, G χ p) = (‖U χ‖^2 : ℝ) / (N : ℂ) := by
     have e : U χ/(Real.sqrt N : ℂ) = -c*(∫ t : ℝ, F χ t) :=

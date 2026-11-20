@@ -67,7 +67,8 @@ theorem character_polynomial_integral {n : ℕ} (φ : TestWeight) (h : modulusGR
   rw [character_contour_shift φ h hχ ha ha']
   have hinv := companion_LSeries_inversion φ (twistedMangoldt χ) (by simp [twistedMangoldt])
     (Nat.succ_pos n) (1/2) 1 (χ.LSeriesSummable_twist_vonMangoldt (by norm_num))
-  push_cast at hinv
+  simp only [Complex.ofReal_add, Complex.ofReal_div, Complex.ofReal_one,
+    Complex.ofReal_ofNat] at hinv
   rw [weighted_samples_eq_units] at hinv
   rw [← hinv, neg_mul, ← mul_neg, ← integral_neg]
   congr 1

@@ -64,7 +64,7 @@ private theorem read_error {Y Z : ℕ → ℝ → ℝ} {k : ℕ} {h δ : ℝ} (h
   unfold anchoredRead
   rw [←sub_div,abs_div,abs_of_pos (mul_pos (by norm_num) hp)]
   apply (div_le_iff₀ (mul_pos (by norm_num) hp)).mpr
-  rw [show 4*δ/h*(2*h)=8*δ by field_simp]
+  rw [show 4*δ/h*(2*h)=8*δ by field_simp; ring]
   rw [abs_le]
   change -(8*δ) ≤ second _ g h-second _ g h ∧ _
   dsimp only [second]
@@ -84,7 +84,10 @@ theorem twelve_sample_anchor_error (a : ℕ → ℂ) {k : ℕ} (hk : 1 ≤ k)
     intros; push_cast; ring]
   refine (norm_sub_le _ _).trans ?_
   simp only [norm_mul,Complex.norm_I,mul_one,Complex.norm_real,Real.norm_eq_abs]
-  linarith only [read_error hp hU,read_error hp hV]
+  have h1 := read_error hp hU
+  have h2 := read_error hp hV
+  have h8 : 8*δ/h = 4*δ/h+4*δ/h := by ring
+  linarith only [h1,h2,h8]
 
 /-- A unit reference at 1 and a free complex amplitude at n. -/
 def anchorPair (n : ℕ) (z : ℂ) (j : ℕ) : ℂ :=
@@ -95,9 +98,13 @@ private theorem last_pair_row {k : ℕ} (hk : 1 ≤ k) (s t d : ℝ) :
       s^2*max d 0+2*(s*Real.cos (t*Real.log (k+1:ℕ)))*max (d-Real.log (k+1:ℕ)) 0 := by
   have hn : k+1 ≠ 1 := by omega
   have hz : ‖translated (anchorPair (k+1) s) t (k+1)‖^2 = s^2 := by
-    simp [translated,anchorPair,hn,norm_mul,Complex.norm_exp,Complex.norm_real,Real.norm_eq_abs]
+    rw [translated,anchorPair,if_neg hn,if_pos rfl,norm_mul,Complex.norm_exp_ofReal_mul_I,mul_one,
+      Complex.norm_real,Real.norm_eq_abs,sq_abs]
   rw [row_spectrum,hz,sum_eq_single 1]
-  · simp [translated_gram,anchorPair,hn,gram,gap,Complex.mul_re,Complex.mul_im]
+  · have hA : anchorPair (k+1) (s:ℂ) (k+1) = s := by simp [anchorPair]
+    have hB : anchorPair (k+1) (s:ℂ) 1 = 1 := by simp [anchorPair]
+    rw [translated_gram,hA,hB]
+    simp [gram,gap]
     <;> ring
   · intro j hj hj₁
     have hjn : j ≠ k+1 := (Nat.lt_succ_of_le (mem_Icc.mp hj).2).ne
@@ -121,14 +128,18 @@ theorem opposite_anchors_energy {n : ℕ} (hn : 2 ≤ n) (t d : ℝ) (N : ℕ) :
     by_cases he : k+1=n
     · subst n
       rw [if_neg (by omega : ¬k+1 ≤ k),if_pos le_rfl,zero_add]
-      rw [last_pair_row (by omega) 1,last_pair_row (by omega) (-1)]
+      have h1 := last_pair_row (k := k) (by omega) 1 t d
+      have h2 := last_pair_row (k := k) (by omega) (-1) t d
+      dsimp only [A,B]
+      push_cast at h1 h2 ⊢
+      rw [h1,h2]
       ring
     · have hrow : row A k d=row B k d := by
         by_cases hk : k=0
         · subst k
           simp [A,B,row_spectrum,translated,anchorPair]
         have h0 (u : ℂ) : translated (anchorPair n u) t (k+1)=0 := by
-          simp [translated,anchorPair,he,show k+1≠1 by omega]
+          simp [translated,anchorPair,he,hk]
         simp [A,B,row_spectrum,h0,gram]
       rw [hrow,sub_self,add_zero]
       by_cases hle : n ≤ k <;> simp [hle,show n ≤ k+1 ↔ n ≤ k by omega]
@@ -144,7 +155,7 @@ theorem opposite_anchors_noise_floor {n : ℕ} (hn : 2 ≤ n) {h : ℝ} (hh : 0 
   · intro t d hd N
     rw [opposite_anchors_energy hn]
     split_ifs
-    · rw [abs_mul,abs_mul,abs_of_nonneg (le_max_right _ 0)]
+    · rw [abs_mul,abs_mul,abs_of_nonneg (le_max_right (d-Real.log n) (0:ℝ))]
       norm_num
       have hcos := abs_le.mpr ⟨Real.neg_one_le_cos _, Real.cos_le_one _⟩
       have hle := mul_le_mul hcos (max_le (by linarith only [hd] : d-Real.log n ≤ h) hh)

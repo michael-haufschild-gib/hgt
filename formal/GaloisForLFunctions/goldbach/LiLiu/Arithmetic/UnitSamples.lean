@@ -42,7 +42,8 @@ theorem diagonal_samples (N : ℕ) [NeZero N] (φ : TestWeight) :
     by_cases hu : k.Coprime N
     · have hs : (Real.sqrt ((k:ℝ)/N) : ℂ)^2 = (k:ℂ)/N := by
         rw [← Complex.ofReal_pow,Real.sq_sqrt (div_nonneg (Nat.cast_nonneg k) (Nat.cast_nonneg N)),
-          Complex.ofReal_div,Complex.ofReal_natCast]
+          Complex.ofReal_div]
+        simp only [Complex.ofReal_natCast]
       simp only [diagonalCoefficient,if_pos hu,companion,Vstar,map_mul,conj_ofReal,
         f,coefficient,Complex.ofReal_mul]
       have h0 : (k:ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hk.ne'
