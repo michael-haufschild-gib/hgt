@@ -1,4 +1,4 @@
-import GaloisForLFunctions.goldbach.LiLiu.SignedMellin
+import GaloisForLFunctions.goldbach.LiLiu.Mellin.SignedMellin
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.IntegrationByParts
 

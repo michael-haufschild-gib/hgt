@@ -1,5 +1,5 @@
 import GaloisForLFunctions.goldbach.LiLiu.ArithmeticKernel
-import GaloisForLFunctions.goldbach.LiLiu.EulerBounds
+import GaloisForLFunctions.goldbach.LiLiu.Arithmetic.EulerBounds
 import GaloisForLFunctions.HTGeometry.GammaVerticalRatioBound
 import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.PowerTailZetaMultiplierBound
 
@@ -26,7 +26,7 @@ theorem signedBetaGammaFactor_vertical {s : ℂ} (hs : 0 ≤ s.re) (hu : s.re < 
   exact _root_.HTGeometry.norm_Gamma_div_le ha hab t
 
 private theorem realGamma_continuous {x : ℝ} (hx : 0 < x) : ContinuousAt Real.Gamma x :=
-  (Real.differentiableAt_Gamma x fun m he => by
+  (Real.differentiableAt_Gamma (s := x) fun m he => by
     have hm := Nat.cast_nonneg (α := ℝ) m
     linarith only [he,hx,hm]).continuousAt
 

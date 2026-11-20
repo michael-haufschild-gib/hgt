@@ -1,5 +1,5 @@
-import GaloisForLFunctions.goldbach.LiLiu.CharacterContour
-import GaloisForLFunctions.goldbach.LiLiu.DirichletInversion
+import GaloisForLFunctions.goldbach.LiLiu.Mellin.CharacterContour
+import GaloisForLFunctions.goldbach.LiLiu.Mellin.DirichletInversion
 import GaloisForLFunctions.goldbach.LiLiu.FiniteProjection
 import GaloisForLFunctions.RHTower.SelbergKloostermanCongruence
 

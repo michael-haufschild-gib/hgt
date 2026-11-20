@@ -1,5 +1,5 @@
 import GaloisForLFunctions.goldbach.LiLiu.ArithmeticKernel
-import GaloisForLFunctions.goldbach.LiLiu.EulerBounds
+import GaloisForLFunctions.goldbach.LiLiu.Arithmetic.EulerBounds
 
 /-! # Hermitian symmetry of the arithmetic boundary kernel -/
 

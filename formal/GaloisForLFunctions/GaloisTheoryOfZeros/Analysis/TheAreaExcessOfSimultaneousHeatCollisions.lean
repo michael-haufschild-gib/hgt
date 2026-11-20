@@ -48,7 +48,7 @@ theorem projected_order_at_time (C : Finset (ℂ × ℂ)) (τ : ℂ) :
   by_cases he : p.1=τ
   · rw [if_pos he,he,hlin,nsmul_eq_mul,mul_one]
   · have hz : analyticOrderAt (fun z : ℂ => z-p.1) τ=0 :=
-      analyticOrderAt_eq_zero.mpr (Or.inr (sub_ne_zero.mpr he.symm))
+      analyticOrderAt_eq_zero.mpr (Or.inr (sub_ne_zero.mpr (Ne.symm he)))
     rw [if_neg he,hz,nsmul_zero,Nat.cast_zero]
 
 /-- A single time-plane disk reads the entire projected divisor of the

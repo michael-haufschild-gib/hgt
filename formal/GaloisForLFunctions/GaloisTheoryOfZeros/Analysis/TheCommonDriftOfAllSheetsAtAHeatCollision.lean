@@ -26,7 +26,8 @@ theorem IsCollision.blowup_ray_jet {τ z : ℂ} {m : ℕ} (hc : IsCollision τ z
     (((m+j).choose m*m.factorial:ℕ):ℂ)*iteratedDeriv j (fun s : ℂ => collisionBlowup τ z m (s,y)) 0 =
       parabolicRayPolynomial (m+j) y*iteratedDeriv (m+j) (complexHeat τ) z := by
   have hd : Differentiable ℂ (fun s : ℂ => collisionBlowup τ z m (s,y)) := fun s =>
-    ((analyticAt_collisionBlowup τ z m (s,y)).comp (analyticAt_id.prod analyticAt_const)).differentiableAt
+    ((analyticAt_collisionBlowup τ z m (s,y)).comp (f := fun s : ℂ => (s,y)) (x := s)
+      (analyticAt_id.prod analyticAt_const)).differentiableAt
   have h := heat_parabolic_ray_derivative τ z y (m+j) 0
   simp only [iteratedDeriv_zero,Nat.zero_add] at h
   rw [show (fun s : ℂ => complexHeat (τ+s^2) (z+s*y))=(fun s => s^m*collisionBlowup τ z m (s,y)) from
@@ -47,7 +48,7 @@ theorem IsCollision.all_branches_have_one_drift {τ z ρ : ℂ} {m : ℕ} (hc : 
   let B := iteratedDeriv (m+1) (complexHeat τ) z
   let F : ℂ := m.factorial
   let q := parabolicRayPolynomial m
-  have hF : F≠0 := by exact_mod_cast Nat.factorial_ne_zero m
+  have hF : F≠0 := Nat.cast_ne_zero.mpr (Nat.factorial_ne_zero m)
   have hA : A≠0 := hc.top_ne_zero
   have hM : (m:ℂ)+1≠0 := by exact_mod_cast Nat.succ_ne_zero m
   have hval (u : ℂ) : F*G (0,u)=q u*A := by
@@ -56,7 +57,7 @@ theorem IsCollision.all_branches_have_one_drift {τ z ρ : ℂ} {m : ℕ} (hc : 
   have hq : q ρ=0 := (mul_eq_zero.mp ((hval ρ).symm.trans (by rw [hzero,mul_zero]))).resolve_right hA
   have hd := (analyticAt_collisionBlowup τ z m (0,ρ)).differentiableAt.hasFDerivAt
   have hx : deriv (fun s : ℂ => G (s,ρ)) 0=D (1,0) :=
-    (hd.comp_hasDerivAt 0 ((hasDerivAt_id 0).prodMk (hasDerivAt_const 0 ρ))).deriv
+    (hd.comp_hasDerivAt (0:ℂ) ((hasDerivAt_id' (0:ℂ)).prodMk (hasDerivAt_const (0:ℂ) ρ))).deriv
   have hz := hd.comp_hasDerivAt ρ ((hasDerivAt_const ρ (0:ℂ)).prodMk (hasDerivAt_id ρ))
   have hp : HasDerivAt q (deriv q ρ) ρ := ((heatShiftPoly (1/4) m).hasDerivAt_aeval ρ).differentiableAt.hasDerivAt
   have hspace : F*D (0,1)=deriv q ρ*A :=
@@ -64,11 +65,12 @@ theorem IsCollision.all_branches_have_one_drift {τ z ρ : ℂ} {m : ℕ} (hc : 
   have hcnt : (m+1).choose m=m+1 := by
     rw [←Nat.choose_symm (Nat.le_succ m),show m+1-m=1 by omega,Nat.choose_one_right]
   have htime := hc.blowup_ray_jet ρ 1
-  rw [hcnt,Nat.cast_mul,Nat.cast_succ,iteratedDeriv_one,hx,parabolic_ray_raise,hq,mul_zero,zero_sub] at htime
+  rw [hcnt,Nat.cast_mul,Nat.cast_succ,iteratedDeriv_one,hx,parabolic_ray_raise,
+    show parabolicRayPolynomial m ρ = 0 from hq,mul_zero,zero_sub] at htime
   change (((m:ℂ)+1)*F)*D (1,0)= -(2*deriv q ρ)*B at htime
   obtain ⟨hY,hY0,hYZ,_⟩ := collisionBranch_spec hc hr
   have hD' : HasFDerivAt G D (0,Y 0) := by rw [show Y 0=ρ from hY0]; exact hd
-  have hzero' := (hD'.comp_hasDerivAt 0 ((hasDerivAt_id 0).prodMk hY.differentiableAt.hasDerivAt)).unique
+  have hzero' := (hD'.comp_hasDerivAt (0:ℂ) ((hasDerivAt_id' (0:ℂ)).prodMk hY.differentiableAt.hasDerivAt)).unique
     ((hasDerivAt_const (0:ℂ) (0:ℂ)).congr_of_eventuallyEq hYZ)
   change D (1,deriv Y 0)=0 at hzero'
   rw [show ((1:ℂ),deriv Y 0) = ((1,0):ℂ × ℂ) + deriv Y 0 • ((0,1):ℂ × ℂ) by ext <;> simp,
@@ -89,15 +91,15 @@ theorem IsCollision.sheet_after_common_translation {τ z ρ : ℂ} {m : ℕ} (hc
   let Y := collisionBranch τ z m ρ
   obtain ⟨hY,hY0,_,_⟩ := collisionBranch_spec hc hr
   obtain ⟨u,hu,h₁,hu0⟩ := Bottcher.analyticAt_simple_factor (hY.sub (analyticAt_const (v:=ρ)))
-    (by change Y 0-ρ=0; rw [hY0,sub_self])
+    (by show collisionBranch τ z m ρ 0 - ρ = 0; rw [hY0,sub_self])
   have hder : deriv (fun s => Y s-ρ) 0=collisionDrift τ z m :=
     (hY.differentiableAt.hasDerivAt.sub_const ρ).deriv.trans (hc.all_branches_have_one_drift hr)
   have hu₀ : u 0=collisionDrift τ z m := hu0.trans hder
   obtain ⟨v,hv,h₂,_⟩ := Bottcher.analyticAt_simple_factor
     (hu.sub (analyticAt_const (v:=collisionDrift τ z m))) (by simp only [Pi.sub_apply,hu₀,sub_self])
   refine ⟨v,hv,Eventually.of_forall fun s => ?_⟩
-  have ha : Y s-ρ=s*u s := by simpa only [sub_zero] using h₁ s
-  have hb : u s-collisionDrift τ z m=s*v s := by simpa only [sub_zero] using h₂ s
+  have ha : Y s-ρ=s*u s := by simpa only [sub_zero,Pi.sub_apply] using h₁ s
+  have hb : u s-collisionDrift τ z m=s*v s := by simpa only [sub_zero,Pi.sub_apply] using h₂ s
   change z+s*Y s=z+ρ*s+collisionDrift τ z m*s^2+s^3*v s
   linear_combination s*ha+s^2*hb
 

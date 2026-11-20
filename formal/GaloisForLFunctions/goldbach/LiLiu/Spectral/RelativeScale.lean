@@ -1,4 +1,4 @@
-import GaloisForLFunctions.goldbach.LiLiu.SpectralScales
+import GaloisForLFunctions.goldbach.LiLiu.Spectral.SpectralScales
 import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 
 /-! # The critical-line scale is smaller than the main term -/
