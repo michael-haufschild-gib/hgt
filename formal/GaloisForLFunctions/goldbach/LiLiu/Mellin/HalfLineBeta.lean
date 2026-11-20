@@ -60,9 +60,8 @@ private theorem odds_jacobian (a b : ℂ) {x : ℝ} (hx : x ∈ Ioo 0 1) :
     congr 1
     push_cast
     ring
-  rw [hpow, ← Complex.ofReal_sub, Complex.ofReal_one]
-  change _ = (x:ℂ)^(a-1)*(d:ℂ)^(b-1)
-  have hdA := cpow_ne_zero_iff.mpr (Or.inl hdc) (y := a-1)
+  rw [hpow, show 1-(x:ℂ) = (d:ℂ) by simp [d]]
+  have hdA : (d:ℂ)^(a-1) ≠ 0 := cpow_ne_zero_iff.mpr (Or.inl hdc)
   push_cast
   field_simp [hdc,hdA]
   ring

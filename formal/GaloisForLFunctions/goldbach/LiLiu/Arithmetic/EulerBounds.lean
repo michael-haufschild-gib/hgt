@@ -26,8 +26,9 @@ theorem densityEuler_norm_bound {a : ℝ} (ha : 0 < a) :
       intro p _
       have h := norm_add_le (1 : ℂ) (densityIncrement N p w)
       rw [norm_one] at h
-      exact h.trans ((add_le_add le_rfl (norm_densityIncrement_le N p hw)).trans
-        (by simpa only [add_comm] using Real.add_one_le_exp (m p)))
+      have hinc : ‖densityIncrement N p w‖ ≤ m p := norm_densityIncrement_le N p hw
+      exact h.trans ((add_le_add le_rfl hinc).trans
+        (by rw [add_comm (1 : ℝ)]; exact Real.add_one_le_exp (m p)))
     _ = Real.exp (∑ p ∈ S, m p) := (Real.exp_sum ..).symm
     _ ≤ _ := Real.exp_le_exp.mpr (hm.sum_le_tsum _ fun p _ => by dsimp [m]; positivity)
 

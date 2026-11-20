@@ -24,10 +24,11 @@ theorem integral_LSeries_mul (a : ℕ → ℂ) {c : ℝ} (hs : LSeriesSummable a
       ∑' n, ∫ t : ℝ, LSeries.term a ((c : ℂ) + t * I) n * V t := by
   let F (n : ℕ) (t : ℝ) := LSeries.term a (line c t) n * V t
   have hn (n : ℕ) (t : ℝ) : ‖F n t‖ = ‖LSeries.term a c n‖ * ‖V t‖ := by
-    simp [F, line, norm_mul, LSeries.norm_term_eq]
+    simp [F, line, LSeries.norm_term_eq]
   have hc (n : ℕ) : Continuous fun t : ℝ => LSeries.term a (line c t) n := by
     rcases Nat.eq_zero_or_pos n with rfl | hp
-    · simp
+    · simp only [LSeries.term_zero]
+      exact continuous_const
     simp only [LSeries.term_of_ne_zero hp.ne', div_eq_mul_inv, ← Complex.cpow_neg]
     exact continuous_const.mul ((line_continuous c).neg.const_cpow (Or.inl (Nat.cast_ne_zero.mpr hp.ne')))
   have hi (n : ℕ) : Integrable (F n) := by

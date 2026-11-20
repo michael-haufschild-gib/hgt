@@ -110,6 +110,58 @@ private theorem reaches_robust_threshold {n d P : ℕ} (e : (Fin n → Bool) ≃
   linarith only [norm_sub_le_norm_sub_add_norm_sub (z • B) (unitaryEvolution (H : Reg n) v)
     (c • (C.eval : Reg n)),hfar,hnear,hcheap]
 
+/-- A compiler for short time increments gives a two-sided exclusion interval
+at the first crossing of a circuit budget, with an attained return deadline. -/
+theorem first_circuit_threshold_of_increment {n d P C₀ : ℕ}
+    (e : (Fin n → Bool) ≃ Fin (d+1)) (H : selfAdjoint (Reg n))
+    (hmax : MaximallyProjectiveEnergy (fun i => H.2.isHermitian.eigenvalues (e.symm i)))
+    (hent : atMostQuarterCircuitEntropyBound n P < ((2^d : ℕ) : ℝ))
+    (B : ℝ) (hB : 0 ≤ B) (hcost' : 2*C₀ ≤ P)
+    (hinc : ∀ t : ℝ, |t| ≤ B → HasProjectiveCircuitApproximation n (1/100:ℝ) C₀
+      (unitaryEvolution (H : Reg n) t)) :
+    ∃ σ : ℝ, B < σ ∧ orbitCircuitDistance H P σ = 9/80 ∧
+      (∀ t ∈ Ico 0 σ, orbitCircuitDistance H P t < 9/80) ∧
+      (∀ t ∈ Icc (σ-B) (σ+B), ProjectiveCircuitSeparated n (1/10:ℝ) (P/2)
+        (unitaryEvolution (H : Reg n) t)) ∧
+      ∀ s ≤ P/2, ∃ v : ℝ, σ+B < v ∧ v ≤ (σ+1)*(100:ℝ)^d ∧
+        HasProjectiveCircuitApproximation n (1/10:ℝ) s (unitaryEvolution (H : Reg n) v) ∧
+        ∀ t ∈ Ico σ v, ProjectiveCircuitSeparated n (1/10:ℝ) s
+          (unitaryEvolution (H : Reg n) t) := by
+  let U := unitaryEvolution (H : Reg n)
+  let r := P/2
+  have hprefix (t : ℝ) (ht : t ∈ Icc 0 B) : orbitCircuitDistance H P t < 9/80 := by
+    obtain ⟨c,hc,C,hC,he⟩ := hinc t (by simpa only [abs_of_nonneg ht.1] using ht.2)
+    have h := (hasProjectiveCircuitApproximation_iff_infDist (U t) P (1/100:ℝ)).mp
+      ⟨c,hc,C,by omega,he⟩
+    change orbitCircuitDistance H P t ≤ 1/100 at h
+    linarith
+  obtain ⟨σ,hσ,heq,hprior⟩ := first_crossing _ (continuous_orbitCircuitDistance H P) (9/80) B hB
+    hprefix (reaches_robust_threshold e H hmax hent)
+  have hσ0 := hB.trans hσ.le
+  have hlate : ProjectiveCircuitSeparated n (11/100:ℝ) P (U σ) := by
+    intro c hc C hC
+    by_contra! h
+    have h' := (hasProjectiveCircuitApproximation_iff_infDist (U σ) P (11/100:ℝ)).mp ⟨c,hc,C,hC,h⟩
+    change orbitCircuitDistance H P σ ≤ 11/100 at h'
+    linarith
+  have hwin (t : ℝ) (ht : t ∈ Icc (σ-B) (σ+B)) : ProjectiveCircuitSeparated n (1/10:ℝ) r (U t) := by
+    have hτ : |σ-t| ≤ B := abs_le.mpr ⟨by linarith only [ht.2],by linarith only [ht.1]⟩
+    have hc := projectiveCircuitSeparated_unitaryEvolution_backward_cone H
+      (by omega : C₀ ≤ P) hlate (hinc (σ-t) hτ)
+      (by norm_num : (1/10:ℝ)+1/100 ≤ 11/100)
+    rw [show σ-(σ-t) = t by ring] at hc
+    apply hc.mono_budget
+    change P/2 ≤ P-C₀
+    omega
+  refine ⟨σ,hσ,heq,hprior,hwin,?_⟩
+  intro s hs
+  obtain ⟨v,hv,he,hgap⟩ := projective_first_circuit_visit_deadline e H σ s
+  refine ⟨v,?_,by simpa only [abs_of_nonneg hσ0] using hv.2,he,hgap⟩
+  by_contra! h
+  obtain ⟨c,hc,C,hC,heC⟩ := he
+  exact (not_lt_of_ge heC) (hwin v ⟨(sub_le_self _ hB).trans hv.1,h⟩ c hc C (hC.trans hs))
+
+
 /-- From identity, the first robust crossing of the exponential budget is
 itself at least exponentially late in intrinsic time. Every threshold up to
 half that budget has a literal first re-entry after the crossing, preceded
@@ -146,9 +198,7 @@ theorem gaussianPath_first_robust_saturation_and_return :
   let n := L*2
   let d := 2^n-1
   let H := RHTower.pairQubitProjectivePauliSeedSelfAdjoint L p
-  let U := unitaryEvolution (H : Reg n)
   let P := nearHilbertContinuousCircuitBudget n
-  let r := excursionGateBudget n
   let B := (continuousCircuitPlateauWidth L : ℝ)/(1+‖(H : Reg n)‖)
   have hB : 0 ≤ B := by dsimp [B]; positivity
   let e : (Fin n → Bool) ≃ Fin (d+1) := (Fintype.equivFin _).trans
@@ -159,37 +209,7 @@ theorem gaussianPath_first_robust_saturation_and_return :
   have hinc (t : ℝ) (ht : |t| ≤ B) := normalized_path_increment hL H
     (RHTower.pairQubitProjectivePauliSeed_hasPauliWeightAtMost_two L p) t ht
   have hcost' : 2*continuousCircuitPlateauCompilerCost L ≤ P := hcost
-  have hprefix (t : ℝ) (ht : t ∈ Icc 0 B) : orbitCircuitDistance H P t < 9/80 := by
-    obtain ⟨c,hc,C,hC,he⟩ := hinc t (by simpa only [abs_of_nonneg ht.1] using ht.2)
-    have h := (hasProjectiveCircuitApproximation_iff_infDist (U t) P (1/100:ℝ)).mp
-      ⟨c,hc,C,by omega,he⟩
-    change orbitCircuitDistance H P t ≤ 1/100 at h
-    linarith
-  obtain ⟨σ,hσ,heq,hprior⟩ := first_crossing _ (continuous_orbitCircuitDistance H P) (9/80) B hB
-    hprefix (reaches_robust_threshold e H hmax hent)
-  have hσ0 := hB.trans hσ.le
-  have hlate : ProjectiveCircuitSeparated n (11/100:ℝ) P (U σ) := by
-    intro c hc C hC
-    by_contra! h
-    have h' := (hasProjectiveCircuitApproximation_iff_infDist (U σ) P (11/100:ℝ)).mp ⟨c,hc,C,hC,h⟩
-    change orbitCircuitDistance H P σ ≤ 11/100 at h'
-    linarith
-  have hwin (t : ℝ) (ht : t ∈ Icc (σ-B) (σ+B)) : ProjectiveCircuitSeparated n (1/10:ℝ) r (U t) := by
-    have hτ : |σ-t| ≤ B := abs_le.mpr ⟨by linarith only [ht.2],by linarith only [ht.1]⟩
-    have hc := projectiveCircuitSeparated_unitaryEvolution_backward_cone H
-      (by omega : continuousCircuitPlateauCompilerCost L ≤ P) hlate (hinc (σ-t) hτ)
-      (by norm_num : (1/10:ℝ)+1/100 ≤ 11/100)
-    rw [show σ-(σ-t) = t by ring] at hc
-    apply hc.mono_budget
-    change P/2 ≤ P-continuousCircuitPlateauCompilerCost L
-    omega
-  refine ⟨σ,hσ,heq,hprior,hwin,?_⟩
-  intro s hs
-  obtain ⟨v,hv,he,hgap⟩ := projective_first_circuit_visit_deadline e H σ s
-  refine ⟨v,?_,by simpa only [abs_of_nonneg hσ0] using hv.2,he,hgap⟩
-  by_contra! h
-  obtain ⟨c,hc,C,hC,heC⟩ := he
-  exact (not_lt_of_ge heC) (hwin v ⟨(sub_le_self _ hB).trans hv.1,h⟩ c hc C (hC.trans hs))
+  exact first_circuit_threshold_of_increment e H hmax hent B hB hcost' hinc
 
 #print axioms gaussianPath_first_robust_saturation_and_return
 

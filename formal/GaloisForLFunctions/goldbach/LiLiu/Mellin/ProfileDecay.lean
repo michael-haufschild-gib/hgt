@@ -48,6 +48,17 @@ private theorem profile_zero_above (φ : TestWeight) {x : ℝ} (hx : 3/2 < x) : 
     sumProfile_zero φ (show x ∉ Icc (2/3 : ℝ) (4/3) from fun h => by linarith only [h.2,hx]),
     mul_zero, sub_zero, Complex.ofReal_zero]
 
+theorem signedProfile_mellinConvergent (φ : TestWeight) {s : ℂ} (hs : 0 < s.re) :
+    MellinConvergent (fun x => (signedProfile φ x : ℂ)) s := by
+  have hc := (profile_smooth φ).continuous
+  have he : profile φ =ᶠ[atTop] fun _ => 0 :=
+    (eventually_gt_atTop (3/2 : ℝ)).mono fun _ hx => profile_zero_above φ hx
+  apply mellinConvergent_of_isBigO_rpow (a := s.re+1) (b := 0)
+    (hc.continuousOn.locallyIntegrableOn measurableSet_Ioi)
+    (he.isBigO.trans (Asymptotics.isBigO_zero _ _)) (by linarith only) _ hs
+  simpa only [neg_zero, Real.rpow_zero] using
+    (hc.continuousAt.tendsto.mono_left nhdsWithin_le_nhds).isBigO_one ℝ
+
 private theorem profileMellin_eq_interval (φ : TestWeight) (s : ℂ) :
     profileMellin φ s = truncatedMellin (profile φ) s := by
   rw [profileMellin, mellin, truncatedMellin, intervalIntegral.integral_of_le (by norm_num)]

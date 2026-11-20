@@ -37,11 +37,11 @@ private theorem disorder_prefix_law (n : ℕ) :
     have h := (hi.precomp hf).map_fun_eq_pi_map (fun i => (measurable_pi_apply _).aemeasurable)
     change Measure.map (fun ω : PathPauliDisorder => fun i => ω (f i)) _ =
       Measure.pi (fun _ => gaussianReal 0 1)
-    convert h using 1
-    congr 1
-    funext i
-    exact (measurePreserving_eval_infinitePi (fun _ : ℕ × PathPauliDirections => gaussianReal 0 1)
-      (f i)).map_eq.symm
+    have hmap i : Measure.map (fun ω : PathPauliDisorder => ω (f i)) pathPauliDisorderLaw =
+        gaussianReal 0 1 :=
+      (measurePreserving_eval_infinitePi (fun _ : ℕ × PathPauliDirections => gaussianReal 0 1)
+        (f i)).map_eq
+    exact h.trans (congrArg (fun μ => Measure.pi μ) (funext hmap))
   convert heval using 1
   funext ω i
   change pathPauliDisorderShell ω n (pathCoeffEquiv n i) = ω (disorderIndex (pathCoeffEquiv n i))

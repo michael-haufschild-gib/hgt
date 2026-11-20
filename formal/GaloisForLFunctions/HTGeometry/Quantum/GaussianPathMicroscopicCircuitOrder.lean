@@ -15,7 +15,9 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 private abbrev Reg (n : ℕ) := Matrix (Fin n → Bool) (Fin n → Bool) ℂ
 
-private theorem coefficient_mass_le {n : ℕ} (u : PathShell n) (b : ℝ)
+/-- Total Pauli coefficient magnitude is bounded by the number of labels
+plus the total squared coefficient norm. -/
+theorem path_pauli_coefficient_mass_le {n : ℕ} (u : PathShell n) (b : ℝ)
     (hb : ‖u‖^2 ≤ b*((n+2:ℕ):ℝ)) :
     ∑ l : PathLabel n, |u l| ≤ (12+b)*((n+2:ℕ):ℝ) := by
   have h (l : PathLabel n) : |u l| ≤ 1+(u l)^2 := by
@@ -48,7 +50,7 @@ theorem gaussian_path_inverse_size_circuit_upper (B : ℝ) :
   filter_upwards [hω] with n hn
   intro t ht
   let u := pathPauliDisorderShell ω n
-  have hm := coefficient_mass_le u b hn.2
+  have hm := path_pauli_coefficient_mass_le u b hn.2
   have htm : (∑ l, |u l|)*|t| ≤ L*B := by
     calc
       _ ≤ (L*((n+2:ℕ):ℝ))*|t| := mul_le_mul_of_nonneg_right hm (abs_nonneg _)

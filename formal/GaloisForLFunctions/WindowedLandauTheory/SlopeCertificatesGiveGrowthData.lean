@@ -46,6 +46,7 @@ theorem re_mainTotal (ℓ : AddChar (SignPair × H) ℂ → ℂ) (a : ℝ) (w : 
   rw [mainTotal, Complex.re_ofReal_mul]
   simp only [Complex.add_re, Complex.sub_re, Complex.ofReal_re, meanLogWeight]
 
+omit [DecidableEq H] in
 /-- **The archimedean identity.** -/
 theorem slope_archimedean_eq (ℓ : AddChar (SignPair × H) ℂ → ℂ) (TT : Finset H) (a : H → ℝ)
     {m : ℕ} (w : Fin m → SignPair × H → ℝ) (v lg c e : ℝ) :
@@ -130,6 +131,7 @@ structure SlopeCertificate (D : FrobeniusData H) (ℓ : AddChar (SignPair × H) 
 
 attribute [instance] SlopeCertificate.fin SlopeCertificate.ne
 
+omit [DecidableEq H] in
 /-- **A slope certificate bounds the inert excess.** -/
 theorem SlopeCertificate.inertExcess_le {D : FrobeniusData H} {ℓ : AddChar (SignPair × H) ℂ → ℂ}
     {N : ℕ} {TT : Finset H} {a : H → ℝ} {m : ℕ} {w : Fin m → SignPair × H → ℝ} {Err : ℝ}
