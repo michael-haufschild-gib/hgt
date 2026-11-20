@@ -49,6 +49,7 @@ theorem xi_polynomial_area_form (c : ℂ) {R : ℝ} (hR : 0<R)
   have h := sum_local_superlevel_areas F (fun z => Real.pi*(B z)^2) (fun u => u^2) c R S
     (fun z hz => by simpa only [mem_ball,dist_eq_norm] using ((hS z).mp hz).1) hreg
     (fun z => fixed_disk_radial_level_area (mul_nonneg (norm_nonneg _) (Real.sqrt_nonneg _)) (hl z))
+  show Tendsto (fun u => polynomialXiArea q c R u) _ _
   simpa only [polynomialXiArea,F,B,mul_pow,Real.sq_sqrt (Nat.cast_nonneg _),Finset.mul_sum] using h
 
 /-- The polynomial weights whose area tends to zero form the principal
@@ -81,11 +82,11 @@ theorem kernel_of_polynomial_xi_areas (c : ℂ) {R : ℝ} (hR : 0<R)
 /-- The cardinal interpolation polynomial which equals one at z and
 zero at all other members of the observed divisor. -/
 def divisorSelector (S : Finset ℂ) (z : ℂ) : ℂ[X] :=
-  C ((∏ w ∈ S.erase z, z-w)⁻¹) * ∏ w ∈ S.erase z, (X-C w)
+  C ((∏ w ∈ S.erase z, (z-w))⁻¹) * ∏ w ∈ S.erase z, (X-C w)
 
 private theorem selector_at_self (S : Finset ℂ) (z : ℂ) :
     (divisorSelector S z).eval z = 1 := by
-  have hn : (∏ w ∈ S.erase z, z-w) ≠ 0 := Finset.prod_ne_zero_iff.mpr
+  have hn : (∏ w ∈ S.erase z, (z-w)) ≠ 0 := Finset.prod_ne_zero_iff.mpr
     (fun w hw => sub_ne_zero.mpr (Finset.ne_of_mem_erase hw).symm)
   simp only [divisorSelector,eval_mul,eval_C,eval_prod,eval_sub,eval_X,inv_mul_cancel₀ hn]
 

@@ -18052,3 +18052,4 @@ import GaloisForLFunctions.HTGeometry.Analysis.ReflectionlessModeCollocation
 import GaloisForLFunctions.HTGeometry.StanleyReisner.NodalResidueFibers
 import GaloisForLFunctions.HTGeometry.StanleyReisner.NodalKoszulNormalForm
 import GaloisForLFunctions.HTGeometry.StanleyReisner.FaceRingHilbertKunz
+import GaloisForLFunctions.HTGeometry.Quantum.SpectralBlockHamiltonian
