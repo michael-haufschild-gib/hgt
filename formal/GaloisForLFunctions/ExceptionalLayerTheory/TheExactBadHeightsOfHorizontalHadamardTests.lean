@@ -31,7 +31,7 @@ private theorem same_height_bound (a t : ℝ) :
     apply Complex.ext <;> simp [pt]
   have hb : pt x t∈ball (pt a t) r := by
     simpa only [mem_ball,dist_eq_norm,he,Complex.norm_real,Real.norm_eq_abs] using hx
-  simpa only [he,←Complex.ofReal_natCast,←Complex.ofReal_div,Complex.ofReal_re] using h _ hb
+  simpa only [horizontalHadamardReading,he,←Complex.ofReal_natCast,←Complex.ofReal_div,Complex.ofReal_re] using h _ hb
 
 private theorem zero_free_of_rational_bound (a b t : ℝ) :
     (∃ B : ℝ, ∀ q : ℚ, (q:ℝ)∈Icc a b → B≤horizontalHadamardReading t q) →
@@ -79,7 +79,8 @@ theorem horizontal_lower_bound_iff (a b t : ℝ) :
         simp_rw [he]
         fun_prop
       exact (Complex.continuous_re.continuousAt.comp
-        ((ha.deriv.continuousAt.div ha.continuousAt (hn x hx)).comp hp.continuousAt)).continuousWithinAt
+        ((ha.deriv.continuousAt.div ha.continuousAt (hn x hx)).comp (f := fun y : ℝ => pt y t) (x := x)
+          hp.continuousAt)).continuousWithinAt
     obtain ⟨B,hB⟩ := isCompact_Icc.bddBelow_image hc
     refine ⟨min B (-K),fun x hx => ?_⟩
     by_cases hfar : a+r/2≤x
