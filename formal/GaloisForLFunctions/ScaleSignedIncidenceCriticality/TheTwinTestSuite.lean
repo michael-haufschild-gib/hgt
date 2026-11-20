@@ -96,7 +96,7 @@ theorem twin_fixedAperture {a : ℝ} (ha : 0 < a) :
 end Aperture
 
 section Schur
-open Complex _root_.RHTower GaloisForLFunctions.BlackHoleRingdown
+open _root_.RHTower GaloisForLFunctions.BlackHoleRingdown
 
 /-- **Causal decay on the prime-2 Schur twin: fails at every prescribed rate.** -/
 theorem twin_primeTwo_schur {δ : ℝ} (hδ : 0 < δ) :
@@ -107,9 +107,9 @@ theorem twin_primeTwo_schur {δ : ℝ} (hδ : 0 < δ) :
           (primeTwoScatteringGate α w * (riemannZeta (2 * w) / riemannZeta (2 * w + 1)))) ∧
       (∀ w : ℂ, 0 ≤ w.re → ‖deformedReducedScattering α w‖ ≤ 1 ∧
         0 ≤ ((1 - deformedReducedScattering α w) / (1 + deformedReducedScattering α w)).re) ∧
-      (∀ t : ℝ, ‖deformedScatteringPhase α ((t : ℂ) * I)‖ = 1) ∧
+      (∀ t : ℝ, ‖deformedScatteringPhase α ((t : ℂ) * Complex.I)‖ = 1) ∧
       (∀ ρ : ℂ, xi ρ = 0 →
-        meromorphicOrderAt (deformedWightmanRL α) (I * (ρ - 1) / 2) < 0) ∧
+        meromorphicOrderAt (deformedWightmanRL α) (Complex.I * (ρ - 1) / 2) < 0) ∧
       (∀ σ : ℝ, 0 < σ → σ < (1 - α) / 2 → ∀ h : CompactPulse, ∃ C : ℝ, 0 ≤ C ∧
         ∀ τ : ℝ, 0 ≤ τ → ‖deformedReflectedField α h τ‖ ≤ C * Real.exp (-σ * τ)) ∧
       (∃ h : CompactPulse, ¬ ∃ C : ℝ, ∀ τ : ℝ, 0 ≤ τ →

@@ -76,7 +76,8 @@ private theorem prefix_le_axis {r : ℕ → ℝ} (hr : ∀ n, 0 < r n ∧ r n≤
   have h := (windowSpectrum_hasProd (fun n => ⟨(hr n).1.le,(hr n).2⟩) hs ((y:ℂ)*I)).tendsto_prod_nat.norm
   apply ge_of_tendsto h
   filter_upwards [eventually_ge_atTop N] with n hn
-  simpa only [norm_prod] using (hm hn : P N≤P n)
+  rw [norm_prod]
+  exact hm hn
 
 /-- The logarithmic growth rate on the positive imaginary axis attains
 the total half-width of the boxes. -/
@@ -87,11 +88,11 @@ theorem windowSpectrum_exact_type {r : ℕ → ℝ} (hr : ∀ n, 0 < r n ∧ r n
   apply tendsto_order.mpr
   constructor
   · intro b hb
-    obtain ⟨N,hN⟩ := (hs.hasSum.tendsto_sum_nat.eventually_gt hb).exists
+    obtain ⟨N,hN⟩ := (hs.hasSum.tendsto_sum_nat.eventually (lt_mem_nhds hb)).exists
     have hlim : Tendsto (fun y : ℝ => ∑ j ∈ Finset.range N, Real.log (axisFactor (r j) y)/y)
         atTop (𝓝 (∑ j ∈ Finset.range N, r j)) :=
       tendsto_finsetSum _ fun j _ => single_axis_rate (hr j).1
-    filter_upwards [hlim.eventually_gt hN,eventually_gt_atTop (0:ℝ)] with y hy hypos
+    filter_upwards [hlim.eventually (lt_mem_nhds hN),eventually_gt_atTop (0:ℝ)] with y hy hypos
     apply hy.trans_le
     rw [←Finset.sum_div,←Real.log_prod (fun j _ => (one_pos.trans_le (axis_one (hr j).1 hypos)).ne')]
     exact div_le_div_of_nonneg_right (Real.log_le_log (Finset.prod_pos fun j _ =>
