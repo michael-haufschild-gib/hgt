@@ -33,7 +33,7 @@ private theorem charFun_gibbsEnergyMeasure (β : ℝ) (E : α → ℝ) (t : ℝ)
       finiteSpectralSurvivalAmplitude (finiteGibbsStateWeight β E) E t := by
   rw [gibbsEnergyMeasure, RHTower.charFun_finiteAtomicObserverSpectrum _ _
     (fun i => (finiteGibbsStateWeight_pos β E i).le)]
-  simpa only [finiteSpectralSurvivalAmplitude, mul_comm t]
+  simp only [finiteSpectralSurvivalAmplitude, mul_comm t]
 
 /-- Empirical Gibbs survival fidelity under the uniform centered clock. -/
 def gibbsWindowReturnDistribution (β : ℝ) (E : α → ℝ) (T : ℝ) :
@@ -45,7 +45,8 @@ omit [DecidableEq α] in
 theorem gibbsWindowReturnDistribution_moment (β : ℝ) (E : α → ℝ) (T : Ioi (0 : ℝ)) (n : ℕ) :
     (∫ x, ((x : ℝ) ^ n) ∂(gibbsWindowReturnDistribution β E T : Measure _)) =
       (finiteSpectralSurvivalFidelityMean (finiteGibbsStateWeight β E) E n T).re := by
-  rw [gibbsWindowReturnDistribution, RHTower.integral_pow_centeredSpectralReturnProbabilityMeasure _ n T.2]
+  rw [gibbsWindowReturnDistribution,
+    RHTower.integral_pow_centeredSpectralReturnProbabilityMeasure (gibbsEnergyMeasure β E) n T.2]
   have h : RHTower.spectralReturnMomentMean (gibbsEnergyMeasure β E) n T =
       finiteSpectralSurvivalFidelityMean (finiteGibbsStateWeight β E) E n T := by
     simp [RHTower.spectralReturnMomentMean, finiteSpectralSurvivalFidelityMean,

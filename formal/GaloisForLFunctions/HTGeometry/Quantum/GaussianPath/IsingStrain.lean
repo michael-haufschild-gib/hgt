@@ -57,7 +57,7 @@ private abbrev Configuration (n : ℕ) := FiniteQubitConfiguration (Site n)
 def strainPath (h dh : Site n → ℝ) (J : Fin (n + 1) → ℝ) (t : ℝ) : PathShell n :=
   WithLp.toLp 2 fun
     | .inl (i, a) => if a = 2 then h i + t * dh i else 0
-    | .inr (e, a, b) => if a = 2 ∧ b = 2 then J e else 0
+    | .inr (e, ab) => if ab = (2, 2) then J e else 0
 
 /-- The response eigenvalue of a computational basis configuration. -/
 def onsiteResponse (dh : Site n → ℝ) (x : Configuration n) : ℝ :=
@@ -71,8 +71,8 @@ theorem pathDiagEnergy_strain (h dh : Site n → ℝ) (J : Fin (n + 1) → ℝ)
     change (if (2 : Fin 3) = 2 then h s + u * dh s else 0) = _
     rw [if_pos rfl]
   have hbond (e : Fin (n + 1)) (u : ℝ) : strainPath h dh J u (.inr (e,2,2)) = J e := by
-    change (if (2 : Fin 3) = 2 ∧ (2 : Fin 3) = 2 then J e else 0) = _
-    rw [if_pos ⟨rfl, rfl⟩]
+    change (if ((2, 2) : Fin 3 × Fin 3) = (2, 2) then J e else 0) = _
+    rw [if_pos rfl]
   simp only [pathDiagEnergy, onsiteResponse, hon, hbond, zero_mul, add_zero, add_mul,
     mul_assoc, Finset.sum_add_distrib, ← Finset.mul_sum]
   exact add_right_comm _ _ _
@@ -84,7 +84,7 @@ private theorem strainPath_diagonal (h dh : Site n → ℝ) (J : Fin (n + 1) →
   rintro (⟨i,a⟩ | ⟨e,a,b⟩) hl
   · change (if a = 2 then h i + t * dh i else 0) = 0
     exact if_neg hl
-  · change (if a = 2 ∧ b = 2 then J e else 0) = 0
+  · change (if (a, b) = (2, 2) then J e else 0) = 0
     exact if_neg hl
 
 /-- The exact Hamiltonian increment is the sum of onsite responses, even when

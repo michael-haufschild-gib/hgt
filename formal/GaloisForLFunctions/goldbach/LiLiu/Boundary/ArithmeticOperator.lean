@@ -45,7 +45,9 @@ theorem extendedKernel_continuous {n : ℕ} (h : modulusGRH (n+1)) {a : ℝ}
   apply continuous_iff_continuousAt.mpr
   intro p
   exact (boundaryKernel_continuousAt h (p := (clippedPoint a (1/8) p.1,clippedPoint a (1/8) p.2))
-    (hstrip _) (hstrip _)).comp ((hc.comp continuous_fst).prodMk (hc.comp continuous_snd)).continuousAt
+    (hstrip _) (hstrip _)).comp
+      (f := fun q : ℂ × ℂ => (clippedPoint a (1/8) q.1,clippedPoint a (1/8) q.2))
+      ((hc.comp continuous_fst).prodMk (hc.comp continuous_snd)).continuousAt
 
 theorem extendedKernel_sq_integrable {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH (n+1))
     {a : ℝ} (ha : 0 < a) (hab : a ≤ 1/8) :
@@ -53,8 +55,8 @@ theorem extendedKernel_sq_integrable {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH 
       ((boundaryMeasure a (1/8)).prod (boundaryMeasure a (1/8))) := by
   obtain ⟨B,hB,hb⟩ := boundaryKernel_strip_decay hN h ha
   have hw := edgeDecay_sq_integrable a (1/8)
-  have hmeas := ((extendedKernel_continuous h ha hab).norm.pow 2).aestronglyMeasurable
-  apply ((hw.mul_prod hw).const_mul (B^2)).mono' hmeas
+  apply ((hw.mul_prod hw).const_mul (B^2)).mono'
+    ((extendedKernel_continuous h ha hab).norm.pow 2).aestronglyMeasurable
   filter_upwards with p
   change ‖‖extendedKernel (n+1) a p.1 p.2‖^2‖ ≤ B^2*(edgeDecay p.1.im^2*edgeDecay p.2.im^2)
   rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
@@ -77,7 +79,7 @@ def arithmeticSqKernel {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH (n+1))
     have H := hL.eLpNorm_lt_top
     rw [SchurKernel.eLpNorm_two_eq] at H
     have hI := (ENNReal.rpow_lt_top_iff_of_pos (by norm_num : (0:ℝ)<1/2)).mp H
-    rw [← lintegral_prod _ (hM.enorm.pow_const 2).aemeasurable]
+    rw [lintegral_prod _ (hM.enorm.pow_const 2).aemeasurable] at hI
     exact hI
 
 theorem arithmeticSqKernel_compact {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH (n+1))
