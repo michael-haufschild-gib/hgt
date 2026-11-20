@@ -41,6 +41,7 @@ theorem exists_trace_of_majorant {a b : ℝ} {F : ℂ → ℂ} (hc : Continuous 
   have hline (x : ℝ) : Integrable (fun t : ℝ => ‖F (mellinLine x t)‖^2) := by
     apply hi.mono' ((hC x).norm.pow 2).aestronglyMeasurable
     exact Eventually.of_forall fun t => by
+      change ‖‖F (mellinLine x t)‖^2‖ ≤ g t^2
       rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
       exact pow_le_pow_left₀ (norm_nonneg _) (hb x t) 2
   have hF : MemLp F 2 (boundaryMeasure a b) :=

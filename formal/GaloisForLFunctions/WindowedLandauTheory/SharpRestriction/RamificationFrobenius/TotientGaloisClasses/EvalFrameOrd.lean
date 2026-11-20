@@ -8,7 +8,10 @@ open Lean Meta Qq
 
 /-- `positivity` proves `0 < Frame.ord a`. -/
 @[positivity WindowedLandauTheory.HC.Frame.ord _]
-def evalFrameOrd : PositivityExt where eval {u α} _zα _pα e := do
+def evalFrameOrd : PositivityExt where eval {u α} _zα pα? e :=
+  match pα? with
+  | none => throwError "no order"
+  | some _pα => do
   match u, α, e with
   | 0, ~q(ℕ), ~q(WindowedLandauTheory.HC.Frame.ord $a) =>
     assertInstancesCommute

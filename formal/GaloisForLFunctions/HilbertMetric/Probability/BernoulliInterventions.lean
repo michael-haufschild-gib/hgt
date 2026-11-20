@@ -18,49 +18,49 @@ open _root_.HTGeometry
 noncomputable section
 
 /-- A probability specified as a nonnegative mass bounded by one. -/
-abbrev Probability := Set.Iic (1 : ℝ≥0)
+abbrev FailureRate := Set.Iic (1 : ℝ≥0)
 
 /-- Binary failure law, with `true` representing failure. -/
-def failureLaw (p : Probability) : Bool → ℝ≥0
+def failureLaw (p : FailureRate) : Bool → ℝ≥0
   | false => 1 - p.1
   | true => p.1
 
 /-- Joint law of factual and intervened outcomes. -/
-abbrev Pairing (p q : Probability) := FiniteNNCoupling (failureLaw p) (failureLaw q)
+abbrev Pairing (p q : FailureRate) := FiniteNNCoupling (failureLaw p) (failureLaw q)
 
 /-- The factual outcome fails and the intervened outcome succeeds. -/
-def rescue {p q : Probability} (C : Pairing p q) : ℝ := C.plan true false
+def rescue {p q : FailureRate} (C : Pairing p q) : ℝ := C.plan true false
 
 /-- The factual outcome succeeds and the intervened outcome fails. -/
-def harm {p q : Probability} (C : Pairing p q) : ℝ := C.plan false true
+def harm {p q : FailureRate} (C : Pairing p q) : ℝ := C.plan false true
 
-private def mass (p : Probability) : ℝ := p.1
+private def mass (p : FailureRate) : ℝ := p.1
 
-private theorem mass_nonneg (p : Probability) : 0 ≤ mass p := p.1.2
+private theorem mass_nonneg (p : FailureRate) : 0 ≤ mass p := p.1.2
 
-private theorem mass_le_one (p : Probability) : mass p ≤ 1 := by
+private theorem mass_le_one (p : FailureRate) : mass p ≤ 1 := by
   change (p.1 : ℝ) ≤ 1
   exact_mod_cast (show p.1 ≤ 1 from p.2)
 
-private theorem coe_failureLaw_false (p : Probability) :
+private theorem coe_failureLaw_false (p : FailureRate) :
     (failureLaw p false : ℝ) = 1 - mass p := by
   exact NNReal.coe_sub p.2
 
-private theorem row_true {p q : Probability} (C : Pairing p q) :
+private theorem row_true {p q : FailureRate} (C : Pairing p q) :
     rescue C + (C.plan true true : ℝ) = mass p := by
   have h := C.row true
   rw [Fintype.sum_bool, add_comm] at h
   change (C.plan true false : ℝ) + (C.plan true true : ℝ) = (p.1 : ℝ)
   exact_mod_cast h
 
-private theorem col_true {p q : Probability} (C : Pairing p q) :
+private theorem col_true {p q : FailureRate} (C : Pairing p q) :
     harm C + (C.plan true true : ℝ) = mass q := by
   have h := C.col true
   rw [Fintype.sum_bool, add_comm] at h
   change (C.plan false true : ℝ) + (C.plan true true : ℝ) = (q.1 : ℝ)
   exact_mod_cast h
 
-private theorem col_false {p q : Probability} (C : Pairing p q) :
+private theorem col_false {p q : FailureRate} (C : Pairing p q) :
     (C.plan false false : ℝ) + rescue C = 1 - mass q := by
   rw [← coe_failureLaw_false]
   have h := C.col false
@@ -69,13 +69,13 @@ private theorem col_false {p q : Probability} (C : Pairing p q) :
   exact_mod_cast h
 
 /-- The signed change in failure rate is independent of the pairing. -/
-theorem rescue_sub_harm {p q : Probability} (C : Pairing p q) :
+theorem rescue_sub_harm {p q : FailureRate} (C : Pairing p q) :
     rescue C - harm C = (p.1 : ℝ) - q.1 := by
   change rescue C - harm C = mass p - mass q
   linarith only [row_true C, col_true C]
 
 /-- Any pairing changes outcomes on at least the absolute net change in failure mass. -/
-theorem disagreement_ge {p q : Probability} (C : Pairing p q) :
+theorem disagreement_ge {p q : FailureRate} (C : Pairing p q) :
     |(p.1 : ℝ) - q.1| ≤ rescue C + harm C := by
   rw [← rescue_sub_harm C, abs_le]
   constructor
@@ -89,7 +89,7 @@ private def cells (p q x : ℝ) : Bool → Bool → ℝ
   | true, true => p - x
 
 /-- The rescue entry determines every other entry of the joint law. -/
-theorem pairing_ext {p q : Probability} {C D : Pairing p q}
+theorem pairing_ext {p q : FailureRate} {C D : Pairing p q}
     (h : rescue C = rescue D) : C = D := by
   have entry (A : Pairing p q) (a b : Bool) :
       (A.plan a b : ℝ) = cells (mass p) (mass q) (rescue A) a b := by
@@ -111,7 +111,7 @@ theorem pairing_ext {p q : Probability} {C D : Pairing p q}
   rfl
 
 /-- Exact feasible interval for the fraction of shots rescued by an intervention. -/
-theorem range_rescue (p q : Probability) :
+theorem range_rescue (p q : FailureRate) :
     Set.range (rescue (p := p) (q := q)) =
       Set.Icc (max 0 ((p.1 : ℝ) - q.1)) (min (p.1 : ℝ) (1 - q.1)) := by
   ext x
@@ -127,7 +127,8 @@ theorem range_rescue (p q : Probability) :
     have hnn (a b : Bool) : 0 ≤ cells (mass p) (mass q) x a b := by
       cases a <;> cases b
       · exact sub_nonneg.mpr ((le_min_iff.mp hx.2).2)
-      · linarith only [(max_le_iff.mp hx.1).2]
+      · change 0 ≤ mass q - mass p + x
+        linarith only [(max_le_iff.mp hx.1).2]
       · exact (max_le_iff.mp hx.1).1
       · exact sub_nonneg.mpr ((le_min_iff.mp hx.2).1)
     let C : Pairing p q := {
@@ -158,7 +159,7 @@ theorem range_rescue (p q : Probability) :
 
 /-- The minimum possible probability of an outcome change is the distance
 between the marginals. Exactly one joint law attains it. -/
-theorem existsUnique_minimum_disagreement (p q : Probability) :
+theorem existsUnique_minimum_disagreement (p q : FailureRate) :
     ∃! C : Pairing p q, rescue C + harm C = |(p.1 : ℝ) - q.1| := by
   let x := max 0 (mass p - mass q)
   have hx : x ∈ Set.range (rescue (p := p) (q := q)) := by
@@ -184,12 +185,12 @@ theorem existsUnique_minimum_disagreement (p q : Probability) :
 rescue rates for the same factual and intervened failure rates. -/
 theorem interior_rescue_not_identified
     (p q : Set.Ioo (0 : ℝ≥0) 1) :
-    let p' : Probability := ⟨p.1, p.2.2.le⟩
-    let q' : Probability := ⟨q.1, q.2.2.le⟩
+    let p' : FailureRate := ⟨p.1, p.2.2.le⟩
+    let q' : FailureRate := ⟨q.1, q.2.2.le⟩
     ∃ C D : Pairing p' q', rescue C < rescue D := by
   dsimp only
-  let p' : Probability := ⟨p.1, p.2.2.le⟩
-  let q' : Probability := ⟨q.1, q.2.2.le⟩
+  let p' : FailureRate := ⟨p.1, p.2.2.le⟩
+  let q' : FailureRate := ⟨q.1, q.2.2.le⟩
   let l := max 0 (mass p' - mass q')
   let u := min (mass p') (1 - mass q')
   have hp0 : 0 < mass p' := by change 0 < (p.1 : ℝ); exact_mod_cast p.2.1

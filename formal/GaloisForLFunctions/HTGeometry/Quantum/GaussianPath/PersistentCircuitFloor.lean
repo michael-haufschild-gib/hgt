@@ -1,5 +1,4 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.IsolatedFieldDensity
-import GaloisForLFunctions.HTGeometry.Quantum.PhysicalCircuitInversion
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnSpacing.IsolatedSiteFloor
 
 /-! # Persistent circuit hardness throughout a fixed physical time horizon -/
@@ -48,18 +47,7 @@ theorem gaussian_pauli_persistent_circuit_floor (T : ℝ) (hT : 0 < T) :
     dsimp [q]; field_simp [hT.ne']
   have hf := isolated_sites_uniform_circuit_floor u q p hq hp S hS his hsize t ht hstart hend
   refine ⟨hf,?_⟩
-  intro v s r hv he
-  by_contra! hsmall
-  have hh : ProjectiveCircuitSeparated N (1/4:ℝ) (r+s) (unitaryEvolution H.val t) := by
-    intro z _ C hC
-    by_contra! happrox
-    have hc : (C.gateCount:ℝ) ≤ (r:ℝ)+s := by exact_mod_cast hC
-    linarith only [hf C z happrox,hc,hsmall]
-  have hx := projectiveCircuitSeparated_unitaryEvolution_backward_cone H
-    (by omega : s ≤ r+s) hh (hv.neg_time H) (by norm_num : (1/10:ℝ)+1/10 ≤ 1/4)
-  rw [show t-(-v) = v+t by ring,Nat.add_sub_cancel] at hx
-  obtain ⟨z,hz,C,hC,heC⟩ := he
-  exact (not_lt_of_ge heC) (hx z hz C hC)
+  exact combined_endpoint_cost_of_lag_floor H hf
 
 /-- For every sublinear gate budget, two affordable times more than A/N
 apart must eventually be farther apart than any fixed macroscopic duration.

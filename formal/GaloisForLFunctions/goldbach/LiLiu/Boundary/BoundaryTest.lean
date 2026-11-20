@@ -27,18 +27,21 @@ theorem boundaryTest_square_majorant (φ : TestWeight) :
   have ht := hb N hN t
   rw [pow_one, mul_comm] at ht
   have hs := pow_le_pow_left₀ (norm_nonneg _) ((le_div_iff₀ hp).mpr ht) 2
-  simpa only [div_pow, Real.rpow_neg hp.le, Real.rpow_two, div_eq_mul_inv] using hs
+  simpa only [div_pow, Real.rpow_neg hp.le, Real.rpow_two, div_eq_mul_inv, mul_pow, inv_pow] using hs
 
 /-- The Mellin density on the left line lies in L² for every admissible modulus. -/
 theorem boundaryTest_memLp (φ : TestWeight) {N : ℕ} (hN : 1 ≤ Real.log N) :
     MemLp (boundaryTest φ N) 2 volume := by
-  have hpos : 0 < N := by by_contra! h; simp [Nat.eq_zero_of_le_zero h] at hN
+  have hpos : 0 < N := Nat.cast_pos.mp
+    (zero_lt_one.trans ((Real.log_pos_iff (Nat.cast_nonneg N)).mp (zero_lt_one.trans_le hN)))
   have hc := boundaryTest_continuous φ hpos
   apply (memLp_two_iff_integrable_sq_norm hc.aestronglyMeasurable).mpr
   obtain ⟨g, hg, hb⟩ := boundaryTest_square_majorant φ
   apply hg.mono' (hc.norm.pow 2).aestronglyMeasurable
   exact Filter.Eventually.of_forall fun t => by
-    simpa only [Real.norm_eq_abs, abs_of_nonneg (sq_nonneg _)] using hb N hN t
+    change ‖‖boundaryTest φ N t‖^2‖ ≤ g t
+    rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
+    exact hb N hN t
 
 /-- Its squared norm is bounded by a constant depending only on the original test weight. -/
 theorem boundaryTest_norm_sq_bounded (φ : TestWeight) :

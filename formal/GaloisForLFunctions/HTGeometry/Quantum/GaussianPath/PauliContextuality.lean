@@ -146,10 +146,12 @@ theorem gaussian_path_ae_contextual :
   have h (k : ℕ × PathPauliDirections) :
       ∀ᵐ ω ∂pathPauliDisorderLaw, ω k ≠ 0 := by
     letI : NullSingletonClass (gaussianReal 0 1) := nullSingletonClass_gaussianReal one_ne_zero
+    have hnormal : ∀ᵐ x : ℝ ∂gaussianReal 0 1, x ≠ 0 := by
+      apply ae_iff.mpr
+      change gaussianReal 0 1 {x : ℝ | ¬ x ≠ 0} = 0
+      simpa only [not_not] using (measure_singleton (μ := gaussianReal 0 1) (0 : ℝ))
     exact (measurePreserving_eval_infinitePi
-      (fun _ : ℕ × PathPauliDirections => gaussianReal 0 1) k).quasiMeasurePreserving.ae
-      (ae_iff.mpr (by simpa only [not_not] using
-        (measure_singleton (μ := gaussianReal 0 1) (0 : ℝ))))
+      (fun _ : ℕ × PathPauliDirections => gaussianReal 0 1) k).quasiMeasurePreserving.ae hnormal
   filter_upwards [ae_all_iff.mpr h] with ω hω
   intro n hc
   have hm := path_noncontextual_forbids_two_multiaxis_sites (pathPauliDisorderShell ω n) hc

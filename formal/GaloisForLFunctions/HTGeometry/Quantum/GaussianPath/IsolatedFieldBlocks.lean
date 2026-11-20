@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPathCoefficientMass
 import GaloisForLFunctions.HTGeometry.GaussianIntervalPositivity
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnSpacing.PairedRows
 
 /-! # Density of prescribed two-site coefficient boxes along the Gaussian path -/
 open MeasureTheory ProbabilityTheory Filter Set
@@ -19,22 +20,7 @@ private def blockSeqLaw : Measure (ℕ → BlockField) := Measure.infinitePi fun
 
 private theorem measurePreserving_pathPauliBlock :
     MeasurePreserving pathPauliBlock pathPauliDisorderLaw blockSeqLaw := by
-  let F (p : ℕ × PathPauliBlockLabel) : ℕ × PathPauliDirections := (2*p.1+p.2.1.val,p.2.2)
-  have hf : Function.Injective F := by
-    rintro ⟨k,i,d⟩ ⟨j,l,e⟩ h
-    obtain ⟨he,hd⟩ := Prod.mk.inj h
-    change 2*k+i.val = 2*j+l.val at he
-    change d = e at hd
-    have hk : k=j := by have := i.isLt; have := l.isLt; omega
-    have hpos : i=l := Fin.ext (by omega)
-    exact Prod.ext hk (Prod.ext hpos hd)
-  let R (ω : PathPauliDisorder) (p : ℕ × PathPauliBlockLabel) := ω (F p)
-  let ν : Measure ((ℕ × PathPauliBlockLabel) → ℝ) := Measure.infinitePi fun _ => gaussianReal 0 1
-  have hR : MeasurePreserving R pathPauliDisorderLaw ν :=
-    ⟨measurable_pi_lambda _ (fun _ => measurable_pi_apply _),Measure.map_infinitePi_infinitePi_of_inj hf⟩
-  have hC : MeasurePreserving (MeasurableEquiv.curry ℕ PathPauliBlockLabel ℝ) ν blockSeqLaw :=
-    ⟨(MeasurableEquiv.curry ..).measurable,Measure.infinitePi_map_curry (fun _ _ => gaussianReal 0 1)⟩
-  exact hC.comp hR
+  exact measurePreserving_paired_rows _
 
 /-- Any nondegenerate coefficient box in a two-row block occurs with positive
 limiting frequency along almost every single infinite Gaussian sample. -/

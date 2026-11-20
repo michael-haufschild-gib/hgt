@@ -56,6 +56,7 @@ theorem extendedKernel_sq_integrable {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH 
   have hmeas := ((extendedKernel_continuous h ha hab).norm.pow 2).aestronglyMeasurable
   apply ((hw.mul_prod hw).const_mul (B^2)).mono' hmeas
   filter_upwards with p
+  change ‖‖extendedKernel (n+1) a p.1 p.2‖^2‖ ≤ B^2*(edgeDecay p.1.im^2*edgeDecay p.2.im^2)
   rw [Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)]
   have he := hb (clippedPoint a (1/8) p.1) (clippedPoint a (1/8) p.2)
     (clippedPoint_re hab _) (clippedPoint_re hab _)

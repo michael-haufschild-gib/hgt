@@ -434,15 +434,15 @@ private theorem tendsto_sinc_power (c γ : ℝ) :
   rcases lt_trichotomy γ 1 with hg | rfl | hg
   · by_cases hc : c = 0
     · simp [powerFineFactor, hg.ne, hc]
-    · simpa only [powerFineFactor, hg.ne, hg, hc, true_and, if_true, if_false,
-        Function.comp_apply, add_zero, mul_comm] using
+    · rw [powerFineFactor, if_neg hg.ne, if_pos ⟨hg, hc⟩]
+      simpa only [Function.comp_def, add_zero, mul_comm] using
         (tendsto_sinc_affine_nonzero c 0 hc).comp (tendsto_rpow_atTop (sub_pos.mpr hg))
   · simp [powerFineFactor]
   · have hneg : 1 - γ = -(γ - 1) := by ring
     have harg : Tendsto (fun T : ℝ => c * T ^ (1 - γ)) atTop (𝓝 0) := by
       simpa only [hneg, mul_zero] using (tendsto_rpow_neg_atTop (sub_pos.mpr hg)).const_mul c
     simpa only [powerFineFactor, hg.ne', not_lt_of_ge hg.le, false_and, if_false,
-      Function.comp_apply, Real.sinc_zero] using Real.continuous_sinc.continuousAt.tendsto.comp harg
+      Function.comp_def, Real.sinc_zero] using Real.continuous_sinc.continuousAt.tendsto.comp harg
 
 private theorem tendsto_powerSplitting_zero (τ : ℝ) (γ : Set.Ioi (0 : ℝ)) :
     Tendsto (fun T : ℝ => τ * T ^ (-(γ : ℝ))) atTop (𝓝 0) := by
@@ -502,8 +502,8 @@ private theorem powerTimeReplicaLimit_eq_sum (β τ : ℝ) (E F : α → ℝ)
   by_cases heq : (γ : ℝ) = 1
   · simp only [powerTimeReplicaLimit, heq, if_true, thermalReplicaCrossover, powerFineFactor]
   · by_cases hslow : (γ : ℝ) < 1 ∧ τ ≠ 0
-    · simp only [powerTimeReplicaLimit, heq, hslow, if_false, if_true, jointReplicaCollisionMass,
-        Complex.ofReal_sum, apply_ite, Complex.ofReal_zero]
+    · rw [powerTimeReplicaLimit, if_neg heq, if_pos hslow]
+      simp only [jointReplicaCollisionMass, Complex.ofReal_sum, apply_ite, Complex.ofReal_zero]
       refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
       by_cases hE : replicaMultiplicityEnergy E p = replicaMultiplicityEnergy E q
       · by_cases hF : replicaMultiplicityEnergy F p = replicaMultiplicityEnergy F q

@@ -27,7 +27,7 @@ def node (β h : ℝ) (w : ℂ) := Complex.exp ((h:ℂ)*(w-β))
 def rejected (F : Finset XiZeroCopy) (ρ : ℂ) := insert 1 ((F.image xiZero).erase ρ)
 
 /-- Monic polynomial killing the competing nodes. -/
-def rejector (S : Finset ℂ) (β h : ℝ) : ℂ[X] := ∏ w ∈ S,X-C (node β h w)
+def rejector (S : Finset ℂ) (β h : ℝ) : ℂ[X] := ∏ w ∈ S,(X-C (node β h w))
 
 /-- Unit response at the target when it is resolved by the grid. -/
 def detector (S : Finset ℂ) (β h : ℝ) (ρ : ℂ) : ℂ[X] :=
@@ -44,7 +44,7 @@ private theorem rejector_kills {w : ℂ} {S : Finset ℂ} (hw : w ∈ S) (β h :
 
 private theorem rejector_degree (S : Finset ℂ) (β h : ℝ) : (rejector S β h).natDegree=S.card := by
   unfold rejector
-  rw [Polynomial.natDegree_prod_of_monic (fun i _ => Polynomial.monic_X_sub_C _)]
+  rw [Polynomial.natDegree_prod_of_monic _ _ (fun i _ => Polynomial.monic_X_sub_C _)]
   simp
 
 private theorem resolved_value {S : Finset ℂ} {ρ : ℂ} (hr : ρ ∉ S) {β h : ℝ}
@@ -182,6 +182,7 @@ theorem scaled_gain_limit (S : Finset ℂ) {ρ : ℂ} (hr : ρ ∉ S) (β : ℝ)
     norm_ne_zero_iff.mpr (sub_ne_zero.mpr fun he => hr (by simpa only [he] using hw))
   have hh := (norm_rejector_limit S β hl).div hval hgap
   exact hh.congr fun t => by
+    simp only [Pi.div_apply]
     rw [detector,scalar_gain,norm_inv,norm_div,norm_pow,Complex.norm_real,Real.norm_eq_abs]
     simp only [div_eq_mul_inv,mul_inv_rev,inv_inv]
     ring
@@ -304,6 +305,7 @@ theorem prime_recovery_noise_threshold (F : Finset XiZeroCopy) {θ σ β a : ℝ
     rw [zero_div] at he
     refine he.congr' ?_
     filter_upwards [hgain.eventually_ne hc] with t ht
+    simp only [Pi.div_apply]
     field_simp [ht]
   · intro hlim
     have he := hlim.mul hgain
