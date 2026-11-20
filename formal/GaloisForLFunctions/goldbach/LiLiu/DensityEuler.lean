@@ -10,7 +10,7 @@ to the absolute factor error. The same majorant works for every modulus.
 -/
 
 namespace GaloisForLFunctions.Goldbach.LiLiu
-open Complex Filter Set GaloisForLFunctions.HTGeometry
+open _root_.Complex Filter Set GaloisForLFunctions.HTGeometry
 open scoped Topology
 noncomputable section
 
@@ -25,7 +25,7 @@ theorem densityIncrement_differentiable (N : ℕ) (p : Nat.Primes) :
   unfold densityIncrement
   split_ifs
   · have hp : ((p : ℕ) : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr p.prop.ne_zero
-    fun_prop (disch := assumption)
+    fun_prop (disch := exact Or.inl hp)
   · exact differentiable_const _
 
 theorem norm_densityIncrement_le (N : ℕ) (p : Nat.Primes) {a : ℝ} {w : ℂ} (hw : a ≤ w.re) :
@@ -72,7 +72,7 @@ theorem densityEuler_differentiableAt (N : ℕ) {w : ℂ} (hw : 0 < w.re) :
   simpa only [Finset.prod_fn] using DifferentiableOn.finsetProd
     (f := fun p w => 1 + densityIncrement N p w)
     (s := {z : ℂ | a < z.re}) (u := P) fun p _ =>
-      differentiableOn_const.add (densityIncrement_differentiable N p).differentiableOn
+      (differentiable_const (1 : ℂ)).differentiableOn.add (densityIncrement_differentiable N p).differentiableOn
 
 #print axioms densityEuler_differentiableAt
 end

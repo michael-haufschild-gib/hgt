@@ -12,7 +12,7 @@ from the contour by at least its horizontal distance to that line.
 -/
 
 namespace GaloisForLFunctions.Goldbach.LiLiu
-open Complex Metric Finset _root_.RHTower
+open _root_.Complex Metric Finset _root_.RHTower
 noncomputable section
 
 /-- GRH(N) for the primitive conductors dividing this particular modulus. -/
@@ -57,9 +57,9 @@ theorem modulusGRH.norm_logDeriv_le {n : ℕ} (h : modulusGRH (n + 1))
     calc
       _ ≤ s.re - ρ.re := sub_le_sub_left (h.zero_re_le_half hχ hmem.2) _
       _ ≤ ‖s - ρ‖ := Complex.re_le_norm (s - ρ)
-  have hstrip : s ∈ closedBall (2 + s.im * I) (3 / 2) := by
+  have hstrip : s ∈ closedBall (2 + (s.im : ℂ) * Complex.I) (3 / 2) := by
     rw [mem_closedBall, Complex.dist_eq]
-    have he : s - (2 + (s.im : ℂ) * I) = ((s.re - 2 : ℝ) : ℂ) := by
+    have he : s - (2 + (s.im : ℂ) * Complex.I) = ((s.re - 2 : ℝ) : ℂ) := by
       apply Complex.ext <;> simp
     rw [he, Complex.norm_real, Real.norm_eq_abs, abs_of_nonpos (sub_nonpos.mpr hs')]
     linarith only [hs]
@@ -67,14 +67,15 @@ theorem modulusGRH.norm_logDeriv_le {n : ℕ} (h : modulusGRH (n + 1))
   have hsum : ‖∑ ρ ∈ Z, (analyticOrderNatAt χ.LFunction ρ : ℂ) / (s - ρ)‖ ≤
       4 * (8 + pfConst * Real.log (((n + 1 : ℕ) : ℝ) * (|s.im| + 3))) / (s.re - 1 / 2) := by
     refine (norm_sum_le _ _).trans ?_
-    apply (sum_le_sum (g := fun ρ => (analyticOrderNatAt χ.LFunction ρ : ℝ) / (s.re - 1 / 2))
-      (fun ρ hρ => ?_)).trans
+    refine (sum_le_sum (g := fun ρ => (analyticOrderNatAt χ.LFunction ρ : ℝ) / (s.re - 1 / 2))
+      (fun ρ hρ => ?_)).trans ?_
     · rw [norm_div, Complex.norm_natCast]
       exact div_le_div_of_nonneg_left (Nat.cast_nonneg _) (sub_pos.mpr hs) (hdist ρ hρ)
     · rw [← sum_div]
       exact div_le_div_of_nonneg_right hmass (sub_nonneg.mpr hs.le)
-  exact (le_add_of_sub_le ((norm_sub_norm_le _ _).trans he)).trans
-    (add_le_add_left hsum _)
+  have htri := norm_sub_norm_le (logDeriv χ.LFunction s)
+    (∑ ρ ∈ Z, (analyticOrderNatAt χ.LFunction ρ : ℂ) / (s - ρ))
+  linarith only [htri, he, hsum]
 
 end
 end GaloisForLFunctions.Goldbach.LiLiu

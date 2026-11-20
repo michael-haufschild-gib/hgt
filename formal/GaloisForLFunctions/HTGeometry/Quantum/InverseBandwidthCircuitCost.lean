@@ -19,13 +19,14 @@ noncomputable section
 
 private abbrev Reg (n : ℕ) := Matrix (Fin n → Bool) (Fin n → Bool) ℂ
 
-private def touched {n : ℕ} (C : TwoQubitCircuit n) : Finset (Fin n) :=
+/-- Qubits on which at least one of the circuit's gates acts. -/
+def TwoQubitCircuit.touchedSites {n : ℕ} (C : TwoQubitCircuit n) : Finset (Fin n) :=
   (Finset.univ.image fun i => (C.architecture.sites i).1) ∪
     (Finset.univ.image fun i => (C.architecture.sites i).2)
 
-private theorem touched_card {n : ℕ} (C : TwoQubitCircuit n) :
-    (touched C).card ≤ 2*C.gateCount := by
-  unfold touched
+theorem TwoQubitCircuit.card_touchedSites_le {n : ℕ} (C : TwoQubitCircuit n) :
+    C.touchedSites.card ≤ 2*C.gateCount := by
+  unfold TwoQubitCircuit.touchedSites
   refine (Finset.card_union_le _ _).trans ?_
   have h1 := Finset.card_image_le (s := Finset.univ (α := Fin C.gateCount))
     (f := fun i => (C.architecture.sites i).1)
@@ -64,8 +65,8 @@ private theorem lift_invariant_on_idle {n : ℕ} (S : Finset (Fin n))
   simp [idleFlip, ha, hb]
 
 private theorem circuit_invariant_on_idle {n : ℕ} (C : TwoQubitCircuit n) (x y : Fin n → Bool) :
-    C.eval.val (idleFlip (touched C) x) (idleFlip (touched C) y) = C.eval.val x y := by
-  let S := touched C
+    C.eval.val (idleFlip C.touchedSites x) (idleFlip C.touchedSites y) = C.eval.val x y := by
+  let S := C.touchedSites
   let Φ := Matrix.reindexAlgEquiv ℂ ℂ (idleFlip S)
   let g (i : Fin C.gateCount) := C.architecture.gateLift i (C.gates i)
   have hg (i) : Φ (g i).val = (g i).val := by
@@ -109,7 +110,7 @@ theorem occupationField_inverseBandwidth_gate_cost (n : ℕ) (C : TwoQubitCircui
   | zero => simp
   | succ k =>
     let n := k+1
-    let S := touched C
+    let S := C.touchedSites
     let a : Fin n → Bool := fun _ => false
     let b := idleFlip S a
     let E (x : Fin n → Bool) := ((Finset.univ.filter fun i => x i = true).card : ℝ)
@@ -149,7 +150,7 @@ theorem occupationField_inverseBandwidth_gate_cost (n : ℕ) (C : TwoQubitCircui
     have he' := he b
     rw [hsame] at he'
     rw [norm_sub_rev (c*C.eval.val a a) (U a a)] at htri
-    have hcost : (S.card:ℝ) ≤ 2*(C.gateCount:ℝ) := by exact_mod_cast touched_card C
+    have hcost : (S.card:ℝ) ≤ 2*(C.gateCount:ℝ) := by exact_mod_cast C.card_touchedSites_le
     have hmul := (div_le_iff₀ hn).mp (hphase.trans (htri.trans (add_le_add he' (he a))))
     change (n:ℝ) ≤ 2*(C.gateCount:ℝ) + n*d
     nlinarith only [hmul,hcost]

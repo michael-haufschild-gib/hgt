@@ -68,6 +68,8 @@ private theorem exists_norm_index {T : H →L[ℂ] H} [hc : Fact (IsCompactOpera
   let k : {z : ℂ // z ≠ 0} := ⟨μ, Complex.ofReal_ne_zero.mpr hμ0⟩
   have hx0 : x ≠ 0 := by intro h; simp [h] at hx
   have hxk : x ∈ nonzeroEigenspace T k := Module.End.mem_eigenspace_iff.mpr he
+  letI : FiniteDimensional ℂ (nonzeroEigenspace T k) :=
+    ContinuousLinearMap.finite_dimensional_eigenspace hc.out k.1 k.2
   letI : Nontrivial (nonzeroEigenspace T k) :=
     ⟨⟨⟨x, hxk⟩, 0, fun h => hx0 (congrArg Subtype.val h)⟩⟩
   exact ⟨⟨k, ⟨0, Module.finrank_pos⟩⟩, hμ⟩
@@ -84,7 +86,8 @@ theorem norm_bound_of_zeroFree {T : H →L[ℂ] H} [Fact (IsCompactOperator T)]
   have hb := (factor_zeroFree_iff (i.1.1.re / δ) hη hhalf).mp
     fun z hz hf => h z hz (tprod_of_exists_eq_zero ⟨i, hf⟩)
   have hv : 4 * i.1.1.re ^ 2 * η * (1 - η) / δ ^ 2 ≤ 1 := by
-    convert hb using 1 <;> ring
+    convert hb using 1
+    ring
   rw [div_le_one (sq_pos_of_pos hδ)] at hv
   simpa only [← hi, sq_abs] using hv
 

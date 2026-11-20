@@ -63,7 +63,7 @@ private theorem laplace_of_gamma_series {v : ℝ → ℝ} (hm : Measurable v)
   intro n
   rw [← ofReal_integral_norm_eq_lintegral_enorm (hP n)]
   apply ENNReal.ofReal_le_ofReal
-  have eq := setIntegral_congr_fun measurableSet_Ioi (fun t (ht : t ∈ Ioi (0:ℝ)) =>
+  have eq := setIntegral_congr_fun (μ := volume) measurableSet_Ioi (fun t (ht : t ∈ Ioi (0:ℝ)) =>
     Real.norm_of_nonneg (show 0 ≤ P n t from Finset.sum_nonneg fun j _ =>
       mul_nonneg (pow_nonneg hr _) (mul_nonneg (weight_nonneg j ht) (le_max_right _ _))))
   rw [eq]
@@ -133,7 +133,7 @@ private theorem paired_gamma_growth {v : ℝ → ℝ} (hm : Measurable v)
   intro n hn
   have p0 := pow_nonneg (zero_lt_one.trans dp).le n
   have x := mul_le_mul_of_nonneg_right (le_abs_self M) p0
-  have y := le_mul_of_one_le_right B0 (one_le_pow₀ dp.le)
+  have y : B ≤ B * d^n := le_mul_of_one_le_right B0 (one_le_pow₀ dp.le)
   exact lt_min (by linarith only [hn,x,y,B0]) (by linarith only [hn,x,y,diff n])
 
 /-- Three actual rungs force positive and negative ordinary-prime mass to

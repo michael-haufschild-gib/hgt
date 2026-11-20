@@ -60,8 +60,9 @@ theorem symmetric_dilation_quadratic_remainder {D : ℂ → ℂ} {k : ℕ}
     have hq := hQ.differentiableAt.hasDerivAt
     have hneg := hnQ.differentiableAt.hasDerivAt.comp (0:ℂ) (hasDerivAt_id (x:=(0:ℂ))).neg
     have hp := hq.mul hneg
-    simpa only [P,Function.comp_def,id_eq,neg_zero,mul_neg,mul_one,neg_mul,
-      mul_comm (deriv Q 0),add_neg_cancel,neg_add_cancel] using hp.deriv
+    refine hp.deriv.trans ?_
+    (try simp only [Function.comp_apply,id_eq,neg_zero])
+    ring
   let U := HTGeometry.analyticSlope (HTGeometry.analyticSlope P 0) 0
   refine ⟨U,HTGeometry.analyticAt_analyticSlope_two hP,?_⟩
   have hlin : Tendsto (fun z : ℂ => a*z) (𝓝 0) (𝓝 0) := by simpa only [mul_zero] using hscale.continuousAt.tendsto
@@ -76,7 +77,7 @@ theorem symmetric_dilation_quadratic_remainder {D : ℂ → ℂ} {k : ℕ}
   have hneg : Tendsto (fun z : ℂ => -z) (𝓝[≠] 0) (𝓝[≠] 0) := by
     apply tendsto_nhdsWithin_iff.mpr
     exact ⟨by simpa only [neg_zero] using (continuous_neg.tendsto (0:ℂ)).mono_left nhdsWithin_le_nhds,
-      self_mem_nhdsWithin.mono fun z hz => neg_ne_zero.mpr hz⟩
+      eventually_mem_nhdsWithin.mono fun z hz => neg_ne_zero.mpr hz⟩
   filter_upwards [her,hneg.eventually her] with z hz hneg'
   rw [hz,hneg']
   have he := HTGeometry.eq_taylor_two_add_sq_mul P 0 z
@@ -113,11 +114,11 @@ theorem rh_iff_heat_boundary_doubling :
   · intro hr t ht l u hx hy hb D hc
     have hd : D 0 ≠ 0 := by
       change heatBoundaryDiscriminant ((t:ℂ)+0) l u ≠ 0
-      rw [add_zero,heatBoundaryDiscriminant_eq_zero_iff _ _ _ hx hy hb]
+      rw [add_zero,ne_eq,heatBoundaryDiscriminant_eq_zero_iff _ _ _ hx hy hb]
       rintro ⟨z,_,hz⟩
       exact hr t ht ⟨((t:ℂ),z),hz,rfl⟩
     have h₂ : Tendsto (fun w : ℂ => 2*w) (𝓝[≠] 0) (𝓝 0) := by
-      simpa only [mul_zero] using ((tendsto_const_nhds (x:=(2:ℂ))).mul
+      simpa only [mul_zero,id_eq] using ((tendsto_const_nhds (x:=(2:ℂ))).mul
         (tendsto_id.mono_left nhdsWithin_le_nhds : Tendsto (fun w : ℂ => w) (𝓝[≠] 0) (𝓝 0)))
     have hh := ((hc.tendsto.comp h₂).div (hc.tendsto.mono_left nhdsWithin_le_nhds) hd).norm
     rw [div_self hd,norm_one] at hh

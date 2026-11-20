@@ -34,7 +34,7 @@ theorem sumProfile_smooth (φ : TestWeight) : ContDiff ℝ ∞ (sumProfile φ) :
 
 theorem sumProfile_reflect (φ : TestWeight) (y : ℝ) : sumProfile φ (2 - y) = sumProfile φ y := by
   unfold sumProfile
-  rw [← integral_sub_left_eq_self (fun u : ℝ => φ u * φ (2 - y - u)) 1]
+  rw [← integral_sub_left_eq_self (fun u : ℝ => φ u * φ (2 - y - u)) volume 1]
   apply integral_congr_ae
   filter_upwards with u
   rw [φ.symmetric, show 2 - y - (1 - u) = 1 - (y - u) by ring, φ.symmetric]
@@ -86,14 +86,15 @@ theorem integral_signedProfile_Ioi (φ : TestWeight) : (∫ y in Ioi 0, signedPr
     filter_upwards with y hy
     rw [uIoc_of_le (by norm_num : (-1 : ℝ) ≤ 0)] at hy
     exact sumProfile_zero φ fun h => by linarith only [h.1, hy.2]
-  have hneg := intervalIntegral.integral_add_adjacent_intervals
+  have hneg := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
     (a := (-1 : ℝ)) (b := 0) (c := 1) (hJ.intervalIntegrable ..) (hJ.intervalIntegrable ..)
-  have hpos := intervalIntegral.integral_add_adjacent_intervals
+  have hpos := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
     (a := (0 : ℝ)) (b := 1) (c := 2) (hJ.intervalIntegrable ..) (hJ.intervalIntegrable ..)
   rw [hsupp]
   change (∫ y in (0 : ℝ)..2, 2 * J (1 - y) - J y) = 0
-  rw [intervalIntegral.integral_sub (by fun_prop (disch := assumption) : Continuous
-    (fun y : ℝ => 2 * J (1 - y))).intervalIntegrable (hJ.intervalIntegrable ..),
+  have hc : Continuous (fun y : ℝ => 2 * J (1 - y)) :=
+    continuous_const.mul (hJ.comp (continuous_const.sub continuous_id))
+  rw [intervalIntegral.integral_sub (hc.intervalIntegrable ..) (hJ.intervalIntegrable ..),
     intervalIntegral.integral_const_mul, intervalIntegral.integral_comp_sub_left]
   norm_num only [show (1 : ℝ) - 2 = -1 by norm_num, sub_zero]
   linarith only [hleft, hneg, hpos, hsym]

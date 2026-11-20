@@ -57,6 +57,28 @@ theorem count_of_eventual_weighted_lower (φ : TestWeight)
   apply mul_le_mul_of_nonneg_right _ (Nat.cast_nonneg N)
   linarith only [hmain hEven]
 
+/-- The positive count supplies two actual primes in the stated interval. -/
+theorem prime_pair_of_eventual_weighted_lower (φ : TestWeight)
+    (h : ∀ᶠ N : ℕ in atTop, Even N → φ.mass / 2 * singularSeries N ≤ correlation φ N) :
+    ∀ᶠ N : ℕ in atTop, Even N → ∃ p q : ℕ, p.Prime ∧ q.Prime ∧ p + q = N ∧
+      (p : ℝ) ∈ Set.Icc ((N : ℝ) / 3) (2 * N / 3) ∧
+      (q : ℝ) ∈ Set.Icc ((N : ℝ) / 3) (2 * N / 3) := by
+  filter_upwards [eventually_ge_atTop 2, count_of_eventual_weighted_lower φ h] with N hN hc he
+  have hp : (0 : ℝ) < N := by exact_mod_cast (by omega : 0 < N)
+  have hL := Real.log_pos (show (1 : ℝ) < N by exact_mod_cast (by omega : 1 < N))
+  have hpos := div_pos (mul_pos (mul_pos (div_pos φ.mass_pos (by norm_num))
+    (singularSeries_pos N)) hp) (sq_pos_of_pos hL)
+  have hcard : 0 < (centralPrimePairs N).card := by exact_mod_cast hpos.trans_le (hc he)
+  obtain ⟨⟨p, q⟩, hpq⟩ := Finset.card_pos.mp hcard
+  obtain ⟨hs, hpr, hqr, hw, hv⟩ := Finset.mem_filter.mp hpq
+  have window (k : ℕ) (hk : inWindow N k) :
+      (k : ℝ) ∈ Set.Icc ((N : ℝ) / 3) (2 * N / 3) := by
+    have a := (le_div_iff₀ hp).mp hk.1
+    have b := (div_le_iff₀ hp).mp hk.2
+    exact ⟨by linarith only [a], by linarith only [b]⟩
+  exact ⟨p, q, hpr, hqr, Finset.mem_antidiagonal.mp hs, window p hw, window q hv⟩
+
+#print axioms prime_pair_of_eventual_weighted_lower
 #print axioms eventually_correlation_sub_le_count
 #print axioms count_of_eventual_weighted_lower
 
