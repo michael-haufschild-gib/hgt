@@ -109,7 +109,7 @@ theorem twice_card_simple_split_mod_prime_power (p h : ℕ) [Fact p.Prime] :
   letI : IsLocalRing (ZMod q) := IsLocalRing.of_surjective (PadicInt.toZModPow (p:=p) (h+1))
     (ZMod.ringHom_surjective _)
   have hcard := twice_card_simple_split_labels (ZMod q)
-  rw [ZMod.card,Nat.card_eq_fintype_card,ZMod.card_units_eq_totient] at hcard
+  rw [ZMod.card,Nat.card_eq_fintype_card (α:=(ZMod q)ˣ),ZMod.card_units_eq_totient] at hcard
   simpa only [q,Nat.totient_prime_pow_succ hp] using hcard
 
 /-- The unramified split branch takes the same positive fraction of all

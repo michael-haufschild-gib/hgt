@@ -211,16 +211,19 @@ theorem cornerPartition_area (k : ℕ) (x y : ℕ → ℕ) :
   | zero => simp [cornerRows,gapArea,repeatArea,mixedArea]
   | succ k ih =>
     rw [cornerRows,Multiset.sum_add,Multiset.sum_replicate,ih,gapArea_succ,
-      Nat.choose_succ_succ,Nat.choose_one_right]
-    simp only [repeatArea,mixedArea,sum_Icc_succ_top (by omega : 1 ≤ k+1),cornerLength,nsmul_eq_mul]
+      Nat.choose_succ_succ (k+1) 1,Nat.choose_one_right]
+    simp only [repeatArea,mixedArea,sum_Icc_succ_top (by omega : 1 ≤ k+1),cornerLength,
+      nsmul_eq_mul,Nat.cast_id]
     ring
 
 private theorem linear_cost_of_crossing {k i j : ℕ} (x y : ℕ → ℕ)
     (hi : i ∈ Icc 1 j) (hj : j ∈ Icc 1 k) (hx : 0 < x i) (hy : 0 < y j) :
     k+1 ≤ gapArea k x + repeatArea k y := by
   have hik := mem_Icc.mpr ⟨(mem_Icc.mp hi).1,(mem_Icc.mp hi).2.trans (mem_Icc.mp hj).2⟩
-  have hg : (k+1-i)*x i ≤ gapArea k x := single_le_sum (fun _ _ => Nat.zero_le _) hik
-  have hr : j*y j ≤ repeatArea k y := single_le_sum (fun _ _ => Nat.zero_le _) hj
+  have hg : (k+1-i)*x i ≤ gapArea k x :=
+    single_le_sum (f:=fun t => (k+1-t)*x t) (fun _ _ => Nat.zero_le _) hik
+  have hr : j*y j ≤ repeatArea k y :=
+    single_le_sum (f:=fun t => t*y t) (fun _ _ => Nat.zero_le _) hj
   have h₁ := Nat.le_mul_of_pos_right (k+1-i) hx
   have h₂ := Nat.le_mul_of_pos_right j hy
   have hij := (mem_Icc.mp hi).2
@@ -275,7 +278,12 @@ theorem first_mixed_cornerPartition {i k : ℕ} (hi : i ∈ Icc 1 k) :
   have hr : repeatArea k f=i := by simp [repeatArea,f,unitAt,mul_ite,hi]
   have hm : mixedArea k f f=1 := by
     have hii : i ∈ Icc 1 i := mem_Icc.mpr ⟨(mem_Icc.mp hi).1,le_rfl⟩
-    simp [mixedArea,f,unitAt,ite_mul,hi,hii]
+    unfold mixedArea
+    rw [sum_eq_single i]
+    · simp [f,unitAt,hii]
+    · intro j _ hji
+      simp [f,unitAt,hji]
+    · exact fun h => (h hi).elim
   refine ⟨f,f,hg,hr,hm,?_⟩
   rw [cornerPartition_area,hg,hr,hm]
   have := (mem_Icc.mp hi).2

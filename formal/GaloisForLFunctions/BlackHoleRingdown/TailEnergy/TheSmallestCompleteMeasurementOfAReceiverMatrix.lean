@@ -92,7 +92,7 @@ private theorem separated_tail_posDef (n : ℕ) (T : ℝ) :
   apply hx
   funext i
   have hi := h (i.val:ℝ)
-  simp only [mixedPulse_apply,separated_at_center,mul_ite,mul_one,mul_zero,sum_ite_eq',mem_univ,if_true,
+  simp only [mixedPulse_apply,separated_at_center,mul_ite,mul_one,mul_zero,sum_ite_eq',Finset.mem_univ,if_true,
     Pi.star_apply,star_eq_zero] at hi
   exact hi
 
@@ -104,7 +104,7 @@ theorem exists_orthonormal_tail_pulses (n : ℕ) (T : ℝ) :
   let S := CFC.sqrt B
   have hB : B.PosDef := separated_tail_posDef n T
   have hS : S.PosDef := positiveMatrixSqrt_posDef hB
-  have hu := Matrix.isUnit_iff_isUnit_det.mp hS.isUnit
+  have hu := (Matrix.isUnit_iff_isUnit_det S).mp hS.isUnit
   refine ⟨fun j => mixedPulse univ (S⁻¹ j) (@separatedPulse n),?_⟩
   rw [mixed_receiver_matrix]
   change S⁻¹*B*(S⁻¹)ᴴ=1
@@ -143,7 +143,7 @@ private theorem probe_conjTranspose {d n : ℕ} (c : Fin d → Fin n → ℂ)
   have form (B : Matrix (Fin n) (Fin n) ℂ) :
       probeMatrix c B k=star (star (c k)) ⬝ᵥ B.mulVec (star (c k)) := by
     simp only [probeMatrix,LinearMap.coe_mk,AddHom.coe_mk,star_star,dotProduct,mulVec,
-      Finset.mul_sum,Pi.star_apply,Complex.star_def]
+      Finset.mul_sum,Pi.star_apply,Complex.star_def,Complex.conj_conj]
     exact sum_congr rfl fun i _ => sum_congr rfl fun j _ => by ring
   rw [form,matrixQuadraticForm_conjTranspose,form] <;> rfl
 

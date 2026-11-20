@@ -80,8 +80,21 @@ theorem absolute_mass_le_rough_interval_log (y X T : ℕ) :
   intro n _
   change roughFloorCoefficient y a n ≤ _
   by_cases h : IsFree (RoughReading.banned y) n
-  · rw [if_pos h]
-    exact (le_abs_self _).trans (rough_coefficient_le_log dom y n)
+  · rw [if_pos h,roughFloorCoefficient,mul_comm (roughMobiusWeight y),mul_apply,
+      Nat.sum_divisorsAntidiagonal (fun q k => a q*roughMobiusWeight y k),←vonMangoldt_sum (n:=n)]
+    apply sum_le_sum
+    intro q _
+    have unit : |roughMobiusWeight y (n/q)| ≤ 1 := by
+      rw [roughMobiusWeight,roughRestriction_apply]
+      split
+      · change |((ArithmeticFunction.moebius (n/q):ℤ):ℝ)| ≤ 1
+        exact_mod_cast abs_moebius_le_one (n:=n/q)
+      · norm_num
+    calc
+      _ ≤ |a q*roughMobiusWeight y (n/q)| := le_abs_self _
+      _ = |a q| * |roughMobiusWeight y (n/q)| := abs_mul ..
+      _ ≤ |a q| := mul_le_of_le_one_right (abs_nonneg _) unit
+      _ ≤ _ := dom q
   · rw [if_neg h, coeff, roughRestriction_apply, if_neg h]
 
 private theorem count_bound (y X T : ℕ) :

@@ -43,12 +43,12 @@ theorem octave_odd_endpoint {n : ℕ} (hn : 1<n) (ho : ¬2 ∣ n) :
 private theorem even_power_of_nonzero {n : ℕ} (hn : vonMangoldt (2*n) ≠ 0) :
     ∃ j : ℕ, n=2^j := by
   have hpow : IsPrimePow (2*n) := by_contra fun h => hn (vonMangoldt_eq_zero_iff.mpr h)
-  obtain ⟨p,k,hp,hk,he⟩ := isPrimePow_nat_iff.mp hpow
+  obtain ⟨p,k,hp,hk,he⟩ := (isPrimePow_nat_iff (2*n)).mp hpow
   have h2 : 2 ∣ p^k := he.symm ▸ dvd_mul_right 2 n
   obtain rfl : p=2 := ((Nat.prime_dvd_prime_iff_eq Nat.prime_two hp).mp (Nat.prime_two.dvd_of_dvd_pow h2)).symm
   obtain ⟨j,rfl⟩ := Nat.exists_eq_succ_of_ne_zero hk.ne'
-  rw [pow_succ',Nat.mul_right_inj (by decide : 0<2)] at he
-  exact ⟨j,he.symm⟩
+  rw [pow_succ'] at he
+  exact ⟨j,by omega⟩
 
 /-- On even endpoints the debit is Λ(n)/n minus Λ(2n)/(2n).
 Only powers of two have a nonzero credit. The endpoint two is exceptional. -/
@@ -57,8 +57,7 @@ theorem octave_even_endpoint {n : ℕ} (hn : 0<n) :
   rw [jump_eq_atom (by omega)]
   simp only [reciprocalOctaveAtom,dvd_mul_right,if_pos,Nat.mul_div_cancel_left _ (by decide : 0<2),
     if_neg (show 2*n≠1 by omega),sub_zero,octaveMangoldtMass,Nat.cast_mul,Nat.cast_ofNat]
-  field_simp [Nat.cast_ne_zero.mpr hn.ne' (R:=ℝ)]
-  ring
+  field_simp [(Nat.cast_ne_zero.mpr hn.ne' : (n:ℝ)≠0)] <;> ring
 
 theorem octave_even_endpoint_nonpositive {n : ℕ} (hn : 1<n) : octaveEndpointJump (2*n) ≤ 0 := by
   rw [octave_even_endpoint (by omega),sub_nonpos]
@@ -116,6 +115,7 @@ theorem octave_fine_variation_identity {N : ℕ} (hN : 2≤N) :
     rw [sum_congr rfl (fun n hn => positive_jump (mem_Ioc.mp hn).1),sum_add_distrib,sum_sub_distrib,
       add_one octaveMangoldtMass (by simp [octaveMangoldtMass]),add_one (fun n => if 2∣n then octaveMangoldtMass n else 0) (by simp),
       ←sum_filter,sum_ite_eq',if_pos (show 2 ∈ S from mem_Ioc.mpr ⟨by decide,hN⟩)]
+    rfl
   have point (n : ℕ) : |octaveEndpointJump n| = 2*max (octaveEndpointJump n) 0-octaveEndpointJump n := by
     rcases le_total 0 (octaveEndpointJump n) with h|h
     · rw [abs_of_nonneg h,max_eq_left h]; ring
@@ -161,7 +161,7 @@ theorem octave_even_mass_geometric (N : ℕ) :
   induction J with
   | zero => simp
   | succ j ih =>
-    rw [sum_range_succ,ih]
+    rw [Finset.sum_range_succ,ih]
     simp only [octaveMangoldtMass,vonMangoldt_apply_pow (Nat.succ_ne_zero _),
       vonMangoldt_apply_prime Nat.prime_two,Nat.cast_pow,Nat.cast_ofNat,one_div,inv_pow,←div_eq_mul_inv]
     rw [pow_succ]
@@ -173,7 +173,9 @@ private theorem even_mass_limit : Tendsto octaveEvenMangoldtPrefix atTop (𝓝 (
     (eventually_ge_atTop (2^j)).mono fun _ hn => Nat.le_log_of_pow_le (by decide) hn
   have h := (tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num : 0≤(1/2:ℝ))
     (by norm_num : (1/2:ℝ)<1)).comp hlog
-  simpa only [octave_even_mass_geometric,Function.comp_apply,sub_zero,mul_one] using
+  rw [show octaveEvenMangoldtPrefix = (fun N : ℕ => Real.log 2*(1-(1/2:ℝ)^Nat.log 2 N))
+    from funext octave_even_mass_geometric]
+  simpa only [Function.comp_apply,sub_zero,mul_one] using
     ((tendsto_const_nhds.sub h).const_mul (Real.log 2) :
       Tendsto (fun N : ℕ => Real.log 2 * (1-(1/2:ℝ)^Nat.log 2 N)) atTop (𝓝 _))
 
@@ -187,7 +189,7 @@ theorem tendsto_reciprocalOctaveError_zero :
   have hratio : Tendsto (fun n : ℕ => ((n/2:ℕ):ℝ)/((n:ℝ)/2)) atTop (𝓝 1) := by
     have hf (n : ℕ) : ⌊(n:ℝ)/2⌋₊ = n/2 := by
       simpa using Nat.floor_div_natCast (n:ℝ) 2
-    simpa only [Function.comp_apply,hf] using
+    simpa only [Function.comp_def,hf] using
       ((tendsto_nat_floor_div_atTop (R:=ℝ)).comp hscale)
   have h := (hm.sub hq).sub (hratio.log (by norm_num))
   simp only [Real.log_one,sub_self,sub_zero] at h
@@ -199,7 +201,8 @@ theorem tendsto_reciprocalOctaveError_zero :
   have intervals (m : ℕ) : Ioc 0 m = Icc 1 m := by ext j; simp only [mem_Ioc,mem_Icc]; omega
   rw [intervals,intervals] at hs
   simp only [Function.comp_apply,reciprocalOctaveError,
-    Real.log_div hq' (div_ne_zero hn' (by norm_num)),Real.log_div hn' (by norm_num)]
+    Real.log_div hq' (div_ne_zero hn' (by norm_num : (2:ℝ)≠0)),
+    Real.log_div hn' (by norm_num : (2:ℝ)≠0)]
   linarith only [hs]
 
 /-- The full integer-grid variation grows like twice the logarithm.

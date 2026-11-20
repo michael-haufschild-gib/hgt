@@ -141,7 +141,8 @@ theorem recover_full_receiver_gram_from_spiral {n : ℕ} (f : Fin n → CompactP
   simp_rw [spiral_readout,Finset.mul_sum]
   rw [sum_comm]
   change (∑ p : Fin n × Fin n, ∑ j ∈ range (n^2), L.coeff j*(G p*(spiralNode p)^(K+j)))=_
-  simp only [eq,point,mul_ite,mul_one,mul_zero,sum_ite_eq',mem_univ,if_true,G]
+  simp only [eq,point,mul_ite,mul_one,mul_zero,sum_ite_eq',Finset.mem_univ,if_true,G]
+  rfl
 
 /-- Two experiments agree on a full window Gram matrix exactly when
 their n² consecutive scalar readings agree. -/
@@ -188,7 +189,7 @@ theorem isolated_spiral_readout {n : ℕ} (i : Fin n) (h : CompactPulse) (W : Se
   have ht (t : ℝ) : pulseReflected (spiralMixedPulse (isolatedSpiralChannel i h) k) t=
       (receiverSpiralStep^i.val)^k*pulseReflected h t := by
     rw [spiralMixedPulse,pulseReflected_mixedPulse,sum_eq_single i]
-    · simp only [isolatedSpiralChannel,if_pos rfl]
+    · simp [isolatedSpiralChannel]
     · intro j _ hji
       rw [isolatedSpiralChannel,if_neg hji,pulseReflected_zero,mul_zero]
     · intro hi
@@ -196,6 +197,9 @@ theorem isolated_spiral_readout {n : ℕ} (i : Fin n) (h : CompactPulse) (W : Se
   have hgain : ‖(receiverSpiralStep^i.val)^k‖^2=(5/9:ℝ)^(i.val*k) := by
     rw [←pow_mul,norm_pow,←pow_mul,Nat.mul_comm (i.val*k) 2,pow_mul,Complex.sq_norm,step_normSq]
   simp only [reflectedWindowEnergy,ht,norm_mul,mul_pow,hgain,integral_const_mul]
+
+private theorem windowEnergy_nonneg (f : CompactPulse) (W : Set ℝ) : 0 ≤ reflectedWindowEnergy f W :=
+  integral_nonneg fun _ => sq_nonneg _
 
 /-- On a single nonzero channel, the first reading in the block is the
 largest. This gives the full exponential loss even for genuine nonnegative
@@ -205,10 +209,11 @@ theorem peak_isolated_spiral_readout {n : ℕ} (i : Fin n) (h : CompactPulse) (W
       '' {j | j<n^2}) ((5/9:ℝ)^(i.val*K)*reflectedWindowEnergy h W) := by
   have hn : 0<n := (Nat.zero_le i.val).trans_lt i.isLt
   constructor
-  · exact ⟨0,pow_pos hn _,by rw [Nat.add_zero,isolated_spiral_readout]⟩
+  · exact ⟨0,pow_pos hn _,isolated_spiral_readout i h W K⟩
   · rintro _ ⟨j,_,rfl⟩
+    change reflectedWindowEnergy (spiralMixedPulse (isolatedSpiralChannel i h) (K+j)) W ≤ _
     rw [isolated_spiral_readout,Nat.mul_add,pow_add]
-    apply mul_le_mul_of_nonneg_right _ (integral_nonneg fun _ => sq_nonneg _)
+    apply mul_le_mul_of_nonneg_right _ (windowEnergy_nonneg h W)
     exact mul_le_of_le_one_right (by positivity) (pow_le_one₀ (by norm_num) (by norm_num))
 
 /-- Uniform error coefficients for recovery of the ith channel's own
@@ -235,7 +240,7 @@ theorem sharp_exponential_diagonal_cost {n : ℕ} (i : Fin n) :
     rw [reflectedWindowGram_self,reflectedWindowGram_self,←Complex.ofReal_sub,Complex.norm_real,
       Real.norm_eq_abs,hnode] at h
     change _≤C*ε/(5/9:ℝ)^(i.val*K) at h
-    linarith only [h]
+    simpa only [div_mul_eq_mul_div] using h
   · intro L hL
     let p := scaledBumpPulse 1 zero_lt_one
     have hp : ∃ t : ℝ, p t≠0 := by
@@ -253,7 +258,7 @@ theorem sharp_exponential_diagonal_cost {n : ℕ} (i : Fin n) :
     have hpeak := peak_isolated_spiral_readout i p W K
     have measured (j : ℕ) (hj : j<n^2) : |reflectedWindowEnergy (spiralMixedPulse f (K+j)) W-
         reflectedWindowEnergy (spiralMixedPulse f (K+j)) ∅|≤A*E := by
-      rw [hempty,sub_zero,abs_of_nonneg (integral_nonneg fun _ => sq_nonneg _)]
+      rw [hempty,sub_zero,abs_of_nonneg (windowEnergy_nonneg _ W)]
       exact hpeak.2 ⟨j,hj,rfl⟩
     have hh := hL f f W ∅ (A*E) measured
     rw [hempty,sub_zero,show f i=p by simp [f,isolatedSpiralChannel],abs_of_pos hE] at hh

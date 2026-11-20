@@ -79,8 +79,9 @@ theorem dominant_population_sign (b : ℕ → ℝ) (hn : ∀ i, 0 ≤ b i) {j d 
     rw [show d+1=(j+1)+(d-j) by omega,sum_range_add,sum_range_succ]
     simp only [L,R,pow_add,mul_sum,mul_assoc]
   rw [he,mul_add,mul_add,←mul_assoc _ _ (b j),sign_sq,one_mul,pow_succ]
-  have hlow : -|L| ≤ (-1:ℝ)^j*L := by simpa only [abs_mul,abs_pow,abs_neg,abs_one,one_pow,one_mul] using
-    neg_abs_le ((-1:ℝ)^j*L)
+  have hlow : -|L| ≤ (-1:ℝ)^j*L := by
+    simpa only [abs_mul,abs_pow,abs_neg,abs_one,one_pow,one_mul] using
+      (neg_abs_le ((-1:ℝ)^j*L))
   have hx : (-1:ℝ)^j*(((-1:ℝ)^j*(-1))*R) = -R := by
     calc _ = -(((-1:ℝ)^j*(-1)^j)*R) := by ring
          _ = _ := by rw [sign_sq,one_mul]

@@ -237,7 +237,9 @@ theorem unitary_noise_linear_iff_dominant {k : ℕ} (hk : 1<k) {ρ : ℝ} (hρ :
   have positive {T : Finset ℕ} (ht : T ∈ F) : 0 < ρ-ρ^T.card := by
     have hge := (mem_filter.mp ht).2.2
     apply sub_pos.mpr
-    simpa only [pow_one] using pow_lt_pow_of_lt_one hρ hu (show 1<T.card by omega)
+    have tail := pow_lt_one₀ hρ.le hu (by omega : T.card-1≠0)
+    calc ρ^T.card = ρ^(T.card-1)*ρ := by rw [←pow_succ,Nat.sub_add_cancel (by omega : 1≤T.card)]
+         _ < ρ := by simpa only [one_mul] using mul_lt_mul_of_pos_right tail hρ
   constructor
   · intro he
     have hsum : ∑ T ∈ F, e T = 0 := by

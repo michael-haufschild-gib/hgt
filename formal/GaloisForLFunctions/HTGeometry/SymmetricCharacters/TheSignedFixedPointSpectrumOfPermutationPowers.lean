@@ -18,9 +18,7 @@ noncomputable section
 open scoped Classical
 variable {α R : Type*} [Fintype α] [CommRing R]
 
-/-- In the signed multivariate fixed-point enumerator only the full
-monomial and its one-coordinate deletions survive. -/
-theorem signed_fixed_point_enumerator (w : α → R) :
+private theorem fixed_point_enumerator [DecidableEq α] (w : α → R) :
     (∑ σ : Equiv.Perm α, ((Equiv.Perm.sign σ:ℤ):R)*
       ∏ i ∈ univ.filter (fun i => σ i=i), (w i+1)) =
     (∏ i, w i)+∑ i, ∏ j ∈ univ.erase i, w j := by
@@ -36,6 +34,14 @@ theorem signed_fixed_point_enumerator (w : α → R) :
   intro i _
   by_cases hi : σ i=i <;> simp [M,diagonal_apply,vecMulVec,hi]
 
+/-- In the signed multivariate fixed-point enumerator only the full
+monomial and its one-coordinate deletions survive. -/
+theorem signed_fixed_point_enumerator (w : α → R) :
+    (∑ σ : Equiv.Perm α, ((Equiv.Perm.sign σ:ℤ):R)*
+      ∏ i ∈ univ.filter (fun i => σ i=i), (w i+1)) =
+    (∏ i, w i)+∑ i, ∏ j ∈ univ.erase i, w j :=
+  fixed_point_enumerator w
+
 /-- Number of fixed letters in the defining symmetric-group action. -/
 abbrev permutationFixedLetters {n : ℕ} (σ : Equiv.Perm (Fin n)) := (univ.filter (fun i => σ i=i)).card
 
@@ -44,11 +50,21 @@ included. Here the permutation degree is n+1. -/
 theorem signed_fixed_point_choose (n r : ℕ) :
     (∑ σ : Equiv.Perm (Fin (n+1)), (Equiv.Perm.sign σ:ℤ)*((permutationFixedLetters σ).choose r:ℤ)) =
       (if r=n+1 then 1 else 0)+(n+1:ℤ)*(if r=n then 1 else 0) := by
-  have h := signed_fixed_point_enumerator (fun _ : Fin (n+1) => (X:ℤ[X]))
+  have h := fixed_point_enumerator (fun _ : Fin (n+1) => (X:ℤ[X]))
   simp only [prod_const,card_univ,Fintype.card_fin,card_erase_of_mem (mem_univ _),
     Nat.add_sub_cancel,sum_const,nsmul_eq_mul] at h
-  have he : (∑ σ : Equiv.Perm (Fin (n+1)), C (Equiv.Perm.sign σ:ℤ)*(X+1)^permutationFixedLetters σ) =
-      X^(n+1)+C (n+1:ℤ)*X^n := by simpa only [map_add,map_one,map_natCast,Int.cast_ofNat] using h
+  let shift (σ : Equiv.Perm (Fin (n+1))) := ((X:ℤ[X])+1)^permutationFixedLetters σ
+  have hn : (C (n+1:ℤ) : ℤ[X]) = ((n+1:ℕ):ℤ[X]) := by
+    rw [map_add,map_natCast,map_one,Nat.cast_succ]
+  have he : (∑ σ : Equiv.Perm (Fin (n+1)),
+      C (Equiv.Perm.sign σ:ℤ)*((X:ℤ[X])+1)^permutationFixedLetters σ) =
+      X^(n+1)+C (n+1:ℤ)*X^n := by
+    rw [hn]
+    calc
+      _ = ∑ σ : Equiv.Perm (Fin (n+1)), ((Equiv.Perm.sign σ : ℤ) : ℤ[X]) * shift σ :=
+        sum_congr rfl fun σ _ => congrArg (fun c : ℤ[X] => c * shift σ)
+          (map_intCast C (Equiv.Perm.sign σ : ℤ))
+      _ = _ := h
   have hc := congrArg (fun P : ℤ[X] => P.coeff r) he
   simpa only [finset_sum_coeff,coeff_C_mul,coeff_X_add_one_pow,coeff_add,coeff_X_pow] using hc
 

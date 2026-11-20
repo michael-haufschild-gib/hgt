@@ -47,7 +47,7 @@ private theorem evaluate_tau (r a : Fin n → ℝ) (x : ℝ) :
   rw [RingHom.map_det]
   congr 1
   ext i j
-  by_cases hij : i=j <;> simp [RingHom.mapMatrix_apply,Matrix.one_apply,hij]
+  by_cases hij : i=j <;> simp [RingHom.mapMatrix_apply,hij,mul_comm x]
 
 private theorem spectral_det {M : Matrix (Fin n) (Fin n) ℝ} (hM : M.IsHermitian) (x : ℝ) :
     (1+x • M).det = ∏ i, (1+x*hM.eigenvalues i) := by
@@ -58,7 +58,7 @@ private theorem spectral_det {M : Matrix (Fin n) (Fin n) ℝ} (hM : M.IsHermitia
     rw [show diagonal (fun i => 1+x*hM.eigenvalues i) = 1+x • diagonal hM.eigenvalues by
       ext i j; by_cases hij : i=j <;> simp [hij,Matrix.one_apply],map_add,map_one,map_smul,← hme]
   rw [he]
-  change (↑hM.eigenvectorUnitary * diagonal _ * (star hM.eigenvectorUnitary : Matrix _ _ ℝ)).det = _
+  dsimp only [A,Unitary.conjStarAlgAut_apply]
   rw [Matrix.det_mul_comm,← Matrix.mul_assoc,Unitary.coe_star_mul_self,one_mul,Matrix.det_diagonal]
 
 private def factor (level : ℝ) : ℝ[X] := 1+C level*X

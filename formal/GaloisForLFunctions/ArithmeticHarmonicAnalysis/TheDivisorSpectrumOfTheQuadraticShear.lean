@@ -30,7 +30,8 @@ private theorem annihilator_modulus {N : ℕ} [NeZero N] (x s : ZMod N) :
     _ ↔ N/d∣(x.val/d)*s.val := Nat.mul_dvd_mul_iff_left hd
     _ ↔ _ := hc.dvd_mul_left
 
-private theorem gcd_annihilator_fourier {N : ℕ} [NeZero N] (x j : ZMod N) :
+private theorem gcd_annihilator_fourier {N : ℕ} [NeZero N] (x j : ZMod N)
+    [DecidablePred (fun u : ZMod N => u*x+j=0)] :
     ((univ.filter (fun u : ZMod N => u*x+j=0)).card:ℂ)=
       if x.val.gcd N∣j.val then (x.val.gcd N:ℂ) else 0 := by
   let d := x.val.gcd N
@@ -40,7 +41,11 @@ private theorem gcd_annihilator_fourier {N : ℕ} [NeZero N] (x j : ZMod N) :
   have hq : 0<N/d := Nat.div_pos (Nat.le_of_dvd hn hv) hd
   have hprod : d*(N/d)=N := Nat.mul_div_cancel' hv
   have hdiv : N/(N/d)=d := Nat.div_eq_of_eq_mul_left hq hprod.symm
-  rw [←annihilator_fourier_count ZMod.stdAddChar (ZMod.isPrimitive_stdAddChar N)]
+  have hf := annihilator_fourier_count ZMod.stdAddChar (ZMod.isPrimitive_stdAddChar N) x j
+  refine Eq.trans ?_ (hf.symm.trans ?_)
+  · apply congrArg (fun S : Finset (ZMod N) => (S.card : ℂ))
+    ext u
+    simp only [mem_filter,mem_univ,true_and]
   simp only [annihilator_modulus,mul_comm j]
   have he := sum_stdAddChar_divisible hn (Nat.mem_divisors.mpr
     ⟨Nat.div_dvd_of_dvd hv,hn.ne'⟩ : N/d∈N.divisors) j
@@ -79,12 +84,13 @@ theorem gcd_stratum_ramanujan {N d : ℕ} [NeZero N] (hd : d∈N.divisors) (m : 
     have hlt : d*b.val<N := ((Nat.mul_lt_mul_left hd₀).mpr b.isLt).trans_eq hN
     have hg : (d*b.val).gcd N=d*b.val.gcd q := by rw [←hN,Nat.gcd_mul_left]
     have hu : IsUnit (ZMod.finEquiv q b) ↔ b.val.Coprime q := by
-      simpa only [ZMod.natCast_zmod_val,val_finEquiv] using
-        (ZMod.isUnit_iff_coprime (ZMod.finEquiv q b).val q)
+      have hu := ZMod.isUnit_iff_coprime (ZMod.finEquiv q b).val q
+      rw [ZMod.natCast_zmod_val] at hu
+      simpa only [val_finEquiv] using hu
     have hcop : d*b.val.gcd q=d ↔ b.val.Coprime q := by
       change d*b.val.gcd q=d ↔ b.val.gcd q=1
       conv_lhs => rhs; rw [←mul_one d]
-      exact Nat.mul_left_cancel_iff_of_pos hd₀
+      exact mul_right_inj' hd₀.ne'
     simp only [F,G,ramanujanMultiplesFinEquiv_apply,ZMod.val_natCast_of_lt hlt,hg,hcop,hu]
     split_ifs
     · rw [stdAddChar_divisorMultiple hn hd]
@@ -92,7 +98,8 @@ theorem gcd_stratum_ramanujan {N d : ℕ} [NeZero N] (hd : d∈N.divisors) (m : 
         rw [←val_finEquiv b,ZMod.natCast_zmod_val]
       rw [hb]
     · rfl
-  rw [sum_congr rfl (fun b _ => each b),(ZMod.finEquiv q).toEquiv.sum_comp G]
+  rw [sum_congr rfl (fun b _ => each b)]
+  refine (Equiv.sum_comp (ZMod.finEquiv q).toEquiv G).trans ?_
   change (∑ x : ZMod q, if IsUnit x then ZMod.stdAddChar (x*(m.val:ZMod q)) else 0)=_
   rw [←sum_filter]
   rfl
@@ -107,14 +114,13 @@ theorem quadratic_shear_full_divisor_spectrum (M : ℕ+) (j a : ZMod (M:ℕ)) :
           ((a-j).val:ZMod ((M:ℕ)/d.val)) else 0 := by
   rw [fixedGapQuadraticTransform_linear_fibres ZMod.stdAddChar (ZMod.isPrimitive_stdAddChar (M:ℕ))]
   simp only [gcd_annihilator_fourier]
-  let D := (M:ℕ).divisors
   let m := a-j
   let χ (x : ZMod (M:ℕ)) := ZMod.stdAddChar (x*m)
   have entry (x : ZMod (M:ℕ)) :
       (if x.val.gcd M∣j.val then (x.val.gcd M:ℂ) else 0)*ZMod.stdAddChar ((a-j)*x) =
-      ∑ d ∈ D.attach, (if d.val∣j.val then (d.val:ℂ) else 0)*
+      ∑ d ∈ (M:ℕ).divisors.attach, (if d.val∣j.val then (d.val:ℂ) else 0)*
         (if x.val.gcd M=d.val then χ x else 0) := by
-    let d₀ : D := ⟨x.val.gcd M,Nat.mem_divisors.mpr ⟨Nat.gcd_dvd_right ..,M.pos.ne'⟩⟩
+    let d₀ : (M:ℕ).divisors := ⟨x.val.gcd M,Nat.mem_divisors.mpr ⟨Nat.gcd_dvd_right ..,M.pos.ne'⟩⟩
     rw [sum_eq_single_of_mem d₀ (mem_attach _ _)]
     · simp only [d₀,if_true,χ,m,mul_comm (a-j)]
     · intro d _ hd
@@ -126,7 +132,9 @@ theorem quadratic_shear_full_divisor_spectrum (M : ℕ+) (j a : ZMod (M:ℕ)) :
   change (if d.val∣j.val then (d.val:ℂ) else 0)*
     (∑ x : ZMod (M:ℕ), if x.val.gcd M=d.val then ZMod.stdAddChar (x*m) else 0) = _
   rw [gcd_stratum_ramanujan d.property m]
-  split_ifs <;> simp only [zero_mul]
+  by_cases h : d.val ∣ j.val
+  · simp [h,m]
+  · simp [h,m]
 
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis

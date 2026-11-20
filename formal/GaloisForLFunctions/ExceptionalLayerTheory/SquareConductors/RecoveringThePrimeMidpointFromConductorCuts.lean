@@ -155,7 +155,7 @@ private theorem reciprocal_prefix_inverse (f : ℕ → ℝ) (n : ℕ) :
       rw [reciprocalCutRead,reciprocalCutRead,sum_Ioc_succ_top (Nat.zero_le n),Nat.succ_sub_one,Nat.cast_succ]
     have hc : ((n:ℝ)+1)*((f (n+1)-f n)/(n+1))=f (n+1)-f n := by
       field_simp [show (n:ℝ)+1≠0 by positivity]
-    rw [sum_range_succ,hinc,Nat.cast_succ,mul_add,hc]
+    rw [Finset.sum_range_succ,hinc,Nat.cast_succ,mul_add,hc]
     linarith only [ih]
 
 private theorem conductor_reciprocal_prefix {N n : ℕ} (hN : 0<N) (hk : (n:ℝ)≤Real.exp (-8)*(N:ℝ)^2) :

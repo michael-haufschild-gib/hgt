@@ -23,7 +23,9 @@ theorem exists_late_positive_release (h : CompactPulse) (hne : ∃ t : ℝ, h t 
   have hs := shifted_releases_have_sum h (N+1)
   have hz (i : ℕ) : stepDecrement h (i+(N+1):ℕ) 1 = 0 :=
     le_antisymm (H _ (by omega)) (stepDecrement_nonneg _ _ _)
-  have ht : tailEnergy h (N+1:ℕ) = 0 := by rw [← hs.tsum_eq]; simp [hz]
+  have ht : tailEnergy h (N+1:ℕ) = 0 := by
+    rw [← hs.tsum_eq]
+    simp only [hz, tsum_zero]
   exact (tailEnergy_pos h hne _).ne' ht
 
 /-- Signed difference of order d at the kth Laplace sample. -/

@@ -92,7 +92,7 @@ theorem one_exchange_virial_spectrum {k p : ℕ} (hp : p ∈ k.primeFactors)
       ring
     · rw [if_neg he,zero_add]
       rcases Nat.even_or_odd T.card with h|h
-      · simp [E,b,h.not_odd,unitaryWalshContrast_even (mem_powerset.mp hT) h]
+      · simp [E,b,Nat.not_odd_iff_even.mpr h,unitaryWalshContrast_even (mem_powerset.mp hT) h]
       · dsimp only [E]
         rw [unitaryWalshContrast_one_exchange hp hl hu (mem_powerset.mp hT) h,
           if_neg he,zero_add]
@@ -120,9 +120,9 @@ private theorem odd_symbol_moment (γ : ℝ) {r : ℕ} (hr : 4≤r) (a : ℕ) :
   | base =>
     by_cases h : Odd a <;>
       norm_num [sum_range_succ,shiftedSymbol,Nat.odd_add,h,Nat.choose,
-        cubicMean,blockVirialSymbol] <;> ring
+        cubicMean,blockVirialSymbol] <;> norm_num [Nat.odd_iff,Nat.even_iff] <;> ring
   | succ r hr ih =>
-    have hs := Nat.sum_choose_succ_mul (fun j _ => shiftedSymbol γ a j) r
+    have hs := Finset.sum_choose_succ_mul (fun j _ => shiftedSymbol γ a j) r
     have shift (j : ℕ) : shiftedSymbol γ a (j+1) = shiftedSymbol γ (a+1) j := by
       simp only [shiftedSymbol,show a+(j+1) = a+1+j by omega]
     simp only [shift] at hs
@@ -175,6 +175,7 @@ private theorem triple_singleton_contrast {k p : ℕ} (hk : 1<k) (hr : k.primeFa
   have hd : ({p}:Finset ℕ) ≠ P := fun e => by
     have := congrArg card e
     simp only [card_singleton,P,hr] at this
+    omega
   have hsingle : ({p}:Finset ℕ) ∈ F := mem_filter.mpr
     ⟨mem_powerset.mpr (singleton_subset_iff.mpr hp),mem_singleton_self _⟩
   have hfull : P ∈ F := mem_filter.mpr ⟨mem_powerset.mpr Subset.rfl,hp⟩
@@ -214,7 +215,7 @@ theorem balanced_triple_virial_energy {k : ℕ} (hk : 1<k) (hr : k.primeFactors.
       blockVirialSymbol γ (2*T.card)*(unitaryWalshContrast k T:ℝ)^2 = f T.card := by
     have hsub := mem_powerset.mp hT
     rcases Nat.even_or_odd T.card with he|he
-    · simp [f,he.not_odd,unitaryWalshContrast_even hsub he]
+    · simp [f,Nat.not_odd_iff_even.mpr he,unitaryWalshContrast_even hsub he]
     have hc := card_le_card hsub
     change T.card ≤ k.primeFactors.card at hc
     rw [hr] at hc
@@ -233,7 +234,6 @@ theorem balanced_triple_virial_energy {k : ℕ} (hk : 1<k) (hr : k.primeFactors.
   rw [sum_congr rfl hpt,sum_powerset_apply_card]
   change (∑ j ∈ range (k.primeFactors.card+1), k.primeFactors.card.choose j • f j) = _
   rw [hr]
-  norm_num [sum_range_succ,Nat.choose,f,blockVirialSymbol,nsmul_eq_mul]
-  <;> ring
+  norm_num [sum_range_succ,Nat.choose,f,blockVirialSymbol,nsmul_eq_mul] <;> norm_num [Nat.odd_iff,Nat.even_iff] <;> ring
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

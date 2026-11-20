@@ -67,8 +67,9 @@ theorem padicMatrixHaar_unitEntry_traceDet (h : ℕ) (t d : ZMod (p^h)) :
   have hu : Nat.card (ZMod q)ˣ = q.totient := by
     rw [Nat.card_eq_fintype_card,ZMod.card_units_eq_totient]
   change (Nat.card (ZMod q)*Nat.card (ZMod q)ˣ : ℕ) / (Nat.card (Matrix (Fin 2) (Fin 2) (ZMod q)) : ℝ) = _
-  rw [hu,card_residue_matrices,Nat.card_zmod,Nat.cast_mul,Nat.cast_pow]
-  change (q:ℝ)*q.totient/(q:ℝ)^4 = q.totient/(q:ℝ)^3
+  rw [hu,card_residue_matrices,Nat.card_zmod]
+  change ((q*q.totient : ℕ):ℝ) / ((q^4 : ℕ):ℝ) = q.totient/(q:ℝ)^3
+  rw [Nat.cast_mul,Nat.cast_pow (α:=ℝ) q 4]
   field_simp [hqR] <;> ring
 
 /-- Full joint residue law. Ground-field root count changes the density by

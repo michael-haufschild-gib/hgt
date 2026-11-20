@@ -25,7 +25,7 @@ theorem distinct_count_area_bounds {ι : Type*} (S : Finset ι) (m : ι → ℕ)
     (hm : ∀ i ∈ S, 0 < m i) {q : ℝ} (hq : 0≤q) (hq' : q≤1) :
     (S.card:ℝ) ≤ zeroOrderMellinSum S m q ∧
     zeroOrderMellinSum S m q ≤ S.card+q*((∑ i ∈ S, (m i:ℝ))-S.card) := by
-  have h₁ (i : ι) (hi : i∈S) : (1:ℝ)≤m i := by exact_mod_cast hm i hi
+  have h₁ (i : ι) (hi : i∈S) : (1:ℝ) ≤ m i := by exact_mod_cast hm i hi
   constructor
   · simpa [zeroOrderMellinSum] using Finset.sum_le_sum
       (fun i hi => Real.one_le_rpow (h₁ i hi) hq)
@@ -73,7 +73,7 @@ theorem robust_count_of_distinct_xi_zeros (c : ℂ) {R : ℝ} (hR : 0<R)
   have hd : ((j+1:ℕ):ℝ)=8*(W:ℝ)+2 := by push_cast [j]; ring
   have hden : 0<((j+1:ℕ):ℝ) := by positivity
   have hq : 0<q := div_pos (by norm_num) hden
-  have hq' : q≤1 := (div_le_iff₀ hden).mpr (by rw [hd,one_mul]; linarith only [Nat.cast_nonneg (R:=ℝ) W])
+  have hq' : q≤1 := (div_le_iff₀ hden).mpr (by rw [hd,one_mul]; linarith only [Nat.cast_nonneg (α :=ℝ) W])
   have hqW : q*(W:ℝ)<1/4 := by
     change (2/_)*(W:ℝ)<_
     rw [div_mul_eq_mul_div]

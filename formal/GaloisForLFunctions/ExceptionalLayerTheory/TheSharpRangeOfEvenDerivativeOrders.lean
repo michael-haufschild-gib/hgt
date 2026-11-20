@@ -23,9 +23,13 @@ theorem independent_odd_radical_classes {ι : Type*} {n : ℕ} (hn : Odd n)
     LinearIndependent ℚ (fun i => (m i:ℝ)^((n:ℝ)⁻¹)) := by
   have hn0 : 0<n := by obtain ⟨k,h⟩ := hn; omega
   apply independent_cyclotomic_radical_weights hn0 m hm
-  let K := CyclotomicField n ℚ
-  letI : IsAbelianGalois ℚ K := IsCyclotomicExtension.isAbelianGalois {n} ℚ K
-  let e : K →ₐ[ℚ] ℂ := IsAlgClosed.lift
+  letI : NeZero n := ⟨hn0.ne'⟩
+  letI : NeZero (n : ℚ) := ⟨Nat.cast_ne_zero.mpr hn0.ne'⟩
+  letI : IsCyclotomicExtension {n} ℚ (CyclotomicField n ℚ) :=
+    CyclotomicField.isCyclotomicExtension n ℚ
+  letI : IsAbelianGalois ℚ (CyclotomicField n ℚ) :=
+    IsCyclotomicExtension.isAbelianGalois {n} ℚ (CyclotomicField n ℚ)
+  let e : CyclotomicField n ℚ →ₐ[ℚ] ℂ := IsAlgClosed.lift
   intro i j hne v hv
   obtain ⟨q,hq⟩ := (odd_radical_descends_from_abelian_field e hn ((m i:ℚ)/m j)).mp
     ⟨v,by simpa only [Rat.cast_div,Rat.cast_natCast] using hv⟩
@@ -64,7 +68,8 @@ theorem even_area_weights_independent_iff {j W : ℕ} (hj : Even j) :
   have hi : w i=1 := by simp [w,i,orderAreaWeight]
   have hk : w k=4 := by
     have he : k.val+1=2^(j+1) := by dsimp [k]; omega
-    rw [w,orderAreaWeight,he,Nat.cast_pow,div_eq_mul_inv,mul_comm (2:ℝ) _,
+    change orderAreaWeight j k.val = 4
+    rw [orderAreaWeight,he,Nat.cast_pow,Nat.cast_ofNat,div_eq_mul_inv,mul_comm (2:ℝ) _,
       Real.rpow_mul (by positivity : (0:ℝ)≤(2:ℝ)^(j+1)),
       Real.pow_rpow_inv_natCast (by norm_num : (0:ℝ)≤2) (Nat.succ_ne_zero j),Real.rpow_two]
     norm_num
@@ -98,7 +103,7 @@ theorem even_calibrated_histograms_injective (W : ℕ) :
     ∑ i, orderAreaWeight j i.val*((b i).val:ℝ) at he
   rw [←sub_eq_zero,←Finset.sum_sub_distrib] at he
   have hr : ∑ i, c i • orderAreaWeight j i.val=0 := by
-    simpa only [c,Rat.smul_def,Rat.cast_sub,Rat.cast_natCast,←mul_sub,mul_comm] using he
+    simpa only [c,Rat.smul_def,Rat.cast_sub,Rat.cast_natCast,sub_mul,mul_comm] using he
   funext i
   have hc := linearIndependent_iff'.mp hlin Finset.univ c hr i (Finset.mem_univ _)
   exact Fin.ext (by exact_mod_cast sub_eq_zero.mp hc)

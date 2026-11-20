@@ -53,12 +53,15 @@ private theorem squarefree_gcd_row {Q d : ℕ} (hsQ : Squarefree Q) (hd : d ∈ 
   apply sum_congr rfl
   intro a _
   dsimp only [f,coprimeSquarefreeIndicator]
-  rw [propext (hc a)]
-  by_cases h : Q.Coprime a <;> simp only [h,true_and,false_and,if_false,if_true]
-  by_cases hs : Squarefree a
-  · rw [if_pos hs]
-    rcases moebius_eq_one_or_neg_one_of_squarefree hs with hm | hm <;> rw [hm] <;> norm_num
-  · rw [if_neg hs,moebius_eq_zero_of_not_squarefree hs]; norm_num
+  split
+  · rename_i hit
+    obtain ⟨h,hs⟩ := (hc a).mp hit
+    rcases moebius_eq_one_or_neg_one_of_squarefree hs with hm | hm <;> norm_num [h,hm]
+  · rename_i miss
+    by_cases h : Q.Coprime a
+    · have hs : ¬Squarefree a := fun hs => miss ((hc a).mpr ⟨h,hs⟩)
+      simp [h,moebius_eq_zero_of_not_squarefree hs]
+    · simp [h]
 
 private theorem local_prefix_expansion {Q : ℕ} (hQ : Squarefree Q) (X : ℕ) :
     localPrefix Q X = ∑ d ∈ Q.divisors,(μ d:ℝ)*coprimeSquarefreeCount Q (X/d) := by
@@ -115,10 +118,9 @@ theorem smaller_prime_bias_on_octaves {Q : ℕ} (hQ : Squarefree Q) :
   have hd : Disjoint (squarefreeOf (Icc 1 X)) (squarefreeOf (Ioc X (2*X))) :=
     disjoint_left.mpr (fun n hv hw => (mem_Ioc.mp (mem_filter.mp hw).1).1.not_ge (mem_Icc.mp (mem_filter.mp hv).1).2)
   change 2*(localPrefix Q ⌊2*(X:ℝ)⌋₊/(2*(X:ℝ)))-localPrefix Q ⌊(X:ℝ)⌋₊/X=_
-  rw [show 2*(X:ℝ)=((2*X:ℕ):ℝ) by push_cast; rfl,Nat.floor_natCast,Nat.floor_natCast,
-    localPrefix Q (2*X),localPrefix Q X,he,sum_union hd,Nat.cast_mul,Nat.cast_ofNat]
-  field_simp [hx.ne']
-  ring
+  rw [show 2*(X:ℝ)=((2*X:ℕ):ℝ) by push_cast; rfl,Nat.floor_natCast,Nat.floor_natCast]
+  simp only [localPrefix,he,sum_union hd,Nat.cast_mul,Nat.cast_ofNat]
+  field_simp [hx.ne'] <;> ring
 
 
 /-- The product formula is strictly positive even if all other prime
@@ -133,7 +135,6 @@ theorem smallerPrimeBias_eq {Q : ℕ} (hQ : Squarefree Q) :
   intro p hp
   have h0 : (0:ℝ)<p := Nat.cast_pos.mpr (Nat.prime_of_mem_primeFactors hp).pos
   field_simp
-  ring
 
 /-- The smaller split prime is one of the prescribed primes. -/
 def usesSmallSplit (S : Finset ℕ) (a b : ℕ) :=
@@ -175,8 +176,9 @@ private theorem short_edge_charge {S : Finset ℕ} (hS : ∀ s ∈ S,Nat.Prime s
     · rw [abs_sub_comm] at hshort; push_cast at hshort ⊢; exact hshort
   rw [←mul_sub,abs_mul,abs_of_nonneg (Nat.cast_nonneg _)] at cost
   have hcap : c*Y^2 ≤ X := by
-    exact_mod_cast (mul_le_mul_of_nonneg_right (by simpa only [mul_one] using
-      mul_le_mul_of_nonneg_left hdiff (Nat.cast_nonneg (α := ℝ) c)) (sq_nonneg (Y:ℝ))).trans cost
+    have hc : (c:ℝ) ≤ c*|(p:ℝ)-(q*r:ℕ)| := by
+      simpa only [mul_one] using mul_le_mul_of_nonneg_left hdiff (Nat.cast_nonneg (α := ℝ) c)
+    exact_mod_cast (mul_le_mul_of_nonneg_right hc (sq_nonneg (Y:ℝ))).trans cost
   have ends : X<c*p ∧ X<c*(q*r) ∧ Squarefree (c*(q*r)) := by
     rcases hor with ⟨rfl,rfl⟩ | ⟨rfl,rfl⟩
     · exact ⟨(mem_Ioc.mp ha).1,(mem_Ioc.mp hb).1,hsqb⟩
@@ -209,8 +211,10 @@ private theorem paired_charge {S : Finset ℕ} (hS : ∀ p ∈ S,Nat.Prime p) {Y
   let Q := ∏ p ∈ S,p
   let f := fun n : ℕ => (μ (n.gcd Q):ℝ)
   let O := M.sources.filter (fun n => ¬usesSmallSplit S n (M.partner n))
-  have hf (n : ℕ) : f n ≤ 1 := (le_abs_self _).trans (by exact_mod_cast
-    ArithmeticFunction.abs_moebius_le_one (n := n.gcd Q))
+  have hf (n : ℕ) : f n ≤ 1 := by
+    apply (le_abs_self _).trans
+    change |(μ (n.gcd Q):ℝ)| ≤ 1
+    exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n := n.gcd Q)
   have hsum : ∑ n ∈ M.matchedSet,f n=∑ n ∈ M.sources,(f n+f (M.partner n)) := by
     have hdis : Disjoint M.sources M.targets :=
       (disjoint_posParity_negParity _).mono M.sources_subset M.targets_subset

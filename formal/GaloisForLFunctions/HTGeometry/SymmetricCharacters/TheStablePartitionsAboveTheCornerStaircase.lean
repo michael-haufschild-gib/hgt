@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.SymmetricCharacters.TheFirstInteractionAboveTheCornerStaircase
+import Mathlib.SetTheory.Cardinal.Finite
 
 /-!
 # Stable partitions above the corner staircase
@@ -79,7 +80,8 @@ private theorem color_area {k d : ℕ} (hd : d ≤ k) (p : cornerBipartitions d)
     gapArea k (fun i => p.1.1.count (k+1-i)) +
       repeatArea k (fun i => p.1.2.count i) = d := by
   obtain ⟨ha,hb⟩ := colors_in_range hd p
-  rw [gap_reflect,repeatArea,←sum_bundle,←sum_bundle,
+  rw [gap_reflect k (fun i => p.1.1.count i),repeatArea,
+    ←sum_bundle k (fun i => p.1.1.count i),←sum_bundle k (fun i => p.1.2.count i),
     bundle_reconstruct _ ha,bundle_reconstruct _ hb,p.2.2.2]
 
 private def colorsToCorner {k d : ℕ} (hd : d ≤ k) (p : cornerBipartitions d) : cornerShell k d :=
@@ -128,6 +130,7 @@ private theorem colorsToCorner_surjective {k d : ℕ} (hd : d ≤ k) :
     apply sum_congr rfl
     intro i hi
     have := (mem_Icc.mp hi).2
+    dsimp only
     rw [show k+1-(k+1-i)=i by omega]
   have hm : A.sum+B.sum=d := by
     rw [show A.sum=_ from sum_bundle ..,show B.sum=_ from sum_bundle ..,
@@ -169,7 +172,9 @@ def cornerBipartitionsBySize (d : ℕ) : cornerBipartitions d ≃
     omega⟩
   left_inv _ := rfl
   right_inv := by
-    rintro ⟨⟨i,hi⟩,⟨⟨s,hs,rfl⟩,⟨t,ht,hst⟩⟩⟩
+    rintro ⟨⟨i,hi⟩,⟨⟨s,hs,hsi⟩,⟨t,ht,hst⟩⟩⟩
+    change s.sum = i at hsi
+    subst i
     rfl
 
 /-- The exact shell size in excess degree d is the convolution of the

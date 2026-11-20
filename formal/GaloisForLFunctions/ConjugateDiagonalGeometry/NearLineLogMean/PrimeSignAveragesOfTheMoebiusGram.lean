@@ -251,10 +251,12 @@ private theorem product_reading_factor (N m : ℕ) (K : ℝ → ℝ) :
   rw [primitiveProductReading,mul_sum]
   apply sum_congr rfl
   intro q hq
-  obtain ⟨hq, rfl⟩ := mem_filter.mp hq
-  have hc := (mem_filter.mp hq).2.1
+  obtain ⟨hpair, heq⟩ := mem_filter.mp hq
+  have hc := (mem_filter.mp hpair).2.1
+  subst m
   unfold atom coeff mobiusRealCoefficient
   rw [moebius_mul_of_coprime hc,Int.cast_mul,Nat.cast_mul,Real.sqrt_mul (Nat.cast_nonneg _)]
+  simp only [div_eq_mul_inv,mul_inv_rev]
   ring
 
 /-- Group the twisted Gram spectrum by its squarefree prime character. -/
@@ -322,7 +324,8 @@ private theorem prime_sign_product_orthogonality {N m n : ℕ}
         rw [z hm,z hn]
     · rintro rfl p _
       exact ⟨_,rfl⟩
-  simp only [←Int.cast_mul,←Int.cast_sum,sum_primeSignTwist_mul,prod_two_or_zero,he]
+  simp only [←Int.cast_mul,←Int.cast_sum,sum_primeSignTwist_mul,
+    prod_two_or_zero P (fun p => m.factorization p+n.factorization p),he]
   split_ifs <;> push_cast <;> rfl
 
 /-- Multiplicative sign measurements recover each product fibre, even
@@ -339,7 +342,7 @@ theorem prime_sign_product_readout {N m : ℕ} (hm : m ∈ primitiveSignProducts
         if n=m then (2:ℝ)^P.card*primitiveProductReading N m K else 0 := by
     simp_rw [mul_right_comm _ (primitiveProductReading N n K),←sum_mul]
     rw [prime_sign_product_orthogonality hn hm]
-    split_ifs with e <;> simp_all
+    split_ifs with e <;> simp_all [P]
   rw [sum_congr rfl term,sum_ite_eq',if_pos hm]
 
 /-- Exact covariance of two centered sign readings. Only equal squarefree
@@ -351,7 +354,7 @@ theorem prime_sign_product_covariance (N : ℕ) (K L : ℝ → ℝ) :
         primitiveProductReading N m K*primitiveProductReading N m L := by
   intro P
   simp_rw [signed_product_expansion N P _ L,mul_sum]
-  rw [sum_comm,mul_sum]
+  rw [sum_comm]
   refine sum_congr rfl fun m hm => ?_
   simp_rw [←mul_assoc,←sum_mul]
   rw [prime_sign_product_readout hm,mul_assoc]
@@ -389,7 +392,7 @@ private theorem all_minus_on_product {N m : ℕ} (hm : m ∈ primitiveSignProduc
   have he := sum_subset (f:=fun p => m.factorization p) hs (fun _ _ hn => Finsupp.notMem_support_iff.mp hn)
   rw [ArithmeticFunction.moebius_apply_of_squarefree (mem_filter.mp hm).2,
     ArithmeticFunction.cardFactors_eq_sum_factorization]
-  simp only [primeSignTwist,Units.val_neg,Units.val_one,←pow_sum,sum_coe_sort,Finsupp.sum,he]
+  simp only [primeSignTwist,Units.val_neg,Units.val_one,prod_pow_eq_pow_sum,sum_coe_sort,Finsupp.sum,he]
 
 /-- The all-negative prime choice attains the absolute envelope of every
 nonnegative spectral window at once. Each squarefree product then carries

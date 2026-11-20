@@ -60,7 +60,7 @@ private theorem weight_early (r k i : ℕ) :
     dsimp only [y,x,radiationNode]
     linarith only [mul_le_mul_of_nonneg_right hn.le (Real.exp_pos (-(i:ℝ))).le]
   have hpoly := (div_le_iff₀ (by positivity : 0 < (r.factorial:ℝ))).mp
-    (Real.pow_div_factorial_le_exp hy r)
+    (Real.pow_div_factorial_le_exp y hy r)
   have hc : Real.exp ((k:ℝ)-i)^r ≤ 2^r*(Real.exp y*r.factorial) :=
     (pow_le_pow_left₀ (Real.exp_pos _).le hh r).trans
       ((mul_pow (2:ℝ) y r).le.trans (mul_le_mul_of_nonneg_left hpoly (by positivity)))
@@ -74,7 +74,7 @@ private theorem weight_early (r k i : ℕ) :
     rw [Real.exp_nat_mul]
     calc _ ≤ Real.exp ((n:ℝ)* -x)*(2^r*(Real.exp y*r.factorial)) := h
          _ = (Real.exp ((n:ℝ)* -x)*Real.exp y)*2^r*r.factorial := by ring
-         _ ≤ _ := by rw [he]; gcongr; exact Real.exp_le_exp.mpr hx₁
+         _ ≤ _ := by rw [he]; gcongr <;> exact Real.exp_le_exp.mpr hx₁
   rw [neg_mul,Real.exp_neg,←div_eq_mul_inv,le_div_iff₀ (Real.exp_pos _)]
   exact h'
 
@@ -86,7 +86,8 @@ private theorem term_nonneg (h : CompactPulse) (k i : ℕ) : 0 ≤ term h k i :=
 private theorem term_sum (h : CompactPulse) (k : ℕ) :
     HasSum (term h k) (sparseRadiationDifference h k) := by
   have hs := summable_radiation_kernel h 0 (radiationDifferenceOrder k)
-  simpa only [sparseRadiationDifference,radiationSample_signed_difference,pow_zero,one_mul,term,weight]
+  change HasSum (fun i : ℕ => (1-radiationNode i)^radiationDifferenceOrder k * stepDecrement h i 1) _
+  simpa only [sparseRadiationDifference,radiationSample_signed_difference,pow_zero,one_mul]
     using hs.hasSum
 
 /-- The sparse reading never loses more than half of the remaining energy. -/

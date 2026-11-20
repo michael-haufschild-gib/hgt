@@ -61,7 +61,7 @@ private theorem phaseMark_injective {n : ℕ} : Function.Injective (@pulsePhaseM
   intro i j h
   by_contra hn
   obtain ⟨_,eq⟩ := pulsePhaseMark_difference_unique hn
-    (k:=i) (l:=i) (by rw [h,sub_self,sub_self])
+    (k:=i) (l:=i) (by simp only [h,sub_self])
   exact hn eq.symm
 
 /-- Windowed Hermitian cross-energy between two reflected compact pulses. -/
@@ -81,7 +81,7 @@ def markedPulse {n : ℕ} (f : Fin n → CompactPulse) (x : Unit → ℝ) : Comp
 private theorem tone_difference (k l : ℤ) (x : Unit → ℝ) :
     pulseTone (k-l) x = pulseTone k x*(starRingEnd ℂ) (pulseTone l x) := by
   change charLift ((fun _ : Unit => k) + -(fun _ : Unit => l)) x = _
-  rw [charLift_add_index,charLift_neg_index]
+  simp only [charLift_add_index,charLift_neg_index,pulseTone]
 
 private theorem cast_norm_square (z : ℂ) : ((‖z‖^2:ℝ):ℂ)=z*(starRingEnd ℂ) z := by
   rw [Complex.mul_conj,Complex.sq_norm]
@@ -170,9 +170,13 @@ theorem recover_reflected_window_gram {n : ℕ} (f : Fin n → CompactPulse) (W 
         reflectedWindowGram (f i) (f j) W := by
   rw [demodulate_energy]
   have eq (u v : Fin n) : pulsePhaseMark u-pulsePhaseMark v=pulsePhaseMark i-pulsePhaseMark j ↔
-      u=i ∧ v=j := ⟨fun h => by obtain ⟨e,e'⟩ := pulsePhaseMark_difference_unique hij h.symm
-                            exact ⟨e.symm,e'.symm⟩,
-        fun ⟨e,e'⟩ => by rw [e,e']⟩
+      u=i ∧ v=j := by
+    constructor
+    · intro h
+      obtain ⟨e,e'⟩ := pulsePhaseMark_difference_unique hij h.symm
+      exact ⟨e.symm,e'.symm⟩
+    · rintro ⟨rfl,rfl⟩
+      rfl
   simp only [eq,ite_and]
   classical
   simp [Finset.sum_ite_eq',Finset.sum_ite_eq]

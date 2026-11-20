@@ -128,7 +128,10 @@ theorem mertens_polynomial_rank_order (r : ℕ → ℕ) {g K : ℝ} (hg : g<1)
     by_contra! hc
     obtain ⟨k,hk,hd⟩ := hsurv _ ((Nat.cast_le.mpr hc).trans hN)
     obtain ⟨hkN,hs⟩ := mem_filter.mp hk
-    exact hd (mem_filter.mpr ⟨hkN,by simpa only [one_mul] using hs⟩)
+    apply hd
+    refine mem_filter.mpr ⟨hkN, ?_⟩
+    change ((N : ℝ) + 1)^b < ‖mobiusMertensPartialSum k‖
+    simpa only [one_mul] using hs
   · intro b hb
     obtain ⟨A,hA,h⟩ := upper_peak hb
     exact ⟨A,hA,fun N => (show (mertensRank N (r N):ℝ) ≤ (remainingMertensPeak N ∅:ℝ) from
@@ -143,27 +146,29 @@ theorem corrupted_mertens_rank_order (w : ℕ → ℕ → ℝ≥0) (q r : ℕ �
     (hqr : ∀ᶠ N : ℕ in atTop, q N≤r N)
     (hw : ∀ᶠ N : ℕ in atTop,
       ((range (N+1)).filter fun k => ‖mobiusMertensPartialSum k‖₊ ≠ w N k).card ≤ q N) :
-    Tendsto (fun N : ℕ => Real.log (1+(FiniteRanks.erasedPeak
+    Tendsto (fun N : ℕ => Real.log (1+(FiniteRanks.erasedPeak (α := ℝ≥0)
       (range (N+1)) (w N) (r N):ℝ))/Real.log ((N:ℝ)+1)) atTop (𝓝 zetaZeroAbscissa) := by
   let v := fun k => ‖mobiusMertensPartialSum k‖₊
   have hlo := mertens_polynomial_rank_order (fun N => r N+q N) hg hr
   have hhi := mertens_polynomial_rank_order (fun N => r N-q N) hg
     (hr.mono (fun N h => (Nat.cast_le.mpr
       ((Nat.sub_le _ _).trans (Nat.le_add_right _ _))).trans h))
+  have logMono (N : ℕ) {x y : ℝ≥0} (hxy : x ≤ y) :
+      Real.log (1 + (x : ℝ)) / Real.log ((N : ℝ) + 1) ≤
+      Real.log (1 + (y : ℝ)) / Real.log ((N : ℝ) + 1) :=
+    div_le_div_of_nonneg_right (Real.log_le_log (add_pos_of_pos_of_nonneg zero_lt_one x.property)
+      (add_le_add le_rfl (show (x : ℝ) ≤ (y : ℝ) from hxy)))
+      (Real.log_nonneg (le_add_of_nonneg_left (Nat.cast_nonneg N)))
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hlo hhi
   · filter_upwards [hw] with N h
     have hh := FiniteRanks.replacement_interlacing _ v (w N) (r N) (q N) h
-    exact div_le_div_of_nonneg_right (Real.log_le_log (by positivity)
-      (add_le_add (le_refl (1:ℝ)) (show (_:ℝ) ≤ _ from hh)))
-        (Real.log_nonneg (le_add_of_nonneg_left (Nat.cast_nonneg N)))
+    exact logMono N hh
   · filter_upwards [hw,hqr] with N h he
     have hs : ((range (N+1)).filter fun k => w N k ≠ v k).card ≤ q N := by
       simpa only [ne_comm] using h
     have hh := FiniteRanks.replacement_interlacing _ (w N) v (r N-q N) (q N) hs
     rw [Nat.sub_add_cancel he] at hh
-    exact div_le_div_of_nonneg_right (Real.log_le_log (by positivity)
-      (add_le_add (le_refl (1:ℝ)) (show (_:ℝ) ≤ _ from hh)))
-        (Real.log_nonneg (le_add_of_nonneg_left (Nat.cast_nonneg N)))
+    exact logMono N hh
 
 /-- The longest interval whose every Mertens sum has the same sign
 and magnitude at least its length grows with ordinary exponent Θ.

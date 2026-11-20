@@ -53,6 +53,7 @@ private theorem split_label_partition :
       induction s using Sym2.inductionOn with | _ u v =>
         by_cases h : u=v
         · subst v
+          change (u+u,u*u)=(t,d) at he
           exact Or.inr ⟨u,by simpa only [two_mul,sq] using he.symm⟩
         · exact Or.inl ⟨u,v,h,he.symm⟩
     · rintro (⟨u,v,_,he⟩|⟨u,he⟩)
@@ -90,18 +91,21 @@ theorem rankTwo_spectral_power_sum (m : ℕ) :
     rcases z with ⟨t,d⟩
     letI : IsEmpty (traceDetRoot t d) := ⟨fun x =>
       (mem_nonsplitQuadraticPairs K t d).mp hz x.val x.property⟩
-    simp only [a,RankTwoSpectralFibre,card_traceDetFibre,Nat.card_of_isEmpty (α:=traceDetRoot t d),
-      Nat.add_zero,Nat.card_eq_fintype_card,q]
+    change (Nat.card {A : Matrix (Fin 2) (Fin 2) K // A.trace=t ∧ A.det=d})^m = _
+    rw [card_traceDetFibre t d,Nat.card_of_isEmpty (α:=traceDetRoot t d),
+      Nat.add_zero,Nat.card_eq_fintype_card (α:=K)]
   have hd (z : K×K) (hz : z∈D) : a z=(q*(q+1))^m := by
     obtain ⟨u,v,hne,he⟩ := (mem_distinctSplitPairs K z.1 z.2).mp hz
     change z=(u+v,u*v) at he
     subst z
-    simp only [a,RankTwoSpectralFibre,card_traceDetFibre_distinct hne,Nat.card_eq_fintype_card,q]
+    change (Nat.card {A : Matrix (Fin 2) (Fin 2) K // A.trace=u+v ∧ A.det=u*v})^m = _
+    rw [card_traceDetFibre_distinct hne,Nat.card_eq_fintype_card (α:=K)]
   have hr (z : K×K) (hz : z∈R) : a z=(q^2)^m := by
     obtain ⟨u,he⟩ := (mem_repeatedQuadraticPairs K z.1 z.2).mp hz
     change z=(2*u,u^2) at he
     subst z
-    simp only [a,RankTwoSpectralFibre,card_traceDetFibre_repeated,Nat.card_eq_fintype_card,q]
+    change (Nat.card {A : Matrix (Fin 2) (Fin 2) K // A.trace=2*u ∧ A.det=u^2})^m = _
+    rw [card_traceDetFibre_repeated,Nat.card_eq_fintype_card (α:=K)]
   have hc : R.card=q := by rw [show R=repeatedQuadraticPairs K from rfl,repeatedQuadraticPairs,card_map,card_univ]
   change ∑ z ∈ univ, a z = _
   rw [← cover,sum_union nd,show P=D∪R from hP,sum_union hdis,sum_congr rfl hn,sum_congr rfl hd,sum_congr rfl hr]

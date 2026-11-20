@@ -58,7 +58,7 @@ theorem velocity_difference_limit (W V : Op) (R : ℝ) (x : H) :
   have e : (-kgFreqSqLowOp R (kgLowPassOp R x)+kgBandOp W R x) -
       (-kgFreqSqLowOp R (kgLowPassOp R x)+kgBandOp V R x) =
       kgBandOp W R x-kgBandOp V R x := by abel
-  simpa only [Function.comp_def,slope_def_module,clock,sub_zero,shot_zero,sub_self,
+  simpa only [Function.comp_def,slope_def_module,clock,Pi.sub_apply,shot_zero,sub_self,
     sub_zero,one_div,inv_inv,e] using h
 
 /-- Agreement times may depend on the initial displacement. Infinitely many

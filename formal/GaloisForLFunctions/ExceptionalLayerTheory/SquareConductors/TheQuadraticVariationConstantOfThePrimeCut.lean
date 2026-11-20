@@ -11,7 +11,7 @@ logarithm by log K costs only O(K³), uniformly in the conductor.
 -/
 
 noncomputable section
-open Filter Finset
+open Filter Finset Topology
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
 private def primeStepLog (n : ℕ) : ℝ := if n.Prime then Real.log n else 0
@@ -29,7 +29,7 @@ private theorem prime_second_moment_limit :
     simpa only [Function.comp_def,Real.rpow_natCast] using
       ((tendsto_rpow_atTop (show (0:ℝ)<(3:ℕ) by norm_num)).comp (tendsto_natCast_atTop_atTop (R:=ℝ)))
   have small : Tendsto (fun n : ℕ => b/(n:ℝ)^3) atTop (𝓝 0) := by
-    simpa only [div_eq_mul_inv,mul_zero] using grow.inv_tendsto_atTop.const_mul b
+    simpa only [div_eq_mul_inv,Pi.inv_apply,mul_zero] using grow.inv_tendsto_atTop.const_mul b
   have main : Tendsto (fun n : ℕ => _root_.RHTower.primeRpowLogSumIoc 3 n/(n:ℝ)^3)
       atTop (𝓝 (1/3:ℝ)) := by
     simpa only [Function.comp_def,show (3:ℝ)=((3:ℕ):ℝ) by norm_num,Real.rpow_natCast] using prime
@@ -82,7 +82,8 @@ private theorem square_jump_remainder {n K : ℕ} (hn : 0<n) (hnK : n≤K) :
     apply abs_le.mpr
     constructor <;> linarith only [main,sign,small,n2,sq_nonneg (n:ℝ),
       mul_nonneg (sq_nonneg (n:ℝ)) w,mul_nonneg (sq_nonneg (K:ℝ)) w]
-  · simpa only [primeStepLog,if_neg hp,sub_zero,one_pow,mul_one,mul_zero,add_zero,abs_of_nonneg (sq_nonneg _)] using n2
+  · simpa only [primeStepLog,if_neg hp,sub_zero,one_pow,mul_one,mul_zero,add_zero,
+      abs_of_nonneg (sq_nonneg (n:ℝ))] using n2
 
 /-- Replacing one prime logarithm by the cutoff logarithm in the squared
 mesh increments has a uniform cubic cost in the entire first spline segment. -/
@@ -104,7 +105,9 @@ theorem centered_cut_square_log_remainder {N K : ℕ} (hN : 0<N)
   have mass : (∑ k ∈ range K,primeStepLog (k+1))≤(K:ℝ)*Real.log 4 := by
     have full : (∑ n ∈ range (K+1),primeStepLog n)=∑ k ∈ range K,primeStepLog (k+1) := by
       rw [sum_range_succ',show primeStepLog 0=0 by simp [primeStepLog],add_zero]
-    rw [←full,primeStepLog,←sum_filter]
+    rw [←full]
+    unfold primeStepLog
+    rw [←sum_filter]
     exact _root_.RHTower.Sieve.sum_log_primesLE_le K
   have approx : |(∑ k ∈ range K,f k)-Real.log K*(∑ k ∈ range K,g k)|≤
       (1+3*Real.log 4)*(K:ℝ)^3 := by
@@ -130,7 +133,7 @@ theorem seventeen_ninths_cut_square_variation_constant :
   have loggrow := Real.tendsto_log_atTop.comp ((tendsto_natCast_atTop_atTop (R:=ℝ)).comp grow)
   let C := innerPrimeSlope^2*(1+3*Real.log 4)
   have small : Tendsto (fun N : ℕ => C/Real.log (K N)) atTop (𝓝 0) := by
-    simpa only [Function.comp_def,div_eq_mul_inv,mul_zero] using loggrow.inv_tendsto_atTop.const_mul C
+    simpa only [Function.comp_def,div_eq_mul_inv,Pi.inv_apply,mul_zero] using loggrow.inv_tendsto_atTop.const_mul C
   apply Metric.tendsto_nhds.mpr
   intro ε hε
   have half := half_pos hε
@@ -146,7 +149,7 @@ theorem seventeen_ninths_cut_square_variation_constant :
   have id : v/((K N:ℝ)^3*Real.log (K N))-m=
       (v-innerPrimeSlope^2*(Real.log (K N)*cutPrimeSecondMoment (K N)))/((K N:ℝ)^3*Real.log (K N)) := by
     dsimp only [m]
-    field_simp [cube.ne',lg.ne']
+    field_simp [cube.ne',lg.ne'] <;> ring
   have near : |v/((K N:ℝ)^3*Real.log (K N))-m|≤C/Real.log (K N) := by
     rw [id,abs_div,abs_of_pos (mul_pos cube lg),div_le_div_iff₀ (mul_pos cube lg) lg]
     exact (mul_le_mul_of_nonneg_right bound lg.le).trans_eq (by dsimp only [C]; ring)

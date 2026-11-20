@@ -45,8 +45,12 @@ private theorem second_before_square {y : ℕ} (hy : 4 ≤ y) :
 
 private theorem prime_member {y m p : ℕ} :
     p ∈ primes y m ↔ y < p ∧ p ≤ m ∧ p.Prime := by
-  simp only [primes,_root_.RHTower.Sieve.bigPrimeSet,mem_filter,mem_Icc]
-  omega
+  constructor
+  · intro h
+    obtain ⟨interval,prime⟩ := mem_filter.mp h
+    exact ⟨(mem_Icc.mp interval).1,(mem_Icc.mp interval).2,prime⟩
+  · rintro ⟨lo,hi,prime⟩
+    exact mem_filter.mpr ⟨mem_Icc.mpr ⟨lo,hi⟩,prime⟩
 
 private theorem before_first {y m : ℕ} (h : m < nextRoughPrime y) :
     primes y m = ∅ := by
@@ -101,8 +105,9 @@ theorem sign_boundaries_of_polynomial_rough_prefix (j : ℕ) :
   by_cases h₁ : m < p
   · have hz : F y m = 1 := by
       unfold F
-      rw [rough_prefix_before_composites hm ((h₁.trans pq).le.trans qy),before_first h₁]
-      simp
+      rw [rough_prefix_before_composites hm ((h₁.trans pq).le.trans qy)]
+      change 1-((primes y m).card:ℝ)=1
+      simp [before_first h₁]
     exact ⟨iff_of_true (hz.symm ▸ zero_lt_one) h₁,
       iff_of_false (by rw [hz];exact one_ne_zero) (fun h => h₁.not_ge h.1),
       iff_of_false (by rw [hz];exact not_lt_of_ge zero_le_one) (not_le_of_gt (h₁.trans pq)),fun _ => hz⟩
@@ -110,7 +115,9 @@ theorem sign_boundaries_of_polynomial_rough_prefix (j : ℕ) :
     by_cases h₂ : m < q
     · have hz : F y m = 0 := by
         unfold F
-        rw [rough_prefix_before_composites hm (h₂.le.trans qy),between_first_two pm h₂]; simp
+        rw [rough_prefix_before_composites hm (h₂.le.trans qy)]
+        change 1-((primes y m).card:ℝ)=0
+        simp [between_first_two pm h₂]
       exact ⟨iff_of_false (by rw [hz];exact lt_irrefl _) h₁,iff_of_true hz ⟨pm,h₂⟩,
         iff_of_false (by rw [hz];exact lt_irrefl _) h₂.not_ge,fun hf => (h₁ hf).elim⟩
     · have qm := le_of_not_gt h₂

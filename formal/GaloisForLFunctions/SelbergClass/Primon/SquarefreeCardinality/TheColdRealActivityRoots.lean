@@ -19,9 +19,11 @@ theorem population_ground_ge_two_pow {P : Finset ℕ} (hp : ∀ p ∈ P, Nat.Pri
     {j : ℕ} (hj : j ≤ P.card) : 2^j ≤ leastPopulationEnergy P j := by
   induction j with
   | zero => simp [leastPopulationEnergy_zero]
-  | succ j ih => exact (show 2^(j+1) ≤ 2*leastPopulationEnergy P j by
-      rw [pow_succ,mul_comm]; exact Nat.mul_le_mul_left _ (ih (by omega))).trans
-        (leastPopulationEnergy_double hp (by omega))
+  | succ j ih =>
+    calc
+      2^(j+1) = 2*2^j := by rw [pow_succ, mul_comm]
+      _ ≤ 2*leastPopulationEnergy P j := Nat.mul_le_mul_left _ (ih (by omega))
+      _ ≤ _ := leastPopulationEnergy_double hp (by omega)
 
 private theorem slope_strict {P : Finset ℕ} (hp : ∀ p ∈ P, Nat.Prime p)
     {j : ℕ} (hj : j < P.card) : populationSlope P j < populationSlope P (j+1) := by
@@ -74,7 +76,7 @@ theorem distinct_activity_roots_above_population {P : Finset ℕ} (hp : ∀ p �
   · simpa only [show P.card-J=0 by change m-J=0; omega] using Nat.zero_le F.roots.toFinset.card
   have hy (i : ℕ) (hi : i < m-J) : y i < y (i+1) := by
     have hr : m-(i+1)+1=m-i := by omega
-    have hs := slope_strict hp (j:=m-(i+1)) (by change m-(i+1)<m; omega)
+    have hs := slope_strict hp (j:=m-(i+1)) (by change m - (i+1) < m; omega)
     rw [hr] at hs
     exact neg_lt_neg (Real.exp_lt_exp.mpr (mul_lt_mul_of_pos_left hs hb))
   have halt (i : ℕ) (hi : i ≤ m-J) : 0 < (-1:ℝ)^i*(C ((-1:ℝ)^m)*F).eval (y i) := by
@@ -119,10 +121,11 @@ theorem squarefree_cold_roots {β : ℝ} (hb : 0 < β)
   let F := squarefreeCardinalityPolynomial P β
   have hd : P.card ≤ F.roots.toFinset.card := by
     apply distinct_activity_roots_above_population hp hb 0
-    simpa using hgap
+    simpa [div_eq_mul_inv] using hgap
   have he := Multiset.toFinset_card_le F.roots
   have hc := card_roots' F
   have hdeg : F.natDegree=P.card := squarefreeCardinality_degree P β
+  change F.Splits ∧ F.roots.Nodup ∧ ∀ x : ℝ, F.IsRoot x → x < 0
   refine ⟨splits_iff_card_roots.mpr (by omega),Multiset.toFinset_card_eq_card_iff_nodup.mp (by omega),
     squarefree_real_root_neg P β⟩
 

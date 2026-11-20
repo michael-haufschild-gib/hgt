@@ -26,9 +26,22 @@ def decode (z : Fin 4 → ℝ) : Row ℝ :=
 def gain : Fin 4 → ℝ := ![3,1,4,2]
 
 theorem decode_exact (r : Row ℝ) : decode (sample r)=r := by
-  cases r
-  simp only [decode,sample,shots,signal,response,Bool.false_eq_true,if_false,
-    Matrix.cons_val_zero,Matrix.cons_val_one,Matrix.cons_val_two,Matrix.cons_val_three]
+  obtain ⟨a,b,c,d⟩ := r
+  let r : Row ℝ := ⟨a,b,c,d⟩
+  have s0 : sample r 0 = a+b+c+d := by
+    change 1*a+1*b+1^2*(1*c+1*d) = _
+    ring
+  have s1 : sample r 1 = a-b+c-d := by
+    change 1*a+(-1)*b+1^2*(1*c+(-1)*d) = _
+    ring
+  have s2 : sample r 2 = a/2+c/8 := by
+    change (1/2)*a+0*b+(1/2)^2*((1/2)*c+0*d) = _
+    ring
+  have s3 : sample r 3 = b := by
+    change 0*a+1*b+0^2*(0*c+1*d) = _
+    ring
+  change decode (sample r) = ⟨a,b,c,d⟩
+  simp only [decode,s0,s1,s2,s3]
   congr 1 <;> ring
 
 private theorem perturbed (r : Row ℝ) (e : Fin 4 → ℝ) (i : Fin 4) :
@@ -88,8 +101,11 @@ private theorem extrema (j : Fin 4) : invisible (extremal j) ∧ coord (extremal
         ![-(4*x^3-3*x),-(y*(2*x^2-1)),4*x^3-3*x,y*(2*x^2-1)] j := by
       fin_cases j <;> simp [extremal,response] <;> ring
     rw [hw]
-    fin_cases j <;> simp only [Matrix.cons_val_zero,Matrix.cons_val_one,Matrix.cons_val_two,
-      Matrix.cons_val_three,abs_neg] <;> assumption
+    fin_cases j
+    · exact (abs_neg _).le.trans hp
+    · exact (abs_neg _).le.trans hq
+    · exact hp
+    · exact hq
   · fin_cases j <;> rfl
 
 /-- Each gain is attained by a signal bounded on the entire unit square.

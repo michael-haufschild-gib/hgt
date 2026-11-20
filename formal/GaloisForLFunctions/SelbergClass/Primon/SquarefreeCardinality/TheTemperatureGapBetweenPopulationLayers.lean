@@ -55,7 +55,7 @@ theorem leastPopulationEnergy_double {P : Finset ℕ} (hp : ∀ p ∈ P, Nat.Pri
   obtain ⟨hs,hcard⟩ := mem_powersetCard.mp hS
   obtain ⟨p,hpS⟩ := card_pos.mp (show 0 < S.card by omega)
   have hE := leastPopulationEnergy_le (P:=P) (j:=j) (S:=S.erase p)
-    (mem_powersetCard.mpr ⟨(erase_subset ..).trans hs,by rw [card_erase_of_mem hpS,hcard,Nat.add_sub_cancel]⟩)
+    (mem_powersetCard.mpr ⟨(erase_subset ..).trans hs,by rw [card_erase_of_mem hpS,hcard] <;> omega⟩)
   calc _ ≤ p*finitePrimeSubsetProduct (S.erase p) := Nat.mul_le_mul (hp p (hs hpS)).two_le hE
        _ = _ := (mul_prod_erase S id hpS).trans he
 
@@ -66,7 +66,10 @@ theorem squarefreeCardinality_coeff (P : Finset ℕ) (β : ℝ) (j : ℕ) :
   rw [squarefreeCardinalityPolynomial,finsetSum_coeff,powersetCard_eq_filter,sum_filter]
   apply sum_congr rfl
   intro S _
-  by_cases h : S.card=j <;> simp [coeff_C_mul,coeff_X_pow,h,eq_comm]
+  by_cases h : S.card=j
+  · subst j
+    simp [coeff_C_mul,coeff_X_pow]
+  · simp [coeff_C_mul,coeff_X_pow,h,Ne.symm h]
 
 /-- One geometric series controls all excited states, uniformly in the size
 of the prime support and the population. -/

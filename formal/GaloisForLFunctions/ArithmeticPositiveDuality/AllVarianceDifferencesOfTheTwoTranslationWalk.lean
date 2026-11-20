@@ -63,8 +63,9 @@ theorem contrast_forces_binomial_growth (w : ℝ) (hw : w ∈ Set.Icc 0 1) (a b 
       walk w a b n (fun y => f y^2) x := by
   rw [binomial_walk_second_moment _ _ _ hf]
   have hvar := mul_nonneg hw.1 (sub_nonneg.mpr hw.2)
-  exact single_le_sum (fun j _ => mul_nonneg (Nat.cast_nonneg _)
-    (mul_nonneg (pow_nonneg hvar _) (sq_nonneg _))) (mem_range.mpr (Nat.lt_succ_of_le hk))
+  exact single_le_sum (fun j _ => mul_nonneg (Nat.cast_nonneg (n.choose j))
+    (mul_nonneg (pow_nonneg hvar j) (sq_nonneg ((contrast a b)^[j] f x))))
+    (mem_range.mpr (Nat.lt_succ_of_le hk))
 
 /-- The time profile of the second moment determines every squared contrast
 at the starting point by finite differences, including its zeros. -/
@@ -101,7 +102,7 @@ theorem contrast_zero_of_cofinal_moment {ι : Type*} {l : Filter ι} [NeBot l]
     filter_upwards [hN.eventually_ge_atTop k] with i hi
     have h := div_le_div_of_nonneg_right
       (contrast_forces_binomial_growth w ⟨hw.1.le,hw.2.le⟩ a b hf k (N i) hi x)
-      (pow_nonneg (Nat.cast_nonneg _) k)
+      (pow_nonneg (Nat.cast_nonneg (N i)) k)
     simpa only [Function.comp_apply,div_mul_eq_mul_div,A] using h
   by_contra hn
   have hc := pow_pos (mul_pos hw.1 (sub_pos.mpr hw.2)) k

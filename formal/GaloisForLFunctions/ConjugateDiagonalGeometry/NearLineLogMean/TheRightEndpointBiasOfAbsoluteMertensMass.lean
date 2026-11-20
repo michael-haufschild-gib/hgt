@@ -1,5 +1,4 @@
-import GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.TheOrderOfAbsoluteMertensMass
-import GaloisForLFunctions.RHTower.MobiusMertensMeanSquareExponentLaw
+import GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.ThePowerSpectrumOfReciprocalMertensMass
 
 /-!
 # The right-endpoint quadrature error of absolute Mertens mass
@@ -41,33 +40,13 @@ theorem cumulative_mertens_quadrature (N : ℕ) :
 
 private theorem collision_numerator_upper {a : ℝ} (ha : zetaZeroAbscissa<a) :
     ∃ B : ℝ, 0≤B ∧ ∀ N, (∑ j ∈ range N, mertensAbelJump j^2) ≤ B*((N:ℝ)+1)^(2*a-1) := by
-  have hv : 0<2*a-1 := by linarith only [half_le_zetaZeroAbscissa,ha]
-  have ha0 : 0≤a := by linarith only [hv]
-  obtain ⟨A,hA,hM⟩ := mobiusMertens_subpower_zetaZeroAbscissa (a-zetaZeroAbscissa) (sub_pos.mpr ha)
-  rw [show zetaZeroAbscissa+(a-zetaZeroAbscissa)=a by ring] at hM
-  let C := A*2^a
-  have hC : 0≤C := mul_nonneg hA (by positivity)
-  refine ⟨C^2*(1+1/(2*a-1)),by positivity,fun N => ?_⟩
-  have row (j : ℕ) : mertensAbelJump j^2 ≤ C^2*((j:ℝ)+1)^((2*a-1)-1) := by
-    let x := (j:ℝ)+1
-    have h1 : 1≤x := le_add_of_nonneg_left (Nat.cast_nonneg j)
-    have xp := zero_lt_one.trans_le h1
-    have h := hM (j+1)
-    rw [Nat.cast_succ] at h
-    have hp := Real.rpow_le_rpow (by positivity : 0≤x+1) (by linarith only [h1] : x+1≤2*x) ha0
-    rw [Real.mul_rpow (by norm_num : (0:ℝ)≤2) xp.le] at hp
-    have hj : mertensAbelJump j ≤ C*x^(a-1) := by
-      change ‖mobiusMertensPartialSum (j+1)‖/x ≤ C*x^(a-1)
-      apply (div_le_iff₀ xp).mpr
-      rw [Real.rpow_sub xp,Real.rpow_one]
-      exact (h.trans (mul_le_mul_of_nonneg_left hp hA)).trans_eq (by dsimp only [C]; field_simp)
-    have hs := pow_le_pow_left₀ (jump_nonneg j) hj 2
-    rw [mul_pow,←Real.rpow_two (x^(a-1)),←Real.rpow_mul xp.le] at hs
-    rwa [show (a-1)*2=(2*a-1)-1 by ring] at hs
-  have hs := sum_le_sum (s:=range N) (fun j _ => row j)
-  rw [←mul_sum] at hs
-  exact hs.trans ((mul_le_mul_of_nonneg_left (ArithmeticGaugeTheory.sum_rpow_sub_one_le hv N)
-    (sq_nonneg C)).trans_eq (by ring))
+  have hv : max 0 (1 + 2*(zetaZeroAbscissa-1)) < 2*a-1 :=
+    max_lt (by linarith only [half_le_zetaZeroAbscissa, ha]) (by linarith only [ha])
+  obtain ⟨B, hB, h⟩ := reciprocal_mertens_moment_upper (q := 2) (by norm_num) hv
+  refine ⟨B, hB, fun N => ?_⟩
+  have hN := h N
+  rw [reciprocalMertensMoment, _root_.RHTower.sum_Icc_eq_sum_range_shift] at hN
+  simpa only [Real.rpow_two, reciprocalMertensWeight, Nat.cast_succ, mertensAbelJump] using hN
 
 /-- Exact attainable lower scale, and an upper bound within any positive
 power of it, for the collision probability of normalized Mertens mass. -/
@@ -94,7 +73,7 @@ theorem mertens_collision_exponent {ε : ℝ} (hε : 0<ε) :
   have he : 2*a-1-b*2 ≤ -1+ε := by
     dsimp only [a,b,d]; linarith only [min_le_left (ε/4) (zetaZeroAbscissa/2)]
   constructor
-  · have hc := sq_sum_mul_le_sum_sq_mul_mul_sum (range N) mertensAbelJump (fun _ => 1) (fun _ _ => zero_le_one)
+  · have hc := sq_sum_mul_le_sum_sq_mul_mul_sum (range N) mertensAbelJump (fun _ => 1) (fun _ => zero_le_one)
     simp only [mul_one,sum_const,card_range,nsmul_eq_mul] at hc
     exact (div_le_div_iff₀ (Nat.cast_pos.mpr hn) (sq_pos_of_pos hm)).mpr (by
       change 1*(∑ j ∈ range N,mertensAbelJump j)^2 ≤ _
@@ -109,7 +88,7 @@ theorem mertens_collision_exponent {ε : ℝ} (hε : 0<ε) :
 collision probability of the entire section. -/
 theorem mertens_mass_share_le_card_collision (N : ℕ) (S : Finset ℕ) (hS : S ⊆ range N) :
     ((∑ j ∈ S,mertensAbelJump j)/mertensAbelMass N)^2 ≤ S.card*mertensAbelCollision N := by
-  have hc := sq_sum_mul_le_sum_sq_mul_mul_sum S mertensAbelJump (fun _ => 1) (fun _ _ => zero_le_one)
+  have hc := sq_sum_mul_le_sum_sq_mul_mul_sum S mertensAbelJump (fun _ => 1) (fun _ => zero_le_one)
   simp only [mul_one,sum_const,nsmul_eq_mul] at hc
   have hs := sum_le_sum_of_subset_of_nonneg (f:=fun j => mertensAbelJump j^2) hS (fun j _ _ => sq_nonneg _)
   rw [div_pow,mertensAbelCollision,←mul_div_assoc]
@@ -128,14 +107,14 @@ theorem polynomially_sparse_mertens_share_vanishes (S : ℕ → Finset ℕ) {g :
     tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
   have hl := (tendsto_rpow_neg_atTop he).comp hX
   have hz : Tendsto (fun N : ℕ => B*((N:ℝ)+1)^(-e)) atTop (𝓝 0) := by
-    simpa only [mul_zero] using hl.const_mul B
+    simpa only [Function.comp_apply, mul_zero] using hl.const_mul B
   have hsq : Tendsto (fun N => ((∑ j ∈ S N,mertensAbelJump j)/mertensAbelMass N)^2) atTop (𝓝 0) := by
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds hz
     · exact .of_forall fun _ => sq_nonneg _
     · filter_upwards [hs,hh] with N nh ch
       let X := (N:ℝ)+1
       have xp : 0<X := by dsimp only [X]; positivity
-      have hc : 0≤mertensAbelCollision N := div_nonneg (sum_nonneg fun j _ => sq_nonneg _) (sq_nonneg _)
+      have hc : 0 ≤ mertensAbelCollision N := div_nonneg (sum_nonneg fun j _ => sq_nonneg _) (sq_nonneg _)
       apply (mertens_mass_share_le_card_collision N (S N) (hS N)).trans
       calc _ ≤ X^g * (B*X^(-1+e)) := mul_le_mul nh ch.2 hc (Real.rpow_nonneg xp.le _)
            _ = B*X^(-e) := by rw [mul_left_comm,←Real.rpow_add xp]; congr 2; dsimp only [e]; ring

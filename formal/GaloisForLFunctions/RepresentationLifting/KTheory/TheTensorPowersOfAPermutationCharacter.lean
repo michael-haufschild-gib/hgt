@@ -47,7 +47,7 @@ theorem permutationFixedCount_le_card_sub_two (g : G) (hg : ¬∀ x : X, g • x
     · obtain rfl := mem_singleton.mp hh
       simp [F,hy]
   have hh := card_le_card hin
-  rw [card_pair hx.symm,card_sdiff_of_subset (filter_subset _ _),card_univ] at hh
+  rw [card_pair (Ne.symm hx),card_sdiff_of_subset (filter_subset _ _),card_univ] at hh
   change F.card≤_
   omega
 

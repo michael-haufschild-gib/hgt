@@ -61,17 +61,17 @@ private theorem power_not_dvd_prev (k : ℕ) : ¬(p:ℤ)^(k+1)∣(p:ℤ)^k := by
   omega
 
 private theorem at_zero (h : ℕ) : shear p h 0=p^(h/2) := by
-  rw [arithmetic_shear_root_count,if_pos (dvd_zero _)]
+  rw [shear,arithmetic_shear_root_count,if_pos (dvd_zero _)]
 
 private theorem at_last_power (h k : ℕ) (hk : (h+1)/2=k+1) :
     shear p h ((p:ℤ)^k)=2*p^k := by
-  rw [arithmetic_shear_root_count,hk,if_neg (power_not_dvd_prev p k)]
+  rw [shear,arithmetic_shear_root_count,hk,if_neg (power_not_dvd_prev p k)]
   simp only [Int.cast_pow,Int.cast_natCast,PadicInt.valuation_pow,PadicInt.valuation_p,mul_one]
 
 private theorem integer_period_of_dvd {α : Type*} {f : ℤ → α} {l t : ℤ}
     (hf : Periodic f l) (hd : l∣t) : Periodic f t := by
   obtain ⟨v,rfl⟩ := hd
-  simpa only [mul_comm v l] using hf.int_mul v
+  simpa only [Int.cast_id,mul_comm v l] using hf.int_mul v
 
 private theorem prime_power_period_iff {α : Type*} (f : ℤ → α) (k : ℕ)
     (full : Periodic f ((p:ℤ)^(k+1))) (jump : f ((p:ℤ)^k)≠f 0) (t : ℤ) :
@@ -99,7 +99,9 @@ all shear counts modulo p^(2k+1). -/
 theorem odd_precision_shear_periods (k : ℕ) (t : ℤ) :
     Periodic (_root_.RHTower.quadraticCongruenceRootCountTotal (p^(2*k+1))) t ↔ (p:ℤ)^(k+1)∣t := by
   have hk : (2*k+1+1)/2=k+1 := by omega
-  apply prime_power_period_iff p _ k (hk ▸ half_period p _) _ t
+  have hfull := half_period p (2*k+1)
+  rw [hk] at hfull
+  apply prime_power_period_iff p (shear p (2*k+1)) k hfull _ t
   rw [at_last_power p _ _ hk,at_zero,show (2*k+1)/2=k by omega]
   have hp := pow_pos (Fact.out : p.Prime).pos k
   omega
@@ -108,7 +110,9 @@ theorem odd_precision_shear_periods (k : ℕ) (t : ℤ) :
 theorem even_precision_odd_prime_shear_periods (hp : p≠2) (k : ℕ) (t : ℤ) :
     Periodic (_root_.RHTower.quadraticCongruenceRootCountTotal (p^(2*(k+1)))) t ↔ (p:ℤ)^(k+1)∣t := by
   have hk : (2*(k+1)+1)/2=k+1 := by omega
-  apply prime_power_period_iff p _ k (hk ▸ half_period p _) _ t
+  have hfull := half_period p (2*(k+1))
+  rw [hk] at hfull
+  apply prime_power_period_iff p (shear p (2*(k+1))) k hfull _ t
   rw [at_last_power p _ _ hk,at_zero,show 2*(k+1)/2=k+1 by omega,pow_succ,mul_comm (p^k)]
   exact fun he => hp ((Nat.eq_of_mul_eq_mul_right (pow_pos (Fact.out : p.Prime).pos k) he).symm)
 

@@ -4,25 +4,18 @@ The remaining drafts below need a successful Lean check and an import in [Restri
 
 | Paper argument | Pending modules, with prerequisites first |
 | --- | --- |
-| Restricted exchanges and fixed vertices | [BoundedStretchForPerfectRestrictedMatchings](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/BoundedStretchForPerfectRestrictedMatchings.lean) · [LogarithmicMomentsOfTheFixedDivisors](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/LogarithmicMomentsOfTheFixedDivisors.lean) |
-| Displacement and prescribed smaller primes | [LongExchangesOnEverySmoothOctave](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/LongExchangesOnEverySmoothOctave.lean) · [TheParityCostOfRestrictingTheSmallerPrime](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/TheParityCostOfRestrictingTheSmallerPrime.lean) · [PrimeDonorsWithAPrescribedSmallerPrime](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/PrimeDonorsWithAPrescribedSmallerPrime.lean) · [DonorsFromDisjointPairsOfPrimes](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/DonorsFromDisjointPairsOfPrimes.lean) |
+| Restricted exchanges and fixed vertices | [BoundedStretchForPerfectRestrictedMatchings](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/BoundedStretchForPerfectRestrictedMatchings.lean) |
 
 The moving-cutoff and least-prime modules compile and are wired. The head-variation bound follows from the existing square-crossing estimate at the squares of the two heights. [PrimeArrivalsAtAMovingLogSquareWall](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/PrimeArrivalsAtAMovingLogSquareWall.lean) · [TheExactFlowAcrossLeastPrimeBranches](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/TheExactFlowAcrossLeastPrimeBranches.lean)
 
 **Scope.** The two donor modules cover the paper arguments for donor supply and reversible switches. Attainment by the full prescribed-smaller-prime matching remains conjectural. The whole-window semiprime flux, the proposed natural-wall variation constant, and the square-root bound on the recombined interior also remain open.
 
-**Other modules in the shared directory.** [OneCofactorAtEveryDyadicQuotient](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/OneCofactorAtEveryDyadicQuotient.lean) · [TheStripSeenThroughAnArbitrarilyShortCofactorRange](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/TheStripSeenThroughAnArbitrarilyShortCofactorRange.lean). The strip module is wired. The dyadic quotient module still needs its umbrella import. Successful source checks for both remain unconfirmed.
+The two cofactor-range modules compile and are wired. [OneCofactorAtEveryDyadicQuotient](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/OneCofactorAtEveryDyadicQuotient.lean) · [TheStripSeenThroughAnArbitrarilyShortCofactorRange](../../../formal/GaloisForLFunctions/RestrictedFactorizationCalculus/TheStripSeenThroughAnArbitrarilyShortCofactorRange.lean).
 
 
 ## Cubic fields, scattering and quantum heating
 
-112 of 117 started modules compiled and are wired. These 5 drafts still need a confirmed successful Lean check and an import in the indicated umbrella.
-
-| Area | Pending modules | Umbrella |
-| --- | --- | --- |
-| Cubic mode recovery | [CoupledCubicVelocityInverse](../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Modes/CoupledCubicVelocityInverse.lean) · [CubicProbeMinimax](../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Modes/CubicProbeMinimax.lean) | [ExclusionOfTheCriticalState](../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState.lean) |
-| Dispersive scattering | [CubicGraphScattering](../../../formal/GaloisForLFunctions/HTGeometry/DispersivePDE/CubicGraphScattering.lean) · [CubicScatteringSpectrum](../../../formal/GaloisForLFunctions/HTGeometry/DispersivePDE/CubicScatteringSpectrum.lean) | [Applications](../../../formal/GaloisForLFunctions/HTGeometry/DispersivePDE/Applications.lean) |
-| Velocity recovery | [SparseVelocityInverse](../../../formal/GaloisForLFunctions/HTGeometry/KleinGordon/SparseVelocityInverse.lean) | [HTGeometry](../../../formal/GaloisForLFunctions/HTGeometry.lean) |
+All 117 started modules compile and are wired. These include the four-shot cubic minimax bounds, sparse velocity recovery, and the real factorization of the scattering polynomial.
 
 All six quantum-heating modules compile and are wired, through the sharp one- and two-channel sampling thresholds in [SchwartzHeatingSampling](../../../formal/GaloisForLFunctions/HTGeometry/QuantumChannels/SchwartzHeatingSampling.lean).
 

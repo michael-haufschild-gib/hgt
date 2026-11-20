@@ -23,7 +23,7 @@ def multiplicityRootPart (p n : ℕ) := Nat.findGreatest (fun a => a^p ∣ n) n
 def multiplicityPowerFreePart (p n : ℕ) := n/(multiplicityRootPart p n)^p
 
 theorem multiplicity_power_free_decomposition {p n : ℕ} (hp : 0<p) (hn : 0<n) :
-    0<multiplicityRootPart p n ∧ 0<multiplicityPowerFreePart p n ∧
+    0 < multiplicityRootPart p n ∧ 0 < multiplicityPowerFreePart p n ∧
       (multiplicityRootPart p n)^p*multiplicityPowerFreePart p n=n ∧
       ∀ d, d^p ∣ multiplicityPowerFreePart p n → d<2 := by
   let A := multiplicityRootPart p n

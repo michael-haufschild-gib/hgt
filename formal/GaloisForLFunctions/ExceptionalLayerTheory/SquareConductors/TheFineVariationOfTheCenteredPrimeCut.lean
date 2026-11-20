@@ -75,7 +75,7 @@ theorem centered_fixed_cut_step {N k : ℕ} (hN : 0<N)
   unfold innerCutIncrement
   by_cases prime : n.Prime
   · simp only [prime,if_true,sum_singleton] at split ⊢
-    rw [←split,mul_add,price]
+    rw [←split,mul_add ((N:ℂ)^2) (f n),price]
     push_cast
     push_cast at drift
     linear_combination drift
@@ -86,8 +86,8 @@ theorem centered_fixed_cut_step {N k : ℕ} (hN : 0<N)
     linear_combination drift
 
 private theorem increment_abs_le {n K : ℕ} (hp : 0<n) (hl : n≤K) :
-    |innerCutIncrement n|≤innerPrimeSlope*K*(1+Real.log K) := by
-  have hλ := innerPrimeSlope_pos
+    |innerCutIncrement n| ≤ innerPrimeSlope*K*(1+Real.log K) := by
+  have hslope := innerPrimeSlope_pos
   have hg : |1-(if n.Prime then Real.log n else 0)|≤1+Real.log K := by
     by_cases h : n.Prime
     · simp only [h,if_true]
@@ -97,9 +97,9 @@ private theorem increment_abs_le {n K : ℕ} (hp : 0<n) (hl : n≤K) :
     · simp only [h,if_false,sub_zero,abs_one]
       linarith only [Real.log_natCast_nonneg K]
   unfold innerCutIncrement
-  rw [abs_mul,abs_of_nonneg (mul_nonneg hλ.le (Nat.cast_nonneg n))]
-  exact mul_le_mul (mul_le_mul_of_nonneg_left (Nat.cast_le.mpr hl) hλ.le) hg (abs_nonneg _)
-    (mul_nonneg hλ.le (Nat.cast_nonneg K))
+  rw [abs_mul,abs_of_nonneg (mul_nonneg hslope.le (Nat.cast_nonneg n))]
+  exact mul_le_mul (mul_le_mul_of_nonneg_left (Nat.cast_le.mpr hl) hslope.le) hg (abs_nonneg _)
+    (mul_nonneg hslope.le (Nat.cast_nonneg K))
 
 /-- The finite quadratic variation of the original complex cutoff
 curve is controlled at every cutoff below the first knot. -/
@@ -135,7 +135,7 @@ private theorem absolute_even_steps (t : ℕ) (ht : 1≤t) :
         abs_of_nonneg (mul_nonneg innerPrimeSlope_pos.le (Nat.cast_nonneg _))]
       push_cast
       ring
-    rw [show 2*(t+1)=2*t+1+1 by omega,sum_range_succ,sum_range_succ,last]
+    rw [show 2*(t+1)=2*t+1+1 by omega,Finset.sum_range_succ,Finset.sum_range_succ,last]
     push_cast
     linarith only [ih,abs_nonneg (innerCutIncrement (2*t+1))]
 
@@ -269,7 +269,7 @@ theorem variation_at_the_seventeen_ninths_cut {ε : ℝ} (hε : 0<ε) :
   have pow₃ : Y^3=x^(17/3:ℝ) := by
     rw [←Real.rpow_natCast Y 3,←Real.rpow_mul xp.le,show (17/9:ℝ)*(3:ℕ)=17/3 by norm_num]
   change innerPrimeSlope/16*x^(34/9:ℝ)≤∑ k ∈ range K,jump k ∧
-    (∑ k ∈ range K,(jump k)^2)≤innerPrimeSlope^2*D^2*x^(17/3+ε)
+    (∑ k ∈ range K,(jump k)^2) ≤ innerPrimeSlope^2*D^2*x^(17/3+ε)
   constructor
   · have hard := centered_fixed_cut_absolute_variation pc (show 1≤t by omega)
       ((Nat.cast_le.mpr twice).trans knot)
@@ -279,7 +279,7 @@ theorem variation_at_the_seventeen_ninths_cut {ε : ℝ} (hε : 0<ε) :
       linarith only [pow_le_pow_left₀ pY.le big 2,tlr]
     rw [←pow₂]
     exact (by linarith only [mul_le_mul_of_nonneg_left shape innerPrimeSlope_pos.le] :
-      innerPrimeSlope/16*Y^2≤innerPrimeSlope*((t:ℝ)*(t+1)-2)).trans (hard.trans extend)
+      innerPrimeSlope/16*Y^2 ≤ innerPrimeSlope*((t:ℝ)*(t+1)-2)).trans (hard.trans extend)
   · have raw := centered_fixed_cut_quadratic_variation pc knot
     have Kp : 0<(K:ℝ) := Nat.cast_pos.mpr (by omega)
     have logK := Real.log_le_log Kp Klo

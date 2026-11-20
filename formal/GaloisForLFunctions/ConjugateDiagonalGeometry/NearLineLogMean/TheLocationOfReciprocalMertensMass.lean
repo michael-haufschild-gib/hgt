@@ -62,6 +62,7 @@ theorem relative_mertens_mass_exponent (K : ℕ → ℕ) (hK : Tendsto K atTop a
     (lt_add_of_pos_left 1 (Nat.cast_pos.mpr hK1))
   have hnlog : 0<Real.log ((N:ℝ)+1) := Real.log_pos
     (lt_add_of_pos_left 1 (Nat.cast_pos.mpr hN1))
+  simp only [Function.comp_apply] at hM ⊢
   rw [Real.log_div hM.ne' hN.ne']
   change _ / Real.log ((K N:ℝ)+1) * (_ / Real.log ((N:ℝ)+1)) - _ / Real.log ((N:ℝ)+1) = _
   field_simp [hklog.ne',hnlog.ne']

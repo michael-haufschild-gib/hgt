@@ -125,7 +125,7 @@ theorem first_omitted_power_coefficient {ι : Type*} {l : Filter ι} {J : ℕ} (
   rw [mul_one,zero_add] at ht
   apply ht.congr
   intro i
-  simp only [sub_div,mul_div_assoc,sub_add_cancel]
+  simp only [r,sub_div,mul_div_assoc,sub_add_cancel]
 
 /-- At center one the normalized maximum tends to J+1, so the first
 omitted exponent and its coefficient are both attained. -/

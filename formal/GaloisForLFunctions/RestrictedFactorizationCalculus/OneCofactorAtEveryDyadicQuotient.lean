@@ -41,11 +41,11 @@ theorem dyadic_unit_readings_telescope (a : ArithmeticFunction ℝ) (y X : ℕ) 
     ∑ j ∈ range (Nat.log 2 X+1), dyadicUnitReading a y X j = headAt a y X := by
   let F := fun j : ℕ => headAt a y (X/2^j)
   have term (j : ℕ) : dyadicUnitReading a y X j = F j-F (j+1) := by
-    simp only [dyadicUnitReading,unit_difference,F,pow_succ,Nat.div_div_eq_div_mul]
+    simpa only [dyadicUnitReading,F,pow_succ,Nat.div_div_eq_div_mul] using unit_difference a y (X/2^j)
   have hsum (J : ℕ) : ∑ j ∈ range J, (F j-F (j+1)) = F 0-F J := by
     induction J with
     | zero => simp
-    | succ J ih => rw [sum_range_succ,ih]; ring
+    | succ J ih => rw [Finset.sum_range_succ,ih]; ring
   simp only [term,hsum,F,pow_zero,Nat.div_one,
     Nat.div_eq_of_lt (Nat.lt_pow_succ_log_self (by decide : 1 < 2) X)]
   simp [quotientReading]
@@ -102,7 +102,10 @@ theorem dyadic_single_cofactors_detect_the_strip {b : ℝ} (hb : 1/2 ≤ b)
       (mul_nonneg k0 (Real.rpow_nonneg (Nat.cast_nonneg X) _))
     simp only [terminalPrimeHead,Real.rpow_one,Nat.floor_natCast]
     apply large.trans (cost.trans_eq ?_)
-    rw [show b+ε=η+(b+η) by dsimp only [η]; ring,Real.rpow_add (Nat.cast_pos.mpr xp)]
+    have splitPower : (X:ℝ)^(b+ε) = (X:ℝ)^η * (X:ℝ)^(b+η) := by
+      rw [←Real.rpow_add (Nat.cast_pos.mpr xp),show b+ε=η+(b+η) by dsimp only [η]; ring]
+    rw [splitPower]
+    dsimp only [K]
     ring
   · intro strip ε ep
     obtain ⟨C,c0,hC⟩ := shrinking_the_cofactor_range_for_prime_readings (α := 1)

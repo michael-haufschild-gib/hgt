@@ -61,7 +61,7 @@ theorem count_midpoint_measurements (b : ℕ) {m : ℕ} (hm : 0 < m) :
   have h (n : ℕ) : ∑ j ∈ range n, (j+1)=(n+1).choose 2 := by
     induction n with
     | zero => simp
-    | succ n ih => rw [sum_range_succ,ih,Nat.choose_succ_succ (n+1) 1,Nat.choose_one_right,Nat.add_comm]
+    | succ n ih => rw [Finset.sum_range_succ,ih,Nat.choose_succ_succ (n+1) 1,Nat.choose_one_right,Nat.add_comm]
   rw [h,Nat.choose_succ_succ (b+1) 1,Nat.choose_one_right]
 
 private def rowWeight (r j : ℕ) : ℝ := (1/2:ℝ)^r*(r.choose j:ℝ)
@@ -107,7 +107,7 @@ private theorem sum_normalized_central (b : ℕ) :
   induction b with
   | zero => simp
   | succ b ih =>
-    rw [sum_range_succ,ih,Nat.cast_succ,central_step]
+    rw [Finset.sum_range_succ,ih,Nat.cast_succ,central_step]
     ring
 
 /-- Boundary and forcing coordinates contribute, respectively, a single

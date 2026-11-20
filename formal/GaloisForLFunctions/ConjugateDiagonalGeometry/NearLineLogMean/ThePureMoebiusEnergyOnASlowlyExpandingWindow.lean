@@ -51,11 +51,13 @@ theorem local_error_paid_by_pure_window (τ : ℝ) :
     change ‖riemannZeta (linePoint u)*moebiusPoly N (linePoint u)-1‖^2 ≤ _
     dsimp only [f]
     linarith only [hh,sq_nonneg (B*‖moebiusPoly N (linePoint u)‖-1)]
-  have h := setIntegral_mono_on (he.integrableOn_Icc)
+  have h := setIntegral_mono_on (μ := volume) (s := Icc (τ-1) (τ+1))
+    (g := fun u => 2*B^2*f u+2) he.integrableOn_Icc
     (((hf.const_mul (2*B^2)).add continuous_const).integrableOn_Icc) measurableSet_Icc hpt
   rw [integral_add (hf.integrableOn_Icc.const_mul _) (integrableOn_const measure_Icc_lt_top.ne),
     integral_const_mul,setIntegral_const,Real.volume_real_Icc_of_le (by linarith : τ-1≤τ+1),smul_eq_mul] at h
-  have hsub' := setIntegral_mono_set hf.integrableOn_Icc (Eventually.of_forall (fun _ => sq_nonneg _))
+  have hsub' := setIntegral_mono_set (μ := volume) (f := f) (s := Icc (τ-1) (τ+1))
+    (t := Icc (-H) H) hf.integrableOn_Icc (Eventually.of_forall (fun _ => sq_nonneg _))
     (Eventually.of_forall (fun _ hu => hsub hu))
   change _ ≤ symmetricMoebiusEnergy N H at hsub'
   linarith only [h,mul_le_mul_of_nonneg_left hsub' (by positivity : 0≤2*B^2)]
@@ -90,12 +92,14 @@ private theorem window_abel_upper {e : ℝ} (he : 0<e) :
   have hA : 0≤A := Real.rpow_nonneg (Nat.cast_nonneg _) _
   let D := (2*A*(K*(1+H)))^2
   have hD : 0≤D := sq_nonneg _
-  have hm := setIntegral_mono_on ((continuous_reading N).integrableOn_Icc)
-    (integrableOn_const (c:=D) measure_Icc_lt_top.ne) measurableSet_Icc (fun t ht => by
-      have ht' : |t|≤H := abs_le.mpr ht
-      apply pow_le_pow_left₀ (norm_nonneg _) ((h N t hN).trans ?_)
-      exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (add_le_add (le_refl (1:ℝ)) ht') hK)
-        (mul_nonneg (by norm_num) hA))
+  have hpt (t : ℝ) (ht : t ∈ Icc (-H) H) : ‖moebiusPoly N (linePoint t)‖^2 ≤ D := by
+    have ht' : |t| ≤ H := abs_le.mpr ht
+    apply pow_le_pow_left₀ (norm_nonneg _) ((h N t hN).trans ?_)
+    exact mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (add_le_add le_rfl ht') hK)
+      (mul_nonneg (by norm_num : (0:ℝ) ≤ 2) hA)
+  have hm := setIntegral_mono_on (μ := volume) (s := Icc (-H) H)
+    (g := fun _ => D) (continuous_reading N).integrableOn_Icc
+    (integrableOn_const (C := D) measure_Icc_lt_top.ne) measurableSet_Icc hpt
   rw [setIntegral_const,Real.volume_real_Icc_of_le (by linarith : -H≤H),smul_eq_mul] at hm
   change symmetricMoebiusEnergy N H ≤ (H- -H)*D at hm
   have hsq : (N:ℝ)^(2*(zetaZeroWidth+e))=A^2 := by
@@ -122,6 +126,7 @@ theorem expanding_window_upper {H : ℕ → ℝ} (hH : Tendsto H atTop atTop)
     rw [←Real.rpow_natCast,←Real.rpow_mul hx.le]
     congr 1; push_cast; ring
   rw [hpow] at hh
+  change C ≤ (N : ℝ)^(e/2) at hcn
   have hs' := mul_le_mul hcn hh (pow_nonneg (by linarith only [hpos]) 3) (Real.rpow_nonneg hx.le _)
   have hp := mul_le_mul_of_nonneg_right hs' (Real.rpow_nonneg hx.le (2*(zetaZeroWidth+e/4)))
   rw [←Real.rpow_add hx,←Real.rpow_add hx] at hp
@@ -165,7 +170,7 @@ theorem pure_moebius_single_window_log_order {H : ℕ → ℝ} (hH : Tendsto H a
       exact hb0.trans_le (div_nonneg (Real.log_nonneg (le_max_left ..))
         (Real.log_nonneg (Nat.one_le_cast.mpr (by omega : 1≤N))))
     · have hw : b/2<zetaZeroWidth := by linarith only [hb]
-      filter_upwards [expanding_window_lower hH (half_nonneg (le_of_not_gt hb0)) hw,
+      filter_upwards [expanding_window_lower hH (div_nonneg (le_of_not_gt hb0) (by norm_num : (0:ℝ) ≤ 2)) hw,
         eventually_ge_atTop 2] with N h hN
       have hx : 1<(N:ℝ) := by exact_mod_cast (by omega : 1<N)
       have ht := Real.log_lt_log (Real.rpow_pos_of_pos (zero_lt_one.trans hx) _) (h.trans_le (le_max_right 1 _))
@@ -186,11 +191,12 @@ theorem pure_moebius_single_window_log_order {H : ℕ → ℝ} (hH : Tendsto H a
 theorem log_height_subpower {a : ℝ} (ha : 0<a) :
     ∀ᶠ N : ℕ in atTop, 1+Real.log (N:ℝ)≤(N:ℝ)^a := by
   have h₁ := (tendsto_natCast_atTop_atTop (R:=ℝ)).eventually
-    ((Real.isLittleO_log_rpow_atTop ha).bound (by norm_num : 0<(1/2:ℝ)))
+    ((_root_.isLittleO_log_rpow_atTop ha).bound (by norm_num : 0<(1/2:ℝ)))
   have h₂ := ((tendsto_rpow_atTop ha).comp (tendsto_natCast_atTop_atTop (R:=ℝ))).eventually_ge_atTop 2
   filter_upwards [h₁,h₂,eventually_ge_atTop 1] with N h hbig hN
   have hx : 1≤(N:ℝ) := Nat.one_le_cast.mpr hN
   change ‖Real.log (N:ℝ)‖ ≤ (1/2:ℝ)*‖(N:ℝ)^a‖ at h
+  change 2 ≤ (N : ℝ)^a at hbig
   rw [Real.norm_of_nonneg (Real.log_nonneg hx),Real.norm_of_nonneg (Real.rpow_nonneg (Nat.cast_nonneg N) a)] at h
   linarith only [h,hbig]
 
@@ -202,7 +208,7 @@ theorem rh_iff_log_height_moebius_energy :
       symmetricMoebiusEnergy N (Real.log (N:ℝ)) ≤ (N:ℝ)^(2*e) := by
   rw [_root_.RHTower.riemannHypothesis_iff_xiZeroHalfPlaneBound_zero,
     ←zetaZeroWidth_le_iff_xiZeroHalfPlaneBound le_rfl]
-  simpa only [zero_add] using (single_subpower_window_iff
+  simpa only [zero_add, Function.comp_apply] using (single_subpower_window_iff
     (Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop (R:=ℝ)))
     (fun _ h => log_height_subpower h) (β:=0) le_rfl).symm
 

@@ -20,8 +20,11 @@ private theorem smooth_step (f : ℕ → ℝ) (K i : ℕ) :
   unfold smooth
   rw [←sub_div]
   have he := sum_range_succ' (fun j => f (i+j)) K
-  rw [sum_range_succ] at he
-  simp only [Nat.add_zero,show ∀ j : ℕ, i+(j+1)=i+1+j by intro j; omega] at he
+  rw [Finset.sum_range_succ] at he
+  have hshift : (∑ j ∈ range K, f (i+(j+1))) = ∑ j ∈ range K, f (i+1+j) :=
+    sum_congr rfl fun j _ => congrArg f (by omega)
+  rw [hshift] at he
+  change (∑ j ∈ range K, f (i+j)) + f (i+K) = (∑ j ∈ range K, f (i+1+j)) + f i at he
   congr 1
   linarith only [he]
 
@@ -53,7 +56,7 @@ theorem floor_window_modulus {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer
   let b := smooth f K
   let C := 16*(K:ℝ)*w
   have hk : 0 < (K:ℝ) := Nat.cast_pos.mpr hK
-  have hw : 0 ≤ w := by exact_mod_cast (hP.nonneg 0).trans (hP.stepWeight_le_peak _)
+  have hw : 0 ≤ w := by dsimp only [w]; exact_mod_cast (hP.nonneg 0).trans (hP.stepWeight_le_peak _)
   have hD₀ : 0 ≤ D := by simpa using hD 0 0 (Nat.zero_le _)
   have hM₀ := (abs_nonneg _).trans (hM 0)
   have hC : 0 ≤ C := mul_nonneg (by positivity) hw
@@ -62,7 +65,7 @@ theorem floor_window_modulus {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer
     simpa only [g,w,C,sum_sub_distrib,sum_const,card_range,nsmul_eq_mul,←mul_div_assoc] using h
   have hg (i : ℕ) : |g i| ≤ w/2 := by
     have h₀ : 0 ≤ (stepWeight c (n+i):ℝ) := by exact_mod_cast hP.nonneg _
-    have h₁ : (stepWeight c (n+i):ℝ) ≤ w := by exact_mod_cast hP.stepWeight_le_peak _
+    have h₁ : (stepWeight c (n+i):ℝ) ≤ w := by dsimp only [w]; exact_mod_cast hP.stepWeight_le_peak (n+i)
     exact abs_le.mpr ⟨by dsimp only [g]; linarith only [h₀],by dsimp only [g]; linarith only [h₁]⟩
   have hb (i : ℕ) : |b i| ≤ M := by
     change |(∑ j ∈ range K, f (i+j))/(K:ℝ)| ≤ M
@@ -93,7 +96,7 @@ theorem floor_window_modulus {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer
   change |∑ i ∈ range L, g i*f i| ≤ _
   rw [he]
   have h := (abs_add_le ..).trans (add_le_add hsm hrest)
-  have hc : C*(D/K)=16*w*D := by dsimp only [C]; field_simp; ring
+  have hc : C*(D/K)=16*w*D := by dsimp only [C]; field_simp
   rw [hc] at h
   exact h.trans_eq (by dsimp only [C,w]; ring)
 
@@ -110,6 +113,7 @@ theorem floor_window_holder {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer 
     intro i j hj
     have h := hF (((i+j:ℕ):ℝ)/L) ((i:ℝ)/L)
     rw [Nat.cast_add,add_div,add_sub_cancel_left,abs_of_nonneg (div_nonneg (Nat.cast_nonneg _) hl.le)] at h
+    rw [Nat.cast_add,add_div]
     exact h.trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (by positivity)
       (div_le_div_of_nonneg_right (Nat.cast_le.mpr hj) hl.le) hs) hA₀))
   rw [abs_div,abs_of_pos hl,div_le_iff₀ hl]

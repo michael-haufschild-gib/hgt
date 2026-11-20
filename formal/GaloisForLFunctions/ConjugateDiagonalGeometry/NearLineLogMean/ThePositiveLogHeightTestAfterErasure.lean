@@ -19,7 +19,8 @@ private theorem retained_le_symmetric (N : ℕ) {H : ℝ} (hH : 1≤H) (D : Set 
     retainedMoebiusEnergy N H D ≤ symmetricMoebiusEnergy N H := by
   have hc : Continuous fun t => ‖moebiusPoly N (linePoint t)‖^2 :=
     ((differentiable_moebiusPoly N).continuous.comp (by unfold linePoint; fun_prop)).norm.pow 2
-  apply setIntegral_mono_set hc.integrableOn_Icc (.of_forall fun _ => sq_nonneg _)
+  apply setIntegral_mono_set (μ := volume) (s := Icc 1 H \ D) (t := Icc (-H) H)
+    hc.integrableOn_Icc (.of_forall fun _ => sq_nonneg _)
   exact Eventually.of_forall fun u hu =>
     ⟨(by linarith only [hH] : -H≤1).trans hu.1.1,hu.1.2⟩
 
@@ -62,7 +63,7 @@ theorem rh_iff_erased_positive_log_height :
         retainedMoebiusEnergy N (Real.log (N:ℝ)) D ≤ (N:ℝ)^(2*e) := by
   rw [_root_.RHTower.riemannHypothesis_iff_xiZeroHalfPlaneBound_zero,
     ←zetaZeroWidth_le_iff_xiZeroHalfPlaneBound le_rfl]
-  simpa only [zero_add] using (width_iff_sparse_retained_moebius_energy
+  simpa only [zero_add, Function.comp_apply] using (width_iff_sparse_retained_moebius_energy
     (Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop (R:=ℝ)))
     (fun _ ha => log_height_subpower ha) (β:=0) le_rfl)
 

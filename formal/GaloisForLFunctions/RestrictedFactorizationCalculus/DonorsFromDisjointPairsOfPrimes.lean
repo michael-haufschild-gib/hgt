@@ -84,7 +84,7 @@ theorem exists_donorRise_of_positive_total (H : ℕ → ℤ) (N : ℕ)
   have hfirst (j : ℕ) (hj : j ≤ i) : H j<M := by
     refine lt_of_le_of_ne (hmax j (hj.trans hi.le)) (fun hh => ?_)
     exact Nat.find_min peak (show j<k by omega) ⟨hj.trans hi.le,hh⟩
-  have hii : H (i+1)=M := by rw [←he]; exact hk
+  have hii : H (i+1)=M := (congrArg H he).symm.trans hk
   have his := hstep i hi
   have hdiff : H (i+1)=H i+1 := by have := hfirst i le_rfl; omega
   refine ⟨i,hi,fun j hj => ?_,hdiff,fun j _ hj => (hmax j hj).trans_eq hii.symm⟩

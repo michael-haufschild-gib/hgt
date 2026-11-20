@@ -219,8 +219,9 @@ theorem summable_shortfall_power (s : ℕ) {p : ℝ} (hp : 1<p)
   apply Summable.of_nonneg_of_le (fun i => Real.rpow_nonneg (shortfall_nonneg _ i) p) _ hbound
   intro i
   have hh := Real.rpow_le_rpow (shortfall_nonneg _ i) (h i) hp₀.le
-  simpa only [Real.mul_rpow hB (Real.rpow_nonneg (by positivity) _),
-    ← Real.rpow_mul (by positivity : 0 ≤ (i:ℝ)+1)] using hh
+  have base : 0 ≤ (i:ℝ)+1 := by positivity
+  rw [Real.mul_rpow hB (Real.rpow_nonneg base (e-1)),←Real.rpow_mul base] at hh
+  exact hh
 
 /-- Every finite p-moment forces the corresponding strip width. This
 also forces divergence at all indices below the critical index. -/
@@ -238,8 +239,10 @@ theorem grid_exponent_le_of_summable_shortfall (s : ℕ) {p : ℝ} (hp : 1 ≤ p
   have hsum := hs.sum_le_tsum (range k) (fun i _ => Real.rpow_nonneg (shortfall_nonneg r i) p)
   have hpow := Real.rpow_le_rpow (sum_nonneg (fun i _ => Real.rpow_nonneg (shortfall_nonneg r i) p))
     hsum (inv_nonneg.mpr (zero_le_one.trans hp))
-  exact hk.not_ge (hh.trans (by rw [mul_comm M]; exact mul_le_mul_of_nonneg_left hpow
-    (Real.rpow_nonneg (Nat.cast_nonneg _) _)))
+  apply hk.not_ge
+  refine hh.trans ?_
+  rw [mul_comm M]
+  exact mul_le_mul_of_nonneg_left hpow (Real.rpow_nonneg (Nat.cast_nonneg _) _)
 
 /-- The exact strip parameter is the transition in the unweighted
 power sums of the single-site losses. -/
@@ -411,10 +414,6 @@ theorem trimmed_shortfall_exponent (s : ℕ) {α : ℝ} (hα : 0≤α) (hα₁ :
       rw [← sum_shortfall]
       exact sum_le_sum_of_subset_of_nonneg sdiff_subset (fun i _ _ => shortfall_nonneg _ i)
     exact lt_of_le_of_lt (div_le_div_of_nonneg_right (Real.log_le_log (by linarith only [hnon K])
-      (add_le_add_left hs 1)) (Real.log_natCast_nonneg K)) hK
-
-
-
-
+      (add_le_add le_rfl hs)) (Real.log_natCast_nonneg K)) hK
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

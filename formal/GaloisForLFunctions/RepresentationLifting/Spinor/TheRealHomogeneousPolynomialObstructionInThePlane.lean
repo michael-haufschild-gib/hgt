@@ -96,11 +96,12 @@ private theorem symbol_at_unit_displacement (p a c : ℂ) (n b : ℕ) (hb : 0<b)
   have hB' : (secondPolarDerivative n F).derivative.eval (c+1)=
       ((n:ℂ)-1)*(a*b)-(c+1)*(a*b*((b:ℂ)-1)) := by
     simp only [secondPolarDerivative,derivative_sub,derivative_C_mul,derivative_mul,derivative_X,
-      one_mul,eval_sub,eval_add,eval_mul,eval_X,eval_C,hA,hA']
+      derivative_C,zero_mul,zero_add,one_mul,eval_sub,eval_add,eval_mul,eval_X,eval_C,hA,hA']
     ring
+  have hB : (secondPolarDerivative n F).eval (c+1) = (n:ℂ)*a-(c+1)*(a*b) := by
+    simp only [secondPolarDerivative,eval_sub,eval_mul,eval_C,eval_X,hF,hA]
   change (planarPolarSymbol p n F).eval (c+1)=_
-  simp only [planarPolarSymbol,eval_add,eval_sub,eval_mul,eval_pow,eval_C,eval_X,hB',secondPolarDerivative,
-    hF,hA,hA']
+  simp only [planarPolarSymbol,eval_add,eval_sub,eval_mul,eval_pow,eval_C,eval_X,hB',hB,hA,hA']
 
 /-- Lewis's rigidity in the homogeneous polar chart. At degree two and
 higher the only conjugate-symmetric solution is identically zero. -/
@@ -126,8 +127,7 @@ theorem homogeneous_planar_symbol_rigidity {p : ℝ} (hp : 1<p) (hp₂ : p≠2)
     have hp₂' : (p:ℂ)≠2 := by exact_mod_cast hp₂
     obtain ⟨c,hc⟩ := polar_chart_is_a_translated_power (by omega : 0<n) hp₂' hb hs
     change F=C a*(X-C c)^b at hc
-    have htest := congrArg (fun Q : ℂ[X] => Q.eval (c+1)) hs
-    change (planarPolarSymbol (p:ℂ) n F).eval (c+1)=0 at htest
+    have htest : (planarPolarSymbol (p:ℂ) n F).eval (c+1)=0 := by rw [hs,eval_zero]
     rw [hc,symbol_at_unit_displacement _ _ _ _ _ hb] at htest
     have hb' : (b:ℂ)≠0 := Nat.cast_ne_zero.mpr hb.ne'
     have hp' : (p:ℂ)-1≠0 := by exact_mod_cast (sub_pos.mpr hp).ne'
@@ -158,7 +158,7 @@ theorem homogeneous_planar_symbol_rigidity {p : ℝ} (hp : 1<p) (hp₂ : p≠2)
         by_contra hi
         apply href
         rw [hmono,coeff_C_mul_X_pow]
-        simp only [if_neg hi,if_neg hi.symm]
+        simp only [if_neg hi,if_neg (Ne.symm hi)]
       have heq : (n:ℂ)=2*(b:ℂ) := by exact_mod_cast (show n=2*b by omega)
       have hpos : 0<2*(p-1)*(b:ℝ)-(p-2) := by
         have h := mul_nonneg (sub_pos.mpr hp).le (sub_nonneg.mpr (Nat.one_le_cast.mpr hb))

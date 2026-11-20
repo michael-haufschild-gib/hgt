@@ -23,7 +23,8 @@ noncomputable section
 /-- Laplace node of the unit-time release at index i. -/
 def radiationNode (i : ℕ) : ℝ := Real.exp (-(i : ℝ))
 theorem radiationNode_pos (i : ℕ) : 0 < radiationNode i := Real.exp_pos _
-theorem radiationNode_le_one (i : ℕ) : radiationNode i ≤ 1 := Real.exp_le_one_iff.mpr (by positivity)
+theorem radiationNode_le_one (i : ℕ) : radiationNode i ≤ 1 :=
+  Real.exp_le_one_iff.mpr (neg_nonpos.mpr (Nat.cast_nonneg i))
 
 /-- Unit-grid Laplace samples of the nonnegative energy released in each unit interval. -/
 def radiationSample (h : CompactPulse) (k : ℕ) : ℝ :=
@@ -70,11 +71,13 @@ theorem radiationSample_signed_difference (h : CompactPulse) (k n : ℕ) :
 private theorem coeff_nonneg {b : ℝ} (hb : 0 ≤ b) (n : ℕ) : 0 ≤ Ring.multichoose b n := by
   have h := Ring.factorial_nsmul_multichoose_eq_ascPochhammer b n
   rw [nsmul_eq_mul, ascPochhammer_smeval_eq_eval] at h
-  have hp : 0 ≤ (ascPochhammer ℝ n).eval b := by
-    induction n with
+  have hp (k : ℕ) : 0 ≤ (ascPochhammer ℝ k).eval b := by
+    induction k with
     | zero => simp
-    | succ n ih => rw [ascPochhammer_succ_eval]; positivity
-  exact nonneg_of_mul_nonneg_right (hp.trans_eq h.symm) (by positivity : (0 : ℝ) < n.factorial)
+    | succ k ih =>
+      rw [ascPochhammer_succ_eval]
+      exact mul_nonneg ih (add_nonneg hb (Nat.cast_nonneg k))
+  exact nonneg_of_mul_nonneg_right ((hp n).trans_eq h.symm) (by positivity : (0 : ℝ) < n.factorial)
 
 private theorem binomial_kernel (b : ℝ) (i : ℕ) :
     HasSum (fun n : ℕ => Ring.multichoose b n * (1-radiationNode i)^n) (Real.exp (b*i)) := by
@@ -82,8 +85,9 @@ private theorem binomial_kernel (b : ℝ) (i : ℕ) :
     rw [Real.norm_eq_abs, abs_of_nonneg (sub_nonneg.mpr (radiationNode_le_one i))]
     linarith only [radiationNode_pos i]
   have hm : 1-radiationNode i ∈ Metric.eball (0 : ℝ) 1 := by
-    rw [mem_eball_zero_iff]
-    exact_mod_cast hn
+    rw [mem_eball_zero_iff, Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_one,
+      ENNReal.ofReal_lt_ofReal_iff one_pos, ← Real.norm_eq_abs]
+    exact hn
   have H := (Real.one_div_one_sub_rpow_hasFPowerSeriesOnBall_zero b).hasSum hm
   simpa only [FormalMultilinearSeries.ofScalars_apply_eq, smul_eq_mul, ← Ring.multichoose_eq,
     zero_add, sub_sub_cancel, radiationNode, ← Real.exp_mul, one_div, ← Real.exp_neg, neg_mul, neg_neg,
@@ -123,7 +127,7 @@ theorem radiationNewton_hasSum_iff (h : CompactPulse) {b : ℝ} (hb : 0 ≤ b) (
   have hnew (n : ℕ) : radiationNewtonTerm h b n = ∑' i : ℕ, A n i := newton_term h b n
   rw [funext hnew]
   have exchange (hf : Summable (Function.uncurry A)) :
-      (∑' i : ℕ, Real.exp (b*i)*stepDecrement h i 1) = ∑' n i : ℕ, A n i := by
+      (∑' i : ℕ, Real.exp (b*i)*stepDecrement h i 1) = ∑' n : ℕ, ∑' i : ℕ, A n i := by
     simpa only [fun i => (hcol i).tsum_eq] using hf.tsum_comm
   constructor
   · intro H

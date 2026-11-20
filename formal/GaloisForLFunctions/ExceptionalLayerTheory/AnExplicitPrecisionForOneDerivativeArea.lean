@@ -27,7 +27,7 @@ theorem quantitative_radical_sum {W p : ℕ} (hp : 0<p) (m : Fin W → ℕ) (c :
   classical
   let x (i : Fin W) : ℂ := (radicalWeight p (m i):ℂ)
   have hx (i : Fin W) : (x i)^p=(m i:ℂ) := by
-    exact_mod_cast Real.rpow_inv_natCast_pow (Nat.cast_nonneg (m i) : (0:ℝ)≤m i) hp.ne'
+    exact_mod_cast Real.rpow_inv_natCast_pow (Nat.cast_nonneg (m i) : (0:ℝ) ≤ m i) hp.ne'
   let K := IntermediateField.adjoin ℚ (Set.range x)
   letI : Finite (Set.range x) := Set.finite_range x
   letI : FiniteDimensional ℚ K := IntermediateField.finiteDimensional_adjoin (by
@@ -100,7 +100,7 @@ theorem prime_area_gap {W p : ℕ} (hp : p.Prime) (hW : W<2^p)
         · linarith only [hb,(Nat.cast_nonneg (a i).val : (0:ℝ)≤(a i).val)]
         · linarith only [ha,(Nat.cast_nonneg (b i).val : (0:ℝ)≤(b i).val)]
       have h₂ : (m i:ℝ)^((p:ℝ)⁻¹)≤2 := by
-        have h := Real.rpow_le_rpow (Nat.cast_nonneg (m i) : (0:ℝ)≤m i)
+        have h := Real.rpow_le_rpow (Nat.cast_nonneg (m i) : (0:ℝ) ≤ m i)
           (by exact_mod_cast ((Nat.succ_le_of_lt i.isLt).trans hW.le) : (m i:ℝ)≤((2^p:ℕ):ℝ))
           (inv_nonneg.mpr (Nat.cast_nonneg p))
         simpa only [Nat.cast_pow,Nat.cast_ofNat,Real.pow_rpow_inv_natCast (by norm_num : (0:ℝ)≤2)

@@ -60,7 +60,7 @@ private theorem node_chain_iff {z : ℂ} (hz : z ≠ 0) (w : List ℕ) {p : ℂ[
     · obtain ⟨hf,he⟩ := filter_multiplicity s hz hp hr
       rw [and_iff_right hr,ih hf,he]
       omega
-    · simp [hr,rootMultiplicity_eq_zero hr]
+    · simp only [hr, false_and, rootMultiplicity_eq_zero hr, Nat.not_lt_zero]
 
 private theorem node_ne_zero {K : ℕ} {z : ℂ} (h : z ∈ shortPeriodNodes K) : z ≠ 0 := by
   obtain ⟨k,hk,hz⟩ := mem_biUnion.mp h
@@ -89,7 +89,7 @@ theorem balancesEulerMoments_iff_power (K : ℕ) (w : List ℕ) (p : ℂ[X]) :
   · intro h z hz
     apply (node_chain_iff (node_ne_zero hz) w hp).mpr
     apply (le_rootMultiplicity_iff hp).mpr
-    exact (dvd_prod_of_mem _ hz).trans h
+    exact (dvd_prod_of_mem (fun a : ℂ => ((X : ℂ[X])-C a)^(w.length+1)) hz).trans h
 
 /-- Word length alone determines which samplers balance all prefix moments. -/
 theorem moment_orders_are_interchangeable (K : ℕ) (v w : List ℕ) (h : v.length=w.length) (p : ℂ[X]) :

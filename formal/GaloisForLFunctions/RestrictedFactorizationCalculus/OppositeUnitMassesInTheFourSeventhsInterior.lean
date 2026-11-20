@@ -24,15 +24,14 @@ def orientedInteriorMass (σ : ℝ) (y X T : ℕ) :=
 private theorem twice_oriented (y X T : ℕ) :
     2*orientedInteriorMass 1 y X T=absoluteRoughInterior y X T+S y X T ∧
     2*orientedInteriorMass (-1) y X T=absoluteRoughInterior y X T-S y X T := by
-  rw [rough_interior_as_kernel]
-  unfold orientedInteriorMass absoluteRoughInterior
-  simp only [mul_sum,←sum_add_distrib,←sum_sub_distrib,one_mul,neg_one_mul]
-  constructor <;> apply sum_congr rfl <;> intro q _ <;>
-    by_cases h : 0 ≤ atom y X T q
-  · rw [max_eq_left h,abs_of_nonneg h];ring
-  · rw [max_eq_right (le_of_not_ge h),abs_of_neg (lt_of_not_ge h)];ring
-  · rw [max_eq_right (neg_nonpos.mpr h),abs_of_nonneg h];ring
-  · rw [max_eq_left (neg_nonneg.mpr (le_of_not_ge h)),abs_of_neg (lt_of_not_ge h)];ring
+  have plus (x : ℝ) : 2*max x 0=|x|+x := by
+    rcases le_total 0 x with h|h
+    · rw [max_eq_left h,abs_of_nonneg h]; ring
+    · rw [max_eq_right h,abs_of_nonpos h]; ring
+  have minus (x : ℝ) : 2*max (-x) 0=|x|-x := by rw [plus,abs_neg,sub_eq_add_neg]
+  simp only [S,rough_interior_as_kernel,orientedInteriorMass,absoluteRoughInterior,
+    mul_sum,←sum_add_distrib,←sum_sub_distrib,one_mul,neg_one_mul]
+  exact ⟨sum_congr rfl (fun q _ => plus (atom y X T q)),sum_congr rfl (fun q _ => minus (atom y X T q))⟩
 
 private theorem saving_small (p : ℕ) {δ : ℝ} (hδ : 0 < δ) :
     ∀ᶠ X : ℕ in atTop, ∀ T : ℕ, |S (logSquareCutoff X) X T| * Real.log X^p ≤ δ*(X:ℝ) := by
@@ -74,7 +73,7 @@ private theorem endpoint (y X T : ℕ) (t : ℝ) :
   let e := fun q => if 0 ≤ atom y X T q then t else -t
   refine ⟨e,fun q => ?_,?_⟩
   · dsimp only [e];split <;> simp
-  · rw [rough_interior_as_kernel,rough_interior_as_kernel,absoluteRoughInterior,mul_sum,←sum_add_distrib]
+  · simp only [S,rough_interior_as_kernel,absoluteRoughInterior,mul_sum,←sum_add_distrib]
     apply sum_congr rfl
     intro q _
     change (1+e q)*roughMangoldtWeight y q*interiorKernel y X T q=
@@ -116,7 +115,10 @@ theorem opposite_readings_under_inverse_log_errors (p : ℕ) {α : ℝ} (ha : 0 
     by simpa only [abs_neg,abs_of_pos (one_div_pos.mpr hL)] using hf q⟩,?_,?_⟩
   · rw [hp,div_le_iff₀ hL,add_mul,one_div_mul_eq_div,div_mul_cancel₀ _ hL.ne']
     linarith only [low,hi]
-  · rw [hn,←neg_div,le_div_iff₀ hL,add_mul,neg_mul,one_div_mul_eq_div,neg_mul,div_mul_cancel₀ _ hL.ne']
+  · change roughInteriorReading (relativeInteriorWeight y f) y X T ≤ -((X:ℝ)/L)
+    rw [hn,show -((X:ℝ)/L)=(-(X:ℝ))/L by ring,le_div_iff₀ hL,add_mul]
+    rw [show (-(1/L)*absoluteRoughInterior y X T)*L = -absoluteRoughInterior y X T by
+      field_simp [hL.ne']]
     linarith only [high,hi]
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

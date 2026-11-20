@@ -22,9 +22,10 @@ def squarefreeCardinalityPolynomial (P : Finset ℕ) (β : ℝ) : ℝ[X] :=
 theorem squarefreeCardinality_aeval (P : Finset ℕ) (β : ℝ) (z : ℂ) :
     aeval z (squarefreeCardinalityPolynomial P β) = finitePrimeCardinalityPartition P β z := by
   simp only [squarefreeCardinalityPolynomial,finitePrimeCardinalityPartition,map_sum,map_mul,map_pow,
-    aeval_C,aeval_X,Complex.algebraMap_apply,Complex.ofReal_exp,Complex.ofReal_mul,
-    Complex.ofReal_neg,Complex.ofReal_natCast]
-  exact sum_congr rfl fun _ _ => mul_comm _ _
+    aeval_C,aeval_X]
+  refine sum_congr rfl fun S _ => ?_
+  change (Real.exp (-(finitePrimeSubsetProduct S : ℝ)*β) : ℂ)*z^S.card = _
+  rw [Complex.ofReal_exp, Complex.ofReal_mul, Complex.ofReal_neg, Complex.ofReal_natCast, mul_comm]
 
 /-- The nth physical-scale derivative at zero inverse temperature. -/
 theorem temperature_derivative_factors (P : Finset ℕ) (n : ℕ) (z : ℂ) :
@@ -45,7 +46,11 @@ theorem temperature_derivative_reads_support (P : Finset ℕ) {q n : ℕ} (hq : 
   have h (p : ℕ) : 1 + -((q:ℂ)^n)⁻¹*(p:ℂ)^n = 0 ↔ p=q := by
     rw [neg_mul,←sub_eq_add_neg,sub_eq_zero,eq_comm,←div_eq_inv_mul,div_eq_one_iff_eq hq']
     exact_mod_cast ((Nat.pow_left_injective hn.ne').eq_iff : p^n = q^n ↔ p = q)
-  simp [h]
+  constructor
+  · rintro ⟨p,hp,he⟩
+    exact (h p).mp he ▸ hp
+  · intro hqP
+    exact ⟨q,hqP,(h q).mpr rfl⟩
 
 /-- Equality of one derivative as a function of activity determines the entire
 finite prime ensemble, with no bound on the largest prime. -/

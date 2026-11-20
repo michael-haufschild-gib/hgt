@@ -1,4 +1,7 @@
 import GaloisForLFunctions.RestrictedFactorizationCalculus.SmoothCofactorsInEveryQuotientInterval
+import GaloisForLFunctions.RestrictedFactorizationCalculus.SmoothPopulationAtLargePolynomialDegrees
+import GaloisForLFunctions.RHTower.Sieve.MultiplicativeLogRecursion
+import GaloisForLFunctions.RHTower.ZetaZeroDensityExponentLemmas
 
 /-!
 # The factorial upper bound for the smooth population
@@ -171,5 +174,62 @@ theorem smooth_density_beyond_each_power (j : ℕ) {ε : ℝ} (ep : 0 < ε) :
       have u : 1 ≤ ((j+1:ℕ):ℝ) := Nat.one_le_cast.mpr (Nat.succ_pos j)
       have v := le_mul_of_one_le_right (mul_nonneg (Nat.cast_nonneg (α:=ℝ) Z) ep.le) u
       linarith only [v])
+
+/-- At the power wall the logarithm of the smooth proportion has leading term
+`-j log j`, with the prime cutoff tending to infinity at each fixed degree. -/
+theorem logarithmic_smooth_density_at_power_walls {ε : ℝ} (ep : 0 < ε) :
+    ∀ᶠ j : ℕ in atTop, ∀ᶠ y : ℕ in atTop,
+      let d := ((smoothUpTo (Nat.primesLE y) (y^j)).card:ℝ) / ((y^j:ℕ):ℝ);
+      -(1+ε)*((j:ℝ)*Real.log j) ≤ Real.log d ∧ Real.log d ≤ -(1-ε)*((j:ℝ)*Real.log j) := by
+  let C : ℝ := 48*Real.exp 16
+  have cp : 0 < C := by dsimp only [C]; positivity
+  have two : Real.log 2 ≤ 1 :=
+    (Real.log_le_sub_one_of_pos (by norm_num : (0:ℝ) < 2)).trans_eq (by norm_num)
+  have grows := tendsto_natCast_atTop_atTop (R:=ℝ)
+  filter_upwards [grows.eventually (_root_.RHTower.eventually_const_mul_polylog_le_rpow 1 ep C),
+    (Real.tendsto_log_atTop.comp grows).eventually_ge_atTop (2/ε),eventually_ge_atTop (8:ℕ)]
+    with j cap scale hj
+  have j1 : (1:ℝ) ≤ j := Nat.one_le_cast.mpr (by omega)
+  have jp := zero_lt_one.trans_le j1
+  have lp : 0 < Real.log ((j:ℝ)+1) := Real.log_pos (by linarith only [jp])
+  have logstep := Real.log_le_log (by positivity : (0:ℝ) < j+1)
+    (show (j:ℝ)+1 ≤ 2*j by linarith only [j1])
+  rw [Real.log_mul (by norm_num) jp.ne'] at logstep
+  change C*(1+Real.log j)^1 ≤ (j:ℝ)^ε at cap
+  rw [pow_one] at cap
+  have correction := Real.log_le_log (mul_pos cp lp)
+    ((mul_le_mul_of_nonneg_left (show Real.log ((j:ℝ)+1) ≤ 1+Real.log j by
+      linarith only [logstep,two]) cp.le).trans cap)
+  rw [Real.log_rpow jp] at correction
+  have factor : 48*Real.exp 16*(j:ℝ)*Real.log ((j:ℝ)+1)=(j:ℝ)*(C*Real.log ((j:ℝ)+1)) := by
+    dsimp only [C]; ring
+  have pp : 0 < polynomialSmoothPrice j := by
+    rw [polynomialSmoothPrice,factor]
+    exact pow_pos (mul_pos jp (mul_pos cp lp)) _
+  have lowerCost : Real.log (polynomialSmoothPrice j) ≤ (1+ε)*((j:ℝ)*Real.log j) := by
+    rw [polynomialSmoothPrice,factor,Real.log_pow,Real.log_mul jp.ne' (mul_pos cp lp).ne']
+    linarith only [mul_le_mul_of_nonneg_left correction jp.le]
+  have fac := RHTower.Mertens.sum_log_ge j
+  rw [_root_.RHTower.Sieve.sum_Icc_log_eq_log_factorial] at fac
+  change 2/ε ≤ Real.log j at scale
+  have margin := mul_le_mul_of_nonneg_left ((div_le_iff₀ ep).mp scale) jp.le
+  have fp : 0 < (j.factorial:ℝ) := Nat.cast_pos.mpr (Nat.factorial_pos _)
+  filter_upwards [smooth_population_at_large_degrees hj,
+    smooth_density_beyond_each_power j (one_div_pos.mpr fp),eventually_ge_atTop (1:ℕ)]
+    with y below above hy
+  let Z : ℝ := ((y^j:ℕ):ℝ)
+  let S : ℝ := (smooth y (y^j)).card
+  have zp : 0 < Z := Nat.cast_pos.mpr (pow_pos hy _)
+  have lo : Z ≤ polynomialSmoothPrice j*S := below _ le_rfl
+  have sp : 0 < S := pos_of_mul_pos_right (zp.trans_le lo) pp.le
+  have hi : S ≤ (2/(j.factorial:ℝ))*Z := by
+    simpa only [show 1/(j.factorial:ℝ)+1/(j.factorial:ℝ)=2/(j.factorial:ℝ) by ring] using above _ le_rfl
+  have lowLog := Real.log_le_log zp lo
+  have highLog := Real.log_le_log sp hi
+  rw [Real.log_mul pp.ne' sp.ne'] at lowLog
+  rw [Real.log_mul (div_pos (by norm_num) fp).ne' zp.ne',Real.log_div (by norm_num) fp.ne'] at highLog
+  change _ ≤ Real.log (S/Z) ∧ Real.log (S/Z) ≤ _
+  rw [Real.log_div sp.ne' zp.ne']
+  constructor <;> linarith only [lowLog,highLog,lowerCost,fac,margin,two,j1]
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

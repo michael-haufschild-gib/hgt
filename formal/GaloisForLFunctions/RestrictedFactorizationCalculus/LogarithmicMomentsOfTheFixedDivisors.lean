@@ -78,7 +78,9 @@ theorem logExchangeMoment_ne_zero {J k : ℕ} (h : bandReady J k) : logExchangeM
   have pf : 0 < ∏ w ∈ W,(f w:ℝ) := prod_pos fun w hm => Nat.cast_pos.mpr (hp w hm)
   have pw : 0 < ∏ w ∈ W,(w:ℝ) := prod_pos fun w hm => Nat.cast_pos.mpr (hw w hm)
   have hprod := Real.log_injOn_pos pf pw he
-  have heq : (∏ w ∈ W, f w) = ∏ w ∈ W, w := by exact_mod_cast hprod
+  have heq : (∏ w ∈ W, f w) = ∏ w ∈ W, w := by
+    apply Nat.cast_injective (R := ℝ)
+    simpa only [Nat.cast_prod] using hprod
   rw [heq,pairs] at primes
   have hcard : 0 < W.card := card_pos.mpr (products_nonempty h)
   omega
@@ -313,7 +315,10 @@ theorem fixed_prefix_as_coprime_quotients (J X : ℕ) (I : Finset ℕ)
     congr 1
     rw [coprimeMoebiusSum,sum_filter]
     exact sum_congr rfl fun a _ => by
-      rw [coprimeMoebiusIndicator,(Nat.coprime_comm : Q.Coprime a ↔ a.Coprime Q)]
+      by_cases ha : a.Coprime (exchangePeriod I)
+      · simp only [Q,coprimeMoebiusIndicator,if_pos ha,if_pos ha.symm]
+      · have hb : ¬(exchangePeriod I).Coprime a := fun h => ha h.symm
+        simp only [Q,coprimeMoebiusIndicator,if_neg ha,if_neg hb]
 
 /-- Every requested order of exact fixed-divisor cancellation is realized
 by disjoint prime exchanges at any prescribed resolution. The same ranges

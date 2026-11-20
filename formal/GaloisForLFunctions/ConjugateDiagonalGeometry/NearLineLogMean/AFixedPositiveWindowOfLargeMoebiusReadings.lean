@@ -133,7 +133,9 @@ theorem positive_moebius_energy_after_erasure {b d : ℝ} (hb : 0≤b)
   have hfinG : volume G≠⊤ := ne_top_of_le_ne_top measure_Icc_lt_top.ne (measure_mono (fun _ h => h.1.1))
   have hB : volume.real B≤1 := by simpa only [one_mul] using hbad
   have hW : volume.real W=d+2 := by
-    rw [W,Real.volume_real_Icc_of_le (by linarith only [hL])]; ring
+    change volume.real (Icc γ (γ + (d + 2))) = d + 2
+    rw [Real.volume_real_Icc_of_le (by linarith only [hL] : γ ≤ γ + (d + 2))]
+    ring
   have hG : 1≤volume.real G := by
     have h₁ := le_measureReal_sdiff (μ:=volume) (s₁:=W) hfinD
     have h₂ := le_measureReal_sdiff (μ:=volume) (s₁:=W \ D) hfinB

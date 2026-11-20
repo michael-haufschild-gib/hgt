@@ -55,7 +55,7 @@ theorem centered_cut_variation_decomposition {N K : ℕ} (hn : 0<N)
     induction k with
     | zero => simp
     | succ k ih =>
-      rw [sum_range_succ,ih]
+      rw [Finset.sum_range_succ,ih]
       push_cast
       ring
   rw [mesh]
@@ -82,7 +82,7 @@ private theorem clipped_log_error {K : ℕ} (lg : 1≤Real.log K) :
     have raw := Real.log_le_sub_one_of_pos (div_pos kp pos)
     rw [Real.log_div kp.ne' pos.ne'] at raw
     have endpt := mul_le_mul_of_nonneg_right raw pos.le
-    rw [sub_mul,div_mul_cancel₀ _ pos.ne',one_mul] at endpt
+    simp only [sub_mul,div_mul_cancel₀ _ pos.ne',one_mul] at endpt
     have upper := mul_le_mul_of_nonneg_left (min_le_left (1:ℝ) (Real.log p)) (Real.log_natCast_nonneg K)
     rw [mul_one] at upper
     constructor <;> linarith only [mul_le_mul_of_nonneg_left low pos.le,

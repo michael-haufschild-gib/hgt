@@ -21,6 +21,11 @@ private def shift (i : Fin 5) : ℕ := ![1,1,2,1,3] i
 private def primeAt (i : Fin 5) (n : ℕ) : Prop := (slope i*n + shift i).Prime
 private abbrev Pair := {p : Fin 5 × Fin 5 // p.1 < p.2}
 private def bothPrime (q : Pair) (n : ℕ) : Prop := primeAt q.val.1 n ∧ primeAt q.val.2 n
+private def primeIndicator (k : ℕ) : ℕ := if k.Prime then 1 else 0
+
+private theorem sum_indicator_nat {ι : Type*} (s : Finset ι) (p : ι → Prop) [DecidablePred p] :
+    (∑ i ∈ s, if p i then 1 else 0 : ℕ) = (s.filter p).card := by
+  simpa only [Nat.cast_id] using (Finset.sum_boole (R := ℕ) p s)
 
 private theorem prime_count_add_site (k : ℕ) :
     Nat.primeCounting (k+1) = Nat.primeCounting k + (if (k+1).Prime then 1 else 0) := by
@@ -49,10 +54,15 @@ private theorem endpoint_clock_step {n : ℕ} (hn : 0 < n) :
   have z₃ := not_prime_multiple (p:=3) (k:=3*n+3) (by decide) (by omega) (by omega)
   have z₄ := not_prime_multiple (p:=2) (k:=4*n+2) (by decide) (by omega) (by omega)
   have z₄' := not_prime_multiple (p:=2) (k:=4*n+4) (by decide) (by omega) (by omega)
-  rw [←sum_boole]
-  simp only [Fin.sum_univ_succ,Finset.univ_unique,Finset.sum_singleton,primeAt,slope,shift,
-    Matrix.cons_val_zero,Matrix.cons_val_succ,Fin.succ_zero_eq_one]
-  simp only [primeMidpointClock,Nat.mul_add,Nat.mul_one]
+  have ind (i : Fin 5) : (if primeAt i n then 1 else 0 : ℕ) = primeIndicator (slope i*n+shift i) := by
+    by_cases hp : (slope i*n+shift i).Prime <;> simp [primeIndicator,primeAt,hp]
+  rw [←sum_indicator_nat univ (fun i => primeAt i n)]
+  simp only [ind,Fin.sum_univ_succ,Finset.univ_unique,Finset.sum_singleton,
+    Finset.univ_eq_empty,Finset.sum_empty,add_zero]
+  change primeMidpointClock (n+1) - primeMidpointClock n =
+    primeIndicator (2*n+1) + (primeIndicator (3*n+1) + (primeIndicator (3*n+2) +
+    (primeIndicator (4*n+1) + primeIndicator (4*n+3))))
+  simp only [primeMidpointClock,primeIndicator,Nat.mul_add,Nat.mul_one]
   simp only [Nat.add_assoc,Nat.reduceAdd,if_neg z₂,if_neg z₃,if_neg z₄,if_neg z₄'] at *
   omega
 
@@ -63,7 +73,7 @@ def distinctPrimeMidpointCount (N : ℕ) := ((range (N+1)).image primeMidpointPr
 private theorem distinct_as_occupied (N : ℕ) :
     distinctPrimeMidpointCount N =
       1 + ∑ n ∈ range N, (if primeMidpointClock n < primeMidpointClock (n+1) then 1 else 0) := by
-  rw [distinctPrimeMidpointCount,number_of_distinct_midpoint_readings,sum_boole]
+  rw [distinctPrimeMidpointCount,number_of_distinct_midpoint_readings,sum_indicator_nat]
 
 open Classical in
 private def doubleHits (N : ℕ) := (Icc 1 N).filter (fun n => ∃ q : Pair, bothPrime q n)
@@ -81,7 +91,7 @@ private theorem missed_crossings (N : ℕ) :
     induction N with
     | zero => simp [c,primeMidpointClock]
     | succ N ih =>
-      rw [sum_range_succ,ih]
+      rw [Finset.sum_range_succ,ih]
       have hm : c N ≤ c (N+1) := monotone_prime_midpoint_clock (Nat.le_succ N)
       omega
   have hupper := sum_le_sum (s:=range N) fun n _ => hv n
@@ -89,7 +99,7 @@ private theorem missed_crossings (N : ℕ) :
       c (n+1)-c n ≤ v n + (if n=0 then c 1 else 0) +
         5*(if 0<n ∧ ∃ q : Pair, bothPrime q n then 1 else 0) := by
     rcases Nat.eq_zero_or_pos n with rfl | hn
-    · simp
+    · simp <;> omega
     have he := endpoint_clock_step hn
     let S := univ.filter (fun i => primeAt i n)
     have hsize : S.card ≤ 5 := by
@@ -108,7 +118,8 @@ private theorem missed_crossings (N : ℕ) :
       simp only [hpair,and_false,if_false,mul_zero,add_zero,v]
       split <;> omega
   have hsum := sum_le_sum (s:=range N) fun n _ => hlocal n
-  rw [ht,sum_add_distrib,sum_add_distrib,←mul_sum,sum_boole] at hsum
+  rw [ht,sum_add_distrib,sum_add_distrib,←mul_sum,
+    sum_indicator_nat (range N) (fun n => 0<n ∧ ∃ q : Pair, bothPrime q n)] at hsum
   have hfirst : (∑ n ∈ range N, if n=0 then c 1 else 0) ≤ c 1 := by
     rw [sum_ite_eq']; split <;> omega
   have hh : ((range N).filter (fun n => 0<n ∧ ∃ q : Pair, bothPrime q n)).card ≤ (doubleHits N).card := by
@@ -128,8 +139,17 @@ private theorem double_hit_estimate :
       Real.log N^2 * (((Icc 1 N).filter (bothPrime q)).card:ℝ) ≤ C*N := by
     obtain ⟨⟨i,j⟩,hij⟩ := q
     have pos (r : Fin 5) : 0 < slope r := by fin_cases r <;> decide
-    apply two_affine_prime_endpoints_log_squared (pos i) (pos j) (shift i) (shift j)
-    fin_cases i <;> fin_cases j <;> first | decide | (exfalso; revert hij; decide)
+    have hne : slope i * shift j ≠ slope j * shift i := by
+      fin_cases i <;> fin_cases j <;> first | decide | (exfalso; revert hij; decide)
+    obtain ⟨C,hC,hN⟩ := two_affine_prime_endpoints_log_squared (pos i) (pos j) (shift i) (shift j) hne
+    refine ⟨C,hC,?_⟩
+    filter_upwards [hN] with N hn
+    have hs : (Icc 1 N).filter (bothPrime ⟨(i,j),hij⟩) =
+        (Icc 1 N).filter (fun n => (slope i*n+shift i).Prime ∧ (slope j*n+shift j).Prime) := by
+      ext n
+      simp only [mem_filter,bothPrime,primeAt]
+    rw [hs]
+    exact hn
   choose K hK hK' using h
   refine ⟨∑ q, K q,sum_nonneg (fun q _ => (hK q).le),?_⟩
   filter_upwards [eventually_all.mpr hK'] with N hN
@@ -201,7 +221,6 @@ theorem asymptotic_number_of_distinct_prime_midpoints :
     norm_num only [Nat.cast_ofNat, Nat.reduceAdd, Nat.cast_add] at h
     convert h using 1
     · ext N; simp only [primeMidpointClock,Nat.cast_add]; ring
-    · norm_num
   have hr := tendsto_natCast_atTop_atTop (R:=ℝ)
   have hln := Real.isLittleO_log_id_atTop.tendsto_div_nhds_zero.comp hr
   have hinv := tendsto_inv_atTop_zero.comp (Real.tendsto_log_atTop.comp hr)
@@ -222,12 +241,14 @@ theorem asymptotic_number_of_distinct_prime_midpoints :
       field_simp [hN₀.ne']
       nlinarith only [hh]
     change _ - ((primeMidpointClock 1:ℝ)*(Real.log N/N)+5*C*(Real.log N)⁻¹) ≤ _
+    simp only [div_eq_mul_inv] at hm hhit ⊢
     linarith only [hm,hhit]
   · filter_upwards with N
     have hf := (Nat.cast_le (α:=ℝ)).mpr (missed_crossings N).1
     push_cast at hf
     have hm := mul_le_mul_of_nonneg_right hf (div_nonneg (Real.log_natCast_nonneg N) (Nat.cast_nonneg N))
     change _ ≤ (primeMidpointClock N:ℝ)*Real.log N/N + Real.log N/N
+    simp only [div_eq_mul_inv] at hm ⊢
     linarith only [hm]
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

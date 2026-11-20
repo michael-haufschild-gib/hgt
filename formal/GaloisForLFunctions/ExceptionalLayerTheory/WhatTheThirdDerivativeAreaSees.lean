@@ -26,7 +26,7 @@ private def algebraicSqrt (m : ℕ) : A := by
   apply IsIntegral.isAlgebraic
   apply IsIntegral.of_pow (by decide : 0<2)
   have hs : ((Real.sqrt (m:ℝ):ℝ):ℂ)^2=(m:ℂ) := by
-    exact_mod_cast Real.sq_sqrt (Nat.cast_nonneg m : (0:ℝ)≤m)
+    exact_mod_cast Real.sq_sqrt (Nat.cast_nonneg m : (0:ℝ) ≤ m)
   rw [hs]
   simpa only [map_natCast] using (isIntegral_algebraMap (R:=ℚ) (A:=ℂ) (x:=(m:ℚ)))
 
@@ -51,7 +51,7 @@ theorem sqrt_order_relation_iff_square_classes {ι : Type*} (S : Finset ι)
     apply Subtype.ext
     change ((Real.sqrt (m i:ℝ):ℝ):ℂ)^2=((algebraMap ℚ A (m i:ℚ):A):ℂ)
     rw [map_natCast]
-    exact_mod_cast Real.sq_sqrt (Nat.cast_nonneg (m i) : (0:ℝ)≤m i)
+    exact_mod_cast Real.sq_sqrt (Nat.cast_nonneg (m i) : (0:ℝ) ≤ m i)
   have hn (i : ι) : algebraicSqrt (m i)≠0 := by
     intro h
     have he := hs i

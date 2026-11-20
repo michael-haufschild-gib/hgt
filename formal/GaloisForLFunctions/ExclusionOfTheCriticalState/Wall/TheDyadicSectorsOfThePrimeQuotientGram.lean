@@ -36,7 +36,7 @@ private theorem odd_reduced_iff_orders {n m : ℕ} (hn : 0 < n) (hm : 0 < m) :
 theorem quotientGramMean_eq_franel {n m : ℕ} (hn : 0 < n) (hm : 0 < m) :
     quotientGramMean n m = if n.factorization 2=m.factorization 2 then
       (n.gcd m : ℝ)^2/((n:ℝ)*m) else 0 := by
-  rw [quotientGramMean_gcd hn hm,odd_reduced_iff_orders hn hm]
+  simp only [quotientGramMean_gcd hn hm,odd_reduced_iff_orders hn hm]
 
 /-- Coefficients retained at two-adic order v. -/
 def dyadicQuotientBand (c : ℕ → ℝ) (v n : ℕ) : ℝ :=
@@ -57,11 +57,12 @@ theorem quotientGram_jordan_diagonal (c : ℕ → ℝ) (N : ℕ) :
       c z.1*c z.2*quotientGramMean z.1 z.2 =
         ∑ v ∈ quotientOrders N, dyadicQuotientBand c v z.1*dyadicQuotientBand c v z.2*G z := by
     obtain ⟨ha,hb⟩ := mem_product.mp hz
-    rw [sum_eq_single_of_mem (z.1.factorization 2) (mem_image.mpr ⟨z.1,ha,rfl⟩),
+    have hv : z.1.factorization 2 ∈ quotientOrders N := mem_image.mpr ⟨z.1,ha,rfl⟩
+    rw [sum_eq_single_of_mem (z.1.factorization 2) hv,
       quotientGramMean_eq_franel (mem_Icc.mp ha).1 (mem_Icc.mp hb).1]
     · by_cases he : z.1.factorization 2=z.2.factorization 2 <;> simp [dyadicQuotientBand,he,G,eq_comm]
     · intro v hv hne
-      simp only [dyadicQuotientBand,if_neg hne.symm,zero_mul]
+      simp only [dyadicQuotientBand,if_neg (Ne.symm hne),zero_mul]
   rw [sum_congr rfl entries,sum_comm]
   exact sum_congr rfl fun v _ => franelGcdQuadraticForm_eq_jordanTotient2_diagonal N _
 
@@ -91,7 +92,10 @@ theorem quotientReading_square_period (c : ℕ → ℝ) (N : ℕ) :
     refine sum_congr rfl fun i _ => ?_
     rw [mul_sum]
     exact sum_congr rfl fun j _ => by ring
-  rw [← quotientGram_jordan_diagonal,sum_congr rfl (fun H _ => expand H),sum_comm,mul_sum]
+  rw [← quotientGram_jordan_diagonal]
+  change (∑ H ∈ range P, (∑ n ∈ S, c n*quotientSign n H)^2) =
+    (P:ℝ)*∑ z ∈ S ×ˢ S, c z.1*c z.2*quotientGramMean z.1 z.2
+  rw [sum_congr rfl (fun H _ => expand H),sum_comm,mul_sum]
   exact sum_congr rfl fun z hz => by rw [← mul_sum,pair z hz]; ring
 
 /-- Exact common-numerator second moment of twice the centered odd-quotient

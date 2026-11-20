@@ -31,14 +31,17 @@ theorem annihilator_fourier_count (ψ : AddChar R ℂ) (hψ : ψ.IsPrimitive) (x
       rw [mul_sum]
       refine sum_congr rfl fun s _ => ?_
       rw [AddChar.sum_mulShift _ hψ]
-      by_cases h : x*s=0 <;> simp only [h,if_true,if_false,mul_zero,zero_mul,q]
+      by_cases h : x*s=0 <;> simp only [h,if_true,if_false,Nat.cast_zero,mul_zero,zero_mul,q]
     _ = ∑ u : R, ∑ s : R, ψ (s*(u*x+j)) := by
       simp only [sum_mul]
       rw [sum_comm]
       exact sum_congr rfl fun u _ => sum_congr rfl fun s _ => by
         rw [←ψ.map_add_eq_mul]
         exact congrArg ψ (by ring)
-    _ = ∑ u : R, if u*x+j=0 then q else 0 := sum_congr rfl fun u _ => AddChar.sum_mulShift _ hψ
+    _ = ∑ u : R, if u*x+j=0 then q else 0 := by
+      refine sum_congr rfl fun u _ => ?_
+      rw [AddChar.sum_mulShift _ hψ]
+      by_cases h : u*x+j=0 <;> simp [h,q]
     _ = _ := by rw [←sum_filter,sum_const,nsmul_eq_mul,mul_comm]
 
 /-- Twisted joint transform in the gap and the marked quadratic root. -/
@@ -54,7 +57,7 @@ theorem fixedGapQuadraticTransform_linear_fibres (ψ : AddChar R ℂ) (hψ : ψ.
   rw [sum_comm]
   refine sum_congr rfl fun x _ => ?_
   let F (s : R) := if x*s=0 then ψ (j*s) else 0
-  have hmove : ∑ g : R, F (x+g) = ∑ s : R, F s := (Equiv.addLeft x).sum_comp F
+  have hmove : ∑ g : R, F (x+g) = ∑ s : R, F s := Equiv.sum_comp (Equiv.addLeft x) F
   calc
     _ = ∑ g : R, F (x+g)*ψ ((a-j)*x) := sum_congr rfl fun g _ => by
       dsimp only [F]
@@ -111,9 +114,16 @@ arbitrary additive twist a on the roots. -/
 theorem arithmetic_quadratic_root_sum_fourier (M : ℕ+) (j : (ZMod (M:ℕ))ˣ) (a : ℤ) :
     ∑ g : ZMod (M:ℕ), _root_.RHTower.quadraticCongruenceRootSum (M:ℕ) g.val a *
         ZMod.stdAddChar ((j:ZMod (M:ℕ))*g) =
-      _root_.RHTower.cglRamanujanAdditiveSum ⟨M,M.pos⟩ ((a:ZMod (M:ℕ))-j) :=
-  (transform_arithmetic_quadratic_root_sum M j a).trans
-    (fixedGapQuadraticTransform_unit ZMod.stdAddChar (ZMod.isPrimitive_stdAddChar (M:ℕ)) j _)
+      _root_.RHTower.cglRamanujanAdditiveSum ⟨M,M.pos⟩ ((a:ZMod (M:ℕ))-j) := by
+  refine (transform_arithmetic_quadratic_root_sum M j a).trans ?_
+  refine (fixedGapQuadraticTransform_unit ZMod.stdAddChar (ZMod.isPrimitive_stdAddChar (M:ℕ)) j
+    (a:ZMod (M:ℕ))).trans ?_
+  unfold _root_.RHTower.cglRamanujanAdditiveSum
+  apply Finset.sum_congr
+  · ext u
+    simp only [mem_filter,mem_univ,true_and]
+  · intro u _
+    rfl
 
 /-- GCD and Möbius inversion evaluate all primitive gap-frequency
 columns, including the zero root twist at nonsquarefree moduli. -/

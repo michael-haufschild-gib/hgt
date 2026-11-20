@@ -94,7 +94,9 @@ theorem balanced_unitary_edge_count {k : ℕ} (hk : 1<k)
   have price : edgePrice r 1-edgePrice r (r-1)=2*((r-2:ℕ):ℝ) := by
     simp only [edgePrice,Nat.cast_sub (by omega : 1≤r),Nat.cast_sub (by omega : 2≤r),Nat.cast_one,Nat.cast_ofNat]
     ring
-  rw [face_edge_price hp,←edge_rank_price,price] at paid
+  rw [face_edge_price hp,←edge_rank_price] at paid
+  change (2:ℝ)^(r-1)+(edgePrice r 1-edgePrice r (r-1)) ≤ (unitaryEdgeCount k:ℝ) at paid
+  rw [price] at paid
   exact_mod_cast paid
 
 /-- The least possible boundary size detects a prime-power block above

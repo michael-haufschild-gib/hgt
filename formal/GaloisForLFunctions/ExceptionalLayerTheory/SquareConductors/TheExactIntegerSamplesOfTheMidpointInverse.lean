@@ -50,7 +50,7 @@ theorem ternary_binomial_green (seed data : ℕ → ℝ) (b m : ℕ) :
       refine sum_congr rfl fun c hc => ?_
       have hlt := mem_range.mp hc
       rw [show b+1-1-c=(b-1-c)+1 by omega,average_step]
-    rw [ternaryMidpointRow_succ_apply,ih,ih,average_step,sum_range_succ,window,
+    rw [ternaryMidpointRow_succ_apply,ih,ih,average_step,Finset.sum_range_succ,window,
       show b+1-1-b=0 by omega,average_zero_steps]
     ring
 
@@ -89,11 +89,13 @@ theorem forcing_sample_indispensable (b m i : ℕ) :
       dyadicMidpointAverage (fun z => if z=i then 1 else 0) r (3^c*m) := by
     unfold dyadicMidpointAverage
     congr 1
-    exact sum_congr rfl fun j _ => by rw [show 3^c*(2^(r+j)*m)=2^(r+j)*(3^c*m) by ac_rfl]
+    exact sum_congr rfl fun j _ => by
+      dsimp only
+      rw [show 3^c*(2^(r+j)*m)=2^(r+j)*(3^c*m) by ac_rfl]
   have hn (c r : ℕ) : 0 ≤ dyadicMidpointAverage (fun z => if z=i then 1 else 0) r (3^c*m) := by
     unfold dyadicMidpointAverage
     exact mul_nonneg (by positivity) (sum_nonneg fun j _ =>
-      mul_nonneg (Nat.cast_nonneg _) (by split <;> norm_num))
+      mul_nonneg (Nat.cast_nonneg _) (by dsimp only; split <;> norm_num))
   rw [ternary_binomial_green,hz,zero_add,div_pos_iff_of_pos_right (by norm_num)]
   simp_rw [hscale]
   rw [sum_pos_iff_of_nonneg (fun c _ => hn c _)]

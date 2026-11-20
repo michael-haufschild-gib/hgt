@@ -67,7 +67,9 @@ private theorem initial_acceleration (K : Sites n →L[ℝ] Sites n) (R : Coeffi
   obtain ⟨h0,ε,hε,h⟩ := trajectory_solves K R x y
   have hd := h 0 ⟨neg_lt_zero.mpr hε,hε⟩
   rw [h0] at hd
-  simpa [velocity] using hd.hasFDerivAt.snd.hasDerivAt
+  apply hasDerivAt_iff_tendsto_slope.mpr
+  change Tendsto (fun t => slope (velocity K R x y) 0 t) _ _
+  simpa only [slope_def_module,velocity,start,Prod.smul_snd,Prod.snd_sub] using hd.tendsto_slope.snd_nhds
 
 /-- Velocities of the two components observed through the actual exponential probe bank. -/
 def observation (s : ℝ) (time shift : Fin n ↪ ℕ) (K : Sites n →L[ℝ] Sites n)
@@ -130,9 +132,13 @@ theorem four_sparse_shots_identify (s : ℝ) (time shift : Fin n ↪ ℕ) (K : S
   constructor
   · intro h
     have he (b e : Bool) := acceleration_of_sparse s time shift K R S (amplitude b) (direction b e) (h b e)
-    apply Prod.ext <;> apply row_ext <;> intro i <;> apply reads_row <;> intro b e
-    · exact add_left_cancel (congrArg (fun z : Pair n => z.1 i) (he b e))
-    · exact add_left_cancel (congrArg (fun z : Pair n => z.2 i) (he b e))
+    apply Prod.ext <;> apply row_ext <;> intro i
+    · apply reads_row (second := false)
+      intro b e
+      exact add_left_cancel (congrArg (fun z : Pair n => z.1 i) (he b e))
+    · apply reads_row (second := true)
+      intro b e
+      exact add_left_cancel (congrArg (fun z : Pair n => z.2 i) (he b e))
   · rintro rfl _ _
     exact (Eventually.of_forall fun _ => rfl).frequently
 

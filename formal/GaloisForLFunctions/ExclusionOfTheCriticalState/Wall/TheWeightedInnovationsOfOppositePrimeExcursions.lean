@@ -40,7 +40,7 @@ private theorem mean_product_update (W u F G x y : ℝ) (hW : 0 ≤ W) (hu : 0 �
     · rw [h]
       field_simp [he.ne']
       ring
-  · have hsum : W+u ≠ 0 := (add_pos_of_pos_of_nonneg (lt_of_le_of_ne hW h.symm) hu).ne'
+  · have hsum : W+u ≠ 0 := (add_pos_of_pos_of_nonneg (lt_of_le_of_ne hW (Ne.symm h)) hu).ne'
     field_simp [h,hsum]
     ring
 
@@ -62,10 +62,10 @@ theorem weighted_numerator_plancherel (w f g : ℕ → ℝ) (hw : ∀ i, 0 ≤ w
     have hstep : numeratorMeanProduct w f g n + w n*(f n*g n) =
         numeratorMeanProduct w f g (n+1) + numeratorInnovation w f g n := by
       simpa only [numeratorMeanProduct,numeratorInnovation,numeratorMoment,numeratorMass,
-        sum_range_succ] using step
+        Finset.sum_range_succ] using step
     rw [show numeratorMoment w (fun i => f i*g i) (n+1) =
-      numeratorMoment w (fun i => f i*g i) n + w n*(f n*g n) from sum_range_succ ..,
-      ih, sum_range_succ]
+      numeratorMoment w (fun i => f i*g i) n + w n*(f n*g n) from Finset.sum_range_succ ..,
+      ih, Finset.sum_range_succ]
     linarith only [hstep]
 
 /-- Joint-event weights for the opposite prime excursions. The whole

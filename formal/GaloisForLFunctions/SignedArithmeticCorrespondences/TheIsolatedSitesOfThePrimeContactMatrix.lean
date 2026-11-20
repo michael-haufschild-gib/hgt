@@ -118,7 +118,7 @@ theorem singleton_commutes_primeContactMatrix (A U : ℕ) (i : Ioc A U) :
     let j : Ioc A U := ⟨m,hm⟩
     have hji : j ≠ i := fun e => hne (congrArg Subtype.val e)
     have he := congrArg (fun M : Matrix (Ioc A U) (Ioc A U) ℝ => M i j) h.eq
-    simpa only [Matrix.diagonal_mul, Matrix.mul_diagonal, if_pos rfl, if_neg hji, one_mul,
+    simpa only [Matrix.diagonal_mul, Matrix.mul_diagonal, if_pos rfl, if_true, if_neg hji, one_mul,
       mul_zero, primeContactMatrix] using he
   · intro hi
     have hz := (mem_filter.mp hi).2

@@ -144,18 +144,17 @@ theorem rook_product_difference {α : Type*} (U : ℕ → Finset α) (hU : Monot
   have expansion : (fun e : ℕ => ((∏ i ∈ range n, ((U i).card+e-i):ℕ):ℤ)) = ∑ A, w A • C A := by
     funext e
     rw [←factorial_rook_factorization U hU n e,Nat.cast_sum]
-    simp only [sum_apply,Pi.smul_apply,smul_eq_mul,w,C,m,Nat.descFactorial_eq_factorial_mul_choose,
+    simp only [Finset.sum_apply,Pi.smul_apply,smul_eq_mul,w,C,m,Nat.descFactorial_eq_factorial_mul_choose,
       Nat.cast_mul,mul_assoc]
   rw [expansion,fwdDiff_iter_finsetSum]
-  simp only [fwdDiff_iter_const_smul,sum_apply,Pi.smul_apply,smul_eq_mul,C,fwdDiff_iter_choose_zero]
+  simp only [fwdDiff_iter_const_smul,Finset.sum_apply,Pi.smul_apply,smul_eq_mul,C,fwdDiff_iter_choose_zero]
   simp only [vacantRowRookCount,Nat.cast_sum,mul_sum,sum_filter,mul_ite,mul_zero]
   refine sum_congr rfl fun A _ => ?_
+  change (if j=m A then w A*1 else 0) =
+    (j.factorial:ℤ) * ((if m A=j then Nat.card (RowSubsetPlacement U A) else 0 : ℕ):ℤ)
   by_cases h : m A=j
-  · change w A*(if j=m A then 1 else 0)=if m A=j then _ else _
-    simp only [w,h,if_pos rfl,mul_one]
-    exact mul_comm _ _
-  · change w A*(if j=m A then 1 else 0)=if m A=j then _ else _
-    rw [if_neg h,if_neg (Ne.symm h),mul_zero]
+  · simp [w,h,mul_comm]
+  · rw [if_neg (Ne.symm h),if_neg h,Nat.cast_zero,mul_zero]
 
 /-- Every individual rook number is recovered from the j+1 evaluations
 at 0 through j, in an explicit alternating binomial sum. -/
@@ -166,7 +165,7 @@ theorem rook_count_from_product_samples {α : Type*} (U : ℕ → Finset α) (hU
         (j.factorial:ℤ)*vacantRowRookCount U n j := by
   have h := rook_product_difference U hU n j
   rw [fwdDiff_iter_eq_sum_shift] at h
-  simpa only [nsmul_eq_mul,mul_one,zero_add,zsmul_eq_mul] using h
+  simpa only [nsmul_eq_mul,mul_one,zero_add,zsmul_eq_mul,Nat.cast_id,Int.cast_id] using h
 
 
 end

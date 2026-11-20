@@ -24,7 +24,7 @@ private theorem increment_le_fine (f : ℕ → ℝ) {a b : ℕ} (h : a≤b) :
     calc |f (b+1)-f a| ≤ |f b-f a| + |f (b+1)-f b| := by
            rw [show f (b+1)-f a = (f b-f a)+(f (b+1)-f b) by ring]
            exact abs_add_le _ _
-         _ ≤ _ := add_le_add_right ih _
+         _ ≤ _ := add_le_add ih le_rfl
 
 /-- A single increment pays either from loss of envelope or from
 nearest-neighbor movement weighted by the envelope at the later site. -/
@@ -54,7 +54,7 @@ theorem envelope_variation_interval (f u : ℕ → ℝ) (hu : Antitone u)
     rw [Real.mul_rpow (by norm_num) (hpos a)] at h
     apply h.trans
     have h' := mul_le_mul_of_nonneg_left hpay (Real.rpow_nonneg (by norm_num : 0≤(2:ℝ)) q)
-    linarith only [h',mul_nonneg (Real.rpow_nonneg (by norm_num : 0≤(4:ℝ)) _) hfine]
+    linarith only [h',mul_nonneg (Real.rpow_nonneg (by norm_num : 0≤(4:ℝ)) (q-1)) hfine]
   · have he : |f b-f a|^q = |f b-f a|^(q-1)*|f b-f a| := by
       by_cases hz : |f b-f a|=0
       · rw [hz,Real.zero_rpow (lt_of_lt_of_le zero_lt_one hq).ne',mul_zero]
@@ -91,6 +91,4 @@ theorem envelope_variation_grid (f u : ℕ → ℝ) (hu : Antitone u) (hf : ∀ 
     rw [←hjoin]
     ring
 
-#print axioms envelope_variation_interval
-#print axioms envelope_variation_grid
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis

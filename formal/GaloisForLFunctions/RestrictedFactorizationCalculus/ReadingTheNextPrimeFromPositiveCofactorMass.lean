@@ -61,7 +61,9 @@ theorem prime_interval_power_cost_above_the_abscissa {s : ℝ} (hs : _root_.RHTo
       simp only [f,same q hp,roughMangoldtWeight,roughRestriction_apply,if_pos free,
         sub_self,abs_zero,hp,not_true_eq_false,if_false,le_rfl]
     · rw [if_pos hp]
-      exact (abs_sub ..).trans (by rw [abs_of_nonneg (vonMangoldt_nonneg (n:=q)),two_mul]; exact add_le_add_right (dom q) _)
+      exact (abs_sub ..).trans (by
+        rw [abs_of_nonneg (vonMangoldt_nonneg (n:=q)),two_mul]
+        exact add_le_add (dom q) le_rfl)
   have sub : I.filter (fun q => ¬q.Prime) ⊆ (Icc 1 X).filter (fun q => ¬q.Prime) := by
     intro q h
     obtain ⟨hi,hp⟩ := mem_filter.mp h

@@ -25,7 +25,8 @@ private theorem twice_proper_divisor {a m : ℕ} (hlt : a < m) (hd : a∣m) : 2*
 
 private theorem cofactor_not_prime {m : ℕ} (hm : 2 ≤ m.primeFactors.card) : ¬m.Prime := by
   intro h
-  simpa only [h.primeFactors,card_singleton] using hm
+  rw [h.primeFactors,card_singleton] at hm
+  omega
 
 /-- A prime in the upper half of a composite cofactor is the unique
 largest prime of the resulting midpoint integer. -/
@@ -161,7 +162,4 @@ theorem balanced_high_rank_virial_threshold (γ : ℝ) (R : ℕ) :
     exact (mul_neg_of_pos_of_neg (by positivity : 0<((2:ℝ)^r)^2) hbad).not_ge hgood
   · exact fun h k _ _ _ _ => (unitaryVirialEnergy_nonneg_iff γ).mpr h k
 
-#print axioms upper_half_prime_completion_injective
-#print axioms upper_half_prime_completion_price
-#print axioms balanced_high_rank_virial_threshold
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

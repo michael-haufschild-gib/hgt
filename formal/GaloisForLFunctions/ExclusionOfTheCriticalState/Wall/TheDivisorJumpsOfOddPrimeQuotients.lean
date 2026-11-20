@@ -33,9 +33,9 @@ private theorem digit_jump (n H : ℕ) (a : ℝ) :
     have he : 2*n ∣ H+1 ↔ 2 ∣ (H+1)/n := by
       conv_lhs => rw [← hprod,Nat.mul_comm 2 n]
       exact Nat.mul_dvd_mul_iff_left hnpos
-    rw [if_pos hn,he,hq]
+    simp only [if_pos hn,he,hq]
     by_cases h : H/n%2=1
-    · simp [h,show (H/n+1)%2 ≠ 1 by omega, show 2∣H/n+1 by omega]
+    · simp [h,show (H/n+1)%2 ≠ 1 by omega, show 2∣H/n+1 by omega] <;> ring
     · simp [h,show (H/n+1)%2=1 by omega,show ¬2∣H/n+1 by omega]
   · have h2 : ¬ 2*n ∣ H+1 := fun h => hn ((dvd_mul_left n 2).trans h)
     simp [Nat.succ_div_of_not_dvd hn,hn,h2]
@@ -75,7 +75,7 @@ theorem divisorPrimeExcess_dyadic (S : Finset ℕ) {u : ℕ} (hu : Odd u) (v : �
   | succ v ih =>
     have h := oddPrimeJump_double S (show 0<2^v*u by positivity)
     rw [show 2*(2^v*u)=2^(v+1)*u by ring] at h
-    rw [sum_range_succ,Nat.sub_self,pow_zero,one_mul]
+    rw [Finset.sum_range_succ,Nat.sub_self,pow_zero,one_mul]
     have hs : ∑ j ∈ range (v+1), (2:ℝ)^(v+1-j)*oddPrimeJump S (2^j*u) =
         2*∑ j ∈ range (v+1), (2:ℝ)^(v-j)*oddPrimeJump S (2^j*u) := by
       rw [mul_sum]
@@ -94,7 +94,7 @@ private theorem full_divisor_excess {u X : ℕ} (hu : 0 < u) (hX : u ≤ X) :
     exact ⟨fun h => h.2,fun h => ⟨⟨Nat.pos_of_dvd_of_pos h hu,(Nat.le_of_dvd hu h).trans hX⟩,h⟩⟩
   have hp : u.divisors.filter Nat.Prime = u.primeFactors := by
     ext p
-    simp only [mem_filter,Nat.mem_divisors,Nat.mem_primeFactors,hu.ne',and_true]
+    simp only [mem_filter,Nat.mem_divisors,Nat.mem_primeFactors]
     tauto
   rw [divisorPrimeExcess,← sum_filter,he]
   simp only [ordinaryPrimeExcessCoeff,sum_sub_distrib,← sum_filter,hp,sum_const,nsmul_eq_mul,mul_one]
@@ -123,7 +123,8 @@ private theorem full_even_divisor_excess {u X : ℕ} (hu : Odd u) (r : ℕ)
   have hnot : 2∉u.primeFactors := fun h => hu.not_two_dvd_nat (Nat.dvd_of_mem_primeFactors h)
   rw [full_divisor_excess (by positivity) hX,hc.card_divisors_mul,hc.primeFactors_mul,
     Nat.primeFactors_pow 2 (Nat.succ_ne_zero r),Nat.prime_two.primeFactors,singleton_union,sum_insert hnot,
-    Nat.divisors_prime_pow Nat.prime_two,card_map,card_range,Nat.cast_mul,Nat.cast_succ,Nat.cast_succ]
+    Nat.divisors_prime_pow Nat.prime_two,card_map,card_range,Nat.cast_mul]
+  push_cast
   ring
 
 /-- From dyadic exponent two onward the jump is affine in that exponent.
@@ -154,7 +155,9 @@ theorem four_dyadic_jumps_constant {u X : ℕ} (hu : Odd u) (hX : 8*u≤X) :
     oddPrimeJump (Ioc 0 X) u + oddPrimeJump (Ioc 0 X) (2*u) +
       (oddPrimeJump (Ioc 0 X) (8*u) - oddPrimeJump (Ioc 0 X) (4*u)) = Real.log 2 := by
   have hu₀ : 0<u := by obtain ⟨j,hj⟩ := hu; omega
-  rw [dyadic_jump_difference_reads_divisor_count hu 0 hX,oddPrimeJump_twice_odd_full hu (by omega),
+  have hd := dyadic_jump_difference_reads_divisor_count hu 0 hX
+  norm_num at hd
+  rw [hd,oddPrimeJump_twice_odd_full hu (by omega),
     oddPrimeJump_odd _ hu,full_divisor_excess hu₀ (by omega)]
   ring
 

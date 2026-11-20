@@ -102,8 +102,9 @@ theorem null_pair_cleared_p_laplacian (q r : Fin d → ℝ) (m : ℕ) (p : ℂ) 
       (C (((m+2)*(m+1):ℕ):ℂ)*M^m)*(C (b i)*C (b j)) := by
     simp only [P,map_add,L,M,hess_wave]
   simp only [infinityPolynomial,hh,mul_add,sum_add_distrib,rank_one_contraction,d₁,d₂]
-  change _ = C _*(L*M)^m*(L^(m+2)+M^(m+2))
-  simp only [map_mul,map_pow,Nat.cast_mul,mul_pow,pow_succ L,pow_succ M]
+  change _ = C _*(L*M)^m*L^(m+2) + C _*(L*M)^m*M^(m+2)
+  simp only [Nat.cast_add,Nat.cast_mul,Nat.cast_one,map_mul,map_pow,map_add,map_one,
+    mul_pow,pow_succ L,pow_succ M]
   ring
 
 private lemma eval_linear (a b : ι → ℂ) :
@@ -124,6 +125,7 @@ theorem null_pair_p_harmonic_iff (q r : Fin d → ℝ) (m : ℕ) (p : ℂ) :
   · simp [hc]
   let a := nullPolarization q
   let b := nullPolarization r
+  change waveOverlap a b ≠ 0 at hc
   have hba : waveOverlap b a ≠ 0 := by
     rw [show waveOverlap b a=waveOverlap a b from sum_congr rfl fun _ _ => mul_comm _ _]
     exact hc
@@ -132,7 +134,8 @@ theorem null_pair_p_harmonic_iff (q r : Fin d → ℝ) (m : ℕ) (p : ℂ) :
   have hS : momentLinearForm ℂ a^(m+2)+momentLinearForm ℂ b^(m+2) ≠ 0 := by
     intro he
     have h := congrArg (MvPolynomial.eval b) he
-    simp only [map_add,map_pow,eval_linear,overlap_self_zero,map_zero,zero_pow (by omega : m+2 ≠ 0),add_zero] at h
+    simp only [map_add,map_pow,eval_linear,show waveOverlap b b=0 from overlap_self_zero r,
+      map_zero,zero_pow (by omega : m+2 ≠ 0),add_zero] at h
     exact pow_ne_zero _ hc h
   change _ ↔ p=2 ∨ waveOverlap a b=0
   change C ((p-2)*(((m+2:ℕ):ℂ)^3)*((m+1:ℕ):ℂ)*(waveOverlap a b)^2)*
@@ -150,7 +153,10 @@ theorem null_pair_p_harmonic_iff_radial_equality (q r : Fin d → ℝ) (m : ℕ)
     let M := momentLinearForm ℂ (nullPolarization r)
     clearedPLaplacian p (L^(m+2)+M^(m+2))=0 ↔
       p=2 ∨ radialLength q*radialLength r=∑ i, q i*r i := by
-  rw [null_pair_p_harmonic_iff]
+  dsimp only
+  have hz := null_pair_p_harmonic_iff q r m p
+  dsimp only at hz
+  rw [hz]
   have he : waveOverlap (nullPolarization q) (nullPolarization r) =
       ((radialLength q*radialLength r-∑ i, q i*r i : ℝ):ℂ) := by
     simp only [waveOverlap,Fintype.sum_option,nullPolarization,Complex.ofReal_sub,
@@ -177,7 +183,8 @@ theorem opposite_null_pair_real_slice (q : Fin d → ℝ) (m : ℕ) (x : Option 
     simp only [eval_linear,waveOverlap,Fintype.sum_option,nullPolarization,radialLength_neg,
       map_add,map_sum,map_mul,Complex.conj_ofReal,Complex.conj_I,Pi.neg_apply,Complex.ofReal_neg]
     simp only [neg_mul,mul_neg]
-  rw [map_add,map_pow,map_pow,he,← map_pow,Complex.add_conj]
+  simp only [map_add,map_pow,he]
+  rw [← map_pow (starRingEnd ℂ),Complex.add_conj]
   push_cast
   ring
 
@@ -188,7 +195,10 @@ theorem opposite_null_pair_p_harmonic_iff (q : Fin d → ℝ) (hq : q≠0) (m : 
     let L := momentLinearForm ℂ (nullPolarization q)
     let M := momentLinearForm ℂ (nullPolarization (-q))
     clearedPLaplacian (p:ℂ) (L^(m+2)+M^(m+2))=0 ↔ p=2 := by
-  rw [null_pair_p_harmonic_iff_radial_equality,radialLength_neg]
+  dsimp only
+  have hz := null_pair_p_harmonic_iff_radial_equality q (-q) m (p:ℂ)
+  dsimp only at hz
+  rw [hz,radialLength_neg]
   have ht : ∃ i, q i≠0 := by
     by_contra! h
     exact hq (funext h)

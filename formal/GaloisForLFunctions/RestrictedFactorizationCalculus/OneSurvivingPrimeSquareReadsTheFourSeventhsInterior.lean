@@ -37,12 +37,15 @@ private theorem prime_spec (n : ℕ) : (p n).Prime ∧ logSquareCutoff (n^2) < p
   have lo := le_nextPrime ((k:ℝ)+1)
   obtain ⟨P,hP,h₁,h₂⟩ := Nat.exists_prime_lt_and_le_two_mul (k+1) (Nat.succ_ne_zero k)
   have hi : p n ≤ P := nextPrime_le hP (by exact_mod_cast h₁.le)
-  exact ⟨nextPrime_prime _,by exact_mod_cast lo,hi.trans h₂⟩
+  have low : k+1 ≤ p n := (Nat.cast_le (α:=ℝ)).mp (by
+    rw [Nat.cast_add,Nat.cast_one]
+    exact lo)
+  exact ⟨nextPrime_prime _,low,hi.trans h₂⟩
 
 private theorem observation_mono : Monotone Xn := by
   intro i j h
   have hwall := logSquareCutoff_mono (Nat.pow_le_pow_left h 2)
-  have hi : p i ≤ p j := nextPrime_mono (add_le_add_right (Nat.cast_le.mpr hwall) 1)
+  have hi : p i ≤ p j := nextPrime_mono (add_le_add (Nat.cast_le.mpr hwall) (le_refl 1))
   exact Nat.mul_le_mul h (Nat.pow_le_pow_left hi 2)
 
 private theorem observation_grow : Tendsto Xn atTop atTop :=
@@ -71,10 +74,10 @@ theorem selected_prime_square_is_subpolynomial {η : ℝ} (he : 0 < η) :
   have h4 : 4 ≤ (n:ℝ)^(η/2) := hfour
   rw [mul_pow,hh] at hp2
   have mul := mul_le_mul_of_nonneg_right h4 (Real.rpow_nonneg np.le (η/2))
-  apply hp2.trans
-  norm_num only [Nat.reducePow] at hp2
-  calc 4*(n:ℝ)^(η/2) ≤ (n:ℝ)^(η/2)*(n:ℝ)^(η/2) := mul
-       _ = _ := by rw [←Real.rpow_add np];congr 1;ring
+  calc
+    _ ≤ 4*(n:ℝ)^(η/2) := by simpa only [show (2:ℝ)^2=4 by norm_num] using hp2
+    _ ≤ (n:ℝ)^(η/2)*(n:ℝ)^(η/2) := mul
+    _ = (n:ℝ)^η := by rw [←Real.rpow_add np,show η/2+η/2=η by ring]
 
 /-- The selected prime survives the actual log-square wall at its observation. -/
 theorem selected_prime_survives_its_observation :
@@ -162,7 +165,7 @@ theorem surviving_square_detects_the_zero_abscissa {β : ℝ} (hb : 1/2 ≤ β) 
     obtain ⟨D,hD,paid⟩ := head_paid he
     refine ⟨C+D,?_⟩
     filter_upwards [h,paid,eventually_ge_atTop 1] with n hc hh hn
-    have hpow := Real.rpow_le_rpow_of_exponent_le ((Nat.one_le_cast (α:=ℝ)).mpr hn) (add_le_add_right hb η)
+    have hpow := Real.rpow_le_rpow_of_exponent_le ((Nat.one_le_cast (α:=ℝ)).mpr hn) (add_le_add hb (le_refl η))
     have small := hh.trans (mul_le_mul_of_nonneg_left hpow hD)
     let R := F (wall n) (min (Xn n) (cut (Xn n))/(p n)^2)
     have hsum := abs_add_le (isolatedSquareCoefficient n) R
@@ -178,7 +181,7 @@ theorem surviving_square_detects_the_zero_abscissa {β : ℝ} (hb : 1/2 ≤ β) 
     refine ⟨C+D,?_⟩
     filter_upwards [price_one su (half_pos he),paid,eventually_ge_atTop 1] with n hprice hh hn
     have np := (Nat.cast_pos (α:=ℝ)).mpr hn
-    have hpow := Real.rpow_le_rpow_of_exponent_le ((Nat.one_le_cast (α:=ℝ)).mpr hn) (add_le_add_right hb ε)
+    have hpow := Real.rpow_le_rpow_of_exponent_le ((Nat.one_le_cast (α:=ℝ)).mpr hn) (add_le_add hb (le_refl ε))
     have small := hh.trans (mul_le_mul_of_nonneg_left hpow hD)
     have main : |F (wall n) n| ≤ C*(n:ℝ)^(β+ε) := by
       apply (cap _ _).trans ((mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hprice hC) (Real.rpow_nonneg np.le u)).trans_eq ?_)
@@ -240,7 +243,9 @@ theorem proper_power_variation_detects_the_zero_abscissa {β : ℝ} (hb : 1/2 �
         nlinarith only [hp.two_le,h]
     have member : q∈(Icc 1 (Xn n)).filter (fun q => ¬q.Prime) := mem_filter.mpr ⟨mem_Icc.mpr ⟨qp,qle⟩,qcomp⟩
     have sample : roughMangoldtWeight (wall n) q*|isolatedSquareCoefficient n| ≤ properInteriorVariation (Xn n) :=
-      single_le_sum (fun i _ => mul_nonneg (positive_weight _ _) (abs_nonneg _)) member
+      single_le_sum (f:=fun i => roughMangoldtWeight (wall n) i *
+        |interiorKernel (wall n) (Xn n) (cut (Xn n)) i|)
+        (fun i _ => mul_nonneg (positive_weight (wall n) i) (abs_nonneg _)) member
     rw [hweight] at sample
     have logbound := Real.log_le_log (by norm_num : (0:ℝ) < 2) (show (2:ℝ) ≤ p n by exact_mod_cast hp.two_le)
     have ob : (Xn n:ℝ) ≤ (n:ℝ)^(1+γ) := by

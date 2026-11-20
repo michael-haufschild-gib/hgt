@@ -61,9 +61,9 @@ private theorem prime_jump {n K : ℕ} {q : ℝ} (hq : 1≤q) (lg : 4≤Real.log
     have prod := mul_le_mul_of_nonneg_left two (mul_nonneg innerPrimeSlope_pos.le (Real.log_natCast_nonneg n))
     have paid := mul_le_mul_of_nonneg_left ln (mul_nonneg innerPrimeSlope_pos.le np.le)
     linarith only [prod,paid]
-  have term := Real.rpow_le_rpow (mul_nonneg (by positivity : 0≤innerPrimeSlope*K/4) (Real.log_natCast_nonneg n))
+  have term := Real.rpow_le_rpow (mul_nonneg (by positivity : 0 ≤ innerPrimeSlope*K/4) (Real.log_natCast_nonneg n))
     size (zero_le_one.trans hq)
-  rw [Real.mul_rpow (by positivity : 0≤innerPrimeSlope*K/4) (Real.log_natCast_nonneg n)] at term
+  rw [Real.mul_rpow (by positivity : 0 ≤ innerPrimeSlope*K/4) (Real.log_natCast_nonneg n)] at term
   have split : (Real.log n)^(q-1)*Real.log n=(Real.log n)^q := by
     simpa only [Real.rpow_one,sub_add_cancel] using (Real.rpow_add (by linarith only [ln] : 0<Real.log n) (q-1) 1).symm
   have comp := mul_le_mul_of_nonneg_right

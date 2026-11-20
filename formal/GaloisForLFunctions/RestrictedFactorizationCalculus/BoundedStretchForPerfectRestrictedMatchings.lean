@@ -28,12 +28,9 @@ private theorem range_switch_preserves_two {J : ℕ} {I : Finset ℕ} (ready : �
       have member := Nat.mem_primeFactors.mpr ⟨Nat.prime_two,divides,(switchModulus_spec k).2.2.ne'⟩
       rw [(switchModulus_spec k).2.1] at member
       obtain ⟨_,low,high⟩ := mem_switchPrimes.mp member
-      cases k with
-      | zero => norm_num at high
-      | succ j =>
-        have positive := Nat.two_pow_pos j
-        rw [pow_succ] at low
-        omega
+      have one : (2:ℕ)^k = 1 := by have := Nat.two_pow_pos k; omega
+      rw [one] at high
+      norm_num at high
     rw [rangeSwitch,dif_pos active]
     exact (switchInteger_on_endpoint (ready k hk.1) sq hk.2).2.2.2.2 2 odd
   · rw [rangeSwitch,dif_neg active]
@@ -89,9 +86,10 @@ private theorem ray_step (j : ℕ) : (rayPrime (j+1)).Prime ∧ 2*rayPrime j<ray
   have positive (i : ℕ) : 0<rayPrime i := by
     cases i with
     | zero => decide
-    | succ i => exact (Nat.exists_prime_lt_and_le_two_mul _ _).choose_spec.1.pos
+    | succ i => exact (Nat.exists_prime_lt_and_le_two_mul (2*max (rayPrime i) 1) (by positivity)).choose_spec.1.pos
   have h := (Nat.exists_prime_lt_and_le_two_mul (2*max (rayPrime j) 1) (by positivity)).choose_spec
-  change (biggerPrime (rayPrime j)).Prime ∧ _ at h
+  change (rayPrime (j+1)).Prime ∧ 2*max (rayPrime j) 1 < rayPrime (j+1) ∧
+    rayPrime (j+1) ≤ 2*(2*max (rayPrime j) 1) at h
   rw [max_eq_left (positive j)] at h
   exact ⟨h.1,h.2.1,by simpa only [show 4*rayPrime j=2*(2*rayPrime j) by ring] using h.2.2⟩
 
@@ -133,7 +131,12 @@ private theorem ray_edge (j : ℕ) : GlobalDyadicOneTwoRel (2*oddRay j) (oddRay 
   have source := Nat.squarefree_mul_iff.mpr ⟨cp,Nat.prime_two.squarefree,sq⟩
   refine ⟨source,(odd_ray_properties (j+1)).1,?_,?_⟩
   · cases j with
-    | zero => decide
+    | zero =>
+      change μ 2 = -μ (3*5)
+      rw [isMultiplicative_moebius.map_mul_of_coprime (by decide : Nat.Coprime 3 5),
+        moebius_apply_prime Nat.prime_two,moebius_apply_prime (by decide : Nat.Prime 3),
+        moebius_apply_prime (by decide : Nat.Prime 5)]
+      decide
     | succ i =>
       have mu (k : ℕ) : μ (oddRay (k+1))=1 := by
         obtain ⟨prime,large⟩ := ray_primes k
@@ -188,7 +191,7 @@ private theorem double_edge {n m : ℕ} (edge : GlobalDyadicOneTwoRel n m)
   obtain ⟨sq,sq',sign,c,p,q,r,pr,qr,rr,order,pair⟩ := edge
   refine ⟨squarefree_double sq odd,squarefree_double sq' odd',?_,2*c,p,q,r,pr,qr,rr,order,?_⟩
   · rw [isMultiplicative_moebius.map_mul_of_coprime (Nat.prime_two.coprime_iff_not_dvd.mpr odd),
-      isMultiplicative_moebius.map_mul_of_coprime (Nat.prime_two.coprime_iff_not_dvd.mpr odd'),sign,mul_neg,neg_neg]
+      isMultiplicative_moebius.map_mul_of_coprime (Nat.prime_two.coprime_iff_not_dvd.mpr odd'),sign,mul_neg]
   · rcases pair with ⟨a,b⟩ | ⟨a,b⟩
     · exact Or.inl ⟨by rw [a,Nat.mul_assoc],by rw [b,Nat.mul_assoc]⟩
     · exact Or.inr ⟨by rw [a,Nat.mul_assoc],by rw [b,Nat.mul_assoc]⟩
@@ -281,7 +284,8 @@ private theorem completed_law {F : ℕ → ℕ} (law : seedLaw F) (n : ℕ) :
       | false =>
         cases j with
         | zero =>
-          change G (G 1)=1 ∧ (G 1=1 ∨ _) ∧ _ ∧ _
+          change G (G 1)=1 ∧ (G 1=1 ∨ GlobalDyadicOneTwoRel 1 (G 1)) ∧
+            (Squarefree 1 → 1<1 → G 1 ≠ 1) ∧ G 1 ≤ 8*1
           have one : G 1=1 := on_ray_unit F
           simp [one]
         | succ j =>
@@ -309,8 +313,9 @@ private theorem completed_law {F : ℕ → ℕ} (law : seedLaw F) (n : ℕ) :
           if_neg (not_or.mpr ⟨Ne.symm diff,ray⟩)]
       cases b with
       | false => exact pair (forward false) (returnMap false) actual (by change F t ≤ 8*t; omega)
-      | true => exact pair (forward true) (returnMap true) (double_edge actual odd odd')
-            (by change 2*F t ≤ 8*(2*t); omega)
+      | true =>
+        exact pair (forward true) (returnMap true) (double_edge actual odd odd')
+          (by change 2*F t ≤ 8*(2*t); omega)
   · have fixed : G n=n := if_neg sq
     rw [fixed]
     exact ⟨fixed,Or.inl rfl,fun h => (sq h).elim,by omega⟩
@@ -382,8 +387,8 @@ private theorem number_of_exceptional_rows {F : ℕ → ℕ} (law : seedLaw F) (
 
 /-- Vertices with an exchange longer than a prescribed fraction
 of their own height. -/
-def longRelativeExchanges (G : ℕ → ℕ) (δ : ℝ) (X : ℕ) :=
-  (Icc 1 X).filter (fun n => δ*(n:ℝ)<|(G n:ℝ)-n|)
+def longRelativeExchanges (G : ℕ → ℕ) (δ : ℝ) (X : ℕ) : Finset ℕ :=
+  (Icc 1 X).filter (fun (n : ℕ) => δ*(n:ℝ) < |(G n:ℝ)-n|)
 
 private theorem long_exchanges_from_odd_rows {F : ℕ → ℕ} {δ : ℝ} (dp : 0<δ) (N X : ℕ)
     (near : ∀ t,N ≤ t → Squarefree t → |(F t:ℝ)-t| ≤ δ*t) :
@@ -407,7 +412,7 @@ private theorem long_exchanges_from_odd_rows {F : ℕ → ℕ} {δ : ℝ} (dp : 
         cases b with
         | false => exact (not_lt_of_ge close) far
         | true =>
-          change δ*((2*t:ℕ):ℝ)<|((2*F t:ℕ):ℝ)-((2*t:ℕ):ℝ)| at far
+          change δ*((2*t:ℕ):ℝ) < |((2*F t:ℕ):ℝ)-((2*t:ℕ):ℝ)| at far
           rw [Nat.cast_mul,Nat.cast_mul,Nat.cast_ofNat,←mul_sub,abs_mul,abs_of_pos (by norm_num : (0:ℝ)<2)] at far
           linarith only [far,close]
       cases b with

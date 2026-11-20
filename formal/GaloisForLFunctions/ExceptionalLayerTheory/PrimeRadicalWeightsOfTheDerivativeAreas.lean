@@ -53,12 +53,17 @@ theorem small_rational_power_ratio {m n p : ℕ} (hp : 0<p) (hm : 0 < m) (hn : 0
     exact hsmall.not_ge ((Nat.pow_le_pow_left ha p).trans (Nat.le_of_dvd hpos hd))
   exact power_free_ratio_rigid hp hm hn (fun _ => hb hm hm') (fun _ => hb hn hn') q hq
 
+private theorem rational_cyclotomic_extension (p : ℕ) [NeZero p] :
+    IsCyclotomicExtension {p} ℚ (CyclotomicField p ℚ) := by
+  letI : NeZero (p : ℚ) := ⟨Nat.cast_ne_zero.mpr (NeZero.ne p)⟩
+  exact CyclotomicField.isCyclotomicExtension p ℚ
+
 /-- The p-th power classes of rational numbers remain distinct after
 adjoining the p-th roots of unity. The cyclotomic field has degree p−1. -/
 theorem rational_power_classes_survive_cyclotomic {p : ℕ} (hp : p.Prime) (a : ℚ) :
     (∃ x : CyclotomicField p ℚ, x^p=(a:CyclotomicField p ℚ)) ↔ ∃ q : ℚ, q^p=a := by
-  let K := CyclotomicField p ℚ
   letI : NeZero p := ⟨hp.ne_zero⟩
+  letI := rational_cyclotomic_extension p
   constructor
   · rintro ⟨x,hx⟩
     by_contra! hno
@@ -68,9 +73,9 @@ theorem rational_power_classes_survive_cyclotomic {p : ℕ} (hp : p.Prime) (a : 
       exact hx
     have hmin := minpoly.eq_of_irreducible_of_monic hI he (monic_X_pow_sub_C a hp.ne_zero)
     have hdeg := minpoly.natDegree_le (A:=ℚ) x
-    rw [←hmin,natDegree_X_pow_sub_C,IsCyclotomicExtension.finrank (n:=p) K
+    rw [←hmin,natDegree_X_pow_sub_C,IsCyclotomicExtension.finrank (n:=p) (CyclotomicField p ℚ)
       (cyclotomic.irreducible_rat hp.pos),Nat.totient_prime hp] at hdeg
-    omega
+    exact (Nat.sub_lt hp.pos Nat.zero_lt_one).not_ge hdeg
   · rintro ⟨q,hq⟩
     exact ⟨q,by exact_mod_cast hq⟩
 
@@ -106,7 +111,7 @@ private theorem independent_radical_values {K L ι : Type*} [Field K] [Field L] 
     have hfix (σ : L ≃ₐ[K] L) : σ (b i/b j)=b i/b j := by
       have hh : σ (b i)/b i=σ (b j)/b j := DFunLike.congr_fun he σ
       rw [map_div₀]
-      exact (div_eq_div_iff (map_ne_zero σ (hb j)) (hb j)).mpr
+      exact (div_eq_div_iff ((_root_.map_ne_zero σ).mpr (hb j)) (hb j)).mpr
         (by linear_combination (div_eq_div_iff (hb i) (hb j)).mp hh)
     obtain ⟨v,hv⟩ := (InfiniteGalois.mem_range_algebraMap_iff_fixed (b i/b j)).mpr hfix
     apply hd i j hne v
@@ -123,27 +128,32 @@ private theorem independent_radical_values {K L ι : Type*} [Field K] [Field L] 
   rw [hF,Finset.sum_singleton] at hs
   exact (algebraMap K L).injective (by simpa only [map_zero] using (mul_eq_zero.mp hs).resolve_right (hb i))
 
+section
+variable {p : ℕ}
+local notation "RadicalBase" => CyclotomicField p ℚ
+
 /-- Distinct power classes over the cyclotomic field give independent
 real radical weights of any positive degree. -/
-theorem independent_cyclotomic_radical_weights {ι : Type*} {p : ℕ} (hp : 0<p)
+theorem independent_cyclotomic_radical_weights {ι : Type*} (hp : 0<p)
     (m : ι → ℕ) (hm : ∀ i, 0 < m i)
     (hclasses : ∀ i j, i≠j → ∀ v : CyclotomicField p ℚ, v^p≠(m i:CyclotomicField p ℚ)/m j) :
     LinearIndependent ℚ (fun i => (m i:ℝ)^((p:ℝ)⁻¹)) := by
   classical
-  let K := CyclotomicField p ℚ
   letI : NeZero p := ⟨hp.ne'⟩
-  letI : Algebra K ℂ := (IsAlgClosed.lift : K →ₐ[ℚ] ℂ).toRingHom.toAlgebra
-  let A := algebraicClosure K ℂ
-  letI : IsAlgClosure K A := ⟨HTGeometry.algebraicClosure_isAlgClosed K ℂ,inferInstance⟩
-  letI : IsGalois K A := ⟨⟩
+  letI := rational_cyclotomic_extension p
+  letI : Algebra RadicalBase ℂ := (IsAlgClosed.lift : RadicalBase →ₐ[ℚ] ℂ).toRingHom.toAlgebra
+  let A := algebraicClosure RadicalBase ℂ
+  letI : IsAlgClosure RadicalBase A := ⟨HTGeometry.algebraicClosure_isAlgClosed RadicalBase ℂ,inferInstance⟩
+  letI : IsGalois RadicalBase A := ⟨⟩
   let w (i : ι) : ℝ := (m i:ℝ)^((p:ℝ)⁻¹)
   have hw (i : ι) : ((w i:ℂ)^p)=(m i:ℂ) := by
-    exact_mod_cast Real.rpow_inv_natCast_pow (Nat.cast_nonneg (m i) : (0:ℝ)≤m i) hp.ne'
+    exact_mod_cast Real.rpow_inv_natCast_pow (Nat.cast_nonneg (m i) : (0:ℝ) ≤ m i) hp.ne'
   let b (i : ι) : A := ⟨(w i:ℂ),mem_algebraicClosure_iff.mpr
-    ((IsIntegral.of_pow (R:=K) hp (by
+    ((IsIntegral.of_pow (R:=RadicalBase) hp (by
       rw [hw]
-      simpa only [map_natCast] using (isIntegral_algebraMap (R:=K) (A:=ℂ) (x:=(m i:K))))).isAlgebraic)⟩
-  have hpow (i : ι) : b i^p=algebraMap K A (m i:K) := by
+      rw [← map_natCast (algebraMap RadicalBase ℂ) (m i)]
+      exact isIntegral_algebraMap)).isAlgebraic)⟩
+  have hpow (i : ι) : b i^p=algebraMap RadicalBase A (m i:RadicalBase) := by
     rw [map_natCast]
     exact Subtype.ext (hw i)
   have hne (i : ι) : b i≠0 := by
@@ -151,18 +161,20 @@ theorem independent_cyclotomic_radical_weights {ι : Type*} {p : ℕ} (hp : 0<p)
     have h := hpow i
     rw [he,zero_pow hp.ne',map_natCast] at h
     exact (Nat.cast_ne_zero.mpr (hm i).ne') h.symm
-  have hI := independent_radical_values (IsCyclotomicExtension.zeta_spec p ℚ K) b
-    (fun i => (m i:K)) hne hpow hclasses
+  have hI := independent_radical_values (IsCyclotomicExtension.zeta_spec p ℚ RadicalBase) b
+    (fun i => (m i:RadicalBase)) hne hpow hclasses
   apply linearIndependent_iff'.mpr
   intro S c h i hi
-  have hh : ∑ k ∈ S, ((c k:K) • b k)=0 := by
+  have hh : ∑ k ∈ S, ((c k:RadicalBase) • b k)=0 := by
     apply (algebraMap A ℂ).injective
     have he (k : ι) : algebraMap A ℂ (b k)=(w k:ℂ) := rfl
     simp only [Algebra.smul_def,map_sum,map_mul,map_zero,map_ratCast,he]
     simp only [Rat.smul_def] at h
     exact_mod_cast h
-  have hc := linearIndependent_iff'.mp hI S (fun k => (c k:K)) hh i hi
+  have hc := linearIndependent_iff'.mp hI S (fun k => (c k:RadicalBase)) hh i hi
   exact_mod_cast hc
+
+end
 
 /-- Real roots from distinct rational p-th power classes are linearly
 independent, with no limit on the size or number of the radicands. -/

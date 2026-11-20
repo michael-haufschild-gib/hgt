@@ -29,9 +29,10 @@ private theorem squarefree_subset_twist {N m : ℕ} (hm : m∈primitiveSignProdu
   have point (p : P) : ((signsFromPrimeSubset P A p:ℤˣ):ℤ) = sign p := by
     unfold signsFromPrimeSubset sign
     split <;> rfl
-  simp only [primeSignTwist,point,prod_coe_sort]
+  simp only [primeSignTwist,point]
+  rw [prod_coe_sort (s:=P) (f:=fun p : ℕ => sign p ^ m.factorization p)]
   have subset : m.primeFactors⊆P := sign_product_support hm
-  rw [←prod_subset subset (fun p _ hp => by
+  rw [←prod_subset (f:=fun p => sign p ^ m.factorization p) subset (fun p _ hp => by
     have e : m.factorization p=0 := by
       simpa only [← Nat.support_factorization,Finsupp.notMem_support_iff] using hp
     rw [e,pow_zero])]
@@ -96,7 +97,9 @@ private theorem subset_synthesis_eq_reading (N : ℕ) (K : ℝ → ℝ) (A : Fin
   rw [blockSynthesis,sum_congr rfl (fun T _ => e T),sum_mode_support,signed_product_expansion]
   apply sum_congr rfl
   intro m hm
-  simp only [f,Nat.prod_primeFactors_of_squarefree (mem_filter.mp hm).2,squarefree_subset_twist hm A,mul_comm]
+  have twist : primeSignTwist P (signsFromPrimeSubset P A) m = blockCharacter m.primeFactors A :=
+    squarefree_subset_twist hm A
+  simp only [f,Nat.prod_primeFactors_of_squarefree (mem_filter.mp hm).2,twist,mul_comm]
 
 /-- At least the squared ratio of ordinary to rank-weighted energy,
 divided by four, of all sign masks have a large off-diagonal signal. -/
@@ -125,7 +128,7 @@ theorem many_prime_signs_at_bounded_rank (N q : ℕ) (K : ℝ → ℝ)
       apply rank m hm
       simpa only [moebiusBlockCoefficient,if_pos ht,Nat.prod_primeFactors_of_squarefree (mem_filter.mp hm).2] using h
     · exact False.elim (h (if_neg ht))
-  simpa only [product_rank_energy,subset_synthesis_eq_reading] using
+  simpa only [P,E,product_rank_energy,subset_synthesis_eq_reading] using
     block_low_rank_large_fraction P (moebiusBlockCoefficient N K) q degree
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram

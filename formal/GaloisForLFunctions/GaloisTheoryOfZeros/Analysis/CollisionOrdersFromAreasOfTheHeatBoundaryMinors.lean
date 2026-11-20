@@ -29,10 +29,10 @@ theorem IsCollision.contour_minor_area_laws {τ z : ℂ} {m : ℕ} (hc : IsColli
     ∀ᶠ d in 𝓝[>] (0:ℝ), ∀ q : ℕ, 2≤q → ∀ j : ℕ,
       ∃ r : ℝ, 0<r ∧ ∀ s : ℝ, 0<s → s≤r →
         Tendsto (heatMinorArea τ z d q j s) atTop
-          (𝓝 (if q≤m then (q.choose 2:ℝ)^(2/((j+1:ℕ):ℝ)) else 0)) := by
+          (𝓝 (if q ≤ m then (q.choose 2:ℝ)^(2/((j+1:ℕ):ℝ)) else 0)) := by
   filter_upwards [hc.contourMinor_orders] with d hd q hq j
   let F := fun w : ℂ => localHeatMomentMinor z d q (τ+w)
-  by_cases hm : q≤m
+  by_cases hm : q ≤ m
   · have hord := (hd q).1 hm
     have ha : AnalyticAt ℂ F 0 := by
       by_contra hn
@@ -58,7 +58,7 @@ theorem heat_three_moment_area_at_place (τ z : ℂ) :
   let m := analyticOrderNatAt (complexHeat τ) z
   have hc : IsCollision τ z m := isCollision_iff_analyticOrderAt.mpr
     (Nat.cast_analyticOrderNatAt (analyticOrderAt_complexHeat_ne_top τ z)).symm
-  have hm : (τ,z) ∈ multipleZeros ↔ 2≤m := by
+  have hm : (τ,z) ∈ multipleZeros ↔ 2 ≤ m := by
     rw [←heatIntersectionMultiplicity_ne_zero_iff,hc.heatIntersectionMultiplicity_eq,Nat.choose_ne_zero_iff]
   filter_upwards [hc.contour_minor_area_laws] with d hd j
   simpa only [hm,Nat.choose_self,Nat.cast_one,Real.one_rpow] using hd 2 le_rfl j

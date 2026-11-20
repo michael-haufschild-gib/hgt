@@ -68,7 +68,7 @@ theorem block_fourth_rank_bound (P : Finset ℕ) (c : Finset ℕ → ℝ) :
     (∑ A ∈ P.powerset, (blockSynthesis P c A)^4) ≤
       (2:ℝ)^P.card*(blockRankEnergy P 3 c)^2 := by
   induction P using Finset.induction_on generalizing c with
-  | empty => simp [blockSynthesis,blockRankEnergy,blockCharacter] <;> ring
+  | empty => simp [blockSynthesis,blockRankEnergy,blockCharacter,←pow_mul]
   | @insert p P hp ih =>
     let b (T : Finset ℕ) := c (insert p T)
     let f := blockSynthesis P c
@@ -194,7 +194,7 @@ theorem block_low_rank_large_fraction (P : Finset ℕ) (c : Finset ℕ → ℝ) 
     have chain := hh.trans (mul_le_mul_of_nonneg_left hn (by positivity))
     rw [mul_pow,←pow_mul,(Nat.mul_comm q 2),pow_mul,show (3:ℝ)^2=9 by norm_num] at chain
     have bound : (2:ℝ)^P.card≤4*9^q*large.card := by
-      apply le_of_mul_le_mul_right (b:=E^2) _ (sq_pos_of_pos hpos)
+      apply le_of_mul_le_mul_right _ (sq_pos_of_pos hpos)
       linarith only [chain]
     exact_mod_cast bound
 

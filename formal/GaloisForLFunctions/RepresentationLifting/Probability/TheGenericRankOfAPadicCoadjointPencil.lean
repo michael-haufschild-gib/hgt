@@ -99,15 +99,15 @@ affine space, including slices with arbitrary field-valued coefficients. -/
 theorem full_padic_affine_rank_stratum (P : Matrix (Fin a) (Fin b) (MvPolynomial (Fin n) ℚ_[p])) :
     ∃ (r : ℕ) (i : Fin r → Fin a) (j : Fin r → Fin b),
       (P.submatrix i j).det≠0 ∧ (∀ y, (P.map (MvPolynomial.eval y)).rank≤r) ∧
-      (∀ᵐ x ∂RHTower.fieldOnePadicProductUnitBallNormalizedHaar (ι:=Fin n) (fun _ => p),
+      (∀ᵐ x ∂ RHTower.fieldOnePadicProductUnitBallNormalizedHaar (ι:=Fin n) (fun _ => p),
         (P.map (MvPolynomial.eval x)).rank=r ∧ ((P.map (MvPolynomial.eval x)).submatrix i j).det≠0) := by
   obtain ⟨r,i,j,hn,ht,he⟩ := polynomial_maximal_minor_certificate (RingHom.id ℚ_[p]) Function.injective_id P
   refine ⟨r,i,j,hn,ht,?_⟩
   have hnull := mvPolynomial_product_null n (fun _ => RHTower.fieldOnePadicUnitBallNormalizedHaar p) _ hn
-  have ha : ∀ᵐ x ∂RHTower.fieldOnePadicProductUnitBallNormalizedHaar (ι:=Fin n) (fun _ => p),
+  have ha : ∀ᵐ x ∂ RHTower.fieldOnePadicProductUnitBallNormalizedHaar (ι:=Fin n) (fun _ => p),
       MvPolynomial.eval x (P.submatrix i j).det≠0 := by
     rw [ae_iff]
-    simpa using hnull
+    simpa only [RHTower.fieldOnePadicProductUnitBallNormalizedHaar, not_not] using hnull
   filter_upwards [ha] with x hx
   exact ⟨he x hx,(fieldMinor_zero_iff (RingHom.id ℚ_[p]) Function.injective_id P x i j).not.mpr hx⟩
 
@@ -130,7 +130,8 @@ theorem ae_affine_padic_minimal_stabilizer
       (padicFieldMatrix p P z).mulVecLin.finrank_range_add_finrank_ker
   have xx := ranknull x
   have yy := ranknull y
-  change Module.finrank _ (LinearMap.ker (padicFieldMatrix p P x).mulVecLin) ≤ _
+  change Module.finrank ℚ_[p] (LinearMap.ker (padicFieldMatrix p P x).mulVecLin) ≤
+    Module.finrank ℚ_[p] (LinearMap.ker (padicFieldMatrix p P y).mulVecLin)
   omega
 
 end

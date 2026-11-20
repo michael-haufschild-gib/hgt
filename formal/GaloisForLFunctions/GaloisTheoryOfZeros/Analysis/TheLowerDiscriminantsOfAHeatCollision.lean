@@ -63,7 +63,7 @@ the number of sheets. Beyond that order every minor vanishes over either field. 
 theorem clusterMomentMinor_pos {m q : ℕ} (v : Fin m → ℝ) (hv : Function.Injective v) (hq : q ≤ m) :
     0 < clusterMomentMinor v q := by
   let f : Fin q → Fin m := Fin.castLE hq
-  have hf : Function.Injective f := fun i j he => Fin.ext (congrArg Fin.val he)
+  have hf : Function.Injective f := fun _ _ he => Fin.ext (congrArg (Fin.val : Fin m → ℕ) he)
   have h := sq_pos_of_ne_zero (det_vandermonde_ne_zero_iff.mpr (hv.comp hf))
   have hs := (sum_pos' (s := (univ : Finset (Fin q → Fin m)))
     (fun g _ => sq_nonneg ((vandermonde (fun j => v (g j))).det)) ⟨f,mem_univ _,h⟩)
@@ -153,9 +153,11 @@ private theorem even_minor {τ z : ℂ} {m : ℕ} (hc : IsCollision τ z m) (q :
   filter_upwards [Filter.eventually_all.mpr h] with s hs
   unfold collisionMomentMinor clusterMomentMinor
   congr 1
-  ext i j
+  apply Matrix.ext
+  intro i j
   simp only [Matrix.of_apply,hs]
-  exact Equiv.sum_comp e _
+  exact Equiv.sum_comp e (fun a : Fin m =>
+    (collisionZero τ z m ((orderedHeatProfileRoot m a : ℝ) : ℂ) s)^(i.val+j.val))
 
 /-- In ordinary complex time each lower determinant has order q choose 2.
 Its normalized leading coefficient is the positive Hermite minor. -/
@@ -182,7 +184,8 @@ theorem IsCollision.exists_momentMinor_germ {τ z : ℂ} {m q : ℕ} (hc : IsCol
   have hD : AnalyticAt ℂ D 0 := (analyticAt_id.pow _).mul hV0
   refine ⟨D,V,hD,hV0,hz,fun _ => rfl,?_,hD.analyticOrderAt_eq_natCast.mpr ⟨V,hV0,hne,by simp [D]⟩⟩
   filter_upwards [ball_mem_nhds (0:ℂ) hR] with s hs
-  rw [hfactor,D,hVs s hs]
+  change (s^2)^(q.choose 2)*V (s^2) = _
+  rw [hfactor,hVs s hs]
 
 /-- The quadratic moment determinant has a simple zero in physical time at every
 multiple collision. Its derivative is real and strictly positive. -/
@@ -193,7 +196,9 @@ theorem IsCollision.two_moment_derivative {τ z : ℂ} {m : ℕ} (hc : IsCollisi
   have hf : D = fun w => w*V w := funext fun w => by simpa using hD w
   refine ⟨D,he,by simp [hf],?_⟩
   rw [hf,←h₀]
-  simpa using (hasDerivAt_id (0:ℂ)).mul hV.differentiableAt.hasDerivAt
+  change HasDerivAt (id * V) (V 0) (0:ℂ)
+  simpa only [id_eq,one_mul,zero_mul,add_zero] using
+    (hasDerivAt_id (𝕜 := ℂ) (0:ℂ)).mul hV.differentiableAt.hasDerivAt
 
 
 end

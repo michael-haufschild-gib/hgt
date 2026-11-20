@@ -31,7 +31,8 @@ theorem rational_squared_norm_of_abelian_radical {K : Type*} [Field K] [CharZero
   have hfix (σ : K ≃ₐ[ℚ] K) : σ (x*C x)=x*C x := by
     have hσ : σ (C x)=C (σ x) := DFunLike.congr_fun (mul_comm σ C) x
     apply e.injective
-    rw [map_mul,hσ,map_mul,map_mul,hc,hc,Complex.mul_conj,Complex.mul_conj,
+    change e (σ (x * C x)) = e (x * C x)
+    rw [map_mul σ,hσ,map_mul e,map_mul e,hc,hc,Complex.mul_conj,Complex.mul_conj,
       Complex.normSq_eq_norm_sq,Complex.normSq_eq_norm_sq,he]
   obtain ⟨b,hb⟩ := (InfiniteGalois.mem_range_algebraMap_iff_fixed (x*C x)).mpr hfix
   have hnorm := congrArg e hb

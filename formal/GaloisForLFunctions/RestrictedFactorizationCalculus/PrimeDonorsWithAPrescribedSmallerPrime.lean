@@ -21,8 +21,8 @@ namespace GaloisForLFunctions.RestrictedFactorizationCalculus
 private theorem eventually_donor_counts {p α : ℝ} (hp : 2 ≤ p) (ha : 1<α) (ha2 : α ≤ 5/4) :
     ∀ᶠ T : ℝ in atTop, (windowPrimes T (α*T)).card ≤ (windowPrimes (p*T) (α*(p*T))).card ∧
       ((α-1)/2)*T/Real.log T ≤ ((windowPrimes T (α*T)).card:ℝ) := by
-  obtain ⟨U,_,upper⟩ := exists_card_windowPrimes_le 1 (ε := 1/10) (by norm_num)
-  obtain ⟨L,_,lower⟩ := exists_card_windowPrimes_div_ge 1 (ε := 1/10) (by norm_num)
+  obtain ⟨U,_,upper⟩ := PrimeCells.exists_card_windowPrimes_le 1 (ε := 1/10) (by norm_num)
+  obtain ⟨L,_,lower⟩ := PrimeCells.exists_card_windowPrimes_div_ge 1 (ε := 1/10) (by norm_num)
   filter_upwards [eventually_ge_atTop (max 3 (max U L)),
     Real.tendsto_log_atTop.eventually_ge_atTop (1/(α-1)),
     Real.tendsto_log_atTop.eventually_ge_atTop (2*Real.log (2*p))] with T hT hlog hlogP
@@ -69,7 +69,8 @@ private theorem eventually_donor_counts {p α : ℝ} (hp : 2 ≤ p) (ha : 1<α) 
   constructor
   · apply Nat.cast_le.mp (hu.trans (le_trans ?_ hpr))
     apply div_le_div_of_nonneg_right _ hL.le
-    nlinarith only [mul_le_mul_of_nonneg_right hp (mul_nonneg hα.le hT0.le)]
+    have nonneg := mul_nonneg hα.le hT0.le
+    nlinarith only [mul_le_mul_of_nonneg_right hp nonneg,nonneg]
   · apply le_trans _ hsingle
     apply div_le_div_of_nonneg_right _ hL.le
     nlinarith only [mul_nonneg hα.le hT0.le]
@@ -115,10 +116,9 @@ theorem arbitrarily_large_donor_mass {p J : ℕ} (hp : p.Prime) (hJ : 0<J) (V : 
   have pmem {i r : ℕ} (h : r ∈ R i) : (f i r).Prime ∧ (p:ℝ)*T i<f i r ∧ (f i r:ℝ) ≤ α*((p:ℝ)*T i) :=
     (mem_windowPrimes (mul_nonneg hp0.le (t0 i).le) (by positivity)).1 (rankedSlot_mem (supply i).1 h)
   have sep {i j : ℕ} (h : i<j) : B*T i ≤ T j := by
-    rw [show B*T i=B^((K+1)*(i+1)+1) by rw [pow_succ,mul_comm]; rfl]
+    rw [show B*T i=B^((K+1)*(i+1)+1) by rw [pow_succ,mul_comm]]
     apply pow_le_pow_right₀ hB.le
-    have hh := Nat.mul_le_mul_left (K+1) (Nat.succ_le_succ h)
-    omega
+    exact Nat.mul_lt_mul_of_pos_left (Nat.succ_lt_succ h) (Nat.succ_pos K)
   have unique {i j : ℕ} {x : ℝ} (hi : T i<x ∧ x ≤ B*T i) (hj : T j<x ∧ x ≤ B*T j) : i=j := by
     rcases lt_trichotomy i j with h | h | h
     · exact (hj.1.not_ge (hi.2.trans (sep h))).elim
@@ -142,12 +142,12 @@ theorem arbitrarily_large_donor_mass {p J : ℕ} (hp : p.Prime) (hJ : 0<J) (V : 
       dsimp only [T]; rw [Real.log_pow]; push_cast; ring
     have hlogt : 0<Real.log (T i) := by rw [htlog]; positivity
     calc C*(1/((i:ℝ)+1)) = (((α-1)/2)*T i/Real.log (T i))*(1/(α*T i)) := by
-           rw [htlog]; dsimp only [C]; field_simp; ring
+           rw [htlog]; dsimp only [C]; field_simp [(t0 i).ne']
          _ ≤ ((R i).card:ℝ)*(1/(α*T i)) := mul_le_mul_of_nonneg_right (supply i).2 (by positivity)
          _ = ∑ _r ∈ R i,1/(α*T i) := by simp
          _ ≤ _ := sum_le_sum (fun r hr => one_div_le_one_div_of_le
            (Nat.cast_pos.mpr (rmem hr).1.pos) (rmem hr).2.2)
-  obtain ⟨N,hN⟩ := eventually_atTop.mp (tendsto_sum_range_one_div_nat_succ_atTop.eventually_ge_atTop (L/C))
+  obtain ⟨N,hN⟩ := eventually_atTop.mp (Real.tendsto_sum_range_one_div_nat_succ_atTop.eventually_ge_atTop (L/C))
   let I := range N
   let D := I.biUnion R
   have address {r : ℕ} (h : r ∈ D) : ∃ i : I,r ∈ R i := by
@@ -195,7 +195,7 @@ theorem arbitrarily_large_donor_mass {p J : ℕ} (hp : p.Prime) (hJ : 0<J) (V : 
     have gapJ : (α-1)*((p:ℝ)*T i) ≤ ((p:ℝ)*T i)/J := by
       rw [show α-1=1/(4*(J:ℝ)) by dsimp [α]; ring]
       field_simp [hj0.ne']
-      nlinarith only [mul_nonneg hp0.le (t0 i).le]
+      linarith only [t0 i]
     refine ⟨hr',hv,hv',?_,(gap.trans gapJ).trans (div_le_div_of_nonneg_right
       (mul_le_mul_of_nonneg_left hrlo.le hp0.le) hj0.le),
       (gap.trans gapJ).trans (div_le_div_of_nonneg_right hvlo.le hj0.le)⟩

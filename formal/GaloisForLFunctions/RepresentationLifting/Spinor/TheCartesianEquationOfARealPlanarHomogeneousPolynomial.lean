@@ -17,7 +17,7 @@ symmetry under reversal.
 
 noncomputable section
 open Complex
-open scoped ComplexConjugate
+open scoped ComplexConjugate Polynomial
 namespace GaloisForLFunctions.RepresentationLifting.Spinor
 
 private abbrev Plane := MvPolynomial (Fin 2) ℂ
@@ -27,8 +27,8 @@ private def axes : Fin 2 → ℂ[X] :=
 
 private def chart : Plane →ₐ[ℂ] ℂ[X] := MvPolynomial.aeval axes
 
-private lemma chart_C (z : ℂ) : chart (MvPolynomial.C z)=Polynomial.C z := MvPolynomial.aeval_C _
-private lemma chart_X (j : Fin 2) : chart (MvPolynomial.X j)=axes j := MvPolynomial.aeval_X _
+private lemma chart_C (z : ℂ) : chart (MvPolynomial.C z)=Polynomial.C z := MvPolynomial.aeval_C axes z
+private lemma chart_X (j : Fin 2) : chart (MvPolynomial.X j)=axes j := MvPolynomial.aeval_X axes j
 
 private theorem chart_derivative (Q : Plane) :
     (chart Q).derivative=chart (MvPolynomial.pderiv 0 Q)-Polynomial.C I*chart (MvPolynomial.pderiv 1 Q) := by
@@ -67,6 +67,21 @@ private theorem symbol_coordinate_identity {R : Type*} [CommRing R]
       4*((a^2+b^2)*(h+l)+(p-2)*(a^2*h+2*a*b*k+b^2*l)) := by
   linear_combination (-2*p*b^2*(h+l)+(p-2)*(2*b^2*(h-l)-8*a*b*k))*hi
 
+private theorem chart_cleared_symbol (p : ℂ) (Q : Plane) :
+    let X := MvPolynomial.pderiv (R:=ℂ) (0:Fin 2)
+    let Y := MvPolynomial.pderiv (R:=ℂ) (1:Fin 2)
+    let a := chart (X Q)
+    let b := chart (Y Q)
+    let h := chart (X (X Q))
+    let k := chart (X (Y Q))
+    let l := chart (Y (Y Q))
+    chart (clearedPLaplacian p Q) =
+      (a^2+b^2)*(h+l)+Polynomial.C (p-2)*(a^2*h+2*a*b*k+b^2*l) := by
+  dsimp only
+  simp only [clearedPLaplacian,euclideanPolynomialLaplacian,infinityPolynomial,Fin.sum_univ_two,
+    map_add,map_mul,map_pow,chart_C,←mixed_plane_partials Q]
+  ring
+
 /-- In this chart the polar symbol is four times the physical Cartesian
 symbol, for every complex homogeneous form. -/
 theorem cartesian_planar_symbol_in_chart {n : ℕ} (hn : 0<n) (p : ℂ) (Q : Plane)
@@ -103,14 +118,13 @@ theorem cartesian_planar_symbol_in_chart {n : ℕ} (hn : 0<n) (p : ℂ) (Q : Pla
     rw [hB',hB]
     simp only [secondPolarDerivative,hnat,ha,hb] at hwA hwB
     linear_combination hwA+i*hwB+l*hi-Polynomial.X*l*hi
-  simp only [planarPolarSymbol,hD,hB',hA',hA,hB,clearedPLaplacian,euclideanPolynomialLaplacian,
-    infinityPolynomial,Fin.sum_univ_two,map_add,map_mul,map_pow,chart_C]
-  change Polynomial.C (2*p)*(a-i*b)*(a+i*b)*(h+l)+Polynomial.C (p-2)*((a-i*b)^2*(h+2*i*k-l)+
-    (a+i*b)^2*(h-2*i*k-l))=4*((a^2+b^2)*(h+l)+Polynomial.C (p-2)*
-    (a*a*h+a*b*k+(b*a*chart (Y (X Q))+b*b*l)))
-  rw [hmix]
+  dsimp only [planarPolarSymbol]
+  have hcart : chart (clearedPLaplacian p Q) =
+      (a^2+b^2)*(h+l)+Polynomial.C (p-2)*(a^2*h+2*a*b*k+b^2*l) :=
+    chart_cleared_symbol p Q
+  rw [hD,hB',hA',hA,hB,hcart]
   simp only [map_mul,map_sub,map_ofNat]
-  exact (symbol_coordinate_identity (Polynomial.C p) i a b h k l hi).trans (by ring)
+  exact symbol_coordinate_identity (Polynomial.C p) i a b h k l hi
 
 private def polarAxes : Fin 2 → Plane :=
   ![MvPolynomial.X 0+MvPolynomial.X 1,MvPolynomial.C (-I)*(MvPolynomial.X 0-MvPolynomial.X 1)]
@@ -124,6 +138,7 @@ private theorem change_injective : Function.Injective isotropicChange := by
   have hi : (MvPolynomial.C I : Plane)^2= -1 := by rw [←map_pow,Complex.I_sq,map_neg,map_one]
   have hhalf : (2:Plane)*MvPolynomial.C (1/2:ℂ)=1 := by
     rw [←map_ofNat MvPolynomial.C 2,←map_mul,show (2:ℂ)*(1/2)=1 by norm_num,map_one]
+  simp only [one_div] at hhalf
   have hinv : undo.comp isotropicChange=AlgHom.id ℂ Plane := by
     apply MvPolynomial.algHom_ext
     intro j
@@ -143,7 +158,8 @@ private theorem chart_injective_in_degree {n : ℕ} {Q : Plane} (hq : Q.IsHomoge
   have hcomp : E.comp isotropicChange=chart := by
     apply MvPolynomial.algHom_ext
     intro j
-    fin_cases j <;> simp [E,isotropicChange,polarAxes,chart,axes,Polynomial.C_eq_algebraMap]
+    fin_cases j <;> simp [E,isotropicChange,polarAxes,chart,axes,Polynomial.C_eq_algebraMap] <;>
+      rw [map_neg,neg_mul]
   have hp := Polynomial.homogenize_eq_of_isHomogeneous hhom ((DFunLike.congr_fun hcomp Q).trans hz)
   apply change_injective
   simpa only [Polynomial.homogenize_zero,map_zero] using hp.symm
@@ -189,7 +205,8 @@ private theorem real_chart_coefficients {n : ℕ} (P : MvPolynomial (Fin 2) ℝ)
       have h := reflects_mul (reflects_real (P.coeff m)) (reflects_mul (reflects_pow (axes_reflect 0) (m 0))
         (reflects_pow (axes_reflect 1) (m 1)))
       simpa only [Nat.zero_add,hcount,MvPolynomial.map_monomial,chart,MvPolynomial.aeval_monomial,
-        Finsupp.prod_fintype,Fin.prod_univ_two,Complex.ofRealHom_apply,←Polynomial.C_eq_algebraMap] using h
+        Finsupp.prod_fintype m (fun i k => axes i ^ k) (fun _ => pow_zero _),
+        Fin.prod_univ_two,Complex.ofRealHom_eq_coe,←Polynomial.C_eq_algebraMap] using h
   have h := hS P.support (fun _ hx => hx)
   rw [←map_sum,←map_sum,←P.as_sum] at h
   refine ⟨h.1,fun j hj => ?_⟩
@@ -210,7 +227,8 @@ theorem real_homogeneous_cartesian_p_laplacian {n : ℕ} (hn : 2≤n) (P : MvPol
     change clearedPLaplacian (p:ℂ) Q=0 at h
     rw [h,map_zero,mul_zero] at hs
     have hz := (homogeneous_planar_symbol_rigidity hp hp₂ hn (chart Q) (real_chart_coefficients P hP)).mp hs
-    exact MvPolynomial.map_injective Complex.ofReal_injective ((chart_injective_in_degree hQ hz).trans (map_zero _).symm)
+    exact MvPolynomial.map_injective Complex.ofRealHom Complex.ofReal_injective
+      ((chart_injective_in_degree hQ hz).trans (map_zero _).symm)
   · rintro rfl
     simp [clearedPLaplacian,infinityPolynomial,euclideanPolynomialLaplacian]
 

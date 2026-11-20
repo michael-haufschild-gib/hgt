@@ -63,7 +63,7 @@ private theorem difference_det (k : ℕ) : ((1:Matrix (Fin (k+1)) (Fin (k+1)) �
   · simp [Matrix.sub_apply,hn]
   · intro i j hij
     have h : j < i := hij
-    simp [Matrix.sub_apply,Matrix.one_apply,h.ne',hn i j h.le]
+    simp [Matrix.sub_apply,h.ne',hn i j h.le]
 
 /-- Consecutive column differences first appear on the diagonal, always as
 two. Thus the centered sign readings have determinant 2^k on any k+1
@@ -88,12 +88,12 @@ theorem det_quotientSignSamples {k : ℕ} (d : Fin (k+1) ↪o ℕ) :
       cases i using Fin.cases with
       | zero => simp [A,quotientSignSamples]
       | succ i =>
-        have h₁ : i.castSucc < j.castSucc := by omega
-        have h₂ : i.castSucc < j.succ := by omega
+        have h₁ : i.castSucc < j.castSucc := Nat.lt_of_succ_lt_succ hij
+        have h₂ : i.castSucc < j.succ := Nat.lt_succ_of_lt h₁
         simp [A,quotientSignSamples,early _ _ h₁,early _ _ h₂]
   have hd (j : Fin k) : B j.succ j.succ = 2 := by
     rw [hs]
-    have hj : j.castSucc < j.succ := by omega
+    have hj : j.castSucc < j.succ := Nat.lt_succ_self j.val
     simp [A,quotientSignSamples,early _ _ hj,Nat.div_self]
   have hfirst : B 0 0=1 := by rw [h0]; simp [A,quotientSignSamples]
   have he : B.det=2^k := by

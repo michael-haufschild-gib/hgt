@@ -39,7 +39,9 @@ private theorem filtered_hasSum (h : CompactPulse) (t : ℝ)
   induction n generalizing k with
   | zero =>
     have H := (summable_radiation_kernel h k 0).hasSum
-    simpa only [filteredMass,pow_zero,one_mul,mul_one,releaseFilter,radiationSample] using H
+    change HasSum (fun i : ℕ => multiplier t (radiationNode i)^0 *
+      (radiationNode i^k * stepDecrement h i 1)) (radiationSample h k)
+    simpa only [pow_zero,one_mul,mul_one,radiationSample] using H
   | succ n ih =>
     refine ((((ih k).mul_left (1-t^2)).add ((ih (k+1)).mul_left (2*t))).sub (ih (k+2))).congr_fun ?_
     intro i
@@ -51,7 +53,10 @@ private theorem node_anti : Antitone radiationNode := by
   exact Real.exp_le_exp.mpr (neg_le_neg (Nat.cast_le.mpr h))
 
 private theorem node_succ (i : ℕ) : radiationNode (i+1) = radiationNode i*radiationNode 1 := by
-  simp only [radiationNode,Nat.cast_add_one,Nat.cast_one,neg_add_rev,Real.exp_add,mul_comm]
+  unfold radiationNode
+  rw [← Real.exp_add]
+  congr 1
+  push_cast <;> ring
 
 /-- Distance from a release node to its nearest distinct node, on its right in time. -/
 def releaseGap (j : ℕ) := radiationNode j*(1-radiationNode 1)
@@ -151,11 +156,11 @@ theorem releaseFilter_stability (f g : ℕ → ℝ) {t : ℝ} (ht : 0 ≤ t) (ht
     change |D (k+2)| ≤ B at h₂
     have heq : releaseFilter t f (n+1) k-releaseFilter t g (n+1) k =
         (1-t^2)*D k+2*t*D (k+1)-D (k+2) := by dsimp only [releaseFilter,D]; ring
-    rw [heq,pow_succ]
+    rw [heq,pow_succ (3:ℝ) n]
     calc _ ≤ |(1-t^2)*D k|+|2*t*D (k+1)|+|D (k+2)| :=
-            (abs_sub _ _).trans (add_le_add_right (abs_add_le ..) _)
+            (abs_sub _ _).trans (add_le_add (abs_add_le ..) le_rfl)
          _ ≤ (1-t^2)*B+2*t*B+B := by
-            simp only [abs_mul,abs_of_nonneg hb,abs_of_nonneg (show 0 ≤ 2*t by positivity)]
+            simp only [abs_mul,abs_of_nonneg hb,abs_of_nonneg ht,abs_of_nonneg (show (0:ℝ) ≤ 2 by norm_num)]
             exact add_le_add (add_le_add (mul_le_mul_of_nonneg_left h₀ hb)
               (mul_le_mul_of_nonneg_left h₁ (by positivity))) h₂
          _ ≤ _ := by
