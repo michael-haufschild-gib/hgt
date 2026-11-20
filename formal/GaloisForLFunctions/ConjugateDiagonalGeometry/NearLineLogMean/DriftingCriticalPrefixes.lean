@@ -239,7 +239,7 @@ theorem many_critical_prefixes_on_a_height_band {b d : ℝ} (hb : b < zetaZeroWi
     rw [Real.mul_rpow (by norm_num) hp.le] at hr
     refine hku.trans ((mul_le_mul (mul_le_mul_of_nonneg_left hlen hK) hr (by positivity) (by positivity)).trans_eq ?_)
     dsimp only [M,U]
-    rw [show zetaZeroWidth+e=(zetaZeroWidth+a)+a by dsimp only [a];ring,Real.rpow_add hp]
+    rw [show zetaZeroWidth+e=(zetaZeroWidth+a)+a by dsimp only [a];ring,Real.rpow_add hp (zetaZeroWidth+a) a]
     ring
   by_contra! hsmall
   let S := largeVerticalPrefixes u H N
@@ -330,7 +330,7 @@ theorem cutoff_moment_power_squeeze {p ε : ℝ} (hp : 0 < p) (hε : 0 < ε) :
       have hh : (k:ℝ)+1 ≤ X := add_le_add_left ((Nat.cast_le (α := ℝ)).mpr (mem_Icc.mp hk).2) _
       have hs := Real.rpow_le_rpow (by positivity) hh (add_nonneg zetaZeroWidth_nonneg ha.le)
       refine (hsec k u).trans ((mul_le_mul (mul_le_mul_of_nonneg_left hs hC) hy (by positivity) (by positivity)).trans_eq ?_)
-      rw [show zetaZeroWidth+2*a=(zetaZeroWidth+a)+a by ring,Real.rpow_add hXpos]
+      rw [show zetaZeroWidth+2*a=(zetaZeroWidth+a)+a by ring,Real.rpow_add hXpos (zetaZeroWidth+a) a]
       dsimp only [B]; ring
     have sm := sum_le_sum (s:=Icc 1 N) (fun j hj => Real.rpow_le_rpow (norm_nonneg _)
       (hU j hj) hp.le)

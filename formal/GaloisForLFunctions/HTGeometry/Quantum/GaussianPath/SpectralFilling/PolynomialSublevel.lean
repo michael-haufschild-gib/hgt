@@ -187,7 +187,7 @@ theorem gaussian_integerPolynomial_sublevel {n : ℕ} (p : MvPolynomial (Fin n) 
     simp only [f,MvPolynomial.totalDegree,MvPolynomial.support_map_of_injective p hinj]
   obtain ⟨m,hm⟩ := lexHeadCoefficient_is_coeff f
   have he : ((p.coeff m : ℤ) : ℂ) = lexHeadCoefficient f := by
-    simpa only [f,ι,MvPolynomial.coeff_map,Int.castRingHom_apply] using hm
+    simpa only [f,ι,MvPolynomial.coeff_map,Int.coe_castRingHom] using hm
   have hn : p.coeff m ≠ 0 := by
     intro h
     exact lexHeadCoefficient_ne_zero f hf (by rw [← he,h,Int.cast_zero])

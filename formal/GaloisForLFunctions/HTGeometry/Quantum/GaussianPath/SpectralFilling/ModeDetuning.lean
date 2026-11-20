@@ -77,18 +77,23 @@ private theorem abs_orbit_le_one_mode {I : Type*} [Fintype I]
     _ = (∏ s ∈ Finset.univ.erase σ, F s)*F σ := (Finset.prod_erase_mul _ _ (Finset.mem_univ σ)).symm
     _ ≤ _ := by rw [mul_comm]; exact mul_le_mul_of_nonneg_left hrest (abs_nonneg _)
 
-/-- For a fixed nonzero balanced integer mode, bound the probability that
-any labeling has the indicated small detuning while all energies are at most
-R in absolute value. The constants are determined by the physical polynomial. -/
+/-- The event that some labeling has a small energy sum at spectral cutoff R.
+The factor with exponent D!−1 bounds the other factors of the orbit product. -/
+def pauliModeNearResonance (k : ℕ) (m : ChainEnergyIndex k → ℤ) (R r : ℝ) :
+    Set (ChainCoordinate k → ℝ) :=
+  {x | let E := (isHermitian_spectralEnsembleMatrix (chainPauliFin_isHermitian (k+3)) x).eigenvalues
+       let p := pauliSpectralModePolynomial k m
+       (∀ i, |E i| ≤ R) ∧ ∃ σ : Equiv.Perm (ChainEnergyIndex k),
+         |∑ i, (m i:ℝ)*E (σ i)| * ((∑ i, |(m i:ℝ)|)*R)^(Fintype.card (Equiv.Perm (ChainEnergyIndex k))-1)
+           < ‖lexHeadCoefficient p‖*r^p.totalDegree}
+
+/-- For a nonzero balanced mode on the path, the near-resonance probability
+is at most 2dr, with d the degree of the physical obstruction polynomial. -/
 theorem gaussian_pauli_mode_detuning_sublevel (k : ℕ) (m : ChainEnergyIndex k → ℤ)
     (hbal : SpectralCharacterBalanced m) (hm : m ≠ 0) {r : ℝ} (hr : 0 < r) (hr' : r ≤ 1)
     (R : ℝ) :
-    let p := pauliSpectralModePolynomial k m
-    (Measure.pi fun _ : ChainCoordinate k => gaussianReal 0 1)
-      {x | let E := (isHermitian_spectralEnsembleMatrix (chainPauliFin_isHermitian (k+3)) x).eigenvalues
-           (∀ i, |E i| ≤ R) ∧ ∃ σ : Equiv.Perm (ChainEnergyIndex k),
-             |∑ i, (m i:ℝ)*E (σ i)| * ((∑ i, |(m i:ℝ)|)*R)^(Fintype.card (Equiv.Perm (ChainEnergyIndex k))-1)
-               < ‖lexHeadCoefficient p‖*r^p.totalDegree} ≤ ENNReal.ofReal (2*p.totalDegree*r) := by
+    (Measure.pi fun _ : ChainCoordinate k => gaussianReal 0 1) (pauliModeNearResonance k m R r) ≤
+      ENNReal.ofReal (2*(pauliSpectralModePolynomial k m).totalDegree*r) := by
   let p := pauliSpectralModePolynomial k m
   refine (measure_mono ?_).trans (gaussian_mvPolynomial_sublevel p (pauliSpectralModePolynomial_ne_zero k m hbal hm) hr hr')
   rintro x ⟨he,σ,hs⟩
@@ -96,6 +101,18 @@ theorem gaussian_pauli_mode_detuning_sublevel (k : ℕ) (m : ChainEnergyIndex k 
   rw [show p = pauliSpectralModePolynomial k m from rfl,pauliSpectralModePolynomial_eval,Complex.norm_real,Real.norm_eq_abs]
   exact (abs_orbit_le_one_mode m _ σ R he).trans_lt hs
 
+/-- On the same draw, a finite collection of balanced modes obeys the sum
+of their individual near-resonance bounds. -/
+theorem gaussian_pauli_finite_mode_detuning_sublevel (k : ℕ) (S : Finset (ChainEnergyIndex k → ℤ))
+    (hS : ∀ m ∈ S, SpectralCharacterBalanced m ∧ m ≠ 0)
+    {r : ℝ} (hr : 0 < r) (hr' : r ≤ 1) (R : ℝ) :
+    (Measure.pi fun _ : ChainCoordinate k => gaussianReal 0 1)
+      (⋃ m ∈ S, pauliModeNearResonance k m R r) ≤
+      ∑ m ∈ S, ENNReal.ofReal (2*(pauliSpectralModePolynomial k m).totalDegree*r) :=
+  (measure_biUnion_finset_le _ _).trans (Finset.sum_le_sum fun m hm =>
+    gaussian_pauli_mode_detuning_sublevel k m (hS m hm).1 (hS m hm).2 hr hr' R)
+
+#print axioms gaussian_pauli_finite_mode_detuning_sublevel
 #print axioms gaussian_pauli_mode_detuning_sublevel
 end
 end GaloisForLFunctions.HTGeometry

@@ -107,12 +107,10 @@ theorem betaModel_strip_bound {N : ℕ} (hN : 4 ≤ N) {a : ℝ} (ha : 0 < a) :
   simp only [betaModel, norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos (singularSeries_pos _)]
   calc
     _ ≤ singularSeries N * 1 * E * (Z*((1+|s.im|)^(1/4:ℝ) * (1+|z.im|)^(1/4:ℝ))) * G * G := by
-      gcongr
-      · exact hp
-      · exact he N _ hlo
-      · exact hZ'
-      · exact hg s (ha.le.trans hs.1) hs.2
-      · exact hg z (ha.le.trans hz.1) hz.2
+      have hS := (singularSeries_pos N).le
+      gcongr <;> first | exact hp | exact he N _ hlo | exact hZ'
+                       | exact hg s (ha.le.trans hs.1) hs.2 | exact hg z (ha.le.trans hz.1) hz.2
+                       | positivity
     _ = _ := by ring
 
 #print axioms betaModel_strip_bound
