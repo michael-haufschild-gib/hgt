@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.Thermofield.FragmentCoherence
 import GaloisForLFunctions.HTGeometry.Thermofield.ThermalReturnPlateau
 import GaloisForLFunctions.HTGeometry.ReplicaOperatorCovarianceCrowdingLaw
+import GaloisForLFunctions.HTGeometry.FiniteWindowReplicaCollisionResolution
 
 /-!
 # Thermal return of a restricted fragment
@@ -40,7 +41,7 @@ theorem fragmentReturn_eq (lost : α → ν) (β : ℝ) (E : α → ℝ) (t : �
   apply Finset.sum_congr rfl
   intro b _
   by_cases h : lost a = lost b
-  · simp only [fragmentState_apply, h, h.symm, if_true, Complex.ofReal_zero,
+  · simp only [fragmentState_apply, h, if_true, Complex.ofReal_zero,
       mul_zero, zero_mul, Complex.exp_zero, one_mul, retainedPairMass]
     rw [finiteKMSWightmanWeight_symm β E b a, mul_assoc, ← Complex.ofReal_mul,
       ← pow_two, finiteKMSWightmanWeight_sq, mul_comm]
@@ -100,6 +101,37 @@ theorem fragmentReturnMean_tendsto (lost : α → ν) (β : ℝ) (E : α → ℝ
 
 variable [Nonempty α]
 
+omit [DecidableEq α] in
+private theorem retainedPairMass_nonneg (lost : α → ν) (β : ℝ) (E : α → ℝ) (a b : α) :
+    0 ≤ retainedPairMass lost β E a b := by
+  unfold retainedPairMass
+  split
+  · exact mul_nonneg (finiteGibbsStateWeight_pos β E a).le
+      (finiteGibbsStateWeight_pos β E b).le
+  · exact le_rfl
+
+/-- The finite-window error is bounded using only the surviving nonzero gaps,
+each weighted by its retained Gibbs mass. -/
+theorem fragmentReturnMean_error_le (lost : α → ν) (β : ℝ) (E : α → ℝ)
+    (T : Set.Ioi (0 : ℝ)) :
+    ‖fragmentReturnMean lost β E T - (fragmentReturnPlateau lost β E : ℂ)‖ ≤
+      ∑ a, ∑ b, if E a = E b then 0 else
+        retainedPairMass lost β E a b * min 1 ((T : ℝ) * |E a - E b|)⁻¹ := by
+  have hT : 0 < (T : ℝ) := T.2
+  rw [fragmentReturnMean_eq, fragmentReturnPlateau]
+  simp_rw [Complex.ofReal_sum, ← Finset.sum_sub_distrib]
+  refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun a _ => ?_)
+  refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun b _ => ?_)
+  by_cases he : E a = E b
+  · simp only [he, if_true, sub_self, symmetricPhaseAverage_eq_sinc _ _ hT.ne',
+      mul_zero, Real.sinc_zero, Complex.ofReal_one, mul_one, norm_zero, le_refl]
+  · simp only [if_neg he, Complex.ofReal_zero, sub_zero, norm_mul, Complex.norm_real,
+      Real.norm_eq_abs, abs_of_nonneg (retainedPairMass_nonneg lost β E a b)]
+    exact mul_le_mul_of_nonneg_left
+      (norm_symmetricPhaseAverage_le_min_inv hT (abs_pos.mpr (sub_ne_zero.mpr he)) le_rfl)
+      (retainedPairMass_nonneg lost β E a b)
+
+omit [DecidableEq α] in
 /-- The ordinary Gibbs purity is a lower bound on the fragment return plateau. -/
 theorem purity_le_fragmentReturnPlateau (lost : α → ν) (β : ℝ) (E : α → ℝ) :
     finiteGibbsPurity β E ≤ fragmentReturnPlateau lost β E := by
@@ -107,10 +139,14 @@ theorem purity_le_fragmentReturnPlateau (lost : α → ν) (β : ℝ) (E : α �
   intro a _
   have h := Finset.single_le_sum
     (f := fun b => if E a = E b then retainedPairMass lost β E a b else 0)
-    (fun b _ => by unfold retainedPairMass; split <;> try split <;> positivity)
+    (fun b _ => by
+      split
+      · exact retainedPairMass_nonneg lost β E a b
+      · exact le_rfl)
     (Finset.mem_univ a)
   simpa only [retainedPairMass, if_true, pow_two] using h
 
+omit [Nonempty α] in
 /-- The inaccessible record deletes exactly the equal-energy pairs it separates. -/
 theorem returnPlateau_eq_fragment_add_lost (lost : α → ν) (β : ℝ) (E : α → ℝ) :
     returnPlateau β E = fragmentReturnPlateau lost β E +
@@ -131,11 +167,16 @@ label is constant on every equal-energy class. -/
 theorem fragmentReturnPlateau_eq_full_iff (lost : α → ν) (β : ℝ) (E : α → ℝ) :
     fragmentReturnPlateau lost β E = returnPlateau β E ↔
       ∀ a b, E a = E b → lost a = lost b := by
-  rw [returnPlateau_eq_fragment_add_lost]
+  rw [returnPlateau_eq_fragment_add_lost lost β E]
   let F : α → α → ℝ := fun a b => if E a = E b ∧ lost a ≠ lost b then
     finiteGibbsStateWeight β E a * finiteGibbsStateWeight β E b else 0
   change _ = _ + (∑ a, ∑ b, F a b) ↔ _
-  have hnonneg (a b : α) : 0 ≤ F a b := by unfold F; split <;> positivity
+  have hnonneg (a b : α) : 0 ≤ F a b := by
+    unfold F
+    split
+    · exact mul_nonneg (finiteGibbsStateWeight_pos β E a).le
+        (finiteGibbsStateWeight_pos β E b).le
+    · exact le_rfl
   constructor
   · intro h a b hE
     have hz : (∑ a, ∑ b, F a b) = 0 := by linarith only [h]
@@ -156,6 +197,7 @@ theorem fragmentReturnPlateau_eq_full_iff (lost : α → ν) (β : ℝ) (E : α 
 #print axioms fragmentReturn_eq
 #print axioms fragmentReturnMean_eq
 #print axioms fragmentReturnMean_tendsto
+#print axioms fragmentReturnMean_error_le
 #print axioms purity_le_fragmentReturnPlateau
 #print axioms returnPlateau_eq_fragment_add_lost
 #print axioms fragmentReturnPlateau_eq_full_iff

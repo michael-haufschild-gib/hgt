@@ -84,7 +84,12 @@ theorem prime_midpoint_full_variation_iff (n : ℕ) :
     have he : leftSite n j=m := by dsimp [leftSite,j];omega
     have hz := hh j (mem_range.mpr hj)
     simp [P,he,hq,lower,selectedLog,hp] at hz
-    exact (Real.log_pos (show (1:ℝ)< m by exact_mod_cast hp.one_lt)).ne' hz
+    have h2 := hp.two_le
+    rcases hz with h | h | h
+    · omega
+    · omega
+    · have h0 : (0:ℝ) ≤ m := Nat.cast_nonneg m
+      linarith
   · intro h j hj
     have hm : leftSite n j∈Ioc (2*n) (3*n) := by
       have h' := mem_range.mp hj

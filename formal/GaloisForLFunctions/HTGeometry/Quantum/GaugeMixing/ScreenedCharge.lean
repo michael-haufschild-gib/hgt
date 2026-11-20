@@ -68,9 +68,11 @@ theorem modeEnergy_eq_completedSquare
     (e : Mixing) (p : MomentumSq) (m : MassSq) (x y : ℝ) :
     modeEnergy e p m x y = visibleCoefficient e p m * x^2 +
       ((p : ℝ) + (m : ℝ)) * (y - screenedMixing e p m * x)^2 := by
-  unfold modeEnergy visibleCoefficient screenedMixing momentumFraction
-  field_simp [(scale_pos p m).ne']
-  ring
+  have hs : screenedMixing e p m * ((p : ℝ) + (m : ℝ)) = (p : ℝ) * (e : ℝ) := by
+    rw [screenedMixing, momentumFraction, mul_assoc, div_mul_cancel₀ _ (scale_pos p m).ne',
+      mul_comm]
+  unfold modeEnergy visibleCoefficient
+  linear_combination (2 * x * y - screenedMixing e p m * x ^ 2) * hs
 
 /-- The normalized visible and dark amplitudes have unit kinetic coefficients. -/
 def canonicalFields (e : Mixing) (p : MomentumSq) (m : MassSq) (x y : ℝ) : ℝ × ℝ :=
@@ -99,7 +101,8 @@ theorem source_eq_canonicalFields (e : Mixing) (p : MomentumSq) (m : MassSq)
   have hA : 0 < visibleCoefficient e p m :=
     (visibleCoefficient_lower e p m).1.trans_le (visibleCoefficient_lower e p m).2
   simp only [visibleCoupling, canonicalFields]
-  field_simp [(Real.sqrt_pos.mpr hA).ne', (Real.sqrt_pos.mpr (scale_pos p m)).ne']
+  rw [← mul_assoc, div_mul_cancel₀ _ (Real.sqrt_pos.mpr hA).ne',
+    ← mul_assoc, div_mul_cancel₀ _ (Real.sqrt_pos.mpr (scale_pos p m)).ne']
   ring
 
 /-- Dividing the induced visible coupling by the visible reference charge
@@ -110,9 +113,9 @@ theorem chargeRatio_eq_screened (e : Mixing) (p : MomentumSq) (m : MassSq)
       momentumFraction p m * ((e : ℝ) * h / (g : ℝ)) := by
   have hA : 0 < visibleCoefficient e p m :=
     (visibleCoefficient_lower e p m).1.trans_le (visibleCoefficient_lower e p m).2
+  have hg : (g : ℝ) ≠ 0 := ne_of_gt g.2
   simp only [visibleCoupling, screenedMixing, zero_mul, add_zero, zero_add]
-  field_simp [g.2.ne', (Real.sqrt_pos.mpr hA).ne']
-  ring
+  field_simp [hg, (Real.sqrt_pos.mpr hA).ne']
 
 /-- A nonzero mass strictly suppresses a nonzero induced charge. -/
 theorem chargeRatio_abs_eq_unscreened_iff (e : Mixing) (p : MomentumSq) (m : MassSq)

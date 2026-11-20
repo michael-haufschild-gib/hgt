@@ -23,8 +23,7 @@ private theorem sign_coordinate_le {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d+
       by_cases h : i=l
       · subst l; simp [f]
       · simp [h]
-    rw [hdiag,Matrix.mul_sub,Matrix.sub_mul,Matrix.mul_smul,Matrix.smul_mul]
-    rfl
+    rw [hdiag,Matrix.mul_sub,Matrix.sub_mul,Matrix.mul_smul,Matrix.smul_mul] <;> rfl
   rw [he,l2_opNorm_unitary_conj_eq V.2,Matrix.l2_opNorm_diagonal]
   simpa only [f,Equiv.apply_symm_apply] using norm_le_pi_norm f (e.symm j)
 
@@ -37,7 +36,7 @@ theorem spectral_reflection_sqrt_two_separation {n d : ℕ} (e : (Fin n → Bool
     Real.sqrt 2 ≤ ‖anchoredSpectralBooleanReflection e V x-z • anchoredSpectralBooleanReflection e V y‖ := by
   let M := ‖anchoredSpectralBooleanReflection e V x-z • anchoredSpectralBooleanReflection e V y‖
   have ha : ‖(1:ℂ)-z‖ ≤ M := by
-    simpa only [anchoredBooleanPacket,Fin.cases_zero,mul_one] using sign_coordinate_le e V x y z 0
+    simpa [anchoredBooleanPacket] using sign_coordinate_le e V x y z 0
   obtain ⟨i,hi⟩ := Function.ne_iff.mp hxy
   have hb : ‖(1:ℂ)+z‖ ≤ M := by
     have h := sign_coordinate_le e V x y z i.succ

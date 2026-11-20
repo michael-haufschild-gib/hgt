@@ -32,7 +32,7 @@ theorem occupation_mul_card_le_of_disjoint_shifts {ι : Type*} [Fintype ι]
     obtain ⟨i,hi⟩ := mem_iUnion.mp hx
     have hb : x+-u i ∈ Icc a (a+T) := hi.2
     exact ⟨by linarith only [hb.1,(hu i).1],by linarith only [hb.2,(hu i).2]⟩
-  have hbound := measureReal_mono hsub measure_Icc_lt_top.ne
+  have hbound := measureReal_mono (μ := volume) hsub measure_Icc_lt_top.ne
   rw [measureReal_iUnion_fintype hd (fun i => hm.preimage (measurable_id.add_const _))
     (fun i => (hG i).trans_ne hfin),Real.volume_real_Icc_of_le (by linarith only [hT,hB])] at hbound
   simpa only [hGF,Finset.sum_const,Finset.card_univ,nsmul_eq_mul,add_sub_cancel_left,

@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.CharacteristicEquilibriumDefect
 import GaloisForLFunctions.HTGeometry.EternityOperatorReturnCorollary
 import GaloisForLFunctions.HTGeometry.Quantum.DisjointSiteCircuitApproximation
 import GaloisForLFunctions.HTGeometry.Quantum.FirstCircuitSaturationBoundary
@@ -275,6 +276,13 @@ theorem orbitCircuitDistance_lipschitz_spectralWidth {n : ℕ} (H : selfAdjoint 
   rw [← orbitCircuitDistance_scalarCentered H P c]
   exact orbitCircuitDistance_lipschitz _ P
 
+private theorem zeroGateCircuit_eval {n : ℕ} (C : TwoQubitCircuit n) (hC : C.gateCount ≤ 0) :
+    (C.eval : Reg n) = 1 := by
+  obtain ⟨m, A, G⟩ := C
+  have hm : m = 0 := Nat.eq_zero_of_le_zero hC
+  subst m
+  simp [TwoQubitCircuit.eval, TwoQubitArchitecture.contraction]
+
 /-- The extreme eigenphases bound the zero-gate distance from below by half their chord. -/
 theorem abs_sin_spectralWidth_le_zeroGateDistance {n : ℕ} (H : selfAdjoint (Reg n)) (t : ℝ) :
     |Real.sin (t * (circuitHamiltonianSpectralWidth H / 2))| ≤ orbitCircuitDistance H 0 t := by
@@ -285,13 +293,8 @@ theorem abs_sin_spectralWidth_le_zeroGateDistance {n : ℕ} (H : selfAdjoint (Re
   have hwidth : circuitHamiltonianSpectralWidth H = E i - E j := congrArg₂ (· - ·) hi hj
   obtain ⟨c, _, C, hC, h⟩ := (hasProjectiveCircuitApproximation_iff_infDist
     (unitaryEvolution (H : Reg n) t) 0 (orbitCircuitDistance H 0 t)).mpr le_rfl
-  have heval : (C.eval : Reg n) = 1 := by
-    obtain ⟨m, A, G⟩ := C
-    have hm : m = 0 := Nat.eq_zero_of_le_zero hC
-    subst m
-    simp [TwoQubitCircuit.eval, TwoQubitArchitecture.contraction]
   change ‖unitaryEvolution (H : Reg n) t - c • (C.eval : Reg n)‖ ≤ _ at h
-  rw [heval] at h
+  rw [zeroGateCircuit_eval C hC] at h
   have h_i := (spectral_point_scalar_error_le hH i t c).trans h
   have h_j := (spectral_point_scalar_error_le hH j t c).trans h
   have hchord := norm_sub_le_norm_sub_add_norm_sub (anchorPhase E i t) c (anchorPhase E j t)
@@ -373,6 +376,279 @@ theorem orbitCircuitCellMean_certifies_spectralWidth {n : ℕ} (H : selfAdjoint 
     projectiveApproximation_smul_iff (Complex.norm_exp_ofReal_mul_I _)]
   exact he
 
+private theorem sq_norm_phase_sub_unit (θ : ℝ) (z : ℂ) (hz : ‖z‖ = 1) :
+    ‖Complex.exp ((θ : ℂ) * Complex.I) - z‖ ^ 2 =
+      2 - 2 * (Real.cos θ * z.re + Real.sin θ * z.im) := by
+  have hzsq : z.re * z.re + z.im * z.im = 1 := by
+    rw [← Complex.normSq_apply, Complex.normSq_eq_norm_sq, hz, one_pow]
+  rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.sub_re, Complex.sub_im,
+    Complex.exp_ofReal_mul_I_re, Complex.exp_ofReal_mul_I_im]
+  nlinarith only [hzsq, Real.sin_sq_add_cos_sq θ]
+
+private theorem sq_phaseArcRadius (θ : ℝ) :
+    (2 * Real.sin (|θ| / 2)) ^ 2 = 2 - 2 * Real.cos θ := by
+  have hc := Real.cos_two_mul_eq_one_sub (|θ| / 2)
+  rw [show 2 * (|θ| / 2) = |θ| by ring, Real.cos_abs] at hc
+  rw [hc]
+  ring
+
+private theorem phaseArcRadius_nonneg {θ : ℝ} (hθ : |θ| ≤ Real.pi / 2) :
+    0 ≤ 2 * Real.sin (|θ| / 2) := by
+  refine mul_nonneg zero_le_two
+    (Real.sin_nonneg_of_nonneg_of_le_pi (div_nonneg (abs_nonneg _) zero_le_two) ?_)
+  linarith only [hθ, Real.pi_pos]
+
+private theorem phaseArcRadius_le_max {θ : ℝ} (hθ : |θ| ≤ Real.pi / 2) (z : ℂ) (hz : ‖z‖ = 1) :
+    2 * Real.sin (|θ| / 2) ≤
+      max ‖Complex.exp ((θ : ℂ) * Complex.I) - z‖ ‖Complex.exp ((-θ : ℝ) * Complex.I) - z‖ := by
+  let x := ‖Complex.exp ((θ : ℂ) * Complex.I) - z‖
+  let y := ‖Complex.exp ((-θ : ℝ) * Complex.I) - z‖
+  have hm : 0 ≤ max x y := (norm_nonneg _ : 0 ≤ x).trans (le_max_left _ _)
+  have hx : x ^ 2 ≤ (max x y) ^ 2 := (sq_le_sq₀ (norm_nonneg _) hm).mpr (le_max_left _ _)
+  have hy : y ^ 2 ≤ (max x y) ^ 2 := (sq_le_sq₀ (norm_nonneg _) hm).mpr (le_max_right _ _)
+  have hcos : 0 ≤ Real.cos θ := Real.cos_nonneg_of_mem_Icc (abs_le.mp hθ)
+  have hdot : Real.cos θ * z.re ≤ Real.cos θ := by
+    have hzre : z.re ≤ 1 := (Complex.re_le_norm z).trans_eq hz
+    simpa only [mul_one] using mul_le_mul_of_nonneg_left hzre hcos
+  have hsum : 4 - 4 * Real.cos θ ≤ x ^ 2 + y ^ 2 := by
+    dsimp only [x, y]
+    rw [sq_norm_phase_sub_unit θ z hz, sq_norm_phase_sub_unit (-θ) z hz,
+      Real.cos_neg, Real.sin_neg]
+    linarith only [hdot]
+  change 2 * Real.sin (|θ| / 2) ≤ max x y
+  apply (sq_le_sq₀ (phaseArcRadius_nonneg hθ) hm).mp
+  rw [sq_phaseArcRadius]
+  linarith only [hx, hy, hsum]
+
+private theorem norm_phase_sub_midpoint_le {u θ : ℝ} (hu : |u| ≤ |θ|) (hθ : |θ| ≤ Real.pi / 2) :
+    ‖Complex.exp ((u : ℂ) * Complex.I) - 1‖ ≤ 2 * Real.sin (|θ| / 2) := by
+  have hpi : |θ| ≤ Real.pi := hθ.trans (half_le_self Real.pi_pos.le)
+  have hcos : Real.cos θ ≤ Real.cos u := by
+    rw [← Real.cos_abs θ, ← Real.cos_abs u]
+    exact Real.antitoneOn_cos ⟨abs_nonneg _, hu.trans hpi⟩ ⟨abs_nonneg _, hpi⟩ hu
+  apply (sq_le_sq₀ (norm_nonneg _) (phaseArcRadius_nonneg hθ)).mp
+  rw [sq_norm_phase_sub_unit u 1 norm_one, sq_phaseArcRadius]
+  simp only [Complex.one_re, Complex.one_im, mul_one, mul_zero, add_zero]
+  linarith only [hcos]
+
+private theorem norm_evolution_sub_scalar {n : ℕ} (H : selfAdjoint (Reg n)) (s : ℝ) (z : ℂ) :
+    ‖unitaryEvolution (H : Reg n) s - z • (1 : Reg n)‖ =
+      ‖fun i => anchorPhase H.2.isHermitian.eigenvalues i s - z‖ := by
+  let V := (H.2.isHermitian.eigenvectorUnitary : Reg n)
+  have hV : V ∈ unitary (Reg n) := H.2.isHermitian.eigenvectorUnitary.2
+  have hscalar : z • (1 : Reg n) = V * Matrix.diagonal (fun _ => z) * star V := by
+    rw [← smul_one_eq_diagonal_const z, Matrix.mul_smul, Matrix.mul_one,
+      Matrix.smul_mul, (Unitary.mem_iff.mp hV).2]
+  rw [unitaryEvolution_spectral H.2.isHermitian, hscalar, ← Matrix.sub_mul, ← Matrix.mul_sub,
+    Matrix.diagonal_sub, l2_opNorm_unitary_conj_eq hV, Matrix.l2_opNorm_diagonal]
+  rfl
+
+/-- On a time interval where the spectrum subtends at most a semicircle,
+the zero-gate projective error is exactly the half-arc chord. -/
+theorem orbitCircuitDistance_zeroGate_eq_spectralArc {n : ℕ} (H : selfAdjoint (Reg n))
+    (t : {s : ℝ // |s| * circuitHamiltonianSpectralWidth H ≤ Real.pi}) :
+    orbitCircuitDistance H 0 t = 2 * Real.sin (|(t : ℝ)| * (circuitHamiltonianSpectralWidth H / 4)) := by
+  let E := H.2.isHermitian.eigenvalues
+  let s := (t : ℝ)
+  let W := circuitHamiltonianSpectralWidth H
+  obtain ⟨i, _, hi⟩ := Finset.exists_mem_eq_sup' Finset.univ_nonempty E
+  obtain ⟨j, _, hj⟩ := Finset.exists_mem_eq_inf' Finset.univ_nonempty E
+  let a := E j
+  let b := E i
+  let c := (a + b) / 2
+  let θ := s * (b - a) / 2
+  let phase (u : ℝ) := Complex.exp ((-(s * u) : ℝ) * Complex.I)
+  have hW : W = b - a := congrArg₂ (· - ·) hi hj
+  have hwidth : 0 ≤ W := circuitHamiltonianSpectralWidth_nonneg H
+  have hθ : |θ| = |s| * W / 2 := by
+    dsimp only [θ]
+    rw [abs_div, abs_of_nonneg (zero_le_two : (0 : ℝ) ≤ 2), abs_mul, ← hW, abs_of_nonneg hwidth]
+  have hArc : |θ| ≤ Real.pi / 2 := by
+    rw [hθ]
+    exact div_le_div_of_nonneg_right t.2 zero_le_two
+  have hangle : |s| * (W / 4) = |θ| / 2 := by rw [hθ]; ring
+  have hmid : ‖phase c‖ = 1 := Complex.norm_exp_ofReal_mul_I _
+  have hphase (k : Fin n → Bool) : anchorPhase E k s = phase (E k) := by
+    unfold anchorPhase phase
+    congr 1
+    push_cast
+    ring
+  have hrot (u : ℝ) : phase u = phase c * Complex.exp ((s * (c - u) : ℝ) * Complex.I) := by
+    simp only [phase, ← Complex.exp_add]
+    congr 1
+    push_cast
+    ring
+  have hra (k : Fin n → Bool) : |s * (c - E k)| ≤ |θ| := by
+    have hlo : a ≤ E k := by
+      change E j ≤ E k
+      rw [← hj]
+      exact Finset.inf'_le E (Finset.mem_univ k)
+    have hhi : E k ≤ b := by
+      change E k ≤ E i
+      rw [← hi]
+      exact Finset.le_sup' E (Finset.mem_univ k)
+    have hgap : |c - E k| ≤ W / 2 := by
+      rw [hW, abs_le]
+      dsimp only [c]
+      constructor <;> linarith only [hlo, hhi]
+    rw [abs_mul, hθ, mul_div_assoc]
+    exact mul_le_mul_of_nonneg_left hgap (abs_nonneg _)
+  change orbitCircuitDistance H 0 s = 2 * Real.sin (|s| * (W / 4))
+  rw [hangle]
+  apply le_antisymm
+  · apply (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mp
+    refine ⟨phase c, hmid, TwoQubitCircuit.one n, le_rfl, ?_⟩
+    rw [TwoQubitCircuit.one_eval]
+    change ‖unitaryEvolution (H : Reg n) s - phase c • (1 : Reg n)‖ ≤ _
+    rw [norm_evolution_sub_scalar, pi_norm_le_iff_of_nonempty]
+    intro k
+    change ‖anchorPhase E k s - phase c‖ ≤ _
+    calc
+      _ = ‖phase c * (Complex.exp ((s * (c - E k) : ℝ) * Complex.I) - 1)‖ := by
+        rw [hphase k, hrot (E k)]
+        simp only [mul_sub, mul_one]
+      _ ≤ _ := by
+        rw [norm_mul, hmid, one_mul]
+        exact norm_phase_sub_midpoint_le (hra k) hArc
+  · obtain ⟨z, hz, C, hC, he⟩ :=
+      (hasProjectiveCircuitApproximation_iff_infDist (unitaryEvolution (H : Reg n) s)
+        0 (orbitCircuitDistance H 0 s)).mpr le_rfl
+    change ‖unitaryEvolution (H : Reg n) s - z • (C.eval : Reg n)‖ ≤ _ at he
+    rw [zeroGateCircuit_eval C hC] at he
+    let z' := (phase c)⁻¹ * z
+    have hz' : ‖z'‖ = 1 := by rw [show z' = (phase c)⁻¹ * z from rfl, norm_mul, norm_inv, hmid, hz]; simp
+    have hmidne : phase c ≠ 0 := fun h => by simp [h] at hmid
+    have hrecover : phase c * z' = z := by
+      dsimp only [z']
+      rw [← mul_assoc, mul_inv_cancel₀ hmidne, one_mul]
+    have hpoint (k : Fin n → Bool) : ‖Complex.exp ((s * (c - E k) : ℝ) * Complex.I) - z'‖ ≤
+        orbitCircuitDistance H 0 s := by
+      have h := (spectral_point_scalar_error_le H.2.isHermitian k s z).trans he
+      change ‖anchorPhase E k s - z‖ ≤ _ at h
+      rwa [hphase k, hrot (E k), ← hrecover, ← mul_sub, norm_mul, hmid, one_mul] at h
+    have hai : s * (c - E i) = -θ := by dsimp only [c, b, θ]; ring
+    have haj : s * (c - E j) = θ := by dsimp only [c, a, θ]; ring
+    refine (phaseArcRadius_le_max hArc z' hz').trans (max_le ?_ ?_)
+    · simpa only [haj] using hpoint j
+    · simpa only [hai] using hpoint i
+
+/-- Within the semicircle window a zero-gate error tolerance is equivalent
+to an exact bound on elapsed time times spectral width. -/
+theorem zeroGateApproximation_iff_spectralArc {n : ℕ} (H : selfAdjoint (Reg n))
+    (t : {s : ℝ // |s| * circuitHamiltonianSpectralWidth H ≤ Real.pi}) (ε : Icc (0 : ℝ) 2) :
+    HasProjectiveCircuitApproximation n ε 0 (unitaryEvolution (H : Reg n) t) ↔
+      |(t : ℝ)| * circuitHamiltonianSpectralWidth H ≤ 4 * Real.arcsin ((ε : ℝ) / 2) := by
+  let a := |(t : ℝ)| * (circuitHamiltonianSpectralWidth H / 4)
+  have ha' : a = (|(t : ℝ)| * circuitHamiltonianSpectralWidth H) / 4 := by dsimp only [a]; ring
+  have ha0 : 0 ≤ a := mul_nonneg (abs_nonneg _)
+    (div_nonneg (circuitHamiltonianSpectralWidth_nonneg H) (by positivity))
+  have ha : a ∈ Icc (-(Real.pi / 2)) (Real.pi / 2) := by
+    refine ⟨(neg_nonpos.mpr (div_nonneg Real.pi_pos.le zero_le_two)).trans ha0, ?_⟩
+    rw [ha']
+    linarith only [t.2, Real.pi_pos]
+  have hε : (ε : ℝ) / 2 ∈ Icc (-1 : ℝ) 1 := by
+    constructor <;> linarith only [ε.2.1, ε.2.2]
+  rw [hasProjectiveCircuitApproximation_iff_infDist, ← orbitCircuitDistance,
+    orbitCircuitDistance_zeroGate_eq_spectralArc H t]
+  change 2 * Real.sin a ≤ (ε : ℝ) ↔ _
+  calc
+    _ ↔ Real.sin a ≤ (ε : ℝ) / 2 := by
+      constructor <;> intro h <;> linarith only [h]
+    _ ↔ a ≤ Real.arcsin ((ε : ℝ) / 2) := (Real.le_arcsin_iff_sin_le ha hε).symm
+    _ ↔ _ := by
+      rw [ha']
+      constructor <;> intro h <;> linarith only [h]
+
+/-- On a centered semicircle window the Steklov mean of the zero-gate error
+is the exact cosine-defect quotient. -/
+theorem orbitCircuitCellMean_zeroGate_eq_spectralArc {n : ℕ} (H : selfAdjoint (Reg n))
+    (h : {r : ℝ // 0 < r ∧ r * circuitHamiltonianSpectralWidth H ≤ Real.pi}) :
+    orbitCircuitCellMean H 0 0 ⟨h, h.2.1⟩ =
+      2 * (1 - Real.cos ((h : ℝ) * (circuitHamiltonianSpectralWidth H / 4))) /
+        ((h : ℝ) * (circuitHamiltonianSpectralWidth H / 4)) := by
+  let s := (h : ℝ)
+  let a := circuitHamiltonianSpectralWidth H / 4
+  let f (t : ℝ) : ℝ := 2 * Real.sin (|t| * a)
+  have hs : 0 < s := h.2.1
+  have hrep : (∫ t in -s..s, orbitCircuitDistance H 0 t) = ∫ t in -s..s, f t := by
+    apply intervalIntegral.integral_congr
+    intro t ht
+    rw [uIcc_of_le (neg_le_self hs.le)] at ht
+    have hlocal : |t| * circuitHamiltonianSpectralWidth H ≤ Real.pi :=
+      (mul_le_mul_of_nonneg_right (abs_le.mpr ht) (circuitHamiltonianSpectralWidth_nonneg H)).trans h.2.2
+    exact orbitCircuitDistance_zeroGate_eq_spectralArc H ⟨t, hlocal⟩
+  simp only [orbitCircuitCellMean, zero_sub, zero_add]
+  change (∫ t in -s..s, orbitCircuitDistance H 0 t) / (2 * s) =
+    2 * (1 - Real.cos (s * a)) / (s * a)
+  rw [hrep]
+  by_cases ha : a = 0
+  · simp [f, ha]
+  have hc : Continuous f := by
+    dsimp only [f]
+    fun_prop
+  have heven : (∫ t in -s..0, f t) = ∫ t in 0..s, f t := by
+    have he := intervalIntegral.integral_comp_neg (f := f) (a := 0) (b := s)
+    simpa only [f, abs_neg, neg_zero] using he.symm
+  have hpos : (∫ t in 0..s, f t) = 2 * (1 - Real.cos (s * a)) / a := by
+    have hcongr : (∫ t in 0..s, f t) = ∫ t in 0..s, 2 * Real.sin (t * a) := by
+      apply intervalIntegral.integral_congr
+      intro t ht
+      rw [uIcc_of_le hs.le] at ht
+      simp only [f, abs_of_nonneg ht.1]
+    rw [hcongr, intervalIntegral.integral_const_mul, intervalIntegral.integral_comp_mul_right _ ha,
+      zero_mul, integral_sin, Real.cos_zero, smul_eq_mul]
+    ring
+  rw [← intervalIntegral.integral_add_adjacent_intervals (hc.intervalIntegrable (-s) 0)
+    (hc.intervalIntegrable 0 s), heven, hpos]
+  field_simp
+  ring
+
+/-- The centered zero-gate mean divided by the cell radius has a sinc-square profile. -/
+theorem orbitCircuitCellMean_zeroGate_div_radius_eq_sinc {n : ℕ} (H : selfAdjoint (Reg n))
+    (h : {r : ℝ // 0 < r ∧ r * circuitHamiltonianSpectralWidth H ≤ Real.pi}) :
+    orbitCircuitCellMean H 0 0 ⟨h, h.2.1⟩ / (h : ℝ) =
+      (circuitHamiltonianSpectralWidth H / 4) *
+        Real.sinc ((h : ℝ) * (circuitHamiltonianSpectralWidth H / 4) / 2) ^ 2 := by
+  let s := (h : ℝ)
+  let a := circuitHamiltonianSpectralWidth H / 4
+  rw [orbitCircuitCellMean_zeroGate_eq_spectralArc H h]
+  change 2 * (1 - Real.cos (s * a)) / (s * a) / s = a * Real.sinc (s * a / 2) ^ 2
+  by_cases ha : a = 0
+  · simp [ha]
+  have harg : a / 2 * s = s * a / 2 := by ring
+  have hcoef : a ^ 2 / a = a := by rw [pow_two, mul_div_cancel_right₀ _ ha]
+  calc
+    _ = 2 * (1 - Real.cos (a * s)) / (a * s ^ 2) := by
+      rw [div_div, mul_comm s a]
+      congr 1
+      ring
+    _ = _ := by
+      rw [← sq_mul_sinc_sq_eq_normalized_cosDefect ha h.2.1.ne' a, hcoef, harg]
+
+/-- The small-radius centered Steklov error attains the spectral-width
+coefficient `width / 4` on the zero-gate orbit. -/
+theorem orbitCircuitCellMean_zeroGate_tendsto_div_radius {n : ℕ} (H : selfAdjoint (Reg n)) :
+    Tendsto (fun h : CellRadius => orbitCircuitCellMean H 0 0 h / (h : ℝ))
+      (Filter.comap (fun h : CellRadius => (h : ℝ)) (𝓝 (0 : ℝ)))
+      (𝓝 (circuitHamiltonianSpectralWidth H / 4)) := by
+  let L := Filter.comap (fun h : CellRadius => (h : ℝ)) (𝓝 (0 : ℝ))
+  let a := circuitHamiltonianSpectralWidth H / 4
+  let f := fun s : ℝ => a * Real.sinc (s * a / 2) ^ 2
+  have hv : Tendsto (fun h : CellRadius => (h : ℝ)) L (𝓝 (0 : ℝ)) := Filter.tendsto_comap
+  have hwidth : Tendsto (fun h : CellRadius => (h : ℝ) * circuitHamiltonianSpectralWidth H) L
+      (𝓝 (0 : ℝ)) := by simpa only [zero_mul] using hv.mul_const (circuitHamiltonianSpectralWidth H)
+  have hnear : ∀ᶠ h : CellRadius in L, (h : ℝ) * circuitHamiltonianSpectralWidth H ≤ Real.pi :=
+    hwidth.eventually (ge_mem_nhds Real.pi_pos)
+  have hc : Continuous f := by
+    dsimp only [f]
+    fun_prop
+  have hzero : f 0 = a := by simp [f]
+  have hlim := (hc.tendsto 0).comp hv
+  rw [hzero] at hlim
+  refine hlim.congr' ?_
+  filter_upwards [hnear] with h hh
+  exact (orbitCircuitCellMean_zeroGate_div_radius_eq_sinc H ⟨h, h.2, hh⟩).symm
+
 #print axioms orbitCircuitCellMean_center_error
 #print axioms orbitCircuitCellMean_certifies
 #print axioms orbitCircuitDistance_scalarCentered
@@ -381,6 +657,10 @@ theorem orbitCircuitCellMean_certifies_spectralWidth {n : ℕ} (H : selfAdjoint 
 #print axioms orbitCircuitDistance_zeroGate_least_lipschitz
 #print axioms orbitCircuitCellMean_error_spectralWidth
 #print axioms orbitCircuitCellMean_certifies_spectralWidth
+#print axioms orbitCircuitDistance_zeroGate_eq_spectralArc
+#print axioms zeroGateApproximation_iff_spectralArc
+#print axioms orbitCircuitCellMean_zeroGate_eq_spectralArc
+#print axioms orbitCircuitCellMean_zeroGate_tendsto_div_radius
 
 end
 

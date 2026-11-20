@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.WeightedGraphSpectralGap
 import Mathlib.Analysis.Calculus.LocalExtr.Basic
 import Mathlib.Analysis.Calculus.Deriv.Mul
+import Mathlib.Analysis.Real.Sqrt
 import Mathlib.Tactic.FieldSimp
 
 /-!
@@ -233,16 +234,17 @@ theorem isGroundAt_positive_iff (G : WeightedGraph V)
   · rintro rfl
     exact G.inversePotential_ground f E
 
-/-- Equal positive ground densities determine the same potential up to an
-additive shift, and the shift equals the difference in ground energies. -/
+/-- Equal densities with full support determine the same potential up to an
+additive shift when the first ground amplitude is taken positive. The shift
+equals the difference in ground energies. -/
 theorem eq_density_potential_shift (G : WeightedGraph V)
-    (x y : {f : PositiveAmplitude V // potentialForm (fun _ => 1) f.1 = 1})
+    (x : {f : PositiveAmplitude V // potentialForm (fun _ => 1) f.1 = 1}) (y : V → ℝ)
     (a b : V → ℝ) (E F : ℝ) :
-    G.IsGroundAt a E x.1.1 ∧ G.IsGroundAt b F y.1.1 ∧
-      (∀ v, x.1.1 v * x.1.1 v = y.1.1 v * y.1.1 v) →
+    G.IsGroundAt a E x.1.1 ∧ G.IsGroundAt b F y ∧
+      (∀ v, x.1.1 v * x.1.1 v = y v * y v) →
       ∀ v, a v - b v = E - F := by
   rintro ⟨ha, hb, hρ⟩
-  have hcommon := (G.commonGround_of_eq_density a b x.1.1 y.1.1 E F
+  have hcommon := (G.commonGround_of_eq_density a b x.1.1 y E F
     ⟨ha, hb, hρ⟩).2.1
   rw [(G.isGroundAt_positive_iff x a E).mp ha,
     (G.isGroundAt_positive_iff x b F).mp hcommon]
@@ -250,12 +252,26 @@ theorem eq_density_potential_shift (G : WeightedGraph V)
   unfold inversePotential
   ring
 
+/-- Every strictly positive probability field occurs as the ground density
+of an explicit graph potential. -/
+theorem exists_ground_of_positive_density (G : WeightedGraph V)
+    (ρ : {ρ : PositiveAmplitude V // ∑ v, ρ.1 v = 1}) (E : ℝ) :
+    ∃ a x : V → ℝ, G.IsGroundAt a E x ∧ ∀ v, x v * x v = ρ.1.1 v := by
+  let f : PositiveAmplitude V := ⟨fun v => Real.sqrt (ρ.1.1 v),
+    fun v => Real.sqrt_pos.mpr (ρ.1.2 v)⟩
+  have hsq (v : V) : f.1 v * f.1 v = ρ.1.1 v :=
+    Real.mul_self_sqrt (ρ.1.2 v).le
+  have hf : potentialForm (fun _ => 1) f.1 = 1 := by
+    simp only [potentialForm, one_mul, hsq, ρ.2]
+  exact ⟨G.inversePotential f E, f.1, G.inversePotential_ground ⟨f, hf⟩ E, hsq⟩
+
 #print axioms commonGround_of_eq_density
 #print axioms inversePotential_defect
 #print axioms inversePotential_ground
 #print axioms inversePotential_eq_groundEnergy_iff
 #print axioms isGroundAt_positive_iff
 #print axioms eq_density_potential_shift
+#print axioms exists_ground_of_positive_density
 
 end
 

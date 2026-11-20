@@ -65,8 +65,12 @@ theorem arithmeticSqKernel_mem_hardy {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH 
   change (arithmeticSqKernel hN h ha hab).op f ∈ H
   rw [← H.orthogonal_orthogonal,H.orthogonal.mem_orthogonal]
   intro v hv
-  rw [← arithmeticSqKernel_symmetric hN h ha hab v f,arithmeticSqKernel_zero_orthogonal hN h ha hab hv,
-    inner_zero_left]
+  let K := arithmeticSqKernel hN h ha hab
+  have he : ⟪K.op v,f⟫_ℂ = ⟪v,K.op f⟫_ℂ := arithmeticSqKernel_symmetric hN h ha hab v f
+  have hzero : K.op v=0 := arithmeticSqKernel_zero_orthogonal hN h ha hab hv
+  calc
+    _ = ⟪K.op v,f⟫_ℂ := he.symm
+    _ = 0 := by rw [hzero,inner_zero_left]
 
 theorem hardyOperator_form {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH (n+1)) {a : ℝ}
     (ha : 0 < a) (hab : a ≤ 1/8) (f : Lp ℂ 2 (boundaryMeasure a (1/8))) :

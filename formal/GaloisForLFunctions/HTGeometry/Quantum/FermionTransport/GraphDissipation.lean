@@ -191,12 +191,89 @@ theorem hasDerivAt_freeEnergy_drift (G : WeightedGraph V) (E : V → ℝ) (p : V
     (chemicalPotential E p v * d) 0
   exact hres
 
+/-- Fermi--Dirac occupation at the indicated energy and chemical potential. -/
+def gibbsOccupation (e μ : ℝ) : Occupation :=
+  ⟨1 / (1 + Real.exp (e - μ)), by
+    have h : 0 < Real.exp (e - μ) := Real.exp_pos _
+    have hd : 0 < 1 + Real.exp (e - μ) := by positivity
+    exact ⟨div_pos one_pos hd, (div_lt_iff₀ hd).mpr (by linarith only [h])⟩⟩
+
+omit [Fintype V] in
+/-- The Fermi--Dirac profile has exactly the prescribed chemical potential. -/
+theorem chemicalPotential_gibbs (E : V → ℝ) (μ : ℝ) (v : V) :
+    chemicalPotential E (fun u => gibbsOccupation (E u) μ) v = μ := by
+  let z := Real.exp (E v - μ)
+  have hz : 0 < z := Real.exp_pos _
+  have hd : 0 < 1 + z := by positivity
+  have hratio : (1 / (1 + z)) / (1 - 1 / (1 + z)) = z⁻¹ := by
+    have hv : 1 - 1 / (1 + z) = z / (1 + z) := by
+      field_simp [hd.ne']
+      ring
+    rw [hv]
+    field_simp [hd.ne', hz.ne']
+  change E v + Real.log ((1 / (1 + z)) / (1 - 1 / (1 + z))) = μ
+  rw [hratio, Real.log_inv]
+  change E v + -Real.log (Real.exp (E v - μ)) = μ
+  rw [Real.log_exp]
+  ring
+
+omit [Fintype V] in
+/-- The chemical potential is an exact coordinate on interior occupations. -/
+theorem chemicalPotential_eq_iff (E : V → ℝ) (p : V → Occupation) (μ : ℝ) (v : V) :
+    chemicalPotential E p v = μ ↔ p v = gibbsOccupation (E v) μ := by
+  constructor
+  · intro h
+    let q : V → Occupation := fun u => gibbsOccupation (E u) μ
+    have hc : chemicalPotential E p v = chemicalPotential E q v :=
+      h.trans (chemicalPotential_gibbs E μ v).symm
+    have hl : Real.log ((p v : ℝ) / (1 - (p v : ℝ))) =
+        Real.log ((q v : ℝ) / (1 - (q v : ℝ))) :=
+      add_left_cancel hc
+    have hr := congrArg Real.exp hl
+    rw [Real.exp_log (div_pos (p v).2.1 (vacancy_pos p v)),
+      Real.exp_log (div_pos (q v).2.1 (vacancy_pos q v))] at hr
+    apply Subtype.ext
+    change (p v : ℝ) = (q v : ℝ)
+    have hm := (div_eq_div_iff (vacancy_pos p v).ne' (vacancy_pos q v).ne').mp hr
+    linarith only [show (p v : ℝ) * (1 - (q v : ℝ)) =
+      (q v : ℝ) * (1 - (p v : ℝ)) from hm]
+  · intro h
+    unfold chemicalPotential
+    rw [h]
+    exact chemicalPotential_gibbs E μ v
+
+/-- Every Fermi--Dirac profile with a common chemical potential is stationary. -/
+theorem drift_gibbs_eq_zero (G : WeightedGraph V) (E : V → ℝ) (μ : ℝ) :
+    ∀ v, drift G E (fun u => gibbsOccupation (E u) μ) v = 0 := by
+  apply (drift_eq_zero_iff _ _ _).mpr
+  intro v u _
+  rw [chemicalPotential_gibbs, chemicalPotential_gibbs]
+
+/-- On a connected graph, the Gibbs profiles exhaust the stationary fields. -/
+theorem stationary_iff_gibbs_of_paths (G : WeightedGraph V) (E : V → ℝ)
+    (p : V → Occupation) (v₀ : V) :
+    (∀ v, Relation.ReflTransGen (fun a b => 0 < G.w a b) v₀ v) →
+      ((∀ v, drift G E p v = 0) ↔ ∃ μ, p = fun u => gibbsOccupation (E u) μ) := by
+  intro hpath
+  constructor
+  · intro h
+    have he := (drift_eq_zero_iff G E p).mp h
+    refine ⟨chemicalPotential E p v₀, funext fun v => ?_⟩
+    apply (chemicalPotential_eq_iff E p (chemicalPotential E p v₀) v).mp
+    induction hpath v with
+    | refl => rfl
+    | tail _ edge ih => exact (he _ _ edge).symm.trans ih
+  · rintro ⟨μ, rfl⟩
+    exact drift_gibbs_eq_zero G E μ
+
 #print axioms flux_eq_particle_hole
 #print axioms freeEnergy_eq_spectral
 #print axioms sum_drift_eq_zero
 #print axioms dissipation_eq_zero_iff
 #print axioms drift_eq_zero_iff
 #print axioms hasDerivAt_freeEnergy_drift
+#print axioms chemicalPotential_eq_iff
+#print axioms stationary_iff_gibbs_of_paths
 
 end
 
