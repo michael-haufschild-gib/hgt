@@ -43,7 +43,9 @@ theorem exists_equalMultiplicity_spectralSimulation
     intro a b hab
     by_cases ha : a < k * m
     · by_cases hb' : b < k * m
-      · simpa only [f, dif_pos ha, dif_pos hb'] using
+      · dsimp only [f]
+        rw [dif_pos ha, dif_pos hb']
+        exact
           (Tuple.monotone_sort energy (show (⟨a, ha⟩ : Fin (k*m)) ≤ ⟨b, hb'⟩ from hab))
       · simpa only [f, dif_pos ha, dif_neg hb'] using (hb (p ⟨a, ha⟩)).2
     · have hb' : ¬ b < k * m := fun h => ha (lt_of_le_of_lt hab h)
@@ -73,7 +75,10 @@ theorem exists_equalMultiplicity_spectralSimulation
     have htwo : ‖x - y‖ ≤ 2 := by
       calc
         ‖x - y‖ ≤ ‖x‖ + ‖y‖ := norm_sub_le _ _
-        _ = 2 := by simp [x, y, Complex.norm_exp_ofReal_mul_I]
+        _ = 2 := by
+          rw [show ‖x‖ = 1 from Complex.norm_exp_ofReal_mul_I _,
+            show ‖y‖ = 1 from Complex.norm_exp_ofReal_mul_I _]
+          norm_num
     have hchord : ‖x - y‖ ≤ |t| * (b (i.val + 1) - b i.val) := by
       have h := norm_expI_sub_expI_le (t * energy (e (i,j))) (t * b i.val) 0
       simp only [Int.cast_zero, mul_zero, sub_zero, ← mul_sub, abs_mul,
@@ -118,6 +123,40 @@ private theorem hsSq_diagonal (d : ℕ) (v : Fin d → ℂ) :
   classical
   simp [hsSq, Matrix.diagonal, apply_ite]
 
+private theorem hsSq_conj_diagonal_difference {d : ℕ}
+    (V : Matrix.unitaryGroup (Fin d) ℂ) (u v : Fin d → ℂ) :
+    hsSq ((V : Matrix _ _ ℂ) * Matrix.diagonal u * star (V : Matrix _ _ ℂ) -
+      (V : Matrix _ _ ℂ) * Matrix.diagonal v * star (V : Matrix _ _ ℂ)) =
+      ∑ x, ‖u x - v x‖ ^ 2 := by
+  rw [← sub_mul, ← mul_sub, Matrix.diagonal_sub]
+  exact (hsSq_unitary_mul_star (fun _ => (V : Matrix _ _ ℂ)) (fun _ => V.2)
+    0 0 (Matrix.diagonal (fun x => u x - v x))).trans (hsSq_diagonal d _)
+
+private theorem schrodingerPhase_eq (t x : ℝ) :
+    Complex.exp (-(Complex.I * ((t : ℂ) * (x : ℂ)))) =
+      Complex.exp (((-t * x : ℝ) : ℂ) * Complex.I) := by
+  congr 1
+  push_cast
+  ring
+
+private theorem hsSq_blockLift_eq {k m : ℕ} (H : Matrix (Fin (k*m)) (Fin (k*m)) ℂ)
+    (hH : H.IsHermitian) (e : Fin k × Fin m ≃ Fin (k*m)) (K : Fin k → ℝ) (t : ℝ) :
+    hsSq (unitaryEvolution H t - unitaryEvolution (spectralBlockLift H hH e K) t) =
+      ∑ i : Fin k, ∑ j : Fin m,
+        ‖Complex.exp (((-t * hH.eigenvalues (e (i,j)) : ℝ) : ℂ) * Complex.I) -
+         Complex.exp (((-t * K i : ℝ) : ℂ) * Complex.I)‖ ^ 2 := by
+  rw [unitaryEvolution_spectral hH t, spectralBlockLift,
+    unitaryEvolution_conj_diagonal _ hH.eigenvectorUnitary.2]
+  let u (x : Fin (k*m)) := Complex.exp (-(Complex.I * ((t : ℂ) * hH.eigenvalues x)))
+  let v (x : Fin (k*m)) := Complex.exp (-(Complex.I * ((t : ℂ) * K (e.symm x).1)))
+  rw [hsSq_conj_diagonal_difference hH.eigenvectorUnitary u v]
+  calc
+    _ = ∑ ij : Fin k × Fin m, ‖u (e ij) - v (e ij)‖ ^ 2 :=
+      (Equiv.sum_comp e (fun x => ‖u x - v x‖ ^ 2)).symm
+    _ = _ := by
+      rw [Fintype.sum_prod_type]
+      simp only [u, v, Equiv.symm_apply_apply, schrodingerPhase_eq]
+
 /-- Every finite Hamiltonian has a single autonomous equal-multiplicity
 simulator; the estimate applies to its actual matrix evolution at every time. -/
 theorem exists_equalMultiplicity_hamiltonianSimulation
@@ -132,25 +171,12 @@ theorem exists_equalMultiplicity_hamiltonianSimulation
   obtain ⟨e, K, h⟩ := exists_equalMultiplicity_spectralSimulation k m E
     (-‖E‖) ‖E‖ hb (by linarith only [norm_nonneg E])
   refine ⟨e, K, fun t => ?_⟩
-  let z (x : ℝ) := Complex.exp (-(Complex.I * ((t : ℂ) * (x : ℂ))))
-  have hz (x : ℝ) : z x = Complex.exp (((-t * x : ℝ) : ℂ) * Complex.I) := by
-    dsimp [z]
-    congr 1
-    push_cast
-    ring
-  rw [unitaryEvolution_spectral hH t, spectralBlockLift,
-    unitaryEvolution_conj_diagonal _ hH.eigenvectorUnitary.2]
-  rw [← sub_mul, ← mul_sub, ← Matrix.diagonal_sub]
-  rw [hsSq_unitary_mul_star (fun _ => (hH.eigenvectorUnitary : Matrix _ _ ℂ))
-    (fun _ => hH.eigenvectorUnitary.2) 0 0, hsSq_diagonal]
-  change ∑ x, ‖z (E x) - z (K (e.symm x).1)‖ ^ 2 ≤ _
-  rw [← Equiv.sum_comp e (fun x => ‖z (E x) - z (K (e.symm x).1)‖ ^ 2),
-    Fintype.sum_prod_type]
-  simp only [Equiv.symm_apply_apply, hz]
-  have h' := h (-t)
-  rw [abs_neg] at h'
-  convert h' using 1 <;> ring
+  rw [hsSq_blockLift_eq H hH e K t]
+  apply (h (-t)).trans
+  rw [abs_neg]
+  exact le_of_eq (by change 2 * (m : ℝ) * |t| * (‖E‖ - -‖E‖) = 4 * m * |t| * ‖E‖; ring)
 
+#print axioms exists_equalMultiplicity_hamiltonianSimulation
 
 end
 end GaloisForLFunctions.HTGeometry

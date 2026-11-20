@@ -32,13 +32,13 @@ theorem negative_reading_has_deeper_zero {s : ℂ} (hs : 1/2 < s.re) (hn : (logD
     han.deriv.continuousAt.div han.continuousAt (negative_nonzero hn)
   have hshift : Tendsto (fun u : ℝ => s+(u:ℂ)) (𝓝[>] 0) (𝓝 s) := by
     simpa only [Complex.ofReal_zero,add_zero] using
-      ((tendsto_const_nhds (x:=s)).add Complex.continuous_ofReal.continuousAt.tendsto).mono_left
+      ((tendsto_const_nhds (x:=s)).add (Complex.continuous_ofReal.tendsto (0:ℝ))).mono_left
         (nhdsWithin_le_nhds (s:=Ioi (0:ℝ)))
   have hneg := (Complex.continuous_re.continuousAt.tendsto.comp (hc.tendsto.comp hshift)).eventually_lt_const hn
-  obtain ⟨u,hu,hu'⟩ := ((self_mem_nhdsWithin : Ioi (0:ℝ) ∈ 𝓝[>] 0).and hneg).exists
+  obtain ⟨u,hu,hu'⟩ := ((eventually_mem_nhdsWithin (s := Ioi (0:ℝ)) (a := 0)).and hneg).exists
   have hu₀ : 0 < u := hu
-  have hs' : 1/2 < (s+(u:ℂ)).re := by simpa only [Complex.add_re,Complex.ofReal_re] using
-    hs.trans (lt_add_of_pos_right _ hu₀)
+  have hs' : 1/2 < (s+(u:ℂ)).re := by
+    simpa only [Complex.add_re,Complex.ofReal_re] using hs.trans (lt_add_of_pos_right _ hu₀)
   obtain ⟨q,hq⟩ := exists_zero_disk_of_re_logDeriv_xi_neg hs' (negative_nonzero hu') hu'
   simp only [Complex.add_re,Complex.ofReal_re,Complex.add_im,Complex.ofReal_im,add_zero] at hq
   have hx := (sq_lt_sq₀ (sub_nonneg.mpr hs.le) (by linarith only [hs,hu₀] : 0 ≤ s.re+u-1/2)).mpr
@@ -165,7 +165,7 @@ theorem failure_of_landing_forces_additive_tracking :
       Tendsto (fun σ => hadamardThreshold σ-topRightOrdinate σ) (𝓝[>] (1/2:ℝ)) (𝓝 0) := by
   classical
   intro h
-  rw [ZetaLandingLaw,not_imp] at h
+  rw [ZetaLandingLaw,_root_.not_imp] at h
   obtain ⟨hZ,hF⟩ := h
   have hE := eventualHadamardPositivity_iff_zerosApproachLine.mpr hZ
   have high (A : ℝ) : ∃ q : XiZeroCopy, 1/2 < (q.1:ℂ).re ∧ A < |(q.1:ℂ).im| := by
