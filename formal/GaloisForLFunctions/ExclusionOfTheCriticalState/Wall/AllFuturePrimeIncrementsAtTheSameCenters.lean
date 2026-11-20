@@ -44,12 +44,12 @@ private theorem futureChebyshevFloor_rate {c : ℝ} (hc : c < 1) :
     obtain ⟨U,hU⟩ := eventually_atTop.mp (hr.eventually_const_lt hrs)
     filter_upwards [eventually_ge_atTop U,eventually_gt_atTop (0:ℝ)] with x hxU hx
     apply har.trans_le ((le_div_iff₀ hx).2 ?_)
-    apply le_csInf ⟨g x,⟨x,le_rfl,rfl⟩⟩
+    refine le_csInf (s := g '' Ici x) ⟨g x,x,Set.left_mem_Ici,rfl⟩ ?_
     rintro _ ⟨y,hy,rfl⟩
     exact (mul_le_mul_of_nonneg_left hy hpos.le).trans
       ((lt_div_iff₀ (hx.trans_le hy)).1 (hU y (hxU.trans hy))).le
   · filter_upwards [hbound,eventually_gt_atTop (0:ℝ),hr.eventually_lt_const ha] with x hxB hx hxg
-    have h := csInf_le hxB (show g x ∈ g '' Ici x from ⟨x,le_rfl,rfl⟩)
+    have h := csInf_le hxB (show g x ∈ g '' Ici x from ⟨x,Set.left_mem_Ici,rfl⟩)
     exact (div_le_div_of_nonneg_right h hx.le).trans_lt hxg
 
 
@@ -70,7 +70,7 @@ private theorem chebyshev_drift_boundedBelow {c : ℝ} (hc0 : 0 ≤ c) (hc1 : c 
 private theorem futureChebyshevFloor_mono {c : ℝ} (hB : BddBelow (range fun y : ℝ => Chebyshev.psi y-c*y)) :
     Monotone (futureChebyshevFloor c) := by
   intro x y hxy
-  apply le_csInf ⟨_,⟨y,le_rfl,rfl⟩⟩
+  refine le_csInf (s := (fun y : ℝ => Chebyshev.psi y-c*y) '' Ici y) ⟨_,y,Set.left_mem_Ici,rfl⟩ ?_
   rintro _ ⟨z,hz,rfl⟩
   exact csInf_le (hB.mono (image_subset_range ..)) ⟨z,hxy.trans hz,rfl⟩
 
@@ -86,7 +86,7 @@ private theorem futureChebyshevFloor_increment {c x H : ℝ} (hc : 0 ≤ c) (hH 
   have hle (a y : ℝ) (h : a ≤ y) : M a ≤ g y :=
     csInf_le (hB.mono (image_subset_range ..)) ⟨y,h,rfl⟩
   have hlow (r : ℝ) (h : ∀ y ≥ x, r ≤ g y) : r ≤ M x := by
-    apply le_csInf ⟨g x,⟨x,le_rfl,rfl⟩⟩
+    refine le_csInf (s := g '' Ici x) ⟨g x,x,Set.left_mem_Ici,rfl⟩ ?_
     rintro _ ⟨y,hy,rfl⟩; exact h y hy
   have hpx := Chebyshev.psi_mono (le_add_of_nonneg_right (a := x) hH)
   constructor
@@ -298,7 +298,7 @@ private theorem futurePrimeCellWidth_div_sqrt {R : ℝ} (hR : 0 < R) :
   dsimp only [futurePrimeCellWidth,Function.comp_apply]
   rw [Real.log_mul hR.ne' hx.ne',add_div,Real.exp_add,
     show Real.sqrt x=Real.exp (Real.log x/2) by rw [Real.exp_half,Real.exp_log hx],
-    div_eq_mul_inv,← Real.exp_neg,mul_assoc,← Real.exp_add]
+    mul_div_assoc,← Real.exp_sub]
   congr 2; ring
 
 /-- One measurable set carries positive fractional-test mass, a favorable
@@ -340,7 +340,7 @@ theorem criticalState_all_future_prefixes_at_favorable_state_centers {W₀ : ℝ
   have hprefix (u : ℝ) (hu : u ∈ A) (y : ℝ) (hy : u ≤ y) :=
     centered_future_increment_of_chebyshev (hx0.trans (hAI hu).1).le hy (hfuture u hu y hy)
   have hlarge (u : ℝ) (hu : u ∈ A) (y : ℝ) (hy : u ≤ y) :
-      let D := ⌊Real.exp (Real.log u/4)⌋₊
+      let D := ⌊Real.exp (Real.log u/4)⌋₊;
       -(1-c)*(y-u)-c*Real.exp (Real.log (R*x)/4)-1-D*Real.log D ≤ lateDivisorCenteredCount D u y := by
     have hu0 := hx0.trans (hAI hu).1
     have hlog := (Real.le_log_iff_exp_le hu0).mpr (hxe.trans (hAI hu).1.le)
@@ -359,7 +359,7 @@ theorem criticalState_all_future_prefixes_at_favorable_state_centers {W₀ : ℝ
     dsimp only [w,criticalWallWidth]; rw [Real.exp_half,Real.exp_log hu0]
     exact (Real.sqrt_le_sqrt hxu.le).trans (le_mul_of_one_le_right (Real.sqrt_nonneg _) hl)
   have hw0 := (Real.sqrt_pos.mpr hx0).trans_le hxy
-  have hsmall := ((lt_div_iff₀ (Real.sqrt_pos.mpr hx0)).mp hH).le.trans (mul_le_mul_of_nonneg_left hxy hδ.le)
+  have hsmall := ((div_lt_iff₀ (Real.sqrt_pos.mpr hx0)).mp hH).le.trans (mul_le_mul_of_nonneg_left hxy hδ.le)
   have hscale : c*futurePrimeCellWidth R x ≤ δ*w := (mul_le_of_le_one_left
     (Real.exp_pos _).le hc1.le).trans hsmall
   have hfut := hfuture u hu (u+w) (le_add_of_nonneg_right hw0.le)

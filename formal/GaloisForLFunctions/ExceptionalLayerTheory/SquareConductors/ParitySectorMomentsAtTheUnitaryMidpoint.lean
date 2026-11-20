@@ -44,7 +44,7 @@ theorem twice_card_smallUnitarySubsets {k : ℕ} (hk : 1 < k) :
   let small (S : Finset ℕ) := primePowerSubset k S ≤ primePowerSubset k (P \ S)
   have flip (S : Finset ℕ) (hs : S ⊆ P) : small (P \ S) ↔ ¬small S := by
     dsimp only [small]
-    rw [sdiff_sdiff_eq_self hs, not_le]
+    rw [Finset.sdiff_sdiff_eq_self hs, not_le]
     refine ⟨fun h => h.lt_of_ne ?_, LT.lt.le⟩
     intro he
     have hc := (primePowerSubset_coprime_iff hs (show P \ S ⊆ P from sdiff_subset)).mpr
@@ -65,8 +65,8 @@ theorem twice_card_smallUnitarySubsets {k : ℕ} (hk : 1 < k) :
     · intro S hS
       obtain ⟨hS,hm⟩ := mem_filter.mp hS
       exact mem_filter.mpr ⟨mem_powerset.mpr sdiff_subset,(flip S (mem_powerset.mp hS)).mpr hm⟩
-    · exact fun S hS => sdiff_sdiff_eq_self (mem_powerset.mp (mem_filter.mp hS).1)
-    · exact fun S hS => sdiff_sdiff_eq_self (mem_powerset.mp (mem_filter.mp hS).1)
+    · exact fun S hS => Finset.sdiff_sdiff_eq_self (mem_powerset.mp (mem_filter.mp hS).1)
+    · exact fun S hS => Finset.sdiff_sdiff_eq_self (mem_powerset.mp (mem_filter.mp hS).1)
   have hall := P.powerset.card_filter_add_card_filter_not small
   rw [← same,card_powerset] at hall
   exact (two_mul _).trans hall

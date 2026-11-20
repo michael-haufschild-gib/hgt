@@ -227,7 +227,7 @@ theorem heatTimeProduct_orbits {M : Type*} [CommMonoid M] (r : ℝ) (f : ℝ →
     (fun p => by simp only [w,weight_reflect] <;> rfl)
   have hempty : ((heatBoxSites r).filter fun p => p.2.re = 0) = ∅ :=
     filter_eq_empty_iff.mpr fun p hp => site_re_ne_zero hp
-  rw [hempty, prod_empty, one_mul] at h
+  rw [hempty, Finset.prod_empty, one_mul] at h
   have h' := prod_oriented S (fun p => p.2.im) w conjugateSite
     (fun p => by simp [conjugateSite]) (fun p hp => mem_filter.mpr
       ⟨conjugate_mem (mem_filter.mp hp).1, (mem_filter.mp hp).2⟩) (fun _ => rfl)
@@ -262,7 +262,8 @@ theorem heatBox_contour_norm (r : ℝ) (hr : 0 < r) :
   have he : C = heatBoxSites r := Finset.ext fun p => (hC p).trans mem_heatBoxSites.symm
   subst C
   rw [hI]
-  simp [norm_mul, abs_of_pos Real.pi_pos, heatBoxWinding]
+  change ‖2 * (Real.pi : ℂ) * I * ((heatBoxWinding r : ℕ) : ℂ)‖ = _
+  simp [abs_of_pos Real.pi_pos]
 
 /-- A cofinal family of projected contours with norm strictly below 4π
 already excludes every positive-time collision. -/

@@ -82,7 +82,7 @@ theorem riemannHypothesis_or_ordinary_prime_complement_on_every_late_octave : Ri
             let m := ∫ u, Φ u
             let v := fun n : ℕ => (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t
             m*((∑' n : {j : ℕ // j ∉ J}, v n)-m/2)-ε < m*ordinaryPrimePolarError Φ t ∧
-              ∀ y ≥ x, let D := ⌊Real.exp (Real.log x/4)⌋₊
+              ∀ y ≥ x, let D := ⌊Real.exp (Real.log x/4)⌋₊;
                 -(1-c)*(y-x)-c*Real.exp (Real.log (2*Real.exp T)/4)-1-D*Real.log D ≤
                   lateDivisorCenteredCount D x y := by
   rcases riemannHypothesis_or_integer_mangoldt_sign_transfer with hr | ⟨W₀,F,Φ,D₀,hW,ht,hF,hΦ,he,hD₀,htail⟩
@@ -224,7 +224,7 @@ theorem riemannHypothesis_or_ordinary_prime_tail_beyond_the_critical_width : Rie
             m*((∑' n : {j : ℕ // x+Real.sqrt (x*Real.log x) < j},
                 (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t)-m/2)-ε <
                   m*ordinaryPrimePolarError Φ t ∧
-              ∀ y ≥ x, let D := ⌊Real.exp (Real.log x/4)⌋₊
+              ∀ y ≥ x, let D := ⌊Real.exp (Real.log x/4)⌋₊;
                 -(1-c)*(y-x)-c*Real.exp (Real.log (2*Real.exp T)/4)-1-D*Real.log D ≤
                   lateDivisorCenteredCount D x y := by
   rcases riemannHypothesis_or_ordinary_prime_complement_on_every_late_octave with hr |

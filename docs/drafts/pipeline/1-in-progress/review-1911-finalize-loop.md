@@ -16,8 +16,8 @@ Procedure: topological order over the listed modules plus the three unlisted dep
 | `SignedArithmeticCorrespondences/TheFinitePartOfAShortFlatWeilComb` | checked, wired |
 | `ExceptionalLayerTheory/SquareConductors/TheNegativeRankFiveMidpoint` | olean built |
 | `ExceptionalLayerTheory/SquareConductors/RealizingTheUnitaryMidpointChambers` | olean built |
-| `ExceptionalLayerTheory/SquareConductors/EveryValueOfTheFivePrimeMidpoint` | fails: unsolved goals |
-| `ExceptionalLayerTheory/SquareConductors/ParitySectorMomentsAtTheUnitaryMidpoint` | blocked by EveryValueOfTheFivePrimeMidpoint |
+| `ExceptionalLayerTheory/SquareConductors/EveryValueOfTheFivePrimeMidpoint` | olean built |
+| `ExceptionalLayerTheory/SquareConductors/ParitySectorMomentsAtTheUnitaryMidpoint` | checked, wired |
 | `BlackHoleRingdown/TailEnergy/PrimePowerReturnsForceSignedCancellation` | olean built |
 | `BlackHoleRingdown/TailEnergy/TheMobiusReadingOfTheScatteringReturns` | checked, wired |
 | `RepresentationLifting/KTheory/PermutationVirtualFreeness` | olean built |
@@ -35,7 +35,7 @@ Procedure: topological order over the listed modules plus the three unlisted dep
 | `ExceptionalLayerTheory/LevelWidthsOfAReflectedHadamardPair` | olean built |
 | `ExceptionalLayerTheory/TheLogarithmicCorrectionToGaussianObservation` | olean built |
 | `ExclusionOfTheCriticalState/Wall/OppositeExcursionsOfTheThirdConfinedPrimeWave` | olean built |
-| `GaloisTheoryOfZeros/Analysis/HermiteConstantsOfTheHeatMinors` | pending |
+| `GaloisTheoryOfZeros/Analysis/HermiteConstantsOfTheHeatMinors` | checked |
 | `GaloisTheoryOfZeros/Analysis/MultiplicityStrataOfTheHeatWinding` | pending |
 | `GaloisTheoryOfZeros/Analysis/RecoveringHeatTimeFromOneReflectedPair` | pending |
 | `GaloisTheoryOfZeros/Analysis/ThreeBoundaryMomentsDetectEveryHeatCollision` | pending |
