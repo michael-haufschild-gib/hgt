@@ -101,8 +101,8 @@ private theorem last_pair_row {k : ℕ} (hk : 1 ≤ k) (s t d : ℝ) :
     rw [translated,anchorPair,if_neg hn,if_pos rfl,norm_mul,Complex.norm_exp_ofReal_mul_I,mul_one,
       Complex.norm_real,Real.norm_eq_abs,sq_abs]
   rw [row_spectrum,hz,sum_eq_single 1]
-  · have hA : anchorPair (k+1) (s:ℂ) (k+1) = s := by simp [anchorPair]
-    have hB : anchorPair (k+1) (s:ℂ) 1 = 1 := by simp [anchorPair]
+  · have hA : anchorPair (k+1) (s:ℂ) (k+1) = s := by rw [anchorPair, if_neg hn, if_pos rfl]
+    have hB : anchorPair (k+1) (s:ℂ) 1 = 1 := by rw [anchorPair, if_pos rfl]
     rw [translated_gram,hA,hB]
     simp [gram,gap]
     <;> ring
@@ -157,7 +157,7 @@ theorem opposite_anchors_noise_floor {n : ℕ} (hn : 2 ≤ n) {h : ℝ} (hh : 0 
     split_ifs
     · rw [abs_mul,abs_mul,abs_of_nonneg (le_max_right (d-Real.log n) (0:ℝ))]
       norm_num
-      have hcos := abs_le.mpr ⟨Real.neg_one_le_cos _, Real.cos_le_one _⟩
+      have hcos := abs_le.mpr ⟨Real.neg_one_le_cos (t*Real.log n), Real.cos_le_one (t*Real.log n)⟩
       have hle := mul_le_mul hcos (max_le (by linarith only [hd] : d-Real.log n ≤ h) hh)
         (le_max_right _ _) zero_le_one
       linarith only [hle]

@@ -42,7 +42,7 @@ private theorem mass_dilation {X : ℝ} (hx : 1≤X) (s : ℂ) :
     rw [mass_one h2x,mass_one (by norm_num),mass_one hx,sub_self,Complex.cpow_zero,one_mul,
       Real.log_mul (by norm_num : (2:ℝ)≠0) hp.ne',Complex.ofReal_add]
   have H (Y:ℝ) (hy:1≤Y) : powerMass Y s=((Y:ℂ)^(1-s)-1)/(1-s) := by
-    rw [eq_div_iff (sub_ne_zero.mpr he.symm),mul_comm];exact (squarefree_density_primitive hy s).symm
+    rw [eq_div_iff (sub_ne_zero.mpr (Ne.symm he)),mul_comm];exact (squarefree_density_primitive hy s).symm
   rw [H _ h2x,H _ (by norm_num),H _ hx,Complex.ofReal_mul,Complex.mul_cpow_ofReal_nonneg (by norm_num) hp.le,
     Complex.ofReal_ofNat]
   ring
@@ -82,6 +82,7 @@ crossing the abscissa of absolute convergence. -/
 theorem squarefree_dyadic_locally_uniform :
     TendstoLocallyUniformlyOn (fun X : ℝ => dyadicSquarefreeDifference X) squarefreeDyadicLimit
       atTop {s : ℂ | 1/2<s.re} := by
+  change TendstoLocallyUniformlyOn _ _ atTop halfPlane
   rw [tendstoLocallyUniformlyOn_iff_forall_isCompact halfPlane_open]
   intro K hsub hK
   rw [Metric.tendstoUniformlyOn_iff]
@@ -96,30 +97,31 @@ theorem squarefree_dyadic_locally_uniform :
   rw [mul_zero] at hh
   filter_upwards [hh.eventually_lt_const hε,eventually_ge_atTop (1:ℝ)] with X hX hx s hsk
   have hs : 1/2<s.re := hsub hsk
-  have hsr := hmin hsk
-  have hsn := hmax hsk
+  have hsr : lo.re ≤ s.re := hmin hsk
+  have hsn : ‖s‖ ≤ ‖hi‖ := hmax hsk
   rw [dist_comm,dist_eq_norm]
   apply (squarefree_dyadic_error hx hs).trans_lt
   apply lt_of_le_of_lt _ hX
   rw [neg_sub]
+  have h1 : 0 < lo.re-1/2 := sub_pos.mpr hc
   apply mul_le_mul
-  · dsimp only [D];gcongr
-    · exact hsn
-    · exact sub_pos.mpr hc
-    · exact hsr
+  · dsimp only [D]
+    have h3 : ‖s‖/(s.re-1/2) ≤ ‖hi‖/(lo.re-1/2) :=
+      div_le_div₀ (norm_nonneg _) hsn h1 (by linarith only [hsr])
+    linarith only [h3]
   · exact Real.rpow_le_rpow_of_exponent_le hx (by linarith only [hsr])
   · exact Real.rpow_nonneg (zero_le_one.trans hx) _
-  · dsimp only [D];have := sub_pos.mpr hc;positivity
+  · exact mul_nonneg (by norm_num) (add_nonneg zero_le_one (div_nonneg (norm_nonneg _) h1.le))
 
 private theorem entire_section (X : ℝ) : Differentiable ℂ (squarefreeSection X) := by
   rw [show squarefreeSection X=(fun s : ℂ => ∑ n∈Icc 1 ⌊X⌋₊,
     (n:ℂ)^(-s)*(((((ArithmeticFunction.moebius n:ℤ):ℝ)^2):ℝ):ℂ)) from funext (squarefreeSection_eq_positive X)]
-  exact Differentiable.sum fun n hn s =>
-    ((differentiableAt_id.neg).const_cpow (Or.inl (Nat.cast_ne_zero.mpr (Nat.ne_of_gt (mem_Icc.mp hn).1)))).mul_const _
+  exact Differentiable.fun_sum fun n hn s =>
+    ((differentiableAt_id.neg).const_cpow (Or.inl (Nat.cast_ne_zero.mpr (Nat.one_le_iff_ne_zero.mp (mem_Icc.mp hn).1)))).mul_const _
 
 private theorem entire_dyadic (X : ℝ) : Differentiable ℂ (dyadicSquarefreeDifference X) := by
   apply (entire_section (2*X)).sub
-  exact ((differentiable_const.sub differentiable_id).const_cpow (Or.inl (by norm_num : (2:ℂ)≠0))).mul (entire_section X)
+  exact (((differentiable_const _).sub differentiable_id).const_cpow (Or.inl (by norm_num : (2:ℂ)≠0))).mul (entire_section X)
 
 /-- All arithmetic derivatives converge to the corresponding zeta
 quotient derivatives, with the pole already removed before differentiating. -/
@@ -148,11 +150,14 @@ theorem squarefree_dyadic_order {s : ℂ} (hlo : 1/2<s.re) (hhi : s.re<1) :
     intro he;have hre := congrArg Complex.re he
     simp only [two_mul,Complex.add_re,Complex.one_re] at hre;linarith
   have hf : AnalyticAt ℂ f s := by
-    apply AnalyticAt.div _ _ hz
-    · apply AnalyticAt.sub analyticAt_const
-      simp_rw [Complex.cpow_def_of_ne_zero (by norm_num : (2:ℂ)≠0)]
-      exact (analyticAt_const.mul (analyticAt_const.sub analyticAt_id)).cexp
-    · exact (_root_.RHTower.analyticAt_riemannZeta h2).comp (analyticAt_const.mul analyticAt_id)
+    have h1 : AnalyticAt ℂ (fun z : ℂ => 1-(2:ℂ)^(1-z)) s := by
+      have he : (fun z : ℂ => 1-(2:ℂ)^(1-z)) = fun z => 1-cexp (Complex.log 2*(1-z)) := by
+        funext z; rw [Complex.cpow_def_of_ne_zero (by norm_num : (2:ℂ)≠0)]
+      rw [he]
+      exact analyticAt_const.sub (analyticAt_const.mul (analyticAt_const.sub analyticAt_id)).cexp
+    have h2' : AnalyticAt ℂ (fun z : ℂ => riemannZeta (2*z)) s :=
+      (_root_.RHTower.analyticAt_riemannZeta h2).comp (analyticAt_const.mul analyticAt_id)
+    exact AnalyticAt.div (f := fun z : ℂ => 1-(2:ℂ)^(1-z)) (g := fun z : ℂ => riemannZeta (2*z)) h1 h2' hz
   have hq : (2:ℂ)^(1-s)≠1 := by
     have he := Complex.norm_cpow_eq_rpow_re_of_pos (by norm_num : (0:ℝ)<2) (1-s)
     simp only [Complex.ofReal_ofNat,Complex.sub_re,Complex.one_re] at he
@@ -165,7 +170,7 @@ theorem squarefree_dyadic_order {s : ℂ} (hlo : 1/2<s.re) (hhi : s.re<1) :
 /-- Multiplicity at least m is equivalent to decay of the first m
 ordinary arithmetic derivatives along one common cofinal sequence. -/
 theorem squarefree_jet_vanishing_iff {s : ℂ} (hlo : 1/2<s.re) (hhi : s.re<1) (m : ℕ) :
-    (∃ X : ℕ → ℝ,Tendsto X atTop atTop ∧ ∀ j<m,Tendsto (fun n =>
+    (∃ X : ℕ → ℝ,Tendsto X atTop atTop ∧ ∀ j < m,Tendsto (fun n =>
       iteratedDeriv j (dyadicSquarefreeDifference (X n)) s) atTop (𝓝 0)) ↔
       (m:ℕ∞)≤analyticOrderAt riemannZeta s := by
   have hDiff := squarefree_dyadic_locally_uniform.differentiableOn

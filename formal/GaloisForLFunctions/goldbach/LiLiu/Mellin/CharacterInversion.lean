@@ -25,37 +25,41 @@ private theorem companion_sample {N k : ℕ} (hN : 0 < N) (hk : 0 < k) (φ : Tes
   field_simp [Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr (Nat.cast_pos.mpr hk)).ne',
     Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr (Nat.cast_pos.mpr hN)).ne']
 
-private theorem weighted_samples_eq_units (n : ℕ) (φ : TestWeight) (χ : DirichletCharacter ℂ (n+1)) :
-    (∑' k : ℕ, (twistedMangoldt χ k * (k : ℂ)^(-(1/2 : ℂ))) * companion φ ((k : ℝ)/(n+1 : ℕ))) =
-      unitCharacterSum n (fun u => (coefficient φ (n+1) (u : ZMod (n+1)).val : ℂ)) χ / (Real.sqrt (n+1 : ℕ) : ℂ) := by
-  let N := n+1
-  have hN : 0 < N := Nat.succ_pos n
-  have hx (k : ℕ) : (twistedMangoldt χ k * (k : ℂ)^(-(1/2 : ℂ))) * companion φ ((k : ℝ)/N) =
+private theorem character_sample {N : ℕ} [NeZero N] (φ : TestWeight)
+    (χ : DirichletCharacter ℂ N) (k : ℕ) :
+    (twistedMangoldt χ k * (k:ℂ)^(-(1/2:ℂ))) * companion φ ((k:ℝ)/N) =
       (coefficient φ N k : ℂ) * χ (k : ZMod N) / (Real.sqrt N : ℂ) := by
-    rcases Nat.eq_zero_or_pos k with rfl | hk
-    · simp [twistedMangoldt, coefficient]
-    rw [mul_assoc, companion_sample hN hk]
-    simp only [twistedMangoldt, coefficient, Complex.ofReal_mul]
-    ring
-  simp_rw [hx]
-  rw [tsum_eq_sum (s := range N)]
-  · rw [← Finset.sum_div, unitCharacterSum, ← RHTower.SelbergKloostermanCongruence.sum_range_units N
-      (fun u => (coefficient φ N u.val : ℂ) * χ u)]
-    congr 1
-    apply sum_congr rfl
-    intro k hk
-    rw [ZMod.val_natCast_of_lt (mem_range.mp hk)]
-    by_cases hu : IsUnit (k : ZMod N)
-    · rw [if_pos hu]
-    · simp [hu, χ.map_nonunit hu]
-  · intro k hk
-    have hkN : N ≤ k := Nat.le_of_not_gt fun h => hk (mem_range.mpr h)
-    simp [coefficient, weight_sample_zero hN hkN φ]
+  rcases Nat.eq_zero_or_pos k with rfl | hk
+  · simp [twistedMangoldt,coefficient]
+  rw [mul_assoc,companion_sample (NeZero.pos N) hk]
+  simp only [twistedMangoldt,coefficient,Complex.ofReal_mul]
+  ring
+
+/-- A Dirichlet character vanishes on nonunits, and the supported weight
+only samples representatives strictly below the modulus. -/
+private theorem weighted_samples_eq_units (n : ℕ) (φ : TestWeight) (χ : DirichletCharacter ℂ (n+1)) :
+    (∑' k : ℕ, (twistedMangoldt χ k * (k:ℂ)^(-(1/2:ℂ))) * companion φ ((k:ℝ)/(n+1:ℕ))) =
+      unitCharacterSum n (fun u => (coefficient φ (n+1) (u : ZMod (n+1)).val : ℂ)) χ /
+        (Real.sqrt (n+1:ℕ) : ℂ) := by
+  let f (k : ℕ) := (coefficient φ (n+1) k : ℂ) * χ (k : ZMod (n+1)) / (Real.sqrt (n+1:ℕ) : ℂ)
+  have hf (k : ℕ) (hk : n+1 ≤ k) : f k=0 := by
+    simp [f,coefficient,weight_sample_zero (Nat.succ_pos n) hk φ]
+  have he (k : ℕ) : f k = if k.Coprime (n+1) then f k else 0 := by
+    split_ifs with h
+    · rfl
+    · have hn : ¬ IsUnit (k : ZMod (n+1)) := fun hu => h ((ZMod.isUnit_iff_coprime k (n+1)).mp hu)
+      simp only [f,χ.map_nonunit hn,mul_zero,zero_div]
+  calc
+    _ = ∑' k : ℕ, f k := tsum_congr (character_sample φ χ)
+    _ = ∑' k : ℕ, if k.Coprime (n+1) then f k else 0 := tsum_congr he
+    _ = ∑ u : (ZMod (n+1))ˣ, f (u : ZMod (n+1)).val := tsum_coprime_eq_sum_units (n+1) f hf
+    _ = _ := by simp only [f,unitCharacterSum,Finset.sum_div,ZMod.natCast_zmod_val]
 
 private theorem twisted_LSeries_eq {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N)
     {s : ℂ} (hs : 1 < (1/2+s : ℂ).re) :
     LSeries (twistedMangoldt χ) (1/2+s) = -characterFeature χ s := by
-  rw [characterFeature, logDeriv, χ.deriv_LFunction_eq_deriv_LSeries hs, χ.LFunction_eq_LSeries hs,
+  change LSeries (twistedMangoldt χ) (1/2+s) = -(deriv χ.LFunction (1/2+s) / χ.LFunction (1/2+s))
+  rw [χ.deriv_LFunction_eq_deriv_LSeries hs, χ.LFunction_eq_LSeries hs,
     ← neg_div]
   exact χ.LSeries_twist_vonMangoldt_eq hs
 

@@ -102,8 +102,9 @@ theorem boundaryKernel_strip_decay {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH (n
     _ ≤ C * heightGrowth s.im * heightGrowth z.im / (‖1+s‖*‖1+conj z‖) :=
       div_le_div_of_nonneg_right (hb s z hs hz) (by positivity)
     _ = C * (heightGrowth s.im / ‖1+s‖) * (heightGrowth z.im / ‖1+conj z‖) := by ring
-    _ ≤ C * (2*(1+|s.im|)^(-(3/4:ℝ))) * (2*(1+|z.im|)^(-(3/4:ℝ))) := by
-      gcongr
+    _ ≤ C * (2*(1+|s.im|)^(-(3/4:ℝ))) * (2*(1+|z.im|)^(-(3/4:ℝ))) :=
+      mul_le_mul (mul_le_mul_of_nonneg_left h1 hC) h2
+        (div_nonneg (heightGrowth_pos _).le (norm_nonneg _)) (by positivity)
     _ = _ := by ring
 
 #print axioms boundaryKernel_strip_decay
