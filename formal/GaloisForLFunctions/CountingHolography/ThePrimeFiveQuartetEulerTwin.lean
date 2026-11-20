@@ -1,7 +1,7 @@
 import GaloisForLFunctions.CountingHolography.TheCountLawAtEveryGenus
 import GaloisForLFunctions.ArithmeticCastelnuovoSeveri.WittIntegralityIsNotPurity
-import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.EffectiveElementsOfTheArithmeticSquare
-import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.Witt.NecklaceMobiusCoordinates
+import GaloisForLFunctions.AbsoluteGeometryOfSpecZ.TheRestrictionToTheFrobeniusGraph
+import Mathlib.NumberTheory.ArithmeticFunction.Moebius
 
 /-!
 # Universal Witt–Euler Coordinates and the Prime-Five Non-Real Quartet Beurling Curve Twin
@@ -411,21 +411,16 @@ theorem exists_int_necklace_of_integral_hasGhost (Zℤ : PowerSeries ℤ)
   have hghost_mem : IsGhost (fun n : ℕ+ => N n) :=
     isGhost_of_necklace (b := π) fun n => hN_eq n n.pos
   refine ⟨hghost_mem, π, rfl, hN_eq, fun k hk => ?_⟩
-  let x : ghostRing := ofPrimeCounts π
-  have hx_val : ∀ d : ℕ, 1 ≤ d → toNat x.val d = N d := by
-    intro d hd
-    have hcomp := ghostComponent_ofPrimeCounts π ⟨d, hd⟩
-    rw [← hN_eq d hd] at hcomp
-    simpa [toNat, hd] using hcomp
-  have hmoeb := ghost_necklace_moebius x ⟨k, hk⟩
-  have hneck : necklace (toNat x.val) k = π k := by
-    change coord x k = π k
-    exact coord_ofPrimeCounts π (by omega)
-  simp only [PNat.mk_coe] at hmoeb
-  rw [hneck] at hmoeb
-  rw [hmoeb]
+  let g : ℕ → ℤ := fun d => if d = 0 then 0 else N d
+  have hmoeb := (ArithmeticFunction.sum_eq_iff_sum_mul_moebius_eq
+    (f := fun d => (d : ℤ) * π d) (g := g)).mp
+      (fun m hm => by dsimp [g]; rw [if_neg (by omega)]; exact (hN_eq m hm).symm) k hk
+  simp only [Int.cast_id] at hmoeb
+  rw [Nat.sum_divisorsAntidiagonal' (fun i j => (ArithmeticFunction.moebius i : ℤ) * g j)] at hmoeb
+  rw [← hmoeb]
   refine Finset.sum_congr rfl fun d hd => ?_
-  rw [hx_val d (Nat.pos_of_mem_divisors hd)]
+  dsimp [g]
+  rw [if_neg (Nat.pos_of_mem_divisors hd).ne']
 
 /-! ## 2. The prime-five (`q = 5`) genus-`2` non-real single-quartet curve datum -/
 
@@ -855,8 +850,8 @@ private theorem five_pow_dominates_for_five_le :
 Over the prime base `q = 5`, `primeFiveQuartetDatum` has:
 1. Integral zeta series in `1 + X ℤ⟦X⟧` with functional equation and non-real off-circle quartet;
 2. Nonnegative degree-`1` kernel counts `detDeg P ≥ 0` for all `P ∈ ℝ[X]`;
-3. An effective Witt ghost element (`IsEffective x`, `1 ≤ coord x d` for every `d ≥ 1`, with
-   `coord x 1 = 4`, `coord x 2 = 21`, `coord x 3 = 52`) realizing `N_k = ∑_{d ∣ k} d π_d`;
+3. An effective Witt ghost element (`0 ≤ coord x d` for all `d` and `1 ≤ coord x d` for every `d ≥ 1`,
+   with `coord x 1 = 4`, `coord x 2 = 21`, `coord x 3 = 52`) realizing `N_k = ∑_{d ∣ k} d π_d`;
 4. Genus-`2` Weil count laws at levels `n = 1, 2, 3` (with exact boundary equality
    `fiveQuartetTrace 2 ^ 2 = 16 * 5 ^ 2 = 400` at `n = 2`), while failing the full tower count law. -/
 theorem primeFiveQuartet_complete_twin :
@@ -864,7 +859,7 @@ theorem primeFiveQuartet_complete_twin :
       PowerSeries.map (Int.castRingHom ℂ) Zℤ = primeFiveQuartetDatum.zetaSeries) ∧
     (∀ i : Fin 4, (primeFiveQuartetDatum.β i).im ≠ 0) ∧
     ¬ (∀ i : Fin 4, ‖primeFiveQuartetDatum.β i‖ = 1) ∧
-    (∃ x : ghostRing, IsEffective x ∧
+    (∃ x : ghostRing, (∀ d : ℕ, 0 ≤ coord x d) ∧
       coord x 1 = 4 ∧ coord x 2 = 21 ∧ coord x 3 = 52 ∧
       (∀ d : ℕ, 1 ≤ d → 1 ≤ coord x d) ∧
       (∀ k : ℕ+, ((ghostComponent k x : ℤ) : ℝ) = primeFiveQuartetDatum.pointCount k)) ∧
@@ -1019,14 +1014,19 @@ theorem primeFiveQuartet_complete_twin :
       have hd_zpos : (0 : ℤ) < d := by exact_mod_cast hd1
       have hπ_gt0 : 0 < π d := pos_of_mul_pos_right hdπ_pos hd_zpos.le
       omega
-  -- Package `x = ofPrimeCounts π` in `ghostRing`.
-  let x : ghostRing := ofPrimeCounts π
-  have hcoord_x : ∀ d : ℕ, 1 ≤ d → coord x d = π d := fun d hd =>
-    coord_ofPrimeCounts π (by omega)
-  have heff_x : IsEffective x := by
+  -- Package `x` in `ghostRing`.
+  let x : ghostRing :=
+    ⟨fun n => ∑ d ∈ (n : ℕ).divisors, (d : ℤ) * π d, isGhost_of_necklace (b := π) fun _ => rfl⟩
+  have hcoord_x : ∀ d : ℕ, 1 ≤ d → coord x d = π d := by
+    intro d hd
+    refine necklace_unique (b := coord x) (b' := π) (fun n hn => ?_) d (by omega)
+    obtain ⟨N_p, rfl⟩ : ∃ N_p : ℕ+, (N_p : ℕ) = n := ⟨⟨n, Nat.pos_of_ne_zero hn⟩, rfl⟩
+    rw [← ghostComponent_eq_sum_coord]
+    rfl
+  have heff_x : ∀ d : ℕ, 0 ≤ coord x d := by
     intro d
     rcases Nat.eq_zero_or_pos d with rfl | hd
-    · rw [coord_zero]
+    · rw [coord, necklace_eq]; simp
     · rw [hcoord_x d hd]; exact le_trans zero_le_one (hπ_pos d hd)
   -- Check genus-2 Weil count laws at `n = 1, 2, 3` and failure on the full tower.
   have hlaw_123 : ∀ n ∈ ({1, 2, 3} : Finset ℕ), ∃ K : ℤ → ℤ → ℕ, CountLaw K ∧
@@ -1040,7 +1040,7 @@ theorem primeFiveQuartet_complete_twin :
       (K 0 1 : ℤ) = 2 ∧ (K 1 0 : ℤ) = 2 * (5 : ℤ) ^ n ∧
       (K 1 1 : ℤ) = 2 * ((5 : ℤ) ^ n + 1) - fiveQuartetTrace n) := by
     intro hall
-    -- At `n = 8` (or via `unitary_of_abs_trace_le`), `towerCountLaw` forces unitarity!
+    -- Via `unitary_of_abs_trace_le`, full tower count laws force unitarity!
     have hunit : ∀ i : Fin 4, ‖primeFiveQuartetDatum.β i‖ = 1 := by
       refine unitary_of_abs_trace_le primeFiveQuartetDatum fun n hn => ?_
       have hlev := (exists_genusCountLaw_iff (by norm_num : (0 : ℤ) < 2)).mp (hall n hn)
@@ -1061,7 +1061,8 @@ theorem primeFiveQuartet_complete_twin :
   exact ⟨⟨Zℤ, hZ0, hZmap⟩, primeFiveQuartetDatum_im_ne_zero, primeFiveQuartetDatum_not_unitary,
     ⟨x, heff_x, hcoord_x 1 le_rfl ▸ hπ1, hcoord_x 2 (by decide) ▸ hπ2,
       hcoord_x 3 (by decide) ▸ hπ3, fun d hd => hcoord_x d hd ▸ hπ_pos d hd, fun k => by
-        rw [ghostComponent_ofPrimeCounts, ← hN_sum k k.pos, primeFiveQuartetDatum_pointCount_eq]⟩,
+        change ((∑ d ∈ (k : ℕ).divisors, (d : ℤ) * π d : ℤ) : ℝ) = primeFiveQuartetDatum.pointCount k
+        rw [← hN_sum k k.pos, primeFiveQuartetDatum_pointCount_eq]⟩,
     hlaw_123, by decide, hnot_tower⟩
 
 end GaloisForLFunctions.CountingHolography

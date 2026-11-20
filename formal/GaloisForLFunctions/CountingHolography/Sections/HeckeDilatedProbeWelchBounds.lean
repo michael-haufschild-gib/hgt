@@ -1,6 +1,8 @@
-import GaloisForLFunctions.CountingHolography.Sections.TheMeanSquareCorrelationOfNegativePrimeProbes
+import GaloisForLFunctions.CountingHolography.Sections.PrimeDisplacementGramAndModeQuotients
+import GaloisForLFunctions.HTGeometry.SpectralEnsembleEigenvalueBound
 import GaloisForLFunctions.CountingHolography.TheTateLimitOfACount
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Index.SingleQuartetSecularAndWallRigidity
+import Mathlib.Algebra.Order.Chebyshev
 
 /-!
 # Hecke-Dilated Negative Probe Welch Bounds and Single-Quartet Correlation Floors
@@ -8,8 +10,7 @@ import GaloisForLFunctions.ExclusionOfTheCriticalState.Index.SingleQuartetSecula
 By the Born-rule isometry (`CountingHolography.integerProbe_dilate`), every positive integer
 dilation `T_d` preserves the spline Krein square `integerProbe` identically. Embedding `m` Hecke
 dilations `T_{d_0} a_0, ..., T_{d_{m-1}} a_0` of a single negative integer probe `a_0` into a common
-ambient cutoff `M ≥ d_i N_0` combines Hecke covariance with the finite-index Welch inequality
-(`finite_right_support_forces_probe_energy`):
+ambient cutoff `M ≥ d_i N_0` combines Hecke covariance with the negative-index Welch trace inequality:
 
 1. **Ambient Hecke isometry, joint scale invariance, and prime-multiplier disjointness**
    (`integerProbe_heckeDilateAt`, `probePairing_heckeDilateAt_mul_left`,
@@ -46,7 +47,8 @@ open scoped ComplexConjugate
 namespace GaloisForLFunctions.CountingHolography.Sections
 
 open ArithmeticScatteringHolography CountingHolography HTGeometry
-open ArithmeticCastelnuovoSeveri Zeta23 ExclusionOfTheCriticalState
+open HeckeKreinToeplitz ArithmeticCastelnuovoSeveri RenormalizedIntersectionTheory
+open Zeta23 ExclusionOfTheCriticalState
 
 /-! ## 1. Ambient Hecke dilation into a common cutoff `M ≥ d N₀` -/
 
@@ -226,6 +228,42 @@ theorem disjoint_activeConductors_heckeDilateAt_of_primes {M p₁ p₂ N₀ : �
 
 /-! ## 2. Finite-right-support Welch lower bounds across Hecke dilations -/
 
+private theorem neg_trace_sq_le_hermNegIndex_mul_trace_sq {m : ℕ} {H : Matrix (Fin m) (Fin m) ℂ}
+    (hH : H.IsHermitian) (ht : H.trace.re ≤ 0) :
+    H.trace.re ^ 2 ≤ (hermNegIndex H : ℝ) * ((H ^ 2).trace).re := by
+  let e := hH.eigenvalues
+  let S := univ.filter (fun i => e i < 0)
+  have htr : ∑ i, e i = H.trace.re := by
+    have h := (congrArg Complex.re hH.trace_eq_sum_eigenvalues).symm
+    rw [Complex.re_sum] at h
+    simpa only [Complex.ofReal_re] using h
+  have hpart := sum_filter_add_sum_filter_not univ (fun i => e i < 0) e
+  have hrest : 0 ≤ ∑ i ∈ univ.filter (fun i => ¬ e i < 0), e i :=
+    sum_nonneg fun i hi => le_of_not_gt (mem_filter.mp hi).2
+  have hle : -H.trace.re ≤ ∑ i ∈ S, -e i := by
+    rw [sum_neg_distrib]
+    change -H.trace.re ≤ -(∑ i ∈ univ.filter (fun i => e i < 0), e i)
+    linarith
+  have hcs := sq_sum_le_card_mul_sum_sq (s := S) (f := fun i => -e i)
+  simp only [neg_sq] at hcs
+  have hsub := sum_le_sum_of_subset_of_nonneg (filter_subset (fun i => e i < 0) univ)
+    (fun i _ _ => sq_nonneg (e i))
+  rw [negIndex_eq_card_neg_eigenvalues hH, ← sum_sq_eigenvalues_eq_trace_sq_re hH]
+  calc H.trace.re ^ 2 = (-H.trace.re) ^ 2 := (neg_sq _).symm
+    _ ≤ (S.card : ℝ) * ∑ i ∈ S, e i ^ 2 :=
+        (pow_le_pow_left₀ (neg_nonneg.mpr ht) hle 2).trans hcs
+    _ ≤ (S.card : ℝ) * ∑ i, e i ^ 2 :=
+        mul_le_mul_of_nonneg_left hsub (Nat.cast_nonneg S.card)
+
+private theorem hermNegIndex_probeGramMatrix_le_rightZeros {m M : ℕ}
+    (fam : Fin m → (Fin M → ℤ)) :
+    (hermNegIndex (probeGramMatrix M fam) : ℕ∞) ≤ (rightZeros zetaZeroConfig).encard := by
+  rw [rightZeros_encard_eq_sectionIndex]
+  simp only [sectionMatrix_eq_atomGram]
+  exact (show (hermNegIndex (probeGramMatrix M fam) : ℕ∞) ≤ hermNegIndex (atomGram M) by
+    exact_mod_cast hermNegIndex_probeGramMatrix_le M fam).trans
+      (le_iSup (fun K : ℕ => (hermNegIndex (atomGram K) : ℕ∞)) M)
+
 /-- **Hecke-dilated Welch energy theorem.**
 For any negative integer probe `a₀` (`integerProbe N₀ a₀ < 0`) and any `m` positive multipliers
 `d : Fin m → ℕ` inside cutoff `M`, `#(rightZeros zetaZeroConfig) ≤ r` forces
@@ -238,34 +276,46 @@ theorem finite_right_support_heckeDilate_energy {r m M N₀ : ℕ}
       (r : ℝ) * ∑ i : Fin m, ∑ j ∈ univ.erase i,
         (probePairing M (heckeDilateAt (hd i) (hM i) a₀) (heckeDilateAt (hd j) (hM j) a₀)) ^ 2 := by
   let fam : Fin m → (Fin M → ℤ) := fun i => heckeDilateAt (hd i) (hM i) a₀
-  have hdiag : ∀ i : Fin m, probePairing M (fam i) (fam i) < 0 := by
+  let H : Matrix (Fin m) (Fin m) ℂ := probeGramMatrix M fam
+  have hH : H.IsHermitian := probeGramMatrix_isHermitian M fam
+  have hself : ∀ i : Fin m, probePairing M (fam i) (fam i) = integerProbe N₀ a₀ := fun i =>
+    probePairing_heckeDilateAt_self (hd i) (hM i) a₀
+  have htr : H.trace.re = (m : ℝ) * integerProbe N₀ a₀ := by
+    simp only [H, probeGramMatrix, Matrix.trace, Matrix.diag_apply, Matrix.of_apply,
+      Complex.re_sum, Complex.ofReal_re, hself, sum_const, card_univ, Fintype.card_fin,
+      nsmul_eq_mul]
+  have htr_le : H.trace.re ≤ 0 := by
+    rw [htr]; exact mul_nonpos_of_nonneg_of_nonpos (Nat.cast_nonneg m) hneg.le
+  have hrow : ∀ i : Fin m, ∑ j : Fin m, (probePairing M (fam i) (fam j)) ^ 2 =
+      (integerProbe N₀ a₀) ^ 2 + ∑ j ∈ univ.erase i, (probePairing M (fam i) (fam j)) ^ 2 := by
     intro i
-    dsimp [fam]
-    rw [probePairing_heckeDilateAt_self]
-    exact hneg
-  have hwelch := finite_right_support_forces_probe_energy hr fam hdiag
-  have hQ_pos : 0 < (integerProbe N₀ a₀) ^ 2 := sq_pos_of_ne_zero hneg.ne
-  -- Simplify `distinctProbeEnergy fam * Q(a₀)²`.
-  have hcorr_sq : ∀ i j : Fin m,
-      (probeCorrelation fam i j) ^ 2 * (integerProbe N₀ a₀) ^ 2 =
-        (probePairing M (fam i) (fam j)) ^ 2 := by
-    intro i j
-    unfold probeCorrelation
-    have hself_i : probePairing M (fam i) (fam i) = integerProbe N₀ a₀ :=
-      probePairing_heckeDilateAt_self (hd i) (hM i) a₀
-    have hself_j : probePairing M (fam j) (fam j) = integerProbe N₀ a₀ :=
-      probePairing_heckeDilateAt_self (hd j) (hM j) a₀
-    rw [hself_i, hself_j, div_pow, Real.sq_sqrt (mul_self_nonneg _), ← sq, div_mul_cancel₀ _ hQ_pos.ne']
-  have henergy_eq : distinctProbeEnergy fam * (integerProbe N₀ a₀) ^ 2 =
-      ∑ i : Fin m, ∑ j ∈ univ.erase i, (probePairing M (fam i) (fam j)) ^ 2 := by
-    unfold distinctProbeEnergy
-    rw [Finset.sum_mul]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Finset.sum_mul]
-    exact Finset.sum_congr rfl fun j _ => hcorr_sq i j
-  have hmul := mul_le_mul_of_nonneg_right hwelch hQ_pos.le
-  rw [mul_assoc (r : ℝ), henergy_eq] at hmul
-  exact hmul
+    rw [← add_sum_erase univ _ (mem_univ i), hself i]
+  have htr2 : ((H ^ 2).trace).re =
+      (m : ℝ) * (integerProbe N₀ a₀) ^ 2 +
+        ∑ i : Fin m, ∑ j ∈ univ.erase i, (probePairing M (fam i) (fam j)) ^ 2 := by
+    simp only [H, probeGramMatrix, sq, Matrix.trace, Matrix.diag_apply, Matrix.mul_apply,
+      Matrix.of_apply, Complex.re_sum, ← Complex.ofReal_mul, Complex.ofReal_re]
+    calc (∑ i : Fin m, ∑ j : Fin m, probePairing M (fam i) (fam j) * probePairing M (fam j) (fam i))
+        = ∑ i : Fin m, ∑ j : Fin m, (probePairing M (fam i) (fam j)) ^ 2 := by
+          refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
+          rw [probePairing_symm M (fam j) (fam i), sq]
+      _ = (m : ℝ) * (integerProbe N₀ a₀) ^ 2 +
+            ∑ i : Fin m, ∑ j ∈ univ.erase i, (probePairing M (fam i) (fam j)) ^ 2 := by
+          simp only [hrow, sum_add_distrib, sum_const, card_univ, Fintype.card_fin, nsmul_eq_mul]
+  have hcs := neg_trace_sq_le_hermNegIndex_mul_trace_sq hH htr_le
+  rw [htr, htr2] at hcs
+  have hidx : hermNegIndex H ≤ r := by
+    exact_mod_cast (hermNegIndex_probeGramMatrix_le_rightZeros fam).trans hr
+  have htr2_nn : 0 ≤ (m : ℝ) * (integerProbe N₀ a₀) ^ 2 +
+      ∑ i : Fin m, ∑ j ∈ univ.erase i, (probePairing M (fam i) (fam j)) ^ 2 :=
+    add_nonneg (by positivity) (sum_nonneg fun _ _ => sum_nonneg fun _ _ => sq_nonneg _)
+  have hidx_mul : (hermNegIndex H : ℝ) *
+      ((m : ℝ) * (integerProbe N₀ a₀) ^ 2 +
+        ∑ i : Fin m, ∑ j ∈ univ.erase i, (probePairing M (fam i) (fam j)) ^ 2) ≤
+      (r : ℝ) * ((m : ℝ) * (integerProbe N₀ a₀) ^ 2 +
+        ∑ i : Fin m, ∑ j ∈ univ.erase i, (probePairing M (fam i) (fam j)) ^ 2) :=
+    mul_le_mul_of_nonneg_right (by exact_mod_cast hidx) htr2_nn
+  nlinarith
 
 /-- **Pairwise Hecke-dilation Welch bound.**
 Under `#(rightZeros zetaZeroConfig) ≤ r`, among any `m ≥ 2` Hecke dilations of a negative probe `a₀`
@@ -278,21 +328,28 @@ theorem exists_heckeDilate_pair_correlation {r m M N₀ : ℕ} (hm : 2 ≤ m)
       ((m : ℝ) - r) * (integerProbe N₀ a₀) ^ 2 ≤
         (r : ℝ) * ((m : ℝ) - 1) *
           (probePairing M (heckeDilateAt (hd i) (hM i) a₀) (heckeDilateAt (hd j) (hM j) a₀)) ^ 2 := by
+  by_contra! h
+  haveI : Nonempty (Fin m) := ⟨⟨0, by omega⟩⟩
   let fam : Fin m → (Fin M → ℤ) := fun i => heckeDilateAt (hd i) (hM i) a₀
-  have hdiag : ∀ i : Fin m, probePairing M (fam i) (fam i) < 0 := fun i => by
-    dsimp [fam]; rw [probePairing_heckeDilateAt_self]; exact hneg
-  obtain ⟨i, j, hij, hpair⟩ := exists_correlated_pair_of_finite_right_support hm hr fam hdiag
-  have hQ_pos : 0 < (integerProbe N₀ a₀) ^ 2 := sq_pos_of_ne_zero hneg.ne
-  have hcorr_sq : (probeCorrelation fam i j) ^ 2 * (integerProbe N₀ a₀) ^ 2 =
-      (probePairing M (fam i) (fam j)) ^ 2 := by
-    unfold probeCorrelation
-    rw [probePairing_heckeDilateAt_self (hd i) (hM i) a₀,
-      probePairing_heckeDilateAt_self (hd j) (hM j) a₀,
-      div_pow, Real.sq_sqrt (mul_self_nonneg _), ← sq, div_mul_cancel₀ _ hQ_pos.ne']
-  refine ⟨i, j, hij, ?_⟩
-  have hmul := mul_le_mul_of_nonneg_right hpair hQ_pos.le
-  rw [mul_assoc ((r : ℝ) * ((m : ℝ) - 1)), hcorr_sq] at hmul
-  exact hmul
+  have hrow : ∀ i : Fin m,
+      ∑ j ∈ univ.erase i, ((r : ℝ) * ((m : ℝ) - 1) * (probePairing M (fam i) (fam j)) ^ 2) <
+        ∑ _j ∈ univ.erase i, (((m : ℝ) - r) * (integerProbe N₀ a₀) ^ 2) := by
+    intro i
+    have hcard : (univ.erase i).card = m - 1 := by simp
+    refine sum_lt_sum_of_nonempty (card_pos.mp (by omega)) fun j hj => ?_
+    exact h i j (mem_erase.mp hj).1.symm
+  have hsum_lt := sum_lt_sum_of_nonempty (s := univ) univ_nonempty fun i _ => hrow i
+  have hcast : ((m - 1 : ℕ) : ℝ) = (m : ℝ) - 1 := by
+    rw [Nat.cast_sub (by omega : 1 ≤ m), Nat.cast_one]
+  simp only [← mul_sum, sum_const, card_erase_of_mem (mem_univ _), card_univ, Fintype.card_fin,
+    nsmul_eq_mul, hcast] at hsum_lt
+  have hwelch := finite_right_support_heckeDilate_energy hr hneg d hd hM
+  have hm1_nn : (0 : ℝ) ≤ (m : ℝ) - 1 := by
+    have : (1 : ℝ) ≤ (m : ℝ) := by exact_mod_cast (show 1 ≤ m by omega)
+    linarith
+  have hmul := mul_le_mul_of_nonneg_left hwelch hm1_nn
+  dsimp [fam] at hsum_lt
+  nlinarith
 
 /-! ## 3. Single-quartet Welch floor (`r = 2`) and three-dilation converse exclusion -/
 
