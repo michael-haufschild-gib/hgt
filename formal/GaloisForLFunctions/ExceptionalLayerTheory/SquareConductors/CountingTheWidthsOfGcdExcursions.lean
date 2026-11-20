@@ -33,8 +33,11 @@ private theorem gcd_level_rational (r : ℕ) {m k J : ℕ} (hm : 0 < m) (hk : 0<
   have hcast : G^J≤2^((J-k)*m^(r+1)) ↔ (G:ℝ)^J≤(2:ℝ)^((J-k)*m^(r+1)) := by norm_cast
   rw [hcast,←Real.log_le_log_iff (pow_pos hpos _) (by positivity),Real.log_pow,Real.log_pow,
     Nat.cast_mul,Nat.cast_sub hkJ,Nat.cast_pow]
-  rw [le_sub_comm,div_le_iff₀ hX,sub_mul,div_mul_eq_mul_div,le_sub_comm,div_le_iff₀ hJ]
-  constructor <;> intro h <;> linarith only [h]
+  have hJ0 : (J:ℝ) ≠ 0 := hJ.ne'
+  rw [le_sub_comm, div_le_iff₀ hX,
+    show (Real.log 2-Real.log 2*(k:ℝ)/J)*(m:ℝ)^(r+1) = ((J:ℝ)-k)*(m:ℝ)^(r+1)*Real.log 2/J by
+      field_simp <;> ring,
+    le_div_iff₀ hJ, mul_comm (Real.log (G:ℝ))]
 
 /-- Every row from the center to each of two prescribed depths passes
 the same integer comparison. All operations in this test are natural ones. -/

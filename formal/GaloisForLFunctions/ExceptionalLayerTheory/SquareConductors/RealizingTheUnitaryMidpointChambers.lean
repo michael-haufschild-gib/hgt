@@ -62,7 +62,10 @@ private theorem block_limit (w : ℕ → ℝ) {p : ℕ} (hp : p.Prime) (hw : 0 �
     unfold exponent
     push_cast
     rw [div_le_iff₀ hN]
-    rw [add_mul, mul_assoc (Real.log p), one_div, inv_mul_cancel₀ hN.ne', mul_one]
+    have e : (w p + Real.log p * (1/((N:ℝ)+1))) * ((N:ℝ)+1) = ((N:ℝ)+1) * w p + Real.log p := by
+      rw [add_mul, mul_assoc, one_div, inv_mul_cancel₀ hN.ne']
+      ring
+    rw [e]
     linarith only [hf]
 
 private theorem reading_limit {P S : Finset ℕ} (hP : ∀ p ∈ P, Nat.Prime p)
@@ -118,7 +121,7 @@ theorem smallUnitarySubsets_pow (k n : ℕ) :
     rw [← Finset.prod_pow]
     apply prod_congr rfl
     intro p _
-    simp only [Nat.factorization_pow, Finsupp.smul_apply, nsmul_eq_mul, ← pow_mul, Nat.mul_comm (n+1)]
+    rw [Nat.factorization_pow, Finsupp.smul_apply, smul_eq_mul, ← pow_mul, Nat.mul_comm]
   ext S
   simp only [smallUnitarySubsets, Nat.primeFactors_pow k (Nat.succ_ne_zero n), mem_filter,
     hpow, Nat.pow_le_pow_iff_left (Nat.succ_ne_zero n)]
@@ -144,7 +147,7 @@ theorem unitary_central_bound_attained {P : Finset ℕ} (hP : ∀ p ∈ P, Nat.P
   have hn := card_pos.mp (by omega : 0 < P.card)
   have ht (S : Finset ℕ) (hS : S ⊆ P) :
       (∑ _p ∈ S, (1:ℝ)) ≠ ∑ _p ∈ P \ S, (1:ℝ) := by
-    simp only [sum_const, nsmul_eq_mul, mul_one, card_sdiff_of_subset hS, Nat.cast_inj]
+    simp only [sum_const, nsmul_eq_mul, mul_one, card_sdiff_of_subset hS, ne_eq, Nat.cast_inj]
     have := card_le_card hS
     omega
   obtain ⟨k,hk,hs,hc⟩ := unitary_chamber_cofinal hn hP (fun _ => 1) (fun _ _ => zero_le_one) ht B

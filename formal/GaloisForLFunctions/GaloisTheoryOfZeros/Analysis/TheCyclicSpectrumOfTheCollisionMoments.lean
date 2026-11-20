@@ -162,7 +162,7 @@ theorem proper_minor_vanishing_iff_cyclic {m : ℕ} (hm : 0 < m) (v : Fin m → 
         rcases j with _|j
         · omega
         rcases j with _|k
-        · simpa only [pow_one] using hcenter
+        · simpa only [zero_add, pow_one] using hcenter
         apply (minor_zero_iff_next_moment hm v k (fun i hi hij => ih i hij hi (hij.trans hj))).mp
         exact h _ (by omega) hj
     obtain ⟨r,hr⟩ := IsAlgClosed.exists_pow_nat_eq ((∑ i, v i^m)/(m:ℂ)) hm

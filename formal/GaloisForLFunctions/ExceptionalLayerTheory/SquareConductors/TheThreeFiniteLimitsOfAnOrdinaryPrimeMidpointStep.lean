@@ -25,14 +25,14 @@ def midpointStepPattern (n : ℕ) : Fin 5 → Bool :=
   ![decide (3*n+1).Prime,decide (3*n+2).Prime,decide (2*n+1).Prime,
     decide (4*n+1).Prime,decide (4*n+3).Prime]
 
-private def middle (P : Fin 5 → Bool) := (P 0).toNat+(P 1).toNat
-private def left (P : Fin 5 → Bool) := (P 2).toNat
-private def right (P : Fin 5 → Bool) := (P 3).toNat+(P 4).toNat
+private def stepMiddle (P : Fin 5 → Bool) := (P 0).toNat+(P 1).toNat
+private def stepLeft (P : Fin 5 → Bool) := (P 2).toNat
+private def stepRight (P : Fin 5 → Bool) := (P 3).toNat+(P 4).toNat
 
-def midpointStepSlope (P : Fin 5 → Bool) : ℝ := 2*(middle P:ℝ)-(left P:ℝ)-(right P:ℝ)
+def midpointStepSlope (P : Fin 5 → Bool) : ℝ := 2*(stepMiddle P:ℝ)-(stepLeft P:ℝ)-(stepRight P:ℝ)
 
 def midpointStepOffset (P : Fin 5 → Bool) : ℝ :=
-  2*(middle P:ℝ)*Real.log 3-(left P:ℝ)*Real.log 2-(right P:ℝ)*Real.log 4
+  2*(stepMiddle P:ℝ)*Real.log 3-(stepLeft P:ℝ)*Real.log 2-(stepRight P:ℝ)*Real.log 4
 
 /-- Ordinary-prime weight at a single positive integer. -/
 def midpointPrimeSiteLog (k : ℕ) := if k.Prime then Real.log k else 0
@@ -98,13 +98,13 @@ theorem prime_midpoint_step_on_a_pattern (P : Fin 5 → Bool) {φ : ℕ → ℕ}
     rw [←hi]
     by_cases hp : k.Prime <;> simp [hp]
   have hoff : midpointStepOffset P=2*(b 0*Real.log 3+b 1*Real.log 3)-b 2*Real.log 2-b 3*Real.log 4-b 4*Real.log 4 := by
-    simp only [midpointStepOffset,middle,left,right,b,Nat.cast_add]
+    simp only [midpointStepOffset,stepMiddle,stepLeft,stepRight,b,Nat.cast_add]
     ring
   rw [hoff]
   apply hlim.congr'
   filter_upwards [hφ.eventually_gt_atTop 0] with j hj
   rw [prime_midpoint_step_five_sites hj,hid j _ 0 rfl,hid j _ 1 rfl,hid j _ 2 rfl,hid j _ 3 rfl,hid j _ 4 rfl]
-  simp only [Function.comp_apply,midpointStepSlope,middle,left,right,b,Nat.cast_add]
+  simp only [Function.comp_apply,midpointStepSlope,stepMiddle,stepLeft,stepRight,b,Nat.cast_add]
   ring
 
 /-- A finite cluster value occurs exactly when a recurring pattern loses
@@ -134,6 +134,7 @@ theorem finite_prime_midpoint_step_limit_iff (c : ℝ) :
         change (primeMidpointStep (φ (u j))-(primeMidpointStep (φ (u j))-midpointStepSlope P*Real.log (φ (u j))))/
           midpointStepSlope P=_
         field_simp [hz]
+        ring
       exact not_tendsto_nhds_of_tendsto_atTop
         (Real.tendsto_log_atTop.comp ((tendsto_natCast_atTop_atTop (R:=ℝ)).comp ht)) _ hlog
     refine ⟨P,frequently_atTop.mpr (fun N => ?_),hs,?_⟩
@@ -147,7 +148,7 @@ theorem finite_prime_midpoint_step_limit_iff (c : ℝ) :
     exact ⟨φ,hφ,by simpa only [hs,zero_mul,sub_zero] using prime_midpoint_step_on_a_pattern P hφ.tendsto_atTop he⟩
 
 private theorem side_counts {P : Fin 5 → Bool} (hf : ∃ᶠ n : ℕ in atTop, midpointStepPattern n=P) :
-    middle P≤1 ∧ left P≤1 ∧ right P≤2 := by
+    stepMiddle P≤1 ∧ stepLeft P≤1 ∧ stepRight P≤2 := by
   obtain ⟨n,hP,hn⟩ := (hf.and_eventually (eventually_ge_atTop 1)).exists
   have even_off {k : ℕ} (hk : 2<k) (hd : 2∣k) : ¬k.Prime :=
     fun hp => hk.ne' ((hp.dvd_iff_eq (by decide : 2≠1)).mp hd)
@@ -157,7 +158,7 @@ private theorem side_counts {P : Fin 5 → Bool} (hf : ∃ᶠ n : ℕ in atTop, 
     · exact even_off (by omega) hd h₁
     · exact even_off (by omega) (by omega) h₂
   have hbit (v : Bool) : v.toNat≤1 := by cases v <;> decide
-  have hmid : middle P≤1 := by
+  have hmid : stepMiddle P≤1 := by
     rw [←hP]
     change (decide (3*n+1).Prime).toNat+(decide (3*n+2).Prime).toNat≤1
     by_cases h₁ : (3*n+1).Prime <;> by_cases h₂ : (3*n+2).Prime <;> simp_all
@@ -171,11 +172,11 @@ theorem three_possible_finite_prime_midpoint_steps {c : ℝ} {φ : ℕ → ℕ} 
     c=0 ∨ c=Real.log (9/8:ℝ) ∨ c=Real.log (9/16:ℝ) := by
   obtain ⟨P,hP,hs,rfl⟩ := (finite_prime_midpoint_step_limit_iff c).mp ⟨φ,hφ,h⟩
   obtain ⟨hm,hl,hr⟩ := side_counts hP
-  have he : 2*middle P=left P+right P := by
-    exact_mod_cast (show 2*(middle P:ℝ)=(left P:ℝ)+(right P:ℝ) by
+  have he : 2*stepMiddle P=stepLeft P+stepRight P := by
+    exact_mod_cast (show 2*(stepMiddle P:ℝ)=(stepLeft P:ℝ)+(stepRight P:ℝ) by
       dsimp only [midpointStepSlope] at hs; linarith only [hs])
-  have hc : (middle P=0 ∧ left P=0 ∧ right P=0) ∨
-      (middle P=1 ∧ left P=1 ∧ right P=1) ∨ (middle P=1 ∧ left P=0 ∧ right P=2) := by omega
+  have hc : (stepMiddle P=0 ∧ stepLeft P=0 ∧ stepRight P=0) ∨
+      (stepMiddle P=1 ∧ stepLeft P=1 ∧ stepRight P=1) ∨ (stepMiddle P=1 ∧ stepLeft P=0 ∧ stepRight P=2) := by omega
   have h₉ : Real.log 9=2*Real.log 3 := by rw [show (9:ℝ)=3^2 by norm_num,Real.log_pow]; norm_num
   rcases hc with ⟨a,b,d⟩ | ⟨a,b,d⟩ | ⟨a,b,d⟩
   · exact Or.inl (by simp [midpointStepOffset,a,b,d])

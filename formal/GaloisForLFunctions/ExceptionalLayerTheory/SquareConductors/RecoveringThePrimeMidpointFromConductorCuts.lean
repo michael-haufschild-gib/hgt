@@ -26,6 +26,9 @@ private theorem reciprocalCutRead_abel (f : ℕ → ℝ) {a b : ℕ} (hab : a≤
   | succ b hab ih =>
     unfold reciprocalCutRead at ih ⊢
     rw [sum_Ioc_succ_top hab,sum_Ioc_succ_top hab,Nat.succ_sub_one,Nat.cast_succ]
+    have h₁ : (f (b+1)-f b)/((b:ℝ)+1) = f (b+1)/((b:ℝ)+1)-f b/((b:ℝ)+1) := sub_div _ _ _
+    have h₂ : (1/((b:ℝ)+1)-1/((b:ℝ)+1+1))*f (b+1) = f (b+1)/((b:ℝ)+1)-f (b+1)/((b:ℝ)+1+1) := by ring
+    rw [h₁,h₂]
     linarith only [ih]
 
 /-- The boundary-corrected reading is monotone in every interior price.
@@ -211,7 +214,7 @@ theorem conductor_octave_oscillation_of_zero_abscissa {b t : ℝ} (hb : 1/2≤b)
       ∀ j∈Icc (2*n) (4*n), |(centeredFixedPrimeTail N j).re-(centeredFixedPrimeTail N (2*n)).re|
         ≤ C*(n:ℝ)^(1+t) := by
   obtain ⟨D,hD,he⟩ := theta_spectrum_majorant hb ht hz
-  have hλ := innerPrimeSlope_pos
+  have hslope := innerPrimeSlope_pos
   refine ⟨16*innerPrimeSlope*D*(4:ℝ)^t,by positivity,?_⟩
   intro n N hn hN hk j hj
   have ht' : 0≤t := by linarith only [hb,ht]
@@ -277,7 +280,8 @@ theorem zero_abscissa_iff_one_conductor_per_octave {b : ℝ} (hb : 1/2≤b) :
     have hsum : 1/(2*(n:ℝ)+1)+1/(3*(n:ℝ)+1)≤2/(n:ℝ) := by
       have h₂ := one_div_le_one_div_of_le hn' (show (n:ℝ)≤2*n+1 by linarith only [hn'])
       have h₃ := one_div_le_one_div_of_le hn' (show (n:ℝ)≤3*n+1 by linarith only [hn'])
-      linarith only [h₂,h₃]
+      have h2n : 2/(n:ℝ) = 1/n+1/n := by ring
+      linarith only [h₂,h₃,h2n]
     rw [show a+B-(a-B)=2*B by ring] at he
     have hpaid := he.trans (mul_le_mul_of_nonneg_left hsum (by positivity))
     have hf : innerPrimeSlope*|primeMidpointPrice n| ≤ 4*C*(n:ℝ)^t := hpaid.trans_eq (by

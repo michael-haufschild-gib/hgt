@@ -32,7 +32,8 @@ theorem permutationFixedCount_tuples (k : ℕ) (g : G) :
     invFun x := ⟨fun i => (x i).val,funext fun i => (x i).property⟩
     left_inv _ := rfl
     right_inv _ := rfl }
-  rw [fixedCount_card,fixedCount_card,Fintype.card_congr e,Fintype.card_fun,Fintype.card_fin]
+  rw [fixedCount_card, fixedCount_card, Fintype.card_eq_nat_card, Fintype.card_eq_nat_card,
+    Nat.card_congr e, Nat.card_fun, Nat.card_eq_fintype_card (α := Fin k), Fintype.card_fin]
 
 /-- Losing one fixed point forces a second loss, its image under the permutation. -/
 theorem permutationFixedCount_le_card_sub_two (g : G) (hg : ¬∀ x : X, g • x=x) :
@@ -48,7 +49,7 @@ theorem permutationFixedCount_le_card_sub_two (g : G) (hg : ¬∀ x : X, g • x
       simp [F,hy]
   have hh := card_le_card hin
   rw [card_pair (Ne.symm hx),card_sdiff_of_subset (filter_subset _ _),card_univ] at hh
-  change F.card≤_
+  change (univ.filter (fun y : X => g • y=y)).card≤_
   omega
 
 /-- Multiplicity as a genuine equivariant Hom dimension on the k-tuple action. -/

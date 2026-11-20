@@ -27,11 +27,11 @@ def realPrimeIntervalProbe (a b c β : ℝ) : ℝ :=
 
 private theorem sum_prime_excess (a b : ℝ) (hab : a ≤ b) :
     (∑ p ∈ Ioc ⌊a⌋₊ ⌊b⌋₊, ordinaryPrimeExcessCoeff p)=discretePrimeExcess b-discretePrimeExcess a := by
-  have prefix (y : ℝ) : (∑ p ∈ Ioc 0 ⌊y⌋₊, ordinaryPrimeExcessCoeff p)=discretePrimeExcess y := by
+  have hprefix (y : ℝ) : (∑ p ∈ Ioc 0 ⌊y⌋₊, ordinaryPrimeExcessCoeff p)=discretePrimeExcess y := by
     simp only [ordinaryPrimeExcessCoeff,discretePrimeExcess,Chebyshev.theta,sum_sub_distrib,
       sum_filter,sum_const,Nat.card_Ioc,Nat.sub_zero,nsmul_eq_mul,mul_one]
   have h := sum_Ioc_consecutive ordinaryPrimeExcessCoeff (Nat.zero_le ⌊a⌋₊) (Nat.floor_mono hab)
-  rw [prefix,prefix] at h
+  rw [hprefix, hprefix] at h
   linarith only [h]
 
 theorem real_prime_interval_inversion {a b c β : ℝ} (ha : 0 ≤ a) (hab : a ≤ b) (hbc : b ≤ c)
@@ -43,7 +43,7 @@ theorem real_prime_interval_inversion {a b c β : ℝ} (ha : 0 ≤ a) (hab : a �
   have he (y : ℝ) (hy : a ≤ y) :
       (∫ t, cutPower (-β) (t-y)*f t)=ProbabilityTheory.beta (1-β) β*
         ∑ i ∈ Ioc ⌊y⌋₊ ⌊c⌋₊, ordinaryPrimeExcessCoeff i := by
-    have hfilter : S.filter (fun i => y < (i:ℝ))=Ioc ⌊y⌋₊ ⌊c⌋₊ := by
+    have hfilter : S.filter (fun i : ℕ => y < (i:ℝ))=Ioc ⌊y⌋₊ ⌊c⌋₊ := by
       ext i
       simp only [S,mem_filter,mem_Ioc,←Nat.floor_lt (ha.trans hy)]
       have hA := Nat.floor_mono hy

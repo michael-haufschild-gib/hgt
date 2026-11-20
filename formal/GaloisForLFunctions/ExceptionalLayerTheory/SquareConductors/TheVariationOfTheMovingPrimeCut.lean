@@ -75,11 +75,11 @@ private theorem gross_moment :
   simp only [mul_zero] at hdecay
   have err : Tendsto (fun K : ℕ => ((∑ k ∈ Icc 1 K,weighted k)-triangle K)/(K:ℝ)^2)
       atTop (𝓝 0) := by
-    apply tendsto_zero_iff_abs_tendsto_zero.mpr
+    apply (tendsto_zero_iff_abs_tendsto_zero _).mpr
     apply squeeze_zero' (.of_forall fun _ => abs_nonneg _) _ hdecay
     filter_upwards [eventually_ge_atTop (1:ℕ)] with K hk
     have kp := Nat.cast_pos (α:=ℝ).mpr hk
-    rw [abs_div,abs_of_nonneg (sq_nonneg _),div_le_iff₀ (sq_pos_of_pos kp),moment]
+    rw [Function.comp_apply,abs_div,abs_of_nonneg (sq_nonneg (K:ℝ)),div_le_iff₀ (sq_pos_of_pos kp),moment]
     have h := hc K hk
     apply h.trans_eq
     rw [mul_assoc,← Real.rpow_two,←Real.rpow_add kp]
@@ -98,7 +98,7 @@ private theorem leakage (K : ℕ) :
     · have h0 := mul_nonneg (Nat.cast_nonneg (α:=ℝ) k) (Real.log_natCast_nonneg k)
       simp only [row,weighted,atom,if_pos hp]
       have tri := abs_sub (k:ℝ) ((k:ℝ)*Real.log k)
-      rw [abs_of_nonneg (Nat.cast_nonneg _),abs_of_nonneg h0] at tri
+      rw [abs_of_nonneg (Nat.cast_nonneg (α:=ℝ) k),abs_of_nonneg h0] at tri
       rw [abs_of_nonpos (sub_nonpos.mpr tri)]
       linarith only [neg_abs_le ((k:ℝ)-(k:ℝ)*Real.log k),kk]
     · simp [row,weighted,atom,hp,abs_of_nonneg (Nat.cast_nonneg (α:=ℝ) k)]
@@ -138,12 +138,12 @@ theorem inner_cutoff_variation (N : ℕ → ℕ)
   simp only [mul_zero] at hp
   have hdiff : Tendsto (fun K : ℕ => ((∑ k ∈ Icc 1 K, |row k|) -
       (triangle K+∑ k ∈ Icc 1 K, weighted k))/(K:ℝ)^2) atTop (𝓝 0) := by
-    apply tendsto_zero_iff_abs_tendsto_zero.mpr
+    apply (tendsto_zero_iff_abs_tendsto_zero _).mpr
     apply squeeze_zero' (.of_forall fun _ => abs_nonneg _) _ hp
     filter_upwards [eventually_ge_atTop (1:ℕ)] with K hk
     have kp := Nat.cast_pos (α:=ℝ).mpr hk
-    rw [abs_div,abs_of_nonneg (sq_nonneg _),div_le_iff₀ (sq_pos_of_pos kp)]
-    exact (leakage K).trans_eq (by change _ = 2*(_/(K:ℝ))*(K:ℝ)^2; field_simp; ring)
+    rw [abs_div,abs_of_nonneg (sq_nonneg (K:ℝ)),div_le_iff₀ (sq_pos_of_pos kp)]
+    exact (leakage K).trans_eq (by change _ = 2*(_/(K:ℝ))*(K:ℝ)^2; field_simp)
   have limit := (htotal.add hdiff).const_mul innerPrimeSlope
   simp only [add_zero,mul_one] at limit
   refine limit.congr' ?_
@@ -160,8 +160,5 @@ theorem inner_cutoff_variation (N : ℕ → ℕ)
   rw [sum_congr rfl each,←mul_sum]
   change _ * (_ / _ + (_ - _) / _) = _ / _
   ring
-
-#print axioms inner_cutoff_jump
-#print axioms inner_cutoff_variation
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval.ConductorMoment

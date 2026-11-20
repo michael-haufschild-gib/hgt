@@ -22,7 +22,7 @@ def heavyPartners (k p : ℕ) := (k.primeFactors.erase p).filter fun q => k < (b
 
 private theorem heavy_pair_iff {k p q : ℕ} (hpq : p ≠ q) :
     {p,q} ∈ heavyUnitaryPairs k ↔ p ∈ k.primeFactors ∧ q ∈ k.primeFactors ∧ k < (block k p*block k q)^2 := by
-  simp [heavyUnitaryPairs, primePowerSubset,block,hpq, and_assoc]
+  simp [heavyUnitaryPairs, primePowerSubset, block, hpq, insert_subset_iff, and_assoc]
 
 /-- Disjoint unitary divisors cannot both lie above the square root. -/
 theorem overweight_subsets_intersect {k : ℕ} (hk : 0 < k) {S T : Finset ℕ}
@@ -58,7 +58,8 @@ private theorem star_card (k p : ℕ) : (star k p).card = (heavyPartners k p).ca
   apply card_image_of_injOn
   intro q hq r hr he
   have hqp := (mem_erase.mp (mem_filter.mp hq).1).1
-  have hq' : q ∈ ({p,r} : Finset ℕ) := he ▸ (show q ∈ ({p,q} : Finset ℕ) by simp)
+  have he' : ({p,q} : Finset ℕ) = {p,r} := he
+  have hq' : q ∈ ({p,r} : Finset ℕ) := by rw [← he']; simp
   simpa [hqp] using hq'
 
 private theorem star_subset {k p : ℕ} (hp : p ∈ k.primeFactors) : star k p ⊆ heavyUnitaryPairs k := by
@@ -87,7 +88,7 @@ private theorem triangle_exhausts {k p x y : ℕ} (hpx : p ≠ x) (hpy : p ≠ y
   have hcard := (mem_powersetCard.mp (mem_filter.mp hS).1).2
   have eqedge {u v : ℕ} (hu : u ∈ S) (hv : v ∈ S) (hne : u ≠ v) : S = {u,v} := by
     apply Eq.symm
-    exact eq_of_subset_of_card_le (by simp [hu,hv]) (by simp [hne,hcard])
+    exact eq_of_subset_of_card_le (by simp [insert_subset_iff, hu, hv]) (by simp [hne, hcard])
   have meet {u v : ℕ} (he : {u,v} ∈ heavyUnitaryPairs k) : u ∈ S ∨ v ∈ S := by
     obtain ⟨q,hq,huv⟩ := heavy_meet hS he
     rcases (show q=u ∨ q=v by simpa using huv) with rfl | rfl
@@ -173,7 +174,7 @@ theorem negative_balanced_five_iff_full_star
     rcases largest_star_or_triangle hp hm with hs | ⟨x,y,hx,hy,hxy,hs⟩
     · rw [hs,star_card] at hfour
       have hfull : heavyPartners k p = k.val.primeFactors.erase p := eq_of_subset_of_card_le
-        (filter_subset _ _) (by rw [card_erase_of_mem hp,hc,hfour]; decide)
+        (filter_subset _ _) (by rw [card_erase_of_mem hp,hc,hfour])
       exact ⟨p,hp,fun q hq => (mem_filter.mp (show q ∈ heavyPartners k p by rwa [hfull])).2⟩
     · rw [hs,triangle_card hx hy hxy] at hfour
       omega

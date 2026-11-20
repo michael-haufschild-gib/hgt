@@ -99,6 +99,7 @@ import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.TheSquareCostOfUnitTimeR
 import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.NoDifferentialEquationAnnihilatesALateReceiver
 import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.FixedStepContractionFalsification
 import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.PrimePowerReturnsForceSignedCancellation
+import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.TheMobiusReadingOfTheScatteringReturns
 
 /-!
 # Black-hole ringdown and the zeros of zeta
