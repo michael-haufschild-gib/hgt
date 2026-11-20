@@ -52,7 +52,7 @@ private theorem persistent_floor_of_sites {n : ℕ} (u : PathShell n) (q p : ℝ
   have hD : Disjoint K C.touchedSites := Finset.disjoint_left.mpr
     (fun s hs h => (Finset.mem_sdiff.mp (hKF hs)).2 h)
   have hg := isolated_field_circuit_deficit u q (q/200) hq (by positivity) C z K
-    (hK.symm ▸ hmpos) hD (fun s hs => hiso s (Finset.mem_sdiff.mp (hKF hs)).1) t
+    (by rwa [hK]) hD (fun s hs => hiso s (Finset.mem_sdiff.mp (hKF hs)).1) t
   rw [hK,abs_of_pos ht] at hg
   have hid : b*(2*q*t) = Real.pi := div_mul_cancel₀ _ (by positivity)
   have hlo := mul_le_mul_of_nonneg_right hmc (show 0 ≤ 2*q*t by positivity)
@@ -97,7 +97,7 @@ theorem gaussian_pauli_persistent_circuit_floor (T : ℝ) (hT : 0 < T) :
   have hstart : A ≤ (N:ℝ)*t := by simpa only [mul_comm t] using (div_le_iff₀ hN).mp hlo
   have hend : q*t ≤ 1/8 := by
     apply (mul_le_mul_of_nonneg_left hhi hq.le).trans_eq
-    dsimp [q]; field_simp
+    dsimp [q]; field_simp [hT.ne']
   have hf := persistent_floor_of_sites u q p hq hp S hS his hsize t ht hstart hend
   refine ⟨hf,?_⟩
   intro v s r hv he
@@ -113,6 +113,47 @@ theorem gaussian_pauli_persistent_circuit_floor (T : ℝ) (hT : 0 < T) :
   obtain ⟨z,hz,C,hC,heC⟩ := he
   exact (not_lt_of_ge heC) (hx z hz C hC)
 
+/-- For every sublinear gate budget, two affordable times more than A/N
+apart must eventually be farther apart than any fixed macroscopic duration.
+One deterministic A works for every duration and every budget sequence. -/
+theorem gaussian_pauli_sublinear_dip_spacing :
+    ∃ A : ℝ, 0 < A ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ s : ℕ → ℕ,
+      Tendsto (fun n => (s n:ℝ)/((n+2:ℕ):ℝ)) atTop (nhds 0) →
+      ∀ T : ℝ, ∀ᶠ n : ℕ in atTop,
+        let N := n+2
+        let H := pathHamiltonian (pathPauliDisorderShell ω n)
+        ∀ t : ℝ, A/(N:ℝ) ≤ t → ∀ v : ℝ,
+          HasProjectiveCircuitApproximation N (1/10:ℝ) (s n) (unitaryEvolution H v) →
+          HasProjectiveCircuitApproximation N (1/10:ℝ) (s n) (unitaryEvolution H (v+t)) → T < t := by
+  have hall (k : ℕ) := gaussian_pauli_persistent_circuit_floor ((k:ℝ)+1) (by positivity)
+  choose A c hA hc hw using hall
+  refine ⟨A 0,hA 0,?_⟩
+  filter_upwards [ae_all_iff.mpr hw] with ω hω
+  intro s hsub T
+  obtain ⟨k,hk⟩ := exists_nat_gt T
+  obtain ⟨m,hm⟩ := exists_nat_gt (A k)
+  have hsmall i := hsub.eventually_lt_const (show 0 < c i/2 by positivity)
+  filter_upwards [hω 0,hω k,hsmall 0,hsmall k,eventually_ge_atTop m]
+    with n hzero hwide hsmall0 hsmallk hlarge
+  let N := n+2
+  have hN : 0 < (N:ℝ) := by dsimp [N]; positivity
+  have hcost (i : ℕ) (hs : (s n:ℝ)/(N:ℝ) < c i/2) :
+      (s n:ℝ)+(s n:ℝ) < c i*(N:ℝ) := by
+    linarith only [(div_lt_iff₀ hN).mp hs]
+  have hone : A k/(N:ℝ) ≤ 1 := by
+    apply (div_le_iff₀ hN).mpr
+    rw [one_mul]
+    exact hm.le.trans (by exact_mod_cast (show m ≤ N by dsimp [N]; omega))
+  intro t ht v hv he
+  by_contra! hT
+  by_cases htone : t ≤ 1
+  · have h := (hzero t ht (by simpa using htone)).2 v (s n) (s n) hv he
+    exact (not_lt_of_ge h) (hcost 0 hsmall0)
+  · have h := (hwide t (hone.trans (le_of_not_ge htone))
+      (by linarith only [hT,hk])).2 v (s n) (s n) hv he
+    exact (not_lt_of_ge h) (hcost k hsmallk)
+
 #print axioms gaussian_pauli_persistent_circuit_floor
+#print axioms gaussian_pauli_sublinear_dip_spacing
 end
 end GaloisForLFunctions.HTGeometry

@@ -30,7 +30,7 @@ theorem packet_scalar_distance_with_spectator {n : ℕ} {S T : Finset (Fin n)} (
     (H K J : selfAdjoint (Reg n)) (hK : IsSiteSupported S K.val) (hJ : IsSiteSupported T J.val)
     (C : Reg n) (hC : IsSiteSupported T C) (t : ℝ) :
     ∃ z : ℂ, ‖unitaryEvolution K.val t - z • (1:Reg n)‖ ≤
-      ‖unitaryEvolution H.val t - C‖ + |t|*‖H.val-(J.val+K.val)‖ := by
+      ‖unitaryEvolution H.val t - C‖ + |t| * ‖H.val-(J.val+K.val)‖ := by
   let V := unitaryEvolution J.val t
   let V' := unitaryEvolution J.val (-t)
   let U := unitaryEvolution K.val t
@@ -51,9 +51,11 @@ theorem packet_scalar_distance_with_spectator {n : ℕ} {S T : Finset (Fin n)} (
     _ = ‖unitaryEvolution (J.val+K.val) t-C‖ := by rw [hv,one_mul,hfac]
     _ ≤ ‖unitaryEvolution (J.val+K.val) t-unitaryEvolution H.val t‖ +
       ‖unitaryEvolution H.val t-C‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
-    _ ≤ _ := by
-      rw [norm_sub_rev (unitaryEvolution (J.val+K.val) t),add_comm]
-      exact add_le_add_left (norm_unitaryEvolution_sub_le H.val (J.val+K.val) H.2 (J.2.add K.2) t) _
+    _ ≤ |t| * ‖H.val-(J.val+K.val)‖ + ‖unitaryEvolution H.val t-C‖ := by
+      refine add_le_add ?_ le_rfl
+      rw [norm_sub_rev]
+      exact norm_unitaryEvolution_sub_le H.val (J.val+K.val) H.2 (J.2.add K.2) t
+    _ = _ := add_comm _ _
 
 #print axioms packet_scalar_distance_with_spectator
 end

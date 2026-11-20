@@ -23,9 +23,9 @@ def squareRootDeletionFactor (p : ℕ) := (1-(Real.sqrt p)⁻¹)⁻¹
 
 private theorem prime_inv_sqrt {p : ℕ} (hp : p.Prime) : (Real.sqrt p)⁻¹<1 := by
   apply inv_lt_one_of_one_lt₀
-  exact Real.one_lt_sqrt.mpr (by exact_mod_cast hp.one_lt)
+  exact (Real.lt_sqrt zero_le_one).mpr (by rw [one_pow]; exact_mod_cast hp.one_lt)
 
-private theorem one_le_cost {p : ℕ} (hp : p.Prime) : 1≤squareRootDeletionFactor p := by
+private theorem one_le_cost {p : ℕ} (hp : p.Prime) : 1 ≤ squareRootDeletionFactor p := by
   unfold squareRootDeletionFactor
   rw [one_le_inv₀ (sub_pos.mpr (prime_inv_sqrt hp))]
   exact sub_le_self _ (inv_nonneg.mpr (Real.sqrt_nonneg _))
@@ -60,8 +60,8 @@ theorem squarefree_count_deletion_envelope {p Q : ℕ} (hp : p.Prime) (hPQ : ¬p
   have hpR : 0<(p:ℝ) := Nat.cast_pos.mpr hp.pos
   have hb : b<1 := prime_inv_sqrt hp
   have hd := one_le_cost hp
-  have hC : 1≤K*squareRootDeletionFactor p := by nlinarith only [hK,hd,mul_nonneg
-    (sub_nonneg.mpr hK) (sub_nonneg.mpr hd)]
+  have hC : 1 ≤ K*squareRootDeletionFactor p := by
+    nlinarith only [hK,hd,mul_nonneg (sub_nonneg.mpr hK) (sub_nonneg.mpr hd)]
   have price : K+K*squareRootDeletionFactor p*b=K*squareRootDeletionFactor p := by
     change K+K*(1-b)⁻¹*b=K*(1-b)⁻¹
     field_simp [(sub_pos.mpr hb).ne'];ring
@@ -112,7 +112,7 @@ theorem squarefree_count_euler_envelope (Q : ℕ) : Squarefree Q → ∀ x:ℝ,0
     have hlt : R<L := Nat.div_lt_self (Nat.pos_of_ne_zero hsq.ne_zero) hp.one_lt
     have hnot : p∉R.primeFactors := fun h => hnd (Nat.mem_primeFactors.mp h).2.1
     have hset : L.primeFactors=insert p R.primeFactors := by
-      rw [←hfac,Nat.primeFactors_mul hp.ne_zero hR.ne_zero,hp.primeFactors];simp
+      rw [←hfac,Nat.primeFactors_mul hp.ne_zero hR.ne_zero,hp.primeFactors];simp <;> rfl
     have hprod : 1≤∏ q∈R.primeFactors,squareRootDeletionFactor q :=
       Finset.one_le_prod fun q hq => one_le_cost (Nat.mem_primeFactors.mp hq).1
     have hb := squarefree_count_deletion_envelope hp hnd hR.ne_zero
@@ -136,6 +136,8 @@ theorem coprime_squarefree_count_error {Q : ℕ} (hQ : Q≠0) {x : ℝ} (hx : 0�
       simp only [primeRadical,Nat.primeFactors_prod_primeFactors]
     simp only [coprimeSquarefreeIndicator,hc]
   have hb := squarefree_count_euler_envelope (primeRadical Q) (squarefree_primeRadical Q hQ) x hx
-  simpa only [coprimeCountError,hcount,coprimeSquarefreeDensity,primeRadical,Nat.primeFactors_prod_primeFactors] using hb
+  simp only [coprimeCountError] at hb
+  rw [hcount] at hb
+  simpa only [coprimeCountError,coprimeSquarefreeDensity,primeRadical,Nat.primeFactors_prod_primeFactors] using hb
 
 end GaloisForLFunctions.BezoutValuationIncidence

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.Quantum.LocalPacketComparison
+import GaloisForLFunctions.HTGeometry.Quantum.DisjointSiteCircuitApproximation
 import GaloisForLFunctions.HTGeometry.Quantum.PathPauliSpectralWidth
 import GaloisForLFunctions.HTGeometry.AveragedCentralizerProjectionFloor
 
@@ -65,7 +65,7 @@ theorem longitudinal_packet_scalar_floor {n : ℕ} (S : Finset (Fin (n+2))) (hS 
   change 1 ≤ ‖unitaryEvolution H (Real.pi/(E i-E j))-z • (1:Reg (n+2))‖ at hhard
   rw [hgap] at hhard
   let v := Real.pi/(2*M)
-  have heq : (v-t)*M = Real.pi/2-t*M := by dsimp [v]; field_simp; ring
+  have heq : (v-t)*M = Real.pi/2-t*M := by dsimp [v]; field_simp [hM.ne']
   have hs : ‖unitaryEvolution H v-unitaryEvolution H t‖ ≤ |t*M-Real.pi/2| := by
     calc
       _ ≤ ‖H‖*|v-t| := norm_unitaryEvolution_time_sub_le (isSelfAdjoint_pathHamiltonian u) _ _

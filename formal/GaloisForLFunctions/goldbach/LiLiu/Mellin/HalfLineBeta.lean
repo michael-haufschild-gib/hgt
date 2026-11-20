@@ -35,7 +35,9 @@ private theorem odds_deriv (x : ℝ) (hx : x ∈ Ioo (0:ℝ) 1) :
     HasDerivWithinAt odds ((1-x)^2)⁻¹ (Ioo 0 1) x := by
   have h := ((hasDerivAt_id x).div ((hasDerivAt_const x (1:ℝ)).sub (hasDerivAt_id x))
     (sub_ne_zero.mpr hx.2.ne')).hasDerivWithinAt (s := Ioo 0 1)
-  convert h using 1 <;> simp [odds,div_eq_mul_inv] <;> ring
+  have he : (1*(1-x)-x*(0-1))/(1-x)^2 = ((1-x)^2)⁻¹ := by rw [div_eq_mul_inv]; ring
+  rw [← he]
+  exact h
 
 private def halfBetaIntegrand (a b : ℂ) (x : ℝ) := (x:ℂ)^(a-1)*(1+(x:ℂ))^(-(a+b))
 
@@ -64,7 +66,6 @@ private theorem odds_jacobian (a b : ℂ) {x : ℝ} (hx : x ∈ Ioo 0 1) :
   have hdA : (d:ℂ)^(a-1) ≠ 0 := cpow_ne_zero_iff.mpr (Or.inl hdc)
   push_cast
   field_simp [hdc,hdA]
-  ring
 
 /-- The change of variables also transfers absolute convergence. -/
 theorem halfLineBeta_integrable {a b : ℂ} (ha : 0 < a.re) (hb : 0 < b.re) :

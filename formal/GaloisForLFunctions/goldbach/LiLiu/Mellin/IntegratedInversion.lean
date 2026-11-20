@@ -30,8 +30,8 @@ private theorem weight_inversion (φ : TestWeight) (σ : ℝ) {x : ℝ} (hx : 0 
       congr 1
       apply integral_congr_ae
       filter_upwards with t
-      rw [← mul_assoc, ← cpow_add _ _ h0, neg_add]
-      rfl
+      rw [← mul_assoc, ← cpow_add _ _ h0]
+      simp only [line,neg_add]
 
 /-- Continuous-index Mellin inversion. The real-part majorant is the only
 absolute convergence requirement on the measure against which we invert. -/
@@ -97,11 +97,15 @@ theorem product_weight_inversion (μ ν : Measure ℝ) [SFinite μ] [SFinite ν]
         mellin (companion φ) ((σ:ℂ)+t*I) := by
   have hx : ∀ᵐ p ∂μ.prod ν, 0 < p.1 := Measure.quasiMeasurePreserving_fst.ae hμ
   have hy : ∀ᵐ p ∂μ.prod ν, 0 < p.2 := Measure.quasiMeasurePreserving_snd.ae hν
-  obtain ⟨hi,hv,he⟩ := integrated_weight_inversion (μ.prod ν) φ σ (measurable_fst.mul measurable_snd)
+  obtain ⟨hi,hv,he⟩ := integrated_weight_inversion (μ.prod ν) φ σ
+    (q := fun p : ℝ × ℝ => p.1*p.2) (W := fun p : ℝ × ℝ => A p.1*B p.2)
+    (measurable_fst.mul measurable_snd)
     ((hA.comp measurable_fst).mul (hB.comp measurable_snd))
     (hx.and hy |>.mono fun _ h => mul_pos h.1 h.2) (by
       apply (hI.mul_prod hJ).congr
       filter_upwards [hx,hy] with p hx hy
+      change (‖A p.1‖ * p.1^(-(1/2+σ))) * (‖B p.2‖ * p.2^(-(1/2+σ))) =
+        ‖A p.1*B p.2‖ * (p.1*p.2)^(-(1/2+σ))
       simp only [norm_mul, Real.mul_rpow hx.le hy.le]
       ring)
   have hsplit (s : ℂ) : (∫ p : ℝ × ℝ, (A p.1 * B p.2) * ((p.1*p.2:ℝ):ℂ)^(-s) ∂μ.prod ν) =

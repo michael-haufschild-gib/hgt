@@ -80,6 +80,7 @@ theorem orientedProfile_mellin (φ : TestWeight) {d : ℝ} (hd : d^2=1) {w : ℂ
     _ = _ := by
       apply setIntegral_congr_fun measurableSet_Icc
       intro r hr
+      dsimp only
       have hr0 : 0 < r := lt_of_lt_of_le (by norm_num : (0:ℝ)<1/3) hr.1
       have hy : (∫ y in Ioi (0:ℝ), F y r) = ∫ y in Ioc (0:ℝ) 2, F y r := by
         apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi (fun _ h => h.1)

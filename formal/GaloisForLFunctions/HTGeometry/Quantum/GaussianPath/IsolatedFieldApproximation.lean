@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.IsolatedFieldPackets
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.IncidentPauliTerms
+import GaloisForLFunctions.HTGeometry.Quantum.LocalPacketComparison
 import GaloisForLFunctions.HTGeometry.Quantum.PhysicalCircuitDeletionBound
 
 /-! # Error from replacing weakly coupled sites by longitudinal fields -/
@@ -65,10 +66,11 @@ private theorem omitted_mass {n : ℕ} (u : PathShell n) (S : Finset (Fin (n+2))
       · change v=s at hi
         simp [p,longitudinalPacket,hi,hS]
       · rfl
-    simpa only [pathPacketReferenceCoeff,if_neg hcomp,hp,zero_add,he] using
-      (show |u l-longitudinalPacket Finset.univ q l| ≤ η from hs s hS l hi)
+    rw [pathPacketReferenceCoeff,if_neg hcomp,hp l,zero_add,he]
+    exact hs s hS l hi
   have hz (l) (hl : l ∉ W) : |u l-pathPacketReferenceCoeff Sᶜ S u p l| = 0 := by
-    simp only [pathPacketReferenceCoeff,if_pos (path_supported_compl_of_not_incident S l hl),hp,ho l hl,add_zero,sub_self,abs_zero]
+    rw [pathPacketReferenceCoeff,if_pos (path_supported_compl_of_not_incident S l hl),
+      hp l,ho l hl,add_zero,sub_self,abs_zero]
   have herr := norm_pathHamiltonian_sub_packetReference_le Sᶜ S u p
   have hres : pathHamiltonianOnSites S p = pathHamiltonian p := packet_restriction S q
   rw [pathHamiltonianPacketReference,hres] at herr
@@ -85,7 +87,7 @@ theorem isolated_field_circuit_deficit {n : ℕ} (u : PathShell n) (q η : ℝ) 
     (hd : Disjoint S C.touchedSites) (hs : ∀ s ∈ S, isolatedLongitudinalSite u q η s)
     (t : ℝ) :
     1 ≤ ‖unitaryEvolution (pathHamiltonian u) t-z • (C.eval : Reg (n+2))‖ +
-      |t|*(21*(S.card:ℝ)*η) + |t*((S.card:ℝ)*q)-Real.pi/2| := by
+      |t| * (21*(S.card:ℝ)*η) + |t*((S.card:ℝ)*q)-Real.pi/2| := by
   let H : selfAdjoint (Reg (n+2)) := ⟨pathHamiltonian u,isSelfAdjoint_pathHamiltonian u⟩
   let J : selfAdjoint (Reg (n+2)) := ⟨pathHamiltonianOnSites Sᶜ u,isSelfAdjoint_pathHamiltonianOnSites _ _⟩
   let K : selfAdjoint (Reg (n+2)) := ⟨pathHamiltonian (longitudinalPacket S q),isSelfAdjoint_pathHamiltonian _⟩
@@ -99,7 +101,9 @@ theorem isolated_field_circuit_deficit {n : ℕ} (u : PathShell n) (q η : ℝ) 
     (pathHamiltonianOnSites_isSiteSupported _ _) _ hC t
   have hf := longitudinal_packet_scalar_floor S hS q hq t c
   apply hf.trans
-  exact add_le_add_right (hc.trans (add_le_add_left
-    (mul_le_mul_of_nonneg_left (omitted_mass u S q η hη hs) (abs_nonneg _)) _)) _
+  exact add_le_add (hc.trans (add_le_add le_rfl
+    (mul_le_mul_of_nonneg_left (omitted_mass u S q η hη hs) (abs_nonneg _)))) le_rfl
+
+#print axioms isolated_field_circuit_deficit
 end
 end GaloisForLFunctions.HTGeometry

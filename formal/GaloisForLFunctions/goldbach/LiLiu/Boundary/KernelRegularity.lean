@@ -59,7 +59,7 @@ theorem boundaryKernel_continuousAt {n : ℕ} (h : modulusGRH (n+1)) {p : ℂ ×
     (p := f p) hs hz).continuousAt.comp hf.continuousAt
   have hP : ContinuousAt (fun q : ℂ × ℂ => characterKernel (n+1) q.1 q.2) p := by
     apply continuousAt_const.mul
-    apply continuousAt_finsetSum
+    apply tendsto_finsetSum
     intro χ hχ
     have hn := odd_ne_principal (mem_filter.mp hχ).2
     exact (((characterFeature_analyticAt h hn hs.1).continuousAt.comp continuous_fst.continuousAt).mul
